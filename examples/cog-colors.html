@@ -1,0 +1,32 @@
+---
+layout: example.html
+title: NDVI with a Dynamic Color Ramp
+shortdesc: NDVI from a COG with a dynamic color ramp
+docs: >
+  The GeoTIFF layer in this example draws from two Sentinel 2 sources: a red band and a near infrared band.
+  The layer style includes a `color` expression that calculates the Normalized Difference Vegetation Index (NDVI)
+  from values in the two bands.  The `interpolate` expression is used to map NDVI values to colors.  The "stop" values
+  for the color ramp are derived from application provided style variables.  Using the inputs above, the min and max
+  colors and values can be adjusted.  The `layer.updateStyleVariables()` method is called to update the
+  variables used in the interpolated color expression.
+tags: "cog, ndvi"
+resources:
+  - https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.2/chroma.min.js
+---
+<div id="map" class="map"></div>
+<table>
+  <tbody>
+    <tr>
+      <td>Min NDVI</td>
+      <td><input type="range" id="min-value-input" min="-1.0" max="-0.1" step="0.01"></td>
+      <td class="data" id="min-value-output"></td>
+      <td><input type="color" id="min-color"></td>
+    </tr>
+    <tr>
+      <td>Max NDVI</td>
+      <td><input type="range" id="max-value-input" min="0.1" max="1.0" step="0.01"></td>
+      <td class="data" id="max-value-output"></td>
+      <td><input type="color" id="max-color"></td>
+    </tr>
+  </tbody>
+</table>

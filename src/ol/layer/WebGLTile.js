@@ -18,7 +18,7 @@ import {assign} from '../obj.js';
  * @typedef {Object} Style
  * Translates tile data to rendered pixels.
  *
- * @property {Object<string, number>} [variables] Style variables.  Each variable must hold a number.  These
+ * @property {Object<string, (string|number)>} [variables] Style variables.  Each variable must hold a number or string.  These
  * variables can be used in the `color`, `brightness`, `contrast`, `exposure`, `saturation` and `gamma`
  * {@link import("../style/expressions.js").ExpressionValue expressions}, using the `['var', 'varName']` operator.
  * To update style variables, use the {@link import("./WebGLTile.js").default#updateStyleVariables} method.
@@ -287,6 +287,12 @@ class WebGLTileLayer extends BaseTileLayer {
      * @private
      */
     this.cacheSize_ = cacheSize;
+
+    /**
+     * @type {Object<string, (string|number)>}
+     * @private
+     */
+    this.styleVariables_ = this.style_.variables || {};
   }
 
   /**
@@ -300,8 +306,6 @@ class WebGLTileLayer extends BaseTileLayer {
       this.style_,
       'bandCount' in source ? source.bandCount : 4
     );
-
-    this.styleVariables_ = this.style_.variables || {};
 
     return new WebGLTileLayerRenderer(this, {
       vertexShader: parsedStyle.vertexShader,
