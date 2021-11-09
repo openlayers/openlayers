@@ -101,7 +101,7 @@
     "rollup-plugin-terser": "^7.0.2",
     "serve-static": "^1.14.0",
     "shx": "^0.3.2",
-    "sinon": "^11.1.1",
+    "sinon": "^12.0.1",
     "terser-webpack-plugin": "^5.1.1",
     "threads": "^1.6.5",
     "url-polyfill": "^1.1.5",
