@@ -381,7 +381,11 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     }
 
     this.helper.useProgram(this.program_);
-    this.helper.prepareDraw(frameState, !blend);
+    this.helper.prepareDraw(
+      frameState,
+      !blend,
+      tileLayer.styleVariables_.additiveBlending
+    );
 
     const zs = Object.keys(tileTexturesByZ)
       .map(Number)
