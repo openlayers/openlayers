@@ -29,6 +29,7 @@ import {
 } from '../extent.js';
 import {createEditingStyle} from '../style/Style.js';
 import {fromUserCoordinate, getUserProjection} from '../proj.js';
+import {getDefaultView} from '../util.js';
 import {squaredDistance as squaredCoordinateDistance} from '../coordinate.js';
 
 /**
@@ -557,7 +558,7 @@ class Draw extends PointerInteraction {
         this.lastDragTime_ = undefined;
       }
       if (this.shouldHandle_ && this.downTimeout_ !== undefined) {
-        clearTimeout(this.downTimeout_);
+        getDefaultView().clearTimeout(this.downTimeout_);
         this.downTimeout_ = undefined;
       }
     }
@@ -643,7 +644,7 @@ class Draw extends PointerInteraction {
 
     if (this.getPointerCount() === 0) {
       if (this.downTimeout_) {
-        clearTimeout(this.downTimeout_);
+        getDefaultView().clearTimeout(this.downTimeout_);
         this.downTimeout_ = undefined;
       }
 

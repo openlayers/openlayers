@@ -1,7 +1,7 @@
 /**
  * @module ol/net
  */
-import {getUid} from './util.js';
+import {getDefaultView, getUid} from './util.js';
 
 /**
  * Simple JSONP helper. Supports error callbacks and a custom callback param.
@@ -28,14 +28,14 @@ export function jsonp(url, callback, opt_errback, opt_callbackParam) {
     (opt_callbackParam || 'callback') +
     '=' +
     key;
-  const timer = setTimeout(function () {
+  const timer = getDefaultView().setTimeout(function () {
     cleanup();
     if (opt_errback) {
       opt_errback();
     }
   }, 10000);
   window[key] = function (data) {
-    clearTimeout(timer);
+    getDefaultView().clearTimeout(timer);
     cleanup();
     callback(data);
   };

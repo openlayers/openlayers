@@ -9,6 +9,7 @@ import PointerEventType from './pointer/EventType.js';
 import Target from './events/Target.js';
 import {PASSIVE_EVENT_LISTENERS} from './has.js';
 import {VOID} from './functions.js';
+import {getDefaultView} from './util.js';
 import {listen, unlistenByKey} from './events.js';
 
 class MapBrowserEventHandler extends Target {
@@ -134,7 +135,7 @@ class MapBrowserEventHandler extends Target {
     this.dispatchEvent(newEvent);
     if (this.clickTimeoutId_ !== undefined) {
       // double-click
-      clearTimeout(this.clickTimeoutId_);
+      getDefaultView().clearTimeout(this.clickTimeoutId_);
       this.clickTimeoutId_ = undefined;
       newEvent = new MapBrowserEvent(
         MapBrowserEventType.DBLCLICK,
@@ -144,7 +145,7 @@ class MapBrowserEventHandler extends Target {
       this.dispatchEvent(newEvent);
     } else {
       // click
-      this.clickTimeoutId_ = setTimeout(
+      this.clickTimeoutId_ = getDefaultView().setTimeout(
         /** @this {MapBrowserEventHandler} */
         function () {
           this.clickTimeoutId_ = undefined;

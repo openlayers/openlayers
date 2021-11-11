@@ -16,6 +16,7 @@ import {assign} from '../obj.js';
 import {createCanvasContext2D} from '../dom.js';
 import {create as createTransform} from '../transform.js';
 import {equals, getCenter, getHeight, getWidth} from '../extent.js';
+import {getDefaultView} from '../util.js';
 
 let hasImageData = true;
 try {
@@ -173,7 +174,7 @@ function createFauxWorker(config, onMessage) {
   let terminated = false;
   return {
     postMessage: function (data) {
-      setTimeout(function () {
+      getDefaultView().setTimeout(function () {
         if (terminated) {
           return;
         }
@@ -782,7 +783,7 @@ class RasterSource extends ImageSource {
     frameState.tileQueue.loadMoreTiles(16, 16);
 
     if (frameState.animate) {
-      requestAnimationFrame(this.changed.bind(this));
+      getDefaultView().requestAnimationFrame(this.changed.bind(this));
     }
 
     return this.renderedImageCanvas_;
@@ -863,7 +864,7 @@ class RasterSource extends ImageSource {
       new RasterSourceEvent(RasterEventType.AFTEROPERATIONS, frameState, data)
     );
     if (frameState.animate) {
-      requestAnimationFrame(this.changed.bind(this));
+      getDefaultView().requestAnimationFrame(this.changed.bind(this));
     }
   }
 

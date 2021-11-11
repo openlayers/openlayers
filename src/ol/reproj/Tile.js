@@ -13,6 +13,7 @@ import {
 } from '../reproj.js';
 import {clamp} from '../math.js';
 import {getArea, getIntersection} from '../extent.js';
+import {getDefaultView} from '../util.js';
 import {listen, unlistenByKey} from '../events.js';
 
 /**
@@ -335,7 +336,7 @@ class ReprojTile extends Tile {
       );
 
       if (leftToLoad === 0) {
-        setTimeout(this.reproject_.bind(this), 0);
+        getDefaultView().setTimeout(this.reproject_.bind(this), 0);
       } else {
         this.sourceTiles_.forEach(function (tile, i, arr) {
           const state = tile.getState();

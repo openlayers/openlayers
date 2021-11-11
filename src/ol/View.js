@@ -46,6 +46,7 @@ import {
   getWidth,
   isEmpty,
 } from './extent.js';
+import {getDefaultView} from './util.js';
 import {inAndOut} from './easing.js';
 import {linearFindNearest} from './array.js';
 import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
@@ -857,7 +858,7 @@ class View extends BaseObject {
     // prune completed series
     this.animations_ = this.animations_.filter(Boolean);
     if (more && this.updateAnimationKey_ === undefined) {
-      this.updateAnimationKey_ = requestAnimationFrame(
+      this.updateAnimationKey_ = getDefaultView().requestAnimationFrame(
         this.updateAnimations_.bind(this)
       );
     }
@@ -1909,7 +1910,7 @@ class View extends BaseObject {
  * @param {*} returnValue Return value.
  */
 function animationCallback(callback, returnValue) {
-  setTimeout(function () {
+  getDefaultView().setTimeout(function () {
     callback(returnValue);
   }, 0);
 }

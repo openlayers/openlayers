@@ -19,6 +19,7 @@ import TileQueue, {getTilePriority} from './TileQueue.js';
 import View from './View.js';
 import ViewHint from './ViewHint.js';
 import {DEVICE_PIXEL_RATIO, PASSIVE_EVENT_LISTENERS} from './has.js';
+import {GLOBAL_SCOPE_OBJECT_KEY, getDefaultView} from './util.js';
 import {TRUE} from './functions.js';
 import {
   apply as applyTransform,
@@ -1137,6 +1138,20 @@ class PluggableMap extends BaseObject {
   }
 
   /**
+   * Set the default view reference to global scope.
+   * @param {HTMLElement} [target] The Element or id of the Element
+   *
+   * @private
+   */
+  setDefaultView_(target) {
+    const defaultView = target.ownerDocument.defaultView;
+    window[GLOBAL_SCOPE_OBJECT_KEY] = {
+      ...window[GLOBAL_SCOPE_OBJECT_KEY],
+      defaultView,
+    };
+  }
+
+  /**
    * @private
    */
   handleTargetChanged_() {
@@ -1166,7 +1181,7 @@ class PluggableMap extends BaseObject {
     const targetElement = this.getTargetElement();
     if (!targetElement) {
       if (this.renderer_) {
-        clearTimeout(this.postRenderTimeoutHandle_);
+        getDefaultView().clearTimeout(this.postRenderTimeoutHandle_);
         this.postRenderTimeoutHandle_ = undefined;
         this.postRenderFunctions_.length = 0;
         this.renderer_.dispose();
@@ -1177,6 +1192,8 @@ class PluggableMap extends BaseObject {
         this.animationDelayKey_ = undefined;
       }
     } else {
+      this.setDefaultView_(targetElement);
+
       targetElement.appendChild(this.viewport_);
       if (!this.renderer_) {
         this.renderer_ = this.createRenderer();
@@ -1332,7 +1349,9 @@ class PluggableMap extends BaseObject {
    */
   render() {
     if (this.renderer_ && this.animationDelayKey_ === undefined) {
-      this.animationDelayKey_ = requestAnimationFrame(this.animationDelay_);
+      this.animationDelayKey_ = getDefaultView().requestAnimationFrame(
+        this.animationDelay_
+      );
     }
   }
 
@@ -1476,7 +1495,7 @@ class PluggableMap extends BaseObject {
     this.dispatchEvent(new MapEvent(MapEventType.POSTRENDER, this, frameState));
 
     if (!this.postRenderTimeoutHandle_) {
-      this.postRenderTimeoutHandle_ = setTimeout(() => {
+      this.postRenderTimeoutHandle_ = getDefaultView().setTimeout(() => {
         this.postRenderTimeoutHandle_ = undefined;
         this.handlePostRender();
       }, 0);

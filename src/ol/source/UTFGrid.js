@@ -11,6 +11,7 @@ import {applyTransform, intersects} from '../extent.js';
 import {assert} from '../asserts.js';
 import {createFromTemplates, nullTileUrlFunction} from '../tileurlfunction.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
+import {getDefaultView} from '../util.js';
 import {getKeyZXY} from '../tilecoord.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
 import {listenOnce} from '../events.js';
@@ -149,7 +150,7 @@ export class CustomTile extends Tile {
       this.loadInternal_();
     } else {
       if (opt_request === true) {
-        setTimeout(
+        getDefaultView().setTimeout(
           function () {
             callback(this.getData(coordinate));
           }.bind(this),
@@ -407,7 +408,7 @@ class UTFGrid extends TileSource {
       tile.forDataAtCoordinate(coordinate, callback, opt_request);
     } else {
       if (opt_request === true) {
-        setTimeout(function () {
+        getDefaultView().setTimeout(function () {
           callback(null);
         }, 0);
       } else {

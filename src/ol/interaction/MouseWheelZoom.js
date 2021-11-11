@@ -6,6 +6,7 @@ import Interaction, {zoomByDelta} from './Interaction.js';
 import {DEVICE_PIXEL_RATIO, FIREFOX} from '../has.js';
 import {all, always, focusWithTabindex} from '../events/condition.js';
 import {clamp} from '../math.js';
+import {getDefaultView} from '../util.js';
 
 /**
  * @enum {string}
@@ -223,14 +224,14 @@ class MouseWheelZoom extends Interaction {
       !(view.getConstrainResolution() || this.constrainResolution_)
     ) {
       if (this.trackpadTimeoutId_) {
-        clearTimeout(this.trackpadTimeoutId_);
+        getDefaultView().clearTimeout(this.trackpadTimeoutId_);
       } else {
         if (view.getAnimating()) {
           view.cancelAnimations();
         }
         view.beginInteraction();
       }
-      this.trackpadTimeoutId_ = setTimeout(
+      this.trackpadTimeoutId_ = getDefaultView().setTimeout(
         this.endInteraction_.bind(this),
         this.timeout_
       );
@@ -243,8 +244,8 @@ class MouseWheelZoom extends Interaction {
 
     const timeLeft = Math.max(this.timeout_ - (now - this.startTime_), 0);
 
-    clearTimeout(this.timeoutId_);
-    this.timeoutId_ = setTimeout(
+    getDefaultView().clearTimeout(this.timeoutId_);
+    this.timeoutId_ = getDefaultView().setTimeout(
       this.handleWheelZoom_.bind(this, map),
       timeLeft
     );

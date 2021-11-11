@@ -6,6 +6,7 @@ import EventTarget from '../events/Target.js';
 import {WORKER_OFFSCREEN_CANVAS} from '../has.js';
 import {clear} from '../obj.js';
 import {createCanvasContext2D} from '../dom.js';
+import {getDefaultView} from '../util.js';
 import {getFontParameters} from '../css.js';
 
 /**
@@ -253,7 +254,7 @@ export const registerFont = (function () {
       }
     }
     if (done) {
-      clearInterval(interval);
+      getDefaultView().clearInterval(interval);
       interval = undefined;
     }
   }
@@ -272,7 +273,7 @@ export const registerFont = (function () {
         if (!isAvailable(font.style, font.weight, family)) {
           checkedFonts.set(key, 0, true);
           if (interval === undefined) {
-            interval = setInterval(check, 32);
+            interval = getDefaultView().setInterval(check, 32);
           }
         }
       }

@@ -38,3 +38,10 @@ export function getUid(obj) {
  * @type {string}
  */
 export const VERSION = 'latest';
+
+export const GLOBAL_SCOPE_OBJECT_KEY = 'OpenLayers';
+
+export function getDefaultView() {
+  const globalOlObject = window[GLOBAL_SCOPE_OBJECT_KEY];
+  return (globalOlObject && globalOlObject.defaultView) || window;
+}

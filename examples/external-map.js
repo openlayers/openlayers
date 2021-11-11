@@ -2,29 +2,14 @@ import Map from '../src/ol/Map.js';
 import OSM from '../src/ol/source/OSM.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
-import {
-  Control,
-  FullScreen,
-  defaults as defaultControls,
-} from '../src/ol/control.js';
+import {FullScreen, defaults as defaultControls} from '../src/ol/control.js';
 import {fromLonLat} from '../src/ol/proj.js';
-
-class UnusableMask extends Control {
-  constructor() {
-    super({
-      element: document.createElement('div'),
-    });
-    this.element.setAttribute('hidden', 'hidden');
-    this.element.className = 'ol-mask';
-    this.element.innerHTML = '<div>Map not usable</div>';
-  }
-}
 
 const localMapTarget = document.getElementById('map');
 
 const map = new Map({
   target: localMapTarget,
-  controls: defaultControls().extend([new FullScreen(), new UnusableMask()]),
+  controls: defaultControls().extend([new FullScreen()]),
   layers: [
     new TileLayer({
       source: new OSM(),
@@ -53,27 +38,6 @@ function resetMapTarget() {
   map.setTarget(localMapTarget);
   button.disabled = false;
 }
-
-function updateOverlay() {
-  if (!mapWindow) {
-    return;
-  }
-  const externalMapTarget = mapWindow.document.getElementById('map');
-  if (!externalMapTarget) {
-    return;
-  }
-  if (document.visibilityState === 'visible') {
-    // Show controls and enable keyboard input
-    externalMapTarget.classList.remove('unusable');
-    externalMapTarget.setAttribute('tabindex', '0');
-    externalMapTarget.focus();
-  } else {
-    // Hide all controls and disable keyboard input
-    externalMapTarget.removeAttribute('tabindex');
-    externalMapTarget.classList.add('unusable');
-  }
-}
-window.addEventListener('visibilitychange', updateOverlay);
 
 button.addEventListener('click', function () {
   const blockerNotice = document.getElementById('blocker-notice');
@@ -106,7 +70,5 @@ button.addEventListener('click', function () {
       // Close window in case user does a page reload
       closeMapWindow();
     });
-
-    updateOverlay();
   });
 });
