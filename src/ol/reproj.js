@@ -248,20 +248,36 @@ export function render(
 
   const stitchScale = pixelRatio / sourceResolution;
 
+  let imageContext;
+  if (opt_contextOptions === IMAGE_SMOOTHING_DISABLED) {
+    imageContext = createCanvasContext2D(1, 1);
+    assign(imageContext, opt_contextOptions);
+  }
+
   sources.forEach(function (src, i, arr) {
     const xPos = src.extent[0] - sourceDataExtent[0];
     const yPos = -(src.extent[3] - sourceDataExtent[3]);
     const srcWidth = getWidth(src.extent);
     const srcHeight = getHeight(src.extent);
+    let image = src.image;
 
     // This test should never fail -- but it does. Need to find a fix the upstream condition
-    if (src.image.width > 0 && src.image.height > 0) {
+    if (image.width > 0 && image.height > 0) {
+      // Due to inconsistent browser behavior always use a canvas image when smoothing disabled
+      if (imageContext && !(image instanceof HTMLCanvasElement)) {
+        imageContext.canvas.width = image.width;
+        imageContext.canvas.height = image.height;
+        imageContext.clearRect(0, 0, image.width, image.height);
+        imageContext.drawImage(image, 0, 0, image.width, image.height);
+        image = imageContext.canvas;
+      }
+
       stitchContext.drawImage(
-        src.image,
+        image,
         gutter,
         gutter,
-        src.image.width - 2 * gutter,
-        src.image.height - 2 * gutter,
+        image.width - 2 * gutter,
+        image.height - 2 * gutter,
         xPos * stitchScale,
         yPos * stitchScale,
         srcWidth * stitchScale,
