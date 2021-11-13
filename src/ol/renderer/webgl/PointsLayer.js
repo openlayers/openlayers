@@ -132,7 +132,6 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     uniforms[DefaultUniform.PROJECTION_MATRIX] = projectionMatrixTransform;
 
     super(layer, {
-      className: options.className,
       uniforms: uniforms,
       postProcesses: options.postProcesses,
     });
@@ -146,10 +145,21 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       DYNAMIC_DRAW
     );
 
-    this.program_ = this.helper.getProgram(
-      options.fragmentShader,
-      options.vertexShader
-    );
+    /**
+     * @private
+     */
+    this.vertexShader_ = options.vertexShader;
+
+    /**
+     * @private
+     */
+    this.fragmentShader_ = options.fragmentShader;
+
+    /**
+     * @type {WebGLProgram}
+     * @private
+     */
+    this.program_;
 
     /**
      * @type {boolean}
@@ -158,12 +168,21 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.hitDetectionEnabled_ =
       options.hitFragmentShader && options.hitVertexShader ? true : false;
 
-    this.hitProgram_ =
-      this.hitDetectionEnabled_ &&
-      this.helper.getProgram(
-        options.hitFragmentShader,
-        options.hitVertexShader
-      );
+    /**
+     * @private
+     */
+    this.hitVertexShader_ = options.hitVertexShader;
+
+    /**
+     * @private
+     */
+    this.hitFragmentShader_ = options.hitFragmentShader;
+
+    /**
+     * @type {WebGLProgram}
+     * @private
+     */
+    this.hitProgram_;
 
     const customAttributes = options.attributes
       ? options.attributes.map(function (attribute) {
@@ -263,8 +282,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
      * @type {WebGLRenderTarget}
      * @private
      */
-    this.hitRenderTarget_ =
-      this.hitDetectionEnabled_ && new WebGLRenderTarget(this.helper);
+    this.hitRenderTarget_;
 
     this.worker_ = createWebGLWorker();
     this.worker_.addEventListener(
@@ -360,6 +378,22 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     );
   }
 
+  afterHelperCreated() {
+    this.program_ = this.helper.getProgram(
+      this.fragmentShader_,
+      this.vertexShader_
+    );
+
+    if (this.hitDetectionEnabled_) {
+      this.hitProgram_ = this.helper.getProgram(
+        this.hitFragmentShader_,
+        this.hitVertexShader_
+      );
+
+      this.hitRenderTarget_ = new WebGLRenderTarget(this.helper);
+    }
+  }
+
   /**
    * @param {import("../../source/Vector.js").VectorSourceEvent} event Event.
    * @private
@@ -436,11 +470,11 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
-   * Determine whether render should be called.
+   * Determine whether renderFrame should be called.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
    */
-  prepareFrame(frameState) {
+  prepareFrameInternal(frameState) {
     const layer = this.getLayer();
     const vectorSource = layer.getSource();
     const viewState = frameState.viewState;

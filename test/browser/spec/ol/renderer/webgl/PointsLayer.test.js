@@ -75,7 +75,7 @@ const hitFragmentShader = `
     gl_FragColor = v_hitColor;
   }`;
 
-describe('ol.renderer.webgl.PointsLayer', function () {
+describe('ol/renderer/webgl/PointsLayer', function () {
   describe('constructor', function () {
     let target;
 
@@ -116,16 +116,16 @@ describe('ol.renderer.webgl.PointsLayer', function () {
         hitVertexShader: hitVertexShader,
         hitFragmentShader: hitFragmentShader,
       });
-      frameState = Object.assign(
-        {
-          size: [2, 2],
-          extent: [-100, -100, 100, 100],
-        },
-        baseFrameState
-      );
+      frameState = Object.assign({}, baseFrameState, {
+        size: [2, 2],
+        extent: [-100, -100, 100, 100],
+        layerStatesArray: [layer.getLayerState()],
+      });
     });
 
     it('calls WebGlHelper#prepareDraw', function () {
+      renderer.prepareFrame(frameState);
+
       const spy = sinon.spy(renderer.helper, 'prepareDraw');
       renderer.prepareFrame(frameState);
       expect(spy.called).to.be(true);
@@ -327,14 +327,12 @@ describe('ol.renderer.webgl.PointsLayer', function () {
         0,
         0
       );
-      const frameState = Object.assign(
-        {
-          extent: [-20, -20, 20, 20],
-          size: [40, 40],
-          coordinateToPixelTransform: transform,
-        },
-        baseFrameState
-      );
+      const frameState = Object.assign({}, baseFrameState, {
+        extent: [-20, -20, 20, 20],
+        size: [40, 40],
+        coordinateToPixelTransform: transform,
+        layerStatesArray: [layer.getLayerState()],
+      });
 
       renderer.prepareFrame(frameState);
       renderer.worker_.addEventListener('message', function () {
@@ -391,15 +389,14 @@ describe('ol.renderer.webgl.PointsLayer', function () {
         0,
         0
       );
-      const frameState = Object.assign(
-        {
-          pixelRatio: 3,
-          extent: [-20, -20, 20, 20],
-          size: [40, 40],
-          coordinateToPixelTransform: transform,
-        },
-        baseFrameState
-      );
+      const frameState = Object.assign({}, baseFrameState, {
+        pixelRatio: 3,
+        extent: [-20, -20, 20, 20],
+        size: [40, 40],
+        coordinateToPixelTransform: transform,
+        layerStatesArray: [layer.getLayerState()],
+      });
+
       let found;
       const cb = function (feature) {
         found = feature;
@@ -445,6 +442,13 @@ describe('ol.renderer.webgl.PointsLayer', function () {
         vertexShader: simpleVertexShader,
         fragmentShader: simpleFragmentShader,
       });
+
+      const frameState = Object.assign({}, baseFrameState, {
+        size: [2, 2],
+        extent: [-100, -100, 100, 100],
+        layerStatesArray: [layer.getLayerState()],
+      });
+      renderer.prepareFrame(frameState);
 
       const spyHelper = sinon.spy(renderer.helper, 'disposeInternal');
       const spyWorker = sinon.spy(renderer.worker_, 'terminate');

@@ -7,7 +7,7 @@ import {create} from '../../../../../../src/ol/transform.js';
 import {createCanvasContext2D} from '../../../../../../src/ol/dom.js';
 import {get} from '../../../../../../src/ol/proj.js';
 
-describe('ol.renderer.webgl.TileLayer', function () {
+describe('ol/renderer/webgl/TileLayer', function () {
   /** @type {import("../../../../../../src/ol/renderer/webgl/TileLayer.js").default} */
   let renderer;
   /** @type {WebGLTileLayer} */
@@ -74,6 +74,9 @@ describe('ol.renderer.webgl.TileLayer', function () {
   });
 
   it('#renderFrame()', function () {
+    const ready = renderer.prepareFrame(frameState);
+    expect(ready).to.be(true);
+
     const rendered = renderer.renderFrame(frameState);
     expect(rendered).to.be.a(HTMLCanvasElement);
     expect(frameState.tileQueue.getCount()).to.be(1);

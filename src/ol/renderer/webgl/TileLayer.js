@@ -103,7 +103,6 @@ function getRenderExtent(frameState, extent) {
  * @property {string} fragmentShader Fragment shader source.
  * @property {Object<string, import("../../webgl/Helper").UniformValue>} [uniforms] Additional uniforms
  * made available to shaders.
- * @property {string} [className='ol-layer'] A CSS class name to set to the canvas element.
  * @property {number} [cacheSize=512] The texture cache size.
  */
 
@@ -120,7 +119,6 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
   constructor(tileLayer, options) {
     super(tileLayer, {
       uniforms: options.uniforms,
-      className: options.className,
     });
 
     /**
@@ -154,10 +152,21 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
      */
     this.tempSize_ = [0, 0];
 
-    this.program_ = this.helper.getProgram(
-      options.fragmentShader,
-      options.vertexShader
-    );
+    /**
+     * @type {WebGLProgram}
+     * @private
+     */
+    this.program_;
+
+    /**
+     * @private
+     */
+    this.vertexShader_ = options.vertexShader;
+
+    /**
+     * @private
+     */
+    this.fragmentShader_ = options.fragmentShader;
 
     /**
      * Tiles are rendered as a quad with the following structure:
@@ -173,11 +182,11 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
      *
      * Triangle A: P0, P1, P3
      * Triangle B: P1, P2, P3
+     *
+     * @private
      */
-    const indices = new WebGLArrayBuffer(ELEMENT_ARRAY_BUFFER, STATIC_DRAW);
-    indices.fromArray([0, 1, 3, 1, 2, 3]);
-    this.helper.flushBufferData(indices);
-    this.indices_ = indices;
+    this.indices_ = new WebGLArrayBuffer(ELEMENT_ARRAY_BUFFER, STATIC_DRAW);
+    this.indices_.fromArray([0, 1, 3, 1, 2, 3]);
 
     const cacheSize = options.cacheSize !== undefined ? options.cacheSize : 512;
 
@@ -187,7 +196,20 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
      */
     this.tileTextureCache_ = new LRUCache(cacheSize);
 
+    /**
+     * @type {number}
+     * @private
+     */
     this.renderedOpacity_ = NaN;
+  }
+
+  afterHelperCreated() {
+    this.program_ = this.helper.getProgram(
+      this.fragmentShader_,
+      this.vertexShader_
+    );
+
+    this.helper.flushBufferData(this.indices_);
   }
 
   /**
@@ -207,11 +229,11 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
-   * Determine whether render should be called.
+   * Determine whether renderFrame should be called.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
    */
-  prepareFrame(frameState) {
+  prepareFrameInternal(frameState) {
     if (isEmpty(getRenderExtent(frameState, frameState.extent))) {
       return false;
     }

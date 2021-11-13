@@ -4,6 +4,7 @@ import View from '../../../../../src/ol/View.js';
 import WebGLHelper from '../../../../../src/ol/webgl/Helper.js';
 import WebGLTileLayer from '../../../../../src/ol/layer/WebGLTile.js';
 import {createCanvasContext2D} from '../../../../../src/ol/dom.js';
+import {getForViewAndSize} from '../../../../../src/ol/extent.js';
 import {getRenderPixel} from '../../../../../src/ol/render.js';
 
 describe('ol/layer/WebGLTile', function () {
@@ -62,7 +63,21 @@ describe('ol/layer/WebGLTile', function () {
 
   it('creates fragment and vertex shaders', function () {
     const compileShaderSpy = sinon.spy(WebGLHelper.prototype, 'compileShader');
-    layer.createRenderer();
+    const renderer = layer.createRenderer();
+    const viewState = map.getView().getState();
+    const size = map.getSize();
+    const frameState = {
+      viewState: viewState,
+      extent: getForViewAndSize(
+        viewState.center,
+        viewState.resolution,
+        viewState.rotation,
+        size
+      ),
+      layerStatesArray: map.getLayerGroup().getLayerStatesArray(),
+      layerIndex: 0,
+    };
+    renderer.prepareFrame(frameState);
     compileShaderSpy.restore();
     expect(compileShaderSpy.callCount).to.be(2);
     expect(compileShaderSpy.getCall(0).args[0].replace(/[ \n]+/g, ' ')).to.be(
