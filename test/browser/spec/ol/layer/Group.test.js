@@ -6,7 +6,7 @@ import {assign} from '../../../../../src/ol/obj.js';
 import {getIntersection} from '../../../../../src/ol/extent.js';
 import {getUid} from '../../../../../src/ol/util.js';
 
-describe('ol.layer.Group', function () {
+describe('ol/layer/Group', function () {
   function disposeHierarchy(layer) {
     if (layer instanceof LayerGroup) {
       layer.getLayers().forEach((l) => disposeHierarchy(l));
@@ -216,6 +216,160 @@ describe('ol.layer.Group', function () {
       expect(group.getLayers().item(0)).to.be(layer);
 
       disposeHierarchy(group);
+    });
+  });
+
+  describe('addlayer event', () => {
+    it('is dispatched when a layer is added', (done) => {
+      const group = new LayerGroup();
+      const layer = new Layer({});
+      group.on('addlayer', (event) => {
+        expect(event.layer).to.be(layer);
+        done();
+      });
+
+      group.getLayers().push(layer);
+    });
+
+    it('is dispatched once for each layer added', (done) => {
+      const group = new LayerGroup();
+      const layers = [new Layer({}), new Layer({}), new Layer({})];
+
+      let count = 0;
+      group.on('addlayer', (event) => {
+        expect(event.layer).to.be(layers[count]);
+        count++;
+        if (count === layers.length) {
+          done();
+        }
+      });
+
+      group.getLayers().extend(layers);
+    });
+
+    it('is dispatched when setLayers is called', (done) => {
+      const group = new LayerGroup();
+
+      const layers = [new Layer({}), new Layer({}), new Layer({})];
+
+      let count = 0;
+      group.on('addlayer', (event) => {
+        expect(event.layer).to.be(layers[count]);
+        count++;
+        if (count === layers.length) {
+          done();
+        }
+      });
+
+      group.setLayers(new Collection(layers));
+    });
+
+    it('is dispatched when a layer group is added', (done) => {
+      const group = new LayerGroup();
+      const layer = new LayerGroup();
+      group.on('addlayer', (event) => {
+        expect(event.layer).to.be(layer);
+        done();
+      });
+
+      group.getLayers().push(layer);
+    });
+
+    it('is dispatched for each layer added to a child group', (done) => {
+      const group = new LayerGroup();
+      const child = new LayerGroup();
+      group.getLayers().push(child);
+
+      const layer = new Layer({});
+      group.on('addlayer', (event) => {
+        expect(event.layer).to.be(layer);
+        done();
+      });
+
+      child.getLayers().push(layer);
+    });
+
+    it('is dispatched for each layer added to a child group configured at construction', (done) => {
+      const child = new LayerGroup();
+      const group = new LayerGroup({
+        layers: [child],
+      });
+
+      const layer = new Layer({});
+      group.on('addlayer', (event) => {
+        expect(event.layer).to.be(layer);
+        done();
+      });
+
+      child.getLayers().push(layer);
+    });
+
+    it('is not dispatched for layers added to a child group after the child group is removed', (done) => {
+      const child = new LayerGroup();
+      const group = new LayerGroup({
+        layers: [child],
+      });
+
+      const layer = new Layer({});
+      group.on('addlayer', (event) => {
+        done(new Error('unexpected addlayer after group removal'));
+      });
+
+      group.getLayers().remove(child);
+      child.getLayers().push(layer);
+
+      setTimeout(done, 10);
+    });
+  });
+
+  describe('removelayer event', () => {
+    it('is dispatched when a layer is removed', (done) => {
+      const layer = new Layer({});
+      const group = new LayerGroup({layers: [layer]});
+      group.on('removelayer', (event) => {
+        expect(event.layer).to.be(layer);
+        done();
+      });
+
+      group.getLayers().remove(layer);
+    });
+
+    it('is dispatched when a setLayers is called', (done) => {
+      const layer = new Layer({});
+      const group = new LayerGroup({layers: [layer]});
+      group.on('removelayer', (event) => {
+        expect(event.layer).to.be(layer);
+        done();
+      });
+
+      group.setLayers(new Collection());
+    });
+
+    it('is dispatched when a layer is removed from a child group', (done) => {
+      const layer = new Layer({});
+      const child = new LayerGroup({layers: [layer]});
+      const group = new LayerGroup({layers: [child]});
+      group.on('removelayer', (event) => {
+        expect(event.layer).to.be(layer);
+        done();
+      });
+
+      child.getLayers().remove(layer);
+    });
+
+    it('is not dispatched when a layer is removed from a child group after child group removal', (done) => {
+      const layer = new Layer({});
+      const child = new LayerGroup({layers: [layer]});
+      const group = new LayerGroup({layers: [child]});
+      group.getLayers().remove(child);
+
+      group.on('removelayer', (event) => {
+        done(new Error('unexpected removelayer after group removal'));
+      });
+
+      child.getLayers().remove(layer);
+
+      setTimeout(done, 10);
     });
   });
 

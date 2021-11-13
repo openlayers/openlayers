@@ -259,6 +259,22 @@ class Layer extends BaseLayer {
   }
 
   /**
+   * For use inside the library only.
+   * @param {import("../PluggableMap.js").default} map Map.
+   */
+  setMapInternal(map) {
+    this.set(LayerProperty.MAP, map);
+  }
+
+  /**
+   * For use inside the library only.
+   * @return {import("../PluggableMap.js").default} Map.
+   */
+  getMapInternal() {
+    return this.get(LayerProperty.MAP);
+  }
+
+  /**
    * Sets the layer to be rendered on top of other layers on a map. The map will
    * not manage this layer in its layers collection, and the callback in
    * {@link module:ol/Map~Map#forEachLayerAtPixel} will receive `null` as layer. This
