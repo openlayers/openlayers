@@ -311,7 +311,6 @@ class WebGLTileLayer extends BaseTileLayer {
       vertexShader: parsedStyle.vertexShader,
       fragmentShader: parsedStyle.fragmentShader,
       uniforms: parsedStyle.uniforms,
-      className: this.getClassName(),
       cacheSize: this.cacheSize_,
     });
   }

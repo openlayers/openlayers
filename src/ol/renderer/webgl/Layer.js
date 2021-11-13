@@ -41,7 +41,6 @@ export const WebGLWorkerMessageType = {
 
 /**
  * @typedef {Object} Options
- * @property {string} [className='ol-layer'] A CSS class name to set to the canvas element.
  * @property {Object<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
  * @property {Array<PostProcessesOptions>} [postProcesses] Post-processes definitions
  */
@@ -71,26 +70,72 @@ class WebGLLayerRenderer extends LayerRenderer {
     this.inversePixelTransform_ = createTransform();
 
     /**
+     * @private
+     */
+    this.postProcesses_ = options.postProcesses;
+
+    /**
+     * @private
+     */
+    this.uniforms_ = options.uniforms;
+
+    /**
      * @type {WebGLHelper}
      * @protected
      */
-    this.helper = new WebGLHelper({
-      postProcesses: options.postProcesses,
-      uniforms: options.uniforms,
-    });
+    this.helper;
+  }
 
-    if (options.className !== undefined) {
-      this.helper.getCanvas().className = options.className;
+  removeHelper_() {
+    if (this.helper) {
+      this.helper.dispose();
+      delete this.helper;
     }
+  }
+
+  /**
+   * Determine whether renderFrame should be called.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @return {boolean} Layer is ready to be rendered.
+   */
+  prepareFrame(frameState) {
+    if (!this.helper && !!this.getLayer().getSource()) {
+      this.helper = new WebGLHelper({
+        postProcesses: this.postProcesses_,
+        uniforms: this.uniforms_,
+      });
+
+      const className = this.getLayer().getClassName();
+      if (className) {
+        this.helper.getCanvas().className = className;
+      }
+
+      this.afterHelperCreated();
+    }
+
+    return this.prepareFrameInternal(frameState);
+  }
+
+  /**
+   * @protected
+   */
+  afterHelperCreated() {}
+
+  /**
+   * Determine whether renderFrame should be called.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @return {boolean} Layer is ready to be rendered.
+   * @protected
+   */
+  prepareFrameInternal(frameState) {
+    return true;
   }
 
   /**
    * Clean up.
    */
   disposeInternal() {
-    this.helper.dispose();
-    delete this.helper;
-
+    this.removeHelper_();
     super.disposeInternal();
   }
 

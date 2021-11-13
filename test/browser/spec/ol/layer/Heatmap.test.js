@@ -5,24 +5,53 @@ import Point from '../../../../../src/ol/geom/Point.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
 import View from '../../../../../src/ol/View.js';
 
-describe('ol.layer.Heatmap', function () {
+describe('ol/layer/Heatmap', function () {
   describe('constructor', function () {
+    let target, map;
+    beforeEach(() => {
+      target = document.createElement('div');
+      target.style.width = '300px';
+      target.style.height = '300px';
+      document.body.appendChild(target);
+
+      map = new Map({
+        view: new View({
+          center: [0, 0],
+          resolution: 0.1,
+        }),
+        target: target,
+      });
+    });
+
+    afterEach(() => {
+      map.dispose();
+      document.body.removeChild(target);
+    });
+
     it('can be constructed without arguments', function () {
       const instance = new HeatmapLayer();
       expect(instance).to.be.an(HeatmapLayer);
     });
+
     it('has a default className', function () {
       const layer = new HeatmapLayer({
         source: new VectorSource(),
       });
+      map.addLayer(layer);
+      map.renderSync();
+
       const canvas = layer.getRenderer().helper.getCanvas();
       expect(canvas.className).to.eql('ol-layer');
     });
+
     it('accepts a custom className', function () {
       const layer = new HeatmapLayer({
         source: new VectorSource(),
         className: 'a-class-name',
       });
+      map.addLayer(layer);
+      map.renderSync();
+
       const canvas = layer.getRenderer().helper.getCanvas();
       expect(canvas.className).to.eql('a-class-name');
     });
