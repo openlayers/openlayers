@@ -1,10 +1,12 @@
+import Group from '../../../../../src/ol/layer/Group.js';
 import Layer, {inView} from '../../../../../src/ol/layer/Layer.js';
 import Map from '../../../../../src/ol/Map.js';
+import Property from '../../../../../src/ol/layer/Property.js';
 import RenderEvent from '../../../../../src/ol/render/Event.js';
 import Source from '../../../../../src/ol/source/Source.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 
-describe('ol.layer.Layer', function () {
+describe('ol/layer/Layer', function () {
   describe('constructor (defaults)', function () {
     let layer;
 
@@ -617,6 +619,79 @@ describe('ol.layer.Layer', function () {
 
       layer.setVisible(true);
       expect(listener.callCount).to.be(2);
+    });
+  });
+
+  describe('map property', () => {
+    it('is set when a layer is added to a map', () => {
+      const map = new Map({});
+      const layer = new Layer({});
+      map.addLayer(layer);
+
+      expect(layer.get(Property.MAP)).to.be(map);
+    });
+
+    it('is set when a layer is added to a map in the constructor', () => {
+      const layer = new Layer({});
+      const map = new Map({layers: [layer]});
+
+      expect(layer.get(Property.MAP)).to.be(map);
+    });
+
+    it('is set when a layer is added to a group', () => {
+      const layer = new Layer({});
+      const group = new Group();
+      const map = new Map({});
+      map.addLayer(group);
+      group.getLayers().push(layer);
+
+      expect(layer.get(Property.MAP)).to.be(map);
+    });
+
+    it('is set when a layer is added to a group set in the constructor', () => {
+      const layer = new Layer({});
+      const group = new Group();
+      const map = new Map({layers: [group]});
+      group.getLayers().push(layer);
+
+      expect(layer.get(Property.MAP)).to.be(map);
+    });
+
+    it('is set when a layer already added to a group set in the constructor', () => {
+      const layer = new Layer({});
+      const group = new Group({layers: [layer]});
+      const map = new Map({layers: [group]});
+
+      expect(layer.get(Property.MAP)).to.be(map);
+    });
+
+    it('is removed when a layer is removed from the map', () => {
+      const map = new Map({});
+      const layer = new Layer({});
+      map.addLayer(layer);
+      expect(layer.get(Property.MAP)).to.be(map);
+
+      map.removeLayer(layer);
+      expect(layer.get(Property.MAP)).to.be(null);
+    });
+
+    it('is removed when a layer added in the constructor is removed from the map', () => {
+      const layer = new Layer({});
+      const map = new Map({layers: [layer]});
+      expect(layer.get(Property.MAP)).to.be(map);
+
+      map.removeLayer(layer);
+      expect(layer.get(Property.MAP)).to.be(null);
+    });
+
+    it('is removed when a layer is removed from a group', () => {
+      const layer = new Layer({});
+      const group = new Group({layers: [layer]});
+      const map = new Map({layers: [group]});
+      expect(layer.get(Property.MAP)).to.be(map);
+
+      group.getLayers().remove(layer);
+      expect(layer.get(Property.MAP)).to.be(null);
     });
   });
 

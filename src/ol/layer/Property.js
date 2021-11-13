@@ -15,4 +15,5 @@ export default {
   MAX_ZOOM: 'maxZoom',
   MIN_ZOOM: 'minZoom',
   SOURCE: 'source',
+  MAP: 'map',
 };
