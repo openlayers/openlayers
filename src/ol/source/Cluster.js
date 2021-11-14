@@ -52,7 +52,7 @@ import {getUid} from '../util.js';
  *   });
  * }
  * ```
- * @property {VectorSource} [source] Source.
+ * @property {VectorSource} [source=null] Source.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  */
 
@@ -127,11 +127,14 @@ class Cluster extends VectorSource {
     this.createCustomCluster_ = options.createCluster;
 
     /**
-     * @type {VectorSource}
+     * @type {VectorSource|null}
      * @protected
      */
     this.source = null;
 
+    /**
+     * @private
+     */
     this.boundRefresh_ = this.refresh.bind(this);
 
     this.updateDistance(this.distance, this.minDistance);
@@ -159,7 +162,7 @@ class Cluster extends VectorSource {
 
   /**
    * Get a reference to the wrapped source.
-   * @return {VectorSource} Source.
+   * @return {VectorSource|null} Source.
    * @api
    */
   getSource() {
@@ -209,7 +212,7 @@ class Cluster extends VectorSource {
 
   /**
    * Replace the wrapped source.
-   * @param {VectorSource} source The new source for this instance.
+   * @param {VectorSource|null} source The new source for this instance.
    * @api
    */
   setSource(source) {
