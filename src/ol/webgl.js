@@ -2,6 +2,8 @@
  * @module ol/webgl
  */
 
+import {assign} from './obj.js';
+
 /**
  * Constants taken from goog.webgl
  */
@@ -78,6 +80,29 @@ export const FLOAT = 0x1406;
  */
 
 /**
+ * @type {boolean}
+ */
+let preserveDrawingBuffer = true;
+
+/**
+ * Disable the `preserveDrawingBuffer` context attribute when creating WebGL contexts.
+ * This may improve performance but will prevent access to pixel data after rendering.
+ * @api
+ */
+export function disablePreserveDrawingBuffer() {
+  preserveDrawingBuffer = false;
+}
+
+/**
+ * Reset the `preserveDrawingBuffer` context attribute used when creating WebGL contexts.
+ * This must be enabled to access pixel data after rendering.
+ * @api
+ */
+export function resetPreserveDrawingBuffer() {
+  preserveDrawingBuffer = true;
+}
+
+/**
  * @const
  * @type {Array<string>}
  */
@@ -89,10 +114,12 @@ const CONTEXT_IDS = ['experimental-webgl', 'webgl', 'webkit-3d', 'moz-webgl'];
  * @return {WebGLRenderingContext} WebGL rendering context.
  */
 export function getContext(canvas, opt_attributes) {
+  const attributes = {preserveDrawingBuffer: preserveDrawingBuffer};
+  assign(attributes, opt_attributes);
   const ii = CONTEXT_IDS.length;
   for (let i = 0; i < ii; ++i) {
     try {
-      const context = canvas.getContext(CONTEXT_IDS[i], opt_attributes);
+      const context = canvas.getContext(CONTEXT_IDS[i], attributes);
       if (context) {
         return /** @type {!WebGLRenderingContext} */ (context);
       }
