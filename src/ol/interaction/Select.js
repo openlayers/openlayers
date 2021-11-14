@@ -57,7 +57,7 @@ const SelectEventType = {
  * selectable.
  * @property {import("../style/Style.js").StyleLike|null} [style]
  * Style for the selected features. By default the default edit style is used
- * (see {@link module:ol/style}). Set to `null` if this interaction should not apply
+ * (see {@link module:ol/style/Style~Style}). Set to `null` if this interaction should not apply
  * any style changes for selected features.
  * If set to a falsey value, the selected feature's style will not change.
  * @property {import("../events/condition.js").Condition} [removeCondition] A function
