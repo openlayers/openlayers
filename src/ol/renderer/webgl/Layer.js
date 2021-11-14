@@ -74,12 +74,6 @@ class WebGLLayerRenderer extends LayerRenderer {
 
     /**
      * @private
-     * @type {CanvasRenderingContext2D}
-     */
-    this.pixelContext_ = null;
-
-    /**
-     * @private
      */
     this.postProcesses_ = options.postProcesses;
 
