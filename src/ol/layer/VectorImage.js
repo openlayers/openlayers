@@ -40,7 +40,7 @@ import {assign} from '../obj.js';
  * by the `zIndex` of the style and the render order of features. Higher z-index means higher priority.
  * Within the same z-index, a feature rendered before another has higher priority.
  * @property {import("../style/Style.js").StyleLike|null} [style] Layer style. When set to `null`, only
- * features that have their own style will be rendered. See {@link module:ol/style} for default style
+ * features that have their own style will be rendered. See {@link module:ol/style/Style~Style} for the default style
  * which will be used if this is not set.
  * @property {number} [imageRatio=1] Ratio by which the rendered extent should be larger than the
  * viewport extent. A larger ratio avoids cut images during panning, but will cause a decrease in performance.

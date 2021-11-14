@@ -110,7 +110,7 @@ const ModifyEventType = {
  * @property {import("../style/Style.js").StyleLike} [style]
  * Style used for the modification point or vertex. For linestrings and polygons, this will
  * be the affected vertex, for circles a point along the circle, and for points the actual
- * point. If not configured, the default edit style is used (see {@link module:ol/style}).
+ * point. If not configured, the default edit style is used (see {@link module:ol/style/Style~Style}).
  * When using a style function, the point feature passed to the function will have a `features`
  * property - an array whose entries are the features that are being modified, and a `geometries`
  * property - an array whose entries are the geometries that are being modified. Both arrays are

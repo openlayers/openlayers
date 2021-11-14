@@ -46,7 +46,7 @@ import {
  * Higher z-index means higher priority. Within the same z-index, a feature rendered before another has
  * higher priority.
  * @property {import("../style/Style.js").StyleLike|null} [style] Layer style. When set to `null`, only
- * features that have their own style will be rendered. See {@link module:ol/style} for default style
+ * features that have their own style will be rendered. See {@link module:ol/style/Style~Style} for the default style
  * which will be used if this is not set.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will
  * be recreated during animations. This means that no vectors will be shown clipped, but the
@@ -242,7 +242,7 @@ class BaseVectorLayer extends Layer {
    * an array of styles. If set to `null`, the layer has no style (a `null` style),
    * so only features that have their own styles will be rendered in the layer. Call
    * `setStyle()` without arguments to reset to the default style. See
-   * {@link module:ol/style} for information on the default style.
+   * {@link module:ol/style/Style~Style} for information on the default style.
    * @param {import("../style/Style.js").StyleLike|null} [opt_style] Layer style.
    * @api
    */

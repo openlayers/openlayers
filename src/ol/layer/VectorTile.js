@@ -63,7 +63,7 @@ import {assign} from '../obj.js';
  * Higher z-index means higher priority. Within the same z-index, a feature rendered before another has
  * higher priority.
  * @property {import("../style/Style.js").StyleLike|null} [style] Layer style. When set to `null`, only
- * features that have their own style will be rendered. See {@link module:ol/style} for default style
+ * features that have their own style will be rendered. See {@link module:ol/style/Style~Style} for the default style
  * which will be used if this is not set.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will be
  * recreated during animations. This means that no vectors will be shown clipped, but the setting
