@@ -1,6 +1,7 @@
 /**
  * @module ol/renderer/webgl/Layer
  */
+import LayerProperty from '../../layer/Property.js';
 import LayerRenderer from '../Layer.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
@@ -84,6 +85,8 @@ class WebGLLayerRenderer extends LayerRenderer {
      * @protected
      */
     this.helper;
+
+    layer.addChangeListener(LayerProperty.MAP, this.removeHelper_.bind(this));
   }
 
   removeHelper_() {
@@ -99,18 +102,48 @@ class WebGLLayerRenderer extends LayerRenderer {
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrame(frameState) {
-    if (!this.helper && !!this.getLayer().getSource()) {
-      this.helper = new WebGLHelper({
-        postProcesses: this.postProcesses_,
-        uniforms: this.uniforms_,
-      });
-
-      const className = this.getLayer().getClassName();
-      if (className) {
-        this.helper.getCanvas().className = className;
+    if (this.getLayer().getSource()) {
+      let incrementGroup = true;
+      let groupNumber = -1;
+      let className;
+      for (let i = 0, ii = frameState.layerStatesArray.length; i < ii; i++) {
+        const layer = frameState.layerStatesArray[i].layer;
+        const renderer = layer.getRenderer();
+        if (!(renderer instanceof WebGLLayerRenderer)) {
+          incrementGroup = true;
+          continue;
+        }
+        const layerClassName = layer.getClassName();
+        if (incrementGroup || layerClassName !== className) {
+          groupNumber += 1;
+          incrementGroup = false;
+        }
+        className = layerClassName;
+        if (renderer === this) {
+          break;
+        }
       }
 
-      this.afterHelperCreated();
+      const canvasCacheKey =
+        'map/' + frameState.mapId + '/group/' + groupNumber;
+
+      if (!this.helper || !this.helper.canvasCacheKeyMatches(canvasCacheKey)) {
+        if (this.helper) {
+          this.helper.dispose();
+        }
+
+        this.helper = new WebGLHelper({
+          postProcesses: this.postProcesses_,
+          uniforms: this.uniforms_,
+          canvasCacheKey: canvasCacheKey,
+        });
+
+        if (className) {
+          this.helper.getCanvas().className = className;
+        }
+
+        this.afterHelperCreated();
+      }
     }
 
     return this.prepareFrameInternal(frameState);

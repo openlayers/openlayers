@@ -255,9 +255,6 @@ function parseStyle(style, bandCount) {
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * **Important**: after removing a `WebGLTile` layer from your map, call `layer.dispose()`
- * to clean up underlying resources.
- *
  * @extends BaseTileLayer<import("../source/DataTile.js").default|import("../source/TileImage.js").default>
  * @api
  */

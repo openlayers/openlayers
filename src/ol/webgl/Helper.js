@@ -97,6 +97,7 @@ export const AttributeType = {
  * @property {Object<string,UniformValue>} [uniforms] Uniform definitions; property names must match the uniform
  * names in the provided or default shaders.
  * @property {Array<PostProcessesOptions>} [postProcesses] Post-processes definitions
+ * @property {string} [canvasCacheKey] The cache key for the canvas.
  */
 
 /**
@@ -106,6 +107,78 @@ export const AttributeType = {
  * @property {WebGLTexture} [texture] Texture
  * @private
  */
+
+/**
+ * @typedef {Object} CanvasCacheItem
+ * @property {HTMLCanvasElement} canvas Canvas element.
+ * @property {number} users The count of users of this canvas.
+ */
+
+/**
+ * @type {Object<string,CanvasCacheItem>}
+ */
+const canvasCache = {};
+
+/**
+ * @param {string} key The cache key for the canvas.
+ * @return {string} The shared cache key.
+ */
+function getSharedCanvasCacheKey(key) {
+  return 'shared/' + key;
+}
+
+let uniqueCanvasCacheKeyCount = 0;
+
+/**
+ * @return {string} The unique cache key.
+ */
+function getUniqueCanvasCacheKey() {
+  const key = 'unique/' + uniqueCanvasCacheKeyCount;
+  uniqueCanvasCacheKeyCount += 1;
+  return key;
+}
+
+/**
+ * @param {string} key The cache key for the canvas.
+ * @return {HTMLCanvasElement} The canvas.
+ */
+function getCanvas(key) {
+  let cacheItem = canvasCache[key];
+  if (!cacheItem) {
+    const canvas = document.createElement('canvas');
+    canvas.style.position = 'absolute';
+    canvas.style.left = '0';
+    cacheItem = {users: 0, canvas};
+    canvasCache[key] = cacheItem;
+  }
+
+  cacheItem.users += 1;
+  return cacheItem.canvas;
+}
+
+/**
+ * @param {string} key The cache key for the canvas.
+ */
+function releaseCanvas(key) {
+  const cacheItem = canvasCache[key];
+  if (!cacheItem) {
+    return;
+  }
+
+  cacheItem.users -= 1;
+  if (cacheItem.users > 0) {
+    return;
+  }
+
+  const canvas = cacheItem.canvas;
+  const gl = getContext(canvas);
+  const extension = gl.getExtension('WEBGL_lose_context');
+  if (extension) {
+    extension.loseContext();
+  }
+
+  delete canvasCache[key];
+}
 
 /**
  * @classdesc
@@ -250,11 +323,17 @@ class WebGLHelper extends Disposable {
 
     /**
      * @private
+     * @type {string}
+     */
+    this.canvasCacheKey_ = options.canvasCacheKey
+      ? getSharedCanvasCacheKey(options.canvasCacheKey)
+      : getUniqueCanvasCacheKey();
+
+    /**
+     * @private
      * @type {HTMLCanvasElement}
      */
-    this.canvas_ = document.createElement('canvas');
-    this.canvas_.style.position = 'absolute';
-    this.canvas_.style.left = '0';
+    this.canvas_ = getCanvas(this.canvasCacheKey_);
 
     /**
      * @private
@@ -369,6 +448,14 @@ class WebGLHelper extends Disposable {
   }
 
   /**
+   * @param {string} canvasCacheKey The canvas cache key.
+   * @return {boolean} The provided key matches the one this helper was constructed with.
+   */
+  canvasCacheKeyMatches(canvasCacheKey) {
+    return this.canvasCacheKey_ === getSharedCanvasCacheKey(canvasCacheKey);
+  }
+
+  /**
    * Get a WebGL extension.  If the extension is not supported, null is returned.
    * Extensions are cached after they are enabled for the first time.
    * @param {string} name The extension name.
@@ -443,10 +530,8 @@ class WebGLHelper extends Disposable {
       this.boundHandleWebGLContextRestored_
     );
 
-    const extension = this.gl_.getExtension('WEBGL_lose_context');
-    if (extension) {
-      extension.loseContext();
-    }
+    releaseCanvas(this.canvasCacheKey_);
+
     delete this.gl_;
     delete this.canvas_;
   }
@@ -481,6 +566,7 @@ class WebGLHelper extends Disposable {
 
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
+
     gl.enable(gl.BLEND);
     gl.blendFunc(
       gl.ONE,

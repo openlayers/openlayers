@@ -34,6 +34,7 @@ import {
   isEmpty,
 } from './extent.js';
 import {fromUserCoordinate, toUserCoordinate} from './proj.js';
+import {getUid} from './util.js';
 import {hasArea} from './size.js';
 import {listen, unlistenByKey} from './events.js';
 import {removeNode} from './dom.js';
@@ -60,6 +61,7 @@ import {removeNode} from './dom.js';
  * @property {!Object<string, Object<string, boolean>>} usedTiles UsedTiles.
  * @property {Array<number>} viewHints ViewHints.
  * @property {!Object<string, Object<string, boolean>>} wantedTiles WantedTiles.
+ * @property {string} mapId The id of the map.
  */
 
 /**
@@ -1469,6 +1471,7 @@ class PluggableMap extends BaseObject {
         viewState: viewState,
         viewHints: viewHints,
         wantedTiles: {},
+        mapId: getUid(this),
       };
       if (viewState.nextCenter && viewState.nextResolution) {
         const rotation = isNaN(viewState.nextRotation)
