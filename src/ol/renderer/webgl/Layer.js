@@ -79,6 +79,16 @@ class WebGLLayerRenderer extends LayerRenderer {
     this.pixelContext_ = null;
 
     /**
+     * @private
+     */
+    this.postProcesses_ = options.postProcesses;
+
+    /**
+     * @private
+     */
+    this.uniforms_ = options.uniforms;
+
+    /**
      * @type {WebGLHelper}
      * @protected
      */
