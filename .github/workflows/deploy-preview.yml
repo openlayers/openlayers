@@ -1,45 +1,102 @@
 name: Deploy Preview
 
 on:
-  pull_request_target:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Build Preview"]
+    types:
+      - completed
 
 jobs:
   deploy-preview:
     runs-on: ubuntu-latest
+    if: ${{github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'}}
     steps:
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
-          node-version: 16
-          registry-url: https://registry.npmjs.org/
-      - run: npm install --global netlify-cli
-      - uses: lewagon/wait-on-check-action@v1.1.1
+          node-version: '16'
+      - run: npm install --global netlify-cli@6
+      - run: npm install unzipper@0.10
+
+      - name: Get pull request number
+        uses: actions/github-script@v5
+        id: pull-request-number
         with:
-          ref: ${{github.event.pull_request.head.sha}}
-          check-name: 'build-preview'
-          repo-token: ${{secrets.GITHUB_TOKEN}}
-          wait-interval: 10
+          result-encoding: string
+          script: |
+            const unzipper = require('unzipper');
+
+            const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: ${{github.event.workflow_run.id}}
+            });
+
+            const artifact = artifacts.data.artifacts.filter(
+              artifact => artifact.name === 'pr'
+            )[0];
+
+            if (!artifact) {
+              throw new Error('No pr artifact found');
+            }
+
+            const download = await github.rest.actions.downloadArtifact({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              artifact_id: artifact.id,
+              archive_format: 'zip'
+            });
+
+            const directory = await unzipper.Open.buffer(Buffer.from(download.data));
+            const file = directory.files.find(d => d.path === 'number');
+            const content = await file.buffer();
+            return content.toString();
+
       - uses: dawidd6/action-download-artifact@v2
         with:
           github_token: ${{secrets.GITHUB_TOKEN}}
           workflow: build-preview.yml
-          pr: ${{github.event.number}}
+          pr: ${{steps.pull-request-number.outputs.result}}
           name: site
           path: build/site
-      - env:
+
+      - name: Deploy to Netlify
+        env:
           NETLIFY_AUTH_TOKEN: ${{secrets.NETLIFY_AUTH_TOKEN}}
           NETLIFY_SITE_ID: ${{secrets.NETLIFY_SITE_ID}}
-        run: netlify deploy --dir=build/site --alias=deploy-preview-${{github.event.number}}
-      - uses: octokit/request-action@v2.x
+        run: netlify deploy --dir=build/site --alias=deploy-preview-${{steps.pull-request-number.outputs.result}}
+
+      - name: Add comment to pull request
+        uses: actions/github-script@v5
         with:
-          route: POST /repos/{owner}/{repo}/statuses/{sha}
-          owner: openlayers
-          repo: openlayers
-          sha: ${{github.event.pull_request.head.sha}}
-          state: "success"
-          target_url: https://deploy-preview-${{github.event.number}}--ol-site.netlify.app
-          context: "Deploy Preview"
-          description: "Preview URL"
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const pullRequestNumber = parseInt(${{steps.pull-request-number.outputs.result}}, 10);
+
+            const start = ':package:';
+            const author = 'github-actions[bot]';
+
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pullRequestNumber
+            });
+
+            const commentExists = comments.data.some(
+              comment => comment.user.login === author && comment.body.startsWith(start)
+            );
+
+            if (!commentExists) {
+              const body = [
+                `${start} Preview the [examples](https://deploy-preview-${pullRequestNumber}--ol-site.netlify.app/examples/) and`,
+                `[docs](https://deploy-preview-${pullRequestNumber}--ol-site.netlify.app/apidoc/) from this branch`,
+                `here: https://deploy-preview-${pullRequestNumber}--ol-site.netlify.app/.`
+              ].join(' ');
+
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pullRequestNumber,
+                body: body
+              });
+            } else {
+              console.log(`Preview URL comment already added to PR #${pullRequestNumber}`);
+            }
