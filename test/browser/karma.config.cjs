@@ -17,13 +17,6 @@ module.exports = function (karma) {
       {
         pattern: path.resolve(
           __dirname,
-          require.resolve('url-polyfill/url-polyfill.js')
-        ),
-        watched: false,
-      },
-      {
-        pattern: path.resolve(
-          __dirname,
           require.resolve('jquery/dist/jquery.js')
         ),
         watched: false,
