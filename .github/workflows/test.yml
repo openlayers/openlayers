@@ -28,19 +28,6 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Determine Cache Directory
-        id: npm-cache
-        run: |
-          echo "::set-output name=dir::$(npm config get cache)"
-
-      - name: Configure Job Cache
-        uses: actions/cache@v1
-        with:
-          path: ${{ steps.npm-cache.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - name: Install Dependencies
         run: npm ci
 
@@ -62,19 +49,6 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16'
-
-      - name: Determine Cache Directory
-        id: npm-cache
-        run: |
-          echo "::set-output name=dir::$(npm config get cache)"
-
-      - name: Configure Job Cache
-        uses: actions/cache@v1
-        with:
-          path: ${{ steps.npm-cache.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
 
       - name: Install Dependencies
         run: npm ci
@@ -98,19 +72,6 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Determine Cache Directory
-        id: npm-cache
-        run: |
-          echo "::set-output name=dir::$(npm config get cache)"
-
-      - name: Configure Job Cache
-        uses: actions/cache@v1
-        with:
-          path: ${{ steps.npm-cache.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - name: Install Dependencies
         run: npm ci
 
@@ -132,19 +93,6 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16'
-
-      - name: Determine Cache Directory
-        id: npm-cache
-        run: |
-          echo "::set-output name=dir::$(npm config get cache)"
-
-      - name: Configure Job Cache
-        uses: actions/cache@v1
-        with:
-          path: ${{ steps.npm-cache.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
 
       - name: Install Dependencies
         run: npm ci
@@ -170,19 +118,6 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16'
-
-      - name: Determine Cache Directory
-        id: npm-cache
-        run: |
-          echo "::set-output name=dir::$(npm config get cache)"
-
-      - name: Configure Job Cache
-        uses: actions/cache@v1
-        with:
-          path: ${{ steps.npm-cache.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
 
       - name: Install Dependencies
         run: npm ci
