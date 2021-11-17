@@ -2,6 +2,11 @@ import Map from '../src/ol/Map.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
 import XYZ from '../src/ol/source/XYZ.js';
+import {
+  getPointResolution,
+  get as getProjection,
+  transform,
+} from '../src/ol/proj.js';
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
 const attributions =
@@ -65,10 +70,13 @@ control.addEventListener('change', listener);
 output.innerText = control.value;
 imagery.setOpacity(control.value / 100);
 
+const viewProjSelect = document.getElementById('view-projection');
+const projection = getProjection(viewProjSelect.value);
+
 const view = new View({
-  center: [6.893, 45.8295],
+  center: transform([6.893, 45.8295], 'EPSG:4326', projection),
   zoom: 16,
-  projection: 'EPSG:4326',
+  projection: projection,
 });
 
 const map1 = new Map({
@@ -120,3 +128,35 @@ const showElevations = function (evt) {
 
 map1.on('pointermove', showElevations);
 map2.on('pointermove', showElevations);
+
+viewProjSelect.addEventListener('change', function () {
+  const currentView = map1.getView();
+  const currentProjection = currentView.getProjection();
+  const newProjection = getProjection(viewProjSelect.value);
+  const currentResolution = currentView.getResolution();
+  const currentCenter = currentView.getCenter();
+  const currentRotation = currentView.getRotation();
+  const newCenter = transform(currentCenter, currentProjection, newProjection);
+  const currentPointResolution = getPointResolution(
+    currentProjection,
+    1,
+    currentCenter,
+    'm'
+  );
+  const newPointResolution = getPointResolution(
+    newProjection,
+    1,
+    newCenter,
+    'm'
+  );
+  const newResolution =
+    (currentResolution * currentPointResolution) / newPointResolution;
+  const newView = new View({
+    center: newCenter,
+    resolution: newResolution,
+    rotation: currentRotation,
+    projection: newProjection,
+  });
+  map1.setView(newView);
+  map2.setView(newView);
+});

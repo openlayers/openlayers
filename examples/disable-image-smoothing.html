@@ -5,7 +5,8 @@ shortdesc: Example of disabling image smoothing
 docs: >
   Example of disabling image smoothing when using raster DEM (digital elevation model) data.
   The <code>imageSmoothing: false</code> setting is used to disable canvas image smoothing during
-  reprojection and rendering. Elevation data is
+  reprojection and rendering (for reprojection the results can differ between browsers and
+  their settings such as hardware acceleration). Elevation data is
   calculated from the pixel value returned by <b>forEachLayerAtPixel</b>. For comparison a second map
   with smoothing enabled returns inaccuate elevations which are very noticeable close to 3107 meters
   due to how elevation is calculated from the pixel value.
@@ -40,6 +41,13 @@ cloak:
         Elevation
         <span id="info2">0.0</span> meters
       </label>
+    </div>
+    <div>
+      <label for="view-projection">View projection</label>
+      <select id="view-projection">
+        <option value="EPSG:3857">Spherical Mercator (EPSG:3857)</option>
+        <option value="EPSG:4326" selected>WGS 84 (EPSG:4326)</option>
+      </select>
     </div>
   </div>
 </div>
