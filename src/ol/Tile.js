@@ -185,7 +185,11 @@ class Tile extends EventTarget {
     }
 
     let tile = this.interimTile;
-    let prev = /** @type {Tile} */ (this);
+
+    /**
+     * @type {Tile}
+     */
+    let prev = this;
 
     do {
       if (tile.getState() == TileState.LOADED) {

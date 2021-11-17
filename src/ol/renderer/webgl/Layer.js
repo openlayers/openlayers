@@ -51,6 +51,7 @@ export const WebGLWorkerMessageType = {
  * Base WebGL renderer class.
  * Holds all logic related to data manipulation & some common rendering logic
  * @template {import("../../layer/Layer.js").default} LayerType
+ * @extends {LayerRenderer<LayerType>}
  */
 class WebGLLayerRenderer extends LayerRenderer {
   /**

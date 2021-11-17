@@ -85,19 +85,19 @@ describe('ol/renderer/webgl/TileLayer', function () {
     expect(renderer.tileTextureCache_.count_).to.be(1);
   });
 
-  it('#isDrawableTile()', function (done) {
+  it('#isDrawableTile_()', function (done) {
     const tile = tileLayer.getSource().getTile(0, 0, 0);
-    expect(renderer.isDrawableTile(tile)).to.be(false);
+    expect(renderer.isDrawableTile_(tile)).to.be(false);
     tileLayer.getSource().on('tileloadend', () => {
-      expect(renderer.isDrawableTile(tile)).to.be(true);
+      expect(renderer.isDrawableTile_(tile)).to.be(true);
       done();
     });
     tile.load();
     const errorTile = tileLayer.getSource().getTile(1, 0, 1);
     errorTile.setState(TileState.ERROR);
     tileLayer.setUseInterimTilesOnError(false);
-    expect(renderer.isDrawableTile(errorTile)).to.be(true);
+    expect(renderer.isDrawableTile_(errorTile)).to.be(true);
     tileLayer.setUseInterimTilesOnError(true);
-    expect(renderer.isDrawableTile(errorTile)).to.be(false);
+    expect(renderer.isDrawableTile_(errorTile)).to.be(false);
   });
 });

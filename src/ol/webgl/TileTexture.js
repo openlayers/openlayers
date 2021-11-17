@@ -86,9 +86,13 @@ function uploadDataTexture(helper, texture, data, size, bandCount) {
   );
 }
 
+/**
+ * @typedef {import("../DataTile.js").default|ImageTile|ReprojTile} TileType
+ */
+
 class TileTexture extends EventTarget {
   /**
-   * @param {import("../DataTile.js").default|import("../ImageTile.js").default} tile The tile.
+   * @param {TileType} tile The tile.
    * @param {import("../tilegrid/TileGrid.js").default} grid Tile grid.
    * @param {import("../webgl/Helper.js").default} helper WebGL helper.
    */
@@ -96,7 +100,7 @@ class TileTexture extends EventTarget {
     super();
 
     /**
-     * @type {import("../DataTile.js").default|import("../ImageTile.js").default}
+     * @type {TileType}
      */
     this.tile;
 
@@ -130,7 +134,7 @@ class TileTexture extends EventTarget {
   }
 
   /**
-   * @param {import("../DataTile.js").default|import("../ImageTile.js").default} tile Tile.
+   * @param {TileType} tile Tile.
    */
   setTile(tile) {
     if (tile !== this.tile) {

@@ -210,7 +210,6 @@ class TileImage extends UrlTile {
   /**
    * Return the key to be used for all tiles in the source.
    * @return {string} The key for all tiles.
-   * @protected
    */
   getKey() {
     return (
@@ -286,7 +285,7 @@ class TileImage extends UrlTile {
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @param {string} key The key set on the tile.
-   * @return {!import("../Tile.js").default} Tile.
+   * @return {!ImageTile} Tile.
    * @private
    */
   createTile_(z, x, y, pixelRatio, projection, key) {
@@ -317,7 +316,7 @@ class TileImage extends UrlTile {
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {!import("../Tile.js").default} Tile.
+   * @return {!(ImageTile|ReprojTile)} Tile.
    */
   getTile(z, x, y, pixelRatio, projection) {
     const sourceProjection = this.getProjection();
@@ -388,7 +387,7 @@ class TileImage extends UrlTile {
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
    * @param {!import("../proj/Projection.js").default} projection Projection.
-   * @return {!import("../Tile.js").default} Tile.
+   * @return {!(ImageTile|ReprojTile)} Tile.
    * @protected
    */
   getTileInternal(z, x, y, pixelRatio, projection) {
