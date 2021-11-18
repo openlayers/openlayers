@@ -85,7 +85,7 @@ import {assign} from '../obj.js';
  * options means that `title` is observable, and has get/set accessors.
  *
  * @param {Options} [opt_options] Options.
- * @extends {BaseVectorLayer<import("../source/VectorTile.js").default>}
+ * @extends {BaseVectorLayer<import("../source/VectorTile.js").default, CanvasVectorTileLayerRenderer>}
  * @api
  */
 class VectorTileLayer extends BaseVectorLayer {
@@ -147,11 +147,6 @@ class VectorTileLayer extends BaseVectorLayer {
     );
   }
 
-  /**
-   * Create a renderer for this layer.
-   * @return {import("../renderer/Layer.js").default} A layer renderer.
-   * @protected
-   */
   createRenderer() {
     return new CanvasVectorTileLayerRenderer(this);
   }

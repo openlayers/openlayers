@@ -259,7 +259,7 @@ function parseStyle(style, bandCount) {
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @extends BaseTileLayer<SourceType>
+ * @extends BaseTileLayer<SourceType, WebGLTileLayerRenderer>
  * @api
  */
 class WebGLTileLayer extends BaseTileLayer {
@@ -296,11 +296,6 @@ class WebGLTileLayer extends BaseTileLayer {
     this.styleVariables_ = this.style_.variables || {};
   }
 
-  /**
-   * Create a renderer for this layer.
-   * @return {import("../renderer/Layer.js").default} A layer renderer.
-   * @protected
-   */
   createRenderer() {
     const source = this.getSource();
     const parsedStyle = parseStyle(

@@ -13,7 +13,7 @@ import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
  * options means that `title` is observable, and has get/set accessors.
  *
  * @template {import("../source/Image.js").default} ImageSourceType
- * @extends {BaseImageLayer<ImageSourceType>}
+ * @extends {BaseImageLayer<ImageSourceType, CanvasImageLayerRenderer>}
  * @api
  */
 class ImageLayer extends BaseImageLayer {
@@ -24,10 +24,6 @@ class ImageLayer extends BaseImageLayer {
     super(opt_options);
   }
 
-  /**
-   * Create a renderer for this layer.
-   * @return {import("../renderer/Layer.js").default} A layer renderer.
-   */
   createRenderer() {
     return new CanvasImageLayerRenderer(this);
   }
