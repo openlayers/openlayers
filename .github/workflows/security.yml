@@ -15,20 +15,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          # Must fetch at least the immediate parents so that if this is
-          # a pull request then we can checkout the head of the pull request.
-          # Only include this option if you are running this workflow on pull requests.
-          fetch-depth: 2
+      - uses: actions/checkout@v2
 
-      # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v1
         with:
           languages: javascript
-          config-file: ./.github/codeql/config.yml
+          source-root: src
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v1
