@@ -213,6 +213,24 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     this.tileTextureCache_ = new LRUCache(cacheSize);
   }
 
+  /**
+   * @param {Options} options Options.
+   */
+  reset(options) {
+    super.reset({
+      uniforms: options.uniforms,
+    });
+    this.vertexShader_ = options.vertexShader;
+    this.fragmentShader_ = options.fragmentShader;
+
+    if (this.helper) {
+      this.program_ = this.helper.getProgram(
+        this.fragmentShader_,
+        this.vertexShader_
+      );
+    }
+  }
+
   afterHelperCreated() {
     this.program_ = this.helper.getProgram(
       this.fragmentShader_,

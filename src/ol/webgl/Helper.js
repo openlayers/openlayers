@@ -340,7 +340,6 @@ class WebGLHelper extends Disposable {
      * @type {WebGLRenderingContext}
      */
     this.gl_ = getContext(this.canvas_);
-    const gl = this.getGL();
 
     /**
      * @private
@@ -407,13 +406,10 @@ class WebGLHelper extends Disposable {
      */
     this.uniforms_ = [];
     if (options.uniforms) {
-      for (const name in options.uniforms) {
-        this.uniforms_.push({
-          name: name,
-          value: options.uniforms[name],
-        });
-      }
+      this.setUniforms(options.uniforms);
     }
+
+    const gl = this.getGL();
 
     /**
      * An array of PostProcessingPass objects is kept in this variable, built from the steps provided in the
@@ -445,6 +441,20 @@ class WebGLHelper extends Disposable {
      * @private
      */
     this.startTime_ = Date.now();
+  }
+
+  /**
+   * @param {Object<string, UniformValue>} uniforms Uniform definitions.
+   */
+  setUniforms(uniforms) {
+    this.uniforms_ = [];
+    for (const name in uniforms) {
+      this.uniforms_.push({
+        name: name,
+        value: uniforms[name],
+      });
+    }
+    this.uniformLocations_ = {};
   }
 
   /**
