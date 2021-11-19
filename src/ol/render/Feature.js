@@ -43,6 +43,11 @@ class RenderFeature {
    */
   constructor(type, flatCoordinates, ends, properties, id) {
     /**
+     * @type {import("../style/Style.js").StyleFunction|undefined}
+     */
+    this.styleFunction;
+
+    /**
      * @private
      * @type {import("../extent.js").Extent|undefined}
      */
@@ -259,10 +264,10 @@ class RenderFeature {
   }
 
   /**
-   * @return {undefined}
+   * @return {import('../style/Style.js').StyleFunction|undefined} Style
    */
   getStyleFunction() {
-    return undefined;
+    return this.styleFunction;
   }
 
   /**

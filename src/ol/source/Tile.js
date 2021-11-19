@@ -90,7 +90,6 @@ class TileSource extends Source {
       options.tilePixelRatio !== undefined ? options.tilePixelRatio : 1;
 
     /**
-     * @protected
      * @type {import("../tilegrid/TileGrid.js").default}
      */
     this.tileGrid = options.tileGrid !== undefined ? options.tileGrid : null;
