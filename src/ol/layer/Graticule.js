@@ -86,9 +86,13 @@ const INTERVALS = [
  * appropriate for conformal projections like Spherical Mercator. If you
  * increase the value, more lines will be drawn and the drawing performance will
  * decrease.
- * @property {Stroke} [strokeStyle='rgba(0,0,0,0.2)'] The
- * stroke style to use for drawing the graticule. If not provided, a not fully
- * opaque black will be used.
+ * @property {Stroke} [strokeStyle] The
+ * stroke style to use for drawing the graticule. If not provided, the following stroke will be used:
+ * ```js
+ * new Stroke({
+ *   color: 'rgba(0, 0, 0, 0.2)' // a not fully opaque black
+ * });
+ * ```
  * @property {number} [targetSize=100] The target size of the graticule cells,
  * in pixels.
  * @property {boolean} [showLabels=false] Render a label with the respective
