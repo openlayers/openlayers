@@ -1,7 +1,7 @@
 /**
  * @module ol/layer/Heatmap
  */
-import VectorLayer from './Vector.js';
+import BaseVector from './BaseVector.js';
 import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer.js';
 import {assign} from '../obj.js';
 import {clamp} from '../math.js';
@@ -61,10 +61,10 @@ const DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
  * options means that `title` is observable, and has get/set accessors.
  *
  * @fires import("../render/Event.js").RenderEvent
- * @extends {VectorLayer<import("../source/Vector.js").default>}
+ * @extends {BaseVector<import("../source/Vector.js").default, WebGLPointsLayerRenderer>}
  * @api
  */
-class Heatmap extends VectorLayer {
+class Heatmap extends BaseVector {
   /**
    * @param {Options} [opt_options] Options.
    */
@@ -174,10 +174,6 @@ class Heatmap extends VectorLayer {
     this.set(Property.RADIUS, radius);
   }
 
-  /**
-   * Create a renderer for this layer.
-   * @return {WebGLPointsLayerRenderer} A layer renderer.
-   */
   createRenderer() {
     return new WebGLPointsLayerRenderer(this, {
       className: this.getClassName(),

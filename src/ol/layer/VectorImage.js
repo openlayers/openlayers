@@ -55,7 +55,7 @@ import {assign} from '../obj.js';
  * options means that `title` is observable, and has get/set accessors.
  *
  * @template {import("../source/Vector.js").default} VectorSourceType
- * @extends {BaseVectorLayer<VectorSourceType>}
+ * @extends {BaseVectorLayer<VectorSourceType, CanvasVectorImageLayerRenderer>}
  * @api
  */
 class VectorImageLayer extends BaseVectorLayer {
@@ -84,10 +84,6 @@ class VectorImageLayer extends BaseVectorLayer {
     return this.imageRatio_;
   }
 
-  /**
-   * Create a renderer for this layer.
-   * @return {import("../renderer/Layer.js").default} A layer renderer.
-   */
   createRenderer() {
     return new CanvasVectorImageLayerRenderer(this);
   }
