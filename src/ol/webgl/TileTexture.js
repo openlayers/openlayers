@@ -36,18 +36,20 @@ function uploadImageTexture(gl, texture, image) {
  * @param {import("../DataTile.js").Data} data The pixel data.
  * @param {import("../size.js").Size} size The pixel size.
  * @param {number} bandCount The band count.
- * @param {number} unpackAlignment The unpack alignment.
  */
-function uploadDataTexture(
-  helper,
-  texture,
-  data,
-  size,
-  bandCount,
-  unpackAlignment
-) {
+function uploadDataTexture(helper, texture, data, size, bandCount) {
   const gl = helper.getGL();
   bindAndConfigure(gl, texture);
+
+  const bytesPerRow = data.byteLength / size[1];
+  let unpackAlignment = 1;
+  if (bytesPerRow % 8 === 0) {
+    unpackAlignment = 8;
+  } else if (bytesPerRow % 4 === 0) {
+    unpackAlignment = 4;
+  } else if (bytesPerRow % 2 === 0) {
+    unpackAlignment = 2;
+  }
 
   let format;
   switch (bandCount) {
@@ -81,6 +83,7 @@ function uploadDataTexture(
     textureType = gl.UNSIGNED_BYTE;
   }
 
+  const oldUnpackAlignment = gl.getParameter(gl.UNPACK_ALIGNMENT);
   gl.pixelStorei(gl.UNPACK_ALIGNMENT, unpackAlignment);
   gl.texImage2D(
     gl.TEXTURE_2D,
@@ -93,7 +96,7 @@ function uploadDataTexture(
     textureType,
     data
   );
-  gl.pixelStorei(gl.UNPACK_ALIGNMENT, 4);
+  gl.pixelStorei(gl.UNPACK_ALIGNMENT, oldUnpackAlignment);
 }
 
 /**
@@ -180,32 +183,15 @@ class TileTexture extends EventTarget {
     const pixelCount = this.size[0] * this.size[1];
     const DataType = isFloat ? Float32Array : Uint8Array;
     const bytesPerElement = DataType.BYTES_PER_ELEMENT;
-    const byteWidth = data.byteLength / this.size[1];
-    this.bandCount = Math.floor(byteWidth / bytesPerElement / this.size[0]);
-    const textureCount = Math.ceil(this.bandCount / 4);
+    const bytesPerRow = data.byteLength / this.size[1];
 
-    let unpackAlignment;
-    if (byteWidth % 8 === 0) {
-      unpackAlignment = 8;
-    } else if (byteWidth % 4 === 0) {
-      unpackAlignment = 4;
-    } else if (byteWidth % 2 === 0) {
-      unpackAlignment = 2;
-    } else {
-      unpackAlignment = 1;
-    }
+    this.bandCount = Math.floor(bytesPerRow / bytesPerElement / this.size[0]);
+    const textureCount = Math.ceil(this.bandCount / 4);
 
     if (textureCount === 1) {
       const texture = gl.createTexture();
       this.textures.push(texture);
-      uploadDataTexture(
-        helper,
-        texture,
-        data,
-        this.size,
-        this.bandCount,
-        unpackAlignment
-      );
+      uploadDataTexture(helper, texture, data, this.size, this.bandCount);
       return;
     }
 
@@ -221,36 +207,29 @@ class TileTexture extends EventTarget {
 
     let dataIndex = 0;
     let rowOffset = 0;
-    const valueCount = this.size[0] * this.bandCount;
+    const colCount = this.size[0] * this.bandCount;
     for (let rowIndex = 0; rowIndex < this.size[1]; ++rowIndex) {
-      for (let colIndex = 0; colIndex < valueCount; ++colIndex) {
-        const bandIndex = colIndex % this.bandCount;
-        const textureBandIndex = bandIndex % 4;
-        const textureIndex = Math.floor(bandIndex / 4);
-        const bandCount =
-          textureIndex < textureCount - 1 ? 4 : this.bandCount % 4;
+      for (let colIndex = 0; colIndex < colCount; ++colIndex) {
+        const dataValue = data[rowOffset + colIndex];
+
         const pixelIndex = Math.floor(dataIndex / this.bandCount);
-        textureDataArrays[textureIndex][
-          pixelIndex * bandCount + textureBandIndex
-        ] = data[rowOffset + colIndex];
+        const bandIndex = colIndex % this.bandCount;
+        const textureIndex = Math.floor(bandIndex / 4);
+        const textureData = textureDataArrays[textureIndex];
+        const bandCount = textureData.length / pixelCount;
+        const textureBandIndex = bandIndex % 4;
+        textureData[pixelIndex * bandCount + textureBandIndex] = dataValue;
+
         ++dataIndex;
       }
-      rowOffset += byteWidth / bytesPerElement;
+      rowOffset += bytesPerRow / bytesPerElement;
     }
 
     for (let textureIndex = 0; textureIndex < textureCount; ++textureIndex) {
-      const bandCount =
-        textureIndex < textureCount - 1 ? 4 : this.bandCount % 4;
       const texture = this.textures[textureIndex];
-      const data = textureDataArrays[textureIndex];
-      uploadDataTexture(
-        helper,
-        texture,
-        data,
-        this.size,
-        bandCount,
-        bytesPerElement
-      );
+      const textureData = textureDataArrays[textureIndex];
+      const bandCount = textureData.length / pixelCount;
+      uploadDataTexture(helper, texture, textureData, this.size, bandCount);
     }
   }
 
