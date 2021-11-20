@@ -1,0 +1,27 @@
+name: "Security Scan"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: '0 0 * * 0'  # At 00:00 on Sunday
+
+jobs:
+  codeql:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: javascript
+          source-root: src
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v1
