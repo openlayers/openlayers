@@ -4,6 +4,8 @@ import MapboxVectorLayer, {
   normalizeSpriteUrl,
   normalizeStyleUrl,
 } from '../../../../../src/ol/layer/MapboxVector.js';
+import {get} from '../../../../../src/ol/proj.js';
+import {unByKey} from '../../../../../src/ol/Observable.js';
 
 describe('ol/layer/MapboxVector', () => {
   describe('getMapboxPath()', () => {
@@ -112,13 +114,67 @@ describe('ol/layer/MapboxVector', () => {
                   type: 'vector',
                 },
               },
+              layers: [],
             })
           ),
       });
-      layer.on('change:source', function () {
-        // we only get here when a new source was set, which is what ol-mapbox-style's
-        // setupVectorSource() does.
-        done();
+      const source = layer.getSource();
+      const key = source.on('change', function () {
+        if (source.getState() === 'ready') {
+          unByKey(key);
+          expect(source.getTileUrlFunction()([0, 0, 0])).to.be(
+            'http://a.tiles.mapbox.com/v3/mapbox.geography-class/0/0/0.png'
+          );
+          done();
+        }
+      });
+    });
+  });
+
+  describe('background', function () {
+    it('adds a feature for the background', function (done) {
+      const layer = new MapboxVectorLayer({
+        styleUrl:
+          'data:,' +
+          encodeURIComponent(
+            JSON.stringify({
+              version: 8,
+              sources: {
+                'foo': {
+                  url: '/spec/ol/data/{z}-{x}-{y}.vector.pbf',
+                  type: 'vector',
+                },
+              },
+              layers: [
+                {
+                  id: 'background',
+                  type: 'background',
+                  paint: {
+                    'background-color': '#ff0000',
+                    'background-opacity': 0.8,
+                  },
+                },
+              ],
+            })
+          ),
+      });
+      const source = layer.getSource();
+      const key = source.on('change', function () {
+        if (source.getState() === 'ready') {
+          unByKey(key);
+          source.getTile(14, 8938, 5680, 1, get('EPSG:3857')).load();
+          source.once('tileloadend', (event) => {
+            const features = event.tile.getFeatures();
+            if (!features) {
+              event.tile.setFeatures([]);
+            }
+            expect(features[0].get('layer')).to.be('background');
+            expect(
+              features[0].getStyleFunction()().getFill().getColor()
+            ).to.eql([255, 0, 0, 0.8]);
+            done();
+          });
+        }
       });
     });
   });

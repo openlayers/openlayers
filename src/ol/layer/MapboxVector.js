@@ -3,11 +3,17 @@
  */
 import BaseEvent from '../events/Event.js';
 import EventType from '../events/EventType.js';
+import GeometryType from '../geom/GeometryType.js';
 import MVT from '../format/MVT.js';
+import RenderFeature from '../render/Feature.js';
 import SourceState from '../source/State.js';
+import TileEventType from '../source/TileEventType.js';
 import VectorTileLayer from '../layer/VectorTile.js';
 import VectorTileSource from '../source/VectorTile.js';
+import {Fill, Style} from '../style.js';
 import {applyStyle, setupVectorSource} from 'ol-mapbox-style';
+import {fromExtent} from '../geom/Polygon.js';
+import {getValue} from 'ol-mapbox-style/dist/stylefunction.js';
 
 const mapboxBaseUrl = 'https://api.mapbox.com';
 
@@ -153,7 +159,10 @@ const SourceType = {
 /**
  * @typedef {Object} LayerObject
  * @property {string} id The layer id.
+ * @property {string} type The layer type.
  * @property {string} source The source id.
+ * @property {Object} layout The layout.
+ * @property {Object} paint The paint.
  */
 
 /**
@@ -291,6 +300,7 @@ class MapboxVectorLayer extends VectorTileLayer {
 
     this.sourceId = options.source;
     this.layers = options.layers;
+
     if (options.accessToken) {
       this.accessToken = options.accessToken;
     } else {
@@ -409,7 +419,7 @@ class MapboxVectorLayer extends VectorTileLayer {
       );
       applyStyle(this, style, sourceIdOrLayersList)
         .then(() => {
-          source.setState(SourceState.READY);
+          this.configureSource(source, style);
         })
         .catch((error) => {
           this.handleError(error);
@@ -431,14 +441,85 @@ class MapboxVectorLayer extends VectorTileLayer {
       ).then((source) => {
         applyStyle(this, style, sourceIdOrLayersList)
           .then(() => {
-            this.setSource(source);
+            this.configureSource(source, style);
           })
           .catch((error) => {
-            this.setSource(source);
+            this.configureSource(source, style);
             this.handleError(error);
           });
       });
     }
+  }
+
+  /**
+   * Applies configuration from the provided source to this layer's source,
+   * and reconfigures the loader to add a feature that renders the background,
+   * if the style is configured with a background.
+   * @param {import("../source/VectorTile.js").default} source The source to configure from.
+   * @param {StyleObject} style The style to configure the background from.
+   */
+  configureSource(source, style) {
+    const targetSource = this.getSource();
+    if (source !== targetSource) {
+      targetSource.setAttributions(source.getAttributions());
+      targetSource.setTileUrlFunction(source.getTileUrlFunction());
+      targetSource.setTileLoadFunction(source.getTileLoadFunction());
+      targetSource.tileGrid = source.tileGrid;
+    }
+    const background = style.layers.find(
+      (layer) => layer.type === 'background'
+    );
+    if (
+      !background ||
+      !background.layout ||
+      background.layout.visibility !== 'none'
+    ) {
+      const style = new Style({
+        fill: new Fill(),
+      });
+      targetSource.addEventListener(TileEventType.TILELOADEND, (event) => {
+        const tile = /** @type {import("../VectorTile.js").default} */ (
+          /** @type {import("../source/Tile.js").TileSourceEvent} */ (event)
+            .tile
+        );
+        const styleFuntion = () => {
+          const opacity =
+            /** @type {number} */ (
+              getValue(
+                background,
+                'paint',
+                'background-opacity',
+                tile.tileCoord[0]
+              )
+            ) || 1;
+          const color = /** @type {*} */ (
+            getValue(background, 'paint', 'background-color', tile.tileCoord[0])
+          );
+          style
+            .getFill()
+            .setColor([
+              color.r * 255,
+              color.g * 255,
+              color.b * 255,
+              color.a * opacity,
+            ]);
+          return style;
+        };
+        const extentGeometry = fromExtent(
+          targetSource.tileGrid.getTileCoordExtent(tile.tileCoord)
+        );
+        const renderFeature = new RenderFeature(
+          GeometryType.POLYGON,
+          extentGeometry.getFlatCoordinates(),
+          extentGeometry.getEnds(),
+          {layer: background.id},
+          undefined
+        );
+        renderFeature.styleFunction = styleFuntion;
+        tile.getFeatures().unshift(renderFeature);
+      });
+    }
+    targetSource.setState(SourceState.READY);
   }
 
   /**
