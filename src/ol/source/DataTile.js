@@ -10,11 +10,18 @@ import {assign} from '../obj.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 import {getKeyZXY} from '../tilecoord.js';
 import {getUid} from '../util.js';
+import {toPromise} from '../functions.js';
+
+/**
+ * Data tile loading function.  The function is called with z, x, and y tile coordinates and
+ * returns {@link import("../DataTile.js").Data data} for a tile or a promise for the same.
+ * @typedef {function(number, number, number) : (import("../DataTile.js").Data|Promise<import("../DataTile.js").Data>)} Loader
+ */
 
 /**
  * @typedef {Object} Options
- * @property {function(number, number, number) : Promise<import("../DataTile.js").Data>} [loader] Data loader.  Called with z, x, and y tile coordinates.
- * Returns a promise that resolves to a {@link import("../DataTile.js").Data}.
+ * @property {Loader} [loader] Data loader.  Called with z, x, and y tile coordinates.
+ * Returns {@link import("../DataTile.js").Data data} for a tile or a promise for the same.
  * @property {number} [maxZoom=42] Optional max zoom level. Not used if `tileGrid` is provided.
  * @property {number} [minZoom=0] Optional min zoom level. Not used if `tileGrid` is provided.
  * @property {number|import("../size.js").Size} [tileSize=[256, 256]] The pixel width and height of the tiles.
@@ -31,7 +38,7 @@ import {getUid} from '../util.js';
 
 /**
  * @classdesc
- * Base class for sources providing tiles divided into a tile grid.
+ * A source for typed array data tiles.
  *
  * @fires import("./Tile.js").TileSourceEvent
  * @api
@@ -86,7 +93,7 @@ class DataTileSource extends TileSource {
   }
 
   /**
-   * @param {function(number, number, number) : Promise<import("../DataTile.js").Data>} loader The data loader.
+   * @param {Loader} loader The data loader.
    * @protected
    */
   setLoader(loader) {
@@ -109,8 +116,11 @@ class DataTileSource extends TileSource {
     }
 
     const sourceLoader = this.loader_;
+
     function loader() {
-      return sourceLoader(z, x, y);
+      return toPromise(function () {
+        return sourceLoader(z, x, y);
+      });
     }
 
     const tile = new DataTile(

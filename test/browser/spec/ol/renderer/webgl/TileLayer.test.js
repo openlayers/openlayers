@@ -25,7 +25,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
           context.fillStyle = 'rgba(100, 100, 100, 0.5)';
           context.fillRect(0, 0, size, size);
           const data = context.getImageData(0, 0, size, size).data;
-          return Promise.resolve(data);
+          return data;
         },
       }),
     });

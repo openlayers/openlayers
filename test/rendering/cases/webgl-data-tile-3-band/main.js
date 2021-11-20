@@ -34,7 +34,7 @@ new Map({
 
           const bandCount = 3;
           const result = data.filter((_, index) => index % 4 < bandCount);
-          return Promise.resolve(result);
+          return result;
         },
         tileSize: size,
       }),
