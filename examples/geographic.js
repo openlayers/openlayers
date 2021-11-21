@@ -63,10 +63,15 @@ map.on('moveend', function () {
 });
 
 map.on('click', function (event) {
+  $(element).popover('dispose');
+
   const feature = map.getFeaturesAtPixel(event.pixel)[0];
   if (feature) {
     const coordinate = feature.getGeometry().getCoordinates();
-    popup.setPosition(coordinate);
+    popup.setPosition([
+      coordinate[0] + Math.round(event.coordinate[0] / 360) * 360,
+      coordinate[1],
+    ]);
     $(element).popover({
       container: element.parentElement,
       html: true,
@@ -75,8 +80,6 @@ map.on('click', function (event) {
       placement: 'top',
     });
     $(element).popover('show');
-  } else {
-    $(element).popover('dispose');
   }
 });
 
