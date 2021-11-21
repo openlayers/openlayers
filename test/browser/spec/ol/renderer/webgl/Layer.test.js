@@ -252,7 +252,7 @@ describe('ol/renderer/webgl/Layer', function () {
         className: className,
         source: new DataTileSource({
           loader(z, x, y) {
-            return Promise.resolve(new ImageData(256, 256));
+            return new ImageData(256, 256);
           },
         }),
       });

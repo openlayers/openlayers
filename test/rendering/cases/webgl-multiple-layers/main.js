@@ -64,7 +64,7 @@ new Map({
             labelCanvasSize,
             labelCanvasSize
           ).data;
-          return Promise.resolve(new Uint8Array(data.buffer));
+          return new Uint8Array(data.buffer);
         },
         transition: 0,
       }),

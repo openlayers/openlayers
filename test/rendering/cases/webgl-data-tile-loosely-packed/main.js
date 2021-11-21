@@ -53,7 +53,7 @@ new Map({
             }
           }
 
-          return Promise.resolve(output);
+          return output;
         },
       }),
     }),

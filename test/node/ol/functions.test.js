@@ -1,7 +1,63 @@
 import expect from '../expect.js';
-import {memoizeOne} from '../../../src/ol/functions.js';
+import {memoizeOne, toPromise} from '../../../src/ol/functions.js';
 
 describe('ol/functions.js', function () {
+  describe('toPromise()', () => {
+    it('returns a promise given a getter for a value', (done) => {
+      const getter = () => 'a value';
+      const promise = toPromise(getter);
+      expect(promise).to.be.a(Promise);
+      promise.then((value) => {
+        expect(value).to.be('a value');
+        done();
+      }, done);
+    });
+
+    it('returns a promise given a getter for a promise that resolves', (done) => {
+      const getter = () => Promise.resolve('a value');
+      const promise = toPromise(getter);
+      expect(promise).to.be.a(Promise);
+      promise.then((value) => {
+        expect(value).to.be('a value');
+        done();
+      }, done);
+    });
+
+    it('returns a promise that rejects given a getter that throws', (done) => {
+      const getter = () => {
+        throw new Error('an error');
+      };
+      const promise = toPromise(getter);
+      expect(promise).to.be.a(Promise);
+      promise.then(
+        (value) => {
+          done(new Error(`expected promise to reject, got ${value}`));
+        },
+        (err) => {
+          expect(err).to.be.an(Error);
+          expect(err.message).to.be('an error');
+          done();
+        }
+      );
+    });
+
+    it('returns a promise that rejects given a getter for a promse that rejects', (done) => {
+      const getter = () => Promise.reject(new Error('an error'));
+      const promise = toPromise(getter);
+      expect(promise).to.be.a(Promise);
+      promise.then(
+        (value) => {
+          done(new Error(`expected promise to reject, got ${value}`));
+        },
+        (err) => {
+          expect(err).to.be.an(Error);
+          expect(err.message).to.be('an error');
+          done();
+        }
+      );
+    });
+  });
+
   describe('memoizeOne()', function () {
     it('returns the result from the first call when called a second time with the same args', function () {
       const arg1 = {};
