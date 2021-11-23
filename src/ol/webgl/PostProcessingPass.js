@@ -250,9 +250,12 @@ class WebGLPostProcessingPass {
    * Render to the next postprocessing pass (or to the canvas if final pass).
    * @param {import("../PluggableMap.js").FrameState} frameState current frame state
    * @param {WebGLPostProcessingPass} [nextPass] Next pass, optional
+   * @param {GLenum} [glBlendEquation] .
+   * @param {GLenum} [glBlendFuncSRC] .
+   * @param {GLenum} [glBlendFuncDST] .
    * @api
    */
-  apply(frameState, nextPass) {
+  apply(frameState, nextPass, glBlendEquation, glBlendFuncSRC, glBlendFuncDST) {
     const gl = this.getGL();
     const size = frameState.size;
 
@@ -265,7 +268,23 @@ class WebGLPostProcessingPass {
 
     // render the frame buffer to the canvas
     gl.enable(gl.BLEND);
-    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    if (glBlendEquation !== null && glBlendEquation !== undefined) {
+      gl.blendEquation(glBlendEquation);
+    } else {
+      gl.blendEquation(gl.FUNC_ADD);
+    }
+
+    if (
+      glBlendFuncSRC !== null &&
+      glBlendFuncSRC !== null &&
+      glBlendFuncSRC !== undefined &&
+      glBlendFuncSRC !== undefined
+    ) {
+      gl.blendFunc(glBlendFuncSRC, glBlendFuncDST);
+    } else {
+      gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    }
+
     gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.renderTargetVerticesBuffer_);

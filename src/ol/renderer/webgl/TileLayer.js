@@ -429,7 +429,6 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     this.helper.prepareDraw(
       frameState,
       !blend,
-      tileLayer.styleVariables_.additiveBlending
     );
 
     const zs = Object.keys(tileTexturesByZ)
@@ -528,7 +527,12 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
       }
     }
 
-    this.helper.finalizeDraw(frameState);
+    this.helper.finalizeDraw(
+      frameState, 
+      tileLayer.styleVariables_.glBlendEquation,
+      tileLayer.styleVariables_.glBlendFuncSRC,
+      tileLayer.styleVariables_.glBlendFuncDST
+    );
 
     const canvas = this.helper.getCanvas();
 

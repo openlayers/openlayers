@@ -542,10 +542,9 @@ class WebGLHelper extends Disposable {
    * subsequent draw calls.
    * @param {import("../PluggableMap.js").FrameState} frameState current frame state
    * @param {boolean} [opt_disableAlphaBlend] If true, no alpha blending will happen.
-   * @param {boolean} [additiveBlending] If true, blend for dest set to gl.ONE.
    * @api
    */
-  prepareDraw(frameState, opt_disableAlphaBlend, additiveBlending) {
+  prepareDraw(frameState, opt_disableAlphaBlend) {
     const gl = this.getGL();
     const canvas = this.getCanvas();
     const size = frameState.size;
@@ -569,14 +568,10 @@ class WebGLHelper extends Disposable {
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     gl.enable(gl.BLEND);
-    if (additiveBlending) {
-      gl.blendFunc(gl.ONE, gl.ONE);
-    } else {
-      gl.blendFunc(
-        gl.ONE,
-        opt_disableAlphaBlend ? gl.ZERO : gl.ONE_MINUS_SRC_ALPHA
-      );
-    }
+    gl.blendFunc(
+      gl.ONE,
+      opt_disableAlphaBlend ? gl.ZERO : gl.ONE_MINUS_SRC_ALPHA
+    );
 
     gl.useProgram(this.currentProgram_);
     this.applyFrameState(frameState);
@@ -632,14 +627,20 @@ class WebGLHelper extends Disposable {
   /**
    * Apply the successive post process passes which will eventually render to the actual canvas.
    * @param {import("../PluggableMap.js").FrameState} frameState current frame state
+   * @param {GLenum} [glBlendEquation] .
+   * @param {GLenum} [glBlendFuncSRC] .
+   * @param {GLenum} [glBlendFuncDST] .
    * @api
    */
-  finalizeDraw(frameState) {
+  finalizeDraw(frameState, glBlendEquation, glBlendFuncSRC, glBlendFuncDST) {
     // apply post processes using the next one as target
     for (let i = 0; i < this.postProcessPasses_.length; i++) {
       this.postProcessPasses_[i].apply(
         frameState,
-        this.postProcessPasses_[i + 1] || null
+        this.postProcessPasses_[i + 1] || null,
+        glBlendEquation, 
+        glBlendFuncSRC, 
+        glBlendFuncDST
       );
     }
   }
