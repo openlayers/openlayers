@@ -62,9 +62,9 @@ import {assign} from '../obj.js';
  * is defined by the z-index of the layer, the `zIndex` of the style and the render order of features.
  * Higher z-index means higher priority. Within the same z-index, a feature rendered before another has
  * higher priority.
- * @property {import("../style/Style.js").StyleLike} [style] Layer style. See
- * {@link import("../style/Style.js").default the style docs} for the default style that will be used if
- * this is not defined.
+ * @property {import("../style/Style.js").StyleLike|null} [style] Layer style. When set to `null`, only
+ * features that have their own style will be rendered. See {@link module:ol/style/Style~Style} for the default style
+ * which will be used if this is not set.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will be
  * recreated during animations. This means that no vectors will be shown clipped, but the setting
  * will have a performance impact for large amounts of vector data. When set to `false`, batches
@@ -85,7 +85,7 @@ import {assign} from '../obj.js';
  * options means that `title` is observable, and has get/set accessors.
  *
  * @param {Options} [opt_options] Options.
- * @extends {BaseVectorLayer<import("../source/VectorTile.js").default>}
+ * @extends {BaseVectorLayer<import("../source/VectorTile.js").default, CanvasVectorTileLayerRenderer>}
  * @api
  */
 class VectorTileLayer extends BaseVectorLayer {
@@ -147,11 +147,6 @@ class VectorTileLayer extends BaseVectorLayer {
     );
   }
 
-  /**
-   * Create a renderer for this layer.
-   * @return {import("../renderer/Layer.js").default} A layer renderer.
-   * @protected
-   */
   createRenderer() {
     return new CanvasVectorTileLayerRenderer(this);
   }

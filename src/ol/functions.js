@@ -58,3 +58,24 @@ export function memoizeOne(fn) {
     return lastResult;
   };
 }
+
+/**
+ * @template T
+ * @param {function(): (T | Promise<T>)} getter A function that returns a value or a promise for a value.
+ * @return {Promise<T>} A promise for the value.
+ */
+export function toPromise(getter) {
+  function promiseGetter() {
+    let value;
+    try {
+      value = getter();
+    } catch (err) {
+      return Promise.reject(err);
+    }
+    if (value instanceof Promise) {
+      return value;
+    }
+    return Promise.resolve(value);
+  }
+  return promiseGetter();
+}

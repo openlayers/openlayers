@@ -12,7 +12,7 @@ import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer.js';
  * options means that `title` is observable, and has get/set accessors.
  *
  * @template {import("../source/Vector.js").default} VectorSourceType
- * @extends {BaseVectorLayer<VectorSourceType>}
+ * @extends {BaseVectorLayer<VectorSourceType, CanvasVectorLayerRenderer>}
  * @api
  */
 class VectorLayer extends BaseVectorLayer {
@@ -23,10 +23,6 @@ class VectorLayer extends BaseVectorLayer {
     super(opt_options);
   }
 
-  /**
-   * Create a renderer for this layer.
-   * @return {import("../renderer/Layer.js").default} A layer renderer.
-   */
   createRenderer() {
     return new CanvasVectorLayerRenderer(this);
   }

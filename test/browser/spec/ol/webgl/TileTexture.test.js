@@ -5,11 +5,15 @@ import TileState from '../../../../../src/ol/TileState.js';
 import TileTexture from '../../../../../src/ol/webgl/TileTexture.js';
 import WebGLArrayBuffer from '../../../../../src/ol/webgl/Buffer.js';
 import WebGLTileLayer from '../../../../../src/ol/layer/WebGLTile.js';
+import {EXTENT as EPSG3857_EXTENT} from '../../../../../src/ol/proj/epsg3857.js';
 import {createCanvasContext2D} from '../../../../../src/ol/dom.js';
 
-describe('ol.webgl.TileTexture', function () {
+describe('ol/webgl/TileTexture', function () {
   /** @type {TileTexture} */
   let tileTexture;
+
+  /** @type {import("../../../../../src/ol/renderer/webgl/TileLayer.js").default} */
+  let renderer;
 
   beforeEach(function () {
     const layer = new WebGLTileLayer({
@@ -24,15 +28,25 @@ describe('ol.webgl.TileTexture', function () {
         },
       }),
     });
-    const renderer =
-      /** @type {import("../../../../../src/ol/renderer/webgl/TileLayer.js").default} */ (
-        layer.createRenderer()
-      );
+
+    renderer = layer.createRenderer();
+    renderer.prepareFrame({
+      extent: EPSG3857_EXTENT,
+      layerIndex: 0,
+      layerStatesArray: [layer.getLayerState()],
+      size: [256, 256],
+      mapId: 'map-1',
+    });
+
     tileTexture = new TileTexture(
       layer.getSource().getTile(3, 2, 1),
       layer.getSource().getTileGrid(),
       renderer.helper
     );
+  });
+
+  afterEach(() => {
+    renderer.dispose();
   });
 
   it('constructor', function () {

@@ -5,7 +5,8 @@ import BaseObject from './Object.js';
 import Collection from './Collection.js';
 import CollectionEventType from './CollectionEventType.js';
 import EventType from './events/EventType.js';
-import LayerGroup from './layer/Group.js';
+import Layer from './layer/Layer.js';
+import LayerGroup, {GroupEvent} from './layer/Group.js';
 import MapBrowserEvent from './MapBrowserEvent.js';
 import MapBrowserEventHandler from './MapBrowserEventHandler.js';
 import MapBrowserEventType from './MapBrowserEventType.js';
@@ -33,6 +34,7 @@ import {
   isEmpty,
 } from './extent.js';
 import {fromUserCoordinate, toUserCoordinate} from './proj.js';
+import {getUid} from './util.js';
 import {hasArea} from './size.js';
 import {listen, unlistenByKey} from './events.js';
 import {removeNode} from './dom.js';
@@ -59,6 +61,7 @@ import {removeNode} from './dom.js';
  * @property {!Object<string, Object<string, boolean>>} usedTiles UsedTiles.
  * @property {Array<number>} viewHints ViewHints.
  * @property {!Object<string, Object<string, boolean>>} wantedTiles WantedTiles.
+ * @property {string} mapId The id of the map.
  */
 
 /**
@@ -142,6 +145,36 @@ import {removeNode} from './dom.js';
  * fetched unless this is specified at construction time or through
  * {@link module:ol/Map~Map#setView}.
  */
+
+/**
+ * @param {import("./layer/Base.js").default} layer Layer.
+ */
+function removeLayerMapProperty(layer) {
+  if (layer instanceof Layer) {
+    layer.setMapInternal(null);
+    return;
+  }
+  if (layer instanceof LayerGroup) {
+    layer.getLayers().forEach(removeLayerMapProperty);
+  }
+}
+
+/**
+ * @param {import("./layer/Base.js").default} layer Layer.
+ * @param {PluggableMap} map Map.
+ */
+function setLayerMapProperty(layer, map) {
+  if (layer instanceof Layer) {
+    layer.setMapInternal(map);
+    return;
+  }
+  if (layer instanceof LayerGroup) {
+    const layers = layer.getLayers().getArray();
+    for (let i = 0, ii = layers.length; i < ii; ++i) {
+      setLayerMapProperty(layers[i], map);
+    }
+  }
+}
 
 /**
  * @fires import("./MapBrowserEvent.js").MapBrowserEvent
@@ -522,6 +555,14 @@ class PluggableMap extends BaseObject {
   addLayer(layer) {
     const layers = this.getLayerGroup().getLayers();
     layers.push(layer);
+  }
+
+  /**
+   * @param {import("./layer/Group.js").GroupEvent} event The layer add event.
+   * @private
+   */
+  handleLayerAdd_(event) {
+    setLayerMapProperty(event.layer, this);
   }
 
   /**
@@ -1287,9 +1328,12 @@ class PluggableMap extends BaseObject {
     }
     const layerGroup = this.getLayerGroup();
     if (layerGroup) {
+      this.handleLayerAdd_(new GroupEvent('addlayer', layerGroup));
       this.layerGroupPropertyListenerKeys_ = [
         listen(layerGroup, ObjectEventType.PROPERTYCHANGE, this.render, this),
         listen(layerGroup, EventType.CHANGE, this.render, this),
+        listen(layerGroup, 'addlayer', this.handleLayerAdd_, this),
+        listen(layerGroup, 'removelayer', this.handleLayerRemove_, this),
       ];
     }
     this.render();
@@ -1371,6 +1415,14 @@ class PluggableMap extends BaseObject {
   }
 
   /**
+   * @param {import("./layer/Group.js").GroupEvent} event The layer remove event.
+   * @private
+   */
+  handleLayerRemove_(event) {
+    removeLayerMapProperty(event.layer);
+  }
+
+  /**
    * Remove the given overlay from the map.
    * @param {import("./Overlay.js").default} overlay Overlay.
    * @return {import("./Overlay.js").default|undefined} The removed overlay (or undefined
@@ -1419,6 +1471,7 @@ class PluggableMap extends BaseObject {
         viewState: viewState,
         viewHints: viewHints,
         wantedTiles: {},
+        mapId: getUid(this),
       };
       if (viewState.nextCenter && viewState.nextResolution) {
         const rotation = isNaN(viewState.nextRotation)
@@ -1490,6 +1543,10 @@ class PluggableMap extends BaseObject {
    * @api
    */
   setLayerGroup(layerGroup) {
+    const oldLayerGroup = this.getLayerGroup();
+    if (oldLayerGroup) {
+      this.handleLayerRemove_(new GroupEvent('removelayer', oldLayerGroup));
+    }
     this.set(MapProperty.LAYERGROUP, layerGroup);
   }
 

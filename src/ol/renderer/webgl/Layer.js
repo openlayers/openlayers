@@ -1,6 +1,7 @@
 /**
  * @module ol/renderer/webgl/Layer
  */
+import LayerProperty from '../../layer/Property.js';
 import LayerRenderer from '../Layer.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
@@ -41,7 +42,6 @@ export const WebGLWorkerMessageType = {
 
 /**
  * @typedef {Object} Options
- * @property {string} [className='ol-layer'] A CSS class name to set to the canvas element.
  * @property {Object<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
  * @property {Array<PostProcessesOptions>} [postProcesses] Post-processes definitions
  */
@@ -51,6 +51,7 @@ export const WebGLWorkerMessageType = {
  * Base WebGL renderer class.
  * Holds all logic related to data manipulation & some common rendering logic
  * @template {import("../../layer/Layer.js").default} LayerType
+ * @extends {LayerRenderer<LayerType>}
  */
 class WebGLLayerRenderer extends LayerRenderer {
   /**
@@ -71,26 +72,104 @@ class WebGLLayerRenderer extends LayerRenderer {
     this.inversePixelTransform_ = createTransform();
 
     /**
+     * @private
+     */
+    this.postProcesses_ = options.postProcesses;
+
+    /**
+     * @private
+     */
+    this.uniforms_ = options.uniforms;
+
+    /**
      * @type {WebGLHelper}
      * @protected
      */
-    this.helper = new WebGLHelper({
-      postProcesses: options.postProcesses,
-      uniforms: options.uniforms,
-    });
+    this.helper;
 
-    if (options.className !== undefined) {
-      this.helper.getCanvas().className = options.className;
+    layer.addChangeListener(LayerProperty.MAP, this.removeHelper_.bind(this));
+  }
+
+  removeHelper_() {
+    if (this.helper) {
+      this.helper.dispose();
+      delete this.helper;
     }
+  }
+
+  /**
+   * Determine whether renderFrame should be called.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @return {boolean} Layer is ready to be rendered.
+   */
+  prepareFrame(frameState) {
+    if (this.getLayer().getSource()) {
+      let incrementGroup = true;
+      let groupNumber = -1;
+      let className;
+      for (let i = 0, ii = frameState.layerStatesArray.length; i < ii; i++) {
+        const layer = frameState.layerStatesArray[i].layer;
+        const renderer = layer.getRenderer();
+        if (!(renderer instanceof WebGLLayerRenderer)) {
+          incrementGroup = true;
+          continue;
+        }
+        const layerClassName = layer.getClassName();
+        if (incrementGroup || layerClassName !== className) {
+          groupNumber += 1;
+          incrementGroup = false;
+        }
+        className = layerClassName;
+        if (renderer === this) {
+          break;
+        }
+      }
+
+      const canvasCacheKey =
+        'map/' + frameState.mapId + '/group/' + groupNumber;
+
+      if (!this.helper || !this.helper.canvasCacheKeyMatches(canvasCacheKey)) {
+        if (this.helper) {
+          this.helper.dispose();
+        }
+
+        this.helper = new WebGLHelper({
+          postProcesses: this.postProcesses_,
+          uniforms: this.uniforms_,
+          canvasCacheKey: canvasCacheKey,
+        });
+
+        if (className) {
+          this.helper.getCanvas().className = className;
+        }
+
+        this.afterHelperCreated();
+      }
+    }
+
+    return this.prepareFrameInternal(frameState);
+  }
+
+  /**
+   * @protected
+   */
+  afterHelperCreated() {}
+
+  /**
+   * Determine whether renderFrame should be called.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @return {boolean} Layer is ready to be rendered.
+   * @protected
+   */
+  prepareFrameInternal(frameState) {
+    return true;
   }
 
   /**
    * Clean up.
    */
   disposeInternal() {
-    this.helper.dispose();
-    delete this.helper;
-
+    this.removeHelper_();
     super.disposeInternal();
   }
 

@@ -56,6 +56,9 @@ const attributeDescriptions = [
   },
 ];
 
+/**
+ * @type {Object<string, boolean>}
+ */
 const empty = {};
 
 /**
@@ -69,7 +72,7 @@ function depthForZ(z) {
 
 /**
  * Add a tile texture to the lookup.
- * @param {Object<string, Array<import("../../webgl/TileTexture.js").default>>} tileTexturesByZ Lookup of
+ * @param {Object<number, Array<import("../../webgl/TileTexture.js").default>>} tileTexturesByZ Lookup of
  * tile textures by zoom level.
  * @param {import("../../webgl/TileTexture.js").default} tileTexture A tile texture.
  * @param {number} z The zoom level.
@@ -103,24 +106,27 @@ function getRenderExtent(frameState, extent) {
  * @property {string} fragmentShader Fragment shader source.
  * @property {Object<string, import("../../webgl/Helper").UniformValue>} [uniforms] Additional uniforms
  * made available to shaders.
- * @property {string} [className='ol-layer'] A CSS class name to set to the canvas element.
  * @property {number} [cacheSize=512] The texture cache size.
+ */
+
+/**
+ * @typedef {import("../../layer/WebGLTile.js").default} LayerType
  */
 
 /**
  * @classdesc
  * WebGL renderer for tile layers.
+ * @extends {WebGLLayerRenderer<LayerType>}
  * @api
  */
 class WebGLTileLayerRenderer extends WebGLLayerRenderer {
   /**
-   * @param {import("../../layer/WebGLTile.js").default} tileLayer Tile layer.
+   * @param {LayerType} tileLayer Tile layer.
    * @param {Options} options Options.
    */
   constructor(tileLayer, options) {
     super(tileLayer, {
       uniforms: options.uniforms,
-      className: options.className,
     });
 
     /**
@@ -154,10 +160,21 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
      */
     this.tempSize_ = [0, 0];
 
-    this.program_ = this.helper.getProgram(
-      options.fragmentShader,
-      options.vertexShader
-    );
+    /**
+     * @type {WebGLProgram}
+     * @private
+     */
+    this.program_;
+
+    /**
+     * @private
+     */
+    this.vertexShader_ = options.vertexShader;
+
+    /**
+     * @private
+     */
+    this.fragmentShader_ = options.fragmentShader;
 
     /**
      * Tiles are rendered as a quad with the following structure:
@@ -173,11 +190,11 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
      *
      * Triangle A: P0, P1, P3
      * Triangle B: P1, P2, P3
+     *
+     * @private
      */
-    const indices = new WebGLArrayBuffer(ELEMENT_ARRAY_BUFFER, STATIC_DRAW);
-    indices.fromArray([0, 1, 3, 1, 2, 3]);
-    this.helper.flushBufferData(indices);
-    this.indices_ = indices;
+    this.indices_ = new WebGLArrayBuffer(ELEMENT_ARRAY_BUFFER, STATIC_DRAW);
+    this.indices_.fromArray([0, 1, 3, 1, 2, 3]);
 
     const cacheSize = options.cacheSize !== undefined ? options.cacheSize : 512;
 
@@ -186,16 +203,23 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
      * @private
      */
     this.tileTextureCache_ = new LRUCache(cacheSize);
+  }
 
-    this.renderedOpacity_ = NaN;
+  afterHelperCreated() {
+    this.program_ = this.helper.getProgram(
+      this.fragmentShader_,
+      this.vertexShader_
+    );
+
+    this.helper.flushBufferData(this.indices_);
   }
 
   /**
-   * @protected
-   * @param {import("../../Tile.js").default} tile Tile.
+   * @param {import("../../webgl/TileTexture").TileType} tile Tile.
    * @return {boolean} Tile is drawable.
+   * @private
    */
-  isDrawableTile(tile) {
+  isDrawableTile_(tile) {
     const tileLayer = this.getLayer();
     const tileState = tile.getState();
     const useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
@@ -207,11 +231,11 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
-   * Determine whether render should be called.
+   * Determine whether renderFrame should be called.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
    */
-  prepareFrame(frameState) {
+  prepareFrameInternal(frameState) {
     if (isEmpty(getRenderExtent(frameState, frameState.extent))) {
       return false;
     }
@@ -222,6 +246,12 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     return source.getState() === State.READY;
   }
 
+  /**
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../extent.js").Extent} extent The extent.
+   * @param {number} z The zoom level.
+   * @param {Object<number, Array<TileTexture>>} tileTexturesByZ The zoom level.
+   */
   enqueueTiles(frameState, extent, z, tileTexturesByZ) {
     const viewState = frameState.viewState;
     const tileLayer = this.getLayer();
@@ -244,7 +274,16 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
         const tileCoord = createTileCoord(z, x, y, this.tempTileCoord_);
         const tileCoordKey = getTileCoordKey(tileCoord);
 
-        let tileTexture, tile;
+        /**
+         * @type {TileTexture}
+         */
+        let tileTexture;
+
+        /**
+         * @type {import("../../webgl/TileTexture").TileType}
+         */
+        let tile;
+
         if (tileTextureCache.containsKey(tileCoordKey)) {
           tileTexture = tileTextureCache.get(tileCoordKey);
           tile = tileTexture.tile;
@@ -261,9 +300,15 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
             tileTexture = new TileTexture(tile, tileGrid, this.helper);
             tileTextureCache.set(tileCoordKey, tileTexture);
           } else {
-            tileTexture.setTile(
-              this.isDrawableTile(tile) ? tile : tile.getInterimTile()
-            );
+            if (this.isDrawableTile_(tile)) {
+              tileTexture.setTile(tile);
+            } else {
+              const interimTile =
+                /** @type {import("../../webgl/TileTexture").TileType} */ (
+                  tile.getInterimTile()
+                );
+              tileTexture.setTile(interimTile);
+            }
           }
         }
 
@@ -296,7 +341,6 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     this.preRender(gl, frameState);
 
     const viewState = frameState.viewState;
-    const layerState = frameState.layerStatesArray[frameState.layerIndex];
     const extent = getRenderExtent(frameState, frameState.extent);
     const tileLayer = this.getLayer();
     const tileSource = tileLayer.getSource();
@@ -307,7 +351,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     );
 
     /**
-     * @type {Object<string, Array<import("../../webgl/TileTexture.js").default>>}
+     * @type {Object<number, Array<import("../../webgl/TileTexture.js").default>>}
      */
     const tileTexturesByZ = {};
 
@@ -366,7 +410,8 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
       }
 
       // next look for parent tiles
-      for (let parentZ = z - 1; parentZ >= tileGrid.minZoom; --parentZ) {
+      const minZoom = tileGrid.getMinZoom();
+      for (let parentZ = z - 1; parentZ >= minZoom; --parentZ) {
         const coveredByParent = this.findAltTiles_(
           tileGrid,
           tileCoord,
@@ -487,12 +532,6 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
 
     const canvas = this.helper.getCanvas();
 
-    const opacity = layerState.opacity;
-    if (this.renderedOpacity_ !== opacity) {
-      canvas.style.opacity = String(opacity);
-      this.renderedOpacity_ = opacity;
-    }
-
     const tileTextureCache = this.tileTextureCache_;
     while (tileTextureCache.canExpireCache()) {
       const tileTexture = tileTextureCache.pop();
@@ -507,7 +546,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
      * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
      */
     const postRenderFunction = function (map, frameState) {
-      tileSource.expireCache(tileSource.getProjection(), empty);
+      tileSource.expireCache(frameState.viewState.projection, empty);
     };
 
     frameState.postRenderFunctions.push(postRenderFunction);
@@ -522,7 +561,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
    * @param {import("../../tilegrid/TileGrid.js").default} tileGrid The tile grid.
    * @param {import("../../tilecoord.js").TileCoord} tileCoord The target tile coordinate.
    * @param {number} altZ The alternate zoom level.
-   * @param {Object<string, Array<import("../../webgl/TileTexture.js").default>>} tileTexturesByZ Lookup of
+   * @param {Object<number, Array<import("../../webgl/TileTexture.js").default>>} tileTexturesByZ Lookup of
    * tile textures by zoom level.
    * @return {boolean} The tile coordinate is covered by loaded tiles at the alternate zoom level.
    * @private

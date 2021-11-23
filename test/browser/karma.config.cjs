@@ -4,9 +4,9 @@ const path = require('path');
 
 module.exports = function (karma) {
   karma.set({
-    browsers: [process.env.CI ? 'ChromeHeadless' : 'Chrome'],
+    browsers: ['ChromeHeadless'],
     browserDisconnectTolerance: 2,
-    frameworks: ['webpack', 'mocha'],
+    frameworks: ['webpack', 'mocha', 'source-map-support'],
     client: {
       runInParent: true,
       mocha: {
@@ -14,13 +14,6 @@ module.exports = function (karma) {
       },
     },
     files: [
-      {
-        pattern: path.resolve(
-          __dirname,
-          require.resolve('url-polyfill/url-polyfill.js')
-        ),
-        watched: false,
-      },
       {
         pattern: path.resolve(
           __dirname,
@@ -63,14 +56,9 @@ module.exports = function (karma) {
       '/spec/': '/base/spec/',
     },
     preprocessors: {
-      '**/*.js': ['webpack', 'sourcemap'],
+      '**/*.js': ['webpack'], //, 'sourcemap'],
     },
-    reporters: ['dots', 'coverage-istanbul'],
-    coverageIstanbulReporter: {
-      reports: ['text-summary', 'html'],
-      dir: path.resolve(__dirname, '../../coverage/'),
-      fixWebpackSourcePaths: true,
-    },
+    reporters: ['dots'],
     webpack: {
       devtool: 'inline-source-map',
       mode: 'development',
@@ -92,17 +80,6 @@ module.exports = function (karma) {
               loader: 'babel-loader',
               options: {
                 presets: ['@babel/preset-env'],
-              },
-            },
-            include: path.resolve('src/ol/'),
-            exclude: path.resolve('node_modules/'),
-          },
-          {
-            test: /\.js$/,
-            use: {
-              loader: 'coverage-istanbul-loader',
-              options: {
-                esModules: true,
               },
             },
             include: path.resolve('src/ol/'),

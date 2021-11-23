@@ -30,13 +30,13 @@ import {toUserExtent} from '../proj.js';
  * @property {import("../extent.js").Extent} [extent] Initial extent. Defaults to no
  * initial extent.
  * @property {import("../style/Style.js").StyleLike} [boxStyle]
- * Style for the drawn extent box. Defaults to
- * {@link module:ol/style/Style~createEditing()['Polygon']}
+ * Style for the drawn extent box. Defaults to the `Polygon` editing style
+ * documented in {@link module:ol/style/Style~Style}
  * @property {number} [pixelTolerance=10] Pixel tolerance for considering the
  * pointer close enough to a segment or vertex for editing.
  * @property {import("../style/Style.js").StyleLike} [pointerStyle]
- * Style for the cursor used to draw the extent. Defaults to
- * {@link module:ol/style/Style~createEditing()['Point']}
+ * Style for the cursor used to draw the extent. Defaults to the `Point` editing style
+ * documented in {@link module:ol/style/Style~Style}
  * @property {boolean} [wrapX=false] Wrap the drawn extent across multiple maps
  * in the X direction? Only affects visuals, not functionality.
  */

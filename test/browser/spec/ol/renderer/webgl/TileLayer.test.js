@@ -7,7 +7,7 @@ import {create} from '../../../../../../src/ol/transform.js';
 import {createCanvasContext2D} from '../../../../../../src/ol/dom.js';
 import {get} from '../../../../../../src/ol/proj.js';
 
-describe('ol.renderer.webgl.TileLayer', function () {
+describe('ol/renderer/webgl/TileLayer', function () {
   /** @type {import("../../../../../../src/ol/renderer/webgl/TileLayer.js").default} */
   let renderer;
   /** @type {WebGLTileLayer} */
@@ -25,7 +25,7 @@ describe('ol.renderer.webgl.TileLayer', function () {
           context.fillStyle = 'rgba(100, 100, 100, 0.5)';
           context.fillRect(0, 0, size, size);
           const data = context.getImageData(0, 0, size, size).data;
-          return Promise.resolve(data);
+          return data;
         },
       }),
     });
@@ -74,6 +74,9 @@ describe('ol.renderer.webgl.TileLayer', function () {
   });
 
   it('#renderFrame()', function () {
+    const ready = renderer.prepareFrame(frameState);
+    expect(ready).to.be(true);
+
     const rendered = renderer.renderFrame(frameState);
     expect(rendered).to.be.a(HTMLCanvasElement);
     expect(frameState.tileQueue.getCount()).to.be(1);
@@ -82,19 +85,19 @@ describe('ol.renderer.webgl.TileLayer', function () {
     expect(renderer.tileTextureCache_.count_).to.be(1);
   });
 
-  it('#isDrawableTile()', function (done) {
+  it('#isDrawableTile_()', function (done) {
     const tile = tileLayer.getSource().getTile(0, 0, 0);
-    expect(renderer.isDrawableTile(tile)).to.be(false);
+    expect(renderer.isDrawableTile_(tile)).to.be(false);
     tileLayer.getSource().on('tileloadend', () => {
-      expect(renderer.isDrawableTile(tile)).to.be(true);
+      expect(renderer.isDrawableTile_(tile)).to.be(true);
       done();
     });
     tile.load();
     const errorTile = tileLayer.getSource().getTile(1, 0, 1);
     errorTile.setState(TileState.ERROR);
     tileLayer.setUseInterimTilesOnError(false);
-    expect(renderer.isDrawableTile(errorTile)).to.be(true);
+    expect(renderer.isDrawableTile_(errorTile)).to.be(true);
     tileLayer.setUseInterimTilesOnError(true);
-    expect(renderer.isDrawableTile(errorTile)).to.be(false);
+    expect(renderer.isDrawableTile_(errorTile)).to.be(false);
   });
 });

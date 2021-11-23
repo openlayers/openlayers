@@ -94,6 +94,7 @@ import {listen, unlistenByKey} from '../events.js';
  * @fires import("../render/Event.js").RenderEvent#postrender
  *
  * @template {import("../source/Source.js").default} SourceType
+ * @template {import("../renderer/Layer.js").default} RendererType
  * @api
  */
 class Layer extends BaseLayer {
@@ -141,7 +142,7 @@ class Layer extends BaseLayer {
 
     /**
      * @private
-     * @type {import("../renderer/Layer.js").default}
+     * @type {RendererType}
      */
     this.renderer_ = null;
 
@@ -259,6 +260,22 @@ class Layer extends BaseLayer {
   }
 
   /**
+   * For use inside the library only.
+   * @param {import("../PluggableMap.js").default} map Map.
+   */
+  setMapInternal(map) {
+    this.set(LayerProperty.MAP, map);
+  }
+
+  /**
+   * For use inside the library only.
+   * @return {import("../PluggableMap.js").default} Map.
+   */
+  getMapInternal() {
+    return this.get(LayerProperty.MAP);
+  }
+
+  /**
    * Sets the layer to be rendered on top of other layers on a map. The map will
    * not manage this layer in its layers collection, and the callback in
    * {@link module:ol/Map~Map#forEachLayerAtPixel} will receive `null` as layer. This
@@ -319,7 +336,7 @@ class Layer extends BaseLayer {
 
   /**
    * Get the renderer for this layer.
-   * @return {import("../renderer/Layer.js").default} The layer renderer.
+   * @return {RendererType} The layer renderer.
    */
   getRenderer() {
     if (!this.renderer_) {
@@ -337,7 +354,7 @@ class Layer extends BaseLayer {
 
   /**
    * Create a renderer for this layer.
-   * @return {import("../renderer/Layer.js").default} A layer renderer.
+   * @return {RendererType} A layer renderer.
    * @protected
    */
   createRenderer() {

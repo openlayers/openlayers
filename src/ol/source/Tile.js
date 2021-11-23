@@ -90,7 +90,6 @@ class TileSource extends Source {
       options.tilePixelRatio !== undefined ? options.tilePixelRatio : 1;
 
     /**
-     * @protected
      * @type {import("../tilegrid/TileGrid.js").default}
      */
     this.tileGrid = options.tileGrid !== undefined ? options.tileGrid : null;
@@ -202,7 +201,6 @@ class TileSource extends Source {
   /**
    * Return the key to be used for all tiles in the source.
    * @return {string} The key for all tiles.
-   * @protected
    */
   getKey() {
     return this.key_;

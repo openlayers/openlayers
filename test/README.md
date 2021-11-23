@@ -15,7 +15,7 @@ Run the tests once:
 
     npm test
 
-This will run tests in Chrome.  If you do not have Chrome installed, you can run tests on Firefox instead:
+This will run tests in (headless) Chrome.  If you do not have Chrome installed, you can run tests on Firefox instead:
 
     npm test -- --browsers Firefox
 
@@ -25,9 +25,12 @@ To run the tests continuously:
 
     npm run karma
 
-After this, the test server is listening on http://localhost:9876/, and you can
-attach any number of browsers for testing (during development, tests will run
-in Chrome by default).
+After this, you can attach any browser and debug the tests like this:
+
+ * open http://localhost:9876/debug.html
+ * open the developer tools
+ * add a breakpoint
+ * refresh the page
 
 # Rendering tests
 

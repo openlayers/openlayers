@@ -11,7 +11,7 @@ import {assert} from '../asserts.js';
 /**
  * A function that takes an {@link module:ol/Feature} and a `{number}`
  * representing the view's resolution. The function should return a
- * {@link module:ol/style/Style} or an array of them. This way e.g. a
+ * {@link module:ol/style/Style~Style} or an array of them. This way e.g. a
  * vector layer can be styled. If the function returns `undefined`, the
  * feature will not be rendered.
  *
@@ -66,83 +66,86 @@ import {assert} from '../asserts.js';
  *
  * If no style is defined, the following default style is used:
  * ```js
- *  import {Fill, Stroke, Circle, Style} from 'ol/style';
+ *  import {Circle, Fill, Stroke, Style} from 'ol/style';
  *
- *  var fill = new Fill({
- *    color: 'rgba(255,255,255,0.4)'
+ *  const fill = new Fill({
+ *    color: 'rgba(255,255,255,0.4)',
  *  });
- *  var stroke = new Stroke({
+ *  const stroke = new Stroke({
  *    color: '#3399CC',
- *    width: 1.25
+ *    width: 1.25,
  *  });
- *  var styles = [
+ *  const styles = [
  *    new Style({
  *      image: new Circle({
  *        fill: fill,
  *        stroke: stroke,
- *        radius: 5
+ *        radius: 5,
  *      }),
  *      fill: fill,
- *      stroke: stroke
- *    })
+ *      stroke: stroke,
+ *    }),
  *  ];
  * ```
  *
  * A separate editing style has the following defaults:
  * ```js
- *  import {Fill, Stroke, Circle, Style} from 'ol/style';
  *  import GeometryType from 'ol/geom/GeometryType';
+ *  import {Circle, Fill, Stroke, Style} from 'ol/style';
  *
- *  var white = [255, 255, 255, 1];
- *  var blue = [0, 153, 255, 1];
- *  var width = 3;
+ *  const styles = {};
+ *  const white = [255, 255, 255, 1];
+ *  const blue = [0, 153, 255, 1];
+ *  const width = 3;
  *  styles[GeometryType.POLYGON] = [
  *    new Style({
  *      fill: new Fill({
- *        color: [255, 255, 255, 0.5]
- *      })
- *    })
+ *        color: [255, 255, 255, 0.5],
+ *      }),
+ *    }),
  *  ];
- *  styles[GeometryType.MULTI_POLYGON] =
- *      styles[GeometryType.POLYGON];
+ *  styles[GeometryType.MULTI_POLYGON] = styles[GeometryType.POLYGON];
+ *
  *  styles[GeometryType.LINE_STRING] = [
  *    new Style({
  *      stroke: new Stroke({
  *        color: white,
- *        width: width + 2
- *      })
+ *        width: width + 2,
+ *      }),
  *    }),
  *    new Style({
  *      stroke: new Stroke({
  *        color: blue,
- *        width: width
- *      })
- *    })
+ *        width: width,
+ *      }),
+ *    }),
  *  ];
- *  styles[GeometryType.MULTI_LINE_STRING] =
- *      styles[GeometryType.LINE_STRING];
+ *  styles[GeometryType.MULTI_LINE_STRING] = styles[GeometryType.LINE_STRING];
+ *
+ *  styles[GeometryType.CIRCLE] = styles[GeometryType.POLYGON].concat(
+ *    styles[GeometryType.LINE_STRING]
+ *  );
+ *
  *  styles[GeometryType.POINT] = [
  *    new Style({
  *      image: new Circle({
  *        radius: width * 2,
  *        fill: new Fill({
- *          color: blue
+ *          color: blue,
  *        }),
  *        stroke: new Stroke({
  *          color: white,
- *          width: width / 2
- *        })
+ *          width: width / 2,
+ *        }),
  *      }),
- *      zIndex: Infinity
- *    })
+ *      zIndex: Infinity,
+ *    }),
  *  ];
- *  styles[GeometryType.MULTI_POINT] =
- *      styles[GeometryType.POINT];
- *  styles[GeometryType.GEOMETRY_COLLECTION] =
- *      styles[GeometryType.POLYGON].concat(
- *          styles[GeometryType.LINE_STRING],
- *          styles[GeometryType.POINT]
- *      );
+ *  styles[GeometryType.MULTI_POINT] = styles[GeometryType.POINT];
+ *
+ *  styles[GeometryType.GEOMETRY_COLLECTION] = styles[
+ *    GeometryType.POLYGON
+ *  ].concat(styles[GeometryType.LINE_STRING], styles[GeometryType.POINT]);
  * ```
  *
  * @api

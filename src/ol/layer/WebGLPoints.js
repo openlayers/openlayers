@@ -69,7 +69,7 @@ import {parseLiteralStyle} from '../webgl/ShaderBuilder.js';
  * options means that `title` is observable, and has get/set accessors.
  *
  * @template {import("../source/Vector.js").default} VectorSourceType
- * @extends {Layer<VectorSourceType>}
+ * @extends {Layer<VectorSourceType, WebGLPointsLayerRenderer>}
  * @fires import("../render/Event.js").RenderEvent
  */
 class WebGLPointsLayer extends Layer {
@@ -94,13 +94,8 @@ class WebGLPointsLayer extends Layer {
     this.hitDetectionDisabled_ = !!options.disableHitDetection;
   }
 
-  /**
-   * Create a renderer for this layer.
-   * @return {WebGLPointsLayerRenderer} A layer renderer.
-   */
   createRenderer() {
     return new WebGLPointsLayerRenderer(this, {
-      className: this.getClassName(),
       vertexShader: this.parseResult_.builder.getSymbolVertexShader(),
       fragmentShader: this.parseResult_.builder.getSymbolFragmentShader(),
       hitVertexShader:

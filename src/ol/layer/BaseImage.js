@@ -40,7 +40,8 @@ import Layer from './Layer.js';
  * options means that `title` is observable, and has get/set accessors.
  *
  * @template {import("../source/Image.js").default} ImageSourceType
- * @extends {Layer<ImageSourceType>}
+ * @template {import("../renderer/Layer.js").default} RendererType
+ * @extends {Layer<ImageSourceType, RendererType>}
  * @api
  */
 class BaseImageLayer extends Layer {
