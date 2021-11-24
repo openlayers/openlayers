@@ -405,10 +405,7 @@ class MapboxVectorLayer extends VectorTileLayer {
     }
 
     const source = this.getSource();
-    if (
-      styleSource.url.indexOf('mapbox://') === 0 ||
-      styleSource.url.indexOf('{z}') !== -1
-    ) {
+    if (styleSource.url && styleSource.url.indexOf('mapbox://') === 0) {
       // Tile source url, handle it directly
       source.setUrl(
         normalizeSourceUrl(
@@ -433,11 +430,13 @@ class MapboxVectorLayer extends VectorTileLayer {
       }
       setupVectorSource(
         styleSource,
-        normalizeSourceUrl(
-          styleSource.url,
-          this.accessToken,
-          this.accessTokenParam_
-        )
+        styleSource.url
+          ? normalizeSourceUrl(
+              styleSource.url,
+              this.accessToken,
+              this.accessTokenParam_
+            )
+          : undefined
       ).then((source) => {
         applyStyle(this, style, sourceIdOrLayersList)
           .then(() => {
@@ -470,9 +469,8 @@ class MapboxVectorLayer extends VectorTileLayer {
       (layer) => layer.type === 'background'
     );
     if (
-      !background ||
-      !background.layout ||
-      background.layout.visibility !== 'none'
+      background &&
+      (!background.layout || background.layout.visibility !== 'none')
     ) {
       const style = new Style({
         fill: new Fill(),
