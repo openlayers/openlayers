@@ -276,9 +276,9 @@ class WebGLPostProcessingPass {
 
     if (
       glBlendFuncSRC !== null &&
-      glBlendFuncSRC !== null &&
+      glBlendFuncDST !== null &&
       glBlendFuncSRC !== undefined &&
-      glBlendFuncSRC !== undefined
+      glBlendFuncDST !== undefined
     ) {
       gl.blendFunc(glBlendFuncSRC, glBlendFuncDST);
     } else {
