@@ -627,7 +627,7 @@ class WebGLHelper extends Disposable {
   /**
    * Apply the successive post process passes which will eventually render to the actual canvas.
    * @param {import("../PluggableMap.js").FrameState} frameState current frame state
-   * @param {GLenum} [glBlendEquation] specifying how source and destination colors are combined, The default value is gl.FUNC_ADD.
+   * @param {GLenum} [glBlendEquation] specifying how source and destination colors are combined. The default value is gl.FUNC_ADD.
    * @param {GLenum} [glBlendFuncSRC] specifying a multiplier for the source blending factors. The default value is gl.ONE.
    * @param {GLenum} [glBlendFuncDST] specifying a multiplier for the destination blending factors. The default value is gl.ONE_MINUS_SRC_ALPHA.
    * @api
