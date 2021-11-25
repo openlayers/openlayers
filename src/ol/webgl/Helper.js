@@ -638,8 +638,8 @@ class WebGLHelper extends Disposable {
       this.postProcessPasses_[i].apply(
         frameState,
         this.postProcessPasses_[i + 1] || null,
-        glBlendEquation, 
-        glBlendFuncSRC, 
+        glBlendEquation,
+        glBlendFuncSRC,
         glBlendFuncDST
       );
     }

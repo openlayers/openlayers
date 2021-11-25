@@ -426,10 +426,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     }
 
     this.helper.useProgram(this.program_);
-    this.helper.prepareDraw(
-      frameState,
-      !blend,
-    );
+    this.helper.prepareDraw(frameState, !blend);
 
     const zs = Object.keys(tileTexturesByZ)
       .map(Number)
@@ -528,10 +525,10 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     }
 
     this.helper.finalizeDraw(
-      frameState, 
-      tileLayer.styleVariables_.glBlendEquation,
-      tileLayer.styleVariables_.glBlendFuncSRC,
-      tileLayer.styleVariables_.glBlendFuncDST
+      frameState,
+      Number(tileLayer.GetStyleVariables().glBlendEquation),
+      Number(tileLayer.GetStyleVariables().glBlendFuncSRC),
+      Number(tileLayer.GetStyleVariables().glBlendFuncDST)
     );
 
     const canvas = this.helper.getCanvas();

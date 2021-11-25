@@ -320,6 +320,14 @@ class WebGLTileLayer extends BaseTileLayer {
     assign(this.styleVariables_, variables);
     this.changed();
   }
+
+  /**
+   * Get variables used by the layer style.
+   * @return {Object<string, (string|number)>} style variables
+   */
+  GetStyleVariables() {
+    return this.styleVariables_;
+  }
 }
 
 /**
