@@ -250,7 +250,7 @@ class WebGLPostProcessingPass {
    * Render to the next postprocessing pass (or to the canvas if final pass).
    * @param {import("../PluggableMap.js").FrameState} frameState current frame state
    * @param {WebGLPostProcessingPass} [nextPass] Next pass, optional
-   * @param {GLenum} [glBlendEquation] specifying how source and destination colors are combined, The default value is gl.FUNC_ADD.
+   * @param {GLenum} [glBlendEquation] specifying how source and destination colors are combined. The default value is gl.FUNC_ADD.
    * @param {GLenum} [glBlendFuncSRC] specifying a multiplier for the source blending factors. The default value is gl.ONE.
    * @param {GLenum} [glBlendFuncDST] specifying a multiplier for the destination blending factors. The default value is gl.ONE_MINUS_SRC_ALPHA.
    * @api
