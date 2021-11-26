@@ -526,9 +526,15 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
 
     this.helper.finalizeDraw(
       frameState,
-      Number(tileLayer.GetStyleVariables().glBlendEquation),
-      Number(tileLayer.GetStyleVariables().glBlendFuncSRC),
-      Number(tileLayer.GetStyleVariables().glBlendFuncDST)
+      /** @type {GLenum|undefined} */ (
+        tileLayer.getStyleVariables().glBlendEquation
+      ),
+      /** @type {GLenum|undefined} */ (
+        tileLayer.getStyleVariables().glBlendFuncSRC
+      ),
+      /** @type {GLenum|undefined} */ (
+        tileLayer.getStyleVariables().glBlendFuncDST
+      )
     );
 
     const canvas = this.helper.getCanvas();
