@@ -46,6 +46,7 @@ new Map({
     }),
     new TileLayer({
       source: new DataTile({
+        wrapX: true,
         loader: function (z, x, y) {
           const half = labelCanvasSize / 2;
 

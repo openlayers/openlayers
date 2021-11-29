@@ -7,6 +7,7 @@ import WebGLArrayBuffer from '../../../../../src/ol/webgl/Buffer.js';
 import WebGLTileLayer from '../../../../../src/ol/layer/WebGLTile.js';
 import {EXTENT as EPSG3857_EXTENT} from '../../../../../src/ol/proj/epsg3857.js';
 import {createCanvasContext2D} from '../../../../../src/ol/dom.js';
+import {get as getProjection} from '../../../../../src/ol/proj.js';
 
 describe('ol/webgl/TileTexture', function () {
   /** @type {TileTexture} */
@@ -31,6 +32,9 @@ describe('ol/webgl/TileTexture', function () {
 
     renderer = layer.createRenderer();
     renderer.prepareFrame({
+      viewState: {
+        projection: getProjection('EPSG:3857'),
+      },
       extent: EPSG3857_EXTENT,
       layerIndex: 0,
       layerStatesArray: [layer.getLayerState()],

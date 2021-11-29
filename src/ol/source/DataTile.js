@@ -31,7 +31,7 @@ import {toPromise} from '../functions.js';
  * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {import("./State.js").default} [state] The source state.
  * @property {number} [tilePixelRatio] Tile pixel ratio.
- * @property {boolean} [wrapX=true] Render tiles beyond the antimeridian.
+ * @property {boolean} [wrapX=false] Render tiles beyond the antimeridian.
  * @property {number} [transition] Transition time when fading in new tiles (in miliseconds).
  * @property {number} [bandCount=4] Number of bands represented in the data.
  */

@@ -34,7 +34,7 @@ import {scale as scaleSize, toSize} from '../size.js';
  * @property {import("../proj.js").ProjectionLike} [projection] Projection.
  * @property {import("./State.js").default} [state] State.
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] TileGrid.
- * @property {boolean} [wrapX=true] WrapX.
+ * @property {boolean} [wrapX=false] WrapX.
  * @property {number} [transition] Transition.
  * @property {string} [key] Key.
  * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0] ZDirection.

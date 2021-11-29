@@ -97,6 +97,14 @@ function getRenderExtent(frameState, extent) {
       fromUserExtent(layerState.extent, frameState.viewState.projection)
     );
   }
+  const source =
+    /** {import("../../source/Tile.js").default} */ layerState.layer.getSource();
+  if (!source.getWrapX()) {
+    const gridExtent = source.tileGrid.getExtent();
+    if (gridExtent) {
+      extent = getIntersection(extent, gridExtent);
+    }
+  }
   return extent;
 }
 
@@ -236,11 +244,13 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrameInternal(frameState) {
-    if (isEmpty(getRenderExtent(frameState, frameState.extent))) {
+    const layer = this.getLayer();
+    const source = layer.getSource();
+    if (!source) {
       return false;
     }
-    const source = this.getLayer().getSource();
-    if (!source) {
+
+    if (isEmpty(getRenderExtent(frameState, frameState.extent))) {
       return false;
     }
     return source.getState() === State.READY;
@@ -248,7 +258,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {import("../../extent.js").Extent} extent The extent.
+   * @param {import("../../extent.js").Extent} extent The extent to be rendered.
    * @param {number} z The zoom level.
    * @param {Object<number, Array<TileTexture>>} tileTexturesByZ The zoom level.
    */
@@ -341,10 +351,10 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     this.preRender(gl, frameState);
 
     const viewState = frameState.viewState;
-    const extent = getRenderExtent(frameState, frameState.extent);
     const tileLayer = this.getLayer();
     const tileSource = tileLayer.getSource();
     const tileGrid = tileSource.getTileGridForProjection(viewState.projection);
+    const extent = getRenderExtent(frameState, frameState.extent);
     const z = tileGrid.getZForResolution(
       viewState.resolution,
       tileSource.zDirection
