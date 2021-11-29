@@ -1,8 +1,8 @@
 {
    "title" : "ne_10m_admin_0_countries",
-   "dataType" : "vector",
    "tileMatrixSetURI" : "http://www.opengis.net/def/tilematrixset/OGC/1.0/WebMercatorQuad",
-   "tileMatrixSetDefinition" : "https://maps.ecere.com/ogcapi/tileMatrixSets/WebMercatorQuad",
+   "crs" : "http://www.opengis.net/def/crs/EPSG/0/3857",
+   "dataType" : "vector",
    "tileMatrixSetLimits" : [
       { "tileMatrix" : "0", "minTileRow" : 0, "maxTileRow" : 0, "minTileCol" : 0, "maxTileCol" : 0 },
       { "tileMatrix" : "1", "minTileRow" : 0, "maxTileRow" : 1, "minTileCol" : 0, "maxTileCol" : 1 },
@@ -13,161 +13,6 @@
       { "tileMatrix" : "6", "minTileRow" : 0, "maxTileRow" : 63, "minTileCol" : 0, "maxTileCol" : 63 },
       { "tileMatrix" : "7", "minTileRow" : 0, "maxTileRow" : 127, "minTileCol" : 0, "maxTileCol" : 127 }
    ],
-   "layers" : [
-      {
-         "id" : "ne_10m_admin_0_countries",
-         "dataType" : "vector",
-         "geometryType" : "polygon",
-         "minScaleDenominator" : 4367830.1877243574709,
-         "minCellSize" : 1222.9924525628201,
-         "maxTileMatrix" : "7",
-         "links" : [
-            {
-               "rel" : "http://www.opengis.net/def/rel/ogc/1.0/geodata",
-               "href" : "/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries"
-            }
-         ],
-         "propertiesSchema" : {
-            "type" : "object",
-            "properties" : { "abbrev" : {
-               "type" : "string"
-            }, "abbrev_len" : {
-               "type" : "integer"
-            }, "adm0_a3" : {
-               "type" : "string"
-            }, "adm0_a3_is" : {
-               "type" : "string"
-            }, "adm0_a3_un" : {
-               "type" : "integer"
-            }, "adm0_a3_us" : {
-               "type" : "string"
-            }, "adm0_a3_wb" : {
-               "type" : "integer"
-            }, "adm0_dif" : {
-               "type" : "integer"
-            }, "admin" : {
-               "type" : "string"
-            }, "brk_a3" : {
-               "type" : "string"
-            }, "brk_diff" : {
-               "type" : "integer"
-            }, "brk_group" : {
-               "type" : "string"
-            }, "brk_name" : {
-               "type" : "string"
-            }, "continent" : {
-               "type" : "string"
-            }, "economy" : {
-               "type" : "string"
-            }, "featurecla" : {
-               "type" : "string"
-            }, "fips_10" : {
-               "type" : "string"
-            }, "formal_en" : {
-               "type" : "string"
-            }, "formal_fr" : {
-               "type" : "string"
-            }, "gdp_md_est" : {
-               "type" : "integer"
-            }, "gdp_year" : {
-               "type" : "integer"
-            }, "geou_dif" : {
-               "type" : "integer"
-            }, "geounit" : {
-               "type" : "string"
-            }, "gu_a3" : {
-               "type" : "string"
-            }, "homepart" : {
-               "type" : "integer"
-            }, "income_grp" : {
-               "type" : "string"
-            }, "iso_a2" : {
-               "type" : "string"
-            }, "iso_a3" : {
-               "type" : "string"
-            }, "iso_n3" : {
-               "type" : "string"
-            }, "labelrank" : {
-               "type" : "integer"
-            }, "lastcensus" : {
-               "type" : "integer"
-            }, "level" : {
-               "type" : "integer"
-            }, "long_len" : {
-               "type" : "integer"
-            }, "mapcolor13" : {
-               "type" : "integer"
-            }, "mapcolor7" : {
-               "type" : "integer"
-            }, "mapcolor8" : {
-               "type" : "integer"
-            }, "mapcolor9" : {
-               "type" : "integer"
-            }, "name" : {
-               "type" : "string"
-            }, "name_alt" : {
-               "type" : "string"
-            }, "name_len" : {
-               "type" : "integer"
-            }, "name_long" : {
-               "type" : "string"
-            }, "name_sort" : {
-               "type" : "string"
-            }, "note_adm0" : {
-               "type" : "string"
-            }, "note_brk" : {
-               "type" : "string"
-            }, "pop_est" : {
-               "type" : "integer"
-            }, "pop_year" : {
-               "type" : "integer"
-            }, "postal" : {
-               "type" : "string"
-            }, "region_un" : {
-               "type" : "string"
-            }, "region_wb" : {
-               "type" : "string"
-            }, "scalerank" : {
-               "type" : "integer"
-            }, "sov_a3" : {
-               "type" : "string"
-            }, "sovereignt" : {
-               "type" : "string"
-            }, "su_a3" : {
-               "type" : "string"
-            }, "su_dif" : {
-               "type" : "integer"
-            }, "subregion" : {
-               "type" : "string"
-            }, "subunit" : {
-               "type" : "string"
-            }, "tiny" : {
-               "type" : "integer"
-            }, "type" : {
-               "type" : "string"
-            }, "un_a3" : {
-               "type" : "string"
-            }, "wb_a2" : {
-               "type" : "string"
-            }, "wb_a3" : {
-               "type" : "string"
-            }, "wikipedia" : {
-               "type" : "integer"
-            }, "woe_id" : {
-               "type" : "integer"
-            } }
-         }
-      }
-   ],
-   "centerPoint" : {
-      "coordinates" : [
-         0,
-         0.000102911832
-      ],
-      "tileMatrix" : "4",
-      "scaleDenominator" : 34942641.501794859767,
-      "cellSize" : 9783.9396205025605
-   },
    "links" : [
       {
          "rel" : "self",
@@ -192,6 +37,12 @@
          "type" : "application/json+tile",
          "title" : "The TileJSON representation of the WebMercatorQuad vector tileset for NaturalEarth:cultural:ne_10m_admin_0_countries",
          "href" : "/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad?f=tilejson"
+      },
+      {
+         "rel" : "http://www.opengis.net/def/rel/ogc/1.0/tiling-scheme",
+         "type" : "application/json",
+         "title" : "WebMercatorQuadTileMatrixSet definition (as JSON)",
+         "href" : "/ogcapi/tileMatrixSets/WebMercatorQuad"
       },
       {
          "rel" : "http://www.opengis.net/def/rel/ogc/1.0/geodata",
@@ -220,10 +71,241 @@
       },
       {
          "rel" : "item",
+         "type" : "application/vnd.ogc.fg+json",
+         "title" : "WebMercatorQuad vector tiles for NaturalEarth:cultural:ne_10m_admin_0_countries (as F&G GeoJSON)",
+         "href" : "/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.fgjson",
+         "templated" : true
+      },
+      {
+         "rel" : "item",
          "type" : "text/mapml",
          "title" : "WebMercatorQuad vector tiles for NaturalEarth:cultural:ne_10m_admin_0_countries (as MapML)",
          "href" : "/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.mapml",
          "templated" : true
       }
-   ]
+   ],
+   "layers" : [
+      {
+         "id" : "ne_10m_admin_0_countries",
+         "dataType" : "vector",
+         "geometryDimension" : 2,
+         "minScaleDenominator" : 4367830.1877243574709,
+         "minCellSize" : 1222.9924525628201,
+         "maxTileMatrix" : "7",
+         "links" : [
+            {
+               "rel" : "http://www.opengis.net/def/rel/ogc/1.0/geodata",
+               "href" : "/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries"
+            }
+         ],
+         "propertiesSchema" : {
+            "type" : "object",
+            "properties" : { "geometry" : {
+               "oneOf" : [
+                  {
+                     "type" : "null"
+                  },
+                  {
+                     "title" : "GeoJSON MultiPolygon",
+                     "type" : "object",
+                     "required" : [
+                        "type",
+                        "coordinates"
+                     ],
+                     "properties" : { "coordinates" : {
+                        "type" : "array",
+                        "items" : {
+                           "type" : "array",
+                           "items" : {
+                              "type" : "array",
+                              "items" : {
+                                 "type" : "array",
+                                 "items" : {
+                                    "type" : "number"
+                                 },
+                                 "minItems" : 2
+                              },
+                              "minItems" : 3
+                           }
+                        }
+                     }, "type" : {
+                        "type" : "string",
+                        "Enum" : [
+                           "MultiPolygon"
+                        ]
+                     } }
+                  },
+                  {
+                     "title" : "GeoJSON Polygon",
+                     "type" : "object",
+                     "required" : [
+                        "type",
+                        "coordinates"
+                     ],
+                     "properties" : { "coordinates" : {
+                        "type" : "array",
+                        "items" : {
+                           "type" : "array",
+                           "items" : {
+                              "type" : "array",
+                              "items" : {
+                                 "type" : "number"
+                              },
+                              "minItems" : 2
+                           },
+                           "minItems" : 3
+                        }
+                     }, "type" : {
+                        "type" : "string",
+                        "Enum" : [
+                           "Polygon"
+                        ]
+                     } }
+                  }
+               ]
+            }, "properties" : {
+               "type" : "object",
+               "properties" : { "abbrev" : {
+                  "type" : "string"
+               }, "abbrev_len" : {
+                  "type" : "integer"
+               }, "adm0_a3" : {
+                  "type" : "string"
+               }, "adm0_a3_is" : {
+                  "type" : "string"
+               }, "adm0_a3_un" : {
+                  "type" : "integer"
+               }, "adm0_a3_us" : {
+                  "type" : "string"
+               }, "adm0_a3_wb" : {
+                  "type" : "integer"
+               }, "adm0_dif" : {
+                  "type" : "integer"
+               }, "admin" : {
+                  "type" : "string"
+               }, "brk_a3" : {
+                  "type" : "string"
+               }, "brk_diff" : {
+                  "type" : "integer"
+               }, "brk_group" : {
+                  "type" : "string"
+               }, "brk_name" : {
+                  "type" : "string"
+               }, "continent" : {
+                  "type" : "string"
+               }, "economy" : {
+                  "type" : "string"
+               }, "featurecla" : {
+                  "type" : "string"
+               }, "fips_10" : {
+                  "type" : "string"
+               }, "formal_en" : {
+                  "type" : "string"
+               }, "formal_fr" : {
+                  "type" : "string"
+               }, "gdp_md_est" : {
+                  "type" : "integer"
+               }, "gdp_year" : {
+                  "type" : "integer"
+               }, "geou_dif" : {
+                  "type" : "integer"
+               }, "geounit" : {
+                  "type" : "string"
+               }, "gu_a3" : {
+                  "type" : "string"
+               }, "homepart" : {
+                  "type" : "integer"
+               }, "income_grp" : {
+                  "type" : "string"
+               }, "iso_a2" : {
+                  "type" : "string"
+               }, "iso_a3" : {
+                  "type" : "string"
+               }, "iso_n3" : {
+                  "type" : "string"
+               }, "labelrank" : {
+                  "type" : "integer"
+               }, "lastcensus" : {
+                  "type" : "integer"
+               }, "level" : {
+                  "type" : "integer"
+               }, "long_len" : {
+                  "type" : "integer"
+               }, "lyr.id" : {
+                  "type" : "string"
+               }, "mapcolor13" : {
+                  "type" : "integer"
+               }, "mapcolor7" : {
+                  "type" : "integer"
+               }, "mapcolor8" : {
+                  "type" : "integer"
+               }, "mapcolor9" : {
+                  "type" : "integer"
+               }, "name" : {
+                  "type" : "string"
+               }, "name_alt" : {
+                  "type" : "string"
+               }, "name_len" : {
+                  "type" : "integer"
+               }, "name_long" : {
+                  "type" : "string"
+               }, "name_sort" : {
+                  "type" : "string"
+               }, "note_adm0" : {
+                  "type" : "string"
+               }, "note_brk" : {
+                  "type" : "string"
+               }, "pop_est" : {
+                  "type" : "integer"
+               }, "pop_year" : {
+                  "type" : "integer"
+               }, "postal" : {
+                  "type" : "string"
+               }, "rec.id" : {
+                  "type" : "integer"
+               }, "region_un" : {
+                  "type" : "string"
+               }, "region_wb" : {
+                  "type" : "string"
+               }, "scalerank" : {
+                  "type" : "integer"
+               }, "sov_a3" : {
+                  "type" : "string"
+               }, "sovereignt" : {
+                  "type" : "string"
+               }, "su_a3" : {
+                  "type" : "string"
+               }, "su_dif" : {
+                  "type" : "integer"
+               }, "subregion" : {
+                  "type" : "string"
+               }, "subunit" : {
+                  "type" : "string"
+               }, "tiny" : {
+                  "type" : "integer"
+               }, "type" : {
+                  "type" : "string"
+               }, "un_a3" : {
+                  "type" : "string"
+               }, "viz.sd" : {
+                  "type" : "number"
+               }, "wb_a2" : {
+                  "type" : "string"
+               }, "wb_a3" : {
+                  "type" : "string"
+               }, "wikipedia" : {
+                  "type" : "integer"
+               }, "woe_id" : {
+                  "type" : "integer"
+               } }
+            } }
+         }
+      }
+   ],
+   "centerPoint" : {
+      "coordinates" : [ 0, 0.000102911832 ],
+      "tileMatrix" : "4",
+      "scaleDenominator" : 34942641.501794859767,
+      "cellSize" : 9783.9396205025605
+   }
 }

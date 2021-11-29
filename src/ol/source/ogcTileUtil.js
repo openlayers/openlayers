@@ -373,11 +373,18 @@ function parseTileSetMetadata(sourceInfo, tileSet) {
     );
   }
 
-  if (!tileSet.tileMatrixSetDefinition) {
-    throw new Error('Expected tileMatrixSetDefinition or tileMatrixSet');
+  const tileMatrixSetLink = tileSet.links.find(
+    (link) =>
+      link.rel === 'http://www.opengis.net/def/rel/ogc/1.0/tiling-scheme'
+  );
+  if (!tileMatrixSetLink) {
+    throw new Error(
+      'Expected http://www.opengis.net/def/rel/ogc/1.0/tiling-scheme link or tileMatrixSet'
+    );
   }
+  const tileMatrixSetDefinition = tileMatrixSetLink.href;
 
-  const url = resolveUrl(sourceInfo.url, tileSet.tileMatrixSetDefinition);
+  const url = resolveUrl(sourceInfo.url, tileMatrixSetDefinition);
   return getJSON(url).then(function (tileMatrixSet) {
     return parseTileMatrixSet(
       sourceInfo,
