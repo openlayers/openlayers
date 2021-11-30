@@ -300,6 +300,7 @@ function getMaxForDataType(array) {
  * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {number} [transition=250] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
+ * @property {boolean} [wrapX=false] Render tiles beyond the tile grid extent.
  */
 
 /**
@@ -318,6 +319,7 @@ class GeoTIFFSource extends DataTile {
       projection: null,
       opaque: options.opaque,
       transition: options.transition,
+      wrapX: options.wrapX,
     });
 
     /**
