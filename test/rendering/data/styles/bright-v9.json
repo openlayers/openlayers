@@ -69,7 +69,7 @@
   },
   "sources": {
     "mapbox": {
-      "url": "/data/tiles/mapbox-streets-v6/{z}/{x}/{y}.vector.pbf",
+      "tiles": ["/data/tiles/mapbox-streets-v6/{z}/{x}/{y}.vector.pbf"],
       "type": "vector"
     }
   },
