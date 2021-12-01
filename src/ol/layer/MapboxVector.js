@@ -197,9 +197,11 @@ const SourceType = {
  * @property {number} [minResolution] The minimum resolution (inclusive) at which this layer will be
  * visible.
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
- * be visible.
- * @property {number} [minZoom] The minimum view zoom level (exclusive) above which this layer will be
- * visible.
+ * be visible. If neither `maxResolution` nor `minZoom` are defined, the layer's `maxResolution` will
+ * match the style source's `minzoom`.
+ * @property {number} [minZoom] The minimum view zoom level (exclusive) above which this layer will
+ * be visible. If neither `maxResolution` nor `minZoom` are defined, the layer's `minZoom` will match
+ * the style source's `minzoom`.
  * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
  * be visible.
  * @property {import("../render.js").OrderFunction} [renderOrder] Render order. Function to be used when sorting
@@ -297,6 +299,9 @@ class MapboxVectorLayer extends VectorTileLayer {
       useInterimTilesOnError: options.useInterimTilesOnError,
       properties: options.properties,
     });
+
+    this.setMaxResolutionFromTileGrid_ =
+      options.maxResolution === undefined && options.minZoom === undefined;
 
     this.sourceId = options.source;
     this.layers = options.layers;
@@ -516,6 +521,10 @@ class MapboxVectorLayer extends VectorTileLayer {
         renderFeature.styleFunction = styleFuntion;
         tile.getFeatures().unshift(renderFeature);
       });
+    }
+    if (this.setMaxResolutionFromTileGrid_) {
+      const tileGrid = targetSource.getTileGrid();
+      this.setMaxResolution(tileGrid.getResolution(tileGrid.getMinZoom()));
     }
     targetSource.setState(SourceState.READY);
   }

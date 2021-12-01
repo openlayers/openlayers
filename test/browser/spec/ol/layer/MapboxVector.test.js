@@ -131,6 +131,55 @@ describe('ol/layer/MapboxVector', () => {
     });
   });
 
+  describe('maxResolution', function () {
+    const styleUrl =
+      'data:,' +
+      encodeURIComponent(
+        JSON.stringify({
+          version: 8,
+          sources: {
+            'foo': {
+              tiles: ['/spec/ol/data/{z}-{x}-{y}.vector.pbf'],
+              type: 'vector',
+              minzoom: 6,
+            },
+          },
+          layers: [],
+        })
+      );
+
+    it('accepts minZoom from configuration', function (done) {
+      const layer = new MapboxVectorLayer({
+        minZoom: 5,
+        styleUrl: styleUrl,
+      });
+      const source = layer.getSource();
+      source.on('change', function onchange() {
+        if (source.getState() === 'ready') {
+          source.un('change', onchange);
+          expect(layer.getMaxResolution()).to.be(Infinity);
+          done();
+        }
+      });
+    });
+
+    it('uses minZoom from source', function (done) {
+      const layer = new MapboxVectorLayer({
+        styleUrl: styleUrl,
+      });
+      const source = layer.getSource();
+      source.on('change', function onchange() {
+        if (source.getState() === 'ready') {
+          source.un('change', onchange);
+          expect(layer.getMaxResolution()).to.be(
+            source.getTileGrid().getResolution(6)
+          );
+          done();
+        }
+      });
+    });
+  });
+
   describe('background', function () {
     it('adds a feature for the background', function (done) {
       const layer = new MapboxVectorLayer({
