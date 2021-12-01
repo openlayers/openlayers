@@ -293,27 +293,16 @@ function renderCircularStringGeometry(
   feature,
   opt_declutterBuilderGroup
 ) {
-    console.log('renderCircularStringGeometry');
-    console.log({ builderGroup, geometry, style, feature, opt_declutterBuilderGroup });
+  const strokeStyle = style.getStroke();
+  if (strokeStyle) {
+    const circularStringReplay = builderGroup.getBuilder(
+      style.getZIndex(),
+      BuilderType.CIRCULAR_STRING
+    );
 
-  // const strokeStyle = style.getStroke();
-  // if (strokeStyle) {
-  //   const lineStringReplay = builderGroup.getBuilder(
-  //     style.getZIndex(),
-  //     BuilderType.LINE_STRING
-  //   );
-  //   lineStringReplay.setFillStrokeStyle(null, strokeStyle);
-  //   lineStringReplay.drawLineString(geometry, feature);
-  // }
-  // const textStyle = style.getText();
-  // if (textStyle && textStyle.getText()) {
-  //   const textReplay = (opt_declutterBuilderGroup || builderGroup).getBuilder(
-  //     style.getZIndex(),
-  //     BuilderType.TEXT
-  //   );
-  //   textReplay.setTextStyle(textStyle);
-  //   textReplay.drawText(geometry, feature);
-  // }
+    circularStringReplay.setFillStrokeStyle(null, strokeStyle);
+    circularStringReplay.drawCircularString(geometry, feature);
+  }
 }
 
 /**

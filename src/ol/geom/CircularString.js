@@ -7,7 +7,6 @@ import SimpleGeometry from './SimpleGeometry.js';
 import {assignClosestPoint, maxSquaredDelta} from './flat/closest.js';
 import {closestSquaredDistanceXY} from '../extent.js';
 import {deflateCoordinates} from './flat/deflate.js';
-import {douglasPeucker} from './flat/simplify.js';
 import {extend} from '../array.js';
 import {forEach as forEachSegment} from './flat/segments.js';
 import {inflateCoordinates} from './flat/inflate.js';
@@ -17,7 +16,7 @@ import {lineStringLength} from './flat/length.js';
 
 /**
  * @classdesc
- * Linestring geometry.
+ * CircularString geometry.
  *
  * @api
  */
@@ -246,25 +245,6 @@ class CircularString extends SimpleGeometry {
       this.flatMidpointRevision_ = this.getRevision();
     }
     return this.flatMidpoint_;
-  }
-
-  /**
-   * @param {number} squaredTolerance Squared tolerance.
-   * @return {CircularString} Simplified CircularString.
-   * @protected
-   */
-  getSimplifiedGeometryInternal(squaredTolerance) {
-    const simplifiedFlatCoordinates = [];
-    simplifiedFlatCoordinates.length = douglasPeucker(
-      this.flatCoordinates,
-      0,
-      this.flatCoordinates.length,
-      this.stride,
-      squaredTolerance,
-      simplifiedFlatCoordinates,
-      0
-    );
-    return new CircularString(simplifiedFlatCoordinates, GeometryLayout.XY);
   }
 
   /**

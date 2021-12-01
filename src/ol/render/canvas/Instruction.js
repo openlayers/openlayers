@@ -19,6 +19,7 @@ const Instruction = {
   SET_FILL_STYLE: 10,
   SET_STROKE_STYLE: 11,
   STROKE: 12,
+  CIRCULAR_ARC: 13,
 };
 
 /**

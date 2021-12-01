@@ -22,6 +22,7 @@ const ORDER = [
   BuilderType.POLYGON,
   BuilderType.CIRCLE,
   BuilderType.LINE_STRING,
+  BuilderType.CIRCULAR_STRING,
   BuilderType.IMAGE,
   BuilderType.TEXT,
   BuilderType.DEFAULT,
