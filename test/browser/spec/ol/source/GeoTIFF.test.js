@@ -27,6 +27,29 @@ describe('ol/source/GeoTIFF', function () {
       expect(source.readMethod_).to.be('readRGB');
     });
 
+    it('defaults to wrapX: false', function () {
+      const source = new GeoTIFFSource({
+        sources: [
+          {
+            url: 'spec/ol/source/images/0-0-0.tif',
+          },
+        ],
+      });
+      expect(source.getWrapX()).to.be(false);
+    });
+
+    it('allows wrapX to be set', function () {
+      const source = new GeoTIFFSource({
+        wrapX: true,
+        sources: [
+          {
+            url: 'spec/ol/source/images/0-0-0.tif',
+          },
+        ],
+      });
+      expect(source.getWrapX()).to.be(true);
+    });
+
     it('generates Float32Array data if normalize is set to false', (done) => {
       const source = new GeoTIFFSource({
         normalize: false,
