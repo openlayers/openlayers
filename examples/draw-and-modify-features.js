@@ -30,6 +30,8 @@ const vector = new VectorLayer({
   }),
 });
 
+// Limit multi-world panning to one world east and west of the real world.
+// Geometry coordinates have to be within that range.
 const extent = get('EPSG:3857').getExtent().slice();
 extent[0] += extent[0];
 extent[2] += extent[2];
