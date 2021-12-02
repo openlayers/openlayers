@@ -40,7 +40,7 @@ const map = new Map({
     center: [-11000000, 4600000],
     zoom: 4,
     extent,
-  })
+  }),
 });
 
 const modify = new Modify({source: source});
