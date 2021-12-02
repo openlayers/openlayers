@@ -4,6 +4,7 @@ import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
 import {Draw, Modify, Snap} from '../src/ol/interaction.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import {get} from '../src/ol/proj.js';
 
 const raster = new TileLayer({
   source: new OSM(),
@@ -29,12 +30,18 @@ const vector = new VectorLayer({
   }),
 });
 
+// Limit multi-world panning to one world east and west of the real world.
+// Geometry coordinates have to be within that range.
+const extent = get('EPSG:3857').getExtent().slice();
+extent[0] += extent[0];
+extent[2] += extent[2];
 const map = new Map({
   layers: [raster, vector],
   target: 'map',
   view: new View({
     center: [-11000000, 4600000],
     zoom: 4,
+    extent,
   }),
 });
 
