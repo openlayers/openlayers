@@ -4,7 +4,7 @@ import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
 import {Draw, Modify, Snap} from '../src/ol/interaction.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {get} from 'ol/proj';
+import {get} from '../src/ol/proj/projection.js';
 
 const raster = new TileLayer({
   source: new OSM(),
