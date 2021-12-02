@@ -29,13 +29,17 @@ const vector = new VectorLayer({
   }),
 });
 
+const extent = get('EPSG:3857').getExtent().slice();
+extent[0] += extent[0];
+extent[2] += extent[2];
 const map = new Map({
   layers: [raster, vector],
   target: 'map',
   view: new View({
     center: [-11000000, 4600000],
     zoom: 4,
-  }),
+    extent,
+  })
 });
 
 const modify = new Modify({source: source});
