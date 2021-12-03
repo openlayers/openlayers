@@ -160,14 +160,23 @@ class ImageWrapper extends ImageBase {
  */
 export function listenImage(image, loadHandler, errorHandler) {
   const img = /** @type {HTMLImageElement} */ (image);
+  let listening = true;
+  let decoding = false;
+  let loaded = false;
+
+  const listenerKeys = [
+    listenOnce(img, EventType.LOAD, function () {
+      loaded = true;
+      if (!decoding) {
+        loadHandler();
+      }
+    }),
+  ];
 
   if (img.src && IMAGE_DECODE) {
-    const promise = img.decode();
-    let listening = true;
-    const unlisten = function () {
-      listening = false;
-    };
-    promise
+    decoding = true;
+    img
+      .decode()
       .then(function () {
         if (listening) {
           loadHandler();
@@ -175,26 +184,19 @@ export function listenImage(image, loadHandler, errorHandler) {
       })
       .catch(function (error) {
         if (listening) {
-          // FIXME: Unconditionally call errorHandler() when this bug is fixed upstream:
-          //        https://bugs.webkit.org/show_bug.cgi?id=198527
-          if (
-            error.name === 'EncodingError' &&
-            error.message === 'Invalid image type.'
-          ) {
+          if (loaded) {
             loadHandler();
           } else {
             errorHandler();
           }
         }
       });
-    return unlisten;
+  } else {
+    listenerKeys.push(listenOnce(img, EventType.ERROR, errorHandler));
   }
 
-  const listenerKeys = [
-    listenOnce(img, EventType.LOAD, loadHandler),
-    listenOnce(img, EventType.ERROR, errorHandler),
-  ];
   return function unlisten() {
+    listening = false;
     listenerKeys.forEach(unlistenByKey);
   };
 }
