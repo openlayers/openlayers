@@ -1,0 +1,20 @@
+---
+layout: example.html
+title: Change Tile Layer Style
+shortdesc: Updating the style of a WebGL tile layer
+docs: >
+  When you want to change the style of a WebGL tile layer based on some change in your
+  application state, you should use the `layer.updateStyleVariables()` method.  A layer can
+  be efficiently rendered even if style variables are changed on every render frame.
+  In cases where you need to completely replace the style of a layer, you can call the
+  `layer.setStyle()` method.  This method should not be called in response to frequent
+  user events (e.g. mouse movement, dragging a slider, etc.).
+tags: "cog, webgl, style"
+---
+<div id="map" class="map"></div>
+Set the layer style
+<select id="style">
+  <option value="trueColor">True Color</option>
+  <option value="falseColor">False Color</option>
+  <option value="ndvi">NDVI</option>
+</select>

@@ -90,6 +90,17 @@ class WebGLLayerRenderer extends LayerRenderer {
     layer.addChangeListener(LayerProperty.MAP, this.removeHelper_.bind(this));
   }
 
+  /**
+   * Reset options (only handles uniforms).
+   * @param {Options} options Options.
+   */
+  reset(options) {
+    this.uniforms_ = options.uniforms;
+    if (this.helper) {
+      this.helper.setUniforms(this.uniforms_);
+    }
+  }
+
   removeHelper_() {
     if (this.helper) {
       this.helper.dispose();
