@@ -441,6 +441,7 @@ export function parseLiteralStyle(style) {
     variables: [],
     attributes: [],
     stringLiteralsMap: {},
+    functions: {},
   };
   const parsedSize = expressionToGlsl(
     vertContext,
@@ -471,6 +472,7 @@ export function parseLiteralStyle(style) {
     variables: vertContext.variables,
     attributes: [],
     stringLiteralsMap: vertContext.stringLiteralsMap,
+    functions: {},
   };
   const parsedColor = expressionToGlsl(fragContext, color, ValueTypes.COLOR);
   const parsedOpacity = expressionToGlsl(

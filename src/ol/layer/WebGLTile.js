@@ -105,6 +105,7 @@ function parseStyle(style, bandCount) {
     variables: [],
     attributes: [],
     stringLiteralsMap: {},
+    functions: {},
     bandCount: bandCount,
   };
 
@@ -203,14 +204,15 @@ function parseStyle(style, bandCount) {
   });
 
   const textureCount = Math.ceil(bandCount / 4);
-  const colorAssignments = new Array(textureCount);
-  for (let textureIndex = 0; textureIndex < textureCount; ++textureIndex) {
-    const uniformName = Uniforms.TILE_TEXTURE_PREFIX + textureIndex;
-    uniformDeclarations.push(`uniform sampler2D ${uniformName};`);
-    colorAssignments[
-      textureIndex
-    ] = `vec4 color${textureIndex} = texture2D(${uniformName}, v_textureCoord);`;
-  }
+  uniformDeclarations.push(
+    `uniform sampler2D ${Uniforms.TILE_TEXTURE_ARRAY}[${textureCount}];`
+  );
+
+  const functionDefintions = Object.keys(context.functions).map(function (
+    name
+  ) {
+    return context.functions[name];
+  });
 
   const fragmentShader = `
     #ifdef GL_FRAGMENT_PRECISION_HIGH
@@ -228,10 +230,12 @@ function parseStyle(style, bandCount) {
 
     ${uniformDeclarations.join('\n')}
 
-    void main() {
-      ${colorAssignments.join('\n')}
+    ${functionDefintions.join('\n')}
 
-      vec4 color = color0;
+    void main() {
+      vec4 color = texture2D(${
+        Uniforms.TILE_TEXTURE_ARRAY
+      }[0],  v_textureCoord);
 
       ${pipeline.join('\n')}
 
