@@ -63,12 +63,30 @@ describe('ol/layer/MapboxVector', () => {
         url: 'https://example.com/sprite',
         expected: 'https://example.com/sprite',
       },
+      {
+        url: '../sprite',
+        expected: 'https://example.com:8000/sprite',
+      },
+      {
+        url: '/sprite',
+        expected: 'https://example.com:8000/sprite',
+      },
+      {
+        url: './sprite',
+        expected: 'https://example.com:8000/mystyle/sprite',
+      },
     ];
 
     const token = 'test-token';
     for (const c of cases) {
       it(`works for ${c.url}`, () => {
-        expect(normalizeSpriteUrl(c.url, token)).to.be(c.expected);
+        expect(
+          normalizeSpriteUrl(
+            c.url,
+            token,
+            'https://example.com:8000/mystyle/style.json'
+          )
+        ).to.be(c.expected);
       });
     }
   });
