@@ -7,9 +7,7 @@ import MVT from '../format/MVT.js';
 import SourceState from '../source/State.js';
 import VectorTileLayer from '../layer/VectorTile.js';
 import VectorTileSource from '../source/VectorTile.js';
-import {applyStyle, setupVectorSource} from 'ol-mapbox-style';
-import {getValue} from 'ol-mapbox-style/dist/stylefunction.js';
-import {toString} from '../color.js';
+import {applyBackground, applyStyle, setupVectorSource} from 'ol-mapbox-style';
 
 const mapboxBaseUrl = 'https://api.mapbox.com';
 
@@ -489,40 +487,8 @@ class MapboxVectorLayer extends VectorTileLayer {
       targetSource.setTileLoadFunction(source.getTileLoadFunction());
       targetSource.tileGrid = source.tileGrid;
     }
-    const background = style.layers.find(
-      (layer) => layer.type === 'background'
-    );
-    if (
-      this.getBackground() === undefined &&
-      background &&
-      (!background.layout || background.layout.visibility !== 'none')
-    ) {
-      const colorFunction = (resolution) => {
-        const opacity =
-          /** @type {number} */ (
-            getValue(
-              background,
-              'paint',
-              'background-opacity',
-              this.getSource().getTileGrid().getZForResolution(resolution)
-            )
-          ) || 1;
-        const color = /** @type {*} */ (
-          getValue(
-            background,
-            'paint',
-            'background-color',
-            this.getSource().getTileGrid().getZForResolution(resolution)
-          )
-        );
-        return toString([
-          color.r * 255,
-          color.g * 255,
-          color.b * 255,
-          color.a * opacity,
-        ]);
-      };
-      this.setBackground(colorFunction);
+    if (this.getBackground() === undefined) {
+      applyBackground(this, style);
     }
     if (this.setMaxResolutionFromTileGrid_) {
       const tileGrid = targetSource.getTileGrid();
