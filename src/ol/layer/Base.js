@@ -9,6 +9,13 @@ import {assign} from '../obj.js';
 import {clamp} from '../math.js';
 
 /**
+ * A css color, or a function called with a view resolution returning a css color.
+ *
+ * @typedef {string|function(number):string} BackgroundColor
+ * @api
+ */
+
+/**
  * @typedef {import("../ObjectEventType").Types|'change:extent'|'change:maxResolution'|'change:maxZoom'|
  *    'change:minResolution'|'change:minZoom'|'change:opacity'|'change:visible'|'change:zIndex'} BaseLayerObjectEventTypes
  */
@@ -39,6 +46,8 @@ import {clamp} from '../math.js';
  * visible.
  * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
  * be visible.
+ * @property {BackgroundColor} [background] Background color for the layer. If not specified, no background
+ * will be rendered.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
@@ -73,6 +82,12 @@ class BaseLayer extends BaseObject {
      * @type {BaseLayerOnSignature<void>}
      */
     this.un;
+
+    /**
+     * @type {BackgroundColor|false}
+     * @private
+     */
+    this.background_ = options.background;
 
     /**
      * @type {Object<string, *>}
@@ -114,6 +129,14 @@ class BaseLayer extends BaseObject {
      * @private
      */
     this.state_ = null;
+  }
+
+  /**
+   * Get the background for this layer.
+   * @return {BackgroundColor|false} Layer background.
+   */
+  getBackground() {
+    return this.background_;
   }
 
   /**
@@ -263,6 +286,15 @@ class BaseLayer extends BaseObject {
    */
   getZIndex() {
     return /** @type {number} */ (this.get(LayerProperty.Z_INDEX));
+  }
+
+  /**
+   * Sets the backgrlound color.
+   * @param {BackgroundColor} [opt_background] Background color.
+   */
+  setBackground(opt_background) {
+    this.background_ = opt_background;
+    this.changed();
   }
 
   /**

@@ -3,17 +3,13 @@
  */
 import BaseEvent from '../events/Event.js';
 import EventType from '../events/EventType.js';
-import GeometryType from '../geom/GeometryType.js';
 import MVT from '../format/MVT.js';
-import RenderFeature from '../render/Feature.js';
 import SourceState from '../source/State.js';
-import TileEventType from '../source/TileEventType.js';
 import VectorTileLayer from '../layer/VectorTile.js';
 import VectorTileSource from '../source/VectorTile.js';
-import {Fill, Style} from '../style.js';
 import {applyStyle, setupVectorSource} from 'ol-mapbox-style';
-import {fromExtent} from '../geom/Polygon.js';
 import {getValue} from 'ol-mapbox-style/dist/stylefunction.js';
+import {toString} from '../color.js';
 
 const mapboxBaseUrl = 'https://api.mapbox.com';
 
@@ -188,6 +184,9 @@ const SourceType = {
  * is defined by the z-index of the layer, the `zIndex` of the style and the render order of features.
  * Higher z-index means higher priority. Within the same z-index, a feature rendered before another has
  * higher priority.
+ * @property {import("./Base.js").BackgroundColor|false} [background] Background color for the layer.
+ * If not specified, the background from the Mapbox style object will be used. Set to `false` to prevent
+ * the Mapbox style's background from being used.
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
@@ -283,6 +282,7 @@ class MapboxVectorLayer extends VectorTileLayer {
 
     super({
       source: source,
+      background: options.background,
       declutter: declutter,
       className: options.className,
       opacity: options.opacity,
@@ -493,53 +493,36 @@ class MapboxVectorLayer extends VectorTileLayer {
       (layer) => layer.type === 'background'
     );
     if (
+      this.getBackground() === undefined &&
       background &&
       (!background.layout || background.layout.visibility !== 'none')
     ) {
-      const style = new Style({
-        fill: new Fill(),
-      });
-      targetSource.addEventListener(TileEventType.TILELOADEND, (event) => {
-        const tile = /** @type {import("../VectorTile.js").default} */ (
-          /** @type {import("../source/Tile.js").TileSourceEvent} */ (event)
-            .tile
+      const colorFunction = (resolution) => {
+        const opacity =
+          /** @type {number} */ (
+            getValue(
+              background,
+              'paint',
+              'background-opacity',
+              this.getSource().getTileGrid().getZForResolution(resolution)
+            )
+          ) || 1;
+        const color = /** @type {*} */ (
+          getValue(
+            background,
+            'paint',
+            'background-color',
+            this.getSource().getTileGrid().getZForResolution(resolution)
+          )
         );
-        const styleFuntion = () => {
-          const opacity =
-            /** @type {number} */ (
-              getValue(
-                background,
-                'paint',
-                'background-opacity',
-                tile.tileCoord[0]
-              )
-            ) || 1;
-          const color = /** @type {*} */ (
-            getValue(background, 'paint', 'background-color', tile.tileCoord[0])
-          );
-          style
-            .getFill()
-            .setColor([
-              color.r * 255,
-              color.g * 255,
-              color.b * 255,
-              color.a * opacity,
-            ]);
-          return style;
-        };
-        const extentGeometry = fromExtent(
-          targetSource.tileGrid.getTileCoordExtent(tile.tileCoord)
-        );
-        const renderFeature = new RenderFeature(
-          GeometryType.POLYGON,
-          extentGeometry.getFlatCoordinates(),
-          extentGeometry.getEnds(),
-          {layer: background.id},
-          undefined
-        );
-        renderFeature.styleFunction = styleFuntion;
-        tile.getFeatures().unshift(renderFeature);
-      });
+        return toString([
+          color.r * 255,
+          color.g * 255,
+          color.b * 255,
+          color.a * opacity,
+        ]);
+      };
+      this.setBackground(colorFunction);
     }
     if (this.setMaxResolutionFromTileGrid_) {
       const tileGrid = targetSource.getTileGrid();
