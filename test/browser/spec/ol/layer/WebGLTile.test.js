@@ -96,10 +96,9 @@ describe('ol/layer/WebGLTile', function () {
       uniform float u_var_r;
       uniform float u_var_g;
       uniform float u_var_b;
-      uniform sampler2D u_tileTexture0;
+      uniform sampler2D u_tileTextures[1];
       void main() {
-        vec4 color0 = texture2D(u_tileTexture0, v_textureCoord);
-        vec4 color = color0;
+        vec4 color = texture2D(u_tileTextures[0], v_textureCoord);
         color = vec4(u_var_r / 255.0, u_var_g / 255.0, u_var_b / 255.0, 1.0);
         if (color.a == 0.0) {
           discard;
@@ -122,6 +121,82 @@ describe('ol/layer/WebGLTile', function () {
         gl_Position = u_tileTransform * vec4(a_textureCoord, u_depth, 1.0);
       }
       `.replace(/[ \n]+/g, ' ')
+    );
+  });
+
+  it('adds a getBandValue function to the fragment shaders', function () {
+    const max = 3000;
+    function normalize(value) {
+      return ['/', value, max];
+    }
+
+    const red = normalize(['band', 1]);
+    const green = normalize(['band', 2]);
+    const nir = normalize(['band', 4]);
+
+    layer.setStyle({
+      color: ['array', nir, red, green, 1],
+    });
+
+    const compileShaderSpy = sinon.spy(WebGLHelper.prototype, 'compileShader');
+    const renderer = layer.createRenderer();
+    const viewState = map.getView().getState();
+    const size = map.getSize();
+    const frameState = {
+      viewState: viewState,
+      extent: getForViewAndSize(
+        viewState.center,
+        viewState.resolution,
+        viewState.rotation,
+        size
+      ),
+      layerStatesArray: map.getLayerGroup().getLayerStatesArray(),
+      layerIndex: 0,
+    };
+    renderer.prepareFrame(frameState);
+    compileShaderSpy.restore();
+    expect(compileShaderSpy.callCount).to.be(2);
+    expect(compileShaderSpy.getCall(0).args[0].replace(/[ \n]+/g, ' ')).to.be(
+      `
+      #ifdef GL_FRAGMENT_PRECISION_HIGH
+      precision highp float;
+      #else
+      precision mediump float;
+      #endif varying vec2 v_textureCoord;
+      uniform float u_transitionAlpha;
+      uniform float u_texturePixelWidth;
+      uniform float u_texturePixelHeight;
+      uniform float u_resolution;
+      uniform float u_zoom;
+      uniform sampler2D u_tileTextures[1];
+
+      float getBandValue(float band, float xOffset, float yOffset) {
+        float dx = xOffset / u_texturePixelWidth;
+        float dy = yOffset / u_texturePixelHeight;
+        if (band == 1.0) {
+          return texture2D(u_tileTextures[0], v_textureCoord + vec2(dx, dy))[0];
+        }
+        if (band == 2.0) {
+          return texture2D(u_tileTextures[0], v_textureCoord + vec2(dx, dy))[1];
+        }
+        if (band == 3.0) {
+          return texture2D(u_tileTextures[0], v_textureCoord + vec2(dx, dy))[2];
+        }
+        if (band == 4.0) {
+          return texture2D(u_tileTextures[0], v_textureCoord + vec2(dx, dy))[3];
+        }
+      }
+
+      void main() {
+        vec4 color = texture2D(u_tileTextures[0], v_textureCoord);
+        color = vec4((getBandValue(4.0, 0.0, 0.0) / 3000.0), (getBandValue(1.0, 0.0, 0.0) / 3000.0), (getBandValue(2.0, 0.0, 0.0) / 3000.0), 1.0);
+        if (color.a == 0.0) {
+          discard;
+        }
+        gl_FragColor = color;
+        gl_FragColor.rgb *= gl_FragColor.a;
+        gl_FragColor *= u_transitionAlpha;
+      }`.replace(/[ \n]+/g, ' ')
     );
   });
 

@@ -31,7 +31,7 @@ import {numberSafeCompareFunction} from '../../array.js';
 import {toSize} from '../../size.js';
 
 export const Uniforms = {
-  TILE_TEXTURE_PREFIX: 'u_tileTexture',
+  TILE_TEXTURE_ARRAY: 'u_tileTextures',
   TILE_TRANSFORM: 'u_tileTransform',
   TRANSITION_ALPHA: 'u_transitionAlpha',
   DEPTH: 'u_depth',
@@ -516,7 +516,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
           ++textureIndex
         ) {
           const textureProperty = 'TEXTURE' + textureIndex;
-          const uniformName = Uniforms.TILE_TEXTURE_PREFIX + textureIndex;
+          const uniformName = `${Uniforms.TILE_TEXTURE_ARRAY}[${textureIndex}]`;
           gl.activeTexture(gl[textureProperty]);
           gl.bindTexture(gl.TEXTURE_2D, tileTexture.textures[textureIndex]);
           gl.uniform1i(

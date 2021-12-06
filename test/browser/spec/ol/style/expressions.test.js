@@ -10,7 +10,7 @@ import {
   uniformNameForVariable,
 } from '../../../../../src/ol/style/expressions.js';
 
-describe('ol.style.expressions', function () {
+describe('ol/style/expressions', function () {
   describe('numberToGlsl', function () {
     it('does a simple transform when a fraction is present', function () {
       expect(numberToGlsl(1.3456)).to.eql('1.3456');
@@ -70,6 +70,7 @@ describe('ol.style.expressions', function () {
     beforeEach(function () {
       context = {
         stringLiteralsMap: {},
+        functions: {},
       };
     });
 
@@ -207,6 +208,7 @@ describe('ol.style.expressions', function () {
         variables: [],
         attributes: [],
         stringLiteralsMap: {},
+        functions: {},
       };
     });
 
@@ -289,9 +291,11 @@ describe('ol.style.expressions', function () {
       expect(
         expressionToGlsl(context, ['color', ['get', 'attr4'], 1, 2, 0.5])
       ).to.eql('vec4(a_attr4 / 255.0, 1.0 / 255.0, 2.0 / 255.0, 0.5)');
-      expect(expressionToGlsl(context, ['band', 1])).to.eql('color0[0]');
+      expect(expressionToGlsl(context, ['band', 1])).to.eql(
+        'getBandValue(1.0, 0.0, 0.0)'
+      );
       expect(expressionToGlsl(context, ['band', 1, -1, 2])).to.eql(
-        'texture2D(u_tileTexture0, v_textureCoord + vec2(-1.0 / u_texturePixelWidth, 2.0 / u_texturePixelHeight))[0]'
+        'getBandValue(1.0, -1.0, 2.0)'
       );
     });
 
@@ -464,6 +468,7 @@ describe('ol.style.expressions', function () {
         variables: [],
         attributes: [],
         stringLiteralsMap: {},
+        functions: {},
       };
     });
 
@@ -608,6 +613,7 @@ describe('ol.style.expressions', function () {
         variables: [],
         attributes: [],
         stringLiteralsMap: {},
+        functions: {},
       };
     });
 
@@ -821,6 +827,7 @@ describe('ol.style.expressions', function () {
         variables: [],
         attributes: [],
         stringLiteralsMap: {},
+        functions: {},
       };
     });
 
@@ -1067,6 +1074,7 @@ describe('ol.style.expressions', function () {
         variables: [],
         attributes: [],
         stringLiteralsMap: {},
+        functions: {},
       };
     });
 

@@ -184,6 +184,7 @@ export function isTypeUnique(valueType) {
  * @property {Array<string>} variables List of variables used in the expression; contains **unprefixed names**
  * @property {Array<string>} attributes List of attributes used in the expression; contains **unprefixed names**
  * @property {Object<string, number>} stringLiteralsMap This object maps all encountered string values to a number
+ * @property {Object<string, string>} functions Lookup of functions used by the style.
  * @property {number} [bandCount] Number of bands per pixel.
  */
 
@@ -417,6 +418,8 @@ Operators['var'] = {
   },
 };
 
+const GET_BAND_VALUE_FUNC = 'getBandValue';
+
 Operators['band'] = {
   getReturnType: function (args) {
     return ValueTypes.NUMBER;
@@ -425,32 +428,38 @@ Operators['band'] = {
     assertArgsMinCount(args, 1);
     assertArgsMaxCount(args, 3);
     const band = args[0];
-    if (typeof band !== 'number') {
-      throw new Error('Band index must be a number');
+
+    if (!(GET_BAND_VALUE_FUNC in context.functions)) {
+      let ifBlocks = '';
+      const bandCount = context.bandCount || 1;
+      for (let i = 0; i < bandCount; i++) {
+        const colorIndex = Math.floor(i / 4);
+        let bandIndex = i % 4;
+        if (bandIndex === bandCount - 1 && bandIndex === 1) {
+          // LUMINANCE_ALPHA - band 1 assigned to rgb and band 2 assigned to alpha
+          bandIndex = 3;
+        }
+        const textureName = `${Uniforms.TILE_TEXTURE_ARRAY}[${colorIndex}]`;
+        ifBlocks += `
+          if (band == ${i + 1}.0) {
+            return texture2D(${textureName}, v_textureCoord + vec2(dx, dy))[${bandIndex}];
+          }
+        `;
+      }
+
+      context.functions[GET_BAND_VALUE_FUNC] = `
+        float getBandValue(float band, float xOffset, float yOffset) {
+          float dx = xOffset / ${Uniforms.TEXTURE_PIXEL_WIDTH};
+          float dy = yOffset / ${Uniforms.TEXTURE_PIXEL_HEIGHT};
+          ${ifBlocks}
+        }
+      `;
     }
-    const zeroBasedBand = band - 1;
-    const colorIndex = Math.floor(zeroBasedBand / 4);
-    let bandIndex = zeroBasedBand % 4;
-    if (band === context.bandCount && bandIndex === 1) {
-      // LUMINANCE_ALPHA - band 1 assigned to rgb and band 2 assigned to alpha
-      bandIndex = 3;
-    }
-    if (args.length === 1) {
-      return `color${colorIndex}[${bandIndex}]`;
-    } else {
-      const xOffset = args[1];
-      const yOffset = args[2] || 0;
-      assertNumber(xOffset);
-      assertNumber(yOffset);
-      const uniformName = Uniforms.TILE_TEXTURE_PREFIX + colorIndex;
-      return `texture2D(${uniformName}, v_textureCoord + vec2(${expressionToGlsl(
-        context,
-        xOffset
-      )} / ${Uniforms.TEXTURE_PIXEL_WIDTH}, ${expressionToGlsl(
-        context,
-        yOffset
-      )} / ${Uniforms.TEXTURE_PIXEL_HEIGHT}))[${bandIndex}]`;
-    }
+
+    const bandExpression = expressionToGlsl(context, band);
+    const xOffsetExpression = expressionToGlsl(context, args[1] || 0);
+    const yOffsetExpression = expressionToGlsl(context, args[2] || 0);
+    return `${GET_BAND_VALUE_FUNC}(${bandExpression}, ${xOffsetExpression}, ${yOffsetExpression})`;
   },
 };
 
