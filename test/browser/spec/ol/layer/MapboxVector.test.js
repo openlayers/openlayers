@@ -4,7 +4,7 @@ import MapboxVectorLayer, {
   normalizeSpriteUrl,
   normalizeStyleUrl,
 } from '../../../../../src/ol/layer/MapboxVector.js';
-import {get} from '../../../../../src/ol/proj.js';
+import {asString} from '../../../../../src/ol/color.js';
 import {unByKey} from '../../../../../src/ol/Observable.js';
 
 describe('ol/layer/MapboxVector', () => {
@@ -199,7 +199,7 @@ describe('ol/layer/MapboxVector', () => {
   });
 
   describe('background', function () {
-    it('adds a feature for the background', function (done) {
+    it('configures the layer with a background function', function (done) {
       const layer = new MapboxVectorLayer({
         styleUrl:
           'data:,' +
@@ -229,15 +229,45 @@ describe('ol/layer/MapboxVector', () => {
       const key = source.on('change', function () {
         if (source.getState() === 'ready') {
           unByKey(key);
-          source.getTile(14, 8938, 5680, 1, get('EPSG:3857')).load();
-          source.once('tileloadend', (event) => {
-            const features = event.tile.getFeatures();
-            expect(features[0].get('layer')).to.be('background');
-            expect(
-              features[0].getStyleFunction()().getFill().getColor()
-            ).to.eql([255, 0, 0, 0.8]);
-            done();
-          });
+          expect(layer.getBackground()(1)).to.eql(asString([255, 0, 0, 0.8]));
+          done();
+        }
+      });
+    });
+
+    it("avoids the style's background with `background: false`", function (done) {
+      const layer = new MapboxVectorLayer({
+        styleUrl:
+          'data:,' +
+          encodeURIComponent(
+            JSON.stringify({
+              version: 8,
+              sources: {
+                'foo': {
+                  tiles: ['/spec/ol/data/{z}-{x}-{y}.vector.pbf'],
+                  type: 'vector',
+                },
+              },
+              layers: [
+                {
+                  id: 'background',
+                  type: 'background',
+                  paint: {
+                    'background-color': '#ff0000',
+                    'background-opacity': 0.8,
+                  },
+                },
+              ],
+            })
+          ),
+        background: false,
+      });
+      const source = layer.getSource();
+      const key = source.on('change', function () {
+        if (source.getState() === 'ready') {
+          unByKey(key);
+          expect(layer.getBackground()).to.be(false);
+          done();
         }
       });
     });
@@ -274,15 +304,8 @@ describe('ol/layer/MapboxVector', () => {
       const key = source.on('change', function () {
         if (source.getState() === 'ready') {
           unByKey(key);
-          source.getTile(14, 8938, 5680, 1, get('EPSG:3857')).load();
-          source.once('tileloadend', (event) => {
-            const features = event.tile.getFeatures();
-            expect(features[0].get('layer')).to.be('landuse');
-            expect(
-              layer.getStyleFunction()(features[0])[0].getFill().getColor()
-            ).to.eql('rgba(255,0,0,0.8)');
-            done();
-          });
+          expect(layer.getBackground()).to.be(undefined);
+          done();
         }
       });
     });

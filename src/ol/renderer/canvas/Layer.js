@@ -9,6 +9,7 @@ import {
   compose as composeTransform,
   create as createTransform,
 } from '../../transform.js';
+import {asArray} from '../../color.js';
 import {
   containsCoordinate,
   getBottomLeft,
@@ -17,6 +18,7 @@ import {
   getTopRight,
 } from '../../extent.js';
 import {createCanvasContext2D} from '../../dom.js';
+import {equals} from '../../array.js';
 
 /**
  * @abstract
@@ -84,19 +86,38 @@ class CanvasLayerRenderer extends LayerRenderer {
   }
 
   /**
+   * @param {import('../../PluggableMap.js').FrameState} frameState Frame state.
+   * @return {string} Background color.
+   */
+  getBackground(frameState) {
+    const layer = this.getLayer();
+    let background = layer.getBackground();
+    if (typeof background === 'function') {
+      background = background(frameState.viewState.resolution);
+    }
+    return background || undefined;
+  }
+
+  /**
    * Get a rendering container from an existing target, if compatible.
    * @param {HTMLElement} target Potential render target.
    * @param {string} transform CSS Transform.
    * @param {number} opacity Opacity.
+   * @param {string} [opt_backgroundColor] Background color.
    */
-  useContainer(target, transform, opacity) {
+  useContainer(target, transform, opacity, opt_backgroundColor) {
     const layerClassName = this.getLayer().getClassName();
     let container, context;
     if (
       target &&
       target.className === layerClassName &&
       target.style.opacity === '' &&
-      opacity === 1
+      opacity === 1 &&
+      (!opt_backgroundColor ||
+        equals(
+          asArray(target.style.backgroundColor),
+          asArray(opt_backgroundColor)
+        ))
     ) {
       const canvas = target.firstElementChild;
       if (canvas instanceof HTMLCanvasElement) {
@@ -121,6 +142,9 @@ class CanvasLayerRenderer extends LayerRenderer {
       style.position = 'absolute';
       style.width = '100%';
       style.height = '100%';
+      if (opt_backgroundColor) {
+        style.backgroundColor = opt_backgroundColor;
+      }
       context = createCanvasContext2D();
       const canvas = context.canvas;
       container.appendChild(canvas);
