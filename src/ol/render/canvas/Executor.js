@@ -26,167 +26,7 @@ import {drawTextOnPath} from '../../geom/flat/textpath.js';
 import {equals} from '../../array.js';
 import {lineStringLength} from '../../geom/flat/length.js';
 import {transform2D} from '../../geom/flat/transform.js';
-
-function angleFromOrigin(origin, at) {
-  let angle = Math.atan2(at.y - origin.y, at.x - origin.x);
-
-  if (angle < 0) {
-    angle = 2 * Math.PI + angle;
-  }
-
-  return angle;
-}
-
-class Point {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-  }
-
-  add = (other) => new Point(this.x + other.x, this.y + other.y);
-  subtract = (other) => new Point(this.x - other.x, this.y - other.y);
-  times = (multiplier) => new Point(this.x * multiplier, this.y * multiplier);
-  magnitude = () => Math.sqrt(this.x * this.x + this.y * this.y);
-  rotated90ClockWise = () => new Point(-this.y, this.x);
-  equals = (other) => this.x === other.x && this.y === other.y;
-
-  normalized = () => {
-    const magnitude = this.magnitude();
-    return new Point(this.x / magnitude, this.y / magnitude);
-  };
-}
-
-class Line {
-  constructor(begin, end) {
-    this.begin = begin;
-    this.end = end;
-  }
-
-  center = () => {
-    return this.begin.add(
-      this.end
-        .subtract(this.begin)
-        .normalized()
-        .times(0.5 * this.length())
-    );
-  };
-
-  length = () => this.end.subtract(this.begin).magnitude();
-
-  unit = () => this.end.subtract(this.begin).normalized();
-
-  intersection = (other) => {
-    // source:
-    // https://dirask.com/posts/JavaScript-how-to-calculate-intersection-point-of-two-lines-for-given-4-points-VjvnAj
-
-    const p1 = this.begin;
-    const p2 = this.end;
-    const p3 = other.begin;
-    const p4 = other.end;
-
-    // down part of intersection point formula
-    const d1 = (p1.x - p2.x) * (p3.y - p4.y); // (x1 - x2) * (y3 - y4)
-    const d2 = (p1.y - p2.y) * (p3.x - p4.x); // (y1 - y2) * (x3 - x4)
-    const d = d1 - d2;
-
-    if (d === 0) {
-      throw new Error('Number of intersection points is zero or infinity.');
-    }
-
-    // upper part of intersection point formula
-    const u1 = p1.x * p2.y - p1.y * p2.x; // (x1 * y2 - y1 * x2)
-    const u4 = p3.x * p4.y - p3.y * p4.x; // (x3 * y4 - y3 * x4)
-
-    const u2x = p3.x - p4.x; // (x3 - x4)
-    const u3x = p1.x - p2.x; // (x1 - x2)
-    const u2y = p3.y - p4.y; // (y3 - y4)
-    const u3y = p1.y - p2.y; // (y1 - y2)
-
-    // intersection point formula
-    const px = (u1 * u2x - u3x * u4) / d;
-    const py = (u1 * u2y - u3y * u4) / d;
-
-    return new Point(px, py);
-  };
-}
-
-class CircularArc {
-  constructor(begin, middle, end) {
-    this.begin = begin;
-    this.middle = middle;
-    this.end = end;
-  }
-
-  drawable = () => {
-    const center = this.centerOfCircle();
-    const angles = this.angles();
-
-    return {
-      begin: this.begin,
-      middle: this.middle,
-      end: this.end,
-      centerOfCircle: center,
-      radius: this.begin.subtract(center).magnitude(),
-      startAngle: angles.startAngle,
-      endAngle: angles.endAngle,
-      clockwise: this.clockwise(angles),
-    };
-  };
-
-  fullCircle = () => this.begin.equals(this.end);
-
-  clockwise = (angles) => {
-    // compute the clockwise distance from start to middle and from start to end
-    const startToMiddle =
-      (angles.middleAngle - angles.startAngle + 2 * Math.PI) % (2 * Math.PI);
-    const startToEnd =
-      (angles.endAngle - angles.startAngle + 2 * Math.PI) % (2 * Math.PI);
-
-    // clockwise if in clockwise direction we reach middle before we reach end
-    return startToMiddle < startToEnd;
-  };
-
-  angles = () => {
-    if (this.fullCircle()) {
-      return {
-        startAngle: 0,
-        middleAngle: Math.PI,
-        endAngle: 2 * Math.PI,
-      };
-    }
-
-    const center = this.centerOfCircle();
-
-    return {
-      startAngle: angleFromOrigin(center, this.begin),
-      middleAngle: angleFromOrigin(center, this.middle),
-      endAngle: angleFromOrigin(center, this.end),
-    };
-  };
-
-  centerOfCircle = () => {
-    if (this.fullCircle()) {
-      // three points represent a full circle
-      return new Line(this.begin, this.middle).center();
-    }
-
-    // no full circle
-    const l1 = new Line(this.begin, this.middle);
-    const l2 = new Line(this.middle, this.end);
-
-    const perpendicularL1 = new Line(
-      l1.center(),
-      l1.center().add(l1.unit().rotated90ClockWise())
-    );
-
-    const perpendicularL2 = new Line(
-      l2.center(),
-      l2.center().add(l2.unit().rotated90ClockWise())
-    );
-
-    return perpendicularL1.intersection(perpendicularL2);
-  };
-}
+import {Point, CircularArc} from "../../geom/flat/CircularArc.js";
 
 /**
  * @typedef {Object} BBox
@@ -821,6 +661,12 @@ class Executor {
       rotation: viewRotation,
     });
 
+    const tmpArc = new CircularArc(
+      new Point(0, 0),
+      new Point(0, 0),
+      new Point(0, 0)
+    );
+
     // When the batch size gets too big, performance decreases. 200 is a good
     // balance between batch size and number of fill/stroke instructions.
     const batchSize =
@@ -866,15 +712,16 @@ class Executor {
           ++i;
           break;
         case CanvasInstruction.CIRCULAR_ARC:
-          d = instruction[1]; // start arc
-          dd = instruction[2]; // end
+          d = /** @type {number} */ instruction[1]; // start arc
+          dd = /** @type {number} */ instruction[2] - 2; // end
           for (; d < dd; d += 4) {
-            const arc = new CircularArc(
-              new Point(pixelCoordinates[d], pixelCoordinates[d + 1]),
-              new Point(pixelCoordinates[d + 2], pixelCoordinates[d + 3]),
-              new Point(pixelCoordinates[d + 4], pixelCoordinates[d + 5])
-            );
-            const drawable = arc.drawable();
+            tmpArc.begin.x = pixelCoordinates[d];
+            tmpArc.begin.y = pixelCoordinates[d + 1];
+            tmpArc.middle.x = pixelCoordinates[d + 2];
+            tmpArc.middle.y = pixelCoordinates[d + 3];
+            tmpArc.end.x = pixelCoordinates[d + 4];
+            tmpArc.end.y = pixelCoordinates[d + 5];
+            const drawable = tmpArc.drawable();
             context.moveTo(drawable.begin.x, drawable.begin.y);
             context.arc(
               drawable.centerOfCircle.x,

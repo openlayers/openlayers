@@ -256,9 +256,6 @@ function renderLineStringGeometry(
   feature,
   opt_declutterBuilderGroup
 ) {
-  console.log('renderLineStringGeometry');
-  console.log({ builderGroup, geometry, style, feature, opt_declutterBuilderGroup });
-
   const strokeStyle = style.getStroke();
   if (strokeStyle) {
     const lineStringReplay = builderGroup.getBuilder(

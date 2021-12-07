@@ -117,6 +117,9 @@ class WkbReader {
     return coords;
   }
 
+  /**
+   * @returns {Array<import('../coordinate.js').Coordinate>}
+   */
   readCircularString() {
     return this.readLineString();
   }
@@ -360,8 +363,6 @@ class WkbReader {
 
       case WKBGeometryType.CIRCULAR_STRING:
         return new CircularString(result, this.layout_);
-        //return new MultiPoint(result, this.layout_);
-        //return new LineString(result, this.layout_);
 
       default:
         return null;
