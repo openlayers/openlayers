@@ -15,7 +15,8 @@ const disabledLayer = new TileLayer({
     attributions: attributions,
     url:
       'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + key,
-    maxZoom: 10,
+    tileSize: 512,
+    maxZoom: 12,
     crossOrigin: '',
     imageSmoothing: false,
   }),
@@ -36,7 +37,8 @@ const enabledLayer = new TileLayer({
     attributions: attributions,
     url:
       'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + key,
-    maxZoom: 10,
+    tileSize: 512,
+    maxZoom: 12,
     crossOrigin: '',
   }),
 });
