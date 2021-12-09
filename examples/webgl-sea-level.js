@@ -31,8 +31,8 @@ const layer = new TileLayer({
   source: new XYZ({
     url:
       'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + key,
-    maxZoom: 10,
     tileSize: 512,
+    maxZoom: 12,
     crossOrigin: 'anonymous',
   }),
   style: {
@@ -58,6 +58,7 @@ const map = new Map({
         attributions: attributions,
         crossOrigin: 'anonymous',
         tileSize: 512,
+        maxZoom: 22,
       }),
     }),
     layer,

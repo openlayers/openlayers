@@ -30,7 +30,8 @@ const elevation = new TileLayer({
   source: new XYZ({
     url:
       'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + key,
-    maxZoom: 10,
+    tileSize: 512,
+    maxZoom: 12,
     crossOrigin: '',
   }),
 });
@@ -52,6 +53,7 @@ const map = new Map({
         attributions: attributions,
         url: 'https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=' + key,
         tileSize: 512,
+        maxZoom: 22,
       }),
     }),
     new ImageLayer({
