@@ -562,6 +562,17 @@ describe('ol/View', function () {
     });
   });
 
+  describe('#setCenter()', function () {
+    it('allows setting undefined center', function () {
+      const view = new View({
+        center: [0, 0],
+        resolution: 1,
+      });
+      view.setCenter(undefined);
+      expect(view.getCenter()).to.be(undefined);
+    });
+  });
+
   describe('#setHint()', function () {
     it('changes a view hint', function () {
       const view = new View({

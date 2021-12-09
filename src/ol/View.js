@@ -1738,6 +1738,7 @@ class View extends BaseObject {
       this.set(ViewProperty.RESOLUTION, newResolution);
     }
     if (
+      !newCenter ||
       !this.get(ViewProperty.CENTER) ||
       !equals(this.get(ViewProperty.CENTER), newCenter)
     ) {
