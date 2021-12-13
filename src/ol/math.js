@@ -204,3 +204,47 @@ export function modulo(a, b) {
 export function lerp(a, b, x) {
   return a + x * (b - a);
 }
+
+/**
+ * Returns a number with a limited number of decimal digits.
+ * @param {number} n The input number.
+ * @param {number} decimals The maximum number of decimal digits.
+ * @return {number} The input number with a limited number of decimal digits.
+ */
+export function toFixed(n, decimals) {
+  const factor = Math.pow(10, decimals);
+  return Math.round(n * factor) / factor;
+}
+
+/**
+ * Rounds a number to the nearest integer value considering only the given number
+ * of decimal digits (with rounding on the final digit).
+ * @param {number} n The input number.
+ * @param {number} decimals The maximum number of decimal digits.
+ * @return {number} The nearest integer.
+ */
+export function round(n, decimals) {
+  return Math.round(toFixed(n, decimals));
+}
+
+/**
+ * Rounds a number to the next smaller integer considering only the given number
+ * of decimal digits (with rounding on the final digit).
+ * @param {number} n The input number.
+ * @param {number} decimals The maximum number of decimal digits.
+ * @return {number} The next smaller integer.
+ */
+export function floor(n, decimals) {
+  return Math.floor(toFixed(n, decimals));
+}
+
+/**
+ * Rounds a number to the next bigger integer considering only the given number
+ * of decimal digits (with rounding on the final digit).
+ * @param {number} n The input number.
+ * @param {number} decimals The maximum number of decimal digits.
+ * @return {number} The next bigger integer.
+ */
+export function ceil(n, decimals) {
+  return Math.ceil(toFixed(n, decimals));
+}

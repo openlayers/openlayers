@@ -12,6 +12,7 @@ import {appendParams} from '../uri.js';
 import {assert} from '../asserts.js';
 import {assign} from '../obj.js';
 import {calculateSourceResolution} from '../reproj.js';
+import {ceil, floor, round} from '../math.js';
 import {compareVersions} from '../string.js';
 import {
   containsExtent,
@@ -21,6 +22,12 @@ import {
   getWidth,
 } from '../extent.js';
 import {get as getProjection, transform} from '../proj.js';
+
+/**
+ * Number of decimal digits to consider in integer values when rounding.
+ * @type {number}
+ */
+const DECIMALS = 4;
 
 /**
  * @const
@@ -197,8 +204,8 @@ class ImageWMS extends ImageSource {
     };
     assign(baseParams, this.params_, params);
 
-    const x = Math.floor((coordinate[0] - extent[0]) / resolution);
-    const y = Math.floor((extent[3] - coordinate[1]) / resolution);
+    const x = floor((coordinate[0] - extent[0]) / resolution, DECIMALS);
+    const y = floor((extent[3] - coordinate[1]) / resolution, DECIMALS);
     baseParams[this.v13_ ? 'I' : 'X'] = x;
     baseParams[this.v13_ ? 'J' : 'Y'] = y;
 
@@ -290,17 +297,19 @@ class ImageWMS extends ImageSource {
     const imageResolution = resolution / pixelRatio;
 
     const center = getCenter(extent);
-    const viewWidth = Math.ceil(getWidth(extent) / imageResolution);
-    const viewHeight = Math.ceil(getHeight(extent) / imageResolution);
+    const viewWidth = ceil(getWidth(extent) / imageResolution, DECIMALS);
+    const viewHeight = ceil(getHeight(extent) / imageResolution, DECIMALS);
     const viewExtent = getForViewAndSize(center, imageResolution, 0, [
       viewWidth,
       viewHeight,
     ]);
-    const requestWidth = Math.ceil(
-      (this.ratio_ * getWidth(extent)) / imageResolution
+    const requestWidth = ceil(
+      (this.ratio_ * getWidth(extent)) / imageResolution,
+      DECIMALS
     );
-    const requestHeight = Math.ceil(
-      (this.ratio_ * getHeight(extent)) / imageResolution
+    const requestHeight = ceil(
+      (this.ratio_ * getHeight(extent)) / imageResolution,
+      DECIMALS
     );
     const requestExtent = getForViewAndSize(center, imageResolution, 0, [
       requestWidth,
@@ -327,8 +336,14 @@ class ImageWMS extends ImageSource {
     };
     assign(params, this.params_);
 
-    this.imageSize_[0] = Math.round(getWidth(requestExtent) / imageResolution);
-    this.imageSize_[1] = Math.round(getHeight(requestExtent) / imageResolution);
+    this.imageSize_[0] = round(
+      getWidth(requestExtent) / imageResolution,
+      DECIMALS
+    );
+    this.imageSize_[1] = round(
+      getHeight(requestExtent) / imageResolution,
+      DECIMALS
+    );
 
     const url = this.getRequestUrl_(
       requestExtent,

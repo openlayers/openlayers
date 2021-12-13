@@ -3,10 +3,14 @@ import ImageState from '../../../../../src/ol/ImageState.js';
 import ImageWMS from '../../../../../src/ol/source/ImageWMS.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
-import {getHeight, getWidth} from '../../../../../src/ol/extent.js';
+import {
+  getForViewAndSize,
+  getHeight,
+  getWidth,
+} from '../../../../../src/ol/extent.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 
-describe('ol.source.ImageWMS', function () {
+describe('ol/source/ImageWMS', function () {
   let extent, pixelRatio, options, optionsReproj, projection, resolution;
   beforeEach(function () {
     extent = [10, 20, 30, 40];
@@ -85,6 +89,28 @@ describe('ol.source.ImageWMS', function () {
       const height = parseFloat(queryData.get('HEIGHT'));
       expect(width).to.be(Math.round(width));
       expect(height).to.be(Math.round(height));
+    });
+
+    it('does not request extra pixels due to floating point issues', function () {
+      const source = new ImageWMS({
+        params: {LAYERS: 'layer'},
+        url: 'http://example.com/wms',
+        ratio: 1,
+      });
+
+      const mapSize = [1110, 670];
+      const rotation = 0;
+      const resolution = 354.64216525539024;
+      const center = [1224885.7248147277, 6681822.177576577];
+      const extent = getForViewAndSize(center, resolution, rotation, mapSize);
+      const projection = getProjection('EPSG:3857');
+      const image = source.getImage(extent, resolution, 1, projection);
+      const params = new URL(image.src_).searchParams;
+
+      const imageWidth = Number(params.get('WIDTH'));
+      const imageHeight = Number(params.get('HEIGHT'));
+      expect(imageWidth).to.be(mapSize[0]);
+      expect(imageHeight).to.be(mapSize[1]);
     });
 
     it('sets WIDTH and HEIGHT to match the aspect ratio of BBOX', function () {
