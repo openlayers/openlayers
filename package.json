@@ -63,7 +63,7 @@
     "@types/topojson-specification": "^1.0.1",
     "babel-loader": "^8.2.2",
     "chaikin-smooth": "^1.0.4",
-    "clean-css-cli": "5.4.2",
+    "clean-css-cli": "5.5.0",
     "copy-webpack-plugin": "^10.0.0",
     "es-main": "^1.0.2",
     "eslint": "^8.0.1",
