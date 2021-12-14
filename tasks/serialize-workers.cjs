@@ -43,10 +43,10 @@ async function build(input, {minify = true} = {}) {
     name: 'serialize worker and export create function',
     renderChunk(code) {
       return `
-        const source = ${JSON.stringify(code)};
-        const blob = new Blob([source], {type: 'application/javascript'});
-        const url = URL.createObjectURL(blob);
         export function create() {
+          const source = ${JSON.stringify(code)};
+          const blob = new Blob([source], {type: 'application/javascript'});
+          const url = URL.createObjectURL(blob);
           return new Worker(url);
         }
       `;
