@@ -416,10 +416,11 @@ class View extends BaseObject {
    * @param {ViewOptions} options View options.
    */
   applyOptions_(options) {
-    /**
-     * @type {Object<string, *>}
-     */
-    const properties = {};
+    const properties = assign({}, options);
+    for (const key in ViewProperty) {
+      delete properties[key];
+    }
+    this.setProperties(properties, true);
 
     const resolutionConstraintInfo = createResolutionConstraint(options);
 
@@ -479,17 +480,10 @@ class View extends BaseObject {
     );
     if (options.resolution !== undefined) {
       this.setResolution(options.resolution);
-    } else if (options.zoom !== undefined) {
+    }
+    if (options.zoom !== undefined) {
       this.setZoom(options.zoom);
     }
-
-    this.setProperties(properties);
-
-    /**
-     * @private
-     * @type {ViewOptions}
-     */
-    this.options_ = options;
   }
 
   /**
@@ -531,12 +525,13 @@ class View extends BaseObject {
    * @return {ViewOptions} New options updated with the current view state.
    */
   getUpdatedOptions_(newOptions) {
-    const options = assign({}, this.options_);
+    const options = this.getProperties();
 
     // preserve resolution (or zoom)
     if (options.resolution !== undefined) {
       options.resolution = this.getResolution();
-    } else {
+    }
+    if (options.zoom !== undefined) {
       options.zoom = this.getZoom();
     }
 
@@ -973,7 +968,7 @@ class View extends BaseObject {
    * @return {boolean} Resolution constraint is set
    */
   getConstrainResolution() {
-    return this.options_.constrainResolution;
+    return this.get('constrainResolution');
   }
 
   /**
