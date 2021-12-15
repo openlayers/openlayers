@@ -257,6 +257,21 @@ describe('ol/layer/WebGLTile', function () {
     });
   });
 
+  it('dispatches a precompose event with WebGL context', (done) => {
+    let called = false;
+    layer.on('precompose', (event) => {
+      expect(event.context).to.be.a(WebGLRenderingContext);
+      called = true;
+    });
+
+    map.once('rendercomplete', () => {
+      expect(called).to.be(true);
+      done();
+    });
+
+    map.render();
+  });
+
   it('dispatches a prerender event with WebGL context and inverse pixel transform', (done) => {
     let called = false;
     layer.on('prerender', (event) => {

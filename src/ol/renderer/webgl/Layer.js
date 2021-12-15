@@ -88,6 +88,45 @@ class WebGLLayerRenderer extends LayerRenderer {
     this.helper;
 
     layer.addChangeListener(LayerProperty.MAP, this.removeHelper_.bind(this));
+
+    this.dispatchPreComposeEvent = this.dispatchPreComposeEvent.bind(this);
+    this.dispatchPostComposeEvent = this.dispatchPostComposeEvent.bind(this);
+  }
+
+  /**
+   * @param {WebGLRenderingContext} context The WebGL rendering context.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @protected
+   */
+  dispatchPreComposeEvent(context, frameState) {
+    const layer = this.getLayer();
+    if (layer.hasListener(RenderEventType.PRECOMPOSE)) {
+      const event = new RenderEvent(
+        RenderEventType.PRECOMPOSE,
+        undefined,
+        frameState,
+        context
+      );
+      layer.dispatchEvent(event);
+    }
+  }
+
+  /**
+   * @param {WebGLRenderingContext} context The WebGL rendering context.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @protected
+   */
+  dispatchPostComposeEvent(context, frameState) {
+    const layer = this.getLayer();
+    if (layer.hasListener(RenderEventType.POSTCOMPOSE)) {
+      const event = new RenderEvent(
+        RenderEventType.POSTCOMPOSE,
+        undefined,
+        frameState,
+        context
+      );
+      layer.dispatchEvent(event);
+    }
   }
 
   /**

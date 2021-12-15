@@ -450,7 +450,11 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
     const renderCount = this.indicesBuffer_.getSize();
     this.helper.drawElements(0, renderCount);
-    this.helper.finalizeDraw(frameState);
+    this.helper.finalizeDraw(
+      frameState,
+      this.dispatchPreComposeEvent,
+      this.dispatchPostComposeEvent
+    );
     const canvas = this.helper.getCanvas();
 
     if (this.hitDetectionEnabled_) {

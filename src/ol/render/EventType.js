@@ -21,16 +21,18 @@ export default {
   POSTRENDER: 'postrender',
 
   /**
-   * Triggered before layers are rendered.
-   * The event object will not have a `context` set.
+   * Triggered before layers are composed.  When dispatched by the map, the event object will not have
+   * a `context` set.  When dispatched by a layer, the event object will have a `context` set.  Only
+   * WebGL layers currently dispatch this event.
    * @event module:ol/render/Event~RenderEvent#precompose
    * @api
    */
   PRECOMPOSE: 'precompose',
 
   /**
-   * Triggered after all layers are rendered.
-   * The event object will not have a `context` set.
+   * Triggered after layers are composed.  When dispatched by the map, the event object will not have
+   * a `context` set.  When dispatched by a layer, the event object will have a `context` set.  Only
+   * WebGL layers currently dispatch this event.
    * @event module:ol/render/Event~RenderEvent#postcompose
    * @api
    */

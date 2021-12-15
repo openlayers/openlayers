@@ -250,9 +250,11 @@ class WebGLPostProcessingPass {
    * Render to the next postprocessing pass (or to the canvas if final pass).
    * @param {import("../PluggableMap.js").FrameState} frameState current frame state
    * @param {WebGLPostProcessingPass} [nextPass] Next pass, optional
+   * @param {function(WebGLRenderingContext, import("../PluggableMap.js").FrameState):void} [preCompose] Called before composing.
+   * @param {function(WebGLRenderingContext, import("../PluggableMap.js").FrameState):void} [postCompose] Called before composing.
    * @api
    */
-  apply(frameState, nextPass) {
+  apply(frameState, nextPass, preCompose, postCompose) {
     const gl = this.getGL();
     const size = frameState.size;
 
@@ -288,7 +290,13 @@ class WebGLPostProcessingPass {
 
     this.applyUniforms(frameState);
 
+    if (preCompose) {
+      preCompose(gl, frameState);
+    }
     gl.drawArrays(gl.TRIANGLES, 0, 6);
+    if (postCompose) {
+      postCompose(gl, frameState);
+    }
   }
 
   /**
