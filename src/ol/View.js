@@ -480,8 +480,7 @@ class View extends BaseObject {
     );
     if (options.resolution !== undefined) {
       this.setResolution(options.resolution);
-    }
-    if (options.zoom !== undefined) {
+    } else if (options.zoom !== undefined) {
       this.setZoom(options.zoom);
     }
   }
@@ -530,8 +529,7 @@ class View extends BaseObject {
     // preserve resolution (or zoom)
     if (options.resolution !== undefined) {
       options.resolution = this.getResolution();
-    }
-    if (options.zoom !== undefined) {
+    } else {
       options.zoom = this.getZoom();
     }
 
@@ -1731,6 +1729,7 @@ class View extends BaseObject {
     }
     if (this.get(ViewProperty.RESOLUTION) !== newResolution) {
       this.set(ViewProperty.RESOLUTION, newResolution);
+      this.set('zoom', this.getZoom(), true);
     }
     if (
       !newCenter ||

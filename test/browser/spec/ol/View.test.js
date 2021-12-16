@@ -623,11 +623,15 @@ describe('ol/View', function () {
         minZoom: 2,
         zoom: 10,
       });
-      const options = view.getProperties();
+      view.setZoom(8);
+      view.setCenter([1, 2]);
+      view.setRotation(1);
 
-      expect(options.center).to.eql([0, 0]);
+      const options = view.getProperties();
       expect(options.minZoom).to.eql(2);
-      expect(options.zoom).to.eql(10);
+      expect(options.zoom).to.eql(8);
+      expect(options.center).to.eql([1, 2]);
+      expect(options.rotation).to.eql(1);
     });
 
     it('applies the current zoom', function () {
