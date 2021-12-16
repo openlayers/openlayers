@@ -617,6 +617,23 @@ describe('ol/View', function () {
       expect(options.zoom).to.eql(10);
     });
 
+    it('returns the current properties with getProperties()', function () {
+      const view = new View({
+        center: [0, 0],
+        minZoom: 2,
+        zoom: 10,
+      });
+      view.setZoom(8);
+      view.setCenter([1, 2]);
+      view.setRotation(1);
+
+      const options = view.getProperties();
+      expect(options.minZoom).to.eql(2);
+      expect(options.zoom).to.eql(8);
+      expect(options.center).to.eql([1, 2]);
+      expect(options.rotation).to.eql(1);
+    });
+
     it('applies the current zoom', function () {
       const view = new View({
         center: [0, 0],
@@ -1874,8 +1891,8 @@ describe('ol/View', function () {
       expect(view.getCenter()[1]).to.be(1500);
     });
     it('fits correctly to the extent when a view extent is configured', function () {
-      view.options_.extent = [1500, 0, 2500, 10000];
-      view.applyOptions_(view.options_);
+      view.set('extent', [1500, 0, 2500, 10000]);
+      view.applyOptions_(view.getProperties());
       view.fit([1000, 1000, 2000, 2000]);
       expect(view.calculateExtent()).eql([1500, 1000, 2500, 2000]);
     });
