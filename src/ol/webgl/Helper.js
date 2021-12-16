@@ -637,15 +637,25 @@ class WebGLHelper extends Disposable {
   /**
    * Apply the successive post process passes which will eventually render to the actual canvas.
    * @param {import("../PluggableMap.js").FrameState} frameState current frame state
-   * @api
+   * @param {function(WebGLRenderingContext, import("../PluggableMap.js").FrameState):void} [preCompose] Called before composing.
+   * @param {function(WebGLRenderingContext, import("../PluggableMap.js").FrameState):void} [postCompose] Called before composing.
    */
-  finalizeDraw(frameState) {
+  finalizeDraw(frameState, preCompose, postCompose) {
     // apply post processes using the next one as target
-    for (let i = 0; i < this.postProcessPasses_.length; i++) {
-      this.postProcessPasses_[i].apply(
-        frameState,
-        this.postProcessPasses_[i + 1] || null
-      );
+    for (let i = 0, ii = this.postProcessPasses_.length; i < ii; i++) {
+      if (i === ii - 1) {
+        this.postProcessPasses_[i].apply(
+          frameState,
+          null,
+          preCompose,
+          postCompose
+        );
+      } else {
+        this.postProcessPasses_[i].apply(
+          frameState,
+          this.postProcessPasses_[i + 1]
+        );
+      }
     }
   }
 
