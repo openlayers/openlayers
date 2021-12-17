@@ -208,6 +208,12 @@ class PluggableMap extends BaseObject {
 
     const optionsInternal = createOptionsInternal(options);
 
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.renderComplete_;
+
     /** @private */
     this.boundHandleBrowserEvent_ = this.handleBrowserEvent.bind(this);
 
@@ -1150,8 +1156,7 @@ class PluggableMap extends BaseObject {
       frameState &&
       this.hasListener(RenderEventType.RENDERCOMPLETE) &&
       !frameState.animate &&
-      !this.tileQueue_.getTilesLoading() &&
-      !this.getLoading()
+      this.renderComplete_
     ) {
       this.renderer_.dispatchRenderEvent(
         RenderEventType.RENDERCOMPLETE,
@@ -1527,6 +1532,11 @@ class PluggableMap extends BaseObject {
     }
 
     this.dispatchEvent(new MapEvent(MapEventType.POSTRENDER, this, frameState));
+
+    this.renderComplete_ =
+      !this.tileQueue_.getTilesLoading() &&
+      !this.tileQueue_.getCount() &&
+      !this.getLoading();
 
     if (!this.postRenderTimeoutHandle_) {
       this.postRenderTimeoutHandle_ = setTimeout(() => {
