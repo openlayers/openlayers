@@ -38,5 +38,5 @@ function update() {
   opacityOutput.innerText = opacity.toFixed(2);
 }
 opacityInput.addEventListener('input', update);
-
+opacityInput.addEventListener('change', update);
 update();
