@@ -2,6 +2,8 @@
  * @module ol/webgl
  */
 
+import {assign} from './obj.js';
+
 /**
  * Constants taken from goog.webgl
  */
@@ -89,10 +91,11 @@ const CONTEXT_IDS = ['experimental-webgl', 'webgl', 'webkit-3d', 'moz-webgl'];
  * @return {WebGLRenderingContext} WebGL rendering context.
  */
 export function getContext(canvas, opt_attributes) {
+  const attributes = assign({preserveDrawingBuffer: true}, opt_attributes);
   const ii = CONTEXT_IDS.length;
   for (let i = 0; i < ii; ++i) {
     try {
-      const context = canvas.getContext(CONTEXT_IDS[i], opt_attributes);
+      const context = canvas.getContext(CONTEXT_IDS[i], attributes);
       if (context) {
         return /** @type {!WebGLRenderingContext} */ (context);
       }

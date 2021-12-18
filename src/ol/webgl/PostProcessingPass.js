@@ -2,6 +2,8 @@
  * @module ol/webgl/PostProcessingPass
  */
 
+import {getUid} from '../util.js';
+
 const DEFAULT_VERTEX_SHADER = `
   precision mediump float;
   
@@ -265,7 +267,21 @@ class WebGLPostProcessingPass {
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, this.renderTargetTexture_);
 
-    // render the frame buffer to the canvas
+    if (!nextPass) {
+      // clear the canvas if we are the first to render to it
+      // and preserveDrawingBuffer is true
+      const canvasId = getUid(gl.canvas);
+      if (!frameState.renderTargets[canvasId]) {
+        const attributes = gl.getContextAttributes();
+        if (attributes.preserveDrawingBuffer) {
+          gl.clearColor(0.0, 0.0, 0.0, 0.0);
+          gl.clear(gl.COLOR_BUFFER_BIT);
+        }
+
+        frameState.renderTargets[canvasId] = true;
+      }
+    }
+
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);

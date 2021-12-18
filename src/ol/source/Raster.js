@@ -648,6 +648,7 @@ class RasterSource extends ImageSource {
       viewHints: [],
       wantedTiles: {},
       mapId: getUid(this),
+      renderTargets: {},
     };
 
     this.setAttributions(function (frameState) {
