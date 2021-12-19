@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import TileLayer from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/WebGLTile.js';
 import View from '../src/ol/View.js';
 import WMTS, {optionsFromCapabilities} from '../src/ol/source/WMTS.js';
 import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';
@@ -21,7 +21,17 @@ register(proj4);
 const proj27700 = getProjection('EPSG:27700');
 proj27700.setExtent([0, 0, 700000, 1300000]);
 
-const raster = new TileLayer();
+const map = new Map({
+  controls: defaultControls({
+    attributionOptions: {collapsible: false},
+  }),
+  target: 'map',
+  view: new View({
+    center: [373500, 436500],
+    projection: proj27700,
+    zoom: 7,
+  }),
+});
 
 const url =
   'https://tiles.arcgis.com/tiles/qHLhLQrcvEnxjtPr/arcgis/rest/services/OS_Open_Raster/MapServer/WMTS';
@@ -40,21 +50,12 @@ fetch(url)
     options.crossOrigin = '';
     options.projection = proj27700;
     options.wrapX = false;
-    raster.setSource(new WMTS(options));
+    map.addLayer(
+      new TileLayer({
+        source: new WMTS(options),
+      })
+    );
   });
-
-const map = new Map({
-  layers: [raster],
-  controls: defaultControls({
-    attributionOptions: {collapsible: false},
-  }),
-  target: 'map',
-  view: new View({
-    center: [373500, 436500],
-    projection: proj27700,
-    zoom: 7,
-  }),
-});
 
 const scaleLine = new ScaleLine({bar: true, text: true, minWidth: 125});
 map.addControl(scaleLine);
