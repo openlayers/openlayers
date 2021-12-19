@@ -25,6 +25,7 @@ const baseFrameState = {
   layerStatesArray: [{}],
   layerIndex: 0,
   pixelRatio: 1,
+  renderTargets: {},
 };
 
 const simpleVertexShader = `
@@ -664,6 +665,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
             zIndex: 0,
           },
         ],
+        renderTargets: {},
       };
     });
 

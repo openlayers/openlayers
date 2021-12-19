@@ -51,6 +51,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
       usedTiles: {},
       wantedTiles: {},
       tileQueue: new TileQueue(VOID, VOID),
+      renderTargets: {},
     };
   });
 

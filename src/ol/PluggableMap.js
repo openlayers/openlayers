@@ -62,6 +62,7 @@ import {removeNode} from './dom.js';
  * @property {Array<number>} viewHints ViewHints.
  * @property {!Object<string, Object<string, boolean>>} wantedTiles WantedTiles.
  * @property {string} mapId The id of the map.
+ * @property {Object<string, boolean>} renderTargets Identifiers of previously rendered elements.
  */
 
 /**
@@ -1477,6 +1478,7 @@ class PluggableMap extends BaseObject {
         viewHints: viewHints,
         wantedTiles: {},
         mapId: getUid(this),
+        renderTargets: {},
       };
       if (viewState.nextCenter && viewState.nextResolution) {
         const rotation = isNaN(viewState.nextRotation)
