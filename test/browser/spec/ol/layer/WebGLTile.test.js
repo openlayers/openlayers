@@ -339,4 +339,38 @@ describe('ol/layer/WebGLTile', function () {
     }
     expect(incorrectStyle).to.throwException(); // missing 'blue' in styleVariables
   });
+
+  it('works if the layer is constructed without a source', (done) => {
+    const sourceless = new WebGLTileLayer({
+      className: 'testlayer',
+      style: {
+        variables: {
+          r: 0,
+          g: 255,
+          b: 0,
+        },
+        color: ['color', ['var', 'r'], ['var', 'g'], ['var', 'b']],
+      },
+    });
+
+    map.addLayer(sourceless);
+
+    sourceless.setSource(
+      new DataTileSource({
+        loader(z, x, y) {
+          return new ImageData(256, 256);
+        },
+      })
+    );
+
+    let called = false;
+    layer.on('postrender', (event) => {
+      called = true;
+    });
+
+    map.once('rendercomplete', () => {
+      expect(called).to.be(true);
+      done();
+    });
+  });
 });

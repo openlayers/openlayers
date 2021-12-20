@@ -2,6 +2,7 @@
  * @module ol/layer/WebGLTile
  */
 import BaseTileLayer from './BaseTile.js';
+import LayerProperty from '../layer/Property.js';
 import WebGLTileLayerRenderer, {
   Attributes,
   Uniforms,
@@ -298,14 +299,28 @@ class WebGLTileLayer extends BaseTileLayer {
      * @private
      */
     this.styleVariables_ = this.style_.variables || {};
+
+    this.addChangeListener(LayerProperty.SOURCE, this.handleSourceUpdate_);
+  }
+
+  /**
+   * @private
+   */
+  handleSourceUpdate_() {
+    this.setStyle(this.style_);
+  }
+
+  /**
+   * @private
+   * @return {number} The number of source bands.
+   */
+  getSourceBandCount_() {
+    const source = this.getSource();
+    return source && 'bandCount' in source ? source.bandCount : 4;
   }
 
   createRenderer() {
-    const source = this.getSource();
-    const parsedStyle = parseStyle(
-      this.style_,
-      'bandCount' in source ? source.bandCount : 4
-    );
+    const parsedStyle = parseStyle(this.style_, this.getSourceBandCount_());
 
     return new WebGLTileLayerRenderer(this, {
       vertexShader: parsedStyle.vertexShader,
@@ -323,11 +338,7 @@ class WebGLTileLayer extends BaseTileLayer {
    */
   setStyle(style) {
     this.style_ = style;
-    const source = this.getSource();
-    const parsedStyle = parseStyle(
-      this.style_,
-      'bandCount' in source ? source.bandCount : 4
-    );
+    const parsedStyle = parseStyle(this.style_, this.getSourceBandCount_());
     const renderer = this.getRenderer();
     renderer.reset({
       vertexShader: parsedStyle.vertexShader,
