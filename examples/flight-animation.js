@@ -7,6 +7,7 @@ import View from '../src/ol/View.js';
 import {Stroke, Style} from '../src/ol/style.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {getVectorContext} from '../src/ol/render.js';
+import {getWidth} from '../src/ol/extent.js';
 
 const tileLayer = new TileLayer({
   source: new Stamen({
@@ -18,7 +19,7 @@ const map = new Map({
   layers: [tileLayer],
   target: 'map',
   view: new View({
-    center: [0, 0],
+    center: [-11000000, 4600000],
     zoom: 2,
   }),
 });
@@ -31,7 +32,6 @@ const style = new Style({
 });
 
 const flightsSource = new VectorSource({
-  wrapX: false,
   attributions:
     'Flight data by ' +
     '<a href="https://openflights.org/data.html">OpenFlights</a>,',
@@ -55,18 +55,23 @@ const flightsSource = new VectorSource({
           );
 
           const arcLine = arcGenerator.Arc(100, {offset: 10});
-          if (arcLine.geometries.length === 1) {
-            const line = new LineString(arcLine.geometries[0].coords);
+          // paths which cross the -180°/+180° meridian are split
+          // into two sections which will be animated sequentially
+          const features = [];
+          arcLine.geometries.forEach(function (geometry) {
+            const line = new LineString(geometry.coords);
             line.transform('EPSG:4326', 'EPSG:3857');
 
-            const feature = new Feature({
-              geometry: line,
-              finished: false,
-            });
-            // add the feature with a delay so that the animation
-            // for all features does not start at the same time
-            addLater(feature, i * 50);
-          }
+            features.push(
+              new Feature({
+                geometry: line,
+                finished: false,
+              })
+            );
+          });
+          // add the features with a delay so that the animation
+          // for all features does not start at the same time
+          addLater(features, i * 50);
         }
         tileLayer.on('postrender', animateFlights);
       });
@@ -88,7 +93,7 @@ const flightsLayer = new VectorLayer({
 
 map.addLayer(flightsLayer);
 
-const pointsPerMs = 0.1;
+const pointsPerMs = 0.02;
 function animateFlights(event) {
   const vectorContext = getVectorContext(event);
   const frameState = event.frameState;
@@ -101,26 +106,41 @@ function animateFlights(event) {
       // only draw the lines for which the animation has not finished yet
       const coords = feature.getGeometry().getCoordinates();
       const elapsedTime = frameState.time - feature.get('start');
-      const elapsedPoints = elapsedTime * pointsPerMs;
+      if (elapsedTime >= 0) {
+        const elapsedPoints = elapsedTime * pointsPerMs;
 
-      if (elapsedPoints >= coords.length) {
-        feature.set('finished', true);
+        if (elapsedPoints >= coords.length) {
+          feature.set('finished', true);
+        }
+
+        const maxIndex = Math.min(elapsedPoints, coords.length);
+        const currentLine = new LineString(coords.slice(0, maxIndex));
+
+        // animation is needed in the current and nearest adjacent wrapped world
+        const worldWidth = getWidth(map.getView().getProjection().getExtent());
+        const offset = Math.floor(map.getView().getCenter()[0] / worldWidth);
+
+        // directly draw the lines with the vector context
+        currentLine.translate(offset * worldWidth, 0);
+        vectorContext.drawGeometry(currentLine);
+        currentLine.translate(worldWidth, 0);
+        vectorContext.drawGeometry(currentLine);
       }
-
-      const maxIndex = Math.min(elapsedPoints, coords.length);
-      const currentLine = new LineString(coords.slice(0, maxIndex));
-
-      // directly draw the line with the vector context
-      vectorContext.drawGeometry(currentLine);
     }
   }
   // tell OpenLayers to continue the animation
   map.render();
 }
 
-function addLater(feature, timeout) {
+function addLater(features, timeout) {
   window.setTimeout(function () {
-    feature.set('start', Date.now());
-    flightsSource.addFeature(feature);
+    let start = Date.now();
+    features.forEach(function (feature) {
+      feature.set('start', start);
+      flightsSource.addFeature(feature);
+      const duration =
+        (feature.getGeometry().getCoordinates().length - 1) / pointsPerMs;
+      start += duration;
+    });
   }, timeout);
 }
