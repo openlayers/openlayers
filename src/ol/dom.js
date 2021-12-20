@@ -27,7 +27,6 @@ export function createCanvasContext2D(
     canvas = new OffscreenCanvas(opt_width || 300, opt_height || 300);
   } else {
     canvas = document.createElement('canvas');
-    canvas.style.all = 'unset';
   }
   if (opt_width) {
     canvas.width = opt_width;

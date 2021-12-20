@@ -76,6 +76,9 @@
   user-select: none;
   -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
+.ol-viewport canvas {
+  all: unset;
+}
 .ol-selectable {
   -webkit-touch-callout: default;
   -webkit-user-select: text;
