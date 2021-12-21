@@ -3,8 +3,9 @@
  * @module ol/style/expressions
  */
 
+import PaletteTexture from '../webgl/PaletteTexture.js';
 import {Uniforms} from '../renderer/webgl/TileLayer.js';
-import {asArray, isStringColor} from '../color.js';
+import {asArray, fromString, isStringColor} from '../color.js';
 import {log2} from '../math.js';
 
 /**
@@ -77,6 +78,11 @@ import {log2} from '../math.js';
  *   * `['color', red, green, blue, alpha]` creates a `color` value from `number` values; the `alpha` parameter is
  *     optional; if not specified, it will be set to 1.
  *     Note: `red`, `green` and `blue` components must be values between 0 and 255; `alpha` between 0 and 1.
+ *   * `['palette', index, colors]` picks a `color` value from an array of colors using the given index; the `index`
+ *     expression must evaluate to a number; the items in the `colors` array must be strings with hex colors
+ *     (e.g. `'#86A136'`), colors using the rgba[a] functional notation (e.g. `'rgb(134, 161, 54)'` or `'rgba(134, 161, 54, 1)'`),
+ *     named colors (e.g. `'red'`), or array literals with 3 ([r, g, b]) or 4 ([r, g, b, a]) values (with r, g, and b
+ *     in the 0-255 range and a in the 0-1 range).
  *
  * Values can either be literals or another operator, as they will be evaluated recursively.
  * Literal values can be of the following types:
@@ -186,6 +192,7 @@ export function isTypeUnique(valueType) {
  * @property {Object<string, number>} stringLiteralsMap This object maps all encountered string values to a number
  * @property {Object<string, string>} functions Lookup of functions used by the style.
  * @property {number} [bandCount] Number of bands per pixel.
+ * @property {Array<PaletteTexture>} [paletteTextures] List of palettes used by the style.
  */
 
 /**
@@ -415,6 +422,65 @@ Operators['var'] = {
       context.variables.push(value);
     }
     return uniformNameForVariable(value);
+  },
+};
+
+export const PALETTE_TEXTURE_ARRAY = 'u_paletteTextures';
+
+// ['palette', index, colors]
+Operators['palette'] = {
+  getReturnType: function (args) {
+    return ValueTypes.COLOR;
+  },
+  toGlsl: function (context, args) {
+    assertArgsCount(args, 2);
+    assertNumber(args[0]);
+    const index = expressionToGlsl(context, args[0]);
+    const colors = args[1];
+    if (!Array.isArray(colors)) {
+      throw new Error('The second argument of palette must be an array');
+    }
+    const numColors = colors.length;
+    const palette = new Uint8Array(numColors * 4);
+    for (let i = 0; i < numColors; i++) {
+      const candidate = colors[i];
+      /**
+       * @type {import('../color.js').Color}
+       */
+      let color;
+      if (typeof candidate === 'string') {
+        color = fromString(candidate);
+      } else {
+        if (!Array.isArray(candidate)) {
+          throw new Error(
+            'The second argument of palette must be an array of strings or colors'
+          );
+        }
+        const length = candidate.length;
+        if (length === 4) {
+          color = candidate;
+        } else {
+          if (length !== 3) {
+            throw new Error(
+              `Expected palette color to have 3 or 4 values, got ${length}`
+            );
+          }
+          color = [candidate[0], candidate[1], candidate[2], 1];
+        }
+      }
+      const offset = i * 4;
+      palette[offset] = color[0];
+      palette[offset + 1] = color[1];
+      palette[offset + 2] = color[2];
+      palette[offset + 3] = color[3] * 255;
+    }
+    if (!context.paletteTextures) {
+      context.paletteTextures = [];
+    }
+    const paletteName = `${PALETTE_TEXTURE_ARRAY}[${context.paletteTextures.length}]`;
+    const paletteTexture = new PaletteTexture(paletteName, palette);
+    context.paletteTextures.push(paletteTexture);
+    return `texture2D(${paletteName}, vec2((${index} + 0.5) / ${numColors}.0, 0.5))`;
   },
 };
 

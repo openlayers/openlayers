@@ -8,6 +8,7 @@ import WebGLTileLayerRenderer, {
   Uniforms,
 } from '../renderer/webgl/TileLayer.js';
 import {
+  PALETTE_TEXTURE_ARRAY,
   ValueTypes,
   expressionToGlsl,
   getStringNumberEquivalent,
@@ -77,6 +78,7 @@ import {assign} from '../obj.js';
  * @property {string} vertexShader The vertex shader.
  * @property {string} fragmentShader The fragment shader.
  * @property {Object<string,import("../webgl/Helper.js").UniformValue>} uniforms Uniform definitions.
+ * @property {Array<import("../webgl/PaletteTexture.js").default>} paletteTextures Palette textures.
  */
 
 /**
@@ -209,6 +211,12 @@ function parseStyle(style, bandCount) {
     `uniform sampler2D ${Uniforms.TILE_TEXTURE_ARRAY}[${textureCount}];`
   );
 
+  if (context.paletteTextures) {
+    uniformDeclarations.push(
+      `uniform sampler2D ${PALETTE_TEXTURE_ARRAY}[${context.paletteTextures.length}];`
+    );
+  }
+
   const functionDefintions = Object.keys(context.functions).map(function (
     name
   ) {
@@ -253,6 +261,7 @@ function parseStyle(style, bandCount) {
     vertexShader: vertexShader,
     fragmentShader: fragmentShader,
     uniforms: uniforms,
+    paletteTextures: context.paletteTextures,
   };
 }
 
@@ -327,6 +336,7 @@ class WebGLTileLayer extends BaseTileLayer {
       fragmentShader: parsedStyle.fragmentShader,
       uniforms: parsedStyle.uniforms,
       cacheSize: this.cacheSize_,
+      paletteTextures: parsedStyle.paletteTextures,
     });
   }
 
@@ -344,6 +354,7 @@ class WebGLTileLayer extends BaseTileLayer {
       vertexShader: parsedStyle.vertexShader,
       fragmentShader: parsedStyle.fragmentShader,
       uniforms: parsedStyle.uniforms,
+      paletteTextures: parsedStyle.paletteTextures,
     });
     this.changed();
   }
