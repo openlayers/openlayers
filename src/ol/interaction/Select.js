@@ -6,6 +6,7 @@ import CollectionEventType from '../CollectionEventType.js';
 import Event from '../events/Event.js';
 import GeometryType from '../geom/GeometryType.js';
 import Interaction from './Interaction.js';
+import VectorLayer from '../layer/Vector.js';
 import {TRUE} from '../functions.js';
 import {clear} from '../obj.js';
 import {createEditingStyle} from '../style/Style.js';
@@ -308,10 +309,8 @@ class Select extends Interaction {
   }
 
   /**
-   * Returns the associated {@link module:ol/layer/Vector~Vector vectorlayer} of
-   * the (last) selected feature. Note that this will not work with any
-   * programmatic method like pushing features to
-   * {@link module:ol/interaction/Select~Select#getFeatures collection}.
+   * Returns the associated {@link module:ol/layer/Vector~Vector vector layer} of
+   * a selected feature.
    * @param {import("../Feature.js").FeatureLike} feature Feature
    * @return {import('../layer/Vector.js').default} Layer.
    * @api
@@ -377,6 +376,24 @@ class Select extends Interaction {
     const feature = evt.element;
     if (this.style_) {
       this.applySelectedStyle_(feature);
+    }
+    if (!this.getLayer(feature)) {
+      const layer = /** @type {VectorLayer} */ (
+        this.getMap()
+          .getAllLayers()
+          .find(function (layer) {
+            if (
+              layer instanceof VectorLayer &&
+              layer.getSource() &&
+              layer.getSource().hasFeature(feature)
+            ) {
+              return layer;
+            }
+          })
+      );
+      if (layer) {
+        this.addFeatureLayerAssociation_(feature, layer);
+      }
     }
   }
 
@@ -475,8 +492,8 @@ class Select extends Interaction {
          */
         function (feature, layer) {
           if (this.filter_(feature, layer)) {
-            selected.push(feature);
             this.addFeatureLayerAssociation_(feature, layer);
+            selected.push(feature);
             return !this.multi_;
           }
         }.bind(this),
@@ -511,8 +528,8 @@ class Select extends Interaction {
         function (feature, layer) {
           if (this.filter_(feature, layer)) {
             if ((add || toggle) && !includes(features.getArray(), feature)) {
-              selected.push(feature);
               this.addFeatureLayerAssociation_(feature, layer);
+              selected.push(feature);
             } else if (
               (remove || toggle) &&
               includes(features.getArray(), feature)

@@ -375,6 +375,13 @@ describe('ol.interaction.Select', function () {
       // Select again to make sure the style change does not break selection
       simulateEvent('singleclick', 10, -20);
     });
+
+    it('returns a layer from a programmatically selected feature', function () {
+      const feature = source.getFeatures()[0];
+      interaction.getFeatures().push(feature);
+      const layerWithSelectedFeature = interaction.getLayer(feature);
+      expect(layerWithSelectedFeature).to.equal(layer);
+    });
   });
 
   describe('#setActive()', function () {
