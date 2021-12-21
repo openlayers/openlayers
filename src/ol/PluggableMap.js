@@ -665,6 +665,25 @@ class PluggableMap extends BaseObject {
   }
 
   /**
+   * Get all layers from all layer groups.
+   * @return {Array<import("./layer/Layer.js").default>} Layers.
+   */
+  getAllLayers() {
+    const layers = [];
+    function addLayersFrom(layerGroup) {
+      layerGroup.forEach(function (layer) {
+        if (layer instanceof LayerGroup) {
+          addLayersFrom(layer.getLayers());
+        } else {
+          layers.push(layer);
+        }
+      });
+    }
+    addLayersFrom(this.getLayers());
+    return layers;
+  }
+
+  /**
    * Detect layers that have a color value at a pixel on the viewport, and
    * execute a callback with each matching layer. Layers included in the
    * detection can be configured through `opt_layerFilter`.

@@ -233,6 +233,19 @@ describe('ol/Map', function () {
     });
   });
 
+  describe('#getAllLayers()', function () {
+    it('returns all layers, also from inside groups', function () {
+      const map = new Map({});
+      const layer = new TileLayer();
+      const group = new LayerGroup({layers: [layer]});
+      map.addLayer(group);
+
+      const allLayers = map.getAllLayers();
+      expect(allLayers.length).to.be(1);
+      expect(allLayers[0]).to.be(layer);
+    });
+  });
+
   describe('#setLayers()', function () {
     it('adds an array of layers to the map', function () {
       const map = new Map({});
