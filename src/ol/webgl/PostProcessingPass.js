@@ -273,7 +273,7 @@ class WebGLPostProcessingPass {
       const canvasId = getUid(gl.canvas);
       if (!frameState.renderTargets[canvasId]) {
         const attributes = gl.getContextAttributes();
-        if (attributes.preserveDrawingBuffer) {
+        if (attributes && attributes.preserveDrawingBuffer) {
           gl.clearColor(0.0, 0.0, 0.0, 0.0);
           gl.clear(gl.COLOR_BUFFER_BIT);
         }
