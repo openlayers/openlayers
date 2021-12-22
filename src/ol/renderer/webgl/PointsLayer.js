@@ -55,7 +55,7 @@ import {listen, unlistenByKey} from '../../events.js';
  * @property {string} [hitVertexShader] Vertex shader source for hit detection rendering.
  * @property {string} [hitFragmentShader] Fragment shader source for hit detection rendering.
  * @property {Object<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
- * Please note that `u_texture` is reserved for the main texture slot.
+ * Please note that `u_texture` is reserved for the main texture slot and `u_opacity` is reserved for the layer opacity.
  * @property {Array<import("./Layer").PostProcessesOptions>} [postProcesses] Post-processes definitions
  */
 
@@ -99,6 +99,7 @@ import {listen, unlistenByKey} from '../../events.js';
  * the final color that will have to be output for hit detection to work.
  *
  * The following uniform is used for the main texture: `u_texture`.
+ * The following uniform is used for the layer opacity: `u_opacity`.
  *
  * Please note that the main shader output should have premultiplied alpha, otherwise visual anomalies may occur.
  *

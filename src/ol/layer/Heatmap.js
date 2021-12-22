@@ -285,18 +285,22 @@ class Heatmap extends BaseVector {
 
             uniform sampler2D u_image;
             uniform sampler2D u_gradientTexture;
+            uniform float u_opacity;
 
             varying vec2 v_texCoord;
 
             void main() {
               vec4 color = texture2D(u_image, v_texCoord);
-              gl_FragColor.a = color.a;
+              gl_FragColor.a = color.a * u_opacity;
               gl_FragColor.rgb = texture2D(u_gradientTexture, vec2(0.5, color.a)).rgb;
               gl_FragColor.rgb *= gl_FragColor.a;
             }`,
           uniforms: {
             u_gradientTexture: function () {
               return this.gradient_;
+            }.bind(this),
+            u_opacity: function () {
+              return this.getOpacity();
             }.bind(this),
           },
         },
