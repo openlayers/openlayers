@@ -38,6 +38,8 @@ import {scale as scaleSize, toSize} from '../size.js';
  * @property {number} [transition] Transition.
  * @property {string} [key] Key.
  * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0] ZDirection.
+ * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
+ * the nearest neighbor is used when resampling.
  */
 
 /**
@@ -122,7 +124,10 @@ class TileSource extends Source {
      * @protected
      * @type {import("../Tile.js").Options}
      */
-    this.tileOptions = {transition: options.transition};
+    this.tileOptions = {
+      transition: options.transition,
+      interpolate: options.interpolate,
+    };
 
     /**
      * zDirection hint, read by the renderer. Indicates which resolution should be used

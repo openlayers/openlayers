@@ -63,6 +63,8 @@ import {easeIn} from './easing.js';
  * @typedef {Object} Options
  * @property {number} [transition=250] A duration for tile opacity
  * transitions in milliseconds. A duration of 0 disables the opacity transition.
+ * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
+ * the nearest neighbor is used when resampling.
  * @api
  */
 
@@ -123,6 +125,11 @@ class Tile extends EventTarget {
      * @type {Object<string, number>}
      */
     this.transitionStarts_ = {};
+
+    /**
+     * @type {boolean}
+     */
+    this.interpolate = !!options.interpolate;
   }
 
   /**

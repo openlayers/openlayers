@@ -13,9 +13,11 @@ import TileState from './TileState.js';
 /**
  * @typedef {Object} Options
  * @property {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
- * @property {function() : Promise<Data>} loader Data loader.
+ * @property {function(): Promise<Data>} loader Data loader.
  * @property {number} [transition=250] A duration for tile opacity
  * transitions in milliseconds. A duration of 0 disables the opacity transition.
+ * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
+ * the nearest neighbor is used when resampling.
  * @api
  */
 
@@ -26,10 +28,27 @@ class DataTile extends Tile {
   constructor(options) {
     const state = TileState.IDLE;
 
-    super(options.tileCoord, state, {transition: options.transition});
+    super(options.tileCoord, state, {
+      transition: options.transition,
+      interpolate: options.interpolate,
+    });
 
+    /**
+     * @type {function(): Promise<Data>}
+     * @private
+     */
     this.loader_ = options.loader;
+
+    /**
+     * @type {Data}
+     * @private
+     */
     this.data_ = null;
+
+    /**
+     * @type {Error}
+     * @private
+     */
     this.error_ = null;
   }
 

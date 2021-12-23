@@ -34,6 +34,8 @@ import {toPromise} from '../functions.js';
  * @property {boolean} [wrapX=false] Render tiles beyond the antimeridian.
  * @property {number} [transition] Transition time when fading in new tiles (in miliseconds).
  * @property {number} [bandCount=4] Number of bands represented in the data.
+ * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
+ * the nearest neighbor is used when resampling.
  */
 
 /**
@@ -71,6 +73,7 @@ class DataTileSource extends TileSource {
       tilePixelRatio: options.tilePixelRatio,
       wrapX: options.wrapX,
       transition: options.transition,
+      interpolate: options.interpolate,
     });
 
     /**
@@ -90,6 +93,12 @@ class DataTileSource extends TileSource {
      * @type {number}
      */
     this.bandCount = options.bandCount === undefined ? 4 : options.bandCount; // assume RGBA if undefined
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this.interpolate_ = !!options.interpolate;
   }
 
   /**
