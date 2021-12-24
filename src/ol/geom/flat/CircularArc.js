@@ -1,8 +1,8 @@
 /**
- * Computes and returns the angle at a specific point wrt. the given origin.
+ * Computes and returns the angle at a specific vector wrt. the given origin.
  * The angle is returned in radians and ranges from 0 to +2PI.
- * @param {Point} origin The given origin.
- * @param {Point} at The point for which to compute the angle.
+ * @param {Vector2} origin The given origin.
+ * @param {Vector2} at The vector for which to compute the angle.
  * @return {number} The computed angle.
  */
 function angleFromOrigin(origin, at) {
@@ -15,75 +15,81 @@ function angleFromOrigin(origin, at) {
   return angle;
 }
 
-export class Point {
+export class Vector2 {
   /**
-   * Constructs a new Point given an X and Y coordinate.
+   * Constructs a new Vector2 given an X and Y coordinate.
    * @param {number} x The X coordinate.
    * @param {number} y The Y coordinate.
    */
-  constructor(x, y) {
+  constructor(x = 0, y = 0) {
     this.x = x;
     this.y = y;
   }
 
   /**
-   * Adds a given other point and returns the result.
-   * @param {Point} other The given other point.
-   * @return {Point} The resulting point.
+   * Adds a given other vector and returns the result.
+   * @param {Vector2} other The given other vector.
+   * @return {Vector2} The resulting vector.
    */
-  add = (other) => new Point(this.x + other.x, this.y + other.y);
+  add = (other) => new Vector2(this.x + other.x, this.y + other.y);
 
   /**
-   * Subtracts a given other point and returns the result.
-   * @param {Point} other The given other point.
-   * @return {Point} The resulting point.
+   * Subtracts a given other vector and returns the result.
+   * @param {Vector2} other The given other vector.
+   * @return {Vector2} The resulting vector.
    */
-  subtract = (other) => new Point(this.x - other.x, this.y - other.y);
+  subtract = (other) => new Vector2(this.x - other.x, this.y - other.y);
 
   /**
-   * Multiplies this point with the given multiplier and returns the result.
+   * Multiplies this vector with the given multiplier and returns the result.
    * @param {number} multiplier The multiplication factor.
-   * @return {Point} The resulting point.
+   * @return {Vector2} The resulting vector.
    */
-  times = (multiplier) => new Point(this.x * multiplier, this.y * multiplier);
+  times = (multiplier) => new Vector2(this.x * multiplier, this.y * multiplier);
 
   /**
-   * Computes and returns the point's magnitude.
+   * Computes and returns the vector's magnitude.
    * @return {number} The computed magnitude.
    */
   magnitude = () => Math.sqrt(this.x * this.x + this.y * this.y);
 
   /**
-   * Rotates the point 90 degrees in clockwise direction and returns the
-   * result.
-   * @return {Point} The resulting point.
+   * Rotates the vector 90 degrees around the origin in clockwise direction
+   * and returns the result.
+   * @return {Vector2} The resulting vector.
    */
-  rotated90ClockWise = () => new Point(-this.y, this.x);
+  rotated90ClockWise = () => new Vector2(-this.y, this.x);
 
   /**
-   * Tests if this point and the given other point are equal in terms of
-   * coordinates. Note that they are required to be exactly equal in order
-   * for them to be considered equal.
-   * @param {Point} other The given other point.
+   * Computes and returns the distance from this vector to a given other.
+   * @param {Vector2} other The given other vector.
+   * @return {number} The computed distance.
+   */
+  distance = (other) => this.subtract(other).magnitude();
+
+  /**
+   * Tests if this vector and the given other vector are equal. They are
+   * considered equal if the distance between them is smaller than 1e-6.
+   * @param {Vector2} other The given other vector.
    * @return {boolean} True if equal, false otherwise.
    */
-  equals = (other) => this.x === other.x && this.y === other.y;
+  equals = (other) => this.distance(other) < 1e-6;
 
   /**
-   * Computes and returns the normalized version of this point.
-   * @return {Point} The normalized point.
+   * Computes and returns the normalized version of this vector.
+   * @return {Vector2} The normalized vector.
    */
   normalized = () => {
     const magnitude = this.magnitude();
-    return new Point(this.x / magnitude, this.y / magnitude);
+    return new Vector2(this.x / magnitude, this.y / magnitude);
   };
 }
 
 export class Line {
   /**
-   * Constructs a new Line given a begin and end point.
-   * @param {Point} begin The given begin point.
-   * @param {Point} end The given end point.
+   * Constructs a new Line given a begin and end vector.
+   * @param {Vector2} begin The given begin vector.
+   * @param {Vector2} end The given end vector.
    */
   constructor(begin, end) {
     this.begin = begin;
@@ -91,17 +97,14 @@ export class Line {
   }
 
   /**
-   * Computes and returns the center point of the line.
-   * @return {Point} The center point.
+   * Computes and returns the center of the line.
+   * @return {Vector2} The center.
    */
-  center = () => {
-    return this.begin.add(
-      this.end
-        .subtract(this.begin)
-        .normalized()
-        .times(0.5 * this.length())
+  center = () =>
+    new Vector2(
+      (this.begin.x + this.end.x) / 2.0,
+      (this.begin.y + this.end.y) / 2.0
     );
-  };
 
   /**
    * Computes and returns the length of the line.
@@ -110,19 +113,18 @@ export class Line {
   length = () => this.end.subtract(this.begin).magnitude();
 
   /**
-   * Computes and returns a unit vector (point) in direction of the line's end
-   * point.
-   * @return {Point} The computed unit vector (point).
+   * Computes and returns a unit vector in direction of the line's end.
+   * @return {Vector2} The computed unit vector.
    */
   unit = () => this.end.subtract(this.begin).normalized();
 
   /**
-   * Computes and returns the point at which this line and a given other line
+   * Computes and returns the vector at which this line and a given other line
    * would intersect, if any. If no such intersection can be computed an
-   * exception is thrown. The returned point is the point where they would
+   * exception is thrown. The returned vector is the vector where they would
    * intersect if they don't actually intersect as of right now.
    * @param {Line} other The given other line.
-   * @return {Point} The point of intersection.
+   * @return {Vector2} The vector of intersection.
    */
   intersection = (other) => {
     // source:
@@ -155,18 +157,22 @@ export class Line {
     const px = (u1 * u2x - u3x * u4) / d;
     const py = (u1 * u2y - u3y * u4) / d;
 
-    return new Point(px, py);
+    return new Vector2(px, py);
   };
 }
 
 export class CircularArc {
   /**
    * Constructs a circular arc given a begin, middle and end point.
-   * @param {Point} begin The given begin point.
-   * @param {Point} middle The given middle point.
-   * @param {Point} end The given end point.
+   * @param {Vector2} begin The given begin point.
+   * @param {Vector2} middle The given middle point.
+   * @param {Vector2} end The given end point.
    */
-  constructor(begin, middle, end) {
+  constructor(
+    begin = new Vector2(),
+    middle = new Vector2(),
+    end = new Vector2()
+  ) {
     this.begin = begin;
     this.middle = middle;
     this.end = end;
@@ -174,7 +180,7 @@ export class CircularArc {
 
   /**
    * Computes and returns everything necessary in order to draw this arc.
-   * @return {{middle: Point, startAngle: number, centerOfCircle: Point, clockwise: boolean, endAngle: number, end: Point, radius: number, begin: Point}}
+   * @return {{middle: Vector2, startAngle: number, centerOfCircle: Vector2, clockwise: boolean, endAngle: number, end: Vector2, radius: number, begin: Vector2}}
    */
   drawable = () => {
     const center = this.centerOfCircle();
@@ -239,7 +245,7 @@ export class CircularArc {
 
   /**
    * Computes and returns the center of the circle.
-   * @return {Point} The center of the circle.
+   * @return {Vector2} The center of the circle.
    */
   centerOfCircle = () => {
     if (this.fullCircle()) {

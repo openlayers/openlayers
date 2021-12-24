@@ -2,6 +2,7 @@
  * @module ol/render/canvas/Executor
  */
 import CanvasInstruction from './Instruction.js';
+import {CircularArc} from '../../geom/flat/CircularArc.js';
 import {TEXT_ALIGN} from './TextBuilder.js';
 import {WORKER_OFFSCREEN_CANVAS} from '../../has.js';
 import {
@@ -26,7 +27,6 @@ import {drawTextOnPath} from '../../geom/flat/textpath.js';
 import {equals} from '../../array.js';
 import {lineStringLength} from '../../geom/flat/length.js';
 import {transform2D} from '../../geom/flat/transform.js';
-import {Point, CircularArc} from "../../geom/flat/CircularArc.js";
 
 /**
  * @typedef {Object} BBox
@@ -661,11 +661,7 @@ class Executor {
       rotation: viewRotation,
     });
 
-    const tmpArc = new CircularArc(
-      new Point(0, 0),
-      new Point(0, 0),
-      new Point(0, 0)
-    );
+    const tmpArc = new CircularArc();
 
     // When the batch size gets too big, performance decreases. 200 is a good
     // balance between batch size and number of fill/stroke instructions.
