@@ -823,14 +823,14 @@ describe('ol/tilegrid/TileGrid.js', function () {
       expect(tileCoord[2]).to.eql(1);
 
       // pixels are top aligned to the origin
-      coordinate = [1280, -2559.999];
+      coordinate = [1280, -2549.999];
       tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, 10);
       expect(tileCoord[0]).to.eql(0);
       expect(tileCoord[1]).to.eql(0);
       expect(tileCoord[2]).to.eql(0);
 
       // pixels are left aligned to the origin
-      coordinate = [2559.999, -1280];
+      coordinate = [2549.999, -1280];
       tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, 10);
       expect(tileCoord[0]).to.eql(0);
       expect(tileCoord[1]).to.eql(0);
@@ -947,6 +947,44 @@ describe('ol/tilegrid/TileGrid.js', function () {
   });
 
   describe('getTileRangeForExtentAndZ', function () {
+    it('includes a tile even if a fraction of a pixel is covered', function () {
+      const tileGrid = new TileGrid({
+        resolutions: [1],
+        origin: [0, 10],
+        tileSize: 10,
+      });
+
+      let tileRange;
+
+      // overlaps to the right
+      tileRange = tileGrid.getTileRangeForExtentAndZ([0, 0, 10.1, 10], 0);
+      expect(tileRange.minX).to.be(0);
+      expect(tileRange.maxX).to.be(1);
+      expect(tileRange.minY).to.be(0);
+      expect(tileRange.maxY).to.be(0);
+
+      // overlaps to the bottom
+      tileRange = tileGrid.getTileRangeForExtentAndZ([0, -0.1, 10, 10], 0);
+      expect(tileRange.minX).to.be(0);
+      expect(tileRange.maxX).to.be(0);
+      expect(tileRange.minY).to.be(0);
+      expect(tileRange.maxY).to.be(1);
+
+      // overlaps to the left
+      tileRange = tileGrid.getTileRangeForExtentAndZ([-0.1, 0, 10, 10], 0);
+      expect(tileRange.minX).to.be(-1);
+      expect(tileRange.maxX).to.be(0);
+      expect(tileRange.minY).to.be(0);
+      expect(tileRange.maxY).to.be(0);
+
+      // overlaps to the top
+      tileRange = tileGrid.getTileRangeForExtentAndZ([0, 0, 10, 10.1], 0);
+      expect(tileRange.minX).to.be(0);
+      expect(tileRange.maxX).to.be(0);
+      expect(tileRange.minY).to.be(-1);
+      expect(tileRange.maxY).to.be(0);
+    });
+
     it('returns the expected TileRange', function () {
       const tileGrid = new TileGrid({
         resolutions: resolutions,

@@ -294,7 +294,11 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     const tileSource = tileLayer.getSource();
     const tileGrid = tileSource.getTileGridForProjection(viewState.projection);
     const tileTextureCache = this.tileTextureCache_;
-    const tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
+    const tileRange = tileGrid.getTileRangeForExtentAndZ(
+      extent,
+      z,
+      this.tempTileRange_
+    );
 
     const tileSourceKey = getUid(tileSource);
     if (!(tileSourceKey in frameState.wantedTiles)) {

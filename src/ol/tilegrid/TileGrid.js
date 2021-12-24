@@ -6,7 +6,7 @@ import TileRange, {
 } from '../TileRange.js';
 import {DEFAULT_TILE_SIZE} from './common.js';
 import {assert} from '../asserts.js';
-import {clamp} from '../math.js';
+import {ceil, clamp, floor} from '../math.js';
 import {createOrUpdate, getTopLeft} from '../extent.js';
 import {createOrUpdate as createOrUpdateTileCoord} from '../tilecoord.js';
 import {isSorted, linearFindNearest} from '../array.js';
@@ -17,6 +17,12 @@ import {toSize} from '../size.js';
  * @type {import("../tilecoord.js").TileCoord}
  */
 const tmpTileCoord = [0, 0, 0];
+
+/**
+ * Number of decimal digits to consider in integer values when rounding.
+ * @type {number}
+ */
+const DECIMALS = 5;
 
 /**
  * @typedef {Object} Options
@@ -520,19 +526,15 @@ class TileGrid {
     const origin = this.getOrigin(z);
     const tileSize = toSize(this.getTileSize(z), this.tmpSize_);
 
-    const adjustX = reverseIntersectionPolicy ? 0.5 : 0;
-    const adjustY = reverseIntersectionPolicy ? 0.5 : 0;
-    const xFromOrigin = Math.floor((x - origin[0]) / resolution + adjustX);
-    const yFromOrigin = Math.floor((origin[1] - y) / resolution + adjustY);
-    let tileCoordX = (scale * xFromOrigin) / tileSize[0];
-    let tileCoordY = (scale * yFromOrigin) / tileSize[1];
+    let tileCoordX = (scale * (x - origin[0])) / resolution / tileSize[0];
+    let tileCoordY = (scale * (origin[1] - y)) / resolution / tileSize[1];
 
     if (reverseIntersectionPolicy) {
-      tileCoordX = Math.ceil(tileCoordX) - 1;
-      tileCoordY = Math.ceil(tileCoordY) - 1;
+      tileCoordX = ceil(tileCoordX, DECIMALS) - 1;
+      tileCoordY = ceil(tileCoordY, DECIMALS) - 1;
     } else {
-      tileCoordX = Math.floor(tileCoordX);
-      tileCoordY = Math.floor(tileCoordY);
+      tileCoordX = floor(tileCoordX, DECIMALS);
+      tileCoordY = floor(tileCoordY, DECIMALS);
     }
 
     return createOrUpdateTileCoord(z, tileCoordX, tileCoordY, opt_tileCoord);
@@ -558,19 +560,15 @@ class TileGrid {
     const resolution = this.getResolution(z);
     const tileSize = toSize(this.getTileSize(z), this.tmpSize_);
 
-    const adjustX = reverseIntersectionPolicy ? 0.5 : 0;
-    const adjustY = reverseIntersectionPolicy ? 0.5 : 0;
-    const xFromOrigin = Math.floor((x - origin[0]) / resolution + adjustX);
-    const yFromOrigin = Math.floor((origin[1] - y) / resolution + adjustY);
-    let tileCoordX = xFromOrigin / tileSize[0];
-    let tileCoordY = yFromOrigin / tileSize[1];
+    let tileCoordX = (x - origin[0]) / resolution / tileSize[0];
+    let tileCoordY = (origin[1] - y) / resolution / tileSize[1];
 
     if (reverseIntersectionPolicy) {
-      tileCoordX = Math.ceil(tileCoordX) - 1;
-      tileCoordY = Math.ceil(tileCoordY) - 1;
+      tileCoordX = ceil(tileCoordX, DECIMALS) - 1;
+      tileCoordY = ceil(tileCoordY, DECIMALS) - 1;
     } else {
-      tileCoordX = Math.floor(tileCoordX);
-      tileCoordY = Math.floor(tileCoordY);
+      tileCoordX = floor(tileCoordX, DECIMALS);
+      tileCoordY = floor(tileCoordY, DECIMALS);
     }
 
     return createOrUpdateTileCoord(z, tileCoordX, tileCoordY, opt_tileCoord);
