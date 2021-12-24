@@ -1,6 +1,7 @@
 /**
  * @module ol/format/WKB
  */
+import CircularString from '../geom/CircularString.js';
 import Feature from '../Feature.js';
 import FeatureFormat, {transformGeometryWithOptions} from './Feature.js';
 import FormatType from './FormatType.js';
@@ -13,7 +14,6 @@ import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
-import CircularString from "../geom/CircularString.js";
 import {get as getProjection} from '../proj.js';
 
 import SimpleGeometry from '../geom/SimpleGeometry.js';
@@ -118,7 +118,7 @@ class WkbReader {
   }
 
   /**
-   * @returns {Array<import('../coordinate.js').Coordinate>}
+   * @return {Array<import('../coordinate.js').Coordinate>} coords for CircularString
    */
   readCircularString() {
     return this.readLineString();
@@ -362,7 +362,10 @@ class WkbReader {
         );
 
       case WKBGeometryType.CIRCULAR_STRING:
-        return new CircularString(result, this.layout_);
+        return new CircularString(
+          /** @type {Array<import('../coordinate.js').Coordinate>} */ (result),
+          this.layout_
+        );
 
       default:
         return null;

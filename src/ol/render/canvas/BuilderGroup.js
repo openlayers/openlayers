@@ -14,10 +14,10 @@ import TextBuilder from './TextBuilder.js';
  */
 const BATCH_CONSTRUCTORS = {
   'Circle': PolygonBuilder,
+  'CircularString': CircularStringBuilder,
   'Default': Builder,
   'Image': ImageBuilder,
   'LineString': LineStringBuilder,
-  'CircularString': CircularStringBuilder,
   'Polygon': PolygonBuilder,
   'Text': TextBuilder,
 };

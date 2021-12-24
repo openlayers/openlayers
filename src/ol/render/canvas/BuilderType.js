@@ -7,10 +7,10 @@
  */
 export default {
   CIRCLE: 'Circle',
+  CIRCULAR_STRING: 'CircularString',
   DEFAULT: 'Default',
   IMAGE: 'Image',
   LINE_STRING: 'LineString',
-  CIRCULAR_STRING: 'CircularString',
   POLYGON: 'Polygon',
   TEXT: 'Text',
 };
