@@ -186,7 +186,7 @@ const GEOMETRY_READERS = {
 function concatenateArcs(indices, arcs) {
   /** @type {Array<import("../coordinate.js").Coordinate>} */
   const coordinates = [];
-  let index, arc;
+  let index;
   for (let i = 0, ii = indices.length; i < ii; ++i) {
     index = indices[i];
     if (i > 0) {
@@ -195,16 +195,17 @@ function concatenateArcs(indices, arcs) {
     }
     if (index >= 0) {
       // forward arc
-      arc = arcs[index];
+      const arc = arcs[index];
+      for (let j = 0, jj = arc.length; j < jj; ++j) {
+        coordinates.push(arc[j].slice(0));
+      }
     } else {
       // reverse arc
-      arc = arcs[~index].slice().reverse();
+      const arc = arcs[~index];
+      for (let j = arc.length - 1; j >= 0; --j) {
+        coordinates.push(arc[j].slice(0));
+      }
     }
-    coordinates.push.apply(coordinates, arc);
-  }
-  // provide fresh copies of coordinate arrays
-  for (let j = 0, jj = coordinates.length; j < jj; ++j) {
-    coordinates[j] = coordinates[j].slice();
   }
   return coordinates;
 }
