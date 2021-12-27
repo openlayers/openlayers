@@ -6,7 +6,6 @@ import ImageState from '../ImageState.js';
 import ReprojImage from '../reproj/Image.js';
 import Source from './Source.js';
 import {ENABLE_RASTER_REPROJECTION} from '../reproj/common.js';
-import {IMAGE_SMOOTHING_DISABLED} from './common.js';
 import {abstract} from '../util.js';
 import {equals} from '../extent.js';
 import {equivalent} from '../proj.js';
@@ -76,7 +75,9 @@ export class ImageSourceEvent extends Event {
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
- * @property {boolean} [imageSmoothing=true] Enable image smoothing.
+ * @property {boolean} [imageSmoothing=true] Deprecated.  Use the `interpolate` option instead.
+ * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
+ * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection.
  * @property {Array<number>} [resolutions] Resolutions.
  * @property {import("./State.js").default} [state] State.
@@ -96,10 +97,17 @@ class ImageSource extends Source {
    * @param {Options} options Single image source options.
    */
   constructor(options) {
+    let interpolate =
+      options.imageSmoothing !== undefined ? options.imageSmoothing : true;
+    if (options.interpolate !== undefined) {
+      interpolate = options.interpolate;
+    }
+
     super({
       attributions: options.attributions,
       projection: options.projection,
       state: options.state,
+      interpolate: interpolate,
     });
 
     /***
@@ -135,13 +143,6 @@ class ImageSource extends Source {
      * @type {number}
      */
     this.reprojectedRevision_ = 0;
-
-    /**
-     * @private
-     * @type {object|undefined}
-     */
-    this.contextOptions_ =
-      options.imageSmoothing === false ? IMAGE_SMOOTHING_DISABLED : undefined;
   }
 
   /**
@@ -149,13 +150,6 @@ class ImageSource extends Source {
    */
   getResolutions() {
     return this.resolutions_;
-  }
-
-  /**
-   * @return {Object|undefined} Context options.
-   */
-  getContextOptions() {
-    return this.contextOptions_;
   }
 
   /**
@@ -218,7 +212,7 @@ class ImageSource extends Source {
             sourceProjection
           );
         }.bind(this),
-        this.contextOptions_
+        this.getInterpolate()
       );
       this.reprojectedRevision_ = this.getRevision();
 

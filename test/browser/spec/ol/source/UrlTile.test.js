@@ -2,7 +2,7 @@ import UrlTile from '../../../../../src/ol/source/UrlTile.js';
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 
-describe('ol.source.UrlTile', function () {
+describe('ol/source/UrlTile', function () {
   describe('#setUrl()', function () {
     it('sets the URL for the source', function () {
       const source = new UrlTile({});
@@ -20,6 +20,18 @@ describe('ol.source.UrlTile', function () {
       source.setUrl(url);
 
       expect(source.getKey()).to.eql(url);
+    });
+  });
+
+  describe('#getInterpolate()', function () {
+    it('is false by default', function () {
+      const source = new UrlTile({});
+      expect(source.getInterpolate()).to.be(false);
+    });
+
+    it('is true if constructed with interpolate: true', function () {
+      const source = new UrlTile({interpolate: true});
+      expect(source.getInterpolate()).to.be(true);
     });
   });
 

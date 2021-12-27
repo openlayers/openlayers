@@ -32,7 +32,7 @@ class ReprojImage extends ImageBase {
    * @param {number} pixelRatio Pixel ratio.
    * @param {FunctionType} getImageFunction
    *     Function returning source images (extent, resolution, pixelRatio).
-   * @param {object} [opt_contextOptions] Properties to set on the canvas context.
+   * @param {boolean} interpolate Use linear interpolation when resampling.
    */
   constructor(
     sourceProj,
@@ -41,7 +41,7 @@ class ReprojImage extends ImageBase {
     targetResolution,
     pixelRatio,
     getImageFunction,
-    opt_contextOptions
+    interpolate
   ) {
     const maxSourceExtent = sourceProj.getExtent();
     const maxTargetExtent = targetProj.getExtent();
@@ -124,9 +124,9 @@ class ReprojImage extends ImageBase {
 
     /**
      * @private
-     * @type {object}
+     * @type {boolean}
      */
-    this.contextOptions_ = opt_contextOptions;
+    this.interpolate_ = interpolate;
 
     /**
      * @private
@@ -191,7 +191,7 @@ class ReprojImage extends ImageBase {
         ],
         0,
         undefined,
-        this.contextOptions_
+        this.interpolate_
       );
     }
     this.state = sourceState;

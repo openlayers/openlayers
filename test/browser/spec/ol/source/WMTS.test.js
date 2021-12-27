@@ -7,7 +7,7 @@ import WMTSTileGrid from '../../../../../src/ol/tilegrid/WMTS.js';
 import {getBottomLeft, getTopRight} from '../../../../../src/ol/extent.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 
-describe('ol.source.WMTS', function () {
+describe('ol/source/WMTS', function () {
   describe('when creating options from capabilities', function () {
     const parser = new WMTSCapabilities();
     let capabilities, content;
@@ -227,6 +227,23 @@ describe('ol.source.WMTS', function () {
       expect(options.urls[0]).to.be.eql(
         'http://www.maps.bob/cgi-bin/MiraMon5_0.cgi?'
       );
+    });
+  });
+
+  describe('#getInterpolate()', function () {
+    it('is true by default', function () {
+      const source = new WMTS({});
+      expect(source.getInterpolate()).to.be(true);
+    });
+
+    it('is false if constructed with interpolate: false', function () {
+      const source = new WMTS({interpolate: false});
+      expect(source.getInterpolate()).to.be(false);
+    });
+
+    it('is false if constructed with imageSmoothing: false', function () {
+      const source = new WMTS({imageSmoothing: false});
+      expect(source.getInterpolate()).to.be(false);
     });
   });
 

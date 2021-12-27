@@ -1,7 +1,7 @@
 import ImageArcGISRest from '../../../../../src/ol/source/ImageArcGISRest.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 
-describe('ol.source.ImageArcGISRest', function () {
+describe('ol/source/ImageArcGISRest', function () {
   let pixelRatio, options, projection, proj3857, resolution;
   beforeEach(function () {
     pixelRatio = 1;
@@ -12,6 +12,27 @@ describe('ol.source.ImageArcGISRest', function () {
       params: {},
       url: 'http://example.com/MapServer',
     };
+  });
+
+  describe('#getInterpolate()', function () {
+    it('is true by default', function () {
+      const source = new ImageArcGISRest(options);
+      expect(source.getInterpolate()).to.be(true);
+    });
+
+    it('is false if constructed with interpolate: false', function () {
+      const source = new ImageArcGISRest(
+        Object.assign({interpolate: false}, options)
+      );
+      expect(source.getInterpolate()).to.be(false);
+    });
+
+    it('is false if constructed with imageSmoothing: false', function () {
+      const source = new ImageArcGISRest(
+        Object.assign({imageSmoothing: false}, options)
+      );
+      expect(source.getInterpolate()).to.be(false);
+    });
   });
 
   describe('#getImage', function () {

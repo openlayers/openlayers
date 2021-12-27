@@ -18,7 +18,7 @@ import {getKeyZXY} from '../../../../../src/ol/tilecoord.js';
 import {listen} from '../../../../../src/ol/events.js';
 import {register} from '../../../../../src/ol/proj/proj4.js';
 
-describe('ol.source.TileImage', function () {
+describe('ol/source/TileImage', function () {
   function createSource(opt_proj, opt_tileGrid, opt_cacheSize) {
     const proj = opt_proj || 'EPSG:3857';
     return new TileImage({
@@ -30,6 +30,23 @@ describe('ol.source.TileImage', function () {
       ),
     });
   }
+
+  describe('#getInterpolate()', function () {
+    it('is true by default', function () {
+      const source = new TileImage({});
+      expect(source.getInterpolate()).to.be(true);
+    });
+
+    it('is false if constructed with interpolate: false', function () {
+      const source = new TileImage({interpolate: false});
+      expect(source.getInterpolate()).to.be(false);
+    });
+
+    it('is false if constructed with imageSmoothing: false', function () {
+      const source = new TileImage({imageSmoothing: false});
+      expect(source.getInterpolate()).to.be(false);
+    });
+  });
 
   describe('#getTileCacheForProjection', function () {
     it('uses the cacheSize for reprojected tile caches', function () {

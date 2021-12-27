@@ -1,12 +1,29 @@
 import BingMaps, {quadKey} from '../../../../../src/ol/source/BingMaps.js';
 import {unByKey} from '../../../../../src/ol/Observable.js';
 
-describe('ol.source.BingMaps', function () {
+describe('ol/source/BingMaps', function () {
   describe('quadKey()', function () {
     it('returns expected string', function () {
       const tileCoord = [3, 3, 5];
       const s = quadKey(tileCoord);
       expect(s).to.eql('213');
+    });
+  });
+
+  describe('#getInterpolate()', function () {
+    it('is true by default', function () {
+      const source = new BingMaps({});
+      expect(source.getInterpolate()).to.be(true);
+    });
+
+    it('is false if constructed with interpolate: false', function () {
+      const source = new BingMaps({interpolate: false});
+      expect(source.getInterpolate()).to.be(false);
+    });
+
+    it('is false if constructed with imageSmoothing: false', function () {
+      const source = new BingMaps({imageSmoothing: false});
+      expect(source.getInterpolate()).to.be(false);
     });
   });
 

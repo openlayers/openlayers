@@ -39,7 +39,7 @@ class ReprojTile extends Tile {
    *     Function returning source tiles (z, x, y, pixelRatio).
    * @param {number} [opt_errorThreshold] Acceptable reprojection error (in px).
    * @param {boolean} [opt_renderEdges] Render reprojection edges.
-   * @param {object} [opt_contextOptions] Properties to set on the canvas context.
+   * @param {boolean} [opt_interpolate] Use linear interpolation when resampling.
    */
   constructor(
     sourceProj,
@@ -53,21 +53,15 @@ class ReprojTile extends Tile {
     getTileFunction,
     opt_errorThreshold,
     opt_renderEdges,
-    opt_contextOptions
+    opt_interpolate
   ) {
-    super(tileCoord, TileState.IDLE);
+    super(tileCoord, TileState.IDLE, {interpolate: !!opt_interpolate});
 
     /**
      * @private
      * @type {boolean}
      */
     this.renderEdges_ = opt_renderEdges !== undefined ? opt_renderEdges : false;
-
-    /**
-     * @private
-     * @type {object}
-     */
-    this.contextOptions_ = opt_contextOptions;
 
     /**
      * @private
@@ -272,6 +266,7 @@ class ReprojTile extends Tile {
       const targetExtent = this.targetTileGrid_.getTileCoordExtent(
         this.wrappedTileCoord_
       );
+
       this.canvas_ = renderReprojected(
         width,
         height,
@@ -284,7 +279,7 @@ class ReprojTile extends Tile {
         sources,
         this.gutter_,
         this.renderEdges_,
-        this.contextOptions_
+        this.interpolate
       );
 
       this.state = TileState.LOADED;

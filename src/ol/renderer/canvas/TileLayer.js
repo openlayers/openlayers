@@ -4,6 +4,7 @@
 import CanvasLayerRenderer from './Layer.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
+import {IMAGE_SMOOTHING_DISABLED} from './common.js';
 import {
   apply as applyTransform,
   compose as composeTransform,
@@ -317,7 +318,10 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       this.clipUnrotated(context, frameState, layerExtent);
     }
 
-    assign(context, tileSource.getContextOptions());
+    if (!tileSource.getInterpolate()) {
+      assign(context, IMAGE_SMOOTHING_DISABLED);
+    }
+
     this.preRender(context, frameState);
 
     this.renderedTiles.length = 0;

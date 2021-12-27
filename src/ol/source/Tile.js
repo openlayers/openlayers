@@ -61,6 +61,7 @@ class TileSource extends Source {
       projection: options.projection,
       state: options.state,
       wrapX: options.wrapX,
+      interpolate: options.interpolate,
     });
 
     /***

@@ -93,12 +93,6 @@ class DataTileSource extends TileSource {
      * @type {number}
      */
     this.bandCount = options.bandCount === undefined ? 4 : options.bandCount; // assume RGBA if undefined
-
-    /**
-     * @type {boolean}
-     * @private
-     */
-    this.interpolate_ = !!options.interpolate;
   }
 
   /**

@@ -2,7 +2,7 @@ import DataTile from '../../../../../src/ol/DataTile.js';
 import DataTileSource from '../../../../../src/ol/source/DataTile.js';
 import TileState from '../../../../../src/ol/TileState.js';
 
-describe('ol.source.DataTile', function () {
+describe('ol/source/DataTile', function () {
   /** @type {DataTileSource} */
   let source;
   beforeEach(function () {
@@ -37,6 +37,18 @@ describe('ol.source.DataTile', function () {
       });
 
       tile.load();
+    });
+  });
+
+  describe('#getInterpolate()', function () {
+    it('is false by default', function () {
+      const source = new DataTileSource({loader: () => {}});
+      expect(source.getInterpolate()).to.be(false);
+    });
+
+    it('is true if constructed with interpoate: true', function () {
+      const source = new DataTileSource({interpolate: true, loader: () => {}});
+      expect(source.getInterpolate()).to.be(true);
     });
   });
 });

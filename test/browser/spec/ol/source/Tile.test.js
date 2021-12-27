@@ -48,7 +48,7 @@ MockTile.prototype.getTile = function (z, x, y) {
   }
 };
 
-describe('ol.source.Tile', function () {
+describe('ol/source/Tile', function () {
   describe('constructor', function () {
     it('returns a tile source', function () {
       const source = new TileSource({
@@ -106,6 +106,18 @@ describe('ol.source.Tile', function () {
       const key = 'foo';
       source.setKey(key);
       expect(source.getKey()).to.equal(key);
+    });
+  });
+
+  describe('#getInterpolate()', function () {
+    it('is false by default', function () {
+      const source = new TileSource({});
+      expect(source.getInterpolate()).to.be(false);
+    });
+
+    it('is true if constructed with interpolate: true', function () {
+      const source = new TileSource({interpolate: true});
+      expect(source.getInterpolate()).to.be(true);
     });
   });
 
