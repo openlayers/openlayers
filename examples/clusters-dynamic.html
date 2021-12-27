@@ -1,0 +1,16 @@
+---
+layout: example.html
+title: Dynamic clusters
+shortdesc: Clusters with zoom-to-cluster, hull view, and uncluttering of overlapping features.
+docs: >
+  <p>This example shows open data of subsidized photovoltaic installations in Vienna. Different style functions
+    are used for cluster display, single feature display, convex hull of a cluster, and an expanded view of
+    overlapping features. Hovering over a cluster shows its convex hull. Clicking on a cluster zooms to the
+    extent of the contained features. Clicking on a cluster consisting of features that are very close to each other reveals an expanded view
+    of the features, along a circle around the cluster.</p>
+  <p>Features are styled differently depending on the power of the photovoltaic installation.</p>
+tags: "marker, cluster, vector, style, convex hull"
+resources:
+  - https://unpkg.com/monotone-chain-convex-hull@1.0.0/lib/index.js
+---
+<div id="map" class="map"></div>
