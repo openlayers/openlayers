@@ -1,6 +1,6 @@
 ## Upgrade notes
 
-### Next
+### v6.10.0
 
 #### New `interpolate` option for sources
 
