@@ -26,6 +26,8 @@ import {getUid} from '../util.js';
  * @property {number} [transition] Transition.
  * @property {string} [key] Key.
  * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0] ZDirection.
+ * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
+ * the nearest neighbor is used when resampling.
  */
 
 /**
@@ -49,6 +51,7 @@ class UrlTile extends TileSource {
       tilePixelRatio: options.tilePixelRatio,
       wrapX: options.wrapX,
       transition: options.transition,
+      interpolate: options.interpolate,
       key: options.key,
       attributionsCollapsible: options.attributionsCollapsible,
       zDirection: options.zDirection,

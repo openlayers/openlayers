@@ -34,7 +34,7 @@ const map = new Map({
   }),
 });
 
-const imageSmoothing = document.getElementById('imageSmoothing');
+const interpolate = document.getElementById('interpolate');
 
 function setSource() {
   const source = new Static({
@@ -44,10 +44,10 @@ function setSource() {
     crossOrigin: '',
     projection: 'EPSG:27700',
     imageExtent: imageExtent,
-    imageSmoothing: imageSmoothing.checked,
+    interpolate: interpolate.checked,
   });
   imageLayer.setSource(source);
 }
 setSource();
 
-imageSmoothing.addEventListener('change', setSource);
+interpolate.addEventListener('change', setSource);

@@ -2,7 +2,7 @@ import IIIF from '../../../../../src/ol/source/IIIF.js';
 import {DEFAULT_TILE_SIZE} from '../../../../../src/ol/tilegrid/common.js';
 import {Versions} from '../../../../../src/ol/format/IIIFInfo.js';
 
-describe('ol.source.IIIF', function () {
+describe('ol/source/IIIF', function () {
   const width = 2000,
     height = 1500,
     size = [width, height],
@@ -138,6 +138,23 @@ describe('ol.source.IIIF', function () {
       expect(tileUrlFunction([0, 0, 0])).to.be(
         'http://iiif.test/other-image-id/full/full/0/default.jpg'
       );
+    });
+  });
+
+  describe('#getInterpolate()', function () {
+    it('is true by default', function () {
+      const source = new IIIF({size: size});
+      expect(source.getInterpolate()).to.be(true);
+    });
+
+    it('is false if constructed with interpolate: false', function () {
+      const source = new IIIF({size: size, interpolate: false});
+      expect(source.getInterpolate()).to.be(false);
+    });
+
+    it('is false if constructed with imageSmoothing: false', function () {
+      const source = new IIIF({size: size, imageSmoothing: false});
+      expect(source.getInterpolate()).to.be(false);
     });
   });
 

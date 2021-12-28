@@ -1,5 +1,29 @@
 ## Upgrade notes
 
+### Next
+
+#### New `interpolate` option for sources
+
+Sources now have an `interpolate` option.  This option controls whether data from the source is interpolated when resampling.
+
+For `ol/source/DataTile` sources, the default is `interpolate: false`.  This means that when a data tile source is used with a WebGL tile layer renderer, your style expression will have access to pixel values in the data tiles without interpolation.  If this option is set to true, linear interpolation will be used when over- or under-sampling the data.
+
+#### Deprecation of the `imageSmoothing` option for sources
+
+The `imageSmoothing` option for sources has been deprecated and will be removed in the next major release.  Use the `interpolate` option instead.
+
+```js
+// if you were using `imageSmoothing`
+const before = new TileSource({
+  imageSmoothing: false
+});
+
+// use the `interpolate` option instead
+const after = new TileSource({
+  interpolate: false
+});
+```
+
 ### v6.9.0
 
 There should be nothing special required when upgrading from v6.8 to v6.9.

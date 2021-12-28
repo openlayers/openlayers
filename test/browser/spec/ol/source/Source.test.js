@@ -1,7 +1,7 @@
 import Source from '../../../../../src/ol/source/Source.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 
-describe('ol.source.Source', function () {
+describe('ol/source/Source', function () {
   describe('constructor', function () {
     it('returns a source', function () {
       const source = new Source({
@@ -72,6 +72,18 @@ describe('ol.source.Source', function () {
       source.on('change', changedSpy);
       source.refresh();
       expect(changedSpy.called).to.be.ok();
+    });
+  });
+
+  describe('#getInterpolate()', function () {
+    it('returns false by default', function () {
+      const source = new Source({});
+      expect(source.getInterpolate()).to.be(false);
+    });
+
+    it('returns true if constructed with interpolate: true', function () {
+      const source = new Source({interpolate: true});
+      expect(source.getInterpolate()).to.be(true);
     });
   });
 

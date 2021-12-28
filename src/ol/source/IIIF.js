@@ -20,7 +20,9 @@ import {toSize} from '../size.js';
  * @property {null|string} [crossOrigin] The value for the crossOrigin option of the request.
  * @property {import("../extent.js").Extent} [extent=[0, -height, width, 0]] The extent.
  * @property {string} [format='jpg'] Requested image format.
- * @property {boolean} [imageSmoothing=true] Enable image smoothing.
+ * @property {boolean} [imageSmoothing=true] Deprecated.  Use the `interpolate` option instead.
+ * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
+ * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection.
  * @property {string} [quality] Requested IIIF image quality. Default is 'native'
  * for version 1, 'default' for versions 2 and 3.
@@ -68,6 +70,12 @@ class IIIF extends TileImage {
      * @type {Partial<Options>}
      */
     const options = opt_options || {};
+
+    let interpolate =
+      options.imageSmoothing !== undefined ? options.imageSmoothing : true;
+    if (options.interpolate !== undefined) {
+      interpolate = options.interpolate;
+    }
 
     let baseUrl = options.url || '';
     baseUrl =
@@ -333,7 +341,7 @@ class IIIF extends TileImage {
       attributionsCollapsible: options.attributionsCollapsible,
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
-      imageSmoothing: options.imageSmoothing,
+      interpolate: interpolate,
       projection: options.projection,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       state: options.state,

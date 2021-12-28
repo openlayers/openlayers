@@ -4,7 +4,7 @@ import TileWMS from '../../../../../src/ol/source/TileWMS.js';
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 
-describe('ol.source.TileWMS', function () {
+describe('ol/source/TileWMS', function () {
   let options, optionsReproj;
   beforeEach(function () {
     options = {
@@ -29,6 +29,23 @@ describe('ol.source.TileWMS', function () {
         tileGrid: createXYZ({maxZoom: 6}),
       });
       expect(source).to.be.an(TileWMS);
+    });
+  });
+
+  describe('#getInterpolate()', function () {
+    it('is true by default', function () {
+      const source = new TileWMS();
+      expect(source.getInterpolate()).to.be(true);
+    });
+
+    it('is false if constructed with interpolate: false', function () {
+      const source = new TileWMS({interpolate: false});
+      expect(source.getInterpolate()).to.be(false);
+    });
+
+    it('is false if constructed with imageSmoothing: false', function () {
+      const source = new TileWMS({imageSmoothing: false});
+      expect(source.getInterpolate()).to.be(false);
     });
   });
 

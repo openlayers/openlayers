@@ -8,7 +8,6 @@ import TileCache from '../TileCache.js';
 import TileState from '../TileState.js';
 import UrlTile from './UrlTile.js';
 import {ENABLE_RASTER_REPROJECTION} from '../reproj/common.js';
-import {IMAGE_SMOOTHING_DISABLED} from './common.js';
 import {equivalent, get as getProjection} from '../proj.js';
 import {getKey, getKeyZXY} from '../tilecoord.js';
 import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
@@ -22,7 +21,9 @@ import {getUid} from '../util.js';
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
- * @property {boolean} [imageSmoothing=true] Enable image smoothing.
+ * @property {boolean} [imageSmoothing=true] Deprecated.  Use the `interpolate` option instead.
+ * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
+ * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
@@ -70,6 +71,12 @@ class TileImage extends UrlTile {
    * @param {!Options} options Image tile options.
    */
   constructor(options) {
+    let interpolate =
+      options.imageSmoothing !== undefined ? options.imageSmoothing : true;
+    if (options.interpolate !== undefined) {
+      interpolate = options.interpolate;
+    }
+
     super({
       attributions: options.attributions,
       cacheSize: options.cacheSize,
@@ -86,6 +93,7 @@ class TileImage extends UrlTile {
       urls: options.urls,
       wrapX: options.wrapX,
       transition: options.transition,
+      interpolate: interpolate,
       key: options.key,
       attributionsCollapsible: options.attributionsCollapsible,
       zDirection: options.zDirection,
@@ -122,13 +130,6 @@ class TileImage extends UrlTile {
      * @type {number|undefined}
      */
     this.reprojectionErrorThreshold_ = options.reprojectionErrorThreshold;
-
-    /**
-     * @private
-     * @type {object|undefined}
-     */
-    this.contextOptions_ =
-      options.imageSmoothing === false ? IMAGE_SMOOTHING_DISABLED : undefined;
 
     /**
      * @private
@@ -177,13 +178,6 @@ class TileImage extends UrlTile {
   }
 
   /**
-   * @return {Object|undefined} Context options.
-   */
-  getContextOptions() {
-    return this.contextOptions_;
-  }
-
-  /**
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {number} Gutter.
    */
@@ -212,10 +206,11 @@ class TileImage extends UrlTile {
    * @return {string} The key for all tiles.
    */
   getKey() {
-    return (
-      super.getKey() +
-      (this.contextOptions_ ? '\n' + JSON.stringify(this.contextOptions_) : '')
-    );
+    let key = super.getKey();
+    if (!this.getInterpolate()) {
+      key += ':disable-interpolation';
+    }
+    return key;
   }
 
   /**
@@ -365,7 +360,7 @@ class TileImage extends UrlTile {
           }.bind(this),
           this.reprojectionErrorThreshold_,
           this.renderReprojectionEdges_,
-          this.contextOptions_
+          this.getInterpolate()
         );
         newTile.key = key;
 

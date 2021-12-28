@@ -1,7 +1,7 @@
 /**
  * @module ol/reproj
  */
-import {IMAGE_SMOOTHING_DISABLED} from './source/common.js';
+import {IMAGE_SMOOTHING_DISABLED} from './renderer/canvas/common.js';
 import {assign} from './obj.js';
 import {
   containsCoordinate,
@@ -198,7 +198,7 @@ export function calculateSourceExtentResolution(
  * @param {Array<ImageExtent>} sources Array of sources.
  * @param {number} gutter Gutter of the sources.
  * @param {boolean} [opt_renderEdges] Render reprojection edges.
- * @param {object} [opt_contextOptions] Properties to set on the canvas context.
+ * @param {object} [opt_interpolate] Use linear interpolation when resampling.
  * @return {HTMLCanvasElement} Canvas with reprojected data.
  */
 export function render(
@@ -213,13 +213,16 @@ export function render(
   sources,
   gutter,
   opt_renderEdges,
-  opt_contextOptions
+  opt_interpolate
 ) {
   const context = createCanvasContext2D(
     Math.round(pixelRatio * width),
     Math.round(pixelRatio * height)
   );
-  assign(context, opt_contextOptions);
+
+  if (!opt_interpolate) {
+    assign(context, IMAGE_SMOOTHING_DISABLED);
+  }
 
   if (sources.length === 0) {
     return context.canvas;
@@ -244,7 +247,10 @@ export function render(
     Math.round((pixelRatio * canvasWidthInUnits) / sourceResolution),
     Math.round((pixelRatio * canvasHeightInUnits) / sourceResolution)
   );
-  assign(stitchContext, opt_contextOptions);
+
+  if (!opt_interpolate) {
+    assign(stitchContext, IMAGE_SMOOTHING_DISABLED);
+  }
 
   const stitchScale = pixelRatio / sourceResolution;
 
@@ -341,10 +347,7 @@ export function render(
     context.save();
     context.beginPath();
 
-    if (
-      isBrokenDiagonalRendering() ||
-      opt_contextOptions === IMAGE_SMOOTHING_DISABLED
-    ) {
+    if (isBrokenDiagonalRendering() || !opt_interpolate) {
       // Make sure that all lines are horizontal or vertical
       context.moveTo(u1, v1);
       // This is the diagonal line. Do it in 4 steps

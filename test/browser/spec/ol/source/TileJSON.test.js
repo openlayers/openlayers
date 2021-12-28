@@ -3,7 +3,7 @@ import TileJSON from '../../../../../src/ol/source/TileJSON.js';
 import {transformExtent} from '../../../../../src/ol/proj.js';
 import {unByKey} from '../../../../../src/ol/Observable.js';
 
-describe('ol.source.TileJSON', function () {
+describe('ol/source/TileJSON', function () {
   describe('constructor', function () {
     it('returns a tileJSON source', function () {
       const source = new TileJSON({
@@ -11,6 +11,29 @@ describe('ol.source.TileJSON', function () {
       });
       expect(source).to.be.a(Source);
       expect(source).to.be.a(TileJSON);
+    });
+  });
+
+  describe('#getInterpolate()', function () {
+    it('is true by default', function () {
+      const source = new TileJSON({url: 'spec/ol/data/tilejson.json'});
+      expect(source.getInterpolate()).to.be(true);
+    });
+
+    it('is false if constructed with interpolate: false', function () {
+      const source = new TileJSON({
+        interpolate: false,
+        url: 'spec/ol/data/tilejson.json',
+      });
+      expect(source.getInterpolate()).to.be(false);
+    });
+
+    it('is false if constructed with imageSmoothing: false', function () {
+      const source = new TileJSON({
+        imageSmoothing: false,
+        url: 'spec/ol/data/tilejson.json',
+      });
+      expect(source.getInterpolate()).to.be(false);
     });
   });
 

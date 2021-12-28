@@ -23,7 +23,9 @@ export const ATTRIBUTION =
  * @property {null|string} [crossOrigin='anonymous'] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
- * @property {boolean} [imageSmoothing=true] Enable image smoothing.
+ * @property {boolean} [imageSmoothing=true] Deprecated.  Use the `interpolate` option instead.
+ * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
+ * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {number} [maxZoom=19] Max zoom.
  * @property {boolean} [opaque=true] Whether the layer is opaque.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
@@ -56,6 +58,12 @@ class OSM extends XYZ {
   constructor(opt_options) {
     const options = opt_options || {};
 
+    let interpolate =
+      options.imageSmoothing !== undefined ? options.imageSmoothing : true;
+    if (options.interpolate !== undefined) {
+      interpolate = options.interpolate;
+    }
+
     let attributions;
     if (options.attributions !== undefined) {
       attributions = options.attributions;
@@ -76,7 +84,7 @@ class OSM extends XYZ {
       attributionsCollapsible: false,
       cacheSize: options.cacheSize,
       crossOrigin: crossOrigin,
-      imageSmoothing: options.imageSmoothing,
+      interpolate: interpolate,
       maxZoom: options.maxZoom !== undefined ? options.maxZoom : 19,
       opaque: options.opaque !== undefined ? options.opaque : true,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,

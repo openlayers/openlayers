@@ -8,7 +8,7 @@ const attributions =
   '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
   '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
 
-const disabledLayer = new TileLayer({
+const notInterpolated = new TileLayer({
   // specify className so forEachLayerAtPixel can distinguish layers
   className: 'ol-layer-dem',
   source: new XYZ({
@@ -18,21 +18,11 @@ const disabledLayer = new TileLayer({
     tileSize: 512,
     maxZoom: 12,
     crossOrigin: '',
-    imageSmoothing: false,
+    interpolate: false,
   }),
 });
 
-const imagery = new TileLayer({
-  className: 'ol-layer-imagery',
-  source: new XYZ({
-    attributions: attributions,
-    url: 'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=' + key,
-    maxZoom: 20,
-    crossOrigin: '',
-  }),
-});
-
-const enabledLayer = new TileLayer({
+const interpolated = new TileLayer({
   source: new XYZ({
     attributions: attributions,
     url:
@@ -43,30 +33,6 @@ const enabledLayer = new TileLayer({
   }),
 });
 
-imagery.on('prerender', function (evt) {
-  // use opaque background to conceal DEM while fully opaque imagery renders
-  if (imagery.getOpacity() === 1) {
-    evt.context.fillStyle = 'white';
-    evt.context.fillRect(
-      0,
-      0,
-      evt.context.canvas.width,
-      evt.context.canvas.height
-    );
-  }
-});
-
-const control = document.getElementById('opacity');
-const output = document.getElementById('output');
-const listener = function () {
-  output.innerText = control.value;
-  imagery.setOpacity(control.value / 100);
-};
-control.addEventListener('input', listener);
-control.addEventListener('change', listener);
-output.innerText = control.value;
-imagery.setOpacity(control.value / 100);
-
 const view = new View({
   center: [6.893, 45.8295],
   zoom: 16,
@@ -75,13 +41,13 @@ const view = new View({
 
 const map1 = new Map({
   target: 'map1',
-  layers: [disabledLayer, imagery],
+  layers: [notInterpolated],
   view: view,
 });
 
 const map2 = new Map({
   target: 'map2',
-  layers: [enabledLayer],
+  layers: [interpolated],
   view: view,
 });
 
@@ -101,7 +67,7 @@ const showElevations = function (evt) {
     },
     {
       layerFilter: function (layer) {
-        return layer === disabledLayer;
+        return layer === notInterpolated;
       },
     }
   );
@@ -114,7 +80,7 @@ const showElevations = function (evt) {
     },
     {
       layerFilter: function (layer) {
-        return layer === enabledLayer;
+        return layer === interpolated;
       },
     }
   );

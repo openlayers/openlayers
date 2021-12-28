@@ -1,7 +1,7 @@
 import Static from '../../../../../src/ol/source/ImageStatic.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 
-describe('ol.source.ImageStatic', function () {
+describe('ol/source/ImageStatic', function () {
   let extent, pixelRatio, projection, resolution;
   beforeEach(function () {
     extent = [
@@ -11,6 +11,23 @@ describe('ol.source.ImageStatic', function () {
     pixelRatio = 1;
     projection = getProjection('EPSG:3857');
     resolution = 38;
+  });
+
+  describe('#getInterpolate()', function () {
+    it('is true by default', function () {
+      const source = new Static({});
+      expect(source.getInterpolate()).to.be(true);
+    });
+
+    it('is false if constructed with interpolate: false', function () {
+      const source = new Static({interpolate: false});
+      expect(source.getInterpolate()).to.be(false);
+    });
+
+    it('is false if constructed with imageSmoothing: false', function () {
+      const source = new Static({imageSmoothing: false});
+      expect(source.getInterpolate()).to.be(false);
+    });
   });
 
   describe('#getImage', function () {

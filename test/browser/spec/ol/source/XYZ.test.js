@@ -7,7 +7,7 @@ import View from '../../../../../src/ol/View.js';
 import XYZ from '../../../../../src/ol/source/XYZ.js';
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
 
-describe('ol.source.XYZ', function () {
+describe('ol/source/XYZ', function () {
   describe('constructor', function () {
     it('can be constructed without options', function () {
       const source = new XYZ();
@@ -44,6 +44,23 @@ describe('ol.source.XYZ', function () {
         minZoom: 2,
       });
       expect(tileSource.getTileGrid().getMinZoom()).to.be(2);
+    });
+  });
+
+  describe('getInterpolate()', function () {
+    it('is true by default', function () {
+      const source = new XYZ();
+      expect(source.getInterpolate()).to.be(true);
+    });
+
+    it('is false if constructed with interpolate: false', function () {
+      const source = new XYZ({interpolate: false});
+      expect(source.getInterpolate()).to.be(false);
+    });
+
+    it('is false if constructed with imageSmoothing: false', function () {
+      const source = new XYZ({imageSmoothing: false});
+      expect(source.getInterpolate()).to.be(false);
     });
   });
 

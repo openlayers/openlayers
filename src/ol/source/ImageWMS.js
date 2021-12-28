@@ -46,7 +46,9 @@ const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
  * @property {import("./WMSServerType.js").default|string} [serverType] The type of
  * the remote WMS server: `mapserver`, `geoserver` or `qgis`. Only needed if `hidpi` is `true`.
  * @property {import("../Image.js").LoadFunction} [imageLoadFunction] Optional function to load an image given a URL.
- * @property {boolean} [imageSmoothing=true] Enable image smoothing.
+ * @property {boolean} [imageSmoothing=true] Deprecated.  Use the `interpolate` option instead.
+ * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
+ * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {Object<string,*>} params WMS request parameters.
  * At least a `LAYERS` param is required. `STYLES` is
  * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX`
@@ -74,9 +76,15 @@ class ImageWMS extends ImageSource {
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
 
+    let interpolate =
+      options.imageSmoothing !== undefined ? options.imageSmoothing : true;
+    if (options.interpolate !== undefined) {
+      interpolate = options.interpolate;
+    }
+
     super({
       attributions: options.attributions,
-      imageSmoothing: options.imageSmoothing,
+      interpolate: interpolate,
       projection: options.projection,
       resolutions: options.resolutions,
     });

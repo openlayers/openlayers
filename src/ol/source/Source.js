@@ -31,6 +31,8 @@ import {get as getProjection} from '../proj.js';
  * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {import("./State.js").default} [state='ready'] State.
  * @property {boolean} [wrapX=false] WrapX.
+ * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
+ * the nearest neighbor is used when resampling.
  */
 
 /**
@@ -90,6 +92,12 @@ class Source extends BaseObject {
      * @type {boolean}
      */
     this.wrapX_ = options.wrapX !== undefined ? options.wrapX : false;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.interpolate_ = !!options.interpolate;
 
     /**
      * @protected
@@ -172,10 +180,10 @@ class Source extends BaseObject {
   }
 
   /**
-   * @return {Object|undefined} Context options.
+   * @return {boolean} Use linear interpolation when resampling.
    */
-  getContextOptions() {
-    return undefined;
+  getInterpolate() {
+    return this.interpolate_;
   }
 
   /**

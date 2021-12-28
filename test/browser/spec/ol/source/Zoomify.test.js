@@ -4,7 +4,7 @@ import Zoomify, {CustomTile} from '../../../../../src/ol/source/Zoomify.js';
 import {DEFAULT_TILE_SIZE} from '../../../../../src/ol/tilegrid/common.js';
 import {listen} from '../../../../../src/ol/events.js';
 
-describe('ol.source.Zoomify', function () {
+describe('ol/source/Zoomify', function () {
   const w = 1024;
   const h = 512;
   const size = [w, h];
@@ -138,6 +138,27 @@ describe('ol.source.Zoomify', function () {
         const tileGrid = sources[i].getTileGrid();
         expect(tileGrid).to.be.a(TileGrid);
       }
+    });
+  });
+
+  describe('#getInterpolate()', function () {
+    it('is true by default', function () {
+      const source = new Zoomify({url: '', size: [47, 11]});
+      expect(source.getInterpolate()).to.be(true);
+    });
+
+    it('is false if constructed with interpolate: false', function () {
+      const source = new Zoomify({interpolate: false, url: '', size: [47, 11]});
+      expect(source.getInterpolate()).to.be(false);
+    });
+
+    it('is false if constructed with imageSmoothing: false', function () {
+      const source = new Zoomify({
+        imageSmoothing: false,
+        url: '',
+        size: [47, 11],
+      });
+      expect(source.getInterpolate()).to.be(false);
     });
   });
 
