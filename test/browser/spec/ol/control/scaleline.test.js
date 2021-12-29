@@ -640,5 +640,49 @@ describe('ol.control.ScaleLine', function () {
       expect(text.slice(0, 4)).to.be('1 : ');
       expect(text.replace(/^1|\D/g, '')).to.eql(69885283);
     });
+    it('it corresponds to the resolution in EPSG:4326', function () {
+      const ctrl = new ScaleLine({
+        bar: true,
+        text: true,
+      });
+      ctrl.setMap(map);
+      map.setView(
+        new View({
+          center: [0, 0],
+          zoom: 2,
+          multiWorld: true,
+          projection: 'EPSG:4326',
+        })
+      );
+      map.renderSync();
+      const element = document.querySelector('.ol-scale-text', map.getTarget());
+      expect(element).to.not.be(null);
+      expect(element).to.be.a(HTMLDivElement);
+      const text = element.innerText;
+      expect(text.slice(0, 4)).to.be('1 : ');
+      expect(text.replace(/^1|\D/g, '')).to.eql(139614359);
+    });
+    it('it changes with latitude in EPSG:4326', function () {
+      const ctrl = new ScaleLine({
+        bar: true,
+        text: true,
+      });
+      ctrl.setMap(map);
+      map.setView(
+        new View({
+          center: [0, 60],
+          zoom: 2,
+          multiWorld: true,
+          projection: 'EPSG:4326',
+        })
+      );
+      map.renderSync();
+      const element = document.querySelector('.ol-scale-text', map.getTarget());
+      expect(element).to.not.be(null);
+      expect(element).to.be.a(HTMLDivElement);
+      const text = element.innerText;
+      expect(text.slice(0, 4)).to.be('1 : ');
+      expect(text.replace(/^1|\D/g, '')).to.eql(104710728);
+    });
   });
 });
