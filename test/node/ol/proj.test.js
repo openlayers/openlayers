@@ -421,7 +421,17 @@ describe('ol/proj.js', function () {
       let pointResolution = getPointResolution('EPSG:4326', 1, [0, 0], 'm');
       expect(pointResolution).to.roughlyEqual(111195.0802335329, 1e-5);
       pointResolution = getPointResolution('EPSG:4326', 1, [0, 52], 'm');
-      expect(pointResolution).to.roughlyEqual(89826.53390979706, 1e-5);
+      expect(pointResolution).to.roughlyEqual(89826.803688743, 1e-5);
+    });
+    it('returns point resolution for EPSG:4326 consistent with resolution', function () {
+      let pointResolution = getPointResolution('EPSG:4326', 30, [0, 0], 'm');
+      expect(pointResolution / 30).to.roughlyEqual(111195.0802335329, 1e-5);
+      pointResolution = getPointResolution('EPSG:4326', 1e-8, [0, 0], 'm');
+      expect(pointResolution / 1e-8).to.roughlyEqual(111195.0802335329, 1e-5);
+      pointResolution = getPointResolution('EPSG:4326', 30, [0, 52], 'm');
+      expect(pointResolution / 30).to.roughlyEqual(89826.803688743, 1e-5);
+      pointResolution = getPointResolution('EPSG:4326', 1e-8, [0, 52], 'm');
+      expect(pointResolution / 1e-8).to.roughlyEqual(89826.803688743, 1e-5);
     });
     it('returns the correct point resolution for EPSG:3857', function () {
       let pointResolution = getPointResolution('EPSG:3857', 1, [0, 0]);
