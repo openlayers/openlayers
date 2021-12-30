@@ -682,7 +682,7 @@ describe('ol.control.ScaleLine', function () {
       expect(element).to.be.a(HTMLDivElement);
       const text = element.innerText;
       expect(text.slice(0, 4)).to.be('1 : ');
-      expect(text.replace(/^1|\D/g, '')).to.eql(104710728);
+      expect(text.replace(/^1|\D/g, '')).to.eql(104710769);
     });
   });
 });
