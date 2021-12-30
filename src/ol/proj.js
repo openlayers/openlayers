@@ -216,20 +216,44 @@ export function getPointResolution(projection, resolution, point, opt_units) {
         // no transform is available
         pointResolution = resolution * projection.getMetersPerUnit();
       } else {
-        let vertices = [
-          point[0] - resolution / 2,
-          point[1],
-          point[0] + resolution / 2,
-          point[1],
-          point[0],
-          point[1] - resolution / 2,
-          point[0],
-          point[1] + resolution / 2,
-        ];
-        vertices = toEPSG4326(vertices, vertices, 2);
-        const width = getDistance(vertices.slice(0, 2), vertices.slice(2, 4));
-        const height = getDistance(vertices.slice(4, 6), vertices.slice(6, 8));
-        pointResolution = (width + height) / 2;
+        let width = 0;
+        let height = 0;
+        let fraction = 1 / 2;
+        const calculateDimensions = function () {
+          const offset = resolution * fraction;
+          let vertices = [
+            point[0] - offset,
+            point[1],
+            point[0] + offset,
+            point[1],
+            point[0],
+            point[1] - offset,
+            point[0],
+            point[1] + offset,
+          ];
+          vertices = toEPSG4326(vertices, vertices, 2);
+          width = getDistance(vertices.slice(0, 2), vertices.slice(2, 4));
+          height = getDistance(vertices.slice(4, 6), vertices.slice(6, 8));
+        };
+        calculateDimensions();
+        // Measurements over large distances can be inaccurate due to
+        // changes in point resolution across the area, and over small
+        // distances are limited by the accuracy of spherical distance
+        // calculations, so aim to fit at least one dimension between
+        // 10 and 1000 meters on the ground. Target is 100 meters.
+        const target = 100;
+        const minDimension = Math.min(width, height);
+        if (minDimension > target) {
+          fraction *= target / minDimension;
+          calculateDimensions();
+        } else {
+          const maxDimension = Math.max(width, height);
+          if (maxDimension < target) {
+            fraction *= target / maxDimension;
+            calculateDimensions();
+          }
+        }
+        pointResolution = (width + height) / (4 * fraction);
       }
       const metersPerUnit = opt_units
         ? METERS_PER_UNIT[opt_units]
