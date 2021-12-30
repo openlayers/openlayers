@@ -1,0 +1,18 @@
+---
+layout: example.html
+title: Projection and Scale
+shortdesc: Example of maintaining scale when changing projection.
+docs: >
+  Example of maintaining scale when changing projection.
+  `getPointResolution()` is used to calculate the resolution for the
+  new projection which corresponds to that for the old projection. 
+tags: "projection, scale"
+---
+<div id="map" class="map"></div>
+<div>
+  <label for="view-projection">View projection</label>
+  <select id="view-projection">
+    <option value="EPSG:3857">Spherical Mercator (EPSG:3857)</option>
+    <option value="EPSG:4326" selected>WGS 84 (EPSG:4326)</option>
+  </select>
+</div>
