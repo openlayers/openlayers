@@ -4,7 +4,6 @@
 import DataTile from './DataTile.js';
 import State from './State.js';
 import TileGrid from '../tilegrid/TileGrid.js';
-import {Pool, fromUrl as tiffFromUrl, fromUrls as tiffFromUrls} from 'geotiff';
 import {
   Projection,
   get as getCachedProjection,
@@ -90,10 +89,12 @@ const STATISTICS_MINIMUM = 'STATISTICS_MINIMUM';
  * @property {function():number} getSamplesPerPixel Get the number of samples per pixel.
  */
 
+let geotiff;
+
 let workerPool;
 function getWorkerPool() {
   if (!workerPool) {
-    workerPool = new Pool(undefined, createDecoderWorker());
+    workerPool = new geotiff.Pool(undefined, createDecoderWorker());
   }
   return workerPool;
 }
@@ -208,9 +209,9 @@ function getImagesForTIFF(tiff) {
 function getImagesForSource(source) {
   let request;
   if (source.overviews) {
-    request = tiffFromUrls(source.url, source.overviews);
+    request = geotiff.fromUrls(source.url, source.overviews);
   } else {
-    request = tiffFromUrl(source.url);
+    request = geotiff.fromUrl(source.url);
   }
   return request.then(getImagesForTIFF);
 }
@@ -403,13 +404,25 @@ class GeoTIFFSource extends DataTile {
     this.setKey(this.sourceInfo_.map((source) => source.url).join(','));
 
     const self = this;
-    const requests = new Array(numSources);
-    for (let i = 0; i < numSources; ++i) {
-      requests[i] = getImagesForSource(this.sourceInfo_[i]);
-    }
-    Promise.all(requests)
-      .then(function (sources) {
-        self.configure_(sources);
+    const geotiffPromise = geotiff
+      ? Promise.resolve(geotiff)
+      : import('geotiff');
+    geotiffPromise
+      .then(function (geotiffImport) {
+        geotiff = geotiffImport;
+        const requests = new Array(numSources);
+        for (let i = 0; i < numSources; ++i) {
+          requests[i] = getImagesForSource(self.sourceInfo_[i]);
+        }
+        Promise.all(requests)
+          .then(function (sources) {
+            self.configure_(sources);
+          })
+          .catch(function (error) {
+            console.error(error); // eslint-disable-line no-console
+            self.error_ = error;
+            self.setState(State.ERROR);
+          });
       })
       .catch(function (error) {
         console.error(error); // eslint-disable-line no-console
