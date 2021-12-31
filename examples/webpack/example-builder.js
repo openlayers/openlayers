@@ -329,7 +329,7 @@ export default class ExampleBuilder {
           source = this.cloakSource(source, data.cloak);
           assets[fileName] = source;
           return {
-            name: sourceConfig.as ?? fileName,
+            name: sourceConfig.as || fileName,
             source: source,
             type: ext,
           };
