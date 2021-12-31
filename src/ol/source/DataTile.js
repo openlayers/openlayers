@@ -22,6 +22,8 @@ import {toPromise} from '../functions.js';
  * @typedef {Object} Options
  * @property {Loader} [loader] Data loader.  Called with z, x, and y tile coordinates.
  * Returns {@link import("../DataTile.js").Data data} for a tile or a promise for the same.
+ * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [maxZoom=42] Optional max zoom level. Not used if `tileGrid` is provided.
  * @property {number} [minZoom=0] Optional min zoom level. Not used if `tileGrid` is provided.
  * @property {number|import("../size.js").Size} [tileSize=[256, 256]] The pixel width and height of the tiles.
@@ -66,6 +68,8 @@ class DataTileSource extends TileSource {
 
     super({
       cacheSize: 0.1, // don't cache on the source
+      attributions: options.attributions,
+      attributionsCollapsible: options.attributionsCollapsible,
       projection: projection,
       tileGrid: tileGrid,
       opaque: options.opaque,
