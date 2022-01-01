@@ -4,7 +4,11 @@
 import DataTile from './DataTile.js';
 import State from './State.js';
 import TileGrid from '../tilegrid/TileGrid.js';
-import {Pool, fromUrl as tiffFromUrl, fromUrls as tiffFromUrls} from 'geotiff';
+import {
+  Pool,
+  fromUrl as tiffFromUrl,
+  fromUrls as tiffFromUrls,
+} from 'geotiff/src/geotiff.js';
 import {
   Projection,
   get as getCachedProjection,
