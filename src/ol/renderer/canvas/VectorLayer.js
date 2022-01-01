@@ -233,7 +233,12 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     const canvasTransform = transformToString(this.pixelTransform);
 
-    this.useContainer(target, canvasTransform, layerState.opacity);
+    this.useContainer(
+      target,
+      canvasTransform,
+      layerState.opacity,
+      this.getBackground(frameState)
+    );
     const context = this.context;
     const canvas = context.canvas;
 
