@@ -151,9 +151,12 @@ function createWorker(config, onMessage) {
     '});',
   ]);
 
-  const blob = new Blob(lines, {type: 'text/javascript'});
-  const source = URL.createObjectURL(blob);
-  const worker = new Worker(source);
+  const worker = new Worker(
+    typeof Blob === 'undefined'
+      ? 'data:text/javascript;base64,' +
+        Buffer.from(lines.join('\n'), 'binary').toString('base64')
+      : URL.createObjectURL(new Blob(lines, {type: 'text/javascript'}))
+  );
   worker.addEventListener('message', onMessage);
   return worker;
 }

@@ -45,9 +45,9 @@ async function build(input, {minify = true} = {}) {
       return `
         export function create() {
           const source = ${JSON.stringify(code)};
-          const blob = new Blob([source], {type: 'application/javascript'});
-          const url = URL.createObjectURL(blob);
-          return new Worker(url);
+          return new Worker(typeof Blob === 'undefined'
+            ? 'data:application/javascript;base64,' + Buffer.from(source, 'binary').toString('base64')
+            : URL.createObjectURL(new Blob([source], {type: 'application/javascript'})));
         }
       `;
     },
