@@ -7,7 +7,7 @@ import {Fill, Stroke, Style} from '../src/ol/style.js';
 
 const style = new Style({
   fill: new Fill({
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: '#eeeeee',
   }),
 });
 

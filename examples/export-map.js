@@ -2,28 +2,33 @@ import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Map from '../src/ol/Map.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
-import {Fill, Stroke, Style} from '../src/ol/style.js';
+import {Fill, Style} from '../src/ol/style.js';
 import {
   Heatmap as HeatmapLayer,
   Vector as VectorLayer,
 } from '../src/ol/layer.js';
+import {asArray} from '../src/ol/color.js';
+
+const style = new Style({
+  fill: new Fill({
+    color: '#eeeeee',
+  }),
+});
 
 const map = new Map({
   layers: [
     new VectorLayer({
-      background: '#a9d3df',
       source: new VectorSource({
-        url: 'data/geojson/countries.geojson',
+        url: 'https://openlayers.org/data/vector/ecoregions.json',
         format: new GeoJSON(),
       }),
-      style: new Style({
-        stroke: new Stroke({
-          color: '#ccc',
-        }),
-        fill: new Fill({
-          color: 'white',
-        }),
-      }),
+      background: 'white',
+      style: function (feature) {
+        const color = asArray(feature.get('COLOR_NNH') || '#eeeeee');
+        color[3] = 0.75;
+        style.getFill().setColor(color);
+        return style;
+      },
     }),
     new HeatmapLayer({
       source: new VectorSource({
@@ -35,7 +40,7 @@ const map = new Map({
       },
       radius: 15,
       blur: 15,
-      opacity: 0.5,
+      opacity: 0.75,
     }),
   ],
   target: 'map',
@@ -56,15 +61,16 @@ document.getElementById('export-png').addEventListener('click', function () {
       map.getViewport().querySelectorAll('.ol-layer canvas, canvas.ol-layer'),
       function (canvas) {
         if (canvas.width > 0) {
+          const opacity =
+            canvas.parentNode.style.opacity || canvas.style.opacity;
+          mapContext.globalAlpha = opacity === '' ? 1 : Number(opacity);
+
           const backgroundColor = canvas.parentNode.style.backgroundColor;
           if (backgroundColor) {
             mapContext.fillStyle = backgroundColor;
             mapContext.fillRect(0, 0, canvas.width, canvas.height);
           }
 
-          const opacity =
-            canvas.parentNode.style.opacity || canvas.style.opacity;
-          mapContext.globalAlpha = opacity === '' ? 1 : Number(opacity);
           let matrix;
           const transform = canvas.style.transform;
           if (transform) {
