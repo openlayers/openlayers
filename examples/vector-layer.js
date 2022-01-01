@@ -17,12 +17,8 @@ const vectorLayer = new VectorLayer({
     format: new GeoJSON(),
   }),
   style: function (feature) {
-    const color = feature.get('COLOR');
-    if (color) {
-      style.getFill().setColor(color);
-    } else {
-      style.getFill().setColor('#eeeeee');
-    }
+    const color = feature.get('COLOR') || '#eeeeee';
+    style.getFill().setColor(color);
     return style;
   },
 });
