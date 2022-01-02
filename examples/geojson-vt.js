@@ -1,60 +1,67 @@
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Map from '../src/ol/Map.js';
-import OSM from '../src/ol/source/OSM.js';
 import Projection from '../src/ol/proj/Projection.js';
+import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
 import View from '../src/ol/View.js';
-import {
-  Tile as TileLayer,
-  VectorTile as VectorTileLayer,
-} from '../src/ol/layer.js';
+import {Fill, Style} from '../src/ol/style.js';
 
 // Converts geojson-vt data to GeoJSON
 const replacer = function (key, value) {
-  if (value.geometry) {
-    let type;
-    const rawType = value.type;
-    let geometry = value.geometry;
-
-    if (rawType === 1) {
-      type = 'MultiPoint';
-      if (geometry.length == 1) {
-        type = 'Point';
-        geometry = geometry[0];
-      }
-    } else if (rawType === 2) {
-      type = 'MultiLineString';
-      if (geometry.length == 1) {
-        type = 'LineString';
-        geometry = geometry[0];
-      }
-    } else if (rawType === 3) {
-      type = 'Polygon';
-      if (geometry.length > 1) {
-        type = 'MultiPolygon';
-        geometry = [geometry];
-      }
-    }
-
-    return {
-      'type': 'Feature',
-      'geometry': {
-        'type': type,
-        'coordinates': geometry,
-      },
-      'properties': value.tags,
-    };
-  } else {
+  if (!value || !value.geometry) {
     return value;
   }
+
+  let type;
+  const rawType = value.type;
+  let geometry = value.geometry;
+  if (rawType === 1) {
+    type = 'MultiPoint';
+    if (geometry.length == 1) {
+      type = 'Point';
+      geometry = geometry[0];
+    }
+  } else if (rawType === 2) {
+    type = 'MultiLineString';
+    if (geometry.length == 1) {
+      type = 'LineString';
+      geometry = geometry[0];
+    }
+  } else if (rawType === 3) {
+    type = 'Polygon';
+    if (geometry.length > 1) {
+      type = 'MultiPolygon';
+      geometry = [geometry];
+    }
+  }
+
+  return {
+    'type': 'Feature',
+    'geometry': {
+      'type': type,
+      'coordinates': geometry,
+    },
+    'properties': value.tags,
+  };
 };
 
+const style = new Style({
+  fill: new Fill({
+    color: '#eeeeee',
+  }),
+});
+
+const layer = new VectorTileLayer({
+  background: '#1a2b39',
+  style: function (feature) {
+    const color = feature.get('COLOR') || '#eeeeee';
+    style.getFill().setColor(color);
+    return style;
+  },
+});
+
 const map = new Map({
-  layers: [
-    new TileLayer({
-      source: new OSM(),
-    }),
-  ],
+  layers: [layer],
   target: 'map',
   view: new View({
     center: [0, 0],
@@ -62,7 +69,7 @@ const map = new Map({
   }),
 });
 
-const url = 'data/geojson/countries.geojson';
+const url = 'https://openlayers.org/data/vector/ecoregions.json';
 fetch(url)
   .then(function (response) {
     return response.json();
@@ -106,8 +113,5 @@ fetch(url)
         tile.setFeatures(features);
       },
     });
-    const vectorLayer = new VectorTileLayer({
-      source: vectorSource,
-    });
-    map.addLayer(vectorLayer);
+    layer.setSource(vectorSource);
   });

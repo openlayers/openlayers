@@ -22,6 +22,7 @@ const map = new Map({
   layers: [
     new VectorLayer({
       source: vectorSource,
+      background: '#1a2b39',
       style: function (feature) {
         const color = feature.get('COLOR_BIO') || '#eeeeee';
         style.getFill().setColor(color);

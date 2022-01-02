@@ -12,6 +12,7 @@ const style = new Style({
 });
 
 const vectorLayer = new VectorLayer({
+  background: '#1a2b39',
   source: new VectorSource({
     url: 'https://openlayers.org/data/vector/ecoregions.json',
     format: new GeoJSON(),
