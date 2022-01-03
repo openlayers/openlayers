@@ -1,6 +1,7 @@
 import DataTileSource from '../../../../../../src/ol/source/DataTile.js';
 import Layer from '../../../../../../src/ol/layer/Layer.js';
 import Map from '../../../../../../src/ol/Map.js';
+import Projection from '../../../../../../src/ol/proj/Projection.js';
 import TileLayer from '../../../../../../src/ol/layer/WebGLTile.js';
 import VectorLayer from '../../../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../../../src/ol/source/Vector.js';
@@ -432,6 +433,178 @@ describe('ol/renderer/webgl/Layer', function () {
       expectCacheKeyMatches(layer1, `map/${mapId}/group/1`);
 
       dispose(map);
+    });
+  });
+
+  describe('#getDataAtPixel (preserveDrawingBuffer false)', function () {
+    let map, target, source, layer, getContextOriginal;
+    beforeEach(function (done) {
+      getContextOriginal = HTMLCanvasElement.prototype.getContext;
+      HTMLCanvasElement.prototype.getContext = function (type, attributes) {
+        if (attributes && attributes.preserveDrawingBuffer) {
+          attributes.preserveDrawingBuffer = false;
+        }
+        return getContextOriginal.call(this, type, attributes);
+      };
+
+      const projection = new Projection({
+        code: 'custom-image',
+        units: 'pixels',
+        extent: [0, 0, 200, 200],
+      });
+      target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      source = new DataTileSource({
+        loader: function (z, x, y) {
+          return new Uint8Array(x == 0 ? [255, 0, 0, 255] : [0, 0, 0, 0]);
+        },
+        projection: projection,
+        maxZoom: 0,
+        tileSize: 1,
+        maxResolution: 100,
+      });
+      layer = new TileLayer({
+        source: source,
+        extent: [50, 0, 150, 100],
+      });
+      map = new Map({
+        pixelRatio: 1,
+        target: target,
+        layers: [layer],
+        view: new View({
+          projection: projection,
+          center: [100, 100],
+          zoom: 0,
+        }),
+      });
+      map.once('rendercomplete', function () {
+        done();
+      });
+    });
+
+    afterEach(function () {
+      HTMLCanvasElement.prototype.getContext = getContextOriginal;
+      map.setLayers([]);
+      map.setTarget(null);
+      document.body.removeChild(target);
+    });
+
+    it('should not detect pixels outside of the layer extent', function () {
+      const pixel = [10, 10];
+      const frameState = map.frameState_;
+      const hitTolerance = 0;
+      const layerRenderer = layer.getRenderer();
+      const data = layerRenderer.getDataAtPixel(
+        pixel,
+        frameState,
+        hitTolerance
+      );
+      expect(data).to.be(null);
+    });
+
+    it('should handle unreadable pixels in the layer extent', function () {
+      const pixel = [10, 60];
+      const frameState = map.frameState_;
+      const hitTolerance = 0;
+      const layerRenderer = layer.getRenderer();
+      const data = layerRenderer.getDataAtPixel(
+        pixel,
+        frameState,
+        hitTolerance
+      );
+      expect(data.length).to.be(0);
+    });
+  });
+
+  describe('#getDataAtPixel (preserveDrawingBuffer true)', function () {
+    let map, target, source, layer;
+    beforeEach(function (done) {
+      const projection = new Projection({
+        code: 'custom-image',
+        units: 'pixels',
+        extent: [0, 0, 200, 200],
+      });
+      target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      source = new DataTileSource({
+        loader: function (z, x, y) {
+          return new Uint8Array(x == 0 ? [255, 0, 0, 255] : [0, 0, 0, 0]);
+        },
+        projection: projection,
+        maxZoom: 0,
+        tileSize: 1,
+        maxResolution: 100,
+      });
+      layer = new TileLayer({
+        source: source,
+        extent: [50, 0, 150, 100],
+      });
+      map = new Map({
+        pixelRatio: 1,
+        target: target,
+        layers: [layer],
+        view: new View({
+          projection: projection,
+          center: [100, 100],
+          zoom: 0,
+        }),
+      });
+      map.once('rendercomplete', function () {
+        done();
+      });
+    });
+
+    afterEach(function () {
+      map.setLayers([]);
+      map.setTarget(null);
+      document.body.removeChild(target);
+    });
+
+    it('should not detect pixels outside of the layer extent', function () {
+      const pixel = [10, 10];
+      const frameState = map.frameState_;
+      const hitTolerance = 0;
+      const layerRenderer = layer.getRenderer();
+      const data = layerRenderer.getDataAtPixel(
+        pixel,
+        frameState,
+        hitTolerance
+      );
+      expect(data).to.be(null);
+    });
+
+    it('should detect pixels in the layer extent', function () {
+      const pixel = [10, 60];
+      const frameState = map.frameState_;
+      const hitTolerance = 0;
+      const layerRenderer = layer.getRenderer();
+      const data = layerRenderer.getDataAtPixel(
+        pixel,
+        frameState,
+        hitTolerance
+      );
+      expect(data.length > 0).to.be(true);
+      expect(data[0]).to.be(255);
+      expect(data[1]).to.be(0);
+      expect(data[2]).to.be(0);
+      expect(data[3]).to.be(255);
+    });
+
+    it('should handle no data in the layer extent', function () {
+      const pixel = [60, 60];
+      const frameState = map.frameState_;
+      const hitTolerance = 0;
+      const layerRenderer = layer.getRenderer();
+      const data = layerRenderer.getDataAtPixel(
+        pixel,
+        frameState,
+        hitTolerance
+      );
+      expect(data).to.be(null);
     });
   });
 });
