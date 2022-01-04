@@ -3,10 +3,12 @@
  */
 import GeometryType from './GeometryType.js';
 import SimpleGeometry from './SimpleGeometry.js';
+import {CircularArc} from './flat/CircularArc.js';
 import {assignClosestPoint, maxSquaredDelta} from './flat/closest.js';
 import {
   closestSquaredDistanceXY,
   createEmpty,
+  createOrUpdateFromFlatCoordinates,
   extendFlatCoordinates,
   intersects,
 } from '../extent.js';
@@ -130,26 +132,104 @@ class CircularString extends SimpleGeometry {
   }
 
   /**
+   * Returns the amount of arcs of which this geometry consists.
+   * @return {number} The amount of arcs.
+   */
+  arcCount() {
+    return Math.floor(this.flatCoordinates.length / this.stride / 2);
+  }
+
+  /**
+   * Constructs and returns a CircularArc object for the arc at the given
+   * index.
+   * @param {number} index The arc's index.
+   * @return {CircularArc} The constructed CircularArc.
+   */
+  arc(index) {
+    const arc = new CircularArc();
+    const offset = this.stride * 2 * index;
+    arc.begin.x = this.flatCoordinates[offset];
+    arc.begin.y = this.flatCoordinates[offset + 1];
+    arc.middle.x = this.flatCoordinates[offset + this.stride];
+    arc.middle.y = this.flatCoordinates[offset + this.stride + 1];
+    arc.end.x = this.flatCoordinates[offset + this.stride * 2];
+    arc.end.y = this.flatCoordinates[offset + this.stride * 2 + 1];
+    return arc;
+  }
+
+  /**
+   * Computes and returns the flat bounding coordinates for the given arc.
+   * @param {CircularArc} arc The given arc.
+   * @return {Array<number>} The computed bounding coordinates.
+   */
+  flatBoundingArcCoordinates(arc) {
+    const boundingCoords = [];
+    const center = arc.centerOfCircle();
+    const radius = arc.radius(center);
+    const angles = arc.angles();
+    const clockwise = arc.clockwise(angles);
+    arc.boundingCoords(center, radius, angles, clockwise).forEach((coords) => {
+      boundingCoords.push(coords.x);
+      boundingCoords.push(coords.y);
+    });
+    return boundingCoords;
+  }
+
+  /**
+   * Computes and returns the flat bounding coordinates for the geometry as
+   * a whole.
+   * @return {Array<number>} The computed bounding coordinates.
+   */
+  flatBoundingCoordinates() {
+    let boundingCoords = [];
+    const count = this.arcCount();
+    for (let i = 0; i < count; ++i) {
+      const arc = this.arc(i);
+      boundingCoords = boundingCoords.concat(
+        this.flatBoundingArcCoordinates(arc)
+      );
+    }
+    return boundingCoords;
+  }
+
+  /**
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @protected
+   * @return {import("../extent.js").Extent} extent Extent.
+   */
+  computeExtent(extent) {
+    const boundingCoords = this.flatBoundingCoordinates();
+    return createOrUpdateFromFlatCoordinates(
+      boundingCoords,
+      0,
+      boundingCoords.length,
+      2,
+      extent
+    );
+  }
+
+  /**
    * Test if the geometry and the passed extent intersect.
    * @param {import("../extent.js").Extent} extent Extent.
    * @return {boolean} `true` if the geometry and the extent intersect.
    * @api
    */
   intersectsExtent(extent) {
-    // test per arc extents
-    for (let i = 0; i < this.flatCoordinates.length - 2; i += 4) {
+    const count = this.arcCount();
+    for (let i = 0; i < count; ++i) {
+      const arc = this.arc(i);
+      const boundingCoords = this.flatBoundingArcCoordinates(arc);
       const arcExtents = extendFlatCoordinates(
         createEmpty(),
-        this.flatCoordinates,
-        i,
-        i + this.stride * 3,
-        this.stride
+        boundingCoords,
+        0,
+        boundingCoords.length,
+        2
       );
       if (intersects(extent, arcExtents)) {
         return true;
       }
     }
-
     return false;
   }
 
