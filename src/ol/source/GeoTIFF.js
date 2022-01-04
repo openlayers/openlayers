@@ -6,6 +6,7 @@ import State from './State.js';
 import TileGrid from '../tilegrid/TileGrid.js';
 import {
   Pool,
+  fromBlob as tiffFromBlob,
   fromUrl as tiffFromUrl,
   fromUrls as tiffFromUrls,
 } from 'geotiff/src/geotiff.js';
@@ -24,7 +25,8 @@ import {fromCode as unitsFromCode} from '../proj/Units.js';
 /**
  * @typedef {Object} SourceInfo
  * @property {string} url URL for the source GeoTIFF.
- * @property {Array<string>} [overviews] List of any overview URLs.
+ * @property {Blob} blob Blob containing the source GeoTIFF. `blob` and `url` are mutually exclusive.
+ * @property {Array<string>} [overviews] List of any overview URLs. Only available if the source GeoTIFF is provided via `url`.
  * @property {number} [min=0] The minimum source data value.  Rendered values are scaled from 0 to 1 based on
  * the configured min and max.  If not provided and raster statistics are available, those will be used instead.
  * If neither are available, the minimum for the data type will be used.  To disable this behavior, set
@@ -211,7 +213,9 @@ function getImagesForTIFF(tiff) {
  */
 function getImagesForSource(source) {
   let request;
-  if (source.overviews) {
+  if (source.blob) {
+    request = tiffFromBlob(source.blob);
+  } else if (source.overviews) {
     request = tiffFromUrls(source.url, source.overviews);
   } else {
     request = tiffFromUrl(source.url);
