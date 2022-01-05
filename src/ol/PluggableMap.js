@@ -688,8 +688,11 @@ class PluggableMap extends BaseObject {
    * execute a callback with each matching layer. Layers included in the
    * detection can be configured through `opt_layerFilter`.
    *
-   * Note: this may give false positives unless the map layers have had different `className`
-   * properties assigned to them.
+   * Note: In maps with more than one layer, this method will typically return pixel data
+   * representing the composed image of all layers visible at the given pixel – because layers
+   * will generally share the same rendering context.  To force layers to render separately, and
+   * to get pixel data representing only one layer at a time, you can assign each layer a unique
+   * `className` in its constructor.
    *
    * @param {import("./pixel.js").Pixel} pixel Pixel.
    * @param {function(this: S, import("./layer/Layer.js").default, (Uint8ClampedArray|Uint8Array)): T} callback

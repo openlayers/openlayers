@@ -7,9 +7,11 @@ import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import WebGLHelper from '../../webgl/Helper.js';
 import {
+  apply as applyTransform,
   compose as composeTransform,
   create as createTransform,
 } from '../../transform.js';
+import {containsCoordinate} from '../../extent.js';
 
 /**
  * @enum {string}
@@ -269,6 +271,46 @@ class WebGLLayerRenderer extends LayerRenderer {
    */
   postRender(context, frameState) {
     this.dispatchRenderEvent_(RenderEventType.POSTRENDER, context, frameState);
+  }
+
+  /**
+   * @param {import("../../pixel.js").Pixel} pixel Pixel.
+   * @param {import("../../PluggableMap.js").FrameState} frameState FrameState.
+   * @param {number} hitTolerance Hit tolerance in pixels.
+   * @return {Uint8Array} The result.  If there is no data at the pixel
+   *    location, null will be returned.  If there is data, but pixel values cannot be
+   *    returned, and empty array will be returned.
+   */
+  getDataAtPixel(pixel, frameState, hitTolerance) {
+    if (!this.helper) {
+      return null;
+    }
+
+    const layer = this.getLayer();
+    const layerExtent = layer.getExtent();
+    if (layerExtent) {
+      const renderCoordinate = applyTransform(
+        frameState.pixelToCoordinateTransform,
+        pixel.slice()
+      );
+
+      if (!containsCoordinate(layerExtent, renderCoordinate)) {
+        return null;
+      }
+    }
+
+    const gl = this.helper.getGL();
+    const x = pixel[0] * frameState.pixelRatio;
+    const y = gl.canvas.height - pixel[1] * frameState.pixelRatio;
+
+    const data = new Uint8Array(4);
+    gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, data);
+
+    if (data[3] === 0) {
+      return null;
+    }
+
+    return data;
   }
 }
 
