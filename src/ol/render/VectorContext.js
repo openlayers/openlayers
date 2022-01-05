@@ -52,6 +52,12 @@ class VectorContext {
   drawGeometryCollection(geometryCollectionGeometry, feature) {}
 
   /**
+   * @param {import("../geom/CircularString.js").default|import("./Feature.js").default} circularStringGeometry Circular string geometry.
+   * @param {import("../Feature.js").FeatureLike} feature Feature.
+   */
+  drawCircularString(circularStringGeometry, feature) {}
+
+  /**
    * @param {import("../geom/LineString.js").default|import("./Feature.js").default} lineStringGeometry Line string geometry.
    * @param {import("../Feature.js").FeatureLike} feature Feature.
    */
