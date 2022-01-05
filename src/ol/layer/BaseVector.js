@@ -75,7 +75,7 @@ const Property = {
  * options means that `title` is observable, and has get/set accessors.
  *
  * @template {import("../source/Vector.js").default|import("../source/VectorTile.js").default} VectorSourceType
- * @template {import("../renderer/Layer.js").default} RendererType
+ * @template {import("../renderer/canvas/VectorLayer.js").default|import("../renderer/canvas/VectorTileLayer.js").default|import("../renderer/canvas/VectorImageLayer.js").default|import("../renderer/webgl/PointsLayer.js").default} RendererType
  * @extends {Layer<VectorSourceType, RendererType>}
  * @api
  */
