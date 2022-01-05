@@ -48,11 +48,12 @@ class CanvasCircularStringBuilder extends CanvasBuilder {
     const startIndex = this.coordinates.length;
     const coordinates = circularStringGeometry.getFlatCoordinates();
     const stride = circularStringGeometry.getStride();
+    const endIndex = startIndex + (coordinates.length / stride) * 2;
     this.appendFlatCircularStringCoordinates(coordinates, stride);
     this.instructions.push([
       CanvasInstruction.CIRCULAR_ARC,
       startIndex,
-      startIndex + coordinates.length,
+      endIndex,
     ]);
     this.endGeometry(feature);
   }
@@ -63,8 +64,8 @@ class CanvasCircularStringBuilder extends CanvasBuilder {
   finish() {
     const state = this.state;
     if (
-      state.lastStroke != undefined &&
-      state.lastStroke != this.coordinates.length
+      state.lastStroke !== undefined &&
+      state.lastStroke !== this.coordinates.length
     ) {
       this.instructions.push(strokeInstruction);
     }
@@ -78,8 +79,8 @@ class CanvasCircularStringBuilder extends CanvasBuilder {
    */
   applyStroke(state) {
     if (
-      state.lastStroke != undefined &&
-      state.lastStroke != this.coordinates.length
+      state.lastStroke !== undefined &&
+      state.lastStroke !== this.coordinates.length
     ) {
       this.instructions.push(strokeInstruction);
       state.lastStroke = this.coordinates.length;
