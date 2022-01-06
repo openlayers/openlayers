@@ -42,6 +42,9 @@ const dragBox = new DragBox({
 map.addInteraction(dragBox);
 
 dragBox.on('boxend', function () {
+  const extent = dragBox.getGeometry().getExtent();
+  const boxFeatures = vectorSource.getFeaturesInExtent(extent);
+
   // features that intersect the box geometry are added to the
   // collection of selected features
 
@@ -50,11 +53,6 @@ dragBox.on('boxend', function () {
   // be added directly to the collection
   const rotation = map.getView().getRotation();
   const oblique = rotation % (Math.PI / 2) !== 0;
-  const candidateFeatures = oblique ? [] : selectedFeatures;
-  const extent = dragBox.getGeometry().getExtent();
-  vectorSource.forEachFeatureIntersectingExtent(extent, function (feature) {
-    candidateFeatures.push(feature);
-  });
 
   // when the view is obliquely rotated the box extent will
   // exceed its geometry so both the box and the candidate
@@ -66,13 +64,15 @@ dragBox.on('boxend', function () {
     const geometry = dragBox.getGeometry().clone();
     geometry.rotate(-rotation, anchor);
     const extent = geometry.getExtent();
-    candidateFeatures.forEach(function (feature) {
+    boxFeatures.forEach(function (feature) {
       const geometry = feature.getGeometry().clone();
       geometry.rotate(-rotation, anchor);
       if (geometry.intersectsExtent(extent)) {
         selectedFeatures.push(feature);
       }
     });
+  } else {
+    selectedFeatures.extend(boxFeatures);
   }
 });
 
