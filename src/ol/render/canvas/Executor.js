@@ -718,7 +718,14 @@ class Executor {
             tmpArc.end.x = pixelCoordinates[d + 4];
             tmpArc.end.y = pixelCoordinates[d + 5];
             const drawable = tmpArc.drawable();
-            context.moveTo(drawable.begin.x, drawable.begin.y);
+            if (tmpArc.fullCircle()) {
+              context.moveTo(
+                drawable.centerOfCircle.x + drawable.radius,
+                drawable.centerOfCircle.y
+              );
+            } else {
+              context.moveTo(drawable.begin.x, drawable.begin.y);
+            }
             context.arc(
               drawable.centerOfCircle.x,
               drawable.centerOfCircle.y,
