@@ -43,7 +43,9 @@ map.addInteraction(dragBox);
 
 dragBox.on('boxend', function () {
   const extent = dragBox.getGeometry().getExtent();
-  const boxFeatures = vectorSource.getFeaturesInExtent(extent);
+  const boxFeatures = vectorSource
+    .getFeaturesInExtent(extent)
+    .filter((feature) => feature.getGeometry().intersectsExtent(extent));
 
   // features that intersect the box geometry are added to the
   // collection of selected features
