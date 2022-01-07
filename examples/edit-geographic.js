@@ -1,30 +1,28 @@
 import GeoJSON from '../src/ol/format/GeoJSON.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import {Draw, Modify, Select, Snap} from '../src/ol/interaction.js';
 import {Map, View} from '../src/ol/index.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {useGeographic} from '../src/ol/proj.js';
 
 useGeographic();
 
 const source = new VectorSource({
-  url: 'data/geojson/countries.geojson',
+  url: 'https://openlayers.org/data/vector/us-states.json',
   format: new GeoJSON(),
 });
 
 const map = new Map({
   target: 'map',
   layers: [
-    new TileLayer({
-      source: new OSM(),
-    }),
     new VectorLayer({
+      background: 'white',
       source: source,
     }),
   ],
   view: new View({
-    center: [0, 0],
-    zoom: 2,
+    center: [-100, 38.5],
+    zoom: 4,
   }),
 });
 
