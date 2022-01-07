@@ -1,40 +1,37 @@
 import Fill from '../src/ol/style/Fill.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Map from '../src/ol/Map.js';
-import OSM from '../src/ol/source/OSM.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-
-const raster = new TileLayer({
-  source: new OSM(),
-});
+import {fromLonLat} from '../src/ol/proj.js';
 
 const highlightStyle = new Style({
   fill: new Fill({
-    color: 'rgba(255,255,255,0.7)',
+    color: '#EEE',
   }),
   stroke: new Stroke({
     color: '#3399CC',
-    width: 3,
+    width: 2,
   }),
 });
 
 const vector = new VectorLayer({
+  background: 'white',
   source: new VectorSource({
-    url: 'data/geojson/countries.geojson',
+    url: 'https://openlayers.org/data/vector/us-states.json',
     format: new GeoJSON(),
   }),
 });
 
 const map = new Map({
-  layers: [raster, vector],
+  layers: [vector],
   target: 'map',
   view: new View({
-    center: [0, 0],
-    zoom: 2,
+    center: fromLonLat([-100, 38.5]),
+    zoom: 4,
     multiWorld: true,
   }),
 });
