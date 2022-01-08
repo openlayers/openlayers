@@ -114,10 +114,11 @@ class CanvasLayerRenderer extends LayerRenderer {
       target.style.opacity === '' &&
       opacity === 1 &&
       (!opt_backgroundColor ||
-        equals(
-          asArray(target.style.backgroundColor),
-          asArray(opt_backgroundColor)
-        ))
+        (target.style.backgroundColor &&
+          equals(
+            asArray(target.style.backgroundColor),
+            asArray(opt_backgroundColor)
+          )))
     ) {
       const canvas = target.firstElementChild;
       if (canvas instanceof HTMLCanvasElement) {
