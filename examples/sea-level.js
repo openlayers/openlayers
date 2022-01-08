@@ -26,18 +26,14 @@ const attributions =
   '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
   '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
 
-const elevation = new TileLayer({
-  source: new XYZ({
-    url:
-      'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + key,
-    tileSize: 512,
-    maxZoom: 12,
-    crossOrigin: '',
-  }),
-});
-elevation.on('prerender', function (evt) {
-  evt.context.imageSmoothingEnabled = false;
-  evt.context.msImageSmoothingEnabled = false;
+const elevation = new XYZ({
+  // The RGB values in the source collectively represent elevation.
+  // Interpolation of individual colors would produce incorrect evelations and is disabled.
+  url: 'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + key,
+  tileSize: 512,
+  maxZoom: 12,
+  crossOrigin: '',
+  interpolate: false,
 });
 
 const raster = new RasterSource({
