@@ -3,35 +3,23 @@ import Map from '../src/ol/Map.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
-import {Fill, Stroke, Style, Text} from '../src/ol/style.js';
+import {Fill, Stroke, Style} from '../src/ol/style.js';
 
 const style = new Style({
   fill: new Fill({
-    color: 'rgba(255, 255, 255, 0.6)',
-  }),
-  stroke: new Stroke({
-    color: '#319FD3',
-    width: 1,
-  }),
-  text: new Text({
-    font: '12px Calibri,sans-serif',
-    fill: new Fill({
-      color: '#000',
-    }),
-    stroke: new Stroke({
-      color: '#fff',
-      width: 3,
-    }),
+    color: '#eeeeee',
   }),
 });
 
 const vectorLayer = new VectorLayer({
+  background: '#1a2b39',
   source: new VectorSource({
-    url: 'data/geojson/countries.geojson',
+    url: 'https://openlayers.org/data/vector/ecoregions.json',
     format: new GeoJSON(),
   }),
   style: function (feature) {
-    style.getText().setText(feature.get('name'));
+    const color = feature.get('COLOR_NNH') || '#eeeeee';
+    style.getFill().setColor(color);
     return style;
   },
 });
@@ -47,31 +35,15 @@ const map = new Map({
 
 const highlightStyle = new Style({
   stroke: new Stroke({
-    color: '#f00',
-    width: 1,
-  }),
-  fill: new Fill({
-    color: 'rgba(255,0,0,0.1)',
-  }),
-  text: new Text({
-    font: '12px Calibri,sans-serif',
-    fill: new Fill({
-      color: '#000',
-    }),
-    stroke: new Stroke({
-      color: '#f00',
-      width: 3,
-    }),
+    color: 'rgba(255, 255, 255, 0.7)',
+    width: 2,
   }),
 });
 
 const featureOverlay = new VectorLayer({
   source: new VectorSource(),
   map: map,
-  style: function (feature) {
-    highlightStyle.getText().setText(feature.get('name'));
-    return highlightStyle;
-  },
+  style: highlightStyle,
 });
 
 let highlight;
@@ -80,7 +52,7 @@ const displayFeatureInfo = function (pixel) {
     const feature = features.length ? features[0] : undefined;
     const info = document.getElementById('info');
     if (features.length) {
-      info.innerHTML = feature.getId() + ': ' + feature.get('name');
+      info.innerHTML = feature.get('ECO_NAME') + ': ' + feature.get('NNH_NAME');
     } else {
       info.innerHTML = '&nbsp;';
     }

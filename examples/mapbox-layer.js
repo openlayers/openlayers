@@ -1,11 +1,10 @@
 import GeoJSON from '../src/ol/format/GeoJSON.js';
+import HeatmapLayer from '../src/ol/layer/Heatmap.js';
 import Layer from '../src/ol/layer/Layer.js';
 import Map from '../src/ol/Map.js';
 import Source from '../src/ol/source/Source.js';
-import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
-import {Stroke, Style} from '../src/ol/style.js';
 import {fromLonLat, toLonLat} from '../src/ol/proj.js';
 
 const center = [-98.8, 37.9];
@@ -34,6 +33,7 @@ const mbLayer = new Layer({
 
     const visible = mbLayer.getVisible();
     canvas.style.display = visible ? 'block' : 'none';
+    canvas.style.position = 'absolute';
 
     const opacity = mbLayer.getOpacity();
     canvas.style.opacity = opacity;
@@ -66,19 +66,16 @@ const mbLayer = new Layer({
   }),
 });
 
-const style = new Style({
-  stroke: new Stroke({
-    color: '#319FD3',
-    width: 2,
-  }),
-});
-
-const vectorLayer = new VectorLayer({
+const cities = new HeatmapLayer({
   source: new VectorSource({
-    url: 'data/geojson/countries.geojson',
+    url: 'data/geojson/world-cities.geojson',
     format: new GeoJSON(),
   }),
-  style: style,
+  weight: function (feature) {
+    return feature.get('population') / 1e7;
+  },
+  radius: 15,
+  blur: 15,
 });
 
 const map = new Map({
@@ -87,5 +84,5 @@ const map = new Map({
     center: fromLonLat(center),
     zoom: 4,
   }),
-  layers: [mbLayer, vectorLayer],
+  layers: [mbLayer, cities],
 });

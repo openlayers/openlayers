@@ -6,6 +6,7 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
 import proj4 from 'proj4';
+import {Fill, Style} from '../src/ol/style.js';
 import {register} from '../src/ol/proj/proj4.js';
 
 proj4.defs(
@@ -26,14 +27,25 @@ const sphereMollweideProjection = new Projection({
   worldExtent: [-179, -89.99, 179, 89.99],
 });
 
+const style = new Style({
+  fill: new Fill({
+    color: '#eeeeee',
+  }),
+});
+
 const map = new Map({
   keyboardEventTarget: document,
   layers: [
     new VectorLayer({
       source: new VectorSource({
-        url: 'data/geojson/countries-110m.geojson',
+        url: 'https://openlayers.org/data/vector/ecoregions.json',
         format: new GeoJSON(),
       }),
+      style: function (feature) {
+        const color = feature.get('COLOR_BIO') || '#eeeeee';
+        style.getFill().setColor(color);
+        return style;
+      },
     }),
     new Graticule(),
   ],
@@ -41,6 +53,6 @@ const map = new Map({
   view: new View({
     center: [0, 0],
     projection: sphereMollweideProjection,
-    zoom: 1,
+    zoom: 2,
   }),
 });

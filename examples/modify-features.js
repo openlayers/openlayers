@@ -1,21 +1,19 @@
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Map from '../src/ol/Map.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
 import {
   Modify,
   Select,
   defaults as defaultInteractions,
 } from '../src/ol/interaction.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-
-const raster = new TileLayer({
-  source: new OSM(),
-});
+import {fromLonLat} from '../src/ol/proj.js';
 
 const vector = new VectorLayer({
+  background: 'white',
   source: new VectorSource({
-    url: 'data/geojson/countries.geojson',
+    url: 'https://openlayers.org/data/vector/us-states.json',
     format: new GeoJSON(),
     wrapX: false,
   }),
@@ -31,10 +29,10 @@ const modify = new Modify({
 
 const map = new Map({
   interactions: defaultInteractions().extend([select, modify]),
-  layers: [raster, vector],
+  layers: [vector],
   target: 'map',
   view: new View({
-    center: [0, 0],
-    zoom: 2,
+    center: fromLonLat([-100, 38.5]),
+    zoom: 4,
   }),
 });

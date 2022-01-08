@@ -4,33 +4,30 @@ import VectorImageLayer from '../src/ol/layer/VectorImage.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
-import {Fill, Stroke, Style, Text} from '../src/ol/style.js';
+import {Fill, Stroke, Style} from '../src/ol/style.js';
 
 const style = new Style({
   fill: new Fill({
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: '#eeeeee',
   }),
-  stroke: new Stroke({
-    color: '#319FD3',
-    width: 1,
+});
+
+const vectorLayer = new VectorImageLayer({
+  background: '#1a2b39',
+  imageRatio: 2,
+  source: new VectorSource({
+    url: 'https://openlayers.org/data/vector/ecoregions.json',
+    format: new GeoJSON(),
   }),
-  text: new Text(),
+  style: function (feature) {
+    const color = feature.get('COLOR') || '#eeeeee';
+    style.getFill().setColor(color);
+    return style;
+  },
 });
 
 const map = new Map({
-  layers: [
-    new VectorImageLayer({
-      imageRatio: 2,
-      source: new VectorSource({
-        url: 'data/geojson/countries.geojson',
-        format: new GeoJSON(),
-      }),
-      style: function (feature) {
-        style.getText().setText(feature.get('name'));
-        return style;
-      },
-    }),
-  ],
+  layers: [vectorLayer],
   target: 'map',
   view: new View({
     center: [0, 0],
@@ -43,47 +40,42 @@ const featureOverlay = new VectorLayer({
   map: map,
   style: new Style({
     stroke: new Stroke({
-      color: '#f00',
-      width: 1,
-    }),
-    fill: new Fill({
-      color: 'rgba(255,0,0,0.1)',
+      color: 'rgba(255, 255, 255, 0.7)',
+      width: 2,
     }),
   }),
 });
 
 let highlight;
 const displayFeatureInfo = function (pixel) {
-  map
-    .getLayers()
-    .item(0)
-    .getFeatures(pixel)
-    .then(function (features) {
-      const feature = features.length > 0 ? features[0] : undefined;
+  const feature = map.forEachFeatureAtPixel(pixel, function (feature) {
+    return feature;
+  });
 
-      const info = document.getElementById('info');
-      if (feature) {
-        info.innerHTML = feature.getId() + ': ' + feature.get('name');
-      } else {
-        info.innerHTML = '&nbsp;';
-      }
+  const info = document.getElementById('info');
+  if (feature) {
+    info.innerHTML = feature.get('ECO_NAME') || '&nbsp;';
+  } else {
+    info.innerHTML = '&nbsp;';
+  }
 
-      if (feature !== highlight) {
-        if (highlight) {
-          featureOverlay.getSource().removeFeature(highlight);
-        }
-        if (feature) {
-          featureOverlay.getSource().addFeature(feature);
-        }
-        highlight = feature;
-      }
-    });
+  if (feature !== highlight) {
+    if (highlight) {
+      featureOverlay.getSource().removeFeature(highlight);
+    }
+    if (feature) {
+      featureOverlay.getSource().addFeature(feature);
+    }
+    highlight = feature;
+  }
 };
 
 map.on('pointermove', function (evt) {
-  if (!evt.dragging) {
-    displayFeatureInfo(evt.pixel);
+  if (evt.dragging) {
+    return;
   }
+  const pixel = map.getEventPixel(evt.originalEvent);
+  displayFeatureInfo(pixel);
 });
 
 map.on('click', function (evt) {

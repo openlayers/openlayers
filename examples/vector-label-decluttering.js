@@ -4,12 +4,13 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
 import {Fill, Stroke, Style, Text} from '../src/ol/style.js';
+import {fromLonLat} from '../src/ol/proj.js';
 
 const map = new Map({
   target: 'map',
   view: new View({
-    center: [0, 0],
-    zoom: 1,
+    center: fromLonLat([-100, 38.5]),
+    zoom: 4,
   }),
 });
 
@@ -38,12 +39,14 @@ const countryStyle = new Style({
 const style = [countryStyle, labelStyle];
 
 const vectorLayer = new VectorLayer({
+  background: 'white',
   source: new VectorSource({
-    url: 'data/geojson/countries.geojson',
+    url: 'https://openlayers.org/data/vector/us-states.json',
     format: new GeoJSON(),
   }),
   style: function (feature) {
-    labelStyle.getText().setText(feature.get('name'));
+    const label = feature.get('name').split(' ').join('\n');
+    labelStyle.getText().setText(label);
     return style;
   },
   declutter: true,

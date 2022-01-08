@@ -1,13 +1,11 @@
 ---
 layout: example.html
 title: Styling feature with CanvasGradient or CanvasPattern
-shortdesc: Example showing the countries vector layer styled with patterns and gradients.
+shortdesc: Example showing a vector layer styled with a gradient.
 docs: >
-  This example creates a [`CanvasPattern`](https://developer.mozilla.org/en-US/docs/Web/API/CanvasPattern)
-  and a [`CanvasGradient`](https://developer.mozilla.org/en/docs/Web/API/CanvasGradient). The countries are loaded from
-  a GeoJSON file. A style function determines for each country whether to use a fill with the
-  CanvasGradient (rainbow colors) or a CanvasPattern (repeating stacked circles). **Note**: For seamless repeat patterns,
-  image width and height of the pattern image must be a factor of two (2, 4, 8, ..., 512).
+  This example creates a [`CanvasGradient`](https://developer.mozilla.org/en/docs/Web/API/CanvasGradient).
+  The vector data is loaded from a file and features are filled with the gradient.
+  The same technique can be used with a [`CanvasPattern`](https://developer.mozilla.org/en-US/docs/Web/API/CanvasPattern).
 tags: "canvas, gradient, pattern, style"
 ---
 <div id="map" class="map"></div>
