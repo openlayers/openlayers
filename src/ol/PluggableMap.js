@@ -1690,6 +1690,79 @@ class PluggableMap extends BaseObject {
       view.setViewportSize(size);
     }
   }
+
+  /**
+   * Returns a composite canvas snapshot of layers in the viewport.
+   * @param {string} [opt_className] CSS class name (or space-separated classes)
+   *     of layers to be included.  By default all layers will be included.
+   * @return {HTMLCanvasElement|undefined} Canvas element (or undefined
+   *     if the map has no size or viewport).
+   * @api
+   */
+  getCompositeCanvas(opt_className) {
+    const size = this.getSize();
+    const viewport = this.getViewport();
+    if (size && viewport) {
+      const mapCanvas = document.createElement('canvas');
+      mapCanvas.width = size[0];
+      mapCanvas.height = size[1];
+
+      const selector =
+        opt_className && opt_className.replace(/\s+/, '')
+          ? opt_className
+              .split(/\s+/)
+              .filter(function (value, index, self) {
+                return self.indexOf(value) === index;
+              })
+              .map(function (s) {
+                return '.' + s + ' canvas, canvas.' + s;
+              })
+              .join(', ')
+          : '.ol-layers canvas';
+
+      const mapContext = mapCanvas.getContext('2d');
+      Array.prototype.forEach.call(
+        viewport.querySelectorAll(selector),
+        function (canvas) {
+          if (canvas.width > 0) {
+            const opacity =
+              canvas.parentNode.style.opacity || canvas.style.opacity;
+            mapContext.globalAlpha = opacity === '' ? 1 : Number(opacity);
+            let matrix;
+            const transform = canvas.style.transform;
+            if (transform) {
+              // Get the transform parameters from the style's transform matrix
+              matrix = transform
+                .match(/^matrix\(([^\(]*)\)$/)[1]
+                .split(',')
+                .map(Number);
+            } else {
+              matrix = [
+                parseFloat(canvas.style.width) / canvas.width,
+                0,
+                0,
+                parseFloat(canvas.style.height) / canvas.height,
+                0,
+                0,
+              ];
+            }
+            // Apply the transform to the export map context
+            CanvasRenderingContext2D.prototype.setTransform.apply(
+              mapContext,
+              matrix
+            );
+            const backgroundColor = canvas.parentNode.style.backgroundColor;
+            if (backgroundColor) {
+              mapContext.fillStyle = backgroundColor;
+              mapContext.fillRect(0, 0, canvas.width, canvas.height);
+            }
+            mapContext.drawImage(canvas, 0, 0);
+          }
+        }
+      );
+      return mapCanvas;
+    }
+  }
 }
 
 /**
