@@ -2,6 +2,10 @@
 
 ### v6.10.0
 
+No special changes are required when upgrading to the 6.11.0 release.
+
+### v6.10.0
+
 #### New `interpolate` option for sources
 
 Sources now have an `interpolate` option.  This option controls whether data from the source is interpolated when resampling.
