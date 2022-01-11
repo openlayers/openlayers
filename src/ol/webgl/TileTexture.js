@@ -175,6 +175,12 @@ class TileTexture extends EventTarget {
       if (this.loaded) {
         this.uploadTile_();
       } else {
+        if (tile instanceof ImageTile) {
+          const image = tile.getImage();
+          if (image instanceof Image && !image.crossOrigin) {
+            image.crossOrigin = 'anonymous';
+          }
+        }
         tile.addEventListener(EventType.CHANGE, this.handleTileChange_);
       }
     }

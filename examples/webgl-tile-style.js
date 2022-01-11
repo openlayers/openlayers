@@ -22,7 +22,6 @@ const layer = new TileLayer({
     variables: variables,
   },
   source: new XYZ({
-    crossOrigin: 'anonymous', // TODO: determine if we can avoid this
     attributions: attributions,
     url: 'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=' + key,
     maxZoom: 20,

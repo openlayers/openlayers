@@ -17,7 +17,6 @@ const imagery = new TileLayer({
     attributions:
       '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
       '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
-    crossOrigin: '',
     maxZoom: 20,
   }),
 });
