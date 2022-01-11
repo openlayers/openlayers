@@ -77,6 +77,25 @@ describe('ol/webgl/TileTexture', function () {
     expect(tileTexture.loaded).to.be(true);
   });
 
+  it('sets anonymous cors mode for image tiles by default', function () {
+    const tile = new ImageTile([0, 0, 0], TileState.IDLE);
+    tileTexture.setTile(tile);
+    const image = tile.getImage();
+    expect(image.crossOrigin).to.be('anonymous');
+  });
+
+  it('resepects any existing cors mode', function () {
+    const tile = new ImageTile(
+      [0, 0, 0],
+      TileState.IDLE,
+      'https://example.com/tile.png',
+      'use-credentials'
+    );
+    tileTexture.setTile(tile);
+    const image = tile.getImage();
+    expect(image.crossOrigin).to.be('use-credentials');
+  });
+
   it('registers and unregisters change listener', function () {
     const tile = tileTexture.tile;
     expect(tile.getListeners('change').length).to.be(2);
