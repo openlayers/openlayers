@@ -164,7 +164,7 @@ class MVT extends FeatureFormat {
    * @param {PBF} pbf PBF
    * @param {Object} rawFeature Raw Mapbox feature.
    * @param {import("./Feature.js").ReadOptions} options Read options.
-   * @return {import("../Feature.js").FeatureLike} Feature.
+   * @return {import("../Feature.js").FeatureLike|null} Feature.
    */
   createFeature_(pbf, rawFeature, options) {
     const type = rawFeature.type;
@@ -293,7 +293,10 @@ class MVT extends FeatureFormat {
 
       for (let i = 0, ii = pbfLayer.length; i < ii; ++i) {
         const rawFeature = readRawFeature(pbf, pbfLayer, i);
-        features.push(this.createFeature_(pbf, rawFeature, options));
+        const feature = this.createFeature_(pbf, rawFeature, options);
+        if (feature !== null) {
+          features.push(feature);
+        }
       }
     }
 
