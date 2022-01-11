@@ -1360,13 +1360,16 @@ class Modify extends PointerInteraction {
       const evt = this.lastPointerEvent_;
       this.willModifyFeatures_(evt, this.dragSegments_);
       const removed = this.removeVertex_();
-      this.dispatchEvent(
-        new ModifyEvent(
-          ModifyEventType.MODIFYEND,
-          this.featuresBeingModified_,
-          evt
-        )
-      );
+      if (this.featuresBeingModified_) {
+        this.dispatchEvent(
+          new ModifyEvent(
+            ModifyEventType.MODIFYEND,
+            this.featuresBeingModified_,
+            evt
+          )
+        );
+      }
+
       this.featuresBeingModified_ = null;
       return removed;
     }
