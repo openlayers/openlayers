@@ -100,7 +100,9 @@ function getRenderExtent(frameState, extent) {
   const source =
     /** {import("../../source/Tile.js").default} */ layerState.layer.getSource();
   if (!source.getWrapX()) {
-    const gridExtent = source.tileGrid.getExtent();
+    const gridExtent = source
+      .getTileGridForProjection(frameState.viewState.projection)
+      .getExtent();
     if (gridExtent) {
       extent = getIntersection(extent, gridExtent);
     }
