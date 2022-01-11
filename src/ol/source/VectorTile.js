@@ -124,6 +124,7 @@ class VectorTile extends UrlTile {
       attributions: options.attributions,
       attributionsCollapsible: options.attributionsCollapsible,
       cacheSize: options.cacheSize,
+      interpolate: true,
       opaque: false,
       projection: projection,
       state: options.state,
