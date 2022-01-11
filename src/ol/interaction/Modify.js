@@ -185,7 +185,7 @@ export class ModifyEvent extends Event {
  *
  * Cartesian distance from the pointer is used to determine the features that
  * will be modified. This means that geometries will only be considered for
- * modification when they are within the configured `pixelTolerane`. For point
+ * modification when they are within the configured `pixelTolerance`. For point
  * geometries, the `hitDetection` option can be used to match their visual
  * appearance.
  *
@@ -480,7 +480,7 @@ class Modify extends PointerInteraction {
    */
   removeFeature_(feature) {
     this.removeFeatureSegmentData_(feature);
-    // Remove the vertex feature if the collection of canditate features is empty.
+    // Remove the vertex feature if the collection of candidate features is empty.
     if (this.vertexFeature_ && this.features_.getLength() === 0) {
       this.overlay_.getSource().removeFeature(this.vertexFeature_);
       this.vertexFeature_ = null;
