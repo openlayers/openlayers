@@ -1,0 +1,29 @@
+---
+layout: example.html
+title: Interpolation (with WebGL)
+shortdesc: Example of WebGL data interpolation
+docs: >
+  <p>
+    Example of data resampling when using raster DEM (digital elevation model) data with WebGL.
+    The data is interpolated by calculating the values represented by the RGB bands of
+    the pixels and the interpolated values are styled back as RGB so they can be accessed by
+    <b>forEachLayerAtPixel</b>.
+  </p><p>
+    Special consideration is needed when reprojecting raster sources whose pixels represent data values.
+    If the reprojected source zooms beyond the level of detail of the source data it will not be useful
+    for subsequent interpolation by WebGL.  The reprojection should also preserve the pixel data
+    values for interpolation.  <b>setTileGridForProjection</b> is be used to restrict reprojection to a
+    zoom level comparable to the original detail and to preserve pixel data values.
+  </p>
+tags: "image interpolation, xyz, maptiler, reprojection"
+cloak:
+  - key: get_your_own_D6rA4zTHduk6KOKTXzGB
+    value: Get your own API key at https://www.maptiler.com/cloud/
+---
+<div id="map" class="map"></div>
+<div>
+  <label>
+    Elevation
+    <span id="info">0.0</span> meters
+  </label>
+</div>
