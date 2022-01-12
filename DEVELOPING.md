@@ -36,7 +36,7 @@ Below is an example of how to build and link it to "sample-project"
 
 
     $ cd openlayers
-    $ npm build-package
+    $ npm run build-package
     $ cd build/ol
     $ npm link
     $ cd /sample-project
