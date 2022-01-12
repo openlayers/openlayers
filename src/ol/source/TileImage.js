@@ -127,6 +127,12 @@ class TileImage extends UrlTile {
 
     /**
      * @private
+     * @type {!Object<string, boolean>}
+     */
+    this.dataOptionForProjection_ = {};
+
+    /**
+     * @private
      * @type {number|undefined}
      */
     this.reprojectionErrorThreshold_ = options.reprojectionErrorThreshold;
@@ -253,6 +259,27 @@ class TileImage extends UrlTile {
 
   /**
    * @param {import("../proj/Projection.js").default} projection Projection.
+   * @return {boolean} Data mode.
+   * @private
+   */
+  getDataOptionForProjection_(projection) {
+    if (!ENABLE_RASTER_REPROJECTION) {
+      return false;
+    }
+    const thisProj = this.getProjection();
+    if (this.tileGrid && (!thisProj || equivalent(thisProj, projection))) {
+      return false;
+    } else {
+      const projKey = getUid(projection);
+      if (!(projKey in this.dataOptionForProjection_)) {
+        this.dataOptionForProjection_[projKey] = false;
+      }
+      return this.dataOptionForProjection_[projKey];
+    }
+  }
+
+  /**
+   * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {import("../TileCache.js").default} Tile cache.
    */
   getTileCacheForProjection(projection) {
@@ -346,6 +373,7 @@ class TileImage extends UrlTile {
           tileCoord,
           projection
         );
+        const pixelData = this.getDataOptionForProjection_(projection);
         const newTile = new ReprojTile(
           sourceProjection,
           sourceTileGrid,
@@ -360,7 +388,8 @@ class TileImage extends UrlTile {
           }.bind(this),
           this.reprojectionErrorThreshold_,
           this.renderReprojectionEdges_,
-          this.getInterpolate()
+          this.getInterpolate(),
+          pixelData
         );
         newTile.key = key;
 
@@ -444,15 +473,19 @@ class TileImage extends UrlTile {
    *
    * @param {import("../proj.js").ProjectionLike} projection Projection.
    * @param {import("../tilegrid/TileGrid.js").default} tilegrid Tile grid to use for the projection.
+   * @param {boolean} [opt_pixelData] Set true if pixel colors represent data values and should
+   * be preserved when reprojecting with interpolation.  Default is false.
    * @api
    */
-  setTileGridForProjection(projection, tilegrid) {
+  setTileGridForProjection(projection, tilegrid, opt_pixelData) {
     if (ENABLE_RASTER_REPROJECTION) {
       const proj = getProjection(projection);
       if (proj) {
         const projKey = getUid(proj);
         if (!(projKey in this.tileGridForProjection)) {
           this.tileGridForProjection[projKey] = tilegrid;
+          this.dataOptionForProjection_[projKey] =
+            opt_pixelData !== undefined ? opt_pixelData : false;
         }
       }
     }

@@ -40,6 +40,7 @@ class ReprojTile extends Tile {
    * @param {number} [opt_errorThreshold] Acceptable reprojection error (in px).
    * @param {boolean} [opt_renderEdges] Render reprojection edges.
    * @param {boolean} [opt_interpolate] Use linear interpolation when resampling.
+   * @param {boolean} [opt_pixelData] Preserve pixel data when reprojecting with interpolation.
    */
   constructor(
     sourceProj,
@@ -53,7 +54,8 @@ class ReprojTile extends Tile {
     getTileFunction,
     opt_errorThreshold,
     opt_renderEdges,
-    opt_interpolate
+    opt_interpolate,
+    opt_pixelData
   ) {
     super(tileCoord, TileState.IDLE, {interpolate: !!opt_interpolate});
 
@@ -62,6 +64,12 @@ class ReprojTile extends Tile {
      * @type {boolean}
      */
     this.renderEdges_ = opt_renderEdges !== undefined ? opt_renderEdges : false;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.pixelData_ = opt_pixelData !== undefined ? opt_pixelData : false;
 
     /**
      * @private
@@ -279,7 +287,7 @@ class ReprojTile extends Tile {
         sources,
         this.gutter_,
         this.renderEdges_,
-        this.interpolate
+        this.interpolate && !this.pixelData_
       );
 
       this.state = TileState.LOADED;
