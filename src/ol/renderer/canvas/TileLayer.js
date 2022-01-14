@@ -4,7 +4,7 @@
 import CanvasLayerRenderer from './Layer.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
-import {IMAGE_SMOOTHING_DISABLED} from './common.js';
+import {IMAGE_SMOOTHING_DISABLED, IMAGE_SMOOTHING_ENABLED} from './common.js';
 import {
   apply as applyTransform,
   compose as composeTransform,
@@ -457,6 +457,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     if (layerState.extent) {
       context.restore();
     }
+    assign(context, IMAGE_SMOOTHING_ENABLED);
 
     if (canvasTransform !== canvas.style.transform) {
       canvas.style.transform = canvasTransform;

@@ -87,5 +87,17 @@ describe('ol.renderer.canvas.TileLayer', function () {
         done();
       });
     });
+
+    it('image smoothing is re-enabled after rendering', function (done) {
+      let context;
+      layer.on('postrender', function (e) {
+        context = e.context;
+        context.imageSmoothingEnabled = false;
+      });
+      map.on('postrender', function () {
+        expect(context.imageSmoothingEnabled).to.be(true);
+        done();
+      });
+    });
   });
 });

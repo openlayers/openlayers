@@ -181,6 +181,7 @@ class VectorSource extends Source {
 
     super({
       attributions: options.attributions,
+      interpolate: true,
       projection: undefined,
       state: SourceState.READY,
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
