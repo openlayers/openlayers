@@ -1,5 +1,9 @@
 ## Upgrade notes
 
+### v6.12.0
+
+No special changes are required when upgrading to the 6.12.0 release.
+
 ### v6.11.0
 
 No special changes are required when upgrading to the 6.11.0 release.
