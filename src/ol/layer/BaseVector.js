@@ -45,6 +45,11 @@ import {
  * is defined by the z-index of the layer, the `zIndex` of the style and the render order of features.
  * Higher z-index means higher priority. Within the same z-index, a feature rendered before another has
  * higher priority.
+ *
+ * As an optimization decluttered features from layers with the same `className` are rendered above
+ * the fill and stroke styles of all of those layers regardless of z-index.  To opt out of this
+ * behavior and place declutterd features with their own layer configure the layer with a `className`
+ * other than `ol-layer`.
  * @property {import("../style/Style.js").StyleLike|null} [style] Layer style. When set to `null`, only
  * features that have their own style will be rendered. See {@link module:ol/style/Style~Style} for the default style
  * which will be used if this is not set.
