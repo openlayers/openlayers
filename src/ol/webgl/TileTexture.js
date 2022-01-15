@@ -199,14 +199,21 @@ class TileTexture extends EventTarget {
       return;
     }
 
+    const tilePixelRatio = /** @type {import("../DataTile.js").default} */ (
+      tile
+    ).tilePixelRatio;
+    const pixelSize = [
+      this.size[0] * tilePixelRatio,
+      this.size[1] * tilePixelRatio,
+    ];
     const data = tile.getData();
     const isFloat = data instanceof Float32Array;
-    const pixelCount = this.size[0] * this.size[1];
+    const pixelCount = pixelSize[0] * pixelSize[1];
     const DataType = isFloat ? Float32Array : Uint8Array;
     const bytesPerElement = DataType.BYTES_PER_ELEMENT;
-    const bytesPerRow = data.byteLength / this.size[1];
+    const bytesPerRow = data.byteLength / pixelSize[1];
 
-    this.bandCount = Math.floor(bytesPerRow / bytesPerElement / this.size[0]);
+    this.bandCount = Math.floor(bytesPerRow / bytesPerElement / pixelSize[0]);
     const textureCount = Math.ceil(this.bandCount / 4);
 
     if (textureCount === 1) {
@@ -216,7 +223,7 @@ class TileTexture extends EventTarget {
         helper,
         texture,
         data,
-        this.size,
+        pixelSize,
         this.bandCount,
         tile.interpolate
       );
@@ -235,8 +242,8 @@ class TileTexture extends EventTarget {
 
     let dataIndex = 0;
     let rowOffset = 0;
-    const colCount = this.size[0] * this.bandCount;
-    for (let rowIndex = 0; rowIndex < this.size[1]; ++rowIndex) {
+    const colCount = pixelSize[0] * this.bandCount;
+    for (let rowIndex = 0; rowIndex < pixelSize[1]; ++rowIndex) {
       for (let colIndex = 0; colIndex < colCount; ++colIndex) {
         const dataValue = data[rowOffset + colIndex];
 
@@ -261,7 +268,7 @@ class TileTexture extends EventTarget {
         helper,
         texture,
         textureData,
-        this.size,
+        pixelSize,
         bandCount,
         tile.interpolate
       );

@@ -18,6 +18,7 @@ import TileState from './TileState.js';
  * transitions in milliseconds. A duration of 0 disables the opacity transition.
  * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
  * the nearest neighbor is used when resampling.
+ * @property {number} [tilePixelRatio=1] Tile pixel ratio.
  * @api
  */
 
@@ -50,6 +51,12 @@ class DataTile extends Tile {
      * @private
      */
     this.error_ = null;
+
+    /**
+     * @type {number}
+     */
+    this.tilePixelRatio =
+      options.tilePixelRatio !== undefined ? options.tilePixelRatio : 1;
   }
 
   /**
