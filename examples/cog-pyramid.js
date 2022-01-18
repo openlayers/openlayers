@@ -3,7 +3,6 @@ import Map from '../src/ol/Map.js';
 import TileGrid from '../src/ol/tilegrid/TileGrid.js';
 import View from '../src/ol/View.js';
 import WebGLTileLayer from '../src/ol/layer/WebGLTile.js';
-import {createXYZ} from '../src/ol/tilegrid.js';
 import {sourcesFromTileGrid} from '../src/ol/source.js';
 
 // Metadata from https://s2downloads.eox.at/demo/EOxCloudless/2019/rgb/2019_EOxCloudless_rgb.json
@@ -26,12 +25,6 @@ const pyramid = new WebGLTileLayer({
     tileGrid,
     ([z, x, y]) =>
       new GeoTIFF({
-        tileGrid: createXYZ({
-          extent: tileGrid.getTileCoordExtent([z, x, y]),
-          minZoom: z,
-          maxZoom:
-            z === tileGrid.getResolutions().length - 1 ? undefined : z + 1,
-        }),
         sources: [
           {
             url: `https://s2downloads.eox.at/demo/EOxCloudless/2019/rgb/${z}/${y}/${x}.tif`,

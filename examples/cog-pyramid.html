@@ -5,7 +5,8 @@ shortdesc: Rendering a COG tile pyramid as layer group.
 docs: >
   Data from a Cloud Optimized GeoTIFF (COG) tile pyramid can be rendered as a set of layers.  In this
   example, a pyramid of 3-band GeoTIFFs is used to render RGB data. The `ol/source.sourcesFromTileGrid`
-  helper function creates sources from this pyramid on demand.
+  helper function creates sources from this pyramid on demand. The GeoTIFFs used by those sources have
+  a resolution range that matches the range of a single z of the pyramid tile grid.
 tags: "cog, tilepyramid, stac"
 ---
 <div id="map" class="map"></div>
