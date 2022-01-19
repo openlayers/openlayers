@@ -67,6 +67,16 @@ class LRUCache {
   }
 
   /**
+   * Expire the cache.
+   * @param {!Object<string, boolean>} [keep] Keys to keep. To be implemented by subclasses.
+   */
+  expireCache(keep) {
+    while (this.canExpireCache()) {
+      this.pop();
+    }
+  }
+
+  /**
    * FIXME empty description for jsdoc
    */
   clear() {

@@ -3,6 +3,7 @@
  */
 import BaseTileLayer from './BaseTile.js';
 import LayerProperty from '../layer/Property.js';
+import SourceState from '../source/State.js';
 import WebGLTileLayerRenderer, {
   Attributes,
   Uniforms,
@@ -64,6 +65,11 @@ import {assign} from '../obj.js';
  * @property {number} [preload=0] Preload. Load low-resolution tiles up to `preload` levels. `0`
  * means no preloading.
  * @property {SourceType} [source] Source for this layer.
+ * @property {Array<SourceType>|function(import("../extent.js").Extent, number):Array<SourceType>} [sources] Array
+ * of sources for this layer. Takes precedence over `source`. Can either be an array of sources, or a function that
+ * expects an extent and a resolution (in view projection units per pixel) and returns an array of sources. See
+ * {@link module:ol/source.sourcesFromTileGrid} for a helper function to generate sources that are organized in a
+ * pyramid following the same pattern as a tile grid.
  * @property {import("../PluggableMap.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
@@ -292,6 +298,18 @@ class WebGLTileLayer extends BaseTileLayer {
     super(options);
 
     /**
+     * @type {Array<SourceType>|function(import("../extent.js").Extent, number):Array<SourceType>}
+     * @private
+     */
+    this.sources_ = options.sources;
+
+    /**
+     * @type {number}
+     * @private
+     */
+    this.renderedResolution_ = NaN;
+
+    /**
      * @type {Style}
      * @private
      */
@@ -310,6 +328,41 @@ class WebGLTileLayer extends BaseTileLayer {
     this.styleVariables_ = this.style_.variables || {};
 
     this.addChangeListener(LayerProperty.SOURCE, this.handleSourceUpdate_);
+  }
+
+  /**
+   * Gets the sources for this layer, for a given extent and resolution.
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @param {number} resolution Resolution.
+   * @return {Array<SourceType>} Sources.
+   */
+  getSources(extent, resolution) {
+    const source = this.getSource();
+    return this.sources_
+      ? typeof this.sources_ === 'function'
+        ? this.sources_(extent, resolution)
+        : this.sources_
+      : source
+      ? [source]
+      : [];
+  }
+
+  /**
+   * @return {SourceType} The source being rendered.
+   */
+  getRenderSource() {
+    return (
+      /** @type {SourceType} */ (this.getLayerState().source) ||
+      this.getSource()
+    );
+  }
+
+  /**
+   * @return {import("../source/State.js").default} Source state.
+   */
+  getSourceState() {
+    const source = this.getRenderSource();
+    return source ? source.getState() : SourceState.UNDEFINED;
   }
 
   /**
@@ -338,6 +391,66 @@ class WebGLTileLayer extends BaseTileLayer {
       cacheSize: this.cacheSize_,
       paletteTextures: parsedStyle.paletteTextures,
     });
+  }
+
+  /**
+   * @param {import("../PluggableMap").FrameState} frameState Frame state.
+   * @param {Array<SourceType>} sources Sources.
+   * @return {HTMLElement} Canvas.
+   */
+  renderSources(frameState, sources) {
+    const layerRenderer = this.getRenderer();
+    let canvas;
+    for (let i = 0, ii = sources.length; i < ii; ++i) {
+      this.getLayerState().source = sources[i];
+      if (layerRenderer.prepareFrame(frameState)) {
+        canvas = layerRenderer.renderFrame(frameState);
+      }
+    }
+    return canvas;
+  }
+
+  /**
+   * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {HTMLElement} target Target which the renderer may (but need not) use
+   * for rendering its content.
+   * @return {HTMLElement} The rendered element.
+   */
+  render(frameState, target) {
+    const viewState = frameState.viewState;
+    const sources = this.getSources(frameState.extent, viewState.resolution);
+    let ready = true;
+    for (let i = 0, ii = sources.length; i < ii; ++i) {
+      const source = sources[i];
+      const sourceState = source.getState();
+      if (sourceState == SourceState.LOADING) {
+        const onChange = () => {
+          if (source.getState() == SourceState.READY) {
+            source.removeEventListener('change', onChange);
+            this.changed();
+          }
+        };
+        source.addEventListener('change', onChange);
+      }
+      ready = ready && sourceState == SourceState.READY;
+    }
+    const canvas = this.renderSources(frameState, sources);
+    if (this.getRenderer().renderComplete && ready) {
+      // Fully rendered, done.
+      this.renderedResolution_ = viewState.resolution;
+      return canvas;
+    }
+    // Render sources from previously fully rendered frames
+    if (this.renderedResolution_ > 0.5 * viewState.resolution) {
+      const altSources = this.getSources(
+        frameState.extent,
+        this.renderedResolution_
+      ).filter((source) => !sources.includes(source));
+      if (altSources.length > 0) {
+        return this.renderSources(frameState, altSources);
+      }
+    }
+    return canvas;
   }
 
   /**

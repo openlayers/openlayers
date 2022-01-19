@@ -373,4 +373,37 @@ describe('ol/layer/WebGLTile', function () {
       done();
     });
   });
+
+  it('handles multiple sources correctly', () => {
+    const source = layer.getSource();
+    expect(layer.getRenderSource()).to.be(source);
+    layer.sources_ = (extent, resolution) => {
+      return [
+        {
+          getState: () => 'ready',
+          extent,
+          resolution,
+          id: 'source1',
+        },
+        {
+          getState: () => 'ready',
+          extent,
+          resolution,
+          id: 'source2',
+        },
+      ];
+    };
+    const sourceIds = [];
+    layer.getRenderer().prepareFrame = (frameState) => {
+      const renderedSource = layer.getRenderSource();
+      expect(renderedSource.extent).to.eql([0, 0, 100, 100]);
+      expect(renderedSource.resolution).to.be(1);
+      sourceIds.push(renderedSource.id);
+    };
+    layer.render({
+      extent: [0, 0, 100, 100],
+      viewState: {resolution: 1},
+    });
+    expect(sourceIds).to.eql(['source1', 'source2']);
+  });
 });
