@@ -1,0 +1,34 @@
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import WKB from '../src/ol/format/WKB.js';
+import {OSM, Vector as VectorSource} from '../src/ol/source.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+
+const raster = new TileLayer({
+  source: new OSM(),
+});
+
+const wkb =
+  '010900000006000000010800000003000000000000000000000000000000000000000000000000000000000000000000F03F000000000000F03F0000000000000000010200000002000000000000000000F03F000000000000000000000000000000400000000000000000010800000003000000000000000000004000000000000000000000000000000040000000000000F03F00000000000008400000000000000000010200000002000000000000000000084000000000000000000000000000000040000000000000F0BF0108000000030000000000000000000040000000000000F0BF0000000000000040000000000000F8BF000000000000F03F000000000000F0BF010200000002000000000000000000F03F000000000000F0BF00000000000000000000000000000000\n';
+
+const format = new WKB();
+
+const feature = format.readFeature(wkb, {
+  dataProjection: 'EPSG:4326',
+  featureProjection: 'EPSG:3857',
+});
+
+const vector = new VectorLayer({
+  source: new VectorSource({
+    features: [feature],
+  }),
+});
+
+const map = new Map({
+  layers: [raster, vector],
+  target: 'map',
+  view: new View({
+    center: [0, 0],
+    zoom: 4,
+  }),
+});
