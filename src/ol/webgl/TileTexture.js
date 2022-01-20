@@ -126,7 +126,7 @@ class TileTexture extends EventTarget {
    * @param {number} [opt_tilePixelRatio=1] Tile pixel ratio.
    * @param {number} [opt_gutter=0] The size in pixels of the gutter around image tiles to ignore.
    */
-  constructor(tile, grid, helper) {
+  constructor(tile, grid, helper, opt_tilePixelRatio, opt_gutter) {
     super();
 
     /**
