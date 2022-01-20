@@ -13,7 +13,7 @@ const tileWms = new TileWMS({
 });
 
 new Map({
-  pixelRatio: 1,
+  pixelRatio: 1.5,
   layers: [new TileLayer({source: tileWms})],
   target: 'map',
   view: new View({
