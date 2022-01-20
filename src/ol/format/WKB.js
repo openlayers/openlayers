@@ -2,6 +2,7 @@
  * @module ol/format/WKB
  */
 import CircularString from '../geom/CircularString.js';
+import CompoundCurve from '../geom/CompoundCurve.js';
 import Feature from '../Feature.js';
 import FeatureFormat, {transformGeometryWithOptions} from './Feature.js';
 import FormatType from './FormatType.js';
@@ -36,8 +37,8 @@ const WKBGeometryType = {
   GEOMETRY_COLLECTION: 7,
 
   CIRCULAR_STRING: 8,
-  /*
   COMPOUND_CURVE: 9,
+  /*
   CURVE_POLYGON: 10,
 
   MULTI_CURVE: 11,
@@ -122,6 +123,13 @@ class WkbReader {
    */
   readCircularString() {
     return this.readLineString();
+  }
+
+  /**
+   * @return {Array<import('../geom/Geometry.js').default>} array of geometries
+   */
+  readCompoundCurve() {
+    return this.readGeometryCollection();
   }
 
   /**
@@ -237,6 +245,9 @@ class WkbReader {
 
       case WKBGeometryType.CIRCULAR_STRING:
         return this.readCircularString();
+
+      case WKBGeometryType.COMPOUND_CURVE:
+        return this.readCompoundCurve();
 
       default:
         throw new Error(
@@ -365,6 +376,11 @@ class WkbReader {
         return new CircularString(
           /** @type {Array<import('../coordinate.js').Coordinate>} */ (result),
           this.layout_
+        );
+
+      case WKBGeometryType.COMPOUND_CURVE:
+        return new CompoundCurve(
+          /** @type {Array<import('../geom/Geometry.js').default>} */ (result)
         );
 
       default:
