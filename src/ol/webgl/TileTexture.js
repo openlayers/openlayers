@@ -123,6 +123,8 @@ class TileTexture extends EventTarget {
    * @param {TileType} tile The tile.
    * @param {import("../tilegrid/TileGrid.js").default} grid Tile grid.
    * @param {import("../webgl/Helper.js").default} helper WebGL helper.
+   * @param {number} [opt_tilePixelRatio=1] Tile pixel ratio.
+   * @param {number} [opt_gutter=0] The size in pixels of the gutter around image tiles to ignore.
    */
   constructor(tile, grid, helper) {
     super();
@@ -139,6 +141,11 @@ class TileTexture extends EventTarget {
     this.handleTileChange_ = this.handleTileChange_.bind(this);
 
     this.size = toSize(grid.getTileSize(tile.tileCoord[0]));
+
+    this.tilePixelRatio_ =
+      opt_tilePixelRatio !== undefined ? opt_tilePixelRatio : 1;
+
+    this.gutter_ = opt_gutter !== undefined ? opt_gutter : 0;
 
     this.bandCount = NaN;
 
@@ -199,12 +206,9 @@ class TileTexture extends EventTarget {
       return;
     }
 
-    const tilePixelRatio = /** @type {import("../DataTile.js").default} */ (
-      tile
-    ).tilePixelRatio;
     const pixelSize = [
-      this.size[0] * tilePixelRatio,
-      this.size[1] * tilePixelRatio,
+      this.size[0] * this.tilePixelRatio_,
+      this.size[1] * this.tilePixelRatio_,
     ];
     const data = tile.getData();
     const isFloat = data instanceof Float32Array;
