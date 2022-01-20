@@ -9,6 +9,9 @@ import ReprojTile from '../reproj/Tile.js';
 import TileState from '../TileState.js';
 import WebGLArrayBuffer from './Buffer.js';
 import {ARRAY_BUFFER, STATIC_DRAW} from '../webgl.js';
+import {IMAGE_SMOOTHING_DISABLED} from '../renderer/canvas/common.js';
+import {assign} from '../obj.js';
+import {createCanvasContext2D} from '../dom.js';
 import {toSize} from '../size.js';
 
 /**
@@ -123,8 +126,10 @@ class TileTexture extends EventTarget {
    * @param {TileType} tile The tile.
    * @param {import("../tilegrid/TileGrid.js").default} grid Tile grid.
    * @param {import("../webgl/Helper.js").default} helper WebGL helper.
+   * @param {number} [opt_tilePixelRatio=1] Tile pixel ratio.
+   * @param {number} [opt_gutter=0] The size in pixels of the gutter around image tiles to ignore.
    */
-  constructor(tile, grid, helper) {
+  constructor(tile, grid, helper, opt_tilePixelRatio, opt_gutter) {
     super();
 
     /**
@@ -139,6 +144,11 @@ class TileTexture extends EventTarget {
     this.handleTileChange_ = this.handleTileChange_.bind(this);
 
     this.size = toSize(grid.getTileSize(tile.tileCoord[0]));
+
+    this.tilePixelRatio_ =
+      opt_tilePixelRatio !== undefined ? opt_tilePixelRatio : 1;
+
+    this.gutter_ = opt_gutter !== undefined ? opt_gutter : 0;
 
     this.bandCount = NaN;
 
@@ -192,21 +202,47 @@ class TileTexture extends EventTarget {
     const tile = this.tile;
 
     if (tile instanceof ImageTile || tile instanceof ReprojTile) {
+      let image = tile.getImage();
+      if (this.gutter_ !== 0) {
+        const gutter = this.tilePixelRatio_ * this.gutter_;
+        const width = Math.round(image.width - 2 * gutter);
+        const height = Math.round(image.height - 2 * gutter);
+        const context = createCanvasContext2D(width, height);
+        if (!tile.interpolate) {
+          assign(context, IMAGE_SMOOTHING_DISABLED);
+        }
+        context.drawImage(
+          image,
+          gutter,
+          gutter,
+          width,
+          height,
+          0,
+          0,
+          width,
+          height
+        );
+        image = context.canvas;
+      }
       const texture = gl.createTexture();
       this.textures.push(texture);
       this.bandCount = 4;
-      uploadImageTexture(gl, texture, tile.getImage(), tile.interpolate);
+      uploadImageTexture(gl, texture, image, tile.interpolate);
       return;
     }
 
+    const pixelSize = [
+      this.size[0] * this.tilePixelRatio_,
+      this.size[1] * this.tilePixelRatio_,
+    ];
     const data = tile.getData();
     const isFloat = data instanceof Float32Array;
-    const pixelCount = this.size[0] * this.size[1];
+    const pixelCount = pixelSize[0] * pixelSize[1];
     const DataType = isFloat ? Float32Array : Uint8Array;
     const bytesPerElement = DataType.BYTES_PER_ELEMENT;
-    const bytesPerRow = data.byteLength / this.size[1];
+    const bytesPerRow = data.byteLength / pixelSize[1];
 
-    this.bandCount = Math.floor(bytesPerRow / bytesPerElement / this.size[0]);
+    this.bandCount = Math.floor(bytesPerRow / bytesPerElement / pixelSize[0]);
     const textureCount = Math.ceil(this.bandCount / 4);
 
     if (textureCount === 1) {
@@ -216,7 +252,7 @@ class TileTexture extends EventTarget {
         helper,
         texture,
         data,
-        this.size,
+        pixelSize,
         this.bandCount,
         tile.interpolate
       );
@@ -235,8 +271,8 @@ class TileTexture extends EventTarget {
 
     let dataIndex = 0;
     let rowOffset = 0;
-    const colCount = this.size[0] * this.bandCount;
-    for (let rowIndex = 0; rowIndex < this.size[1]; ++rowIndex) {
+    const colCount = pixelSize[0] * this.bandCount;
+    for (let rowIndex = 0; rowIndex < pixelSize[1]; ++rowIndex) {
       for (let colIndex = 0; colIndex < colCount; ++colIndex) {
         const dataValue = data[rowOffset + colIndex];
 
@@ -261,7 +297,7 @@ class TileTexture extends EventTarget {
         helper,
         texture,
         textureData,
-        this.size,
+        pixelSize,
         bandCount,
         tile.interpolate
       );
