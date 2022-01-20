@@ -2,6 +2,7 @@
  * @module ol/geom/CompoundCurve
  */
 import GeometryCollection from './GeometryCollection.js';
+import GeometryType from './GeometryType.js';
 
 /**
  * @classdesc
@@ -15,6 +16,15 @@ class CompoundCurve extends GeometryCollection {
    */
   constructor(geometries) {
     super(geometries);
+  }
+
+  /**
+   * Get the type of this geometry.
+   * @return {import("./GeometryType.js").default} Geometry type.
+   * @api
+   */
+  getType() {
+    return GeometryType.COMPOUND_CURVE;
   }
 
   /**
