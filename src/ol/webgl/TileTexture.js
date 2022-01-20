@@ -199,10 +199,32 @@ class TileTexture extends EventTarget {
     const tile = this.tile;
 
     if (tile instanceof ImageTile || tile instanceof ReprojTile) {
+      let image = tile.getImage();
+      if (this.gutter_ !== 0) {
+        const gutter = this.tilePixelRatio_ * this.gutter_;
+        const width = Math.round(image.width - 2 * gutter);
+        const height = Math.round(image.height - 2 * gutter);
+        const context = createCanvasContext2D(width, height);
+        if (!tile.interpolate) {
+          assign(context, IMAGE_SMOOTHING_DISABLED);
+        }
+        context.drawImage(
+          image,
+          gutter,
+          gutter,
+          width,
+          height,
+          0,
+          0,
+          width,
+          height
+        );
+        image = context.canvas;
+      }
       const texture = gl.createTexture();
       this.textures.push(texture);
       this.bandCount = 4;
-      uploadImageTexture(gl, texture, tile.getImage(), tile.interpolate);
+      uploadImageTexture(gl, texture, image, tile.interpolate);
       return;
     }
 
