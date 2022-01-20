@@ -295,6 +295,9 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     const tileLayer = this.getLayer();
     const tileSource = tileLayer.getSource();
     const tileGrid = tileSource.getTileGridForProjection(viewState.projection);
+    const tilePixelRatio = tileSource.getTilePixelRatio(frameState.pixelRatio);
+    const gutter = tileSource.getGutterForProjection(viewState.projection);
+
     const tileTextureCache = this.tileTextureCache_;
     const tileRange = tileGrid.getTileRangeForExtentAndZ(
       extent,
@@ -339,7 +342,13 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
             viewState.projection
           );
           if (!tileTexture) {
-            tileTexture = new TileTexture(tile, tileGrid, this.helper);
+            tileTexture = new TileTexture(
+              tile,
+              tileGrid,
+              this.helper,
+              tilePixelRatio,
+              gutter
+            );
             tileTextureCache.set(tileCoordKey, tileTexture);
           } else {
             if (this.isDrawableTile_(tile)) {
