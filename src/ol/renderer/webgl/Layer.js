@@ -161,7 +161,7 @@ class WebGLLayerRenderer extends LayerRenderer {
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrame(frameState) {
-    if (this.getLayer().getSource()) {
+    if (this.getLayer().getRenderSource()) {
       let incrementGroup = true;
       let groupNumber = -1;
       let className;

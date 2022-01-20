@@ -163,7 +163,6 @@ class BaseLayer extends BaseObject {
       });
     const zIndex = this.getZIndex();
     state.opacity = clamp(Math.round(this.getOpacity() * 100) / 100, 0, 1);
-    state.sourceState = this.getSourceState();
     state.visible = this.getVisible();
     state.extent = this.getExtent();
     state.zIndex = zIndex === undefined && !state.managed ? Infinity : zIndex;

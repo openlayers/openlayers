@@ -548,6 +548,8 @@ export function parseLiteralStyle(style) {
 
   if (symbStyle.symbolType === 'image' && symbStyle.src) {
     const texture = new Image();
+    texture.crossOrigin =
+      symbStyle.crossOrigin === undefined ? 'anonymous' : symbStyle.crossOrigin;
     texture.src = symbStyle.src;
     builder
       .addUniform('sampler2D u_texture')
