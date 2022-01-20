@@ -131,14 +131,7 @@ class DataTileSource extends TileSource {
     }
 
     const tile = new DataTile(
-      assign(
-        {
-          tileCoord: [z, x, y],
-          loader: loader,
-          tilePixelRatio: this.getTilePixelRatio(pixelRatio),
-        },
-        this.tileOptions
-      )
+      assign({tileCoord: [z, x, y], loader: loader}, this.tileOptions)
     );
     tile.key = this.getKey();
     tile.addEventListener(EventType.CHANGE, this.handleTileChange_);
