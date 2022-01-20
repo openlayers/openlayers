@@ -9,6 +9,9 @@ import ReprojTile from '../reproj/Tile.js';
 import TileState from '../TileState.js';
 import WebGLArrayBuffer from './Buffer.js';
 import {ARRAY_BUFFER, STATIC_DRAW} from '../webgl.js';
+import {IMAGE_SMOOTHING_DISABLED} from '../renderer/canvas/common.js';
+import {assign} from '../obj.js';
+import {createCanvasContext2D} from '../dom.js';
 import {toSize} from '../size.js';
 
 /**
