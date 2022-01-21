@@ -3,6 +3,7 @@
  */
 import CircularString from '../geom/CircularString.js';
 import CompoundCurve from '../geom/CompoundCurve.js';
+import CurvePolygon from '../geom/CurvePolygon.js';
 import Feature from '../Feature.js';
 import FeatureFormat, {transformGeometryWithOptions} from './Feature.js';
 import FormatType from './FormatType.js';
@@ -38,8 +39,8 @@ const WKBGeometryType = {
 
   CIRCULAR_STRING: 8,
   COMPOUND_CURVE: 9,
-  /*
   CURVE_POLYGON: 10,
+  /*
 
   MULTI_CURVE: 11,
   MULTI_SURFACE: 12,
@@ -129,6 +130,10 @@ class WkbReader {
    * @return {Array<import('../geom/Geometry.js').default>} array of geometries
    */
   readCompoundCurve() {
+    return this.readGeometryCollection();
+  }
+
+  readCurvePolygon() {
     return this.readGeometryCollection();
   }
 
@@ -248,6 +253,9 @@ class WkbReader {
 
       case WKBGeometryType.COMPOUND_CURVE:
         return this.readCompoundCurve();
+
+      case WKBGeometryType.CURVE_POLYGON:
+        return this.readCurvePolygon();
 
       default:
         throw new Error(
@@ -383,6 +391,11 @@ class WkbReader {
           /** @type {Array<import('../geom/Geometry.js').default>} */ (result)
         );
 
+      case WKBGeometryType.CURVE_POLYGON:
+        return new CurvePolygon(
+          /** @type {Array<import('../geom/Geometry.js').default>} */ (result),
+          this.layout_
+        );
       default:
         return null;
     }

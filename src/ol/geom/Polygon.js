@@ -43,7 +43,7 @@ class Polygon extends SimpleGeometry {
 
     /**
      * @type {Array<number>}
-     * @private
+     * @protected
      */
     this.ends_ = [];
 
@@ -60,25 +60,25 @@ class Polygon extends SimpleGeometry {
     this.flatInteriorPoint_ = null;
 
     /**
-     * @private
+     * @protected
      * @type {number}
      */
     this.maxDelta_ = -1;
 
     /**
-     * @private
+     * @protected
      * @type {number}
      */
     this.maxDeltaRevision_ = -1;
 
     /**
-     * @private
+     * @protected
      * @type {number}
      */
     this.orientedRevision_ = -1;
 
     /**
-     * @private
+     * @protected
      * @type {Array<number>}
      */
     this.orientedFlatCoordinates_ = null;
