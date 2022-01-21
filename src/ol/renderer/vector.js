@@ -39,6 +39,7 @@ const GEOMETRY_RENDERERS = {
   'Circle': renderCircleGeometry,
   'CircularString': renderCircularStringGeometry,
   'CompoundCurve': renderCompoundCurveGeometry,
+  'CurvePolygon': renderCurvePolygonGeometry,
 };
 
 /**
@@ -324,6 +325,25 @@ function renderCompoundCurveGeometry(
     feature,
     opt_declutterBuilderGroup
   );
+}
+
+function renderCurvePolygonGeometry(
+  builderGroup,
+  geometry,
+  style,
+  feature,
+  opt_declutterBuilderGroup
+) {
+  const fillStyle = style.getFill();
+  const strokeStyle = style.getStroke();
+  if (fillStyle || strokeStyle) {
+    const polygonReplay = builderGroup.getBuilder(
+      style.getZIndex(),
+      BuilderType.CURVE_POLYGON
+    );
+    polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);
+    polygonReplay.drawCurvePolygon(geometry, feature);
+  }
 }
 
 /**

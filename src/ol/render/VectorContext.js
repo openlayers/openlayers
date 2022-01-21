@@ -57,6 +57,8 @@ class VectorContext {
    */
   drawCircularString(circularStringGeometry, feature) {}
 
+  drawCurvePolygon(curvePolygonGeometry, feature) {}
+
   /**
    * @param {import("../geom/LineString.js").default|import("./Feature.js").default} lineStringGeometry Line string geometry.
    * @param {import("../Feature.js").FeatureLike} feature Feature.

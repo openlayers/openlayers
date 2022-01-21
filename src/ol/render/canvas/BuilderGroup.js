@@ -4,6 +4,7 @@
 
 import Builder from './Builder.js';
 import CircularStringBuilder from './CircularStringBuilder.js';
+import CurvePolygonBuilder from './CurvePolygonBuilder.js';
 import ImageBuilder from './ImageBuilder.js';
 import LineStringBuilder from './LineStringBuilder.js';
 import PolygonBuilder from './PolygonBuilder.js';
@@ -15,6 +16,7 @@ import TextBuilder from './TextBuilder.js';
 const BATCH_CONSTRUCTORS = {
   'Circle': PolygonBuilder,
   'CircularString': CircularStringBuilder,
+  'CurvePolygon': CurvePolygonBuilder,
   'Default': Builder,
   'Image': ImageBuilder,
   'LineString': LineStringBuilder,

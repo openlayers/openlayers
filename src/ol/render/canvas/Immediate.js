@@ -547,6 +547,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * @api
    */
   drawGeometry(geometry) {
+    // todo: moeten we hier nog het één en ander aan toevoegen?
     const type = geometry.getType();
     switch (type) {
       case GeometryType.POINT:

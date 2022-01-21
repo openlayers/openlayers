@@ -8,6 +8,7 @@
 export default {
   CIRCLE: 'Circle',
   CIRCULAR_STRING: 'CircularString',
+  CURVE_POLYGON: 'CurvePolygon',
   DEFAULT: 'Default',
   IMAGE: 'Image',
   LINE_STRING: 'LineString',
