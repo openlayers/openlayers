@@ -38,6 +38,7 @@ const GEOMETRY_RENDERERS = {
   'GeometryCollection': renderGeometryCollectionGeometry,
   'Circle': renderCircleGeometry,
   'CircularString': renderCircularStringGeometry,
+  'CompoundCurve': renderCompoundCurveGeometry,
 };
 
 /**
@@ -300,6 +301,29 @@ function renderCircularStringGeometry(
     circularStringReplay.setFillStrokeStyle(null, strokeStyle);
     circularStringReplay.drawCircularString(geometry, feature);
   }
+}
+
+/**
+ * @param {import("../render/canvas/BuilderGroup.js").default} builderGroup Replay group.
+ * @param {import("../geom/CompoundCurve.js").default} geometry Geometry.
+ * @param {import("../style/Style.js").default} style Style.
+ * @param {import("../Feature.js").default} feature Feature.
+ * @param {import("../render/canvas/BuilderGroup.js").default} [opt_declutterBuilderGroup] Builder for decluttering.
+ */
+function renderCompoundCurveGeometry(
+  builderGroup,
+  geometry,
+  style,
+  feature,
+  opt_declutterBuilderGroup
+) {
+  renderGeometryCollectionGeometry(
+    builderGroup,
+    geometry,
+    style,
+    feature,
+    opt_declutterBuilderGroup
+  );
 }
 
 /**

@@ -2,6 +2,7 @@
  * @module ol/geom/CompoundCurve
  */
 import GeometryCollection from './GeometryCollection.js';
+import GeometryType from './GeometryType.js';
 
 /**
  * @classdesc
@@ -18,6 +19,15 @@ class CompoundCurve extends GeometryCollection {
   }
 
   /**
+   * Get the type of this geometry.
+   * @return {import("./GeometryType.js").default} Geometry type.
+   * @api
+   */
+  getType() {
+    return GeometryType.COMPOUND_CURVE;
+  }
+
+  /**
    * Scale the geometry (with an optional origin).  This modifies the geometry
    * coordinates in place.
    * @abstract
@@ -28,7 +38,7 @@ class CompoundCurve extends GeometryCollection {
    * @api
    */
   scale(sx, opt_sy, opt_anchor) {
-    GeometryCollection.prototype.scale(sx, opt_sy, opt_anchor);
+    super.scale(sx, opt_sy, opt_anchor);
   }
 }
 
