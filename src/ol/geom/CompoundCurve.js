@@ -38,7 +38,7 @@ class CompoundCurve extends GeometryCollection {
    * @api
    */
   scale(sx, opt_sy, opt_anchor) {
-    GeometryCollection.prototype.scale(sx, opt_sy, opt_anchor);
+    super.scale(sx, opt_sy, opt_anchor);
   }
 }
 
