@@ -16,12 +16,12 @@ function getItemCssClass(type) {
 
 const printListItem = (member) => {
     const shortName = toShortName(member.name); ?>
-                    <li data-name="<?js= shortName.toLowerCase() ?>"><?js= self.linkto(member.longname, shortName) ?><?js
+            <li data-name="<?js= shortName.toLowerCase() ?>"><?js= self.linkto(member.longname, shortName) ?><?js
 };
 const printListItemWithStability = (member) => {
     const shortName = toShortName(member.name);
     const cls = member.stability && member.stability !== 'stable' ? ' class="unstable"' : ''; ?>
-                    <li data-name="<?js= shortName.toLowerCase() ?>"<?js= cls ?>><?js= self.linkto(member.longname, shortName) ?><?js
+            <li data-name="<?js= shortName.toLowerCase() ?>"<?js= cls ?>><?js= self.linkto(member.longname, shortName) ?><?js
 };
 const printFiresListItem = (eventName) => {
     const ancestor = self.find({longname: eventName})[0] ||
@@ -32,43 +32,28 @@ const printFiresListItem = (eventName) => {
     } else {
         const cls = ancestor.stability && ancestor.stability !== 'stable' ? ' class="unstable"' : '';
         const shortName = toShortName(ancestor.name); ?>
-                    <li data-name="<?js= shortName.toLowerCase() ?>"<?js= cls ?>><?js= shortName ?><?js
+            <li data-name="<?js= shortName.toLowerCase() ?>"<?js= cls ?>><?js= shortName ?><?js
     }
 };
 
 function listContent(item, title, listItemPrinter) {
     const type = title.toLowerCase();
     if (item[type] && item[type].length) { ?>
-            <div class="member-list" data-type="<?js= type ?>">
-                <span class="subtitle"><?js= title ?></span>
-                <ul><?js
-        item[type].forEach(function (v) {
-            listItemPrinter(v);
-         }); ?>
-                </ul>
-            </div><?js
-    }
-}
-?>
-<div class="navigation col-md-4 col-lg-3">
-    <div class="search-wrapper">
-        <div class="search">
-            <input id="search" type="text" autocomplete="off" class="form-control input-sm" placeholder="Search Documentation">
-        </div>
-    </div>
-    <div class="navigation-list-wrapper">
-        <ul class="navigation-list search-empty"><?js
-            this.nav.forEach(function (item) { ?>
-            <li class="item item-<?js= item.type ?>" data-longname="<?js= item.longname ?>" data-name="<?js= item.prettyname.toLowerCase() ?>">
-                <span class="title toggle">
-                    <span class="fa <?js= getItemCssClass(item.type) ?> mr-2 mt-1"></span>
-                    <span><?js= self.linkto(item.longname, item.prettyname.replace(/[.~\/]/g, '\u200b$&')) ?></span>
-                </span><?js
-                    listContent(item, 'Members', printListItem);
-                    listContent(item, 'Typedefs', printListItemWithStability);
-                    listContent(item, 'Methods', printListItemWithStability);
-                    listContent(item, 'Fires', printFiresListItem);
-            }); ?>
+    <div class="member-list" data-type="<?js= type ?>">
+        <span class="subtitle"><?js= title ?></span>
+        <ul><?js
+        item[type].forEach((v) => listItemPrinter(v)); ?>
         </ul>
-    </div>
-</div>
+    </div><?js
+    }
+} ?>
+<li class="item item-<?js= item.type ?><?js= obj.classes || '' ?>" data-longname="<?js= item.longname ?>" data-name="<?js= item.prettyname.toLowerCase() ?>">
+    <span class="title toggle">
+        <span class="fa <?js= getItemCssClass(item.type) ?> mr-2 mt-1"></span>
+        <span><?js= self.linkto(item.longname, item.prettyname.replace(/[.~\/]/g, '\u200b$&')) ?></span>
+    </span><?js
+listContent(item, 'Members', printListItem);
+listContent(item, 'Typedefs', printListItemWithStability);
+listContent(item, 'Methods', printListItemWithStability);
+listContent(item, 'Fires', printFiresListItem);
+?>

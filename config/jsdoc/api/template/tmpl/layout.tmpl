@@ -29,7 +29,7 @@ var version = obj.packageInfo.version;
       gtag('js', new Date());
       gtag('config', 'UA-2577926-1', { 'anonymize_ip': true });
     </script>
-    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
+    <link type="text/css" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
     <script>
     window.addEventListener("load", function() {
@@ -64,14 +64,14 @@ var version = obj.packageInfo.version;
     </script>
     <title>OpenLayers v<?js= version ?> API - <?js= title ?></title>
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=fetch"></script>
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <script src="scripts/jquery.min.js"> </script>
-    <script src="scripts/bootstrap.bundle.min.js"> </script>
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <script src="scripts/bootstrap.bundle.min.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+    <link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
     <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
@@ -115,15 +115,35 @@ var version = obj.packageInfo.version;
         </nav>
       </header>
       <div id="wrap" class="row">
-          <?js= this.navigationHtml ?>
-          <div class="main col-md-8 col-lg-9">
-              <h1 class="page-title" data-filename="<?js= filename ?>"><?js= title ?></h1>
-              <div id="latest-check" class="alert alert-warning alert-dismissible" role="alert" style="display:none">
-                <button id="latest-dismiss" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                This documentation is for OpenLayers v<span id="package-version"><?js= version ?></span>. The <a id="latest-link" href="#" class="alert-link">latest</a> is v<span id="latest-version"></span>.
-              </div>
-              <?js= content ?>
+        <div class="navigation col-md-4 col-lg-3">
+          <div class="search-wrapper">
+            <div class="search">
+              <input id="search" type="text" autocomplete="off" class="form-control input-sm" placeholder="Search Documentation">
+            </div>
           </div>
+          <div class="navigation-list-wrapper">
+            <ul class="navigation-list search-empty"><?js
+              const item = this.navigationItems[docs[0].longname];
+              const listItem = item
+                ? this.partial('navigation.tmpl', {
+                    item: item,
+                    classes: ' toggle-manual toggle-manual-show',
+                  })
+                : '';
+              ?><?js= listItem ?>
+              <li class="loading">Loading …
+            </ul>
+          </div>
+        </div>
+
+        <div class="main col-md-8 col-lg-9">
+            <h1 class="page-title" data-filename="<?js= filename ?>"><?js= title ?></h1>
+            <div id="latest-check" class="alert alert-warning alert-dismissible" role="alert" style="display:none">
+              <button id="latest-dismiss" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              This documentation is for OpenLayers v<span id="package-version"><?js= version ?></span>. The <a id="latest-link" href="#" class="alert-link">latest</a> is v<span id="latest-version"></span>.
+            </div>
+            <?js= content ?>
+        </div>
       </div>
       <script>prettyPrint();</script>
       <script src="scripts/linenumber.js"></script>

@@ -22,6 +22,7 @@ body {
 }
 .navbar-brand img {
   height: 35px;
+  width: 35px;;
   vertical-align: middle;
   margin-right: 5px;
   display: inline-block;
