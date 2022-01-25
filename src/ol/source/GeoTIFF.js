@@ -207,14 +207,15 @@ function getImagesForTIFF(tiff) {
 
 /**
  * @param {SourceInfo} source The GeoTIFF source.
+ * @param {object} options Options for the GeoTIFF source.
  * @return {Promise<Array<GeoTIFFImage>>} Resolves to a list of images.
  */
-function getImagesForSource(source) {
+function getImagesForSource(source, options) {
   let request;
   if (source.overviews) {
-    request = tiffFromUrls(source.url, source.overviews);
+    request = tiffFromUrls(source.url, source.overviews, options);
   } else {
-    request = tiffFromUrl(source.url);
+    request = tiffFromUrl(source.url, options);
   }
   return request.then(getImagesForTIFF);
 }
@@ -308,6 +309,7 @@ function getMaxForDataType(array) {
  * sources, one with 3 bands and {@link import("./GeoTIFF.js").SourceInfo nodata} configured, and
  * another with 1 band, the resulting data tiles will have 5 bands: 3 from the first source, 1 alpha
  * band from the first source, and 1 band from the second source.
+ * @property {object} [sourceOptions] Additional options to be passed to the underlying geotiff.js source.
  * @property {boolean} [convertToRGB = false] By default, bands from the sources are read as-is. When
  * reading GeoTIFFs with the purpose of displaying them as RGB images, setting this to `true` will
  * convert other color spaces (YCbCr, CMYK) to RGB.
@@ -350,6 +352,12 @@ class GeoTIFFSource extends DataTile {
     this.sourceInfo_ = options.sources;
 
     const numSources = this.sourceInfo_.length;
+
+    /**
+     * @type {object}
+     * @private
+     */
+    this.sourceOptions_ = options.sourceOptions;
 
     /**
      * @type {Array<Array<GeoTIFFImage>>}
@@ -409,7 +417,10 @@ class GeoTIFFSource extends DataTile {
     const self = this;
     const requests = new Array(numSources);
     for (let i = 0; i < numSources; ++i) {
-      requests[i] = getImagesForSource(this.sourceInfo_[i]);
+      requests[i] = getImagesForSource(
+        this.sourceInfo_[i],
+        this.sourceOptions_
+      );
     }
     Promise.all(requests)
       .then(function (sources) {
