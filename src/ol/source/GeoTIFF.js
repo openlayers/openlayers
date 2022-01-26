@@ -300,6 +300,20 @@ function getMaxForDataType(array) {
 }
 
 /**
+ * @typedef {Object} GeoTIFFSourceOptions
+ * @property {boolean} [forceXHR=false] Whether to force the usage of the browsers XMLHttpRequest API.
+ * @property {Object} [headers] additional headers to be passed with each request.
+ * @property {string} [credentials] How credentials shall be handled. See
+ * https://developer.mozilla.org/en-US/docs/Web/API/fetch for reference and possible values
+ * @property {number} [maxRanges] The maximum amount of ranges to request in a single multi-range request.
+ * By default only a single range is used.
+ * @property {boolean} [allowFullFile=false] Whether or not a full file is accepted when only a portion is
+ * requested. Only use this when you know the source image to be small enough to fit in memory.
+ * @property {number} [blockSize=65536] The block size to use.
+ * @property {number} [cacheSize=100] The number of blocks that shall be held in a LRU cache.
+ */
+
+/**
  * @typedef {Object} Options
  * @property {Array<SourceInfo>} sources List of information about GeoTIFF sources.
  * Multiple sources can be combined when their resolution sets are equal after applying a scale.
@@ -309,7 +323,7 @@ function getMaxForDataType(array) {
  * sources, one with 3 bands and {@link import("./GeoTIFF.js").SourceInfo nodata} configured, and
  * another with 1 band, the resulting data tiles will have 5 bands: 3 from the first source, 1 alpha
  * band from the first source, and 1 band from the second source.
- * @property {object} [sourceOptions] Additional options to be passed to the underlying geotiff.js source.
+ * @property {GeoTIFFSourceOptions} [sourceOptions] Additional options to be passed to the underlying geotiff.js source.
  * @property {boolean} [convertToRGB = false] By default, bands from the sources are read as-is. When
  * reading GeoTIFFs with the purpose of displaying them as RGB images, setting this to `true` will
  * convert other color spaces (YCbCr, CMYK) to RGB.
