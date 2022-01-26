@@ -96,8 +96,9 @@ function getRenderExtent(frameState, extent) {
       fromUserExtent(layerState.extent, frameState.viewState.projection)
     );
   }
-  const source =
-    /** {import("../../source/Tile.js").default} */ layerState.layer.getRenderSource();
+  const source = /** @type {import("../../source/Tile.js").default} */ (
+    layerState.layer.getRenderSource()
+  );
   if (!source.getWrapX()) {
     const gridExtent = source
       .getTileGridForProjection(frameState.viewState.projection)

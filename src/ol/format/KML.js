@@ -1007,8 +1007,7 @@ function createFeatureStyleFunction(
       if (drawName) {
         const geometry = feature.getGeometry();
         if (geometry) {
-          const type = geometry.getType();
-          if (type === GeometryType.GEOMETRY_COLLECTION) {
+          if (geometry instanceof GeometryCollection) {
             multiGeometryPoints = geometry
               .getGeometriesArrayRecursive()
               .filter(function (geometry) {
@@ -1020,6 +1019,7 @@ function createFeatureStyleFunction(
               });
             drawName = multiGeometryPoints.length > 0;
           } else {
+            const type = geometry.getType();
             drawName =
               type === GeometryType.POINT || type === GeometryType.MULTI_POINT;
           }
