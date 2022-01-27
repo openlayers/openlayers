@@ -8,7 +8,7 @@ import {extend} from './array.js';
  * {@link module:ol/xml.makeSimpleNodeFactory}, the top `objectStack` item needs
  * to have this structure.
  * @typedef {Object} NodeStackItem
- * @property {Node} node Node.
+ * @property {Element} node Node.
  */
 
 /**

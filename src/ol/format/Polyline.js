@@ -110,7 +110,7 @@ class Polyline extends TextFeature {
   }
 
   /**
-   * @param {import("../Feature.js").default} feature Features.
+   * @param {import("../Feature.js").default<LineString>} feature Features.
    * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
    * @protected
    * @return {string} Text.
@@ -126,7 +126,7 @@ class Polyline extends TextFeature {
   }
 
   /**
-   * @param {Array<import("../Feature.js").default>} features Features.
+   * @param {Array<import("../Feature.js").default<LineString>>} features Features.
    * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
    * @protected
    * @return {string} Text.

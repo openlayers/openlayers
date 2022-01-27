@@ -421,7 +421,7 @@ class Draw extends PointerInteraction {
 
     /**
      * Sketch feature.
-     * @type {Feature}
+     * @type {Feature<import('../geom/SimpleGeometry.js').default>}
      * @private
      */
     this.sketchFeature_ = null;
@@ -1022,7 +1022,7 @@ class Draw extends PointerInteraction {
 
   /**
    * Stop drawing without adding the sketch feature to the target layer.
-   * @return {Feature} The sketch feature (or null if none).
+   * @return {Feature<import("../geom/SimpleGeometry.js").default>} The sketch feature (or null if none).
    * @private
    */
   abortDrawing_() {

@@ -253,7 +253,7 @@ class Modify extends PointerInteraction {
 
     /**
      * Editing vertex.
-     * @type {Feature}
+     * @type {Feature<Point>}
      * @private
      */
     this.vertexFeature_ = null;

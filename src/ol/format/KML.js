@@ -1007,8 +1007,7 @@ function createFeatureStyleFunction(
       if (drawName) {
         const geometry = feature.getGeometry();
         if (geometry) {
-          const type = geometry.getType();
-          if (type === GeometryType.GEOMETRY_COLLECTION) {
+          if (geometry instanceof GeometryCollection) {
             multiGeometryPoints = geometry
               .getGeometriesArrayRecursive()
               .filter(function (geometry) {
@@ -1020,6 +1019,7 @@ function createFeatureStyleFunction(
               });
             drawName = multiGeometryPoints.length > 0;
           } else {
+            const type = geometry.getType();
             drawName =
               type === GeometryType.POINT || type === GeometryType.MULTI_POINT;
           }
@@ -2473,7 +2473,7 @@ const DOCUMENT_NODE_FACTORY = function (value, objectStack, opt_nodeName) {
 };
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<Feature>} features Features.
  * @param {Array<*>} objectStack Object stack.
  * @this {KML}
@@ -2499,7 +2499,7 @@ function writeDocument(node, features, objectStack) {
 const DATA_NODE_FACTORY = makeSimpleNodeFactory('Data');
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {{names: Array<string>, values: (Array<*>)}} namesAndValues Names and values.
  * @param {Array<*>} objectStack Object stack.
  */
@@ -2561,7 +2561,7 @@ const GX_NODE_FACTORY = function (value, objectStack, opt_nodeName) {
 };
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Object} icon Icon object.
  * @param {Array<*>} objectStack Object stack.
  */
@@ -2617,7 +2617,7 @@ const ICON_STYLE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {import("../style/Icon.js").default} style Icon style.
  * @param {Array<*>} objectStack Object stack.
  */
@@ -2712,7 +2712,7 @@ const LABEL_STYLE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Text} style style.
  * @param {Array<*>} objectStack Object stack.
  */
@@ -2758,7 +2758,7 @@ const LINE_STYLE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Stroke} style style.
  * @param {Array<*>} objectStack Object stack.
  */
@@ -2856,7 +2856,7 @@ const MULTI_GEOMETRY_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {import("../geom/Geometry.js").default} geometry Geometry.
  * @param {Array<*>} objectStack Object stack.
  */
@@ -2927,7 +2927,7 @@ const BOUNDARY_IS_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {import("../geom/LinearRing.js").default} linearRing Linear ring.
  * @param {Array<*>} objectStack Object stack.
  */
@@ -3180,7 +3180,7 @@ const PRIMITIVE_GEOMETRY_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {import("../geom/SimpleGeometry.js").default} geometry Geometry.
  * @param {Array<*>} objectStack Object stack.
  */
@@ -3243,7 +3243,7 @@ const INNER_BOUNDARY_NODE_FACTORY = makeSimpleNodeFactory('innerBoundaryIs');
 const OUTER_BOUNDARY_NODE_FACTORY = makeSimpleNodeFactory('outerBoundaryIs');
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Polygon} polygon Polygon.
  * @param {Array<*>} objectStack Object stack.
  */
@@ -3281,7 +3281,7 @@ const POLY_STYLE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Style} style Style.
  * @param {Array<*>} objectStack Object stack.
  */
@@ -3341,7 +3341,7 @@ const STYLE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Object<string, Array<Style>>} styles Styles.
  * @param {Array<*>} objectStack Object stack.
  */

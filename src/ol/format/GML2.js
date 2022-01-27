@@ -393,7 +393,7 @@ class GML2 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {import("../geom/LineString.js").default} line LineString geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
@@ -455,7 +455,7 @@ class GML2 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {import("../geom/Polygon.js").default} polygon Polygon geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
@@ -467,7 +467,7 @@ class GML2 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {import("../geom/LinearRing.js").default} ring LinearRing geometry.
    * @param {Array<*>} objectStack Node stack.
    */
@@ -546,7 +546,7 @@ class GML2 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {import("../geom/Point.js").default} point Point geometry.
    * @param {Array<*>} objectStack Node stack.
    */

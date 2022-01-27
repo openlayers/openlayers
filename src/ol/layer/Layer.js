@@ -25,7 +25,7 @@ import {listen, unlistenByKey} from '../events.js';
  */
 
 /**
- * @template {import("../source/Source.js").default} SourceType
+ * @template {import("../source/Source.js").default} [SourceType=import("../source/Source.js").default]
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
@@ -93,8 +93,8 @@ import {listen, unlistenByKey} from '../events.js';
  * @fires import("../render/Event.js").RenderEvent#prerender
  * @fires import("../render/Event.js").RenderEvent#postrender
  *
- * @template {import("../source/Source.js").default} SourceType
- * @template {import("../renderer/Layer.js").default} RendererType
+ * @template {import("../source/Source.js").default} [SourceType=import("../source/Source.js").default]
+ * @template {import("../renderer/Layer.js").default} [RendererType=import("../renderer/Layer.js").default]
  * @api
  */
 class Layer extends BaseLayer {

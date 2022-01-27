@@ -34,7 +34,7 @@ import {xhr} from '../featureloader.js';
  * @classdesc
  * Events emitted by {@link module:ol/source/Vector} instances are instances of this
  * type.
- * @template {import("../geom/Geometry.js").default} Geometry
+ * @template {import("../geom/Geometry.js").default} [Geometry=import("../geom/Geometry.js").default]
  */
 export class VectorSourceEvent extends Event {
   /**
@@ -170,7 +170,7 @@ export class VectorSourceEvent extends Event {
  *
  * @fires VectorSourceEvent
  * @api
- * @template {import("../geom/Geometry.js").default} Geometry
+ * @template {import("../geom/Geometry.js").default} [Geometry=import("../geom/Geometry.js").default]
  */
 class VectorSource extends Source {
   /**
@@ -299,9 +299,15 @@ class VectorSource extends Source {
 
     let collection, features;
     if (Array.isArray(options.features)) {
-      features = options.features;
+      features =
+        /** @type {Array<import("../Feature.js").default<Geometry>>} */ (
+          options.features
+        );
     } else if (options.features) {
-      collection = options.features;
+      collection =
+        /** @type {Collection<import("../Feature.js").default<Geometry>>} */ (
+          options.features
+        );
       features = collection.getArray();
     }
     if (!useSpatialIndex && collection === undefined) {

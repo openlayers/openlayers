@@ -166,7 +166,7 @@ class GMLBase extends XMLFeature {
       if (!featureType && node.childNodes) {
         (featureType = []), (featureNS = {});
         for (let i = 0, ii = node.childNodes.length; i < ii; ++i) {
-          const child = node.childNodes[i];
+          const child = /** @type {Element} */ (node.childNodes[i]);
           if (child.nodeType === 1) {
             const ft = child.nodeName.split(':').pop();
             if (featureType.indexOf(ft) === -1) {
