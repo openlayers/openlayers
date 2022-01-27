@@ -4,11 +4,7 @@
 import DataTile from './DataTile.js';
 import State from './State.js';
 import TileGrid from '../tilegrid/TileGrid.js';
-import {
-  Pool,
-  fromUrl as tiffFromUrl,
-  fromUrls as tiffFromUrls,
-} from 'geotiff/src/geotiff.js';
+import {Pool, fromUrl as tiffFromUrl, fromUrls as tiffFromUrls} from 'geotiff';
 import {
   Projection,
   get as getCachedProjection,
@@ -16,7 +12,6 @@ import {
   toUserExtent,
 } from '../proj.js';
 import {clamp} from '../math.js';
-import {create as createDecoderWorker} from '../worker/geotiff-decoder.js';
 import {getCenter, getIntersection} from '../extent.js';
 import {toSize} from '../size.js';
 import {fromCode as unitsFromCode} from '../proj/Units.js';
@@ -55,15 +50,11 @@ import {fromCode as unitsFromCode} from '../proj/Units.js';
  */
 
 /**
- * @typedef {Object} GeoTIFF
- * @property {function():Promise<number>} getImageCount Get the number of internal subfile images.
- * @property {function(number):Promise<GeoTIFFImage>} getImage Get the image at the specified index.
+ * @typedef {import("geotiff").GeoTIFF} GeoTIFF
  */
 
 /**
- * @typedef {Object} MultiGeoTIFF
- * @property {function():Promise<number>} getImageCount Get the number of internal subfile images.
- * @property {function(number):Promise<GeoTIFFImage>} getImage Get the image at the specified index.
+ * @typedef {import("geotiff").MultiGeoTIFF} MultiGeoTIFF
  */
 
 /**
@@ -76,28 +67,13 @@ const STATISTICS_MAXIMUM = 'STATISTICS_MAXIMUM';
 const STATISTICS_MINIMUM = 'STATISTICS_MINIMUM';
 
 /**
- * @typedef {Object} GeoTIFFImage
- * @property {Object} fileDirectory The file directory.
- * @property {GeoKeys} geoKeys The parsed geo-keys.
- * @property {boolean} littleEndian Uses little endian byte order.
- * @property {Object} tiles The tile cache.
- * @property {boolean} isTiled The image is tiled.
- * @property {function():Array<number>} getBoundingBox Get the image bounding box.
- * @property {function():Array<number>} getOrigin Get the image origin.
- * @property {function(GeoTIFFImage):Array<number>} getResolution Get the image resolution.
- * @property {function():number} getWidth Get the pixel width of the image.
- * @property {function():number} getHeight Get the pixel height of the image.
- * @property {function():number} getTileWidth Get the pixel width of image tiles.
- * @property {function():number} getTileHeight Get the pixel height of image tiles.
- * @property {function():number|null} getGDALNoData Get the nodata value (or null if none).
- * @property {function():GDALMetadata|null} getGDALMetadata Get the raster stats (or null if none).
- * @property {function():number} getSamplesPerPixel Get the number of samples per pixel.
+ * @typedef {import("geotiff/dist-module/geotiffimage.js").default} GeoTIFFImage
  */
 
 let workerPool;
 function getWorkerPool() {
   if (!workerPool) {
-    workerPool = new Pool(undefined, createDecoderWorker());
+    workerPool = new Pool();
   }
   return workerPool;
 }
@@ -471,7 +447,7 @@ class GeoTIFFSource extends DataTile {
       for (let imageIndex = 0; imageIndex < imageCount; ++imageIndex) {
         const image = images[imageIndex];
         const nodataValue = image.getGDALNoData();
-        metadata[sourceIndex][imageIndex] = image.getGDALMetadata();
+        metadata[sourceIndex][imageIndex] = image.getGDALMetadata(0);
         nodataValues[sourceIndex][imageIndex] =
           nodataValue === null ? NaN : nodataValue;
 
