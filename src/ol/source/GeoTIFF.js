@@ -323,7 +323,7 @@ function getMaxForDataType(array) {
  * sources, one with 3 bands and {@link import("./GeoTIFF.js").SourceInfo nodata} configured, and
  * another with 1 band, the resulting data tiles will have 5 bands: 3 from the first source, 1 alpha
  * band from the first source, and 1 band from the second source.
- * @property {GeoTIFFSourceOptions} [sourceOptions] Additional options to be passed to the underlying geotiff.js source.
+ * @property {GeoTIFFSourceOptions} [sourceOptions] Additional options to be passed to [geotiff.js](https://geotiffjs.github.io/geotiff.js/module-geotiff.html)'s `fromUrl` or `fromUrls` methods.
  * @property {boolean} [convertToRGB = false] By default, bands from the sources are read as-is. When
  * reading GeoTIFFs with the purpose of displaying them as RGB images, setting this to `true` will
  * convert other color spaces (YCbCr, CMYK) to RGB.
