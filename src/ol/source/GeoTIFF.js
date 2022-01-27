@@ -302,7 +302,7 @@ function getMaxForDataType(array) {
 /**
  * @typedef {Object} GeoTIFFSourceOptions
  * @property {boolean} [forceXHR=false] Whether to force the usage of the browsers XMLHttpRequest API.
- * @property {Object} [headers] additional headers to be passed with each request.
+ * @property {Object<string, string>} [headers] additional key-value pairs of headers to be passed with each request. Key is the header name, value the header value.
  * @property {string} [credentials] How credentials shall be handled. See
  * https://developer.mozilla.org/en-US/docs/Web/API/fetch for reference and possible values
  * @property {number} [maxRanges] The maximum amount of ranges to request in a single multi-range request.
