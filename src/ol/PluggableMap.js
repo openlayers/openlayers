@@ -667,6 +667,7 @@ class PluggableMap extends BaseObject {
   /**
    * Get all layers from all layer groups.
    * @return {Array<import("./layer/Layer.js").default>} Layers.
+   * @api
    */
   getAllLayers() {
     const layers = [];
