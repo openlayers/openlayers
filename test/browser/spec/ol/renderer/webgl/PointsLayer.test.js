@@ -764,4 +764,66 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       });
     });
   });
+
+  describe('#updateStyleVariables()', function () {
+    const targetContext = createCanvasContext2D(1, 1);
+
+    function getCenterPixelImageData() {
+      targetContext.clearRect(0, 0, 1, 1);
+      const canvas = document.querySelector('.testlayer');
+      targetContext.drawImage(canvas, 50, 50, 1, 1, 0, 0, 1, 1);
+      return Array.from(targetContext.getImageData(0, 0, 1, 1).data);
+    }
+
+    let map, layer;
+    beforeEach(function (done) {
+      layer = new WebGLPointsLayer({
+        className: 'testlayer',
+        source: new VectorSource({
+          features: [new Feature(new Point([0, 0]))],
+        }),
+        style: {
+          variables: {
+            r: 0,
+            g: 255,
+            b: 0,
+          },
+          symbol: {
+            symbolType: 'circle',
+            size: 14,
+            color: ['color', ['var', 'r'], ['var', 'g'], ['var', 'b']],
+          },
+        },
+      });
+      map = new Map({
+        pixelRatio: 1,
+        target: createMapDiv(100, 100),
+        layers: [layer],
+        view: new View({
+          center: [0, 0],
+          zoom: 2,
+        }),
+      });
+      map.once('rendercomplete', () => done());
+    });
+    afterEach(function () {
+      disposeMap(map);
+    });
+
+    it('allows changing variables', function (done) {
+      expect(layer.styleVariables_['r']).to.be(0);
+      expect(getCenterPixelImageData()).to.eql([0, 255, 0, 255]);
+      layer.updateStyleVariables({
+        r: 255,
+        g: 0,
+        b: 255,
+      });
+      expect(layer.styleVariables_['r']).to.be(255);
+
+      map.on('rendercomplete', function (event) {
+        expect(getCenterPixelImageData()).to.eql([255, 0, 255, 255]);
+        done();
+      });
+    });
+  });
 });

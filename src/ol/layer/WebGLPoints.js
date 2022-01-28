@@ -88,6 +88,12 @@ class WebGLPointsLayer extends Layer {
     this.parseResult_ = parseLiteralStyle(options.style);
 
     /**
+     * @type {Object<string, (string|number)>}
+     * @private
+     */
+    this.styleVariables_ = options.style.variables || {};
+
+    /**
      * @private
      * @type {boolean}
      */
@@ -107,6 +113,15 @@ class WebGLPointsLayer extends Layer {
       uniforms: this.parseResult_.uniforms,
       attributes: this.parseResult_.attributes,
     });
+  }
+
+  /**
+   * Update any variables used by the layer style and trigger a re-render.
+   * @param {Object<string, number>} variables Variables to update.
+   */
+  updateStyleVariables(variables) {
+    assign(this.styleVariables_, variables);
+    this.changed();
   }
 }
 
