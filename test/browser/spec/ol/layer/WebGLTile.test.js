@@ -255,6 +255,49 @@ describe('ol/layer/WebGLTile', function () {
       layer.updateStyleVariables({foo: 'bam'});
       expect(layer.styleVariables_.foo).to.be('bam');
     });
+
+    it('also works after setStyle()', function (done) {
+      const layer = new WebGLTileLayer({
+        className: 'testlayer2',
+        source: new DataTileSource({
+          loader(z, x, y) {
+            return new Promise((resolve) => {
+              resolve(new ImageData(256, 256));
+            });
+          },
+        }),
+      });
+
+      map.addLayer(layer);
+      layer.setStyle({
+        variables: {
+          r: 0,
+          g: 255,
+          b: 0,
+        },
+        color: ['color', ['var', 'r'], ['var', 'g'], ['var', 'b']],
+      });
+      map.renderSync();
+
+      layer.updateStyleVariables({
+        r: 255,
+        g: 0,
+        b: 255,
+      });
+
+      expect(layer.styleVariables_['r']).to.be(255);
+      const targetContext = createCanvasContext2D(100, 100);
+      layer.on('postrender', () => {
+        targetContext.clearRect(0, 0, 100, 100);
+        targetContext.drawImage(target.querySelector('.testlayer2'), 0, 0);
+      });
+      map.once('rendercomplete', () => {
+        expect(Array.from(targetContext.getImageData(0, 0, 1, 1).data)).to.eql([
+          255, 0, 255, 255,
+        ]);
+        done();
+      });
+    });
   });
 
   it('dispatches a precompose event with WebGL context', (done) => {
