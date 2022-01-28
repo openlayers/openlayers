@@ -456,10 +456,13 @@ class WebGLTileLayer extends BaseTileLayer {
   /**
    * Update the layer style.  The `updateStyleVariables` function is a more efficient
    * way to update layer rendering.  In cases where the whole style needs to be updated,
-   * this method may be called instead.
+   * this method may be called instead.  Note that calling this method will also replace
+   * any previously set variables, so the new style also needs to include new variables,
+   * if needed.
    * @param {Style} style The new style.
    */
   setStyle(style) {
+    this.styleVariables_ = style.variables || {};
     this.style_ = style;
     const parsedStyle = parseStyle(this.style_, this.getSourceBandCount_());
     const renderer = this.getRenderer();
