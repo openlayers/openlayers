@@ -248,7 +248,9 @@ class MVT extends FeatureFormat {
       }
       const geometry = transformGeometryWithOptions(geom, false, options);
       feature.setGeometry(geometry);
-      feature.setId(id);
+      if (id !== undefined) {
+        feature.setId(id);
+      }
       feature.setProperties(values, true);
     }
 
