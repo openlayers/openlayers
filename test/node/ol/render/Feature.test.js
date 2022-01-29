@@ -153,44 +153,6 @@ describe('ol/render/Feature', function () {
       expect(converted.getEndss()).to.eql(geometry.getEndss());
       expect(converted.getProperties()).to.eql({});
     });
-    it('creates a MultiPolygon', function () {
-      const geometry = new MultiPolygon([
-        [
-          [
-            [0, 0],
-            [5, 0],
-            [5, 5],
-            [0, 0],
-          ],
-          [
-            [1, 1],
-            [4, 1],
-            [4, 4],
-            [1, 1],
-          ],
-        ],
-        [
-          [
-            [-0, -0],
-            [-5, -0],
-            [-5, -5],
-            [-0, -0],
-          ],
-        ],
-      ]);
-      const renderFeature = new RenderFeature(
-        geometry.getType(),
-        geometry.getFlatCoordinates().slice(),
-        geometry.getEndss().slice()
-      );
-      const converted = toGeometry(renderFeature);
-      expect(converted).to.be.a(MultiPolygon);
-      expect(converted.getFlatCoordinates()).to.eql(
-        geometry.getFlatCoordinates()
-      );
-      expect(converted.getEndss()).to.eql(geometry.getEndss());
-      expect(converted.getProperties()).to.eql({});
-    });
   });
 
   describe('ol/render/Feature.toFeature()', function () {

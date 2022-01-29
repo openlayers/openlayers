@@ -373,12 +373,6 @@ export function toGeometry(renderFeature) {
       return endss.length > 1
         ? new MultiPolygon(flatCoordinates, GeometryLayout.XY, endss)
         : new Polygon(flatCoordinates, GeometryLayout.XY, ends);
-    case GeometryType.MULTI_POLYGON:
-      return new MultiPolygon(
-        renderFeature.getFlatCoordinates(),
-        GeometryLayout.XY,
-        /** @type {Array<Array<number>>} */ (renderFeature.getEndss())
-      );
     default:
       throw new Error('Invalid geometry type:' + geometryType);
   }
