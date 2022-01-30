@@ -96,7 +96,9 @@ class OSMXML extends XMLFeature {
         }
         transformGeometryWithOptions(geometry, false, options);
         const feature = new Feature(geometry);
-        feature.setId(values.id);
+        if (values.id !== undefined) {
+          feature.setId(values.id);
+        }
         feature.setProperties(values.tags, true);
         state.features.push(feature);
       }
@@ -146,7 +148,9 @@ function readNode(node, objectStack) {
     const geometry = new Point(coordinates);
     transformGeometryWithOptions(geometry, false, options);
     const feature = new Feature(geometry);
-    feature.setId(id);
+    if (id !== undefined) {
+      feature.setId(id);
+    }
     feature.setProperties(values.tags, true);
     state.features.push(feature);
   }

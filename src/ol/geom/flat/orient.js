@@ -178,3 +178,31 @@ export function orientLinearRingsArray(
   }
   return offset;
 }
+
+/**
+ * Return a two-dimensional endss
+ * @param {Array<number>} flatCoordinates Flat coordinates
+ * @param {Array<number>} ends Linear ring end indexes
+ * @return {Array<Array<number>>} Two dimensional endss array that can
+ * be used to contruct a MultiPolygon
+ */
+export function inflateEnds(flatCoordinates, ends) {
+  const endss = [];
+  let offset = 0;
+  let prevEndIndex = 0;
+  for (let i = 0, ii = ends.length; i < ii; ++i) {
+    const end = ends[i];
+    // classifies an array of rings into polygons with outer rings and holes
+    if (!linearRingIsClockwise(flatCoordinates, offset, end, 2)) {
+      endss.push(ends.slice(prevEndIndex, i + 1));
+    } else {
+      if (endss.length === 0) {
+        continue;
+      }
+      endss[endss.length - 1].push(ends[prevEndIndex]);
+    }
+    prevEndIndex = i + 1;
+    offset = end;
+  }
+  return endss;
+}

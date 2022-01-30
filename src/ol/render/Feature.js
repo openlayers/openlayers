@@ -1,7 +1,17 @@
 /**
  * @module ol/render/Feature
  */
+import Feature from '../Feature.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
+import {
+  LineString,
+  MultiLineString,
+  MultiPoint,
+  MultiPolygon,
+  Point,
+  Polygon,
+} from '../geom.js';
 import {
   compose as composeTransform,
   create as createTransform,
@@ -18,6 +28,7 @@ import {
   getInteriorPointsOfMultiArray,
 } from '../geom/flat/interiorpoint.js';
 import {get as getProjection} from '../proj.js';
+import {inflateEnds} from '../geom/flat/orient.js';
 import {interpolatePoint} from '../geom/flat/interpolate.js';
 import {linearRingss as linearRingssCenter} from '../geom/flat/center.js';
 import {transform2D} from '../geom/flat/transform.js';
@@ -325,5 +336,71 @@ RenderFeature.prototype.getEndss = RenderFeature.prototype.getEnds;
  */
 RenderFeature.prototype.getFlatCoordinates =
   RenderFeature.prototype.getOrientedFlatCoordinates;
+
+/**
+ * Create a geometry from an `ol/render/Feature`
+ * @param {RenderFeature} renderFeature
+ * Render Feature
+ * @return {Point|MultiPoint|LineString|MultiLineString|Polygon|MultiPolygon}
+ * New geometry instance.
+ * @api
+ */
+export function toGeometry(renderFeature) {
+  const geometryType = renderFeature.getType();
+  switch (geometryType) {
+    case GeometryType.POINT:
+      return new Point(renderFeature.getFlatCoordinates());
+    case GeometryType.MULTI_POINT:
+      return new MultiPoint(
+        renderFeature.getFlatCoordinates(),
+        GeometryLayout.XY
+      );
+    case GeometryType.LINE_STRING:
+      return new LineString(
+        renderFeature.getFlatCoordinates(),
+        GeometryLayout.XY
+      );
+    case GeometryType.MULTI_LINE_STRING:
+      return new MultiLineString(
+        renderFeature.getFlatCoordinates(),
+        GeometryLayout.XY,
+        /** @type {Array<number>} */ (renderFeature.getEnds())
+      );
+    case GeometryType.POLYGON:
+      const flatCoordinates = renderFeature.getFlatCoordinates();
+      const ends = /** @type {Array<number>} */ (renderFeature.getEnds());
+      const endss = inflateEnds(flatCoordinates, ends);
+      return endss.length > 1
+        ? new MultiPolygon(flatCoordinates, GeometryLayout.XY, endss)
+        : new Polygon(flatCoordinates, GeometryLayout.XY, ends);
+    default:
+      throw new Error('Invalid geometry type:' + geometryType);
+  }
+}
+
+/**
+ * Create an `ol/Feature` from an `ol/render/Feature`
+ * @param {RenderFeature} renderFeature RenderFeature
+ * @param {string} [opt_geometryName='geometry'] Geometry name to use
+ * when creating the Feature.
+ * @return {Feature} Newly constructed `ol/Feature` with properties,
+ * geometry, and id copied over.
+ * @api
+ */
+export function toFeature(renderFeature, opt_geometryName) {
+  const id = renderFeature.getId();
+  const geometry = toGeometry(renderFeature);
+  const properties = renderFeature.getProperties();
+  const feature = new Feature();
+  if (opt_geometryName !== undefined) {
+    feature.setGeometryName(opt_geometryName);
+  }
+  feature.setGeometry(geometry);
+  if (id !== undefined) {
+    feature.setId(id);
+  }
+  feature.setProperties(properties, true);
+  return feature;
+}
 
 export default RenderFeature;
