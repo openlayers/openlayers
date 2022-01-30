@@ -33,7 +33,7 @@ import {createCanvasContext2D} from '../dom.js';
  * @property {string|function(import("../Feature.js").default):number} [weight='weight'] The feature
  * attribute to use for the weight or a function that returns a weight from a feature. Weight values
  * should range from 0 to 1 (and values outside will be clamped to that range).
- * @property {import("../source/Vector.js").default} [source] Source.
+ * @property {import("../source/Vector.js").default<import("../geom/Point.js").default>} [source] Point source.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
