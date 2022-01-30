@@ -168,7 +168,7 @@ class Text {
 
     /**
      * @private
-     * @type {Array<number>}
+     * @type {Array<number>|null}
      */
     this.padding_ = options.padding === undefined ? null : options.padding;
   }
@@ -201,7 +201,7 @@ class Text {
       backgroundStroke: this.getBackgroundStroke()
         ? this.getBackgroundStroke().clone()
         : undefined,
-      padding: this.getPadding(),
+      padding: this.getPadding() || undefined,
     });
   }
 
@@ -359,7 +359,7 @@ class Text {
 
   /**
    * Get the padding for the text.
-   * @return {Array<number>} Padding.
+   * @return {Array<number>|null} Padding.
    * @api
    */
   getPadding() {
@@ -530,7 +530,7 @@ class Text {
   /**
    * Set the padding (`[top, right, bottom, left]`).
    *
-   * @param {!Array<number>} padding Padding.
+   * @param {Array<number>|null} padding Padding.
    * @api
    */
   setPadding(padding) {

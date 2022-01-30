@@ -169,7 +169,7 @@ class Translate extends PointerInteraction {
     this.startCoordinate_ = null;
 
     /**
-     * @type {Collection<import("../Feature.js").default>}
+     * @type {Collection<import("../Feature.js").default>|null}
      * @private
      */
     this.features_ = options.features !== undefined ? options.features : null;

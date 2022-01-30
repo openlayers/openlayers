@@ -29,7 +29,7 @@ worker.onmessage = (event) => {
     const indexBuffer = new Uint32Array(indicesCount);
     const vertexBuffer = new Float32Array(verticesCount);
 
-    let bufferPositions = null;
+    let bufferPositions;
     for (let i = 0; i < renderInstructions.length; i += instructionsCount) {
       bufferPositions = writePointFeatureToBuffers(
         renderInstructions,

@@ -93,14 +93,13 @@ class TileSource extends Source {
       options.tilePixelRatio !== undefined ? options.tilePixelRatio : 1;
 
     /**
-     * @type {import("../tilegrid/TileGrid.js").default}
+     * @type {import("../tilegrid/TileGrid.js").default|null}
      */
     this.tileGrid = options.tileGrid !== undefined ? options.tileGrid : null;
 
     const tileSize = [256, 256];
-    const tileGrid = options.tileGrid;
-    if (tileGrid) {
-      toSize(tileGrid.getTileSize(tileGrid.getMinZoom()), tileSize);
+    if (this.tileGrid) {
+      toSize(this.tileGrid.getTileSize(this.tileGrid.getMinZoom()), tileSize);
     }
 
     /**
@@ -233,9 +232,12 @@ class TileSource extends Source {
   }
 
   /**
-   * @return {Array<number>} Resolutions.
+   * @return {Array<number>|null} Resolutions.
    */
   getResolutions() {
+    if (!this.tileGrid) {
+      return null;
+    }
     return this.tileGrid.getResolutions();
   }
 
@@ -254,7 +256,7 @@ class TileSource extends Source {
 
   /**
    * Return the tile grid of the tile source.
-   * @return {import("../tilegrid/TileGrid.js").default} Tile grid.
+   * @return {import("../tilegrid/TileGrid.js").default|null} Tile grid.
    * @api
    */
   getTileGrid() {

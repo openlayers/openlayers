@@ -142,7 +142,7 @@ class VectorTile extends UrlTile {
 
     /**
      * @private
-     * @type {import("../format/Feature.js").default}
+     * @type {import("../format/Feature.js").default|null}
      */
     this.format_ = options.format ? options.format : null;
 

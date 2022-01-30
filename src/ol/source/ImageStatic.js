@@ -87,7 +87,7 @@ class Static extends ImageSource {
 
     /**
      * @private
-     * @type {import("../size.js").Size}
+     * @type {import("../size.js").Size|null}
      */
     this.imageSize_ = options.imageSize ? options.imageSize : null;
 
