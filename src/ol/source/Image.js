@@ -93,6 +93,21 @@ export class ImageSourceEvent extends Event {
  * @api
  */
 class ImageSource extends Source {
+  /***
+   * @type {ImageSourceOnSignature<import("../events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {ImageSourceOnSignature<import("../events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {ImageSourceOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {Options} options Single image source options.
    */
@@ -109,21 +124,6 @@ class ImageSource extends Source {
       state: options.state,
       interpolate: interpolate,
     });
-
-    /***
-     * @type {ImageSourceOnSignature<import("../events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {ImageSourceOnSignature<import("../events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {ImageSourceOnSignature<void>}
-     */
-    this.un;
 
     /**
      * @private

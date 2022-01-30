@@ -73,27 +73,27 @@ export class CollectionEvent extends Event {
  * @api
  */
 class Collection extends BaseObject {
+  /***
+   * @type {CollectionOnSignature<import("./events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {CollectionOnSignature<import("./events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {CollectionOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {Array<T>} [opt_array] Array.
    * @param {Options} [opt_options] Collection options.
    */
   constructor(opt_array, opt_options) {
     super();
-
-    /***
-     * @type {CollectionOnSignature<import("./events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {CollectionOnSignature<import("./events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {CollectionOnSignature<void>}
-     */
-    this.un;
 
     const options = opt_options || {};
 

@@ -159,26 +159,26 @@ const originalFeatureStyles = {};
  * @api
  */
 class Select extends Interaction {
+  /***
+   * @type {SelectOnSignature<import("../events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {SelectOnSignature<import("../events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {SelectOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     super();
-
-    /***
-     * @type {SelectOnSignature<import("../events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {SelectOnSignature<import("../events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {SelectOnSignature<void>}
-     */
-    this.un;
 
     const options = opt_options ? opt_options : {};
 

@@ -51,6 +51,21 @@ import {scale as scaleSize, toSize} from '../size.js';
  * @api
  */
 class TileSource extends Source {
+  /***
+   * @type {TileSourceOnSignature<import("../events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {TileSourceOnSignature<import("../events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {TileSourceOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {Options} options SourceTile source options.
    */
@@ -63,21 +78,6 @@ class TileSource extends Source {
       wrapX: options.wrapX,
       interpolate: options.interpolate,
     });
-
-    /***
-     * @type {TileSourceOnSignature<import("../events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {TileSourceOnSignature<import("../events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {TileSourceOnSignature<void>}
-     */
-    this.un;
 
     /**
      * @private

@@ -94,6 +94,21 @@ export class ExtentEvent extends Event {
  * @api
  */
 class Extent extends PointerInteraction {
+  /***
+   * @type {ExtentOnSignature<import("../events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {ExtentOnSignature<import("../events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {ExtentOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {Options} [opt_options] Options.
    */
@@ -101,21 +116,6 @@ class Extent extends PointerInteraction {
     const options = opt_options || {};
 
     super(/** @type {import("./Pointer.js").Options} */ (options));
-
-    /***
-     * @type {ExtentOnSignature<import("../events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {ExtentOnSignature<import("../events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {ExtentOnSignature<void>}
-     */
-    this.un;
 
     /**
      * Condition

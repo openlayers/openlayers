@@ -98,6 +98,21 @@ import {listen, unlistenByKey} from '../events.js';
  * @api
  */
 class Layer extends BaseLayer {
+  /***
+   * @type {LayerOnSignature<import("../events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {LayerOnSignature<import("../events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {LayerOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {Options<SourceType>} options Layer options.
    */
@@ -106,21 +121,6 @@ class Layer extends BaseLayer {
     delete baseOptions.source;
 
     super(baseOptions);
-
-    /***
-     * @type {LayerOnSignature<import("../events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {LayerOnSignature<import("../events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {LayerOnSignature<void>}
-     */
-    this.un;
 
     /**
      * @private

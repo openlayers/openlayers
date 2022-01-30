@@ -63,6 +63,21 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  * @api
  */
 class MousePosition extends Control {
+  /***
+   * @type {MousePositionOnSignature<import("../events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {MousePositionOnSignature<import("../events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {MousePositionOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {Options} [opt_options] Mouse position options.
    */
@@ -78,21 +93,6 @@ class MousePosition extends Control {
       render: options.render,
       target: options.target,
     });
-
-    /***
-     * @type {MousePositionOnSignature<import("../events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {MousePositionOnSignature<import("../events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {MousePositionOnSignature<void>}
-     */
-    this.un;
 
     this.addChangeListener(PROJECTION, this.handleProjectionChanged_);
 

@@ -305,26 +305,26 @@ const DEFAULT_MIN_ZOOM = 0;
  * @api
  */
 class View extends BaseObject {
+  /***
+   * @type {ViewOnSignature<import("./events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {ViewOnSignature<import("./events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {ViewOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {ViewOptions} [opt_options] View options.
    */
   constructor(opt_options) {
     super();
-
-    /***
-     * @type {ViewOnSignature<import("./events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {ViewOnSignature<import("./events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {ViewOnSignature<void>}
-     */
-    this.un;
 
     const options = assign({}, opt_options);
 

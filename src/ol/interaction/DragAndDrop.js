@@ -97,6 +97,21 @@ export class DragAndDropEvent extends Event {
  * @fires DragAndDropEvent
  */
 class DragAndDrop extends Interaction {
+  /***
+   * @type {DragAndDropOnSignature<import("../events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {DragAndDropOnSignature<import("../events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {DragAndDropOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {Options} [opt_options] Options.
    */
@@ -106,21 +121,6 @@ class DragAndDrop extends Interaction {
     super({
       handleEvent: TRUE,
     });
-
-    /***
-     * @type {DragAndDropOnSignature<import("../events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {DragAndDropOnSignature<import("../events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {DragAndDropOnSignature<void>}
-     */
-    this.un;
 
     /**
      * @private

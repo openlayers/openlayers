@@ -60,6 +60,21 @@ import {assign} from '../obj.js';
  * @api
  */
 class BaseTileLayer extends Layer {
+  /***
+   * @type {BaseTileLayerOnSignature<import("../events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {BaseTileLayerOnSignature<import("../events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {BaseTileLayerOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {Options<TileSourceType>} [opt_options] Tile layer options.
    */
@@ -71,21 +86,6 @@ class BaseTileLayer extends Layer {
     delete baseOptions.preload;
     delete baseOptions.useInterimTilesOnError;
     super(baseOptions);
-
-    /***
-     * @type {BaseTileLayerOnSignature<import("../events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {BaseTileLayerOnSignature<import("../events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {BaseTileLayerOnSignature<void>}
-     */
-    this.un;
 
     this.setPreload(options.preload !== undefined ? options.preload : 0);
     this.setUseInterimTilesOnError(

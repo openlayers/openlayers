@@ -62,26 +62,26 @@ import {clamp} from '../math.js';
  * @api
  */
 class BaseLayer extends BaseObject {
+  /***
+   * @type {BaseLayerOnSignature<import("../events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {BaseLayerOnSignature<import("../events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {BaseLayerOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {Options} options Layer options.
    */
   constructor(options) {
     super();
-
-    /***
-     * @type {BaseLayerOnSignature<import("../events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {BaseLayerOnSignature<import("../events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {BaseLayerOnSignature<void>}
-     */
-    this.un;
 
     /**
      * @type {BackgroundColor|false}

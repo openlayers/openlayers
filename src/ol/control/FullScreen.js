@@ -79,6 +79,21 @@ const FullScreenEventType = {
  * @api
  */
 class FullScreen extends Control {
+  /***
+   * @type {FullScreenOnSignature<import("../events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {FullScreenOnSignature<import("../events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {FullScreenOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {Options} [opt_options] Options.
    */
@@ -89,21 +104,6 @@ class FullScreen extends Control {
       element: document.createElement('div'),
       target: options.target,
     });
-
-    /***
-     * @type {FullScreenOnSignature<import("../events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {FullScreenOnSignature<import("../events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {FullScreenOnSignature<void>}
-     */
-    this.un;
 
     /**
      * @private

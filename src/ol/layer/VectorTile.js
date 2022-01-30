@@ -96,6 +96,21 @@ import {assign} from '../obj.js';
  * @api
  */
 class VectorTileLayer extends BaseVectorLayer {
+  /***
+   * @type {VectorTileLayerOnSignature<import("../events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {VectorTileLayerOnSignature<import("../events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {VectorTileLayerOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {Options} [opt_options] Options.
    */
@@ -111,21 +126,6 @@ class VectorTileLayer extends BaseVectorLayer {
         baseOptions
       )
     );
-
-    /***
-     * @type {VectorTileLayerOnSignature<import("../events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {VectorTileLayerOnSignature<import("../events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {VectorTileLayerOnSignature<void>}
-     */
-    this.un;
 
     if (options.renderMode === VectorTileRenderType.IMAGE) {
       //FIXME deprecated - remove this check in v7.

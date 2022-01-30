@@ -88,6 +88,21 @@ const Property = {
  * @api
  */
 class LayerGroup extends BaseLayer {
+  /***
+   * @type {GroupOnSignature<import("../events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {GroupOnSignature<import("../events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {GroupOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {Options} [opt_options] Layer options.
    */
@@ -99,21 +114,6 @@ class LayerGroup extends BaseLayer {
     let layers = options.layers;
 
     super(baseOptions);
-
-    /***
-     * @type {GroupOnSignature<import("../events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {GroupOnSignature<import("../events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {GroupOnSignature<void>}
-     */
-    this.un;
 
     /**
      * @private

@@ -88,26 +88,26 @@ export class ObjectEvent extends Event {
  * @api
  */
 class BaseObject extends Observable {
+  /***
+   * @type {ObjectOnSignature<import("./events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {ObjectOnSignature<import("./events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {ObjectOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {Object<string, *>} [opt_values] An object with key-value pairs.
    */
   constructor(opt_values) {
     super();
-
-    /***
-     * @type {ObjectOnSignature<import("./events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {ObjectOnSignature<import("./events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {ObjectOnSignature<void>}
-     */
-    this.un;
 
     // Call {@link module:ol/util.getUid} to ensure that the order of objects' ids is
     // the same as the order in which they were created.  This also helps to

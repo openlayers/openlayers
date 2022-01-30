@@ -100,26 +100,26 @@ class GeolocationError extends BaseEvent {
  * @api
  */
 class Geolocation extends BaseObject {
+  /***
+   * @type {GeolocationOnSignature<import("./events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {GeolocationOnSignature<import("./events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {GeolocationOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     super();
-
-    /***
-     * @type {GeolocationOnSignature<import("./events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {GeolocationOnSignature<import("./events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {GeolocationOnSignature<void>}
-     */
-    this.un;
 
     const options = opt_options || {};
 

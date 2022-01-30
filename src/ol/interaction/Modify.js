@@ -196,26 +196,26 @@ export class ModifyEvent extends Event {
  * @api
  */
 class Modify extends PointerInteraction {
+  /***
+   * @type {ModifyOnSignature<import("../events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {ModifyOnSignature<import("../events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {ModifyOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {Options} options Options.
    */
   constructor(options) {
     super(/** @type {import("./Pointer.js").Options} */ (options));
-
-    /***
-     * @type {ModifyOnSignature<import("../events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {ModifyOnSignature<import("../events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {ModifyOnSignature<void>}
-     */
-    this.un;
 
     /** @private */
     this.boundHandleFeatureChange_ = this.handleFeatureChange_.bind(this);

@@ -73,6 +73,21 @@ import {listen, unlistenByKey} from './events.js';
  * @template {import("./geom/Geometry.js").default} [Geometry=import("./geom/Geometry.js").default]
  */
 class Feature extends BaseObject {
+  /***
+   * @type {FeatureOnSignature<import("./events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {FeatureOnSignature<import("./events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {FeatureOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {Geometry|ObjectWithGeometry<Geometry>} [opt_geometryOrProperties]
    *     You may pass a Geometry object directly, or an object literal containing
@@ -81,21 +96,6 @@ class Feature extends BaseObject {
    */
   constructor(opt_geometryOrProperties) {
     super();
-
-    /***
-     * @type {FeatureOnSignature<import("./events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {FeatureOnSignature<import("./events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {FeatureOnSignature<void>}
-     */
-    this.un;
 
     /**
      * @private

@@ -116,26 +116,26 @@ const Property = {
  * @api
  */
 class Overlay extends BaseObject {
+  /***
+   * @type {OverlayOnSignature<import("./events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {OverlayOnSignature<import("./events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {OverlayOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {Options} options Overlay options.
    */
   constructor(options) {
     super();
-
-    /***
-     * @type {OverlayOnSignature<import("./events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {OverlayOnSignature<import("./events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {OverlayOnSignature<void>}
-     */
-    this.un;
 
     /**
      * @protected

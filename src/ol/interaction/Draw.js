@@ -190,6 +190,21 @@ export class DrawEvent extends Event {
  * @api
  */
 class Draw extends PointerInteraction {
+  /***
+   * @type {DrawOnSignature<import("../events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {DrawOnSignature<import("../events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {DrawOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {Options} options Options.
    */
@@ -202,21 +217,6 @@ class Draw extends PointerInteraction {
     }
 
     super(pointerOptions);
-
-    /***
-     * @type {DrawOnSignature<import("../events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {DrawOnSignature<import("../events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {DrawOnSignature<void>}
-     */
-    this.un;
 
     /**
      * @type {boolean}

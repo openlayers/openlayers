@@ -173,6 +173,21 @@ export class VectorSourceEvent extends Event {
  * @template {import("../geom/Geometry.js").default} [Geometry=import("../geom/Geometry.js").default]
  */
 class VectorSource extends Source {
+  /***
+   * @type {VectorSourceOnSignature<import("../events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {VectorSourceOnSignature<import("../events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {VectorSourceOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {Options} [opt_options] Vector source options.
    */
@@ -186,21 +201,6 @@ class VectorSource extends Source {
       state: SourceState.READY,
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
     });
-
-    /***
-     * @type {VectorSourceOnSignature<import("../events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {VectorSourceOnSignature<import("../events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {VectorSourceOnSignature<void>}
-     */
-    this.un;
 
     /**
      * @private

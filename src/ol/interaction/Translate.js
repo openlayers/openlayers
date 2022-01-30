@@ -131,6 +131,21 @@ export class TranslateEvent extends Event {
  * @api
  */
 class Translate extends PointerInteraction {
+  /***
+   * @type {TranslateOnSignature<import("../events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {TranslateOnSignature<import("../events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {TranslateOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {Options} [opt_options] Options.
    */
@@ -138,21 +153,6 @@ class Translate extends PointerInteraction {
     const options = opt_options ? opt_options : {};
 
     super(/** @type {import("./Pointer.js").Options} */ (options));
-
-    /***
-     * @type {TranslateOnSignature<import("../events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {TranslateOnSignature<import("../events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {TranslateOnSignature<void>}
-     */
-    this.un;
 
     /**
      * The last position we translated to.

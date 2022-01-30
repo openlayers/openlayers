@@ -39,26 +39,26 @@ import {easeOut, linear} from '../easing.js';
  * @api
  */
 class Interaction extends BaseObject {
+  /***
+   * @type {InteractionOnSignature<import("../events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {InteractionOnSignature<import("../events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {InteractionOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {InteractionOptions} [opt_options] Options.
    */
   constructor(opt_options) {
     super();
-
-    /***
-     * @type {InteractionOnSignature<import("../events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {InteractionOnSignature<import("../events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {InteractionOnSignature<void>}
-     */
-    this.un;
 
     if (opt_options && opt_options.handleEvent) {
       this.handleEvent = opt_options.handleEvent;

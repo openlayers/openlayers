@@ -80,6 +80,21 @@ const DEFAULT_DPI = 25.4 / 0.28;
  * @api
  */
 class ScaleLine extends Control {
+  /***
+   * @type {ScaleLineOnSignature<import("../events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {ScaleLineOnSignature<import("../events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {ScaleLineOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {Options} [opt_options] Scale line options.
    */
@@ -98,21 +113,6 @@ class ScaleLine extends Control {
       render: options.render,
       target: options.target,
     });
-
-    /***
-     * @type {ScaleLineOnSignature<import("../events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {ScaleLineOnSignature<import("../events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {ScaleLineOnSignature<void>}
-     */
-    this.un;
 
     /**
      * @private

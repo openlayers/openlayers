@@ -116,26 +116,26 @@ export class DragBoxEvent extends Event {
  * @api
  */
 class DragBox extends PointerInteraction {
+  /***
+   * @type {DragBoxOnSignature<import("../events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {DragBoxOnSignature<import("../events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {DragBoxOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
     super();
-
-    /***
-     * @type {DragBoxOnSignature<import("../events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {DragBoxOnSignature<import("../events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {DragBoxOnSignature<void>}
-     */
-    this.un;
 
     const options = opt_options ? opt_options : {};
 

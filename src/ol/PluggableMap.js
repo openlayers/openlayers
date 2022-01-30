@@ -186,26 +186,26 @@ function setLayerMapProperty(layer, map) {
  * @api
  */
 class PluggableMap extends BaseObject {
+  /***
+   * @type {PluggableMapOnSignature<import("./events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {PluggableMapOnSignature<import("./events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {PluggableMapOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {MapOptions} options Map options.
    */
   constructor(options) {
     super();
-
-    /***
-     * @type {PluggableMapOnSignature<import("./events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {PluggableMapOnSignature<import("./events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {PluggableMapOnSignature<void>}
-     */
-    this.un;
 
     const optionsInternal = createOptionsInternal(options);
 

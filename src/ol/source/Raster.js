@@ -543,6 +543,21 @@ export class RasterSourceEvent extends Event {
  * @api
  */
 class RasterSource extends ImageSource {
+  /***
+   * @type {RasterSourceOnSignature<import("../events").EventsKey>}
+   */
+  on;
+
+  /***
+   * @type {RasterSourceOnSignature<import("../events").EventsKey>}
+   */
+  once;
+
+  /***
+   * @type {RasterSourceOnSignature<void>}
+   */
+  un;
+
   /**
    * @param {Options} options Options.
    */
@@ -550,21 +565,6 @@ class RasterSource extends ImageSource {
     super({
       projection: null,
     });
-
-    /***
-     * @type {RasterSourceOnSignature<import("../events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {RasterSourceOnSignature<import("../events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {RasterSourceOnSignature<void>}
-     */
-    this.un;
 
     /**
      * @private
