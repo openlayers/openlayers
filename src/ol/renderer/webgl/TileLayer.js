@@ -691,10 +691,4 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
   }
 }
 
-/**
- * @function
- * @return {import("../../layer/WebGLTile.js").default}
- */
-WebGLTileLayerRenderer.prototype.getLayer;
-
 export default WebGLTileLayerRenderer;
