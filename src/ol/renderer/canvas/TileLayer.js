@@ -27,10 +27,12 @@ import {toString as toTransformString} from '../../transform.js';
  * @classdesc
  * Canvas renderer for tile layers.
  * @api
+ * @template {import("../../layer/Tile.js").default<import("../../source/Tile.js").default>|import("../../layer/VectorTile.js").default} [LayerType=import("../../layer/Tile.js").default<import("../../source/Tile.js").default>|import("../../layer/VectorTile.js").default]
+ * @extends {CanvasLayerRenderer<LayerType>}
  */
 class CanvasTileLayerRenderer extends CanvasLayerRenderer {
   /**
-   * @param {import("../../layer/Tile.js").default|import("../../layer/VectorTile.js").default} tileLayer Tile layer.
+   * @param {LayerType} tileLayer Tile layer.
    */
   constructor(tileLayer) {
     super(tileLayer);
@@ -647,11 +649,5 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     tileSource.updateCacheSize(tileCount, projection);
   }
 }
-
-/**
- * @function
- * @return {import("../../layer/Tile.js").default|import("../../layer/VectorTile.js").default}
- */
-CanvasTileLayerRenderer.prototype.getLayer;
 
 export default CanvasTileLayerRenderer;
