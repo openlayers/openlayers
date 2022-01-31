@@ -67,7 +67,7 @@ const STATISTICS_MAXIMUM = 'STATISTICS_MAXIMUM';
 const STATISTICS_MINIMUM = 'STATISTICS_MINIMUM';
 
 /**
- * @typedef {import("geotiff/dist-module/geotiffimage.js").default} GeoTIFFImage
+ * @typedef {import("geotiff").GeoTIFFImage} GeoTIFFImage
  */
 
 let workerPool;
