@@ -228,6 +228,7 @@ class VectorTile extends UrlTile {
    * @api
    */
   clear() {
+    this.tileCache.releaseAllTileCacheCanvas();
     this.tileCache.clear();
     this.sourceTileCache.clear();
   }

@@ -2,7 +2,7 @@
  * @module ol/TileCache
  */
 import LRUCache from './structs/LRUCache.js';
-import {fromKey, getKey} from './tilecoord.js';
+import { fromKey, getKey } from './tilecoord.js';
 
 class TileCache extends LRUCache {
   /**
@@ -38,6 +38,19 @@ class TileCache extends LRUCache {
       }.bind(this)
     );
   }
+
+  /**
+  * Removes the canvas from all the TileCache and releases for each one leaving its canvas reduced to 1x1 to avoid overflow of canvas memory of IOS
+  */
+  releaseAllTileCacheCanvas() {
+    if (this.getCount() === 0) {
+      return;
+    }
+    this.forEach(function (tile) {
+      this.remove(getKey(tile.tileCoord));
+      tile.release();
+    }.bind(this));
+  };
 }
 
 export default TileCache;

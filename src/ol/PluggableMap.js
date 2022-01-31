@@ -37,7 +37,7 @@ import {fromUserCoordinate, toUserCoordinate} from './proj.js';
 import {getUid} from './util.js';
 import {hasArea} from './size.js';
 import {listen, unlistenByKey} from './events.js';
-import {removeNode} from './dom.js';
+import {releaseAllCanvasMemory, removeNode} from './dom.js';
 
 /**
  * State of the current frame. Only `pixelRatio`, `time` and `viewState` should
@@ -599,6 +599,7 @@ class PluggableMap extends BaseObject {
    * Clean up.
    */
   disposeInternal() {
+    releaseAllCanvasMemory(); //In the 'unload|beforeunload' event it is recommended to call map.dispose() to try to completely free the canvas memory.
     this.setTarget(null);
     super.disposeInternal();
   }

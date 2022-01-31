@@ -2,11 +2,12 @@
  * @module ol/source/UrlTile
  */
 import TileEventType from './TileEventType.js';
-import TileSource, {TileSourceEvent} from './Tile.js';
+import TileSource, { TileSourceEvent } from './Tile.js';
 import TileState from '../TileState.js';
-import {createFromTemplates, expandUrl} from '../tileurlfunction.js';
-import {getKeyZXY} from '../tilecoord.js';
-import {getUid} from '../util.js';
+import { createFromTemplates, expandUrl } from '../tileurlfunction.js';
+import { getKeyZXY } from '../tilecoord.js';
+import { getUid } from '../util.js';
+import { getCanvasMemorySize } from '../dom.js';
 
 /**
  * @typedef {Object} Options
@@ -91,6 +92,13 @@ class UrlTile extends TileSource {
      * @type {!Object<string, boolean>}
      */
     this.tileLoadingKeys_ = {};
+
+    /**
+     * MB of maximum canvas memory allowed. Once this value is exceeded, all canvas tilecaches will be released
+     * @protected
+     * @type {number}
+     */
+    this.releaseCanvasOnReaching = 200;
   }
 
   /**
@@ -143,11 +151,19 @@ class UrlTile extends TileSource {
         tileState == TileState.ERROR
           ? TileEventType.TILELOADERROR
           : tileState == TileState.LOADED
-          ? TileEventType.TILELOADEND
-          : undefined;
+            ? TileEventType.TILELOADEND
+            : undefined;
     }
     if (type != undefined) {
       this.dispatchEvent(new TileSourceEvent(type, tile));
+    }
+    //canvas memory consumption is obtained and if it is higher than a threshold, we release the canvas resources from the tileache
+    const canvasMemorySize = getCanvasMemorySize();
+    console.debug('Current canvas memory size:', canvasMemorySize + ' Mb');
+    if (canvasMemorySize > this.releaseCanvasOnReaching) {
+      this.tileCache.releaseAllTileCacheCanvas();
+      console.debug('Canvas Tilecache released! (Reached the maximum limit allowed - ' + this.releaseCanvasOnReaching + ' Mb)');
+      console.debug('New canvas memory size:', getCanvasMemorySize() + ' Mb');
     }
   }
 

@@ -2,8 +2,8 @@
  * @module ol/VectorRenderTile
  */
 import Tile from './Tile.js';
-import {createCanvasContext2D} from './dom.js';
-import {getUid} from './util.js';
+import { createCanvasContext2D, releaseCanvas } from './dom.js';
+import { getUid } from './util.js';
 
 /**
  * @typedef {Object} ReplayState
@@ -30,7 +30,7 @@ class VectorRenderTile extends Tile {
    * to get source tiles for this tile.
    */
   constructor(tileCoord, state, urlTileCoord, getSourceTiles) {
-    super(tileCoord, state, {transition: 0});
+    super(tileCoord, state, { transition: 0 });
 
     /**
      * @private
@@ -154,6 +154,9 @@ class VectorRenderTile extends Tile {
    */
   release() {
     for (const key in this.context_) {
+     //Release the canvas making the size 1x1. It's necessary for IOS, as it doesn't manage the canvas memory well and causes it to overflow very quickly.
+     //It is useless to delete or assign null to the canvas, the only option we have is to minimize its memory as it did not disappear from memory until the collector garbage is activated, which seems to never happen until ios to page refresh (sometimes not even refreshing, memory is freed!)
+      releaseCanvas(this.context_[key].canvas);
       canvasPool.push(this.context_[key].canvas);
       delete this.context_[key];
     }

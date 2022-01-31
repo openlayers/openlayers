@@ -1,4 +1,4 @@
-import {WORKER_OFFSCREEN_CANVAS} from './has.js';
+import { WORKER_OFFSCREEN_CANVAS } from './has.js';
 
 /**
  * @module ol/dom
@@ -13,6 +13,41 @@ import {WORKER_OFFSCREEN_CANVAS} from './has.js';
  * @param {CanvasRenderingContext2DSettings} [opt_Context2DSettings] CanvasRenderingContext2DSettings
  * @return {CanvasRenderingContext2D} The context.
  */
+
+let allCanvasRef = []; //keeps all references to the created canvas inside the createCanvasContext2D function
+
+/**
+ * Make a calculation of the memory used by all the canvas we currently in 'allCanvasRef' array and return the total Mb (approx)
+ * A single canvas requires  canvas.width * canvas.height * 4(red, green, blue, alpha) bytes. 
+ * @return {number} Total memory canvas in MB (the sum of size of all canvas on allCanvasRef)
+ */
+export function getCanvasMemorySize() {
+  let canvas, totalSizeMb = 0;
+  for (let i in allCanvasRef) {
+    canvas = allCanvasRef[i];
+    totalSizeMb += (canvas.width * canvas.height * 4) / Math.pow(10, 6);
+  }
+  return Math.round(totalSizeMb);
+}
+
+/** 
+* Release all canvas memory
+*/
+export function releaseAllCanvasMemory() {
+  for (let i in allCanvasRef) {
+    releaseCanvas(allCanvasRef[i]);
+  }
+}
+
+/** 
+* Release a single canvas.
+*/
+export function releaseCanvas(canvas) {
+  canvas.width = 1;
+  canvas.height = 1;
+  canvas.getContext('2d').clearRect(0, 0, 1, 1);
+}
+
 export function createCanvasContext2D(
   opt_width,
   opt_height,
@@ -27,6 +62,7 @@ export function createCanvasContext2D(
     canvas = new OffscreenCanvas(opt_width || 300, opt_height || 300);
   } else {
     canvas = document.createElement('canvas');
+    allCanvasRef.push(canvas);
   }
   if (opt_width) {
     canvas.width = opt_width;
