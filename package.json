@@ -76,7 +76,7 @@
     "globby": "^13.0.0",
     "handlebars": "4.7.7",
     "jquery": "3.6.0",
-    "jsdoc": "3.6.9",
+    "jsdoc": "3.6.10",
     "jsdoc-plugin-typescript": "^2.0.5",
     "json-stringify-safe": "^5.0.1",
     "karma": "^6.3.8",
