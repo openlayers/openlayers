@@ -110,7 +110,7 @@ class Attribution extends Control {
     const collapseClassName =
       options.collapseClassName !== undefined
         ? options.collapseClassName
-        : className + '-collpase';
+        : className + '-collapse';
 
     if (typeof collapseLabel === 'string') {
       /**
