@@ -1,8 +1,10 @@
 import Feature from '../../../../../../src/ol/Feature.js';
 import GeoJSON from '../../../../../../src/ol/format/GeoJSON.js';
+import Map from '../../../../../../src/ol/Map.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import VectorLayer from '../../../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../../../src/ol/source/Vector.js';
+import View from '../../../../../../src/ol/View.js';
 import ViewHint from '../../../../../../src/ol/ViewHint.js';
 import WebGLPointsLayer from '../../../../../../src/ol/layer/WebGLPoints.js';
 import WebGLPointsLayerRenderer from '../../../../../../src/ol/renderer/webgl/PointsLayer.js';
@@ -11,6 +13,7 @@ import {
   compose as composeTransform,
   create as createTransform,
 } from '../../../../../../src/ol/transform.js';
+import {createCanvasContext2D} from '../../../../../../src/ol/dom.js';
 import {get as getProjection} from '../../../../../../src/ol/proj.js';
 import {getUid} from '../../../../../../src/ol/util.js';
 
@@ -686,6 +689,63 @@ describe('ol/renderer/webgl/PointsLayer', function () {
 
       renderer.prepareFrame(frameState);
       renderer.renderFrame(frameState);
+    });
+  });
+
+  describe('rendercomplete', function () {
+    let map, layer;
+    beforeEach(function () {
+      layer = new WebGLPointsLayer({
+        source: new VectorSource({
+          features: [new Feature(new Point([0, 0]))],
+        }),
+        style: {
+          symbol: {
+            symbolType: 'circle',
+            size: 14,
+            color: 'red',
+          },
+        },
+      });
+      map = new Map({
+        pixelRatio: 1,
+        target: createMapDiv(100, 100),
+        layers: [layer],
+        view: new View({
+          center: [0, 0],
+          zoom: 2,
+        }),
+      });
+    });
+
+    afterEach(function () {
+      disposeMap(map);
+    });
+
+    it('is completely rendered on rendercomplete', function (done) {
+      map.once('rendercomplete', function () {
+        const targetContext = createCanvasContext2D(1, 1);
+        const canvas = document.querySelector('.ol-layer');
+        targetContext.drawImage(canvas, 50, 50, 1, 1, 0, 0, 1, 1);
+        expect(Array.from(targetContext.getImageData(0, 0, 1, 1).data)).to.eql([
+          255, 0, 0, 255,
+        ]);
+        layer
+          .getSource()
+          .addFeature(new Feature(new Point([1900000, 1900000])));
+        layer.once('postrender', function () {
+          expect(layer.getRenderer().ready).to.be(false);
+        });
+        map.once('rendercomplete', function () {
+          const targetContext = createCanvasContext2D(1, 1);
+          const canvas = document.querySelector('.ol-layer');
+          targetContext.drawImage(canvas, 99, 0, 1, 1, 0, 0, 1, 1);
+          expect(
+            Array.from(targetContext.getImageData(0, 0, 1, 1).data)
+          ).to.eql([255, 0, 0, 255]);
+          done();
+        });
+      });
     });
   });
 });

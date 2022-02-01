@@ -137,6 +137,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       postProcesses: options.postProcesses,
     });
 
+    this.ready = false;
+
     this.sourceRevision_ = -1;
 
     this.verticesBuffer_ = new WebGLArrayBuffer(ARRAY_BUFFER, DYNAMIC_DRAW);
@@ -320,7 +322,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
               event.data.renderInstructions
             );
           }
-
+          this.ready = true;
           this.getLayer().changed();
         }
       }.bind(this)
@@ -610,6 +612,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     };
     // additional properties will be sent back as-is by the worker
     message['projectionTransform'] = projectionTransform;
+    this.ready = false;
     this.worker_.postMessage(message, [this.renderInstructions_.buffer]);
     this.renderInstructions_ = null;
 
