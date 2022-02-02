@@ -287,6 +287,13 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
      */
     this.hitRenderTarget_;
 
+    /**
+     * Keep track of latest message sent to worker
+     * @type {number}
+     * @private
+     */
+    this.generateBuffersRun_ = 0;
+
     this.worker_ = createWebGLWorker();
     this.worker_.addEventListener(
       'message',
@@ -321,8 +328,11 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
             this.renderInstructions_ = new Float32Array(
               event.data.renderInstructions
             );
+            if (received.generateBuffersRun === this.generateBuffersRun_) {
+              this.ready = true;
+            }
           }
-          this.ready = true;
+
           this.getLayer().changed();
         }
       }.bind(this)
@@ -612,6 +622,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     };
     // additional properties will be sent back as-is by the worker
     message['projectionTransform'] = projectionTransform;
+    message['generateBuffersRun'] = ++this.generateBuffersRun_;
     this.ready = false;
     this.worker_.postMessage(message, [this.renderInstructions_.buffer]);
     this.renderInstructions_ = null;
