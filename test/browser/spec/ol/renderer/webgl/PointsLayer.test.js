@@ -747,5 +747,21 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         });
       });
     });
+    it('is not ready until after second rebuildBuffers_ worker calls completed', function (done) {
+      map.renderSync();
+      map.getView().setCenter([10, 10]);
+      map.renderSync();
+      let changed = 0;
+      layer.on('change', function () {
+        try {
+          expect(layer.getRenderer().ready).to.be(++changed > 2);
+          if (changed === 4) {
+            done();
+          }
+        } catch (e) {
+          done(e);
+        }
+      });
+    });
   });
 });
