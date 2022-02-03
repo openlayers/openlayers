@@ -943,10 +943,13 @@ class PluggableMap extends BaseObject {
   /**
    * @return {boolean} Layers have sources that are still loading.
    */
-  getLoading() {
+  getLoadingOrNotReady() {
     const layerStatesArray = this.getLayerGroup().getLayerStatesArray();
     for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       const layer = layerStatesArray[i].layer;
+      if (!layer.getRenderer().ready) {
+        return true;
+      }
       const source = /** @type {import("./layer/Layer.js").default} */ (
         layer
       ).getSource();
@@ -1561,7 +1564,7 @@ class PluggableMap extends BaseObject {
     this.renderComplete_ =
       !this.tileQueue_.getTilesLoading() &&
       !this.tileQueue_.getCount() &&
-      !this.getLoading();
+      !this.getLoadingOrNotReady();
 
     if (!this.postRenderTimeoutHandle_) {
       this.postRenderTimeoutHandle_ = setTimeout(() => {

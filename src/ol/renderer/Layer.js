@@ -17,6 +17,11 @@ class LayerRenderer extends Observable {
   constructor(layer) {
     super();
 
+    /**
+     * @type {boolean} The renderer is initialized and ready to render.
+     */
+    this.ready = true;
+
     /** @private */
     this.boundHandleImageChange_ = this.handleImageChange_.bind(this);
 
