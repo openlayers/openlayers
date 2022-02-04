@@ -378,8 +378,8 @@ class Overlay extends BaseObject {
 
   /**
    * Set the map to be associated with this overlay.
-   * @param {import("./PluggableMap.js").default|undefined} map The map that the
-   * overlay is part of.
+   * @param {import("./PluggableMap.js").default|undefined|null} map The map that the
+   * overlay is part of. Pass `null` to just remove the overlay from the current map.
    * @observable
    * @api
    */
