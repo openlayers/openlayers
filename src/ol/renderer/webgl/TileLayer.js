@@ -23,9 +23,8 @@ import {
   getKey as getTileCoordKey,
 } from '../../tilecoord.js';
 import {fromUserExtent} from '../../proj.js';
-import {getIntersection} from '../../extent.js';
+import {getIntersection, isEmpty} from '../../extent.js';
 import {getUid} from '../../util.js';
-import {isEmpty} from '../../extent.js';
 import {numberSafeCompareFunction} from '../../array.js';
 import {toSize} from '../../size.js';
 

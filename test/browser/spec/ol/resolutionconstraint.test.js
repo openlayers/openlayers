@@ -1,5 +1,5 @@
-import {createMinMaxResolution} from '../../../../src/ol/resolutionconstraint.js';
 import {
+  createMinMaxResolution,
   createSnapToPower,
   createSnapToResolutions,
 } from '../../../../src/ol/resolutionconstraint.js';

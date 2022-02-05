@@ -9,6 +9,7 @@ import {
   apply as applyTransform,
   compose as composeTransform,
   makeInverse,
+  toString as toTransformString,
 } from '../../transform.js';
 import {assign} from '../../obj.js';
 import {
@@ -21,7 +22,6 @@ import {cssOpacity} from '../../css.js';
 import {fromUserExtent} from '../../proj.js';
 import {getUid} from '../../util.js';
 import {numberSafeCompareFunction} from '../../array.js';
-import {toString as toTransformString} from '../../transform.js';
 
 /**
  * @classdesc

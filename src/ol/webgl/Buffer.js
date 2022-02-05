@@ -1,8 +1,13 @@
 /**
  * @module ol/webgl/Buffer
  */
-import {ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER} from '../webgl.js';
-import {DYNAMIC_DRAW, STATIC_DRAW, STREAM_DRAW} from '../webgl.js';
+import {
+  ARRAY_BUFFER,
+  DYNAMIC_DRAW,
+  ELEMENT_ARRAY_BUFFER,
+  STATIC_DRAW,
+  STREAM_DRAW,
+} from '../webgl.js';
 import {assert} from '../asserts.js';
 
 /**

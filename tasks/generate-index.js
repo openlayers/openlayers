@@ -1,8 +1,7 @@
 import esMain from 'es-main';
 import fse from 'fs-extra';
 import generateInfo from './generate-info.js';
-import path from 'path';
-import {dirname} from 'path';
+import path, {dirname} from 'path';
 import {fileURLToPath} from 'url';
 
 /**

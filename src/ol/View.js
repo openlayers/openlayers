@@ -20,25 +20,25 @@ import {VOID} from './functions.js';
 import {
   add as addCoordinate,
   equals as coordinatesEqual,
+  equals,
   rotate as rotateCoordinate,
 } from './coordinate.js';
 import {assert} from './asserts.js';
 import {assign} from './obj.js';
 import {none as centerNone, createExtent} from './centerconstraint.js';
 import {clamp, modulo} from './math.js';
-import {createMinMaxResolution} from './resolutionconstraint.js';
+import {
+  createMinMaxResolution,
+  createSnapToPower,
+  createSnapToResolutions,
+} from './resolutionconstraint.js';
 import {
   createSnapToN,
   createSnapToZero,
   disable,
   none as rotationNone,
 } from './rotationconstraint.js';
-import {
-  createSnapToPower,
-  createSnapToResolutions,
-} from './resolutionconstraint.js';
-import {easeOut} from './easing.js';
-import {equals} from './coordinate.js';
+import {easeOut, inAndOut} from './easing.js';
 import {
   getCenter,
   getForViewAndSize,
@@ -46,7 +46,6 @@ import {
   getWidth,
   isEmpty,
 } from './extent.js';
-import {inAndOut} from './easing.js';
 import {linearFindNearest} from './array.js';
 import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
 

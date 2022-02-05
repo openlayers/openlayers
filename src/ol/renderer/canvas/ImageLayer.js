@@ -6,11 +6,18 @@ import ViewHint from '../../ViewHint.js';
 import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
 import {IMAGE_SMOOTHING_DISABLED, IMAGE_SMOOTHING_ENABLED} from './common.js';
 import {assign} from '../../obj.js';
-import {compose as composeTransform, makeInverse} from '../../transform.js';
-import {containsExtent, intersects as intersectsExtent} from '../../extent.js';
+import {
+  compose as composeTransform,
+  makeInverse,
+  toString as toTransformString,
+} from '../../transform.js';
+import {
+  containsExtent,
+  getIntersection,
+  intersects as intersectsExtent,
+  isEmpty,
+} from '../../extent.js';
 import {fromUserExtent} from '../../proj.js';
-import {getIntersection, isEmpty} from '../../extent.js';
-import {toString as toTransformString} from '../../transform.js';
 
 /**
  * @classdesc
