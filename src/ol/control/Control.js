@@ -69,7 +69,7 @@ class Control extends BaseObject {
 
     /**
      * @private
-     * @type {import("../PluggableMap.js").default|undefined|null}
+     * @type {import("../PluggableMap.js").default|null}
      */
     this.map_ = null;
 
@@ -98,7 +98,7 @@ class Control extends BaseObject {
 
   /**
    * Get the map associated with this control.
-   * @return {import("../PluggableMap.js").default|undefined|null} Map.
+   * @return {import("../PluggableMap.js").default|null} Map.
    * @api
    */
   getMap() {
@@ -110,7 +110,7 @@ class Control extends BaseObject {
    * Pass `null` to just remove the control from the current map.
    * Subclasses may set up event handlers to get notified about changes to
    * the map here.
-   * @param {import("../PluggableMap.js").default|null} [map] Map.
+   * @param {import("../PluggableMap.js").default|null} map Map.
    * @api
    */
   setMap(map) {
