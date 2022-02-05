@@ -96,12 +96,22 @@ function parseStyle(style, bandCount) {
   const vertexShader = `
     attribute vec2 ${Attributes.TEXTURE_COORD};
     uniform mat4 ${Uniforms.TILE_TRANSFORM};
+    uniform float ${Uniforms.TEXTURE_PIXEL_WIDTH};
+    uniform float ${Uniforms.TEXTURE_PIXEL_HEIGHT};
+    uniform float ${Uniforms.TEXTURE_RESOLUTION};
+    uniform float ${Uniforms.TEXTURE_ORIGIN_X};
+    uniform float ${Uniforms.TEXTURE_ORIGIN_Y};
     uniform float ${Uniforms.DEPTH};
 
     varying vec2 v_textureCoord;
+    varying vec2 v_mapCoord;
 
     void main() {
       v_textureCoord = ${Attributes.TEXTURE_COORD};
+      v_mapCoord = vec2(
+        ${Uniforms.TEXTURE_ORIGIN_X} + ${Uniforms.TEXTURE_RESOLUTION} * ${Uniforms.TEXTURE_PIXEL_WIDTH} * v_textureCoord[0],
+        ${Uniforms.TEXTURE_ORIGIN_Y} - ${Uniforms.TEXTURE_RESOLUTION} * ${Uniforms.TEXTURE_PIXEL_HEIGHT} * v_textureCoord[1]
+      );
       gl_Position = ${Uniforms.TILE_TRANSFORM} * vec4(${Attributes.TEXTURE_COORD}, ${Uniforms.DEPTH}, 1.0);
     }
   `;
@@ -237,6 +247,8 @@ function parseStyle(style, bandCount) {
     #endif
 
     varying vec2 v_textureCoord;
+    varying vec2 v_mapCoord;
+    uniform vec4 ${Uniforms.RENDER_EXTENT};
     uniform float ${Uniforms.TRANSITION_ALPHA};
     uniform float ${Uniforms.TEXTURE_PIXEL_WIDTH};
     uniform float ${Uniforms.TEXTURE_PIXEL_HEIGHT};
@@ -248,6 +260,15 @@ function parseStyle(style, bandCount) {
     ${functionDefintions.join('\n')}
 
     void main() {
+      if (
+        v_mapCoord[0] < ${Uniforms.RENDER_EXTENT}[0] ||
+        v_mapCoord[1] < ${Uniforms.RENDER_EXTENT}[1] ||
+        v_mapCoord[0] > ${Uniforms.RENDER_EXTENT}[2] ||
+        v_mapCoord[1] > ${Uniforms.RENDER_EXTENT}[3]
+      ) {
+        discard;
+      }
+
       vec4 color = texture2D(${
         Uniforms.TILE_TEXTURE_ARRAY
       }[0],  v_textureCoord);

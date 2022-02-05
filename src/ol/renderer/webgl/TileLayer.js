@@ -35,6 +35,10 @@ export const Uniforms = {
   DEPTH: 'u_depth',
   TEXTURE_PIXEL_WIDTH: 'u_texturePixelWidth',
   TEXTURE_PIXEL_HEIGHT: 'u_texturePixelHeight',
+  TEXTURE_RESOLUTION: 'u_textureResolution', // map units per texture pixel
+  TEXTURE_ORIGIN_X: 'u_textureOriginX', // map x coordinate of left edge of texture
+  TEXTURE_ORIGIN_Y: 'u_textureOriginY', // map y coordinate of top edge of texture
+  RENDER_EXTENT: 'u_renderExtent', // intersection of layer, source, and view extent
   RESOLUTION: 'u_resolution',
   ZOOM: 'u_zoom',
 };
@@ -150,7 +154,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     this.renderComplete = false;
 
     /**
-     * This transform converts tile i, j coordinates to screen coordinates.
+     * This transform converts texture coordinates to screen coordinates.
      * @type {import("../../transform.js").Transform}
      * @private
      */
@@ -581,6 +585,19 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
           Uniforms.TEXTURE_PIXEL_HEIGHT,
           tileSize[1]
         );
+        this.helper.setUniformFloatValue(
+          Uniforms.TEXTURE_RESOLUTION,
+          tileResolution
+        );
+        this.helper.setUniformFloatValue(
+          Uniforms.TEXTURE_ORIGIN_X,
+          tileOrigin[0] + tileCenterI * tileSize[0] * tileResolution
+        );
+        this.helper.setUniformFloatValue(
+          Uniforms.TEXTURE_ORIGIN_Y,
+          tileOrigin[1] - tileCenterJ * tileSize[1] * tileResolution
+        );
+        this.helper.setUniformFloatVec4(Uniforms.RENDER_EXTENT, extent);
         this.helper.setUniformFloatValue(
           Uniforms.RESOLUTION,
           viewState.resolution
