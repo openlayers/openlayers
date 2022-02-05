@@ -1,5 +1,4 @@
-import IIIFInfo from '../../../../../src/ol/format/IIIFInfo.js';
-import {Versions} from '../../../../../src/ol/format/IIIFInfo.js';
+import IIIFInfo, {Versions} from '../../../../../src/ol/format/IIIFInfo.js';
 
 describe('ol.format.IIIFInfo', function () {
   const iiifInfo = new IIIFInfo();

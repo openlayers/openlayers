@@ -1,7 +1,6 @@
 import esMain from 'es-main';
 import fse from 'fs-extra';
-import path from 'path';
-import {dirname} from 'path';
+import path, {dirname} from 'path';
 import {fileURLToPath} from 'url';
 
 const baseDir = dirname(fileURLToPath(import.meta.url));

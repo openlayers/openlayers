@@ -1,12 +1,13 @@
 import MVT from '../src/ol/format/MVT.js';
-import TileQueue from '../src/ol/TileQueue.js';
+import TileQueue, {
+  getTilePriority as tilePriorityFunction,
+} from '../src/ol/TileQueue.js';
 import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
 import stringify from 'json-stringify-safe';
 import styleFunction from 'ol-mapbox-style/dist/stylefunction.js';
 import {get} from '../src/ol/proj.js';
 import {inView} from '../src/ol/layer/Layer.js';
-import {getTilePriority as tilePriorityFunction} from '../src/ol/TileQueue.js';
 
 /** @type {any} */
 const worker = self;
