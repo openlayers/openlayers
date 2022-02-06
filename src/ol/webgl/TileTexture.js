@@ -2,6 +2,7 @@
  * @module ol/webgl/TileTexture
  */
 
+import DataTile from '../DataTile.js';
 import EventTarget from '../events/Target.js';
 import EventType from '../events/EventType.js';
 import ImageTile from '../ImageTile.js';
@@ -131,6 +132,12 @@ class TileTexture extends EventTarget {
      * @type {TileType}
      */
     this.tile;
+
+    /**
+     * @private
+     * @type {CanvasRenderingContext2D}
+     */
+    this.pixelContext_ = null;
 
     /**
      * @type {Array<WebGLTexture>}
@@ -283,6 +290,51 @@ class TileTexture extends EventTarget {
       gl.deleteTexture(this.textures[i]);
     }
     this.tile.removeEventListener(EventType.CHANGE, this.handleTileChange_);
+  }
+
+  /**
+   * Get data for a pixel.  If the tile is not loaded, null is returned.
+   * @param {number} col The column index.
+   * @param {number} row The row index.
+   * @return {import("../DataTile.js").Data|null} The data.
+   */
+  getPixelData(col, row) {
+    if (!this.loaded) {
+      return null;
+    }
+
+    if (this.tile instanceof DataTile) {
+      const data = this.tile.getData();
+      if (data instanceof DataView) {
+        const bytesPerPixel = data.byteLength / (this.size[0] * this.size[1]);
+        const offset = row * this.size[0] * bytesPerPixel + col * bytesPerPixel;
+        const buffer = data.buffer.slice(offset, offset + bytesPerPixel);
+        return new DataView(buffer);
+      }
+
+      const offset = row * this.size[0] * this.bandCount + col * this.bandCount;
+      return data.slice(offset, offset + this.bandCount);
+    }
+
+    let context = this.pixelContext_;
+    if (!context) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1;
+      canvas.height = 1;
+      context = canvas.getContext('2d');
+      this.pixelContext_ = context;
+    }
+    context.clearRect(0, 0, 1, 1);
+
+    let data;
+    const image = this.tile.getImage();
+    try {
+      context.drawImage(image, col, row, 1, 1, 0, 0, 1, 1);
+      data = context.getImageData(0, 0, 1, 1).data;
+    } catch (err) {
+      return null;
+    }
+    return data;
   }
 }
 

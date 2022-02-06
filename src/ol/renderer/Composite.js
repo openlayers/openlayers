@@ -155,7 +155,7 @@ class CompositeMapRenderer extends MapRenderer {
    * @param {import("../pixel.js").Pixel} pixel Pixel.
    * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {function(import("../layer/Layer.js").default<import("../source/Source").default>, (Uint8ClampedArray|Uint8Array)): T} callback Layer
+   * @param {function(import("../layer/Layer.js").default<import("../source/Source").default>, (Uint8ClampedArray|Uint8Array|Float32Array|DataView)): T} callback Layer
    *     callback.
    * @param {function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean} layerFilter Layer filter
    *     function, only layers which are visible and for which this function

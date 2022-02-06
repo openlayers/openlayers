@@ -1,5 +1,16 @@
 ## Upgrade notes
 
+### Next
+
+#### New behavior of map.forEachLayerAtPixel() for WebGL tile layers
+
+The `map.forEachLayerAtPixel()` method now returns original pixel values for WebGL-rendered tile layers.  Previously,
+the value returned was based on the RGBA composite pixel based on rendering all layers.  Additional data types have been added to the signature of the callback passed to this method.  In addition to being called with a `Uint8ClampedArray` or `Uint8Array`, the method may now be called with a `Float32Array` or `DataView` depending on the underlying data type of the tiles used.
+
+For example, when rendering a GeoTIFF source that loads floating point values (with `normalize: false`), the `map.forEachLayerAtPixel()` callback will be called with a `Float32Array` representing pixel values.
+
+Previously, when rendering data tile sources with zero pixel values in the fourth band, the `map.forEachLayerAtPixel()` callback would be called with `null`.  Now, the full pixel array will be provided (even if the fourth band is zero).
+
 ### v6.12.0
 
 No special changes are required when upgrading to the 6.12.0 release.

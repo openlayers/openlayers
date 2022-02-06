@@ -11,9 +11,11 @@ import WebGLLayerRenderer from './Layer.js';
 import {AttributeType} from '../../webgl/Helper.js';
 import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
 import {
+  apply as applyTransform,
   compose as composeTransform,
   create as createTransform,
 } from '../../transform.js';
+import {containsCoordinate, getIntersection, isEmpty} from '../../extent.js';
 import {
   create as createMat4,
   fromTransform as mat4FromTransform,
@@ -23,7 +25,6 @@ import {
   getKey as getTileCoordKey,
 } from '../../tilecoord.js';
 import {fromUserExtent} from '../../proj.js';
-import {getIntersection, isEmpty} from '../../extent.js';
 import {getUid} from '../../util.js';
 import {numberSafeCompareFunction} from '../../array.js';
 import {toSize} from '../../size.js';
@@ -637,6 +638,69 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
 
     this.postRender(gl, frameState);
     return canvas;
+  }
+
+  /**
+   * @param {import("../../pixel.js").Pixel} pixel Pixel.
+   * @param {import("../../PluggableMap.js").FrameState} frameState FrameState.
+   * @param {number} hitTolerance Hit tolerance in pixels.
+   * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView} The result.  If there is no data at the pixel
+   *    location, null will be returned.  If there is data, but pixel values cannot be
+   *    returned, and empty array will be returned.
+   */
+  getDataAtPixel(pixel, frameState, hitTolerance) {
+    const gl = this.helper.getGL();
+    if (!gl) {
+      return null;
+    }
+
+    const layer = this.getLayer();
+    const coordinate = applyTransform(
+      frameState.pixelToCoordinateTransform,
+      pixel.slice()
+    );
+
+    const layerExtent = layer.getExtent();
+    if (layerExtent) {
+      if (!containsCoordinate(layerExtent, coordinate)) {
+        return null;
+      }
+    }
+
+    const viewState = frameState.viewState;
+    const source = layer.getRenderSource();
+    const tileGrid = source.getTileGridForProjection(viewState.projection);
+
+    const tileTextureCache = this.tileTextureCache_;
+    for (
+      let z = tileGrid.getZForResolution(viewState.resolution);
+      z >= tileGrid.getMinZoom();
+      --z
+    ) {
+      const tileCoord = tileGrid.getTileCoordForCoordAndZ(coordinate, z);
+      const cacheKey = getCacheKey(source, tileCoord);
+      if (!tileTextureCache.containsKey(cacheKey)) {
+        continue;
+      }
+      const tileTexture = tileTextureCache.get(cacheKey);
+      if (!tileTexture.loaded) {
+        continue;
+      }
+      const tileOrigin = tileGrid.getOrigin(z);
+      const tileSize = toSize(tileGrid.getTileSize(z));
+      const tileResolution = tileGrid.getResolution(z);
+
+      const col =
+        Math.floor((coordinate[0] - tileOrigin[0]) / tileResolution) -
+        tileCoord[1] * tileSize[0];
+
+      const row =
+        Math.floor((tileOrigin[1] - coordinate[1]) / tileResolution) -
+        tileCoord[2] * tileSize[1];
+
+      return tileTexture.getPixelData(col, row);
+    }
+    return null;
   }
 
   /**

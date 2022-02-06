@@ -283,7 +283,7 @@ class WebGLLayerRenderer extends LayerRenderer {
    * @param {import("../../pixel.js").Pixel} pixel Pixel.
    * @param {import("../../PluggableMap.js").FrameState} frameState FrameState.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @return {Uint8ClampedArray|Uint8Array} The result.  If there is no data at the pixel
+   * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView} The result.  If there is no data at the pixel
    *    location, null will be returned.  If there is data, but pixel values cannot be
    *    returned, and empty array will be returned.
    */

@@ -696,12 +696,13 @@ class PluggableMap extends BaseObject {
    * `className` in its constructor.
    *
    * @param {import("./pixel.js").Pixel} pixel Pixel.
-   * @param {function(this: S, import("./layer/Layer.js").default, (Uint8ClampedArray|Uint8Array)): T} callback
+   * @param {function(this: S, import("./layer/Layer.js").default, (Uint8ClampedArray|Uint8Array|Float32Array|DataView)): T} callback
    *     Layer callback. This callback will receive two arguments: first is the
    *     {@link module:ol/layer/Layer layer}, second argument is an array representing
-   *     [R, G, B, A] pixel values (0 - 255) and will be `null` for layer types
-   *     that do not currently support this argument. To stop detection, callback
-   *     functions can return a truthy value.
+   *     pixel values and will be `null` for layer types that do not currently support this method.
+   *     The type of pixel data passed to the callback depends on the source data type.  For example,
+   *     the callback will be called with a 5 element Float32Array for a data source with 5 bands of
+   *     floating point data.  To stop detection, callback functions can return a truthy value.
    * @param {AtPixelOptions} [opt_options] Configuration options.
    * @return {T|undefined} Callback result, i.e. the return value of last
    * callback execution, or the first truthy callback return value.

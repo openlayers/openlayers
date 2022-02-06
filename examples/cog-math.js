@@ -79,3 +79,17 @@ const map = new Map({
   ],
   view: source.getView(),
 });
+
+const output = document.getElementById('output');
+function displayPixelValue(event) {
+  map.forEachLayerAtPixel(event.pixel, (layer, data) => {
+    if (!data) {
+      return;
+    }
+    const red = data[0];
+    const nir = data[1];
+    const ndvi = (nir - red) / (nir + red);
+    output.textContent = ndvi.toFixed(2);
+  });
+}
+map.on(['pointermove', 'click'], displayPixelValue);
