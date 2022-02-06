@@ -74,7 +74,7 @@ export function interpolatePoint(
  * @param {number} stride Stride.
  * @param {number} m M.
  * @param {boolean} extrapolate Extrapolate.
- * @return {import("../../coordinate.js").Coordinate} Coordinate.
+ * @return {import("../../coordinate.js").Coordinate|null} Coordinate.
  */
 export function lineStringCoordinateAtM(
   flatCoordinates,
@@ -147,7 +147,7 @@ export function lineStringCoordinateAtM(
  * @param {number} m M.
  * @param {boolean} extrapolate Extrapolate.
  * @param {boolean} interpolate Interpolate.
- * @return {import("../../coordinate.js").Coordinate} Coordinate.
+ * @return {import("../../coordinate.js").Coordinate|null} Coordinate.
  */
 export function lineStringsCoordinateAtM(
   flatCoordinates,

@@ -59,7 +59,7 @@ class MapBrowserEventHandler extends Target {
     /**
      * The most recent "down" type event (or null if none have occurred).
      * Set on pointerdown.
-     * @type {PointerEvent}
+     * @type {PointerEvent|null}
      * @private
      */
     this.down_ = null;

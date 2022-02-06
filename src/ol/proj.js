@@ -158,7 +158,7 @@ export function addProjections(projections) {
  * @param {ProjectionLike} projectionLike Either a code string which is
  *     a combination of authority and identifier such as "EPSG:4326", or an
  *     existing projection object, or undefined.
- * @return {Projection} Projection object, or null if not in list.
+ * @return {Projection|null} Projection object, or null if not in list.
  * @api
  */
 export function get(projectionLike) {
@@ -533,7 +533,7 @@ export function transformWithProjections(
 }
 
 /**
- * @type {?Projection}
+ * @type {Projection|null}
  */
 let userProjection = null;
 
@@ -560,7 +560,7 @@ export function clearUserProjection() {
  * Get the projection for coordinates supplied from and returned by API methods.
  * Note that this method is not yet a part of the stable API.  Support for user
  * projections is not yet complete and should be considered experimental.
- * @return {?Projection} The user projection (or null if not set).
+ * @return {Projection|null} The user projection (or null if not set).
  */
 export function getUserProjection() {
   return userProjection;
