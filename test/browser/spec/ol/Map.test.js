@@ -469,6 +469,7 @@ describe('ol/Map', function () {
       document.body.removeChild(map.getTargetElement());
       map.setTarget(null);
       map.dispose();
+      map.getLayers().forEach((layer) => layer.dispose());
     });
 
     it('triggers when all tiles and sources are loaded and faded in', function (done) {

@@ -103,6 +103,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         fragmentShader: simpleFragmentShader,
       });
       expect(renderer).to.be.a(WebGLPointsLayerRenderer);
+      renderer.dispose();
     });
   });
 
@@ -125,6 +126,10 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         extent: [-100, -100, 100, 100],
         layerStatesArray: [layer.getLayerState()],
       });
+    });
+
+    afterEach(function () {
+      renderer.dispose();
     });
 
     it('calls WebGlHelper#prepareDraw', function () {
@@ -320,6 +325,10 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       });
     });
 
+    afterEach(function () {
+      renderer.dispose();
+    });
+
     it('correctly hit detects a feature', function (done) {
       const transform = composeTransform(
         createTransform(),
@@ -456,7 +465,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
 
       const spyHelper = sinon.spy(renderer.helper, 'disposeInternal');
       const spyWorker = sinon.spy(renderer.worker_, 'terminate');
-      renderer.disposeInternal();
+      renderer.dispose();
       expect(spyHelper.called).to.be(true);
       expect(spyWorker.called).to.be(true);
     });
@@ -672,6 +681,10 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       };
     });
 
+    afterEach(function () {
+      renderer.dispose();
+    });
+
     it('fires prerender and postrender events', function (done) {
       let prerenderNotified = false;
       let postrenderNotified = false;
@@ -720,6 +733,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
 
     afterEach(function () {
       disposeMap(map);
+      layer.dispose();
     });
 
     it('is completely rendered on rendercomplete', function (done) {
@@ -808,6 +822,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
     });
     afterEach(function () {
       disposeMap(map);
+      layer.dispose();
     });
 
     it('allows changing variables', function (done) {

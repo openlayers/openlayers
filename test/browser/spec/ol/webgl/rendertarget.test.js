@@ -17,6 +17,10 @@ describe('ol.webgl.RenderTarget', function () {
     }
   });
 
+  afterEach(function () {
+    helper.dispose();
+  });
+
   describe('constructor', function () {
     it('creates a target of size 1x1', function () {
       const rt = new WebGLRenderTarget(helper);

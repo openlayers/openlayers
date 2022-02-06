@@ -6,35 +6,41 @@ import VectorSource from '../../../../../src/ol/source/Vector.js';
 import View from '../../../../../src/ol/View.js';
 
 describe('ol/layer/Heatmap', function () {
+  /** @type {HTMLDivElement} */
+  let target;
+  /** @type {Map} */
+  let map;
+  /** @type {HeatmapLayer} */
+  let layer;
+  beforeEach(() => {
+    target = document.createElement('div');
+    target.style.width = '300px';
+    target.style.height = '300px';
+    document.body.appendChild(target);
+
+    map = new Map({
+      view: new View({
+        center: [0, 0],
+        resolution: 0.1,
+      }),
+      target: target,
+    });
+  });
+
+  afterEach(() => {
+    map.dispose();
+    document.body.removeChild(target);
+    layer.dispose();
+  });
+
   describe('constructor', function () {
-    let target, map;
-    beforeEach(() => {
-      target = document.createElement('div');
-      target.style.width = '300px';
-      target.style.height = '300px';
-      document.body.appendChild(target);
-
-      map = new Map({
-        view: new View({
-          center: [0, 0],
-          resolution: 0.1,
-        }),
-        target: target,
-      });
-    });
-
-    afterEach(() => {
-      map.dispose();
-      document.body.removeChild(target);
-    });
-
     it('can be constructed without arguments', function () {
-      const instance = new HeatmapLayer();
-      expect(instance).to.be.an(HeatmapLayer);
+      layer = new HeatmapLayer();
+      expect(layer).to.be.an(HeatmapLayer);
     });
 
     it('has a default className', function () {
-      const layer = new HeatmapLayer({
+      layer = new HeatmapLayer({
         source: new VectorSource(),
       });
       map.addLayer(layer);
@@ -45,7 +51,7 @@ describe('ol/layer/Heatmap', function () {
     });
 
     it('accepts a custom className', function () {
-      const layer = new HeatmapLayer({
+      layer = new HeatmapLayer({
         source: new VectorSource(),
         className: 'a-class-name',
       });
@@ -59,11 +65,6 @@ describe('ol/layer/Heatmap', function () {
 
   describe('hit detection', function () {
     it('hit detects two distinct features', function (done) {
-      const target = document.createElement('div');
-      target.style.width = '300px';
-      target.style.height = '300px';
-      document.body.appendChild(target);
-
       const feature = new Feature({
         geometry: new Point([0, 0]),
         id: 1,
@@ -78,19 +79,12 @@ describe('ol/layer/Heatmap', function () {
       const source = new VectorSource({
         features: [feature, feature2],
       });
-      const layer = new HeatmapLayer({
+      layer = new HeatmapLayer({
         source: source,
         blur: 10,
         radius: 10,
       });
-      const map = new Map({
-        layers: [layer],
-        view: new View({
-          center: [0, 0],
-          resolution: 0.1,
-        }),
-        target: target,
-      });
+      map.addLayer(layer);
       map.render();
 
       function hitTest(coordinate) {
@@ -118,7 +112,6 @@ describe('ol/layer/Heatmap', function () {
         res = hitTest([0, 14]);
         expect(res).to.be(null);
 
-        document.body.removeChild(target);
         done();
       });
     });
