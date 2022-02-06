@@ -87,7 +87,11 @@ describe('ol/layer/WebGLTile', function () {
       #else
       precision mediump float;
       #endif
+
       varying vec2 v_textureCoord;
+      varying vec2 v_mapCoord;
+
+      uniform vec4 u_renderExtent;
       uniform float u_transitionAlpha;
       uniform float u_texturePixelWidth;
       uniform float u_texturePixelHeight;
@@ -97,7 +101,16 @@ describe('ol/layer/WebGLTile', function () {
       uniform float u_var_g;
       uniform float u_var_b;
       uniform sampler2D u_tileTextures[1];
+
       void main() {
+        if (
+          v_mapCoord[0] < u_renderExtent[0] ||
+          v_mapCoord[1] < u_renderExtent[1] ||
+          v_mapCoord[0] > u_renderExtent[2] ||
+          v_mapCoord[1] > u_renderExtent[3]
+        ) {
+          discard;
+        }
         vec4 color = texture2D(u_tileTextures[0], v_textureCoord);
         color = vec4(u_var_r / 255.0, u_var_g / 255.0, u_var_b / 255.0, 1.0);
         if (color.a == 0.0) {
@@ -112,12 +125,24 @@ describe('ol/layer/WebGLTile', function () {
     expect(compileShaderSpy.getCall(1).args[0].replace(/[ \n]+/g, ' ')).to.be(
       `
       attribute vec2 a_textureCoord;
+
       uniform mat4 u_tileTransform;
+      uniform float u_texturePixelWidth; 
+      uniform float u_texturePixelHeight; 
+      uniform float u_textureResolution; 
+      uniform float u_textureOriginX; 
+      uniform float u_textureOriginY; 
       uniform float u_depth;
 
       varying vec2 v_textureCoord;
+      varying vec2 v_mapCoord; 
+
       void main() {
         v_textureCoord = a_textureCoord;
+        v_mapCoord = vec2(
+          u_textureOriginX + u_textureResolution * u_texturePixelWidth * v_textureCoord[0],
+          u_textureOriginY - u_textureResolution * u_texturePixelHeight * v_textureCoord[1]
+        );
         gl_Position = u_tileTransform * vec4(a_textureCoord, u_depth, 1.0);
       }
       `.replace(/[ \n]+/g, ' ')
@@ -163,6 +188,10 @@ describe('ol/layer/WebGLTile', function () {
       #else
       precision mediump float;
       #endif varying vec2 v_textureCoord;
+
+      varying vec2 v_mapCoord;
+
+      uniform vec4 u_renderExtent;
       uniform float u_transitionAlpha;
       uniform float u_texturePixelWidth;
       uniform float u_texturePixelHeight;
@@ -188,6 +217,14 @@ describe('ol/layer/WebGLTile', function () {
       }
 
       void main() {
+        if (
+          v_mapCoord[0] < u_renderExtent[0] ||
+          v_mapCoord[1] < u_renderExtent[1] ||
+          v_mapCoord[0] > u_renderExtent[2] ||
+          v_mapCoord[1] > u_renderExtent[3]
+        ) {
+          discard;
+        }
         vec4 color = texture2D(u_tileTextures[0], v_textureCoord);
         color = vec4((getBandValue(4.0, 0.0, 0.0) / 3000.0), (getBandValue(1.0, 0.0, 0.0) / 3000.0), (getBandValue(2.0, 0.0, 0.0) / 3000.0), 1.0);
         if (color.a == 0.0) {
