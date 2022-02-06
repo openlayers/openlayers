@@ -2,6 +2,7 @@
  * @module ol/webgl/TileTexture
  */
 
+import DataTile from '../DataTile.js';
 import EventTarget from '../events/Target.js';
 import EventType from '../events/EventType.js';
 import ImageTile from '../ImageTile.js';
@@ -118,18 +119,35 @@ function uploadDataTexture(
 }
 
 /**
+ * @type {CanvasRenderingContext2D}
+ */
+let pixelContext = null;
+
+function createPixelContext() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1;
+  canvas.height = 1;
+  pixelContext = canvas.getContext('2d');
+}
+
+/**
  * @typedef {import("../DataTile.js").default|ImageTile|ReprojTile} TileType
+ */
+
+/**
+ * @typedef {Object} Options
+ * @property {TileType} tile The tile.
+ * @property {import("../tilegrid/TileGrid.js").default} grid Tile grid.
+ * @property {import("../webgl/Helper.js").default} helper WebGL helper.
+ * @property {number} [tilePixelRatio=1] Tile pixel ratio.
+ * @property {number} [gutter=0] The size in pixels of the gutter around image tiles to ignore.
  */
 
 class TileTexture extends EventTarget {
   /**
-   * @param {TileType} tile The tile.
-   * @param {import("../tilegrid/TileGrid.js").default} grid Tile grid.
-   * @param {import("../webgl/Helper.js").default} helper WebGL helper.
-   * @param {number} [opt_tilePixelRatio=1] Tile pixel ratio.
-   * @param {number} [opt_gutter=0] The size in pixels of the gutter around image tiles to ignore.
+   * @param {Options} options The tile texture options.
    */
-  constructor(tile, grid, helper, opt_tilePixelRatio, opt_gutter) {
+  constructor(options) {
     super();
 
     /**
@@ -143,16 +161,33 @@ class TileTexture extends EventTarget {
     this.textures = [];
     this.handleTileChange_ = this.handleTileChange_.bind(this);
 
-    this.size = toSize(grid.getTileSize(tile.tileCoord[0]));
+    /**
+     * @type {import("../size.js").Size}
+     */
+    this.size = toSize(options.grid.getTileSize(options.tile.tileCoord[0]));
 
-    this.tilePixelRatio_ =
-      opt_tilePixelRatio !== undefined ? opt_tilePixelRatio : 1;
+    /**
+     * @type {number}
+     * @private
+     */
+    this.tilePixelRatio_ = options.tilePixelRatio || 1;
 
-    this.gutter_ = opt_gutter !== undefined ? opt_gutter : 0;
+    /**
+     * @type {number}
+     * @private
+     */
+    this.gutter_ = options.gutter || 0;
 
+    /**
+     * @type {number}
+     */
     this.bandCount = NaN;
 
-    this.helper_ = helper;
+    /**
+     * @type {import("../webgl/Helper.js").default}
+     * @private
+     */
+    this.helper_ = options.helper;
 
     const coords = new WebGLArrayBuffer(ARRAY_BUFFER, STATIC_DRAW);
     coords.fromArray([
@@ -165,10 +200,14 @@ class TileTexture extends EventTarget {
       0, // P3
       0,
     ]);
-    helper.flushBufferData(coords);
+    this.helper_.flushBufferData(coords);
 
+    /**
+     * @type {WebGLArrayBuffer}
+     */
     this.coords = coords;
-    this.setTile(tile);
+
+    this.setTile(options.tile);
   }
 
   /**
@@ -319,6 +358,50 @@ class TileTexture extends EventTarget {
       gl.deleteTexture(this.textures[i]);
     }
     this.tile.removeEventListener(EventType.CHANGE, this.handleTileChange_);
+  }
+
+  /**
+   * Get data for a pixel.  If the tile is not loaded, null is returned.
+   * @param {number} col The column index.
+   * @param {number} row The row index.
+   * @return {import("../DataTile.js").Data|null} The data.
+   */
+  getPixelData(col, row) {
+    if (!this.loaded) {
+      return null;
+    }
+
+    col = Math.floor(this.tilePixelRatio_ * col);
+    row = Math.floor(this.tilePixelRatio_ * row);
+
+    if (this.tile instanceof DataTile) {
+      const data = this.tile.getData();
+      const pixelsPerRow = Math.floor(this.tilePixelRatio_ * this.size[0]);
+      if (data instanceof DataView) {
+        const bytesPerPixel = data.byteLength / (this.size[0] * this.size[1]);
+        const offset = row * pixelsPerRow * bytesPerPixel + col * bytesPerPixel;
+        const buffer = data.buffer.slice(offset, offset + bytesPerPixel);
+        return new DataView(buffer);
+      }
+
+      const offset = row * pixelsPerRow * this.bandCount + col * this.bandCount;
+      return data.slice(offset, offset + this.bandCount);
+    }
+
+    if (!pixelContext) {
+      createPixelContext();
+    }
+    pixelContext.clearRect(0, 0, 1, 1);
+
+    let data;
+    const image = this.tile.getImage();
+    try {
+      pixelContext.drawImage(image, col, row, 1, 1, 0, 0, 1, 1);
+      data = pixelContext.getImageData(0, 0, 1, 1).data;
+    } catch (err) {
+      return null;
+    }
+    return data;
   }
 }
 

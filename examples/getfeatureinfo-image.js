@@ -47,9 +47,7 @@ map.on('pointermove', function (evt) {
   if (evt.dragging) {
     return;
   }
-  const pixel = map.getEventPixel(evt.originalEvent);
-  const hit = map.forEachLayerAtPixel(pixel, function () {
-    return true;
-  });
+  const data = wmsLayer.getData(evt.pixel);
+  const hit = data && data[3] > 0; // transparent pixels have zero for data[3]
   map.getTargetElement().style.cursor = hit ? 'pointer' : '';
 });

@@ -10,7 +10,7 @@ import VectorSource from '../../../../../../src/ol/source/Vector.js';
 import View from '../../../../../../src/ol/View.js';
 import {get as getProj} from '../../../../../../src/ol/proj.js';
 
-describe('ol.renderer.canvas.ImageLayer', function () {
+describe('ol/renderer/canvas/ImageLayer', function () {
   describe('#forEachLayerAtCoordinate', function () {
     let map, target, source;
     beforeEach(function (done) {

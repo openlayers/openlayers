@@ -251,6 +251,17 @@ class Layer extends BaseLayer {
   }
 
   /**
+   * @param {import("../pixel").Pixel} pixel Pixel.
+   * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView|null} Pixel data.
+   */
+  getData(pixel) {
+    if (!this.renderer_) {
+      return null;
+    }
+    return this.renderer_.getData(pixel);
+  }
+
+  /**
    * In charge to manage the rendering of the layer. One layer type is
    * bounded with one layer renderer.
    * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.

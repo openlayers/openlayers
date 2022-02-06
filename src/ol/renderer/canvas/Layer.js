@@ -21,6 +21,18 @@ import {createCanvasContext2D} from '../../dom.js';
 import {equals} from '../../array.js';
 
 /**
+ * @type {CanvasRenderingContext2D}
+ */
+let pixelContext = null;
+
+function createPixelContext() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1;
+  canvas.height = 1;
+  pixelContext = canvas.getContext('2d');
+}
+
+/**
  * @abstract
  * @template {import("../../layer/Layer.js").default} LayerType
  * @extends {LayerRenderer<LayerType>}
@@ -83,6 +95,34 @@ class CanvasLayerRenderer extends LayerRenderer {
      * @type {CanvasRenderingContext2D}
      */
     this.pixelContext_ = null;
+
+    /**
+     * @protected
+     * @type {import("../../PluggableMap.js").FrameState|null}
+     */
+    this.frameState = null;
+  }
+
+  /**
+   * @param {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} image Image.
+   * @param {number} col The column index.
+   * @param {number} row The row index.
+   * @return {Uint8ClampedArray|null} The image data.
+   */
+  getImageData(image, col, row) {
+    if (!pixelContext) {
+      createPixelContext();
+    }
+    pixelContext.clearRect(0, 0, 1, 1);
+
+    let data;
+    try {
+      pixelContext.drawImage(image, col, row, 1, 1, 0, 0, 1, 1);
+      data = pixelContext.getImageData(0, 0, 1, 1).data;
+    } catch (err) {
+      return null;
+    }
+    return data;
   }
 
   /**
@@ -215,6 +255,7 @@ class CanvasLayerRenderer extends LayerRenderer {
    * @protected
    */
   preRender(context, frameState) {
+    this.frameState = frameState;
     this.dispatchRenderEvent_(RenderEventType.PRERENDER, context, frameState);
   }
 
@@ -323,6 +364,14 @@ class CanvasLayerRenderer extends LayerRenderer {
       return null;
     }
     return data;
+  }
+
+  /**
+   * Clean up.
+   */
+  disposeInternal() {
+    delete this.frameState;
+    super.disposeInternal();
   }
 }
 

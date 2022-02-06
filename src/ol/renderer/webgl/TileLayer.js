@@ -11,9 +11,11 @@ import WebGLLayerRenderer from './Layer.js';
 import {AttributeType} from '../../webgl/Helper.js';
 import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
 import {
+  apply as applyTransform,
   compose as composeTransform,
   create as createTransform,
 } from '../../transform.js';
+import {containsCoordinate, getIntersection, isEmpty} from '../../extent.js';
 import {
   create as createMat4,
   fromTransform as mat4FromTransform,
@@ -23,7 +25,6 @@ import {
   getKey as getTileCoordKey,
 } from '../../tilecoord.js';
 import {fromUserExtent} from '../../proj.js';
-import {getIntersection, isEmpty} from '../../extent.js';
 import {getUid} from '../../util.js';
 import {numberSafeCompareFunction} from '../../array.js';
 import {toSize} from '../../size.js';
@@ -233,6 +234,12 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
      * @private
      */
     this.paletteTextures_ = options.paletteTextures || [];
+
+    /**
+     * @private
+     * @type {import("../../PluggableMap.js").FrameState|null}
+     */
+    this.frameState_ = null;
   }
 
   /**
@@ -355,13 +362,13 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
             viewState.projection
           );
           if (!tileTexture) {
-            tileTexture = new TileTexture(
-              tile,
-              tileGrid,
-              this.helper,
-              tilePixelRatio,
-              gutter
-            );
+            tileTexture = new TileTexture({
+              tile: tile,
+              grid: tileGrid,
+              helper: this.helper,
+              tilePixelRatio: tilePixelRatio,
+              gutter: gutter,
+            });
             tileTextureCache.set(cacheKey, tileTexture);
           } else {
             if (this.isDrawableTile_(tile)) {
@@ -401,6 +408,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
    * @return {HTMLElement} The rendered element.
    */
   renderFrame(frameState) {
+    this.frameState_ = frameState;
     this.renderComplete = true;
     const gl = this.helper.getGL();
     this.preRender(gl, frameState);
@@ -649,6 +657,83 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
+   * @param {import("../../pixel.js").Pixel} pixel Pixel.
+   * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView} Data at the pixel location.
+   */
+  getData(pixel) {
+    const gl = this.helper.getGL();
+    if (!gl) {
+      return null;
+    }
+
+    const frameState = this.frameState_;
+    if (!frameState) {
+      return null;
+    }
+
+    const layer = this.getLayer();
+    const coordinate = applyTransform(
+      frameState.pixelToCoordinateTransform,
+      pixel.slice()
+    );
+
+    const viewState = frameState.viewState;
+    const layerExtent = layer.getExtent();
+    if (layerExtent) {
+      if (
+        !containsCoordinate(
+          fromUserExtent(layerExtent, viewState.projection),
+          coordinate
+        )
+      ) {
+        return null;
+      }
+    }
+
+    const source = layer.getRenderSource();
+    const tileGrid = source.getTileGridForProjection(viewState.projection);
+    if (!source.getWrapX()) {
+      const gridExtent = tileGrid.getExtent();
+      if (gridExtent) {
+        if (!containsCoordinate(gridExtent, coordinate)) {
+          return null;
+        }
+      }
+    }
+
+    const tileTextureCache = this.tileTextureCache_;
+    for (
+      let z = tileGrid.getZForResolution(viewState.resolution);
+      z >= tileGrid.getMinZoom();
+      --z
+    ) {
+      const tileCoord = tileGrid.getTileCoordForCoordAndZ(coordinate, z);
+      const cacheKey = getCacheKey(source, tileCoord);
+      if (!tileTextureCache.containsKey(cacheKey)) {
+        continue;
+      }
+      const tileTexture = tileTextureCache.get(cacheKey);
+      if (!tileTexture.loaded) {
+        continue;
+      }
+      const tileOrigin = tileGrid.getOrigin(z);
+      const tileSize = toSize(tileGrid.getTileSize(z));
+      const tileResolution = tileGrid.getResolution(z);
+
+      const col =
+        (coordinate[0] - tileOrigin[0]) / tileResolution -
+        tileCoord[1] * tileSize[0];
+
+      const row =
+        (tileOrigin[1] - coordinate[1]) / tileResolution -
+        tileCoord[2] * tileSize[1];
+
+      return tileTexture.getPixelData(col, row);
+    }
+    return null;
+  }
+
+  /**
    * Look for tiles covering the provided tile coordinate at an alternate
    * zoom level.  Loaded tiles will be added to the provided tile texture lookup.
    * @param {import("../../tilegrid/TileGrid.js").default} tileGrid The tile grid.
@@ -719,6 +804,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
 
     delete this.indices_;
     delete this.tileTextureCache_;
+    delete this.frameState_;
   }
 }
 

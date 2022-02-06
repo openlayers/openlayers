@@ -42,11 +42,11 @@ describe('ol/webgl/TileTexture', function () {
       mapId: 'map-1',
     });
 
-    tileTexture = new TileTexture(
-      layer.getSource().getTile(3, 2, 1),
-      layer.getSource().getTileGrid(),
-      renderer.helper
-    );
+    tileTexture = new TileTexture({
+      tile: layer.getSource().getTile(3, 2, 1),
+      grid: layer.getSource().getTileGrid(),
+      helper: renderer.helper,
+    });
   });
 
   afterEach(() => {
