@@ -30,7 +30,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
       }),
     });
 
-    renderer = tileLayer.createRenderer();
+    renderer = tileLayer.getRenderer();
 
     const proj = get('EPSG:3857');
     frameState = {
@@ -53,6 +53,10 @@ describe('ol/renderer/webgl/TileLayer', function () {
       tileQueue: new TileQueue(VOID, VOID),
       renderTargets: {},
     };
+  });
+
+  afterEach(function () {
+    tileLayer.dispose();
   });
 
   it('maintains a cache on the renderer instead of the source', function () {

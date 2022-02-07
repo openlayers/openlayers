@@ -692,27 +692,33 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     return covered;
   }
 
+  removeHelper() {
+    if (this.helper) {
+      const tileTextureCache = this.tileTextureCache_;
+      tileTextureCache.forEach((tileTexture) => tileTexture.dispose());
+      tileTextureCache.clear();
+    }
+
+    super.removeHelper();
+  }
+
   /**
    * Clean up.
    */
   disposeInternal() {
     const helper = this.helper;
-    const gl = helper.getGL();
+    if (helper) {
+      const gl = helper.getGL();
+      gl.deleteProgram(this.program_);
+      delete this.program_;
 
-    helper.deleteBuffer(this.indices_);
-    delete this.indices_;
-
-    gl.deleteProgram(this.program_);
-    delete this.program_;
-
-    const tileTextureCache = this.tileTextureCache_;
-    tileTextureCache.forEach(function (tileTexture) {
-      tileTexture.dispose();
-    });
-    tileTextureCache.clear();
-    delete this.tileTextureCache_;
+      helper.deleteBuffer(this.indices_);
+    }
 
     super.disposeInternal();
+
+    delete this.indices_;
+    delete this.tileTextureCache_;
   }
 }
 

@@ -50,6 +50,7 @@ describe('ol/layer/WebGLTile', function () {
   afterEach(function () {
     map.setTarget(null);
     document.body.removeChild(target);
+    map.getLayers().forEach((layer) => layer.dispose());
   });
 
   describe('dispose()', () => {
@@ -63,7 +64,7 @@ describe('ol/layer/WebGLTile', function () {
 
   it('creates fragment and vertex shaders', function () {
     const compileShaderSpy = sinon.spy(WebGLHelper.prototype, 'compileShader');
-    const renderer = layer.createRenderer();
+    const renderer = layer.getRenderer();
     const viewState = map.getView().getState();
     const size = map.getSize();
     const frameState = {
@@ -164,7 +165,7 @@ describe('ol/layer/WebGLTile', function () {
     });
 
     const compileShaderSpy = sinon.spy(WebGLHelper.prototype, 'compileShader');
-    const renderer = layer.createRenderer();
+    const renderer = layer.getRenderer();
     const viewState = map.getView().getState();
     const size = map.getSize();
     const frameState = {
@@ -259,7 +260,7 @@ describe('ol/layer/WebGLTile', function () {
     });
 
     it('can be called before the layer is rendered', function () {
-      const layer = new WebGLTileLayer({
+      layer = new WebGLTileLayer({
         style: {
           variables: {
             foo: 'bar',
