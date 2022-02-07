@@ -47,7 +47,7 @@ import {listen, unlistenByKey} from '../events.js';
  * @property {SourceType} [source] Source for this layer.  If not provided to the constructor,
  * the source can be set by calling {@link module:ol/layer/Layer~Layer#setSource layer.setSource(source)} after
  * construction.
- * @property {import("../PluggableMap.js").default} [map] Map.
+ * @property {import("../PluggableMap.js").default|null} [map] Map.
  * @property {RenderFunction} [render] Render function. Takes the frame state as input and is expected to return an
  * HTML element. Will overwrite the default rendering for the layer.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
@@ -71,7 +71,7 @@ import {listen, unlistenByKey} from '../events.js';
 /**
  * @classdesc
  * Base class from which all layer types are derived. This should only be instantiated
- * in the case where a custom layer is be added to the map with a custom `render` function.
+ * in the case where a custom layer is added to the map with a custom `render` function.
  * Such a function can be specified in the `options` object, and is expected to return an HTML element.
  *
  * A visual representation of raster or vector map data.
@@ -268,7 +268,7 @@ class Layer extends BaseLayer {
 
   /**
    * For use inside the library only.
-   * @param {import("../PluggableMap.js").default} map Map.
+   * @param {import("../PluggableMap.js").default|null} map Map.
    */
   setMapInternal(map) {
     this.set(LayerProperty.MAP, map);
@@ -276,7 +276,7 @@ class Layer extends BaseLayer {
 
   /**
    * For use inside the library only.
-   * @return {import("../PluggableMap.js").default} Map.
+   * @return {import("../PluggableMap.js").default|null} Map.
    */
   getMapInternal() {
     return this.get(LayerProperty.MAP);
@@ -291,7 +291,7 @@ class Layer extends BaseLayer {
    *
    * To add the layer to a map and have it managed by the map, use
    * {@link module:ol/Map~Map#addLayer} instead.
-   * @param {import("../PluggableMap.js").default} map Map.
+   * @param {import("../PluggableMap.js").default|null} map Map.
    * @api
    */
   setMap(map) {
