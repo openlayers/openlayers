@@ -275,7 +275,7 @@ class Polygon extends SimpleGeometry {
    * at index `1` and beyond.
    *
    * @param {number} index Index.
-   * @return {LinearRing} Linear ring.
+   * @return {LinearRing|null} Linear ring.
    * @api
    */
   getLinearRing(index) {

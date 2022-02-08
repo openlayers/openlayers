@@ -469,7 +469,7 @@ class WebGLHelper extends Disposable {
    * Get a WebGL extension.  If the extension is not supported, null is returned.
    * Extensions are cached after they are enabled for the first time.
    * @param {string} name The extension name.
-   * @return {Object} The extension or null if not supported.
+   * @return {Object|null} The extension or null if not supported.
    */
   getExtension(name) {
     if (name in this.extensionCache_) {

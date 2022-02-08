@@ -166,7 +166,7 @@ class LineString extends SimpleGeometry {
    *
    * @param {number} m M.
    * @param {boolean} [opt_extrapolate] Extrapolate. Default is `false`.
-   * @return {import("../coordinate.js").Coordinate} Coordinate.
+   * @return {import("../coordinate.js").Coordinate|null} Coordinate.
    * @api
    */
   getCoordinateAtM(m, opt_extrapolate) {

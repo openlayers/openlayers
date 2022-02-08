@@ -17,7 +17,7 @@ import {rotate} from './transform.js';
  * @param {string} font The font.
  * @param {Object<string, number>} cache A cache of measured widths.
  * @param {number} rotation Rotation to apply to the flatCoordinates to determine whether text needs to be reversed.
- * @return {Array<Array<*>>} The result array (or null if `maxAngle` was
+ * @return {Array<Array<*>>|null} The result array (or null if `maxAngle` was
  * exceeded). Entries of the array are x, y, anchorX, angle, chunk.
  */
 export function drawTextOnPath(

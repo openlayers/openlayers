@@ -62,7 +62,7 @@ class WkbReader {
     this.isLittleEndian_ = false;
     this.hasZ_ = false;
     this.hasM_ = false;
-    /** @type {number} */
+    /** @type {number|null} */
     this.srid_ = null;
 
     this.layout_ = GeometryLayout.XY;
@@ -356,7 +356,7 @@ class WkbReader {
   }
 
   /**
-   * @return {number} SRID in the EWKB. `null` if not defined.
+   * @return {number|null} SRID in the EWKB. `null` if not defined.
    */
   getSrid() {
     return this.srid_;

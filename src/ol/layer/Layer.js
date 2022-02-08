@@ -188,7 +188,7 @@ class Layer extends BaseLayer {
 
   /**
    * Get the layer source.
-   * @return {SourceType} The layer source (or `null` if not yet set).
+   * @return {SourceType|null} The layer source (or `null` if not yet set).
    * @observable
    * @api
    */
@@ -197,7 +197,7 @@ class Layer extends BaseLayer {
   }
 
   /**
-   * @return {SourceType} The source being rendered.
+   * @return {SourceType|null} The source being rendered.
    */
   getRenderSource() {
     return this.getSource();
@@ -333,7 +333,7 @@ class Layer extends BaseLayer {
 
   /**
    * Set the layer source.
-   * @param {SourceType} source The layer source.
+   * @param {SourceType|null} source The layer source.
    * @observable
    * @api
    */

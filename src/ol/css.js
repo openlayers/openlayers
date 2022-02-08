@@ -91,7 +91,7 @@ const fontRegExMatchIndex = [
  * Get the list of font families from a font spec.  Note that this doesn't work
  * for font families that have commas in them.
  * @param {string} fontSpec The CSS font property.
- * @return {FontParameters} The font parameters (or null if the input spec is invalid).
+ * @return {FontParameters|null} The font parameters (or null if the input spec is invalid).
  */
 export const getFontParameters = function (fontSpec) {
   const match = fontSpec.match(fontRegEx);

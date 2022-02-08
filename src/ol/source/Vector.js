@@ -293,7 +293,7 @@ class VectorSource extends Source {
 
     /**
      * @private
-     * @type {Collection<import("../Feature.js").default<Geometry>>}
+     * @type {Collection<import("../Feature.js").default<Geometry>>|null}
      */
     this.featuresCollection_ = null;
 
@@ -683,7 +683,7 @@ class VectorSource extends Source {
    * Get the features collection associated with this source. Will be `null`
    * unless the source was configured with `useSpatialIndex` set to `false`, or
    * with an {@link module:ol/Collection} as `features`.
-   * @return {Collection<import("../Feature.js").default<Geometry>>} The collection of features.
+   * @return {Collection<import("../Feature.js").default<Geometry>>|null} The collection of features.
    * @api
    */
   getFeaturesCollection() {
