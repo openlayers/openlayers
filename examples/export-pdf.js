@@ -83,6 +83,7 @@ exportButton.addEventListener(
           }
         }
       );
+      mapContext.globalAlpha = 1;
       const pdf = new jspdf.jsPDF('landscape', undefined, format);
       pdf.addImage(
         mapCanvas.toDataURL('image/jpeg'),
