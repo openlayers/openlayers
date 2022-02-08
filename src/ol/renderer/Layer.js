@@ -18,7 +18,8 @@ class LayerRenderer extends Observable {
     super();
 
     /**
-     * @type {boolean} The renderer is initialized and ready to render.
+     * The renderer is initialized and ready to render.
+     * @type {boolean}
      */
     this.ready = true;
 
