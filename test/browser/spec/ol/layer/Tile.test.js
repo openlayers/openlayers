@@ -69,6 +69,13 @@ describe('ol/layer/Tile', function () {
       expect(data[2]).to.be(208);
       expect(data[3]).to.be(255);
     });
+
+    it('gets pixel data', () => {
+      layer.setVisible(false);
+      map.renderSync();
+      const data = layer.getData([50, 50]);
+      expect(data).to.be(null);
+    });
   });
 
   describe('frameState.animate after tile transition with layer opacity', function () {

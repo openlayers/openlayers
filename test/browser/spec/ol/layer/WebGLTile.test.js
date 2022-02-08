@@ -1,5 +1,4 @@
 import DataTileSource from '../../../../../src/ol/source/DataTile.js';
-import GeoTIFF from '../../../../../src/ol/source/GeoTIFF.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import WebGLHelper from '../../../../../src/ol/webgl/Helper.js';
@@ -66,6 +65,10 @@ describe('ol/layer/WebGLTile', function () {
       document.body.appendChild(target);
       map = new Map({
         target: target,
+        view: new View({
+          center: [0, 0],
+          zoom: 0,
+        }),
       });
     });
 
@@ -75,23 +78,26 @@ describe('ol/layer/WebGLTile', function () {
     });
 
     it('retrieves pixel data', (done) => {
-      const source = new GeoTIFF({
-        sources: [{url: 'spec/ol/source/images/0-0-0.tif'}],
+      const layer = new WebGLTileLayer({
+        source: new DataTileSource({
+          tilePixelRatio: 1 / 256,
+          loader(z, x, y) {
+            return new Uint8Array([5, 4, 3, 2, 1]);
+          },
+        }),
       });
 
-      const layer = new WebGLTileLayer({source: source});
-
       map.addLayer(layer);
-      map.setView(source.getView());
 
       map.once('rendercomplete', () => {
         const data = layer.getData([50, 25]);
         expect(data).to.be.a(Uint8Array);
-        expect(data.length).to.be(4);
-        expect(data[0]).to.be(255);
-        expect(data[1]).to.be(189);
-        expect(data[2]).to.be(103);
-        expect(data[3]).to.be(255);
+        expect(data.length).to.be(5);
+        expect(data[0]).to.be(5);
+        expect(data[1]).to.be(4);
+        expect(data[2]).to.be(3);
+        expect(data[3]).to.be(2);
+        expect(data[4]).to.be(1);
         done();
       });
     });
@@ -107,12 +113,6 @@ describe('ol/layer/WebGLTile', function () {
       });
 
       map.addLayer(layer);
-      map.setView(
-        new View({
-          center: [0, 0],
-          zoom: 0,
-        })
-      );
 
       map.once('rendercomplete', () => {
         const data = layer.getData([50, 25]);

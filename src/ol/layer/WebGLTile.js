@@ -440,6 +440,7 @@ class WebGLTileLayer extends BaseTileLayer {
    * @return {HTMLElement} The rendered element.
    */
   render(frameState, target) {
+    this.rendered = true;
     const viewState = frameState.viewState;
     const sources = this.getSources(frameState.extent, viewState.resolution);
     let ready = true;

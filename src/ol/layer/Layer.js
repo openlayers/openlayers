@@ -146,6 +146,12 @@ class Layer extends BaseLayer {
      */
     this.renderer_ = null;
 
+    /**
+     * @protected
+     * @type {boolean}
+     */
+    this.rendered = false;
+
     // Overwrite default render method with a custom one
     if (options.render) {
       this.render = options.render;
@@ -255,7 +261,7 @@ class Layer extends BaseLayer {
    * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView|null} Pixel data.
    */
   getData(pixel) {
-    if (!this.renderer_) {
+    if (!this.renderer_ || !this.rendered) {
       return null;
     }
     return this.renderer_.getData(pixel);
@@ -273,8 +279,16 @@ class Layer extends BaseLayer {
     const layerRenderer = this.getRenderer();
 
     if (layerRenderer.prepareFrame(frameState)) {
+      this.rendered = true;
       return layerRenderer.renderFrame(frameState, target);
     }
+  }
+
+  /**
+   * Called when a layer is not visible during a map render.
+   */
+  unrender() {
+    this.rendered = false;
   }
 
   /**
@@ -282,6 +296,9 @@ class Layer extends BaseLayer {
    * @param {import("../PluggableMap.js").default|null} map Map.
    */
   setMapInternal(map) {
+    if (!map) {
+      this.unrender();
+    }
     this.set(LayerProperty.MAP, map);
   }
 
