@@ -63,11 +63,7 @@ class CurvePolygon extends Polygon {
    * @protected
    */
   getSimplifiedGeometryInternal(squaredTolerance) {
-    // todo: moeten we hier iets mee?
-    // als ik deze niet hier implementeer wordt de method van de Polygon class
-    // aangeroepen en wordt er een Polygon gereturned. En dat is niet de bedoeling,
-    // want dan zal niet de juiste renderer worden aangeroepen (namelijk die van de
-    // Polygon in plaats van de CurvePolygon).
+    // At the moment, the geometry is not simplified
     return this.clone();
   }
 
