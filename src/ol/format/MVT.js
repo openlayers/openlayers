@@ -80,7 +80,7 @@ class MVT extends FeatureFormat {
 
     /**
      * @private
-     * @type {Array<string>}
+     * @type {Array<string>|null}
      */
     this.layers_ = options.layers ? options.layers : null;
 

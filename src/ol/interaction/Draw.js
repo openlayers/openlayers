@@ -257,14 +257,14 @@ class Draw extends PointerInteraction {
 
     /**
      * Target source for drawn features.
-     * @type {VectorSource}
+     * @type {VectorSource|null}
      * @private
      */
     this.source_ = options.source ? options.source : null;
 
     /**
      * Target collection for drawn features.
-     * @type {import("../Collection.js").default<Feature>}
+     * @type {import("../Collection.js").default<Feature>|null}
      * @private
      */
     this.features_ = options.features ? options.features : null;
@@ -1022,7 +1022,7 @@ class Draw extends PointerInteraction {
 
   /**
    * Stop drawing without adding the sketch feature to the target layer.
-   * @return {Feature<import("../geom/SimpleGeometry.js").default>} The sketch feature (or null if none).
+   * @return {Feature<import("../geom/SimpleGeometry.js").default>|null} The sketch feature (or null if none).
    * @private
    */
   abortDrawing_() {

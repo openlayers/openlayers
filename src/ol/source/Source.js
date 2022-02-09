@@ -150,7 +150,7 @@ class Source extends BaseObject {
 
   /**
    * @abstract
-   * @return {Array<number>|undefined} Resolutions.
+   * @return {Array<number>|null} Resolutions.
    */
   getResolutions() {
     return abstract();

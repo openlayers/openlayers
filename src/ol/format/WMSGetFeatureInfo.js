@@ -54,20 +54,20 @@ class WMSGetFeatureInfo extends XMLFeature {
 
     /**
      * @private
-     * @type {Array<string>}
+     * @type {Array<string>|null}
      */
     this.layers_ = options.layers ? options.layers : null;
   }
 
   /**
-   * @return {Array<string>} layers
+   * @return {Array<string>|null} layers
    */
   getLayers() {
     return this.layers_;
   }
 
   /**
-   * @param {Array<string>} layers Layers to parse.
+   * @param {Array<string>|null} layers Layers to parse.
    */
   setLayers(layers) {
     this.layers_ = layers;

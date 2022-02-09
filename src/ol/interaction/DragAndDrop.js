@@ -168,7 +168,7 @@ class DragAndDrop extends Interaction {
 
     /**
      * @private
-     * @type {HTMLElement}
+     * @type {HTMLElement|null}
      */
     this.target = options.target ? options.target : null;
   }

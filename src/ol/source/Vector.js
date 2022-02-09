@@ -827,7 +827,7 @@ class VectorSource extends Source {
    * `source.getFeatureById(2)` will return a feature with id `'2'` or `2`.
    *
    * @param {string|number} id Feature identifier.
-   * @return {import("../Feature.js").default<Geometry>} The feature (or `null` if not found).
+   * @return {import("../Feature.js").default<Geometry>|null} The feature (or `null` if not found).
    * @api
    */
   getFeatureById(id) {
@@ -839,7 +839,7 @@ class VectorSource extends Source {
    * Get a feature by its internal unique identifier (using `getUid`).
    *
    * @param {string} uid Feature identifier.
-   * @return {import("../Feature.js").default<Geometry>} The feature (or `null` if not found).
+   * @return {import("../Feature.js").default<Geometry>|null} The feature (or `null` if not found).
    */
   getFeatureByUid(uid) {
     const feature = this.uidIndex_[uid];

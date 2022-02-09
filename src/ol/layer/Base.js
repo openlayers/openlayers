@@ -119,7 +119,7 @@ class BaseLayer extends BaseObject {
      * @private
      */
     this.className_ =
-      properties.className !== undefined ? options.className : 'ol-layer';
+      properties.className !== undefined ? properties.className : 'ol-layer';
     delete properties.className;
 
     this.setProperties(properties);
@@ -288,7 +288,7 @@ class BaseLayer extends BaseObject {
   }
 
   /**
-   * Sets the backgrlound color.
+   * Sets the background color.
    * @param {BackgroundColor} [opt_background] Background color.
    */
   setBackground(opt_background) {

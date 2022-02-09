@@ -4,7 +4,7 @@
 
 /**
  * @typedef {Object} Options
- * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [color=null] A color, gradient or pattern.
+ * @property {import("../color.js").Color|import("../colorlike.js").ColorLike|null} [color=null] A color, gradient or pattern.
  * See {@link module:ol/color~Color} and {@link module:ol/colorlike~ColorLike} for possible formats.
  * Default null; if null, the Canvas/renderer default black will be used.
  */
@@ -23,7 +23,7 @@ class Fill {
 
     /**
      * @private
-     * @type {import("../color.js").Color|import("../colorlike.js").ColorLike}
+     * @type {import("../color.js").Color|import("../colorlike.js").ColorLike|null}
      */
     this.color_ = options.color !== undefined ? options.color : null;
   }
@@ -42,7 +42,7 @@ class Fill {
 
   /**
    * Get the fill color.
-   * @return {import("../color.js").Color|import("../colorlike.js").ColorLike} Color.
+   * @return {import("../color.js").Color|import("../colorlike.js").ColorLike|null} Color.
    * @api
    */
   getColor() {
@@ -52,7 +52,7 @@ class Fill {
   /**
    * Set the color.
    *
-   * @param {import("../color.js").Color|import("../colorlike.js").ColorLike} color Color.
+   * @param {import("../color.js").Color|import("../colorlike.js").ColorLike|null} color Color.
    * @api
    */
   setColor(color) {

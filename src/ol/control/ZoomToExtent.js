@@ -38,7 +38,7 @@ class ZoomToExtent extends Control {
     });
 
     /**
-     * @type {?import("../extent.js").Extent}
+     * @type {?import("../extent.js").Extent|null}
      * @protected
      */
     this.extent = options.extent ? options.extent : null;

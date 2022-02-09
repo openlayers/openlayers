@@ -455,7 +455,7 @@ export function toFunction(obj) {
 }
 
 /**
- * @type {Array<Style>}
+ * @type {Array<Style>|null}
  */
 let defaultStyles = null;
 

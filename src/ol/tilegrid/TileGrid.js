@@ -117,7 +117,7 @@ class TileGrid {
 
     /**
      * @private
-     * @type {import("../coordinate.js").Coordinate}
+     * @type {import("../coordinate.js").Coordinate|null}
      */
     this.origin_ = options.origin !== undefined ? options.origin : null;
 

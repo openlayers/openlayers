@@ -127,7 +127,7 @@ class ImageSource extends Source {
 
     /**
      * @private
-     * @type {Array<number>}
+     * @type {Array<number>|null}
      */
     this.resolutions_ =
       options.resolutions !== undefined ? options.resolutions : null;
@@ -146,7 +146,7 @@ class ImageSource extends Source {
   }
 
   /**
-   * @return {Array<number>} Resolutions.
+   * @return {Array<number>|null} Resolutions.
    */
   getResolutions() {
     return this.resolutions_;

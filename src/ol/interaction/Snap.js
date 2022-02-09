@@ -115,7 +115,7 @@ class Snap extends PointerInteraction {
     super(pointerOptions);
 
     /**
-     * @type {import("../source/Vector.js").default}
+     * @type {import("../source/Vector.js").default|null}
      * @private
      */
     this.source_ = options.source ? options.source : null;
@@ -133,7 +133,7 @@ class Snap extends PointerInteraction {
     this.edge_ = options.edge !== undefined ? options.edge : true;
 
     /**
-     * @type {import("../Collection.js").default<import("../Feature.js").default>}
+     * @type {import("../Collection.js").default<import("../Feature.js").default>|null}
      * @private
      */
     this.features_ = options.features ? options.features : null;
