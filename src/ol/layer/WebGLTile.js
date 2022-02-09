@@ -3,6 +3,7 @@
  */
 import BaseTileLayer from './BaseTile.js';
 import LayerProperty from '../layer/Property.js';
+import SourceState from '../source/State.js';
 import WebGLTileLayerRenderer, {
   Attributes,
   Uniforms,
@@ -64,6 +65,11 @@ import {assign} from '../obj.js';
  * @property {number} [preload=0] Preload. Load low-resolution tiles up to `preload` levels. `0`
  * means no preloading.
  * @property {SourceType} [source] Source for this layer.
+ * @property {Array<SourceType>|function(import("../extent.js").Extent, number):Array<SourceType>} [sources] Array
+ * of sources for this layer. Takes precedence over `source`. Can either be an array of sources, or a function that
+ * expects an extent and a resolution (in view projection units per pixel) and returns an array of sources. See
+ * {@link module:ol/source.sourcesFromTileGrid} for a helper function to generate sources that are organized in a
+ * pyramid following the same pattern as a tile grid.
  * @property {import("../PluggableMap.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
@@ -90,12 +96,22 @@ function parseStyle(style, bandCount) {
   const vertexShader = `
     attribute vec2 ${Attributes.TEXTURE_COORD};
     uniform mat4 ${Uniforms.TILE_TRANSFORM};
+    uniform float ${Uniforms.TEXTURE_PIXEL_WIDTH};
+    uniform float ${Uniforms.TEXTURE_PIXEL_HEIGHT};
+    uniform float ${Uniforms.TEXTURE_RESOLUTION};
+    uniform float ${Uniforms.TEXTURE_ORIGIN_X};
+    uniform float ${Uniforms.TEXTURE_ORIGIN_Y};
     uniform float ${Uniforms.DEPTH};
 
     varying vec2 v_textureCoord;
+    varying vec2 v_mapCoord;
 
     void main() {
       v_textureCoord = ${Attributes.TEXTURE_COORD};
+      v_mapCoord = vec2(
+        ${Uniforms.TEXTURE_ORIGIN_X} + ${Uniforms.TEXTURE_RESOLUTION} * ${Uniforms.TEXTURE_PIXEL_WIDTH} * v_textureCoord[0],
+        ${Uniforms.TEXTURE_ORIGIN_Y} - ${Uniforms.TEXTURE_RESOLUTION} * ${Uniforms.TEXTURE_PIXEL_HEIGHT} * v_textureCoord[1]
+      );
       gl_Position = ${Uniforms.TILE_TRANSFORM} * vec4(${Attributes.TEXTURE_COORD}, ${Uniforms.DEPTH}, 1.0);
     }
   `;
@@ -231,6 +247,8 @@ function parseStyle(style, bandCount) {
     #endif
 
     varying vec2 v_textureCoord;
+    varying vec2 v_mapCoord;
+    uniform vec4 ${Uniforms.RENDER_EXTENT};
     uniform float ${Uniforms.TRANSITION_ALPHA};
     uniform float ${Uniforms.TEXTURE_PIXEL_WIDTH};
     uniform float ${Uniforms.TEXTURE_PIXEL_HEIGHT};
@@ -242,6 +260,15 @@ function parseStyle(style, bandCount) {
     ${functionDefintions.join('\n')}
 
     void main() {
+      if (
+        v_mapCoord[0] < ${Uniforms.RENDER_EXTENT}[0] ||
+        v_mapCoord[1] < ${Uniforms.RENDER_EXTENT}[1] ||
+        v_mapCoord[0] > ${Uniforms.RENDER_EXTENT}[2] ||
+        v_mapCoord[1] > ${Uniforms.RENDER_EXTENT}[3]
+      ) {
+        discard;
+      }
+
       vec4 color = texture2D(${
         Uniforms.TILE_TEXTURE_ARRAY
       }[0],  v_textureCoord);
@@ -292,6 +319,18 @@ class WebGLTileLayer extends BaseTileLayer {
     super(options);
 
     /**
+     * @type {Array<SourceType>|function(import("../extent.js").Extent, number):Array<SourceType>}
+     * @private
+     */
+    this.sources_ = options.sources;
+
+    /**
+     * @type {number}
+     * @private
+     */
+    this.renderedResolution_ = NaN;
+
+    /**
      * @type {Style}
      * @private
      */
@@ -313,10 +352,47 @@ class WebGLTileLayer extends BaseTileLayer {
   }
 
   /**
+   * Gets the sources for this layer, for a given extent and resolution.
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @param {number} resolution Resolution.
+   * @return {Array<SourceType>} Sources.
+   */
+  getSources(extent, resolution) {
+    const source = this.getSource();
+    return this.sources_
+      ? typeof this.sources_ === 'function'
+        ? this.sources_(extent, resolution)
+        : this.sources_
+      : source
+      ? [source]
+      : [];
+  }
+
+  /**
+   * @return {SourceType} The source being rendered.
+   */
+  getRenderSource() {
+    return (
+      /** @type {SourceType} */ (this.getLayerState().source) ||
+      this.getSource()
+    );
+  }
+
+  /**
+   * @return {import("../source/State.js").default} Source state.
+   */
+  getSourceState() {
+    const source = this.getRenderSource();
+    return source ? source.getState() : SourceState.UNDEFINED;
+  }
+
+  /**
    * @private
    */
   handleSourceUpdate_() {
-    this.setStyle(this.style_);
+    if (this.getSource()) {
+      this.setStyle(this.style_);
+    }
   }
 
   /**
@@ -341,12 +417,76 @@ class WebGLTileLayer extends BaseTileLayer {
   }
 
   /**
+   * @param {import("../PluggableMap").FrameState} frameState Frame state.
+   * @param {Array<SourceType>} sources Sources.
+   * @return {HTMLElement} Canvas.
+   */
+  renderSources(frameState, sources) {
+    const layerRenderer = this.getRenderer();
+    let canvas;
+    for (let i = 0, ii = sources.length; i < ii; ++i) {
+      this.getLayerState().source = sources[i];
+      if (layerRenderer.prepareFrame(frameState)) {
+        canvas = layerRenderer.renderFrame(frameState);
+      }
+    }
+    return canvas;
+  }
+
+  /**
+   * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {HTMLElement} target Target which the renderer may (but need not) use
+   * for rendering its content.
+   * @return {HTMLElement} The rendered element.
+   */
+  render(frameState, target) {
+    this.rendered = true;
+    const viewState = frameState.viewState;
+    const sources = this.getSources(frameState.extent, viewState.resolution);
+    let ready = true;
+    for (let i = 0, ii = sources.length; i < ii; ++i) {
+      const source = sources[i];
+      const sourceState = source.getState();
+      if (sourceState == SourceState.LOADING) {
+        const onChange = () => {
+          if (source.getState() == SourceState.READY) {
+            source.removeEventListener('change', onChange);
+            this.changed();
+          }
+        };
+        source.addEventListener('change', onChange);
+      }
+      ready = ready && sourceState == SourceState.READY;
+    }
+    const canvas = this.renderSources(frameState, sources);
+    if (this.getRenderer().renderComplete && ready) {
+      // Fully rendered, done.
+      this.renderedResolution_ = viewState.resolution;
+      return canvas;
+    }
+    // Render sources from previously fully rendered frames
+    if (this.renderedResolution_ > 0.5 * viewState.resolution) {
+      const altSources = this.getSources(
+        frameState.extent,
+        this.renderedResolution_
+      ).filter((source) => !sources.includes(source));
+      if (altSources.length > 0) {
+        return this.renderSources(frameState, altSources);
+      }
+    }
+    return canvas;
+  }
+
+  /**
    * Update the layer style.  The `updateStyleVariables` function is a more efficient
    * way to update layer rendering.  In cases where the whole style needs to be updated,
-   * this method may be called instead.
+   * this method may be called instead.  Note that calling this method will also replace
+   * any previously set variables, so the new style also needs to include new variables,
+   * if needed.
    * @param {Style} style The new style.
    */
   setStyle(style) {
+    this.styleVariables_ = style.variables || {};
     this.style_ = style;
     const parsedStyle = parseStyle(this.style_, this.getSourceBandCount_());
     const renderer = this.getRenderer();

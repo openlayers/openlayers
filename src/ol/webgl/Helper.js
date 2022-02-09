@@ -469,7 +469,7 @@ class WebGLHelper extends Disposable {
    * Get a WebGL extension.  If the extension is not supported, null is returned.
    * Extensions are cached after they are enabled for the first time.
    * @param {string} name The extension name.
-   * @return {Object} The extension or null if not supported.
+   * @return {Object|null} The extension or null if not supported.
    */
   getExtension(name) {
     if (name in this.extensionCache_) {
@@ -960,6 +960,15 @@ class WebGLHelper extends Disposable {
    */
   setUniformFloatValue(uniform, value) {
     this.getGL().uniform1f(this.getUniformLocation(uniform), value);
+  }
+
+  /**
+   * Give a value for a vec4 uniform
+   * @param {string} uniform Uniform name
+   * @param {Array<number>} value Array of length 4.
+   */
+  setUniformFloatVec4(uniform, value) {
+    this.getGL().uniform4fv(this.getUniformLocation(uniform), value);
   }
 
   /**

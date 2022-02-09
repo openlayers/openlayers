@@ -25,7 +25,7 @@ import {listen, unlistenByKey} from '../events.js';
  */
 
 /**
- * @template {import("../source/Source.js").default} SourceType
+ * @template {import("../source/Source.js").default} [SourceType=import("../source/Source.js").default]
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
@@ -47,7 +47,7 @@ import {listen, unlistenByKey} from '../events.js';
  * @property {SourceType} [source] Source for this layer.  If not provided to the constructor,
  * the source can be set by calling {@link module:ol/layer/Layer~Layer#setSource layer.setSource(source)} after
  * construction.
- * @property {import("../PluggableMap.js").default} [map] Map.
+ * @property {import("../PluggableMap.js").default|null} [map] Map.
  * @property {RenderFunction} [render] Render function. Takes the frame state as input and is expected to return an
  * HTML element. Will overwrite the default rendering for the layer.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
@@ -57,7 +57,7 @@ import {listen, unlistenByKey} from '../events.js';
  * @typedef {Object} State
  * @property {import("./Layer.js").default} layer Layer.
  * @property {number} opacity Opacity, the value is rounded to two digits to appear after the decimal point.
- * @property {import("../source/State.js").default} sourceState SourceState.
+ * @property {import("../source/Source.js").default|undefined} source Source being rendered (only for multi-source layers).
  * @property {boolean} visible Visible.
  * @property {boolean} managed Managed.
  * @property {import("../extent.js").Extent} [extent] Extent.
@@ -71,7 +71,7 @@ import {listen, unlistenByKey} from '../events.js';
 /**
  * @classdesc
  * Base class from which all layer types are derived. This should only be instantiated
- * in the case where a custom layer is be added to the map with a custom `render` function.
+ * in the case where a custom layer is added to the map with a custom `render` function.
  * Such a function can be specified in the `options` object, and is expected to return an HTML element.
  *
  * A visual representation of raster or vector map data.
@@ -93,8 +93,8 @@ import {listen, unlistenByKey} from '../events.js';
  * @fires import("../render/Event.js").RenderEvent#prerender
  * @fires import("../render/Event.js").RenderEvent#postrender
  *
- * @template {import("../source/Source.js").default} SourceType
- * @template {import("../renderer/Layer.js").default} RendererType
+ * @template {import("../source/Source.js").default} [SourceType=import("../source/Source.js").default]
+ * @template {import("../renderer/Layer.js").default} [RendererType=import("../renderer/Layer.js").default]
  * @api
  */
 class Layer extends BaseLayer {
@@ -146,6 +146,12 @@ class Layer extends BaseLayer {
      */
     this.renderer_ = null;
 
+    /**
+     * @protected
+     * @type {boolean}
+     */
+    this.rendered = false;
+
     // Overwrite default render method with a custom one
     if (options.render) {
       this.render = options.render;
@@ -188,12 +194,19 @@ class Layer extends BaseLayer {
 
   /**
    * Get the layer source.
-   * @return {SourceType} The layer source (or `null` if not yet set).
+   * @return {SourceType|null} The layer source (or `null` if not yet set).
    * @observable
    * @api
    */
   getSource() {
     return /** @type {SourceType} */ (this.get(LayerProperty.SOURCE)) || null;
+  }
+
+  /**
+   * @return {SourceType|null} The source being rendered.
+   */
+  getRenderSource() {
+    return this.getSource();
   }
 
   /**
@@ -244,6 +257,17 @@ class Layer extends BaseLayer {
   }
 
   /**
+   * @param {import("../pixel").Pixel} pixel Pixel.
+   * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView|null} Pixel data.
+   */
+  getData(pixel) {
+    if (!this.renderer_ || !this.rendered) {
+      return null;
+    }
+    return this.renderer_.getData(pixel);
+  }
+
+  /**
    * In charge to manage the rendering of the layer. One layer type is
    * bounded with one layer renderer.
    * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
@@ -255,21 +279,32 @@ class Layer extends BaseLayer {
     const layerRenderer = this.getRenderer();
 
     if (layerRenderer.prepareFrame(frameState)) {
+      this.rendered = true;
       return layerRenderer.renderFrame(frameState, target);
     }
   }
 
   /**
+   * Called when a layer is not visible during a map render.
+   */
+  unrender() {
+    this.rendered = false;
+  }
+
+  /**
    * For use inside the library only.
-   * @param {import("../PluggableMap.js").default} map Map.
+   * @param {import("../PluggableMap.js").default|null} map Map.
    */
   setMapInternal(map) {
+    if (!map) {
+      this.unrender();
+    }
     this.set(LayerProperty.MAP, map);
   }
 
   /**
    * For use inside the library only.
-   * @return {import("../PluggableMap.js").default} Map.
+   * @return {import("../PluggableMap.js").default|null} Map.
    */
   getMapInternal() {
     return this.get(LayerProperty.MAP);
@@ -284,7 +319,7 @@ class Layer extends BaseLayer {
    *
    * To add the layer to a map and have it managed by the map, use
    * {@link module:ol/Map~Map#addLayer} instead.
-   * @param {import("../PluggableMap.js").default} map Map.
+   * @param {import("../PluggableMap.js").default|null} map Map.
    * @api
    */
   setMap(map) {
@@ -326,7 +361,7 @@ class Layer extends BaseLayer {
 
   /**
    * Set the layer source.
-   * @param {SourceType} source The layer source.
+   * @param {SourceType|null} source The layer source.
    * @observable
    * @api
    */

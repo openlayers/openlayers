@@ -667,6 +667,7 @@ class PluggableMap extends BaseObject {
   /**
    * Get all layers from all layer groups.
    * @return {Array<import("./layer/Layer.js").default>} Layers.
+   * @api
    */
   getAllLayers() {
     const layers = [];
@@ -684,6 +685,9 @@ class PluggableMap extends BaseObject {
   }
 
   /**
+   * Please the `layer.getData()` method for {@link module:ol/layer/Tile~TileLayer#getData tile layers} or
+   * {@link module:ol/layer/Image~ImageLayer#getData image layers} instead of using this method.
+   *
    * Detect layers that have a color value at a pixel on the viewport, and
    * execute a callback with each matching layer. Layers included in the
    * detection can be configured through `opt_layerFilter`.
@@ -706,6 +710,7 @@ class PluggableMap extends BaseObject {
    * callback execution, or the first truthy callback return value.
    * @template S,T
    * @api
+   * @deprecated
    */
   forEachLayerAtPixel(pixel, callback, opt_options) {
     if (!this.frameState_) {
@@ -942,10 +947,13 @@ class PluggableMap extends BaseObject {
   /**
    * @return {boolean} Layers have sources that are still loading.
    */
-  getLoading() {
+  getLoadingOrNotReady() {
     const layerStatesArray = this.getLayerGroup().getLayerStatesArray();
     for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       const layer = layerStatesArray[i].layer;
+      if (!layer.getRenderer().ready) {
+        return true;
+      }
       const source = /** @type {import("./layer/Layer.js").default} */ (
         layer
       ).getSource();
@@ -1560,7 +1568,7 @@ class PluggableMap extends BaseObject {
     this.renderComplete_ =
       !this.tileQueue_.getTilesLoading() &&
       !this.tileQueue_.getCount() &&
-      !this.getLoading();
+      !this.getLoadingOrNotReady();
 
     if (!this.postRenderTimeoutHandle_) {
       this.postRenderTimeoutHandle_ = setTimeout(() => {

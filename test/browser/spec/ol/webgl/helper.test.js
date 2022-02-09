@@ -13,39 +13,39 @@ import {getUid} from '../../../../../src/ol/util.js';
 
 const VERTEX_SHADER = `
   precision mediump float;
-  
+
   uniform mat4 u_offsetScaleMatrix;
   uniform mat4 u_offsetRotateMatrix;
   uniform float u_time;
   uniform float u_zoom;
   uniform float u_resolution;
-  
+
   attribute float a_test;
   uniform float u_test;
-  
+
   void main(void) {
     gl_Position = vec4(u_test, a_test, 0.0, 1.0);
   }`;
 
 const INVALID_VERTEX_SHADER = `
   precision mediump float;
-  
+
   uniform mat4 u_offsetScaleMatrix;
   uniform mat4 u_offsetRotateMatrix;
   uniform float u_time;
   uniform float u_zoom;
   uniform float u_resolution;
-  
+
   bla
   uniform float u_test;
-  
+
   void main(void) {
     gl_Position = vec4(u_test, a_test, 0.0, 1.0);
   }`;
 
 const FRAGMENT_SHADER = `
   precision mediump float;
-  
+
   void main(void) {
     gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
   }`;
@@ -58,9 +58,13 @@ const INVALID_FRAGMENT_SHADER = `
   }`;
 
 describe('ol/webgl/WebGLHelper', function () {
+  let h;
+  afterEach(function () {
+    h.dispose();
+  });
+
   describe('constructor', function () {
     describe('without an argument', function () {
-      let h;
       beforeEach(function () {
         h = new WebGLHelper();
       });
@@ -76,7 +80,6 @@ describe('ol/webgl/WebGLHelper', function () {
     });
 
     describe('with post process passes', function () {
-      let h;
       beforeEach(function () {
         h = new WebGLHelper({
           postProcesses: [
@@ -105,7 +108,6 @@ describe('ol/webgl/WebGLHelper', function () {
 
   describe('operations', function () {
     describe('prepare draw', function () {
-      let h;
       beforeEach(function () {
         h = new WebGLHelper({
           uniforms: {
@@ -157,7 +159,6 @@ describe('ol/webgl/WebGLHelper', function () {
     });
 
     describe('valid shader compiling', function () {
-      let h;
       let p;
       beforeEach(function () {
         h = new WebGLHelper();
@@ -189,18 +190,18 @@ describe('ol/webgl/WebGLHelper', function () {
 
     describe('invalid shader compiling', function () {
       it('throws for an invalid vertex shader', function () {
-        const helper = new WebGLHelper();
+        h = new WebGLHelper();
         expect(() =>
-          helper.getProgram(FRAGMENT_SHADER, INVALID_VERTEX_SHADER)
+          h.getProgram(FRAGMENT_SHADER, INVALID_VERTEX_SHADER)
         ).to.throwException(
           /Vertex shader compilation failed: ERROR: 0:10: 'bla' : syntax error/
         );
       });
 
       it('throws for an invalid fragment shader', function () {
-        const helper = new WebGLHelper();
+        h = new WebGLHelper();
         expect(() =>
-          helper.getProgram(INVALID_FRAGMENT_SHADER, VERTEX_SHADER)
+          h.getProgram(INVALID_FRAGMENT_SHADER, VERTEX_SHADER)
         ).to.throwException(
           /Fragment shader compliation failed: ERROR: 0:5: 'oops' : undeclared identifier/
         );
@@ -208,7 +209,6 @@ describe('ol/webgl/WebGLHelper', function () {
     });
 
     describe('#makeProjectionTransform', function () {
-      let h;
       let frameState;
       beforeEach(function () {
         h = new WebGLHelper();
@@ -246,20 +246,19 @@ describe('ol/webgl/WebGLHelper', function () {
 
     describe('deleteBuffer()', function () {
       it('can be called to free up buffer resources', function () {
-        const helper = new WebGLHelper();
+        h = new WebGLHelper();
         const buffer = new WebGLArrayBuffer(ARRAY_BUFFER, STATIC_DRAW);
         buffer.fromArray([0, 1, 2, 3]);
-        helper.flushBufferData(buffer);
+        h.flushBufferData(buffer);
         const bufferKey = getUid(buffer);
-        expect(helper.bufferCache_).to.have.property(bufferKey);
+        expect(h.bufferCache_).to.have.property(bufferKey);
 
-        helper.deleteBuffer(buffer);
-        expect(helper.bufferCache_).to.not.have.property(bufferKey);
+        h.deleteBuffer(buffer);
+        expect(h.bufferCache_).to.not.have.property(bufferKey);
       });
     });
 
     describe('#createTexture', function () {
-      let h;
       beforeEach(function () {
         h = new WebGLHelper();
       });
@@ -342,7 +341,7 @@ describe('ol/webgl/WebGLHelper', function () {
   });
 
   describe('#enableAttributes', function () {
-    let baseAttrs, h;
+    let baseAttrs;
 
     beforeEach(function () {
       h = new WebGLHelper();

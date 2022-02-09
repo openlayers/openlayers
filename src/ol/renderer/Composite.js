@@ -110,15 +110,18 @@ class CompositeMapRenderer extends MapRenderer {
     for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       const layerState = layerStatesArray[i];
       frameState.layerIndex = i;
+
+      const layer = layerState.layer;
+      const sourceState = layer.getSourceState();
       if (
         !inView(layerState, viewState) ||
-        (layerState.sourceState != SourceState.READY &&
-          layerState.sourceState != SourceState.UNDEFINED)
+        (sourceState != SourceState.READY &&
+          sourceState != SourceState.UNDEFINED)
       ) {
+        layer.unrender();
         continue;
       }
 
-      const layer = layerState.layer;
       const element = layer.render(frameState, previousElement);
       if (!element) {
         continue;

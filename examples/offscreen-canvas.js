@@ -5,9 +5,12 @@ import View from '../src/ol/View.js';
 import Worker from 'worker-loader!./offscreen-canvas.worker.js'; //eslint-disable-line
 import stringify from 'json-stringify-safe';
 import {FullScreen} from '../src/ol/control.js';
-import {compose, create} from '../src/ol/transform.js';
+import {
+  compose,
+  create,
+  toString as toTransformString,
+} from '../src/ol/transform.js';
 import {createXYZ} from '../src/ol/tilegrid.js';
-import {toString as toTransformString} from '../src/ol/transform.js';
 
 const worker = new Worker();
 

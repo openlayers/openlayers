@@ -2,7 +2,7 @@
 
 ## Setting up development environment
 
-You will obviously start by
+You will start by
 [forking](https://github.com/openlayers/openlayers/fork) the OpenLayers repository.
 
 ### Development dependencies
@@ -26,6 +26,28 @@ To run the examples you first need to start the dev server:
 
 Then, load <http://localhost:8080/> in your browser.
 
+## Linking Package
+
+The `ol` package is published from the `build/ol` folder of the `openlayers` repo. 
+
+After you've cloned the `openlayers` repo locally run the `npm build-package` to prepare the build then use the `npm link` command to connect it your project. 
+
+Below is an example of how to build and link it to "sample-project"
+
+
+    $ cd openlayers
+    $ npm run build-package
+    $ cd build/ol
+    $ npm link
+    $ cd /sample-project
+    $ npm link ol
+
+To remove the link run the following commands
+
+    $ cd sample-project
+    $ npm unlink --no-save ol
+    $ cd ../openlayers
+    $ npm unlink
 ## Running tests
 
 To run the tests once:

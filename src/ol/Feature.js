@@ -11,7 +11,7 @@ import {listen, unlistenByKey} from './events.js';
  */
 
 /**
- * @typedef {Feature<import("./geom/Geometry.js").default>|import("./render/Feature.js").default} FeatureLike
+ * @typedef {Feature|import("./render/Feature.js").default} FeatureLike
  */
 
 /***
@@ -70,7 +70,7 @@ import {listen, unlistenByKey} from './events.js';
  * ```
  *
  * @api
- * @template {import("./geom/Geometry.js").default} Geometry
+ * @template {import("./geom/Geometry.js").default} [Geometry=import("./geom/Geometry.js").default]
  */
 class Feature extends BaseObject {
   /**

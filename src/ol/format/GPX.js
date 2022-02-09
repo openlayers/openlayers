@@ -869,7 +869,7 @@ function writeRte(node, feature, objectStack) {
 }
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Feature} feature Feature.
  * @param {Array<*>} objectStack Object stack.
  */
@@ -902,7 +902,7 @@ function writeTrk(node, feature, objectStack) {
 }
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {LineString} lineString LineString.
  * @param {Array<*>} objectStack Object stack.
  */

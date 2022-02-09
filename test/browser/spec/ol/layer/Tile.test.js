@@ -2,7 +2,7 @@ import TileLayer from '../../../../../src/ol/layer/Tile.js';
 import {Map, View} from '../../../../../src/ol/index.js';
 import {OSM, XYZ} from '../../../../../src/ol/source.js';
 
-describe('ol.layer.Tile', function () {
+describe('ol/layer/Tile', function () {
   describe('constructor (defaults)', function () {
     let layer;
 
@@ -26,6 +26,55 @@ describe('ol.layer.Tile', function () {
 
     it('provides default useInterimTilesOnError', function () {
       expect(layer.getUseInterimTilesOnError()).to.be(true);
+    });
+  });
+
+  describe('getData()', () => {
+    let map, target, layer;
+    beforeEach((done) => {
+      target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+
+      layer = new TileLayer({
+        source: new XYZ({
+          url: 'spec/ol/data/osm-0-0-0.png',
+        }),
+      });
+
+      map = new Map({
+        target: target,
+        layers: [layer],
+        view: new View({
+          center: [0, 0],
+          zoom: 0,
+        }),
+      });
+
+      map.once('rendercomplete', () => done());
+    });
+
+    afterEach(() => {
+      map.setTarget(null);
+      document.body.removeChild(target);
+    });
+
+    it('gets pixel data', () => {
+      const data = layer.getData([50, 50]);
+      expect(data).to.be.a(Uint8ClampedArray);
+      expect(data.length).to.be(4);
+      expect(data[0]).to.be(181);
+      expect(data[1]).to.be(208);
+      expect(data[2]).to.be(208);
+      expect(data[3]).to.be(255);
+    });
+
+    it('gets pixel data', () => {
+      layer.setVisible(false);
+      map.renderSync();
+      const data = layer.getData([50, 50]);
+      expect(data).to.be(null);
     });
   });
 

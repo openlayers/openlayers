@@ -10,7 +10,7 @@ import VectorSource from '../../../../../../src/ol/source/Vector.js';
 import View from '../../../../../../src/ol/View.js';
 import {get as getProj} from '../../../../../../src/ol/proj.js';
 
-describe('ol.renderer.canvas.ImageLayer', function () {
+describe('ol/renderer/canvas/ImageLayer', function () {
   describe('#forEachLayerAtCoordinate', function () {
     let map, target, source;
     beforeEach(function (done) {
@@ -298,6 +298,18 @@ describe('ol.renderer.canvas.ImageLayer', function () {
       map.on('postrender', function () {
         expect(prerender).to.be(1);
         expect(postrender).to.be(1);
+        done();
+      });
+    });
+
+    it('image smoothing is re-enabled after rendering', function (done) {
+      let context;
+      layer.on('postrender', function (e) {
+        context = e.context;
+        context.imageSmoothingEnabled = false;
+      });
+      map.on('postrender', function () {
+        expect(context.imageSmoothingEnabled).to.be(true);
         done();
       });
     });

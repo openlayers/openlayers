@@ -139,7 +139,7 @@ class TileJSON extends TileImage {
     if (!client.status || (client.status >= 200 && client.status < 300)) {
       let response;
       try {
-        response = /** @type {TileJSON} */ (JSON.parse(client.responseText));
+        response = /** @type {Config} */ (JSON.parse(client.responseText));
       } catch (err) {
         this.handleTileJSONError();
         return;

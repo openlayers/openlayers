@@ -169,7 +169,7 @@ class MultiLineString extends SimpleGeometry {
    * @param {number} m M.
    * @param {boolean} [opt_extrapolate] Extrapolate. Default is `false`.
    * @param {boolean} [opt_interpolate] Interpolate. Default is `false`.
-   * @return {import("../coordinate.js").Coordinate} Coordinate.
+   * @return {import("../coordinate.js").Coordinate|null} Coordinate.
    * @api
    */
   getCoordinateAtM(m, opt_extrapolate, opt_interpolate) {

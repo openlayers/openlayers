@@ -95,7 +95,7 @@ class WebGLLayerRenderer extends LayerRenderer {
      */
     this.helper;
 
-    layer.addChangeListener(LayerProperty.MAP, this.removeHelper_.bind(this));
+    layer.addChangeListener(LayerProperty.MAP, this.removeHelper.bind(this));
 
     this.dispatchPreComposeEvent = this.dispatchPreComposeEvent.bind(this);
     this.dispatchPostComposeEvent = this.dispatchPostComposeEvent.bind(this);
@@ -148,7 +148,10 @@ class WebGLLayerRenderer extends LayerRenderer {
     }
   }
 
-  removeHelper_() {
+  /**
+   * @protected
+   */
+  removeHelper() {
     if (this.helper) {
       this.helper.dispose();
       delete this.helper;
@@ -161,7 +164,7 @@ class WebGLLayerRenderer extends LayerRenderer {
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrame(frameState) {
-    if (this.getLayer().getSource()) {
+    if (this.getLayer().getRenderSource()) {
       let incrementGroup = true;
       let groupNumber = -1;
       let className;
@@ -187,9 +190,7 @@ class WebGLLayerRenderer extends LayerRenderer {
         'map/' + frameState.mapId + '/group/' + groupNumber;
 
       if (!this.helper || !this.helper.canvasCacheKeyMatches(canvasCacheKey)) {
-        if (this.helper) {
-          this.helper.dispose();
-        }
+        this.removeHelper();
 
         this.helper = new WebGLHelper({
           postProcesses: this.postProcesses_,
@@ -227,7 +228,7 @@ class WebGLLayerRenderer extends LayerRenderer {
    * Clean up.
    */
   disposeInternal() {
-    this.removeHelper_();
+    this.removeHelper();
     super.disposeInternal();
   }
 

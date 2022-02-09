@@ -28,6 +28,10 @@ class Element extends Layer {
   render() {
     return this.element;
   }
+
+  createRenderer() {
+    return {};
+  }
 }
 
 // elements for stacked controls

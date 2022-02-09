@@ -34,7 +34,7 @@ import {xhr} from '../featureloader.js';
  * @classdesc
  * Events emitted by {@link module:ol/source/Vector} instances are instances of this
  * type.
- * @template {import("../geom/Geometry.js").default} Geometry
+ * @template {import("../geom/Geometry.js").default} [Geometry=import("../geom/Geometry.js").default]
  */
 export class VectorSourceEvent extends Event {
   /**
@@ -170,7 +170,7 @@ export class VectorSourceEvent extends Event {
  *
  * @fires VectorSourceEvent
  * @api
- * @template {import("../geom/Geometry.js").default} Geometry
+ * @template {import("../geom/Geometry.js").default} [Geometry=import("../geom/Geometry.js").default]
  */
 class VectorSource extends Source {
   /**
@@ -181,6 +181,7 @@ class VectorSource extends Source {
 
     super({
       attributions: options.attributions,
+      interpolate: true,
       projection: undefined,
       state: SourceState.READY,
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
@@ -292,15 +293,21 @@ class VectorSource extends Source {
 
     /**
      * @private
-     * @type {Collection<import("../Feature.js").default<Geometry>>}
+     * @type {Collection<import("../Feature.js").default<Geometry>>|null}
      */
     this.featuresCollection_ = null;
 
     let collection, features;
     if (Array.isArray(options.features)) {
-      features = options.features;
+      features =
+        /** @type {Array<import("../Feature.js").default<Geometry>>} */ (
+          options.features
+        );
     } else if (options.features) {
-      collection = options.features;
+      collection =
+        /** @type {Collection<import("../Feature.js").default<Geometry>>} */ (
+          options.features
+        );
       features = collection.getArray();
     }
     if (!useSpatialIndex && collection === undefined) {
@@ -676,7 +683,7 @@ class VectorSource extends Source {
    * Get the features collection associated with this source. Will be `null`
    * unless the source was configured with `useSpatialIndex` set to `false`, or
    * with an {@link module:ol/Collection} as `features`.
-   * @return {Collection<import("../Feature.js").default<Geometry>>} The collection of features.
+   * @return {Collection<import("../Feature.js").default<Geometry>>|null} The collection of features.
    * @api
    */
   getFeaturesCollection() {

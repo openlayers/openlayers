@@ -17,6 +17,12 @@ class LayerRenderer extends Observable {
   constructor(layer) {
     super();
 
+    /**
+     * The renderer is initialized and ready to render.
+     * @type {boolean}
+     */
+    this.ready = true;
+
     /** @private */
     this.boundHandleImageChange_ = this.handleImageChange_.bind(this);
 
@@ -40,6 +46,14 @@ class LayerRenderer extends Observable {
    */
   getFeatures(pixel) {
     return abstract();
+  }
+
+  /**
+   * @param {import("../pixel.js").Pixel} pixel Pixel.
+   * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView|null} Pixel data.
+   */
+  getData(pixel) {
+    return null;
   }
 
   /**
@@ -185,6 +199,14 @@ class LayerRenderer extends Observable {
     if (layer.getVisible() && layer.getSourceState() == SourceState.READY) {
       layer.changed();
     }
+  }
+
+  /**
+   * Clean up.
+   */
+  disposeInternal() {
+    delete this.layer_;
+    super.disposeInternal();
   }
 }
 

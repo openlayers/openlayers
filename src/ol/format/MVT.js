@@ -19,7 +19,7 @@ import RenderFeature from '../render/Feature.js';
 import Units from '../proj/Units.js';
 import {assert} from '../asserts.js';
 import {get} from '../proj.js';
-import {linearRingIsClockwise} from '../geom/flat/orient.js';
+import {inflateEnds} from '../geom/flat/orient.js';
 
 /**
  * @typedef {Object} Options
@@ -164,7 +164,7 @@ class MVT extends FeatureFormat {
    * @param {PBF} pbf PBF
    * @param {Object} rawFeature Raw Mapbox feature.
    * @param {import("./Feature.js").ReadOptions} options Read options.
-   * @return {import("../Feature.js").FeatureLike} Feature.
+   * @return {import("../Feature.js").FeatureLike|null} Feature.
    */
   createFeature_(pbf, rawFeature, options) {
     const type = rawFeature.type;
@@ -185,8 +185,8 @@ class MVT extends FeatureFormat {
 
     values[this.layerName_] = rawFeature.layer.name;
 
-    const flatCoordinates = [];
-    const ends = [];
+    const flatCoordinates = /** @type {Array<number>} */ ([]);
+    const ends = /** @type {Array<number>} */ ([]);
     this.readRawGeometry_(pbf, rawFeature, flatCoordinates, ends);
 
     const geometryType = getGeometryType(type, ends.length);
@@ -203,28 +203,11 @@ class MVT extends FeatureFormat {
     } else {
       let geom;
       if (geometryType == GeometryType.POLYGON) {
-        const endss = [];
-        let offset = 0;
-        let prevEndIndex = 0;
-        for (let i = 0, ii = ends.length; i < ii; ++i) {
-          const end = ends[i];
-          // classifies an array of rings into polygons with outer rings and holes
-          if (!linearRingIsClockwise(flatCoordinates, offset, end, 2)) {
-            endss.push(ends.slice(prevEndIndex, i + 1));
-          } else {
-            if (endss.length === 0) {
-              continue;
-            }
-            endss[endss.length - 1].push(ends[prevEndIndex]);
-          }
-          prevEndIndex = i + 1;
-          offset = end;
-        }
-        if (endss.length > 1) {
-          geom = new MultiPolygon(flatCoordinates, GeometryLayout.XY, endss);
-        } else {
-          geom = new Polygon(flatCoordinates, GeometryLayout.XY, ends);
-        }
+        const endss = inflateEnds(flatCoordinates, ends);
+        geom =
+          endss.length > 1
+            ? new MultiPolygon(flatCoordinates, GeometryLayout.XY, endss)
+            : new Polygon(flatCoordinates, GeometryLayout.XY, ends);
       } else {
         geom =
           geometryType === GeometryType.POINT
@@ -248,7 +231,9 @@ class MVT extends FeatureFormat {
       }
       const geometry = transformGeometryWithOptions(geom, false, options);
       feature.setGeometry(geometry);
-      feature.setId(id);
+      if (id !== undefined) {
+        feature.setId(id);
+      }
       feature.setProperties(values, true);
     }
 
@@ -293,7 +278,10 @@ class MVT extends FeatureFormat {
 
       for (let i = 0, ii = pbfLayer.length; i < ii; ++i) {
         const rawFeature = readRawFeature(pbf, pbfLayer, i);
-        features.push(this.createFeature_(pbf, rawFeature, options));
+        const feature = this.createFeature_(pbf, rawFeature, options);
+        if (feature !== null) {
+          features.push(feature);
+        }
       }
     }
 

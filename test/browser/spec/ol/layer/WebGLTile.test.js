@@ -50,6 +50,82 @@ describe('ol/layer/WebGLTile', function () {
   afterEach(function () {
     map.setTarget(null);
     document.body.removeChild(target);
+    map.getLayers().forEach((layer) => layer.dispose());
+  });
+
+  describe('getData()', () => {
+    /** @type {Map} */
+    let map;
+    let target;
+
+    beforeEach(() => {
+      target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      map = new Map({
+        target: target,
+        view: new View({
+          center: [0, 0],
+          zoom: 0,
+        }),
+      });
+    });
+
+    afterEach(() => {
+      map.setTarget(null);
+      document.body.removeChild(target);
+    });
+
+    it('retrieves pixel data', (done) => {
+      const layer = new WebGLTileLayer({
+        source: new DataTileSource({
+          tilePixelRatio: 1 / 256,
+          loader(z, x, y) {
+            return new Uint8Array([5, 4, 3, 2, 1]);
+          },
+        }),
+      });
+
+      map.addLayer(layer);
+
+      map.once('rendercomplete', () => {
+        const data = layer.getData([50, 25]);
+        expect(data).to.be.a(Uint8Array);
+        expect(data.length).to.be(5);
+        expect(data[0]).to.be(5);
+        expect(data[1]).to.be(4);
+        expect(data[2]).to.be(3);
+        expect(data[3]).to.be(2);
+        expect(data[4]).to.be(1);
+        done();
+      });
+    });
+
+    it('preserves the original data type', (done) => {
+      const layer = new WebGLTileLayer({
+        source: new DataTileSource({
+          tilePixelRatio: 1 / 256,
+          loader(z, x, y) {
+            return new Float32Array([1.11, 2.22, 3.33, 4.44, 5.55]);
+          },
+        }),
+      });
+
+      map.addLayer(layer);
+
+      map.once('rendercomplete', () => {
+        const data = layer.getData([50, 25]);
+        expect(data).to.be.a(Float32Array);
+        expect(data.length).to.be(5);
+        expect(data[0]).to.roughlyEqual(1.11, 1e-5);
+        expect(data[1]).to.roughlyEqual(2.22, 1e-5);
+        expect(data[2]).to.roughlyEqual(3.33, 1e-5);
+        expect(data[3]).to.roughlyEqual(4.44, 1e-5);
+        expect(data[4]).to.roughlyEqual(5.55, 1e-5);
+        done();
+      });
+    });
   });
 
   describe('dispose()', () => {
@@ -63,7 +139,7 @@ describe('ol/layer/WebGLTile', function () {
 
   it('creates fragment and vertex shaders', function () {
     const compileShaderSpy = sinon.spy(WebGLHelper.prototype, 'compileShader');
-    const renderer = layer.createRenderer();
+    const renderer = layer.getRenderer();
     const viewState = map.getView().getState();
     const size = map.getSize();
     const frameState = {
@@ -87,7 +163,11 @@ describe('ol/layer/WebGLTile', function () {
       #else
       precision mediump float;
       #endif
+
       varying vec2 v_textureCoord;
+      varying vec2 v_mapCoord;
+
+      uniform vec4 u_renderExtent;
       uniform float u_transitionAlpha;
       uniform float u_texturePixelWidth;
       uniform float u_texturePixelHeight;
@@ -97,7 +177,16 @@ describe('ol/layer/WebGLTile', function () {
       uniform float u_var_g;
       uniform float u_var_b;
       uniform sampler2D u_tileTextures[1];
+
       void main() {
+        if (
+          v_mapCoord[0] < u_renderExtent[0] ||
+          v_mapCoord[1] < u_renderExtent[1] ||
+          v_mapCoord[0] > u_renderExtent[2] ||
+          v_mapCoord[1] > u_renderExtent[3]
+        ) {
+          discard;
+        }
         vec4 color = texture2D(u_tileTextures[0], v_textureCoord);
         color = vec4(u_var_r / 255.0, u_var_g / 255.0, u_var_b / 255.0, 1.0);
         if (color.a == 0.0) {
@@ -112,12 +201,24 @@ describe('ol/layer/WebGLTile', function () {
     expect(compileShaderSpy.getCall(1).args[0].replace(/[ \n]+/g, ' ')).to.be(
       `
       attribute vec2 a_textureCoord;
+
       uniform mat4 u_tileTransform;
+      uniform float u_texturePixelWidth; 
+      uniform float u_texturePixelHeight; 
+      uniform float u_textureResolution; 
+      uniform float u_textureOriginX; 
+      uniform float u_textureOriginY; 
       uniform float u_depth;
 
       varying vec2 v_textureCoord;
+      varying vec2 v_mapCoord; 
+
       void main() {
         v_textureCoord = a_textureCoord;
+        v_mapCoord = vec2(
+          u_textureOriginX + u_textureResolution * u_texturePixelWidth * v_textureCoord[0],
+          u_textureOriginY - u_textureResolution * u_texturePixelHeight * v_textureCoord[1]
+        );
         gl_Position = u_tileTransform * vec4(a_textureCoord, u_depth, 1.0);
       }
       `.replace(/[ \n]+/g, ' ')
@@ -139,7 +240,7 @@ describe('ol/layer/WebGLTile', function () {
     });
 
     const compileShaderSpy = sinon.spy(WebGLHelper.prototype, 'compileShader');
-    const renderer = layer.createRenderer();
+    const renderer = layer.getRenderer();
     const viewState = map.getView().getState();
     const size = map.getSize();
     const frameState = {
@@ -163,6 +264,10 @@ describe('ol/layer/WebGLTile', function () {
       #else
       precision mediump float;
       #endif varying vec2 v_textureCoord;
+
+      varying vec2 v_mapCoord;
+
+      uniform vec4 u_renderExtent;
       uniform float u_transitionAlpha;
       uniform float u_texturePixelWidth;
       uniform float u_texturePixelHeight;
@@ -188,6 +293,14 @@ describe('ol/layer/WebGLTile', function () {
       }
 
       void main() {
+        if (
+          v_mapCoord[0] < u_renderExtent[0] ||
+          v_mapCoord[1] < u_renderExtent[1] ||
+          v_mapCoord[0] > u_renderExtent[2] ||
+          v_mapCoord[1] > u_renderExtent[3]
+        ) {
+          discard;
+        }
         vec4 color = texture2D(u_tileTextures[0], v_textureCoord);
         color = vec4((getBandValue(4.0, 0.0, 0.0) / 3000.0), (getBandValue(1.0, 0.0, 0.0) / 3000.0), (getBandValue(2.0, 0.0, 0.0) / 3000.0), 1.0);
         if (color.a == 0.0) {
@@ -222,7 +335,7 @@ describe('ol/layer/WebGLTile', function () {
     });
 
     it('can be called before the layer is rendered', function () {
-      const layer = new WebGLTileLayer({
+      layer = new WebGLTileLayer({
         style: {
           variables: {
             foo: 'bar',
@@ -254,6 +367,49 @@ describe('ol/layer/WebGLTile', function () {
 
       layer.updateStyleVariables({foo: 'bam'});
       expect(layer.styleVariables_.foo).to.be('bam');
+    });
+
+    it('also works after setStyle()', function (done) {
+      const layer = new WebGLTileLayer({
+        className: 'testlayer2',
+        source: new DataTileSource({
+          loader(z, x, y) {
+            return new Promise((resolve) => {
+              resolve(new ImageData(256, 256));
+            });
+          },
+        }),
+      });
+
+      map.addLayer(layer);
+      layer.setStyle({
+        variables: {
+          r: 0,
+          g: 255,
+          b: 0,
+        },
+        color: ['color', ['var', 'r'], ['var', 'g'], ['var', 'b']],
+      });
+      map.renderSync();
+
+      layer.updateStyleVariables({
+        r: 255,
+        g: 0,
+        b: 255,
+      });
+
+      expect(layer.styleVariables_['r']).to.be(255);
+      const targetContext = createCanvasContext2D(100, 100);
+      layer.on('postrender', () => {
+        targetContext.clearRect(0, 0, 100, 100);
+        targetContext.drawImage(target.querySelector('.testlayer2'), 0, 0);
+      });
+      map.once('rendercomplete', () => {
+        expect(Array.from(targetContext.getImageData(0, 0, 1, 1).data)).to.eql([
+          255, 0, 255, 255,
+        ]);
+        done();
+      });
     });
   });
 
@@ -372,5 +528,38 @@ describe('ol/layer/WebGLTile', function () {
       expect(called).to.be(true);
       done();
     });
+  });
+
+  it('handles multiple sources correctly', () => {
+    const source = layer.getSource();
+    expect(layer.getRenderSource()).to.be(source);
+    layer.sources_ = (extent, resolution) => {
+      return [
+        {
+          getState: () => 'ready',
+          extent,
+          resolution,
+          id: 'source1',
+        },
+        {
+          getState: () => 'ready',
+          extent,
+          resolution,
+          id: 'source2',
+        },
+      ];
+    };
+    const sourceIds = [];
+    layer.getRenderer().prepareFrame = (frameState) => {
+      const renderedSource = layer.getRenderSource();
+      expect(renderedSource.extent).to.eql([0, 0, 100, 100]);
+      expect(renderedSource.resolution).to.be(1);
+      sourceIds.push(renderedSource.id);
+    };
+    layer.render({
+      extent: [0, 0, 100, 100],
+      viewState: {resolution: 1},
+    });
+    expect(sourceIds).to.eql(['source1', 'source2']);
   });
 });

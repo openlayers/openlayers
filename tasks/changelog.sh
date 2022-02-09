@@ -49,12 +49,12 @@ main() {
         number="${BASH_REMATCH[1]}"
         author="${BASH_REMATCH[2]}"
         summary="${BASH_REMATCH[3]}"
-        declare $output+=" * [#${number}](${PULLS_URL}/${number}) - ${summary} ([@${author}](${GITHUB_URL}/${author}))\n"
+        declare $output+=" * ${summary} (by @${author} in ${PULLS_URL}/${number})\n"
       elif [[ ${l} =~ ${SQUASH_RE} ]] ; then
         number="${BASH_REMATCH[3]}"
         author="${BASH_REMATCH[1]}"
         summary="${BASH_REMATCH[2]}"
-        declare $output+=" * [#${number}](${PULLS_URL}/${number}) - ${summary} ([${author}](${GITHUB_URL}/search?q=${author}&type=Users))\n"
+        declare $output+=" * ${summary} (by @${author} in ${PULLS_URL}/${number})\n"
       fi
     done
 

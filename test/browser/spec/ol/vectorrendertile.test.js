@@ -2,8 +2,9 @@ import EventType from '../../../../src/ol/events/EventType.js';
 import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 import TileState from '../../../../src/ol/TileState.js';
-import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
-import {defaultLoadFunction} from '../../../../src/ol/source/VectorTile.js';
+import VectorTileSource, {
+  defaultLoadFunction,
+} from '../../../../src/ol/source/VectorTile.js';
 import {listen, unlistenByKey} from '../../../../src/ol/events.js';
 
 describe('ol.VectorRenderTile', function () {

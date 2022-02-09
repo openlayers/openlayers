@@ -195,13 +195,13 @@ const KML_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 let DEFAULT_COLOR;
 
 /**
- * @type {Fill}
+ * @type {Fill|null}
  */
 let DEFAULT_FILL_STYLE = null;
 
 /**
  * Get the default fill style (or null if not yet set).
- * @return {Fill} The default fill style.
+ * @return {Fill|null} The default fill style.
  */
 export function getDefaultFillStyle() {
   return DEFAULT_FILL_STYLE;
@@ -233,13 +233,13 @@ let DEFAULT_IMAGE_STYLE_SIZE;
 let DEFAULT_IMAGE_STYLE_SRC;
 
 /**
- * @type {import("../style/Image.js").default}
+ * @type {import("../style/Image.js").default|null}
  */
 let DEFAULT_IMAGE_STYLE = null;
 
 /**
  * Get the default image style (or null if not yet set).
- * @return {import("../style/Image.js").default} The default image style.
+ * @return {import("../style/Image.js").default|null} The default image style.
  */
 export function getDefaultImageStyle() {
   return DEFAULT_IMAGE_STYLE;
@@ -251,13 +251,13 @@ export function getDefaultImageStyle() {
 let DEFAULT_NO_IMAGE_STYLE;
 
 /**
- * @type {Stroke}
+ * @type {Stroke|null}
  */
 let DEFAULT_STROKE_STYLE = null;
 
 /**
  * Get the default stroke style (or null if not yet set).
- * @return {Stroke} The default stroke style.
+ * @return {Stroke|null} The default stroke style.
  */
 export function getDefaultStrokeStyle() {
   return DEFAULT_STROKE_STYLE;
@@ -269,39 +269,39 @@ export function getDefaultStrokeStyle() {
 let DEFAULT_TEXT_STROKE_STYLE;
 
 /**
- * @type {Text}
+ * @type {Text|null}
  */
 let DEFAULT_TEXT_STYLE = null;
 
 /**
  * Get the default text style (or null if not yet set).
- * @return {Text} The default text style.
+ * @return {Text|null} The default text style.
  */
 export function getDefaultTextStyle() {
   return DEFAULT_TEXT_STYLE;
 }
 
 /**
- * @type {Style}
+ * @type {Style|null}
  */
 let DEFAULT_STYLE = null;
 
 /**
  * Get the default style (or null if not yet set).
- * @return {Style} The default style.
+ * @return {Style|null} The default style.
  */
 export function getDefaultStyle() {
   return DEFAULT_STYLE;
 }
 
 /**
- * @type {Array<Style>}
+ * @type {Array<Style>|null}
  */
 let DEFAULT_STYLE_ARRAY = null;
 
 /**
  * Get the default style array (or null if not yet set).
- * @return {Array<Style>} The default style.
+ * @return {Array<Style>|null} The default style.
  */
 export function getDefaultStyleArray() {
   return DEFAULT_STYLE_ARRAY;
@@ -1007,8 +1007,7 @@ function createFeatureStyleFunction(
       if (drawName) {
         const geometry = feature.getGeometry();
         if (geometry) {
-          const type = geometry.getType();
-          if (type === GeometryType.GEOMETRY_COLLECTION) {
+          if (geometry instanceof GeometryCollection) {
             multiGeometryPoints = geometry
               .getGeometriesArrayRecursive()
               .filter(function (geometry) {
@@ -1020,6 +1019,7 @@ function createFeatureStyleFunction(
               });
             drawName = multiGeometryPoints.length > 0;
           } else {
+            const type = geometry.getType();
             drawName =
               type === GeometryType.POINT || type === GeometryType.MULTI_POINT;
           }
@@ -2473,7 +2473,7 @@ const DOCUMENT_NODE_FACTORY = function (value, objectStack, opt_nodeName) {
 };
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<Feature>} features Features.
  * @param {Array<*>} objectStack Object stack.
  * @this {KML}
@@ -2499,7 +2499,7 @@ function writeDocument(node, features, objectStack) {
 const DATA_NODE_FACTORY = makeSimpleNodeFactory('Data');
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {{names: Array<string>, values: (Array<*>)}} namesAndValues Names and values.
  * @param {Array<*>} objectStack Object stack.
  */
@@ -2561,7 +2561,7 @@ const GX_NODE_FACTORY = function (value, objectStack, opt_nodeName) {
 };
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Object} icon Icon object.
  * @param {Array<*>} objectStack Object stack.
  */
@@ -2617,7 +2617,7 @@ const ICON_STYLE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {import("../style/Icon.js").default} style Icon style.
  * @param {Array<*>} objectStack Object stack.
  */
@@ -2712,7 +2712,7 @@ const LABEL_STYLE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Text} style style.
  * @param {Array<*>} objectStack Object stack.
  */
@@ -2758,7 +2758,7 @@ const LINE_STYLE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Stroke} style style.
  * @param {Array<*>} objectStack Object stack.
  */
@@ -2856,7 +2856,7 @@ const MULTI_GEOMETRY_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {import("../geom/Geometry.js").default} geometry Geometry.
  * @param {Array<*>} objectStack Object stack.
  */
@@ -2927,7 +2927,7 @@ const BOUNDARY_IS_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {import("../geom/LinearRing.js").default} linearRing Linear ring.
  * @param {Array<*>} objectStack Object stack.
  */
@@ -3180,7 +3180,7 @@ const PRIMITIVE_GEOMETRY_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {import("../geom/SimpleGeometry.js").default} geometry Geometry.
  * @param {Array<*>} objectStack Object stack.
  */
@@ -3243,7 +3243,7 @@ const INNER_BOUNDARY_NODE_FACTORY = makeSimpleNodeFactory('innerBoundaryIs');
 const OUTER_BOUNDARY_NODE_FACTORY = makeSimpleNodeFactory('outerBoundaryIs');
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Polygon} polygon Polygon.
  * @param {Array<*>} objectStack Object stack.
  */
@@ -3281,7 +3281,7 @@ const POLY_STYLE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Style} style Style.
  * @param {Array<*>} objectStack Object stack.
  */
@@ -3341,7 +3341,7 @@ const STYLE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Object<string, Array<Style>>} styles Styles.
  * @param {Array<*>} objectStack Object stack.
  */

@@ -62,21 +62,47 @@ $(function () {
       $navList.addClass('search-empty');
       return 'search-empty';
     })();
+    let initialCurrent = navListNode.querySelector('li.item');
+    const longname = initialCurrent && initialCurrent.dataset.longname;
     let manualToggles = {};
-
-    // Show an item related a current documentation automatically
-    const longname = $('.page-title').data('filename')
-      .replace(/\.[a-z]+$/, '')
-      .replace('module-', 'module:')
-      .replace(/_/g, '/')
-      .replace(/-/g, '~');
-    const currentItem = navListNode.querySelector('.item[data-longname="' + longname + '"]');
-    if (currentItem) {
-      $navList.prepend(currentItem);
+    if (initialCurrent) {
+      manualToggles[longname] = $(initialCurrent);
     }
+
+    fetch('./navigation.tmpl.html').then(function (response) {
+      return response.text();
+    }).then(function (text) {
+      navListNode.innerHTML = text;
+
+      // Show an item related a current documentation automatically
+      const currentItem = navListNode.querySelector('.item[data-longname="' + longname + '"]');
+      if (currentItem) {
+        $navList.prepend(currentItem);
+        search.$currentItem = $(currentItem);
+      }
+      $classItems = undefined;
+      $members = undefined;
+
+      // Search again with full navigation, if user already searched
+      manualToggles = {};
+      const lastTerm = search.lastSearchTerm;
+      search.lastSearchTerm = undefined;
+      const fa = currentItem.querySelector('.title > .fa');
+      fa.classList.add('no-transition');
+      doSearch(lastTerm || '');
+
+      // Transfer manual toggle state to newly loaded current node
+      if (initialCurrent && initialCurrent.classList.contains('toggle-manual')) {
+        search.manualToggle(search.$currentItem, initialCurrent.classList.contains('toggle-manual-show'));
+      }
+      setTimeout(function () {
+        fa.classList.remove('no-transition');
+      }, 0);
+    });
+
     return {
       $navList: $navList,
-      $currentItem: currentItem ? $(currentItem) : undefined,
+      $currentItem: initialCurrent ? $(initialCurrent) : undefined,
       lastSearchTerm: undefined,
       lastState: {},
       lastClasses: undefined,
@@ -240,7 +266,7 @@ $(function () {
 
   // Toggle when click an item element
   search.$navList.on('click', '.toggle', function (e) {
-    if (event.target.tagName.toLowerCase() === 'a') {
+    if (e.target.tagName === 'A') {
       return;
     }
     const clsItem = $(this).closest('.item');

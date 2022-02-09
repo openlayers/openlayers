@@ -20,7 +20,11 @@ import {
   clearUserProjection,
   setUserProjection,
 } from '../../../../../src/ol/proj.js';
-import {doubleClick, never} from '../../../../../src/ol/events/condition.js';
+import {
+  click,
+  doubleClick,
+  never,
+} from '../../../../../src/ol/events/condition.js';
 import {getValues} from '../../../../../src/ol/obj.js';
 
 describe('ol.interaction.Modify', function () {
@@ -877,6 +881,33 @@ describe('ol.interaction.Modify', function () {
 
       setTimeout(function () {
         expect(modifystart).to.be(false);
+        done();
+      }, 0);
+    });
+
+    it('does not fire `modifyend` when nothing is modified', function (done) {
+      const modify = new Modify({
+        features: new Collection(features),
+        deleteCondition: click,
+        insertVertexCondition: never,
+      });
+      map.addInteraction(modify);
+
+      let modifyend = false;
+      modify.on('modifyend', function (e) {
+        modifyend = true;
+      });
+
+      // try to add vertex
+      simulateEvent('pointermove', 40, -20, null, 0);
+      simulateEvent('pointerdown', 40, -20, null, 0);
+      simulateEvent('pointerdrag', 42, -30, null, 0);
+      simulateEvent('pointerup', 42, -30, null, 0);
+      simulateEvent('click', 42, -30, null, 0);
+      simulateEvent('singleclick', 42, -30, null, 0);
+
+      setTimeout(function () {
+        expect(modifyend).to.be(false);
         done();
       }, 0);
     });

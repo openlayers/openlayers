@@ -249,14 +249,14 @@ class Overlay extends BaseObject {
 
   /**
    * Get the map associated with this overlay.
-   * @return {import("./PluggableMap.js").default|undefined} The map that the
+   * @return {import("./PluggableMap.js").default|null} The map that the
    * overlay is part of.
    * @observable
    * @api
    */
   getMap() {
-    return /** @type {import("./PluggableMap.js").default|undefined} */ (
-      this.get(Property.MAP)
+    return /** @type {import("./PluggableMap.js").default|null} */ (
+      this.get(Property.MAP) || null
     );
   }
 
@@ -378,8 +378,8 @@ class Overlay extends BaseObject {
 
   /**
    * Set the map to be associated with this overlay.
-   * @param {import("./PluggableMap.js").default|undefined} map The map that the
-   * overlay is part of.
+   * @param {import("./PluggableMap.js").default|null} map The map that the
+   * overlay is part of. Pass `null` to just remove the overlay from the current map.
    * @observable
    * @api
    */

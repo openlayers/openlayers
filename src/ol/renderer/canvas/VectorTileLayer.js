@@ -73,6 +73,7 @@ const VECTOR_REPLAYS = {
  * @classdesc
  * Canvas renderer for vector tile layers.
  * @api
+ * @extends {CanvasTileLayerRenderer<import("../../layer/VectorTile.js").default>}
  */
 class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   /**

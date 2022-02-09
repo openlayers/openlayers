@@ -29,7 +29,7 @@ class RenderBox extends Disposable {
 
     /**
      * @private
-     * @type {import("../PluggableMap.js").default}
+     * @type {import("../PluggableMap.js").default|null}
      */
     this.map_ = null;
 
@@ -68,7 +68,7 @@ class RenderBox extends Disposable {
   }
 
   /**
-   * @param {import("../PluggableMap.js").default} map Map.
+   * @param {import("../PluggableMap.js").default|null} map Map.
    */
   setMap(map) {
     if (this.map_) {

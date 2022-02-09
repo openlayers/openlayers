@@ -219,7 +219,7 @@ class Source extends BaseObject {
 /**
  * Turns the attributions option into an attributions function.
  * @param {AttributionLike|undefined} attributionLike The attribution option.
- * @return {?Attribution} An attribution function (or null).
+ * @return {Attribution|null} An attribution function (or null).
  */
 function adaptAttributions(attributionLike) {
   if (!attributionLike) {

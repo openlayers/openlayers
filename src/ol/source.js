@@ -2,6 +2,9 @@
  * @module ol/source
  */
 
+import LRUCache from './structs/LRUCache.js';
+import {getIntersection} from './extent.js';
+
 export {default as BingMaps} from './source/BingMaps.js';
 export {default as CartoDB} from './source/CartoDB.js';
 export {default as Cluster} from './source/Cluster.js';
@@ -31,3 +34,37 @@ export {default as VectorTile} from './source/VectorTile.js';
 export {default as WMTS} from './source/WMTS.js';
 export {default as XYZ} from './source/XYZ.js';
 export {default as Zoomify} from './source/Zoomify.js';
+
+/**
+ * Creates a sources function from a tile grid. This function can be used as value for the
+ * `sources` property of the {@link module:ol/layer/Layer~Layer} subclasses that support it.
+ * @param {import("./tilegrid/TileGrid.js").default} tileGrid Tile grid.
+ * @param {function(import("./tilecoord.js").TileCoord): import("./source/Source.js").default} factory Source factory.
+ * This function takes a {@link module:ol/tilecoord~TileCoord} as argument and is expected to return a
+ * {@link module:ol/source/Source~Source}. **Note**: The returned sources should have a tile grid with
+ * a limited set of resolutions, matching the resolution range of a single zoom level of the pyramid
+ * `tileGrid` that `createFromTileGrid` was called with.
+ * @return {function(import("./extent.js").Extent, number): Array<import("./source/Source.js").default>} Sources function.
+ * @api
+ */
+export function sourcesFromTileGrid(tileGrid, factory) {
+  const sourceCache = new LRUCache(32);
+  const tileGridExtent = tileGrid.getExtent();
+  return function (extent, resolution) {
+    sourceCache.expireCache();
+    if (tileGridExtent) {
+      extent = getIntersection(tileGridExtent, extent);
+    }
+    const z = tileGrid.getZForResolution(resolution);
+    const wantedSources = [];
+    tileGrid.forEachTileCoord(extent, z, (tileCoord) => {
+      const key = tileCoord.toString();
+      if (!sourceCache.containsKey(key)) {
+        const source = factory(tileCoord);
+        sourceCache.set(key, source);
+      }
+      wantedSources.push(sourceCache.get(key));
+    });
+    return wantedSources;
+  };
+}

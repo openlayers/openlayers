@@ -11,22 +11,21 @@ import WebGLLayerRenderer from './Layer.js';
 import {AttributeType} from '../../webgl/Helper.js';
 import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
 import {
+  apply as applyTransform,
   compose as composeTransform,
   create as createTransform,
 } from '../../transform.js';
+import {containsCoordinate, getIntersection, isEmpty} from '../../extent.js';
 import {
   create as createMat4,
   fromTransform as mat4FromTransform,
 } from '../../vec/mat4.js';
 import {
   createOrUpdate as createTileCoord,
-  getKeyZXY,
   getKey as getTileCoordKey,
 } from '../../tilecoord.js';
 import {fromUserExtent} from '../../proj.js';
-import {getIntersection} from '../../extent.js';
 import {getUid} from '../../util.js';
-import {isEmpty} from '../../extent.js';
 import {numberSafeCompareFunction} from '../../array.js';
 import {toSize} from '../../size.js';
 
@@ -37,6 +36,10 @@ export const Uniforms = {
   DEPTH: 'u_depth',
   TEXTURE_PIXEL_WIDTH: 'u_texturePixelWidth',
   TEXTURE_PIXEL_HEIGHT: 'u_texturePixelHeight',
+  TEXTURE_RESOLUTION: 'u_textureResolution', // map units per texture pixel
+  TEXTURE_ORIGIN_X: 'u_textureOriginX', // map x coordinate of left edge of texture
+  TEXTURE_ORIGIN_Y: 'u_textureOriginY', // map y coordinate of top edge of texture
+  RENDER_EXTENT: 'u_renderExtent', // intersection of layer, source, and view extent
   RESOLUTION: 'u_resolution',
   ZOOM: 'u_zoom',
 };
@@ -97,15 +100,22 @@ function getRenderExtent(frameState, extent) {
       fromUserExtent(layerState.extent, frameState.viewState.projection)
     );
   }
-  const source =
-    /** {import("../../source/Tile.js").default} */ layerState.layer.getSource();
+  const source = /** @type {import("../../source/Tile.js").default} */ (
+    layerState.layer.getRenderSource()
+  );
   if (!source.getWrapX()) {
-    const gridExtent = source.tileGrid.getExtent();
+    const gridExtent = source
+      .getTileGridForProjection(frameState.viewState.projection)
+      .getExtent();
     if (gridExtent) {
       extent = getIntersection(extent, gridExtent);
     }
   }
   return extent;
+}
+
+function getCacheKey(source, tileCoord) {
+  return `${source.getKey()},${getTileCoordKey(tileCoord)}`;
 }
 
 /**
@@ -139,7 +149,13 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     });
 
     /**
-     * This transform converts tile i, j coordinates to screen coordinates.
+     * The last call to `renderFrame` was completed with all tiles loaded
+     * @type {boolean}
+     */
+    this.renderComplete = false;
+
+    /**
+     * This transform converts texture coordinates to screen coordinates.
      * @type {import("../../transform.js").Transform}
      * @private
      */
@@ -218,6 +234,12 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
      * @private
      */
     this.paletteTextures_ = options.paletteTextures || [];
+
+    /**
+     * @private
+     * @type {import("../../PluggableMap.js").FrameState|null}
+     */
+    this.frameState_ = null;
   }
 
   /**
@@ -271,7 +293,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
    */
   prepareFrameInternal(frameState) {
     const layer = this.getLayer();
-    const source = layer.getSource();
+    const source = layer.getRenderSource();
     if (!source) {
       return false;
     }
@@ -291,8 +313,11 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
   enqueueTiles(frameState, extent, z, tileTexturesByZ) {
     const viewState = frameState.viewState;
     const tileLayer = this.getLayer();
-    const tileSource = tileLayer.getSource();
+    const tileSource = tileLayer.getRenderSource();
     const tileGrid = tileSource.getTileGridForProjection(viewState.projection);
+    const tilePixelRatio = tileSource.getTilePixelRatio(frameState.pixelRatio);
+    const gutter = tileSource.getGutterForProjection(viewState.projection);
+
     const tileTextureCache = this.tileTextureCache_;
     const tileRange = tileGrid.getTileRangeForExtentAndZ(
       extent,
@@ -312,7 +337,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
         const tileCoord = createTileCoord(z, x, y, this.tempTileCoord_);
-        const tileCoordKey = getTileCoordKey(tileCoord);
+        const cacheKey = getCacheKey(tileSource, tileCoord);
 
         /**
          * @type {TileTexture}
@@ -324,8 +349,8 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
          */
         let tile;
 
-        if (tileTextureCache.containsKey(tileCoordKey)) {
-          tileTexture = tileTextureCache.get(tileCoordKey);
+        if (tileTextureCache.containsKey(cacheKey)) {
+          tileTexture = tileTextureCache.get(cacheKey);
           tile = tileTexture.tile;
         }
         if (!tileTexture || tileTexture.tile.key !== tileSource.getKey()) {
@@ -337,8 +362,14 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
             viewState.projection
           );
           if (!tileTexture) {
-            tileTexture = new TileTexture(tile, tileGrid, this.helper);
-            tileTextureCache.set(tileCoordKey, tileTexture);
+            tileTexture = new TileTexture({
+              tile: tile,
+              grid: tileGrid,
+              helper: this.helper,
+              tilePixelRatio: tilePixelRatio,
+              gutter: gutter,
+            });
+            tileTextureCache.set(cacheKey, tileTexture);
           } else {
             if (this.isDrawableTile_(tile)) {
               tileTexture.setTile(tile);
@@ -377,12 +408,14 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
    * @return {HTMLElement} The rendered element.
    */
   renderFrame(frameState) {
+    this.frameState_ = frameState;
+    this.renderComplete = true;
     const gl = this.helper.getGL();
     this.preRender(gl, frameState);
 
     const viewState = frameState.viewState;
     const tileLayer = this.getLayer();
-    const tileSource = tileLayer.getSource();
+    const tileSource = tileLayer.getRenderSource();
     const tileGrid = tileSource.getTileGridForProjection(viewState.projection);
     const extent = getRenderExtent(frameState, frameState.extent);
     const z = tileGrid.getZForResolution(
@@ -436,6 +469,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
         const tileCoordKey = getTileCoordKey(tileCoord);
         alphaLookup[tileCoordKey] = alpha;
       }
+      this.renderComplete = false;
 
       // first look for child tiles (at z + 1)
       const coveredByChildren = this.findAltTiles_(
@@ -569,6 +603,19 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
           tileSize[1]
         );
         this.helper.setUniformFloatValue(
+          Uniforms.TEXTURE_RESOLUTION,
+          tileResolution
+        );
+        this.helper.setUniformFloatValue(
+          Uniforms.TEXTURE_ORIGIN_X,
+          tileOrigin[0] + tileCenterI * tileSize[0] * tileResolution
+        );
+        this.helper.setUniformFloatValue(
+          Uniforms.TEXTURE_ORIGIN_Y,
+          tileOrigin[1] - tileCenterJ * tileSize[1] * tileResolution
+        );
+        this.helper.setUniformFloatVec4(Uniforms.RENDER_EXTENT, extent);
+        this.helper.setUniformFloatValue(
           Uniforms.RESOLUTION,
           viewState.resolution
         );
@@ -610,6 +657,83 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
+   * @param {import("../../pixel.js").Pixel} pixel Pixel.
+   * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView} Data at the pixel location.
+   */
+  getData(pixel) {
+    const gl = this.helper.getGL();
+    if (!gl) {
+      return null;
+    }
+
+    const frameState = this.frameState_;
+    if (!frameState) {
+      return null;
+    }
+
+    const layer = this.getLayer();
+    const coordinate = applyTransform(
+      frameState.pixelToCoordinateTransform,
+      pixel.slice()
+    );
+
+    const viewState = frameState.viewState;
+    const layerExtent = layer.getExtent();
+    if (layerExtent) {
+      if (
+        !containsCoordinate(
+          fromUserExtent(layerExtent, viewState.projection),
+          coordinate
+        )
+      ) {
+        return null;
+      }
+    }
+
+    const source = layer.getRenderSource();
+    const tileGrid = source.getTileGridForProjection(viewState.projection);
+    if (!source.getWrapX()) {
+      const gridExtent = tileGrid.getExtent();
+      if (gridExtent) {
+        if (!containsCoordinate(gridExtent, coordinate)) {
+          return null;
+        }
+      }
+    }
+
+    const tileTextureCache = this.tileTextureCache_;
+    for (
+      let z = tileGrid.getZForResolution(viewState.resolution);
+      z >= tileGrid.getMinZoom();
+      --z
+    ) {
+      const tileCoord = tileGrid.getTileCoordForCoordAndZ(coordinate, z);
+      const cacheKey = getCacheKey(source, tileCoord);
+      if (!tileTextureCache.containsKey(cacheKey)) {
+        continue;
+      }
+      const tileTexture = tileTextureCache.get(cacheKey);
+      if (!tileTexture.loaded) {
+        continue;
+      }
+      const tileOrigin = tileGrid.getOrigin(z);
+      const tileSize = toSize(tileGrid.getTileSize(z));
+      const tileResolution = tileGrid.getResolution(z);
+
+      const col =
+        (coordinate[0] - tileOrigin[0]) / tileResolution -
+        tileCoord[1] * tileSize[0];
+
+      const row =
+        (tileOrigin[1] - coordinate[1]) / tileResolution -
+        tileCoord[2] * tileSize[1];
+
+      return tileTexture.getPixelData(col, row);
+    }
+    return null;
+  }
+
+  /**
    * Look for tiles covering the provided tile coordinate at an alternate
    * zoom level.  Loaded tiles will be added to the provided tile texture lookup.
    * @param {import("../../tilegrid/TileGrid.js").default} tileGrid The tile grid.
@@ -633,9 +757,10 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
 
     let covered = true;
     const tileTextureCache = this.tileTextureCache_;
+    const source = this.getLayer().getRenderSource();
     for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
-        const cacheKey = getKeyZXY(altZ, x, y);
+        const cacheKey = getCacheKey(source, [altZ, x, y]);
         let loaded = false;
         if (tileTextureCache.containsKey(cacheKey)) {
           const tileTexture = tileTextureCache.get(cacheKey);
@@ -652,34 +777,35 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     return covered;
   }
 
+  removeHelper() {
+    if (this.helper) {
+      const tileTextureCache = this.tileTextureCache_;
+      tileTextureCache.forEach((tileTexture) => tileTexture.dispose());
+      tileTextureCache.clear();
+    }
+
+    super.removeHelper();
+  }
+
   /**
    * Clean up.
    */
   disposeInternal() {
     const helper = this.helper;
-    const gl = helper.getGL();
+    if (helper) {
+      const gl = helper.getGL();
+      gl.deleteProgram(this.program_);
+      delete this.program_;
 
-    helper.deleteBuffer(this.indices_);
-    delete this.indices_;
-
-    gl.deleteProgram(this.program_);
-    delete this.program_;
-
-    const tileTextureCache = this.tileTextureCache_;
-    tileTextureCache.forEach(function (tileTexture) {
-      tileTexture.dispose();
-    });
-    tileTextureCache.clear();
-    delete this.tileTextureCache_;
+      helper.deleteBuffer(this.indices_);
+    }
 
     super.disposeInternal();
+
+    delete this.indices_;
+    delete this.tileTextureCache_;
+    delete this.frameState_;
   }
 }
-
-/**
- * @function
- * @return {import("../../layer/WebGLTile.js").default}
- */
-WebGLTileLayerRenderer.prototype.getLayer;
 
 export default WebGLTileLayerRenderer;

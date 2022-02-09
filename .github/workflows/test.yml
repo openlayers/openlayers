@@ -101,7 +101,7 @@ jobs:
         run: npm run build-package
 
       - name: Generate the Legacy Build
-        run: npm run build-legacy && npx eslint --fix build/index.js
+        run: "npm run build-legacy && npx eslint --rule 'import/no-duplicates: off' --fix build/index.js"
 
   rendering:
     name: Rendering

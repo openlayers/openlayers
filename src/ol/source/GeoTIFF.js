@@ -4,11 +4,7 @@
 import DataTile from './DataTile.js';
 import State from './State.js';
 import TileGrid from '../tilegrid/TileGrid.js';
-import {
-  Pool,
-  fromUrl as tiffFromUrl,
-  fromUrls as tiffFromUrls,
-} from 'geotiff/src/geotiff.js';
+import {Pool, fromUrl as tiffFromUrl, fromUrls as tiffFromUrls} from 'geotiff';
 import {
   Projection,
   get as getCachedProjection,
@@ -16,7 +12,6 @@ import {
   toUserExtent,
 } from '../proj.js';
 import {clamp} from '../math.js';
-import {create as createDecoderWorker} from '../worker/geotiff-decoder.js';
 import {getCenter, getIntersection} from '../extent.js';
 import {toSize} from '../size.js';
 import {fromCode as unitsFromCode} from '../proj/Units.js';
@@ -55,15 +50,11 @@ import {fromCode as unitsFromCode} from '../proj/Units.js';
  */
 
 /**
- * @typedef {Object} GeoTIFF
- * @property {function():Promise<number>} getImageCount Get the number of internal subfile images.
- * @property {function(number):Promise<GeoTIFFImage>} getImage Get the image at the specified index.
+ * @typedef {import("geotiff").GeoTIFF} GeoTIFF
  */
 
 /**
- * @typedef {Object} MultiGeoTIFF
- * @property {function():Promise<number>} getImageCount Get the number of internal subfile images.
- * @property {function(number):Promise<GeoTIFFImage>} getImage Get the image at the specified index.
+ * @typedef {import("geotiff").MultiGeoTIFF} MultiGeoTIFF
  */
 
 /**
@@ -76,28 +67,13 @@ const STATISTICS_MAXIMUM = 'STATISTICS_MAXIMUM';
 const STATISTICS_MINIMUM = 'STATISTICS_MINIMUM';
 
 /**
- * @typedef {Object} GeoTIFFImage
- * @property {Object} fileDirectory The file directory.
- * @property {GeoKeys} geoKeys The parsed geo-keys.
- * @property {boolean} littleEndian Uses little endian byte order.
- * @property {Object} tiles The tile cache.
- * @property {boolean} isTiled The image is tiled.
- * @property {function():Array<number>} getBoundingBox Get the image bounding box.
- * @property {function():Array<number>} getOrigin Get the image origin.
- * @property {function(GeoTIFFImage):Array<number>} getResolution Get the image resolution.
- * @property {function():number} getWidth Get the pixel width of the image.
- * @property {function():number} getHeight Get the pixel height of the image.
- * @property {function():number} getTileWidth Get the pixel width of image tiles.
- * @property {function():number} getTileHeight Get the pixel height of image tiles.
- * @property {function():number|null} getGDALNoData Get the nodata value (or null if none).
- * @property {function():GDALMetadata|null} getGDALMetadata Get the raster stats (or null if none).
- * @property {function():number} getSamplesPerPixel Get the number of samples per pixel.
+ * @typedef {import("geotiff").GeoTIFFImage} GeoTIFFImage
  */
 
 let workerPool;
 function getWorkerPool() {
   if (!workerPool) {
-    workerPool = new Pool(undefined, createDecoderWorker());
+    workerPool = new Pool();
   }
   return workerPool;
 }
@@ -207,14 +183,15 @@ function getImagesForTIFF(tiff) {
 
 /**
  * @param {SourceInfo} source The GeoTIFF source.
+ * @param {object} options Options for the GeoTIFF source.
  * @return {Promise<Array<GeoTIFFImage>>} Resolves to a list of images.
  */
-function getImagesForSource(source) {
+function getImagesForSource(source, options) {
   let request;
   if (source.overviews) {
-    request = tiffFromUrls(source.url, source.overviews);
+    request = tiffFromUrls(source.url, source.overviews, options);
   } else {
-    request = tiffFromUrl(source.url);
+    request = tiffFromUrl(source.url, options);
   }
   return request.then(getImagesForTIFF);
 }
@@ -299,6 +276,20 @@ function getMaxForDataType(array) {
 }
 
 /**
+ * @typedef {Object} GeoTIFFSourceOptions
+ * @property {boolean} [forceXHR=false] Whether to force the usage of the browsers XMLHttpRequest API.
+ * @property {Object<string, string>} [headers] additional key-value pairs of headers to be passed with each request. Key is the header name, value the header value.
+ * @property {string} [credentials] How credentials shall be handled. See
+ * https://developer.mozilla.org/en-US/docs/Web/API/fetch for reference and possible values
+ * @property {number} [maxRanges] The maximum amount of ranges to request in a single multi-range request.
+ * By default only a single range is used.
+ * @property {boolean} [allowFullFile=false] Whether or not a full file is accepted when only a portion is
+ * requested. Only use this when you know the source image to be small enough to fit in memory.
+ * @property {number} [blockSize=65536] The block size to use.
+ * @property {number} [cacheSize=100] The number of blocks that shall be held in a LRU cache.
+ */
+
+/**
  * @typedef {Object} Options
  * @property {Array<SourceInfo>} sources List of information about GeoTIFF sources.
  * Multiple sources can be combined when their resolution sets are equal after applying a scale.
@@ -308,6 +299,7 @@ function getMaxForDataType(array) {
  * sources, one with 3 bands and {@link import("./GeoTIFF.js").SourceInfo nodata} configured, and
  * another with 1 band, the resulting data tiles will have 5 bands: 3 from the first source, 1 alpha
  * band from the first source, and 1 band from the second source.
+ * @property {GeoTIFFSourceOptions} [sourceOptions] Additional options to be passed to [geotiff.js](https://geotiffjs.github.io/geotiff.js/module-geotiff.html)'s `fromUrl` or `fromUrls` methods.
  * @property {boolean} [convertToRGB = false] By default, bands from the sources are read as-is. When
  * reading GeoTIFFs with the purpose of displaying them as RGB images, setting this to `true` will
  * convert other color spaces (YCbCr, CMYK) to RGB.
@@ -350,6 +342,12 @@ class GeoTIFFSource extends DataTile {
     this.sourceInfo_ = options.sources;
 
     const numSources = this.sourceInfo_.length;
+
+    /**
+     * @type {object}
+     * @private
+     */
+    this.sourceOptions_ = options.sourceOptions;
 
     /**
      * @type {Array<Array<GeoTIFFImage>>}
@@ -409,7 +407,10 @@ class GeoTIFFSource extends DataTile {
     const self = this;
     const requests = new Array(numSources);
     for (let i = 0; i < numSources; ++i) {
-      requests[i] = getImagesForSource(this.sourceInfo_[i]);
+      requests[i] = getImagesForSource(
+        this.sourceInfo_[i],
+        this.sourceOptions_
+      );
     }
     Promise.all(requests)
       .then(function (sources) {
@@ -471,7 +472,7 @@ class GeoTIFFSource extends DataTile {
       for (let imageIndex = 0; imageIndex < imageCount; ++imageIndex) {
         const image = images[imageIndex];
         const nodataValue = image.getGDALNoData();
-        metadata[sourceIndex][imageIndex] = image.getGDALMetadata();
+        metadata[sourceIndex][imageIndex] = image.getGDALMetadata(0);
         nodataValues[sourceIndex][imageIndex] =
           nodataValue === null ? NaN : nodataValue;
 

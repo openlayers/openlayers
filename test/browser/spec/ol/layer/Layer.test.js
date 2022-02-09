@@ -4,6 +4,9 @@ import Map from '../../../../../src/ol/Map.js';
 import Property from '../../../../../src/ol/layer/Property.js';
 import RenderEvent from '../../../../../src/ol/render/Event.js';
 import Source from '../../../../../src/ol/source/Source.js';
+import TileLayer from '../../../../../src/ol/layer/Tile.js';
+import View from '../../../../../src/ol/View.js';
+import XYZ from '../../../../../src/ol/source/XYZ.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 
 describe('ol/layer/Layer', function () {
@@ -56,7 +59,6 @@ describe('ol/layer/Layer', function () {
         opacity: 1,
         visible: true,
         managed: true,
-        sourceState: 'ready',
         extent: undefined,
         zIndex: undefined,
         maxResolution: Infinity,
@@ -95,7 +97,6 @@ describe('ol/layer/Layer', function () {
         opacity: 0.5,
         visible: false,
         managed: true,
-        sourceState: 'ready',
         extent: undefined,
         zIndex: 10,
         maxResolution: 500,
@@ -430,7 +431,6 @@ describe('ol/layer/Layer', function () {
         opacity: 0.33,
         visible: false,
         managed: true,
-        sourceState: 'ready',
         extent: undefined,
         zIndex: 10,
         maxResolution: 500,
@@ -619,6 +619,77 @@ describe('ol/layer/Layer', function () {
 
       layer.setVisible(true);
       expect(listener.callCount).to.be(2);
+    });
+  });
+
+  describe('unrender()', () => {
+    /** @type {Map} */
+    let map;
+
+    /** @type {TileLayer} */
+    let layer;
+
+    /** HTMLDivElement */
+    let target;
+
+    beforeEach((done) => {
+      target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+
+      layer = new TileLayer({
+        source: new XYZ({
+          url: 'spec/ol/data/osm-0-0-0.png',
+        }),
+      });
+
+      map = new Map({
+        target: target,
+        layers: [layer],
+        view: new View({
+          center: [0, 0],
+          zoom: 0,
+        }),
+      });
+
+      map.once('rendercomplete', () => done());
+    });
+
+    afterEach(() => {
+      map.setTarget(null);
+      document.body.removeChild(target);
+    });
+
+    it('is called when a layer goes from visible to not visible', () => {
+      const spy = sinon.spy(layer, 'unrender');
+      map.renderSync();
+      expect(spy.callCount).to.be(0);
+
+      layer.setVisible(false);
+      map.renderSync();
+      expect(spy.callCount).to.be(1);
+    });
+
+    it('is called when a layer is removed from the map', () => {
+      const spy = sinon.spy(layer, 'unrender');
+      map.renderSync();
+      expect(spy.callCount).to.be(0);
+
+      map.removeLayer(layer);
+      map.renderSync();
+      expect(spy.callCount).to.be(1);
+    });
+
+    it('is called when a layer goes out of range', () => {
+      const spy = sinon.spy(layer, 'unrender');
+      map.renderSync();
+      expect(spy.callCount).to.be(0);
+
+      layer.setMaxZoom(3);
+      map.getView().setZoom(4);
+      map.renderSync();
+      expect(spy.callCount).to.be(1);
     });
   });
 

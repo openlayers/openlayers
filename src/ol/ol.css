@@ -39,13 +39,13 @@
   height: 15px;
   background-color: #000000;
   float: right;
-  z-Index: 10;
+  z-index: 10;
 }
 .ol-scale-step-text {
   position: absolute;
   bottom: -5px;
   font-size: 12px;
-  z-Index: 11;
+  z-index: 11;
   color: #000000;
   text-shadow: -2px 0 #FFFFFF, 0 2px #FFFFFF, 2px 0 #FFFFFF, 0 -2px #FFFFFF;
 }
@@ -60,7 +60,7 @@
 .ol-scale-singlebar {
   position: relative;
   height: 10px;
-  z-Index: 9;
+  z-index: 9;
   box-sizing: border-box;
   border: 1px solid black;
 }

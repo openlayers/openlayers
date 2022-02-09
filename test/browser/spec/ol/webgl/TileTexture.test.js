@@ -42,11 +42,11 @@ describe('ol/webgl/TileTexture', function () {
       mapId: 'map-1',
     });
 
-    tileTexture = new TileTexture(
-      layer.getSource().getTile(3, 2, 1),
-      layer.getSource().getTileGrid(),
-      renderer.helper
-    );
+    tileTexture = new TileTexture({
+      tile: layer.getSource().getTile(3, 2, 1),
+      grid: layer.getSource().getTileGrid(),
+      helper: renderer.helper,
+    });
   });
 
   afterEach(() => {
@@ -75,6 +75,25 @@ describe('ol/webgl/TileTexture', function () {
     const imageTile = new ImageTile([0, 0, 0], TileState.LOADED);
     tileTexture.setTile(imageTile);
     expect(tileTexture.loaded).to.be(true);
+  });
+
+  it('sets anonymous cors mode for image tiles by default', function () {
+    const tile = new ImageTile([0, 0, 0], TileState.IDLE);
+    tileTexture.setTile(tile);
+    const image = tile.getImage();
+    expect(image.crossOrigin).to.be('anonymous');
+  });
+
+  it('resepects any existing cors mode', function () {
+    const tile = new ImageTile(
+      [0, 0, 0],
+      TileState.IDLE,
+      'https://example.com/tile.png',
+      'use-credentials'
+    );
+    tileTexture.setTile(tile);
+    const image = tile.getImage();
+    expect(image.crossOrigin).to.be('use-credentials');
   });
 
   it('registers and unregisters change listener', function () {

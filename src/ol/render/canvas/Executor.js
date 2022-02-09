@@ -13,11 +13,9 @@ import {
 import {createEmpty, createOrUpdate, intersects} from '../../extent.js';
 import {
   defaultPadding,
+  defaultTextAlign,
   defaultTextBaseline,
   drawImageOrLabel,
-} from '../canvas.js';
-import {
-  defaultTextAlign,
   measureAndCacheTextWidth,
   measureTextHeight,
   measureTextWidths,

@@ -1,8 +1,10 @@
 import Feature from '../../../../../../src/ol/Feature.js';
 import GeoJSON from '../../../../../../src/ol/format/GeoJSON.js';
+import Map from '../../../../../../src/ol/Map.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import VectorLayer from '../../../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../../../src/ol/source/Vector.js';
+import View from '../../../../../../src/ol/View.js';
 import ViewHint from '../../../../../../src/ol/ViewHint.js';
 import WebGLPointsLayer from '../../../../../../src/ol/layer/WebGLPoints.js';
 import WebGLPointsLayerRenderer from '../../../../../../src/ol/renderer/webgl/PointsLayer.js';
@@ -11,6 +13,7 @@ import {
   compose as composeTransform,
   create as createTransform,
 } from '../../../../../../src/ol/transform.js';
+import {createCanvasContext2D} from '../../../../../../src/ol/dom.js';
 import {get as getProjection} from '../../../../../../src/ol/proj.js';
 import {getUid} from '../../../../../../src/ol/util.js';
 
@@ -100,6 +103,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         fragmentShader: simpleFragmentShader,
       });
       expect(renderer).to.be.a(WebGLPointsLayerRenderer);
+      renderer.dispose();
     });
   });
 
@@ -122,6 +126,10 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         extent: [-100, -100, 100, 100],
         layerStatesArray: [layer.getLayerState()],
       });
+    });
+
+    afterEach(function () {
+      renderer.dispose();
     });
 
     it('calls WebGlHelper#prepareDraw', function () {
@@ -317,6 +325,10 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       });
     });
 
+    afterEach(function () {
+      renderer.dispose();
+    });
+
     it('correctly hit detects a feature', function (done) {
       const transform = composeTransform(
         createTransform(),
@@ -453,7 +465,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
 
       const spyHelper = sinon.spy(renderer.helper, 'disposeInternal');
       const spyWorker = sinon.spy(renderer.worker_, 'terminate');
-      renderer.disposeInternal();
+      renderer.dispose();
       expect(spyHelper.called).to.be(true);
       expect(spyWorker.called).to.be(true);
     });
@@ -669,6 +681,10 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       };
     });
 
+    afterEach(function () {
+      renderer.dispose();
+    });
+
     it('fires prerender and postrender events', function (done) {
       let prerenderNotified = false;
       let postrenderNotified = false;
@@ -686,6 +702,143 @@ describe('ol/renderer/webgl/PointsLayer', function () {
 
       renderer.prepareFrame(frameState);
       renderer.renderFrame(frameState);
+    });
+  });
+
+  describe('rendercomplete', function () {
+    let map, layer;
+    beforeEach(function () {
+      layer = new WebGLPointsLayer({
+        source: new VectorSource({
+          features: [new Feature(new Point([0, 0]))],
+        }),
+        style: {
+          symbol: {
+            symbolType: 'circle',
+            size: 14,
+            color: 'red',
+          },
+        },
+      });
+      map = new Map({
+        pixelRatio: 1,
+        target: createMapDiv(100, 100),
+        layers: [layer],
+        view: new View({
+          center: [0, 0],
+          zoom: 2,
+        }),
+      });
+    });
+
+    afterEach(function () {
+      disposeMap(map);
+      layer.dispose();
+    });
+
+    it('is completely rendered on rendercomplete', function (done) {
+      map.once('rendercomplete', function () {
+        const targetContext = createCanvasContext2D(1, 1);
+        const canvas = document.querySelector('.ol-layer');
+        targetContext.drawImage(canvas, 50, 50, 1, 1, 0, 0, 1, 1);
+        expect(Array.from(targetContext.getImageData(0, 0, 1, 1).data)).to.eql([
+          255, 0, 0, 255,
+        ]);
+        layer
+          .getSource()
+          .addFeature(new Feature(new Point([1900000, 1900000])));
+        layer.once('postrender', function () {
+          expect(layer.getRenderer().ready).to.be(false);
+        });
+        map.once('rendercomplete', function () {
+          const targetContext = createCanvasContext2D(1, 1);
+          const canvas = document.querySelector('.ol-layer');
+          targetContext.drawImage(canvas, 99, 0, 1, 1, 0, 0, 1, 1);
+          expect(
+            Array.from(targetContext.getImageData(0, 0, 1, 1).data)
+          ).to.eql([255, 0, 0, 255]);
+          done();
+        });
+      });
+    });
+    it('is not ready until after second rebuildBuffers_ worker calls completed', function (done) {
+      map.renderSync();
+      map.getView().setCenter([10, 10]);
+      map.renderSync();
+      let changed = 0;
+      layer.on('change', function () {
+        try {
+          expect(layer.getRenderer().ready).to.be(++changed > 2);
+          if (changed === 4) {
+            done();
+          }
+        } catch (e) {
+          done(e);
+        }
+      });
+    });
+  });
+
+  describe('#updateStyleVariables()', function () {
+    const targetContext = createCanvasContext2D(1, 1);
+
+    function getCenterPixelImageData() {
+      targetContext.clearRect(0, 0, 1, 1);
+      const canvas = document.querySelector('.testlayer');
+      targetContext.drawImage(canvas, 50, 50, 1, 1, 0, 0, 1, 1);
+      return Array.from(targetContext.getImageData(0, 0, 1, 1).data);
+    }
+
+    let map, layer;
+    beforeEach(function (done) {
+      layer = new WebGLPointsLayer({
+        className: 'testlayer',
+        source: new VectorSource({
+          features: [new Feature(new Point([0, 0]))],
+        }),
+        style: {
+          variables: {
+            r: 0,
+            g: 255,
+            b: 0,
+          },
+          symbol: {
+            symbolType: 'circle',
+            size: 14,
+            color: ['color', ['var', 'r'], ['var', 'g'], ['var', 'b']],
+          },
+        },
+      });
+      map = new Map({
+        pixelRatio: 1,
+        target: createMapDiv(100, 100),
+        layers: [layer],
+        view: new View({
+          center: [0, 0],
+          zoom: 2,
+        }),
+      });
+      map.once('rendercomplete', () => done());
+    });
+    afterEach(function () {
+      disposeMap(map);
+      layer.dispose();
+    });
+
+    it('allows changing variables', function (done) {
+      expect(layer.styleVariables_['r']).to.be(0);
+      expect(getCenterPixelImageData()).to.eql([0, 255, 0, 255]);
+      layer.updateStyleVariables({
+        r: 255,
+        g: 0,
+        b: 255,
+      });
+      expect(layer.styleVariables_['r']).to.be(255);
+
+      map.on('rendercomplete', function (event) {
+        expect(getCenterPixelImageData()).to.eql([255, 0, 255, 255]);
+        done();
+      });
     });
   });
 });

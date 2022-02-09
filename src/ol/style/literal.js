@@ -32,6 +32,7 @@ export const SymbolType = {
  * @property {ExpressionValue|Array<ExpressionValue, ExpressionValue>} size Size, mandatory.
  * @property {SymbolType} symbolType Symbol type to use, either a regular shape or an image.
  * @property {string} [src] Path to the image to be used for the symbol. Only required with `symbolType: 'image'`.
+ * @property {string} [crossOrigin='anonymous'] The `crossOrigin` attribute for loading `src`.
  * @property {import("../color.js").Color|Array<ExpressionValue>|string} [color='#FFFFFF'] Color used for the representation (either fill, line or symbol).
  * @property {ExpressionValue} [opacity=1] Opacity.
  * @property {ExpressionValue} [rotation=0] Symbol rotation in radians.

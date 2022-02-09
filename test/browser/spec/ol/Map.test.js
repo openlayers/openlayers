@@ -23,6 +23,7 @@ import TileLayerRenderer from '../../../../src/ol/renderer/canvas/TileLayer.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import View from '../../../../src/ol/View.js';
+import WebGLPointsLayer from '../../../../src/ol/layer/WebGLPoints.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
 import {LineString, Point, Polygon} from '../../../../src/ol/geom.js';
 import {TRUE} from '../../../../src/ol/functions.js';
@@ -449,6 +450,17 @@ describe('ol/Map', function () {
               },
             }),
           }),
+          new WebGLPointsLayer({
+            source: new VectorSource({
+              features: [new Feature(new Point([0, 0]))],
+            }),
+            style: {
+              symbol: {
+                color: 'red',
+                symbolType: 'circle',
+              },
+            },
+          }),
         ],
       });
     });
@@ -457,16 +469,19 @@ describe('ol/Map', function () {
       document.body.removeChild(map.getTargetElement());
       map.setTarget(null);
       map.dispose();
+      map.getLayers().forEach((layer) => layer.dispose());
     });
 
     it('triggers when all tiles and sources are loaded and faded in', function (done) {
+      const layers = map.getLayers().getArray();
+      expect(layers[6].getRenderer().ready).to.be(false);
       map.once('rendercomplete', function () {
-        const layers = map.getLayers().getArray();
         expect(map.tileQueue_.getTilesLoading()).to.be(0);
         expect(layers[1].getSource().image_.getState()).to.be(
           ImageState.LOADED
         );
         expect(layers[2].getSource().getFeatures().length).to.be(1);
+        expect(layers[6].getRenderer().ready).to.be(true);
         done();
       });
       map.setView(
