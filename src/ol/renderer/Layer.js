@@ -49,6 +49,14 @@ class LayerRenderer extends Observable {
   }
 
   /**
+   * @param {import("../pixel.js").Pixel} pixel Pixel.
+   * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView|null} Pixel data.
+   */
+  getData(pixel) {
+    return null;
+  }
+
+  /**
    * Determine whether render should be called.
    * @abstract
    * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
@@ -191,6 +199,14 @@ class LayerRenderer extends Observable {
     if (layer.getVisible() && layer.getSourceState() == SourceState.READY) {
       layer.changed();
     }
+  }
+
+  /**
+   * Clean up.
+   */
+  disposeInternal() {
+    delete this.layer_;
+    super.disposeInternal();
   }
 }
 

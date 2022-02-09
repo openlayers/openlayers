@@ -685,6 +685,9 @@ class PluggableMap extends BaseObject {
   }
 
   /**
+   * Please the `layer.getData()` method for {@link module:ol/layer/Tile~TileLayer#getData tile layers} or
+   * {@link module:ol/layer/Image~ImageLayer#getData image layers} instead of using this method.
+   *
    * Detect layers that have a color value at a pixel on the viewport, and
    * execute a callback with each matching layer. Layers included in the
    * detection can be configured through `opt_layerFilter`.
@@ -707,6 +710,7 @@ class PluggableMap extends BaseObject {
    * callback execution, or the first truthy callback return value.
    * @template S,T
    * @api
+   * @deprecated
    */
   forEachLayerAtPixel(pixel, callback, opt_options) {
     if (!this.frameState_) {

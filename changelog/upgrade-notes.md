@@ -1,5 +1,17 @@
 ## Upgrade notes
 
+### Next
+
+#### New `layer.getData()` method
+
+Raster layers (static images, image tiles, data tiles) have a new `layer.getData(pixel)` method that returns the pixel data at the provided location.  The return value depends on the underlying source data type.  For example, a GeoTIFF may return a `Float32Array` with one value per band, while a PNG rendered from a tile layer will return a `Uint8ClampedArray` of RGBA values.
+
+If you were previously using the `map.forEachLayerAtPixel()` method, you should use the new `layer.getData()` method instead.  The old method returns composite pixel values from multiple layers and is limited to RGBA values.  The new method doesn't suffer from these shortcomings and is more performant.
+
+#### Deprecated `map.forEachLayerAtPixel()` method
+
+The `map.forEachLayerAtPixel()` method has been deprecated.  It will be removed (or its behavior may change) in the next major release.  Please use the `layer.getData()` method instead.
+
 ### v6.12.0
 
 No special changes are required when upgrading to the 6.12.0 release.

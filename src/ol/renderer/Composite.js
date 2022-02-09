@@ -118,6 +118,7 @@ class CompositeMapRenderer extends MapRenderer {
         (sourceState != SourceState.READY &&
           sourceState != SourceState.UNDEFINED)
       ) {
+        layer.unrender();
         continue;
       }
 

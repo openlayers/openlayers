@@ -53,6 +53,81 @@ describe('ol/layer/WebGLTile', function () {
     map.getLayers().forEach((layer) => layer.dispose());
   });
 
+  describe('getData()', () => {
+    /** @type {Map} */
+    let map;
+    let target;
+
+    beforeEach(() => {
+      target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      map = new Map({
+        target: target,
+        view: new View({
+          center: [0, 0],
+          zoom: 0,
+        }),
+      });
+    });
+
+    afterEach(() => {
+      map.setTarget(null);
+      document.body.removeChild(target);
+    });
+
+    it('retrieves pixel data', (done) => {
+      const layer = new WebGLTileLayer({
+        source: new DataTileSource({
+          tilePixelRatio: 1 / 256,
+          loader(z, x, y) {
+            return new Uint8Array([5, 4, 3, 2, 1]);
+          },
+        }),
+      });
+
+      map.addLayer(layer);
+
+      map.once('rendercomplete', () => {
+        const data = layer.getData([50, 25]);
+        expect(data).to.be.a(Uint8Array);
+        expect(data.length).to.be(5);
+        expect(data[0]).to.be(5);
+        expect(data[1]).to.be(4);
+        expect(data[2]).to.be(3);
+        expect(data[3]).to.be(2);
+        expect(data[4]).to.be(1);
+        done();
+      });
+    });
+
+    it('preserves the original data type', (done) => {
+      const layer = new WebGLTileLayer({
+        source: new DataTileSource({
+          tilePixelRatio: 1 / 256,
+          loader(z, x, y) {
+            return new Float32Array([1.11, 2.22, 3.33, 4.44, 5.55]);
+          },
+        }),
+      });
+
+      map.addLayer(layer);
+
+      map.once('rendercomplete', () => {
+        const data = layer.getData([50, 25]);
+        expect(data).to.be.a(Float32Array);
+        expect(data.length).to.be(5);
+        expect(data[0]).to.roughlyEqual(1.11, 1e-5);
+        expect(data[1]).to.roughlyEqual(2.22, 1e-5);
+        expect(data[2]).to.roughlyEqual(3.33, 1e-5);
+        expect(data[3]).to.roughlyEqual(4.44, 1e-5);
+        expect(data[4]).to.roughlyEqual(5.55, 1e-5);
+        done();
+      });
+    });
+  });
+
   describe('dispose()', () => {
     it('calls dispose on the renderer', () => {
       const renderer = layer.getRenderer();
