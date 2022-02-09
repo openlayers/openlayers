@@ -98,6 +98,7 @@ document.getElementById('export-png').addEventListener('click', function () {
         }
       }
     );
+    mapContext.globalAlpha = 1;
     if (navigator.msSaveBlob) {
       // link download attribute does not work on MS browsers
       navigator.msSaveBlob(mapCanvas.msToBlob(), 'map.png');
