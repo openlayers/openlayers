@@ -457,10 +457,12 @@ class VectorSource extends Source {
       this.featuresRtree_.load(extents, geometryFeatures);
     }
 
-    for (let i = 0, length = newFeatures.length; i < length; i++) {
-      this.dispatchEvent(
-        new VectorSourceEvent(VectorEventType.ADDFEATURE, newFeatures[i])
-      );
+    if (this.hasListener(VectorEventType.ADDFEATURE)) {
+      for (let i = 0, length = newFeatures.length; i < length; i++) {
+        this.dispatchEvent(
+          new VectorSourceEvent(VectorEventType.ADDFEATURE, newFeatures[i])
+        );
+      }
     }
   }
 

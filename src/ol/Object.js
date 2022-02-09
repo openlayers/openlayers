@@ -172,9 +172,13 @@ class BaseObject extends Observable {
   notify(key, oldValue) {
     let eventType;
     eventType = `change:${key}`;
-    this.dispatchEvent(new ObjectEvent(eventType, key, oldValue));
+    if (this.hasListener(eventType)) {
+      this.dispatchEvent(new ObjectEvent(eventType, key, oldValue));
+    }
     eventType = ObjectEventType.PROPERTYCHANGE;
-    this.dispatchEvent(new ObjectEvent(eventType, key, oldValue));
+    if (this.hasListener(eventType)) {
+      this.dispatchEvent(new ObjectEvent(eventType, key, oldValue));
+    }
   }
 
   /**
