@@ -2,7 +2,7 @@
 
 ## Setting up development environment
 
-You will obviously start by
+You will start by
 [forking](https://github.com/openlayers/openlayers/fork) the OpenLayers repository.
 
 ### Development dependencies
