@@ -1768,6 +1768,8 @@ class PluggableMap extends BaseObject {
           }
         }
       );
+      mapContext.globalAlpha = 1;
+      mapContext.setTransform(1, 0, 0, 1, 0, 0);
       return mapCanvas;
     }
   }
