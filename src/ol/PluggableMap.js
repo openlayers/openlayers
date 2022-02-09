@@ -710,6 +710,7 @@ class PluggableMap extends BaseObject {
    * callback execution, or the first truthy callback return value.
    * @template S,T
    * @api
+   * @deprecated
    */
   forEachLayerAtPixel(pixel, callback, opt_options) {
     if (!this.frameState_) {
