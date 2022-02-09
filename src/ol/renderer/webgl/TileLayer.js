@@ -307,23 +307,16 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
   /**
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @param {import("../../extent.js").Extent} extent The extent to be rendered.
-   * @param {number} z The zoom level.
+   * @param {number} initialZ The zoom level.
    * @param {Object<number, Array<TileTexture>>} tileTexturesByZ The zoom level.
    */
-  enqueueTiles(frameState, extent, z, tileTexturesByZ) {
+  enqueueTiles(frameState, extent, initialZ, tileTexturesByZ) {
     const viewState = frameState.viewState;
     const tileLayer = this.getLayer();
     const tileSource = tileLayer.getRenderSource();
     const tileGrid = tileSource.getTileGridForProjection(viewState.projection);
     const tilePixelRatio = tileSource.getTilePixelRatio(frameState.pixelRatio);
     const gutter = tileSource.getGutterForProjection(viewState.projection);
-
-    const tileTextureCache = this.tileTextureCache_;
-    const tileRange = tileGrid.getTileRangeForExtentAndZ(
-      extent,
-      z,
-      this.tempTileRange_
-    );
 
     const tileSourceKey = getUid(tileSource);
     if (!(tileSourceKey in frameState.wantedTiles)) {
@@ -332,70 +325,80 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
 
     const wantedTiles = frameState.wantedTiles[tileSourceKey];
 
-    const tileResolution = tileGrid.getResolution(z);
+    const tileTextureCache = this.tileTextureCache_;
+    const minZ = Math.max(
+      initialZ - tileLayer.getPreload(),
+      tileGrid.getMinZoom(),
+      tileLayer.getMinZoom()
+    );
+    for (let z = initialZ; z >= minZ; --z) {
+      const tileRange = tileGrid.getTileRangeForExtentAndZ(
+        extent,
+        z,
+        this.tempTileRange_
+      );
 
-    for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
-      for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
-        const tileCoord = createTileCoord(z, x, y, this.tempTileCoord_);
-        const cacheKey = getCacheKey(tileSource, tileCoord);
+      const tileResolution = tileGrid.getResolution(z);
 
-        /**
-         * @type {TileTexture}
-         */
-        let tileTexture;
+      for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
+        for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
+          const tileCoord = createTileCoord(z, x, y, this.tempTileCoord_);
+          const cacheKey = getCacheKey(tileSource, tileCoord);
 
-        /**
-         * @type {import("../../webgl/TileTexture").TileType}
-         */
-        let tile;
+          /** @type {TileTexture} */
+          let tileTexture;
 
-        if (tileTextureCache.containsKey(cacheKey)) {
-          tileTexture = tileTextureCache.get(cacheKey);
-          tile = tileTexture.tile;
-        }
-        if (!tileTexture || tileTexture.tile.key !== tileSource.getKey()) {
-          tile = tileSource.getTile(
-            z,
-            x,
-            y,
-            frameState.pixelRatio,
-            viewState.projection
-          );
-          if (!tileTexture) {
-            tileTexture = new TileTexture({
-              tile: tile,
-              grid: tileGrid,
-              helper: this.helper,
-              tilePixelRatio: tilePixelRatio,
-              gutter: gutter,
-            });
-            tileTextureCache.set(cacheKey, tileTexture);
-          } else {
-            if (this.isDrawableTile_(tile)) {
-              tileTexture.setTile(tile);
+          /** @type {import("../../webgl/TileTexture").TileType} */
+          let tile;
+
+          if (tileTextureCache.containsKey(cacheKey)) {
+            tileTexture = tileTextureCache.get(cacheKey);
+            tile = tileTexture.tile;
+          }
+          if (!tileTexture || tileTexture.tile.key !== tileSource.getKey()) {
+            tile = tileSource.getTile(
+              z,
+              x,
+              y,
+              frameState.pixelRatio,
+              viewState.projection
+            );
+            if (!tileTexture) {
+              tileTexture = new TileTexture({
+                tile: tile,
+                grid: tileGrid,
+                helper: this.helper,
+                tilePixelRatio: tilePixelRatio,
+                gutter: gutter,
+              });
+              tileTextureCache.set(cacheKey, tileTexture);
             } else {
-              const interimTile =
-                /** @type {import("../../webgl/TileTexture").TileType} */ (
-                  tile.getInterimTile()
-                );
-              tileTexture.setTile(interimTile);
+              if (this.isDrawableTile_(tile)) {
+                tileTexture.setTile(tile);
+              } else {
+                const interimTile =
+                  /** @type {import("../../webgl/TileTexture").TileType} */ (
+                    tile.getInterimTile()
+                  );
+                tileTexture.setTile(interimTile);
+              }
             }
           }
-        }
 
-        addTileTextureToLookup(tileTexturesByZ, tileTexture, z);
+          addTileTextureToLookup(tileTexturesByZ, tileTexture, z);
 
-        const tileQueueKey = tile.getKey();
-        wantedTiles[tileQueueKey] = true;
+          const tileQueueKey = tile.getKey();
+          wantedTiles[tileQueueKey] = true;
 
-        if (tile.getState() === TileState.IDLE) {
-          if (!frameState.tileQueue.isKeyQueued(tileQueueKey)) {
-            frameState.tileQueue.enqueue([
-              tile,
-              tileSourceKey,
-              tileGrid.getTileCoordCenter(tileCoord),
-              tileResolution,
-            ]);
+          if (tile.getState() === TileState.IDLE) {
+            if (!frameState.tileQueue.isKeyQueued(tileQueueKey)) {
+              frameState.tileQueue.enqueue([
+                tile,
+                tileSourceKey,
+                tileGrid.getTileCoordCenter(tileCoord),
+                tileResolution,
+              ]);
+            }
           }
         }
       }
