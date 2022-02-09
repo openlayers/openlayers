@@ -15,6 +15,7 @@ import TextBuilder from './TextBuilder.js';
 const BATCH_CONSTRUCTORS = {
   'Circle': PolygonBuilder,
   'CircularString': CircularStringBuilder,
+  'CompoundCurve': CircularStringBuilder,
   'Default': Builder,
   'Image': ImageBuilder,
   'LineString': LineStringBuilder,

@@ -317,13 +317,16 @@ function renderCompoundCurveGeometry(
   feature,
   opt_declutterBuilderGroup
 ) {
-  renderGeometryCollectionGeometry(
-    builderGroup,
-    geometry,
-    style,
-    feature,
-    opt_declutterBuilderGroup
-  );
+  const strokeStyle = style.getStroke();
+  if (strokeStyle) {
+    const compoundCurveReplay = builderGroup.getBuilder(
+      style.getZIndex(),
+      BuilderType.COMPOUND_CURVE
+    );
+
+    compoundCurveReplay.setFillStrokeStyle(null, strokeStyle);
+    compoundCurveReplay.drawCompoundCurve(geometry, feature);
+  }
 }
 
 /**

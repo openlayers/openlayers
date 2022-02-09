@@ -23,6 +23,7 @@ const ORDER = [
   BuilderType.CIRCLE,
   BuilderType.LINE_STRING,
   BuilderType.CIRCULAR_STRING,
+  BuilderType.COMPOUND_CURVE,
   BuilderType.IMAGE,
   BuilderType.TEXT,
   BuilderType.DEFAULT,

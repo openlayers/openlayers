@@ -380,7 +380,8 @@ class WkbReader {
 
       case WKBGeometryType.COMPOUND_CURVE:
         return new CompoundCurve(
-          /** @type {Array<import('../geom/Geometry.js').default>} */ (result)
+          /** @type {Array<import('../geom/Geometry.js').default>} */ (result),
+          this.layout_
         );
 
       default:
