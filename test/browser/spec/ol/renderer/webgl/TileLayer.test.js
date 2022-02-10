@@ -6,6 +6,7 @@ import {VOID} from '../../../../../../src/ol/functions.js';
 import {create} from '../../../../../../src/ol/transform.js';
 import {createCanvasContext2D} from '../../../../../../src/ol/dom.js';
 import {get} from '../../../../../../src/ol/proj.js';
+import {getUid} from '../../../../../../src/ol/util.js';
 
 describe('ol/renderer/webgl/TileLayer', function () {
   /** @type {import("../../../../../../src/ol/renderer/webgl/TileLayer.js").default} */
@@ -104,5 +105,82 @@ describe('ol/renderer/webgl/TileLayer', function () {
     expect(renderer.isDrawableTile_(errorTile)).to.be(true);
     tileLayer.setUseInterimTilesOnError(true);
     expect(renderer.isDrawableTile_(errorTile)).to.be(false);
+  });
+
+  describe('enqueueTiles()', () => {
+    it('enqueues tiles at a single zoom level (preload: 0)', () => {
+      renderer.prepareFrame(frameState);
+      const extent = [-1, -1, 1, 1];
+      renderer.enqueueTiles(frameState, extent, 10, {});
+
+      const source = tileLayer.getSource();
+      const sourceKey = getUid(source);
+      expect(frameState.wantedTiles[sourceKey]).to.be.an(Object);
+
+      const wantedTiles = frameState.wantedTiles[sourceKey];
+
+      const expected = {
+        '/10,511,511': true,
+        '/10,511,512': true,
+        '/10,512,511': true,
+        '/10,512,512': true,
+      };
+      expect(wantedTiles).to.eql(expected);
+    });
+
+    it('enqueues tiles at multiple zoom levels (preload: 2)', () => {
+      tileLayer.setPreload(2);
+      renderer.prepareFrame(frameState);
+      const extent = [-1, -1, 1, 1];
+      renderer.enqueueTiles(frameState, extent, 10, {});
+
+      const source = tileLayer.getSource();
+      const sourceKey = getUid(source);
+      expect(frameState.wantedTiles[sourceKey]).to.be.an(Object);
+
+      const wantedTiles = frameState.wantedTiles[sourceKey];
+
+      const expected = {
+        '/10,511,511': true,
+        '/10,511,512': true,
+        '/10,512,511': true,
+        '/10,512,512': true,
+        '/9,255,255': true,
+        '/9,255,256': true,
+        '/9,256,255': true,
+        '/9,256,256': true,
+        '/8,127,127': true,
+        '/8,127,128': true,
+        '/8,128,127': true,
+        '/8,128,128': true,
+      };
+      expect(wantedTiles).to.eql(expected);
+    });
+
+    it('does not go below layer min zoom', () => {
+      tileLayer.setPreload(Infinity);
+      tileLayer.setMinZoom(9);
+      renderer.prepareFrame(frameState);
+      const extent = [-1, -1, 1, 1];
+      renderer.enqueueTiles(frameState, extent, 10, {});
+
+      const source = tileLayer.getSource();
+      const sourceKey = getUid(source);
+      expect(frameState.wantedTiles[sourceKey]).to.be.an(Object);
+
+      const wantedTiles = frameState.wantedTiles[sourceKey];
+
+      const expected = {
+        '/10,511,511': true,
+        '/10,511,512': true,
+        '/10,512,511': true,
+        '/10,512,512': true,
+        '/9,255,255': true,
+        '/9,255,256': true,
+        '/9,256,255': true,
+        '/9,256,256': true,
+      };
+      expect(wantedTiles).to.eql(expected);
+    });
   });
 });
