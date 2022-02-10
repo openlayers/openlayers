@@ -243,6 +243,11 @@ describe('ol/style/expressions', function () {
           ['-', ['get', 'attr3'], ['get', 'attr2']],
         ])
       ).to.eql('abs((a_attr3 - a_attr2))');
+      expect(expressionToGlsl(context, ['floor', 1])).to.eql('floor(1.0)');
+      expect(expressionToGlsl(context, ['round', 1])).to.eql(
+        'floor(1.0 + 0.5)'
+      );
+      expect(expressionToGlsl(context, ['ceil', 1])).to.eql('ceil(1.0)');
       expect(expressionToGlsl(context, ['sin', 1])).to.eql('sin(1.0)');
       expect(expressionToGlsl(context, ['cos', 1])).to.eql('cos(1.0)');
       expect(expressionToGlsl(context, ['atan', 1])).to.eql('atan(1.0)');
