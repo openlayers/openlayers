@@ -7,7 +7,7 @@ import {abstract} from '../util.js';
 import {
   closestSquaredDistanceXY,
   createOrUpdateEmpty,
-  extend,
+  extend, getCenter,
 } from '../extent.js';
 import {deflateCoordinates} from './flat/deflate.js';
 import {inflateCoordinates} from './flat/inflate.js';
@@ -61,6 +61,18 @@ class CompoundCurve extends SimpleGeometry {
    */
   constructor(geometries, opt_layout) {
     super();
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.maxDelta_ = -1;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.maxDeltaRevision_ = -1;
 
     /**
      * @private
@@ -238,6 +250,75 @@ class CompoundCurve extends SimpleGeometry {
       }
     }
     return false;
+  }
+
+  /**
+   * Apply a transform function to the coordinates of the geometry.
+   * The geometry is modified in place.
+   * If you do not want the geometry modified in place, first `clone()` it and
+   * then use this function on the clone.
+   * @param {import("../proj.js").TransformFunction} transformFn Transform function.
+   * Called with a flat array of geometry coordinates.
+   * @api
+   */
+  applyTransform(transformFn) {
+    const geometries = this.geometries_;
+    for (let i = 0, ii = geometries.length; i < ii; ++i) {
+      geometries[i].applyTransform(transformFn);
+    }
+    super.applyTransform(transformFn);
+  }
+
+  /**
+   * Rotate the geometry around a given coordinate. This modifies the geometry
+   * coordinates in place.
+   * @param {number} angle Rotation angle in radians.
+   * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
+   * @api
+   */
+  rotate(angle, anchor) {
+    const geometries = this.geometries_;
+    for (let i = 0, ii = geometries.length; i < ii; ++i) {
+      geometries[i].rotate(angle, anchor);
+    }
+    super.rotate(angle, anchor);
+  }
+
+  /**
+   * Scale the geometry (with an optional origin).  This modifies the geometry
+   * coordinates in place.
+   * @abstract
+   * @param {number} sx The scaling factor in the x-direction.
+   * @param {number} [opt_sy] The scaling factor in the y-direction (defaults to sx).
+   * @param {import("../coordinate.js").Coordinate} [opt_anchor] The scale origin (defaults to the center
+   *     of the geometry extent).
+   * @api
+   */
+  scale(sx, opt_sy, opt_anchor) {
+    let anchor = opt_anchor;
+    if (!anchor) {
+      anchor = getCenter(this.getExtent());
+    }
+    const geometries = this.geometries_;
+    for (let i = 0, ii = geometries.length; i < ii; ++i) {
+      geometries[i].scale(sx, opt_sy, anchor);
+    }
+    super.scale(sx, opt_sy, opt_anchor);
+  }
+
+  /**
+   * Translate the geometry.  This modifies the geometry coordinates in place.  If
+   * instead you want a new geometry, first `clone()` this geometry.
+   * @param {number} deltaX Delta X.
+   * @param {number} deltaY Delta Y.
+   * @api
+   */
+  translate(deltaX, deltaY) {
+    const geometries = this.geometries_;
+    for (let i = 0, ii = geometries.length; i < ii; ++i) {
+      geometries[i].translate(deltaX, deltaY);
+    }
+    super.translate(deltaX, deltaY);
   }
 }
 
