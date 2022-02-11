@@ -6,6 +6,7 @@ import CanvasInstruction, {
   beginPathInstruction,
   strokeInstruction,
 } from './Instruction.js';
+import GeometryType from '../../geom/GeometryType.js';
 
 class CanvasCircularStringBuilder extends CanvasBuilder {
   /**
@@ -55,6 +56,45 @@ class CanvasCircularStringBuilder extends CanvasBuilder {
       startIndex,
       endIndex,
     ]);
+    this.endGeometry(feature);
+  }
+
+  /**
+   * @param {import("../../geom/GeometryType.js").default} geometryType The given geometry type.
+   * @return {CanvasInstruction} The canvas instruction.
+   */
+  geometryTypeCanvasInstruction(geometryType) {
+    switch (geometryType) {
+      case GeometryType.CIRCULAR_STRING:
+        return CanvasInstruction.CIRCULAR_ARC;
+      case GeometryType.LINE_STRING:
+        return CanvasInstruction.MOVE_TO_LINE_TO;
+      default:
+        // Should not happen
+        return CanvasInstruction.MOVE_TO_LINE_TO;
+    }
+  }
+
+  drawCompoundCurve(compoundCurveGeometry, feature) {
+    const state = this.state;
+    const strokeStyle = state.strokeStyle;
+    const lineWidth = state.lineWidth;
+    if (strokeStyle === undefined || lineWidth === undefined) {
+      return;
+    }
+    this.updateStrokeStyle(state, this.applyStroke);
+    this.beginGeometry(compoundCurveGeometry, feature);
+    const curveOffset = this.coordinates.length;
+    const coordinates = compoundCurveGeometry.getFlatCoordinates();
+    const stride = compoundCurveGeometry.getStride();
+    this.appendFlatCircularStringCoordinates(coordinates, stride);
+    const geometryDescription = compoundCurveGeometry.getDescription();
+    geometryDescription.segmentDescriptions.forEach((segment) => {
+      const instruction = this.geometryTypeCanvasInstruction(segment.type);
+      const start = curveOffset + segment.start * stride;
+      const end = start + segment.length * stride;
+      this.instructions.push([instruction, start, end]);
+    });
     this.endGeometry(feature);
   }
 

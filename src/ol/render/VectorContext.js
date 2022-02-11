@@ -60,6 +60,12 @@ class VectorContext {
   drawCurvePolygon(curvePolygonGeometry, feature) {}
 
   /**
+   * @param {import("../geom/CompoundCurve.js").default} compoundCurveGeometry Compound curve.
+   * @param {import("../Feature.js").default} feature Feature.
+   */
+  drawCompoundCurve(compoundCurveGeometry, feature) {}
+
+  /**
    * @param {import("../geom/LineString.js").default|import("./Feature.js").default} lineStringGeometry Line string geometry.
    * @param {import("../Feature.js").FeatureLike} feature Feature.
    */

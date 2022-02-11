@@ -16,11 +16,12 @@ import TextBuilder from './TextBuilder.js';
 const BATCH_CONSTRUCTORS = {
   'Circle': PolygonBuilder,
   'CircularString': CircularStringBuilder,
-  'CurvePolygon': CurvePolygonBuilder,
+  'CompoundCurve': CircularStringBuilder,
   'Default': Builder,
   'Image': ImageBuilder,
   'LineString': LineStringBuilder,
   'Polygon': PolygonBuilder,
+  'CurvePolygon': CurvePolygonBuilder,
   'Text': TextBuilder,
 };
 
