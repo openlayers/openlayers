@@ -397,6 +397,7 @@ class WkbReader {
           /** @type {Array<import('../geom/Geometry.js').default>} */ (result),
           this.layout_
         );
+
       default:
         return null;
     }

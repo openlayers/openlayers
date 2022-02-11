@@ -3,7 +3,7 @@
  */
 import CanvasBuilder from './Builder.js';
 import CanvasInstruction, {
-  beginPathInstruction,
+  beginPathInstruction, closePathInstruction, fillInstruction,
   strokeInstruction,
 } from './Instruction.js';
 import GeometryType from '../../geom/GeometryType.js';
@@ -88,6 +88,15 @@ class CanvasCircularStringBuilder extends CanvasBuilder {
     const coordinates = compoundCurveGeometry.getFlatCoordinates();
     const stride = compoundCurveGeometry.getStride();
     this.appendFlatCircularStringCoordinates(coordinates, stride);
+    this.appendCompoundCurveInstructions(
+      compoundCurveGeometry,
+      curveOffset,
+      stride
+    );
+    this.endGeometry(feature);
+  }
+
+  appendCompoundCurveInstructions(compoundCurveGeometry, curveOffset, stride) {
     const geometryDescription = compoundCurveGeometry.getDescription();
     geometryDescription.segmentDescriptions.forEach((segment) => {
       const instruction = this.geometryTypeCanvasInstruction(segment.type);
@@ -95,7 +104,115 @@ class CanvasCircularStringBuilder extends CanvasBuilder {
       const end = start + segment.length * stride;
       this.instructions.push([instruction, start, end]);
     });
+  }
+
+  drawCurvePolygon(curvePolygonGeometry, feature) {
+    console.log("Drawing curve polygon");
+    const state = this.state;
+    const fillStyle = state.fillStyle;
+    const strokeStyle = state.strokeStyle;
+    if (fillStyle === undefined && strokeStyle === undefined) {
+      return;
+    }
+    this.setFillStrokeStyles_();
+    this.beginGeometry(curvePolygonGeometry, feature);
+    // const ends = curvePolygonGeometry.getEnds();
+    // const flatCoordinates = curvePolygonGeometry.getOrientedFlatCoordinates();
+    // const stride = curvePolygonGeometry.getStride();
+    this.drawFlatCoordinatess_(curvePolygonGeometry);
+    //   flatCoordinates,
+    //   curvePolygonGeometry.getType(),
+    //   0,
+    //   /** @type {Array<number>} */ (ends),
+    //   stride
+    // );
     this.endGeometry(feature);
+  }
+
+  /**
+   * @param {import("../../geom/CurvePolygon.js").default} curvePolygonGeometry Curve Polygon.
+   */
+  drawFlatCoordinatess_(curvePolygonGeometry) {
+    const state = this.state;
+    const fill = state.fillStyle !== undefined;
+    const stroke = state.strokeStyle !== undefined;
+    //const numEnds = ends.length;
+    this.instructions.push(beginPathInstruction);
+    let offset = 0;
+    const numOfRings =
+      curvePolygonGeometry.getDescription().ringDescriptions.length;
+
+    for (let i = 0; i < numOfRings; ++i) {
+      const ring = curvePolygonGeometry.getRings()[i];
+      const stride = ring.getStride();
+      const end = curvePolygonGeometry.getEnds()[i];
+      const myBegin = this.coordinates.length;
+      const myEnd = this.appendCoordinates(ring.getFlatCoordinates(), stride);
+      switch (ring.getType()) {
+        case GeometryType.LINE_STRING:
+          this.instructions.push([
+            CanvasInstruction.MOVE_TO_LINE_TO,
+            myBegin,
+            myEnd,
+          ]);
+          break;
+
+        case GeometryType.CIRCULAR_STRING:
+          this.instructions.push([
+            CanvasInstruction.CIRCULAR_ARC,
+            myBegin,
+            myEnd,
+          ]);
+          break;
+
+        case GeometryType.COMPOUND_CURVE:
+          const compoundCurve =
+            /** @type {import('../../geom/CompoundCurve.js').default} */ (ring);
+          this.appendCompoundCurveInstructions(compoundCurve, myBegin, stride);
+          break;
+
+        default:
+          throw new Error('Geometry type not supported in curve polygon');
+      }
+      if (stroke) {
+        // Performance optimization: only call closePath() when we have a stroke.
+        // Otherwise the ring is closed already (see appendFlatLineCoordinates above).
+        this.instructions.push(closePathInstruction);
+      }
+      offset = end;
+    }
+    if (fill) {
+      this.instructions.push(fillInstruction);
+    }
+    if (stroke) {
+      this.instructions.push(strokeInstruction);
+    }
+    return offset;
+  }
+
+  appendCoordinates(flatCoordinates, stride) {
+    const coordinates = this.coordinates;
+    const length = flatCoordinates.length;
+    let myEnd = this.coordinates.length;
+    for (let i = 0; i < length; i += stride) {
+      coordinates[myEnd++] = flatCoordinates[i];
+      coordinates[myEnd++] = flatCoordinates[i + 1];
+    }
+    return myEnd;
+  }
+
+  /**
+   * @private
+   */
+  setFillStrokeStyles_() {
+    const state = this.state;
+    const fillStyle = state.fillStyle;
+    if (fillStyle !== undefined) {
+      this.updateFillStyle(state, this.createFill);
+    }
+    if (state.strokeStyle !== undefined) {
+      this.updateStrokeStyle(state, this.applyStroke);
+    }
   }
 
   /**

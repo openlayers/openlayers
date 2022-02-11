@@ -710,6 +710,7 @@ class Executor {
         case CanvasInstruction.CIRCULAR_ARC:
           d = /** @type {number} */ instruction[1]; // start arc
           dd = /** @type {number} */ instruction[2] - 2; // end
+          let first = true;
           for (; d < dd; d += 4) {
             tmpArc.begin.x = pixelCoordinates[d];
             tmpArc.begin.y = pixelCoordinates[d + 1];
@@ -718,13 +719,16 @@ class Executor {
             tmpArc.end.x = pixelCoordinates[d + 4];
             tmpArc.end.y = pixelCoordinates[d + 5];
             const drawable = tmpArc.drawable();
-            if (tmpArc.fullCircle()) {
-              context.moveTo(
-                drawable.centerOfCircle.x + drawable.radius,
-                drawable.centerOfCircle.y
-              );
-            } else {
-              context.moveTo(drawable.begin.x, drawable.begin.y);
+            if (first) {
+              if (tmpArc.fullCircle()) {
+                context.moveTo(
+                  drawable.centerOfCircle.x + drawable.radius,
+                  drawable.centerOfCircle.y
+                );
+              } else {
+                context.moveTo(drawable.begin.x, drawable.begin.y);
+              }
+              first = false;
             }
             context.arc(
               drawable.centerOfCircle.x,
