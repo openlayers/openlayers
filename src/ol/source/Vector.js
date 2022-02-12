@@ -941,7 +941,15 @@ class VectorSource extends Source {
    * @return {boolean} Is empty.
    */
   isEmpty() {
-    return this.featuresRtree_.isEmpty() && isEmpty(this.nullGeometryFeatures_);
+    if (this.featuresRtree_) {
+      return (
+        this.featuresRtree_.isEmpty() && isEmpty(this.nullGeometryFeatures_)
+      );
+    }
+    if (this.featuresCollection_) {
+      return this.featuresCollection_.getLength() === 0;
+    }
+    return true;
   }
 
   /**
