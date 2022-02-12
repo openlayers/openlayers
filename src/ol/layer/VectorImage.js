@@ -49,7 +49,11 @@ import {assign} from '../obj.js';
 
 /**
  * @classdesc
- * Vector data that is rendered client-side.
+ * Vector data is rendered client-side, to an image. This layer type provides great performance
+ * during panning and zooming, but point symbols and texts are always rotated with the view and
+ * pixels are scaled during zoom animations. For more accurate rendering of vector data, use
+ * {@link module:ol/layer/Vector~VectorLayer} instead.
+ *
  * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
