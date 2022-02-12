@@ -27,6 +27,7 @@
         <a href="module-ol_layer_Tile-TileLayer.html">ol/layer/Tile</a><br>
         <a href="module-ol_layer_Image-ImageLayer.html">ol/layer/Image</a><br>
         <a href="module-ol_layer_Vector-VectorLayer.html">ol/layer/Vector</a><br>
+        <a href="module-ol_layer_VectorImage-VectorImageLayer.html">ol/layer/VectorImage</a><br>
         <a href="module-ol_layer_VectorTile-VectorTileLayer.html">ol/layer/VectorTile</a><br>
         <a href="module-ol_layer_WebGLTile-WebGLTileLayer.html">ol/layer/WebGLTile</a>
       </div>
