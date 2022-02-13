@@ -121,7 +121,7 @@ class PointerInteraction extends Interaction {
   handleDragEvent(mapBrowserEvent) {}
 
   /**
-   * Handles the {@link module:ol/MapBrowserEvent map browser event} and may call into
+   * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} and may call into
    * other functions, if event sequences like e.g. 'drag' or 'down-up' etc. are
    * detected.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.

@@ -327,7 +327,7 @@ class VectorSource extends Source {
    * instead. A feature will not be added to the source if feature with
    * the same id is already there. The reason for this behavior is to avoid
    * feature duplication when using bbox or tile loading strategies.
-   * Note: this also applies if an {@link module:ol/Collection} is used for features,
+   * Note: this also applies if an {@link module:ol/Collection~Collection} is used for features,
    * meaning that if a feature with a duplicate id is added in the collection, it will
    * be removed from it right away.
    * @param {import("../Feature.js").default<Geometry>} feature Feature to add.
@@ -684,7 +684,7 @@ class VectorSource extends Source {
   /**
    * Get the features collection associated with this source. Will be `null`
    * unless the source was configured with `useSpatialIndex` set to `false`, or
-   * with an {@link module:ol/Collection} as `features`.
+   * with an {@link module:ol/Collection~Collection} as `features`.
    * @return {Collection<import("../Feature.js").default<Geometry>>|null} The collection of features.
    * @api
    */

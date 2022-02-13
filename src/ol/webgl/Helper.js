@@ -264,7 +264,7 @@ function releaseCanvas(key) {
  * ### Specifying attributes
  *
  *   The GPU only receives the data as arrays of numbers. These numbers must be handled differently depending on what it describes (position, texture coordinate...).
- *   Attributes are used to specify these uses. Use {@link enableAttributeArray_} and either
+ *   Attributes are used to specify these uses. Use {@link module:ol/webgl/Helper~WebGLHelper#enableAttributes endableAttributes} and either
  *   the default attribute names in {@link module:ol/webgl/Helper.DefaultAttrib} or custom ones.
  *
  *   Please note that you will have to specify the type and offset of the attributes in the data array. You can refer to the documentation of [WebGLRenderingContext.vertexAttribPointer](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/vertexAttribPointer) for more explanation.
@@ -302,7 +302,6 @@ function releaseCanvas(key) {
  *   ```
  *
  * For an example usage of this class, refer to {@link module:ol/renderer/webgl/PointsLayer~WebGLPointsLayerRenderer}.
- *
  *
  * @api
  */

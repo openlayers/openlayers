@@ -1165,7 +1165,7 @@ function getDefaultStyleFunction() {
 /**
  * Create a `geometryFunction` for `type: 'Circle'` that will create a regular
  * polygon with a user specified number of sides and start angle instead of a
- * `import("../geom/Circle.js").Circle` geometry.
+ * {@link import("../geom/Circle.js").Circle} geometry.
  * @param {number} [opt_sides] Number of sides of the regular polygon.
  *     Default is 32.
  * @param {number} [opt_angle] Angle of the first point in counter-clockwise

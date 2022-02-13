@@ -27,9 +27,9 @@ const SelectEventType = {
 };
 
 /**
- * A function that takes an {@link module:ol/Feature} or
- * {@link module:ol/render/Feature} and an
- * {@link module:ol/layer/Layer} and returns `true` if the feature may be
+ * A function that takes an {@link module:ol/Feature~Feature} or
+ * {@link module:ol/render/Feature~RenderFeature} and an
+ * {@link module:ol/layer/Layer~Layer} and returns `true` if the feature may be
  * selected or `false` otherwise.
  * @typedef {function(import("../Feature.js").FeatureLike, import("../layer/Layer.js").default<import("../source/Source").default>):boolean} FilterFunction
  */
@@ -83,8 +83,8 @@ const SelectEventType = {
  * used by the interaction is returned by
  * {@link module:ol/interaction/Select~Select#getFeatures}.
  * @property {FilterFunction} [filter] A function
- * that takes an {@link module:ol/Feature} and an
- * {@link module:ol/layer/Layer} and returns `true` if the feature may be
+ * that takes an {@link module:ol/Feature~Feature} and an
+ * {@link module:ol/layer/Layer~Layer} and returns `true` if the feature may be
  * selected or `false` otherwise.
  * @property {number} [hitTolerance=0] Hit-detection tolerance. Pixels inside
  * the radius around the given position will be checked for features.
@@ -309,7 +309,7 @@ class Select extends Interaction {
   }
 
   /**
-   * Returns the associated {@link module:ol/layer/Vector~Vector vector layer} of
+   * Returns the associated {@link module:ol/layer/Vector~VectorLayer vector layer} of
    * a selected feature.
    * @param {import("../Feature.js").FeatureLike} feature Feature
    * @return {import('../layer/Vector.js').default} Layer.

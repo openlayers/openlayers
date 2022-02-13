@@ -4,7 +4,7 @@
 import {clear} from './obj.js';
 
 /**
- * Key to use with {@link module:ol/Observable~Observable#unByKey}.
+ * Key to use with {@link module:ol/Observable.unByKey}.
  * @typedef {Object} EventsKey
  * @property {ListenerFunction} listener Listener.
  * @property {import("./events/Target.js").EventTargetLike} target Target.
