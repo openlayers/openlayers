@@ -28,8 +28,8 @@ import {getUid} from '../util.js';
  * overlapping icons. As a tradoff, the cluster feature's position will no longer be
  * the center of all its features.
  * @property {function(Feature):Point} [geometryFunction]
- * Function that takes an {@link module:ol/Feature} as argument and returns an
- * {@link module:ol/geom/Point} as cluster calculation point for the feature. When a
+ * Function that takes an {@link module:ol/Feature~Feature} as argument and returns an
+ * {@link module:ol/geom/Point~Point} as cluster calculation point for the feature. When a
  * feature should not be considered for clustering, the function should return
  * `null`. The default, which works when the underlying source contains point
  * features only, is
@@ -41,9 +41,9 @@ import {getUid} from '../util.js';
  * See {@link module:ol/geom/Polygon~Polygon#getInteriorPoint} for a way to get a cluster
  * calculation point for polygons.
  * @property {function(Point, Array<Feature>):Feature} [createCluster]
- * Function that takes the cluster's center {@link module:ol/geom/Point} and an array
- * of {@link module:ol/Feature} included in this cluster. Must return a
- * {@link module:ol/Feature} that will be used to render. Default implementation is:
+ * Function that takes the cluster's center {@link module:ol/geom/Point~Point} and an array
+ * of {@link module:ol/Feature~Feature} included in this cluster. Must return a
+ * {@link module:ol/Feature~Feature} that will be used to render. Default implementation is:
  * ```js
  * function(point, features) {
  *   return new Feature({
@@ -143,7 +143,7 @@ class Cluster extends VectorSource {
 
   /**
    * Remove all features from the source.
-   * @param {boolean} [opt_fast] Skip dispatching of {@link module:ol/source/Vector.VectorSourceEvent#removefeature} events.
+   * @param {boolean} [opt_fast] Skip dispatching of {@link module:ol/source/VectorEventType~VectorEventType#removefeature} events.
    * @api
    */
   clear(opt_fast) {

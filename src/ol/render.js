@@ -25,8 +25,8 @@ import {getTransformFromProjections, getUserProjection} from './proj.js';
 
 /**
  * A function to be used when sorting features before rendering.
- * It takes two instances of {@link module:ol/Feature} or
- * {@link module:ol/render/Feature} and returns a `{number}`.
+ * It takes two instances of {@link module:ol/Feature~Feature} or
+ * {@link module:ol/render/Feature~RenderFeature} and returns a `{number}`.
  *
  * @typedef {function(import("./Feature.js").FeatureLike, import("./Feature.js").FeatureLike):number} OrderFunction
  */

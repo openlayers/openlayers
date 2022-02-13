@@ -8,7 +8,7 @@ import RenderBox from '../render/Box.js';
 import {mouseActionButton} from '../events/condition.js';
 
 /**
- * A function that takes a {@link module:ol/MapBrowserEvent} and two
+ * A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two
  * {@link module:ol/pixel~Pixel}s and returns a `{boolean}`. If the condition is met,
  * true should be returned.
  * @typedef {function(this: ?, import("../MapBrowserEvent.js").default, import("../pixel.js").Pixel, import("../pixel.js").Pixel):boolean} EndCondition

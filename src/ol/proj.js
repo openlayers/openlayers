@@ -171,7 +171,7 @@ export function get(projectionLike) {
  * Get the resolution of the point in degrees or distance units.
  * For projections with degrees as the unit this will simply return the
  * provided resolution. For other projections the point resolution is
- * by default estimated by transforming the 'point' pixel to EPSG:4326,
+ * by default estimated by transforming the `point` pixel to EPSG:4326,
  * measuring its width and height on the normal sphere,
  * and taking the average of the width and height.
  * A custom function can be provided for a specific projection, either

@@ -148,9 +148,9 @@ const TRANSACTION_SERIALIZERS = {
  * @property {import("../extent.js").Extent} [bbox] Extent to use for the BBOX filter. The `geometryName`
  * option must be set.
  * @property {import("./filter/Filter.js").default} [filter] Filter condition. See
- * {@link module:ol/format/Filter} for more information.
+ * {@link module:ol/format/filter} for more information.
  * @property {string} [resultType] Indicates what response should be returned,
- * E.g. `hits` only includes the `numberOfFeatures` attribute in the response and no features.
+ * e.g. `hits` only includes the `numberOfFeatures` attribute in the response and no features.
  */
 
 /**

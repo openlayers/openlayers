@@ -289,7 +289,7 @@ export function makeChildAppender(nodeWriter, opt_this) {
 /**
  * Create a serializer that calls the provided `nodeWriter` from
  * {@link module:ol/xml.serialize}. This can be used by the parent writer to have the
- * 'nodeWriter' called with an array of values when the `nodeWriter` was
+ * `nodeWriter` called with an array of values when the `nodeWriter` was
  * designed to serialize a single item. An example would be a LineString
  * geometry writer, which could be reused for writing MultiLineString
  * geometries.

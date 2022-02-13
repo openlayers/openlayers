@@ -30,7 +30,7 @@ import {defaults as defaultInteractions} from './interaction.js';
  *       target: 'map'
  *     });
  *
- * The above snippet creates a map using a {@link module:ol/layer/Tile} to
+ * The above snippet creates a map using a {@link module:ol/layer/Tile~TileLayer} to
  * display {@link module:ol/source/OSM~OSM} OSM data and render it to a DOM
  * element with the id `map`.
  *
@@ -47,8 +47,8 @@ import {defaults as defaultInteractions} from './interaction.js';
  * accessed by `getLayerGroup` and `setLayerGroup`. Layers entered in the
  * options are added to this group, and `addLayer` and `removeLayer` change the
  * layer collection in the group. `getLayers` is a convenience function for
- * `getLayerGroup().getLayers()`. Note that {@link module:ol/layer/Group~Group}
- * is a subclass of {@link module:ol/layer/Base}, so layers entered in the
+ * `getLayerGroup().getLayers()`. Note that {@link module:ol/layer/Group~LayerGroup}
+ * is a subclass of {@link module:ol/layer/Base~BaseLayer}, so layers entered in the
  * options or added with `addLayer` can be groups, which can contain further
  * groups, and so on.
  *
