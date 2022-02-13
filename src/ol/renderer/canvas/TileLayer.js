@@ -671,7 +671,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @param {import("../../proj/Projection.js").default} projection Projection.
    * @param {import("../../extent.js").Extent} extent Extent.
    * @param {number} currentZ Current Z.
-   * @param {number} preload Load low resolution tiles up to 'preload' levels.
+   * @param {number} preload Load low resolution tiles up to `preload` levels.
    * @param {function(import("../../Tile.js").default):void} [opt_tileCallback] Tile callback.
    * @protected
    */

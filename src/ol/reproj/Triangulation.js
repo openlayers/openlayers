@@ -479,7 +479,7 @@ class Triangulation {
   }
 
   /**
-   * Calculates extent of the 'source' coordinates from all the triangles.
+   * Calculates extent of the `source` coordinates from all the triangles.
    *
    * @return {import("../extent.js").Extent} Calculated extent.
    */
