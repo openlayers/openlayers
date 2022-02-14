@@ -151,6 +151,14 @@ class SimpleGeometry extends Geometry {
   }
 
   /**
+   */
+  reverse() {
+    const coordinates = this.getCoordinates();
+    coordinates.reverse();
+    this.setCoordinates(coordinates, this.layout);
+  }
+
+  /**
    * @param {import("./GeometryLayout.js").default} layout Layout.
    * @param {Array<number>} flatCoordinates Flat coordinates.
    */

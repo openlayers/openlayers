@@ -5,8 +5,8 @@ import GeometryType from './GeometryType.js';
 import SimpleGeometry from './SimpleGeometry.js';
 import {createOrUpdateEmpty, extend} from '../extent.js';
 import {deflateCoordinates} from './flat/deflate.js';
-import {linearRingsAreOriented, orientLinearRings} from "./flat/orient.js";
-import {inflateCoordinates} from "./flat/inflate.js";
+import {linearRingsAreOriented, orientLinearRings} from './flat/orient.js';
+import {inflateCoordinates} from './flat/inflate.js';
 
 class CurvePolygonRingDescription {
   constructor(type, start, length) {
@@ -72,10 +72,10 @@ class CurvePolygon extends SimpleGeometry {
     this.ends_ = this.computeEnds();
 
     this.flatCoordinates = this.getOrientedFlatCoordinates();
-    this.orientRings();
+    this.updateRingCoordinates();
   }
 
-  orientRings() {
+  updateRingCoordinates() {
     for (let i = 0; i < this.rings_.length; i++) {
       let flatCoords;
 
@@ -90,7 +90,9 @@ class CurvePolygon extends SimpleGeometry {
 
       const ring = this.rings_[i];
       if (ring.getType() === GeometryType.COMPOUND_CURVE) {
-        ring.setCoordinates_(inflateCoordinates(flatCoords, 0, flatCoords.length, this.stride));
+        ring.setCoordinates_(
+          inflateCoordinates(flatCoords, 0, flatCoords.length, this.stride)
+        );
       } else {
         ring.setCoordinates(
           inflateCoordinates(flatCoords, 0, flatCoords.length, this.stride)
@@ -214,6 +216,7 @@ class CurvePolygon extends SimpleGeometry {
   getOrientedFlatCoordinates() {
     if (this.orientedRevision_ != this.getRevision()) {
       const flatCoordinates = this.flatCoordinates;
+      const reversedRings = [];
       if (linearRingsAreOriented(flatCoordinates, 0, this.ends_, this.stride)) {
         this.orientedFlatCoordinates_ = flatCoordinates;
       } else {
@@ -222,10 +225,15 @@ class CurvePolygon extends SimpleGeometry {
           this.orientedFlatCoordinates_,
           0,
           this.ends_,
-          this.stride
+          this.stride,
+          false,
+          reversedRings
         );
       }
       this.orientedRevision_ = this.getRevision();
+      reversedRings.forEach((ringIndex) => {
+        this.rings_[ringIndex].reverse();
+      });
     }
     return this.orientedFlatCoordinates_;
   }

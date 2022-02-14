@@ -720,13 +720,19 @@ class Executor {
             tmpArc.end.y = pixelCoordinates[d + 5];
             const drawable = tmpArc.drawable();
             if (first) {
+              let moveToX;
+              let moveToY;
               if (tmpArc.fullCircle()) {
-                context.moveTo(
-                  drawable.centerOfCircle.x + drawable.radius,
-                  drawable.centerOfCircle.y
-                );
+                moveToX = drawable.centerOfCircle.x + drawable.radius;
+                moveToY = drawable.centerOfCircle.y;
               } else {
-                context.moveTo(drawable.begin.x, drawable.begin.y);
+                moveToX = drawable.begin.x;
+                moveToY = drawable.begin.y;
+              }
+              moveToX = (moveToX + 0.5) | 0;
+              moveToY = (moveToY + 0.5) | 0;
+              if (moveToX !== prevX || moveToY !== prevY) {
+                context.moveTo(moveToX, moveToY);
               }
               first = false;
             }
@@ -738,6 +744,8 @@ class Executor {
               drawable.endAngle,
               !drawable.clockwise
             );
+            prevX = (tmpArc.end.x + 0.5) | 0;
+            prevY = (tmpArc.end.y + 0.5) | 0;
           }
           ++i;
           break;

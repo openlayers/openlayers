@@ -117,6 +117,7 @@ export function linearRingssAreOriented(
  * @param {Array<number>} ends Ends.
  * @param {number} stride Stride.
  * @param {boolean} [opt_right] Follow the right-hand rule for orientation.
+ * @param {Array<number>} [opt_reversed] Filled with indexes of inverted rings
  * @return {number} End.
  */
 export function orientLinearRings(
@@ -124,7 +125,8 @@ export function orientLinearRings(
   offset,
   ends,
   stride,
-  opt_right
+  opt_right,
+  opt_reversed
 ) {
   const right = opt_right !== undefined ? opt_right : false;
   for (let i = 0, ii = ends.length; i < ii; ++i) {
@@ -141,6 +143,9 @@ export function orientLinearRings(
         : (right && !isClockwise) || (!right && isClockwise);
     if (reverse) {
       reverseCoordinates(flatCoordinates, offset, end, stride);
+      if (opt_reversed) {
+        opt_reversed.push(i);
+      }
     }
     offset = end;
   }

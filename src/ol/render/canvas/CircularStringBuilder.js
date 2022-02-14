@@ -137,7 +137,7 @@ class CanvasCircularStringBuilder extends CanvasBuilder {
     const fill = state.fillStyle !== undefined;
     const stroke = state.strokeStyle !== undefined;
     //const numEnds = ends.length;
-    this.instructions.push(beginPathInstruction);
+    //this.instructions.push(beginPathInstruction);
     let offset = 0;
     const numOfRings =
       curvePolygonGeometry.getDescription().ringDescriptions.length;

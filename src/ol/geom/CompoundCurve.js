@@ -93,6 +93,17 @@ class CompoundCurve extends SimpleGeometry {
     );
   }
 
+  reverse() {
+    this.geometries_.reverse();
+    this.description_ = this.createDescription();
+    this.setCoordinates_(
+      /** @type {Array<import("../coordinate.js").Coordinate>} */ (
+        this.description_.coordinates
+      ),
+      this.layout
+    );
+  }
+
   /**
    * @return {CompoundCurveDescription} compound curve description
    */
