@@ -32,7 +32,7 @@ import {transformGeom2D} from '../../geom/SimpleGeometry.js';
 
 /**
  * @classdesc
- * A concrete subclass of {@link module:ol/render/VectorContext VectorContext} that implements
+ * A concrete subclass of {@link module:ol/render/VectorContext~VectorContext VectorContext} that implements
  * direct rendering of features and geometries to an HTML5 Canvas context.
  * Instances of this class are created internally by the library and
  * provided to application code as vectorContext member of the

@@ -73,7 +73,7 @@ const tempSegment = [];
 /**
  * @classdesc
  * Handles snapping of vector features while modifying or drawing them.  The
- * features can come from a {@link module:ol/source/Vector} or {@link module:ol/Collection~Collection}
+ * features can come from a {@link module:ol/source/Vector~VectorSource} or {@link module:ol/Collection~Collection}
  * Any interaction object that allows the user to interact
  * with the features using the mouse can benefit from the snapping, as long
  * as it is added before.

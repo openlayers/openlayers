@@ -23,7 +23,7 @@ import {getTileSetInfo} from './ogcTileUtil.js';
  * stroke operations.
  * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Projection of the tile grid.
  * @property {typeof import("../VectorTile.js").default} [tileClass] Class used to instantiate image tiles.
- * Default is {@link module:ol/VectorTile}.
+ * Default is {@link module:ol/VectorTile~VectorTile}.
  * @property {number} [transition] A duration for tile opacity
  * transitions in milliseconds. A duration of 0 disables the opacity transition.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.

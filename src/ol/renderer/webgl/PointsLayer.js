@@ -66,7 +66,7 @@ import {listen, unlistenByKey} from '../../events.js';
  * every time the vector source changes.
  *
  * You need to provide vertex and fragment shaders for rendering. This can be done using
- * {@link module:ol/webgl/ShaderBuilder} utilities. These shaders shall expect a `a_position` attribute
+ * {@link module:ol/webgl/ShaderBuilder~ShaderBuilder} utilities. These shaders shall expect a `a_position` attribute
  * containing the screen-space projected center of the quad, as well as a `a_index` attribute
  * whose value (0, 1, 2 or 3) indicates which quad vertex is currently getting processed (see structure below).
  *

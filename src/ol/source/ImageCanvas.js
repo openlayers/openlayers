@@ -16,9 +16,9 @@ import {
  * used by the source as an image. The arguments passed to the function are:
  * {@link module:ol/extent~Extent} the image extent, `{number}` the image resolution,
  * `{number}` the pixel ratio of the map, {@link module:ol/size~Size} the image size,
- * and {@link module:ol/proj/Projection} the image projection. The canvas returned by
+ * and {@link module:ol/proj/Projection~Projection} the image projection. The canvas returned by
  * this function is cached by the source. The this keyword inside the function
- * references the {@link module:ol/source/ImageCanvas}.
+ * references the {@link module:ol/source/ImageCanvas~ImageCanvasSource}.
  *
  * @typedef {function(this:import("../ImageCanvas.js").default, import("../extent.js").Extent, number,
  *     number, import("../size.js").Size, import("../proj/Projection.js").default): HTMLCanvasElement} FunctionType

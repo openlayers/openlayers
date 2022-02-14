@@ -37,7 +37,7 @@ import {toSize} from '../size.js';
  * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Projection of the tile grid.
  * @property {import("./State.js").default} [state] Source state.
  * @property {typeof import("../VectorTile.js").default} [tileClass] Class used to instantiate image tiles.
- * Default is {@link module:ol/VectorTile}.
+ * Default is {@link module:ol/VectorTile~VectorTile}.
  * @property {number} [maxZoom=22] Optional max zoom level. Not used if `tileGrid` is provided.
  * @property {number} [minZoom] Optional min zoom level. Not used if `tileGrid` is provided.
  * @property {number|import("../size.js").Size} [tileSize=512] Optional tile size. Not used if `tileGrid` is provided.

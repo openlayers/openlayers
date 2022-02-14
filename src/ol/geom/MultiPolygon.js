@@ -301,7 +301,7 @@ class MultiPolygon extends SimpleGeometry {
   }
 
   /**
-   * Return the interior points as {@link module:ol/geom/MultiPoint multipoint}.
+   * Return the interior points as {@link module:ol/geom/MultiPoint~MultiPoint multipoint}.
    * @return {MultiPoint} Interior points as XYM coordinates, where M is
    * the length of the horizontal intersection that the point belongs to.
    * @api

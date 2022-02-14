@@ -12,7 +12,7 @@ import {VOID} from './functions.js';
 let withCredentials = false;
 
 /**
- * {@link module:ol/source/Vector} sources use a function of this type to
+ * {@link module:ol/source/Vector~VectorSource} sources use a function of this type to
  * load features.
  *
  * This function takes up to 5 arguments. These are an {@link module:ol/extent~Extent} representing
@@ -35,7 +35,7 @@ let withCredentials = false;
  */
 
 /**
- * {@link module:ol/source/Vector} sources use a function of this type to
+ * {@link module:ol/source/Vector~VectorSource} sources use a function of this type to
  * get the url to load features from.
  *
  * This function takes an {@link module:ol/extent~Extent} representing the area

@@ -9,7 +9,7 @@ import {get as getProjection} from '../proj.js';
 /**
  * @typedef {Object} Options
  * @property {import("../extent.js").Extent} [extent] Extent for the tile grid. No tiles
- * outside this extent will be requested by {@link module:ol/source/Tile} sources.
+ * outside this extent will be requested by {@link module:ol/source/Tile~TileSource} sources.
  * When no `origin` or `origins` are configured, the `origin` will be set to the
  * top-left corner of the extent.
  * @property {import("../coordinate.js").Coordinate} [origin] The tile grid origin, i.e.

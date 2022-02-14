@@ -4,7 +4,7 @@
 
 /**
  * The ol/proj module stores:
- * * a list of {@link module:ol/proj/Projection}
+ * * a list of {@link module:ol/proj/Projection~Projection}
  * objects, one for each projection supported by the application
  * * a list of transform functions needed to convert coordinates in one projection
  * into another.
@@ -43,13 +43,13 @@
  *
  * In addition to Proj4js support, any transform functions can be added with
  * {@link module:ol/proj.addCoordinateTransforms}. To use this, you must first create
- * a {@link module:ol/proj/Projection} object for the new projection and add it with
+ * a {@link module:ol/proj/Projection~Projection} object for the new projection and add it with
  * {@link module:ol/proj.addProjection}. You can then add the forward and inverse
  * functions with {@link module:ol/proj.addCoordinateTransforms}. See
  * examples/wms-custom-proj for an example of this.
  *
  * Note that if no transforms are needed and you only need to define the
- * projection, just add a {@link module:ol/proj/Projection} with
+ * projection, just add a {@link module:ol/proj/Projection~Projection} with
  * {@link module:ol/proj.addProjection}. See examples/wms-no-proj for an example of
  * this.
  */
@@ -77,7 +77,7 @@ import {getDistance} from './sphere.js';
 import {getWorldsAway} from './coordinate.js';
 
 /**
- * A projection as {@link module:ol/proj/Projection}, SRS identifier
+ * A projection as {@link module:ol/proj/Projection~Projection}, SRS identifier
  * string or undefined.
  * @typedef {Projection|string|undefined} ProjectionLike
  * @api

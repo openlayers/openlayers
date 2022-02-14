@@ -102,7 +102,7 @@ export class TranslateEvent extends Event {
     this.startCoordinate = startCoordinate;
 
     /**
-     * Associated {@link module:ol/MapBrowserEvent}.
+     * Associated {@link module:ol/MapBrowserEvent~MapBrowserEvent}.
      * @type {import("../MapBrowserEvent.js").default}
      * @api
      */

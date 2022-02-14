@@ -50,7 +50,7 @@ export class ObjectEvent extends Event {
  * instantiated in apps.
  * Most non-trivial classes inherit from this.
  *
- * This extends {@link module:ol/Observable} with observable
+ * This extends {@link module:ol/Observable~Observable} with observable
  * properties, where each property is observable as well as the object as a
  * whole.
  *

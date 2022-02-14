@@ -93,7 +93,7 @@ class Interaction extends BaseObject {
   }
 
   /**
-   * Handles the {@link module:ol/MapBrowserEvent map browser event}.
+   * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event}.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
    * @return {boolean} `false` to stop event propagation.
    * @api
