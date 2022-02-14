@@ -10,6 +10,7 @@ import {DEFAULT_TILE_SIZE} from './tilegrid/common.js';
 import {
   METERS_PER_UNIT,
   createProjection,
+  disableCoordinateWarning,
   fromUserCoordinate,
   fromUserExtent,
   getUserProjection,
@@ -241,7 +242,7 @@ const DEFAULT_MIN_ZOOM = 0;
  * A View has a `projection`. The projection determines the
  * coordinate system of the center, and its units determine the units of the
  * resolution (projection units per pixel). The default projection is
- * Spherical Mercator (EPSG:3857).
+ * Web Mercator (EPSG:3857).
  *
  * ### The view states
  *
@@ -405,6 +406,9 @@ class View extends BaseObject {
     }
     if (options.extent) {
       options.extent = fromUserExtent(options.extent, this.projection_);
+    }
+    if (options.projection) {
+      disableCoordinateWarning();
     }
 
     this.applyOptions_(options);
