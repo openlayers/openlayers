@@ -66,6 +66,9 @@ class GeoJSON extends JSONFeature {
     );
 
     if (options.featureProjection) {
+      /**
+       * @type {import("../proj/Projection.js").default}
+       */
       this.defaultFeatureProjection = getProjection(options.featureProjection);
     }
 
