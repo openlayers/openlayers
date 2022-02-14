@@ -29,7 +29,7 @@ export const SymbolType = {
 
 /**
  * @typedef {Object} LiteralSymbolStyle
- * @property {ExpressionValue|Array<ExpressionValue, ExpressionValue>} size Size, mandatory.
+ * @property {ExpressionValue|Array<ExpressionValue>} size Size, mandatory.
  * @property {SymbolType} symbolType Symbol type to use, either a regular shape or an image.
  * @property {string} [src] Path to the image to be used for the symbol. Only required with `symbolType: 'image'`.
  * @property {string} [crossOrigin='anonymous'] The `crossOrigin` attribute for loading `src`.

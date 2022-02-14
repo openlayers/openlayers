@@ -55,7 +55,7 @@ class SimpleGeometry extends Geometry {
 
   /**
    * @abstract
-   * @return {Array<*>} Coordinates.
+   * @return {Array<*> | null} Coordinates.
    */
   getCoordinates() {
     return abstract();
