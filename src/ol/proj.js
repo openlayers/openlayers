@@ -539,18 +539,17 @@ let userProjection = null;
 
 /**
  * Set the projection for coordinates supplied from and returned by API methods.
- * Note that this method is not yet a part of the stable API.  Support for user
- * projections is not yet complete and should be considered experimental.
+ * This includes all API methods except for those interacting with tile grids.
  * @param {ProjectionLike} projection The user projection.
+ * @api
  */
 export function setUserProjection(projection) {
   userProjection = get(projection);
 }
 
 /**
- * Clear the user projection if set.  Note that this method is not yet a part of
- * the stable API.  Support for user projections is not yet complete and should
- * be considered experimental.
+ * Clear the user projection if set.
+ * @api
  */
 export function clearUserProjection() {
   userProjection = null;
@@ -561,15 +560,16 @@ export function clearUserProjection() {
  * Note that this method is not yet a part of the stable API.  Support for user
  * projections is not yet complete and should be considered experimental.
  * @return {Projection|null} The user projection (or null if not set).
+ * @api
  */
 export function getUserProjection() {
   return userProjection;
 }
 
 /**
- * Use geographic coordinates (WGS-84 datum) in API methods.  Note that this
- * method is not yet a part of the stable API.  Support for user projections is
- * not yet complete and should be considered experimental.
+ * Use geographic coordinates (WGS-84 datum) in API methods.  This includes all API
+ * methods except for those interacting with tile grids.
+ * @api
  */
 export function useGeographic() {
   setUserProjection('EPSG:4326');
