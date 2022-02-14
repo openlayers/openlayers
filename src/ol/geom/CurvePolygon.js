@@ -5,41 +5,8 @@ import GeometryType from './GeometryType.js';
 import SimpleGeometry from './SimpleGeometry.js';
 import {createOrUpdateEmpty, extend} from '../extent.js';
 import {deflateCoordinates} from './flat/deflate.js';
-import {linearRingsAreOriented, orientLinearRings} from './flat/orient.js';
 import {inflateCoordinates} from './flat/inflate.js';
-
-class CurvePolygonRingDescription {
-  constructor(type, start, length) {
-    /**
-     * @type {GeometryType}
-     */
-    this.type = type;
-
-    /**
-     * @type {number}
-     */
-    this.start = start;
-
-    /**
-     * @type {number}
-     */
-    this.length = length;
-  }
-}
-
-class CurvePolygonDescription {
-  constructor() {
-    /**
-     * @type {Array<import("../coordinate.js").Coordinate>}
-     */
-    this.coordinates = [];
-
-    /**
-     * @type {Array<CurvePolygonRingDescription>}
-     */
-    this.ringDescriptions = [];
-  }
-}
+import {linearRingsAreOriented, orientLinearRings} from './flat/orient.js';
 
 class CurvePolygon extends SimpleGeometry {
   /**
@@ -56,11 +23,9 @@ class CurvePolygon extends SimpleGeometry {
     this.rings_ =
       /** @type {Array<import('../geom/SimpleGeometry.js').default>} */ (rings);
 
-    this.description_ = this.createDescription();
-
     this.setCoordinates(
       /** @type {Array<import("../coordinate.js").Coordinate>} */ (
-        this.description_.coordinates
+        this.computeCoordinates()
       ),
       opt_layout
     );
@@ -109,8 +74,7 @@ class CurvePolygon extends SimpleGeometry {
     const ends = [];
     let i = 0;
     this.rings_.forEach((ring) => {
-      const numberOfCoordinates =
-        this.description_.ringDescriptions[i].length * this.stride;
+      const numberOfCoordinates = ring.getCoordinates().length * this.stride;
 
       if (ends.length === 0) {
         ends.push(numberOfCoordinates);
@@ -125,37 +89,18 @@ class CurvePolygon extends SimpleGeometry {
   }
 
   /**
-   * @return {CurvePolygonDescription} compound curve description
-   */
-  getDescription() {
-    return this.description_;
-  }
-
-  /**
    * @private
-   * @return {CurvePolygonDescription} compound curve description
+   * @return {Array<import("../coordinate.js").Coordinate>} compound curve description
    */
-  createDescription() {
-    const data = new CurvePolygonDescription();
+  computeCoordinates() {
+    let coordinates = [];
 
     this.rings_.forEach((ring) => {
       const ringCoordinates = ring.getCoordinates();
-      const ringDescription = new CurvePolygonRingDescription(
-        ring.getType(),
-        0,
-        ringCoordinates.length
-      );
-
-      if (data.coordinates.length > 0) {
-        ringDescription.start = data.coordinates.length;
-      }
-
-      data.coordinates = data.coordinates.concat(ringCoordinates);
-
-      data.ringDescriptions.push(ringDescription);
+      coordinates = coordinates.concat(ringCoordinates);
     });
 
-    return data;
+    return coordinates;
   }
 
   /**

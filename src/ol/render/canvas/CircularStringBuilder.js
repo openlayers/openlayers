@@ -107,7 +107,6 @@ class CanvasCircularStringBuilder extends CanvasBuilder {
   }
 
   drawCurvePolygon(curvePolygonGeometry, feature) {
-    console.log("Drawing curve polygon");
     const state = this.state;
     const fillStyle = state.fillStyle;
     const strokeStyle = state.strokeStyle;
@@ -116,31 +115,19 @@ class CanvasCircularStringBuilder extends CanvasBuilder {
     }
     this.setFillStrokeStyles_();
     this.beginGeometry(curvePolygonGeometry, feature);
-    // const ends = curvePolygonGeometry.getEnds();
-    // const flatCoordinates = curvePolygonGeometry.getOrientedFlatCoordinates();
-    // const stride = curvePolygonGeometry.getStride();
-    this.drawFlatCoordinatess_(curvePolygonGeometry);
-    //   flatCoordinates,
-    //   curvePolygonGeometry.getType(),
-    //   0,
-    //   /** @type {Array<number>} */ (ends),
-    //   stride
-    // );
+    this.appendCurvePolygonInstructions(curvePolygonGeometry);
     this.endGeometry(feature);
   }
 
   /**
    * @param {import("../../geom/CurvePolygon.js").default} curvePolygonGeometry Curve Polygon.
    */
-  drawFlatCoordinatess_(curvePolygonGeometry) {
+  appendCurvePolygonInstructions(curvePolygonGeometry) {
     const state = this.state;
     const fill = state.fillStyle !== undefined;
     const stroke = state.strokeStyle !== undefined;
-    //const numEnds = ends.length;
-    //this.instructions.push(beginPathInstruction);
     let offset = 0;
-    const numOfRings =
-      curvePolygonGeometry.getDescription().ringDescriptions.length;
+    const numOfRings = curvePolygonGeometry.getRings().length;
 
     for (let i = 0; i < numOfRings; ++i) {
       const ring = curvePolygonGeometry.getRings()[i];
