@@ -17,6 +17,7 @@ export default {
   MULTI_POINT: 'MultiPoint',
   MULTI_LINE_STRING: 'MultiLineString',
   MULTI_POLYGON: 'MultiPolygon',
+  MULTI_CURVE: 'MultiCurve',
   GEOMETRY_COLLECTION: 'GeometryCollection',
   CIRCLE: 'Circle',
   CIRCULAR_STRING: 'CircularString',

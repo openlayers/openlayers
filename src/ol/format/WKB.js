@@ -11,6 +11,7 @@ import GeometryCollection from '../geom/GeometryCollection.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
+import MultiCurve from '../geom/MultiCurve.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
@@ -40,9 +41,9 @@ const WKBGeometryType = {
   CIRCULAR_STRING: 8,
   COMPOUND_CURVE: 9,
   CURVE_POLYGON: 10,
-  /*
 
   MULTI_CURVE: 11,
+  /*
   MULTI_SURFACE: 12,
   CURVE: 13,
   SURFACE: 14,
@@ -134,6 +135,10 @@ class WkbReader {
   }
 
   readCurvePolygon() {
+    return this.readGeometryCollection();
+  }
+
+  readMultiCurve() {
     return this.readGeometryCollection();
   }
 
@@ -256,6 +261,9 @@ class WkbReader {
 
       case WKBGeometryType.CURVE_POLYGON:
         return this.readCurvePolygon();
+
+      case WKBGeometryType.MULTI_CURVE:
+        return this.readMultiCurve();
 
       default:
         throw new Error(
@@ -397,6 +405,12 @@ class WkbReader {
           /** @type {Array<import('../geom/Geometry.js').default>} */ (result),
           this.layout_
         );
+
+      case WKBGeometryType.MULTI_CURVE:
+        return new MultiCurve(
+          /** @type {Array<import('../geom/Geometry.js').default>} */ (result),
+          this.layout_
+        )
 
       default:
         return null;

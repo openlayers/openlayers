@@ -19,6 +19,7 @@ const BATCH_CONSTRUCTORS = {
   'Default': Builder,
   'Image': ImageBuilder,
   'LineString': LineStringBuilder,
+  'MultiCurve': CircularStringBuilder,
   'Polygon': PolygonBuilder,
   'CurvePolygon': CircularStringBuilder,
   'Text': TextBuilder,
