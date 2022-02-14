@@ -410,7 +410,7 @@ class WkbReader {
         return new MultiCurve(
           /** @type {Array<import('../geom/Geometry.js').default>} */ (result),
           this.layout_
-        )
+        );
 
       default:
         return null;

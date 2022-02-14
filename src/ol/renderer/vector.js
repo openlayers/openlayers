@@ -34,6 +34,7 @@ const GEOMETRY_RENDERERS = {
   'Polygon': renderPolygonGeometry,
   'MultiPoint': renderMultiPointGeometry,
   'MultiLineString': renderMultiLineStringGeometry,
+  'MultiCurve': renderMultiCurve,
   'MultiPolygon': renderMultiPolygonGeometry,
   'GeometryCollection': renderGeometryCollectionGeometry,
   'Circle': renderCircleGeometry,
@@ -347,6 +348,22 @@ function renderCurvePolygonGeometry(
     polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);
     polygonReplay.drawCurvePolygon(geometry, feature);
   }
+}
+
+function renderMultiCurve(
+  replayGroup,
+  geometry,
+  style,
+  feature,
+  opt_declutterBuilderGroup
+) {
+  renderGeometryCollectionGeometry(
+    replayGroup,
+    geometry,
+    style,
+    feature,
+    opt_declutterBuilderGroup
+  );
 }
 
 /**

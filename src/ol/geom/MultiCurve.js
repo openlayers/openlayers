@@ -1,15 +1,39 @@
 /**
  * @module ol/geom/MultiCurve
  */
+import GeometryType from './GeometryType.js';
 import {SimpleGeometry} from '../geom.js';
 import {createOrUpdateEmpty, extend} from '../extent.js';
-import GeometryType from "./GeometryType.js";
 
 class MultiCurve extends SimpleGeometry {
   constructor(geometries, opt_layout) {
     super();
 
     this.geometries_ = geometries;
+  }
+
+  /**
+   * Apply a transform function to the coordinates of the geometry.
+   * The geometry is modified in place.
+   * If you do not want the geometry modified in place, first `clone()` it and
+   * then use this function on the clone.
+   * @param {import("../proj.js").TransformFunction} transformFn Transform function.
+   * Called with a flat array of geometry coordinates.
+   * @api
+   */
+  applyTransform(transformFn) {
+    const geometries = this.geometries_;
+    for (let i = 0, ii = geometries.length; i < ii; ++i) {
+      geometries[i].applyTransform(transformFn);
+    }
+    this.changed();
+  }
+
+  /**
+   * @return {Array<import("./Geometry.js")>} Geometries.
+   */
+  getGeometriesArray() {
+    return this.geometries_;
   }
 
   /**
