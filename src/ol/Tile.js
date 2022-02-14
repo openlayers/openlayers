@@ -45,7 +45,7 @@ import {easeIn} from './easing.js';
  */
 
 /**
- * {@link module:ol/source/Tile~Tile} sources use a function of this type to get
+ * {@link module:ol/source/Tile~TileSource} sources use a function of this type to get
  * the url that provides a tile for a given tile coordinate.
  *
  * This function takes an {@link module:ol/tilecoord~TileCoord} for the tile
