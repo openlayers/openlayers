@@ -47,7 +47,7 @@ import {containsExtent, getHeight, getWidth} from '../extent.js';
  *
  * If underlying map service is not using labels,
  * take advantage of ol image caching and use
- * {@link module:ol/source/TileArcGISRest} data source.
+ * {@link module:ol/source/TileArcGISRest~TileArcGISRest} data source.
  *
  * @fires module:ol/source/Image.ImageSourceEvent
  * @api

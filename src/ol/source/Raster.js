@@ -466,7 +466,7 @@ const RasterOperationType = {
 
 /**
  * @classdesc
- * Events emitted by {@link module:ol/source/Raster} instances are instances of this
+ * Events emitted by {@link module:ol/source/Raster~RasterSource} instances are instances of this
  * type.
  */
 export class RasterSourceEvent extends Event {

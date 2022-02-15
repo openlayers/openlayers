@@ -243,10 +243,10 @@ class LayerGroup extends BaseLayer {
   }
 
   /**
-   * Returns the {@link module:ol/Collection collection} of {@link module:ol/layer/Layer~Layer layers}
+   * Returns the {@link module:ol/Collection~Collection collection} of {@link module:ol/layer/Layer~Layer layers}
    * in this group.
    * @return {!import("../Collection.js").default<import("./Base.js").default>} Collection of
-   *   {@link module:ol/layer/Base layers} that are part of this group.
+   *   {@link module:ol/layer/Base~BaseLayer layers} that are part of this group.
    * @observable
    * @api
    */
@@ -257,10 +257,10 @@ class LayerGroup extends BaseLayer {
   }
 
   /**
-   * Set the {@link module:ol/Collection collection} of {@link module:ol/layer/Layer~Layer layers}
+   * Set the {@link module:ol/Collection~Collection collection} of {@link module:ol/layer/Layer~Layer layers}
    * in this group.
    * @param {!import("../Collection.js").default<import("./Base.js").default>} layers Collection of
-   *   {@link module:ol/layer/Base layers} that are part of this group.
+   *   {@link module:ol/layer/Base~BaseLayer layers} that are part of this group.
    * @observable
    * @api
    */

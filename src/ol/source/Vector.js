@@ -32,7 +32,7 @@ import {xhr} from '../featureloader.js';
 
 /**
  * @classdesc
- * Events emitted by {@link module:ol/source/Vector} instances are instances of this
+ * Events emitted by {@link module:ol/source/Vector~VectorSource} instances are instances of this
  * type.
  * @template {import("../geom/Geometry.js").default} [Geometry=import("../geom/Geometry.js").default]
  */
@@ -74,7 +74,7 @@ export class VectorSourceEvent extends Event {
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {Array<import("../Feature.js").default>|Collection<import("../Feature.js").default>} [features]
- * Features. If provided as {@link module:ol/Collection}, the features in the source
+ * Features. If provided as {@link module:ol/Collection~Collection}, the features in the source
  * and the collection will stay in sync.
  * @property {import("../format/Feature.js").default} [format] The feature format used by the XHR
  * feature loader when `url` is set. Required if `url` is set, otherwise ignored.
@@ -155,7 +155,7 @@ export class VectorSourceEvent extends Event {
  * through all features.
  *
  * When set to `false`, the features will be maintained in an
- * {@link module:ol/Collection}, which can be retrieved through
+ * {@link module:ol/Collection~Collection}, which can be retrieved through
  * {@link module:ol/source/Vector~VectorSource#getFeaturesCollection}.
  * @property {boolean} [wrapX=true] Wrap the world horizontally. For vector editing across the
  * -180° and 180° meridians to work properly, this should be set to `false`. The
@@ -756,7 +756,7 @@ class VectorSource extends Source {
    * `useSpatialIndex` set to `false`.
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {function(import("../Feature.js").default<Geometry>):boolean} [opt_filter] Feature filter function.
-   *     The filter function will receive one argument, the {@link module:ol/Feature feature}
+   *     The filter function will receive one argument, the {@link module:ol/Feature~Feature feature}
    *     and it should return a boolean value. By default, no filtering is made.
    * @return {import("../Feature.js").default<Geometry>} Closest feature.
    * @api

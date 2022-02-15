@@ -27,7 +27,7 @@ const DECIMALS = 5;
 /**
  * @typedef {Object} Options
  * @property {import("../extent.js").Extent} [extent] Extent for the tile grid. No tiles outside this
- * extent will be requested by {@link module:ol/source/Tile} sources. When no `origin` or
+ * extent will be requested by {@link module:ol/source/Tile~TileSource} sources. When no `origin` or
  * `origins` are configured, the `origin` will be set to the top-left corner of the extent.
  * @property {number} [minZoom=0] Minimum zoom.
  * @property {import("../coordinate.js").Coordinate} [origin] The tile grid origin, i.e. where the `x`

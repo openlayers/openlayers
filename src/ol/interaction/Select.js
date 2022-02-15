@@ -101,7 +101,7 @@ export class SelectEvent extends Event {
    * @param {Array<import("../Feature.js").default>} selected Selected features.
    * @param {Array<import("../Feature.js").default>} deselected Deselected features.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Associated
-   *     {@link module:ol/MapBrowserEvent}.
+   *     {@link module:ol/MapBrowserEvent~MapBrowserEvent}.
    */
   constructor(type, selected, deselected, mapBrowserEvent) {
     super(type);
@@ -121,7 +121,7 @@ export class SelectEvent extends Event {
     this.deselected = deselected;
 
     /**
-     * Associated {@link module:ol/MapBrowserEvent}.
+     * Associated {@link module:ol/MapBrowserEvent~MapBrowserEvent}.
      * @type {import("../MapBrowserEvent.js").default}
      * @api
      */
@@ -460,7 +460,7 @@ class Select extends Interaction {
   }
 
   /**
-   * Handles the {@link module:ol/MapBrowserEvent map browser event} and may change the
+   * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} and may change the
    * selected state of features.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
    * @return {boolean} `false` to stop event propagation.

@@ -121,7 +121,7 @@ const ModifyEventType = {
  * must be provided with the `features` option.
  * @property {boolean|import("../layer/BaseVector").default} [hitDetection] When configured, point
  * features will be considered for modification based on their visual appearance, instead of being within
- * the `pixelTolerance` from the pointer location. When a {@link module:ol/layer/BaseVector} is
+ * the `pixelTolerance` from the pointer location. When a {@link module:ol/layer/BaseVector~BaseVectorLayer} is
  * provided, only the rendered representation of the features on that layer will be considered.
  * @property {Collection<Feature>} [features]
  * The features the interaction works on.  If a feature collection is not
@@ -142,10 +142,10 @@ export class ModifyEvent extends Event {
    * @param {ModifyEventType} type Type.
    * @param {Collection<import("../Feature").FeatureLike>} features
    * The features modified.
-   * @param {import("../MapBrowserEvent.js").default} MapBrowserEvent
-   * Associated {@link module:ol/MapBrowserEvent}.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent
+   * Associated {@link module:ol/MapBrowserEvent~MapBrowserEvent}.
    */
-  constructor(type, features, MapBrowserEvent) {
+  constructor(type, features, mapBrowserEvent) {
     super(type);
 
     /**
@@ -156,11 +156,11 @@ export class ModifyEvent extends Event {
     this.features = features;
 
     /**
-     * Associated {@link module:ol/MapBrowserEvent}.
+     * Associated {@link module:ol/MapBrowserEvent~MapBrowserEvent}.
      * @type {import("../MapBrowserEvent.js").default}
      * @api
      */
-    this.mapBrowserEvent = MapBrowserEvent;
+    this.mapBrowserEvent = mapBrowserEvent;
   }
 }
 
@@ -834,7 +834,7 @@ class Modify extends PointerInteraction {
   }
 
   /**
-   * Handles the {@link module:ol/MapBrowserEvent map browser event} and may modify the geometry.
+   * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} and may modify the geometry.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
    * @return {boolean} `false` to stop event propagation.
    */

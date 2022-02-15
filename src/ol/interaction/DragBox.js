@@ -110,7 +110,7 @@ export class DragBoxEvent extends Event {
  * it to when the shift or other key is held down. This is used, for example,
  * for zooming to a specific area of the map
  * (see {@link module:ol/interaction/DragZoom~DragZoom} and
- * {@link module:ol/interaction/DragRotateAndZoom}).
+ * {@link module:ol/interaction/DragRotateAndZoom~DragRotateAndZoom}).
  *
  * @fires DragBoxEvent
  * @api

@@ -8,7 +8,7 @@ import {abstract} from './util.js';
 import {easeIn} from './easing.js';
 
 /**
- * A function that takes an {@link module:ol/Tile} for the tile and a
+ * A function that takes an {@link module:ol/Tile~Tile} for the tile and a
  * `{string}` for the url as arguments. The default is
  * ```js
  * source.setTileLoadFunction(function(tile, src) {
@@ -45,12 +45,12 @@ import {easeIn} from './easing.js';
  */
 
 /**
- * {@link module:ol/source/Tile~Tile} sources use a function of this type to get
+ * {@link module:ol/source/Tile~TileSource} sources use a function of this type to get
  * the url that provides a tile for a given tile coordinate.
  *
  * This function takes an {@link module:ol/tilecoord~TileCoord} for the tile
  * coordinate, a `{number}` representing the pixel ratio and a
- * {@link module:ol/proj/Projection} for the projection  as arguments
+ * {@link module:ol/proj/Projection~Projection} for the projection  as arguments
  * and returns a `{string}` representing the tile URL, or undefined if no tile
  * should be requested for the passed tile coordinate.
  *

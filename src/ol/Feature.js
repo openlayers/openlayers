@@ -36,7 +36,7 @@ import {listen, unlistenByKey} from './events.js';
  * Features can be styled individually with `setStyle`; otherwise they use the
  * style of their vector layer.
  *
- * Note that attribute properties are set as {@link module:ol/Object} properties on
+ * Note that attribute properties are set as {@link module:ol/Object~BaseObject} properties on
  * the feature object, so they are observable, and have get/set accessors.
  *
  * Typically, a feature has a single geometry property. You can set the

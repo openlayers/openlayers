@@ -73,7 +73,7 @@ import {removeNode} from './dom.js';
  * @typedef {Object} AtPixelOptions
  * @property {undefined|function(import("./layer/Layer.js").default<import("./source/Source").default>): boolean} [layerFilter] Layer filter
  * function. The filter function will receive one argument, the
- * {@link module:ol/layer/Layer layer-candidate} and it should return a boolean value.
+ * {@link module:ol/layer/Layer~Layer layer-candidate} and it should return a boolean value.
  * Only layers which are visible and for which this function returns `true`
  * will be tested for features. By default, all visible layers will be tested.
  * @property {number} [hitTolerance=0] Hit-detection tolerance in css pixels. Pixels
@@ -610,9 +610,9 @@ class PluggableMap extends BaseObject {
    * @param {import("./pixel.js").Pixel} pixel Pixel.
    * @param {function(import("./Feature.js").FeatureLike, import("./layer/Layer.js").default<import("./source/Source").default>, import("./geom/SimpleGeometry.js").default): T} callback Feature callback. The callback will be
    *     called with two arguments. The first argument is one
-   *     {@link module:ol/Feature feature} or
-   *     {@link module:ol/render/Feature render feature} at the pixel, the second is
-   *     the {@link module:ol/layer/Layer layer} of the feature and will be null for
+   *     {@link module:ol/Feature~Feature feature} or
+   *     {@link module:ol/render/Feature~RenderFeature render feature} at the pixel, the second is
+   *     the {@link module:ol/layer/Layer~Layer layer} of the feature and will be null for
    *     unmanaged layers. To stop detection, callback functions can return a
    *     truthy value.
    * @param {AtPixelOptions} [opt_options] Optional options.
@@ -701,7 +701,7 @@ class PluggableMap extends BaseObject {
    * @param {import("./pixel.js").Pixel} pixel Pixel.
    * @param {function(this: S, import("./layer/Layer.js").default, (Uint8ClampedArray|Uint8Array)): T} callback
    *     Layer callback. This callback will receive two arguments: first is the
-   *     {@link module:ol/layer/Layer layer}, second argument is an array representing
+   *     {@link module:ol/layer/Layer~Layer layer}, second argument is an array representing
    *     [R, G, B, A] pixel values (0 - 255) and will be `null` for layer types
    *     that do not currently support this argument. To stop detection, callback
    *     functions can return a truthy value.

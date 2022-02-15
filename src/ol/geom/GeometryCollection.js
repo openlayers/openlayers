@@ -14,7 +14,7 @@ import {listen, unlistenByKey} from '../events.js';
 
 /**
  * @classdesc
- * An array of {@link module:ol/geom/Geometry} objects.
+ * An array of {@link module:ol/geom/Geometry~Geometry} objects.
  *
  * @api
  */
