@@ -1,0 +1,41 @@
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import WKB from '../src/ol/format/WKB.js';
+import {OSM, Vector as VectorSource} from '../src/ol/source.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+
+const raster = new TileLayer({
+  source: new OSM(),
+});
+
+const wkb = [
+  // MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING( 0 0, 4 0, 4 4, 0 4, 0 0),(1 1, 3 3, 3 1, 1 1)),((10 10, 14 12, 11 10, 10 10), (11 11, 11.5 11, 11 11.5, 11 11)))
+  '010C00000002000000010A000000020000000108000000050000000000000000000000000000000000000000000000000010400000000000000000000000000000104000000000000010400000000000000000000000000000104000000000000000000000000000000000010200000004000000000000000000F03F000000000000F03F000000000000084000000000000008400000000000000840000000000000F03F000000000000F03F000000000000F03F01030000000200000004000000000000000000244000000000000024400000000000002C40000000000000284000000000000026400000000000002440000000000000244000000000000024400400000000000000000026400000000000002640000000000000274000000000000026400000000000002640000000000000274000000000000026400000000000002640',
+];
+
+const format = new WKB();
+
+const features = [];
+wkb.forEach((geometry) => {
+  features.push(
+    format.readFeature(geometry, {
+      dataProjection: 'EPSG:4326',
+      featureProjection: 'EPSG:3857',
+    })
+  );
+});
+
+const vector = new VectorLayer({
+  source: new VectorSource({
+    features: features,
+  }),
+});
+
+const map = new Map({
+  layers: [raster, vector],
+  target: 'map',
+  view: new View({
+    center: [0, 0],
+    zoom: 4,
+  }),
+});

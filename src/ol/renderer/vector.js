@@ -36,6 +36,7 @@ const GEOMETRY_RENDERERS = {
   'MultiLineString': renderMultiLineStringGeometry,
   'MultiCurve': renderMultiCurve,
   'MultiPolygon': renderMultiPolygonGeometry,
+  'MultiSurface': renderMultiSurface,
   'GeometryCollection': renderGeometryCollectionGeometry,
   'Circle': renderCircleGeometry,
   'CircularString': renderCircularStringGeometry,
@@ -350,6 +351,13 @@ function renderCurvePolygonGeometry(
   }
 }
 
+/**
+ * @param {import("../render/canvas/BuilderGroup.js").default} replayGroup Replay group.
+ * @param {import("../geom/MultiCurve.js").default} geometry Geometry.
+ * @param {import("../style/Style.js").default} style Style.
+ * @param {import("../Feature.js").default} feature Feature.
+ * @param {import("../render/canvas/BuilderGroup.js").default} [opt_declutterBuilderGroup] Builder for decluttering.
+ */
 function renderMultiCurve(
   replayGroup,
   geometry,
@@ -433,6 +441,29 @@ function renderMultiPolygonGeometry(
     textReplay.setTextStyle(textStyle);
     textReplay.drawText(geometry, feature);
   }
+}
+
+/**
+ * @param {import("../render/canvas/BuilderGroup.js").default} builderGroup Replay group.
+ * @param {import("../geom/MultiSurface.js").default} geometry Geometry.
+ * @param {import("../style/Style.js").default} style Style.
+ * @param {import("../Feature.js").default} feature Feature.
+ * @param {import("../render/canvas/BuilderGroup.js").default} [opt_declutterBuilderGroup] Builder for decluttering.
+ */
+function renderMultiSurface(
+  builderGroup,
+  geometry,
+  style,
+  feature,
+  opt_declutterBuilderGroup
+) {
+  renderGeometryCollectionGeometry(
+    builderGroup,
+    geometry,
+    style,
+    feature,
+    opt_declutterBuilderGroup
+  );
 }
 
 /**

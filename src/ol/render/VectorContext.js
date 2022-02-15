@@ -57,6 +57,10 @@ class VectorContext {
    */
   drawCircularString(circularStringGeometry, feature) {}
 
+  /**
+   * @param {import("../geom/CurvePolygon.js").default|import("./Feature.js").default} curvePolygonGeometry Circular string geometry.
+   * @param {import("../Feature.js").FeatureLike} feature Feature.
+   */
   drawCurvePolygon(curvePolygonGeometry, feature) {}
 
   /**
@@ -88,6 +92,12 @@ class VectorContext {
    * @param {import("../Feature.js").FeatureLike} feature Feature.
    */
   drawMultiPolygon(multiPolygonGeometry, feature) {}
+
+  /**
+   * @param {import("../geom/MultiSurface.js").default} multiSurfaceGeometry MultiPolygon geometry.
+   * @param {import("../Feature.js").FeatureLike} feature Feature.
+   */
+  drawMultiSurface(multiSurfaceGeometry, feature) {}
 
   /**
    * @param {import("../geom/Point.js").default|import("./Feature.js").default} pointGeometry Point geometry.

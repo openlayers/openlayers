@@ -6,7 +6,7 @@
  * The geometry type. One of `'Point'`, `'LineString'`, `'LinearRing'`,
  * `'Polygon'`, `'MultiPoint'`, `'MultiLineString'`, `'MultiPolygon'`,
  * `'GeometryCollection'`, `'Circle'`, `'CircularString', `'CompoundCurve'`,
- * `'CurvePolygon'`.
+ * `'CurvePolygon'`, `'MULTI_CURVE'`, `'MULTI_SURFACE'`.
  * @enum {string}
  */
 export default {
@@ -18,6 +18,7 @@ export default {
   MULTI_LINE_STRING: 'MultiLineString',
   MULTI_POLYGON: 'MultiPolygon',
   MULTI_CURVE: 'MultiCurve',
+  MULTI_SURFACE: 'MultiSurface',
   GEOMETRY_COLLECTION: 'GeometryCollection',
   CIRCLE: 'Circle',
   CIRCULAR_STRING: 'CircularString',
