@@ -7,13 +7,15 @@ import {abstract} from '../util.js';
 import {
   closestSquaredDistanceXY,
   createOrUpdateEmpty,
-  extend, getCenter,
+  extend,
+  getCenter,
 } from '../extent.js';
 import {deflateCoordinates} from './flat/deflate.js';
 import {inflateCoordinates} from './flat/inflate.js';
 
 /**
- *
+ * A compound curve consists of multiple segments (circular strings and/or linear strings).
+ * Each segment is descibed by this data structure.
  */
 class CompoundCurveSegmentDescription {
   constructor(type, start, length) {
@@ -34,6 +36,10 @@ class CompoundCurveSegmentDescription {
   }
 }
 
+/**
+ * This data structure holds the description for a compound curve which is needed
+ * for drawing.
+ */
 class CompoundCurveDescription {
   constructor() {
     /**
@@ -83,6 +89,10 @@ class CompoundCurve extends SimpleGeometry {
         geometries
       );
 
+    /**
+     * @private
+     * @type {CompoundCurveDescription}
+     */
     this.description_ = this.createDescription();
 
     this.setCoordinates_(
@@ -93,6 +103,11 @@ class CompoundCurve extends SimpleGeometry {
     );
   }
 
+  /**
+   * Reverses the compound curve orientation.
+   * When reversing the rings of a curve polygon for orientation purposes the compound curve
+   * also needs to be reversed.
+   */
   reverse() {
     this.geometries_.reverse();
     this.description_ = this.createDescription();
@@ -118,6 +133,8 @@ class CompoundCurve extends SimpleGeometry {
   createDescription() {
     const data = new CompoundCurveDescription();
 
+    // For every geometry in the compound curve, create a segment description and retrieve
+    // all required coordinates.
     this.geometries_.forEach((geometry) => {
       const geometryCoordinates = geometry.getCoordinates();
       const segmentDescription = new CompoundCurveSegmentDescription(
@@ -126,9 +143,12 @@ class CompoundCurve extends SimpleGeometry {
         geometryCoordinates.length
       );
 
+      // For the first geometry all coordinates should be taken
       if (data.coordinates.length < 1) {
         data.coordinates = data.coordinates.concat(geometryCoordinates);
       } else {
+        // For all other geometries, the first coordinate should not be taken
+        // since it's the last coordinate of the previous geometry.
         segmentDescription.start = data.coordinates.length - 1;
         data.coordinates = data.coordinates.concat(
           geometryCoordinates.slice(1)
@@ -163,7 +183,9 @@ class CompoundCurve extends SimpleGeometry {
   }
 
   /**
-   * Set the coordinates of the compound curve.
+   * Set the coordinates of the compound curve. This function has been created
+   * in order to not use the actual base function setCoordinates(coordinates, opt_layout).
+   * Whenever that function has correctly been implemented this function should be removed.
    * @param {!Array<import("../coordinate.js").Coordinate>} coordinates Coordinates.
    * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
    * @api
