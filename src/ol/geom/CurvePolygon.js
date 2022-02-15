@@ -40,6 +40,9 @@ class CurvePolygon extends SimpleGeometry {
     this.updateRingCoordinates();
   }
 
+  /**
+   * Updates the coordinates of the rings which make up the curve polygon.
+   */
   updateRingCoordinates() {
     for (let i = 0; i < this.rings_.length; i++) {
       let flatCoords;
@@ -55,6 +58,8 @@ class CurvePolygon extends SimpleGeometry {
 
       const ring = this.rings_[i];
       if (ring.getType() === GeometryType.COMPOUND_CURVE) {
+        // This function should be called temporarily until setCoordinates() has
+        // been implemented for the compound curve.
         ring.setCoordinates_(
           inflateCoordinates(flatCoords, 0, flatCoords.length, this.stride)
         );
@@ -66,10 +71,16 @@ class CurvePolygon extends SimpleGeometry {
     }
   }
 
+  /**
+   * @return {Array<import('../geom/SimpleGeometry.js').default>} rings
+   */
   getRings() {
     return this.rings_;
   }
 
+  /**
+   * @return {Array<number>} ends
+   */
   computeEnds() {
     const ends = [];
     let i = 0;
@@ -134,6 +145,11 @@ class CurvePolygon extends SimpleGeometry {
     return curvePolygon;
   }
 
+  /**
+   * Get the type of this geometry.
+   * @return {import("./GeometryType.js").default} Geometry type.
+   * @api
+   */
   getType() {
     return GeometryType.CURVE_POLYGON;
   }
@@ -214,6 +230,12 @@ class CurvePolygon extends SimpleGeometry {
     return extent;
   }
 
+  /**
+   * Test if the geometry and the passed extent intersect.
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @return {boolean} `true` if the geometry and the extent intersect.
+   * @api
+   */
   intersectsExtent(extent) {
     throw Error('Method not yet supported.');
     // eslint-disable-next-line no-unreachable

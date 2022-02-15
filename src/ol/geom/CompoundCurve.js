@@ -105,8 +105,6 @@ class CompoundCurve extends SimpleGeometry {
 
   /**
    * Reverses the compound curve orientation.
-   * When reversing the rings of a curve polygon for orientation purposes the compound curve
-   * also needs to be reversed.
    */
   reverse() {
     this.geometries_.reverse();
@@ -143,12 +141,12 @@ class CompoundCurve extends SimpleGeometry {
         geometryCoordinates.length
       );
 
-      // For the first geometry all coordinates should be taken
       if (data.coordinates.length < 1) {
+        // For the first geometry all coordinates should be taken
         data.coordinates = data.coordinates.concat(geometryCoordinates);
       } else {
         // For all other geometries, the first coordinate should not be taken
-        // since it's the last coordinate of the previous geometry.
+        // since it's the same as the last coordinate of the previous geometry.
         segmentDescription.start = data.coordinates.length - 1;
         data.coordinates = data.coordinates.concat(
           geometryCoordinates.slice(1)
