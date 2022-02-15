@@ -140,9 +140,10 @@ class Icon extends ImageStyle {
     const image = options.img !== undefined ? options.img : null;
 
     /**
-     * @type {import("../size.js").Size}
+     * @private
+     * @type {import("../size.js").Size|undefined}
      */
-    const imgSize = options.imgSize !== undefined ? options.imgSize : null;
+    this.imgSize_ = options.imgSize;
 
     /**
      * @type {string|undefined}
@@ -150,7 +151,7 @@ class Icon extends ImageStyle {
     let src = options.src;
 
     assert(!(src !== undefined && image), 4); // `image` and `src` cannot be provided at the same time
-    assert(!image || (image && imgSize), 5); // `imgSize` must be set when `image` is provided
+    assert(!image || (image && this.imgSize_), 5); // `imgSize` must be set when `image` is provided
 
     if ((src === undefined || src.length === 0) && image) {
       src = /** @type {HTMLImageElement} */ (image).src || getUid(image);
@@ -176,7 +177,7 @@ class Icon extends ImageStyle {
     this.iconImage_ = getIconImage(
       image,
       /** @type {string} */ (src),
-      imgSize,
+      this.imgSize_ !== undefined ? this.imgSize_ : null,
       this.crossOrigin_,
       imageState,
       this.color_
@@ -221,19 +222,20 @@ class Icon extends ImageStyle {
       anchorOrigin: this.anchorOrigin_,
       anchorXUnits: this.anchorXUnits_,
       anchorYUnits: this.anchorYUnits_,
-      crossOrigin: this.crossOrigin_,
       color:
         this.color_ && this.color_.slice
           ? this.color_.slice()
           : this.color_ || undefined,
-      src: this.getSrc(),
+      crossOrigin: this.crossOrigin_,
+      imgSize: this.imgSize_,
       offset: this.offset_.slice(),
       offsetOrigin: this.offsetOrigin_,
-      size: this.size_ !== null ? this.size_.slice() : undefined,
       opacity: this.getOpacity(),
-      scale: Array.isArray(scale) ? scale.slice() : scale,
-      rotation: this.getRotation(),
       rotateWithView: this.getRotateWithView(),
+      rotation: this.getRotation(),
+      scale: Array.isArray(scale) ? scale.slice() : scale,
+      size: this.size_ !== null ? this.size_.slice() : undefined,
+      src: this.getSrc(),
     });
   }
 
