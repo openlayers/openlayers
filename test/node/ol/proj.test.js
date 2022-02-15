@@ -1,5 +1,6 @@
 import Projection from '../../../src/ol/proj/Projection.js';
 import Units from '../../../src/ol/proj/Units.js';
+import View from '../../../src/ol/View.js';
 import expect from '../expect.js';
 import proj4 from 'proj4';
 import {HALF_SIZE} from '../../../src/ol/proj/epsg3857.js';
@@ -8,6 +9,7 @@ import {
   addCommon,
   clearAllProjections,
   clearUserProjection,
+  disableCoordinateWarning,
   equivalent,
   fromLonLat,
   fromUserCoordinate,
@@ -888,6 +890,45 @@ describe('ol/proj.js', function () {
       expect(epsg4279.getMetersPerUnit()).to.eql(
         6377563.396 * 0.01745329251994328
       );
+    });
+  });
+
+  describe('Console info about `setUserProjection`', function () {
+    let originalConsole, callCount;
+    beforeEach(function () {
+      disableCoordinateWarning(false);
+      originalConsole = console;
+      callCount = 0;
+      global.console = {
+        ...console,
+        warn: () => ++callCount,
+      };
+    });
+    afterEach(function () {
+      global.console = originalConsole;
+      clearUserProjection();
+    });
+    it('is shown once when suspicious coordinates are used', function () {
+      const view = new View({
+        center: [16, 48],
+      });
+      view.setCenter([15, 47]);
+      expect(callCount).to.be(1);
+    });
+    it('is not shown when fromLonLat() is used', function () {
+      const view = new View({
+        center: fromLonLat([16, 48]),
+      });
+      view.setCenter(fromLonLat([15, 47]));
+      expect(callCount).to.be(0);
+    });
+    it('is not shown when useGeographic() is used', function () {
+      useGeographic();
+      const view = new View({
+        center: [16, 48],
+      });
+      view.setCenter([15, 47]);
+      expect(callCount).to.be(0);
     });
   });
 });

@@ -73,8 +73,8 @@ import {
 } from './proj/transforms.js';
 import {applyTransform, getWidth} from './extent.js';
 import {clamp, modulo} from './math.js';
+import {equals, getWorldsAway} from './coordinate.js';
 import {getDistance} from './sphere.js';
-import {getWorldsAway} from './coordinate.js';
 
 /**
  * A projection as {@link module:ol/proj/Projection}, SRS identifier
@@ -96,6 +96,16 @@ import {getWorldsAway} from './coordinate.js';
 export {METERS_PER_UNIT};
 
 export {Projection};
+
+let showCoordinateWarning = true;
+
+/**
+ * @param {boolean} [opt_disable = true] Disable console info about `useGeographic()`
+ */
+export function disableCoordinateWarning(opt_disable) {
+  const hide = opt_disable === undefined ? true : opt_disable;
+  showCoordinateWarning = !hide;
+}
 
 /**
  * @param {Array<number>} input Input coordinate array.
@@ -386,6 +396,7 @@ export function addCoordinateTransforms(source, destination, forward, inverse) {
  * @api
  */
 export function fromLonLat(coordinate, opt_projection) {
+  disableCoordinateWarning();
   return transform(
     coordinate,
     'EPSG:4326',
@@ -539,18 +550,17 @@ let userProjection = null;
 
 /**
  * Set the projection for coordinates supplied from and returned by API methods.
- * Note that this method is not yet a part of the stable API.  Support for user
- * projections is not yet complete and should be considered experimental.
+ * This includes all API methods except for those interacting with tile grids.
  * @param {ProjectionLike} projection The user projection.
+ * @api
  */
 export function setUserProjection(projection) {
   userProjection = get(projection);
 }
 
 /**
- * Clear the user projection if set.  Note that this method is not yet a part of
- * the stable API.  Support for user projections is not yet complete and should
- * be considered experimental.
+ * Clear the user projection if set.
+ * @api
  */
 export function clearUserProjection() {
   userProjection = null;
@@ -561,15 +571,16 @@ export function clearUserProjection() {
  * Note that this method is not yet a part of the stable API.  Support for user
  * projections is not yet complete and should be considered experimental.
  * @return {Projection|null} The user projection (or null if not set).
+ * @api
  */
 export function getUserProjection() {
   return userProjection;
 }
 
 /**
- * Use geographic coordinates (WGS-84 datum) in API methods.  Note that this
- * method is not yet a part of the stable API.  Support for user projections is
- * not yet complete and should be considered experimental.
+ * Use geographic coordinates (WGS-84 datum) in API methods.  This includes all API
+ * methods except for those interacting with tile grids.
+ * @api
  */
 export function useGeographic() {
   setUserProjection('EPSG:4326');
@@ -598,6 +609,20 @@ export function toUserCoordinate(coordinate, sourceProjection) {
  */
 export function fromUserCoordinate(coordinate, destProjection) {
   if (!userProjection) {
+    if (
+      showCoordinateWarning &&
+      !equals(coordinate, [0, 0]) &&
+      coordinate[0] >= -180 &&
+      coordinate[0] <= 180 &&
+      coordinate[1] >= -90 &&
+      coordinate[1] <= 90
+    ) {
+      showCoordinateWarning = false;
+      // eslint-disable-next-line no-console
+      console.warn(
+        'Call useGeographic() ol/proj once to work with [longitude, latitude] coordinates.'
+      );
+    }
     return coordinate;
   }
   return transform(coordinate, userProjection, destProjection);
