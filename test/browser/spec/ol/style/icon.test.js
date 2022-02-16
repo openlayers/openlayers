@@ -11,6 +11,9 @@ describe('ol.style.Icon', function () {
     'data:image/gif;base64,' +
     'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=';
 
+  beforeEach(function () {
+    iconImageCache.clear();
+  });
   describe('constructor', function () {
     it('caches canvas images with a uid as src', function () {
       const canvas = document.createElement('canvas');
@@ -47,7 +50,7 @@ describe('ol.style.Icon', function () {
       expect(clone).to.not.be(original);
     });
 
-    it('copies all values ', function () {
+    it('copies all values with img', function () {
       const canvas = document.createElement('canvas');
       const original = new Icon({
         anchor: [1, 0],
@@ -82,14 +85,44 @@ describe('ol.style.Icon', function () {
       expect(original.getOpacity()).to.eql(clone.getOpacity());
       expect(original.getRotation()).to.eql(clone.getRotation());
       expect(original.getRotateWithView()).to.eql(clone.getRotateWithView());
-
-      const original2 = new Icon({
+    });
+    it('copies all values with src', function () {
+      const original = new Icon({
         src: src,
       });
-      const clone2 = original2.clone();
-      expect(original2.getImage(1)).to.be(clone2.getImage(1));
-      expect(original2.iconImage_).to.be(clone2.iconImage_);
-      expect(original2.getSrc()).to.eql(clone2.getSrc());
+      const clone = original.clone();
+      expect(original.getImage(1)).to.be(clone.getImage(1));
+      expect(original.iconImage_).to.be(clone.iconImage_);
+      expect(original.getSrc()).to.be(clone.getSrc());
+    });
+    it('copies all values with src without shared IconImageCache', function (done) {
+      const imgSize = [11, 13];
+      const original = new Icon({
+        src: src,
+        imgSize: imgSize.slice(),
+      });
+      iconImageCache.clear();
+
+      const clone = original.clone();
+
+      original.load();
+      clone.load();
+      Promise.all([
+        new Promise(function (resolve) {
+          original.iconImage_.addEventListener('change', resolve);
+        }),
+        new Promise(function (resolve) {
+          clone.iconImage_.addEventListener('change', resolve);
+        }),
+      ]).then(function () {
+        expect(original.getSrc()).to.be(clone.getSrc());
+        expect(original.iconImage_).to.not.be(clone.iconImage_);
+        expect(original.getImage(1).width).to.be(imgSize[0]);
+        expect(original.getImage(1).height).to.be(imgSize[1]);
+        expect(original.getImage(1).width).to.be(clone.getImage(1).width);
+        expect(original.getImage(1).height).to.be(clone.getImage(1).height);
+        done();
+      });
     });
 
     it('the clone does not reference the same objects as the original', function () {
