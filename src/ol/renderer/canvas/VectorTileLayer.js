@@ -665,48 +665,17 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const rotation = viewState.rotation;
 
     const tiles = this.renderedTiles;
-    const clips = [];
-    const clipZs = [];
     for (let i = tiles.length - 1; i >= 0; --i) {
       const tile = /** @type {import("../../VectorRenderTile.js").default} */ (
         tiles[i]
       );
       const transform = this.getTileRenderTransform(tile, frameState);
       const executorGroups = tile.executorGroups[getUid(layer)];
-      let clipped = false;
       for (let t = 0, tt = executorGroups.length; t < tt; ++t) {
         const executorGroup = executorGroups[t];
         if (!executorGroup.hasExecutors(replayTypes)) {
           // sourceTile has no instructions of the types we want to render
           continue;
-        }
-        const currentZ = tile.tileCoord[0];
-        let currentClip;
-        if (!clipped) {
-          currentClip = executorGroup.getClipCoords(transform);
-          if (currentClip) {
-            context.save();
-
-            // Create a clip mask for regions in this low resolution tile that are
-            // already filled by a higher resolution tile
-            for (let j = 0, jj = clips.length; j < jj; ++j) {
-              const clip = clips[j];
-              if (currentZ < clipZs[j]) {
-                context.beginPath();
-                // counter-clockwise (outer ring) for current tile
-                context.moveTo(currentClip[0], currentClip[1]);
-                context.lineTo(currentClip[2], currentClip[3]);
-                context.lineTo(currentClip[4], currentClip[5]);
-                context.lineTo(currentClip[6], currentClip[7]);
-                // clockwise (inner ring) for higher resolution tile
-                context.moveTo(clip[6], clip[7]);
-                context.lineTo(clip[4], clip[5]);
-                context.lineTo(clip[2], clip[3]);
-                context.lineTo(clip[0], clip[1]);
-                context.clip();
-              }
-            }
-          }
         }
         executorGroup.execute(
           context,
@@ -716,12 +685,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           hifi,
           replayTypes
         );
-        if (!clipped && currentClip) {
-          context.restore();
-          clips.push(currentClip);
-          clipZs.push(currentZ);
-          clipped = true;
-        }
       }
     }
     context.globalAlpha = alpha;
