@@ -20,6 +20,7 @@ import {
   equals,
   getIntersection,
   getTopLeft,
+  intersects,
 } from '../../extent.js';
 import {cssOpacity} from '../../css.js';
 import {fromUserExtent} from '../../proj.js';
@@ -463,26 +464,37 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
         const inTransition =
           transition && tile.getAlpha(getUid(this), frameState.time) !== 1;
+        let contextSaved = false;
         if (!inTransition) {
           if (clips) {
             // Clip mask for regions in this tile that already filled by a higher z tile
-            context.save();
             currentClip = [x, y, x + w, y, x + w, y + h, x, y + h];
             for (let i = 0, ii = clips.length; i < ii; ++i) {
               if (z !== currentZ && currentZ < clipZs[i]) {
                 const clip = clips[i];
-                context.beginPath();
-                // counter-clockwise (outer ring) for current tile
-                context.moveTo(currentClip[0], currentClip[1]);
-                context.lineTo(currentClip[2], currentClip[3]);
-                context.lineTo(currentClip[4], currentClip[5]);
-                context.lineTo(currentClip[6], currentClip[7]);
-                // clockwise (inner ring) for higher z tile
-                context.moveTo(clip[6], clip[7]);
-                context.lineTo(clip[4], clip[5]);
-                context.lineTo(clip[2], clip[3]);
-                context.lineTo(clip[0], clip[1]);
-                context.clip();
+                if (
+                  intersects(
+                    [x, y, x + w, y + h],
+                    [clip[0], clip[3], clip[4], clip[7]]
+                  )
+                ) {
+                  if (!contextSaved) {
+                    context.save();
+                    contextSaved = true;
+                  }
+                  context.beginPath();
+                  // counter-clockwise (outer ring) for current tile
+                  context.moveTo(currentClip[0], currentClip[1]);
+                  context.lineTo(currentClip[2], currentClip[3]);
+                  context.lineTo(currentClip[4], currentClip[5]);
+                  context.lineTo(currentClip[6], currentClip[7]);
+                  // clockwise (inner ring) for higher z tile
+                  context.moveTo(clip[6], clip[7]);
+                  context.lineTo(clip[4], clip[5]);
+                  context.lineTo(clip[2], clip[3]);
+                  context.lineTo(clip[0], clip[1]);
+                  context.clip();
+                }
               }
             }
             clips.push(currentClip);
@@ -502,7 +514,9 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
           transition
         );
         if (clips && !inTransition) {
-          context.restore();
+          if (contextSaved) {
+            context.restore();
+          }
           this.renderedTiles.unshift(tile);
         } else {
           this.renderedTiles.push(tile);
