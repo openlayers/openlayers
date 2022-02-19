@@ -562,6 +562,18 @@ describe('ol/View', function () {
     });
   });
 
+  describe('#setResolution()', function () {
+    it('does not change center when set to undefined', function () {
+      const center = [1, 1];
+      const view = new View({
+        center: center.slice(),
+        resolution: 1,
+      });
+      view.setResolution(undefined);
+      expect(view.getCenter()).to.eql(center);
+    });
+  });
+
   describe('#setCenter()', function () {
     it('allows setting undefined center', function () {
       const view = new View({

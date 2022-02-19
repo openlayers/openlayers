@@ -1636,7 +1636,9 @@ class View extends BaseObject {
    * @api
    */
   setCenter(center) {
-    this.setCenterInternal(fromUserCoordinate(center, this.getProjection()));
+    this.setCenterInternal(
+      center ? fromUserCoordinate(center, this.getProjection()) : center
+    );
   }
 
   /**
