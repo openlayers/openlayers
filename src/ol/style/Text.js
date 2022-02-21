@@ -27,7 +27,11 @@ const DEFAULT_FILL_COLOR = '#333';
  * @property {number|import("../size.js").Size} [scale] Scale.
  * @property {boolean} [rotateWithView=false] Whether to rotate the text with the view.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
- * @property {string} [text] Text content.
+ * @property {string|Array<string>} [text] Text content or rich text content. For plain text provide a string, which can
+ * contain line breaks (`\n`). For rich text provide an array of text/font tuples. A tuple consists of the text to
+ * render and the font to use (or `''` to use the text style's font). A line break has to be a separate tuple (i.e. `'\n', ''`).
+ * **Example:** `['foo', 'bold 10px sans-serif', ' bar', 'italic 10px sans-serif', ' baz', '']` will yield "**foo** *bar* baz".
+ * **Note:** Rich text is not supported for the immediate rendering API.
  * @property {string} [textAlign] Text alignment. Possible values: 'left', 'right', 'center', 'end' or 'start'.
  * Default is 'center' for `placement: 'point'`. For `placement: 'line'`, the default is to let the renderer choose a
  * placement where `maxAngle` is not exceeded.
@@ -87,7 +91,7 @@ class Text {
 
     /**
      * @private
-     * @type {string|undefined}
+     * @type {string|Array<string>|undefined}
      */
     this.text_ = options.text;
 
@@ -314,7 +318,7 @@ class Text {
 
   /**
    * Get the text to be rendered.
-   * @return {string|undefined} Text.
+   * @return {string|Array<string>|undefined} Text.
    * @api
    */
   getText() {

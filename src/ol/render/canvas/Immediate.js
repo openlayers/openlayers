@@ -1146,7 +1146,12 @@ class CanvasImmediateRenderer extends VectorContext {
             ? textTextBaseline
             : defaultTextBaseline,
       };
-      this.text_ = textText !== undefined ? textText : '';
+      this.text_ =
+        textText !== undefined
+          ? Array.isArray(textText)
+            ? textText.reduce((acc, t, i) => (acc += i % 2 ? ' ' : t), '')
+            : textText
+          : '';
       this.textOffsetX_ =
         textOffsetX !== undefined ? this.pixelRatio_ * textOffsetX : 0;
       this.textOffsetY_ =

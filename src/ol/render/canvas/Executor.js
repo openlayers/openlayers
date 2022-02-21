@@ -16,9 +16,8 @@ import {
   defaultTextAlign,
   defaultTextBaseline,
   drawImageOrLabel,
+  getTextDimensions,
   measureAndCacheTextWidth,
-  measureTextHeight,
-  measureTextWidths,
 } from '../canvas.js';
 import {drawTextOnPath} from '../../geom/flat/textpath.js';
 import {equals} from '../../array.js';
@@ -100,6 +99,20 @@ function horizontalTextAlign(text, align) {
     align = align === 'start' ? 'left' : 'right';
   }
   return TEXT_ALIGN[align];
+}
+
+/**
+ * @param {Array<string>} acc Accumulator.
+ * @param {string} line Line of text.
+ * @param {number} i Index
+ * @return {Array<string>} Accumulator.
+ */
+function createTextChunks(acc, line, i) {
+  if (i > 0) {
+    acc.push('\n', '');
+  }
+  acc.push(line, '');
+  return acc;
 }
 
 class Executor {
@@ -206,7 +219,7 @@ class Executor {
   }
 
   /**
-   * @param {string} text Text.
+   * @param {string|Array<string>} text Text.
    * @param {string} textKey Text style key.
    * @param {string} fillKey Fill style key.
    * @param {string} strokeKey Stroke style key.
@@ -225,19 +238,22 @@ class Executor {
       textState.scale[0] * pixelRatio,
       textState.scale[1] * pixelRatio,
     ];
+    const textIsArray = Array.isArray(text);
     const align = horizontalTextAlign(
-      text,
+      textIsArray ? text[0] : text,
       textState.textAlign || defaultTextAlign
     );
     const strokeWidth =
       strokeKey && strokeState.lineWidth ? strokeState.lineWidth : 0;
 
-    const lines = text.split('\n');
-    const numLines = lines.length;
-    const widths = [];
-    const width = measureTextWidths(textState.font, lines, widths);
-    const lineHeight = measureTextHeight(textState.font);
-    const height = lineHeight * numLines;
+    const chunks = textIsArray
+      ? text
+      : text.split('\n').reduce(createTextChunks, []);
+
+    const {width, height, widths, heights, lineWidths} = getTextDimensions(
+      textState,
+      chunks
+    );
     const renderWidth = width + strokeWidth;
     const contextInstructions = [];
     // make canvas 2 pixels wider to account for italic text width measurement errors
@@ -252,7 +268,6 @@ class Executor {
     if (scale[0] != 1 || scale[1] != 1) {
       contextInstructions.push('scale', scale);
     }
-    contextInstructions.push('font', textState.font);
     if (strokeKey) {
       contextInstructions.push('strokeStyle', strokeState.strokeStyle);
       contextInstructions.push('lineWidth', strokeWidth);
@@ -272,26 +287,52 @@ class Executor {
     contextInstructions.push('textBaseline', 'middle');
     contextInstructions.push('textAlign', 'center');
     const leftRight = 0.5 - align;
-    const x = align * renderWidth + leftRight * strokeWidth;
-    let i;
-    if (strokeKey) {
-      for (i = 0; i < numLines; ++i) {
-        contextInstructions.push('strokeText', [
-          lines[i],
-          x + leftRight * widths[i],
-          0.5 * (strokeWidth + lineHeight) + i * lineHeight,
-        ]);
+    let x = align * renderWidth + leftRight * strokeWidth;
+    const strokeInstructions = [];
+    const fillInstructions = [];
+    let lineHeight = 0;
+    let lineOffset = 0;
+    let widthHeightIndex = 0;
+    let lineWidthIndex = 0;
+    let previousFont;
+    for (let i = 0, ii = chunks.length; i < ii; i += 2) {
+      const text = chunks[i];
+      if (text === '\n') {
+        lineOffset += lineHeight;
+        lineHeight = 0;
+        x = align * renderWidth + leftRight * strokeWidth;
+        ++lineWidthIndex;
+        continue;
       }
-    }
-    if (fillKey) {
-      for (i = 0; i < numLines; ++i) {
-        contextInstructions.push('fillText', [
-          lines[i],
-          x + leftRight * widths[i],
-          0.5 * (strokeWidth + lineHeight) + i * lineHeight,
-        ]);
+      const font = chunks[i + 1] || textState.font;
+      if (font !== previousFont) {
+        if (strokeKey) {
+          strokeInstructions.push('font', font);
+        }
+        if (fillKey) {
+          fillInstructions.push('font', font);
+        }
+        previousFont = font;
       }
+      lineHeight = Math.max(lineHeight, heights[widthHeightIndex]);
+      const fillStrokeArgs = [
+        text,
+        x +
+          leftRight * widths[widthHeightIndex] +
+          align * (widths[widthHeightIndex] - lineWidths[lineWidthIndex]),
+        0.5 * (strokeWidth + lineHeight) + lineOffset,
+      ];
+      x += widths[widthHeightIndex];
+      if (strokeKey) {
+        strokeInstructions.push('strokeText', fillStrokeArgs);
+      }
+      if (fillKey) {
+        fillInstructions.push('fillText', fillStrokeArgs);
+      }
+      ++widthHeightIndex;
     }
+    Array.prototype.push.apply(contextInstructions, strokeInstructions);
+    Array.prototype.push.apply(contextInstructions, fillInstructions);
     this.labels_[key] = label;
     return label;
   }
@@ -550,7 +591,7 @@ class Executor {
 
   /**
    * @private
-   * @param {string} text The text to draw.
+   * @param {string|Array<string>} text The text to draw.
    * @param {string} textKey The key of the text state.
    * @param {string} strokeKey The key for the stroke state.
    * @param {string} fillKey The key for the fill state.
@@ -564,7 +605,7 @@ class Executor {
     const strokeState = this.strokeStates[strokeKey];
     const pixelRatio = this.pixelRatio;
     const align = horizontalTextAlign(
-      text,
+      Array.isArray(text) ? text[0] : text,
       textState.textAlign || defaultTextAlign
     );
     const baseline = TEXT_ALIGN[textState.textBaseline || defaultTextBaseline];

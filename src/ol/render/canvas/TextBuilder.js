@@ -60,7 +60,7 @@ class CanvasTextBuilder extends CanvasBuilder {
 
     /**
      * @private
-     * @type {string}
+     * @type {string|Array<string>}
      */
     this.text_ = '';
 
