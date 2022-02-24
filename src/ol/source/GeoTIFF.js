@@ -525,7 +525,7 @@ class GeoTIFFSource extends DataTile {
         assertEqual(
           resolutions.slice(minZoom, resolutions.length),
           scaledSourceResolutions,
-          0.005,
+          0.02,
           message,
           this.viewRejector
         );
