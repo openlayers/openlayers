@@ -2,6 +2,8 @@
 
 ### Next
 
+### v6.13.0
+
 #### New `layer.getData()` method
 
 Raster layers (static images, image tiles, data tiles) have a new `layer.getData(pixel)` method that returns the pixel data at the provided location.  The return value depends on the underlying source data type.  For example, a GeoTIFF may return a `Float32Array` with one value per band, while a PNG rendered from a tile layer will return a `Uint8ClampedArray` of RGBA values.
