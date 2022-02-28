@@ -371,7 +371,7 @@ class Layer extends BaseLayer {
 
   /**
    * Get the renderer for this layer.
-   * @return {RendererType} The layer renderer.
+   * @return {RendererType|null} The layer renderer.
    */
   getRenderer() {
     if (!this.renderer_) {
