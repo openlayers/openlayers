@@ -950,13 +950,16 @@ class PluggableMap extends BaseObject {
   getLoadingOrNotReady() {
     const layerStatesArray = this.getLayerGroup().getLayerStatesArray();
     for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
-      const layer = layerStatesArray[i].layer;
-      const renderer = layer.getRenderer();
+      const state = layerStatesArray[i];
+      if (!state.visible) {
+        continue;
+      }
+      const renderer = state.layer.getRenderer();
       if (renderer && !renderer.ready) {
         return true;
       }
       const source = /** @type {import("./layer/Layer.js").default} */ (
-        layer
+        state.layer
       ).getSource();
       if (source && source.loading) {
         return true;
