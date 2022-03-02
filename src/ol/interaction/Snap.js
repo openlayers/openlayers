@@ -41,6 +41,7 @@ import {listen, unlistenByKey} from '../events.js';
  * @property {import("../Collection.js").default<import("../Feature.js").default>} [features] Snap to these features. Either this option or source should be provided.
  * @property {boolean} [edge=true] Snap to edges.
  * @property {boolean} [vertex=true] Snap to vertices.
+ * @property {boolean} [intersection=true] Snap to edges intersection points. Makes sense only when edge and vertex are enabled too.
  * @property {number} [pixelTolerance=10] Pixel tolerance for considering the pointer close enough to a segment or
  * vertex for snapping.
  * @property {import("../source/Vector.js").default} [source] Snap to features from this source. Either this option or features should be provided
@@ -128,6 +129,13 @@ class Snap extends PointerInteraction {
      * @type {boolean}
      */
     this.edge_ = options.edge !== undefined ? options.edge : true;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.intersection_ =
+      options.intersection !== undefined ? options.intersection : true;
 
     /**
      * @type {import("../Collection.js").default<import("../Feature.js").default>|null}
