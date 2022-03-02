@@ -391,7 +391,7 @@ class PluggableMap extends BaseObject {
     this.overlayIdIndex_ = {};
 
     /**
-     * @type {import("./renderer/Map.js").default}
+     * @type {import("./renderer/Map.js").default|null}
      * @private
      */
     this.renderer_ = null;
@@ -622,7 +622,7 @@ class PluggableMap extends BaseObject {
    * @api
    */
   forEachFeatureAtPixel(pixel, callback, opt_options) {
-    if (!this.frameState_) {
+    if (!this.frameState_ || !this.renderer_) {
       return;
     }
     const coordinate = this.getCoordinateFromPixelInternal(pixel);
@@ -713,7 +713,7 @@ class PluggableMap extends BaseObject {
    * @deprecated
    */
   forEachLayerAtPixel(pixel, callback, opt_options) {
-    if (!this.frameState_) {
+    if (!this.frameState_ || !this.renderer_) {
       return;
     }
     const options = opt_options || {};
@@ -738,7 +738,7 @@ class PluggableMap extends BaseObject {
    * @api
    */
   hasFeatureAtPixel(pixel, opt_options) {
-    if (!this.frameState_) {
+    if (!this.frameState_ || !this.renderer_) {
       return false;
     }
     const coordinate = this.getCoordinateFromPixelInternal(pixel);
@@ -1003,7 +1003,7 @@ class PluggableMap extends BaseObject {
 
   /**
    * Get the map renderer.
-   * @return {import("./renderer/Map.js").default} Renderer
+   * @return {import("./renderer/Map.js").default|null} Renderer
    */
   getRenderer() {
     return this.renderer_;
@@ -1189,6 +1189,7 @@ class PluggableMap extends BaseObject {
 
     if (
       frameState &&
+      this.renderer_ &&
       this.hasListener(RenderEventType.RENDERCOMPLETE) &&
       !frameState.animate &&
       this.renderComplete_
@@ -1529,7 +1530,9 @@ class PluggableMap extends BaseObject {
     }
 
     this.frameState_ = frameState;
-    this.renderer_.renderFrame(frameState);
+    /** @type {import("./renderer/Map.js").default} */ (
+      this.renderer_
+    ).renderFrame(frameState);
 
     if (frameState) {
       if (frameState.animate) {
