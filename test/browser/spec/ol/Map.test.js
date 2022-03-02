@@ -491,6 +491,18 @@ describe('ol/Map', function () {
         })
       );
     });
+    it('ignores invisible layers', function (done) {
+      map.getLayers().forEach(function (layer, i) {
+        layer.setVisible(i === 4);
+      });
+      map.setView(
+        new View({
+          center: [0, 0],
+          zoom: 0,
+        })
+      );
+      map.once('rendercomplete', () => done());
+    });
   });
 
   describe('#getFeaturesAtPixel', function () {
