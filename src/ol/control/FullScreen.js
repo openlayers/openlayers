@@ -165,6 +165,7 @@ class FullScreen extends Control {
 
     const tipLabel = options.tipLabel ? options.tipLabel : 'Toggle full-screen';
     this.button_.setAttribute('type', 'button');
+    this.setClassName_(this.button_, this.isInFullscreen_);
     this.button_.title = tipLabel;
     this.button_.appendChild(this.labelNode_);
 
