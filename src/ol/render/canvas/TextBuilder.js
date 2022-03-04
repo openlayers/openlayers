@@ -48,9 +48,10 @@ class CanvasTextBuilder extends CanvasBuilder {
    * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
+   * @param {Array<number>} displacement Pixel displacement to apply to geometry
    */
-  constructor(tolerance, maxExtent, resolution, pixelRatio) {
-    super(tolerance, maxExtent, resolution, pixelRatio);
+  constructor(tolerance, maxExtent, resolution, pixelRatio, displacement) {
+    super(tolerance, maxExtent, resolution, pixelRatio, displacement);
 
     /**
      * @private
@@ -228,7 +229,10 @@ class CanvasTextBuilder extends CanvasBuilder {
           flatEnd = ends[o];
         }
         for (let i = flatOffset; i < flatEnd; i += stride) {
-          coordinates.push(flatCoordinates[i], flatCoordinates[i + 1]);
+          coordinates.push(
+            flatCoordinates[i] + this.displacement[0],
+            flatCoordinates[i + 1] + this.displacement[1]
+          );
         }
         const end = coordinates.length;
         flatOffset = ends[o];
@@ -305,8 +309,10 @@ class CanvasTextBuilder extends CanvasBuilder {
         let beg = begin / 2;
         geometryWidths = geometryWidths.filter((w, i) => {
           const keep =
-            coordinates[(beg + i) * 2] === flatCoordinates[i * stride] &&
-            coordinates[(beg + i) * 2 + 1] === flatCoordinates[i * stride + 1];
+            coordinates[(beg + i) * 2] ===
+              flatCoordinates[i * stride] + this.displacement[0] &&
+            coordinates[(beg + i) * 2 + 1] ===
+              flatCoordinates[i * stride + 1] + this.displacement[1];
           if (!keep) {
             --beg;
           }

@@ -55,6 +55,7 @@ import {
  * which will be used if this is not set.
  * @property {import("./Base.js").BackgroundColor} [background] Background color for the layer. If not specified, no background
  * will be rendered.
+ * @property {Array<number>} [displacement=[0,0]] Displacement to apply to this layer, in the layers's coordinate space.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will
  * be recreated during animations. This means that no vectors will be shown clipped, but the
  * setting will have a performance impact for large amounts of vector data. When set to `false`,
@@ -146,6 +147,13 @@ class BaseVectorLayer extends Layer {
       options.updateWhileInteracting !== undefined
         ? options.updateWhileInteracting
         : false;
+
+    /**
+     * @type {Array<number>}
+     * @private
+     */
+    this.displacement_ =
+      options.displacement !== undefined ? options.displacement : [0, 0];
   }
 
   /**
@@ -223,6 +231,13 @@ class BaseVectorLayer extends Layer {
    */
   getUpdateWhileInteracting() {
     return this.updateWhileInteracting_;
+  }
+
+  /**
+   * @return {Array<number>} The displacement to apply to this layer, in the layer's coordinate space.
+   */
+  getDisplacement() {
+    return this.displacement_;
   }
 
   /**

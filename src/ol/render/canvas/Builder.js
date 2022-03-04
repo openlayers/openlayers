@@ -35,8 +35,9 @@ class CanvasBuilder extends VectorContext {
    * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
+   * @param {Array<number>} displacement Pixel displacement to apply to geometry
    */
-  constructor(tolerance, maxExtent, resolution, pixelRatio) {
+  constructor(tolerance, maxExtent, resolution, pixelRatio, displacement) {
     super();
 
     /**
@@ -57,6 +58,12 @@ class CanvasBuilder extends VectorContext {
      * @type {number}
      */
     this.pixelRatio = pixelRatio;
+
+    /**
+     * @protected
+     * @type {Array<number>}
+     */
+    this.displacement = displacement;
 
     /**
      * @protected
@@ -146,8 +153,8 @@ class CanvasBuilder extends VectorContext {
     const coordinates = this.coordinates;
     let myEnd = coordinates.length;
     for (let i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
-      tmpCoord[0] = flatCoordinates[i];
-      tmpCoord[1] = flatCoordinates[i + 1];
+      tmpCoord[0] = flatCoordinates[i] + this.displacement[0];
+      tmpCoord[1] = flatCoordinates[i + 1] + this.displacement[1];
       if (containsCoordinate(extent, tmpCoord)) {
         coordinates[myEnd++] = tmpCoord[0];
         coordinates[myEnd++] = tmpCoord[1];
@@ -180,15 +187,15 @@ class CanvasBuilder extends VectorContext {
     if (skipFirst) {
       offset += stride;
     }
-    let lastXCoord = flatCoordinates[offset];
-    let lastYCoord = flatCoordinates[offset + 1];
+    let lastXCoord = flatCoordinates[offset] + this.displacement[0];
+    let lastYCoord = flatCoordinates[offset + 1] + this.displacement[1];
     const nextCoord = this.tmpCoordinate_;
     let skipped = true;
 
     let i, lastRel, nextRel;
     for (i = offset + stride; i < end; i += stride) {
-      nextCoord[0] = flatCoordinates[i];
-      nextCoord[1] = flatCoordinates[i + 1];
+      nextCoord[0] = flatCoordinates[i] + this.displacement[0];
+      nextCoord[1] = flatCoordinates[i + 1] + this.displacement[1];
       nextRel = coordinateRelationship(extent, nextCoord);
       if (nextRel !== lastRel) {
         if (skipped) {
@@ -387,7 +394,10 @@ class CanvasBuilder extends VectorContext {
         break;
       case GeometryType.POINT:
         flatCoordinates = geometry.getFlatCoordinates();
-        this.coordinates.push(flatCoordinates[0], flatCoordinates[1]);
+        this.coordinates.push(
+          flatCoordinates[0] + this.displacement[0],
+          flatCoordinates[1] + this.displacement[1]
+        );
         builderEnd = this.coordinates.length;
 
         this.instructions.push([

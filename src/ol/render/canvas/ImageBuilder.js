@@ -10,9 +10,10 @@ class CanvasImageBuilder extends CanvasBuilder {
    * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
+   * @param {Array<number>} displacement Pixel displacement to apply to geometry
    */
-  constructor(tolerance, maxExtent, resolution, pixelRatio) {
-    super(tolerance, maxExtent, resolution, pixelRatio);
+  constructor(tolerance, maxExtent, resolution, pixelRatio, displacement) {
+    super(tolerance, maxExtent, resolution, pixelRatio, displacement);
 
     /**
      * @private

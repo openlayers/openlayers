@@ -72,6 +72,7 @@ import {assign} from '../obj.js';
  * which will be used if this is not set.
  * @property {import("./Base.js").BackgroundColor|false} [background] Background color for the layer. If not specified, no
  * background will be rendered.
+ * @property {Array<number>} [displacement=[0,0]] Displacement to apply to this layer, in tile coordinate space.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will be
  * recreated during animations. This means that no vectors will be shown clipped, but the setting
  * will have a performance impact for large amounts of vector data. When set to `false`, batches

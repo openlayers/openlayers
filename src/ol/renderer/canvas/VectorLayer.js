@@ -539,6 +539,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const vectorLayerRevision = vectorLayer.getRevision();
     const vectorLayerRenderBuffer = vectorLayer.getRenderBuffer();
     let vectorLayerRenderOrder = vectorLayer.getRenderOrder();
+    const vectorLayerDisplacement = vectorLayer.getDisplacement();
 
     if (vectorLayerRenderOrder === undefined) {
       vectorLayerRenderOrder = defaultRenderOrder;
@@ -617,7 +618,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       getRenderTolerance(resolution, pixelRatio),
       extent,
       resolution,
-      pixelRatio
+      pixelRatio,
+      vectorLayerDisplacement
     );
 
     let declutterBuilderGroup;
@@ -626,7 +628,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         getRenderTolerance(resolution, pixelRatio),
         extent,
         resolution,
-        pixelRatio
+        pixelRatio,
+        vectorLayerDisplacement
       );
     }
 

@@ -227,6 +227,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     const source = layer.getSource();
     const declutter = layer.getDeclutter();
+    const displacement = layer.getDisplacement();
     const sourceTileGrid = source.getTileGrid();
     const tileGrid = source.getTileGridForProjection(projection);
     const tileExtent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
@@ -260,10 +261,17 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         0,
         builderExtent,
         resolution,
-        pixelRatio
+        pixelRatio,
+        displacement
       );
       const declutterBuilderGroup = declutter
-        ? new CanvasBuilderGroup(0, sharedExtent, resolution, pixelRatio)
+        ? new CanvasBuilderGroup(
+            0,
+            sharedExtent,
+            resolution,
+            pixelRatio,
+            displacement
+          )
         : undefined;
       const squaredTolerance = getSquaredRenderTolerance(
         resolution,

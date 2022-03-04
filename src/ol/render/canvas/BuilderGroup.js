@@ -26,8 +26,9 @@ class BuilderGroup {
    * @param {import("../../extent.js").Extent} maxExtent Max extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
+   * @param {Array<number>} displacement Pixel displacement to apply to geometry
    */
-  constructor(tolerance, maxExtent, resolution, pixelRatio) {
+  constructor(tolerance, maxExtent, resolution, pixelRatio, displacement) {
     /**
      * @private
      * @type {number}
@@ -51,6 +52,12 @@ class BuilderGroup {
      * @type {number}
      */
     this.resolution_ = resolution;
+
+    /**
+     * @private
+     * @type {Array<number>}
+     */
+    this.displacement_ = displacement;
 
     /**
      * @private
@@ -94,7 +101,8 @@ class BuilderGroup {
         this.tolerance_,
         this.maxExtent_,
         this.resolution_,
-        this.pixelRatio_
+        this.pixelRatio_,
+        this.displacement_
       );
       replays[builderType] = replay;
     }
