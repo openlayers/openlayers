@@ -625,7 +625,7 @@ class Snap extends PointerInteraction {
         feature: feature,
         segment: [point],
       };
-      this.rBush_.insert(geometry.getExtent(), segmentData);
+      this.rBush_.insert(boundingExtent(segmentData.segment), segmentData);
     });
   }
 
