@@ -122,6 +122,27 @@ describe('ol.interaction.Snap', function () {
       expect(event.coordinate).to.eql([10, 0]);
     });
 
+    it('snaps to vertex on line', function () {
+      const line = new Feature(
+        new LineString([
+          [0, 0],
+          [50, 0],
+        ])
+      );
+      const point = new Feature(new Point([5, 0]));
+      const snap = new Snap({
+        features: new Collection([line, point]),
+      });
+      snap.setMap(map);
+      const event = {
+        pixel: [3 + width / 2, height / 2],
+        coordinate: [3, 0],
+        map: map,
+      };
+      snap.handleEvent(event);
+      expect(event.coordinate).to.eql([5, 0]);
+    });
+
     it('snaps to circle', function () {
       const circle = new Feature(new Circle([0, 0], 10));
       const snapInteraction = new Snap({
