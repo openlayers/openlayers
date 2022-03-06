@@ -26,7 +26,6 @@ import {listen, unlistenByKey} from '../events.js';
 
 /**
  * @typedef {Object} Result
- * @property {boolean} snapped Snapped.
  * @property {import("../coordinate.js").Coordinate|null} vertex Vertex.
  * @property {import("../pixel.js").Pixel|null} vertexPixel VertexPixel.
  */
@@ -66,11 +65,7 @@ function getFeatureFromEvent(evt) {
   }
 }
 
-const NOT_SNAPPED = {
-  snapped: false,
-  vertex: null,
-  vertexPixel: null,
-};
+const tempSegment = [];
 
 /**
  * @classdesc
@@ -268,7 +263,7 @@ class Snap extends PointerInteraction {
    */
   handleEvent(evt) {
     const result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
-    if (result.snapped) {
+    if (result) {
       evt.coordinate = result.vertex.slice(0, 2);
       evt.pixel = result.vertexPixel;
     }
@@ -413,7 +408,7 @@ class Snap extends PointerInteraction {
    * @param {import("../pixel.js").Pixel} pixel Pixel
    * @param {import("../coordinate.js").Coordinate} pixelCoordinate Coordinate
    * @param {import("../PluggableMap.js").default} map Map.
-   * @return {Result} Snap result
+   * @return {Result|null} Snap result
    */
   snapTo(pixel, pixelCoordinate, map) {
     const lowerLeft = map.getCoordinateFromPixel([
@@ -430,7 +425,7 @@ class Snap extends PointerInteraction {
 
     const segmentsLength = segments.length;
     if (segmentsLength === 0) {
-      return NOT_SNAPPED;
+      return null;
     }
 
     const projection = map.getView().getProjection();
@@ -446,7 +441,6 @@ class Snap extends PointerInteraction {
         const squaredPixelDistance = squaredDistance(pixel, vertexPixel);
         if (squaredPixelDistance <= squaredPixelTolerance) {
           return {
-            snapped: true,
             vertex: closestVertex,
             vertexPixel: [
               Math.round(vertexPixel[0]),
@@ -455,7 +449,7 @@ class Snap extends PointerInteraction {
           };
         }
       }
-      return NOT_SNAPPED;
+      return null;
     };
 
     if (this.vertex_) {
@@ -475,13 +469,12 @@ class Snap extends PointerInteraction {
         }
       }
       const result = getResult();
-      if (result.snapped) {
+      if (result) {
         return result;
       }
     }
 
     if (this.edge_) {
-      const tempSegment = [];
       for (let i = 0; i < segmentsLength; ++i) {
         let vertex = null;
         const segmentData = segments[i];
@@ -523,12 +516,12 @@ class Snap extends PointerInteraction {
       }
 
       const result = getResult();
-      if (result.snapped) {
+      if (result) {
         return result;
       }
     }
 
-    return NOT_SNAPPED;
+    return null;
   }
 
   /**
