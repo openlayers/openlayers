@@ -12,9 +12,7 @@ import {boundingExtent, createEmpty} from '../extent.js';
 import {
   closestOnCircle,
   closestOnSegment,
-  distance as coordinateDistance,
-  squaredDistance as squaredCoordinateDistance,
-  squaredDistanceToSegment,
+  squaredDistance,
 } from '../coordinate.js';
 import {fromCircle} from '../geom/Polygon.js';
 import {
@@ -28,7 +26,6 @@ import {listen, unlistenByKey} from '../events.js';
 
 /**
  * @typedef {Object} Result
- * @property {boolean} snapped Snapped.
  * @property {import("../coordinate.js").Coordinate|null} vertex Vertex.
  * @property {import("../pixel.js").Pixel|null} vertexPixel VertexPixel.
  */
@@ -266,7 +263,7 @@ class Snap extends PointerInteraction {
    */
   handleEvent(evt) {
     const result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
-    if (result.snapped) {
+    if (result) {
       evt.coordinate = result.vertex.slice(0, 2);
       evt.pixel = result.vertexPixel;
     }
@@ -411,7 +408,7 @@ class Snap extends PointerInteraction {
    * @param {import("../pixel.js").Pixel} pixel Pixel
    * @param {import("../coordinate.js").Coordinate} pixelCoordinate Coordinate
    * @param {import("../PluggableMap.js").default} map Map.
-   * @return {Result} Snap result
+   * @return {Result|null} Snap result
    */
   snapTo(pixel, pixelCoordinate, map) {
     const lowerLeft = map.getCoordinateFromPixel([
@@ -424,113 +421,107 @@ class Snap extends PointerInteraction {
     ]);
     const box = boundingExtent([lowerLeft, upperRight]);
 
-    let segments = this.rBush_.getInExtent(box);
+    const segments = this.rBush_.getInExtent(box);
 
-    // If snapping on vertices only, don't consider circles
-    if (this.vertex_ && !this.edge_) {
-      segments = segments.filter(function (segment) {
-        return segment.feature.getGeometry().getType() !== GeometryType.CIRCLE;
-      });
-    }
-
-    let snapped = false;
-    let vertex = null;
-    let vertexPixel = null;
-
-    if (segments.length === 0) {
-      return {
-        snapped: snapped,
-        vertex: vertex,
-        vertexPixel: vertexPixel,
-      };
+    const segmentsLength = segments.length;
+    if (segmentsLength === 0) {
+      return null;
     }
 
     const projection = map.getView().getProjection();
     const projectedCoordinate = fromUserCoordinate(pixelCoordinate, projection);
 
-    let closestSegmentData;
+    let closestVertex;
     let minSquaredDistance = Infinity;
-    for (let i = 0; i < segments.length; ++i) {
-      const segmentData = segments[i];
-      tempSegment[0] = fromUserCoordinate(segmentData.segment[0], projection);
-      tempSegment[1] = fromUserCoordinate(segmentData.segment[1], projection);
-      const delta = squaredDistanceToSegment(projectedCoordinate, tempSegment);
-      if (delta < minSquaredDistance) {
-        closestSegmentData = segmentData;
-        minSquaredDistance = delta;
+
+    const squaredPixelTolerance = this.pixelTolerance_ * this.pixelTolerance_;
+    const getResult = () => {
+      if (closestVertex) {
+        const vertexPixel = map.getPixelFromCoordinate(closestVertex);
+        const squaredPixelDistance = squaredDistance(pixel, vertexPixel);
+        if (squaredPixelDistance <= squaredPixelTolerance) {
+          return {
+            vertex: closestVertex,
+            vertexPixel: [
+              Math.round(vertexPixel[0]),
+              Math.round(vertexPixel[1]),
+            ],
+          };
+        }
+      }
+      return null;
+    };
+
+    if (this.vertex_) {
+      for (let i = 0; i < segmentsLength; ++i) {
+        const segmentData = segments[i];
+        if (
+          segmentData.feature.getGeometry().getType() !== GeometryType.CIRCLE
+        ) {
+          segmentData.segment.forEach((vertex) => {
+            const tempVertexCoord = fromUserCoordinate(vertex, projection);
+            const delta = squaredDistance(projectedCoordinate, tempVertexCoord);
+            if (delta < minSquaredDistance) {
+              closestVertex = vertex;
+              minSquaredDistance = delta;
+            }
+          });
+        }
+      }
+      const result = getResult();
+      if (result) {
+        return result;
       }
     }
-    const closestSegment = closestSegmentData.segment;
 
-    if (this.vertex_ && !this.edge_) {
-      const pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
-      const pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
-      const squaredDist1 = squaredCoordinateDistance(pixel, pixel1);
-      const squaredDist2 = squaredCoordinateDistance(pixel, pixel2);
-      const dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
-      if (dist <= this.pixelTolerance_) {
-        snapped = true;
-        vertex =
-          squaredDist1 > squaredDist2 ? closestSegment[1] : closestSegment[0];
-        vertexPixel = map.getPixelFromCoordinate(vertex);
-      }
-    } else if (this.edge_) {
-      const isCircle =
-        closestSegmentData.feature.getGeometry().getType() ===
-        GeometryType.CIRCLE;
-      if (isCircle) {
-        let circleGeometry = closestSegmentData.feature.getGeometry();
-        const userProjection = getUserProjection();
-        if (userProjection) {
-          circleGeometry = circleGeometry
-            .clone()
-            .transform(userProjection, projection);
+    if (this.edge_) {
+      for (let i = 0; i < segmentsLength; ++i) {
+        let vertex = null;
+        const segmentData = segments[i];
+        if (
+          segmentData.feature.getGeometry().getType() === GeometryType.CIRCLE
+        ) {
+          let circleGeometry = segmentData.feature.getGeometry();
+          const userProjection = getUserProjection();
+          if (userProjection) {
+            circleGeometry = circleGeometry
+              .clone()
+              .transform(userProjection, projection);
+          }
+          vertex = toUserCoordinate(
+            closestOnCircle(
+              projectedCoordinate,
+              /** @type {import("../geom/Circle.js").default} */ (
+                circleGeometry
+              )
+            ),
+            projection
+          );
+        } else {
+          const [segmentStart, segmentEnd] = segmentData.segment;
+          // points have only one coordinate
+          if (segmentEnd) {
+            tempSegment[0] = fromUserCoordinate(segmentStart, projection);
+            tempSegment[1] = fromUserCoordinate(segmentEnd, projection);
+            vertex = closestOnSegment(projectedCoordinate, tempSegment);
+          }
         }
-        vertex = toUserCoordinate(
-          closestOnCircle(
-            projectedCoordinate,
-            /** @type {import("../geom/Circle.js").default} */ (circleGeometry)
-          ),
-          projection
-        );
-      } else {
-        tempSegment[0] = fromUserCoordinate(closestSegment[0], projection);
-        tempSegment[1] = fromUserCoordinate(closestSegment[1], projection);
-        vertex = toUserCoordinate(
-          closestOnSegment(projectedCoordinate, tempSegment),
-          projection
-        );
-      }
-      vertexPixel = map.getPixelFromCoordinate(vertex);
-
-      if (coordinateDistance(pixel, vertexPixel) <= this.pixelTolerance_) {
-        snapped = true;
-        if (this.vertex_ && !isCircle) {
-          const pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
-          const pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
-          const squaredDist1 = squaredCoordinateDistance(vertexPixel, pixel1);
-          const squaredDist2 = squaredCoordinateDistance(vertexPixel, pixel2);
-          const dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
-          if (dist <= this.pixelTolerance_) {
-            vertex =
-              squaredDist1 > squaredDist2
-                ? closestSegment[1]
-                : closestSegment[0];
-            vertexPixel = map.getPixelFromCoordinate(vertex);
+        if (vertex) {
+          const delta = squaredDistance(projectedCoordinate, vertex);
+          if (delta < minSquaredDistance) {
+            closestVertex = vertex;
+            minSquaredDistance = delta;
           }
         }
       }
+
+      const result = getResult();
+      if (result) {
+        return result;
+      }
     }
 
-    if (snapped) {
-      vertexPixel = [Math.round(vertexPixel[0]), Math.round(vertexPixel[1])];
-    }
-
-    return {
-      snapped: snapped,
-      vertex: vertex,
-      vertexPixel: vertexPixel,
-    };
+    return null;
   }
 
   /**
@@ -629,15 +620,13 @@ class Snap extends PointerInteraction {
    * @private
    */
   writeMultiPointGeometry_(feature, geometry) {
-    const points = geometry.getCoordinates();
-    for (let i = 0, ii = points.length; i < ii; ++i) {
-      const coordinates = points[i];
+    geometry.getCoordinates().forEach((point) => {
       const segmentData = {
         feature: feature,
-        segment: [coordinates, coordinates],
+        segment: [point],
       };
       this.rBush_.insert(geometry.getExtent(), segmentData);
-    }
+    });
   }
 
   /**
@@ -669,10 +658,9 @@ class Snap extends PointerInteraction {
    * @private
    */
   writePointGeometry_(feature, geometry) {
-    const coordinates = geometry.getCoordinates();
     const segmentData = {
       feature: feature,
-      segment: [coordinates, coordinates],
+      segment: [geometry.getCoordinates()],
     };
     this.rBush_.insert(geometry.getExtent(), segmentData);
   }
