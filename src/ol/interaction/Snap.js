@@ -181,18 +181,18 @@ class Snap extends PointerInteraction {
     /**
      * @const
      * @private
-     * @type {Object<string, function(import("../Feature.js").default, import("../geom/Geometry.js").default): void>}
+     * @type {Object<string, function(Array<Array<import('../coordinate.js').Coordinate>>, import("../geom/Geometry.js").default): void>}
      */
-    this.SEGMENT_WRITERS_ = {
-      'Point': this.writePointGeometry_.bind(this),
-      'LineString': this.writeLineStringGeometry_.bind(this),
-      'LinearRing': this.writeLineStringGeometry_.bind(this),
-      'Polygon': this.writePolygonGeometry_.bind(this),
-      'MultiPoint': this.writeMultiPointGeometry_.bind(this),
-      'MultiLineString': this.writeMultiLineStringGeometry_.bind(this),
-      'MultiPolygon': this.writeMultiPolygonGeometry_.bind(this),
-      'GeometryCollection': this.writeGeometryCollectionGeometry_.bind(this),
-      'Circle': this.writeCircleGeometry_.bind(this),
+    this.GEOMETRY_SEGMENTERS_ = {
+      'Point': this.segmentPointGemetry_.bind(this),
+      'LineString': this.segmentLineStringGemetry_.bind(this),
+      'LinearRing': this.segmentLineStringGemetry_.bind(this),
+      'Polygon': this.segmentPolygonGemetry_.bind(this),
+      'MultiPoint': this.segmentMultiPointGemetry_.bind(this),
+      'MultiLineString': this.segmentMultiLineStringGemetry_.bind(this),
+      'MultiPolygon': this.segmentMultiPolygonGemetry_.bind(this),
+      'GeometryCollection': this.segmentGeometryCollectionGemetry_.bind(this),
+      'Circle': this.segmentCircleGemetry_.bind(this),
     };
   }
 
@@ -208,12 +208,27 @@ class Snap extends PointerInteraction {
     const feature_uid = getUid(feature);
     const geometry = feature.getGeometry();
     if (geometry) {
-      const segmentWriter = this.SEGMENT_WRITERS_[geometry.getType()];
-      if (segmentWriter) {
+      const segmenter = this.GEOMETRY_SEGMENTERS_[geometry.getType()];
+      if (segmenter) {
         this.indexedFeaturesExtents_[feature_uid] = geometry.getExtent(
           createEmpty()
         );
-        segmentWriter(feature, geometry);
+        const segments =
+          /** @type {Array<Array<import('../coordinate.js').Coordinate>>} */ ([]);
+        segmenter(segments, geometry);
+        if (segments.length === 1) {
+          this.rBush_.insert(boundingExtent(segments[0]), {
+            feature: feature,
+            segment: segments[0],
+          });
+        } else if (segments.length > 1) {
+          const extents = segments.map((s) => boundingExtent(s));
+          const segmentsData = segments.map((segment) => ({
+            feature: feature,
+            segment: segment,
+          }));
+          this.rBush_.load(extents, segmentsData);
+        }
       }
     }
 
@@ -534,11 +549,11 @@ class Snap extends PointerInteraction {
   }
 
   /**
-   * @param {import("../Feature.js").default} feature Feature
+   * @param {Array<Array<import('../coordinate.js').Coordinate>>} segments Segments
    * @param {import("../geom/Circle.js").default} geometry Geometry.
    * @private
    */
-  writeCircleGeometry_(feature, geometry) {
+  segmentCircleGemetry_(segments, geometry) {
     const projection = this.getMap().getView().getProjection();
     let circleGeometry = geometry;
     const userProjection = getUserProjection();
@@ -553,134 +568,101 @@ class Snap extends PointerInteraction {
     }
     const coordinates = polygon.getCoordinates()[0];
     for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-      const segment = coordinates.slice(i, i + 2);
-      const segmentData = {
-        feature: feature,
-        segment: segment,
-      };
-      this.rBush_.insert(boundingExtent(segment), segmentData);
+      segments.push(coordinates.slice(i, i + 2));
     }
   }
 
   /**
-   * @param {import("../Feature.js").default} feature Feature
+   * @param {Array<Array<import('../coordinate.js').Coordinate>>} segments Segments
    * @param {import("../geom/GeometryCollection.js").default} geometry Geometry.
    * @private
    */
-  writeGeometryCollectionGeometry_(feature, geometry) {
+  segmentGeometryCollectionGemetry_(segments, geometry) {
     const geometries = geometry.getGeometriesArray();
     for (let i = 0; i < geometries.length; ++i) {
-      const segmentWriter = this.SEGMENT_WRITERS_[geometries[i].getType()];
-      if (segmentWriter) {
-        segmentWriter(feature, geometries[i]);
+      const segmenter = this.GEOMETRY_SEGMENTERS_[geometries[i].getType()];
+      if (segmenter) {
+        segmenter(segments, geometries[i]);
       }
     }
   }
 
   /**
-   * @param {import("../Feature.js").default} feature Feature
+   * @param {Array<Array<import('../coordinate.js').Coordinate>>} segments Segments
    * @param {import("../geom/LineString.js").default} geometry Geometry.
    * @private
    */
-  writeLineStringGeometry_(feature, geometry) {
+  segmentLineStringGemetry_(segments, geometry) {
     const coordinates = geometry.getCoordinates();
     for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-      const segment = coordinates.slice(i, i + 2);
-      const segmentData = {
-        feature: feature,
-        segment: segment,
-      };
-      this.rBush_.insert(boundingExtent(segment), segmentData);
+      segments.push(coordinates.slice(i, i + 2));
     }
   }
 
   /**
-   * @param {import("../Feature.js").default} feature Feature
+   * @param {Array<Array<import('../coordinate.js').Coordinate>>} segments Segments
    * @param {import("../geom/MultiLineString.js").default} geometry Geometry.
    * @private
    */
-  writeMultiLineStringGeometry_(feature, geometry) {
+  segmentMultiLineStringGemetry_(segments, geometry) {
     const lines = geometry.getCoordinates();
     for (let j = 0, jj = lines.length; j < jj; ++j) {
       const coordinates = lines[j];
       for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-        const segment = coordinates.slice(i, i + 2);
-        const segmentData = {
-          feature: feature,
-          segment: segment,
-        };
-        this.rBush_.insert(boundingExtent(segment), segmentData);
+        segments.push(coordinates.slice(i, i + 2));
       }
     }
   }
 
   /**
-   * @param {import("../Feature.js").default} feature Feature
+   * @param {Array<Array<import('../coordinate.js').Coordinate>>} segments Segments
    * @param {import("../geom/MultiPoint.js").default} geometry Geometry.
    * @private
    */
-  writeMultiPointGeometry_(feature, geometry) {
+  segmentMultiPointGemetry_(segments, geometry) {
     geometry.getCoordinates().forEach((point) => {
-      const segmentData = {
-        feature: feature,
-        segment: [point],
-      };
-      this.rBush_.insert(geometry.getExtent(), segmentData);
+      segments.push([point]);
     });
   }
 
   /**
-   * @param {import("../Feature.js").default} feature Feature
+   * @param {Array<Array<import('../coordinate.js').Coordinate>>} segments Segments
    * @param {import("../geom/MultiPolygon.js").default} geometry Geometry.
    * @private
    */
-  writeMultiPolygonGeometry_(feature, geometry) {
+  segmentMultiPolygonGemetry_(segments, geometry) {
     const polygons = geometry.getCoordinates();
     for (let k = 0, kk = polygons.length; k < kk; ++k) {
       const rings = polygons[k];
       for (let j = 0, jj = rings.length; j < jj; ++j) {
         const coordinates = rings[j];
         for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-          const segment = coordinates.slice(i, i + 2);
-          const segmentData = {
-            feature: feature,
-            segment: segment,
-          };
-          this.rBush_.insert(boundingExtent(segment), segmentData);
+          segments.push(coordinates.slice(i, i + 2));
         }
       }
     }
   }
 
   /**
-   * @param {import("../Feature.js").default} feature Feature
+   * @param {Array<Array<import('../coordinate.js').Coordinate>>} segments Segments
    * @param {import("../geom/Point.js").default} geometry Geometry.
    * @private
    */
-  writePointGeometry_(feature, geometry) {
-    const segmentData = {
-      feature: feature,
-      segment: [geometry.getCoordinates()],
-    };
-    this.rBush_.insert(geometry.getExtent(), segmentData);
+  segmentPointGemetry_(segments, geometry) {
+    segments.push([geometry.getCoordinates()]);
   }
 
   /**
-   * @param {import("../Feature.js").default} feature Feature
+   * @param {Array<Array<import('../coordinate.js').Coordinate>>} segments Segments
    * @param {import("../geom/Polygon.js").default} geometry Geometry.
    * @private
    */
-  writePolygonGeometry_(feature, geometry) {
+  segmentPolygonGemetry_(segments, geometry) {
     const rings = geometry.getCoordinates();
     for (let j = 0, jj = rings.length; j < jj; ++j) {
       const coordinates = rings[j];
       for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-        const segment = coordinates.slice(i, i + 2);
-        const segmentData = {
-          feature: feature,
-          segment: segment,
-        };
-        this.rBush_.insert(boundingExtent(segment), segmentData);
+        segments.push(coordinates.slice(i, i + 2));
       }
     }
   }
