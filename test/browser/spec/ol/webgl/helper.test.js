@@ -57,6 +57,15 @@ const INVALID_FRAGMENT_SHADER = `
     gl_FragColor = vec4(oops, 1.0, 1.0, 1.0);
   }`;
 
+const SAMPLE_FRAMESTATE = {
+  size: [100, 150],
+  viewState: {
+    rotation: 0.4,
+    resolution: 2,
+    center: [10, 20],
+  },
+};
+
 describe('ol/webgl/WebGLHelper', function () {
   let h;
   afterEach(function () {
@@ -117,7 +126,10 @@ describe('ol/webgl/WebGLHelper', function () {
             u_test4: createTransform(),
           },
         });
-        h.useProgram(h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER));
+        h.useProgram(
+          h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER),
+          SAMPLE_FRAMESTATE
+        );
         h.prepareDraw({
           pixelRatio: 2,
           size: [50, 80],
@@ -164,7 +176,7 @@ describe('ol/webgl/WebGLHelper', function () {
         h = new WebGLHelper();
 
         p = h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER);
-        h.useProgram(p);
+        h.useProgram(p, SAMPLE_FRAMESTATE);
       });
 
       it('has saved the program', function () {
@@ -209,34 +221,30 @@ describe('ol/webgl/WebGLHelper', function () {
     });
 
     describe('#makeProjectionTransform', function () {
-      let frameState;
       beforeEach(function () {
         h = new WebGLHelper();
-
-        frameState = {
-          size: [100, 150],
-          viewState: {
-            rotation: 0.4,
-            resolution: 2,
-            center: [10, 20],
-          },
-        };
       });
 
       it('gives out the correct transform', function () {
-        const scaleX = 2 / frameState.size[0] / frameState.viewState.resolution;
-        const scaleY = 2 / frameState.size[1] / frameState.viewState.resolution;
+        const scaleX =
+          2 /
+          SAMPLE_FRAMESTATE.size[0] /
+          SAMPLE_FRAMESTATE.viewState.resolution;
+        const scaleY =
+          2 /
+          SAMPLE_FRAMESTATE.size[1] /
+          SAMPLE_FRAMESTATE.viewState.resolution;
         const given = createTransform();
         const expected = createTransform();
         scaleTransform(expected, scaleX, scaleY);
-        rotateTransform(expected, -frameState.viewState.rotation);
+        rotateTransform(expected, -SAMPLE_FRAMESTATE.viewState.rotation);
         translateTransform(
           expected,
-          -frameState.viewState.center[0],
-          -frameState.viewState.center[1]
+          -SAMPLE_FRAMESTATE.viewState.center[0],
+          -SAMPLE_FRAMESTATE.viewState.center[1]
         );
 
-        h.makeProjectionTransform(frameState, given);
+        h.makeProjectionTransform(SAMPLE_FRAMESTATE, given);
 
         expect(given.map((val) => val.toFixed(15))).to.eql(
           expected.map((val) => val.toFixed(15))
@@ -377,7 +385,8 @@ describe('ol/webgl/WebGLHelper', function () {
         void main(void) {
           gl_Position = vec4(u_test, attr3, 0.0, 1.0);
         }`
-        )
+        ),
+        SAMPLE_FRAMESTATE
       );
     });
 

@@ -49,6 +49,7 @@ export const DefaultUniform = {
   TIME: 'u_time',
   ZOOM: 'u_zoom',
   RESOLUTION: 'u_resolution',
+  SIZE_PX: 'u_sizePx',
 };
 
 /**
@@ -206,11 +207,12 @@ function releaseCanvas(key) {
  *   Shaders must be compiled and assembled into a program like so:
  *   ```js
  *   // here we simply create two shaders and assemble them in a program which is then used
- *   // for subsequent rendering calls
+ *   // for subsequent rendering calls; note how a frameState is required to set up a program,
+ *   // as several default uniforms are computed from it (projection matrix, zoom level, etc.)
  *   const vertexShader = new WebGLVertex(VERTEX_SHADER);
  *   const fragmentShader = new WebGLFragment(FRAGMENT_SHADER);
  *   const program = this.context.getProgram(fragmentShader, vertexShader);
- *   helper.useProgram(this.program);
+ *   helper.useProgram(this.program, frameState);
  *   ```
  *
  *   Uniforms are defined using the `uniforms` option and can either be explicit values or callbacks taking the frame state as argument.
@@ -564,8 +566,6 @@ class WebGLHelper extends Disposable {
     canvas.style.width = size[0] + 'px';
     canvas.style.height = size[1] + 'px';
 
-    gl.useProgram(this.currentProgram_);
-
     // loop backwards in post processes list
     for (let i = this.postProcessPasses_.length - 1; i >= 0; i--) {
       this.postProcessPasses_[i].init(frameState);
@@ -581,10 +581,6 @@ class WebGLHelper extends Disposable {
       gl.ONE,
       opt_disableAlphaBlend ? gl.ZERO : gl.ONE_MINUS_SRC_ALPHA
     );
-
-    gl.useProgram(this.currentProgram_);
-    this.applyFrameState(frameState);
-    this.applyUniforms(frameState);
   }
 
   /**
@@ -609,10 +605,6 @@ class WebGLHelper extends Disposable {
       gl.ONE,
       opt_disableAlphaBlend ? gl.ZERO : gl.ONE_MINUS_SRC_ALPHA
     );
-
-    gl.useProgram(this.currentProgram_);
-    this.applyFrameState(frameState);
-    this.applyUniforms(frameState);
   }
 
   /**
@@ -709,6 +701,7 @@ class WebGLHelper extends Disposable {
       DefaultUniform.RESOLUTION,
       frameState.viewState.resolution
     );
+    this.setUniformFloatVec2(DefaultUniform.SIZE_PX, [size[0], size[1]]);
   }
 
   /**
@@ -803,22 +796,20 @@ class WebGLHelper extends Disposable {
   }
 
   /**
-   * Use a program.  If the program is already in use, this will return `false`.
+   * Set up a program for use. The program will be set as the current one. Then, the uniforms used
+   * in the program will be set based on the current frame state and the helper configuration.
    * @param {WebGLProgram} program Program.
-   * @return {boolean} Changed.
+   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
    * @api
    */
-  useProgram(program) {
-    if (program == this.currentProgram_) {
-      return false;
-    } else {
-      const gl = this.getGL();
-      gl.useProgram(program);
-      this.currentProgram_ = program;
-      this.uniformLocations_ = {};
-      this.attribLocations_ = {};
-      return true;
-    }
+  useProgram(program, frameState) {
+    const gl = this.getGL();
+    gl.useProgram(program);
+    this.currentProgram_ = program;
+    this.uniformLocations_ = {};
+    this.attribLocations_ = {};
+    this.applyFrameState(frameState);
+    this.applyUniforms(frameState);
   }
 
   /**
@@ -957,6 +948,15 @@ class WebGLHelper extends Disposable {
    */
   setUniformFloatValue(uniform, value) {
     this.getGL().uniform1f(this.getUniformLocation(uniform), value);
+  }
+
+  /**
+   * Give a value for a vec2 uniform
+   * @param {string} uniform Uniform name
+   * @param {Array<number>} value Array of length 4.
+   */
+  setUniformFloatVec2(uniform, value) {
+    this.getGL().uniform2fv(this.getUniformLocation(uniform), value);
   }
 
   /**

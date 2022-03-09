@@ -508,7 +508,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
       }
     }
 
-    this.helper.useProgram(this.program_);
+    this.helper.useProgram(this.program_, frameState);
     this.helper.prepareDraw(frameState, !blend);
 
     const zs = Object.keys(tileTexturesByZ)
