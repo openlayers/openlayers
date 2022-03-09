@@ -1,0 +1,108 @@
+/**
+ * @module ol/render/webgl/LineStringBatchRenderer
+ */
+import {AttributeType} from '../../webgl/Helper.js';
+import {transform2D} from '../../geom/flat/transform.js';
+import AbstractBatchRenderer from './BatchRenderer.js';
+
+class LineStringBatchRenderer extends AbstractBatchRenderer {
+  /**
+   * @param {import("../../webgl/Helper.js").default} helper
+   * @param {Worker} worker
+   * @param {string} vertexShader
+   * @param {string} fragmentShader
+   * @param {Array<import('./BatchRenderer.js').CustomAttribute>} customAttributes
+   */
+  constructor(helper, worker, vertexShader, fragmentShader, customAttributes) {
+    super(helper, worker, vertexShader, fragmentShader, customAttributes);
+
+    // vertices for lines must hold both a position (x,y) and an offset (dx,dy)
+    this.attributes_ = [
+      {
+        name: 'a_segmentStart',
+        size: 2,
+        type: AttributeType.FLOAT,
+      },
+      {
+        name: 'a_segmentEnd',
+        size: 2,
+        type: AttributeType.FLOAT,
+      },
+      {
+        name: 'a_parameters',
+        size: 1,
+        type: AttributeType.FLOAT,
+      },
+    ].concat(
+      customAttributes.map(function (attribute) {
+        return {
+          name: 'a_' + attribute.name,
+          size: 1,
+          type: AttributeType.FLOAT,
+        };
+      })
+    );
+  }
+
+  /**
+   * Render instructions for lines are structured like so:
+   * [ customAttr0, ... , customAttrN, numberOfVertices0, x0, y0, ... , xN, yN, numberOfVertices1, ... ]
+   * @param {import("./MixedGeometryBatch.js").PointGeometryBatch} batch
+   * @override
+   */
+  generateRenderInstructions_(batch) {
+    // here we anticipate the amount of render instructions for lines:
+    // 2 instructions per vertex for position (x and y)
+    // + 1 instruction per line per custom attributes
+    // + 1 instruction per line (for vertices count)
+    const totalInstructionsCount =
+      2 * batch.verticesCount +
+      (1 + this.customAttributes_.length) * batch.geometriesCount;
+    if (
+      !batch.renderInstructions ||
+      batch.renderInstructions.length !== totalInstructionsCount
+    ) {
+      batch.renderInstructions = new Float32Array(totalInstructionsCount);
+    }
+
+    // loop on features to fill the render instructions
+    let batchEntry;
+    const flatCoords = [];
+    let renderIndex = 0;
+    let value;
+    for (const featureUid in batch.entries) {
+      batchEntry = batch.entries[featureUid];
+      for (let i = 0, ii = batchEntry.flatCoordss.length; i < ii; i++) {
+        flatCoords.length = batchEntry.flatCoordss[i].length;
+        transform2D(
+          batchEntry.flatCoordss[i],
+          0,
+          flatCoords.length,
+          2,
+          batch.renderInstructionsTransform,
+          flatCoords
+        );
+
+        // custom attributes
+        for (let k = 0, kk = this.customAttributes_.length; k < kk; k++) {
+          value = this.customAttributes_[k].callback(
+            batchEntry.feature,
+            batchEntry.properties
+          );
+          batch.renderInstructions[renderIndex++] = value;
+        }
+
+        // vertices count
+        batch.renderInstructions[renderIndex++] = flatCoords.length / 2;
+
+        // looping on points for positions
+        for (let j = 0, jj = flatCoords.length; j < jj; j += 2) {
+          batch.renderInstructions[renderIndex++] = flatCoords[j];
+          batch.renderInstructions[renderIndex++] = flatCoords[j + 1];
+        }
+      }
+    }
+  }
+}
+
+export default LineStringBatchRenderer;
