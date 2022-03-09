@@ -93,8 +93,6 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
         );
         if (image && this.loadImage(image)) {
           this.image_ = image;
-        } else {
-          this.image_ = null;
         }
       } else {
         this.image_ = null;
