@@ -620,7 +620,7 @@ export function fromUserCoordinate(coordinate, destProjection) {
       showCoordinateWarning = false;
       // eslint-disable-next-line no-console
       console.warn(
-        'Call useGeographic() ol/proj once to work with [longitude, latitude] coordinates.'
+        'Call useGeographic() from ol/proj once to work with [longitude, latitude] coordinates.'
       );
     }
     return coordinate;

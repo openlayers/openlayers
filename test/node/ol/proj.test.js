@@ -930,5 +930,13 @@ describe('ol/proj.js', function () {
       view.setCenter([15, 47]);
       expect(callCount).to.be(0);
     });
+    it('is not shown when view projection is configured', function () {
+      const view = new View({
+        projection: 'EPSG:4326',
+        center: [16, 48],
+      });
+      view.setCenter([15, 47]);
+      expect(callCount).to.be(0);
+    });
   });
 });
