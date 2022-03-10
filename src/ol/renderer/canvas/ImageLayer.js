@@ -2,6 +2,7 @@
  * @module ol/renderer/canvas/ImageLayer
  */
 import CanvasLayerRenderer from './Layer.js';
+import ImageState from '../../ImageState.js';
 import ViewHint from '../../ViewHint.js';
 import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
 import {IMAGE_SMOOTHING_DISABLED, IMAGE_SMOOTHING_ENABLED} from './common.js';
@@ -91,8 +92,12 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
           pixelRatio,
           projection
         );
-        if (image && this.loadImage(image)) {
-          this.image_ = image;
+        if (image) {
+          if (this.loadImage(image)) {
+            this.image_ = image;
+          } else if (image.getState() === ImageState.EMPTY) {
+            this.image_ = null;
+          }
         }
       } else {
         this.image_ = null;
