@@ -401,14 +401,14 @@ class View extends BaseObject {
      */
     this.cancelAnchor_ = undefined;
 
+    if (options.projection) {
+      disableCoordinateWarning();
+    }
     if (options.center) {
       options.center = fromUserCoordinate(options.center, this.projection_);
     }
     if (options.extent) {
       options.extent = fromUserExtent(options.extent, this.projection_);
-    }
-    if (options.projection) {
-      disableCoordinateWarning();
     }
 
     this.applyOptions_(options);
