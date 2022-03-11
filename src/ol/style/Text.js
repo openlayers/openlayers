@@ -484,7 +484,7 @@ class Text {
   /**
    * Set the text.
    *
-   * @param {string|undefined} text Text.
+   * @param {string|Array<string>|undefined} text Text.
    * @api
    */
   setText(text) {
