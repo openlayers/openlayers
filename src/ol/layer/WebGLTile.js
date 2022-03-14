@@ -301,6 +301,7 @@ function parseStyle(style, bandCount) {
  * options means that `title` is observable, and has get/set accessors.
  *
  * @extends BaseTileLayer<SourceType, WebGLTileLayerRenderer>
+ * @fires import("../render/Event.js").RenderEvent
  * @api
  */
 class WebGLTileLayer extends BaseTileLayer {
