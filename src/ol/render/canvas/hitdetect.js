@@ -125,6 +125,7 @@ export function createHitDetectionImageData(
         byGeometryType[GeometryType.CIRCLE] = [];
         byGeometryType[GeometryType.LINE_STRING] = [];
         byGeometryType[GeometryType.POINT] = [];
+        byGeometryType[GeometryType.GEOMETRY_COLLECTION] = [];
       }
       byGeometryType[geometry.getType().replace('Multi', '')].push(
         geometry,
