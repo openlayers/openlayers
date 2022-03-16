@@ -1,17 +1,17 @@
 /**
  * @module ol/render/webgl/LineStringBatchRenderer
  */
+import AbstractBatchRenderer from './BatchRenderer.js';
 import {AttributeType} from '../../webgl/Helper.js';
 import {transform2D} from '../../geom/flat/transform.js';
-import AbstractBatchRenderer from './BatchRenderer.js';
 
 class LineStringBatchRenderer extends AbstractBatchRenderer {
   /**
-   * @param {import("../../webgl/Helper.js").default} helper
-   * @param {Worker} worker
-   * @param {string} vertexShader
-   * @param {string} fragmentShader
-   * @param {Array<import('./BatchRenderer.js').CustomAttribute>} customAttributes
+   * @param {import("../../webgl/Helper.js").default} helper WebGL helper instance
+   * @param {Worker} worker WebGL worker instance
+   * @param {string} vertexShader Vertex shader
+   * @param {string} fragmentShader Fragment shader
+   * @param {Array<import('./BatchRenderer.js').CustomAttribute>} customAttributes List of custom attributes
    */
   constructor(helper, worker, vertexShader, fragmentShader, customAttributes) {
     super(helper, worker, vertexShader, fragmentShader, customAttributes);
@@ -47,7 +47,7 @@ class LineStringBatchRenderer extends AbstractBatchRenderer {
   /**
    * Render instructions for lines are structured like so:
    * [ customAttr0, ... , customAttrN, numberOfVertices0, x0, y0, ... , xN, yN, numberOfVertices1, ... ]
-   * @param {import("./MixedGeometryBatch.js").PointGeometryBatch} batch
+   * @param {import("./MixedGeometryBatch.js").LineStringGeometryBatch} batch Linestring geometry batch
    * @override
    */
   generateRenderInstructions_(batch) {

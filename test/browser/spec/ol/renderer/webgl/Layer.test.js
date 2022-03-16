@@ -8,12 +8,6 @@ import VectorSource from '../../../../../../src/ol/source/Vector.js';
 import View from '../../../../../../src/ol/View.js';
 import WebGLLayerRenderer from '../../../../../../src/ol/renderer/webgl/Layer.js';
 import {getUid} from '../../../../../../src/ol/util.js';
-import {
-  colorDecodeId,
-  colorEncodeId,
-  getBlankImageData,
-  writePointFeatureToBuffers,
-} from '../../../../../../src/ol/render/webgl/utils.js';
 
 describe('ol/renderer/webgl/Layer', function () {
   describe('constructor', function () {

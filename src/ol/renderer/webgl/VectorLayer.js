@@ -1,21 +1,20 @@
 /**
  * @module ol/renderer/webgl/VectorLayer
  */
-import WebGLLayerRenderer from './Layer.js';
-import {create as createTransform} from '../../transform.js';
-import {DefaultUniform} from '../../webgl/Helper.js';
-import {buffer, createEmpty, equals} from '../../extent.js';
-import {create as createWebGLWorker} from '../../worker/webgl.js';
-import {listen, unlistenByKey} from '../../events.js';
+import BaseVector from '../../layer/BaseVector.js';
+import GeometryType from '../../geom/GeometryType.js';
+import LineStringBatchRenderer from '../../render/webgl/LineStringBatchRenderer.js';
+import MixedGeometryBatch from '../../render/webgl/MixedGeometryBatch.js';
+import PointBatchRenderer from '../../render/webgl/PointBatchRenderer.js';
+import PolygonBatchRenderer from '../../render/webgl/PolygonBatchRenderer.js';
 import VectorEventType from '../../source/VectorEventType.js';
 import ViewHint from '../../ViewHint.js';
-import BaseVector from '../../layer/BaseVector.js';
-import MixedGeometryBatch from '../../render/webgl/MixedGeometryBatch.js';
-import GeometryType from '../../geom/GeometryType.js';
-import PolygonBatchRenderer from '../../render/webgl/PolygonBatchRenderer.js';
-import PointBatchRenderer from '../../render/webgl/PointBatchRenderer.js';
-import LineStringBatchRenderer from '../../render/webgl/LineStringBatchRenderer.js';
-import WebGLRenderTarget from '../../webgl/RenderTarget.js';
+import WebGLLayerRenderer from './Layer.js';
+import {DefaultUniform} from '../../webgl/Helper.js';
+import {buffer, createEmpty, equals} from '../../extent.js';
+import {create as createTransform} from '../../transform.js';
+import {create as createWebGLWorker} from '../../worker/webgl.js';
+import {listen, unlistenByKey} from '../../events.js';
 
 /**
  * @typedef {Object} CustomAttribute A description of a custom attribute to be passed on to the GPU, with a value different

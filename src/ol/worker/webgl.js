@@ -2,17 +2,17 @@
  * A worker that does cpu-heavy tasks related to webgl rendering.
  * @module ol/worker/webgl
  */
-import {assign} from '../obj.js';
 import {WebGLWorkerMessageType} from '../render/webgl/constants.js';
+import {assign} from '../obj.js';
+import {
+  create as createTransform,
+  makeInverse as makeInverseTransform,
+} from '../transform.js';
 import {
   writeLineSegmentToBuffers,
   writePointFeatureToBuffers,
   writePolygonTrianglesToBuffers,
 } from '../render/webgl/utils.js';
-import {
-  create as createTransform,
-  makeInverse as makeInverseTransform,
-} from '../transform.js';
 
 /** @type {any} */
 const worker = self;
@@ -170,6 +170,8 @@ worker.onmessage = (event) => {
       ]);
       break;
     }
+    default:
+    // pass
   }
 };
 

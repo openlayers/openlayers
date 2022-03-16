@@ -1,17 +1,17 @@
-import PointBatchRenderer from '../../../../../../src/ol/render/webgl/PointBatchRenderer.js';
-import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
-import {create as createWebGLWorker} from '../../../../../../src/ol/worker/webgl.js';
-import MixedGeometryBatch from '../../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
 import Feature from '../../../../../../src/ol/Feature.js';
-import Point from '../../../../../../src/ol/geom/Point.js';
-import Polygon from '../../../../../../src/ol/geom/Polygon.js';
-import LineString from '../../../../../../src/ol/geom/LineString.js';
 import GeometryType from '../../../../../../src/ol/geom/GeometryType.js';
-import {create as createTransform} from '../../../../../../src/ol/transform.js';
-import {WebGLWorkerMessageType} from '../../../../../../src/ol/render/webgl/constants.js';
+import LineString from '../../../../../../src/ol/geom/LineString.js';
 import LineStringBatchRenderer from '../../../../../../src/ol/render/webgl/LineStringBatchRenderer.js';
-import {FLOAT} from '../../../../../../src/ol/webgl.js';
+import MixedGeometryBatch from '../../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
+import Point from '../../../../../../src/ol/geom/Point.js';
+import PointBatchRenderer from '../../../../../../src/ol/render/webgl/PointBatchRenderer.js';
+import Polygon from '../../../../../../src/ol/geom/Polygon.js';
 import PolygonBatchRenderer from '../../../../../../src/ol/render/webgl/PolygonBatchRenderer.js';
+import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
+import {FLOAT} from '../../../../../../src/ol/webgl.js';
+import {WebGLWorkerMessageType} from '../../../../../../src/ol/render/webgl/constants.js';
+import {create as createTransform} from '../../../../../../src/ol/transform.js';
+import {create as createWebGLWorker} from '../../../../../../src/ol/worker/webgl.js';
 
 const POINT_VERTEX_SHADER = `precision mediump float;
 void main(void) {}`;

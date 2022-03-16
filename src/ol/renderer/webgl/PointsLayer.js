@@ -9,6 +9,7 @@ import WebGLLayerRenderer from './Layer.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
 import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
 import {AttributeType, DefaultUniform} from '../../webgl/Helper.js';
+import {WebGLWorkerMessageType} from '../../render/webgl/constants.js';
 import {
   apply as applyTransform,
   create as createTransform,
@@ -18,11 +19,10 @@ import {
 } from '../../transform.js';
 import {assert} from '../../asserts.js';
 import {buffer, createEmpty, equals, getWidth} from '../../extent.js';
+import {colorDecodeId, colorEncodeId} from '../../render/webgl/utils.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {getUid} from '../../util.js';
 import {listen, unlistenByKey} from '../../events.js';
-import {colorDecodeId, colorEncodeId} from '../../render/webgl/utils.js';
-import {WebGLWorkerMessageType} from '../../render/webgl/constants.js';
 
 /**
  * @typedef {Object} CustomAttribute A description of a custom attribute to be passed on to the GPU, with a value different

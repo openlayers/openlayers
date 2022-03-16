@@ -1,11 +1,11 @@
 /**
  * @module ol/render/webgl/MixedGeometryBatch
  */
-import {getUid} from '../../util.js';
 import GeometryType from '../../geom/GeometryType.js';
 import WebGLArrayBuffer from '../../webgl/Buffer.js';
 import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
 import {create as createTransform} from '../../transform.js';
+import {getUid} from '../../util.js';
 
 /**
  * @typedef {Object} GeometryBatchItem Object that holds a reference to a feature as well as the raw coordinates of its various geometries
@@ -18,36 +18,52 @@ import {create as createTransform} from '../../transform.js';
  */
 
 /**
- * @typedef {Object} AbstractGeometryBatch
- * @abstract
+ * @typedef {PointGeometryBatch|LineStringGeometryBatch|PolygonGeometryBatch} GeometryBatch
+ */
+
+/**
+ * @typedef {Object} PolygonGeometryBatch A geometry batch specific to polygons
  * @property {Object<string, GeometryBatchItem>} entries Dictionary of all entries in the batch with associated computed values.
  * One entry corresponds to one feature. Key is feature uid.
  * @property {number} geometriesCount Amount of geometries in the batch.
  * @property {Float32Array} renderInstructions Render instructions for polygons are structured like so:
  * [ numberOfRings, numberOfVerticesInRing0, ..., numberOfVerticesInRingN, x0, y0, customAttr0, ..., xN, yN, customAttrN, numberOfRings,... ]
- * @property {WebGLArrayBuffer} verticesBuffer
- * @property {WebGLArrayBuffer} indicesBuffer
+ * @property {WebGLArrayBuffer} verticesBuffer Vertices WebGL buffer
+ * @property {WebGLArrayBuffer} indicesBuffer Indices WebGL buffer
  * @property {import("../../transform.js").Transform} renderInstructionsTransform Converts world space coordinates to screen space; applies to the rendering instructions
  * @property {import("../../transform.js").Transform} verticesBufferTransform Converts world space coordinates to screen space; applies to the webgl vertices buffer
  * @property {import("../../transform.js").Transform} invertVerticesBufferTransform Screen space to world space; applies to the webgl vertices buffer
- */
-
-/**
- * @typedef {Object} PolygonGeometryBatch A geometry batch specific to polygons
- * @extends {AbstractGeometryBatch}
  * @property {number} verticesCount Amount of vertices from geometries in the batch.
  * @property {number} ringsCount How many outer and inner rings in this batch.
  */
 
 /**
  * @typedef {Object} LineStringGeometryBatch A geometry batch specific to lines
- * @extends {AbstractGeometryBatch}
+ * @property {Object<string, GeometryBatchItem>} entries Dictionary of all entries in the batch with associated computed values.
+ * One entry corresponds to one feature. Key is feature uid.
+ * @property {number} geometriesCount Amount of geometries in the batch.
+ * @property {Float32Array} renderInstructions Render instructions for polygons are structured like so:
+ * [ numberOfRings, numberOfVerticesInRing0, ..., numberOfVerticesInRingN, x0, y0, customAttr0, ..., xN, yN, customAttrN, numberOfRings,... ]
+ * @property {WebGLArrayBuffer} verticesBuffer Vertices WebGL buffer
+ * @property {WebGLArrayBuffer} indicesBuffer Indices WebGL buffer
+ * @property {import("../../transform.js").Transform} renderInstructionsTransform Converts world space coordinates to screen space; applies to the rendering instructions
+ * @property {import("../../transform.js").Transform} verticesBufferTransform Converts world space coordinates to screen space; applies to the webgl vertices buffer
+ * @property {import("../../transform.js").Transform} invertVerticesBufferTransform Screen space to world space; applies to the webgl vertices buffer
  * @property {number} verticesCount Amount of vertices from geometries in the batch.
  */
 
 /**
  * @typedef {Object} PointGeometryBatch A geometry batch specific to points
- * @extends {AbstractGeometryBatch}
+ * @property {Object<string, GeometryBatchItem>} entries Dictionary of all entries in the batch with associated computed values.
+ * One entry corresponds to one feature. Key is feature uid.
+ * @property {number} geometriesCount Amount of geometries in the batch.
+ * @property {Float32Array} renderInstructions Render instructions for polygons are structured like so:
+ * [ numberOfRings, numberOfVerticesInRing0, ..., numberOfVerticesInRingN, x0, y0, customAttr0, ..., xN, yN, customAttrN, numberOfRings,... ]
+ * @property {WebGLArrayBuffer} verticesBuffer Vertices WebGL buffer
+ * @property {WebGLArrayBuffer} indicesBuffer Indices WebGL buffer
+ * @property {import("../../transform.js").Transform} renderInstructionsTransform Converts world space coordinates to screen space; applies to the rendering instructions
+ * @property {import("../../transform.js").Transform} verticesBufferTransform Converts world space coordinates to screen space; applies to the webgl vertices buffer
+ * @property {import("../../transform.js").Transform} invertVerticesBufferTransform Screen space to world space; applies to the webgl vertices buffer
  */
 
 /**
@@ -118,7 +134,7 @@ class MixedGeometryBatch {
   }
 
   /**
-   * @param {import("../../Feature").default[]} features
+   * @param {Array<import("../../Feature").default>} features Array of features to add to the batch
    */
   addFeatures(features) {
     for (let i = 0; i < features.length; i++) {
@@ -127,7 +143,7 @@ class MixedGeometryBatch {
   }
 
   /**
-   * @param {import("../../Feature").default} feature
+   * @param {import("../../Feature").default} feature Feature to add to the batch
    */
   addFeature(feature) {
     const geometry = feature.getGeometry();
@@ -138,8 +154,8 @@ class MixedGeometryBatch {
   }
 
   /**
-   * @param {import("../../Feature").default} feature
-   * @return {GeometryBatchItem}
+   * @param {import("../../Feature").default} feature Feature
+   * @return {GeometryBatchItem} Batch item added (or existing one)
    * @private
    */
   addFeatureEntryInPointBatch_(feature) {
@@ -155,8 +171,8 @@ class MixedGeometryBatch {
   }
 
   /**
-   * @param {import("../../Feature").default} feature
-   * @return {GeometryBatchItem}
+   * @param {import("../../Feature").default} feature Feature
+   * @return {GeometryBatchItem} Batch item added (or existing one)
    * @private
    */
   addFeatureEntryInLineStringBatch_(feature) {
@@ -173,8 +189,8 @@ class MixedGeometryBatch {
   }
 
   /**
-   * @param {import("../../Feature").default} feature
-   * @return {GeometryBatchItem}
+   * @param {import("../../Feature").default} feature Feature
+   * @return {GeometryBatchItem} Batch item added (or existing one)
    * @private
    */
   addFeatureEntryInPolygonBatch_(feature) {
@@ -193,35 +209,41 @@ class MixedGeometryBatch {
   }
 
   /**
-   * @param {import("../../Feature").default} feature
+   * @param {import("../../Feature").default} feature Feature
    * @private
    */
   clearFeatureEntryInPointBatch_(feature) {
     const entry = this.pointBatch.entries[getUid(feature)];
-    if (!entry) return;
+    if (!entry) {
+      return;
+    }
     this.pointBatch.geometriesCount -= entry.flatCoordss.length;
     delete this.pointBatch.entries[getUid(feature)];
   }
 
   /**
-   * @param {import("../../Feature").default} feature
+   * @param {import("../../Feature").default} feature Feature
    * @private
    */
   clearFeatureEntryInLineStringBatch_(feature) {
     const entry = this.lineStringBatch.entries[getUid(feature)];
-    if (!entry) return;
+    if (!entry) {
+      return;
+    }
     this.lineStringBatch.verticesCount -= entry.verticesCount;
     this.lineStringBatch.geometriesCount -= entry.flatCoordss.length;
     delete this.lineStringBatch.entries[getUid(feature)];
   }
 
   /**
-   * @param {import("../../Feature").default} feature
+   * @param {import("../../Feature").default} feature Feature
    * @private
    */
   clearFeatureEntryInPolygonBatch_(feature) {
     const entry = this.polygonBatch.entries[getUid(feature)];
-    if (!entry) return;
+    if (!entry) {
+      return;
+    }
     this.polygonBatch.verticesCount -= entry.verticesCount;
     this.polygonBatch.ringsCount -= entry.ringsCount;
     this.polygonBatch.geometriesCount -= entry.flatCoordss.length;
@@ -229,8 +251,8 @@ class MixedGeometryBatch {
   }
 
   /**
-   * @param {import("../../geom").Geometry} geometry
-   * @param {import("../../Feature").default} feature
+   * @param {import("../../geom").Geometry} geometry Geometry
+   * @param {import("../../Feature").default} feature Feature
    * @private
    */
   addGeometry_(geometry, feature) {
@@ -240,29 +262,34 @@ class MixedGeometryBatch {
     let batchEntry;
     switch (type) {
       case GeometryType.GEOMETRY_COLLECTION:
-        geometry
+        /** @type {import("../../geom").GeometryCollection} */ (geometry)
           .getGeometries()
           .map((geom) => this.addGeometry_(geom, feature));
         break;
       case GeometryType.MULTI_POLYGON:
-        geometry
+        /** @type {import("../../geom").MultiPolygon} */ (geometry)
           .getPolygons()
           .map((polygon) => this.addGeometry_(polygon, feature));
         break;
       case GeometryType.MULTI_LINE_STRING:
-        geometry
+        /** @type {import("../../geom").MultiLineString} */ (geometry)
           .getLineStrings()
           .map((line) => this.addGeometry_(line, feature));
         break;
       case GeometryType.MULTI_POINT:
-        geometry.getPoints().map((point) => this.addGeometry_(point, feature));
+        /** @type {import("../../geom").MultiPoint} */ (geometry)
+          .getPoints()
+          .map((point) => this.addGeometry_(point, feature));
         break;
       case GeometryType.POLYGON:
+        const polygonGeom = /** @type {import("../../geom").Polygon} */ (
+          geometry
+        );
         batchEntry = this.addFeatureEntryInPolygonBatch_(feature);
-        flatCoords = geometry.getFlatCoordinates();
+        flatCoords = polygonGeom.getFlatCoordinates();
         verticesCount = flatCoords.length / 2;
-        const ringsCount = geometry.getLinearRingCount();
-        const ringsVerticesCount = geometry
+        const ringsCount = polygonGeom.getLinearRingCount();
+        const ringsVerticesCount = polygonGeom
           .getEnds()
           .map((end, ind, arr) =>
             ind > 0 ? (end - arr[ind - 1]) / 2 : end / 2
@@ -274,31 +301,37 @@ class MixedGeometryBatch {
         batchEntry.ringsVerticesCounts.push(ringsVerticesCount);
         batchEntry.verticesCount += verticesCount;
         batchEntry.ringsCount += ringsCount;
-        geometry
+        polygonGeom
           .getLinearRings()
           .map((ring) => this.addGeometry_(ring, feature));
         break;
       case GeometryType.POINT:
+        const pointGeom = /** @type {import("../../geom").Point} */ (geometry);
         batchEntry = this.addFeatureEntryInPointBatch_(feature);
-        flatCoords = geometry.getFlatCoordinates();
+        flatCoords = pointGeom.getFlatCoordinates();
         this.pointBatch.geometriesCount++;
         batchEntry.flatCoordss.push(flatCoords);
         break;
       case GeometryType.LINE_STRING:
       case GeometryType.LINEAR_RING:
+        const lineGeom = /** @type {import("../../geom").LineString} */ (
+          geometry
+        );
         batchEntry = this.addFeatureEntryInLineStringBatch_(feature);
-        flatCoords = geometry.getFlatCoordinates();
+        flatCoords = lineGeom.getFlatCoordinates();
         verticesCount = flatCoords.length / 2;
         this.lineStringBatch.verticesCount += verticesCount;
         this.lineStringBatch.geometriesCount++;
         batchEntry.flatCoordss.push(flatCoords);
         batchEntry.verticesCount += verticesCount;
         break;
+      default:
+      // pass
     }
   }
 
   /**
-   * @param {import("../../Feature").default} feature
+   * @param {import("../../Feature").default} feature Feature
    */
   changeFeature(feature) {
     this.clearFeatureEntryInPointBatch_(feature);
@@ -312,7 +345,7 @@ class MixedGeometryBatch {
   }
 
   /**
-   * @param {import("../../Feature").default} feature
+   * @param {import("../../Feature").default} feature Feature
    */
   removeFeature(feature) {
     this.clearFeatureEntryInPointBatch_(feature);

@@ -2,13 +2,13 @@
  * @module ol/render/webgl/BatchRenderer
  */
 import GeometryType from '../../geom/GeometryType.js';
+import {WebGLWorkerMessageType} from './constants.js';
+import {abstract} from '../../util.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
   multiply as multiplyTransform,
 } from '../../transform.js';
-import {abstract} from '../../util.js';
-import {WebGLWorkerMessageType} from './constants.js';
 
 /**
  * @typedef {Object} CustomAttribute A description of a custom attribute to be passed on to the GPU, with a value different
@@ -27,11 +27,11 @@ let workerMessageCounter = 0;
  */
 class AbstractBatchRenderer {
   /**
-   * @param {import("../../webgl/Helper.js").default} helper
-   * @param {Worker} worker
-   * @param {string} vertexShader
-   * @param {string} fragmentShader
-   * @param {Array<CustomAttribute>} customAttributes
+   * @param {import("../../webgl/Helper.js").default} helper WebGL helper instance
+   * @param {Worker} worker WebGL worker instance
+   * @param {string} vertexShader Vertex shader
+   * @param {string} fragmentShader Fragment shader
+   * @param {Array<CustomAttribute>} customAttributes List of custom attributes
    */
   constructor(helper, worker, vertexShader, fragmentShader, customAttributes) {
     /**
@@ -69,9 +69,9 @@ class AbstractBatchRenderer {
   /**
    * Rebuild rendering instructions and webgl buffers based on the provided frame state
    * Note: this is a costly operation.
-   * @param {import("./MixedGeometryBatch.js").AbstractGeometryBatch} batch
+   * @param {import("./MixedGeometryBatch.js").GeometryBatch} batch Geometry batch
    * @param {import("../../PluggableMap").FrameState} frameState Frame state.
-   * @param {import("../../geom/GeometryType.js").default} geometryType
+   * @param {import("../../geom/GeometryType.js").default} geometryType Geometry type
    */
   rebuild(batch, frameState, geometryType) {
     // store transform for rendering instructions
@@ -86,12 +86,13 @@ class AbstractBatchRenderer {
   /**
    * Render the geometries in the batch. This will also update the current transform used for rendering according to
    * the invert transform of the webgl buffers
-   * @param {import("./MixedGeometryBatch.js").AbstractGeometryBatch} batch
-   * @param {import("../../transform.js").Transform} currentTransform
+   * @param {import("./MixedGeometryBatch.js").GeometryBatch} batch Geometry batch
+   * @param {import("../../transform.js").Transform} currentTransform Transform
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    */
   render(batch, currentTransform, frameState) {
     // multiply the current projection transform with the invert of the one used to fill buffers
+    // FIXME: this should probably be done directly in the layer renderer
     this.helper_.makeProjectionTransform(frameState, currentTransform);
     multiplyTransform(currentTransform, batch.invertVerticesBufferTransform);
 
@@ -108,7 +109,7 @@ class AbstractBatchRenderer {
   /**
    * Rebuild rendering instructions based on the provided frame state
    * This is specific to the geometry type and has to be implemented by subclasses.
-   * @param {import("./MixedGeometryBatch.js").default} batch
+   * @param {import("./MixedGeometryBatch.js").GeometryBatch} batch Geometry batch
    * @protected
    */
   generateRenderInstructions_(batch) {
@@ -118,8 +119,8 @@ class AbstractBatchRenderer {
   /**
    * Rebuild internal webgl buffers for rendering based on the current rendering instructions;
    * This is asynchronous: webgl buffers wil _not_ be updated right away
-   * @param {import("./MixedGeometryBatch.js").AbstractGeometryBatch} batch
-   * @param {import("../../geom/GeometryType.js").default} geometryType
+   * @param {import("./MixedGeometryBatch.js").GeometryBatch} batch Geometry batch
+   * @param {import("../../geom/GeometryType.js").default} geometryType Geometry type
    * @protected
    */
   generateBuffers_(batch, geometryType) {
@@ -136,6 +137,8 @@ class AbstractBatchRenderer {
       case GeometryType.LINE_STRING:
         messageType = WebGLWorkerMessageType.GENERATE_LINE_STRING_BUFFERS;
         break;
+      default:
+      // pass
     }
 
     /** @type {import('./constants.js').WebGLWorkerGenerateBuffersMessage} */

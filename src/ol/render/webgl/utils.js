@@ -1,9 +1,9 @@
 /**
  * @module ol/render/webgl/utils
  */
+import earcut from 'earcut';
 import {apply as applyTransform} from '../../transform.js';
 import {clamp} from '../../math.js';
-import earcut from 'earcut';
 
 const tmpArray_ = [];
 
@@ -103,9 +103,9 @@ export function writePointFeatureToBuffers(
  * @param {number} segmentEndIndex Index of the segment start point from which render instructions will be read.
  * @param {number|null} beforeSegmentIndex Index of the point right before the segment (null if none, e.g this is a line start)
  * @param {number|null} afterSegmentIndex Index of the point right after the segment (null if none, e.g this is a line end)
- * @param {number[]} vertexArray Array containing vertices.
- * @param {number[]} indexArray Array containing indices.
- * @param {number[]} customAttributes Array of custom attributes value
+ * @param {Array<number>} vertexArray Array containing vertices.
+ * @param {Array<number>} indexArray Array containing indices.
+ * @param {Array<number>} customAttributes Array of custom attributes value
  * @param {import('../../transform.js').Transform} instructionsTransform Transform matrix used to project coordinates in instructions
  * @param {import('../../transform.js').Transform} invertInstructionsTransform Transform matrix used to project coordinates in instructions
  * @private
@@ -125,7 +125,7 @@ export function writeLineSegmentToBuffers(
   // compute the stride to determine how many vertices were already pushed
   const baseVertexAttrsCount = 5; // base attributes: x0, y0, x1, y1, params (vertex number [0-3], join angle 1, join angle 2)
   const stride = baseVertexAttrsCount + customAttributes.length;
-  let baseIndex = vertexArray.length / stride;
+  const baseIndex = vertexArray.length / stride;
 
   // The segment is composed of two positions called P0[x0, y0] and P1[x1, y1]
   // Depending on whether there are points before and after the segment, its final shape
@@ -253,8 +253,8 @@ export function writeLineSegmentToBuffers(
  * Pushes several triangles to form a polygon, including holes
  * @param {Float32Array} instructions Array of render instructions for lines.
  * @param {number} polygonStartIndex Index of the polygon start point from which render instructions will be read.
- * @param {number[]} vertexArray Array containing vertices.
- * @param {number[]} indexArray Array containing indices.
+ * @param {Array<number>} vertexArray Array containing vertices.
+ * @param {Array<number>} indexArray Array containing indices.
  * @param {number} customAttributesCount Amount of custom attributes for each element.
  * @return {number} Next polygon instructions index
  * @private
@@ -279,7 +279,9 @@ export function writePolygonTrianglesToBuffers(
   const holes = new Array(ringsCount - 1);
   for (let i = 0; i < ringsCount; i++) {
     verticesCount += instructions[instructionsIndex++];
-    if (i < ringsCount - 1) holes[i] = verticesCount;
+    if (i < ringsCount - 1) {
+      holes[i] = verticesCount;
+    }
   }
   const flatCoords = instructions.slice(
     instructionsIndex,

@@ -1,17 +1,17 @@
 /**
  * @module ol/render/webgl/PolygonBatchRenderer
  */
+import AbstractBatchRenderer from './BatchRenderer.js';
 import {AttributeType} from '../../webgl/Helper.js';
 import {transform2D} from '../../geom/flat/transform.js';
-import AbstractBatchRenderer from './BatchRenderer.js';
 
 class PolygonBatchRenderer extends AbstractBatchRenderer {
   /**
-   * @param {import("../../webgl/Helper.js").default} helper
-   * @param {Worker} worker
-   * @param {string} vertexShader
-   * @param {string} fragmentShader
-   * @param {Array<import('./BatchRenderer.js').CustomAttribute>} customAttributes
+   * @param {import("../../webgl/Helper.js").default} helper WebGL helper instance
+   * @param {Worker} worker WebGL worker instance
+   * @param {string} vertexShader Vertex shader
+   * @param {string} fragmentShader Fragment shader
+   * @param {Array<import('./BatchRenderer.js').CustomAttribute>} customAttributes List of custom attributes
    */
   constructor(helper, worker, vertexShader, fragmentShader, customAttributes) {
     super(helper, worker, vertexShader, fragmentShader, customAttributes);
@@ -37,7 +37,7 @@ class PolygonBatchRenderer extends AbstractBatchRenderer {
   /**
    * Render instructions for polygons are structured like so:
    * [ customAttr0, ..., customAttrN, numberOfRings, numberOfVerticesInRing0, ..., numberOfVerticesInRingN, x0, y0, ..., xN, yN, numberOfRings,... ]
-   * @param {import("./MixedGeometryBatch.js").PolygonGeometryBatch} batch
+   * @param {import("./MixedGeometryBatch.js").PolygonGeometryBatch} batch Polygon geometry batch
    * @override
    */
   generateRenderInstructions_(batch) {
