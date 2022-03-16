@@ -2,8 +2,15 @@ import {
   colorDecodeId,
   colorEncodeId,
   getBlankImageData,
+  writeLineSegmentToBuffers,
   writePointFeatureToBuffers,
+  writePolygonTrianglesToBuffers,
 } from '../../../../../../src/ol/render/webgl/utils.js';
+import {
+  compose as composeTransform,
+  create as createTransform,
+  makeInverse as makeInverseTransform,
+} from '../../../../../../src/ol/transform.js';
 
 describe('webgl render utils', function () {
   describe('writePointFeatureToBuffers', function () {
@@ -155,6 +162,269 @@ describe('webgl render utils', function () {
 
       expect(positions.indexPosition).to.eql(6 * 3);
       expect(positions.vertexPosition).to.eql(stride * 4 * 3);
+    });
+  });
+
+  describe('writeLineSegmentToBuffers', function () {
+    let vertexArray, indexArray, instructions;
+    let instructionsTransform, invertInstructionsTransform;
+
+    beforeEach(function () {
+      vertexArray = [];
+      indexArray = [];
+
+      instructions = new Float32Array(100);
+
+      instructionsTransform = createTransform();
+      invertInstructionsTransform = createTransform();
+      composeTransform(instructionsTransform, 0, 0, 10, 20, 0, -50, 200);
+      makeInverseTransform(invertInstructionsTransform, instructionsTransform);
+    });
+
+    describe('isolated segment', function () {
+      beforeEach(function () {
+        instructions.set([0, 0, 0, 2, 5, 5, 25, 5]);
+        writeLineSegmentToBuffers(
+          instructions,
+          4,
+          6,
+          null,
+          null,
+          vertexArray,
+          indexArray,
+          [],
+          instructionsTransform,
+          invertInstructionsTransform
+        );
+      });
+      it('generates a quad for the segment', function () {
+        expect(vertexArray).to.have.length(20);
+        expect(vertexArray).to.eql([
+          5, 5, 25, 5, 0, 5, 5, 25, 5, 100000000, 5, 5, 25, 5, 200000000, 5, 5,
+          25, 5, 300000000,
+        ]);
+        expect(indexArray).to.have.length(6);
+        expect(indexArray).to.eql([0, 1, 2, 1, 3, 2]);
+      });
+    });
+
+    describe('isolated segment with custom attributes', function () {
+      beforeEach(function () {
+        instructions.set([888, 999, 2, 5, 5, 25, 5]);
+        writeLineSegmentToBuffers(
+          instructions,
+          3,
+          5,
+          null,
+          null,
+          vertexArray,
+          indexArray,
+          [888, 999],
+          instructionsTransform,
+          invertInstructionsTransform
+        );
+      });
+      it('adds custom attributes in the vertices buffer', function () {
+        expect(vertexArray).to.have.length(28);
+        expect(vertexArray).to.eql([
+          5, 5, 25, 5, 0, 888, 999, 5, 5, 25, 5, 100000000, 888, 999, 5, 5, 25,
+          5, 200000000, 888, 999, 5, 5, 25, 5, 300000000, 888, 999,
+        ]);
+      });
+      it('does not impact indices array', function () {
+        expect(indexArray).to.have.length(6);
+      });
+    });
+
+    describe('segment with a point coming before it, join angle < PI', function () {
+      beforeEach(function () {
+        instructions.set([2, 5, 5, 25, 5, 5, 20]);
+        writeLineSegmentToBuffers(
+          instructions,
+          1,
+          3,
+          5,
+          null,
+          vertexArray,
+          indexArray,
+          [],
+          instructionsTransform,
+          invertInstructionsTransform
+        );
+      });
+      it('generate the correct amount of vertices', () => {
+        expect(vertexArray).to.have.length(20);
+      });
+      it('correctly encodes the join angle', () => {
+        expect(vertexArray[4]).to.eql(2356);
+        expect(vertexArray[9]).to.eql(100002356);
+        expect(vertexArray[14]).to.eql(200002356);
+        expect(vertexArray[19]).to.eql(300002356);
+      });
+      it('does not impact indices array', function () {
+        expect(indexArray).to.have.length(6);
+      });
+    });
+
+    describe('segment with a point coming before it, join angle > PI', function () {
+      beforeEach(function () {
+        instructions.set([2, 5, 5, 25, 5, 5, -10]);
+        writeLineSegmentToBuffers(
+          instructions,
+          1,
+          3,
+          5,
+          null,
+          vertexArray,
+          indexArray,
+          [],
+          instructionsTransform,
+          invertInstructionsTransform
+        );
+      });
+      it('generate the correct amount of vertices', () => {
+        expect(vertexArray).to.have.length(20);
+      });
+      it('correctly encodes the join angle', () => {
+        expect(vertexArray[4]).to.eql(7069);
+        expect(vertexArray[9]).to.eql(100007069);
+        expect(vertexArray[14]).to.eql(200007069);
+        expect(vertexArray[19]).to.eql(300007069);
+      });
+      it('does not impact indices array', function () {
+        expect(indexArray).to.have.length(6);
+      });
+    });
+
+    describe('segment with a point coming after it, join angle < PI', function () {
+      beforeEach(function () {
+        instructions.set([2, 5, 5, 25, 5, 5, 20]);
+        writeLineSegmentToBuffers(
+          instructions,
+          1,
+          3,
+          null,
+          5,
+          vertexArray,
+          indexArray,
+          [],
+          instructionsTransform,
+          invertInstructionsTransform
+        );
+      });
+      it('generate the correct amount of vertices', () => {
+        expect(vertexArray).to.have.length(20);
+      });
+      it('correctly encodes the join angle', () => {
+        expect(vertexArray[4]).to.eql(88870000);
+        expect(vertexArray[9]).to.eql(188870000);
+        expect(vertexArray[14]).to.eql(288870000);
+        expect(vertexArray[19]).to.eql(388870000);
+      });
+      it('does not impact indices array', function () {
+        expect(indexArray).to.have.length(6);
+      });
+    });
+
+    describe('segment with a point coming after it, join angle > PI', function () {
+      beforeEach(function () {
+        instructions.set([2, 5, 5, 25, 5, 25, -10]);
+        writeLineSegmentToBuffers(
+          instructions,
+          1,
+          3,
+          null,
+          5,
+          vertexArray,
+          indexArray,
+          [],
+          instructionsTransform,
+          invertInstructionsTransform
+        );
+      });
+      it('generate the correct amount of vertices', () => {
+        expect(vertexArray).to.have.length(20);
+      });
+      it('correctly encodes join angles', () => {
+        expect(vertexArray[4]).to.eql(23560000);
+        expect(vertexArray[9]).to.eql(123560000);
+        expect(vertexArray[14]).to.eql(223560000);
+        expect(vertexArray[19]).to.eql(323560000);
+      });
+      it('does not impact indices array', function () {
+        expect(indexArray).to.have.length(6);
+      });
+    });
+  });
+
+  describe('writePolygonTrianglesToBuffers', function () {
+    let vertexArray, indexArray, instructions, newIndex;
+
+    beforeEach(function () {
+      vertexArray = [];
+      indexArray = [];
+      instructions = new Float32Array(100);
+    });
+
+    describe('polygon with a hole', function () {
+      beforeEach(function () {
+        instructions.set([
+          0, 0, 0, 2, 6, 5, 0, 0, 10, 0, 15, 6, 10, 12, 0, 12, 0, 0, 3, 3, 5, 1,
+          7, 3, 5, 5, 3, 3,
+        ]);
+        newIndex = writePolygonTrianglesToBuffers(
+          instructions,
+          3,
+          vertexArray,
+          indexArray,
+          0
+        );
+      });
+      it('generates triangles correctly', function () {
+        expect(vertexArray).to.have.length(22);
+        expect(vertexArray).to.eql([
+          0, 0, 10, 0, 15, 6, 10, 12, 0, 12, 0, 0, 3, 3, 5, 1, 7, 3, 5, 5, 3, 3,
+        ]);
+        expect(indexArray).to.have.length(24);
+        expect(indexArray).to.eql([
+          4, 0, 9, 7, 10, 0, 1, 2, 3, 3, 4, 9, 7, 0, 1, 3, 9, 8, 8, 7, 1, 1, 3,
+          8,
+        ]);
+      });
+      it('correctly returns the new index', function () {
+        expect(newIndex).to.eql(28);
+      });
+    });
+
+    describe('polygon with a hole and custom attributes', function () {
+      beforeEach(function () {
+        instructions.set([
+          0, 0, 0, 1234, 2, 6, 5, 0, 0, 10, 0, 15, 6, 10, 12, 0, 12, 0, 0, 3, 3,
+          5, 1, 7, 3, 5, 5, 3, 3,
+        ]);
+        newIndex = writePolygonTrianglesToBuffers(
+          instructions,
+          3,
+          vertexArray,
+          indexArray,
+          1
+        );
+      });
+      it('generates triangles correctly', function () {
+        expect(vertexArray).to.have.length(33);
+        expect(vertexArray).to.eql([
+          0, 0, 1234, 10, 0, 1234, 15, 6, 1234, 10, 12, 1234, 0, 12, 1234, 0, 0,
+          1234, 3, 3, 1234, 5, 1, 1234, 7, 3, 1234, 5, 5, 1234, 3, 3, 1234,
+        ]);
+        expect(indexArray).to.have.length(24);
+        expect(indexArray).to.eql([
+          4, 0, 9, 7, 10, 0, 1, 2, 3, 3, 4, 9, 7, 0, 1, 3, 9, 8, 8, 7, 1, 1, 3,
+          8,
+        ]);
+      });
+      it('correctly returns the new index', function () {
+        expect(newIndex).to.eql(29);
+      });
     });
   });
 
