@@ -5,11 +5,7 @@ import BaseVector from '../../layer/BaseVector.js';
 import VectorEventType from '../../source/VectorEventType.js';
 import ViewHint from '../../ViewHint.js';
 import WebGLArrayBuffer from '../../webgl/Buffer.js';
-import WebGLLayerRenderer, {
-  WebGLWorkerMessageType,
-  colorDecodeId,
-  colorEncodeId,
-} from './Layer.js';
+import WebGLLayerRenderer from './Layer.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
 import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
 import {AttributeType, DefaultUniform} from '../../webgl/Helper.js';
@@ -25,6 +21,8 @@ import {buffer, createEmpty, equals, getWidth} from '../../extent.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {getUid} from '../../util.js';
 import {listen, unlistenByKey} from '../../events.js';
+import {colorDecodeId, colorEncodeId} from '../../render/webgl/utils.js';
+import {WebGLWorkerMessageType} from '../../render/webgl/constants.js';
 
 /**
  * @typedef {Object} CustomAttribute A description of a custom attribute to be passed on to the GPU, with a value different
@@ -303,7 +301,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
        */
       function (event) {
         const received = event.data;
-        if (received.type === WebGLWorkerMessageType.GENERATE_BUFFERS) {
+        if (received.type === WebGLWorkerMessageType.GENERATE_POINT_BUFFERS) {
           const projectionTransform = received.projectionTransform;
           if (received.hitDetection) {
             this.hitVerticesBuffer_.fromArrayBuffer(received.vertexBuffer);
@@ -637,9 +635,10 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       }
     }
 
-    /** @type {import('./Layer').WebGLWorkerGenerateBuffersMessage} */
+    /** @type {import('../../render/webgl/constants.js').WebGLWorkerGenerateBuffersMessage} */
     const message = {
-      type: WebGLWorkerMessageType.GENERATE_BUFFERS,
+      id: 0,
+      type: WebGLWorkerMessageType.GENERATE_POINT_BUFFERS,
       renderInstructions: this.renderInstructions_.buffer,
       customAttributesCount: this.customAttributes.length,
     };
@@ -650,10 +649,11 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.worker_.postMessage(message, [this.renderInstructions_.buffer]);
     this.renderInstructions_ = null;
 
-    /** @type {import('./Layer').WebGLWorkerGenerateBuffersMessage} */
+    /** @type {import('../../render/webgl/constants.js').WebGLWorkerGenerateBuffersMessage} */
     if (this.hitDetectionEnabled_) {
       const hitMessage = {
-        type: WebGLWorkerMessageType.GENERATE_BUFFERS,
+        id: 0,
+        type: WebGLWorkerMessageType.GENERATE_POINT_BUFFERS,
         renderInstructions: this.hitRenderInstructions_.buffer,
         customAttributesCount: 5 + this.customAttributes.length,
       };
