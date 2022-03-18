@@ -36,7 +36,7 @@ import {
 const FEATURE_COLLECTION_PARSERS = {
   'http://www.opengis.net/gml': {
     'boundedBy': makeObjectPropertySetter(
-      GMLBase.prototype.readGeometryElement,
+      GMLBase.prototype.readExtentElement,
       'bounds'
     ),
   },
