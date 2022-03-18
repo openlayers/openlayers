@@ -211,9 +211,15 @@ class PluggableMap extends BaseObject {
 
     /**
      * @private
-     * @type {boolean}
+     * @type {boolean|undefined}
      */
     this.renderComplete_;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.loaded_ = true;
 
     /** @private */
     this.boundHandleBrowserEvent_ = this.handleBrowserEvent.bind(this);
@@ -1187,17 +1193,26 @@ class PluggableMap extends BaseObject {
       }
     }
 
-    if (
-      frameState &&
-      this.renderer_ &&
-      this.hasListener(RenderEventType.RENDERCOMPLETE) &&
-      !frameState.animate &&
-      this.renderComplete_
-    ) {
-      this.renderer_.dispatchRenderEvent(
-        RenderEventType.RENDERCOMPLETE,
-        frameState
-      );
+    if (frameState && this.renderer_ && !frameState.animate) {
+      if (this.renderComplete_ === true) {
+        if (this.hasListener(RenderEventType.RENDERCOMPLETE)) {
+          this.renderer_.dispatchRenderEvent(
+            RenderEventType.RENDERCOMPLETE,
+            frameState
+          );
+        }
+        if (this.loaded_ === false) {
+          this.loaded_ = true;
+          this.dispatchEvent(
+            new MapEvent(MapEventType.LOADEND, this, frameState)
+          );
+        }
+      } else if (this.loaded_ === true) {
+        this.loaded_ = false;
+        this.dispatchEvent(
+          new MapEvent(MapEventType.LOADSTART, this, frameState)
+        );
+      }
     }
 
     const postRenderFunctions = this.postRenderFunctions_;
@@ -1573,9 +1588,13 @@ class PluggableMap extends BaseObject {
     this.dispatchEvent(new MapEvent(MapEventType.POSTRENDER, this, frameState));
 
     this.renderComplete_ =
-      !this.tileQueue_.getTilesLoading() &&
-      !this.tileQueue_.getCount() &&
-      !this.getLoadingOrNotReady();
+      this.hasListener(MapEventType.LOADSTART) ||
+      this.hasListener(MapEventType.LOADEND) ||
+      this.hasListener(RenderEventType.RENDERCOMPLETE)
+        ? !this.tileQueue_.getTilesLoading() &&
+          !this.tileQueue_.getCount() &&
+          !this.getLoadingOrNotReady()
+        : undefined;
 
     if (!this.postRenderTimeoutHandle_) {
       this.postRenderTimeoutHandle_ = setTimeout(() => {

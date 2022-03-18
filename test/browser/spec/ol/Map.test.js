@@ -505,6 +505,97 @@ describe('ol/Map', function () {
     });
   });
 
+  describe('loadstart/loadend event sequence', function () {
+    let map;
+    beforeEach(function () {
+      const target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      map = new Map({
+        target: target,
+        layers: [
+          new TileLayer({
+            opacity: 0.5,
+            source: new XYZ({
+              url: 'spec/ol/data/osm-{z}-{x}-{y}.png',
+            }),
+          }),
+          new ImageLayer({
+            source: new ImageStatic({
+              url: 'spec/ol/data/osm-0-0-0.png',
+              imageExtent: getProjection('EPSG:3857').getExtent(),
+              projection: 'EPSG:3857',
+            }),
+          }),
+          new VectorLayer({
+            source: new VectorSource({
+              url: 'spec/ol/data/point.json',
+              format: new GeoJSON(),
+            }),
+          }),
+          new VectorLayer({
+            source: new VectorSource({
+              url: 'spec/ol/data/point.json',
+              format: new GeoJSON(),
+              strategy: tileStrategy(createXYZ()),
+            }),
+          }),
+          new VectorLayer({
+            source: new VectorSource({
+              features: [new Feature(new Point([0, 0]))],
+            }),
+          }),
+          new VectorLayer({
+            source: new VectorSource({
+              loader: function (extent, resolution, projection) {
+                this.addFeature(new Feature(new Point([0, 0])));
+              },
+            }),
+          }),
+          new WebGLPointsLayer({
+            source: new VectorSource({
+              features: [new Feature(new Point([0, 0]))],
+            }),
+            style: {
+              symbol: {
+                color: 'red',
+                symbolType: 'circle',
+              },
+            },
+          }),
+        ],
+      });
+    });
+
+    afterEach(function () {
+      document.body.removeChild(map.getTargetElement());
+      map.setTarget(null);
+      map.dispose();
+      map.getLayers().forEach((layer) => layer.dispose());
+    });
+
+    it('is a reliable start-end sequence', function (done) {
+      const layers = map.getLayers().getArray();
+      expect(layers[6].getRenderer().ready).to.be(false);
+      let loading = 0;
+      map.on('loadstart', () => {
+        map.getView().setZoom(0.1);
+        loading++;
+      });
+      map.on('loadend', () => {
+        expect(loading).to.be(1);
+        done();
+      });
+      map.setView(
+        new View({
+          center: [0, 0],
+          zoom: 0,
+        })
+      );
+    });
+  });
+
   describe('#getFeaturesAtPixel', function () {
     let target, map, layer;
     beforeEach(function () {

@@ -26,8 +26,22 @@ export default {
    * @api
    */
   MOVEEND: 'moveend',
+
+  /**
+   * Triggered when loading of additional map data (tiles, images, features) starts.
+   * @event module:ol/render/Event~RenderEvent#loadstart
+   * @api
+   */
+  LOADSTART: 'loadstart',
+
+  /**
+   * Triggered when loading of additional map data has completed.
+   * @event module:ol/render/Event~RenderEvent#loadend
+   * @api
+   */
+  LOADEND: 'loadend',
 };
 
 /***
- * @typedef {'postrender'|'movestart'|'moveend'} Types
+ * @typedef {'postrender'|'movestart'|'moveend'|'loadstart'|'loadend'} Types
  */
