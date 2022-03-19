@@ -3,11 +3,13 @@ layout: example.html
 title: Image Load Events
 shortdesc: Example using image load events.
 docs: >
-  <p>Image sources fire events related to image loading.  You can
+  Image sources fire events related to image loading.  You can
   listen for <code>imageloadstart</code>, <code>imageloadend</code>,
   and <code>imageloaderror</code> type events to monitor image loading
   progress.  This example registers listeners for these events and
-  renders an image loading progress bar at the bottom of the map.</p>
+  renders an image loading progress bar at the bottom of the map. The
+  progress bar is shown and hidden according to the map's <code>loadstart</code>
+  and <code>loadend</code> events.
 tags: "image, events, loading"
 ---
 <div class="wrapper">

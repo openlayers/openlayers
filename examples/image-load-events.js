@@ -18,9 +18,6 @@ function Progress(el) {
  * Increment the count of loading tiles.
  */
 Progress.prototype.addLoading = function () {
-  if (this.loading === 0) {
-    this.show();
-  }
   ++this.loading;
   this.update();
 };
@@ -29,11 +26,8 @@ Progress.prototype.addLoading = function () {
  * Increment the count of loaded tiles.
  */
 Progress.prototype.addLoaded = function () {
-  const this_ = this;
-  setTimeout(function () {
-    ++this_.loaded;
-    this_.update();
-  }, 100);
+  ++this.loaded;
+  this.update();
 };
 
 /**
@@ -42,14 +36,6 @@ Progress.prototype.addLoaded = function () {
 Progress.prototype.update = function () {
   const width = ((this.loaded / this.loading) * 100).toFixed(1) + '%';
   this.el.style.width = width;
-  if (this.loading === this.loaded) {
-    this.loading = 0;
-    this.loaded = 0;
-    const this_ = this;
-    setTimeout(function () {
-      this_.hide();
-    }, 500);
-  }
 };
 
 /**
@@ -63,10 +49,11 @@ Progress.prototype.show = function () {
  * Hide the progress bar.
  */
 Progress.prototype.hide = function () {
-  if (this.loading === this.loaded) {
-    this.el.style.visibility = 'hidden';
-    this.el.style.width = 0;
-  }
+  const style = this.el.style;
+  setTimeout(function () {
+    style.visibility = 'hidden';
+    style.width = 0;
+  }, 250);
 };
 
 const progress = new Progress(document.getElementById('progress'));
@@ -80,11 +67,7 @@ const source = new ImageWMS({
 source.on('imageloadstart', function () {
   progress.addLoading();
 });
-
-source.on('imageloadend', function () {
-  progress.addLoaded();
-});
-source.on('imageloaderror', function () {
+source.on(['imageloadend', 'imageloaderror'], function () {
   progress.addLoaded();
 });
 
@@ -95,4 +78,11 @@ const map = new Map({
     center: [-10997148, 4569099],
     zoom: 4,
   }),
+});
+
+map.on('loadstart', function () {
+  progress.show();
+});
+map.on('loadend', function () {
+  progress.hide();
 });
