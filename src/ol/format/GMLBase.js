@@ -238,34 +238,51 @@ class GMLBase extends XMLFeature {
    * @param {Array<*>} objectStack Object stack.
    * @return {import("../geom/Geometry.js").default|import("../extent.js").Extent|undefined} Geometry.
    */
-  readGeometryElement(node, objectStack) {
+  readGeometryOrExtent(node, objectStack) {
     const context = /** @type {Object} */ (objectStack[0]);
     context['srsName'] = node.firstElementChild.getAttribute('srsName');
     context['srsDimension'] =
       node.firstElementChild.getAttribute('srsDimension');
-    const geometry = pushParseAndPop(
+    return pushParseAndPop(
       null,
       this.GEOMETRY_PARSERS,
       node,
       objectStack,
       this
     );
-    if (geometry) {
-      if (Array.isArray(geometry)) {
-        return transformExtentWithOptions(
-          /** @type {import("../extent.js").Extent} */ (geometry),
+  }
+
+  /**
+   * @param {Element} node Node.
+   * @param {Array<*>} objectStack Object stack.
+   * @return {import("../geom/Geometry.js").default|import("../extent.js").Extent|undefined} Geometry.
+   */
+  readExtentElement(node, objectStack) {
+    const context = /** @type {Object} */ (objectStack[0]);
+    const extent = this.readGeometryOrExtent(node, objectStack);
+    return extent
+      ? transformExtentWithOptions(
+          /** @type {import("../extent.js").Extent} */ (extent),
           context
-        );
-      } else {
-        return transformGeometryWithOptions(
+        )
+      : undefined;
+  }
+
+  /**
+   * @param {Element} node Node.
+   * @param {Array<*>} objectStack Object stack.
+   * @return {import("../geom/Geometry.js").default|import("../extent.js").Extent|undefined} Geometry.
+   */
+  readGeometryElement(node, objectStack) {
+    const context = /** @type {Object} */ (objectStack[0]);
+    const geometry = this.readGeometryOrExtent(node, objectStack);
+    return geometry
+      ? transformGeometryWithOptions(
           /** @type {import("../geom/Geometry.js").default} */ (geometry),
           false,
           context
-        );
-      }
-    } else {
-      return undefined;
-    }
+        )
+      : undefined;
   }
 
   /**
@@ -292,8 +309,11 @@ class GMLBase extends XMLFeature {
         }
       } else {
         if (asFeature) {
-          //if feature, try it as a geometry
-          value = this.readGeometryElement(n, objectStack);
+          //if feature, try it as a geometry or extent
+          value =
+            localName === 'boundedBy'
+              ? this.readExtentElement(n, objectStack)
+              : this.readGeometryElement(n, objectStack);
         }
         if (!value) {
           //if not a geometry or not a feature, treat it as a complex attribute
