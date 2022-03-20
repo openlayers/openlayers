@@ -20,6 +20,17 @@ export const FIREFOX = ua.indexOf('firefox') !== -1;
 export const SAFARI = ua.indexOf('safari') !== -1 && ua.indexOf('chrom') == -1;
 
 /**
+ * https://bugs.webkit.org/show_bug.cgi?id=237906
+ * @type {boolean}
+ */
+export const SAFARI_BUG_237906 =
+  SAFARI &&
+  !!(
+    ua.indexOf('version/15.4') >= 0 ||
+    ua.match(/cpu (os|iphone os) 15_4 like mac os x/)
+  );
+
+/**
  * User agent string says we are dealing with a WebKit engine.
  * @type {boolean}
  */
