@@ -43,18 +43,13 @@ function onChangeProjection() {
   const currentCenter = currentView.getCenter();
   const currentRotation = currentView.getRotation();
   const newCenter = transform(currentCenter, currentProjection, newProjection);
-  const currentPointResolution = getPointResolution(
-    currentProjection,
-    1,
-    currentCenter,
-    'm'
-  );
-  const newPointResolution = getPointResolution(
-    newProjection,
-    1,
-    newCenter,
-    'm'
-  );
+  const currentMPU = currentProjection.getMetersPerUnit();
+  const newMPU = newProjection.getMetersPerUnit();
+  const currentPointResolution =
+    getPointResolution(currentProjection, 1 / currentMPU, currentCenter, 'm') *
+    currentMPU;
+  const newPointResolution =
+    getPointResolution(newProjection, 1 / newMPU, newCenter, 'm') * newMPU;
   const newResolution =
     (currentResolution * currentPointResolution) / newPointResolution;
   const newView = new View({
