@@ -7,7 +7,7 @@ import {fromLonLat} from '../../../../src/ol/proj.js';
 const source = new Static({
   url: '/data/tiles/osm/5/5/12.png',
   imageExtent: [-123, 37, -122, 38],
-  imageSmoothing: false,
+  interpolate: false,
   projection: 'EPSG:4326',
 });
 

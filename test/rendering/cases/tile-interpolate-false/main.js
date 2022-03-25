@@ -3,7 +3,6 @@ import TileLayer from '../../../../src/ol/layer/Tile.js';
 import View from '../../../../src/ol/View.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
 import {createXYZ} from '../../../../src/ol/tilegrid.js';
-import {toLonLat} from '../../../../src/ol/proj.js';
 
 const tileGrid = createXYZ();
 const extent = tileGrid.getTileCoordExtent([5, 5, 12]);
@@ -13,7 +12,7 @@ const source = new XYZ({
   transition: 0,
   minZoom: 5,
   maxZoom: 5,
-  imageSmoothing: false,
+  interpolate: false,
   url: '/data/tiles/osm/{z}/{x}/{y}.png',
 });
 
@@ -26,8 +25,7 @@ new Map({
   target: 'map',
   layers: [layer],
   view: new View({
-    projection: 'EPSG:4326',
-    center: toLonLat(center),
+    center: center,
     zoom: 10,
   }),
 });

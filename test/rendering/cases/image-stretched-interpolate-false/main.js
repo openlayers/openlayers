@@ -7,7 +7,7 @@ import {fromLonLat, transformExtent} from '../../../../src/ol/proj.js';
 const source = new Static({
   url: '/data/tiles/osm/5/5/12.png',
   imageExtent: transformExtent([-123, 37, -122, 38], 'EPSG:4326', 'EPSG:3857'),
-  imageSmoothing: false,
+  interpolate: false,
 });
 
 new Map({
