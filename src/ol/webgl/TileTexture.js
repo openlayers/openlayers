@@ -58,7 +58,18 @@ function uploadDataTexture(
   interpolate
 ) {
   const gl = helper.getGL();
-  bindAndConfigure(gl, texture, interpolate);
+  let textureType;
+  let canInterpolate;
+  if (data instanceof Float32Array) {
+    textureType = gl.FLOAT;
+    helper.getExtension('OES_texture_float');
+    const extension = helper.getExtension('OES_texture_float_linear');
+    canInterpolate = extension !== null;
+  } else {
+    textureType = gl.UNSIGNED_BYTE;
+    canInterpolate = true;
+  }
+  bindAndConfigure(gl, texture, interpolate && canInterpolate);
 
   const bytesPerRow = data.byteLength / size[1];
   let unpackAlignment = 1;
@@ -91,15 +102,6 @@ function uploadDataTexture(
     default: {
       throw new Error(`Unsupported number of bands: ${bandCount}`);
     }
-  }
-
-  let textureType;
-  if (data instanceof Float32Array) {
-    textureType = gl.FLOAT;
-    helper.getExtension('OES_texture_float');
-    helper.getExtension('OES_texture_float_linear');
-  } else {
-    textureType = gl.UNSIGNED_BYTE;
   }
 
   const oldUnpackAlignment = gl.getParameter(gl.UNPACK_ALIGNMENT);
