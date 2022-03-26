@@ -1,6 +1,8 @@
 ## Upgrade notes
 
-### Next
+### v6.14.0
+
+No special changes are required when upgrading to the 6.14.0 release.
 
 ### v6.13.0
 
