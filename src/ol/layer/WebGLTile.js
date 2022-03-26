@@ -326,6 +326,12 @@ class WebGLTileLayer extends BaseTileLayer {
     this.sources_ = options.sources;
 
     /**
+     * @type {SourceType|null}
+     * @private
+     */
+    this.renderedSource_ = null;
+
+    /**
      * @type {number}
      * @private
      */
@@ -373,10 +379,7 @@ class WebGLTileLayer extends BaseTileLayer {
    * @return {SourceType} The source being rendered.
    */
   getRenderSource() {
-    return (
-      /** @type {SourceType} */ (this.getLayerState().source) ||
-      this.getSource()
-    );
+    return this.renderedSource_ || this.getSource();
   }
 
   /**
@@ -426,7 +429,7 @@ class WebGLTileLayer extends BaseTileLayer {
     const layerRenderer = this.getRenderer();
     let canvas;
     for (let i = 0, ii = sources.length; i < ii; ++i) {
-      this.getLayerState().source = sources[i];
+      this.renderedSource_ = sources[i];
       if (layerRenderer.prepareFrame(frameState)) {
         canvas = layerRenderer.renderFrame(frameState);
       }
