@@ -412,6 +412,7 @@ class TileTexture extends EventTarget {
       );
       data = pixelContext.getImageData(0, 0, 1, 1).data;
     } catch (err) {
+      pixelContext = null;
       return null;
     }
     return data;
