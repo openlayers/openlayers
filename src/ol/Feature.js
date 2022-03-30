@@ -98,6 +98,13 @@ class Feature extends BaseObject {
     this.un;
 
     /**
+     * Name of type of feature (e.g. GML Feature element name)
+     * @type {string|undefined}
+     * @api
+     */
+    this.featureType = undefined;
+
+    /**
      * @private
      * @type {number|string|undefined}
      */
@@ -156,6 +163,7 @@ class Feature extends BaseObject {
     const clone = /** @type {Feature<Geometry>} */ (
       new Feature(this.hasProperties() ? this.getProperties() : null)
     );
+    clone.featureType = this.featureType;
     clone.setGeometryName(this.getGeometryName());
     const geometry = this.getGeometry();
     if (geometry) {
