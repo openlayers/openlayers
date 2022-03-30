@@ -120,6 +120,7 @@ class CanvasLayerRenderer extends LayerRenderer {
       pixelContext.drawImage(image, col, row, 1, 1, 0, 0, 1, 1);
       data = pixelContext.getImageData(0, 0, 1, 1).data;
     } catch (err) {
+      pixelContext = null;
       return null;
     }
     return data;

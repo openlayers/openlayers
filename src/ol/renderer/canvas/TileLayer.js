@@ -208,7 +208,11 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
             tileCoord[2] * tileSize[1])
       );
 
-      return this.getImageData(tile.getImage(), col, row);
+      const gutter = Math.round(
+        tilePixelRatio * source.getGutterForProjection(viewState.projection)
+      );
+
+      return this.getImageData(tile.getImage(), col + gutter, row + gutter);
     }
 
     return null;

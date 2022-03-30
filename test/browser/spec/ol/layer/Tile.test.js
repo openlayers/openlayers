@@ -1,6 +1,6 @@
 import TileLayer from '../../../../../src/ol/layer/Tile.js';
 import {Map, View} from '../../../../../src/ol/index.js';
-import {OSM, XYZ} from '../../../../../src/ol/source.js';
+import {OSM, TileWMS, XYZ} from '../../../../../src/ol/source.js';
 
 describe('ol/layer/Tile', function () {
   describe('constructor (defaults)', function () {
@@ -75,6 +75,77 @@ describe('ol/layer/Tile', function () {
       map.renderSync();
       const data = layer.getData([50, 50]);
       expect(data).to.be(null);
+    });
+  });
+
+  describe('gutter', () => {
+    let map, target, layer, data;
+    beforeEach((done) => {
+      target = document.createElement('div');
+      target.style.width = '256px';
+      target.style.height = '256px';
+      document.body.appendChild(target);
+
+      layer = new TileLayer({
+        source: new TileWMS({
+          params: {
+            LAYERS: 'layer',
+          },
+          gutter: 20,
+          url: 'spec/ol/data/wms20.png',
+        }),
+      });
+
+      map = new Map({
+        target: target,
+        pixelRatio: 1,
+        layers: [layer],
+        view: new View({
+          center: [0, 0],
+          zoom: 0,
+        }),
+      });
+
+      map.once('rendercomplete', () => done());
+    });
+
+    afterEach(() => {
+      map.setTarget(null);
+      document.body.removeChild(target);
+    });
+
+    it('gets pixel data', () => {
+      data = layer.getData([76, 114]);
+      expect(data).to.be.a(Uint8ClampedArray);
+      expect(data.length).to.be(4);
+      expect(data[0]).to.be(77);
+      expect(data[1]).to.be(255);
+      expect(data[2]).to.be(77);
+      expect(data[3]).to.be(179);
+
+      data = layer.getData([76, 118]);
+      expect(data).to.be.a(Uint8ClampedArray);
+      expect(data.length).to.be(4);
+      expect(data[0]).to.be(255);
+      expect(data[1]).to.be(77);
+      expect(data[2]).to.be(77);
+      expect(data[3]).to.be(179);
+
+      data = layer.getData([80, 114]);
+      expect(data).to.be.a(Uint8ClampedArray);
+      expect(data.length).to.be(4);
+      expect(data[0]).to.be(255);
+      expect(data[1]).to.be(77);
+      expect(data[2]).to.be(77);
+      expect(data[3]).to.be(179);
+
+      data = layer.getData([80, 118]);
+      expect(data).to.be.a(Uint8ClampedArray);
+      expect(data.length).to.be(4);
+      expect(data[0]).to.be(77);
+      expect(data[1]).to.be(255);
+      expect(data[2]).to.be(77);
+      expect(data[3]).to.be(179);
     });
   });
 

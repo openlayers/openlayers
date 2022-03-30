@@ -397,10 +397,22 @@ class TileTexture extends EventTarget {
 
     let data;
     const image = this.tile.getImage();
+    const gutter = Math.round(this.tilePixelRatio_ * this.gutter_);
     try {
-      pixelContext.drawImage(image, col, row, 1, 1, 0, 0, 1, 1);
+      pixelContext.drawImage(
+        image,
+        col + gutter,
+        row + gutter,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1
+      );
       data = pixelContext.getImageData(0, 0, 1, 1).data;
     } catch (err) {
+      pixelContext = null;
       return null;
     }
     return data;
