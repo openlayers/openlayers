@@ -358,12 +358,21 @@ describe('ol/Feature.js', function () {
     });
   });
 
+  describe('featureType', function () {
+    it('is initially undefined', function () {
+      const feature = new Feature();
+
+      expect(feature.featureType).to.be(undefined);
+    });
+  });
+
   describe('#clone', function () {
     it('correctly clones features', function () {
       const feature = new Feature();
       feature.setProperties({'fookey': 'fooval'});
       feature.setId(1);
       feature.setGeometryName('geom');
+      feature.featureType = 'Foo';
       const geometry = new Point([1, 2]);
       feature.setGeometry(geometry);
       const style = new Style({});
@@ -374,6 +383,7 @@ describe('ol/Feature.js', function () {
       expect(clone.get('fookey')).to.be('fooval');
       expect(clone.getId()).to.be(undefined);
       expect(clone.getGeometryName()).to.be('geom');
+      expect(clone.featureType).to.be('Foo');
       const geometryClone = clone.getGeometry();
       expect(geometryClone).not.to.be(geometry);
       const coordinates = geometryClone.getFlatCoordinates();
@@ -383,13 +393,14 @@ describe('ol/Feature.js', function () {
       expect(clone.get('barkey')).to.be('barval');
     });
 
-    it('correctly clones features with no geometry and no style', function () {
+    it('correctly clones features with no geometry, no featureType and no style', function () {
       const feature = new Feature();
       feature.set('fookey', 'fooval');
 
       const clone = feature.clone();
       expect(clone.get('fookey')).to.be('fooval');
       expect(clone.getGeometry()).to.be(undefined);
+      expect(clone.featureType).to.be(undefined);
       expect(clone.getStyle()).to.be(null);
     });
   });
