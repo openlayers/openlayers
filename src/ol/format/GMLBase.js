@@ -354,6 +354,7 @@ class GMLBase extends XMLFeature {
       if (fid) {
         feature.setId(fid);
       }
+      feature.featureType = node.localName;
       return feature;
     }
   }
