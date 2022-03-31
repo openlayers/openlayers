@@ -43,6 +43,10 @@ describe('ol.format.GML2', function () {
     it('reads all features', function () {
       expect(features.length).to.be(3);
     });
+
+    it('reads the names of feature types', function () {
+      expect(features[0].featureType).to.be('water_areas');
+    });
   });
 
   describe('#readGeometry', function () {
@@ -1442,6 +1446,10 @@ describe('ol.format.GML3', function () {
       expect(features[0].getId()).to.equal('states.1');
     });
 
+    it('reads the names of feature types', function () {
+      expect(features[0].featureType).to.be('states');
+    });
+
     it('can reuse the parser for a different featureNS', function () {
       const text =
         '<gml:featureMembers xmlns:gml="http://www.opengis.net/gml">' +
@@ -1504,6 +1512,10 @@ describe('ol.format.GML3', function () {
 
     it('creates the right id for the feature', function () {
       expect(features[0].getId()).to.equal('states.1');
+    });
+
+    it('reads the names of feature types', function () {
+      expect(features[0].featureType).to.be('states');
     });
 
     it('writes back features as GML', function () {
@@ -1682,6 +1694,11 @@ describe('ol.format.GML3', function () {
     it('reads all features', function () {
       expect(features.length).to.be(12);
     });
+
+    it('reads the names of feature types', function () {
+      expect(features[0].featureType).to.be('planet_osm_line');
+      expect(features[11].featureType).to.be('planet_osm_polygon');
+    });
   });
 
   describe('when parsing multiple feature types', function () {
@@ -1727,6 +1744,11 @@ describe('ol.format.GML3', function () {
 
     it('reads all features', function () {
       expect(features.length).to.be(2);
+    });
+
+    it('reads the names of feature types', function () {
+      expect(features[0].featureType).to.be('states');
+      expect(features[1].featureType).to.be('roads');
     });
   });
 
