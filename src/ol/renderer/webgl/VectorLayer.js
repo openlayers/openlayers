@@ -89,8 +89,6 @@ import {listen, unlistenByKey} from '../../events.js';
  *
  *
  * This uses {@link module:ol/webgl/Helper~WebGLHelper} internally.
- *
- * @api
  */
 class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   /**
