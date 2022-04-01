@@ -15,6 +15,7 @@ import {assign} from '../obj.js';
 import {createCanvasContext2D} from '../dom.js';
 import {toSize} from '../size.js';
 
+// https://stackoverflow.com/q/32633585/how-do-you-convert-to-half-floats-in-javascript#32633586
 const dataView = new DataView(new ArrayBuffer(4));
 function toHalf(fval) {
   dataView.setFloat32(0, fval);
@@ -100,6 +101,7 @@ function uploadDataTexture(
   const gl = helper.getGL();
   let textureType;
   let canInterpolate;
+  /** @type {import("../DataTile.js").Data|Uint16Array} */
   let tempData = data;
   if (data instanceof Float32Array) {
     const float = helper.getExtension('OES_texture_float');
