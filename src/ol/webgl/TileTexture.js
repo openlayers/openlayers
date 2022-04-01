@@ -15,6 +15,46 @@ import {assign} from '../obj.js';
 import {createCanvasContext2D} from '../dom.js';
 import {toSize} from '../size.js';
 
+const dataView = new DataView(new ArrayBuffer(4));
+function toHalf(fval) {
+  dataView.setFloat32(0, fval);
+  const fbits = dataView.getInt32(0);
+  const sign = (fbits >> 16) & 0x8000; // sign only
+  let val = (fbits & 0x7fffffff) + 0x1000; // rounded value
+
+  if (val >= 0x47800000) {
+    // might be or become NaN/Inf
+    if ((fbits & 0x7fffffff) >= 0x47800000) {
+      // is or must become NaN/Inf
+      if (val < 0x7f800000) {
+        // was value but too large
+        return sign | 0x7c00; // make it +/-Inf
+      }
+      return (
+        sign |
+        0x7c00 | // remains +/-Inf or NaN
+        ((fbits & 0x007fffff) >> 13)
+      ); // keep NaN (and Inf) bits
+    }
+    return sign | 0x7bff; // unrounded not quite Inf
+  }
+  if (val >= 0x38800000) {
+    // remains normalized value
+    return sign | ((val - 0x38000000) >> 13); // exp - 127 + 15
+  }
+  if (val < 0x33000000) {
+    // too small for subnormal
+    return sign; // becomes +/-0
+  }
+  val = (fbits & 0x7fffffff) >> 23; // tmp exp for subnormal calc
+  return (
+    sign |
+    ((((fbits & 0x7fffff) | 0x800000) + // add subnormal bit
+      (0x800000 >>> (val - 102))) >> // round depending on cut off
+      (126 - val))
+  ); // div by 2^(1-(exp-127+15)) and >> 13 | exp=0
+}
+
 /**
  * @param {WebGLRenderingContext} gl The WebGL context.
  * @param {WebGLTexture} texture The texture.
@@ -60,18 +100,32 @@ function uploadDataTexture(
   const gl = helper.getGL();
   let textureType;
   let canInterpolate;
+  let tempData = data;
   if (data instanceof Float32Array) {
-    textureType = gl.FLOAT;
-    helper.getExtension('OES_texture_float');
-    const extension = helper.getExtension('OES_texture_float_linear');
-    canInterpolate = extension !== null;
+    const float = undefined; //helper.getExtension("OES_texture_float");
+    if (float) {
+      textureType = gl.FLOAT;
+      const extension = helper.getExtension('OES_texture_float_linear');
+      canInterpolate = extension !== null;
+    } else {
+      const halfFloat = helper.getExtension('OES_texture_half_float');
+      if (halfFloat) {
+        textureType = halfFloat.HALF_FLOAT_OES;
+      }
+      const extension = helper.getExtension('OES_texture_half_float_linear');
+      canInterpolate = extension !== null;
+      tempData = new Uint16Array(data.length);
+      for (let i = 0; i < data.length; ++i) {
+        tempData[i] = toHalf(data[i]);
+      }
+    }
   } else {
     textureType = gl.UNSIGNED_BYTE;
     canInterpolate = true;
   }
   bindAndConfigure(gl, texture, interpolate && canInterpolate);
 
-  const bytesPerRow = data.byteLength / size[1];
+  const bytesPerRow = tempData.byteLength / size[1];
   let unpackAlignment = 1;
   if (bytesPerRow % 8 === 0) {
     unpackAlignment = 8;
@@ -115,7 +169,7 @@ function uploadDataTexture(
     0,
     format,
     textureType,
-    data
+    tempData
   );
   gl.pixelStorei(gl.UNPACK_ALIGNMENT, oldUnpackAlignment);
 }
