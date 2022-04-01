@@ -9,6 +9,7 @@ import WebGLPointsLayer from '../src/ol/layer/WebGLPoints.js';
 const vectorSource = new Vector({
   url: 'data/geojson/world-cities.geojson',
   format: new GeoJSON(),
+  wrapX: true,
 });
 
 const predefinedStyles = {
@@ -79,7 +80,7 @@ const predefinedStyles = {
         2000000,
         28,
       ],
-      color: '#006688',
+      color: ['match', ['get', 'hover'], 1, '#ff3f3f', '#006688'],
       rotateWithView: false,
       offset: [0, 0],
       opacity: [
@@ -97,7 +98,7 @@ const predefinedStyles = {
     symbol: {
       symbolType: 'circle',
       size: ['interpolate', ['exponential', 2.5], ['zoom'], 2, 1, 14, 32],
-      color: '#240572',
+      color: ['match', ['get', 'hover'], 1, '#ff3f3f', '#006688'],
       offset: [0, 0],
       opacity: 0.95,
     },
@@ -160,12 +161,27 @@ const map = new Map({
 
 let literalStyle;
 let pointsLayer;
+
+let selected = null;
+
+map.on('pointermove', function (ev) {
+  if (selected !== null) {
+    selected.set('hover', 0);
+    selected = null;
+  }
+
+  map.forEachFeatureAtPixel(ev.pixel, function (feature) {
+    feature.set('hover', 1);
+    selected = feature;
+    return true;
+  });
+});
+
 function refreshLayer(newStyle) {
   const previousLayer = pointsLayer;
   pointsLayer = new WebGLPointsLayer({
     source: vectorSource,
     style: newStyle,
-    disableHitDetection: true,
   });
   map.addLayer(pointsLayer);
 

@@ -678,7 +678,6 @@ class WebGLHelper extends Disposable {
   /**
    * Sets the default matrix uniforms for a given frame state. This is called internally in `prepareDraw`.
    * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
-   * @private
    */
   applyFrameState(frameState) {
     const size = frameState.size;
@@ -715,7 +714,6 @@ class WebGLHelper extends Disposable {
   /**
    * Sets the custom uniforms based on what was given in the constructor. This is called internally in `prepareDraw`.
    * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
-   * @private
    */
   applyUniforms(frameState) {
     const gl = this.getGL();
