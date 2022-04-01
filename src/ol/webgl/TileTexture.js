@@ -102,7 +102,7 @@ function uploadDataTexture(
   let canInterpolate;
   let tempData = data;
   if (data instanceof Float32Array) {
-    const float = helper.getExtension("OES_texture_float");
+    const float = helper.getExtension('OES_texture_float');
     if (float) {
       textureType = gl.FLOAT;
       const extension = helper.getExtension('OES_texture_float_linear');
