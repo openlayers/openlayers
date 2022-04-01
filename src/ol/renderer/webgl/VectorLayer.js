@@ -11,7 +11,7 @@ import VectorEventType from '../../source/VectorEventType.js';
 import ViewHint from '../../ViewHint.js';
 import WebGLLayerRenderer from './Layer.js';
 import {DefaultUniform} from '../../webgl/Helper.js';
-import {buffer, createEmpty, equals} from '../../extent.js';
+import {buffer, createEmpty, equals, getWidth} from '../../extent.js';
 import {create as createTransform} from '../../transform.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {listen, unlistenByKey} from '../../events.js';
@@ -226,21 +226,42 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   renderFrame(frameState) {
     const gl = this.helper.getGL();
     this.preRender(gl, frameState);
-    this.polygonRenderer_.render(
-      this.batch_.polygonBatch,
-      this.currentTransform_,
-      frameState
-    );
-    this.lineStringRenderer_.render(
-      this.batch_.lineStringBatch,
-      this.currentTransform_,
-      frameState
-    );
-    this.pointRenderer_.render(
-      this.batch_.pointBatch,
-      this.currentTransform_,
-      frameState
-    );
+
+    const layer = this.getLayer();
+    const vectorSource = layer.getSource();
+    const projection = frameState.viewState.projection;
+    const multiWorld = vectorSource.getWrapX() && projection.canWrapX();
+    const projectionExtent = projection.getExtent();
+    const extent = frameState.extent;
+    const worldWidth = multiWorld ? getWidth(projectionExtent) : null;
+    const endWorld = multiWorld
+      ? Math.ceil((extent[2] - projectionExtent[2]) / worldWidth) + 1
+      : 1;
+    let world = multiWorld
+      ? Math.floor((extent[0] - projectionExtent[0]) / worldWidth)
+      : 0;
+
+    do {
+      this.polygonRenderer_.render(
+        this.batch_.polygonBatch,
+        this.currentTransform_,
+        frameState,
+        world * worldWidth
+      );
+      this.lineStringRenderer_.render(
+        this.batch_.lineStringBatch,
+        this.currentTransform_,
+        frameState,
+        world * worldWidth
+      );
+      this.pointRenderer_.render(
+        this.batch_.pointBatch,
+        this.currentTransform_,
+        frameState,
+        world * worldWidth
+      );
+    } while (++world < endWorld);
+
     this.helper.finalizeDraw(frameState);
 
     const canvas = this.helper.getCanvas();

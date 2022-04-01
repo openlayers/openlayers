@@ -10,7 +10,10 @@ import PolygonBatchRenderer from '../../../../../../src/ol/render/webgl/PolygonB
 import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
 import {FLOAT} from '../../../../../../src/ol/webgl.js';
 import {WebGLWorkerMessageType} from '../../../../../../src/ol/render/webgl/constants.js';
-import {create as createTransform} from '../../../../../../src/ol/transform.js';
+import {
+  create as createTransform,
+  translate as translateTransform,
+} from '../../../../../../src/ol/transform.js';
 import {create as createWebGLWorker} from '../../../../../../src/ol/worker/webgl.js';
 
 const POINT_VERTEX_SHADER = `precision mediump float;
@@ -133,6 +136,8 @@ describe('Batch renderers', function () {
       });
     });
     describe('#render (from parent)', function () {
+      let transform;
+      const offsetX = 12;
       beforeEach(function () {
         sinon.spy(helper, 'makeProjectionTransform');
         sinon.spy(helper, 'useProgram');
@@ -140,15 +145,24 @@ describe('Batch renderers', function () {
         sinon.spy(helper, 'enableAttributes');
         sinon.spy(helper, 'drawElements');
 
-        const transform = createTransform();
+        transform = createTransform();
         batchRenderer.render(
           mixedBatch.pointBatch,
           transform,
-          SAMPLE_FRAMESTATE
+          SAMPLE_FRAMESTATE,
+          offsetX
         );
       });
       it('computes current transform', function () {
         expect(helper.makeProjectionTransform.calledOnce).to.be(true);
+      });
+      it('includes the X offset in the transform used for rendering', function () {
+        const expected = helper.makeProjectionTransform(
+          SAMPLE_FRAMESTATE,
+          createTransform()
+        );
+        translateTransform(expected, offsetX, 0);
+        expect(transform).to.eql(expected);
       });
       it('computes sets up render parameters', function () {
         expect(helper.useProgram.calledOnce).to.be(true);

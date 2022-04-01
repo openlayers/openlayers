@@ -8,6 +8,7 @@ import {
   create as createTransform,
   makeInverse as makeInverseTransform,
   multiply as multiplyTransform,
+  translate as translateTransform,
 } from '../../transform.js';
 
 /**
@@ -89,11 +90,12 @@ class AbstractBatchRenderer {
    * @param {import("./MixedGeometryBatch.js").GeometryBatch} batch Geometry batch
    * @param {import("../../transform.js").Transform} currentTransform Transform
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {number} offsetX X offset
    */
-  render(batch, currentTransform, frameState) {
+  render(batch, currentTransform, frameState, offsetX) {
     // multiply the current projection transform with the invert of the one used to fill buffers
-    // FIXME: this should probably be done directly in the layer renderer
     this.helper_.makeProjectionTransform(frameState, currentTransform);
+    translateTransform(currentTransform, offsetX, 0);
     multiplyTransform(currentTransform, batch.invertVerticesBufferTransform);
 
     // enable program, buffers and attributes
