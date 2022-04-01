@@ -51,6 +51,8 @@ const DEFAULT_DPI = 25.4 / 0.28;
  * @property {string} [className='ol-scale-line'] CSS Class name.
  * @property {number} [minWidth=64] Minimum width in pixels at the OGC default dpi. The width will be
  * adjusted to match the dpi used.
+ * @property {number} [maxWidth] Maximum width in pixels at the OGC default dpi. The width will be
+ * adjusted to match the dpi used.
  * @property {function(import("../MapEvent.js").default):void} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  * @property {HTMLElement|string} [target] Specify a target if you want the control
@@ -135,6 +137,12 @@ class ScaleLine extends Control {
      * @type {number}
      */
     this.minWidth_ = options.minWidth !== undefined ? options.minWidth : 64;
+
+    /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.maxWidth_ = options.maxWidth;
 
     /**
      * @private
@@ -249,6 +257,11 @@ class ScaleLine extends Control {
     const minWidth =
       (this.minWidth_ * (this.dpi_ || DEFAULT_DPI)) / DEFAULT_DPI;
 
+    const maxWidth =
+      this.maxWidth_ !== undefined
+        ? (this.maxWidth_ * (this.dpi_ || DEFAULT_DPI)) / DEFAULT_DPI
+        : undefined;
+
     let nominalCount = minWidth * pointResolution;
     let suffix = '';
     if (units == Units.DEGREES) {
@@ -307,6 +320,7 @@ class ScaleLine extends Control {
 
     let i = 3 * Math.floor(Math.log(minWidth * pointResolution) / Math.log(10));
     let count, width, decimalCount;
+    let previousCount, previousWidth, previousDecimalCount;
     while (true) {
       decimalCount = Math.floor(i / 3);
       const decimal = Math.pow(10, decimalCount);
@@ -316,9 +330,18 @@ class ScaleLine extends Control {
         this.element.style.display = 'none';
         this.renderedVisible_ = false;
         return;
+      }
+      if (maxWidth !== undefined && width >= maxWidth) {
+        count = previousCount;
+        width = previousWidth;
+        decimalCount = previousDecimalCount;
+        break;
       } else if (width >= minWidth) {
         break;
       }
+      previousCount = count;
+      previousWidth = width;
+      previousDecimalCount = decimalCount;
       ++i;
     }
     let html;
