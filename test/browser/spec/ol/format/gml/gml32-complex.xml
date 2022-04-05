@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gml:FeatureCollection gml:id="collection.0" xmlns:ex="http://www.example.com" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <gml:featureMember>
+    <ex:FeatureA gml:id="feature.a">
+      <gml:identifier codeSpace="http://www.example.com">featureA</gml:identifier>
+      <ex:attributeA xlink:href="http://www.example.com/extern/1" />
+      <ex:attributeA xlink:href="http://www.example.com/extern/2" />
+      <ex:attributeA xlink:href="http://www.example.com/extern/3" />
+      <ex:attributeB>
+        <ex:Attribute>
+          <ex:value>foo</ex:value>
+        </ex:Attribute>
+      </ex:attributeB>
+      <ex:attributeB>
+        <ex:Attribute>
+          <ex:value>bar</ex:value>
+        </ex:Attribute>
+      </ex:attributeB>
+      <ex:location>
+        <gml:Point gml:id="point.0" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+          <gml:pos srsDimensions="2">0 0</gml:pos>
+        </gml:Point>
+      </ex:location>
+    </ex:FeatureA>
+  </gml:featureMember>
+  <gml:featureMember>
+    <ex:FeatureB gml:id="feature.b">
+      <gml:identifier codeSpace="http://www.example.com">featureB</gml:identifier>
+      <ex:attributeA xlink:href="http://www.example.com/extern/4" />
+      <ex:attributeA xlink:href="http://www.example.com/extern/5" />
+      <ex:attributeA xlink:href="http://www.example.com/extern/6" />
+      <ex:attributeB>
+        <ex:Attribute>
+          <ex:value>foobar</ex:value>
+        </ex:Attribute>
+      </ex:attributeB>
+      <ex:attributeB>
+        <ex:Attribute>
+          <ex:value>barfoo</ex:value>
+        </ex:Attribute>
+      </ex:attributeB>
+      <ex:location>
+        <gml:Point gml:id="point.1" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+          <gml:pos srsDimensions="2">1 1</gml:pos>
+        </gml:Point>
+      </ex:location>
+    </ex:FeatureB>
+  </gml:featureMember>
+</gml:FeatureCollection>
