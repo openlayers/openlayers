@@ -5,6 +5,7 @@ import Circle from '../geom/Circle.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import Feature from '../Feature.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
 import InteractionProperty from './Property.js';
 import LineString from '../geom/LineString.js';
@@ -29,6 +30,7 @@ import {
 } from '../extent.js';
 import {createEditingStyle} from '../style/Style.js';
 import {fromUserCoordinate, getUserProjection} from '../proj.js';
+import {getStrideForLayout} from '../geom/SimpleGeometry.js';
 import {squaredDistance as squaredCoordinateDistance} from '../coordinate.js';
 
 /**
@@ -82,6 +84,8 @@ import {squaredDistance as squaredCoordinateDistance} from '../coordinate.js';
  * Shift key activates freehand drawing.
  * @property {boolean} [wrapX=false] Wrap the world horizontally on the sketch
  * overlay.
+ * @property {GeometryLayout} [geometryLayout='XY'] Layout of the
+ * feature geometries created by the draw interaction.
  */
 
 /**
@@ -335,6 +339,14 @@ class Draw extends PointerInteraction {
       ? options.finishCondition
       : TRUE;
 
+    /**
+     * @private
+     * @type {import("../geom/GeometryLayout").default}
+     */
+    this.geometryLayout_ = options.geometryLayout
+      ? options.geometryLayout
+      : GeometryLayout.XY;
+
     let geometryFunction = options.geometryFunction;
     if (!geometryFunction) {
       const mode = this.mode_;
@@ -354,7 +366,11 @@ class Draw extends PointerInteraction {
             center,
             fromUserCoordinate(coordinates[coordinates.length - 1], projection)
           );
-          circle.setCenterAndRadius(center, Math.sqrt(squaredLength));
+          circle.setCenterAndRadius(
+            center,
+            Math.sqrt(squaredLength),
+            this.geometryLayout_
+          );
           const userProjection = getUserProjection();
           if (userProjection) {
             circle.transform(projection, userProjection);
@@ -381,17 +397,18 @@ class Draw extends PointerInteraction {
             if (mode === Mode.POLYGON) {
               if (coordinates[0].length) {
                 // Add a closing coordinate to match the first
-                geometry.setCoordinates([
-                  coordinates[0].concat([coordinates[0][0]]),
-                ]);
+                geometry.setCoordinates(
+                  [coordinates[0].concat([coordinates[0][0]])],
+                  this.geometryLayout_
+                );
               } else {
-                geometry.setCoordinates([]);
+                geometry.setCoordinates([], this.geometryLayout_);
               }
             } else {
-              geometry.setCoordinates(coordinates);
+              geometry.setCoordinates(coordinates, this.geometryLayout_);
             }
           } else {
-            geometry = new Constructor(coordinates);
+            geometry = new Constructor(coordinates, this.geometryLayout_);
           }
           return geometry;
         };
@@ -803,6 +820,10 @@ class Draw extends PointerInteraction {
    */
   startDrawing_(start) {
     const projection = this.getMap().getView().getProjection();
+    const stride = getStrideForLayout(this.geometryLayout_);
+    while (start.length < stride) {
+      start.push(0);
+    }
     this.finishCoordinate_ = start;
     if (this.mode_ === Mode.POINT) {
       this.sketchCoords_ = start.slice();
@@ -840,7 +861,11 @@ class Draw extends PointerInteraction {
     const map = this.getMap();
     const geometry = this.sketchFeature_.getGeometry();
     const projection = map.getView().getProjection();
+    const stride = getStrideForLayout(this.geometryLayout_);
     let coordinates, last;
+    while (coordinate.length < stride) {
+      coordinate.push(0);
+    }
     if (this.mode_ === Mode.POINT) {
       last = this.sketchCoords_;
     } else if (this.mode_ === Mode.POLYGON) {
