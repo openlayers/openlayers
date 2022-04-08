@@ -36,6 +36,9 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * should be set to `2`.
  * @property {number|import("../size.js").Size} [tileSize=[256, 256]] The tile size used by the tile service.
  * Not used if `tileGrid` is provided.
+ * @property {number} [gutter=0] The size in pixels of the gutter around image tiles to ignore.
+ * This allows artifacts of rendering at tile edges to be ignored.
+ * Supported images should be wider and taller than the tile size by a value of `2 x gutter`.
  * @property {import("../Tile.js").UrlFunction} [tileUrlFunction] Optional function to get
  * tile URL given a tile coordinate and the projection.
  * Required if `url` or `urls` are not provided.
@@ -114,6 +117,19 @@ class XYZ extends TileImage {
       attributionsCollapsible: options.attributionsCollapsible,
       zDirection: options.zDirection,
     });
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.gutter_ = options.gutter !== undefined ? options.gutter : 0;
+  }
+
+  /**
+   * @return {number} Gutter.
+   */
+  getGutter() {
+    return this.gutter_;
   }
 }
 
