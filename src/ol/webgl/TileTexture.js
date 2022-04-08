@@ -10,9 +10,6 @@ import ReprojTile from '../reproj/Tile.js';
 import TileState from '../TileState.js';
 import WebGLArrayBuffer from './Buffer.js';
 import {ARRAY_BUFFER, STATIC_DRAW} from '../webgl.js';
-import {IMAGE_SMOOTHING_DISABLED} from '../renderer/canvas/common.js';
-import {assign} from '../obj.js';
-import {createCanvasContext2D} from '../dom.js';
 import {toSize} from '../size.js';
 
 /**
@@ -243,38 +240,16 @@ class TileTexture extends EventTarget {
     const tile = this.tile;
 
     if (tile instanceof ImageTile || tile instanceof ReprojTile) {
-      let image = tile.getImage();
-      if (this.gutter_ !== 0) {
-        const gutter = this.tilePixelRatio_ * this.gutter_;
-        const width = Math.round(image.width - 2 * gutter);
-        const height = Math.round(image.height - 2 * gutter);
-        const context = createCanvasContext2D(width, height);
-        if (!tile.interpolate) {
-          assign(context, IMAGE_SMOOTHING_DISABLED);
-        }
-        context.drawImage(
-          image,
-          gutter,
-          gutter,
-          width,
-          height,
-          0,
-          0,
-          width,
-          height
-        );
-        image = context.canvas;
-      }
       const texture = gl.createTexture();
       this.textures.push(texture);
       this.bandCount = 4;
-      uploadImageTexture(gl, texture, image, tile.interpolate);
+      uploadImageTexture(gl, texture, tile.getImage(), tile.interpolate);
       return;
     }
 
     const pixelSize = [
-      this.size[0] * this.tilePixelRatio_,
-      this.size[1] * this.tilePixelRatio_,
+      (this.size[0] + 2 * this.gutter_) * this.tilePixelRatio_,
+      (this.size[1] + 2 * this.gutter_) * this.tilePixelRatio_,
     ];
     const data = tile.getData();
     const isFloat = data instanceof Float32Array;
@@ -373,14 +348,19 @@ class TileTexture extends EventTarget {
       return null;
     }
 
-    col = Math.floor(this.tilePixelRatio_ * col);
-    row = Math.floor(this.tilePixelRatio_ * row);
+    const gutter = Math.round(this.tilePixelRatio_ * this.gutter_);
+    col = Math.floor(this.tilePixelRatio_ * col) + gutter;
+    row = Math.floor(this.tilePixelRatio_ * row) + gutter;
 
     if (this.tile instanceof DataTile) {
       const data = this.tile.getData();
-      const pixelsPerRow = Math.floor(this.tilePixelRatio_ * this.size[0]);
+      let size = this.size;
+      if (gutter > 0) {
+        size = [size[0] + 2 * this.gutter_, size[1] + 2 * this.gutter_];
+      }
+      const pixelsPerRow = Math.floor(this.tilePixelRatio_ * size[0]);
       if (data instanceof DataView) {
-        const bytesPerPixel = data.byteLength / (this.size[0] * this.size[1]);
+        const bytesPerPixel = data.byteLength / (size[0] * size[1]);
         const offset = row * pixelsPerRow * bytesPerPixel + col * bytesPerPixel;
         const buffer = data.buffer.slice(offset, offset + bytesPerPixel);
         return new DataView(buffer);
@@ -397,19 +377,8 @@ class TileTexture extends EventTarget {
 
     let data;
     const image = this.tile.getImage();
-    const gutter = Math.round(this.tilePixelRatio_ * this.gutter_);
     try {
-      pixelContext.drawImage(
-        image,
-        col + gutter,
-        row + gutter,
-        1,
-        1,
-        0,
-        0,
-        1,
-        1
-      );
+      pixelContext.drawImage(image, col, row, 1, 1, 0, 0, 1, 1);
       data = pixelContext.getImageData(0, 0, 1, 1).data;
     } catch (err) {
       pixelContext = null;
