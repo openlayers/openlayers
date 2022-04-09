@@ -318,6 +318,24 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         done();
       });
     });
+
+    it('changes background when function returns a different color', function (done) {
+      let first = true;
+      layer.setBackground(function (resolution) {
+        expect(resolution).to.be(map.getView().getResolution());
+        const background = first === true ? undefined : 'rgba(255, 0, 0, 0.5)';
+        first = false;
+        return background;
+      });
+      map.once('rendercomplete', function () {
+        expect(layer.getRenderer().container.style.backgroundColor).to.be('');
+        map.renderSync();
+        expect(layer.getRenderer().container.style.backgroundColor).to.be(
+          'rgba(255, 0, 0, 0.5)'
+        );
+        done();
+      });
+    });
   });
 
   describe('#prepareFrame', function () {
