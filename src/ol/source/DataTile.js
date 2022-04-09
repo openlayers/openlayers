@@ -27,6 +27,9 @@ import {toPromise} from '../functions.js';
  * @property {number} [maxZoom=42] Optional max zoom level. Not used if `tileGrid` is provided.
  * @property {number} [minZoom=0] Optional min zoom level. Not used if `tileGrid` is provided.
  * @property {number|import("../size.js").Size} [tileSize=[256, 256]] The pixel width and height of the tiles.
+ * @property {number} [gutter=0] The size in pixels of the gutter around data tiles to ignore.
+ * This allows artifacts of rendering at tile edges to be ignored.
+ * Supported data should be wider and taller than the tile size by a value of `2 x gutter`.
  * @property {number} [maxResolution] Optional tile grid resolution at level zero. Not used if `tileGrid` is provided.
  * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Tile projection.
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
@@ -82,6 +85,12 @@ class DataTileSource extends TileSource {
 
     /**
      * @private
+     * @type {number}
+     */
+    this.gutter_ = options.gutter !== undefined ? options.gutter : 0;
+
+    /**
+     * @private
      * @type {!Object<string, boolean>}
      */
     this.tileLoadingKeys_ = {};
@@ -97,6 +106,14 @@ class DataTileSource extends TileSource {
      * @type {number}
      */
     this.bandCount = options.bandCount === undefined ? 4 : options.bandCount; // assume RGBA if undefined
+  }
+
+  /**
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @return {number} Gutter.
+   */
+  getGutterForProjection(projection) {
+    return this.gutter_;
   }
 
   /**
