@@ -7,110 +7,7 @@ import MVT from '../format/MVT.js';
 import SourceState from '../source/State.js';
 import VectorTileLayer from '../layer/VectorTile.js';
 import VectorTileSource from '../source/VectorTile.js';
-import {applyBackground, applyStyle, setupVectorSource} from 'ol-mapbox-style';
-
-const mapboxBaseUrl = 'https://api.mapbox.com';
-
-/**
- * Gets the path from a mapbox:// URL.
- * @param {string} url The Mapbox URL.
- * @return {string} The path.
- * @private
- */
-export function getMapboxPath(url) {
-  const startsWith = 'mapbox://';
-  if (url.indexOf(startsWith) !== 0) {
-    return '';
-  }
-  return url.slice(startsWith.length);
-}
-
-/**
- * Turns mapbox:// sprite URLs into resolvable URLs.
- * @param {string} url The sprite URL.
- * @param {string} token The access token.
- * @param {string} styleUrl The style URL.
- * @return {string} A resolvable URL.
- * @private
- */
-export function normalizeSpriteUrl(url, token, styleUrl) {
-  const mapboxPath = getMapboxPath(url);
-  if (!mapboxPath) {
-    return decodeURI(new URL(url, styleUrl).href);
-  }
-  const startsWith = 'sprites/';
-  if (mapboxPath.indexOf(startsWith) !== 0) {
-    throw new Error(`unexpected sprites url: ${url}`);
-  }
-  const sprite = mapboxPath.slice(startsWith.length);
-
-  return `${mapboxBaseUrl}/styles/v1/${sprite}/sprite?access_token=${token}`;
-}
-
-/**
- * Turns mapbox:// glyphs URLs into resolvable URLs.
- * @param {string} url The glyphs URL.
- * @param {string} token The access token.
- * @param {string} styleUrl The style URL.
- * @return {string} A resolvable URL.
- * @private
- */
-export function normalizeGlyphsUrl(url, token, styleUrl) {
-  const mapboxPath = getMapboxPath(url);
-  if (!mapboxPath) {
-    return decodeURI(new URL(url, styleUrl).href);
-  }
-  const startsWith = 'fonts/';
-  if (mapboxPath.indexOf(startsWith) !== 0) {
-    throw new Error(`unexpected fonts url: ${url}`);
-  }
-  const font = mapboxPath.slice(startsWith.length);
-
-  return `${mapboxBaseUrl}/fonts/v1/${font}/0-255.pbf?access_token=${token}`;
-}
-
-/**
- * Turns mapbox:// style URLs into resolvable URLs.
- * @param {string} url The style URL.
- * @param {string} token The access token.
- * @return {string} A resolvable URL.
- * @private
- */
-export function normalizeStyleUrl(url, token) {
-  const mapboxPath = getMapboxPath(url);
-  if (!mapboxPath) {
-    return decodeURI(new URL(url, location.href).href);
-  }
-  const startsWith = 'styles/';
-  if (mapboxPath.indexOf(startsWith) !== 0) {
-    throw new Error(`unexpected style url: ${url}`);
-  }
-  const style = mapboxPath.slice(startsWith.length);
-
-  return `${mapboxBaseUrl}/styles/v1/${style}?&access_token=${token}`;
-}
-
-/**
- * Turns mapbox:// source URLs into vector tile URL templates.
- * @param {string} url The source URL.
- * @param {string} token The access token.
- * @param {string} tokenParam The access token key.
- * @param {string} styleUrl The style URL.
- * @return {string} A vector tile template.
- * @private
- */
-export function normalizeSourceUrl(url, token, tokenParam, styleUrl) {
-  const urlObject = new URL(url, styleUrl);
-  const mapboxPath = getMapboxPath(url);
-  if (!mapboxPath) {
-    if (!token) {
-      return decodeURI(urlObject.href);
-    }
-    urlObject.searchParams.set(tokenParam, token);
-    return decodeURI(urlObject.href);
-  }
-  return `https://{a-d}.tiles.mapbox.com/v4/${mapboxPath}/{z}/{x}/{y}.vector.pbf?access_token=${token}`;
-}
+import {applyBackground, applyStyle} from 'ol-mapbox-style';
 
 /**
  * @classdesc
@@ -129,38 +26,6 @@ class ErrorEvent extends BaseEvent {
     this.error = error;
   }
 }
-
-/**
- * @typedef {Object} StyleObject
- * @property {Object<string, SourceObject>} sources The style sources.
- * @property {string} sprite The sprite URL.
- * @property {string} glyphs The glyphs URL.
- * @property {Array<LayerObject>} layers The style layers.
- */
-
-/**
- * @typedef {Object} SourceObject
- * @property {string} url The source URL.
- * @property {SourceType} type The source type.
- * @property {Array<string>} [tiles] TileJSON tiles.
- */
-
-/**
- * The Mapbox source type.
- * @enum {string}
- */
-const SourceType = {
-  VECTOR: 'vector',
-};
-
-/**
- * @typedef {Object} LayerObject
- * @property {string} id The layer id.
- * @property {string} type The layer type.
- * @property {string} source The source id.
- * @property {Object} layout The layout.
- * @property {Object} paint The paint.
- */
 
 /**
  * @typedef {Object} Options
@@ -306,211 +171,26 @@ class MapboxVectorLayer extends VectorTileLayer {
       properties: options.properties,
     });
 
-    this.setMaxResolutionFromTileGrid_ =
-      options.maxResolution === undefined && options.minZoom === undefined;
-
-    this.sourceId = options.source;
-    this.layers = options.layers;
-
     if (options.accessToken) {
       this.accessToken = options.accessToken;
-    } else {
-      const url = new URL(options.styleUrl, location.href);
-      // The last search parameter is the access token
-      url.searchParams.forEach((value, key) => {
-        this.accessToken = value;
-        this.accessTokenParam_ = key;
-      });
     }
-    this.fetchStyle(options.styleUrl);
-  }
-
-  /**
-   * Fetch the style object.
-   * @param {string} styleUrl The URL of the style to load.
-   * @protected
-   */
-  fetchStyle(styleUrl) {
-    const url = normalizeStyleUrl(styleUrl, this.accessToken);
-    fetch(url)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(
-            `unexpected response when fetching style: ${response.status}`
-          );
-        }
-        return response.json();
-      })
-      .then((style) => {
-        this.onStyleLoad(style, url.startsWith('data:') ? location.href : url);
+    const url = options.styleUrl;
+    applyStyle(this, url, options.layers || options.source, {
+      accessToken: this.accessToken,
+    })
+      .then(() => {
+        source.setState(SourceState.READY);
       })
       .catch((error) => {
-        this.handleError(error);
+        this.dispatchEvent(new ErrorEvent(error));
+        const source = this.getSource();
+        source.setState(SourceState.ERROR);
       });
-  }
-
-  /**
-   * Handle the loaded style object.
-   * @param {StyleObject} style The loaded style.
-   * @param {string} styleUrl The URL of the style.
-   * @protected
-   */
-  onStyleLoad(style, styleUrl) {
-    let sourceId;
-    let sourceIdOrLayersList;
-    if (this.layers) {
-      // confirm all layers share the same source
-      const lookup = {};
-      for (let i = 0; i < style.layers.length; ++i) {
-        const layer = style.layers[i];
-        if (layer.source) {
-          lookup[layer.id] = layer.source;
-        }
-      }
-      let firstSource;
-      for (let i = 0; i < this.layers.length; ++i) {
-        const candidate = lookup[this.layers[i]];
-        if (!candidate) {
-          this.handleError(
-            new Error(`could not find source for ${this.layers[i]}`)
-          );
-          return;
-        }
-        if (!firstSource) {
-          firstSource = candidate;
-        } else if (firstSource !== candidate) {
-          this.handleError(
-            new Error(
-              `layers can only use a single source, found ${firstSource} and ${candidate}`
-            )
-          );
-          return;
-        }
-      }
-      sourceId = firstSource;
-      sourceIdOrLayersList = this.layers;
-    } else {
-      sourceId = this.sourceId;
-      sourceIdOrLayersList = sourceId;
-    }
-
-    if (!sourceIdOrLayersList) {
-      // default to the first source in the style
-      sourceId = Object.keys(style.sources)[0];
-      sourceIdOrLayersList = sourceId;
-    }
-
-    if (style.sprite) {
-      style.sprite = normalizeSpriteUrl(
-        style.sprite,
-        this.accessToken,
-        styleUrl
-      );
-    }
-
-    if (style.glyphs) {
-      style.glyphs = normalizeGlyphsUrl(
-        style.glyphs,
-        this.accessToken,
-        styleUrl
-      );
-    }
-
-    const styleSource = style.sources[sourceId];
-    if (styleSource.type !== SourceType.VECTOR) {
-      this.handleError(
-        new Error(`only works for vector sources, found ${styleSource.type}`)
-      );
-      return;
-    }
-
-    const source = this.getSource();
-    if (styleSource.url && styleSource.url.indexOf('mapbox://') === 0) {
-      // Tile source url, handle it directly
-      source.setUrl(
-        normalizeSourceUrl(
-          styleSource.url,
-          this.accessToken,
-          this.accessTokenParam_,
-          styleUrl
-        )
-      );
-      applyStyle(this, style, sourceIdOrLayersList)
-        .then(() => {
-          this.configureSource(source, style);
-        })
-        .catch((error) => {
-          this.handleError(error);
-        });
-    } else {
-      // TileJSON url, let ol-mapbox-style handle it
-      if (styleSource.tiles) {
-        styleSource.tiles = styleSource.tiles.map((url) =>
-          normalizeSourceUrl(
-            url,
-            this.accessToken,
-            this.accessTokenParam_,
-            styleUrl
-          )
-        );
-      }
-      setupVectorSource(
-        styleSource,
-        styleSource.url
-          ? normalizeSourceUrl(
-              styleSource.url,
-              this.accessToken,
-              this.accessTokenParam_,
-              styleUrl
-            )
-          : undefined
-      ).then((source) => {
-        applyStyle(this, style, sourceIdOrLayersList)
-          .then(() => {
-            this.configureSource(source, style);
-          })
-          .catch((error) => {
-            this.configureSource(source, style);
-            this.handleError(error);
-          });
-      });
-    }
-  }
-
-  /**
-   * Applies configuration from the provided source to this layer's source,
-   * and reconfigures the loader to add a feature that renders the background,
-   * if the style is configured with a background.
-   * @param {import("../source/VectorTile.js").default} source The source to configure from.
-   * @param {StyleObject} style The style to configure the background from.
-   */
-  configureSource(source, style) {
-    const targetSource = this.getSource();
-    if (source !== targetSource) {
-      targetSource.setAttributions(source.getAttributions());
-      targetSource.setTileUrlFunction(source.getTileUrlFunction());
-      targetSource.setTileLoadFunction(source.getTileLoadFunction());
-      targetSource.tileGrid = source.tileGrid;
-    }
     if (this.getBackground() === undefined) {
-      applyBackground(this, style);
+      applyBackground(this, options.styleUrl, {
+        accessToken: this.accessToken,
+      });
     }
-    if (this.setMaxResolutionFromTileGrid_) {
-      const tileGrid = targetSource.getTileGrid();
-      this.setMaxResolution(tileGrid.getResolution(tileGrid.getMinZoom()));
-    }
-    targetSource.setState(SourceState.READY);
-  }
-
-  /**
-   * Handle configuration or loading error.
-   * @param {Error} error The error.
-   * @protected
-   */
-  handleError(error) {
-    this.dispatchEvent(new ErrorEvent(error));
-    const source = this.getSource();
-    source.setState(SourceState.ERROR);
   }
 }
 

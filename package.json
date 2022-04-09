@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "geotiff": "^2.0.2",
-    "ol-mapbox-style": "^7.1.1",
+    "ol-mapbox-style": "^8.0.4",
     "pbf": "3.2.1",
     "rbush": "^3.0.1"
   },

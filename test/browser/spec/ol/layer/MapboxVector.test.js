@@ -1,123 +1,9 @@
-import MapboxVectorLayer, {
-  getMapboxPath,
-  normalizeSourceUrl,
-  normalizeSpriteUrl,
-  normalizeStyleUrl,
-} from '../../../../../src/ol/layer/MapboxVector.js';
+import MapboxVectorLayer from '../../../../../src/ol/layer/MapboxVector.js';
 import {asString} from '../../../../../src/ol/color.js';
+import {strokeInstruction} from '../../../../../src/ol/render/canvas/Instruction.js';
 import {unByKey} from '../../../../../src/ol/Observable.js';
 
 describe('ol/layer/MapboxVector', () => {
-  describe('getMapboxPath()', () => {
-    const cases = [
-      {
-        url: 'mapbox://path/to/resource',
-        expected: 'path/to/resource',
-      },
-      {
-        url: 'mapbox://path/to/resource?query',
-        expected: 'path/to/resource?query',
-      },
-      {
-        url: 'https://example.com/resource',
-        expected: '',
-      },
-    ];
-
-    for (const c of cases) {
-      it(`works for ${c.url}`, () => {
-        expect(getMapboxPath(c.url)).to.be(c.expected);
-      });
-    }
-  });
-
-  describe('normalizeStyleUrl()', () => {
-    const cases = [
-      {
-        url: 'mapbox://styles/mapbox/bright-v9',
-        expected:
-          'https://api.mapbox.com/styles/v1/mapbox/bright-v9?&access_token=test-token',
-      },
-      {
-        url: 'https://example.com/style',
-        expected: 'https://example.com/style',
-      },
-    ];
-
-    const token = 'test-token';
-    for (const c of cases) {
-      it(`works for ${c.url}`, () => {
-        expect(normalizeStyleUrl(c.url, token)).to.be(c.expected);
-      });
-    }
-  });
-
-  describe('normalizeSpriteUrl()', () => {
-    const cases = [
-      {
-        url: 'mapbox://sprites/mapbox/bright-v9',
-        expected:
-          'https://api.mapbox.com/styles/v1/mapbox/bright-v9/sprite?access_token=test-token',
-      },
-      {
-        url: 'https://example.com/sprite',
-        expected: 'https://example.com/sprite',
-      },
-      {
-        url: '../sprite',
-        expected: 'https://example.com:8000/sprite',
-      },
-      {
-        url: '/sprite',
-        expected: 'https://example.com:8000/sprite',
-      },
-      {
-        url: './sprite',
-        expected: 'https://example.com:8000/mystyle/sprite',
-      },
-    ];
-
-    const token = 'test-token';
-    for (const c of cases) {
-      it(`works for ${c.url}`, () => {
-        expect(
-          normalizeSpriteUrl(
-            c.url,
-            token,
-            'https://example.com:8000/mystyle/style.json'
-          )
-        ).to.be(c.expected);
-      });
-    }
-  });
-
-  describe('normalizeSourceUrl()', () => {
-    const cases = [
-      {
-        url: 'mapbox://mapbox.mapbox-streets-v7',
-        expected:
-          'https://{a-d}.tiles.mapbox.com/v4/mapbox.mapbox-streets-v7/{z}/{x}/{y}.vector.pbf?access_token=test-token',
-      },
-      {
-        url: 'https://example.com/source/{z}/{x}/{y}.pbf',
-        expected: 'https://example.com/source/{z}/{x}/{y}.pbf?token=test-token',
-      },
-      {
-        url: 'https://example.com/source/{z}/{x}/{y}.pbf?foo=bar',
-        expected:
-          'https://example.com/source/{z}/{x}/{y}.pbf?foo=bar&token=test-token',
-      },
-    ];
-
-    const token = 'test-token';
-    const tokenParam = 'token';
-    for (const c of cases) {
-      it(`works for ${c.url}`, () => {
-        expect(normalizeSourceUrl(c.url, token, tokenParam)).to.be(c.expected);
-      });
-    }
-  });
-
   describe('TileJSON', function () {
     it('lets ol-mapbox-style handle TileJSON URLs', function (done) {
       const layer = new MapboxVectorLayer({
@@ -135,6 +21,9 @@ describe('ol/layer/MapboxVector', () => {
               layers: [],
             })
           ),
+      });
+      layer.on('error', function (e) {
+        done(e.error);
       });
       const source = layer.getSource();
       const key = source.on('change', function () {
@@ -184,6 +73,9 @@ describe('ol/layer/MapboxVector', () => {
     it('uses minZoom from source', function (done) {
       const layer = new MapboxVectorLayer({
         styleUrl: styleUrl,
+      });
+      layer.on('error', function (e) {
+        done(e.error);
       });
       const source = layer.getSource();
       source.on('change', function onchange() {
@@ -312,20 +204,31 @@ describe('ol/layer/MapboxVector', () => {
   });
 
   describe('Access token', function () {
-    it('applies correct access token from access_token', function () {
-      const layer = new MapboxVectorLayer({
+    let originalFetch, fetchUrl;
+    beforeEach(function () {
+      originalFetch = fetch;
+      window.fetch = function (url) {
+        fetchUrl = url;
+        return Promise.resolve();
+      };
+    });
+    afterEach(function () {
+      window.fetch = originalFetch;
+    });
+    it('applies correct access token', function () {
+      new MapboxVectorLayer({
         styleUrl: 'mapbox://styles/mapbox/streets-v7',
         accessToken: '123',
       });
-      expect(layer.accessToken).to.be('123');
-      expect(layer.accessTokenParam_).to.be(undefined);
+      expect(fetchUrl.url).to.be(
+        'https://api.mapbox.com/styles/v1/mapbox/streets-v7?&access_token=123'
+      );
     });
     it('applies correct access token from url', function () {
-      const layer = new MapboxVectorLayer({
+      new MapboxVectorLayer({
         styleUrl: 'foo?key=123',
       });
-      expect(layer.accessToken).to.be('123');
-      expect(layer.accessTokenParam_).to.be('key');
+      expect(fetchUrl.url).to.be(`${location.origin}/foo?key=123`);
     });
   });
 });

@@ -1,55 +1,36 @@
-import MVT from '../src/ol/format/MVT.js';
-import TileGrid from '../src/ol/tilegrid/TileGrid.js';
+import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
-import View from '../src/ol/View.js';
-
-import olms from 'ol-mapbox-style';
-import {defaultResolutions} from 'ol-mapbox-style/dist/util.js';
+import {Map, View} from '../src/ol/index.js';
+import {applyBackground, applyStyle} from 'ol-mapbox-style';
+import {createXYZ} from '../src/ol/tilegrid.js';
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
+const url = 'https://api.maptiler.com/maps/basic-4326/style.json?key=' + key;
 
 // Match the server resolutions
-const maxResolution = 360 / 512;
-defaultResolutions.length = 14;
-for (let i = 0; i < 14; ++i) {
-  defaultResolutions[i] = maxResolution / Math.pow(2, i + 1);
-}
+const tileGrid = createXYZ({
+  extent: [-180, -90, 180, 90],
+  tileSize: 512,
+  maxResolution: 180 / 512,
+  maxZoom: 13,
+});
 
-olms(
-  'map',
-  'https://api.maptiler.com/maps/basic-4326/style.json?key=' + key
-).then(function (map) {
-  // Custom tile grid for the EPSG:4326 projection
-  const tileGrid = new TileGrid({
-    extent: [-180, -90, 180, 90],
-    tileSize: 512,
-    resolutions: defaultResolutions,
-  });
+const layer = new VectorTileLayer({
+  declutter: true,
+  source: new VectorTileSource({
+    projection: 'EPSG:4326',
+    tileGrid: tileGrid,
+  }),
+});
+applyStyle(layer, url, '', {resolutions: tileGrid.getResolutions()});
+applyBackground(layer, url);
 
-  const mapboxStyle = map.get('mapbox-style');
-
-  // Replace the source with a EPSG:4326 projection source for each vector tile layer
-  map.getLayers().forEach(function (layer) {
-    const mapboxSource = layer.get('mapbox-source');
-    if (mapboxSource && mapboxStyle.sources[mapboxSource].type === 'vector') {
-      const source = layer.getSource();
-      layer.setSource(
-        new VectorTileSource({
-          format: new MVT(),
-          projection: 'EPSG:4326',
-          urls: source.getUrls(),
-          tileGrid: tileGrid,
-        })
-      );
-    }
-  });
-
-  // Configure the map with a view with EPSG:4326 projection
-  map.setView(
-    new View({
-      projection: 'EPSG:4326',
-      zoom: mapboxStyle.zoom,
-      center: mapboxStyle.center,
-    })
-  );
+const map = new Map({
+  target: 'map',
+  layers: [layer],
+  view: new View({
+    projection: 'EPSG:4326',
+    zoom: 0,
+    center: [0, 30],
+  }),
 });

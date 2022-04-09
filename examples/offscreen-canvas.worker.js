@@ -5,9 +5,9 @@ import TileQueue, {
 import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
 import stringify from 'json-stringify-safe';
-import styleFunction from 'ol-mapbox-style/dist/stylefunction.js';
 import {get} from '../src/ol/proj.js';
 import {inView} from '../src/ol/layer/Layer.js';
+import {stylefunction} from 'ol-mapbox-style';
 
 /** @type {any} */
 const worker = self;
@@ -95,7 +95,7 @@ function loadStyles() {
               };
               rendererTransform = transform;
             };
-            styleFunction(
+            stylefunction(
               layer,
               styleJson,
               bucket.layers,
