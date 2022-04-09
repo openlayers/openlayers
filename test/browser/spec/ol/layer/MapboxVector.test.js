@@ -1,6 +1,5 @@
 import MapboxVectorLayer from '../../../../../src/ol/layer/MapboxVector.js';
 import {asString} from '../../../../../src/ol/color.js';
-import {strokeInstruction} from '../../../../../src/ol/render/canvas/Instruction.js';
 import {unByKey} from '../../../../../src/ol/Observable.js';
 
 describe('ol/layer/MapboxVector', () => {
