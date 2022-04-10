@@ -289,7 +289,7 @@ class ScaleLine extends Control {
       }
     } else if (units == Units.NAUTICAL) {
       pointResolution /= 1852;
-      suffix = 'nm';
+      suffix = 'NM';
     } else if (units == Units.METRIC) {
       if (nominalCount < 0.001) {
         suffix = 'μm';
