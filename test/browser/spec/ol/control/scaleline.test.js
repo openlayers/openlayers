@@ -221,7 +221,7 @@ describe('ol.control.ScaleLine', function () {
 
       ctrl.setUnits('nautical');
       map.renderSync();
-      expect(ctrl.element.innerText).to.be('10000 nm');
+      expect(ctrl.element.innerText).to.be('10000 NM');
     });
   });
 
@@ -411,7 +411,7 @@ describe('ol.control.ScaleLine', function () {
       expect(ctrl.element.innerText).to.be('500 ft');
 
       ctrl.setUnits('nautical');
-      expect(ctrl.element.innerText).to.be('0.05 nm');
+      expect(ctrl.element.innerText).to.be('0.05 NM');
 
       ctrl.setUnits('us');
       expect(ctrl.element.innerText).to.be('500 ft');
@@ -440,7 +440,7 @@ describe('ol.control.ScaleLine', function () {
       expect(ctrl.element.innerText).to.be('5 in');
 
       ctrl.setUnits('nautical');
-      expect(ctrl.element.innerText).to.be('0.00005 nm');
+      expect(ctrl.element.innerText).to.be('0.00005 NM');
 
       ctrl.setUnits('us');
       expect(ctrl.element.innerText).to.be('5 in');
