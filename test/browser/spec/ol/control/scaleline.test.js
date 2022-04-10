@@ -221,7 +221,7 @@ describe('ol.control.ScaleLine', function () {
 
       ctrl.setUnits('nautical');
       map.renderSync();
-      expect(ctrl.element.innerText).to.be('10000 nm');
+      expect(ctrl.element.innerText).to.be('10000 NM');
     });
   });
 
