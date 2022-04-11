@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "geotiff": "^2.0.2",
-    "ol-mapbox-style": "^7.1.1",
+    "ol-mapbox-style": "^8.0.5",
     "pbf": "3.2.1",
     "rbush": "^3.0.1"
   },
@@ -98,6 +98,7 @@
     "serve-static": "^1.14.0",
     "shx": "^0.3.2",
     "sinon": "^13.0.0",
+    "source-map-loader": "^3.0.1",
     "threads": "^1.6.5",
     "typescript": "4.6.3",
     "walk": "^2.3.9",
