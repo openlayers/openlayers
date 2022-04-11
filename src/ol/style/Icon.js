@@ -44,6 +44,7 @@ import {getUid} from '../util.js';
  * @property {import("../size.js").Size} [imgSize] Image size in pixels. Only required if `img` is set and `src` is not, and
  * for SVG images in Internet Explorer 11. The provided `imgSize` needs to match the actual size of the image.
  * @property {string} [src] Image source URI.
+ * @property {"declutter"|"obstacle"|"none"|undefined} [declutterMode] Declutter mode
  */
 
 /**
@@ -86,6 +87,7 @@ class Icon extends ImageStyle {
       displacement:
         options.displacement !== undefined ? options.displacement : [0, 0],
       rotateWithView: rotateWithView,
+      declutterMode: options.declutterMode,
     });
 
     /**

@@ -16,6 +16,7 @@ import RegularShape from './RegularShape.js';
  * (positive rotation clockwise, meaningful only when used in conjunction with a two dimensional scale).
  * @property {boolean} [rotateWithView=false] Whether to rotate the shape with the view
  * (meaningful only when used in conjunction with a two dimensional scale).
+ * @property {"declutter"|"obstacle"|"none"|undefined} [declutterMode] Declutter mode
  */
 
 /**
@@ -41,6 +42,7 @@ class CircleStyle extends RegularShape {
         options.rotateWithView !== undefined ? options.rotateWithView : false,
       displacement:
         options.displacement !== undefined ? options.displacement : [0, 0],
+      declutterMode: options.declutterMode,
     });
   }
 
@@ -59,6 +61,7 @@ class CircleStyle extends RegularShape {
       rotation: this.getRotation(),
       rotateWithView: this.getRotateWithView(),
       displacement: this.getDisplacement().slice(),
+      declutterMode: this.getDeclutterMode(),
     });
     style.setOpacity(this.getOpacity());
     return style;

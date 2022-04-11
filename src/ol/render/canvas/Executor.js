@@ -808,17 +808,21 @@ class Executor {
             instruction[12]
           );
           let width = /** @type {number} */ (instruction[13]);
-          const declutterImageWithText =
-            /** @type {import("../canvas.js").DeclutterImageWithText} */ (
+          const declutterMode =
+            /** @type {"declutter"|"obstacle"|"none"|undefined} */ (
               instruction[14]
             );
+          const declutterImageWithText =
+            /** @type {import("../canvas.js").DeclutterImageWithText} */ (
+              instruction[15]
+            );
 
-          if (!image && instruction.length >= 19) {
+          if (!image && instruction.length >= 20) {
             // create label images
-            text = /** @type {string} */ (instruction[18]);
-            textKey = /** @type {string} */ (instruction[19]);
-            strokeKey = /** @type {string} */ (instruction[20]);
-            fillKey = /** @type {string} */ (instruction[21]);
+            text = /** @type {string} */ (instruction[19]);
+            textKey = /** @type {string} */ (instruction[20]);
+            strokeKey = /** @type {string} */ (instruction[21]);
+            fillKey = /** @type {string} */ (instruction[22]);
             const labelWithAnchor = this.drawLabelWithPointPlacement_(
               text,
               textKey,
@@ -827,10 +831,10 @@ class Executor {
             );
             image = labelWithAnchor.label;
             instruction[3] = image;
-            const textOffsetX = /** @type {number} */ (instruction[22]);
+            const textOffsetX = /** @type {number} */ (instruction[23]);
             anchorX = (labelWithAnchor.anchorX - textOffsetX) * this.pixelRatio;
             instruction[4] = anchorX;
-            const textOffsetY = /** @type {number} */ (instruction[23]);
+            const textOffsetY = /** @type {number} */ (instruction[24]);
             anchorY = (labelWithAnchor.anchorY - textOffsetY) * this.pixelRatio;
             instruction[5] = anchorY;
             height = image.height;
@@ -840,15 +844,15 @@ class Executor {
           }
 
           let geometryWidths;
-          if (instruction.length > 24) {
-            geometryWidths = /** @type {number} */ (instruction[24]);
+          if (instruction.length > 25) {
+            geometryWidths = /** @type {number} */ (instruction[25]);
           }
 
           let padding, backgroundFill, backgroundStroke;
-          if (instruction.length > 16) {
-            padding = /** @type {Array<number>} */ (instruction[15]);
-            backgroundFill = /** @type {boolean} */ (instruction[16]);
-            backgroundStroke = /** @type {boolean} */ (instruction[17]);
+          if (instruction.length > 17) {
+            padding = /** @type {Array<number>} */ (instruction[16]);
+            backgroundFill = /** @type {boolean} */ (instruction[17]);
+            backgroundStroke = /** @type {boolean} */ (instruction[18]);
           } else {
             padding = defaultPadding;
             backgroundFill = false;
@@ -902,39 +906,43 @@ class Executor {
                 ? /** @type {Array<*>} */ (lastStrokeInstruction)
                 : null,
             ];
-            let imageArgs;
-            let imageDeclutterBox;
-            if (opt_declutterTree && declutterImageWithText) {
-              const index = dd - d;
-              if (!declutterImageWithText[index]) {
-                // We now have the image for an image+text combination.
-                declutterImageWithText[index] = args;
-                // Don't render anything for now, wait for the text.
-                continue;
-              }
-              imageArgs = declutterImageWithText[index];
-              delete declutterImageWithText[index];
-              imageDeclutterBox = getDeclutterBox(imageArgs);
-              if (opt_declutterTree.collides(imageDeclutterBox)) {
-                continue;
-              }
-            }
-            if (
-              opt_declutterTree &&
-              opt_declutterTree.collides(dimensions.declutterBox)
-            ) {
-              continue;
-            }
-            if (imageArgs) {
-              // We now have image and text for an image+text combination.
-              if (opt_declutterTree) {
-                opt_declutterTree.insert(imageDeclutterBox);
-              }
-              // Render the image before we render the text.
-              this.replayImageOrLabel_.apply(this, imageArgs);
-            }
             if (opt_declutterTree) {
-              opt_declutterTree.insert(dimensions.declutterBox);
+              if (declutterMode === 'none') {
+                // not rendered in declutter group
+                continue;
+              } else if (declutterMode === 'obstacle') {
+                // will always be drawn, thus no collision detection, but insert as obstacle
+                opt_declutterTree.insert(dimensions.declutterBox);
+                continue;
+              } else {
+                let imageArgs;
+                let imageDeclutterBox;
+                if (declutterImageWithText) {
+                  const index = dd - d;
+                  if (!declutterImageWithText[index]) {
+                    // We now have the image for an image+text combination.
+                    declutterImageWithText[index] = args;
+                    // Don't render anything for now, wait for the text.
+                    continue;
+                  }
+                  imageArgs = declutterImageWithText[index];
+                  delete declutterImageWithText[index];
+                  imageDeclutterBox = getDeclutterBox(imageArgs);
+                  if (opt_declutterTree.collides(imageDeclutterBox)) {
+                    continue;
+                  }
+                }
+                if (opt_declutterTree.collides(dimensions.declutterBox)) {
+                  continue;
+                }
+                if (imageArgs) {
+                  // We now have image and text for an image+text combination.
+                  opt_declutterTree.insert(imageDeclutterBox);
+                  // Render the image before we render the text.
+                  this.replayImageOrLabel_.apply(this, imageArgs);
+                }
+                opt_declutterTree.insert(dimensions.declutterBox);
+              }
             }
             this.replayImageOrLabel_.apply(this, args);
           }

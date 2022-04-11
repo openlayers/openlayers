@@ -374,6 +374,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.textRotation_,
         [1, 1],
         NaN,
+        undefined,
         this.declutterImageWithText_,
         padding == defaultPadding
           ? defaultPadding
@@ -406,6 +407,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.textRotation_,
         [scale, scale],
         NaN,
+        undefined,
         this.declutterImageWithText_,
         padding,
         !!textState.backgroundFill,
