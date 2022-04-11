@@ -86,7 +86,7 @@
     "karma-source-map-support": "^1.4.0",
     "karma-webpack": "^5.0.0",
     "loglevelnext": "^5.0.5",
-    "marked": "4.0.12",
+    "marked": "4.0.14",
     "mocha": "9.2.2",
     "pixelmatch": "^5.1.0",
     "pngjs": "^6.0.0",
