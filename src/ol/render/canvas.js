@@ -56,6 +56,7 @@ import {getFontParameters} from '../css.js';
  * @typedef {Object} TextState
  * @property {string} font Font.
  * @property {string} [textAlign] TextAlign.
+ * @property {string} [justify] Justify.
  * @property {string} textBaseline TextBaseline.
  * @property {string} [placement] Placement.
  * @property {number} [maxAngle] MaxAngle.

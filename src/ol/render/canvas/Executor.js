@@ -239,10 +239,13 @@ class Executor {
       textState.scale[1] * pixelRatio,
     ];
     const textIsArray = Array.isArray(text);
-    const align = horizontalTextAlign(
-      textIsArray ? text[0] : text,
-      textState.textAlign || defaultTextAlign
-    );
+    // See: https://github.com/openlayers/openlayers/issues/13481
+    const align = textState.justify
+      ? TEXT_ALIGN[textState.justify]
+      : horizontalTextAlign(
+          Array.isArray(text) ? text[0] : text,
+          textState.textAlign || defaultTextAlign
+        );
     const strokeWidth =
       strokeKey && strokeState.lineWidth ? strokeState.lineWidth : 0;
 

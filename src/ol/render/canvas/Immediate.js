@@ -946,6 +946,7 @@ class CanvasImmediateRenderer extends VectorContext {
     const textAlign = textState.textAlign
       ? textState.textAlign
       : defaultTextAlign;
+    // Ignore justification here, since rich-text and also `'\n'` make less sense for line placement.
     if (!contextTextState) {
       context.font = textState.font;
       context.textAlign = /** @type {CanvasTextAlign} */ (textAlign);
