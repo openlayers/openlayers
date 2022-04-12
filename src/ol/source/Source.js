@@ -54,7 +54,7 @@ class Source extends BaseObject {
 
     /**
      * @protected
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection.js").default|null}
      */
     this.projection = getProjection(options.projection);
 
@@ -141,7 +141,7 @@ class Source extends BaseObject {
 
   /**
    * Get the projection of the source.
-   * @return {import("../proj/Projection.js").default} Projection.
+   * @return {import("../proj/Projection.js").default|null} Projection.
    * @api
    */
   getProjection() {
