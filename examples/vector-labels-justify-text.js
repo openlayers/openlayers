@@ -59,7 +59,7 @@ const features = [
   },
 ];
 
-function createStyleFunction({textAlign, justify}) {
+function createStyle({textAlign, justify}) {
   return new Style({
     image: new CircleStyle({
       radius: 10,
@@ -98,7 +98,7 @@ const vectorPoints = new VectorLayer({
         const feature = new Feature({
           geometry: featureOptions.geometry,
         });
-        feature.setStyle(createStyleFunction(featureOptions));
+        feature.setStyle(createStyle(featureOptions));
         return feature;
       })
     ),

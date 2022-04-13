@@ -211,7 +211,8 @@ class CanvasTextBuilder extends CanvasBuilder {
       }
       this.beginGeometry(geometry, feature);
       const textAlign = textState.textAlign;
-      // Ignore justification here, since rich-text and also `'\n'` make less sense for line placement.
+      // Ignore `textState.justify` here,
+      // since rich-text and also `'\n'` make less sense for line placement.
       let flatOffset = 0;
       let flatEnd;
       for (let o = 0, oo = ends.length; o < oo; ++o) {
