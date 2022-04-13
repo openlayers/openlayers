@@ -45,6 +45,7 @@
     "url": "https://opencollective.com/openlayers"
   },
   "dependencies": {
+    "geographiclib": "^1.52.0",
     "geotiff": "^2.0.2",
     "ol-mapbox-style": "^8.0.5",
     "pbf": "3.2.1",
