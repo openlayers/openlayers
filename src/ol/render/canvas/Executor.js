@@ -239,7 +239,6 @@ class Executor {
       textState.scale[1] * pixelRatio,
     ];
     const textIsArray = Array.isArray(text);
-    // See: https://github.com/openlayers/openlayers/issues/13481
     const align = textState.justify
       ? TEXT_ALIGN[textState.justify]
       : horizontalTextAlign(

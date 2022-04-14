@@ -39,7 +39,6 @@ const DEFAULT_FILL_COLOR = '#333';
  * If not set, text is justified towards the `textAlign` anchor.
  * Otherwise, use options `'left'`, `'center'`, or `'right'` to justify the text within the text box.
  * **Note:** `justify` is ignored for immediate rendering and also for `placement: 'line'`.
- * See: https://github.com/openlayers/openlayers/issues/13481
  * @property {string} [textBaseline='middle'] Text base line. Possible values: 'bottom', 'top', 'middle', 'alphabetic',
  * 'hanging', 'ideographic'.
  * @property {import("./Fill.js").default} [fill] Fill style. If none is provided, we'll use a dark fill-style (#333).

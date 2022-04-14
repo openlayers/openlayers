@@ -946,8 +946,6 @@ class CanvasImmediateRenderer extends VectorContext {
     const textAlign = textState.textAlign
       ? textState.textAlign
       : defaultTextAlign;
-    // Ignore `textState.justify` here,
-    // since rich-text is not supported for the immediate rendering API.
     if (!contextTextState) {
       context.font = textState.font;
       context.textAlign = /** @type {CanvasTextAlign} */ (textAlign);
