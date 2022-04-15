@@ -338,9 +338,10 @@ class TileTexture extends EventTarget {
    * Get data for a pixel.  If the tile is not loaded, null is returned.
    * @param {number} renderCol The column index (in rendered tile space).
    * @param {number} renderRow The row index (in rendered tile space).
+   * @param {boolean} premultiplied Premultiplied.
    * @return {import("../DataTile.js").Data|null} The data.
    */
-  getPixelData(renderCol, renderRow) {
+  getPixelData(renderCol, renderRow, premultiplied) {
     if (!this.loaded) {
       return null;
     }
@@ -376,11 +377,6 @@ class TileTexture extends EventTarget {
       return data.slice(offset, offset + this.bandCount);
     }
 
-    if (!pixelContext) {
-      createPixelContext();
-    }
-    pixelContext.clearRect(0, 0, 1, 1);
-
     const image = this.tile.getImage();
     const sourceWidth = image.width;
     const sourceHeight = image.height;
@@ -394,6 +390,39 @@ class TileTexture extends EventTarget {
     const sourceRow =
       gutter +
       Math.floor(sourceHeightWithoutGutter * (renderRow / renderHeight));
+
+    if (!premultiplied) {
+      const gl = this.helper_.getGL();
+      if (!gl) {
+        return null;
+      }
+      const framebuffer = gl.createFramebuffer();
+      gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+      gl.framebufferTexture2D(
+        gl.FRAMEBUFFER,
+        gl.COLOR_ATTACHMENT0,
+        gl.TEXTURE_2D,
+        this.textures[0],
+        0
+      );
+      const data = new Uint8Array(4);
+      gl.readPixels(
+        sourceCol,
+        sourceRow,
+        1,
+        1,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        data
+      );
+      gl.deleteFramebuffer(framebuffer);
+      return data;
+    }
+
+    if (!pixelContext) {
+      createPixelContext();
+    }
+    pixelContext.clearRect(0, 0, 1, 1);
 
     let data;
     try {

@@ -4,6 +4,7 @@ import TileWMS from '../../../../../src/ol/source/TileWMS.js';
 import View from '../../../../../src/ol/View.js';
 import WebGLHelper from '../../../../../src/ol/webgl/Helper.js';
 import WebGLTileLayer from '../../../../../src/ol/layer/WebGLTile.js';
+import XYZ from '../../../../../src/ol/source/XYZ.js';
 import {createCanvasContext2D} from '../../../../../src/ol/dom.js';
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
 import {getForViewAndSize} from '../../../../../src/ol/extent.js';
@@ -186,6 +187,56 @@ describe('ol/layer/WebGLTile', function () {
         expect(data[4]).to.roughlyEqual(5.55, 1e-5);
         done();
       });
+    });
+  });
+
+  describe('not premultiplied', () => {
+    let map, target, layer, data;
+    beforeEach((done) => {
+      target = document.createElement('div');
+      target.style.width = '256px';
+      target.style.height = '256px';
+      document.body.appendChild(target);
+
+      layer = new WebGLTileLayer({
+        source: new XYZ({
+          url: 'spec/ol/data/tilezen-normal.png',
+        }),
+      });
+
+      map = new Map({
+        target: target,
+        layers: [layer],
+        view: new View({
+          center: [0, 0],
+          zoom: 0,
+        }),
+      });
+
+      map.once('rendercomplete', () => done());
+    });
+
+    afterEach(() => {
+      map.setTarget(null);
+      document.body.removeChild(target);
+    });
+
+    it('gets pixel data', () => {
+      data = layer.getData([128, 128]);
+      expect(data).to.be.a(Uint8ClampedArray);
+      expect(data.length).to.be(4);
+      expect(data[0]).to.be(85);
+      expect(data[1]).to.be(85);
+      expect(data[2]).to.be(255);
+      expect(data[3]).to.be(6);
+
+      data = layer.getData([128, 128], {premultiplied: false});
+      expect(data).to.be.a(Uint8Array);
+      expect(data.length).to.be(4);
+      expect(data[0]).to.be(70);
+      expect(data[1]).to.be(95);
+      expect(data[2]).to.be(237);
+      expect(data[3]).to.be(6);
     });
   });
 

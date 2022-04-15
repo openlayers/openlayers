@@ -107,9 +107,10 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * @param {import("../../pixel.js").Pixel} pixel Pixel.
+   * @param {boolean} premultiplied Premultiplied.
    * @return {Uint8ClampedArray} Data at the pixel location.
    */
-  getData(pixel) {
+  getData(pixel, premultiplied) {
     const frameState = this.frameState;
     if (!frameState) {
       return null;

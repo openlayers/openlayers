@@ -140,7 +140,7 @@ class BaseTileLayer extends Layer {
    * Get data for a pixel location.  The return type depends on the source data.  For image tiles,
    * a four element RGBA array will be returned.  For data tiles, the array length will match the
    * number of bands in the dataset.  For requests outside the layer extent, `null` will be returned.
-   * Data for a image tiles can only be retrieved if the source's `crossOrigin` property is set.
+   * Data for image tiles can only be retrieved if the source's `crossOrigin` property is set.
    *
    * ```js
    * // display layer data on every pointer move
@@ -149,11 +149,12 @@ class BaseTileLayer extends Layer {
    * });
    * ```
    * @param {import("../pixel").Pixel} pixel Pixel.
+   * @param {import("./Layer.js").GetDataOptions} [options] Options.
    * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView|null} Pixel data.
    * @api
    */
-  getData(pixel) {
-    return super.getData(pixel);
+  getData(pixel, options) {
+    return super.getData(pixel, options);
   }
 }
 
