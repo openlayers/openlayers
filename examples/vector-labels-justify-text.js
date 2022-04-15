@@ -67,26 +67,19 @@ function createStyle({textAlign, justify}) {
       stroke: new Stroke({color: 'red', width: 1}),
     }),
     text: new Text({
+      font: '16px sans-serif',
       textAlign,
       justify,
-      text: [
-        'long text to emphasize justify',
-        '',
-        '\n',
-        '',
-        `textAlign: ${textAlign}`,
-        '',
-        '\n',
-        '',
-        `justify: ${justify}`,
-        '',
-      ],
+      text:
+        `Justify text inside box\ntextAlign: ${textAlign}` +
+        (justify ? `\njustify: ${justify}` : ''),
       fill: new Fill({
         color: [255, 255, 255, 1],
       }),
       backgroundFill: new Fill({
-        color: [168, 50, 153, 0.8],
+        color: [168, 50, 153, 0.6],
       }),
+      padding: [2, 2, 2, 2],
     }),
   });
 }
