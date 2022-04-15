@@ -211,6 +211,7 @@ class CanvasTextBuilder extends CanvasBuilder {
       }
       this.beginGeometry(geometry, feature);
       const textAlign = textState.textAlign;
+      // No `justify` support for line placement.
       let flatOffset = 0;
       let flatEnd;
       for (let o = 0, oo = ends.length; o < oo; ++o) {
@@ -449,6 +450,7 @@ class CanvasTextBuilder extends CanvasBuilder {
       this.textStates[textKey] = {
         font: textState.font,
         textAlign: textState.textAlign || defaultTextAlign,
+        justify: textState.justify,
         textBaseline: textState.textBaseline || defaultTextBaseline,
         scale: textState.scale,
       };
@@ -581,6 +583,7 @@ class CanvasTextBuilder extends CanvasBuilder {
       textState.maxAngle = textStyle.getMaxAngle();
       textState.placement = textStyle.getPlacement();
       textState.textAlign = textStyle.getTextAlign();
+      textState.justify = textStyle.getJustify();
       textState.textBaseline =
         textStyle.getTextBaseline() || defaultTextBaseline;
       textState.backgroundFill = textStyle.getBackgroundFill();
@@ -617,6 +620,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         textState.font +
         textState.scale +
         (textState.textAlign || '?') +
+        (textState.justify || '?') +
         (textState.textBaseline || '?');
       this.fillKey_ = fillState
         ? typeof fillState.fillStyle == 'string'

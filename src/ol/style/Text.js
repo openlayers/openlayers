@@ -35,6 +35,10 @@ const DEFAULT_FILL_COLOR = '#333';
  * @property {string} [textAlign] Text alignment. Possible values: 'left', 'right', 'center', 'end' or 'start'.
  * Default is 'center' for `placement: 'point'`. For `placement: 'line'`, the default is to let the renderer choose a
  * placement where `maxAngle` is not exceeded.
+ * @property {string} [justify] Text justification within the text box.
+ * If not set, text is justified towards the `textAlign` anchor.
+ * Otherwise, use options `'left'`, `'center'`, or `'right'` to justify the text within the text box.
+ * **Note:** `justify` is ignored for immediate rendering and also for `placement: 'line'`.
  * @property {string} [textBaseline='middle'] Text base line. Possible values: 'bottom', 'top', 'middle', 'alphabetic',
  * 'hanging', 'ideographic'.
  * @property {import("./Fill.js").default} [fill] Fill style. If none is provided, we'll use a dark fill-style (#333).
@@ -100,6 +104,12 @@ class Text {
      * @type {string|undefined}
      */
     this.textAlign_ = options.textAlign;
+
+    /**
+     * @private
+     * @type {string|undefined}
+     */
+    this.justify_ = options.justify;
 
     /**
      * @private
@@ -194,6 +204,7 @@ class Text {
       scale: Array.isArray(scale) ? scale.slice() : scale,
       text: this.getText(),
       textAlign: this.getTextAlign(),
+      justify: this.getJustify(),
       textBaseline: this.getTextBaseline(),
       fill: this.getFill() ? this.getFill().clone() : undefined,
       stroke: this.getStroke() ? this.getStroke().clone() : undefined,
@@ -332,6 +343,15 @@ class Text {
    */
   getTextAlign() {
     return this.textAlign_;
+  }
+
+  /**
+   * Get the justification.
+   * @return {string|undefined} Justification.
+   * @api
+   */
+  getJustify() {
+    return this.justify_;
   }
 
   /**
@@ -499,6 +519,16 @@ class Text {
    */
   setTextAlign(textAlign) {
     this.textAlign_ = textAlign;
+  }
+
+  /**
+   * Set the justification.
+   *
+   * @param {string|undefined} justify Justification.
+   * @api
+   */
+  setJustify(justify) {
+    this.justify_ = justify;
   }
 
   /**
