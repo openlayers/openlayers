@@ -347,25 +347,25 @@ RenderFeature.prototype.getFlatCoordinates =
 export function toGeometry(renderFeature) {
   const geometryType = renderFeature.getType();
   switch (geometryType) {
-    case GeometryType.POINT:
+    case 'Point':
       return new Point(renderFeature.getFlatCoordinates());
-    case GeometryType.MULTI_POINT:
+    case 'MultiPoint':
       return new MultiPoint(
         renderFeature.getFlatCoordinates(),
         GeometryLayout.XY
       );
-    case GeometryType.LINE_STRING:
+    case 'LineString':
       return new LineString(
         renderFeature.getFlatCoordinates(),
         GeometryLayout.XY
       );
-    case GeometryType.MULTI_LINE_STRING:
+    case 'MultiLineString':
       return new MultiLineString(
         renderFeature.getFlatCoordinates(),
         GeometryLayout.XY,
         /** @type {Array<number>} */ (renderFeature.getEnds())
       );
-    case GeometryType.POLYGON:
+    case 'Polygon':
       const flatCoordinates = renderFeature.getFlatCoordinates();
       const ends = /** @type {Array<number>} */ (renderFeature.getEnds());
       const endss = inflateEnds(flatCoordinates, ends);

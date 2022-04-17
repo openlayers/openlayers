@@ -114,8 +114,7 @@ class CompositeMapRenderer extends MapRenderer {
       const sourceState = layer.getSourceState();
       if (
         !inView(layerState, viewState) ||
-        (layerState.sourceState != 'ready' &&
-          layerState.sourceState != 'undefined')
+        (sourceState != 'ready' && sourceState != 'undefined')
       ) {
         layer.unrender();
         continue;

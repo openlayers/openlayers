@@ -469,9 +469,7 @@ class Snap extends PointerInteraction {
     if (this.vertex_) {
       for (let i = 0; i < segmentsLength; ++i) {
         const segmentData = segments[i];
-        if (
-          segmentData.feature.getGeometry().getType() !== GeometryType.CIRCLE
-        ) {
+        if (segmentData.feature.getGeometry().getType() !== 'Circle') {
           segmentData.segment.forEach((vertex) => {
             const tempVertexCoord = fromUserCoordinate(vertex, projection);
             const delta = squaredDistance(projectedCoordinate, tempVertexCoord);
@@ -492,9 +490,7 @@ class Snap extends PointerInteraction {
       for (let i = 0; i < segmentsLength; ++i) {
         let vertex = null;
         const segmentData = segments[i];
-        if (
-          segmentData.feature.getGeometry().getType() === GeometryType.CIRCLE
-        ) {
+        if (segmentData.feature.getGeometry().getType() === 'Circle') {
           let circleGeometry = segmentData.feature.getGeometry();
           const userProjection = getUserProjection();
           if (userProjection) {

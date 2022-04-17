@@ -1968,14 +1968,14 @@ describe('ol.interaction.Draw', function () {
     }
 
     function drawPoint(geometryLayout) {
-      createDrawInteraction(GeometryType.POINT, geometryLayout);
+      createDrawInteraction('Point', geometryLayout);
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
     }
 
     function drawLineString(geometryLayout) {
-      createDrawInteraction(GeometryType.LINE_STRING, geometryLayout);
+      createDrawInteraction('LineString', geometryLayout);
       // first point
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
@@ -1992,7 +1992,7 @@ describe('ol.interaction.Draw', function () {
     }
 
     function drawPolygon(geometryLayout) {
-      createDrawInteraction(GeometryType.POLYGON, geometryLayout);
+      createDrawInteraction('Polygon', geometryLayout);
       // first point
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
@@ -2014,7 +2014,7 @@ describe('ol.interaction.Draw', function () {
     }
 
     function drawCircle(geometryLayout) {
-      createDrawInteraction(GeometryType.CIRCLE, geometryLayout);
+      createDrawInteraction('Circle', geometryLayout);
       // first point
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
