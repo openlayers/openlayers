@@ -19,9 +19,10 @@ import {
   create as createTransform,
   makeInverse as makeInverseTransform,
   multiply as multiplyTransform,
+  translate as translateTransform,
 } from '../../transform.js';
 import {assert} from '../../asserts.js';
-import {buffer, createEmpty, equals} from '../../extent.js';
+import {buffer, createEmpty, equals, getWidth} from '../../extent.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {getUid} from '../../util.js';
 import {listen, unlistenByKey} from '../../events.js';
@@ -461,8 +462,36 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const gl = this.helper.getGL();
     this.preRender(gl, frameState);
 
+    const projection = frameState.viewState.projection;
+    const layer = this.getLayer();
+    const vectorSource = layer.getSource();
+    // FIXME fix hit detection isn't reliable when rendering multiple worlds
+    const multiWorld = vectorSource.getWrapX() && projection.canWrapX();
+    const projectionExtent = projection.getExtent();
+
+    const extent = frameState.extent;
+    const worldWidth = multiWorld ? getWidth(projectionExtent) : null;
+    const endWorld = multiWorld
+      ? Math.ceil((extent[2] - projectionExtent[2]) / worldWidth) + 1
+      : 1;
+
+    const startWorld = multiWorld
+      ? Math.floor((extent[0] - projectionExtent[0]) / worldWidth)
+      : 0;
+
+    let world = startWorld;
     const renderCount = this.indicesBuffer_.getSize();
-    this.helper.drawElements(0, renderCount);
+
+    do {
+      // apply the current projection transform with the invert of the one used to fill buffers
+      this.helper.makeProjectionTransform(frameState, this.currentTransform_);
+      translateTransform(this.currentTransform_, world * worldWidth, 0);
+      multiplyTransform(this.currentTransform_, this.invertRenderTransform_);
+      this.helper.applyUniforms(frameState);
+
+      this.helper.drawElements(0, renderCount);
+    } while (++world < endWorld);
+
     this.helper.finalizeDraw(
       frameState,
       this.dispatchPreComposeEvent,
@@ -471,7 +500,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const canvas = this.helper.getCanvas();
 
     if (this.hitDetectionEnabled_) {
-      this.renderHitDetection(frameState);
+      this.renderHitDetection(frameState, startWorld, endWorld, worldWidth);
       this.hitRenderTarget_.clearCachedData();
     }
 
@@ -512,17 +541,12 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       this.previousExtent_ = frameState.extent.slice();
     }
 
-    // apply the current projection transform with the invert of the one used to fill buffers
-    this.helper.makeProjectionTransform(frameState, this.currentTransform_);
-    multiplyTransform(this.currentTransform_, this.invertRenderTransform_);
-
     this.helper.useProgram(this.program_);
     this.helper.prepareDraw(frameState);
 
     // write new data
     this.helper.bindBuffer(this.verticesBuffer_);
     this.helper.bindBuffer(this.indicesBuffer_);
-
     this.helper.enableAttributes(this.attributes);
 
     return true;
@@ -686,12 +710,17 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
   /**
    * Render the hit detection data to the corresponding render target
    * @param {import("../../PluggableMap.js").FrameState} frameState current frame state
+   * @param {number} startWorld the world to render in the first iteration
+   * @param {number} endWorld the last world to render
+   * @param {number} worldWidth the width of the worlds being rendered
    */
-  renderHitDetection(frameState) {
+  renderHitDetection(frameState, startWorld, endWorld, worldWidth) {
     // skip render entirely if vertex buffers not ready/generated yet
     if (!this.hitVerticesBuffer_.getSize()) {
       return;
     }
+
+    let world = startWorld;
 
     this.hitRenderTarget_.setSize([
       Math.floor(frameState.size[0] / 2),
@@ -707,11 +736,17 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
     this.helper.bindBuffer(this.hitVerticesBuffer_);
     this.helper.bindBuffer(this.indicesBuffer_);
-
     this.helper.enableAttributes(this.hitDetectionAttributes);
 
-    const renderCount = this.indicesBuffer_.getSize();
-    this.helper.drawElements(0, renderCount);
+    do {
+      this.helper.makeProjectionTransform(frameState, this.currentTransform_);
+      translateTransform(this.currentTransform_, world * worldWidth, 0);
+      multiplyTransform(this.currentTransform_, this.invertRenderTransform_);
+      this.helper.applyUniforms(frameState);
+
+      const renderCount = this.indicesBuffer_.getSize();
+      this.helper.drawElements(0, renderCount);
+    } while (++world < endWorld);
   }
 
   /**
