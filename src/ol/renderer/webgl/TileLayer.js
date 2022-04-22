@@ -39,7 +39,8 @@ export const Uniforms = {
   DEPTH: 'u_depth',
   TEXTURE_PIXEL_WIDTH: 'u_texturePixelWidth',
   TEXTURE_PIXEL_HEIGHT: 'u_texturePixelHeight',
-  TEXTURE_RESOLUTION: 'u_textureResolution', // map units per texture pixel
+  TEXTURE_RESOLUTION_X: 'u_textureResolutionX', // map x units per texture pixel
+  TEXTURE_RESOLUTION_Y: 'u_textureResolutionY', // map y units per texture pixel
   TEXTURE_ORIGIN_X: 'u_textureOriginX', // map x coordinate of left edge of texture
   TEXTURE_ORIGIN_Y: 'u_textureOriginY', // map y coordinate of top edge of texture
   RENDER_EXTENT: 'u_renderExtent', // intersection of layer, source, and view extent
@@ -518,20 +519,24 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
 
     for (let j = 0, jj = zs.length; j < jj; ++j) {
       const tileZ = zs[j];
-      const tileResolution = tileGrid.getResolution(tileZ);
+      const pixelAspectRatio = tileGrid.getAspectRatio(tileZ);
+      const tileResolutionX = tileGrid.getResolution(tileZ);
+      const tileResolutionY = tileResolutionX / pixelAspectRatio;
       const tileSize = toSize(tileGrid.getTileSize(tileZ), this.tempSize_);
+
       const tileOrigin = tileGrid.getOrigin(tileZ);
 
       const tileWidthWithGutter = tileSize[0] + 2 * gutter;
       const tileHeightWithGutter = tileSize[1] + 2 * gutter;
-      const aspectRatio = tileWidthWithGutter / tileHeightWithGutter;
+      const tileAspectRatio =
+        (tileWidthWithGutter * pixelAspectRatio) / tileHeightWithGutter;
 
       const centerI =
-        (centerX - tileOrigin[0]) / (tileSize[0] * tileResolution);
+        (centerX - tileOrigin[0]) / (tileSize[0] * tileResolutionX);
       const centerJ =
-        (tileOrigin[1] - centerY) / (tileSize[1] * tileResolution);
+        (tileOrigin[1] - centerY) / (tileSize[1] * tileResolutionY);
 
-      const tileScale = viewState.resolution / tileResolution;
+      const tileScale = viewState.resolution / tileResolutionX;
 
       const depth = depthForZ(tileZ);
       const tileTextures = tileTexturesByZ[tileZ];
@@ -554,7 +559,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
           -2 / ((frameState.size[1] * tileScale) / tileWidthWithGutter)
         );
         rotateTransform(this.tileTransform_, viewState.rotation);
-        scaleTransform(this.tileTransform_, 1, 1 / aspectRatio);
+        scaleTransform(this.tileTransform_, 1, 1 / tileAspectRatio);
         translateTransform(
           this.tileTransform_,
           (tileSize[0] * (tileCenterI - centerI) - gutter) /
@@ -619,20 +624,24 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
           tileHeightWithGutter
         );
         this.helper.setUniformFloatValue(
-          Uniforms.TEXTURE_RESOLUTION,
-          tileResolution
+          Uniforms.TEXTURE_RESOLUTION_X,
+          tileResolutionX
+        );
+        this.helper.setUniformFloatValue(
+          Uniforms.TEXTURE_RESOLUTION_Y,
+          tileResolutionY
         );
         this.helper.setUniformFloatValue(
           Uniforms.TEXTURE_ORIGIN_X,
           tileOrigin[0] +
-            tileCenterI * tileSize[0] * tileResolution -
-            gutter * tileResolution
+            tileCenterI * tileSize[0] * tileResolutionX -
+            gutter * tileResolutionX
         );
         this.helper.setUniformFloatValue(
           Uniforms.TEXTURE_ORIGIN_Y,
           tileOrigin[1] -
-            tileCenterJ * tileSize[1] * tileResolution +
-            gutter * tileResolution
+            tileCenterJ * tileSize[1] * tileResolutionY +
+            gutter * tileResolutionY
         );
         let gutterExtent = extent;
         if (gutter > 0) {

@@ -379,6 +379,44 @@ describe('ol/tilegrid/TileGrid.js', function () {
     });
   });
 
+  describe('create with aspect ratios', () => {
+    it('allows working with non-square pixels', () => {
+      const extent = [0, 0, 100, 100];
+      const resolutions = [1, 0.5, 0.25, 0.125];
+      const aspectRatio = 1 / 2;
+      const aspectRatios = resolutions.map(() => aspectRatio);
+      const grid = new TileGrid({
+        extent,
+        resolutions,
+        aspectRatios,
+        tileSize: [100, 50],
+      });
+
+      expect(grid.getAspectRatio(0)).to.be(aspectRatio);
+
+      const extent000 = grid.getTileCoordExtent([0, 0, 0]);
+      expect(extent000).to.eql(extent);
+
+      const extent100 = grid.getTileCoordExtent([1, 0, 0]);
+      expect(extent100).to.eql([0, 50, 50, 100]);
+
+      const extent111 = grid.getTileCoordExtent([1, 1, 1]);
+      expect(extent111).to.eql([50, 0, 100, 50]);
+
+      expect(
+        grid.getTileCoordForCoordAndResolution([10, 90], resolutions[1])
+      ).to.eql([1, 0, 0]);
+
+      expect(
+        grid.getTileCoordForCoordAndResolution([10, 10], resolutions[1])
+      ).to.eql([1, 0, 1]);
+
+      expect(
+        grid.getTileCoordForCoordAndResolution([90, 10], resolutions[1])
+      ).to.eql([1, 1, 1]);
+    });
+  });
+
   describe('createForExtent', function () {
     it('allows creation of tile grid from extent', function () {
       const extent = createOrUpdate(-100, -100, 100, 100);

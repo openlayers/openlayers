@@ -40,7 +40,11 @@ const DECIMALS = 5;
  * `origin` must be provided.
  * @property {!Array<number>} resolutions Resolutions. The array index of each resolution needs
  * to match the zoom level. This means that even if a `minZoom` is configured, the resolutions
- * array will have a length of `maxZoom + 1`.
+ * array will have a length of `maxZoom + 1`.  If the grid is configured with an aspect ratios array,
+ * the resolutions array should correspond with the x-resolution.
+ * @property {Array<number>} [aspectRatios] Aspect ratios (x-resolution / y-resolution). The array
+ * index of each resolution needs to match the zoom level. This means that even if a `minZoom` is configured, the resolutions
+ * array will have a length of `maxZoom + 1`.  If not provided, the aspect ratio is assumed to be 1.
  * @property {Array<import("../size.js").Size>} [sizes] Number of tile rows and columns
  * of the grid for each zoom level. If specified the values
  * define each zoom level's extent together with the `origin` or `origins`.
@@ -87,6 +91,17 @@ class TileGrid {
       ),
       17
     ); // `resolutions` must be sorted in descending order
+
+    let aspectRatios = options.aspectRatios;
+    if (!aspectRatios) {
+      aspectRatios = this.resolutions_.map(() => 1);
+    }
+
+    /**
+     * @private
+     * @type {!Array<number>}
+     */
+    this.aspectRatios_ = aspectRatios;
 
     // check if we've got a consistent zoom factor and origin
     let zoomFactor;
@@ -334,6 +349,15 @@ class TileGrid {
   }
 
   /**
+   * Get the resolution aspect ratio (x-resolution / y-resolution) for the given zoom level.
+   * @param {number} z Integer zoom level.
+   * @return {number} The resolution aspect ratio.
+   */
+  getAspectRatio(z) {
+    return this.aspectRatios_[z];
+  }
+
+  /**
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {import("../TileRange.js").default} [opt_tileRange] Temporary import("../TileRange.js").default object.
    * @param {import("../extent.js").Extent} [opt_extent] Temporary import("../extent.js").Extent object.
@@ -417,11 +441,15 @@ class TileGrid {
   getTileRangeExtent(z, tileRange, opt_extent) {
     const origin = this.getOrigin(z);
     const resolution = this.getResolution(z);
+    const aspectRatio = this.getAspectRatio(z);
     const tileSize = toSize(this.getTileSize(z), this.tmpSize_);
     const minX = origin[0] + tileRange.minX * tileSize[0] * resolution;
     const maxX = origin[0] + (tileRange.maxX + 1) * tileSize[0] * resolution;
-    const minY = origin[1] + tileRange.minY * tileSize[1] * resolution;
-    const maxY = origin[1] + (tileRange.maxY + 1) * tileSize[1] * resolution;
+    const minY =
+      origin[1] + (tileRange.minY * tileSize[1] * resolution) / aspectRatio;
+    const maxY =
+      origin[1] +
+      ((tileRange.maxY + 1) * tileSize[1] * resolution) / aspectRatio;
     return createOrUpdate(minX, minY, maxX, maxY, opt_extent);
   }
 
@@ -452,12 +480,15 @@ class TileGrid {
    * @return {import("../coordinate.js").Coordinate} Tile center.
    */
   getTileCoordCenter(tileCoord) {
-    const origin = this.getOrigin(tileCoord[0]);
-    const resolution = this.getResolution(tileCoord[0]);
-    const tileSize = toSize(this.getTileSize(tileCoord[0]), this.tmpSize_);
+    const z = tileCoord[0];
+    const origin = this.getOrigin(z);
+    const resolution = this.getResolution(z);
+    const aspectRatio = this.getAspectRatio(z);
+    const tileSize = toSize(this.getTileSize(z), this.tmpSize_);
     return [
       origin[0] + (tileCoord[1] + 0.5) * tileSize[0] * resolution,
-      origin[1] - (tileCoord[2] + 0.5) * tileSize[1] * resolution,
+      origin[1] -
+        ((tileCoord[2] + 0.5) * tileSize[1] * resolution) / aspectRatio,
     ];
   }
 
@@ -470,13 +501,16 @@ class TileGrid {
    * @api
    */
   getTileCoordExtent(tileCoord, opt_extent) {
-    const origin = this.getOrigin(tileCoord[0]);
-    const resolution = this.getResolution(tileCoord[0]);
-    const tileSize = toSize(this.getTileSize(tileCoord[0]), this.tmpSize_);
+    const z = tileCoord[0];
+    const origin = this.getOrigin(z);
+    const resolution = this.getResolution(z);
+    const aspectRatio = this.getAspectRatio(z);
+    const tileSize = toSize(this.getTileSize(z), this.tmpSize_);
     const minX = origin[0] + tileCoord[1] * tileSize[0] * resolution;
-    const minY = origin[1] - (tileCoord[2] + 1) * tileSize[1] * resolution;
+    const minY =
+      origin[1] - ((tileCoord[2] + 1) * tileSize[1] * resolution) / aspectRatio;
     const maxX = minX + tileSize[0] * resolution;
-    const maxY = minY + tileSize[1] * resolution;
+    const maxY = minY + (tileSize[1] * resolution) / aspectRatio;
     return createOrUpdate(minX, minY, maxX, maxY, opt_extent);
   }
 
@@ -525,9 +559,11 @@ class TileGrid {
     const scale = resolution / this.getResolution(z);
     const origin = this.getOrigin(z);
     const tileSize = toSize(this.getTileSize(z), this.tmpSize_);
+    const aspectRatio = this.getAspectRatio(z);
 
     let tileCoordX = (scale * (x - origin[0])) / resolution / tileSize[0];
-    let tileCoordY = (scale * (origin[1] - y)) / resolution / tileSize[1];
+    let tileCoordY =
+      (scale * (origin[1] - y)) / (resolution / aspectRatio) / tileSize[1];
 
     if (reverseIntersectionPolicy) {
       tileCoordX = ceil(tileCoordX, DECIMALS) - 1;
@@ -558,10 +594,11 @@ class TileGrid {
   getTileCoordForXYAndZ_(x, y, z, reverseIntersectionPolicy, opt_tileCoord) {
     const origin = this.getOrigin(z);
     const resolution = this.getResolution(z);
+    const aspectRatio = this.getAspectRatio(z);
     const tileSize = toSize(this.getTileSize(z), this.tmpSize_);
 
     let tileCoordX = (x - origin[0]) / resolution / tileSize[0];
-    let tileCoordY = (origin[1] - y) / resolution / tileSize[1];
+    let tileCoordY = (origin[1] - y) / (resolution / aspectRatio) / tileSize[1];
 
     if (reverseIntersectionPolicy) {
       tileCoordX = ceil(tileCoordX, DECIMALS) - 1;

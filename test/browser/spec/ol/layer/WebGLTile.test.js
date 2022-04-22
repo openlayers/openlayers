@@ -275,21 +275,22 @@ describe('ol/layer/WebGLTile', function () {
       attribute vec2 a_textureCoord;
 
       uniform mat4 u_tileTransform;
-      uniform float u_texturePixelWidth; 
-      uniform float u_texturePixelHeight; 
-      uniform float u_textureResolution; 
-      uniform float u_textureOriginX; 
-      uniform float u_textureOriginY; 
+      uniform float u_texturePixelWidth;
+      uniform float u_texturePixelHeight;
+      uniform float u_textureResolutionX;
+      uniform float u_textureResolutionY;
+      uniform float u_textureOriginX;
+      uniform float u_textureOriginY;
       uniform float u_depth;
 
       varying vec2 v_textureCoord;
-      varying vec2 v_mapCoord; 
+      varying vec2 v_mapCoord;
 
       void main() {
         v_textureCoord = a_textureCoord;
         v_mapCoord = vec2(
-          u_textureOriginX + u_textureResolution * u_texturePixelWidth * v_textureCoord[0],
-          u_textureOriginY - u_textureResolution * u_texturePixelHeight * v_textureCoord[1]
+          u_textureOriginX + u_textureResolutionX * u_texturePixelWidth * v_textureCoord[0],
+          u_textureOriginY - u_textureResolutionY * u_texturePixelHeight * v_textureCoord[1]
         );
         gl_Position = u_tileTransform * vec4(a_textureCoord, u_depth, 1.0);
       }

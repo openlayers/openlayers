@@ -98,7 +98,8 @@ function parseStyle(style, bandCount) {
     uniform mat4 ${Uniforms.TILE_TRANSFORM};
     uniform float ${Uniforms.TEXTURE_PIXEL_WIDTH};
     uniform float ${Uniforms.TEXTURE_PIXEL_HEIGHT};
-    uniform float ${Uniforms.TEXTURE_RESOLUTION};
+    uniform float ${Uniforms.TEXTURE_RESOLUTION_X};
+    uniform float ${Uniforms.TEXTURE_RESOLUTION_Y};
     uniform float ${Uniforms.TEXTURE_ORIGIN_X};
     uniform float ${Uniforms.TEXTURE_ORIGIN_Y};
     uniform float ${Uniforms.DEPTH};
@@ -109,8 +110,8 @@ function parseStyle(style, bandCount) {
     void main() {
       v_textureCoord = ${Attributes.TEXTURE_COORD};
       v_mapCoord = vec2(
-        ${Uniforms.TEXTURE_ORIGIN_X} + ${Uniforms.TEXTURE_RESOLUTION} * ${Uniforms.TEXTURE_PIXEL_WIDTH} * v_textureCoord[0],
-        ${Uniforms.TEXTURE_ORIGIN_Y} - ${Uniforms.TEXTURE_RESOLUTION} * ${Uniforms.TEXTURE_PIXEL_HEIGHT} * v_textureCoord[1]
+        ${Uniforms.TEXTURE_ORIGIN_X} + ${Uniforms.TEXTURE_RESOLUTION_X} * ${Uniforms.TEXTURE_PIXEL_WIDTH} * v_textureCoord[0],
+        ${Uniforms.TEXTURE_ORIGIN_Y} - ${Uniforms.TEXTURE_RESOLUTION_Y} * ${Uniforms.TEXTURE_PIXEL_HEIGHT} * v_textureCoord[1]
       );
       gl_Position = ${Uniforms.TILE_TRANSFORM} * vec4(${Attributes.TEXTURE_COORD}, ${Uniforms.DEPTH}, 1.0);
     }

@@ -108,19 +108,21 @@ function getOrigin(image) {
 }
 
 /**
- * Get the resolution of an image.  If the image does not have an affine transform,
+ * Get the x and y resolutions of an image.  If the image does not have an affine transform,
  * the width of the image is compared with the reference image.
  * @param {GeoTIFFImage} image The image.
  * @param {GeoTIFFImage} referenceImage The reference image.
- * @return {number} The image resolution.
+ * @return {Array<number>} The image resolutions.
  */
-function getResolution(image, referenceImage) {
+function getResolutions(image, referenceImage) {
   try {
-    return image.getResolution(referenceImage)[0];
+    return image.getResolution(referenceImage);
   } catch (_) {
-    return (
-      referenceImage.fileDirectory.ImageWidth / image.fileDirectory.ImageWidth
-    );
+    return [
+      referenceImage.fileDirectory.ImageWidth / image.fileDirectory.ImageWidth,
+      referenceImage.fileDirectory.ImageHeight /
+        image.fileDirectory.ImageHeight,
+    ];
   }
 }
 
@@ -451,6 +453,7 @@ class GeoTIFFSource extends DataTile {
     let origin;
     let tileSizes;
     let resolutions;
+    let aspectRatios;
     const samplesPerPixel = new Array(sources.length);
     const nodataValues = new Array(sources.length);
     const metadata = new Array(sources.length);
@@ -465,6 +468,7 @@ class GeoTIFFSource extends DataTile {
       let sourceOrigin;
       const sourceTileSizes = new Array(imageCount);
       const sourceResolutions = new Array(imageCount);
+      const sourceAspectRatios = new Array(imageCount);
 
       nodataValues[sourceIndex] = new Array(imageCount);
       metadata[sourceIndex] = new Array(imageCount);
@@ -490,7 +494,9 @@ class GeoTIFFSource extends DataTile {
           sourceOrigin = getOrigin(image);
         }
 
-        sourceResolutions[level] = getResolution(image, images[0]);
+        const resolutions = getResolutions(image, images[0]);
+        sourceResolutions[level] = resolutions[0];
+        sourceAspectRatios[level] = resolutions[0] / Math.abs(resolutions[1]);
         sourceTileSizes[level] = [image.getTileWidth(), image.getTileHeight()];
       }
 
@@ -527,6 +533,18 @@ class GeoTIFFSource extends DataTile {
           scaledSourceResolutions,
           0.02,
           message,
+          this.viewRejector
+        );
+      }
+
+      if (!aspectRatios) {
+        aspectRatios = sourceAspectRatios;
+      } else {
+        assertEqual(
+          aspectRatios.slice(minZoom, aspectRatios.length),
+          sourceAspectRatios,
+          0,
+          `Pixel aspect ratio mismatch for source ${sourceIndex}`,
           this.viewRejector
         );
       }
@@ -612,6 +630,7 @@ class GeoTIFFSource extends DataTile {
       minZoom: minZoom,
       origin: origin,
       resolutions: resolutions,
+      aspectRatios: aspectRatios,
       tileSizes: tileSizes,
     });
 
