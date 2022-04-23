@@ -29,14 +29,14 @@ export default {
 
   /**
    * Triggered when loading of additional map data (tiles, images, features) starts.
-   * @event module:ol/render/Event~RenderEvent#loadstart
+   * @event module:ol/MapEvent~MapEvent#loadstart
    * @api
    */
   LOADSTART: 'loadstart',
 
   /**
    * Triggered when loading of additional map data has completed.
-   * @event module:ol/render/Event~RenderEvent#loadend
+   * @event module:ol/MapEvent~MapEvent#loadend
    * @api
    */
   LOADEND: 'loadend',
