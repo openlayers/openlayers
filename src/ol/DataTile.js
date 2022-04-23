@@ -75,21 +75,26 @@ class DataTile extends Tile {
    * @api
    */
   load() {
-    this.state = TileState.LOADING;
-    this.changed();
+    if (this.state == TileState.ERROR) {
+      this.state = TileState.IDLE;
+    }
+    if (this.state == TileState.IDLE) {
+      this.state = TileState.LOADING;
+      this.changed();
 
-    const self = this;
-    this.loader_()
-      .then(function (data) {
-        self.data_ = data;
-        self.state = TileState.LOADED;
-        self.changed();
-      })
-      .catch(function (error) {
-        self.error_ = error;
-        self.state = TileState.ERROR;
-        self.changed();
-      });
+      const self = this;
+      this.loader_()
+        .then(function (data) {
+          self.data_ = data;
+          self.state = TileState.LOADED;
+          self.changed();
+        })
+        .catch(function (error) {
+          self.error_ = error;
+          self.state = TileState.ERROR;
+          self.changed();
+        });
+    }
   }
 }
 
