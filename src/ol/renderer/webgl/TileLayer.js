@@ -12,8 +12,11 @@ import {AttributeType} from '../../webgl/Helper.js';
 import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
 import {
   apply as applyTransform,
-  compose as composeTransform,
   create as createTransform,
+  reset as resetTransform,
+  rotate as rotateTransform,
+  scale as scaleTransform,
+  translate as translateTransform,
 } from '../../transform.js';
 import {containsCoordinate, getIntersection, isEmpty} from '../../extent.js';
 import {
@@ -519,6 +522,10 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
       const tileSize = toSize(tileGrid.getTileSize(tileZ), this.tempSize_);
       const tileOrigin = tileGrid.getOrigin(tileZ);
 
+      const tileWidthWithGutter = tileSize[0] + 2 * gutter;
+      const tileHeightWithGutter = tileSize[1] + 2 * gutter;
+      const aspectRatio = tileWidthWithGutter / tileHeightWithGutter;
+
       const centerI =
         (centerX - tileOrigin[0]) / (tileSize[0] * tileResolution);
       const centerJ =
@@ -540,17 +547,20 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
         const tileCenterI = tileCoord[1];
         const tileCenterJ = tileCoord[2];
 
-        composeTransform(
+        resetTransform(this.tileTransform_);
+        scaleTransform(
           this.tileTransform_,
-          0,
-          0,
-          2 / ((frameState.size[0] * tileScale) / (tileSize[0] + 2 * gutter)),
-          -2 / ((frameState.size[1] * tileScale) / (tileSize[1] + 2 * gutter)),
-          viewState.rotation,
-          ((tileCenterI - centerI - gutter / tileSize[0]) * tileSize[0]) /
-            (tileSize[0] + 2 * gutter),
-          ((tileCenterJ - centerJ - gutter / tileSize[1]) * tileSize[1]) /
-            (tileSize[1] + 2 * gutter)
+          2 / ((frameState.size[0] * tileScale) / tileWidthWithGutter),
+          -2 / ((frameState.size[1] * tileScale) / tileWidthWithGutter)
+        );
+        rotateTransform(this.tileTransform_, viewState.rotation);
+        scaleTransform(this.tileTransform_, 1, 1 / aspectRatio);
+        translateTransform(
+          this.tileTransform_,
+          (tileSize[0] * (tileCenterI - centerI) - gutter) /
+            tileWidthWithGutter,
+          (tileSize[1] * (tileCenterJ - centerJ) - gutter) /
+            tileHeightWithGutter
         );
 
         this.helper.setUniformMatrixValue(
@@ -602,11 +612,11 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
         this.helper.setUniformFloatValue(Uniforms.DEPTH, depth);
         this.helper.setUniformFloatValue(
           Uniforms.TEXTURE_PIXEL_WIDTH,
-          tileSize[0] + 2 * gutter
+          tileWidthWithGutter
         );
         this.helper.setUniformFloatValue(
           Uniforms.TEXTURE_PIXEL_HEIGHT,
-          tileSize[1] + 2 * gutter
+          tileHeightWithGutter
         );
         this.helper.setUniformFloatValue(
           Uniforms.TEXTURE_RESOLUTION,
