@@ -263,15 +263,17 @@ export function render(
     const yPos = -(src.extent[3] - sourceDataExtent[3]);
     const srcWidth = getWidth(src.extent);
     const srcHeight = getHeight(src.extent);
+    const gutterX = gutter / (srcWidth / sourceResolution + 2 * gutter);
+    const gutterY = gutter / (srcHeight / sourceResolution + 2 * gutter);
 
     // This test should never fail -- but it does. Need to find a fix the upstream condition
     if (src.image.width > 0 && src.image.height > 0) {
       stitchContext.drawImage(
         src.image,
-        gutter,
-        gutter,
-        src.image.width - 2 * gutter,
-        src.image.height - 2 * gutter,
+        src.image.width * gutterX,
+        src.image.height * gutterY,
+        src.image.width * (1 - 2 * gutterX),
+        src.image.height * (1 - 2 * gutterY),
         xPos * stitchScale,
         yPos * stitchScale,
         srcWidth * stitchScale,
