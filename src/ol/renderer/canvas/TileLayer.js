@@ -521,7 +521,8 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
           y,
           w,
           h,
-          tileGutter,
+          tileGutter / (currentTilePixelSize[0] + 2 * tileGutter),
+          tileGutter / (currentTilePixelSize[1] + 2 * tileGutter),
           transition
         );
         if (clips && !inTransition) {
@@ -577,10 +578,11 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @param {number} y Top of the tile.
    * @param {number} w Width of the tile.
    * @param {number} h Height of the tile.
-   * @param {number} gutter Tile gutter.
+   * @param {number} gutterX Tile gutter as fraction of image width.
+   * @param {number} gutterY Tile gutter as fraction of image height.
    * @param {boolean} transition Apply an alpha transition.
    */
-  drawTileImage(tile, frameState, x, y, w, h, gutter, transition) {
+  drawTileImage(tile, frameState, x, y, w, h, gutterX, gutterY, transition) {
     const image = this.getTileImage(tile);
     if (!image) {
       return;
@@ -597,10 +599,10 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     }
     this.context.drawImage(
       image,
-      gutter,
-      gutter,
-      image.width - 2 * gutter,
-      image.height - 2 * gutter,
+      image.width * gutterX,
+      image.height * gutterY,
+      image.width * (1 - 2 * gutterX),
+      image.height * (1 - 2 * gutterY),
       x,
       y,
       w,
