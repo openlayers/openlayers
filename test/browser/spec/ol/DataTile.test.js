@@ -1,7 +1,8 @@
 import DataTile from '../../../../src/ol/DataTile.js';
 import TileState from '../../../../src/ol/TileState.js';
+import {listenOnce} from '../../../../src/ol/events.js';
 
-describe('ol.DataTile', function () {
+describe('ol/DataTile', function () {
   /** @type {Promise<import('../../../../src/ol/DataTile.js').Data} */
   let loader;
   beforeEach(function () {
@@ -42,10 +43,26 @@ describe('ol.DataTile', function () {
       expect(tile.getState()).to.be(TileState.IDLE);
       tile.load();
       expect(tile.getState()).to.be(TileState.LOADING);
-      setTimeout(() => {
+      listenOnce(tile, 'change', () => {
         expect(tile.getState()).to.be(TileState.LOADED);
         done();
-      }, 16);
+      });
+    });
+
+    it('reloads tiles in an error state', function (done) {
+      const tileCoord = [0, 0, 0];
+      const tile = new DataTile({
+        tileCoord: tileCoord,
+        loader: loader,
+      });
+      tile.state = TileState.ERROR;
+
+      tile.load();
+      expect(tile.getState()).to.be(TileState.LOADING);
+      listenOnce(tile, 'change', () => {
+        expect(tile.getState()).to.be(TileState.LOADED);
+        done();
+      });
     });
   });
 });
