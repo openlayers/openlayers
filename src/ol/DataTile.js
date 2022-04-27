@@ -75,6 +75,9 @@ class DataTile extends Tile {
    * @api
    */
   load() {
+    if (this.state !== TileState.IDLE && this.state !== TileState.ERROR) {
+      return;
+    }
     this.state = TileState.LOADING;
     this.changed();
 
