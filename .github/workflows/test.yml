@@ -11,6 +11,9 @@ on:
 env:
   CI: true
 
+permissions:
+  contents: read
+
 jobs:
   pretest:
     name: Pre-Test
