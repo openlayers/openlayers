@@ -166,7 +166,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const viewState = frameState.viewState;
     const source = layer.getRenderSource();
     const tileGrid = source.getTileGridForProjection(viewState.projection);
-    const tilePixelRatio = source.getTilePixelRatio(frameState.pixelRatio);
 
     for (
       let z = tileGrid.getZForResolution(viewState.resolution);
@@ -192,24 +191,26 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       const tileOrigin = tileGrid.getOrigin(z);
       const tileSize = toSize(tileGrid.getTileSize(z));
       const tileResolution = tileGrid.getResolution(z);
+      const gutter = source.getGutterForProjection(viewState.projection);
+      const image = tile.getImage();
 
       const col = Math.floor(
-        tilePixelRatio *
-          ((coordinate[0] - tileOrigin[0]) / tileResolution -
-            tileCoord[1] * tileSize[0])
+        (((coordinate[0] - tileOrigin[0]) / tileResolution -
+          tileCoord[1] * tileSize[0] +
+          gutter) *
+          image.width) /
+          (tileSize[0] + 2 * gutter)
       );
 
       const row = Math.floor(
-        tilePixelRatio *
-          ((tileOrigin[1] - coordinate[1]) / tileResolution -
-            tileCoord[2] * tileSize[1])
+        (((tileOrigin[1] - coordinate[1]) / tileResolution -
+          tileCoord[2] * tileSize[1] +
+          gutter) *
+          image.height) /
+          (tileSize[1] + 2 * gutter)
       );
 
-      const gutter = Math.round(
-        tilePixelRatio * source.getGutterForProjection(viewState.projection)
-      );
-
-      return this.getImageData(tile.getImage(), col + gutter, row + gutter);
+      return this.getImageData(image, col, row);
     }
 
     return null;
