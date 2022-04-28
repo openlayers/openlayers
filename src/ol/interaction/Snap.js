@@ -28,6 +28,7 @@ import {listen, unlistenByKey} from '../events.js';
  * @typedef {Object} Result
  * @property {import("../coordinate.js").Coordinate|null} vertex Vertex.
  * @property {import("../pixel.js").Pixel|null} vertexPixel VertexPixel.
+ * @property {boolean} snappedToEdge Whether vertex was snapped to an edge.
  */
 
 /**
@@ -450,7 +451,7 @@ class Snap extends PointerInteraction {
     let minSquaredDistance = Infinity;
 
     const squaredPixelTolerance = this.pixelTolerance_ * this.pixelTolerance_;
-    const getResult = () => {
+    const getResult = (snappedToEdge) => {
       if (closestVertex) {
         const vertexPixel = map.getPixelFromCoordinate(closestVertex);
         const squaredPixelDistance = squaredDistance(pixel, vertexPixel);
@@ -461,6 +462,7 @@ class Snap extends PointerInteraction {
               Math.round(vertexPixel[0]),
               Math.round(vertexPixel[1]),
             ],
+            snappedToEdge: snappedToEdge,
           };
         }
       }
@@ -483,7 +485,7 @@ class Snap extends PointerInteraction {
           });
         }
       }
-      const result = getResult();
+      const result = getResult(false);
       if (result) {
         return result;
       }
@@ -530,7 +532,7 @@ class Snap extends PointerInteraction {
         }
       }
 
-      const result = getResult();
+      const result = getResult(true);
       if (result) {
         return result;
       }
