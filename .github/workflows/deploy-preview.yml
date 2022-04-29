@@ -18,7 +18,7 @@ jobs:
       - run: npm install unzipper@0.10
 
       - name: Get pull request number
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         id: pull-request-number
         with:
           result-encoding: string
@@ -66,7 +66,7 @@ jobs:
         run: netlify deploy --dir=build/site --alias=deploy-preview-${{steps.pull-request-number.outputs.result}}
 
       - name: Add comment to pull request
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         with:
           script: |
             const pullRequestNumber = parseInt(${{steps.pull-request-number.outputs.result}}, 10);
