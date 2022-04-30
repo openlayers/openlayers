@@ -440,6 +440,18 @@ class GeoTIFFSource extends DataTile {
   }
 
   /**
+   * Returns metadata from the sources, which might be helpful for manual normalization
+   * or other purposes.
+   * @return {Array<Array<GDALMetadata>>|undefined} Metadata
+   * @api
+   */
+  getMetadata() {
+    return this.metadata_
+      ? JSON.parse(JSON.stringify(this.metadata_))
+      : undefined;
+  }
+
+  /**
    * Configure the tile grid based on images within the source GeoTIFFs.  Each GeoTIFF
    * must have the same internal tiled structure.
    * @param {Array<Array<GeoTIFFImage>>} sources Each source is a list of images
