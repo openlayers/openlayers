@@ -129,8 +129,8 @@ class CanvasImageBuilder extends CanvasBuilder {
       this.anchorY_ * this.imagePixelRatio_,
       Math.ceil(this.height_ * this.imagePixelRatio_),
       this.opacity_,
-      this.originX_,
-      this.originY_,
+      this.originX_ * this.imagePixelRatio_,
+      this.originY_ * this.imagePixelRatio_,
       this.rotateWithView_,
       this.rotation_,
       [
@@ -186,8 +186,8 @@ class CanvasImageBuilder extends CanvasBuilder {
       this.anchorY_ * this.imagePixelRatio_,
       Math.ceil(this.height_ * this.imagePixelRatio_),
       this.opacity_,
-      this.originX_,
-      this.originY_,
+      this.originX_ * this.imagePixelRatio_,
+      this.originY_ * this.imagePixelRatio_,
       this.rotateWithView_,
       this.rotation_,
       [
@@ -249,18 +249,16 @@ class CanvasImageBuilder extends CanvasBuilder {
   setImageStyle(imageStyle, opt_sharedData) {
     const anchor = imageStyle.getAnchor();
     const size = imageStyle.getSize();
-    const hitDetectionImage = imageStyle.getHitDetectionImage();
-    const image = imageStyle.getImage(this.pixelRatio);
     const origin = imageStyle.getOrigin();
     this.imagePixelRatio_ = imageStyle.getPixelRatio(this.pixelRatio);
     this.anchorX_ = anchor[0];
     this.anchorY_ = anchor[1];
-    this.hitDetectionImage_ = hitDetectionImage;
-    this.image_ = image;
+    this.hitDetectionImage_ = imageStyle.getHitDetectionImage();
+    this.image_ = imageStyle.getImage(this.pixelRatio);
     this.height_ = size[1];
     this.opacity_ = imageStyle.getOpacity();
-    this.originX_ = origin[0] * this.imagePixelRatio_;
-    this.originY_ = origin[1] * this.imagePixelRatio_;
+    this.originX_ = origin[0];
+    this.originY_ = origin[1];
     this.rotateWithView_ = imageStyle.getRotateWithView();
     this.rotation_ = imageStyle.getRotation();
     this.scale_ = imageStyle.getScaleArray();
