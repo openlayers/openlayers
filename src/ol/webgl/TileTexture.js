@@ -138,7 +138,7 @@ function createPixelContext() {
  * @property {TileType} tile The tile.
  * @property {import("../tilegrid/TileGrid.js").default} grid Tile grid.
  * @property {import("../webgl/Helper.js").default} helper WebGL helper.
- * @property {number} [tilePixelRatio=1] Tile pixel ratio.
+ * @property {Array<number>} [tilePixelRatio] Tile pixel ratio in the x and y direction.
  * @property {number} [gutter=0] The size in pixels of the gutter around image tiles to ignore.
  */
 
@@ -166,10 +166,10 @@ class TileTexture extends EventTarget {
     this.size = toSize(options.grid.getTileSize(options.tile.tileCoord[0]));
 
     /**
-     * @type {number}
+     * @type {Array<number>}
      * @private
      */
-    this.tilePixelRatio_ = options.tilePixelRatio || 1;
+    this.tilePixelRatio_ = options.tilePixelRatio || [1, 1];
 
     /**
      * @type {number}
@@ -248,8 +248,8 @@ class TileTexture extends EventTarget {
     }
 
     const pixelSize = [
-      (this.size[0] + 2 * this.gutter_) * this.tilePixelRatio_,
-      (this.size[1] + 2 * this.gutter_) * this.tilePixelRatio_,
+      this.size[0] * this.tilePixelRatio_[0] + 2 * this.gutter_,
+      this.size[1] * this.tilePixelRatio_[1] + 2 * this.gutter_,
     ];
     const data = tile.getData();
     const isFloat = data instanceof Float32Array;
@@ -348,17 +348,16 @@ class TileTexture extends EventTarget {
       return null;
     }
 
-    const gutter = Math.round(this.tilePixelRatio_ * this.gutter_);
-    col = Math.floor(this.tilePixelRatio_ * col) + gutter;
-    row = Math.floor(this.tilePixelRatio_ * row) + gutter;
+    col = Math.floor(this.tilePixelRatio_[0] * col) + this.gutter_;
+    row = Math.floor(this.tilePixelRatio_[1] * row) + this.gutter_;
 
     if (this.tile instanceof DataTile) {
       const data = this.tile.getData();
       let size = this.size;
-      if (gutter > 0) {
+      if (this.gutter_ > 0) {
         size = [size[0] + 2 * this.gutter_, size[1] + 2 * this.gutter_];
       }
-      const pixelsPerRow = Math.floor(this.tilePixelRatio_ * size[0]);
+      const pixelsPerRow = Math.floor(this.tilePixelRatio_[0] * size[0]);
       if (data instanceof DataView) {
         const bytesPerPixel = data.byteLength / (size[0] * size[1]);
         const offset = row * pixelsPerRow * bytesPerPixel + col * bytesPerPixel;

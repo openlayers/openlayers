@@ -189,7 +189,7 @@ export function calculateSourceExtentResolution(
  *
  * @param {number} width Width of the canvas.
  * @param {number} height Height of the canvas.
- * @param {number} pixelRatio Pixel ratio.
+ * @param {Array<number>} pixelRatio Pixel ratio.
  * @param {number} sourceResolution Source resolution.
  * @param {import("./extent.js").Extent} sourceExtent Extent of the data source.
  * @param {number} targetResolution Target resolution.
@@ -216,8 +216,8 @@ export function render(
   opt_interpolate
 ) {
   const context = createCanvasContext2D(
-    Math.round(pixelRatio * width),
-    Math.round(pixelRatio * height)
+    Math.round(pixelRatio[0] * width),
+    Math.round(pixelRatio[1] * height)
   );
 
   if (!opt_interpolate) {
@@ -228,10 +228,14 @@ export function render(
     return context.canvas;
   }
 
-  context.scale(pixelRatio, pixelRatio);
+  context.scale(pixelRatio[0], pixelRatio[1]);
 
-  function pixelRound(value) {
-    return Math.round(value * pixelRatio) / pixelRatio;
+  function pixelRoundX(value) {
+    return Math.round(value * pixelRatio[0]) / pixelRatio[0];
+  }
+
+  function pixelRoundY(value) {
+    return Math.round(value * pixelRatio[1]) / pixelRatio[1];
   }
 
   context.globalCompositeOperation = 'lighter';
@@ -244,15 +248,16 @@ export function render(
   const canvasWidthInUnits = getWidth(sourceDataExtent);
   const canvasHeightInUnits = getHeight(sourceDataExtent);
   const stitchContext = createCanvasContext2D(
-    Math.round((pixelRatio * canvasWidthInUnits) / sourceResolution),
-    Math.round((pixelRatio * canvasHeightInUnits) / sourceResolution)
+    Math.round((pixelRatio[0] * canvasWidthInUnits) / sourceResolution),
+    Math.round((pixelRatio[1] * canvasHeightInUnits) / sourceResolution)
   );
 
   if (!opt_interpolate) {
     assign(stitchContext, IMAGE_SMOOTHING_DISABLED);
   }
 
-  const stitchScale = pixelRatio / sourceResolution;
+  const stitchScaleX = pixelRatio[0] / sourceResolution;
+  const stitchScaleY = pixelRatio[1] / sourceResolution;
 
   sources.forEach(function (src, i, arr) {
     const xPos = src.extent[0] - sourceDataExtent[0];
@@ -268,10 +273,10 @@ export function render(
         gutter,
         src.image.width - 2 * gutter,
         src.image.height - 2 * gutter,
-        xPos * stitchScale,
-        yPos * stitchScale,
-        srcWidth * stitchScale,
-        srcHeight * stitchScale
+        xPos * stitchScaleX,
+        yPos * stitchScaleY,
+        srcWidth * stitchScaleX,
+        srcHeight * stitchScaleY
       );
     }
   });
@@ -308,16 +313,22 @@ export function render(
     let x2 = source[2][0],
       y2 = source[2][1];
     // Make sure that everything is on pixel boundaries
-    const u0 = pixelRound((target[0][0] - targetTopLeft[0]) / targetResolution);
-    const v0 = pixelRound(
+    const u0 = pixelRoundX(
+      (target[0][0] - targetTopLeft[0]) / targetResolution
+    );
+    const v0 = pixelRoundY(
       -(target[0][1] - targetTopLeft[1]) / targetResolution
     );
-    const u1 = pixelRound((target[1][0] - targetTopLeft[0]) / targetResolution);
-    const v1 = pixelRound(
+    const u1 = pixelRoundX(
+      (target[1][0] - targetTopLeft[0]) / targetResolution
+    );
+    const v1 = pixelRoundY(
       -(target[1][1] - targetTopLeft[1]) / targetResolution
     );
-    const u2 = pixelRound((target[2][0] - targetTopLeft[0]) / targetResolution);
-    const v2 = pixelRound(
+    const u2 = pixelRoundX(
+      (target[2][0] - targetTopLeft[0]) / targetResolution
+    );
+    const v2 = pixelRoundY(
       -(target[2][1] - targetTopLeft[1]) / targetResolution
     );
 
@@ -357,14 +368,14 @@ export function render(
       for (let step = 0; step < steps; step++) {
         // Go horizontally
         context.lineTo(
-          u1 + pixelRound(((step + 1) * ud) / steps),
-          v1 + pixelRound((step * vd) / (steps - 1))
+          u1 + pixelRoundX(((step + 1) * ud) / steps),
+          v1 + pixelRoundY((step * vd) / (steps - 1))
         );
         // Go vertically
         if (step != steps - 1) {
           context.lineTo(
-            u1 + pixelRound(((step + 1) * ud) / steps),
-            v1 + pixelRound(((step + 1) * vd) / (steps - 1))
+            u1 + pixelRoundX(((step + 1) * ud) / steps),
+            v1 + pixelRoundY(((step + 1) * vd) / (steps - 1))
           );
         }
       }
@@ -393,8 +404,8 @@ export function render(
     );
 
     context.scale(
-      sourceResolution / pixelRatio,
-      -sourceResolution / pixelRatio
+      sourceResolution / pixelRatio[0],
+      -sourceResolution / pixelRatio[1]
     );
 
     context.drawImage(stitchContext.canvas, 0, 0);

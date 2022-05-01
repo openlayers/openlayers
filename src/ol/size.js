@@ -36,7 +36,7 @@ export function hasArea(size) {
 /**
  * Returns a size scaled by a ratio. The result will be an array of integers.
  * @param {Size} size Size.
- * @param {number} ratio Ratio.
+ * @param {Array<number>} ratio The x and y scale.
  * @param {Size} [opt_size] Optional reusable size array.
  * @return {Size} The scaled size.
  */
@@ -44,8 +44,8 @@ export function scale(size, ratio, opt_size) {
   if (opt_size === undefined) {
     opt_size = [0, 0];
   }
-  opt_size[0] = (size[0] * ratio + 0.5) | 0;
-  opt_size[1] = (size[1] * ratio + 0.5) | 0;
+  opt_size[0] = (size[0] * ratio[0] + 0.5) | 0;
+  opt_size[1] = (size[1] * ratio[1] + 0.5) | 0;
   return opt_size;
 }
 

@@ -10,6 +10,8 @@ import {modulo} from '../math.js';
 import {scale as scaleSize, toSize} from '../size.js';
 import {hash as tileCoordHash} from '../tilecoord.js';
 
+const defaultTilePixelRatio = [1, 1];
+
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
@@ -196,10 +198,11 @@ class TileArcGISRest extends TileImage {
   /**
    * Get the tile pixel ratio for this source.
    * @param {number} pixelRatio Pixel ratio.
-   * @return {number} Tile pixel ratio.
+   * @param {number} z The zoom level (for the tile grid being used for rendering).
+   * @return {Array<number>} Tile pixel ratio in the x and y direction.
    */
-  getTilePixelRatio(pixelRatio) {
-    return this.hidpi_ ? pixelRatio : 1;
+  getTilePixelRatio(pixelRatio, z) {
+    return this.hidpi_ ? [pixelRatio, pixelRatio] : defaultTilePixelRatio;
   }
 
   /**
@@ -237,7 +240,7 @@ class TileArcGISRest extends TileImage {
     let tileSize = toSize(tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
 
     if (pixelRatio != 1) {
-      tileSize = scaleSize(tileSize, pixelRatio, this.tmpSize);
+      tileSize = scaleSize(tileSize, [pixelRatio, pixelRatio], this.tmpSize);
     }
 
     // Apply default params and override with user specified values.

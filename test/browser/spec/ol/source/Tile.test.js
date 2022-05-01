@@ -98,6 +98,52 @@ describe('ol/source/Tile', function () {
     });
   });
 
+  describe('getTilePixelRatio()', function () {
+    it('works with scalar in the constructor', function () {
+      const source = new TileSource({
+        tilePixelRatio: 2,
+      });
+      expect(source.getTilePixelRatio(-1, -1)).to.eql([2, 2]);
+    });
+
+    it('works with array of arrays in the constructor', function () {
+      const ratios = [
+        [1, 2],
+        [1, 3],
+        [1, 4],
+      ];
+      const source = new TileSource({
+        tilePixelRatio: ratios,
+      });
+      expect(source.getTilePixelRatio(-1, 1)).to.eql([1, 3]);
+    });
+
+    it('works with scalar updated after construction', function () {
+      const source = new TileSource({
+        tilePixelRatio: [
+          [1, 2],
+          [1, 3],
+          [1, 4],
+        ],
+      });
+      source.setTilePixelRatio(2);
+      expect(source.getTilePixelRatio(-1, 2)).to.eql([2, 2]);
+    });
+
+    it('works with an array of arrays updated after construction', function () {
+      const ratios = [
+        [1, 2],
+        [1, 3],
+        [1, 4],
+      ];
+      const source = new TileSource({
+        tilePixelRatio: 2,
+      });
+      source.setTilePixelRatio(ratios);
+      expect(source.getTilePixelRatio(-1, 2)).to.eql([1, 4]);
+    });
+  });
+
   describe('#setKey()', function () {
     it('sets the source key', function () {
       const source = new TileSource({});

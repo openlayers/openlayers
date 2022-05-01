@@ -35,7 +35,9 @@ import {toPromise} from '../functions.js';
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
  * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {import("./State.js").default} [state] The source state.
- * @property {number} [tilePixelRatio] Tile pixel ratio.
+ * @property {number|Array<Array<number>>} [tilePixelRatio] The ratio of source pixels to rendered pixels.
+ * If the source pixel resolutions differ in the x and y direction or if pixel ratios differ per zoom level,
+ * an array of [sx, sy] elements (one two element array per zoom level) can be provided.
  * @property {boolean} [wrapX=false] Render tiles beyond the antimeridian.
  * @property {number} [transition] Transition time when fading in new tiles (in miliseconds).
  * @property {number} [bandCount=4] Number of bands represented in the data.

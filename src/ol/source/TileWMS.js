@@ -17,6 +17,8 @@ import {get as getProjection, transform, transformExtent} from '../proj.js';
 import {modulo} from '../math.js';
 import {hash as tileCoordHash} from '../tilecoord.js';
 
+const defaultTilePixelRatio = [1, 1];
+
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
@@ -387,10 +389,13 @@ class TileWMS extends TileImage {
   /**
    * Get the tile pixel ratio for this source.
    * @param {number} pixelRatio Pixel ratio.
-   * @return {number} Tile pixel ratio.
+   * @param {number} z The zoom level (for the tile grid being used for rendering).
+   * @return {Array<number>} Tile pixel ratio in the x and y direction.
    */
-  getTilePixelRatio(pixelRatio) {
-    return !this.hidpi_ || this.serverType_ === undefined ? 1 : pixelRatio;
+  getTilePixelRatio(pixelRatio, z) {
+    return !this.hidpi_ || this.serverType_ === undefined
+      ? defaultTilePixelRatio
+      : [pixelRatio, pixelRatio];
   }
 
   /**
@@ -457,7 +462,7 @@ class TileWMS extends TileImage {
     }
 
     if (pixelRatio != 1) {
-      tileSize = scaleSize(tileSize, pixelRatio, this.tmpSize);
+      tileSize = scaleSize(tileSize, [pixelRatio, pixelRatio], this.tmpSize);
     }
 
     const baseParams = {

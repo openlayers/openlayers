@@ -30,7 +30,9 @@ import {scale as scaleSize, toSize} from '../size.js';
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize] CacheSize.
  * @property {boolean} [opaque=false] Whether the layer is opaque.
- * @property {number} [tilePixelRatio] TilePixelRatio.
+ * @property {number|Array<Array<number>>} [tilePixelRatio] The ratio of source pixels to rendered pixels.
+ * If the source pixel resolutions differ in the x and y direction or if pixel ratios differ per zoom level,
+ * an array of [sx, sy] elements (one two element array per zoom level) can be provided.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection.
  * @property {import("./State.js").default} [state] State.
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] TileGrid.
@@ -87,10 +89,22 @@ class TileSource extends Source {
 
     /**
      * @private
-     * @type {number}
+     * @type {number|Array<Array<number>>}
      */
     this.tilePixelRatio_ =
       options.tilePixelRatio !== undefined ? options.tilePixelRatio : 1;
+
+    /**
+     * @private
+     * @type {Array<number>}
+     */
+    this.uniformTilePixelRatio_ = [NaN, NaN];
+    if (!Array.isArray(this.tilePixelRatio_)) {
+      this.uniformTilePixelRatio_ = [
+        this.tilePixelRatio_,
+        this.tilePixelRatio_,
+      ];
+    }
 
     /**
      * @type {import("../tilegrid/TileGrid.js").default|null}
@@ -137,6 +151,17 @@ class TileSource extends Source {
      * @type {number|import("../array.js").NearestDirectionFunction}
      */
     this.zDirection = options.zDirection ? options.zDirection : 0;
+  }
+
+  /**
+   * @param {number|Array<Array<number>>} tilePixelRatio The tile pixel ratio.
+   * @protected
+   */
+  setTilePixelRatio(tilePixelRatio) {
+    this.tilePixelRatio_ = tilePixelRatio;
+    if (!Array.isArray(tilePixelRatio)) {
+      this.uniformTilePixelRatio_ = [tilePixelRatio, tilePixelRatio];
+    }
   }
 
   /**
@@ -292,12 +317,16 @@ class TileSource extends Source {
   /**
    * Get the tile pixel ratio for this source. Subclasses may override this
    * method, which is meant to return a supported pixel ratio that matches the
-   * provided `pixelRatio` as close as possible.
+   * provided `pixelRatio` at the provided zoom level as close as possible.
    * @param {number} pixelRatio Pixel ratio.
-   * @return {number} Tile pixel ratio.
+   * @param {number} z The zoom level (for the tile grid being used for rendering).
+   * @return {Array<number>} Tile pixel ratio in the x and y direction.
    */
-  getTilePixelRatio(pixelRatio) {
-    return this.tilePixelRatio_;
+  getTilePixelRatio(pixelRatio, z) {
+    if (Array.isArray(this.tilePixelRatio_)) {
+      return this.tilePixelRatio_[z];
+    }
+    return this.uniformTilePixelRatio_;
   }
 
   /**
@@ -308,9 +337,9 @@ class TileSource extends Source {
    */
   getTilePixelSize(z, pixelRatio, projection) {
     const tileGrid = this.getTileGridForProjection(projection);
-    const tilePixelRatio = this.getTilePixelRatio(pixelRatio);
+    const tilePixelRatio = this.getTilePixelRatio(pixelRatio, z);
     const tileSize = toSize(tileGrid.getTileSize(z), this.tmpSize);
-    if (tilePixelRatio == 1) {
+    if (tilePixelRatio[0] == 1 && tilePixelRatio[1] == 1) {
       return tileSize;
     } else {
       return scaleSize(tileSize, tilePixelRatio, this.tmpSize);

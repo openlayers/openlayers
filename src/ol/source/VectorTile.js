@@ -442,10 +442,11 @@ class VectorTile extends UrlTile {
   /**
    * Get the tile pixel ratio for this source.
    * @param {number} pixelRatio Pixel ratio.
-   * @return {number} Tile pixel ratio.
+   * @param {number} z The zoom level (for the tile grid being used for rendering).
+   * @return {Array<number>} Tile pixel ratio in the x and y direction.
    */
-  getTilePixelRatio(pixelRatio) {
-    return pixelRatio;
+  getTilePixelRatio(pixelRatio, z) {
+    return [pixelRatio, pixelRatio];
   }
 
   /**

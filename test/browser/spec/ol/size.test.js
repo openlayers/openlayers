@@ -36,15 +36,21 @@ describe('ol.size', function () {
   describe('scale()', function () {
     it('scales a size and rounds the result', function () {
       const size = [50, 75];
-      const scaledSize = scaleSize(size, 1.75);
+      const scaledSize = scaleSize(size, [1.75, 1.75]);
       expect(scaledSize).to.eql([88, 131]);
     });
 
     it('reuses an existing array', function () {
       const reuse = [0, 0];
       const size = [50, 50];
-      const scaledSize = scaleSize(size, 1.75, reuse);
+      const scaledSize = scaleSize(size, [1.75, 1.75], reuse);
       expect(scaledSize).to.equal(reuse);
+    });
+
+    it('allows non-uniform scaling', function () {
+      const size = [50, 50];
+      const scaledSize = scaleSize(size, [2, 3]);
+      expect(scaledSize).to.equal([100, 150]);
     });
   });
 

@@ -353,7 +353,7 @@ class TileImage extends UrlTile {
           targetTileGrid,
           tileCoord,
           wrappedTileCoord,
-          this.getTilePixelRatio(pixelRatio),
+          this.getTilePixelRatio(pixelRatio, z),
           this.getGutter(),
           function (z, x, y, pixelRatio) {
             return this.getTileInternal(z, x, y, pixelRatio, sourceProjection);

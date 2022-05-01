@@ -16,7 +16,7 @@ import {getArea, getIntersection} from '../extent.js';
 import {listen, unlistenByKey} from '../events.js';
 
 /**
- * @typedef {function(number, number, number, number) : import("../Tile.js").default} FunctionType
+ * @typedef {function(number, number, number, Array<number>) : import("../Tile.js").default} FunctionType
  */
 
 /**
@@ -33,7 +33,7 @@ class ReprojTile extends Tile {
    * @param {import("../tilegrid/TileGrid.js").default} targetTileGrid Target tile grid.
    * @param {import("../tilecoord.js").TileCoord} tileCoord Coordinate of the tile.
    * @param {import("../tilecoord.js").TileCoord} wrappedTileCoord Coordinate of the tile wrapped in X.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param {Array<number>} pixelRatio Pixel ratio.
    * @param {number} gutter Gutter of the source tiles.
    * @param {FunctionType} getTileFunction
    *     Function returning source tiles (z, x, y, pixelRatio).
@@ -65,7 +65,7 @@ class ReprojTile extends Tile {
 
     /**
      * @private
-     * @type {number}
+     * @type {Array<number>}
      */
     this.pixelRatio_ = pixelRatio;
 
