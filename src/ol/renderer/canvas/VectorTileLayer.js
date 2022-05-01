@@ -87,12 +87,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     /**
      * @private
-     * @type {boolean}
-     */
-    this.dirty_ = false;
-
-    /**
-     * @private
      * @type {number}
      */
     this.renderedLayerRevision_;
@@ -289,7 +283,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
             builderGroup,
             declutterBuilderGroup
           );
-          this.dirty_ = this.dirty_ || dirty;
           builderState.dirty = builderState.dirty || dirty;
         }
       };
@@ -339,6 +332,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     builderState.renderedRevision = revision;
     builderState.renderedRenderOrder = renderOrder;
     builderState.renderedResolution = resolution;
+    this.ready = !builderState.dirty;
   }
 
   /**
