@@ -963,6 +963,70 @@ describe('ol/Map', function () {
     });
   });
 
+  describe('#forEachFeatureAtPixel', function () {
+    let map, target;
+
+    beforeEach(function () {
+      target = document.createElement('div');
+      target.style.width = '360px';
+      target.style.height = '180px';
+      document.body.appendChild(target);
+    });
+
+    afterEach(function () {
+      disposeMap(map);
+      map = undefined;
+    });
+    it('does hitdetection with image offset', function (done) {
+      const svg = `<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <rect x="32" y="32" width="32" height="32" />
+      </svg>`;
+
+      const feature = new Feature(new Point([0, 0]));
+      feature.setStyle(
+        new Style({
+          image: new Icon({
+            src: 'data:image/svg+xml;base64,' + window.btoa(svg),
+            color: [255, 0, 0, 1],
+            offset: [32, 32],
+            size: [32, 32],
+          }),
+        })
+      );
+
+      map = new Map({
+        pixelRatio: 2,
+        controls: [],
+        interactions: [],
+        target: target,
+        layers: [
+          new VectorLayer({
+            source: new VectorSource({
+              features: [feature],
+            }),
+          }),
+        ],
+        view: new View({
+          projection: 'EPSG:4326',
+          center: [0, 0],
+          resolution: 1,
+        }),
+      });
+      map.once('rendercomplete', function () {
+        const hit = map.forEachFeatureAtPixel(
+          map.getPixelFromCoordinate([0, 0]),
+          () => true
+        );
+        try {
+          expect(hit).to.be(true);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      });
+    });
+  });
+
   describe('#forEachLayerAtPixel()', function () {
     let target, map, original, log;
 
