@@ -340,11 +340,10 @@ export function createTransformFromCoordinateTransform(coordTransform) {
       const dimension = opt_dimension !== undefined ? opt_dimension : 2;
       const output = opt_output !== undefined ? opt_output : new Array(length);
       for (let i = 0; i < length; i += dimension) {
-        const point = coordTransform([input[i], input[i + 1]]);
-        output[i] = point[0];
-        output[i + 1] = point[1];
-        for (let j = dimension - 1; j >= 2; --j) {
-          output[i + j] = input[i + j];
+        const point = coordTransform(input.slice(i, i + dimension));
+        const pointLength = point.length;
+        for (let j = 0, jj = dimension; j < jj; ++j) {
+          output[i + j] = j >= pointLength ? input[i + j] : point[j];
         }
       }
       return output;
@@ -368,7 +367,10 @@ export function createTransformFromCoordinateTransform(coordTransform) {
  * @param {function(import("./coordinate.js").Coordinate): import("./coordinate.js").Coordinate} inverse The inverse transform
  *     function (that is, from the destination projection to the source
  *     projection) that takes a {@link module:ol/coordinate~Coordinate} as argument and returns
- *     the transformed {@link module:ol/coordinate~Coordinate}.
+ *     the transformed {@link module:ol/coordinate~Coordinate}. If the transform function can only
+ *     transform less dimensions than the input coordinate, it is supposeed to return a coordinate
+ *     with only the length it can transform. The other dimensions will be taken unchanged from the
+ *     source.
  * @api
  */
 export function addCoordinateTransforms(source, destination, forward, inverse) {
@@ -706,20 +708,19 @@ export function fromUserResolution(resolution, destProjection) {
  */
 export function createSafeCoordinateTransform(sourceProj, destProj, transform) {
   return function (coord) {
-    let sourceX = coord[0];
-    let sourceY = coord[1];
     let transformed, worldsAway;
     if (sourceProj.canWrapX()) {
       const sourceExtent = sourceProj.getExtent();
       const sourceExtentWidth = getWidth(sourceExtent);
+      coord = coord.slice(0);
       worldsAway = getWorldsAway(coord, sourceProj, sourceExtentWidth);
       if (worldsAway) {
         // Move x to the real world
-        sourceX = sourceX - worldsAway * sourceExtentWidth;
+        coord[0] = coord[0] - worldsAway * sourceExtentWidth;
       }
-      sourceX = clamp(sourceX, sourceExtent[0], sourceExtent[2]);
-      sourceY = clamp(sourceY, sourceExtent[1], sourceExtent[3]);
-      transformed = transform([sourceX, sourceY]);
+      coord[0] = clamp(coord[0], sourceExtent[0], sourceExtent[2]);
+      coord[1] = clamp(coord[1], sourceExtent[1], sourceExtent[3]);
+      transformed = transform(coord);
     } else {
       transformed = transform(coord);
     }

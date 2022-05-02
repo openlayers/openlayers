@@ -1,5 +1,28 @@
 ## Upgrade notes
 
+### v6.15.0
+
+#### Fixed coordinate dimesion handling in `ol/proj`'s `addCoordinateTransforms`
+
+The `forward` and `inverse` functions passed to `addCooordinateTransforms` now receive a coordinate with all dimensions of the original coordinate, not just two. If you previosly had coordinates with more than two dimensions and added a transform like
+```js
+addCoordinateTransforms(
+    'EPSG:4326',
+    new Projection({code: 'latlong', units: 'degrees}),
+    function(coordinate) { return coordinate.reverse(); },
+    function(coordinate) { return coordinate.reverse(); }
+);
+```
+you have to change that to
+```js
+addCoordinateTransforms(
+    'EPSG:4326',
+    new Projection({code: 'latlong', units: 'degrees}),
+    function(coordinate) { return coordinate.slice(0, 2).reverse() },
+    function(coordinate) { return coordinate.slice(0, 2).reverse() }
+);
+```
+
 ### v6.14.0
 
 No special changes are required when upgrading to the 6.14.0 release.

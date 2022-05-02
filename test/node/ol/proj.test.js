@@ -7,6 +7,7 @@ import {HALF_SIZE} from '../../../src/ol/proj/epsg3857.js';
 import {
   METERS_PER_UNIT,
   addCommon,
+  addCoordinateTransforms,
   clearAllProjections,
   clearUserProjection,
   disableCoordinateWarning,
@@ -776,6 +777,26 @@ describe('ol/proj.js', function () {
       expect(got[2]).to.be(3);
     });
 
+    it('transforms a 3d coordinate with 2-dimension transform', function () {
+      const latlon = new Projection({
+        code: 'latlon',
+      });
+      addCoordinateTransforms(
+        'EPSG:4326',
+        latlon,
+        function (coordinate) {
+          return coordinate.slice(0, 2).reverse();
+        },
+        function (coordinate) {
+          return coordinate.slice(0, 2).reverse();
+        }
+      );
+
+      const got = transform([-10, -20, 3], 'EPSG:4326', latlon);
+      expect(got).to.have.length(3);
+      expect(got).to.eql([-20, -10, 3]);
+    });
+
     it('transforms a 4d coordinate', function () {
       const got = transform([-10, -20, 3, 4], 'EPSG:4326', 'EPSG:3857');
       expect(got).to.have.length(4);
@@ -805,6 +826,47 @@ describe('ol/proj.js', function () {
       addCommon();
     });
 
+    it('works with 3d points and proj4 defs for 3d transforms', function () {
+      proj4.defs(
+        'geocent',
+        '+proj=geocent +datum=WGS84 +ellps=WGS84 +units=m +no_defs'
+      );
+      register(proj4);
+
+      const got = transform(
+        [5584000, 2844000, 3448000],
+        'geocent',
+        'EPSG:4326'
+      );
+      expect(got).to.have.length(3);
+      expect(got[0]).to.roughlyEqual(26.990304649234826, 1e-9);
+      expect(got[1]).to.roughlyEqual(28.965718227798618, 1e-9);
+      expect(got[2]).to.roughlyEqual(779337.8584198505, 1e-9);
+
+      delete proj4.defs.geocent;
+      clearAllProjections();
+      addCommon();
+    });
+
+    it('works with 3d points and proj4 defs for 3d transforms with clamped extent', function () {
+      proj4.defs(
+        'geocent',
+        '+proj=geocent +datum=WGS84 +ellps=WGS84 +units=m +no_defs'
+      );
+      register(proj4);
+
+      const got = transform([-7.56234, 38.96618, 0], 'EPSG:4326', 'geocent');
+
+      expect(got).to.have.length(3);
+      expect(got[0]).to.roughlyEqual(4922499, 1);
+      expect(got[1]).to.roughlyEqual(-653508, 1);
+      expect(got[2]).to.roughlyEqual(3989398, 1);
+
+      delete proj4.defs.geocent;
+      clearAllProjections();
+      addCommon();
+    });
+
     it('does not flip axis order', function () {
       proj4.defs('enu', '+proj=longlat');
       proj4.defs('neu', '+proj=longlat +axis=neu');
@@ -812,7 +874,6 @@ describe('ol/proj.js', function () {
 
       const got = transform([1, 2], 'neu', 'enu');
       expect(got).to.eql([1, 2]);
-
       delete proj4.defs.enu;
       delete proj4.defs.neu;
       clearAllProjections();
