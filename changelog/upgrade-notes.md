@@ -2,7 +2,7 @@
 
 ### v6.15.0
 
-#### Fixed coordinate dimesion handling in `ol/proj`'s `addCoordinateTransforms`
+#### Fixed coordinate dimension handling in `ol/proj`'s `addCoordinateTransforms`
 
 The `forward` and `inverse` functions passed to `addCooordinateTransforms` now receive a coordinate with all dimensions of the original coordinate, not just two. If you previosly had coordinates with more than two dimensions and added a transform like
 ```js
