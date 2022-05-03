@@ -8,7 +8,7 @@ The `forward` and `inverse` functions passed to `addCooordinateTransforms` now r
 ```js
 addCoordinateTransforms(
     'EPSG:4326',
-    new Projection({code: 'latlong', units: 'degrees}),
+    new Projection({code: 'latlong', units: 'degrees'}),
     function(coordinate) { return coordinate.reverse(); },
     function(coordinate) { return coordinate.reverse(); }
 );
@@ -17,7 +17,7 @@ you have to change that to
 ```js
 addCoordinateTransforms(
     'EPSG:4326',
-    new Projection({code: 'latlong', units: 'degrees}),
+    new Projection({code: 'latlong', units: 'degrees'}),
     function(coordinate) { return coordinate.slice(0, 2).reverse() },
     function(coordinate) { return coordinate.slice(0, 2).reverse() }
 );
