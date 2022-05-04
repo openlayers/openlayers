@@ -770,6 +770,11 @@ class GeoTIFFSource extends DataTile {
       }
 
       return data;
+    })
+    .catch(function (error) {
+      // output then rethrow
+      console.error(error); // eslint-disable-line no-console
+      throw error;
     });
   }
 }
