@@ -98,12 +98,15 @@ describe('Batch renderers', function () {
       });
     });
     describe('#rebuild', function () {
+      let rebuildCb;
       beforeEach(function (done) {
         sinon.spy(helper, 'flushBufferData');
+        rebuildCb = sinon.spy();
         batchRenderer.rebuild(
           mixedBatch.pointBatch,
           SAMPLE_FRAMESTATE,
-          GeometryType.POINT
+          GeometryType.POINT,
+          rebuildCb
         );
         // wait for worker response for our specific message
         worker.addEventListener('message', function (event) {
@@ -133,6 +136,9 @@ describe('Batch renderers', function () {
         expect(mixedBatch.pointBatch.renderInstructionsTransform).to.eql([
           0.2, 0, 0, 0.2, 0, -2,
         ]);
+      });
+      it('calls the provided callback', function () {
+        expect(rebuildCb.calledOnce).to.be(true);
       });
     });
     describe('#render (from parent)', function () {
@@ -196,12 +202,15 @@ describe('Batch renderers', function () {
       });
     });
     describe('#rebuild', function () {
+      let rebuildCb;
       beforeEach(function (done) {
         sinon.spy(helper, 'flushBufferData');
+        rebuildCb = sinon.spy();
         batchRenderer.rebuild(
           mixedBatch.lineStringBatch,
           SAMPLE_FRAMESTATE,
-          GeometryType.LINE_STRING
+          GeometryType.LINE_STRING,
+          rebuildCb
         );
         // wait for worker response for our specific message
         worker.addEventListener('message', function (event) {
@@ -231,6 +240,9 @@ describe('Batch renderers', function () {
         ).to.be.greaterThan(0);
         expect(helper.flushBufferData.calledTwice).to.be(true);
       });
+      it('calls the provided callback', function () {
+        expect(rebuildCb.calledOnce).to.be(true);
+      });
     });
   });
 
@@ -253,12 +265,15 @@ describe('Batch renderers', function () {
       });
     });
     describe('#rebuild', function () {
+      let rebuildCb;
       beforeEach(function (done) {
         sinon.spy(helper, 'flushBufferData');
+        rebuildCb = sinon.spy();
         batchRenderer.rebuild(
           mixedBatch.polygonBatch,
           SAMPLE_FRAMESTATE,
-          GeometryType.POLYGON
+          GeometryType.POLYGON,
+          rebuildCb
         );
         // wait for worker response for our specific message
         worker.addEventListener('message', function (event) {
@@ -284,6 +299,9 @@ describe('Batch renderers', function () {
           mixedBatch.polygonBatch.indicesBuffer.getArray().length
         ).to.be.greaterThan(0);
         expect(helper.flushBufferData.calledTwice).to.be(true);
+      });
+      it('calls the provided callback', function () {
+        expect(rebuildCb.calledOnce).to.be(true);
       });
     });
   });

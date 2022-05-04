@@ -73,15 +73,16 @@ class AbstractBatchRenderer {
    * @param {import("./MixedGeometryBatch.js").GeometryBatch} batch Geometry batch
    * @param {import("../../PluggableMap").FrameState} frameState Frame state.
    * @param {import("../../geom/GeometryType.js").default} geometryType Geometry type
+   * @param {function(): void} callback Function called once the render buffers are updated
    */
-  rebuild(batch, frameState, geometryType) {
+  rebuild(batch, frameState, geometryType, callback) {
     // store transform for rendering instructions
     batch.renderInstructionsTransform = this.helper_.makeProjectionTransform(
       frameState,
       createTransform()
     );
     this.generateRenderInstructions_(batch);
-    this.generateBuffers_(batch, geometryType);
+    this.generateBuffers_(batch, geometryType, callback);
   }
 
   /**
@@ -123,9 +124,10 @@ class AbstractBatchRenderer {
    * This is asynchronous: webgl buffers wil _not_ be updated right away
    * @param {import("./MixedGeometryBatch.js").GeometryBatch} batch Geometry batch
    * @param {import("../../geom/GeometryType.js").default} geometryType Geometry type
+   * @param {function(): void} callback Function called once the render buffers are updated
    * @protected
    */
-  generateBuffers_(batch, geometryType) {
+  generateBuffers_(batch, geometryType, callback) {
     const messageId = workerMessageCounter++;
 
     let messageType;
@@ -192,7 +194,7 @@ class AbstractBatchRenderer {
           received.renderInstructions
         );
 
-        // TODO: call layer.changed somehow for the layer to rerender!!!1
+        callback();
       }.bind(this);
 
     this.worker_.addEventListener('message', handleMessage);

@@ -303,20 +303,31 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       const extent = buffer(frameState.extent, renderBuffer * resolution);
       vectorSource.loadFeatures(extent, resolution, projection);
 
+      this.ready = false;
+      let remaining = 3;
+      const rebuildCb = () => {
+        remaining--;
+        this.ready = remaining <= 0;
+        this.getLayer().changed();
+      };
+
       this.polygonRenderer_.rebuild(
         this.batch_.polygonBatch,
         frameState,
-        GeometryType.POLYGON
+        GeometryType.POLYGON,
+        rebuildCb
       );
       this.lineStringRenderer_.rebuild(
         this.batch_.lineStringBatch,
         frameState,
-        GeometryType.LINE_STRING
+        GeometryType.LINE_STRING,
+        rebuildCb
       );
       this.pointRenderer_.rebuild(
         this.batch_.pointBatch,
         frameState,
-        GeometryType.POINT
+        GeometryType.POINT,
+        rebuildCb
       );
       this.previousExtent_ = frameState.extent.slice();
     }
