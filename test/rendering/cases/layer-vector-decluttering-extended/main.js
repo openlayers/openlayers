@@ -16,7 +16,7 @@ const map = new Map({
   target: 'map',
   view: new View({
     center: center,
-    zoom: 13.1,
+    zoom: 12.6,
   }),
 });
 
@@ -133,6 +133,7 @@ map.addLayer(
           text: feature.get('text'),
           font: 'italic bold 18px Ubuntu',
           textBaseline: 'bottom',
+          offsetX: -25,
           offsetY: -17,
         }),
       });
