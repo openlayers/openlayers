@@ -685,92 +685,98 @@ class GeoTIFFSource extends DataTile {
     const normalize = this.normalize_;
     const metadata = this.metadata_;
 
-    return Promise.all(requests).then(function (sourceSamples) {
-      /** @type {Uint8Array|Float32Array} */
-      let data;
-      if (normalize) {
-        data = new Uint8Array(dataLength);
-      } else {
-        data = new Float32Array(dataLength);
-      }
+    return Promise.all(requests)
+      .then(function (sourceSamples) {
+        /** @type {Uint8Array|Float32Array} */
+        let data;
+        if (normalize) {
+          data = new Uint8Array(dataLength);
+        } else {
+          data = new Float32Array(dataLength);
+        }
 
-      let dataIndex = 0;
-      for (let pixelIndex = 0; pixelIndex < pixelCount; ++pixelIndex) {
-        let transparent = addAlpha;
-        for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
-          const source = sourceInfo[sourceIndex];
+        let dataIndex = 0;
+        for (let pixelIndex = 0; pixelIndex < pixelCount; ++pixelIndex) {
+          let transparent = addAlpha;
+          for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
+            const source = sourceInfo[sourceIndex];
 
-          let min = source.min;
-          let max = source.max;
-          let gain, bias;
-          if (normalize) {
-            const stats = metadata[sourceIndex][0];
-            if (min === undefined) {
-              if (stats && STATISTICS_MINIMUM in stats) {
-                min = parseFloat(stats[STATISTICS_MINIMUM]);
-              } else {
-                min = getMinForDataType(sourceSamples[sourceIndex][0]);
-              }
-            }
-            if (max === undefined) {
-              if (stats && STATISTICS_MAXIMUM in stats) {
-                max = parseFloat(stats[STATISTICS_MAXIMUM]);
-              } else {
-                max = getMaxForDataType(sourceSamples[sourceIndex][0]);
-              }
-            }
-
-            gain = 255 / (max - min);
-            bias = -min * gain;
-          }
-
-          for (
-            let sampleIndex = 0;
-            sampleIndex < samplesPerPixel[sourceIndex];
-            ++sampleIndex
-          ) {
-            const sourceValue =
-              sourceSamples[sourceIndex][sampleIndex][pixelIndex];
-
-            let value;
+            let min = source.min;
+            let max = source.max;
+            let gain, bias;
             if (normalize) {
-              value = clamp(gain * sourceValue + bias, 0, 255);
-            } else {
-              value = sourceValue;
+              const stats = metadata[sourceIndex][0];
+              if (min === undefined) {
+                if (stats && STATISTICS_MINIMUM in stats) {
+                  min = parseFloat(stats[STATISTICS_MINIMUM]);
+                } else {
+                  min = getMinForDataType(sourceSamples[sourceIndex][0]);
+                }
+              }
+              if (max === undefined) {
+                if (stats && STATISTICS_MAXIMUM in stats) {
+                  max = parseFloat(stats[STATISTICS_MAXIMUM]);
+                } else {
+                  max = getMaxForDataType(sourceSamples[sourceIndex][0]);
+                }
+              }
+
+              gain = 255 / (max - min);
+              bias = -min * gain;
             }
 
-            if (!addAlpha) {
-              data[dataIndex] = value;
-            } else {
-              let nodata = source.nodata;
-              if (nodata === undefined) {
-                let bandIndex;
-                if (source.bands) {
-                  bandIndex = source.bands[sampleIndex] - 1;
-                } else {
-                  bandIndex = sampleIndex;
-                }
-                nodata = nodataValues[sourceIndex][bandIndex];
+            for (
+              let sampleIndex = 0;
+              sampleIndex < samplesPerPixel[sourceIndex];
+              ++sampleIndex
+            ) {
+              const sourceValue =
+                sourceSamples[sourceIndex][sampleIndex][pixelIndex];
+
+              let value;
+              if (normalize) {
+                value = clamp(gain * sourceValue + bias, 0, 255);
+              } else {
+                value = sourceValue;
               }
 
-              if (sourceValue !== nodata) {
-                transparent = false;
+              if (!addAlpha) {
                 data[dataIndex] = value;
+              } else {
+                let nodata = source.nodata;
+                if (nodata === undefined) {
+                  let bandIndex;
+                  if (source.bands) {
+                    bandIndex = source.bands[sampleIndex] - 1;
+                  } else {
+                    bandIndex = sampleIndex;
+                  }
+                  nodata = nodataValues[sourceIndex][bandIndex];
+                }
+
+                if (sourceValue !== nodata) {
+                  transparent = false;
+                  data[dataIndex] = value;
+                }
               }
+              dataIndex++;
+            }
+          }
+          if (addAlpha) {
+            if (!transparent) {
+              data[dataIndex] = 255;
             }
             dataIndex++;
           }
         }
-        if (addAlpha) {
-          if (!transparent) {
-            data[dataIndex] = 255;
-          }
-          dataIndex++;
-        }
-      }
 
-      return data;
-    });
+        return data;
+      })
+      .catch(function (error) {
+        // output then rethrow
+        console.error(error); // eslint-disable-line no-console
+        throw error;
+      });
   }
 }
 
