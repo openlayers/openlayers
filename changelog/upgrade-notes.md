@@ -1,6 +1,17 @@
 ## Upgrade notes
 
-### v6.15.0
+### Next Release
+
+#### Deprecated `tilePixelRatio` option for data tile sources.
+
+If you were previously trying to scale data tiles using the `tilePixelRatio` property for data tile sources (this is rare), you should now use the explicit `tileSize` and `tileGrid` properties.  The source's `tileSize` represents the source tile dimensions and the tile grid's `tileSize` represents the desired rendered dimensions.
+
+```js
+const source = new DataTileSource({
+  tileSize: [512, 512], // source tile size
+  tileGrid: createXYZ({tileSize: [256, 256]}), // rendered tile size
+});
+```
 
 #### Fixed coordinate dimension handling in `ol/proj`'s `addCoordinateTransforms`
 

@@ -13,7 +13,6 @@ import {
 } from '../proj.js';
 import {clamp} from '../math.js';
 import {getCenter, getIntersection} from '../extent.js';
-import {toSize} from '../size.js';
 import {fromCode as unitsFromCode} from '../proj/Units.js';
 
 /**
@@ -112,15 +111,17 @@ function getOrigin(image) {
  * the width of the image is compared with the reference image.
  * @param {GeoTIFFImage} image The image.
  * @param {GeoTIFFImage} referenceImage The reference image.
- * @return {number} The image resolution.
+ * @return {Array<number>} The map x and y units per pixel.
  */
-function getResolution(image, referenceImage) {
+function getResolutions(image, referenceImage) {
   try {
-    return image.getResolution(referenceImage)[0];
+    return image.getResolution(referenceImage);
   } catch (_) {
-    return (
-      referenceImage.fileDirectory.ImageWidth / image.fileDirectory.ImageWidth
-    );
+    return [
+      referenceImage.fileDirectory.ImageWidth / image.fileDirectory.ImageWidth,
+      referenceImage.fileDirectory.ImageHeight /
+        image.fileDirectory.ImageHeight,
+    ];
   }
 }
 
@@ -449,7 +450,8 @@ class GeoTIFFSource extends DataTile {
   configure_(sources) {
     let extent;
     let origin;
-    let tileSizes;
+    let commonRenderTileSizes;
+    let commonSourceTileSizes;
     let resolutions;
     const samplesPerPixel = new Array(sources.length);
     const nodataValues = new Array(sources.length);
@@ -464,6 +466,7 @@ class GeoTIFFSource extends DataTile {
       let sourceExtent;
       let sourceOrigin;
       const sourceTileSizes = new Array(imageCount);
+      const renderTileSizes = new Array(imageCount);
       const sourceResolutions = new Array(imageCount);
 
       nodataValues[sourceIndex] = new Array(imageCount);
@@ -490,8 +493,17 @@ class GeoTIFFSource extends DataTile {
           sourceOrigin = getOrigin(image);
         }
 
-        sourceResolutions[level] = getResolution(image, images[0]);
-        sourceTileSizes[level] = [image.getTileWidth(), image.getTileHeight()];
+        const imageResolutions = getResolutions(image, images[0]);
+        sourceResolutions[level] = imageResolutions[0];
+
+        const sourceTileSize = [image.getTileWidth(), image.getTileHeight()];
+        sourceTileSizes[level] = sourceTileSize;
+
+        const aspectRatio = imageResolutions[0] / Math.abs(imageResolutions[1]);
+        renderTileSizes[level] = [
+          sourceTileSize[0],
+          sourceTileSize[1] / aspectRatio,
+        ];
       }
 
       if (!extent) {
@@ -531,11 +543,23 @@ class GeoTIFFSource extends DataTile {
         );
       }
 
-      if (!tileSizes) {
-        tileSizes = sourceTileSizes;
+      if (!commonRenderTileSizes) {
+        commonRenderTileSizes = renderTileSizes;
       } else {
         assertEqual(
-          tileSizes.slice(minZoom, tileSizes.length),
+          commonRenderTileSizes.slice(minZoom, commonRenderTileSizes.length),
+          renderTileSizes,
+          0,
+          `Tile size mismatch for source ${sourceIndex}`,
+          this.viewRejector
+        );
+      }
+
+      if (!commonSourceTileSizes) {
+        commonSourceTileSizes = sourceTileSizes;
+      } else {
+        assertEqual(
+          commonSourceTileSizes.slice(minZoom, commonSourceTileSizes.length),
           sourceTileSizes,
           0,
           `Tile size mismatch for source ${sourceIndex}`,
@@ -612,10 +636,11 @@ class GeoTIFFSource extends DataTile {
       minZoom: minZoom,
       origin: origin,
       resolutions: resolutions,
-      tileSizes: tileSizes,
+      tileSizes: commonRenderTileSizes,
     });
 
     this.tileGrid = tileGrid;
+    this.setTileSizes(commonSourceTileSizes);
 
     this.setLoader(this.loadTile_.bind(this));
     this.setState(State.READY);
@@ -629,8 +654,7 @@ class GeoTIFFSource extends DataTile {
   }
 
   loadTile_(z, x, y) {
-    const size = toSize(this.tileGrid.getTileSize(z));
-
+    const sourceTileSize = this.getTileSize(z);
     const sourceCount = this.sourceImagery_.length;
     const requests = new Array(sourceCount);
     const addAlpha = this.addAlpha_;
@@ -642,10 +666,10 @@ class GeoTIFFSource extends DataTile {
       const source = sourceInfo[sourceIndex];
       const resolutionFactor = this.resolutionFactors_[sourceIndex];
       const pixelBounds = [
-        Math.round(x * (size[0] * resolutionFactor)),
-        Math.round(y * (size[1] * resolutionFactor)),
-        Math.round((x + 1) * (size[0] * resolutionFactor)),
-        Math.round((y + 1) * (size[1] * resolutionFactor)),
+        Math.round(x * (sourceTileSize[0] * resolutionFactor)),
+        Math.round(y * (sourceTileSize[1] * resolutionFactor)),
+        Math.round((x + 1) * (sourceTileSize[0] * resolutionFactor)),
+        Math.round((y + 1) * (sourceTileSize[1] * resolutionFactor)),
       ];
       const image = this.sourceImagery_[sourceIndex][z];
       let samples;
@@ -671,8 +695,8 @@ class GeoTIFFSource extends DataTile {
 
       requests[sourceIndex] = image[this.readMethod_]({
         window: pixelBounds,
-        width: size[0],
-        height: size[1],
+        width: sourceTileSize[0],
+        height: sourceTileSize[1],
         samples: samples,
         fillValue: fillValue,
         pool: getWorkerPool(),
@@ -680,7 +704,7 @@ class GeoTIFFSource extends DataTile {
       });
     }
 
-    const pixelCount = size[0] * size[1];
+    const pixelCount = sourceTileSize[0] * sourceTileSize[1];
     const dataLength = pixelCount * bandCount;
     const normalize = this.normalize_;
     const metadata = this.metadata_;

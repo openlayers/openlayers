@@ -138,7 +138,6 @@ function createPixelContext() {
  * @property {TileType} tile The tile.
  * @property {import("../tilegrid/TileGrid.js").default} grid Tile grid.
  * @property {import("../webgl/Helper.js").default} helper WebGL helper.
- * @property {number} [tilePixelRatio=1] Tile pixel ratio.
  * @property {number} [gutter=0] The size in pixels of the gutter around image tiles to ignore.
  */
 
@@ -162,14 +161,11 @@ class TileTexture extends EventTarget {
 
     /**
      * @type {import("../size.js").Size}
-     */
-    this.size = toSize(options.grid.getTileSize(options.tile.tileCoord[0]));
-
-    /**
-     * @type {number}
      * @private
      */
-    this.tilePixelRatio_ = options.tilePixelRatio || 1;
+    this.renderSize_ = toSize(
+      options.grid.getTileSize(options.tile.tileCoord[0])
+    );
 
     /**
      * @type {number}
@@ -247,9 +243,10 @@ class TileTexture extends EventTarget {
       return;
     }
 
+    const sourceTileSize = tile.getSize();
     const pixelSize = [
-      (this.size[0] + 2 * this.gutter_) * this.tilePixelRatio_,
-      (this.size[1] + 2 * this.gutter_) * this.tilePixelRatio_,
+      sourceTileSize[0] + 2 * this.gutter_,
+      sourceTileSize[1] + 2 * this.gutter_,
     ];
     const data = tile.getData();
     const isFloat = data instanceof Float32Array;
@@ -339,34 +336,43 @@ class TileTexture extends EventTarget {
 
   /**
    * Get data for a pixel.  If the tile is not loaded, null is returned.
-   * @param {number} col The column index.
-   * @param {number} row The row index.
+   * @param {number} renderCol The column index (in rendered tile space).
+   * @param {number} renderRow The row index (in rendered tile space).
    * @return {import("../DataTile.js").Data|null} The data.
    */
-  getPixelData(col, row) {
+  getPixelData(renderCol, renderRow) {
     if (!this.loaded) {
       return null;
     }
-
-    const gutter = Math.round(this.tilePixelRatio_ * this.gutter_);
-    col = Math.floor(this.tilePixelRatio_ * col) + gutter;
-    row = Math.floor(this.tilePixelRatio_ * row) + gutter;
+    const renderWidth = this.renderSize_[0];
+    const renderHeight = this.renderSize_[1];
+    const gutter = this.gutter_;
 
     if (this.tile instanceof DataTile) {
+      const sourceSize = this.tile.getSize();
+
+      const sourceWidthWithoutGutter = sourceSize[0];
+      const sourceHeightWithoutGutter = sourceSize[1];
+      const sourceWidth = sourceWidthWithoutGutter + 2 * gutter;
+      const sourceHeight = sourceHeightWithoutGutter + 2 * gutter;
+
+      const sourceCol =
+        gutter +
+        Math.floor(sourceWidthWithoutGutter * (renderCol / renderWidth));
+
+      const sourceRow =
+        gutter +
+        Math.floor(sourceHeightWithoutGutter * (renderRow / renderHeight));
+
       const data = this.tile.getData();
-      let size = this.size;
-      if (gutter > 0) {
-        size = [size[0] + 2 * this.gutter_, size[1] + 2 * this.gutter_];
-      }
-      const pixelsPerRow = Math.floor(this.tilePixelRatio_ * size[0]);
       if (data instanceof DataView) {
-        const bytesPerPixel = data.byteLength / (size[0] * size[1]);
-        const offset = row * pixelsPerRow * bytesPerPixel + col * bytesPerPixel;
+        const bytesPerPixel = data.byteLength / (sourceWidth * sourceHeight);
+        const offset = bytesPerPixel * (sourceRow * sourceWidth + sourceCol);
         const buffer = data.buffer.slice(offset, offset + bytesPerPixel);
         return new DataView(buffer);
       }
 
-      const offset = row * pixelsPerRow * this.bandCount + col * this.bandCount;
+      const offset = this.bandCount * (sourceRow * sourceWidth + sourceCol);
       return data.slice(offset, offset + this.bandCount);
     }
 
@@ -375,10 +381,23 @@ class TileTexture extends EventTarget {
     }
     pixelContext.clearRect(0, 0, 1, 1);
 
-    let data;
     const image = this.tile.getImage();
+    const sourceWidth = image.width;
+    const sourceHeight = image.height;
+
+    const sourceWidthWithoutGutter = sourceWidth - 2 * gutter;
+    const sourceHeightWithoutGutter = sourceHeight - 2 * gutter;
+
+    const sourceCol =
+      gutter + Math.floor(sourceWidthWithoutGutter * (renderCol / renderWidth));
+
+    const sourceRow =
+      gutter +
+      Math.floor(sourceHeightWithoutGutter * (renderRow / renderHeight));
+
+    let data;
     try {
-      pixelContext.drawImage(image, col, row, 1, 1, 0, 0, 1, 1);
+      pixelContext.drawImage(image, sourceCol, sourceRow, 1, 1, 0, 0, 1, 1);
       data = pixelContext.getImageData(0, 0, 1, 1).data;
     } catch (err) {
       pixelContext = null;
