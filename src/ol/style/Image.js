@@ -11,7 +11,7 @@ import {toSize} from '../size.js';
  * @property {number} rotation Rotation.
  * @property {number|import("../size.js").Size} scale Scale.
  * @property {Array<number>} displacement Displacement.
- */
+ * @property {"declutter"|"obstacle"|"none"|undefined} declutterMode Declutter mode: `declutter`, `obstacle`, 'none */
 
 /**
  * @classdesc
@@ -61,6 +61,12 @@ class ImageStyle {
      * @type {Array<number>}
      */
     this.displacement_ = options.displacement;
+
+    /**
+     * @private
+     * @type {"declutter"|"obstacle"|"none"|undefined}
+     */
+    this.declutterMode_ = options.declutterMode;
   }
 
   /**
@@ -76,6 +82,7 @@ class ImageStyle {
       rotation: this.getRotation(),
       rotateWithView: this.getRotateWithView(),
       displacement: this.getDisplacement().slice(),
+      declutterMode: this.getDeclutterMode(),
     });
   }
 
@@ -130,6 +137,15 @@ class ImageStyle {
    */
   getDisplacement() {
     return this.displacement_;
+  }
+
+  /**
+   * Get the declutter mode of the shape
+   * @return {"declutter"|"obstacle"|"none"|undefined} Shape's declutter mode
+   * @api
+   */
+  getDeclutterMode() {
+    return this.declutterMode_;
   }
 
   /**

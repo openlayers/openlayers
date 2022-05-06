@@ -362,16 +362,29 @@ function renderPointGeometry(
   const textStyle = style.getText();
   /** @type {import("../render/canvas.js").DeclutterImageWithText} */
   let declutterImageWithText;
-  if (opt_declutterBuilderGroup) {
-    builderGroup = opt_declutterBuilderGroup;
-    declutterImageWithText =
-      imageStyle && textStyle && textStyle.getText() ? {} : undefined;
-  }
   if (imageStyle) {
     if (imageStyle.getImageState() != ImageState.LOADED) {
       return;
     }
-    const imageReplay = builderGroup.getBuilder(
+    let imageBuilderGroup = builderGroup;
+    if (opt_declutterBuilderGroup) {
+      const declutterMode = imageStyle.getDeclutterMode();
+      if (declutterMode !== 'none') {
+        imageBuilderGroup = opt_declutterBuilderGroup;
+        if (declutterMode === 'obstacle') {
+          // draw in non-declutter group:
+          const imageReplay = builderGroup.getBuilder(
+            style.getZIndex(),
+            BuilderType.IMAGE
+          );
+          imageReplay.setImageStyle(imageStyle, declutterImageWithText);
+          imageReplay.drawPoint(geometry, feature);
+        } else if (textStyle && textStyle.getText()) {
+          declutterImageWithText = {};
+        }
+      }
+    }
+    const imageReplay = imageBuilderGroup.getBuilder(
       style.getZIndex(),
       BuilderType.IMAGE
     );
@@ -379,7 +392,11 @@ function renderPointGeometry(
     imageReplay.drawPoint(geometry, feature);
   }
   if (textStyle && textStyle.getText()) {
-    const textReplay = builderGroup.getBuilder(
+    let textBuilderGroup = builderGroup;
+    if (opt_declutterBuilderGroup) {
+      textBuilderGroup = opt_declutterBuilderGroup;
+    }
+    const textReplay = textBuilderGroup.getBuilder(
       style.getZIndex(),
       BuilderType.TEXT
     );
@@ -406,16 +423,29 @@ function renderMultiPointGeometry(
   const textStyle = style.getText();
   /** @type {import("../render/canvas.js").DeclutterImageWithText} */
   let declutterImageWithText;
-  if (opt_declutterBuilderGroup) {
-    builderGroup = opt_declutterBuilderGroup;
-    declutterImageWithText =
-      imageStyle && textStyle && textStyle.getText() ? {} : undefined;
-  }
   if (imageStyle) {
     if (imageStyle.getImageState() != ImageState.LOADED) {
       return;
     }
-    const imageReplay = builderGroup.getBuilder(
+    let imageBuilderGroup = builderGroup;
+    if (opt_declutterBuilderGroup) {
+      const declutterMode = imageStyle.getDeclutterMode();
+      if (declutterMode !== 'none') {
+        imageBuilderGroup = opt_declutterBuilderGroup;
+        if (declutterMode === 'obstacle') {
+          // draw in non-declutter group:
+          const imageReplay = builderGroup.getBuilder(
+            style.getZIndex(),
+            BuilderType.IMAGE
+          );
+          imageReplay.setImageStyle(imageStyle, declutterImageWithText);
+          imageReplay.drawMultiPoint(geometry, feature);
+        } else if (textStyle && textStyle.getText()) {
+          declutterImageWithText = {};
+        }
+      }
+    }
+    const imageReplay = imageBuilderGroup.getBuilder(
       style.getZIndex(),
       BuilderType.IMAGE
     );
@@ -423,7 +453,11 @@ function renderMultiPointGeometry(
     imageReplay.drawMultiPoint(geometry, feature);
   }
   if (textStyle && textStyle.getText()) {
-    const textReplay = (opt_declutterBuilderGroup || builderGroup).getBuilder(
+    let textBuilderGroup = builderGroup;
+    if (opt_declutterBuilderGroup) {
+      textBuilderGroup = opt_declutterBuilderGroup;
+    }
+    const textReplay = textBuilderGroup.getBuilder(
       style.getZIndex(),
       BuilderType.TEXT
     );

@@ -93,6 +93,12 @@ class CanvasImageBuilder extends CanvasBuilder {
     this.width_ = undefined;
 
     /**
+     * @private
+     * @type {"declutter"|"obstacle"|"none"|undefined}
+     */
+    this.declutterMode_ = undefined;
+
+    /**
      * Data shared with a text builder for combined decluttering.
      * @private
      * @type {import("../canvas.js").DeclutterImageWithText}
@@ -132,6 +138,7 @@ class CanvasImageBuilder extends CanvasBuilder {
         (this.scale_[1] * this.pixelRatio) / this.imagePixelRatio_,
       ],
       Math.ceil(this.width_ * this.imagePixelRatio_),
+      this.declutterMode_,
       this.declutterImageWithText_,
     ]);
     this.hitDetectionInstructions.push([
@@ -150,6 +157,7 @@ class CanvasImageBuilder extends CanvasBuilder {
       this.rotation_,
       this.scale_,
       this.width_,
+      this.declutterMode_,
       this.declutterImageWithText_,
     ]);
     this.endGeometry(feature);
@@ -187,6 +195,7 @@ class CanvasImageBuilder extends CanvasBuilder {
         (this.scale_[1] * this.pixelRatio) / this.imagePixelRatio_,
       ],
       Math.ceil(this.width_ * this.imagePixelRatio_),
+      this.declutterMode_,
       this.declutterImageWithText_,
     ]);
     this.hitDetectionInstructions.push([
@@ -205,6 +214,7 @@ class CanvasImageBuilder extends CanvasBuilder {
       this.rotation_,
       this.scale_,
       this.width_,
+      this.declutterMode_,
       this.declutterImageWithText_,
     ]);
     this.endGeometry(feature);
@@ -255,6 +265,7 @@ class CanvasImageBuilder extends CanvasBuilder {
     this.rotation_ = imageStyle.getRotation();
     this.scale_ = imageStyle.getScaleArray();
     this.width_ = size[0];
+    this.declutterMode_ = imageStyle.getDeclutterMode();
     this.declutterImageWithText_ = opt_sharedData;
   }
 }

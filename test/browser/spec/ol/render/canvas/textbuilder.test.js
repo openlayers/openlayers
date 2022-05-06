@@ -320,7 +320,7 @@ describe('ol.render.canvas.TextBuilder', function () {
     builder.drawText(feature.getGeometry(), feature);
     expect(builder.coordinates).to.have.length(2);
     expect(builder.instructions).to.have.length(3);
-    const geometryWidths = builder.instructions[1][24];
+    const geometryWidths = builder.instructions[1][25];
     expect(geometryWidths).to.have.length(1);
     expect(geometryWidths[0]).to.be(120);
   });

@@ -31,6 +31,7 @@ import {
  * @property {boolean} [rotateWithView=false] Whether to rotate the shape with the view.
  * @property {number|import("../size.js").Size} [scale=1] Scale. Unless two dimensional scaling is required a better
  * result may be obtained with appropriate settings for `radius`, `radius1` and `radius2`.
+ * @property {"declutter"|"obstacle"|"none"|undefined} [declutterMode] Declutter mode
  */
 
 /**
@@ -69,6 +70,7 @@ class RegularShape extends ImageStyle {
       scale: options.scale !== undefined ? options.scale : 1,
       displacement:
         options.displacement !== undefined ? options.displacement : [0, 0],
+      declutterMode: options.declutterMode,
     });
 
     /**
@@ -159,6 +161,7 @@ class RegularShape extends ImageStyle {
       rotateWithView: this.getRotateWithView(),
       scale: Array.isArray(scale) ? scale.slice() : scale,
       displacement: this.getDisplacement().slice(),
+      declutterMode: this.getDeclutterMode(),
     });
     style.setOpacity(this.getOpacity());
     return style;
