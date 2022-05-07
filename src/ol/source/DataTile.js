@@ -11,6 +11,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
 import {getKeyZXY} from '../tilecoord.js';
 import {getUid} from '../util.js';
 import {toPromise} from '../functions.js';
+import {toSize} from '../size.js';
 
 /**
  * Data tile loading function.  The function is called with z, x, and y tile coordinates and
@@ -26,7 +27,8 @@ import {toPromise} from '../functions.js';
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [maxZoom=42] Optional max zoom level. Not used if `tileGrid` is provided.
  * @property {number} [minZoom=0] Optional min zoom level. Not used if `tileGrid` is provided.
- * @property {number|import("../size.js").Size} [tileSize=[256, 256]] The pixel width and height of the tiles.
+ * @property {number|import("../size.js").Size} [tileSize=[256, 256]] The pixel width and height of the source tiles.
+ * This may be different than the rendered pixel size if a `tileGrid` is provided.
  * @property {number} [gutter=0] The size in pixels of the gutter around data tiles to ignore.
  * This allows artifacts of rendering at tile edges to be ignored.
  * Supported data should be wider and taller than the tile size by a value of `2 x gutter`.
@@ -35,7 +37,8 @@ import {toPromise} from '../functions.js';
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
  * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {import("./State.js").default} [state] The source state.
- * @property {number} [tilePixelRatio] Tile pixel ratio.
+ * @property {number} [tilePixelRatio] Deprecated.  To have tiles scaled, pass a `tileSize` representing
+ * the source tile size and a `tileGrid` with the desired rendered tile size.
  * @property {boolean} [wrapX=false] Render tiles beyond the antimeridian.
  * @property {number} [transition] Transition time when fading in new tiles (in miliseconds).
  * @property {number} [bandCount=4] Number of bands represented in the data.
@@ -91,6 +94,25 @@ class DataTileSource extends TileSource {
 
     /**
      * @private
+     * @type {import('../size.js').Size|null}
+     */
+    this.tileSize_ = options.tileSize ? toSize(options.tileSize) : null;
+    if (!this.tileSize_ && options.tilePixelRatio && tileGrid) {
+      const renderTileSize = toSize(tileGrid.getTileSize(0));
+      this.tileSize_ = [
+        renderTileSize[0] * options.tilePixelRatio,
+        renderTileSize[1] * options.tilePixelRatio,
+      ];
+    }
+
+    /**
+     * @private
+     * @type {Array<import('../size.js').Size>|null}
+     */
+    this.tileSizes_ = null;
+
+    /**
+     * @private
      * @type {!Object<string, boolean>}
      */
     this.tileLoadingKeys_ = {};
@@ -106,6 +128,34 @@ class DataTileSource extends TileSource {
      * @type {number}
      */
     this.bandCount = options.bandCount === undefined ? 4 : options.bandCount; // assume RGBA if undefined
+  }
+
+  /**
+   * Set the source tile sizes.  The length of the array is expected to match the number of
+   * levels in the tile grid.
+   * @protected
+   * @param {Array<import('../size.js').Size>} tileSizes An array of tile sizes.
+   */
+  setTileSizes(tileSizes) {
+    this.tileSizes_ = tileSizes;
+  }
+
+  /**
+   * Get the source tile size at the given zoom level.  This may be different than the rendered tile
+   * size.
+   * @protected
+   * @param {number} z Tile zoom level.
+   * @return {import('../size.js').Size} The source tile size.
+   */
+  getTileSize(z) {
+    if (this.tileSizes_) {
+      return this.tileSizes_[z];
+    }
+    if (this.tileSize_) {
+      return this.tileSize_;
+    }
+    const tileGrid = this.getTileGrid();
+    return tileGrid ? toSize(tileGrid.getTileSize(z)) : [256, 256];
   }
 
   /**
@@ -133,6 +183,7 @@ class DataTileSource extends TileSource {
    * @return {!DataTile} Tile.
    */
   getTile(z, x, y, pixelRatio, projection) {
+    const size = this.getTileSize(z);
     const tileCoordKey = getKeyZXY(z, x, y);
     if (this.tileCache.containsKey(tileCoordKey)) {
       return this.tileCache.get(tileCoordKey);
@@ -146,9 +197,16 @@ class DataTileSource extends TileSource {
       });
     }
 
-    const tile = new DataTile(
-      assign({tileCoord: [z, x, y], loader: loader}, this.tileOptions)
+    const options = assign(
+      {
+        tileCoord: [z, x, y],
+        loader: loader,
+        size: size,
+      },
+      this.tileOptions
     );
+
+    const tile = new DataTile(options);
     tile.key = this.getKey();
     tile.addEventListener(EventType.CHANGE, this.handleTileChange_);
 

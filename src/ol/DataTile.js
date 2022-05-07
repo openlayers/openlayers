@@ -18,6 +18,7 @@ import TileState from './TileState.js';
  * transitions in milliseconds. A duration of 0 disables the opacity transition.
  * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
  * the nearest neighbor is used when resampling.
+ * @property {import('./size.js').Size} [size=[256, 256]] Tile size.
  * @api
  */
 
@@ -50,6 +51,20 @@ class DataTile extends Tile {
      * @private
      */
     this.error_ = null;
+
+    /**
+     * @type {import('./size.js').Size}
+     * @private
+     */
+    this.size_ = options.size || [256, 256];
+  }
+
+  /**
+   * Get the tile size.
+   * @return {import('./size.js').Size} Tile size.
+   */
+  getSize() {
+    return this.size_;
   }
 
   /**

@@ -5,6 +5,7 @@ import View from '../../../../../src/ol/View.js';
 import WebGLHelper from '../../../../../src/ol/webgl/Helper.js';
 import WebGLTileLayer from '../../../../../src/ol/layer/WebGLTile.js';
 import {createCanvasContext2D} from '../../../../../src/ol/dom.js';
+import {createXYZ} from '../../../../../src/ol/tilegrid.js';
 import {getForViewAndSize} from '../../../../../src/ol/extent.js';
 import {getRenderPixel} from '../../../../../src/ol/render.js';
 
@@ -81,7 +82,8 @@ describe('ol/layer/WebGLTile', function () {
     it('retrieves pixel data', (done) => {
       const layer = new WebGLTileLayer({
         source: new DataTileSource({
-          tilePixelRatio: 1 / 256,
+          tileSize: 1,
+          tileGrid: createXYZ(),
           loader(z, x, y) {
             return new Uint8Array([5, 4, 3, 2, 1]);
           },
@@ -106,7 +108,8 @@ describe('ol/layer/WebGLTile', function () {
     it('preserves the original data type', (done) => {
       const layer = new WebGLTileLayer({
         source: new DataTileSource({
-          tilePixelRatio: 1 / 256,
+          tileSize: 1,
+          tileGrid: createXYZ(),
           loader(z, x, y) {
             return new Float32Array([1.11, 2.22, 3.33, 4.44, 5.55]);
           },

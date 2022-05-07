@@ -33,6 +33,28 @@ describe('ol/DataTile', function () {
     });
   });
 
+  describe('#getSize()', function () {
+    it('returns [256, 256] by default', function () {
+      const tileCoord = [0, 0, 0];
+      const tile = new DataTile({
+        tileCoord: tileCoord,
+        loader: loader,
+      });
+      expect(tile.getSize()).to.eql([256, 256]);
+    });
+
+    it('respects what is provided in the constructor', function () {
+      const size = [123, 456];
+      const tileCoord = [0, 0, 0];
+      const tile = new DataTile({
+        size: size,
+        tileCoord: tileCoord,
+        loader: loader,
+      });
+      expect(tile.getSize()).to.eql(size);
+    });
+  });
+
   describe('#load()', function () {
     it('handles loading states correctly', function (done) {
       const tileCoord = [0, 0, 0];

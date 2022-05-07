@@ -318,7 +318,6 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     const tileLayer = this.getLayer();
     const tileSource = tileLayer.getRenderSource();
     const tileGrid = tileSource.getTileGridForProjection(viewState.projection);
-    const tilePixelRatio = tileSource.getTilePixelRatio(frameState.pixelRatio);
     const gutter = tileSource.getGutterForProjection(viewState.projection);
 
     const tileSourceKey = getUid(tileSource);
@@ -371,7 +370,6 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
                 tile: tile,
                 grid: tileGrid,
                 helper: this.helper,
-                tilePixelRatio: tilePixelRatio,
                 gutter: gutter,
               });
               tileTextureCache.set(cacheKey, tileTexture);

@@ -40,6 +40,30 @@ describe('ol/source/DataTile', function () {
     });
   });
 
+  describe('#getTileSize()', function () {
+    it('returns [256, 256] by default', function () {
+      const source = new DataTileSource({});
+      expect(source.getTileSize(0)).to.eql([256, 256]);
+    });
+
+    it('respects a tileSize passed to the constructor', function () {
+      const size = [1234, 5678];
+      const source = new DataTileSource({tileSize: size});
+      expect(source.getTileSize(0)).to.eql(size);
+    });
+
+    it('picks from an array of sizes passed to setTileSizes()', function () {
+      const sizes = [
+        [123, 456],
+        [234, 567],
+        [345, 678],
+      ];
+      const source = new DataTileSource({});
+      source.setTileSizes(sizes);
+      expect(source.getTileSize(1)).to.eql(sizes[1]);
+    });
+  });
+
   describe('#getInterpolate()', function () {
     it('is false by default', function () {
       const source = new DataTileSource({loader: () => {}});
