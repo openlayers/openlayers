@@ -549,7 +549,7 @@ class GeoTIFFSource extends DataTile {
         assertEqual(
           commonRenderTileSizes.slice(minZoom, commonRenderTileSizes.length),
           renderTileSizes,
-          0,
+          0.01,
           `Tile size mismatch for source ${sourceIndex}`,
           this.viewRejector
         );
