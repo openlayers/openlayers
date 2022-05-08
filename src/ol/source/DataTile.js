@@ -3,10 +3,19 @@
  */
 import DataTile from '../DataTile.js';
 import EventType from '../events/EventType.js';
+import ReprojDataTile from '../reproj/DataTile.js';
+import TileCache from '../TileCache.js';
 import TileEventType from './TileEventType.js';
 import TileSource, {TileSourceEvent} from './Tile.js';
 import TileState from '../TileState.js';
-import {createXYZ, extentFromProjection} from '../tilegrid.js';
+import {canvasPool} from '../reproj.js';
+import {createCanvasContext2D, releaseCanvas} from '../dom.js';
+import {
+  createXYZ,
+  extentFromProjection,
+  getForProjection as getTileGridForProjection,
+} from '../tilegrid.js';
+import {equivalent, get as getProjection} from '../proj.js';
 import {getKeyZXY} from '../tilecoord.js';
 import {getUid} from '../util.js';
 import {toPromise} from '../functions.js';
@@ -52,7 +61,7 @@ import {toSize} from '../size.js';
  */
 class DataTileSource extends TileSource {
   /**
-   * @param {Options} options Image tile options.
+   * @param {Options} options DataTile source options.
    */
   constructor(options) {
     const projection =
@@ -117,6 +126,18 @@ class DataTileSource extends TileSource {
      * @type {number}
      */
     this.bandCount = options.bandCount === undefined ? 4 : options.bandCount; // assume RGBA if undefined
+
+    /**
+     * @protected
+     * @type {!Object<string, import("../tilegrid/TileGrid.js").default>}
+     */
+    this.tileGridForProjection = {};
+
+    /**
+     * @protected
+     * @type {!Object<string, import("../TileCache.js").default>}
+     */
+    this.tileCacheForProjection = {};
   }
 
   /**
@@ -152,7 +173,12 @@ class DataTileSource extends TileSource {
    * @return {number} Gutter.
    */
   getGutterForProjection(projection) {
-    return this.gutter_;
+    const thisProj = this.getProjection();
+    if (!thisProj || equivalent(thisProj, projection)) {
+      return this.gutter_;
+    } else {
+      return 0;
+    }
   }
 
   /**
@@ -172,6 +198,61 @@ class DataTileSource extends TileSource {
    * @return {!DataTile} Tile.
    */
   getTile(z, x, y, pixelRatio, projection) {
+    const sourceProjection = this.getProjection();
+    if (
+      sourceProjection &&
+      projection &&
+      !equivalent(sourceProjection, projection)
+    ) {
+      const cache = this.getTileCacheForProjection(projection);
+      let tile;
+      const tileCoordKey = getKeyZXY(z, x, y);
+      if (cache.containsKey(tileCoordKey)) {
+        tile = cache.get(tileCoordKey);
+      }
+      const key = this.getKey();
+      if (tile && tile.key == key) {
+        return tile;
+      } else {
+        const tileGrid = this.getTileGrid();
+        const reprojTilePixelRatio = Math.max.apply(
+          null,
+          tileGrid.getResolutions().map((r, z) => {
+            const tileSize = toSize(tileGrid.getTileSize(z));
+            const textureSize = this.getTileSize(z);
+            return Math.max(
+              textureSize[0] / tileSize[0],
+              textureSize[1] / tileSize[1]
+            );
+          })
+        );
+
+        const sourceTileGrid = this.getTileGridForProjection(sourceProjection);
+        const targetTileGrid = this.getTileGridForProjection(projection);
+        const tileCoord = [z, x, y];
+        const wrappedTileCoord = this.getTileCoordForTileUrlFunction(
+          tileCoord,
+          projection
+        );
+        const newTile = new ReprojDataTile(
+          sourceProjection,
+          sourceTileGrid,
+          projection,
+          targetTileGrid,
+          tileCoord,
+          wrappedTileCoord,
+          reprojTilePixelRatio,
+          this.getGutterForProjection(sourceProjection),
+          function (z, x, y, pixelRatio) {
+            return this.getTile(z, x, y, pixelRatio, sourceProjection);
+          }.bind(this),
+          this.getInterpolate()
+        );
+        newTile.key = key;
+        return newTile;
+      }
+    }
+
     const size = this.getTileSize(z);
     const tileCoordKey = getKeyZXY(z, x, y);
     if (this.tileCache.containsKey(tileCoordKey)) {
@@ -228,6 +309,115 @@ class DataTileSource extends TileSource {
       this.dispatchEvent(new TileSourceEvent(type, tile));
     }
   }
+
+  /**
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @return {!import("../tilegrid/TileGrid.js").default} Tile grid.
+   */
+  getTileGridForProjection(projection) {
+    const thisProj = this.getProjection();
+    if (this.tileGrid && (!thisProj || equivalent(thisProj, projection))) {
+      return this.tileGrid;
+    } else {
+      const projKey = getUid(projection);
+      if (!(projKey in this.tileGridForProjection)) {
+        this.tileGridForProjection[projKey] =
+          getTileGridForProjection(projection);
+      }
+      return this.tileGridForProjection[projKey];
+    }
+  }
+
+  /**
+   * Sets the tile grid to use when reprojecting the tiles to the given
+   * projection instead of the default tile grid for the projection.
+   *
+   * This can be useful when the default tile grid cannot be created
+   * (e.g. projection has no extent defined) or
+   * for optimization reasons (custom tile size, resolutions, ...).
+   *
+   * @param {import("../proj.js").ProjectionLike} projection Projection.
+   * @param {import("../tilegrid/TileGrid.js").default} tilegrid Tile grid to use for the projection.
+   * @api
+   */
+  setTileGridForProjection(projection, tilegrid) {
+    const proj = getProjection(projection);
+    if (proj) {
+      const projKey = getUid(proj);
+      if (!(projKey in this.tileGridForProjection)) {
+        this.tileGridForProjection[projKey] = tilegrid;
+      }
+    }
+  }
+
+  /**
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @return {import("../TileCache.js").default} Tile cache.
+   */
+  getTileCacheForProjection(projection) {
+    const thisProj = this.getProjection();
+    if (!thisProj || equivalent(thisProj, projection)) {
+      return this.tileCache;
+    } else {
+      const projKey = getUid(projection);
+      if (!(projKey in this.tileCacheForProjection)) {
+        this.tileCacheForProjection[projKey] = new TileCache(0.1); // don't cache
+      }
+      return this.tileCacheForProjection[projKey];
+    }
+  }
+
+  /**
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {!Object<string, boolean>} usedTiles Used tiles.
+   */
+  expireCache(projection, usedTiles) {
+    const usedTileCache = this.getTileCacheForProjection(projection);
+
+    this.tileCache.expireCache(
+      this.tileCache == usedTileCache ? usedTiles : {}
+    );
+    for (const id in this.tileCacheForProjection) {
+      const tileCache = this.tileCacheForProjection[id];
+      tileCache.expireCache(tileCache == usedTileCache ? usedTiles : {});
+    }
+  }
+
+  clear() {
+    super.clear();
+    for (const id in this.tileCacheForProjection) {
+      this.tileCacheForProjection[id].clear();
+    }
+  }
 }
 
 export default DataTileSource;
+
+/**
+ * Determines the browser's ability to accurately reproject data. Some browsers
+ * (mostly Gecko-based) may interpolate byte values and corrupt Float32 values,
+ * especially when reprojecting between non-parallel projections, in which case
+ * an alternative output may be preferable.
+ * @return {boolean} True if the browser can accurately reproject data.
+ * @api
+ */
+export function getReprojectCapability() {
+  const ctx1 = createCanvasContext2D(2, 2, canvasPool);
+  const imageData = ctx1.getImageData(0, 0, 2, 2);
+  imageData.data[0] = 255;
+  imageData.data[3] = 255;
+  imageData.data[7] = 255;
+  imageData.data[11] = 255;
+  imageData.data[12] = 255;
+  imageData.data[15] = 255;
+  ctx1.putImageData(imageData, 0, 0);
+  const ctx2 = createCanvasContext2D(1, 1, canvasPool);
+  ctx2.imageSmoothingEnabled = false;
+  ctx2.drawImage(ctx1.canvas, 0, 0, 2, 2, 0, 0, 1, 1);
+  const data = ctx2.getImageData(0, 0, 1, 1).data;
+  releaseCanvas(ctx1);
+  canvasPool.push(ctx1.canvas);
+  releaseCanvas(ctx2);
+  canvasPool.push(ctx2.canvas);
+  return data[0] === 0 || data[0] === 255;
+}
