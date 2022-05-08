@@ -181,8 +181,7 @@
 
       <div class="row-fluid">
         <h5 class="source-heading">main.js</h5>
-        <pre><code id="example-js-source" class="language-js">import 'ol/ol.css';
-{{ js.source }}</code></pre>
+        <pre><code id="example-js-source" class="language-js">{{ js.source }}</code></pre>
       </div>
 
       <div class="row-fluid">
@@ -198,6 +197,9 @@
     &lt;script src="https://cdn.polyfill.io/v3/polyfill.min.js?features=fetch,requestAnimationFrame,Element.prototype.classList,TextDecoder"&gt;&lt;/script&gt;
     &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/3.18.3/minified.js"&gt;&lt;/script&gt;{{#if extraHead.remote}}
 {{ indent extraHead.remote spaces=4 }}{{/if}}
+    &lt;style&gt;
+    @import "node_modules/ol/ol.css";
+    &lt;/style&gt;
     &lt;style&gt;
       .map {
         width: 100%;
