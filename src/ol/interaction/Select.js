@@ -153,7 +153,9 @@ const originalFeatureStyles = {};
  * output. There are three ways of controlling which features are selected:
  * using the browser event as defined by the `condition` and optionally the
  * `toggle`, `add`/`remove`, and `multi` options; a `layers` filter; and a
- * further feature filter using the `filter` option.
+ * further feature filter using the `filter` option. Cluster sources are not
+ * supported by this interaction, which means that selection must be done using
+ * map events directly.
  *
  * @fires SelectEvent
  * @api
