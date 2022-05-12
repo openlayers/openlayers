@@ -476,8 +476,7 @@ class GeoTIFFSource extends DataTile {
         const image = images[imageIndex];
         const nodataValue = image.getGDALNoData();
         metadata[sourceIndex][imageIndex] = image.getGDALMetadata(0);
-        nodataValues[sourceIndex][imageIndex] =
-          nodataValue === null ? NaN : nodataValue;
+        nodataValues[sourceIndex][imageIndex] = nodataValue;
 
         const wantedSamples = this.sourceInfo_[sourceIndex].bands;
         samplesPerPixel[sourceIndex] = wantedSamples
@@ -607,7 +606,7 @@ class GeoTIFFSource extends DataTile {
       const bands = this.sourceInfo_[sourceIndex].bands;
       if (bands) {
         for (let i = 0; i < bands.length; ++i) {
-          if (!isNaN(values[bands[i] - 1])) {
+          if (values[bands[i] - 1] !== null) {
             this.addAlpha_ = true;
             break outer;
           }
@@ -617,7 +616,7 @@ class GeoTIFFSource extends DataTile {
 
       // option 3: check image metadata for all bands
       for (let imageIndex = 0; imageIndex < values.length; ++imageIndex) {
-        if (!isNaN(values[imageIndex])) {
+        if (values[imageIndex] !== null) {
           this.addAlpha_ = true;
           break outer;
         }
@@ -681,7 +680,7 @@ class GeoTIFFSource extends DataTile {
 
       /** @type {number|Array<number>} */
       let fillValue;
-      if (!isNaN(source.nodata)) {
+      if ('nodata' in source && source.nodata !== null) {
         fillValue = source.nodata;
       } else {
         if (!samples) {
@@ -778,7 +777,11 @@ class GeoTIFFSource extends DataTile {
                   nodata = nodataValues[sourceIndex][bandIndex];
                 }
 
-                if (sourceValue !== nodata) {
+                const nodataIsNaN = isNaN(nodata);
+                if (
+                  (!nodataIsNaN && sourceValue !== nodata) ||
+                  (nodataIsNaN && !isNaN(sourceValue))
+                ) {
                   transparent = false;
                   data[dataIndex] = value;
                 }
