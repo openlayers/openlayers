@@ -688,36 +688,43 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       let contextSaved = false;
       // Clip mask for regions in this tile that already filled by a higher z tile
       const currentClip = executorGroups[0].getClipCoords(transform);
-      for (let j = 0, jj = clips.length; j < jj; ++j) {
-        if (z !== currentZ && currentZ < clipZs[j]) {
-          const clip = clips[j];
-          if (
-            intersects(
-              [currentClip[0], currentClip[3], currentClip[4], currentClip[7]],
-              [clip[0], clip[3], clip[4], clip[7]]
-            )
-          ) {
-            if (!contextSaved) {
-              context.save();
-              contextSaved = true;
+      if (currentClip) {
+        for (let j = 0, jj = clips.length; j < jj; ++j) {
+          if (z !== currentZ && currentZ < clipZs[j]) {
+            const clip = clips[j];
+            if (
+              intersects(
+                [
+                  currentClip[0],
+                  currentClip[3],
+                  currentClip[4],
+                  currentClip[7],
+                ],
+                [clip[0], clip[3], clip[4], clip[7]]
+              )
+            ) {
+              if (!contextSaved) {
+                context.save();
+                contextSaved = true;
+              }
+              context.beginPath();
+              // counter-clockwise (outer ring) for current tile
+              context.moveTo(currentClip[0], currentClip[1]);
+              context.lineTo(currentClip[2], currentClip[3]);
+              context.lineTo(currentClip[4], currentClip[5]);
+              context.lineTo(currentClip[6], currentClip[7]);
+              // clockwise (inner ring) for higher z tile
+              context.moveTo(clip[6], clip[7]);
+              context.lineTo(clip[4], clip[5]);
+              context.lineTo(clip[2], clip[3]);
+              context.lineTo(clip[0], clip[1]);
+              context.clip();
             }
-            context.beginPath();
-            // counter-clockwise (outer ring) for current tile
-            context.moveTo(currentClip[0], currentClip[1]);
-            context.lineTo(currentClip[2], currentClip[3]);
-            context.lineTo(currentClip[4], currentClip[5]);
-            context.lineTo(currentClip[6], currentClip[7]);
-            // clockwise (inner ring) for higher z tile
-            context.moveTo(clip[6], clip[7]);
-            context.lineTo(clip[4], clip[5]);
-            context.lineTo(clip[2], clip[3]);
-            context.lineTo(clip[0], clip[1]);
-            context.clip();
           }
         }
+        clips.push(currentClip);
+        clipZs.push(currentZ);
       }
-      clips.push(currentClip);
-      clipZs.push(currentZ);
       for (let t = 0, tt = executorGroups.length; t < tt; ++t) {
         const executorGroup = executorGroups[t];
         executorGroup.execute(
