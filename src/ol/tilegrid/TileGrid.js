@@ -337,7 +337,7 @@ class TileGrid {
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {import("../TileRange.js").default} [opt_tileRange] Temporary import("../TileRange.js").default object.
    * @param {import("../extent.js").Extent} [opt_extent] Temporary import("../extent.js").Extent object.
-   * @return {import("../TileRange.js").default} Tile range.
+   * @return {import("../TileRange.js").default|null} Tile range.
    */
   getTileCoordChildTileRange(tileCoord, opt_tileRange, opt_extent) {
     if (tileCoord[0] < this.maxZoom) {
@@ -369,7 +369,7 @@ class TileGrid {
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {number} z Integer zoom level.
    * @param {import("../TileRange.js").default} [opt_tileRange] Temporary import("../TileRange.js").default object.
-   * @return {import("../TileRange.js").default} Tile range.
+   * @return {import("../TileRange.js").default|null} Tile range.
    */
   getTileRangeForTileCoordAndZ(tileCoord, z, opt_tileRange) {
     if (z > this.maxZoom || z < this.minZoom) {
