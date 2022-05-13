@@ -287,7 +287,7 @@ class ExecutorGroup {
 
   /**
    * @param {import("../../transform.js").Transform} transform Transform.
-   * @return {Array<number>} Clip coordinates.
+   * @return {Array<number>|null} Clip coordinates.
    */
   getClipCoords(transform) {
     const maxExtent = this.maxExtent_;
