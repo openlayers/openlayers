@@ -107,7 +107,7 @@ const createTextStyle = function (feature, resolution, dom) {
     const openSans = document.createElement('link');
     openSans.href = 'https://fonts.googleapis.com/css?family=Open+Sans';
     openSans.rel = 'stylesheet';
-    document.getElementsByTagName('head')[0].appendChild(openSans);
+    document.head.appendChild(openSans);
     openSansAdded = true;
   }
   const font = weight + ' ' + size + '/' + height + ' ' + dom.font.value;

@@ -5,7 +5,6 @@ describe('ol.render.canvas', function () {
   font.href =
     'https://fonts.googleapis.com/css?family=Abel&text=wmytzilWMYTZIL%40%23%2F%26%3F%24%2510';
   font.rel = 'stylesheet';
-  const head = document.getElementsByTagName('head')[0];
 
   describe('ol.render.canvas.registerFont()', function () {
     beforeEach(function () {
@@ -65,7 +64,7 @@ describe('ol.render.canvas', function () {
     });
 
     it('triggers redraw and clear measurements for fonts that become available', function (done) {
-      head.appendChild(font);
+      document.head.appendChild(font);
       render.checkedFonts.addEventListener(
         'propertychange',
         function onPropertyChange(e) {
@@ -75,6 +74,8 @@ describe('ol.render.canvas', function () {
           );
           expect(e.key).to.be('normal\nnormal\nAbel');
           expect(render.textHeights).to.eql({});
+
+          document.head.removeChild(font);
           done();
         }
       );

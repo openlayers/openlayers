@@ -24,7 +24,6 @@ import {getUid} from '../../../../../../src/ol/util.js';
 
 describe('ol/renderer/canvas/VectorTileLayer', function () {
   describe('constructor', function () {
-    const head = document.getElementsByTagName('head')[0];
     const font = document.createElement('link');
     font.href = 'https://fonts.googleapis.com/css?family=Dancing+Script';
     font.rel = 'stylesheet';
@@ -200,12 +199,12 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
     it('re-renders for fonts that become available', function (done) {
       map.renderSync();
       checkedFonts.values_ = {};
-      head.appendChild(font);
+      document.head.appendChild(font);
       layerStyle[0].getText().setFont('12px "Dancing Script",sans-serif');
       layer.changed();
       const revision = layer.getRevision();
       setTimeout(function () {
-        head.removeChild(font);
+        document.head.removeChild(font);
         expect(layer.getRevision()).to.be(revision + 1);
         done();
       }, 1600);

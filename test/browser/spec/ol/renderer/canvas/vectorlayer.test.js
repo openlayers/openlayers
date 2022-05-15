@@ -23,7 +23,6 @@ import {get as getProjection} from '../../../../../../src/ol/proj.js';
 
 describe('ol.renderer.canvas.VectorLayer', function () {
   describe('constructor', function () {
-    const head = document.getElementsByTagName('head')[0];
     const font = document.createElement('link');
     font.href = 'https://fonts.googleapis.com/css?family=Droid+Sans';
     font.rel = 'stylesheet';
@@ -156,7 +155,7 @@ describe('ol.renderer.canvas.VectorLayer', function () {
 
     it('re-renders for fonts that become available', function (done) {
       checkedFonts.values_ = {};
-      head.appendChild(font);
+      document.head.appendChild(font);
       const map = new Map({
         view: new View({
           center: [0, 0],
@@ -182,7 +181,7 @@ describe('ol.renderer.canvas.VectorLayer', function () {
       const revision = layer.getRevision();
       setTimeout(function () {
         expect(layer.getRevision()).to.be(revision + 1);
-        head.removeChild(font);
+        document.head.removeChild(font);
         done();
       }, 1600);
     });

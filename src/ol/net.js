@@ -39,7 +39,7 @@ export function jsonp(url, callback, opt_errback, opt_callbackParam) {
     cleanup();
     callback(data);
   };
-  document.getElementsByTagName('head')[0].appendChild(script);
+  document.head.appendChild(script);
 }
 
 export class ResponseError extends Error {

@@ -36,7 +36,7 @@ describe('ol/net', function () {
   });
 
   describe('jsonp()', function () {
-    const head = document.getElementsByTagName('head')[0];
+    const head = document.head;
     const origAppendChild = head.appendChild;
     const origCreateElement = document.createElement;
     const origSetTimeout = setTimeout;
