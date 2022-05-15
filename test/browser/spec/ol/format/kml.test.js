@@ -6,6 +6,7 @@ import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js
 import Icon from '../../../../../src/ol/style/Icon.js';
 import IconAnchorUnits from '../../../../../src/ol/style/IconAnchorUnits.js';
 import IconOrigin from '../../../../../src/ol/style/IconOrigin.js';
+import ImageState from '../../../../../src/ol/ImageState.js';
 import KML, {
   getDefaultFillStyle,
   getDefaultImageStyle,
@@ -2323,7 +2324,7 @@ describe('ol.format.KML', function () {
           expect(f).to.be.an(Feature);
           const styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
-          const styleArray = styleFunction(f, 0);
+          const styleArray = /** @type {Array<Style>} */ (styleFunction(f, 0));
           expect(styleArray).to.be.an(Array);
           expect(styleArray).to.have.length(1);
           const style = styleArray[0];
@@ -2342,11 +2343,13 @@ describe('ol.format.KML', function () {
           expect(style.getText()).to.be(getDefaultTextStyle());
           expect(style.getZIndex()).to.be(undefined);
 
-          setTimeout(function () {
-            expect(imageStyle.getSize()).to.eql([20, 20]);
-            expect(imageStyle.getScale()).to.be(1.6); // 32 / 20
-            done();
-          }, 200);
+          imageStyle.listenImageChange(function (evt) {
+            if (imageStyle.getImageState() === ImageState.LOADED) {
+              expect(imageStyle.getSize()).to.eql([20, 20]);
+              expect(imageStyle.getScale()).to.be(1.6); // 32 / 20
+              done();
+            }
+          });
         });
 
         it("can read a IconStyle's hotspot", function () {

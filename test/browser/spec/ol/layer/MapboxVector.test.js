@@ -208,7 +208,7 @@ describe('ol/layer/MapboxVector', () => {
       originalFetch = fetch;
       window.fetch = function (url) {
         fetchUrl = url;
-        return Promise.resolve();
+        return Promise.resolve({ok: false});
       };
     });
     afterEach(function () {
