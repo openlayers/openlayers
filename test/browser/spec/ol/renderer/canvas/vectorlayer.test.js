@@ -18,15 +18,20 @@ import {
   getWidth,
 } from '../../../../../../src/ol/extent.js';
 import {checkedFonts} from '../../../../../../src/ol/render/canvas.js';
+import {createFontStyle} from '../../../util.js';
 import {fromExtent} from '../../../../../../src/ol/geom/Polygon.js';
 import {get as getProjection} from '../../../../../../src/ol/proj.js';
 
 describe('ol.renderer.canvas.VectorLayer', function () {
   describe('constructor', function () {
-    const head = document.getElementsByTagName('head')[0];
-    const font = document.createElement('link');
-    font.href = 'https://fonts.googleapis.com/css?family=Droid+Sans';
-    font.rel = 'stylesheet';
+    const fontFamily = 'Ubuntu - VectorLayerTest';
+    const font = createFontStyle({
+      fontFamily: fontFamily,
+      src: {
+        url: '/spec/ol/data/fonts/ubuntu-regular-webfont.woff2',
+        format: 'woff2',
+      },
+    });
 
     let target;
 
@@ -156,7 +161,7 @@ describe('ol.renderer.canvas.VectorLayer', function () {
 
     it('re-renders for fonts that become available', function (done) {
       checkedFonts.values_ = {};
-      head.appendChild(font);
+      font.add();
       const map = new Map({
         view: new View({
           center: [0, 0],
@@ -167,7 +172,7 @@ describe('ol.renderer.canvas.VectorLayer', function () {
       const layerStyle = new Style({
         text: new Text({
           text: 'layer',
-          font: '12px "Droid Sans",sans-serif',
+          font: `12px "${fontFamily}",sans-serif`,
         }),
       });
 
@@ -181,9 +186,13 @@ describe('ol.renderer.canvas.VectorLayer', function () {
       map.addLayer(layer);
       const revision = layer.getRevision();
       setTimeout(function () {
-        expect(layer.getRevision()).to.be(revision + 1);
-        head.removeChild(font);
-        done();
+        try {
+          font.remove();
+          expect(layer.getRevision()).to.be(revision + 1);
+          done();
+        } catch (e) {
+          done(e);
+        }
       }, 1600);
     });
   });

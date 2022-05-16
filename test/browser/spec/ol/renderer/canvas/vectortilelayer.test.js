@@ -17,6 +17,7 @@ import View from '../../../../../../src/ol/View.js';
 import XYZ from '../../../../../../src/ol/source/XYZ.js';
 import {checkedFonts} from '../../../../../../src/ol/render/canvas.js';
 import {create} from '../../../../../../src/ol/transform.js';
+import {createFontStyle} from '../../../util.js';
 import {createXYZ} from '../../../../../../src/ol/tilegrid.js';
 import {getCenter} from '../../../../../../src/ol/extent.js';
 import {get as getProjection} from '../../../../../../src/ol/proj.js';
@@ -24,10 +25,14 @@ import {getUid} from '../../../../../../src/ol/util.js';
 
 describe('ol/renderer/canvas/VectorTileLayer', function () {
   describe('constructor', function () {
-    const head = document.getElementsByTagName('head')[0];
-    const font = document.createElement('link');
-    font.href = 'https://fonts.googleapis.com/css?family=Dancing+Script';
-    font.rel = 'stylesheet';
+    const fontFamily = 'Ubuntu - VectorTileLayerTest';
+    const font = createFontStyle({
+      fontFamily: fontFamily,
+      src: {
+        url: '/spec/ol/data/fonts/ubuntu-regular-webfont.woff2',
+        format: 'woff2',
+      },
+    });
 
     let map,
       layer,
@@ -200,14 +205,18 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
     it('re-renders for fonts that become available', function (done) {
       map.renderSync();
       checkedFonts.values_ = {};
-      head.appendChild(font);
-      layerStyle[0].getText().setFont('12px "Dancing Script",sans-serif');
+      font.add();
+      layerStyle[0].getText().setFont(`12px "${fontFamily}",sans-serif`);
       layer.changed();
       const revision = layer.getRevision();
       setTimeout(function () {
-        head.removeChild(font);
-        expect(layer.getRevision()).to.be(revision + 1);
-        done();
+        try {
+          font.remove();
+          expect(layer.getRevision()).to.be(revision + 1);
+          done();
+        } catch (e) {
+          done(e);
+        }
       }, 1600);
     });
 

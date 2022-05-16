@@ -21,7 +21,7 @@ describe('ol/layer/WebGLTile', function () {
       source: new DataTileSource({
         loader(z, x, y) {
           return new Promise((resolve) => {
-            resolve(new ImageData(256, 256));
+            resolve(new ImageData(256, 256).data);
           });
         },
       }),
@@ -278,15 +278,15 @@ describe('ol/layer/WebGLTile', function () {
       attribute vec2 a_textureCoord;
 
       uniform mat4 u_tileTransform;
-      uniform float u_texturePixelWidth; 
-      uniform float u_texturePixelHeight; 
-      uniform float u_textureResolution; 
-      uniform float u_textureOriginX; 
-      uniform float u_textureOriginY; 
+      uniform float u_texturePixelWidth;
+      uniform float u_texturePixelHeight;
+      uniform float u_textureResolution;
+      uniform float u_textureOriginX;
+      uniform float u_textureOriginY;
       uniform float u_depth;
 
       varying vec2 v_textureCoord;
-      varying vec2 v_mapCoord; 
+      varying vec2 v_mapCoord;
 
       void main() {
         v_textureCoord = a_textureCoord;
@@ -419,7 +419,7 @@ describe('ol/layer/WebGLTile', function () {
         source: new DataTileSource({
           loader(z, x, y) {
             return new Promise((resolve) => {
-              resolve(new ImageData(256, 256));
+              resolve(new ImageData(256, 256).data);
             });
           },
         }),
@@ -434,7 +434,7 @@ describe('ol/layer/WebGLTile', function () {
         source: new DataTileSource({
           loader(z, x, y) {
             return new Promise((resolve) => {
-              resolve(new ImageData(256, 256));
+              resolve(new ImageData(256, 256).data);
             });
           },
         }),
@@ -450,7 +450,7 @@ describe('ol/layer/WebGLTile', function () {
         source: new DataTileSource({
           loader(z, x, y) {
             return new Promise((resolve) => {
-              resolve(new ImageData(256, 256));
+              resolve(new ImageData(256, 256).data);
             });
           },
         }),
@@ -589,7 +589,7 @@ describe('ol/layer/WebGLTile', function () {
     sourceless.setSource(
       new DataTileSource({
         loader(z, x, y) {
-          return new ImageData(256, 256);
+          return new ImageData(256, 256).data;
         },
       })
     );
