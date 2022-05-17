@@ -188,10 +188,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    */
   prepareFrame(frameState) {
     const layerRevision = this.getLayer().getRevision();
-    if (this.renderedLayerRevision_ != layerRevision) {
+    if (this.renderedLayerRevision_ !== layerRevision) {
+      this.renderedLayerRevision_ = layerRevision;
       this.renderedTiles.length = 0;
     }
-    this.renderedLayerRevision_ = layerRevision;
     return super.prepareFrame(frameState);
   }
 
@@ -232,6 +232,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     if (declutter) {
       tile.declutterExecutorGroups[layerUid] = [];
     }
+    builderState.dirty = false;
     for (let t = 0, tt = sourceTiles.length; t < tt; ++t) {
       const sourceTile = sourceTiles[t];
       if (sourceTile.getState() != TileState.LOADED) {
@@ -249,7 +250,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const bufferedExtent = equals(sourceTileExtent, sharedExtent)
         ? null
         : builderExtent;
-      builderState.dirty = false;
       const builderGroup = new CanvasBuilderGroup(
         0,
         builderExtent,
@@ -332,7 +332,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     builderState.renderedRevision = revision;
     builderState.renderedRenderOrder = renderOrder;
     builderState.renderedResolution = resolution;
-    this.ready = !builderState.dirty;
   }
 
   /**
@@ -667,10 +666,12 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const tiles = this.renderedTiles;
     const clips = [];
     const clipZs = [];
+    let ready = true;
     for (let i = tiles.length - 1; i >= 0; --i) {
       const tile = /** @type {import("../../VectorRenderTile.js").default} */ (
         tiles[i]
       );
+      ready = ready && !tile.getReplayState(layer).dirty;
       const executorGroups = tile.executorGroups[getUid(layer)].filter(
         (group) => group.hasExecutors(replayTypes)
       );
@@ -735,6 +736,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       }
     }
     context.globalAlpha = alpha;
+    this.ready = ready;
 
     return this.container;
   }
