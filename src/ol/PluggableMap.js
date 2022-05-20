@@ -605,6 +605,9 @@ class PluggableMap extends BaseObject {
    * Clean up.
    */
   disposeInternal() {
+    this.controls.clear();
+    this.interactions.clear();
+    this.overlays_.clear();
     this.setTarget(null);
     super.disposeInternal();
   }
