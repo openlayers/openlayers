@@ -964,4 +964,52 @@ describe('ol/extent.js', function () {
       ).to.be(false);
     });
   });
+
+  describe('wrapAndSliceX', function () {
+    const projection = get('EPSG:4326');
+
+    it('leaves real world extent untouched', function () {
+      expect(_ol_extent_.wrapAndSliceX([16, 48, 18, 49], projection)).to.eql([
+        [16, 48, 18, 49],
+      ]);
+    });
+
+    it('slices +180 crossing extents', function () {
+      expect(_ol_extent_.wrapAndSliceX([164, 48, 198, 49], projection)).to.eql([
+        [164, 48, 180, 49],
+        [-180, 48, -162, 49],
+      ]);
+
+      expect(_ol_extent_.wrapAndSliceX([178, 48, 198, 49], projection)).to.eql([
+        [178, 48, 180, 49],
+        [-180, 48, -162, 49],
+      ]);
+    });
+
+    it('slices -180 crossing extents', function () {
+      expect(
+        _ol_extent_.wrapAndSliceX([-198, 48, -160, 49], projection)
+      ).to.eql([
+        [162, 48, 180, 49],
+        [-180, 48, -160, 49],
+      ]);
+
+      expect(
+        _ol_extent_.wrapAndSliceX([-202, 48, -160, 49], projection)
+      ).to.eql([
+        [158, 48, 180, 49],
+        [-180, 48, -160, 49],
+      ]);
+    });
+
+    it('fits infinite extents to the projection extent', function () {
+      expect(
+        _ol_extent_.wrapAndSliceX([-Infinity, 48, -160, 49], projection)
+      ).to.eql([[-180, 48, 180, 49]]);
+
+      expect(
+        _ol_extent_.wrapAndSliceX([-198, 48, Infinity, 49], projection)
+      ).to.eql([[-180, 48, 180, 49]]);
+    });
+  });
 });
