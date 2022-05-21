@@ -1,6 +1,7 @@
 /**
  * @module ol/interaction/Link
  */
+import EventType from '../events/EventType.js';
 import Interaction from './Interaction.js';
 import MapEventType from '../MapEventType.js';
 import {assign} from '../obj.js';
@@ -188,8 +189,11 @@ class Link extends Interaction {
    */
   registerListeners_(map) {
     this.listenerKeys_.push(
-      listen(map, MapEventType.MOVEEND, this.updateUrl_, this)
+      listen(map, MapEventType.MOVEEND, this.updateUrl_, this),
+      listen(map.getLayerGroup(), EventType.CHANGE, this.updateUrl_, this),
+      listen(map, 'change:layergroup', this.handleChangeLayerGroup_, this)
     );
+
     if (!this.replace_) {
       addEventListener('popstate', this.updateState_);
     }
@@ -208,13 +212,29 @@ class Link extends Interaction {
     if (!this.replace_) {
       removeEventListener('popstate', this.updateState_);
     }
+
     const url = new URL(window.location.href);
     const params = url.searchParams;
     this.delete_(params, 'x');
     this.delete_(params, 'y');
     this.delete_(params, 'z');
     this.delete_(params, 'r');
+    this.delete_(params, 'l');
     window.history.replaceState(null, '', url);
+  }
+
+  /**
+   * @private
+   */
+  handleChangeLayerGroup_() {
+    const map = this.getMap();
+    if (!map) {
+      return;
+    }
+    this.unregisterListeners_(map);
+    this.registerListeners_(map);
+    this.initial_ = true;
+    this.updateUrl_();
   }
 
   /**
@@ -232,23 +252,23 @@ class Link extends Interaction {
     const url = new URL(window.location.href);
     const params = url.searchParams;
 
-    let update = false;
+    let updateView = false;
 
     /**
      * @type {import('../View.js').AnimationOptions}
      */
-    const properties = {};
+    const viewProperties = {};
 
     const zoom = readNumber(this.get_(params, 'z'));
     if (differentNumber(zoom, view.getZoom())) {
-      update = true;
-      properties.zoom = zoom;
+      updateView = true;
+      viewProperties.zoom = zoom;
     }
 
     const rotation = readNumber(this.get_(params, 'r'));
     if (differentNumber(rotation, view.getRotation())) {
-      update = true;
-      properties.rotation = rotation;
+      updateView = true;
+      viewProperties.rotation = rotation;
     }
 
     const center = [
@@ -256,22 +276,37 @@ class Link extends Interaction {
       readNumber(this.get_(params, 'y')),
     ];
     if (differentArray(center, view.getCenter())) {
-      update = true;
-      properties.center = center;
+      updateView = true;
+      viewProperties.center = center;
     }
 
-    if (update) {
+    if (updateView) {
       if (!this.initial_ && this.animationOptions_) {
-        view.animate(assign(properties, this.animationOptions_));
+        view.animate(assign(viewProperties, this.animationOptions_));
       } else {
-        if (properties.center) {
-          view.setCenter(properties.center);
+        if (viewProperties.center) {
+          view.setCenter(viewProperties.center);
         }
-        if ('zoom' in properties) {
-          view.setZoom(properties.zoom);
+        if ('zoom' in viewProperties) {
+          view.setZoom(viewProperties.zoom);
         }
-        if ('rotation' in properties) {
-          view.setRotation(properties.rotation);
+        if ('rotation' in viewProperties) {
+          view.setRotation(viewProperties.rotation);
+        }
+      }
+    }
+
+    const layers = map.getAllLayers();
+    const layersParam = this.get_(params, 'l');
+    if (layersParam && layersParam.length === layers.length) {
+      for (let i = 0, ii = layers.length; i < ii; ++i) {
+        const value = parseInt(layersParam[i]);
+        if (!isNaN(value)) {
+          const visible = Boolean(value);
+          const layer = layers[i];
+          if (layer.getVisible() !== visible) {
+            layer.setVisible(visible);
+          }
         }
       }
     }
@@ -296,12 +331,20 @@ class Link extends Interaction {
     const zoom = view.getZoom();
     const rotation = view.getRotation();
 
+    const layers = map.getAllLayers();
+    const visibilities = new Array(layers.length);
+    for (let i = 0, ii = layers.length; i < ii; ++i) {
+      visibilities[i] = layers[i].getVisible() ? '1' : '0';
+    }
+
     const url = new URL(window.location.href);
     const params = url.searchParams;
+
     this.set_(params, 'x', writeNumber(center[0]));
     this.set_(params, 'y', writeNumber(center[1]));
     this.set_(params, 'z', writeNumber(zoom));
     this.set_(params, 'r', writeNumber(rotation));
+    this.set_(params, 'l', visibilities.join(''));
 
     if (url.href !== window.location.href) {
       if (initial || this.replace_) {

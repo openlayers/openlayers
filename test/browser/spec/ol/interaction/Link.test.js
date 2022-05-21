@@ -1,3 +1,4 @@
+import Layer from '../../../../../src/ol/layer/Tile.js';
 import Link from '../../../../../src/ol/interaction/Link.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
@@ -13,6 +14,11 @@ describe('ol/interaction/Link', () => {
         resolutions: [4, 2, 1],
         zoom: 1,
       }),
+      layers: [
+        new Layer({visible: true}),
+        new Layer({visible: false}),
+        new Layer({visible: true}),
+      ],
     });
     map.renderSync();
   });
@@ -32,6 +38,7 @@ describe('ol/interaction/Link', () => {
         expect(params.get('x')).to.be('3');
         expect(params.get('y')).to.be('4');
         expect(params.get('r')).to.be('0.5');
+        expect(params.get('l')).to.be('101');
         done();
       });
 
@@ -51,6 +58,7 @@ describe('ol/interaction/Link', () => {
         expect(params.get('ol:x')).to.be('3');
         expect(params.get('ol:y')).to.be('4');
         expect(params.get('ol:r')).to.be('0.5');
+        expect(params.get('ol:l')).to.be('101');
         done();
       });
 
