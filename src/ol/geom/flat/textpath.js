@@ -104,6 +104,9 @@ export function drawTextOnPath(
     return result;
   }
 
+  // rendering across line segments
+  text = text.replace(/\n/g, ' '); // ensure rendering in single-line as all calculations below don't handle multi-lines
+
   for (let i = 0, ii = text.length; i < ii; ) {
     advance();
     let angle = Math.atan2(y2 - y1, x2 - x1);
