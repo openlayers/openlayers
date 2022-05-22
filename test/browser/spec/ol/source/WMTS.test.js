@@ -475,6 +475,34 @@ describe('ol/source/WMTS', function () {
       expectDelta(extent[3], expectedMatrixSetExtend[3]);
     });
   });
+
+  describe('when creating options from epsg:4326 capabilities with BoundingBox', function () {
+    const parser = new WMTSCapabilities();
+    let capabilities;
+    before(function (done) {
+      afterLoadText(
+        'spec/ol/format/wmts/capabilities_epsg4326_with_boundingbox.xml',
+        function (xml) {
+          try {
+            capabilities = parser.read(xml);
+          } catch (e) {
+            done(e);
+          }
+          done();
+        }
+      );
+    });
+
+    it('returns correct bounding box when the layer has BoundingBox', function () {
+      const options = optionsFromCapabilities(capabilities, {
+        layer: 's2cloudless-2020',
+      });
+
+      const extent = options.tileGrid.getExtent();
+      expect(extent).to.eql([-180, -90, 180, 90]);
+    });
+  });
+
   describe('set wrap x by bounding box if available', function () {
     const parser = new WMTSCapabilities();
     let capabilities;

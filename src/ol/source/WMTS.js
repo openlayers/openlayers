@@ -461,7 +461,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
   }
 
   let wrapX = false;
-  const switchOriginXY = projection.getAxisOrientation().substr(0, 2) == 'ne';
+  const switchXY = projection.getAxisOrientation().substr(0, 2) == 'ne';
 
   let matrix = matrixSetObj.TileMatrix[0];
 
@@ -491,12 +491,20 @@ export function optionsFromCapabilities(wmtsCap, config) {
 
   const resolution =
     (matrix.ScaleDenominator * 0.00028) / projection.getMetersPerUnit(); // WMTS 1.0.0: standardized rendering pixel size
-  const origin = switchOriginXY
+  const origin = switchXY
     ? [matrix.TopLeftCorner[1], matrix.TopLeftCorner[0]]
     : matrix.TopLeftCorner;
   const tileSpanX = matrix.TileWidth * resolution;
   const tileSpanY = matrix.TileHeight * resolution;
-  const matrixSetExtent = matrixSetObj['BoundingBox'];
+  let matrixSetExtent = matrixSetObj['BoundingBox'];
+  if (matrixSetExtent && switchXY) {
+    matrixSetExtent = [
+      matrixSetExtent[1],
+      matrixSetExtent[0],
+      matrixSetExtent[3],
+      matrixSetExtent[2],
+    ];
+  }
   let extent = [
     origin[0] + tileSpanX * selectedMatrixLimit.MinTileCol,
     // add one to get proper bottom/right coordinate
