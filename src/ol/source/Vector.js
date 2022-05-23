@@ -736,19 +736,21 @@ class VectorSource extends Source {
    * features.
    *
    * @param {import("../extent.js").Extent} extent Extent.
-   * @param {import("../proj/Projection.js").default} [projection] Projection.
+   * @param {import("../proj/Projection.js").default} [opt_projection] Include features
+   * where `extent` exceeds the x-axis bounds of `projection` and wraps around the world.
    * @return {Array<import("../Feature.js").default<Geometry>>} Features.
    * @api
    */
-  getFeaturesInExtent(extent, projection) {
+  getFeaturesInExtent(extent, opt_projection) {
     if (this.featuresRtree_) {
-      const multiWorld = projection && projection.canWrapX() && this.getWrapX();
+      const multiWorld =
+        opt_projection && opt_projection.canWrapX() && this.getWrapX();
 
       if (!multiWorld) {
         return this.featuresRtree_.getInExtent(extent);
       }
 
-      const extents = wrapAndSliceX(extent, projection);
+      const extents = wrapAndSliceX(extent, opt_projection);
 
       return [].concat(
         ...extents.map((anExtent) => this.featuresRtree_.getInExtent(anExtent))
