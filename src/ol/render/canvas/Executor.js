@@ -1189,8 +1189,8 @@ class Executor {
           }
           ++i;
           break;
-        default:
-          ++i; // consume the instruction anyway, to avoid an infinite loop
+        default: // consume the instruction anyway, to avoid an infinite loop
+          ++i;
           break;
       }
     }

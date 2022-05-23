@@ -184,7 +184,7 @@ function getImagesForTIFF(tiff) {
 
 /**
  * @param {SourceInfo} source The GeoTIFF source.
- * @param {object} options Options for the GeoTIFF source.
+ * @param {Object} options Options for the GeoTIFF source.
  * @return {Promise<Array<GeoTIFFImage>>} Resolves to a list of images.
  */
 function getImagesForSource(source, options) {
@@ -345,7 +345,7 @@ class GeoTIFFSource extends DataTile {
     const numSources = this.sourceInfo_.length;
 
     /**
-     * @type {object}
+     * @type {Object}
      * @private
      */
     this.sourceOptions_ = options.sourceOptions;

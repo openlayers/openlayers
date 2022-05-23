@@ -424,8 +424,8 @@ class ImageWMS extends ImageSource {
         case WMSServerType.QGIS:
           params['DPI'] = 90 * pixelRatio;
           break;
-        default:
-          assert(false, 8); // Unknown `serverType` configured
+        default: // Unknown `serverType` configured
+          assert(false, 8);
           break;
       }
     }
