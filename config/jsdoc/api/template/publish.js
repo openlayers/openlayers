@@ -223,7 +223,7 @@ function getPrettyName(doclet) {
 
 /**
  * Create the navigation sidebar.
- * @param {object} members The members that will be used to create the sidebar.
+ * @param {Object} members The members that will be used to create the sidebar.
  * @param {Array<Object>} members.classes Classes.
  * @param {Array<Object>} members.externals Externals.
  * @param {Array<Object>} members.globals Globals.

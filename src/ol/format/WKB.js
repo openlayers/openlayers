@@ -365,12 +365,12 @@ class WkbReader {
 
 class WkbWriter {
   /**
-   * @type {object}
+   * @type {Object}
    * @property {string} [layout] geometryLayout
    * @property {boolean} [littleEndian=true] littleEndian
    * @property {boolean} [ewkb=true] Whether writes in EWKB format
-   * @property {object} [nodata] NoData value for each axes
-   * @param {object} opts options
+   * @property {Object} [nodata] NoData value for each axes
+   * @param {Object} opts options
    */
   constructor(opts) {
     opts = opts || {};
@@ -385,7 +385,7 @@ class WkbWriter {
     this.writeQueue_ = [];
 
     /**
-     * @type {object}
+     * @type {Object}
      * @property {number} X NoData value for X
      * @property {number} Y NoData value for Y
      * @property {number} Z NoData value for Z
@@ -421,7 +421,7 @@ class WkbWriter {
    */
   writePoint(coords, layout) {
     /**
-     * @type {object}
+     * @type {Object}
      * @property {number} X NoData value for X
      * @property {number} Y NoData value for Y
      * @property {number} [Z] NoData value for Z

@@ -355,8 +355,8 @@ class TileWMS extends TileImage {
         case WMSServerType.QGIS:
           params['DPI'] = 90 * pixelRatio;
           break;
-        default:
-          assert(false, 52); // Unknown `serverType` configured
+        default: // Unknown `serverType` configured
+          assert(false, 52);
           break;
       }
     }

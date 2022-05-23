@@ -180,8 +180,8 @@ class Zoomify extends TileImage {
           height >>= 1;
         }
         break;
-      default:
-        assert(false, 53); // Unknown `tierSizeCalculation` configured
+      default: // Unknown `tierSizeCalculation` configured
+        assert(false, 53);
         break;
     }
 
