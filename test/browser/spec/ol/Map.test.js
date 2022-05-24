@@ -22,6 +22,8 @@ import TileLayer from '../../../../src/ol/layer/Tile.js';
 import TileLayerRenderer from '../../../../src/ol/renderer/canvas/TileLayer.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
+import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
+import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
 import View from '../../../../src/ol/View.js';
 import WebGLPointsLayer from '../../../../src/ol/layer/WebGLPoints.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
@@ -37,6 +39,7 @@ import {
 } from '../../../../src/ol/proj.js';
 import {createXYZ} from '../../../../src/ol/tilegrid.js';
 import {defaults as defaultInteractions} from '../../../../src/ol/interaction.js';
+import {shared as iconImageCache} from '../../../../src/ol/style/IconImageCache.js';
 import {tile as tileStrategy} from '../../../../src/ol/loadingstrategy.js';
 
 describe('ol/Map', function () {
@@ -508,12 +511,13 @@ describe('ol/Map', function () {
       });
     });
 
-    describe('icon loading', function () {
+    describe('with icons', function () {
       /** @type {Icon} */
       let icon;
       beforeEach(function () {
+        iconImageCache.clear();
         icon = new Icon({
-          src: 'spec/ol/data/dot.png',
+          src: 'spec/ol/data/dot.png?delayed',
         });
 
         const delay = 100;
@@ -551,7 +555,59 @@ describe('ol/Map', function () {
         };
       });
 
-      it('waits for icons to load', function (done) {
+      it('waits for icons to be loaded with ol/renderer/canvas/VectorTileLayer', function (done) {
+        const delayIconAtTile = 1;
+        let tilesRequested = 0;
+        const tileSize = 64;
+        const tileGrid = createXYZ({tileSize: tileSize});
+        map = new Map({
+          target: target,
+          view: new View({
+            center: [0, 0],
+            resolution: 1,
+          }),
+          layers: [
+            new VectorTileLayer({
+              source: new VectorTileSource({
+                tileSize: tileSize,
+                tileUrlFunction: (tileCoord) => tileCoord.join('/'),
+                tileLoadFunction: function (tile, url) {
+                  const coordinate = tileGrid.getTileCoordCenter(
+                    tile.getTileCoord()
+                  );
+                  const feature = new Feature(new Point(coordinate));
+                  tile.setFeatures([feature]);
+                  if (tilesRequested++ === delayIconAtTile) {
+                    feature.setStyle(new Style({image: icon}));
+                  }
+                },
+              }),
+              style: new Style({
+                image: new Icon({
+                  src: 'spec/ol/data/dot.png',
+                }),
+              }),
+            }),
+          ],
+        });
+        let iconLoaded = false;
+        icon.listenImageChange(function (e) {
+          if (e.target.getImageState() === ImageState.LOADED) {
+            iconLoaded = true;
+          }
+        });
+        map.once('rendercomplete', function () {
+          try {
+            expect(tilesRequested).to.be.greaterThan(delayIconAtTile);
+            expect(iconLoaded).to.be(true);
+            done();
+          } catch (e) {
+            done(e);
+          }
+        });
+      });
+
+      it('waits for icons to be loaded with ol/renderer/canvas/VectorLayer', function (done) {
         map = new Map({
           target: target,
           view: new View({
@@ -569,15 +625,15 @@ describe('ol/Map', function () {
             }),
           ],
         });
-        let loaded = false;
+        let iconLoaded = false;
         icon.listenImageChange(function (e) {
           if (e.target.getImageState() === ImageState.LOADED) {
-            loaded = true;
+            iconLoaded = true;
           }
         });
         map.once('rendercomplete', function () {
           try {
-            expect(loaded).to.be(true);
+            expect(iconLoaded).to.be(true);
             done();
           } catch (e) {
             done(e);
