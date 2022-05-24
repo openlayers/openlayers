@@ -14,7 +14,7 @@ import VectorEventType from './VectorEventType.js';
 import {TRUE, VOID} from '../functions.js';
 import {all as allStrategy} from '../loadingstrategy.js';
 import {assert} from '../asserts.js';
-import {containsExtent, equals} from '../extent.js';
+import {containsExtent, equals, wrapAndSliceX} from '../extent.js';
 import {extend} from '../array.js';
 import {getUid} from '../util.js';
 import {getValues, isEmpty} from '../obj.js';
@@ -736,12 +736,25 @@ class VectorSource extends Source {
    * features.
    *
    * @param {import("../extent.js").Extent} extent Extent.
+   * @param {import("../proj/Projection.js").default} [opt_projection] Include features
+   * where `extent` exceeds the x-axis bounds of `projection` and wraps around the world.
    * @return {Array<import("../Feature.js").default<Geometry>>} Features.
    * @api
    */
-  getFeaturesInExtent(extent) {
+  getFeaturesInExtent(extent, opt_projection) {
     if (this.featuresRtree_) {
-      return this.featuresRtree_.getInExtent(extent);
+      const multiWorld =
+        opt_projection && opt_projection.canWrapX() && this.getWrapX();
+
+      if (!multiWorld) {
+        return this.featuresRtree_.getInExtent(extent);
+      }
+
+      const extents = wrapAndSliceX(extent, opt_projection);
+
+      return [].concat(
+        ...extents.map((anExtent) => this.featuresRtree_.getInExtent(anExtent))
+      );
     } else if (this.featuresCollection_) {
       return this.featuresCollection_.getArray().slice(0);
     } else {
