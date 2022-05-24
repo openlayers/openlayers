@@ -198,7 +198,7 @@ export function calculateSourceExtentResolution(
  * @param {Array<ImageExtent>} sources Array of sources.
  * @param {number} gutter Gutter of the sources.
  * @param {boolean} [opt_renderEdges] Render reprojection edges.
- * @param {Object} [opt_interpolate] Use linear interpolation when resampling.
+ * @param {boolean} [opt_interpolate] Use linear interpolation when resampling.
  * @return {HTMLCanvasElement} Canvas with reprojected data.
  */
 export function render(
