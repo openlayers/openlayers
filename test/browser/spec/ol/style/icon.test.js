@@ -78,8 +78,10 @@ describe('ol.style.Icon', function () {
       expect(original.anchorYUnits_).to.eql(clone.anchorYUnits_);
       expect(original.crossOrigin_).to.eql(clone.crossOrigin_);
       expect(original.getColor()).to.eql(clone.getColor());
+      expect(original.imgSize_).to.eql(clone.imgSize_);
       expect(original.offset_).to.eql(clone.offset_);
       expect(original.offsetOrigin_).to.eql(clone.offsetOrigin_);
+      expect(original.getScale()).to.eql(clone.getScale());
       expect(original.getSize()).to.eql(clone.getSize());
       expect(original.getSrc()).to.eql(clone.getSrc());
       expect(original.getOpacity()).to.eql(clone.getOpacity());
