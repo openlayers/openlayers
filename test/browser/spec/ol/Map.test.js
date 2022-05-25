@@ -22,9 +22,12 @@ import TileLayer from '../../../../src/ol/layer/Tile.js';
 import TileLayerRenderer from '../../../../src/ol/renderer/canvas/TileLayer.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
+import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
+import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
 import View from '../../../../src/ol/View.js';
 import WebGLPointsLayer from '../../../../src/ol/layer/WebGLPoints.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
+import {Icon, Style} from '../../../../src/ol/style.js';
 import {LineString, Point, Polygon} from '../../../../src/ol/geom.js';
 import {TRUE} from '../../../../src/ol/functions.js';
 import {
@@ -36,6 +39,7 @@ import {
 } from '../../../../src/ol/proj.js';
 import {createXYZ} from '../../../../src/ol/tilegrid.js';
 import {defaults as defaultInteractions} from '../../../../src/ol/interaction.js';
+import {shared as iconImageCache} from '../../../../src/ol/style/IconImageCache.js';
 import {tile as tileStrategy} from '../../../../src/ol/loadingstrategy.js';
 
 describe('ol/Map', function () {
@@ -403,105 +407,239 @@ describe('ol/Map', function () {
   });
 
   describe('rendercomplete event', function () {
-    let map;
+    let map, target;
+
     beforeEach(function () {
-      const target = document.createElement('div');
+      target = document.createElement('div');
       target.style.width = '100px';
       target.style.height = '100px';
       document.body.appendChild(target);
-      map = new Map({
-        target: target,
-        layers: [
-          new TileLayer({
-            opacity: 0.5,
-            source: new XYZ({
-              url: 'spec/ol/data/osm-{z}-{x}-{y}.png',
-            }),
-          }),
-          new ImageLayer({
-            source: new ImageStatic({
-              url: 'spec/ol/data/osm-0-0-0.png',
-              imageExtent: getProjection('EPSG:3857').getExtent(),
-              projection: 'EPSG:3857',
-            }),
-          }),
-          new VectorLayer({
-            source: new VectorSource({
-              url: 'spec/ol/data/point.json',
-              format: new GeoJSON(),
-            }),
-          }),
-          new VectorLayer({
-            source: new VectorSource({
-              url: 'spec/ol/data/point.json',
-              format: new GeoJSON(),
-              strategy: tileStrategy(createXYZ()),
-            }),
-          }),
-          new VectorLayer({
-            source: new VectorSource({
-              features: [new Feature(new Point([0, 0]))],
-            }),
-          }),
-          new VectorLayer({
-            source: new VectorSource({
-              loader: function (extent, resolution, projection) {
-                this.addFeature(new Feature(new Point([0, 0])));
-              },
-            }),
-          }),
-          new WebGLPointsLayer({
-            source: new VectorSource({
-              features: [new Feature(new Point([0, 0]))],
-            }),
-            style: {
-              symbol: {
-                color: 'red',
-                symbolType: 'circle',
-              },
-            },
-          }),
-        ],
-      });
     });
 
     afterEach(function () {
-      document.body.removeChild(map.getTargetElement());
-      map.setTarget(null);
-      map.dispose();
+      disposeMap(map);
       map.getLayers().forEach((layer) => layer.dispose());
     });
 
-    it('triggers when all tiles and sources are loaded and faded in', function (done) {
-      const layers = map.getLayers().getArray();
-      expect(layers[6].getRenderer().ready).to.be(false);
-      map.once('rendercomplete', function () {
-        expect(map.tileQueue_.getTilesLoading()).to.be(0);
-        expect(layers[1].getSource().image_.getState()).to.be(
-          ImageState.LOADED
+    describe('renderer ready property', function () {
+      beforeEach(function () {
+        map = new Map({
+          target: target,
+          layers: [
+            new TileLayer({
+              opacity: 0.5,
+              source: new XYZ({
+                url: 'spec/ol/data/osm-{z}-{x}-{y}.png',
+              }),
+            }),
+            new ImageLayer({
+              source: new ImageStatic({
+                url: 'spec/ol/data/osm-0-0-0.png',
+                imageExtent: getProjection('EPSG:3857').getExtent(),
+                projection: 'EPSG:3857',
+              }),
+            }),
+            new VectorLayer({
+              source: new VectorSource({
+                url: 'spec/ol/data/point.json',
+                format: new GeoJSON(),
+              }),
+            }),
+            new VectorLayer({
+              source: new VectorSource({
+                url: 'spec/ol/data/point.json',
+                format: new GeoJSON(),
+                strategy: tileStrategy(createXYZ()),
+              }),
+            }),
+            new VectorLayer({
+              source: new VectorSource({
+                features: [new Feature(new Point([0, 0]))],
+              }),
+            }),
+            new VectorLayer({
+              source: new VectorSource({
+                loader: function (extent, resolution, projection) {
+                  this.addFeature(new Feature(new Point([0, 0])));
+                },
+              }),
+            }),
+            new WebGLPointsLayer({
+              source: new VectorSource({
+                features: [new Feature(new Point([0, 0]))],
+              }),
+              style: {
+                symbol: {
+                  color: 'red',
+                  symbolType: 'circle',
+                },
+              },
+            }),
+          ],
+        });
+      });
+
+      it('triggers when all tiles and sources are loaded and faded in', function (done) {
+        const layers = map.getLayers().getArray();
+        expect(layers[6].getRenderer().ready).to.be(false);
+        map.once('rendercomplete', function () {
+          expect(map.tileQueue_.getTilesLoading()).to.be(0);
+          expect(layers[1].getSource().image_.getState()).to.be(
+            ImageState.LOADED
+          );
+          expect(layers[2].getSource().getFeatures().length).to.be(1);
+          expect(layers[6].getRenderer().ready).to.be(true);
+          done();
+        });
+        map.setView(
+          new View({
+            center: [0, 0],
+            zoom: 0,
+          })
         );
-        expect(layers[2].getSource().getFeatures().length).to.be(1);
-        expect(layers[6].getRenderer().ready).to.be(true);
-        done();
       });
-      map.setView(
-        new View({
-          center: [0, 0],
-          zoom: 0,
-        })
-      );
+
+      it('ignores invisible layers', function (done) {
+        map.getLayers().forEach((layer, i) => layer.setVisible(i === 4));
+        map.setView(
+          new View({
+            center: [0, 0],
+            zoom: 0,
+          })
+        );
+        map.once('rendercomplete', () => done());
+      });
     });
-    it('ignores invisible layers', function (done) {
-      map.getLayers().forEach(function (layer, i) {
-        layer.setVisible(i === 4);
+
+    describe('with icons', function () {
+      /** @type {Icon} */
+      let icon;
+      beforeEach(function () {
+        iconImageCache.clear();
+        icon = new Icon({
+          src: 'spec/ol/data/dot.png?delayed',
+        });
+
+        const delay = 100;
+        // Delay icon change events
+        let states = [{state: icon.getImageState()}];
+        icon.listenImageChange = function (listener) {
+          if (!listener._delay) {
+            listener._delay = (e) => {
+              const key = setTimeout(() => {
+                states.shift();
+                listener.call(this, e);
+              }, delay);
+              Object.assign(states[states.length - 1], {key, listener});
+              states.push({
+                state: Icon.prototype.getImageState.call(this),
+              });
+            };
+          }
+          return Icon.prototype.listenImageChange.call(this, listener._delay);
+        };
+        icon.unlistenImageChange = function (listener) {
+          states = states.filter((state) => {
+            if (state.listener !== listener) {
+              return true;
+            }
+            clearTimeout(listener.key);
+            return false;
+          });
+          const addedListener = listener._delay;
+          delete listener._delay;
+          return Icon.prototype.unlistenImageChange.call(this, addedListener);
+        };
+        icon.getImageState = function () {
+          return states[0].state;
+        };
       });
-      map.setView(
-        new View({
-          center: [0, 0],
-          zoom: 0,
-        })
-      );
-      map.once('rendercomplete', () => done());
+
+      it('waits for icons to be loaded with ol/renderer/canvas/VectorTileLayer', function (done) {
+        const delayIconAtTile = 1;
+        let tilesRequested = 0;
+        const tileSize = 64;
+        const tileGrid = createXYZ({tileSize: tileSize});
+        map = new Map({
+          target: target,
+          view: new View({
+            center: [0, 0],
+            resolution: 1,
+          }),
+          layers: [
+            new VectorTileLayer({
+              source: new VectorTileSource({
+                tileSize: tileSize,
+                tileUrlFunction: (tileCoord) => tileCoord.join('/'),
+                tileLoadFunction: function (tile, url) {
+                  const coordinate = tileGrid.getTileCoordCenter(
+                    tile.getTileCoord()
+                  );
+                  const feature = new Feature(new Point(coordinate));
+                  tile.setFeatures([feature]);
+                  if (tilesRequested++ === delayIconAtTile) {
+                    feature.setStyle(new Style({image: icon}));
+                  }
+                },
+              }),
+              style: new Style({
+                image: new Icon({
+                  src: 'spec/ol/data/dot.png',
+                }),
+              }),
+            }),
+          ],
+        });
+        let iconLoaded = false;
+        icon.listenImageChange(function (e) {
+          if (e.target.getImageState() === ImageState.LOADED) {
+            iconLoaded = true;
+          }
+        });
+        map.once('rendercomplete', function () {
+          try {
+            expect(tilesRequested).to.be.greaterThan(delayIconAtTile);
+            expect(iconLoaded).to.be(true);
+            done();
+          } catch (e) {
+            done(e);
+          }
+        });
+      });
+
+      it('waits for icons to be loaded with ol/renderer/canvas/VectorLayer', function (done) {
+        map = new Map({
+          target: target,
+          view: new View({
+            center: [0, 0],
+            resolution: 1,
+          }),
+          layers: [
+            new VectorLayer({
+              source: new VectorSource({
+                features: [new Feature(new Point([0, 0]))],
+              }),
+              style: new Style({
+                image: icon,
+              }),
+            }),
+          ],
+        });
+        let iconLoaded = false;
+        icon.listenImageChange(function (e) {
+          if (e.target.getImageState() === ImageState.LOADED) {
+            iconLoaded = true;
+          }
+        });
+        map.once('rendercomplete', function () {
+          try {
+            expect(iconLoaded).to.be(true);
+            done();
+          } catch (e) {
+            done(e);
+          }
+        });
+      });
     });
   });
 

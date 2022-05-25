@@ -124,14 +124,13 @@ export function renderFeature(
   let loading = false;
   const imageStyle = style.getImage();
   if (imageStyle) {
-    let imageState = imageStyle.getImageState();
+    const imageState = imageStyle.getImageState();
     if (imageState == ImageState.LOADED || imageState == ImageState.ERROR) {
       imageStyle.unlistenImageChange(listener);
     } else {
       if (imageState == ImageState.IDLE) {
         imageStyle.load();
       }
-      imageState = imageStyle.getImageState();
       imageStyle.listenImageChange(listener);
       loading = true;
     }

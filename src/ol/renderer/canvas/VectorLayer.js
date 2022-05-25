@@ -63,12 +63,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     this.animatingOrInteracting_;
 
     /**
-     * @private
-     * @type {boolean}
-     */
-    this.dirty_ = false;
-
-    /**
      * @type {ImageData}
      */
     this.hitDetectionImageData_ = null;
@@ -523,7 +517,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const updateWhileInteracting = vectorLayer.getUpdateWhileInteracting();
 
     if (
-      (!this.dirty_ && !updateWhileAnimating && animating) ||
+      (this.ready && !updateWhileAnimating && animating) ||
       (!updateWhileInteracting && interacting)
     ) {
       this.animatingOrInteracting_ = true;
@@ -594,7 +588,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     }
 
     if (
-      !this.dirty_ &&
+      this.ready &&
       this.renderedResolution_ == resolution &&
       this.renderedRevision_ == vectorLayerRevision &&
       this.renderedRenderOrder_ == vectorLayerRenderOrder &&
@@ -610,8 +604,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     }
 
     this.replayGroup_ = null;
-
-    this.dirty_ = false;
 
     const replayGroup = new CanvasBuilderGroup(
       getRenderTolerance(resolution, pixelRatio),
@@ -650,7 +642,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     }
 
     const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
-
+    let ready = true;
     const render =
       /**
        * @param {import("../../Feature.js").default} feature Feature.
@@ -672,7 +664,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
             userTransform,
             declutterBuilderGroup
           );
-          this.dirty_ = this.dirty_ || dirty;
+          ready = ready && !dirty;
         }
       }.bind(this);
 
@@ -686,6 +678,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       render(features[i]);
     }
     this.renderedFeatures_ = features;
+    this.ready = ready;
 
     const replayGroupInstructions = replayGroup.finish();
     const executorGroup = new ExecutorGroup(
