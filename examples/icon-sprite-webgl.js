@@ -124,12 +124,6 @@ client.onload = function () {
     prevIndex = curIndex + 1;
 
     const coords = fromLonLat([parseFloat(line[5]), parseFloat(line[4])]);
-
-    // only keep valid points
-    if (isNaN(coords[0]) || isNaN(coords[1])) {
-      continue;
-    }
-
     const shape = line[2];
     shapeTypes[shape] = (shapeTypes[shape] ? shapeTypes[shape] : 0) + 1;
     shapeTypes['all']++;
