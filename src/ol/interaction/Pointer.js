@@ -193,7 +193,10 @@ class PointerInteraction extends Interaction {
       const event = mapBrowserEvent.originalEvent;
 
       const id = event.pointerId.toString();
-      if (mapBrowserEvent.type == MapBrowserEventType.POINTERUP) {
+      if (
+        mapBrowserEvent.type == MapBrowserEventType.POINTERUP ||
+        mapBrowserEvent.type == MapBrowserEventType.POINTERCANCEL
+      ) {
         delete this.trackedPointers_[id];
       } else if (mapBrowserEvent.type == MapBrowserEventType.POINTERDOWN) {
         this.trackedPointers_[id] = event;
