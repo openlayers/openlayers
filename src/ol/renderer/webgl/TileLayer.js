@@ -18,7 +18,12 @@ import {
   scale as scaleTransform,
   translate as translateTransform,
 } from '../../transform.js';
-import {containsCoordinate, getIntersection, isEmpty} from '../../extent.js';
+import {
+  boundingExtent,
+  containsCoordinate,
+  getIntersection,
+  isEmpty,
+} from '../../extent.js';
 import {
   create as createMat4,
   fromTransform as mat4FromTransform,
@@ -713,15 +718,27 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
       }
     }
 
-    const source = layer.getRenderSource();
-    const tileGrid = source.getTileGridForProjection(viewState.projection);
-    if (!source.getWrapX()) {
-      const gridExtent = tileGrid.getExtent();
-      if (gridExtent) {
-        if (!containsCoordinate(gridExtent, coordinate)) {
-          return null;
+    // determine last source suitable for rendering at coordinate
+    const sources = layer.getSources(
+      boundingExtent([coordinate]),
+      viewState.resolution
+    );
+    let i, source, tileGrid;
+    for (i = sources.length - 1; i >= 0; --i) {
+      source = sources[i];
+      if (source.getState() === State.READY) {
+        tileGrid = source.getTileGridForProjection(viewState.projection);
+        if (source.getWrapX()) {
+          break;
+        }
+        const gridExtent = tileGrid.getExtent();
+        if (!gridExtent || containsCoordinate(gridExtent, coordinate)) {
+          break;
         }
       }
+    }
+    if (i < 0) {
+      return null;
     }
 
     const tileTextureCache = this.tileTextureCache_;
