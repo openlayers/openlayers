@@ -43,7 +43,7 @@ export {default as Zoomify} from './source/Zoomify.js';
  * This function takes a {@link module:ol/tilecoord~TileCoord} as argument and is expected to return a
  * {@link module:ol/source/Source~Source}. **Note**: The returned sources should have a tile grid with
  * a limited set of resolutions, matching the resolution range of a single zoom level of the pyramid
- * `tileGrid` that `createFromTileGrid` was called with.
+ * `tileGrid` that `sourcesFromTileGrid` was called with.
  * @return {function(import("./extent.js").Extent, number): Array<import("./source/Source.js").default>} Sources function.
  * @api
  */
