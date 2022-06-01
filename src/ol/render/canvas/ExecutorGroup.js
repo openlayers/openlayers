@@ -158,6 +158,7 @@ class ExecutorGroup {
    * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {number} resolution Resolution.
    * @param {number} rotation Rotation.
+   * @param {number} pixelRatio The pixel ratio of the frame.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {function(import("../../Feature.js").FeatureLike, import("../../geom/SimpleGeometry.js").default, number): T} callback Feature callback.
    * @param {Array<import("../../Feature.js").FeatureLike>} declutteredFeatures Decluttered features.
@@ -168,6 +169,7 @@ class ExecutorGroup {
     coordinate,
     resolution,
     rotation,
+    pixelRatio,
     hitTolerance,
     callback,
     declutteredFeatures
@@ -178,8 +180,8 @@ class ExecutorGroup {
       this.hitDetectionTransform_,
       hitTolerance + 0.5,
       hitTolerance + 0.5,
-      1 / resolution,
-      -1 / resolution,
+      pixelRatio / resolution,
+      -pixelRatio / resolution,
       -rotation,
       -coordinate[0],
       -coordinate[1]
