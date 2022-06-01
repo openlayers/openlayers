@@ -80,6 +80,25 @@ describe('ol/source/GeoTIFF', function () {
         tile.load();
       });
     });
+
+    it('loads from blob', (done) => {
+      fetch('spec/ol/source/images/0-0-0.tif')
+        .then((response) => response.blob())
+        .then((blob) => {
+          const source = new GeoTIFFSource({
+            sources: [{blob: blob}],
+          });
+          source.on('change', () => {
+            const tile = source.getTile(0, 0, 0);
+            source.on('tileloadend', () => {
+              expect(tile.getState()).to.be(TileState.LOADED);
+              expect(tile.getData()).to.be.a(Uint8Array);
+              done();
+            });
+            tile.load();
+          });
+        });
+    });
   });
 
   describe('loading', function () {
