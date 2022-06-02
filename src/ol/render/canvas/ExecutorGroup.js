@@ -174,12 +174,13 @@ class ExecutorGroup {
   ) {
     hitTolerance = Math.round(hitTolerance);
     const contextSize = hitTolerance * 2 + 1;
+    const sx = this.pixelRatio_ / resolution;
     const transform = composeTransform(
       this.hitDetectionTransform_,
       hitTolerance + 0.5,
       hitTolerance + 0.5,
-      1 / resolution,
-      -1 / resolution,
+      sx,
+      -sx,
       -rotation,
       -coordinate[0],
       -coordinate[1]
