@@ -418,7 +418,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     }
     const resolution = frameState.viewState.resolution;
     const rotation = frameState.viewState.rotation;
-    const pixelRatio = frameState.pixelRatio;
     const layer = this.getLayer();
 
     /** @type {!Object<string, import("../Map.js").HitMatch<T>|true>} */
@@ -469,7 +468,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         coordinate,
         resolution,
         rotation,
-        pixelRatio,
         hitTolerance,
         featureCallback,
         executorGroup === this.declutterExecutorGroup &&

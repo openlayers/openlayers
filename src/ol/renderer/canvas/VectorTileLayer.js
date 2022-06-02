@@ -352,7 +352,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   ) {
     const resolution = frameState.viewState.resolution;
     const rotation = frameState.viewState.rotation;
-    const pixelRatio = frameState.pixelRatio;
     hitTolerance = hitTolerance == undefined ? 0 : hitTolerance;
     const layer = this.getLayer();
     const source = layer.getSource();
@@ -434,7 +433,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
             coordinate,
             resolution,
             rotation,
-            pixelRatio,
             hitTolerance,
             featureCallback,
             declutteredFeatures
