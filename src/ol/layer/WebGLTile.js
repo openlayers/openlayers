@@ -14,6 +14,7 @@ import {
   getStringNumberEquivalent,
   uniformNameForVariable,
 } from '../style/expressions.js';
+import {wrapAndSliceX} from '../extent.js';
 
 /**
  * @typedef {import("../source/DataTile.js").default|import("../source/TileImage.js").default} SourceType
@@ -361,14 +362,31 @@ class WebGLTileLayer extends BaseTileLayer {
    * Gets the sources for this layer, for a given extent and resolution.
    * @param {import("../extent.js").Extent} extent Extent.
    * @param {number} resolution Resolution.
+   * @param {import("../proj/Projection.js").default} [projection] Projection.
    * @return {Array<SourceType>} Sources.
    */
-  getSources(extent, resolution) {
+  getSources(extent, resolution, projection) {
+    const sources = this.sources_;
+    function sourcesFromExtents() {
+      const extents = projection
+        ? wrapAndSliceX(extent.slice(), projection)
+        : [extent];
+      const sourcesArray = [];
+      for (let i = 0, ii = extents.length; i < ii; ++i) {
+        sourcesArray.push.apply(
+          sourcesArray,
+          /** @type {Function} */ (sources)(extents[i], resolution).filter(
+            (source) => !sourcesArray.includes(source)
+          )
+        );
+      }
+      return sourcesArray;
+    }
     const source = this.getSource();
-    return this.sources_
-      ? typeof this.sources_ === 'function'
-        ? this.sources_(extent, resolution)
-        : this.sources_
+    return sources
+      ? typeof sources === 'function'
+        ? sourcesFromExtents()
+        : sources
       : source
       ? [source]
       : [];
@@ -451,7 +469,11 @@ class WebGLTileLayer extends BaseTileLayer {
   render(frameState, target) {
     this.rendered = true;
     const viewState = frameState.viewState;
-    const sources = this.getSources(frameState.extent, viewState.resolution);
+    const sources = this.getSources(
+      frameState.extent,
+      viewState.resolution,
+      viewState.projection
+    );
     let ready = true;
     for (let i = 0, ii = sources.length; i < ii; ++i) {
       const source = sources[i];
@@ -477,7 +499,8 @@ class WebGLTileLayer extends BaseTileLayer {
     if (this.renderedResolution_ > 0.5 * viewState.resolution) {
       const altSources = this.getSources(
         frameState.extent,
-        this.renderedResolution_
+        this.renderedResolution_,
+        viewState.projection
       ).filter((source) => !sources.includes(source));
       if (altSources.length > 0) {
         return this.renderSources(frameState, altSources);

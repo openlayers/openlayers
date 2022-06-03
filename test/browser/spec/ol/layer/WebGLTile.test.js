@@ -729,7 +729,10 @@ describe('ol/layer/WebGLTile', function () {
     };
     layer.render({
       extent: [0, 0, 100, 100],
-      viewState: {resolution: 1},
+      viewState: {
+        resolution: 1,
+        projection: new View().getProjection(),
+      },
     });
     expect(sourceIds).to.eql(['source1', 'source2']);
   });
