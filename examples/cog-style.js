@@ -81,6 +81,7 @@ const layer = new TileLayer({
         url: 'https://s2downloads.eox.at/demo/EOxCloudless/2020/rgbnir/s2cloudless2020-16bits_sinlge-file_z0-4.tif',
       },
     ],
+    wrapX: true,
   }),
 });
 
