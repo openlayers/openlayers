@@ -100,7 +100,7 @@
     "sinon": "^14.0.0",
     "source-map-loader": "^3.0.1",
     "threads": "^1.6.5",
-    "typescript": "4.7.2",
+    "typescript": "4.7.3",
     "walk": "^2.3.9",
     "webpack": "^5.27.2",
     "webpack-cli": "^4.5.0",
