@@ -63,6 +63,7 @@ const SAMPLE_FRAMESTATE = {
     rotation: 0.4,
     resolution: 2,
     center: [10, 20],
+    zoom: 3,
   },
 };
 
@@ -154,6 +155,16 @@ describe('ol/webgl/WebGLHelper', function () {
           h.uniformLocations_[DefaultUniform.OFFSET_SCALE_MATRIX]
         ).not.to.eql(undefined);
         expect(h.uniformLocations_[DefaultUniform.TIME]).not.to.eql(undefined);
+        expect(h.uniformLocations_[DefaultUniform.ZOOM]).not.to.eql(undefined);
+        expect(h.uniformLocations_[DefaultUniform.RESOLUTION]).not.to.eql(
+          undefined
+        );
+        expect(h.uniformLocations_[DefaultUniform.SIZE_PX]).not.to.eql(
+          undefined
+        );
+        expect(h.uniformLocations_[DefaultUniform.PIXEL_RATIO]).not.to.eql(
+          undefined
+        );
       });
 
       it('has processed uniforms', function () {
@@ -411,6 +422,52 @@ describe('ol/webgl/WebGLHelper', function () {
       expect(spy.getCall(2).args[2]).to.eql(FLOAT);
       expect(spy.getCall(2).args[3]).to.eql(6 * bytesPerFloat);
       expect(spy.getCall(2).args[4]).to.eql(5 * bytesPerFloat);
+    });
+  });
+
+  describe('#applyFrameState', function () {
+    let stubMatrix, stubFloat, stubVec2, stubTime;
+    beforeEach(function () {
+      stubTime = sinon.stub(Date, 'now');
+      stubTime.returns(1000);
+      h = new WebGLHelper();
+      stubMatrix = sinon.stub(h, 'setUniformMatrixValue');
+      stubFloat = sinon.stub(h, 'setUniformFloatValue');
+      stubVec2 = sinon.stub(h, 'setUniformFloatVec2');
+
+      stubTime.returns(2000);
+      h.applyFrameState({...SAMPLE_FRAMESTATE, pixelRatio: 2});
+    });
+
+    afterEach(function () {
+      stubTime.restore();
+    });
+
+    it('sets the default uniforms according the frame state', function () {
+      expect(stubMatrix.getCall(0).args).to.eql([
+        DefaultUniform.OFFSET_SCALE_MATRIX,
+        [
+          0.9210609940028851, -0.3894183423086505, 0, 0, 0.3894183423086505,
+          0.9210609940028851, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1,
+        ],
+      ]);
+      expect(stubMatrix.getCall(1).args).to.eql([
+        DefaultUniform.OFFSET_ROTATION_MATRIX,
+        [
+          0.9210609940028851, -0.3894183423086505, 0, 0, 0.3894183423086505,
+          0.9210609940028851, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1,
+        ],
+      ]);
+
+      expect(stubFloat.getCall(0).args).to.eql([DefaultUniform.TIME, 1]);
+      expect(stubFloat.getCall(1).args).to.eql([DefaultUniform.ZOOM, 3]);
+      expect(stubFloat.getCall(2).args).to.eql([DefaultUniform.RESOLUTION, 2]);
+      expect(stubFloat.getCall(3).args).to.eql([DefaultUniform.PIXEL_RATIO, 2]);
+
+      expect(stubVec2.getCall(0).args).to.eql([
+        DefaultUniform.SIZE_PX,
+        [100, 150],
+      ]);
     });
   });
 });

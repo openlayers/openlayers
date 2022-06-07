@@ -50,6 +50,7 @@ export const DefaultUniform = {
   ZOOM: 'u_zoom',
   RESOLUTION: 'u_resolution',
   SIZE_PX: 'u_sizePx',
+  PIXEL_RATIO: 'u_pixelRatio',
 };
 
 /**
@@ -666,6 +667,7 @@ class WebGLHelper extends Disposable {
   applyFrameState(frameState) {
     const size = frameState.size;
     const rotation = frameState.viewState.rotation;
+    const pixelRatio = frameState.pixelRatio;
 
     const offsetScaleMatrix = resetTransform(this.offsetScaleMatrix_);
     scaleTransform(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
@@ -693,6 +695,7 @@ class WebGLHelper extends Disposable {
       DefaultUniform.RESOLUTION,
       frameState.viewState.resolution
     );
+    this.setUniformFloatValue(DefaultUniform.PIXEL_RATIO, pixelRatio);
     this.setUniformFloatVec2(DefaultUniform.SIZE_PX, [size[0], size[1]]);
   }
 

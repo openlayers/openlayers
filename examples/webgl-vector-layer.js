@@ -100,6 +100,7 @@ class WebGLLayer extends Layer {
         }`,
       lineStringFragmentShader: `
         precision mediump float;
+        uniform float u_pixelRatio;
         varying vec2 v_segmentStart;
         varying vec2 v_segmentEnd;
         varying float v_angleStart;
@@ -118,8 +119,9 @@ class WebGLLayer extends Layer {
         float lineWidth = 1.5;
 
         void main(void) {
+          vec2 v_currentPoint = gl_FragCoord.xy / u_pixelRatio;
           gl_FragColor = vec4(v_color.rgb * 0.75, 1.0);
-          gl_FragColor *= segmentDistanceField(gl_FragCoord.xy, v_segmentStart, v_segmentEnd, lineWidth);
+          gl_FragColor *= segmentDistanceField(v_currentPoint, v_segmentStart, v_segmentEnd, lineWidth);
         }`,
       pointVertexShader: `
         precision mediump float;
