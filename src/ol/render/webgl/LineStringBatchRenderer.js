@@ -50,7 +50,7 @@ class LineStringBatchRenderer extends AbstractBatchRenderer {
    * @param {import("./MixedGeometryBatch.js").LineStringGeometryBatch} batch Linestring geometry batch
    * @override
    */
-  generateRenderInstructions_(batch) {
+  generateRenderInstructions(batch) {
     // here we anticipate the amount of render instructions for lines:
     // 2 instructions per vertex for position (x and y)
     // + 1 instruction per line per custom attributes

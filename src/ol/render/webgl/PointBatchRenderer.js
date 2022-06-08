@@ -46,7 +46,7 @@ class PointBatchRenderer extends AbstractBatchRenderer {
    * @param {import("./MixedGeometryBatch.js").PointGeometryBatch} batch Point geometry batch
    * @override
    */
-  generateRenderInstructions_(batch) {
+  generateRenderInstructions(batch) {
     // here we anticipate the amount of render instructions for points:
     // 2 instructions per vertex for position (x and y)
     // + 1 instruction per vertex per custom attributes

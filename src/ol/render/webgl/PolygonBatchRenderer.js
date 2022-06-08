@@ -40,7 +40,7 @@ class PolygonBatchRenderer extends AbstractBatchRenderer {
    * @param {import("./MixedGeometryBatch.js").PolygonGeometryBatch} batch Polygon geometry batch
    * @override
    */
-  generateRenderInstructions_(batch) {
+  generateRenderInstructions(batch) {
     // here we anticipate the amount of render instructions for polygons:
     // 2 instructions per vertex for position (x and y)
     // + 1 instruction per polygon per custom attributes

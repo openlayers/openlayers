@@ -81,7 +81,7 @@ class AbstractBatchRenderer {
       frameState,
       createTransform()
     );
-    this.generateRenderInstructions_(batch);
+    this.generateRenderInstructions(batch);
     this.generateBuffers_(batch, geometryType, callback);
   }
 
@@ -115,7 +115,7 @@ class AbstractBatchRenderer {
    * @param {import("./MixedGeometryBatch.js").GeometryBatch} batch Geometry batch
    * @protected
    */
-  generateRenderInstructions_(batch) {
+  generateRenderInstructions(batch) {
     abstract();
   }
 
@@ -125,7 +125,7 @@ class AbstractBatchRenderer {
    * @param {import("./MixedGeometryBatch.js").GeometryBatch} batch Geometry batch
    * @param {import("../../geom/GeometryType.js").default} geometryType Geometry type
    * @param {function(): void} callback Function called once the render buffers are updated
-   * @protected
+   * @private
    */
   generateBuffers_(batch, geometryType, callback) {
     const messageId = workerMessageCounter++;
@@ -153,8 +153,6 @@ class AbstractBatchRenderer {
       renderInstructionsTransform: batch.renderInstructionsTransform,
       customAttributesCount: this.customAttributes_.length,
     };
-    // additional properties will be sent back as-is by the worker
-    message['projectionTransform'] = batch.renderInstructionsTransform;
     this.worker_.postMessage(message, [batch.renderInstructions.buffer]);
 
     // leave ownership of render instructions
@@ -177,7 +175,7 @@ class AbstractBatchRenderer {
         this.worker_.removeEventListener('message', handleMessage);
 
         // store transform & invert transform for webgl buffers
-        batch.verticesBufferTransform = received.projectionTransform;
+        batch.verticesBufferTransform = received.renderInstructionsTransform;
         makeInverseTransform(
           batch.invertVerticesBufferTransform,
           batch.verticesBufferTransform
