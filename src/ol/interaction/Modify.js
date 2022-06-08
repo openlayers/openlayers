@@ -1042,15 +1042,32 @@ class Modify extends PointerInteraction {
           coordinatesEqual(segment[1], vertex) &&
           !componentSegments[uid][1]
         ) {
-          // prevent dragging closed linestrings by the connecting node
           if (
-            (segmentDataMatch.geometry.getType() === GeometryType.LINE_STRING ||
-              segmentDataMatch.geometry.getType() ===
-                GeometryType.MULTI_LINE_STRING) &&
             componentSegments[uid][0] &&
             componentSegments[uid][0].index === 0
           ) {
-            continue;
+            let coordinates = segmentDataMatch.geometry.getCoordinates();
+            switch (segmentDataMatch.geometry.getType()) {
+              // prevent dragging closed linestrings by the connecting node
+              case GeometryType.LINE_STRING:
+              case GeometryType.MULTI_LINE_STRING:
+                continue;
+              // if dragging the first vertex of a polygon, ensure the other segment
+              // belongs to the closing vertex of the linear ring
+              case GeometryType.MULTI_POLYGON:
+                coordinates = coordinates[depth[1]];
+              /* falls through */
+              case GeometryType.POLYGON:
+                if (
+                  segmentDataMatch.index !==
+                  coordinates[depth[0]].length - 2
+                ) {
+                  continue;
+                }
+                break;
+              default:
+              // pass
+            }
           }
 
           this.dragSegments_.push([segmentDataMatch, 1]);
