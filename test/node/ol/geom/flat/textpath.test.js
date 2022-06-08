@@ -242,4 +242,59 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
     expect(instructions[0][3]).to.be((45 * Math.PI) / 180);
     expect(instructions.length).to.be(1);
   });
+
+  it('renders multi-line in one segment', function () {
+    const foo = 'foo';
+    const bar = 'bar';
+    const text = foo + '\n' + bar;
+    const pathLength = lineStringLength(angled, 2, angled.length, 2);
+    const textLength = measureAndCacheTextWidth('', bar);
+    const textAlign = 0.5;
+    const startM = (pathLength - textLength) * textAlign;
+    const instructions = drawTextOnPath(
+      angled,
+      0,
+      angled.length,
+      2,
+      text,
+      startM,
+      Infinity,
+      1,
+      measureAndCacheTextWidth,
+      '',
+      {}
+    );
+    expect(instructions[0][3]).to.be((45 * Math.PI) / 180);
+    expect(instructions[0][4]).to.be(text);
+    expect(instructions.length).to.be(1);
+  });
+
+  it('renders multi-line as single-line across segments', function () {
+    const foo = 'foo-foo-foo';
+    const bar = 'bar-bar-bar-bar-bar-bar-bar';
+    const text = foo + '\n' + bar;
+    const pathLength = lineStringLength(angled, 2, angled.length, 2);
+    const textLength = measureAndCacheTextWidth('', bar);
+    const textAlign = 0.5;
+    const startM = (pathLength - textLength) * textAlign;
+
+    const instructions = drawTextOnPath(
+      angled,
+      0,
+      angled.length,
+      2,
+      text,
+      startM,
+      Infinity,
+      1,
+      measureAndCacheTextWidth,
+      '',
+      {}
+    );
+    expect(instructions[0][3]).to.be((45 * Math.PI) / 180);
+    expect(instructions[0][4]).to.be('foo-foo-foo bar-bar-b');
+    expect(instructions.length).to.be(2);
+    expect(instructions[1][3]).to.be((-45 * Math.PI) / 180);
+    expect(instructions[1][4]).to.be('ar-bar-bar-bar-bar');
+  });
 });
