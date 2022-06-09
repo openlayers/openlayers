@@ -201,6 +201,15 @@ class RegularShape extends ImageStyle {
   }
 
   /**
+   * Set the fill style.
+   * @param {import("./Fill.js").default} fill Fill style.
+   * @api
+   */
+  setFill(fill) {
+    this.fill_ = fill;
+  }
+
+  /**
    * @return {HTMLCanvasElement} Image element.
    */
   getHitDetectionImage() {
@@ -307,6 +316,15 @@ class RegularShape extends ImageStyle {
    */
   getStroke() {
     return this.stroke_;
+  }
+
+  /**
+   * Set the stroke style.
+   * @param {import("./Stroke.js").default} stroke Stroke style.
+   * @api
+   */
+  setStroke(stroke) {
+    this.stroke_ = stroke;
   }
 
   /**
