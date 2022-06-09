@@ -15,6 +15,7 @@ import {buffer, createEmpty, equals, getWidth} from '../../extent.js';
 import {create as createTransform} from '../../transform.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {listen, unlistenByKey} from '../../events.js';
+import './shaders.js'; // this is to make sure that default shaders are part of the bundle
 
 /**
  * @typedef {Object} CustomAttribute A description of a custom attribute to be passed on to the GPU, with a value different
