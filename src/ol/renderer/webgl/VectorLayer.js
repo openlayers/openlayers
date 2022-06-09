@@ -10,39 +10,44 @@ import PolygonBatchRenderer from '../../render/webgl/PolygonBatchRenderer.js';
 import VectorEventType from '../../source/VectorEventType.js';
 import ViewHint from '../../ViewHint.js';
 import WebGLLayerRenderer from './Layer.js';
+import {
+  DEFAULT_LINESTRING_FRAGMENT,
+  DEFAULT_LINESTRING_VERTEX,
+  DEFAULT_POINT_FRAGMENT,
+  DEFAULT_POINT_VERTEX,
+  DEFAULT_POLYGON_FRAGMENT,
+  DEFAULT_POLYGON_VERTEX,
+  DefaultAttributes,
+  packColor,
+} from './shaders.js';
 import {DefaultUniform} from '../../webgl/Helper.js';
 import {buffer, createEmpty, equals, getWidth} from '../../extent.js';
 import {create as createTransform} from '../../transform.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {listen, unlistenByKey} from '../../events.js';
-import './shaders.js'; // this is to make sure that default shaders are part of the bundle
 
 /**
- * @typedef {Object} CustomAttribute A description of a custom attribute to be passed on to the GPU, with a value different
- * for each feature.
- * @property {string} name Attribute name.
- * @property {function(import("../../Feature").default, Object<string, *>):number} callback This callback computes the numerical value of the
- * attribute for a given feature (properties are available as 2nd arg for quicker access).
+ * @typedef {function(import("../../Feature").default, Object<string, *>):number} CustomAttributeCallback A callback computing
+ * the value of a custom attribute (different for each feature) to be passed on to the GPU.
+ * Properties are available as 2nd arg for quicker access.
+ */
+
+/**
+ * @typedef {Object} ShaderProgram An object containing both shaders (vertex and fragment) as well as the required attributes
+ * @property {string} [vertexShader] Vertex shader source (using the default one if unspecified).
+ * @property {string} [fragmentShader] Fragment shader source (using the default one if unspecified).
+ * @property {Object<string,CustomAttributeCallback>} attributes Custom attributes made available in the vertex shader.
+ * Keys are the names of the attributes which are then accessible in the vertex shader using the `a_` prefix, e.g.: `a_opacity`.
+ * Default shaders rely on the attributes in {@link module:ol/render/webgl/shaders~DefaultAttributes}.
  */
 
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the canvas element.
- * @property {Array<CustomAttribute>} [attributes] These attributes will be read from the features in the source
- * and then passed to the GPU. The `name` property of each attribute will serve as its identifier:
- *  * In the vertex shader as an `attribute` by prefixing it with `a_`
- *  * In the fragment shader as a `varying` by prefixing it with `v_`
- * Please note that these can only be numerical values.
- * @property {string} polygonVertexShader Vertex shader source, mandatory.
- * @property {string} polygonFragmentShader Fragment shader source, mandatory.
- * @property {string} lineStringVertexShader Vertex shader source, mandatory.
- * @property {string} lineStringFragmentShader Fragment shader source, mandatory.
- * @property {string} pointVertexShader Vertex shader source, mandatory.
- * @property {string} pointFragmentShader Fragment shader source, mandatory.
- * @property {string} [hitVertexShader] Vertex shader source for hit detection rendering.
- * @property {string} [hitFragmentShader] Fragment shader source for hit detection rendering.
- * @property {Object<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
- * Please note that `u_texture` is reserved for the main texture slot.
+ * @property {ShaderProgram} [polygonShader] Vertex shaders for polygons; using default shader if unspecified
+ * @property {ShaderProgram} [lineStringShader] Vertex shaders for line strings; using default shader if unspecified
+ * @property {ShaderProgram} [pointShader] Vertex shaders for points; using default shader if unspecified
+ * @property {Object<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions.
  * @property {Array<import("./Layer").PostProcessesOptions>} [postProcesses] Post-processes definitions
  */
 
@@ -119,13 +124,63 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
      */
     this.currentTransform_ = projectionMatrixTransform;
 
-    this.polygonVertexShader_ = options.polygonVertexShader;
-    this.polygonFragmentShader_ = options.polygonFragmentShader;
-    this.pointVertexShader_ = options.pointVertexShader;
-    this.pointFragmentShader_ = options.pointFragmentShader;
-    this.lineStringVertexShader_ = options.lineStringVertexShader;
-    this.lineStringFragmentShader_ = options.lineStringFragmentShader;
-    this.attributes_ = options.attributes;
+    const polygonAttributesWithDefault = {
+      [DefaultAttributes.COLOR]: function () {
+        return packColor('#ddd');
+      },
+      [DefaultAttributes.OPACITY]: function () {
+        return 1;
+      },
+      ...(options.polygonShader && options.polygonShader.attributes),
+    };
+    const lineAttributesWithDefault = {
+      [DefaultAttributes.COLOR]: function () {
+        return packColor('#eee');
+      },
+      [DefaultAttributes.OPACITY]: function () {
+        return 1;
+      },
+      [DefaultAttributes.WIDTH]: function () {
+        return 1.5;
+      },
+      ...(options.lineStringShader && options.lineStringShader.attributes),
+    };
+    const pointAttributesWithDefault = {
+      [DefaultAttributes.COLOR]: function () {
+        return packColor('#eee');
+      },
+      [DefaultAttributes.OPACITY]: function () {
+        return 1;
+      },
+      ...(options.pointShader && options.pointShader.attributes),
+    };
+    function toAttributesArray(obj) {
+      return Object.keys(obj).map((key) => ({name: key, callback: obj[key]}));
+    }
+
+    this.polygonVertexShader_ =
+      (options.polygonShader && options.polygonShader.vertexShader) ||
+      DEFAULT_POLYGON_VERTEX;
+    this.polygonFragmentShader_ =
+      (options.polygonShader && options.polygonShader.fragmentShader) ||
+      DEFAULT_POLYGON_FRAGMENT;
+    this.polygonAttributes_ = toAttributesArray(polygonAttributesWithDefault);
+
+    this.lineStringVertexShader_ =
+      (options.lineStringShader && options.lineStringShader.vertexShader) ||
+      DEFAULT_LINESTRING_VERTEX;
+    this.lineStringFragmentShader_ =
+      (options.lineStringShader && options.lineStringShader.fragmentShader) ||
+      DEFAULT_LINESTRING_FRAGMENT;
+    this.lineStringAttributes_ = toAttributesArray(lineAttributesWithDefault);
+
+    this.pointVertexShader_ =
+      (options.pointShader && options.pointShader.vertexShader) ||
+      DEFAULT_POINT_VERTEX;
+    this.pointFragmentShader_ =
+      (options.pointShader && options.pointShader.fragmentShader) ||
+      DEFAULT_POINT_FRAGMENT;
+    this.pointAttributes_ = toAttributesArray(pointAttributesWithDefault);
 
     this.worker_ = createWebGLWorker();
 
@@ -167,21 +222,21 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       this.worker_,
       this.polygonVertexShader_,
       this.polygonFragmentShader_,
-      this.attributes_ || []
+      this.polygonAttributes_
     );
     this.pointRenderer_ = new PointBatchRenderer(
       this.helper,
       this.worker_,
       this.pointVertexShader_,
       this.pointFragmentShader_,
-      this.attributes_ || []
+      this.pointAttributes_
     );
     this.lineStringRenderer_ = new LineStringBatchRenderer(
       this.helper,
       this.worker_,
       this.lineStringVertexShader_,
       this.lineStringFragmentShader_,
-      this.attributes_ || []
+      this.lineStringAttributes_
     );
   }
 
