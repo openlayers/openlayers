@@ -53,48 +53,23 @@ import {listen, unlistenByKey} from '../../events.js';
 
 /**
  * @classdesc
- * Experimental WebGL vector renderer. Supports polygons and lines.
+ * Experimental WebGL vector renderer. Supports polygons, lines and points:
+ *  * Polygons are broken down into triangles
+ *  * Lines are rendered as strips of quads
+ *  * Points are rendered as quads
  *
- * You need to provide vertex and fragment shaders for rendering. This can be done using
- * {@link module:ol/webgl/ShaderBuilder} utilities.
+ * You need to provide vertex and fragment shaders as well as custom attributes for each type of geometry. All shaders
+ * can access the uniforms in the {@link module:ol/webgl/Helper~DefaultUniform} enum.
+ * The vertex shaders can access the following attributes depending on the geometry type:
+ *  * For polygons: {@link module:ol/render/webgl/PolygonBatchRenderer~Attributes}
+ *  * For line strings: {@link module:ol/render/webgl/LineStringBatchRenderer~Attributes}
+ *  * For points: {@link module:ol/render/webgl/PointBatchRenderer~Attributes}
  *
- * To include variable attributes in the shaders, you need to declare them using the `attributes` property of
- * the options object like so:
- * ```js
- * new WebGLPointsLayerRenderer(layer, {
- *   attributes: [
- *     {
- *       name: 'size',
- *       callback: function(feature) {
- *         // compute something with the feature
- *       }
- *     },
- *     {
- *       name: 'weight',
- *       callback: function(feature) {
- *         // compute something with the feature
- *       }
- *     },
- *   ],
- *   vertexShader:
- *     // shader using attribute a_weight and a_size
- *   fragmentShader:
- *     // shader using varying v_weight and v_size
- * ```
+ * Please note that the fragment shaders output should have premultiplied alpha, otherwise visual anomalies may occur.
  *
- * To enable hit detection, you must as well provide dedicated shaders using the `hitVertexShader`
- * and `hitFragmentShader` properties. These shall expect the `a_hitColor` attribute to contain
- * the final color that will have to be output for hit detection to work.
+ * Note: this uses {@link module:ol/webgl/Helper~WebGLHelper} internally.
  *
- * The following uniform is used for the main texture: `u_texture`.
- *
- * Please note that the main shader output should have premultiplied alpha, otherwise visual anomalies may occur.
- *
- * Polygons are broken down into triangles using the @mapbox/earcut package.
- * Lines are rendered into strips of quads.
- *
- *
- * This uses {@link module:ol/webgl/Helper~WebGLHelper} internally.
+ * @api
  */
 class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   /**

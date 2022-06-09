@@ -38,8 +38,8 @@ export const ShaderType = {
 };
 
 /**
- * Uniform names used in the default shaders: `PROJECTION_MATRIX`, `OFFSET_SCALE_MATRIX`.
- * and `OFFSET_ROTATION_MATRIX`.
+ * Names of uniforms made available to all shaders.
+ * Please note: changing these *will* break custom shaders!
  * @enum {string}
  */
 export const DefaultUniform = {

@@ -6,6 +6,16 @@ import AbstractBatchRenderer from './BatchRenderer.js';
 import {AttributeType} from '../../webgl/Helper.js';
 import {apply as applyTransform} from '../../transform.js';
 
+/**
+ * Names of attributes made available to the vertex shader.
+ * Please note: changing these *will* break custom shaders!
+ * @enum {string}
+ */
+export const Attributes = {
+  POSITION: 'a_position',
+  INDEX: 'a_index',
+};
+
 class PointBatchRenderer extends AbstractBatchRenderer {
   /**
    * @param {import("../../webgl/Helper.js").default} helper WebGL helper instance
@@ -20,12 +30,12 @@ class PointBatchRenderer extends AbstractBatchRenderer {
     // vertices for point must hold both a position (x,y) and an index (their position in the quad)
     this.attributes_ = [
       {
-        name: 'a_position',
+        name: Attributes.POSITION,
         size: 2,
         type: AttributeType.FLOAT,
       },
       {
-        name: 'a_index',
+        name: Attributes.INDEX,
         size: 1,
         type: AttributeType.FLOAT,
       },

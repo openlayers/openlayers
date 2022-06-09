@@ -5,6 +5,15 @@ import AbstractBatchRenderer from './BatchRenderer.js';
 import {AttributeType} from '../../webgl/Helper.js';
 import {transform2D} from '../../geom/flat/transform.js';
 
+/**
+ * Names of attributes made available to the vertex shader.
+ * Please note: changing these *will* break custom shaders!
+ * @enum {string}
+ */
+export const Attributes = {
+  POSITION: 'a_position',
+};
+
 class PolygonBatchRenderer extends AbstractBatchRenderer {
   /**
    * @param {import("../../webgl/Helper.js").default} helper WebGL helper instance
@@ -19,7 +28,7 @@ class PolygonBatchRenderer extends AbstractBatchRenderer {
     // By default only a position attribute is required to render polygons
     this.attributes_ = [
       {
-        name: 'a_position',
+        name: Attributes.POSITION,
         size: 2,
         type: AttributeType.FLOAT,
       },

@@ -5,6 +5,17 @@ import AbstractBatchRenderer from './BatchRenderer.js';
 import {AttributeType} from '../../webgl/Helper.js';
 import {transform2D} from '../../geom/flat/transform.js';
 
+/**
+ * Names of attributes made available to the vertex shader.
+ * Please note: changing these *will* break custom shaders!
+ * @enum {string}
+ */
+export const Attributes = {
+  SEGMENT_START: 'a_segmentStart',
+  SEGMENT_END: 'a_segmentEnd',
+  PARAMETERS: 'a_parameters',
+};
+
 class LineStringBatchRenderer extends AbstractBatchRenderer {
   /**
    * @param {import("../../webgl/Helper.js").default} helper WebGL helper instance
@@ -19,17 +30,17 @@ class LineStringBatchRenderer extends AbstractBatchRenderer {
     // vertices for lines must hold both a position (x,y) and an offset (dx,dy)
     this.attributes_ = [
       {
-        name: 'a_segmentStart',
+        name: Attributes.SEGMENT_START,
         size: 2,
         type: AttributeType.FLOAT,
       },
       {
-        name: 'a_segmentEnd',
+        name: Attributes.SEGMENT_END,
         size: 2,
         type: AttributeType.FLOAT,
       },
       {
-        name: 'a_parameters',
+        name: Attributes.PARAMETERS,
         size: 1,
         type: AttributeType.FLOAT,
       },
