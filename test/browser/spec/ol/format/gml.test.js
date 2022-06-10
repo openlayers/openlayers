@@ -2290,6 +2290,39 @@ describe('ol.format.GML32', function () {
           '</gml:Curve>';
         expect(serialized.firstElementChild).to.xmleql(parse(expected));
       });
+
+      it('can read a polygon with a ring of curves', function () {
+        const text = `
+        <gml:Polygon xmlns:gml="http://www.opengis.net/gml/3.2" srsName="CRS:84">
+          <gml:exterior>
+            <gml:Ring>
+              <gml:curveMember>
+                <gml:Curve>
+                  <gml:segments>
+                    <gml:LineStringSegment interpolation="linear">
+                      <gml:posList>1 2 3 4</gml:posList>
+                    </gml:LineStringSegment>
+                    <gml:LineStringSegment interpolation="linear">
+                      <gml:posList>5 6 7 8</gml:posList>
+                    </gml:LineStringSegment>
+                  </gml:segments>
+                </gml:Curve>
+              </gml:curveMember>
+            </gml:Ring>
+          </gml:exterior>
+        </gml:Polygon>
+        `;
+        const g = readGeometry(format, text);
+        expect(g).to.be.an(Polygon);
+        expect(g.getCoordinates()).to.eql([
+          [
+            [1, 2, 0],
+            [3, 4, 0],
+            [5, 6, 0],
+            [7, 8, 0],
+          ],
+        ]);
+      });
     });
 
     describe('envelope', function () {
