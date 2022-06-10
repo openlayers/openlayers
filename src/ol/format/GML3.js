@@ -13,6 +13,7 @@ import {
   XML_SCHEMA_INSTANCE_URI,
   createElementNS,
   getAllTextContent,
+  makeArrayExtender,
   makeArrayPusher,
   makeChildAppender,
   makeReplacer,
@@ -189,13 +190,7 @@ class GML3 extends GMLBase {
    * @return {Array<number>|undefined} flat coordinates.
    */
   readSegment(node, objectStack) {
-    return pushParseAndPop(
-      [null],
-      this.SEGMENTS_PARSERS,
-      node,
-      objectStack,
-      this
-    );
+    return pushParseAndPop([], this.SEGMENTS_PARSERS, node, objectStack, this);
   }
 
   /**
@@ -1161,7 +1156,9 @@ GML3.prototype.PATCHES_PARSERS = {
  */
 GML3.prototype.SEGMENTS_PARSERS = {
   'http://www.opengis.net/gml': {
-    'LineStringSegment': makeReplacer(GML3.prototype.readLineStringSegment),
+    'LineStringSegment': makeArrayExtender(
+      GML3.prototype.readLineStringSegment
+    ),
   },
 };
 

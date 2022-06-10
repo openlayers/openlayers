@@ -169,7 +169,9 @@ GML32.prototype.PATCHES_PARSERS = {
  */
 GML32.prototype.SEGMENTS_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
-    'LineStringSegment': makeReplacer(GML3.prototype.readLineStringSegment),
+    'LineStringSegment': makeArrayExtender(
+      GML3.prototype.readLineStringSegment
+    ),
   },
 };
 
