@@ -184,15 +184,15 @@ class Snap extends PointerInteraction {
      * @type {Object<string, function(Array<Array<import('../coordinate.js').Coordinate>>, import("../geom/Geometry.js").default): void>}
      */
     this.GEOMETRY_SEGMENTERS_ = {
-      'Point': this.segmentPointGemetry_.bind(this),
-      'LineString': this.segmentLineStringGemetry_.bind(this),
-      'LinearRing': this.segmentLineStringGemetry_.bind(this),
-      'Polygon': this.segmentPolygonGemetry_.bind(this),
-      'MultiPoint': this.segmentMultiPointGemetry_.bind(this),
-      'MultiLineString': this.segmentMultiLineStringGemetry_.bind(this),
-      'MultiPolygon': this.segmentMultiPolygonGemetry_.bind(this),
-      'GeometryCollection': this.segmentGeometryCollectionGemetry_.bind(this),
-      'Circle': this.segmentCircleGemetry_.bind(this),
+      'Point': this.segmentPointGeometry_.bind(this),
+      'LineString': this.segmentLineStringGeometry_.bind(this),
+      'LinearRing': this.segmentLineStringGeometry_.bind(this),
+      'Polygon': this.segmentPolygonGeometry_.bind(this),
+      'MultiPoint': this.segmentMultiPointGeometry_.bind(this),
+      'MultiLineString': this.segmentMultiLineStringGeometry_.bind(this),
+      'MultiPolygon': this.segmentMultiPolygonGeometry_.bind(this),
+      'GeometryCollection': this.segmentGeometryCollectionGeometry_.bind(this),
+      'Circle': this.segmentCircleGeometry_.bind(this),
     };
   }
 
@@ -553,7 +553,7 @@ class Snap extends PointerInteraction {
    * @param {import("../geom/Circle.js").default} geometry Geometry.
    * @private
    */
-  segmentCircleGemetry_(segments, geometry) {
+  segmentCircleGeometry_(segments, geometry) {
     const projection = this.getMap().getView().getProjection();
     let circleGeometry = geometry;
     const userProjection = getUserProjection();
@@ -577,7 +577,7 @@ class Snap extends PointerInteraction {
    * @param {import("../geom/GeometryCollection.js").default} geometry Geometry.
    * @private
    */
-  segmentGeometryCollectionGemetry_(segments, geometry) {
+  segmentGeometryCollectionGeometry_(segments, geometry) {
     const geometries = geometry.getGeometriesArray();
     for (let i = 0; i < geometries.length; ++i) {
       const segmenter = this.GEOMETRY_SEGMENTERS_[geometries[i].getType()];
@@ -592,7 +592,7 @@ class Snap extends PointerInteraction {
    * @param {import("../geom/LineString.js").default} geometry Geometry.
    * @private
    */
-  segmentLineStringGemetry_(segments, geometry) {
+  segmentLineStringGeometry_(segments, geometry) {
     const coordinates = geometry.getCoordinates();
     for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
       segments.push(coordinates.slice(i, i + 2));
@@ -604,7 +604,7 @@ class Snap extends PointerInteraction {
    * @param {import("../geom/MultiLineString.js").default} geometry Geometry.
    * @private
    */
-  segmentMultiLineStringGemetry_(segments, geometry) {
+  segmentMultiLineStringGeometry_(segments, geometry) {
     const lines = geometry.getCoordinates();
     for (let j = 0, jj = lines.length; j < jj; ++j) {
       const coordinates = lines[j];
@@ -619,7 +619,7 @@ class Snap extends PointerInteraction {
    * @param {import("../geom/MultiPoint.js").default} geometry Geometry.
    * @private
    */
-  segmentMultiPointGemetry_(segments, geometry) {
+  segmentMultiPointGeometry_(segments, geometry) {
     geometry.getCoordinates().forEach((point) => {
       segments.push([point]);
     });
@@ -630,7 +630,7 @@ class Snap extends PointerInteraction {
    * @param {import("../geom/MultiPolygon.js").default} geometry Geometry.
    * @private
    */
-  segmentMultiPolygonGemetry_(segments, geometry) {
+  segmentMultiPolygonGeometry_(segments, geometry) {
     const polygons = geometry.getCoordinates();
     for (let k = 0, kk = polygons.length; k < kk; ++k) {
       const rings = polygons[k];
@@ -648,7 +648,7 @@ class Snap extends PointerInteraction {
    * @param {import("../geom/Point.js").default} geometry Geometry.
    * @private
    */
-  segmentPointGemetry_(segments, geometry) {
+  segmentPointGeometry_(segments, geometry) {
     segments.push([geometry.getCoordinates()]);
   }
 
@@ -657,7 +657,7 @@ class Snap extends PointerInteraction {
    * @param {import("../geom/Polygon.js").default} geometry Geometry.
    * @private
    */
-  segmentPolygonGemetry_(segments, geometry) {
+  segmentPolygonGeometry_(segments, geometry) {
     const rings = geometry.getCoordinates();
     for (let j = 0, jj = rings.length; j < jj; ++j) {
       const coordinates = rings[j];
