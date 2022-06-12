@@ -13,6 +13,7 @@ import {
   XML_SCHEMA_INSTANCE_URI,
   createElementNS,
   getAllTextContent,
+  makeArrayExtender,
   makeArrayPusher,
   makeChildAppender,
   makeReplacer,
@@ -136,6 +137,27 @@ class GML3 extends GMLBase {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
+   * @return {Array<number>|undefined} Polygon.
+   */
+  readFlatCurveRing(node, objectStack) {
+    /** @type {Array<LineString>} */
+    const lineStrings = pushParseAndPop(
+      [],
+      this.MULTICURVE_PARSERS,
+      node,
+      objectStack,
+      this
+    );
+    const flatCoordinates = [];
+    for (let i = 0, ii = lineStrings.length; i < ii; ++i) {
+      extend(flatCoordinates, lineStrings[i].getFlatCoordinates());
+    }
+    return flatCoordinates;
+  }
+
+  /**
+   * @param {Element} node Node.
+   * @param {Array<*>} objectStack Object stack.
    * @return {MultiPolygon|undefined} MultiPolygon.
    */
   readMultiSurface(node, objectStack) {
@@ -189,13 +211,7 @@ class GML3 extends GMLBase {
    * @return {Array<number>|undefined} flat coordinates.
    */
   readSegment(node, objectStack) {
-    return pushParseAndPop(
-      [null],
-      this.SEGMENTS_PARSERS,
-      node,
-      objectStack,
-      this
-    );
+    return pushParseAndPop([], this.SEGMENTS_PARSERS, node, objectStack, this);
   }
 
   /**
@@ -1161,7 +1177,20 @@ GML3.prototype.PATCHES_PARSERS = {
  */
 GML3.prototype.SEGMENTS_PARSERS = {
   'http://www.opengis.net/gml': {
-    'LineStringSegment': makeReplacer(GML3.prototype.readLineStringSegment),
+    'LineStringSegment': makeArrayExtender(
+      GML3.prototype.readLineStringSegment
+    ),
+  },
+};
+
+/**
+ * @const
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ */
+GMLBase.prototype.RING_PARSERS = {
+  'http://www.opengis.net/gml': {
+    'LinearRing': makeReplacer(GMLBase.prototype.readFlatLinearRing),
+    'Ring': makeReplacer(GML3.prototype.readFlatCurveRing),
   },
 };
 

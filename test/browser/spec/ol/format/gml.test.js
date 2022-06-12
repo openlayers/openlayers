@@ -2252,6 +2252,77 @@ describe('ol.format.GML32', function () {
         const serialized = format.writeGeometryNode(g);
         expect(serialized.firstElementChild).to.xmleql(parse(text));
       });
+
+      it('can read and write a curve geometry', function () {
+        const text =
+          '<gml:Curve xmlns:gml="http://www.opengis.net/gml/3.2" ' +
+          '    srsName="CRS:84">' +
+          '  <gml:segments>' +
+          '    <gml:LineStringSegment>' +
+          '      <gml:posList srsDimension="2">1 2 3 4</gml:posList>' +
+          '    </gml:LineStringSegment>' +
+          '    <gml:LineStringSegment>' +
+          '      <gml:posList srsDimension="2">5 6 7 8</gml:posList>' +
+          '    </gml:LineStringSegment>' +
+          '  </gml:segments>' +
+          '</gml:Curve>';
+        const g = readGeometry(format, text);
+        expect(g).to.be.an(LineString);
+        expect(g.getCoordinates()).to.eql([
+          [1, 2, 0],
+          [3, 4, 0],
+          [5, 6, 0],
+          [7, 8, 0],
+        ]);
+        format = new GML32({srsName: 'CRS:84', curve: true});
+        const serialized = format.writeGeometryNode(g);
+        // Conversion back to GML is not lossless, because we don't know
+        // the mapping of original LineString segements to the OpenLayers
+        // LineString geometry's coordinates.
+        const expected =
+          '<gml:Curve xmlns:gml="http://www.opengis.net/gml/3.2" ' +
+          '    srsName="CRS:84">' +
+          '  <gml:segments>' +
+          '    <gml:LineStringSegment>' +
+          '      <gml:posList srsDimension="2">1 2 3 4 5 6 7 8</gml:posList>' +
+          '    </gml:LineStringSegment>' +
+          '  </gml:segments>' +
+          '</gml:Curve>';
+        expect(serialized.firstElementChild).to.xmleql(parse(expected));
+      });
+
+      it('can read a polygon with a ring of curves', function () {
+        const text = `
+        <gml:Polygon xmlns:gml="http://www.opengis.net/gml/3.2" srsName="CRS:84">
+          <gml:exterior>
+            <gml:Ring>
+              <gml:curveMember>
+                <gml:Curve>
+                  <gml:segments>
+                    <gml:LineStringSegment interpolation="linear">
+                      <gml:posList>1 2 3 4</gml:posList>
+                    </gml:LineStringSegment>
+                    <gml:LineStringSegment interpolation="linear">
+                      <gml:posList>5 6 7 8</gml:posList>
+                    </gml:LineStringSegment>
+                  </gml:segments>
+                </gml:Curve>
+              </gml:curveMember>
+            </gml:Ring>
+          </gml:exterior>
+        </gml:Polygon>
+        `;
+        const g = readGeometry(format, text);
+        expect(g).to.be.an(Polygon);
+        expect(g.getCoordinates()).to.eql([
+          [
+            [1, 2, 0],
+            [3, 4, 0],
+            [5, 6, 0],
+            [7, 8, 0],
+          ],
+        ]);
+      });
     });
 
     describe('envelope', function () {

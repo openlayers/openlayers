@@ -4,7 +4,12 @@
 import GML2 from './GML2.js';
 import GML3 from './GML3.js';
 import GMLBase from './GMLBase.js';
-import {makeArrayPusher, makeChildAppender, makeReplacer} from '../xml.js';
+import {
+  makeArrayExtender,
+  makeArrayPusher,
+  makeChildAppender,
+  makeReplacer,
+} from '../xml.js';
 import {writeStringTextNode} from '../format/xsd.js';
 
 /**
@@ -169,7 +174,9 @@ GML32.prototype.PATCHES_PARSERS = {
  */
 GML32.prototype.SEGMENTS_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
-    'LineStringSegment': makeReplacer(GML3.prototype.readLineStringSegment),
+    'LineStringSegment': makeArrayExtender(
+      GML3.prototype.readLineStringSegment
+    ),
   },
 };
 
@@ -247,6 +254,7 @@ GML32.prototype.POLYGONMEMBER_PARSERS = {
 GML32.prototype.RING_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
     'LinearRing': makeReplacer(GMLBase.prototype.readFlatLinearRing),
+    'Ring': makeReplacer(GML32.prototype.readFlatCurveRing),
   },
 };
 
