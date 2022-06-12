@@ -419,6 +419,52 @@ describe('ol.interaction.Modify', function () {
       expect(lineFeature.getGeometry().getCoordinates()[2][2]).to.equal(30);
       expect(lineFeature.getGeometry().getCoordinates()[4][2]).to.equal(50);
     });
+
+    it('keeps polygon geometries valid', function () {
+      const overlappingVertexFeature = new Feature({
+        geometry: new Polygon([
+          [
+            [10, 20],
+            [0, 20],
+            [0, 0],
+            [20, 0],
+            [20, 20],
+            [10, 20],
+            [15, 15],
+            [5, 15],
+            [10, 20],
+          ],
+        ]),
+      });
+      features.length = 0;
+      features.push(overlappingVertexFeature);
+
+      const modify = new Modify({
+        features: new Collection(features),
+      });
+      map.addInteraction(modify);
+
+      let coords, exteriorRing;
+      coords = overlappingVertexFeature.getGeometry().getCoordinates();
+      exteriorRing = coords[0];
+
+      expect(exteriorRing.length).to.equal(9);
+      expect(exteriorRing[0]).to.eql(exteriorRing[exteriorRing.length - 1]);
+
+      // move the overlapping vertice
+      simulateEvent('pointermove', 10, -20, null, 0);
+      simulateEvent('pointerdown', 10, -20, null, 0);
+      simulateEvent('pointermove', 10, -25, null, 0);
+      simulateEvent('pointerdrag', 10, -25, null, 0);
+      simulateEvent('pointerup', 10, -25, null, 0);
+
+      coords = overlappingVertexFeature.getGeometry().getCoordinates();
+      exteriorRing = coords[0];
+
+      expect(exteriorRing.length).to.equal(9);
+      expect(exteriorRing[0]).to.eql([10, 25]);
+      expect(exteriorRing[0]).to.eql(exteriorRing[exteriorRing.length - 1]);
+    });
   });
 
   describe('vertex insertion', function () {
