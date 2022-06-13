@@ -478,7 +478,7 @@ class Select extends Interaction {
     const features = this.getFeatures();
     const deselected = [];
     const selected = [];
-    if (set) {
+    if (set || !this.multi_) {
       // Replace the currently selected feature(s) with the feature(s) at the
       // pixel, or clear the selected feature(s) if there is no feature at
       // the pixel.
