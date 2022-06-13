@@ -69,7 +69,7 @@ import {assign} from '../obj.js';
  * of sources for this layer. Takes precedence over `source`. Can either be an array of sources, or a function that
  * expects an extent and a resolution (in view projection units per pixel) and returns an array of sources. See
  * {@link module:ol/source.sourcesFromTileGrid} for a helper function to generate sources that are organized in a
- * pyramid following the same pattern as a tile grid.
+ * pyramid following the same pattern as a tile grid. **Note:** All sources must have the same band count and content.
  * @property {import("../PluggableMap.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
@@ -404,8 +404,11 @@ class WebGLTileLayer extends BaseTileLayer {
    * @return {number} The number of source bands.
    */
   getSourceBandCount_() {
-    const source = this.getSource();
-    return source && 'bandCount' in source ? source.bandCount : 4;
+    const max = Number.MAX_SAFE_INTEGER;
+    const sources = this.getSources([-max, -max, max, max], max);
+    return sources && sources.length && 'bandCount' in sources[0]
+      ? sources[0].bandCount
+      : 4;
   }
 
   createRenderer() {

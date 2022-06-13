@@ -545,6 +545,31 @@ describe('ol/layer/WebGLTile', function () {
     });
   });
 
+  describe('multiple sources', () => {
+    it('can determine the correct band count for static sources array', () => {
+      const layer = new WebGLTileLayer({
+        sources: [
+          new DataTileSource({
+            bandCount: 7,
+          }),
+        ],
+      });
+      expect(layer.getSourceBandCount_()).to.be(7);
+    });
+    it('can determine the correct band count for sources function', () => {
+      const layer = new WebGLTileLayer({
+        sources: sourcesFromTileGrid(
+          createXYZ(),
+          ([z, x, y]) =>
+            new DataTileSource({
+              bandCount: 7,
+            })
+        ),
+      });
+      expect(layer.getSourceBandCount_()).to.be(7);
+    });
+  });
+
   it('dispatches a precompose event with WebGL context', (done) => {
     let called = false;
     layer.on('precompose', (event) => {
