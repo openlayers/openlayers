@@ -73,7 +73,7 @@ class MapBrowserEventHandler extends Target {
     this.activePointers_ = 0;
 
     /**
-     * @type {!Object<number, boolean>}
+     * @type {!Object<number, Event>}
      * @private
      */
     this.trackedTouches_ = {};
@@ -169,14 +169,26 @@ class MapBrowserEventHandler extends Target {
    */
   updateActivePointers_(pointerEvent) {
     const event = pointerEvent;
+    const id = event.pointerId;
 
     if (
       event.type == MapBrowserEventType.POINTERUP ||
       event.type == MapBrowserEventType.POINTERCANCEL
     ) {
-      delete this.trackedTouches_[event.pointerId];
+      delete this.trackedTouches_[id];
     } else if (event.type == MapBrowserEventType.POINTERDOWN) {
-      this.trackedTouches_[event.pointerId] = true;
+      this.trackedTouches_[id] = event;
+    } else if (event.type == MapBrowserEventType.POINTERMOVE) {
+      for (const pointerId in this.trackedTouches_) {
+        if (this.trackedTouches_[pointerId].target !== event.target) {
+          // Some platforms assign a new pointerId when the target changes.
+          // If this happens, delete one tracked pointer. If there is more
+          // than one tracked pointer for the old target, it will be cleared
+          // by subsequent POINTERUP events from other pointers.
+          delete this.trackedTouches_[pointerId];
+          break;
+        }
+      }
     }
     this.activePointers_ = Object.keys(this.trackedTouches_).length;
   }

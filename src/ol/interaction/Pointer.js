@@ -195,16 +195,6 @@ class PointerInteraction extends Interaction {
       const id = event.pointerId.toString();
       if (mapBrowserEvent.type == MapBrowserEventType.POINTERUP) {
         delete this.trackedPointers_[id];
-        for (const pointerId in this.trackedPointers_) {
-          if (this.trackedPointers_[pointerId].target !== event.target) {
-            // Some platforms assign a new pointerId when the target changes.
-            // If this happens, delete one tracked pointer. If there is more
-            // than one tracked pointer for the old target, it will be cleared
-            // by subsequent POINTERUP events from other pointers.
-            delete this.trackedPointers_[pointerId];
-            break;
-          }
-        }
       } else if (mapBrowserEvent.type == MapBrowserEventType.POINTERDOWN) {
         this.trackedPointers_[id] = event;
       } else if (id in this.trackedPointers_) {
