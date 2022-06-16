@@ -129,3 +129,14 @@ const map = new Map({
     zoom: 2,
   }),
 });
+
+const colors = ['blue', 'green', 'yellow', 'aqua', 'red'];
+let currentColor = 0;
+
+document.getElementById('color-changer').addEventListener('click', function () {
+  styles.square
+    .getImage()
+    .setFill(new Fill({color: colors[currentColor % colors.length]}));
+  vectorLayer.changed();
+  currentColor++;
+});

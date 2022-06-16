@@ -207,6 +207,7 @@ class RegularShape extends ImageStyle {
    */
   setFill(fill) {
     this.fill_ = fill;
+    this.render();
   }
 
   /**
@@ -325,6 +326,7 @@ class RegularShape extends ImageStyle {
    */
   setStroke(stroke) {
     this.stroke_ = stroke;
+    this.render();
   }
 
   /**
