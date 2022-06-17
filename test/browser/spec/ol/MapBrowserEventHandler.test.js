@@ -281,4 +281,48 @@ describe('ol/MapBrowserEventHandler', function () {
       expect(dblclickSpy.called).to.not.be.ok();
     });
   });
+
+  describe('Event target change', function () {
+    let target, handler, element, down1, down2, up1, up2;
+    beforeEach(function () {
+      target = document.createElement('div');
+      handler = new MapBrowserEventHandler(
+        new Map({
+          target: target,
+        })
+      );
+
+      element = handler.element_;
+      down1 = new Event('pointerdown', {target: element});
+      down1.clientX = 0;
+      down1.clientY = 0;
+      down1.button = 0;
+      down1.pointerId = 1;
+      down2 = new Event('pointerdown', {target: element});
+      down2.clientX = 0;
+      down2.clientY = 0;
+      down2.button = 0;
+      down2.pointerId = 2;
+      up1 = new Event('pointerup', {target: element.firstChild});
+      up1.clientX = 0;
+      up1.clientY = 0;
+      up1.button = 0;
+      up1.pointerId = 3;
+      up2 = new Event('pointerup', {target: element.firstChild});
+      up2.clientX = 0;
+      up2.clientY = 0;
+      up2.button = 0;
+      up2.pointerId = 4;
+    });
+
+    it('keeps activePointers up to date when event target changes', function () {
+      element.dispatchEvent(down1);
+      element.dispatchEvent(down2);
+      expect(handler.activePointers_[0].pointerId).to.be(1);
+      expect(handler.activePointers_[1].pointerId).to.be(2);
+      document.dispatchEvent(up1);
+      document.dispatchEvent(up2);
+      expect(handler.activePointers_).to.have.length(0);
+    });
+  });
 });

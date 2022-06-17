@@ -9,6 +9,7 @@ import PointerEventType from './pointer/EventType.js';
 import Target from './events/Target.js';
 import {PASSIVE_EVENT_LISTENERS} from './has.js';
 import {VOID} from './functions.js';
+import {getValues} from './obj.js';
 import {listen, unlistenByKey} from './events.js';
 
 class MapBrowserEventHandler extends Target {
@@ -67,13 +68,13 @@ class MapBrowserEventHandler extends Target {
     const element = this.map_.getViewport();
 
     /**
-     * @type {number}
+     * @type {Array<PointerEvent>}
      * @private
      */
-    this.activePointers_ = 0;
+    this.activePointers_ = [];
 
     /**
-     * @type {!Object<number, boolean>}
+     * @type {!Object<number, Event>}
      * @private
      */
     this.trackedTouches_ = {};
@@ -104,7 +105,7 @@ class MapBrowserEventHandler extends Target {
     this.relayedListenerKey_ = listen(
       element,
       PointerEventType.POINTERMOVE,
-      this.relayEvent_,
+      this.relayMoveEvent_,
       this
     );
 
@@ -169,16 +170,30 @@ class MapBrowserEventHandler extends Target {
    */
   updateActivePointers_(pointerEvent) {
     const event = pointerEvent;
+    const id = event.pointerId;
 
     if (
       event.type == MapBrowserEventType.POINTERUP ||
       event.type == MapBrowserEventType.POINTERCANCEL
     ) {
-      delete this.trackedTouches_[event.pointerId];
-    } else if (event.type == MapBrowserEventType.POINTERDOWN) {
-      this.trackedTouches_[event.pointerId] = true;
+      delete this.trackedTouches_[id];
+      for (const pointerId in this.trackedTouches_) {
+        if (this.trackedTouches_[pointerId].target !== event.target) {
+          // Some platforms assign a new pointerId when the target changes.
+          // If this happens, delete one tracked pointer. If there is more
+          // than one tracked pointer for the old target, it will be cleared
+          // by subsequent POINTERUP events from other pointers.
+          delete this.trackedTouches_[pointerId];
+          break;
+        }
+      }
+    } else if (
+      event.type == MapBrowserEventType.POINTERDOWN ||
+      event.type == MapBrowserEventType.POINTERMOVE
+    ) {
+      this.trackedTouches_[id] = event;
     }
-    this.activePointers_ = Object.keys(this.trackedTouches_).length;
+    this.activePointers_ = getValues(this.trackedTouches_);
   }
 
   /**
@@ -191,7 +206,10 @@ class MapBrowserEventHandler extends Target {
     const newEvent = new MapBrowserEvent(
       MapBrowserEventType.POINTERUP,
       this.map_,
-      pointerEvent
+      pointerEvent,
+      undefined,
+      undefined,
+      this.activePointers_
     );
     this.dispatchEvent(newEvent);
 
@@ -210,7 +228,7 @@ class MapBrowserEventHandler extends Target {
       this.emulateClick_(this.down_);
     }
 
-    if (this.activePointers_ === 0) {
+    if (this.activePointers_.length === 0) {
       this.dragListenerKeys_.forEach(unlistenByKey);
       this.dragListenerKeys_.length = 0;
       this.dragging_ = false;
@@ -234,12 +252,15 @@ class MapBrowserEventHandler extends Target {
    * @private
    */
   handlePointerDown_(pointerEvent) {
-    this.emulateClicks_ = this.activePointers_ === 0;
+    this.emulateClicks_ = this.activePointers_.length === 0;
     this.updateActivePointers_(pointerEvent);
     const newEvent = new MapBrowserEvent(
       MapBrowserEventType.POINTERDOWN,
       this.map_,
-      pointerEvent
+      pointerEvent,
+      undefined,
+      undefined,
+      this.activePointers_
     );
     this.dispatchEvent(newEvent);
 
@@ -303,29 +324,36 @@ class MapBrowserEventHandler extends Target {
     // To avoid a 'false' touchmove event to be dispatched, we test if the pointer
     // moved a significant distance.
     if (this.isMoving_(pointerEvent)) {
+      this.updateActivePointers_(pointerEvent);
       this.dragging_ = true;
       const newEvent = new MapBrowserEvent(
         MapBrowserEventType.POINTERDRAG,
         this.map_,
         pointerEvent,
-        this.dragging_
+        this.dragging_,
+        undefined,
+        this.activePointers_
       );
       this.dispatchEvent(newEvent);
     }
   }
 
   /**
-   * Wrap and relay a pointer event.  Note that this requires that the type
-   * string for the MapBrowserEvent matches the PointerEvent type.
+   * Wrap and relay a pointermove event.
    * @param {PointerEvent} pointerEvent Pointer
    * event.
    * @private
    */
-  relayEvent_(pointerEvent) {
+  relayMoveEvent_(pointerEvent) {
     this.originalPointerMoveEvent_ = pointerEvent;
     const dragging = !!(this.down_ && this.isMoving_(pointerEvent));
     this.dispatchEvent(
-      new MapBrowserEvent(pointerEvent.type, this.map_, pointerEvent, dragging)
+      new MapBrowserEvent(
+        MapBrowserEventType.POINTERMOVE,
+        this.map_,
+        pointerEvent,
+        dragging
+      )
     );
   }
 
