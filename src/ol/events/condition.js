@@ -254,8 +254,8 @@ export const targetNotEditable = function (mapBrowserEvent) {
     tagName !== 'INPUT' &&
     tagName !== 'SELECT' &&
     tagName !== 'TEXTAREA' &&
-    !originalEvent.target.isContentEditable;
-  )
+    !originalEvent.target.isContentEditable
+  );
 };
 
 /**
