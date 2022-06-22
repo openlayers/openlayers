@@ -250,8 +250,7 @@ export const targetNotEditable = function (mapBrowserEvent) {
     mapBrowserEvent.originalEvent
   );
   const tagName = /** @type {Element} */ (originalEvent.target).tagName;
-  return tagName !== 'INPUT' && tagName !== 'SELECT' && tagName !== 'TEXTAREA' &&
-    !originalEvent.target.isContentEditable;
+  return tagName !== 'INPUT' && tagName !== 'SELECT' && tagName !== 'TEXTAREA' && !originalEvent.target.isContentEditable;
 };
 
 /**
