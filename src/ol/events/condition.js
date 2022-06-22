@@ -254,6 +254,9 @@ export const targetNotEditable = function (mapBrowserEvent) {
     tagName !== 'INPUT' &&
     tagName !== 'SELECT' &&
     tagName !== 'TEXTAREA' &&
+    // `isContentEditable` is only available on `HTMLElement`, but it may also be a
+    // different type like `SVGElement`.
+    // @ts-ignore
     !originalEvent.target.isContentEditable
   );
 };
