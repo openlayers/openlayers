@@ -240,8 +240,9 @@ class VectorTile extends UrlTile {
     const tileCache = this.getTileCacheForProjection(projection);
     const usedSourceTiles = Object.keys(usedTiles).reduce((acc, key) => {
       const cacheKey = getCacheKeyForTileKey(key);
-      if (tileCache.containsKey(cacheKey)) {
-        const sourceTiles = tileCache.get(cacheKey).sourceTiles;
+      const tile = tileCache.peek(cacheKey);
+      if (tile) {
+        const sourceTiles = tile.sourceTiles;
         for (let i = 0, ii = sourceTiles.length; i < ii; ++i) {
           acc[sourceTiles[i].getKey()] = true;
         }
