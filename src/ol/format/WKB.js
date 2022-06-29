@@ -700,7 +700,7 @@ class WKB extends FeatureFormat {
    *
    * @param {string|ArrayBuffer|ArrayBufferView} source Source.
    * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
-   * @return {import("../Feature.js").FeatureLike} Feature.
+   * @return {import("../Feature.js").default} Feature.
    * @api
    */
   readFeature(source, opt_options) {
@@ -714,7 +714,7 @@ class WKB extends FeatureFormat {
    *
    * @param {string|ArrayBuffer|ArrayBufferView} source Source.
    * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
-   * @return {Array<import("../Feature.js").FeatureLike>} Features.
+   * @return {Array<import("../Feature.js").default>} Features.
    * @api
    */
   readFeatures(source, opt_options) {
