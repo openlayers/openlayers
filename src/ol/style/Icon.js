@@ -238,6 +238,8 @@ class Icon extends ImageStyle {
       scale: Array.isArray(scale) ? scale.slice() : scale,
       size: this.size_ !== null ? this.size_.slice() : undefined,
       src: this.getSrc(),
+      displacement: this.getDisplacement().slice(),
+      declutterMode: this.getDeclutterMode(),
     });
   }
 
