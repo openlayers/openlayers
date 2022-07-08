@@ -20,6 +20,7 @@ import {
   equals,
   getHeight,
   getIntersection,
+  getRotatedViewport,
   getTopLeft,
   getWidth,
   intersects,
@@ -308,8 +309,22 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const tmpExtent = this.tmpExtent;
     const tmpTileRange = this.tmpTileRange_;
     this.newTiles_ = false;
+    const viewport = rotation
+      ? getRotatedViewport(
+          viewState.center,
+          resolution,
+          rotation,
+          frameState.size
+        )
+      : undefined;
     for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
+        if (
+          rotation &&
+          !tileGrid.tileCoordIntersectsViewport([z, x, y], viewport)
+        ) {
+          continue;
+        }
         const tile = this.getTile(z, x, y, frameState);
         if (this.isDrawableTile(tile)) {
           const uid = getUid(this);
@@ -709,6 +724,15 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const wantedTiles = frameState.wantedTiles[tileSourceKey];
     const tileQueue = frameState.tileQueue;
     const minZoom = tileGrid.getMinZoom();
+    const rotation = frameState.viewState.rotation;
+    const viewport = rotation
+      ? getRotatedViewport(
+          frameState.viewState.center,
+          frameState.viewState.resolution,
+          rotation,
+          frameState.size
+        )
+      : undefined;
     let tileCount = 0;
     let tile, tileRange, tileResolution, x, y, z;
     for (z = minZoom; z <= currentZ; ++z) {
@@ -716,6 +740,12 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       tileResolution = tileGrid.getResolution(z);
       for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
         for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
+          if (
+            rotation &&
+            !tileGrid.tileCoordIntersectsViewport([z, x, y], viewport)
+          ) {
+            continue;
+          }
           if (currentZ - z <= preload) {
             ++tileCount;
             tile = tileSource.getTile(z, x, y, pixelRatio, projection);
