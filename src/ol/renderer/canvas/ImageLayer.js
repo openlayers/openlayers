@@ -168,18 +168,17 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     const viewState = frameState.viewState;
     const viewCenter = viewState.center;
     const viewResolution = viewState.resolution;
-    const size = frameState.size;
     const scale =
       (pixelRatio * imageResolution) / (viewResolution * imagePixelRatio);
 
-    let width = Math.round(size[0] * pixelRatio);
-    let height = Math.round(size[1] * pixelRatio);
+    const extent = frameState.extent;
+    const resolution = viewState.resolution;
     const rotation = viewState.rotation;
-    if (rotation) {
-      const size = Math.round(Math.sqrt(width * width + height * height));
-      width = size;
-      height = size;
-    }
+    // desired dimensions of the canvas in pixels
+    const width = Math.round((getWidth(extent) / resolution) * imagePixelRatio);
+    const height = Math.round(
+      (getHeight(extent) / resolution) * imagePixelRatio
+    );
 
     // set forward and inverse pixel transforms
     composeTransform(

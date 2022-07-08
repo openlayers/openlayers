@@ -18,8 +18,10 @@ import {
   containsCoordinate,
   createEmpty,
   equals,
+  getHeight,
   getIntersection,
   getTopLeft,
+  getWidth,
   intersects,
 } from '../../extent.js';
 import {cssOpacity} from '../../css.js';
@@ -263,6 +265,14 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const tileResolution = tileGrid.getResolution(z);
 
     let extent = frameState.extent;
+    const resolution = frameState.viewState.resolution;
+    const tilePixelRatio = tileSource.getTilePixelRatio(pixelRatio);
+    // desired dimensions of the canvas in pixels
+    const width = Math.round((getWidth(extent) / resolution) * tilePixelRatio);
+    const height = Math.round(
+      (getHeight(extent) / resolution) * tilePixelRatio
+    );
+
     const layerExtent =
       layerState.extent && fromUserExtent(layerState.extent, projection);
     if (layerExtent) {
@@ -270,18 +280,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         extent,
         fromUserExtent(layerState.extent, projection)
       );
-    }
-
-    const tilePixelRatio = tileSource.getTilePixelRatio(pixelRatio);
-
-    // desired dimensions of the canvas in pixels
-    let width = Math.round(frameState.size[0] * tilePixelRatio);
-    let height = Math.round(frameState.size[1] * tilePixelRatio);
-
-    if (rotation) {
-      const size = Math.round(Math.sqrt(width * width + height * height));
-      width = size;
-      height = size;
     }
 
     const dx = (tileResolution * width) / 2 / tilePixelRatio;
