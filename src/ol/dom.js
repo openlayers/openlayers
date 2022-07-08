@@ -41,6 +41,18 @@ export function createCanvasContext2D(
 }
 
 /**
+ * Releases canvas memory to avoid exceeding memory limits in Safari.
+ * See https://pqina.nl/blog/total-canvas-memory-use-exceeds-the-maximum-limit/
+ * @param {CanvasRenderingContext2D} context Context.
+ */
+export function releaseCanvas(context) {
+  const canvas = context.canvas;
+  canvas.width = 1;
+  canvas.height = 1;
+  context.clearRect(0, 0, 1, 1);
+}
+
+/**
  * Get the current computed width for the given element including margin,
  * padding and border.
  * Equivalent to jQuery's `$(el).outerWidth(true)`.
