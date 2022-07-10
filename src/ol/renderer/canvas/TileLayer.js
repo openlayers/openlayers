@@ -25,7 +25,6 @@ import {
   getWidth,
   intersects,
 } from '../../extent.js';
-import {cssOpacity} from '../../css.js';
 import {fromUserExtent} from '../../proj.js';
 import {getUid} from '../../util.js';
 import {numberSafeCompareFunction} from '../../array.js';
@@ -330,7 +329,12 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
           const uid = getUid(this);
           if (tile.getState() == TileState.LOADED) {
             tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
-            const inTransition = tile.inTransition(uid);
+            let inTransition = tile.inTransition(uid);
+            if (inTransition && layerState.opacity !== 1) {
+              // Skipping transition when layer is not fully opaque avoids visual artifacts.
+              tile.endTransition(uid);
+              inTransition = false;
+            }
             if (
               !this.newTiles_ &&
               (inTransition || this.renderedTiles.indexOf(tile) === -1)
@@ -381,12 +385,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     const canvasTransform = toTransformString(this.pixelTransform);
 
-    this.useContainer(
-      target,
-      canvasTransform,
-      layerState.opacity,
-      this.getBackground(frameState)
-    );
+    this.useContainer(target, canvasTransform, this.getBackground(frameState));
     const context = this.context;
     const canvas = context.canvas;
 
@@ -572,11 +571,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     if (canvasTransform !== canvas.style.transform) {
       canvas.style.transform = canvasTransform;
     }
-    const opacity = cssOpacity(layerState.opacity);
-    const container = this.container;
-    if (opacity !== container.style.opacity) {
-      container.style.opacity = opacity;
-    }
 
     return this.container;
   }
@@ -597,7 +591,10 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       return;
     }
     const uid = getUid(this);
-    const alpha = transition ? tile.getAlpha(uid, frameState.time) : 1;
+    const layerState = frameState.layerStatesArray[frameState.layerIndex];
+    const alpha =
+      layerState.opacity *
+      (transition ? tile.getAlpha(uid, frameState.time) : 1);
     const alphaChanged = alpha !== this.context.globalAlpha;
     if (alphaChanged) {
       this.context.save();
@@ -618,7 +615,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     if (alphaChanged) {
       this.context.restore();
     }
-    if (alpha !== 1) {
+    if (alpha !== layerState.opacity) {
       frameState.animate = true;
     } else if (transition) {
       tile.endTransition(uid);

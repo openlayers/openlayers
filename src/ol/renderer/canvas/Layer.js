@@ -21,6 +21,11 @@ import {createCanvasContext2D} from '../../dom.js';
 import {equals} from '../../array.js';
 
 /**
+ * @type {Array<HTMLCanvasElement>}
+ */
+export const canvasPool = [];
+
+/**
  * @type {CanvasRenderingContext2D}
  */
 let pixelContext = null;
@@ -143,17 +148,14 @@ class CanvasLayerRenderer extends LayerRenderer {
    * Get a rendering container from an existing target, if compatible.
    * @param {HTMLElement} target Potential render target.
    * @param {string} transform CSS Transform.
-   * @param {number} opacity Opacity.
    * @param {string} [opt_backgroundColor] Background color.
    */
-  useContainer(target, transform, opacity, opt_backgroundColor) {
+  useContainer(target, transform, opt_backgroundColor) {
     const layerClassName = this.getLayer().getClassName();
     let container, context;
     if (
       target &&
       target.className === layerClassName &&
-      target.style.opacity === '' &&
-      opacity === 1 &&
       (!opt_backgroundColor ||
         (target &&
           target.style.backgroundColor &&
