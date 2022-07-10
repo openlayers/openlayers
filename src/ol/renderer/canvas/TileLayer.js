@@ -268,10 +268,8 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const resolution = frameState.viewState.resolution;
     const tilePixelRatio = tileSource.getTilePixelRatio(pixelRatio);
     // desired dimensions of the canvas in pixels
-    const width = Math.round((getWidth(extent) / resolution) * tilePixelRatio);
-    const height = Math.round(
-      (getHeight(extent) / resolution) * tilePixelRatio
-    );
+    const width = Math.round((getWidth(extent) / resolution) * pixelRatio);
+    const height = Math.round((getHeight(extent) / resolution) * pixelRatio);
 
     const layerExtent =
       layerState.extent && fromUserExtent(layerState.extent, projection);
@@ -369,15 +367,16 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       }
     }
 
-    const canvasScale = tileResolution / viewResolution;
+    const canvasScale =
+      ((tileResolution / viewResolution) * pixelRatio) / tilePixelRatio;
 
     // set forward and inverse pixel transforms
     composeTransform(
       this.pixelTransform,
       frameState.size[0] / 2,
       frameState.size[1] / 2,
-      1 / tilePixelRatio,
-      1 / tilePixelRatio,
+      1 / pixelRatio,
+      1 / pixelRatio,
       rotation,
       -width / 2,
       -height / 2
