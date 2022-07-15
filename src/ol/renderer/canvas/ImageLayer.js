@@ -168,18 +168,15 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     const viewState = frameState.viewState;
     const viewCenter = viewState.center;
     const viewResolution = viewState.resolution;
-    const size = frameState.size;
     const scale =
       (pixelRatio * imageResolution) / (viewResolution * imagePixelRatio);
 
-    let width = Math.round(size[0] * pixelRatio);
-    let height = Math.round(size[1] * pixelRatio);
+    const extent = frameState.extent;
+    const resolution = viewState.resolution;
     const rotation = viewState.rotation;
-    if (rotation) {
-      const size = Math.round(Math.sqrt(width * width + height * height));
-      width = size;
-      height = size;
-    }
+    // desired dimensions of the canvas in pixels
+    const width = Math.round((getWidth(extent) / resolution) * pixelRatio);
+    const height = Math.round((getHeight(extent) / resolution) * pixelRatio);
 
     // set forward and inverse pixel transforms
     composeTransform(
@@ -196,12 +193,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
 
     const canvasTransform = toTransformString(this.pixelTransform);
 
-    this.useContainer(
-      target,
-      canvasTransform,
-      layerState.opacity,
-      this.getBackground(frameState)
-    );
+    this.useContainer(target, canvasTransform, this.getBackground(frameState));
 
     const context = this.context;
     const canvas = context.canvas;
@@ -260,17 +252,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
         previousAlpha = context.globalAlpha;
         context.globalAlpha = opacity;
       }
-      context.drawImage(
-        img,
-        0,
-        0,
-        +img.width,
-        +img.height,
-        Math.round(dx),
-        Math.round(dy),
-        Math.round(dw),
-        Math.round(dh)
-      );
+      context.drawImage(img, 0, 0, +img.width, +img.height, dx, dy, dw, dh);
       if (opacity !== 1) {
         context.globalAlpha = previousAlpha;
       }

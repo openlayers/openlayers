@@ -105,8 +105,11 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
       !hints[ViewHint.INTERACTING] &&
       !isEmpty(renderedExtent)
     ) {
-      vectorRenderer.useContainer(null, null, 1);
+      vectorRenderer.useContainer(null, null);
       const context = vectorRenderer.context;
+      const layerState = frameState.layerStatesArray[frameState.layerIndex];
+      context.globalAlpha = layerState.opacity;
+      const imageLayerState = assign({}, layerState, {opacity: 1});
       const imageFrameState =
         /** @type {import("../../PluggableMap.js").FrameState} */ (
           assign({}, frameState, {
@@ -118,6 +121,8 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
                 rotation: 0,
               })
             ),
+            layerStatesArray: [imageLayerState],
+            layerIndex: 0,
           })
         );
       let emptyImage = true;

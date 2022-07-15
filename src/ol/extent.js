@@ -535,6 +535,29 @@ export function getForViewAndSize(
   size,
   opt_extent
 ) {
+  const [x0, y0, x1, y1, x2, y2, x3, y3] = getRotatedViewport(
+    center,
+    resolution,
+    rotation,
+    size
+  );
+  return createOrUpdate(
+    Math.min(x0, x1, x2, x3),
+    Math.min(y0, y1, y2, y3),
+    Math.max(x0, x1, x2, x3),
+    Math.max(y0, y1, y2, y3),
+    opt_extent
+  );
+}
+
+/**
+ * @param {import("./coordinate.js").Coordinate} center Center.
+ * @param {number} resolution Resolution.
+ * @param {number} rotation Rotation.
+ * @param {import("./size.js").Size} size Size.
+ * @return {Array<number>} Linear ring representing the viewport.
+ */
+export function getRotatedViewport(center, resolution, rotation, size) {
   const dx = (resolution * size[0]) / 2;
   const dy = (resolution * size[1]) / 2;
   const cosRotation = Math.cos(rotation);
@@ -545,21 +568,18 @@ export function getForViewAndSize(
   const ySin = dy * sinRotation;
   const x = center[0];
   const y = center[1];
-  const x0 = x - xCos + ySin;
-  const x1 = x - xCos - ySin;
-  const x2 = x + xCos - ySin;
-  const x3 = x + xCos + ySin;
-  const y0 = y - xSin - yCos;
-  const y1 = y - xSin + yCos;
-  const y2 = y + xSin + yCos;
-  const y3 = y + xSin - yCos;
-  return createOrUpdate(
-    Math.min(x0, x1, x2, x3),
-    Math.min(y0, y1, y2, y3),
-    Math.max(x0, x1, x2, x3),
-    Math.max(y0, y1, y2, y3),
-    opt_extent
-  );
+  return [
+    x - xCos + ySin,
+    y - xSin - yCos,
+    x - xCos - ySin,
+    y - xSin + yCos,
+    x + xCos - ySin,
+    y + xSin + yCos,
+    x + xCos + ySin,
+    y + xSin - yCos,
+    x - xCos + ySin,
+    y - xSin - yCos,
+  ];
 }
 
 /**

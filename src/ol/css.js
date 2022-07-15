@@ -114,11 +114,3 @@ export const getFontParameters = function (fontSpec) {
   style.families = style.family.split(/,\s?/);
   return style;
 };
-
-/**
- * @param {number} opacity Opacity (0..1).
- * @return {string} CSS opacity.
- */
-export function cssOpacity(opacity) {
-  return opacity === 1 ? '' : String(Math.round(opacity * 100) / 100);
-}

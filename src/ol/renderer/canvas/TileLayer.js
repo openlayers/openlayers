@@ -18,11 +18,13 @@ import {
   containsCoordinate,
   createEmpty,
   equals,
+  getHeight,
   getIntersection,
+  getRotatedViewport,
   getTopLeft,
+  getWidth,
   intersects,
 } from '../../extent.js';
-import {cssOpacity} from '../../css.js';
 import {fromUserExtent} from '../../proj.js';
 import {getUid} from '../../util.js';
 import {numberSafeCompareFunction} from '../../array.js';
@@ -263,6 +265,12 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const tileResolution = tileGrid.getResolution(z);
 
     let extent = frameState.extent;
+    const resolution = frameState.viewState.resolution;
+    const tilePixelRatio = tileSource.getTilePixelRatio(pixelRatio);
+    // desired dimensions of the canvas in pixels
+    const width = Math.round((getWidth(extent) / resolution) * pixelRatio);
+    const height = Math.round((getHeight(extent) / resolution) * pixelRatio);
+
     const layerExtent =
       layerState.extent && fromUserExtent(layerState.extent, projection);
     if (layerExtent) {
@@ -270,18 +278,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         extent,
         fromUserExtent(layerState.extent, projection)
       );
-    }
-
-    const tilePixelRatio = tileSource.getTilePixelRatio(pixelRatio);
-
-    // desired dimensions of the canvas in pixels
-    let width = Math.round(frameState.size[0] * tilePixelRatio);
-    let height = Math.round(frameState.size[1] * tilePixelRatio);
-
-    if (rotation) {
-      const size = Math.round(Math.sqrt(width * width + height * height));
-      width = size;
-      height = size;
     }
 
     const dx = (tileResolution * width) / 2 / tilePixelRatio;
@@ -310,14 +306,33 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const tmpExtent = this.tmpExtent;
     const tmpTileRange = this.tmpTileRange_;
     this.newTiles_ = false;
+    const viewport = rotation
+      ? getRotatedViewport(
+          viewState.center,
+          resolution,
+          rotation,
+          frameState.size
+        )
+      : undefined;
     for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
+        if (
+          rotation &&
+          !tileGrid.tileCoordIntersectsViewport([z, x, y], viewport)
+        ) {
+          continue;
+        }
         const tile = this.getTile(z, x, y, frameState);
         if (this.isDrawableTile(tile)) {
           const uid = getUid(this);
           if (tile.getState() == TileState.LOADED) {
             tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
-            const inTransition = tile.inTransition(uid);
+            let inTransition = tile.inTransition(uid);
+            if (inTransition && layerState.opacity !== 1) {
+              // Skipping transition when layer is not fully opaque avoids visual artifacts.
+              tile.endTransition(uid);
+              inTransition = false;
+            }
             if (
               !this.newTiles_ &&
               (inTransition || this.renderedTiles.indexOf(tile) === -1)
@@ -352,15 +367,16 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       }
     }
 
-    const canvasScale = tileResolution / viewResolution;
+    const canvasScale =
+      ((tileResolution / viewResolution) * pixelRatio) / tilePixelRatio;
 
     // set forward and inverse pixel transforms
     composeTransform(
       this.pixelTransform,
       frameState.size[0] / 2,
       frameState.size[1] / 2,
-      1 / tilePixelRatio,
-      1 / tilePixelRatio,
+      1 / pixelRatio,
+      1 / pixelRatio,
       rotation,
       -width / 2,
       -height / 2
@@ -368,12 +384,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     const canvasTransform = toTransformString(this.pixelTransform);
 
-    this.useContainer(
-      target,
-      canvasTransform,
-      layerState.opacity,
-      this.getBackground(frameState)
-    );
+    this.useContainer(target, canvasTransform, this.getBackground(frameState));
     const context = this.context;
     const canvas = context.canvas;
 
@@ -559,11 +570,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     if (canvasTransform !== canvas.style.transform) {
       canvas.style.transform = canvasTransform;
     }
-    const opacity = cssOpacity(layerState.opacity);
-    const container = this.container;
-    if (opacity !== container.style.opacity) {
-      container.style.opacity = opacity;
-    }
 
     return this.container;
   }
@@ -584,7 +590,10 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       return;
     }
     const uid = getUid(this);
-    const alpha = transition ? tile.getAlpha(uid, frameState.time) : 1;
+    const layerState = frameState.layerStatesArray[frameState.layerIndex];
+    const alpha =
+      layerState.opacity *
+      (transition ? tile.getAlpha(uid, frameState.time) : 1);
     const alphaChanged = alpha !== this.context.globalAlpha;
     if (alphaChanged) {
       this.context.save();
@@ -605,7 +614,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     if (alphaChanged) {
       this.context.restore();
     }
-    if (alpha !== 1) {
+    if (alpha !== layerState.opacity) {
       frameState.animate = true;
     } else if (transition) {
       tile.endTransition(uid);
@@ -711,6 +720,15 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const wantedTiles = frameState.wantedTiles[tileSourceKey];
     const tileQueue = frameState.tileQueue;
     const minZoom = tileGrid.getMinZoom();
+    const rotation = frameState.viewState.rotation;
+    const viewport = rotation
+      ? getRotatedViewport(
+          frameState.viewState.center,
+          frameState.viewState.resolution,
+          rotation,
+          frameState.size
+        )
+      : undefined;
     let tileCount = 0;
     let tile, tileRange, tileResolution, x, y, z;
     for (z = minZoom; z <= currentZ; ++z) {
@@ -718,6 +736,12 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       tileResolution = tileGrid.getResolution(z);
       for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
         for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
+          if (
+            rotation &&
+            !tileGrid.tileCoordIntersectsViewport([z, x, y], viewport)
+          ) {
+            continue;
+          }
           if (currentZ - z <= preload) {
             ++tileCount;
             tile = tileSource.getTile(z, x, y, pixelRatio, projection);
