@@ -50,7 +50,7 @@ const DECIMALS = 5;
  * negative because OpenLayers tile coordinates use the top left as the origin.
  * @property {number|import("../size.js").Size} [tileSize] Tile size.
  * Default is `[256, 256]`.
- * @property {Array<import("../size.js").Size>} [tileSizes] Tile sizes. If given, the array length
+ * @property {Array<number|import("../size.js").Size>} [tileSizes] Tile sizes. If given, the array length
  * should match the length of the `resolutions` array, i.e. each resolution can have a different
  * tile size.
  */
