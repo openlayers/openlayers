@@ -63,6 +63,7 @@ describe('ol.VectorRenderTile', function () {
   });
 
   it("only loads tiles within the source tileGrid's extent", function (done) {
+    let tile;
     const url = 'spec/ol/data/point.json';
     const source = new VectorTileSource({
       projection: 'EPSG:4326',
@@ -77,8 +78,12 @@ describe('ol.VectorRenderTile', function () {
       },
       url: url,
     });
-    const tile = source.getTile(0, 0, 0, 1, source.getProjection());
 
+    tile = source.getTile(0, 0, 0, 1, source.getProjection());
+    expect(tile.getState()).to.be(TileState.EMPTY);
+
+    tile = source.getTile(0, 16, 9, 1, source.getProjection());
+    expect(tile.getState()).to.be(TileState.IDLE);
     tile.load();
     const key = listen(tile, EventType.CHANGE, function () {
       if (tile.getState() === TileState.LOADED) {

@@ -510,7 +510,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         let hitDetectionImageData = tile.hitDetectionImageData[layerUid];
         if (!hitDetectionImageData && !this.animatingOrInteracting_) {
           const tileSize = toSize(
-            tileGrid.getTileSize(tileGrid.getZForResolution(resolution))
+            tileGrid.getTileSize(
+              tileGrid.getZForResolution(resolution, source.zDirection)
+            )
           );
           const rotation = this.renderedRotation_;
           const transforms = [
