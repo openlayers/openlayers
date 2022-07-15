@@ -252,17 +252,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
         previousAlpha = context.globalAlpha;
         context.globalAlpha = opacity;
       }
-      context.drawImage(
-        img,
-        0,
-        0,
-        +img.width,
-        +img.height,
-        Math.round(dx),
-        Math.round(dy),
-        Math.round(dw),
-        Math.round(dh)
-      );
+      context.drawImage(img, 0, 0, +img.width, +img.height, dx, dy, dw, dh);
       if (opacity !== 1) {
         context.globalAlpha = previousAlpha;
       }
