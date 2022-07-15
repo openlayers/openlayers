@@ -1,7 +1,6 @@
 /**
  * @module ol/render/webgl/MixedGeometryBatch
  */
-import GeometryType from '../../geom/GeometryType.js';
 import WebGLArrayBuffer from '../../webgl/Buffer.js';
 import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
 import {create as createTransform} from '../../transform.js';
@@ -261,27 +260,27 @@ class MixedGeometryBatch {
     let verticesCount;
     let batchEntry;
     switch (type) {
-      case GeometryType.GEOMETRY_COLLECTION:
+      case 'GeometryCollection':
         /** @type {import("../../geom").GeometryCollection} */ (geometry)
           .getGeometries()
           .map((geom) => this.addGeometry_(geom, feature));
         break;
-      case GeometryType.MULTI_POLYGON:
+      case 'MultiPolygon':
         /** @type {import("../../geom").MultiPolygon} */ (geometry)
           .getPolygons()
           .map((polygon) => this.addGeometry_(polygon, feature));
         break;
-      case GeometryType.MULTI_LINE_STRING:
+      case 'MultiLineString':
         /** @type {import("../../geom").MultiLineString} */ (geometry)
           .getLineStrings()
           .map((line) => this.addGeometry_(line, feature));
         break;
-      case GeometryType.MULTI_POINT:
+      case 'MultiPoint':
         /** @type {import("../../geom").MultiPoint} */ (geometry)
           .getPoints()
           .map((point) => this.addGeometry_(point, feature));
         break;
-      case GeometryType.POLYGON:
+      case 'Polygon':
         const polygonGeom = /** @type {import("../../geom").Polygon} */ (
           geometry
         );
@@ -305,15 +304,15 @@ class MixedGeometryBatch {
           .getLinearRings()
           .map((ring) => this.addGeometry_(ring, feature));
         break;
-      case GeometryType.POINT:
+      case 'Point':
         const pointGeom = /** @type {import("../../geom").Point} */ (geometry);
         batchEntry = this.addFeatureEntryInPointBatch_(feature);
         flatCoords = pointGeom.getFlatCoordinates();
         this.pointBatch.geometriesCount++;
         batchEntry.flatCoordss.push(flatCoords);
         break;
-      case GeometryType.LINE_STRING:
-      case GeometryType.LINEAR_RING:
+      case 'LineString':
+      case 'LinearRing':
         const lineGeom = /** @type {import("../../geom").LineString} */ (
           geometry
         );

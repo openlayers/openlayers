@@ -1,7 +1,6 @@
 /**
  * @module ol/render/webgl/BatchRenderer
  */
-import GeometryType from '../../geom/GeometryType.js';
 import {WebGLWorkerMessageType} from './constants.js';
 import {abstract} from '../../util.js';
 import {
@@ -72,7 +71,7 @@ class AbstractBatchRenderer {
    * Note: this is a costly operation.
    * @param {import("./MixedGeometryBatch.js").GeometryBatch} batch Geometry batch
    * @param {import("../../PluggableMap").FrameState} frameState Frame state.
-   * @param {import("../../geom/GeometryType.js").default} geometryType Geometry type
+   * @param {import("../../geom/Geometry.js").Type} geometryType Geometry type
    * @param {function(): void} callback Function called once the render buffers are updated
    */
   rebuild(batch, frameState, geometryType, callback) {
@@ -123,7 +122,7 @@ class AbstractBatchRenderer {
    * Rebuild internal webgl buffers for rendering based on the current rendering instructions;
    * This is asynchronous: webgl buffers wil _not_ be updated right away
    * @param {import("./MixedGeometryBatch.js").GeometryBatch} batch Geometry batch
-   * @param {import("../../geom/GeometryType.js").default} geometryType Geometry type
+   * @param {import("../../geom/Geometry.js").Type} geometryType Geometry type
    * @param {function(): void} callback Function called once the render buffers are updated
    * @private
    */
@@ -132,13 +131,13 @@ class AbstractBatchRenderer {
 
     let messageType;
     switch (geometryType) {
-      case GeometryType.POLYGON:
+      case 'Polygon':
         messageType = WebGLWorkerMessageType.GENERATE_POLYGON_BUFFERS;
         break;
-      case GeometryType.POINT:
+      case 'Point':
         messageType = WebGLWorkerMessageType.GENERATE_POINT_BUFFERS;
         break;
-      case GeometryType.LINE_STRING:
+      case 'LineString':
         messageType = WebGLWorkerMessageType.GENERATE_LINE_STRING_BUFFERS;
         break;
       default:

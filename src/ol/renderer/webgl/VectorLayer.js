@@ -2,7 +2,6 @@
  * @module ol/renderer/webgl/VectorLayer
  */
 import BaseVector from '../../layer/BaseVector.js';
-import GeometryType from '../../geom/GeometryType.js';
 import LineStringBatchRenderer from '../../render/webgl/LineStringBatchRenderer.js';
 import MixedGeometryBatch from '../../render/webgl/MixedGeometryBatch.js';
 import PointBatchRenderer from '../../render/webgl/PointBatchRenderer.js';
@@ -345,19 +344,19 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       this.polygonRenderer_.rebuild(
         this.batch_.polygonBatch,
         frameState,
-        GeometryType.POLYGON,
+        'Polygon',
         rebuildCb
       );
       this.lineStringRenderer_.rebuild(
         this.batch_.lineStringBatch,
         frameState,
-        GeometryType.LINE_STRING,
+        'LineString',
         rebuildCb
       );
       this.pointRenderer_.rebuild(
         this.batch_.pointBatch,
         frameState,
-        GeometryType.POINT,
+        'Point',
         rebuildCb
       );
       this.previousExtent_ = frameState.extent.slice();

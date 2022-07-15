@@ -1,5 +1,4 @@
 import Feature from '../../../../../../src/ol/Feature.js';
-import GeometryType from '../../../../../../src/ol/geom/GeometryType.js';
 import LineString from '../../../../../../src/ol/geom/LineString.js';
 import LineStringBatchRenderer from '../../../../../../src/ol/render/webgl/LineStringBatchRenderer.js';
 import MixedGeometryBatch from '../../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
@@ -105,7 +104,7 @@ describe('Batch renderers', function () {
         batchRenderer.rebuild(
           mixedBatch.pointBatch,
           SAMPLE_FRAMESTATE,
-          GeometryType.POINT,
+          'Point',
           rebuildCb
         );
         // wait for worker response for our specific message
@@ -209,7 +208,7 @@ describe('Batch renderers', function () {
         batchRenderer.rebuild(
           mixedBatch.lineStringBatch,
           SAMPLE_FRAMESTATE,
-          GeometryType.LINE_STRING,
+          'LineString',
           rebuildCb
         );
         // wait for worker response for our specific message
@@ -272,7 +271,7 @@ describe('Batch renderers', function () {
         batchRenderer.rebuild(
           mixedBatch.polygonBatch,
           SAMPLE_FRAMESTATE,
-          GeometryType.POLYGON,
+          'Polygon',
           rebuildCb
         );
         // wait for worker response for our specific message
