@@ -387,10 +387,7 @@ function renderPointGeometry(
     if (opt_declutterBuilderGroup) {
       textBuilderGroup = opt_declutterBuilderGroup;
     }
-    const textReplay = textBuilderGroup.getBuilder(
-      style.getZIndex(),
-      'Text'
-    );
+    const textReplay = textBuilderGroup.getBuilder(style.getZIndex(), 'Text');
     textReplay.setTextStyle(textStyle, declutterImageWithText);
     textReplay.drawText(geometry, feature);
   }
@@ -448,10 +445,7 @@ function renderMultiPointGeometry(
     if (opt_declutterBuilderGroup) {
       textBuilderGroup = opt_declutterBuilderGroup;
     }
-    const textReplay = textBuilderGroup.getBuilder(
-      style.getZIndex(),
-      'Text'
-    );
+    const textReplay = textBuilderGroup.getBuilder(style.getZIndex(), 'Text');
     textReplay.setTextStyle(textStyle, declutterImageWithText);
     textReplay.drawText(geometry, feature);
   }

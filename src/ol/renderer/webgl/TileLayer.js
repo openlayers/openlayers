@@ -725,7 +725,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     let i, source, tileGrid;
     for (i = sources.length - 1; i >= 0; --i) {
       source = sources[i];
-      if (source.getState() === State.READY) {
+      if (source.getState() === 'ready') {
         tileGrid = source.getTileGridForProjection(viewState.projection);
         if (source.getWrapX()) {
           break;
