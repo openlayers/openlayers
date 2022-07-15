@@ -4,7 +4,6 @@
 import BaseEvent from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import MVT from '../format/MVT.js';
-import SourceState from '../source/State.js';
 import VectorTileLayer from '../layer/VectorTile.js';
 import VectorTileSource from '../source/VectorTile.js';
 import {applyBackground, applyStyle} from 'ol-mapbox-style';
@@ -144,7 +143,7 @@ class MapboxVectorLayer extends VectorTileLayer {
   constructor(options) {
     const declutter = 'declutter' in options ? options.declutter : true;
     const source = new VectorTileSource({
-      state: SourceState.LOADING,
+      state: 'loading',
       format: new MVT(),
     });
 
@@ -179,12 +178,12 @@ class MapboxVectorLayer extends VectorTileLayer {
       accessToken: this.accessToken,
     })
       .then(() => {
-        source.setState(SourceState.READY);
+        source.setState('ready');
       })
       .catch((error) => {
         this.dispatchEvent(new ErrorEvent(error));
         const source = this.getSource();
-        source.setState(SourceState.ERROR);
+        source.setState('error');
       });
     if (this.getBackground() === undefined) {
       applyBackground(this, options.styleUrl, {

@@ -2,7 +2,6 @@
  * @module ol/format/XMLFeature
  */
 import FeatureFormat from '../format/Feature.js';
-import FormatType from '../format/FormatType.js';
 import {abstract} from '../util.js';
 import {extend} from '../array.js';
 import {getXMLSerializer, isDocument, parse} from '../xml.js';
@@ -27,10 +26,10 @@ class XMLFeature extends FeatureFormat {
   }
 
   /**
-   * @return {import("./FormatType.js").default} Format.
+   * @return {import("./Feature.js").Type} Format.
    */
   getType() {
-    return FormatType.XML;
+    return 'xml';
   }
 
   /**

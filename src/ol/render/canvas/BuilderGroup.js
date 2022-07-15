@@ -9,7 +9,7 @@ import PolygonBuilder from './PolygonBuilder.js';
 import TextBuilder from './TextBuilder.js';
 
 /**
- * @type {Object<import("./BuilderType").default, typeof Builder>}
+ * @type {Object<import("../canvas.js").BuilderType, typeof Builder>}
  */
 const BATCH_CONSTRUCTORS = {
   'Circle': PolygonBuilder,
@@ -54,13 +54,13 @@ class BuilderGroup {
 
     /**
      * @private
-     * @type {!Object<string, !Object<import("./BuilderType").default, Builder>>}
+     * @type {!Object<string, !Object<import("../canvas.js").BuilderType, Builder>>}
      */
     this.buildersByZIndex_ = {};
   }
 
   /**
-   * @return {!Object<string, !Object<import("./BuilderType").default, import("./Builder.js").SerializableInstructions>>} The serializable instructions
+   * @return {!Object<string, !Object<import("../canvas.js").BuilderType, import("./Builder.js").SerializableInstructions>>} The serializable instructions
    */
   finish() {
     const builderInstructions = {};
@@ -77,7 +77,7 @@ class BuilderGroup {
 
   /**
    * @param {number|undefined} zIndex Z index.
-   * @param {import("./BuilderType.js").default} builderType Replay type.
+   * @param {import("../canvas.js").BuilderType} builderType Replay type.
    * @return {import("../VectorContext.js").default} Replay.
    */
   getBuilder(zIndex, builderType) {

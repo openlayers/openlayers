@@ -4,7 +4,6 @@
 import Feature from '../Feature.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
-import GeometryType from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
@@ -79,13 +78,18 @@ const TokenType = {
 };
 
 /**
- * @const
- * @type {Object<string, string>}
+ * @type {Object<import("../geom/Geometry.js").Type, string>}
  */
-const WKTGeometryType = {};
-for (const type in GeometryType) {
-  WKTGeometryType[type] = GeometryType[type].toUpperCase();
-}
+const wktTypeLookup = {
+  Point: 'POINT',
+  LineString: 'LINESTRING',
+  Polygon: 'POLYGON',
+  MultiPoint: 'MULTIPOINT',
+  MultiLineString: 'MULTILINESTRING',
+  MultiPolygon: 'MULTIPOLYGON',
+  GeometryCollection: 'GEOMETRYCOLLECTION',
+  Circle: 'CIRCLE',
+};
 
 /**
  * Class to tokenize a WKT string.
@@ -648,10 +652,7 @@ class WKT extends TextFeature {
   readFeaturesFromText(text, opt_options) {
     let geometries = [];
     const geometry = this.readGeometryFromText(text, opt_options);
-    if (
-      this.splitCollection_ &&
-      geometry.getType() == GeometryType.GEOMETRY_COLLECTION
-    ) {
+    if (this.splitCollection_ && geometry.getType() == 'GeometryCollection') {
       geometries = /** @type {GeometryCollection} */ (
         geometry
       ).getGeometriesArray();
@@ -847,22 +848,22 @@ const GeometryEncoder = {
  * @return {string} WKT string for the geometry.
  */
 function encode(geom) {
-  let type = geom.getType();
+  const type = geom.getType();
   const geometryEncoder = GeometryEncoder[type];
   const enc = geometryEncoder(geom);
-  type = type.toUpperCase();
+  let wktType = wktTypeLookup[type];
   if (typeof (/** @type {?} */ (geom).getFlatCoordinates) === 'function') {
     const dimInfo = encodeGeometryLayout(
       /** @type {import("../geom/SimpleGeometry.js").default} */ (geom)
     );
     if (dimInfo.length > 0) {
-      type += ' ' + dimInfo;
+      wktType += ' ' + dimInfo;
     }
   }
   if (enc.length === 0) {
-    return type + ' ' + EMPTY;
+    return wktType + ' ' + EMPTY;
   }
-  return type + '(' + enc + ')';
+  return wktType + '(' + enc + ')';
 }
 
 export default WKT;

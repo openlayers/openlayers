@@ -44,7 +44,7 @@ import {
  * width and height of the map viewport, and so on. Must be `1` or higher.
  * @property {Array<number>} [resolutions] Resolutions.
  * If specified, new canvases will be created for these resolutions
- * @property {import("./State.js").default} [state] Source state.
+ * @property {import("./Source.js").State} [state] Source state.
  */
 
 /**

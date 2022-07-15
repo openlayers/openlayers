@@ -4,7 +4,6 @@
 
 import EventType from '../events/EventType.js';
 import Feature from '../Feature.js';
-import GeometryType from '../geom/GeometryType.js';
 import Point from '../geom/Point.js';
 import VectorSource from './Vector.js';
 import {add as addCoordinate, scale as scaleCoordinate} from '../coordinate.js';
@@ -116,7 +115,7 @@ class Cluster extends VectorSource {
       options.geometryFunction ||
       function (feature) {
         const geometry = /** @type {Point} */ (feature.getGeometry());
-        assert(geometry.getType() == GeometryType.POINT, 10); // The default `geometryFunction` can only handle `Point` geometries
+        assert(geometry.getType() == 'Point', 10); // The default `geometryFunction` can only handle `Point` geometries
         return geometry;
       };
 

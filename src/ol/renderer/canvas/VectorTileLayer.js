@@ -4,7 +4,6 @@
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
 import CanvasExecutorGroup from '../../render/canvas/ExecutorGroup.js';
 import CanvasTileLayerRenderer from './TileLayer.js';
-import ReplayType from '../../render/canvas/BuilderType.js';
 import TileState from '../../TileState.js';
 import VectorTileRenderType from '../../layer/VectorTileRenderType.js';
 import ViewHint from '../../ViewHint.js';
@@ -40,33 +39,20 @@ import {toSize} from '../../size.js';
 import {wrapX} from '../../coordinate.js';
 
 /**
- * @type {!Object<string, Array<import("../../render/canvas/BuilderType.js").default>>}
+ * @type {!Object<string, Array<import("../../render/canvas.js").BuilderType>>}
  */
 const IMAGE_REPLAYS = {
-  'image': [
-    ReplayType.POLYGON,
-    ReplayType.CIRCLE,
-    ReplayType.LINE_STRING,
-    ReplayType.IMAGE,
-    ReplayType.TEXT,
-  ],
-  'hybrid': [ReplayType.POLYGON, ReplayType.LINE_STRING],
+  'image': ['Polygon', 'Circle', 'LineString', 'Image', 'Text'],
+  'hybrid': ['Polygon', 'LineString'],
   'vector': [],
 };
 
 /**
- * @type {!Object<string, Array<import("../../render/canvas/BuilderType.js").default>>}
+ * @type {!Object<string, Array<import("../../render/canvas.js").BuilderType>>}
  */
 const VECTOR_REPLAYS = {
-  'hybrid': [ReplayType.IMAGE, ReplayType.TEXT, ReplayType.DEFAULT],
-  'vector': [
-    ReplayType.POLYGON,
-    ReplayType.CIRCLE,
-    ReplayType.LINE_STRING,
-    ReplayType.IMAGE,
-    ReplayType.TEXT,
-    ReplayType.DEFAULT,
-  ],
+  'hybrid': ['Image', 'Text', 'Default'],
+  'vector': ['Polygon', 'Circle', 'LineString', 'Image', 'Text', 'Default'],
 };
 
 /**

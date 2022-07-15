@@ -80,7 +80,7 @@ export class ImageSourceEvent extends Event {
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection.
  * @property {Array<number>} [resolutions] Resolutions.
- * @property {import("./State.js").default} [state] State.
+ * @property {import("./Source.js").State} [state] State.
  */
 
 /**

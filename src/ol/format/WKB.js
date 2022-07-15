@@ -3,10 +3,8 @@
  */
 import Feature from '../Feature.js';
 import FeatureFormat, {transformGeometryWithOptions} from './Feature.js';
-import FormatType from './FormatType.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
-import GeometryType from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
@@ -579,14 +577,17 @@ class WkbWriter {
    * @param {number} [srid] SRID
    */
   writeGeometry(geom, srid) {
+    /**
+     * @type {Object<import("../geom/Geometry.js").Type, WKBGeometryType>}
+     */
     const wkblut = {
-      [GeometryType.POINT]: WKBGeometryType.POINT,
-      [GeometryType.LINE_STRING]: WKBGeometryType.LINE_STRING,
-      [GeometryType.POLYGON]: WKBGeometryType.POLYGON,
-      [GeometryType.MULTI_POINT]: WKBGeometryType.MULTI_POINT,
-      [GeometryType.MULTI_LINE_STRING]: WKBGeometryType.MULTI_LINE_STRING,
-      [GeometryType.MULTI_POLYGON]: WKBGeometryType.MULTI_POLYGON,
-      [GeometryType.GEOMETRY_COLLECTION]: WKBGeometryType.GEOMETRY_COLLECTION,
+      Point: WKBGeometryType.POINT,
+      LineString: WKBGeometryType.LINE_STRING,
+      Polygon: WKBGeometryType.POLYGON,
+      MultiPoint: WKBGeometryType.MULTI_POINT,
+      MultiLineString: WKBGeometryType.MULTI_LINE_STRING,
+      MultiPolygon: WKBGeometryType.MULTI_POLYGON,
+      GeometryCollection: WKBGeometryType.GEOMETRY_COLLECTION,
     };
     const geomType = geom.getType();
     const typeId = wkblut[geomType];
@@ -604,12 +605,12 @@ class WkbWriter {
 
     if (geom instanceof SimpleGeometry) {
       const writerLUT = {
-        [GeometryType.POINT]: this.writePoint,
-        [GeometryType.LINE_STRING]: this.writeLineString,
-        [GeometryType.POLYGON]: this.writePolygon,
-        [GeometryType.MULTI_POINT]: this.writeMultiPoint,
-        [GeometryType.MULTI_LINE_STRING]: this.writeMultiLineString,
-        [GeometryType.MULTI_POLYGON]: this.writeMultiPolygon,
+        Point: this.writePoint,
+        LineString: this.writeLineString,
+        Polygon: this.writePolygon,
+        MultiPoint: this.writeMultiPoint,
+        MultiLineString: this.writeMultiLineString,
+        MultiPolygon: this.writeMultiPolygon,
       };
       writerLUT[geomType].call(this, geom.getCoordinates(), geom.getLayout());
     } else if (geom instanceof GeometryCollection) {
@@ -689,10 +690,10 @@ class WKB extends FeatureFormat {
   }
 
   /**
-   * @return {import("./FormatType.js").default} Format.
+   * @return {import("./Feature.js").Type} Format.
    */
   getType() {
-    return this.hex_ ? FormatType.TEXT : FormatType.ARRAY_BUFFER;
+    return this.hex_ ? 'text' : 'arraybuffer';
   }
 
   /**

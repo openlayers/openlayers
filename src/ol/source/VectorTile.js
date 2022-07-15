@@ -35,7 +35,7 @@ import {toSize} from '../size.js';
  * boundaries or TopoJSON sources) allows the renderer to optimise fill and
  * stroke operations.
  * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Projection of the tile grid.
- * @property {import("./State.js").default} [state] Source state.
+ * @property {import("./Source.js").State} [state] Source state.
  * @property {typeof import("../VectorTile.js").default} [tileClass] Class used to instantiate image tiles.
  * Default is {@link module:ol/VectorTile~VectorTile}.
  * @property {number} [maxZoom=22] Optional max zoom level. Not used if `tileGrid` is provided.

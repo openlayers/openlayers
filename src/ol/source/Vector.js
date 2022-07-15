@@ -9,7 +9,6 @@ import EventType from '../events/EventType.js';
 import ObjectEventType from '../ObjectEventType.js';
 import RBush from '../structs/RBush.js';
 import Source from './Source.js';
-import SourceState from './State.js';
 import VectorEventType from './VectorEventType.js';
 import {TRUE, VOID} from '../functions.js';
 import {all as allStrategy} from '../loadingstrategy.js';
@@ -183,7 +182,7 @@ class VectorSource extends Source {
       attributions: options.attributions,
       interpolate: true,
       projection: undefined,
-      state: SourceState.READY,
+      state: 'ready',
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
     });
 

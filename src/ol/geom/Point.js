@@ -1,7 +1,6 @@
 /**
  * @module ol/geom/Point
  */
-import GeometryType from './GeometryType.js';
 import SimpleGeometry from './SimpleGeometry.js';
 import {containsXY, createOrUpdateFromCoordinate} from '../extent.js';
 import {deflateCoordinate} from './flat/deflate.js';
@@ -81,11 +80,11 @@ class Point extends SimpleGeometry {
 
   /**
    * Get the type of this geometry.
-   * @return {import("./GeometryType.js").default} Geometry type.
+   * @return {import("./Geometry.js").Type} Geometry type.
    * @api
    */
   getType() {
-    return GeometryType.POINT;
+    return 'Point';
   }
 
   /**

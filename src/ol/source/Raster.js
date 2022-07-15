@@ -8,7 +8,6 @@ import ImageCanvas from '../ImageCanvas.js';
 import ImageLayer from '../layer/Image.js';
 import ImageSource from './Image.js';
 import Source from './Source.js';
-import SourceState from './State.js';
 import TileLayer from '../layer/Tile.js';
 import TileQueue from '../TileQueue.js';
 import TileSource from './Tile.js';
@@ -743,7 +742,7 @@ class RasterSource extends ImageSource {
     let source;
     for (let i = 0, ii = this.layers_.length; i < ii; ++i) {
       source = this.layers_[i].getSource();
-      if (source.getState() !== SourceState.READY) {
+      if (source.getState() !== 'ready') {
         ready = false;
         break;
       }

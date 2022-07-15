@@ -3,7 +3,6 @@
  */
 import Feature from '../Feature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
-import GeometryType from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import Point from '../geom/Point.js';
@@ -848,7 +847,7 @@ function writeRte(node, feature, objectStack) {
   const context = {node: node};
   context['properties'] = properties;
   const geometry = feature.getGeometry();
-  if (geometry.getType() == GeometryType.LINE_STRING) {
+  if (geometry.getType() == 'LineString') {
     const lineString = /** @type {LineString} */ (
       transformGeometryWithOptions(geometry, true, options)
     );
@@ -882,7 +881,7 @@ function writeTrk(node, feature, objectStack) {
   const context = {node: node};
   context['properties'] = properties;
   const geometry = feature.getGeometry();
-  if (geometry.getType() == GeometryType.MULTI_LINE_STRING) {
+  if (geometry.getType() == 'MultiLineString') {
     const multiLineString = /** @type {MultiLineString} */ (
       transformGeometryWithOptions(geometry, true, options)
     );
@@ -932,7 +931,7 @@ function writeWpt(node, feature, objectStack) {
   const context = objectStack[objectStack.length - 1];
   context['properties'] = feature.getProperties();
   const geometry = feature.getGeometry();
-  if (geometry.getType() == GeometryType.POINT) {
+  if (geometry.getType() == 'Point') {
     const point = /** @type {Point} */ (
       transformGeometryWithOptions(geometry, true, options)
     );

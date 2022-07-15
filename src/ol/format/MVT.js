@@ -4,9 +4,7 @@
 //FIXME Implement projection handling
 
 import FeatureFormat, {transformGeometryWithOptions} from './Feature.js';
-import FormatType from './FormatType.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
-import GeometryType from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
@@ -202,7 +200,7 @@ class MVT extends FeatureFormat {
       feature.transform(options.dataProjection);
     } else {
       let geom;
-      if (geometryType == GeometryType.POLYGON) {
+      if (geometryType == 'Polygon') {
         const endss = inflateEnds(flatCoordinates, ends);
         geom =
           endss.length > 1
@@ -210,15 +208,13 @@ class MVT extends FeatureFormat {
             : new Polygon(flatCoordinates, GeometryLayout.XY, ends);
       } else {
         geom =
-          geometryType === GeometryType.POINT
+          geometryType === 'Point'
             ? new Point(flatCoordinates, GeometryLayout.XY)
-            : geometryType === GeometryType.LINE_STRING
+            : geometryType === 'LineString'
             ? new LineString(flatCoordinates, GeometryLayout.XY)
-            : geometryType === GeometryType.POLYGON
-            ? new Polygon(flatCoordinates, GeometryLayout.XY, ends)
-            : geometryType === GeometryType.MULTI_POINT
+            : geometryType === 'MultiPoint'
             ? new MultiPoint(flatCoordinates, GeometryLayout.XY)
-            : geometryType === GeometryType.MULTI_LINE_STRING
+            : geometryType === 'MultiLineString'
             ? new MultiLineString(flatCoordinates, GeometryLayout.XY, ends)
             : null;
       }
@@ -241,10 +237,10 @@ class MVT extends FeatureFormat {
   }
 
   /**
-   * @return {import("./FormatType.js").default} Format.
+   * @return {import("./Feature.js").Type} Format.
    */
   getType() {
-    return FormatType.ARRAY_BUFFER;
+    return 'arraybuffer';
   }
 
   /**
@@ -421,19 +417,17 @@ function readRawFeature(pbf, layer, i) {
  * @param {number} type The raw feature's geometry type
  * @param {number} numEnds Number of ends of the flat coordinates of the
  * geometry.
- * @return {import("../geom/GeometryType.js").default} The geometry type.
+ * @return {import("../geom/Geometry.js").Type} The geometry type.
  */
 function getGeometryType(type, numEnds) {
-  /** @type {import("../geom/GeometryType.js").default} */
+  /** @type {import("../geom/Geometry.js").Type} */
   let geometryType;
   if (type === 1) {
-    geometryType =
-      numEnds === 1 ? GeometryType.POINT : GeometryType.MULTI_POINT;
+    geometryType = numEnds === 1 ? 'Point' : 'MultiPoint';
   } else if (type === 2) {
-    geometryType =
-      numEnds === 1 ? GeometryType.LINE_STRING : GeometryType.MULTI_LINE_STRING;
+    geometryType = numEnds === 1 ? 'LineString' : 'MultiLineString';
   } else if (type === 3) {
-    geometryType = GeometryType.POLYGON;
+    geometryType = 'Polygon';
     // MultiPolygon not relevant for rendering - winding order determines
     // outer rings of polygons.
   }

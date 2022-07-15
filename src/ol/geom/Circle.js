@@ -1,7 +1,6 @@
 /**
  * @module ol/geom/Circle
  */
-import GeometryType from './GeometryType.js';
 import SimpleGeometry from './SimpleGeometry.js';
 import {createOrUpdate, forEachCorner, intersects} from '../extent.js';
 import {deflateCoordinate} from './flat/deflate.js';
@@ -137,11 +136,11 @@ class Circle extends SimpleGeometry {
 
   /**
    * Get the type of this geometry.
-   * @return {import("./GeometryType.js").default} Geometry type.
+   * @return {import("./Geometry.js").Type} Geometry type.
    * @api
    */
   getType() {
-    return GeometryType.CIRCLE;
+    return 'Circle';
   }
 
   /**

@@ -3,7 +3,6 @@
  */
 import CanvasBuilder from './Builder.js';
 import CanvasInstruction from './Instruction.js';
-import GeometryType from '../../geom/GeometryType.js';
 import TextPlacement from '../../style/TextPlacement.js';
 import {asColorLike} from '../../colorlike.js';
 import {
@@ -179,27 +178,27 @@ class CanvasTextBuilder extends CanvasBuilder {
 
     if (
       textState.placement === TextPlacement.LINE &&
-      (geometryType == GeometryType.LINE_STRING ||
-        geometryType == GeometryType.MULTI_LINE_STRING ||
-        geometryType == GeometryType.POLYGON ||
-        geometryType == GeometryType.MULTI_POLYGON)
+      (geometryType == 'LineString' ||
+        geometryType == 'MultiLineString' ||
+        geometryType == 'Polygon' ||
+        geometryType == 'MultiPolygon')
     ) {
       if (!intersects(this.getBufferedMaxExtent(), geometry.getExtent())) {
         return;
       }
       let ends;
       flatCoordinates = geometry.getFlatCoordinates();
-      if (geometryType == GeometryType.LINE_STRING) {
+      if (geometryType == 'LineString') {
         ends = [flatCoordinates.length];
-      } else if (geometryType == GeometryType.MULTI_LINE_STRING) {
+      } else if (geometryType == 'MultiLineString') {
         ends = /** @type {import("../../geom/MultiLineString.js").default} */ (
           geometry
         ).getEnds();
-      } else if (geometryType == GeometryType.POLYGON) {
+      } else if (geometryType == 'Polygon') {
         ends = /** @type {import("../../geom/Polygon.js").default} */ (geometry)
           .getEnds()
           .slice(0, 1);
-      } else if (geometryType == GeometryType.MULTI_POLYGON) {
+      } else if (geometryType == 'MultiPolygon') {
         const endss =
           /** @type {import("../../geom/MultiPolygon.js").default} */ (
             geometry
@@ -240,33 +239,33 @@ class CanvasTextBuilder extends CanvasBuilder {
     } else {
       let geometryWidths = textState.overflow ? null : [];
       switch (geometryType) {
-        case GeometryType.POINT:
-        case GeometryType.MULTI_POINT:
+        case 'Point':
+        case 'MultiPoint':
           flatCoordinates =
             /** @type {import("../../geom/MultiPoint.js").default} */ (
               geometry
             ).getFlatCoordinates();
           break;
-        case GeometryType.LINE_STRING:
+        case 'LineString':
           flatCoordinates =
             /** @type {import("../../geom/LineString.js").default} */ (
               geometry
             ).getFlatMidpoint();
           break;
-        case GeometryType.CIRCLE:
+        case 'Circle':
           flatCoordinates =
             /** @type {import("../../geom/Circle.js").default} */ (
               geometry
             ).getCenter();
           break;
-        case GeometryType.MULTI_LINE_STRING:
+        case 'MultiLineString':
           flatCoordinates =
             /** @type {import("../../geom/MultiLineString.js").default} */ (
               geometry
             ).getFlatMidpoints();
           stride = 2;
           break;
-        case GeometryType.POLYGON:
+        case 'Polygon':
           flatCoordinates =
             /** @type {import("../../geom/Polygon.js").default} */ (
               geometry
@@ -276,7 +275,7 @@ class CanvasTextBuilder extends CanvasBuilder {
           }
           stride = 3;
           break;
-        case GeometryType.MULTI_POLYGON:
+        case 'MultiPolygon':
           const interiorPoints =
             /** @type {import("../../geom/MultiPolygon.js").default} */ (
               geometry
