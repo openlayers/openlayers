@@ -390,7 +390,7 @@ class ScaleLine extends Control {
           '<div ' +
           'class="ol-scale-singlebar ' +
           backgroundColor +
-          '"' +
+          '" ' +
           'style=' +
           '"width: ' +
           stepWidth +
