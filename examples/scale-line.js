@@ -9,6 +9,7 @@ const unitsSelect = document.getElementById('units');
 const typeSelect = document.getElementById('type');
 const stepsSelect = document.getElementById('steps');
 const scaleTextCheckbox = document.getElementById('showScaleText');
+const invertColorsCheckbox = document.getElementById('invertColors');
 
 let control;
 
@@ -26,6 +27,7 @@ function scaleControl() {
       text: scaleTextCheckbox.checked,
       minWidth: 140,
     });
+    onInvertColorsChange();
     scaleBarOptionsContainer.style.display = 'block';
   }
   return control;
@@ -51,7 +53,14 @@ function reconfigureScaleLine() {
 function onChangeUnit() {
   control.setUnits(unitsSelect.value);
 }
+function onInvertColorsChange() {
+  control.element.classList.toggle(
+    'ol-scale-bar-inverted',
+    invertColorsCheckbox.checked
+  );
+}
 unitsSelect.addEventListener('change', onChangeUnit);
 typeSelect.addEventListener('change', reconfigureScaleLine);
 stepsSelect.addEventListener('change', reconfigureScaleLine);
 scaleTextCheckbox.addEventListener('change', reconfigureScaleLine);
+invertColorsCheckbox.addEventListener('change', onInvertColorsChange);
