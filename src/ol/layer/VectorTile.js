@@ -4,7 +4,6 @@
 import BaseVectorLayer from './BaseVector.js';
 import CanvasVectorTileLayerRenderer from '../renderer/canvas/VectorTileLayer.js';
 import TileProperty from './TileProperty.js';
-import VectorTileRenderType from './VectorTileRenderType.js';
 import {assert} from '../asserts.js';
 
 /***
@@ -15,6 +14,10 @@ import {assert} from '../asserts.js';
  *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default, Return> &
  *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|
  *     'change:source'|'change:preload'|'change:useInterimTilesOnError'|import("../render/EventType").LayerRenderEventTypes, Return>} VectorTileLayerOnSignature
+ */
+
+/**
+ * @typedef {'hybrid' | 'vector'} VectorTileRenderType
  */
 
 /**
@@ -44,7 +47,7 @@ import {assert} from '../asserts.js';
  * Recommended value: Vector tiles are usually generated with a buffer, so this value should match
  * the largest possible buffer of the used tiles. It should be at least the size of the largest
  * point symbol or line width.
- * @property {import("./VectorTileRenderType.js").default|string} [renderMode='hybrid'] Render mode for vector tiles:
+ * @property {VectorTileRenderType} [renderMode='hybrid'] Render mode for vector tiles:
  *  * `'hybrid'`: Polygon and line elements are rendered as images, so pixels are scaled during zoom
  *    animations. Point symbols and texts are accurately rendered as vectors and can stay upright on
  *    rotated views.
@@ -126,16 +129,13 @@ class VectorTileLayer extends BaseVectorLayer {
      */
     this.un;
 
-    const renderMode = options.renderMode || VectorTileRenderType.HYBRID;
-    assert(
-      renderMode == VectorTileRenderType.HYBRID ||
-        renderMode == VectorTileRenderType.VECTOR,
-      28
-    ); // `renderMode` must be `'hybrid'` or `'vector'`.
+    const renderMode = options.renderMode || 'hybrid';
+    // `renderMode` must be `'hybrid'` or `'vector'`.
+    assert(renderMode == 'hybrid' || renderMode == 'vector', 28);
 
     /**
      * @private
-     * @type {import("./VectorTileRenderType.js").default}
+     * @type {VectorTileRenderType}
      */
     this.renderMode_ = renderMode;
 
@@ -184,7 +184,7 @@ class VectorTileLayer extends BaseVectorLayer {
   }
 
   /**
-   * @return {import("./VectorTileRenderType.js").default} The render mode.
+   * @return {VectorTileRenderType} The render mode.
    */
   getRenderMode() {
     return this.renderMode_;
