@@ -379,7 +379,7 @@ class ScaleLine extends Control {
       '1 : ' + Math.round(this.getScaleForResolution()).toLocaleString();
     const scaleSteps = [];
     const stepWidth = width / this.scaleBarSteps_;
-    let backgroundColor = '#ffffff';
+    let backgroundColor = 'ol-scale-singlebar-odd';
     for (let i = 0; i < this.scaleBarSteps_; i++) {
       if (i === 0) {
         // create the first marker at position 0
@@ -388,14 +388,13 @@ class ScaleLine extends Control {
       scaleSteps.push(
         '<div>' +
           '<div ' +
-          'class="ol-scale-singlebar" ' +
+          'class="ol-scale-singlebar ' +
+          backgroundColor +
+          '" ' +
           'style=' +
           '"width: ' +
           stepWidth +
-          'px;' +
-          'background-color: ' +
-          backgroundColor +
-          ';"' +
+          'px;"' +
           '>' +
           '</div>' +
           this.createMarker('relative', i) +
@@ -411,12 +410,11 @@ class ScaleLine extends Control {
         }
         scaleSteps.push(this.createStepText(i + 1, width, true, scale, suffix));
       }
-      // switch colors of steps between black and white
-      if (backgroundColor === '#ffffff') {
-        backgroundColor = '#000000';
-      } else {
-        backgroundColor = '#ffffff';
-      }
+      // switch style of steps
+      backgroundColor =
+        backgroundColor === 'ol-scale-singlebar-odd'
+          ? 'ol-scale-singlebar-even'
+          : 'ol-scale-singlebar-odd';
     }
 
     let scaleBarText;

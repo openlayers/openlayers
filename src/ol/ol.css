@@ -29,6 +29,12 @@
   will-change: contents, width;
   transition: all 0.25s;
 }
+.ol-scale-singlebar-even{
+  background-color: #000000;
+}
+.ol-scale-singlebar-odd{
+  background-color: #ffffff;
+}
 .ol-scale-bar {
   position: absolute;
   bottom: 8px;
