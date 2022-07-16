@@ -9,14 +9,12 @@ export default {
   /**
    * Triggered before a layer is rendered.
    * @event module:ol/render/Event~RenderEvent#prerender
-   * @api
    */
   PRERENDER: 'prerender',
 
   /**
    * Triggered after a layer is rendered.
    * @event module:ol/render/Event~RenderEvent#postrender
-   * @api
    */
   POSTRENDER: 'postrender',
 
@@ -25,7 +23,6 @@ export default {
    * a `context` set.  When dispatched by a layer, the event object will have a `context` set.  Only
    * WebGL layers currently dispatch this event.
    * @event module:ol/render/Event~RenderEvent#precompose
-   * @api
    */
   PRECOMPOSE: 'precompose',
 
@@ -34,7 +31,6 @@ export default {
    * a `context` set.  When dispatched by a layer, the event object will have a `context` set.  Only
    * WebGL layers currently dispatch this event.
    * @event module:ol/render/Event~RenderEvent#postcompose
-   * @api
    */
   POSTCOMPOSE: 'postcompose',
 
@@ -43,7 +39,6 @@ export default {
    * finished loading for the current viewport, and all tiles are faded in.
    * The event object will not have a `context` set.
    * @event module:ol/render/Event~RenderEvent#rendercomplete
-   * @api
    */
   RENDERCOMPLETE: 'rendercomplete',
 };

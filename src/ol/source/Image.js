@@ -18,21 +18,18 @@ export const ImageSourceEventType = {
   /**
    * Triggered when an image starts loading.
    * @event module:ol/source/Image.ImageSourceEvent#imageloadstart
-   * @api
    */
   IMAGELOADSTART: 'imageloadstart',
 
   /**
    * Triggered when an image finishes loading.
    * @event module:ol/source/Image.ImageSourceEvent#imageloadend
-   * @api
    */
   IMAGELOADEND: 'imageloadend',
 
   /**
    * Triggered if image loading results in an error.
    * @event module:ol/source/Image.ImageSourceEvent#imageloaderror
-   * @api
    */
   IMAGELOADERROR: 'imageloaderror',
 };

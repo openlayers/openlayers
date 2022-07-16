@@ -36,28 +36,24 @@ const DragBoxEventType = {
   /**
    * Triggered upon drag box start.
    * @event DragBoxEvent#boxstart
-   * @api
    */
   BOXSTART: 'boxstart',
 
   /**
    * Triggered on drag when box is active.
    * @event DragBoxEvent#boxdrag
-   * @api
    */
   BOXDRAG: 'boxdrag',
 
   /**
    * Triggered upon drag box end.
    * @event DragBoxEvent#boxend
-   * @api
    */
   BOXEND: 'boxend',
 
   /**
    * Triggered upon drag box canceled.
    * @event DragBoxEvent#boxcancel
-   * @api
    */
   BOXCANCEL: 'boxcancel',
 };

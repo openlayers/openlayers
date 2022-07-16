@@ -67,13 +67,11 @@ const ModifyEventType = {
   /**
    * Triggered upon feature modification start
    * @event ModifyEvent#modifystart
-   * @api
    */
   MODIFYSTART: 'modifystart',
   /**
    * Triggered upon feature modification end
    * @event ModifyEvent#modifyend
-   * @api
    */
   MODIFYEND: 'modifyend',
 };

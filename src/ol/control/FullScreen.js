@@ -21,14 +21,12 @@ const FullScreenEventType = {
   /**
    * Triggered after the map entered fullscreen.
    * @event FullScreenEventType#enterfullscreen
-   * @api
    */
   ENTERFULLSCREEN: 'enterfullscreen',
 
   /**
    * Triggered after the map leave fullscreen.
    * @event FullScreenEventType#leavefullscreen
-   * @api
    */
   LEAVEFULLSCREEN: 'leavefullscreen',
 };

@@ -435,7 +435,6 @@ const RasterEventType = {
    * Triggered before operations are run.  Listeners will receive an event object with
    * a `data` property that can be used to make data available to operations.
    * @event module:ol/source/Raster.RasterSourceEvent#beforeoperations
-   * @api
    */
   BEFOREOPERATIONS: 'beforeoperations',
 
@@ -444,7 +443,6 @@ const RasterEventType = {
    * a `data` property.  If more than one thread is used, `data` will be an array of
    * objects.  If a single thread is used, `data` will be a single object.
    * @event module:ol/source/Raster.RasterSourceEvent#afteroperations
-   * @api
    */
   AFTEROPERATIONS: 'afteroperations',
 };
