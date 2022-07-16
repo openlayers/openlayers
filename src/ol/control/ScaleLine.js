@@ -13,17 +13,9 @@ import {assert} from '../asserts.js';
 const UNITS_PROP = 'units';
 
 /**
- * Units for the scale line. Supported values are `'degrees'`, `'imperial'`,
- * `'nautical'`, `'metric'`, `'us'`.
- * @enum {string}
+ * @typedef {'degrees' | 'imperial' | 'nautical' | 'metric' | 'us'} Units
+ * Units for the scale line.
  */
-export const Units = {
-  DEGREES: 'degrees',
-  IMPERIAL: 'imperial',
-  NAUTICAL: 'nautical',
-  METRIC: 'metric',
-  US: 'us',
-};
 
 /**
  * @const
@@ -57,7 +49,7 @@ const DEFAULT_DPI = 25.4 / 0.28;
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  * @property {HTMLElement|string} [target] Specify a target if you want the control
  * to be rendered outside of the map's viewport.
- * @property {import("./ScaleLine.js").Units|string} [units='metric'] Units.
+ * @property {Units} [units='metric'] Units.
  * @property {boolean} [bar=false] Render scalebars instead of a line.
  * @property {number} [steps=4] Number of steps the scalebar should use. Use even numbers
  * for best results. Only applies when `bar` is `true`.
@@ -164,7 +156,7 @@ class ScaleLine extends Control {
 
     this.addChangeListener(UNITS_PROP, this.handleUnitsChanged_);
 
-    this.setUnits(options.units || Units.METRIC);
+    this.setUnits(options.units || 'metric');
 
     /**
      * @private
@@ -193,7 +185,7 @@ class ScaleLine extends Control {
 
   /**
    * Return the units to use in the scale line.
-   * @return {import("./ScaleLine.js").Units} The units
+   * @return {Units} The units
    * to use in the scale line.
    * @observable
    * @api
@@ -211,7 +203,7 @@ class ScaleLine extends Control {
 
   /**
    * Set the units to use in the scale line.
-   * @param {import("./ScaleLine.js").Units} units The units to use in the scale line.
+   * @param {Units} units The units to use in the scale line.
    * @observable
    * @api
    */
@@ -246,7 +238,7 @@ class ScaleLine extends Control {
     const projection = viewState.projection;
     const units = this.getUnits();
     const pointResolutionUnits =
-      units == Units.DEGREES ? ProjUnits.DEGREES : ProjUnits.METERS;
+      units == 'degrees' ? ProjUnits.DEGREES : ProjUnits.METERS;
     let pointResolution = getPointResolution(
       projection,
       viewState.resolution,
@@ -264,7 +256,7 @@ class ScaleLine extends Control {
 
     let nominalCount = minWidth * pointResolution;
     let suffix = '';
-    if (units == Units.DEGREES) {
+    if (units == 'degrees') {
       const metersPerDegree = METERS_PER_UNIT[ProjUnits.DEGREES];
       nominalCount *= metersPerDegree;
       if (nominalCount < metersPerDegree / 60) {
@@ -276,7 +268,7 @@ class ScaleLine extends Control {
       } else {
         suffix = '\u00b0'; // degrees
       }
-    } else if (units == Units.IMPERIAL) {
+    } else if (units == 'imperial') {
       if (nominalCount < 0.9144) {
         suffix = 'in';
         pointResolution /= 0.0254;
@@ -287,10 +279,10 @@ class ScaleLine extends Control {
         suffix = 'mi';
         pointResolution /= 1609.344;
       }
-    } else if (units == Units.NAUTICAL) {
+    } else if (units == 'nautical') {
       pointResolution /= 1852;
       suffix = 'NM';
-    } else if (units == Units.METRIC) {
+    } else if (units == 'metric') {
       if (nominalCount < 0.001) {
         suffix = 'μm';
         pointResolution *= 1000000;
@@ -303,7 +295,7 @@ class ScaleLine extends Control {
         suffix = 'km';
         pointResolution /= 1000;
       }
-    } else if (units == Units.US) {
+    } else if (units == 'us') {
       if (nominalCount < 0.9144) {
         suffix = 'in';
         pointResolution *= 39.37;
