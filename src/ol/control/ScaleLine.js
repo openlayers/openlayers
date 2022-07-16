@@ -65,9 +65,6 @@ const DEFAULT_DPI = 25.4 / 0.28;
  * when `bar` is `true`.
  * @property {number|undefined} [dpi=undefined] dpi of output device such as printer. Only applies
  * when `bar` is `true`. If undefined the OGC default screen pixel size of 0.28mm will be assumed.
- * @property {array<string>} [scaleBarColors=['#ffffff','#000000']] 2 colors to alternate the steps colors of the scalebar. Only applies
- * when `bar` is `true`. If undefined the default will be white and black ['#ffffff','#000000'].
-
  */
 
 /**
@@ -192,12 +189,6 @@ class ScaleLine extends Control {
      * @type {number|undefined}
      */
     this.dpi_ = options.dpi || undefined;
-
-    /**
-     * @private
-     * @type {array|['#ffffff','#000000']}
-     */
-    this.scaleBarColors_ = options.scaleBarColors || ['#ffffff','#000000'];
   }
 
   /**
@@ -355,7 +346,7 @@ class ScaleLine extends Control {
     }
     let html;
     if (this.scaleBar_) {
-      html = this.createScaleBar(width, count, suffix, scaleBarColors);
+      html = this.createScaleBar(width, count, suffix);
     } else {
       html = count.toFixed(decimalCount < 0 ? -decimalCount : 0) + ' ' + suffix;
     }
@@ -381,15 +372,14 @@ class ScaleLine extends Control {
    * @param {number} width The current width of the scalebar.
    * @param {number} scale The current scale.
    * @param {string} suffix The suffix to append to the scale text.
-   * @param {array<string>} color The 2 colors of the scalebar.
    * @return {string} The stringified HTML of the scalebar.
    */
-  createScaleBar(width, scale, suffix, color) {
+  createScaleBar(width, scale, suffix) {
     const mapScale =
       '1 : ' + Math.round(this.getScaleForResolution()).toLocaleString();
     const scaleSteps = [];
     const stepWidth = width / this.scaleBarSteps_;
-    let backgroundColor = color[0];
+    let backgroundColor = 'ol-scale-line-bar-light';
     for (let i = 0; i < this.scaleBarSteps_; i++) {
       if (i === 0) {
         // create the first marker at position 0
@@ -398,14 +388,13 @@ class ScaleLine extends Control {
       scaleSteps.push(
         '<div>' +
           '<div ' +
-          'class="ol-scale-singlebar" ' +
+          'class="ol-scale-singlebar ' +
+          backgroundColor +
+          '"' +
           'style=' +
           '"width: ' +
           stepWidth +
-          'px;' +
-          'background-color: ' +
-          backgroundColor +
-          ';"' +
+          'px;"' +
           '>' +
           '</div>' +
           this.createMarker('relative', i) +
@@ -421,8 +410,11 @@ class ScaleLine extends Control {
         }
         scaleSteps.push(this.createStepText(i + 1, width, true, scale, suffix));
       }
-      // switch colors of steps
-      backgroundColor = (backgroundColor === color[0])  ? color[1] : color[0];
+      // switch style of steps
+      backgroundColor =
+        backgroundColor === 'ol-scale-line-bar-light'
+          ? 'ol-scale-line-bar-dark'
+          : 'ol-scale-line-bar-light';
     }
 
     let scaleBarText;

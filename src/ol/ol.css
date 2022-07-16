@@ -29,6 +29,12 @@
   will-change: contents, width;
   transition: all 0.25s;
 }
+.ol-scale-line-bar-dark{
+  background-color: #000000;
+}
+.ol-scale-line-bar-light{
+  background-color: #ffffff;
+}
 .ol-scale-bar {
   position: absolute;
   bottom: 8px;
