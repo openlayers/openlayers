@@ -1,8 +1,6 @@
 /**
  * @module ol/renderer/vector
  */
-import BuilderType from '../render/canvas/BuilderType.js';
-import GeometryType from '../geom/GeometryType.js';
 import ImageState from '../ImageState.js';
 import {getUid} from '../util.js';
 
@@ -24,7 +22,7 @@ const SIMPLIFY_TOLERANCE = 0.5;
 
 /**
  * @const
- * @type {Object<import("../geom/GeometryType.js").default,
+ * @type {Object<import("../geom/Geometry.js").Type,
  *                function(import("../render/canvas/BuilderGroup.js").default, import("../geom/Geometry.js").default,
  *                         import("../style/Style.js").default, Object): void>}
  */
@@ -84,10 +82,7 @@ function renderCircleGeometry(
   const fillStyle = style.getFill();
   const strokeStyle = style.getStroke();
   if (fillStyle || strokeStyle) {
-    const circleReplay = builderGroup.getBuilder(
-      style.getZIndex(),
-      BuilderType.CIRCLE
-    );
+    const circleReplay = builderGroup.getBuilder(style.getZIndex(), 'Circle');
     circleReplay.setFillStrokeStyle(fillStyle, strokeStyle);
     circleReplay.drawCircle(geometry, feature);
   }
@@ -95,7 +90,7 @@ function renderCircleGeometry(
   if (textStyle && textStyle.getText()) {
     const textReplay = (opt_declutterBuilderGroup || builderGroup).getBuilder(
       style.getZIndex(),
-      BuilderType.TEXT
+      'Text'
     );
     textReplay.setTextStyle(textStyle);
     textReplay.drawText(geometry, feature);
@@ -193,7 +188,7 @@ function renderFeatureInternal(
  * @param {import("../Feature.js").FeatureLike} feature Feature.
  */
 function renderGeometry(replayGroup, geometry, style, feature) {
-  if (geometry.getType() == GeometryType.GEOMETRY_COLLECTION) {
+  if (geometry.getType() == 'GeometryCollection') {
     const geometries =
       /** @type {import("../geom/GeometryCollection.js").default} */ (
         geometry
@@ -203,7 +198,7 @@ function renderGeometry(replayGroup, geometry, style, feature) {
     }
     return;
   }
-  const replay = replayGroup.getBuilder(style.getZIndex(), BuilderType.DEFAULT);
+  const replay = replayGroup.getBuilder(style.getZIndex(), 'Default');
   replay.drawCustom(
     /** @type {import("../geom/SimpleGeometry.js").default} */ (geometry),
     feature,
@@ -258,7 +253,7 @@ function renderLineStringGeometry(
   if (strokeStyle) {
     const lineStringReplay = builderGroup.getBuilder(
       style.getZIndex(),
-      BuilderType.LINE_STRING
+      'LineString'
     );
     lineStringReplay.setFillStrokeStyle(null, strokeStyle);
     lineStringReplay.drawLineString(geometry, feature);
@@ -267,7 +262,7 @@ function renderLineStringGeometry(
   if (textStyle && textStyle.getText()) {
     const textReplay = (opt_declutterBuilderGroup || builderGroup).getBuilder(
       style.getZIndex(),
-      BuilderType.TEXT
+      'Text'
     );
     textReplay.setTextStyle(textStyle);
     textReplay.drawText(geometry, feature);
@@ -292,7 +287,7 @@ function renderMultiLineStringGeometry(
   if (strokeStyle) {
     const lineStringReplay = builderGroup.getBuilder(
       style.getZIndex(),
-      BuilderType.LINE_STRING
+      'LineString'
     );
     lineStringReplay.setFillStrokeStyle(null, strokeStyle);
     lineStringReplay.drawMultiLineString(geometry, feature);
@@ -301,7 +296,7 @@ function renderMultiLineStringGeometry(
   if (textStyle && textStyle.getText()) {
     const textReplay = (opt_declutterBuilderGroup || builderGroup).getBuilder(
       style.getZIndex(),
-      BuilderType.TEXT
+      'Text'
     );
     textReplay.setTextStyle(textStyle);
     textReplay.drawText(geometry, feature);
@@ -325,10 +320,7 @@ function renderMultiPolygonGeometry(
   const fillStyle = style.getFill();
   const strokeStyle = style.getStroke();
   if (strokeStyle || fillStyle) {
-    const polygonReplay = builderGroup.getBuilder(
-      style.getZIndex(),
-      BuilderType.POLYGON
-    );
+    const polygonReplay = builderGroup.getBuilder(style.getZIndex(), 'Polygon');
     polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);
     polygonReplay.drawMultiPolygon(geometry, feature);
   }
@@ -336,7 +328,7 @@ function renderMultiPolygonGeometry(
   if (textStyle && textStyle.getText()) {
     const textReplay = (opt_declutterBuilderGroup || builderGroup).getBuilder(
       style.getZIndex(),
-      BuilderType.TEXT
+      'Text'
     );
     textReplay.setTextStyle(textStyle);
     textReplay.drawText(geometry, feature);
@@ -374,7 +366,7 @@ function renderPointGeometry(
           // draw in non-declutter group:
           const imageReplay = builderGroup.getBuilder(
             style.getZIndex(),
-            BuilderType.IMAGE
+            'Image'
           );
           imageReplay.setImageStyle(imageStyle, declutterImageWithText);
           imageReplay.drawPoint(geometry, feature);
@@ -385,7 +377,7 @@ function renderPointGeometry(
     }
     const imageReplay = imageBuilderGroup.getBuilder(
       style.getZIndex(),
-      BuilderType.IMAGE
+      'Image'
     );
     imageReplay.setImageStyle(imageStyle, declutterImageWithText);
     imageReplay.drawPoint(geometry, feature);
@@ -395,10 +387,7 @@ function renderPointGeometry(
     if (opt_declutterBuilderGroup) {
       textBuilderGroup = opt_declutterBuilderGroup;
     }
-    const textReplay = textBuilderGroup.getBuilder(
-      style.getZIndex(),
-      BuilderType.TEXT
-    );
+    const textReplay = textBuilderGroup.getBuilder(style.getZIndex(), 'Text');
     textReplay.setTextStyle(textStyle, declutterImageWithText);
     textReplay.drawText(geometry, feature);
   }
@@ -435,7 +424,7 @@ function renderMultiPointGeometry(
           // draw in non-declutter group:
           const imageReplay = builderGroup.getBuilder(
             style.getZIndex(),
-            BuilderType.IMAGE
+            'Image'
           );
           imageReplay.setImageStyle(imageStyle, declutterImageWithText);
           imageReplay.drawMultiPoint(geometry, feature);
@@ -446,7 +435,7 @@ function renderMultiPointGeometry(
     }
     const imageReplay = imageBuilderGroup.getBuilder(
       style.getZIndex(),
-      BuilderType.IMAGE
+      'Image'
     );
     imageReplay.setImageStyle(imageStyle, declutterImageWithText);
     imageReplay.drawMultiPoint(geometry, feature);
@@ -456,10 +445,7 @@ function renderMultiPointGeometry(
     if (opt_declutterBuilderGroup) {
       textBuilderGroup = opt_declutterBuilderGroup;
     }
-    const textReplay = textBuilderGroup.getBuilder(
-      style.getZIndex(),
-      BuilderType.TEXT
-    );
+    const textReplay = textBuilderGroup.getBuilder(style.getZIndex(), 'Text');
     textReplay.setTextStyle(textStyle, declutterImageWithText);
     textReplay.drawText(geometry, feature);
   }
@@ -482,10 +468,7 @@ function renderPolygonGeometry(
   const fillStyle = style.getFill();
   const strokeStyle = style.getStroke();
   if (fillStyle || strokeStyle) {
-    const polygonReplay = builderGroup.getBuilder(
-      style.getZIndex(),
-      BuilderType.POLYGON
-    );
+    const polygonReplay = builderGroup.getBuilder(style.getZIndex(), 'Polygon');
     polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);
     polygonReplay.drawPolygon(geometry, feature);
   }
@@ -493,7 +476,7 @@ function renderPolygonGeometry(
   if (textStyle && textStyle.getText()) {
     const textReplay = (opt_declutterBuilderGroup || builderGroup).getBuilder(
       style.getZIndex(),
-      BuilderType.TEXT
+      'Text'
     );
     textReplay.setTextStyle(textStyle);
     textReplay.drawText(geometry, feature);

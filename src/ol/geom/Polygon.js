@@ -2,7 +2,6 @@
  * @module ol/geom/Polygon
  */
 import GeometryLayout from './GeometryLayout.js';
-import GeometryType from './GeometryType.js';
 import LinearRing from './LinearRing.js';
 import Point from './Point.js';
 import SimpleGeometry from './SimpleGeometry.js';
@@ -363,11 +362,11 @@ class Polygon extends SimpleGeometry {
 
   /**
    * Get the type of this geometry.
-   * @return {import("./GeometryType.js").default} Geometry type.
+   * @return {import("./Geometry.js").Type} Geometry type.
    * @api
    */
   getType() {
-    return GeometryType.POLYGON;
+    return 'Polygon';
   }
 
   /**

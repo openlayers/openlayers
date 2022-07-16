@@ -9,6 +9,7 @@ import {assert} from '../asserts.js';
 import {ceil, clamp, floor} from '../math.js';
 import {createOrUpdate, getTopLeft} from '../extent.js';
 import {createOrUpdate as createOrUpdateTileCoord} from '../tilecoord.js';
+import {intersectsLinearRing} from '../geom/flat/intersectsextent.js';
 import {isSorted, linearFindNearest} from '../array.js';
 import {toSize} from '../size.js';
 
@@ -654,6 +655,22 @@ class TileGrid {
       opt_direction || 0
     );
     return clamp(z, this.minZoom, this.maxZoom);
+  }
+
+  /**
+   * The tile with the provided tile coordinate intersects the given viewport.
+   * @param {import('../tilecoord.js').TileCoord} tileCoord Tile coordinate.
+   * @param {Array<number>} viewport Viewport as returned from {@link module:ol/extent.getRotatedViewport}.
+   * @return {boolean} The tile with the provided tile coordinate intersects the given viewport.
+   */
+  tileCoordIntersectsViewport(tileCoord, viewport) {
+    return intersectsLinearRing(
+      viewport,
+      0,
+      viewport.length,
+      2,
+      this.getTileCoordExtent(tileCoord)
+    );
   }
 
   /**

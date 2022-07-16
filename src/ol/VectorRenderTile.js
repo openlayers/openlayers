@@ -2,7 +2,7 @@
  * @module ol/VectorRenderTile
  */
 import Tile from './Tile.js';
-import {createCanvasContext2D} from './dom.js';
+import {createCanvasContext2D, releaseCanvas} from './dom.js';
 import {getUid} from './util.js';
 
 /**
@@ -154,7 +154,9 @@ class VectorRenderTile extends Tile {
    */
   release() {
     for (const key in this.context_) {
-      canvasPool.push(this.context_[key].canvas);
+      const context = this.context_[key];
+      releaseCanvas(context);
+      canvasPool.push(context.canvas);
       delete this.context_[key];
     }
     super.release();

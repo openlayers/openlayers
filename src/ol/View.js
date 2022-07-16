@@ -2,7 +2,6 @@
  * @module ol/View
  */
 import BaseObject from './Object.js';
-import GeometryType from './geom/GeometryType.js';
 import Units from './proj/Units.js';
 import ViewHint from './ViewHint.js';
 import ViewProperty from './ViewProperty.js';
@@ -1345,7 +1344,7 @@ class View extends BaseObject {
       assert(!isEmpty(geometryOrExtent), 25); // Cannot fit empty extent provided as `geometry`
       const extent = fromUserExtent(geometryOrExtent, this.getProjection());
       geometry = polygonFromExtent(extent);
-    } else if (geometryOrExtent.getType() === GeometryType.CIRCLE) {
+    } else if (geometryOrExtent.getType() === 'Circle') {
       const extent = fromUserExtent(
         geometryOrExtent.getExtent(),
         this.getProjection()

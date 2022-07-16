@@ -3,7 +3,6 @@
  */
 import BaseTileLayer from './BaseTile.js';
 import LayerProperty from '../layer/Property.js';
-import SourceState from '../source/State.js';
 import WebGLTileLayerRenderer, {
   Attributes,
   Uniforms,
@@ -383,11 +382,11 @@ class WebGLTileLayer extends BaseTileLayer {
   }
 
   /**
-   * @return {import("../source/State.js").default} Source state.
+   * @return {import("../source/Source.js").State} Source state.
    */
   getSourceState() {
     const source = this.getRenderSource();
-    return source ? source.getState() : SourceState.UNDEFINED;
+    return source ? source.getState() : 'undefined';
   }
 
   /**
@@ -454,16 +453,16 @@ class WebGLTileLayer extends BaseTileLayer {
     for (let i = 0, ii = sources.length; i < ii; ++i) {
       const source = sources[i];
       const sourceState = source.getState();
-      if (sourceState == SourceState.LOADING) {
+      if (sourceState == 'loading') {
         const onChange = () => {
-          if (source.getState() == SourceState.READY) {
+          if (source.getState() == 'ready') {
             source.removeEventListener('change', onChange);
             this.changed();
           }
         };
         source.addEventListener('change', onChange);
       }
-      ready = ready && sourceState == SourceState.READY;
+      ready = ready && sourceState == 'ready';
     }
     const canvas = this.renderSources(frameState, sources);
     if (this.getRenderer().renderComplete && ready) {

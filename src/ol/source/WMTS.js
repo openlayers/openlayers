@@ -3,7 +3,6 @@
  */
 
 import TileImage from './TileImage.js';
-import WMTSRequestEncoding from './WMTSRequestEncoding.js';
 import {appendParams} from '../uri.js';
 import {assign} from '../obj.js';
 import {containsExtent} from '../extent.js';
@@ -11,6 +10,11 @@ import {createFromCapabilitiesMatrixSet} from '../tilegrid/WMTS.js';
 import {createFromTileUrlFunctions, expandUrl} from '../tileurlfunction.js';
 import {equivalent, get as getProjection, transformExtent} from '../proj.js';
 import {find, findIndex, includes} from '../array.js';
+
+/**
+ * Request encoding. One of 'KVP', 'REST'.
+ * @typedef {'KVP' | 'REST'} RequestEncoding
+ */
 
 /**
  * @typedef {Object} Options
@@ -27,7 +31,7 @@ import {find, findIndex, includes} from '../array.js';
  * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {import("./WMTSRequestEncoding.js").default|string} [requestEncoding='KVP'] Request encoding.
+ * @property {RequestEncoding} [requestEncoding='KVP'] Request encoding.
  * @property {string} layer Layer name as advertised in the WMTS capabilities.
  * @property {string} style Style name as advertised in the WMTS capabilities.
  * @property {typeof import("../ImageTile.js").default} [tileClass]  Class used to instantiate image tiles. Default is {@link module:ol/ImageTile~ImageTile}.
@@ -80,11 +84,7 @@ class WMTS extends TileImage {
     // TODO: add support for TileMatrixLimits
 
     const requestEncoding =
-      options.requestEncoding !== undefined
-        ? /** @type {import("./WMTSRequestEncoding.js").default} */ (
-            options.requestEncoding
-          )
-        : WMTSRequestEncoding.KVP;
+      options.requestEncoding !== undefined ? options.requestEncoding : 'KVP';
 
     // FIXME: should we create a default tileGrid?
     // we could issue a getCapabilities xhr to retrieve missing configuration
@@ -155,7 +155,7 @@ class WMTS extends TileImage {
 
     /**
      * @private
-     * @type {import("./WMTSRequestEncoding.js").default}
+     * @type {RequestEncoding}
      */
     this.requestEncoding_ = requestEncoding;
 
@@ -224,7 +224,7 @@ class WMTS extends TileImage {
 
   /**
    * Return the request encoding, either "KVP" or "REST".
-   * @return {import("./WMTSRequestEncoding.js").default} Request encoding.
+   * @return {RequestEncoding} Request encoding.
    * @api
    */
   getRequestEncoding() {
@@ -287,7 +287,7 @@ class WMTS extends TileImage {
       'tilematrixset': this.matrixSet_,
     };
 
-    if (requestEncoding == WMTSRequestEncoding.KVP) {
+    if (requestEncoding == 'KVP') {
       assign(context, {
         'Service': 'WMTS',
         'Request': 'GetTile',
@@ -301,7 +301,7 @@ class WMTS extends TileImage {
     // special template params
 
     template =
-      requestEncoding == WMTSRequestEncoding.KVP
+      requestEncoding == 'KVP'
         ? appendParams(template, context)
         : template.replace(/\{(\w+?)\}/g, function (m, p) {
             return p.toLowerCase() in context ? context[p.toLowerCase()] : m;
@@ -330,7 +330,7 @@ class WMTS extends TileImage {
           };
           assign(localContext, dimensions);
           let url = template;
-          if (requestEncoding == WMTSRequestEncoding.KVP) {
+          if (requestEncoding == 'KVP') {
             url = appendParams(url, localContext);
           } else {
             url = url.replace(/\{(\w+?)\}/g, function (m, p) {
@@ -565,21 +565,21 @@ export function optionsFromCapabilities(wmtsCap, config) {
           // requestEncoding not provided, use the first encoding from the list
           requestEncoding = encodings[0];
         }
-        if (requestEncoding === WMTSRequestEncoding.KVP) {
-          if (includes(encodings, WMTSRequestEncoding.KVP)) {
+        if (requestEncoding === 'KVP') {
+          if (includes(encodings, 'KVP')) {
             urls.push(/** @type {string} */ (gets[i]['href']));
           }
         } else {
           break;
         }
       } else if (gets[i]['href']) {
-        requestEncoding = WMTSRequestEncoding.KVP;
+        requestEncoding = 'KVP';
         urls.push(/** @type {string} */ (gets[i]['href']));
       }
     }
   }
   if (urls.length === 0) {
-    requestEncoding = WMTSRequestEncoding.REST;
+    requestEncoding = 'REST';
     l['ResourceURL'].forEach(function (element) {
       if (element['resourceType'] === 'tile') {
         format = element['format'];

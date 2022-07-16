@@ -1,5 +1,4 @@
 import GeoTIFFSource from '../../../../../src/ol/source/GeoTIFF.js';
-import State from '../../../../../src/ol/source/State.js';
 import TileState from '../../../../../src/ol/TileState.js';
 
 describe('ol/source/GeoTIFF', function () {
@@ -115,9 +114,9 @@ describe('ol/source/GeoTIFF', function () {
     });
 
     it('manages load states', function (done) {
-      expect(source.getState()).to.be(State.LOADING);
+      expect(source.getState()).to.be('loading');
       source.on('change', () => {
-        expect(source.getState()).to.be(State.READY);
+        expect(source.getState()).to.be('ready');
         done();
       });
     });

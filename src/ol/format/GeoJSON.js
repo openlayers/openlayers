@@ -4,7 +4,6 @@
 
 import Feature from '../Feature.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
-import GeometryType from '../geom/GeometryType.js';
 import JSONFeature from './JSONFeature.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
@@ -284,46 +283,46 @@ function readGeometry(object, opt_options) {
    */
   let geometry;
   switch (object['type']) {
-    case GeometryType.POINT: {
+    case 'Point': {
       geometry = readPointGeometry(/** @type {GeoJSONPoint} */ (object));
       break;
     }
-    case GeometryType.LINE_STRING: {
+    case 'LineString': {
       geometry = readLineStringGeometry(
         /** @type {GeoJSONLineString} */ (object)
       );
       break;
     }
-    case GeometryType.POLYGON: {
+    case 'Polygon': {
       geometry = readPolygonGeometry(/** @type {GeoJSONPolygon} */ (object));
       break;
     }
-    case GeometryType.MULTI_POINT: {
+    case 'MultiPoint': {
       geometry = readMultiPointGeometry(
         /** @type {GeoJSONMultiPoint} */ (object)
       );
       break;
     }
-    case GeometryType.MULTI_LINE_STRING: {
+    case 'MultiLineString': {
       geometry = readMultiLineStringGeometry(
         /** @type {GeoJSONMultiLineString} */ (object)
       );
       break;
     }
-    case GeometryType.MULTI_POLYGON: {
+    case 'MultiPolygon': {
       geometry = readMultiPolygonGeometry(
         /** @type {GeoJSONMultiPolygon} */ (object)
       );
       break;
     }
-    case GeometryType.GEOMETRY_COLLECTION: {
+    case 'GeometryCollection': {
       geometry = readGeometryCollectionGeometry(
         /** @type {GeoJSONGeometryCollection} */ (object)
       );
       break;
     }
     default: {
-      throw new Error('Unsupported GeoJSON type: ' + object.type);
+      throw new Error('Unsupported GeoJSON type: ' + object['type']);
     }
   }
   return transformGeometryWithOptions(geometry, false, opt_options);
@@ -407,56 +406,56 @@ function writeGeometry(geometry, opt_options) {
   /** @type {GeoJSONGeometry} */
   let geoJSON;
   switch (type) {
-    case GeometryType.POINT: {
+    case 'Point': {
       geoJSON = writePointGeometry(
         /** @type {Point} */ (geometry),
         opt_options
       );
       break;
     }
-    case GeometryType.LINE_STRING: {
+    case 'LineString': {
       geoJSON = writeLineStringGeometry(
         /** @type {LineString} */ (geometry),
         opt_options
       );
       break;
     }
-    case GeometryType.POLYGON: {
+    case 'Polygon': {
       geoJSON = writePolygonGeometry(
         /** @type {Polygon} */ (geometry),
         opt_options
       );
       break;
     }
-    case GeometryType.MULTI_POINT: {
+    case 'MultiPoint': {
       geoJSON = writeMultiPointGeometry(
         /** @type {MultiPoint} */ (geometry),
         opt_options
       );
       break;
     }
-    case GeometryType.MULTI_LINE_STRING: {
+    case 'MultiLineString': {
       geoJSON = writeMultiLineStringGeometry(
         /** @type {MultiLineString} */ (geometry),
         opt_options
       );
       break;
     }
-    case GeometryType.MULTI_POLYGON: {
+    case 'MultiPolygon': {
       geoJSON = writeMultiPolygonGeometry(
         /** @type {MultiPolygon} */ (geometry),
         opt_options
       );
       break;
     }
-    case GeometryType.GEOMETRY_COLLECTION: {
+    case 'GeometryCollection': {
       geoJSON = writeGeometryCollectionGeometry(
         /** @type {GeometryCollection} */ (geometry),
         opt_options
       );
       break;
     }
-    case GeometryType.CIRCLE: {
+    case 'Circle': {
       geoJSON = {
         type: 'GeometryCollection',
         geometries: [],

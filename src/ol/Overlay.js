@@ -3,11 +3,17 @@
  */
 import BaseObject from './Object.js';
 import MapEventType from './MapEventType.js';
-import OverlayPositioning from './OverlayPositioning.js';
 import {CLASS_SELECTABLE} from './css.js';
 import {containsExtent} from './extent.js';
 import {listen, unlistenByKey} from './events.js';
 import {outerHeight, outerWidth, removeChildren, removeNode} from './dom.js';
+
+/**
+ * @typedef {'bottom-left' | 'bottom-center' | 'bottom-right' | 'center-left' | 'center-center' | 'center-right' | 'top-left' | 'top-center' | 'top-right'} Positioning
+ * The overlay position: `'bottom-left'`, `'bottom-center'`,  `'bottom-right'`,
+ * `'center-left'`, `'center-center'`, `'center-right'`, `'top-left'`,
+ * `'top-center'`, or `'top-right'`.
+ */
 
 /**
  * @typedef {Object} Options
@@ -21,7 +27,7 @@ import {outerHeight, outerWidth, removeChildren, removeNode} from './dom.js';
  * shifts the overlay down.
  * @property {import("./coordinate.js").Coordinate} [position] The overlay position
  * in map projection.
- * @property {import("./OverlayPositioning.js").default} [positioning='top-left'] Defines how
+ * @property {Positioning} [positioning='top-left'] Defines how
  * the overlay is actually positioned with respect to its `position` property.
  * Possible values are `'bottom-left'`, `'bottom-center'`, `'bottom-right'`,
  * `'center-left'`, `'center-center'`, `'center-right'`, `'top-left'`,
@@ -215,13 +221,7 @@ class Overlay extends BaseObject {
 
     this.setOffset(options.offset !== undefined ? options.offset : [0, 0]);
 
-    this.setPositioning(
-      options.positioning !== undefined
-        ? /** @type {import("./OverlayPositioning.js").default} */ (
-            options.positioning
-          )
-        : OverlayPositioning.TOP_LEFT
-    );
+    this.setPositioning(options.positioning || 'top-left');
 
     if (options.position !== undefined) {
       this.setPosition(options.position);
@@ -285,15 +285,13 @@ class Overlay extends BaseObject {
 
   /**
    * Get the current positioning of this overlay.
-   * @return {import("./OverlayPositioning.js").default} How the overlay is positioned
+   * @return {Positioning} How the overlay is positioned
    *     relative to its point on the map.
    * @observable
    * @api
    */
   getPositioning() {
-    return /** @type {import("./OverlayPositioning.js").default} */ (
-      this.get(Property.POSITIONING)
-    );
+    return /** @type {Positioning} */ (this.get(Property.POSITIONING));
   }
 
   /**
@@ -503,7 +501,7 @@ class Overlay extends BaseObject {
 
   /**
    * Set the positioning for this overlay.
-   * @param {import("./OverlayPositioning.js").default} positioning how the overlay is
+   * @param {Positioning} positioning how the overlay is
    *     positioned relative to its point on the map.
    * @observable
    * @api
@@ -559,28 +557,28 @@ class Overlay extends BaseObject {
     let posX = '0%';
     let posY = '0%';
     if (
-      positioning == OverlayPositioning.BOTTOM_RIGHT ||
-      positioning == OverlayPositioning.CENTER_RIGHT ||
-      positioning == OverlayPositioning.TOP_RIGHT
+      positioning == 'bottom-right' ||
+      positioning == 'center-right' ||
+      positioning == 'top-right'
     ) {
       posX = '-100%';
     } else if (
-      positioning == OverlayPositioning.BOTTOM_CENTER ||
-      positioning == OverlayPositioning.CENTER_CENTER ||
-      positioning == OverlayPositioning.TOP_CENTER
+      positioning == 'bottom-center' ||
+      positioning == 'center-center' ||
+      positioning == 'top-center'
     ) {
       posX = '-50%';
     }
     if (
-      positioning == OverlayPositioning.BOTTOM_LEFT ||
-      positioning == OverlayPositioning.BOTTOM_CENTER ||
-      positioning == OverlayPositioning.BOTTOM_RIGHT
+      positioning == 'bottom-left' ||
+      positioning == 'bottom-center' ||
+      positioning == 'bottom-right'
     ) {
       posY = '-100%';
     } else if (
-      positioning == OverlayPositioning.CENTER_LEFT ||
-      positioning == OverlayPositioning.CENTER_CENTER ||
-      positioning == OverlayPositioning.CENTER_RIGHT
+      positioning == 'center-left' ||
+      positioning == 'center-center' ||
+      positioning == 'center-right'
     ) {
       posY = '-50%';
     }

@@ -1,7 +1,6 @@
 /**
  * @module ol/geom/MultiPoint
  */
-import GeometryType from './GeometryType.js';
 import Point from './Point.js';
 import SimpleGeometry from './SimpleGeometry.js';
 import {closestSquaredDistanceXY, containsXY} from '../extent.js';
@@ -154,11 +153,11 @@ class MultiPoint extends SimpleGeometry {
 
   /**
    * Get the type of this geometry.
-   * @return {import("./GeometryType.js").default} Geometry type.
+   * @return {import("./Geometry.js").Type} Geometry type.
    * @api
    */
   getType() {
-    return GeometryType.MULTI_POINT;
+    return 'MultiPoint';
   }
 
   /**

@@ -1,7 +1,6 @@
 /**
  * @module ol/sphere
  */
-import GeometryType from './geom/GeometryType.js';
 import {toDegrees, toRadians} from './math.js';
 
 /**
@@ -78,26 +77,26 @@ export function getLength(geometry, opt_options) {
   const radius = options.radius || DEFAULT_RADIUS;
   const projection = options.projection || 'EPSG:3857';
   const type = geometry.getType();
-  if (type !== GeometryType.GEOMETRY_COLLECTION) {
+  if (type !== 'GeometryCollection') {
     geometry = geometry.clone().transform(projection, 'EPSG:4326');
   }
   let length = 0;
   let coordinates, coords, i, ii, j, jj;
   switch (type) {
-    case GeometryType.POINT:
-    case GeometryType.MULTI_POINT: {
+    case 'Point':
+    case 'MultiPoint': {
       break;
     }
-    case GeometryType.LINE_STRING:
-    case GeometryType.LINEAR_RING: {
+    case 'LineString':
+    case 'LinearRing': {
       coordinates = /** @type {import("./geom/SimpleGeometry.js").default} */ (
         geometry
       ).getCoordinates();
       length = getLengthInternal(coordinates, radius);
       break;
     }
-    case GeometryType.MULTI_LINE_STRING:
-    case GeometryType.POLYGON: {
+    case 'MultiLineString':
+    case 'Polygon': {
       coordinates = /** @type {import("./geom/SimpleGeometry.js").default} */ (
         geometry
       ).getCoordinates();
@@ -106,7 +105,7 @@ export function getLength(geometry, opt_options) {
       }
       break;
     }
-    case GeometryType.MULTI_POLYGON: {
+    case 'MultiPolygon': {
       coordinates = /** @type {import("./geom/SimpleGeometry.js").default} */ (
         geometry
       ).getCoordinates();
@@ -118,7 +117,7 @@ export function getLength(geometry, opt_options) {
       }
       break;
     }
-    case GeometryType.GEOMETRY_COLLECTION: {
+    case 'GeometryCollection': {
       const geometries =
         /** @type {import("./geom/GeometryCollection.js").default} */ (
           geometry
@@ -181,20 +180,20 @@ export function getArea(geometry, opt_options) {
   const radius = options.radius || DEFAULT_RADIUS;
   const projection = options.projection || 'EPSG:3857';
   const type = geometry.getType();
-  if (type !== GeometryType.GEOMETRY_COLLECTION) {
+  if (type !== 'GeometryCollection') {
     geometry = geometry.clone().transform(projection, 'EPSG:4326');
   }
   let area = 0;
   let coordinates, coords, i, ii, j, jj;
   switch (type) {
-    case GeometryType.POINT:
-    case GeometryType.MULTI_POINT:
-    case GeometryType.LINE_STRING:
-    case GeometryType.MULTI_LINE_STRING:
-    case GeometryType.LINEAR_RING: {
+    case 'Point':
+    case 'MultiPoint':
+    case 'LineString':
+    case 'MultiLineString':
+    case 'LinearRing': {
       break;
     }
-    case GeometryType.POLYGON: {
+    case 'Polygon': {
       coordinates = /** @type {import("./geom/Polygon.js").default} */ (
         geometry
       ).getCoordinates();
@@ -204,7 +203,7 @@ export function getArea(geometry, opt_options) {
       }
       break;
     }
-    case GeometryType.MULTI_POLYGON: {
+    case 'MultiPolygon': {
       coordinates = /** @type {import("./geom/SimpleGeometry.js").default} */ (
         geometry
       ).getCoordinates();
@@ -217,7 +216,7 @@ export function getArea(geometry, opt_options) {
       }
       break;
     }
-    case GeometryType.GEOMETRY_COLLECTION: {
+    case 'GeometryCollection': {
       const geometries =
         /** @type {import("./geom/GeometryCollection.js").default} */ (
           geometry

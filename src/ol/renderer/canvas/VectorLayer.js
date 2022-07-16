@@ -2,7 +2,7 @@
  * @module ol/renderer/canvas/VectorLayer
  */
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
-import CanvasLayerRenderer from './Layer.js';
+import CanvasLayerRenderer, {canvasPool} from './Layer.js';
 import ExecutorGroup from '../../render/canvas/ExecutorGroup.js';
 import ViewHint from '../../ViewHint.js';
 import {
@@ -24,7 +24,7 @@ import {
   intersects as intersectsExtent,
   wrapX as wrapExtentX,
 } from '../../extent.js';
-import {cssOpacity} from '../../css.js';
+import {createCanvasContext2D, releaseCanvas} from '../../dom.js';
 import {
   defaultOrder as defaultRenderOrder,
   getTolerance as getRenderTolerance,
@@ -142,6 +142,18 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
      * @type {boolean}
      */
     this.clipping = true;
+
+    /**
+     * @private
+     * @type {CanvasRenderingContext2D}
+     */
+    this.compositionContext_ = null;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.opacity_ = 1;
   }
 
   /**
@@ -163,7 +175,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const snapToPixel = !(
       viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]
     );
-    const context = this.context;
+    const context = this.compositionContext_;
     const width = Math.round(frameState.size[0] * pixelRatio);
     const height = Math.round(frameState.size[1] * pixelRatio);
 
@@ -197,17 +209,44 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     } while (++world < endWorld);
   }
 
+  setupCompositionContext_() {
+    if (this.opacity_ !== 1) {
+      const compositionContext = createCanvasContext2D(
+        this.context.canvas.width,
+        this.context.canvas.height,
+        canvasPool
+      );
+      this.compositionContext_ = compositionContext;
+    } else {
+      this.compositionContext_ = this.context;
+    }
+  }
+
+  releaseCompositionContext_() {
+    if (this.opacity_ !== 1) {
+      const alpha = this.context.globalAlpha;
+      this.context.globalAlpha = this.opacity_;
+      this.context.drawImage(this.compositionContext_.canvas, 0, 0);
+      this.context.globalAlpha = alpha;
+      releaseCanvas(this.compositionContext_);
+      canvasPool.push(this.compositionContext_.canvas);
+      this.compositionContext_ = null;
+    }
+  }
+
   /**
    * Render declutter items for this layer
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    */
   renderDeclutter(frameState) {
     if (this.declutterExecutorGroup) {
+      this.setupCompositionContext_();
       this.renderWorlds(
         this.declutterExecutorGroup,
         frameState,
         frameState.declutterTree
       );
+      this.releaseCompositionContext_();
     }
   }
 
@@ -227,12 +266,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     const canvasTransform = transformToString(this.pixelTransform);
 
-    this.useContainer(
-      target,
-      canvasTransform,
-      layerState.opacity,
-      this.getBackground(frameState)
-    );
+    this.useContainer(target, canvasTransform, this.getBackground(frameState));
     const context = this.context;
     const canvas = context.canvas;
 
@@ -263,6 +297,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const viewState = frameState.viewState;
     const projection = viewState.projection;
 
+    this.opacity_ = layerState.opacity;
+    this.setupCompositionContext_();
+
     // clipped rendering if layer extent is set
     let clipped = false;
     let render = true;
@@ -271,7 +308,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       render = intersectsExtent(layerExtent, frameState.extent);
       clipped = render && !containsExtent(layerExtent, frameState.extent);
       if (clipped) {
-        this.clipUnrotated(context, frameState, layerExtent);
+        this.clipUnrotated(this.compositionContext_, frameState, layerExtent);
       }
     }
 
@@ -280,16 +317,12 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     }
 
     if (clipped) {
-      context.restore();
+      this.compositionContext_.restore();
     }
+
+    this.releaseCompositionContext_();
 
     this.postRender(context, frameState);
-
-    const opacity = cssOpacity(layerState.opacity);
-    const container = this.container;
-    if (opacity !== container.style.opacity) {
-      container.style.opacity = opacity;
-    }
 
     if (this.renderedRotation_ !== viewState.rotation) {
       this.renderedRotation_ = viewState.rotation;

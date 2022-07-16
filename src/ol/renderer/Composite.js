@@ -5,7 +5,6 @@ import MapRenderer from './Map.js';
 import ObjectEventType from '../ObjectEventType.js';
 import RenderEvent from '../render/Event.js';
 import RenderEventType from '../render/EventType.js';
-import SourceState from '../source/State.js';
 import {CLASS_UNSELECTABLE} from '../css.js';
 import {checkedFonts} from '../render/canvas.js';
 import {inView} from '../layer/Layer.js';
@@ -115,8 +114,7 @@ class CompositeMapRenderer extends MapRenderer {
       const sourceState = layer.getSourceState();
       if (
         !inView(layerState, viewState) ||
-        (sourceState != SourceState.READY &&
-          sourceState != SourceState.UNDEFINED)
+        (sourceState != 'ready' && sourceState != 'undefined')
       ) {
         layer.unrender();
         continue;

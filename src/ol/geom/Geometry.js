@@ -19,6 +19,13 @@ import {memoizeOne} from '../functions.js';
 import {transform2D} from './flat/transform.js';
 
 /**
+ * @typedef {'Point' | 'LineString' | 'LinearRing' | 'Polygon' | 'MultiPoint' | 'MultiLineString' | 'MultiPolygon' | 'GeometryCollection' | 'Circle'} Type
+ * The geometry type.  One of `'Point'`, `'LineString'`, `'LinearRing'`,
+ * `'Polygon'`, `'MultiPoint'`, `'MultiLineString'`, `'MultiPolygon'`,
+ * `'GeometryCollection'`, or `'Circle'`.
+ */
+
+/**
  * @type {import("../transform.js").Transform}
  */
 const tmpTransform = createTransform();
@@ -237,7 +244,7 @@ class Geometry extends BaseObject {
   /**
    * Get the type of this geometry.
    * @abstract
-   * @return {import("./GeometryType.js").default} Geometry type.
+   * @return {Type} Geometry type.
    */
   getType() {
     return abstract();

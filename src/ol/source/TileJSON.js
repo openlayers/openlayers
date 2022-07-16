@@ -7,7 +7,6 @@
  * See https://mapbox.com/developers/api/.
  */
 
-import SourceState from './State.js';
 import TileImage from './TileImage.js';
 import {applyTransform, intersects} from '../extent.js';
 import {assert} from '../asserts.js';
@@ -89,7 +88,7 @@ class TileJSON extends TileImage {
       interpolate: interpolate,
       projection: getProjection('EPSG:3857'),
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-      state: SourceState.LOADING,
+      state: 'loading',
       tileLoadFunction: options.tileLoadFunction,
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
       transition: options.transition,
@@ -206,14 +205,14 @@ class TileJSON extends TileImage {
       });
     }
     this.tileJSON_ = tileJSON;
-    this.setState(SourceState.READY);
+    this.setState('ready');
   }
 
   /**
    * @protected
    */
   handleTileJSONError() {
-    this.setState(SourceState.ERROR);
+    this.setState('error');
   }
 }
 

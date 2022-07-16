@@ -2,7 +2,6 @@
  * @module ol/source/GeoTIFF
  */
 import DataTile from './DataTile.js';
-import State from './State.js';
 import TileGrid from '../tilegrid/TileGrid.js';
 import {
   Pool,
@@ -335,7 +334,7 @@ class GeoTIFFSource extends DataTile {
    */
   constructor(options) {
     super({
-      state: State.LOADING,
+      state: 'loading',
       tileGrid: null,
       projection: null,
       opaque: options.opaque,
@@ -428,7 +427,7 @@ class GeoTIFFSource extends DataTile {
       .catch(function (error) {
         console.error(error); // eslint-disable-line no-console
         self.error_ = error;
-        self.setState(State.ERROR);
+        self.setState('error');
       });
   }
 
@@ -650,7 +649,7 @@ class GeoTIFFSource extends DataTile {
     this.setTileSizes(commonSourceTileSizes);
 
     this.setLoader(this.loadTile_.bind(this));
-    this.setState(State.READY);
+    this.setState('ready');
     this.viewResolver({
       projection: this.projection,
       resolutions: resolutions,

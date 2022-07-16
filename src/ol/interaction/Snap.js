@@ -3,7 +3,6 @@
  */
 import CollectionEventType from '../CollectionEventType.js';
 import EventType from '../events/EventType.js';
-import GeometryType from '../geom/GeometryType.js';
 import PointerInteraction from './Pointer.js';
 import RBush from '../structs/RBush.js';
 import VectorEventType from '../source/VectorEventType.js';
@@ -470,9 +469,7 @@ class Snap extends PointerInteraction {
     if (this.vertex_) {
       for (let i = 0; i < segmentsLength; ++i) {
         const segmentData = segments[i];
-        if (
-          segmentData.feature.getGeometry().getType() !== GeometryType.CIRCLE
-        ) {
+        if (segmentData.feature.getGeometry().getType() !== 'Circle') {
           segmentData.segment.forEach((vertex) => {
             const tempVertexCoord = fromUserCoordinate(vertex, projection);
             const delta = squaredDistance(projectedCoordinate, tempVertexCoord);
@@ -493,9 +490,7 @@ class Snap extends PointerInteraction {
       for (let i = 0; i < segmentsLength; ++i) {
         let vertex = null;
         const segmentData = segments[i];
-        if (
-          segmentData.feature.getGeometry().getType() === GeometryType.CIRCLE
-        ) {
+        if (segmentData.feature.getGeometry().getType() === 'Circle') {
           let circleGeometry = segmentData.feature.getGeometry();
           const userProjection = getUserProjection();
           if (userProjection) {

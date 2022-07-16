@@ -2,7 +2,6 @@
  * @module ol/geom/MultiPolygon
  */
 import GeometryLayout from './GeometryLayout.js';
-import GeometryType from './GeometryType.js';
 import MultiPoint from './MultiPoint.js';
 import Polygon from './Polygon.js';
 import SimpleGeometry from './SimpleGeometry.js';
@@ -425,11 +424,11 @@ class MultiPolygon extends SimpleGeometry {
 
   /**
    * Get the type of this geometry.
-   * @return {import("./GeometryType.js").default} Geometry type.
+   * @return {import("./Geometry.js").Type} Geometry type.
    * @api
    */
   getType() {
-    return GeometryType.MULTI_POLYGON;
+    return 'MultiPolygon';
   }
 
   /**

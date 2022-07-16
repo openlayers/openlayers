@@ -32,7 +32,7 @@ import {toSize} from '../size.js';
  * @property {import("../size.js").Size} size Size of the image [width, height].
  * @property {Array<import("../size.js").Size>} [sizes] Supported scaled image sizes.
  * Content of the IIIF info.json 'sizes' property, but as array of Size objects.
- * @property {import("./State.js").default} [state] Source state.
+ * @property {import("./Source.js").State} [state] Source state.
  * @property {Array<string>} [supports=[]] Supported IIIF region and size calculation
  * features.
  * @property {number} [tilePixelRatio] Tile pixel ratio.

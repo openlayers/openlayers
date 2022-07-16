@@ -20,6 +20,11 @@ import {solveLinearSystem} from './math.js';
 let brokenDiagonalRendering_;
 
 /**
+ * @type {Array<HTMLCanvasElement>}
+ */
+export const canvasPool = [];
+
+/**
  * This draws a small triangle into a canvas by setting the triangle as the clip region
  * and then drawing a (too large) rectangle
  *
@@ -217,7 +222,8 @@ export function render(
 ) {
   const context = createCanvasContext2D(
     Math.round(pixelRatio * width),
-    Math.round(pixelRatio * height)
+    Math.round(pixelRatio * height),
+    canvasPool
   );
 
   if (!opt_interpolate) {

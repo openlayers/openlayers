@@ -3,7 +3,6 @@
  */
 import Event from '../events/Event.js';
 import Feature from '../Feature.js';
-import GeometryType from '../geom/GeometryType.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
 import Point from '../geom/Point.js';
 import PointerInteraction from './Pointer.js';
@@ -478,7 +477,7 @@ class Extent extends PointerInteraction {
 function getDefaultExtentStyleFunction() {
   const style = createEditingStyle();
   return function (feature, resolution) {
-    return style[GeometryType.POLYGON];
+    return style['Polygon'];
   };
 }
 
@@ -490,7 +489,7 @@ function getDefaultExtentStyleFunction() {
 function getDefaultPointerStyleFunction() {
   const style = createEditingStyle();
   return function (feature, resolution) {
-    return style[GeometryType.POINT];
+    return style['Point'];
   };
 }
 

@@ -9,11 +9,13 @@ import TileState from '../TileState.js';
 import Triangulation from './Triangulation.js';
 import {
   calculateSourceExtentResolution,
+  canvasPool,
   render as renderReprojected,
 } from '../reproj.js';
 import {clamp} from '../math.js';
 import {getArea, getIntersection} from '../extent.js';
 import {listen, unlistenByKey} from '../events.js';
+import {releaseCanvas} from '../dom.js';
 
 /**
  * @typedef {function(number, number, number, number) : import("../Tile.js").default} FunctionType
@@ -348,6 +350,18 @@ class ReprojTile extends Tile {
   unlistenSources_() {
     this.sourcesListenerKeys_.forEach(unlistenByKey);
     this.sourcesListenerKeys_ = null;
+  }
+
+  /**
+   * Remove from the cache due to expiry
+   */
+  release() {
+    if (this.canvas_) {
+      releaseCanvas(this.canvas_.getContext('2d'));
+      canvasPool.push(this.canvas_);
+      this.canvas_ = null;
+    }
+    super.release();
   }
 }
 

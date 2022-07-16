@@ -2,7 +2,6 @@
  * @module ol/geom/LinearRing
  */
 import GeometryLayout from './GeometryLayout.js';
-import GeometryType from './GeometryType.js';
 import SimpleGeometry from './SimpleGeometry.js';
 import {assignClosestPoint, maxSquaredDelta} from './flat/closest.js';
 import {closestSquaredDistanceXY} from '../extent.js';
@@ -149,11 +148,11 @@ class LinearRing extends SimpleGeometry {
 
   /**
    * Get the type of this geometry.
-   * @return {import("./GeometryType.js").default} Geometry type.
+   * @return {import("./Geometry.js").Type} Geometry type.
    * @api
    */
   getType() {
-    return GeometryType.LINEAR_RING;
+    return 'LinearRing';
   }
 
   /**

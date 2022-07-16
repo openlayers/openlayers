@@ -3,7 +3,6 @@
  */
 import EventType from '../events/EventType.js';
 import Geometry from './Geometry.js';
-import GeometryType from './GeometryType.js';
 import {
   closestSquaredDistanceXY,
   createOrUpdateEmpty,
@@ -204,11 +203,11 @@ class GeometryCollection extends Geometry {
 
   /**
    * Get the type of this geometry.
-   * @return {import("./GeometryType.js").default} Geometry type.
+   * @return {import("./Geometry.js").Type} Geometry type.
    * @api
    */
   getType() {
-    return GeometryType.GEOMETRY_COLLECTION;
+    return 'GeometryCollection';
   }
 
   /**
