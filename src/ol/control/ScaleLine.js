@@ -2,7 +2,6 @@
  * @module ol/control/ScaleLine
  */
 import Control from './Control.js';
-import ProjUnits from '../proj/Units.js';
 import {CLASS_UNSELECTABLE} from '../css.js';
 import {METERS_PER_UNIT, getPointResolution} from '../proj.js';
 import {assert} from '../asserts.js';
@@ -237,8 +236,7 @@ class ScaleLine extends Control {
     const center = viewState.center;
     const projection = viewState.projection;
     const units = this.getUnits();
-    const pointResolutionUnits =
-      units == 'degrees' ? ProjUnits.DEGREES : ProjUnits.METERS;
+    const pointResolutionUnits = units == 'degrees' ? 'degrees' : 'm';
     let pointResolution = getPointResolution(
       projection,
       viewState.resolution,
@@ -257,7 +255,7 @@ class ScaleLine extends Control {
     let nominalCount = minWidth * pointResolution;
     let suffix = '';
     if (units == 'degrees') {
-      const metersPerDegree = METERS_PER_UNIT[ProjUnits.DEGREES];
+      const metersPerDegree = METERS_PER_UNIT.degrees;
       nominalCount *= metersPerDegree;
       if (nominalCount < metersPerDegree / 60) {
         suffix = '\u2033'; // seconds
@@ -498,7 +496,7 @@ class ScaleLine extends Control {
       this.viewState_.projection,
       this.viewState_.resolution,
       this.viewState_.center,
-      ProjUnits.METERS
+      'm'
     );
     const dpi = this.dpi_ || DEFAULT_DPI;
     const inchesPerMeter = 1000 / 25.4;

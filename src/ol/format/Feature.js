@@ -1,7 +1,6 @@
 /**
  * @module ol/format/Feature
  */
-import Units from '../proj/Units.js';
 import {abstract} from '../util.js';
 import {
   equivalent as equivalentProjection,
@@ -103,7 +102,7 @@ class FeatureFormat {
       if (
         opt_options.extent &&
         dataProjection &&
-        dataProjection.getUnits() === Units.TILE_PIXELS
+        dataProjection.getUnits() === 'tile-pixels'
       ) {
         dataProjection = getProjection(dataProjection);
         dataProjection.setWorldExtent(opt_options.extent);

@@ -2,7 +2,6 @@
  * @module ol/proj/proj4
  */
 import Projection from './Projection.js';
-import Units from './Units.js';
 import {
   addCoordinateTransforms,
   addEquivalentProjections,
@@ -33,7 +32,7 @@ export function register(proj4) {
       const def = proj4.defs(code);
       let units = def.units;
       if (!units && def.projName === 'longlat') {
-        units = Units.DEGREES;
+        units = 'degrees';
       }
       addProjection(
         new Projection({

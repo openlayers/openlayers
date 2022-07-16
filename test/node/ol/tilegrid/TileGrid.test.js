@@ -444,7 +444,7 @@ describe('ol/tilegrid/TileGrid.js', function () {
       const grid = createForProjection(projection);
       const resolutions = grid.getResolutions();
       expect(resolutions[5]).to.be(
-        (360 * METERS_PER_UNIT['degrees']) / DEFAULT_TILE_SIZE / Math.pow(2, 5)
+        (360 * METERS_PER_UNIT.degrees) / DEFAULT_TILE_SIZE / Math.pow(2, 5)
       );
     });
 
