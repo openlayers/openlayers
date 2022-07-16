@@ -61,7 +61,7 @@ import {getFontParameters} from '../css.js';
  * @property {string} [textAlign] TextAlign.
  * @property {string} [justify] Justify.
  * @property {string} textBaseline TextBaseline.
- * @property {string} [placement] Placement.
+ * @property {import('../style/Text.js').TextPlacement} [placement] Placement.
  * @property {number} [maxAngle] MaxAngle.
  * @property {boolean} [overflow] Overflow.
  * @property {import("../style/Fill.js").default} [backgroundFill] BackgroundFill.

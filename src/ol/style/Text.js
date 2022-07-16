@@ -2,8 +2,15 @@
  * @module ol/style/Text
  */
 import Fill from './Fill.js';
-import TextPlacement from './TextPlacement.js';
 import {toSize} from '../size.js';
+
+/**
+ * @typedef {'point' | 'line'} TextPlacement
+ * Default text placement is `'point'`. Note that
+ * `'line'` requires the underlying geometry to be a {@link module:ol/geom/LineString~LineString},
+ * {@link module:ol/geom/Polygon~Polygon}, {@link module:ol/geom/MultiLineString~MultiLineString} or
+ * {@link module:ol/geom/MultiPolygon~MultiPolygon}.
+ */
 
 /**
  * The default fill color to use if no fill was set at construction time; a
@@ -23,7 +30,7 @@ const DEFAULT_FILL_COLOR = '#333';
  * @property {number} [offsetY=0] Vertical text offset in pixels. A positive will shift the text down.
  * @property {boolean} [overflow=false] For polygon labels or when `placement` is set to `'line'`, allow text to exceed
  * the width of the polygon at the label position or the length of the path that it follows.
- * @property {import("./TextPlacement.js").default|string} [placement='point'] Text placement.
+ * @property {TextPlacement} [placement='point'] Text placement.
  * @property {number|import("../size.js").Size} [scale] Scale.
  * @property {boolean} [rotateWithView=false] Whether to rotate the text with the view.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
@@ -135,10 +142,10 @@ class Text {
 
     /**
      * @private
-     * @type {import("./TextPlacement.js").default|string}
+     * @type {TextPlacement}
      */
     this.placement_ =
-      options.placement !== undefined ? options.placement : TextPlacement.POINT;
+      options.placement !== undefined ? options.placement : 'point';
 
     /**
      * @private
@@ -249,7 +256,7 @@ class Text {
 
   /**
    * Get the label placement.
-   * @return {import("./TextPlacement.js").default|string} Text placement.
+   * @return {TextPlacement} Text placement.
    * @api
    */
   getPlacement() {
@@ -443,7 +450,7 @@ class Text {
   /**
    * Set the text placement.
    *
-   * @param {import("./TextPlacement.js").default|string} placement Placement.
+   * @param {TextPlacement} placement Placement.
    * @api
    */
   setPlacement(placement) {
