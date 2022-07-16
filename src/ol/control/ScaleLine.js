@@ -334,12 +334,9 @@ class ScaleLine extends Control {
       previousDecimalCount = decimalCount;
       ++i;
     }
-    let html;
-    if (this.scaleBar_) {
-      html = this.createScaleBar(width, count, suffix);
-    } else {
-      html = count.toFixed(decimalCount < 0 ? -decimalCount : 0) + ' ' + suffix;
-    }
+    const html = this.scaleBar_
+      ? this.createScaleBar(width, count, suffix)
+      : count.toFixed(decimalCount < 0 ? -decimalCount : 0) + ' ' + suffix;
 
     if (this.renderedHTML_ != html) {
       this.innerElement_.innerHTML = html;
@@ -367,85 +364,49 @@ class ScaleLine extends Control {
   createScaleBar(width, scale, suffix) {
     const mapScale =
       '1 : ' + Math.round(this.getScaleForResolution()).toLocaleString();
-    const scaleSteps = [];
-    const stepWidth = width / this.scaleBarSteps_;
-    let backgroundColor = 'ol-scale-singlebar-odd';
-    for (let i = 0; i < this.scaleBarSteps_; i++) {
-      if (i === 0) {
-        // create the first marker at position 0
-        scaleSteps.push(this.createMarker('absolute', i));
-      }
+    const steps = this.scaleBarSteps_;
+    const stepWidth = width / steps;
+    const scaleSteps = [this.createMarker('absolute')];
+    for (let i = 0; i < steps; ++i) {
+      const cls =
+        i % 2 === 0 ? 'ol-scale-singlebar-odd' : 'ol-scale-singlebar-even';
       scaleSteps.push(
         '<div>' +
           '<div ' +
-          'class="ol-scale-singlebar ' +
-          backgroundColor +
-          '" ' +
-          'style=' +
-          '"width: ' +
-          stepWidth +
-          'px;"' +
+          `class="ol-scale-singlebar ${cls}" ` +
+          `style="width: ${stepWidth}px;"` +
           '>' +
           '</div>' +
-          this.createMarker('relative', i) +
-          /*render text every second step, except when only 2 steps */
-          (i % 2 === 0 || this.scaleBarSteps_ === 2
+          this.createMarker('relative') +
+          // render text every second step, except when only 2 steps
+          (i % 2 === 0 || steps === 2
             ? this.createStepText(i, width, false, scale, suffix)
             : '') +
           '</div>'
       );
-      if (i === this.scaleBarSteps_ - 1) {
-        {
-          /*render text at the end */
-        }
-        scaleSteps.push(this.createStepText(i + 1, width, true, scale, suffix));
-      }
-      // switch style of steps
-      backgroundColor =
-        backgroundColor === 'ol-scale-singlebar-odd'
-          ? 'ol-scale-singlebar-even'
-          : 'ol-scale-singlebar-odd';
     }
+    // render text at the end
+    scaleSteps.push(this.createStepText(steps, width, true, scale, suffix));
 
-    let scaleBarText;
-    if (this.scaleBarText_) {
-      scaleBarText =
-        '<div ' +
-        'class="ol-scale-text" ' +
-        'style="width: ' +
-        width +
-        'px;">' +
+    const scaleBarText = this.scaleBarText_
+      ? `<div class="ol-scale-text" style="width: ${width}px;">` +
         mapScale +
-        '</div>';
-    } else {
-      scaleBarText = '';
-    }
-    const container =
-      '<div ' +
-      'style="display: flex;">' +
-      scaleBarText +
-      scaleSteps.join('') +
-      '</div>';
-    return container;
+        '</div>'
+      : '';
+    return `<div>${scaleBarText}${scaleSteps.join('')}</div>`;
   }
 
   /**
    * Creates a marker at given position
-   * @param {string} position The position, absolute or relative
-   * @param {number} i The iterator
+   * @param {'absolute'|'relative'} position The position, absolute or relative
    * @return {string} The stringified div containing the marker
    */
-  createMarker(position, i) {
+  createMarker(position) {
     const top = position === 'absolute' ? 3 : -10;
     return (
       '<div ' +
       'class="ol-scale-step-marker" ' +
-      'style="position: ' +
-      position +
-      ';' +
-      'top: ' +
-      top +
-      'px;"' +
+      `style="position: ${position}; top: ${top}px;"` +
       '></div>'
     );
   }
@@ -469,19 +430,11 @@ class ScaleLine extends Control {
       '<div ' +
       'class="ol-scale-step-text" ' +
       'style="' +
-      'margin-left: ' +
-      margin +
-      'px;' +
-      'text-align: ' +
-      (i === 0 ? 'left' : 'center') +
-      '; ' +
-      'min-width: ' +
-      minWidth +
-      'px;' +
-      'left: ' +
-      (isLast ? width + 'px' : 'unset') +
-      ';"' +
-      '>' +
+      `margin-left: ${margin}px;` +
+      `text-align: ${i === 0 ? 'left' : 'center'};` +
+      `min-width: ${minWidth}px;` +
+      `left: ${isLast ? width + 'px' : 'unset'};` +
+      '">' +
       lengthString +
       '</div>'
     );

@@ -41,18 +41,14 @@
   transition: all 0.25s;
 }
 
-.ol-scale-singlebar-even {
-  background-color: var(--ol-subtle-foreground-color);
-}
-
-.ol-scale-singlebar-odd {
-  background-color: var(--ol-background-color);
-}
-
 .ol-scale-bar {
   position: absolute;
   bottom: 8px;
   left: 8px;
+}
+
+.ol-scale-bar-inner > div {
+  display: flex;
 }
 
 .ol-scale-step-marker {
@@ -87,6 +83,14 @@
   z-index: 9;
   box-sizing: border-box;
   border: 1px solid var(--ol-foreground-color);
+}
+
+.ol-scale-singlebar-even {
+  background-color: var(--ol-subtle-foreground-color);
+}
+
+.ol-scale-singlebar-odd {
+  background-color: var(--ol-background-color);
 }
 
 .ol-unsupported {
