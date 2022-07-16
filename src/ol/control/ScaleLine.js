@@ -379,7 +379,7 @@ class ScaleLine extends Control {
       '1 : ' + Math.round(this.getScaleForResolution()).toLocaleString();
     const scaleSteps = [];
     const stepWidth = width / this.scaleBarSteps_;
-    let backgroundColor = 'ol-scale-line-bar-light';
+    let backgroundColor = 'ol-scale-singlebar-odd';
     for (let i = 0; i < this.scaleBarSteps_; i++) {
       if (i === 0) {
         // create the first marker at position 0
@@ -412,9 +412,9 @@ class ScaleLine extends Control {
       }
       // switch style of steps
       backgroundColor =
-        backgroundColor === 'ol-scale-line-bar-light'
-          ? 'ol-scale-line-bar-dark'
-          : 'ol-scale-line-bar-light';
+        backgroundColor === 'ol-scale-singlebar-odd'
+          ? 'ol-scale-singlebar-even'
+          : 'ol-scale-singlebar-odd';
     }
 
     let scaleBarText;
