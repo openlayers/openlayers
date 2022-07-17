@@ -2,7 +2,6 @@
  * @module ol/render/canvas
  */
 import BaseObject from '../Object.js';
-import EventTarget from '../events/Target.js';
 import {WORKER_OFFSCREEN_CANVAS} from '../has.js';
 import {clear} from '../obj.js';
 import {createCanvasContext2D} from '../dom.js';
@@ -161,19 +160,6 @@ export const defaultLineWidth = 1;
  * @type {BaseObject}
  */
 export const checkedFonts = new BaseObject();
-
-/**
- * The label cache for text rendering. To change the default cache size of 2048
- * entries, use {@link module:ol/structs/LRUCache~LRUCache#setSize cache.setSize()}.
- * Deprecated - there is no label cache any more.
- * @type {?}
- * @api
- * @deprecated
- */
-export const labelCache = new EventTarget();
-labelCache.setSize = function () {
-  console.warn('labelCache is deprecated.'); //eslint-disable-line
-};
 
 /**
  * @type {CanvasRenderingContext2D}
