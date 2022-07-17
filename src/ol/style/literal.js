@@ -18,14 +18,8 @@
  */
 
 /**
- * @enum {string}
+ * @typedef {'circle' | 'square' | 'triangle' | 'image'} SymbolType
  */
-export const SymbolType = {
-  CIRCLE: 'circle',
-  SQUARE: 'square',
-  TRIANGLE: 'triangle',
-  IMAGE: 'image',
-};
 
 /**
  * @typedef {Object} LiteralSymbolStyle
