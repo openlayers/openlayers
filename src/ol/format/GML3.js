@@ -3,7 +3,6 @@
  */
 import GML2 from './GML2.js';
 import GMLBase, {GMLNS} from './GMLBase.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
@@ -308,7 +307,7 @@ class GML3 extends GMLBase {
         extend(flatCoordinates, flatLinearRings[i]);
         ends.push(flatCoordinates.length);
       }
-      return new Polygon(flatCoordinates, GeometryLayout.XYZ, ends);
+      return new Polygon(flatCoordinates, 'XYZ', ends);
     } else {
       return undefined;
     }
@@ -329,7 +328,7 @@ class GML3 extends GMLBase {
       this
     );
     if (flatCoordinates) {
-      const lineString = new LineString(flatCoordinates, GeometryLayout.XYZ);
+      const lineString = new LineString(flatCoordinates, 'XYZ');
       return lineString;
     } else {
       return undefined;

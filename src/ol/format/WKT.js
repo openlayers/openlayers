@@ -3,7 +3,6 @@
  */
 import Feature from '../Feature.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
@@ -15,7 +14,7 @@ import {transformGeometryWithOptions} from './Feature.js';
 
 /**
  * Geometry constructors
- * @enum {function (new:import("../geom/Geometry.js").default, Array, import("../geom/GeometryLayout.js").default)}
+ * @enum {function (new:import("../geom/Geometry.js").default, Array, import("../geom/Geometry.js").GeometryLayout)}
  */
 const GeometryConstructor = {
   'POINT': Point,
@@ -249,10 +248,10 @@ class Parser {
     };
 
     /**
-     * @type {import("../geom/GeometryLayout.js").default}
+     * @type {import("../geom/Geometry.js").GeometryLayout}
      * @private
      */
-    this.layout_ = GeometryLayout.XY;
+    this.layout_ = 'XY';
   }
 
   /**
@@ -296,22 +295,23 @@ class Parser {
 
   /**
    * Try to parse the dimensional info.
-   * @return {import("../geom/GeometryLayout.js").default} The layout.
+   * @return {import("../geom/Geometry.js").GeometryLayout} The layout.
    * @private
    */
   parseGeometryLayout_() {
-    let layout = GeometryLayout.XY;
+    /** @type {import("../geom/Geometry.js").GeometryLayout} */
+    let layout = 'XY';
     const dimToken = this.token_;
     if (this.isTokenType(TokenType.TEXT)) {
       const dimInfo = dimToken.value;
       if (dimInfo === Z) {
-        layout = GeometryLayout.XYZ;
+        layout = 'XYZ';
       } else if (dimInfo === M) {
-        layout = GeometryLayout.XYM;
+        layout = 'XYM';
       } else if (dimInfo === ZM) {
-        layout = GeometryLayout.XYZM;
+        layout = 'XYZM';
       }
-      if (layout !== GeometryLayout.XY) {
+      if (layout !== 'XY') {
         this.consume_();
       }
     }
@@ -819,10 +819,10 @@ function encodeMultiPolygonGeometry(geom) {
 function encodeGeometryLayout(geom) {
   const layout = geom.getLayout();
   let dimInfo = '';
-  if (layout === GeometryLayout.XYZ || layout === GeometryLayout.XYZM) {
+  if (layout === 'XYZ' || layout === 'XYZM') {
     dimInfo += Z;
   }
-  if (layout === GeometryLayout.XYM || layout === GeometryLayout.XYZM) {
+  if (layout === 'XYM' || layout === 'XYZM') {
     dimInfo += M;
   }
   return dimInfo;

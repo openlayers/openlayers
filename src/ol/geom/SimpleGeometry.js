@@ -2,7 +2,6 @@
  * @module ol/geom/SimpleGeometry
  */
 import Geometry from './Geometry.js';
-import GeometryLayout from './GeometryLayout.js';
 import {abstract} from '../util.js';
 import {createOrUpdateFromFlatCoordinates, getCenter} from '../extent.js';
 import {rotate, scale, transform2D, translate} from './flat/transform.js';
@@ -21,9 +20,9 @@ class SimpleGeometry extends Geometry {
 
     /**
      * @protected
-     * @type {import("./GeometryLayout.js").default}
+     * @type {import("./Geometry.js").GeometryLayout}
      */
-    this.layout = GeometryLayout.XY;
+    this.layout = 'XY';
 
     /**
      * @protected
@@ -89,8 +88,8 @@ class SimpleGeometry extends Geometry {
   }
 
   /**
-   * Return the {@link module:ol/geom/GeometryLayout layout} of the geometry.
-   * @return {import("./GeometryLayout.js").default} Layout.
+   * Return the {@link import("./Geometry.js").GeometryLayout layout} of the geometry.
+   * @return {import("./Geometry.js").GeometryLayout} Layout.
    * @api
    */
   getLayout() {
@@ -151,7 +150,7 @@ class SimpleGeometry extends Geometry {
   }
 
   /**
-   * @param {import("./GeometryLayout.js").default} layout Layout.
+   * @param {import("./Geometry.js").GeometryLayout} layout Layout.
    * @param {Array<number>} flatCoordinates Flat coordinates.
    */
   setFlatCoordinates(layout, flatCoordinates) {
@@ -163,14 +162,14 @@ class SimpleGeometry extends Geometry {
   /**
    * @abstract
    * @param {!Array<*>} coordinates Coordinates.
-   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
+   * @param {import("./Geometry.js").GeometryLayout} [opt_layout] Layout.
    */
   setCoordinates(coordinates, opt_layout) {
     abstract();
   }
 
   /**
-   * @param {import("./GeometryLayout.js").default|undefined} layout Layout.
+   * @param {import("./Geometry.js").GeometryLayout|undefined} layout Layout.
    * @param {Array<*>} coordinates Coordinates.
    * @param {number} nesting Nesting.
    * @protected
@@ -183,7 +182,7 @@ class SimpleGeometry extends Geometry {
     } else {
       for (let i = 0; i < nesting; ++i) {
         if (coordinates.length === 0) {
-          this.layout = GeometryLayout.XY;
+          this.layout = 'XY';
           this.stride = 2;
           return;
         } else {
@@ -299,31 +298,31 @@ class SimpleGeometry extends Geometry {
 
 /**
  * @param {number} stride Stride.
- * @return {import("./GeometryLayout.js").default} layout Layout.
+ * @return {import("./Geometry.js").GeometryLayout} layout Layout.
  */
 function getLayoutForStride(stride) {
   let layout;
   if (stride == 2) {
-    layout = GeometryLayout.XY;
+    layout = 'XY';
   } else if (stride == 3) {
-    layout = GeometryLayout.XYZ;
+    layout = 'XYZ';
   } else if (stride == 4) {
-    layout = GeometryLayout.XYZM;
+    layout = 'XYZM';
   }
-  return /** @type {import("./GeometryLayout.js").default} */ (layout);
+  return /** @type {import("./Geometry.js").GeometryLayout} */ (layout);
 }
 
 /**
- * @param {import("./GeometryLayout.js").default} layout Layout.
+ * @param {import("./Geometry.js").GeometryLayout} layout Layout.
  * @return {number} Stride.
  */
 export function getStrideForLayout(layout) {
   let stride;
-  if (layout == GeometryLayout.XY) {
+  if (layout == 'XY') {
     stride = 2;
-  } else if (layout == GeometryLayout.XYZ || layout == GeometryLayout.XYM) {
+  } else if (layout == 'XYZ' || layout == 'XYM') {
     stride = 3;
-  } else if (layout == GeometryLayout.XYZM) {
+  } else if (layout == 'XYZM') {
     stride = 4;
   }
   return /** @type {number} */ (stride);

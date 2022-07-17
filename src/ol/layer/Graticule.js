@@ -5,7 +5,6 @@ import Collection from '../Collection.js';
 import EventType from '../render/EventType.js';
 import Feature from '../Feature.js';
 import Fill from '../style/Fill.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import Point from '../geom/Point.js';
 import Stroke from '../style/Stroke.js';
@@ -1037,10 +1036,10 @@ class Graticule extends VectorLayer {
     );
     let lineString = this.meridians_[index];
     if (!lineString) {
-      lineString = new LineString(flatCoordinates, GeometryLayout.XY);
+      lineString = new LineString(flatCoordinates, 'XY');
       this.meridians_[index] = lineString;
     } else {
-      lineString.setFlatCoordinates(GeometryLayout.XY, flatCoordinates);
+      lineString.setFlatCoordinates('XY', flatCoordinates);
       lineString.changed();
     }
     return lineString;
@@ -1107,9 +1106,9 @@ class Graticule extends VectorLayer {
     );
     let lineString = this.parallels_[index];
     if (!lineString) {
-      lineString = new LineString(flatCoordinates, GeometryLayout.XY);
+      lineString = new LineString(flatCoordinates, 'XY');
     } else {
-      lineString.setFlatCoordinates(GeometryLayout.XY, flatCoordinates);
+      lineString.setFlatCoordinates('XY', flatCoordinates);
       lineString.changed();
     }
     return lineString;

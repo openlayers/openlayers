@@ -4,7 +4,6 @@
 import Feature from '../Feature.js';
 import Fill from '../style/Fill.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
 import Icon from '../style/Icon.js';
 import IconAnchorUnits from '../style/IconAnchorUnits.js';
 import IconOrigin from '../style/IconOrigin.js';
@@ -1594,7 +1593,7 @@ function readGxTrack(node, objectStack) {
       );
     }
   }
-  return new LineString(flatCoordinates, GeometryLayout.XYZM);
+  return new LineString(flatCoordinates, 'XYZM');
 }
 
 /**
@@ -1677,7 +1676,7 @@ function readLineString(node, objectStack) {
   );
   const flatCoordinates = readFlatCoordinatesFromNode(node, objectStack);
   if (flatCoordinates) {
-    const lineString = new LineString(flatCoordinates, GeometryLayout.XYZ);
+    const lineString = new LineString(flatCoordinates, 'XYZ');
     lineString.setProperties(properties, true);
     return lineString;
   } else {
@@ -1699,7 +1698,7 @@ function readLinearRing(node, objectStack) {
   );
   const flatCoordinates = readFlatCoordinatesFromNode(node, objectStack);
   if (flatCoordinates) {
-    const polygon = new Polygon(flatCoordinates, GeometryLayout.XYZ, [
+    const polygon = new Polygon(flatCoordinates, 'XYZ', [
       flatCoordinates.length,
     ]);
     polygon.setProperties(properties, true);
@@ -1795,7 +1794,7 @@ function readPoint(node, objectStack) {
   );
   const flatCoordinates = readFlatCoordinatesFromNode(node, objectStack);
   if (flatCoordinates) {
-    const point = new Point(flatCoordinates, GeometryLayout.XYZ);
+    const point = new Point(flatCoordinates, 'XYZ');
     point.setProperties(properties, true);
     return point;
   } else {
@@ -1838,7 +1837,7 @@ function readPolygon(node, objectStack) {
       extend(flatCoordinates, flatLinearRings[i]);
       ends.push(flatCoordinates.length);
     }
-    const polygon = new Polygon(flatCoordinates, GeometryLayout.XYZ, ends);
+    const polygon = new Polygon(flatCoordinates, 'XYZ', ends);
     polygon.setProperties(properties, true);
     return polygon;
   } else {
@@ -2338,9 +2337,9 @@ function writeCoordinatesTextNode(node, coordinates, objectStack) {
   const stride = context['stride'];
 
   let dimension;
-  if (layout == GeometryLayout.XY || layout == GeometryLayout.XYM) {
+  if (layout == 'XY' || layout == 'XYM') {
     dimension = 2;
-  } else if (layout == GeometryLayout.XYZ || layout == GeometryLayout.XYZM) {
+  } else if (layout == 'XYZ' || layout == 'XYZM') {
     dimension = 3;
   } else {
     assert(false, 34); // Invalid geometry layout

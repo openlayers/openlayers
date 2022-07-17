@@ -5,7 +5,6 @@
 // of GEOMETRY_PARSERS_ and methods using GEOMETRY_PARSERS_ do not expect
 // envelopes/extents, only geometries!
 import Feature from '../Feature.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import LinearRing from '../geom/LinearRing.js';
 import MultiLineString from '../geom/MultiLineString.js';
@@ -370,7 +369,7 @@ class GMLBase extends XMLFeature {
   readPoint(node, objectStack) {
     const flatCoordinates = this.readFlatCoordinatesFromNode(node, objectStack);
     if (flatCoordinates) {
-      return new Point(flatCoordinates, GeometryLayout.XYZ);
+      return new Point(flatCoordinates, 'XYZ');
     }
   }
 
@@ -465,7 +464,7 @@ class GMLBase extends XMLFeature {
   readLineString(node, objectStack) {
     const flatCoordinates = this.readFlatCoordinatesFromNode(node, objectStack);
     if (flatCoordinates) {
-      const lineString = new LineString(flatCoordinates, GeometryLayout.XYZ);
+      const lineString = new LineString(flatCoordinates, 'XYZ');
       return lineString;
     } else {
       return undefined;
@@ -500,7 +499,7 @@ class GMLBase extends XMLFeature {
   readLinearRing(node, objectStack) {
     const flatCoordinates = this.readFlatCoordinatesFromNode(node, objectStack);
     if (flatCoordinates) {
-      return new LinearRing(flatCoordinates, GeometryLayout.XYZ);
+      return new LinearRing(flatCoordinates, 'XYZ');
     }
   }
 
@@ -526,7 +525,7 @@ class GMLBase extends XMLFeature {
         extend(flatCoordinates, flatLinearRings[i]);
         ends.push(flatCoordinates.length);
       }
-      return new Polygon(flatCoordinates, GeometryLayout.XYZ, ends);
+      return new Polygon(flatCoordinates, 'XYZ', ends);
     } else {
       return undefined;
     }

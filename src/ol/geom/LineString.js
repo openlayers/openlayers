@@ -1,7 +1,6 @@
 /**
  * @module ol/geom/LineString
  */
-import GeometryLayout from './GeometryLayout.js';
 import SimpleGeometry from './SimpleGeometry.js';
 import {assignClosestPoint, maxSquaredDelta} from './flat/closest.js';
 import {closestSquaredDistanceXY} from '../extent.js';
@@ -24,7 +23,7 @@ class LineString extends SimpleGeometry {
   /**
    * @param {Array<import("../coordinate.js").Coordinate>|Array<number>} coordinates Coordinates.
    *     For internal use, flat coordinates in combination with `opt_layout` are also accepted.
-   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
+   * @param {import("./Geometry.js").GeometryLayout} [opt_layout] Layout.
    */
   constructor(coordinates, opt_layout) {
     super();
@@ -169,10 +168,7 @@ class LineString extends SimpleGeometry {
    * @api
    */
   getCoordinateAtM(m, opt_extrapolate) {
-    if (
-      this.layout != GeometryLayout.XYM &&
-      this.layout != GeometryLayout.XYZM
-    ) {
+    if (this.layout != 'XYM' && this.layout != 'XYZM') {
       return null;
     }
     const extrapolate = opt_extrapolate !== undefined ? opt_extrapolate : false;
@@ -263,7 +259,7 @@ class LineString extends SimpleGeometry {
       simplifiedFlatCoordinates,
       0
     );
-    return new LineString(simplifiedFlatCoordinates, GeometryLayout.XY);
+    return new LineString(simplifiedFlatCoordinates, 'XY');
   }
 
   /**
@@ -294,7 +290,7 @@ class LineString extends SimpleGeometry {
   /**
    * Set the coordinates of the linestring.
    * @param {!Array<import("../coordinate.js").Coordinate>} coordinates Coordinates.
-   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
+   * @param {import("./Geometry.js").GeometryLayout} [opt_layout] Layout.
    * @api
    */
   setCoordinates(coordinates, opt_layout) {

@@ -4,7 +4,6 @@
 //FIXME Implement projection handling
 
 import FeatureFormat, {transformGeometryWithOptions} from './Feature.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
@@ -204,18 +203,18 @@ class MVT extends FeatureFormat {
         const endss = inflateEnds(flatCoordinates, ends);
         geom =
           endss.length > 1
-            ? new MultiPolygon(flatCoordinates, GeometryLayout.XY, endss)
-            : new Polygon(flatCoordinates, GeometryLayout.XY, ends);
+            ? new MultiPolygon(flatCoordinates, 'XY', endss)
+            : new Polygon(flatCoordinates, 'XY', ends);
       } else {
         geom =
           geometryType === 'Point'
-            ? new Point(flatCoordinates, GeometryLayout.XY)
+            ? new Point(flatCoordinates, 'XY')
             : geometryType === 'LineString'
-            ? new LineString(flatCoordinates, GeometryLayout.XY)
+            ? new LineString(flatCoordinates, 'XY')
             : geometryType === 'MultiPoint'
-            ? new MultiPoint(flatCoordinates, GeometryLayout.XY)
+            ? new MultiPoint(flatCoordinates, 'XY')
             : geometryType === 'MultiLineString'
-            ? new MultiLineString(flatCoordinates, GeometryLayout.XY, ends)
+            ? new MultiLineString(flatCoordinates, 'XY', ends)
             : null;
       }
       const ctor = /** @type {typeof import("../Feature.js").default} */ (

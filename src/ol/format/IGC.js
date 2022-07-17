@@ -2,7 +2,6 @@
  * @module ol/format/IGC
  */
 import Feature from '../Feature.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import TextFeature from './TextFeature.js';
 import {get as getProjection} from '../proj.js';
@@ -148,8 +147,7 @@ class IGC extends TextFeature {
     if (flatCoordinates.length === 0) {
       return null;
     }
-    const layout =
-      altitudeMode == 'none' ? GeometryLayout.XYM : GeometryLayout.XYZM;
+    const layout = altitudeMode == 'none' ? 'XYM' : 'XYZM';
     const lineString = new LineString(flatCoordinates, layout);
     const feature = new Feature(
       transformGeometryWithOptions(lineString, false, opt_options)

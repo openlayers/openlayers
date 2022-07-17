@@ -5,7 +5,6 @@ import Circle from '../geom/Circle.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import Feature from '../Feature.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
 import InteractionProperty from './Property.js';
 import LineString from '../geom/LineString.js';
 import MapBrowserEvent from '../MapBrowserEvent.js';
@@ -83,7 +82,7 @@ import {squaredDistance as squaredCoordinateDistance} from '../coordinate.js';
  * Shift key activates freehand drawing.
  * @property {boolean} [wrapX=false] Wrap the world horizontally on the sketch
  * overlay.
- * @property {GeometryLayout} [geometryLayout='XY'] Layout of the
+ * @property {import("../geom/Geometry.js").GeometryLayout} [geometryLayout='XY'] Layout of the
  * feature geometries created by the draw interaction.
  */
 
@@ -340,11 +339,11 @@ class Draw extends PointerInteraction {
 
     /**
      * @private
-     * @type {import("../geom/GeometryLayout").default}
+     * @type {import("../geom/Geometry.js").GeometryLayout}
      */
     this.geometryLayout_ = options.geometryLayout
       ? options.geometryLayout
-      : GeometryLayout.XY;
+      : 'XY';
 
     let geometryFunction = options.geometryFunction;
     if (!geometryFunction) {
