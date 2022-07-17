@@ -4,7 +4,6 @@ import Fill from '../../../../../src/ol/style/Fill.js';
 import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
 import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js';
 import Icon from '../../../../../src/ol/style/Icon.js';
-import IconAnchorUnits from '../../../../../src/ol/style/IconAnchorUnits.js';
 import IconOrigin from '../../../../../src/ol/style/IconOrigin.js';
 import ImageState from '../../../../../src/ol/ImageState.js';
 import KML, {
@@ -2431,13 +2430,13 @@ describe('ol.format.KML', function () {
               expect(imageStyle.anchor_[0]).to.be(0.5);
               expect(imageStyle.anchor_[1]).to.be(0.5);
               expect(imageStyle.anchorOrigin_).to.be(IconOrigin.BOTTOM_LEFT);
-              expect(imageStyle.anchorXUnits_).to.be(IconAnchorUnits.FRACTION);
-              expect(imageStyle.anchorYUnits_).to.be(IconAnchorUnits.FRACTION);
+              expect(imageStyle.anchorXUnits_).to.be('fraction');
+              expect(imageStyle.anchorYUnits_).to.be('fraction');
             } else {
               expect(imageStyle.anchor_[0]).to.be(5);
               expect(imageStyle.anchor_[1]).to.be(5);
-              expect(imageStyle.anchorXUnits_).to.be(IconAnchorUnits.PIXELS);
-              expect(imageStyle.anchorYUnits_).to.be(IconAnchorUnits.PIXELS);
+              expect(imageStyle.anchorXUnits_).to.be('pixels');
+              expect(imageStyle.anchorYUnits_).to.be('pixels');
               if (f.getId() == 2) {
                 expect(imageStyle.anchorOrigin_).to.be(IconOrigin.BOTTOM_LEFT);
               }

@@ -5,7 +5,6 @@ import Feature from '../Feature.js';
 import Fill from '../style/Fill.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
 import Icon from '../style/Icon.js';
-import IconAnchorUnits from '../style/IconAnchorUnits.js';
 import IconOrigin from '../style/IconOrigin.js';
 import ImageState from '../ImageState.js';
 import LineString from '../geom/LineString.js';
@@ -56,9 +55,9 @@ import {transformGeometryWithOptions} from './Feature.js';
 /**
  * @typedef {Object} Vec2
  * @property {number} x X coordinate.
- * @property {import("../style/IconAnchorUnits").default} xunits Units of x.
+ * @property {import("../style/Icon.js").IconAnchorUnits} xunits Units of x.
  * @property {number} y Y coordinate.
- * @property {import("../style/IconAnchorUnits").default} yunits Units of Y.
+ * @property {import("../style/Icon.js").IconAnchorUnits} yunits Units of Y.
  * @property {import("../style/IconOrigin.js").default} [origin] Origin.
  */
 
@@ -95,12 +94,12 @@ const SCHEMA_LOCATION =
   'https://developers.google.com/kml/schema/kml22gx.xsd';
 
 /**
- * @type {Object<string, import("../style/IconAnchorUnits").default>}
+ * @type {Object<string, import("../style/Icon.js").IconAnchorUnits>}
  */
 const ICON_ANCHOR_UNITS_MAP = {
-  'fraction': IconAnchorUnits.FRACTION,
-  'pixels': IconAnchorUnits.PIXELS,
-  'insetPixels': IconAnchorUnits.PIXELS,
+  'fraction': 'fraction',
+  'pixels': 'pixels',
+  'insetPixels': 'pixels',
 };
 
 /**
@@ -211,12 +210,12 @@ export function getDefaultFillStyle() {
 let DEFAULT_IMAGE_STYLE_ANCHOR;
 
 /**
- * @type {import("../style/IconAnchorUnits").default}
+ * @type {import("../style/Icon.js").IconAnchorUnits}
  */
 let DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS;
 
 /**
- * @type {import("../style/IconAnchorUnits").default}
+ * @type {import("../style/Icon.js").IconAnchorUnits}
  */
 let DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS;
 
@@ -323,9 +322,9 @@ function createStyleDefaults() {
 
   DEFAULT_IMAGE_STYLE_ANCHOR = [20, 2];
 
-  DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS = IconAnchorUnits.PIXELS;
+  DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS = 'pixels';
 
-  DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS = IconAnchorUnits.PIXELS;
+  DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS = 'pixels';
 
   DEFAULT_IMAGE_STYLE_SIZE = [64, 64];
 
@@ -2627,9 +2626,9 @@ function writeIconStyle(node, style, objectStack) {
     if (anchor && (anchor[0] !== size[0] / 2 || anchor[1] !== size[1] / 2)) {
       const /** @type {Vec2} */ hotSpot = {
           x: anchor[0],
-          xunits: IconAnchorUnits.PIXELS,
+          xunits: 'pixels',
           y: size[1] - anchor[1],
-          yunits: IconAnchorUnits.PIXELS,
+          yunits: 'pixels',
         };
       properties['hotSpot'] = hotSpot;
     }

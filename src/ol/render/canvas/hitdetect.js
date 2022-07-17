@@ -3,7 +3,6 @@
  */
 
 import CanvasImmediateRenderer from './Immediate.js';
-import IconAnchorUnits from '../../style/IconAnchorUnits.js';
 import {Icon} from '../../style.js';
 import {clamp} from '../../math.js';
 import {createCanvasContext2D} from '../../dom.js';
@@ -104,8 +103,8 @@ export function createHitDetectionImageData(
             img: img,
             imgSize: imgSize,
             anchor: image.getAnchor(),
-            anchorXUnits: IconAnchorUnits.PIXELS,
-            anchorYUnits: IconAnchorUnits.PIXELS,
+            anchorXUnits: 'pixels',
+            anchorYUnits: 'pixels',
             offset: image.getOrigin(),
             opacity: 1,
             size: image.getSize(),

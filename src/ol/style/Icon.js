@@ -2,7 +2,6 @@
  * @module ol/style/Icon
  */
 import EventType from '../events/EventType.js';
-import IconAnchorUnits from './IconAnchorUnits.js';
 import IconOrigin from './IconOrigin.js';
 import ImageState from '../ImageState.js';
 import ImageStyle from './Image.js';
@@ -12,14 +11,19 @@ import {get as getIconImage} from './IconImage.js';
 import {getUid} from '../util.js';
 
 /**
+ * @typedef {'fraction' | 'pixels'} IconAnchorUnits
+ * Anchor unit can be either a fraction of the icon size or in pixels.
+ */
+
+/**
  * @typedef {Object} Options
  * @property {Array<number>} [anchor=[0.5, 0.5]] Anchor. Default value is the icon center.
  * @property {import("./IconOrigin.js").default} [anchorOrigin='top-left'] Origin of the anchor: `bottom-left`, `bottom-right`,
  * `top-left` or `top-right`.
- * @property {import("./IconAnchorUnits.js").default} [anchorXUnits='fraction'] Units in which the anchor x value is
+ * @property {IconAnchorUnits} [anchorXUnits='fraction'] Units in which the anchor x value is
  * specified. A value of `'fraction'` indicates the x value is a fraction of the icon. A value of `'pixels'` indicates
  * the x value in pixels.
- * @property {import("./IconAnchorUnits.js").default} [anchorYUnits='fraction'] Units in which the anchor y value is
+ * @property {IconAnchorUnits} [anchorYUnits='fraction'] Units in which the anchor y value is
  * specified. A value of `'fraction'` indicates the y value is a fraction of the icon. A value of `'pixels'` indicates
  * the y value in pixels.
  * @property {import("../color.js").Color|string} [color] Color to tint the icon. If not specified,
@@ -113,21 +117,17 @@ class Icon extends ImageStyle {
 
     /**
      * @private
-     * @type {import("./IconAnchorUnits.js").default}
+     * @type {IconAnchorUnits}
      */
     this.anchorXUnits_ =
-      options.anchorXUnits !== undefined
-        ? options.anchorXUnits
-        : IconAnchorUnits.FRACTION;
+      options.anchorXUnits !== undefined ? options.anchorXUnits : 'fraction';
 
     /**
      * @private
-     * @type {import("./IconAnchorUnits.js").default}
+     * @type {IconAnchorUnits}
      */
     this.anchorYUnits_ =
-      options.anchorYUnits !== undefined
-        ? options.anchorYUnits
-        : IconAnchorUnits.FRACTION;
+      options.anchorYUnits !== undefined ? options.anchorYUnits : 'fraction';
 
     /**
      * @private
@@ -255,17 +255,17 @@ class Icon extends ImageStyle {
       anchor = this.anchor_;
       const size = this.getSize();
       if (
-        this.anchorXUnits_ == IconAnchorUnits.FRACTION ||
-        this.anchorYUnits_ == IconAnchorUnits.FRACTION
+        this.anchorXUnits_ == 'fraction' ||
+        this.anchorYUnits_ == 'fraction'
       ) {
         if (!size) {
           return null;
         }
         anchor = this.anchor_.slice();
-        if (this.anchorXUnits_ == IconAnchorUnits.FRACTION) {
+        if (this.anchorXUnits_ == 'fraction') {
           anchor[0] *= size[0];
         }
-        if (this.anchorYUnits_ == IconAnchorUnits.FRACTION) {
+        if (this.anchorYUnits_ == 'fraction') {
           anchor[1] *= size[1];
         }
       }
