@@ -5,7 +5,6 @@ import Feature from '../Feature.js';
 import Fill from '../style/Fill.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
 import Icon from '../style/Icon.js';
-import IconOrigin from '../style/IconOrigin.js';
 import ImageState from '../ImageState.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
@@ -58,7 +57,7 @@ import {transformGeometryWithOptions} from './Feature.js';
  * @property {import("../style/Icon.js").IconAnchorUnits} xunits Units of x.
  * @property {number} y Y coordinate.
  * @property {import("../style/Icon.js").IconAnchorUnits} yunits Units of Y.
- * @property {import("../style/IconOrigin.js").default} [origin] Origin.
+ * @property {import("../style/Icon.js").IconOrigin} [origin] Origin.
  */
 
 /**
@@ -333,7 +332,7 @@ function createStyleDefaults() {
 
   DEFAULT_IMAGE_STYLE = new Icon({
     anchor: DEFAULT_IMAGE_STYLE_ANCHOR,
-    anchorOrigin: IconOrigin.BOTTOM_LEFT,
+    anchorOrigin: 'bottom-left',
     anchorXUnits: DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS,
     anchorYUnits: DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS,
     crossOrigin: 'anonymous',
@@ -1173,18 +1172,19 @@ function readStyleURL(node) {
 function readVec2(node) {
   const xunits = node.getAttribute('xunits');
   const yunits = node.getAttribute('yunits');
+  /** @type {import('../style/Icon.js').IconOrigin} */
   let origin;
   if (xunits !== 'insetPixels') {
     if (yunits !== 'insetPixels') {
-      origin = IconOrigin.BOTTOM_LEFT;
+      origin = 'bottom-left';
     } else {
-      origin = IconOrigin.TOP_LEFT;
+      origin = 'top-left';
     }
   } else {
     if (yunits !== 'insetPixels') {
-      origin = IconOrigin.BOTTOM_RIGHT;
+      origin = 'bottom-right';
     } else {
-      origin = IconOrigin.TOP_RIGHT;
+      origin = 'top-right';
     }
   }
   return {
@@ -1265,7 +1265,8 @@ function iconStyleParser(node, objectStack) {
     src = DEFAULT_IMAGE_STYLE_SRC;
   }
   let anchor, anchorXUnits, anchorYUnits;
-  let anchorOrigin = IconOrigin.BOTTOM_LEFT;
+  /** @type {import('../style/Icon.js').IconOrigin|undefined} */
+  let anchorOrigin = 'bottom-left';
   const hotSpot = /** @type {Vec2|undefined} */ (object['hotSpot']);
   if (hotSpot) {
     anchor = [hotSpot.x, hotSpot.y];
@@ -1325,7 +1326,7 @@ function iconStyleParser(node, objectStack) {
       anchorYUnits: anchorYUnits,
       crossOrigin: this.crossOrigin_,
       offset: offset,
-      offsetOrigin: IconOrigin.BOTTOM_LEFT,
+      offsetOrigin: 'bottom-left',
       rotation: rotation,
       scale: scale,
       size: size,
