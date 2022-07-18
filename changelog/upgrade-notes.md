@@ -1,6 +1,8 @@
 ## Upgrade notes
 
-### Next Release
+### Next version
+
+### 6.15.0
 
 #### Deprecated `tilePixelRatio` option for data tile sources.
 
@@ -33,6 +35,20 @@ addCoordinateTransforms(
     function(coordinate) { return coordinate.slice(0, 2).reverse() }
 );
 ```
+
+#### Replacement of string enums with union types
+
+This change only affects users that were using the non-API string enums
+
+* ol/OverlayPositioning
+* ol/extent/Corner
+* ol/format/FormatType
+* ol/geom/GeometryType
+* ol/source/State
+* ol/source/WMSServerType
+* ol/source/WMTSRequestEncoding
+
+Instead of these, use the respective `string`s, which are now typesafe by means of union types.
 
 ### v6.14.0
 
