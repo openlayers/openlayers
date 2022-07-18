@@ -24,6 +24,8 @@ import {clear} from '../obj.js';
  *    `stopPropagation` or `preventDefault` on an event object, it means that no
  *    more listeners after this one will be called. Same as when the listener
  *    returns false.
+ *
+ * @template {string} EventTypes
  */
 class Target extends Disposable {
   /**
@@ -52,13 +54,13 @@ class Target extends Disposable {
 
     /**
      * @private
-     * @type {Object<string, Array<import("../events.js").Listener>>}
+     * @type {Object<EventTypes, Array<import("../events.js").Listener>>}
      */
     this.listeners_ = null;
   }
 
   /**
-   * @param {string} type Type.
+   * @param {EventTypes} type Type.
    * @param {import("../events.js").Listener} listener Listener.
    */
   addEventListener(type, listener) {
@@ -77,7 +79,7 @@ class Target extends Disposable {
    * of this type. The event parameter can either be a string or an
    * Object with a `type` property.
    *
-   * @param {import("./Event.js").default|string} event Event object.
+   * @param {import("./Event.js").default<EventTypes>|EventTypes} event Event object.
    * @return {boolean|undefined} `false` if anyone called preventDefault on the
    *     event object or if any of the listeners returned false.
    * @api
@@ -140,7 +142,7 @@ class Target extends Disposable {
    * Get the listeners for a specified event type. Listeners are returned in the
    * order that they will be called in.
    *
-   * @param {string} type Type.
+   * @param {EventTypes} type Type.
    * @return {Array<import("../events.js").Listener>|undefined} Listeners.
    */
   getListeners(type) {
@@ -148,7 +150,7 @@ class Target extends Disposable {
   }
 
   /**
-   * @param {string} [opt_type] Type. If not provided,
+   * @param {EventTypes} [opt_type] Type. If not provided,
    *     `true` will be returned if this event target has any listeners.
    * @return {boolean} Has listeners.
    */
@@ -162,7 +164,7 @@ class Target extends Disposable {
   }
 
   /**
-   * @param {string} type Type.
+   * @param {EventTypes} type Type.
    * @param {import("../events.js").Listener} listener Listener.
    */
   removeEventListener(type, listener) {

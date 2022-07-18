@@ -2,7 +2,6 @@
  * @module ol/Object
  */
 import Event from './events/Event.js';
-import ObjectEventType from './ObjectEventType.js';
 import Observable from './Observable.js';
 import {assign, isEmpty} from './obj.js';
 import {getUid} from './util.js';
@@ -42,6 +41,11 @@ export class ObjectEvent extends Event {
  * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return> &
  *    import("./Observable").OnSignature<import("./ObjectEventType").Types, ObjectEvent, Return> &
  *    import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|import("./ObjectEventType").Types, Return>} ObjectOnSignature
+ */
+
+/**
+ * @template {string} ObservableProperties
+ * @typedef {`change:${ObservableProperties}`|import("./Observable").EventTypes|'propertychange'} EventTypes
  */
 
 /**
@@ -85,6 +89,9 @@ export class ObjectEvent extends Event {
  * object.unset('foo').
  *
  * @fires ObjectEvent
+ * @template {string} ObservableProperties
+ * @template {string} ObjectEventTypes
+ * @extends Observable<ObjectEventTypes|EventTypes<ObservableProperties>>
  * @api
  */
 class BaseObject extends Observable {
@@ -117,7 +124,7 @@ class BaseObject extends Observable {
 
     /**
      * @private
-     * @type {Object<string, *>}
+     * @type {Object<ObservableProperties, *>}
      */
     this.values_ = null;
 
@@ -128,7 +135,7 @@ class BaseObject extends Observable {
 
   /**
    * Gets a value.
-   * @param {string} key Key name.
+   * @param {ObservableProperties} key Key name.
    * @return {*} Value.
    * @api
    */
@@ -142,16 +149,20 @@ class BaseObject extends Observable {
 
   /**
    * Get a list of object property names.
-   * @return {Array<string>} List of property names.
+   * @return {Array<ObservableProperties>} List of property names.
    * @api
    */
   getKeys() {
-    return (this.values_ && Object.keys(this.values_)) || [];
+    return (
+      /** @type {Array<ObservableProperties>} */ (
+        this.values_ && Object.keys(this.values_)
+      ) || []
+    );
   }
 
   /**
    * Get an object of all property names and values.
-   * @return {Object<string, *>} Object.
+   * @return {Object<ObservableProperties, *>} Object.
    * @api
    */
   getProperties() {
@@ -166,23 +177,24 @@ class BaseObject extends Observable {
   }
 
   /**
-   * @param {string} key Key name.
+   * @param {ObservableProperties} key Key name.
    * @param {*} oldValue Old value.
    */
   notify(key, oldValue) {
-    let eventType;
-    eventType = `change:${key}`;
+    let eventType = /** @type {EventTypes<ObservableProperties>} */ (
+      `change:${key}`
+    );
     if (this.hasListener(eventType)) {
       this.dispatchEvent(new ObjectEvent(eventType, key, oldValue));
     }
-    eventType = ObjectEventType.PROPERTYCHANGE;
+    eventType = 'propertychange';
     if (this.hasListener(eventType)) {
       this.dispatchEvent(new ObjectEvent(eventType, key, oldValue));
     }
   }
 
   /**
-   * @param {string} key Key name.
+   * @param {ObservableProperties} key Key name.
    * @param {import("./events.js").Listener} listener Listener.
    */
   addChangeListener(key, listener) {
@@ -190,7 +202,7 @@ class BaseObject extends Observable {
   }
 
   /**
-   * @param {string} key Key name.
+   * @param {ObservableProperties} key Key name.
    * @param {import("./events.js").Listener} listener Listener.
    */
   removeChangeListener(key, listener) {
@@ -199,7 +211,7 @@ class BaseObject extends Observable {
 
   /**
    * Sets a value.
-   * @param {string} key Key name.
+   * @param {ObservableProperties} key Key name.
    * @param {*} value Value.
    * @param {boolean} [opt_silent] Update without triggering an event.
    * @api
@@ -220,13 +232,17 @@ class BaseObject extends Observable {
   /**
    * Sets a collection of key-value pairs.  Note that this changes any existing
    * properties and adds new ones (it does not remove any existing properties).
-   * @param {Object<string, *>} values Values.
+   * @param {Object<ObservableProperties, *>} values Values.
    * @param {boolean} [opt_silent] Update without triggering an event.
    * @api
    */
   setProperties(values, opt_silent) {
     for (const key in values) {
-      this.set(key, values[key], opt_silent);
+      this.set(
+        /** @type {ObservableProperties} */ (key),
+        values[key],
+        opt_silent
+      );
     }
   }
 
@@ -244,7 +260,7 @@ class BaseObject extends Observable {
 
   /**
    * Unsets a property.
-   * @param {string} key Key name.
+   * @param {ObservableProperties} key Key name.
    * @param {boolean} [opt_silent] Unset without triggering an event.
    * @api
    */
