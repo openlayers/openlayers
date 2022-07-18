@@ -2,7 +2,6 @@
  * @module ol/Observable
  */
 import EventTarget from './events/Target.js';
-import EventType from './events/EventType.js';
 import {listen, listenOnce, unlistenByKey} from './events.js';
 
 /***
@@ -36,6 +35,8 @@ import {listen, listenOnce, unlistenByKey} from './events.js';
  * {@link module:ol/Observable~Observable#changed}.
  *
  * @fires import("./events/Event.js").default
+ * @template {string} ObservableEventTypes
+ * @extends EventTarget<ObservableEventTypes|EventTypes>
  * @api
  */
 class Observable extends EventTarget {
@@ -67,7 +68,7 @@ class Observable extends EventTarget {
    */
   changed() {
     ++this.revision_;
-    this.dispatchEvent(EventType.CHANGE);
+    this.dispatchEvent('change');
   }
 
   /**
@@ -81,7 +82,7 @@ class Observable extends EventTarget {
   }
 
   /**
-   * @param {string|Array<string>} type Type.
+   * @param {EventTypes|Array<EventTypes>} type Type.
    * @param {function((Event|import("./events/Event").default)): ?} listener Listener.
    * @return {import("./events.js").EventsKey|Array<import("./events.js").EventsKey>} Event key.
    * @protected
@@ -100,7 +101,7 @@ class Observable extends EventTarget {
   }
 
   /**
-   * @param {string|Array<string>} type Type.
+   * @param {EventTypes|Array<EventTypes>} type Type.
    * @param {function((Event|import("./events/Event").default)): ?} listener Listener.
    * @return {import("./events.js").EventsKey|Array<import("./events.js").EventsKey>} Event key.
    * @protected
@@ -122,7 +123,7 @@ class Observable extends EventTarget {
 
   /**
    * Unlisten for a certain type of event.
-   * @param {string|Array<string>} type Type.
+   * @param {EventTypes|Array<EventTypes>} type Type.
    * @param {function((Event|import("./events/Event").default)): ?} listener Listener.
    * @protected
    */

@@ -11,10 +11,12 @@
  * `stopPropagation` and `preventDefault` methods. It is meant as base class
  * for higher level events defined in the library, and works with
  * {@link module:ol/events/Target~Target}.
+ *
+ * @template {string} EventTypes
  */
 class BaseEvent {
   /**
-   * @param {string} type Type.
+   * @param {EventTypes} type Type.
    */
   constructor(type) {
     /**
@@ -29,7 +31,7 @@ class BaseEvent {
 
     /**
      * The event type.
-     * @type {string}
+     * @type {EventTypes}
      * @api
      */
     this.type = type;
@@ -61,14 +63,14 @@ class BaseEvent {
 }
 
 /**
- * @param {Event|import("./Event.js").default} evt Event
+ * @param {Event|BaseEvent} evt Event
  */
 export function stopPropagation(evt) {
   evt.stopPropagation();
 }
 
 /**
- * @param {Event|import("./Event.js").default} evt Event
+ * @param {Event|BaseEvent} evt Event
  */
 export function preventDefault(evt) {
   evt.preventDefault();
