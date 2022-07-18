@@ -5,19 +5,17 @@
 import EventType from '../events/EventType.js';
 import Tile from '../VectorTile.js';
 import TileCache from '../TileCache.js';
+import TileGrid from '../tilegrid/TileGrid.js';
 import TileState from '../TileState.js';
 import UrlTile from './UrlTile.js';
 import VectorRenderTile from '../VectorRenderTile.js';
+import {DEFAULT_MAX_ZOOM} from '../tilegrid/common.js';
 import {
   buffer as bufferExtent,
   getIntersection,
   intersects,
 } from '../extent.js';
-import {
-  createForProjection,
-  createXYZ,
-  extentFromProjection,
-} from '../tilegrid.js';
+import {createXYZ, extentFromProjection} from '../tilegrid.js';
 import {fromKey, getCacheKeyForTileKey, getKeyZXY} from '../tilecoord.js';
 import {isEmpty} from '../obj.js';
 import {loadFeaturesXhr} from '../featureloader.js';
@@ -274,7 +272,10 @@ class VectorTile extends UrlTile {
       if (sourceExtent) {
         getIntersection(extent, sourceExtent, extent);
       }
-      const sourceZ = sourceTileGrid.getZForResolution(resolution, 1);
+      const sourceZ = sourceTileGrid.getZForResolution(
+        resolution,
+        this.zDirection
+      );
 
       sourceTileGrid.forEachTileCoord(extent, sourceZ, (sourceTileCoord) => {
         const tileUrl = this.tileUrlFunction(
@@ -428,13 +429,25 @@ class VectorTile extends UrlTile {
       // A tile grid that matches the tile size of the source tile grid is more
       // likely to have 1:1 relationships between source tiles and rendered tiles.
       const sourceTileGrid = this.tileGrid;
-      tileGrid = createForProjection(
-        projection,
-        undefined,
-        sourceTileGrid
-          ? sourceTileGrid.getTileSize(sourceTileGrid.getMinZoom())
-          : undefined
-      );
+      const resolutions = sourceTileGrid.getResolutions().slice();
+      const origins = resolutions.map(function (resolution, z) {
+        return sourceTileGrid.getOrigin(z);
+      });
+      const tileSizes = resolutions.map(function (resolution, z) {
+        return sourceTileGrid.getTileSize(z);
+      });
+      const length = DEFAULT_MAX_ZOOM + 1;
+      for (let z = resolutions.length; z < length; ++z) {
+        resolutions.push(resolutions[z - 1] / 2);
+        origins.push(origins[z - 1]);
+        tileSizes.push(tileSizes[z - 1]);
+      }
+      tileGrid = new TileGrid({
+        extent: sourceTileGrid.getExtent(),
+        origins: origins,
+        resolutions: resolutions,
+        tileSizes: tileSizes,
+      });
       this.tileGrids_[code] = tileGrid;
     }
     return tileGrid;
