@@ -1,7 +1,6 @@
 /**
  * @module ol/geom/Polygon
  */
-import GeometryLayout from './GeometryLayout.js';
 import LinearRing from './LinearRing.js';
 import Point from './Point.js';
 import SimpleGeometry from './SimpleGeometry.js';
@@ -34,7 +33,7 @@ class Polygon extends SimpleGeometry {
    *     an array of vertices' coordinates where the first coordinate and the last are
    *     equivalent. (For internal use, flat coordinates in combination with
    *     `opt_layout` and `opt_ends` are also accepted.)
-   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
+   * @param {import("./Geometry.js").GeometryLayout} [opt_layout] Layout.
    * @param {Array<number>} [opt_ends] Ends (for internal use with flat coordinates).
    */
   constructor(coordinates, opt_layout, opt_ends) {
@@ -253,7 +252,7 @@ class Polygon extends SimpleGeometry {
    * @api
    */
   getInteriorPoint() {
-    return new Point(this.getFlatInteriorPoint(), GeometryLayout.XYM);
+    return new Point(this.getFlatInteriorPoint(), 'XYM');
   }
 
   /**
@@ -353,11 +352,7 @@ class Polygon extends SimpleGeometry {
       0,
       simplifiedEnds
     );
-    return new Polygon(
-      simplifiedFlatCoordinates,
-      GeometryLayout.XY,
-      simplifiedEnds
-    );
+    return new Polygon(simplifiedFlatCoordinates, 'XY', simplifiedEnds);
   }
 
   /**
@@ -388,7 +383,7 @@ class Polygon extends SimpleGeometry {
   /**
    * Set the coordinates of the polygon.
    * @param {!Array<Array<import("../coordinate.js").Coordinate>>} coordinates Coordinates.
-   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
+   * @param {import("./Geometry.js").GeometryLayout} [opt_layout] Layout.
    * @api
    */
   setCoordinates(coordinates, opt_layout) {
@@ -433,9 +428,7 @@ export function circular(center, radius, opt_n, opt_sphereRadius) {
     );
   }
   flatCoordinates.push(flatCoordinates[0], flatCoordinates[1]);
-  return new Polygon(flatCoordinates, GeometryLayout.XY, [
-    flatCoordinates.length,
-  ]);
+  return new Polygon(flatCoordinates, 'XY', [flatCoordinates.length]);
 }
 
 /**
@@ -461,9 +454,7 @@ export function fromExtent(extent) {
     minX,
     minY,
   ];
-  return new Polygon(flatCoordinates, GeometryLayout.XY, [
-    flatCoordinates.length,
-  ]);
+  return new Polygon(flatCoordinates, 'XY', [flatCoordinates.length]);
 }
 
 /**

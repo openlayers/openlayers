@@ -4,7 +4,6 @@
 import Feature from '../Feature.js';
 import FeatureFormat, {transformGeometryWithOptions} from './Feature.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
@@ -53,17 +52,50 @@ class WkbReader {
    * @param {DataView} view source to read
    */
   constructor(view) {
+    /** @private */
     this.view_ = view;
+
+    /**
+     * @type {number}
+     * @private
+     */
     this.pos_ = 0;
 
+    /**
+     * @type {boolean}
+     * @private
+     */
     this.initialized_ = false;
+
+    /**
+     * @type {boolean}
+     * @private
+     */
     this.isLittleEndian_ = false;
+
+    /**
+     * @type {boolean}
+     * @private
+     */
     this.hasZ_ = false;
+
+    /**
+     * @type {boolean}
+     * @private
+     */
     this.hasM_ = false;
-    /** @type {number|null} */
+
+    /**
+     * @type {number|null}
+     * @private
+     */
     this.srid_ = null;
 
-    this.layout_ = GeometryLayout.XY;
+    /**
+     * @type {import("../geom/Geometry.js").GeometryLayout}
+     * @private
+     */
+    this.layout_ = 'XY';
   }
 
   /**
@@ -164,7 +196,9 @@ class WkbReader {
       wkbTypeThousandth === 3;
     const hasSRID = Boolean(wkbType & 0x20000000);
     const typeId = (wkbType & 0x0fffffff) % 1000; // Assume 1000 is an upper limit for type ID
-    const layout = ['XY', hasZ ? 'Z' : '', hasM ? 'M' : ''].join('');
+    const layout = /** @type {import("../geom/Geometry.js").GeometryLayout} */ (
+      ['XY', hasZ ? 'Z' : '', hasM ? 'M' : ''].join('')
+    );
 
     const srid = hasSRID ? this.readUint32(isLittleEndian) : null;
 
@@ -415,7 +449,7 @@ class WkbWriter {
 
   /**
    * @param {import('../coordinate.js').Coordinate} coords coords
-   * @param {import("../geom/GeometryLayout").default} layout layout
+   * @param {import("../geom/Geometry.js").GeometryLayout} layout layout
    */
   writePoint(coords, layout) {
     /**
@@ -439,7 +473,7 @@ class WkbWriter {
 
   /**
    * @param {Array<import('../coordinate.js').Coordinate>} coords coords
-   * @param {import("../geom/GeometryLayout").default} layout layout
+   * @param {import("../geom/Geometry.js").GeometryLayout} layout layout
    */
   writeLineString(coords, layout) {
     this.writeUint32(coords.length); // numPoints
@@ -450,7 +484,7 @@ class WkbWriter {
 
   /**
    * @param {Array<Array<import('../coordinate.js').Coordinate>>} rings rings
-   * @param {import("../geom/GeometryLayout").default} layout layout
+   * @param {import("../geom/Geometry.js").GeometryLayout} layout layout
    */
   writePolygon(rings, layout) {
     this.writeUint32(rings.length); // numRings
@@ -484,7 +518,7 @@ class WkbWriter {
 
   /**
    * @param {Array<import('../coordinate.js').Coordinate>} coords coords
-   * @param {string} layout layout
+   * @param {import("../geom/Geometry.js").GeometryLayout} layout layout
    */
   writeMultiPoint(coords, layout) {
     this.writeUint32(coords.length); // numItems
@@ -496,7 +530,7 @@ class WkbWriter {
 
   /**
    * @param {Array<Array<import('../coordinate.js').Coordinate>>} coords coords
-   * @param {string} layout layout
+   * @param {import("../geom/Geometry.js").GeometryLayout} layout layout
    */
   writeMultiLineString(coords, layout) {
     this.writeUint32(coords.length); // numItems
@@ -508,7 +542,7 @@ class WkbWriter {
 
   /**
    * @param {Array<Array<Array<import('../coordinate.js').Coordinate>>>} coords coords
-   * @param {string} layout layout
+   * @param {import("../geom/Geometry.js").GeometryLayout} layout layout
    */
   writeMultiPolygon(coords, layout) {
     this.writeUint32(coords.length); // numItems
@@ -531,31 +565,31 @@ class WkbWriter {
 
   /**
    * @param {import("../geom/Geometry.js").default} geom geometry
-   * @param {import("../geom/GeometryLayout.js").default} [layout] layout
-   * @return {import("../geom/GeometryLayout.js").default} minumum layout made by common axes
+   * @param {import("../geom/Geometry.js").GeometryLayout} [layout] layout
+   * @return {import("../geom/Geometry.js").GeometryLayout} minumum layout made by common axes
    */
-  findMinimumLayout(geom, layout = GeometryLayout.XYZM) {
+  findMinimumLayout(geom, layout = 'XYZM') {
     /**
-     * @param {import("../geom/GeometryLayout.js").default} a A
-     * @param {import("../geom/GeometryLayout.js").default} b B
-     * @return {import("../geom/GeometryLayout.js").default} minumum layout made by common axes
+     * @param {import("../geom/Geometry.js").GeometryLayout} a A
+     * @param {import("../geom/Geometry.js").GeometryLayout} b B
+     * @return {import("../geom/Geometry.js").GeometryLayout} minumum layout made by common axes
      */
     const GeometryLayout_min = (a, b) => {
       if (a === b) {
         return a;
       }
 
-      if (a === GeometryLayout.XYZM) {
+      if (a === 'XYZM') {
         // anything `b` is minimum
         return b;
       }
-      if (b === GeometryLayout.XYZM) {
+      if (b === 'XYZM') {
         // anything `a` is minimum
         return a;
       }
 
       // otherwise, incompatible
-      return GeometryLayout.XY;
+      return 'XY';
     };
 
     if (geom instanceof SimpleGeometry) {
@@ -564,7 +598,7 @@ class WkbWriter {
 
     if (geom instanceof GeometryCollection) {
       const geoms = geom.getGeometriesArray();
-      for (let i = 0; i < geoms.length && layout !== GeometryLayout.XY; i++) {
+      for (let i = 0; i < geoms.length && layout !== 'XY'; i++) {
         layout = this.findMinimumLayout(geoms[i], layout);
       }
     }
@@ -652,7 +686,7 @@ class WkbWriter {
  * @property {boolean} [hex=true] Returns hex string instead of ArrayBuffer for output. This also is used as a hint internally whether it should load contents as text or ArrayBuffer on reading.
  * @property {boolean} [littleEndian=true] Use littleEndian for output.
  * @property {boolean} [ewkb=true] Use EWKB format for output.
- * @property {import("../geom/GeometryLayout").default} [geometryLayout=null] Use specific coordinate layout for output features (null: auto detect)
+ * @property {import("../geom/Geometry.js").GeometryLayout} [geometryLayout=null] Use specific coordinate layout for output features (null: auto detect)
  * @property {number} [nodataZ=0] If the `geometryLayout` doesn't match with geometry to be output, this value is used to fill missing coordinate value of Z.
  * @property {number} [nodataM=0] If the `geometryLayout` doesn't match with geometry to be output, this value is used to fill missing coordinate value of M.
  * @property {number|boolean} [srid=true] SRID for output. Specify integer value to enforce the value as a SRID. Specify `true` to extract from `dataProjection`. `false` to suppress the output. This option only takes effect when `ewkb` is `true`.

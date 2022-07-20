@@ -14,12 +14,8 @@ import {getCenter} from '../extent.js';
 import {toSize} from '../size.js';
 
 /**
- * @enum {string}
+ * @typedef {'default' | 'truncated'} TierSizeCalculation
  */
-const TierSizeCalculation = {
-  DEFAULT: 'default',
-  TRUNCATED: 'truncated',
-};
 
 export class CustomTile extends ImageTile {
   /**
@@ -105,7 +101,7 @@ export class CustomTile extends ImageTile {
  * `http://my.zoomify.info?FIF=IMAGE.TIF&JTL={z},{tileIndex}`.
  * A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`, may be
  * used instead of defining each one separately in the `urls` option.
- * @property {string} [tierSizeCalculation] Tier size calculation method: `default` or `truncated`.
+ * @property {TierSizeCalculation} [tierSizeCalculation] Tier size calculation method: `default` or `truncated`.
  * @property {import("../size.js").Size} size Size.
  * @property {import("../extent.js").Extent} [extent] Extent for the TileGrid that is created.
  * Default sets the TileGrid in the
@@ -143,7 +139,7 @@ class Zoomify extends TileImage {
     const tierSizeCalculation =
       options.tierSizeCalculation !== undefined
         ? options.tierSizeCalculation
-        : TierSizeCalculation.DEFAULT;
+        : 'default';
 
     const tilePixelRatio = options.tilePixelRatio || 1;
     const imageWidth = size[0];
@@ -153,7 +149,7 @@ class Zoomify extends TileImage {
     let tileSizeForTierSizeCalculation = tileSize * tilePixelRatio;
 
     switch (tierSizeCalculation) {
-      case TierSizeCalculation.DEFAULT:
+      case 'default':
         while (
           imageWidth > tileSizeForTierSizeCalculation ||
           imageHeight > tileSizeForTierSizeCalculation
@@ -165,7 +161,7 @@ class Zoomify extends TileImage {
           tileSizeForTierSizeCalculation += tileSizeForTierSizeCalculation;
         }
         break;
-      case TierSizeCalculation.TRUNCATED:
+      case 'truncated':
         let width = imageWidth;
         let height = imageHeight;
         while (

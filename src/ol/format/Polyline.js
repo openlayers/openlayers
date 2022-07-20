@@ -2,7 +2,6 @@
  * @module ol/format/Polyline
  */
 import Feature from '../Feature.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import TextFeature from './TextFeature.js';
 import {assert} from '../asserts.js';
@@ -15,7 +14,7 @@ import {transformGeometryWithOptions} from './Feature.js';
 /**
  * @typedef {Object} Options
  * @property {number} [factor=1e5] The factor by which the coordinates values will be scaled.
- * @property {GeometryLayout} [geometryLayout='XY'] Layout of the
+ * @property {import("../geom/Geometry.js").GeometryLayout} [geometryLayout='XY'] Layout of the
  * feature geometries created by the format reader.
  */
 
@@ -55,11 +54,11 @@ class Polyline extends TextFeature {
 
     /**
      * @private
-     * @type {import("../geom/GeometryLayout").default}
+     * @type {import("../geom/Geometry.js").GeometryLayout}
      */
     this.geometryLayout_ = options.geometryLayout
       ? options.geometryLayout
-      : GeometryLayout.XY;
+      : 'XY';
   }
 
   /**

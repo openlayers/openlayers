@@ -2,7 +2,6 @@
  * @module ol/format/EsriJSON
  */
 import Feature from '../Feature.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
 import JSONFeature from './JSONFeature.js';
 import LineString from '../geom/LineString.js';
 import LinearRing from '../geom/LinearRing.js';
@@ -295,7 +294,7 @@ function readGeometry(object, opt_options) {
  * array. It is used for checking for holes.
  * Logic inspired by: https://github.com/Esri/terraformer-arcgis-parser
  * @param {Array<!Array<!Array<number>>>} rings Rings.
- * @param {import("../geom/GeometryLayout.js").default} layout Geometry layout.
+ * @param {import("../geom/Geometry.js").GeometryLayout} layout Geometry layout.
  * @return {Array<!Array<!Array<!Array<number>>>>} Transformed rings.
  */
 function convertRings(rings, layout) {
@@ -352,14 +351,11 @@ function convertRings(rings, layout) {
 function readPointGeometry(object) {
   let point;
   if (object.m !== undefined && object.z !== undefined) {
-    point = new Point(
-      [object.x, object.y, object.z, object.m],
-      GeometryLayout.XYZM
-    );
+    point = new Point([object.x, object.y, object.z, object.m], 'XYZM');
   } else if (object.z !== undefined) {
-    point = new Point([object.x, object.y, object.z], GeometryLayout.XYZ);
+    point = new Point([object.x, object.y, object.z], 'XYZ');
   } else if (object.m !== undefined) {
-    point = new Point([object.x, object.y, object.m], GeometryLayout.XYM);
+    point = new Point([object.x, object.y, object.m], 'XYM');
   } else {
     point = new Point([object.x, object.y]);
   }
@@ -386,16 +382,17 @@ function readMultiLineStringGeometry(object) {
 
 /**
  * @param {EsriJSONHasZM} object Object.
- * @return {import("../geom/GeometryLayout.js").default} The geometry layout to use.
+ * @return {import("../geom/Geometry.js").GeometryLayout} The geometry layout to use.
  */
 function getGeometryLayout(object) {
-  let layout = GeometryLayout.XY;
+  /** @type {import("../geom/Geometry.js").GeometryLayout} */
+  let layout = 'XY';
   if (object.hasZ === true && object.hasM === true) {
-    layout = GeometryLayout.XYZM;
+    layout = 'XYZM';
   } else if (object.hasZ === true) {
-    layout = GeometryLayout.XYZ;
+    layout = 'XYZ';
   } else if (object.hasM === true) {
-    layout = GeometryLayout.XYM;
+    layout = 'XYM';
   }
   return layout;
 }
@@ -437,26 +434,26 @@ function writePointGeometry(geometry, opt_options) {
   /** @type {EsriJSONPoint} */
   let esriJSON;
   const layout = geometry.getLayout();
-  if (layout === GeometryLayout.XYZ) {
+  if (layout === 'XYZ') {
     esriJSON = {
       x: coordinates[0],
       y: coordinates[1],
       z: coordinates[2],
     };
-  } else if (layout === GeometryLayout.XYM) {
+  } else if (layout === 'XYM') {
     esriJSON = {
       x: coordinates[0],
       y: coordinates[1],
       m: coordinates[2],
     };
-  } else if (layout === GeometryLayout.XYZM) {
+  } else if (layout === 'XYZM') {
     esriJSON = {
       x: coordinates[0],
       y: coordinates[1],
       z: coordinates[2],
       m: coordinates[3],
     };
-  } else if (layout === GeometryLayout.XY) {
+  } else if (layout === 'XY') {
     esriJSON = {
       x: coordinates[0],
       y: coordinates[1],
@@ -474,8 +471,8 @@ function writePointGeometry(geometry, opt_options) {
 function getHasZM(geometry) {
   const layout = geometry.getLayout();
   return {
-    hasZ: layout === GeometryLayout.XYZ || layout === GeometryLayout.XYZM,
-    hasM: layout === GeometryLayout.XYM || layout === GeometryLayout.XYZM,
+    hasZ: layout === 'XYZ' || layout === 'XYZM',
+    hasM: layout === 'XYM' || layout === 'XYZM',
   };
 }
 

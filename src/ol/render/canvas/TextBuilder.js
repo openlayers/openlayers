@@ -3,7 +3,6 @@
  */
 import CanvasBuilder from './Builder.js';
 import CanvasInstruction from './Instruction.js';
-import TextPlacement from '../../style/TextPlacement.js';
 import {asColorLike} from '../../colorlike.js';
 import {
   defaultFillStyle,
@@ -177,7 +176,7 @@ class CanvasTextBuilder extends CanvasBuilder {
     let stride = geometry.getStride();
 
     if (
-      textState.placement === TextPlacement.LINE &&
+      textState.placement === 'line' &&
       (geometryType == 'LineString' ||
         geometryType == 'MultiLineString' ||
         geometryType == 'Polygon' ||

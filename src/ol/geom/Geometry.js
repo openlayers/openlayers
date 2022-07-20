@@ -19,6 +19,12 @@ import {memoizeOne} from '../functions.js';
 import {transform2D} from './flat/transform.js';
 
 /**
+ * @typedef {'XY' | 'XYZ' | 'XYM' | 'XYZM'} GeometryLayout
+ * The coordinate layout for geometries, indicating whether a 3rd or 4th z ('Z')
+ * or measure ('M') coordinate is available.
+ */
+
+/**
  * @typedef {'Point' | 'LineString' | 'LinearRing' | 'Polygon' | 'MultiPoint' | 'MultiLineString' | 'MultiPolygon' | 'GeometryCollection' | 'Circle'} Type
  * The geometry type.  One of `'Point'`, `'LineString'`, `'LinearRing'`,
  * `'Polygon'`, `'MultiPoint'`, `'MultiLineString'`, `'MultiPolygon'`,

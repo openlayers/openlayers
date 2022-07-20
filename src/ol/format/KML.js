@@ -4,10 +4,7 @@
 import Feature from '../Feature.js';
 import Fill from '../style/Fill.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
 import Icon from '../style/Icon.js';
-import IconAnchorUnits from '../style/IconAnchorUnits.js';
-import IconOrigin from '../style/IconOrigin.js';
 import ImageState from '../ImageState.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
@@ -57,10 +54,10 @@ import {transformGeometryWithOptions} from './Feature.js';
 /**
  * @typedef {Object} Vec2
  * @property {number} x X coordinate.
- * @property {import("../style/IconAnchorUnits").default} xunits Units of x.
+ * @property {import("../style/Icon.js").IconAnchorUnits} xunits Units of x.
  * @property {number} y Y coordinate.
- * @property {import("../style/IconAnchorUnits").default} yunits Units of Y.
- * @property {import("../style/IconOrigin.js").default} [origin] Origin.
+ * @property {import("../style/Icon.js").IconAnchorUnits} yunits Units of Y.
+ * @property {import("../style/Icon.js").IconOrigin} [origin] Origin.
  */
 
 /**
@@ -96,12 +93,12 @@ const SCHEMA_LOCATION =
   'https://developers.google.com/kml/schema/kml22gx.xsd';
 
 /**
- * @type {Object<string, import("../style/IconAnchorUnits").default>}
+ * @type {Object<string, import("../style/Icon.js").IconAnchorUnits>}
  */
 const ICON_ANCHOR_UNITS_MAP = {
-  'fraction': IconAnchorUnits.FRACTION,
-  'pixels': IconAnchorUnits.PIXELS,
-  'insetPixels': IconAnchorUnits.PIXELS,
+  'fraction': 'fraction',
+  'pixels': 'pixels',
+  'insetPixels': 'pixels',
 };
 
 /**
@@ -212,12 +209,12 @@ export function getDefaultFillStyle() {
 let DEFAULT_IMAGE_STYLE_ANCHOR;
 
 /**
- * @type {import("../style/IconAnchorUnits").default}
+ * @type {import("../style/Icon.js").IconAnchorUnits}
  */
 let DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS;
 
 /**
- * @type {import("../style/IconAnchorUnits").default}
+ * @type {import("../style/Icon.js").IconAnchorUnits}
  */
 let DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS;
 
@@ -324,9 +321,9 @@ function createStyleDefaults() {
 
   DEFAULT_IMAGE_STYLE_ANCHOR = [20, 2];
 
-  DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS = IconAnchorUnits.PIXELS;
+  DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS = 'pixels';
 
-  DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS = IconAnchorUnits.PIXELS;
+  DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS = 'pixels';
 
   DEFAULT_IMAGE_STYLE_SIZE = [64, 64];
 
@@ -335,7 +332,7 @@ function createStyleDefaults() {
 
   DEFAULT_IMAGE_STYLE = new Icon({
     anchor: DEFAULT_IMAGE_STYLE_ANCHOR,
-    anchorOrigin: IconOrigin.BOTTOM_LEFT,
+    anchorOrigin: 'bottom-left',
     anchorXUnits: DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS,
     anchorYUnits: DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS,
     crossOrigin: 'anonymous',
@@ -1175,18 +1172,19 @@ function readStyleURL(node) {
 function readVec2(node) {
   const xunits = node.getAttribute('xunits');
   const yunits = node.getAttribute('yunits');
+  /** @type {import('../style/Icon.js').IconOrigin} */
   let origin;
   if (xunits !== 'insetPixels') {
     if (yunits !== 'insetPixels') {
-      origin = IconOrigin.BOTTOM_LEFT;
+      origin = 'bottom-left';
     } else {
-      origin = IconOrigin.TOP_LEFT;
+      origin = 'top-left';
     }
   } else {
     if (yunits !== 'insetPixels') {
-      origin = IconOrigin.BOTTOM_RIGHT;
+      origin = 'bottom-right';
     } else {
-      origin = IconOrigin.TOP_RIGHT;
+      origin = 'top-right';
     }
   }
   return {
@@ -1267,7 +1265,8 @@ function iconStyleParser(node, objectStack) {
     src = DEFAULT_IMAGE_STYLE_SRC;
   }
   let anchor, anchorXUnits, anchorYUnits;
-  let anchorOrigin = IconOrigin.BOTTOM_LEFT;
+  /** @type {import('../style/Icon.js').IconOrigin|undefined} */
+  let anchorOrigin = 'bottom-left';
   const hotSpot = /** @type {Vec2|undefined} */ (object['hotSpot']);
   if (hotSpot) {
     anchor = [hotSpot.x, hotSpot.y];
@@ -1327,7 +1326,7 @@ function iconStyleParser(node, objectStack) {
       anchorYUnits: anchorYUnits,
       crossOrigin: this.crossOrigin_,
       offset: offset,
-      offsetOrigin: IconOrigin.BOTTOM_LEFT,
+      offsetOrigin: 'bottom-left',
       rotation: rotation,
       scale: scale,
       size: size,
@@ -1594,7 +1593,7 @@ function readGxTrack(node, objectStack) {
       );
     }
   }
-  return new LineString(flatCoordinates, GeometryLayout.XYZM);
+  return new LineString(flatCoordinates, 'XYZM');
 }
 
 /**
@@ -1677,7 +1676,7 @@ function readLineString(node, objectStack) {
   );
   const flatCoordinates = readFlatCoordinatesFromNode(node, objectStack);
   if (flatCoordinates) {
-    const lineString = new LineString(flatCoordinates, GeometryLayout.XYZ);
+    const lineString = new LineString(flatCoordinates, 'XYZ');
     lineString.setProperties(properties, true);
     return lineString;
   } else {
@@ -1699,7 +1698,7 @@ function readLinearRing(node, objectStack) {
   );
   const flatCoordinates = readFlatCoordinatesFromNode(node, objectStack);
   if (flatCoordinates) {
-    const polygon = new Polygon(flatCoordinates, GeometryLayout.XYZ, [
+    const polygon = new Polygon(flatCoordinates, 'XYZ', [
       flatCoordinates.length,
     ]);
     polygon.setProperties(properties, true);
@@ -1795,7 +1794,7 @@ function readPoint(node, objectStack) {
   );
   const flatCoordinates = readFlatCoordinatesFromNode(node, objectStack);
   if (flatCoordinates) {
-    const point = new Point(flatCoordinates, GeometryLayout.XYZ);
+    const point = new Point(flatCoordinates, 'XYZ');
     point.setProperties(properties, true);
     return point;
   } else {
@@ -1838,7 +1837,7 @@ function readPolygon(node, objectStack) {
       extend(flatCoordinates, flatLinearRings[i]);
       ends.push(flatCoordinates.length);
     }
-    const polygon = new Polygon(flatCoordinates, GeometryLayout.XYZ, ends);
+    const polygon = new Polygon(flatCoordinates, 'XYZ', ends);
     polygon.setProperties(properties, true);
     return polygon;
   } else {
@@ -2338,9 +2337,9 @@ function writeCoordinatesTextNode(node, coordinates, objectStack) {
   const stride = context['stride'];
 
   let dimension;
-  if (layout == GeometryLayout.XY || layout == GeometryLayout.XYM) {
+  if (layout == 'XY' || layout == 'XYM') {
     dimension = 2;
-  } else if (layout == GeometryLayout.XYZ || layout == GeometryLayout.XYZM) {
+  } else if (layout == 'XYZ' || layout == 'XYZM') {
     dimension = 3;
   } else {
     assert(false, 34); // Invalid geometry layout
@@ -2628,9 +2627,9 @@ function writeIconStyle(node, style, objectStack) {
     if (anchor && (anchor[0] !== size[0] / 2 || anchor[1] !== size[1] / 2)) {
       const /** @type {Vec2} */ hotSpot = {
           x: anchor[0],
-          xunits: IconAnchorUnits.PIXELS,
+          xunits: 'pixels',
           y: size[1] - anchor[1],
-          yunits: IconAnchorUnits.PIXELS,
+          yunits: 'pixels',
         };
       properties['hotSpot'] = hotSpot;
     }

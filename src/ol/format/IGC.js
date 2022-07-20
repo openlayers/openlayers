@@ -2,21 +2,15 @@
  * @module ol/format/IGC
  */
 import Feature from '../Feature.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import TextFeature from './TextFeature.js';
 import {get as getProjection} from '../proj.js';
 import {transformGeometryWithOptions} from './Feature.js';
 
 /**
+ * @typedef {'barometric' | 'gps' | 'none'} IGCZ
  * IGC altitude/z. One of 'barometric', 'gps', 'none'.
- * @enum {string}
  */
-const IGCZ = {
-  BAROMETRIC: 'barometric',
-  GPS: 'gps',
-  NONE: 'none',
-};
 
 /**
  * @const
@@ -47,7 +41,7 @@ const NEWLINE_RE = /\r\n|\r|\n/;
 
 /**
  * @typedef {Object} Options
- * @property {IGCZ|string} [altitudeMode='none'] Altitude mode. Possible
+ * @property {IGCZ} [altitudeMode='none'] Altitude mode. Possible
  * values are `'barometric'`, `'gps'`, and `'none'`.
  */
 
@@ -79,9 +73,7 @@ class IGC extends TextFeature {
      * @private
      * @type {IGCZ}
      */
-    this.altitudeMode_ = options.altitudeMode
-      ? options.altitudeMode
-      : IGCZ.NONE;
+    this.altitudeMode_ = options.altitudeMode ? options.altitudeMode : 'none';
   }
 
   /**
@@ -119,11 +111,11 @@ class IGC extends TextFeature {
             x = -x;
           }
           flatCoordinates.push(x, y);
-          if (altitudeMode != IGCZ.NONE) {
+          if (altitudeMode != 'none') {
             let z;
-            if (altitudeMode == IGCZ.GPS) {
+            if (altitudeMode == 'gps') {
               z = parseInt(m[11], 10);
-            } else if (altitudeMode == IGCZ.BAROMETRIC) {
+            } else if (altitudeMode == 'barometric') {
               z = parseInt(m[12], 10);
             } else {
               z = 0;
@@ -155,8 +147,7 @@ class IGC extends TextFeature {
     if (flatCoordinates.length === 0) {
       return null;
     }
-    const layout =
-      altitudeMode == IGCZ.NONE ? GeometryLayout.XYM : GeometryLayout.XYZM;
+    const layout = altitudeMode == 'none' ? 'XYM' : 'XYZM';
     const lineString = new LineString(flatCoordinates, layout);
     const feature = new Feature(
       transformGeometryWithOptions(lineString, false, opt_options)

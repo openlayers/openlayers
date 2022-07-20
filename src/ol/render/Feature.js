@@ -2,7 +2,6 @@
  * @module ol/render/Feature
  */
 import Feature from '../Feature.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
 import {
   LineString,
   MultiLineString,
@@ -350,19 +349,13 @@ export function toGeometry(renderFeature) {
     case 'Point':
       return new Point(renderFeature.getFlatCoordinates());
     case 'MultiPoint':
-      return new MultiPoint(
-        renderFeature.getFlatCoordinates(),
-        GeometryLayout.XY
-      );
+      return new MultiPoint(renderFeature.getFlatCoordinates(), 'XY');
     case 'LineString':
-      return new LineString(
-        renderFeature.getFlatCoordinates(),
-        GeometryLayout.XY
-      );
+      return new LineString(renderFeature.getFlatCoordinates(), 'XY');
     case 'MultiLineString':
       return new MultiLineString(
         renderFeature.getFlatCoordinates(),
-        GeometryLayout.XY,
+        'XY',
         /** @type {Array<number>} */ (renderFeature.getEnds())
       );
     case 'Polygon':
@@ -370,8 +363,8 @@ export function toGeometry(renderFeature) {
       const ends = /** @type {Array<number>} */ (renderFeature.getEnds());
       const endss = inflateEnds(flatCoordinates, ends);
       return endss.length > 1
-        ? new MultiPolygon(flatCoordinates, GeometryLayout.XY, endss)
-        : new Polygon(flatCoordinates, GeometryLayout.XY, ends);
+        ? new MultiPolygon(flatCoordinates, 'XY', endss)
+        : new Polygon(flatCoordinates, 'XY', ends);
     default:
       throw new Error('Invalid geometry type:' + geometryType);
   }
