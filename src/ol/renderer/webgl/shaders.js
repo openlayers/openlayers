@@ -38,7 +38,7 @@ const DECODE_COLOR_EXPRESSION = `vec3(
  * Relies on DefaultAttributes.COLOR and DefaultAttributes.OPACITY.
  * @type {string}
  */
-export const DEFAULT_POLYGON_VERTEX = `
+export const FILL_VERTEX_SHADER = `
   precision mediump float;
   uniform mat4 u_projectionMatrix;
   attribute vec2 a_position;
@@ -57,7 +57,7 @@ export const DEFAULT_POLYGON_VERTEX = `
  * Default polygon fragment shader.
  * @type {string}
  */
-export const DEFAULT_POLYGON_FRAGMENT = `
+export const FILL_FRAGMENT_SHADER = `
   precision mediump float;
   varying vec3 v_color;
   varying float v_opacity;
@@ -71,7 +71,7 @@ export const DEFAULT_POLYGON_FRAGMENT = `
  * Relies on DefaultAttributes.COLOR, DefaultAttributes.OPACITY and DefaultAttributes.WIDTH.
  * @type {string}
  */
-export const DEFAULT_LINESTRING_VERTEX = `
+export const STROKE_VERTEX_SHADER = `
   precision mediump float;
   uniform mat4 u_projectionMatrix;
   uniform vec2 u_sizePx;
@@ -136,7 +136,7 @@ export const DEFAULT_LINESTRING_VERTEX = `
  * Default linestring fragment shader.
  * @type {string}
  */
-export const DEFAULT_LINESTRING_FRAGMENT = `
+export const STROKE_FRAGMENT_SHADER = `
   precision mediump float;
   uniform float u_pixelRatio;
   varying vec2 v_segmentStart;
@@ -166,7 +166,7 @@ export const DEFAULT_LINESTRING_FRAGMENT = `
  * Relies on DefaultAttributes.COLOR and DefaultAttributes.OPACITY.
  * @type {string}
  */
-export const DEFAULT_POINT_VERTEX = `
+export const POINT_VERTEX_SHADER = `
   precision mediump float;
   uniform mat4 u_projectionMatrix;
   uniform mat4 u_offsetScaleMatrix;
@@ -196,7 +196,7 @@ export const DEFAULT_POINT_VERTEX = `
  * Default point fragment shader.
  * @type {string}
  */
-export const DEFAULT_POINT_FRAGMENT = `
+export const POINT_FRAGMENT_SHADER = `
   precision mediump float;
   varying vec3 v_color;
   varying float v_opacity;

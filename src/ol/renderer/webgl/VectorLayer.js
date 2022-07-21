@@ -10,13 +10,13 @@ import VectorEventType from '../../source/VectorEventType.js';
 import ViewHint from '../../ViewHint.js';
 import WebGLLayerRenderer from './Layer.js';
 import {
-  DEFAULT_LINESTRING_FRAGMENT,
-  DEFAULT_LINESTRING_VERTEX,
-  DEFAULT_POINT_FRAGMENT,
-  DEFAULT_POINT_VERTEX,
-  DEFAULT_POLYGON_FRAGMENT,
-  DEFAULT_POLYGON_VERTEX,
   DefaultAttributes,
+  FILL_FRAGMENT_SHADER,
+  FILL_VERTEX_SHADER,
+  POINT_FRAGMENT_SHADER,
+  POINT_VERTEX_SHADER,
+  STROKE_FRAGMENT_SHADER,
+  STROKE_VERTEX_SHADER,
   packColor,
 } from './shaders.js';
 import {DefaultUniform} from '../../webgl/Helper.js';
@@ -43,9 +43,9 @@ import {listen, unlistenByKey} from '../../events.js';
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the canvas element.
- * @property {ShaderProgram} [polygonShader] Vertex shaders for polygons; using default shader if unspecified
- * @property {ShaderProgram} [lineStringShader] Vertex shaders for line strings; using default shader if unspecified
- * @property {ShaderProgram} [pointShader] Vertex shaders for points; using default shader if unspecified
+ * @property {ShaderProgram} [fill] Attributes and shaders for filling polygons.
+ * @property {ShaderProgram} [stroke] Attributes and shaders for line strings and polygon strokes.
+ * @property {ShaderProgram} [point] Attributes and shaders for points.
  * @property {Object<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions.
  * @property {Array<import("./Layer").PostProcessesOptions>} [postProcesses] Post-processes definitions
  */
@@ -96,16 +96,17 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
      */
     this.currentTransform_ = projectionMatrixTransform;
 
-    const polygonAttributesWithDefault = {
+    const fillAttributes = {
       [DefaultAttributes.COLOR]: function () {
         return packColor('#ddd');
       },
       [DefaultAttributes.OPACITY]: function () {
         return 1;
       },
-      ...(options.polygonShader && options.polygonShader.attributes),
+      ...(options.fill && options.fill.attributes),
     };
-    const lineAttributesWithDefault = {
+
+    const strokeAttributes = {
       [DefaultAttributes.COLOR]: function () {
         return packColor('#eee');
       },
@@ -115,44 +116,41 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       [DefaultAttributes.WIDTH]: function () {
         return 1.5;
       },
-      ...(options.lineStringShader && options.lineStringShader.attributes),
+      ...(options.stroke && options.stroke.attributes),
     };
-    const pointAttributesWithDefault = {
+
+    const pointAttributes = {
       [DefaultAttributes.COLOR]: function () {
         return packColor('#eee');
       },
       [DefaultAttributes.OPACITY]: function () {
         return 1;
       },
-      ...(options.pointShader && options.pointShader.attributes),
+      ...(options.point && options.point.attributes),
     };
+
     function toAttributesArray(obj) {
       return Object.keys(obj).map((key) => ({name: key, callback: obj[key]}));
     }
 
-    this.polygonVertexShader_ =
-      (options.polygonShader && options.polygonShader.vertexShader) ||
-      DEFAULT_POLYGON_VERTEX;
-    this.polygonFragmentShader_ =
-      (options.polygonShader && options.polygonShader.fragmentShader) ||
-      DEFAULT_POLYGON_FRAGMENT;
-    this.polygonAttributes_ = toAttributesArray(polygonAttributesWithDefault);
+    this.fillVertexShader_ =
+      (options.fill && options.fill.vertexShader) || FILL_VERTEX_SHADER;
+    this.fillFragmentShader_ =
+      (options.fill && options.fill.fragmentShader) || FILL_FRAGMENT_SHADER;
+    this.fillAttributes_ = toAttributesArray(fillAttributes);
 
-    this.lineStringVertexShader_ =
-      (options.lineStringShader && options.lineStringShader.vertexShader) ||
-      DEFAULT_LINESTRING_VERTEX;
-    this.lineStringFragmentShader_ =
-      (options.lineStringShader && options.lineStringShader.fragmentShader) ||
-      DEFAULT_LINESTRING_FRAGMENT;
-    this.lineStringAttributes_ = toAttributesArray(lineAttributesWithDefault);
+    this.strokeVertexShader_ =
+      (options.stroke && options.stroke.vertexShader) || STROKE_VERTEX_SHADER;
+    this.strokeFragmentShader_ =
+      (options.stroke && options.stroke.fragmentShader) ||
+      STROKE_FRAGMENT_SHADER;
+    this.strokeAttributes_ = toAttributesArray(strokeAttributes);
 
     this.pointVertexShader_ =
-      (options.pointShader && options.pointShader.vertexShader) ||
-      DEFAULT_POINT_VERTEX;
+      (options.point && options.point.vertexShader) || POINT_VERTEX_SHADER;
     this.pointFragmentShader_ =
-      (options.pointShader && options.pointShader.fragmentShader) ||
-      DEFAULT_POINT_FRAGMENT;
-    this.pointAttributes_ = toAttributesArray(pointAttributesWithDefault);
+      (options.point && options.point.fragmentShader) || POINT_FRAGMENT_SHADER;
+    this.pointAttributes_ = toAttributesArray(pointAttributes);
 
     /**
      * @private
@@ -198,9 +196,9 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     this.polygonRenderer_ = new PolygonBatchRenderer(
       this.helper,
       this.worker_,
-      this.polygonVertexShader_,
-      this.polygonFragmentShader_,
-      this.polygonAttributes_
+      this.fillVertexShader_,
+      this.fillFragmentShader_,
+      this.fillAttributes_
     );
     this.pointRenderer_ = new PointBatchRenderer(
       this.helper,
@@ -212,9 +210,9 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     this.lineStringRenderer_ = new LineStringBatchRenderer(
       this.helper,
       this.worker_,
-      this.lineStringVertexShader_,
-      this.lineStringFragmentShader_,
-      this.lineStringAttributes_
+      this.strokeVertexShader_,
+      this.strokeFragmentShader_,
+      this.strokeAttributes_
     );
   }
 

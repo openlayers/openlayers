@@ -16,7 +16,7 @@ class WebGLLayer extends Layer {
   createRenderer() {
     return new WebGLVectorLayerRenderer(this, {
       className: this.getClassName(),
-      polygonShader: {
+      fill: {
         attributes: {
           [DefaultAttributes.COLOR]: function (feature, properties) {
             const color = asArray(properties.COLOR || '#eee');
@@ -28,7 +28,7 @@ class WebGLLayer extends Layer {
           },
         },
       },
-      lineStringShader: {
+      stroke: {
         attributes: {
           [DefaultAttributes.COLOR]: function (feature, properties) {
             const color = [...asArray(properties.COLOR || '#eee')];
