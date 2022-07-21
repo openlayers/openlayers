@@ -96,10 +96,7 @@ class LineStringBatchRenderer extends AbstractBatchRenderer {
 
         // custom attributes
         for (let k = 0, kk = this.customAttributes.length; k < kk; k++) {
-          value = this.customAttributes[k].callback(
-            batchEntry.feature,
-            batchEntry.properties
-          );
+          value = this.customAttributes[k].callback(batchEntry.feature);
           batch.renderInstructions[renderIndex++] = value;
         }
 

@@ -62,12 +62,10 @@ describe('MixedGeometryBatch', function () {
         expect(keys).to.eql([uid1, uid2]);
         expect(mixedBatch.pointBatch.entries[uid1]).to.eql({
           feature: feature1,
-          properties: feature1.getProperties(),
           flatCoordss: [[0, 1]],
         });
         expect(mixedBatch.pointBatch.entries[uid2]).to.eql({
           feature: feature2,
-          properties: feature2.getProperties(),
           flatCoordss: [[2, 3]],
         });
       });
@@ -95,7 +93,7 @@ describe('MixedGeometryBatch', function () {
         });
         it('updates the modified properties and geometry in the point batch', () => {
           const entry = mixedBatch.pointBatch.entries[getUid(feature1)];
-          expect(entry.properties.prop1).to.eql('changed');
+          expect(entry.feature.get('prop1')).to.eql('changed');
         });
         it('keeps geometry count the same', () => {
           expect(mixedBatch.pointBatch.geometriesCount).to.be(2);
@@ -173,13 +171,11 @@ describe('MixedGeometryBatch', function () {
         expect(keys).to.eql([uid1, uid2]);
         expect(mixedBatch.lineStringBatch.entries[uid1]).to.eql({
           feature: feature1,
-          properties: feature1.getProperties(),
           flatCoordss: [[0, 1, 2, 3, 4, 5, 6, 7]],
           verticesCount: 4,
         });
         expect(mixedBatch.lineStringBatch.entries[uid2]).to.eql({
           feature: feature2,
-          properties: feature2.getProperties(),
           flatCoordss: [[8, 9, 10, 11, 12, 13]],
           verticesCount: 3,
         });
@@ -208,7 +204,7 @@ describe('MixedGeometryBatch', function () {
         });
         it('updates the modified properties and geometry in the linestring batch', () => {
           const entry = mixedBatch.lineStringBatch.entries[getUid(feature1)];
-          expect(entry.properties.prop1).to.eql('changed');
+          expect(entry.feature.get('prop1')).to.eql('changed');
           expect(entry.verticesCount).to.eql(6);
           expect(entry.flatCoordss).to.eql([
             [0, 1, 2, 3, 4, 5, 6, 7, 100, 101, 102, 103],
@@ -316,7 +312,6 @@ describe('MixedGeometryBatch', function () {
         expect(keys).to.eql([uid1, uid2]);
         expect(mixedBatch.polygonBatch.entries[uid1]).to.eql({
           feature: feature1,
-          properties: feature1.getProperties(),
           flatCoordss: [[0, 1, 2, 3, 4, 5, 6, 7, 20, 21, 22, 23, 24, 25]],
           verticesCount: 7,
           ringsCount: 2,
@@ -324,7 +319,6 @@ describe('MixedGeometryBatch', function () {
         });
         expect(mixedBatch.polygonBatch.entries[uid2]).to.eql({
           feature: feature2,
-          properties: feature2.getProperties(),
           flatCoordss: [
             [
               8, 9, 10, 11, 12, 13, 30, 31, 32, 33, 34, 35, 40, 41, 42, 43, 44,
@@ -346,7 +340,6 @@ describe('MixedGeometryBatch', function () {
         expect(keys).to.eql([getUid(feature1), getUid(feature2)]);
         expect(mixedBatch.lineStringBatch.entries[getUid(feature1)]).to.eql({
           feature: feature1,
-          properties: feature1.getProperties(),
           flatCoordss: [
             [0, 1, 2, 3, 4, 5, 6, 7],
             [20, 21, 22, 23, 24, 25],
@@ -355,7 +348,6 @@ describe('MixedGeometryBatch', function () {
         });
         expect(mixedBatch.lineStringBatch.entries[getUid(feature2)]).to.eql({
           feature: feature2,
-          properties: feature2.getProperties(),
           flatCoordss: [
             [8, 9, 10, 11, 12, 13],
             [30, 31, 32, 33, 34, 35],
@@ -393,7 +385,7 @@ describe('MixedGeometryBatch', function () {
         });
         it('updates the modified properties and geometry in the polygon batch', () => {
           const entry = mixedBatch.polygonBatch.entries[getUid(feature1)];
-          expect(entry.properties.prop1).to.eql('changed');
+          expect(entry.feature.get('prop1')).to.eql('changed');
           expect(entry.verticesCount).to.eql(11);
           expect(entry.ringsCount).to.eql(3);
           expect(entry.ringsVerticesCounts).to.eql([[4, 3, 4]]);
@@ -529,7 +521,6 @@ describe('MixedGeometryBatch', function () {
         const uid = getUid(feature);
         expect(mixedBatch.polygonBatch.entries[uid]).to.eql({
           feature: feature,
-          properties: feature.getProperties(),
           flatCoordss: [
             [0, 1, 2, 3, 4, 5, 6, 7, 20, 21, 22, 23, 24, 25],
             [
@@ -549,7 +540,6 @@ describe('MixedGeometryBatch', function () {
         const uid = getUid(feature);
         expect(mixedBatch.lineStringBatch.entries[uid]).to.eql({
           feature: feature,
-          properties: feature.getProperties(),
           flatCoordss: [
             [0, 1, 2, 3, 4, 5, 6, 7],
             [20, 21, 22, 23, 24, 25],
@@ -566,7 +556,6 @@ describe('MixedGeometryBatch', function () {
         const uid = getUid(feature);
         expect(mixedBatch.pointBatch.entries[uid]).to.eql({
           feature: feature,
-          properties: feature.getProperties(),
           flatCoordss: [
             [101, 102],
             [201, 202],
@@ -619,7 +608,6 @@ describe('MixedGeometryBatch', function () {
           const entry = mixedBatch.polygonBatch.entries[getUid(feature)];
           expect(entry).to.eql({
             feature: feature,
-            properties: feature.getProperties(),
             flatCoordss: [
               [0, 1, 2, 3, 4, 5, 6, 7, 20, 21, 22, 23, 24, 25],
               [
@@ -637,7 +625,6 @@ describe('MixedGeometryBatch', function () {
           const entry = mixedBatch.lineStringBatch.entries[getUid(feature)];
           expect(entry).to.eql({
             feature: feature,
-            properties: feature.getProperties(),
             flatCoordss: [
               [0, 1, 2, 3, 4, 5, 6, 7],
               [20, 21, 22, 23, 24, 25],
@@ -680,7 +667,6 @@ describe('MixedGeometryBatch', function () {
           const entry = mixedBatch.polygonBatch.entries[getUid(feature)];
           expect(entry).to.eql({
             feature: feature,
-            properties: feature.getProperties(),
             flatCoordss: [[201, 202, 203, 204, 205, 206, 207, 208]],
             verticesCount: 4,
             ringsCount: 1,
@@ -691,7 +677,6 @@ describe('MixedGeometryBatch', function () {
           const entry = mixedBatch.lineStringBatch.entries[getUid(feature)];
           expect(entry).to.eql({
             feature: feature,
-            properties: feature.getProperties(),
             flatCoordss: [[201, 202, 203, 204, 205, 206, 207, 208]],
             verticesCount: 4,
           });

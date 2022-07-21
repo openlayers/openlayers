@@ -14,8 +14,8 @@ import {
  * @typedef {Object} CustomAttribute A description of a custom attribute to be passed on to the GPU, with a value different
  * for each feature.
  * @property {string} name Attribute name.
- * @property {function(import("../../Feature").default, Object<string, *>):number} callback This callback computes the numerical value of the
- * attribute for a given feature (properties are available as 2nd arg for quicker access).
+ * @property {function(import("../../Feature").default):number} callback This callback computes the numerical value of the
+ * attribute for a given feature.
  */
 
 let workerMessageCounter = 0;

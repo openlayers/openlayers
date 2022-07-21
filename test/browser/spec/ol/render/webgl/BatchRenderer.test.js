@@ -39,7 +39,7 @@ describe('Batch renderers', function () {
       {
         name: 'test',
         callback: function (feature, properties) {
-          return properties.test;
+          return feature.get('test');
         },
       },
     ];

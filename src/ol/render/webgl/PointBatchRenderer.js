@@ -86,10 +86,7 @@ class PointBatchRenderer extends AbstractBatchRenderer {
 
         // pushing custom attributes
         for (let j = 0, jj = this.customAttributes.length; j < jj; j++) {
-          value = this.customAttributes[j].callback(
-            batchEntry.feature,
-            batchEntry.properties
-          );
+          value = this.customAttributes[j].callback(batchEntry.feature);
           batch.renderInstructions[renderIndex++] = value;
         }
       }

@@ -9,7 +9,6 @@ import {getUid} from '../../util.js';
 /**
  * @typedef {Object} GeometryBatchItem Object that holds a reference to a feature as well as the raw coordinates of its various geometries
  * @property {import("../../Feature").default} feature Feature
- * @property {Object<string, *>} properties Feature properties
  * @property {Array<Array<number>>} flatCoordss Array of flat coordinates arrays, one for each geometry related to the feature
  * @property {number} [verticesCount] Only defined for linestring and polygon batches
  * @property {number} [ringsCount] Only defined for polygon batches
@@ -162,7 +161,6 @@ class MixedGeometryBatch {
     if (!(uid in this.pointBatch.entries)) {
       this.pointBatch.entries[uid] = {
         feature: feature,
-        properties: feature.getProperties(),
         flatCoordss: [],
       };
     }
@@ -179,7 +177,6 @@ class MixedGeometryBatch {
     if (!(uid in this.lineStringBatch.entries)) {
       this.lineStringBatch.entries[uid] = {
         feature: feature,
-        properties: feature.getProperties(),
         flatCoordss: [],
         verticesCount: 0,
       };
@@ -197,7 +194,6 @@ class MixedGeometryBatch {
     if (!(uid in this.polygonBatch.entries)) {
       this.polygonBatch.entries[uid] = {
         feature: feature,
-        properties: feature.getProperties(),
         flatCoordss: [],
         verticesCount: 0,
         ringsCount: 0,

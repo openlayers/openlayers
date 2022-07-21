@@ -18,8 +18,8 @@ class WebGLLayer extends Layer {
       className: this.getClassName(),
       fill: {
         attributes: {
-          [DefaultAttributes.COLOR]: function (feature, properties) {
-            const color = asArray(properties.COLOR || '#eee');
+          [DefaultAttributes.COLOR]: function (feature) {
+            const color = asArray(feature.get('COLOR') || '#eee');
             color[3] = 0.85;
             return packColor(color);
           },
@@ -30,8 +30,8 @@ class WebGLLayer extends Layer {
       },
       stroke: {
         attributes: {
-          [DefaultAttributes.COLOR]: function (feature, properties) {
-            const color = [...asArray(properties.COLOR || '#eee')];
+          [DefaultAttributes.COLOR]: function (feature) {
+            const color = [...asArray(feature.get('COLOR') || '#eee')];
             color.forEach((_, i) => (color[i] = Math.round(color[i] * 0.75))); // darken slightly
             return packColor(color);
           },
