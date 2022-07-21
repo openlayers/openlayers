@@ -28,7 +28,7 @@ class PointBatchRenderer extends AbstractBatchRenderer {
     super(helper, worker, vertexShader, fragmentShader, customAttributes);
 
     // vertices for point must hold both a position (x,y) and an index (their position in the quad)
-    this.attributes_ = [
+    this.attributes = [
       {
         name: Attributes.POSITION,
         size: 2,
@@ -61,7 +61,7 @@ class PointBatchRenderer extends AbstractBatchRenderer {
     // 2 instructions per vertex for position (x and y)
     // + 1 instruction per vertex per custom attributes
     const totalInstructionsCount =
-      (2 + this.customAttributes_.length) * batch.geometriesCount;
+      (2 + this.customAttributes.length) * batch.geometriesCount;
     if (
       !batch.renderInstructions ||
       batch.renderInstructions.length !== totalInstructionsCount
@@ -85,8 +85,8 @@ class PointBatchRenderer extends AbstractBatchRenderer {
         batch.renderInstructions[renderIndex++] = tmpCoords[1];
 
         // pushing custom attributes
-        for (let j = 0, jj = this.customAttributes_.length; j < jj; j++) {
-          value = this.customAttributes_[j].callback(
+        for (let j = 0, jj = this.customAttributes.length; j < jj; j++) {
+          value = this.customAttributes[j].callback(
             batchEntry.feature,
             batchEntry.properties
           );

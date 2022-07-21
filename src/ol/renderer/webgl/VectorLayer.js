@@ -156,8 +156,14 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       DEFAULT_POINT_FRAGMENT;
     this.pointAttributes_ = toAttributesArray(pointAttributesWithDefault);
 
+    /**
+     * @private
+     */
     this.worker_ = createWebGLWorker();
 
+    /**
+     * @private
+     */
     this.batch_ = new MixedGeometryBatch();
 
     const source = this.getLayer().getSource();

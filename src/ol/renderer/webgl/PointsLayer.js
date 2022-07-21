@@ -292,7 +292,11 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
      */
     this.generateBuffersRun_ = 0;
 
+    /**
+     * @private
+     */
     this.worker_ = createWebGLWorker();
+
     this.worker_.addEventListener(
       'message',
       /**

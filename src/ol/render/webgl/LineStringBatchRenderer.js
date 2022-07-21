@@ -28,7 +28,7 @@ class LineStringBatchRenderer extends AbstractBatchRenderer {
     super(helper, worker, vertexShader, fragmentShader, customAttributes);
 
     // vertices for lines must hold both a position (x,y) and an offset (dx,dy)
-    this.attributes_ = [
+    this.attributes = [
       {
         name: Attributes.SEGMENT_START,
         size: 2,
@@ -68,7 +68,7 @@ class LineStringBatchRenderer extends AbstractBatchRenderer {
     // + 1 instruction per line (for vertices count)
     const totalInstructionsCount =
       2 * batch.verticesCount +
-      (1 + this.customAttributes_.length) * batch.geometriesCount;
+      (1 + this.customAttributes.length) * batch.geometriesCount;
     if (
       !batch.renderInstructions ||
       batch.renderInstructions.length !== totalInstructionsCount
@@ -95,8 +95,8 @@ class LineStringBatchRenderer extends AbstractBatchRenderer {
         );
 
         // custom attributes
-        for (let k = 0, kk = this.customAttributes_.length; k < kk; k++) {
-          value = this.customAttributes_[k].callback(
+        for (let k = 0, kk = this.customAttributes.length; k < kk; k++) {
+          value = this.customAttributes[k].callback(
             batchEntry.feature,
             batchEntry.properties
           );

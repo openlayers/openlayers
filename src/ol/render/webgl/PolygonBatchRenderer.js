@@ -26,7 +26,7 @@ class PolygonBatchRenderer extends AbstractBatchRenderer {
     super(helper, worker, vertexShader, fragmentShader, customAttributes);
 
     // By default only a position attribute is required to render polygons
-    this.attributes_ = [
+    this.attributes = [
       {
         name: Attributes.POSITION,
         size: 2,
@@ -57,7 +57,7 @@ class PolygonBatchRenderer extends AbstractBatchRenderer {
     // + 1 instruction per ring (for vertices count in ring)
     const totalInstructionsCount =
       2 * batch.verticesCount +
-      (1 + this.customAttributes_.length) * batch.geometriesCount +
+      (1 + this.customAttributes.length) * batch.geometriesCount +
       batch.ringsCount;
     if (
       !batch.renderInstructions ||
@@ -85,8 +85,8 @@ class PolygonBatchRenderer extends AbstractBatchRenderer {
         );
 
         // custom attributes
-        for (let k = 0, kk = this.customAttributes_.length; k < kk; k++) {
-          value = this.customAttributes_[k].callback(
+        for (let k = 0, kk = this.customAttributes.length; k < kk; k++) {
+          value = this.customAttributes[k].callback(
             batchEntry.feature,
             batchEntry.properties
           );

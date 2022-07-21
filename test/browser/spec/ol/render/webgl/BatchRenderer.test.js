@@ -89,7 +89,7 @@ describe('Batch renderers', function () {
     });
     describe('constructor', function () {
       it('generates the attributes list', function () {
-        expect(batchRenderer.attributes_).to.eql([
+        expect(batchRenderer.attributes).to.eql([
           {name: 'a_position', size: 2, type: FLOAT},
           {name: 'a_index', size: 1, type: FLOAT},
           {name: 'a_test', size: 1, type: FLOAT},
@@ -192,7 +192,7 @@ describe('Batch renderers', function () {
     });
     describe('constructor', function () {
       it('generates the attributes list', function () {
-        expect(batchRenderer.attributes_).to.eql([
+        expect(batchRenderer.attributes).to.eql([
           {name: 'a_segmentStart', size: 2, type: FLOAT},
           {name: 'a_segmentEnd', size: 2, type: FLOAT},
           {name: 'a_parameters', size: 1, type: FLOAT},
@@ -257,7 +257,7 @@ describe('Batch renderers', function () {
     });
     describe('constructor', function () {
       it('generates the attributes list', function () {
-        expect(batchRenderer.attributes_).to.eql([
+        expect(batchRenderer.attributes).to.eql([
           {name: 'a_position', size: 2, type: FLOAT},
           {name: 'a_test', size: 1, type: FLOAT},
         ]);

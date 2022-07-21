@@ -36,19 +36,19 @@ class AbstractBatchRenderer {
   constructor(helper, worker, vertexShader, fragmentShader, customAttributes) {
     /**
      * @type {import("../../webgl/Helper.js").default}
-     * @protected
+     * @private
      */
     this.helper_ = helper;
 
     /**
      * @type {Worker}
-     * @protected
+     * @private
      */
     this.worker_ = worker;
 
     /**
      * @type {WebGLProgram}
-     * @protected
+     * @private
      */
     this.program_ = this.helper_.getProgram(fragmentShader, vertexShader);
 
@@ -57,13 +57,13 @@ class AbstractBatchRenderer {
      * @type {Array<import('../../webgl/Helper.js').AttributeDescription>}
      * @protected
      */
-    this.attributes_ = [];
+    this.attributes = [];
 
     /**
      * @type {Array<CustomAttribute>}
      * @protected
      */
-    this.customAttributes_ = customAttributes;
+    this.customAttributes = customAttributes;
   }
 
   /**
@@ -102,7 +102,7 @@ class AbstractBatchRenderer {
     this.helper_.useProgram(this.program_, frameState);
     this.helper_.bindBuffer(batch.verticesBuffer);
     this.helper_.bindBuffer(batch.indicesBuffer);
-    this.helper_.enableAttributes(this.attributes_);
+    this.helper_.enableAttributes(this.attributes);
 
     const renderCount = batch.indicesBuffer.getSize();
     this.helper_.drawElements(0, renderCount);
@@ -150,7 +150,7 @@ class AbstractBatchRenderer {
       type: messageType,
       renderInstructions: batch.renderInstructions.buffer,
       renderInstructionsTransform: batch.renderInstructionsTransform,
-      customAttributesCount: this.customAttributes_.length,
+      customAttributesCount: this.customAttributes.length,
     };
     this.worker_.postMessage(message, [batch.renderInstructions.buffer]);
 
