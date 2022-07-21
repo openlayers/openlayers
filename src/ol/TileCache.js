@@ -5,6 +5,13 @@ import LRUCache from './structs/LRUCache.js';
 import {fromKey, getKey} from './tilecoord.js';
 
 class TileCache extends LRUCache {
+  clear() {
+    while (this.getCount() > 0) {
+      this.pop().release();
+    }
+    super.clear();
+  }
+
   /**
    * @param {!Object<string, boolean>} usedTiles Used tiles.
    */

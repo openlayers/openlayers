@@ -86,7 +86,9 @@ class TileQueue extends PriorityQueue {
       state === TileState.ERROR ||
       state === TileState.EMPTY
     ) {
-      tile.removeEventListener(EventType.CHANGE, this.boundHandleTileChange_);
+      if (state !== TileState.ERROR) {
+        tile.removeEventListener(EventType.CHANGE, this.boundHandleTileChange_);
+      }
       const tileKey = tile.getKey();
       if (tileKey in this.tilesLoadingKeys_) {
         delete this.tilesLoadingKeys_[tileKey];

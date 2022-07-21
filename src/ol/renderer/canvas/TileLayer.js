@@ -129,10 +129,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const tileSource = tileLayer.getSource();
     let tile = tileSource.getTile(z, x, y, pixelRatio, projection);
     if (tile.getState() == TileState.ERROR) {
-      if (!tileLayer.getUseInterimTilesOnError()) {
-        // When useInterimTilesOnError is false, we consider the error tile as loaded.
-        tile.setState(TileState.LOADED);
-      } else if (tileLayer.getPreload() > 0) {
+      if (tileLayer.getUseInterimTilesOnError() && tileLayer.getPreload() > 0) {
         // Preloaded tiles for lower resolutions might have finished loading.
         this.newTiles_ = true;
       }
