@@ -12,7 +12,6 @@ import {packColor} from '../src/ol/renderer/webgl/shaders.js';
 class WebGLLayer extends Layer {
   createRenderer() {
     return new WebGLVectorLayerRenderer(this, {
-      className: this.getClassName(),
       fill: {
         attributes: {
           color: function (feature) {
