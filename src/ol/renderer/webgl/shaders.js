@@ -18,7 +18,6 @@ export const DefaultAttributes = {
  * This is how DefaultAttributes.COLOR is expected to be computed.
  * @param {import("../../color.js").Color|string} color Color as array of numbers or string
  * @return {number} Float value containing the color
- * @api
  */
 export function packColor(color) {
   const array = asArray(color);
@@ -38,7 +37,6 @@ const DECODE_COLOR_EXPRESSION = `vec3(
  * Default polygon vertex shader.
  * Relies on DefaultAttributes.COLOR and DefaultAttributes.OPACITY.
  * @type {string}
- * @api
  */
 export const DEFAULT_POLYGON_VERTEX = `
   precision mediump float;
@@ -58,7 +56,6 @@ export const DEFAULT_POLYGON_VERTEX = `
 /**
  * Default polygon fragment shader.
  * @type {string}
- * @api
  */
 export const DEFAULT_POLYGON_FRAGMENT = `
   precision mediump float;
@@ -73,7 +70,6 @@ export const DEFAULT_POLYGON_FRAGMENT = `
  * Default linestring vertex shader.
  * Relies on DefaultAttributes.COLOR, DefaultAttributes.OPACITY and DefaultAttributes.WIDTH.
  * @type {string}
- * @api
  */
 export const DEFAULT_LINESTRING_VERTEX = `
   precision mediump float;
@@ -139,7 +135,6 @@ export const DEFAULT_LINESTRING_VERTEX = `
 /**
  * Default linestring fragment shader.
  * @type {string}
- * @api
  */
 export const DEFAULT_LINESTRING_FRAGMENT = `
   precision mediump float;
@@ -170,7 +165,6 @@ export const DEFAULT_LINESTRING_FRAGMENT = `
  * Default point vertex shader.
  * Relies on DefaultAttributes.COLOR and DefaultAttributes.OPACITY.
  * @type {string}
- * @api
  */
 export const DEFAULT_POINT_VERTEX = `
   precision mediump float;
@@ -201,7 +195,6 @@ export const DEFAULT_POINT_VERTEX = `
 /**
  * Default point fragment shader.
  * @type {string}
- * @api
  */
 export const DEFAULT_POINT_FRAGMENT = `
   precision mediump float;

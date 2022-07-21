@@ -67,8 +67,6 @@ import {listen, unlistenByKey} from '../../events.js';
  * Please note that the fragment shaders output should have premultiplied alpha, otherwise visual anomalies may occur.
  *
  * Note: this uses {@link module:ol/webgl/Helper~WebGLHelper} internally.
- *
- * @api
  */
 class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   /**
