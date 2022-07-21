@@ -9,8 +9,8 @@ import PolygonBatchRenderer from '../../render/webgl/PolygonBatchRenderer.js';
 import VectorEventType from '../../source/VectorEventType.js';
 import ViewHint from '../../ViewHint.js';
 import WebGLLayerRenderer from './Layer.js';
+import {DefaultUniform} from '../../webgl/Helper.js';
 import {
-  DefaultAttributes,
   FILL_FRAGMENT_SHADER,
   FILL_VERTEX_SHADER,
   POINT_FRAGMENT_SHADER,
@@ -19,7 +19,6 @@ import {
   STROKE_VERTEX_SHADER,
   packColor,
 } from './shaders.js';
-import {DefaultUniform} from '../../webgl/Helper.js';
 import {buffer, createEmpty, equals, getWidth} from '../../extent.js';
 import {create as createTransform} from '../../transform.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
@@ -35,7 +34,7 @@ import {listen, unlistenByKey} from '../../events.js';
  * @typedef {Object} ShaderProgram An object containing both shaders (vertex and fragment) as well as the required attributes
  * @property {string} [vertexShader] Vertex shader source (using the default one if unspecified).
  * @property {string} [fragmentShader] Fragment shader source (using the default one if unspecified).
- * @property {Object<string,CustomAttributeCallback>} attributes Custom attributes made available in the vertex shader.
+ * @property {Object<import("./shaders.js").DefaultAttributes,CustomAttributeCallback>} attributes Custom attributes made available in the vertex shader.
  * Keys are the names of the attributes which are then accessible in the vertex shader using the `a_` prefix, e.g.: `a_opacity`.
  * Default shaders rely on the attributes in {@link module:ol/render/webgl/shaders~DefaultAttributes}.
  */
@@ -49,6 +48,14 @@ import {listen, unlistenByKey} from '../../events.js';
  * @property {Object<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions.
  * @property {Array<import("./Layer").PostProcessesOptions>} [postProcesses] Post-processes definitions
  */
+
+/**
+ * @param {Object<import("./shaders.js").DefaultAttributes,CustomAttributeCallback>} obj Lookup of attribute getters.
+ * @return {Array<import("../../render/webgl/BatchRenderer").CustomAttribute>} An array of attribute descriptors.
+ */
+function toAttributesArray(obj) {
+  return Object.keys(obj).map((key) => ({name: key, callback: obj[key]}));
+}
 
 /**
  * @classdesc
@@ -97,41 +104,37 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     this.currentTransform_ = projectionMatrixTransform;
 
     const fillAttributes = {
-      [DefaultAttributes.COLOR]: function () {
+      color: function () {
         return packColor('#ddd');
       },
-      [DefaultAttributes.OPACITY]: function () {
+      opacity: function () {
         return 1;
       },
       ...(options.fill && options.fill.attributes),
     };
 
     const strokeAttributes = {
-      [DefaultAttributes.COLOR]: function () {
+      color: function () {
         return packColor('#eee');
       },
-      [DefaultAttributes.OPACITY]: function () {
+      opacity: function () {
         return 1;
       },
-      [DefaultAttributes.WIDTH]: function () {
+      width: function () {
         return 1.5;
       },
       ...(options.stroke && options.stroke.attributes),
     };
 
     const pointAttributes = {
-      [DefaultAttributes.COLOR]: function () {
+      color: function () {
         return packColor('#eee');
       },
-      [DefaultAttributes.OPACITY]: function () {
+      opacity: function () {
         return 1;
       },
       ...(options.point && options.point.attributes),
     };
-
-    function toAttributesArray(obj) {
-      return Object.keys(obj).map((key) => ({name: key, callback: obj[key]}));
-    }
 
     this.fillVertexShader_ =
       (options.fill && options.fill.vertexShader) || FILL_VERTEX_SHADER;

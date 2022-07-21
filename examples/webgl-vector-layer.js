@@ -6,11 +6,8 @@ import TileLayer from '../src/ol/layer/WebGLTile.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
 import WebGLVectorLayerRenderer from '../src/ol/renderer/webgl/VectorLayer.js';
-import {
-  DefaultAttributes,
-  packColor,
-} from '../src/ol/renderer/webgl/shaders.js';
 import {asArray} from '../src/ol/color.js';
+import {packColor} from '../src/ol/renderer/webgl/shaders.js';
 
 class WebGLLayer extends Layer {
   createRenderer() {
@@ -18,27 +15,27 @@ class WebGLLayer extends Layer {
       className: this.getClassName(),
       fill: {
         attributes: {
-          [DefaultAttributes.COLOR]: function (feature) {
+          color: function (feature) {
             const color = asArray(feature.get('COLOR') || '#eee');
             color[3] = 0.85;
             return packColor(color);
           },
-          [DefaultAttributes.OPACITY]: function () {
+          opacity: function () {
             return 0.6;
           },
         },
       },
       stroke: {
         attributes: {
-          [DefaultAttributes.COLOR]: function (feature) {
+          color: function (feature) {
             const color = [...asArray(feature.get('COLOR') || '#eee')];
             color.forEach((_, i) => (color[i] = Math.round(color[i] * 0.75))); // darken slightly
             return packColor(color);
           },
-          [DefaultAttributes.WIDTH]: function () {
+          width: function () {
             return 1.5;
           },
-          [DefaultAttributes.OPACITY]: function () {
+          opacity: function () {
             return 1;
           },
         },

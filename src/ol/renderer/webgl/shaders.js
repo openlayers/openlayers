@@ -3,19 +3,11 @@
  */
 import {asArray} from '../../color.js';
 
-/**
- * Attribute names used in the default shaders.
- * @enum {string}
- */
-export const DefaultAttributes = {
-  COLOR: 'color',
-  OPACITY: 'opacity',
-  WIDTH: 'width',
-};
+/** @typedef {'color'|'opacity'|'width'} DefaultAttributes */
 
 /**
  * Packs red/green/blue channels of a color into a single float value; alpha is ignored.
- * This is how DefaultAttributes.COLOR is expected to be computed.
+ * This is how the color is expected to be computed.
  * @param {import("../../color.js").Color|string} color Color as array of numbers or string
  * @return {number} Float value containing the color
  */
@@ -35,7 +27,7 @@ const DECODE_COLOR_EXPRESSION = `vec3(
 
 /**
  * Default polygon vertex shader.
- * Relies on DefaultAttributes.COLOR and DefaultAttributes.OPACITY.
+ * Relies on the color and opacity attributes.
  * @type {string}
  */
 export const FILL_VERTEX_SHADER = `
@@ -68,7 +60,7 @@ export const FILL_FRAGMENT_SHADER = `
 
 /**
  * Default linestring vertex shader.
- * Relies on DefaultAttributes.COLOR, DefaultAttributes.OPACITY and DefaultAttributes.WIDTH.
+ * Relies on color, opacity and width attributes.
  * @type {string}
  */
 export const STROKE_VERTEX_SHADER = `
@@ -163,7 +155,7 @@ export const STROKE_FRAGMENT_SHADER = `
 
 /**
  * Default point vertex shader.
- * Relies on DefaultAttributes.COLOR and DefaultAttributes.OPACITY.
+ * Relies on color and opacity attributes.
  * @type {string}
  */
 export const POINT_VERTEX_SHADER = `
