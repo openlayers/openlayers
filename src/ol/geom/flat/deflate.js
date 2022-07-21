@@ -94,6 +94,9 @@ export function deflateMultiCoordinatesArray(
       stride,
       endss[i]
     );
+    if (ends.length === 0) {
+      ends[0] = offset;
+    }
     endss[i++] = ends;
     offset = ends[ends.length - 1];
   }
