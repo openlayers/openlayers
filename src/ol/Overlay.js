@@ -43,20 +43,7 @@ import {outerHeight, outerWidth, removeChildren, removeNode} from './dom.js';
  * probably set `insertFirst` to `true` so the overlay is displayed below the
  * controls.
  * @property {PanIntoViewOptions|boolean} [autoPan=false] Pan the map when calling
- * `setPosition`, so that the overlay is entirely visible in the current viewport?
- * If `true` (deprecated), then `autoPanAnimation` and `autoPanMargin` will be
- * used to determine the panning parameters; if an object is supplied then other
- * parameters are ignored.
- * @property {PanOptions} [autoPanAnimation] The animation options used to pan
- * the overlay into view. This animation is only used when `autoPan` is enabled.
- * A `duration` and `easing` may be provided to customize the animation.
- * Deprecated and ignored if `autoPan` is supplied as an object.
- * @property {number} [autoPanMargin=20] The margin (in pixels) between the
- * overlay and the borders of the map when autopanning. Deprecated and ignored
- * if `autoPan` is supplied as an object.
- * @property {PanIntoViewOptions} [autoPanOptions] The options to use for the
- * autoPan. This is only used when `autoPan` is enabled and has preference over
- * the individual `autoPanMargin` and `autoPanOptions`.
+ * `setPosition`, so that the overlay is entirely visible in the current viewport.
  * @property {string} [className='ol-overlay-container ol-selectable'] CSS class
  * name.
  */
@@ -180,18 +167,11 @@ class Overlay extends BaseObject {
     this.element.style.position = 'absolute';
     this.element.style.pointerEvents = 'auto';
 
-    let autoPan = options.autoPan;
-    if (autoPan && 'object' !== typeof autoPan) {
-      autoPan = {
-        animation: options.autoPanAnimation,
-        margin: options.autoPanMargin,
-      };
-    }
     /**
      * @protected
-     * @type {PanIntoViewOptions|false}
+     * @type {PanIntoViewOptions|undefined}
      */
-    this.autoPan = /** @type {PanIntoViewOptions} */ (autoPan) || false;
+    this.autoPan = options.autoPan === true ? {} : options.autoPan || undefined;
 
     /**
      * @protected
@@ -586,8 +566,6 @@ class Overlay extends BaseObject {
     if (this.rendered.transform_ != transform) {
       this.rendered.transform_ = transform;
       style.transform = transform;
-      // @ts-ignore IE9
-      style.msTransform = transform;
     }
   }
 
