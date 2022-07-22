@@ -57,6 +57,16 @@ const INVALID_FRAGMENT_SHADER = `
     gl_FragColor = vec4(oops, 1.0, 1.0, 1.0);
   }`;
 
+const SAMPLE_FRAMESTATE = {
+  size: [100, 150],
+  viewState: {
+    rotation: 0.4,
+    resolution: 2,
+    center: [10, 20],
+    zoom: 3,
+  },
+};
+
 describe('ol/webgl/WebGLHelper', function () {
   let h;
   afterEach(function () {
@@ -117,7 +127,10 @@ describe('ol/webgl/WebGLHelper', function () {
             u_test4: createTransform(),
           },
         });
-        h.useProgram(h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER));
+        h.useProgram(
+          h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER),
+          SAMPLE_FRAMESTATE
+        );
         h.prepareDraw({
           pixelRatio: 2,
           size: [50, 80],
@@ -142,6 +155,16 @@ describe('ol/webgl/WebGLHelper', function () {
           h.uniformLocations_[DefaultUniform.OFFSET_SCALE_MATRIX]
         ).not.to.eql(undefined);
         expect(h.uniformLocations_[DefaultUniform.TIME]).not.to.eql(undefined);
+        expect(h.uniformLocations_[DefaultUniform.ZOOM]).not.to.eql(undefined);
+        expect(h.uniformLocations_[DefaultUniform.RESOLUTION]).not.to.eql(
+          undefined
+        );
+        expect(h.uniformLocations_[DefaultUniform.SIZE_PX]).not.to.eql(
+          undefined
+        );
+        expect(h.uniformLocations_[DefaultUniform.PIXEL_RATIO]).not.to.eql(
+          undefined
+        );
       });
 
       it('has processed uniforms', function () {
@@ -164,7 +187,7 @@ describe('ol/webgl/WebGLHelper', function () {
         h = new WebGLHelper();
 
         p = h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER);
-        h.useProgram(p);
+        h.useProgram(p, SAMPLE_FRAMESTATE);
       });
 
       it('has saved the program', function () {
@@ -209,34 +232,30 @@ describe('ol/webgl/WebGLHelper', function () {
     });
 
     describe('#makeProjectionTransform', function () {
-      let frameState;
       beforeEach(function () {
         h = new WebGLHelper();
-
-        frameState = {
-          size: [100, 150],
-          viewState: {
-            rotation: 0.4,
-            resolution: 2,
-            center: [10, 20],
-          },
-        };
       });
 
       it('gives out the correct transform', function () {
-        const scaleX = 2 / frameState.size[0] / frameState.viewState.resolution;
-        const scaleY = 2 / frameState.size[1] / frameState.viewState.resolution;
+        const scaleX =
+          2 /
+          SAMPLE_FRAMESTATE.size[0] /
+          SAMPLE_FRAMESTATE.viewState.resolution;
+        const scaleY =
+          2 /
+          SAMPLE_FRAMESTATE.size[1] /
+          SAMPLE_FRAMESTATE.viewState.resolution;
         const given = createTransform();
         const expected = createTransform();
         scaleTransform(expected, scaleX, scaleY);
-        rotateTransform(expected, -frameState.viewState.rotation);
+        rotateTransform(expected, -SAMPLE_FRAMESTATE.viewState.rotation);
         translateTransform(
           expected,
-          -frameState.viewState.center[0],
-          -frameState.viewState.center[1]
+          -SAMPLE_FRAMESTATE.viewState.center[0],
+          -SAMPLE_FRAMESTATE.viewState.center[1]
         );
 
-        h.makeProjectionTransform(frameState, given);
+        h.makeProjectionTransform(SAMPLE_FRAMESTATE, given);
 
         expect(given.map((val) => val.toFixed(15))).to.eql(
           expected.map((val) => val.toFixed(15))
@@ -377,7 +396,8 @@ describe('ol/webgl/WebGLHelper', function () {
         void main(void) {
           gl_Position = vec4(u_test, attr3, 0.0, 1.0);
         }`
-        )
+        ),
+        SAMPLE_FRAMESTATE
       );
     });
 
@@ -402,6 +422,52 @@ describe('ol/webgl/WebGLHelper', function () {
       expect(spy.getCall(2).args[2]).to.eql(FLOAT);
       expect(spy.getCall(2).args[3]).to.eql(6 * bytesPerFloat);
       expect(spy.getCall(2).args[4]).to.eql(5 * bytesPerFloat);
+    });
+  });
+
+  describe('#applyFrameState', function () {
+    let stubMatrix, stubFloat, stubVec2, stubTime;
+    beforeEach(function () {
+      stubTime = sinon.stub(Date, 'now');
+      stubTime.returns(1000);
+      h = new WebGLHelper();
+      stubMatrix = sinon.stub(h, 'setUniformMatrixValue');
+      stubFloat = sinon.stub(h, 'setUniformFloatValue');
+      stubVec2 = sinon.stub(h, 'setUniformFloatVec2');
+
+      stubTime.returns(2000);
+      h.applyFrameState({...SAMPLE_FRAMESTATE, pixelRatio: 2});
+    });
+
+    afterEach(function () {
+      stubTime.restore();
+    });
+
+    it('sets the default uniforms according the frame state', function () {
+      expect(stubMatrix.getCall(0).args).to.eql([
+        DefaultUniform.OFFSET_SCALE_MATRIX,
+        [
+          0.9210609940028851, -0.3894183423086505, 0, 0, 0.3894183423086505,
+          0.9210609940028851, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1,
+        ],
+      ]);
+      expect(stubMatrix.getCall(1).args).to.eql([
+        DefaultUniform.OFFSET_ROTATION_MATRIX,
+        [
+          0.9210609940028851, -0.3894183423086505, 0, 0, 0.3894183423086505,
+          0.9210609940028851, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1,
+        ],
+      ]);
+
+      expect(stubFloat.getCall(0).args).to.eql([DefaultUniform.TIME, 1]);
+      expect(stubFloat.getCall(1).args).to.eql([DefaultUniform.ZOOM, 3]);
+      expect(stubFloat.getCall(2).args).to.eql([DefaultUniform.RESOLUTION, 2]);
+      expect(stubFloat.getCall(3).args).to.eql([DefaultUniform.PIXEL_RATIO, 2]);
+
+      expect(stubVec2.getCall(0).args).to.eql([
+        DefaultUniform.SIZE_PX,
+        [100, 150],
+      ]);
     });
   });
 });

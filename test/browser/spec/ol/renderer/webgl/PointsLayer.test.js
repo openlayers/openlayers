@@ -8,7 +8,7 @@ import View from '../../../../../../src/ol/View.js';
 import ViewHint from '../../../../../../src/ol/ViewHint.js';
 import WebGLPointsLayer from '../../../../../../src/ol/layer/WebGLPoints.js';
 import WebGLPointsLayerRenderer from '../../../../../../src/ol/renderer/webgl/PointsLayer.js';
-import {WebGLWorkerMessageType} from '../../../../../../src/ol/renderer/webgl/Layer.js';
+import {WebGLWorkerMessageType} from '../../../../../../src/ol/render/webgl/constants.js';
 import {
   compose as composeTransform,
   create as createTransform,
@@ -156,7 +156,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       const attributePerVertex = 3;
 
       renderer.worker_.addEventListener('message', function (event) {
-        if (event.data.type !== WebGLWorkerMessageType.GENERATE_BUFFERS) {
+        if (event.data.type !== WebGLWorkerMessageType.GENERATE_POINT_BUFFERS) {
           return;
         }
         expect(renderer.verticesBuffer_.getArray().length).to.eql(
@@ -192,7 +192,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       const attributePerVertex = 8;
 
       renderer.worker_.addEventListener('message', function (event) {
-        if (event.data.type !== WebGLWorkerMessageType.GENERATE_BUFFERS) {
+        if (event.data.type !== WebGLWorkerMessageType.GENERATE_POINT_BUFFERS) {
           return;
         }
         if (!renderer.hitVerticesBuffer_.getArray()) {
@@ -231,7 +231,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       renderer.prepareFrame(frameState);
 
       renderer.worker_.addEventListener('message', function (event) {
-        if (event.data.type !== WebGLWorkerMessageType.GENERATE_BUFFERS) {
+        if (event.data.type !== WebGLWorkerMessageType.GENERATE_POINT_BUFFERS) {
           return;
         }
         const attributePerVertex = 3;
@@ -627,14 +627,14 @@ describe('ol/renderer/webgl/PointsLayer', function () {
     beforeEach(function () {
       source = new VectorSource({
         features: new GeoJSON().readFeatures({
-          'type': 'FeatureCollection',
-          'features': [
+          type: 'FeatureCollection',
+          features: [
             {
-              'type': 'Feature',
-              'properties': {},
-              'geometry': {
-                'type': 'Point',
-                'coordinates': [13, 52],
+              type: 'Feature',
+              properties: {},
+              geometry: {
+                type: 'Point',
+                coordinates: [13, 52],
               },
             },
           ],
