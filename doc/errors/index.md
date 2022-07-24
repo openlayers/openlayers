@@ -89,10 +89,6 @@ Number of `origins` and `resolutions` must be equal.
 
 Either `tileSize` or `tileSizes` must be configured, never both.
 
-### 23
-
-The passed `ol.TileCoord`s must all have the same `z` value.
-
 ### 24
 
 Invalid extent or geometry provided as `geometry`.
@@ -113,9 +109,6 @@ Features for `updates` must have an id set by the feature reader or `ol.Feature#
 
 `renderMode` must be `'hybrid'` or `'vector'`.
 
-### 29
-
-`x` must be greater than `0`.
 
 ### 30
 
@@ -165,10 +158,6 @@ Expected an `ol.style.Style` or an array of `ol.style.Style`.
 
 Expected `layers` to be an array or an `ol.Collection`.
 
-### 46
-
-Incorrect format for `renderer` option.
-
 ### 47
 
 Expected `controls` to be an array or an `ol.Collection`.
@@ -196,10 +185,6 @@ Unknown `serverType` configured.
 ### 53
 
 Unknown `tierSizeCalculation` configured.
-
-### 54
-
-Hex color should have 3 or 6 digits.
 
 ### 55
 
