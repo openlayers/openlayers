@@ -450,13 +450,9 @@ const RasterEventType = {
 };
 
 /**
+ * @typedef {'pixel' | 'image'} RasterOperationType
  * Raster operation type. Supported values are `'pixel'` and `'image'`.
- * @enum {string}
  */
-const RasterOperationType = {
-  PIXEL: 'pixel',
-  IMAGE: 'image',
-};
 
 /**
  * @typedef {import("./Image.js").ImageSourceEventTypes|'beforeoperations'|'afteroperations'} RasterSourceEventTypes
@@ -575,9 +571,7 @@ class RasterSource extends ImageSource {
      * @type {RasterOperationType}
      */
     this.operationType_ =
-      options.operationType !== undefined
-        ? options.operationType
-        : RasterOperationType.PIXEL;
+      options.operationType !== undefined ? options.operationType : 'pixel';
 
     /**
      * @private
@@ -692,7 +686,7 @@ class RasterSource extends ImageSource {
 
     this.processor_ = new Processor({
       operation: operation,
-      imageOps: this.operationType_ === RasterOperationType.IMAGE,
+      imageOps: this.operationType_ === 'image',
       queue: 1,
       lib: opt_lib,
       threads: this.threads_,
