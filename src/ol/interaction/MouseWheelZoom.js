@@ -8,12 +8,8 @@ import {all, always, focusWithTabindex} from '../events/condition.js';
 import {clamp} from '../math.js';
 
 /**
- * @enum {string}
+ * @typedef {'trackpad' | 'wheel'} Mode
  */
-export const Mode = {
-  TRACKPAD: 'trackpad',
-  WHEEL: 'wheel',
-};
 
 /**
  * @typedef {Object} Options
@@ -218,12 +214,12 @@ class MouseWheelZoom extends Interaction {
     }
 
     if (!this.mode_ || now - this.startTime_ > this.trackpadEventGap_) {
-      this.mode_ = Math.abs(delta) < 4 ? Mode.TRACKPAD : Mode.WHEEL;
+      this.mode_ = Math.abs(delta) < 4 ? 'trackpad' : 'wheel';
     }
 
     const view = map.getView();
     if (
-      this.mode_ === Mode.TRACKPAD &&
+      this.mode_ === 'trackpad' &&
       !(view.getConstrainResolution() || this.constrainResolution_)
     ) {
       if (this.trackpadTimeoutId_) {
