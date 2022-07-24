@@ -134,19 +134,6 @@ class LayerRenderer extends Observable {
   }
 
   /**
-   * @abstract
-   * @param {import("../pixel.js").Pixel} pixel Pixel.
-   * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
-   * @param {number} hitTolerance Hit tolerance in pixels.
-   * @return {Uint8ClampedArray|Uint8Array} The result.  If there is no data at the pixel
-   *    location, null will be returned.  If there is data, but pixel values cannot be
-   *    returned, and empty array will be returned.
-   */
-  getDataAtPixel(pixel, frameState, hitTolerance) {
-    return null;
-  }
-
-  /**
    * @return {LayerType} Layer.
    */
   getLayer() {

@@ -13,8 +13,10 @@ import View from '../../../../../../src/ol/View.js';
 import {get as getProj} from '../../../../../../src/ol/proj.js';
 
 describe('ol/renderer/canvas/ImageLayer', function () {
-  describe('#forEachLayerAtCoordinate', function () {
+  describe('#getData', function () {
     let map, target, source;
+    /** @type {ImageLayer} */
+    let layer;
     beforeEach(function (done) {
       const projection = new Projection({
         code: 'custom-image',
@@ -30,14 +32,13 @@ describe('ol/renderer/canvas/ImageLayer', function () {
         projection: projection,
         imageExtent: [0, 0, 20, 20],
       });
+      layer = new ImageLayer({
+        source: source,
+      });
       map = new Map({
         pixelRatio: 1,
         target: target,
-        layers: [
-          new ImageLayer({
-            source: source,
-          }),
-        ],
+        layers: [layer],
         view: new View({
           projection: projection,
           center: [10, 10],
@@ -57,19 +58,13 @@ describe('ol/renderer/canvas/ImageLayer', function () {
 
     it('properly detects pixels', function () {
       map.renderSync();
-      let has = false;
-      function hasLayer() {
-        has = true;
-      }
-      map.forEachLayerAtPixel([20, 80], hasLayer);
-      expect(has).to.be(true);
-      has = false;
-      map.forEachLayerAtPixel([10, 90], hasLayer);
-      expect(has).to.be(false);
+
+      expect(layer.getData([20, 80])[3]).to.not.be(0);
+      expect(layer.getData([10, 90])[3]).to.be(0);
     });
   });
 
-  describe('#forEachLayerAtPixel Image CORS', function () {
+  describe('#getData Image CORS', function () {
     let map,
       target,
       imageExtent,
@@ -133,34 +128,22 @@ describe('ol/renderer/canvas/ImageLayer', function () {
       document.body.removeChild(target);
     });
 
-    it('should detect pixels even if there is no color because neither crossOrigin or extent is set', function () {
+    it('should not detect pixels when crossOrigin is not set', function () {
       imageLayerCross.setVisible(false);
       imageLayer.setVisible(true);
       map.renderSync();
-      let has = false;
-      function hasLayer() {
-        has = true;
-      }
-      map.forEachLayerAtPixel([50, 50], hasLayer);
-      expect(has).to.be(true);
-      has = false;
-      map.forEachLayerAtPixel([10, 10], hasLayer);
-      expect(has).to.be(true);
+
+      expect(imageLayer.getData([50, 50])).to.be(null);
+      expect(imageLayer.getData([10, 10])).to.be(null);
     });
 
     it('should not detect pixels outside of the layer extent with crossOrigin set', function () {
       imageLayerCross.setVisible(true);
       imageLayer.setVisible(false);
       map.renderSync();
-      let has = false;
-      function hasLayer() {
-        has = true;
-      }
-      map.forEachLayerAtPixel([50, 50], hasLayer);
-      expect(has).to.be(true);
-      has = false;
-      map.forEachLayerAtPixel([10, 10], hasLayer);
-      expect(has).to.be(false);
+
+      expect(imageLayerCross.getData([50, 50])).to.not.be(null);
+      expect(imageLayerCross.getData([10, 10])).to.be(null);
     });
 
     it('should not detect pixels outside of the layer extent with extent set', function () {
@@ -168,87 +151,9 @@ describe('ol/renderer/canvas/ImageLayer', function () {
       imageLayerCross.setExtent(imageExtent);
       imageLayer.setVisible(false);
       map.renderSync();
-      let has = false;
-      function hasLayer() {
-        has = true;
-      }
-      map.forEachLayerAtPixel([50, 50], hasLayer);
-      expect(has).to.be(true);
-      has = false;
-      map.forEachLayerAtPixel([10, 10], hasLayer);
-      expect(has).to.be(false);
-    });
-  });
 
-  describe('#getDataAtPixel', function () {
-    let map, target, source, imageLayer;
-    beforeEach(function (done) {
-      const projection = new Projection({
-        code: 'custom-image',
-        units: 'pixels',
-        extent: [0, 0, 200, 200],
-      });
-      target = document.createElement('div');
-      target.style.width = '100px';
-      target.style.height = '100px';
-      document.body.appendChild(target);
-      const imageExtent = [0, 0, 20, 20];
-      source = new Static({
-        url: 'spec/ol/data/dot.png',
-        projection: projection,
-        imageExtent: imageExtent,
-      });
-      imageLayer = new ImageLayer({
-        source: source,
-        extent: imageExtent,
-      });
-      map = new Map({
-        pixelRatio: 1,
-        target: target,
-        layers: [imageLayer],
-        view: new View({
-          projection: projection,
-          center: [10, 10],
-          zoom: 1,
-          maxZoom: 8,
-        }),
-      });
-      source.on('imageloadend', function () {
-        done();
-      });
-    });
-
-    afterEach(function () {
-      map.setTarget(null);
-      document.body.removeChild(target);
-    });
-
-    it('should not detect pixels outside of the layer extent', function () {
-      map.renderSync();
-      const pixel = [10, 10];
-      const frameState = map.frameState_;
-      const hitTolerance = 0;
-      const layerRenderer = imageLayer.getRenderer();
-      const data = layerRenderer.getDataAtPixel(
-        pixel,
-        frameState,
-        hitTolerance
-      );
-      expect(data).to.be(null);
-    });
-
-    it('should detect pixels in the layer extent', function () {
-      map.renderSync();
-      const pixel = [50, 50];
-      const frameState = map.frameState_;
-      const hitTolerance = 0;
-      const layerRenderer = imageLayer.getRenderer();
-      const data = layerRenderer.getDataAtPixel(
-        pixel,
-        frameState,
-        hitTolerance
-      );
-      expect(data.length > 0).to.be(true);
+      expect(imageLayerCross.getData([50, 50])).to.not.be(null);
+      expect(imageLayerCross.getData([10, 10])).to.be(null);
     });
   });
 

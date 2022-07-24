@@ -10,15 +10,14 @@ import {
   create as createTransform,
 } from '../../transform.js';
 import {asArray} from '../../color.js';
+import {createCanvasContext2D} from '../../dom.js';
+import {equals} from '../../array.js';
 import {
-  containsCoordinate,
   getBottomLeft,
   getBottomRight,
   getTopLeft,
   getTopRight,
 } from '../../extent.js';
-import {createCanvasContext2D} from '../../dom.js';
-import {equals} from '../../array.js';
 
 /**
  * @type {Array<HTMLCanvasElement>}
@@ -313,65 +312,6 @@ class CanvasLayerRenderer extends LayerRenderer {
       dx2,
       dy2
     );
-  }
-
-  /**
-   * @param {import("../../pixel.js").Pixel} pixel Pixel.
-   * @param {import("../../PluggableMap.js").FrameState} frameState FrameState.
-   * @param {number} hitTolerance Hit tolerance in pixels.
-   * @return {Uint8ClampedArray|Uint8Array} The result.  If there is no data at the pixel
-   *    location, null will be returned.  If there is data, but pixel values cannot be
-   *    returned, and empty array will be returned.
-   */
-  getDataAtPixel(pixel, frameState, hitTolerance) {
-    const renderPixel = applyTransform(
-      this.inversePixelTransform,
-      pixel.slice()
-    );
-    const context = this.context;
-
-    const layer = this.getLayer();
-    const layerExtent = layer.getExtent();
-    if (layerExtent) {
-      const renderCoordinate = applyTransform(
-        frameState.pixelToCoordinateTransform,
-        pixel.slice()
-      );
-
-      /** get only data inside of the layer extent */
-      if (!containsCoordinate(layerExtent, renderCoordinate)) {
-        return null;
-      }
-    }
-
-    const x = Math.round(renderPixel[0]);
-    const y = Math.round(renderPixel[1]);
-    let pixelContext = this.pixelContext_;
-    if (!pixelContext) {
-      const pixelCanvas = document.createElement('canvas');
-      pixelCanvas.width = 1;
-      pixelCanvas.height = 1;
-      pixelContext = pixelCanvas.getContext('2d');
-      this.pixelContext_ = pixelContext;
-    }
-    pixelContext.clearRect(0, 0, 1, 1);
-    let data;
-    try {
-      pixelContext.drawImage(context.canvas, x, y, 1, 1, 0, 0, 1, 1);
-      data = pixelContext.getImageData(0, 0, 1, 1).data;
-    } catch (err) {
-      if (err.name === 'SecurityError') {
-        // tainted canvas, we assume there is data at the given pixel (although there might not be)
-        this.pixelContext_ = null;
-        return new Uint8Array();
-      }
-      return data;
-    }
-
-    if (data[3] === 0) {
-      return null;
-    }
-    return data;
   }
 
   /**
