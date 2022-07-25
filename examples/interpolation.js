@@ -9,8 +9,6 @@ const attributions =
   '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
 
 const notInterpolated = new TileLayer({
-  // specify className so forEachLayerAtPixel can distinguish layers
-  className: 'ol-layer-dem',
   source: new XYZ({
     attributions: attributions,
     url:
@@ -51,39 +49,25 @@ const map2 = new Map({
   view: view,
 });
 
+function getHeight(rgba) {
+  return -10000 + (rgba[0] * 256 * 256 + rgba[1] * 256 + rgba[2]) * 0.1;
+}
+
 const info1 = document.getElementById('info1');
 const info2 = document.getElementById('info2');
-
 const showElevations = function (evt) {
   if (evt.dragging) {
     return;
   }
-  map1.forEachLayerAtPixel(
-    evt.pixel,
-    function (layer, pixel) {
-      const height =
-        -10000 + (pixel[0] * 256 * 256 + pixel[1] * 256 + pixel[2]) * 0.1;
-      info1.innerText = height.toFixed(1);
-    },
-    {
-      layerFilter: function (layer) {
-        return layer === notInterpolated;
-      },
-    }
-  );
-  map2.forEachLayerAtPixel(
-    evt.pixel,
-    function (layer, pixel) {
-      const height =
-        -10000 + (pixel[0] * 256 * 256 + pixel[1] * 256 + pixel[2]) * 0.1;
-      info2.innerText = height.toFixed(1);
-    },
-    {
-      layerFilter: function (layer) {
-        return layer === interpolated;
-      },
-    }
-  );
+  const notInterpolatedPixel = notInterpolated.getData(evt.pixel);
+  info1.innerText = notInterpolatedPixel
+    ? getHeight(notInterpolatedPixel).toFixed(1)
+    : '-';
+
+  const interpolatedPixel = interpolated.getData(evt.pixel);
+  info2.innerText = interpolatedPixel
+    ? getHeight(interpolatedPixel).toFixed(1)
+    : '-';
 };
 
 map1.on('pointermove', showElevations);

@@ -83,11 +83,6 @@ import {listen, unlistenByKey} from '../events.js';
  *
  * A generic `change` event is fired when the state of the source changes.
  *
- * Please note that for performance reasons several layers might get rendered to
- * the same HTML element, which will cause {@link import("../PluggableMap.js").default#forEachLayerAtPixel map.forEachLayerAtPixel()} to
- * give false positives. To avoid this, apply different `className` properties to the
- * layers at creation time.
- *
  * @fires import("../render/Event.js").RenderEvent#prerender
  * @fires import("../render/Event.js").RenderEvent#postrender
  *
@@ -310,8 +305,7 @@ class Layer extends BaseLayer {
 
   /**
    * Sets the layer to be rendered on top of other layers on a map. The map will
-   * not manage this layer in its layers collection, and the callback in
-   * {@link module:ol/Map~Map#forEachLayerAtPixel} will receive `null` as layer. This
+   * not manage this layer in its layers collection. This
    * is useful for temporary layers. To remove an unmanaged layer from the map,
    * use `#setMap(null)`.
    *

@@ -694,51 +694,6 @@ class PluggableMap extends BaseObject {
   }
 
   /**
-   * Please the `layer.getData()` method for {@link module:ol/layer/Tile~TileLayer#getData tile layers} or
-   * {@link module:ol/layer/Image~ImageLayer#getData image layers} instead of using this method.
-   *
-   * Detect layers that have a color value at a pixel on the viewport, and
-   * execute a callback with each matching layer. Layers included in the
-   * detection can be configured through `opt_layerFilter`.
-   *
-   * Note: In maps with more than one layer, this method will typically return pixel data
-   * representing the composed image of all layers visible at the given pixel – because layers
-   * will generally share the same rendering context.  To force layers to render separately, and
-   * to get pixel data representing only one layer at a time, you can assign each layer a unique
-   * `className` in its constructor.
-   *
-   * @param {import("./pixel.js").Pixel} pixel Pixel.
-   * @param {function(this: S, import("./layer/Layer.js").default, (Uint8ClampedArray|Uint8Array)): T} callback
-   *     Layer callback. This callback will receive two arguments: first is the
-   *     {@link module:ol/layer/Layer~Layer layer}, second argument is an array representing
-   *     [R, G, B, A] pixel values (0 - 255) and will be `null` for layer types
-   *     that do not currently support this argument. To stop detection, callback
-   *     functions can return a truthy value.
-   * @param {AtPixelOptions} [opt_options] Configuration options.
-   * @return {T|undefined} Callback result, i.e. the return value of last
-   * callback execution, or the first truthy callback return value.
-   * @template S,T
-   * @api
-   * @deprecated
-   */
-  forEachLayerAtPixel(pixel, callback, opt_options) {
-    if (!this.frameState_ || !this.renderer_) {
-      return;
-    }
-    const options = opt_options || {};
-    const hitTolerance =
-      options.hitTolerance !== undefined ? options.hitTolerance : 0;
-    const layerFilter = options.layerFilter || TRUE;
-    return this.renderer_.forEachLayerAtPixel(
-      pixel,
-      this.frameState_,
-      hitTolerance,
-      callback,
-      layerFilter
-    );
-  }
-
-  /**
    * Detect if features intersect a pixel on the viewport. Layers included in the
    * detection can be configured through `opt_layerFilter`.
    * @param {import("./pixel.js").Pixel} pixel Pixel.

@@ -149,50 +149,6 @@ class CompositeMapRenderer extends MapRenderer {
 
     this.scheduleExpireIconCache(frameState);
   }
-
-  /**
-   * @param {import("../pixel.js").Pixel} pixel Pixel.
-   * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
-   * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {function(import("../layer/Layer.js").default<import("../source/Source").default>, (Uint8ClampedArray|Uint8Array)): T} callback Layer
-   *     callback.
-   * @param {function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean} layerFilter Layer filter
-   *     function, only layers which are visible and for which this function
-   *     returns `true` will be tested for features.  By default, all visible
-   *     layers will be tested.
-   * @return {T|undefined} Callback result.
-   * @template T
-   */
-  forEachLayerAtPixel(pixel, frameState, hitTolerance, callback, layerFilter) {
-    const viewState = frameState.viewState;
-
-    const layerStates = frameState.layerStatesArray;
-    const numLayers = layerStates.length;
-
-    for (let i = numLayers - 1; i >= 0; --i) {
-      const layerState = layerStates[i];
-      const layer = layerState.layer;
-      if (
-        layer.hasRenderer() &&
-        inView(layerState, viewState) &&
-        layerFilter(layer)
-      ) {
-        const layerRenderer = layer.getRenderer();
-        const data = layerRenderer.getDataAtPixel(
-          pixel,
-          frameState,
-          hitTolerance
-        );
-        if (data) {
-          const result = callback(layer, data);
-          if (result) {
-            return result;
-          }
-        }
-      }
-    }
-    return undefined;
-  }
 }
 
 export default CompositeMapRenderer;

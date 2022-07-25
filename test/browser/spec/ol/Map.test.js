@@ -19,7 +19,6 @@ import PinchZoom from '../../../../src/ol/interaction/PinchZoom.js';
 import Property from '../../../../src/ol/layer/Property.js';
 import Select from '../../../../src/ol/interaction/Select.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
-import TileLayerRenderer from '../../../../src/ol/renderer/canvas/TileLayer.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
@@ -1024,66 +1023,6 @@ describe('ol/Map', function () {
           done(e);
         }
       });
-    });
-  });
-
-  describe('#forEachLayerAtPixel()', function () {
-    let target, map, original, log;
-
-    beforeEach(function (done) {
-      log = [];
-      original = TileLayerRenderer.prototype.getDataAtPixel;
-      TileLayerRenderer.prototype.getDataAtPixel = function (pixel) {
-        log.push(pixel.slice());
-      };
-
-      target = document.createElement('div');
-      const style = target.style;
-      style.position = 'absolute';
-      style.left = '-1000px';
-      style.top = '-1000px';
-      style.width = '360px';
-      style.height = '180px';
-      document.body.appendChild(target);
-
-      map = new Map({
-        target: target,
-        view: new View({
-          center: [0, 0],
-          zoom: 1,
-        }),
-        layers: [
-          new TileLayer({
-            source: new XYZ(),
-          }),
-          new TileLayer({
-            source: new XYZ(),
-          }),
-          new TileLayer({
-            source: new XYZ(),
-          }),
-        ],
-      });
-
-      map.once('postrender', function () {
-        done();
-      });
-    });
-
-    afterEach(function () {
-      TileLayerRenderer.prototype.getDataAtPixel = original;
-      map.dispose();
-      document.body.removeChild(target);
-      log = null;
-    });
-
-    it('calls each layer renderer with the same pixel', function () {
-      const pixel = [10, 20];
-      map.forEachLayerAtPixel(pixel, function () {});
-      expect(log.length).to.equal(3);
-      expect(log[0].length).to.equal(2);
-      expect(log[0]).to.eql(log[1]);
-      expect(log[1]).to.eql(log[2]);
     });
   });
 
