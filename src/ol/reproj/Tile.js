@@ -5,8 +5,10 @@ import {ERROR_THRESHOLD} from './common.js';
 
 import EventType from '../events/EventType.js';
 import Tile from '../Tile.js';
+import TileQueue from '../TileQueue.js';
 import TileState from '../TileState.js';
 import Triangulation from './Triangulation.js';
+import {VOID} from '../functions.js';
 import {
   calculateSourceExtentResolution,
   canvasPool,
@@ -20,6 +22,10 @@ import {releaseCanvas} from '../dom.js';
 /**
  * @typedef {function(number, number, number, number) : import("../Tile.js").default} FunctionType
  */
+
+const sourceTileQueue = new TileQueue(function () {
+  return 1;
+}, VOID);
 
 /**
  * @classdesc
@@ -298,6 +304,7 @@ class ReprojTile extends Tile {
       this.changed();
 
       let leftToLoad = 0;
+      const maxQueue = 16;
 
       this.sourcesListenerKeys_ = [];
       this.sourceTiles_.forEach(
@@ -317,6 +324,7 @@ class ReprojTile extends Tile {
                   state == TileState.EMPTY
                 ) {
                   unlistenByKey(sourceListenKey);
+                  sourceTileQueue.loadMoreTiles(maxQueue, maxQueue);
                   leftToLoad--;
                   if (leftToLoad === 0) {
                     this.unlistenSources_();
@@ -337,7 +345,11 @@ class ReprojTile extends Tile {
         this.sourceTiles_.forEach(function (tile, i, arr) {
           const state = tile.getState();
           if (state == TileState.IDLE) {
-            tile.load();
+            const tileQueueKey = tile.getKey();
+            if (!sourceTileQueue.isKeyQueued(tileQueueKey)) {
+              sourceTileQueue.enqueue([tile]);
+              sourceTileQueue.loadMoreTiles(maxQueue, maxQueue);
+            }
           }
         });
       }
