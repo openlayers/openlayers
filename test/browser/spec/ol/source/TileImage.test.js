@@ -203,7 +203,7 @@ describe('ol/source/TileImage', function () {
         '4326_noextentnounits',
         createXYZ({
           extent: [-180, -90, 180, 90],
-          tileSize: [2, 2],
+          tileSize: [8, 8],
         })
       );
       const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
