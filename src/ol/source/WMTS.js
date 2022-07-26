@@ -9,7 +9,7 @@ import {containsExtent} from '../extent.js';
 import {createFromCapabilitiesMatrixSet} from '../tilegrid/WMTS.js';
 import {createFromTileUrlFunctions, expandUrl} from '../tileurlfunction.js';
 import {equivalent, get as getProjection, transformExtent} from '../proj.js';
-import {find, findIndex, includes} from '../array.js';
+import {find, findIndex} from '../array.js';
 
 /**
  * Request encoding. One of 'KVP', 'REST'.
@@ -566,7 +566,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
           requestEncoding = encodings[0];
         }
         if (requestEncoding === 'KVP') {
-          if (includes(encodings, 'KVP')) {
+          if (encodings.includes('KVP')) {
             urls.push(/** @type {string} */ (gets[i]['href']));
           }
         } else {

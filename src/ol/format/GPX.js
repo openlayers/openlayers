@@ -22,7 +22,6 @@ import {
   pushSerializeAndPop,
 } from '../xml.js';
 import {get as getProjection} from '../proj.js';
-import {includes} from '../array.js';
 import {
   readDateTime,
   readDecimal,
@@ -172,7 +171,7 @@ class GPX extends XMLFeature {
    * @return {import("../Feature.js").default} Feature.
    */
   readFeatureFromNode(node, opt_options) {
-    if (!includes(NAMESPACE_URIS, node.namespaceURI)) {
+    if (!NAMESPACE_URIS.includes(node.namespaceURI)) {
       return null;
     }
     const featureReader = FEATURE_READER[node.localName];
@@ -195,7 +194,7 @@ class GPX extends XMLFeature {
    * @return {Array<import("../Feature.js").default>} Features.
    */
   readFeaturesFromNode(node, opt_options) {
-    if (!includes(NAMESPACE_URIS, node.namespaceURI)) {
+    if (!NAMESPACE_URIS.includes(node.namespaceURI)) {
       return [];
     }
     if (node.localName == 'gpx') {

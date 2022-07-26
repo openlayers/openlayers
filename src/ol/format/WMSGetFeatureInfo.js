@@ -4,7 +4,7 @@
 import GML2 from './GML2.js';
 import XMLFeature from './XMLFeature.js';
 import {assign} from '../obj.js';
-import {extend, includes} from '../array.js';
+import {extend} from '../array.js';
 import {makeArrayPusher, makeStructureNS, pushParseAndPop} from '../xml.js';
 
 /**
@@ -100,7 +100,7 @@ class WMSGetFeatureInfo extends XMLFeature {
         const toRemove = layerIdentifier;
         const layerName = layerElement.localName.replace(toRemove, '');
 
-        if (this.layers_ && !includes(this.layers_, layerName)) {
+        if (this.layers_ && !this.layers_.includes(layerName)) {
           continue;
         }
 

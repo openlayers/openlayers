@@ -2,6 +2,10 @@
 
 ### Next version
 
+#### Internet Explorer is no longer supported
+
+Please see https://docs.microsoft.com/en-us/lifecycle/announcements/internet-explorer-11-end-of-support.
+
 ### 6.15.0
 
 #### Deprecated `tilePixelRatio` option for data tile sources.

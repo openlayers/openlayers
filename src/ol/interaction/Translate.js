@@ -7,7 +7,6 @@ import InteractionProperty from './Property.js';
 import PointerInteraction from './Pointer.js';
 import {TRUE} from '../functions.js';
 import {always} from '../events/condition.js';
-import {includes} from '../array.js';
 
 /**
  * @enum {string}
@@ -182,7 +181,7 @@ class Translate extends PointerInteraction {
       } else {
         const layers = options.layers;
         layerFilter = function (layer) {
-          return includes(layers, layer);
+          return layers.includes(layer);
         };
       }
     } else {
@@ -347,7 +346,7 @@ class Translate extends PointerInteraction {
       pixel,
       function (feature, layer) {
         if (this.filter_(feature, layer)) {
-          if (!this.features_ || includes(this.features_.getArray(), feature)) {
+          if (!this.features_ || this.features_.getArray().includes(feature)) {
             return feature;
           }
         }

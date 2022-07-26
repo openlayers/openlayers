@@ -4,12 +4,13 @@
 import Collection from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
 import Event from '../events/Event.js';
+import Feature from '../Feature.js';
 import Interaction from './Interaction.js';
 import VectorLayer from '../layer/Vector.js';
 import {TRUE} from '../functions.js';
 import {clear} from '../obj.js';
 import {createEditingStyle} from '../style/Style.js';
-import {extend, includes} from '../array.js';
+import {extend} from '../array.js';
 import {getUid} from '../util.js';
 import {never, shiftKeyOnly, singleClick} from '../events/condition.js';
 
@@ -26,11 +27,9 @@ const SelectEventType = {
 };
 
 /**
- * A function that takes an {@link module:ol/Feature~Feature} or
- * {@link module:ol/render/Feature~RenderFeature} and an
- * {@link module:ol/layer/Layer~Layer} and returns `true` if the feature may be
+ * A function that takes an {@link module:ol/Feature~Feature} and returns `true` if the feature may be
  * selected or `false` otherwise.
- * @typedef {function(import("../Feature.js").FeatureLike, import("../layer/Layer.js").default<import("../source/Source").default>):boolean} FilterFunction
+ * @typedef {function(import("../Feature.js").default, import("../layer/Layer.js").default<import("../source/Source").default>):boolean} FilterFunction
  */
 
 /**
@@ -258,7 +257,7 @@ class Select extends Interaction {
       } else {
         const layers = options.layers;
         layerFilter = function (layer) {
-          return includes(layers, layer);
+          return layers.includes(layer);
         };
       }
     } else {
@@ -281,7 +280,7 @@ class Select extends Interaction {
   }
 
   /**
-   * @param {import("../Feature.js").FeatureLike} feature Feature.
+   * @param {import("../Feature.js").default} feature Feature.
    * @param {import("../layer/Layer.js").default} layer Layer.
    * @private
    */
@@ -310,7 +309,7 @@ class Select extends Interaction {
   /**
    * Returns the associated {@link module:ol/layer/Vector~VectorLayer vector layer} of
    * a selected feature.
-   * @param {import("../Feature.js").FeatureLike} feature Feature
+   * @param {import("../Feature.js").default} feature Feature
    * @return {import('../layer/Vector.js').default} Layer.
    * @api
    */
@@ -451,7 +450,7 @@ class Select extends Interaction {
   }
 
   /**
-   * @param {import("../Feature.js").FeatureLike} feature Feature.
+   * @param {import("../Feature.js").default} feature Feature.
    * @private
    */
   removeFeatureLayerAssociation_(feature) {
@@ -475,8 +474,17 @@ class Select extends Interaction {
     const set = !add && !remove && !toggle;
     const map = mapBrowserEvent.map;
     const features = this.getFeatures();
+
+    /**
+     * @type {Array<import("../Feature.js").default>}
+     */
     const deselected = [];
+
+    /**
+     * @type {Array<import("../Feature.js").default>}
+     */
     const selected = [];
+
     if (set) {
       // Replace the currently selected feature(s) with the feature(s) at the
       // pixel, or clear the selected feature(s) if there is no feature at
@@ -490,11 +498,12 @@ class Select extends Interaction {
          * @return {boolean|undefined} Continue to iterate over the features.
          */
         function (feature, layer) {
-          if (this.filter_(feature, layer)) {
-            this.addFeatureLayerAssociation_(feature, layer);
-            selected.push(feature);
-            return !this.multi_;
+          if (!(feature instanceof Feature) || !this.filter_(feature, layer)) {
+            return;
           }
+          this.addFeatureLayerAssociation_(feature, layer);
+          selected.push(feature);
+          return !this.multi_;
         }.bind(this),
         {
           layerFilter: this.layerFilter_,
@@ -525,19 +534,20 @@ class Select extends Interaction {
          * @return {boolean|undefined} Continue to iterate over the features.
          */
         function (feature, layer) {
-          if (this.filter_(feature, layer)) {
-            if ((add || toggle) && !includes(features.getArray(), feature)) {
-              this.addFeatureLayerAssociation_(feature, layer);
-              selected.push(feature);
-            } else if (
-              (remove || toggle) &&
-              includes(features.getArray(), feature)
-            ) {
-              deselected.push(feature);
-              this.removeFeatureLayerAssociation_(feature);
-            }
-            return !this.multi_;
+          if (!(feature instanceof Feature) || !this.filter_(feature, layer)) {
+            return;
           }
+          if ((add || toggle) && !features.getArray().includes(feature)) {
+            this.addFeatureLayerAssociation_(feature, layer);
+            selected.push(feature);
+          } else if (
+            (remove || toggle) &&
+            features.getArray().includes(feature)
+          ) {
+            deselected.push(feature);
+            this.removeFeatureLayerAssociation_(feature);
+          }
+          return !this.multi_;
         }.bind(this),
         {
           layerFilter: this.layerFilter_,
