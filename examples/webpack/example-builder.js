@@ -13,7 +13,7 @@ const baseDir = dirname(fileURLToPath(import.meta.url));
 
 const isCssRegEx = /\.css(\?.*)?$/;
 const isJsRegEx = /\.js(\?.*)?$/;
-const importRegEx = /\simport .* from '([^']+)';\s/g;
+const importRegEx = /\s?import .*? from '([^']+)'/g;
 const isTemplateJs =
   /\/(jquery(-\d+\.\d+\.\d+)?|(bootstrap(\.bundle)?))(\.min)?\.js(\?.*)?$/;
 const isTemplateCss = /\/bootstrap(\.min)?\.css(\?.*)?$/;
@@ -345,11 +345,11 @@ export default class ExampleBuilder {
         name: data.name,
         dependencies: getDependencies(jsSources, pkg),
         devDependencies: {
-          parcel: '^2.0.0',
+          vite: '^3.0.3',
         },
         scripts: {
-          start: 'parcel index.html',
-          build: 'parcel build --public-url . index.html',
+          start: 'vite',
+          build: 'vite build',
         },
       },
       null,
