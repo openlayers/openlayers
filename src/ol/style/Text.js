@@ -2,6 +2,7 @@
  * @module ol/style/Text
  */
 import Fill from './Fill.js';
+import Observable from '../Observable.js';
 import {toSize} from '../size.js';
 
 /**
@@ -58,16 +59,22 @@ const DEFAULT_FILL_COLOR = '#333';
  * values in the array is `[top, right, bottom, left]`.
  */
 
+const change = 'change';
+
 /**
  * @classdesc
  * Set text style for vector features.
  * @api
  */
-class Text {
+class Text extends Observable {
   /**
    * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
+    super();
+
+    this.handleChange_ = this.handleChange_.bind(this);
+
     const options = opt_options || {};
 
     /**
@@ -128,10 +135,8 @@ class Text {
      * @private
      * @type {import("./Fill.js").default}
      */
-    this.fill_ =
-      options.fill !== undefined
-        ? options.fill
-        : new Fill({color: DEFAULT_FILL_COLOR});
+    this.fill_ = null;
+    this.setFill(options.fill || new Fill({color: DEFAULT_FILL_COLOR}));
 
     /**
      * @private
@@ -157,7 +162,10 @@ class Text {
      * @private
      * @type {import("./Stroke.js").default}
      */
-    this.stroke_ = options.stroke !== undefined ? options.stroke : null;
+    this.stroke_ = null;
+    if (options.stroke) {
+      this.setStroke(options.stroke);
+    }
 
     /**
      * @private
@@ -175,23 +183,32 @@ class Text {
      * @private
      * @type {import("./Fill.js").default}
      */
-    this.backgroundFill_ = options.backgroundFill
-      ? options.backgroundFill
-      : null;
+    this.backgroundFill_ = null;
+    if (options.backgroundFill) {
+      this.setBackgroundFill(options.backgroundFill);
+    }
 
     /**
      * @private
      * @type {import("./Stroke.js").default}
      */
-    this.backgroundStroke_ = options.backgroundStroke
-      ? options.backgroundStroke
-      : null;
+    this.backgroundStroke_ = null;
+    if (options.backgroundStroke) {
+      this.setBackgroundStroke(options.backgroundStroke);
+    }
 
     /**
      * @private
      * @type {Array<number>|null}
      */
     this.padding_ = options.padding === undefined ? null : options.padding;
+  }
+
+  /**
+   * @private
+   */
+  handleChange_() {
+    this.changed();
   }
 
   /**
@@ -405,6 +422,7 @@ class Text {
    */
   setOverflow(overflow) {
     this.overflow_ = overflow;
+    this.changed();
   }
 
   /**
@@ -415,6 +433,7 @@ class Text {
    */
   setFont(font) {
     this.font_ = font;
+    this.changed();
   }
 
   /**
@@ -425,6 +444,7 @@ class Text {
    */
   setMaxAngle(maxAngle) {
     this.maxAngle_ = maxAngle;
+    this.changed();
   }
 
   /**
@@ -435,6 +455,7 @@ class Text {
    */
   setOffsetX(offsetX) {
     this.offsetX_ = offsetX;
+    this.changed();
   }
 
   /**
@@ -445,6 +466,7 @@ class Text {
    */
   setOffsetY(offsetY) {
     this.offsetY_ = offsetY;
+    this.changed();
   }
 
   /**
@@ -455,6 +477,7 @@ class Text {
    */
   setPlacement(placement) {
     this.placement_ = placement;
+    this.changed();
   }
 
   /**
@@ -465,6 +488,7 @@ class Text {
    */
   setRotateWithView(rotateWithView) {
     this.rotateWithView_ = rotateWithView;
+    this.changed();
   }
 
   /**
@@ -474,7 +498,14 @@ class Text {
    * @api
    */
   setFill(fill) {
+    if (this.fill_) {
+      this.fill_.removeEventListener(change, this.handleChange_);
+    }
     this.fill_ = fill;
+    if (fill) {
+      fill.addEventListener(change, this.handleChange_);
+    }
+    this.changed();
   }
 
   /**
@@ -485,6 +516,7 @@ class Text {
    */
   setRotation(rotation) {
     this.rotation_ = rotation;
+    this.changed();
   }
 
   /**
@@ -496,6 +528,7 @@ class Text {
   setScale(scale) {
     this.scale_ = scale;
     this.scaleArray_ = toSize(scale !== undefined ? scale : 1);
+    this.changed();
   }
 
   /**
@@ -505,7 +538,14 @@ class Text {
    * @api
    */
   setStroke(stroke) {
+    if (this.stroke_) {
+      this.stroke_.removeEventListener(change, this.handleChange_);
+    }
     this.stroke_ = stroke;
+    if (stroke) {
+      stroke.addEventListener(change, this.handleChange_);
+    }
+    this.changed();
   }
 
   /**
@@ -516,6 +556,7 @@ class Text {
    */
   setText(text) {
     this.text_ = text;
+    this.changed();
   }
 
   /**
@@ -526,6 +567,7 @@ class Text {
    */
   setTextAlign(textAlign) {
     this.textAlign_ = textAlign;
+    this.changed();
   }
 
   /**
@@ -536,6 +578,7 @@ class Text {
    */
   setJustify(justify) {
     this.justify_ = justify;
+    this.changed();
   }
 
   /**
@@ -546,6 +589,7 @@ class Text {
    */
   setTextBaseline(textBaseline) {
     this.textBaseline_ = textBaseline;
+    this.changed();
   }
 
   /**
@@ -555,7 +599,14 @@ class Text {
    * @api
    */
   setBackgroundFill(fill) {
+    if (this.backgroundFill_) {
+      this.backgroundFill_.removeEventListener(change, this.handleChange_);
+    }
     this.backgroundFill_ = fill;
+    if (fill) {
+      fill.addEventListener(change, this.handleChange_);
+    }
+    this.changed();
   }
 
   /**
@@ -565,7 +616,14 @@ class Text {
    * @api
    */
   setBackgroundStroke(stroke) {
+    if (this.backgroundStroke_) {
+      this.backgroundStroke_.removeEventListener(change, this.handleChange_);
+    }
     this.backgroundStroke_ = stroke;
+    if (stroke) {
+      stroke.addEventListener(change, this.handleChange_);
+    }
+    this.changed();
   }
 
   /**
@@ -576,6 +634,7 @@ class Text {
    */
   setPadding(padding) {
     this.padding_ = padding;
+    this.changed();
   }
 }
 

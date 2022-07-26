@@ -2,6 +2,8 @@
  * @module ol/style/Fill
  */
 
+import Observable from '../Observable.js';
+
 /**
  * @typedef {Object} Options
  * @property {import("../color.js").Color|import("../colorlike.js").ColorLike|null} [color=null] A color, gradient or pattern.
@@ -14,11 +16,13 @@
  * Set fill style for vector features.
  * @api
  */
-class Fill {
+class Fill extends Observable {
   /**
    * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
+    super();
+
     const options = opt_options || {};
 
     /**
@@ -57,6 +61,7 @@ class Fill {
    */
   setColor(color) {
     this.color_ = color;
+    this.changed();
   }
 }
 

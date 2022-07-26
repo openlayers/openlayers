@@ -76,6 +76,7 @@ class CircleStyle extends RegularShape {
   setRadius(radius) {
     this.radius_ = radius;
     this.render();
+    this.changed();
   }
 }
 

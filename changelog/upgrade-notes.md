@@ -2,6 +2,10 @@
 
 ### Next version
 
+#### Style changes propagate to layers and features
+
+It is no longer necessary to call `layer.changed()` or `feature.changed()` if you modify the layer or feature's style with one of the setter methods.  Vector layers with a style or features with a style will now automatically dispatch change events when those styles are modified (resulting in a map render).
+
 ### 6.15.0
 
 #### Deprecated `tilePixelRatio` option for data tile sources.

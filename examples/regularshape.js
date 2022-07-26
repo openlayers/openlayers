@@ -137,6 +137,5 @@ document.getElementById('color-changer').addEventListener('click', function () {
   styles.square
     .getImage()
     .setFill(new Fill({color: colors[currentColor % colors.length]}));
-  vectorLayer.changed();
   currentColor++;
 });

@@ -1,6 +1,7 @@
 /**
  * @module ol/style/Image
  */
+import Observable from '../Observable.js';
 import {abstract} from '../util.js';
 import {toSize} from '../size.js';
 
@@ -21,11 +22,13 @@ import {toSize} from '../size.js';
  * @abstract
  * @api
  */
-class ImageStyle {
+class ImageStyle extends Observable {
   /**
    * @param {Options} options Options.
    */
   constructor(options) {
+    super();
+
     /**
      * @private
      * @type {number}
@@ -227,6 +230,7 @@ class ImageStyle {
    */
   setDisplacement(displacement) {
     this.displacement_ = displacement;
+    this.changed();
   }
 
   /**
@@ -237,6 +241,7 @@ class ImageStyle {
    */
   setOpacity(opacity) {
     this.opacity_ = opacity;
+    this.changed();
   }
 
   /**
@@ -247,6 +252,7 @@ class ImageStyle {
    */
   setRotateWithView(rotateWithView) {
     this.rotateWithView_ = rotateWithView;
+    this.changed();
   }
 
   /**
@@ -257,7 +263,9 @@ class ImageStyle {
    */
   setRotation(rotation) {
     this.rotation_ = rotation;
+    this.changed();
   }
+
   /**
    * Set the scale.
    *
@@ -267,6 +275,7 @@ class ImageStyle {
   setScale(scale) {
     this.scale_ = scale;
     this.scaleArray_ = toSize(scale);
+    this.changed();
   }
 
   /**

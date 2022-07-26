@@ -3,6 +3,7 @@ import Point from '../../../src/ol/geom/Point.js';
 import Style from '../../../src/ol/style/Style.js';
 import expect from '../expect.js';
 import sinon from 'sinon';
+import {Stroke} from '../../../src/ol/style.js';
 import {isEmpty} from '../../../src/ol/obj.js';
 
 describe('ol/Feature.js', function () {
@@ -33,6 +34,17 @@ describe('ol/Feature.js', function () {
       const geometry = feature.getGeometry();
       expect(geometry).to.be.a(Point);
       expect(feature.get('geometry')).to.be(geometry);
+    });
+  });
+
+  describe('change event', () => {
+    it('is fired if the style is modified', (done) => {
+      const feature = new Feature();
+      const style = new Style({stroke: new Stroke({width: 10})});
+      feature.setStyle(style);
+      feature.on('change', () => done());
+
+      style.getStroke().setWidth(42);
     });
   });
 
@@ -379,7 +391,8 @@ describe('ol/Feature.js', function () {
       const coordinates = geometryClone.getFlatCoordinates();
       expect(coordinates[0]).to.be(1);
       expect(coordinates[1]).to.be(2);
-      expect(clone.getStyle()).to.be(style);
+      expect(clone.getStyle()).to.be.a(Style);
+      expect(clone.getStyle()).not.to.be(style);
       expect(clone.get('barkey')).to.be('barval');
     });
 

@@ -3,11 +3,11 @@
  */
 import Layer from './Layer.js';
 import RBush from 'rbush';
-import {assign} from '../obj.js';
-import {
+import Style, {
   createDefaultStyle,
   toFunction as toStyleFunction,
 } from '../style/Style.js';
+import {assign} from '../obj.js';
 
 /**
  * @template {import("../source/Vector.js").default|import("../source/VectorTile.js").default} VectorSourceType
@@ -98,6 +98,8 @@ class BaseVectorLayer extends Layer {
     delete baseOptions.updateWhileAnimating;
     delete baseOptions.updateWhileInteracting;
     super(baseOptions);
+
+    this.handleStyleChange_ = this.handleStyleChange_.bind(this);
 
     /**
      * @private
@@ -245,6 +247,13 @@ class BaseVectorLayer extends Layer {
   }
 
   /**
+   * @private
+   */
+  handleStyleChange_() {
+    this.changed();
+  }
+
+  /**
    * Set the style for features.  This can be a single style object, an array
    * of styles, or a function that takes a feature and resolution and returns
    * an array of styles. If set to `null`, the layer has no style (a `null` style),
@@ -255,6 +264,25 @@ class BaseVectorLayer extends Layer {
    * @api
    */
   setStyle(opt_style) {
+    const change = 'change';
+    if (this.style_) {
+      if (this.style_ instanceof Style) {
+        this.style_.removeEventListener(change, this.handleStyleChange_);
+      } else if (Array.isArray(this.style_)) {
+        for (let i = 0; i < this.style_.length; ++i) {
+          this.style_[i].removeEventListener(change, this.handleStyleChange_);
+        }
+      }
+    }
+    if (opt_style) {
+      if (opt_style instanceof Style) {
+        opt_style.addEventListener(change, this.handleStyleChange_);
+      } else if (Array.isArray(opt_style)) {
+        for (let i = 0; i < opt_style.length; ++i) {
+          opt_style[i].addEventListener(change, this.handleStyleChange_);
+        }
+      }
+    }
     this.style_ = opt_style !== undefined ? opt_style : createDefaultStyle;
     this.styleFunction_ =
       opt_style === null ? undefined : toStyleFunction(this.style_);

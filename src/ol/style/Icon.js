@@ -306,6 +306,7 @@ class Icon extends ImageStyle {
   setAnchor(anchor) {
     this.anchor_ = anchor;
     this.normalizedAnchor_ = null;
+    this.changed();
   }
 
   /**

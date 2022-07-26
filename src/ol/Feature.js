@@ -3,6 +3,7 @@
  */
 import BaseObject from './Object.js';
 import EventType from './events/EventType.js';
+import Style from './style/Style.js';
 import {assert} from './asserts.js';
 import {listen, unlistenByKey} from './events.js';
 
@@ -81,6 +82,8 @@ class Feature extends BaseObject {
    */
   constructor(opt_geometryOrProperties) {
     super();
+
+    this.handleStyleChange_ = this.handleStyleChange_.bind(this);
 
     /***
      * @type {FeatureOnSignature<import("./events").EventsKey>}
@@ -161,8 +164,15 @@ class Feature extends BaseObject {
     if (geometry) {
       clone.setGeometry(/** @type {Geometry} */ (geometry.clone()));
     }
-    const style = this.getStyle();
+    let style = this.getStyle();
     if (style) {
+      if (style instanceof Style) {
+        style = style.clone();
+      } else if (Array.isArray(style)) {
+        style = style.map(function (s) {
+          return s.clone();
+        });
+      }
       clone.setStyle(style);
     }
     return clone;
@@ -261,6 +271,13 @@ class Feature extends BaseObject {
   }
 
   /**
+   * @private
+   */
+  handleStyleChange_() {
+    this.changed();
+  }
+
+  /**
    * Set the style for the feature to override the layer style.  This can be a
    * single style object, an array of styles, or a function that takes a
    * resolution and returns an array of styles. To unset the feature style, call
@@ -270,6 +287,25 @@ class Feature extends BaseObject {
    * @fires module:ol/events/Event~BaseEvent#event:change
    */
   setStyle(opt_style) {
+    const change = 'change';
+    if (this.style_) {
+      if (this.style_ instanceof Style) {
+        this.style_.removeEventListener(change, this.handleStyleChange_);
+      } else if (Array.isArray(this.style_)) {
+        for (let i = 0; i < this.style_.length; ++i) {
+          this.style_[i].removeEventListener(change, this.handleStyleChange_);
+        }
+      }
+    }
+    if (opt_style) {
+      if (opt_style instanceof Style) {
+        opt_style.addEventListener(change, this.handleStyleChange_);
+      } else if (Array.isArray(opt_style)) {
+        for (let i = 0; i < opt_style.length; ++i) {
+          opt_style[i].addEventListener(change, this.handleStyleChange_);
+        }
+      }
+    }
     this.style_ = opt_style;
     this.styleFunction_ = !opt_style
       ? undefined

@@ -2,6 +2,8 @@
  * @module ol/style/Stroke
  */
 
+import Observable from '../Observable.js';
+
 /**
  * @typedef {Object} Options
  * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [color] A color, gradient or pattern.
@@ -25,11 +27,13 @@
  * the options; they will not return the default.
  * @api
  */
-class Stroke {
+class Stroke extends Observable {
   /**
    * @param {Options} [opt_options] Options.
    */
   constructor(opt_options) {
+    super();
+
     const options = opt_options || {};
 
     /**
@@ -164,6 +168,7 @@ class Stroke {
    */
   setColor(color) {
     this.color_ = color;
+    this.changed();
   }
 
   /**
@@ -174,6 +179,7 @@ class Stroke {
    */
   setLineCap(lineCap) {
     this.lineCap_ = lineCap;
+    this.changed();
   }
 
   /**
@@ -190,6 +196,7 @@ class Stroke {
    */
   setLineDash(lineDash) {
     this.lineDash_ = lineDash;
+    this.changed();
   }
 
   /**
@@ -200,6 +207,7 @@ class Stroke {
    */
   setLineDashOffset(lineDashOffset) {
     this.lineDashOffset_ = lineDashOffset;
+    this.changed();
   }
 
   /**
@@ -210,6 +218,7 @@ class Stroke {
    */
   setLineJoin(lineJoin) {
     this.lineJoin_ = lineJoin;
+    this.changed();
   }
 
   /**
@@ -220,6 +229,7 @@ class Stroke {
    */
   setMiterLimit(miterLimit) {
     this.miterLimit_ = miterLimit;
+    this.changed();
   }
 
   /**
@@ -230,6 +240,7 @@ class Stroke {
    */
   setWidth(width) {
     this.width_ = width;
+    this.changed();
   }
 }
 

@@ -4,6 +4,7 @@
 
 import CircleStyle from './Circle.js';
 import Fill from './Fill.js';
+import Observable from '../Observable.js';
 import Stroke from './Stroke.js';
 import {assert} from '../asserts.js';
 
@@ -53,6 +54,8 @@ import {assert} from '../asserts.js';
  * @property {import("./Text.js").default} [text] Text style.
  * @property {number} [zIndex] Z index.
  */
+
+const change = 'change';
 
 /**
  * @classdesc
@@ -149,11 +152,15 @@ import {assert} from '../asserts.js';
  *
  * @api
  */
-class Style {
+class Style extends Observable {
   /**
    * @param {Options} [opt_options] Style options.
    */
   constructor(opt_options) {
+    super();
+
+    this.handleChange_ = this.handleChange_.bind(this);
+
     const options = opt_options || {};
 
     /**
@@ -176,13 +183,19 @@ class Style {
      * @private
      * @type {import("./Fill.js").default}
      */
-    this.fill_ = options.fill !== undefined ? options.fill : null;
+    this.fill_ = null;
+    if (options.fill) {
+      this.setFill(options.fill);
+    }
 
     /**
      * @private
      * @type {import("./Image.js").default}
      */
-    this.image_ = options.image !== undefined ? options.image : null;
+    this.image_ = null;
+    if (options.image) {
+      this.setImage(options.image);
+    }
 
     /**
      * @private
@@ -203,19 +216,32 @@ class Style {
      * @private
      * @type {import("./Stroke.js").default}
      */
-    this.stroke_ = options.stroke !== undefined ? options.stroke : null;
+    this.stroke_ = null;
+    if (options.stroke) {
+      this.setStroke(options.stroke);
+    }
 
     /**
      * @private
      * @type {import("./Text.js").default}
      */
-    this.text_ = options.text !== undefined ? options.text : null;
+    this.text_ = null;
+    if (options.text) {
+      this.setText(options.text);
+    }
 
     /**
      * @private
      * @type {number|undefined}
      */
     this.zIndex_ = options.zIndex;
+  }
+
+  /**
+   * @private
+   */
+  handleChange_() {
+    this.changed();
   }
 
   /**
@@ -259,6 +285,7 @@ class Style {
    */
   setRenderer(renderer) {
     this.renderer_ = renderer;
+    this.changed();
   }
 
   /**
@@ -317,7 +344,14 @@ class Style {
    * @api
    */
   setFill(fill) {
+    if (this.fill_) {
+      this.fill_.removeEventListener(change, this.handleChange_);
+    }
     this.fill_ = fill;
+    if (fill) {
+      fill.addEventListener(change, this.handleChange_);
+    }
+    this.changed();
   }
 
   /**
@@ -335,7 +369,14 @@ class Style {
    * @api
    */
   setImage(image) {
+    if (this.image_) {
+      this.image_.removeEventListener(change, this.handleChange_);
+    }
     this.image_ = image;
+    if (image) {
+      image.addEventListener(change, this.handleChange_);
+    }
+    this.changed();
   }
 
   /**
@@ -353,7 +394,14 @@ class Style {
    * @api
    */
   setStroke(stroke) {
+    if (this.stroke_) {
+      this.stroke_.removeEventListener(change, this.handleChange_);
+    }
     this.stroke_ = stroke;
+    if (stroke) {
+      stroke.addEventListener(change, this.handleChange_);
+    }
+    this.changed();
   }
 
   /**
@@ -371,7 +419,14 @@ class Style {
    * @api
    */
   setText(text) {
+    if (this.text_) {
+      this.text_.removeEventListener(change, this.handleChange_);
+    }
     this.text_ = text;
+    if (text) {
+      text.addEventListener(change, this.handleChange_);
+    }
+    this.changed();
   }
 
   /**
@@ -408,6 +463,7 @@ class Style {
       };
     }
     this.geometry_ = geometry;
+    this.changed();
   }
 
   /**
@@ -418,6 +474,7 @@ class Style {
    */
   setZIndex(zIndex) {
     this.zIndex_ = zIndex;
+    this.changed();
   }
 }
 

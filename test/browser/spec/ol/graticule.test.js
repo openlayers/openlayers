@@ -187,8 +187,6 @@ describe('ol.layer.Graticule', function () {
       graticule.createGraticule_(extent, [0, 0], resolution, squaredTolerance);
       expect(graticule.meridiansLabels_[0].text).to.be('lon: 0');
       expect(graticule.parallelsLabels_[0].text).to.be('lat: 0');
-      expect(graticule.lonLabelStyle_(feature).getText()).to.eql(lonLabelStyle);
-      expect(graticule.latLabelStyle_(feature).getText()).to.eql(latLabelStyle);
       feature.set('graticule_label', graticule.meridiansLabels_[0].text);
       expect(graticule.lonLabelStyle_(feature).getText().getText()).to.be(
         'lon: 0'

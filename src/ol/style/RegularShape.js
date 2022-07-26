@@ -45,6 +45,8 @@ import {
  * @property {number} miterLimit MiterLimit.
  */
 
+const change = 'change';
+
 /**
  * @classdesc
  * Set regular shape style for vector features. The resulting shape will be
@@ -73,6 +75,8 @@ class RegularShape extends ImageStyle {
       declutterMode: options.declutterMode,
     });
 
+    this.handleChange_ = this.handleChange_.bind(this);
+
     /**
      * @private
      * @type {Object<number, HTMLCanvasElement>}
@@ -84,12 +88,6 @@ class RegularShape extends ImageStyle {
      * @type {HTMLCanvasElement}
      */
     this.hitDetectionCanvas_ = null;
-
-    /**
-     * @private
-     * @type {import("./Fill.js").default}
-     */
-    this.fill_ = options.fill !== undefined ? options.fill : null;
 
     /**
      * @private
@@ -124,12 +122,6 @@ class RegularShape extends ImageStyle {
 
     /**
      * @private
-     * @type {import("./Stroke.js").default}
-     */
-    this.stroke_ = options.stroke !== undefined ? options.stroke : null;
-
-    /**
-     * @private
      * @type {import("../size.js").Size}
      */
     this.size_ = null;
@@ -140,7 +132,32 @@ class RegularShape extends ImageStyle {
      */
     this.renderOptions_ = null;
 
+    /**
+     * @private
+     * @type {import("./Fill.js").default}
+     */
+    this.fill_ = null;
+    if (options.fill) {
+      this.setFill(options.fill);
+    }
+
+    /**
+     * @private
+     * @type {import("./Stroke.js").default}
+     */
+    this.stroke_ = null;
+    if (options.stroke) {
+      this.setStroke(options.stroke);
+    }
+
     this.render();
+  }
+
+  /**
+   * @private
+   */
+  handleChange_() {
+    this.changed();
   }
 
   /**
@@ -206,8 +223,15 @@ class RegularShape extends ImageStyle {
    * @api
    */
   setFill(fill) {
+    if (this.fill_) {
+      this.fill_.removeEventListener(change, this.handleChange_);
+    }
     this.fill_ = fill;
+    if (fill) {
+      fill.addEventListener(change, this.handleChange_);
+    }
     this.render();
+    this.changed();
   }
 
   /**
@@ -325,8 +349,15 @@ class RegularShape extends ImageStyle {
    * @api
    */
   setStroke(stroke) {
+    if (this.stroke_) {
+      this.stroke_.removeEventListener(change, this.handleChange_);
+    }
     this.stroke_ = stroke;
+    if (stroke) {
+      stroke.addEventListener(change, this.handleChange_);
+    }
     this.render();
+    this.changed();
   }
 
   /**
