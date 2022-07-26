@@ -47,7 +47,7 @@
   "dependencies": {
     "earcut": "^2.2.3",
     "geotiff": "2.0.4",
-    "ol-mapbox-style": "^8.0.5",
+    "ol-mapbox-style": "8.2.0",
     "pbf": "3.2.1",
     "rbush": "^3.0.1"
   },
@@ -91,7 +91,7 @@
     "mocha": "10.0.0",
     "pixelmatch": "^5.1.0",
     "pngjs": "^6.0.0",
-    "proj4": "^2.7.5",
+    "proj4": "2.8.0",
     "puppeteer": "15.4.0",
     "regenerator-runtime": "^0.13.9",
     "rollup": "^2.42.3",
