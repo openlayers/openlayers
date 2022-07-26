@@ -146,6 +146,8 @@ function getDependencies(jsSource, pkg) {
       const dep = imp.startsWith('@') ? parts.slice(0, 2).join('/') : parts[0];
       if (dep in pkg.devDependencies) {
         dependencies[dep] = pkg.devDependencies[dep];
+      } else if (dep in pkg.dependencies) {
+        dependencies[dep] = pkg.dependencies[dep];
       }
     }
   }
