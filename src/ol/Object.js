@@ -4,8 +4,8 @@
 import Event from './events/Event.js';
 import ObjectEventType from './ObjectEventType.js';
 import Observable from './Observable.js';
-import {assign, isEmpty} from './obj.js';
 import {getUid} from './util.js';
+import {isEmpty} from './obj.js';
 
 /**
  * @classdesc
@@ -155,7 +155,7 @@ class BaseObject extends Observable {
    * @api
    */
   getProperties() {
-    return (this.values_ && assign({}, this.values_)) || {};
+    return (this.values_ && Object.assign({}, this.values_)) || {};
   }
 
   /**
@@ -239,7 +239,7 @@ class BaseObject extends Observable {
     if (!source.values_) {
       return;
     }
-    assign(this.values_ || (this.values_ = {}), source.values_);
+    Object.assign(this.values_ || (this.values_ = {}), source.values_);
   }
 
   /**

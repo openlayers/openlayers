@@ -13,7 +13,6 @@ import Polygon from '../geom/Polygon.js';
 import {get as getProjection} from '../proj.js';
 
 import SimpleGeometry from '../geom/SimpleGeometry.js';
-import {assign} from '../obj.js';
 
 // WKB spec: https://www.ogc.org/standards/sfa
 // EWKB spec: https://raw.githubusercontent.com/postgis/postgis/2.1.0/doc/ZMSgeoms.txt
@@ -423,7 +422,7 @@ class WkbWriter {
      * @property {number} Z NoData value for Z
      * @property {number} M NoData value for M
      */
-    this.nodata_ = assign({X: 0, Y: 0, Z: 0, M: 0}, opts.nodata);
+    this.nodata_ = Object.assign({X: 0, Y: 0, Z: 0, M: 0}, opts.nodata);
   }
 
   /**
@@ -459,7 +458,7 @@ class WkbWriter {
      * @property {number} [Z] NoData value for Z
      * @property {number} [M] NoData value for M
      */
-    const coordsObj = assign.apply(
+    const coordsObj = Object.assign.apply(
       null,
       layout.split('').map((axis, idx) => ({[axis]: coords[idx]}))
     );

@@ -4,7 +4,6 @@
 
 import TileImage from './TileImage.js';
 import {appendParams} from '../uri.js';
-import {assign} from '../obj.js';
 import {createEmpty} from '../extent.js';
 import {modulo} from '../math.js';
 import {scale as scaleSize, toSize} from '../size.js';
@@ -208,7 +207,7 @@ class TileArcGISRest extends TileImage {
    * @api
    */
   updateParams(params) {
-    assign(this.params_, params);
+    Object.assign(this.params_, params);
     this.setKey(this.getKeyForParams_());
   }
 
@@ -246,7 +245,7 @@ class TileArcGISRest extends TileImage {
       'FORMAT': 'PNG32',
       'TRANSPARENT': true,
     };
-    assign(baseParams, this.params_);
+    Object.assign(baseParams, this.params_);
 
     return this.getRequestUrl_(
       tileCoord,

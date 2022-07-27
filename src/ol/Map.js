@@ -3,7 +3,6 @@
  */
 import CompositeMapRenderer from './renderer/Composite.js';
 import PluggableMap from './PluggableMap.js';
-import {assign} from './obj.js';
 import {defaults as defaultControls} from './control.js';
 import {defaults as defaultInteractions} from './interaction.js';
 
@@ -59,7 +58,7 @@ class Map extends PluggableMap {
    * @param {import("./PluggableMap.js").MapOptions} options Map options.
    */
   constructor(options) {
-    options = assign({}, options);
+    options = Object.assign({}, options);
     if (!options.controls) {
       options.controls = defaultControls();
     }

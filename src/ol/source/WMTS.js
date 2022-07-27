@@ -4,7 +4,6 @@
 
 import TileImage from './TileImage.js';
 import {appendParams} from '../uri.js';
-import {assign} from '../obj.js';
 import {containsExtent} from '../extent.js';
 import {createFromCapabilitiesMatrixSet} from '../tilegrid/WMTS.js';
 import {createFromTileUrlFunctions, expandUrl} from '../tileurlfunction.js';
@@ -267,7 +266,7 @@ class WMTS extends TileImage {
    * @api
    */
   updateDimensions(dimensions) {
-    assign(this.dimensions_, dimensions);
+    Object.assign(this.dimensions_, dimensions);
     this.setKey(this.getKeyForDimensions_());
   }
 
@@ -287,7 +286,7 @@ class WMTS extends TileImage {
     };
 
     if (requestEncoding == 'KVP') {
-      assign(context, {
+      Object.assign(context, {
         'Service': 'WMTS',
         'Request': 'GetTile',
         'Version': this.version_,
@@ -327,7 +326,7 @@ class WMTS extends TileImage {
             'TileCol': tileCoord[1],
             'TileRow': tileCoord[2],
           };
-          assign(localContext, dimensions);
+          Object.assign(localContext, dimensions);
           let url = template;
           if (requestEncoding == 'KVP') {
             url = appendParams(url, localContext);

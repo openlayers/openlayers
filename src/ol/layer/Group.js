@@ -8,7 +8,7 @@ import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import ObjectEventType from '../ObjectEventType.js';
 import {assert} from '../asserts.js';
-import {assign, clear} from '../obj.js';
+import {clear} from '../obj.js';
 import {getIntersection} from '../extent.js';
 import {getUid} from '../util.js';
 import {listen, unlistenByKey} from '../events.js';
@@ -92,7 +92,7 @@ class LayerGroup extends BaseLayer {
    */
   constructor(opt_options) {
     const options = opt_options || {};
-    const baseOptions = /** @type {Options} */ (assign({}, options));
+    const baseOptions = /** @type {Options} */ (Object.assign({}, options));
     delete baseOptions.layers;
 
     let layers = options.layers;

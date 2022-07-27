@@ -8,7 +8,6 @@ import ImageWrapper from '../Image.js';
 import {DEFAULT_VERSION} from './wms.js';
 import {appendParams} from '../uri.js';
 import {assert} from '../asserts.js';
-import {assign} from '../obj.js';
 import {calculateSourceResolution} from '../reproj.js';
 import {ceil, floor, round} from '../math.js';
 import {compareVersions} from '../string.js';
@@ -206,7 +205,7 @@ class ImageWMS extends ImageSource {
       'TRANSPARENT': true,
       'QUERY_LAYERS': this.params_['LAYERS'],
     };
-    assign(baseParams, this.params_, params);
+    Object.assign(baseParams, this.params_, params);
 
     const x = floor((coordinate[0] - extent[0]) / resolution, DECIMALS);
     const y = floor((extent[3] - coordinate[1]) / resolution, DECIMALS);
@@ -265,7 +264,7 @@ class ImageWMS extends ImageSource {
       baseParams['SCALE'] = (resolution * mpu) / pixelSize;
     }
 
-    assign(baseParams, params);
+    Object.assign(baseParams, params);
 
     return appendParams(/** @type {string} */ (this.url_), baseParams);
   }
@@ -338,7 +337,7 @@ class ImageWMS extends ImageSource {
       'FORMAT': 'image/png',
       'TRANSPARENT': true,
     };
-    assign(params, this.params_);
+    Object.assign(params, this.params_);
 
     this.imageSize_[0] = round(
       getWidth(requestExtent) / imageResolution,
@@ -480,7 +479,7 @@ class ImageWMS extends ImageSource {
    * @api
    */
   updateParams(params) {
-    assign(this.params_, params);
+    Object.assign(this.params_, params);
     this.updateV13_();
     this.image_ = null;
     this.changed();

@@ -6,7 +6,6 @@ import EventType from '../events/EventType.js';
 import LayerProperty from './Property.js';
 import RenderEventType from '../render/EventType.js';
 import {assert} from '../asserts.js';
-import {assign} from '../obj.js';
 import {listen, unlistenByKey} from '../events.js';
 
 /**
@@ -95,7 +94,7 @@ class Layer extends BaseLayer {
    * @param {Options<SourceType>} options Layer options.
    */
   constructor(options) {
-    const baseOptions = assign({}, options);
+    const baseOptions = Object.assign({}, options);
     delete baseOptions.source;
 
     super(baseOptions);

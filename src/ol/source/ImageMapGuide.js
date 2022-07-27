@@ -6,7 +6,6 @@ import EventType from '../events/EventType.js';
 import ImageSource, {defaultImageLoadFunction} from './Image.js';
 import ImageWrapper from '../Image.js';
 import {appendParams} from '../uri.js';
-import {assign} from '../obj.js';
 import {
   containsExtent,
   getCenter,
@@ -220,7 +219,7 @@ class ImageMapGuide extends ImageSource {
    * @api
    */
   updateParams(params) {
-    assign(this.params_, params);
+    Object.assign(this.params_, params);
     this.changed();
   }
 
@@ -250,7 +249,7 @@ class ImageMapGuide extends ImageSource {
       'SETVIEWCENTERX': center[0],
       'SETVIEWCENTERY': center[1],
     };
-    assign(baseParams, params);
+    Object.assign(baseParams, params);
     return appendParams(baseUrl, baseParams);
   }
 

@@ -3,7 +3,6 @@
  */
 
 import {SAFARI_BUG_237906} from './has.js';
-import {assign} from './obj.js';
 
 /**
  * Constants taken from goog.webgl
@@ -92,7 +91,7 @@ const CONTEXT_IDS = ['experimental-webgl', 'webgl', 'webkit-3d', 'moz-webgl'];
  * @return {WebGLRenderingContext} WebGL rendering context.
  */
 export function getContext(canvas, opt_attributes) {
-  const attributes = assign(
+  const attributes = Object.assign(
     {
       preserveDrawingBuffer: true,
       antialias: SAFARI_BUG_237906 ? false : true, // https://bugs.webkit.org/show_bug.cgi?id=237906

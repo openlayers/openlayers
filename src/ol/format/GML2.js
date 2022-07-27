@@ -13,7 +13,6 @@ import {
   pushParseAndPop,
   pushSerializeAndPop,
 } from '../xml.js';
-import {assign} from '../obj.js';
 import {createOrUpdate} from '../extent.js';
 import {get as getProjection} from '../proj.js';
 import {
@@ -245,7 +244,7 @@ class GML2 extends GMLBase {
         }
       }
     }
-    const item = assign({}, context);
+    const item = Object.assign({}, context);
     item.node = node;
     pushSerializeAndPop(
       /** @type {import("../xml.js").NodeStackItem} */
@@ -330,7 +329,7 @@ class GML2 extends GMLBase {
     const context = /** @type {import("./Feature.js").WriteOptions} */ (
       objectStack[objectStack.length - 1]
     );
-    const item = assign({}, context);
+    const item = Object.assign({}, context);
     item['node'] = node;
     let value;
     if (Array.isArray(geometry)) {

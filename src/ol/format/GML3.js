@@ -21,7 +21,6 @@ import {
   pushParseAndPop,
   pushSerializeAndPop,
 } from '../xml.js';
-import {assign} from '../obj.js';
 import {createOrUpdate} from '../extent.js';
 import {extend} from '../array.js';
 import {get as getProjection} from '../proj.js';
@@ -815,7 +814,7 @@ class GML3 extends GMLBase {
     const context = /** @type {import("./Feature.js").WriteOptions} */ (
       objectStack[objectStack.length - 1]
     );
-    const item = assign({}, context);
+    const item = Object.assign({}, context);
     item['node'] = node;
     let value;
     if (Array.isArray(geometry)) {
@@ -888,7 +887,7 @@ class GML3 extends GMLBase {
         }
       }
     }
-    const item = assign({}, context);
+    const item = Object.assign({}, context);
     item.node = node;
     pushSerializeAndPop(
       /** @type {import("../xml.js").NodeStackItem} */
@@ -918,7 +917,7 @@ class GML3 extends GMLBase {
       this.writeFeatureElement,
       this
     );
-    const item = assign({}, context);
+    const item = Object.assign({}, context);
     item.node = node;
     pushSerializeAndPop(
       /** @type {import("../xml.js").NodeStackItem} */
@@ -1001,7 +1000,7 @@ class GML3 extends GMLBase {
       multiCurve: this.multiCurve_,
     };
     if (opt_options) {
-      assign(context, opt_options);
+      Object.assign(context, opt_options);
     }
     this.writeGeometryElement(geom, geometry, [context]);
     return geom;
@@ -1034,7 +1033,7 @@ class GML3 extends GMLBase {
       featureType: this.featureType,
     };
     if (opt_options) {
-      assign(context, opt_options);
+      Object.assign(context, opt_options);
     }
     this.writeFeatureMembers_(node, features, [context]);
     return node;

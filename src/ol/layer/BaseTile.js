@@ -3,7 +3,6 @@
  */
 import Layer from './Layer.js';
 import TileProperty from './TileProperty.js';
-import {assign} from '../obj.js';
 
 /***
  * @template Return
@@ -66,7 +65,7 @@ class BaseTileLayer extends Layer {
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
 
-    const baseOptions = assign({}, options);
+    const baseOptions = Object.assign({}, options);
 
     delete baseOptions.preload;
     delete baseOptions.useInterimTilesOnError;

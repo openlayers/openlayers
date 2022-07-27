@@ -3,7 +3,6 @@
  */
 import Layer from './Layer.js';
 import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer.js';
-import {assign} from '../obj.js';
 import {parseLiteralStyle} from '../webgl/ShaderBuilder.js';
 
 /**
@@ -77,7 +76,7 @@ class WebGLPointsLayer extends Layer {
    * @param {Options<VectorSourceType>} options Options.
    */
   constructor(options) {
-    const baseOptions = assign({}, options);
+    const baseOptions = Object.assign({}, options);
 
     super(baseOptions);
 
@@ -120,7 +119,7 @@ class WebGLPointsLayer extends Layer {
    * @param {Object<string, number>} variables Variables to update.
    */
   updateStyleVariables(variables) {
-    assign(this.styleVariables_, variables);
+    Object.assign(this.styleVariables_, variables);
     this.changed();
   }
 }

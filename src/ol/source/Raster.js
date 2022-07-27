@@ -11,7 +11,6 @@ import Source from './Source.js';
 import TileLayer from '../layer/Tile.js';
 import TileQueue from '../TileQueue.js';
 import TileSource from './Tile.js';
-import {assign} from '../obj.js';
 import {createCanvasContext2D} from '../dom.js';
 import {create as createTransform} from '../transform.js';
 import {equals, getCenter, getHeight, getWidth} from '../extent.js';
@@ -711,11 +710,11 @@ class RasterSource extends ImageSource {
    */
   updateFrameState_(extent, resolution, projection) {
     const frameState = /** @type {import("../PluggableMap.js").FrameState} */ (
-      assign({}, this.frameState_)
+      Object.assign({}, this.frameState_)
     );
 
     frameState.viewState = /** @type {import("../View.js").State} */ (
-      assign({}, frameState.viewState)
+      Object.assign({}, frameState.viewState)
     );
 
     const center = getCenter(extent);

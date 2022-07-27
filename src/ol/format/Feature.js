@@ -3,7 +3,6 @@
  */
 import Units from '../proj/Units.js';
 import {abstract} from '../util.js';
-import {assign} from '../obj.js';
 import {
   equivalent as equivalentProjection,
   get as getProjection,
@@ -127,7 +126,7 @@ class FeatureFormat {
    *     Updated options.
    */
   adaptOptions(options) {
-    return assign(
+    return Object.assign(
       {
         dataProjection: this.dataProjection,
         featureProjection: this.defaultFeatureProjection,

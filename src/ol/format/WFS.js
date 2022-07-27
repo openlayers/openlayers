@@ -21,7 +21,6 @@ import {
 } from '../xml.js';
 import {and as andFilterFn, bbox as bboxFilterFn} from './filter.js';
 import {assert} from '../asserts.js';
-import {assign} from '../obj.js';
 import {get as getProjection} from '../proj.js';
 import {
   readNonNegativeIntegerString,
@@ -333,12 +332,15 @@ class WFS extends XMLFeature {
     const context = {
       node,
     };
-    assign(context, {
+    Object.assign(context, {
       'featureType': this.featureType_,
       'featureNS': this.featureNS_,
     });
 
-    assign(context, this.getReadOptions(node, opt_options ? opt_options : {}));
+    Object.assign(
+      context,
+      this.getReadOptions(node, opt_options ? opt_options : {})
+    );
     const objectStack = [context];
     let featuresNS;
     if (this.version_ === '2.0.0') {
@@ -511,7 +513,7 @@ class WFS extends XMLFeature {
     const context = {
       node,
     };
-    assign(context, {
+    Object.assign(context, {
       'version': this.version_,
       'srsName': options.srsName,
       'featureNS': options.featureNS ? options.featureNS : this.featureNS_,
@@ -530,7 +532,7 @@ class WFS extends XMLFeature {
           filter
         );
       }
-      assign(context, {
+      Object.assign(context, {
         'geometryName': options.geometryName,
         'filter': filter,
       });
@@ -548,7 +550,7 @@ class WFS extends XMLFeature {
           options.srsName,
           options.filter
         );
-        assign(context, {
+        Object.assign(context, {
           'geometryName': featureType.geometryName,
           'filter': completeFilter,
         });
@@ -686,7 +688,7 @@ function createTransactionRequest(node, baseObj, version, options) {
   } else if (version === '2.0.0') {
     gmlVersion = 3.2;
   }
-  const obj = assign(
+  const obj = Object.assign(
     {node},
     {
       version,
@@ -1035,7 +1037,7 @@ function writeQuery(node, featureType, objectStack) {
     node.setAttributeNS(XMLNS, 'xmlns:' + featurePrefix, featureNS);
   }
   const item = /** @type {import("../xml.js").NodeStackItem} */ (
-    assign({}, context)
+    Object.assign({}, context)
   );
   item.node = node;
   pushSerializeAndPop(
@@ -1062,7 +1064,7 @@ function writeFilterCondition(node, filter, objectStack) {
   const context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   /** @type {import("../xml.js").NodeStackItem} */
   const item = {node};
-  assign(item, {context});
+  Object.assign(item, {context});
   pushSerializeAndPop(
     item,
     GETFEATURE_SERIALIZERS,
@@ -1167,7 +1169,7 @@ function writeLogicalFilter(node, filter, objectStack) {
   const context = parent['context'];
   /** @type {import("../xml.js").NodeStackItem} */
   const item = {node};
-  assign(item, {context});
+  Object.assign(item, {context});
   const conditions = filter.conditions;
   for (let i = 0, ii = conditions.length; i < ii; ++i) {
     const condition = conditions[i];
@@ -1191,7 +1193,7 @@ function writeNotFilter(node, filter, objectStack) {
   const context = parent['context'];
   /** @type {import("../xml.js").NodeStackItem} */
   const item = {node};
-  assign(item, {context});
+  Object.assign(item, {context});
   const condition = filter.condition;
   pushSerializeAndPop(
     item,
@@ -1332,7 +1334,7 @@ export function writeFilter(filter, opt_version) {
   const context = {
     node: child,
   };
-  assign(context, {
+  Object.assign(context, {
     'version': version,
     'filter': filter,
   });
@@ -1348,7 +1350,7 @@ export function writeFilter(filter, opt_version) {
 function writeGetFeature(node, featureTypes, objectStack) {
   const context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const item = /** @type {import("../xml.js").NodeStackItem} */ (
-    assign({}, context)
+    Object.assign({}, context)
   );
   item.node = node;
   pushSerializeAndPop(

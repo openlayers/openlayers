@@ -6,7 +6,6 @@ import EventType from '../events/EventType.js';
 import TileEventType from './TileEventType.js';
 import TileSource, {TileSourceEvent} from './Tile.js';
 import TileState from '../TileState.js';
-import {assign} from '../obj.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 import {getKeyZXY} from '../tilecoord.js';
 import {getUid} from '../util.js';
@@ -197,7 +196,7 @@ class DataTileSource extends TileSource {
       });
     }
 
-    const options = assign(
+    const options = Object.assign(
       {
         tileCoord: [z, x, y],
         loader: loader,

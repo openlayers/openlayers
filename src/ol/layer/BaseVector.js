@@ -3,7 +3,6 @@
  */
 import Layer from './Layer.js';
 import RBush from 'rbush';
-import {assign} from '../obj.js';
 import {
   createDefaultStyle,
   toFunction as toStyleFunction,
@@ -91,7 +90,7 @@ class BaseVectorLayer extends Layer {
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
 
-    const baseOptions = assign({}, options);
+    const baseOptions = Object.assign({}, options);
 
     delete baseOptions.style;
     delete baseOptions.renderBuffer;
