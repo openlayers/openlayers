@@ -25,7 +25,6 @@ import {
   doubleClick,
   never,
 } from '../../../../../src/ol/events/condition.js';
-import {getValues} from '../../../../../src/ol/obj.js';
 
 describe('ol.interaction.Modify', function () {
   let target, map, layer, source, features;
@@ -965,7 +964,7 @@ describe('ol.interaction.Modify', function () {
     beforeEach(function () {
       getModifyListeners = function (feature, modify) {
         const listeners = feature.listeners_['change'];
-        const candidates = getValues(modify);
+        const candidates = Object.values(modify);
         return listeners.filter(function (listener) {
           return candidates.indexOf(listener) !== -1;
         });
