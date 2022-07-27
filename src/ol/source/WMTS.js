@@ -9,7 +9,6 @@ import {containsExtent} from '../extent.js';
 import {createFromCapabilitiesMatrixSet} from '../tilegrid/WMTS.js';
 import {createFromTileUrlFunctions, expandUrl} from '../tileurlfunction.js';
 import {equivalent, get as getProjection, transformExtent} from '../proj.js';
-import {findIndex} from '../array.js';
 
 /**
  * Request encoding. One of 'KVP', 'REST'.
@@ -382,7 +381,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
   let idx;
   if (l['TileMatrixSetLink'].length > 1) {
     if ('projection' in config) {
-      idx = findIndex(l['TileMatrixSetLink'], function (elt, index, array) {
+      idx = l['TileMatrixSetLink'].findIndex(function (elt) {
         const tileMatrixSet = tileMatrixSets.find(function (el) {
           return el['Identifier'] == elt['TileMatrixSet'];
         });
@@ -396,7 +395,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
         }
       });
     } else {
-      idx = findIndex(l['TileMatrixSetLink'], function (elt, index, array) {
+      idx = l['TileMatrixSetLink'].findIndex(function (elt) {
         return elt['TileMatrixSet'] == config['matrixSet'];
       });
     }
@@ -417,7 +416,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
   if ('format' in config) {
     format = config['format'];
   }
-  idx = findIndex(l['Style'], function (elt, index, array) {
+  idx = l['Style'].findIndex(function (elt) {
     if ('style' in config) {
       return elt['Title'] == config['style'];
     } else {

@@ -209,20 +209,6 @@ export function stableSort(arr, compareFnc) {
 }
 
 /**
- * @param {Array<*>} arr The array to search in.
- * @param {Function} func Comparison function.
- * @return {number} Return index.
- */
-export function findIndex(arr, func) {
-  let index;
-  const found = !arr.every(function (el, idx) {
-    index = idx;
-    return !func(el, idx, arr);
-  });
-  return found ? index : -1;
-}
-
-/**
  * @param {Array<*>} arr The array to test.
  * @param {Function} [opt_func] Comparison function.
  * @param {boolean} [opt_strict] Strictly sorted (default false).
