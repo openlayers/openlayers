@@ -32,7 +32,7 @@ import {
   squaredDistanceToSegment,
 } from '../coordinate.js';
 import {createEditingStyle} from '../style/Style.js';
-import {equals, includes} from '../array.js';
+import {equals} from '../array.js';
 import {fromCircle} from '../geom/Polygon.js';
 import {
   fromUserCoordinate,
@@ -1190,7 +1190,7 @@ class Modify extends PointerInteraction {
             );
           if (
             geometry.getType() === 'Point' &&
-            includes(this.features_.getArray(), feature)
+            this.features_.getArray().includes(feature)
           ) {
             hitPointGeometry = geometry;
             const coordinate = geometry.getFlatCoordinates().slice(0, 2);

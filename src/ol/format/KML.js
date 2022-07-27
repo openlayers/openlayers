@@ -37,7 +37,7 @@ import {
 } from '../xml.js';
 import {asArray} from '../color.js';
 import {assert} from '../asserts.js';
-import {extend, includes} from '../array.js';
+import {extend} from '../array.js';
 import {get as getProjection} from '../proj.js';
 import {
   readBoolean,
@@ -631,7 +631,7 @@ class KML extends XMLFeature {
    * @return {import("../Feature.js").default} Feature.
    */
   readFeatureFromNode(node, opt_options) {
-    if (!includes(NAMESPACE_URIS, node.namespaceURI)) {
+    if (!NAMESPACE_URIS.includes(node.namespaceURI)) {
       return null;
     }
     const feature = this.readPlacemark_(node, [
@@ -651,7 +651,7 @@ class KML extends XMLFeature {
    * @return {Array<import("../Feature.js").default>} Features.
    */
   readFeaturesFromNode(node, opt_options) {
-    if (!includes(NAMESPACE_URIS, node.namespaceURI)) {
+    if (!NAMESPACE_URIS.includes(node.namespaceURI)) {
       return [];
     }
     let features;
@@ -730,14 +730,14 @@ class KML extends XMLFeature {
    */
   readNameFromNode(node) {
     for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
-      if (includes(NAMESPACE_URIS, n.namespaceURI) && n.localName == 'name') {
+      if (NAMESPACE_URIS.includes(n.namespaceURI) && n.localName == 'name') {
         return readString(n);
       }
     }
     for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
       const localName = n.localName;
       if (
-        includes(NAMESPACE_URIS, n.namespaceURI) &&
+        NAMESPACE_URIS.includes(n.namespaceURI) &&
         (localName == 'Document' ||
           localName == 'Folder' ||
           localName == 'Placemark' ||
@@ -803,7 +803,7 @@ class KML extends XMLFeature {
     const networkLinks = [];
     for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
       if (
-        includes(NAMESPACE_URIS, n.namespaceURI) &&
+        NAMESPACE_URIS.includes(n.namespaceURI) &&
         n.localName == 'NetworkLink'
       ) {
         const obj = pushParseAndPop({}, NETWORK_LINK_PARSERS, n, []);
@@ -813,7 +813,7 @@ class KML extends XMLFeature {
     for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
       const localName = n.localName;
       if (
-        includes(NAMESPACE_URIS, n.namespaceURI) &&
+        NAMESPACE_URIS.includes(n.namespaceURI) &&
         (localName == 'Document' || localName == 'Folder' || localName == 'kml')
       ) {
         extend(networkLinks, this.readNetworkLinksFromNode(n));
@@ -867,7 +867,7 @@ class KML extends XMLFeature {
   readRegionFromNode(node) {
     const regions = [];
     for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
-      if (includes(NAMESPACE_URIS, n.namespaceURI) && n.localName == 'Region') {
+      if (NAMESPACE_URIS.includes(n.namespaceURI) && n.localName == 'Region') {
         const obj = pushParseAndPop({}, REGION_PARSERS, n, []);
         regions.push(obj);
       }
@@ -875,7 +875,7 @@ class KML extends XMLFeature {
     for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
       const localName = n.localName;
       if (
-        includes(NAMESPACE_URIS, n.namespaceURI) &&
+        NAMESPACE_URIS.includes(n.namespaceURI) &&
         (localName == 'Document' || localName == 'Folder' || localName == 'kml')
       ) {
         extend(regions, this.readRegionFromNode(n));
