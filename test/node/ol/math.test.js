@@ -4,7 +4,6 @@ import {
   clamp,
   floor,
   lerp,
-  log2,
   modulo,
   round,
   solveLinearSystem,
@@ -33,32 +32,6 @@ describe('ol/math.js', () => {
 
     it('returns the correct value at Infinity', function () {
       expect(clamp(Infinity, 10, 20)).to.eql(20);
-    });
-  });
-
-  describe('log2', function () {
-    it('returns the correct value at Infinity', function () {
-      expect(log2(Infinity)).to.eql(Infinity);
-    });
-
-    it('returns the correct value at 3', function () {
-      expect(log2(3)).to.roughlyEqual(1.584962500721156, 1e-9);
-    });
-
-    it('returns the correct value at 2', function () {
-      expect(log2(2)).to.eql(1);
-    });
-
-    it('returns the correct value at 1', function () {
-      expect(log2(1)).to.eql(0);
-    });
-
-    it('returns the correct value at 0', function () {
-      expect(log2(0)).to.eql(-Infinity);
-    });
-
-    it('returns the correct value at -1', function () {
-      expect(log2(-1).toString()).to.eql('NaN');
     });
   });
 
