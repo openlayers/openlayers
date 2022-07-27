@@ -169,25 +169,6 @@ export function remove(arr, obj) {
 }
 
 /**
- * @param {Array<VALUE>} arr The array to search in.
- * @param {function(VALUE, number, ?) : boolean} func The function to compare.
- * @template VALUE
- * @return {VALUE|null} The element found or null.
- */
-export function find(arr, func) {
-  const length = arr.length >>> 0;
-  let value;
-
-  for (let i = 0; i < length; i++) {
-    value = arr[i];
-    if (func(value, i, arr)) {
-      return value;
-    }
-  }
-  return null;
-}
-
-/**
  * @param {Array|Uint8ClampedArray} arr1 The first array to compare.
  * @param {Array|Uint8ClampedArray} arr2 The second array to compare.
  * @return {boolean} Whether the two arrays are equal.

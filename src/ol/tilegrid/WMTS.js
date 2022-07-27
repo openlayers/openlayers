@@ -3,7 +3,6 @@
  */
 
 import TileGrid from './TileGrid.js';
-import {find} from '../array.js';
 import {get as getProjection} from '../proj.js';
 
 /**
@@ -138,7 +137,7 @@ export function createFromCapabilitiesMatrixSet(
     // use of matrixLimits to filter TileMatrices from GetCapabilities
     // TileMatrixSet from unavailable matrix levels.
     if (matrixLimits.length > 0) {
-      matrixAvailable = find(matrixLimits, function (elt_ml) {
+      matrixAvailable = matrixLimits.find(function (elt_ml) {
         if (elt[identifierPropName] == elt_ml[matrixIdsPropName]) {
           return true;
         }

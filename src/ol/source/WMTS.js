@@ -9,7 +9,7 @@ import {containsExtent} from '../extent.js';
 import {createFromCapabilitiesMatrixSet} from '../tilegrid/WMTS.js';
 import {createFromTileUrlFunctions, expandUrl} from '../tileurlfunction.js';
 import {equivalent, get as getProjection, transformExtent} from '../proj.js';
-import {find, findIndex} from '../array.js';
+import {findIndex} from '../array.js';
 
 /**
  * Request encoding. One of 'KVP', 'REST'.
@@ -372,10 +372,10 @@ export default WMTS;
  */
 export function optionsFromCapabilities(wmtsCap, config) {
   const layers = wmtsCap['Contents']['Layer'];
-  const l = find(layers, function (elt, index, array) {
+  const l = layers.find(function (elt) {
     return elt['Identifier'] == config['layer'];
   });
-  if (l === null) {
+  if (!l) {
     return null;
   }
   const tileMatrixSets = wmtsCap['Contents']['TileMatrixSet'];
@@ -383,7 +383,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
   if (l['TileMatrixSetLink'].length > 1) {
     if ('projection' in config) {
       idx = findIndex(l['TileMatrixSetLink'], function (elt, index, array) {
-        const tileMatrixSet = find(tileMatrixSets, function (el) {
+        const tileMatrixSet = tileMatrixSets.find(function (el) {
           return el['Identifier'] == elt['TileMatrixSet'];
         });
         const supportedCRS = tileMatrixSet['SupportedCRS'];
@@ -442,7 +442,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
   }
 
   const matrixSets = wmtsCap['Contents']['TileMatrixSet'];
-  const matrixSetObj = find(matrixSets, function (elt, index, array) {
+  const matrixSetObj = matrixSets.find(function (elt) {
     return elt['Identifier'] == matrixSet;
   });
 
@@ -477,8 +477,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
   //in case of matrix limits, use matrix limits to calculate extent
   if (matrixLimits) {
     selectedMatrixLimit = matrixLimits[matrixLimits.length - 1];
-    const m = find(
-      matrixSetObj.TileMatrix,
+    const m = matrixSetObj.TileMatrix.find(
       (tileMatrixValue) =>
         tileMatrixValue.Identifier === selectedMatrixLimit.TileMatrix ||
         matrixSetObj.Identifier + ':' + tileMatrixValue.Identifier ===
@@ -556,7 +555,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
 
     for (let i = 0, ii = gets.length; i < ii; ++i) {
       if (gets[i]['Constraint']) {
-        const constraint = find(gets[i]['Constraint'], function (element) {
+        const constraint = gets[i]['Constraint'].find(function (element) {
           return element['name'] == 'GetEncoding';
         });
         const encodings = constraint['AllowedValues']['Value'];
