@@ -15,32 +15,6 @@ export function clamp(value, min, max) {
 }
 
 /**
- * Return the hyperbolic cosine of a given number. The method will use the
- * native `Math.cosh` function if it is available, otherwise the hyperbolic
- * cosine will be calculated via the reference implementation of the Mozilla
- * developer network.
- *
- * @param {number} x X.
- * @return {number} Hyperbolic cosine of x.
- */
-export const cosh = (function () {
-  // Wrapped in a iife, to save the overhead of checking for the native
-  // implementation on every invocation.
-  let cosh;
-  if ('cosh' in Math) {
-    // The environment supports the native Math.cosh function, use it…
-    cosh = Math.cosh;
-  } else {
-    // … else, use the reference implementation of MDN:
-    cosh = function (x) {
-      const y = /** @type {Math} */ (Math).exp(x);
-      return (y + 1 / y) / 2;
-    };
-  }
-  return cosh;
-})();
-
-/**
  * Return the base 2 logarithm of a given number. The method will use the
  * native `Math.log2` function if it is available, otherwise the base 2
  * logarithm will be calculated via the reference implementation of the
