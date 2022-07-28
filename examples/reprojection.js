@@ -6,6 +6,7 @@ import WMTS, {optionsFromCapabilities} from '../src/ol/source/WMTS.js';
 import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';
 import proj4 from 'proj4';
 import {OSM, TileImage, TileWMS} from '../src/ol/source.js';
+import {createXYZ} from '../src/ol/tilegrid.js';
 import {getCenter, getWidth} from '../src/ol/extent.js';
 import {get as getProjection, transformExtent} from '../src/ol/proj.js';
 import {register} from '../src/ol/proj/proj4.js';
@@ -79,13 +80,22 @@ layers['osm'] = new TileLayer({
 
 layers['wms4326'] = new TileLayer({
   source: new TileWMS({
-    url: 'https://ahocevar.com/geoserver/wms',
+    url: 'https://ahocevar.com/geoserver/gwc/service/wms',
     crossOrigin: '',
     params: {
       'LAYERS': 'ne:NE1_HR_LC_SR_W_DR',
       'TILED': true,
+      'VERSION': '1.1.1',
     },
     projection: 'EPSG:4326',
+    // Source tile grid (before reprojection)
+    tileGrid: createXYZ({
+      extent: [-180, -90, 180, 90],
+      maxResolution: 360 / 512,
+      maxZoom: 10,
+    }),
+    // Accept a reprojection error of 2 pixels
+    reprojectionErrorThreshold: 2,
   }),
 });
 
