@@ -1,5 +1,5 @@
 import expect from '../expect.js';
-import {assign, clear, getValues, isEmpty} from '../../../src/ol/obj.js';
+import {assign, clear, isEmpty} from '../../../src/ol/obj.js';
 
 describe('ol/obj.js', () => {
   describe('assign()', function () {
@@ -46,13 +46,6 @@ describe('ol/obj.js', () => {
       expect(isEmpty(clear({foo: 'bar', num: 42}))).to.be(true);
       expect(isEmpty(clear({}))).to.be(true);
       expect(isEmpty(clear(null))).to.be(true);
-    });
-  });
-
-  describe('getValues()', function () {
-    it('gets a list of property values from an object', function () {
-      expect(getValues({foo: 'bar', num: 42}).sort()).to.eql([42, 'bar']);
-      expect(getValues([])).to.eql([]);
     });
   });
 

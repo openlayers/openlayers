@@ -16,7 +16,7 @@ import {assert} from '../asserts.js';
 import {containsExtent, equals, wrapAndSliceX} from '../extent.js';
 import {extend} from '../array.js';
 import {getUid} from '../util.js';
-import {getValues, isEmpty} from '../obj.js';
+import {isEmpty} from '../obj.js';
 import {listen, unlistenByKey} from '../events.js';
 import {xhr} from '../featureloader.js';
 
@@ -704,7 +704,7 @@ class VectorSource extends Source {
     } else if (this.featuresRtree_) {
       features = this.featuresRtree_.getAll();
       if (!isEmpty(this.nullGeometryFeatures_)) {
-        extend(features, getValues(this.nullGeometryFeatures_));
+        extend(features, Object.values(this.nullGeometryFeatures_));
       }
     }
     return /** @type {Array<import("../Feature.js").default<Geometry>>} */ (

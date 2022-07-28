@@ -44,25 +44,6 @@ export function clear(object) {
 }
 
 /**
- * Polyfill for Object.values().  Get an array of property values from an object.
- * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/values
- *
- * @param {!Object<K,V>} object The object from which to get the values.
- * @return {!Array<V>} The property values.
- * @template K,V
- */
-export const getValues =
-  typeof Object.values === 'function'
-    ? Object.values
-    : function (object) {
-        const values = [];
-        for (const property in object) {
-          values.push(object[property]);
-        }
-        return values;
-      };
-
-/**
  * Determine if an object has any properties.
  * @param {Object} object The object to check.
  * @return {boolean} The object is empty.

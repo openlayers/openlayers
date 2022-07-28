@@ -20,7 +20,6 @@ import {
   toUserCoordinate,
 } from '../proj.js';
 import {getUid} from '../util.js';
-import {getValues} from '../obj.js';
 import {listen, unlistenByKey} from '../events.js';
 
 /**
@@ -324,7 +323,7 @@ class Snap extends PointerInteraction {
    * @return {boolean} If the event was consumed.
    */
   handleUpEvent(evt) {
-    const featuresToUpdate = getValues(this.pendingFeatures_);
+    const featuresToUpdate = Object.values(this.pendingFeatures_);
     if (featuresToUpdate.length) {
       featuresToUpdate.forEach(this.updateFeature_.bind(this));
       this.pendingFeatures_ = {};
