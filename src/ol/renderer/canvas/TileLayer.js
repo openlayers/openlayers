@@ -13,7 +13,6 @@ import {
   makeInverse,
   toString as toTransformString,
 } from '../../transform.js';
-import {assign} from '../../obj.js';
 import {
   containsCoordinate,
   createEmpty,
@@ -411,7 +410,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     }
 
     if (!tileSource.getInterpolate()) {
-      assign(context, IMAGE_SMOOTHING_DISABLED);
+      Object.assign(context, IMAGE_SMOOTHING_DISABLED);
     }
 
     this.preRender(context, frameState);
@@ -562,7 +561,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     if (layerState.extent) {
       context.restore();
     }
-    assign(context, IMAGE_SMOOTHING_ENABLED);
+    Object.assign(context, IMAGE_SMOOTHING_ENABLED);
 
     if (canvasTransform !== canvas.style.transform) {
       canvas.style.transform = canvasTransform;

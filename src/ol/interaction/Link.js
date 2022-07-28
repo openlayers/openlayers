@@ -4,7 +4,6 @@
 import EventType from '../events/EventType.js';
 import Interaction from './Interaction.js';
 import MapEventType from '../MapEventType.js';
-import {assign} from '../obj.js';
 import {listen, unlistenByKey} from '../events.js';
 import {toFixed} from '../math.js';
 
@@ -76,7 +75,7 @@ class Link extends Interaction {
   constructor(opt_options) {
     super();
 
-    const options = assign(
+    const options = Object.assign(
       {animate: true, replace: false, prefix: ''},
       opt_options || {}
     );
@@ -282,7 +281,7 @@ class Link extends Interaction {
 
     if (updateView) {
       if (!this.initial_ && this.animationOptions_) {
-        view.animate(assign(viewProperties, this.animationOptions_));
+        view.animate(Object.assign(viewProperties, this.animationOptions_));
       } else {
         if (viewProperties.center) {
           view.setCenter(viewProperties.center);

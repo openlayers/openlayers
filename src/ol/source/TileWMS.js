@@ -6,7 +6,6 @@ import TileImage from './TileImage.js';
 import {DEFAULT_VERSION} from './wms.js';
 import {appendParams} from '../uri.js';
 import {assert} from '../asserts.js';
-import {assign} from '../obj.js';
 import {buffer, createEmpty} from '../extent.js';
 import {buffer as bufferSize, scale as scaleSize, toSize} from '../size.js';
 import {calculateSourceResolution} from '../reproj.js';
@@ -218,7 +217,7 @@ class TileWMS extends TileImage {
       'TRANSPARENT': true,
       'QUERY_LAYERS': this.params_['LAYERS'],
     };
-    assign(baseParams, this.params_, params);
+    Object.assign(baseParams, this.params_, params);
 
     const x = Math.floor((coordinate[0] - tileExtent[0]) / tileResolution);
     const y = Math.floor((tileExtent[3] - coordinate[1]) / tileResolution);
@@ -279,7 +278,7 @@ class TileWMS extends TileImage {
       baseParams['SCALE'] = (resolution * mpu) / pixelSize;
     }
 
-    assign(baseParams, params);
+    Object.assign(baseParams, params);
 
     return appendParams(/** @type {string} */ (this.urls[0]), baseParams);
   }
@@ -407,7 +406,7 @@ class TileWMS extends TileImage {
    * @api
    */
   updateParams(params) {
-    assign(this.params_, params);
+    Object.assign(this.params_, params);
     this.updateV13_();
     this.setKey(this.getKeyForParams_());
   }
@@ -462,7 +461,7 @@ class TileWMS extends TileImage {
       'FORMAT': 'image/png',
       'TRANSPARENT': true,
     };
-    assign(baseParams, this.params_);
+    Object.assign(baseParams, this.params_);
 
     return this.getRequestUrl_(
       tileCoord,

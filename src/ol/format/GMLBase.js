@@ -13,7 +13,6 @@ import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
 import XMLFeature from './XMLFeature.js';
-import {assign} from '../obj.js';
 import {extend} from '../array.js';
 import {
   getAllTextContent,
@@ -570,7 +569,7 @@ class GMLBase extends XMLFeature {
       featureNS: this.featureNS,
     };
     if (opt_options) {
-      assign(options, this.getReadOptions(node, opt_options));
+      Object.assign(options, this.getReadOptions(node, opt_options));
     }
     const features = this.readFeaturesInternal(node, [options]);
     return features || [];

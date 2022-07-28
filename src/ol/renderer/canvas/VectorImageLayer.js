@@ -9,7 +9,6 @@ import ImageState from '../../ImageState.js';
 import RBush from 'rbush';
 import ViewHint from '../../ViewHint.js';
 import {apply, compose, create} from '../../transform.js';
-import {assign} from '../../obj.js';
 import {getHeight, getWidth, isEmpty, scaleFromCenter} from '../../extent.js';
 
 /**
@@ -109,15 +108,15 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
       const context = vectorRenderer.context;
       const layerState = frameState.layerStatesArray[frameState.layerIndex];
       context.globalAlpha = layerState.opacity;
-      const imageLayerState = assign({}, layerState, {opacity: 1});
+      const imageLayerState = Object.assign({}, layerState, {opacity: 1});
       const imageFrameState =
         /** @type {import("../../PluggableMap.js").FrameState} */ (
-          assign({}, frameState, {
+          Object.assign({}, frameState, {
             declutterTree: new RBush(9),
             extent: renderedExtent,
             size: [width, height],
             viewState: /** @type {import("../../View.js").State} */ (
-              assign({}, frameState.viewState, {
+              Object.assign({}, frameState.viewState, {
                 rotation: 0,
               })
             ),

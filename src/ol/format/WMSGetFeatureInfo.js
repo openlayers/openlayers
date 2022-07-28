@@ -3,7 +3,6 @@
  */
 import GML2 from './GML2.js';
 import XMLFeature from './XMLFeature.js';
-import {assign} from '../obj.js';
 import {extend} from '../array.js';
 import {makeArrayPusher, makeStructureNS, pushParseAndPop} from '../xml.js';
 
@@ -157,7 +156,7 @@ class WMSGetFeatureInfo extends XMLFeature {
   readFeaturesFromNode(node, opt_options) {
     const options = {};
     if (opt_options) {
-      assign(options, this.getReadOptions(node, opt_options));
+      Object.assign(options, this.getReadOptions(node, opt_options));
     }
     return this.readFeatures_(node, [options]);
   }

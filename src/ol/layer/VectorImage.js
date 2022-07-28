@@ -3,7 +3,6 @@
  */
 import BaseVectorLayer from './BaseVector.js';
 import CanvasVectorImageLayerRenderer from '../renderer/canvas/VectorImageLayer.js';
-import {assign} from '../obj.js';
 
 /**
  * @template {import("../source/Vector.js").default} VectorSourceType
@@ -69,7 +68,7 @@ class VectorImageLayer extends BaseVectorLayer {
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
 
-    const baseOptions = assign({}, options);
+    const baseOptions = Object.assign({}, options);
     delete baseOptions.imageRatio;
     super(baseOptions);
 

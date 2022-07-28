@@ -6,7 +6,6 @@ import CanvasVectorTileLayerRenderer from '../renderer/canvas/VectorTileLayer.js
 import TileProperty from './TileProperty.js';
 import VectorTileRenderType from './VectorTileRenderType.js';
 import {assert} from '../asserts.js';
-import {assign} from '../obj.js';
 
 /***
  * @template Return
@@ -102,7 +101,7 @@ class VectorTileLayer extends BaseVectorLayer {
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
 
-    const baseOptions = /** @type {Object} */ (assign({}, options));
+    const baseOptions = /** @type {Object} */ (Object.assign({}, options));
     delete baseOptions.preload;
     delete baseOptions.useInterimTilesOnError;
 

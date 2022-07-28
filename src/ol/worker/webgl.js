@@ -3,7 +3,6 @@
  * @module ol/worker/webgl
  */
 import {WebGLWorkerMessageType} from '../render/webgl/constants.js';
-import {assign} from '../obj.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
@@ -49,7 +48,7 @@ worker.onmessage = (event) => {
       }
 
       /** @type {import('../render/webgl/constants.js').WebGLWorkerGenerateBuffersMessage} */
-      const message = assign(
+      const message = Object.assign(
         {
           vertexBuffer: vertexBuffer.buffer,
           indexBuffer: indexBuffer.buffer,
@@ -116,7 +115,7 @@ worker.onmessage = (event) => {
       const vertexBuffer = Float32Array.from(vertices);
 
       /** @type {import('../render/webgl/constants.js').WebGLWorkerGenerateBuffersMessage} */
-      const message = assign(
+      const message = Object.assign(
         {
           vertexBuffer: vertexBuffer.buffer,
           indexBuffer: indexBuffer.buffer,
@@ -154,7 +153,7 @@ worker.onmessage = (event) => {
       const vertexBuffer = Float32Array.from(vertices);
 
       /** @type {import('../render/webgl/constants.js').WebGLWorkerGenerateBuffersMessage} */
-      const message = assign(
+      const message = Object.assign(
         {
           vertexBuffer: vertexBuffer.buffer,
           indexBuffer: indexBuffer.buffer,

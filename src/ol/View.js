@@ -24,7 +24,6 @@ import {
   rotate as rotateCoordinate,
 } from './coordinate.js';
 import {assert} from './asserts.js';
-import {assign} from './obj.js';
 import {none as centerNone, createExtent} from './centerconstraint.js';
 import {clamp, modulo} from './math.js';
 import {
@@ -325,7 +324,7 @@ class View extends BaseObject {
      */
     this.un;
 
-    const options = assign({}, opt_options);
+    const options = Object.assign({}, opt_options);
 
     /**
      * @private
@@ -418,7 +417,7 @@ class View extends BaseObject {
    * @param {ViewOptions} options View options.
    */
   applyOptions_(options) {
-    const properties = assign({}, options);
+    const properties = Object.assign({}, options);
     for (const key in ViewProperty) {
       delete properties[key];
     }
@@ -541,7 +540,7 @@ class View extends BaseObject {
     // preserve rotation
     options.rotation = this.getRotation();
 
-    return assign({}, options, newOptions);
+    return Object.assign({}, options, newOptions);
   }
 
   /**
@@ -585,14 +584,14 @@ class View extends BaseObject {
     for (let i = 0; i < args.length; ++i) {
       let options = arguments[i];
       if (options.center) {
-        options = assign({}, options);
+        options = Object.assign({}, options);
         options.center = fromUserCoordinate(
           options.center,
           this.getProjection()
         );
       }
       if (options.anchor) {
-        options = assign({}, options);
+        options = Object.assign({}, options);
         options.anchor = fromUserCoordinate(
           options.anchor,
           this.getProjection()

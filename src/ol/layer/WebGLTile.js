@@ -14,7 +14,6 @@ import {
   getStringNumberEquivalent,
   uniformNameForVariable,
 } from '../style/expressions.js';
-import {assign} from '../obj.js';
 
 /**
  * @typedef {import("../source/DataTile.js").default|import("../source/TileImage.js").default} SourceType
@@ -308,7 +307,7 @@ class WebGLTileLayer extends BaseTileLayer {
    * @param {Options} opt_options Tile layer options.
    */
   constructor(opt_options) {
-    const options = opt_options ? assign({}, opt_options) : {};
+    const options = opt_options ? Object.assign({}, opt_options) : {};
 
     const style = options.style || {};
     delete options.style;
@@ -511,7 +510,7 @@ class WebGLTileLayer extends BaseTileLayer {
    * @api
    */
   updateStyleVariables(variables) {
-    assign(this.styleVariables_, variables);
+    Object.assign(this.styleVariables_, variables);
     this.changed();
   }
 }

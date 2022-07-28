@@ -7,7 +7,6 @@ import ImageSource, {defaultImageLoadFunction} from './Image.js';
 import ImageWrapper from '../Image.js';
 import {appendParams} from '../uri.js';
 import {assert} from '../asserts.js';
-import {assign} from '../obj.js';
 import {containsExtent, getHeight, getWidth} from '../extent.js';
 
 /**
@@ -172,7 +171,7 @@ class ImageArcGISRest extends ImageSource {
       'FORMAT': 'PNG32',
       'TRANSPARENT': true,
     };
-    assign(params, this.params_);
+    Object.assign(params, this.params_);
 
     extent = extent.slice();
     const centerX = (extent[0] + extent[2]) / 2;
@@ -311,7 +310,7 @@ class ImageArcGISRest extends ImageSource {
    * @api
    */
   updateParams(params) {
-    assign(this.params_, params);
+    Object.assign(this.params_, params);
     this.image_ = null;
     this.changed();
   }

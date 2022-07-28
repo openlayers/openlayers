@@ -25,7 +25,6 @@ import {
   isEmpty,
   wrapX as wrapExtentX,
 } from '../extent.js';
-import {assign} from '../obj.js';
 import {clamp} from '../math.js';
 import {degreesToStringHDMS} from '../coordinate.js';
 import {
@@ -170,7 +169,7 @@ class Graticule extends VectorLayer {
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
 
-    const baseOptions = assign(
+    const baseOptions = Object.assign(
       {
         updateWhileAnimating: true,
         updateWhileInteracting: true,

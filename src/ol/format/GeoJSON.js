@@ -12,8 +12,8 @@ import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
 import {assert} from '../asserts.js';
-import {assign, isEmpty} from '../obj.js';
 import {get as getProjection} from '../proj.js';
+import {isEmpty} from '../obj.js';
 import {transformGeometryWithOptions} from './Feature.js';
 
 /**
@@ -476,7 +476,7 @@ function writeGeometry(geometry, opt_options) {
  */
 function writeGeometryCollectionGeometry(geometry, opt_options) {
   const geometries = geometry.getGeometriesArray().map(function (geometry) {
-    const options = assign({}, opt_options);
+    const options = Object.assign({}, opt_options);
     delete options.featureProjection;
     return writeGeometry(geometry, options);
   });
