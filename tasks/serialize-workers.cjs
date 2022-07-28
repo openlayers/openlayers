@@ -80,7 +80,7 @@ exports.build = build;
  */
 async function main() {
   const inputDir = path.join(__dirname, '../src/ol/worker');
-  const outputDir = path.join(__dirname, '../build/ol/src/worker');
+  const outputDir = path.join(__dirname, '../build/ol/worker');
 
   await fse.ensureDir(outputDir);
 
