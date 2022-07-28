@@ -31,7 +31,6 @@ import {
   get as getProjection,
   transform,
 } from '../../../../../src/ol/proj.js';
-import {find} from '../../../../../src/ol/array.js';
 import {parse} from '../../../../../src/ol/xml.js';
 import {remove as removeTransform} from '../../../../../src/ol/proj/transforms.js';
 
@@ -4256,7 +4255,7 @@ describe('ol.format.KML', function () {
       });
 
       it('creates a Point and a MultiPolygon for Alaska', function () {
-        const alaska = find(features, function (feature) {
+        const alaska = features.find(function (feature) {
           return feature.get('name') === 'Alaska';
         });
         expect(alaska).to.be.an(Feature);
