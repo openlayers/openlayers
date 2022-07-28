@@ -80,19 +80,15 @@ OpenLayers appreciates contributions of all kinds.  We especially want to thank 
 
 See our [GitHub sponsors page](https://github.com/sponsors/openlayers) or [Open Collective](https://opencollective.com/openlayers/contribute/sponsors-214/checkout) if you too are interested in becoming a regular sponsor.
 
-## ES Modules
-
-The `ol` package contains a `src/` folder with the sources, authored as [ES Modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules). To use these untranspiled sources, either import modules from `ol/src` instead of `ol`, or configure your bundler with an alias pointing to `ol/src` for the `ol` package.
-
 ## TypeScript support
 
 The [ol package](https://npmjs.com/package/ol) includes auto-generated TypeScript declarations as `*.d.ts` files.
 
 ## Supported Browsers
 
-OpenLayers runs on all modern browsers that support [HTML5](https://html.spec.whatwg.org/multipage/) and [ECMAScript 5](https://262.ecma-international.org/5.1/). This includes Chrome, Firefox, Safari and Edge.
+OpenLayers runs on all modern browsers that support [HTML5](https://html.spec.whatwg.org/multipage/) and [ECMAScript 2017](https://262.ecma-international.org/8.0/). This includes Chrome, Firefox, Safari and Edge.
 
-For older browsers and platforms (Internet Explorer, Android 4.x, iOS v12 and older, Safari v12 and older), polyfills may be needed for the following browser features:
+For older browsers and platforms (Android 4.x, iOS v12 and older, Safari v12 and older), polyfills may be needed for the following browser features:
 
 * [`fetch`](https://caniuse.com/fetch): Available from [polyfill.io](https://polyfill.io/).
 * [`requestAnimationFrame`](https://caniuse.com/requestanimationframe): Available from [polyfill.io](https://polyfill.io/).
