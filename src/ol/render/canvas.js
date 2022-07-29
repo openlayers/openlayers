@@ -58,10 +58,10 @@ import {getFontParameters} from '../css.js';
 /**
  * @typedef {Object} TextState
  * @property {string} font Font.
- * @property {string} [textAlign] TextAlign.
- * @property {string} [justify] Justify.
- * @property {string} textBaseline TextBaseline.
- * @property {import('../style/Text.js').TextPlacement} [placement] Placement.
+ * @property {CanvasTextAlign} [textAlign] TextAlign.
+ * @property {import("../style/Text.js").TextJustify} [justify] Justify.
+ * @property {CanvasTextBaseline} textBaseline TextBaseline.
+ * @property {import("../style/Text.js").TextPlacement} [placement] Placement.
  * @property {number} [maxAngle] MaxAngle.
  * @property {boolean} [overflow] Overflow.
  * @property {import("../style/Fill.js").default} [backgroundFill] BackgroundFill.
@@ -134,13 +134,13 @@ export const defaultStrokeStyle = '#000';
 
 /**
  * @const
- * @type {string}
+ * @type {CanvasTextAlign}
  */
 export const defaultTextAlign = 'center';
 
 /**
  * @const
- * @type {string}
+ * @type {CanvasTextBaseline}
  */
 export const defaultTextBaseline = 'middle';
 

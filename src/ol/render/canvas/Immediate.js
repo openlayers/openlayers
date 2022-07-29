@@ -947,10 +947,8 @@ class CanvasImmediateRenderer extends VectorContext {
       : defaultTextAlign;
     if (!contextTextState) {
       context.font = textState.font;
-      context.textAlign = /** @type {CanvasTextAlign} */ (textAlign);
-      context.textBaseline = /** @type {CanvasTextBaseline} */ (
-        textState.textBaseline
-      );
+      context.textAlign = textAlign;
+      context.textBaseline = textState.textBaseline;
       this.contextTextState_ = {
         font: textState.font,
         textAlign: textAlign,
@@ -962,16 +960,12 @@ class CanvasImmediateRenderer extends VectorContext {
         context.font = textState.font;
       }
       if (contextTextState.textAlign != textAlign) {
-        contextTextState.textAlign = /** @type {CanvasTextAlign} */ (textAlign);
-        context.textAlign = /** @type {CanvasTextAlign} */ (textAlign);
+        contextTextState.textAlign = textAlign;
+        context.textAlign = textAlign;
       }
       if (contextTextState.textBaseline != textState.textBaseline) {
-        contextTextState.textBaseline = /** @type {CanvasTextBaseline} */ (
-          textState.textBaseline
-        );
-        context.textBaseline = /** @type {CanvasTextBaseline} */ (
-          textState.textBaseline
-        );
+        contextTextState.textBaseline = textState.textBaseline;
+        context.textBaseline = textState.textBaseline;
       }
     }
   }
