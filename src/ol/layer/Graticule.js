@@ -49,7 +49,26 @@ const DEFAULT_STROKE_STYLE = new Stroke({
  * @private
  */
 const INTERVALS = [
-  90, 45, 30, 20, 10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05, 0.01, 0.005, 0.002, 0.001,
+  90,
+  45,
+  30,
+  20,
+  10,
+  5,
+  2,
+  1,
+  30 / 60,
+  20 / 60,
+  10 / 60,
+  5 / 60,
+  2 / 60,
+  1 / 60,
+  30 / 3600,
+  20 / 3600,
+  10 / 3600,
+  5 / 3600,
+  2 / 3600,
+  1 / 3600,
 ];
 
 /**
@@ -144,7 +163,7 @@ const INTERVALS = [
  * Note that the default's `textAlign` configuration will not work well for
  * `latLabelPosition` configurations that position labels close to the left of
  * the viewport.
- * @property {Array<number>} [intervals=[90, 45, 30, 20, 10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05, 0.01, 0.005, 0.002, 0.001]]
+ * @property {Array<number>} [intervals=[90, 45, 30, 20, 10, 5, 2, 1, 30/60, 20/60, 10/60, 5/60, 2/60, 1/60, 30/3600, 20/3600, 10/3600, 5/3600, 2/3600, 1/3600]]
  * Intervals (in degrees) for the graticule. Example to limit graticules to 30 and 10 degrees intervals:
  * ```js
  * [30, 10]

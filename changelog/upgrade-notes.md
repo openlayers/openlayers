@@ -10,6 +10,10 @@ Please see https://docs.microsoft.com/en-us/lifecycle/announcements/internet-exp
 
 The `toStringHDMS` function from the `ol/coordinate.js` module now formats longitude, latitude pairs so that the minutes and seconds are omitted if they are zero.  This changes the values displayed on graticules.
 
+#### ol/later/Graticule
+
+The default intervals now align with integer minutes and seconds better suited to the default label formatter.  If formatting in decimal degrees you may wish to specify custom intervals suited to that format.
+
 ### 6.15.0
 
 #### Deprecated `tilePixelRatio` option for data tile sources.
