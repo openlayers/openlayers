@@ -14,6 +14,7 @@
     ]
   },
   "plugins": [
+    "jsdoc-plugin-intersection",
     "config/jsdoc/plugins/markdown.cjs",
     "jsdoc-plugin-typescript",
     "config/jsdoc/plugins/inline-options.cjs",

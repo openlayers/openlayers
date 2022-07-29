@@ -1,38 +1,27 @@
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 
-/** @type {VectorSource<import("../src/ol/geom/SimpleGeometry.js").default>} */
 const source = new VectorSource({
   url: 'data/geojson/switzerland.geojson',
   format: new GeoJSON(),
 });
-const style = new Style({
-  fill: new Fill({
-    color: 'rgba(255, 255, 255, 0.6)',
-  }),
-  stroke: new Stroke({
-    color: '#319FD3',
-    width: 1,
-  }),
-  image: new CircleStyle({
-    radius: 5,
-    fill: new Fill({
-      color: 'rgba(255, 255, 255, 0.6)',
-    }),
-    stroke: new Stroke({
-      color: '#319FD3',
-      width: 1,
-    }),
-  }),
-});
+
 const vectorLayer = new VectorLayer({
   source: source,
-  style: style,
+  style: {
+    'fill-color': 'rgba(255, 255, 255, 0.6)',
+    'stroke-width': 1,
+    'stroke-color': '#319FD3',
+    'circle-radius': 5,
+    'circle-fill-color': 'rgba(255, 255, 255, 0.6)',
+    'circle-stroke-width': 1,
+    'circle-stroke-color': '#319FD3',
+  },
 });
+
 const view = new View({
   center: [0, 0],
   zoom: 1,
