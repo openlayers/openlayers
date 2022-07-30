@@ -22,7 +22,7 @@ import {createFontStyle} from '../../../util.js';
 import {fromExtent} from '../../../../../../src/ol/geom/Polygon.js';
 import {get as getProjection} from '../../../../../../src/ol/proj.js';
 
-describe('ol.renderer.canvas.VectorLayer', function () {
+describe('ol/renderer/canvas/VectorLayer', function () {
   describe('constructor', function () {
     const fontFamily = 'Ubuntu - VectorLayerTest';
     const font = createFontStyle({
@@ -92,7 +92,7 @@ describe('ol.renderer.canvas.VectorLayer', function () {
       map.addLayer(layer);
       const spy = sinon.spy(layer.getRenderer(), 'renderFeature');
       map.renderSync();
-      expect(spy.getCall(0).args[2]).to.be(layerStyle);
+      expect(spy.getCall(0).args[2]).to.eql(layerStyle);
       expect(spy.getCall(1).args[2]).to.be(featureStyle);
       document.body.removeChild(target);
     });
