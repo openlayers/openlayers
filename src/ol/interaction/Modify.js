@@ -361,6 +361,7 @@ class Modify extends PointerInteraction {
      */
     this.hitDetection_ = null;
 
+    /** @type {Collection<Feature>} */
     let features;
     if (options.features) {
       features = options.features;
@@ -574,11 +575,11 @@ class Modify extends PointerInteraction {
   }
 
   /**
-   * @param {import("../Collection.js").CollectionEvent} evt Event.
+   * @param {import("../Collection.js").CollectionEvent<Feature>} evt Event.
    * @private
    */
   handleFeatureAdd_(evt) {
-    this.addFeature_(/** @type {Feature} */ (evt.element));
+    this.addFeature_(evt.element);
   }
 
   /**
@@ -594,12 +595,11 @@ class Modify extends PointerInteraction {
   }
 
   /**
-   * @param {import("../Collection.js").CollectionEvent} evt Event.
+   * @param {import("../Collection.js").CollectionEvent<Feature>} evt Event.
    * @private
    */
   handleFeatureRemove_(evt) {
-    const feature = /** @type {Feature} */ (evt.element);
-    this.removeFeature_(feature);
+    this.removeFeature_(evt.element);
   }
 
   /**

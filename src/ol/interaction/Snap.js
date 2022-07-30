@@ -45,7 +45,7 @@ import {listen, unlistenByKey} from '../events.js';
  */
 
 /**
- * @param  {import("../source/Vector.js").VectorSourceEvent|import("../Collection.js").CollectionEvent} evt Event.
+ * @param  {import("../source/Vector.js").VectorSourceEvent|import("../Collection.js").CollectionEvent<import("../Feature.js").default>} evt Event.
  * @return {import("../Feature.js").default} Feature.
  */
 function getFeatureFromEvent(evt) {
@@ -55,11 +55,13 @@ function getFeatureFromEvent(evt) {
     return /** @type {import("../source/Vector.js").VectorSourceEvent} */ (evt)
       .feature;
   } else if (
-    /** @type {import("../Collection.js").CollectionEvent} */ (evt).element
+    /** @type {import("../Collection.js").CollectionEvent<import("../Feature.js").default>} */ (
+      evt
+    ).element
   ) {
-    return /** @type {import("../Feature.js").default} */ (
-      /** @type {import("../Collection.js").CollectionEvent} */ (evt).element
-    );
+    return /** @type {import("../Collection.js").CollectionEvent<import("../Feature.js").default>} */ (
+      evt
+    ).element;
   }
 }
 
@@ -261,6 +263,7 @@ class Snap extends PointerInteraction {
    * @private
    */
   getFeatures_() {
+    /** @type {import("../Collection.js").default<import("../Feature.js").default>|Array<import("../Feature.js").default>} */
     let features;
     if (this.features_) {
       features = this.features_;
@@ -284,7 +287,7 @@ class Snap extends PointerInteraction {
   }
 
   /**
-   * @param {import("../source/Vector.js").VectorSourceEvent|import("../Collection.js").CollectionEvent} evt Event.
+   * @param {import("../source/Vector.js").VectorSourceEvent|import("../Collection.js").CollectionEvent<import("../Feature.js").default>} evt Event.
    * @private
    */
   handleFeatureAdd_(evt) {
@@ -293,7 +296,7 @@ class Snap extends PointerInteraction {
   }
 
   /**
-   * @param {import("../source/Vector.js").VectorSourceEvent|import("../Collection.js").CollectionEvent} evt Event.
+   * @param {import("../source/Vector.js").VectorSourceEvent|import("../Collection.js").CollectionEvent<import("../Feature.js").default>} evt Event.
    * @private
    */
   handleFeatureRemove_(evt) {

@@ -439,7 +439,7 @@ class PluggableMap extends BaseObject {
     this.controls.addEventListener(
       CollectionEventType.ADD,
       /**
-       * @param {import("./Collection.js").CollectionEvent} event CollectionEvent.
+       * @param {import("./Collection.js").CollectionEvent<import("./control/Control.js").default>} event CollectionEvent
        */
       function (event) {
         event.element.setMap(this);
@@ -449,7 +449,7 @@ class PluggableMap extends BaseObject {
     this.controls.addEventListener(
       CollectionEventType.REMOVE,
       /**
-       * @param {import("./Collection.js").CollectionEvent} event CollectionEvent.
+       * @param {import("./Collection.js").CollectionEvent<import("./control/Control.js").default>} event CollectionEvent.
        */
       function (event) {
         event.element.setMap(null);
@@ -459,7 +459,7 @@ class PluggableMap extends BaseObject {
     this.interactions.addEventListener(
       CollectionEventType.ADD,
       /**
-       * @param {import("./Collection.js").CollectionEvent} event CollectionEvent.
+       * @param {import("./Collection.js").CollectionEvent<import("./interaction/Interaction.js").default>} event CollectionEvent.
        */
       function (event) {
         event.element.setMap(this);
@@ -469,7 +469,7 @@ class PluggableMap extends BaseObject {
     this.interactions.addEventListener(
       CollectionEventType.REMOVE,
       /**
-       * @param {import("./Collection.js").CollectionEvent} event CollectionEvent.
+       * @param {import("./Collection.js").CollectionEvent<import("./interaction/Interaction.js").default>} event CollectionEvent.
        */
       function (event) {
         event.element.setMap(null);
@@ -479,25 +479,20 @@ class PluggableMap extends BaseObject {
     this.overlays_.addEventListener(
       CollectionEventType.ADD,
       /**
-       * @param {import("./Collection.js").CollectionEvent} event CollectionEvent.
+       * @param {import("./Collection.js").CollectionEvent<import("./Overlay.js").default>} event CollectionEvent.
        */
       function (event) {
-        this.addOverlayInternal_(
-          /** @type {import("./Overlay.js").default} */ (event.element)
-        );
+        this.addOverlayInternal_(event.element);
       }.bind(this)
     );
 
     this.overlays_.addEventListener(
       CollectionEventType.REMOVE,
       /**
-       * @param {import("./Collection.js").CollectionEvent} event CollectionEvent.
+       * @param {import("./Collection.js").CollectionEvent<import("./Overlay.js").default>} event CollectionEvent.
        */
       function (event) {
-        const overlay = /** @type {import("./Overlay.js").default} */ (
-          event.element
-        );
-        const id = overlay.getId();
+        const id = event.element.getId();
         if (id !== undefined) {
           delete this.overlayIdIndex_[id.toString()];
         }
@@ -1709,7 +1704,12 @@ function createOptionsInternal(options) {
     options.layers &&
     typeof (/** @type {?} */ (options.layers).getLayers) === 'function'
       ? /** @type {LayerGroup} */ (options.layers)
-      : new LayerGroup({layers: /** @type {Collection} */ (options.layers)});
+      : new LayerGroup({
+          layers:
+            /** @type {Collection<import("./layer/Base.js").default>|Array<import("./layer/Base.js").default>} */ (
+              options.layers
+            ),
+        });
   values[MapProperty.LAYERGROUP] = layerGroup;
 
   values[MapProperty.TARGET] = options.target;
@@ -1717,6 +1717,7 @@ function createOptionsInternal(options) {
   values[MapProperty.VIEW] =
     options.view instanceof View ? options.view : new View();
 
+  /** @type {Collection<import("./control/Control.js").default>} */
   let controls;
   if (options.controls !== undefined) {
     if (Array.isArray(options.controls)) {
@@ -1726,10 +1727,11 @@ function createOptionsInternal(options) {
         typeof (/** @type {?} */ (options.controls).getArray) === 'function',
         47
       ); // Expected `controls` to be an array or an `import("./Collection.js").Collection`
-      controls = /** @type {Collection} */ (options.controls);
+      controls = options.controls;
     }
   }
 
+  /** @type {Collection<import("./interaction/Interaction").default>} */
   let interactions;
   if (options.interactions !== undefined) {
     if (Array.isArray(options.interactions)) {
@@ -1740,10 +1742,11 @@ function createOptionsInternal(options) {
           'function',
         48
       ); // Expected `interactions` to be an array or an `import("./Collection.js").Collection`
-      interactions = /** @type {Collection} */ (options.interactions);
+      interactions = options.interactions;
     }
   }
 
+  /** @type {Collection<import("./Overlay.js").default>} */
   let overlays;
   if (options.overlays !== undefined) {
     if (Array.isArray(options.overlays)) {

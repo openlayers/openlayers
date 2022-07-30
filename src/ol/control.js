@@ -50,6 +50,7 @@ export {default as ZoomToExtent} from './control/ZoomToExtent.js';
 export function defaults(opt_options) {
   const options = opt_options ? opt_options : {};
 
+  /** @type {Collection<import("./control/Control.js").default>} */
   const controls = new Collection();
 
   const zoomControl = options.zoom !== undefined ? options.zoom : true;

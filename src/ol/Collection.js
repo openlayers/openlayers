@@ -18,11 +18,12 @@ const Property = {
  * @classdesc
  * Events emitted by {@link module:ol/Collection~Collection} instances are instances of this
  * type.
+ * @template T
  */
 export class CollectionEvent extends Event {
   /**
    * @param {import("./CollectionEventType.js").default} type Type.
-   * @param {*} element Element.
+   * @param {T} element Element.
    * @param {number} index The index of the added or removed element.
    */
   constructor(type, element, index) {
@@ -30,7 +31,7 @@ export class CollectionEvent extends Event {
 
     /**
      * The element that is added to or removed from the collection.
-     * @type {*}
+     * @type {T}
      * @api
      */
     this.element = element;
@@ -45,10 +46,11 @@ export class CollectionEvent extends Event {
 }
 
 /***
+ * @template T
  * @template Return
  * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return> &
  *   import("./Observable").OnSignature<import("./ObjectEventType").Types|'change:length', import("./Object").ObjectEvent, Return> &
- *   import("./Observable").OnSignature<'add'|'remove', CollectionEvent, Return> &
+ *   import("./Observable").OnSignature<'add'|'remove', CollectionEvent<T>, Return> &
  *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|import("./ObjectEventType").Types|
  *     'change:length'|'add'|'remove',Return>} CollectionOnSignature
  */
@@ -81,17 +83,17 @@ class Collection extends BaseObject {
     super();
 
     /***
-     * @type {CollectionOnSignature<import("./events").EventsKey>}
+     * @type {CollectionOnSignature<T, import("./events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {CollectionOnSignature<import("./events").EventsKey>}
+     * @type {CollectionOnSignature<T, import("./events").EventsKey>}
      */
     this.once;
 
     /***
-     * @type {CollectionOnSignature<void>}
+     * @type {CollectionOnSignature<T, void>}
      */
     this.un;
 
@@ -264,7 +266,9 @@ class Collection extends BaseObject {
     this.array_.splice(index, 1);
     this.updateLength_();
     this.dispatchEvent(
-      new CollectionEvent(CollectionEventType.REMOVE, prev, index)
+      /** @type {CollectionEvent<T>} */ (
+        new CollectionEvent(CollectionEventType.REMOVE, prev, index)
+      )
     );
     return prev;
   }
@@ -290,10 +294,14 @@ class Collection extends BaseObject {
     const prev = this.array_[index];
     this.array_[index] = elem;
     this.dispatchEvent(
-      new CollectionEvent(CollectionEventType.REMOVE, prev, index)
+      /** @type {CollectionEvent<T>} */ (
+        new CollectionEvent(CollectionEventType.REMOVE, prev, index)
+      )
     );
     this.dispatchEvent(
-      new CollectionEvent(CollectionEventType.ADD, elem, index)
+      /** @type {CollectionEvent<T>} */ (
+        new CollectionEvent(CollectionEventType.ADD, elem, index)
+      )
     );
   }
 

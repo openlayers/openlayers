@@ -302,10 +302,7 @@ class VectorSource extends Source {
     /** @type {Array<import("../Feature.js").default<Geometry>>} */
     let features;
     if (Array.isArray(options.features)) {
-      features =
-        /** @type {Array<import("../Feature.js").default<Geometry>>} */ (
-          options.features
-        );
+      features = options.features;
     } else if (options.features) {
       collection = options.features;
       features = collection.getArray();
@@ -501,16 +498,12 @@ class VectorSource extends Source {
     collection.addEventListener(
       CollectionEventType.ADD,
       /**
-       * @param {import("../Collection.js").CollectionEvent} evt The collection event
+       * @param {import("../Collection.js").CollectionEvent<import("../Feature.js").default<Geometry>>} evt The collection event
        */
       function (evt) {
         if (!modifyingCollection) {
           modifyingCollection = true;
-          this.addFeature(
-            /** @type {import("../Feature.js").default<Geometry>} */ (
-              evt.element
-            )
-          );
+          this.addFeature(evt.element);
           modifyingCollection = false;
         }
       }.bind(this)
@@ -518,16 +511,12 @@ class VectorSource extends Source {
     collection.addEventListener(
       CollectionEventType.REMOVE,
       /**
-       * @param {import("../Collection.js").CollectionEvent} evt The collection event
+       * @param {import("../Collection.js").CollectionEvent<import("../Feature.js").default<Geometry>>} evt The collection event
        */
       function (evt) {
         if (!modifyingCollection) {
           modifyingCollection = true;
-          this.removeFeature(
-            /** @type {import("../Feature.js").default<Geometry>} */ (
-              evt.element
-            )
-          );
+          this.removeFeature(evt.element);
           modifyingCollection = false;
         }
       }.bind(this)

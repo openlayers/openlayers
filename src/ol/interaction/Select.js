@@ -75,7 +75,7 @@ const SelectEventType = {
  * @property {boolean} [multi=false] A boolean that determines if the default
  * behaviour should select only single features or all (overlapping) features at
  * the clicked map position. The default of `false` means single select.
- * @property {import("../Collection.js").default<import("../Feature.js").default>} [features]
+ * @property {Collection<Feature>} [features]
  * Collection where the interaction will place selected features. Optional. If
  * not set the interaction will create a collection. In any case the collection
  * used by the interaction is returned by
@@ -245,7 +245,7 @@ class Select extends Interaction {
 
     /**
      * @private
-     * @type {import("../Collection.js").default}
+     * @type {Collection<Feature>}
      */
     this.features_ = options.features || new Collection();
 
@@ -290,7 +290,7 @@ class Select extends Interaction {
 
   /**
    * Get the selected features.
-   * @return {import("../Collection.js").default<import("../Feature.js").default>} Features collection.
+   * @return {Collection<Feature>} Features collection.
    * @api
    */
   getFeatures() {
@@ -367,7 +367,7 @@ class Select extends Interaction {
   }
 
   /**
-   * @param {import("../Collection.js").CollectionEvent} evt Event.
+   * @param {import("../Collection.js").CollectionEvent<Feature>} evt Event.
    * @private
    */
   addFeature_(evt) {
@@ -396,13 +396,12 @@ class Select extends Interaction {
   }
 
   /**
-   * @param {import("../Collection.js").CollectionEvent} evt Event.
+   * @param {import("../Collection.js").CollectionEvent<Feature>} evt Event.
    * @private
    */
   removeFeature_(evt) {
-    const feature = evt.element;
     if (this.style_) {
-      this.restorePreviousStyle_(feature);
+      this.restorePreviousStyle_(evt.element);
     }
   }
 
@@ -414,7 +413,7 @@ class Select extends Interaction {
   }
 
   /**
-   * @param {import("../Feature.js").default} feature Feature
+   * @param {Feature} feature Feature
    * @private
    */
   applySelectedStyle_(feature) {
@@ -426,7 +425,7 @@ class Select extends Interaction {
   }
 
   /**
-   * @param {import("../Feature.js").default} feature Feature
+   * @param {Feature} feature Feature
    * @private
    */
   restorePreviousStyle_(feature) {
@@ -450,7 +449,7 @@ class Select extends Interaction {
   }
 
   /**
-   * @param {import("../Feature.js").default} feature Feature.
+   * @param {Feature} feature Feature.
    * @private
    */
   removeFeatureLayerAssociation_(feature) {
@@ -476,12 +475,12 @@ class Select extends Interaction {
     const features = this.getFeatures();
 
     /**
-     * @type {Array<import("../Feature.js").default>}
+     * @type {Array<Feature>}
      */
     const deselected = [];
 
     /**
-     * @type {Array<import("../Feature.js").default>}
+     * @type {Array<Feature>}
      */
     const selected = [];
 
