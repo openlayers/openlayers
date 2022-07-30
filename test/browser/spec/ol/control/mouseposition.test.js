@@ -84,8 +84,8 @@ describe('ol/control/MousePosition', function () {
         expect(element.innerHTML).to.be('some text');
       });
 
-      it('renders the last posisition if placeholder is false and mouse moves outside the viewport', function () {
-        const ctrl = new MousePosition({placeholder: false});
+      it('renders the last posisition if placeholder is not set and mouse moves outside the viewport', function () {
+        const ctrl = new MousePosition();
         ctrl.setMap(map);
         map.renderSync();
 
@@ -105,7 +105,7 @@ describe('ol/control/MousePosition', function () {
         expect(element.innerHTML).to.be('20,-30');
       });
 
-      it('renders an empty space if placehodler is set to the same and mouse moves outside the viewport', function () {
+      it('renders an empty space if placeholder is set to the same and mouse moves outside the viewport', function () {
         const ctrl = new MousePosition({
           placeholder: '',
         });
@@ -126,74 +126,6 @@ describe('ol/control/MousePosition', function () {
 
         simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
         expect(element.innerHTML).to.be('');
-      });
-    });
-
-    describe('undefinedHTML (deprecated)', function () {
-      it('renders undefinedHTML when mouse moves out', function () {
-        const ctrl = new MousePosition({
-          undefinedHTML: 'some text',
-        });
-        ctrl.setMap(map);
-        map.renderSync();
-
-        const element = document.querySelector(
-          '.ol-mouse-position',
-          map.getTarget()
-        );
-
-        simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
-        expect(element.innerHTML).to.be('some text');
-
-        simulateEvent(EventType.POINTERMOVE, 20, 30);
-        expect(element.innerHTML).to.be('20,-30');
-
-        simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
-        expect(element.innerHTML).to.be('some text');
-      });
-
-      it('clears the mouse position by default when the mouse moves outside the viewport', function () {
-        const ctrl = new MousePosition();
-        ctrl.setMap(map);
-        map.renderSync();
-
-        const element = document.querySelector(
-          '.ol-mouse-position',
-          map.getTarget()
-        );
-
-        simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
-        expect(element.innerHTML).to.be('&nbsp;');
-
-        target.dispatchEvent(new PointerEvent('pointermove'));
-        simulateEvent(EventType.POINTERMOVE, 20, 30);
-        expect(element.innerHTML).to.be('20,-30');
-
-        simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
-        expect(element.innerHTML).to.be('&nbsp;');
-      });
-
-      it('retains the mouse position when undefinedHTML is falsey and mouse moves outside the viewport', function () {
-        const ctrl = new MousePosition({
-          undefinedHTML: '',
-        });
-        ctrl.setMap(map);
-        map.renderSync();
-
-        const element = document.querySelector(
-          '.ol-mouse-position',
-          map.getTarget()
-        );
-
-        simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
-        expect(element.innerHTML).to.be('');
-
-        target.dispatchEvent(new PointerEvent('pointermove'));
-        simulateEvent(EventType.POINTERMOVE, 20, 30);
-        expect(element.innerHTML).to.be('20,-30');
-
-        simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
-        expect(element.innerHTML).to.be('20,-30');
       });
     });
   });
