@@ -14,6 +14,10 @@ The `toStringHDMS` function from the `ol/coordinate.js` module now formats longi
 
 The default intervals now align with integer minutes and seconds better suited to the default label formatter.  If formatting in decimal degrees you may wish to specify custom intervals suited to that format.
 
+#### ol/Collection
+
+Inserting with `setAt` or `insertAt` beyond the current length used to create a sparse Collection with `undefined` inserted for any missing indexes.  This will now throw an error instead.
+
 ### 6.15.0
 
 #### Deprecated `tilePixelRatio` option for data tile sources.

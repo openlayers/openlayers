@@ -22,10 +22,10 @@ const Property = {
 export class CollectionEvent extends Event {
   /**
    * @param {import("./CollectionEventType.js").default} type Type.
-   * @param {*} [opt_element] Element.
-   * @param {number} [opt_index] The index of the added or removed element.
+   * @param {*} element Element.
+   * @param {number} index The index of the added or removed element.
    */
-  constructor(type, opt_element, opt_index) {
+  constructor(type, element, index) {
     super(type);
 
     /**
@@ -33,14 +33,14 @@ export class CollectionEvent extends Event {
      * @type {*}
      * @api
      */
-    this.element = opt_element;
+    this.element = element;
 
     /**
      * The index of the added or removed element.
      * @type {number}
      * @api
      */
-    this.index = opt_index;
+    this.index = index;
   }
 }
 
@@ -195,6 +195,9 @@ class Collection extends BaseObject {
    * @api
    */
   insertAt(index, elem) {
+    if (index < 0 || index > this.getLength()) {
+      throw new Error('Index out of bounds: ' + index);
+    }
     if (this.unique_) {
       this.assertUnique_(elem);
     }
@@ -274,24 +277,24 @@ class Collection extends BaseObject {
    */
   setAt(index, elem) {
     const n = this.getLength();
-    if (index < n) {
-      if (this.unique_) {
-        this.assertUnique_(elem, index);
-      }
-      const prev = this.array_[index];
-      this.array_[index] = elem;
-      this.dispatchEvent(
-        new CollectionEvent(CollectionEventType.REMOVE, prev, index)
-      );
-      this.dispatchEvent(
-        new CollectionEvent(CollectionEventType.ADD, elem, index)
-      );
-    } else {
-      for (let j = n; j < index; ++j) {
-        this.insertAt(j, undefined);
-      }
+    if (index >= n) {
       this.insertAt(index, elem);
+      return;
     }
+    if (index < 0) {
+      throw new Error('Index out of bounds: ' + index);
+    }
+    if (this.unique_) {
+      this.assertUnique_(elem, index);
+    }
+    const prev = this.array_[index];
+    this.array_[index] = elem;
+    this.dispatchEvent(
+      new CollectionEvent(CollectionEventType.REMOVE, prev, index)
+    );
+    this.dispatchEvent(
+      new CollectionEvent(CollectionEventType.ADD, elem, index)
+    );
   }
 
   /**
