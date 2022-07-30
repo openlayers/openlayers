@@ -254,6 +254,9 @@ class Collection extends BaseObject {
    * @api
    */
   removeAt(index) {
+    if (index < 0 || index >= this.getLength()) {
+      return undefined;
+    }
     const prev = this.array_[index];
     this.array_.splice(index, 1);
     this.updateLength_();
