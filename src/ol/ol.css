@@ -78,7 +78,6 @@
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
@@ -89,7 +88,6 @@
   -webkit-touch-callout: default;
   -webkit-user-select: text;
   -moz-user-select: text;
-  -ms-user-select: text;
   user-select: text;
 }
 .ol-grabbing {
