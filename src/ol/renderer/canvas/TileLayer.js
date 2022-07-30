@@ -6,7 +6,6 @@ import ImageTile from '../../ImageTile.js';
 import ReprojTile from '../../reproj/Tile.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
-import {IMAGE_SMOOTHING_DISABLED, IMAGE_SMOOTHING_ENABLED} from './common.js';
 import {
   apply as applyTransform,
   compose as composeTransform,
@@ -410,7 +409,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     }
 
     if (!tileSource.getInterpolate()) {
-      Object.assign(context, IMAGE_SMOOTHING_DISABLED);
+      context.imageSmoothingEnabled = false;
     }
 
     this.preRender(context, frameState);
@@ -561,7 +560,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     if (layerState.extent) {
       context.restore();
     }
-    Object.assign(context, IMAGE_SMOOTHING_ENABLED);
+    context.imageSmoothingEnabled = true;
 
     if (canvasTransform !== canvas.style.transform) {
       canvas.style.transform = canvasTransform;
