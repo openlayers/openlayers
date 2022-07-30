@@ -695,9 +695,13 @@ describe('ol/renderer/webgl/PointsLayer', function () {
 
       layer.once('postrender', (evt) => {
         postrenderNotified = true;
-        expect(prerenderNotified).to.be(true);
-        expect(postrenderNotified).to.be(true);
-        done();
+        try {
+          expect(prerenderNotified).to.be(true);
+          expect(postrenderNotified).to.be(true);
+          done();
+        } catch (e) {
+          done(e);
+        }
       });
 
       renderer.prepareFrame(frameState);
@@ -738,27 +742,38 @@ describe('ol/renderer/webgl/PointsLayer', function () {
 
     it('is completely rendered on rendercomplete', function (done) {
       map.once('rendercomplete', function () {
-        const targetContext = createCanvasContext2D(1, 1);
-        const canvas = document.querySelector('.ol-layer');
-        targetContext.drawImage(canvas, 50, 50, 1, 1, 0, 0, 1, 1);
-        expect(Array.from(targetContext.getImageData(0, 0, 1, 1).data)).to.eql([
-          255, 0, 0, 255,
-        ]);
-        layer
-          .getSource()
-          .addFeature(new Feature(new Point([1900000, 1900000])));
-        layer.once('postrender', function () {
-          expect(layer.getRenderer().ready).to.be(false);
-        });
-        map.once('rendercomplete', function () {
+        try {
           const targetContext = createCanvasContext2D(1, 1);
           const canvas = document.querySelector('.ol-layer');
-          targetContext.drawImage(canvas, 99, 0, 1, 1, 0, 0, 1, 1);
-          expect(
-            Array.from(targetContext.getImageData(0, 0, 1, 1).data)
-          ).to.eql([255, 0, 0, 255]);
-          done();
-        });
+          targetContext.drawImage(canvas, 50, 50, 1, 1, 0, 0, 1, 1);
+          const data = targetContext.getImageData(0, 0, 1, 1).data;
+          expect(Array.from(data)).to.eql([255, 0, 0, 255]);
+          layer
+            .getSource()
+            .addFeature(new Feature(new Point([1900000, 1900000])));
+          layer.once('postrender', function () {
+            try {
+              expect(layer.getRenderer().ready).to.be(false);
+            } catch (e) {
+              done(e);
+            }
+          });
+          map.once('rendercomplete', function () {
+            try {
+              const targetContext = createCanvasContext2D(1, 1);
+              const canvas = document.querySelector('.ol-layer');
+              targetContext.drawImage(canvas, 99, 0, 1, 1, 0, 0, 1, 1);
+              expect(
+                Array.from(targetContext.getImageData(0, 0, 1, 1).data)
+              ).to.eql([255, 0, 0, 255]);
+              done();
+            } catch (e) {
+              done(e);
+            }
+          });
+        } catch (e) {
+          done(e);
+        }
       });
     });
     it('is not ready until after second rebuildBuffers_ worker calls completed', function (done) {
@@ -836,8 +851,12 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       expect(layer.styleVariables_['r']).to.be(255);
 
       map.on('rendercomplete', function (event) {
-        expect(getCenterPixelImageData()).to.eql([255, 0, 255, 255]);
-        done();
+        try {
+          expect(getCenterPixelImageData()).to.eql([255, 0, 255, 255]);
+          done();
+        } catch (e) {
+          done(e);
+        }
       });
     });
   });
