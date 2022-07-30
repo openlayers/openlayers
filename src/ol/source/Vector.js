@@ -72,7 +72,7 @@ export class VectorSourceEvent extends Event {
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
- * @property {Array<import("../Feature.js").default>|Collection<import("../Feature.js").default>} [features]
+ * @property {Array<import("../Feature.js").default<Geometry>>|Collection<import("../Feature.js").default<Geometry>>} [features]
  * Features. If provided as {@link module:ol/Collection~Collection}, the features in the source
  * and the collection will stay in sync.
  * @property {import("../format/Feature.js").default} [format] The feature format used by the XHR
@@ -159,6 +159,7 @@ export class VectorSourceEvent extends Event {
  * @property {boolean} [wrapX=true] Wrap the world horizontally. For vector editing across the
  * -180° and 180° meridians to work properly, this should be set to `false`. The
  * resulting geometry coordinates will then exceed the world bounds.
+ * @template {import("../geom/Geometry.js").default} [Geometry=import("../geom/Geometry.js").default]
  */
 
 /**
@@ -173,7 +174,7 @@ export class VectorSourceEvent extends Event {
  */
 class VectorSource extends Source {
   /**
-   * @param {Options} [opt_options] Vector source options.
+   * @param {Options<Geometry>} [opt_options] Vector source options.
    */
   constructor(opt_options) {
     const options = opt_options || {};
@@ -296,17 +297,14 @@ class VectorSource extends Source {
      */
     this.featuresCollection_ = null;
 
-    let collection, features;
+    /** @type {Collection<import("../Feature.js").default<Geometry>>} */
+    let collection;
+    /** @type {Array<import("../Feature.js").default<Geometry>>} */
+    let features;
     if (Array.isArray(options.features)) {
-      features =
-        /** @type {Array<import("../Feature.js").default<Geometry>>} */ (
-          options.features
-        );
+      features = options.features;
     } else if (options.features) {
-      collection =
-        /** @type {Collection<import("../Feature.js").default<Geometry>>} */ (
-          options.features
-        );
+      collection = options.features;
       features = collection.getArray();
     }
     if (!useSpatialIndex && collection === undefined) {
@@ -500,16 +498,12 @@ class VectorSource extends Source {
     collection.addEventListener(
       CollectionEventType.ADD,
       /**
-       * @param {import("../Collection.js").CollectionEvent} evt The collection event
+       * @param {import("../Collection.js").CollectionEvent<import("../Feature.js").default<Geometry>>} evt The collection event
        */
       function (evt) {
         if (!modifyingCollection) {
           modifyingCollection = true;
-          this.addFeature(
-            /** @type {import("../Feature.js").default<Geometry>} */ (
-              evt.element
-            )
-          );
+          this.addFeature(evt.element);
           modifyingCollection = false;
         }
       }.bind(this)
@@ -517,16 +511,12 @@ class VectorSource extends Source {
     collection.addEventListener(
       CollectionEventType.REMOVE,
       /**
-       * @param {import("../Collection.js").CollectionEvent} evt The collection event
+       * @param {import("../Collection.js").CollectionEvent<import("../Feature.js").default<Geometry>>} evt The collection event
        */
       function (evt) {
         if (!modifyingCollection) {
           modifyingCollection = true;
-          this.removeFeature(
-            /** @type {import("../Feature.js").default<Geometry>} */ (
-              evt.element
-            )
-          );
+          this.removeFeature(evt.element);
           modifyingCollection = false;
         }
       }.bind(this)

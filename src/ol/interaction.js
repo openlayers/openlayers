@@ -85,6 +85,7 @@ export {default as Translate} from './interaction/Translate.js';
 export function defaults(opt_options) {
   const options = opt_options ? opt_options : {};
 
+  /** @type {Collection<import("./interaction/Interaction.js").default>} */
   const interactions = new Collection();
 
   const kinetic = new Kinetic(-0.005, 0.05, 100);
