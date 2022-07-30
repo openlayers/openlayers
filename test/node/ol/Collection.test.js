@@ -5,6 +5,7 @@ import sinon from 'sinon';
 import {listen} from '../../../src/ol/events.js';
 
 describe('ol/Collection.js', function () {
+  /** @type {Collection} */
   let collection;
 
   beforeEach(function () {
@@ -85,6 +86,13 @@ describe('ol/Collection.js', function () {
       collection.removeAt(1);
       expect(collection.item(0)).to.eql(0);
       expect(collection.item(1)).to.eql(2);
+    });
+    it('does not fire event for invalid index', function () {
+      const collection = new Collection([0, 1, 2]);
+      collection.on('remove', function () {
+        throw new Error('Should not fire event for invalid index');
+      });
+      expect(collection.removeAt(3)).to.be(undefined);
     });
   });
 
