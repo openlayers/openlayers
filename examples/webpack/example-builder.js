@@ -16,7 +16,7 @@ const isJsRegEx = /\.js(\?.*)?$/;
 const importRegEx = /\s?import .*? from '([^']+)'/g;
 const isTemplateJs =
   /\/(jquery(-\d+\.\d+\.\d+)?|(bootstrap(\.bundle)?))(\.min)?\.js(\?.*)?$/;
-const isTemplateCss = /\/bootstrap(\.min)?\.css(\?.*)?$/;
+const isTemplateCss = /\/(?:bootstrap|font-awesome)(\.min)?\.css(\?.*)?$/;
 
 const exampleDirContents = fs
   .readdirSync(path.join(baseDir, '..'))
