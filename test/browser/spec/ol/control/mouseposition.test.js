@@ -69,10 +69,7 @@ describe('ol/control/MousePosition', function () {
         ctrl.setMap(map);
         map.renderSync();
 
-        const element = document.querySelector(
-          '.ol-mouse-position',
-          map.getTarget()
-        );
+        const element = document.querySelector('.ol-mouse-position');
 
         simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
         expect(element.innerHTML).to.be('some text');
@@ -89,10 +86,7 @@ describe('ol/control/MousePosition', function () {
         ctrl.setMap(map);
         map.renderSync();
 
-        const element = document.querySelector(
-          '.ol-mouse-position',
-          map.getTarget()
-        );
+        const element = document.querySelector('.ol-mouse-position');
 
         simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
         expect(element.innerHTML).to.be('&nbsp;');
@@ -112,10 +106,7 @@ describe('ol/control/MousePosition', function () {
         ctrl.setMap(map);
         map.renderSync();
 
-        const element = document.querySelector(
-          '.ol-mouse-position',
-          map.getTarget()
-        );
+        const element = document.querySelector('.ol-mouse-position');
 
         simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
         expect(element.innerHTML).to.be('');
