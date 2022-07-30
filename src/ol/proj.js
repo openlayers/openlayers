@@ -54,13 +54,13 @@
  * this.
  */
 import Projection from './proj/Projection.js';
-import Units, {METERS_PER_UNIT} from './proj/Units.js';
 import {
   PROJECTIONS as EPSG3857_PROJECTIONS,
   fromEPSG4326,
   toEPSG4326,
 } from './proj/epsg3857.js';
 import {PROJECTIONS as EPSG4326_PROJECTIONS} from './proj/epsg4326.js';
+import {METERS_PER_UNIT} from './proj/Units.js';
 import {
   add as addProj,
   clear as clearProj,
@@ -192,7 +192,7 @@ export function get(projectionLike) {
  * @param {ProjectionLike} projection The projection.
  * @param {number} resolution Nominal resolution in projection units.
  * @param {import("./coordinate.js").Coordinate} point Point to find adjusted resolution at.
- * @param {import("./proj/Units.js").default} [opt_units] Units to get the point resolution in.
+ * @param {import("./proj/Units.js").Units} [opt_units] Units to get the point resolution in.
  * Default is the projection's units.
  * @return {number} Point resolution.
  * @api
@@ -212,7 +212,7 @@ export function getPointResolution(projection, resolution, point, opt_units) {
     }
   } else {
     const units = projection.getUnits();
-    if ((units == Units.DEGREES && !opt_units) || opt_units == Units.DEGREES) {
+    if ((units == 'degrees' && !opt_units) || opt_units == 'degrees') {
       pointResolution = resolution;
     } else {
       // Estimate point resolution by transforming the center pixel to EPSG:4326,
@@ -222,7 +222,7 @@ export function getPointResolution(projection, resolution, point, opt_units) {
         projection,
         get('EPSG:4326')
       );
-      if (toEPSG4326 === identityTransform && units !== Units.DEGREES) {
+      if (toEPSG4326 === identityTransform && units !== 'degrees') {
         // no transform is available
         pointResolution = resolution * projection.getMetersPerUnit();
       } else {

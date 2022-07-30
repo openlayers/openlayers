@@ -2,7 +2,6 @@
  * @module ol/View
  */
 import BaseObject from './Object.js';
-import Units from './proj/Units.js';
 import ViewHint from './ViewHint.js';
 import ViewProperty from './ViewProperty.js';
 import {DEFAULT_TILE_SIZE} from './tilegrid/common.js';
@@ -2008,7 +2007,7 @@ export function createResolutionConstraint(options) {
     // calculate the default min and max resolution
     const size = !projExtent
       ? // use an extent that can fit the whole world if need be
-        (360 * METERS_PER_UNIT[Units.DEGREES]) / projection.getMetersPerUnit()
+        (360 * METERS_PER_UNIT.degrees) / projection.getMetersPerUnit()
       : Math.max(getWidth(projExtent), getHeight(projExtent));
 
     const defaultMaxResolution =

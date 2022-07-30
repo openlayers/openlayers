@@ -2,7 +2,6 @@
  * @module ol/tilegrid
  */
 import TileGrid from './tilegrid/TileGrid.js';
-import Units from './proj/Units.js';
 import {DEFAULT_MAX_ZOOM, DEFAULT_TILE_SIZE} from './tilegrid/common.js';
 import {METERS_PER_UNIT, get as getProjection} from './proj.js';
 import {
@@ -176,7 +175,7 @@ export function extentFromProjection(projection) {
   let extent = projection.getExtent();
   if (!extent) {
     const half =
-      (180 * METERS_PER_UNIT[Units.DEGREES]) / projection.getMetersPerUnit();
+      (180 * METERS_PER_UNIT.degrees) / projection.getMetersPerUnit();
     extent = createOrUpdate(-half, -half, half, half);
   }
   return extent;

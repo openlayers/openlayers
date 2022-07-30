@@ -2,7 +2,6 @@
  * @module ol/proj/epsg3857
  */
 import Projection from './Projection.js';
-import Units from './Units.js';
 
 /**
  * Radius of WGS84 sphere
@@ -48,7 +47,7 @@ class EPSG3857Projection extends Projection {
   constructor(code) {
     super({
       code: code,
-      units: Units.METERS,
+      units: 'm',
       extent: EXTENT,
       global: true,
       worldExtent: WORLD_EXTENT,

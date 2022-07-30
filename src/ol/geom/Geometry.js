@@ -2,7 +2,6 @@
  * @module ol/geom/Geometry
  */
 import BaseObject from '../Object.js';
-import Units from '../proj/Units.js';
 import {abstract} from '../util.js';
 import {
   compose as composeTransform,
@@ -310,7 +309,7 @@ class Geometry extends BaseObject {
     /** @type {import("../proj/Projection.js").default} */
     const sourceProj = getProjection(source);
     const transformFn =
-      sourceProj.getUnits() == Units.TILE_PIXELS
+      sourceProj.getUnits() == 'tile-pixels'
         ? function (inCoordinates, outCoordinates, stride) {
             const pixelExtent = sourceProj.getExtent();
             const projectedExtent = sourceProj.getWorldExtent();

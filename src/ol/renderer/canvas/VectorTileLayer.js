@@ -5,7 +5,6 @@ import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
 import CanvasExecutorGroup from '../../render/canvas/ExecutorGroup.js';
 import CanvasTileLayerRenderer from './TileLayer.js';
 import TileState from '../../TileState.js';
-import VectorTileRenderType from '../../layer/VectorTileRenderType.js';
 import ViewHint from '../../ViewHint.js';
 import {
   HIT_DETECT_RESOLUTION,
@@ -139,7 +138,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     if (
       render &&
       (hifi || Date.now() - frameState.time < 8) &&
-      layer.getRenderMode() !== VectorTileRenderType.VECTOR
+      layer.getRenderMode() !== 'vector'
     ) {
       this.renderTileImage_(tile, frameState);
     }
@@ -154,7 +153,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const layer = this.getLayer();
     return (
       super.isDrawableTile(tile) &&
-      (layer.getRenderMode() === VectorTileRenderType.VECTOR
+      (layer.getRenderMode() === 'vector'
         ? getUid(layer) in tile.executorGroups
         : tile.hasContext(layer))
     );
@@ -289,7 +288,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const executorGroupInstructions = builderGroup.finish();
       // no need to clip when the render tile is covered by a single source tile
       const replayExtent =
-        layer.getRenderMode() !== VectorTileRenderType.VECTOR &&
+        layer.getRenderMode() !== 'vector' &&
         declutter &&
         sourceTiles.length === 1
           ? null
@@ -784,7 +783,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const layer = /** @type {import("../../layer/VectorTile.js").default} */ (
       this.getLayer()
     );
-    if (layer.getRenderMode() === VectorTileRenderType.VECTOR) {
+    if (layer.getRenderMode() === 'vector') {
       return false;
     }
     const replayState = tile.getReplayState(layer);
