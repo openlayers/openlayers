@@ -1,7 +1,6 @@
 /**
  * @module ol/reproj
  */
-import {IMAGE_SMOOTHING_DISABLED} from './renderer/canvas/common.js';
 import {
   containsCoordinate,
   createEmpty,
@@ -226,7 +225,7 @@ export function render(
   );
 
   if (!opt_interpolate) {
-    Object.assign(context, IMAGE_SMOOTHING_DISABLED);
+    context.imageSmoothingEnabled = false;
   }
 
   if (sources.length === 0) {
@@ -254,7 +253,7 @@ export function render(
   );
 
   if (!opt_interpolate) {
-    Object.assign(stitchContext, IMAGE_SMOOTHING_DISABLED);
+    stitchContext.imageSmoothingEnabled = false;
   }
 
   const stitchScale = pixelRatio / sourceResolution;

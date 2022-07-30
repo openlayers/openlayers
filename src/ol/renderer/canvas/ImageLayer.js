@@ -5,7 +5,6 @@ import CanvasLayerRenderer from './Layer.js';
 import ImageState from '../../ImageState.js';
 import ViewHint from '../../ViewHint.js';
 import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
-import {IMAGE_SMOOTHING_DISABLED, IMAGE_SMOOTHING_ENABLED} from './common.js';
 import {
   apply as applyTransform,
   compose as composeTransform,
@@ -238,7 +237,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     const dh = img.height * transform[3];
 
     if (!this.getLayer().getSource().getInterpolate()) {
-      Object.assign(context, IMAGE_SMOOTHING_DISABLED);
+      context.imageSmoothingEnabled = false;
     }
 
     this.preRender(context, frameState);
@@ -261,7 +260,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     if (clipped) {
       context.restore();
     }
-    Object.assign(context, IMAGE_SMOOTHING_ENABLED);
+    context.imageSmoothingEnabled = true;
 
     if (canvasTransform !== canvas.style.transform) {
       canvas.style.transform = canvasTransform;

@@ -2,9 +2,6 @@
   height: 100%;
   margin: 0;
 }
-.fullscreen:-ms-fullscreen {
-  height: 100%;
-}
 
 .fullscreen:fullscreen {
   height: 100%;
