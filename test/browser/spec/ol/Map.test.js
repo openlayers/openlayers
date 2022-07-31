@@ -1090,16 +1090,12 @@ describe('ol/Map', function () {
       expect(id1).to.be(id2);
     });
 
-    it('creates a new render frame after renderSync()', function (done) {
-      let id2 = null;
+    it('creates a new render frame after renderSync()', function () {
       map.render();
-      const id1 = map.animationDelayKey_;
-      map.once('postrender', function () {
-        expect(id2).to.not.be(id1);
-        done();
-      });
+      expect(map.animationDelayKey_).to.not.be(undefined);
+
       map.renderSync();
-      id2 = map.animationDelayKey_;
+      expect(map.animationDelayKey_).to.be(undefined);
     });
 
     it('results in an postrender event (for zero height map)', function (done) {
