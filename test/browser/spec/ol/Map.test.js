@@ -1070,41 +1070,32 @@ describe('ol/Map', function () {
       expect(spy.callCount).to.be(0);
     });
 
-    it('calls renderFrame_ and results in an postrender event', function (done) {
+    it('calls renderFrame_ and results in a postrender event', function (done) {
       const spy = sinon.spy(map, 'renderFrame_');
       map.render();
       map.once('postrender', function (event) {
         expect(event).to.be.a(MapEvent);
         expect(typeof spy.firstCall.args[0]).to.be('number');
         spy.restore();
-        const frameState = event.frameState;
-        expect(frameState).not.to.be(null);
+        expect(event.frameState).not.to.be(null);
         done();
       });
     });
 
-    it('uses the same render frame for subsequent calls', function (done) {
+    it('uses the same render frame for subsequent calls', function () {
       map.render();
       const id1 = map.animationDelayKey_;
-      let id2 = null;
-      map.once('postrender', function () {
-        expect(id2).to.be(id1);
-        done();
-      });
       map.render();
-      id2 = map.animationDelayKey_;
+      const id2 = map.animationDelayKey_;
+      expect(id1).to.be(id2);
     });
 
-    it('creates a new render frame after renderSync()', function (done) {
-      let id2 = null;
+    it('creates a new render frame after renderSync()', function () {
       map.render();
-      const id1 = map.animationDelayKey_;
-      map.once('postrender', function () {
-        expect(id2).to.not.be(id1);
-        done();
-      });
+      expect(map.animationDelayKey_).to.not.be(undefined);
+
       map.renderSync();
-      id2 = map.animationDelayKey_;
+      expect(map.animationDelayKey_).to.be(undefined);
     });
 
     it('results in an postrender event (for zero height map)', function (done) {
