@@ -87,8 +87,10 @@ $(function () {
       manualToggles = {};
       const lastTerm = search.lastSearchTerm;
       search.lastSearchTerm = undefined;
-      const fa = currentItem.querySelector('.title > .fa');
-      fa.classList.add('no-transition');
+      if (currentItem) {
+        const fa = currentItem.querySelector('.title > .fa');
+        fa.classList.add('no-transition');
+      }
       doSearch(lastTerm || '');
 
       // Transfer manual toggle state to newly loaded current node
