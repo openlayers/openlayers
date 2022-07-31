@@ -250,42 +250,23 @@ class IconImage extends EventTarget {
       return;
     }
 
+    const image = this.image_;
     const canvas = document.createElement('canvas');
-    this.canvas_[pixelRatio] = canvas;
-
-    canvas.width = Math.ceil(this.image_.width * pixelRatio);
-    canvas.height = Math.ceil(this.image_.height * pixelRatio);
+    canvas.width = Math.ceil(image.width * pixelRatio);
+    canvas.height = Math.ceil(image.height * pixelRatio);
 
     const ctx = canvas.getContext('2d');
     ctx.scale(pixelRatio, pixelRatio);
-    ctx.drawImage(this.image_, 0, 0);
+    ctx.drawImage(image, 0, 0);
 
     ctx.globalCompositeOperation = 'multiply';
-    // Internet Explorer 11 does not support the multiply operation.
-    // If the canvas is tainted in Internet Explorer this still produces
-    // a solid color image with the shape of the icon.
-    if (ctx.globalCompositeOperation === 'multiply' || this.isTainted_()) {
-      ctx.fillStyle = asString(this.color_);
-      ctx.fillRect(0, 0, canvas.width / pixelRatio, canvas.height / pixelRatio);
+    ctx.fillStyle = asString(this.color_);
+    ctx.fillRect(0, 0, canvas.width / pixelRatio, canvas.height / pixelRatio);
 
-      ctx.globalCompositeOperation = 'destination-in';
-      ctx.drawImage(this.image_, 0, 0);
-    } else {
-      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const data = imgData.data;
-      const r = this.color_[0] / 255.0;
-      const g = this.color_[1] / 255.0;
-      const b = this.color_[2] / 255.0;
-      const a = this.color_[3];
+    ctx.globalCompositeOperation = 'destination-in';
+    ctx.drawImage(image, 0, 0);
 
-      for (let i = 0, ii = data.length; i < ii; i += 4) {
-        data[i] *= r;
-        data[i + 1] *= g;
-        data[i + 2] *= b;
-        data[i + 3] *= a;
-      }
-      ctx.putImageData(imgData, 0, 0);
-    }
+    this.canvas_[pixelRatio] = canvas;
   }
 
   /**
