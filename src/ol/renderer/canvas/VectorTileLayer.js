@@ -117,7 +117,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {number} z Tile coordinate z.
    * @param {number} x Tile coordinate x.
    * @param {number} y Tile coordinate y.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {!import("../../Tile.js").default} Tile.
    */
   getTile(z, x, y, frameState) {
@@ -168,7 +168,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
   /**
    * Determine whether render should be called.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrame(frameState) {
@@ -321,7 +321,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
   /**
    * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {import("../vector.js").FeatureCallback<T>} callback Feature callback.
    * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
@@ -548,7 +548,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
   /**
    * Render declutter items for this layer
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    */
   renderDeclutter(frameState) {
     const context = this.context;
@@ -618,7 +618,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
   /**
    * Render the layer.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {HTMLElement} target Target that may be used to render content to.
    * @return {HTMLElement} The rendered element.
    */
@@ -797,7 +797,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
   /**
    * @param {import("../../VectorRenderTile.js").default} tile Tile.
-   * @param {import("../../PluggableMap").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @private
    */
   renderTileImage_(tile, frameState) {

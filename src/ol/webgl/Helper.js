@@ -82,7 +82,7 @@ export const AttributeType = {
 /**
  * Uniform value can be a number, array of numbers (2 to 4), canvas element or a callback returning
  * one of the previous types.
- * @typedef {UniformLiteralValue|function(import("../PluggableMap.js").FrameState):UniformLiteralValue} UniformValue
+ * @typedef {UniformLiteralValue|function(import("../Map.js").FrameState):UniformLiteralValue} UniformValue
  */
 
 /**
@@ -548,7 +548,7 @@ class WebGLHelper extends Disposable {
    * Clear the buffer & set the viewport to draw.
    * Post process passes will be initialized here, the first one being bound as a render target for
    * subsequent draw calls.
-   * @param {import("../PluggableMap.js").FrameState} frameState current frame state
+   * @param {import("../Map.js").FrameState} frameState current frame state
    * @param {boolean} [opt_disableAlphaBlend] If true, no alpha blending will happen.
    */
   prepareDraw(frameState, opt_disableAlphaBlend) {
@@ -583,7 +583,7 @@ class WebGLHelper extends Disposable {
    * Clear the render target & bind it for future draw operations.
    * This is similar to `prepareDraw`, only post processes will not be applied.
    * Note: the whole viewport will be drawn to the render target, regardless of its size.
-   * @param {import("../PluggableMap.js").FrameState} frameState current frame state
+   * @param {import("../Map.js").FrameState} frameState current frame state
    * @param {import("./RenderTarget.js").default} renderTarget Render target to draw to
    * @param {boolean} [opt_disableAlphaBlend] If true, no alpha blending will happen.
    */
@@ -622,9 +622,9 @@ class WebGLHelper extends Disposable {
 
   /**
    * Apply the successive post process passes which will eventually render to the actual canvas.
-   * @param {import("../PluggableMap.js").FrameState} frameState current frame state
-   * @param {function(WebGLRenderingContext, import("../PluggableMap.js").FrameState):void} [preCompose] Called before composing.
-   * @param {function(WebGLRenderingContext, import("../PluggableMap.js").FrameState):void} [postCompose] Called before composing.
+   * @param {import("../Map.js").FrameState} frameState current frame state
+   * @param {function(WebGLRenderingContext, import("../Map.js").FrameState):void} [preCompose] Called before composing.
+   * @param {function(WebGLRenderingContext, import("../Map.js").FrameState):void} [postCompose] Called before composing.
    */
   finalizeDraw(frameState, preCompose, postCompose) {
     // apply post processes using the next one as target
@@ -662,7 +662,7 @@ class WebGLHelper extends Disposable {
 
   /**
    * Sets the default matrix uniforms for a given frame state. This is called internally in `prepareDraw`.
-   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../Map.js").FrameState} frameState Frame state.
    */
   applyFrameState(frameState) {
     const size = frameState.size;
@@ -701,7 +701,7 @@ class WebGLHelper extends Disposable {
 
   /**
    * Sets the custom uniforms based on what was given in the constructor. This is called internally in `prepareDraw`.
-   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../Map.js").FrameState} frameState Frame state.
    */
   applyUniforms(frameState) {
     const gl = this.getGL();
@@ -794,7 +794,7 @@ class WebGLHelper extends Disposable {
    * Set up a program for use. The program will be set as the current one. Then, the uniforms used
    * in the program will be set based on the current frame state and the helper configuration.
    * @param {WebGLProgram} program Program.
-   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../Map.js").FrameState} frameState Frame state.
    */
   useProgram(program, frameState) {
     const gl = this.getGL();
@@ -906,7 +906,7 @@ class WebGLHelper extends Disposable {
   /**
    * Modifies the given transform to apply the rotation/translation/scaling of the given frame state.
    * The resulting transform can be used to convert world space coordinates to view coordinates.
-   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../Map.js").FrameState} frameState Frame state.
    * @param {import("../transform").Transform} transform Transform to update.
    * @return {import("../transform").Transform} The updated transform object.
    */

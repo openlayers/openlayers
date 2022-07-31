@@ -81,7 +81,7 @@ class WebGLLayerRenderer extends LayerRenderer {
 
   /**
    * @param {WebGLRenderingContext} context The WebGL rendering context.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @protected
    */
   dispatchPreComposeEvent(context, frameState) {
@@ -99,7 +99,7 @@ class WebGLLayerRenderer extends LayerRenderer {
 
   /**
    * @param {WebGLRenderingContext} context The WebGL rendering context.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @protected
    */
   dispatchPostComposeEvent(context, frameState) {
@@ -138,7 +138,7 @@ class WebGLLayerRenderer extends LayerRenderer {
 
   /**
    * Determine whether renderFrame should be called.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrame(frameState) {
@@ -194,7 +194,7 @@ class WebGLLayerRenderer extends LayerRenderer {
 
   /**
    * Determine whether renderFrame should be called.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
    * @protected
    */
@@ -213,7 +213,7 @@ class WebGLLayerRenderer extends LayerRenderer {
   /**
    * @param {import("../../render/EventType.js").default} type Event type.
    * @param {WebGLRenderingContext} context The rendering context.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @private
    */
   dispatchRenderEvent_(type, context, frameState) {
@@ -242,7 +242,7 @@ class WebGLLayerRenderer extends LayerRenderer {
 
   /**
    * @param {WebGLRenderingContext} context The rendering context.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @protected
    */
   preRender(context, frameState) {
@@ -251,7 +251,7 @@ class WebGLLayerRenderer extends LayerRenderer {
 
   /**
    * @param {WebGLRenderingContext} context The rendering context.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @protected
    */
   postRender(context, frameState) {

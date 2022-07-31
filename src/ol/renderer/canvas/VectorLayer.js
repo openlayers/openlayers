@@ -158,7 +158,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * @param {ExecutorGroup} executorGroup Executor group.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {import("rbush").default} [opt_declutterTree] Declutter tree.
    */
   renderWorlds(executorGroup, frameState, opt_declutterTree) {
@@ -236,7 +236,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * Render declutter items for this layer
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    */
   renderDeclutter(frameState) {
     if (this.declutterExecutorGroup) {
@@ -252,7 +252,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * Render the layer.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {HTMLElement} target Target that may be used to render content to.
    * @return {HTMLElement} The rendered element.
    */
@@ -432,7 +432,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {import("../vector.js").FeatureCallback<T>} callback Feature callback.
    * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
@@ -534,7 +534,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * Determine whether render should be called.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrame(frameState) {

@@ -164,7 +164,7 @@ class Link extends Interaction {
   }
 
   /**
-   * @param {import("../PluggableMap.js").default|null} map Map.
+   * @param {import("../Map.js").default|null} map Map.
    */
   setMap(map) {
     const oldMap = this.getMap();
@@ -183,7 +183,7 @@ class Link extends Interaction {
   }
 
   /**
-   * @param {import("../PluggableMap.js").default} map Map.
+   * @param {import("../Map.js").default} map Map.
    * @private
    */
   registerListeners_(map) {
@@ -199,7 +199,7 @@ class Link extends Interaction {
   }
 
   /**
-   * @param {import("../PluggableMap.js").default} map Map.
+   * @param {import("../Map.js").default} map Map.
    * @private
    */
   unregisterListeners_(map) {

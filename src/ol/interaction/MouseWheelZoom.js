@@ -254,7 +254,7 @@ class MouseWheelZoom extends Interaction {
 
   /**
    * @private
-   * @param {import("../PluggableMap.js").default} map Map.
+   * @param {import("../Map.js").default} map Map.
    */
   handleWheelZoom_(map) {
     const view = map.getView();

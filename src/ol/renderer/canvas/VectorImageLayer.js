@@ -81,7 +81,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
 
   /**
    * Determine whether render should be called.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrame(frameState) {
@@ -109,21 +109,20 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
       const layerState = frameState.layerStatesArray[frameState.layerIndex];
       context.globalAlpha = layerState.opacity;
       const imageLayerState = Object.assign({}, layerState, {opacity: 1});
-      const imageFrameState =
-        /** @type {import("../../PluggableMap.js").FrameState} */ (
-          Object.assign({}, frameState, {
-            declutterTree: new RBush(9),
-            extent: renderedExtent,
-            size: [width, height],
-            viewState: /** @type {import("../../View.js").State} */ (
-              Object.assign({}, frameState.viewState, {
-                rotation: 0,
-              })
-            ),
-            layerStatesArray: [imageLayerState],
-            layerIndex: 0,
-          })
-        );
+      const imageFrameState = /** @type {import("../../Map.js").FrameState} */ (
+        Object.assign({}, frameState, {
+          declutterTree: new RBush(9),
+          extent: renderedExtent,
+          size: [width, height],
+          viewState: /** @type {import("../../View.js").State} */ (
+            Object.assign({}, frameState.viewState, {
+              rotation: 0,
+            })
+          ),
+          layerStatesArray: [imageLayerState],
+          layerIndex: 0,
+        })
+      );
       let emptyImage = true;
       const image = new ImageCanvas(
         renderedExtent,
@@ -194,7 +193,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
 
   /**
    * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {import("../vector.js").FeatureCallback<T>} callback Feature callback.
    * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.

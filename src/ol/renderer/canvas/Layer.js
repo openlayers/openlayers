@@ -102,7 +102,7 @@ class CanvasLayerRenderer extends LayerRenderer {
 
     /**
      * @protected
-     * @type {import("../../PluggableMap.js").FrameState|null}
+     * @type {import("../../Map.js").FrameState|null}
      */
     this.frameState = null;
   }
@@ -131,7 +131,7 @@ class CanvasLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * @param {import('../../PluggableMap.js').FrameState} frameState Frame state.
+   * @param {import('../../Map.js').FrameState} frameState Frame state.
    * @return {string} Background color.
    */
   getBackground(frameState) {
@@ -207,7 +207,7 @@ class CanvasLayerRenderer extends LayerRenderer {
 
   /**
    * @param {CanvasRenderingContext2D} context Context.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {import("../../extent.js").Extent} extent Clip extent.
    * @protected
    */
@@ -240,7 +240,7 @@ class CanvasLayerRenderer extends LayerRenderer {
   /**
    * @param {import("../../render/EventType.js").default} type Event type.
    * @param {CanvasRenderingContext2D} context Context.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @private
    */
   dispatchRenderEvent_(type, context, frameState) {
@@ -258,7 +258,7 @@ class CanvasLayerRenderer extends LayerRenderer {
 
   /**
    * @param {CanvasRenderingContext2D} context Context.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @protected
    */
   preRender(context, frameState) {
@@ -268,7 +268,7 @@ class CanvasLayerRenderer extends LayerRenderer {
 
   /**
    * @param {CanvasRenderingContext2D} context Context.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @protected
    */
   postRender(context, frameState) {

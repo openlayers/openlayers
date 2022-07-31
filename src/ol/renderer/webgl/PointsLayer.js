@@ -456,7 +456,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * Render the layer.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {HTMLElement} The rendered element.
    */
   renderFrame(frameState) {
@@ -512,7 +512,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * Determine whether renderFrame should be called.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrameInternal(frameState) {
@@ -555,7 +555,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * Rebuild internal webgl buffers based on current view extent; costly, should not be called too much
-   * @param {import("../../PluggableMap").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @private
    */
   rebuildBuffers_(frameState) {
@@ -672,7 +672,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {import("../vector.js").FeatureCallback<T>} callback Feature callback.
    * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
@@ -712,7 +712,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * Render the hit detection data to the corresponding render target
-   * @param {import("../../PluggableMap.js").FrameState} frameState current frame state
+   * @param {import("../../Map.js").FrameState} frameState current frame state
    * @param {number} startWorld the world to render in the first iteration
    * @param {number} endWorld the last world to render
    * @param {number} worldWidth the width of the worlds being rendered

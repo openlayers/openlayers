@@ -117,7 +117,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @param {number} z Tile coordinate z.
    * @param {number} x Tile coordinate x.
    * @param {number} y Tile coordinate y.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {!import("../../Tile.js").default} Tile.
    */
   getTile(z, x, y, frameState) {
@@ -230,7 +230,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * Determine whether render should be called.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrame(frameState) {
@@ -239,7 +239,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * Render the layer.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {HTMLElement} target Target that may be used to render content to.
    * @return {HTMLElement} The rendered element.
    */
@@ -571,7 +571,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * @param {import("../../ImageTile.js").default} tile Tile.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {number} x Left of the tile.
    * @param {number} y Top of the tile.
    * @param {number} w Width of the tile.
@@ -635,7 +635,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
   }
 
   /**
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {import("../../source/Tile.js").default} tileSource Tile source.
    * @protected
    */
@@ -643,8 +643,8 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     if (tileSource.canExpireCache()) {
       /**
        * @param {import("../../source/Tile.js").default} tileSource Tile source.
-       * @param {import("../../PluggableMap.js").default} map Map.
-       * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+       * @param {import("../../Map.js").default} map Map.
+       * @param {import("../../Map.js").FrameState} frameState Frame state.
        */
       const postRenderFunction = function (tileSource, map, frameState) {
         const tileSourceKey = getUid(tileSource);
@@ -657,7 +657,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       }.bind(null, tileSource);
 
       frameState.postRenderFunctions.push(
-        /** @type {import("../../PluggableMap.js").PostRenderFunction} */ (
+        /** @type {import("../../Map.js").PostRenderFunction} */ (
           postRenderFunction
         )
       );
@@ -686,7 +686,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * - registers idle tiles in frameState.wantedTiles so that they are not
    *   discarded by the tile queue
    * - enqueues missing tiles
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {import("../../source/Tile.js").default} tileSource Tile source.
    * @param {import("../../tilegrid/TileGrid.js").default} tileGrid Tile grid.
    * @param {number} pixelRatio Pixel ratio.

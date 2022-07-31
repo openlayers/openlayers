@@ -20,7 +20,6 @@ export {default as MapEvent} from './MapEvent.js';
 export {default as Object} from './Object.js';
 export {default as Observable} from './Observable.js';
 export {default as Overlay} from './Overlay.js';
-export {default as PluggableMap} from './PluggableMap.js';
 export {default as Tile} from './Tile.js';
 export {default as TileCache} from './TileCache.js';
 export {default as TileQueue} from './TileQueue.js';

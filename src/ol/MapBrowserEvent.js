@@ -6,16 +6,16 @@ import MapEvent from './MapEvent.js';
 /**
  * @classdesc
  * Events emitted as map browser events are instances of this type.
- * See {@link module:ol/PluggableMap~PluggableMap} for which events trigger a map browser event.
+ * See {@link module:ol/Map~Map} for which events trigger a map browser event.
  * @template {UIEvent} EVENT
  */
 class MapBrowserEvent extends MapEvent {
   /**
    * @param {string} type Event type.
-   * @param {import("./PluggableMap.js").default} map Map.
+   * @param {import("./Map.js").default} map Map.
    * @param {EVENT} originalEvent Original event.
    * @param {boolean} [opt_dragging] Is the map currently being dragged?
-   * @param {import("./PluggableMap.js").FrameState} [opt_frameState] Frame state.
+   * @param {import("./Map.js").FrameState} [opt_frameState] Frame state.
    * @param {Array<PointerEvent>} [opt_activePointers] Active pointers.
    */
   constructor(

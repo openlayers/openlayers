@@ -211,7 +211,7 @@ class Extent extends PointerInteraction {
 
   /**
    * @param {import("../pixel.js").Pixel} pixel cursor location
-   * @param {import("../PluggableMap.js").default} map map
+   * @param {import("../Map.js").default} map map
    * @return {import("../coordinate.js").Coordinate|null} snapped vertex on extent
    * @private
    */
@@ -424,7 +424,7 @@ class Extent extends PointerInteraction {
    * Remove the interaction from its current map and attach it to the new map.
    * Subclasses may set up event handlers to get notified about changes to
    * the map here.
-   * @param {import("../PluggableMap.js").default} map Map.
+   * @param {import("../Map.js").default} map Map.
    */
   setMap(map) {
     this.extentOverlay_.setMap(map);

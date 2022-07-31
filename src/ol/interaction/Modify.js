@@ -538,7 +538,7 @@ class Modify extends PointerInteraction {
    * Remove the interaction from its current map and attach it to the new map.
    * Subclasses may set up event handlers to get notified about changes to
    * the map here.
-   * @param {import("../PluggableMap.js").default} map Map.
+   * @param {import("../Map.js").default} map Map.
    */
   setMap(map) {
     this.overlay_.setMap(map);
@@ -1158,7 +1158,7 @@ class Modify extends PointerInteraction {
 
   /**
    * @param {import("../pixel.js").Pixel} pixel Pixel
-   * @param {import("../PluggableMap.js").default} map Map.
+   * @param {import("../Map.js").default} map Map.
    * @param {import("../coordinate.js").Coordinate} [opt_coordinate] The pixel Coordinate.
    * @private
    */

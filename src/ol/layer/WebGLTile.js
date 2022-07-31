@@ -68,7 +68,7 @@ import {
  * expects an extent and a resolution (in view projection units per pixel) and returns an array of sources. See
  * {@link module:ol/source.sourcesFromTileGrid} for a helper function to generate sources that are organized in a
  * pyramid following the same pattern as a tile grid. **Note:** All sources must have the same band count and content.
- * @property {import("../PluggableMap.js").default} [map] Sets the layer as overlay on a map. The map will not manage
+ * @property {import("../Map.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
  * use {@link module:ol/Map~Map#addLayer}.
@@ -422,7 +422,7 @@ class WebGLTileLayer extends BaseTileLayer {
   }
 
   /**
-   * @param {import("../PluggableMap").FrameState} frameState Frame state.
+   * @param {import("../Map").FrameState} frameState Frame state.
    * @param {Array<SourceType>} sources Sources.
    * @return {HTMLElement} Canvas.
    */
@@ -439,7 +439,7 @@ class WebGLTileLayer extends BaseTileLayer {
   }
 
   /**
-   * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {?import("../Map.js").FrameState} frameState Frame state.
    * @param {HTMLElement} target Target which the renderer may (but need not) use
    * for rendering its content.
    * @return {HTMLElement} The rendered element.
