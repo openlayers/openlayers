@@ -275,28 +275,28 @@ $(function () {
   });
 
   // warn about outdated version
-  var currentVersion = document.getElementById('package-version').innerHTML;
-  var packageUrl = 'https://raw.githubusercontent.com/openlayers/openlayers.github.io/build/package.json';
+  const currentVersion = document.getElementById('package-version').innerHTML;
+  const packageUrl = 'https://raw.githubusercontent.com/openlayers/openlayers.github.io/build/package.json';
   fetch(packageUrl).then(function(response) {
     return response.json();
   }).then(function(json) {
-    var latestVersion = json.version;
+    const latestVersion = json.version;
     document.getElementById('latest-version').innerHTML = latestVersion;
-    var url = window.location.href;
-    var branchSearch = url.match(/\/([^\/]*)\/apidoc\//);
-    var cookieText = 'dismissed=-' + latestVersion + '-';
-    var dismissed = document.cookie.indexOf(cookieText) != -1;
+    const url = window.location.href;
+    const branchSearch = url.match(/\/([^\/]*)\/apidoc\//);
+    const storageKey = 'dismissed=-' + latestVersion;
+    const dismissed = localStorage.getItem(storageKey) === 'true';
     if (branchSearch && !dismissed && /^v[0-9\.]*$/.test(branchSearch[1]) && currentVersion != latestVersion) {
-      var link = url.replace(branchSearch[0], '/latest/apidoc/');
+      const link = url.replace(branchSearch[0], '/latest/apidoc/');
       fetch(link, {method: 'head'}).then(function(response) {
-        var a = document.getElementById('latest-link');
+        const a = document.getElementById('latest-link');
         a.href = response.status == 200 ? link : '../../latest/apidoc/';
       });
-      var latestCheck = document.getElementById('latest-check');
+      const latestCheck = document.getElementById('latest-check');
       latestCheck.style.display = '';
       document.getElementById('latest-dismiss').onclick = function() {
         latestCheck.style.display = 'none';
-        document.cookie = cookieText;
+        localStorage.setItem(storageKey, 'true');
       }
     }
   });
