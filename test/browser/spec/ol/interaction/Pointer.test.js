@@ -6,7 +6,7 @@ import OlEvent from '../../../../../src/ol/events/Event.js';
 import PointerInteraction from '../../../../../src/ol/interaction/Pointer.js';
 import View from '../../../../../src/ol/View.js';
 
-describe('ol.interaction.Pointer', function () {
+describe('ol/interaction/Pointer', function () {
   describe('#handleEvent', function () {
     let event;
     let defaultPrevented;

@@ -126,7 +126,7 @@ class TileQueue extends PriorityQueue {
 export default TileQueue;
 
 /**
- * @param {import('./PluggableMap.js').FrameState} frameState Frame state.
+ * @param {import('./Map.js').FrameState} frameState Frame state.
  * @param {import("./Tile.js").default} tile Tile.
  * @param {string} tileSourceKey Tile source key.
  * @param {import("./coordinate.js").Coordinate} tileCenter Tile center.

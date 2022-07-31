@@ -9,7 +9,7 @@ class RenderEvent extends Event {
    * @param {import("./EventType.js").default} type Type.
    * @param {import("../transform.js").Transform} [opt_inversePixelTransform] Transform for
    *     CSS pixels to rendered pixels.
-   * @param {import("../PluggableMap.js").FrameState} [opt_frameState] Frame state.
+   * @param {import("../Map.js").FrameState} [opt_frameState] Frame state.
    * @param {?(CanvasRenderingContext2D|WebGLRenderingContext)} [opt_context] Context.
    */
   constructor(type, opt_inversePixelTransform, opt_frameState, opt_context) {
@@ -25,7 +25,7 @@ class RenderEvent extends Event {
 
     /**
      * An object representing the current render frame state.
-     * @type {import("../PluggableMap.js").FrameState|undefined}
+     * @type {import("../Map.js").FrameState|undefined}
      * @api
      */
     this.frameState = opt_frameState;

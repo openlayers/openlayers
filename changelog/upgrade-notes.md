@@ -22,6 +22,10 @@ Inserting with `setAt` or `insertAt` beyond the current length used to create a 
 
 The control will now by default keep displaying the last mouse position when the mouse leaves the viewport.  With `placeholder: '&#160;'` you can keep the old behaviour.  The `placeholder` option no longer accepts `false` as a valid value, instead simply omit the option.  The `undefinedHTML` option has been removed. You should use `placeholder` instead.
 
+#### ol/PluggableMap
+
+The `PluggableMap` class has been removed.  If you want to create a custom map class, extend the `Map` class instead.
+
 ### 6.15.0
 
 #### Deprecated `tilePixelRatio` option for data tile sources.

@@ -194,7 +194,7 @@ describe('ol.layer.VectorTile', function () {
       });
       const renderer = layer.getRenderer();
       const frameState =
-        /** @type {import("../../../../../src/ol/PluggableMap.js").FrameState} */ ({
+        /** @type {import("../../../../../src/ol/Map.js").FrameState} */ ({
           pixelRatio: 1,
           viewState: {
             zoom: zoom,

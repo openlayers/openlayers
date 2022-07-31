@@ -70,7 +70,7 @@ class AbstractBatchRenderer {
    * Rebuild rendering instructions and webgl buffers based on the provided frame state
    * Note: this is a costly operation.
    * @param {import("./MixedGeometryBatch.js").GeometryBatch} batch Geometry batch
-   * @param {import("../../PluggableMap").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @param {import("../../geom/Geometry.js").Type} geometryType Geometry type
    * @param {function(): void} callback Function called once the render buffers are updated
    */
@@ -89,7 +89,7 @@ class AbstractBatchRenderer {
    * the invert transform of the webgl buffers
    * @param {import("./MixedGeometryBatch.js").GeometryBatch} batch Geometry batch
    * @param {import("../../transform.js").Transform} currentTransform Transform
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {number} offsetX X offset
    */
   render(batch, currentTransform, frameState, offsetX) {

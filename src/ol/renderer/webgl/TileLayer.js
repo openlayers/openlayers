@@ -95,7 +95,7 @@ function addTileTextureToLookup(tileTexturesByZ, tileTexture, z) {
 }
 
 /**
- * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+ * @param {import("../../Map.js").FrameState} frameState Frame state.
  * @param {import("../../extent.js").Extent} extent The frame extent.
  * @return {import("../../extent.js").Extent} Frame extent intersected with layer extents.
  */
@@ -244,7 +244,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
 
     /**
      * @private
-     * @type {import("../../PluggableMap.js").FrameState|null}
+     * @type {import("../../Map.js").FrameState|null}
      */
     this.frameState_ = null;
   }
@@ -295,7 +295,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * Determine whether renderFrame should be called.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrameInternal(frameState) {
@@ -312,7 +312,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {import("../../extent.js").Extent} extent The extent to be rendered.
    * @param {number} initialZ The zoom level.
    * @param {Object<number, Array<TileTexture>>} tileTexturesByZ The zoom level.
@@ -412,7 +412,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * Render the layer.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {HTMLElement} The rendered element.
    */
   renderFrame(frameState) {
@@ -670,8 +670,8 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     /**
      * Here we unconditionally expire the source cache since the renderer maintains
      * its own cache.
-     * @param {import("../../PluggableMap.js").default} map Map.
-     * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+     * @param {import("../../Map.js").default} map Map.
+     * @param {import("../../Map.js").FrameState} frameState Frame state.
      */
     const postRenderFunction = function (map, frameState) {
       tileSource.expireCache(frameState.viewState.projection, empty);

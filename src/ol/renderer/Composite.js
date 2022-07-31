@@ -18,7 +18,7 @@ import {replaceChildren} from '../dom.js';
  */
 class CompositeMapRenderer extends MapRenderer {
   /**
-   * @param {import("../PluggableMap.js").default} map Map.
+   * @param {import("../Map.js").default} map Map.
    */
   constructor(map) {
     super(map);
@@ -63,7 +63,7 @@ class CompositeMapRenderer extends MapRenderer {
 
   /**
    * @param {import("../render/EventType.js").default} type Event type.
-   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../Map.js").FrameState} frameState Frame state.
    */
   dispatchRenderEvent(type, frameState) {
     const map = this.getMap();
@@ -81,7 +81,7 @@ class CompositeMapRenderer extends MapRenderer {
 
   /**
    * Render.
-   * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {?import("../Map.js").FrameState} frameState Frame state.
    */
   renderFrame(frameState) {
     if (!frameState) {

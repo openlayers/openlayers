@@ -66,7 +66,7 @@ class Interaction extends BaseObject {
 
     /**
      * @private
-     * @type {import("../PluggableMap.js").default|null}
+     * @type {import("../Map.js").default|null}
      */
     this.map_ = null;
 
@@ -85,7 +85,7 @@ class Interaction extends BaseObject {
 
   /**
    * Get the map associated with this interaction.
-   * @return {import("../PluggableMap.js").default|null} Map.
+   * @return {import("../Map.js").default|null} Map.
    * @api
    */
   getMap() {
@@ -116,7 +116,7 @@ class Interaction extends BaseObject {
    * Remove the interaction from its current map and attach it to the new map.
    * Subclasses may set up event handlers to get notified about changes to
    * the map here.
-   * @param {import("../PluggableMap.js").default|null} map Map.
+   * @param {import("../Map.js").default|null} map Map.
    */
   setMap(map) {
     this.map_ = map;

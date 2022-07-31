@@ -466,7 +466,7 @@ const RasterEventType = {
 export class RasterSourceEvent extends Event {
   /**
    * @param {string} type Type.
-   * @param {import("../PluggableMap.js").FrameState} frameState The frame state.
+   * @param {import("../Map.js").FrameState} frameState The frame state.
    * @param {Object|Array<Object>} data An object made available to operations.  For "afteroperations" evenets
    * this will be an array of objects if more than one thread is used.
    */
@@ -600,7 +600,7 @@ class RasterSource extends ImageSource {
 
     /**
      * The most recently requested frame state.
-     * @type {import("../PluggableMap.js").FrameState}
+     * @type {import("../Map.js").FrameState}
      * @private
      */
     this.requestedFrameState_;
@@ -620,7 +620,7 @@ class RasterSource extends ImageSource {
 
     /**
      * @private
-     * @type {import("../PluggableMap.js").FrameState}
+     * @type {import("../Map.js").FrameState}
      */
     this.frameState_ = {
       animate: false,
@@ -699,11 +699,11 @@ class RasterSource extends ImageSource {
    * @param {import("../extent.js").Extent} extent The view extent (in map units).
    * @param {number} resolution The view resolution.
    * @param {import("../proj/Projection.js").default} projection The view projection.
-   * @return {import("../PluggableMap.js").FrameState} The updated frame state.
+   * @return {import("../Map.js").FrameState} The updated frame state.
    * @private
    */
   updateFrameState_(extent, resolution, projection) {
-    const frameState = /** @type {import("../PluggableMap.js").FrameState} */ (
+    const frameState = /** @type {import("../Map.js").FrameState} */ (
       Object.assign({}, this.frameState_)
     );
 
@@ -817,7 +817,7 @@ class RasterSource extends ImageSource {
 
   /**
    * Called when pixel processing is complete.
-   * @param {import("../PluggableMap.js").FrameState} frameState The frame state.
+   * @param {import("../Map.js").FrameState} frameState The frame state.
    * @param {Error} err Any error during processing.
    * @param {ImageData} output The output image data.
    * @param {Object|Array<Object>} data The user data (or an array if more than one thread).
@@ -890,7 +890,7 @@ let sharedContext = null;
 /**
  * Get image data from a layer.
  * @param {import("../layer/Layer.js").default} layer Layer to render.
- * @param {import("../PluggableMap.js").FrameState} frameState The frame state.
+ * @param {import("../Map.js").FrameState} frameState The frame state.
  * @return {ImageData} The image data.
  */
 function getImageData(layer, frameState) {

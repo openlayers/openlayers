@@ -36,10 +36,10 @@ import {toStyle} from '../style/flat.js';
  * renderer when getting features from the vector source for the rendering or hit-detection.
  * Recommended value: the size of the largest symbol, line width or label.
  * @property {VectorSourceType} [source] Source.
- * @property {import("../PluggableMap.js").default} [map] Sets the layer as overlay on a map. The map will not manage
+ * @property {import("../Map.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
- * use {@link import("../PluggableMap.js").default#addLayer map.addLayer()}.
+ * use [map.addLayer()]{@link import("../Map.js").default#addLayer}.
  * @property {boolean} [declutter=false] Declutter images and text. Decluttering is applied to all
  * image and text styles of all Vector and VectorTile layers that have set this to `true`. The priority
  * is defined by the z-index of the layer, the `zIndex` of the style and the render order of features.
@@ -161,8 +161,8 @@ class BaseVectorLayer extends Layer {
    * when a hit was detected, or it will be empty.
    *
    * The hit detection algorithm used for this method is optimized for performance, but is less
-   * accurate than the one used in {@link import("../PluggableMap.js").default#getFeaturesAtPixel}: Text
-   * is not considered, and icons are only represented by their bounding box instead of the exact
+   * accurate than the one used in [map.getFeaturesAtPixel()]{@link import("../Map.js").default#getFeaturesAtPixel}.
+   * Text is not considered, and icons are only represented by their bounding box instead of the exact
    * image.
    *
    * @param {import("../pixel.js").Pixel} pixel Pixel.
@@ -227,7 +227,7 @@ class BaseVectorLayer extends Layer {
 
   /**
    * Render declutter items for this layer
-   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../Map.js").FrameState} frameState Frame state.
    */
   renderDeclutter(frameState) {
     if (!frameState.declutterTree) {

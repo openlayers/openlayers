@@ -1,14 +1,14 @@
 /**
  * @module ol/control/OverviewMap
  */
-import CompositeMapRenderer from '../renderer/Composite.js';
+import Collection from '../Collection.js';
 import Control from './Control.js';
 import EventType from '../events/EventType.js';
+import Map from '../Map.js';
 import MapEventType from '../MapEventType.js';
 import MapProperty from '../MapProperty.js';
 import ObjectEventType from '../ObjectEventType.js';
 import Overlay from '../Overlay.js';
-import PluggableMap from '../PluggableMap.js';
 import View from '../View.js';
 import ViewProperty from '../ViewProperty.js';
 import {CLASS_COLLAPSED, CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
@@ -36,12 +36,6 @@ const MAX_RATIO = 0.75;
  * @type {number}
  */
 const MIN_RATIO = 0.1;
-
-class ControlledMap extends PluggableMap {
-  createRenderer() {
-    return new CompositeMapRenderer(this);
-  }
-}
 
 /**
  * @typedef {Object} Options
@@ -179,14 +173,17 @@ class OverviewMap extends Control {
      */
     this.view_ = options.view;
 
+    const ovmap = new Map({
+      view: options.view,
+      controls: new Collection(),
+      interactions: new Collection(),
+    });
+
     /**
-     * @type {ControlledMap}
+     * @type {Map}
      * @private
      */
-    this.ovmap_ = new ControlledMap({
-      view: options.view,
-    });
-    const ovmap = this.ovmap_;
+    this.ovmap_ = ovmap;
 
     if (options.layers) {
       options.layers.forEach(function (layer) {
@@ -269,7 +266,7 @@ class OverviewMap extends Control {
    * Pass `null` to just remove the control from the current map.
    * Subclasses may set up event handlers to get notified about changes to
    * the map here.
-   * @param {import("../PluggableMap.js").default|null} map Map.
+   * @param {import("../Map.js").default|null} map Map.
    * @api
    */
   setMap(map) {
@@ -661,7 +658,7 @@ class OverviewMap extends Control {
 
   /**
    * Return the overview map.
-   * @return {import("../PluggableMap.js").default} Overview map.
+   * @return {import("../Map.js").default} Overview map.
    * @api
    */
   getOverviewMap() {

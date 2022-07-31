@@ -248,12 +248,12 @@ describe('ol/renderer/canvas/VectorLayer', function () {
   });
 
   describe('#prepareFrame and #compose', function () {
-    /** @type {import("../../../../../../src/ol/PluggableMap").FrameState*/ let frameState;
-    /** @type {import("../../../../../../src/ol/extent").Extent*/ let projExtent;
+    /** @type {import("../../../../../../src/ol/Map").FrameState} */ let frameState;
+    /** @type {import("../../../../../../src/ol/extent").Extent} */ let projExtent;
     /** @type {CanvasVectorLayerRenderer} */ let renderer;
     /** @type {number} */ let worldWidth;
     /** @type {number} */ let buffer;
-    /** @type {Array<import("../../../../../../src/ol/extent").Extent>*/ let loadExtents;
+    /** @type {Array<import("../../../../../../src/ol/extent").Extent>} */ let loadExtents;
 
     function loader(extent) {
       loadExtents.push(extent);
@@ -661,7 +661,7 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       const projection = getProjection('EPSG:3857');
       const projExtent = projection.getExtent();
       const worldWidth = getWidth(projExtent);
-      /** @type {import("../../../../../../src/ol/PluggableMap").FrameState*/
+      /** @type {import("../../../../../../src/ol/Map").FrameState} */
       const frameState = {
         viewHints: [],
         pixelRatio: 1,

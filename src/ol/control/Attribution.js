@@ -186,7 +186,7 @@ class Attribution extends Control {
 
   /**
    * Collect a list of visible attributions and set the collapsible state.
-   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../Map.js").FrameState} frameState Frame state.
    * @return {Array<string>} Attributions.
    * @private
    */
@@ -253,7 +253,7 @@ class Attribution extends Control {
 
   /**
    * @private
-   * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {?import("../Map.js").FrameState} frameState Frame state.
    */
   updateElement_(frameState) {
     if (!frameState) {
