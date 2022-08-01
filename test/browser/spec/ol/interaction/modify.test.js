@@ -32,7 +32,7 @@ describe('ol.interaction.Modify', function () {
   const width = 360;
   const height = 180;
 
-  beforeEach(function (done) {
+  beforeEach(function () {
     target = document.createElement('div');
 
     const style = target.style;
@@ -72,10 +72,7 @@ describe('ol.interaction.Modify', function () {
         resolution: 1,
       }),
     });
-
-    map.once('postrender', function () {
-      done();
-    });
+    map.renderSync();
   });
 
   afterEach(function () {

@@ -103,7 +103,7 @@ describe('ol/renderer/Layer', function () {
   describe('manageTilePyramid behavior', function () {
     let target, map, view, source;
 
-    beforeEach(function (done) {
+    beforeEach(function () {
       target = document.createElement('div');
       Object.assign(target.style, {
         position: 'absolute',
@@ -133,9 +133,7 @@ describe('ol/renderer/Layer', function () {
           }),
         ],
       });
-      map.once('postrender', function () {
-        done();
-      });
+      map.renderSync();
     });
 
     afterEach(function () {

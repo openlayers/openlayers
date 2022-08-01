@@ -28,7 +28,7 @@ describe('ol.interaction.Snap', function () {
     const width = 360;
     const height = 180;
 
-    beforeEach(function (done) {
+    beforeEach(function () {
       target = document.createElement('div');
 
       const style = target.style;
@@ -47,10 +47,7 @@ describe('ol.interaction.Snap', function () {
           resolution: 1,
         }),
       });
-
-      map.once('postrender', function () {
-        done();
-      });
+      map.renderSync();
     });
 
     afterEach(function () {
@@ -287,7 +284,7 @@ describe('ol.interaction.Snap', function () {
 
     let restoreRAF;
 
-    beforeEach((done) => {
+    beforeEach(() => {
       restoreRAF = overrideRAF();
 
       useGeographic();
@@ -309,10 +306,7 @@ describe('ol.interaction.Snap', function () {
           zoom: 0,
         }),
       });
-
-      map.once('postrender', () => {
-        done();
-      });
+      map.renderSync();
     });
 
     afterEach(() => {

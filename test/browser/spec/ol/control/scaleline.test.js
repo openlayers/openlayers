@@ -223,7 +223,7 @@ describe('ol.control.ScaleLine', function () {
     let degreesHtml;
     let imperialHtml;
     let usHtml;
-    beforeEach(function (done) {
+    beforeEach(function () {
       ctrl = new ScaleLine();
       ctrl.setMap(map);
       map.setView(
@@ -232,10 +232,8 @@ describe('ol.control.ScaleLine', function () {
           zoom: 0,
         })
       );
-      map.once('postrender', function () {
-        metricHtml = ctrl.element.innerHTML;
-        done();
-      });
+      map.renderSync();
+      metricHtml = ctrl.element.innerHTML;
     });
     afterEach(function () {
       map.setView(null);

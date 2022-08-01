@@ -18,7 +18,7 @@ describe('ol.interaction.Translate', function () {
   const width = 360;
   const height = 180;
 
-  beforeEach(function (done) {
+  beforeEach(function () {
     target = document.createElement('div');
     const style = target.style;
     style.position = 'absolute';
@@ -47,9 +47,7 @@ describe('ol.interaction.Translate', function () {
         resolution: 1,
       }),
     });
-    map.once('postrender', function () {
-      done();
-    });
+    map.renderSync();
   });
 
   afterEach(function () {
