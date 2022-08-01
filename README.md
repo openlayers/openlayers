@@ -97,9 +97,8 @@ For older browsers and platforms (Android 4.x, iOS v12 and older, Safari v12 and
 * [`TextDecoder`](https://caniuse.com/textencoder): Available from [polyfill.io](https://polyfill.io/).
 * [`Number.isInteger`](https://caniuse.com/isInteger): Available from [polyfill.io](https://polyfill.io/) or [core-js](https://cdnjs.com/libraries/core-js/).
 * [`Reflect`](https://caniuse.com/mdn-javascript_builtins_reflect): Available from [core-js](https://cdnjs.com/libraries/core-js/).
+* [`Promise.allSettled`](https://caniuse.com/mdn-javascript_builtins_promise_allsettled): Available from [core-js](https://cdnjs.com/libraries/core-js/).
 * [Pointer events](https://caniuse.com/pointer): Use [elm-pep](https://npmjs.com/package/elm-pep) (lightweight) or [pepjs](https://npmjs.com/package/pepjs) (for really, really old browsers).
-
-[`ol/source/GeoTIFF`](https://openlayers.org/en/latest/apidoc/module-ol_source_GeoTIFF-GeoTIFFSource.html) requires a browser that supports [ECMAScript 6](https://262.ecma-international.org/6.0/). Additionally a polyfill for [`Promise.allSettled`](https://caniuse.com/mdn-javascript_builtins_promise_allsettled) may be needed.
 
 ## Documentation
 
