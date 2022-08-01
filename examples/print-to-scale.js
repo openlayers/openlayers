@@ -124,7 +124,6 @@ exportButton.addEventListener(
         scaleLine.setDpi();
         map.getTargetElement().style.width = '';
         map.getTargetElement().style.height = '';
-        map.updateSize();
         map.getView().setResolution(viewResolution);
         exportButton.disabled = false;
         document.body.style.cursor = 'auto';
@@ -135,7 +134,6 @@ exportButton.addEventListener(
     scaleLine.setDpi(resolution);
     map.getTargetElement().style.width = width + 'px';
     map.getTargetElement().style.height = height + 'px';
-    map.updateSize();
     map.getView().setResolution(scaleResolution);
   },
   false

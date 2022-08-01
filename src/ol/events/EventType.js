@@ -33,7 +33,6 @@ export default {
   KEYDOWN: 'keydown',
   KEYPRESS: 'keypress',
   LOAD: 'load',
-  RESIZE: 'resize',
   TOUCHMOVE: 'touchmove',
   WHEEL: 'wheel',
 };

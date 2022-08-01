@@ -73,7 +73,7 @@ OpenLayers appreciates contributions of all kinds.  We especially want to thank 
 [![ela-compil logo](./sponsor-logos/ela-compil.png)](https://ela.pl/)
 
 > We develop leading Physical Security Information Management (PSIM) software.
-> OpenLayers is the core of our map engine and we love it! 
+> OpenLayers is the core of our map engine and we love it!
 > https://elacompil.recruitee.com/
 
 <br>
@@ -93,6 +93,7 @@ For older browsers and platforms (Android 4.x, iOS v12 and older, Safari v12 and
 * [`fetch`](https://caniuse.com/fetch): Available from [polyfill.io](https://polyfill.io/).
 * [`requestAnimationFrame`](https://caniuse.com/requestanimationframe): Available from [polyfill.io](https://polyfill.io/).
 * [`element.prototype.classList` (`add`/`remove`)](https://caniuse.com/classlist): Available from [polyfill.io](https://polyfill.io/).
+* [`ResizeObserver`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver): Available from [polyfill.io](https://polyfill.io/)
 * [`URL` API](https://caniuse.com/url): Available from [polyfill.io](https://polyfill.io/) or [core-js](https://cdnjs.com/libraries/core-js/).
 * [`TextDecoder`](https://caniuse.com/textencoder): Available from [polyfill.io](https://polyfill.io/).
 * [`Number.isInteger`](https://caniuse.com/isInteger): Available from [polyfill.io](https://polyfill.io/) or [core-js](https://cdnjs.com/libraries/core-js/).

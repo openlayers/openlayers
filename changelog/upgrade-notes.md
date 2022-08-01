@@ -26,6 +26,10 @@ The control will now by default keep displaying the last mouse position when the
 
 The `PluggableMap` class has been removed.  If you want to create a custom map class, extend the `Map` class instead.
 
+#### ol/Map
+
+A [`ResizeObserver`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver) is added to the map target element and therefore `updateSize` no longer needs to be called when the map's target has been resized.
+
 ### 6.15.0
 
 #### Deprecated `tilePixelRatio` option for data tile sources.

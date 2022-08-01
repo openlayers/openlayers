@@ -460,6 +460,12 @@ class Map extends BaseObject {
 
     /**
      * @private
+     * @type {ResizeObserver}
+     */
+    this.resizeObserver_ = new ResizeObserver(() => this.updateSize());
+
+    /**
+     * @private
      * @type {TileQueue}
      */
     this.tileQueue_ = new TileQueue(
@@ -1293,7 +1299,6 @@ class Map extends BaseObject {
         PASSIVE_EVENT_LISTENERS ? {passive: false} : false
       );
 
-      const defaultView = this.getOwnerDocument().defaultView;
       const keyboardEventTarget = !this.keyboardEventTarget_
         ? targetElement
         : this.keyboardEventTarget_;
@@ -1310,8 +1315,8 @@ class Map extends BaseObject {
           this.handleBrowserEvent,
           this
         ),
-        listen(defaultView, EventType.RESIZE, this.updateSize, this),
       ];
+      this.resizeObserver_.observe(targetElement);
     }
 
     this.updateSize();
@@ -1411,6 +1416,7 @@ class Map extends BaseObject {
     if (this.animationDelayKey_) {
       cancelAnimationFrame(this.animationDelayKey_);
     }
+    this.updateSize();
     this.animationDelay_();
   }
 

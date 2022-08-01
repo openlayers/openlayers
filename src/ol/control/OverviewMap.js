@@ -298,7 +298,6 @@ class OverviewMap extends Control {
       if (view) {
         this.bindView_(view);
         if (view.isDef()) {
-          this.ovmap_.updateSize();
           this.resetExtent_();
         }
       }
@@ -324,11 +323,6 @@ class OverviewMap extends Control {
       }
       const newView = this.getMap().getView();
       this.bindView_(newView);
-    } else if (
-      !this.ovmap_.isRendered() &&
-      (event.key === MapProperty.TARGET || event.key === MapProperty.SIZE)
-    ) {
-      this.ovmap_.updateSize();
     }
   }
 
@@ -571,7 +565,6 @@ class OverviewMap extends Control {
         ovmap.render();
         return;
       }
-      ovmap.updateSize();
       this.resetExtent_();
       this.updateBoxAfterOvmapIsRendered_();
     }

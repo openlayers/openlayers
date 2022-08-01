@@ -261,7 +261,6 @@ class FullScreen extends Control {
         replaceNode(this.labelNode_, this.labelActiveNode_);
         this.dispatchEvent(FullScreenEventType.LEAVEFULLSCREEN);
       }
-      map.updateSize();
     }
   }
 
