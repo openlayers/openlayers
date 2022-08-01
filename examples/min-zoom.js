@@ -28,7 +28,7 @@ const map = new Map({
   view: view,
 });
 
-window.addEventListener('resize', function () {
+map.on('change:size', function () {
   const minZoom = getMinZoom();
   if (minZoom !== view.getMinZoom()) {
     view.setMinZoom(minZoom);
