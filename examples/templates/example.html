@@ -4,64 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-    <script>
-    var gaProperty = 'UA-2577926-1';
-    // Disable tracking if the opt-out cookie exists.
-    var disableStr = 'ga-disable-' + gaProperty;
-    if (document.cookie.indexOf(disableStr + '=true') > -1) {
-      window[disableStr] = true;
-    }
-    function gaOptout() {
-      document.cookie = disableStr + '=true; expires=Thu, 31 Dec 2099 23:59:59 UTC; path=/';
-      window[disableStr] = true;
-    }
-    function gaOptoutRevoke() {
-      document.cookie = disableStr + '=false; expires=Thu, 31 Dec 2099 23:59:59 UTC; path=/';
-      window[disableStr] = false;
-    }
-    </script>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-2577926-1"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'UA-2577926-1', { 'anonymize_ip': true });
-    </script>
-    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
-    <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
     <script src="https://unpkg.com/lz-string@1.4.4/libs/lz-string.min.js"></script>
-    <script>
-    window.addEventListener("load", function() {
-      window.cookieconsent.initialise({
-        'palette': {
-          'popup': {
-            'background': '#eaf7f7',
-            'text': '#5c7291'
-          },
-          'button': {
-            'background': '#56cbdb',
-            'text': '#ffffff'
-          }
-        },
-        'theme': 'edgeless',
-        'type': 'opt-out',
-        'onInitialise': function (status) {
-          if (!this.hasConsented()) {
-            gaOptout()
-          }
-        },
-        'onStatusChange': function(status, chosenBefore) {
-          if (!this.hasConsented()) {
-            gaOptout()
-          }
-        },
-        'onRevokeChoice': function() {
-          gaOptoutRevoke()
-        }
-      })
-    });
-    </script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="./resources/prism/prism-1.20.0.css" type="text/css">
@@ -238,27 +181,27 @@
         modal.find('.modal-body').html(content);
       });
 
-      var packageUrl = 'https://raw.githubusercontent.com/openlayers/openlayers.github.io/build/package.json';
+      const packageUrl = 'https://raw.githubusercontent.com/openlayers/openlayers.github.io/build/package.json';
       fetch(packageUrl).then(function(response) {
         return response.json();
       }).then(function(json) {
-        var latestVersion = json.version;
+        const latestVersion = json.version;
         document.getElementById('latest-version').innerHTML = latestVersion;
-        var url = window.location.href;
-        var branchSearch = url.match(/\/([^\/]*)\/examples\//);
-        var cookieText = 'dismissed=-' + latestVersion + '-';
-        var dismissed = document.cookie.indexOf(cookieText) != -1;
+        const url = window.location.href;
+        const branchSearch = url.match(/\/([^\/]*)\/examples\//);
+        const storageKey = 'ol-dismissed=-' + latestVersion;
+        const dismissed = localStorage.getItem(storageKey) === 'true';
         if (branchSearch && !dismissed && /^v[0-9\.]*$/.test(branchSearch[1]) && '{{ olVersion }}' != latestVersion) {
           var link = url.replace(branchSearch[0], '/latest/examples/');
           fetch(link, {method: 'head'}).then(function(response) {
-            var a = document.getElementById('latest-link');
+            const a = document.getElementById('latest-link');
             a.href = response.status == 200 ? link : '../../latest/examples/';
           });
-          var latestCheck = document.getElementById('latest-check');
+          const latestCheck = document.getElementById('latest-check');
           latestCheck.style.display = '';
           document.getElementById('latest-dismiss').onclick = function() {
             latestCheck.style.display = 'none';
-            document.cookie = cookieText;
+            localStorage.setItem(storageKey, 'true');
           }
         }
       });
