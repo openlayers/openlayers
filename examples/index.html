@@ -6,13 +6,14 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="./resources/layout.css" type="text/css">
+    <link rel="stylesheet" href="./css/ol.css" type="text/css">
+    <link rel="stylesheet" href="./css/site.css" type="text/css">
     <style>
       body {
-        padding-top: 70px;
+        padding-top: 50px;
       }
       input.search-query {
-        color: #333;
+        color: var(--ol-foreground-color);
       }
       .example {
         display: block;
@@ -25,8 +26,11 @@
         font-size: smaller;
         margin: 5px 0;
       }
-      .example:hover {
-        background-color: #F5F5F5;
+      a.bg-light:focus,
+      a.bg-light:hover,
+      button.bg-light:focus,
+      button.bg-light:hover {
+        background-color: #f8f9fa !important;
       }
     </style>
     <script type="text/javascript" src="resources/Jugl.js"></script>
@@ -38,7 +42,7 @@
   <body>
 
     <header class="navbar navbar-expand-md navbar-dark mb-3 py-0 fixed-top" role="navigation">
-      <a class="navbar-brand" href="https://openlayers.org/"><img class="header-logo" src="./resources/logo-70x70.png" alt="">&nbsp;OpenLayers</a>
+      <a class="navbar-brand" href="https://openlayers.org/"><img class="header-logo" src="./resources/logo-dark.svg" width="70px" height="70px" alt="">&nbsp;OpenLayers</a>
 
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#olmenu" aria-controls="olmenu" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
