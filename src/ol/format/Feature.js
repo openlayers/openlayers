@@ -1,9 +1,7 @@
 /**
  * @module ol/format/Feature
  */
-import Units from '../proj/Units.js';
 import {abstract} from '../util.js';
-import {assign} from '../obj.js';
 import {
   equivalent as equivalentProjection,
   get as getProjection,
@@ -49,6 +47,10 @@ import {
  * Set a number here to round coordinates. Can also be used to ensure that
  * coordinates read in can be written back out with the same number of decimals.
  * Default is no rounding.
+ */
+
+/**
+ * @typedef {'arraybuffer' | 'json' | 'text' | 'xml'} Type
  */
 
 /**
@@ -100,7 +102,7 @@ class FeatureFormat {
       if (
         opt_options.extent &&
         dataProjection &&
-        dataProjection.getUnits() === Units.TILE_PIXELS
+        dataProjection.getUnits() === 'tile-pixels'
       ) {
         dataProjection = getProjection(dataProjection);
         dataProjection.setWorldExtent(opt_options.extent);
@@ -123,7 +125,7 @@ class FeatureFormat {
    *     Updated options.
    */
   adaptOptions(options) {
-    return assign(
+    return Object.assign(
       {
         dataProjection: this.dataProjection,
         featureProjection: this.defaultFeatureProjection,
@@ -134,7 +136,7 @@ class FeatureFormat {
 
   /**
    * @abstract
-   * @return {import("./FormatType.js").default} Format.
+   * @return {Type} The format type.
    */
   getType() {
     return abstract();

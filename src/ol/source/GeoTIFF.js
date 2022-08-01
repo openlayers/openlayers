@@ -2,9 +2,13 @@
  * @module ol/source/GeoTIFF
  */
 import DataTile from './DataTile.js';
-import State from './State.js';
 import TileGrid from '../tilegrid/TileGrid.js';
-import {Pool, fromUrl as tiffFromUrl, fromUrls as tiffFromUrls} from 'geotiff';
+import {
+  Pool,
+  fromBlob as tiffFromBlob,
+  fromUrl as tiffFromUrl,
+  fromUrls as tiffFromUrls,
+} from 'geotiff';
 import {
   Projection,
   get as getCachedProjection,
@@ -17,8 +21,9 @@ import {fromCode as unitsFromCode} from '../proj/Units.js';
 
 /**
  * @typedef {Object} SourceInfo
- * @property {string} url URL for the source GeoTIFF.
- * @property {Array<string>} [overviews] List of any overview URLs.
+ * @property {string} [url] URL for the source GeoTIFF.
+ * @property {Array<string>} [overviews] List of any overview URLs, only applies if the url parameter is given.
+ * @property {Blob} [blob] Blob containing the source GeoTIFF. `blob` and `url` are mutually exclusive.
  * @property {number} [min=0] The minimum source data value.  Rendered values are scaled from 0 to 1 based on
  * the configured min and max.  If not provided and raster statistics are available, those will be used instead.
  * If neither are available, the minimum for the data type will be used.  To disable this behavior, set
@@ -189,7 +194,9 @@ function getImagesForTIFF(tiff) {
  */
 function getImagesForSource(source, options) {
   let request;
-  if (source.overviews) {
+  if (source.blob) {
+    request = tiffFromBlob(source.blob);
+  } else if (source.overviews) {
     request = tiffFromUrls(source.url, source.overviews, options);
   } else {
     request = tiffFromUrl(source.url, options);
@@ -327,7 +334,7 @@ class GeoTIFFSource extends DataTile {
    */
   constructor(options) {
     super({
-      state: State.LOADING,
+      state: 'loading',
       tileGrid: null,
       projection: null,
       opaque: options.opaque,
@@ -420,7 +427,7 @@ class GeoTIFFSource extends DataTile {
       .catch(function (error) {
         console.error(error); // eslint-disable-line no-console
         self.error_ = error;
-        self.setState(State.ERROR);
+        self.setState('error');
       });
   }
 
@@ -642,7 +649,7 @@ class GeoTIFFSource extends DataTile {
     this.setTileSizes(commonSourceTileSizes);
 
     this.setLoader(this.loadTile_.bind(this));
-    this.setState(State.READY);
+    this.setState('ready');
     this.viewResolver({
       projection: this.projection,
       resolutions: resolutions,

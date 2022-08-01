@@ -215,6 +215,18 @@ class LRUCache {
   }
 
   /**
+   * Return an entry without updating least recently used time.
+   * @param {string} key Key.
+   * @return {T} Value.
+   */
+  peek(key) {
+    if (!this.containsKey(key)) {
+      return undefined;
+    }
+    return this.entries_[key].value_;
+  }
+
+  /**
    * @return {T} value Value.
    */
   pop() {

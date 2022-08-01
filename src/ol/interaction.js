@@ -25,6 +25,7 @@ export {default as Extent} from './interaction/Extent.js';
 export {default as Interaction} from './interaction/Interaction.js';
 export {default as KeyboardPan} from './interaction/KeyboardPan.js';
 export {default as KeyboardZoom} from './interaction/KeyboardZoom.js';
+export {default as Link} from './interaction/Link.js';
 export {default as Modify} from './interaction/Modify.js';
 export {default as MouseWheelZoom} from './interaction/MouseWheelZoom.js';
 export {default as PinchRotate} from './interaction/PinchRotate.js';
@@ -84,6 +85,7 @@ export {default as Translate} from './interaction/Translate.js';
 export function defaults(opt_options) {
   const options = opt_options ? opt_options : {};
 
+  /** @type {Collection<import("./interaction/Interaction.js").default>} */
   const interactions = new Collection();
 
   const kinetic = new Kinetic(-0.005, 0.05, 100);

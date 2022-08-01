@@ -1,8 +1,6 @@
 /**
  * @module ol/geom/MultiLineString
  */
-import GeometryLayout from './GeometryLayout.js';
-import GeometryType from './GeometryType.js';
 import LineString from './LineString.js';
 import SimpleGeometry from './SimpleGeometry.js';
 import {arrayMaxSquaredDelta, assignClosestArrayPoint} from './flat/closest.js';
@@ -28,7 +26,7 @@ class MultiLineString extends SimpleGeometry {
    * @param {Array<Array<import("../coordinate.js").Coordinate>|LineString>|Array<number>} coordinates
    *     Coordinates or LineString geometries. (For internal use, flat coordinates in
    *     combination with `opt_layout` and `opt_ends` are also accepted.)
-   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
+   * @param {import("./Geometry.js").GeometryLayout} [opt_layout] Layout.
    * @param {Array<number>} [opt_ends] Flat coordinate ends for internal use.
    */
   constructor(coordinates, opt_layout, opt_ends) {
@@ -174,8 +172,7 @@ class MultiLineString extends SimpleGeometry {
    */
   getCoordinateAtM(m, opt_extrapolate, opt_interpolate) {
     if (
-      (this.layout != GeometryLayout.XYM &&
-        this.layout != GeometryLayout.XYZM) ||
+      (this.layout != 'XYM' && this.layout != 'XYZM') ||
       this.flatCoordinates.length === 0
     ) {
       return null;
@@ -299,20 +296,16 @@ class MultiLineString extends SimpleGeometry {
       0,
       simplifiedEnds
     );
-    return new MultiLineString(
-      simplifiedFlatCoordinates,
-      GeometryLayout.XY,
-      simplifiedEnds
-    );
+    return new MultiLineString(simplifiedFlatCoordinates, 'XY', simplifiedEnds);
   }
 
   /**
    * Get the type of this geometry.
-   * @return {import("./GeometryType.js").default} Geometry type.
+   * @return {import("./Geometry.js").Type} Geometry type.
    * @api
    */
   getType() {
-    return GeometryType.MULTI_LINE_STRING;
+    return 'MultiLineString';
   }
 
   /**
@@ -334,7 +327,7 @@ class MultiLineString extends SimpleGeometry {
   /**
    * Set the coordinates of the multilinestring.
    * @param {!Array<Array<import("../coordinate.js").Coordinate>>} coordinates Coordinates.
-   * @param {GeometryLayout} [opt_layout] Layout.
+   * @param {import("./Geometry.js").GeometryLayout} [opt_layout] Layout.
    * @api
    */
   setCoordinates(coordinates, opt_layout) {

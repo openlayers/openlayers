@@ -3,7 +3,6 @@
  */
 
 import EventType from '../events/EventType.js';
-import SourceState from './State.js';
 import Tile from '../Tile.js';
 import TileSource from './Tile.js';
 import TileState from '../TileState.js';
@@ -285,7 +284,7 @@ class UTFGrid extends TileSource {
   constructor(options) {
     super({
       projection: getProjection('EPSG:3857'),
-      state: SourceState.LOADING,
+      state: 'loading',
       zDirection: options.zDirection,
     });
 
@@ -420,7 +419,7 @@ class UTFGrid extends TileSource {
    * @protected
    */
   handleTileJSONError() {
-    this.setState(SourceState.ERROR);
+    this.setState('error');
   }
 
   /**
@@ -455,7 +454,7 @@ class UTFGrid extends TileSource {
 
     const grids = tileJSON['grids'];
     if (!grids) {
-      this.setState(SourceState.ERROR);
+      this.setState('error');
       return;
     }
 
@@ -471,7 +470,7 @@ class UTFGrid extends TileSource {
       });
     }
 
-    this.setState(SourceState.READY);
+    this.setState('ready');
   }
 
   /**

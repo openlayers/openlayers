@@ -3,7 +3,6 @@
  */
 
 import TileGrid from '../tilegrid/TileGrid.js';
-import {assign} from '../obj.js';
 import {getJSON, resolveUrl} from '../net.js';
 import {get as getProjection} from '../proj.js';
 import {getIntersection as intersectExtents} from '../extent.js';
@@ -324,7 +323,7 @@ function parseTileMatrixSet(
       }
     }
 
-    assign(localContext, context);
+    Object.assign(localContext, context);
 
     const url = tileUrlTemplate.replace(/\{(\w+?)\}/g, function (m, p) {
       return localContext[p];

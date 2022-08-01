@@ -9,6 +9,7 @@ import {assert} from '../asserts.js';
 import {ceil, clamp, floor} from '../math.js';
 import {createOrUpdate, getTopLeft} from '../extent.js';
 import {createOrUpdate as createOrUpdateTileCoord} from '../tilecoord.js';
+import {intersectsLinearRing} from '../geom/flat/intersectsextent.js';
 import {isSorted, linearFindNearest} from '../array.js';
 import {toSize} from '../size.js';
 
@@ -50,7 +51,7 @@ const DECIMALS = 5;
  * negative because OpenLayers tile coordinates use the top left as the origin.
  * @property {number|import("../size.js").Size} [tileSize] Tile size.
  * Default is `[256, 256]`.
- * @property {Array<import("../size.js").Size>} [tileSizes] Tile sizes. If given, the array length
+ * @property {Array<number|import("../size.js").Size>} [tileSizes] Tile sizes. If given, the array length
  * should match the length of the `resolutions` array, i.e. each resolution can have a different
  * tile size.
  */
@@ -337,7 +338,7 @@ class TileGrid {
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {import("../TileRange.js").default} [opt_tileRange] Temporary import("../TileRange.js").default object.
    * @param {import("../extent.js").Extent} [opt_extent] Temporary import("../extent.js").Extent object.
-   * @return {import("../TileRange.js").default} Tile range.
+   * @return {import("../TileRange.js").default|null} Tile range.
    */
   getTileCoordChildTileRange(tileCoord, opt_tileRange, opt_extent) {
     if (tileCoord[0] < this.maxZoom) {
@@ -369,7 +370,7 @@ class TileGrid {
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {number} z Integer zoom level.
    * @param {import("../TileRange.js").default} [opt_tileRange] Temporary import("../TileRange.js").default object.
-   * @return {import("../TileRange.js").default} Tile range.
+   * @return {import("../TileRange.js").default|null} Tile range.
    */
   getTileRangeForTileCoordAndZ(tileCoord, z, opt_tileRange) {
     if (z > this.maxZoom || z < this.minZoom) {
@@ -654,6 +655,22 @@ class TileGrid {
       opt_direction || 0
     );
     return clamp(z, this.minZoom, this.maxZoom);
+  }
+
+  /**
+   * The tile with the provided tile coordinate intersects the given viewport.
+   * @param {import('../tilecoord.js').TileCoord} tileCoord Tile coordinate.
+   * @param {Array<number>} viewport Viewport as returned from {@link module:ol/extent.getRotatedViewport}.
+   * @return {boolean} The tile with the provided tile coordinate intersects the given viewport.
+   */
+  tileCoordIntersectsViewport(tileCoord, viewport) {
+    return intersectsLinearRing(
+      viewport,
+      0,
+      viewport.length,
+      2,
+      this.getTileCoordExtent(tileCoord)
+    );
   }
 
   /**

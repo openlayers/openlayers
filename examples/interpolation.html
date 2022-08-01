@@ -6,7 +6,7 @@ docs: >
   Example of data resampling when using raster DEM (digital elevation model) data.
   The <code>interpolate: false</code> setting is used to disable interpolation of data values during
   reprojection and rendering. Elevation data is
-  calculated from the pixel value returned by <b>forEachLayerAtPixel</b>. For comparison a second map
+  calculated from the pixel value returned by <b>getData</b>. For comparison a second map reprojected
   with interpolation enabled returns inaccurate elevations which are very noticeable close to 3107 meters
   due to how elevation is calculated from the pixel value.
 tags: "disable image interpolation, xyz, maptiler, reprojection"
@@ -21,7 +21,7 @@ cloak:
     <div>
       <label>
         Elevation
-        <span id="info1">0.0</span> meters
+        <span id="info1">-</span> meters
       </label>
     </div>
   </div>
@@ -31,7 +31,7 @@ cloak:
     <div>
       <label>
         Elevation
-        <span id="info2">0.0</span> meters
+        <span id="info2">-</span> meters
       </label>
     </div>
   </div>

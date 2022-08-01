@@ -13,7 +13,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
   let renderer;
   /** @type {WebGLTileLayer} */
   let tileLayer;
-  /** @type {import('../../../../../../src/ol/PluggableMap.js').FrameState} */
+  /** @type {import('../../../../../../src/ol/Map.js').FrameState} */
   let frameState;
   beforeEach(function () {
     const size = 256;

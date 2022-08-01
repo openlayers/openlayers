@@ -5,6 +5,7 @@ import sinon from 'sinon';
 import {listen} from '../../../src/ol/events.js';
 
 describe('ol/Collection.js', function () {
+  /** @type {Collection} */
   let collection;
 
   beforeEach(function () {
@@ -72,10 +73,15 @@ describe('ol/Collection.js', function () {
 
   describe('setAt', function () {
     it('sets at the correct location', function () {
-      collection.setAt(1, 1);
-      expect(collection.getLength()).to.eql(2);
-      expect(collection.item(0)).to.be(undefined);
-      expect(collection.item(1)).to.eql(1);
+      collection.setAt(0, 1);
+      collection.setAt(1, 2);
+      expect(collection.getLength()).to.be(2);
+      expect(collection.item(0)).to.be(1);
+      expect(collection.item(1)).to.be(2);
+
+      collection.setAt(0, 3);
+      expect(collection.getLength()).to.be(2);
+      expect(collection.item(0)).to.be(3);
     });
   });
 
@@ -85,6 +91,13 @@ describe('ol/Collection.js', function () {
       collection.removeAt(1);
       expect(collection.item(0)).to.eql(0);
       expect(collection.item(1)).to.eql(2);
+    });
+    it('does not fire event for invalid index', function () {
+      const collection = new Collection([0, 1, 2]);
+      collection.on('remove', function () {
+        throw new Error('Should not fire event for invalid index');
+      });
+      expect(collection.removeAt(3)).to.be(undefined);
     });
   });
 
@@ -187,23 +200,32 @@ describe('ol/Collection.js', function () {
   });
 
   describe('setAt beyond end', function () {
+    it('does not allow setting invalid index', function () {
+      try {
+        collection.setAt(1, 1);
+      } catch (e) {
+        return;
+      }
+      throw new Error('Collection should throw');
+    });
     it('triggers events properly', function () {
-      const added = [],
-        addedIndexes = [];
+      const added = [];
+      const addedIndexes = [];
       listen(collection, CollectionEventType.ADD, function (e) {
         added.push(e.element);
         addedIndexes.push(e.index);
       });
-      collection.setAt(2, 0);
-      expect(collection.getLength()).to.eql(3);
-      expect(collection.item(0)).to.be(undefined);
-      expect(collection.item(1)).to.be(undefined);
-      expect(collection.item(2)).to.eql(0);
-      expect(added.length).to.eql(3);
-      expect(added[0]).to.eql(undefined);
-      expect(added[1]).to.eql(undefined);
-      expect(added[2]).to.eql(0);
-      expect(addedIndexes).to.eql([0, 1, 2]);
+      collection.setAt(0, 0);
+      collection.setAt(1, 1);
+      collection.setAt(0, 2);
+      expect(collection.getLength()).to.be(2);
+      expect(collection.item(0)).to.be(2);
+      expect(collection.item(1)).to.be(1);
+      expect(added.length).to.be(3);
+      expect(added[0]).to.be(0);
+      expect(added[1]).to.be(1);
+      expect(added[2]).to.be(2);
+      expect(addedIndexes).to.eql([0, 1, 0]);
     });
   });
 

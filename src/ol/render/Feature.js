@@ -2,8 +2,6 @@
  * @module ol/render/Feature
  */
 import Feature from '../Feature.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
-import GeometryType from '../geom/GeometryType.js';
 import {
   LineString,
   MultiLineString,
@@ -45,7 +43,7 @@ const tmpTransform = createTransform();
  */
 class RenderFeature {
   /**
-   * @param {import("../geom/GeometryType.js").default} type Geometry type.
+   * @param {import("../geom/Geometry.js").Type} type Geometry type.
    * @param {Array<number>} flatCoordinates Flat coordinates. These always need
    *     to be right-handed for polygons.
    * @param {Array<number>|Array<Array<number>>} ends Ends or Endss.
@@ -72,7 +70,7 @@ class RenderFeature {
 
     /**
      * @private
-     * @type {import("../geom/GeometryType.js").default}
+     * @type {import("../geom/Geometry.js").Type}
      */
     this.type_ = type;
 
@@ -125,7 +123,7 @@ class RenderFeature {
   getExtent() {
     if (!this.extent_) {
       this.extent_ =
-        this.type_ === GeometryType.POINT
+        this.type_ === 'Point'
           ? createOrUpdateFromCoordinate(this.flatCoordinates_)
           : createOrUpdateFromFlatCoordinates(
               this.flatCoordinates_,
@@ -283,7 +281,7 @@ class RenderFeature {
 
   /**
    * Get the type of this feature's geometry.
-   * @return {import("../geom/GeometryType.js").default} Geometry type.
+   * @return {import("../geom/Geometry.js").Type} Geometry type.
    * @api
    */
   getType() {
@@ -348,31 +346,25 @@ RenderFeature.prototype.getFlatCoordinates =
 export function toGeometry(renderFeature) {
   const geometryType = renderFeature.getType();
   switch (geometryType) {
-    case GeometryType.POINT:
+    case 'Point':
       return new Point(renderFeature.getFlatCoordinates());
-    case GeometryType.MULTI_POINT:
-      return new MultiPoint(
-        renderFeature.getFlatCoordinates(),
-        GeometryLayout.XY
-      );
-    case GeometryType.LINE_STRING:
-      return new LineString(
-        renderFeature.getFlatCoordinates(),
-        GeometryLayout.XY
-      );
-    case GeometryType.MULTI_LINE_STRING:
+    case 'MultiPoint':
+      return new MultiPoint(renderFeature.getFlatCoordinates(), 'XY');
+    case 'LineString':
+      return new LineString(renderFeature.getFlatCoordinates(), 'XY');
+    case 'MultiLineString':
       return new MultiLineString(
         renderFeature.getFlatCoordinates(),
-        GeometryLayout.XY,
+        'XY',
         /** @type {Array<number>} */ (renderFeature.getEnds())
       );
-    case GeometryType.POLYGON:
+    case 'Polygon':
       const flatCoordinates = renderFeature.getFlatCoordinates();
       const ends = /** @type {Array<number>} */ (renderFeature.getEnds());
       const endss = inflateEnds(flatCoordinates, ends);
       return endss.length > 1
-        ? new MultiPolygon(flatCoordinates, GeometryLayout.XY, endss)
-        : new Polygon(flatCoordinates, GeometryLayout.XY, ends);
+        ? new MultiPolygon(flatCoordinates, 'XY', endss)
+        : new Polygon(flatCoordinates, 'XY', ends);
     default:
       throw new Error('Invalid geometry type:' + geometryType);
   }

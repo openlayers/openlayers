@@ -91,7 +91,7 @@ const rtlRegEx = new RegExp(
 
 /**
  * @param {string} text Text.
- * @param {string} align Alignment.
+ * @param {CanvasTextAlign} align Alignment.
  * @return {number} Text alignment.
  */
 function horizontalTextAlign(text, align) {

@@ -5,7 +5,6 @@
 
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
-import FormatType from '../format/FormatType.js';
 import Interaction from './Interaction.js';
 import {TRUE} from '../functions.js';
 import {get as getProjection} from '../proj.js';
@@ -143,7 +142,7 @@ class DragAndDrop extends Interaction {
       }
       this.formats_.push(format);
       this.readAsBuffer_ =
-        this.readAsBuffer_ || format.getType() === FormatType.ARRAY_BUFFER;
+        this.readAsBuffer_ || format.getType() === 'arraybuffer';
     }
 
     /**
@@ -192,7 +191,7 @@ class DragAndDrop extends Interaction {
     for (let i = 0, ii = formats.length; i < ii; ++i) {
       const format = formats[i];
       let input = result;
-      if (this.readAsBuffer_ && format.getType() !== FormatType.ARRAY_BUFFER) {
+      if (this.readAsBuffer_ && format.getType() !== 'arraybuffer') {
         if (text === undefined) {
           text = new TextDecoder().decode(result);
         }
@@ -255,7 +254,7 @@ class DragAndDrop extends Interaction {
    * Remove the interaction from its current map and attach it to the new map.
    * Subclasses may set up event handlers to get notified about changes to
    * the map here.
-   * @param {import("../PluggableMap.js").default} map Map.
+   * @param {import("../Map.js").default} map Map.
    */
   setMap(map) {
     this.unregisterListeners_();

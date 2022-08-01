@@ -3,7 +3,6 @@
  */
 import GML2 from './GML2.js';
 import GMLBase, {GMLNS} from './GMLBase.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
@@ -13,6 +12,7 @@ import {
   XML_SCHEMA_INSTANCE_URI,
   createElementNS,
   getAllTextContent,
+  makeArrayExtender,
   makeArrayPusher,
   makeChildAppender,
   makeReplacer,
@@ -21,7 +21,6 @@ import {
   pushParseAndPop,
   pushSerializeAndPop,
 } from '../xml.js';
-import {assign} from '../obj.js';
 import {createOrUpdate} from '../extent.js';
 import {extend} from '../array.js';
 import {get as getProjection} from '../proj.js';
@@ -136,6 +135,27 @@ class GML3 extends GMLBase {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
+   * @return {Array<number>|undefined} Polygon.
+   */
+  readFlatCurveRing(node, objectStack) {
+    /** @type {Array<LineString>} */
+    const lineStrings = pushParseAndPop(
+      [],
+      this.MULTICURVE_PARSERS,
+      node,
+      objectStack,
+      this
+    );
+    const flatCoordinates = [];
+    for (let i = 0, ii = lineStrings.length; i < ii; ++i) {
+      extend(flatCoordinates, lineStrings[i].getFlatCoordinates());
+    }
+    return flatCoordinates;
+  }
+
+  /**
+   * @param {Element} node Node.
+   * @param {Array<*>} objectStack Object stack.
    * @return {MultiPolygon|undefined} MultiPolygon.
    */
   readMultiSurface(node, objectStack) {
@@ -189,13 +209,7 @@ class GML3 extends GMLBase {
    * @return {Array<number>|undefined} flat coordinates.
    */
   readSegment(node, objectStack) {
-    return pushParseAndPop(
-      [null],
-      this.SEGMENTS_PARSERS,
-      node,
-      objectStack,
-      this
-    );
+    return pushParseAndPop([], this.SEGMENTS_PARSERS, node, objectStack, this);
   }
 
   /**
@@ -292,7 +306,7 @@ class GML3 extends GMLBase {
         extend(flatCoordinates, flatLinearRings[i]);
         ends.push(flatCoordinates.length);
       }
-      return new Polygon(flatCoordinates, GeometryLayout.XYZ, ends);
+      return new Polygon(flatCoordinates, 'XYZ', ends);
     } else {
       return undefined;
     }
@@ -313,7 +327,7 @@ class GML3 extends GMLBase {
       this
     );
     if (flatCoordinates) {
-      const lineString = new LineString(flatCoordinates, GeometryLayout.XYZ);
+      const lineString = new LineString(flatCoordinates, 'XYZ');
       return lineString;
     } else {
       return undefined;
@@ -800,7 +814,7 @@ class GML3 extends GMLBase {
     const context = /** @type {import("./Feature.js").WriteOptions} */ (
       objectStack[objectStack.length - 1]
     );
-    const item = assign({}, context);
+    const item = Object.assign({}, context);
     item['node'] = node;
     let value;
     if (Array.isArray(geometry)) {
@@ -873,7 +887,7 @@ class GML3 extends GMLBase {
         }
       }
     }
-    const item = assign({}, context);
+    const item = Object.assign({}, context);
     item.node = node;
     pushSerializeAndPop(
       /** @type {import("../xml.js").NodeStackItem} */
@@ -903,7 +917,7 @@ class GML3 extends GMLBase {
       this.writeFeatureElement,
       this
     );
-    const item = assign({}, context);
+    const item = Object.assign({}, context);
     item.node = node;
     pushSerializeAndPop(
       /** @type {import("../xml.js").NodeStackItem} */
@@ -986,7 +1000,7 @@ class GML3 extends GMLBase {
       multiCurve: this.multiCurve_,
     };
     if (opt_options) {
-      assign(context, opt_options);
+      Object.assign(context, opt_options);
     }
     this.writeGeometryElement(geom, geometry, [context]);
     return geom;
@@ -1019,7 +1033,7 @@ class GML3 extends GMLBase {
       featureType: this.featureType,
     };
     if (opt_options) {
-      assign(context, opt_options);
+      Object.assign(context, opt_options);
     }
     this.writeFeatureMembers_(node, features, [context]);
     return node;
@@ -1161,7 +1175,20 @@ GML3.prototype.PATCHES_PARSERS = {
  */
 GML3.prototype.SEGMENTS_PARSERS = {
   'http://www.opengis.net/gml': {
-    'LineStringSegment': makeReplacer(GML3.prototype.readLineStringSegment),
+    'LineStringSegment': makeArrayExtender(
+      GML3.prototype.readLineStringSegment
+    ),
+  },
+};
+
+/**
+ * @const
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ */
+GMLBase.prototype.RING_PARSERS = {
+  'http://www.opengis.net/gml': {
+    'LinearRing': makeReplacer(GMLBase.prototype.readFlatLinearRing),
+    'Ring': makeReplacer(GML3.prototype.readFlatCurveRing),
   },
 };
 

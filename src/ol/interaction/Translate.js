@@ -7,7 +7,6 @@ import InteractionProperty from './Property.js';
 import PointerInteraction from './Pointer.js';
 import {TRUE} from '../functions.js';
 import {always} from '../events/condition.js';
-import {includes} from '../array.js';
 
 /**
  * @enum {string}
@@ -182,7 +181,7 @@ class Translate extends PointerInteraction {
       } else {
         const layers = options.layers;
         layerFilter = function (layer) {
-          return includes(layers, layer);
+          return layers.includes(layer);
         };
       }
     } else {
@@ -337,7 +336,7 @@ class Translate extends PointerInteraction {
    * Tests to see if the given coordinates intersects any of our selected
    * features.
    * @param {import("../pixel.js").Pixel} pixel Pixel coordinate to test for intersection.
-   * @param {import("../PluggableMap.js").default} map Map to test the intersection on.
+   * @param {import("../Map.js").default} map Map to test the intersection on.
    * @return {import("../Feature.js").default} Returns the feature found at the specified pixel
    * coordinates.
    * @private
@@ -347,7 +346,7 @@ class Translate extends PointerInteraction {
       pixel,
       function (feature, layer) {
         if (this.filter_(feature, layer)) {
-          if (!this.features_ || includes(this.features_.getArray(), feature)) {
+          if (!this.features_ || this.features_.getArray().includes(feature)) {
             return feature;
           }
         }
@@ -382,7 +381,7 @@ class Translate extends PointerInteraction {
    * Remove the interaction from its current map and attach it to the new map.
    * Subclasses may set up event handlers to get notified about changes to
    * the map here.
-   * @param {import("../PluggableMap.js").default} map Map.
+   * @param {import("../Map.js").default} map Map.
    */
   setMap(map) {
     const oldMap = this.getMap();
@@ -398,7 +397,7 @@ class Translate extends PointerInteraction {
   }
 
   /**
-   * @param {import("../PluggableMap.js").default} oldMap Old map.
+   * @param {import("../Map.js").default} oldMap Old map.
    * @private
    */
   updateState_(oldMap) {

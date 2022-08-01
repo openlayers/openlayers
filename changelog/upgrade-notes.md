@@ -1,6 +1,32 @@
 ## Upgrade notes
 
-### Next Release
+### Next version
+
+#### Internet Explorer is no longer supported
+
+Please see https://docs.microsoft.com/en-us/lifecycle/announcements/internet-explorer-11-end-of-support.
+
+#### ol/coordinate.js
+
+The `toStringHDMS` function from the `ol/coordinate.js` module now formats longitude, latitude pairs so that the minutes and seconds are omitted if they are zero.  This changes the values displayed on graticules.
+
+#### ol/later/Graticule
+
+The default intervals now align with integer minutes and seconds better suited to the default label formatter.  If formatting in decimal degrees you may wish to specify custom intervals suited to that format.
+
+#### ol/Collection
+
+Inserting with `setAt` or `insertAt` beyond the current length used to create a sparse Collection with `undefined` inserted for any missing indexes.  This will now throw an error instead.
+
+#### ol/control/MousePosition
+
+The control will now by default keep displaying the last mouse position when the mouse leaves the viewport.  With `placeholder: '&#160;'` you can keep the old behaviour.  The `placeholder` option no longer accepts `false` as a valid value, instead simply omit the option.  The `undefinedHTML` option has been removed. You should use `placeholder` instead.
+
+#### ol/PluggableMap
+
+The `PluggableMap` class has been removed.  If you want to create a custom map class, extend the `Map` class instead.
+
+### 6.15.0
 
 #### Deprecated `tilePixelRatio` option for data tile sources.
 
@@ -33,6 +59,20 @@ addCoordinateTransforms(
     function(coordinate) { return coordinate.slice(0, 2).reverse() }
 );
 ```
+
+#### Replacement of string enums with union types
+
+This change only affects users that were using the non-API string enums
+
+* ol/OverlayPositioning
+* ol/extent/Corner
+* ol/format/FormatType
+* ol/geom/GeometryType
+* ol/source/State
+* ol/source/WMSServerType
+* ol/source/WMTSRequestEncoding
+
+Instead of these, use the respective `string`s, which are now typesafe by means of union types.
 
 ### v6.14.0
 

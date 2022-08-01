@@ -2,15 +2,19 @@
  * @module ol/source/Source
  */
 import BaseObject from '../Object.js';
-import SourceState from './State.js';
 import {abstract} from '../util.js';
 import {get as getProjection} from '../proj.js';
 
 /**
- * A function that takes a {@link module:ol/PluggableMap~FrameState} and returns a string or
+ * @typedef {'undefined' | 'loading' | 'ready' | 'error'} State
+ * State of the source, one of 'undefined', 'loading', 'ready' or 'error'.
+ */
+
+/**
+ * A function that takes a {@link module:ol/Map~FrameState} and returns a string or
  * an array of strings representing source attributions.
  *
- * @typedef {function(import("../PluggableMap.js").FrameState): (string|Array<string>)} Attribution
+ * @typedef {function(import("../Map.js").FrameState): (string|Array<string>)} Attribution
  */
 
 /**
@@ -29,7 +33,7 @@ import {get as getProjection} from '../proj.js';
  * @property {AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
- * @property {import("./State.js").default} [state='ready'] State.
+ * @property {import("./Source.js").State} [state='ready'] State.
  * @property {boolean} [wrapX=false] WrapX.
  * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
  * the nearest neighbor is used when resampling.
@@ -82,10 +86,9 @@ class Source extends BaseObject {
 
     /**
      * @private
-     * @type {import("./State.js").default}
+     * @type {import("./Source.js").State}
      */
-    this.state_ =
-      options.state !== undefined ? options.state : SourceState.READY;
+    this.state_ = options.state !== undefined ? options.state : 'ready';
 
     /**
      * @private
@@ -164,8 +167,8 @@ class Source extends BaseObject {
   }
 
   /**
-   * Get the state of the source, see {@link module:ol/source/State~State} for possible states.
-   * @return {import("./State.js").default} State.
+   * Get the state of the source, see {@link import("./Source.js").State} for possible states.
+   * @return {import("./Source.js").State} State.
    * @api
    */
   getState() {
@@ -208,7 +211,7 @@ class Source extends BaseObject {
 
   /**
    * Set the state of the source.
-   * @param {import("./State.js").default} state State.
+   * @param {import("./Source.js").State} state State.
    */
   setState(state) {
     this.state_ = state;

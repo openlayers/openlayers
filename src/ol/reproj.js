@@ -1,8 +1,6 @@
 /**
  * @module ol/reproj
  */
-import {IMAGE_SMOOTHING_DISABLED} from './renderer/canvas/common.js';
-import {assign} from './obj.js';
 import {
   containsCoordinate,
   createEmpty,
@@ -18,6 +16,11 @@ import {getPointResolution, transform} from './proj.js';
 import {solveLinearSystem} from './math.js';
 
 let brokenDiagonalRendering_;
+
+/**
+ * @type {Array<HTMLCanvasElement>}
+ */
+export const canvasPool = [];
 
 /**
  * This draws a small triangle into a canvas by setting the triangle as the clip region
@@ -217,11 +220,12 @@ export function render(
 ) {
   const context = createCanvasContext2D(
     Math.round(pixelRatio * width),
-    Math.round(pixelRatio * height)
+    Math.round(pixelRatio * height),
+    canvasPool
   );
 
   if (!opt_interpolate) {
-    assign(context, IMAGE_SMOOTHING_DISABLED);
+    context.imageSmoothingEnabled = false;
   }
 
   if (sources.length === 0) {
@@ -249,7 +253,7 @@ export function render(
   );
 
   if (!opt_interpolate) {
-    assign(stitchContext, IMAGE_SMOOTHING_DISABLED);
+    stitchContext.imageSmoothingEnabled = false;
   }
 
   const stitchScale = pixelRatio / sourceResolution;

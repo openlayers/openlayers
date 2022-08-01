@@ -1,8 +1,6 @@
 /**
  * @module ol/geom/MultiPolygon
  */
-import GeometryLayout from './GeometryLayout.js';
-import GeometryType from './GeometryType.js';
 import MultiPoint from './MultiPoint.js';
 import Polygon from './Polygon.js';
 import SimpleGeometry from './SimpleGeometry.js';
@@ -35,7 +33,7 @@ class MultiPolygon extends SimpleGeometry {
   /**
    * @param {Array<Array<Array<import("../coordinate.js").Coordinate>>|Polygon>|Array<number>} coordinates Coordinates.
    *     For internal use, flat coordinates in combination with `opt_layout` and `opt_endss` are also accepted.
-   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
+   * @param {import("./Geometry.js").GeometryLayout} [opt_layout] Layout.
    * @param {Array<Array<number>>} [opt_endss] Array of ends for internal use with flat coordinates.
    */
   constructor(coordinates, opt_layout, opt_endss) {
@@ -307,10 +305,7 @@ class MultiPolygon extends SimpleGeometry {
    * @api
    */
   getInteriorPoints() {
-    return new MultiPoint(
-      this.getFlatInteriorPoints().slice(),
-      GeometryLayout.XYM
-    );
+    return new MultiPoint(this.getFlatInteriorPoints().slice(), 'XYM');
   }
 
   /**
@@ -355,11 +350,7 @@ class MultiPolygon extends SimpleGeometry {
       0,
       simplifiedEndss
     );
-    return new MultiPolygon(
-      simplifiedFlatCoordinates,
-      GeometryLayout.XY,
-      simplifiedEndss
-    );
+    return new MultiPolygon(simplifiedFlatCoordinates, 'XY', simplifiedEndss);
   }
 
   /**
@@ -425,11 +416,11 @@ class MultiPolygon extends SimpleGeometry {
 
   /**
    * Get the type of this geometry.
-   * @return {import("./GeometryType.js").default} Geometry type.
+   * @return {import("./Geometry.js").Type} Geometry type.
    * @api
    */
   getType() {
-    return GeometryType.MULTI_POLYGON;
+    return 'MultiPolygon';
   }
 
   /**
@@ -451,7 +442,7 @@ class MultiPolygon extends SimpleGeometry {
   /**
    * Set the coordinates of the multipolygon.
    * @param {!Array<Array<Array<import("../coordinate.js").Coordinate>>>} coordinates Coordinates.
-   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
+   * @param {import("./Geometry.js").GeometryLayout} [opt_layout] Layout.
    * @api
    */
   setCoordinates(coordinates, opt_layout) {

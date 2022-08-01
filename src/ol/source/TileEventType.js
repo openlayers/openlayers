@@ -22,7 +22,9 @@ export default {
   TILELOADEND: 'tileloadend',
 
   /**
-   * Triggered if tile loading results in an error.
+   * Triggered if tile loading results in an error. Note that this is not the
+   * right place to re-fetch tiles. See {@link module:ol/ImageTile~ImageTile#load}
+   * for details.
    * @event module:ol/source/Tile.TileSourceEvent#tileloaderror
    * @api
    */

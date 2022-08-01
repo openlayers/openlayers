@@ -2,7 +2,6 @@
  * @module ol/geom/Geometry
  */
 import BaseObject from '../Object.js';
-import Units from '../proj/Units.js';
 import {abstract} from '../util.js';
 import {
   compose as composeTransform,
@@ -17,6 +16,19 @@ import {
 import {get as getProjection, getTransform} from '../proj.js';
 import {memoizeOne} from '../functions.js';
 import {transform2D} from './flat/transform.js';
+
+/**
+ * @typedef {'XY' | 'XYZ' | 'XYM' | 'XYZM'} GeometryLayout
+ * The coordinate layout for geometries, indicating whether a 3rd or 4th z ('Z')
+ * or measure ('M') coordinate is available.
+ */
+
+/**
+ * @typedef {'Point' | 'LineString' | 'LinearRing' | 'Polygon' | 'MultiPoint' | 'MultiLineString' | 'MultiPolygon' | 'GeometryCollection' | 'Circle'} Type
+ * The geometry type.  One of `'Point'`, `'LineString'`, `'LinearRing'`,
+ * `'Polygon'`, `'MultiPoint'`, `'MultiLineString'`, `'MultiPolygon'`,
+ * `'GeometryCollection'`, or `'Circle'`.
+ */
 
 /**
  * @type {import("../transform.js").Transform}
@@ -237,7 +249,7 @@ class Geometry extends BaseObject {
   /**
    * Get the type of this geometry.
    * @abstract
-   * @return {import("./GeometryType.js").default} Geometry type.
+   * @return {Type} Geometry type.
    */
   getType() {
     return abstract();
@@ -297,7 +309,7 @@ class Geometry extends BaseObject {
     /** @type {import("../proj/Projection.js").default} */
     const sourceProj = getProjection(source);
     const transformFn =
-      sourceProj.getUnits() == Units.TILE_PIXELS
+      sourceProj.getUnits() == 'tile-pixels'
         ? function (inCoordinates, outCoordinates, stride) {
             const pixelExtent = sourceProj.getExtent();
             const projectedExtent = sourceProj.getWorldExtent();

@@ -5,13 +5,11 @@ import BaseLayer from './Base.js';
 import EventType from '../events/EventType.js';
 import LayerProperty from './Property.js';
 import RenderEventType from '../render/EventType.js';
-import SourceState from '../source/State.js';
 import {assert} from '../asserts.js';
-import {assign} from '../obj.js';
 import {listen, unlistenByKey} from '../events.js';
 
 /**
- * @typedef {function(import("../PluggableMap.js").FrameState):HTMLElement} RenderFunction
+ * @typedef {function(import("../Map.js").FrameState):HTMLElement} RenderFunction
  */
 
 /***
@@ -47,7 +45,7 @@ import {listen, unlistenByKey} from '../events.js';
  * @property {SourceType} [source] Source for this layer.  If not provided to the constructor,
  * the source can be set by calling {@link module:ol/layer/Layer~Layer#setSource layer.setSource(source)} after
  * construction.
- * @property {import("../PluggableMap.js").default|null} [map] Map.
+ * @property {import("../Map.js").default|null} [map] Map.
  * @property {RenderFunction} [render] Render function. Takes the frame state as input and is expected to return an
  * HTML element. Will overwrite the default rendering for the layer.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
@@ -77,17 +75,12 @@ import {listen, unlistenByKey} from '../events.js';
  * Layers group together those properties that pertain to how the data is to be
  * displayed, irrespective of the source of that data.
  *
- * Layers are usually added to a map with {@link import("../PluggableMap.js").default#addLayer map.addLayer()}. Components
- * like {@link module:ol/interaction/Draw~Draw} use unmanaged layers
+ * Layers are usually added to a map with [map.addLayer()]{@link import("../Map.js").default#addLayer}.
+ * Components like {@link module:ol/interaction/Draw~Draw} use unmanaged layers
  * internally. These unmanaged layers are associated with the map using
- * {@link module:ol/layer/Layer~Layer#setMap} instead.
+ * [layer.setMap()]{@link module:ol/layer/Layer~Layer#setMap} instead.
  *
  * A generic `change` event is fired when the state of the source changes.
- *
- * Please note that for performance reasons several layers might get rendered to
- * the same HTML element, which will cause {@link import("../PluggableMap.js").default#forEachLayerAtPixel map.forEachLayerAtPixel()} to
- * give false positives. To avoid this, apply different `className` properties to the
- * layers at creation time.
  *
  * @fires import("../render/Event.js").RenderEvent#prerender
  * @fires import("../render/Event.js").RenderEvent#postrender
@@ -101,7 +94,7 @@ class Layer extends BaseLayer {
    * @param {Options<SourceType>} options Layer options.
    */
   constructor(options) {
-    const baseOptions = assign({}, options);
+    const baseOptions = Object.assign({}, options);
     delete baseOptions.source;
 
     super(baseOptions);
@@ -209,11 +202,11 @@ class Layer extends BaseLayer {
   }
 
   /**
-   * @return {import("../source/State.js").default} Source state.
+   * @return {import("../source/Source.js").State} Source state.
    */
   getSourceState() {
     const source = this.getSource();
-    return !source ? SourceState.UNDEFINED : source.getState();
+    return !source ? 'undefined' : source.getState();
   }
 
   /**
@@ -269,7 +262,7 @@ class Layer extends BaseLayer {
   /**
    * In charge to manage the rendering of the layer. One layer type is
    * bounded with one layer renderer.
-   * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {?import("../Map.js").FrameState} frameState Frame state.
    * @param {HTMLElement} target Target which the renderer may (but need not) use
    * for rendering its content.
    * @return {HTMLElement} The rendered element.
@@ -292,7 +285,7 @@ class Layer extends BaseLayer {
 
   /**
    * For use inside the library only.
-   * @param {import("../PluggableMap.js").default|null} map Map.
+   * @param {import("../Map.js").default|null} map Map.
    */
   setMapInternal(map) {
     if (!map) {
@@ -303,7 +296,7 @@ class Layer extends BaseLayer {
 
   /**
    * For use inside the library only.
-   * @return {import("../PluggableMap.js").default|null} Map.
+   * @return {import("../Map.js").default|null} Map.
    */
   getMapInternal() {
     return this.get(LayerProperty.MAP);
@@ -311,14 +304,13 @@ class Layer extends BaseLayer {
 
   /**
    * Sets the layer to be rendered on top of other layers on a map. The map will
-   * not manage this layer in its layers collection, and the callback in
-   * {@link module:ol/Map~Map#forEachLayerAtPixel} will receive `null` as layer. This
+   * not manage this layer in its layers collection. This
    * is useful for temporary layers. To remove an unmanaged layer from the map,
    * use `#setMap(null)`.
    *
    * To add the layer to a map and have it managed by the map, use
    * {@link module:ol/Map~Map#addLayer} instead.
-   * @param {import("../PluggableMap.js").default|null} map Map.
+   * @param {import("../Map.js").default|null} map Map.
    * @api
    */
   setMap(map) {

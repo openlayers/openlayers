@@ -1,7 +1,6 @@
 /**
  * @module ol/source/OGCMapTile
  */
-import SourceState from './State.js';
 import TileImage from './TileImage.js';
 import {getTileSetInfo} from './ogcTileUtil.js';
 
@@ -60,7 +59,7 @@ class OGCMapTile extends TileImage {
       interpolate: interpolate,
       projection: options.projection,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-      state: SourceState.LOADING,
+      state: 'loading',
       tileLoadFunction: options.tileLoadFunction,
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
       transition: options.transition,
@@ -85,7 +84,7 @@ class OGCMapTile extends TileImage {
   handleTileSetInfo_(tileSetInfo) {
     this.tileGrid = tileSetInfo.grid;
     this.setTileUrlFunction(tileSetInfo.urlFunction, tileSetInfo.urlTemplate);
-    this.setState(SourceState.READY);
+    this.setState('ready');
   }
 
   /**
@@ -94,7 +93,7 @@ class OGCMapTile extends TileImage {
    */
   handleError_(error) {
     console.error(error); // eslint-disable-line no-console
-    this.setState(SourceState.ERROR);
+    this.setState('error');
   }
 }
 

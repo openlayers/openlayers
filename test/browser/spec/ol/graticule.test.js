@@ -65,23 +65,19 @@ describe('ol.layer.Graticule', function () {
       };
       graticule.drawLabels_(event);
       expect(graticule.meridiansLabels_.length).to.be(13);
-      expect(graticule.meridiansLabels_[0].text).to.be('0° 00′ 00″');
+      expect(graticule.meridiansLabels_[0].text).to.be('0°');
       expect(
         graticule.meridiansLabels_[0].geom.getCoordinates()[0]
       ).to.roughlyEqual(0, 1e-9);
       expect(graticule.parallelsLabels_.length).to.be(3);
-      expect(graticule.parallelsLabels_[0].text).to.be('0° 00′ 00″');
+      expect(graticule.parallelsLabels_[0].text).to.be('0°');
       expect(
         graticule.parallelsLabels_[0].geom.getCoordinates()[1]
       ).to.roughlyEqual(0, 1e-9);
       feature.set('graticule_label', graticule.meridiansLabels_[0].text);
-      expect(graticule.lonLabelStyle_(feature).getText().getText()).to.be(
-        '0° 00′ 00″'
-      );
+      expect(graticule.lonLabelStyle_(feature).getText().getText()).to.be('0°');
       feature.set('graticule_label', graticule.parallelsLabels_[0].text);
-      expect(graticule.latLabelStyle_(feature).getText().getText()).to.be(
-        '0° 00′ 00″'
-      );
+      expect(graticule.latLabelStyle_(feature).getText().getText()).to.be('0°');
     });
 
     it('creates a graticule with wrapped world labels', function () {
@@ -115,24 +111,20 @@ describe('ol.layer.Graticule', function () {
       };
       graticule.drawLabels_(event);
       expect(graticule.meridiansLabels_.length).to.be(13);
-      expect(graticule.meridiansLabels_[0].text).to.be('0° 00′ 00″');
+      expect(graticule.meridiansLabels_[0].text).to.be('0°');
       const coordinates = fromLonLat([360, 0]);
       expect(
         graticule.meridiansLabels_[0].geom.getCoordinates()[0]
       ).to.roughlyEqual(coordinates[0], 1e-9);
       expect(graticule.parallelsLabels_.length).to.be(3);
-      expect(graticule.parallelsLabels_[0].text).to.be('0° 00′ 00″');
+      expect(graticule.parallelsLabels_[0].text).to.be('0°');
       expect(
         graticule.parallelsLabels_[0].geom.getCoordinates()[1]
       ).to.roughlyEqual(0, 1e-9);
       feature.set('graticule_label', graticule.meridiansLabels_[0].text);
-      expect(graticule.lonLabelStyle_(feature).getText().getText()).to.be(
-        '0° 00′ 00″'
-      );
+      expect(graticule.lonLabelStyle_(feature).getText().getText()).to.be('0°');
       feature.set('graticule_label', graticule.parallelsLabels_[0].text);
-      expect(graticule.latLabelStyle_(feature).getText().getText()).to.be(
-        '0° 00′ 00″'
-      );
+      expect(graticule.latLabelStyle_(feature).getText().getText()).to.be('0°');
     });
 
     it('has a default stroke style', function () {

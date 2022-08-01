@@ -4,7 +4,6 @@
 
 import CircleStyle from './Circle.js';
 import Fill from './Fill.js';
-import GeometryType from '../geom/GeometryType.js';
 import Stroke from './Stroke.js';
 import {assert} from '../asserts.js';
 
@@ -89,23 +88,22 @@ import {assert} from '../asserts.js';
  *
  * A separate editing style has the following defaults:
  * ```js
- *  import GeometryType from 'ol/geom/GeometryType';
  *  import {Circle, Fill, Stroke, Style} from 'ol/style';
  *
  *  const styles = {};
  *  const white = [255, 255, 255, 1];
  *  const blue = [0, 153, 255, 1];
  *  const width = 3;
- *  styles[GeometryType.POLYGON] = [
+ *  styles['Polygon'] = [
  *    new Style({
  *      fill: new Fill({
  *        color: [255, 255, 255, 0.5],
  *      }),
  *    }),
  *  ];
- *  styles[GeometryType.MULTI_POLYGON] = styles[GeometryType.POLYGON];
- *
- *  styles[GeometryType.LINE_STRING] = [
+ *  styles['MultiPolygon'] =
+ *      styles['Polygon'];
+ *  styles['LineString'] = [
  *    new Style({
  *      stroke: new Stroke({
  *        color: white,
@@ -119,13 +117,13 @@ import {assert} from '../asserts.js';
  *      }),
  *    }),
  *  ];
- *  styles[GeometryType.MULTI_LINE_STRING] = styles[GeometryType.LINE_STRING];
+ *  styles['MultiLineString'] = styles['LineString'];
  *
- *  styles[GeometryType.CIRCLE] = styles[GeometryType.POLYGON].concat(
- *    styles[GeometryType.LINE_STRING]
+ *  styles['Circle'] = styles['Polygon'].concat(
+ *    styles['LineString']
  *  );
  *
- *  styles[GeometryType.POINT] = [
+ *  styles['Point'] = [
  *    new Style({
  *      image: new Circle({
  *        radius: width * 2,
@@ -140,11 +138,13 @@ import {assert} from '../asserts.js';
  *      zIndex: Infinity,
  *    }),
  *  ];
- *  styles[GeometryType.MULTI_POINT] = styles[GeometryType.POINT];
- *
- *  styles[GeometryType.GEOMETRY_COLLECTION] = styles[
- *    GeometryType.POLYGON
- *  ].concat(styles[GeometryType.LINE_STRING], styles[GeometryType.POINT]);
+ *  styles['MultiPoint'] =
+ *      styles['Point'];
+ *  styles['GeometryCollection'] =
+ *      styles['Polygon'].concat(
+ *          styles['LineString'],
+ *          styles['Point']
+ *      );
  * ```
  *
  * @api
@@ -494,24 +494,24 @@ export function createDefaultStyle(feature, resolution) {
 
 /**
  * Default styles for editing features.
- * @return {Object<import("../geom/GeometryType.js").default, Array<Style>>} Styles
+ * @return {Object<import("../geom/Geometry.js").Type, Array<Style>>} Styles
  */
 export function createEditingStyle() {
-  /** @type {Object<import("../geom/GeometryType.js").default, Array<Style>>} */
+  /** @type {Object<import("../geom/Geometry.js").Type, Array<Style>>} */
   const styles = {};
   const white = [255, 255, 255, 1];
   const blue = [0, 153, 255, 1];
   const width = 3;
-  styles[GeometryType.POLYGON] = [
+  styles['Polygon'] = [
     new Style({
       fill: new Fill({
         color: [255, 255, 255, 0.5],
       }),
     }),
   ];
-  styles[GeometryType.MULTI_POLYGON] = styles[GeometryType.POLYGON];
+  styles['MultiPolygon'] = styles['Polygon'];
 
-  styles[GeometryType.LINE_STRING] = [
+  styles['LineString'] = [
     new Style({
       stroke: new Stroke({
         color: white,
@@ -525,13 +525,11 @@ export function createEditingStyle() {
       }),
     }),
   ];
-  styles[GeometryType.MULTI_LINE_STRING] = styles[GeometryType.LINE_STRING];
+  styles['MultiLineString'] = styles['LineString'];
 
-  styles[GeometryType.CIRCLE] = styles[GeometryType.POLYGON].concat(
-    styles[GeometryType.LINE_STRING]
-  );
+  styles['Circle'] = styles['Polygon'].concat(styles['LineString']);
 
-  styles[GeometryType.POINT] = [
+  styles['Point'] = [
     new Style({
       image: new CircleStyle({
         radius: width * 2,
@@ -546,11 +544,12 @@ export function createEditingStyle() {
       zIndex: Infinity,
     }),
   ];
-  styles[GeometryType.MULTI_POINT] = styles[GeometryType.POINT];
+  styles['MultiPoint'] = styles['Point'];
 
-  styles[GeometryType.GEOMETRY_COLLECTION] = styles[
-    GeometryType.POLYGON
-  ].concat(styles[GeometryType.LINE_STRING], styles[GeometryType.POINT]);
+  styles['GeometryCollection'] = styles['Polygon'].concat(
+    styles['LineString'],
+    styles['Point']
+  );
 
   return styles;
 }

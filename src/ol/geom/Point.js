@@ -1,7 +1,6 @@
 /**
  * @module ol/geom/Point
  */
-import GeometryType from './GeometryType.js';
 import SimpleGeometry from './SimpleGeometry.js';
 import {containsXY, createOrUpdateFromCoordinate} from '../extent.js';
 import {deflateCoordinate} from './flat/deflate.js';
@@ -16,7 +15,7 @@ import {squaredDistance as squaredDx} from '../math.js';
 class Point extends SimpleGeometry {
   /**
    * @param {import("../coordinate.js").Coordinate} coordinates Coordinates.
-   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
+   * @param {import("./Geometry.js").GeometryLayout} [opt_layout] Layout.
    */
   constructor(coordinates, opt_layout) {
     super();
@@ -81,11 +80,11 @@ class Point extends SimpleGeometry {
 
   /**
    * Get the type of this geometry.
-   * @return {import("./GeometryType.js").default} Geometry type.
+   * @return {import("./Geometry.js").Type} Geometry type.
    * @api
    */
   getType() {
-    return GeometryType.POINT;
+    return 'Point';
   }
 
   /**
@@ -100,7 +99,7 @@ class Point extends SimpleGeometry {
 
   /**
    * @param {!Array<*>} coordinates Coordinates.
-   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
+   * @param {import("./Geometry.js").GeometryLayout} [opt_layout] Layout.
    * @api
    */
   setCoordinates(coordinates, opt_layout) {

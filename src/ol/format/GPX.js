@@ -2,8 +2,6 @@
  * @module ol/format/GPX
  */
 import Feature from '../Feature.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
-import GeometryType from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import Point from '../geom/Point.js';
@@ -24,7 +22,6 @@ import {
   pushSerializeAndPop,
 } from '../xml.js';
 import {get as getProjection} from '../proj.js';
-import {includes} from '../array.js';
 import {
   readDateTime,
   readDecimal,
@@ -174,7 +171,7 @@ class GPX extends XMLFeature {
    * @return {import("../Feature.js").default} Feature.
    */
   readFeatureFromNode(node, opt_options) {
-    if (!includes(NAMESPACE_URIS, node.namespaceURI)) {
+    if (!NAMESPACE_URIS.includes(node.namespaceURI)) {
       return null;
     }
     const featureReader = FEATURE_READER[node.localName];
@@ -197,7 +194,7 @@ class GPX extends XMLFeature {
    * @return {Array<import("../Feature.js").default>} Features.
    */
   readFeaturesFromNode(node, opt_options) {
-    if (!includes(NAMESPACE_URIS, node.namespaceURI)) {
+    if (!NAMESPACE_URIS.includes(node.namespaceURI)) {
       return [];
     }
     if (node.localName == 'gpx') {
@@ -558,19 +555,20 @@ function appendCoordinate(flatCoordinates, layoutOptions, node, values) {
  * @param {LayoutOptions} layoutOptions Layout options.
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {Array<number>} [ends] Ends.
- * @return {import("../geom/GeometryLayout.js").default} Layout.
+ * @return {import("../geom/Geometry.js").GeometryLayout} Layout.
  */
 function applyLayoutOptions(layoutOptions, flatCoordinates, ends) {
-  let layout = GeometryLayout.XY;
+  /** @type {import("../geom/Geometry.js").GeometryLayout} */
+  let layout = 'XY';
   let stride = 2;
   if (layoutOptions.hasZ && layoutOptions.hasM) {
-    layout = GeometryLayout.XYZM;
+    layout = 'XYZM';
     stride = 4;
   } else if (layoutOptions.hasZ) {
-    layout = GeometryLayout.XYZ;
+    layout = 'XYZ';
     stride = 3;
   } else if (layoutOptions.hasM) {
-    layout = GeometryLayout.XYM;
+    layout = 'XYM';
     stride = 3;
   }
   if (stride !== 4) {
@@ -801,17 +799,17 @@ function writeWptType(node, coordinate, objectStack) {
   node.setAttributeNS(null, 'lon', String(coordinate[0]));
   const geometryLayout = context['geometryLayout'];
   switch (geometryLayout) {
-    case GeometryLayout.XYZM:
+    case 'XYZM':
       if (coordinate[3] !== 0) {
         properties['time'] = coordinate[3];
       }
     // fall through
-    case GeometryLayout.XYZ:
+    case 'XYZ':
       if (coordinate[2] !== 0) {
         properties['ele'] = coordinate[2];
       }
       break;
-    case GeometryLayout.XYM:
+    case 'XYM':
       if (coordinate[2] !== 0) {
         properties['time'] = coordinate[2];
       }
@@ -848,7 +846,7 @@ function writeRte(node, feature, objectStack) {
   const context = {node: node};
   context['properties'] = properties;
   const geometry = feature.getGeometry();
-  if (geometry.getType() == GeometryType.LINE_STRING) {
+  if (geometry.getType() == 'LineString') {
     const lineString = /** @type {LineString} */ (
       transformGeometryWithOptions(geometry, true, options)
     );
@@ -882,7 +880,7 @@ function writeTrk(node, feature, objectStack) {
   const context = {node: node};
   context['properties'] = properties;
   const geometry = feature.getGeometry();
-  if (geometry.getType() == GeometryType.MULTI_LINE_STRING) {
+  if (geometry.getType() == 'MultiLineString') {
     const multiLineString = /** @type {MultiLineString} */ (
       transformGeometryWithOptions(geometry, true, options)
     );
@@ -932,7 +930,7 @@ function writeWpt(node, feature, objectStack) {
   const context = objectStack[objectStack.length - 1];
   context['properties'] = feature.getProperties();
   const geometry = feature.getGeometry();
-  if (geometry.getType() == GeometryType.POINT) {
+  if (geometry.getType() == 'Point') {
     const point = /** @type {Point} */ (
       transformGeometryWithOptions(geometry, true, options)
     );

@@ -4,7 +4,6 @@
 import EventType from '../events/EventType.js';
 import ImageState from '../ImageState.js';
 import Observable from '../Observable.js';
-import SourceState from '../source/State.js';
 import {abstract} from '../util.js';
 
 /**
@@ -59,7 +58,7 @@ class LayerRenderer extends Observable {
   /**
    * Determine whether render should be called.
    * @abstract
-   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrame(frameState) {
@@ -69,7 +68,7 @@ class LayerRenderer extends Observable {
   /**
    * Render the layer.
    * @abstract
-   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../Map.js").FrameState} frameState Frame state.
    * @param {HTMLElement} target Target that may be used to render content to.
    * @return {HTMLElement} The rendered element.
    */
@@ -117,7 +116,7 @@ class LayerRenderer extends Observable {
   /**
    * @abstract
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
-   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../Map.js").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {import("./vector.js").FeatureCallback<T>} callback Feature callback.
    * @param {Array<import("./Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
@@ -132,19 +131,6 @@ class LayerRenderer extends Observable {
     matches
   ) {
     return undefined;
-  }
-
-  /**
-   * @abstract
-   * @param {import("../pixel.js").Pixel} pixel Pixel.
-   * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
-   * @param {number} hitTolerance Hit tolerance in pixels.
-   * @return {Uint8ClampedArray|Uint8Array} The result.  If there is no data at the pixel
-   *    location, null will be returned.  If there is data, but pixel values cannot be
-   *    returned, and empty array will be returned.
-   */
-  getDataAtPixel(pixel, frameState, hitTolerance) {
-    return null;
   }
 
   /**
@@ -196,11 +182,7 @@ class LayerRenderer extends Observable {
    */
   renderIfReadyAndVisible() {
     const layer = this.getLayer();
-    if (
-      layer &&
-      layer.getVisible() &&
-      layer.getSourceState() == SourceState.READY
-    ) {
+    if (layer && layer.getVisible() && layer.getSourceState() === 'ready') {
       layer.changed();
     }
   }

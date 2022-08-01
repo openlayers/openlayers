@@ -1,8 +1,6 @@
 import Feature from '../../../../src/ol/Feature.js';
-import Fill from '../../../../src/ol/style/Fill.js';
 import Map from '../../../../src/ol/Map.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import Style from '../../../../src/ol/style/Style.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import View from '../../../../src/ol/View.js';
@@ -38,11 +36,9 @@ const src = new VectorSource({
 const layer = new VectorLayer({
   renderBuffer: 0,
   source: src,
-  style: new Style({
-    fill: new Fill({
-      color: 'blue',
-    }),
-  }),
+  style: {
+    'fill-color': 'blue',
+  },
 });
 const view = new View({
   center: [0, 0],

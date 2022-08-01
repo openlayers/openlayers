@@ -516,6 +516,26 @@ describe('ol/format/GeoJSON.js', function () {
       expect(array[1]).to.be.a(LineString);
       expect(array[1].getLayout()).to.eql('XY');
     });
+
+    it('works with empty coordinate arrays', function () {
+      const coordinates = [
+        [
+          [
+            [1, 2],
+            [3, 4],
+            [5, 6],
+            [1, 2],
+          ],
+        ],
+        [],
+      ];
+      const geojson = {
+        type: 'MultiPolygon',
+        coordinates: coordinates,
+      };
+      const geometry = format.readGeometry(geojson);
+      expect(geometry.getCoordinates()).to.eql(coordinates);
+    });
   });
 
   describe('#readProjection', function () {
@@ -1024,6 +1044,29 @@ describe('ol/format/GeoJSON.js', function () {
         [42.123456789, 38.987654321],
         [43, 39],
       ]);
+    });
+
+    it('works with empty coordinate arrays', function () {
+      const coordinates = [
+        [
+          [
+            [1, 2],
+            [3, 4],
+            [5, 6],
+            [1, 2],
+          ],
+        ],
+        [],
+      ];
+      const geometry = new MultiPolygon([
+        new Polygon(coordinates[0]),
+        new Polygon(coordinates[1]),
+      ]);
+      const geojson = format.writeGeometryObject(geometry);
+      expect(geojson).to.eql({
+        type: 'MultiPolygon',
+        coordinates: coordinates,
+      });
     });
   });
 });

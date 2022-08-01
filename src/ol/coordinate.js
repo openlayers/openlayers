@@ -2,7 +2,7 @@
  * @module ol/coordinate
  */
 import {getWidth} from './extent.js';
-import {modulo} from './math.js';
+import {modulo, toFixed} from './math.js';
 import {padNumber} from './string.js';
 
 /**
@@ -162,13 +162,11 @@ export function createStringXY(opt_fractionDigits) {
 export function degreesToStringHDMS(hemispheres, degrees, opt_fractionDigits) {
   const normalizedDegrees = modulo(degrees + 180, 360) - 180;
   const x = Math.abs(3600 * normalizedDegrees);
-  const dflPrecision = opt_fractionDigits || 0;
-  const precision = Math.pow(10, dflPrecision);
+  const decimals = opt_fractionDigits || 0;
 
   let deg = Math.floor(x / 3600);
   let min = Math.floor((x - deg * 3600) / 60);
-  let sec = x - deg * 3600 - min * 60;
-  sec = Math.ceil(sec * precision) / precision;
+  let sec = toFixed(x - deg * 3600 - min * 60, decimals);
 
   if (sec >= 60) {
     sec = 0;
@@ -180,17 +178,18 @@ export function degreesToStringHDMS(hemispheres, degrees, opt_fractionDigits) {
     deg += 1;
   }
 
-  return (
-    deg +
-    '\u00b0 ' +
-    padNumber(min, 2) +
-    '\u2032 ' +
-    padNumber(sec, 2, dflPrecision) +
-    '\u2033' +
-    (normalizedDegrees == 0
-      ? ''
-      : ' ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0))
-  );
+  let hdms = deg + '\u00b0';
+  if (min !== 0 || sec !== 0) {
+    hdms += ' ' + padNumber(min, 2) + '\u2032';
+  }
+  if (sec !== 0) {
+    hdms += ' ' + padNumber(sec, 2, decimals) + '\u2033';
+  }
+  if (normalizedDegrees !== 0) {
+    hdms += ' ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
+  }
+
+  return hdms;
 }
 
 /**

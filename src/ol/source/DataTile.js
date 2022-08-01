@@ -6,7 +6,6 @@ import EventType from '../events/EventType.js';
 import TileEventType from './TileEventType.js';
 import TileSource, {TileSourceEvent} from './Tile.js';
 import TileState from '../TileState.js';
-import {assign} from '../obj.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 import {getKeyZXY} from '../tilecoord.js';
 import {getUid} from '../util.js';
@@ -36,7 +35,7 @@ import {toSize} from '../size.js';
  * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Tile projection.
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
  * @property {boolean} [opaque=false] Whether the layer is opaque.
- * @property {import("./State.js").default} [state] The source state.
+ * @property {import("./Source.js").State} [state] The source state.
  * @property {number} [tilePixelRatio] Deprecated.  To have tiles scaled, pass a `tileSize` representing
  * the source tile size and a `tileGrid` with the desired rendered tile size.
  * @property {boolean} [wrapX=false] Render tiles beyond the antimeridian.
@@ -197,7 +196,7 @@ class DataTileSource extends TileSource {
       });
     }
 
-    const options = assign(
+    const options = Object.assign(
       {
         tileCoord: [z, x, y],
         loader: loader,

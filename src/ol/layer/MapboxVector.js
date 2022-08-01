@@ -4,7 +4,6 @@
 import BaseEvent from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import MVT from '../format/MVT.js';
-import SourceState from '../source/State.js';
 import VectorTileLayer from '../layer/VectorTile.js';
 import VectorTileSource from '../source/VectorTile.js';
 import {applyBackground, applyStyle} from 'ol-mapbox-style';
@@ -82,17 +81,17 @@ class ErrorEvent extends BaseEvent {
  * Recommended value: Vector tiles are usually generated with a buffer, so this value should match
  * the largest possible buffer of the used tiles. It should be at least the size of the largest
  * point symbol or line width.
- * @property {import("./VectorTileRenderType.js").default|string} [renderMode='hybrid'] Render mode for vector tiles:
+ * @property {import("./VectorTile.js").VectorTileRenderType} [renderMode='hybrid'] Render mode for vector tiles:
  *  * `'hybrid'`: Polygon and line elements are rendered as images, so pixels are scaled during zoom
  *    animations. Point symbols and texts are accurately rendered as vectors and can stay upright on
  *    rotated views.
  *  * `'vector'`: Everything is rendered as vectors. Use this mode for improved performance on vector
  *    tile layers with only a few rendered features (e.g. for highlighting a subset of features of
  *    another layer with the same source).
- * @property {import("../PluggableMap.js").default} [map] Sets the layer as overlay on a map. The map will not manage
+ * @property {import("../Map.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
- * use {@link import("../PluggableMap.js").default#addLayer map.addLayer()}.
+ * use [map.addLayer()]{@link import("../Map.js").default#addLayer}.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will be
  * recreated during animations. This means that no vectors will be shown clipped, but the setting
  * will have a performance impact for large amounts of vector data. When set to `false`, batches
@@ -144,7 +143,7 @@ class MapboxVectorLayer extends VectorTileLayer {
   constructor(options) {
     const declutter = 'declutter' in options ? options.declutter : true;
     const source = new VectorTileSource({
-      state: SourceState.LOADING,
+      state: 'loading',
       format: new MVT(),
     });
 
@@ -179,12 +178,12 @@ class MapboxVectorLayer extends VectorTileLayer {
       accessToken: this.accessToken,
     })
       .then(() => {
-        source.setState(SourceState.READY);
+        source.setState('ready');
       })
       .catch((error) => {
         this.dispatchEvent(new ErrorEvent(error));
         const source = this.getSource();
-        source.setState(SourceState.ERROR);
+        source.setState('error');
       });
     if (this.getBackground() === undefined) {
       applyBackground(this, options.styleUrl, {

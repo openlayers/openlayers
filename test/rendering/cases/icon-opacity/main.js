@@ -2,7 +2,6 @@ import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import View from '../../../../src/ol/View.js';
-import {Icon, Style} from '../../../../src/ol/style.js';
 import {
   Tile as TileLayer,
   Vector as VectorLayer,
@@ -20,16 +19,12 @@ new Map({
       }),
     }),
     new VectorLayer({
-      style: function () {
-        return new Style({
-          image: new Icon({
-            opacity: 0.5,
-            src: '/data/icon.png',
-            anchor: [0.5, 46],
-            anchorXUnits: 'fraction',
-            anchorYUnits: 'pixels',
-          }),
-        });
+      style: {
+        'icon-src': '/data/icon.png',
+        'icon-opacity': 0.5,
+        'icon-anchor': [0.5, 46],
+        'icon-anchor-x-units': 'fraction',
+        'icon-anchor-y-units': 'pixels',
       },
       source: new VectorSource({
         features: [new Feature(new Point(center))],

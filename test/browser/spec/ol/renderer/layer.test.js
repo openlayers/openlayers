@@ -7,13 +7,30 @@ import View from '../../../../../src/ol/View.js';
 import XYZ from '../../../../../src/ol/source/XYZ.js';
 import {fromKey} from '../../../../../src/ol/tilecoord.js';
 
-describe('ol.renderer.Layer', function () {
-  let renderer;
+describe('ol/renderer/Layer', function () {
+  let layer, renderer;
   const eventType = 'change';
 
   beforeEach(function () {
-    const layer = new Layer({});
+    layer = new Layer({});
     renderer = new LayerRenderer(layer);
+  });
+
+  describe('#renderIfReadyAndVisible', function () {
+    it('updates revision when data is ready and layer is visible', function () {
+      layer.setVisible(true);
+      let state;
+      layer.getSourceState = function () {
+        return state;
+      };
+      const revision = layer.getRevision();
+      state = 'foo';
+      renderer.renderIfReadyAndVisible();
+      expect(layer.getRevision()).to.be(revision);
+      state = 'ready';
+      renderer.renderIfReadyAndVisible();
+      expect(layer.getRevision()).to.be(revision + 1);
+    });
   });
 
   describe('#loadImage', function () {

@@ -1,7 +1,6 @@
 /**
  * @module ol/geom/Circle
  */
-import GeometryType from './GeometryType.js';
 import SimpleGeometry from './SimpleGeometry.js';
 import {createOrUpdate, forEachCorner, intersects} from '../extent.js';
 import {deflateCoordinate} from './flat/deflate.js';
@@ -19,7 +18,7 @@ class Circle extends SimpleGeometry {
    *     For internal use, flat coordinates in combination with `opt_layout` and no
    *     `opt_radius` are also accepted.
    * @param {number} [opt_radius] Radius.
-   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
+   * @param {import("./Geometry.js").GeometryLayout} [opt_layout] Layout.
    */
   constructor(center, opt_radius, opt_layout) {
     super();
@@ -137,11 +136,11 @@ class Circle extends SimpleGeometry {
 
   /**
    * Get the type of this geometry.
-   * @return {import("./GeometryType.js").default} Geometry type.
+   * @return {import("./Geometry.js").Type} Geometry type.
    * @api
    */
   getType() {
-    return GeometryType.CIRCLE;
+    return 'Circle';
   }
 
   /**
@@ -189,7 +188,7 @@ class Circle extends SimpleGeometry {
    * number) of the circle.
    * @param {!import("../coordinate.js").Coordinate} center Center.
    * @param {number} radius Radius.
-   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
+   * @param {import("./Geometry.js").GeometryLayout} [opt_layout] Layout.
    * @api
    */
   setCenterAndRadius(center, radius, opt_layout) {

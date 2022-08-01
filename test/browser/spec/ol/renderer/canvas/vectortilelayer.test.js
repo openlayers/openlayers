@@ -11,7 +11,6 @@ import TileState from '../../../../../../src/ol/TileState.js';
 import VectorRenderTile from '../../../../../../src/ol/VectorRenderTile.js';
 import VectorTile from '../../../../../../src/ol/VectorTile.js';
 import VectorTileLayer from '../../../../../../src/ol/layer/VectorTile.js';
-import VectorTileRenderType from '../../../../../../src/ol/layer/VectorTileRenderType.js';
 import VectorTileSource from '../../../../../../src/ol/source/VectorTile.js';
 import View from '../../../../../../src/ol/View.js';
 import XYZ from '../../../../../../src/ol/source/XYZ.js';
@@ -124,7 +123,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
 
     it('does not render images for pure vector rendering', function () {
       const testLayer = new VectorTileLayer({
-        renderMode: VectorTileRenderType.VECTOR,
+        renderMode: 'vector',
         source: source,
         style: layerStyle,
       });

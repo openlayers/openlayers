@@ -4,11 +4,7 @@
 import Feature from '../Feature.js';
 import Fill from '../style/Fill.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
-import GeometryType from '../geom/GeometryType.js';
 import Icon from '../style/Icon.js';
-import IconAnchorUnits from '../style/IconAnchorUnits.js';
-import IconOrigin from '../style/IconOrigin.js';
 import ImageState from '../ImageState.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
@@ -41,7 +37,7 @@ import {
 } from '../xml.js';
 import {asArray} from '../color.js';
 import {assert} from '../asserts.js';
-import {extend, includes} from '../array.js';
+import {extend} from '../array.js';
 import {get as getProjection} from '../proj.js';
 import {
   readBoolean,
@@ -58,10 +54,10 @@ import {transformGeometryWithOptions} from './Feature.js';
 /**
  * @typedef {Object} Vec2
  * @property {number} x X coordinate.
- * @property {import("../style/IconAnchorUnits").default} xunits Units of x.
+ * @property {import("../style/Icon.js").IconAnchorUnits} xunits Units of x.
  * @property {number} y Y coordinate.
- * @property {import("../style/IconAnchorUnits").default} yunits Units of Y.
- * @property {import("../style/IconOrigin.js").default} [origin] Origin.
+ * @property {import("../style/Icon.js").IconAnchorUnits} yunits Units of Y.
+ * @property {import("../style/Icon.js").IconOrigin} [origin] Origin.
  */
 
 /**
@@ -97,12 +93,12 @@ const SCHEMA_LOCATION =
   'https://developers.google.com/kml/schema/kml22gx.xsd';
 
 /**
- * @type {Object<string, import("../style/IconAnchorUnits").default>}
+ * @type {Object<string, import("../style/Icon.js").IconAnchorUnits>}
  */
 const ICON_ANCHOR_UNITS_MAP = {
-  'fraction': IconAnchorUnits.FRACTION,
-  'pixels': IconAnchorUnits.PIXELS,
-  'insetPixels': IconAnchorUnits.PIXELS,
+  'fraction': 'fraction',
+  'pixels': 'pixels',
+  'insetPixels': 'pixels',
 };
 
 /**
@@ -213,12 +209,12 @@ export function getDefaultFillStyle() {
 let DEFAULT_IMAGE_STYLE_ANCHOR;
 
 /**
- * @type {import("../style/IconAnchorUnits").default}
+ * @type {import("../style/Icon.js").IconAnchorUnits}
  */
 let DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS;
 
 /**
- * @type {import("../style/IconAnchorUnits").default}
+ * @type {import("../style/Icon.js").IconAnchorUnits}
  */
 let DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS;
 
@@ -325,9 +321,9 @@ function createStyleDefaults() {
 
   DEFAULT_IMAGE_STYLE_ANCHOR = [20, 2];
 
-  DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS = IconAnchorUnits.PIXELS;
+  DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS = 'pixels';
 
-  DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS = IconAnchorUnits.PIXELS;
+  DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS = 'pixels';
 
   DEFAULT_IMAGE_STYLE_SIZE = [64, 64];
 
@@ -336,7 +332,7 @@ function createStyleDefaults() {
 
   DEFAULT_IMAGE_STYLE = new Icon({
     anchor: DEFAULT_IMAGE_STYLE_ANCHOR,
-    anchorOrigin: IconOrigin.BOTTOM_LEFT,
+    anchorOrigin: 'bottom-left',
     anchorXUnits: DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS,
     anchorYUnits: DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS,
     crossOrigin: 'anonymous',
@@ -635,7 +631,7 @@ class KML extends XMLFeature {
    * @return {import("../Feature.js").default} Feature.
    */
   readFeatureFromNode(node, opt_options) {
-    if (!includes(NAMESPACE_URIS, node.namespaceURI)) {
+    if (!NAMESPACE_URIS.includes(node.namespaceURI)) {
       return null;
     }
     const feature = this.readPlacemark_(node, [
@@ -655,7 +651,7 @@ class KML extends XMLFeature {
    * @return {Array<import("../Feature.js").default>} Features.
    */
   readFeaturesFromNode(node, opt_options) {
-    if (!includes(NAMESPACE_URIS, node.namespaceURI)) {
+    if (!NAMESPACE_URIS.includes(node.namespaceURI)) {
       return [];
     }
     let features;
@@ -734,14 +730,14 @@ class KML extends XMLFeature {
    */
   readNameFromNode(node) {
     for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
-      if (includes(NAMESPACE_URIS, n.namespaceURI) && n.localName == 'name') {
+      if (NAMESPACE_URIS.includes(n.namespaceURI) && n.localName == 'name') {
         return readString(n);
       }
     }
     for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
       const localName = n.localName;
       if (
-        includes(NAMESPACE_URIS, n.namespaceURI) &&
+        NAMESPACE_URIS.includes(n.namespaceURI) &&
         (localName == 'Document' ||
           localName == 'Folder' ||
           localName == 'Placemark' ||
@@ -807,7 +803,7 @@ class KML extends XMLFeature {
     const networkLinks = [];
     for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
       if (
-        includes(NAMESPACE_URIS, n.namespaceURI) &&
+        NAMESPACE_URIS.includes(n.namespaceURI) &&
         n.localName == 'NetworkLink'
       ) {
         const obj = pushParseAndPop({}, NETWORK_LINK_PARSERS, n, []);
@@ -817,7 +813,7 @@ class KML extends XMLFeature {
     for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
       const localName = n.localName;
       if (
-        includes(NAMESPACE_URIS, n.namespaceURI) &&
+        NAMESPACE_URIS.includes(n.namespaceURI) &&
         (localName == 'Document' || localName == 'Folder' || localName == 'kml')
       ) {
         extend(networkLinks, this.readNetworkLinksFromNode(n));
@@ -871,7 +867,7 @@ class KML extends XMLFeature {
   readRegionFromNode(node) {
     const regions = [];
     for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
-      if (includes(NAMESPACE_URIS, n.namespaceURI) && n.localName == 'Region') {
+      if (NAMESPACE_URIS.includes(n.namespaceURI) && n.localName == 'Region') {
         const obj = pushParseAndPop({}, REGION_PARSERS, n, []);
         regions.push(obj);
       }
@@ -879,7 +875,7 @@ class KML extends XMLFeature {
     for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
       const localName = n.localName;
       if (
-        includes(NAMESPACE_URIS, n.namespaceURI) &&
+        NAMESPACE_URIS.includes(n.namespaceURI) &&
         (localName == 'Document' || localName == 'Folder' || localName == 'kml')
       ) {
         extend(regions, this.readRegionFromNode(n));
@@ -941,6 +937,7 @@ class KML extends XMLFeature {
  */
 function createNameStyleFunction(foundStyle, name) {
   const textOffset = [0, 0];
+  /** @type {CanvasTextAlign} */
   let textAlign = 'start';
   const imageStyle = foundStyle.getImage();
   if (imageStyle) {
@@ -1012,16 +1009,12 @@ function createFeatureStyleFunction(
               .getGeometriesArrayRecursive()
               .filter(function (geometry) {
                 const type = geometry.getType();
-                return (
-                  type === GeometryType.POINT ||
-                  type === GeometryType.MULTI_POINT
-                );
+                return type === 'Point' || type === 'MultiPoint';
               });
             drawName = multiGeometryPoints.length > 0;
           } else {
             const type = geometry.getType();
-            drawName =
-              type === GeometryType.POINT || type === GeometryType.MULTI_POINT;
+            drawName = type === 'Point' || type === 'MultiPoint';
           }
         }
       }
@@ -1180,18 +1173,19 @@ function readStyleURL(node) {
 function readVec2(node) {
   const xunits = node.getAttribute('xunits');
   const yunits = node.getAttribute('yunits');
+  /** @type {import('../style/Icon.js').IconOrigin} */
   let origin;
   if (xunits !== 'insetPixels') {
     if (yunits !== 'insetPixels') {
-      origin = IconOrigin.BOTTOM_LEFT;
+      origin = 'bottom-left';
     } else {
-      origin = IconOrigin.TOP_LEFT;
+      origin = 'top-left';
     }
   } else {
     if (yunits !== 'insetPixels') {
-      origin = IconOrigin.BOTTOM_RIGHT;
+      origin = 'bottom-right';
     } else {
-      origin = IconOrigin.TOP_RIGHT;
+      origin = 'top-right';
     }
   }
   return {
@@ -1272,7 +1266,8 @@ function iconStyleParser(node, objectStack) {
     src = DEFAULT_IMAGE_STYLE_SRC;
   }
   let anchor, anchorXUnits, anchorYUnits;
-  let anchorOrigin = IconOrigin.BOTTOM_LEFT;
+  /** @type {import('../style/Icon.js').IconOrigin|undefined} */
+  let anchorOrigin = 'bottom-left';
   const hotSpot = /** @type {Vec2|undefined} */ (object['hotSpot']);
   if (hotSpot) {
     anchor = [hotSpot.x, hotSpot.y];
@@ -1332,7 +1327,7 @@ function iconStyleParser(node, objectStack) {
       anchorYUnits: anchorYUnits,
       crossOrigin: this.crossOrigin_,
       offset: offset,
-      offsetOrigin: IconOrigin.BOTTOM_LEFT,
+      offsetOrigin: 'bottom-left',
       rotation: rotation,
       scale: scale,
       size: size,
@@ -1599,7 +1594,7 @@ function readGxTrack(node, objectStack) {
       );
     }
   }
-  return new LineString(flatCoordinates, GeometryLayout.XYZM);
+  return new LineString(flatCoordinates, 'XYZM');
 }
 
 /**
@@ -1682,7 +1677,7 @@ function readLineString(node, objectStack) {
   );
   const flatCoordinates = readFlatCoordinatesFromNode(node, objectStack);
   if (flatCoordinates) {
-    const lineString = new LineString(flatCoordinates, GeometryLayout.XYZ);
+    const lineString = new LineString(flatCoordinates, 'XYZ');
     lineString.setProperties(properties, true);
     return lineString;
   } else {
@@ -1704,7 +1699,7 @@ function readLinearRing(node, objectStack) {
   );
   const flatCoordinates = readFlatCoordinatesFromNode(node, objectStack);
   if (flatCoordinates) {
-    const polygon = new Polygon(flatCoordinates, GeometryLayout.XYZ, [
+    const polygon = new Polygon(flatCoordinates, 'XYZ', [
       flatCoordinates.length,
     ]);
     polygon.setProperties(properties, true);
@@ -1759,7 +1754,7 @@ function readMultiGeometry(node, objectStack) {
   if (homogeneous) {
     let layout;
     let flatCoordinates;
-    if (type == GeometryType.POINT) {
+    if (type == 'Point') {
       const point = geometries[0];
       layout = point.getLayout();
       flatCoordinates = point.getFlatCoordinates();
@@ -1769,13 +1764,13 @@ function readMultiGeometry(node, objectStack) {
       }
       multiGeometry = new MultiPoint(flatCoordinates, layout);
       setCommonGeometryProperties(multiGeometry, geometries);
-    } else if (type == GeometryType.LINE_STRING) {
+    } else if (type == 'LineString') {
       multiGeometry = new MultiLineString(geometries);
       setCommonGeometryProperties(multiGeometry, geometries);
-    } else if (type == GeometryType.POLYGON) {
+    } else if (type == 'Polygon') {
       multiGeometry = new MultiPolygon(geometries);
       setCommonGeometryProperties(multiGeometry, geometries);
-    } else if (type == GeometryType.GEOMETRY_COLLECTION) {
+    } else if (type == 'GeometryCollection') {
       multiGeometry = new GeometryCollection(geometries);
     } else {
       assert(false, 37); // Unknown geometry type found
@@ -1800,7 +1795,7 @@ function readPoint(node, objectStack) {
   );
   const flatCoordinates = readFlatCoordinatesFromNode(node, objectStack);
   if (flatCoordinates) {
-    const point = new Point(flatCoordinates, GeometryLayout.XYZ);
+    const point = new Point(flatCoordinates, 'XYZ');
     point.setProperties(properties, true);
     return point;
   } else {
@@ -1843,7 +1838,7 @@ function readPolygon(node, objectStack) {
       extend(flatCoordinates, flatLinearRings[i]);
       ends.push(flatCoordinates.length);
     }
-    const polygon = new Polygon(flatCoordinates, GeometryLayout.XYZ, ends);
+    const polygon = new Polygon(flatCoordinates, 'XYZ', ends);
     polygon.setProperties(properties, true);
     return polygon;
   } else {
@@ -1919,7 +1914,7 @@ function readStyle(node, objectStack) {
         geometry: function (feature) {
           const geometry = feature.getGeometry();
           const type = geometry.getType();
-          if (type === GeometryType.GEOMETRY_COLLECTION) {
+          if (type === 'GeometryCollection') {
             const collection =
               /** @type {import("../geom/GeometryCollection").default} */ (
                 geometry
@@ -1929,16 +1924,10 @@ function readStyle(node, objectStack) {
                 .getGeometriesArrayRecursive()
                 .filter(function (geometry) {
                   const type = geometry.getType();
-                  return (
-                    type !== GeometryType.POLYGON &&
-                    type !== GeometryType.MULTI_POLYGON
-                  );
+                  return type !== 'Polygon' && type !== 'MultiPolygon';
                 })
             );
-          } else if (
-            type !== GeometryType.POLYGON &&
-            type !== GeometryType.MULTI_POLYGON
-          ) {
+          } else if (type !== 'Polygon' && type !== 'MultiPolygon') {
             return geometry;
           }
         },
@@ -1952,7 +1941,7 @@ function readStyle(node, objectStack) {
         geometry: function (feature) {
           const geometry = feature.getGeometry();
           const type = geometry.getType();
-          if (type === GeometryType.GEOMETRY_COLLECTION) {
+          if (type === 'GeometryCollection') {
             const collection =
               /** @type {import("../geom/GeometryCollection").default} */ (
                 geometry
@@ -1962,16 +1951,10 @@ function readStyle(node, objectStack) {
                 .getGeometriesArrayRecursive()
                 .filter(function (geometry) {
                   const type = geometry.getType();
-                  return (
-                    type === GeometryType.POLYGON ||
-                    type === GeometryType.MULTI_POLYGON
-                  );
+                  return type === 'Polygon' || type === 'MultiPolygon';
                 })
             );
-          } else if (
-            type === GeometryType.POLYGON ||
-            type === GeometryType.MULTI_POLYGON
-          ) {
+          } else if (type === 'Polygon' || type === 'MultiPolygon') {
             return geometry;
           }
         },
@@ -2355,9 +2338,9 @@ function writeCoordinatesTextNode(node, coordinates, objectStack) {
   const stride = context['stride'];
 
   let dimension;
-  if (layout == GeometryLayout.XY || layout == GeometryLayout.XYM) {
+  if (layout == 'XY' || layout == 'XYM') {
     dimension = 2;
-  } else if (layout == GeometryLayout.XYZ || layout == GeometryLayout.XYZM) {
+  } else if (layout == 'XYZ' || layout == 'XYZM') {
     dimension = 3;
   } else {
     assert(false, 34); // Invalid geometry layout
@@ -2645,9 +2628,9 @@ function writeIconStyle(node, style, objectStack) {
     if (anchor && (anchor[0] !== size[0] / 2 || anchor[1] !== size[1] / 2)) {
       const /** @type {Vec2} */ hotSpot = {
           x: anchor[0],
-          xunits: IconAnchorUnits.PIXELS,
+          xunits: 'pixels',
           y: size[1] - anchor[1],
-          yunits: IconAnchorUnits.PIXELS,
+          yunits: 'pixels',
         };
       properties['hotSpot'] = hotSpot;
     }
@@ -2868,27 +2851,27 @@ function writeMultiGeometry(node, geometry, objectStack) {
   let geometries = [];
   /** @type {function(*, Array<*>, string=): (Node|undefined)} */
   let factory;
-  if (type === GeometryType.GEOMETRY_COLLECTION) {
+  if (type === 'GeometryCollection') {
     /** @type {GeometryCollection} */ (geometry)
       .getGeometriesArrayRecursive()
       .forEach(function (geometry) {
         const type = geometry.getType();
-        if (type === GeometryType.MULTI_POINT) {
+        if (type === 'MultiPoint') {
           geometries = geometries.concat(
             /** @type {MultiPoint} */ (geometry).getPoints()
           );
-        } else if (type === GeometryType.MULTI_LINE_STRING) {
+        } else if (type === 'MultiLineString') {
           geometries = geometries.concat(
             /** @type {MultiLineString} */ (geometry).getLineStrings()
           );
-        } else if (type === GeometryType.MULTI_POLYGON) {
+        } else if (type === 'MultiPolygon') {
           geometries = geometries.concat(
             /** @type {MultiPolygon} */ (geometry).getPolygons()
           );
         } else if (
-          type === GeometryType.POINT ||
-          type === GeometryType.LINE_STRING ||
-          type === GeometryType.POLYGON
+          type === 'Point' ||
+          type === 'LineString' ||
+          type === 'Polygon'
         ) {
           geometries.push(geometry);
         } else {
@@ -2896,13 +2879,13 @@ function writeMultiGeometry(node, geometry, objectStack) {
         }
       });
     factory = GEOMETRY_NODE_FACTORY;
-  } else if (type === GeometryType.MULTI_POINT) {
+  } else if (type === 'MultiPoint') {
     geometries = /** @type {MultiPoint} */ (geometry).getPoints();
     factory = POINT_NODE_FACTORY;
-  } else if (type === GeometryType.MULTI_LINE_STRING) {
+  } else if (type === 'MultiLineString') {
     geometries = /** @type {MultiLineString} */ (geometry).getLineStrings();
     factory = LINE_STRING_NODE_FACTORY;
-  } else if (type === GeometryType.MULTI_POLYGON) {
+  } else if (type === 'MultiPolygon') {
     geometries = /** @type {MultiPolygon} */ (geometry).getPolygons();
     factory = POLYGON_NODE_FACTORY;
   } else {
@@ -3036,22 +3019,18 @@ function writePlacemark(node, feature, objectStack) {
           const geometry = style.getGeometryFunction()(feature);
           if (geometry) {
             const type = geometry.getType();
-            if (type === GeometryType.GEOMETRY_COLLECTION) {
+            if (type === 'GeometryCollection') {
               return /** @type {GeometryCollection} */ (geometry)
                 .getGeometriesArrayRecursive()
                 .filter(function (geometry) {
                   const type = geometry.getType();
-                  return (
-                    type === GeometryType.POINT ||
-                    type === GeometryType.MULTI_POINT
-                  );
+                  return type === 'Point' || type === 'MultiPoint';
                 }).length;
             }
-            return (
-              type === GeometryType.POINT || type === GeometryType.MULTI_POINT
-            );
+            return type === 'Point' || type === 'MultiPoint';
           }
         });
+        ('Point');
       }
       if (this.writeStyles_) {
         let lineStyles = styleArray;
@@ -3061,42 +3040,30 @@ function writePlacemark(node, feature, objectStack) {
             const geometry = style.getGeometryFunction()(feature);
             if (geometry) {
               const type = geometry.getType();
-              if (type === GeometryType.GEOMETRY_COLLECTION) {
+              if (type === 'GeometryCollection') {
                 return /** @type {GeometryCollection} */ (geometry)
                   .getGeometriesArrayRecursive()
                   .filter(function (geometry) {
                     const type = geometry.getType();
-                    return (
-                      type === GeometryType.LINE_STRING ||
-                      type === GeometryType.MULTI_LINE_STRING
-                    );
+                    return type === 'LineString' || type === 'MultiLineString';
                   }).length;
               }
-              return (
-                type === GeometryType.LINE_STRING ||
-                type === GeometryType.MULTI_LINE_STRING
-              );
+              return type === 'LineString' || type === 'MultiLineString';
             }
           });
           polyStyles = styleArray.filter(function (style) {
             const geometry = style.getGeometryFunction()(feature);
             if (geometry) {
               const type = geometry.getType();
-              if (type === GeometryType.GEOMETRY_COLLECTION) {
+              if (type === 'GeometryCollection') {
                 return /** @type {GeometryCollection} */ (geometry)
                   .getGeometriesArrayRecursive()
                   .filter(function (geometry) {
                     const type = geometry.getType();
-                    return (
-                      type === GeometryType.POLYGON ||
-                      type === GeometryType.MULTI_POLYGON
-                    );
+                    return type === 'Polygon' || type === 'MultiPolygon';
                   }).length;
               }
-              return (
-                type === GeometryType.POLYGON ||
-                type === GeometryType.MULTI_POLYGON
-              );
+              return type === 'Polygon' || type === 'MultiPolygon';
             }
           });
         }

@@ -6,8 +6,6 @@ import EventType from '../events/EventType.js';
 import ImageSource, {defaultImageLoadFunction} from './Image.js';
 import ImageState from '../ImageState.js';
 import ImageWrapper from '../Image.js';
-import {IMAGE_SMOOTHING_DISABLED} from '../renderer/canvas/common.js';
-import {assign} from '../obj.js';
 import {createCanvasContext2D} from '../dom.js';
 import {getHeight, getWidth, intersects} from '../extent.js';
 import {get as getProjection} from '../proj.js';
@@ -158,7 +156,7 @@ class Static extends ImageSource {
       if (targetWidth !== imageWidth || targetHeight !== imageHeight) {
         const context = createCanvasContext2D(targetWidth, targetHeight);
         if (!this.getInterpolate()) {
-          assign(context, IMAGE_SMOOTHING_DISABLED);
+          context.imageSmoothingEnabled = false;
         }
         const canvas = context.canvas;
         context.drawImage(

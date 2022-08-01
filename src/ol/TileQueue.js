@@ -86,7 +86,9 @@ class TileQueue extends PriorityQueue {
       state === TileState.ERROR ||
       state === TileState.EMPTY
     ) {
-      tile.removeEventListener(EventType.CHANGE, this.boundHandleTileChange_);
+      if (state !== TileState.ERROR) {
+        tile.removeEventListener(EventType.CHANGE, this.boundHandleTileChange_);
+      }
       const tileKey = tile.getKey();
       if (tileKey in this.tilesLoadingKeys_) {
         delete this.tilesLoadingKeys_[tileKey];
@@ -124,7 +126,7 @@ class TileQueue extends PriorityQueue {
 export default TileQueue;
 
 /**
- * @param {import('./PluggableMap.js').FrameState} frameState Frame state.
+ * @param {import('./Map.js').FrameState} frameState Frame state.
  * @param {import("./Tile.js").default} tile Tile.
  * @param {string} tileSourceKey Tile source key.
  * @param {import("./coordinate.js").Coordinate} tileCenter Tile center.

@@ -8,6 +8,7 @@ import {createCanvasContext2D} from '../../../../../src/ol/dom.js';
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
 import {getForViewAndSize} from '../../../../../src/ol/extent.js';
 import {getRenderPixel} from '../../../../../src/ol/render.js';
+import {sourcesFromTileGrid} from '../../../../../src/ol/source.js';
 
 describe('ol/layer/WebGLTile', function () {
   /** @type {WebGLTileLayer} */
@@ -101,6 +102,62 @@ describe('ol/layer/WebGLTile', function () {
         expect(data[2]).to.be(3);
         expect(data[3]).to.be(2);
         expect(data[4]).to.be(1);
+        done();
+      });
+    });
+
+    it('retrieves pixel data from pyramid', (done) => {
+      const pyramidGrid = createXYZ({minZoom: 1, maxZoom: 1});
+      const layer = new WebGLTileLayer({
+        sources: sourcesFromTileGrid(
+          pyramidGrid,
+          ([z1, x1, y1]) =>
+            new DataTileSource({
+              tileSize: 1,
+              tileGrid: createXYZ({
+                extent: pyramidGrid.getTileCoordExtent([z1, x1, y1]),
+                minZoom: 1,
+                maxZoom: 1,
+              }),
+              loader(z2, x2, y2) {
+                return new Uint8Array([x1, y1, x2, y2]);
+              },
+            })
+        ),
+      });
+
+      map.addLayer(layer);
+
+      map.once('rendercomplete', () => {
+        let data;
+        data = layer.getData([25, 25]);
+        expect(data).to.be.a(Uint8Array);
+        expect(data.length).to.be(4);
+        expect(data[0]).to.be(0);
+        expect(data[1]).to.be(0);
+        expect(data[2]).to.be(1);
+        expect(data[3]).to.be(1);
+        data = layer.getData([75, 25]);
+        expect(data).to.be.a(Uint8Array);
+        expect(data.length).to.be(4);
+        expect(data[0]).to.be(1);
+        expect(data[1]).to.be(0);
+        expect(data[2]).to.be(0);
+        expect(data[3]).to.be(1);
+        data = layer.getData([25, 75]);
+        expect(data).to.be.a(Uint8Array);
+        expect(data.length).to.be(4);
+        expect(data[0]).to.be(0);
+        expect(data[1]).to.be(1);
+        expect(data[2]).to.be(1);
+        expect(data[3]).to.be(0);
+        data = layer.getData([75, 75]);
+        expect(data).to.be.a(Uint8Array);
+        expect(data.length).to.be(4);
+        expect(data[0]).to.be(1);
+        expect(data[1]).to.be(1);
+        expect(data[2]).to.be(0);
+        expect(data[3]).to.be(0);
         done();
       });
     });
@@ -485,6 +542,31 @@ describe('ol/layer/WebGLTile', function () {
         ]);
         done();
       });
+    });
+  });
+
+  describe('multiple sources', () => {
+    it('can determine the correct band count for static sources array', () => {
+      const layer = new WebGLTileLayer({
+        sources: [
+          new DataTileSource({
+            bandCount: 7,
+          }),
+        ],
+      });
+      expect(layer.getSourceBandCount_()).to.be(7);
+    });
+    it('can determine the correct band count for sources function', () => {
+      const layer = new WebGLTileLayer({
+        sources: sourcesFromTileGrid(
+          createXYZ(),
+          ([z, x, y]) =>
+            new DataTileSource({
+              bandCount: 7,
+            })
+        ),
+      });
+      expect(layer.getSourceBandCount_()).to.be(7);
     });
   });
 

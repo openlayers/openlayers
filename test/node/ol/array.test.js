@@ -3,8 +3,6 @@ import {
   binarySearch,
   equals,
   extend,
-  find,
-  findIndex,
   isSorted,
   linearFindNearest,
   numberSafeCompareFunction,
@@ -380,64 +378,6 @@ describe('ol/array.js', function () {
       }
       extend(a, bigArray);
       expect(a).to.eql(bigArray);
-    });
-  });
-
-  describe('find', function () {
-    it('finds numbers in an array', function () {
-      const a = [0, 1, 2, 3];
-      const b = find(a, function (val, index, a2) {
-        expect(a).to.equal(a2);
-        expect(typeof index).to.be('number');
-        return val > 1;
-      });
-      expect(b).to.be(2);
-    });
-
-    it('returns null when an item in an array is not found', function () {
-      const a = [0, 1, 2, 3];
-      const b = find(a, function (val, index, a2) {
-        return val > 100;
-      });
-      expect(b).to.be(null);
-    });
-
-    it('finds items in an array-like', function () {
-      const a = 'abCD';
-      const b = find(a, function (val, index, a2) {
-        expect(a).to.equal(a2);
-        expect(typeof index).to.be('number');
-        return val >= 'A' && val <= 'Z';
-      });
-      expect(b).to.be('C');
-    });
-
-    it('returns null when nothing in an array-like is found', function () {
-      const a = 'abcd';
-      const b = find(a, function (val, index, a2) {
-        return val >= 'A' && val <= 'Z';
-      });
-      expect(b).to.be(null);
-    });
-  });
-
-  describe('findIndex', function () {
-    it('finds index of numbers in an array', function () {
-      const a = [0, 1, 2, 3];
-      const b = findIndex(a, function (val, index, a2) {
-        expect(a).to.equal(a2);
-        expect(typeof index).to.be('number');
-        return val > 1;
-      });
-      expect(b).to.be(2);
-    });
-
-    it('returns -1 when an item in an array is not found', function () {
-      const a = [0, 1, 2, 3];
-      const b = findIndex(a, function (val, index, a2) {
-        return val > 100;
-      });
-      expect(b).to.be(-1);
     });
   });
 

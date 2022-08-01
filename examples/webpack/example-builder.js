@@ -13,10 +13,10 @@ const baseDir = dirname(fileURLToPath(import.meta.url));
 
 const isCssRegEx = /\.css(\?.*)?$/;
 const isJsRegEx = /\.js(\?.*)?$/;
-const importRegEx = /(?:^|\n)import .* from '(.*)';(?:\n|$)/g;
+const importRegEx = /\s?import .*? from '([^']+)'/g;
 const isTemplateJs =
   /\/(jquery(-\d+\.\d+\.\d+)?|(bootstrap(\.bundle)?))(\.min)?\.js(\?.*)?$/;
-const isTemplateCss = /\/bootstrap(\.min)?\.css(\?.*)?$/;
+const isTemplateCss = /\/(?:bootstrap|font-awesome)(\.min)?\.css(\?.*)?$/;
 
 const exampleDirContents = fs
   .readdirSync(path.join(baseDir, '..'))
@@ -146,6 +146,8 @@ function getDependencies(jsSource, pkg) {
       const dep = imp.startsWith('@') ? parts.slice(0, 2).join('/') : parts[0];
       if (dep in pkg.devDependencies) {
         dependencies[dep] = pkg.devDependencies[dep];
+      } else if (dep in pkg.dependencies) {
+        dependencies[dep] = pkg.dependencies[dep];
       }
     }
   }
@@ -343,11 +345,11 @@ export default class ExampleBuilder {
         name: data.name,
         dependencies: getDependencies(jsSources, pkg),
         devDependencies: {
-          parcel: '^2.0.0',
+          vite: '^3.0.3',
         },
         scripts: {
-          start: 'parcel index.html',
-          build: 'parcel build --public-url . index.html',
+          start: 'vite',
+          build: 'vite build',
         },
       },
       null,

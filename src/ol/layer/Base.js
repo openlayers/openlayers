@@ -5,7 +5,6 @@ import BaseObject from '../Object.js';
 import LayerProperty from './Property.js';
 import {abstract} from '../util.js';
 import {assert} from '../asserts.js';
-import {assign} from '../obj.js';
 import {clamp} from '../math.js';
 
 /**
@@ -92,10 +91,10 @@ class BaseLayer extends BaseObject {
     /**
      * @type {Object<string, *>}
      */
-    const properties = assign({}, options);
+    const properties = Object.assign({}, options);
     if (typeof options.properties === 'object') {
       delete properties.properties;
-      assign(properties, options.properties);
+      Object.assign(properties, options.properties);
     }
 
     properties[LayerProperty.OPACITY] =
@@ -260,7 +259,7 @@ class BaseLayer extends BaseObject {
 
   /**
    * @abstract
-   * @return {import("../source/State.js").default} Source state.
+   * @return {import("../source/Source.js").State} Source state.
    */
   getSourceState() {
     return abstract();

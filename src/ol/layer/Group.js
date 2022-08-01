@@ -7,9 +7,8 @@ import CollectionEventType from '../CollectionEventType.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import ObjectEventType from '../ObjectEventType.js';
-import SourceState from '../source/State.js';
 import {assert} from '../asserts.js';
-import {assign, clear} from '../obj.js';
+import {clear} from '../obj.js';
 import {getIntersection} from '../extent.js';
 import {getUid} from '../util.js';
 import {listen, unlistenByKey} from '../events.js';
@@ -67,7 +66,7 @@ export class GroupEvent extends Event {
  * visible.
  * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
  * be visible.
- * @property {Array<import("./Base.js").default>|import("../Collection.js").default<import("./Base.js").default>} [layers] Child layers.
+ * @property {Array<import("./Base.js").default>|Collection<import("./Base.js").default>} [layers] Child layers.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
@@ -93,7 +92,7 @@ class LayerGroup extends BaseLayer {
    */
   constructor(opt_options) {
     const options = opt_options || {};
-    const baseOptions = /** @type {Options} */ (assign({}, options));
+    const baseOptions = /** @type {Options} */ (Object.assign({}, options));
     delete baseOptions.layers;
 
     let layers = options.layers;
@@ -215,26 +214,22 @@ class LayerGroup extends BaseLayer {
   }
 
   /**
-   * @param {import("../Collection.js").CollectionEvent} collectionEvent CollectionEvent.
+   * @param {import("../Collection.js").CollectionEvent<import("./Base.js").default>} collectionEvent CollectionEvent.
    * @private
    */
   handleLayersAdd_(collectionEvent) {
-    const layer = /** @type {import("./Base.js").default} */ (
-      collectionEvent.element
-    );
+    const layer = collectionEvent.element;
     this.registerLayerListeners_(layer);
     this.dispatchEvent(new GroupEvent('addlayer', layer));
     this.changed();
   }
 
   /**
-   * @param {import("../Collection.js").CollectionEvent} collectionEvent CollectionEvent.
+   * @param {import("../Collection.js").CollectionEvent<import("./Base.js").default>} collectionEvent CollectionEvent.
    * @private
    */
   handleLayersRemove_(collectionEvent) {
-    const layer = /** @type {import("./Base.js").default} */ (
-      collectionEvent.element
-    );
+    const layer = collectionEvent.element;
     const key = getUid(layer);
     this.listenerKeys_[key].forEach(unlistenByKey);
     delete this.listenerKeys_[key];
@@ -245,13 +240,13 @@ class LayerGroup extends BaseLayer {
   /**
    * Returns the {@link module:ol/Collection~Collection collection} of {@link module:ol/layer/Layer~Layer layers}
    * in this group.
-   * @return {!import("../Collection.js").default<import("./Base.js").default>} Collection of
+   * @return {!Collection<import("./Base.js").default>} Collection of
    *   {@link module:ol/layer/Base~BaseLayer layers} that are part of this group.
    * @observable
    * @api
    */
   getLayers() {
-    return /** @type {!import("../Collection.js").default<import("./Base.js").default>} */ (
+    return /** @type {!Collection<import("./Base.js").default>} */ (
       this.get(Property.LAYERS)
     );
   }
@@ -259,7 +254,7 @@ class LayerGroup extends BaseLayer {
   /**
    * Set the {@link module:ol/Collection~Collection collection} of {@link module:ol/layer/Layer~Layer layers}
    * in this group.
-   * @param {!import("../Collection.js").default<import("./Base.js").default>} layers Collection of
+   * @param {!Collection<import("./Base.js").default>} layers Collection of
    *   {@link module:ol/layer/Base~BaseLayer layers} that are part of this group.
    * @observable
    * @api
@@ -343,10 +338,10 @@ class LayerGroup extends BaseLayer {
   }
 
   /**
-   * @return {import("../source/State.js").default} Source state.
+   * @return {import("../source/Source.js").State} Source state.
    */
   getSourceState() {
-    return SourceState.READY;
+    return 'ready';
   }
 }
 

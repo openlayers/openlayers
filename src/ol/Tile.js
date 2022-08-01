@@ -142,7 +142,12 @@ class Tile extends EventTarget {
   /**
    * Called by the tile cache when the tile is removed from the cache due to expiry
    */
-  release() {}
+  release() {
+    if (this.state === TileState.ERROR) {
+      // to remove the `change` listener on this tile in `ol/TileQueue#handleTileChange`
+      this.setState(TileState.EMPTY);
+    }
+  }
 
   /**
    * @return {string} Key.

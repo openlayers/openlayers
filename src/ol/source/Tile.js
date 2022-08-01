@@ -32,7 +32,7 @@ import {scale as scaleSize, toSize} from '../size.js';
  * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {number} [tilePixelRatio] TilePixelRatio.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection.
- * @property {import("./State.js").default} [state] State.
+ * @property {import("./Source.js").State} [state] State.
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] TileGrid.
  * @property {boolean} [wrapX=false] WrapX.
  * @property {number} [transition] Transition.

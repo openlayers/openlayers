@@ -1,6 +1,5 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
 import {Draw, Modify, Select, Snap} from '../src/ol/interaction.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
@@ -11,21 +10,13 @@ const raster = new TileLayer({
 
 const vector = new VectorLayer({
   source: new VectorSource(),
-  style: new Style({
-    fill: new Fill({
-      color: 'rgba(255, 255, 255, 0.2)',
-    }),
-    stroke: new Stroke({
-      color: '#ffcc33',
-      width: 2,
-    }),
-    image: new CircleStyle({
-      radius: 7,
-      fill: new Fill({
-        color: '#ffcc33',
-      }),
-    }),
-  }),
+  style: {
+    'fill-color': 'rgba(255, 255, 255, 0.2)',
+    'stroke-color': '#ffcc33',
+    'stroke-width': 2,
+    'circle-radius': 7,
+    'circle-fill-color': '#ffcc33',
+  },
 });
 
 const map = new Map({

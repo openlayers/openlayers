@@ -4,9 +4,7 @@
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
 import CanvasExecutorGroup from '../../render/canvas/ExecutorGroup.js';
 import CanvasTileLayerRenderer from './TileLayer.js';
-import ReplayType from '../../render/canvas/BuilderType.js';
 import TileState from '../../TileState.js';
-import VectorTileRenderType from '../../layer/VectorTileRenderType.js';
 import ViewHint from '../../ViewHint.js';
 import {
   HIT_DETECT_RESOLUTION,
@@ -40,33 +38,20 @@ import {toSize} from '../../size.js';
 import {wrapX} from '../../coordinate.js';
 
 /**
- * @type {!Object<string, Array<import("../../render/canvas/BuilderType.js").default>>}
+ * @type {!Object<string, Array<import("../../render/canvas.js").BuilderType>>}
  */
 const IMAGE_REPLAYS = {
-  'image': [
-    ReplayType.POLYGON,
-    ReplayType.CIRCLE,
-    ReplayType.LINE_STRING,
-    ReplayType.IMAGE,
-    ReplayType.TEXT,
-  ],
-  'hybrid': [ReplayType.POLYGON, ReplayType.LINE_STRING],
+  'image': ['Polygon', 'Circle', 'LineString', 'Image', 'Text'],
+  'hybrid': ['Polygon', 'LineString'],
   'vector': [],
 };
 
 /**
- * @type {!Object<string, Array<import("../../render/canvas/BuilderType.js").default>>}
+ * @type {!Object<string, Array<import("../../render/canvas.js").BuilderType>>}
  */
 const VECTOR_REPLAYS = {
-  'hybrid': [ReplayType.IMAGE, ReplayType.TEXT, ReplayType.DEFAULT],
-  'vector': [
-    ReplayType.POLYGON,
-    ReplayType.CIRCLE,
-    ReplayType.LINE_STRING,
-    ReplayType.IMAGE,
-    ReplayType.TEXT,
-    ReplayType.DEFAULT,
-  ],
+  'hybrid': ['Image', 'Text', 'Default'],
+  'vector': ['Polygon', 'Circle', 'LineString', 'Image', 'Text', 'Default'],
 };
 
 /**
@@ -132,7 +117,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {number} z Tile coordinate z.
    * @param {number} x Tile coordinate x.
    * @param {number} y Tile coordinate y.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {!import("../../Tile.js").default} Tile.
    */
   getTile(z, x, y, frameState) {
@@ -153,7 +138,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     if (
       render &&
       (hifi || Date.now() - frameState.time < 8) &&
-      layer.getRenderMode() !== VectorTileRenderType.VECTOR
+      layer.getRenderMode() !== 'vector'
     ) {
       this.renderTileImage_(tile, frameState);
     }
@@ -168,7 +153,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const layer = this.getLayer();
     return (
       super.isDrawableTile(tile) &&
-      (layer.getRenderMode() === VectorTileRenderType.VECTOR
+      (layer.getRenderMode() === 'vector'
         ? getUid(layer) in tile.executorGroups
         : tile.hasContext(layer))
     );
@@ -183,7 +168,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
   /**
    * Determine whether render should be called.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrame(frameState) {
@@ -303,7 +288,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const executorGroupInstructions = builderGroup.finish();
       // no need to clip when the render tile is covered by a single source tile
       const replayExtent =
-        layer.getRenderMode() !== VectorTileRenderType.VECTOR &&
+        layer.getRenderMode() !== 'vector' &&
         declutter &&
         sourceTiles.length === 1
           ? null
@@ -336,7 +321,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
   /**
    * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {import("../vector.js").FeatureCallback<T>} callback Feature callback.
    * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
@@ -510,7 +495,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         let hitDetectionImageData = tile.hitDetectionImageData[layerUid];
         if (!hitDetectionImageData && !this.animatingOrInteracting_) {
           const tileSize = toSize(
-            tileGrid.getTileSize(tileGrid.getZForResolution(resolution))
+            tileGrid.getTileSize(
+              tileGrid.getZForResolution(resolution, source.zDirection)
+            )
           );
           const rotation = this.renderedRotation_;
           const transforms = [
@@ -561,7 +548,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
   /**
    * Render declutter items for this layer
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    */
   renderDeclutter(frameState) {
     const context = this.context;
@@ -631,7 +618,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
   /**
    * Render the layer.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {HTMLElement} target Target that may be used to render content to.
    * @return {HTMLElement} The rendered element.
    */
@@ -796,7 +783,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const layer = /** @type {import("../../layer/VectorTile.js").default} */ (
       this.getLayer()
     );
-    if (layer.getRenderMode() === VectorTileRenderType.VECTOR) {
+    if (layer.getRenderMode() === 'vector') {
       return false;
     }
     const replayState = tile.getReplayState(layer);
@@ -810,7 +797,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
   /**
    * @param {import("../../VectorRenderTile.js").default} tile Tile.
-   * @param {import("../../PluggableMap").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @private
    */
   renderTileImage_(tile, frameState) {

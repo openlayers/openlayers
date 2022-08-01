@@ -6,7 +6,6 @@ import CollectionEventType from '../CollectionEventType.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import Feature from '../Feature.js';
-import GeometryType from '../geom/GeometryType.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
 import Point from '../geom/Point.js';
 import PointerInteraction from './Pointer.js';
@@ -33,7 +32,7 @@ import {
   squaredDistanceToSegment,
 } from '../coordinate.js';
 import {createEditingStyle} from '../style/Style.js';
-import {equals, includes} from '../array.js';
+import {equals} from '../array.js';
 import {fromCircle} from '../geom/Polygon.js';
 import {
   fromUserCoordinate,
@@ -362,6 +361,7 @@ class Modify extends PointerInteraction {
      */
     this.hitDetection_ = null;
 
+    /** @type {Collection<Feature>} */
     let features;
     if (options.features) {
       features = options.features;
@@ -538,7 +538,7 @@ class Modify extends PointerInteraction {
    * Remove the interaction from its current map and attach it to the new map.
    * Subclasses may set up event handlers to get notified about changes to
    * the map here.
-   * @param {import("../PluggableMap.js").default} map Map.
+   * @param {import("../Map.js").default} map Map.
    */
   setMap(map) {
     this.overlay_.setMap(map);
@@ -575,11 +575,11 @@ class Modify extends PointerInteraction {
   }
 
   /**
-   * @param {import("../Collection.js").CollectionEvent} evt Event.
+   * @param {import("../Collection.js").CollectionEvent<Feature>} evt Event.
    * @private
    */
   handleFeatureAdd_(evt) {
-    this.addFeature_(/** @type {Feature} */ (evt.element));
+    this.addFeature_(evt.element);
   }
 
   /**
@@ -595,12 +595,11 @@ class Modify extends PointerInteraction {
   }
 
   /**
-   * @param {import("../Collection.js").CollectionEvent} evt Event.
+   * @param {import("../Collection.js").CollectionEvent<Feature>} evt Event.
    * @private
    */
   handleFeatureRemove_(evt) {
-    const feature = /** @type {Feature} */ (evt.element);
-    this.removeFeature_(feature);
+    this.removeFeature_(evt.element);
   }
 
   /**
@@ -905,38 +904,38 @@ class Modify extends PointerInteraction {
       }
 
       switch (geometry.getType()) {
-        case GeometryType.POINT:
+        case 'Point':
           coordinates = vertex;
           segment[0] = vertex;
           segment[1] = vertex;
           break;
-        case GeometryType.MULTI_POINT:
+        case 'MultiPoint':
           coordinates = geometry.getCoordinates();
           coordinates[segmentData.index] = vertex;
           segment[0] = vertex;
           segment[1] = vertex;
           break;
-        case GeometryType.LINE_STRING:
+        case 'LineString':
           coordinates = geometry.getCoordinates();
           coordinates[segmentData.index + index] = vertex;
           segment[index] = vertex;
           break;
-        case GeometryType.MULTI_LINE_STRING:
+        case 'MultiLineString':
           coordinates = geometry.getCoordinates();
           coordinates[depth[0]][segmentData.index + index] = vertex;
           segment[index] = vertex;
           break;
-        case GeometryType.POLYGON:
+        case 'Polygon':
           coordinates = geometry.getCoordinates();
           coordinates[depth[0]][segmentData.index + index] = vertex;
           segment[index] = vertex;
           break;
-        case GeometryType.MULTI_POLYGON:
+        case 'MultiPolygon':
           coordinates = geometry.getCoordinates();
           coordinates[depth[1]][depth[0]][segmentData.index + index] = vertex;
           segment[index] = vertex;
           break;
-        case GeometryType.CIRCLE:
+        case 'Circle':
           segment[0] = vertex;
           segment[1] = vertex;
           if (segmentData.index === CIRCLE_CENTER_INDEX) {
@@ -1011,7 +1010,7 @@ class Modify extends PointerInteraction {
         }
 
         if (
-          segmentDataMatch.geometry.getType() === GeometryType.CIRCLE &&
+          segmentDataMatch.geometry.getType() === 'Circle' &&
           segmentDataMatch.index === CIRCLE_CIRCUMFERENCE_INDEX
         ) {
           const closestVertex = closestOnSegmentData(
@@ -1042,15 +1041,32 @@ class Modify extends PointerInteraction {
           coordinatesEqual(segment[1], vertex) &&
           !componentSegments[uid][1]
         ) {
-          // prevent dragging closed linestrings by the connecting node
           if (
-            (segmentDataMatch.geometry.getType() === GeometryType.LINE_STRING ||
-              segmentDataMatch.geometry.getType() ===
-                GeometryType.MULTI_LINE_STRING) &&
             componentSegments[uid][0] &&
             componentSegments[uid][0].index === 0
           ) {
-            continue;
+            let coordinates = segmentDataMatch.geometry.getCoordinates();
+            switch (segmentDataMatch.geometry.getType()) {
+              // prevent dragging closed linestrings by the connecting node
+              case 'LineString':
+              case 'MultiLineString':
+                continue;
+              // if dragging the first vertex of a polygon, ensure the other segment
+              // belongs to the closing vertex of the linear ring
+              case 'MultiPolygon':
+                coordinates = coordinates[depth[1]];
+              /* falls through */
+              case 'Polygon':
+                if (
+                  segmentDataMatch.index !==
+                  coordinates[depth[0]].length - 2
+                ) {
+                  continue;
+                }
+                break;
+              default:
+              // pass
+            }
           }
 
           this.dragSegments_.push([segmentDataMatch, 1]);
@@ -1088,7 +1104,7 @@ class Modify extends PointerInteraction {
     for (let i = this.dragSegments_.length - 1; i >= 0; --i) {
       const segmentData = this.dragSegments_[i][0];
       const geometry = segmentData.geometry;
-      if (geometry.getType() === GeometryType.CIRCLE) {
+      if (geometry.getType() === 'Circle') {
         // Update a circle object in the R* bush:
         const coordinates = geometry.getCenter();
         const centerSegmentData = segmentData.featureSegments[0];
@@ -1142,7 +1158,7 @@ class Modify extends PointerInteraction {
 
   /**
    * @param {import("../pixel.js").Pixel} pixel Pixel
-   * @param {import("../PluggableMap.js").default} map Map.
+   * @param {import("../Map.js").default} map Map.
    * @param {import("../coordinate.js").Coordinate} [opt_coordinate] The pixel Coordinate.
    * @private
    */
@@ -1173,8 +1189,8 @@ class Modify extends PointerInteraction {
               feature.getGeometry()
             );
           if (
-            geometry.getType() === GeometryType.POINT &&
-            includes(this.features_.getArray(), feature)
+            geometry.getType() === 'Point' &&
+            this.features_.getArray().includes(feature)
           ) {
             hitPointGeometry = geometry;
             const coordinate = geometry.getFlatCoordinates().slice(0, 2);
@@ -1220,7 +1236,7 @@ class Modify extends PointerInteraction {
           this.delta_[1] = vertex[1] - pixelCoordinate[1];
         }
         if (
-          node.geometry.getType() === GeometryType.CIRCLE &&
+          node.geometry.getType() === 'Circle' &&
           node.index === CIRCLE_CIRCUMFERENCE_INDEX
         ) {
           this.snappedToVertex_ = true;
@@ -1296,19 +1312,19 @@ class Modify extends PointerInteraction {
     }
 
     switch (geometry.getType()) {
-      case GeometryType.MULTI_LINE_STRING:
+      case 'MultiLineString':
         coordinates = geometry.getCoordinates();
         coordinates[depth[0]].splice(index + 1, 0, vertex);
         break;
-      case GeometryType.POLYGON:
+      case 'Polygon':
         coordinates = geometry.getCoordinates();
         coordinates[depth[0]].splice(index + 1, 0, vertex);
         break;
-      case GeometryType.MULTI_POLYGON:
+      case 'MultiPolygon':
         coordinates = geometry.getCoordinates();
         coordinates[depth[1]][depth[0]].splice(index + 1, 0, vertex);
         break;
-      case GeometryType.LINE_STRING:
+      case 'LineString':
         coordinates = geometry.getCoordinates();
         coordinates.splice(index + 1, 0, vertex);
         break;
@@ -1424,22 +1440,22 @@ class Modify extends PointerInteraction {
       component = coordinates;
       deleted = false;
       switch (geometry.getType()) {
-        case GeometryType.MULTI_LINE_STRING:
+        case 'MultiLineString':
           if (coordinates[segmentData.depth[0]].length > 2) {
             coordinates[segmentData.depth[0]].splice(index, 1);
             deleted = true;
           }
           break;
-        case GeometryType.LINE_STRING:
+        case 'LineString':
           if (coordinates.length > 2) {
             coordinates.splice(index, 1);
             deleted = true;
           }
           break;
-        case GeometryType.MULTI_POLYGON:
+        case 'MultiPolygon':
           component = component[segmentData.depth[1]];
         /* falls through */
-        case GeometryType.POLYGON:
+        case 'Polygon':
           component = component[segmentData.depth[0]];
           if (component.length > 4) {
             if (index == component.length - 1) {
@@ -1558,7 +1574,7 @@ function projectedDistanceToSegmentDataSquared(
 ) {
   const geometry = segmentData.geometry;
 
-  if (geometry.getType() === GeometryType.CIRCLE) {
+  if (geometry.getType() === 'Circle') {
     let circleGeometry = /** @type {import("../geom/Circle.js").default} */ (
       geometry
     );
@@ -1600,7 +1616,7 @@ function closestOnSegmentData(pointCoordinates, segmentData, projection) {
   const geometry = segmentData.geometry;
 
   if (
-    geometry.getType() === GeometryType.CIRCLE &&
+    geometry.getType() === 'Circle' &&
     segmentData.index === CIRCLE_CIRCUMFERENCE_INDEX
   ) {
     let circleGeometry = /** @type {import("../geom/Circle.js").default} */ (
@@ -1634,7 +1650,7 @@ function closestOnSegmentData(pointCoordinates, segmentData, projection) {
 function getDefaultStyleFunction() {
   const style = createEditingStyle();
   return function (feature, resolution) {
-    return style[GeometryType.POINT];
+    return style['Point'];
   };
 }
 

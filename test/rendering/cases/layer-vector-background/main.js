@@ -3,7 +3,6 @@ import Map from '../../../../src/ol/Map.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import View from '../../../../src/ol/View.js';
-import {Fill, Stroke, Style} from '../../../../src/ol/style.js';
 
 new Map({
   target: 'map',
@@ -18,14 +17,10 @@ new Map({
         url: '/data/countries.json',
         format: new GeoJSON(),
       }),
-      style: new Style({
-        stroke: new Stroke({
-          color: '#ccc',
-        }),
-        fill: new Fill({
-          color: 'white',
-        }),
-      }),
+      style: {
+        'stroke-color': '#ccc',
+        'fill-color': 'white',
+      },
     }),
   ],
 });

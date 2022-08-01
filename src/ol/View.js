@@ -2,8 +2,6 @@
  * @module ol/View
  */
 import BaseObject from './Object.js';
-import GeometryType from './geom/GeometryType.js';
-import Units from './proj/Units.js';
 import ViewHint from './ViewHint.js';
 import ViewProperty from './ViewProperty.js';
 import {DEFAULT_TILE_SIZE} from './tilegrid/common.js';
@@ -25,7 +23,6 @@ import {
   rotate as rotateCoordinate,
 } from './coordinate.js';
 import {assert} from './asserts.js';
-import {assign} from './obj.js';
 import {none as centerNone, createExtent} from './centerconstraint.js';
 import {clamp, modulo} from './math.js';
 import {
@@ -326,7 +323,7 @@ class View extends BaseObject {
      */
     this.un;
 
-    const options = assign({}, opt_options);
+    const options = Object.assign({}, opt_options);
 
     /**
      * @private
@@ -419,7 +416,7 @@ class View extends BaseObject {
    * @param {ViewOptions} options View options.
    */
   applyOptions_(options) {
-    const properties = assign({}, options);
+    const properties = Object.assign({}, options);
     for (const key in ViewProperty) {
       delete properties[key];
     }
@@ -542,7 +539,7 @@ class View extends BaseObject {
     // preserve rotation
     options.rotation = this.getRotation();
 
-    return assign({}, options, newOptions);
+    return Object.assign({}, options, newOptions);
   }
 
   /**
@@ -586,14 +583,14 @@ class View extends BaseObject {
     for (let i = 0; i < args.length; ++i) {
       let options = arguments[i];
       if (options.center) {
-        options = assign({}, options);
+        options = Object.assign({}, options);
         options.center = fromUserCoordinate(
           options.center,
           this.getProjection()
         );
       }
       if (options.anchor) {
-        options = assign({}, options);
+        options = Object.assign({}, options);
         options.anchor = fromUserCoordinate(
           options.anchor,
           this.getProjection()
@@ -1345,7 +1342,7 @@ class View extends BaseObject {
       assert(!isEmpty(geometryOrExtent), 25); // Cannot fit empty extent provided as `geometry`
       const extent = fromUserExtent(geometryOrExtent, this.getProjection());
       geometry = polygonFromExtent(extent);
-    } else if (geometryOrExtent.getType() === GeometryType.CIRCLE) {
+    } else if (geometryOrExtent.getType() === 'Circle') {
       const extent = fromUserExtent(
         geometryOrExtent.getExtent(),
         this.getProjection()
@@ -2010,7 +2007,7 @@ export function createResolutionConstraint(options) {
     // calculate the default min and max resolution
     const size = !projExtent
       ? // use an extent that can fit the whole world if need be
-        (360 * METERS_PER_UNIT[Units.DEGREES]) / projection.getMetersPerUnit()
+        (360 * METERS_PER_UNIT.degrees) / projection.getMetersPerUnit()
       : Math.max(getWidth(projExtent), getHeight(projExtent));
 
     const defaultMaxResolution =
