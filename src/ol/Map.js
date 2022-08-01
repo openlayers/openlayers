@@ -1685,24 +1685,30 @@ class Map extends BaseObject {
         parseFloat(computedStyle['borderBottomWidth']);
       if (!isNaN(width) && !isNaN(height)) {
         size = [width, height];
-        if (
-          !hasArea(size) &&
-          !!(
-            targetElement.offsetWidth ||
-            targetElement.offsetHeight ||
-            targetElement.getClientRects().length
-          )
-        ) {
-          // eslint-disable-next-line
-          console.warn(
-            "No map visible because the map container's width or height are 0."
-          );
-        }
       }
     }
 
-    this.setSize(size);
-    this.updateViewportSize_();
+    if (
+      size &&
+      !hasArea(size) &&
+      (targetElement.offsetWidth ||
+        targetElement.offsetHeight ||
+        targetElement.getClientRects().length)
+    ) {
+      // eslint-disable-next-line
+      console.warn(
+        "No map visible because the map container's width or height are 0."
+      );
+    }
+
+    const oldSize = this.getSize();
+    if (
+      size !== oldSize &&
+      (!size || !oldSize || size[0] !== oldSize[0] || size[1] !== oldSize[1])
+    ) {
+      this.updateViewportSize_();
+      this.setSize(size);
+    }
   }
 
   /**
