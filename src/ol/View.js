@@ -920,12 +920,10 @@ class View extends BaseObject {
    * to avoid performance hit and layout reflow.
    * This should be done on map size change.
    * Note: the constraints are not resolved during an animation to avoid stopping it
-   * @param {import("./size.js").Size} [opt_size] Viewport size; if undefined, [100, 100] is assumed
+   * @param {import("./size.js").Size} [opt_size=[100,100]] Viewport size
    */
   setViewportSize(opt_size) {
-    this.viewportSize_ = Array.isArray(opt_size)
-      ? opt_size.slice()
-      : [100, 100];
+    this.viewportSize_ = opt_size ? opt_size.slice() : [100, 100];
     if (!this.getAnimating()) {
       this.resolveConstraints(0);
     }

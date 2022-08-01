@@ -638,7 +638,6 @@ class Map extends BaseObject {
   }
 
   /**
-   *
    * Clean up.
    */
   disposeInternal() {
@@ -1219,8 +1218,9 @@ class Map extends BaseObject {
    * @private
    */
   handleSizeChanged_() {
-    if (this.getView() && !this.getView().getAnimating()) {
-      this.getView().resolveConstraints(0);
+    const view = this.getView();
+    if (view && !view.getAnimating()) {
+      view.resolveConstraints(0);
     }
 
     this.render();
@@ -1711,17 +1711,18 @@ class Map extends BaseObject {
    */
   updateViewportSize_() {
     const view = this.getView();
-    if (view) {
-      let size = undefined;
-      const computedStyle = getComputedStyle(this.viewport_);
-      if (computedStyle.width && computedStyle.height) {
-        size = [
-          parseInt(computedStyle.width, 10),
-          parseInt(computedStyle.height, 10),
-        ];
-      }
-      view.setViewportSize(size);
+    if (!view) {
+      return;
     }
+    let size = undefined;
+    const computedStyle = getComputedStyle(this.viewport_);
+    if (computedStyle.width && computedStyle.height) {
+      size = [
+        parseInt(computedStyle.width, 10),
+        parseInt(computedStyle.height, 10),
+      ];
+    }
+    view.setViewportSize(size);
   }
 }
 
