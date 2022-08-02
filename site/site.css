@@ -186,7 +186,7 @@ ol.inline>li {
 .map {
   height: 400px;
   width: 100%;
-  background: url(map-background.jpg) repeat;
+  background: var(--ol-background-color);
   margin-bottom: 10px;
 }
 
