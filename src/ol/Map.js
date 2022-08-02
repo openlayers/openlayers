@@ -462,7 +462,9 @@ class Map extends BaseObject {
      * @private
      * @type {ResizeObserver}
      */
-    this.resizeObserver_ = new ResizeObserver(() => this.updateSize());
+    this.resizeObserver_ = new ResizeObserver(() =>
+      this.updateSizeInternal_(false)
+    );
 
     /**
      * @private
@@ -1237,6 +1239,7 @@ class Map extends BaseObject {
    */
   handleTargetChanged_() {
     if (this.mapBrowserEventHandler_) {
+      this.resizeObserver_.disconnect();
       for (let i = 0, ii = this.targetChangeHandlerKeys_.length; i < ii; ++i) {
         unlistenByKey(this.targetChangeHandlerKeys_[i]);
       }
@@ -1416,7 +1419,7 @@ class Map extends BaseObject {
     if (this.animationDelayKey_) {
       cancelAnimationFrame(this.animationDelayKey_);
     }
-    this.updateSize();
+    this.updateSizeInternal_(false);
     this.animationDelay_();
   }
 
@@ -1667,14 +1670,21 @@ class Map extends BaseObject {
   }
 
   /**
-   * Force a recalculation of the map viewport size.  This should be called when
-   * third-party code changes the size of the map viewport.
+   * Force a recalculation of the map viewport size.
    * @api
    */
   updateSize() {
+    this.updateSizeInternal_(true);
+  }
+
+  /**
+   * @param {boolean} force Set new size even if not new.
+   * @private
+   */
+  updateSizeInternal_(force) {
     const targetElement = this.getTargetElement();
 
-    let size = undefined;
+    let size;
     if (targetElement) {
       const computedStyle = getComputedStyle(targetElement);
       const width =
@@ -1694,6 +1704,16 @@ class Map extends BaseObject {
       }
     }
 
+    if (!force) {
+      const oldSize = this.getSize();
+      if (
+        size === oldSize ||
+        (size && oldSize && size[0] === oldSize[0] && size[1] === oldSize[1])
+      ) {
+        return;
+      }
+    }
+
     if (
       size &&
       !hasArea(size) &&
@@ -1706,15 +1726,8 @@ class Map extends BaseObject {
         "No map visible because the map container's width or height are 0."
       );
     }
-
-    const oldSize = this.getSize();
-    if (
-      size !== oldSize &&
-      (!size || !oldSize || size[0] !== oldSize[0] || size[1] !== oldSize[1])
-    ) {
-      this.updateViewportSize_();
-      this.setSize(size);
-    }
+    this.updateViewportSize_();
+    this.setSize(size);
   }
 
   /**
