@@ -182,6 +182,7 @@ async function renderPage(page, entry, options) {
     waitUntil: 'networkidle0',
   });
   const config = await renderCalled;
+  await sleep(1000);
   options.log.debug('screenshot', entry);
   await page.screenshot({path: getActualScreenshotPath(entry)});
   return config;
