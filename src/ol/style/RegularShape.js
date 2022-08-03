@@ -39,7 +39,7 @@ import {
  * @property {import("../colorlike.js").ColorLike} [strokeStyle] StrokeStyle.
  * @property {number} strokeWidth StrokeWidth.
  * @property {number} size Size.
- * @property {Array<number>} lineDash LineDash.
+ * @property {Array<number>|null} lineDash LineDash.
  * @property {number} lineDashOffset LineDashOffset.
  * @property {CanvasLineJoin} lineJoin LineJoin.
  * @property {number} miterLimit MiterLimit.
@@ -517,7 +517,7 @@ class RegularShape extends ImageStyle {
     if (this.stroke_) {
       context.strokeStyle = renderOptions.strokeStyle;
       context.lineWidth = renderOptions.strokeWidth;
-      if (context.setLineDash && renderOptions.lineDash) {
+      if (renderOptions.lineDash) {
         context.setLineDash(renderOptions.lineDash);
         context.lineDashOffset = renderOptions.lineDashOffset;
       }
