@@ -36,8 +36,6 @@ import {toSize} from '../size.js';
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
  * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {import("./Source.js").State} [state] The source state.
- * @property {number} [tilePixelRatio] Deprecated.  To have tiles scaled, pass a `tileSize` representing
- * the source tile size and a `tileGrid` with the desired rendered tile size.
  * @property {boolean} [wrapX=false] Render tiles beyond the antimeridian.
  * @property {number} [transition] Transition time when fading in new tiles (in miliseconds).
  * @property {number} [bandCount=4] Number of bands represented in the data.
@@ -79,7 +77,6 @@ class DataTileSource extends TileSource {
       tileGrid: tileGrid,
       opaque: options.opaque,
       state: options.state,
-      tilePixelRatio: options.tilePixelRatio,
       wrapX: options.wrapX,
       transition: options.transition,
       interpolate: options.interpolate,
@@ -96,13 +93,6 @@ class DataTileSource extends TileSource {
      * @type {import('../size.js').Size|null}
      */
     this.tileSize_ = options.tileSize ? toSize(options.tileSize) : null;
-    if (!this.tileSize_ && options.tilePixelRatio && tileGrid) {
-      const renderTileSize = toSize(tileGrid.getTileSize(0));
-      this.tileSize_ = [
-        renderTileSize[0] * options.tilePixelRatio,
-        renderTileSize[1] * options.tilePixelRatio,
-      ];
-    }
 
     /**
      * @private
