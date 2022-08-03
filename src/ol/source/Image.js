@@ -75,7 +75,6 @@ export class ImageSourceEvent extends Event {
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
- * @property {boolean} [imageSmoothing=true] Deprecated.  Use the `interpolate` option instead.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection.
@@ -97,17 +96,12 @@ class ImageSource extends Source {
    * @param {Options} options Single image source options.
    */
   constructor(options) {
-    let interpolate =
-      options.imageSmoothing !== undefined ? options.imageSmoothing : true;
-    if (options.interpolate !== undefined) {
-      interpolate = options.interpolate;
-    }
-
     super({
       attributions: options.attributions,
       projection: options.projection,
       state: options.state,
-      interpolate: interpolate,
+      interpolate:
+        options.interpolate !== undefined ? options.interpolate : true,
     });
 
     /***

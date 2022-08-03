@@ -42,11 +42,6 @@ describe('ol/source/TileWMS', function () {
       const source = new TileWMS({interpolate: false});
       expect(source.getInterpolate()).to.be(false);
     });
-
-    it('is false if constructed with imageSmoothing: false', function () {
-      const source = new TileWMS({imageSmoothing: false});
-      expect(source.getInterpolate()).to.be(false);
-    });
   });
 
   describe('#getTile', function () {
