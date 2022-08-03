@@ -159,12 +159,10 @@ const controls = {};
 controlIds.forEach(function (id) {
   const control = document.getElementById(id);
   const output = document.getElementById(id + 'Out');
-  const listener = function () {
+  control.addEventListener('input', function () {
     output.innerText = control.value;
     raster.changed();
-  };
-  control.addEventListener('input', listener);
-  control.addEventListener('change', listener);
+  });
   output.innerText = control.value;
   controls[id] = control;
 });

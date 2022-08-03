@@ -65,12 +65,10 @@ const map = new Map({
 
 const control = document.getElementById('level');
 const output = document.getElementById('output');
-const listener = function () {
+control.addEventListener('input', function () {
   output.innerText = control.value;
   raster.changed();
-};
-control.addEventListener('input', listener);
-control.addEventListener('change', listener);
+});
 output.innerText = control.value;
 
 raster.on('beforeoperations', function (event) {
