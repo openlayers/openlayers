@@ -57,11 +57,6 @@ describe('ol/source/XYZ', function () {
       const source = new XYZ({interpolate: false});
       expect(source.getInterpolate()).to.be(false);
     });
-
-    it('is false if constructed with imageSmoothing: false', function () {
-      const source = new XYZ({imageSmoothing: false});
-      expect(source.getInterpolate()).to.be(false);
-    });
   });
 
   describe('tileUrlFunction', function () {

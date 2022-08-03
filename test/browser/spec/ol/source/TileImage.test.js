@@ -41,11 +41,6 @@ describe('ol/source/TileImage', function () {
       const source = new TileImage({interpolate: false});
       expect(source.getInterpolate()).to.be(false);
     });
-
-    it('is false if constructed with imageSmoothing: false', function () {
-      const source = new TileImage({imageSmoothing: false});
-      expect(source.getInterpolate()).to.be(false);
-    });
   });
 
   describe('#getTileCacheForProjection', function () {
