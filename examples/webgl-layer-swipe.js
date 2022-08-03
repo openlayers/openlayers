@@ -53,8 +53,6 @@ imagery.on('postrender', function (event) {
   gl.disable(gl.SCISSOR_TEST);
 });
 
-const listener = function () {
+swipe.addEventListener('input', function () {
   map.render();
-};
-swipe.addEventListener('input', listener);
-swipe.addEventListener('change', listener);
+});

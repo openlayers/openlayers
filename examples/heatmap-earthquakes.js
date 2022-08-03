@@ -42,14 +42,10 @@ new Map({
   }),
 });
 
-const blurHandler = function () {
+blur.addEventListener('input', function () {
   vector.setBlur(parseInt(blur.value, 10));
-};
-blur.addEventListener('input', blurHandler);
-blur.addEventListener('change', blurHandler);
+});
 
-const radiusHandler = function () {
+radius.addEventListener('input', function () {
   vector.setRadius(parseInt(radius.value, 10));
-};
-radius.addEventListener('input', radiusHandler);
-radius.addEventListener('change', radiusHandler);
+});
