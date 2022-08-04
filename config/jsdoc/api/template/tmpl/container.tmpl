@@ -79,7 +79,7 @@
 
     <?js if (doc.kind == 'class') {
       var subclasses = self.find(function() {
-        return this.augments && this.augments.indexOf(doc.longname) > -1;
+        return this.augments && this.augments.includes(doc.longname);
       })
       if (subclasses.length) {
     ?>

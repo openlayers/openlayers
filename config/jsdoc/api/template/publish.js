@@ -461,7 +461,7 @@ exports.publish = function (taffyData, opts, tutorials) {
   data().each(function (doclet) {
     const url = helper.longnameToUrl[doclet.longname];
 
-    if (url.indexOf('#') > -1) {
+    if (url.includes('#')) {
       doclet.id = helper.longnameToUrl[doclet.longname].split(/#/).pop();
     } else {
       doclet.id = doclet.name;

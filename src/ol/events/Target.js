@@ -67,7 +67,7 @@ class Target extends Disposable {
     }
     const listeners = this.listeners_ || (this.listeners_ = {});
     const listenersForType = listeners[type] || (listeners[type] = []);
-    if (listenersForType.indexOf(listener) === -1) {
+    if (!listenersForType.includes(listener)) {
       listenersForType.push(listener);
     }
   }

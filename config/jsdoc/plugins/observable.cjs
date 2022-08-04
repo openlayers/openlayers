@@ -42,14 +42,14 @@ exports.handlers = {
           cls.observables = [];
         }
         observable = observables[doclet.observable];
-        if (observable.type && cls.observables.indexOf(observable) == -1) {
+        if (observable.type && !cls.observables.includes(observable)) {
           cls.observables.push(observable);
         }
         if (!cls.fires) {
           cls.fires = [];
         }
         event = 'module:ol/Object.ObjectEvent#event:change:' + name;
-        if (cls.fires.indexOf(event) == -1) {
+        if (!cls.fires.includes(event)) {
           cls.fires.push(event);
         }
       }

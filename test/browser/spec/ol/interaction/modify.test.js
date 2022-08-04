@@ -966,7 +966,7 @@ describe('ol.interaction.Modify', function () {
         const listeners = feature.listeners_['change'];
         const candidates = Object.values(modify);
         return listeners.filter(function (listener) {
-          return candidates.indexOf(listener) !== -1;
+          return candidates.includes(listener);
         });
       };
     });

@@ -330,7 +330,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
             }
             if (
               !this.newTiles_ &&
-              (inTransition || this.renderedTiles.indexOf(tile) === -1)
+              (inTransition || !this.renderedTiles.includes(tile))
             ) {
               this.newTiles_ = true;
             }

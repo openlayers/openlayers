@@ -59,7 +59,7 @@ exports.publish = function (data, opts) {
       if (
         constructor &&
         constructor.substr(-1) === '_' &&
-        constructor.indexOf('module:') === -1
+        !constructor.includes('module:')
       ) {
         assert.strictEqual(
           doc.inherited,

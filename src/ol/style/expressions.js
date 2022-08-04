@@ -204,7 +204,7 @@ export function isTypeUnique(valueType) {
  */
 export function numberToGlsl(v) {
   const s = v.toString();
-  return s.indexOf('.') === -1 ? s + '.0' : s;
+  return s.includes('.') ? s : s + '.0';
 }
 
 /**
@@ -395,7 +395,7 @@ Operators['get'] = {
     assertArgsCount(args, 1);
     assertString(args[0]);
     const value = args[0].toString();
-    if (context.attributes.indexOf(value) === -1) {
+    if (!context.attributes.includes(value)) {
       context.attributes.push(value);
     }
     const prefix = context.inFragmentShader ? 'v_' : 'a_';
@@ -420,7 +420,7 @@ Operators['var'] = {
     assertArgsCount(args, 1);
     assertString(args[0]);
     const value = args[0].toString();
-    if (context.variables.indexOf(value) === -1) {
+    if (!context.variables.includes(value)) {
       context.variables.push(value);
     }
     return uniformNameForVariable(value);

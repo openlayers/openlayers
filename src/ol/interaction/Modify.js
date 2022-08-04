@@ -455,7 +455,7 @@ class Modify extends PointerInteraction {
         const segment = segments[i];
         for (let s = 0, ss = segment.length; s < ss; ++s) {
           const feature = segment[s].feature;
-          if (feature && features.indexOf(feature) === -1) {
+          if (feature && !features.includes(feature)) {
             this.featuresBeingModified_.push(feature);
           }
         }
@@ -887,11 +887,11 @@ class Modify extends PointerInteraction {
       const dragSegment = this.dragSegments_[i];
       const segmentData = dragSegment[0];
       const feature = segmentData.feature;
-      if (features.indexOf(feature) === -1) {
+      if (!features.includes(feature)) {
         features.push(feature);
       }
       const geometry = segmentData.geometry;
-      if (geometries.indexOf(geometry) === -1) {
+      if (!geometries.includes(geometry)) {
         geometries.push(geometry);
       }
       const depth = segmentData.depth;

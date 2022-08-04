@@ -167,7 +167,7 @@ class GMLBase extends XMLFeature {
           const child = /** @type {Element} */ (node.childNodes[i]);
           if (child.nodeType === 1) {
             const ft = child.nodeName.split(':').pop();
-            if (featureType.indexOf(ft) === -1) {
+            if (!featureType.includes(ft)) {
               let key = '';
               let count = 0;
               const uri = child.namespaceURI;
@@ -206,10 +206,9 @@ class GMLBase extends XMLFeature {
         /** @type {Object<string, import("../xml.js").Parser>} */
         const parsers = {};
         for (let i = 0, ii = featureTypes.length; i < ii; ++i) {
-          const featurePrefix =
-            featureTypes[i].indexOf(':') === -1
-              ? defaultPrefix
-              : featureTypes[i].split(':')[0];
+          const featurePrefix = featureTypes[i].includes(':')
+            ? featureTypes[i].split(':')[0]
+            : defaultPrefix;
           if (featurePrefix === p) {
             parsers[featureTypes[i].split(':').pop()] =
               localName == 'featureMembers'

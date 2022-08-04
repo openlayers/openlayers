@@ -562,7 +562,7 @@ export function parseLiteralStyle(style) {
   // for each feature attribute used in the fragment shader, define a varying that will be used to pass data
   // from the vertex to the fragment shader, as well as an attribute in the vertex shader (if not already present)
   fragContext.attributes.forEach(function (attrName) {
-    if (vertContext.attributes.indexOf(attrName) === -1) {
+    if (!vertContext.attributes.includes(attrName)) {
       vertContext.attributes.push(attrName);
     }
     builder.addVarying(`v_${attrName}`, 'float', `a_${attrName}`);

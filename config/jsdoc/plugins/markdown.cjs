@@ -76,7 +76,7 @@ function shouldProcessString(tagName, text) {
   let shouldProcess = true;
 
   // we only want to process `@author` and `@see` tags that contain Markdown links
-  if ((tagName === 'author' || tagName === 'see') && text.indexOf('[') === -1) {
+  if ((tagName === 'author' || tagName === 'see') && !text.includes('[')) {
     shouldProcess = false;
   }
 
