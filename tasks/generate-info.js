@@ -5,7 +5,7 @@ import {fileURLToPath} from 'url';
 import {spawn} from 'child_process';
 import {walk} from 'walk';
 
-const isWindows = process.platform.indexOf('win') === 0;
+const isWindows = process.platform.startsWith('win');
 const baseDir = dirname(fileURLToPath(import.meta.url));
 
 const sourceDir = path.join(baseDir, '..', 'src');

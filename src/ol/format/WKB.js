@@ -864,7 +864,7 @@ class WKB extends FeatureFormat {
         options.dataProjection && getProjection(options.dataProjection);
       if (dataProjection) {
         const code = dataProjection.getCode();
-        if (code.indexOf('EPSG:') === 0) {
+        if (code.startsWith('EPSG:')) {
           srid = Number(code.substring(5));
         }
       }

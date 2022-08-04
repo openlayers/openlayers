@@ -114,7 +114,7 @@ export function getMapTileUrlTemplate(links, mediaType) {
       }
       if (knownMapMediaTypes[link.type]) {
         fallbackUrlTemplate = link.href;
-      } else if (!fallbackUrlTemplate && link.type.indexOf('image/') === 0) {
+      } else if (!fallbackUrlTemplate && link.type.startsWith('image/')) {
         fallbackUrlTemplate = link.href;
       }
     }

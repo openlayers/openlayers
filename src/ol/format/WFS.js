@@ -822,7 +822,7 @@ function getTypeName(featurePrefix, featureType) {
   featurePrefix = featurePrefix ? featurePrefix : FEATURE_PREFIX;
   const prefix = featurePrefix + ':';
   // The featureType already contains the prefix.
-  if (featureType.indexOf(prefix) === 0) {
+  if (featureType.startsWith(prefix)) {
     return featureType;
   } else {
     return prefix + featureType;

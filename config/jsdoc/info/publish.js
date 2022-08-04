@@ -34,7 +34,7 @@ exports.publish = function (data, opts) {
         return (
           this.meta &&
           this.meta.path &&
-          this.longname.indexOf('<anonymous>') !== 0 &&
+          !this.longname.startsWith('<anonymous>') &&
           this.longname !== 'module:ol'
         );
       },
