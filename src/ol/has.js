@@ -26,7 +26,7 @@ export const SAFARI = ua.includes('safari') && !ua.includes('chrom');
 export const SAFARI_BUG_237906 =
   SAFARI &&
   (ua.includes('version/15.4') ||
-    !!ua.match(/cpu (os|iphone os) 15_4 like mac os x/));
+    /cpu (os|iphone os) 15_4 like mac os x/.test(ua));
 
 /**
  * User agent string says we are dealing with a WebKit engine.

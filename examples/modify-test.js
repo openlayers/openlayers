@@ -321,10 +321,7 @@ const modify = new Modify({
       .getFeatures()
       .getArray()
       .every(function (feature) {
-        return feature
-          .getGeometry()
-          .getType()
-          .match(/Polygon/);
+        return /Polygon/.test(feature.getGeometry().getType());
       });
   },
 });

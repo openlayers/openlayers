@@ -81,10 +81,10 @@ function includeAugments(doclet) {
 
 function extractTypes(item) {
   item.type.names.forEach(function (type) {
-    const match = type.match(/^(.*<)?([^>]*)>?$/);
+    const match = type.match(/^(?:.*<)?([^>]*)>?$/);
     if (match) {
-      modules[match[2]] = true;
-      types[match[2]] = true;
+      modules[match[1]] = true;
+      types[match[1]] = true;
     }
   });
 }
