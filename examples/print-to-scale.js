@@ -78,7 +78,7 @@ const exportOptions = {
       className.indexOf('ol-control') === -1 ||
       className.indexOf('ol-scale') > -1 ||
       (className.indexOf('ol-attribution') > -1 &&
-        className.indexOf('ol-uncollapsible'))
+        className.indexOf('ol-uncollapsible') > -1)
     );
   },
 };
