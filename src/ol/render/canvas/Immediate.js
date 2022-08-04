@@ -883,10 +883,8 @@ class CanvasImmediateRenderer extends VectorContext {
     const contextStrokeState = this.contextStrokeState_;
     if (!contextStrokeState) {
       context.lineCap = strokeState.lineCap;
-      if (context.setLineDash) {
-        context.setLineDash(strokeState.lineDash);
-        context.lineDashOffset = strokeState.lineDashOffset;
-      }
+      context.setLineDash(strokeState.lineDash);
+      context.lineDashOffset = strokeState.lineDashOffset;
       context.lineJoin = strokeState.lineJoin;
       context.lineWidth = strokeState.lineWidth;
       context.miterLimit = strokeState.miterLimit;
@@ -905,16 +903,14 @@ class CanvasImmediateRenderer extends VectorContext {
         contextStrokeState.lineCap = strokeState.lineCap;
         context.lineCap = strokeState.lineCap;
       }
-      if (context.setLineDash) {
-        if (!equals(contextStrokeState.lineDash, strokeState.lineDash)) {
-          context.setLineDash(
-            (contextStrokeState.lineDash = strokeState.lineDash)
-          );
-        }
-        if (contextStrokeState.lineDashOffset != strokeState.lineDashOffset) {
-          contextStrokeState.lineDashOffset = strokeState.lineDashOffset;
-          context.lineDashOffset = strokeState.lineDashOffset;
-        }
+      if (!equals(contextStrokeState.lineDash, strokeState.lineDash)) {
+        context.setLineDash(
+          (contextStrokeState.lineDash = strokeState.lineDash)
+        );
+      }
+      if (contextStrokeState.lineDashOffset != strokeState.lineDashOffset) {
+        contextStrokeState.lineDashOffset = strokeState.lineDashOffset;
+        context.lineDashOffset = strokeState.lineDashOffset;
       }
       if (contextStrokeState.lineJoin != strokeState.lineJoin) {
         contextStrokeState.lineJoin = strokeState.lineJoin;

@@ -3,7 +3,6 @@
  */
 import CanvasInstruction from './Instruction.js';
 import {TEXT_ALIGN} from './TextBuilder.js';
-import {WORKER_OFFSCREEN_CANVAS} from '../../has.js';
 import {
   apply as applyTransform,
   compose as composeTransform,
@@ -276,12 +275,8 @@ class Executor {
       contextInstructions.push('lineCap', strokeState.lineCap);
       contextInstructions.push('lineJoin', strokeState.lineJoin);
       contextInstructions.push('miterLimit', strokeState.miterLimit);
-      // eslint-disable-next-line
-      const Context = WORKER_OFFSCREEN_CANVAS ? OffscreenCanvasRenderingContext2D : CanvasRenderingContext2D;
-      if (Context.prototype.setLineDash) {
-        contextInstructions.push('setLineDash', [strokeState.lineDash]);
-        contextInstructions.push('lineDashOffset', strokeState.lineDashOffset);
-      }
+      contextInstructions.push('setLineDash', [strokeState.lineDash]);
+      contextInstructions.push('lineDashOffset', strokeState.lineDashOffset);
     }
     if (fillKey) {
       contextInstructions.push('fillStyle', fillState.fillStyle);
@@ -585,10 +580,8 @@ class Executor {
     context.lineCap = /** @type {CanvasLineCap} */ (instruction[3]);
     context.lineJoin = /** @type {CanvasLineJoin} */ (instruction[4]);
     context.miterLimit = /** @type {number} */ (instruction[5]);
-    if (context.setLineDash) {
-      context.lineDashOffset = /** @type {number} */ (instruction[7]);
-      context.setLineDash(/** @type {Array<number>} */ (instruction[6]));
-    }
+    context.lineDashOffset = /** @type {number} */ (instruction[7]);
+    context.setLineDash(/** @type {Array<number>} */ (instruction[6]));
   }
 
   /**
