@@ -50,16 +50,6 @@ export function numberSafeCompareFunction(a, b) {
 }
 
 /**
- * Whether the array contains the given object.
- * @param {Array<*>} arr The array to test for the presence of the element.
- * @param {*} obj The object for which to test.
- * @return {boolean} The object is in the array.
- */
-export function includes(arr, obj) {
-  return arr.indexOf(obj) >= 0;
-}
-
-/**
  * {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution} can use a function
  * of this type to determine which nearest resolution to use.
  *
