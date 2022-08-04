@@ -364,13 +364,12 @@ exports.publish = function (taffyData, opts, tutorials) {
       doclet.examples = doclet.examples.map(function (example) {
         let caption, code;
 
-        if (
-          example.match(
-            /^\s*<caption>([\s\S]+?)<\/caption>(\s*[\n\r])([\s\S]+)$/i
-          )
-        ) {
-          caption = RegExp.$1;
-          code = RegExp.$3;
+        const match = example.match(
+          /^\s*<caption>([\s\S]+?)<\/caption>(?:\s*[\n\r])([\s\S]+)$/i
+        );
+        if (match) {
+          caption = match[1];
+          code = match[2];
         }
 
         return {
