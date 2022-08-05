@@ -617,18 +617,16 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   }
 
   /**
-   * Render the layer.
+   * Render the vectors for this layer.
+   * @param {CanvasRenderingContext2D} context Target context.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
-   * @param {HTMLElement} target Target that may be used to render content to.
-   * @return {HTMLElement} The rendered element.
    */
-  renderFrame(frameState, target) {
+  postRender(context, frameState) {
     const viewHints = frameState.viewHints;
     const hifi = !(
       viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]
     );
 
-    super.renderFrame(frameState, target);
     this.renderedPixelToCoordinateTransform_ =
       frameState.pixelToCoordinateTransform.slice();
     this.renderedRotation_ = frameState.viewState.rotation;
@@ -637,7 +635,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       this.getLayer()
     );
     const renderMode = layer.getRenderMode();
-    const context = this.context;
     const alpha = context.globalAlpha;
     context.globalAlpha = layer.getOpacity();
     const replayTypes = VECTOR_REPLAYS[renderMode];
@@ -725,7 +722,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     context.globalAlpha = alpha;
     this.ready = ready;
 
-    return this.container;
+    super.postRender(context, frameState);
   }
 
   /**
