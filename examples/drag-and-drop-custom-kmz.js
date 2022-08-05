@@ -27,7 +27,7 @@ function getKMLImage(href) {
   let url = href;
   let path = window.location.href;
   path = path.slice(0, path.lastIndexOf('/') + 1);
-  if (href.indexOf(path) === 0) {
+  if (href.startsWith(path)) {
     const regexp = new RegExp(href.replace(path, '') + '$', 'i');
     const kmlFile = zip.file(regexp)[0];
     if (kmlFile) {

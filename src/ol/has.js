@@ -11,13 +11,13 @@ const ua =
  * User agent string says we are dealing with Firefox as browser.
  * @type {boolean}
  */
-export const FIREFOX = ua.indexOf('firefox') !== -1;
+export const FIREFOX = ua.includes('firefox');
 
 /**
  * User agent string says we are dealing with Safari as browser.
  * @type {boolean}
  */
-export const SAFARI = ua.indexOf('safari') !== -1 && ua.indexOf('chrom') == -1;
+export const SAFARI = ua.includes('safari') && !ua.includes('chrom');
 
 /**
  * https://bugs.webkit.org/show_bug.cgi?id=237906
@@ -25,22 +25,20 @@ export const SAFARI = ua.indexOf('safari') !== -1 && ua.indexOf('chrom') == -1;
  */
 export const SAFARI_BUG_237906 =
   SAFARI &&
-  !!(
-    ua.indexOf('version/15.4') >= 0 ||
-    ua.match(/cpu (os|iphone os) 15_4 like mac os x/)
-  );
+  (ua.includes('version/15.4') ||
+    /cpu (os|iphone os) 15_4 like mac os x/.test(ua));
 
 /**
  * User agent string says we are dealing with a WebKit engine.
  * @type {boolean}
  */
-export const WEBKIT = ua.indexOf('webkit') !== -1 && ua.indexOf('edge') == -1;
+export const WEBKIT = ua.includes('webkit') && !ua.includes('edge');
 
 /**
  * User agent string says we are dealing with a Mac as platform.
  * @type {boolean}
  */
-export const MAC = ua.indexOf('macintosh') !== -1;
+export const MAC = ua.includes('macintosh');
 
 /**
  * The ratio between physical pixels and device-independent pixels

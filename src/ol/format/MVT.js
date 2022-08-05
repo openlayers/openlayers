@@ -262,7 +262,7 @@ class MVT extends FeatureFormat {
     const pbfLayers = pbf.readFields(layersPBFReader, {});
     const features = [];
     for (const name in pbfLayers) {
-      if (layers && layers.indexOf(name) == -1) {
+      if (layers && !layers.includes(name)) {
         continue;
       }
       const pbfLayer = pbfLayers[name];

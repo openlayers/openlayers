@@ -498,10 +498,10 @@ class WkbWriter {
    */
   writeWkbHeader(wkbType, srid) {
     wkbType %= 1000; // Assume 1000 is an upper limit for type ID
-    if (this.layout_.indexOf('Z') >= 0) {
+    if (this.layout_.includes('Z')) {
       wkbType += this.isEWKB_ ? 0x80000000 : 1000;
     }
-    if (this.layout_.indexOf('M') >= 0) {
+    if (this.layout_.includes('M')) {
       wkbType += this.isEWKB_ ? 0x40000000 : 2000;
     }
     if (this.isEWKB_ && Number.isInteger(srid)) {
@@ -864,7 +864,7 @@ class WKB extends FeatureFormat {
         options.dataProjection && getProjection(options.dataProjection);
       if (dataProjection) {
         const code = dataProjection.getCode();
-        if (code.indexOf('EPSG:') === 0) {
+        if (code.startsWith('EPSG:')) {
           srid = Number(code.substring(5));
         }
       }

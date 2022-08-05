@@ -24,7 +24,7 @@ export function jsonp(url, callback, opt_errback, opt_callbackParam) {
   script.async = true;
   script.src =
     url +
-    (url.indexOf('?') == -1 ? '?' : '&') +
+    (url.includes('?') ? '&' : '?') +
     (opt_callbackParam || 'callback') +
     '=' +
     key;
@@ -131,7 +131,7 @@ export function getJSON(url) {
  * @return {string} The full URL.
  */
 export function resolveUrl(base, url) {
-  if (url.indexOf('://') >= 0) {
+  if (url.includes('://')) {
     return url;
   }
   return new URL(url, base).href;

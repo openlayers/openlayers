@@ -110,7 +110,7 @@ class TopoJSON extends JSONFeature {
       const property = this.layerName_;
       let feature;
       for (const objectName in topoJSONFeatures) {
-        if (this.layers_ && this.layers_.indexOf(objectName) == -1) {
+        if (this.layers_ && !this.layers_.includes(objectName)) {
           continue;
         }
         if (topoJSONFeatures[objectName].type === 'GeometryCollection') {

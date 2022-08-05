@@ -143,7 +143,7 @@ export function createFromCapabilitiesMatrixSet(
         }
         // Fallback for tileMatrix identifiers that don't get prefixed
         // by their tileMatrixSet identifiers.
-        if (elt[identifierPropName].indexOf(':') === -1) {
+        if (!elt[identifierPropName].includes(':')) {
           return (
             matrixSet[identifierPropName] + ':' + elt[identifierPropName] ===
             elt_ml[matrixIdsPropName]

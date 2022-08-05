@@ -86,7 +86,7 @@ map.on(['click', 'pointermove'], function (event) {
     }
     const fid = feature.getId();
 
-    if (selectElement.value.indexOf('singleselect') === 0) {
+    if (selectElement.value.startsWith('singleselect')) {
       selection = {};
     }
     // add selected feature to lookup

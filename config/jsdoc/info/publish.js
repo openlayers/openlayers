@@ -34,7 +34,7 @@ exports.publish = function (data, opts) {
         return (
           this.meta &&
           this.meta.path &&
-          this.longname.indexOf('<anonymous>') !== 0 &&
+          !this.longname.startsWith('<anonymous>') &&
           this.longname !== 'module:ol'
         );
       },
@@ -59,7 +59,7 @@ exports.publish = function (data, opts) {
       if (
         constructor &&
         constructor.substr(-1) === '_' &&
-        constructor.indexOf('module:') === -1
+        !constructor.includes('module:')
       ) {
         assert.strictEqual(
           doc.inherited,

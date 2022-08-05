@@ -29,10 +29,10 @@ exports.handlers = {
         observable.name = name;
         observable.readonly =
           typeof observable.readonly == 'boolean' ? observable.readonly : true;
-        if (doclet.name.indexOf('get') === 0) {
+        if (doclet.name.startsWith('get')) {
           observable.type = doclet.returns[0].type;
           observable.description = doclet.returns[0].description;
-        } else if (doclet.name.indexOf('set') === 0) {
+        } else if (doclet.name.startsWith('set')) {
           observable.readonly = false;
         }
         if (doclet.stability) {
@@ -42,14 +42,14 @@ exports.handlers = {
           cls.observables = [];
         }
         observable = observables[doclet.observable];
-        if (observable.type && cls.observables.indexOf(observable) == -1) {
+        if (observable.type && !cls.observables.includes(observable)) {
           cls.observables.push(observable);
         }
         if (!cls.fires) {
           cls.fires = [];
         }
         event = 'module:ol/Object.ObjectEvent#event:change:' + name;
-        if (cls.fires.indexOf(event) == -1) {
+        if (!cls.fires.includes(event)) {
           cls.fires.push(event);
         }
       }

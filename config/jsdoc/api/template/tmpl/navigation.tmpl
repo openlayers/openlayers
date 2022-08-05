@@ -2,7 +2,7 @@
 var self = this;
 
 function toShortName(name) {
-    return name.indexOf('module:') === 0 ? name.split('/').pop() : name;
+    return name.startsWith('module:') ? name.split('/').pop() : name;
 }
 
 function getItemCssClass(type) {

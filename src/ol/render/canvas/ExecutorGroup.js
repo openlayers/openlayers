@@ -231,7 +231,7 @@ class ExecutorGroup {
           if (
             !declutteredFeatures ||
             (builderType !== 'Image' && builderType !== 'Text') ||
-            declutteredFeatures.indexOf(feature) !== -1
+            declutteredFeatures.includes(feature)
           ) {
             const idx = (indexes[i] - 3) / 4;
             const x = hitTolerance - (idx % contextSize);

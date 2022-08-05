@@ -195,11 +195,7 @@ class Zoomify extends TileImage {
     });
 
     let url = options.url;
-    if (
-      url &&
-      url.indexOf('{TileGroup}') == -1 &&
-      url.indexOf('{tileIndex}') == -1
-    ) {
+    if (url && !url.includes('{TileGroup}') && !url.includes('{tileIndex}')) {
       url += '{TileGroup}/{z}-{x}-{y}.jpg';
     }
     const urls = expandUrl(url);
