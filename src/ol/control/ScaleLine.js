@@ -39,7 +39,8 @@ const DEFAULT_DPI = 25.4 / 0.28;
 
 /**
  * @typedef {Object} Options
- * @property {string} [className='ol-scale-line'] CSS Class name.
+ * @property {string} [className] CSS class name. The default is `ol-scale-bar` when configured with
+ * `bar: true`. Otherwise the default is `ol-scale-line`.
  * @property {number} [minWidth=64] Minimum width in pixels at the OGC default dpi. The width will be
  * adjusted to match the dpi used.
  * @property {number} [maxWidth] Maximum width in pixels at the OGC default dpi. The width will be
