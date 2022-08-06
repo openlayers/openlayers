@@ -80,15 +80,11 @@ class ScaleLine extends Control {
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
 
-    const className =
-      options.className !== undefined
-        ? options.className
-        : options.bar
-        ? 'ol-scale-bar'
-        : 'ol-scale-line';
+    const element = document.createElement('div');
+    element.style.pointerEvents = 'none';
 
     super({
-      element: document.createElement('div'),
+      element: element,
       render: options.render,
       target: options.target,
     });
@@ -107,6 +103,13 @@ class ScaleLine extends Control {
      * @type {ScaleLineOnSignature<void>}
      */
     this.un;
+
+    const className =
+      options.className !== undefined
+        ? options.className
+        : options.bar
+        ? 'ol-scale-bar'
+        : 'ol-scale-line';
 
     /**
      * @private
