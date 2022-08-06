@@ -1023,7 +1023,7 @@ function createFeatureStyleFunction(
         name = /** @type {string} */ (feature.get('name'));
         drawName = drawName && !!name;
         // convert any html character codes
-        if (drawName && name.search(/&[^&]+;/) > -1) {
+        if (drawName && /&[^&]+;/.test(name)) {
           if (!TEXTAREA) {
             TEXTAREA = document.createElement('textarea');
           }
@@ -1274,17 +1274,17 @@ function iconStyleParser(node, objectStack) {
     anchorXUnits = hotSpot.xunits;
     anchorYUnits = hotSpot.yunits;
     anchorOrigin = hotSpot.origin;
-  } else if (/^http:\/\/maps\.(?:google|gstatic)\.com\//.test(src)) {
+  } else if (/^https?:\/\/maps\.(?:google|gstatic)\.com\//.test(src)) {
     // Google hotspots from https://kml4earth.appspot.com/icons.html#notes
-    if (/pushpin/.test(src)) {
+    if (src.includes('pushpin')) {
       anchor = DEFAULT_IMAGE_STYLE_ANCHOR;
       anchorXUnits = DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS;
       anchorYUnits = DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS;
-    } else if (/arrow-reverse/.test(src)) {
+    } else if (src.includes('arrow-reverse')) {
       anchor = [54, 42];
       anchorXUnits = DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS;
       anchorYUnits = DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS;
-    } else if (/paddle/.test(src)) {
+    } else if (src.includes('paddle')) {
       anchor = [32, 1];
       anchorXUnits = DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS;
       anchorYUnits = DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS;
