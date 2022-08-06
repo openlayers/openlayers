@@ -366,8 +366,11 @@ class ScaleLine extends Control {
    * @return {string} The stringified HTML of the scalebar.
    */
   createScaleBar(width, scale, suffix) {
+    const resolutionScale = this.getScaleForResolution();
     const mapScale =
-      '1 : ' + Math.round(this.getScaleForResolution()).toLocaleString();
+      resolutionScale < 1
+        ? Math.round(1 / resolutionScale).toLocaleString() + ' : 1'
+        : '1 : ' + Math.round(resolutionScale).toLocaleString();
     const steps = this.scaleBarSteps_;
     const stepWidth = width / steps;
     const scaleSteps = [this.createMarker('absolute')];
