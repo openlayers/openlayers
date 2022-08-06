@@ -47,7 +47,7 @@
   left: 8px;
 }
 
-.ol-scale-bar-inner > div {
+.ol-scale-bar-inner {
   display: flex;
 }
 

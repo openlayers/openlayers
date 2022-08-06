@@ -393,7 +393,7 @@ class ScaleLine extends Control {
         mapScale +
         '</div>'
       : '';
-    return `<div>${scaleBarText}${scaleSteps.join('')}</div>`;
+    return scaleBarText + scaleSteps.join('');
   }
 
   /**
@@ -453,7 +453,7 @@ class ScaleLine extends Control {
     );
     const dpi = this.dpi_ || DEFAULT_DPI;
     const inchesPerMeter = 1000 / 25.4;
-    return parseFloat(resolution.toString()) * inchesPerMeter * dpi;
+    return resolution * inchesPerMeter * dpi;
   }
 
   /**
