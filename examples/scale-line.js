@@ -7,7 +7,7 @@ import {ScaleLine, defaults as defaultControls} from '../src/ol/control.js';
 const scaleBarOptionsContainer = document.getElementById('scaleBarOptions');
 const unitsSelect = document.getElementById('units');
 const typeSelect = document.getElementById('type');
-const stepsSelect = document.getElementById('steps');
+const stepsRange = document.getElementById('steps');
 const scaleTextCheckbox = document.getElementById('showScaleText');
 const invertColorsCheckbox = document.getElementById('invertColors');
 
@@ -23,7 +23,7 @@ function scaleControl() {
     control = new ScaleLine({
       units: unitsSelect.value,
       bar: true,
-      steps: parseInt(stepsSelect.value, 10),
+      steps: parseInt(stepsRange.value, 10),
       text: scaleTextCheckbox.checked,
       minWidth: 140,
     });
@@ -61,6 +61,6 @@ function onInvertColorsChange() {
 }
 unitsSelect.addEventListener('change', onChangeUnit);
 typeSelect.addEventListener('change', reconfigureScaleLine);
-stepsSelect.addEventListener('change', reconfigureScaleLine);
+stepsRange.addEventListener('input', reconfigureScaleLine);
 scaleTextCheckbox.addEventListener('change', reconfigureScaleLine);
 invertColorsCheckbox.addEventListener('change', onInvertColorsChange);

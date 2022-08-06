@@ -2,6 +2,10 @@
   display: none;
 }
 
+input[type=range] {
+  vertical-align: middle;
+}
+
 .ol-scale-bar-inverted .ol-scale-singlebar-even {
   background-color: var(--ol-background-color);
 }

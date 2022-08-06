@@ -23,12 +23,8 @@ tags: "scale-line, openstreetmap"
 </select>
 
 <div id="scaleBarOptions">
-  <select id="steps">
-    <option value=2>2 steps</option>
-    <option value=4 selected>4 steps</option>
-    <option value=6>6 steps</option>
-    <option value=8>8 steps</option>
-  </select>
+  <label for="steps">Steps:</label>
+  <input id="steps" type="range" value="4" min="1" max="8">
 
   <label><input type="checkbox" id="showScaleText" checked> Show scale text</label>
 
