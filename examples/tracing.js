@@ -249,7 +249,7 @@ function addInteraction() {
   if (value !== 'None') {
     drawInteraction = new Draw({
       source: drawVector.getSource(),
-      type: typeSelect.value,
+      type: value,
     });
     drawInteraction.on('drawstart', () => {
       drawing = true;
