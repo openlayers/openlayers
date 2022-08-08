@@ -90,6 +90,9 @@ $(function () {
       if (currentItem) {
         const fa = currentItem.querySelector('.title > .fa');
         fa.classList.add('no-transition');
+        setTimeout(function () {
+          fa.classList.remove('no-transition');
+        }, 0);
       }
       doSearch(lastTerm || '');
 
@@ -97,9 +100,6 @@ $(function () {
       if (initialCurrent && initialCurrent.classList.contains('toggle-manual')) {
         search.manualToggle(search.$currentItem, initialCurrent.classList.contains('toggle-manual-show'));
       }
-      setTimeout(function () {
-        fa.classList.remove('no-transition');
-      }, 0);
     });
 
     return {
