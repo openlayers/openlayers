@@ -69,8 +69,8 @@ new Map({
   view: new View({
     center: [256 / 2, -256 / 2],
     resolution: 1,
-    devicePixelRatio: 2,
   }),
+  pixelRatio: 2,
 });
 
 render();
