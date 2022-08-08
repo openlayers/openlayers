@@ -262,6 +262,13 @@ export default class ExampleBuilder {
     });
   }
 
+  ensureNewLineAtEnd(source) {
+    if (source[source.length - 1] !== '\n') {
+      source += '\n';
+    }
+    return source;
+  }
+
   transformJsSource(source) {
     return (
       source
@@ -298,8 +305,7 @@ export default class ExampleBuilder {
     let jsSource = await fse.readFile(jsPath, {encoding: 'utf8'});
     jsSource = this.transformJsSource(this.cloakSource(jsSource, data.cloak));
     data.js = {
-      tag: `<script src="${this.common}.js"></script>
-        <script src="${jsName}"></script>`,
+      scripts: [`${this.common}.js`, jsName],
       source: jsSource,
     };
 
@@ -359,7 +365,7 @@ export default class ExampleBuilder {
     if (cssSource) {
       data.css = {
         tag: `<link rel="stylesheet" href="${cssName}">`,
-        source: cssSource,
+        source: this.ensureNewLineAtEnd(cssSource),
       };
       assets[cssName] = cssSource;
     }
