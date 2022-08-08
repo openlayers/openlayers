@@ -60,7 +60,7 @@ It's handy to have the [`src/ol/xml.js` source code](https://github.com/openlaye
 The `parserNS` argument to `parse` is an `Object` whose keys are XML namespaces and whose values are `Objects` whose keys are local element names and whose values are functions.  A simple example might look like this:
 
 ```js
-var parserNS = {
+const parserNS = {
   'http://my/first/namespace': {
     'elementLocalName': function(/* ... */) {
       // parse an <elementLocalName> element in the http://my/first/namespace namespace

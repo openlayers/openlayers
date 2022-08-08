@@ -90,24 +90,24 @@ export class VectorSourceEvent extends Event {
  * import {GeoJSON} from 'ol/format';
  * import {bbox} from 'ol/loadingstrategy';
  *
- * var vectorSource = new Vector({
+ * const vectorSource = new Vector({
  *   format: new GeoJSON(),
  *   loader: function(extent, resolution, projection, success, failure) {
- *      var proj = projection.getCode();
- *      var url = 'https://ahocevar.com/geoserver/wfs?service=WFS&' +
+ *      const proj = projection.getCode();
+ *      const url = 'https://ahocevar.com/geoserver/wfs?service=WFS&' +
  *          'version=1.1.0&request=GetFeature&typename=osm:water_areas&' +
  *          'outputFormat=application/json&srsname=' + proj + '&' +
  *          'bbox=' + extent.join(',') + ',' + proj;
- *      var xhr = new XMLHttpRequest();
+ *      const xhr = new XMLHttpRequest();
  *      xhr.open('GET', url);
- *      var onError = function() {
+ *      const onError = function() {
  *        vectorSource.removeLoadedExtent(extent);
  *        failure();
  *      }
  *      xhr.onerror = onError;
  *      xhr.onload = function() {
  *        if (xhr.status == 200) {
- *          var features = vectorSource.getFormat().readFeatures(xhr.responseText);
+ *          const features = vectorSource.getFormat().readFeatures(xhr.responseText);
  *          vectorSource.addFeatures(features);
  *          success(features);
  *        } else {
@@ -116,7 +116,7 @@ export class VectorSourceEvent extends Event {
  *      }
  *      xhr.send();
  *    },
- *    strategy: bbox
+ *    strategy: bbox,
  *  });
  * ```
  * @property {boolean} [overlaps=true] This source may have overlapping geometries.

@@ -190,17 +190,17 @@ function setLayerMapProperty(layer, map) {
  *     import TileLayer from 'ol/layer/Tile';
  *     import OSM from 'ol/source/OSM';
  *
- *     var map = new Map({
+ *     const map = new Map({
  *       view: new View({
  *         center: [0, 0],
- *         zoom: 1
+ *         zoom: 1,
  *       }),
  *       layers: [
  *         new TileLayer({
- *           source: new OSM()
- *         })
+ *           source: new OSM(),
+ *         }),
  *       ],
- *       target: 'map'
+ *       target: 'map',
  *     });
  *
  * The above snippet creates a map using a {@link module:ol/layer/Tile~TileLayer} to

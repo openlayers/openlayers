@@ -16,12 +16,12 @@ import {Map, View} from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import TileWMS from 'ol/source/TileWMS';
 
-var map = new Map({
+const map = new Map({
   target: 'map',
   view: new View({
     projection: 'EPSG:3857', //HERE IS THE VIEW PROJECTION
     center: [0, 0],
-    zoom: 2
+    zoom: 2,
   }),
   layers: [
     new TileLayer({
@@ -29,11 +29,11 @@ var map = new Map({
         projection: 'EPSG:4326', //HERE IS THE DATA SOURCE PROJECTION
         url: 'https://ahocevar.com/geoserver/wms',
         params: {
-          'LAYERS': 'ne:NE1_HR_LC_SR_W_DR'
-        }
-      })
-    })
-  ]
+          'LAYERS': 'ne:NE1_HR_LC_SR_W_DR',
+        },
+      }),
+    }),
+  ],
 });
 ```
 If a source (based on `ol/source/TileImage` or `ol/source/Image`) has a projection different from the current `ol/View`’s projection then the reprojection happens automatically under the hood.
@@ -60,7 +60,7 @@ proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
     '+towgs84=446.448,-125.157,542.06,0.15,0.247,0.842,-20.489 ' +
     '+units=m +no_defs');
 register(proj4);
-var proj27700 = getProjection('EPSG:27700');
+const proj27700 = getProjection('EPSG:27700');
 proj27700.setExtent([0, 0, 700000, 1300000]);
 ```
 
@@ -70,7 +70,7 @@ To switch the projection used to display the map you have to set a new `ol/View`
 map.setView(new View({
     projection: 'EPSG:27700',
     center: [400000, 650000],
-    zoom: 4
+    zoom: 4,
   }));
 ```
 

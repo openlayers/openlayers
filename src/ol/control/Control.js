@@ -30,7 +30,7 @@ import {removeNode} from '../dom.js';
  * This is the base class for controls. You can use it for simple custom
  * controls by creating the element with listeners, creating an instance:
  * ```js
- * var myControl = new Control({element: myElement});
+ * const myControl = new Control({element: myElement});
  * ```
  * and then adding this to the map.
  *

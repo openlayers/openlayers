@@ -87,7 +87,7 @@ class GeolocationError extends BaseEvent {
  *
  * Example:
  *
- *     var geolocation = new Geolocation({
+ *     const geolocation = new Geolocation({
  *       // take the projection to use from the map's view
  *       projection: view.getProjection()
  *     });
