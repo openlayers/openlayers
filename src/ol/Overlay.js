@@ -100,8 +100,9 @@ const Property = {
  *
  *     import Overlay from 'ol/Overlay';
  *
- *     var popup = new Overlay({
- *       element: document.getElementById('popup')
+ *     // ...
+ *     const popup = new Overlay({
+ *       element: document.getElementById('popup'),
  *     });
  *     popup.setPosition(coordinate);
  *     map.addOverlay(popup);

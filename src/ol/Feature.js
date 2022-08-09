@@ -53,20 +53,20 @@ import {listen, unlistenByKey} from './events.js';
  * import Polygon from 'ol/geom/Polygon';
  * import Point from 'ol/geom/Point';
  *
- * var feature = new Feature({
+ * const feature = new Feature({
  *   geometry: new Polygon(polyCoords),
  *   labelPoint: new Point(labelCoords),
- *   name: 'My Polygon'
+ *   name: 'My Polygon',
  * });
  *
  * // get the polygon geometry
- * var poly = feature.getGeometry();
+ * const poly = feature.getGeometry();
  *
  * // Render the feature as a point using the coordinates from labelPoint
  * feature.setGeometryName('labelPoint');
  *
  * // get the point geometry
- * var point = feature.getGeometry();
+ * const point = feature.getGeometry();
  * ```
  *
  * @api

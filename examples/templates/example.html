@@ -194,7 +194,7 @@
         const storageKey = 'ol-dismissed=-' + latestVersion;
         const dismissed = localStorage.getItem(storageKey) === 'true';
         if (branchSearch && !dismissed && /^v[0-9\.]*$/.test(branchSearch[1]) && '{{ olVersion }}' != latestVersion) {
-          var link = url.replace(branchSearch[0], '/latest/examples/');
+          const link = url.replace(branchSearch[0], '/latest/examples/');
           fetch(link, {method: 'head'}).then(function(response) {
             const a = document.getElementById('latest-link');
             a.href = response.status == 200 ? link : '../../latest/examples/';

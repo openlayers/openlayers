@@ -20,7 +20,7 @@ The script below constructs a map that is rendered in the `<div>` above, using t
 ```js
 import Map from 'ol/Map';
 
-var map = new Map({target: 'map'});
+const map = new Map({target: 'map'});
 ```
 
 ## View
@@ -32,7 +32,7 @@ import View from 'ol/View';
 
 map.setView(new View({
   center: [0, 0],
-  zoom: 2
+  zoom: 2,
 }));
 ```
 
@@ -48,7 +48,7 @@ To get remote data for a layer, OpenLayers uses `ol/source/Source` subclasses. T
 ```js
 import OSM from 'ol/source/OSM';
 
-var osmSource = OSM();
+const osmSource = OSM();
 ```
 
 ## Layer
@@ -63,7 +63,8 @@ A layer is a visual representation of data from a `source`. OpenLayers has four 
 ```js
 import TileLayer from 'ol/layer/Tile';
 
-var osmLayer = new TileLayer({source: osmSource});
+// ...
+const osmLayer = new TileLayer({source: osmSource});
 map.addLayer(osmLayer);
 ```
 
@@ -79,12 +80,12 @@ import TileLayer from 'ol/layer/Tile';
 
 new Map({
   layers: [
-    new TileLayer({source: new OSM()})
+    new TileLayer({source: new OSM()}),
   ],
   view: new View({
     center: [0, 0],
-    zoom: 2
+    zoom: 2,
   }),
-  target: 'map'
+  target: 'map',
 });
 ```

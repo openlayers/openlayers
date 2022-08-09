@@ -113,18 +113,18 @@ class ErrorEvent extends BaseEvent {
  * property (all layers must share the same vector source).  See the constructor options for
  * more detail.
  *
- *     var map = new Map({
+ *     const map = new Map({
  *       view: new View({
  *         center: [0, 0],
- *         zoom: 1
+ *         zoom: 1,
  *       }),
  *       layers: [
  *         new MapboxVectorLayer({
  *           styleUrl: 'mapbox://styles/mapbox/bright-v9',
- *           accessToken: 'your-mapbox-access-token-here'
- *         })
+ *           accessToken: 'your-mapbox-access-token-here',
+ *         }),
  *       ],
- *       target: 'map'
+ *       target: 'map',
  *     });
  *
  * On configuration or loading error, the layer will trigger an `'error'` event.  Listeners

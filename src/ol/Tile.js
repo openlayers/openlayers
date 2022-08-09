@@ -22,10 +22,10 @@ import {easeIn} from './easing.js';
  * import TileState from 'ol/TileState';
  *
  * source.setTileLoadFunction(function(tile, src) {
- *   var xhr = new XMLHttpRequest();
+ *   const xhr = new XMLHttpRequest();
  *   xhr.responseType = 'blob';
  *   xhr.addEventListener('loadend', function (evt) {
- *     var data = this.response;
+ *     const data = this.response;
  *     if (data !== undefined) {
  *       tile.getImage().src = URL.createObjectURL(data);
  *     } else {

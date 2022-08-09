@@ -110,12 +110,10 @@ function addSignatureTypes(f) {
 
 function shortenPaths(files, commonPrefix) {
   // always use forward slashes
-  const regexp = new RegExp('\\\\', 'g');
-
   Object.keys(files).forEach(function (file) {
     files[file].shortened = files[file].resolved
       .replace(commonPrefix, '')
-      .replace(regexp, '/');
+      .replaceAll('\\', '/');
   });
 
   return files;

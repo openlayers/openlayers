@@ -33,17 +33,17 @@ Below you'll find a complete working example.  Create a new file, copy in the co
     <h2>My Map</h2>
     <div id="map" class="map"></div>
     <script type="text/javascript">
-      var map = new ol.Map({
+      const map = new ol.Map({
         target: 'map',
         layers: [
           new ol.layer.Tile({
-            source: new ol.source.OSM()
-          })
+            source: new ol.source.OSM(),
+          }),
         ],
         view: new ol.View({
           center: ol.proj.fromLonLat([37.41, 8.82]),
-          zoom: 4
-        })
+          zoom: 4,
+        }),
       });
     </script>
   </body>
@@ -93,17 +93,17 @@ The map in the application is contained in a [`<div>` HTML element](https://en.w
 ### JavaScript to create a simple map
 
 ```js
-  var map = new ol.Map({
+  const map = new ol.Map({
     target: 'map',
     layers: [
       new ol.layer.Tile({
-        source: new ol.source.OSM()
-      })
+        source: new ol.source.OSM(),
+      }),
     ],
     view: new ol.View({
       center: ol.proj.fromLonLat([37.41, 8.82]),
-      zoom: 4
-    })
+      zoom: 4,
+    }),
   });
 ```
 
@@ -112,7 +112,7 @@ With this JavaScript code, a map object is created with an OSM layer zoomed on t
 The following line creates an OpenLayers `Map` object. Just by itself, this does nothing since there's no layers or interaction attached to it.
 
 ```js
-  var map = new ol.Map({ ... });
+  const map = new ol.Map({ ... });
 ```
 
 To attach the map object to the `<div>`, the map object takes a `target` into arguments. The value is the `id` of the `<div>`:
@@ -126,9 +126,9 @@ The `layers: [ ... ]` array is used to define the list of layers available in th
 ```js
     layers: [
       new ol.layer.Tile({
-        source: new ol.source.OSM()
-      })
-    ]
+        source: new ol.source.OSM(),
+      }),
+    ],
 ```
 
 Layers in OpenLayers are defined with a type (Image, Tile or Vector) which contains a source. The source is the protocol used to get the map tiles.
@@ -138,8 +138,8 @@ The next part of the `Map` object is the `View`. The view allows to specify the 
 ```js
     view: new ol.View({
       center: ol.proj.fromLonLat([37.41, 8.82]),
-      zoom: 4
-    })
+      zoom: 4,
+    }),
 ```
 
 You will notice that the `center` specified is in lon/lat coordinates (EPSG:4326). Since the only layer we use is in Spherical Mercator projection (EPSG:3857), we can reproject them on the fly to be able to zoom the map on the right coordinates.

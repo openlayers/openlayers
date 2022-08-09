@@ -136,15 +136,15 @@ function createMinion(operation) {
  */
 function createWorker(config, onMessage) {
   const lib = Object.keys(config.lib || {}).map(function (name) {
-    return 'var ' + name + ' = ' + config.lib[name].toString() + ';';
+    return 'const ' + name + ' = ' + config.lib[name].toString() + ';';
   });
 
   const lines = lib.concat([
-    'var __minion__ = (' + createMinion.toString() + ')(',
+    'const __minion__ = (' + createMinion.toString() + ')(',
     config.operation.toString(),
     ');',
     'self.addEventListener("message", function(event) {',
-    '  var buffer = __minion__(event.data);',
+    '  const buffer = __minion__(event.data);',
     '  self.postMessage({buffer: buffer, meta: event.data.meta}, [buffer]);',
     '});',
   ]);

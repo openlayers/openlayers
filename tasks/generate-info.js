@@ -69,7 +69,7 @@ function getPaths() {
     const walker = walk(sourceDir);
     walker.on('file', (root, stats, next) => {
       const sourcePath = path.join(root, stats.name);
-      if (/\.js$/.test(sourcePath)) {
+      if (sourcePath.endsWith('.js')) {
         paths.push(sourcePath);
       }
       next();

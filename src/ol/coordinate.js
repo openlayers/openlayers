@@ -27,7 +27,7 @@ import {padNumber} from './string.js';
  *
  *     import {add} from 'ol/coordinate';
  *
- *     var coord = [7.85, 47.983333];
+ *     const coord = [7.85, 47.983333];
  *     add(coord, [-2, 4]);
  *     // coord is now [5.85, 51.983333]
  *
@@ -121,18 +121,18 @@ export function closestOnSegment(coordinate, segment) {
  *
  *     import {createStringXY} from 'ol/coordinate';
  *
- *     var coord = [7.85, 47.983333];
- *     var stringifyFunc = createStringXY();
- *     var out = stringifyFunc(coord);
+ *     const coord = [7.85, 47.983333];
+ *     const stringifyFunc = createStringXY();
+ *     const out = stringifyFunc(coord);
  *     // out is now '8, 48'
  *
  * Example with explicitly specifying 2 fractional digits:
  *
  *     import {createStringXY} from 'ol/coordinate';
  *
- *     var coord = [7.85, 47.983333];
- *     var stringifyFunc = createStringXY(2);
- *     var out = stringifyFunc(coord);
+ *     const coord = [7.85, 47.983333];
+ *     const stringifyFunc = createStringXY(2);
+ *     const out = stringifyFunc(coord);
  *     // out is now '7.85, 47.98'
  *
  * @param {number} [opt_fractionDigits] The number of digits to include
@@ -201,18 +201,18 @@ export function degreesToStringHDMS(hemispheres, degrees, opt_fractionDigits) {
  *
  *     import {format} from 'ol/coordinate';
  *
- *     var coord = [7.85, 47.983333];
- *     var template = 'Coordinate is ({x}|{y}).';
- *     var out = format(coord, template);
+ *     const coord = [7.85, 47.983333];
+ *     const template = 'Coordinate is ({x}|{y}).';
+ *     const out = format(coord, template);
  *     // out is now 'Coordinate is (8|48).'
  *
  * Example explicitly specifying the fractional digits:
  *
  *     import {format} from 'ol/coordinate';
  *
- *     var coord = [7.85, 47.983333];
- *     var template = 'Coordinate is ({x}|{y}).';
- *     var out = format(coord, template, 2);
+ *     const coord = [7.85, 47.983333];
+ *     const template = 'Coordinate is ({x}|{y}).';
+ *     const out = format(coord, template, 2);
  *     // out is now 'Coordinate is (7.85|47.98).'
  *
  * @param {Coordinate} coordinate Coordinate.
@@ -257,8 +257,8 @@ export function equals(coordinate1, coordinate2) {
  *
  *     import {rotate} from 'ol/coordinate';
  *
- *     var coord = [7.85, 47.983333];
- *     var rotateRadians = Math.PI / 2; // 90 degrees
+ *     const coord = [7.85, 47.983333];
+ *     const rotateRadians = Math.PI / 2; // 90 degrees
  *     rotate(coord, rotateRadians);
  *     // coord is now [-47.983333, 7.85]
  *
@@ -285,8 +285,8 @@ export function rotate(coordinate, angle) {
  *
  *     import {scale as scaleCoordinate} from 'ol/coordinate';
  *
- *     var coord = [7.85, 47.983333];
- *     var scale = 1.2;
+ *     const coord = [7.85, 47.983333];
+ *     const scale = 1.2;
  *     scaleCoordinate(coord, scale);
  *     // coord is now [9.42, 57.5799996]
  *
@@ -340,16 +340,16 @@ export function squaredDistanceToSegment(coordinate, segment) {
  *
  *     import {toStringHDMS} from 'ol/coordinate';
  *
- *     var coord = [7.85, 47.983333];
- *     var out = toStringHDMS(coord);
+ *     const coord = [7.85, 47.983333];
+ *     const out = toStringHDMS(coord);
  *     // out is now '47° 58′ 60″ N 7° 50′ 60″ E'
  *
  * Example explicitly specifying 1 fractional digit:
  *
  *     import {toStringHDMS} from 'ol/coordinate';
  *
- *     var coord = [7.85, 47.983333];
- *     var out = toStringHDMS(coord, 1);
+ *     const coord = [7.85, 47.983333];
+ *     const out = toStringHDMS(coord, 1);
  *     // out is now '47° 58′ 60.0″ N 7° 50′ 60.0″ E'
  *
  * @param {Coordinate} coordinate Coordinate.
@@ -377,16 +377,16 @@ export function toStringHDMS(coordinate, opt_fractionDigits) {
  *
  *     import {toStringXY} from 'ol/coordinate';
  *
- *     var coord = [7.85, 47.983333];
- *     var out = toStringXY(coord);
+ *     const coord = [7.85, 47.983333];
+ *     const out = toStringXY(coord);
  *     // out is now '8, 48'
  *
  * Example explicitly specifying 1 fractional digit:
  *
  *     import {toStringXY} from 'ol/coordinate';
  *
- *     var coord = [7.85, 47.983333];
- *     var out = toStringXY(coord, 1);
+ *     const coord = [7.85, 47.983333];
+ *     const out = toStringXY(coord, 1);
  *     // out is now '7.8, 48.0'
  *
  * @param {Coordinate} coordinate Coordinate.

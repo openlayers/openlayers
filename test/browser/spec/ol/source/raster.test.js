@@ -527,9 +527,8 @@ where('Uint8ClampedArray').describe('Processor', function () {
         const pixel = pixels[0];
         const r = pixel[0];
         const g = pixel[1];
-        /* eslint-disable */
-        var nd = diff(r, g) / sum(r, g);
-        /* eslint-enable */
+        // eslint-disable-next-line no-undef
+        const nd = diff(r, g) / sum(r, g);
         const index = Math.round((255 * (nd + 1)) / 2);
         return [index, index, index, pixel[3]];
       };
