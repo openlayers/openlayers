@@ -170,7 +170,9 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
     <script src="./resources/prism/prism-1.20.0.min.js"></script>
     <script src="./resources/common.js"></script>
-    {{{ js.tag }}}
+{{#each js.scripts}}
+    <script src="{{{ . }}}"></script>
+{{/each}}
     <script>
       $('#tag-example-list').on('show.bs.modal', function (event) {
         const button = $(event.relatedTarget); // Button that triggered the modal

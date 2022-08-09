@@ -23,15 +23,8 @@ const exampleDirContents = fs
   .filter((name) => /^(?!index).*\.html$/.test(name))
   .map((name) => name.replace(/\.html$/, ''));
 
-let cachedPackageInfo = null;
-async function getPackageInfo() {
-  if (cachedPackageInfo) {
-    return cachedPackageInfo;
-  }
-  cachedPackageInfo = await fse.readJSON(
-    path.resolve(baseDir, '../../package.json')
-  );
-  return cachedPackageInfo;
+function getPackageInfo() {
+  return fse.readJSON(path.resolve(baseDir, '../../package.json'));
 }
 
 handlebars.registerHelper(
@@ -200,17 +193,15 @@ export default class ExampleBuilder {
     }
 
     const exampleData = await Promise.all(
-      names.map(async (name) => await this.parseExample(dir, name))
+      names.map((name) => this.parseExample(dir, name))
     );
 
-    const examples = exampleData.map((data) => {
-      return {
-        link: data.filename,
-        title: data.title,
-        shortdesc: data.shortdesc,
-        tags: data.tags,
-      };
-    });
+    const examples = exampleData.map((data) => ({
+      link: data.filename,
+      title: data.title,
+      shortdesc: data.shortdesc,
+      tags: data.tags,
+    }));
 
     examples.sort((a, b) =>
       a.title.localeCompare(b.title, 'en', {sensitivity: 'base'})
@@ -239,9 +230,10 @@ export default class ExampleBuilder {
       });
     });
 
+    const pkg = await getPackageInfo();
     await Promise.all(
       exampleData.map(async (data) => {
-        const newAssets = await this.render(data);
+        const newAssets = await this.render(data, pkg);
         for (const file in newAssets) {
           assets[file] = new RawSource(newAssets[file]);
         }
@@ -256,25 +248,25 @@ export default class ExampleBuilder {
     const htmlName = `${name}.html`;
     const htmlPath = path.join(dir, htmlName);
     const htmlSource = await fse.readFile(htmlPath, {encoding: 'utf8'});
+    const {attributes: data, body} = frontMatter(
+      this.ensureNewLineAtEnd(htmlSource)
+    );
+    assert(!!data.layout, `missing layout in ${htmlPath}`);
+    return Object.assign(data, {
+      contents: body,
+      filename: htmlName,
+      dir: dir,
+      name: name,
+      // process tags
+      tags: data.tags ? data.tags.replace(/[\s"]+/g, '').split(',') : [],
+    });
+  }
 
-    const jsName = `${name}.js`;
-    const jsPath = path.join(dir, jsName);
-    const jsSource = await fse.readFile(jsPath, {encoding: 'utf8'});
-
-    const {attributes, body} = frontMatter(htmlSource);
-    assert(!!attributes.layout, `missing layout in ${htmlPath}`);
-    const data = Object.assign(attributes, {contents: body});
-
-    const pkg = await getPackageInfo();
-    data.olVersion = pkg.version;
-    data.filename = htmlName;
-    data.dir = dir;
-    data.name = name;
-    data.jsSource = jsSource;
-
-    // process tags
-    data.tags = data.tags ? data.tags.replace(/[\s"]+/g, '').split(',') : [];
-    return data;
+  ensureNewLineAtEnd(source) {
+    if (source[source.length - 1] !== '\n') {
+      source += '\n';
+    }
+    return source;
   }
 
   transformJsSource(source) {
@@ -289,27 +281,31 @@ export default class ExampleBuilder {
     );
   }
 
+  /**
+   * @param {string} source Source file
+   * @param {Array<{key: string, value: string}>|undefined} cloak Replacement rules
+   * @return {string} The source with all keys replaced by value
+   */
   cloakSource(source, cloak) {
     if (cloak) {
       for (const entry of cloak) {
-        source = source.replace(new RegExp(entry.key, 'g'), entry.value);
+        source = source.replaceAll(entry.key, entry.value);
       }
     }
     return source;
   }
 
-  async render(data) {
+  async render(data, pkg) {
     const assets = {};
     const readOptions = {encoding: 'utf8'};
 
     // add in script tag
     const jsName = `${data.name}.js`;
-    const jsSource = this.transformJsSource(
-      this.cloakSource(data.jsSource, data.cloak)
-    );
+    const jsPath = path.join(data.dir, jsName);
+    let jsSource = await fse.readFile(jsPath, {encoding: 'utf8'});
+    jsSource = this.transformJsSource(this.cloakSource(jsSource, data.cloak));
     data.js = {
-      tag: `<script src="${this.common}.js"></script>
-        <script src="${jsName}"></script>`,
+      scripts: [`${this.common}.js`, jsName],
       source: jsSource,
     };
 
@@ -339,7 +335,7 @@ export default class ExampleBuilder {
       );
     }
 
-    const pkg = await getPackageInfo();
+    data.olVersion = pkg.version;
     data.pkgJson = JSON.stringify(
       {
         name: data.name,
@@ -369,14 +365,13 @@ export default class ExampleBuilder {
     if (cssSource) {
       data.css = {
         tag: `<link rel="stylesheet" href="${cssName}">`,
-        source: cssSource,
+        source: this.ensureNewLineAtEnd(cssSource),
       };
       assets[cssName] = cssSource;
     }
 
     // add additional resources
     if (data.resources) {
-      const pkg = await getPackageInfo();
       const localResources = [];
       const remoteResources = [];
       data.resources.forEach((resource) => {
