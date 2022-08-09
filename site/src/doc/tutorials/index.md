@@ -1,11 +1,10 @@
 ---
 title: Tutorials
-layout: doc.hbs
+layout: default.hbs
 ---
 
 # Tutorials
 
-* [Building an OpenLayers Application](bundle.html)
 * [Basic Concepts](concepts.html)
 * [Some Background on OpenLayers](background.html)
 * [Raster Reprojection](raster-reprojection.html)

@@ -1,6 +1,6 @@
 ---
 title: Frequently Asked Questions (FAQ)
-layout: doc.hbs
+layout: default.hbs
 ---
 
 # Frequently Asked Questions (FAQ)

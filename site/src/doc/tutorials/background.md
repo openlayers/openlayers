@@ -1,11 +1,11 @@
 ---
-title: Introduction
-layout: doc.hbs
+title: Background
+layout: default.hbs
 ---
 
-# Introduction
+# Background
 
-## Objectives
+## Overview
 
 OpenLayers is a modular, high-performance, feature-packed library for displaying and interacting with maps and geospatial data.
 
@@ -15,11 +15,9 @@ The library comes with built-in support for a wide range of commercial and free 
 
 OpenLayers is available as [`ol` npm package](https://npmjs.com/package/ol), which provides all modules of the officially supported [API](../../apidoc).
 
-## Renderers and Browser Support
+## Browser Support
 
-By default, OpenLayers uses a performance optimized Canvas renderer.
-
-OpenLayers runs on all modern browsers that support [HTML5](https://html.spec.whatwg.org/multipage/) and [ECMAScript 5](https://262.ecma-international.org/5.1/). This includes Chrome, Firefox, Safari and Edge. For older browsers and platforms like Internet Explorer (down to version 9) and Android 4.x, [polyfills](https://polyfill.io/), the application bundle needs to be transpiled (e.g. using [Babel](https://babeljs.io/)) and bundled with polyfills for `fetch`, `requestAnimationFrame`, `Element.prototype.classList`, `URL`, `TextDecoder` and `Number.isInteger`.
+OpenLayers runs on all modern browsers (with greater than 1% global usage).  This includes Chrome, Firefox, Safari and Edge. For older browsers, [polyfills](https://polyfill.io/) will likely need to be added.
 
 The library is intended for use on both desktop/laptop and mobile devices, and supports pointer and touch interactions.
 
