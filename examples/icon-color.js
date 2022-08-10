@@ -31,8 +31,6 @@ rome.setStyle(
     image: new Icon({
       color: '#BADA55',
       crossOrigin: 'anonymous',
-      // For Internet Explorer 11
-      imgSize: [20, 20],
       src: 'data/square.svg',
     }),
   })
@@ -64,8 +62,6 @@ paris.setStyle(
     image: new Icon({
       color: '#8959A8',
       crossOrigin: 'anonymous',
-      // For Internet Explorer 11
-      imgSize: [20, 20],
       src: 'data/dot.svg',
     }),
   })
@@ -75,8 +71,6 @@ berlin.setStyle(
   new Style({
     image: new Icon({
       crossOrigin: 'anonymous',
-      // For Internet Explorer 11
-      imgSize: [20, 20],
       src: 'data/dot.svg',
     }),
   })
