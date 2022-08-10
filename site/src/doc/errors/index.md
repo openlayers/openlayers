@@ -1,6 +1,6 @@
 ---
 title: Errors
-layout: doc.hbs
+layout: default.hbs
 ---
 
 # Errors

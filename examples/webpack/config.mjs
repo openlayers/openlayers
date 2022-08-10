@@ -69,8 +69,7 @@ export default {
     }),
     new CopyPlugin({
       patterns: [
-        {from: '../src/ol/ol.css', to: 'css'},
-        {from: '../site/site.css', to: 'css'},
+        {from: '../site/src/theme', to: 'theme'},
         {from: 'data', to: 'data'},
         {from: 'resources', to: 'resources'},
         {from: 'index.html', to: 'index.html'},

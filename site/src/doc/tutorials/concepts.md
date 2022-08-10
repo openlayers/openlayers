@@ -1,13 +1,13 @@
 ---
 title: Basic Concepts
-layout: doc.hbs
+layout: default.hbs
 ---
 
 # Basic Concepts
 
 ## Map
 
-The core component of OpenLayers is the map (`ol/Map`). It is rendered to a `target` container (e.g. a `div` element on the web page that contains the map). All map properties can either be configured at construction time, or by using setter methods, e.g. `setTarget()`.
+The core component of OpenLayers is the map (from the `ol/Map` module). It is rendered to a `target` container (e.g. a `div` element on the web page that contains the map). All map properties can either be configured at construction time, or by using setter methods, e.g. `setTarget()`.
 
 The markup below could be used to create a `<div>` that contains your map.
 
@@ -48,12 +48,12 @@ To get remote data for a layer, OpenLayers uses `ol/source/Source` subclasses. T
 ```js
 import OSM from 'ol/source/OSM';
 
-const osmSource = OSM();
+const source = OSM();
 ```
 
 ## Layer
 
-A layer is a visual representation of data from a `source`. OpenLayers has four basic types of layers:
+A layer is a visual representation of data from a source. OpenLayers has four basic types of layers:
 
  * `ol/layer/Tile` - Renders sources that provide tiled images in grids that are organized by zoom levels for specific resolutions.
  * `ol/layer/Image` - Renders sources that provide map images at arbitrary extents and resolutions.
@@ -64,8 +64,8 @@ A layer is a visual representation of data from a `source`. OpenLayers has four 
 import TileLayer from 'ol/layer/Tile';
 
 // ...
-const osmLayer = new TileLayer({source: osmSource});
-map.addLayer(osmLayer);
+const layer = new TileLayer({source: source});
+map.addLayer(layer);
 ```
 
 ## Putting it all together
