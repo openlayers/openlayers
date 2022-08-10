@@ -1,7 +1,15 @@
-
 #map {
   position: relative;
   height: 120px;
+}
+
+#map:fullscreen {
+  height: 100%;
+}
+
+#map:-webkit-full-screen {
+  height: 100%;
+  margin: 0;
 }
 
 #tagline {
