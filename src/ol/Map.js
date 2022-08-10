@@ -34,8 +34,8 @@ import {
   getForViewAndSize,
   isEmpty,
 } from './extent.js';
-import {defaults as defaultControls} from './control.js';
-import {defaults as defaultInteractions} from './interaction.js';
+import {defaults as defaultControls} from './control/defaults.js';
+import {defaults as defaultInteractions} from './interaction/defaults.js';
 import {fromUserCoordinate, toUserCoordinate} from './proj.js';
 import {getUid} from './util.js';
 import {hasArea} from './size.js';
@@ -115,12 +115,12 @@ import {removeNode} from './dom.js';
  * @typedef {Object} MapOptions
  * @property {Collection<import("./control/Control.js").default>|Array<import("./control/Control.js").default>} [controls]
  * Controls initially added to the map. If not specified,
- * {@link module:ol/control.defaults} is used.
+ * {@link module:ol/control/defaults.defaults} is used.
  * @property {number} [pixelRatio=window.devicePixelRatio] The ratio between
  * physical pixels and device-independent pixels (dips) on the device.
  * @property {Collection<import("./interaction/Interaction.js").default>|Array<import("./interaction/Interaction.js").default>} [interactions]
  * Interactions that are initially added to the map. If not specified,
- * {@link module:ol/interaction.defaults} is used.
+ * {@link module:ol/interaction/defaults.defaults} is used.
  * @property {HTMLElement|Document|string} [keyboardEventTarget] The element to
  * listen to keyboard events on. This determines when the `KeyboardPan` and
  * `KeyboardZoom` interactions trigger. For example, if this option is set to

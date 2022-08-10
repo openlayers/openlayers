@@ -34,7 +34,7 @@ if (/-dev$/.test(version)) {
 </dt>
 <dd class="<?js= (data.stability && data.stability !== 'stable') ? 'unstable' : '' ?>">
 
-<?js if (data.parent && data.parent.kind == 'module' && data.parent.name.split('ol/').length < 3) { ?>
+<?js if (data.parent && data.parent.kind == 'module') { ?>
   <pre class="prettyprint source"><code>import {<?js= data.name ?>} from '<?js= data.parent.name ?>';</code></pre>
 <?js } ?>
 
