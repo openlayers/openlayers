@@ -419,9 +419,6 @@ function defaultIconUrlFunction(href) {
  * geometry types, and into MultiPoint/MultiLineString/MultiPolygon if they are
  * all of the same type.
  *
- * Note that the KML format uses the URL() constructor. Older browsers such as IE
- * which do not support this will need a URL polyfill to be loaded before use.
- *
  * @api
  */
 class KML extends XMLFeature {

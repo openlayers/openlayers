@@ -36,16 +36,12 @@ export const GMLNS = 'http://www.opengis.net/gml';
 
 /**
  * A regular expression that matches if a string only contains whitespace
- * characters. It will e.g. match `''`, `' '`, `'\n'` etc. The non-breaking
- * space (0xa0) is explicitly included as IE doesn't include it in its
- * definition of `\s`.
- *
- * Information from `goog.string.isEmptyOrWhitespace`: https://github.com/google/closure-library/blob/e877b1e/closure/goog/string/string.js#L156-L160
+ * characters. It will e.g. match `''`, `' '`, `'\n'` etc.
  *
  * @const
  * @type {RegExp}
  */
-const ONLY_WHITESPACE_RE = /^[\s\xa0]*$/;
+const ONLY_WHITESPACE_RE = /^\s*$/;
 
 /**
  * @typedef {Object} Options

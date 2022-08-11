@@ -87,10 +87,6 @@ export class DragAndDropEvent extends Event {
  * @classdesc
  * Handles input of vector data by drag and drop.
  *
- * Note that the DragAndDrop interaction uses the TextDecoder() constructor if the supplied
- * combination of formats read both text string and ArrayBuffer sources. Older browsers such
- * as IE which do not support this will need a TextDecoder polyfill to be loaded before use.
- *
  * @api
  *
  * @fires DragAndDropEvent
