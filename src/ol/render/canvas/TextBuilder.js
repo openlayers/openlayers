@@ -58,6 +58,12 @@ class CanvasTextBuilder extends CanvasBuilder {
 
     /**
      * @private
+     * @type {import("../../style/Text.js").TextFunction}
+     */
+    this.textFunction_ = undefined;
+
+    /**
+     * @private
      * @type {string|Array<string>}
      */
     this.text_ = '';
@@ -164,6 +170,9 @@ class CanvasTextBuilder extends CanvasBuilder {
     const fillState = this.textFillState_;
     const strokeState = this.textStrokeState_;
     const textState = this.textState_;
+    if (this.textFunction_ && feature) {
+      this.text_ = this.textFunction_(feature) || '';
+    }
     if (this.text_ === '' || !textState || (!fillState && !strokeState)) {
       return;
     }
@@ -529,6 +538,7 @@ class CanvasTextBuilder extends CanvasBuilder {
   setTextStyle(textStyle, opt_sharedData) {
     let textState, fillState, strokeState;
     if (!textStyle) {
+      this.textFunction_ = undefined;
       this.text_ = '';
     } else {
       const textFillStyle = textStyle.getFill();
@@ -595,7 +605,14 @@ class CanvasTextBuilder extends CanvasBuilder {
       const textOffsetY = textStyle.getOffsetY();
       const textRotateWithView = textStyle.getRotateWithView();
       const textRotation = textStyle.getRotation();
-      this.text_ = textStyle.getText() || '';
+      const textText = textStyle.getText();
+      if (typeof textText === 'function') {
+        this.textFunction_ = textText;
+        this.text_ = '';
+      } else {
+        this.textFunction_ = undefined;
+        this.text_ = textText || '';
+      }
       this.textOffsetX_ = textOffsetX === undefined ? 0 : textOffsetX;
       this.textOffsetY_ = textOffsetY === undefined ? 0 : textOffsetY;
       this.textRotateWithView_ =

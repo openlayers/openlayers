@@ -3076,7 +3076,7 @@ function writePlacemark(node, feature, objectStack) {
       if (pointStyles.length && properties['name'] === undefined) {
         const textStyle = pointStyles[0].getText();
         if (textStyle) {
-          properties['name'] = textStyle.getText();
+          properties['name'] = textStyle.getTextFunction()(feature);
         }
       }
     }

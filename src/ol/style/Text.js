@@ -25,6 +25,13 @@ import {toSize} from '../size.js';
 const DEFAULT_FILL_COLOR = '#333';
 
 /**
+ * A function that takes an {@link module:ol/Feature~Feature} as argument and returns an
+ * string or string array that will be rendered and styled for the feature.
+ *
+ * @typedef {function(import("../Feature.js").FeatureLike): (string|Array<string>)} TextFunction
+ */
+
+/**
  * @typedef {Object} Options
  * @property {string} [font] Font style as CSS `font` value, see:
  * https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/font. Default is `'10px sans-serif'`
@@ -38,9 +45,10 @@ const DEFAULT_FILL_COLOR = '#333';
  * @property {number|import("../size.js").Size} [scale] Scale.
  * @property {boolean} [rotateWithView=false] Whether to rotate the text with the view.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
- * @property {string|Array<string>} [text] Text content or rich text content. For plain text provide a string, which can
- * contain line breaks (`\n`). For rich text provide an array of text/font tuples. A tuple consists of the text to
+ * @property {string|Array<string>|TextFunction} [text] Text content or rich text content. For plain text provide a string,
+ * which can contain line breaks (`\n`). For rich text provide an array of text/font tuples. A tuple consists of the text to
  * render and the font to use (or `''` to use the text style's font). A line break has to be a separate tuple (i.e. `'\n', ''`).
+ * Alternatively provide a function that gets the text or rich text from the feature.
  * **Example:** `['foo', 'bold 10px sans-serif', ' bar', 'italic 10px sans-serif', ' baz', '']` will yield "**foo** *bar* baz".
  * **Note:** Rich text is not supported for the immediate rendering API.
  * @property {CanvasTextAlign} [textAlign] Text alignment. Possible values: `'left'`, `'right'`, `'center'`, `'end'` or `'start'`.
@@ -106,7 +114,7 @@ class Text {
 
     /**
      * @private
-     * @type {string|Array<string>|undefined}
+     * @type {string|Array<string>|TextFunction|undefined}
      */
     this.text_ = options.text;
 
@@ -340,11 +348,26 @@ class Text {
 
   /**
    * Get the text to be rendered.
-   * @return {string|Array<string>|undefined} Text.
+   * @return {string|Array<string>|TextFunction|undefined} Text.
    * @api
    */
   getText() {
     return this.text_;
+  }
+
+  /**
+   * Get the function used to generate a text for rendering.
+   * @return {!TextFunction} Function that is called with a feature
+   * and returns the text to render.
+   * @api
+   */
+  getTextFunction() {
+    if (typeof this.text_ === 'function') {
+      return this.text_;
+    } else {
+      const text = this.text_;
+      return (f) => text;
+    }
   }
 
   /**
@@ -515,7 +538,7 @@ class Text {
   /**
    * Set the text.
    *
-   * @param {string|Array<string>|undefined} text Text.
+   * @param {string|Array<string>|TextFunction|undefined} text Text.
    * @api
    */
   setText(text) {
