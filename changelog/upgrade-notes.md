@@ -26,6 +26,10 @@ The control will now by default keep displaying the last mouse position when the
 
 The `PluggableMap` class has been removed.  If you want to create a custom map class, extend the `Map` class instead.
 
+#### ol/style/Icon and ol/style/RegularShape
+
+`ol/style/Image` and subclasses `displacement` is no longer scaled with the image.  If you previously expected this unintended behavior you should now increase the displacement when setting the scale.
+
 ### 6.15.0
 
 #### Deprecated `tilePixelRatio` option for data tile sources.

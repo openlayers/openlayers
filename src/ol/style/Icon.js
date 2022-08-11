@@ -293,7 +293,13 @@ class Icon extends ImageStyle {
       this.normalizedAnchor_ = anchor;
     }
     const displacement = this.getDisplacement();
-    return [anchor[0] - displacement[0], anchor[1] + displacement[1]];
+    const scale = this.getScaleArray();
+    // anchor is scaled by renderer but displacement should not be scaled
+    // so divide by scale here
+    return [
+      anchor[0] - displacement[0] / scale[0],
+      anchor[1] + displacement[1] / scale[1],
+    ];
   }
 
   /**
