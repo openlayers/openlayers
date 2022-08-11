@@ -34,8 +34,9 @@ if (/-dev$/.test(version)) {
 </dt>
 <dd class="<?js= (data.stability && data.stability !== 'stable') ? 'unstable' : '' ?>">
 
-<?js if (data.parent && data.parent.kind == 'module' && data.parent.name.split('ol/').length < 3) { ?>
-  <pre class="prettyprint source"><code>import {<?js= data.name ?>} from '<?js= data.parent.name ?>';</code></pre>
+<?js if (data.parent && data.parent.kind == 'module') { ?>
+    <?js const importName = data.isDefaultExport ? data.name : `{${data.name}}`; ?>
+    <pre class="prettyprint source"><code>import <?js= importName ?> from '<?js= data.parent.name ?>';</code></pre>
 <?js } ?>
 
     <?js if (data.description) { ?>

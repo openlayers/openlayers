@@ -37,7 +37,7 @@
     <div class="card h-100 bg-light">
       <div class="card-body">
         <h4 class="card-title">Controls</h4>
-        <a href="module-ol_control.html#.defaults">Map default controls</a><br>
+        <a href="module-ol_control_defaults#.defaults">Map default controls</a><br>
         <a href="module-ol_control_Control-Control.html">All controls</a>
       </div>
     </div>
@@ -46,7 +46,7 @@
     <div class="card h-100 bg-light">
       <div class="card-body">
         <h4 class="card-title">Interactions</h4>
-        <a href="module-ol_interaction.html#~defaults">Map default interactions</a><br>
+        <a href="module-ol_interaction_defaults#.defaults">Map default interactions</a><br>
         Interactions for <a href="module-ol_Feature-Feature.html">vector features</a>
         <ul><li><a href="module-ol_interaction_Select-Select.html">ol/interaction/Select</a></li>
           <li><a href="module-ol_interaction_Draw-Draw.html">ol/interaction/Draw</a></li>
