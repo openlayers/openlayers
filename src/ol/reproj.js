@@ -64,7 +64,7 @@ function verifyBrokenDiagonalRendering(data, offset) {
  * Determines if the current browser configuration can render triangular clip regions correctly.
  * This value is cached so the function is only expensive the first time called.
  * Firefox on Windows (as of now) does not if HWA is enabled. See https://bugzilla.mozilla.org/show_bug.cgi?id=1606976
- * IE also doesn't. Chrome works, and everything seems to work on OSX and Android. This function caches the
+ * Chrome works, and everything seems to work on OSX and Android. This function caches the
  * result. I suppose that it is conceivably possible that a browser might flip modes while the app is
  * running, but lets hope not.
  *
