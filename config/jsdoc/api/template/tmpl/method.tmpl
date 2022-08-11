@@ -35,7 +35,8 @@ if (/-dev$/.test(version)) {
 <dd class="<?js= (data.stability && data.stability !== 'stable') ? 'unstable' : '' ?>">
 
 <?js if (data.parent && data.parent.kind == 'module') { ?>
-  <pre class="prettyprint source"><code>import {<?js= data.name ?>} from '<?js= data.parent.name ?>';</code></pre>
+    <?js const importName = data.isDefaultExport ? data.name : `{${data.name}}`; ?>
+    <pre class="prettyprint source"><code>import <?js= importName ?> from '<?js= data.parent.name ?>';</code></pre>
 <?js } ?>
 
     <?js if (data.description) { ?>
