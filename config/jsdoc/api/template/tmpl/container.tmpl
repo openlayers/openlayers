@@ -162,7 +162,7 @@
         var methods = self.find({kind: 'function', memberof: title === 'Global' ? {isUndefined: true} : doc.longname});
         if (methods && methods.length && methods.forEach) {
     ?>
-        <h3 class="subsection-title">Methods</h3>
+        <h3 class="subsection-title"><?js= doc.kind === 'module' ? 'Functions' : 'Methods' ?></h3>
 
         <dl><?js methods.forEach(function(m) { ?>
             <?js m.parent = doc ?>

@@ -14,7 +14,7 @@ if (/-dev$/.test(version)) {
         <div class="anchor" id="<?js= id ?>">
         </div>
         <h4 class="name">
-            <?js= data.attribs + (kind === 'class' ? 'new ' : '') + (data.scope === 'static' ? longname : name) + (kind !== 'event' ? data.signature : '') ?>
+            <?js= data.attribs + (kind === 'class' ? 'new ' : '') + this.getShortName(longname) + (kind !== 'event' ? data.signature : '') ?>
             <?js if (data.inherited || data.inherits) { ?>
                 <span class="inherited"><?js= this.linkto(data.inherits, 'inherited') ?></span>
             <?js } ?>

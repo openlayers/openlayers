@@ -597,6 +597,7 @@ exports.publish = function (taffyData, opts, tutorials) {
   // add template helpers
   view.find = find;
   view.linkto = linkto;
+  view.getShortName = getShortName;
   view.resolveAuthorLinks = resolveAuthorLinks;
   view.tutoriallink = tutoriallink;
   view.htmlsafe = htmlsafe;
