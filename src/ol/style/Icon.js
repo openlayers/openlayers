@@ -49,8 +49,8 @@ import {getUid} from '../util.js';
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
  * @property {import("../size.js").Size} [size] Icon size in pixel. Can be used together with `offset` to define the
  * sub-rectangle to use from the origin (sprite) icon image.
- * @property {import("../size.js").Size} [imgSize] Image size in pixels. Only required if `img` is set and `src` is not, and
- * for SVG images in Internet Explorer 11. The provided `imgSize` needs to match the actual size of the image.
+ * @property {import("../size.js").Size} [imgSize] Image size in pixels. Only required if `img` is set and `src` is not.
+ * The provided `imgSize` needs to match the actual size of the image.
  * @property {string} [src] Image source URI.
  * @property {"declutter"|"obstacle"|"none"|undefined} [declutterMode] Declutter mode
  */
