@@ -121,13 +121,13 @@ class Lexer {
 
   /**
    * @param {string} c Character.
-   * @param {boolean} [opt_decimal] Whether the string number
+   * @param {boolean} [decimal] Whether the string number
    *     contains a dot, i.e. is a decimal number.
    * @return {boolean} Whether the character is numeric.
    * @private
    */
-  isNumeric_(c, opt_decimal) {
-    const decimal = opt_decimal !== undefined ? opt_decimal : false;
+  isNumeric_(c, decimal) {
+    decimal = decimal !== undefined ? decimal : false;
     return (c >= '0' && c <= '9') || (c == '.' && !decimal);
   }
 
@@ -601,12 +601,12 @@ class Parser {
  */
 class WKT extends TextFeature {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
+  constructor(options) {
     super();
 
-    const options = opt_options ? opt_options : {};
+    options = options ? options : {};
 
     /**
      * Split GeometryCollection into multiple features.
@@ -633,11 +633,11 @@ class WKT extends TextFeature {
   /**
    * @protected
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {import("../Feature.js").default} Feature.
    */
-  readFeatureFromText(text, opt_options) {
-    const geom = this.readGeometryFromText(text, opt_options);
+  readFeatureFromText(text, options) {
+    const geom = this.readGeometryFromText(text, options);
     const feature = new Feature();
     feature.setGeometry(geom);
     return feature;
@@ -645,13 +645,13 @@ class WKT extends TextFeature {
 
   /**
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
    * @return {Array<Feature>} Features.
    */
-  readFeaturesFromText(text, opt_options) {
+  readFeaturesFromText(text, options) {
     let geometries = [];
-    const geometry = this.readGeometryFromText(text, opt_options);
+    const geometry = this.readGeometryFromText(text, options);
     if (this.splitCollection_ && geometry.getType() == 'GeometryCollection') {
       geometries = /** @type {GeometryCollection} */ (
         geometry
@@ -670,55 +670,55 @@ class WKT extends TextFeature {
 
   /**
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
    * @return {import("../geom/Geometry.js").default} Geometry.
    */
-  readGeometryFromText(text, opt_options) {
+  readGeometryFromText(text, options) {
     const geometry = this.parse_(text);
-    return transformGeometryWithOptions(geometry, false, opt_options);
+    return transformGeometryWithOptions(geometry, false, options);
   }
 
   /**
    * @param {import("../Feature.js").default} feature Features.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+   * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @protected
    * @return {string} Text.
    */
-  writeFeatureText(feature, opt_options) {
+  writeFeatureText(feature, options) {
     const geometry = feature.getGeometry();
     if (geometry) {
-      return this.writeGeometryText(geometry, opt_options);
+      return this.writeGeometryText(geometry, options);
     }
     return '';
   }
 
   /**
    * @param {Array<import("../Feature.js").default>} features Features.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+   * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @protected
    * @return {string} Text.
    */
-  writeFeaturesText(features, opt_options) {
+  writeFeaturesText(features, options) {
     if (features.length == 1) {
-      return this.writeFeatureText(features[0], opt_options);
+      return this.writeFeatureText(features[0], options);
     }
     const geometries = [];
     for (let i = 0, ii = features.length; i < ii; ++i) {
       geometries.push(features[i].getGeometry());
     }
     const collection = new GeometryCollection(geometries);
-    return this.writeGeometryText(collection, opt_options);
+    return this.writeGeometryText(collection, options);
   }
 
   /**
    * @param {import("../geom/Geometry.js").default} geometry Geometry.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+   * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @protected
    * @return {string} Text.
    */
-  writeGeometryText(geometry, opt_options) {
-    return encode(transformGeometryWithOptions(geometry, true, opt_options));
+  writeGeometryText(geometry, options) {
+    return encode(transformGeometryWithOptions(geometry, true, options));
   }
 }
 

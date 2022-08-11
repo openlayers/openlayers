@@ -86,10 +86,10 @@ const Property = {
  */
 class BaseVectorLayer extends Layer {
   /**
-   * @param {Options<VectorSourceType>} [opt_options] Options.
+   * @param {Options<VectorSourceType>} [options] Options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
     const baseOptions = Object.assign({}, options);
 
@@ -256,25 +256,25 @@ class BaseVectorLayer extends Layer {
    * using the `Style` and symbolizer constructors (`Fill`, `Stroke`, etc.).  See the documentation
    * for the [flat style types]{@link module:ol/style/flat~FlatStyle} to see what properties are supported.
    *
-   * @param {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike|null} [opt_style] Layer style.
+   * @param {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike|null} [style] Layer style.
    * @api
    */
-  setStyle(opt_style) {
+  setStyle(style) {
     /**
      * @type {import("../style/Style.js").StyleLike|null}
      */
-    let style;
+    let styleLike;
 
-    if (opt_style === undefined) {
-      style = createDefaultStyle;
-    } else if (opt_style === null) {
-      style = null;
-    } else if (typeof opt_style === 'function') {
-      style = opt_style;
-    } else if (opt_style instanceof Style) {
-      style = opt_style;
-    } else if (Array.isArray(opt_style)) {
-      const len = opt_style.length;
+    if (style === undefined) {
+      styleLike = createDefaultStyle;
+    } else if (style === null) {
+      styleLike = null;
+    } else if (typeof style === 'function') {
+      styleLike = style;
+    } else if (style instanceof Style) {
+      styleLike = style;
+    } else if (Array.isArray(style)) {
+      const len = style.length;
 
       /**
        * @type {Array<Style>}
@@ -282,21 +282,21 @@ class BaseVectorLayer extends Layer {
       const styles = new Array(len);
 
       for (let i = 0; i < len; ++i) {
-        const s = opt_style[i];
+        const s = style[i];
         if (s instanceof Style) {
           styles[i] = s;
         } else {
           styles[i] = toStyle(s);
         }
       }
-      style = styles;
+      styleLike = styles;
     } else {
-      style = toStyle(opt_style);
+      styleLike = toStyle(style);
     }
 
-    this.style_ = style;
+    this.style_ = styleLike;
     this.styleFunction_ =
-      opt_style === null ? undefined : toStyleFunction(this.style_);
+      style === null ? undefined : toStyleFunction(this.style_);
     this.changed();
   }
 }

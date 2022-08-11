@@ -34,17 +34,17 @@ import {inflateEnds} from '../geom/flat/orient.js';
  * @classdesc
  * Feature format for reading data in the Mapbox MVT format.
  *
- * @param {Options} [opt_options] Options.
+ * @param {Options} [options] Options.
  * @api
  */
 class MVT extends FeatureFormat {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
+  constructor(options) {
     super();
 
-    const options = opt_options ? opt_options : {};
+    options = options ? options : {};
 
     /**
      * @type {Projection}
@@ -245,15 +245,13 @@ class MVT extends FeatureFormat {
    * Read all features.
    *
    * @param {ArrayBuffer} source Source.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {Array<import("../Feature.js").FeatureLike>} Features.
    * @api
    */
-  readFeatures(source, opt_options) {
+  readFeatures(source, options) {
     const layers = this.layers_;
-    const options = /** @type {import("./Feature.js").ReadOptions} */ (
-      this.adaptOptions(opt_options)
-    );
+    options = this.adaptOptions(options);
     const dataProjection = get(options.dataProjection);
     dataProjection.setWorldExtent(options.extent);
     options.dataProjection = dataProjection;

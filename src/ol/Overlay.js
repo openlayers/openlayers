@@ -402,10 +402,10 @@ class Overlay extends BaseObject {
   /**
    * Pan the map so that the overlay is entirely visible in the current viewport
    * (if necessary).
-   * @param {PanIntoViewOptions} [opt_panIntoViewOptions] Options for the pan action
+   * @param {PanIntoViewOptions} [panIntoViewOptions] Options for the pan action
    * @api
    */
-  panIntoView(opt_panIntoViewOptions) {
+  panIntoView(panIntoViewOptions) {
     const map = this.getMap();
 
     if (!map || !map.getTargetElement() || !this.get(Property.POSITION)) {
@@ -419,7 +419,7 @@ class Overlay extends BaseObject {
       outerHeight(element),
     ]);
 
-    const panIntoViewOptions = opt_panIntoViewOptions || {};
+    panIntoViewOptions = panIntoViewOptions || {};
 
     const myMargin =
       panIntoViewOptions.margin === undefined ? 20 : panIntoViewOptions.margin;

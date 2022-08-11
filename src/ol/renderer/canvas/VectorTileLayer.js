@@ -730,7 +730,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {number} squaredTolerance Squared tolerance.
    * @param {import("../../style/Style.js").default|Array<import("../../style/Style.js").default>} styles The style or array of styles.
    * @param {import("../../render/canvas/BuilderGroup.js").default} builderGroup Replay group.
-   * @param {import("../../render/canvas/BuilderGroup.js").default} [opt_declutterBuilderGroup] Builder group for decluttering.
+   * @param {import("../../render/canvas/BuilderGroup.js").default} [declutterBuilderGroup] Builder group for decluttering.
    * @return {boolean} `true` if an image is loading.
    */
   renderFeature(
@@ -738,7 +738,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     squaredTolerance,
     styles,
     builderGroup,
-    opt_declutterBuilderGroup
+    declutterBuilderGroup
   ) {
     if (!styles) {
       return false;
@@ -754,7 +754,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
             squaredTolerance,
             this.boundHandleStyleImageChange_,
             undefined,
-            opt_declutterBuilderGroup
+            declutterBuilderGroup
           ) || loading;
       }
     } else {
@@ -765,7 +765,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         squaredTolerance,
         this.boundHandleStyleImageChange_,
         undefined,
-        opt_declutterBuilderGroup
+        declutterBuilderGroup
       );
     }
     return loading;

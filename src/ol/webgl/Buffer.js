@@ -40,10 +40,10 @@ export const BufferUsage = {
 class WebGLArrayBuffer {
   /**
    * @param {number} type Buffer type, either ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER.
-   * @param {number} [opt_usage] Intended usage, either `STATIC_DRAW`, `STREAM_DRAW` or `DYNAMIC_DRAW`.
+   * @param {number} [usage] Intended usage, either `STATIC_DRAW`, `STREAM_DRAW` or `DYNAMIC_DRAW`.
    * Default is `DYNAMIC_DRAW`.
    */
-  constructor(type, opt_usage) {
+  constructor(type, usage) {
     /**
      * @private
      * @type {Float32Array|Uint32Array}
@@ -62,7 +62,7 @@ class WebGLArrayBuffer {
      * @private
      * @type {number}
      */
-    this.usage = opt_usage !== undefined ? opt_usage : BufferUsage.STATIC_DRAW;
+    this.usage = usage !== undefined ? usage : BufferUsage.STATIC_DRAW;
   }
 
   /**

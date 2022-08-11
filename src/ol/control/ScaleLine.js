@@ -75,10 +75,10 @@ const DEFAULT_DPI = 25.4 / 0.28;
  */
 class ScaleLine extends Control {
   /**
-   * @param {Options} [opt_options] Scale line options.
+   * @param {Options} [options] Scale line options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
     const element = document.createElement('div');
     element.style.pointerEvents = 'none';

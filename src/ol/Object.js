@@ -89,9 +89,9 @@ export class ObjectEvent extends Event {
  */
 class BaseObject extends Observable {
   /**
-   * @param {Object<string, *>} [opt_values] An object with key-value pairs.
+   * @param {Object<string, *>} [values] An object with key-value pairs.
    */
-  constructor(opt_values) {
+  constructor(values) {
     super();
 
     /***
@@ -121,8 +121,8 @@ class BaseObject extends Observable {
      */
     this.values_ = null;
 
-    if (opt_values !== undefined) {
-      this.setProperties(opt_values);
+    if (values !== undefined) {
+      this.setProperties(values);
     }
   }
 
@@ -201,12 +201,12 @@ class BaseObject extends Observable {
    * Sets a value.
    * @param {string} key Key name.
    * @param {*} value Value.
-   * @param {boolean} [opt_silent] Update without triggering an event.
+   * @param {boolean} [silent] Update without triggering an event.
    * @api
    */
-  set(key, value, opt_silent) {
+  set(key, value, silent) {
     const values = this.values_ || (this.values_ = {});
-    if (opt_silent) {
+    if (silent) {
       values[key] = value;
     } else {
       const oldValue = values[key];
@@ -221,12 +221,12 @@ class BaseObject extends Observable {
    * Sets a collection of key-value pairs.  Note that this changes any existing
    * properties and adds new ones (it does not remove any existing properties).
    * @param {Object<string, *>} values Values.
-   * @param {boolean} [opt_silent] Update without triggering an event.
+   * @param {boolean} [silent] Update without triggering an event.
    * @api
    */
-  setProperties(values, opt_silent) {
+  setProperties(values, silent) {
     for (const key in values) {
-      this.set(key, values[key], opt_silent);
+      this.set(key, values[key], silent);
     }
   }
 
@@ -245,17 +245,17 @@ class BaseObject extends Observable {
   /**
    * Unsets a property.
    * @param {string} key Key name.
-   * @param {boolean} [opt_silent] Unset without triggering an event.
+   * @param {boolean} [silent] Unset without triggering an event.
    * @api
    */
-  unset(key, opt_silent) {
+  unset(key, silent) {
     if (this.values_ && key in this.values_) {
       const oldValue = this.values_[key];
       delete this.values_[key];
       if (isEmpty(this.values_)) {
         this.values_ = null;
       }
-      if (!opt_silent) {
+      if (!silent) {
         this.notify(key, oldValue);
       }
     }

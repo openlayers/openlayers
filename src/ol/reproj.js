@@ -200,8 +200,8 @@ export function calculateSourceExtentResolution(
  * @param {import("./reproj/Triangulation.js").default} triangulation Calculated triangulation.
  * @param {Array<ImageExtent>} sources Array of sources.
  * @param {number} gutter Gutter of the sources.
- * @param {boolean} [opt_renderEdges] Render reprojection edges.
- * @param {boolean} [opt_interpolate] Use linear interpolation when resampling.
+ * @param {boolean} [renderEdges] Render reprojection edges.
+ * @param {boolean} [interpolate] Use linear interpolation when resampling.
  * @return {HTMLCanvasElement} Canvas with reprojected data.
  */
 export function render(
@@ -215,8 +215,8 @@ export function render(
   triangulation,
   sources,
   gutter,
-  opt_renderEdges,
-  opt_interpolate
+  renderEdges,
+  interpolate
 ) {
   const context = createCanvasContext2D(
     Math.round(pixelRatio * width),
@@ -224,7 +224,7 @@ export function render(
     canvasPool
   );
 
-  if (!opt_interpolate) {
+  if (!interpolate) {
     context.imageSmoothingEnabled = false;
   }
 
@@ -252,7 +252,7 @@ export function render(
     Math.round((pixelRatio * canvasHeightInUnits) / sourceResolution)
   );
 
-  if (!opt_interpolate) {
+  if (!interpolate) {
     stitchContext.imageSmoothingEnabled = false;
   }
 
@@ -351,7 +351,7 @@ export function render(
     context.save();
     context.beginPath();
 
-    if (isBrokenDiagonalRendering() || !opt_interpolate) {
+    if (isBrokenDiagonalRendering() || !interpolate) {
       // Make sure that all lines are horizontal or vertical
       context.moveTo(u1, v1);
       // This is the diagonal line. Do it in 4 steps
@@ -405,7 +405,7 @@ export function render(
     context.restore();
   });
 
-  if (opt_renderEdges) {
+  if (renderEdges) {
     context.save();
 
     context.globalCompositeOperation = 'source-over';

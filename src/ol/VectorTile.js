@@ -11,10 +11,10 @@ class VectorTile extends Tile {
    * @param {string} src Data source url.
    * @param {import("./format/Feature.js").default} format Feature format.
    * @param {import("./Tile.js").LoadFunction} tileLoadFunction Tile load function.
-   * @param {import("./Tile.js").Options} [opt_options] Tile options.
+   * @param {import("./Tile.js").Options} [options] Tile options.
    */
-  constructor(tileCoord, state, src, format, tileLoadFunction, opt_options) {
-    super(tileCoord, state, opt_options);
+  constructor(tileCoord, state, src, format, tileLoadFunction, options) {
+    super(tileCoord, state, options);
 
     /**
      * Extent of this tile; set by the source.

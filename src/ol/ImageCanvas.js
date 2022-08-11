@@ -19,12 +19,11 @@ class ImageCanvas extends ImageBase {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {HTMLCanvasElement} canvas Canvas.
-   * @param {Loader} [opt_loader] Optional loader function to
+   * @param {Loader} [loader] Optional loader function to
    *     support asynchronous canvas drawing.
    */
-  constructor(extent, resolution, pixelRatio, canvas, opt_loader) {
-    const state =
-      opt_loader !== undefined ? ImageState.IDLE : ImageState.LOADED;
+  constructor(extent, resolution, pixelRatio, canvas, loader) {
+    const state = loader !== undefined ? ImageState.IDLE : ImageState.LOADED;
 
     super(extent, resolution, pixelRatio, state);
 
@@ -33,7 +32,7 @@ class ImageCanvas extends ImageBase {
      * @type {?Loader}
      * @private
      */
-    this.loader_ = opt_loader !== undefined ? opt_loader : null;
+    this.loader_ = loader !== undefined ? loader : null;
 
     /**
      * @private

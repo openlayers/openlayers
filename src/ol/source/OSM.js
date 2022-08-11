@@ -52,10 +52,10 @@ export const ATTRIBUTION =
  */
 class OSM extends XYZ {
   /**
-   * @param {Options} [opt_options] Open Street Map options.
+   * @param {Options} [options] Open Street Map options.
    */
-  constructor(opt_options) {
-    const options = opt_options || {};
+  constructor(options) {
+    options = options || {};
 
     let attributions;
     if (options.attributions !== undefined) {

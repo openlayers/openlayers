@@ -10,11 +10,11 @@ import {getUid} from './util.js';
  * @param {string} url Request url. A 'callback' query parameter will be
  *     appended.
  * @param {Function} callback Callback on success.
- * @param {Function} [opt_errback] Callback on error.
- * @param {string} [opt_callbackParam] Custom query parameter for the JSONP
+ * @param {Function} [errback] Callback on error.
+ * @param {string} [callbackParam] Custom query parameter for the JSONP
  *     callback. Default is 'callback'.
  */
-export function jsonp(url, callback, opt_errback, opt_callbackParam) {
+export function jsonp(url, callback, errback, callbackParam) {
   const script = document.createElement('script');
   const key = 'olc_' + getUid(callback);
   function cleanup() {
@@ -25,13 +25,13 @@ export function jsonp(url, callback, opt_errback, opt_callbackParam) {
   script.src =
     url +
     (url.includes('?') ? '&' : '?') +
-    (opt_callbackParam || 'callback') +
+    (callbackParam || 'callback') +
     '=' +
     key;
   const timer = setTimeout(function () {
     cleanup();
-    if (opt_errback) {
-      opt_errback();
+    if (errback) {
+      errback();
     }
   }, 10000);
   window[key] = function (data) {

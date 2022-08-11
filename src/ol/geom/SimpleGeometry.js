@@ -162,9 +162,9 @@ class SimpleGeometry extends Geometry {
   /**
    * @abstract
    * @param {!Array<*>} coordinates Coordinates.
-   * @param {import("./Geometry.js").GeometryLayout} [opt_layout] Layout.
+   * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
    */
-  setCoordinates(coordinates, opt_layout) {
+  setCoordinates(coordinates, layout) {
     abstract();
   }
 
@@ -240,17 +240,15 @@ class SimpleGeometry extends Geometry {
    * Scale the geometry (with an optional origin).  This modifies the geometry
    * coordinates in place.
    * @param {number} sx The scaling factor in the x-direction.
-   * @param {number} [opt_sy] The scaling factor in the y-direction (defaults to sx).
-   * @param {import("../coordinate.js").Coordinate} [opt_anchor] The scale origin (defaults to the center
+   * @param {number} [sy] The scaling factor in the y-direction (defaults to sx).
+   * @param {import("../coordinate.js").Coordinate} [anchor] The scale origin (defaults to the center
    *     of the geometry extent).
    * @api
    */
-  scale(sx, opt_sy, opt_anchor) {
-    let sy = opt_sy;
+  scale(sx, sy, anchor) {
     if (sy === undefined) {
       sy = sx;
     }
-    let anchor = opt_anchor;
     if (!anchor) {
       anchor = getCenter(this.getExtent());
     }
@@ -331,10 +329,10 @@ export function getStrideForLayout(layout) {
 /**
  * @param {SimpleGeometry} simpleGeometry Simple geometry.
  * @param {import("../transform.js").Transform} transform Transform.
- * @param {Array<number>} [opt_dest] Destination.
+ * @param {Array<number>} [dest] Destination.
  * @return {Array<number>} Transformed flat coordinates.
  */
-export function transformGeom2D(simpleGeometry, transform, opt_dest) {
+export function transformGeom2D(simpleGeometry, transform, dest) {
   const flatCoordinates = simpleGeometry.getFlatCoordinates();
   if (!flatCoordinates) {
     return null;
@@ -346,7 +344,7 @@ export function transformGeom2D(simpleGeometry, transform, opt_dest) {
       flatCoordinates.length,
       stride,
       transform,
-      opt_dest
+      dest
     );
   }
 }

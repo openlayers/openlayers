@@ -106,11 +106,11 @@ export function parse(xml) {
  * Make an array extender function for extending the array at the top of the
  * object stack.
  * @param {function(this: T, Node, Array<*>): (Array<*>|undefined)} valueReader Value reader.
- * @param {T} [opt_this] The object to use as `this` in `valueReader`.
+ * @param {T} [thisArg] The object to use as `this` in `valueReader`.
  * @return {Parser} Parser.
  * @template T
  */
-export function makeArrayExtender(valueReader, opt_this) {
+export function makeArrayExtender(valueReader, thisArg) {
   return (
     /**
      * @param {Node} node Node.
@@ -118,7 +118,7 @@ export function makeArrayExtender(valueReader, opt_this) {
      */
     function (node, objectStack) {
       const value = valueReader.call(
-        opt_this !== undefined ? opt_this : this,
+        thisArg !== undefined ? thisArg : this,
         node,
         objectStack
       );
@@ -136,11 +136,11 @@ export function makeArrayExtender(valueReader, opt_this) {
  * Make an array pusher function for pushing to the array at the top of the
  * object stack.
  * @param {function(this: T, Element, Array<*>): *} valueReader Value reader.
- * @param {T} [opt_this] The object to use as `this` in `valueReader`.
+ * @param {T} [thisArg] The object to use as `this` in `valueReader`.
  * @return {Parser} Parser.
  * @template T
  */
-export function makeArrayPusher(valueReader, opt_this) {
+export function makeArrayPusher(valueReader, thisArg) {
   return (
     /**
      * @param {Element} node Node.
@@ -148,7 +148,7 @@ export function makeArrayPusher(valueReader, opt_this) {
      */
     function (node, objectStack) {
       const value = valueReader.call(
-        opt_this !== undefined ? opt_this : this,
+        thisArg !== undefined ? thisArg : this,
         node,
         objectStack
       );
@@ -166,11 +166,11 @@ export function makeArrayPusher(valueReader, opt_this) {
  * Make an object stack replacer function for replacing the object at the
  * top of the stack.
  * @param {function(this: T, Node, Array<*>): *} valueReader Value reader.
- * @param {T} [opt_this] The object to use as `this` in `valueReader`.
+ * @param {T} [thisArg] The object to use as `this` in `valueReader`.
  * @return {Parser} Parser.
  * @template T
  */
-export function makeReplacer(valueReader, opt_this) {
+export function makeReplacer(valueReader, thisArg) {
   return (
     /**
      * @param {Node} node Node.
@@ -178,7 +178,7 @@ export function makeReplacer(valueReader, opt_this) {
      */
     function (node, objectStack) {
       const value = valueReader.call(
-        opt_this !== undefined ? opt_this : this,
+        thisArg !== undefined ? thisArg : this,
         node,
         objectStack
       );
@@ -193,12 +193,12 @@ export function makeReplacer(valueReader, opt_this) {
  * Make an object property pusher function for adding a property to the
  * object at the top of the stack.
  * @param {function(this: T, Element, Array<*>): *} valueReader Value reader.
- * @param {string} [opt_property] Property.
- * @param {T} [opt_this] The object to use as `this` in `valueReader`.
+ * @param {string} [property] Property.
+ * @param {T} [thisArg] The object to use as `this` in `valueReader`.
  * @return {Parser} Parser.
  * @template T
  */
-export function makeObjectPropertyPusher(valueReader, opt_property, opt_this) {
+export function makeObjectPropertyPusher(valueReader, property, thisArg) {
   return (
     /**
      * @param {Element} node Node.
@@ -206,7 +206,7 @@ export function makeObjectPropertyPusher(valueReader, opt_property, opt_this) {
      */
     function (node, objectStack) {
       const value = valueReader.call(
-        opt_this !== undefined ? opt_this : this,
+        thisArg !== undefined ? thisArg : this,
         node,
         objectStack
       );
@@ -214,14 +214,13 @@ export function makeObjectPropertyPusher(valueReader, opt_property, opt_this) {
         const object = /** @type {!Object} */ (
           objectStack[objectStack.length - 1]
         );
-        const property =
-          opt_property !== undefined ? opt_property : node.localName;
+        const name = property !== undefined ? property : node.localName;
         let array;
-        if (property in object) {
-          array = object[property];
+        if (name in object) {
+          array = object[name];
         } else {
           array = [];
-          object[property] = array;
+          object[name] = array;
         }
         array.push(value);
       }
@@ -232,12 +231,12 @@ export function makeObjectPropertyPusher(valueReader, opt_property, opt_this) {
 /**
  * Make an object property setter function.
  * @param {function(this: T, Element, Array<*>): *} valueReader Value reader.
- * @param {string} [opt_property] Property.
- * @param {T} [opt_this] The object to use as `this` in `valueReader`.
+ * @param {string} [property] Property.
+ * @param {T} [thisArg] The object to use as `this` in `valueReader`.
  * @return {Parser} Parser.
  * @template T
  */
-export function makeObjectPropertySetter(valueReader, opt_property, opt_this) {
+export function makeObjectPropertySetter(valueReader, property, thisArg) {
   return (
     /**
      * @param {Element} node Node.
@@ -245,7 +244,7 @@ export function makeObjectPropertySetter(valueReader, opt_property, opt_this) {
      */
     function (node, objectStack) {
       const value = valueReader.call(
-        opt_this !== undefined ? opt_this : this,
+        thisArg !== undefined ? thisArg : this,
         node,
         objectStack
       );
@@ -253,9 +252,8 @@ export function makeObjectPropertySetter(valueReader, opt_property, opt_this) {
         const object = /** @type {!Object} */ (
           objectStack[objectStack.length - 1]
         );
-        const property =
-          opt_property !== undefined ? opt_property : node.localName;
-        object[property] = value;
+        const name = property !== undefined ? property : node.localName;
+        object[name] = value;
       }
     }
   );
@@ -266,14 +264,14 @@ export function makeObjectPropertySetter(valueReader, opt_property, opt_this) {
  * designated parent. The parent is the `node` of the
  * {@link module:ol/xml~NodeStackItem} at the top of the `objectStack`.
  * @param {function(this: T, Node, V, Array<*>): void} nodeWriter Node writer.
- * @param {T} [opt_this] The object to use as `this` in `nodeWriter`.
+ * @param {T} [thisArg] The object to use as `this` in `nodeWriter`.
  * @return {Serializer} Serializer.
  * @template T, V
  */
-export function makeChildAppender(nodeWriter, opt_this) {
+export function makeChildAppender(nodeWriter, thisArg) {
   return function (node, value, objectStack) {
     nodeWriter.call(
-      opt_this !== undefined ? opt_this : this,
+      thisArg !== undefined ? thisArg : this,
       node,
       value,
       objectStack
@@ -294,11 +292,11 @@ export function makeChildAppender(nodeWriter, opt_this) {
  * geometry writer, which could be reused for writing MultiLineString
  * geometries.
  * @param {function(this: T, Element, V, Array<*>): void} nodeWriter Node writer.
- * @param {T} [opt_this] The object to use as `this` in `nodeWriter`.
+ * @param {T} [thisArg] The object to use as `this` in `nodeWriter`.
  * @return {Serializer} Serializer.
  * @template T, V
  */
-export function makeArraySerializer(nodeWriter, opt_this) {
+export function makeArraySerializer(nodeWriter, thisArg) {
   let serializersNS, nodeFactory;
   return function (node, value, objectStack) {
     if (serializersNS === undefined) {
@@ -313,39 +311,38 @@ export function makeArraySerializer(nodeWriter, opt_this) {
 }
 
 /**
- * Create a node factory which can use the `opt_keys` passed to
+ * Create a node factory which can use the `keys` passed to
  * {@link module:ol/xml.serialize} or {@link module:ol/xml.pushSerializeAndPop} as node names,
  * or a fixed node name. The namespace of the created nodes can either be fixed,
  * or the parent namespace will be used.
- * @param {string} [opt_nodeName] Fixed node name which will be used for all
+ * @param {string} [fixedNodeName] Fixed node name which will be used for all
  *     created nodes. If not provided, the 3rd argument to the resulting node
  *     factory needs to be provided and will be the nodeName.
- * @param {string} [opt_namespaceURI] Fixed namespace URI which will be used for
+ * @param {string} [fixedNamespaceURI] Fixed namespace URI which will be used for
  *     all created nodes. If not provided, the namespace of the parent node will
  *     be used.
  * @return {function(*, Array<*>, string=): (Node|undefined)} Node factory.
  */
-export function makeSimpleNodeFactory(opt_nodeName, opt_namespaceURI) {
-  const fixedNodeName = opt_nodeName;
+export function makeSimpleNodeFactory(fixedNodeName, fixedNamespaceURI) {
   return (
     /**
      * @param {*} value Value.
      * @param {Array<*>} objectStack Object stack.
-     * @param {string} [opt_nodeName] Node name.
+     * @param {string} [newNodeName] Node name.
      * @return {Node} Node.
      */
-    function (value, objectStack, opt_nodeName) {
+    function (value, objectStack, newNodeName) {
       const context = /** @type {NodeStackItem} */ (
         objectStack[objectStack.length - 1]
       );
       const node = context.node;
       let nodeName = fixedNodeName;
       if (nodeName === undefined) {
-        nodeName = opt_nodeName;
+        nodeName = newNodeName;
       }
 
       const namespaceURI =
-        opt_namespaceURI !== undefined ? opt_namespaceURI : node.namespaceURI;
+        fixedNamespaceURI !== undefined ? fixedNamespaceURI : node.namespaceURI;
       return createElementNS(namespaceURI, /** @type {string} */ (nodeName));
     }
   );
@@ -363,7 +360,7 @@ export const OBJECT_PROPERTY_NODE_FACTORY = makeSimpleNodeFactory();
 /**
  * Create an array of `values` to be used with {@link module:ol/xml.serialize} or
  * {@link module:ol/xml.pushSerializeAndPop}, where `orderedKeys` has to be provided as
- * `opt_key` argument.
+ * `key` argument.
  * @param {Object<string, *>} object Key-value pairs for the sequence. Keys can
  *     be a subset of the `orderedKeys`.
  * @param {Array<string>} orderedKeys Keys in the order of the sequence.
@@ -386,15 +383,12 @@ export function makeSequence(object, orderedKeys) {
  * values are version specific.
  * @param {Array<string>} namespaceURIs Namespace URIs.
  * @param {T} structure Structure.
- * @param {Object<string, T>} [opt_structureNS] Namespaced structure to add to.
+ * @param {Object<string, T>} [structureNS] Namespaced structure to add to.
  * @return {Object<string, T>} Namespaced structure.
  * @template T
  */
-export function makeStructureNS(namespaceURIs, structure, opt_structureNS) {
-  /**
-   * @type {Object<string, T>}
-   */
-  const structureNS = opt_structureNS !== undefined ? opt_structureNS : {};
+export function makeStructureNS(namespaceURIs, structure, structureNS) {
+  structureNS = structureNS !== undefined ? structureNS : {};
   let i, ii;
   for (i = 0, ii = namespaceURIs.length; i < ii; ++i) {
     structureNS[namespaceURIs[i]] = structure;
@@ -408,16 +402,16 @@ export function makeStructureNS(namespaceURIs, structure, opt_structureNS) {
  *     Parsers by namespace.
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
- * @param {*} [opt_this] The object to use as `this`.
+ * @param {*} [thisArg] The object to use as `this`.
  */
-export function parseNode(parsersNS, node, objectStack, opt_this) {
+export function parseNode(parsersNS, node, objectStack, thisArg) {
   let n;
   for (n = node.firstElementChild; n; n = n.nextElementSibling) {
     const parsers = parsersNS[n.namespaceURI];
     if (parsers !== undefined) {
       const parser = parsers[n.localName];
       if (parser !== undefined) {
-        parser.call(opt_this, n, objectStack);
+        parser.call(thisArg, n, objectStack);
       }
     }
   }
@@ -430,19 +424,13 @@ export function parseNode(parsersNS, node, objectStack, opt_this) {
  *     Parsers by namespace.
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
- * @param {*} [opt_this] The object to use as `this`.
+ * @param {*} [thisArg] The object to use as `this`.
  * @return {T} Object.
  * @template T
  */
-export function pushParseAndPop(
-  object,
-  parsersNS,
-  node,
-  objectStack,
-  opt_this
-) {
+export function pushParseAndPop(object, parsersNS, node, objectStack, thisArg) {
   objectStack.push(object);
-  parseNode(parsersNS, node, objectStack, opt_this);
+  parseNode(parsersNS, node, objectStack, thisArg);
   return /** @type {T} */ (objectStack.pop());
 }
 
@@ -459,12 +447,12 @@ export function pushParseAndPop(
  * @param {Array<*>} values Values to serialize. An example would be an array
  *     of {@link module:ol/Feature~Feature} instances.
  * @param {Array<*>} objectStack Node stack.
- * @param {Array<string>} [opt_keys] Keys of the `values`. Will be passed to the
+ * @param {Array<string>} [keys] Keys of the `values`. Will be passed to the
  *     `nodeFactory`. This is used for serializing object literals where the
- *     node name relates to the property key. The array length of `opt_keys` has
- *     to match the length of `values`. For serializing a sequence, `opt_keys`
+ *     node name relates to the property key. The array length of `keys` has
+ *     to match the length of `values`. For serializing a sequence, `keys`
  *     determines the order of the sequence.
- * @param {T} [opt_this] The object to use as `this` for the node factory and
+ * @param {T} [thisArg] The object to use as `this` for the node factory and
  *     serializers.
  * @template T
  */
@@ -473,23 +461,23 @@ export function serialize(
   nodeFactory,
   values,
   objectStack,
-  opt_keys,
-  opt_this
+  keys,
+  thisArg
 ) {
-  const length = (opt_keys !== undefined ? opt_keys : values).length;
+  const length = (keys !== undefined ? keys : values).length;
   let value, node;
   for (let i = 0; i < length; ++i) {
     value = values[i];
     if (value !== undefined) {
       node = nodeFactory.call(
-        opt_this !== undefined ? opt_this : this,
+        thisArg !== undefined ? thisArg : this,
         value,
         objectStack,
-        opt_keys !== undefined ? opt_keys[i] : undefined
+        keys !== undefined ? keys[i] : undefined
       );
       if (node !== undefined) {
         serializersNS[node.namespaceURI][node.localName].call(
-          opt_this,
+          thisArg,
           node,
           value,
           objectStack
@@ -512,12 +500,12 @@ export function serialize(
  * @param {Array<*>} values Values to serialize. An example would be an array
  *     of {@link module:ol/Feature~Feature} instances.
  * @param {Array<*>} objectStack Node stack.
- * @param {Array<string>} [opt_keys] Keys of the `values`. Will be passed to the
+ * @param {Array<string>} [keys] Keys of the `values`. Will be passed to the
  *     `nodeFactory`. This is used for serializing object literals where the
- *     node name relates to the property key. The array length of `opt_keys` has
- *     to match the length of `values`. For serializing a sequence, `opt_keys`
+ *     node name relates to the property key. The array length of `keys` has
+ *     to match the length of `values`. For serializing a sequence, `keys`
  *     determines the order of the sequence.
- * @param {T} [opt_this] The object to use as `this` for the node factory and
+ * @param {T} [thisArg] The object to use as `this` for the node factory and
  *     serializers.
  * @return {O|undefined} Object.
  * @template O, T
@@ -528,18 +516,11 @@ export function pushSerializeAndPop(
   nodeFactory,
   values,
   objectStack,
-  opt_keys,
-  opt_this
+  keys,
+  thisArg
 ) {
   objectStack.push(object);
-  serialize(
-    serializersNS,
-    nodeFactory,
-    values,
-    objectStack,
-    opt_keys,
-    opt_this
-  );
+  serialize(serializersNS, nodeFactory, values, objectStack, keys, thisArg);
   return /** @type {O|undefined} */ (objectStack.pop());
 }
 

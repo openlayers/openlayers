@@ -135,19 +135,19 @@ export function closestOnSegment(coordinate, segment) {
  *     const out = stringifyFunc(coord);
  *     // out is now '7.85, 47.98'
  *
- * @param {number} [opt_fractionDigits] The number of digits to include
+ * @param {number} [fractionDigits] The number of digits to include
  *    after the decimal point. Default is `0`.
  * @return {CoordinateFormat} Coordinate format.
  * @api
  */
-export function createStringXY(opt_fractionDigits) {
+export function createStringXY(fractionDigits) {
   return (
     /**
      * @param {Coordinate} coordinate Coordinate.
      * @return {string} String XY.
      */
     function (coordinate) {
-      return toStringXY(coordinate, opt_fractionDigits);
+      return toStringXY(coordinate, fractionDigits);
     }
   );
 }
@@ -155,14 +155,14 @@ export function createStringXY(opt_fractionDigits) {
 /**
  * @param {string} hemispheres Hemispheres.
  * @param {number} degrees Degrees.
- * @param {number} [opt_fractionDigits] The number of digits to include
+ * @param {number} [fractionDigits] The number of digits to include
  *    after the decimal point. Default is `0`.
  * @return {string} String.
  */
-export function degreesToStringHDMS(hemispheres, degrees, opt_fractionDigits) {
+export function degreesToStringHDMS(hemispheres, degrees, fractionDigits) {
   const normalizedDegrees = modulo(degrees + 180, 360) - 180;
   const x = Math.abs(3600 * normalizedDegrees);
-  const decimals = opt_fractionDigits || 0;
+  const decimals = fractionDigits || 0;
 
   let deg = Math.floor(x / 3600);
   let min = Math.floor((x - deg * 3600) / 60);
@@ -218,16 +218,16 @@ export function degreesToStringHDMS(hemispheres, degrees, opt_fractionDigits) {
  * @param {Coordinate} coordinate Coordinate.
  * @param {string} template A template string with `{x}` and `{y}` placeholders
  *     that will be replaced by first and second coordinate values.
- * @param {number} [opt_fractionDigits] The number of digits to include
+ * @param {number} [fractionDigits] The number of digits to include
  *    after the decimal point. Default is `0`.
  * @return {string} Formatted coordinate.
  * @api
  */
-export function format(coordinate, template, opt_fractionDigits) {
+export function format(coordinate, template, fractionDigits) {
   if (coordinate) {
     return template
-      .replace('{x}', coordinate[0].toFixed(opt_fractionDigits))
-      .replace('{y}', coordinate[1].toFixed(opt_fractionDigits));
+      .replace('{x}', coordinate[0].toFixed(fractionDigits))
+      .replace('{y}', coordinate[1].toFixed(fractionDigits));
   } else {
     return '';
   }
@@ -353,17 +353,17 @@ export function squaredDistanceToSegment(coordinate, segment) {
  *     // out is now '47° 58′ 60.0″ N 7° 50′ 60.0″ E'
  *
  * @param {Coordinate} coordinate Coordinate.
- * @param {number} [opt_fractionDigits] The number of digits to include
+ * @param {number} [fractionDigits] The number of digits to include
  *    after the decimal point. Default is `0`.
  * @return {string} Hemisphere, degrees, minutes and seconds.
  * @api
  */
-export function toStringHDMS(coordinate, opt_fractionDigits) {
+export function toStringHDMS(coordinate, fractionDigits) {
   if (coordinate) {
     return (
-      degreesToStringHDMS('NS', coordinate[1], opt_fractionDigits) +
+      degreesToStringHDMS('NS', coordinate[1], fractionDigits) +
       ' ' +
-      degreesToStringHDMS('EW', coordinate[0], opt_fractionDigits)
+      degreesToStringHDMS('EW', coordinate[0], fractionDigits)
     );
   } else {
     return '';
@@ -390,13 +390,13 @@ export function toStringHDMS(coordinate, opt_fractionDigits) {
  *     // out is now '7.8, 48.0'
  *
  * @param {Coordinate} coordinate Coordinate.
- * @param {number} [opt_fractionDigits] The number of digits to include
+ * @param {number} [fractionDigits] The number of digits to include
  *    after the decimal point. Default is `0`.
  * @return {string} XY.
  * @api
  */
-export function toStringXY(coordinate, opt_fractionDigits) {
-  return format(coordinate, '{x}, {y}', opt_fractionDigits);
+export function toStringXY(coordinate, fractionDigits) {
+  return format(coordinate, '{x}, {y}', fractionDigits);
 }
 
 /**
@@ -421,18 +421,17 @@ export function wrapX(coordinate, projection) {
 /**
  * @param {Coordinate} coordinate Coordinate.
  * @param {import("./proj/Projection.js").default} projection Projection.
- * @param {number} [opt_sourceExtentWidth] Width of the source extent.
+ * @param {number} [sourceExtentWidth] Width of the source extent.
  * @return {number} Offset in world widths.
  */
-export function getWorldsAway(coordinate, projection, opt_sourceExtentWidth) {
+export function getWorldsAway(coordinate, projection, sourceExtentWidth) {
   const projectionExtent = projection.getExtent();
   let worldsAway = 0;
   if (
     projection.canWrapX() &&
     (coordinate[0] < projectionExtent[0] || coordinate[0] > projectionExtent[2])
   ) {
-    const sourceExtentWidth =
-      opt_sourceExtentWidth || getWidth(projectionExtent);
+    sourceExtentWidth = sourceExtentWidth || getWidth(projectionExtent);
     worldsAway = Math.floor(
       (coordinate[0] - projectionExtent[0]) / sourceExtentWidth
     );

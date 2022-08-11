@@ -32,13 +32,13 @@ export function linearRingIsClockwise(flatCoordinates, offset, end, stride) {
 /**
  * Determines if linear rings are oriented.  By default, left-hand orientation
  * is tested (first ring must be clockwise, remaining rings counter-clockwise).
- * To test for right-hand orientation, use the `opt_right` argument.
+ * To test for right-hand orientation, use the `right` argument.
  *
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {Array<number>} ends Array of end indexes.
  * @param {number} stride Stride.
- * @param {boolean} [opt_right] Test for right-hand orientation
+ * @param {boolean} [right] Test for right-hand orientation
  *     (counter-clockwise exterior ring and clockwise interior rings).
  * @return {boolean} Rings are correctly oriented.
  */
@@ -47,9 +47,9 @@ export function linearRingsAreOriented(
   offset,
   ends,
   stride,
-  opt_right
+  right
 ) {
-  const right = opt_right !== undefined ? opt_right : false;
+  right = right !== undefined ? right : false;
   for (let i = 0, ii = ends.length; i < ii; ++i) {
     const end = ends[i];
     const isClockwise = linearRingIsClockwise(
@@ -75,13 +75,13 @@ export function linearRingsAreOriented(
 /**
  * Determines if linear rings are oriented.  By default, left-hand orientation
  * is tested (first ring must be clockwise, remaining rings counter-clockwise).
- * To test for right-hand orientation, use the `opt_right` argument.
+ * To test for right-hand orientation, use the `right` argument.
  *
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {Array<Array<number>>} endss Array of array of end indexes.
  * @param {number} stride Stride.
- * @param {boolean} [opt_right] Test for right-hand orientation
+ * @param {boolean} [right] Test for right-hand orientation
  *     (counter-clockwise exterior ring and clockwise interior rings).
  * @return {boolean} Rings are correctly oriented.
  */
@@ -90,13 +90,11 @@ export function linearRingssAreOriented(
   offset,
   endss,
   stride,
-  opt_right
+  right
 ) {
   for (let i = 0, ii = endss.length; i < ii; ++i) {
     const ends = endss[i];
-    if (
-      !linearRingsAreOriented(flatCoordinates, offset, ends, stride, opt_right)
-    ) {
+    if (!linearRingsAreOriented(flatCoordinates, offset, ends, stride, right)) {
       return false;
     }
     if (ends.length) {
@@ -110,13 +108,13 @@ export function linearRingssAreOriented(
  * Orient coordinates in a flat array of linear rings.  By default, rings
  * are oriented following the left-hand rule (clockwise for exterior and
  * counter-clockwise for interior rings).  To orient according to the
- * right-hand rule, use the `opt_right` argument.
+ * right-hand rule, use the `right` argument.
  *
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {Array<number>} ends Ends.
  * @param {number} stride Stride.
- * @param {boolean} [opt_right] Follow the right-hand rule for orientation.
+ * @param {boolean} [right] Follow the right-hand rule for orientation.
  * @return {number} End.
  */
 export function orientLinearRings(
@@ -124,9 +122,9 @@ export function orientLinearRings(
   offset,
   ends,
   stride,
-  opt_right
+  right
 ) {
-  const right = opt_right !== undefined ? opt_right : false;
+  right = right !== undefined ? right : false;
   for (let i = 0, ii = ends.length; i < ii; ++i) {
     const end = ends[i];
     const isClockwise = linearRingIsClockwise(
@@ -151,13 +149,13 @@ export function orientLinearRings(
  * Orient coordinates in a flat array of linear rings.  By default, rings
  * are oriented following the left-hand rule (clockwise for exterior and
  * counter-clockwise for interior rings).  To orient according to the
- * right-hand rule, use the `opt_right` argument.
+ * right-hand rule, use the `right` argument.
  *
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {Array<Array<number>>} endss Array of array of end indexes.
  * @param {number} stride Stride.
- * @param {boolean} [opt_right] Follow the right-hand rule for orientation.
+ * @param {boolean} [right] Follow the right-hand rule for orientation.
  * @return {number} End.
  */
 export function orientLinearRingsArray(
@@ -165,7 +163,7 @@ export function orientLinearRingsArray(
   offset,
   endss,
   stride,
-  opt_right
+  right
 ) {
   for (let i = 0, ii = endss.length; i < ii; ++i) {
     offset = orientLinearRings(
@@ -173,7 +171,7 @@ export function orientLinearRingsArray(
       offset,
       endss[i],
       stride,
-      opt_right
+      right
     );
   }
   return offset;

@@ -89,27 +89,26 @@ class FeatureFormat {
   /**
    * Adds the data projection to the read options.
    * @param {Document|Element|Object|string} source Source.
-   * @param {ReadOptions} [opt_options] Options.
+   * @param {ReadOptions} [options] Options.
    * @return {ReadOptions|undefined} Options.
    * @protected
    */
-  getReadOptions(source, opt_options) {
-    let options;
-    if (opt_options) {
-      let dataProjection = opt_options.dataProjection
-        ? getProjection(opt_options.dataProjection)
+  getReadOptions(source, options) {
+    if (options) {
+      let dataProjection = options.dataProjection
+        ? getProjection(options.dataProjection)
         : this.readProjection(source);
       if (
-        opt_options.extent &&
+        options.extent &&
         dataProjection &&
         dataProjection.getUnits() === 'tile-pixels'
       ) {
         dataProjection = getProjection(dataProjection);
-        dataProjection.setWorldExtent(opt_options.extent);
+        dataProjection.setWorldExtent(options.extent);
       }
       options = {
         dataProjection: dataProjection,
-        featureProjection: opt_options.featureProjection,
+        featureProjection: options.featureProjection,
       };
     }
     return this.adaptOptions(options);
@@ -147,10 +146,10 @@ class FeatureFormat {
    *
    * @abstract
    * @param {Document|Element|Object|string} source Source.
-   * @param {ReadOptions} [opt_options] Read options.
+   * @param {ReadOptions} [options] Read options.
    * @return {import("../Feature.js").FeatureLike} Feature.
    */
-  readFeature(source, opt_options) {
+  readFeature(source, options) {
     return abstract();
   }
 
@@ -159,10 +158,10 @@ class FeatureFormat {
    *
    * @abstract
    * @param {Document|Element|ArrayBuffer|Object|string} source Source.
-   * @param {ReadOptions} [opt_options] Read options.
+   * @param {ReadOptions} [options] Read options.
    * @return {Array<import("../Feature.js").FeatureLike>} Features.
    */
-  readFeatures(source, opt_options) {
+  readFeatures(source, options) {
     return abstract();
   }
 
@@ -171,10 +170,10 @@ class FeatureFormat {
    *
    * @abstract
    * @param {Document|Element|Object|string} source Source.
-   * @param {ReadOptions} [opt_options] Read options.
+   * @param {ReadOptions} [options] Read options.
    * @return {import("../geom/Geometry.js").default} Geometry.
    */
-  readGeometry(source, opt_options) {
+  readGeometry(source, options) {
     return abstract();
   }
 
@@ -194,10 +193,10 @@ class FeatureFormat {
    *
    * @abstract
    * @param {import("../Feature.js").default} feature Feature.
-   * @param {WriteOptions} [opt_options] Write options.
+   * @param {WriteOptions} [options] Write options.
    * @return {string|ArrayBuffer} Result.
    */
-  writeFeature(feature, opt_options) {
+  writeFeature(feature, options) {
     return abstract();
   }
 
@@ -206,10 +205,10 @@ class FeatureFormat {
    *
    * @abstract
    * @param {Array<import("../Feature.js").default>} features Features.
-   * @param {WriteOptions} [opt_options] Write options.
+   * @param {WriteOptions} [options] Write options.
    * @return {string|ArrayBuffer} Result.
    */
-  writeFeatures(features, opt_options) {
+  writeFeatures(features, options) {
     return abstract();
   }
 
@@ -218,10 +217,10 @@ class FeatureFormat {
    *
    * @abstract
    * @param {import("../geom/Geometry.js").default} geometry Geometry.
-   * @param {WriteOptions} [opt_options] Write options.
+   * @param {WriteOptions} [options] Write options.
    * @return {string|ArrayBuffer} Result.
    */
-  writeGeometry(geometry, opt_options) {
+  writeGeometry(geometry, options) {
     return abstract();
   }
 }
@@ -231,16 +230,14 @@ export default FeatureFormat;
 /**
  * @param {import("../geom/Geometry.js").default} geometry Geometry.
  * @param {boolean} write Set to true for writing, false for reading.
- * @param {WriteOptions|ReadOptions} [opt_options] Options.
+ * @param {WriteOptions|ReadOptions} [options] Options.
  * @return {import("../geom/Geometry.js").default} Transformed geometry.
  */
-export function transformGeometryWithOptions(geometry, write, opt_options) {
-  const featureProjection = opt_options
-    ? getProjection(opt_options.featureProjection)
+export function transformGeometryWithOptions(geometry, write, options) {
+  const featureProjection = options
+    ? getProjection(options.featureProjection)
     : null;
-  const dataProjection = opt_options
-    ? getProjection(opt_options.dataProjection)
-    : null;
+  const dataProjection = options ? getProjection(options.dataProjection) : null;
 
   let transformed;
   if (
@@ -257,13 +254,10 @@ export function transformGeometryWithOptions(geometry, write, opt_options) {
   }
   if (
     write &&
-    opt_options &&
-    /** @type {WriteOptions} */ (opt_options).decimals !== undefined
+    options &&
+    /** @type {WriteOptions} */ (options).decimals !== undefined
   ) {
-    const power = Math.pow(
-      10,
-      /** @type {WriteOptions} */ (opt_options).decimals
-    );
+    const power = Math.pow(10, /** @type {WriteOptions} */ (options).decimals);
     // if decimals option on write, round each coordinate appropriately
     /**
      * @param {Array<number>} coordinates Coordinates.
@@ -285,16 +279,14 @@ export function transformGeometryWithOptions(geometry, write, opt_options) {
 
 /**
  * @param {import("../extent.js").Extent} extent Extent.
- * @param {ReadOptions} [opt_options] Read options.
+ * @param {ReadOptions} [options] Read options.
  * @return {import("../extent.js").Extent} Transformed extent.
  */
-export function transformExtentWithOptions(extent, opt_options) {
-  const featureProjection = opt_options
-    ? getProjection(opt_options.featureProjection)
+export function transformExtentWithOptions(extent, options) {
+  const featureProjection = options
+    ? getProjection(options.featureProjection)
     : null;
-  const dataProjection = opt_options
-    ? getProjection(opt_options.dataProjection)
-    : null;
+  const dataProjection = options ? getProjection(options.dataProjection) : null;
 
   if (
     featureProjection &&

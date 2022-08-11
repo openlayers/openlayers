@@ -12,9 +12,9 @@ class MapEvent extends Event {
   /**
    * @param {string} type Event type.
    * @param {import("./Map.js").default} map Map.
-   * @param {?import("./Map.js").FrameState} [opt_frameState] Frame state.
+   * @param {?import("./Map.js").FrameState} [frameState] Frame state.
    */
-  constructor(type, map, opt_frameState) {
+  constructor(type, map, frameState) {
     super(type);
 
     /**
@@ -29,7 +29,7 @@ class MapEvent extends Event {
      * @type {?import("./Map.js").FrameState}
      * @api
      */
-    this.frameState = opt_frameState !== undefined ? opt_frameState : null;
+    this.frameState = frameState !== undefined ? frameState : null;
   }
 }
 

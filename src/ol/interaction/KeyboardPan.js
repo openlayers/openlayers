@@ -34,12 +34,12 @@ import {rotate as rotateCoordinate} from '../coordinate.js';
  */
 class KeyboardPan extends Interaction {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
+  constructor(options) {
     super();
 
-    const options = opt_options || {};
+    options = options || {};
 
     /**
      * @private

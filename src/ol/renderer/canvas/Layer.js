@@ -147,20 +147,20 @@ class CanvasLayerRenderer extends LayerRenderer {
    * Get a rendering container from an existing target, if compatible.
    * @param {HTMLElement} target Potential render target.
    * @param {string} transform CSS Transform.
-   * @param {string} [opt_backgroundColor] Background color.
+   * @param {string} [backgroundColor] Background color.
    */
-  useContainer(target, transform, opt_backgroundColor) {
+  useContainer(target, transform, backgroundColor) {
     const layerClassName = this.getLayer().getClassName();
     let container, context;
     if (
       target &&
       target.className === layerClassName &&
-      (!opt_backgroundColor ||
+      (!backgroundColor ||
         (target &&
           target.style.backgroundColor &&
           equals(
             asArray(target.style.backgroundColor),
-            asArray(opt_backgroundColor)
+            asArray(backgroundColor)
           )))
     ) {
       const canvas = target.firstElementChild;
@@ -198,10 +198,10 @@ class CanvasLayerRenderer extends LayerRenderer {
     }
     if (
       !this.containerReused &&
-      opt_backgroundColor &&
+      backgroundColor &&
       !this.container.style.backgroundColor
     ) {
-      this.container.style.backgroundColor = opt_backgroundColor;
+      this.container.style.backgroundColor = backgroundColor;
     }
   }
 

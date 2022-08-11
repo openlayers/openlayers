@@ -29,14 +29,14 @@ class JSONFeature extends FeatureFormat {
    * read a feature collection.
    *
    * @param {ArrayBuffer|Document|Element|Object|string} source Source.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {import("../Feature.js").default} Feature.
    * @api
    */
-  readFeature(source, opt_options) {
+  readFeature(source, options) {
     return this.readFeatureFromObject(
       getObject(source),
-      this.getReadOptions(source, opt_options)
+      this.getReadOptions(source, options)
     );
   }
 
@@ -45,36 +45,36 @@ class JSONFeature extends FeatureFormat {
    * collection.
    *
    * @param {ArrayBuffer|Document|Element|Object|string} source Source.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {Array<import("../Feature.js").default>} Features.
    * @api
    */
-  readFeatures(source, opt_options) {
+  readFeatures(source, options) {
     return this.readFeaturesFromObject(
       getObject(source),
-      this.getReadOptions(source, opt_options)
+      this.getReadOptions(source, options)
     );
   }
 
   /**
    * @abstract
    * @param {Object} object Object.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
    * @return {import("../Feature.js").default} Feature.
    */
-  readFeatureFromObject(object, opt_options) {
+  readFeatureFromObject(object, options) {
     return abstract();
   }
 
   /**
    * @abstract
    * @param {Object} object Object.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
    * @return {Array<import("../Feature.js").default>} Features.
    */
-  readFeaturesFromObject(object, opt_options) {
+  readFeaturesFromObject(object, options) {
     return abstract();
   }
 
@@ -82,25 +82,25 @@ class JSONFeature extends FeatureFormat {
    * Read a geometry.
    *
    * @param {ArrayBuffer|Document|Element|Object|string} source Source.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {import("../geom/Geometry.js").default} Geometry.
    * @api
    */
-  readGeometry(source, opt_options) {
+  readGeometry(source, options) {
     return this.readGeometryFromObject(
       getObject(source),
-      this.getReadOptions(source, opt_options)
+      this.getReadOptions(source, options)
     );
   }
 
   /**
    * @abstract
    * @param {Object} object Object.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
    * @return {import("../geom/Geometry.js").default} Geometry.
    */
-  readGeometryFromObject(object, opt_options) {
+  readGeometryFromObject(object, options) {
     return abstract();
   }
 
@@ -129,21 +129,21 @@ class JSONFeature extends FeatureFormat {
    * Encode a feature as string.
    *
    * @param {import("../Feature.js").default} feature Feature.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+   * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string} Encoded feature.
    * @api
    */
-  writeFeature(feature, opt_options) {
-    return JSON.stringify(this.writeFeatureObject(feature, opt_options));
+  writeFeature(feature, options) {
+    return JSON.stringify(this.writeFeatureObject(feature, options));
   }
 
   /**
    * @abstract
    * @param {import("../Feature.js").default} feature Feature.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+   * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {Object} Object.
    */
-  writeFeatureObject(feature, opt_options) {
+  writeFeatureObject(feature, options) {
     return abstract();
   }
 
@@ -151,21 +151,21 @@ class JSONFeature extends FeatureFormat {
    * Encode an array of features as string.
    *
    * @param {Array<import("../Feature.js").default>} features Features.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+   * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string} Encoded features.
    * @api
    */
-  writeFeatures(features, opt_options) {
-    return JSON.stringify(this.writeFeaturesObject(features, opt_options));
+  writeFeatures(features, options) {
+    return JSON.stringify(this.writeFeaturesObject(features, options));
   }
 
   /**
    * @abstract
    * @param {Array<import("../Feature.js").default>} features Features.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+   * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {Object} Object.
    */
-  writeFeaturesObject(features, opt_options) {
+  writeFeaturesObject(features, options) {
     return abstract();
   }
 
@@ -173,21 +173,21 @@ class JSONFeature extends FeatureFormat {
    * Encode a geometry as string.
    *
    * @param {import("../geom/Geometry.js").default} geometry Geometry.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+   * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string} Encoded geometry.
    * @api
    */
-  writeGeometry(geometry, opt_options) {
-    return JSON.stringify(this.writeGeometryObject(geometry, opt_options));
+  writeGeometry(geometry, options) {
+    return JSON.stringify(this.writeGeometryObject(geometry, options));
   }
 
   /**
    * @abstract
    * @param {import("../geom/Geometry.js").default} geometry Geometry.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+   * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {Object} Object.
    */
-  writeGeometryObject(geometry, opt_options) {
+  writeGeometryObject(geometry, options) {
     return abstract();
   }
 }

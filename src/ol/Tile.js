@@ -78,12 +78,12 @@ class Tile extends EventTarget {
   /**
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {import("./TileState.js").default} state State.
-   * @param {Options} [opt_options] Tile options.
+   * @param {Options} [options] Tile options.
    */
-  constructor(tileCoord, state, opt_options) {
+  constructor(tileCoord, state, options) {
     super();
 
-    const options = opt_options ? opt_options : {};
+    options = options ? options : {};
 
     /**
      * @type {import("./tilecoord.js").TileCoord}

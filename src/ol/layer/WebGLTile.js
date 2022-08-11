@@ -304,10 +304,10 @@ function parseStyle(style, bandCount) {
  */
 class WebGLTileLayer extends BaseTileLayer {
   /**
-   * @param {Options} opt_options Tile layer options.
+   * @param {Options} options Tile layer options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? Object.assign({}, opt_options) : {};
+  constructor(options) {
+    options = options ? Object.assign({}, options) : {};
 
     const style = options.style || {};
     delete options.style;

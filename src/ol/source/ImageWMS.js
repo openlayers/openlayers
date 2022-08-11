@@ -46,7 +46,7 @@ const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
  * @property {import("../Image.js").LoadFunction} [imageLoadFunction] Optional function to load an image given a URL.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
- * @property {Object<string,*>} params WMS request parameters.
+ * @property {Object<string,*>} [params] WMS request parameters.
  * At least a `LAYERS` param is required. `STYLES` is
  * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX`
  * and `CRS` (`SRS` for WMS version < 1.3.0) will be set dynamically.
@@ -56,7 +56,7 @@ const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
  * higher.
  * @property {Array<number>} [resolutions] Resolutions.
  * If specified, requests will be made for these resolutions only.
- * @property {string} url WMS service URL.
+ * @property {string} [url] WMS service URL.
  */
 
 /**
@@ -68,10 +68,10 @@ const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
  */
 class ImageWMS extends ImageSource {
   /**
-   * @param {Options} [opt_options] ImageWMS options.
+   * @param {Options} [options] ImageWMS options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
     super({
       attributions: options.attributions,

@@ -70,14 +70,14 @@ function differentArray(a, b) {
  */
 class Link extends Interaction {
   /**
-   * @param {Options} [opt_options] Link options.
+   * @param {Options} [options] Link options.
    */
-  constructor(opt_options) {
+  constructor(options) {
     super();
 
-    const options = Object.assign(
+    options = Object.assign(
       {animate: true, replace: false, prefix: ''},
-      opt_options || {}
+      options || {}
     );
 
     let animationOptions;

@@ -437,12 +437,12 @@ class IIIFInfo {
   }
 
   /**
-   * @param {PreferredOptions} [opt_preferredOptions] Optional options for preferred format and quality.
+   * @param {PreferredOptions} [preferredOptions] Optional options for preferred format and quality.
    * @return {import("../source/IIIF.js").Options} IIIF tile source ready constructor options.
    * @api
    */
-  getTileSourceOptions(opt_preferredOptions) {
-    const options = opt_preferredOptions || {},
+  getTileSourceOptions(preferredOptions) {
+    const options = preferredOptions || {},
       version = this.getImageApiVersion();
     if (version === undefined) {
       return;

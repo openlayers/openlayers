@@ -929,7 +929,7 @@ Operators['interpolate'] = {
     }
     return type;
   },
-  toGlsl: function (context, args, opt_typeHint) {
+  toGlsl: function (context, args, typeHint) {
     assertArgsEven(args);
     assertArgsMinCount(args, 6);
 
@@ -955,7 +955,7 @@ Operators['interpolate'] = {
     }
 
     // compute input/output types
-    const typeHint = opt_typeHint !== undefined ? opt_typeHint : ValueTypes.ANY;
+    typeHint = typeHint !== undefined ? typeHint : ValueTypes.ANY;
     const outputType = Operators['interpolate'].getReturnType(args) & typeHint;
     assertUniqueInferredType(args, outputType);
 
@@ -984,11 +984,11 @@ Operators['match'] = {
     type = type & getValueType(args[args.length - 1]);
     return type;
   },
-  toGlsl: function (context, args, opt_typeHint) {
+  toGlsl: function (context, args, typeHint) {
     assertArgsEven(args);
     assertArgsMinCount(args, 4);
 
-    const typeHint = opt_typeHint !== undefined ? opt_typeHint : ValueTypes.ANY;
+    typeHint = typeHint !== undefined ? typeHint : ValueTypes.ANY;
     const outputType = Operators['match'].getReturnType(args) & typeHint;
     assertUniqueInferredType(args, outputType);
 
@@ -1017,11 +1017,11 @@ Operators['case'] = {
     type = type & getValueType(args[args.length - 1]);
     return type;
   },
-  toGlsl: function (context, args, opt_typeHint) {
+  toGlsl: function (context, args, typeHint) {
     assertArgsOdd(args);
     assertArgsMinCount(args, 3);
 
-    const typeHint = opt_typeHint !== undefined ? opt_typeHint : ValueTypes.ANY;
+    typeHint = typeHint !== undefined ? typeHint : ValueTypes.ANY;
     const outputType = Operators['case'].getReturnType(args) & typeHint;
     assertUniqueInferredType(args, outputType);
     for (let i = 0; i < args.length - 1; i += 2) {

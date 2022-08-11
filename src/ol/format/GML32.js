@@ -19,12 +19,10 @@ import {writeStringTextNode} from '../format/xsd.js';
  */
 class GML32 extends GML3 {
   /**
-   * @param {import("./GMLBase.js").Options} [opt_options] Optional configuration object.
+   * @param {import("./GMLBase.js").Options} [options] Optional configuration object.
    */
-  constructor(opt_options) {
-    const options = /** @type {import("./GMLBase.js").Options} */ (
-      opt_options ? opt_options : {}
-    );
+  constructor(options) {
+    options = options ? options : {};
 
     super(options);
 

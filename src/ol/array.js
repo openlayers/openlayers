@@ -8,12 +8,12 @@
  *
  * @param {Array<*>} haystack Items to search through.
  * @param {*} needle The item to look for.
- * @param {Function} [opt_comparator] Comparator function.
+ * @param {Function} [comparator] Comparator function.
  * @return {number} The index of the item if found, -1 if not.
  */
-export function binarySearch(haystack, needle, opt_comparator) {
+export function binarySearch(haystack, needle, comparator) {
   let mid, cmp;
-  const comparator = opt_comparator || numberSafeCompareFunction;
+  comparator = comparator || numberSafeCompareFunction;
   let low = 0;
   let high = haystack.length;
   let found = false;
@@ -200,17 +200,17 @@ export function stableSort(arr, compareFnc) {
 
 /**
  * @param {Array<*>} arr The array to test.
- * @param {Function} [opt_func] Comparison function.
- * @param {boolean} [opt_strict] Strictly sorted (default false).
+ * @param {Function} [func] Comparison function.
+ * @param {boolean} [strict] Strictly sorted (default false).
  * @return {boolean} Return index.
  */
-export function isSorted(arr, opt_func, opt_strict) {
-  const compare = opt_func || numberSafeCompareFunction;
+export function isSorted(arr, func, strict) {
+  const compare = func || numberSafeCompareFunction;
   return arr.every(function (currentVal, index) {
     if (index === 0) {
       return true;
     }
     const res = compare(arr[index - 1], currentVal);
-    return !(res > 0 || (opt_strict && res === 0));
+    return !(res > 0 || (strict && res === 0));
   });
 }

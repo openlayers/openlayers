@@ -39,9 +39,9 @@ class ReprojTile extends Tile {
    * @param {number} gutter Gutter of the source tiles.
    * @param {FunctionType} getTileFunction
    *     Function returning source tiles (z, x, y, pixelRatio).
-   * @param {number} [opt_errorThreshold] Acceptable reprojection error (in px).
-   * @param {boolean} [opt_renderEdges] Render reprojection edges.
-   * @param {boolean} [opt_interpolate] Use linear interpolation when resampling.
+   * @param {number} [errorThreshold] Acceptable reprojection error (in px).
+   * @param {boolean} [renderEdges] Render reprojection edges.
+   * @param {boolean} [interpolate] Use linear interpolation when resampling.
    */
   constructor(
     sourceProj,
@@ -53,17 +53,17 @@ class ReprojTile extends Tile {
     pixelRatio,
     gutter,
     getTileFunction,
-    opt_errorThreshold,
-    opt_renderEdges,
-    opt_interpolate
+    errorThreshold,
+    renderEdges,
+    interpolate
   ) {
-    super(tileCoord, TileState.IDLE, {interpolate: !!opt_interpolate});
+    super(tileCoord, TileState.IDLE, {interpolate: !!interpolate});
 
     /**
      * @private
      * @type {boolean}
      */
-    this.renderEdges_ = opt_renderEdges !== undefined ? opt_renderEdges : false;
+    this.renderEdges_ = renderEdges !== undefined ? renderEdges : false;
 
     /**
      * @private
@@ -164,7 +164,7 @@ class ReprojTile extends Tile {
     }
 
     const errorThresholdInPixels =
-      opt_errorThreshold !== undefined ? opt_errorThreshold : ERROR_THRESHOLD;
+      errorThreshold !== undefined ? errorThreshold : ERROR_THRESHOLD;
 
     /**
      * @private

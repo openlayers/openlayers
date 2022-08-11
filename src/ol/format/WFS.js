@@ -265,12 +265,12 @@ const DEFAULT_VERSION = '1.1.0';
  */
 class WFS extends XMLFeature {
   /**
-   * @param {Options} [opt_options] Optional configuration object.
+   * @param {Options} [options] Optional configuration object.
    */
-  constructor(opt_options) {
+  constructor(options) {
     super();
 
-    const options = opt_options ? opt_options : {};
+    options = options ? options : {};
 
     /**
      * @private
@@ -324,10 +324,10 @@ class WFS extends XMLFeature {
   /**
    * @protected
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
+   * @param {import("./Feature.js").ReadOptions} [options] Options.
    * @return {Array<import("../Feature.js").default>} Features.
    */
-  readFeaturesFromNode(node, opt_options) {
+  readFeaturesFromNode(node, options) {
     /** @type {import("../xml.js").NodeStackItem} */
     const context = {
       node,
@@ -337,10 +337,7 @@ class WFS extends XMLFeature {
       'featureNS': this.featureNS_,
     });
 
-    Object.assign(
-      context,
-      this.getReadOptions(node, opt_options ? opt_options : {})
-    );
+    Object.assign(context, this.getReadOptions(node, options ? options : {}));
     const objectStack = [context];
     let featuresNS;
     if (this.version_ === '2.0.0') {
@@ -565,16 +562,16 @@ class WFS extends XMLFeature {
    *
    * @param {!string} geometryName Geometry name to use.
    * @param {!import("../extent.js").Extent} extent Extent.
-   * @param {string} [opt_srsName] SRS name. No srsName attribute will be
+   * @param {string} [srsName] SRS name. No srsName attribute will be
    *    set on geometries when this is not provided.
-   * @param {import("./filter/Filter.js").default} [opt_filter] Filter condition.
+   * @param {import("./filter/Filter.js").default} [filter] Filter condition.
    * @return {import("./filter/Filter.js").default} The filter.
    */
-  combineBboxAndFilter(geometryName, extent, opt_srsName, opt_filter) {
-    const bboxFilter = bboxFilterFn(geometryName, extent, opt_srsName);
-    if (opt_filter) {
+  combineBboxAndFilter(geometryName, extent, srsName, filter) {
+    const bboxFilter = bboxFilterFn(geometryName, extent, srsName);
+    if (filter) {
       // if bbox and filter are both set, combine the two into a single filter
-      return andFilterFn(opt_filter, bboxFilter);
+      return andFilterFn(filter, bboxFilter);
     }
     return bboxFilter;
   }
@@ -1324,12 +1321,12 @@ function writeTimeInstant(node, time) {
  * Encode filter as WFS `Filter` and return the Node.
  *
  * @param {import("./filter/Filter.js").default} filter Filter.
- * @param {string} opt_version WFS version. If not provided defaults to '1.1.0'
+ * @param {string} version WFS version. If not provided defaults to '1.1.0'
  * @return {Node} Result.
  * @api
  */
-export function writeFilter(filter, opt_version) {
-  const version = opt_version || '1.1.0';
+export function writeFilter(filter, version) {
+  version = version || '1.1.0';
   const child = createElementNS(getFilterNS(version), 'Filter');
   const context = {
     node: child,

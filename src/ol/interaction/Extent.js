@@ -94,10 +94,10 @@ export class ExtentEvent extends Event {
  */
 class Extent extends PointerInteraction {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
-    const options = opt_options || {};
+  constructor(options) {
+    options = options || {};
 
     super(/** @type {import("./Pointer.js").Options} */ (options));
 
@@ -166,8 +166,8 @@ class Extent extends PointerInteraction {
      */
     this.vertexFeature_ = null;
 
-    if (!opt_options) {
-      opt_options = {};
+    if (!options) {
+      options = {};
     }
 
     /**
@@ -178,10 +178,10 @@ class Extent extends PointerInteraction {
     this.extentOverlay_ = new VectorLayer({
       source: new VectorSource({
         useSpatialIndex: false,
-        wrapX: !!opt_options.wrapX,
+        wrapX: !!options.wrapX,
       }),
-      style: opt_options.boxStyle
-        ? opt_options.boxStyle
+      style: options.boxStyle
+        ? options.boxStyle
         : getDefaultExtentStyleFunction(),
       updateWhileAnimating: true,
       updateWhileInteracting: true,
@@ -195,17 +195,17 @@ class Extent extends PointerInteraction {
     this.vertexOverlay_ = new VectorLayer({
       source: new VectorSource({
         useSpatialIndex: false,
-        wrapX: !!opt_options.wrapX,
+        wrapX: !!options.wrapX,
       }),
-      style: opt_options.pointerStyle
-        ? opt_options.pointerStyle
+      style: options.pointerStyle
+        ? options.pointerStyle
         : getDefaultPointerStyleFunction(),
       updateWhileAnimating: true,
       updateWhileInteracting: true,
     });
 
-    if (opt_options.extent) {
-      this.setExtent(opt_options.extent);
+    if (options.extent) {
+      this.setExtent(options.extent);
     }
   }
 

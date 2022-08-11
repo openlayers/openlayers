@@ -101,15 +101,15 @@ class VectorContext {
 
   /**
    * @param {import("../style/Image.js").default} imageStyle Image style.
-   * @param {import("../render/canvas.js").DeclutterImageWithText} [opt_declutterImageWithText] Shared data for combined decluttering with a text style.
+   * @param {import("../render/canvas.js").DeclutterImageWithText} [declutterImageWithText] Shared data for combined decluttering with a text style.
    */
-  setImageStyle(imageStyle, opt_declutterImageWithText) {}
+  setImageStyle(imageStyle, declutterImageWithText) {}
 
   /**
    * @param {import("../style/Text.js").default} textStyle Text style.
-   * @param {import("../render/canvas.js").DeclutterImageWithText} [opt_declutterImageWithText] Shared data for combined decluttering with an image style.
+   * @param {import("../render/canvas.js").DeclutterImageWithText} [declutterImageWithText] Shared data for combined decluttering with an image style.
    */
-  setTextStyle(textStyle, opt_declutterImageWithText) {}
+  setTextStyle(textStyle, declutterImageWithText) {}
 }
 
 export default VectorContext;

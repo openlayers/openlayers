@@ -72,10 +72,10 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  */
 class XYZ extends TileImage {
   /**
-   * @param {Options} [opt_options] XYZ options.
+   * @param {Options} [options] XYZ options.
    */
-  constructor(opt_options) {
-    const options = opt_options || {};
+  constructor(options) {
+    options = options || {};
 
     const projection =
       options.projection !== undefined ? options.projection : 'EPSG:3857';

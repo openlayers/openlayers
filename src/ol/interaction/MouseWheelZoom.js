@@ -37,10 +37,10 @@ import {clamp} from '../math.js';
  */
 class MouseWheelZoom extends Interaction {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
     super(
       /** @type {import("./Interaction.js").InteractionOptions} */ (options)

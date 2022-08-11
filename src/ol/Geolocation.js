@@ -101,9 +101,9 @@ class GeolocationError extends BaseEvent {
  */
 class Geolocation extends BaseObject {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
+  constructor(options) {
     super();
 
     /***
@@ -121,7 +121,7 @@ class Geolocation extends BaseObject {
      */
     this.un;
 
-    const options = opt_options || {};
+    options = options || {};
 
     /**
      * The unprojected (EPSG:4326) device position.

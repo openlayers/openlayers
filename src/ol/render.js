@@ -64,13 +64,13 @@ import {getTransformFromProjections, getUserProjection} from './proj.js';
  * ```
  *
  * @param {CanvasRenderingContext2D} context Canvas context.
- * @param {ToContextOptions} [opt_options] Options.
+ * @param {ToContextOptions} [options] Options.
  * @return {CanvasImmediateRenderer} Canvas Immediate.
  * @api
  */
-export function toContext(context, opt_options) {
+export function toContext(context, options) {
   const canvas = context.canvas;
-  const options = opt_options ? opt_options : {};
+  options = options ? options : {};
   const pixelRatio = options.pixelRatio || DEVICE_PIXEL_RATIO;
   const size = options.size;
   if (size) {

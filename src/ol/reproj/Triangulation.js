@@ -54,7 +54,7 @@ class Triangulation {
    * @param {import("../extent.js").Extent} targetExtent Target extent to triangulate.
    * @param {import("../extent.js").Extent} maxSourceExtent Maximal source extent that can be used.
    * @param {number} errorThreshold Acceptable error (in source units).
-   * @param {?number} opt_destinationResolution The (optional) resolution of the destination.
+   * @param {?number} destinationResolution The (optional) resolution of the destination.
    */
   constructor(
     sourceProj,
@@ -62,7 +62,7 @@ class Triangulation {
     targetExtent,
     maxSourceExtent,
     errorThreshold,
-    opt_destinationResolution
+    destinationResolution
   ) {
     /**
      * @type {import("../proj/Projection.js").default}
@@ -165,16 +165,13 @@ class Triangulation {
      */
     const maxSubdivision =
       MAX_SUBDIVISION +
-      (opt_destinationResolution
+      (destinationResolution
         ? Math.max(
             0,
             Math.ceil(
               Math.log2(
                 getArea(targetExtent) /
-                  (opt_destinationResolution *
-                    opt_destinationResolution *
-                    256 *
-                    256)
+                  (destinationResolution * destinationResolution * 256 * 256)
               )
             )
           )
