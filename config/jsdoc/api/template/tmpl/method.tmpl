@@ -56,7 +56,7 @@ if (/-dev$/.test(version)) {
 
     <?js if (data['this']) { ?>
         <h5>This:</h5>
-        <ul><li><?js= this.linkto(data['this'], data['this']) ?></li></ul>
+        <ul><li><?js= this.linkto(data['this']) ?></li></ul>
     <?js } ?>
 
     <?js if (data.stability || kind !== 'class') { ?>

@@ -85,7 +85,7 @@
     ?>
         <h3 class="subsection-title">Subclasses</h3>
         <ul><?js subclasses.forEach(function(s) { ?>
-          <li><?js= self.linkto(s.longname, s.longname) ?>
+          <li><?js= self.linkto(s.longname) ?>
             <?js= (s.interface ? '(Interface)' : '') ?>
           </li>
         <?js }); ?></ul>
@@ -95,7 +95,7 @@
         <h3 class="subsection-title">Extends</h3>
 
         <ul><?js doc.augments.forEach(function(a) { ?>
-            <li><?js= self.linkto(a, a) ?></li>
+            <li><?js= self.linkto(a) ?></li>
         <?js }); ?></ul>
     <?js } ?>
 
@@ -103,7 +103,7 @@
         <h3 class="subsection-title">Mixes In</h3>
 
         <ul><?js doc.mixes.forEach(function(a) { ?>
-            <li><?js= self.linkto(a, a) ?></li>
+            <li><?js= self.linkto(a) ?></li>
         <?js }); ?></ul>
     <?js } ?>
 
@@ -111,7 +111,7 @@
         <h3 class="subsection-title">Requires</h3>
 
         <ul><?js doc.requires.forEach(function(r) { ?>
-            <li><?js= self.linkto(r, r) ?></li>
+            <li><?js= self.linkto(r) ?></li>
         <?js }); ?></ul>
     <?js } ?>
 
