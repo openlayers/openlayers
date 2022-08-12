@@ -249,10 +249,10 @@ class RenderFeature {
    * Get a transformed and simplified version of the geometry.
    * @abstract
    * @param {number} squaredTolerance Squared tolerance.
-   * @param {import("../proj.js").TransformFunction} [opt_transform] Optional transform function.
+   * @param {import("../proj.js").TransformFunction} [transform] Optional transform function.
    * @return {RenderFeature} Simplified geometry.
    */
-  simplifyTransformed(squaredTolerance, opt_transform) {
+  simplifyTransformed(squaredTolerance, transform) {
     return this;
   }
 
@@ -373,19 +373,19 @@ export function toGeometry(renderFeature) {
 /**
  * Create an `ol/Feature` from an `ol/render/Feature`
  * @param {RenderFeature} renderFeature RenderFeature
- * @param {string} [opt_geometryName='geometry'] Geometry name to use
+ * @param {string} [geometryName='geometry'] Geometry name to use
  * when creating the Feature.
  * @return {Feature} Newly constructed `ol/Feature` with properties,
  * geometry, and id copied over.
  * @api
  */
-export function toFeature(renderFeature, opt_geometryName) {
+export function toFeature(renderFeature, geometryName) {
   const id = renderFeature.getId();
   const geometry = toGeometry(renderFeature);
   const properties = renderFeature.getProperties();
   const feature = new Feature();
-  if (opt_geometryName !== undefined) {
-    feature.setGeometryName(opt_geometryName);
+  if (geometryName !== undefined) {
+    feature.setGeometryName(geometryName);
   }
   feature.setGeometry(geometry);
   if (id !== undefined) {

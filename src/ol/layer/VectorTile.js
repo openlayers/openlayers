@@ -93,16 +93,16 @@ import {assert} from '../asserts.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @param {Options} [opt_options] Options.
+ * @param {Options} [options] Options.
  * @extends {BaseVectorLayer<import("../source/VectorTile.js").default, CanvasVectorTileLayerRenderer>}
  * @api
  */
 class VectorTileLayer extends BaseVectorLayer {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
     const baseOptions = /** @type {Object} */ (Object.assign({}, options));
     delete baseOptions.preload;

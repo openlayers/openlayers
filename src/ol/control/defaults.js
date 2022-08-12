@@ -29,13 +29,13 @@ import Zoom from './Zoom.js';
  * * {@link module:ol/control/Rotate~Rotate}
  * * {@link module:ol/control/Attribution~Attribution}
  *
- * @param {DefaultsOptions} [opt_options] Options for the default controls.
+ * @param {DefaultsOptions} [options] Options for the default controls.
  * @return {Collection<import("./Control.js").default>} A collection of controls
  * to be used with the {@link module:ol/Map~Map} constructor's `controls` option.
  * @api
  */
-export function defaults(opt_options) {
-  const options = opt_options ? opt_options : {};
+export function defaults(options) {
+  options = options ? options : {};
 
   /** @type {Collection<import("./Control.js").default>} */
   const controls = new Collection();

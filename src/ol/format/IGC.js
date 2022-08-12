@@ -57,12 +57,12 @@ const NEWLINE_RE = /\r\n|\r|\n/;
  */
 class IGC extends TextFeature {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
+  constructor(options) {
     super();
 
-    const options = opt_options ? opt_options : {};
+    options = options ? options : {};
 
     /**
      * @type {import("../proj/Projection.js").default}
@@ -79,10 +79,10 @@ class IGC extends TextFeature {
   /**
    * @protected
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {import("../Feature.js").default} Feature.
    */
-  readFeatureFromText(text, opt_options) {
+  readFeatureFromText(text, options) {
     const altitudeMode = this.altitudeMode_;
     const lines = text.split(NEWLINE_RE);
     /** @type {Object<string, string>} */
@@ -150,7 +150,7 @@ class IGC extends TextFeature {
     const layout = altitudeMode == 'none' ? 'XYM' : 'XYZM';
     const lineString = new LineString(flatCoordinates, layout);
     const feature = new Feature(
-      transformGeometryWithOptions(lineString, false, opt_options)
+      transformGeometryWithOptions(lineString, false, options)
     );
     feature.setProperties(properties, true);
     return feature;
@@ -158,12 +158,12 @@ class IGC extends TextFeature {
 
   /**
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
    * @return {Array<Feature>} Features.
    */
-  readFeaturesFromText(text, opt_options) {
-    const feature = this.readFeatureFromText(text, opt_options);
+  readFeaturesFromText(text, options) {
+    const feature = this.readFeatureFromText(text, options);
     if (feature) {
       return [feature];
     } else {

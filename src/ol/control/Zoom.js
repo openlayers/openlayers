@@ -33,10 +33,10 @@ import {easeOut} from '../easing.js';
  */
 class Zoom extends Control {
   /**
-   * @param {Options} [opt_options] Zoom options.
+   * @param {Options} [options] Zoom options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
     super({
       element: document.createElement('div'),

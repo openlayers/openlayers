@@ -60,10 +60,10 @@ import TileProperty from './TileProperty.js';
  */
 class BaseTileLayer extends Layer {
   /**
-   * @param {Options<TileSourceType>} [opt_options] Tile layer options.
+   * @param {Options<TileSourceType>} [options] Tile layer options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
     const baseOptions = Object.assign({}, options);
 

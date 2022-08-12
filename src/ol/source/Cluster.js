@@ -142,12 +142,12 @@ class Cluster extends VectorSource {
 
   /**
    * Remove all features from the source.
-   * @param {boolean} [opt_fast] Skip dispatching of {@link module:ol/source/VectorEventType~VectorEventType#removefeature} events.
+   * @param {boolean} [fast] Skip dispatching of {@link module:ol/source/VectorEventType~VectorEventType#removefeature} events.
    * @api
    */
-  clear(opt_fast) {
+  clear(fast) {
     this.features.length = 0;
-    super.clear(opt_fast);
+    super.clear(fast);
   }
 
   /**

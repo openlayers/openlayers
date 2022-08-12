@@ -61,7 +61,7 @@ const ONLY_WHITESPACE_RE = /^\s*$/;
  * So for instance there might be a featureType item `topp:states` and then
  * there will be a key named `topp` in the featureNS object with value
  * `http://www.openplans.org/topp`.
- * @property {string} srsName srsName to use when writing geometries.
+ * @property {string} [srsName] srsName to use when writing geometries.
  * @property {boolean} [surface=false] Write gml:Surface instead of gml:Polygon
  * elements. This also affects the elements in multi-part geometries.
  * @property {boolean} [curve=false] Write gml:Curve instead of gml:LineString
@@ -88,12 +88,12 @@ const ONLY_WHITESPACE_RE = /^\s*$/;
  */
 class GMLBase extends XMLFeature {
   /**
-   * @param {Options} [opt_options] Optional configuration object.
+   * @param {Options} [options] Optional configuration object.
    */
-  constructor(opt_options) {
+  constructor(options) {
     super();
 
-    const options = /** @type {Options} */ (opt_options ? opt_options : {});
+    options = options ? options : {};
 
     /**
      * @protected
@@ -109,7 +109,7 @@ class GMLBase extends XMLFeature {
 
     /**
      * @protected
-     * @type {string}
+     * @type {string|undefined}
      */
     this.srsName = options.srsName;
 
@@ -542,31 +542,31 @@ class GMLBase extends XMLFeature {
 
   /**
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
+   * @param {import("./Feature.js").ReadOptions} [options] Options.
    * @protected
    * @return {import("../geom/Geometry.js").default} Geometry.
    */
-  readGeometryFromNode(node, opt_options) {
+  readGeometryFromNode(node, options) {
     const geometry = this.readGeometryElement(node, [
-      this.getReadOptions(node, opt_options ? opt_options : {}),
+      this.getReadOptions(node, options ? options : {}),
     ]);
     return geometry ? geometry : null;
   }
 
   /**
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
+   * @param {import("./Feature.js").ReadOptions} [options] Options.
    * @return {Array<import("../Feature.js").default>} Features.
    */
-  readFeaturesFromNode(node, opt_options) {
-    const options = {
+  readFeaturesFromNode(node, options) {
+    const internalOptions = {
       featureType: this.featureType,
       featureNS: this.featureNS,
     };
-    if (opt_options) {
-      Object.assign(options, this.getReadOptions(node, opt_options));
+    if (internalOptions) {
+      Object.assign(internalOptions, this.getReadOptions(node, options));
     }
-    const features = this.readFeaturesInternal(node, [options]);
+    const features = this.readFeaturesInternal(node, [internalOptions]);
     return features || [];
   }
 

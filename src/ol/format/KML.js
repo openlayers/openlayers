@@ -423,12 +423,12 @@ function defaultIconUrlFunction(href) {
  */
 class KML extends XMLFeature {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
+  constructor(options) {
     super();
 
-    const options = opt_options ? opt_options : {};
+    options = options ? options : {};
 
     if (!DEFAULT_STYLE_ARRAY) {
       createStyleDefaults();
@@ -624,15 +624,15 @@ class KML extends XMLFeature {
 
   /**
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
+   * @param {import("./Feature.js").ReadOptions} [options] Options.
    * @return {import("../Feature.js").default} Feature.
    */
-  readFeatureFromNode(node, opt_options) {
+  readFeatureFromNode(node, options) {
     if (!NAMESPACE_URIS.includes(node.namespaceURI)) {
       return null;
     }
     const feature = this.readPlacemark_(node, [
-      this.getReadOptions(node, opt_options),
+      this.getReadOptions(node, options),
     ]);
     if (feature) {
       return feature;
@@ -644,10 +644,10 @@ class KML extends XMLFeature {
   /**
    * @protected
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
+   * @param {import("./Feature.js").ReadOptions} [options] Options.
    * @return {Array<import("../Feature.js").default>} Features.
    */
-  readFeaturesFromNode(node, opt_options) {
+  readFeaturesFromNode(node, options) {
     if (!NAMESPACE_URIS.includes(node.namespaceURI)) {
       return [];
     }
@@ -655,7 +655,7 @@ class KML extends XMLFeature {
     const localName = node.localName;
     if (localName == 'Document' || localName == 'Folder') {
       features = this.readDocumentOrFolder_(node, [
-        this.getReadOptions(node, opt_options),
+        this.getReadOptions(node, options),
       ]);
       if (features) {
         return features;
@@ -664,7 +664,7 @@ class KML extends XMLFeature {
       }
     } else if (localName == 'Placemark') {
       const feature = this.readPlacemark_(node, [
-        this.getReadOptions(node, opt_options),
+        this.getReadOptions(node, options),
       ]);
       if (feature) {
         return [feature];
@@ -674,7 +674,7 @@ class KML extends XMLFeature {
     } else if (localName == 'kml') {
       features = [];
       for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
-        const fs = this.readFeaturesFromNode(n, opt_options);
+        const fs = this.readFeaturesFromNode(n, options);
         if (fs) {
           extend(features, fs);
         }
@@ -886,12 +886,12 @@ class KML extends XMLFeature {
    * MultiPoints, MultiLineStrings, and MultiPolygons are output as MultiGeometries.
    *
    * @param {Array<Feature>} features Features.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Options.
+   * @param {import("./Feature.js").WriteOptions} [options] Options.
    * @return {Node} Node.
    * @api
    */
-  writeFeaturesNode(features, opt_options) {
-    opt_options = this.adaptOptions(opt_options);
+  writeFeaturesNode(features, options) {
+    options = this.adaptOptions(options);
     const kml = createElementNS(NAMESPACE_URIS[4], 'kml');
     const xmlnsUri = 'http://www.w3.org/2000/xmlns/';
     kml.setAttributeNS(xmlnsUri, 'xmlns:gx', GX_NAMESPACE_URIS[0]);
@@ -919,7 +919,7 @@ class KML extends XMLFeature {
       KML_SERIALIZERS,
       OBJECT_PROPERTY_NODE_FACTORY,
       values,
-      [opt_options],
+      [options],
       orderedKeys,
       this
     );
@@ -2444,10 +2444,10 @@ const DOCUMENT_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
  * @const
  * @param {*} value Value.
  * @param {Array<*>} objectStack Object stack.
- * @param {string} [opt_nodeName] Node name.
+ * @param {string} [nodeName] Node name.
  * @return {Node|undefined} Node.
  */
-const DOCUMENT_NODE_FACTORY = function (value, objectStack, opt_nodeName) {
+const DOCUMENT_NODE_FACTORY = function (value, objectStack, nodeName) {
   const parentNode = objectStack[objectStack.length - 1].node;
   return createElementNS(parentNode.namespaceURI, 'Placemark');
 };
@@ -2533,11 +2533,11 @@ const ICON_SERIALIZERS = makeStructureNS(
  * @const
  * @param {*} value Value.
  * @param {Array<*>} objectStack Object stack.
- * @param {string} [opt_nodeName] Node name.
+ * @param {string} [nodeName] Node name.
  * @return {Node|undefined} Node.
  */
-const GX_NODE_FACTORY = function (value, objectStack, opt_nodeName) {
-  return createElementNS(GX_NAMESPACE_URIS[0], 'gx:' + opt_nodeName);
+const GX_NODE_FACTORY = function (value, objectStack, nodeName) {
+  return createElementNS(GX_NAMESPACE_URIS[0], 'gx:' + nodeName);
 };
 
 /**
@@ -2780,10 +2780,10 @@ const GEOMETRY_TYPE_TO_NODENAME = {
  * @const
  * @param {*} value Value.
  * @param {Array<*>} objectStack Object stack.
- * @param {string} [opt_nodeName] Node name.
+ * @param {string} [nodeName] Node name.
  * @return {Node|undefined} Node.
  */
-const GEOMETRY_NODE_FACTORY = function (value, objectStack, opt_nodeName) {
+const GEOMETRY_NODE_FACTORY = function (value, objectStack, nodeName) {
   if (value) {
     const parentNode = objectStack[objectStack.length - 1].node;
     return createElementNS(

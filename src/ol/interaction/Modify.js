@@ -1159,11 +1159,11 @@ class Modify extends PointerInteraction {
   /**
    * @param {import("../pixel.js").Pixel} pixel Pixel
    * @param {import("../Map.js").default} map Map.
-   * @param {import("../coordinate.js").Coordinate} [opt_coordinate] The pixel Coordinate.
+   * @param {import("../coordinate.js").Coordinate} [coordinate] The pixel Coordinate.
    * @private
    */
-  handlePointerAtPixel_(pixel, map, opt_coordinate) {
-    const pixelCoordinate = opt_coordinate || map.getCoordinateFromPixel(pixel);
+  handlePointerAtPixel_(pixel, map, coordinate) {
+    const pixelCoordinate = coordinate || map.getCoordinateFromPixel(pixel);
     const projection = map.getView().getProjection();
     const sortByDistance = function (a, b) {
       return (

@@ -54,14 +54,14 @@ import PinchZoom from './PinchZoom.js';
  * * {@link module:ol/interaction/MouseWheelZoom~MouseWheelZoom}
  * * {@link module:ol/interaction/DragZoom~DragZoom}
  *
- * @param {DefaultsOptions} [opt_options] Defaults options.
+ * @param {DefaultsOptions} [options] Defaults options.
  * @return {Collection<import("./Interaction.js").default>}
  * A collection of interactions to be used with the {@link module:ol/Map~Map}
  * constructor's `interactions` option.
  * @api
  */
-export function defaults(opt_options) {
-  const options = opt_options ? opt_options : {};
+export function defaults(options) {
+  options = options ? options : {};
 
   /** @type {Collection<import("./Interaction.js").default>} */
   const interactions = new Collection();

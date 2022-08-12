@@ -12,16 +12,16 @@
  * Returns a buffered size.
  * @param {Size} size Size.
  * @param {number} num The amount by which to buffer.
- * @param {Size} [opt_size] Optional reusable size array.
+ * @param {Size} [dest] Optional reusable size array.
  * @return {Size} The buffered size.
  */
-export function buffer(size, num, opt_size) {
-  if (opt_size === undefined) {
-    opt_size = [0, 0];
+export function buffer(size, num, dest) {
+  if (dest === undefined) {
+    dest = [0, 0];
   }
-  opt_size[0] = size[0] + 2 * num;
-  opt_size[1] = size[1] + 2 * num;
-  return opt_size;
+  dest[0] = size[0] + 2 * num;
+  dest[1] = size[1] + 2 * num;
+  return dest;
 }
 
 /**
@@ -37,16 +37,16 @@ export function hasArea(size) {
  * Returns a size scaled by a ratio. The result will be an array of integers.
  * @param {Size} size Size.
  * @param {number} ratio Ratio.
- * @param {Size} [opt_size] Optional reusable size array.
+ * @param {Size} [dest] Optional reusable size array.
  * @return {Size} The scaled size.
  */
-export function scale(size, ratio, opt_size) {
-  if (opt_size === undefined) {
-    opt_size = [0, 0];
+export function scale(size, ratio, dest) {
+  if (dest === undefined) {
+    dest = [0, 0];
   }
-  opt_size[0] = (size[0] * ratio + 0.5) | 0;
-  opt_size[1] = (size[1] * ratio + 0.5) | 0;
-  return opt_size;
+  dest[0] = (size[0] * ratio + 0.5) | 0;
+  dest[1] = (size[1] * ratio + 0.5) | 0;
+  return dest;
 }
 
 /**
@@ -54,20 +54,20 @@ export function scale(size, ratio, opt_size) {
  * `Size` array.
  * (meaning: non-square),
  * @param {number|Size} size Width and height.
- * @param {Size} [opt_size] Optional reusable size array.
+ * @param {Size} [dest] Optional reusable size array.
  * @return {Size} Size.
  * @api
  */
-export function toSize(size, opt_size) {
+export function toSize(size, dest) {
   if (Array.isArray(size)) {
     return size;
   } else {
-    if (opt_size === undefined) {
-      opt_size = [size, size];
+    if (dest === undefined) {
+      dest = [size, size];
     } else {
-      opt_size[0] = size;
-      opt_size[1] = size;
+      dest[0] = size;
+      dest[1] = size;
     }
-    return opt_size;
+    return dest;
   }
 }

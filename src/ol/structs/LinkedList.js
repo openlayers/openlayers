@@ -15,10 +15,10 @@
  */
 class LinkedList {
   /**
-   * @param {boolean} [opt_circular] The last item is connected to the first one,
+   * @param {boolean} [circular] The last item is connected to the first one,
    * and the first item to the last one. Default is true.
    */
-  constructor(opt_circular) {
+  constructor(circular) {
     /**
      * @private
      * @type {Item|undefined}
@@ -41,7 +41,7 @@ class LinkedList {
      * @private
      * @type {boolean}
      */
-    this.circular_ = opt_circular === undefined ? true : opt_circular;
+    this.circular_ = circular === undefined ? true : circular;
 
     /**
      * @private

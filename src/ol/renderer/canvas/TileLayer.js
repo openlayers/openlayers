@@ -694,7 +694,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @param {import("../../extent.js").Extent} extent Extent.
    * @param {number} currentZ Current Z.
    * @param {number} preload Load low resolution tiles up to `preload` levels.
-   * @param {function(import("../../Tile.js").default):void} [opt_tileCallback] Tile callback.
+   * @param {function(import("../../Tile.js").default):void} [tileCallback] Tile callback.
    * @protected
    */
   manageTilePyramid(
@@ -706,7 +706,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     extent,
     currentZ,
     preload,
-    opt_tileCallback
+    tileCallback
   ) {
     const tileSourceKey = getUid(tileSource);
     if (!(tileSourceKey in frameState.wantedTiles)) {
@@ -751,8 +751,8 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
                 ]);
               }
             }
-            if (opt_tileCallback !== undefined) {
-              opt_tileCallback(tile);
+            if (tileCallback !== undefined) {
+              tileCallback(tile);
             }
           } else {
             tileSource.useTile(z, x, y, projection);

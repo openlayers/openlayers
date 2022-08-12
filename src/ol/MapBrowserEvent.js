@@ -14,19 +14,12 @@ class MapBrowserEvent extends MapEvent {
    * @param {string} type Event type.
    * @param {import("./Map.js").default} map Map.
    * @param {EVENT} originalEvent Original event.
-   * @param {boolean} [opt_dragging] Is the map currently being dragged?
-   * @param {import("./Map.js").FrameState} [opt_frameState] Frame state.
-   * @param {Array<PointerEvent>} [opt_activePointers] Active pointers.
+   * @param {boolean} [dragging] Is the map currently being dragged?
+   * @param {import("./Map.js").FrameState} [frameState] Frame state.
+   * @param {Array<PointerEvent>} [activePointers] Active pointers.
    */
-  constructor(
-    type,
-    map,
-    originalEvent,
-    opt_dragging,
-    opt_frameState,
-    opt_activePointers
-  ) {
-    super(type, map, opt_frameState);
+  constructor(type, map, originalEvent, dragging, frameState, activePointers) {
+    super(type, map, frameState);
 
     /**
      * The original browser event.
@@ -55,12 +48,12 @@ class MapBrowserEvent extends MapEvent {
      * @type {boolean}
      * @api
      */
-    this.dragging = opt_dragging !== undefined ? opt_dragging : false;
+    this.dragging = dragging !== undefined ? dragging : false;
 
     /**
      * @type {Array<PointerEvent>|undefined}
      */
-    this.activePointers = opt_activePointers;
+    this.activePointers = activePointers;
   }
 
   /**

@@ -151,10 +151,10 @@ import {assert} from '../asserts.js';
  */
 class Style {
   /**
-   * @param {Options} [opt_options] Style options.
+   * @param {Options} [options] Style options.
    */
-  constructor(opt_options) {
-    const options = opt_options || {};
+  constructor(options) {
+    options = options || {};
 
     /**
      * @private

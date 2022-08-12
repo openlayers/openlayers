@@ -53,10 +53,10 @@ import {
  */
 class ImageCanvasSource extends ImageSource {
   /**
-   * @param {Options} [opt_options] ImageCanvas options.
+   * @param {Options} [options] ImageCanvas options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
     super({
       attributions: options.attributions,

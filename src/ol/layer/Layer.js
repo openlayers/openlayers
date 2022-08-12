@@ -165,21 +165,21 @@ class Layer extends BaseLayer {
   }
 
   /**
-   * @param {Array<import("./Layer.js").default>} [opt_array] Array of layers (to be modified in place).
+   * @param {Array<import("./Layer.js").default>} [array] Array of layers (to be modified in place).
    * @return {Array<import("./Layer.js").default>} Array of layers.
    */
-  getLayersArray(opt_array) {
-    const array = opt_array ? opt_array : [];
+  getLayersArray(array) {
+    array = array ? array : [];
     array.push(this);
     return array;
   }
 
   /**
-   * @param {Array<import("./Layer.js").State>} [opt_states] Optional list of layer states (to be modified in place).
+   * @param {Array<import("./Layer.js").State>} [states] Optional list of layer states (to be modified in place).
    * @return {Array<import("./Layer.js").State>} List of layer states.
    */
-  getLayerStatesArray(opt_states) {
-    const states = opt_states ? opt_states : [];
+  getLayerStatesArray(states) {
+    states = states ? states : [];
     states.push(this.getLayerState());
     return states;
   }

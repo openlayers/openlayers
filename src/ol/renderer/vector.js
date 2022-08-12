@@ -70,14 +70,14 @@ export function getTolerance(resolution, pixelRatio) {
  * @param {import("../geom/Circle.js").default} geometry Geometry.
  * @param {import("../style/Style.js").default} style Style.
  * @param {import("../Feature.js").default} feature Feature.
- * @param {import("../render/canvas/BuilderGroup.js").default} [opt_declutterBuilderGroup] Builder for decluttering.
+ * @param {import("../render/canvas/BuilderGroup.js").default} [declutterBuilderGroup] Builder for decluttering.
  */
 function renderCircleGeometry(
   builderGroup,
   geometry,
   style,
   feature,
-  opt_declutterBuilderGroup
+  declutterBuilderGroup
 ) {
   const fillStyle = style.getFill();
   const strokeStyle = style.getStroke();
@@ -88,7 +88,7 @@ function renderCircleGeometry(
   }
   const textStyle = style.getText();
   if (textStyle && textStyle.getText()) {
-    const textReplay = (opt_declutterBuilderGroup || builderGroup).getBuilder(
+    const textReplay = (declutterBuilderGroup || builderGroup).getBuilder(
       style.getZIndex(),
       'Text'
     );
@@ -103,8 +103,8 @@ function renderCircleGeometry(
  * @param {import("../style/Style.js").default} style Style.
  * @param {number} squaredTolerance Squared tolerance.
  * @param {function(import("../events/Event.js").default): void} listener Listener function.
- * @param {import("../proj.js").TransformFunction} [opt_transform] Transform from user to view projection.
- * @param {import("../render/canvas/BuilderGroup.js").default} [opt_declutterBuilderGroup] Builder for decluttering.
+ * @param {import("../proj.js").TransformFunction} [transform] Transform from user to view projection.
+ * @param {import("../render/canvas/BuilderGroup.js").default} [declutterBuilderGroup] Builder for decluttering.
  * @return {boolean} `true` if style is loading.
  */
 export function renderFeature(
@@ -113,8 +113,8 @@ export function renderFeature(
   style,
   squaredTolerance,
   listener,
-  opt_transform,
-  opt_declutterBuilderGroup
+  transform,
+  declutterBuilderGroup
 ) {
   let loading = false;
   const imageStyle = style.getImage();
@@ -135,8 +135,8 @@ export function renderFeature(
     feature,
     style,
     squaredTolerance,
-    opt_transform,
-    opt_declutterBuilderGroup
+    transform,
+    declutterBuilderGroup
   );
 
   return loading;
@@ -147,16 +147,16 @@ export function renderFeature(
  * @param {import("../Feature.js").FeatureLike} feature Feature.
  * @param {import("../style/Style.js").default} style Style.
  * @param {number} squaredTolerance Squared tolerance.
- * @param {import("../proj.js").TransformFunction} [opt_transform] Optional transform function.
- * @param {import("../render/canvas/BuilderGroup.js").default} [opt_declutterBuilderGroup] Builder for decluttering.
+ * @param {import("../proj.js").TransformFunction} [transform] Optional transform function.
+ * @param {import("../render/canvas/BuilderGroup.js").default} [declutterBuilderGroup] Builder for decluttering.
  */
 function renderFeatureInternal(
   replayGroup,
   feature,
   style,
   squaredTolerance,
-  opt_transform,
-  opt_declutterBuilderGroup
+  transform,
+  declutterBuilderGroup
 ) {
   const geometry = style.getGeometryFunction()(feature);
   if (!geometry) {
@@ -164,7 +164,7 @@ function renderFeatureInternal(
   }
   const simplifiedGeometry = geometry.simplifyTransformed(
     squaredTolerance,
-    opt_transform
+    transform
   );
   const renderer = style.getRenderer();
   if (renderer) {
@@ -176,7 +176,7 @@ function renderFeatureInternal(
       simplifiedGeometry,
       style,
       feature,
-      opt_declutterBuilderGroup
+      declutterBuilderGroup
     );
   }
 }
@@ -212,14 +212,14 @@ function renderGeometry(replayGroup, geometry, style, feature) {
  * @param {import("../geom/GeometryCollection.js").default} geometry Geometry.
  * @param {import("../style/Style.js").default} style Style.
  * @param {import("../Feature.js").default} feature Feature.
- * @param {import("../render/canvas/BuilderGroup.js").default} [opt_declutterBuilderGroup] Builder for decluttering.
+ * @param {import("../render/canvas/BuilderGroup.js").default} [declutterBuilderGroup] Builder for decluttering.
  */
 function renderGeometryCollectionGeometry(
   replayGroup,
   geometry,
   style,
   feature,
-  opt_declutterBuilderGroup
+  declutterBuilderGroup
 ) {
   const geometries = geometry.getGeometriesArray();
   let i, ii;
@@ -230,7 +230,7 @@ function renderGeometryCollectionGeometry(
       geometries[i],
       style,
       feature,
-      opt_declutterBuilderGroup
+      declutterBuilderGroup
     );
   }
 }
@@ -240,14 +240,14 @@ function renderGeometryCollectionGeometry(
  * @param {import("../geom/LineString.js").default|import("../render/Feature.js").default} geometry Geometry.
  * @param {import("../style/Style.js").default} style Style.
  * @param {import("../Feature.js").FeatureLike} feature Feature.
- * @param {import("../render/canvas/BuilderGroup.js").default} [opt_declutterBuilderGroup] Builder for decluttering.
+ * @param {import("../render/canvas/BuilderGroup.js").default} [declutterBuilderGroup] Builder for decluttering.
  */
 function renderLineStringGeometry(
   builderGroup,
   geometry,
   style,
   feature,
-  opt_declutterBuilderGroup
+  declutterBuilderGroup
 ) {
   const strokeStyle = style.getStroke();
   if (strokeStyle) {
@@ -260,7 +260,7 @@ function renderLineStringGeometry(
   }
   const textStyle = style.getText();
   if (textStyle && textStyle.getText()) {
-    const textReplay = (opt_declutterBuilderGroup || builderGroup).getBuilder(
+    const textReplay = (declutterBuilderGroup || builderGroup).getBuilder(
       style.getZIndex(),
       'Text'
     );
@@ -274,14 +274,14 @@ function renderLineStringGeometry(
  * @param {import("../geom/MultiLineString.js").default|import("../render/Feature.js").default} geometry Geometry.
  * @param {import("../style/Style.js").default} style Style.
  * @param {import("../Feature.js").FeatureLike} feature Feature.
- * @param {import("../render/canvas/BuilderGroup.js").default} [opt_declutterBuilderGroup] Builder for decluttering.
+ * @param {import("../render/canvas/BuilderGroup.js").default} [declutterBuilderGroup] Builder for decluttering.
  */
 function renderMultiLineStringGeometry(
   builderGroup,
   geometry,
   style,
   feature,
-  opt_declutterBuilderGroup
+  declutterBuilderGroup
 ) {
   const strokeStyle = style.getStroke();
   if (strokeStyle) {
@@ -294,7 +294,7 @@ function renderMultiLineStringGeometry(
   }
   const textStyle = style.getText();
   if (textStyle && textStyle.getText()) {
-    const textReplay = (opt_declutterBuilderGroup || builderGroup).getBuilder(
+    const textReplay = (declutterBuilderGroup || builderGroup).getBuilder(
       style.getZIndex(),
       'Text'
     );
@@ -308,14 +308,14 @@ function renderMultiLineStringGeometry(
  * @param {import("../geom/MultiPolygon.js").default} geometry Geometry.
  * @param {import("../style/Style.js").default} style Style.
  * @param {import("../Feature.js").default} feature Feature.
- * @param {import("../render/canvas/BuilderGroup.js").default} [opt_declutterBuilderGroup] Builder for decluttering.
+ * @param {import("../render/canvas/BuilderGroup.js").default} [declutterBuilderGroup] Builder for decluttering.
  */
 function renderMultiPolygonGeometry(
   builderGroup,
   geometry,
   style,
   feature,
-  opt_declutterBuilderGroup
+  declutterBuilderGroup
 ) {
   const fillStyle = style.getFill();
   const strokeStyle = style.getStroke();
@@ -326,7 +326,7 @@ function renderMultiPolygonGeometry(
   }
   const textStyle = style.getText();
   if (textStyle && textStyle.getText()) {
-    const textReplay = (opt_declutterBuilderGroup || builderGroup).getBuilder(
+    const textReplay = (declutterBuilderGroup || builderGroup).getBuilder(
       style.getZIndex(),
       'Text'
     );
@@ -340,14 +340,14 @@ function renderMultiPolygonGeometry(
  * @param {import("../geom/Point.js").default|import("../render/Feature.js").default} geometry Geometry.
  * @param {import("../style/Style.js").default} style Style.
  * @param {import("../Feature.js").FeatureLike} feature Feature.
- * @param {import("../render/canvas/BuilderGroup.js").default} [opt_declutterBuilderGroup] Builder for decluttering.
+ * @param {import("../render/canvas/BuilderGroup.js").default} [declutterBuilderGroup] Builder for decluttering.
  */
 function renderPointGeometry(
   builderGroup,
   geometry,
   style,
   feature,
-  opt_declutterBuilderGroup
+  declutterBuilderGroup
 ) {
   const imageStyle = style.getImage();
   const textStyle = style.getText();
@@ -358,10 +358,10 @@ function renderPointGeometry(
       return;
     }
     let imageBuilderGroup = builderGroup;
-    if (opt_declutterBuilderGroup) {
+    if (declutterBuilderGroup) {
       const declutterMode = imageStyle.getDeclutterMode();
       if (declutterMode !== 'none') {
-        imageBuilderGroup = opt_declutterBuilderGroup;
+        imageBuilderGroup = declutterBuilderGroup;
         if (declutterMode === 'obstacle') {
           // draw in non-declutter group:
           const imageReplay = builderGroup.getBuilder(
@@ -384,8 +384,8 @@ function renderPointGeometry(
   }
   if (textStyle && textStyle.getText()) {
     let textBuilderGroup = builderGroup;
-    if (opt_declutterBuilderGroup) {
-      textBuilderGroup = opt_declutterBuilderGroup;
+    if (declutterBuilderGroup) {
+      textBuilderGroup = declutterBuilderGroup;
     }
     const textReplay = textBuilderGroup.getBuilder(style.getZIndex(), 'Text');
     textReplay.setTextStyle(textStyle, declutterImageWithText);
@@ -398,14 +398,14 @@ function renderPointGeometry(
  * @param {import("../geom/MultiPoint.js").default|import("../render/Feature.js").default} geometry Geometry.
  * @param {import("../style/Style.js").default} style Style.
  * @param {import("../Feature.js").FeatureLike} feature Feature.
- * @param {import("../render/canvas/BuilderGroup.js").default} [opt_declutterBuilderGroup] Builder for decluttering.
+ * @param {import("../render/canvas/BuilderGroup.js").default} [declutterBuilderGroup] Builder for decluttering.
  */
 function renderMultiPointGeometry(
   builderGroup,
   geometry,
   style,
   feature,
-  opt_declutterBuilderGroup
+  declutterBuilderGroup
 ) {
   const imageStyle = style.getImage();
   const textStyle = style.getText();
@@ -416,10 +416,10 @@ function renderMultiPointGeometry(
       return;
     }
     let imageBuilderGroup = builderGroup;
-    if (opt_declutterBuilderGroup) {
+    if (declutterBuilderGroup) {
       const declutterMode = imageStyle.getDeclutterMode();
       if (declutterMode !== 'none') {
-        imageBuilderGroup = opt_declutterBuilderGroup;
+        imageBuilderGroup = declutterBuilderGroup;
         if (declutterMode === 'obstacle') {
           // draw in non-declutter group:
           const imageReplay = builderGroup.getBuilder(
@@ -442,8 +442,8 @@ function renderMultiPointGeometry(
   }
   if (textStyle && textStyle.getText()) {
     let textBuilderGroup = builderGroup;
-    if (opt_declutterBuilderGroup) {
-      textBuilderGroup = opt_declutterBuilderGroup;
+    if (declutterBuilderGroup) {
+      textBuilderGroup = declutterBuilderGroup;
     }
     const textReplay = textBuilderGroup.getBuilder(style.getZIndex(), 'Text');
     textReplay.setTextStyle(textStyle, declutterImageWithText);
@@ -456,14 +456,14 @@ function renderMultiPointGeometry(
  * @param {import("../geom/Polygon.js").default|import("../render/Feature.js").default} geometry Geometry.
  * @param {import("../style/Style.js").default} style Style.
  * @param {import("../Feature.js").FeatureLike} feature Feature.
- * @param {import("../render/canvas/BuilderGroup.js").default} [opt_declutterBuilderGroup] Builder for decluttering.
+ * @param {import("../render/canvas/BuilderGroup.js").default} [declutterBuilderGroup] Builder for decluttering.
  */
 function renderPolygonGeometry(
   builderGroup,
   geometry,
   style,
   feature,
-  opt_declutterBuilderGroup
+  declutterBuilderGroup
 ) {
   const fillStyle = style.getFill();
   const strokeStyle = style.getStroke();
@@ -474,7 +474,7 @@ function renderPolygonGeometry(
   }
   const textStyle = style.getText();
   if (textStyle && textStyle.getText()) {
-    const textReplay = (opt_declutterBuilderGroup || builderGroup).getBuilder(
+    const textReplay = (declutterBuilderGroup || builderGroup).getBuilder(
       style.getZIndex(),
       'Text'
     );

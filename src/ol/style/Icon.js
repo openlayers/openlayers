@@ -62,10 +62,10 @@ import {getUid} from '../util.js';
  */
 class Icon extends ImageStyle {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
-    const options = opt_options || {};
+  constructor(options) {
+    options = options || {};
 
     /**
      * @type {number}

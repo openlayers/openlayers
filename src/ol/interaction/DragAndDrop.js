@@ -44,10 +44,10 @@ export class DragAndDropEvent extends Event {
   /**
    * @param {DragAndDropEventType} type Type.
    * @param {File} file File.
-   * @param {Array<import("../Feature.js").default>} [opt_features] Features.
-   * @param {import("../proj/Projection.js").default} [opt_projection] Projection.
+   * @param {Array<import("../Feature.js").default>} [features] Features.
+   * @param {import("../proj/Projection.js").default} [projection] Projection.
    */
-  constructor(type, file, opt_features, opt_projection) {
+  constructor(type, file, features, projection) {
     super(type);
 
     /**
@@ -55,7 +55,7 @@ export class DragAndDropEvent extends Event {
      * @type {Array<import("../Feature.js").FeatureLike>|undefined}
      * @api
      */
-    this.features = opt_features;
+    this.features = features;
 
     /**
      * The dropped file.
@@ -69,7 +69,7 @@ export class DragAndDropEvent extends Event {
      * @type {import("../proj/Projection.js").default|undefined}
      * @api
      */
-    this.projection = opt_projection;
+    this.projection = projection;
   }
 }
 
@@ -93,10 +93,10 @@ export class DragAndDropEvent extends Event {
  */
 class DragAndDrop extends Interaction {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
     super({
       handleEvent: TRUE,

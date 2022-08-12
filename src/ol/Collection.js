@@ -76,10 +76,10 @@ export class CollectionEvent extends Event {
  */
 class Collection extends BaseObject {
   /**
-   * @param {Array<T>} [opt_array] Array.
-   * @param {Options} [opt_options] Collection options.
+   * @param {Array<T>} [array] Array.
+   * @param {Options} [options] Collection options.
    */
-  constructor(opt_array, opt_options) {
+  constructor(array, options) {
     super();
 
     /***
@@ -97,7 +97,7 @@ class Collection extends BaseObject {
      */
     this.un;
 
-    const options = opt_options || {};
+    options = options || {};
 
     /**
      * @private
@@ -109,7 +109,7 @@ class Collection extends BaseObject {
      * @private
      * @type {!Array<T>}
      */
-    this.array_ = opt_array ? opt_array : [];
+    this.array_ = array ? array : [];
 
     if (this.unique_) {
       for (let i = 0, ii = this.array_.length; i < ii; ++i) {
@@ -315,11 +315,11 @@ class Collection extends BaseObject {
   /**
    * @private
    * @param {T} elem Element.
-   * @param {number} [opt_except] Optional index to ignore.
+   * @param {number} [except] Optional index to ignore.
    */
-  assertUnique_(elem, opt_except) {
+  assertUnique_(elem, except) {
     for (let i = 0, ii = this.array_.length; i < ii; ++i) {
-      if (this.array_[i] === elem && i !== opt_except) {
+      if (this.array_[i] === elem && i !== except) {
         throw new AssertionError(58);
       }
     }

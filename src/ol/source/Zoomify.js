@@ -25,7 +25,7 @@ export class CustomTile extends ImageTile {
    * @param {string} src Image source URI.
    * @param {?string} crossOrigin Cross origin.
    * @param {import("../Tile.js").LoadFunction} tileLoadFunction Tile load function.
-   * @param {import("../Tile.js").Options} [opt_options] Tile options.
+   * @param {import("../Tile.js").Options} [options] Tile options.
    */
   constructor(
     tileSize,
@@ -34,9 +34,9 @@ export class CustomTile extends ImageTile {
     src,
     crossOrigin,
     tileLoadFunction,
-    opt_options
+    options
   ) {
-    super(tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options);
+    super(tileCoord, state, src, crossOrigin, tileLoadFunction, options);
 
     /**
      * @private
@@ -123,11 +123,9 @@ export class CustomTile extends ImageTile {
  */
 class Zoomify extends TileImage {
   /**
-   * @param {Options} opt_options Options.
+   * @param {Options} options Options.
    */
-  constructor(opt_options) {
-    const options = opt_options;
-
+  constructor(options) {
     const size = options.size;
     const tierSizeCalculation =
       options.tierSizeCalculation !== undefined

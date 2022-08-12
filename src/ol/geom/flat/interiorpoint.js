@@ -13,7 +13,7 @@ import {numberSafeCompareFunction} from '../../array.js';
  * @param {number} stride Stride.
  * @param {Array<number>} flatCenters Flat centers.
  * @param {number} flatCentersOffset Flat center offset.
- * @param {Array<number>} [opt_dest] Destination.
+ * @param {Array<number>} [dest] Destination.
  * @return {Array<number>} Destination point as XYM coordinate, where M is the
  * length of the horizontal intersection that the point belongs to.
  */
@@ -24,7 +24,7 @@ export function getInteriorPointOfArray(
   stride,
   flatCenters,
   flatCentersOffset,
-  opt_dest
+  dest
 ) {
   let i, ii, x, x1, x2, y1, y2;
   const y = flatCenters[flatCentersOffset + 1];
@@ -69,9 +69,9 @@ export function getInteriorPointOfArray(
     // ring.  Use the center of the the linear ring's extent.
     pointX = flatCenters[flatCentersOffset];
   }
-  if (opt_dest) {
-    opt_dest.push(pointX, y, maxSegmentLength);
-    return opt_dest;
+  if (dest) {
+    dest.push(pointX, y, maxSegmentLength);
+    return dest;
   } else {
     return [pointX, y, maxSegmentLength];
   }

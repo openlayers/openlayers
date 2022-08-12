@@ -1179,17 +1179,17 @@ function getDefaultStyleFunction() {
  * Create a `geometryFunction` for `type: 'Circle'` that will create a regular
  * polygon with a user specified number of sides and start angle instead of a
  * {@link import("../geom/Circle.js").Circle} geometry.
- * @param {number} [opt_sides] Number of sides of the regular polygon.
+ * @param {number} [sides] Number of sides of the regular polygon.
  *     Default is 32.
- * @param {number} [opt_angle] Angle of the first point in counter-clockwise
+ * @param {number} [angle] Angle of the first point in counter-clockwise
  *     radians. 0 means East.
  *     Default is the angle defined by the heading from the center of the
  *     regular polygon to the current pointer position.
  * @return {GeometryFunction} Function that draws a polygon.
  * @api
  */
-export function createRegularPolygon(opt_sides, opt_angle) {
-  return function (coordinates, opt_geometry, projection) {
+export function createRegularPolygon(sides, angle) {
+  return function (coordinates, geometry, projection) {
     const center = fromUserCoordinate(
       /** @type {LineCoordType} */ (coordinates)[0],
       projection
@@ -1199,17 +1199,20 @@ export function createRegularPolygon(opt_sides, opt_angle) {
       projection
     );
     const radius = Math.sqrt(squaredCoordinateDistance(center, end));
-    const geometry = opt_geometry
-      ? /** @type {Polygon} */ (opt_geometry)
-      : fromCircle(new Circle(center), opt_sides);
+    geometry = geometry || fromCircle(new Circle(center), sides);
 
-    let angle = opt_angle;
-    if (!opt_angle && opt_angle !== 0) {
+    let internalAngle = angle;
+    if (!angle && angle !== 0) {
       const x = end[0] - center[0];
       const y = end[1] - center[1];
-      angle = Math.atan2(y, x);
+      internalAngle = Math.atan2(y, x);
     }
-    makeRegular(geometry, center, radius, angle);
+    makeRegular(
+      /** @type {Polygon} */ (geometry),
+      center,
+      radius,
+      internalAngle
+    );
 
     const userProjection = getUserProjection();
     if (userProjection) {
@@ -1227,7 +1230,7 @@ export function createRegularPolygon(opt_sides, opt_angle) {
  * @api
  */
 export function createBox() {
-  return function (coordinates, opt_geometry, projection) {
+  return function (coordinates, geometry, projection) {
     const extent = boundingExtent(
       /** @type {LineCoordType} */ ([
         coordinates[0],
@@ -1245,7 +1248,6 @@ export function createBox() {
         getBottomLeft(extent),
       ],
     ];
-    let geometry = opt_geometry;
     if (geometry) {
       geometry.setCoordinates(boxCoordinates);
     } else {

@@ -48,12 +48,10 @@ const MULTIGEOMETRY_TO_MEMBER_NODENAME = {
  */
 class GML2 extends GMLBase {
   /**
-   * @param {import("./GMLBase.js").Options} [opt_options] Optional configuration object.
+   * @param {import("./GMLBase.js").Options} [options] Optional configuration object.
    */
-  constructor(opt_options) {
-    const options =
-      /** @type {import("./GMLBase.js").Options} */
-      (opt_options ? opt_options : {});
+  constructor(options) {
+    options = options ? options : {};
 
     super(options);
 
@@ -171,16 +169,15 @@ class GML2 extends GMLBase {
    * @const
    * @param {*} value Value.
    * @param {Array<*>} objectStack Object stack.
-   * @param {string} [opt_nodeName] Node name.
+   * @param {string} [nodeName] Node name.
    * @return {Element|undefined} Node.
    * @private
    */
-  GEOMETRY_NODE_FACTORY_(value, objectStack, opt_nodeName) {
+  GEOMETRY_NODE_FACTORY_(value, objectStack, nodeName) {
     const context = objectStack[objectStack.length - 1];
     const multiSurface = context['multiSurface'];
     const surface = context['surface'];
     const multiCurve = context['multiCurve'];
-    let nodeName;
     if (!Array.isArray(value)) {
       nodeName = /** @type {import("../geom/Geometry.js").default} */ (
         value
@@ -436,11 +433,11 @@ class GML2 extends GMLBase {
   /**
    * @param {*} value Value.
    * @param {Array<*>} objectStack Object stack.
-   * @param {string} [opt_nodeName] Node name.
+   * @param {string} [nodeName] Node name.
    * @return {Node} Node.
    * @private
    */
-  RING_NODE_FACTORY_(value, objectStack, opt_nodeName) {
+  RING_NODE_FACTORY_(value, objectStack, nodeName) {
     const context = objectStack[objectStack.length - 1];
     const parentNode = context.node;
     const exteriorWritten = context['exteriorWritten'];
@@ -478,21 +475,21 @@ class GML2 extends GMLBase {
 
   /**
    * @param {Array<number>} point Point geometry.
-   * @param {string} [opt_srsName] Optional srsName
-   * @param {boolean} [opt_hasZ] whether the geometry has a Z coordinate (is 3D) or not.
+   * @param {string} [srsName] Optional srsName
+   * @param {boolean} [hasZ] whether the geometry has a Z coordinate (is 3D) or not.
    * @return {string} The coords string.
    * @private
    */
-  getCoords_(point, opt_srsName, opt_hasZ) {
+  getCoords_(point, srsName, hasZ) {
     let axisOrientation = 'enu';
-    if (opt_srsName) {
-      axisOrientation = getProjection(opt_srsName).getAxisOrientation();
+    if (srsName) {
+      axisOrientation = getProjection(srsName).getAxisOrientation();
     }
     let coords =
       axisOrientation.substr(0, 2) === 'en'
         ? point[0] + ',' + point[1]
         : point[1] + ',' + point[0];
-    if (opt_hasZ) {
+    if (hasZ) {
       // For newly created points, Z can be undefined.
       const z = point[2] || 0;
       coords += ',' + z;
@@ -638,11 +635,11 @@ class GML2 extends GMLBase {
    * @const
    * @param {*} value Value.
    * @param {Array<*>} objectStack Object stack.
-   * @param {string} [opt_nodeName] Node name.
+   * @param {string} [nodeName] Node name.
    * @return {Node|undefined} Node.
    * @private
    */
-  MULTIGEOMETRY_MEMBER_NODE_FACTORY_(value, objectStack, opt_nodeName) {
+  MULTIGEOMETRY_MEMBER_NODE_FACTORY_(value, objectStack, nodeName) {
     const parentNode = objectStack[objectStack.length - 1].node;
     return createElementNS(
       'http://www.opengis.net/gml',

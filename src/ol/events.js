@@ -39,16 +39,16 @@ import {clear} from './obj.js';
  * @param {import("./events/Target.js").EventTargetLike} target Event target.
  * @param {string} type Event type.
  * @param {ListenerFunction} listener Listener.
- * @param {Object} [opt_this] Object referenced by the `this` keyword in the
+ * @param {Object} [thisArg] Object referenced by the `this` keyword in the
  *     listener. Default is the `target`.
- * @param {boolean} [opt_once] If true, add the listener as one-off listener.
+ * @param {boolean} [once] If true, add the listener as one-off listener.
  * @return {EventsKey} Unique key for the listener.
  */
-export function listen(target, type, listener, opt_this, opt_once) {
-  if (opt_this && opt_this !== target) {
-    listener = listener.bind(opt_this);
+export function listen(target, type, listener, thisArg, once) {
+  if (thisArg && thisArg !== target) {
+    listener = listener.bind(thisArg);
   }
-  if (opt_once) {
+  if (once) {
     const originalListener = listener;
     listener = function () {
       target.removeEventListener(type, listener);
@@ -80,12 +80,12 @@ export function listen(target, type, listener, opt_this, opt_once) {
  * @param {import("./events/Target.js").EventTargetLike} target Event target.
  * @param {string} type Event type.
  * @param {ListenerFunction} listener Listener.
- * @param {Object} [opt_this] Object referenced by the `this` keyword in the
+ * @param {Object} [thisArg] Object referenced by the `this` keyword in the
  *     listener. Default is the `target`.
  * @return {EventsKey} Key for unlistenByKey.
  */
-export function listenOnce(target, type, listener, opt_this) {
-  return listen(target, type, listener, opt_this, true);
+export function listenOnce(target, type, listener, thisArg) {
+  return listen(target, type, listener, thisArg, true);
 }
 
 /**

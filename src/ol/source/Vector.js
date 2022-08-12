@@ -38,10 +38,10 @@ import {xhr} from '../featureloader.js';
 export class VectorSourceEvent extends Event {
   /**
    * @param {string} type Type.
-   * @param {import("../Feature.js").default<Geometry>} [opt_feature] Feature.
-   * @param {Array<import("../Feature.js").default<Geometry>>} [opt_features] Features.
+   * @param {import("../Feature.js").default<Geometry>} [feature] Feature.
+   * @param {Array<import("../Feature.js").default<Geometry>>} [features] Features.
    */
-  constructor(type, opt_feature, opt_features) {
+  constructor(type, feature, features) {
     super(type);
 
     /**
@@ -49,14 +49,14 @@ export class VectorSourceEvent extends Event {
      * @type {import("../Feature.js").default<Geometry>|undefined}
      * @api
      */
-    this.feature = opt_feature;
+    this.feature = feature;
 
     /**
      * The loaded features for the `FEATURESLOADED` event, `undefined` otherwise.
      * @type {Array<import("../Feature.js").default<Geometry>>|undefined}
      * @api
      */
-    this.features = opt_features;
+    this.features = features;
   }
 }
 
@@ -174,10 +174,10 @@ export class VectorSourceEvent extends Event {
  */
 class VectorSource extends Source {
   /**
-   * @param {Options<Geometry>} [opt_options] Vector source options.
+   * @param {Options<Geometry>} [options] Vector source options.
    */
-  constructor(opt_options) {
-    const options = opt_options || {};
+  constructor(options) {
+    options = options || {};
 
     super({
       attributions: options.attributions,
@@ -526,11 +526,11 @@ class VectorSource extends Source {
 
   /**
    * Remove all features from the source.
-   * @param {boolean} [opt_fast] Skip dispatching of {@link module:ol/source/Vector.VectorSourceEvent#event:removefeature removefeature} events.
+   * @param {boolean} [fast] Skip dispatching of {@link module:ol/source/Vector.VectorSourceEvent#event:removefeature removefeature} events.
    * @api
    */
-  clear(opt_fast) {
-    if (opt_fast) {
+  clear(fast) {
+    if (fast) {
       for (const featureId in this.featureChangeKeys_) {
         const keys = this.featureChangeKeys_[featureId];
         keys.forEach(unlistenByKey);
@@ -725,21 +725,20 @@ class VectorSource extends Source {
    * features.
    *
    * @param {import("../extent.js").Extent} extent Extent.
-   * @param {import("../proj/Projection.js").default} [opt_projection] Include features
+   * @param {import("../proj/Projection.js").default} [projection] Include features
    * where `extent` exceeds the x-axis bounds of `projection` and wraps around the world.
    * @return {Array<import("../Feature.js").default<Geometry>>} Features.
    * @api
    */
-  getFeaturesInExtent(extent, opt_projection) {
+  getFeaturesInExtent(extent, projection) {
     if (this.featuresRtree_) {
-      const multiWorld =
-        opt_projection && opt_projection.canWrapX() && this.getWrapX();
+      const multiWorld = projection && projection.canWrapX() && this.getWrapX();
 
       if (!multiWorld) {
         return this.featuresRtree_.getInExtent(extent);
       }
 
-      const extents = wrapAndSliceX(extent, opt_projection);
+      const extents = wrapAndSliceX(extent, projection);
 
       return [].concat(
         ...extents.map((anExtent) => this.featuresRtree_.getInExtent(anExtent))
@@ -757,13 +756,13 @@ class VectorSource extends Source {
    * This method is not available when the source is configured with
    * `useSpatialIndex` set to `false`.
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
-   * @param {function(import("../Feature.js").default<Geometry>):boolean} [opt_filter] Feature filter function.
+   * @param {function(import("../Feature.js").default<Geometry>):boolean} [filter] Feature filter function.
    *     The filter function will receive one argument, the {@link module:ol/Feature~Feature feature}
    *     and it should return a boolean value. By default, no filtering is made.
    * @return {import("../Feature.js").default<Geometry>} Closest feature.
    * @api
    */
-  getClosestFeatureToCoordinate(coordinate, opt_filter) {
+  getClosestFeatureToCoordinate(coordinate, filter) {
     // Find the closest feature using branch and bound.  We start searching an
     // infinite extent, and find the distance from the first feature found.  This
     // becomes the closest feature.  We then compute a smaller extent which any
@@ -777,7 +776,7 @@ class VectorSource extends Source {
     const closestPoint = [NaN, NaN];
     let minSquaredDistance = Infinity;
     const extent = [-Infinity, -Infinity, Infinity, Infinity];
-    const filter = opt_filter ? opt_filter : TRUE;
+    filter = filter ? filter : TRUE;
     this.featuresRtree_.forEachInExtent(
       extent,
       /**
@@ -816,13 +815,13 @@ class VectorSource extends Source {
    *
    * This method is not available when the source is configured with
    * `useSpatialIndex` set to `false`.
-   * @param {import("../extent.js").Extent} [opt_extent] Destination extent. If provided, no new extent
+   * @param {import("../extent.js").Extent} [extent] Destination extent. If provided, no new extent
    *     will be created. Instead, that extent's coordinates will be overwritten.
    * @return {import("../extent.js").Extent} Extent.
    * @api
    */
-  getExtent(opt_extent) {
-    return this.featuresRtree_.getExtent(opt_extent);
+  getExtent(extent) {
+    return this.featuresRtree_.getExtent(extent);
   }
 
   /**

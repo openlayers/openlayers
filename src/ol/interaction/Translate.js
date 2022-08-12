@@ -131,10 +131,10 @@ export class TranslateEvent extends Event {
  */
 class Translate extends PointerInteraction {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
     super(/** @type {import("./Pointer.js").Options} */ (options));
 

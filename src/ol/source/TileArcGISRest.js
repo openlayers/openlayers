@@ -67,10 +67,10 @@ import {hash as tileCoordHash} from '../tilecoord.js';
  */
 class TileArcGISRest extends TileImage {
   /**
-   * @param {Options} [opt_options] Tile ArcGIS Rest options.
+   * @param {Options} [options] Tile ArcGIS Rest options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
     super({
       attributions: options.attributions,

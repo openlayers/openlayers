@@ -78,10 +78,10 @@ const GEOMETRY_WRITERS = {
  */
 class EsriJSON extends JSONFeature {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
     super();
 
@@ -95,14 +95,14 @@ class EsriJSON extends JSONFeature {
 
   /**
    * @param {Object} object Object.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
-   * @param {string} [opt_idField] Name of the field where to get the id from.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
+   * @param {string} [idField] Name of the field where to get the id from.
    * @protected
    * @return {import("../Feature.js").default} Feature.
    */
-  readFeatureFromObject(object, opt_options, opt_idField) {
+  readFeatureFromObject(object, options, idField) {
     const esriJSONFeature = /** @type {EsriJSONFeature} */ (object);
-    const geometry = readGeometry(esriJSONFeature.geometry, opt_options);
+    const geometry = readGeometry(esriJSONFeature.geometry, options);
     const feature = new Feature();
     if (this.geometryName_) {
       feature.setGeometryName(this.geometryName_);
@@ -110,7 +110,7 @@ class EsriJSON extends JSONFeature {
     feature.setGeometry(geometry);
     if (esriJSONFeature.attributes) {
       feature.setProperties(esriJSONFeature.attributes, true);
-      const id = esriJSONFeature.attributes[opt_idField];
+      const id = esriJSONFeature.attributes[idField];
       if (id !== undefined) {
         feature.setId(/** @type {number} */ (id));
       }
@@ -120,12 +120,12 @@ class EsriJSON extends JSONFeature {
 
   /**
    * @param {Object} object Object.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
    * @return {Array<Feature>} Features.
    */
-  readFeaturesFromObject(object, opt_options) {
-    const options = opt_options ? opt_options : {};
+  readFeaturesFromObject(object, options) {
+    options = options ? options : {};
     if (object['features']) {
       const esriJSONFeatureSet = /** @type {EsriJSONFeatureSet} */ (object);
       /** @type {Array<import("../Feature.js").default>} */
@@ -148,12 +148,12 @@ class EsriJSON extends JSONFeature {
 
   /**
    * @param {EsriJSONGeometry} object Object.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
    * @return {import("../geom/Geometry.js").default} Geometry.
    */
-  readGeometryFromObject(object, opt_options) {
-    return readGeometry(object, opt_options);
+  readGeometryFromObject(object, options) {
+    return readGeometry(object, options);
   }
 
   /**
@@ -180,24 +180,24 @@ class EsriJSON extends JSONFeature {
    * Encode a geometry as a EsriJSON object.
    *
    * @param {import("../geom/Geometry.js").default} geometry Geometry.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+   * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {EsriJSONGeometry} Object.
    * @api
    */
-  writeGeometryObject(geometry, opt_options) {
-    return writeGeometry(geometry, this.adaptOptions(opt_options));
+  writeGeometryObject(geometry, options) {
+    return writeGeometry(geometry, this.adaptOptions(options));
   }
 
   /**
    * Encode a feature as a esriJSON Feature object.
    *
    * @param {import("../Feature.js").default} feature Feature.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+   * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {Object} Object.
    * @api
    */
-  writeFeatureObject(feature, opt_options) {
-    opt_options = this.adaptOptions(opt_options);
+  writeFeatureObject(feature, options) {
+    options = this.adaptOptions(options);
     const object = {};
     if (!feature.hasProperties()) {
       object['attributes'] = {};
@@ -206,10 +206,9 @@ class EsriJSON extends JSONFeature {
     const properties = feature.getProperties();
     const geometry = feature.getGeometry();
     if (geometry) {
-      object['geometry'] = writeGeometry(geometry, opt_options);
+      object['geometry'] = writeGeometry(geometry, options);
       const projection =
-        opt_options &&
-        (opt_options.dataProjection || opt_options.featureProjection);
+        options && (options.dataProjection || options.featureProjection);
       if (projection) {
         object['geometry']['spatialReference'] =
           /** @type {EsriJSONSpatialReferenceWkid} */ ({
@@ -230,15 +229,15 @@ class EsriJSON extends JSONFeature {
    * Encode an array of features as a EsriJSON object.
    *
    * @param {Array<import("../Feature.js").default>} features Features.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+   * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {EsriJSONFeatureSet} EsriJSON Object.
    * @api
    */
-  writeFeaturesObject(features, opt_options) {
-    opt_options = this.adaptOptions(opt_options);
+  writeFeaturesObject(features, options) {
+    options = this.adaptOptions(options);
     const objects = [];
     for (let i = 0, ii = features.length; i < ii; ++i) {
-      objects.push(this.writeFeatureObject(features[i], opt_options));
+      objects.push(this.writeFeatureObject(features[i], options));
     }
     return {
       'features': objects,
@@ -248,10 +247,10 @@ class EsriJSON extends JSONFeature {
 
 /**
  * @param {EsriJSONGeometry} object Object.
- * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+ * @param {import("./Feature.js").ReadOptions} [options] Read options.
  * @return {import("../geom/Geometry.js").default} Geometry.
  */
-function readGeometry(object, opt_options) {
+function readGeometry(object, options) {
   if (!object) {
     return null;
   }
@@ -281,11 +280,7 @@ function readGeometry(object, opt_options) {
     }
   }
   const geometryReader = GEOMETRY_READERS[type];
-  return transformGeometryWithOptions(
-    geometryReader(object),
-    false,
-    opt_options
-  );
+  return transformGeometryWithOptions(geometryReader(object), false, options);
 }
 
 /**
@@ -426,10 +421,10 @@ function readPolygonGeometry(object) {
 
 /**
  * @param {import("../geom/Point.js").default} geometry Geometry.
- * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+ * @param {import("./Feature.js").WriteOptions} [options] Write options.
  * @return {EsriJSONPoint} EsriJSON geometry.
  */
-function writePointGeometry(geometry, opt_options) {
+function writePointGeometry(geometry, options) {
   const coordinates = geometry.getCoordinates();
   /** @type {EsriJSONPoint} */
   let esriJSON;
@@ -478,10 +473,10 @@ function getHasZM(geometry) {
 
 /**
  * @param {import("../geom/LineString.js").default} lineString Geometry.
- * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+ * @param {import("./Feature.js").WriteOptions} [options] Write options.
  * @return {EsriJSONPolyline} EsriJSON geometry.
  */
-function writeLineStringGeometry(lineString, opt_options) {
+function writeLineStringGeometry(lineString, options) {
   const hasZM = getHasZM(lineString);
   return {
     hasZ: hasZM.hasZ,
@@ -494,10 +489,10 @@ function writeLineStringGeometry(lineString, opt_options) {
 
 /**
  * @param {import("../geom/Polygon.js").default} polygon Geometry.
- * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+ * @param {import("./Feature.js").WriteOptions} [options] Write options.
  * @return {EsriJSONPolygon} EsriJSON geometry.
  */
-function writePolygonGeometry(polygon, opt_options) {
+function writePolygonGeometry(polygon, options) {
   // Esri geometries use the left-hand rule
   const hasZM = getHasZM(polygon);
   return {
@@ -511,10 +506,10 @@ function writePolygonGeometry(polygon, opt_options) {
 
 /**
  * @param {import("../geom/MultiLineString.js").default} multiLineString Geometry.
- * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+ * @param {import("./Feature.js").WriteOptions} [options] Write options.
  * @return {EsriJSONPolyline} EsriJSON geometry.
  */
-function writeMultiLineStringGeometry(multiLineString, opt_options) {
+function writeMultiLineStringGeometry(multiLineString, options) {
   const hasZM = getHasZM(multiLineString);
   return {
     hasZ: hasZM.hasZ,
@@ -527,10 +522,10 @@ function writeMultiLineStringGeometry(multiLineString, opt_options) {
 
 /**
  * @param {import("../geom/MultiPoint.js").default} multiPoint Geometry.
- * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+ * @param {import("./Feature.js").WriteOptions} [options] Write options.
  * @return {EsriJSONMultipoint} EsriJSON geometry.
  */
-function writeMultiPointGeometry(multiPoint, opt_options) {
+function writeMultiPointGeometry(multiPoint, options) {
   const hasZM = getHasZM(multiPoint);
   return {
     hasZ: hasZM.hasZ,
@@ -543,10 +538,10 @@ function writeMultiPointGeometry(multiPoint, opt_options) {
 
 /**
  * @param {import("../geom/MultiPolygon.js").default} geometry Geometry.
- * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+ * @param {import("./Feature.js").WriteOptions} [options] Write options.
  * @return {EsriJSONPolygon} EsriJSON geometry.
  */
-function writeMultiPolygonGeometry(geometry, opt_options) {
+function writeMultiPolygonGeometry(geometry, options) {
   const hasZM = getHasZM(geometry);
   const coordinates = geometry.getCoordinates(false);
   const output = [];
@@ -564,14 +559,14 @@ function writeMultiPolygonGeometry(geometry, opt_options) {
 
 /**
  * @param {import("../geom/Geometry.js").default} geometry Geometry.
- * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+ * @param {import("./Feature.js").WriteOptions} [options] Write options.
  * @return {EsriJSONGeometry} EsriJSON geometry.
  */
-function writeGeometry(geometry, opt_options) {
+function writeGeometry(geometry, options) {
   const geometryWriter = GEOMETRY_WRITERS[geometry.getType()];
   return geometryWriter(
-    transformGeometryWithOptions(geometry, true, opt_options),
-    opt_options
+    transformGeometryWithOptions(geometry, true, options),
+    options
   );
 }
 

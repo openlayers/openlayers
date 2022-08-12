@@ -14,10 +14,10 @@ class Bbox extends Filter {
   /**
    * @param {!string} geometryName Geometry name to use.
    * @param {!import("../../extent.js").Extent} extent Extent.
-   * @param {string} [opt_srsName] SRS name. No srsName attribute will be set
+   * @param {string} [srsName] SRS name. No srsName attribute will be set
    * on geometries when this is not provided.
    */
-  constructor(geometryName, extent, opt_srsName) {
+  constructor(geometryName, extent, srsName) {
     super('BBOX');
 
     /**
@@ -38,7 +38,7 @@ class Bbox extends Filter {
     /**
      * @type {string|undefined}
      */
-    this.srsName = opt_srsName;
+    this.srsName = srsName;
   }
 }
 

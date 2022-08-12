@@ -524,9 +524,9 @@ class CanvasTextBuilder extends CanvasBuilder {
 
   /**
    * @param {import("../../style/Text.js").default} textStyle Text style.
-   * @param {Object} [opt_sharedData] Shared data.
+   * @param {Object} [sharedData] Shared data.
    */
-  setTextStyle(textStyle, opt_sharedData) {
+  setTextStyle(textStyle, sharedData) {
     let textState, fillState, strokeState;
     if (!textStyle) {
       this.text_ = '';
@@ -628,7 +628,7 @@ class CanvasTextBuilder extends CanvasBuilder {
           : '|' + getUid(fillState.fillStyle)
         : '';
     }
-    this.declutterImageWithText_ = opt_sharedData;
+    this.declutterImageWithText_ = sharedData;
   }
 }
 

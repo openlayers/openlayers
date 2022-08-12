@@ -183,10 +183,10 @@ const INTERVALS = [
  */
 class Graticule extends VectorLayer {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
     const baseOptions = Object.assign(
       {
@@ -1197,15 +1197,11 @@ class Graticule extends VectorLayer {
     } else {
       const split = this.minLon_ + this.maxLon_ / 2;
       this.maxLon_ += 360;
-      this.toLonLatTransform_ = function (
-        coordinates,
-        opt_output,
-        opt_dimension
-      ) {
-        const dimension = opt_dimension || 2;
+      this.toLonLatTransform_ = function (coordinates, output, dimension) {
+        dimension = dimension || 2;
         const lonLatCoordinates = toLonLatTransform(
           coordinates,
-          opt_output,
+          output,
           dimension
         );
         for (let i = 0, l = lonLatCoordinates.length; i < l; i += dimension) {

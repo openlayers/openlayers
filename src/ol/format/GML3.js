@@ -61,12 +61,10 @@ const MULTIGEOMETRY_TO_MEMBER_NODENAME = {
  */
 class GML3 extends GMLBase {
   /**
-   * @param {import("./GMLBase.js").Options} [opt_options] Optional configuration object.
+   * @param {import("./GMLBase.js").Options} [options] Optional configuration object.
    */
-  constructor(opt_options) {
-    const options =
-      /** @type {import("./GMLBase.js").Options} */
-      (opt_options ? opt_options : {});
+  constructor(options) {
+    options = options ? options : {};
 
     super(options);
 
@@ -480,21 +478,21 @@ class GML3 extends GMLBase {
 
   /**
    * @param {Array<number>} point Point geometry.
-   * @param {string} [opt_srsName] Optional srsName
-   * @param {boolean} [opt_hasZ] whether the geometry has a Z coordinate (is 3D) or not.
+   * @param {string} [srsName] Optional srsName
+   * @param {boolean} [hasZ] whether the geometry has a Z coordinate (is 3D) or not.
    * @return {string} The coords string.
    * @private
    */
-  getCoords_(point, opt_srsName, opt_hasZ) {
+  getCoords_(point, srsName, hasZ) {
     let axisOrientation = 'enu';
-    if (opt_srsName) {
-      axisOrientation = getProjection(opt_srsName).getAxisOrientation();
+    if (srsName) {
+      axisOrientation = getProjection(srsName).getAxisOrientation();
     }
     let coords =
       axisOrientation.substr(0, 2) === 'en'
         ? point[0] + ' ' + point[1]
         : point[1] + ' ' + point[0];
-    if (opt_hasZ) {
+    if (hasZ) {
       // For newly created points, Z can be undefined.
       const z = point[2] || 0;
       coords += ' ' + z;
@@ -587,11 +585,11 @@ class GML3 extends GMLBase {
   /**
    * @param {*} value Value.
    * @param {Array<*>} objectStack Object stack.
-   * @param {string} [opt_nodeName] Node name.
+   * @param {string} [nodeName] Node name.
    * @return {Node} Node.
    * @private
    */
-  RING_NODE_FACTORY_(value, objectStack, opt_nodeName) {
+  RING_NODE_FACTORY_(value, objectStack, nodeName) {
     const context = objectStack[objectStack.length - 1];
     const parentNode = context.node;
     const exteriorWritten = context['exteriorWritten'];
@@ -933,11 +931,11 @@ class GML3 extends GMLBase {
    * @const
    * @param {*} value Value.
    * @param {Array<*>} objectStack Object stack.
-   * @param {string} [opt_nodeName] Node name.
+   * @param {string} [nodeName] Node name.
    * @return {Node|undefined} Node.
    * @private
    */
-  MULTIGEOMETRY_MEMBER_NODE_FACTORY_(value, objectStack, opt_nodeName) {
+  MULTIGEOMETRY_MEMBER_NODE_FACTORY_(value, objectStack, nodeName) {
     const parentNode = objectStack[objectStack.length - 1].node;
     return createElementNS(
       this.namespace,
@@ -949,17 +947,16 @@ class GML3 extends GMLBase {
    * @const
    * @param {*} value Value.
    * @param {Array<*>} objectStack Object stack.
-   * @param {string} [opt_nodeName] Node name.
+   * @param {string} [nodeName] Node name.
    * @return {Element|undefined} Node.
    * @private
    */
-  GEOMETRY_NODE_FACTORY_(value, objectStack, opt_nodeName) {
+  GEOMETRY_NODE_FACTORY_(value, objectStack, nodeName) {
     const context = objectStack[objectStack.length - 1];
     const multiSurface = context['multiSurface'];
     const surface = context['surface'];
     const curve = context['curve'];
     const multiCurve = context['multiCurve'];
-    let nodeName;
     if (!Array.isArray(value)) {
       nodeName = /** @type {import("../geom/Geometry.js").default} */ (
         value
@@ -983,12 +980,12 @@ class GML3 extends GMLBase {
    * Encode a geometry in GML 3.1.1 Simple Features.
    *
    * @param {import("../geom/Geometry.js").default} geometry Geometry.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Options.
+   * @param {import("./Feature.js").WriteOptions} [options] Options.
    * @return {Node} Node.
    * @api
    */
-  writeGeometryNode(geometry, opt_options) {
-    opt_options = this.adaptOptions(opt_options);
+  writeGeometryNode(geometry, options) {
+    options = this.adaptOptions(options);
     const geom = createElementNS(this.namespace, 'geom');
     const context = {
       node: geom,
@@ -999,8 +996,8 @@ class GML3 extends GMLBase {
       multiSurface: this.multiSurface_,
       multiCurve: this.multiCurve_,
     };
-    if (opt_options) {
-      Object.assign(context, opt_options);
+    if (options) {
+      Object.assign(context, options);
     }
     this.writeGeometryElement(geom, geometry, [context]);
     return geom;
@@ -1010,12 +1007,12 @@ class GML3 extends GMLBase {
    * Encode an array of features in the GML 3.1.1 format as an XML node.
    *
    * @param {Array<import("../Feature.js").default>} features Features.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Options.
+   * @param {import("./Feature.js").WriteOptions} [options] Options.
    * @return {Element} Node.
    * @api
    */
-  writeFeaturesNode(features, opt_options) {
-    opt_options = this.adaptOptions(opt_options);
+  writeFeaturesNode(features, options) {
+    options = this.adaptOptions(options);
     const node = createElementNS(this.namespace, 'featureMembers');
     node.setAttributeNS(
       XML_SCHEMA_INSTANCE_URI,
@@ -1032,8 +1029,8 @@ class GML3 extends GMLBase {
       featureNS: this.featureNS,
       featureType: this.featureType,
     };
-    if (opt_options) {
-      Object.assign(context, opt_options);
+    if (options) {
+      Object.assign(context, options);
     }
     this.writeFeatureMembers_(node, features, [context]);
     return node;
@@ -1197,7 +1194,7 @@ GMLBase.prototype.RING_PARSERS = {
  *
  * @function
  * @param {Array<import("../Feature.js").default>} features Features.
- * @param {import("./Feature.js").WriteOptions} [opt_options] Options.
+ * @param {import("./Feature.js").WriteOptions} [options] Options.
  * @return {string} Result.
  * @api
  */
