@@ -503,7 +503,7 @@ Operators['band'] = {
       for (let i = 0; i < bandCount; i++) {
         const colorIndex = Math.floor(i / 4);
         let bandIndex = i % 4;
-        if (bandIndex === bandCount - 1 && bandIndex === 1) {
+        if (i === bandCount - 1 && bandIndex === 1) {
           // LUMINANCE_ALPHA - band 1 assigned to rgb and band 2 assigned to alpha
           bandIndex = 3;
         }
