@@ -1041,19 +1041,24 @@ class CanvasImmediateRenderer extends VectorContext {
       this.image_ = null;
       return;
     }
+    const imagePixelRatio = imageStyle.getPixelRatio(this.pixelRatio_);
     const imageAnchor = imageStyle.getAnchor();
     const imageOrigin = imageStyle.getOrigin();
     this.image_ = imageStyle.getImage(this.pixelRatio_);
-    this.imageAnchorX_ = imageAnchor[0] * this.pixelRatio_;
-    this.imageAnchorY_ = imageAnchor[1] * this.pixelRatio_;
-    this.imageHeight_ = imageSize[1] * this.pixelRatio_;
+    this.imageAnchorX_ = imageAnchor[0] * imagePixelRatio;
+    this.imageAnchorY_ = imageAnchor[1] * imagePixelRatio;
+    this.imageHeight_ = imageSize[1] * imagePixelRatio;
     this.imageOpacity_ = imageStyle.getOpacity();
     this.imageOriginX_ = imageOrigin[0];
     this.imageOriginY_ = imageOrigin[1];
     this.imageRotateWithView_ = imageStyle.getRotateWithView();
     this.imageRotation_ = imageStyle.getRotation();
-    this.imageScale_ = imageStyle.getScaleArray();
-    this.imageWidth_ = imageSize[0] * this.pixelRatio_;
+    const imageScale = imageStyle.getScaleArray();
+    this.imageScale_ = [
+      (imageScale[0] * this.pixelRatio_) / imagePixelRatio,
+      (imageScale[1] * this.pixelRatio_) / imagePixelRatio,
+    ];
+    this.imageWidth_ = imageSize[0] * imagePixelRatio;
   }
 
   /**
