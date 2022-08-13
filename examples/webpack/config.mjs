@@ -70,6 +70,10 @@ export default {
     new CopyPlugin({
       patterns: [
         {from: '../site/src/theme', to: 'theme'},
+        {
+          from: path.join(baseDir, '..', '..', 'src', 'ol', 'ol.css'),
+          to: path.join(baseDir, '..', '..', 'theme', 'ol', 'ol.css'),
+        },
         {from: 'data', to: 'data'},
         {from: 'resources', to: 'resources'},
         {from: 'index.html', to: 'index.html'},
