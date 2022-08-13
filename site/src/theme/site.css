@@ -477,15 +477,19 @@ div.code-toolbar>.toolbar button:focus {
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
 }
 
+div.code-toolbar>.toolbar button {
+  background-color: rgba(255, 255, 255, .625);
+  border-radius: 0 0 0 10px;
+  margin: 1px;
+}
 div.code-toolbar>.toolbar button:before {
-  margin-right: .184em;
-  font: normal normal normal 14px/1 FontAwesome;
-  font-size: inherit;
-  text-rendering: auto;
-  -webkit-font-smoothing: antialiased;
-  content: "\f0ea";
+  font: var(--fa-font-solid);
   font-size: 1.33333333em;
   line-height: .75em;
+  content: "\f0ea";
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  margin-right: .184em;
   vertical-align: middle;
 }
 
