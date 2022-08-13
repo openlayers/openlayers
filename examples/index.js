@@ -82,26 +82,11 @@
     listExamples(examples);
   }
 
-  function parseParams() {
-    const params = {};
-    const list = window.location.search
-      .substring(1)
-      .replace(/\+/g, '%20')
-      .split('&');
-    for (let i = 0; i < list.length; ++i) {
-      const pair = list[i].split('=');
-      if (pair.length === 2) {
-        params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
-      }
-    }
-    return params;
-  }
-
   window.addEventListener('load', function () {
     template = new jugl.Template('template');
     target = document.getElementById('examples');
-    const params = parseParams();
-    const text = params['q'] || '';
+    const params = new URLSearchParams(window.location.search);
+    const text = params.get('q') || '';
     const input = document.getElementById('keywords');
     input.addEventListener('input', inputChange);
     input.value = text;
