@@ -2,6 +2,20 @@
   "use strict"
   /* global LZString */
 
+  let lzStringPromise;
+  function loadLzString() {
+    if (!lzStringPromise) {
+      lzStringPromise = new Promise(function (resolve, reject) {
+        const script = document.createElement('script')
+        script.src = 'https://unpkg.com/lz-string@1.4.4/libs/lz-string.min.js';
+        document.head.append(script);
+        script.addEventListener('load', resolve);
+        script.addEventListener('error', reject);
+      });
+    }
+    return lzStringPromise;
+  }
+
   function compress(json) {
     return LZString.compressToBase64(JSON.stringify(json))
       .replace(/\+/g, '-')
@@ -56,6 +70,7 @@
       const promises = localResources.map(function (resource) {
         return fetchResource(resource);
       });
+      promises.push(loadLzString());
 
       Promise.all(promises).then(
         function (results) {
