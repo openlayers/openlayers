@@ -3,21 +3,17 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-core.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/autoloader/prism-autoloader.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/toolbar/prism-toolbar.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
     <link rel="stylesheet"  type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" crossorigin="anonymous">
     <link rel="stylesheet"  type="text/css" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.2/css/fontawesome.min.css" crossorigin="anonymous">
     <link rel="stylesheet"  type="text/css" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.2/css/solid.css" crossorigin="anonymous">
     <link rel="stylesheet"  type="text/css" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.2/css/brands.css" crossorigin="anonymous">
     <link rel="stylesheet"  type="text/css" href="/theme/ol.css">
     <link rel="stylesheet"  type="text/css" href="/theme/site.css">
+{{#each css.local}}
+    <link rel="stylesheet" href="{{{ . }}}" type="text/css">
+{{/each}}
     <link rel="icon" type="image/svg+xml" href="/theme/img/logo-light.svg" media="(prefers-color-scheme: light)" />
     <link rel="icon" type="image/svg+xml" href="/theme/img/logo-dark.svg" media="(prefers-color-scheme: dark)" />
-    <script src="https://unpkg.com/elm-pep@1.0.6/dist/elm-pep.js"></script>
-    {{{ extraHead.local }}}
-    {{{ css.tag }}}
     <title>{{ title }}</title>
   </head>
   <body>
@@ -134,9 +130,9 @@
   &lt;head&gt;
     &lt;meta charset="UTF-8"&gt;
     &lt;title&gt;{{ title }}&lt;/title&gt;
-    &lt;!-- Pointer events polyfill for old browsers, see https://caniuse.com/#feat=pointer --&gt;
-    &lt;script src="https://unpkg.com/elm-pep@1.0.6/dist/elm-pep.js"&gt;&lt;/script&gt;{{#if extraHead.remote}}
-{{ indent extraHead.remote spaces=4 }}{{/if}}
+{{#each css.remote}}
+    &lt;link rel="stylesheet" href="{{ . }}"&gt;
+{{/each}}
     &lt;link rel="stylesheet" href="node_modules/ol/ol.css"&gt;
     &lt;style&gt;
       .map {
@@ -146,7 +142,12 @@
 {{#if css.source}}{{ indent css.source spaces=6 }}{{/if}}    &lt;/style&gt;
   &lt;/head&gt;
   &lt;body&gt;
-{{ indent contents spaces=4 }}    &lt;script type="module" src="main.js"&gt;&lt;/script&gt;
+{{ indent contents spaces=4 }}    &lt;!-- Pointer events polyfill for old browsers, see https://caniuse.com/#feat=pointer --&gt;
+    &lt;script src="https://unpkg.com/elm-pep@1.0.6/dist/elm-pep.js"&gt;&lt;/script&gt;
+{{#each js.remote}}
+    &lt;script src="{{ . }}"&gt;&lt;/script&gt;
+{{/each}}
+    &lt;script type="module" src="main.js"&gt;&lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;</code></pre>
       </div>
@@ -163,12 +164,17 @@
       </div>
     </div>
 
+    <script src="https://unpkg.com/elm-pep@1.0.6/dist/elm-pep.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
-    <script src="./resources/common.js"></script>
-{{#each js.scripts}}
+{{#each js.local}}
     <script src="{{{ . }}}"></script>
 {{/each}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.js"></script>
+    <script src="./resources/common.js"></script>
     <script>
       $('#tag-example-list').on('show.bs.modal', function (event) {
         const button = $(event.relatedTarget); // Button that triggered the modal
@@ -178,7 +184,8 @@
         modal.find('.modal-title').text(title);
         modal.find('.modal-body').html(content);
       });
-
+    </script>
+    <script>
       const packageUrl = 'https://raw.githubusercontent.com/openlayers/openlayers.github.io/build/package.json';
       fetch(packageUrl).then(function(response) {
         return response.json();

@@ -1,7 +1,9 @@
 (function () {
   'use strict';
   /* global info, jugl */
-  let template, target;
+
+  const template = new jugl.Template('template');
+  const target = document.getElementById('examples');
 
   function listExamples(examples) {
     target.innerHTML = '';
@@ -82,14 +84,10 @@
     listExamples(examples);
   }
 
-  window.addEventListener('load', function () {
-    template = new jugl.Template('template');
-    target = document.getElementById('examples');
-    const params = new URLSearchParams(window.location.search);
-    const text = params.get('q') || '';
-    const input = document.getElementById('keywords');
-    input.addEventListener('input', inputChange);
-    input.value = text;
-    filterList(text);
-  });
+  const params = new URLSearchParams(window.location.search);
+  const text = params.get('q') || '';
+  const input = document.getElementById('keywords');
+  input.addEventListener('input', inputChange);
+  input.value = text;
+  filterList(text);
 })();
