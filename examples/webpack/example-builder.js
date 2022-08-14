@@ -263,6 +263,10 @@ export default class ExampleBuilder {
     });
   }
 
+  /**
+   * @param {string} source A string
+   * @return {string} Same string without a newline character at end
+   */
   ensureNewLineAtEnd(source) {
     if (source[source.length - 1] !== '\n') {
       source += '\n';
@@ -270,6 +274,10 @@ export default class ExampleBuilder {
     return source;
   }
 
+  /**
+   * @param {string} source Source code
+   * @return {string} Transformed source
+   */
   transformJsSource(source) {
     return (
       source
@@ -306,7 +314,8 @@ export default class ExampleBuilder {
     let jsSource = await fse.readFile(jsPath, {encoding: 'utf8'});
     jsSource = this.transformJsSource(this.cloakSource(jsSource, data.cloak));
     data.js = {
-      scripts: [`${this.common}.js`, jsName],
+      local: [],
+      remote: [],
       source: jsSource,
     };
 
@@ -354,53 +363,47 @@ export default class ExampleBuilder {
       2
     );
 
-    // check for example css
-    const cssName = `${data.name}.css`;
-    const cssPath = path.join(data.dir, cssName);
-    let cssSource;
-    try {
-      cssSource = await fse.readFile(cssPath, readOptions);
-    } catch (err) {
-      // pass
-    }
-    if (cssSource) {
-      data.css = {
-        tag: `<link rel="stylesheet" href="${cssName}">`,
-        source: this.ensureNewLineAtEnd(cssSource),
-      };
-      assets[cssName] = cssSource;
-    }
+    data.css = {
+      local: [],
+      remote: [],
+      source: undefined,
+    };
 
     // add additional resources
     if (data.resources) {
-      const localResources = [];
-      const remoteResources = [];
       data.resources.forEach((resource) => {
-        const remoteResource = /^https?:\/\//.test(resource)
+        const absoluteUrl = /^https?:\/\//.test(resource)
           ? resource
           : `https://openlayers.org/en/v${pkg.version}/examples/${resource}`;
         if (isJsRegEx.test(resource)) {
           if (!isTemplateJs.test(resource)) {
-            localResources.push(`<script src="${resource}"></script>`);
+            data.js.local.push(resource);
           }
-          remoteResources.push(`<script src="${remoteResource}"></script>`);
+          data.js.remote.push(absoluteUrl);
         } else if (isCssRegEx.test(resource)) {
           if (!isTemplateCss.test(resource)) {
-            localResources.push(`<link rel="stylesheet" href="${resource}">`);
+            data.css.local.push(resource);
           }
-          remoteResources.push(
-            `<link rel="stylesheet" href="${remoteResource}">`
-          );
+          data.css.remote.push(absoluteUrl);
         } else {
           throw new Error(
             `Invalid resource: '${resource}' is not .js or .css: ${data.filename}`
           );
         }
       });
-      data.extraHead = {
-        local: localResources.join('\n'),
-        remote: remoteResources.join('\n'),
-      };
+    }
+
+    data.js.local.push(`${this.common}.js`, jsName);
+
+    // check for example css
+    const cssName = `${data.name}.css`;
+    const cssPath = path.join(data.dir, cssName);
+    try {
+      assets[cssName] = await fse.readFile(cssPath, readOptions);
+      data.css.local.push(cssName);
+      data.css.source = this.ensureNewLineAtEnd(assets[cssName]);
+    } catch (err) {
+      // pass, no css for this example
     }
 
     const templatePath = path.join(this.templates, data.layout);

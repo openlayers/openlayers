@@ -1,4 +1,5 @@
-:root {
+:root,
+:host {
   --ol-background-color: white;
   --ol-accent-background-color: #F5F5F5;
   --ol-subtle-background-color: rgba(128, 128, 128, 0.25);
