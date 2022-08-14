@@ -386,18 +386,9 @@ class CanvasImmediateRenderer extends VectorContext {
         this.textScale_[0] != 1 ||
         this.textScale_[1] != 1
       ) {
-        const localTransform = composeTransform(
-          this.tmpLocalTransform_,
-          x,
-          y,
-          1,
-          1,
-          rotation,
-          -x,
-          -y
-        );
-        context.setTransform.apply(context, localTransform);
-        context.translate(x, y);
+        context.translate(x - this.textOffsetX_, y - this.textOffsetY_);
+        context.rotate(rotation);
+        context.translate(this.textOffsetX_, this.textOffsetY_);
         context.scale(this.textScale_[0], this.textScale_[1]);
         if (this.textStrokeState_) {
           context.strokeText(this.text_, 0, 0);
