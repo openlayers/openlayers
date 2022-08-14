@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: '16'
       - run: npm ci
-      - run: npm run build-site
+      - run: ./tasks/build-website.sh -v dev -l dev
       - uses: actions/upload-artifact@v3
         with:
           name: site
