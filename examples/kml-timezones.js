@@ -14,20 +14,13 @@ import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
  * daylight savings, so don't use it to plan your vacation.
  */
 const styleFunction = function (feature) {
-  let offset = 0;
-  const name = feature.get('name'); // e.g. GMT -08:30
-  const match = name.match(/([\-+]\d{2}):(\d{2})$/);
-  if (match) {
-    const hours = parseInt(match[1], 10);
-    const minutes = parseInt(match[2], 10);
-    offset = 60 * hours + minutes;
-  }
-  const date = new Date();
-  const local = new Date(
-    date.getTime() + (date.getTimezoneOffset() + offset) * 60000
+  const tzOffset = feature.get('tz-offset');
+  const local = new Date();
+  local.setTime(
+    local.getTime() + (local.getTimezoneOffset() + (tzOffset || 0)) * 60000
   );
   // offset from local noon (in hours)
-  let delta = Math.abs(12 - local.getHours() + local.getMinutes() / 60);
+  let delta = Math.abs(12 - (local.getHours() + local.getMinutes() / 60));
   if (delta > 12) {
     delta = 24 - delta;
   }
@@ -50,6 +43,28 @@ const vector = new VectorLayer({
     }),
   }),
   style: styleFunction,
+});
+
+/**
+ * @param {string} name e.g. GMT -08:30
+ * @return {number|null} The offset from UTC in minutes
+ */
+function parseOffsetFromUtc(name) {
+  const match = name.match(/([+-]?)(\d{2}):(\d{2})$/);
+  if (!match) {
+    return null;
+  }
+  const sign = match[1] === '-' ? -1 : 1;
+  const hours = Number(match[2]);
+  const minutes = Number(match[3]);
+  return sign * (60 * hours + minutes);
+}
+
+vector.getSource().on('featuresloadend', function (evt) {
+  evt.features.forEach(function (feature) {
+    const tzOffset = parseOffsetFromUtc(feature.get('name'));
+    feature.set('tz-offset', tzOffset, true);
+  });
 });
 
 const raster = new TileLayer({
