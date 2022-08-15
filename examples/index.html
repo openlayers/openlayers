@@ -26,6 +26,12 @@
         font-size: smaller;
         margin: 5px 0;
       }
+      a.example {
+        text-decoration: none;
+      }
+      a.example:hover :first-child {
+        text-decoration: underline;
+      }
       a.bg-light:focus,
       a.bg-light:hover,
       button.bg-light:focus,
@@ -88,10 +94,8 @@
         <div id="template" class="row mt-3">
           <div class="col-md-4 col-sm-6" jugl:repeat="example examples">
             <a jugl:attributes="href example.link" class="example  bg-light border rounded">
-              <span class="mainlink">
-                <strong><span jugl:replace="example.title">title</span></strong><br>
-                <small jugl:content="'(' + example.link + ')'"></small>
-              </span>
+              <strong><span jugl:replace="example.title">title</span></strong><br>
+              <small jugl:content="'(' + example.link + ')'"></small>
               <p class="description" jugl:content="example.shortdesc"></p>
             </a>
           </div>
