@@ -193,7 +193,7 @@ function addSignatureReturns(f) {
   if (returnTypes.length) {
     f.signature +=
       '<span class="fa fa-arrow-circle-right"></span><span class="type-signature returnType">' +
-      (returnTypes.length ? '{' + returnTypes.join('|') + '}' : '') +
+      (returnTypes.length ? '{' + returnTypes.join(' | ') + '}' : '') +
       '</span>';
   }
 }
