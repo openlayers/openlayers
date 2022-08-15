@@ -23,12 +23,9 @@
 }
 
 #news {
-  clear: both;
-  border: 1px solid #eee;
-  background-color: #f8f8f8;
+  background-color: var(--ol-accent-background-color);
   border-radius: 4px;
-  padding: 1rem;
-  margin: 0 1rem 0 1rem;
+  padding: 1rem 0 0;
 }
 
 #news h1 {
@@ -50,8 +47,4 @@ img.thumb {
 /* not done with :hover because the overlay blocks events and has no height */
 .over .ol-overlaycontainer-stopevent {
   opacity: 1;
-}
-
-ul.sponsors {
-  background-color: #f8f8f8;
 }
