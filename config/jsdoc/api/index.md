@@ -73,8 +73,8 @@
     <div class="card h-100 bg-light">
       <div class="card-body">
         <h4 class="card-title">Projections</h4>
-          <p>All coordinates and extents need to be provided in view projection (default: EPSG:3857). To transform coordinates from and to geographic, use <a href="module-ol_proj.html#.fromLonLat">ol/proj#fromLonLat()</a> and <a href="module-ol_proj.html#.toLonLat">ol/proj#toLonLat()</a>. For extents and other projections, use <a href="module-ol_proj.html#.transformExtent">ol/proj#transformExtent()</a> and <a href="module-ol_proj.html#.transform">ol/proj#transform()</a>.<p>
-          <a href="module-ol_proj.html">ol/proj</a>
+          <p>All coordinates and extents need to be provided in view projection (default: EPSG:3857). To transform coordinates from and to geographic, use <a href="module-ol_proj.html#.fromLonLat">fromLonLat()</a> and <a href="module-ol_proj.html#.toLonLat">toLonLat()</a>. For extents and other projections, use <a href="module-ol_proj.html#.transformExtent">transformExtent()</a> and <a href="module-ol_proj.html#.transform">transform()</a>.</p>
+          <p>Find these functions and more in the <a href="module-ol_proj.html">ol/proj</a> module.</p>
       </div>
     </div>
   </div>
@@ -82,7 +82,7 @@
     <div class="card h-100 bg-light">
       <div class="card-body">
         <h4 class="card-title">Observable objects</h4>
-        <p>Changes to all <a href="module-ol_Object-BaseObject.html">ol/Object</a>s can be observed by calling the <a href="module-ol_Object-BaseObject.html#on">object.on('propertychange')</a> method.  Listeners receive an <a href="module-ol_Object.ObjectEvent.html">ol/Object.ObjectEvent</a> with information on the changed property and old value.</p>
+        <p>Changes to all <a href="module-ol_Object-BaseObject.html">Object</a>s can be observed by calling the <a href="module-ol_Object-BaseObject.html#on">object.on('propertychange')</a> method.  Listeners receive an <a href="module-ol_Object.ObjectEvent.html">ObjectEvent</a> with information on the changed property and old value.</p>
       </div>
     </div>
   </div>

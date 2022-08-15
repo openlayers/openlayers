@@ -526,7 +526,7 @@ class VectorSource extends Source {
 
   /**
    * Remove all features from the source.
-   * @param {boolean} [fast] Skip dispatching of {@link module:ol/source/Vector.VectorSourceEvent#event:removefeature removefeature} events.
+   * @param {boolean} [fast] Skip dispatching of {@link module:ol/source/Vector.VectorSourceEvent#event:removefeature} events.
    * @api
    */
   clear(fast) {
