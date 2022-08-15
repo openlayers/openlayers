@@ -65,16 +65,6 @@ footer a:focus {
   text-decoration: underline;
 }
 
-pre[class*="language-"] {
-  background: #FFFFFF;
-  font-size: 87.5%;
-}
-
-pre {
-  border: 1px solid #eee;
-  border-radius: 0;
-}
-
 .navbar {
   background-color: var(--ol-foreground-color);
   color: var(--ol-background-color);
