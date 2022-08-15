@@ -5,9 +5,8 @@ import fs from 'fs';
 import path, {dirname} from 'path';
 import {fileURLToPath} from 'url';
 
-const baseDir = dirname(fileURLToPath(import.meta.url));
-
-const src = path.join(baseDir, '..');
+const src = path.join(dirname(fileURLToPath(import.meta.url)), '..');
+const root = path.join(src, '..');
 
 export default {
   context: src,
@@ -39,9 +38,9 @@ export default {
       {
         test: /\.js$/,
         use: {
-          loader: path.join(baseDir, 'worker-loader.cjs'),
+          loader: path.join(src, 'webpack', 'worker-loader.cjs'),
         },
-        include: [path.join(baseDir, '..', '..', 'src', 'ol', 'worker')],
+        include: [path.join(root, 'src', 'ol', 'worker')],
       },
     ],
   },
@@ -64,15 +63,18 @@ export default {
   },
   plugins: [
     new ExampleBuilder({
-      templates: path.join(baseDir, '..', 'templates'),
+      templates: path.join(src, 'templates'),
       common: 'common',
     }),
     new CopyPlugin({
       patterns: [
-        {from: '../site/src/theme', to: 'theme'},
         {
-          from: path.join(baseDir, '..', '..', 'src', 'ol', 'ol.css'),
-          to: path.join(baseDir, '..', '..', 'theme', 'ol', 'ol.css'),
+          from: path.join(root, 'site', 'src', 'theme'),
+          to: 'theme',
+        },
+        {
+          from: path.join(root, 'src', 'ol', 'ol.css'),
+          to: path.join('theme', 'ol.css'),
         },
         {from: 'data', to: 'data'},
         {from: 'resources', to: 'resources'},
@@ -84,7 +86,7 @@ export default {
   devtool: 'source-map',
   output: {
     filename: '[name].js',
-    path: path.join(baseDir, '..', '..', 'build', 'examples'),
+    path: path.join(root, 'build', 'examples'),
   },
   resolve: {
     fallback: {
@@ -94,7 +96,7 @@ export default {
     },
     alias: {
       // allow imports from 'ol/module' instead of specifiying the source path
-      ol: path.join(baseDir, '..', '..', 'src', 'ol'),
+      ol: path.join(root, 'src', 'ol'),
     },
   },
 };
