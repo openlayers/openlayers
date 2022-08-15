@@ -41,7 +41,7 @@ function getShortName(longname) {
   if (longname.includes('<')) {
     return longname;
   }
-  return longname.split(/[\~\.#]/).pop();
+  return longname.split(/[\~\.#\:]/).pop();
 }
 
 function linkto(longname, linkText, cssClass, fragmentId) {
