@@ -58,13 +58,29 @@
 	<tbody>
 	<?js
         var self = this;
+
+        if (params[0].name === 'options' && params[0].subparams) {
+            var onlyOptions = true;
+            for (var i = 1; i < params.length; ++i) {
+                if (params[i]) {
+                    onlyOptions = false;
+                    break;
+                }
+            }
+            if (onlyOptions) {
+                var hasName = params.hasName;
+                params = params[0].subparams;
+                params.hasName = hasName;
+            }
+        }
+
 	    params.forEach(function(param) {
 	        if (!param) { return; }
 	?>
 
         <tr class="<?js= (param.stability && param.stability !== 'stable') ? 'unstable' : '' ?>">
             <?js if (params.hasName) {?>
-                <td class="name"><code><?js= param.name.replace(/^opt_/, "") ?></code></td>
+                <td class="name"><code><?js= param.name ?></code></td>
             <?js } ?>
 
             <?js if (!param.subparams) {?>
