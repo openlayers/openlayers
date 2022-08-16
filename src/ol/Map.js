@@ -81,7 +81,7 @@ import {removeNode} from './dom.js';
  * will be tested for features. By default, all visible layers will be tested.
  * @property {number} [hitTolerance=0] Hit-detection tolerance in css pixels. Pixels
  * inside the radius around the given position will be checked for features.
- * @property {boolean} [checkWrapped=true] Check-Wrapped Will check for for wrapped geometries inside the range of
+ * @property {boolean} [checkWrapped=true] Check-Wrapped Will check for wrapped geometries inside the range of
  *   +/- 1 world width. Works only if a projection is used that can be wrapped.
  */
 
