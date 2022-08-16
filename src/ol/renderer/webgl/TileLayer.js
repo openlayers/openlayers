@@ -674,6 +674,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
      * @param {import("../../Map.js").FrameState} frameState Frame state.
      */
     const postRenderFunction = function (map, frameState) {
+      tileSource.updateCacheSize(0.1, frameState.viewState.projection);
       tileSource.expireCache(frameState.viewState.projection, empty);
     };
 
