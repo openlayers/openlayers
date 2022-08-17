@@ -7,7 +7,7 @@ import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import Interaction from './Interaction.js';
 import {TRUE} from '../functions.js';
-import {get as getProjection} from '../proj.js';
+import {get as getProjection, getUserProjection} from '../proj.js';
 import {listen, unlistenByKey} from '../events.js';
 
 /**
@@ -178,8 +178,11 @@ class DragAndDrop extends Interaction {
     const map = this.getMap();
     let projection = this.projection_;
     if (!projection) {
-      const view = map.getView();
-      projection = view.getProjection();
+      projection = getUserProjection();
+      if (!projection) {
+        const view = map.getView();
+        projection = view.getProjection();
+      }
     }
 
     let text;
