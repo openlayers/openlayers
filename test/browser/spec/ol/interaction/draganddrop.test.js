@@ -155,7 +155,7 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
                   'type': 'Point',
                   'coordinates': [102.0, 0.5],
                 },
-              }
+              },
             ],
           });
         },
@@ -169,7 +169,7 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
       interaction.on('addfeatures', function (evt) {
         expect(evt.features.length).to.be(1);
         expect(evt.features[0].getGeometry().getCoordinates()).to.eql([
-          102.0, 0.5
+          102.0, 0.5,
         ]);
         expect(mockReadAsText).to.be(true);
         expect(mockReadAsArrayBuffer).to.be(false);
@@ -198,7 +198,7 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
                   'type': 'Point',
                   'coordinates': [102.0, 0.5],
                 },
-              }
+              },
             ],
           });
         },
