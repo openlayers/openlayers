@@ -127,7 +127,7 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
     it('reads dropped files as text', function (done) {
       interaction.on('addfeatures', function (evt) {
         expect(evt.features.length).to.be(1);
-        expect(evt.feature[0].getGeometry().getCoordinates()).to.eql(
+        expect(evt.features[0].getGeometry().getCoordinates()).to.eql(
           transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857')
         );
         expect(mockReadAsText).to.be(true);
@@ -147,14 +147,16 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
         item: function () {
           return JSON.stringify({
             type: 'FeatureCollection',
-            features: [{
-              type: 'Feature',
-              id: '1',
-              'geometry': {
-                'type': 'Point',
-                'coordinates': [102.0, 0.5],
-              },
-            }],
+            features: [
+              {
+                type: 'Feature',
+                id: '1',
+                'geometry': {
+                  'type': 'Point',
+                  'coordinates': [102.0, 0.5],
+                },
+              }
+            ],
           });
         },
       };
@@ -166,9 +168,9 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
     it('works with user projection', function (done) {
       interaction.on('addfeatures', function (evt) {
         expect(evt.features.length).to.be(1);
-        expect(evt.feature[0].getGeometry().getCoordinates()).to.eql(
-          [102.0, 0.5]
-        );
+        expect(evt.features[0].getGeometry().getCoordinates()).to.eql([
+          102.0, 0.5
+        ]);
         expect(mockReadAsText).to.be(true);
         expect(mockReadAsArrayBuffer).to.be(false);
         clearUserProjection();
@@ -188,14 +190,16 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
         item: function () {
           return JSON.stringify({
             type: 'FeatureCollection',
-            features: [{
-              type: 'Feature',
-              id: '1',
-              'geometry': {
-                'type': 'Point',
-                'coordinates': [102.0, 0.5],
-              },
-            }],
+            features: [
+              {
+                type: 'Feature',
+                id: '1',
+                'geometry': {
+                  'type': 'Point',
+                  'coordinates': [102.0, 0.5],
+                },
+              }
+            ],
           });
         },
       };
