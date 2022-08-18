@@ -1,16 +1,211 @@
 ---
 layout: example.html
-title: Icon Scale
+title: Icon and Label Scale
 shortdesc: Example of scaling icons and labels.
 docs: >
   Icons and labels can be scaled in both dimensions if required. A negative value will flip the image
-  or text around its anchor point (reversed text is <b>not</b> suitable for line placement). A newline
-  character inserted in label text is interpreted in a <b>vector layer</b>, but will not be shown in
-  a <b>vector context</b>.
+  or text around its anchor point (reversed text is <b>not</b> suitable for line placement).
 tags: "vector, style, icon, label, scale"
-resources:
-  - https://code.jquery.com/jquery-3.5.1.min.js
-  - https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css
-  - https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js
 ---
-<div id="map" class="map"><div id="popup"></div></div>
+<div id="map" class="map"></div>
+<table class="controls">
+  <tr>
+    <th>
+      Image
+    </th>
+    <th></th>
+    <th style="visibility: hidden;">-0.00 π</th>
+    <th>&nbsp;&nbsp;&nbsp;&nbsp;</th>
+    <th>
+      Text
+    </th>
+    <th></th>
+    <th></th>
+  </tr>
+  <tr>
+    <td><label for="rotateWithView">Rotate with view</label>&nbsp;&nbsp;</td>
+    <td>
+      <input id="rotateWithView" type="checkbox" />
+    </td>
+    <td><span id="rotateWithViewOut"></span></td>
+    <td></td>
+    <td><label for="textRotateWithView">Rotate with view</label>&nbsp;&nbsp;</td>
+    <td>
+      <input id="textRotateWithView" type="checkbox" />
+    </td>
+    <td><span id="textRotateWithViewOut"></span></td>
+  </tr>
+  <tr>
+    <td><label for="rotation">Rotation</label></td>
+    <td>
+      <input
+        id="rotation"
+        type="range"
+        min="-1"
+        max="1"
+        step="0.05"
+        value="0.25"
+      />
+    </td>
+    <td><span id="rotationOut"></span> π</td>
+    <td></td>
+    <td><label for="textRotation">Rotation</label></td>
+    <td>
+      <input
+        id="textRotation"
+        type="range"
+        min="-1"
+        max="1"
+        step="0.05"
+        value="0.25"
+      />
+    </td>
+    <td><span id="textRotationOut"></span> π</td>
+  </tr>
+  <tr>
+    <td><label for="scaleX">Scale X</label></td>
+    <td>
+      <input
+        id="scaleX"
+        type="range"
+        min="-2"
+        max="2"
+        step="0.1"
+        value="1"
+      />
+    </td>
+    <td><span id="scaleXOut"></span></td>
+    <td></td>
+    <td><label for="textScaleX">Scale X</label></td>
+    <td>
+      <input
+        id="textScaleX"
+        type="range"
+        min="-2"
+        max="2"
+        step="0.1"
+        value="1"
+      />
+    </td>
+    <td><span id="textScaleXOut"></span></td>
+  </tr>
+  <tr>
+    <td><label for="scaleY">Scale Y</label></td>
+    <td>
+      <input
+        id="scaleY"
+        type="range"
+        min="-2"
+        max="2"
+        step="0.1"
+        value="1"
+      />
+    </td>
+    <td><span id="scaleYOut"></span></td>
+    <td></td>
+    <td><label for="textScaleY">Scale Y</label></td>
+    <td>
+      <input
+        id="textScaleY"
+        type="range"
+        min="-2"
+        max="2"
+        step="0.1"
+        value="1"
+      />
+    </td>
+    <td><span id="textScaleYOut"></span></td>
+  </tr>
+  <tr>
+    <td><label for="anchorX">Anchor X</label></td>
+    <td>
+      <input
+        id="anchorX"
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        value="0.5"
+      />
+    </td>
+    <td><span id="anchorXOut"></span></td>
+    <td></td>
+    <td><label for="textAlign">Align</label></td>
+    <td>
+      <input
+        id="textAlign"
+        type="range"
+        min="0"
+        max="2"
+        step="1"
+        value="1"
+      />
+    </td>
+    <td><span id="textAlignOut"></span></td>
+  </tr>
+  <tr>
+    <td><label for="anchorY">Anchor Y</label></td>
+    <td>
+      <input
+        id="anchorY"
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        value="1"
+      />
+    </td>
+    <td><span id="anchorYOut"></span></td>
+    <td></td>
+    <td><label for="textBaseline">Baseline</label></td>
+    <td>
+      <input
+        id="textBaseline"
+        type="range"
+        min="0"
+        max="2"
+        step="1"
+        value="0"
+      />
+    </td>
+    <td><span id="textBaselineOut"></span></td>
+  </tr>
+  <tr>
+    <td><label for="displacementX">Displacement X</label></td>
+    <td>
+      <input
+        id="displacementX"
+        type="range"
+        min="-100"
+        max="100"
+        value="0"
+      />
+    </td>
+    <td><span id="displacementXOut"></span></td>
+    <td></td>
+    <td><label for="textOffsetX">Offset X</label></td>
+    <td>
+      <input id="textOffsetX" type="range" min="-100" max="100" value="0" />
+    </td>
+    <td><span id="textOffsetXOut"></span></td>
+  </tr>
+  <tr>
+    <td><label for="displacementY">Displacement Y</label></td>
+    <td>
+      <input
+        id="displacementY"
+        type="range"
+        min="-100"
+        max="100"
+        value="0"
+      />
+    </td>
+    <td><span id="displacementYOut"></span></td>
+    <td></td>
+    <td><label for="textOffsetY">Offset Y</label></td>
+    <td>
+      <input id="textOffsetY" type="range" min="-100" max="100" value="0" />
+    </td>
+    <td><span id="textOffsetYOut"></span></td>
+  </tr>
+</table>
