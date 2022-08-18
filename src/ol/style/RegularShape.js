@@ -24,14 +24,15 @@ import {
  * @property {number} [radius] Radius of a regular polygon.
  * @property {number} [radius1] First radius of a star. Ignored if radius is set.
  * @property {number} [radius2] Second radius of a star.
- * @property {number} [angle=0] Shape's angle in radians. A value of 0 will have one of the shape's point facing up.
- * @property {Array<number>} [displacement=[0,0]] Displacement of the shape
+ * @property {number} [angle=0] Shape's angle in radians. A value of 0 will have one of the shape's points facing up.
+ * @property {Array<number>} [displacement=[0, 0]] Displacement of the shape in pixels.
+ * Positive values will shift the shape right and up.
  * @property {import("./Stroke.js").default} [stroke] Stroke style.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
  * @property {boolean} [rotateWithView=false] Whether to rotate the shape with the view.
  * @property {number|import("../size.js").Size} [scale=1] Scale. Unless two dimensional scaling is required a better
  * result may be obtained with appropriate settings for `radius`, `radius1` and `radius2`.
- * @property {"declutter"|"obstacle"|"none"|undefined} [declutterMode] Declutter mode
+ * @property {"declutter"|"obstacle"|"none"|undefined} [declutterMode] Declutter mode.
  */
 
 /**
