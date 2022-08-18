@@ -166,6 +166,7 @@ function updateStyle() {
   iconStyle.getText().setOffsetX(parseFloat(controls['textOffsetX'].value));
 
   iconStyle.getText().setOffsetY(parseFloat(controls['textOffsetY'].value));
+  vectorLayer.changed();
 }
 updateStyle();
 
