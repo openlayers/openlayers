@@ -247,6 +247,12 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
      * @type {import("../../Map.js").FrameState|null}
      */
     this.frameState_ = null;
+
+    /**
+     * @private
+     * @type {import("../../proj/Projection.js").default}
+     */
+    this.projection_ = undefined;
   }
 
   /**
@@ -299,6 +305,14 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrameInternal(frameState) {
+    this.projection_ =
+      this.projection_ === undefined
+        ? frameState.viewState.projection
+        : this.projection_;
+    if (frameState.viewState.projection !== this.projection_) {
+      this.clearCache();
+      this.projection_ = frameState.viewState.projection;
+    }
     const layer = this.getLayer();
     const source = layer.getRenderSource();
     if (!source) {
@@ -817,11 +831,15 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     return covered;
   }
 
+  clearCache() {
+    const tileTextureCache = this.tileTextureCache_;
+    tileTextureCache.forEach((tileTexture) => tileTexture.dispose());
+    tileTextureCache.clear();
+  }
+
   removeHelper() {
     if (this.helper) {
-      const tileTextureCache = this.tileTextureCache_;
-      tileTextureCache.forEach((tileTexture) => tileTexture.dispose());
-      tileTextureCache.clear();
+      this.clearCache();
     }
 
     super.removeHelper();

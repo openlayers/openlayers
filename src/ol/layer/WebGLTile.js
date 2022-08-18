@@ -392,6 +392,9 @@ class WebGLTileLayer extends BaseTileLayer {
    * @private
    */
   handleSourceUpdate_() {
+    if (this.hasRenderer()) {
+      this.getRenderer().clearCache();
+    }
     if (this.getSource()) {
       this.setStyle(this.style_);
     }
