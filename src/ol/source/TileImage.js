@@ -7,7 +7,6 @@ import ReprojTile from '../reproj/Tile.js';
 import TileCache from '../TileCache.js';
 import TileState from '../TileState.js';
 import UrlTile from './UrlTile.js';
-import {ENABLE_RASTER_REPROJECTION} from '../reproj/common.js';
 import {equivalent, get as getProjection} from '../proj.js';
 import {getKey, getKeyZXY} from '../tilecoord.js';
 import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
@@ -136,9 +135,6 @@ class TileImage extends UrlTile {
    * @return {boolean} Can expire cache.
    */
   canExpireCache() {
-    if (!ENABLE_RASTER_REPROJECTION) {
-      return super.canExpireCache();
-    }
     if (this.tileCache.canExpireCache()) {
       return true;
     } else {
@@ -156,10 +152,6 @@ class TileImage extends UrlTile {
    * @param {!Object<string, boolean>} usedTiles Used tiles.
    */
   expireCache(projection, usedTiles) {
-    if (!ENABLE_RASTER_REPROJECTION) {
-      super.expireCache(projection, usedTiles);
-      return;
-    }
     const usedTileCache = this.getTileCacheForProjection(projection);
 
     this.tileCache.expireCache(
@@ -177,7 +169,6 @@ class TileImage extends UrlTile {
    */
   getGutterForProjection(projection) {
     if (
-      ENABLE_RASTER_REPROJECTION &&
       this.getProjection() &&
       projection &&
       !equivalent(this.getProjection(), projection)
@@ -213,7 +204,6 @@ class TileImage extends UrlTile {
    */
   getOpaque(projection) {
     if (
-      ENABLE_RASTER_REPROJECTION &&
       this.getProjection() &&
       projection &&
       !equivalent(this.getProjection(), projection)
@@ -229,9 +219,6 @@ class TileImage extends UrlTile {
    * @return {!import("../tilegrid/TileGrid.js").default} Tile grid.
    */
   getTileGridForProjection(projection) {
-    if (!ENABLE_RASTER_REPROJECTION) {
-      return super.getTileGridForProjection(projection);
-    }
     const thisProj = this.getProjection();
     if (this.tileGrid && (!thisProj || equivalent(thisProj, projection))) {
       return this.tileGrid;
@@ -250,9 +237,6 @@ class TileImage extends UrlTile {
    * @return {import("../TileCache.js").default} Tile cache.
    */
   getTileCacheForProjection(projection) {
-    if (!ENABLE_RASTER_REPROJECTION) {
-      return super.getTileCacheForProjection(projection);
-    }
     const thisProj = this.getProjection();
     if (!thisProj || equivalent(thisProj, projection)) {
       return this.tileCache;
@@ -310,7 +294,6 @@ class TileImage extends UrlTile {
   getTile(z, x, y, pixelRatio, projection) {
     const sourceProjection = this.getProjection();
     if (
-      !ENABLE_RASTER_REPROJECTION ||
       !sourceProjection ||
       !projection ||
       equivalent(sourceProjection, projection)
@@ -415,10 +398,7 @@ class TileImage extends UrlTile {
    * @api
    */
   setRenderReprojectionEdges(render) {
-    if (
-      !ENABLE_RASTER_REPROJECTION ||
-      this.renderReprojectionEdges_ == render
-    ) {
+    if (this.renderReprojectionEdges_ == render) {
       return;
     }
     this.renderReprojectionEdges_ = render;
@@ -441,13 +421,11 @@ class TileImage extends UrlTile {
    * @api
    */
   setTileGridForProjection(projection, tilegrid) {
-    if (ENABLE_RASTER_REPROJECTION) {
-      const proj = getProjection(projection);
-      if (proj) {
-        const projKey = getUid(proj);
-        if (!(projKey in this.tileGridForProjection)) {
-          this.tileGridForProjection[projKey] = tilegrid;
-        }
+    const proj = getProjection(projection);
+    if (proj) {
+      const projKey = getUid(proj);
+      if (!(projKey in this.tileGridForProjection)) {
+        this.tileGridForProjection[projKey] = tilegrid;
       }
     }
   }
