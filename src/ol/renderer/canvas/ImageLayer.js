@@ -4,7 +4,6 @@
 import CanvasLayerRenderer from './Layer.js';
 import ImageState from '../../ImageState.js';
 import ViewHint from '../../ViewHint.js';
-import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
 import {
   apply as applyTransform,
   compose as composeTransform,
@@ -77,13 +76,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       !isEmpty(renderedExtent)
     ) {
       if (imageSource) {
-        let projection = viewState.projection;
-        if (!ENABLE_RASTER_REPROJECTION) {
-          const sourceProjection = imageSource.getProjection();
-          if (sourceProjection) {
-            projection = sourceProjection;
-          }
-        }
+        const projection = viewState.projection;
         const image = imageSource.getImage(
           renderedExtent,
           viewResolution,

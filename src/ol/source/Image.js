@@ -5,7 +5,6 @@ import Event from '../events/Event.js';
 import ImageState from '../ImageState.js';
 import ReprojImage from '../reproj/Image.js';
 import Source from './Source.js';
-import {ENABLE_RASTER_REPROJECTION} from '../reproj/common.js';
 import {abstract} from '../util.js';
 import {equals} from '../extent.js';
 import {equivalent} from '../proj.js';
@@ -169,7 +168,6 @@ class ImageSource extends Source {
   getImage(extent, resolution, pixelRatio, projection) {
     const sourceProjection = this.getProjection();
     if (
-      !ENABLE_RASTER_REPROJECTION ||
       !sourceProjection ||
       !projection ||
       equivalent(sourceProjection, projection)
