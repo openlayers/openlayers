@@ -38,21 +38,22 @@ import {getUid} from '../util.js';
  * @property {HTMLImageElement|HTMLCanvasElement} [img] Image object for the icon. If the `src` option is not provided then the
  * provided image must already be loaded. And in that case, it is required
  * to provide the size of the image, with the `imgSize` option.
- * @property {Array<number>} [offset=[0, 0]] Offset, which, together with the size and the offset origin, define the
- * sub-rectangle to use from the original icon image.
- * @property {Array<number>} [displacement=[0,0]] Displacement of the icon.
- * @property {IconOrigin} [offsetOrigin='top-left'] Origin of the offset: `bottom-left`, `bottom-right`,
- * `top-left` or `top-right`.
+ * @property {import("../size.js").Size} [imgSize] Image size in pixels. Only required if `img` is set and `src` is not.
+ * The provided `imgSize` needs to match the actual size of the image.
+ * @property {Array<number>} [displacement=[0, 0]] Displacement of the icon in pixels.
+ * Positive values will shift the icon right and up.
  * @property {number} [opacity=1] Opacity of the icon.
  * @property {number|import("../size.js").Size} [scale=1] Scale.
  * @property {boolean} [rotateWithView=false] Whether to rotate the icon with the view.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
- * @property {import("../size.js").Size} [size] Icon size in pixel. Can be used together with `offset` to define the
- * sub-rectangle to use from the origin (sprite) icon image.
- * @property {import("../size.js").Size} [imgSize] Image size in pixels. Only required if `img` is set and `src` is not.
- * The provided `imgSize` needs to match the actual size of the image.
+ * @property {Array<number>} [offset=[0, 0]] Offset which, together with `size` and `offsetOrigin`, defines the
+ * sub-rectangle to use from the original (sprite) image.
+ * @property {IconOrigin} [offsetOrigin='top-left'] Origin of the offset: `bottom-left`, `bottom-right`,
+ * `top-left` or `top-right`.
+ * @property {import("../size.js").Size} [size] Icon size in pixels. Used together with `offset` to define the
+ * sub-rectangle to use from the original (sprite) image.
  * @property {string} [src] Image source URI.
- * @property {"declutter"|"obstacle"|"none"|undefined} [declutterMode] Declutter mode
+ * @property {"declutter"|"obstacle"|"none"|undefined} [declutterMode] Declutter mode.
  */
 
 /**
