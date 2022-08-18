@@ -10,31 +10,20 @@ const root = path.join(src, '..');
 
 export default {
   context: src,
-  target: ['web', 'es5'],
+  target: ['browserslist'],
   entry: () => {
     const entry = {};
     fs.readdirSync(src)
       .filter((name) => /^(?!index).*\.html$/.test(name))
       .map((name) => name.replace(/\.html$/, ''))
       .forEach((example) => {
-        entry[example] = ['regenerator-runtime/runtime', `./${example}.js`];
+        entry[example] = `./${example}.js`;
       });
     return entry;
   },
   stats: 'minimal',
   module: {
     rules: [
-      {
-        test: /^((?!es2015-)[\s\S])*\.m?js$/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              ['@babel/preset-env', {targets: 'last 2 versions, not dead'}],
-            ],
-          },
-        },
-      },
       {
         test: /\.js$/,
         use: {

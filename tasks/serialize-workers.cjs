@@ -28,7 +28,7 @@ async function build(input, {minify = true} = {}) {
           '@babel/preset-env',
           {
             'modules': false,
-            'targets': 'last 2 versions, not dead',
+            'targets': '> 1%, last 2 versions, not dead',
           },
         ],
       ],

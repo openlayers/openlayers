@@ -2,30 +2,10 @@ import TerserPlugin from 'terser-webpack-plugin';
 import path from 'path';
 
 export default {
-  entry: ['regenerator-runtime/runtime', './build/index.js'],
+  entry: './build/index.js',
   devtool: 'source-map',
   mode: 'production',
-  target: ['web', 'es5'],
-  module: {
-    rules: [
-      {
-        test: /\.m?js$/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              [
-                '@babel/preset-env',
-                {
-                  targets: 'last 2 versions, not dead',
-                },
-              ],
-            ],
-          },
-        },
-      },
-    ],
-  },
+  target: ['browserslist'],
   resolve: {
     fallback: {
       fs: false,
