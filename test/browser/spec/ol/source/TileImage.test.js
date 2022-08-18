@@ -68,6 +68,37 @@ describe('ol/source/TileImage', function () {
     });
   });
 
+  describe('#refresh', function () {
+    it('refreshes the source', function () {
+      const source = createSource();
+      let loaded = 0;
+      source.setTileLoadFunction(() => ++loaded);
+      source.getTile(0, 0, 0, 1, getProjection('EPSG:3857')).load();
+      expect(loaded).to.be(1);
+      source.getTile(0, 0, 0, 1, getProjection('EPSG:3857')).load();
+      expect(loaded).to.be(1);
+      const revision = source.getRevision();
+      source.refresh();
+      expect(source.getRevision()).to.be(revision + 1);
+      source.getTile(0, 0, 0, 1, getProjection('EPSG:3857')).load();
+      expect(loaded).to.be(2);
+    });
+    it('refreshes the source when raster reprojection is used', function () {
+      const source = createSource();
+      let loaded = 0;
+      source.setTileLoadFunction(() => ++loaded);
+      source.getTile(0, 0, 0, 1, getProjection('EPSG:4326')).load();
+      expect(loaded).to.be(16384);
+      source.getTile(0, 0, 0, 1, getProjection('EPSG:4326')).load();
+      expect(loaded).to.be(16384);
+      const revision = source.getRevision();
+      source.refresh();
+      expect(source.getRevision()).to.be(revision + 1);
+      source.getTile(0, 0, 0, 1, getProjection('EPSG:4326')).load();
+      expect(loaded).to.be(16384 * 2);
+    });
+  });
+
   describe('#getTileInternal', function () {
     let source, tile;
 
