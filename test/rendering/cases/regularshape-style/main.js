@@ -11,7 +11,7 @@ import View from '../../../../src/ol/View.js';
 import {Icon} from '../../../../src/ol/style.js';
 
 const vectorSource = new VectorSource();
-function createFeatures(stroke, fill, offSet = [0, 0]) {
+function createFeatures(stroke, fill, offSet = [0, 0], scale = 1) {
   let feature;
   feature = new Feature({
     geometry: new Point([offSet[0], offSet[1]]),
@@ -26,6 +26,7 @@ function createFeatures(stroke, fill, offSet = [0, 0]) {
         radius: 10,
         angle: Math.PI / 4,
         displacement: [-15, 15],
+        scale: scale,
       }),
     }),
     new Style({
@@ -36,6 +37,7 @@ function createFeatures(stroke, fill, offSet = [0, 0]) {
         anchorXUnits: 'fraction',
         anchorYUnits: 'fraction',
         displacement: [-15, 15],
+        scale: scale,
       }),
     }),
   ]);
@@ -130,6 +132,14 @@ createFeatures(
   }),
   null,
   [-50, -50]
+);
+createFeatures(
+  new Stroke({
+    lineDash: [10, 5],
+  }),
+  null,
+  [-50, 50],
+  1.5
 );
 
 createFeatures(new Stroke(), new Fill(), [50, -50]);

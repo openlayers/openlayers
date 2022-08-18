@@ -179,7 +179,13 @@ class RegularShape extends ImageStyle {
       return null;
     }
     const displacement = this.getDisplacement();
-    return [size[0] / 2 - displacement[0], size[1] / 2 + displacement[1]];
+    const scale = this.getScaleArray();
+    // anchor is scaled by renderer but displacement should not be scaled
+    // so divide by scale here
+    return [
+      size[0] / 2 - displacement[0] / scale[0],
+      size[1] / 2 + displacement[1] / scale[1],
+    ];
   }
 
   /**

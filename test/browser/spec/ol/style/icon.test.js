@@ -243,6 +243,32 @@ describe('ol.style.Icon', function () {
         size[1] / 2 + 20,
       ]);
     });
+
+    it('scale applies to image size, not offset', function () {
+      const scale = 4;
+      let anchorScaled, anchorBig;
+
+      const iconStyleScaled = new Icon({
+        src: 'test.png',
+        size: size,
+        displacement: [20, 10],
+        scale: scale,
+      });
+      const iconStyleBig = new Icon({
+        src: 'test.png',
+        size: [size[0] * scale, size[1] * scale],
+        displacement: [20, 10],
+      });
+      anchorScaled = iconStyleScaled.getAnchor();
+      anchorBig = iconStyleBig.getAnchor();
+      expect(anchorScaled).to.eql([anchorBig[0] / scale, anchorBig[1] / scale]);
+
+      iconStyleScaled.setDisplacement([10, 20]);
+      iconStyleBig.setDisplacement([10, 20]);
+      anchorScaled = iconStyleScaled.getAnchor();
+      anchorBig = iconStyleBig.getAnchor();
+      expect(anchorScaled).to.eql([anchorBig[0] / scale, anchorBig[1] / scale]);
+    });
   });
 
   describe('#setAnchor', function () {
