@@ -451,6 +451,13 @@ class TileImage extends UrlTile {
       }
     }
   }
+
+  clear() {
+    super.clear();
+    for (const id in this.tileCacheForProjection) {
+      this.tileCacheForProjection[id].clear();
+    }
+  }
 }
 
 /**
