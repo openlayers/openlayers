@@ -6,7 +6,7 @@ import {hideBin} from 'yargs/helpers';
 import {readFile, stat} from 'node:fs/promises';
 
 /**
- * @typedef {Object} ReleaseOptions
+ * @typedef {Object} Options
  * @property {string} token The bearer token.
  * @property {string} tag The tag.
  * @property {boolean} draft Create a draft release.
@@ -20,7 +20,7 @@ const repo = 'openlayers';
 
 /**
  * Create a release.
- * @param {ReleaseOptions} options The release options.
+ * @param {Options} options The release options.
  */
 async function createRelease(options) {
   const client = new Octokit({
