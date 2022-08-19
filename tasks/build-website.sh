@@ -78,4 +78,13 @@ mv build/legacy ${build}/en/${version}/
 if [[ "${latest}" == "${version}" ]] ; then
   echo "Copying to en/latest"
   cp -r ${build}/en/${version} ${build}/en/latest
+
+  echo "Building release artifacts"
+  pushd ${build}
+  zip -r ${OLDPWD}/build/${version}-site.zip . -x "en/${version}/*"
+  popd
+
+  pushd ${build}/en/${version}/legacy
+  zip -r ${OLDPWD}/build/${version}-legacy.zip .
+  popd
 fi

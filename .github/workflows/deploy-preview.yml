@@ -1,4 +1,4 @@
-name: Deploy Preview
+name: Deploy Website (Preview)
 
 on:
   workflow_run:
