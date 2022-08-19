@@ -17,8 +17,8 @@ layout: default.hbs
     <div class="col-sm-12">
       <p>
         If you want to try out OpenLayers without downloading anything (<b>not recommended for production</b>), include the following in the head of your html page:
-<pre><code class="language-html">&lt;script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/{{ version }}/build/ol.js"&gt;&lt;/script&gt;
-&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/{{ version }}/theme/ol.css"&gt;
+<pre><code class="language-html">&lt;script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@main/dist/en/{{ version }}/legacy/ol.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@main/dist/en/{{ version }}/legacy/ol.css"&gt;
 </code></pre>
       </p>
     </div>
@@ -32,12 +32,12 @@ layout: default.hbs
         <tbody>
           <tr><th>Archive</th><th>Description</th></tr>
           <tr>
-            <td><a href="https://github.com/openlayers/openlayers/releases/download/{{ version }}/{{ version }}-dist.zip">{{ version }}-dist.zip</a></td>
-            <td>Includes a full build of the library (<code>ol.js</code>), a source map (<code>ol.js.map</code>), and library CSS (<code>ol.css</code> with source map <code>ol.css.map</code>).</td>
+            <td><a href="https://github.com/openlayers/openlayers/releases/download/{{ version }}/{{ version }}-site.zip">{{ version }}-site.zip</a></td>
+            <td>Includes examples and documentation.</td>
           </tr>
           <tr>
-            <td><a href="https://github.com/openlayers/openlayers/releases/download/{{ version }}/{{ version }}.zip">{{ version }}.zip</a></td>
-            <td>Includes all of the above plus examples, API docs, and sources.</td>
+            <td><a href="https://github.com/openlayers/openlayers/releases/download/{{ version }}/{{ version }}-legacy.zip">{{ version }}-legacy.zip</a></td>
+            <td>Includes the legacy build of the library.</td>
           </tr>
         </tbody>
       </table>
