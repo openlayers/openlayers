@@ -1,6 +1,15 @@
 ## Upgrade notes
 
-### Next version
+### 7.0.0
+
+#### Removal of deprecated properties and methods
+
+ * The `tilePixelRatio` has been removed from the `DataTile` source.
+ * The `imageSmoothing` option has been removed from sources.
+ * The `undefinedHTML` option has been removed from the `MousePosition` control.
+ * The `forEachLayerAtPixel` method has been removed from the `Map` class.
+ * Deprecated options have been removed from the `Overlay` component.
+ * The `labelCache` has been removed from the `ol/render/canvas.js` module.
 
 #### Internet Explorer is no longer supported
 
