@@ -32,11 +32,13 @@ jobs:
       - run: |
           cp -r build/site/* openlayers.github.io/dist/
           cd openlayers.github.io
-          git config user.name "$(git --no-pager log --format=format:'%an' -n 1)"
-          git config user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
-          git add .
-          git commit -m "Website updates"
-          git push origin main
+          if [ -n "$(git status --porcelain)" ]; then
+            git config user.name "$(git --no-pager log --format=format:'%an' -n 1)"
+            git config user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
+            git add .
+            git commit -m "Website updates"
+            git push origin main
+          fi
   deploy-tag:
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
@@ -60,8 +62,10 @@ jobs:
       - run: |
           cp -r build/site/* openlayers.github.io/dist/
           cd openlayers.github.io
-          git config user.name "$(git --no-pager log --format=format:'%an' -n 1)"
-          git config user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
-          git add .
-          git commit -m "Website updates"
-          git push origin main
+          if [ -n "$(git status --porcelain)" ]; then
+            git config user.name "$(git --no-pager log --format=format:'%an' -n 1)"
+            git config user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
+            git add .
+            git commit -m "Website updates"
+            git push origin main
+          fi
