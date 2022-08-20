@@ -278,11 +278,11 @@ $(function () {
 
   // warn about outdated version
   const currentVersion = document.getElementById('package-version').innerHTML;
-  const packageUrl = 'https://raw.githubusercontent.com/openlayers/openlayers.github.io/build/package.json';
-  fetch(packageUrl).then(function(response) {
+  const releaseUrl = 'https://api.github.com/repos/openlayers/openlayers/releases/latest';
+  fetch(releaseUrl).then(function(response) {
     return response.json();
   }).then(function(json) {
-    const latestVersion = json.version;
+    const latestVersion = json.name.replace(/^v/, '');
     document.getElementById('latest-version').innerHTML = latestVersion;
     const url = window.location.href;
     const branchSearch = url.match(/\/([^\/]*)\/apidoc\//);
