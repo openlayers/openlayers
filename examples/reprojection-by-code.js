@@ -139,12 +139,19 @@ searchButton.onclick = function (event) {
 /**
  * Handle checkbox change events.
  */
-renderEdgesCheckbox.onchange = function () {
+function onReprojectionChange() {
   osmSource.setRenderReprojectionEdges(renderEdgesCheckbox.checked);
-};
-showTilesCheckbox.onchange = function () {
-  debugLayer.setVisible(showTilesCheckbox.checked);
-};
-showGraticuleCheckbox.onchange = function () {
+}
+function onGraticuleChange() {
   graticule.setVisible(showGraticuleCheckbox.checked);
-};
+}
+function onTilesChange() {
+  debugLayer.setVisible(showTilesCheckbox.checked);
+}
+showGraticuleCheckbox.addEventListener('change', onGraticuleChange);
+renderEdgesCheckbox.addEventListener('change', onReprojectionChange);
+showTilesCheckbox.addEventListener('change', onTilesChange);
+
+onReprojectionChange();
+onGraticuleChange();
+onTilesChange();
