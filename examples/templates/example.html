@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>{{ title }}</title>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.2/css/fontawesome.min.css" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.2/css/solid.css" crossorigin="anonymous">
@@ -10,11 +11,10 @@
     <link rel="stylesheet" type="text/css" href="/theme/ol.css">
     <link rel="stylesheet" type="text/css" href="/theme/site.css">
 {{#each css.local}}
-    <link rel="stylesheet" href="{{{ . }}}" type="text/css">
+    <link rel="stylesheet" type="text/css" href="{{{ . }}}">
 {{/each}}
     <link rel="icon" type="image/svg+xml" href="/theme/img/logo-light.svg" media="(prefers-color-scheme: light)" />
     <link rel="icon" type="image/svg+xml" href="/theme/img/logo-dark.svg" media="(prefers-color-scheme: dark)" />
-    <title>{{ title }}</title>
   </head>
   <body>
     <header class="navbar navbar-expand-md navbar-dark mb-3 py-0 fixed-top" role="navigation">

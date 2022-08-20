@@ -4,16 +4,16 @@ title: Geolocation Tracking with Orientation
 shortdesc: Example of a geolocated and oriented map.
 tags: "fullscreen, geolocation, orientation, mobile"
 ---
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="./theme/ol.css" type="text/css">
-    <link rel="stylesheet" href="./theme/site.css" type="text/css">
     <title>Mobile Geolocation Tracking with Orientation</title>
-    <style type="text/css">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="./theme/ol.css">
+    <link rel="stylesheet" type="text/css" href="./theme/site.css">
+    <style>
       html, body, .map {
         margin: 0;
         padding: 0;
@@ -34,7 +34,6 @@ tags: "fullscreen, geolocation, orientation, mobile"
           left: 10px;
       }
     </style>
-    <script src="https://unpkg.com/elm-pep@1.0.6/dist/elm-pep.js"></script>
   </head>
   <body>
     <div id="map" class="map"></div>
@@ -44,7 +43,8 @@ tags: "fullscreen, geolocation, orientation, mobile"
         <button id="geolocate">Geolocate Me!</button>
         <button id="simulate">Simulate</button>
     </div>
-    <script src="common.js"></script>
+    <script src="https://unpkg.com/elm-pep@1.0.6/dist/elm-pep.js"></script>
     <script src="geolocation-orientation.js"></script>
+    <script src="common.js"></script>
   </body>
 </html>
