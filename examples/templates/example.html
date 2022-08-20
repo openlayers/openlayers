@@ -166,7 +166,6 @@
     </div>
 
     <script src="https://unpkg.com/elm-pep@1.0.6/dist/elm-pep.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
 {{#each js.local}}
     <script src="{{{ . }}}"></script>
@@ -177,14 +176,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.js"></script>
     <script src="./resources/common.js"></script>
     <script>
-      $('#tag-example-list').on('show.bs.modal', function (event) {
-        const button = $(event.relatedTarget); // Button that triggered the modal
-        const title = button.data('title');
-        const content = button.data('content');
-        const modal = $(this)
-        modal.find('.modal-title').text(title);
-        modal.find('.modal-body').html(content);
-      });
+      document.getElementById('tag-example-list')
+        .addEventListener('show.bs.modal', function (event) {
+          const button = event.relatedTarget; // Button that triggered the modal
+          this.querySelector('.modal-title').innerText = button.dataset.title;
+          this.querySelector('.modal-body').innerHTML = button.dataset.content;
+        });
     </script>
     <script>
       const releaseUrl = 'https://api.github.com/repos/openlayers/openlayers/releases/latest';
