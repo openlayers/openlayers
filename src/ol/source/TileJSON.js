@@ -188,7 +188,7 @@ class TileJSON extends TileImage {
 
     this.tileUrlFunction = createFromTemplates(tileJSON['tiles'], tileGrid);
 
-    if (tileJSON['attribution'] !== undefined && !this.getAttributions()) {
+    if (tileJSON['attribution'] && !this.getAttributions()) {
       const attributionExtent = extent !== undefined ? extent : gridExtent;
       this.setAttributions(function (frameState) {
         if (intersects(attributionExtent, frameState.extent)) {
