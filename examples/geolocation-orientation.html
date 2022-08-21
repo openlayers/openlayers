@@ -28,7 +28,7 @@ tags: "fullscreen, geolocation, orientation, mobile"
           background-color: lightgrey;
           padding: 4px;
       }
-      .button {
+      .geolocate-buttons {
           position: absolute;
           bottom: 40px;
           left: 10px;
@@ -39,9 +39,9 @@ tags: "fullscreen, geolocation, orientation, mobile"
     <div id="map" class="map"></div>
     <div id="info"></div>
     <img id="geolocation_marker" src="data/geolocation_marker.png" />
-    <div class="button">
-        <button id="geolocate">Geolocate Me!</button>
-        <button id="simulate">Simulate</button>
+    <div class="geolocate-buttons">
+      <button id="geolocate" class="btn btn-primary">Geolocate Me!</button>
+      <button id="simulate" class="btn btn-secondary">Simulate</button>
     </div>
     <script src="https://unpkg.com/elm-pep@1.0.6/dist/elm-pep.js"></script>
     <script src="geolocation-orientation.js"></script>

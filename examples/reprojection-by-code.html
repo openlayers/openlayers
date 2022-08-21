@@ -7,27 +7,31 @@ docs: >
   OSM (EPSG:3857) to arbitrary projection by searching
   in <a href="https://epsg.io/">EPSG.io</a> database.
 tags: "reprojection, projection, proj4js, epsg.io, graticule"
+resources:
+  - https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css
 ---
 <div id="map" class="map"></div>
-<form class="form-inline">
-  <label for="epsg-query">Search projection:&nbsp</label>
-  <input type="text" id="epsg-query" placeholder="4326, 27700, 3031, US National Atlas, Swiss, France, ..." class="form-control" size="50" />
-  <button id="epsg-search" class="btn">Search</button>
-  <span id="epsg-result"></span>
+<form class="row">
+  <span class="col-auto">
+    <span class="input-group">
+      <label class="input-group-text" for="epsg-query">Search projection:&nbsp</label>
+      <input type="text" id="epsg-query" placeholder="4326, 27700, 3031, US National Atlas, Swiss, France, ..." class="form-control" size="50" />
+      <button class="btn btn-outline-secondary" id="epsg-search">Search</button>
+    </span>
+  </span>
+  <span class="mt-2" id="epsg-result">&nbsp;</span>
 </form>
-<form class="form-inline">
-  <label for="render-edges">
-    Render reprojection edges:&nbsp;
-    <input type="checkbox" id="render-edges" />
-  </label>
-  &nbsp;&nbsp;&nbsp;&nbsp;
-  <label for="show-tiles">
-    Show tile coordinates:&nbsp;
-    <input type="checkbox" id="show-tiles" />
-  </label>
-  &nbsp;&nbsp;&nbsp;&nbsp;
-  <label for="show-graticule">
-    Show graticule:&nbsp;
-    <input type="checkbox" id="show-graticule" />
-  </label>
+<form>
+  <div class="form-check mt-2">
+    <input class="form-check-input" type="checkbox" id="render-edges" />
+    <label class="form-check-label" for="render-edges">Render reprojection edges</label><br>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" id="show-tiles" />
+    <label class="form-check-label" for="show-tiles">Show tile coordinates</label><br>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" id="show-graticule" />
+    <label class="form-check-label" for="show-graticule">Show graticule</label>
+  </div>
 </form>
