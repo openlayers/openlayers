@@ -1,5 +1,11 @@
 ## Upgrade notes
 
+### Next version
+
+#### Deprecation of `ol/AssertionError` and error codes
+
+Future versions will no longer throw `ol/AssertionError` with an error `code`. Instead, they will throw `Error` with just the error message.
+
 ### 7.0.0
 
 #### Removal of deprecated properties and methods
