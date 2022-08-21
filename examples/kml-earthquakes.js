@@ -69,10 +69,12 @@ const tooltip = new bootstrap.Tooltip(info, {
 });
 
 let currentFeature;
-const displayFeatureInfo = function (pixel) {
-  const feature = map.forEachFeatureAtPixel(pixel, function (feature) {
-    return feature;
-  });
+const displayFeatureInfo = function (pixel, target) {
+  const feature = target.closest('.ol-control')
+    ? undefined
+    : map.forEachFeatureAtPixel(pixel, function (feature) {
+        return feature;
+      });
   if (feature) {
     info.style.left = pixel[0] + 'px';
     info.style.top = pixel[1] + 'px';
@@ -97,9 +99,14 @@ map.on('pointermove', function (evt) {
     return;
   }
   const pixel = map.getEventPixel(evt.originalEvent);
-  displayFeatureInfo(pixel);
+  displayFeatureInfo(pixel, evt.originalEvent.target);
 });
 
 map.on('click', function (evt) {
-  displayFeatureInfo(evt.pixel);
+  displayFeatureInfo(evt.pixel, evt.originalEvent.target);
+});
+
+map.getTargetElement().addEventListener('pointerleave', function () {
+  tooltip.hide();
+  currentFeature = undefined;
 });
