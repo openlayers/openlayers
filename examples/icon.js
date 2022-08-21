@@ -59,22 +59,29 @@ const popup = new Overlay({
 });
 map.addOverlay(popup);
 
+let popover;
+function disposePopover() {
+  if (popover) {
+    popover.dispose();
+    popover = undefined;
+  }
+}
 // display popup on click
 map.on('click', function (evt) {
   const feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
     return feature;
   });
-  if (feature) {
-    popup.setPosition(evt.coordinate);
-    $(element).popover({
-      placement: 'top',
-      html: true,
-      content: feature.get('name'),
-    });
-    $(element).popover('show');
-  } else {
-    $(element).popover('dispose');
+  disposePopover();
+  if (!feature) {
+    return;
   }
+  popup.setPosition(evt.coordinate);
+  popover = new bootstrap.Popover(element, {
+    placement: 'top',
+    html: true,
+    content: feature.get('name'),
+  });
+  popover.show();
 });
 
 // change mouse cursor when over marker
@@ -84,6 +91,4 @@ map.on('pointermove', function (e) {
   map.getTarget().style.cursor = hit ? 'pointer' : '';
 });
 // Close the popup when the map is moved
-map.on('movestart', function () {
-  $(element).popover('dispose');
-});
+map.on('movestart', disposePopover);
