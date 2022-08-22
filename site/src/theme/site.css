@@ -7,11 +7,6 @@ body {
   padding-top: 54px;
 }
 
-h1 {
-  margin-top: 30px;
-  margin-bottom: 20px;
-}
-
 h1,
 h2,
 h3,
@@ -25,6 +20,12 @@ h6,
 .h5,
 .h6 {
   font-weight: 700
+}
+
+h1,
+.row h1 {
+  margin-top: 30px;
+  margin-bottom: 20px;
 }
 
 h1.topic {
@@ -58,9 +59,7 @@ a :not(:first-child) {
 }
 
 a:hover,
-a:focus,
-footer a:hover,
-footer a:focus {
+a:focus {
   color: var(--ol-brand-color);
   text-decoration: underline;
 }
@@ -95,6 +94,14 @@ footer a:focus {
   color: var(--ol-brand-color);
 }
 
+.navbar-brand:focus,
+.navbar-brand:hover,
+.nav-link:focus,
+.nav-link:hover {
+  text-decoration: none;
+  color: var(--ol-brand-color);
+}
+
 footer {
   background-color: var(--ol-foreground-color);
   color: var(--ol-background-color);
@@ -111,7 +118,7 @@ a.dropdown-item {
 .dropdown-item:hover {
   color: var(--ol-brand-color);
   text-decoration: none;
-  background-color: var(--ol-background-color)
+  background-color: var(--ol-background-color);
 }
 
 .navbar-nav>li>a {
@@ -169,6 +176,7 @@ a.badge-info:focus,
 a.badge-info:hover {
   background-color: var(--ol-foreground-color);
   color: var(--ol-brand-color);
+  text-decoration: none;
 }
 
 .tag-modal-toggle {
@@ -510,4 +518,10 @@ div.code-toolbar>.toolbar button:before {
 
 .nameContainer .anchor:target+h4 {
   background-color: inherit;
+}
+
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1140px;
+  }
 }

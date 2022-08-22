@@ -5,22 +5,21 @@ shortdesc: Example of a cartodb map.
 docs: >
   A simple example with an anonymous cartodb map
 tags: "simple, openstreetmap, attribution"
+resources:
+  - https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css
 ---
-<div class="row-fluid">
-  <div class="span12">
-    <div id="map" class="map"></div>
-    <div>
-    <form class="form-horizontal">
-      <label>
-        Show countries larger than
-        <select id="country-area" class="form-control">
-          <option value="0" default>0 ㎢</option>
-          <option value="5000">5000 ㎢</option>
-          <option value="10000">10000 ㎢</option>
-          <option value="50000">50000 ㎢</option>
-          <option value="100000">100000 ㎢</option>
-        </select>
-      </label>
-    </form>
+<div id="map" class="map"></div>
+<form class="row">
+  <div class="col-auto">
+    <div class="input-group">
+      <label for="country-area" class="input-group-text">Show european countries larger than</label>
+      <select id="country-area" class="form-select">
+        <option value="0" default>0 ㎢</option>
+        <option value="5000">5000 ㎢</option>
+        <option value="10000">10000 ㎢</option>
+        <option value="50000">50000 ㎢</option>
+        <option value="100000">100000 ㎢</option>
+      </select>
+    </div>
   </div>
-</div>
+</form>
