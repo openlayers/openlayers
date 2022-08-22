@@ -9,9 +9,7 @@ describe('ol/AssertionError.js', function () {
 
   it('generates a message with a versioned url', function () {
     const error = new AssertionError(42);
-    expect(error.message).to.be(
-      'Assertion failed. Question unknown, the answer is 42.'
-    );
+    expect(error.message).to.be('Question unknown, the answer is 42');
   });
 
   it('has an error code', function () {

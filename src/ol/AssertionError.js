@@ -72,7 +72,7 @@ class AssertionError extends Error {
    * @param {number} code Error code.
    */
   constructor(code) {
-    const message = `Assertion failed. ${messages[code]}.`;
+    const message = messages[code];
 
     super(message);
 
