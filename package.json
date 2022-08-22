@@ -98,7 +98,7 @@
     "pixelmatch": "^5.1.0",
     "pngjs": "^6.0.0",
     "proj4": "2.8.0",
-    "puppeteer": "16.1.0",
+    "puppeteer": "16.2.0",
     "rollup": "^2.42.3",
     "rollup-plugin-terser": "^7.0.2",
     "semver": "^7.3.7",
