@@ -5,6 +5,7 @@ import Circle from '../geom/Circle.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import Feature from '../Feature.js';
+import GeometryCollection from '../geom/GeometryCollection.js';
 import InteractionProperty from './Property.js';
 import LineString from '../geom/LineString.js';
 import MapBrowserEvent from '../MapBrowserEvent.js';
@@ -18,7 +19,12 @@ import Polygon, {fromCircle, makeRegular} from '../geom/Polygon.js';
 import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
 import {FALSE, TRUE} from '../functions.js';
-import {always, noModifierKeys, shiftKeyOnly} from '../events/condition.js';
+import {
+  always,
+  never,
+  noModifierKeys,
+  shiftKeyOnly,
+} from '../events/condition.js';
 import {
   boundingExtent,
   getBottomLeft,
@@ -26,10 +32,14 @@ import {
   getTopLeft,
   getTopRight,
 } from '../extent.js';
+import {clamp, squaredDistance, toFixed} from '../math.js';
 import {createEditingStyle} from '../style/Style.js';
+import {
+  distance,
+  squaredDistance as squaredCoordinateDistance,
+} from '../coordinate.js';
 import {fromUserCoordinate, getUserProjection} from '../proj.js';
 import {getStrideForLayout} from '../geom/SimpleGeometry.js';
-import {squaredDistance as squaredCoordinateDistance} from '../coordinate.js';
 
 /**
  * @typedef {Object} Options
@@ -80,6 +90,11 @@ import {squaredDistance as squaredCoordinateDistance} from '../coordinate.js';
  * returns a boolean to indicate whether that event should be handled. The
  * default is {@link module:ol/events/condition.shiftKeyOnly}, meaning that the
  * Shift key activates freehand drawing.
+ * @property {boolean|import("../events/condition.js").Condition} [trace=false] Trace a portion of another geometry.
+ * Ignored when in freehand mode.
+ * @property {VectorSource} [traceSource] Source for features to trace.  If tracing is active and a `traceSource` is
+ * not provided, the interaction's `source` will be used.  Tracing requires that the interaction is configured with
+ * either a `traceSource` or a `source`.
  * @property {boolean} [wrapX=false] Wrap the world horizontally on the sketch
  * overlay.
  * @property {import("../geom/Geometry.js").GeometryLayout} [geometryLayout='XY'] Layout of the
@@ -104,6 +119,24 @@ import {squaredDistance as squaredCoordinateDistance} from '../coordinate.js';
 /**
  * Types used for drawing coordinates.
  * @typedef {PointCoordType|LineCoordType|PolyCoordType} SketchCoordType
+ */
+
+/**
+ * @typedef {Object} TraceState
+ * @property {boolean} active Tracing active.
+ * @property {import("../pixel.js").Pixel} [startPx] The initially clicked pixel location.
+ * @property {Array<TraceTarget>} [targets] Targets available for tracing.
+ * @property {number} [targetIndex] The index of the currently traced target.  A value of -1 indicates
+ * that no trace target is active.
+ */
+
+/**
+ * @typedef {Object} TraceTarget
+ * @property {Array<import("../coordinate.js").Coordinate>} coordinates Target coordinates.
+ * @property {boolean} ring The target coordinates are a linear ring.
+ * @property {number} startIndex The index of first traced coordinate.  A fractional index represents an
+ * edge intersection.  Index values for rings will wrap (may be negative or larger than coordinates length).
+ * @property {number} endIndex The index of last traced coordinate.  Details from startIndex also apply here.
  */
 
 /**
@@ -166,6 +199,359 @@ export class DrawEvent extends Event {
      */
     this.feature = feature;
   }
+}
+
+/**
+ * @param {import("../coordinate.js").Coordinate} coordinate The coordinate.
+ * @param {Array<Feature>} features The candidate features.
+ * @return {Array<TraceTarget>} The trace targets.
+ */
+function getTraceTargets(coordinate, features) {
+  /**
+   * @type {Array<TraceTarget>}
+   */
+  const targets = [];
+
+  for (let i = 0; i < features.length; ++i) {
+    const feature = features[i];
+    const geometry = feature.getGeometry();
+    appendGeometryTraceTargets(coordinate, geometry, targets);
+  }
+
+  return targets;
+}
+
+/**
+ * @param {import("../coordinate.js").Coordinate} a One coordinate.
+ * @param {import("../coordinate.js").Coordinate} b Another coordinate.
+ * @return {number} The squared distance between the two coordinates.
+ */
+function getSquaredDistance(a, b) {
+  return squaredDistance(a[0], a[1], b[0], b[1]);
+}
+
+/**
+ * @param {LineCoordType} coordinates The ring coordinates.
+ * @param {number} index The index.  May be wrapped.
+ * @return {import("../coordinate.js").Coordinate} The coordinate.
+ */
+function getCoordinate(coordinates, index) {
+  const count = coordinates.length;
+  if (index < 0) {
+    return coordinates[index + count];
+  }
+  if (index >= count) {
+    return coordinates[index - count];
+  }
+  return coordinates[index];
+}
+
+/**
+ * Get the cumulative squared distance along a ring path.  The end index index may be "wrapped" and it may
+ * be less than the start index to indicate the direction of travel.  The start and end index may have
+ * a fractional part to indicate a point between two coordinates.
+ * @param {LineCoordType} coordinates Ring coordinates.
+ * @param {number} startIndex The start index.
+ * @param {number} endIndex The end index.
+ * @return {number} The cumulative squared distance along the ring path.
+ */
+function getCumulativeSquaredDistance(coordinates, startIndex, endIndex) {
+  let lowIndex, highIndex;
+  if (startIndex < endIndex) {
+    lowIndex = startIndex;
+    highIndex = endIndex;
+  } else {
+    lowIndex = endIndex;
+    highIndex = startIndex;
+  }
+  const lowWholeIndex = Math.ceil(lowIndex);
+  const highWholeIndex = Math.floor(highIndex);
+
+  if (lowWholeIndex > highWholeIndex) {
+    // both start and end are on the same segment
+    const start = interpolateCoordinate(coordinates, lowIndex);
+    const end = interpolateCoordinate(coordinates, highIndex);
+    return getSquaredDistance(start, end);
+  }
+
+  let sd = 0;
+
+  if (lowIndex < lowWholeIndex) {
+    const start = interpolateCoordinate(coordinates, lowIndex);
+    const end = getCoordinate(coordinates, lowWholeIndex);
+    sd += getSquaredDistance(start, end);
+  }
+
+  if (highWholeIndex < highIndex) {
+    const start = getCoordinate(coordinates, highWholeIndex);
+    const end = interpolateCoordinate(coordinates, highIndex);
+    sd += getSquaredDistance(start, end);
+  }
+
+  for (let i = lowWholeIndex; i < highWholeIndex - 1; ++i) {
+    const start = getCoordinate(coordinates, i);
+    const end = getCoordinate(coordinates, i + 1);
+    sd += getSquaredDistance(start, end);
+  }
+
+  return sd;
+}
+
+/**
+ * @param {import("../coordinate.js").Coordinate} coordinate The coordinate.
+ * @param {import("../geom/Geometry.js").default} geometry The candidate geometry.
+ * @param {Array<TraceTarget>} targets The trace targets.
+ */
+function appendGeometryTraceTargets(coordinate, geometry, targets) {
+  if (geometry instanceof LineString) {
+    appendTraceTarget(coordinate, geometry.getCoordinates(), false, targets);
+    return;
+  }
+  if (geometry instanceof MultiLineString) {
+    const coordinates = geometry.getCoordinates();
+    for (let i = 0, ii = coordinates.length; i < ii; ++i) {
+      appendTraceTarget(coordinate, coordinates[i], false, targets);
+    }
+    return;
+  }
+  if (geometry instanceof Polygon) {
+    const coordinates = geometry.getCoordinates();
+    for (let i = 0, ii = coordinates.length; i < ii; ++i) {
+      appendTraceTarget(coordinate, coordinates[i], true, targets);
+    }
+    return;
+  }
+  if (geometry instanceof MultiPolygon) {
+    const polys = geometry.getCoordinates();
+    for (let i = 0, ii = polys.length; i < ii; ++i) {
+      const coordinates = polys[i];
+      for (let j = 0, jj = coordinates.length; j < jj; ++j) {
+        appendTraceTarget(coordinate, coordinates[j], true, targets);
+      }
+    }
+    return;
+  }
+  if (geometry instanceof GeometryCollection) {
+    const geometries = geometry.getGeometries();
+    for (let i = 0; i < geometries.length; ++i) {
+      appendGeometryTraceTargets(coordinate, geometries[i], targets);
+    }
+    return;
+  }
+  // other types cannot be traced
+}
+
+/**
+ * @typedef {Object} TraceTargetUpdateInfo
+ * @property {number} index The new target index.
+ * @property {number} endIndex The new segment end index.
+ */
+
+/**
+ * @type {TraceTargetUpdateInfo}
+ */
+const sharedUpdateInfo = {index: -1, endIndex: NaN};
+
+/**
+ * @param {import("../coordinate.js").Coordinate} coordinate The coordinate.
+ * @param {TraceState} traceState The trace state.
+ * @return {TraceTargetUpdateInfo} Information about the new trace target.  The returned
+ * object is reused between calls and must not be modified by the caller.
+ */
+function getTraceTargetUpdate(coordinate, traceState) {
+  const x = coordinate[0];
+  const y = coordinate[1];
+
+  let closestTargetDistance = Infinity;
+
+  let newTargetIndex = -1;
+  let newEndIndex = NaN;
+
+  for (
+    let targetIndex = 0;
+    targetIndex < traceState.targets.length;
+    ++targetIndex
+  ) {
+    const target = traceState.targets[targetIndex];
+    const coordinates = target.coordinates;
+
+    let minSegmentDistance = Infinity;
+    let endIndex;
+    for (
+      let coordinateIndex = 0;
+      coordinateIndex < coordinates.length - 1;
+      ++coordinateIndex
+    ) {
+      const start = coordinates[coordinateIndex];
+      const end = coordinates[coordinateIndex + 1];
+      const rel = getPointSegmentRelationship(x, y, start, end);
+      if (rel.squaredDistance < minSegmentDistance) {
+        minSegmentDistance = rel.squaredDistance;
+        endIndex = coordinateIndex + rel.along;
+      }
+    }
+
+    if (minSegmentDistance < closestTargetDistance) {
+      closestTargetDistance = minSegmentDistance;
+      if (target.ring && traceState.targetIndex === targetIndex) {
+        // same target, maintain the same trace direction
+        if (target.endIndex > target.startIndex) {
+          // forward trace
+          if (endIndex < target.startIndex) {
+            endIndex += coordinates.length;
+          }
+        } else if (target.endIndex < target.startIndex) {
+          // reverse trace
+          if (endIndex > target.startIndex) {
+            endIndex -= coordinates.length;
+          }
+        }
+      }
+      newEndIndex = endIndex;
+      newTargetIndex = targetIndex;
+    }
+  }
+
+  if (
+    traceState.targetIndex !== newTargetIndex &&
+    traceState.targets[newTargetIndex].ring
+  ) {
+    const target = traceState.targets[newTargetIndex];
+    const coordinates = target.coordinates;
+    const count = coordinates.length;
+    const startIndex = target.startIndex;
+    const endIndex = newEndIndex;
+    if (startIndex < endIndex) {
+      const forwardDistance = getCumulativeSquaredDistance(
+        coordinates,
+        startIndex,
+        endIndex
+      );
+      const reverseDistance = getCumulativeSquaredDistance(
+        coordinates,
+        startIndex,
+        endIndex - count
+      );
+      if (reverseDistance < forwardDistance) {
+        newEndIndex -= count;
+      }
+    } else {
+      const reverseDistance = getCumulativeSquaredDistance(
+        coordinates,
+        startIndex,
+        endIndex
+      );
+      const forwardDistance = getCumulativeSquaredDistance(
+        coordinates,
+        startIndex,
+        endIndex + count
+      );
+      if (forwardDistance < reverseDistance) {
+        newEndIndex += count;
+      }
+    }
+  }
+
+  sharedUpdateInfo.index = newTargetIndex;
+  sharedUpdateInfo.endIndex = newEndIndex;
+  return sharedUpdateInfo;
+}
+
+/**
+ * @param {import("../coordinate.js").Coordinate} coordinate The clicked coordinate.
+ * @param {Array<import("../coordinate.js").Coordinate>} coordinates The geometry component coordinates.
+ * @param {boolean} ring The coordinates represent a linear ring.
+ * @param {Array<TraceTarget>} targets The trace targets.
+ */
+function appendTraceTarget(coordinate, coordinates, ring, targets) {
+  const x = coordinate[0];
+  const y = coordinate[1];
+  for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+    const start = coordinates[i];
+    const end = coordinates[i + 1];
+    const rel = getPointSegmentRelationship(x, y, start, end);
+    if (rel.squaredDistance === 0) {
+      const index = i + rel.along;
+      targets.push({
+        coordinates: coordinates,
+        ring: ring,
+        startIndex: index,
+        endIndex: index,
+      });
+      return;
+    }
+  }
+}
+
+/**
+ * @typedef {Object} PointSegmentRelationship
+ * @property {number} along The closest point expressed as a fraction along the segment length.
+ * @property {number} squaredDistance The squared distance of the point to the segment.
+ */
+
+/**
+ * @type {PointSegmentRelationship}
+ */
+const sharedRel = {along: 0, squaredDistance: 0};
+
+/**
+ * @param {number} x The point x.
+ * @param {number} y The point y.
+ * @param {import("../coordinate.js").Coordinate} start The segment start.
+ * @param {import("../coordinate.js").Coordinate} end The segment end.
+ * @return {PointSegmentRelationship} The point segment relationship.  The returned object is
+ * shared between calls and must not be modified by the caller.
+ */
+function getPointSegmentRelationship(x, y, start, end) {
+  const x1 = start[0];
+  const y1 = start[1];
+  const x2 = end[0];
+  const y2 = end[1];
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  let along = 0;
+  let px = x1;
+  let py = y1;
+  if (dx !== 0 || dy !== 0) {
+    along = clamp(((x - x1) * dx + (y - y1) * dy) / (dx * dx + dy * dy), 0, 1);
+    px += dx * along;
+    py += dy * along;
+  }
+
+  sharedRel.along = along;
+  sharedRel.squaredDistance = toFixed(squaredDistance(x, y, px, py), 10);
+  return sharedRel;
+}
+
+/**
+ * @param {LineCoordType} coordinates The coordinates.
+ * @param {number} index The index.  May be fractional and may wrap.
+ * @return {import("../coordinate.js").Coordinate} The interpolated coordinate.
+ */
+function interpolateCoordinate(coordinates, index) {
+  const count = coordinates.length;
+
+  let startIndex = Math.floor(index);
+  const along = index - startIndex;
+  if (startIndex >= count) {
+    startIndex -= count;
+  } else if (startIndex < 0) {
+    startIndex += count;
+  }
+
+  let endIndex = startIndex + 1;
+  if (endIndex >= count) {
+    endIndex -= count;
+  }
+
+  const start = coordinates[startIndex];
+  const x0 = start[0];
+  const y0 = start[1];
+  const end = coordinates[endIndex];
+  const dx = end[0] - x0;
+  const dy = end[1] - y0;
+
+  return [x0 + dx * along, y0 + dy * along];
 }
 
 /***
@@ -514,7 +900,44 @@ class Draw extends PointerInteraction {
         : shiftKeyOnly;
     }
 
+    /**
+     * @type {import("../events/condition.js").Condition}
+     * @private
+     */
+    this.traceCondition_;
+    this.setTrace(options.trace || false);
+
+    /**
+     * @type {TraceState}
+     * @private
+     */
+    this.traceState_ = {active: false};
+
+    /**
+     * @type {VectorSource|null}
+     * @private
+     */
+    this.traceSource_ = options.traceSource || options.source || null;
+
     this.addChangeListener(InteractionProperty.ACTIVE, this.updateState_);
+  }
+
+  /**
+   * Toggle tracing mode or set a tracing condition.
+   *
+   * @param {boolean|import("../events/condition.js").Condition} trace A boolean to toggle tracing mode or an event
+   *     condition that will be checked when a feature is clicked to determine if tracing should be active.
+   */
+  setTrace(trace) {
+    let condition;
+    if (!trace) {
+      condition = never;
+    } else if (trace === true) {
+      condition = always;
+    } else {
+      condition = trace;
+    }
+    this.traceCondition_ = condition;
   }
 
   /**
@@ -617,28 +1040,241 @@ class Draw extends PointerInteraction {
         this.startDrawing_(event.coordinate);
       }
       return true;
-    } else if (this.condition_(event)) {
-      this.lastDragTime_ = Date.now();
-      this.downTimeout_ = setTimeout(
-        function () {
-          this.handlePointerMove_(
-            new MapBrowserEvent(
-              MapBrowserEventType.POINTERMOVE,
-              event.map,
-              event.originalEvent,
-              false,
-              event.frameState
-            )
-          );
-        }.bind(this),
-        this.dragVertexDelay_
-      );
-      this.downPx_ = event.pixel;
-      return true;
-    } else {
+    }
+
+    if (!this.condition_(event)) {
       this.lastDragTime_ = undefined;
       return false;
     }
+
+    this.lastDragTime_ = Date.now();
+    this.downTimeout_ = setTimeout(
+      function () {
+        this.handlePointerMove_(
+          new MapBrowserEvent(
+            MapBrowserEventType.POINTERMOVE,
+            event.map,
+            event.originalEvent,
+            false,
+            event.frameState
+          )
+        );
+      }.bind(this),
+      this.dragVertexDelay_
+    );
+    this.downPx_ = event.pixel;
+    return true;
+  }
+
+  /**
+   * @private
+   */
+  deactivateTrace_() {
+    this.traceState_ = {active: false};
+  }
+
+  /**
+   * Activate or deactivate trace state based on a browser event.
+   * @param {import("../MapBrowserEvent.js").default} event Event.
+   * @private
+   */
+  toggleTraceState_(event) {
+    if (!this.traceSource_ || !this.traceCondition_(event)) {
+      return;
+    }
+
+    if (this.traceState_.active) {
+      this.deactivateTrace_();
+      return;
+    }
+
+    const map = this.getMap();
+    const lowerLeft = map.getCoordinateFromPixel([
+      event.pixel[0] - this.snapTolerance_,
+      event.pixel[1] + this.snapTolerance_,
+    ]);
+    const upperRight = map.getCoordinateFromPixel([
+      event.pixel[0] + this.snapTolerance_,
+      event.pixel[1] - this.snapTolerance_,
+    ]);
+    const extent = boundingExtent([lowerLeft, upperRight]);
+    const features = this.traceSource_.getFeaturesInExtent(extent);
+    if (features.length === 0) {
+      return;
+    }
+
+    const targets = getTraceTargets(event.coordinate, features);
+    if (targets.length) {
+      this.traceState_ = {
+        active: true,
+        startPx: event.pixel.slice(),
+        targets: targets,
+        targetIndex: -1,
+      };
+    }
+  }
+
+  /**
+   * @param {TraceTarget} target The trace target.
+   * @param {number} endIndex The new end index of the trace.
+   * @private
+   */
+  addOrRemoveTracedCoordinates_(target, endIndex) {
+    // three cases to handle:
+    //  1. traced in the same direction and points need adding
+    //  2. traced in the same direction and points need removing
+    //  3. traced in a new direction
+    const previouslyForward = target.startIndex <= target.endIndex;
+    const currentlyForward = target.startIndex <= endIndex;
+    if (previouslyForward === currentlyForward) {
+      // same direction
+      if (
+        (previouslyForward && endIndex > target.endIndex) ||
+        (!previouslyForward && endIndex < target.endIndex)
+      ) {
+        // case 1 - add new points
+        this.addTracedCoordinates_(target, target.endIndex, endIndex);
+      } else if (
+        (previouslyForward && endIndex < target.endIndex) ||
+        (!previouslyForward && endIndex > target.endIndex)
+      ) {
+        // case 2 - remove old points
+        this.removeTracedCoordinates_(endIndex, target.endIndex);
+      }
+    } else {
+      // case 3 - remove old points, add new points
+      this.removeTracedCoordinates_(target.startIndex, target.endIndex);
+      this.addTracedCoordinates_(target, target.startIndex, endIndex);
+    }
+  }
+
+  /**
+   * @param {number} fromIndex The start index.
+   * @param {number} toIndex The end index.
+   * @private
+   */
+  removeTracedCoordinates_(fromIndex, toIndex) {
+    if (fromIndex === toIndex) {
+      return;
+    }
+
+    let remove = 0;
+    if (fromIndex < toIndex) {
+      const start = Math.ceil(fromIndex);
+      let end = Math.floor(toIndex);
+      if (end === toIndex) {
+        end -= 1;
+      }
+      remove = end - start + 1;
+    } else {
+      const start = Math.floor(fromIndex);
+      let end = Math.ceil(toIndex);
+      if (end === toIndex) {
+        end += 1;
+      }
+      remove = start - end + 1;
+    }
+
+    if (remove > 0) {
+      this.removeLastPoints_(remove);
+    }
+  }
+
+  /**
+   * @param {TraceTarget} target The trace target.
+   * @param {number} fromIndex The start index.
+   * @param {number} toIndex The end index.
+   * @private
+   */
+  addTracedCoordinates_(target, fromIndex, toIndex) {
+    if (fromIndex === toIndex) {
+      return;
+    }
+
+    const coordinates = [];
+    if (fromIndex < toIndex) {
+      // forward trace
+      const start = Math.ceil(fromIndex);
+      let end = Math.floor(toIndex);
+      if (end === toIndex) {
+        // if end is snapped to a vertex, it will be added later
+        end -= 1;
+      }
+      for (let i = start; i <= end; ++i) {
+        coordinates.push(getCoordinate(target.coordinates, i));
+      }
+    } else {
+      // reverse trace
+      const start = Math.floor(fromIndex);
+      let end = Math.ceil(toIndex);
+      if (end === toIndex) {
+        end += 1;
+      }
+      for (let i = start; i >= end; --i) {
+        coordinates.push(getCoordinate(target.coordinates, i));
+      }
+    }
+    if (coordinates.length) {
+      this.appendCoordinates(coordinates);
+    }
+  }
+
+  /**
+   * Update the trace.
+   * @param {import("../MapBrowserEvent.js").default} event Event.
+   * @private
+   */
+  updateTrace_(event) {
+    const traceState = this.traceState_;
+    if (!traceState.active) {
+      return;
+    }
+
+    if (traceState.targetIndex === -1) {
+      // check if we are ready to pick a target
+      if (distance(traceState.startPx, event.pixel) < this.snapTolerance_) {
+        return;
+      }
+    }
+
+    const updatedTraceTarget = getTraceTargetUpdate(
+      event.coordinate,
+      traceState
+    );
+
+    if (traceState.targetIndex !== updatedTraceTarget.index) {
+      // target changed
+      if (traceState.targetIndex !== -1) {
+        // remove points added during previous trace
+        const oldTarget = traceState.targets[traceState.targetIndex];
+        this.removeTracedCoordinates_(oldTarget.startIndex, oldTarget.endIndex);
+      }
+      // add points for the new target
+      const newTarget = traceState.targets[updatedTraceTarget.index];
+      this.addTracedCoordinates_(
+        newTarget,
+        newTarget.startIndex,
+        updatedTraceTarget.endIndex
+      );
+    } else {
+      // target stayed the same
+      const target = traceState.targets[traceState.targetIndex];
+      this.addOrRemoveTracedCoordinates_(target, updatedTraceTarget.endIndex);
+    }
+
+    // modify the state with updated info
+    traceState.targetIndex = updatedTraceTarget.index;
+    const target = traceState.targets[traceState.targetIndex];
+    target.endIndex = updatedTraceTarget.endIndex;
+
+    // update event coordinate and pixel to match end point of final segment
+    const coordinate = interpolateCoordinate(
+      target.coordinates,
+      target.endIndex
+    );
+    const pixel = this.getMap().getPixelFromCoordinate(coordinate);
+    event.coordinate = coordinate;
+    event.pixel = [Math.round(pixel[0]), Math.round(pixel[1])];
   }
 
   /**
@@ -656,6 +1292,8 @@ class Draw extends PointerInteraction {
       }
 
       this.handlePointerMove_(event);
+      const tracing = this.traceState_.active;
+      this.toggleTraceState_(event);
 
       if (this.shouldHandle_) {
         const startingToDraw = !this.finishCoordinate_;
@@ -668,7 +1306,7 @@ class Draw extends PointerInteraction {
           !this.freehand_ &&
           (!startingToDraw || this.mode_ === 'Point')
         ) {
-          if (this.atFinish_(event.pixel)) {
+          if (this.atFinish_(event.pixel, tracing)) {
             if (this.finishCondition_(event)) {
               this.finishDrawing();
             }
@@ -713,20 +1351,23 @@ class Draw extends PointerInteraction {
       }
     }
 
-    if (this.finishCoordinate_) {
-      this.modifyDrawing_(event.coordinate);
-    } else {
+    if (!this.finishCoordinate_) {
       this.createOrUpdateSketchPoint_(event.coordinate.slice());
+      return;
     }
+
+    this.updateTrace_(event);
+    this.modifyDrawing_(event.coordinate);
   }
 
   /**
    * Determine if an event is within the snapping tolerance of the start coord.
    * @param {import("../pixel.js").Pixel} pixel Pixel.
+   * @param {boolean} [tracing] Drawing in trace mode (only stop if at the starting point).
    * @return {boolean} The event is within the snapping tolerance of the start.
    * @private
    */
-  atFinish_(pixel) {
+  atFinish_(pixel, tracing) {
     let at = false;
     if (this.sketchFeature_) {
       let potentiallyDone = false;
@@ -737,7 +1378,8 @@ class Draw extends PointerInteraction {
       } else if (mode === 'Circle') {
         at = this.sketchCoords_.length === 2;
       } else if (mode === 'LineString') {
-        potentiallyDone = this.sketchCoords_.length > this.minPoints_;
+        potentiallyDone =
+          !tracing && this.sketchCoords_.length > this.minPoints_;
       } else if (mode === 'Polygon') {
         const sketchCoords = /** @type {PolyCoordType} */ (this.sketchCoords_);
         potentiallyDone = sketchCoords[0].length > this.minPoints_;
@@ -745,6 +1387,14 @@ class Draw extends PointerInteraction {
           sketchCoords[0][0],
           sketchCoords[0][sketchCoords[0].length - 2],
         ];
+        if (tracing) {
+          potentiallyFinishCoordinates = [sketchCoords[0][0]];
+        } else {
+          potentiallyFinishCoordinates = [
+            sketchCoords[0][0],
+            sketchCoords[0][sketchCoords[0].length - 2],
+          ];
+        }
       }
       if (potentiallyDone) {
         const map = this.getMap();
@@ -936,49 +1586,61 @@ class Draw extends PointerInteraction {
   }
 
   /**
-   * Remove last point of the feature currently being drawn. Does not do anything when
-   * drawing POINT or MULTI_POINT geometries.
-   * @api
+   * @param {number} n The number of points to remove.
    */
-  removeLastPoint() {
+  removeLastPoints_(n) {
     if (!this.sketchFeature_) {
       return;
     }
     const geometry = this.sketchFeature_.getGeometry();
     const projection = this.getMap().getView().getProjection();
-    let coordinates;
     const mode = this.mode_;
-    if (mode === 'LineString' || mode === 'Circle') {
-      coordinates = /** @type {LineCoordType} */ (this.sketchCoords_);
-      coordinates.splice(-2, 1);
-      if (coordinates.length >= 2) {
-        this.finishCoordinate_ = coordinates[coordinates.length - 2].slice();
-        const finishCoordinate = this.finishCoordinate_.slice();
-        coordinates[coordinates.length - 1] = finishCoordinate;
-        this.createOrUpdateSketchPoint_(finishCoordinate);
+    for (let i = 0; i < n; ++i) {
+      let coordinates;
+      if (mode === 'LineString' || mode === 'Circle') {
+        coordinates = /** @type {LineCoordType} */ (this.sketchCoords_);
+        coordinates.splice(-2, 1);
+        if (coordinates.length >= 2) {
+          this.finishCoordinate_ = coordinates[coordinates.length - 2].slice();
+          const finishCoordinate = this.finishCoordinate_.slice();
+          coordinates[coordinates.length - 1] = finishCoordinate;
+          this.createOrUpdateSketchPoint_(finishCoordinate);
+        }
+        this.geometryFunction_(coordinates, geometry, projection);
+        if (geometry.getType() === 'Polygon' && this.sketchLine_) {
+          this.createOrUpdateCustomSketchLine_(
+            /** @type {Polygon} */ (geometry)
+          );
+        }
+      } else if (mode === 'Polygon') {
+        coordinates = /** @type {PolyCoordType} */ (this.sketchCoords_)[0];
+        coordinates.splice(-2, 1);
+        const sketchLineGeom = this.sketchLine_.getGeometry();
+        if (coordinates.length >= 2) {
+          const finishCoordinate = coordinates[coordinates.length - 2].slice();
+          coordinates[coordinates.length - 1] = finishCoordinate;
+          this.createOrUpdateSketchPoint_(finishCoordinate);
+        }
+        sketchLineGeom.setCoordinates(coordinates);
+        this.geometryFunction_(this.sketchCoords_, geometry, projection);
       }
-      this.geometryFunction_(coordinates, geometry, projection);
-      if (geometry.getType() === 'Polygon' && this.sketchLine_) {
-        this.createOrUpdateCustomSketchLine_(/** @type {Polygon} */ (geometry));
-      }
-    } else if (mode === 'Polygon') {
-      coordinates = /** @type {PolyCoordType} */ (this.sketchCoords_)[0];
-      coordinates.splice(-2, 1);
-      const sketchLineGeom = this.sketchLine_.getGeometry();
-      if (coordinates.length >= 2) {
-        const finishCoordinate = coordinates[coordinates.length - 2].slice();
-        coordinates[coordinates.length - 1] = finishCoordinate;
-        this.createOrUpdateSketchPoint_(finishCoordinate);
-      }
-      sketchLineGeom.setCoordinates(coordinates);
-      this.geometryFunction_(this.sketchCoords_, geometry, projection);
-    }
 
-    if (coordinates.length === 1) {
-      this.abortDrawing();
+      if (coordinates.length === 1) {
+        this.abortDrawing();
+        break;
+      }
     }
 
     this.updateSketchFeatures_();
+  }
+
+  /**
+   * Remove last point of the feature currently being drawn. Does not do anything when
+   * drawing POINT or MULTI_POINT geometries.
+   * @api
+   */
+  removeLastPoint() {
+    this.removeLastPoints_(1);
   }
 
   /**
@@ -1045,6 +1707,7 @@ class Draw extends PointerInteraction {
     this.sketchPoint_ = null;
     this.sketchLine_ = null;
     this.overlay_.getSource().clear(true);
+    this.deactivateTrace_();
     return sketchFeature;
   }
 
