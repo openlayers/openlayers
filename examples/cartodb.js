@@ -10,15 +10,26 @@ const mapConfig = {
       'options': {
         'cartocss_version': '2.1.1',
         'cartocss': '#layer { polygon-fill: #F00; }',
-        'sql': 'select * from european_countries_e where area > 0',
       },
     },
   ],
 };
 
+function setArea(n) {
+  mapConfig.layers[0].options.sql =
+    'select * from european_countries_e where area > ' + n;
+}
+const areaSelect = document.getElementById('country-area');
+setArea(areaSelect.value);
+
 const cartoDBSource = new CartoDB({
   account: 'documentation',
   config: mapConfig,
+});
+
+areaSelect.addEventListener('change', function () {
+  setArea(this.value);
+  cartoDBSource.setConfig(mapConfig);
 });
 
 const map = new Map({
@@ -32,17 +43,7 @@ const map = new Map({
   ],
   target: 'map',
   view: new View({
-    center: [0, 0],
+    center: [8500000, 8500000],
     zoom: 2,
   }),
-});
-
-function setArea(n) {
-  mapConfig.layers[0].options.sql =
-    'select * from european_countries_e where area > ' + n;
-  cartoDBSource.setConfig(mapConfig);
-}
-
-document.getElementById('country-area').addEventListener('change', function () {
-  setArea(this.value);
 });
