@@ -1,5 +1,7 @@
+import Map from '../../../../../../src/ol/Map.js';
 import TileQueue from '../../../../../../src/ol/TileQueue.js';
 import TileState from '../../../../../../src/ol/TileState.js';
+import View from '../../../../../../src/ol/View.js';
 import WebGLTileLayer from '../../../../../../src/ol/layer/WebGLTile.js';
 import {DataTile} from '../../../../../../src/ol/source.js';
 import {VOID} from '../../../../../../src/ol/functions.js';
@@ -54,6 +56,11 @@ describe('ol/renderer/webgl/TileLayer', function () {
       tileQueue: new TileQueue(VOID, VOID),
       renderTargets: {},
     };
+
+    const map = new Map({
+      view: new View(),
+    });
+    tileLayer.set('map', map, true);
   });
 
   afterEach(function () {
@@ -111,7 +118,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
     it('enqueues tiles at a single zoom level (preload: 0)', () => {
       renderer.prepareFrame(frameState);
       const extent = [-1, -1, 1, 1];
-      renderer.enqueueTiles(frameState, extent, 10, {});
+      renderer.enqueueTiles(frameState, extent, 10, {}, tileLayer.getPreload());
 
       const source = tileLayer.getSource();
       const sourceKey = getUid(source);
@@ -132,7 +139,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
       tileLayer.setPreload(2);
       renderer.prepareFrame(frameState);
       const extent = [-1, -1, 1, 1];
-      renderer.enqueueTiles(frameState, extent, 10, {});
+      renderer.enqueueTiles(frameState, extent, 10, {}, tileLayer.getPreload());
 
       const source = tileLayer.getSource();
       const sourceKey = getUid(source);
@@ -162,7 +169,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
       tileLayer.setMinZoom(9);
       renderer.prepareFrame(frameState);
       const extent = [-1, -1, 1, 1];
-      renderer.enqueueTiles(frameState, extent, 10, {});
+      renderer.enqueueTiles(frameState, extent, 10, {}, tileLayer.getPreload());
 
       const source = tileLayer.getSource();
       const sourceKey = getUid(source);
