@@ -181,7 +181,10 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         pixelRatio,
         projection
       );
-      if (!(tile instanceof ImageTile || tile instanceof ReprojTile)) {
+      if (
+        !(tile instanceof ImageTile || tile instanceof ReprojTile) ||
+        (tile instanceof ReprojTile && tile.getState() === TileState.EMPTY)
+      ) {
         return null;
       }
 
