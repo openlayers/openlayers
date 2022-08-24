@@ -84,7 +84,7 @@ class TileWMS extends TileImage {
   constructor(options) {
     options = options ? options : /** @type {Options} */ ({});
 
-    const params = options.params || {};
+    const params = Object.assign({}, options.params);
 
     const transparent = 'TRANSPARENT' in params ? params['TRANSPARENT'] : true;
 

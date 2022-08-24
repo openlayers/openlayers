@@ -6,6 +6,10 @@
 
 Future versions will no longer throw `ol/AssertionError` with an error `code`. Instead, they will throw `Error` with just the error message.
 
+#### Updating parameters in `ol/source/ImageWMS` and `ol/source/TileWMS`
+
+The `updateParams()` method will be the only way to update parameters. Changes made directly to the `params` object passed as a constructor option will have no effect.
+
 ### 7.0.0
 
 #### Removal of deprecated properties and methods
