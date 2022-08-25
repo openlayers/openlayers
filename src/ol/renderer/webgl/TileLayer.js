@@ -305,14 +305,13 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrameInternal(frameState) {
-    this.projection_ =
-      this.projection_ === undefined
-        ? frameState.viewState.projection
-        : this.projection_;
-    if (frameState.viewState.projection !== this.projection_) {
+    if (!this.projection_) {
+      this.projection_ = frameState.viewState.projection;
+    } else if (frameState.viewState.projection !== this.projection_) {
       this.clearCache();
       this.projection_ = frameState.viewState.projection;
     }
+
     const layer = this.getLayer();
     const source = layer.getRenderSource();
     if (!source) {
