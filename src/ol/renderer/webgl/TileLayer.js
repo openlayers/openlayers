@@ -2,6 +2,7 @@
  * @module ol/renderer/webgl/TileLayer
  */
 import LRUCache from '../../structs/LRUCache.js';
+import ReprojTile from '../../reproj/Tile.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
 import TileTexture from '../../webgl/TileTexture.js';
@@ -316,8 +317,9 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
    * @param {import("../../extent.js").Extent} extent The extent to be rendered.
    * @param {number} initialZ The zoom level.
    * @param {Object<number, Array<TileTexture>>} tileTexturesByZ The zoom level.
+   * @param {number} preload Number of additional levels to load.
    */
-  enqueueTiles(frameState, extent, initialZ, tileTexturesByZ) {
+  enqueueTiles(frameState, extent, initialZ, tileTexturesByZ, preload) {
     const viewState = frameState.viewState;
     const tileLayer = this.getLayer();
     const tileSource = tileLayer.getRenderSource();
@@ -330,12 +332,23 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     }
 
     const wantedTiles = frameState.wantedTiles[tileSourceKey];
-
     const tileTextureCache = this.tileTextureCache_;
+
+    const map = tileLayer.getMapInternal();
     const minZ = Math.max(
-      initialZ - tileLayer.getPreload(),
+      initialZ - preload,
       tileGrid.getMinZoom(),
-      tileLayer.getMinZoom()
+      tileGrid.getZForResolution(
+        Math.min(
+          tileLayer.getMaxResolution(),
+          map
+            ? map
+                .getView()
+                .getResolutionForZoom(Math.max(tileLayer.getMinZoom(), 0))
+            : tileGrid.getResolution(0)
+        ),
+        tileSource.zDirection
+      )
     );
     for (let z = initialZ; z >= minZ; --z) {
       const tileRange = tileGrid.getTileRangeForExtentAndZ(
@@ -437,16 +450,34 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
      */
     const tileTexturesByZ = {};
 
+    const preload = tileLayer.getPreload();
     if (frameState.nextExtent) {
       const targetZ = tileGrid.getZForResolution(
         viewState.nextResolution,
         tileSource.zDirection
       );
       const nextExtent = getRenderExtent(frameState, frameState.nextExtent);
-      this.enqueueTiles(frameState, nextExtent, targetZ, tileTexturesByZ);
+      this.enqueueTiles(
+        frameState,
+        nextExtent,
+        targetZ,
+        tileTexturesByZ,
+        preload
+      );
     }
 
-    this.enqueueTiles(frameState, extent, z, tileTexturesByZ);
+    this.enqueueTiles(frameState, extent, z, tileTexturesByZ, 0);
+    if (preload > 0) {
+      setTimeout(() => {
+        this.enqueueTiles(
+          frameState,
+          extent,
+          z - 1,
+          tileTexturesByZ,
+          preload - 1
+        );
+      }, 0);
+    }
 
     /**
      * A lookup of alpha values for tiles at the target rendering resolution
@@ -465,6 +496,9 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     for (let i = 0, ii = tileTextures.length; i < ii; ++i) {
       const tileTexture = tileTextures[i];
       const tile = tileTexture.tile;
+      if (tile instanceof ReprojTile && tile.getState() === TileState.EMPTY) {
+        continue;
+      }
       const tileCoord = tile.tileCoord;
 
       if (tileTexture.loaded) {
@@ -753,6 +787,10 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
         continue;
       }
       const tileTexture = tileTextureCache.get(cacheKey);
+      const tile = tileTexture.tile;
+      if (tile instanceof ReprojTile && tile.getState() === TileState.EMPTY) {
+        return null;
+      }
       if (!tileTexture.loaded) {
         continue;
       }
