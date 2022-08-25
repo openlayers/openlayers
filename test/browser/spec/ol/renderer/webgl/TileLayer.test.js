@@ -17,6 +17,8 @@ describe('ol/renderer/webgl/TileLayer', function () {
   let tileLayer;
   /** @type {import('../../../../../../src/ol/Map.js').FrameState} */
   let frameState;
+  /** @type {Map} */
+  let map;
   beforeEach(function () {
     const size = 256;
     const context = createCanvasContext2D(size, size);
@@ -57,7 +59,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
       renderTargets: {},
     };
 
-    const map = new Map({
+    map = new Map({
       view: new View(),
     });
     tileLayer.set('map', map, true);
@@ -65,6 +67,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
 
   afterEach(function () {
     tileLayer.dispose();
+    map.dispose();
   });
 
   it('maintains a cache on the renderer instead of the source', function () {
@@ -186,6 +189,39 @@ describe('ol/renderer/webgl/TileLayer', function () {
         '/9,255,256': true,
         '/9,256,255': true,
         '/9,256,256': true,
+      };
+      expect(wantedTiles).to.eql(expected);
+    });
+
+    it('layer min zoom relates to view zoom levels', () => {
+      map.setView(
+        new View({maxResolution: map.getView().getMaxResolution() * 2})
+      );
+      tileLayer.setPreload(Infinity);
+      tileLayer.setMinZoom(9);
+      renderer.prepareFrame(frameState);
+      const extent = [-1, -1, 1, 1];
+      renderer.enqueueTiles(frameState, extent, 10, {}, tileLayer.getPreload());
+
+      const source = tileLayer.getSource();
+      const sourceKey = getUid(source);
+      expect(frameState.wantedTiles[sourceKey]).to.be.an(Object);
+
+      const wantedTiles = frameState.wantedTiles[sourceKey];
+
+      const expected = {
+        '/10,511,511': true,
+        '/10,511,512': true,
+        '/10,512,511': true,
+        '/10,512,512': true,
+        '/9,255,255': true,
+        '/9,255,256': true,
+        '/9,256,255': true,
+        '/9,256,256': true,
+        '/8,127,127': true,
+        '/8,127,128': true,
+        '/8,128,127': true,
+        '/8,128,128': true,
       };
       expect(wantedTiles).to.eql(expected);
     });
