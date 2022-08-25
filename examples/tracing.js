@@ -1,64 +1,49 @@
 import Draw from '../src/ol/interaction/Draw.js';
-import Feature from '../src/ol/Feature.js';
-import Fill from '../src/ol/style/Fill.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
-import LineString from '../src/ol/geom/LineString.js';
 import Map from '../src/ol/Map.js';
 import Snap from '../src/ol/interaction/Snap.js';
-import Stroke from '../src/ol/style/Stroke.js';
-import Style from '../src/ol/style/Style.js';
+import TileLayer from '../src/ol/layer/WebGLTile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import XYZ from '../src/ol/source/XYZ.js';
 
 const raster = new TileLayer({
-  source: new OSM(),
+  source: new XYZ({
+    url: 'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=get_your_own_D6rA4zTHduk6KOKTXzGB',
+    maxZoom: 20,
+  }),
 });
 
 // features in this layer will be snapped to
 const baseVector = new VectorLayer({
   source: new VectorSource({
     format: new GeoJSON(),
-    url: "https://ahocevar.com/geoserver/wfs?service=wfs&request=getfeature&typename=topp:states&cql_filter=STATE_NAME='Idaho'&outputformat=application/json",
+    url: 'data/geojson/fire.json',
   }),
+  style: {
+    'fill-color': 'rgba(255, 0, 0, 0.3)',
+    'stroke-color': 'rgba(255, 0, 0, 0.9)',
+    'stroke-width': 0.5,
+  },
 });
 
 // this is were the drawn features go
 const drawVector = new VectorLayer({
   source: new VectorSource(),
-  style: new Style({
-    stroke: new Stroke({
-      color: 'rgba(100, 255, 0, 1)',
-      width: 2,
-    }),
-    fill: new Fill({
-      color: 'rgba(100, 255, 0, 0.3)',
-    }),
-  }),
-});
-
-// this line only appears when we're tracing a feature outer ring
-const previewLine = new Feature({
-  geometry: new LineString([]),
-});
-const previewVector = new VectorLayer({
-  source: new VectorSource({
-    features: [previewLine],
-  }),
-  style: new Style({
-    stroke: new Stroke({
-      color: 'rgba(255, 0, 0, 1)',
-      width: 2,
-    }),
-  }),
+  style: {
+    'stroke-color': 'rgba(100, 255, 0, 1)',
+    'stroke-width': 2,
+    'fill-color': 'rgba(100, 255, 0, 0.3)',
+  },
 });
 
 const map = new Map({
-  layers: [raster, baseVector, drawVector, previewVector],
+  layers: [raster, baseVector, drawVector],
   target: 'map',
   view: new View({
-    center: [-12986427, 5678422],
-    zoom: 5,
+    center: [-13378949, 5943751],
+    zoom: 11,
   }),
 });
 
@@ -78,6 +63,13 @@ function addInteraction() {
       source: drawVector.getSource(),
       trace: true,
       traceSource: baseVector.getSource(),
+      style: {
+        'stroke-color': 'rgba(255, 255, 100, 0.5)',
+        'stroke-width': 1.5,
+        'fill-color': 'rgba(255, 255, 100, 0.25)',
+        'circle-radius': 6,
+        'circle-fill-color': 'rgba(255, 255, 100, 0.5)',
+      },
     });
     map.addInteraction(drawInteraction);
     map.addInteraction(snapInteraction);

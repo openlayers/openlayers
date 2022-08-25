@@ -70,7 +70,7 @@ import {getStrideForLayout} from '../geom/SimpleGeometry.js';
  * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether the drawing can be finished. Not used when drawing
  * POINT or MULTI_POINT geometries.
- * @property {import("../style/Style.js").StyleLike} [style]
+ * @property {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike} [style]
  * Style for sketch features.
  * @property {GeometryFunction} [geometryFunction]
  * Function that is called when a geometry's coordinates are updated.
@@ -355,10 +355,12 @@ const sharedUpdateInfo = {index: -1, endIndex: NaN};
 /**
  * @param {import("../coordinate.js").Coordinate} coordinate The coordinate.
  * @param {TraceState} traceState The trace state.
+ * @param {import("../Map.js").default} map The map.
+ * @param {number} snapTolerance The snap tolerance.
  * @return {TraceTargetUpdateInfo} Information about the new trace target.  The returned
  * object is reused between calls and must not be modified by the caller.
  */
-function getTraceTargetUpdate(coordinate, traceState) {
+function getTraceTargetUpdate(coordinate, traceState, map, snapTolerance) {
   const x = coordinate[0];
   const y = coordinate[1];
 
@@ -412,14 +414,24 @@ function getTraceTargetUpdate(coordinate, traceState) {
     }
   }
 
-  if (
-    traceState.targetIndex !== newTargetIndex &&
-    traceState.targets[newTargetIndex].ring
-  ) {
-    const target = traceState.targets[newTargetIndex];
-    const coordinates = target.coordinates;
+  const newTarget = traceState.targets[newTargetIndex];
+  let considerBothDirections = newTarget.ring;
+  if (traceState.targetIndex === newTargetIndex && considerBothDirections) {
+    // only consider switching trace direction if close to the start
+    const newCoordinate = interpolateCoordinate(
+      newTarget.coordinates,
+      newEndIndex
+    );
+    const pixel = map.getPixelFromCoordinate(newCoordinate);
+    if (distance(pixel, traceState.startPx) > snapTolerance) {
+      considerBothDirections = false;
+    }
+  }
+
+  if (considerBothDirections) {
+    const coordinates = newTarget.coordinates;
     const count = coordinates.length;
-    const startIndex = target.startIndex;
+    const startIndex = newTarget.startIndex;
     const endIndex = newEndIndex;
     if (startIndex < endIndex) {
       const forwardDistance = getCumulativeSquaredDistance(
@@ -1239,7 +1251,9 @@ class Draw extends PointerInteraction {
 
     const updatedTraceTarget = getTraceTargetUpdate(
       event.coordinate,
-      traceState
+      traceState,
+      this.getMap(),
+      this.snapTolerance_
     );
 
     if (traceState.targetIndex !== updatedTraceTarget.index) {
