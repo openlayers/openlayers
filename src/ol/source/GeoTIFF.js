@@ -20,6 +20,18 @@ import {getCenter, getIntersection} from '../extent.js';
 import {fromCode as unitsFromCode} from '../proj/Units.js';
 
 /**
+ * Determine if an image type is a mask.
+ * See https://www.awaresystems.be/imaging/tiff/tifftags/newsubfiletype.html
+ * @param {GeoTIFFImage} image The image.
+ * @return {boolean} The image is a mask.
+ */
+function isMask(image) {
+  const fileDirectory = image.fileDirectory;
+  const type = fileDirectory.NewSubfileType || 0;
+  return (type & 4) === 4;
+}
+
+/**
  * @typedef {Object} SourceInfo
  * @property {string} [url] URL for the source GeoTIFF.
  * @property {Array<string>} [overviews] List of any overview URLs, only applies if the url parameter is given.
@@ -364,6 +376,12 @@ class GeoTIFFSource extends DataTile {
     this.sourceImagery_ = new Array(numSources);
 
     /**
+     * @type {Array<Array<GeoTIFFImage>>}
+     * @private
+     */
+    this.sourceMasks_ = new Array(numSources);
+
+    /**
      * @type {Array<number>}
      * @private
      */
@@ -467,8 +485,22 @@ class GeoTIFFSource extends DataTile {
 
     const sourceCount = sources.length;
     for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
-      const images = sources[sourceIndex];
+      const images = [];
+      const masks = [];
+      sources[sourceIndex].forEach((item) => {
+        if (isMask(item)) {
+          masks.push(item);
+        } else {
+          images.push(item);
+        }
+      });
+
       const imageCount = images.length;
+      if (masks.length > 0 && masks.length !== imageCount) {
+        throw new Error(
+          `Expected one mask per image found ${masks.length} masks and ${imageCount} images`
+        );
+      }
 
       let sourceExtent;
       let sourceOrigin;
@@ -574,6 +606,7 @@ class GeoTIFFSource extends DataTile {
       }
 
       this.sourceImagery_[sourceIndex] = images.reverse();
+      this.sourceMasks_[sourceIndex] = masks.reverse();
     }
 
     for (let i = 0, ii = this.sourceImagery_.length; i < ii; ++i) {
@@ -603,6 +636,10 @@ class GeoTIFFSource extends DataTile {
     outer: for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
       // option 1: source is configured with a nodata value
       if (this.sourceInfo_[sourceIndex].nodata !== undefined) {
+        this.addAlpha_ = true;
+        break;
+      }
+      if (this.sourceMasks_[sourceIndex].length) {
         this.addAlpha_ = true;
         break;
       }
@@ -659,15 +696,20 @@ class GeoTIFFSource extends DataTile {
     });
   }
 
+  /**
+   * @param {number} z The z tile index.
+   * @param {number} x The x tile index.
+   * @param {number} y The y tile index.
+   * @return {Promise} The composed tile data.
+   * @private
+   */
   loadTile_(z, x, y) {
     const sourceTileSize = this.getTileSize(z);
     const sourceCount = this.sourceImagery_.length;
-    const requests = new Array(sourceCount);
-    const addAlpha = this.addAlpha_;
-    const bandCount = this.bandCount;
-    const samplesPerPixel = this.samplesPerPixel_;
+    const requests = new Array(sourceCount * 2);
     const nodataValues = this.nodataValues_;
     const sourceInfo = this.sourceInfo_;
+    const pool = getWorkerPool();
     for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
       const source = sourceInfo[sourceIndex];
       const resolutionFactor = this.resolutionFactors_[sourceIndex];
@@ -705,112 +747,150 @@ class GeoTIFFSource extends DataTile {
         height: sourceTileSize[1],
         samples: samples,
         fillValue: fillValue,
-        pool: getWorkerPool(),
+        pool: pool,
+        interleave: false,
+      });
+
+      // requests after `sourceCount` are for mask data (if any)
+      const maskIndex = sourceCount + sourceIndex;
+      const mask = this.sourceMasks_[sourceIndex][z];
+      if (!mask) {
+        requests[maskIndex] = Promise.resolve(null);
+        continue;
+      }
+
+      requests[maskIndex] = mask.readRasters({
+        window: pixelBounds,
+        width: sourceTileSize[0],
+        height: sourceTileSize[1],
+        samples: [0],
+        pool: pool,
         interleave: false,
       });
     }
 
-    const pixelCount = sourceTileSize[0] * sourceTileSize[1];
-    const dataLength = pixelCount * bandCount;
-    const normalize = this.normalize_;
-    const metadata = this.metadata_;
-
     return Promise.all(requests)
-      .then(function (sourceSamples) {
-        /** @type {Uint8Array|Float32Array} */
-        let data;
-        if (normalize) {
-          data = new Uint8Array(dataLength);
-        } else {
-          data = new Float32Array(dataLength);
-        }
-
-        let dataIndex = 0;
-        for (let pixelIndex = 0; pixelIndex < pixelCount; ++pixelIndex) {
-          let transparent = addAlpha;
-          for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
-            const source = sourceInfo[sourceIndex];
-
-            let min = source.min;
-            let max = source.max;
-            let gain, bias;
-            if (normalize) {
-              const stats = metadata[sourceIndex][0];
-              if (min === undefined) {
-                if (stats && STATISTICS_MINIMUM in stats) {
-                  min = parseFloat(stats[STATISTICS_MINIMUM]);
-                } else {
-                  min = getMinForDataType(sourceSamples[sourceIndex][0]);
-                }
-              }
-              if (max === undefined) {
-                if (stats && STATISTICS_MAXIMUM in stats) {
-                  max = parseFloat(stats[STATISTICS_MAXIMUM]);
-                } else {
-                  max = getMaxForDataType(sourceSamples[sourceIndex][0]);
-                }
-              }
-
-              gain = 255 / (max - min);
-              bias = -min * gain;
-            }
-
-            for (
-              let sampleIndex = 0;
-              sampleIndex < samplesPerPixel[sourceIndex];
-              ++sampleIndex
-            ) {
-              const sourceValue =
-                sourceSamples[sourceIndex][sampleIndex][pixelIndex];
-
-              let value;
-              if (normalize) {
-                value = clamp(gain * sourceValue + bias, 0, 255);
-              } else {
-                value = sourceValue;
-              }
-
-              if (!addAlpha) {
-                data[dataIndex] = value;
-              } else {
-                let nodata = source.nodata;
-                if (nodata === undefined) {
-                  let bandIndex;
-                  if (source.bands) {
-                    bandIndex = source.bands[sampleIndex] - 1;
-                  } else {
-                    bandIndex = sampleIndex;
-                  }
-                  nodata = nodataValues[sourceIndex][bandIndex];
-                }
-
-                const nodataIsNaN = isNaN(nodata);
-                if (
-                  (!nodataIsNaN && sourceValue !== nodata) ||
-                  (nodataIsNaN && !isNaN(sourceValue))
-                ) {
-                  transparent = false;
-                  data[dataIndex] = value;
-                }
-              }
-              dataIndex++;
-            }
-          }
-          if (addAlpha) {
-            if (!transparent) {
-              data[dataIndex] = 255;
-            }
-            dataIndex++;
-          }
-        }
-
-        return data;
-      })
+      .then(this.composeTile_.bind(this, sourceTileSize))
       .catch(function (error) {
-        // output then rethrow
         console.error(error); // eslint-disable-line no-console
         throw error;
       });
+  }
+
+  /**
+   * @param {import("../size.js").Size} sourceTileSize The source tile size.
+   * @param {Array} sourceSamples The source samples.
+   * @return {import("../DataTile.js").Data} The composed tile data.
+   * @private
+   */
+  composeTile_(sourceTileSize, sourceSamples) {
+    const metadata = this.metadata_;
+    const sourceInfo = this.sourceInfo_;
+    const sourceCount = this.sourceImagery_.length;
+    const bandCount = this.bandCount;
+    const samplesPerPixel = this.samplesPerPixel_;
+    const nodataValues = this.nodataValues_;
+    const normalize = this.normalize_;
+    const addAlpha = this.addAlpha_;
+
+    const pixelCount = sourceTileSize[0] * sourceTileSize[1];
+    const dataLength = pixelCount * bandCount;
+
+    /** @type {Uint8Array|Float32Array} */
+    let data;
+    if (normalize) {
+      data = new Uint8Array(dataLength);
+    } else {
+      data = new Float32Array(dataLength);
+    }
+
+    let dataIndex = 0;
+    for (let pixelIndex = 0; pixelIndex < pixelCount; ++pixelIndex) {
+      let transparent = addAlpha;
+      for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
+        const source = sourceInfo[sourceIndex];
+
+        let min = source.min;
+        let max = source.max;
+        let gain, bias;
+        if (normalize) {
+          const stats = metadata[sourceIndex][0];
+          if (min === undefined) {
+            if (stats && STATISTICS_MINIMUM in stats) {
+              min = parseFloat(stats[STATISTICS_MINIMUM]);
+            } else {
+              min = getMinForDataType(sourceSamples[sourceIndex][0]);
+            }
+          }
+          if (max === undefined) {
+            if (stats && STATISTICS_MAXIMUM in stats) {
+              max = parseFloat(stats[STATISTICS_MAXIMUM]);
+            } else {
+              max = getMaxForDataType(sourceSamples[sourceIndex][0]);
+            }
+          }
+
+          gain = 255 / (max - min);
+          bias = -min * gain;
+        }
+
+        for (
+          let sampleIndex = 0;
+          sampleIndex < samplesPerPixel[sourceIndex];
+          ++sampleIndex
+        ) {
+          const sourceValue =
+            sourceSamples[sourceIndex][sampleIndex][pixelIndex];
+
+          let value;
+          if (normalize) {
+            value = clamp(gain * sourceValue + bias, 0, 255);
+          } else {
+            value = sourceValue;
+          }
+
+          if (!addAlpha) {
+            data[dataIndex] = value;
+          } else {
+            let nodata = source.nodata;
+            if (nodata === undefined) {
+              let bandIndex;
+              if (source.bands) {
+                bandIndex = source.bands[sampleIndex] - 1;
+              } else {
+                bandIndex = sampleIndex;
+              }
+              nodata = nodataValues[sourceIndex][bandIndex];
+            }
+
+            const nodataIsNaN = isNaN(nodata);
+            if (
+              (!nodataIsNaN && sourceValue !== nodata) ||
+              (nodataIsNaN && !isNaN(sourceValue))
+            ) {
+              transparent = false;
+              data[dataIndex] = value;
+            }
+          }
+          dataIndex++;
+        }
+        if (!transparent) {
+          const maskIndex = sourceCount + sourceIndex;
+          const mask = sourceSamples[maskIndex];
+          if (mask && !mask[0][pixelIndex]) {
+            transparent = true;
+          }
+        }
+      }
+      if (addAlpha) {
+        if (!transparent) {
+          data[dataIndex] = 255;
+        }
+        dataIndex++;
+      }
+    }
+
+    return data;
   }
 }
 
