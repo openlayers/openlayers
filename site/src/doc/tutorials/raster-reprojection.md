@@ -58,7 +58,8 @@ Following example shows definition of a [British National Grid](https://epsg.io/
 
 ```js
 import proj4 from 'proj4';
-import {get as getProjection, register} from 'ol/proj';
+import {get as getProjection} from 'ol/proj';
+import {register} from 'ol/proj/proj4';
 
 proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
     '+x_0=400000 +y_0=-100000 +ellps=airy ' +
