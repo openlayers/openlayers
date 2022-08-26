@@ -2,6 +2,7 @@
  * @module ol/renderer/webgl/TileLayer
  */
 import LRUCache from '../../structs/LRUCache.js';
+import ReprojDataTile from '../../reproj/DataTile.js';
 import ReprojTile from '../../reproj/Tile.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
@@ -509,7 +510,10 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     for (let i = 0, ii = tileTextures.length; i < ii; ++i) {
       const tileTexture = tileTextures[i];
       const tile = tileTexture.tile;
-      if (tile instanceof ReprojTile && tile.getState() === TileState.EMPTY) {
+      if (
+        (tile instanceof ReprojTile || tile instanceof ReprojDataTile) &&
+        tile.getState() === TileState.EMPTY
+      ) {
         continue;
       }
       const tileCoord = tile.tileCoord;
@@ -801,7 +805,10 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
       }
       const tileTexture = tileTextureCache.get(cacheKey);
       const tile = tileTexture.tile;
-      if (tile instanceof ReprojTile && tile.getState() === TileState.EMPTY) {
+      if (
+        (tile instanceof ReprojTile || tile instanceof ReprojDataTile) &&
+        tile.getState() === TileState.EMPTY
+      ) {
         return null;
       }
       if (!tileTexture.loaded) {
