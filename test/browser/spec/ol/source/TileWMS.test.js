@@ -150,8 +150,8 @@ describe('ol/source/TileWMS', function () {
 
     it('extends FORMAT_OPTIONS if it is already present', function () {
       options.serverType = 'geoserver';
-      const source = new TileWMS(options);
       options.params.FORMAT_OPTIONS = 'param1:value1';
+      const source = new TileWMS(options);
       const tile = source.getTile(3, 2, 2, 2, getProjection('CRS:84'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;

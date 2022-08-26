@@ -206,8 +206,8 @@ describe('ol/source/ImageWMS', function () {
 
     it('extends FORMAT_OPTIONS if it is already present', function () {
       options.serverType = 'geoserver';
-      const source = new ImageWMS(options);
       options.params.FORMAT_OPTIONS = 'param1:value1';
+      const source = new ImageWMS(options);
       pixelRatio = 2;
       const image = source.getImage(extent, resolution, pixelRatio, projection);
       const uri = new URL(image.src_);
