@@ -13,7 +13,7 @@ import {get as getTransform} from './transforms.js';
 
 /**
  * Make projections defined in proj4 (with `proj4.defs()`) available in
- * OpenLayers.
+ * OpenLayers. Requires proj4 >= 2.8.0.
  *
  * This function should be called whenever changes are made to the proj4
  * registry, e.g. after calling `proj4.defs()`. Existing transforms will not be
