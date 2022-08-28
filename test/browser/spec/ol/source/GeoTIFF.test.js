@@ -3,7 +3,7 @@ import TileState from '../../../../../src/ol/TileState.js';
 
 describe('ol/source/GeoTIFF', function () {
   describe('constructor', function () {
-    it('configures readMethod_ to read rasters', function () {
+    it('sets convertToRGB false by default', function () {
       const source = new GeoTIFFSource({
         sources: [
           {
@@ -11,10 +11,10 @@ describe('ol/source/GeoTIFF', function () {
           },
         ],
       });
-      expect(source.readMethod_).to.be('readRasters');
+      expect(source.convertToRGB_).to.be(false);
     });
 
-    it('configures readMethod_ to read RGB', function () {
+    it('respects the convertToRGB option', function () {
       const source = new GeoTIFFSource({
         convertToRGB: true,
         sources: [
@@ -23,7 +23,19 @@ describe('ol/source/GeoTIFF', function () {
           },
         ],
       });
-      expect(source.readMethod_).to.be('readRGB');
+      expect(source.convertToRGB_).to.be(true);
+    });
+
+    it('accepts auto convertToRGB', function () {
+      const source = new GeoTIFFSource({
+        convertToRGB: 'auto',
+        sources: [
+          {
+            url: 'spec/ol/source/images/0-0-0.tif',
+          },
+        ],
+      });
+      expect(source.convertToRGB_).to.be('auto');
     });
 
     it('defaults to wrapX: false', function () {

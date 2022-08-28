@@ -5,6 +5,7 @@ import DataTile from './DataTile.js';
 import TileGrid from '../tilegrid/TileGrid.js';
 import {
   Pool,
+  globals as geotiffGlobals,
   fromBlob as tiffFromBlob,
   fromUrl as tiffFromUrl,
   fromUrls as tiffFromUrls,
@@ -29,6 +30,31 @@ function isMask(image) {
   const fileDirectory = image.fileDirectory;
   const type = fileDirectory.NewSubfileType || 0;
   return (type & 4) === 4;
+}
+
+/**
+ * @param {true|false|'auto'} preference The convertToRGB option.
+ * @param {GeoTIFFImage} image The image.
+ * @return {boolean} Use the `image.readRGB()` method.
+ */
+function readRGB(preference, image) {
+  if (!preference) {
+    return false;
+  }
+  if (preference === true) {
+    return true;
+  }
+  if (image.getSamplesPerPixel() !== 3) {
+    return false;
+  }
+  const interpretation = image.fileDirectory.PhotometricInterpretation;
+  const interpretations = geotiffGlobals.photometricInterpretations;
+  return (
+    interpretation === interpretations.CMYK ||
+    interpretation === interpretations.YCbCr ||
+    interpretation === interpretations.CIELab ||
+    interpretation === interpretations.ICCLab
+  );
 }
 
 /**
@@ -320,9 +346,10 @@ function getMaxForDataType(array) {
  * another with 1 band, the resulting data tiles will have 5 bands: 3 from the first source, 1 alpha
  * band from the first source, and 1 band from the second source.
  * @property {GeoTIFFSourceOptions} [sourceOptions] Additional options to be passed to [geotiff.js](https://geotiffjs.github.io/geotiff.js/module-geotiff.html)'s `fromUrl` or `fromUrls` methods.
- * @property {boolean} [convertToRGB = false] By default, bands from the sources are read as-is. When
+ * @property {true|false|'auto'} [convertToRGB=false] By default, bands from the sources are read as-is. When
  * reading GeoTIFFs with the purpose of displaying them as RGB images, setting this to `true` will
- * convert other color spaces (YCbCr, CMYK) to RGB.
+ * convert other color spaces (YCbCr, CMYK) to RGB.  Setting the option to `'auto'` will make it so CMYK, YCbCr,
+ * CIELab, and ICCLab images will automatically be converted to RGB.
  * @property {boolean} [normalize=true] By default, the source data is normalized to values between
  * 0 and 1 with scaling factors based on the raster statistics or `min` and `max` properties of each source.
  * If instead you want to work with the raw values in a style expression, set this to `false`.  Setting this option
@@ -424,9 +451,9 @@ class GeoTIFFSource extends DataTile {
     this.error_ = null;
 
     /**
-     * @type {'readRasters' | 'readRGB'}
+     * @type {true|false|'auto'}
      */
-    this.readMethod_ = options.convertToRGB ? 'readRGB' : 'readRasters';
+    this.convertToRGB_ = options.convertToRGB || false;
 
     this.setKey(this.sourceInfo_.map((source) => source.url).join(','));
 
@@ -747,7 +774,7 @@ class GeoTIFFSource extends DataTile {
         }
       }
 
-      requests[sourceIndex] = image[this.readMethod_]({
+      const readOptions = {
         window: pixelBounds,
         width: sourceTileSize[0],
         height: sourceTileSize[1],
@@ -755,7 +782,12 @@ class GeoTIFFSource extends DataTile {
         fillValue: fillValue,
         pool: pool,
         interleave: false,
-      });
+      };
+      if (readRGB(this.convertToRGB_, image)) {
+        requests[sourceIndex] = image.readRGB(readOptions);
+      } else {
+        requests[sourceIndex] = image.readRasters(readOptions);
+      }
 
       // requests after `sourceCount` are for mask data (if any)
       const maskIndex = sourceCount + sourceIndex;
