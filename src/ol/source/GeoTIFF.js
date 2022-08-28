@@ -667,12 +667,11 @@ class GeoTIFFSource extends DataTile {
       }
     }
 
-    const additionalBands = this.addAlpha_ ? 1 : 0;
-    this.bandCount =
-      samplesPerPixel.reduce((accumulator, value) => {
-        accumulator += value;
-        return accumulator;
-      }, 0) + additionalBands;
+    let bandCount = this.addAlpha_ ? 1 : 0;
+    for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
+      bandCount += samplesPerPixel[sourceIndex];
+    }
+    this.bandCount = bandCount;
 
     const tileGrid = new TileGrid({
       extent: extent,
@@ -687,12 +686,19 @@ class GeoTIFFSource extends DataTile {
 
     this.setLoader(this.loadTile_.bind(this));
     this.setState('ready');
+
+    let zoom = 0;
+    if (resolutions.length === 1) {
+      resolutions = [resolutions[0] * 2, resolutions[0]];
+      zoom = 1;
+    }
     this.viewResolver({
+      showFullExtent: true,
       projection: this.projection,
       resolutions: resolutions,
       center: toUserCoordinate(getCenter(extent), this.projection),
       extent: toUserExtent(extent, this.projection),
-      zoom: 0,
+      zoom: zoom,
     });
   }
 
