@@ -246,14 +246,7 @@
           break;
         }
         // test attribute namespace
-        // we do not care about the difference between an empty string and
-        // null for namespaceURI some tests will fail in IE9 otherwise
-        // see also
-        // https://docs.microsoft.com/en-us/openspecs/ie_standards/ms-dom2c/d6ad7f24-25f4-4ab0-a36b-32ddc08f413c
-        if (
-          (node1Attr[name].namespaceURI || null) !==
-          (node2Attr[name].namespaceURI || null)
-        ) {
+        if (node1Attr[name].namespaceURI !== node2Attr[name].namespaceURI) {
           errors.push(
             'namespaceURI attribute test failed for: ' +
               node1.nodeName +

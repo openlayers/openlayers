@@ -25,7 +25,7 @@ export class CustomTile extends ImageTile {
    * @param {string} src Image source URI.
    * @param {?string} crossOrigin Cross origin.
    * @param {import("../Tile.js").LoadFunction} tileLoadFunction Tile load function.
-   * @param {import("../Tile.js").Options} [opt_options] Tile options.
+   * @param {import("../Tile.js").Options} [options] Tile options.
    */
   constructor(
     tileSize,
@@ -34,9 +34,9 @@ export class CustomTile extends ImageTile {
     src,
     crossOrigin,
     tileLoadFunction,
-    opt_options
+    options
   ) {
-    super(tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options);
+    super(tileCoord, state, src, crossOrigin, tileLoadFunction, options);
 
     /**
      * @private
@@ -83,7 +83,6 @@ export class CustomTile extends ImageTile {
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value  you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
- * @property {boolean} [imageSmoothing=true] Deprecated.  Use the `interpolate` option instead.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection.
@@ -124,17 +123,9 @@ export class CustomTile extends ImageTile {
  */
 class Zoomify extends TileImage {
   /**
-   * @param {Options} opt_options Options.
+   * @param {Options} options Options.
    */
-  constructor(opt_options) {
-    const options = opt_options;
-
-    let interpolate =
-      options.imageSmoothing !== undefined ? options.imageSmoothing : true;
-    if (options.interpolate !== undefined) {
-      interpolate = options.interpolate;
-    }
-
+  constructor(options) {
     const size = options.size;
     const tierSizeCalculation =
       options.tierSizeCalculation !== undefined
@@ -202,11 +193,7 @@ class Zoomify extends TileImage {
     });
 
     let url = options.url;
-    if (
-      url &&
-      url.indexOf('{TileGroup}') == -1 &&
-      url.indexOf('{tileIndex}') == -1
-    ) {
+    if (url && !url.includes('{TileGroup}') && !url.includes('{tileIndex}')) {
       url += '{TileGroup}/{z}-{x}-{y}.jpg';
     }
     const urls = expandUrl(url);
@@ -264,7 +251,7 @@ class Zoomify extends TileImage {
       attributions: options.attributions,
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
-      interpolate: interpolate,
+      interpolate: options.interpolate,
       projection: options.projection,
       tilePixelRatio: tilePixelRatio,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,

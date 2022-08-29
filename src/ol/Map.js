@@ -34,8 +34,8 @@ import {
   getForViewAndSize,
   isEmpty,
 } from './extent.js';
-import {defaults as defaultControls} from './control.js';
-import {defaults as defaultInteractions} from './interaction.js';
+import {defaults as defaultControls} from './control/defaults.js';
+import {defaults as defaultInteractions} from './interaction/defaults.js';
 import {fromUserCoordinate, toUserCoordinate} from './proj.js';
 import {getUid} from './util.js';
 import {hasArea} from './size.js';
@@ -81,7 +81,7 @@ import {removeNode} from './dom.js';
  * will be tested for features. By default, all visible layers will be tested.
  * @property {number} [hitTolerance=0] Hit-detection tolerance in css pixels. Pixels
  * inside the radius around the given position will be checked for features.
- * @property {boolean} [checkWrapped=true] Check-Wrapped Will check for for wrapped geometries inside the range of
+ * @property {boolean} [checkWrapped=true] Check-Wrapped Will check for wrapped geometries inside the range of
  *   +/- 1 world width. Works only if a projection is used that can be wrapped.
  */
 
@@ -115,12 +115,12 @@ import {removeNode} from './dom.js';
  * @typedef {Object} MapOptions
  * @property {Collection<import("./control/Control.js").default>|Array<import("./control/Control.js").default>} [controls]
  * Controls initially added to the map. If not specified,
- * {@link module:ol/control.defaults} is used.
+ * {@link module:ol/control/defaults.defaults} is used.
  * @property {number} [pixelRatio=window.devicePixelRatio] The ratio between
  * physical pixels and device-independent pixels (dips) on the device.
  * @property {Collection<import("./interaction/Interaction.js").default>|Array<import("./interaction/Interaction.js").default>} [interactions]
  * Interactions that are initially added to the map. If not specified,
- * {@link module:ol/interaction.defaults} is used.
+ * {@link module:ol/interaction/defaults.defaults} is used.
  * @property {HTMLElement|Document|string} [keyboardEventTarget] The element to
  * listen to keyboard events on. This determines when the `KeyboardPan` and
  * `KeyboardZoom` interactions trigger. For example, if this option is set to
@@ -190,17 +190,17 @@ function setLayerMapProperty(layer, map) {
  *     import TileLayer from 'ol/layer/Tile';
  *     import OSM from 'ol/source/OSM';
  *
- *     var map = new Map({
+ *     const map = new Map({
  *       view: new View({
  *         center: [0, 0],
- *         zoom: 1
+ *         zoom: 1,
  *       }),
  *       layers: [
  *         new TileLayer({
- *           source: new OSM()
- *         })
+ *           source: new OSM(),
+ *         }),
  *       ],
- *       target: 'map'
+ *       target: 'map',
  *     });
  *
  * The above snippet creates a map using a {@link module:ol/layer/Tile~TileLayer} to
@@ -234,12 +234,12 @@ function setLayerMapProperty(layer, map) {
  */
 class Map extends BaseObject {
   /**
-   * @param {MapOptions} [opt_options] Map options.
+   * @param {MapOptions} [options] Map options.
    */
-  constructor(opt_options) {
+  constructor(options) {
     super();
 
-    const options = opt_options || {};
+    options = options || {};
 
     /***
      * @type {MapEventHandler<import("./events").EventsKey>}
@@ -652,7 +652,7 @@ class Map extends BaseObject {
   /**
    * Detect features that intersect a pixel on the viewport, and execute a
    * callback with each intersecting feature. Layers included in the detection can
-   * be configured through the `layerFilter` option in `opt_options`.
+   * be configured through the `layerFilter` option in `options`.
    * @param {import("./pixel.js").Pixel} pixel Pixel.
    * @param {function(import("./Feature.js").FeatureLike, import("./layer/Layer.js").default<import("./source/Source").default>, import("./geom/SimpleGeometry.js").default): T} callback Feature callback. The callback will be
    *     called with two arguments. The first argument is one
@@ -661,23 +661,23 @@ class Map extends BaseObject {
    *     the {@link module:ol/layer/Layer~Layer layer} of the feature and will be null for
    *     unmanaged layers. To stop detection, callback functions can return a
    *     truthy value.
-   * @param {AtPixelOptions} [opt_options] Optional options.
+   * @param {AtPixelOptions} [options] Optional options.
    * @return {T|undefined} Callback result, i.e. the return value of last
    * callback execution, or the first truthy callback return value.
    * @template T
    * @api
    */
-  forEachFeatureAtPixel(pixel, callback, opt_options) {
+  forEachFeatureAtPixel(pixel, callback, options) {
     if (!this.frameState_ || !this.renderer_) {
       return;
     }
     const coordinate = this.getCoordinateFromPixelInternal(pixel);
-    opt_options = opt_options !== undefined ? opt_options : {};
+    options = options !== undefined ? options : {};
     const hitTolerance =
-      opt_options.hitTolerance !== undefined ? opt_options.hitTolerance : 0;
+      options.hitTolerance !== undefined ? options.hitTolerance : 0;
     const layerFilter =
-      opt_options.layerFilter !== undefined ? opt_options.layerFilter : TRUE;
-    const checkWrapped = opt_options.checkWrapped !== false;
+      options.layerFilter !== undefined ? options.layerFilter : TRUE;
+    const checkWrapped = options.checkWrapped !== false;
     return this.renderer_.forEachFeatureAtCoordinate(
       coordinate,
       this.frameState_,
@@ -693,19 +693,19 @@ class Map extends BaseObject {
   /**
    * Get all features that intersect a pixel on the viewport.
    * @param {import("./pixel.js").Pixel} pixel Pixel.
-   * @param {AtPixelOptions} [opt_options] Optional options.
+   * @param {AtPixelOptions} [options] Optional options.
    * @return {Array<import("./Feature.js").FeatureLike>} The detected features or
    * an empty array if none were found.
    * @api
    */
-  getFeaturesAtPixel(pixel, opt_options) {
+  getFeaturesAtPixel(pixel, options) {
     const features = [];
     this.forEachFeatureAtPixel(
       pixel,
       function (feature) {
         features.push(feature);
       },
-      opt_options
+      options
     );
     return features;
   }
@@ -732,23 +732,23 @@ class Map extends BaseObject {
 
   /**
    * Detect if features intersect a pixel on the viewport. Layers included in the
-   * detection can be configured through `opt_layerFilter`.
+   * detection can be configured through the `layerFilter` option.
    * @param {import("./pixel.js").Pixel} pixel Pixel.
-   * @param {AtPixelOptions} [opt_options] Optional options.
+   * @param {AtPixelOptions} [options] Optional options.
    * @return {boolean} Is there a feature at the given pixel?
    * @api
    */
-  hasFeatureAtPixel(pixel, opt_options) {
+  hasFeatureAtPixel(pixel, options) {
     if (!this.frameState_ || !this.renderer_) {
       return false;
     }
     const coordinate = this.getCoordinateFromPixelInternal(pixel);
-    opt_options = opt_options !== undefined ? opt_options : {};
+    options = options !== undefined ? options : {};
     const layerFilter =
-      opt_options.layerFilter !== undefined ? opt_options.layerFilter : TRUE;
+      options.layerFilter !== undefined ? options.layerFilter : TRUE;
     const hitTolerance =
-      opt_options.hitTolerance !== undefined ? opt_options.hitTolerance : 0;
-    const checkWrapped = opt_options.checkWrapped !== false;
+      options.hitTolerance !== undefined ? options.hitTolerance : 0;
+    const checkWrapped = options.checkWrapped !== false;
     return this.renderer_.hasFeatureAtCoordinate(
       coordinate,
       this.frameState_,
@@ -1089,10 +1089,10 @@ class Map extends BaseObject {
 
   /**
    * @param {UIEvent} browserEvent Browser event.
-   * @param {string} [opt_type] Type.
+   * @param {string} [type] Type.
    */
-  handleBrowserEvent(browserEvent, opt_type) {
-    const type = opt_type || browserEvent.type;
+  handleBrowserEvent(browserEvent, type) {
+    type = type || browserEvent.type;
     const mapBrowserEvent = new MapBrowserEvent(type, this, browserEvent);
     this.handleMapBrowserEvent(mapBrowserEvent);
   }

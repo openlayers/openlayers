@@ -2,6 +2,25 @@
 
 ### Next version
 
+#### Deprecation of `ol/AssertionError` and error codes
+
+Future versions will no longer throw `ol/AssertionError` with an error `code`. Instead, they will throw `Error` with just the error message.
+
+#### Updating parameters in `ol/source/ImageWMS` and `ol/source/TileWMS`
+
+The `updateParams()` method will be the only way to update parameters. Changes made directly to the `params` object passed as a constructor option will have no effect.
+
+### 7.0.0
+
+#### Removal of deprecated properties and methods
+
+ * The `tilePixelRatio` has been removed from the `DataTile` source.
+ * The `imageSmoothing` option has been removed from sources.
+ * The `undefinedHTML` option has been removed from the `MousePosition` control.
+ * The `forEachLayerAtPixel` method has been removed from the `Map` class.
+ * Deprecated options have been removed from the `Overlay` component.
+ * The `labelCache` has been removed from the `ol/render/canvas.js` module.
+
 #### Internet Explorer is no longer supported
 
 Please see https://docs.microsoft.com/en-us/lifecycle/announcements/internet-explorer-11-end-of-support.
@@ -10,9 +29,9 @@ Please see https://docs.microsoft.com/en-us/lifecycle/announcements/internet-exp
 
 The `toStringHDMS` function from the `ol/coordinate.js` module now formats longitude, latitude pairs so that the minutes and seconds are omitted if they are zero.  This changes the values displayed on graticules.
 
-#### ol/later/Graticule
+#### ol/layer/Graticule
 
-The default intervals now align with integer minutes and seconds better suited to the default label formatter.  If formatting in decimal degrees you may wish to specify custom intervals suited to that format.
+The default `intervals` now align with integer minutes and seconds better suited to the default label formatter.  If formatting in decimal degrees you may wish to specify custom `intervals` suited to that format.
 
 #### ol/Collection
 
@@ -25,6 +44,10 @@ The control will now by default keep displaying the last mouse position when the
 #### ol/PluggableMap
 
 The `PluggableMap` class has been removed.  If you want to create a custom map class, extend the `Map` class instead.
+
+#### ol/style/Icon and ol/style/RegularShape
+
+`ol/style/Image` and subclasses `displacement` is no longer scaled with the image.  If you previously expected this unintended behavior you should now increase the displacement when setting the scale.
 
 ### 6.15.0
 

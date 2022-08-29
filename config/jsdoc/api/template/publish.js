@@ -17,7 +17,6 @@ const taffy = require('taffydb').taffy;
 const handle = require('jsdoc/lib/jsdoc/util/error').handle;
 const helper = require('jsdoc/lib/jsdoc/util/templateHelper');
 const htmlsafe = helper.htmlsafe;
-const linkto = helper.linkto;
 const resolveAuthorLinks = helper.resolveAuthorLinks;
 const outdir = env.opts.destination;
 
@@ -30,6 +29,78 @@ let data;
 
 function find(spec) {
   return helper.find(data, spec);
+}
+
+function getShortName(longname) {
+  if (!longname.includes('module:ol/')) {
+    return longname;
+  }
+  if (longname.includes('|')) {
+    return longname;
+  }
+  if (longname.includes('<')) {
+    return longname;
+  }
+  return longname.split(/[\~\.#\:]/).pop();
+}
+
+function linkto(longname, linkText, cssClass, fragmentId) {
+  if (linkText) {
+    return helper.linkto(longname, linkText, cssClass, fragmentId);
+  }
+
+  if (!longname.includes('module:ol/')) {
+    return helper.linkto(longname, linkText, cssClass, fragmentId);
+  }
+
+  // check for `Array<foo|bar>` types (but allow `Array<foo>|Array<bar>` types)
+  let openBrackets = 0;
+  let parseTypes = false;
+  for (const c of longname) {
+    if (c === '<') {
+      openBrackets += 1;
+      continue;
+    }
+    if (c === '>') {
+      openBrackets -= 1;
+      continue;
+    }
+    if (openBrackets > 0 && c === '|') {
+      parseTypes = true;
+      break;
+    }
+  }
+  if (parseTypes) {
+    // collections or generics with unions get parsed by catharsis and
+    // will unfortunamely include long module:ol/foo names
+    return helper.linkto(longname, '', cssClass, fragmentId);
+  }
+
+  // handle union types
+  if (longname.includes('|')) {
+    return longname
+      .split('|')
+      .map((part) => linkto(part, '', cssClass, fragmentId))
+      .join(' | ');
+  }
+
+  const match = longname.match(/(.+?)\.?<(.+)>$/);
+  // handle generics and collections
+  if (match) {
+    return (
+      linkto(match[1], '', cssClass, fragmentId) +
+      '<' +
+      linkto(match[2], '', cssClass, fragmentId) +
+      '>'
+    );
+  }
+
+  return helper.linkto(
+    longname,
+    htmlsafe(getShortName(longname)),
+    cssClass,
+    fragmentId
+  );
 }
 
 function tutoriallink(tutorial) {
@@ -85,15 +156,44 @@ function addSignatureParams(f) {
   f.signature = (f.signature || '') + '(' + params.join(', ') + ')';
 }
 
+/**
+ * Copied from https://github.com/jsdoc/jsdoc/blob/main/packages/jsdoc/lib/jsdoc/util/templateHelper.js
+ * Modified to call our own `linkto` to shorten names.
+ * @param {Object} doclet The doclet.
+ * @param {Array} [doclet.yields] The returns.
+ * @param {Array} [doclet.returns] The returns.
+ * @param {string} cssClass The css class.
+ * @return {Array} The returns.
+ */
+function getSignatureReturns({yields, returns}, cssClass) {
+  let returnTypes = [];
+
+  if (yields || returns) {
+    (yields || returns).forEach((r) => {
+      if (r && r.type && r.type.names) {
+        if (!returnTypes.length) {
+          returnTypes = r.type.names;
+        }
+      }
+    });
+  }
+
+  if (returnTypes && returnTypes.length) {
+    returnTypes = returnTypes.map((r) => linkto(r, '', cssClass));
+  }
+
+  return returnTypes;
+}
+
 function addSignatureReturns(f) {
-  const returnTypes = helper.getSignatureReturns(f);
+  const returnTypes = getSignatureReturns(f);
 
   f.signature = '<span class="signature">' + (f.signature || '') + '</span>';
 
   if (returnTypes.length) {
     f.signature +=
       '<span class="fa fa-arrow-circle-right"></span><span class="type-signature returnType">' +
-      (returnTypes.length ? '{' + returnTypes.join('|') + '}' : '') +
+      (returnTypes.length ? '{' + returnTypes.join(' | ') + '}' : '') +
       '</span>';
   }
 }
@@ -110,12 +210,10 @@ function addSignatureTypes(f) {
 
 function shortenPaths(files, commonPrefix) {
   // always use forward slashes
-  const regexp = new RegExp('\\\\', 'g');
-
   Object.keys(files).forEach(function (file) {
     files[file].shortened = files[file].resolved
       .replace(commonPrefix, '')
-      .replace(regexp, '/');
+      .replaceAll('\\', '/');
   });
 
   return files;
@@ -138,6 +236,13 @@ function getPathFromDoclet(doclet) {
   return filepath;
 }
 
+function preprocessLinks(text) {
+  return text.replaceAll(
+    /\{@link (module:ol\/\S+?)\}/g,
+    (match, longname) => `{@link ${longname} ${getShortName(longname)}}`
+  );
+}
+
 function generate(title, docs, filename, resolveLinks) {
   resolveLinks = resolveLinks === false ? false : true;
 
@@ -152,7 +257,7 @@ function generate(title, docs, filename, resolveLinks) {
   let html = view.render('container.tmpl', docData);
 
   if (resolveLinks) {
-    html = helper.resolveLinks(html); // turn {@link foo} into <a href="foodoc.html">foo</a>
+    html = helper.resolveLinks(preprocessLinks(html)); // turn {@link foo} into <a href="foodoc.html">foo</a>
   }
 
   fs.writeFileSync(outpath, html, 'utf8');
@@ -364,13 +469,12 @@ exports.publish = function (taffyData, opts, tutorials) {
       doclet.examples = doclet.examples.map(function (example) {
         let caption, code;
 
-        if (
-          example.match(
-            /^\s*<caption>([\s\S]+?)<\/caption>(\s*[\n\r])([\s\S]+)$/i
-          )
-        ) {
-          caption = RegExp.$1;
-          code = RegExp.$3;
+        const match = example.match(
+          /^\s*<caption>([\s\S]+?)<\/caption>(?:\s*[\n\r])([\s\S]+)$/i
+        );
+        if (match) {
+          caption = match[1];
+          code = match[2];
         }
 
         return {
@@ -461,7 +565,7 @@ exports.publish = function (taffyData, opts, tutorials) {
   data().each(function (doclet) {
     const url = helper.longnameToUrl[doclet.longname];
 
-    if (url.indexOf('#') > -1) {
+    if (url.includes('#')) {
       doclet.id = helper.longnameToUrl[doclet.longname].split(/#/).pop();
     } else {
       doclet.id = doclet.name;
@@ -493,6 +597,7 @@ exports.publish = function (taffyData, opts, tutorials) {
   // add template helpers
   view.find = find;
   view.linkto = linkto;
+  view.getShortName = getShortName;
   view.resolveAuthorLinks = resolveAuthorLinks;
   view.tutoriallink = tutoriallink;
   view.htmlsafe = htmlsafe;

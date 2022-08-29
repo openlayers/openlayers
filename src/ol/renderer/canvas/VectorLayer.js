@@ -159,9 +159,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   /**
    * @param {ExecutorGroup} executorGroup Executor group.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
-   * @param {import("rbush").default} [opt_declutterTree] Declutter tree.
+   * @param {import("rbush").default} [declutterTree] Declutter tree.
    */
-  renderWorlds(executorGroup, frameState, opt_declutterTree) {
+  renderWorlds(executorGroup, frameState, declutterTree) {
     const extent = frameState.extent;
     const viewState = frameState.viewState;
     const center = viewState.center;
@@ -204,7 +204,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         rotation,
         snapToPixel,
         undefined,
-        opt_declutterTree
+        declutterTree
       );
     } while (++world < endWorld);
   }
@@ -753,8 +753,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @param {number} squaredTolerance Squared render tolerance.
    * @param {import("../../style/Style.js").default|Array<import("../../style/Style.js").default>} styles The style or array of styles.
    * @param {import("../../render/canvas/BuilderGroup.js").default} builderGroup Builder group.
-   * @param {import("../../proj.js").TransformFunction} [opt_transform] Transform from user to view projection.
-   * @param {import("../../render/canvas/BuilderGroup.js").default} [opt_declutterBuilderGroup] Builder for decluttering.
+   * @param {import("../../proj.js").TransformFunction} [transform] Transform from user to view projection.
+   * @param {import("../../render/canvas/BuilderGroup.js").default} [declutterBuilderGroup] Builder for decluttering.
    * @return {boolean} `true` if an image is loading.
    */
   renderFeature(
@@ -762,8 +762,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     squaredTolerance,
     styles,
     builderGroup,
-    opt_transform,
-    opt_declutterBuilderGroup
+    transform,
+    declutterBuilderGroup
   ) {
     if (!styles) {
       return false;
@@ -778,8 +778,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
             styles[i],
             squaredTolerance,
             this.boundHandleStyleImageChange_,
-            opt_transform,
-            opt_declutterBuilderGroup
+            transform,
+            declutterBuilderGroup
           ) || loading;
       }
     } else {
@@ -789,8 +789,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         styles,
         squaredTolerance,
         this.boundHandleStyleImageChange_,
-        opt_transform,
-        opt_declutterBuilderGroup
+        transform,
+        declutterBuilderGroup
       );
     }
     return loading;

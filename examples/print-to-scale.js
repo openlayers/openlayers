@@ -74,11 +74,11 @@ const exportOptions = {
   useCORS: true,
   ignoreElements: function (element) {
     const className = element.className || '';
-    return !(
-      className.indexOf('ol-control') === -1 ||
-      className.indexOf('ol-scale') > -1 ||
-      (className.indexOf('ol-attribution') > -1 &&
-        className.indexOf('ol-uncollapsible'))
+    return (
+      className.includes('ol-control') &&
+      !className.includes('ol-scale') &&
+      (!className.includes('ol-attribution') ||
+        !className.includes('ol-uncollapsible'))
     );
   },
 };

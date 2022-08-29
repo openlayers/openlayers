@@ -48,7 +48,7 @@ function indexHandler(req, res) {
 function notFound(req, res) {
   return () => {
     // first, try the default directory
-    if (req.url.match(/^\/cases\/[^\/]+\/(index.html)?$/)) {
+    if (/^\/cases\/[^\/]+\/(index.html)?$/.test(req.url)) {
       // request for a case index file, and file not found, use default
       req.url = '/index.html';
       return defaultHandler(req, res, () => indexHandler(req, res));

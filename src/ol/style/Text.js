@@ -69,10 +69,10 @@ const DEFAULT_FILL_COLOR = '#333';
  */
 class Text {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
-    const options = opt_options || {};
+  constructor(options) {
+    options = options || {};
 
     /**
      * @private

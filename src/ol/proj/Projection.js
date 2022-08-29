@@ -17,9 +17,9 @@ import {METERS_PER_UNIT} from './Units.js';
  * @property {import("../extent.js").Extent} [worldExtent] The world extent for the SRS.
  * @property {function(number, import("../coordinate.js").Coordinate):number} [getPointResolution]
  * Function to determine resolution at a point. The function is called with a
- * `number` view resolution and a {@link module:ol/coordinate~Coordinate Coordinate} as arguments, and returns
+ * `number` view resolution and a {@link module:ol/coordinate~Coordinate} as arguments, and returns
  * the `number` resolution in projection units at the passed coordinate. If this is `undefined`,
- * the default {@link module:ol/proj.getPointResolution getPointResolution()} function will be used.
+ * the default {@link module:ol/proj.getPointResolution} function will be used.
  */
 
 /**

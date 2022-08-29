@@ -117,6 +117,39 @@ describe('ol.style.RegularShape', function () {
       expect(style.getDisplacement()[1]).to.eql(10);
       expect(style.getAnchor()).to.eql([-15, 15]);
     });
+
+    it('scale applies to rendered radius, not offset', function () {
+      let style;
+
+      style = new RegularShape({
+        radius: 5,
+        displacement: [10, 20],
+        scale: 4,
+      });
+      expect(style.getDisplacement()).to.an('array');
+      expect(style.getDisplacement()[0]).to.eql(10);
+      expect(style.getDisplacement()[1]).to.eql(20);
+      expect(style.getAnchor()).to.eql([2.5, 10]);
+      style.setDisplacement([20, 10]);
+      expect(style.getDisplacement()).to.an('array');
+      expect(style.getDisplacement()[0]).to.eql(20);
+      expect(style.getDisplacement()[1]).to.eql(10);
+      expect(style.getAnchor()).to.eql([0, 7.5]);
+
+      style = new RegularShape({
+        radius: 20,
+        displacement: [10, 20],
+      });
+      expect(style.getDisplacement()).to.an('array');
+      expect(style.getDisplacement()[0]).to.eql(10);
+      expect(style.getDisplacement()[1]).to.eql(20);
+      expect(style.getAnchor()).to.eql([10, 40]);
+      style.setDisplacement([20, 10]);
+      expect(style.getDisplacement()).to.an('array');
+      expect(style.getDisplacement()[0]).to.eql(20);
+      expect(style.getDisplacement()[1]).to.eql(10);
+      expect(style.getAnchor()).to.eql([0, 30]);
+    });
   });
 
   describe('#clone', function () {

@@ -63,10 +63,10 @@ import CanvasVectorImageLayerRenderer from '../renderer/canvas/VectorImageLayer.
  */
 class VectorImageLayer extends BaseVectorLayer {
   /**
-   * @param {Options<VectorSourceType>} [opt_options] Options.
+   * @param {Options<VectorSourceType>} [options] Options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
     const baseOptions = Object.assign({}, options);
     delete baseOptions.imageRatio;

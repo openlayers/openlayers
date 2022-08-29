@@ -106,7 +106,7 @@ const ModifyEventType = {
  * features. Default is {@link module:ol/events/condition.always}.
  * @property {number} [pixelTolerance=10] Pixel tolerance for considering the
  * pointer close enough to a segment or vertex for editing.
- * @property {import("../style/Style.js").StyleLike} [style]
+ * @property {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike} [style]
  * Style used for the modification point or vertex. For linestrings and polygons, this will
  * be the affected vertex, for circles a point along the circle, and for points the actual
  * point. If not configured, the default edit style is used (see {@link module:ol/style/Style~Style}).
@@ -455,7 +455,7 @@ class Modify extends PointerInteraction {
         const segment = segments[i];
         for (let s = 0, ss = segment.length; s < ss; ++s) {
           const feature = segment[s].feature;
-          if (feature && features.indexOf(feature) === -1) {
+          if (feature && !features.includes(feature)) {
             this.featuresBeingModified_.push(feature);
           }
         }
@@ -887,11 +887,11 @@ class Modify extends PointerInteraction {
       const dragSegment = this.dragSegments_[i];
       const segmentData = dragSegment[0];
       const feature = segmentData.feature;
-      if (features.indexOf(feature) === -1) {
+      if (!features.includes(feature)) {
         features.push(feature);
       }
       const geometry = segmentData.geometry;
-      if (geometries.indexOf(geometry) === -1) {
+      if (!geometries.includes(geometry)) {
         geometries.push(geometry);
       }
       const depth = segmentData.depth;
@@ -1159,11 +1159,11 @@ class Modify extends PointerInteraction {
   /**
    * @param {import("../pixel.js").Pixel} pixel Pixel
    * @param {import("../Map.js").default} map Map.
-   * @param {import("../coordinate.js").Coordinate} [opt_coordinate] The pixel Coordinate.
+   * @param {import("../coordinate.js").Coordinate} [coordinate] The pixel Coordinate.
    * @private
    */
-  handlePointerAtPixel_(pixel, map, opt_coordinate) {
-    const pixelCoordinate = opt_coordinate || map.getCoordinateFromPixel(pixel);
+  handlePointerAtPixel_(pixel, map, coordinate) {
+    const pixelCoordinate = coordinate || map.getCoordinateFromPixel(pixel);
     const projection = map.getView().getProjection();
     const sortByDistance = function (a, b) {
       return (

@@ -52,7 +52,6 @@ const TOS_ATTRIBUTION =
  * @property {string} [culture='en-us'] Culture code.
  * @property {string} key Bing Maps API key. Get yours at https://www.bingmapsportal.com/.
  * @property {string} imagerySet Type of imagery.
- * @property {boolean} [imageSmoothing=true] Deprecated.  Use the `interpolate` option instead.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {number} [maxZoom=21] Max zoom. Default is what's advertized by the BingMaps service.
@@ -121,16 +120,10 @@ class BingMaps extends TileImage {
   constructor(options) {
     const hidpi = options.hidpi !== undefined ? options.hidpi : false;
 
-    let interpolate =
-      options.imageSmoothing !== undefined ? options.imageSmoothing : true;
-    if (options.interpolate !== undefined) {
-      interpolate = options.interpolate;
-    }
-
     super({
       cacheSize: options.cacheSize,
       crossOrigin: 'anonymous',
-      interpolate: interpolate,
+      interpolate: options.interpolate,
       opaque: true,
       projection: getProjection('EPSG:3857'),
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,

@@ -5,7 +5,6 @@ import Event from '../events/Event.js';
 import ImageState from '../ImageState.js';
 import ReprojImage from '../reproj/Image.js';
 import Source from './Source.js';
-import {ENABLE_RASTER_REPROJECTION} from '../reproj/common.js';
 import {abstract} from '../util.js';
 import {equals} from '../extent.js';
 import {equivalent} from '../proj.js';
@@ -75,7 +74,6 @@ export class ImageSourceEvent extends Event {
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
- * @property {boolean} [imageSmoothing=true] Deprecated.  Use the `interpolate` option instead.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection.
@@ -97,17 +95,12 @@ class ImageSource extends Source {
    * @param {Options} options Single image source options.
    */
   constructor(options) {
-    let interpolate =
-      options.imageSmoothing !== undefined ? options.imageSmoothing : true;
-    if (options.interpolate !== undefined) {
-      interpolate = options.interpolate;
-    }
-
     super({
       attributions: options.attributions,
       projection: options.projection,
       state: options.state,
-      interpolate: interpolate,
+      interpolate:
+        options.interpolate !== undefined ? options.interpolate : true,
     });
 
     /***
@@ -175,7 +168,6 @@ class ImageSource extends Source {
   getImage(extent, resolution, pixelRatio, projection) {
     const sourceProjection = this.getProjection();
     if (
-      !ENABLE_RASTER_REPROJECTION ||
       !sourceProjection ||
       !projection ||
       equivalent(sourceProjection, projection)

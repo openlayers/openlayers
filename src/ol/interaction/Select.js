@@ -158,9 +158,9 @@ const originalFeatureStyles = {};
  */
 class Select extends Interaction {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
+  constructor(options) {
     super();
 
     /***
@@ -178,7 +178,7 @@ class Select extends Interaction {
      */
     this.un;
 
-    const options = opt_options ? opt_options : {};
+    options = options ? options : {};
 
     /**
      * @private

@@ -23,7 +23,7 @@ new Map({
   layers: [
     new TileLayer({
       source: new XYZ({
-        url: 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+        url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
       })
     })
   ],
@@ -40,6 +40,8 @@ See the following examples for more detail on bundling OpenLayers with your appl
  * Using [Rollup](https://github.com/openlayers/ol-rollup)
  * Using [webpack](https://github.com/openlayers/ol-webpack)
  * Using [Parcel](https://github.com/openlayers/ol-parcel)
+
+For more detail on quick prototyping without the use of a Node.js based setup, see the [Skypack](https://github.com/openlayers/ol-skypack) example.
 
 ## Sponsors
 
@@ -86,20 +88,7 @@ The [ol package](https://npmjs.com/package/ol) includes auto-generated TypeScrip
 
 ## Supported Browsers
 
-OpenLayers runs on all modern browsers that support [HTML5](https://html.spec.whatwg.org/multipage/) and [ECMAScript 2017](https://262.ecma-international.org/8.0/). This includes Chrome, Firefox, Safari and Edge.
-
-For older browsers and platforms (Android 4.x, iOS v12 and older, Safari v12 and older), polyfills may be needed for the following browser features:
-
-* [`fetch`](https://caniuse.com/fetch): Available from [polyfill.io](https://polyfill.io/).
-* [`requestAnimationFrame`](https://caniuse.com/requestanimationframe): Available from [polyfill.io](https://polyfill.io/).
-* [`element.prototype.classList` (`add`/`remove`)](https://caniuse.com/classlist): Available from [polyfill.io](https://polyfill.io/).
-* [`URL` API](https://caniuse.com/url): Available from [polyfill.io](https://polyfill.io/) or [core-js](https://cdnjs.com/libraries/core-js/).
-* [`TextDecoder`](https://caniuse.com/textencoder): Available from [polyfill.io](https://polyfill.io/).
-* [`Number.isInteger`](https://caniuse.com/isInteger): Available from [polyfill.io](https://polyfill.io/) or [core-js](https://cdnjs.com/libraries/core-js/).
-* [`Reflect`](https://caniuse.com/mdn-javascript_builtins_reflect): Available from [core-js](https://cdnjs.com/libraries/core-js/).
-* [Pointer events](https://caniuse.com/pointer): Use [elm-pep](https://npmjs.com/package/elm-pep) (lightweight) or [pepjs](https://npmjs.com/package/pepjs) (for really, really old browsers).
-
-[`ol/source/GeoTIFF`](https://openlayers.org/en/latest/apidoc/module-ol_source_GeoTIFF-GeoTIFFSource.html) requires a browser that supports [ECMAScript 6](https://262.ecma-international.org/6.0/). Additionally a polyfill for [`Promise.allSettled`](https://caniuse.com/mdn-javascript_builtins_promise_allsettled) may be needed.
+OpenLayers runs on all modern browsers (with greater than 1% global usage).  This includes Chrome, Firefox, Safari and Edge. For older browsers, [polyfills](https://polyfill.io/) will likely need to be added.
 
 ## Documentation
 

@@ -80,19 +80,19 @@ class Geometry extends BaseObject {
      * @abstract
      * @param {number} revision The geometry revision.
      * @param {number} squaredTolerance Squared tolerance.
-     * @param {import("../proj.js").TransformFunction} [opt_transform] Optional transform function.
+     * @param {import("../proj.js").TransformFunction} [transform] Optional transform function.
      * @return {Geometry} Simplified geometry.
      */
     this.simplifyTransformedInternal = memoizeOne(function (
       revision,
       squaredTolerance,
-      opt_transform
+      transform
     ) {
-      if (!opt_transform) {
+      if (!transform) {
         return this.getSimplifiedGeometry(squaredTolerance);
       }
       const clone = this.clone();
-      clone.applyTransform(opt_transform);
+      clone.applyTransform(transform);
       return clone.getSimplifiedGeometry(squaredTolerance);
     });
   }
@@ -101,14 +101,14 @@ class Geometry extends BaseObject {
    * Get a transformed and simplified version of the geometry.
    * @abstract
    * @param {number} squaredTolerance Squared tolerance.
-   * @param {import("../proj.js").TransformFunction} [opt_transform] Optional transform function.
+   * @param {import("../proj.js").TransformFunction} [transform] Optional transform function.
    * @return {Geometry} Simplified geometry.
    */
-  simplifyTransformed(squaredTolerance, opt_transform) {
+  simplifyTransformed(squaredTolerance, transform) {
     return this.simplifyTransformedInternal(
       this.getRevision(),
       squaredTolerance,
-      opt_transform
+      transform
     );
   }
 
@@ -147,12 +147,12 @@ class Geometry extends BaseObject {
    * Return the closest point of the geometry to the passed point as
    * {@link module:ol/coordinate~Coordinate coordinate}.
    * @param {import("../coordinate.js").Coordinate} point Point.
-   * @param {import("../coordinate.js").Coordinate} [opt_closestPoint] Closest point.
+   * @param {import("../coordinate.js").Coordinate} [closestPoint] Closest point.
    * @return {import("../coordinate.js").Coordinate} Closest point.
    * @api
    */
-  getClosestPoint(point, opt_closestPoint) {
-    const closestPoint = opt_closestPoint ? opt_closestPoint : [NaN, NaN];
+  getClosestPoint(point, closestPoint) {
+    closestPoint = closestPoint ? closestPoint : [NaN, NaN];
     this.closestPointXY(point[0], point[1], closestPoint, Infinity);
     return closestPoint;
   }
@@ -180,11 +180,11 @@ class Geometry extends BaseObject {
 
   /**
    * Get the extent of the geometry.
-   * @param {import("../extent.js").Extent} [opt_extent] Extent.
+   * @param {import("../extent.js").Extent} [extent] Extent.
    * @return {import("../extent.js").Extent} extent Extent.
    * @api
    */
-  getExtent(opt_extent) {
+  getExtent(extent) {
     if (this.extentRevision_ != this.getRevision()) {
       const extent = this.computeExtent(this.extent_);
       if (isNaN(extent[0]) || isNaN(extent[1])) {
@@ -192,7 +192,7 @@ class Geometry extends BaseObject {
       }
       this.extentRevision_ = this.getRevision();
     }
-    return returnOrUpdate(this.extent_, opt_extent);
+    return returnOrUpdate(this.extent_, extent);
   }
 
   /**
@@ -212,12 +212,12 @@ class Geometry extends BaseObject {
    * coordinates in place.
    * @abstract
    * @param {number} sx The scaling factor in the x-direction.
-   * @param {number} [opt_sy] The scaling factor in the y-direction (defaults to sx).
-   * @param {import("../coordinate.js").Coordinate} [opt_anchor] The scale origin (defaults to the center
+   * @param {number} [sy] The scaling factor in the y-direction (defaults to sx).
+   * @param {import("../coordinate.js").Coordinate} [anchor] The scale origin (defaults to the center
    *     of the geometry extent).
    * @api
    */
-  scale(sx, opt_sy, opt_anchor) {
+  scale(sx, sy, anchor) {
     abstract();
   }
 

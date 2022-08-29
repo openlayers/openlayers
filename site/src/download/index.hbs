@@ -1,0 +1,52 @@
+---
+title: 'Get the Code'
+layout: default.hbs
+---
+<div class="container mt-4 pt-4">
+  <div class="row">
+    <h3 class="col-sm-12">The <code>ol</code> package</h3>
+    <div class="col-sm-12">
+      <p>
+        The recommended way to use OpenLayers is to work with the <a href="https://www.npmjs.com/package/ol"><code>ol</code> package</a>.  You can install the latest with <code>npm</code>:
+        <pre><code class="language-shell-session">npm install ol</code></pre>
+      </p>
+    </div>
+  </div>
+  <div class="row">
+    <h3 class="col-sm-12">Hosted builds for development</h3>
+    <div class="col-sm-12">
+      <p>
+        If you want to try out OpenLayers without downloading anything (<b>not recommended for production</b>), include the following in the head of your html page:
+<pre><code class="language-html">&lt;script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@main/dist/en/{{ version }}/legacy/ol.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@main/dist/en/{{ version }}/legacy/ol.css"&gt;
+</code></pre>
+      </p>
+    </div>
+  </div>
+  <div class="row">
+    <h3 class="col-sm-12">Downloads for the {{ version }} release</h3>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <table class="table table-hover">
+        <tbody>
+          <tr><th>Archive</th><th>Description</th></tr>
+          <tr>
+            <td><a href="https://github.com/openlayers/openlayers/releases/download/{{ version }}/{{ version }}-site.zip">{{ version }}-site.zip</a></td>
+            <td>Includes examples and documentation.</td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/openlayers/openlayers/releases/download/{{ version }}/{{ version }}-legacy.zip">{{ version }}-legacy.zip</a></td>
+            <td>Includes the legacy build of the library.</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        See the <a href="https://github.com/openlayers/openlayers/releases/tag/{{ version }}">{{ version }} release page</a> for a changelog and any special upgrade notes.
+      </p>
+      <p>
+        For archives of previous releases, see the <a href="https://github.com/openlayers/openlayers/releases/">complete list of releases</a>.
+      </p>
+    </div>
+  </div>
+</div>

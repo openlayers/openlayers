@@ -83,25 +83,21 @@ const inputMax = document.getElementById('input-max');
 const outputMin = document.getElementById('output-min');
 const outputMax = document.getElementById('output-max');
 
-const handleMin = (evt) => {
+inputMin.addEventListener('input', (evt) => {
   numpyLayer.updateStyleVariables({
     'bMin': parseFloat(evt.target.value),
     'bMax': parseFloat(inputMax.value),
   });
   outputMin.innerText = evt.target.value;
-};
-inputMin.addEventListener('input', handleMin);
-inputMin.addEventListener('change', handleMin);
+});
 
-const handleMax = (evt) => {
+inputMax.addEventListener('input', (evt) => {
   numpyLayer.updateStyleVariables({
     'bMin': parseFloat(inputMin.value),
     'bMax': parseFloat(evt.target.value),
   });
   outputMax.innerText = evt.target.value;
-};
-inputMax.addEventListener('input', handleMax);
-inputMax.addEventListener('change', handleMax);
+});
 
 inputMin.value = initialMin;
 inputMax.value = initialMax;

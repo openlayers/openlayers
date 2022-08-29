@@ -38,21 +38,22 @@ import {getUid} from '../util.js';
  * @property {HTMLImageElement|HTMLCanvasElement} [img] Image object for the icon. If the `src` option is not provided then the
  * provided image must already be loaded. And in that case, it is required
  * to provide the size of the image, with the `imgSize` option.
- * @property {Array<number>} [offset=[0, 0]] Offset, which, together with the size and the offset origin, define the
- * sub-rectangle to use from the original icon image.
- * @property {Array<number>} [displacement=[0,0]] Displacement of the icon.
- * @property {IconOrigin} [offsetOrigin='top-left'] Origin of the offset: `bottom-left`, `bottom-right`,
- * `top-left` or `top-right`.
+ * @property {import("../size.js").Size} [imgSize] Image size in pixels. Only required if `img` is set and `src` is not.
+ * The provided `imgSize` needs to match the actual size of the image.
+ * @property {Array<number>} [displacement=[0, 0]] Displacement of the icon in pixels.
+ * Positive values will shift the icon right and up.
  * @property {number} [opacity=1] Opacity of the icon.
  * @property {number|import("../size.js").Size} [scale=1] Scale.
  * @property {boolean} [rotateWithView=false] Whether to rotate the icon with the view.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
- * @property {import("../size.js").Size} [size] Icon size in pixel. Can be used together with `offset` to define the
- * sub-rectangle to use from the origin (sprite) icon image.
- * @property {import("../size.js").Size} [imgSize] Image size in pixels. Only required if `img` is set and `src` is not, and
- * for SVG images in Internet Explorer 11. The provided `imgSize` needs to match the actual size of the image.
+ * @property {Array<number>} [offset=[0, 0]] Offset which, together with `size` and `offsetOrigin`, defines the
+ * sub-rectangle to use from the original (sprite) image.
+ * @property {IconOrigin} [offsetOrigin='top-left'] Origin of the offset: `bottom-left`, `bottom-right`,
+ * `top-left` or `top-right`.
+ * @property {import("../size.js").Size} [size] Icon size in pixels. Used together with `offset` to define the
+ * sub-rectangle to use from the original (sprite) image.
  * @property {string} [src] Image source URI.
- * @property {"declutter"|"obstacle"|"none"|undefined} [declutterMode] Declutter mode
+ * @property {"declutter"|"obstacle"|"none"|undefined} [declutterMode] Declutter mode.
  */
 
 /**
@@ -62,10 +63,10 @@ import {getUid} from '../util.js';
  */
 class Icon extends ImageStyle {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
-    const options = opt_options || {};
+  constructor(options) {
+    options = options || {};
 
     /**
      * @type {number}
@@ -293,7 +294,13 @@ class Icon extends ImageStyle {
       this.normalizedAnchor_ = anchor;
     }
     const displacement = this.getDisplacement();
-    return [anchor[0] - displacement[0], anchor[1] + displacement[1]];
+    const scale = this.getScaleArray();
+    // anchor is scaled by renderer but displacement should not be scaled
+    // so divide by scale here
+    return [
+      anchor[0] - displacement[0] / scale[0],
+      anchor[1] + displacement[1] / scale[1],
+    ];
   }
 
   /**

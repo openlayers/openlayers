@@ -268,7 +268,7 @@ function releaseCanvas(key) {
  *
  *   The GPU only receives the data as arrays of numbers. These numbers must be handled differently depending on what it describes (position, texture coordinate...).
  *   Attributes are used to specify these uses. Specify the attribute names with
- *   {@link module:ol/webgl/Helper~WebGLHelper#enableAttributes enableAttributes()} (see code snippet below).
+ *   {@link module:ol/webgl/Helper~WebGLHelper#enableAttributes} (see code snippet below).
  *
  *   Please note that you will have to specify the type and offset of the attributes in the data array. You can refer to the documentation of [WebGLRenderingContext.vertexAttribPointer](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/vertexAttribPointer) for more explanation.
  *   ```js
@@ -308,11 +308,11 @@ function releaseCanvas(key) {
  */
 class WebGLHelper extends Disposable {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
+  constructor(options) {
     super();
-    const options = opt_options || {};
+    options = options || {};
 
     /** @private */
     this.boundHandleWebGLContextLost_ = this.handleWebGLContextLost.bind(this);
@@ -549,9 +549,9 @@ class WebGLHelper extends Disposable {
    * Post process passes will be initialized here, the first one being bound as a render target for
    * subsequent draw calls.
    * @param {import("../Map.js").FrameState} frameState current frame state
-   * @param {boolean} [opt_disableAlphaBlend] If true, no alpha blending will happen.
+   * @param {boolean} [disableAlphaBlend] If true, no alpha blending will happen.
    */
-  prepareDraw(frameState, opt_disableAlphaBlend) {
+  prepareDraw(frameState, disableAlphaBlend) {
     const gl = this.getGL();
     const canvas = this.getCanvas();
     const size = frameState.size;
@@ -573,10 +573,7 @@ class WebGLHelper extends Disposable {
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     gl.enable(gl.BLEND);
-    gl.blendFunc(
-      gl.ONE,
-      opt_disableAlphaBlend ? gl.ZERO : gl.ONE_MINUS_SRC_ALPHA
-    );
+    gl.blendFunc(gl.ONE, disableAlphaBlend ? gl.ZERO : gl.ONE_MINUS_SRC_ALPHA);
   }
 
   /**
@@ -585,9 +582,9 @@ class WebGLHelper extends Disposable {
    * Note: the whole viewport will be drawn to the render target, regardless of its size.
    * @param {import("../Map.js").FrameState} frameState current frame state
    * @param {import("./RenderTarget.js").default} renderTarget Render target to draw to
-   * @param {boolean} [opt_disableAlphaBlend] If true, no alpha blending will happen.
+   * @param {boolean} [disableAlphaBlend] If true, no alpha blending will happen.
    */
-  prepareDrawToRenderTarget(frameState, renderTarget, opt_disableAlphaBlend) {
+  prepareDrawToRenderTarget(frameState, renderTarget, disableAlphaBlend) {
     const gl = this.getGL();
     const size = renderTarget.getSize();
 
@@ -597,10 +594,7 @@ class WebGLHelper extends Disposable {
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.enable(gl.BLEND);
-    gl.blendFunc(
-      gl.ONE,
-      opt_disableAlphaBlend ? gl.ZERO : gl.ONE_MINUS_SRC_ALPHA
-    );
+    gl.blendFunc(gl.ONE, disableAlphaBlend ? gl.ZERO : gl.ONE_MINUS_SRC_ALPHA);
   }
 
   /**
@@ -1040,13 +1034,13 @@ class WebGLHelper extends Disposable {
    * parameter will be ignored.
    * Note: wrap parameters are set to clamp to edge, min filter is set to linear.
    * @param {Array<number>} size Expected size of the texture
-   * @param {ImageData|HTMLImageElement|HTMLCanvasElement} [opt_data] Image data/object to bind to the texture
-   * @param {WebGLTexture} [opt_texture] Existing texture to reuse
+   * @param {ImageData|HTMLImageElement|HTMLCanvasElement} [data] Image data/object to bind to the texture
+   * @param {WebGLTexture} [texture] Existing texture to reuse
    * @return {WebGLTexture} The generated texture
    */
-  createTexture(size, opt_data, opt_texture) {
+  createTexture(size, data, texture) {
     const gl = this.getGL();
-    const texture = opt_texture || gl.createTexture();
+    texture = texture || gl.createTexture();
 
     // set params & size
     const level = 0;
@@ -1055,15 +1049,8 @@ class WebGLHelper extends Disposable {
     const format = gl.RGBA;
     const type = gl.UNSIGNED_BYTE;
     gl.bindTexture(gl.TEXTURE_2D, texture);
-    if (opt_data) {
-      gl.texImage2D(
-        gl.TEXTURE_2D,
-        level,
-        internalFormat,
-        format,
-        type,
-        opt_data
-      );
+    if (data) {
+      gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, format, type, data);
     } else {
       gl.texImage2D(
         gl.TEXTURE_2D,

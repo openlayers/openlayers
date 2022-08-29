@@ -13,17 +13,10 @@ class ImageTile extends Tile {
    * @param {string} src Image source URI.
    * @param {?string} crossOrigin Cross origin.
    * @param {import("./Tile.js").LoadFunction} tileLoadFunction Tile load function.
-   * @param {import("./Tile.js").Options} [opt_options] Tile options.
+   * @param {import("./Tile.js").Options} [options] Tile options.
    */
-  constructor(
-    tileCoord,
-    state,
-    src,
-    crossOrigin,
-    tileLoadFunction,
-    opt_options
-  ) {
-    super(tileCoord, state, opt_options);
+  constructor(tileCoord, state, src, crossOrigin, tileLoadFunction, options) {
+    super(tileCoord, state, options);
 
     /**
      * @private

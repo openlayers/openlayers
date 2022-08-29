@@ -17,11 +17,10 @@ const map = new Map({
   }),
 });
 
-$('.ol-zoom-in, .ol-zoom-out').tooltip({
-  placement: 'right',
-  container: '#map',
-});
-$('.ol-rotate-reset, .ol-attribution button[title]').tooltip({
-  placement: 'left',
-  container: '#map',
-});
+document
+  .querySelectorAll('.ol-zoom-in, .ol-zoom-out, .ol-rotate-reset')
+  .forEach(function (el) {
+    new bootstrap.Tooltip(el, {
+      container: '#map',
+    });
+  });

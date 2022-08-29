@@ -10,11 +10,11 @@ import {getUid} from './util.js';
  * @param {string} url Request url. A 'callback' query parameter will be
  *     appended.
  * @param {Function} callback Callback on success.
- * @param {Function} [opt_errback] Callback on error.
- * @param {string} [opt_callbackParam] Custom query parameter for the JSONP
+ * @param {Function} [errback] Callback on error.
+ * @param {string} [callbackParam] Custom query parameter for the JSONP
  *     callback. Default is 'callback'.
  */
-export function jsonp(url, callback, opt_errback, opt_callbackParam) {
+export function jsonp(url, callback, errback, callbackParam) {
   const script = document.createElement('script');
   const key = 'olc_' + getUid(callback);
   function cleanup() {
@@ -24,14 +24,14 @@ export function jsonp(url, callback, opt_errback, opt_callbackParam) {
   script.async = true;
   script.src =
     url +
-    (url.indexOf('?') == -1 ? '?' : '&') +
-    (opt_callbackParam || 'callback') +
+    (url.includes('?') ? '&' : '?') +
+    (callbackParam || 'callback') +
     '=' +
     key;
   const timer = setTimeout(function () {
     cleanup();
-    if (opt_errback) {
-      opt_errback();
+    if (errback) {
+      errback();
     }
   }, 10000);
   window[key] = function (data) {
@@ -131,7 +131,7 @@ export function getJSON(url) {
  * @return {string} The full URL.
  */
 export function resolveUrl(base, url) {
-  if (url.indexOf('://') >= 0) {
+  if (url.includes('://')) {
     return url;
   }
   return new URL(url, base).href;

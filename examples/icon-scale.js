@@ -1,14 +1,56 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import Overlay from '../src/ol/Overlay.js';
 import Point from '../src/ol/geom/Point.js';
 import TileJSON from '../src/ol/source/TileJSON.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
-import {Icon, Style, Text} from '../src/ol/style.js';
+import {Circle, Fill, Icon, Stroke, Style, Text} from '../src/ol/style.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {fromLonLat} from '../src/ol/proj.js';
-import {getVectorContext} from '../src/ol/render.js';
+
+const iconFeature = new Feature({
+  geometry: new Point([0, 0]),
+});
+
+const iconStyle = new Style({
+  image: new Icon({
+    anchor: [0.5, 1],
+    src: 'data/world.png',
+  }),
+  text: new Text({
+    text: 'World\nText',
+    font: 'bold 30px Calibri,sans-serif',
+    fill: new Fill({
+      color: 'black',
+    }),
+    stroke: new Stroke({
+      color: 'white',
+      width: 2,
+    }),
+  }),
+});
+
+const pointStyle = new Style({
+  image: new Circle({
+    radius: 7,
+    fill: new Fill({
+      color: 'black',
+    }),
+    stroke: new Stroke({
+      color: 'white',
+      width: 2,
+    }),
+  }),
+});
+
+iconFeature.setStyle([pointStyle, iconStyle]);
+
+const vectorSource = new VectorSource({
+  features: [iconFeature],
+});
+
+const vectorLayer = new VectorLayer({
+  source: vectorSource,
+});
 
 const rasterLayer = new TileLayer({
   source: new TileJSON({
@@ -17,115 +59,119 @@ const rasterLayer = new TileLayer({
   }),
 });
 
-const iconFeature = new Feature({
-  geometry: new Point(fromLonLat([0, -10])),
-  name: 'Fish.1',
-});
-
-const feature1 = new Feature({
-  geometry: new Point(fromLonLat([0, -10])),
-  name: 'Fish.1 Island',
-});
-
-const feature2 = new Feature({
-  geometry: new Point(fromLonLat([-30, 10])),
-  name: 'Fish.2 Island',
-});
-
-const iconStyle = new Style({
-  image: new Icon({
-    anchor: [0.5, 0.9],
-    src: 'data/fish.png',
-    crossOrigin: '',
-    scale: [0, 0],
-    rotation: Math.PI / 4,
-  }),
-  text: new Text({
-    text: 'FISH\nTEXT',
-    scale: [0, 0],
-    rotation: Math.PI / 4,
-    textAlign: 'center',
-    textBaseline: 'top',
-  }),
-});
-
-let i = 0;
-let j = 45;
-
-iconFeature.setStyle(function () {
-  const x = Math.sin((i * Math.PI) / 180) * 3;
-  const y = Math.sin((j * Math.PI) / 180) * 4;
-  iconStyle.getImage().setScale([x, y]);
-  iconStyle.getText().setScale([x, y]);
-  return iconStyle;
-});
-
-rasterLayer.on('postrender', function (event) {
-  const vectorContext = getVectorContext(event);
-  const x = Math.cos((i * Math.PI) / 180) * 3;
-  const y = Math.cos((j * Math.PI) / 180) * 4;
-  iconStyle.getImage().setScale([x, y]);
-  iconStyle.getText().setScale([x, y]);
-  vectorContext.drawFeature(feature2, iconStyle);
-});
-
-const vectorSource = new VectorSource({
-  features: [iconFeature, feature1, feature2],
-});
-
-const vectorLayer = new VectorLayer({
-  source: vectorSource,
-});
-
 const map = new Map({
   layers: [rasterLayer, vectorLayer],
-  target: document.getElementById('map'),
+  target: 'map',
   view: new View({
-    center: fromLonLat([-15, 0]),
+    center: [0, 0],
     zoom: 3,
   }),
 });
 
-setInterval(function () {
-  i = (i + 4) % 360;
-  j = (j + 5) % 360;
-  vectorSource.changed();
-}, 1000);
-
-const element = document.getElementById('popup');
-
-const popup = new Overlay({
-  element: element,
-  positioning: 'bottom-center',
-  stopEvent: false,
-});
-map.addOverlay(popup);
-
-// display popup on click
-map.on('click', function (evt) {
-  const feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
-    return feature;
-  });
-  $(element).popover('dispose');
-  if (feature) {
-    popup.setPosition(evt.coordinate);
-    $(element).popover({
-      placement: 'top',
-      html: true,
-      animation: false,
-      content: feature.get('name'),
-    });
-    $(element).popover('show');
+const textAlignments = ['left', 'center', 'right'];
+const textBaselines = ['top', 'middle', 'bottom'];
+const controls = {};
+const controlIds = [
+  'rotation',
+  'rotateWithView',
+  'scaleX',
+  'scaleY',
+  'anchorX',
+  'anchorY',
+  'displacementX',
+  'displacementY',
+  'textRotation',
+  'textRotateWithView',
+  'textScaleX',
+  'textScaleY',
+  'textAlign',
+  'textBaseline',
+  'textOffsetX',
+  'textOffsetY',
+];
+controlIds.forEach(function (id) {
+  const control = document.getElementById(id);
+  const output = document.getElementById(id + 'Out');
+  function setOutput() {
+    const value = parseFloat(control.value);
+    if (control.type === 'checkbox') {
+      output.innerText = control.checked;
+    } else if (id === 'textAlign') {
+      output.innerText = textAlignments[value];
+    } else if (id === 'textBaseline') {
+      output.innerText = textBaselines[value];
+    } else {
+      output.innerText = control.step.startsWith('0.')
+        ? value.toFixed(2)
+        : value;
+    }
   }
+  control.addEventListener('input', function () {
+    setOutput();
+    updateStyle();
+  });
+  setOutput();
+  controls[id] = control;
 });
+
+function updateStyle() {
+  iconStyle
+    .getImage()
+    .setRotation(parseFloat(controls['rotation'].value) * Math.PI);
+
+  iconStyle.getImage().setRotateWithView(controls['rotateWithView'].checked);
+
+  iconStyle
+    .getImage()
+    .setScale([
+      parseFloat(controls['scaleX'].value),
+      parseFloat(controls['scaleY'].value),
+    ]);
+
+  iconStyle
+    .getImage()
+    .setAnchor([
+      parseFloat(controls['anchorX'].value),
+      parseFloat(controls['anchorY'].value),
+    ]);
+
+  iconStyle
+    .getImage()
+    .setDisplacement([
+      parseFloat(controls['displacementX'].value),
+      parseFloat(controls['displacementY'].value),
+    ]);
+
+  iconStyle
+    .getText()
+    .setRotation(parseFloat(controls['textRotation'].value) * Math.PI);
+
+  iconStyle.getText().setRotateWithView(controls['textRotateWithView'].checked);
+
+  iconStyle
+    .getText()
+    .setScale([
+      parseFloat(controls['textScaleX'].value),
+      parseFloat(controls['textScaleY'].value),
+    ]);
+
+  iconStyle
+    .getText()
+    .setTextAlign(textAlignments[parseFloat(controls['textAlign'].value)]);
+
+  iconStyle
+    .getText()
+    .setTextBaseline(textBaselines[parseFloat(controls['textBaseline'].value)]);
+
+  iconStyle.getText().setOffsetX(parseFloat(controls['textOffsetX'].value));
+  iconStyle.getText().setOffsetY(parseFloat(controls['textOffsetY'].value));
+
+  iconFeature.changed();
+}
+updateStyle();
 
 // change mouse cursor when over marker
 map.on('pointermove', function (e) {
-  const pixel = map.getEventPixel(e.originalEvent);
-  const hit = map.hasFeatureAtPixel(pixel);
-  map.getTarget().style.cursor = hit ? 'pointer' : '';
-});
-// Close the popup when the map is moved
-map.on('movestart', function () {
-  $(element).popover('dispose');
+  const hit = map.hasFeatureAtPixel(e.pixel);
+  map.getTargetElement().style.cursor = hit ? 'pointer' : '';
 });

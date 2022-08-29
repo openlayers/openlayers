@@ -22,10 +22,10 @@ import {lineStringLength} from './flat/length.js';
 class LineString extends SimpleGeometry {
   /**
    * @param {Array<import("../coordinate.js").Coordinate>|Array<number>} coordinates Coordinates.
-   *     For internal use, flat coordinates in combination with `opt_layout` are also accepted.
-   * @param {import("./Geometry.js").GeometryLayout} [opt_layout] Layout.
+   *     For internal use, flat coordinates in combination with `layout` are also accepted.
+   * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
    */
-  constructor(coordinates, opt_layout) {
+  constructor(coordinates, layout) {
     super();
 
     /**
@@ -52,9 +52,9 @@ class LineString extends SimpleGeometry {
      */
     this.maxDeltaRevision_ = -1;
 
-    if (opt_layout !== undefined && !Array.isArray(coordinates[0])) {
+    if (layout !== undefined && !Array.isArray(coordinates[0])) {
       this.setFlatCoordinates(
-        opt_layout,
+        layout,
         /** @type {Array<number>} */ (coordinates)
       );
     } else {
@@ -62,7 +62,7 @@ class LineString extends SimpleGeometry {
         /** @type {Array<import("../coordinate.js").Coordinate>} */ (
           coordinates
         ),
-        opt_layout
+        layout
       );
     }
   }
@@ -157,21 +157,21 @@ class LineString extends SimpleGeometry {
    * Returns the coordinate at `m` using linear interpolation, or `null` if no
    * such coordinate exists.
    *
-   * `opt_extrapolate` controls extrapolation beyond the range of Ms in the
-   * MultiLineString. If `opt_extrapolate` is `true` then Ms less than the first
+   * `extrapolate` controls extrapolation beyond the range of Ms in the
+   * MultiLineString. If `extrapolate` is `true` then Ms less than the first
    * M will return the first coordinate and Ms greater than the last M will
    * return the last coordinate.
    *
    * @param {number} m M.
-   * @param {boolean} [opt_extrapolate] Extrapolate. Default is `false`.
+   * @param {boolean} [extrapolate] Extrapolate. Default is `false`.
    * @return {import("../coordinate.js").Coordinate|null} Coordinate.
    * @api
    */
-  getCoordinateAtM(m, opt_extrapolate) {
+  getCoordinateAtM(m, extrapolate) {
     if (this.layout != 'XYM' && this.layout != 'XYZM') {
       return null;
     }
-    const extrapolate = opt_extrapolate !== undefined ? opt_extrapolate : false;
+    extrapolate = extrapolate !== undefined ? extrapolate : false;
     return lineStringCoordinateAtM(
       this.flatCoordinates,
       0,
@@ -201,19 +201,19 @@ class LineString extends SimpleGeometry {
    * The `fraction` is a number between 0 and 1, where 0 is the start of the
    * linestring and 1 is the end.
    * @param {number} fraction Fraction.
-   * @param {import("../coordinate.js").Coordinate} [opt_dest] Optional coordinate whose values will
+   * @param {import("../coordinate.js").Coordinate} [dest] Optional coordinate whose values will
    *     be modified. If not provided, a new coordinate will be returned.
    * @return {import("../coordinate.js").Coordinate} Coordinate of the interpolated point.
    * @api
    */
-  getCoordinateAt(fraction, opt_dest) {
+  getCoordinateAt(fraction, dest) {
     return interpolatePoint(
       this.flatCoordinates,
       0,
       this.flatCoordinates.length,
       this.stride,
       fraction,
-      opt_dest,
+      dest,
       this.stride
     );
   }
@@ -290,11 +290,11 @@ class LineString extends SimpleGeometry {
   /**
    * Set the coordinates of the linestring.
    * @param {!Array<import("../coordinate.js").Coordinate>} coordinates Coordinates.
-   * @param {import("./Geometry.js").GeometryLayout} [opt_layout] Layout.
+   * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
    * @api
    */
-  setCoordinates(coordinates, opt_layout) {
-    this.setLayout(opt_layout, coordinates, 1);
+  setCoordinates(coordinates, layout) {
+    this.setLayout(layout, coordinates, 1);
     if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }

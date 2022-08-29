@@ -89,17 +89,17 @@ export default WMTSTileGrid;
  * optional TileMatrixSetLimits.
  * @param {Object} matrixSet An object representing a matrixSet in the
  *     capabilities document.
- * @param {import("../extent.js").Extent} [opt_extent] An optional extent to restrict the tile
+ * @param {import("../extent.js").Extent} [extent] An optional extent to restrict the tile
  *     ranges the server provides.
- * @param {Array<Object>} [opt_matrixLimits] An optional object representing
+ * @param {Array<Object>} [matrixLimits] An optional object representing
  *     the available matrices for tileGrid.
  * @return {WMTSTileGrid} WMTS tileGrid instance.
  * @api
  */
 export function createFromCapabilitiesMatrixSet(
   matrixSet,
-  opt_extent,
-  opt_matrixLimits
+  extent,
+  matrixLimits
 ) {
   /** @type {!Array<number>} */
   const resolutions = [];
@@ -112,7 +112,7 @@ export function createFromCapabilitiesMatrixSet(
   /** @type {!Array<import("../size.js").Size>} */
   const sizes = [];
 
-  const matrixLimits = opt_matrixLimits !== undefined ? opt_matrixLimits : [];
+  matrixLimits = matrixLimits !== undefined ? matrixLimits : [];
 
   const supportedCRSPropName = 'SupportedCRS';
   const matrixIdsPropName = 'TileMatrix';
@@ -143,7 +143,7 @@ export function createFromCapabilitiesMatrixSet(
         }
         // Fallback for tileMatrix identifiers that don't get prefixed
         // by their tileMatrixSet identifiers.
-        if (elt[identifierPropName].indexOf(':') === -1) {
+        if (!elt[identifierPropName].includes(':')) {
           return (
             matrixSet[identifierPropName] + ':' + elt[identifierPropName] ===
             elt_ml[matrixIdsPropName]
@@ -178,7 +178,7 @@ export function createFromCapabilitiesMatrixSet(
   });
 
   return new WMTSTileGrid({
-    extent: opt_extent,
+    extent: extent,
     origins: origins,
     resolutions: resolutions,
     matrixIds: matrixIds,

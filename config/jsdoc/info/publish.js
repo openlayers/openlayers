@@ -14,11 +14,7 @@ const path = require('path');
  */
 exports.publish = function (data, opts) {
   function getTypes(data) {
-    const types = [];
-    data.forEach(function (name) {
-      types.push(name.replace(/^function$/, 'Function'));
-    });
-    return types;
+    return data.map((name) => name.replace(/^function$/, 'Function'));
   }
 
   // get all doclets that have exports
@@ -34,7 +30,7 @@ exports.publish = function (data, opts) {
         return (
           this.meta &&
           this.meta.path &&
-          this.longname.indexOf('<anonymous>') !== 0 &&
+          !this.longname.startsWith('<anonymous>') &&
           this.longname !== 'module:ol'
         );
       },
@@ -59,7 +55,7 @@ exports.publish = function (data, opts) {
       if (
         constructor &&
         constructor.substr(-1) === '_' &&
-        constructor.indexOf('module:') === -1
+        !constructor.includes('module:')
       ) {
         assert.strictEqual(
           doc.inherited,

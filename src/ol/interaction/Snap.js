@@ -92,10 +92,10 @@ const tempSegment = [];
  */
 class Snap extends PointerInteraction {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
     const pointerOptions = /** @type {import("./Pointer.js").Options} */ (
       options
@@ -199,12 +199,12 @@ class Snap extends PointerInteraction {
   /**
    * Add a feature to the collection of features that we may snap to.
    * @param {import("../Feature.js").default} feature Feature.
-   * @param {boolean} [opt_listen] Whether to listen to the feature change or not
+   * @param {boolean} [register] Whether to listen to the feature change or not
    *     Defaults to `true`.
    * @api
    */
-  addFeature(feature, opt_listen) {
-    const register = opt_listen !== undefined ? opt_listen : true;
+  addFeature(feature, register) {
+    register = register !== undefined ? register : true;
     const feature_uid = getUid(feature);
     const geometry = feature.getGeometry();
     if (geometry) {
@@ -337,12 +337,12 @@ class Snap extends PointerInteraction {
   /**
    * Remove a feature from the collection of features that we may snap to.
    * @param {import("../Feature.js").default} feature Feature
-   * @param {boolean} [opt_unlisten] Whether to unlisten to the feature change
+   * @param {boolean} [unlisten] Whether to unlisten to the feature change
    *     or not. Defaults to `true`.
    * @api
    */
-  removeFeature(feature, opt_unlisten) {
-    const unregister = opt_unlisten !== undefined ? opt_unlisten : true;
+  removeFeature(feature, unlisten) {
+    const unregister = unlisten !== undefined ? unlisten : true;
     const feature_uid = getUid(feature);
     const extent = this.indexedFeaturesExtents_[feature_uid];
     if (extent) {

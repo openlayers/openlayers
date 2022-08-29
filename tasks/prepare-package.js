@@ -11,9 +11,11 @@ async function main() {
 
   // update the version number in util.js
   const utilPath = path.join(buildDir, 'util.js');
-  const versionRegEx = /var VERSION = '(.*)';/g;
   let utilSrc = await fse.readFile(utilPath, 'utf-8');
-  utilSrc = utilSrc.replace(versionRegEx, `var VERSION = '${pkg.version}';`);
+  utilSrc = utilSrc.replace(
+    /const VERSION = '(?:[^']*)';/g,
+    `const VERSION = '${pkg.version}';`
+  );
   await fse.writeFile(utilPath, utilSrc, 'utf-8');
 
   // write out simplified package.json

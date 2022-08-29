@@ -14,7 +14,7 @@ if (/-dev$/.test(version)) {
         <div class="anchor" id="<?js= id ?>">
         </div>
         <h4 class="name">
-            <?js= data.attribs + (kind === 'class' ? 'new ' : '') + (data.scope === 'static' ? longname : name) + (kind !== 'event' ? data.signature : '') ?>
+            <?js= data.attribs + (kind === 'class' ? 'new ' : '') + this.getShortName(longname) + (kind !== 'event' ? data.signature : '') ?>
             <?js if (data.inherited || data.inherits) { ?>
                 <span class="inherited"><?js= this.linkto(data.inherits, 'inherited') ?></span>
             <?js } ?>
@@ -34,8 +34,9 @@ if (/-dev$/.test(version)) {
 </dt>
 <dd class="<?js= (data.stability && data.stability !== 'stable') ? 'unstable' : '' ?>">
 
-<?js if (data.parent && data.parent.kind == 'module' && data.parent.name.split('ol/').length < 3) { ?>
-  <pre class="prettyprint source"><code>import {<?js= data.name ?>} from '<?js= data.parent.name ?>';</code></pre>
+<?js if (data.parent && data.parent.kind == 'module') { ?>
+    <?js const importName = data.isDefaultExport ? data.name : `{${data.name}}`; ?>
+    <pre class="prettyprint source"><code>import <?js= importName ?> from '<?js= data.parent.name ?>';</code></pre>
 <?js } ?>
 
     <?js if (data.description) { ?>
@@ -55,7 +56,7 @@ if (/-dev$/.test(version)) {
 
     <?js if (data['this']) { ?>
         <h5>This:</h5>
-        <ul><li><?js= this.linkto(data['this'], data['this']) ?></li></ul>
+        <ul><li><?js= this.linkto(data['this']) ?></li></ul>
     <?js } ?>
 
     <?js if (data.stability || kind !== 'class') { ?>

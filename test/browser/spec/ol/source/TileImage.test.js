@@ -41,11 +41,6 @@ describe('ol/source/TileImage', function () {
       const source = new TileImage({interpolate: false});
       expect(source.getInterpolate()).to.be(false);
     });
-
-    it('is false if constructed with imageSmoothing: false', function () {
-      const source = new TileImage({imageSmoothing: false});
-      expect(source.getInterpolate()).to.be(false);
-    });
   });
 
   describe('#getTileCacheForProjection', function () {
@@ -70,6 +65,37 @@ describe('ol/source/TileImage', function () {
         getProjection('EPSG:4326')
       );
       expect(retrieved).to.be(tileGrid);
+    });
+  });
+
+  describe('#refresh', function () {
+    it('refreshes the source', function () {
+      const source = createSource();
+      let loaded = 0;
+      source.setTileLoadFunction(() => ++loaded);
+      source.getTile(0, 0, 0, 1, getProjection('EPSG:3857')).load();
+      expect(loaded).to.be(1);
+      source.getTile(0, 0, 0, 1, getProjection('EPSG:3857')).load();
+      expect(loaded).to.be(1);
+      const revision = source.getRevision();
+      source.refresh();
+      expect(source.getRevision()).to.be(revision + 1);
+      source.getTile(0, 0, 0, 1, getProjection('EPSG:3857')).load();
+      expect(loaded).to.be(2);
+    });
+    it('refreshes the source when raster reprojection is used', function () {
+      const source = createSource();
+      let loaded = 0;
+      source.setTileLoadFunction(() => ++loaded);
+      source.getTile(0, 0, 0, 1, getProjection('EPSG:4326')).load();
+      expect(loaded).to.be(16384);
+      source.getTile(0, 0, 0, 1, getProjection('EPSG:4326')).load();
+      expect(loaded).to.be(16384);
+      const revision = source.getRevision();
+      source.refresh();
+      expect(source.getRevision()).to.be(revision + 1);
+      source.getTile(0, 0, 0, 1, getProjection('EPSG:4326')).load();
+      expect(loaded).to.be(16384 * 2);
     });
   });
 

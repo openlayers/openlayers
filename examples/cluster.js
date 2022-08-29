@@ -77,17 +77,13 @@ const map = new Map({
   }),
 });
 
-const distanceHandler = function () {
+distanceInput.addEventListener('input', function () {
   clusterSource.setDistance(parseInt(distanceInput.value, 10));
-};
-distanceInput.addEventListener('input', distanceHandler);
-distanceInput.addEventListener('change', distanceHandler);
+});
 
-const minDistanceHandler = function () {
+minDistanceInput.addEventListener('input', function () {
   clusterSource.setMinDistance(parseInt(minDistanceInput.value, 10));
-};
-minDistanceInput.addEventListener('input', minDistanceHandler);
-minDistanceInput.addEventListener('change', minDistanceHandler);
+});
 
 map.on('click', (e) => {
   clusters.getFeatures(e.pixel).then((clickedFeatures) => {

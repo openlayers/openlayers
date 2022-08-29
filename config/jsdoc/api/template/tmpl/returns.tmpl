@@ -10,9 +10,9 @@ returns.forEach(function (ret, i) {
         var name = ret.name || ret.description;
         var startSpacePos = name.indexOf(" ");
 
-        if (parentReturn !== null && name.indexOf(parentReturn.name + '.') === 0) {
+        if (parentReturn !== null && name.startsWith(parentReturn.name + '.')) {
             ret.name = isNamed ? name.substr(parentReturn.name.length + 1) : name.substr(parentReturn.name.length + 1, startSpacePos - (parentReturn.name.length + 1));
-        
+
             parentReturn.subReturns = parentReturn.subReturns || [];
             parentReturn.subReturns.push(ret);
             returns[i] = null;
@@ -20,7 +20,7 @@ returns.forEach(function (ret, i) {
             if (!isNamed) {
                 ret.name = ret.description.substr(0, startSpacePos !== -1 ? startSpacePos : ret.description.length);
             }
-            
+
             parentReturn = ret;
         }
     }
@@ -52,9 +52,9 @@ if (returns.length > 1) {
             <?js
                 if (ret.type && ret.type.names) {
                     ret.type.names.forEach(function(name, i) { ?>
-                        <?js= self.linkto(name, self.htmlsafe(name)) ?>
+                        <?js= self.linkto(name) ?>
                         <?js if (i < ret.type.names.length-1) { ?> | <?js } ?>
-                    <?js }); 
+                    <?js });
                 }
             ?>
             </td>

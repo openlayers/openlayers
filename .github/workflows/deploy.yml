@@ -1,0 +1,71 @@
+name: Deploy Website
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*.*.*'
+
+concurrency:
+  group: "deploy"
+
+jobs:
+  deploy-branch:
+    if: startsWith(github.ref, 'refs/heads/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm ci
+      - name: Build Website
+        run: ./tasks/build-website.sh -l $(node tasks/get-latest-release.js)
+      - name: Check out openlayers.github.io
+        uses: actions/checkout@v3
+        with:
+          repository: openlayers/openlayers.github.io
+          ssh-key: ${{ secrets.OPENLAYERS_GITHUB_IO_KEY }}
+          path: openlayers.github.io
+      - run: |
+          cp -r build/site/* openlayers.github.io/dist/
+          cd openlayers.github.io
+          if [ -n "$(git status --porcelain)" ]; then
+            git config user.name "$(git --no-pager log --format=format:'%an' -n 1)"
+            git config user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
+            git add .
+            git commit -m "Website updates"
+            git push origin main
+          fi
+  deploy-tag:
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm ci
+      - name: Assert Latest Release
+        run: node tasks/newest-tag.js --tag ${GITHUB_REF_NAME}
+      - name: Build Website
+        run: ./tasks/build-website.sh -l ${GITHUB_REF_NAME} -v ${GITHUB_REF_NAME}
+      - name: Check out openlayers.github.io
+        uses: actions/checkout@v3
+        with:
+          repository: openlayers/openlayers.github.io
+          ssh-key: ${{ secrets.OPENLAYERS_GITHUB_IO_KEY }}
+          path: openlayers.github.io
+      - run: |
+          cp -r build/site/* openlayers.github.io/dist/
+          cd openlayers.github.io
+          if [ -n "$(git status --porcelain)" ]; then
+            git config user.name "$(git --no-pager log --format=format:'%an' -n 1)"
+            git config user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
+            git add .
+            git commit -m "Website updates"
+            git push origin main
+          fi

@@ -7,15 +7,14 @@ cloak:
   - key: AlEoTLTlzFB6Uf4Sy-ugXcRO21skQO7K8eObA5_L-8d20rjqZJLs2nkO1RMjGSPN
     value: Your Bing Maps Key from https://www.bingmapsportal.com/ here
 ---
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
     <title>Mobile full screen example</title>
-    <link rel="stylesheet" href="../css/ol.css" type="text/css">
-    <style type="text/css">
+    <link rel="stylesheet" type="text/css" href="../theme/ol.css">
+    <style>
       html, body, .map {
         margin: 0;
         padding: 0;
@@ -23,12 +22,11 @@ cloak:
         height: 100%;
       }
     </style>
-    <script src="https://unpkg.com/elm-pep@1.0.6/dist/elm-pep.js"></script>
-    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=fetch,requestAnimationFrame,Element.prototype.classList,URL"></script>
   </head>
   <body>
     <div id="map" class="map"></div>
-    <script src="common.js"></script>
+    <script src="https://unpkg.com/elm-pep@1.0.6/dist/elm-pep.js"></script>
     <script src="mobile-full-screen.js"></script>
+    <script src="common.js"></script>
   </body>
 </html>

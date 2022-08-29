@@ -128,12 +128,12 @@ const GPX_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
  */
 class GPX extends XMLFeature {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
+  constructor(options) {
     super();
 
-    const options = opt_options ? opt_options : {};
+    options = options ? options : {};
 
     /**
      * @type {import("../proj/Projection.js").default}
@@ -167,10 +167,10 @@ class GPX extends XMLFeature {
 
   /**
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
+   * @param {import("./Feature.js").ReadOptions} [options] Options.
    * @return {import("../Feature.js").default} Feature.
    */
-  readFeatureFromNode(node, opt_options) {
+  readFeatureFromNode(node, options) {
     if (!NAMESPACE_URIS.includes(node.namespaceURI)) {
       return null;
     }
@@ -178,9 +178,7 @@ class GPX extends XMLFeature {
     if (!featureReader) {
       return null;
     }
-    const feature = featureReader(node, [
-      this.getReadOptions(node, opt_options),
-    ]);
+    const feature = featureReader(node, [this.getReadOptions(node, options)]);
     if (!feature) {
       return null;
     }
@@ -190,17 +188,17 @@ class GPX extends XMLFeature {
 
   /**
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
+   * @param {import("./Feature.js").ReadOptions} [options] Options.
    * @return {Array<import("../Feature.js").default>} Features.
    */
-  readFeaturesFromNode(node, opt_options) {
+  readFeaturesFromNode(node, options) {
     if (!NAMESPACE_URIS.includes(node.namespaceURI)) {
       return [];
     }
     if (node.localName == 'gpx') {
       /** @type {Array<Feature>} */
       const features = pushParseAndPop([], GPX_PARSERS, node, [
-        this.getReadOptions(node, opt_options),
+        this.getReadOptions(node, options),
       ]);
       if (features) {
         this.handleReadExtensions_(features);
@@ -218,12 +216,12 @@ class GPX extends XMLFeature {
    * as tracks (`<trk>`).
    *
    * @param {Array<Feature>} features Features.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Options.
+   * @param {import("./Feature.js").WriteOptions} [options] Options.
    * @return {Node} Node.
    * @api
    */
-  writeFeaturesNode(features, opt_options) {
-    opt_options = this.adaptOptions(opt_options);
+  writeFeaturesNode(features, options) {
+    options = this.adaptOptions(options);
     //FIXME Serialize metadata
     const gpx = createElementNS('http://www.topografix.com/GPX/1/1', 'gpx');
     const xmlnsUri = 'http://www.w3.org/2000/xmlns/';
@@ -242,7 +240,7 @@ class GPX extends XMLFeature {
       GPX_SERIALIZERS,
       GPX_NODE_FACTORY,
       features,
-      [opt_options]
+      [options]
     );
     return gpx;
   }
@@ -505,10 +503,10 @@ const GEOMETRY_TYPE_TO_NODENAME = {
 /**
  * @param {*} value Value.
  * @param {Array<*>} objectStack Object stack.
- * @param {string} [opt_nodeName] Node name.
+ * @param {string} [nodeName] Node name.
  * @return {Node|undefined} Node.
  */
-function GPX_NODE_FACTORY(value, objectStack, opt_nodeName) {
+function GPX_NODE_FACTORY(value, objectStack, nodeName) {
   const geometry = /** @type {Feature} */ (value).getGeometry();
   if (geometry) {
     const nodeName = GEOMETRY_TYPE_TO_NODENAME[geometry.getType()];

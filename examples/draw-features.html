@@ -8,16 +8,22 @@ docs: >
   point. To activate freehand drawing for lines, polygons, and circles, hold
   the `Shift` key. To remove the last point of a line or polygon, press "Undo".
 tags: "draw, edit, freehand, vector"
+resources:
+  - https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css
 ---
 <div id="map" class="map"></div>
-<form class="form-inline">
-  <label for="type">Geometry type: &nbsp;</label>
-  <select class="form-control mr-2 mb-2 mt-2" id="type">
-    <option value="Point">Point</option>
-    <option value="LineString">LineString</option>
-    <option value="Polygon">Polygon</option>
-    <option value="Circle">Circle</option>
-    <option value="None">None</option>
-  </select>
-  <input class="form-control mr-2 mb-2 mt-2" type="button" value="Undo" id="undo">
-</form>
+<div class="row">
+  <div class="col-auto">
+    <span class="input-group">
+      <label class="input-group-text" for="type">Geometry type:</label>
+      <select class="form-select" id="type">
+        <option value="Point">Point</option>
+        <option value="LineString">LineString</option>
+        <option value="Polygon">Polygon</option>
+        <option value="Circle">Circle</option>
+        <option value="None">None</option>
+      </select>
+      <input class="form-control" type="button" value="Undo" id="undo">
+    </span>
+  </div>
+</div>

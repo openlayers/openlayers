@@ -88,10 +88,10 @@ const Property = {
  */
 class LayerGroup extends BaseLayer {
   /**
-   * @param {Options} [opt_options] Layer options.
+   * @param {Options} [options] Layer options.
    */
-  constructor(opt_options) {
-    const options = opt_options || {};
+  constructor(options) {
+    options = options || {};
     const baseOptions = /** @type {Options} */ (Object.assign({}, options));
     delete baseOptions.layers;
 
@@ -272,11 +272,11 @@ class LayerGroup extends BaseLayer {
   }
 
   /**
-   * @param {Array<import("./Layer.js").default>} [opt_array] Array of layers (to be modified in place).
+   * @param {Array<import("./Layer.js").default>} [array] Array of layers (to be modified in place).
    * @return {Array<import("./Layer.js").default>} Array of layers.
    */
-  getLayersArray(opt_array) {
-    const array = opt_array !== undefined ? opt_array : [];
+  getLayersArray(array) {
+    array = array !== undefined ? array : [];
     this.getLayers().forEach(function (layer) {
       layer.getLayersArray(array);
     });
@@ -286,14 +286,14 @@ class LayerGroup extends BaseLayer {
   /**
    * Get the layer states list and use this groups z-index as the default
    * for all layers in this and nested groups, if it is unset at this point.
-   * If opt_states is not provided and this group's z-index is undefined
+   * If dest is not provided and this group's z-index is undefined
    * 0 is used a the default z-index.
-   * @param {Array<import("./Layer.js").State>} [opt_states] Optional list
+   * @param {Array<import("./Layer.js").State>} [dest] Optional list
    * of layer states (to be modified in place).
    * @return {Array<import("./Layer.js").State>} List of layer states.
    */
-  getLayerStatesArray(opt_states) {
-    const states = opt_states !== undefined ? opt_states : [];
+  getLayerStatesArray(dest) {
+    const states = dest !== undefined ? dest : [];
     const pos = states.length;
 
     this.getLayers().forEach(function (layer) {
@@ -302,7 +302,7 @@ class LayerGroup extends BaseLayer {
 
     const ownLayerState = this.getLayerState();
     let defaultZIndex = ownLayerState.zIndex;
-    if (!opt_states && ownLayerState.zIndex === undefined) {
+    if (!dest && ownLayerState.zIndex === undefined) {
       defaultZIndex = 0;
     }
     for (let i = pos, ii = states.length; i < ii; i++) {

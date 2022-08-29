@@ -40,11 +40,11 @@ export function createSnapToN(n) {
   return (
     /**
      * @param {number|undefined} rotation Rotation.
-     * @param {boolean} [opt_isMoving] True if an interaction or animation is in progress.
+     * @param {boolean} [isMoving] True if an interaction or animation is in progress.
      * @return {number|undefined} Rotation.
      */
-    function (rotation, opt_isMoving) {
-      if (opt_isMoving) {
+    function (rotation, isMoving) {
+      if (isMoving) {
         return rotation;
       }
 
@@ -59,19 +59,19 @@ export function createSnapToN(n) {
 }
 
 /**
- * @param {number} [opt_tolerance] Tolerance.
+ * @param {number} [tolerance] Tolerance.
  * @return {Type} Rotation constraint.
  */
-export function createSnapToZero(opt_tolerance) {
-  const tolerance = opt_tolerance || toRadians(5);
+export function createSnapToZero(tolerance) {
+  tolerance = tolerance || toRadians(5);
   return (
     /**
      * @param {number|undefined} rotation Rotation.
-     * @param {boolean} [opt_isMoving] True if an interaction or animation is in progress.
+     * @param {boolean} [isMoving] True if an interaction or animation is in progress.
      * @return {number|undefined} Rotation.
      */
-    function (rotation, opt_isMoving) {
-      if (opt_isMoving) {
+    function (rotation, isMoving) {
+      if (isMoving) {
         return rotation;
       }
 

@@ -181,7 +181,10 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         pixelRatio,
         projection
       );
-      if (!(tile instanceof ImageTile || tile instanceof ReprojTile)) {
+      if (
+        !(tile instanceof ImageTile || tile instanceof ReprojTile) ||
+        (tile instanceof ReprojTile && tile.getState() === TileState.EMPTY)
+      ) {
         return null;
       }
 
@@ -330,7 +333,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
             }
             if (
               !this.newTiles_ &&
-              (inTransition || this.renderedTiles.indexOf(tile) === -1)
+              (inTransition || !this.renderedTiles.includes(tile))
             ) {
               this.newTiles_ = true;
             }
@@ -694,7 +697,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @param {import("../../extent.js").Extent} extent Extent.
    * @param {number} currentZ Current Z.
    * @param {number} preload Load low resolution tiles up to `preload` levels.
-   * @param {function(import("../../Tile.js").default):void} [opt_tileCallback] Tile callback.
+   * @param {function(import("../../Tile.js").default):void} [tileCallback] Tile callback.
    * @protected
    */
   manageTilePyramid(
@@ -706,7 +709,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     extent,
     currentZ,
     preload,
-    opt_tileCallback
+    tileCallback
   ) {
     const tileSourceKey = getUid(tileSource);
     if (!(tileSourceKey in frameState.wantedTiles)) {
@@ -751,8 +754,8 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
                 ]);
               }
             }
-            if (opt_tileCallback !== undefined) {
-              opt_tileCallback(tile);
+            if (tileCallback !== undefined) {
+              tileCallback(tile);
             }
           } else {
             tileSource.useTile(z, x, y, projection);

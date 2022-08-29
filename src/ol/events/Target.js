@@ -27,16 +27,16 @@ import {clear} from '../obj.js';
  */
 class Target extends Disposable {
   /**
-   * @param {*} [opt_target] Default event target for dispatched events.
+   * @param {*} [target] Default event target for dispatched events.
    */
-  constructor(opt_target) {
+  constructor(target) {
     super();
 
     /**
      * @private
      * @type {*}
      */
-    this.eventTarget_ = opt_target;
+    this.eventTarget_ = target;
 
     /**
      * @private
@@ -67,7 +67,7 @@ class Target extends Disposable {
     }
     const listeners = this.listeners_ || (this.listeners_ = {});
     const listenersForType = listeners[type] || (listeners[type] = []);
-    if (listenersForType.indexOf(listener) === -1) {
+    if (!listenersForType.includes(listener)) {
       listenersForType.push(listener);
     }
   }
@@ -148,16 +148,16 @@ class Target extends Disposable {
   }
 
   /**
-   * @param {string} [opt_type] Type. If not provided,
+   * @param {string} [type] Type. If not provided,
    *     `true` will be returned if this event target has any listeners.
    * @return {boolean} Has listeners.
    */
-  hasListener(opt_type) {
+  hasListener(type) {
     if (!this.listeners_) {
       return false;
     }
-    return opt_type
-      ? opt_type in this.listeners_
+    return type
+      ? type in this.listeners_
       : Object.keys(this.listeners_).length > 0;
   }
 

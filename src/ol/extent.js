@@ -33,33 +33,33 @@ export function boundingExtent(coordinates) {
 /**
  * @param {Array<number>} xs Xs.
  * @param {Array<number>} ys Ys.
- * @param {Extent} [opt_extent] Destination extent.
+ * @param {Extent} [dest] Destination extent.
  * @private
  * @return {Extent} Extent.
  */
-function _boundingExtentXYs(xs, ys, opt_extent) {
+function _boundingExtentXYs(xs, ys, dest) {
   const minX = Math.min.apply(null, xs);
   const minY = Math.min.apply(null, ys);
   const maxX = Math.max.apply(null, xs);
   const maxY = Math.max.apply(null, ys);
-  return createOrUpdate(minX, minY, maxX, maxY, opt_extent);
+  return createOrUpdate(minX, minY, maxX, maxY, dest);
 }
 
 /**
  * Return extent increased by the provided value.
  * @param {Extent} extent Extent.
  * @param {number} value The amount by which the extent should be buffered.
- * @param {Extent} [opt_extent] Extent.
+ * @param {Extent} [dest] Extent.
  * @return {Extent} Extent.
  * @api
  */
-export function buffer(extent, value, opt_extent) {
-  if (opt_extent) {
-    opt_extent[0] = extent[0] - value;
-    opt_extent[1] = extent[1] - value;
-    opt_extent[2] = extent[2] + value;
-    opt_extent[3] = extent[3] + value;
-    return opt_extent;
+export function buffer(extent, value, dest) {
+  if (dest) {
+    dest[0] = extent[0] - value;
+    dest[1] = extent[1] - value;
+    dest[2] = extent[2] + value;
+    dest[3] = extent[3] + value;
+    return dest;
   } else {
     return [
       extent[0] - value,
@@ -74,16 +74,16 @@ export function buffer(extent, value, opt_extent) {
  * Creates a clone of an extent.
  *
  * @param {Extent} extent Extent to clone.
- * @param {Extent} [opt_extent] Extent.
+ * @param {Extent} [dest] Extent.
  * @return {Extent} The clone.
  */
-export function clone(extent, opt_extent) {
-  if (opt_extent) {
-    opt_extent[0] = extent[0];
-    opt_extent[1] = extent[1];
-    opt_extent[2] = extent[2];
-    opt_extent[3] = extent[3];
-    return opt_extent;
+export function clone(extent, dest) {
+  if (dest) {
+    dest[0] = extent[0];
+    dest[1] = extent[1];
+    dest[2] = extent[2];
+    dest[3] = extent[3];
+    return dest;
   } else {
     return extent.slice();
   }
@@ -206,16 +206,16 @@ export function createEmpty() {
  * @param {number} minY Minimum Y.
  * @param {number} maxX Maximum X.
  * @param {number} maxY Maximum Y.
- * @param {Extent} [opt_extent] Destination extent.
+ * @param {Extent} [dest] Destination extent.
  * @return {Extent} Extent.
  */
-export function createOrUpdate(minX, minY, maxX, maxY, opt_extent) {
-  if (opt_extent) {
-    opt_extent[0] = minX;
-    opt_extent[1] = minY;
-    opt_extent[2] = maxX;
-    opt_extent[3] = maxY;
-    return opt_extent;
+export function createOrUpdate(minX, minY, maxX, maxY, dest) {
+  if (dest) {
+    dest[0] = minX;
+    dest[1] = minY;
+    dest[2] = maxX;
+    dest[3] = maxY;
+    return dest;
   } else {
     return [minX, minY, maxX, maxY];
   }
@@ -223,31 +223,31 @@ export function createOrUpdate(minX, minY, maxX, maxY, opt_extent) {
 
 /**
  * Create a new empty extent or make the provided one empty.
- * @param {Extent} [opt_extent] Extent.
+ * @param {Extent} [dest] Extent.
  * @return {Extent} Extent.
  */
-export function createOrUpdateEmpty(opt_extent) {
-  return createOrUpdate(Infinity, Infinity, -Infinity, -Infinity, opt_extent);
+export function createOrUpdateEmpty(dest) {
+  return createOrUpdate(Infinity, Infinity, -Infinity, -Infinity, dest);
 }
 
 /**
  * @param {import("./coordinate.js").Coordinate} coordinate Coordinate.
- * @param {Extent} [opt_extent] Extent.
+ * @param {Extent} [dest] Extent.
  * @return {Extent} Extent.
  */
-export function createOrUpdateFromCoordinate(coordinate, opt_extent) {
+export function createOrUpdateFromCoordinate(coordinate, dest) {
   const x = coordinate[0];
   const y = coordinate[1];
-  return createOrUpdate(x, y, x, y, opt_extent);
+  return createOrUpdate(x, y, x, y, dest);
 }
 
 /**
  * @param {Array<import("./coordinate.js").Coordinate>} coordinates Coordinates.
- * @param {Extent} [opt_extent] Extent.
+ * @param {Extent} [dest] Extent.
  * @return {Extent} Extent.
  */
-export function createOrUpdateFromCoordinates(coordinates, opt_extent) {
-  const extent = createOrUpdateEmpty(opt_extent);
+export function createOrUpdateFromCoordinates(coordinates, dest) {
+  const extent = createOrUpdateEmpty(dest);
   return extendCoordinates(extent, coordinates);
 }
 
@@ -256,7 +256,7 @@ export function createOrUpdateFromCoordinates(coordinates, opt_extent) {
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
- * @param {Extent} [opt_extent] Extent.
+ * @param {Extent} [dest] Extent.
  * @return {Extent} Extent.
  */
 export function createOrUpdateFromFlatCoordinates(
@@ -264,19 +264,19 @@ export function createOrUpdateFromFlatCoordinates(
   offset,
   end,
   stride,
-  opt_extent
+  dest
 ) {
-  const extent = createOrUpdateEmpty(opt_extent);
+  const extent = createOrUpdateEmpty(dest);
   return extendFlatCoordinates(extent, flatCoordinates, offset, end, stride);
 }
 
 /**
  * @param {Array<Array<import("./coordinate.js").Coordinate>>} rings Rings.
- * @param {Extent} [opt_extent] Extent.
+ * @param {Extent} [dest] Extent.
  * @return {Extent} Extent.
  */
-export function createOrUpdateFromRings(rings, opt_extent) {
-  const extent = createOrUpdateEmpty(opt_extent);
+export function createOrUpdateFromRings(rings, dest) {
+  const extent = createOrUpdateEmpty(dest);
   return extendRings(extent, rings);
 }
 
@@ -525,16 +525,10 @@ export function getEnlargedArea(extent1, extent2) {
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
  * @param {import("./size.js").Size} size Size.
- * @param {Extent} [opt_extent] Destination extent.
+ * @param {Extent} [dest] Destination extent.
  * @return {Extent} Extent.
  */
-export function getForViewAndSize(
-  center,
-  resolution,
-  rotation,
-  size,
-  opt_extent
-) {
+export function getForViewAndSize(center, resolution, rotation, size, dest) {
   const [x0, y0, x1, y1, x2, y2, x3, y3] = getRotatedViewport(
     center,
     resolution,
@@ -546,7 +540,7 @@ export function getForViewAndSize(
     Math.min(y0, y1, y2, y3),
     Math.max(x0, x1, x2, x3),
     Math.max(y0, y1, y2, y3),
-    opt_extent
+    dest
   );
 }
 
@@ -606,12 +600,12 @@ export function getIntersectionArea(extent1, extent2) {
  * Get the intersection of two extents.
  * @param {Extent} extent1 Extent 1.
  * @param {Extent} extent2 Extent 2.
- * @param {Extent} [opt_extent] Optional extent to populate with intersection.
+ * @param {Extent} [dest] Optional extent to populate with intersection.
  * @return {Extent} Intersecting extent.
  * @api
  */
-export function getIntersection(extent1, extent2, opt_extent) {
-  const intersection = opt_extent ? opt_extent : createEmpty();
+export function getIntersection(extent1, extent2, dest) {
+  const intersection = dest ? dest : createEmpty();
   if (intersects(extent1, extent2)) {
     if (extent1[0] > extent2[0]) {
       intersection[0] = extent1[0];
@@ -715,16 +709,16 @@ export function isEmpty(extent) {
 
 /**
  * @param {Extent} extent Extent.
- * @param {Extent} [opt_extent] Extent.
+ * @param {Extent} [dest] Extent.
  * @return {Extent} Extent.
  */
-export function returnOrUpdate(extent, opt_extent) {
-  if (opt_extent) {
-    opt_extent[0] = extent[0];
-    opt_extent[1] = extent[1];
-    opt_extent[2] = extent[2];
-    opt_extent[3] = extent[3];
-    return opt_extent;
+export function returnOrUpdate(extent, dest) {
+  if (dest) {
+    dest[0] = extent[0];
+    dest[1] = extent[1];
+    dest[2] = extent[2];
+    dest[3] = extent[3];
+    return dest;
   } else {
     return extent;
   }
@@ -812,27 +806,27 @@ export function intersectsSegment(extent, start, end) {
  * @param {Extent} extent Extent.
  * @param {import("./proj.js").TransformFunction} transformFn Transform function.
  * Called with `[minX, minY, maxX, maxY]` extent coordinates.
- * @param {Extent} [opt_extent] Destination extent.
- * @param {number} [opt_stops] Number of stops per side used for the transform.
+ * @param {Extent} [dest] Destination extent.
+ * @param {number} [stops] Number of stops per side used for the transform.
  * By default only the corners are used.
  * @return {Extent} Extent.
  * @api
  */
-export function applyTransform(extent, transformFn, opt_extent, opt_stops) {
+export function applyTransform(extent, transformFn, dest, stops) {
   let coordinates = [];
-  if (opt_stops > 1) {
+  if (stops > 1) {
     const width = extent[2] - extent[0];
     const height = extent[3] - extent[1];
-    for (let i = 0; i < opt_stops; ++i) {
+    for (let i = 0; i < stops; ++i) {
       coordinates.push(
-        extent[0] + (width * i) / opt_stops,
+        extent[0] + (width * i) / stops,
         extent[1],
         extent[2],
-        extent[1] + (height * i) / opt_stops,
-        extent[2] - (width * i) / opt_stops,
+        extent[1] + (height * i) / stops,
+        extent[2] - (width * i) / stops,
         extent[3],
         extent[0],
-        extent[3] - (height * i) / opt_stops
+        extent[3] - (height * i) / stops
       );
     }
   } else {
@@ -854,7 +848,7 @@ export function applyTransform(extent, transformFn, opt_extent, opt_stops) {
     xs.push(coordinates[i]);
     ys.push(coordinates[i + 1]);
   }
-  return _boundingExtentXYs(xs, ys, opt_extent);
+  return _boundingExtentXYs(xs, ys, dest);
 }
 
 /**

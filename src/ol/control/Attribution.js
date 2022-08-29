@@ -46,10 +46,10 @@ import {removeChildren, replaceNode} from '../dom.js';
  */
 class Attribution extends Control {
   /**
-   * @param {Options} [opt_options] Attribution options.
+   * @param {Options} [options] Attribution options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
     super({
       element: document.createElement('div'),

@@ -16,6 +16,7 @@ import {
 import {createCanvasContext2D} from '../../../../../../src/ol/dom.js';
 import {get as getProjection} from '../../../../../../src/ol/proj.js';
 import {getUid} from '../../../../../../src/ol/util.js';
+import {unByKey} from '../../../../../../src/ol/Observable.js';
 
 const baseFrameState = {
   viewHints: [],
@@ -766,10 +767,11 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       map.getView().setCenter([10, 10]);
       map.renderSync();
       let changed = 0;
-      layer.on('change', function () {
+      const key = layer.on('change', function () {
         try {
           expect(layer.getRenderer().ready).to.be(++changed > 2);
           if (changed === 4) {
+            unByKey(key);
             done();
           }
         } catch (e) {

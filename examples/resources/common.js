@@ -1,4 +1,20 @@
 (function() {
+  "use strict"
+  /* global LZString */
+
+  let lzStringPromise;
+  function loadLzString() {
+    if (!lzStringPromise) {
+      lzStringPromise = new Promise(function (resolve, reject) {
+        const script = document.createElement('script')
+        script.src = 'https://unpkg.com/lz-string@1.4.4/libs/lz-string.min.js';
+        document.head.append(script);
+        script.addEventListener('load', resolve);
+        script.addEventListener('error', reject);
+      });
+    }
+    return lzStringPromise;
+  }
 
   function compress(json) {
     return LZString.compressToBase64(JSON.stringify(json))
@@ -43,55 +59,35 @@
       const pkgJson = document.getElementById('example-pkg-source').innerText;
 
       const unique = new Set();
-      const localResources = (js.match(/'(\.\/)?data\/[^']*/g) || [])
-        .concat(js.match(/'(\.\/)?resources\/[^']*/g) || [])
-        .map(
-          function (f) {
-            return f.replace(/^'(\.\/)?/, '');
-          }
-        )
-        .filter(
-          function (f) {
-            return unique.has(f) ? false : (unique.add(f) || unique);
-          }
-        );
+      const localResources = (js.match(/'(?:\.\/)?(?:data|resources)\/[^']*'/g) || [])
+        .map(function (f) {
+          return f.replace(/^'(?:\.\/)?|'$/g, '');
+        })
+        .filter(function (f) {
+          return unique.has(f) ? false : unique.add(f);
+        });
 
-      const promises = localResources.map(
-        function (resource) {
-          return fetchResource(resource);
-        }
-      );
+      const promises = localResources.map(function (resource) {
+        return fetchResource(resource);
+      });
+      promises.push(loadLzString());
 
       Promise.all(promises).then(
         function (results) {
           const files = {
-            'index.html': {
-              content: html
-            },
-            'main.js': {
-              content: js
-            },
-            'package.json': {
-              content: pkgJson
-            },
-            'sandbox.config.json': {
-              content: '{"template": "parcel"}'
-            }
+            'index.html': {content: html},
+            'main.js': {content: js},
+            'package.json': {content: pkgJson},
+            'sandbox.config.json': {content: '{"template": "parcel"}'}
           };
           if (worker) {
-            files['worker.js'] = {
-              content: worker
-            }
+            files['worker.js'] = {content: worker}
           }
-          const data = {
-            files: files
-          };
-
           for (let i = 0; i < localResources.length; i++) {
-            data.files[localResources[i]] = results[i];
+            files[localResources[i]] = results[i];
           }
 
-          form.parameters.value = compress(data);
+          form.parameters.value = compress({files: files});
           form.submit();
         }
       );

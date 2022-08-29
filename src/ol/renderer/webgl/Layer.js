@@ -36,12 +36,12 @@ import {
 class WebGLLayerRenderer extends LayerRenderer {
   /**
    * @param {LayerType} layer Layer.
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(layer, opt_options) {
+  constructor(layer, options) {
     super(layer);
 
-    const options = opt_options || {};
+    options = options || {};
 
     /**
      * The transform for viewport CSS pixels to rendered pixels.  This transform is only

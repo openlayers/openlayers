@@ -62,10 +62,10 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  */
 class MousePosition extends Control {
   /**
-   * @param {Options} [opt_options] Mouse position options.
+   * @param {Options} [options] Mouse position options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
     const element = document.createElement('div');
     element.className =

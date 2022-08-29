@@ -22,6 +22,6 @@ export function appendParams(uri, params) {
   // remove any trailing ? or &
   uri = uri.replace(/[?&]$/, '');
   // append ? or & depending on whether uri has existing parameters
-  uri = uri.indexOf('?') === -1 ? uri + '?' : uri + '&';
+  uri += uri.includes('?') ? '&' : '?';
   return uri + qs;
 }

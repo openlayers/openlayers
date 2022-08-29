@@ -30,7 +30,7 @@ class ExecutorGroup {
    * @param {boolean} overlaps The executor group can have overlapping geometries.
    * @param {!Object<string, !Object<import("../canvas.js").BuilderType, import("../canvas.js").SerializableInstructions>>} allInstructions
    * The serializable instructions.
-   * @param {number} [opt_renderBuffer] Optional rendering buffer.
+   * @param {number} [renderBuffer] Optional rendering buffer.
    */
   constructor(
     maxExtent,
@@ -38,7 +38,7 @@ class ExecutorGroup {
     pixelRatio,
     overlaps,
     allInstructions,
-    opt_renderBuffer
+    renderBuffer
   ) {
     /**
      * @private
@@ -68,7 +68,7 @@ class ExecutorGroup {
      * @private
      * @type {number|undefined}
      */
-    this.renderBuffer_ = opt_renderBuffer;
+    this.renderBuffer_ = renderBuffer;
 
     /**
      * @private
@@ -231,7 +231,7 @@ class ExecutorGroup {
           if (
             !declutteredFeatures ||
             (builderType !== 'Image' && builderType !== 'Text') ||
-            declutteredFeatures.indexOf(feature) !== -1
+            declutteredFeatures.includes(feature)
           ) {
             const idx = (indexes[i] - 3) / 4;
             const x = hitTolerance - (idx % contextSize);
@@ -307,9 +307,9 @@ class ExecutorGroup {
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
    * @param {boolean} snapToPixel Snap point symbols and test to integer pixel.
-   * @param {Array<import("../canvas.js").BuilderType>} [opt_builderTypes] Ordered replay types to replay.
+   * @param {Array<import("../canvas.js").BuilderType>} [builderTypes] Ordered replay types to replay.
    *     Default is {@link module:ol/render/replay~ORDER}
-   * @param {import("rbush").default} [opt_declutterTree] Declutter tree.
+   * @param {import("rbush").default} [declutterTree] Declutter tree.
    */
   execute(
     context,
@@ -317,8 +317,8 @@ class ExecutorGroup {
     transform,
     viewRotation,
     snapToPixel,
-    opt_builderTypes,
-    opt_declutterTree
+    builderTypes,
+    declutterTree
   ) {
     /** @type {Array<number>} */
     const zs = Object.keys(this.executorsByZIndex_).map(Number);
@@ -331,9 +331,9 @@ class ExecutorGroup {
       this.clip(context, transform);
     }
 
-    const builderTypes = opt_builderTypes ? opt_builderTypes : ORDER;
+    builderTypes = builderTypes ? builderTypes : ORDER;
     let i, ii, j, jj, replays, replay;
-    if (opt_declutterTree) {
+    if (declutterTree) {
       zs.reverse();
     }
     for (i = 0, ii = zs.length; i < ii; ++i) {
@@ -349,7 +349,7 @@ class ExecutorGroup {
             transform,
             viewRotation,
             snapToPixel,
-            opt_declutterTree
+            declutterTree
           );
         }
       }

@@ -46,10 +46,10 @@ import Layer from './Layer.js';
  */
 class BaseImageLayer extends Layer {
   /**
-   * @param {Options<ImageSourceType>} [opt_options] Layer options.
+   * @param {Options<ImageSourceType>} [options] Layer options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
     super(options);
   }
 }

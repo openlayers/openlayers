@@ -131,11 +131,11 @@ export class CustomTile extends Tile {
    * for given coordinate (or `null` if not yet loaded).
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {function(*): void} callback Callback.
-   * @param {boolean} [opt_request] If `true` the callback is always async.
+   * @param {boolean} [request] If `true` the callback is always async.
    *                               The tile data is requested if not yet loaded.
    */
-  forDataAtCoordinate(coordinate, callback, opt_request) {
-    if (this.state == TileState.EMPTY && opt_request === true) {
+  forDataAtCoordinate(coordinate, callback, request) {
+    if (this.state == TileState.EMPTY && request === true) {
       this.state = TileState.IDLE;
       listenOnce(
         this,
@@ -147,7 +147,7 @@ export class CustomTile extends Tile {
       );
       this.loadInternal_();
     } else {
-      if (opt_request === true) {
+      if (request === true) {
         setTimeout(
           function () {
             callback(this.getData(coordinate));
@@ -259,7 +259,7 @@ export class CustomTile extends Tile {
  * If `true` the UTFGrid source loads the tiles based on their "visibility".
  * This improves the speed of response, but increases traffic.
  * Note that if set to `false` (lazy loading), you need to pass `true` as
- * `opt_request` to the `forDataAtCoordinateAndResolution` method otherwise no
+ * `request` to the `forDataAtCoordinateAndResolution` method otherwise no
  * data will ever be loaded.
  * @property {boolean} [jsonp=false] Use JSONP with callback to load the TileJSON.
  * Useful when the server does not support CORS..
@@ -381,16 +381,11 @@ class UTFGrid extends TileSource {
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {number} resolution Resolution.
    * @param {function(*): void} callback Callback.
-   * @param {boolean} [opt_request] If `true` the callback is always async.
+   * @param {boolean} [request] If `true` the callback is always async.
    *                               The tile data is requested if not yet loaded.
    * @api
    */
-  forDataAtCoordinateAndResolution(
-    coordinate,
-    resolution,
-    callback,
-    opt_request
-  ) {
+  forDataAtCoordinateAndResolution(coordinate, resolution, callback, request) {
     if (this.tileGrid) {
       const z = this.tileGrid.getZForResolution(resolution, this.zDirection);
       const tileCoord = this.tileGrid.getTileCoordForCoordAndZ(coordinate, z);
@@ -403,9 +398,9 @@ class UTFGrid extends TileSource {
           this.getProjection()
         )
       );
-      tile.forDataAtCoordinate(coordinate, callback, opt_request);
+      tile.forDataAtCoordinate(coordinate, callback, request);
     } else {
-      if (opt_request === true) {
+      if (request === true) {
         setTimeout(function () {
           callback(null);
         }, 0);

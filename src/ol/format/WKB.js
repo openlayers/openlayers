@@ -498,10 +498,10 @@ class WkbWriter {
    */
   writeWkbHeader(wkbType, srid) {
     wkbType %= 1000; // Assume 1000 is an upper limit for type ID
-    if (this.layout_.indexOf('Z') >= 0) {
+    if (this.layout_.includes('Z')) {
       wkbType += this.isEWKB_ ? 0x80000000 : 1000;
     }
-    if (this.layout_.indexOf('M') >= 0) {
+    if (this.layout_.includes('M')) {
       wkbType += this.isEWKB_ ? 0x40000000 : 2000;
     }
     if (this.isEWKB_ && Number.isInteger(srid)) {
@@ -700,12 +700,12 @@ class WkbWriter {
  */
 class WKB extends FeatureFormat {
   /**
-   * @param {Options} [opt_options] Optional configuration object.
+   * @param {Options} [options] Optional configuration object.
    */
-  constructor(opt_options) {
+  constructor(options) {
     super();
 
-    const options = opt_options ? opt_options : {};
+    options = options ? options : {};
 
     this.splitCollection = Boolean(options.splitCollection);
 
@@ -733,13 +733,13 @@ class WKB extends FeatureFormat {
    * Read a single feature from a source.
    *
    * @param {string|ArrayBuffer|ArrayBufferView} source Source.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {import("../Feature.js").default} Feature.
    * @api
    */
-  readFeature(source, opt_options) {
+  readFeature(source, options) {
     return new Feature({
-      geometry: this.readGeometry(source, opt_options),
+      geometry: this.readGeometry(source, options),
     });
   }
 
@@ -747,13 +747,13 @@ class WKB extends FeatureFormat {
    * Read all features from a source.
    *
    * @param {string|ArrayBuffer|ArrayBufferView} source Source.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {Array<import("../Feature.js").default>} Features.
    * @api
    */
-  readFeatures(source, opt_options) {
+  readFeatures(source, options) {
     let geometries = [];
-    const geometry = this.readGeometry(source, opt_options);
+    const geometry = this.readGeometry(source, options);
     if (this.splitCollection && geometry instanceof GeometryCollection) {
       geometries = geometry.getGeometriesArray();
     } else {
@@ -766,11 +766,11 @@ class WKB extends FeatureFormat {
    * Read a single geometry from a source.
    *
    * @param {string|ArrayBuffer|ArrayBufferView} source Source.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {import("../geom/Geometry.js").default} Geometry.
    * @api
    */
-  readGeometry(source, opt_options) {
+  readGeometry(source, options) {
     const view = getDataView(source);
     if (!view) {
       return null;
@@ -780,7 +780,7 @@ class WKB extends FeatureFormat {
     const geometry = reader.readGeometry();
 
     this.viewCache_ = view; // cache for internal subsequent call of readProjection()
-    const options = this.getReadOptions(source, opt_options);
+    options = this.getReadOptions(source, options);
     this.viewCache_ = null; // release
 
     return transformGeometryWithOptions(geometry, false, options);
@@ -812,26 +812,26 @@ class WKB extends FeatureFormat {
    * Encode a feature in this format.
    *
    * @param {import("../Feature.js").default} feature Feature.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+   * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string|ArrayBuffer} Result.
    * @api
    */
-  writeFeature(feature, opt_options) {
-    return this.writeGeometry(feature.getGeometry(), opt_options);
+  writeFeature(feature, options) {
+    return this.writeGeometry(feature.getGeometry(), options);
   }
 
   /**
    * Encode an array of features in this format.
    *
    * @param {Array<import("../Feature.js").default>} features Features.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+   * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string|ArrayBuffer} Result.
    * @api
    */
-  writeFeatures(features, opt_options) {
+  writeFeatures(features, options) {
     return this.writeGeometry(
       new GeometryCollection(features.map((f) => f.getGeometry())),
-      opt_options
+      options
     );
   }
 
@@ -839,12 +839,12 @@ class WKB extends FeatureFormat {
    * Write a single geometry in this format.
    *
    * @param {import("../geom/Geometry.js").default} geometry Geometry.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+   * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string|ArrayBuffer} Result.
    * @api
    */
-  writeGeometry(geometry, opt_options) {
-    const options = this.adaptOptions(opt_options);
+  writeGeometry(geometry, options) {
+    options = this.adaptOptions(options);
 
     const writer = new WkbWriter({
       layout: this.layout_,
@@ -864,7 +864,7 @@ class WKB extends FeatureFormat {
         options.dataProjection && getProjection(options.dataProjection);
       if (dataProjection) {
         const code = dataProjection.getCode();
-        if (code.indexOf('EPSG:') === 0) {
+        if (code.startsWith('EPSG:')) {
           srid = Number(code.substring(5));
         }
       }

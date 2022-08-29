@@ -151,11 +151,6 @@ describe('ol/source/IIIF', function () {
       const source = new IIIF({size: size, interpolate: false});
       expect(source.getInterpolate()).to.be(false);
     });
-
-    it('is false if constructed with imageSmoothing: false', function () {
-      const source = new IIIF({size: size, imageSmoothing: false});
-      expect(source.getInterpolate()).to.be(false);
-    });
   });
 
   describe('tileUrlFunction', function () {

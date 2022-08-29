@@ -5,38 +5,38 @@
 
   <Style id="nStylem1200"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d261d6cd</color></PolyStyle></Style>
   <Style id="nStylem1100"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d25bb85f</color></PolyStyle></Style>
-  <Style id="nStylem1000"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d20c939c</color></PolyStyle></Style>			
+  <Style id="nStylem1000"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d20c939c</color></PolyStyle></Style>
   <Style id="nStylem0950"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d2eafeff</color></PolyStyle></Style>
   <Style id="nStylem0900"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d299f7ff</color></PolyStyle></Style>
   <Style id="nStylem0850"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d2eafeff</color></PolyStyle></Style>
   <Style id="nStylem0800"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d261d6cd</color></PolyStyle></Style>
   <Style id="nStylem0700"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d25bb85f</color></PolyStyle></Style>
-  <Style id="nStylem0600"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d20c939c</color></PolyStyle></Style>			
-  <Style id="nStylem0500"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d299f7ff</color></PolyStyle></Style>	
+  <Style id="nStylem0600"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d20c939c</color></PolyStyle></Style>
+  <Style id="nStylem0500"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d299f7ff</color></PolyStyle></Style>
   <Style id="nStylem0400"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d261d6cd</color></PolyStyle></Style>
   <Style id="nStylem0350"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d2eafeff</color></PolyStyle></Style>
   <Style id="nStylem0300"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d25bb85f</color></PolyStyle></Style>
-  <Style id="nStylem0200"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d20c939c</color></PolyStyle></Style>			
-  <Style id="nStylem0100"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d299f7ff</color></PolyStyle></Style>		
+  <Style id="nStylem0200"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d20c939c</color></PolyStyle></Style>
+  <Style id="nStylem0100"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d299f7ff</color></PolyStyle></Style>
   <Style id="nStyle0000"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d261d6cd</color></PolyStyle></Style>
   <Style id="nStyle0100"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d25bb85f</color></PolyStyle></Style>
-  <Style id="nStyle0200"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d20c939c</color></PolyStyle></Style>			
-  <Style id="nStyle0300"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d299f7ff</color></PolyStyle></Style>	
+  <Style id="nStyle0200"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d20c939c</color></PolyStyle></Style>
+  <Style id="nStyle0300"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d299f7ff</color></PolyStyle></Style>
   <Style id="nStyle0350"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d2eafeff</color></PolyStyle></Style>
   <Style id="nStyle0400"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d261d6cd</color></PolyStyle></Style>
   <Style id="nStyle0450"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d2f8f6e2</color></PolyStyle></Style>
   <Style id="nStyle0500"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d25bb85f</color></PolyStyle></Style>
   <Style id="nStyle0550"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d2eafeff</color></PolyStyle></Style>
   <Style id="nStyle0575"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d2f8f6e2</color></PolyStyle></Style>
-  <Style id="nStyle0600"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d20c939c</color></PolyStyle></Style>			
+  <Style id="nStyle0600"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d20c939c</color></PolyStyle></Style>
   <Style id="nStyle0650"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d25bb85f</color></PolyStyle></Style>
-  <Style id="nStyle0700"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d299f7ff</color></PolyStyle></Style>	
+  <Style id="nStyle0700"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d299f7ff</color></PolyStyle></Style>
   <Style id="nStyle0800"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d261d6cd</color></PolyStyle></Style>
   <Style id="nStyle0900"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d25bb85f</color></PolyStyle></Style>
   <Style id="nStyle0950"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d2eafeff</color></PolyStyle></Style>
-  <Style id="nStyle1000"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d20c939c</color></PolyStyle></Style>			
+  <Style id="nStyle1000"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d20c939c</color></PolyStyle></Style>
   <Style id="nStyle1050"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d2eafeff</color></PolyStyle></Style>
-  <Style id="nStyle1100"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d299f7ff</color></PolyStyle></Style>	
+  <Style id="nStyle1100"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d299f7ff</color></PolyStyle></Style>
   <Style id="nStyle1150"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d2f8f6e2</color></PolyStyle></Style>
   <Style id="nStyle1200"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d261d6cd</color></PolyStyle></Style>
   <Style id="nStyle1275"><LineStyle><color>4cffffff</color><width>1.0</width></LineStyle><PolyStyle><color>d2eafeff</color></PolyStyle></Style>
@@ -44,38 +44,38 @@
 
   <Style id="hStylem1200"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da61d6cd</color></PolyStyle></Style>
   <Style id="hStylem1100"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da5bb85f</color></PolyStyle></Style>
-  <Style id="hStylem1000"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da0c939c</color></PolyStyle></Style>			
+  <Style id="hStylem1000"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da0c939c</color></PolyStyle></Style>
   <Style id="hStylem0950"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>daeafeff</color></PolyStyle></Style>
   <Style id="hStylem0900"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da99f7ff</color></PolyStyle></Style>
   <Style id="hStylem0850"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>daeafeff</color></PolyStyle></Style>
   <Style id="hStylem0800"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da61d6cd</color></PolyStyle></Style>
   <Style id="hStylem0700"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da5bb85f</color></PolyStyle></Style>
-  <Style id="hStylem0600"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da0c939c</color></PolyStyle></Style>			
-  <Style id="hStylem0500"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da99f7ff</color></PolyStyle></Style>	
+  <Style id="hStylem0600"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da0c939c</color></PolyStyle></Style>
+  <Style id="hStylem0500"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da99f7ff</color></PolyStyle></Style>
   <Style id="hStylem0400"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da61d6cd</color></PolyStyle></Style>
   <Style id="hStylem0350"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>daeafeff</color></PolyStyle></Style>
   <Style id="hStylem0300"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da5bb85f</color></PolyStyle></Style>
-  <Style id="hStylem0200"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da0c939c</color></PolyStyle></Style>			
-  <Style id="hStylem0100"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da99f7ff</color></PolyStyle></Style>		
+  <Style id="hStylem0200"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da0c939c</color></PolyStyle></Style>
+  <Style id="hStylem0100"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da99f7ff</color></PolyStyle></Style>
   <Style id="hStyle0000"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da61d6cd</color></PolyStyle></Style>
   <Style id="hStyle0100"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da5bb85f</color></PolyStyle></Style>
-  <Style id="hStyle0200"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da0c939c</color></PolyStyle></Style>			
-  <Style id="hStyle0300"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da99f7ff</color></PolyStyle></Style>	
+  <Style id="hStyle0200"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da0c939c</color></PolyStyle></Style>
+  <Style id="hStyle0300"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da99f7ff</color></PolyStyle></Style>
   <Style id="hStyle0350"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>daeafeff</color></PolyStyle></Style>
   <Style id="hStyle0400"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da61d6cd</color></PolyStyle></Style>
   <Style id="hStyle0450"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>daf8f6e2</color></PolyStyle></Style>
   <Style id="hStyle0500"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da5bb85f</color></PolyStyle></Style>
   <Style id="hStyle0550"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>daeafeff</color></PolyStyle></Style>
   <Style id="hStyle0575"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>daf8f6e2</color></PolyStyle></Style>
-  <Style id="hStyle0600"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da0c939c</color></PolyStyle></Style>			
+  <Style id="hStyle0600"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da0c939c</color></PolyStyle></Style>
   <Style id="hStyle0650"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da5bb85f</color></PolyStyle></Style>
-  <Style id="hStyle0700"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da99f7ff</color></PolyStyle></Style>	
+  <Style id="hStyle0700"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da99f7ff</color></PolyStyle></Style>
   <Style id="hStyle0800"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da61d6cd</color></PolyStyle></Style>
   <Style id="hStyle0900"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da5bb85f</color></PolyStyle></Style>
   <Style id="hStyle0950"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>daeafeff</color></PolyStyle></Style>
-  <Style id="hStyle1000"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da0c939c</color></PolyStyle></Style>			
+  <Style id="hStyle1000"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da0c939c</color></PolyStyle></Style>
   <Style id="hStyle1050"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>daeafeff</color></PolyStyle></Style>
-  <Style id="hStyle1100"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da99f7ff</color></PolyStyle></Style>	
+  <Style id="hStyle1100"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da99f7ff</color></PolyStyle></Style>
   <Style id="hStyle1150"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>daf8f6e2</color></PolyStyle></Style>
   <Style id="hStyle1200"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>da61d6cd</color></PolyStyle></Style>
   <Style id="hStyle1275"><LineStyle><color>c0ffffff</color><width>1.0</width></LineStyle><PolyStyle><color>daeafeff</color></PolyStyle></Style>
@@ -398,7 +398,7 @@
 				</outerBoundaryIs>
 				<tessellate>1</tessellate>
 			</Polygon>
-			</MultiGeometry>			
+			</MultiGeometry>
 		</Placemark>
 		<Placemark>
 			<name>GMT -07:00</name>
@@ -530,7 +530,7 @@
 			</MultiGeometry>
 		</Placemark>
 		<Placemark>
-			<name>GMT -03.30</name>
+			<name>GMT -03:30</name>
 		<description><![CDATA[<div style="width:300px;height:50px;"  id="clock" ></div>
 <script language="JavaScript">
       var int=self.setInterval("tick()",50);
@@ -602,7 +602,7 @@
 				</innerBoundaryIs>
 				<tessellate>1</tessellate>
 			</Polygon>
-			</MultiGeometry>			
+			</MultiGeometry>
 		</Placemark>
 		<Placemark>
 			<name>GMT -02:00</name>
@@ -640,7 +640,7 @@
 				</outerBoundaryIs>
 				<tessellate>1</tessellate>
 			</Polygon>
-			</MultiGeometry>	
+			</MultiGeometry>
 		</Placemark>
 		<Placemark>
 			<name>GMT -01:00</name>
@@ -687,7 +687,7 @@
 				</outerBoundaryIs>
 				<tessellate>1</tessellate>
 			</Polygon>
-			</MultiGeometry>	
+			</MultiGeometry>
 		</Placemark>
 		<Placemark>
 			<name>GMT +00:00</name>
@@ -799,7 +799,7 @@
 				</outerBoundaryIs>
 				<tessellate>1</tessellate>
 			</Polygon>
-			</MultiGeometry>	
+			</MultiGeometry>
 		</Placemark>
 		<Placemark>
 			<name>GMT +03:00</name>
@@ -837,7 +837,7 @@
 				</outerBoundaryIs>
 				<tessellate>1</tessellate>
 			</Polygon>
-			</MultiGeometry>	
+			</MultiGeometry>
 		</Placemark>
 		<Placemark>
 			<name>GMT +03:30</name>
@@ -1056,7 +1056,7 @@
 				</outerBoundaryIs>
 				<tessellate>1</tessellate>
 			</Polygon>
-			</MultiGeometry>	
+			</MultiGeometry>
 		</Placemark>
 		<Placemark>
 			<name>GMT +05:45</name>
@@ -1537,7 +1537,7 @@
 				</outerBoundaryIs>
 				<tessellate>1</tessellate>
 			</Polygon>
-			</MultiGeometry>	
+			</MultiGeometry>
 		</Placemark>
 		<Placemark>
 			<name>GMT +12:45</name>

@@ -319,11 +319,11 @@ export function getBlankImageData() {
  * Generates a color array based on a numerical id
  * Note: the range for each component is 0 to 1 with 256 steps
  * @param {number} id Id
- * @param {Array<number>} [opt_array] Reusable array
+ * @param {Array<number>} [array] Reusable array
  * @return {Array<number>} Color array containing the encoded id
  */
-export function colorEncodeId(id, opt_array) {
-  const array = opt_array || [];
+export function colorEncodeId(id, array) {
+  array = array || [];
   const radix = 256;
   const divide = radix - 1;
   array[0] = Math.floor(id / radix / radix / radix) / divide;

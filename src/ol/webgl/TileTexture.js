@@ -278,7 +278,7 @@ class TileTexture extends EventTarget {
       this.textures.push(texture);
 
       const bandCount =
-        textureIndex < textureCount - 1 ? 4 : this.bandCount % 4;
+        textureIndex < textureCount - 1 ? 4 : ((this.bandCount - 1) % 4) + 1;
       textureDataArrays[textureIndex] = new DataType(pixelCount * bandCount);
     }
 

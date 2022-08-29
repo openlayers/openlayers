@@ -2,7 +2,7 @@
 var self = this;
 
 function toShortName(name) {
-    return name.indexOf('module:') === 0 ? name.split('/').pop() : name;
+    return name.startsWith('module:') ? name.split('/').pop() : name;
 }
 
 function getItemCssClass(type) {
@@ -49,7 +49,7 @@ function listContent(item, title, listItemPrinter) {
 } ?>
 <li class="item item-<?js= item.type ?><?js= obj.classes || '' ?>" data-longname="<?js= item.longname ?>" data-name="<?js= item.prettyname.toLowerCase() ?>">
     <span class="title toggle">
-        <span class="fa <?js= getItemCssClass(item.type) ?> mr-2 mt-1"></span>
+        <span class="fa <?js= getItemCssClass(item.type) ?> me-2 mt-1"></span>
         <span><?js= self.linkto(item.longname, item.prettyname.replace(/[.~\/]/g, '\u200b$&')) ?></span>
     </span><?js
 listContent(item, 'Members', printListItem);

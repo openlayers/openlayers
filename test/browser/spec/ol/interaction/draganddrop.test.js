@@ -5,6 +5,11 @@ import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
 import MVT from '../../../../../src/ol/format/MVT.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
 import View from '../../../../../src/ol/View.js';
+import {
+  clearUserProjection,
+  transform,
+  useGeographic,
+} from '../../../../../src/ol/proj.js';
 
 where('FileReader').describe('ol.interaction.DragAndDrop', function () {
   let viewport, map, interaction;
@@ -122,6 +127,9 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
     it('reads dropped files as text', function (done) {
       interaction.on('addfeatures', function (evt) {
         expect(evt.features.length).to.be(1);
+        expect(evt.features[0].getGeometry().getCoordinates()).to.eql(
+          transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857')
+        );
         expect(mockReadAsText).to.be(true);
         expect(mockReadAsArrayBuffer).to.be(false);
         done();
@@ -139,7 +147,59 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
         item: function () {
           return JSON.stringify({
             type: 'FeatureCollection',
-            features: [{type: 'Feature', id: '1'}],
+            features: [
+              {
+                type: 'Feature',
+                id: '1',
+                'geometry': {
+                  'type': 'Point',
+                  'coordinates': [102.0, 0.5],
+                },
+              },
+            ],
+          });
+        },
+      };
+      viewport.dispatchEvent(event);
+      expect(event.dataTransfer.dropEffect).to.be('copy');
+      expect(event.propagationStopped).to.be(true);
+    });
+
+    it('works with user projection', function (done) {
+      interaction.on('addfeatures', function (evt) {
+        expect(evt.features.length).to.be(1);
+        expect(evt.features[0].getGeometry().getCoordinates()).to.eql([
+          102.0, 0.5,
+        ]);
+        expect(mockReadAsText).to.be(true);
+        expect(mockReadAsArrayBuffer).to.be(false);
+        clearUserProjection();
+        done();
+      });
+      useGeographic();
+      interaction.setMap(map);
+      const event = new Event();
+      event.dataTransfer = {};
+      event.type = 'dragenter';
+      viewport.dispatchEvent(event);
+      event.type = 'dragover';
+      viewport.dispatchEvent(event);
+      event.type = 'drop';
+      event.dataTransfer.files = {
+        length: 1,
+        item: function () {
+          return JSON.stringify({
+            type: 'FeatureCollection',
+            features: [
+              {
+                type: 'Feature',
+                id: '1',
+                'geometry': {
+                  'type': 'Point',
+                  'coordinates': [102.0, 0.5],
+                },
+              },
+            ],
           });
         },
       };

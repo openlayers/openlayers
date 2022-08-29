@@ -1,5 +1,6 @@
+import Map from '../../../../../src/ol/Map.js';
 import MapboxVectorLayer from '../../../../../src/ol/layer/MapboxVector.js';
-import {asString} from '../../../../../src/ol/color.js';
+import View from '../../../../../src/ol/View.js';
 import {unByKey} from '../../../../../src/ol/Observable.js';
 
 describe('ol/layer/MapboxVector', () => {
@@ -90,6 +91,19 @@ describe('ol/layer/MapboxVector', () => {
   });
 
   describe('background', function () {
+    let map;
+    beforeEach(function () {
+      map = new Map({
+        target: createMapDiv(20, 20),
+        view: new View({
+          zoom: 2,
+          center: [0, 0],
+        }),
+      });
+    });
+    this.afterEach(function () {
+      disposeMap(map);
+    });
     it('configures the layer with a background function', function (done) {
       const layer = new MapboxVectorLayer({
         styleUrl:
@@ -116,13 +130,13 @@ describe('ol/layer/MapboxVector', () => {
             })
           ),
       });
-      const source = layer.getSource();
-      const key = source.on('change', function () {
-        if (source.getState() === 'ready') {
-          unByKey(key);
-          expect(layer.getBackground()(1)).to.eql(asString([255, 0, 0, 0.8]));
+      map.addLayer(layer);
+      layer.getSource().once('change', () => {
+        layer.once('prerender', (e) => {
+          const pixel = Array.from(e.context.getImageData(0, 0, 1, 1).data);
+          expect(pixel).to.eql([255, 0, 0, 0.8 * 255]);
           done();
-        }
+        });
       });
     });
 
@@ -153,13 +167,13 @@ describe('ol/layer/MapboxVector', () => {
           ),
         background: false,
       });
-      const source = layer.getSource();
-      const key = source.on('change', function () {
-        if (source.getState() === 'ready') {
-          unByKey(key);
-          expect(layer.getBackground()).to.be(false);
+      map.addLayer(layer);
+      layer.getSource().once('change', () => {
+        layer.once('prerender', (e) => {
+          const pixel = Array.from(e.context.getImageData(0, 0, 1, 1).data);
+          expect(pixel).to.eql([0, 0, 0, 0]);
           done();
-        }
+        });
       });
     });
 
@@ -191,13 +205,13 @@ describe('ol/layer/MapboxVector', () => {
             })
           ),
       });
-      const source = layer.getSource();
-      const key = source.on('change', function () {
-        if (source.getState() === 'ready') {
-          unByKey(key);
-          expect(layer.getBackground()).to.be(undefined);
+      map.addLayer(layer);
+      layer.getSource().once('change', () => {
+        layer.once('prerender', (e) => {
+          const pixel = Array.from(e.context.getImageData(0, 0, 1, 1).data);
+          expect(pixel).to.eql([0, 0, 0, 0]);
           done();
-        }
+        });
       });
     });
   });

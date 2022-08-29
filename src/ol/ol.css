@@ -1,16 +1,19 @@
-:root {
+:root,
+:host {
   --ol-background-color: white;
-  --ol-foreground-color: #333333;
-  --ol-subtle-foreground-color: #666666;
+  --ol-accent-background-color: #F5F5F5;
   --ol-subtle-background-color: rgba(128, 128, 128, 0.25);
   --ol-partial-background-color: rgba(255, 255, 255, 0.75);
+  --ol-foreground-color: #333333;
+  --ol-subtle-foreground-color: #666666;
+  --ol-brand-color: #00AAFF;
 }
 
 .ol-box {
   box-sizing: border-box;
   border-radius: 2px;
   border: 1.5px solid var(--ol-background-color);
-  background-color: var(--ol-subtle-background-color);
+  background-color: var(--ol-partial-background-color);
 }
 
 .ol-mouse-position {
@@ -39,18 +42,14 @@
   transition: all 0.25s;
 }
 
-.ol-scale-singlebar-even {
-  background-color: var(--ol-subtle-foreground-color);
-}
-
-.ol-scale-singlebar-odd {
-  background-color: var(--ol-background-color);
-}
-
 .ol-scale-bar {
   position: absolute;
   bottom: 8px;
   left: 8px;
+}
+
+.ol-scale-bar-inner {
+  display: flex;
 }
 
 .ol-scale-step-marker {
@@ -85,6 +84,14 @@
   z-index: 9;
   box-sizing: border-box;
   border: 1px solid var(--ol-foreground-color);
+}
+
+.ol-scale-singlebar-even {
+  background-color: var(--ol-subtle-foreground-color);
+}
+
+.ol-scale-singlebar-odd {
+  background-color: var(--ol-background-color);
 }
 
 .ol-unsupported {

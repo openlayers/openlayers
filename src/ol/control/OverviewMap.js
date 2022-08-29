@@ -66,10 +66,10 @@ const MIN_RATIO = 0.1;
  */
 class OverviewMap extends Control {
   /**
-   * @param {Options} [opt_options] OverviewMap options.
+   * @param {Options} [options] OverviewMap options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
     super({
       element: document.createElement('div'),

@@ -36,16 +36,12 @@ export const GMLNS = 'http://www.opengis.net/gml';
 
 /**
  * A regular expression that matches if a string only contains whitespace
- * characters. It will e.g. match `''`, `' '`, `'\n'` etc. The non-breaking
- * space (0xa0) is explicitly included as IE doesn't include it in its
- * definition of `\s`.
- *
- * Information from `goog.string.isEmptyOrWhitespace`: https://github.com/google/closure-library/blob/e877b1e/closure/goog/string/string.js#L156-L160
+ * characters. It will e.g. match `''`, `' '`, `'\n'` etc.
  *
  * @const
  * @type {RegExp}
  */
-const ONLY_WHITESPACE_RE = /^[\s\xa0]*$/;
+const ONLY_WHITESPACE_RE = /^\s*$/;
 
 /**
  * @typedef {Object} Options
@@ -65,7 +61,7 @@ const ONLY_WHITESPACE_RE = /^[\s\xa0]*$/;
  * So for instance there might be a featureType item `topp:states` and then
  * there will be a key named `topp` in the featureNS object with value
  * `http://www.openplans.org/topp`.
- * @property {string} srsName srsName to use when writing geometries.
+ * @property {string} [srsName] srsName to use when writing geometries.
  * @property {boolean} [surface=false] Write gml:Surface instead of gml:Polygon
  * elements. This also affects the elements in multi-part geometries.
  * @property {boolean} [curve=false] Write gml:Curve instead of gml:LineString
@@ -92,12 +88,12 @@ const ONLY_WHITESPACE_RE = /^[\s\xa0]*$/;
  */
 class GMLBase extends XMLFeature {
   /**
-   * @param {Options} [opt_options] Optional configuration object.
+   * @param {Options} [options] Optional configuration object.
    */
-  constructor(opt_options) {
+  constructor(options) {
     super();
 
-    const options = /** @type {Options} */ (opt_options ? opt_options : {});
+    options = options ? options : {};
 
     /**
      * @protected
@@ -113,7 +109,7 @@ class GMLBase extends XMLFeature {
 
     /**
      * @protected
-     * @type {string}
+     * @type {string|undefined}
      */
     this.srsName = options.srsName;
 
@@ -167,7 +163,7 @@ class GMLBase extends XMLFeature {
           const child = /** @type {Element} */ (node.childNodes[i]);
           if (child.nodeType === 1) {
             const ft = child.nodeName.split(':').pop();
-            if (featureType.indexOf(ft) === -1) {
+            if (!featureType.includes(ft)) {
               let key = '';
               let count = 0;
               const uri = child.namespaceURI;
@@ -206,10 +202,9 @@ class GMLBase extends XMLFeature {
         /** @type {Object<string, import("../xml.js").Parser>} */
         const parsers = {};
         for (let i = 0, ii = featureTypes.length; i < ii; ++i) {
-          const featurePrefix =
-            featureTypes[i].indexOf(':') === -1
-              ? defaultPrefix
-              : featureTypes[i].split(':')[0];
+          const featurePrefix = featureTypes[i].includes(':')
+            ? featureTypes[i].split(':')[0]
+            : defaultPrefix;
           if (featurePrefix === p) {
             parsers[featureTypes[i].split(':').pop()] =
               localName == 'featureMembers'
@@ -547,31 +542,31 @@ class GMLBase extends XMLFeature {
 
   /**
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
+   * @param {import("./Feature.js").ReadOptions} [options] Options.
    * @protected
    * @return {import("../geom/Geometry.js").default} Geometry.
    */
-  readGeometryFromNode(node, opt_options) {
+  readGeometryFromNode(node, options) {
     const geometry = this.readGeometryElement(node, [
-      this.getReadOptions(node, opt_options ? opt_options : {}),
+      this.getReadOptions(node, options ? options : {}),
     ]);
     return geometry ? geometry : null;
   }
 
   /**
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
+   * @param {import("./Feature.js").ReadOptions} [options] Options.
    * @return {Array<import("../Feature.js").default>} Features.
    */
-  readFeaturesFromNode(node, opt_options) {
-    const options = {
+  readFeaturesFromNode(node, options) {
+    const internalOptions = {
       featureType: this.featureType,
       featureNS: this.featureNS,
     };
-    if (opt_options) {
-      Object.assign(options, this.getReadOptions(node, opt_options));
+    if (internalOptions) {
+      Object.assign(internalOptions, this.getReadOptions(node, options));
     }
-    const features = this.readFeaturesInternal(node, [options]);
+    const features = this.readFeaturesInternal(node, [internalOptions]);
     return features || [];
   }
 

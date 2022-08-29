@@ -30,7 +30,7 @@ function getImport(symbol, member) {
   if (
     member &&
     namedExport.length > 1 &&
-    (defaultExport.length <= 1 || defaultExport[0].indexOf('.') !== -1)
+    (defaultExport.length <= 1 || defaultExport[0].includes('.'))
   ) {
     const from = namedExport[0].replace(/^module\:/, './');
     const importName = from.replace(/[.\/]+/g, '_');
@@ -52,7 +52,7 @@ function formatSymbolExport(symbol, namespaces, imports) {
   const last = nsParts.length - 1;
   const imp = getImport(symbol, nsParts[last]);
   if (imp) {
-    const isNamed = parts[0].indexOf('.') !== -1;
+    const isNamed = parts[0].includes('.');
     const importName = isNamed
       ? '_' + nsParts.slice(0, last).join('_') + '$' + nsParts[last]
       : '$' + nsParts.join('$');
@@ -79,7 +79,7 @@ function generateExports(symbols) {
   const blocks = [];
   symbols.forEach(function (symbol) {
     const name = symbol.name;
-    if (name.indexOf('#') == -1) {
+    if (!name.includes('#')) {
       const imp = getImport(symbol);
       if (imp) {
         imports[imp] = true;

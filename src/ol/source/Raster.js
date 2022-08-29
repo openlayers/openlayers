@@ -136,15 +136,15 @@ function createMinion(operation) {
  */
 function createWorker(config, onMessage) {
   const lib = Object.keys(config.lib || {}).map(function (name) {
-    return 'var ' + name + ' = ' + config.lib[name].toString() + ';';
+    return 'const ' + name + ' = ' + config.lib[name].toString() + ';';
   });
 
   const lines = lib.concat([
-    'var __minion__ = (' + createMinion.toString() + ')(',
+    'const __minion__ = (' + createMinion.toString() + ')(',
     config.operation.toString(),
     ');',
     'self.addEventListener("message", function(event) {',
-    '  var buffer = __minion__(event.data);',
+    '  const buffer = __minion__(event.data);',
     '  self.postMessage({buffer: buffer, meta: event.data.meta}, [buffer]);',
     '});',
   ]);
@@ -675,11 +675,11 @@ class RasterSource extends ImageSource {
   /**
    * Set the operation.
    * @param {Operation} operation New operation.
-   * @param {Object} [opt_lib] Functions that will be available to operations run
+   * @param {Object} [lib] Functions that will be available to operations run
    *     in a worker.
    * @api
    */
-  setOperation(operation, opt_lib) {
+  setOperation(operation, lib) {
     if (this.processor_) {
       this.processor_.dispose();
     }
@@ -688,7 +688,7 @@ class RasterSource extends ImageSource {
       operation: operation,
       imageOps: this.operationType_ === 'image',
       queue: 1,
-      lib: opt_lib,
+      lib: lib,
       threads: this.threads_,
     });
     this.changed();

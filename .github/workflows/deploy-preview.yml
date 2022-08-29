@@ -1,4 +1,4 @@
-name: Deploy Preview
+name: Deploy Website (Preview)
 
 on:
   workflow_run:
@@ -85,17 +85,11 @@ jobs:
             );
 
             if (!commentExists) {
-              const body = [
-                `${start} Preview the [examples](https://deploy-preview-${pullRequestNumber}--ol-site.netlify.app/examples/) and`,
-                `[docs](https://deploy-preview-${pullRequestNumber}--ol-site.netlify.app/apidoc/) from this branch`,
-                `here: https://deploy-preview-${pullRequestNumber}--ol-site.netlify.app/.`
-              ].join(' ');
-
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: pullRequestNumber,
-                body: body
+                body: `${start} Preview the website for this branch here: https://deploy-preview-${pullRequestNumber}--ol-site.netlify.app/.`
               });
             } else {
               console.log(`Preview URL comment already added to PR #${pullRequestNumber}`);
