@@ -5,8 +5,8 @@ import {fileURLToPath} from 'url';
 
 const baseDir = dirname(fileURLToPath(import.meta.url));
 const buildDir = path.resolve(baseDir, '../build/ol');
-const fullBuildSource = path.resolve(baseDir, '../build/full/ol.js');
-const fullBuildDest = path.join(buildDir, 'dist/index.js');
+const fullBuildSource = path.resolve(baseDir, '../build/full/ol.cjs');
+const fullBuildDest = path.join(buildDir, 'dist/index.cjs');
 
 async function main() {
   const pkg = await fse.readJSON(path.resolve(baseDir, '../package.json'));

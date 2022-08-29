@@ -1,4 +1,5 @@
 import commonjs from '@rollup/plugin-commonjs';
+import esbuild from 'rollup-plugin-esbuild';
 import resolve from '@rollup/plugin-node-resolve';
 
 export default {
@@ -7,7 +8,7 @@ export default {
     name: 'ol',
     format: 'umd',
     exports: 'default',
-    file: 'build/full/ol.js',
+    file: 'build/full/ol.cjs',
     globals: {
       geotiff: 'geotiff',
     },
@@ -15,6 +16,7 @@ export default {
   plugins: [
     resolve({moduleDirectories: ['build', 'node_modules']}),
     commonjs(),
+    esbuild({minify: true}),
   ],
   external: ['geotiff'],
 };
