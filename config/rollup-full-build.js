@@ -8,7 +8,7 @@ export default {
     name: 'ol',
     format: 'umd',
     exports: 'default',
-    file: 'build/full/ol.cjs',
+    file: 'build/full/ol.js',
     globals: {
       geotiff: 'geotiff',
     },
