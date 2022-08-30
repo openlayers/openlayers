@@ -5,8 +5,6 @@ import {fileURLToPath} from 'url';
 
 const baseDir = dirname(fileURLToPath(import.meta.url));
 const buildDir = path.resolve(baseDir, '../build/ol');
-const fullBuildSource = path.resolve(baseDir, '../build/full/ol.js');
-const fullBuildDest = path.join(buildDir, 'dist/index.js');
 
 async function main() {
   const pkg = await fse.readJSON(path.resolve(baseDir, '../package.json'));
@@ -40,8 +38,10 @@ async function main() {
     path.join(buildDir, 'LICENSE.md')
   );
 
-  await fse.ensureDir(dirname(fullBuildDest));
-  await fse.copyFile(fullBuildSource, fullBuildDest);
+  await fse.copy(
+    path.resolve(baseDir, '../build/full/'),
+    path.join(buildDir, 'dist')
+  );
 }
 
 /**
