@@ -130,6 +130,9 @@ class ErrorEvent extends BaseEvent {
  * On configuration or loading error, the layer will trigger an `'error'` event.  Listeners
  * will receive an object with an `error` property that can be used to diagnose the problem.
  *
+ * **Note for users of the full build**: The `MapboxVectorLayer` requires the
+ * [ol-mapbox-style](https://github.com/openlayers/ol-mapbox-style) library to be loaded as well.
+ *
  * @param {Options} options Options.
  * @extends {VectorTileLayer}
  * @fires module:ol/events/Event~BaseEvent#event:error

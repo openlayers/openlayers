@@ -365,6 +365,9 @@ function getMaxForDataType(array) {
 /**
  * @classdesc
  * A source for working with GeoTIFF data.
+ * **Note for users of the full build**: The `GeoTIFF` source requires the
+ * [geotiff.js](https://github.com/geotiffjs/geotiff.js) library to be loaded as well.
+ *
  * @api
  */
 class GeoTIFFSource extends DataTile {
