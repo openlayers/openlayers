@@ -18,4 +18,4 @@ jobs:
       - name: Build Release Assets
         run: ./tasks/build-website.sh -l ${GITHUB_REF_NAME} -v ${GITHUB_REF_NAME}
       - name: Create Release
-        run: node tasks/create-release.js --token ${{secrets.GITHUB_TOKEN}} --tag ${GITHUB_REF_NAME} --legacy build/${GITHUB_REF_NAME}-legacy.zip --site build/${GITHUB_REF_NAME}-site.zip
+        run: node tasks/create-release.js --token ${{secrets.GITHUB_TOKEN}} --tag ${GITHUB_REF_NAME} --package build/${GITHUB_REF_NAME}-package.zip --site build/${GITHUB_REF_NAME}-site.zip
