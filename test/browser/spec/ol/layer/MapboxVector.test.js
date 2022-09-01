@@ -132,7 +132,7 @@ describe('ol/layer/MapboxVector', () => {
       });
       map.addLayer(layer);
       layer.getSource().once('change', () => {
-        layer.once('prerender', (e) => {
+        layer.once('postrender', (e) => {
           const pixel = Array.from(e.context.getImageData(0, 0, 1, 1).data);
           expect(pixel).to.eql([255, 0, 0, 0.8 * 255]);
           done();
@@ -169,7 +169,7 @@ describe('ol/layer/MapboxVector', () => {
       });
       map.addLayer(layer);
       layer.getSource().once('change', () => {
-        layer.once('prerender', (e) => {
+        layer.once('postrender', (e) => {
           const pixel = Array.from(e.context.getImageData(0, 0, 1, 1).data);
           expect(pixel).to.eql([0, 0, 0, 0]);
           done();
@@ -207,7 +207,7 @@ describe('ol/layer/MapboxVector', () => {
       });
       map.addLayer(layer);
       layer.getSource().once('change', () => {
-        layer.once('prerender', (e) => {
+        layer.once('postrender', (e) => {
           const pixel = Array.from(e.context.getImageData(0, 0, 1, 1).data);
           expect(pixel).to.eql([0, 0, 0, 0]);
           done();
