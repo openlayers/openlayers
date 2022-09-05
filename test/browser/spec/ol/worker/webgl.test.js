@@ -156,7 +156,7 @@ describe('ol/worker/webgl', function () {
         const vertices = Array.from(
           new Float32Array(responseData.vertexBuffer)
         );
-        expect(indices).to.have.length(24);
+        expect(indices).to.have.length(27);
         expect(vertices).to.have.length(33);
       });
     });
