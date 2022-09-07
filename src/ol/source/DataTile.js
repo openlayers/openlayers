@@ -174,9 +174,9 @@ class DataTileSource extends TileSource {
     const thisProj = this.getProjection();
     if (!thisProj || equivalent(thisProj, projection)) {
       return this.gutter_;
-    } else {
-      return 0;
     }
+
+    return 0;
   }
 
   /**
@@ -185,6 +185,62 @@ class DataTileSource extends TileSource {
    */
   setLoader(loader) {
     this.loader_ = loader;
+  }
+
+  /**
+   * @param {number} z Tile coordinate z.
+   * @param {number} x Tile coordinate x.
+   * @param {number} y Tile coordinate y.
+   * @param {import("../proj/Projection.js").default} targetProjection The output projection.
+   * @param {import("../proj/Projection.js").default} sourceProjection The input projection.
+   * @return {!DataTile} Tile.
+   */
+  getReprojTile_(z, x, y, targetProjection, sourceProjection) {
+    const cache = this.getTileCacheForProjection(targetProjection);
+    const tileCoordKey = getKeyZXY(z, x, y);
+    if (cache.containsKey(tileCoordKey)) {
+      const tile = cache.get(tileCoordKey);
+      if (tile && tile.key == this.getKey()) {
+        return tile;
+      }
+    }
+
+    const tileGrid = this.getTileGrid();
+    const reprojTilePixelRatio = Math.max.apply(
+      null,
+      tileGrid.getResolutions().map((r, z) => {
+        const tileSize = toSize(tileGrid.getTileSize(z));
+        const textureSize = this.getTileSize(z);
+        return Math.max(
+          textureSize[0] / tileSize[0],
+          textureSize[1] / tileSize[1]
+        );
+      })
+    );
+
+    const sourceTileGrid = this.getTileGridForProjection(sourceProjection);
+    const targetTileGrid = this.getTileGridForProjection(targetProjection);
+    const tileCoord = [z, x, y];
+    const wrappedTileCoord = this.getTileCoordForTileUrlFunction(
+      tileCoord,
+      targetProjection
+    );
+    const newTile = new ReprojDataTile(
+      sourceProjection,
+      sourceTileGrid,
+      targetProjection,
+      targetTileGrid,
+      tileCoord,
+      wrappedTileCoord,
+      reprojTilePixelRatio,
+      this.getGutterForProjection(sourceProjection),
+      function (z, x, y, pixelRatio) {
+        return this.getTile(z, x, y, pixelRatio, sourceProjection);
+      }.bind(this),
+      this.getInterpolate()
+    );
+    newTile.key = this.getKey();
+    return newTile;
   }
 
   /**
@@ -202,53 +258,7 @@ class DataTileSource extends TileSource {
       projection &&
       !equivalent(sourceProjection, projection)
     ) {
-      const cache = this.getTileCacheForProjection(projection);
-      let tile;
-      const tileCoordKey = getKeyZXY(z, x, y);
-      if (cache.containsKey(tileCoordKey)) {
-        tile = cache.get(tileCoordKey);
-      }
-      const key = this.getKey();
-      if (tile && tile.key == key) {
-        return tile;
-      } else {
-        const tileGrid = this.getTileGrid();
-        const reprojTilePixelRatio = Math.max.apply(
-          null,
-          tileGrid.getResolutions().map((r, z) => {
-            const tileSize = toSize(tileGrid.getTileSize(z));
-            const textureSize = this.getTileSize(z);
-            return Math.max(
-              textureSize[0] / tileSize[0],
-              textureSize[1] / tileSize[1]
-            );
-          })
-        );
-
-        const sourceTileGrid = this.getTileGridForProjection(sourceProjection);
-        const targetTileGrid = this.getTileGridForProjection(projection);
-        const tileCoord = [z, x, y];
-        const wrappedTileCoord = this.getTileCoordForTileUrlFunction(
-          tileCoord,
-          projection
-        );
-        const newTile = new ReprojDataTile(
-          sourceProjection,
-          sourceTileGrid,
-          projection,
-          targetTileGrid,
-          tileCoord,
-          wrappedTileCoord,
-          reprojTilePixelRatio,
-          this.getGutterForProjection(sourceProjection),
-          function (z, x, y, pixelRatio) {
-            return this.getTile(z, x, y, pixelRatio, sourceProjection);
-          }.bind(this),
-          this.getInterpolate()
-        );
-        newTile.key = key;
-        return newTile;
-      }
+      return this.getReprojTile_(z, x, y, projection, sourceProjection);
     }
 
     const size = this.getTileSize(z);
@@ -316,14 +326,14 @@ class DataTileSource extends TileSource {
     const thisProj = this.getProjection();
     if (this.tileGrid && (!thisProj || equivalent(thisProj, projection))) {
       return this.tileGrid;
-    } else {
-      const projKey = getUid(projection);
-      if (!(projKey in this.tileGridForProjection_)) {
-        this.tileGridForProjection_[projKey] =
-          getTileGridForProjection(projection);
-      }
-      return this.tileGridForProjection_[projKey];
     }
+
+    const projKey = getUid(projection);
+    if (!(projKey in this.tileGridForProjection_)) {
+      this.tileGridForProjection_[projKey] =
+        getTileGridForProjection(projection);
+    }
+    return this.tileGridForProjection_[projKey];
   }
 
   /**
@@ -356,13 +366,13 @@ class DataTileSource extends TileSource {
     const thisProj = this.getProjection();
     if (!thisProj || equivalent(thisProj, projection)) {
       return this.tileCache;
-    } else {
-      const projKey = getUid(projection);
-      if (!(projKey in this.tileCacheForProjection_)) {
-        this.tileCacheForProjection_[projKey] = new TileCache(0.1); // don't cache
-      }
-      return this.tileCacheForProjection_[projKey];
     }
+
+    const projKey = getUid(projection);
+    if (!(projKey in this.tileCacheForProjection_)) {
+      this.tileCacheForProjection_[projKey] = new TileCache(0.1); // don't cache
+    }
+    return this.tileCacheForProjection_[projKey];
   }
 
   /**
