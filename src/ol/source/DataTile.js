@@ -8,8 +8,6 @@ import TileCache from '../TileCache.js';
 import TileEventType from './TileEventType.js';
 import TileSource, {TileSourceEvent} from './Tile.js';
 import TileState from '../TileState.js';
-import {canvasPool} from '../reproj.js';
-import {createCanvasContext2D, releaseCanvas} from '../dom.js';
 import {
   createXYZ,
   extentFromProjection,
@@ -392,32 +390,3 @@ class DataTileSource extends TileSource {
 }
 
 export default DataTileSource;
-
-/**
- * Determines the browser's ability to accurately reproject data. Some browsers
- * (mostly Gecko-based) may interpolate byte values and corrupt Float32 values,
- * especially when reprojecting between non-parallel projections, in which case
- * an alternative output may be preferable.
- * @return {boolean} True if the browser can accurately reproject data.
- * @api
- */
-export function getReprojectCapability() {
-  const ctx1 = createCanvasContext2D(2, 2, canvasPool);
-  const imageData = ctx1.getImageData(0, 0, 2, 2);
-  imageData.data[0] = 255;
-  imageData.data[3] = 255;
-  imageData.data[7] = 255;
-  imageData.data[11] = 255;
-  imageData.data[12] = 255;
-  imageData.data[15] = 255;
-  ctx1.putImageData(imageData, 0, 0);
-  const ctx2 = createCanvasContext2D(1, 1, canvasPool);
-  ctx2.imageSmoothingEnabled = false;
-  ctx2.drawImage(ctx1.canvas, 0, 0, 2, 2, 0, 0, 1, 1);
-  const data = ctx2.getImageData(0, 0, 1, 1).data;
-  releaseCanvas(ctx1);
-  canvasPool.push(ctx1.canvas);
-  releaseCanvas(ctx2);
-  canvasPool.push(ctx2.canvas);
-  return data[0] === 0 || data[0] === 255;
-}

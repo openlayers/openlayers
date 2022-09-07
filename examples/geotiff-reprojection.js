@@ -2,13 +2,6 @@ import GeoTIFF from '../src/ol/source/GeoTIFF.js';
 import Map from '../src/ol/Map.js';
 import TileLayer from '../src/ol/layer/WebGLTile.js';
 import View from '../src/ol/View.js';
-import {getReprojectCapability} from '../src/ol/source/DataTile.js';
-
-if (!getReprojectCapability()) {
-  // display browser accuracy warning
-  const info = document.getElementById('accuracy');
-  info.style.display = '';
-}
 
 const channels = ['red', 'green', 'blue'];
 for (const channel of channels) {
