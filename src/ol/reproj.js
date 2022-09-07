@@ -11,7 +11,7 @@ import {
   getTopLeft,
   getWidth,
 } from './extent.js';
-import {createCanvasContext2D} from './dom.js';
+import {createCanvasContext2D, releaseCanvas} from './dom.js';
 import {getPointResolution, transform} from './proj.js';
 import {solveLinearSystem} from './math.js';
 
@@ -72,7 +72,7 @@ function verifyBrokenDiagonalRendering(data, offset) {
  */
 function isBrokenDiagonalRendering() {
   if (brokenDiagonalRendering_ === undefined) {
-    const ctx = document.createElement('canvas').getContext('2d');
+    const ctx = createCanvasContext2D(6, 6, canvasPool);
     ctx.globalCompositeOperation = 'lighter';
     ctx.fillStyle = 'rgba(210, 0, 0, 0.75)';
     drawTestTriangle(ctx, 4, 5, 4, 0);
@@ -82,6 +82,8 @@ function isBrokenDiagonalRendering() {
       verifyBrokenDiagonalRendering(data, 0) ||
       verifyBrokenDiagonalRendering(data, 4) ||
       verifyBrokenDiagonalRendering(data, 8);
+    releaseCanvas(ctx);
+    canvasPool.push(ctx.canvas);
   }
 
   return brokenDiagonalRendering_;
@@ -249,7 +251,8 @@ export function render(
   const canvasHeightInUnits = getHeight(sourceDataExtent);
   const stitchContext = createCanvasContext2D(
     Math.round((pixelRatio * canvasWidthInUnits) / sourceResolution),
-    Math.round((pixelRatio * canvasHeightInUnits) / sourceResolution)
+    Math.round((pixelRatio * canvasHeightInUnits) / sourceResolution),
+    canvasPool
   );
 
   if (!interpolate) {
@@ -404,6 +407,9 @@ export function render(
     context.drawImage(stitchContext.canvas, 0, 0);
     context.restore();
   });
+
+  releaseCanvas(stitchContext);
+  canvasPool.push(stitchContext.canvas);
 
   if (renderEdges) {
     context.save();
