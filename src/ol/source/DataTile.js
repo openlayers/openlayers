@@ -126,16 +126,16 @@ class DataTileSource extends TileSource {
     this.bandCount = options.bandCount === undefined ? 4 : options.bandCount; // assume RGBA if undefined
 
     /**
-     * @protected
+     * @private
      * @type {!Object<string, import("../tilegrid/TileGrid.js").default>}
      */
-    this.tileGridForProjection = {};
+    this.tileGridForProjection_ = {};
 
     /**
-     * @protected
+     * @private
      * @type {!Object<string, import("../TileCache.js").default>}
      */
-    this.tileCacheForProjection = {};
+    this.tileCacheForProjection_ = {};
   }
 
   /**
@@ -318,11 +318,11 @@ class DataTileSource extends TileSource {
       return this.tileGrid;
     } else {
       const projKey = getUid(projection);
-      if (!(projKey in this.tileGridForProjection)) {
-        this.tileGridForProjection[projKey] =
+      if (!(projKey in this.tileGridForProjection_)) {
+        this.tileGridForProjection_[projKey] =
           getTileGridForProjection(projection);
       }
-      return this.tileGridForProjection[projKey];
+      return this.tileGridForProjection_[projKey];
     }
   }
 
@@ -342,8 +342,8 @@ class DataTileSource extends TileSource {
     const proj = getProjection(projection);
     if (proj) {
       const projKey = getUid(proj);
-      if (!(projKey in this.tileGridForProjection)) {
-        this.tileGridForProjection[projKey] = tilegrid;
+      if (!(projKey in this.tileGridForProjection_)) {
+        this.tileGridForProjection_[projKey] = tilegrid;
       }
     }
   }
@@ -358,10 +358,10 @@ class DataTileSource extends TileSource {
       return this.tileCache;
     } else {
       const projKey = getUid(projection);
-      if (!(projKey in this.tileCacheForProjection)) {
-        this.tileCacheForProjection[projKey] = new TileCache(0.1); // don't cache
+      if (!(projKey in this.tileCacheForProjection_)) {
+        this.tileCacheForProjection_[projKey] = new TileCache(0.1); // don't cache
       }
-      return this.tileCacheForProjection[projKey];
+      return this.tileCacheForProjection_[projKey];
     }
   }
 
@@ -375,16 +375,16 @@ class DataTileSource extends TileSource {
     this.tileCache.expireCache(
       this.tileCache == usedTileCache ? usedTiles : {}
     );
-    for (const id in this.tileCacheForProjection) {
-      const tileCache = this.tileCacheForProjection[id];
+    for (const id in this.tileCacheForProjection_) {
+      const tileCache = this.tileCacheForProjection_[id];
       tileCache.expireCache(tileCache == usedTileCache ? usedTiles : {});
     }
   }
 
   clear() {
     super.clear();
-    for (const id in this.tileCacheForProjection) {
-      this.tileCacheForProjection[id].clear();
+    for (const id in this.tileCacheForProjection_) {
+      this.tileCacheForProjection_[id].clear();
     }
   }
 }
