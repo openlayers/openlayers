@@ -245,10 +245,9 @@ class WMTS extends TileImage {
    * @return {string} The key for the current dimensions.
    */
   getKeyForDimensions_() {
-    let i = 0;
-    const res = [];
+    const res = this.urls ? this.urls.slice(0) : [];
     for (const key in this.dimensions_) {
-      res[i++] = key + '-' + this.dimensions_[key];
+      res.push(key + '-' + this.dimensions_[key]);
     }
     return res.join('/');
   }
