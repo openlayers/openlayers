@@ -603,9 +603,8 @@ class VectorSource extends Source {
       const geometry = feature.getGeometry();
       if (geometry.intersectsCoordinate(coordinate)) {
         return callback(feature);
-      } else {
-        return undefined;
       }
+      return undefined;
     });
   }
 
@@ -745,9 +744,8 @@ class VectorSource extends Source {
       );
     } else if (this.featuresCollection_) {
       return this.featuresCollection_.getArray().slice(0);
-    } else {
-      return [];
     }
+    return [];
   }
 
   /**
@@ -933,9 +931,8 @@ class VectorSource extends Source {
     const id = feature.getId();
     if (id !== undefined) {
       return id in this.idIndex_;
-    } else {
-      return getUid(feature) in this.uidIndex_;
     }
+    return getUid(feature) in this.uidIndex_;
   }
 
   /**

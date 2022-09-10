@@ -72,7 +72,7 @@
     "copy-webpack-plugin": "^11.0.0",
     "es-main": "^1.0.2",
     "eslint": "^8.0.1",
-    "eslint-config-openlayers": "^16.2.3",
+    "eslint-config-openlayers": "^17.0.0",
     "expect.js": "0.3.1",
     "express": "^4.17.1",
     "front-matter": "^4.0.0",

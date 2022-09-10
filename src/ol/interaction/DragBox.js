@@ -260,9 +260,8 @@ class DragBox extends PointerInteraction {
         )
       );
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
   /**

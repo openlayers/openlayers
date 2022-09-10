@@ -74,9 +74,8 @@ function createMinion(operation) {
   function newWorkerImageData(data, width, height) {
     if (workerHasImageData) {
       return new ImageData(data, width, height);
-    } else {
-      return {data: data, width: width, height: height};
     }
+    return {data: data, width: width, height: height};
   }
 
   return function (data) {

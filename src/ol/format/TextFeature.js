@@ -199,9 +199,8 @@ class TextFeature extends FeatureFormat {
 function getText(source) {
   if (typeof source === 'string') {
     return source;
-  } else {
-    return '';
   }
+  return '';
 }
 
 export default TextFeature;

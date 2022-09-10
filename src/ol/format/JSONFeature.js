@@ -202,9 +202,8 @@ function getObject(source) {
     return object ? /** @type {Object} */ (object) : null;
   } else if (source !== null) {
     return source;
-  } else {
-    return null;
   }
+  return null;
 }
 
 export default JSONFeature;

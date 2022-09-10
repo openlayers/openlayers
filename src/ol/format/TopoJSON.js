@@ -147,9 +147,8 @@ class TopoJSON extends JSONFeature {
         }
       }
       return features;
-    } else {
-      return [];
     }
+    return [];
   }
 
   /**

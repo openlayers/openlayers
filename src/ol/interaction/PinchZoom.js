@@ -110,9 +110,8 @@ class PinchZoom extends PointerInteraction {
       const direction = this.lastScaleDelta_ > 1 ? 1 : -1;
       view.endInteraction(this.duration_, direction);
       return false;
-    } else {
-      return true;
     }
+    return true;
   }
 
   /**
@@ -130,9 +129,8 @@ class PinchZoom extends PointerInteraction {
         map.getView().beginInteraction();
       }
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 }
 

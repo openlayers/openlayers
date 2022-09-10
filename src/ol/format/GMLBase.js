@@ -332,18 +332,17 @@ class GMLBase extends XMLFeature {
     }
     if (!asFeature) {
       return values;
-    } else {
-      const feature = new Feature(values);
-      if (geometryName) {
-        feature.setGeometryName(geometryName);
-      }
-      const fid =
-        node.getAttribute('fid') || getAttributeNS(node, this.namespace, 'id');
-      if (fid) {
-        feature.setId(fid);
-      }
-      return feature;
     }
+    const feature = new Feature(values);
+    if (geometryName) {
+      feature.setGeometryName(geometryName);
+    }
+    const fid =
+      node.getAttribute('fid') || getAttributeNS(node, this.namespace, 'id');
+    if (fid) {
+      feature.setId(fid);
+    }
+    return feature;
   }
 
   /**
@@ -383,9 +382,8 @@ class GMLBase extends XMLFeature {
     );
     if (coordinates) {
       return new MultiPoint(coordinates);
-    } else {
-      return undefined;
     }
+    return undefined;
   }
 
   /**
@@ -460,9 +458,8 @@ class GMLBase extends XMLFeature {
     if (flatCoordinates) {
       const lineString = new LineString(flatCoordinates, 'XYZ');
       return lineString;
-    } else {
-      return undefined;
     }
+    return undefined;
   }
 
   /**
@@ -480,9 +477,8 @@ class GMLBase extends XMLFeature {
     );
     if (ring) {
       return ring;
-    } else {
-      return undefined;
     }
+    return undefined;
   }
 
   /**
@@ -520,9 +516,8 @@ class GMLBase extends XMLFeature {
         ends.push(flatCoordinates.length);
       }
       return new Polygon(flatCoordinates, 'XYZ', ends);
-    } else {
-      return undefined;
     }
+    return undefined;
   }
 
   /**

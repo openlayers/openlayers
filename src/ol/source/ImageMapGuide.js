@@ -273,9 +273,8 @@ function getScale(extent, size, metersPerUnit, dpi) {
   const mpp = 0.0254 / dpi;
   if (devH * mcsW > devW * mcsH) {
     return (mcsW * metersPerUnit) / (devW * mpp); // width limited
-  } else {
-    return (mcsH * metersPerUnit) / (devH * mpp); // height limited
   }
+  return (mcsH * metersPerUnit) / (devH * mpp); // height limited
 }
 
 export default ImageMapGuide;

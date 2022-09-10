@@ -510,9 +510,8 @@ describe('ol.control.ScaleLine', function () {
         return 'mm';
       } else if (zoom > 10) {
         return 'm';
-      } else {
-        return 'km';
       }
+      return 'km';
     };
 
     const getImperialUnit = function (zoom) {
@@ -520,9 +519,8 @@ describe('ol.control.ScaleLine', function () {
         return 'in';
       } else if (zoom >= 10) {
         return 'ft';
-      } else {
-        return 'mi';
       }
+      return 'mi';
     };
 
     beforeEach(function () {

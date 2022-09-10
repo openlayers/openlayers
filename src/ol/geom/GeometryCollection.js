@@ -195,10 +195,9 @@ class GeometryCollection extends Geometry {
       const simplifiedGeometryCollection = new GeometryCollection(null);
       simplifiedGeometryCollection.setGeometriesArray(simplifiedGeometries);
       return simplifiedGeometryCollection;
-    } else {
-      this.simplifiedGeometryMaxMinSquaredTolerance = squaredTolerance;
-      return this;
     }
+    this.simplifiedGeometryMaxMinSquaredTolerance = squaredTolerance;
+    return this;
   }
 
   /**

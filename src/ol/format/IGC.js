@@ -166,9 +166,8 @@ class IGC extends TextFeature {
     const feature = this.readFeatureFromText(text, options);
     if (feature) {
       return [feature];
-    } else {
-      return [];
     }
+    return [];
   }
 }
 

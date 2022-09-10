@@ -95,9 +95,8 @@ describe('ol/structs/PriorityQueue.js', function () {
       pq.priorityFunction_ = function (element) {
         if (i++ % 2 === 0) {
           return Math.abs(element - target);
-        } else {
-          return DROP;
         }
+        return DROP;
       };
       pq.reprioritize();
       expect(pq.getCount()).to.be(16);

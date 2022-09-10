@@ -25,9 +25,8 @@ class XML {
       return this.readFromDocument(doc);
     } else if (isDocument(source)) {
       return this.readFromDocument(/** @type {Document} */ (source));
-    } else {
-      return this.readFromNode(/** @type {Element} */ (source));
     }
+    return this.readFromNode(/** @type {Element} */ (source));
   }
 
   /**

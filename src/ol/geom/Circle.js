@@ -72,9 +72,8 @@ class Circle extends SimpleGeometry {
       }
       closestPoint.length = this.stride;
       return squaredDistance;
-    } else {
-      return minSquaredDistance;
     }
+    return minSquaredDistance;
   }
 
   /**

@@ -540,53 +540,52 @@ class Parser {
         }
         const geometries = this.parseGeometryCollectionText_();
         return new GeometryCollection(geometries);
-      } else {
-        const ctor = GeometryConstructor[geomType];
-        if (!ctor) {
-          throw new Error('Invalid geometry type: ' + geomType);
-        }
-
-        let coordinates;
-
-        if (isEmpty) {
-          if (geomType == 'POINT') {
-            coordinates = [NaN, NaN];
-          } else {
-            coordinates = [];
-          }
-        } else {
-          switch (geomType) {
-            case 'POINT': {
-              coordinates = this.parsePointText_();
-              break;
-            }
-            case 'LINESTRING': {
-              coordinates = this.parseLineStringText_();
-              break;
-            }
-            case 'POLYGON': {
-              coordinates = this.parsePolygonText_();
-              break;
-            }
-            case 'MULTIPOINT': {
-              coordinates = this.parseMultiPointText_();
-              break;
-            }
-            case 'MULTILINESTRING': {
-              coordinates = this.parseMultiLineStringText_();
-              break;
-            }
-            case 'MULTIPOLYGON': {
-              coordinates = this.parseMultiPolygonText_();
-              break;
-            }
-            default:
-              break;
-          }
-        }
-
-        return new ctor(coordinates, this.layout_);
       }
+      const ctor = GeometryConstructor[geomType];
+      if (!ctor) {
+        throw new Error('Invalid geometry type: ' + geomType);
+      }
+
+      let coordinates;
+
+      if (isEmpty) {
+        if (geomType == 'POINT') {
+          coordinates = [NaN, NaN];
+        } else {
+          coordinates = [];
+        }
+      } else {
+        switch (geomType) {
+          case 'POINT': {
+            coordinates = this.parsePointText_();
+            break;
+          }
+          case 'LINESTRING': {
+            coordinates = this.parseLineStringText_();
+            break;
+          }
+          case 'POLYGON': {
+            coordinates = this.parsePolygonText_();
+            break;
+          }
+          case 'MULTIPOINT': {
+            coordinates = this.parseMultiPointText_();
+            break;
+          }
+          case 'MULTILINESTRING': {
+            coordinates = this.parseMultiLineStringText_();
+            break;
+          }
+          case 'MULTIPOLYGON': {
+            coordinates = this.parseMultiPolygonText_();
+            break;
+          }
+          default:
+            break;
+        }
+      }
+
+      return new ctor(coordinates, this.layout_);
     }
     throw new Error(this.formatErrorMessage_());
   }

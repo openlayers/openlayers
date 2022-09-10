@@ -917,9 +917,8 @@ function getDataView(source) {
     return new DataView(source.buffer, source.byteOffset, source.byteLength);
   } else if (source instanceof ArrayBuffer) {
     return new DataView(source);
-  } else {
-    return null;
   }
+  return null;
 }
 
 export default WKB;

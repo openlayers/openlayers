@@ -133,9 +133,8 @@ class PinchRotate extends PointerInteraction {
       const view = map.getView();
       view.endInteraction(this.duration_);
       return false;
-    } else {
-      return true;
     }
+    return true;
   }
 
   /**
@@ -154,9 +153,8 @@ class PinchRotate extends PointerInteraction {
         map.getView().beginInteraction();
       }
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 }
 

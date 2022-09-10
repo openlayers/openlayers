@@ -64,15 +64,13 @@ export class CustomTile extends ImageTile {
       if (image.width == tileSize[0] && image.height == tileSize[1]) {
         this.zoomifyImage_ = image;
         return image;
-      } else {
-        const context = createCanvasContext2D(tileSize[0], tileSize[1]);
-        context.drawImage(image, 0, 0);
-        this.zoomifyImage_ = context.canvas;
-        return context.canvas;
       }
-    } else {
-      return image;
+      const context = createCanvasContext2D(tileSize[0], tileSize[1]);
+      context.drawImage(image, 0, 0);
+      this.zoomifyImage_ = context.canvas;
+      return context.canvas;
     }
+    return image;
   }
 }
 
@@ -215,25 +213,24 @@ class Zoomify extends TileImage {
         function (tileCoord, pixelRatio, projection) {
           if (!tileCoord) {
             return undefined;
-          } else {
-            const tileCoordZ = tileCoord[0];
-            const tileCoordX = tileCoord[1];
-            const tileCoordY = tileCoord[2];
-            const tileIndex =
-              tileCoordX + tileCoordY * tierSizeInTiles[tileCoordZ][0];
-            const tileGroup =
-              ((tileIndex + tileCountUpToTier[tileCoordZ]) / tileWidth) | 0;
-            const localContext = {
-              'z': tileCoordZ,
-              'x': tileCoordX,
-              'y': tileCoordY,
-              'tileIndex': tileIndex,
-              'TileGroup': 'TileGroup' + tileGroup,
-            };
-            return template.replace(/\{(\w+?)\}/g, function (m, p) {
-              return localContext[p];
-            });
           }
+          const tileCoordZ = tileCoord[0];
+          const tileCoordX = tileCoord[1];
+          const tileCoordY = tileCoord[2];
+          const tileIndex =
+            tileCoordX + tileCoordY * tierSizeInTiles[tileCoordZ][0];
+          const tileGroup =
+            ((tileIndex + tileCountUpToTier[tileCoordZ]) / tileWidth) | 0;
+          const localContext = {
+            'z': tileCoordZ,
+            'x': tileCoordX,
+            'y': tileCoordY,
+            'tileIndex': tileIndex,
+            'TileGroup': 'TileGroup' + tileGroup,
+          };
+          return template.replace(/\{(\w+?)\}/g, function (m, p) {
+            return localContext[p];
+          });
         }
       );
     }

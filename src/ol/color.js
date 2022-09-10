@@ -38,9 +38,8 @@ const NAMED_COLOR_RE_ = /^([a-z]*)$|^hsla?\(.*\)$/i;
 export function asString(color) {
   if (typeof color === 'string') {
     return color;
-  } else {
-    return toString(color);
   }
+  return toString(color);
 }
 
 /**
@@ -56,9 +55,8 @@ function fromNamed(color) {
     const rgb = getComputedStyle(el).color;
     document.body.removeChild(el);
     return rgb;
-  } else {
-    return '';
   }
+  return '';
 }
 
 /**
@@ -124,9 +122,8 @@ export const fromString = (function () {
 export function asArray(color) {
   if (Array.isArray(color)) {
     return color;
-  } else {
-    return fromString(color);
   }
+  return fromString(color);
 }
 
 /**

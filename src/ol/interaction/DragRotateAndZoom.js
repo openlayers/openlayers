@@ -128,9 +128,8 @@ class DragRotateAndZoom extends PointerInteraction {
       this.lastAngle_ = undefined;
       this.lastMagnitude_ = undefined;
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 }
 

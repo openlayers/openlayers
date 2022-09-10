@@ -826,9 +826,8 @@ class Map extends BaseObject {
       return typeof target === 'string'
         ? document.getElementById(target)
         : target;
-    } else {
-      return null;
     }
+    return null;
   }
 
   /**
@@ -855,12 +854,8 @@ class Map extends BaseObject {
     const frameState = this.frameState_;
     if (!frameState) {
       return null;
-    } else {
-      return applyTransform(
-        frameState.pixelToCoordinateTransform,
-        pixel.slice()
-      );
     }
+    return applyTransform(frameState.pixelToCoordinateTransform, pixel.slice());
   }
 
   /**
@@ -992,12 +987,11 @@ class Map extends BaseObject {
     const frameState = this.frameState_;
     if (!frameState) {
       return null;
-    } else {
-      return applyTransform(
-        frameState.coordinateToPixelTransform,
-        coordinate.slice(0, 2)
-      );
     }
+    return applyTransform(
+      frameState.coordinateToPixelTransform,
+      coordinate.slice(0, 2)
+    );
   }
 
   /**

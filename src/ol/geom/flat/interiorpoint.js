@@ -72,9 +72,8 @@ export function getInteriorPointOfArray(
   if (dest) {
     dest.push(pointX, y, maxSegmentLength);
     return dest;
-  } else {
-    return [pointX, y, maxSegmentLength];
   }
+  return [pointX, y, maxSegmentLength];
 }
 
 /**

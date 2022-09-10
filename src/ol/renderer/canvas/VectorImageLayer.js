@@ -215,15 +215,14 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
         callback,
         matches
       );
-    } else {
-      return super.forEachFeatureAtCoordinate(
-        coordinate,
-        frameState,
-        hitTolerance,
-        callback,
-        matches
-      );
     }
+    return super.forEachFeatureAtCoordinate(
+      coordinate,
+      frameState,
+      hitTolerance,
+      callback,
+      matches
+    );
   }
 }
 
