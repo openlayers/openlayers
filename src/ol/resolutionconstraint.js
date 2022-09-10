@@ -115,9 +115,8 @@ export function createSnapToResolutions(
           return resolutions[z + 1];
         }
         return resolutions[z];
-      } else {
-        return undefined;
       }
+      return undefined;
     }
   );
 }
@@ -185,9 +184,8 @@ export function createSnapToPower(
         const zoomLevel = Math.max(minZoomLevel, cappedZoomLevel);
         const newResolution = maxResolution / Math.pow(power, zoomLevel);
         return clamp(newResolution, minResolution, cappedMaxRes);
-      } else {
-        return undefined;
       }
+      return undefined;
     }
   );
 }
@@ -236,9 +234,8 @@ export function createMinMaxResolution(
           cappedMaxRes,
           minResolution
         );
-      } else {
-        return undefined;
       }
+      return undefined;
     }
   );
 }

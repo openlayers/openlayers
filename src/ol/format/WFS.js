@@ -375,11 +375,10 @@ class WFS extends XMLFeature {
       return this.readTransactionResponseFromDocument(
         /** @type {Document} */ (source)
       );
-    } else {
-      return this.readTransactionResponseFromNode(
-        /** @type {Element} */ (source)
-      );
     }
+    return this.readTransactionResponseFromNode(
+      /** @type {Element} */ (source)
+    );
   }
 
   /**
@@ -400,11 +399,10 @@ class WFS extends XMLFeature {
       return this.readFeatureCollectionMetadataFromDocument(
         /** @type {Document} */ (source)
       );
-    } else {
-      return this.readFeatureCollectionMetadataFromNode(
-        /** @type {Element} */ (source)
-      );
     }
+    return this.readFeatureCollectionMetadataFromNode(
+      /** @type {Element} */ (source)
+    );
   }
 
   /**
@@ -821,9 +819,8 @@ function getTypeName(featurePrefix, featureType) {
   // The featureType already contains the prefix.
   if (featureType.startsWith(prefix)) {
     return featureType;
-  } else {
-    return prefix + featureType;
   }
+  return prefix + featureType;
 }
 
 /**

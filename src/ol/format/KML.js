@@ -509,9 +509,8 @@ class KML extends XMLFeature {
     const features = pushParseAndPop([], parsersNS, node, objectStack, this);
     if (features) {
       return features;
-    } else {
-      return undefined;
     }
+    return undefined;
   }
 
   /**
@@ -636,9 +635,8 @@ class KML extends XMLFeature {
     ]);
     if (feature) {
       return feature;
-    } else {
-      return null;
     }
+    return null;
   }
 
   /**
@@ -659,18 +657,16 @@ class KML extends XMLFeature {
       ]);
       if (features) {
         return features;
-      } else {
-        return [];
       }
+      return [];
     } else if (localName == 'Placemark') {
       const feature = this.readPlacemark_(node, [
         this.getReadOptions(node, options),
       ]);
       if (feature) {
         return [feature];
-      } else {
-        return [];
       }
+      return [];
     } else if (localName == 'kml') {
       features = [];
       for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
@@ -680,9 +676,8 @@ class KML extends XMLFeature {
         }
       }
       return features;
-    } else {
-      return [];
     }
+    return [];
   }
 
   /**
@@ -700,9 +695,8 @@ class KML extends XMLFeature {
       return this.readNameFromDocument(doc);
     } else if (isDocument(source)) {
       return this.readNameFromDocument(/** @type {Document} */ (source));
-    } else {
-      return this.readNameFromNode(/** @type {Element} */ (source));
     }
+    return this.readNameFromNode(/** @type {Element} */ (source));
   }
 
   /**
@@ -1070,9 +1064,8 @@ function findStyle(styleValue, defaultStyle, sharedStyles) {
     return styleValue;
   } else if (typeof styleValue === 'string') {
     return findStyle(sharedStyles[styleValue], defaultStyle, sharedStyles);
-  } else {
-    return defaultStyle;
   }
+  return defaultStyle;
 }
 
 /**
@@ -1092,9 +1085,8 @@ function readColor(node) {
       parseInt(hexColor.substr(2, 2), 16),
       parseInt(hexColor.substr(0, 2), 16) / 255,
     ];
-  } else {
-    return undefined;
   }
+  return undefined;
 }
 
 /**
@@ -1136,9 +1128,8 @@ function readURI(node) {
   if (baseURI) {
     const url = new URL(s, baseURI);
     return url.href;
-  } else {
-    return s;
   }
+  return s;
 }
 
 /**
@@ -1158,9 +1149,8 @@ function readStyleURL(node) {
   if (baseURI) {
     const url = new URL(s, baseURI);
     return url.href;
-  } else {
-    return s;
   }
+  return s;
 }
 
 /**
@@ -1621,9 +1611,8 @@ function readIcon(node, objectStack) {
   const iconObject = pushParseAndPop({}, ICON_PARSERS, node, objectStack);
   if (iconObject) {
     return iconObject;
-  } else {
-    return null;
   }
+  return null;
 }
 
 /**
@@ -1677,9 +1666,8 @@ function readLineString(node, objectStack) {
     const lineString = new LineString(flatCoordinates, 'XYZ');
     lineString.setProperties(properties, true);
     return lineString;
-  } else {
-    return undefined;
   }
+  return undefined;
 }
 
 /**
@@ -1701,9 +1689,8 @@ function readLinearRing(node, objectStack) {
     ]);
     polygon.setProperties(properties, true);
     return polygon;
-  } else {
-    return undefined;
   }
+  return undefined;
 }
 
 /**
@@ -1795,9 +1782,8 @@ function readPoint(node, objectStack) {
     const point = new Point(flatCoordinates, 'XYZ');
     point.setProperties(properties, true);
     return point;
-  } else {
-    return undefined;
   }
+  return undefined;
 }
 
 /**
@@ -1838,9 +1824,8 @@ function readPolygon(node, objectStack) {
     const polygon = new Polygon(flatCoordinates, 'XYZ', ends);
     polygon.setProperties(properties, true);
     return polygon;
-  } else {
-    return undefined;
   }
+  return undefined;
 }
 
 /**

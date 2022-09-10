@@ -172,9 +172,8 @@ export function assignClosestPoint(
       }
       closestPoint.length = stride;
       return squaredDistance;
-    } else {
-      return minSquaredDistance;
     }
+    return minSquaredDistance;
   }
   tmpPoint = tmpPoint ? tmpPoint : [NaN, NaN];
   let index = offset + stride;

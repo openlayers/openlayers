@@ -314,9 +314,8 @@ export function createProjection(projection, defaultCode) {
     return get(defaultCode);
   } else if (typeof projection === 'string') {
     return get(projection);
-  } else {
-    return /** @type {Projection} */ (projection);
   }
+  return /** @type {Projection} */ (projection);
 }
 
 /**
@@ -444,10 +443,9 @@ export function equivalent(projection1, projection2) {
   const equalUnits = projection1.getUnits() === projection2.getUnits();
   if (projection1.getCode() === projection2.getCode()) {
     return equalUnits;
-  } else {
-    const transformFunc = getTransformFromProjections(projection1, projection2);
-    return transformFunc === cloneTransform && equalUnits;
   }
+  const transformFunc = getTransformFromProjections(projection1, projection2);
+  return transformFunc === cloneTransform && equalUnits;
 }
 
 /**

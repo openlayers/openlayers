@@ -316,12 +316,11 @@ class Cluster extends VectorSource {
     ]);
     if (this.createCustomCluster_) {
       return this.createCustomCluster_(geometry, features);
-    } else {
-      return new Feature({
-        geometry,
-        features,
-      });
     }
+    return new Feature({
+      geometry,
+      features,
+    });
   }
 }
 

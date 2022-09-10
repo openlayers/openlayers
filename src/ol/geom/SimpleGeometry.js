@@ -121,16 +121,15 @@ class SimpleGeometry extends Geometry {
     const simplifiedFlatCoordinates = simplifiedGeometry.getFlatCoordinates();
     if (simplifiedFlatCoordinates.length < this.flatCoordinates.length) {
       return simplifiedGeometry;
-    } else {
-      // Simplification did not actually remove any coordinates.  We now know
-      // that any calls to getSimplifiedGeometry with a squaredTolerance less
-      // than or equal to the current squaredTolerance will also not have any
-      // effect.  This allows us to short circuit simplification (saving CPU
-      // cycles) and prevents the cache of simplified geometries from filling
-      // up with useless identical copies of this geometry (saving memory).
-      this.simplifiedGeometryMaxMinSquaredTolerance = squaredTolerance;
-      return this;
     }
+    // Simplification did not actually remove any coordinates.  We now know
+    // that any calls to getSimplifiedGeometry with a squaredTolerance less
+    // than or equal to the current squaredTolerance will also not have any
+    // effect.  This allows us to short circuit simplification (saving CPU
+    // cycles) and prevents the cache of simplified geometries from filling
+    // up with useless identical copies of this geometry (saving memory).
+    this.simplifiedGeometryMaxMinSquaredTolerance = squaredTolerance;
+    return this;
   }
 
   /**
@@ -185,9 +184,8 @@ class SimpleGeometry extends Geometry {
           this.layout = 'XY';
           this.stride = 2;
           return;
-        } else {
-          coordinates = /** @type {Array} */ (coordinates[0]);
         }
+        coordinates = /** @type {Array} */ (coordinates[0]);
       }
       stride = coordinates.length;
       layout = getLayoutForStride(stride);
@@ -336,17 +334,16 @@ export function transformGeom2D(simpleGeometry, transform, dest) {
   const flatCoordinates = simpleGeometry.getFlatCoordinates();
   if (!flatCoordinates) {
     return null;
-  } else {
-    const stride = simpleGeometry.getStride();
-    return transform2D(
-      flatCoordinates,
-      0,
-      flatCoordinates.length,
-      stride,
-      transform,
-      dest
-    );
   }
+  const stride = simpleGeometry.getStride();
+  return transform2D(
+    flatCoordinates,
+    0,
+    flatCoordinates.length,
+    stride,
+    transform,
+    dest
+  );
 }
 
 export default SimpleGeometry;

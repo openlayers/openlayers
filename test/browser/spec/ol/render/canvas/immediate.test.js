@@ -236,9 +236,8 @@ describe('ol.render.canvas.Immediate', function () {
                 .map(function (arg) {
                   if (typeof arg === 'number') {
                     return arg.toFixed(9);
-                  } else {
-                    return arg;
                   }
+                  return arg;
                 })
                 .join(', ') +
               ']'

@@ -44,9 +44,8 @@ export function wrapX(tileGrid, tileCoord, projection) {
     );
     center[0] += worldWidth * worldsAway;
     return tileGrid.getTileCoordForCoordAndZ(center, z);
-  } else {
-    return tileCoord;
   }
+  return tileCoord;
 }
 
 /**

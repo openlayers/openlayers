@@ -118,10 +118,9 @@ class Polyline extends TextFeature {
     const geometry = feature.getGeometry();
     if (geometry) {
       return this.writeGeometryText(geometry, options);
-    } else {
-      assert(false, 40); // Expected `feature` to have a geometry
-      return '';
     }
+    assert(false, 40); // Expected `feature` to have a geometry
+    return '';
   }
 
   /**

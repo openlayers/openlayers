@@ -146,9 +146,8 @@ export function createOrUpdate(minX, maxX, minY, maxY, tileRange) {
     tileRange.minY = minY;
     tileRange.maxY = maxY;
     return tileRange;
-  } else {
-    return new TileRange(minX, maxX, minY, maxY);
   }
+  return new TileRange(minX, maxX, minY, maxY);
 }
 
 export default TileRange;

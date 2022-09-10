@@ -61,13 +61,12 @@ export function scale(size, ratio, dest) {
 export function toSize(size, dest) {
   if (Array.isArray(size)) {
     return size;
-  } else {
-    if (dest === undefined) {
-      dest = [size, size];
-    } else {
-      dest[0] = size;
-      dest[1] = size;
-    }
-    return dest;
   }
+  if (dest === undefined) {
+    dest = [size, size];
+  } else {
+    dest[0] = size;
+    dest[1] = size;
+  }
+  return dest;
 }

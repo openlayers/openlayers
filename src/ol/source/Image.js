@@ -176,40 +176,39 @@ class ImageSource extends Source {
         projection = sourceProjection;
       }
       return this.getImageInternal(extent, resolution, pixelRatio, projection);
-    } else {
-      if (this.reprojectedImage_) {
-        if (
-          this.reprojectedRevision_ == this.getRevision() &&
-          equivalent(this.reprojectedImage_.getProjection(), projection) &&
-          this.reprojectedImage_.getResolution() == resolution &&
-          equals(this.reprojectedImage_.getExtent(), extent)
-        ) {
-          return this.reprojectedImage_;
-        }
-        this.reprojectedImage_.dispose();
-        this.reprojectedImage_ = null;
-      }
-
-      this.reprojectedImage_ = new ReprojImage(
-        sourceProjection,
-        projection,
-        extent,
-        resolution,
-        pixelRatio,
-        function (extent, resolution, pixelRatio) {
-          return this.getImageInternal(
-            extent,
-            resolution,
-            pixelRatio,
-            sourceProjection
-          );
-        }.bind(this),
-        this.getInterpolate()
-      );
-      this.reprojectedRevision_ = this.getRevision();
-
-      return this.reprojectedImage_;
     }
+    if (this.reprojectedImage_) {
+      if (
+        this.reprojectedRevision_ == this.getRevision() &&
+        equivalent(this.reprojectedImage_.getProjection(), projection) &&
+        this.reprojectedImage_.getResolution() == resolution &&
+        equals(this.reprojectedImage_.getExtent(), extent)
+      ) {
+        return this.reprojectedImage_;
+      }
+      this.reprojectedImage_.dispose();
+      this.reprojectedImage_ = null;
+    }
+
+    this.reprojectedImage_ = new ReprojImage(
+      sourceProjection,
+      projection,
+      extent,
+      resolution,
+      pixelRatio,
+      function (extent, resolution, pixelRatio) {
+        return this.getImageInternal(
+          extent,
+          resolution,
+          pixelRatio,
+          sourceProjection
+        );
+      }.bind(this),
+      this.getInterpolate()
+    );
+    this.reprojectedRevision_ = this.getRevision();
+
+    return this.reprojectedImage_;
   }
 
   /**

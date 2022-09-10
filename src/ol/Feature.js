@@ -315,21 +315,20 @@ class Feature extends BaseObject {
 export function createStyleFunction(obj) {
   if (typeof obj === 'function') {
     return obj;
-  } else {
-    /**
-     * @type {Array<import("./style/Style.js").default>}
-     */
-    let styles;
-    if (Array.isArray(obj)) {
-      styles = obj;
-    } else {
-      assert(typeof (/** @type {?} */ (obj).getZIndex) === 'function', 41); // Expected an `import("./style/Style.js").Style` or an array of `import("./style/Style.js").Style`
-      const style = /** @type {import("./style/Style.js").default} */ (obj);
-      styles = [style];
-    }
-    return function () {
-      return styles;
-    };
   }
+  /**
+   * @type {Array<import("./style/Style.js").default>}
+   */
+  let styles;
+  if (Array.isArray(obj)) {
+    styles = obj;
+  } else {
+    assert(typeof (/** @type {?} */ (obj).getZIndex) === 'function', 41); // Expected an `import("./style/Style.js").Style` or an array of `import("./style/Style.js").Style`
+    const style = /** @type {import("./style/Style.js").default} */ (obj);
+    styles = [style];
+  }
+  return function () {
+    return styles;
+  };
 }
 export default Feature;

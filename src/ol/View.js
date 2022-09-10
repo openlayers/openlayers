@@ -908,9 +908,8 @@ class View extends BaseObject {
         Math.abs(w * Math.cos(rotation)) + Math.abs(h * Math.sin(rotation)),
         Math.abs(w * Math.sin(rotation)) + Math.abs(h * Math.cos(rotation)),
       ];
-    } else {
-      return size;
     }
+    return size;
   }
 
   /**
@@ -974,9 +973,8 @@ class View extends BaseObject {
       hints[0] = this.hints_[0];
       hints[1] = this.hints_[1];
       return hints;
-    } else {
-      return this.hints_.slice();
     }
+    return this.hints_.slice();
   }
 
   /**
@@ -1308,11 +1306,10 @@ class View extends BaseObject {
         this.resolutions_[baseLevel] /
         Math.pow(zoomFactor, clamp(zoom - baseLevel, 0, 1))
       );
-    } else {
-      return (
-        this.maxResolution_ / Math.pow(this.zoomFactor_, zoom - this.minZoom_)
-      );
     }
+    return (
+      this.maxResolution_ / Math.pow(this.zoomFactor_, zoom - this.minZoom_)
+    );
   }
 
   /**
@@ -2083,12 +2080,10 @@ export function createRotationConstraint(options) {
       return rotationNone;
     } else if (typeof constrainRotation === 'number') {
       return createSnapToN(constrainRotation);
-    } else {
-      return rotationNone;
     }
-  } else {
-    return disable;
+    return rotationNone;
   }
+  return disable;
 }
 
 /**
