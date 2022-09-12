@@ -60,7 +60,7 @@
     "@openlayers/eslint-plugin": "^4.0.0",
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-commonjs": "^22.0.0",
-    "@rollup/plugin-node-resolve": "^13.0.0",
+    "@rollup/plugin-node-resolve": "^14.0.1",
     "@types/arcgis-rest-api": "^10.4.4",
     "@types/geojson": "^7946.0.7",
     "@types/offscreencanvas": "^2019.6.4",
