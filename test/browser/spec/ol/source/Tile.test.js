@@ -41,11 +41,10 @@ MockTile.prototype.getTile = function (z, x, y) {
   const key = getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(key)) {
     return /** @type {!ol.Tile} */ (this.tileCache.get(key));
-  } else {
-    const tile = new Tile(key, 0); // IDLE
-    this.tileCache.set(key, tile);
-    return tile;
   }
+  const tile = new Tile(key, 0); // IDLE
+  this.tileCache.set(key, tile);
+  return tile;
 };
 
 describe('ol/source/Tile', function () {

@@ -310,9 +310,8 @@ class TileGrid {
   getOrigin(z) {
     if (this.origin_) {
       return this.origin_;
-    } else {
-      return this.origins_[z];
     }
+    return this.origins_[z];
   }
 
   /**
@@ -612,9 +611,8 @@ class TileGrid {
   getTileSize(z) {
     if (this.tileSize_) {
       return this.tileSize_;
-    } else {
-      return this.tileSizes_[z];
     }
+    return this.tileSizes_[z];
   }
 
   /**
@@ -626,9 +624,8 @@ class TileGrid {
       return this.extent_
         ? this.getTileRangeForExtentAndZ(this.extent_, z)
         : null;
-    } else {
-      return this.fullTileRanges_[z];
     }
+    return this.fullTileRanges_[z];
   }
 
   /**

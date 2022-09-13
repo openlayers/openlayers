@@ -174,10 +174,9 @@ function clusterStyle(feature) {
         }),
       }),
     ];
-  } else {
-    const originalFeature = feature.get('features')[0];
-    return clusterMemberStyle(originalFeature);
   }
+  const originalFeature = feature.get('features')[0];
+  return clusterMemberStyle(originalFeature);
 }
 
 const vectorSource = new VectorSource({

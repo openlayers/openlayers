@@ -53,7 +53,6 @@ export function linear(t) {
 export function upAndDown(t) {
   if (t < 0.5) {
     return inAndOut(2 * t);
-  } else {
-    return 1 - inAndOut(2 * (t - 0.5));
   }
+  return 1 - inAndOut(2 * (t - 0.5));
 }

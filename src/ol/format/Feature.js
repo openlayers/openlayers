@@ -294,7 +294,6 @@ export function transformExtentWithOptions(extent, options) {
     !equivalentProjection(featureProjection, dataProjection)
   ) {
     return transformExtent(extent, dataProjection, featureProjection);
-  } else {
-    return extent;
   }
+  return extent;
 }

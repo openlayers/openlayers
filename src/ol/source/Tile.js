@@ -270,9 +270,8 @@ class TileSource extends Source {
   getTileGridForProjection(projection) {
     if (!this.tileGrid) {
       return getTileGridForProjection(projection);
-    } else {
-      return this.tileGrid;
     }
+    return this.tileGrid;
   }
 
   /**
@@ -312,9 +311,8 @@ class TileSource extends Source {
     const tileSize = toSize(tileGrid.getTileSize(z), this.tmpSize);
     if (tilePixelRatio == 1) {
       return tileSize;
-    } else {
-      return scaleSize(tileSize, tilePixelRatio, this.tmpSize);
     }
+    return scaleSize(tileSize, tilePixelRatio, this.tmpSize);
   }
 
   /**

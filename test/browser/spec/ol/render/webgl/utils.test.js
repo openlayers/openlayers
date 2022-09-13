@@ -385,10 +385,10 @@ describe('webgl render utils', function () {
         expect(vertexArray).to.eql([
           0, 0, 10, 0, 15, 6, 10, 12, 0, 12, 0, 0, 3, 3, 5, 1, 7, 3, 5, 5, 3, 3,
         ]);
-        expect(indexArray).to.have.length(24);
+        expect(indexArray).to.have.length(27);
         expect(indexArray).to.eql([
-          4, 0, 9, 7, 10, 0, 1, 2, 3, 3, 4, 9, 7, 0, 1, 3, 9, 8, 8, 7, 1, 1, 3,
-          8,
+          1, 2, 3, 3, 4, 0, 3, 0, 10, 7, 10, 0, 3, 10, 9, 7, 0, 1, 3, 9, 8, 8,
+          7, 1, 1, 3, 8,
         ]);
       });
       it('correctly returns the new index', function () {
@@ -416,10 +416,10 @@ describe('webgl render utils', function () {
           0, 0, 1234, 10, 0, 1234, 15, 6, 1234, 10, 12, 1234, 0, 12, 1234, 0, 0,
           1234, 3, 3, 1234, 5, 1, 1234, 7, 3, 1234, 5, 5, 1234, 3, 3, 1234,
         ]);
-        expect(indexArray).to.have.length(24);
+        expect(indexArray).to.have.length(27);
         expect(indexArray).to.eql([
-          4, 0, 9, 7, 10, 0, 1, 2, 3, 3, 4, 9, 7, 0, 1, 3, 9, 8, 8, 7, 1, 1, 3,
-          8,
+          1, 2, 3, 3, 4, 0, 3, 0, 10, 7, 10, 0, 3, 10, 9, 7, 0, 1, 3, 9, 8, 8,
+          7, 1, 1, 3, 8,
         ]);
       });
       it('correctly returns the new index', function () {

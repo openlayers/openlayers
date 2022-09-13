@@ -37,6 +37,11 @@ async function main() {
     path.resolve(baseDir, '../LICENSE.md'),
     path.join(buildDir, 'LICENSE.md')
   );
+
+  await fse.copy(
+    path.resolve(baseDir, '../build/full/'),
+    path.join(buildDir, 'dist')
+  );
 }
 
 /**

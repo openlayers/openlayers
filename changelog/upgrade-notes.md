@@ -1,6 +1,10 @@
 ## Upgrade notes
 
-### Next version
+### 7.1.0
+
+#### Notice to full build users
+
+If you have been using the full (or legacy) build of the library, note that the location of these scripts is changing for this and future releases.  The previous locations were not stable, and although we do not recommend linking to the full build for production applications, there are many instances of this that were breaking due to changing URLs.  See the [download page](https://openlayers.org/download/) for details on the new versioned URLs for the full build.
 
 #### Deprecation of `ol/AssertionError` and error codes
 
@@ -8,7 +12,7 @@ Future versions will no longer throw `ol/AssertionError` with an error `code`. I
 
 #### Updating parameters in `ol/source/ImageWMS` and `ol/source/TileWMS`
 
-The `updateParams()` method will be the only way to update parameters. Changes made directly to the `params` object passed as a constructor option will have no effect.
+The `updateParams()` method is the only way to update WMS parameters. Changes made directly to the `params` object passed as a constructor option will have no effect.
 
 ### 7.0.0
 

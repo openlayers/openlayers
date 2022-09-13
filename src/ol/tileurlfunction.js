@@ -25,19 +25,18 @@ export function createFromTemplate(template, tileGrid) {
     function (tileCoord, pixelRatio, projection) {
       if (!tileCoord) {
         return undefined;
-      } else {
-        return template
-          .replace(zRegEx, tileCoord[0].toString())
-          .replace(xRegEx, tileCoord[1].toString())
-          .replace(yRegEx, tileCoord[2].toString())
-          .replace(dashYRegEx, function () {
-            const z = tileCoord[0];
-            const range = tileGrid.getFullTileRange(z);
-            assert(range, 55); // The {-y} placeholder requires a tile grid with extent
-            const y = range.getHeight() - tileCoord[2] - 1;
-            return y.toString();
-          });
       }
+      return template
+        .replace(zRegEx, tileCoord[0].toString())
+        .replace(xRegEx, tileCoord[1].toString())
+        .replace(yRegEx, tileCoord[2].toString())
+        .replace(dashYRegEx, function () {
+          const z = tileCoord[0];
+          const range = tileGrid.getFullTileRange(z);
+          assert(range, 55); // The {-y} placeholder requires a tile grid with extent
+          const y = range.getHeight() - tileCoord[2] - 1;
+          return y.toString();
+        });
     }
   );
 }
@@ -74,11 +73,10 @@ export function createFromTileUrlFunctions(tileUrlFunctions) {
     function (tileCoord, pixelRatio, projection) {
       if (!tileCoord) {
         return undefined;
-      } else {
-        const h = tileCoordHash(tileCoord);
-        const index = modulo(h, tileUrlFunctions.length);
-        return tileUrlFunctions[index](tileCoord, pixelRatio, projection);
       }
+      const h = tileCoordHash(tileCoord);
+      const index = modulo(h, tileUrlFunctions.length);
+      return tileUrlFunctions[index](tileCoord, pixelRatio, projection);
     }
   );
 }

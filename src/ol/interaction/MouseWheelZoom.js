@@ -203,9 +203,8 @@ class MouseWheelZoom extends Interaction {
 
     if (delta === 0) {
       return false;
-    } else {
-      this.lastDelta_ = delta;
     }
+    this.lastDelta_ = delta;
 
     const now = Date.now();
 

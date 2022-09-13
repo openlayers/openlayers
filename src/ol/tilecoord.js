@@ -22,9 +22,8 @@ export function createOrUpdate(z, x, y, tileCoord) {
     tileCoord[1] = x;
     tileCoord[2] = y;
     return tileCoord;
-  } else {
-    return [z, x, y];
   }
+  return [z, x, y];
 }
 
 /**
@@ -92,7 +91,6 @@ export function withinExtentAndZ(tileCoord, tileGrid) {
   const tileRange = tileGrid.getFullTileRange(z);
   if (!tileRange) {
     return true;
-  } else {
-    return tileRange.containsXY(x, y);
   }
+  return tileRange.containsXY(x, y);
 }

@@ -141,9 +141,8 @@ class EsriJSON extends JSONFeature {
         );
       }
       return features;
-    } else {
-      return [this.readFeatureFromObject(object, options)];
     }
+    return [this.readFeatureFromObject(object, options)];
   }
 
   /**
@@ -171,9 +170,8 @@ class EsriJSON extends JSONFeature {
       );
       const crs = spatialReference.wkid;
       return getProjection('EPSG:' + crs);
-    } else {
-      return null;
     }
+    return null;
   }
 
   /**

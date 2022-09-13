@@ -254,19 +254,18 @@ class BingMaps extends TileImage {
           function (tileCoord, pixelRatio, projection) {
             if (!tileCoord) {
               return undefined;
-            } else {
-              createOrUpdate(
-                tileCoord[0],
-                tileCoord[1],
-                tileCoord[2],
-                quadKeyTileCoord
-              );
-              let url = imageUrl;
-              if (hidpi) {
-                url += '&dpi=d1&device=mobile';
-              }
-              return url.replace('{quadkey}', quadKey(quadKeyTileCoord));
             }
+            createOrUpdate(
+              tileCoord[0],
+              tileCoord[1],
+              tileCoord[2],
+              quadKeyTileCoord
+            );
+            let url = imageUrl;
+            if (hidpi) {
+              url += '&dpi=d1&device=mobile';
+            }
+            return url.replace('{quadkey}', quadKey(quadKeyTileCoord));
           }
         );
       })

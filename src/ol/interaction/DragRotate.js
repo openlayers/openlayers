@@ -116,9 +116,8 @@ class DragRotate extends PointerInteraction {
       map.getView().beginInteraction();
       this.lastAngle_ = undefined;
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 }
 

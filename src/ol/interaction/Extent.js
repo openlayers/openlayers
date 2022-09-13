@@ -517,9 +517,8 @@ function getEdgeHandler(fixedP1, fixedP2) {
     return function (point) {
       return boundingExtent([fixedP1, [fixedP2[0], point[1]]]);
     };
-  } else {
-    return null;
   }
+  return null;
 }
 
 /**

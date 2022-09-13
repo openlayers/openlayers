@@ -12,7 +12,7 @@ import {readFile, stat} from 'node:fs/promises';
  * @property {boolean} draft Create a draft release.
  * @property {boolean} notes Generate release notes.
  * @property {string} site Path to zip archive with site contents.
- * @property {string} legacy Path to zip archive with legacy build.
+ * @property {string} package Path to zip archive with source and full build.
  */
 
 const owner = 'openlayers';
@@ -45,8 +45,8 @@ async function createRelease(options) {
   await uploadAsset(
     client,
     response.data,
-    options.legacy,
-    'Legacy build (zip)'
+    options.package,
+    'Package archive (zip)'
   );
 }
 
@@ -79,12 +79,12 @@ if (esMain(import.meta)) {
       type: 'string',
     })
     .demandOption('tag')
-    .option('legacy-zip', {
-      describe: 'Path to the archive with the legacy build',
+    .option('package', {
+      describe: 'Path to the archive with the source package',
       type: 'string',
     })
-    .demandOption('legacy')
-    .option('site-zip', {
+    .demandOption('package')
+    .option('site', {
       describe: 'Path to the archive with the site contents',
       type: 'string',
     })

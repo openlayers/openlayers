@@ -315,6 +315,9 @@ describe('ol/source/WMTS', function () {
         projection
       );
       expect(url).to.be.eql('http://host/layer/default/42/EPSG:3857/1/1/1.jpg');
+      expect(source.getKey()).to.be.eql(
+        'http://host/{Layer}/{Style}/{Time}/{tilematrixset}/{TileMatrix}/{TileCol}/{TileRow}.jpg/Time-42'
+      );
     });
   });
 

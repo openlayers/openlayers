@@ -125,9 +125,8 @@ class GML3 extends GMLBase {
     if (lineStrings) {
       const multiLineString = new MultiLineString(lineStrings);
       return multiLineString;
-    } else {
-      return undefined;
     }
+    return undefined;
   }
 
   /**
@@ -305,9 +304,8 @@ class GML3 extends GMLBase {
         ends.push(flatCoordinates.length);
       }
       return new Polygon(flatCoordinates, 'XYZ', ends);
-    } else {
-      return undefined;
     }
+    return undefined;
   }
 
   /**
@@ -327,9 +325,8 @@ class GML3 extends GMLBase {
     if (flatCoordinates) {
       const lineString = new LineString(flatCoordinates, 'XYZ');
       return lineString;
-    } else {
-      return undefined;
     }
+    return undefined;
   }
 
   /**

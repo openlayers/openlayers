@@ -55,9 +55,8 @@ class Point extends SimpleGeometry {
       }
       closestPoint.length = stride;
       return squaredDistance;
-    } else {
-      return minSquaredDistance;
     }
+    return minSquaredDistance;
   }
 
   /**

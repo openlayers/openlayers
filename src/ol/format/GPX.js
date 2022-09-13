@@ -203,9 +203,8 @@ class GPX extends XMLFeature {
       if (features) {
         this.handleReadExtensions_(features);
         return features;
-      } else {
-        return [];
       }
+      return [];
     }
     return [];
   }

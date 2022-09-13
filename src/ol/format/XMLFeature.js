@@ -51,9 +51,8 @@ class XMLFeature extends FeatureFormat {
         /** @type {Document} */ (source),
         options
       );
-    } else {
-      return this.readFeatureFromNode(/** @type {Element} */ (source), options);
     }
+    return this.readFeatureFromNode(/** @type {Element} */ (source), options);
   }
 
   /**
@@ -65,9 +64,8 @@ class XMLFeature extends FeatureFormat {
     const features = this.readFeaturesFromDocument(doc, options);
     if (features.length > 0) {
       return features[0];
-    } else {
-      return null;
     }
+    return null;
   }
 
   /**
@@ -98,12 +96,8 @@ class XMLFeature extends FeatureFormat {
         /** @type {Document} */ (source),
         options
       );
-    } else {
-      return this.readFeaturesFromNode(
-        /** @type {Element} */ (source),
-        options
-      );
     }
+    return this.readFeaturesFromNode(/** @type {Element} */ (source), options);
   }
 
   /**
@@ -155,12 +149,8 @@ class XMLFeature extends FeatureFormat {
         /** @type {Document} */ (source),
         options
       );
-    } else {
-      return this.readGeometryFromNode(
-        /** @type {Element} */ (source),
-        options
-      );
     }
+    return this.readGeometryFromNode(/** @type {Element} */ (source), options);
   }
 
   /**
@@ -198,9 +188,8 @@ class XMLFeature extends FeatureFormat {
       return this.readProjectionFromDocument(doc);
     } else if (isDocument(source)) {
       return this.readProjectionFromDocument(/** @type {Document} */ (source));
-    } else {
-      return this.readProjectionFromNode(/** @type {Element} */ (source));
     }
+    return this.readProjectionFromNode(/** @type {Element} */ (source));
   }
 
   /**

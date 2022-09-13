@@ -137,13 +137,13 @@ class TileImage extends UrlTile {
   canExpireCache() {
     if (this.tileCache.canExpireCache()) {
       return true;
-    } else {
-      for (const key in this.tileCacheForProjection) {
-        if (this.tileCacheForProjection[key].canExpireCache()) {
-          return true;
-        }
+    }
+    for (const key in this.tileCacheForProjection) {
+      if (this.tileCacheForProjection[key].canExpireCache()) {
+        return true;
       }
     }
+
     return false;
   }
 
@@ -174,9 +174,8 @@ class TileImage extends UrlTile {
       !equivalent(this.getProjection(), projection)
     ) {
       return 0;
-    } else {
-      return this.getGutter();
     }
+    return this.getGutter();
   }
 
   /**
@@ -209,9 +208,8 @@ class TileImage extends UrlTile {
       !equivalent(this.getProjection(), projection)
     ) {
       return false;
-    } else {
-      return super.getOpaque(projection);
     }
+    return super.getOpaque(projection);
   }
 
   /**
@@ -222,14 +220,13 @@ class TileImage extends UrlTile {
     const thisProj = this.getProjection();
     if (this.tileGrid && (!thisProj || equivalent(thisProj, projection))) {
       return this.tileGrid;
-    } else {
-      const projKey = getUid(projection);
-      if (!(projKey in this.tileGridForProjection)) {
-        this.tileGridForProjection[projKey] =
-          getTileGridForProjection(projection);
-      }
-      return this.tileGridForProjection[projKey];
     }
+    const projKey = getUid(projection);
+    if (!(projKey in this.tileGridForProjection)) {
+      this.tileGridForProjection[projKey] =
+        getTileGridForProjection(projection);
+    }
+    return this.tileGridForProjection[projKey];
   }
 
   /**
@@ -240,15 +237,14 @@ class TileImage extends UrlTile {
     const thisProj = this.getProjection();
     if (!thisProj || equivalent(thisProj, projection)) {
       return this.tileCache;
-    } else {
-      const projKey = getUid(projection);
-      if (!(projKey in this.tileCacheForProjection)) {
-        this.tileCacheForProjection[projKey] = new TileCache(
-          this.tileCache.highWaterMark
-        );
-      }
-      return this.tileCacheForProjection[projKey];
     }
+    const projKey = getUid(projection);
+    if (!(projKey in this.tileCacheForProjection)) {
+      this.tileCacheForProjection[projKey] = new TileCache(
+        this.tileCache.highWaterMark
+      );
+    }
+    return this.tileCacheForProjection[projKey];
   }
 
   /**
@@ -305,52 +301,50 @@ class TileImage extends UrlTile {
         pixelRatio,
         sourceProjection || projection
       );
-    } else {
-      const cache = this.getTileCacheForProjection(projection);
-      const tileCoord = [z, x, y];
-      let tile;
-      const tileCoordKey = getKey(tileCoord);
-      if (cache.containsKey(tileCoordKey)) {
-        tile = cache.get(tileCoordKey);
-      }
-      const key = this.getKey();
-      if (tile && tile.key == key) {
-        return tile;
-      } else {
-        const sourceTileGrid = this.getTileGridForProjection(sourceProjection);
-        const targetTileGrid = this.getTileGridForProjection(projection);
-        const wrappedTileCoord = this.getTileCoordForTileUrlFunction(
-          tileCoord,
-          projection
-        );
-        const newTile = new ReprojTile(
-          sourceProjection,
-          sourceTileGrid,
-          projection,
-          targetTileGrid,
-          tileCoord,
-          wrappedTileCoord,
-          this.getTilePixelRatio(pixelRatio),
-          this.getGutter(),
-          function (z, x, y, pixelRatio) {
-            return this.getTileInternal(z, x, y, pixelRatio, sourceProjection);
-          }.bind(this),
-          this.reprojectionErrorThreshold_,
-          this.renderReprojectionEdges_,
-          this.getInterpolate()
-        );
-        newTile.key = key;
-
-        if (tile) {
-          newTile.interimTile = tile;
-          newTile.refreshInterimChain();
-          cache.replace(tileCoordKey, newTile);
-        } else {
-          cache.set(tileCoordKey, newTile);
-        }
-        return newTile;
-      }
     }
+    const cache = this.getTileCacheForProjection(projection);
+    const tileCoord = [z, x, y];
+    let tile;
+    const tileCoordKey = getKey(tileCoord);
+    if (cache.containsKey(tileCoordKey)) {
+      tile = cache.get(tileCoordKey);
+    }
+    const key = this.getKey();
+    if (tile && tile.key == key) {
+      return tile;
+    }
+    const sourceTileGrid = this.getTileGridForProjection(sourceProjection);
+    const targetTileGrid = this.getTileGridForProjection(projection);
+    const wrappedTileCoord = this.getTileCoordForTileUrlFunction(
+      tileCoord,
+      projection
+    );
+    const newTile = new ReprojTile(
+      sourceProjection,
+      sourceTileGrid,
+      projection,
+      targetTileGrid,
+      tileCoord,
+      wrappedTileCoord,
+      this.getTilePixelRatio(pixelRatio),
+      this.getGutter(),
+      function (z, x, y, pixelRatio) {
+        return this.getTileInternal(z, x, y, pixelRatio, sourceProjection);
+      }.bind(this),
+      this.reprojectionErrorThreshold_,
+      this.renderReprojectionEdges_,
+      this.getInterpolate()
+    );
+    newTile.key = key;
+
+    if (tile) {
+      newTile.interimTile = tile;
+      newTile.refreshInterimChain();
+      cache.replace(tileCoordKey, newTile);
+    } else {
+      cache.set(tileCoordKey, newTile);
+    }
+    return newTile;
   }
 
   /**

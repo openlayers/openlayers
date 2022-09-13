@@ -228,9 +228,8 @@ export function format(coordinate, template, fractionDigits) {
     return template
       .replace('{x}', coordinate[0].toFixed(fractionDigits))
       .replace('{y}', coordinate[1].toFixed(fractionDigits));
-  } else {
-    return '';
   }
+  return '';
 }
 
 /**
@@ -365,9 +364,8 @@ export function toStringHDMS(coordinate, fractionDigits) {
       ' ' +
       degreesToStringHDMS('EW', coordinate[0], fractionDigits)
     );
-  } else {
-    return '';
   }
+  return '';
 }
 
 /**

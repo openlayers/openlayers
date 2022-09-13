@@ -148,15 +148,14 @@ class DragPan extends PointerInteraction {
         view.endInteraction();
       }
       return false;
-    } else {
-      if (this.kinetic_) {
-        // reset so we don't overestimate the kinetic energy after
-        // after one finger up, tiny drag, second finger up
-        this.kinetic_.begin();
-      }
-      this.lastCentroid = null;
-      return true;
     }
+    if (this.kinetic_) {
+      // reset so we don't overestimate the kinetic energy after
+      // after one finger up, tiny drag, second finger up
+      this.kinetic_.begin();
+    }
+    this.lastCentroid = null;
+    return true;
   }
 
   /**
@@ -180,9 +179,8 @@ class DragPan extends PointerInteraction {
       // detected. This is to prevent nasty pans after pinch.
       this.noKinetic_ = this.targetPointers.length > 1;
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 }
 

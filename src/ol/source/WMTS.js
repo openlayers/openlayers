@@ -245,10 +245,9 @@ class WMTS extends TileImage {
    * @return {string} The key for the current dimensions.
    */
   getKeyForDimensions_() {
-    let i = 0;
-    const res = [];
+    const res = this.urls ? this.urls.slice(0) : [];
     for (const key in this.dimensions_) {
-      res[i++] = key + '-' + this.dimensions_[key];
+      res.push(key + '-' + this.dimensions_[key]);
     }
     return res.join('/');
   }
@@ -313,23 +312,22 @@ class WMTS extends TileImage {
       function (tileCoord, pixelRatio, projection) {
         if (!tileCoord) {
           return undefined;
-        } else {
-          const localContext = {
-            'TileMatrix': tileGrid.getMatrixId(tileCoord[0]),
-            'TileCol': tileCoord[1],
-            'TileRow': tileCoord[2],
-          };
-          Object.assign(localContext, dimensions);
-          let url = template;
-          if (requestEncoding == 'KVP') {
-            url = appendParams(url, localContext);
-          } else {
-            url = url.replace(/\{(\w+?)\}/g, function (m, p) {
-              return localContext[p];
-            });
-          }
-          return url;
         }
+        const localContext = {
+          'TileMatrix': tileGrid.getMatrixId(tileCoord[0]),
+          'TileCol': tileCoord[1],
+          'TileRow': tileCoord[2],
+        };
+        Object.assign(localContext, dimensions);
+        let url = template;
+        if (requestEncoding == 'KVP') {
+          url = appendParams(url, localContext);
+        } else {
+          url = url.replace(/\{(\w+?)\}/g, function (m, p) {
+            return localContext[p];
+          });
+        }
+        return url;
       }
     );
   }
@@ -382,9 +380,8 @@ export function optionsFromCapabilities(wmtsCap, config) {
         const proj2 = getProjection(config['projection']);
         if (proj1 && proj2) {
           return equivalent(proj1, proj2);
-        } else {
-          return supportedCRS == config['projection'];
         }
+        return supportedCRS == config['projection'];
       });
     } else {
       idx = l['TileMatrixSetLink'].findIndex(function (elt) {
@@ -411,9 +408,8 @@ export function optionsFromCapabilities(wmtsCap, config) {
   idx = l['Style'].findIndex(function (elt) {
     if ('style' in config) {
       return elt['Title'] == config['style'];
-    } else {
-      return elt['isDefault'];
     }
+    return elt['isDefault'];
   });
   if (idx < 0) {
     idx = 0;
