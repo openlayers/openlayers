@@ -12,13 +12,17 @@ import {listen, unlistenByKey} from '../events.js';
  * @typedef {function(import("../Map.js").FrameState):HTMLElement} RenderFunction
  */
 
+/**
+ * @typedef {'sourceready'|'change:source'} LayerEventType
+ */
+
 /***
  * @template Return
  * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
  *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
- *     'change:source', import("../Object").ObjectEvent, Return> &
+ *     LayerEventType, import("../Object").ObjectEvent, Return> &
  *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|'change:source'|
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|LayerEventType|
  *     import("../render/EventType").LayerRenderEventTypes, Return>} LayerOnSignature
  */
 
@@ -81,9 +85,11 @@ import {listen, unlistenByKey} from '../events.js';
  * [layer.setMap()]{@link module:ol/layer/Layer~Layer#setMap} instead.
  *
  * A generic `change` event is fired when the state of the source changes.
+ * A `sourceready` event is fired when the layer's source is ready.
  *
  * @fires import("../render/Event.js").RenderEvent#prerender
  * @fires import("../render/Event.js").RenderEvent#postrender
+ * @fires import("../events/Event.js").BaseEvent#sourceready
  *
  * @template {import("../source/Source.js").default} [SourceType=import("../source/Source.js").default]
  * @template {import("../renderer/Layer.js").default} [RendererType=import("../renderer/Layer.js").default]
@@ -137,6 +143,12 @@ class Layer extends BaseLayer {
      * @type {RendererType}
      */
     this.renderer_ = null;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.sourceReady_ = false;
 
     /**
      * @protected
@@ -214,6 +226,11 @@ class Layer extends BaseLayer {
    */
   handleSourceChange_() {
     this.changed();
+    if (this.sourceReady_ || this.getSource().getState() !== 'ready') {
+      return;
+    }
+    this.sourceReady_ = true;
+    this.dispatchEvent('sourceready');
   }
 
   /**
@@ -224,6 +241,7 @@ class Layer extends BaseLayer {
       unlistenByKey(this.sourceChangeKey_);
       this.sourceChangeKey_ = null;
     }
+    this.sourceReady_ = false;
     const source = this.getSource();
     if (source) {
       this.sourceChangeKey_ = listen(
@@ -232,6 +250,12 @@ class Layer extends BaseLayer {
         this.handleSourceChange_,
         this
       );
+      if (source.getState() === 'ready') {
+        this.sourceReady_ = true;
+        setTimeout(() => {
+          this.dispatchEvent('sourceready');
+        }, 0);
+      }
     }
     this.changed();
   }
