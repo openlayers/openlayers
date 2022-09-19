@@ -35,7 +35,7 @@ async function bundleMain() {
     plugins: [
       common(),
       nodeResolve({
-        moduleDirectories: [
+        modulePaths: [
           resolve(baseDir, '../src'),
           resolve(baseDir, '../node_modules'),
         ],
