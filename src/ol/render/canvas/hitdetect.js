@@ -64,7 +64,7 @@ export function createHitDetectionImageData(
       styles = [styles];
     }
     const index = i * indexFactor;
-    const color = '#' + ('000000' + index.toString(16)).slice(-6);
+    const color = index.toString(16).padStart(7, '#00000');
     for (let j = 0, jj = styles.length; j < jj; ++j) {
       const originalStyle = styles[j];
       const geometry = originalStyle.getGeometryFunction()(feature);
@@ -124,10 +124,22 @@ export function createHitDetectionImageData(
         byGeometryType['LineString'] = [];
         byGeometryType['Point'] = [];
       }
-      byGeometryType[geometry.getType().replace('Multi', '')].push(
-        geometry,
-        style
-      );
+      const type = geometry.getType();
+      if (type === 'GeometryCollection') {
+        const geometries =
+          /** @type {import("../../geom/GeometryCollection.js").default} */ (
+            geometry
+          ).getGeometriesArrayRecursive();
+        for (let i = 0, ii = geometries.length; i < ii; ++i) {
+          const geometry = geometries[i];
+          byGeometryType[geometry.getType().replace('Multi', '')].push(
+            geometry,
+            style
+          );
+        }
+      } else {
+        byGeometryType[type.replace('Multi', '')].push(geometry, style);
+      }
     }
   }
 
