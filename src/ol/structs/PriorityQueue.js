@@ -178,6 +178,44 @@ class PriorityQueue {
   }
 
   /**
+   * @param {string} key Key.
+   * @return {number} Index of this key's element or -1 if not found.
+   */
+  findIndex_(key) {
+    const elements = this.elements_;
+    for (let i = 0, ii = elements.length; i < ii; ++i) {
+      if (key === this.keyFunction_(elements[i])) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  /**
+   * @param {string} key Key.
+   * @return {boolean} True when this queue contained this element.
+   */
+  remove(key) {
+    if (!this.isKeyQueued(key)) {
+      return false;
+    }
+    const index = this.findIndex_(key);
+    const elements = this.elements_;
+    const priorities = this.priorities_;
+    if (index === elements.length - 1) {
+      elements.length = index;
+      priorities.length = index;
+    } else {
+      elements[index] = elements.pop();
+      priorities[index] = priorities.pop();
+      this.siftUp_(index);
+    }
+
+    delete this.queuedElements_[key];
+    return true;
+  }
+
+  /**
    * @param {number} index The index of the node to move down.
    * @private
    */

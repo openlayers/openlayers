@@ -389,7 +389,10 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
           wantedTiles[tileQueueKey] = true;
 
           if (tile.getState() === TileState.IDLE) {
-            if (!frameState.tileQueue.isKeyQueued(tileQueueKey)) {
+            if (
+              !frameState.tileQueue.isKeyQueued(tileQueueKey) &&
+              !frameState.tileQueue.isKeyLoading(tileQueueKey)
+            ) {
               frameState.tileQueue.enqueue([
                 tile,
                 tileSourceKey,
