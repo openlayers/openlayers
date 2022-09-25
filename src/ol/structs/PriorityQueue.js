@@ -96,14 +96,14 @@ class PriorityQueue {
   enqueue(element) {
     assert(!(this.keyFunction_(element) in this.queuedElements_), 31); // Tried to enqueue an `element` that was already added to the queue
     const priority = this.priorityFunction_(element);
-    if (priority != DROP) {
-      this.elements_.push(element);
-      this.priorities_.push(priority);
-      this.queuedElements_[this.keyFunction_(element)] = true;
-      this.siftDown_(0, this.elements_.length - 1);
-      return true;
+    if (priority == DROP) {
+      return false;
     }
-    return false;
+    this.elements_.push(element);
+    this.priorities_.push(priority);
+    this.queuedElements_[this.keyFunction_(element)] = true;
+    this.siftDown_(0, this.elements_.length - 1);
+    return true;
   }
 
   /**
@@ -148,8 +148,7 @@ class PriorityQueue {
    * @private
    */
   heapify_() {
-    let i;
-    for (i = (this.elements_.length >> 1) - 1; i >= 0; i--) {
+    for (let i = (this.elements_.length >> 1) - 1; i >= 0; i--) {
       this.siftUp_(i);
     }
   }
@@ -259,13 +258,12 @@ class PriorityQueue {
 
     while (index > startIndex) {
       const parentIndex = this.getParentIndex_(index);
-      if (priorities[parentIndex] > priority) {
-        elements[index] = elements[parentIndex];
-        priorities[index] = priorities[parentIndex];
-        index = parentIndex;
-      } else {
+      if (priorities[parentIndex] <= priority) {
         break;
       }
+      elements[index] = elements[parentIndex];
+      priorities[index] = priorities[parentIndex];
+      index = parentIndex;
     }
     elements[index] = element;
     priorities[index] = priority;
