@@ -13,7 +13,7 @@ import {
 import {Cluster, Vector as VectorSource, XYZ} from '../src/ol/source.js';
 import {LineString, Point, Polygon} from '../src/ol/geom.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {createEmpty, extend, getWidth} from '../src/ol/extent.js';
+import {createEmpty, extend, getHeight, getWidth} from '../src/ol/extent.js';
 import {fromLonLat} from '../src/ol/proj.js';
 
 const circleDistanceMultiplier = 1;
@@ -261,7 +261,7 @@ map.on('click', (event) => {
         const resolution = map.getView().getResolution();
         if (
           view.getZoom() === view.getMaxZoom() ||
-          (getWidth(extent) < resolution && getWidth(extent) < resolution)
+          (getWidth(extent) < resolution && getHeight(extent) < resolution)
         ) {
           // Show an expanded view of the cluster members.
           clickFeature = features[0];
