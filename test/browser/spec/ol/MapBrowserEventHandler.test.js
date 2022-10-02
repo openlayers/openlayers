@@ -195,6 +195,59 @@ describe('ol/MapBrowserEventHandler', function () {
     });
   });
 
+  describe('click', function () {
+    let handler;
+    let clickSpy;
+    let target;
+    let element, down, move, up;
+
+    beforeEach(function () {
+      target = document.createElement('div');
+      handler = new MapBrowserEventHandler(
+        new Map({
+          target: target,
+        })
+      );
+
+      element = handler.element_;
+      down = new Event('pointerdown', {target: element});
+      down.clientX = 0;
+      down.clientY = 0;
+      down.button = 0;
+      down.pointerId = 1;
+      move = new Event('pointermove', {target: element});
+      move.clientX = 0;
+      move.clientY = 0;
+      move.button = 0;
+      move.pointerId = 1;
+      up = new Event('pointerup', {target: element});
+      up.clientX = 0;
+      up.clientY = 0;
+      up.button = 0;
+      up.pointerId = 1;
+
+      clickSpy = sinon.spy();
+      listen(handler, 'click', clickSpy);
+    });
+
+    afterEach(function () {
+      handler.dispose();
+    });
+
+    it('emulates click', function () {
+      element.dispatchEvent(down);
+      document.dispatchEvent(up);
+      expect(clickSpy.called).to.be.ok();
+    });
+
+    it('emulates click when pointermove between down and up', function () {
+      element.dispatchEvent(down);
+      document.dispatchEvent(move);
+      document.dispatchEvent(up);
+      expect(clickSpy.called).to.be.ok();
+    });
+  });
+
   describe('dblclick', function () {
     let clock;
     let handler;
