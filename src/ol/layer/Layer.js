@@ -262,12 +262,12 @@ class Layer extends BaseLayer {
 
   /**
    * @param {import("../pixel").Pixel} pixel Pixel.
-   * @return {Promise<Array<import("../Feature").default>>} Promise that resolves with
+   * @return {Promise<Array<import("../Feature").FeatureLike>>} Promise that resolves with
    * an array of features.
    */
   getFeatures(pixel) {
     if (!this.renderer_) {
-      return new Promise((resolve) => resolve([]));
+      return Promise.resolve([]);
     }
     return this.renderer_.getFeatures(pixel);
   }
