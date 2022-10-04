@@ -144,19 +144,15 @@ class MapBrowserEventHandler extends Target {
       this.dispatchEvent(newEvent);
     } else {
       // click
-      this.clickTimeoutId_ = setTimeout(
-        /** @this {MapBrowserEventHandler} */
-        () => {
-          this.clickTimeoutId_ = undefined;
-          const newEvent = new MapBrowserEvent(
-            MapBrowserEventType.SINGLECLICK,
-            this.map_,
-            pointerEvent
-          );
-          this.dispatchEvent(newEvent);
-        },
-        250
-      );
+      this.clickTimeoutId_ = setTimeout(() => {
+        this.clickTimeoutId_ = undefined;
+        const newEvent = new MapBrowserEvent(
+          MapBrowserEventType.SINGLECLICK,
+          this.map_,
+          pointerEvent
+        );
+        this.dispatchEvent(newEvent);
+      }, 250);
     }
   }
 

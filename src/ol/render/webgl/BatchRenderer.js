@@ -160,7 +160,6 @@ class AbstractBatchRenderer {
     const handleMessage =
       /**
        * @param {*} event Event.
-       * @this {AbstractBatchRenderer}
        */
       (event) => {
         const received = event.data;

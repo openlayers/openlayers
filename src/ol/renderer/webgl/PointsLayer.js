@@ -301,7 +301,6 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       'message',
       /**
        * @param {*} event Event.
-       * @this {WebGLPointsLayerRenderer}
        */
       (event) => {
         const received = event.data;

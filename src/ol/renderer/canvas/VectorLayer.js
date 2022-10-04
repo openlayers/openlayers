@@ -679,7 +679,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const render =
       /**
        * @param {import("../../Feature.js").default} feature Feature.
-       * @this {CanvasVectorLayerRenderer}
        */
       (feature) => {
         let styles;

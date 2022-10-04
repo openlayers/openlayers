@@ -553,7 +553,6 @@ class Map extends BaseObject {
     this.controls.forEach(
       /**
        * @param {import("./control/Control.js").default} control Control.
-       * @this {Map}
        */
       (control) => {
         control.setMap(this);
@@ -563,7 +562,6 @@ class Map extends BaseObject {
     this.interactions.forEach(
       /**
        * @param {import("./interaction/Interaction.js").default} interaction Interaction.
-       * @this {Map}
        */
       (interaction) => {
         interaction.setMap(this);

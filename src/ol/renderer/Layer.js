@@ -105,7 +105,6 @@ class LayerRenderer extends Observable {
        * @param {number} zoom Zoom level.
        * @param {import("../TileRange.js").default} tileRange Tile range.
        * @return {boolean} The tile range is fully loaded.
-       * @this {LayerRenderer}
        */
       (zoom, tileRange) => {
         const callback = this.loadedTileCallback.bind(this, tiles, zoom);

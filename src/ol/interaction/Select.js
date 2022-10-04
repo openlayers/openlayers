@@ -461,7 +461,6 @@ class Select extends Interaction {
    * selected state of features.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
    * @return {boolean} `false` to stop event propagation.
-   * @this {Select}
    */
   handleEvent(mapBrowserEvent) {
     if (!this.condition_(mapBrowserEvent)) {

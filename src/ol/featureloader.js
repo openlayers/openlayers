@@ -141,7 +141,6 @@ export function xhr(url, format) {
    *      Function called when loading succeeded.
    * @param {function(): void} [failure] Failure
    *      Function called when loading failed.
-   * @this {import("./source/Vector").default}
    */
   return function (extent, resolution, projection, success, failure) {
     const source = /** @type {import("./source/Vector").default} */ (this);
