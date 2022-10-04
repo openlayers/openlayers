@@ -301,9 +301,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       'message',
       /**
        * @param {*} event Event.
-       * @this {WebGLPointsLayerRenderer}
        */
-      function (event) {
+      (event) => {
         const received = event.data;
         if (received.type === WebGLWorkerMessageType.GENERATE_POINT_BUFFERS) {
           const projectionTransform = received.projectionTransform;
@@ -337,7 +336,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
           this.getLayer().changed();
         }
-      }.bind(this)
+      }
     );
 
     /**
@@ -381,16 +380,14 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
         this
       ),
     ];
-    source.forEachFeature(
-      function (feature) {
-        this.featureCache_[getUid(feature)] = {
-          feature: feature,
-          properties: feature.getProperties(),
-          geometry: feature.getGeometry(),
-        };
-        this.featureCount_++;
-      }.bind(this)
-    );
+    source.forEachFeature((feature) => {
+      this.featureCache_[getUid(feature)] = {
+        feature: feature,
+        properties: feature.getProperties(),
+        geometry: feature.getGeometry(),
+      };
+      this.featureCount_++;
+    });
   }
 
   afterHelperCreated() {

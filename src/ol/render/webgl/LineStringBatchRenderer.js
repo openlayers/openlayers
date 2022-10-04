@@ -77,12 +77,10 @@ class LineStringBatchRenderer extends AbstractBatchRenderer {
     }
 
     // loop on features to fill the render instructions
-    let batchEntry;
     const flatCoords = [];
     let renderIndex = 0;
-    let value;
     for (const featureUid in batch.entries) {
-      batchEntry = batch.entries[featureUid];
+      const batchEntry = batch.entries[featureUid];
       for (let i = 0, ii = batchEntry.flatCoordss.length; i < ii; i++) {
         flatCoords.length = batchEntry.flatCoordss[i].length;
         transform2D(
@@ -96,7 +94,7 @@ class LineStringBatchRenderer extends AbstractBatchRenderer {
 
         // custom attributes
         for (let k = 0, kk = this.customAttributes.length; k < kk; k++) {
-          value = this.customAttributes[k].callback(batchEntry.feature);
+          const value = this.customAttributes[k].callback(batchEntry.feature);
           batch.renderInstructions[renderIndex++] = value;
         }
 

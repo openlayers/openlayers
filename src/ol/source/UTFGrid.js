@@ -148,12 +148,9 @@ export class CustomTile extends Tile {
       this.loadInternal_();
     } else {
       if (request === true) {
-        setTimeout(
-          function () {
-            callback(this.getData(coordinate));
-          }.bind(this),
-          0
-        );
+        setTimeout(() => {
+          callback(this.getData(coordinate));
+        }, 0);
       } else {
         callback(this.getData(coordinate));
       }

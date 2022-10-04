@@ -390,15 +390,11 @@ class VectorTile extends UrlTile {
       // make extent 1 pixel smaller so we don't load tiles for < 0.5 pixel render space
       const extent = tileGrid.getTileCoordExtent(urlTileCoord);
       bufferExtent(extent, -resolution, extent);
-      sourceTileGrid.forEachTileCoord(
-        extent,
-        sourceZ,
-        function (sourceTileCoord) {
-          empty =
-            empty &&
-            !this.tileUrlFunction(sourceTileCoord, pixelRatio, projection);
-        }.bind(this)
-      );
+      sourceTileGrid.forEachTileCoord(extent, sourceZ, (sourceTileCoord) => {
+        empty =
+          empty &&
+          !this.tileUrlFunction(sourceTileCoord, pixelRatio, projection);
+      });
     }
     const newTile = new VectorRenderTile(
       tileCoord,
