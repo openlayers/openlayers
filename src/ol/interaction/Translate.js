@@ -344,13 +344,14 @@ class Translate extends PointerInteraction {
   featuresAtPixel_(pixel, map) {
     return map.forEachFeatureAtPixel(
       pixel,
-      function (feature, layer) {
+      (feature, layer) => {
+        feature = /** @type {import("../Feature.js").default} */ (feature);
         if (this.filter_(feature, layer)) {
           if (!this.features_ || this.features_.getArray().includes(feature)) {
             return feature;
           }
         }
-      }.bind(this),
+      },
       {
         layerFilter: this.layerFilter_,
         hitTolerance: this.hitTolerance_,

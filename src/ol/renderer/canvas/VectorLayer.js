@@ -681,7 +681,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
        * @param {import("../../Feature.js").default} feature Feature.
        * @this {CanvasVectorLayerRenderer}
        */
-      function (feature) {
+      (feature) => {
         let styles;
         const styleFunction =
           feature.getStyleFunction() || vectorLayer.getStyleFunction();
@@ -699,7 +699,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
           );
           ready = ready && !dirty;
         }
-      }.bind(this);
+      };
 
     const userExtent = toUserExtent(extent, projection);
     /** @type {Array<import("../../Feature.js").default>} */

@@ -414,11 +414,11 @@ class Graticule extends VectorLayer {
        * @param {import("../Feature").default} feature Feature
        * @return {Style} style
        */
-      this.lonLabelStyle_ = function (feature) {
+      this.lonLabelStyle_ = (feature) => {
         const label = feature.get('graticule_label');
         this.lonLabelStyleBase_.getText().setText(label);
         return this.lonLabelStyleBase_;
-      }.bind(this);
+      };
 
       /**
        * @type {Style}
@@ -446,11 +446,11 @@ class Graticule extends VectorLayer {
        * @param {import("../Feature").default} feature Feature
        * @return {Style} style
        */
-      this.latLabelStyle_ = function (feature) {
+      this.latLabelStyle_ = (feature) => {
         const label = feature.get('graticule_label');
         this.latLabelStyleBase_.getText().setText(label);
         return this.latLabelStyleBase_;
-      }.bind(this);
+      };
 
       this.meridiansLabels_ = [];
       this.parallelsLabels_ = [];

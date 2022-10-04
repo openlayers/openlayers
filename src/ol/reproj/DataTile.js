@@ -116,7 +116,7 @@ class ReprojDataTile extends DataTile {
 
     /**
      * @private
-     * @type {!Array<import("../Tile.js").default>}
+     * @type {!Array<DataTile>}
      */
     this.sourceTiles_ = [];
 
@@ -270,48 +270,46 @@ class ReprojDataTile extends DataTile {
    */
   reproject_() {
     const dataSources = [];
-    this.sourceTiles_.forEach(
-      function (tile, i, arr) {
-        if (tile && tile.getState() == TileState.LOADED) {
-          const size = tile.getSize();
-          const gutter = this.gutter_;
-          const tileData = tile.getData();
-          const pixelSize = [size[0] + 2 * gutter, size[1] + 2 * gutter];
-          const isFloat = tileData instanceof Float32Array;
-          const pixelCount = pixelSize[0] * pixelSize[1];
-          const DataType = isFloat ? Float32Array : Uint8Array;
-          const tileDataR = new DataType(tileData.buffer);
-          const bytesPerElement = DataType.BYTES_PER_ELEMENT;
-          const bytesPerPixel =
-            (bytesPerElement * tileDataR.length) / pixelCount;
-          const bytesPerRow = tileDataR.byteLength / pixelSize[1];
-          const bandCount = Math.floor(
-            bytesPerRow / bytesPerElement / pixelSize[0]
-          );
-          const packedLength = pixelCount * bandCount;
-          let packedData = tileDataR;
-          if (tileDataR.length !== packedLength) {
-            packedData = new DataType(packedLength);
-            let dataIndex = 0;
-            let rowOffset = 0;
-            const colCount = pixelSize[0] * bandCount;
-            for (let rowIndex = 0; rowIndex < pixelSize[1]; ++rowIndex) {
-              for (let colIndex = 0; colIndex < colCount; ++colIndex) {
-                packedData[dataIndex++] = tileDataR[rowOffset + colIndex];
-              }
-              rowOffset += bytesPerRow / bytesPerElement;
-            }
+    this.sourceTiles_.forEach((tile) => {
+      if (!tile || tile.getState() !== TileState.LOADED) {
+        return;
+      }
+      const size = tile.getSize();
+      const gutter = this.gutter_;
+      const tileData = tile.getData();
+      const pixelSize = [size[0] + 2 * gutter, size[1] + 2 * gutter];
+      const isFloat = tileData instanceof Float32Array;
+      const pixelCount = pixelSize[0] * pixelSize[1];
+      const DataType = isFloat ? Float32Array : Uint8Array;
+      const tileDataR = new DataType(tileData.buffer);
+      const bytesPerElement = DataType.BYTES_PER_ELEMENT;
+      const bytesPerPixel = (bytesPerElement * tileDataR.length) / pixelCount;
+      const bytesPerRow = tileDataR.byteLength / pixelSize[1];
+      const bandCount = Math.floor(
+        bytesPerRow / bytesPerElement / pixelSize[0]
+      );
+      const packedLength = pixelCount * bandCount;
+      let packedData = tileDataR;
+      if (tileDataR.length !== packedLength) {
+        packedData = new DataType(packedLength);
+        let dataIndex = 0;
+        let rowOffset = 0;
+        const colCount = pixelSize[0] * bandCount;
+        for (let rowIndex = 0; rowIndex < pixelSize[1]; ++rowIndex) {
+          for (let colIndex = 0; colIndex < colCount; ++colIndex) {
+            packedData[dataIndex++] = tileDataR[rowOffset + colIndex];
           }
-          dataSources.push({
-            extent: this.sourceTileGrid_.getTileCoordExtent(tile.tileCoord),
-            data: new Uint8Array(packedData.buffer),
-            dataType: DataType,
-            bytesPerPixel: bytesPerPixel,
-            pixelSize: pixelSize,
-          });
+          rowOffset += bytesPerRow / bytesPerElement;
         }
-      }.bind(this)
-    );
+      }
+      dataSources.push({
+        extent: this.sourceTileGrid_.getTileCoordExtent(tile.tileCoord),
+        data: new Uint8Array(packedData.buffer),
+        dataType: DataType,
+        bytesPerPixel: bytesPerPixel,
+        pixelSize: pixelSize,
+      });
+    });
     this.sourceTiles_.length = 0;
 
     if (dataSources.length === 0) {
@@ -440,41 +438,40 @@ class ReprojDataTile extends DataTile {
     let leftToLoad = 0;
 
     this.sourcesListenerKeys_ = [];
-    this.sourceTiles_.forEach(
-      function (tile, i, arr) {
-        const state = tile.getState();
-        if (state == TileState.IDLE || state == TileState.LOADING) {
-          leftToLoad++;
+    this.sourceTiles_.forEach((tile) => {
+      const state = tile.getState();
+      if (state !== TileState.IDLE && state !== TileState.LOADING) {
+        return;
+      }
+      leftToLoad++;
 
-          const sourceListenKey = listen(
-            tile,
-            EventType.CHANGE,
-            function (e) {
-              const state = tile.getState();
-              if (
-                state == TileState.LOADED ||
-                state == TileState.ERROR ||
-                state == TileState.EMPTY
-              ) {
-                unlistenByKey(sourceListenKey);
-                leftToLoad--;
-                if (leftToLoad === 0) {
-                  this.unlistenSources_();
-                  this.reproject_();
-                }
-              }
-            },
-            this
-          );
-          this.sourcesListenerKeys_.push(sourceListenKey);
-        }
-      }.bind(this)
-    );
+      const sourceListenKey = listen(
+        tile,
+        EventType.CHANGE,
+        function () {
+          const state = tile.getState();
+          if (
+            state == TileState.LOADED ||
+            state == TileState.ERROR ||
+            state == TileState.EMPTY
+          ) {
+            unlistenByKey(sourceListenKey);
+            leftToLoad--;
+            if (leftToLoad === 0) {
+              this.unlistenSources_();
+              this.reproject_();
+            }
+          }
+        },
+        this
+      );
+      this.sourcesListenerKeys_.push(sourceListenKey);
+    });
 
     if (leftToLoad === 0) {
       setTimeout(this.reproject_.bind(this), 0);
     } else {
-      this.sourceTiles_.forEach(function (tile, i, arr) {
+      this.sourceTiles_.forEach(function (tile) {
         const state = tile.getState();
         if (state == TileState.IDLE) {
           tile.load();

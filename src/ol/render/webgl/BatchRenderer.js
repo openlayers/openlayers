@@ -162,7 +162,7 @@ class AbstractBatchRenderer {
        * @param {*} event Event.
        * @this {AbstractBatchRenderer}
        */
-      function (event) {
+      (event) => {
         const received = event.data;
 
         // this is not the response to our request: skip
@@ -192,7 +192,7 @@ class AbstractBatchRenderer {
         );
 
         callback();
-      }.bind(this);
+      };
 
     this.worker_.addEventListener('message', handleMessage);
   }

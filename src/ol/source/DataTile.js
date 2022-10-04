@@ -234,9 +234,8 @@ class DataTileSource extends TileSource {
       wrappedTileCoord,
       reprojTilePixelRatio,
       this.getGutterForProjection(sourceProjection),
-      function (z, x, y, pixelRatio) {
-        return this.getTile(z, x, y, pixelRatio, sourceProjection);
-      }.bind(this),
+      (z, x, y, pixelRatio) =>
+        this.getTile(z, x, y, pixelRatio, sourceProjection),
       this.getInterpolate()
     );
     newTile.key = this.getKey();

@@ -107,10 +107,10 @@ class LayerRenderer extends Observable {
        * @return {boolean} The tile range is fully loaded.
        * @this {LayerRenderer}
        */
-      function (zoom, tileRange) {
+      (zoom, tileRange) => {
         const callback = this.loadedTileCallback.bind(this, tiles, zoom);
         return source.forEachLoadedTile(projection, zoom, tileRange, callback);
-      }.bind(this)
+      }
     );
   }
   /**

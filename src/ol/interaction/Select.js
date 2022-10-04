@@ -496,14 +496,14 @@ class Select extends Interaction {
          * @param {import("../layer/Layer.js").default} layer Layer.
          * @return {boolean|undefined} Continue to iterate over the features.
          */
-        function (feature, layer) {
+        (feature, layer) => {
           if (!(feature instanceof Feature) || !this.filter_(feature, layer)) {
             return;
           }
           this.addFeatureLayerAssociation_(feature, layer);
           selected.push(feature);
           return !this.multi_;
-        }.bind(this),
+        },
         {
           layerFilter: this.layerFilter_,
           hitTolerance: this.hitTolerance_,
@@ -532,7 +532,7 @@ class Select extends Interaction {
          * @param {import("../layer/Layer.js").default} layer Layer.
          * @return {boolean|undefined} Continue to iterate over the features.
          */
-        function (feature, layer) {
+        (feature, layer) => {
           if (!(feature instanceof Feature) || !this.filter_(feature, layer)) {
             return;
           }
@@ -547,7 +547,7 @@ class Select extends Interaction {
             this.removeFeatureLayerAssociation_(feature);
           }
           return !this.multi_;
-        }.bind(this),
+        },
         {
           layerFilter: this.layerFilter_,
           hitTolerance: this.hitTolerance_,

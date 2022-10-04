@@ -491,9 +491,9 @@ class Map extends BaseObject {
       /**
        * @param {import("./Collection.js").CollectionEvent<import("./control/Control.js").default>} event CollectionEvent
        */
-      function (event) {
+      (event) => {
         event.element.setMap(this);
-      }.bind(this)
+      }
     );
 
     this.controls.addEventListener(
@@ -501,9 +501,9 @@ class Map extends BaseObject {
       /**
        * @param {import("./Collection.js").CollectionEvent<import("./control/Control.js").default>} event CollectionEvent.
        */
-      function (event) {
+      (event) => {
         event.element.setMap(null);
-      }.bind(this)
+      }
     );
 
     this.interactions.addEventListener(
@@ -511,9 +511,9 @@ class Map extends BaseObject {
       /**
        * @param {import("./Collection.js").CollectionEvent<import("./interaction/Interaction.js").default>} event CollectionEvent.
        */
-      function (event) {
+      (event) => {
         event.element.setMap(this);
-      }.bind(this)
+      }
     );
 
     this.interactions.addEventListener(
@@ -521,9 +521,9 @@ class Map extends BaseObject {
       /**
        * @param {import("./Collection.js").CollectionEvent<import("./interaction/Interaction.js").default>} event CollectionEvent.
        */
-      function (event) {
+      (event) => {
         event.element.setMap(null);
-      }.bind(this)
+      }
     );
 
     this.overlays_.addEventListener(
@@ -531,9 +531,9 @@ class Map extends BaseObject {
       /**
        * @param {import("./Collection.js").CollectionEvent<import("./Overlay.js").default>} event CollectionEvent.
        */
-      function (event) {
+      (event) => {
         this.addOverlayInternal_(event.element);
-      }.bind(this)
+      }
     );
 
     this.overlays_.addEventListener(
@@ -541,13 +541,13 @@ class Map extends BaseObject {
       /**
        * @param {import("./Collection.js").CollectionEvent<import("./Overlay.js").default>} event CollectionEvent.
        */
-      function (event) {
+      (event) => {
         const id = event.element.getId();
         if (id !== undefined) {
           delete this.overlayIdIndex_[id.toString()];
         }
         event.element.setMap(null);
-      }.bind(this)
+      }
     );
 
     this.controls.forEach(
@@ -555,9 +555,9 @@ class Map extends BaseObject {
        * @param {import("./control/Control.js").default} control Control.
        * @this {Map}
        */
-      function (control) {
+      (control) => {
         control.setMap(this);
-      }.bind(this)
+      }
     );
 
     this.interactions.forEach(
@@ -565,9 +565,9 @@ class Map extends BaseObject {
        * @param {import("./interaction/Interaction.js").default} interaction Interaction.
        * @this {Map}
        */
-      function (interaction) {
+      (interaction) => {
         interaction.setMap(this);
-      }.bind(this)
+      }
     );
 
     this.overlays_.forEach(this.addOverlayInternal_.bind(this));

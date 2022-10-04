@@ -277,47 +277,42 @@ class BingMaps extends TileImage {
         this.getProjection()
       );
 
-      this.setAttributions(
-        function (frameState) {
-          const attributions = [];
-          const viewState = frameState.viewState;
-          const tileGrid = this.getTileGrid();
-          const z = tileGrid.getZForResolution(
-            viewState.resolution,
-            this.zDirection
-          );
-          const tileCoord = tileGrid.getTileCoordForCoordAndZ(
-            viewState.center,
-            z
-          );
-          const zoom = tileCoord[0];
-          resource.imageryProviders.map(function (imageryProvider) {
-            let intersecting = false;
-            const coverageAreas = imageryProvider.coverageAreas;
-            for (let i = 0, ii = coverageAreas.length; i < ii; ++i) {
-              const coverageArea = coverageAreas[i];
-              if (
-                zoom >= coverageArea.zoomMin &&
-                zoom <= coverageArea.zoomMax
-              ) {
-                const bbox = coverageArea.bbox;
-                const epsg4326Extent = [bbox[1], bbox[0], bbox[3], bbox[2]];
-                const extent = applyTransform(epsg4326Extent, transform);
-                if (intersects(extent, frameState.extent)) {
-                  intersecting = true;
-                  break;
-                }
+      this.setAttributions((frameState) => {
+        const attributions = [];
+        const viewState = frameState.viewState;
+        const tileGrid = this.getTileGrid();
+        const z = tileGrid.getZForResolution(
+          viewState.resolution,
+          this.zDirection
+        );
+        const tileCoord = tileGrid.getTileCoordForCoordAndZ(
+          viewState.center,
+          z
+        );
+        const zoom = tileCoord[0];
+        resource.imageryProviders.map(function (imageryProvider) {
+          let intersecting = false;
+          const coverageAreas = imageryProvider.coverageAreas;
+          for (let i = 0, ii = coverageAreas.length; i < ii; ++i) {
+            const coverageArea = coverageAreas[i];
+            if (zoom >= coverageArea.zoomMin && zoom <= coverageArea.zoomMax) {
+              const bbox = coverageArea.bbox;
+              const epsg4326Extent = [bbox[1], bbox[0], bbox[3], bbox[2]];
+              const extent = applyTransform(epsg4326Extent, transform);
+              if (intersects(extent, frameState.extent)) {
+                intersecting = true;
+                break;
               }
             }
-            if (intersecting) {
-              attributions.push(imageryProvider.attribution);
-            }
-          });
+          }
+          if (intersecting) {
+            attributions.push(imageryProvider.attribution);
+          }
+        });
 
-          attributions.push(TOS_ATTRIBUTION);
-          return attributions;
-        }.bind(this)
-      );
+        attributions.push(TOS_ATTRIBUTION);
+        return attributions;
+      });
     }
 
     this.setState('ready');
