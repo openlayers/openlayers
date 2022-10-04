@@ -70,12 +70,10 @@ class PointBatchRenderer extends AbstractBatchRenderer {
     }
 
     // loop on features to fill the render instructions
-    let batchEntry;
     const tmpCoords = [];
     let renderIndex = 0;
-    let value;
     for (const featureUid in batch.entries) {
-      batchEntry = batch.entries[featureUid];
+      const batchEntry = batch.entries[featureUid];
       for (let i = 0, ii = batchEntry.flatCoordss.length; i < ii; i++) {
         tmpCoords[0] = batchEntry.flatCoordss[i][0];
         tmpCoords[1] = batchEntry.flatCoordss[i][1];
@@ -86,7 +84,7 @@ class PointBatchRenderer extends AbstractBatchRenderer {
 
         // pushing custom attributes
         for (let j = 0, jj = this.customAttributes.length; j < jj; j++) {
-          value = this.customAttributes[j].callback(batchEntry.feature);
+          const value = this.customAttributes[j].callback(batchEntry.feature);
           batch.renderInstructions[renderIndex++] = value;
         }
       }
