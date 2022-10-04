@@ -63,7 +63,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
    */
   getFeatures(pixel) {
     if (!this.vectorRenderer_) {
-      return new Promise((resolve) => resolve([]));
+      return Promise.resolve([]);
     }
     const vectorPixel = apply(
       this.coordinateToVectorPixelTransform_,
