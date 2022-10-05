@@ -18,7 +18,7 @@ import {listen, unlistenByKey} from '../events.js';
 import {releaseCanvas} from '../dom.js';
 
 /**
- * @typedef {function(number, number, number, number) : (ReprojTile|import("../ImageTile.js").default)} FunctionType
+ * @typedef {function(number, number, number, number) : (import("../ImageTile.js").default)} FunctionType
  */
 
 /**
@@ -103,7 +103,7 @@ class ReprojTile extends Tile {
 
     /**
      * @private
-     * @type {!Array<ReprojTile|import("../ImageTile.js").default>}
+     * @type {!Array<import("../ImageTile.js").default>}
      */
     this.sourceTiles_ = [];
 
