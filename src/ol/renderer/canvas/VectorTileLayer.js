@@ -482,17 +482,14 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       }
       const extent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
       const corner = getTopLeft(extent);
-      const tilePixel = [
-        (coordinate[0] - corner[0]) / resolution,
-        (corner[1] - coordinate[1]) / resolution,
-      ];
+
       /** @type {Array<import("../../Feature.js").FeatureLike>} */
       const features = tile
         .getSourceTiles()
         .reduce(function (accumulator, sourceTile) {
           return accumulator.concat(sourceTile.getFeatures());
         }, []);
-      /** @type {ImageData|undefined} */
+
       let hitDetectionImageData = tile.hitDetectionImageData[layerUid];
       if (!hitDetectionImageData) {
         const tileSize = toSize(
@@ -523,7 +520,16 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         );
         tile.hitDetectionImageData[layerUid] = hitDetectionImageData;
       }
-      resolve(hitDetect(tilePixel, features, hitDetectionImageData));
+
+      const result = hitDetect(
+        [
+          (coordinate[0] - corner[0]) / resolution,
+          (corner[1] - coordinate[1]) / resolution,
+        ],
+        features,
+        hitDetectionImageData
+      );
+      resolve(result);
     });
   }
 

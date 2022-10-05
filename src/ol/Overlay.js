@@ -454,11 +454,13 @@ class Overlay extends BaseObject {
         if (!centerPx) {
           return;
         }
-        const newCenterPx = [centerPx[0] + delta[0], centerPx[1] + delta[1]];
 
         const panOptions = panIntoViewOptions.animation || {};
         map.getView().animateInternal({
-          center: map.getCoordinateFromPixelInternal(newCenterPx),
+          center: map.getCoordinateFromPixelInternal([
+            centerPx[0] + delta[0],
+            centerPx[1] + delta[1],
+          ]),
           duration: panOptions.duration,
           easing: panOptions.easing,
         });

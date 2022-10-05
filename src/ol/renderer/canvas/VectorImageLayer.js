@@ -9,6 +9,7 @@ import ImageState from '../../ImageState.js';
 import RBush from 'rbush';
 import ViewHint from '../../ViewHint.js';
 import {apply, compose, create} from '../../transform.js';
+import {clone as clonePixel} from '../../pixel.js';
 import {getHeight, getWidth, isEmpty, scaleFromCenter} from '../../extent.js';
 
 /**
@@ -67,7 +68,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
     }
     const vectorPixel = apply(
       this.coordinateToVectorPixelTransform_,
-      apply(this.renderedPixelToCoordinateTransform_, pixel.slice())
+      apply(this.renderedPixelToCoordinateTransform_, clonePixel(pixel))
     );
     return this.vectorRenderer_.getFeatures(vectorPixel);
   }

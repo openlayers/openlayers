@@ -9,6 +9,7 @@ import {
   multiply as multiplyTransform,
   scale as scaleTransform,
 } from './transform.js';
+import {clone as clonePixel} from './pixel.js';
 import {getSquaredTolerance} from './renderer/vector.js';
 import {getTransformFromProjections, getUserProjection} from './proj.js';
 
@@ -135,5 +136,5 @@ export function getVectorContext(event) {
  * @api
  */
 export function getRenderPixel(event, pixel) {
-  return applyTransform(event.inversePixelTransform, pixel.slice(0));
+  return applyTransform(event.inversePixelTransform, clonePixel(pixel));
 }

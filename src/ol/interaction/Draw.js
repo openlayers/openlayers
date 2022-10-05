@@ -33,6 +33,7 @@ import {
   getTopRight,
 } from '../extent.js';
 import {clamp, squaredDistance, toFixed} from '../math.js';
+import {clone as clonePixel} from '../pixel.js';
 import {createEditingStyle} from '../style/Style.js';
 import {
   distance,
@@ -1116,7 +1117,7 @@ class Draw extends PointerInteraction {
     if (targets.length) {
       this.traceState_ = {
         active: true,
-        startPx: event.pixel.slice(),
+        startPx: clonePixel(event.pixel),
         targets: targets,
         targetIndex: -1,
       };

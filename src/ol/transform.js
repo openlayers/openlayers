@@ -118,9 +118,10 @@ export function setFromArray(transform1, transform2) {
  * Transforms the given coordinate with the given transform returning the
  * resulting, transformed coordinate. The coordinate will be modified in-place.
  *
+ * @template {Array} T
  * @param {Transform} transform The transformation.
- * @param {import("./coordinate.js").Coordinate|import("./pixel.js").Pixel} coordinate The coordinate to transform.
- * @return {import("./coordinate.js").Coordinate|import("./pixel.js").Pixel} return coordinate so that operations can be
+ * @param {T} coordinate The coordinate to transform.
+ * @return {T} return coordinate so that operations can be
  *     chained together.
  */
 export function apply(transform, coordinate) {

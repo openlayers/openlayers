@@ -40,6 +40,7 @@ import {fromUserCoordinate, toUserCoordinate} from './proj.js';
 import {getUid} from './util.js';
 import {hasArea} from './size.js';
 import {listen, unlistenByKey} from './events.js';
+import {fromCoordinate as pixelFromCoordinate} from './pixel.js';
 import {removeNode} from './dom.js';
 
 /**
@@ -988,7 +989,7 @@ class Map extends BaseObject {
     }
     return applyTransform(
       frameState.coordinateToPixelTransform,
-      coordinate.slice(0, 2)
+      pixelFromCoordinate(coordinate)
     );
   }
 

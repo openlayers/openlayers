@@ -451,6 +451,9 @@ class Snap extends PointerInteraction {
     let minSquaredDistance = Infinity;
 
     const squaredPixelTolerance = this.pixelTolerance_ * this.pixelTolerance_;
+    /**
+     * @return {Result|null} The result.
+     */
     const getResult = () => {
       if (closestVertex) {
         const vertexPixel = map.getPixelFromCoordinate(closestVertex);
