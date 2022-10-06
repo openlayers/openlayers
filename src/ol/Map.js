@@ -37,11 +37,11 @@ import {
 import {defaults as defaultControls} from './control/defaults.js';
 import {defaults as defaultInteractions} from './interaction/defaults.js';
 import {fromUserCoordinate, toUserCoordinate} from './proj.js';
+import {getCanvasScale} from './canvasUtils.js';
 import {getUid} from './util.js';
 import {hasArea} from './size.js';
 import {listen, unlistenByKey} from './events.js';
 import {removeNode} from './dom.js';
-import {getCanvasScale} from './canvasUtils.js'
 
 /**
  * State of the current frame. Only `pixelRatio`, `time` and `viewState` should

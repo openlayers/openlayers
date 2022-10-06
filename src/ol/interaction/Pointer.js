@@ -3,7 +3,7 @@
  */
 import Interaction from './Interaction.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
-import {getCanvasScale} from '../canvasUtils.js'
+import {getCanvasScale} from '../canvasUtils.js';
 
 /**
  * @typedef {Object} Options

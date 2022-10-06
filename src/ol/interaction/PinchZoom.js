@@ -5,7 +5,7 @@ import PointerInteraction, {
   centroid as centroidFromPointers,
 } from './Pointer.js';
 import {FALSE} from '../functions.js';
-import {getCanvasScale} from '../canvasUtils.js'
+import {getCanvasScale} from '../canvasUtils.js';
 
 /**
  * @typedef {Object} Options
@@ -89,7 +89,9 @@ class PinchZoom extends PointerInteraction {
 
     // scale anchor point.
     const viewportPosition = map.getViewport().getBoundingClientRect();
-    const [scaleX, scaleY] = getCanvasScale(mapBrowserEvent.originalEvent.target)
+    const [scaleX, scaleY] = getCanvasScale(
+      mapBrowserEvent.originalEvent.target
+    );
     const centroid = centroidFromPointers(this.targetPointers);
     centroid[0] -= viewportPosition.left / scaleX;
     centroid[1] -= viewportPosition.top / scaleY;
