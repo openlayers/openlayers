@@ -8,7 +8,6 @@ import {DEVICE_PIXEL_RATIO} from './has.js';
  * @return {Array} Array of x-scale and y-scale
  */
 export function getCanvasScale(el) {
-  console.log({el})
   if(!(el instanceof HTMLCanvasElement)) {
     return [1, 1]
   }
