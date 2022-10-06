@@ -197,7 +197,7 @@ export function centroid(pointerEvents) {
   const length = pointerEvents.length;
   let clientX = 0;
   let clientY = 0;
-  const [scaleX, scaleY] = getCanvasScale(pointerEvents.length > 0 && pointerEvents[0].target);
+  const [scaleX, scaleY] = getCanvasScale(pointerEvents[0].target);
   for (let i = 0; i < length; i++) {
     clientX += pointerEvents[i].clientX / scaleX;
     clientY += pointerEvents[i].clientY / scaleY;
