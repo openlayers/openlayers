@@ -3,6 +3,7 @@
  */
 import Interaction from './Interaction.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
+import {getCanvasScale} from '../canvasUtils.js'
 
 /**
  * @typedef {Object} Options
@@ -196,9 +197,10 @@ export function centroid(pointerEvents) {
   const length = pointerEvents.length;
   let clientX = 0;
   let clientY = 0;
+  const [scaleX, scaleY] = getCanvasScale(pointerEvents.length > 0 && pointerEvents[0].target);
   for (let i = 0; i < length; i++) {
-    clientX += pointerEvents[i].clientX;
-    clientY += pointerEvents[i].clientY;
+    clientX += pointerEvents[i].clientX / scaleX;
+    clientY += pointerEvents[i].clientY / scaleY;
   }
   return [clientX / length, clientY / length];
 }
