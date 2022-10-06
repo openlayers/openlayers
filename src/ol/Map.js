@@ -41,6 +41,7 @@ import {getUid} from './util.js';
 import {hasArea} from './size.js';
 import {listen, unlistenByKey} from './events.js';
 import {removeNode} from './dom.js';
+import {getCanvasScale} from './canvasUtils.js'
 
 /**
  * State of the current frame. Only `pixelRatio`, `time` and `viewState` should
@@ -783,6 +784,7 @@ class Map extends BaseObject {
    * @api
    */
   getEventPixel(event) {
+    const [scaleX, scaleY] = getCanvasScale(event.target);
     const viewportPosition = this.viewport_.getBoundingClientRect();
     const eventPosition =
       //FIXME Are we really calling this with a TouchEvent anywhere?
@@ -791,8 +793,8 @@ class Map extends BaseObject {
         : /** @type {MouseEvent} */ (event);
 
     return [
-      eventPosition.clientX - viewportPosition.left,
-      eventPosition.clientY - viewportPosition.top,
+      (eventPosition.clientX - viewportPosition.left) / scaleX,
+      (eventPosition.clientY - viewportPosition.top) / scaleY,
     ];
   }
 
