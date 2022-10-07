@@ -913,9 +913,9 @@ class View extends BaseObject {
   }
 
   /**
-   * If the map is scaled using css transform scale(), pointer events for interactions will be offset.
-   * This function calculates the scale from the event so we can take that into account when handling the interactions.
-   * @param {HTMLElement} viewport Event target element (the map Canvas element)
+   * If the viewport is scaled using css transform scale(), pointer events for interactions need to be offset.
+   * This function calculates the scale of the viewport so we can take that into account when handling the interactions.
+   * @param {HTMLElement} viewport Viewport HTML element
    * @return {Array} Array of x-scale and y-scale
    */
   getViewportScale(viewport) {
