@@ -784,7 +784,9 @@ class Map extends BaseObject {
    */
   getEventPixel(event) {
     const viewportPosition = this.viewport_.getBoundingClientRect();
-    const [scaleX, scaleY] = this.getView().getViewportScale(this.getViewport()) ?? [1, 1];
+    const [scaleX, scaleY] = this.getView().getViewportScale(
+      this.getViewport()
+    ) ?? [1, 1];
 
     const eventPosition =
       //FIXME Are we really calling this with a TouchEvent anywhere?

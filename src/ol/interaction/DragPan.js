@@ -88,7 +88,7 @@ class DragPan extends PointerInteraction {
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    */
   handleDragEvent(mapBrowserEvent) {
-    const view = this.getMap().getView()
+    const view = this.getMap().getView();
     if (!this.panning_) {
       this.panning_ = true;
       view.beginInteraction();
