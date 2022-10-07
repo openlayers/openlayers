@@ -37,7 +37,6 @@ import {
 import {defaults as defaultControls} from './control/defaults.js';
 import {defaults as defaultInteractions} from './interaction/defaults.js';
 import {fromUserCoordinate, toUserCoordinate} from './proj.js';
-import {getCanvasScale} from './canvasUtils.js';
 import {getUid} from './util.js';
 import {hasArea} from './size.js';
 import {listen, unlistenByKey} from './events.js';
@@ -784,8 +783,9 @@ class Map extends BaseObject {
    * @api
    */
   getEventPixel(event) {
-    const [scaleX, scaleY] = getCanvasScale(event.target);
     const viewportPosition = this.viewport_.getBoundingClientRect();
+    const [scaleX, scaleY] = this.getView().getViewportScale(this.getViewport()) ?? [1, 1];
+
     const eventPosition =
       //FIXME Are we really calling this with a TouchEvent anywhere?
       'changedTouches' in event

@@ -93,7 +93,9 @@ class DragPan extends PointerInteraction {
       this.getMap().getView().beginInteraction();
     }
     const targetPointers = this.targetPointers;
-    const centroid = centroidFromPointers(targetPointers);
+    let centroid = centroidFromPointers(targetPointers);
+    const [scaleX, scaleY] = this.getMap().getView().getViewportScale(this.getMap().getViewport()) ?? [1, 1];
+    centroid = [centroid[0] / scaleX, centroid[1] / scaleY];
     if (targetPointers.length == this.lastPointersCount_) {
       if (this.kinetic_) {
         this.kinetic_.update(centroid[0], centroid[1]);

@@ -912,6 +912,30 @@ class View extends BaseObject {
     return size;
   }
 
+/**
+ * If the map is scaled using css transform scale(), pointer events for interactions will be offset.
+ * This function calculates the scale from the event so we can take that into account when handling the interactions.
+  * @param {HTMLElement} viewport Event target element (the map Canvas element)
+ * @return {Array} Array of x-scale and y-scale
+ */
+  getViewportScale(viewport) {
+    console.log({view: this, viewport})
+
+    const viewportPosition = viewport.getBoundingClientRect();
+    const size = this.getViewportSize_();
+
+    console.log('getViewportScale',{
+      viewportPosition,
+      size,
+      scale: viewportPosition.width / size[0]
+    })
+
+    return [
+      viewportPosition.width / size[0],
+      viewportPosition.height / size[1]
+    ]
+  }
+
   /**
    * Stores the viewport size on the view. The viewport size is not read every time from the DOM
    * to avoid performance hit and layout reflow.
