@@ -88,13 +88,16 @@ class DragPan extends PointerInteraction {
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    */
   handleDragEvent(mapBrowserEvent) {
+    const view = this.getMap().getView()
     if (!this.panning_) {
       this.panning_ = true;
-      this.getMap().getView().beginInteraction();
+      view.beginInteraction();
     }
     const targetPointers = this.targetPointers;
     let centroid = centroidFromPointers(targetPointers);
-    const [scaleX, scaleY] = this.getMap().getView().getViewportScale(this.getMap().getViewport()) ?? [1, 1];
+    const [scaleX, scaleY] = view.getViewportScale(
+      this.getMap().getViewport()
+    ) ?? [1, 1];
     centroid = [centroid[0] / scaleX, centroid[1] / scaleY];
     if (targetPointers.length == this.lastPointersCount_) {
       if (this.kinetic_) {
@@ -105,8 +108,6 @@ class DragPan extends PointerInteraction {
           this.lastCentroid[0] - centroid[0],
           centroid[1] - this.lastCentroid[1],
         ];
-        const map = mapBrowserEvent.map;
-        const view = map.getView();
         scaleCoordinate(delta, view.getResolution());
         rotateCoordinate(delta, view.getRotation());
         view.adjustCenterInternal(delta);

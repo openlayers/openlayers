@@ -88,7 +88,7 @@ class PinchZoom extends PointerInteraction {
 
     // scale anchor point.
     const viewportPosition = map.getViewport().getBoundingClientRect();
-    const [scaleX, scaleY] = map.getView().getViewportScale(map.getViewport()) ?? [1, 1];
+    const [scaleX, scaleY] = view.getViewportScale(map.getViewport()) ?? [1, 1];
     const centroid = centroidFromPointers(this.targetPointers);
     centroid[0] -= viewportPosition.left * scaleX;
     centroid[1] -= viewportPosition.top * scaleY;
