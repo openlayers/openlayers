@@ -81,7 +81,7 @@ const ModifyEventType = {
 /**
  * @typedef {Object} SegmentData
  * @property {Array<number>} [depth] Depth.
- * @property {import("../Feature").FeatureLike} feature Feature.
+ * @property {Feature} feature Feature.
  * @property {import("../geom/SimpleGeometry.js").default} geometry Geometry.
  * @property {number} [index] Index.
  * @property {Array<Array<number>>} segment Segment.
@@ -139,7 +139,7 @@ const ModifyEventType = {
 export class ModifyEvent extends Event {
   /**
    * @param {ModifyEventType} type Type.
-   * @param {Collection<import("../Feature").FeatureLike>} features
+   * @param {Collection<Feature>} features
    * The features modified.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent
    * Associated {@link module:ol/MapBrowserEvent~MapBrowserEvent}.
@@ -149,7 +149,7 @@ export class ModifyEvent extends Event {
 
     /**
      * The features being modified.
-     * @type {Collection<import("../Feature").FeatureLike>}
+     * @type {Collection<Feature>}
      * @api
      */
     this.features = features;
@@ -279,7 +279,7 @@ class Modify extends PointerInteraction {
     this.ignoreNextSingleClick_ = false;
 
     /**
-     * @type {Collection<import("../Feature").FeatureLike>}
+     * @type {Collection<Feature>}
      * @private
      */
     this.featuresBeingModified_ = null;
@@ -387,7 +387,7 @@ class Modify extends PointerInteraction {
     }
 
     /**
-     * @type {Collection<import("../Feature.js").FeatureLike>}
+     * @type {Collection<Feature>}
      * @private
      */
     this.features_ = features;
@@ -812,7 +812,7 @@ class Modify extends PointerInteraction {
 
   /**
    * @param {import("../coordinate.js").Coordinate} coordinates Coordinates.
-   * @param {Array<import("../Feature").FeatureLike>} features The features being modified.
+   * @param {Array<Feature>} features The features being modified.
    * @param {Array<import("../geom/SimpleGeometry.js").default>} geometries The geometries being modified.
    * @return {Feature} Vertex feature.
    * @private
@@ -1174,6 +1174,7 @@ class Modify extends PointerInteraction {
 
     /** @type {Array<SegmentData>|undefined} */
     let nodes;
+    /** @type {Point|undefined} */
     let hitPointGeometry;
     if (this.hitDetection_) {
       const layerFilter =
@@ -1183,21 +1184,20 @@ class Modify extends PointerInteraction {
       map.forEachFeatureAtPixel(
         pixel,
         (feature, layer, geometry) => {
-          geometry =
-            geometry ||
-            /** @type {import("../geom/SimpleGeometry").default} */ (
-              feature.getGeometry()
-            );
+          const geom = geometry || feature.getGeometry();
           if (
-            geometry.getType() === 'Point' &&
+            geom.getType() === 'Point' &&
+            feature instanceof Feature &&
             this.features_.getArray().includes(feature)
           ) {
-            hitPointGeometry = geometry;
-            const coordinate = geometry.getFlatCoordinates().slice(0, 2);
+            hitPointGeometry = /** @type {Point} */ (geom);
+            const coordinate = hitPointGeometry
+              .getFlatCoordinates()
+              .slice(0, 2);
             nodes = [
               {
                 feature,
-                geometry,
+                geometry: hitPointGeometry,
                 segment: [coordinate, coordinate],
               },
             ];
