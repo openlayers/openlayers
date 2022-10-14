@@ -19,8 +19,21 @@ async function build(input, {minify = true} = {}) {
         return code.replace('export let create;', '');
       },
     },
+    {
+      name: 'remove geotiff http client',
+      transform(code, id) {
+        if (
+          !id.match(
+            /geotiff[\/\\]dist-module[\/\\]source[\/\\]client[\/\\]http/
+          )
+        ) {
+          return null;
+        }
+        return 'export function HttpClient() {throw new Error("HttpClient is not supported")};';
+      },
+    },
     common(),
-    resolve(),
+    resolve({browser: true}),
     babel({
       babelHelpers: 'bundled',
       presets: [
@@ -45,9 +58,8 @@ async function build(input, {minify = true} = {}) {
       return `
         export function create() {
           const source = ${JSON.stringify(code)};
-          return new Worker(typeof Blob === 'undefined'
-            ? 'data:application/javascript;base64,' + Buffer.from(source, 'binary').toString('base64')
-            : URL.createObjectURL(new Blob([source], {type: 'application/javascript'})));
+          const url = URL.createObjectURL(new Blob([source], {type: 'application/javascript'}));
+          return new Worker(url);
         }
       `;
     },

@@ -9,7 +9,7 @@ const source = new GeoTIFF({
   sources: [{url: '/data/raster/non-square-pixels.tif'}],
 });
 
-new Map({
+const map = new Map({
   target: 'map',
   layers: [new TileLayer({source})],
   view: new View({
@@ -19,6 +19,8 @@ new Map({
   }),
 });
 
-render({
-  message: 'renders reprojected',
+map.once('loadend', () => {
+  render({
+    message: 'renders reprojected',
+  });
 });

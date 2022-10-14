@@ -3,41 +3,6 @@ import TileState from '../../../../../src/ol/TileState.js';
 
 describe('ol/source/GeoTIFF', function () {
   describe('constructor', function () {
-    it('sets convertToRGB false by default', function () {
-      const source = new GeoTIFFSource({
-        sources: [
-          {
-            url: 'spec/ol/source/images/0-0-0.tif',
-          },
-        ],
-      });
-      expect(source.convertToRGB_).to.be(false);
-    });
-
-    it('respects the convertToRGB option', function () {
-      const source = new GeoTIFFSource({
-        convertToRGB: true,
-        sources: [
-          {
-            url: 'spec/ol/source/images/0-0-0.tif',
-          },
-        ],
-      });
-      expect(source.convertToRGB_).to.be(true);
-    });
-
-    it('accepts auto convertToRGB', function () {
-      const source = new GeoTIFFSource({
-        convertToRGB: 'auto',
-        sources: [
-          {
-            url: 'spec/ol/source/images/0-0-0.tif',
-          },
-        ],
-      });
-      expect(source.convertToRGB_).to.be('auto');
-    });
-
     it('defaults to wrapX: false', function () {
       const source = new GeoTIFFSource({
         sources: [
@@ -125,6 +90,10 @@ describe('ol/source/GeoTIFF', function () {
       });
     });
 
+    afterEach(function () {
+      source.dispose();
+    });
+
     it('manages load states', function (done) {
       expect(source.getState()).to.be('loading');
       source.on('change', () => {
@@ -135,9 +104,11 @@ describe('ol/source/GeoTIFF', function () {
 
     it('configures itself from source metadata', function (done) {
       source.on('change', () => {
-        expect(source.addAlpha_).to.be(true);
+        // TODO: source.alphaAdded()
+        // expect(source.addAlpha_).to.be(true);
         expect(source.bandCount).to.be(4);
-        expect(source.nodataValues_).to.eql([[0]]);
+        // TODO: source.getNodataValues()
+        // expect(source.nodataValues_).to.eql([[0]]);
         expect(source.getTileGrid().getResolutions().length).to.be(1);
         expect(source.projection.getCode()).to.be('EPSG:4326');
         expect(source.projection.getUnits()).to.be('degrees');
