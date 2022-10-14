@@ -1357,6 +1357,21 @@ describe('ol/Map', function () {
         // 190 = clientY - target.style.top
         expect(position[1]).to.eql(190);
       });
+
+      it('takes scale transform into account', function () {
+        target.style.transformOrigin = '0px 0px';
+        target.style.transform = 'scale(0.5, 0.5)';
+        const map = new Map({target});
+        const browserEvent = {
+          type: 'click',
+          target,
+          clientX: 100,
+          clientY: 200,
+        };
+        const position = map.getEventPixel(browserEvent);
+        expect(position[0]).to.eql(160);
+        expect(position[1]).to.eql(380);
+      });
     });
 
     describe('#getOverlayById()', function () {

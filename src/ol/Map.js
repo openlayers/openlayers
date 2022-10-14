@@ -145,6 +145,7 @@ import {removeNode} from './dom.js';
  * element itself or the `id` of the element. If not specified at construction
  * time, {@link module:ol/Map~Map#setTarget} must be called for the map to be
  * rendered. If passed by element, the container can be in a secondary document.
+ * **Note:** CSS `transform` support for the target element is limited to `scale`.
  * @property {View|Promise<import("./View.js").ViewOptions>} [view] The map's view.  No layer sources will be
  * fetched unless this is specified at construction time or through
  * {@link module:ol/Map~Map#setView}.
@@ -778,12 +779,15 @@ class Map extends BaseObject {
 
   /**
    * Returns the map pixel position for a browser event relative to the viewport.
-   * @param {UIEvent} event Event.
+   * @param {UIEvent|{clientX: number, clientY: number}} event Event.
    * @return {import("./pixel.js").Pixel} Pixel.
    * @api
    */
   getEventPixel(event) {
     const viewportPosition = this.viewport_.getBoundingClientRect();
+    const viewportSize = this.getSize();
+    const scaleX = viewportPosition.width / viewportSize[0];
+    const scaleY = viewportPosition.height / viewportSize[1];
     const eventPosition =
       //FIXME Are we really calling this with a TouchEvent anywhere?
       'changedTouches' in event
@@ -791,8 +795,8 @@ class Map extends BaseObject {
         : /** @type {MouseEvent} */ (event);
 
     return [
-      eventPosition.clientX - viewportPosition.left,
-      eventPosition.clientY - viewportPosition.top,
+      (eventPosition.clientX - viewportPosition.left) / scaleX,
+      (eventPosition.clientY - viewportPosition.top) / scaleY,
     ];
   }
 

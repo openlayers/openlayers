@@ -88,12 +88,13 @@ class DragPan extends PointerInteraction {
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    */
   handleDragEvent(mapBrowserEvent) {
+    const map = mapBrowserEvent.map;
     if (!this.panning_) {
       this.panning_ = true;
-      this.getMap().getView().beginInteraction();
+      map.getView().beginInteraction();
     }
     const targetPointers = this.targetPointers;
-    const centroid = centroidFromPointers(targetPointers);
+    const centroid = map.getEventPixel(centroidFromPointers(targetPointers));
     if (targetPointers.length == this.lastPointersCount_) {
       if (this.kinetic_) {
         this.kinetic_.update(centroid[0], centroid[1]);

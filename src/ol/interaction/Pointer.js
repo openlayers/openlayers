@@ -190,7 +190,7 @@ class PointerInteraction extends Interaction {
 
 /**
  * @param {Array<PointerEvent>} pointerEvents List of events.
- * @return {import("../pixel.js").Pixel} Centroid pixel.
+ * @return {{clientX: number, clientY: number}} Centroid pixel.
  */
 export function centroid(pointerEvents) {
   const length = pointerEvents.length;
@@ -200,7 +200,7 @@ export function centroid(pointerEvents) {
     clientX += pointerEvents[i].clientX;
     clientY += pointerEvents[i].clientY;
   }
-  return [clientX / length, clientY / length];
+  return {clientX: clientX / length, clientY: clientY / length};
 }
 
 export default PointerInteraction;
