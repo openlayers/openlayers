@@ -181,7 +181,9 @@ class ExecutorGroup {
     if (newContext) {
       this.hitDetectionContext_ = createCanvasContext2D(
         contextSize,
-        contextSize
+        contextSize,
+        undefined,
+        {willReadFrequently: true}
       );
     }
     const context = this.hitDetectionContext_;
