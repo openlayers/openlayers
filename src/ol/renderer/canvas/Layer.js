@@ -30,10 +30,9 @@ export const canvasPool = [];
 let pixelContext = null;
 
 function createPixelContext() {
-  const canvas = document.createElement('canvas');
-  canvas.width = 1;
-  canvas.height = 1;
-  pixelContext = canvas.getContext('2d');
+  pixelContext = createCanvasContext2D(1, 1, undefined, {
+    willReadFrequently: true,
+  });
 }
 
 /**

@@ -10,6 +10,7 @@ import ReprojTile from '../reproj/Tile.js';
 import TileState from '../TileState.js';
 import WebGLArrayBuffer from './Buffer.js';
 import {ARRAY_BUFFER, STATIC_DRAW} from '../webgl.js';
+import {createCanvasContext2D} from '../dom.js';
 import {toSize} from '../size.js';
 
 /**
@@ -123,10 +124,9 @@ function uploadDataTexture(
 let pixelContext = null;
 
 function createPixelContext() {
-  const canvas = document.createElement('canvas');
-  canvas.width = 1;
-  canvas.height = 1;
-  pixelContext = canvas.getContext('2d');
+  pixelContext = createCanvasContext2D(1, 1, undefined, {
+    willReadFrequently: true,
+  });
 }
 
 /**
