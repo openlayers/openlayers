@@ -16,10 +16,27 @@ import {clamp} from '../math.js';
 import {createCanvasContext2D, releaseCanvas} from '../dom.js';
 import {getArea, getIntersection} from '../extent.js';
 import {listen, unlistenByKey} from '../events.js';
-import {toPromise} from '../functions.js';
 
 /**
- * @typedef {function(number, number, number, number) : import("../DataTile.js").default} FunctionType
+ * @typedef {function(number, number, number, number) : import("../DataTile.js").default} TileGetter
+ */
+
+/**
+ * @typedef {Object} Options
+ * @property {import("../proj/Projection.js").default} sourceProj Source projection.
+ * @property {import("../tilegrid/TileGrid.js").default} sourceTileGrid Source tile grid.
+ * @property {import("../proj/Projection.js").default} targetProj Target projection.
+ * @property {import("../tilegrid/TileGrid.js").default} targetTileGrid Target tile grid.
+ * @property {import("../tilecoord.js").TileCoord} tileCoord Coordinate of the tile.
+ * @property {import("../tilecoord.js").TileCoord} [wrappedTileCoord] Coordinate of the tile wrapped in X.
+ * @property {number} pixelRatio Pixel ratio.
+ * @property {number} gutter Gutter of the source tiles.
+ * @property {TileGetter} getTileFunction Function returning source tiles (z, x, y, pixelRatio).
+ * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
+ * the nearest neighbor is used when resampling.
+ * @property {number} [errorThreshold] Acceptable reprojection error (in px).
+ * @property {number} [transition=250] A duration for tile opacity
+ * transitions in milliseconds. A duration of 0 disables the opacity transition.
  */
 
 /**
@@ -30,53 +47,27 @@ import {toPromise} from '../functions.js';
  */
 class ReprojDataTile extends DataTile {
   /**
-   * @param {import("../proj/Projection.js").default} sourceProj Source projection.
-   * @param {import("../tilegrid/TileGrid.js").default} sourceTileGrid Source tile grid.
-   * @param {import("../proj/Projection.js").default} targetProj Target projection.
-   * @param {import("../tilegrid/TileGrid.js").default} targetTileGrid Target tile grid.
-   * @param {import("../tilecoord.js").TileCoord} tileCoord Coordinate of the tile.
-   * @param {import("../tilecoord.js").TileCoord} wrappedTileCoord Coordinate of the tile wrapped in X.
-   * @param {number} pixelRatio Pixel ratio.
-   * @param {number} gutter Gutter of the source tiles.
-   * @param {FunctionType} getTileFunction
-   *     Function returning source tiles (z, x, y, pixelRatio).
-   * @param {boolean} interpolate Use linear interpolation when resampling.
-   * @param {number} [errorThreshold] Acceptable reprojection error (in px).
+   * @param {Options} options Tile options.
    */
-  constructor(
-    sourceProj,
-    sourceTileGrid,
-    targetProj,
-    targetTileGrid,
-    tileCoord,
-    wrappedTileCoord,
-    pixelRatio,
-    gutter,
-    getTileFunction,
-    interpolate,
-    errorThreshold
-  ) {
+  constructor(options) {
     super({
-      tileCoord: tileCoord,
-      loader: function () {
-        return toPromise(function () {
-          return new Uint8Array(4);
-        });
-      },
-      interpolate: interpolate,
+      tileCoord: options.tileCoord,
+      loader: () => Promise.resolve(new Uint8Array(4)),
+      interpolate: options.interpolate,
+      transition: options.transition,
     });
 
     /**
      * @private
      * @type {number}
      */
-    this.pixelRatio_ = pixelRatio;
+    this.pixelRatio_ = options.pixelRatio;
 
     /**
      * @private
      * @type {number}
      */
-    this.gutter_ = gutter;
+    this.gutter_ = options.gutter;
 
     /**
      * @type {import("../DataTile.js").Data}
@@ -100,19 +91,19 @@ class ReprojDataTile extends DataTile {
      * @private
      * @type {import("../tilegrid/TileGrid.js").default}
      */
-    this.sourceTileGrid_ = sourceTileGrid;
+    this.sourceTileGrid_ = options.sourceTileGrid;
 
     /**
      * @private
      * @type {import("../tilegrid/TileGrid.js").default}
      */
-    this.targetTileGrid_ = targetTileGrid;
+    this.targetTileGrid_ = options.targetTileGrid;
 
     /**
      * @private
      * @type {import("../tilecoord.js").TileCoord}
      */
-    this.wrappedTileCoord_ = wrappedTileCoord ? wrappedTileCoord : tileCoord;
+    this.wrappedTileCoord_ = options.wrappedTileCoord || options.tileCoord;
 
     /**
      * @private
@@ -132,7 +123,7 @@ class ReprojDataTile extends DataTile {
      */
     this.sourceZ_ = 0;
 
-    const targetExtent = targetTileGrid.getTileCoordExtent(
+    const targetExtent = this.targetTileGrid_.getTileCoordExtent(
       this.wrappedTileCoord_
     );
     const maxTargetExtent = this.targetTileGrid_.getExtent();
@@ -149,6 +140,7 @@ class ReprojDataTile extends DataTile {
       return;
     }
 
+    const sourceProj = options.sourceProj;
     const sourceProjExtent = sourceProj.getExtent();
     if (sourceProjExtent) {
       if (!maxSourceExtent) {
@@ -158,10 +150,11 @@ class ReprojDataTile extends DataTile {
       }
     }
 
-    const targetResolution = targetTileGrid.getResolution(
+    const targetResolution = this.targetTileGrid_.getResolution(
       this.wrappedTileCoord_[0]
     );
 
+    const targetProj = options.targetProj;
     const sourceResolution = calculateSourceExtentResolution(
       sourceProj,
       targetProj,
@@ -177,7 +170,9 @@ class ReprojDataTile extends DataTile {
     }
 
     const errorThresholdInPixels =
-      errorThreshold !== undefined ? errorThreshold : ERROR_THRESHOLD;
+      options.errorThreshold !== undefined
+        ? options.errorThreshold
+        : ERROR_THRESHOLD;
 
     /**
      * @private
@@ -198,7 +193,7 @@ class ReprojDataTile extends DataTile {
       return;
     }
 
-    this.sourceZ_ = sourceTileGrid.getZForResolution(sourceResolution);
+    this.sourceZ_ = this.sourceTileGrid_.getZForResolution(sourceResolution);
     let sourceExtent = this.triangulation_.calculateSourceExtent();
 
     if (maxSourceExtent) {
@@ -221,14 +216,14 @@ class ReprojDataTile extends DataTile {
     if (!getArea(sourceExtent)) {
       this.state = TileState.EMPTY;
     } else {
-      const sourceRange = sourceTileGrid.getTileRangeForExtentAndZ(
+      const sourceRange = this.sourceTileGrid_.getTileRangeForExtentAndZ(
         sourceExtent,
         this.sourceZ_
       );
-
+      const getTile = options.getTileFunction;
       for (let srcX = sourceRange.minX; srcX <= sourceRange.maxX; srcX++) {
         for (let srcY = sourceRange.minY; srcY <= sourceRange.maxY; srcY++) {
-          const tile = getTileFunction(this.sourceZ_, srcX, srcY, pixelRatio);
+          const tile = getTile(this.sourceZ_, srcX, srcY, this.pixelRatio_);
           if (tile) {
             this.sourceTiles_.push(tile);
           }
