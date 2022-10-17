@@ -95,7 +95,7 @@
     "loglevelnext": "^5.0.5",
     "marked": "4.1.1",
     "metalsmith": "^2.5.0",
-    "mocha": "10.0.0",
+    "mocha": "10.1.0",
     "pixelmatch": "^5.1.0",
     "pngjs": "^6.0.0",
     "proj4": "2.8.0",
