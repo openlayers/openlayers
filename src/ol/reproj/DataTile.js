@@ -342,7 +342,7 @@ class ReprojDataTile extends DataTile {
           const width = pixelSize[0];
           const height = pixelSize[1];
           const context = createCanvasContext2D(width, height, canvasPool);
-          const imageData = context.getImageData(0, 0, width, height);
+          const imageData = context.createImageData(width, height);
           const data = imageData.data;
           let offset = reproj * 3;
           for (let j = 0, len = data.length; j < len; j += 4) {
