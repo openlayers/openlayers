@@ -38,8 +38,8 @@ describe('ol/reproj/DataTile', () => {
           const offset = (j * size + i) * 4;
           output[offset] = i;
           output[offset + 1] = j;
-          output[offset + 2] = i % 2 === 0 ? i : size - 1 - i;
-          output[offset + 3] = j % 2 === 0 ? size - 1 - j : j;
+          output[offset + 2] = (i + x) % 2 === 0 ? i : size - 1 - i;
+          output[offset + 3] = (j + x) % 2 === 0 ? size - 1 - j : j;
         }
       }
       return output;
@@ -55,7 +55,8 @@ describe('ol/reproj/DataTile', () => {
     }
     document.body.removeChild(target);
     document.body.removeChild(targetR);
-    delete proj4.defs['EPSG:27700'];
+    delete proj4.defs['EPSG:32632'];
+    delete proj4.defs['EPSG:32636'];
     clearAllProjections();
     addCommon();
   });
