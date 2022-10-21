@@ -434,97 +434,97 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   /**
    * Asynchronous layer level hit detection.
    * @param {import("../../pixel.js").Pixel} pixel Pixel.
-   * @return {Promise<Array<import("../../Feature").default>>} Promise that resolves with an array of features.
+   * @return {Promise<Array<import("../../Feature.js").FeatureLike>>} Promise that resolves with an array of features.
    */
   getFeatures(pixel) {
-    return new Promise(
-      function (resolve, reject) {
-        const layer =
-          /** @type {import("../../layer/VectorTile.js").default} */ (
-            this.getLayer()
+    return new Promise((resolve, reject) => {
+      const layer = this.getLayer();
+      const layerUid = getUid(layer);
+      const source = layer.getSource();
+      const projection = this.renderedProjection;
+      const projectionExtent = projection.getExtent();
+      const resolution = this.renderedResolution;
+      const tileGrid = source.getTileGridForProjection(projection);
+      const coordinate = applyTransform(
+        this.renderedPixelToCoordinateTransform_,
+        pixel.slice()
+      );
+      const tileCoord = tileGrid.getTileCoordForCoordAndResolution(
+        coordinate,
+        resolution
+      );
+      /** @type {import("../../VectorRenderTile.js").default|undefined} */
+      let tile;
+      for (let i = 0, ii = this.renderedTiles.length; i < ii; ++i) {
+        if (
+          tileCoord.toString() === this.renderedTiles[i].tileCoord.toString()
+        ) {
+          tile = /** @type {import("../../VectorRenderTile.js").default} */ (
+            this.renderedTiles[i]
           );
-        const layerUid = getUid(layer);
-        const source = layer.getSource();
-        const projection = this.renderedProjection;
-        const projectionExtent = projection.getExtent();
-        const resolution = this.renderedResolution;
-        const tileGrid = source.getTileGridForProjection(projection);
-        const coordinate = applyTransform(
-          this.renderedPixelToCoordinateTransform_,
-          pixel.slice()
-        );
-        const tileCoord = tileGrid.getTileCoordForCoordAndResolution(
-          coordinate,
-          resolution
-        );
-        let tile;
-        for (let i = 0, ii = this.renderedTiles.length; i < ii; ++i) {
-          if (
-            tileCoord.toString() === this.renderedTiles[i].tileCoord.toString()
-          ) {
-            tile = this.renderedTiles[i];
-            if (tile.getState() === TileState.LOADED) {
-              const extent = tileGrid.getTileCoordExtent(tile.tileCoord);
-              if (
-                source.getWrapX() &&
-                projection.canWrapX() &&
-                !containsExtent(projectionExtent, extent)
-              ) {
-                wrapX(coordinate, projection);
-              }
-              break;
+          if (tile.getState() === TileState.LOADED) {
+            const extent = tileGrid.getTileCoordExtent(tile.tileCoord);
+            if (
+              source.getWrapX() &&
+              projection.canWrapX() &&
+              !containsExtent(projectionExtent, extent)
+            ) {
+              wrapX(coordinate, projection);
             }
-            tile = undefined;
+            break;
           }
+          tile = undefined;
         }
-        if (!tile || tile.loadingSourceTiles > 0) {
-          resolve([]);
-          return;
-        }
-        const extent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
-        const corner = getTopLeft(extent);
-        const tilePixel = [
-          (coordinate[0] - corner[0]) / resolution,
-          (corner[1] - coordinate[1]) / resolution,
+      }
+      if (!tile || tile.loadingSourceTiles > 0) {
+        resolve([]);
+        return;
+      }
+      const extent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
+      const corner = getTopLeft(extent);
+      const tilePixel = [
+        (coordinate[0] - corner[0]) / resolution,
+        (corner[1] - coordinate[1]) / resolution,
+      ];
+      /** @type {Array<import("../../Feature.js").FeatureLike>} */
+      const features = tile
+        .getSourceTiles()
+        .reduce(function (accumulator, sourceTile) {
+          return accumulator.concat(sourceTile.getFeatures());
+        }, []);
+      /** @type {ImageData|undefined} */
+      let hitDetectionImageData = tile.hitDetectionImageData[layerUid];
+      if (!hitDetectionImageData) {
+        const tileSize = toSize(
+          tileGrid.getTileSize(
+            tileGrid.getZForResolution(resolution, source.zDirection)
+          )
+        );
+        const rotation = this.renderedRotation_;
+        const transforms = [
+          this.getRenderTransform(
+            tileGrid.getTileCoordCenter(tile.wrappedTileCoord),
+            resolution,
+            0,
+            HIT_DETECT_RESOLUTION,
+            tileSize[0] * HIT_DETECT_RESOLUTION,
+            tileSize[1] * HIT_DETECT_RESOLUTION,
+            0
+          ),
         ];
-        const features = tile
-          .getSourceTiles()
-          .reduce(function (accumulator, sourceTile) {
-            return accumulator.concat(sourceTile.getFeatures());
-          }, []);
-        let hitDetectionImageData = tile.hitDetectionImageData[layerUid];
-        if (!hitDetectionImageData && !this.animatingOrInteracting_) {
-          const tileSize = toSize(
-            tileGrid.getTileSize(
-              tileGrid.getZForResolution(resolution, source.zDirection)
-            )
-          );
-          const rotation = this.renderedRotation_;
-          const transforms = [
-            this.getRenderTransform(
-              tileGrid.getTileCoordCenter(tile.wrappedTileCoord),
-              resolution,
-              0,
-              HIT_DETECT_RESOLUTION,
-              tileSize[0] * HIT_DETECT_RESOLUTION,
-              tileSize[1] * HIT_DETECT_RESOLUTION,
-              0
-            ),
-          ];
-          hitDetectionImageData = createHitDetectionImageData(
-            tileSize,
-            transforms,
-            features,
-            layer.getStyleFunction(),
-            tileGrid.getTileCoordExtent(tile.wrappedTileCoord),
-            tile.getReplayState(layer).renderedResolution,
-            rotation
-          );
-          tile.hitDetectionImageData[layerUid] = hitDetectionImageData;
-        }
-        resolve(hitDetect(tilePixel, features, hitDetectionImageData));
-      }.bind(this)
-    );
+        hitDetectionImageData = createHitDetectionImageData(
+          tileSize,
+          transforms,
+          features,
+          layer.getStyleFunction(),
+          tileGrid.getTileCoordExtent(tile.wrappedTileCoord),
+          tile.getReplayState(layer).renderedResolution,
+          rotation
+        );
+        tile.hitDetectionImageData[layerUid] = hitDetectionImageData;
+      }
+      resolve(hitDetect(tilePixel, features, hitDetectionImageData));
+    });
   }
 
   /**

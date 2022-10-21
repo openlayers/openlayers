@@ -196,14 +196,8 @@ class ImageSource extends Source {
       extent,
       resolution,
       pixelRatio,
-      function (extent, resolution, pixelRatio) {
-        return this.getImageInternal(
-          extent,
-          resolution,
-          pixelRatio,
-          sourceProjection
-        );
-      }.bind(this),
+      (extent, resolution, pixelRatio) =>
+        this.getImageInternal(extent, resolution, pixelRatio, sourceProjection),
       this.getInterpolate()
     );
     this.reprojectedRevision_ = this.getRevision();

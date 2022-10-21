@@ -4,6 +4,7 @@ import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
 import View from '../../../../src/ol/View.js';
 
 const source = new GeoTIFF({
+  transition: 0,
   convertToRGB: true,
   sources: [{url: '/data/raster/non-square-pixels.tif'}],
 });

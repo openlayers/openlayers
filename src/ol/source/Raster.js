@@ -924,11 +924,15 @@ function getImageData(layer, frameState) {
   }
 
   if (!sharedContext) {
-    sharedContext = createCanvasContext2D(width, height);
+    sharedContext = createCanvasContext2D(width, height, undefined, {
+      willReadFrequently: true,
+    });
   } else {
     const canvas = sharedContext.canvas;
     if (canvas.width !== width || canvas.height !== height) {
-      sharedContext = createCanvasContext2D(width, height);
+      sharedContext = createCanvasContext2D(width, height, undefined, {
+        willReadFrequently: true,
+      });
     } else {
       sharedContext.clearRect(0, 0, width, height);
     }

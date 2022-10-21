@@ -202,51 +202,49 @@ class Triangulation {
 
       // Shift triangles to be as close to `leftBound` as possible
       // (if the distance is more than `worldWidth / 2` it can be closer.
-      this.triangles_.forEach(
-        function (triangle) {
-          if (
-            Math.max(
-              triangle.source[0][0],
-              triangle.source[1][0],
-              triangle.source[2][0]
-            ) -
-              leftBound >
-            this.sourceWorldWidth_ / 2
-          ) {
-            const newTriangle = [
-              [triangle.source[0][0], triangle.source[0][1]],
-              [triangle.source[1][0], triangle.source[1][1]],
-              [triangle.source[2][0], triangle.source[2][1]],
-            ];
-            if (newTriangle[0][0] - leftBound > this.sourceWorldWidth_ / 2) {
-              newTriangle[0][0] -= this.sourceWorldWidth_;
-            }
-            if (newTriangle[1][0] - leftBound > this.sourceWorldWidth_ / 2) {
-              newTriangle[1][0] -= this.sourceWorldWidth_;
-            }
-            if (newTriangle[2][0] - leftBound > this.sourceWorldWidth_ / 2) {
-              newTriangle[2][0] -= this.sourceWorldWidth_;
-            }
-
-            // Rarely (if the extent contains both the dateline and prime meridian)
-            // the shift can in turn break some triangles.
-            // Detect this here and don't shift in such cases.
-            const minX = Math.min(
-              newTriangle[0][0],
-              newTriangle[1][0],
-              newTriangle[2][0]
-            );
-            const maxX = Math.max(
-              newTriangle[0][0],
-              newTriangle[1][0],
-              newTriangle[2][0]
-            );
-            if (maxX - minX < this.sourceWorldWidth_ / 2) {
-              triangle.source = newTriangle;
-            }
+      this.triangles_.forEach((triangle) => {
+        if (
+          Math.max(
+            triangle.source[0][0],
+            triangle.source[1][0],
+            triangle.source[2][0]
+          ) -
+            leftBound >
+          this.sourceWorldWidth_ / 2
+        ) {
+          const newTriangle = [
+            [triangle.source[0][0], triangle.source[0][1]],
+            [triangle.source[1][0], triangle.source[1][1]],
+            [triangle.source[2][0], triangle.source[2][1]],
+          ];
+          if (newTriangle[0][0] - leftBound > this.sourceWorldWidth_ / 2) {
+            newTriangle[0][0] -= this.sourceWorldWidth_;
           }
-        }.bind(this)
-      );
+          if (newTriangle[1][0] - leftBound > this.sourceWorldWidth_ / 2) {
+            newTriangle[1][0] -= this.sourceWorldWidth_;
+          }
+          if (newTriangle[2][0] - leftBound > this.sourceWorldWidth_ / 2) {
+            newTriangle[2][0] -= this.sourceWorldWidth_;
+          }
+
+          // Rarely (if the extent contains both the dateline and prime meridian)
+          // the shift can in turn break some triangles.
+          // Detect this here and don't shift in such cases.
+          const minX = Math.min(
+            newTriangle[0][0],
+            newTriangle[1][0],
+            newTriangle[2][0]
+          );
+          const maxX = Math.max(
+            newTriangle[0][0],
+            newTriangle[1][0],
+            newTriangle[2][0]
+          );
+          if (maxX - minX < this.sourceWorldWidth_ / 2) {
+            triangle.source = newTriangle;
+          }
+        }
+      });
     }
 
     transformInvCache = {};

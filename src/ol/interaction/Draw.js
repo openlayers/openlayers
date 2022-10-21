@@ -1060,20 +1060,17 @@ class Draw extends PointerInteraction {
     }
 
     this.lastDragTime_ = Date.now();
-    this.downTimeout_ = setTimeout(
-      function () {
-        this.handlePointerMove_(
-          new MapBrowserEvent(
-            MapBrowserEventType.POINTERMOVE,
-            event.map,
-            event.originalEvent,
-            false,
-            event.frameState
-          )
-        );
-      }.bind(this),
-      this.dragVertexDelay_
-    );
+    this.downTimeout_ = setTimeout(() => {
+      this.handlePointerMove_(
+        new MapBrowserEvent(
+          MapBrowserEventType.POINTERMOVE,
+          event.map,
+          event.originalEvent,
+          false,
+          event.frameState
+        )
+      );
+    }, this.dragVertexDelay_);
     this.downPx_ = event.pixel;
     return true;
   }

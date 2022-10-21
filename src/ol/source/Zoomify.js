@@ -273,13 +273,10 @@ class Zoomify extends TileImage {
     );
     const testTileUrl = tileUrlFunction(tileUrl, 1, null);
     const image = new Image();
-    image.addEventListener(
-      'error',
-      function () {
-        tileWidth = tileSize;
-        this.changed();
-      }.bind(this)
-    );
+    image.addEventListener('error', () => {
+      tileWidth = tileSize;
+      this.changed();
+    });
     image.src = testTileUrl;
   }
 }

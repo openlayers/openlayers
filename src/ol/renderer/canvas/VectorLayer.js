@@ -63,7 +63,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     this.animatingOrInteracting_;
 
     /**
-     * @type {ImageData}
+     * @type {ImageData|null}
      */
     this.hitDetectionImageData_ = null;
 
@@ -334,100 +334,95 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   /**
    * Asynchronous layer level hit detection.
    * @param {import("../../pixel.js").Pixel} pixel Pixel.
-   * @return {Promise<Array<import("../../Feature").default>>} Promise that resolves with an array of features.
+   * @return {Promise<Array<import("../../Feature").default>>} Promise
+   * that resolves with an array of features.
    */
   getFeatures(pixel) {
-    return new Promise(
-      /**
-       * @param {function(Array<import("../../Feature").default|import("../../render/Feature").default>): void} resolve Resolver function.
-       * @this {CanvasVectorLayerRenderer}
-       */
-      function (resolve) {
-        if (!this.hitDetectionImageData_ && !this.animatingOrInteracting_) {
-          const size = [this.context.canvas.width, this.context.canvas.height];
-          apply(this.pixelTransform, size);
-          const center = this.renderedCenter_;
-          const resolution = this.renderedResolution_;
-          const rotation = this.renderedRotation_;
-          const projection = this.renderedProjection_;
-          const extent = this.wrappedRenderedExtent_;
-          const layer = this.getLayer();
-          const transforms = [];
-          const width = size[0] * HIT_DETECT_RESOLUTION;
-          const height = size[1] * HIT_DETECT_RESOLUTION;
-          transforms.push(
-            this.getRenderTransform(
-              center,
-              resolution,
-              rotation,
-              HIT_DETECT_RESOLUTION,
-              width,
-              height,
-              0
-            ).slice()
-          );
-          const source = layer.getSource();
-          const projectionExtent = projection.getExtent();
-          if (
-            source.getWrapX() &&
-            projection.canWrapX() &&
-            !containsExtent(projectionExtent, extent)
-          ) {
-            let startX = extent[0];
-            const worldWidth = getWidth(projectionExtent);
-            let world = 0;
-            let offsetX;
-            while (startX < projectionExtent[0]) {
-              --world;
-              offsetX = worldWidth * world;
-              transforms.push(
-                this.getRenderTransform(
-                  center,
-                  resolution,
-                  rotation,
-                  HIT_DETECT_RESOLUTION,
-                  width,
-                  height,
-                  offsetX
-                ).slice()
-              );
-              startX += worldWidth;
-            }
-            world = 0;
-            startX = extent[2];
-            while (startX > projectionExtent[2]) {
-              ++world;
-              offsetX = worldWidth * world;
-              transforms.push(
-                this.getRenderTransform(
-                  center,
-                  resolution,
-                  rotation,
-                  HIT_DETECT_RESOLUTION,
-                  width,
-                  height,
-                  offsetX
-                ).slice()
-              );
-              startX -= worldWidth;
-            }
-          }
-
-          this.hitDetectionImageData_ = createHitDetectionImageData(
-            size,
-            transforms,
-            this.renderedFeatures_,
-            layer.getStyleFunction(),
-            extent,
+    return new Promise((resolve) => {
+      if (!this.hitDetectionImageData_ && !this.animatingOrInteracting_) {
+        const size = [this.context.canvas.width, this.context.canvas.height];
+        apply(this.pixelTransform, size);
+        const center = this.renderedCenter_;
+        const resolution = this.renderedResolution_;
+        const rotation = this.renderedRotation_;
+        const projection = this.renderedProjection_;
+        const extent = this.wrappedRenderedExtent_;
+        const layer = this.getLayer();
+        const transforms = [];
+        const width = size[0] * HIT_DETECT_RESOLUTION;
+        const height = size[1] * HIT_DETECT_RESOLUTION;
+        transforms.push(
+          this.getRenderTransform(
+            center,
             resolution,
-            rotation
-          );
-        }
-        resolve(
-          hitDetect(pixel, this.renderedFeatures_, this.hitDetectionImageData_)
+            rotation,
+            HIT_DETECT_RESOLUTION,
+            width,
+            height,
+            0
+          ).slice()
         );
-      }.bind(this)
-    );
+        const source = layer.getSource();
+        const projectionExtent = projection.getExtent();
+        if (
+          source.getWrapX() &&
+          projection.canWrapX() &&
+          !containsExtent(projectionExtent, extent)
+        ) {
+          let startX = extent[0];
+          const worldWidth = getWidth(projectionExtent);
+          let world = 0;
+          let offsetX;
+          while (startX < projectionExtent[0]) {
+            --world;
+            offsetX = worldWidth * world;
+            transforms.push(
+              this.getRenderTransform(
+                center,
+                resolution,
+                rotation,
+                HIT_DETECT_RESOLUTION,
+                width,
+                height,
+                offsetX
+              ).slice()
+            );
+            startX += worldWidth;
+          }
+          world = 0;
+          startX = extent[2];
+          while (startX > projectionExtent[2]) {
+            ++world;
+            offsetX = worldWidth * world;
+            transforms.push(
+              this.getRenderTransform(
+                center,
+                resolution,
+                rotation,
+                HIT_DETECT_RESOLUTION,
+                width,
+                height,
+                offsetX
+              ).slice()
+            );
+            startX -= worldWidth;
+          }
+        }
+
+        this.hitDetectionImageData_ = createHitDetectionImageData(
+          size,
+          transforms,
+          this.renderedFeatures_,
+          layer.getStyleFunction(),
+          extent,
+          resolution,
+          rotation
+        );
+      }
+      resolve(
+        hitDetect(pixel, this.renderedFeatures_, this.hitDetectionImageData_)
+      );
+    });
   }
 
   /**
@@ -679,9 +674,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const render =
       /**
        * @param {import("../../Feature.js").default} feature Feature.
-       * @this {CanvasVectorLayerRenderer}
        */
-      function (feature) {
+      (feature) => {
         let styles;
         const styleFunction =
           feature.getStyleFunction() || vectorLayer.getStyleFunction();
@@ -699,7 +693,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
           );
           ready = ready && !dirty;
         }
-      }.bind(this);
+      };
 
     const userExtent = toUserExtent(extent, projection);
     /** @type {Array<import("../../Feature.js").default>} */

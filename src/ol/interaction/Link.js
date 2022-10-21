@@ -52,9 +52,13 @@ function differentArray(a, b) {
   return differentNumber(a[0], b[0]) || differentNumber(a[1], b[1]);
 }
 
+/** @typedef {'x'|'y'|'z'|'r'|'l'} Params */
+
 /**
  * @typedef {Object} Options
  * @property {boolean|import('../View.js').AnimationOptions} [animate=true] Animate view transitions.
+ * @property {Array<Params>} [params=['x', 'y', 'z', 'r', 'l']] Properties to track. Default is to track
+ * `x` (center x), `y` (center y), `z` (zoom), `r` (rotation) and `l` (layers).
  * @property {boolean} [replace=false] Replace the current URL without creating the new entry in browser history.
  * By default, changes in the map state result in a new entry being added to the browser history.
  * @property {string} [prefix=''] By default, the URL will be updated with search parameters x, y, z, and r.  To
@@ -76,7 +80,12 @@ class Link extends Interaction {
     super();
 
     options = Object.assign(
-      {animate: true, replace: false, prefix: ''},
+      {
+        animate: true,
+        params: ['x', 'y', 'z', 'r', 'l'],
+        replace: false,
+        prefix: '',
+      },
       options || {}
     );
 
@@ -94,6 +103,15 @@ class Link extends Interaction {
      * @private
      */
     this.animationOptions_ = animationOptions;
+
+    /**
+     * @type {Object<Params, boolean>}
+     * @private
+     */
+    this.params_ = options.params.reduce((acc, value) => {
+      acc[value] = true;
+      return acc;
+    }, {});
 
     /**
      * @private
@@ -151,6 +169,9 @@ class Link extends Interaction {
    * @param {string} value The param value.
    */
   set_(params, name, value) {
+    if (!(name in this.params_)) {
+      return;
+    }
     params.set(this.getParamName_(name), value);
   }
 
@@ -160,6 +181,9 @@ class Link extends Interaction {
    * @param {string} name The unprefixed parameter name.
    */
   delete_(params, name) {
+    if (!(name in this.params_)) {
+      return;
+    }
     params.delete(this.getParamName_(name));
   }
 
@@ -259,13 +283,13 @@ class Link extends Interaction {
     const viewProperties = {};
 
     const zoom = readNumber(this.get_(params, 'z'));
-    if (differentNumber(zoom, view.getZoom())) {
+    if ('z' in this.params_ && differentNumber(zoom, view.getZoom())) {
       updateView = true;
       viewProperties.zoom = zoom;
     }
 
     const rotation = readNumber(this.get_(params, 'r'));
-    if (differentNumber(rotation, view.getRotation())) {
+    if ('r' in this.params_ && differentNumber(rotation, view.getRotation())) {
       updateView = true;
       viewProperties.rotation = rotation;
     }
@@ -274,7 +298,10 @@ class Link extends Interaction {
       readNumber(this.get_(params, 'x')),
       readNumber(this.get_(params, 'y')),
     ];
-    if (differentArray(center, view.getCenter())) {
+    if (
+      ('x' in this.params_ || 'y' in this.params_) &&
+      differentArray(center, view.getCenter())
+    ) {
       updateView = true;
       viewProperties.center = center;
     }
@@ -297,7 +324,11 @@ class Link extends Interaction {
 
     const layers = map.getAllLayers();
     const layersParam = this.get_(params, 'l');
-    if (layersParam && layersParam.length === layers.length) {
+    if (
+      'l' in this.params_ &&
+      layersParam &&
+      layersParam.length === layers.length
+    ) {
       for (let i = 0, ii = layers.length; i < ii; ++i) {
         const value = parseInt(layersParam[i]);
         if (!isNaN(value)) {
@@ -347,7 +378,7 @@ class Link extends Interaction {
 
     if (url.href !== window.location.href) {
       if (initial || this.replace_) {
-        window.history.replaceState(null, '', url);
+        window.history.replaceState(history.state, '', url);
       } else {
         window.history.pushState(null, '', url);
       }

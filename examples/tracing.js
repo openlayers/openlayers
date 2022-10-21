@@ -28,7 +28,7 @@ const baseVector = new VectorLayer({
   },
 });
 
-// this is were the drawn features go
+// this is where the drawn features go
 const drawVector = new VectorLayer({
   source: new VectorSource(),
   style: {

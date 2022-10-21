@@ -46,7 +46,7 @@ const DEFAULT_FRAGMENT_SHADER = `
 /**
  * @typedef {Object} UniformInternalDescription
  * @property {import("./Helper").UniformValue} value Value
- * @property {number} location Location
+ * @property {WebGLUniformLocation} location Location
  * @property {WebGLTexture} [texture] Texture
  * @private
  */
@@ -168,14 +168,12 @@ class WebGLPostProcessingPass {
      */
     this.uniforms_ = [];
     options.uniforms &&
-      Object.keys(options.uniforms).forEach(
-        function (name) {
-          this.uniforms_.push({
-            value: options.uniforms[name],
-            location: gl.getUniformLocation(this.renderTargetProgram_, name),
-          });
-        }.bind(this)
-      );
+      Object.keys(options.uniforms).forEach((name) => {
+        this.uniforms_.push({
+          value: options.uniforms[name],
+          location: gl.getUniformLocation(this.renderTargetProgram_, name),
+        });
+      });
   }
 
   /**

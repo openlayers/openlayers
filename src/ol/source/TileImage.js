@@ -328,9 +328,8 @@ class TileImage extends UrlTile {
       wrappedTileCoord,
       this.getTilePixelRatio(pixelRatio),
       this.getGutter(),
-      function (z, x, y, pixelRatio) {
-        return this.getTileInternal(z, x, y, pixelRatio, sourceProjection);
-      }.bind(this),
+      (z, x, y, pixelRatio) =>
+        this.getTileInternal(z, x, y, pixelRatio, sourceProjection),
       this.reprojectionErrorThreshold_,
       this.renderReprojectionEdges_,
       this.getInterpolate()
@@ -353,7 +352,7 @@ class TileImage extends UrlTile {
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
    * @param {!import("../proj/Projection.js").default} projection Projection.
-   * @return {!(ImageTile|ReprojTile)} Tile.
+   * @return {!ImageTile} Tile.
    * @protected
    */
   getTileInternal(z, x, y, pixelRatio, projection) {

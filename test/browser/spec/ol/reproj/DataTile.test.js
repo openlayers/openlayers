@@ -1,5 +1,6 @@
 import DataTileSource from '../../../../../src/ol/source/DataTile.js';
 import Map from '../../../../../src/ol/Map.js';
+import ReprojDataTile from '../../../../../src/ol/reproj/DataTile.js';
 import View from '../../../../../src/ol/View.js';
 import WebGLTileLayer from '../../../../../src/ol/layer/WebGLTile.js';
 import {
@@ -9,7 +10,7 @@ import {
   transform,
   transformExtent,
 } from '../../../../../src/ol/proj.js';
-import {createXYZ} from '../../../../../src/ol/tilegrid.js';
+import {createXYZ, getForProjection} from '../../../../../src/ol/tilegrid.js';
 import {register} from '../../../../../src/ol/proj/proj4.js';
 
 describe('ol/reproj/DataTile', () => {
@@ -37,8 +38,8 @@ describe('ol/reproj/DataTile', () => {
           const offset = (j * size + i) * 4;
           output[offset] = i;
           output[offset + 1] = j;
-          output[offset + 2] = i % 2 === 0 ? i : size - 1 - i;
-          output[offset + 3] = j % 2 === 0 ? size - 1 - j : j;
+          output[offset + 2] = (i + x) % 2 === 0 ? i : size - 1 - i;
+          output[offset + 3] = (j + x) % 2 === 0 ? size - 1 - j : j;
         }
       }
       return output;
@@ -46,13 +47,50 @@ describe('ol/reproj/DataTile', () => {
   });
 
   afterEach(() => {
-    map.setTarget(null);
-    mapR.setTarget(null);
+    if (map) {
+      map.setTarget(null);
+    }
+    if (mapR) {
+      mapR.setTarget(null);
+    }
     document.body.removeChild(target);
     document.body.removeChild(targetR);
-    delete proj4.defs['EPSG:27700'];
+    delete proj4.defs['EPSG:32632'];
+    delete proj4.defs['EPSG:32636'];
     clearAllProjections();
     addCommon();
+  });
+
+  it('accepts a transition option', () => {
+    const sourceProj = getProjection('EPSG:4326');
+    const targetProj = getProjection('EPSG:3857');
+
+    /**
+     * @type {import("../../../../../src/ol/reproj/DataTile.js").Options}
+     */
+    const options = {
+      sourceProj,
+      sourceTileGrid: getForProjection(sourceProj),
+      targetProj,
+      targetTileGrid: getForProjection(targetProj),
+      tileCoord: [0, 0, 0],
+      pixelRatio: 1,
+      gutter: 0,
+      getTileFunction: (z, x, y, pixelRatio) => null,
+    };
+
+    const withTransition = new ReprojDataTile({
+      ...options,
+      transition: 42,
+    });
+
+    const withoutTransition = new ReprojDataTile({
+      ...options,
+      transition: 0,
+    });
+
+    expect(withTransition.getAlpha('test', 0)).to.be.lessThan(1);
+    expect(withoutTransition.getAlpha('test', 0)).to.be(1);
   });
 
   it('pixel data reprojected from EPSG:4326 to EPSG:3857 exactly matches original', (done) => {

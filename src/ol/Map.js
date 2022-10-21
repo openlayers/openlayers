@@ -145,6 +145,7 @@ import {removeNode} from './dom.js';
  * element itself or the `id` of the element. If not specified at construction
  * time, {@link module:ol/Map~Map#setTarget} must be called for the map to be
  * rendered. If passed by element, the container can be in a secondary document.
+ * **Note:** CSS `transform` support for the target element is limited to `scale`.
  * @property {View|Promise<import("./View.js").ViewOptions>} [view] The map's view.  No layer sources will be
  * fetched unless this is specified at construction time or through
  * {@link module:ol/Map~Map#setView}.
@@ -491,9 +492,9 @@ class Map extends BaseObject {
       /**
        * @param {import("./Collection.js").CollectionEvent<import("./control/Control.js").default>} event CollectionEvent
        */
-      function (event) {
+      (event) => {
         event.element.setMap(this);
-      }.bind(this)
+      }
     );
 
     this.controls.addEventListener(
@@ -501,9 +502,9 @@ class Map extends BaseObject {
       /**
        * @param {import("./Collection.js").CollectionEvent<import("./control/Control.js").default>} event CollectionEvent.
        */
-      function (event) {
+      (event) => {
         event.element.setMap(null);
-      }.bind(this)
+      }
     );
 
     this.interactions.addEventListener(
@@ -511,9 +512,9 @@ class Map extends BaseObject {
       /**
        * @param {import("./Collection.js").CollectionEvent<import("./interaction/Interaction.js").default>} event CollectionEvent.
        */
-      function (event) {
+      (event) => {
         event.element.setMap(this);
-      }.bind(this)
+      }
     );
 
     this.interactions.addEventListener(
@@ -521,9 +522,9 @@ class Map extends BaseObject {
       /**
        * @param {import("./Collection.js").CollectionEvent<import("./interaction/Interaction.js").default>} event CollectionEvent.
        */
-      function (event) {
+      (event) => {
         event.element.setMap(null);
-      }.bind(this)
+      }
     );
 
     this.overlays_.addEventListener(
@@ -531,9 +532,9 @@ class Map extends BaseObject {
       /**
        * @param {import("./Collection.js").CollectionEvent<import("./Overlay.js").default>} event CollectionEvent.
        */
-      function (event) {
+      (event) => {
         this.addOverlayInternal_(event.element);
-      }.bind(this)
+      }
     );
 
     this.overlays_.addEventListener(
@@ -541,33 +542,31 @@ class Map extends BaseObject {
       /**
        * @param {import("./Collection.js").CollectionEvent<import("./Overlay.js").default>} event CollectionEvent.
        */
-      function (event) {
+      (event) => {
         const id = event.element.getId();
         if (id !== undefined) {
           delete this.overlayIdIndex_[id.toString()];
         }
         event.element.setMap(null);
-      }.bind(this)
+      }
     );
 
     this.controls.forEach(
       /**
        * @param {import("./control/Control.js").default} control Control.
-       * @this {Map}
        */
-      function (control) {
+      (control) => {
         control.setMap(this);
-      }.bind(this)
+      }
     );
 
     this.interactions.forEach(
       /**
        * @param {import("./interaction/Interaction.js").default} interaction Interaction.
-       * @this {Map}
        */
-      function (interaction) {
+      (interaction) => {
         interaction.setMap(this);
-      }.bind(this)
+      }
     );
 
     this.overlays_.forEach(this.addOverlayInternal_.bind(this));
@@ -780,12 +779,16 @@ class Map extends BaseObject {
 
   /**
    * Returns the map pixel position for a browser event relative to the viewport.
-   * @param {UIEvent} event Event.
+   * @param {UIEvent|{clientX: number, clientY: number}} event Event.
    * @return {import("./pixel.js").Pixel} Pixel.
    * @api
    */
   getEventPixel(event) {
-    const viewportPosition = this.viewport_.getBoundingClientRect();
+    const viewport = this.viewport_;
+    const viewportPosition = viewport.getBoundingClientRect();
+    const viewportSize = this.getSize();
+    const scaleX = viewportPosition.width / viewportSize[0];
+    const scaleY = viewportPosition.height / viewportSize[1];
     const eventPosition =
       //FIXME Are we really calling this with a TouchEvent anywhere?
       'changedTouches' in event
@@ -793,8 +796,8 @@ class Map extends BaseObject {
         : /** @type {MouseEvent} */ (event);
 
     return [
-      eventPosition.clientX - viewportPosition.left,
-      eventPosition.clientY - viewportPosition.top,
+      (eventPosition.clientX - viewportPosition.left) / scaleX,
+      (eventPosition.clientY - viewportPosition.top) / scaleY,
     ];
   }
 

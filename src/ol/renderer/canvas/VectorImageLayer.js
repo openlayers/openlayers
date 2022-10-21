@@ -63,7 +63,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
    */
   getFeatures(pixel) {
     if (!this.vectorRenderer_) {
-      return new Promise((resolve) => resolve([]));
+      return Promise.resolve([]);
     }
     const vectorPixel = apply(
       this.coordinateToVectorPixelTransform_,
@@ -144,30 +144,27 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
         }
       );
 
-      image.addEventListener(
-        EventType.CHANGE,
-        function () {
-          if (image.getState() !== ImageState.LOADED) {
-            return;
-          }
-          this.image_ = emptyImage ? null : image;
-          const imageResolution = image.getResolution();
-          const imagePixelRatio = image.getPixelRatio();
-          const renderedResolution =
-            (imageResolution * pixelRatio) / imagePixelRatio;
-          this.renderedResolution = renderedResolution;
-          this.coordinateToVectorPixelTransform_ = compose(
-            this.coordinateToVectorPixelTransform_,
-            width / 2,
-            height / 2,
-            1 / renderedResolution,
-            -1 / renderedResolution,
-            0,
-            -viewState.center[0],
-            -viewState.center[1]
-          );
-        }.bind(this)
-      );
+      image.addEventListener(EventType.CHANGE, () => {
+        if (image.getState() !== ImageState.LOADED) {
+          return;
+        }
+        this.image_ = emptyImage ? null : image;
+        const imageResolution = image.getResolution();
+        const imagePixelRatio = image.getPixelRatio();
+        const renderedResolution =
+          (imageResolution * pixelRatio) / imagePixelRatio;
+        this.renderedResolution = renderedResolution;
+        this.coordinateToVectorPixelTransform_ = compose(
+          this.coordinateToVectorPixelTransform_,
+          width / 2,
+          height / 2,
+          1 / renderedResolution,
+          -1 / renderedResolution,
+          0,
+          -viewState.center[0],
+          -viewState.center[1]
+        );
+      });
       image.load();
     }
 

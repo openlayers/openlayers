@@ -104,7 +104,9 @@ class IconImage extends EventTarget {
   isTainted_() {
     if (this.tainted_ === undefined && this.imageState_ === ImageState.LOADED) {
       if (!taintedTestContext) {
-        taintedTestContext = createCanvasContext2D(1, 1);
+        taintedTestContext = createCanvasContext2D(1, 1, undefined, {
+          willReadFrequently: true,
+        });
       }
       taintedTestContext.drawImage(this.image_, 0, 0);
       try {
