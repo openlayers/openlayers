@@ -1,10 +1,8 @@
 .map {
   background: #85ccf9;
-  position: relative;
 }
 #map {
   height: 400px;
-  position: relative;
 }
 
 @keyframes spinner {

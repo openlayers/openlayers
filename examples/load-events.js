@@ -24,8 +24,8 @@ const map = new Map({
 });
 
 map.on('loadstart', function () {
-  map.getTargetElement().classList.add('spinner');
+  map.getViewport().classList.add('spinner');
 });
 map.on('loadend', function () {
-  map.getTargetElement().classList.remove('spinner');
+  map.getViewport().classList.remove('spinner');
 });
