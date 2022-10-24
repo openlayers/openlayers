@@ -126,8 +126,8 @@ describe('ol/control/MousePosition', function () {
       });
     });
 
-    it('does not wrapX by default', function () {
-      const ctrl = new MousePosition();
+    it('can opt out of wrapX', function () {
+      const ctrl = new MousePosition({wrapX: false});
       ctrl.setMap(map);
       map.getView().setCenter([-360, 0]);
       map.renderSync();
@@ -136,7 +136,7 @@ describe('ol/control/MousePosition', function () {
     });
 
     it('can wrapX', function () {
-      const ctrl = new MousePosition({wrapX: true});
+      const ctrl = new MousePosition();
       ctrl.setMap(map);
       map.getView().setCenter([-360, 0]);
       map.renderSync();
@@ -145,7 +145,7 @@ describe('ol/control/MousePosition', function () {
     });
 
     it('can wrapX with projection', function () {
-      const ctrl = new MousePosition({wrapX: true, projection: 'EPSG:4326'});
+      const ctrl = new MousePosition({projection: 'EPSG:4326'});
       map.setView(new View({resolution: 1}));
       ctrl.setMap(map);
       map.getView().setCenter(fromLonLat([-360, 0]));
@@ -156,7 +156,7 @@ describe('ol/control/MousePosition', function () {
 
     it('can wrapX with user projection', function () {
       useGeographic();
-      const ctrl = new MousePosition({wrapX: true, projection: 'EPSG:4326'});
+      const ctrl = new MousePosition({projection: 'EPSG:4326'});
       map.setView(new View({resolution: 1}));
       ctrl.setMap(map);
       map.getView().setCenter([-360, 0]);

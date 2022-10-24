@@ -138,7 +138,7 @@ class MousePosition extends Control {
      * @private
      * @type {boolean}
      */
-    this.wrapX_ = options.wrapX;
+    this.wrapX_ = options.wrapX === false ? false : true;
   }
 
   /**
