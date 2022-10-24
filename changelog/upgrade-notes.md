@@ -1,5 +1,14 @@
 ## Upgrade notes
 
+### Next version
+
+#### Fixed `wrapX` behavior of `ol/control/MousePosition`
+
+Previously, `ol/control/MousePosition` always displayed coordinates as-is. Now it has a `wrapX` option,
+which is `true` by default. This avoids longitudes aoutside the -180 to 180 degrees range.
+
+If you want the previous behavior, which displays coordinates with longitudes less than -180 or greater than 180, configure the control with `wrapX: false`.
+
 ### 7.1.0
 
 #### Notice to full build users
