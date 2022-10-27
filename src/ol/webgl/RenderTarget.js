@@ -129,7 +129,9 @@ class WebGLRenderTarget {
    * @api
    */
   readPixel(x, y) {
-    if (x < 0 || y < 0 || x > this.size_[0] || y >= this.size_[1]) {
+    x = Math.floor(x);
+    y = Math.floor(y);
+    if (x < 0 || y < 0 || x >= this.size_[0] || y >= this.size_[1]) {
       tmpArray4[0] = 0;
       tmpArray4[1] = 0;
       tmpArray4[2] = 0;
@@ -138,8 +140,7 @@ class WebGLRenderTarget {
     }
 
     this.readAll();
-    const index =
-      Math.floor(x) + (this.size_[1] - Math.floor(y) - 1) * this.size_[0];
+    const index = x + (this.size_[1] - y - 1) * this.size_[0];
     tmpArray4[0] = this.data_[index * 4];
     tmpArray4[1] = this.data_[index * 4 + 1];
     tmpArray4[2] = this.data_[index * 4 + 2];
