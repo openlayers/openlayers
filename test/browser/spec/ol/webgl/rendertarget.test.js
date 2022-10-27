@@ -2,7 +2,10 @@ import WebGLHelper from '../../../../../src/ol/webgl/Helper.js';
 import WebGLRenderTarget from '../../../../../src/ol/webgl/RenderTarget.js';
 
 describe('ol.webgl.RenderTarget', function () {
-  let helper, testImage_4x4;
+  /** @type {WebGLHelper} */
+  let helper;
+  /** @type {ImageData} */
+  let testImage_4x4;
 
   beforeEach(function () {
     helper = new WebGLHelper();
@@ -129,13 +132,22 @@ describe('ol.webgl.RenderTarget', function () {
       data = rt.readPixel(3, -1);
       expect(data).to.eql([0, 0, 0, 0]);
 
-      data = rt.readPixel(6, 2);
+      data = rt.readPixel(4, 2);
       expect(data).to.eql([0, 0, 0, 0]);
 
-      data = rt.readPixel(2, 7);
+      data = rt.readPixel(2, 4);
       expect(data).to.eql([0, 0, 0, 0]);
+
+      data = rt.readPixel(0, 0);
+      expect(data).not.to.eql([0, 0, 0, 0]);
 
       data = rt.readPixel(2, 3);
+      expect(data).not.to.eql([0, 0, 0, 0]);
+
+      data = rt.readPixel(1, 3.5);
+      expect(data).not.to.eql([0, 0, 0, 0]);
+
+      data = rt.readPixel(3.5, 1);
       expect(data).not.to.eql([0, 0, 0, 0]);
     });
   });
