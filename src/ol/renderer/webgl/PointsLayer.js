@@ -21,6 +21,7 @@ import {assert} from '../../asserts.js';
 import {buffer, createEmpty, equals, getWidth} from '../../extent.js';
 import {colorDecodeId, colorEncodeId} from '../../render/webgl/utils.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
+import {getPixelIndexArray} from '../../render/canvas/ExecutorGroup.js';
 import {getUid} from '../../util.js';
 import {listen, unlistenByKey} from '../../events.js';
 
@@ -693,19 +694,54 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       coordinate.slice()
     );
 
-    const data = this.hitRenderTarget_.readPixel(
-      Math.round(pixel[0]) / 2,
-      Math.round(pixel[1]) / 2
-    );
-    const color = [data[0] / 255, data[1] / 255, data[2] / 255, data[3] / 255];
-    const index = colorDecodeId(color);
-    const opacity = this.hitRenderInstructions_[index];
-    const uid = Math.floor(opacity).toString();
+    const layer = this.getLayer();
 
-    const source = this.getLayer().getSource();
-    const feature = source.getFeatureByUid(uid);
-    if (feature) {
-      return callback(feature, this.getLayer(), null);
+    /**
+     * @param {import("../../Feature.js").FeatureLike} feature Feature.
+     * @param {number} distanceSq The squared distance to the click position.
+     * @return {T|undefined} Callback result.
+     */
+    const featureCallback = function (feature, distanceSq) {
+      if (distanceSq > 0) {
+        matches.push({
+          feature: feature,
+          layer: layer,
+          geometry: null,
+          distanceSq: distanceSq,
+          callback: callback,
+        });
+        return undefined;
+      }
+      return callback(feature, layer, null);
+    };
+
+    const source = layer.getSource();
+    const pixelIndexArray = getPixelIndexArray(hitTolerance);
+    const hitSize = hitTolerance * 2 + 1;
+    const pixelX = Math.round(pixel[0]);
+    const pixelY = Math.round(pixel[1]);
+    for (let i = 0, ii = pixelIndexArray.length; i < ii; ++i) {
+      const idx = (pixelIndexArray[i] - 3) / 4;
+      const x = hitTolerance - (idx % hitSize);
+      const y = hitTolerance - ((idx / hitSize) | 0);
+
+      const data = this.hitRenderTarget_.readPixel(
+        (pixelX + x) / 2,
+        (pixelY + y) / 2
+      );
+      const color = [
+        data[0] / 255,
+        data[1] / 255,
+        data[2] / 255,
+        data[3] / 255,
+      ];
+      const index = colorDecodeId(color);
+      const opacity = this.hitRenderInstructions_[index];
+      const uid = Math.floor(opacity).toString();
+      const feature = source.getFeatureByUid(uid);
+      if (feature) {
+        return featureCallback(feature, x * x + y * y);
+      }
     }
     return undefined;
   }

@@ -308,14 +308,21 @@ describe('ol/renderer/webgl/PointsLayer', function () {
   });
 
   describe('#forEachFeatureAtCoordinate', function () {
-    let layer, renderer, feature, feature2;
+    /** @type {VectorLayer<VectorSource<Point>>} */
+    let layer;
+    /** @type {WebGLPointsLayerRenderer} */
+    let renderer;
+    /** @type {Array<Feature<Point>>} */
+    let features;
 
     beforeEach(function () {
-      feature = new Feature({geometry: new Point([0, 0]), id: 1});
-      feature2 = new Feature({geometry: new Point([14, 14]), id: 2});
+      features = [
+        new Feature(new Point([0, 0])),
+        new Feature(new Point([14, 14])),
+      ];
       layer = new VectorLayer({
         source: new VectorSource({
-          features: [feature, feature2],
+          features: features,
         }),
       });
       renderer = new WebGLPointsLayerRenderer(layer, {
@@ -357,36 +364,28 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         renderer.renderFrame(frameState);
 
         function checkHit(x, y, expected) {
-          let called = false;
-          renderer.forEachFeatureAtCoordinate(
+          const feature = renderer.forEachFeatureAtCoordinate(
             [x, y],
             frameState,
             0,
-            function (feature) {
-              expect(feature).to.be(expected);
-              called = true;
-            },
-            null
+            (feature) => feature,
+            []
           );
 
-          if (expected) {
-            expect(called).to.be(true);
-          } else {
-            expect(called).to.be(false);
-          }
+          expect(feature).to.be(expected);
         }
 
-        checkHit(0, 0, feature);
-        checkHit(1, -1, feature);
-        checkHit(-2, 2, feature);
-        checkHit(2, 0, null);
-        checkHit(1, -3, null);
+        checkHit(0, 0, features[0]);
+        checkHit(1, -1, features[0]);
+        checkHit(-2, 2, features[0]);
+        checkHit(2, 0, undefined);
+        checkHit(1, -3, undefined);
 
-        checkHit(14, 14, feature2);
-        checkHit(15, 13, feature2);
-        checkHit(12, 16, feature2);
-        checkHit(16, 14, null);
-        checkHit(13, 11, null);
+        checkHit(14, 14, features[1]);
+        checkHit(15, 13, features[1]);
+        checkHit(12, 16, features[1]);
+        checkHit(16, 14, undefined);
+        checkHit(13, 11, undefined);
 
         done();
       });
@@ -411,11 +410,6 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         layerStatesArray: [layer.getLayerState()],
       });
 
-      let found;
-      const cb = function (feature) {
-        found = feature;
-      };
-
       renderer.prepareFrame(frameState);
       renderer.worker_.addEventListener('message', function () {
         if (!renderer.hitRenderInstructions_) {
@@ -425,22 +419,39 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         renderer.renderFrame(frameState);
 
         function checkHit(x, y, expected) {
-          found = null;
-          renderer.forEachFeatureAtCoordinate([x, y], frameState, 0, cb, null);
+          const found = renderer.forEachFeatureAtCoordinate(
+            [x, y],
+            frameState,
+            0,
+            (feature) => feature,
+            []
+          );
           expect(found).to.be(expected);
         }
 
-        checkHit(0, 0, feature);
-        checkHit(1, -1, feature);
-        checkHit(-2, 2, feature);
-        checkHit(2, 0, null);
-        checkHit(1, -3, null);
+        checkHit(0, 0, features[0]);
+        checkHit(1, -1, features[0]);
+        checkHit(-2, 2, features[0]);
+        checkHit(2, 0, undefined);
+        checkHit(1, -3, undefined);
 
-        checkHit(14, 14, feature2);
-        checkHit(15, 13, feature2);
-        checkHit(12, 16, feature2);
-        checkHit(16, 14, null);
-        checkHit(13, 11, null);
+        checkHit(14, 14, features[1]);
+        checkHit(15, 13, features[1]);
+        checkHit(12, 16, features[1]);
+        checkHit(16, 14, undefined);
+        checkHit(13, 11, undefined);
+
+        const hitMatch = [];
+        const found = renderer.forEachFeatureAtCoordinate(
+          [6, 6],
+          frameState,
+          10,
+          (feature) => feature,
+          hitMatch
+        );
+        expect(found).to.be(undefined);
+        expect(hitMatch).to.have.length(1);
+        expect(hitMatch[0].feature).to.be(features[0]);
 
         done();
       });
