@@ -3,6 +3,7 @@ import Map from '../src/ol/Map.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
 import XYZ from '../src/ol/source/XYZ.js';
+import {DEVICE_PIXEL_RATIO} from '../src/ol/has.js';
 import {Fill, Stroke, Style} from '../src/ol/style.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {createXYZ} from '../src/ol/tilegrid.js';
@@ -10,46 +11,145 @@ import {fromLonLat} from '../src/ol/proj.js';
 import {tile as tileStrategy} from '../src/ol/loadingstrategy.js';
 
 const serviceUrl =
-  'https://sampleserver3.arcgisonline.com/ArcGIS/rest/services/' +
-  'Petroleum/KSFields/FeatureServer/';
+  'https://services-eu1.arcgis.com/NPIbx47lsIiu2pqz/ArcGIS/rest/services/' +
+  'Neptune_Coastline_Campaign_Open_Data_Land_Use_2014/FeatureServer/';
 const layer = '0';
 
 const esrijsonFormat = new EsriJSON();
 
+const canvas = document.createElement('canvas');
+const context = canvas.getContext('2d');
+
+// Patterns are in canvas pixel space, so we adjust for the
+// renderer's pixel ratio
+const pixelRatio = DEVICE_PIXEL_RATIO;
+
+const backwardDiagonal = function (color) {
+  canvas.width = 16 * pixelRatio;
+  canvas.height = 16 * pixelRatio;
+  context.lineWidth = 2 * pixelRatio;
+  context.strokeStyle = color;
+  context.moveTo(0, canvas.height);
+  context.lineTo(canvas.width, 0);
+  context.stroke();
+  return context.createPattern(canvas, 'repeat');
+};
+
 const styleCache = {
-  'ABANDONED': new Style({
+  'Lost To Sea Since 1965': new Style({
     fill: new Fill({
-      color: 'rgba(225, 225, 225, 255)',
+      color: 'rgba(0, 0, 0, 255)',
     }),
     stroke: new Stroke({
       color: 'rgba(0, 0, 0, 255)',
       width: 0.4,
     }),
   }),
-  'GAS': new Style({
+  'Urban/Built-up': new Style({
     fill: new Fill({
-      color: 'rgba(255, 0, 0, 255)',
+      color: 'rgba(104, 104, 104, 255)',
     }),
     stroke: new Stroke({
-      color: 'rgba(110, 110, 110, 255)',
+      color: 'rgba(0, 0, 0, 255)',
       width: 0.4,
     }),
   }),
-  'OIL': new Style({
+  'Shacks': new Style({
     fill: new Fill({
-      color: 'rgba(56, 168, 0, 255)',
+      color: 'rgba(115, 76, 0, 255)',
     }),
     stroke: new Stroke({
-      color: 'rgba(110, 110, 110, 255)',
+      color: 'rgba(0, 0, 0, 255)',
       width: 0,
     }),
   }),
-  'OILGAS': new Style({
+  'Industry': new Style({
     fill: new Fill({
-      color: 'rgba(168, 112, 0, 255)',
+      color: 'rgba(230, 0, 0, 255)',
     }),
     stroke: new Stroke({
-      color: 'rgba(110, 110, 110, 255)',
+      color: 'rgba(0, 0, 0, 255)',
+      width: 0.4,
+    }),
+  }),
+  'Wasteland': new Style({
+    fill: new Fill({
+      color: 'rgba(230, 0, 0, 255)',
+    }),
+    stroke: new Stroke({
+      color: 'rgba(0, 0, 0, 255)',
+      width: 0.4,
+    }),
+  }),
+  'Caravans': new Style({
+    fill: new Fill({
+      color: backwardDiagonal('rgba(0, 112, 255, 255)'),
+    }),
+    stroke: new Stroke({
+      color: 'rgba(0, 0, 0, 255)',
+      width: 0.4,
+    }),
+  }),
+  'Defence': new Style({
+    fill: new Fill({
+      color: backwardDiagonal('rgba(230, 152, 0, 255)'),
+    }),
+    stroke: new Stroke({
+      color: 'rgba(0, 0, 0, 255)',
+      width: 0.4,
+    }),
+  }),
+  'Transport': new Style({
+    fill: new Fill({
+      color: 'rgba(230, 152, 0, 255)',
+    }),
+    stroke: new Stroke({
+      color: 'rgba(0, 0, 0, 255)',
+      width: 0.4,
+    }),
+  }),
+  'Open Countryside': new Style({
+    fill: new Fill({
+      color: 'rgba(255, 255, 115, 255)',
+    }),
+    stroke: new Stroke({
+      color: 'rgba(0, 0, 0, 255)',
+      width: 0.4,
+    }),
+  }),
+  'Woodland': new Style({
+    fill: new Fill({
+      color: 'rgba(38, 115, 0, 255)',
+    }),
+    stroke: new Stroke({
+      color: 'rgba(0, 0, 0, 255)',
+      width: 0.4,
+    }),
+  }),
+  'Managed Recreation/Sport': new Style({
+    fill: new Fill({
+      color: 'rgba(85, 255, 0, 255)',
+    }),
+    stroke: new Stroke({
+      color: 'rgba(0, 0, 0, 255)',
+      width: 0.4,
+    }),
+  }),
+  'Amenity Water': new Style({
+    fill: new Fill({
+      color: 'rgba(0, 112, 255, 255)',
+    }),
+    stroke: new Stroke({
+      color: 'rgba(0, 0, 0, 255)',
+      width: 0.4,
+    }),
+  }),
+  'Inland Water': new Style({
+    fill: new Fill({
+      color: 'rgba(0, 38, 115, 255)',
+    }),
+    stroke: new Stroke({
+      color: 'rgba(0, 0, 0, 255)',
       width: 0.4,
     }),
   }),
@@ -103,14 +203,19 @@ const vectorSource = new VectorSource({
       tileSize: 512,
     })
   ),
+  attributions:
+    'University of Leicester (commissioned by the ' +
+    '<a href="https://www.arcgis.com/home/item.html?id=' +
+    'd5f05b1dc3dd4d76906c421bc1727805">National Trust</a>)',
 });
 
 const vector = new VectorLayer({
   source: vectorSource,
   style: function (feature) {
-    const classify = feature.get('activeprod');
+    const classify = feature.get('LU_2014');
     return styleCache[classify];
   },
+  opacity: 0.7,
 });
 
 const raster = new TileLayer({
@@ -128,26 +233,25 @@ const map = new Map({
   layers: [raster, vector],
   target: document.getElementById('map'),
   view: new View({
-    center: fromLonLat([-97.6114, 38.8403]),
-    zoom: 7,
+    center: fromLonLat([1.72, 52.4]),
+    zoom: 12,
   }),
 });
 
 const displayFeatureInfo = function (pixel) {
-  const features = [];
-  map.forEachFeatureAtPixel(pixel, function (feature) {
-    features.push(feature);
+  const feature = map.forEachFeatureAtPixel(pixel, function (feature) {
+    return feature;
   });
-  if (features.length > 0) {
-    const info = [];
-    let i, ii;
-    for (i = 0, ii = features.length; i < ii; ++i) {
-      info.push(features[i].get('field_name'));
-    }
-    document.getElementById('info').innerHTML = info.join(', ') || '(unknown)';
+  if (feature) {
+    const info =
+      '2014 Land Use: ' +
+      feature.get('LU_2014') +
+      '<br>1965 Land Use: ' +
+      feature.get('LU_1965');
+    document.getElementById('info').innerHTML = info;
     map.getTarget().style.cursor = 'pointer';
   } else {
-    document.getElementById('info').innerHTML = '&nbsp;';
+    document.getElementById('info').innerHTML = '&nbsp;<br>&nbsp;';
     map.getTarget().style.cursor = '';
   }
 };
