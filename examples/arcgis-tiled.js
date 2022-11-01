@@ -4,8 +4,8 @@ import View from '../src/ol/View.js';
 import {OSM, TileArcGISRest} from '../src/ol/source.js';
 
 const url =
-  'https://sampleserver1.arcgisonline.com/ArcGIS/rest/services/' +
-  'Specialty/ESRI_StateCityHighway_USA/MapServer';
+  'https://sampleserver6.arcgisonline.com/ArcGIS/rest/services/' +
+  'USA/MapServer';
 
 const layers = [
   new TileLayer({
