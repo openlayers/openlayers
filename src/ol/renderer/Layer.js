@@ -49,9 +49,10 @@ class LayerRenderer extends Observable {
 
   /**
    * @param {import("../pixel.js").Pixel} pixel Pixel.
+   * @param {boolean} premultiplied Premultiplied.
    * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView|null} Pixel data.
    */
-  getData(pixel) {
+  getData(pixel, premultiplied) {
     return null;
   }
 

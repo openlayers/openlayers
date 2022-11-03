@@ -70,6 +70,12 @@ import {listen, unlistenByKey} from '../events.js';
  */
 
 /**
+ * @typedef {Object} GetDataOptions
+ * @property {boolean} [premultiplied=true] If `false` return the RGBA data for image tiles before
+ * alpha premultiplication (when used frequently this may incur a significant performance loss).
+ */
+
+/**
  * @classdesc
  * Base class from which all layer types are derived. This should only be instantiated
  * in the case where a custom layer is added to the map with a custom `render` function.
@@ -274,13 +280,18 @@ class Layer extends BaseLayer {
 
   /**
    * @param {import("../pixel").Pixel} pixel Pixel.
+   * @param {GetDataOptions} [options] Options.
    * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView|null} Pixel data.
    */
-  getData(pixel) {
+  getData(pixel, options) {
     if (!this.renderer_ || !this.rendered) {
       return null;
     }
-    return this.renderer_.getData(pixel);
+    options = options || {};
+    return this.renderer_.getData(
+      pixel,
+      options.premultiplied !== undefined ? options.premultiplied : true
+    );
   }
 
   /**

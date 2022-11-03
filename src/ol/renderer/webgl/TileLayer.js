@@ -737,9 +737,10 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * @param {import("../../pixel.js").Pixel} pixel Pixel.
+   * @param {boolean} premultiplied Premultiplied.
    * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView} Data at the pixel location.
    */
-  getData(pixel) {
+  getData(pixel, premultiplied) {
     const gl = this.helper.getGL();
     if (!gl) {
       return null;
@@ -826,7 +827,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
         (tileOrigin[1] - coordinate[1]) / tileResolution -
         tileCoord[2] * tileSize[1];
 
-      return tileTexture.getPixelData(col, row);
+      return tileTexture.getPixelData(col, row, premultiplied);
     }
     return null;
   }
