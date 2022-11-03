@@ -38,118 +38,118 @@ const backwardDiagonal = function (color) {
 const styleCache = {
   'Lost To Sea Since 1965': new Style({
     fill: new Fill({
-      color: 'rgba(0, 0, 0, 255)',
+      color: 'rgba(0, 0, 0, 1)',
     }),
     stroke: new Stroke({
-      color: 'rgba(0, 0, 0, 255)',
+      color: 'rgba(0, 0, 0, 1)',
       width: 0.4,
     }),
   }),
   'Urban/Built-up': new Style({
     fill: new Fill({
-      color: 'rgba(104, 104, 104, 255)',
+      color: 'rgba(104, 104, 104, 1)',
     }),
     stroke: new Stroke({
-      color: 'rgba(0, 0, 0, 255)',
+      color: 'rgba(0, 0, 0, 1)',
       width: 0.4,
     }),
   }),
   'Shacks': new Style({
     fill: new Fill({
-      color: 'rgba(115, 76, 0, 255)',
+      color: 'rgba(115, 76, 0, 1)',
     }),
     stroke: new Stroke({
-      color: 'rgba(0, 0, 0, 255)',
+      color: 'rgba(0, 0, 0, 1)',
       width: 0,
     }),
   }),
   'Industry': new Style({
     fill: new Fill({
-      color: 'rgba(230, 0, 0, 255)',
+      color: 'rgba(230, 0, 0, 1)',
     }),
     stroke: new Stroke({
-      color: 'rgba(0, 0, 0, 255)',
+      color: 'rgba(0, 0, 0, 1)',
       width: 0.4,
     }),
   }),
   'Wasteland': new Style({
     fill: new Fill({
-      color: 'rgba(230, 0, 0, 255)',
+      color: 'rgba(230, 0, 0, 1)',
     }),
     stroke: new Stroke({
-      color: 'rgba(0, 0, 0, 255)',
+      color: 'rgba(0, 0, 0, 1)',
       width: 0.4,
     }),
   }),
   'Caravans': new Style({
     fill: new Fill({
-      color: backwardDiagonal('rgba(0, 112, 255, 255)'),
+      color: backwardDiagonal('rgba(0, 112, 255, 1)'),
     }),
     stroke: new Stroke({
-      color: 'rgba(0, 0, 0, 255)',
+      color: 'rgba(0, 0, 0, 1)',
       width: 0.4,
     }),
   }),
   'Defence': new Style({
     fill: new Fill({
-      color: backwardDiagonal('rgba(230, 152, 0, 255)'),
+      color: backwardDiagonal('rgba(230, 152, 0, 1)'),
     }),
     stroke: new Stroke({
-      color: 'rgba(0, 0, 0, 255)',
+      color: 'rgba(0, 0, 0, 1)',
       width: 0.4,
     }),
   }),
   'Transport': new Style({
     fill: new Fill({
-      color: 'rgba(230, 152, 0, 255)',
+      color: 'rgba(230, 152, 0, 1)',
     }),
     stroke: new Stroke({
-      color: 'rgba(0, 0, 0, 255)',
+      color: 'rgba(0, 0, 0, 1)',
       width: 0.4,
     }),
   }),
   'Open Countryside': new Style({
     fill: new Fill({
-      color: 'rgba(255, 255, 115, 255)',
+      color: 'rgba(255, 255, 115, 1)',
     }),
     stroke: new Stroke({
-      color: 'rgba(0, 0, 0, 255)',
+      color: 'rgba(0, 0, 0, 1)',
       width: 0.4,
     }),
   }),
   'Woodland': new Style({
     fill: new Fill({
-      color: 'rgba(38, 115, 0, 255)',
+      color: 'rgba(38, 115, 0, 1)',
     }),
     stroke: new Stroke({
-      color: 'rgba(0, 0, 0, 255)',
+      color: 'rgba(0, 0, 0, 1)',
       width: 0.4,
     }),
   }),
   'Managed Recreation/Sport': new Style({
     fill: new Fill({
-      color: 'rgba(85, 255, 0, 255)',
+      color: 'rgba(85, 255, 0, 1)',
     }),
     stroke: new Stroke({
-      color: 'rgba(0, 0, 0, 255)',
+      color: 'rgba(0, 0, 0, 1)',
       width: 0.4,
     }),
   }),
   'Amenity Water': new Style({
     fill: new Fill({
-      color: 'rgba(0, 112, 255, 255)',
+      color: 'rgba(0, 112, 255, 1)',
     }),
     stroke: new Stroke({
-      color: 'rgba(0, 0, 0, 255)',
+      color: 'rgba(0, 0, 0, 1)',
       width: 0.4,
     }),
   }),
   'Inland Water': new Style({
     fill: new Fill({
-      color: 'rgba(0, 38, 115, 255)',
+      color: 'rgba(0, 38, 115, 1)',
     }),
     stroke: new Stroke({
-      color: 'rgba(0, 0, 0, 255)',
+      color: 'rgba(0, 0, 0, 1)',
       width: 0.4,
     }),
   }),
