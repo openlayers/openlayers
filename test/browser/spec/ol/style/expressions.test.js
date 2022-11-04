@@ -220,6 +220,14 @@ describe('ol/style/expressions', function () {
       expect(expressionToGlsl(context, ['time'])).to.eql('u_time');
       expect(expressionToGlsl(context, ['zoom'])).to.eql('u_zoom');
       expect(expressionToGlsl(context, ['resolution'])).to.eql('u_resolution');
+
+      expect(expressionToGlsl(context, ['+', 1, 2, 3, 4])).to.eql(
+        '(1.0 + 2.0 + 3.0 + 4.0)'
+      );
+      expect(expressionToGlsl(context, ['*', 1, 2, 3, 4])).to.eql(
+        '(1.0 * 2.0 * 3.0 * 4.0)'
+      );
+
       expect(
         expressionToGlsl(context, ['+', ['*', ['get', 'size'], 0.001], 12])
       ).to.eql('((a_size * 0.001) + 12.0)');
