@@ -566,12 +566,9 @@ Operators['*'] = {
     return ValueTypes.NUMBER;
   },
   toGlsl: function (context, args) {
-    assertArgsCount(args, 2);
+    assertArgsMinCount(args, 2);
     assertNumbers(args);
-    return `(${expressionToGlsl(context, args[0])} * ${expressionToGlsl(
-      context,
-      args[1]
-    )})`;
+    return `(${args.map((arg) => expressionToGlsl(context, arg)).join(' * ')})`;
   },
 };
 
@@ -594,12 +591,10 @@ Operators['+'] = {
     return ValueTypes.NUMBER;
   },
   toGlsl: function (context, args) {
-    assertArgsCount(args, 2);
+    assertArgsMinCount(args, 2);
     assertNumbers(args);
-    return `(${expressionToGlsl(context, args[0])} + ${expressionToGlsl(
-      context,
-      args[1]
-    )})`;
+
+    return `(${args.map((arg) => expressionToGlsl(context, arg)).join(' + ')})`;
   },
 };
 
