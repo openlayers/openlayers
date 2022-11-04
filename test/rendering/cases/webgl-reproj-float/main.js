@@ -15,7 +15,7 @@ const source = new GeoTIFF({
   ],
 });
 
-new Map({
+const map = new Map({
   target: 'map',
   layers: [
     new TileLayer({
@@ -38,6 +38,8 @@ new Map({
   }),
 });
 
-render({
-  message: 'renders float reprojected',
+map.once('loadend', () => {
+  render({
+    message: 'renders reprojected',
+  });
 });
