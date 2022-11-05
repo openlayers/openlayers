@@ -1,9 +1,10 @@
 import DragAndDrop from '../src/ol/interaction/DragAndDrop.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {GPX, GeoJSON, IGC, KML, TopoJSON} from '../src/ol/format.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {Vector as VectorSource, XYZ} from '../src/ol/source.js';
+import {Vector as VectorSource} from '../src/ol/source.js';
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
 const attributions =
@@ -13,7 +14,7 @@ const attributions =
 const map = new Map({
   layers: [
     new TileLayer({
-      source: new XYZ({
+      source: new ImageTile({
         attributions: attributions,
         url:
           'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=' + key,

@@ -265,9 +265,9 @@ class Map extends BaseObject {
 
     /**
      * @private
-     * @type {boolean|undefined}
+     * @type {boolean}
      */
-    this.renderComplete_;
+    this.renderComplete_ = false;
 
     /**
      * @private
@@ -1194,7 +1194,7 @@ class Map extends BaseObject {
     }
 
     if (frameState && this.renderer_ && !frameState.animate) {
-      if (this.renderComplete_ === true) {
+      if (this.renderComplete_) {
         if (this.hasListener(RenderEventType.RENDERCOMPLETE)) {
           this.renderer_.dispatchRenderEvent(
             RenderEventType.RENDERCOMPLETE,
@@ -1610,13 +1610,12 @@ class Map extends BaseObject {
     this.dispatchEvent(new MapEvent(MapEventType.POSTRENDER, this, frameState));
 
     this.renderComplete_ =
-      this.hasListener(MapEventType.LOADSTART) ||
-      this.hasListener(MapEventType.LOADEND) ||
-      this.hasListener(RenderEventType.RENDERCOMPLETE)
-        ? !this.tileQueue_.getTilesLoading() &&
-          !this.tileQueue_.getCount() &&
-          !this.getLoadingOrNotReady()
-        : undefined;
+      (this.hasListener(MapEventType.LOADSTART) ||
+        this.hasListener(MapEventType.LOADEND) ||
+        this.hasListener(RenderEventType.RENDERCOMPLETE)) &&
+      !this.tileQueue_.getTilesLoading() &&
+      !this.tileQueue_.getCount() &&
+      !this.getLoadingOrNotReady();
 
     if (!this.postRenderTimeoutHandle_) {
       this.postRenderTimeoutHandle_ = setTimeout(() => {
