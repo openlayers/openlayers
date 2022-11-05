@@ -49,9 +49,9 @@ import {listen, unlistenByKey} from './events.js';
  *
  * ```js
  *
- * import Feature from 'ol/Feature';
- * import Polygon from 'ol/geom/Polygon';
- * import Point from 'ol/geom/Point';
+ * import Feature from 'ol/Feature.js';
+ * import Polygon from 'ol/geom/Polygon.js';
+ * import Point from 'ol/geom/Point.js';
  *
  * const feature = new Feature({
  *   geometry: new Polygon(polyCoords),

@@ -80,7 +80,7 @@ const tempSegment = [];
  *
  * Example:
  *
- *     import Snap from 'ol/interaction/Snap';
+ *     import Snap from 'ol/interaction/Snap.js';
  *
  *     const snap = new Snap({
  *       source: source

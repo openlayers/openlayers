@@ -25,7 +25,7 @@ import {padNumber} from './string.js';
  *
  * Example:
  *
- *     import {add} from 'ol/coordinate';
+ *     import {add} from 'ol/coordinate.js';
  *
  *     const coord = [7.85, 47.983333];
  *     add(coord, [-2, 4]);
@@ -119,7 +119,7 @@ export function closestOnSegment(coordinate, segment) {
  *
  * Example without specifying the fractional digits:
  *
- *     import {createStringXY} from 'ol/coordinate';
+ *     import {createStringXY} from 'ol/coordinate.js';
  *
  *     const coord = [7.85, 47.983333];
  *     const stringifyFunc = createStringXY();
@@ -128,7 +128,7 @@ export function closestOnSegment(coordinate, segment) {
  *
  * Example with explicitly specifying 2 fractional digits:
  *
- *     import {createStringXY} from 'ol/coordinate';
+ *     import {createStringXY} from 'ol/coordinate.js';
  *
  *     const coord = [7.85, 47.983333];
  *     const stringifyFunc = createStringXY(2);
@@ -199,7 +199,7 @@ export function degreesToStringHDMS(hemispheres, degrees, fractionDigits) {
  *
  * Example without specifying the fractional digits:
  *
- *     import {format} from 'ol/coordinate';
+ *     import {format} from 'ol/coordinate.js';
  *
  *     const coord = [7.85, 47.983333];
  *     const template = 'Coordinate is ({x}|{y}).';
@@ -208,7 +208,7 @@ export function degreesToStringHDMS(hemispheres, degrees, fractionDigits) {
  *
  * Example explicitly specifying the fractional digits:
  *
- *     import {format} from 'ol/coordinate';
+ *     import {format} from 'ol/coordinate.js';
  *
  *     const coord = [7.85, 47.983333];
  *     const template = 'Coordinate is ({x}|{y}).';
@@ -254,7 +254,7 @@ export function equals(coordinate1, coordinate2) {
  *
  * Example:
  *
- *     import {rotate} from 'ol/coordinate';
+ *     import {rotate} from 'ol/coordinate.js';
  *
  *     const coord = [7.85, 47.983333];
  *     const rotateRadians = Math.PI / 2; // 90 degrees
@@ -282,7 +282,7 @@ export function rotate(coordinate, angle) {
  *
  * Example:
  *
- *     import {scale as scaleCoordinate} from 'ol/coordinate';
+ *     import {scale as scaleCoordinate} from 'ol/coordinate.js';
  *
  *     const coord = [7.85, 47.983333];
  *     const scale = 1.2;
@@ -337,7 +337,7 @@ export function squaredDistanceToSegment(coordinate, segment) {
  *
  * Example without specifying fractional digits:
  *
- *     import {toStringHDMS} from 'ol/coordinate';
+ *     import {toStringHDMS} from 'ol/coordinate.js';
  *
  *     const coord = [7.85, 47.983333];
  *     const out = toStringHDMS(coord);
@@ -345,7 +345,7 @@ export function squaredDistanceToSegment(coordinate, segment) {
  *
  * Example explicitly specifying 1 fractional digit:
  *
- *     import {toStringHDMS} from 'ol/coordinate';
+ *     import {toStringHDMS} from 'ol/coordinate.js';
  *
  *     const coord = [7.85, 47.983333];
  *     const out = toStringHDMS(coord, 1);
@@ -373,7 +373,7 @@ export function toStringHDMS(coordinate, fractionDigits) {
  *
  * Example without specifying fractional digits:
  *
- *     import {toStringXY} from 'ol/coordinate';
+ *     import {toStringXY} from 'ol/coordinate.js';
  *
  *     const coord = [7.85, 47.983333];
  *     const out = toStringXY(coord);
@@ -381,7 +381,7 @@ export function toStringHDMS(coordinate, fractionDigits) {
  *
  * Example explicitly specifying 1 fractional digit:
  *
- *     import {toStringXY} from 'ol/coordinate';
+ *     import {toStringXY} from 'ol/coordinate.js';
  *
  *     const coord = [7.85, 47.983333];
  *     const out = toStringXY(coord, 1);

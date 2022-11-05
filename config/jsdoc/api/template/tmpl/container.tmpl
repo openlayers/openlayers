@@ -24,7 +24,7 @@
       if (ancestors) {
         parts.push(ancestors.split('~').shift());
       }
-      var importPath = parts.join('/');
+      var importPath = parts.join('/') + '.js';
     ?>
       <?js
         var nameParts = doc.name.split('/');
