@@ -108,6 +108,8 @@ function readRGB(preference, image) {
 const STATISTICS_MAXIMUM = 'STATISTICS_MAXIMUM';
 const STATISTICS_MINIMUM = 'STATISTICS_MINIMUM';
 
+const defaultTileSize = 256;
+
 /**
  * @typedef {import("geotiff").GeoTIFFImage} GeoTIFFImage
  */
@@ -565,6 +567,16 @@ class GeoTIFFSource extends DataTile {
         sourceResolutions[level] = imageResolutions[0];
 
         const sourceTileSize = [image.getTileWidth(), image.getTileHeight()];
+
+        // request larger blocks for untiled layouts
+        if (
+          sourceTileSize[0] !== sourceTileSize[1] &&
+          sourceTileSize[1] < defaultTileSize
+        ) {
+          sourceTileSize[0] = defaultTileSize;
+          sourceTileSize[1] = defaultTileSize;
+        }
+
         sourceTileSizes[level] = sourceTileSize;
 
         const aspectRatio = imageResolutions[0] / Math.abs(imageResolutions[1]);
@@ -717,11 +729,13 @@ class GeoTIFFSource extends DataTile {
     this.setLoader(this.loadTile_.bind(this));
     this.setState('ready');
 
-    let zoom = 0;
-    if (resolutions.length === 1) {
-      resolutions = [resolutions[0] * 2, resolutions[0]];
-      zoom = 1;
+    const zoom = 1;
+    if (resolutions.length === 2) {
+      resolutions = [resolutions[0], resolutions[1], resolutions[1] / 2];
+    } else if (resolutions.length === 1) {
+      resolutions = [resolutions[0] * 2, resolutions[0], resolutions[0] / 2];
     }
+
     this.viewResolver({
       showFullExtent: true,
       projection: this.projection,

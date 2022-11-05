@@ -3,24 +3,27 @@ import Map from '../../../../src/ol/Map.js';
 import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
 
 const source = new GeoTIFF({
+  sources: [
+    {
+      url: '/data/raster/not-a-cog.tif',
+    },
+  ],
   transition: 0,
-  convertToRGB: false,
-  sources: [{url: '/data/raster/masked.tif'}],
+});
+
+const layer = new TileLayer({
+  source: source,
 });
 
 new Map({
-  layers: [
-    new TileLayer({
-      source: source,
-    }),
-  ],
+  layers: [layer],
   target: 'map',
   view: source.getView().then((config) => ({
     ...config,
-    zoom: 0,
+    zoom: 2,
   })),
 });
 
 render({
-  message: 'can be overridden to read raw YCbCr',
+  message: 'render a geotiff that is not a cog',
 });
