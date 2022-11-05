@@ -1,6 +1,6 @@
 import Map from '../src/ol/Map.js';
 import TileGrid from '../src/ol/tilegrid/TileGrid.js';
-import TileLayer from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/WebGLTile.js';
 import View from '../src/ol/View.js';
 import WMTS, {optionsFromCapabilities} from '../src/ol/source/WMTS.js';
 import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';

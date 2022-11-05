@@ -767,10 +767,11 @@ class GeoTIFFSource extends DataTile {
    * @param {number} z The z tile index.
    * @param {number} x The x tile index.
    * @param {number} y The y tile index.
+   * @param {import('./DataTile.js').LoaderOptions} options The loader options.
    * @return {Promise} The composed tile data.
    * @private
    */
-  loadTile_(z, x, y) {
+  loadTile_(z, x, y, options) {
     const sourceTileSize = this.getTileSize(z);
     const sourceCount = this.sourceImagery_.length;
     const requests = new Array(sourceCount * 2);
@@ -816,6 +817,7 @@ class GeoTIFFSource extends DataTile {
         fillValue: fillValue,
         pool: pool,
         interleave: false,
+        signal: options.signal,
       };
       if (readRGB(this.convertToRGB_, image)) {
         requests[sourceIndex] = image.readRGB(readOptions);

@@ -44,6 +44,11 @@ export function asArrayLike(data) {
 }
 
 /**
+ * This is set as the cancellation reason when a tile is disposed.
+ */
+export const disposedError = new Error('disposed');
+
+/**
  * @type {CanvasRenderingContext2D|null}
  */
 let sharedContext = null;
@@ -70,7 +75,7 @@ export function toArray(image) {
   if (canvas.height !== height) {
     canvas.height = height;
   }
-  sharedContext.drawImage(image, width, height);
+  sharedContext.drawImage(image, 0, 0);
   return sharedContext.getImageData(0, 0, width, height).data;
 }
 
@@ -89,6 +94,7 @@ const defaultSize = [256, 256];
  * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
  * the nearest neighbor is used when resampling.
  * @property {import('./size.js').Size} [size=[256, 256]] Tile size.
+ * @property {AbortController} [controller] An abort controller.
  * @api
  */
 
@@ -127,6 +133,12 @@ class DataTile extends Tile {
      * @private
      */
     this.size_ = options.size || null;
+
+    /**
+     * @type {AbortController|null}
+     * @private
+     */
+    this.controller_ = options.controller || null;
   }
 
   /**
@@ -163,7 +175,7 @@ class DataTile extends Tile {
   }
 
   /**
-   * Load not yet loaded URI.
+   * Load the tile data.
    * @api
    */
   load() {
@@ -185,6 +197,17 @@ class DataTile extends Tile {
         self.state = TileState.ERROR;
         self.changed();
       });
+  }
+
+  /**
+   * Clean up.
+   */
+  disposeInternal() {
+    if (this.controller_) {
+      this.controller_.abort(disposedError);
+      this.controller_ = null;
+    }
+    super.disposeInternal();
   }
 }
 
