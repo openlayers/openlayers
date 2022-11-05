@@ -729,11 +729,13 @@ class GeoTIFFSource extends DataTile {
     this.setLoader(this.loadTile_.bind(this));
     this.setState('ready');
 
-    let zoom = 0;
-    if (resolutions.length === 1) {
-      resolutions = [resolutions[0] * 2, resolutions[0]];
-      zoom = 1;
+    const zoom = 1;
+    if (resolutions.length === 2) {
+      resolutions = [resolutions[0], resolutions[1], resolutions[1] / 2];
+    } else if (resolutions.length === 1) {
+      resolutions = [resolutions[0] * 2, resolutions[0], resolutions[0] / 2];
     }
+
     this.viewResolver({
       showFullExtent: true,
       projection: this.projection,

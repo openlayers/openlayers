@@ -18,7 +18,10 @@ const layer = new TileLayer({
 new Map({
   layers: [layer],
   target: 'map',
-  view: source.getView(),
+  view: source.getView().then((config) => ({
+    ...config,
+    zoom: 2,
+  })),
 });
 
 render({

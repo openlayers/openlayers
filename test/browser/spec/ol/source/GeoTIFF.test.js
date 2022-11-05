@@ -152,7 +152,7 @@ describe('ol/source/GeoTIFF', function () {
         expect(projection.getUnits()).to.be('degrees');
         expect(viewOptions.extent).to.eql([-180, -90, 180, 90]);
         expect(viewOptions.center).to.eql([0, 0]);
-        expect(viewOptions.resolutions).to.eql([1.40625, 0.703125]);
+        expect(viewOptions.resolutions).to.eql([1.40625, 0.703125, 0.3515625]);
         expect(viewOptions.showFullExtent).to.be(true);
         done();
       });
