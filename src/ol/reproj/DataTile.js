@@ -3,7 +3,7 @@
  */
 import {ERROR_THRESHOLD} from './common.js';
 
-import DataTile from '../DataTile.js';
+import DataTile, {asArrayLike, asImageLike, toArray} from '../DataTile.js';
 import EventType from '../events/EventType.js';
 import TileState from '../TileState.js';
 import Triangulation from './Triangulation.js';
@@ -271,7 +271,16 @@ class ReprojDataTile extends DataTile {
       }
       const size = tile.getSize();
       const gutter = this.gutter_;
-      const tileData = tile.getData();
+      /**
+       * @type {import("../DataTile.js").ArrayLike}
+       */
+      let tileData;
+      const arrayData = asArrayLike(tile.getData());
+      if (arrayData) {
+        tileData = arrayData;
+      } else {
+        tileData = toArray(asImageLike(tile.getData()));
+      }
       const pixelSize = [size[0] + 2 * gutter, size[1] + 2 * gutter];
       const isFloat = tileData instanceof Float32Array;
       const pixelCount = pixelSize[0] * pixelSize[1];

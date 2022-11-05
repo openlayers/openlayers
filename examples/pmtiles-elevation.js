@@ -20,20 +20,13 @@ function loadImage(src) {
   });
 }
 
-const size = 256;
-const canvas = document.createElement('canvas');
-canvas.width = size;
-canvas.height = size;
-const context = canvas.getContext('2d', {willReadFrequently: true});
-
 async function loader(z, x, y) {
   const response = await tiles.getZxy(z, x, y);
   const blob = new Blob([response.data]);
   const src = URL.createObjectURL(blob);
-  const img = await loadImage(src);
-  context.drawImage(img, 0, 0);
+  const image = await loadImage(src);
   URL.revokeObjectURL(src);
-  return context.getImageData(0, 0, size, size).data;
+  return image;
 }
 
 // The method used to extract elevations from the DEM.

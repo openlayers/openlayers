@@ -2,7 +2,7 @@
  * @module ol/webgl/TileTexture
  */
 
-import DataTile from '../DataTile.js';
+import DataTile, {asArrayLike, asImageLike} from '../DataTile.js';
 import EventTarget from '../events/Target.js';
 import EventType from '../events/EventType.js';
 import ImageTile from '../ImageTile.js';
@@ -30,7 +30,7 @@ function bindAndConfigure(gl, texture, interpolate) {
 /**
  * @param {WebGLRenderingContext} gl The WebGL context.
  * @param {WebGLTexture} texture The texture.
- * @param {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} image The image.
+ * @param {import("../DataTile.js").ImageLike} image The image.
  * @param {boolean} interpolate Interpolate when resampling.
  */
 function uploadImageTexture(gl, texture, image, interpolate) {
@@ -42,7 +42,7 @@ function uploadImageTexture(gl, texture, image, interpolate) {
 /**
  * @param {import("./Helper.js").default} helper The WebGL helper.
  * @param {WebGLTexture} texture The texture.
- * @param {import("../DataTile.js").Data} data The pixel data.
+ * @param {import("../DataTile.js").ArrayLike} data The pixel data.
  * @param {import("../size.js").Size} size The pixel size.
  * @param {number} bandCount The band count.
  * @param {boolean} interpolate Interpolate when resampling.
@@ -235,20 +235,33 @@ class TileTexture extends EventTarget {
     const gl = helper.getGL();
     const tile = this.tile;
 
+    /**
+     * @type {import("../DataTile.js").Data}
+     */
+    let data;
+
     if (tile instanceof ImageTile || tile instanceof ReprojTile) {
+      data = tile.getImage();
+    } else {
+      data = tile.getData();
+    }
+
+    const image = asImageLike(data);
+    if (image) {
       const texture = gl.createTexture();
       this.textures.push(texture);
       this.bandCount = 4;
-      uploadImageTexture(gl, texture, tile.getImage(), tile.interpolate);
+      uploadImageTexture(gl, texture, image, tile.interpolate);
       return;
     }
 
-    const sourceTileSize = tile.getSize();
+    data = asArrayLike(data);
+
+    const sourceTileSize = /** @type {DataTile} */ (tile).getSize();
     const pixelSize = [
       sourceTileSize[0] + 2 * this.gutter_,
       sourceTileSize[1] + 2 * this.gutter_,
     ];
-    const data = tile.getData();
     const isFloat = data instanceof Float32Array;
     const pixelCount = pixelSize[0] * pixelSize[1];
     const DataType = isFloat ? Float32Array : Uint8Array;
@@ -335,53 +348,22 @@ class TileTexture extends EventTarget {
   }
 
   /**
-   * Get data for a pixel.  If the tile is not loaded, null is returned.
+   * @param {import("../DataTile.js").ImageLike} image The image.
    * @param {number} renderCol The column index (in rendered tile space).
    * @param {number} renderRow The row index (in rendered tile space).
-   * @return {import("../DataTile.js").Data|null} The data.
+   * @return {Uint8ClampedArray|null} The data.
+   * @private
    */
-  getPixelData(renderCol, renderRow) {
-    if (!this.loaded) {
-      return null;
-    }
+  getImagePixelData_(image, renderCol, renderRow) {
+    const gutter = this.gutter_;
     const renderWidth = this.renderSize_[0];
     const renderHeight = this.renderSize_[1];
-    const gutter = this.gutter_;
-
-    if (this.tile instanceof DataTile) {
-      const sourceSize = this.tile.getSize();
-
-      const sourceWidthWithoutGutter = sourceSize[0];
-      const sourceHeightWithoutGutter = sourceSize[1];
-      const sourceWidth = sourceWidthWithoutGutter + 2 * gutter;
-      const sourceHeight = sourceHeightWithoutGutter + 2 * gutter;
-
-      const sourceCol =
-        gutter +
-        Math.floor(sourceWidthWithoutGutter * (renderCol / renderWidth));
-
-      const sourceRow =
-        gutter +
-        Math.floor(sourceHeightWithoutGutter * (renderRow / renderHeight));
-
-      const data = this.tile.getData();
-      if (data instanceof DataView) {
-        const bytesPerPixel = data.byteLength / (sourceWidth * sourceHeight);
-        const offset = bytesPerPixel * (sourceRow * sourceWidth + sourceCol);
-        const buffer = data.buffer.slice(offset, offset + bytesPerPixel);
-        return new DataView(buffer);
-      }
-
-      const offset = this.bandCount * (sourceRow * sourceWidth + sourceCol);
-      return data.slice(offset, offset + this.bandCount);
-    }
 
     if (!pixelContext) {
       createPixelContext();
     }
     pixelContext.clearRect(0, 0, 1, 1);
 
-    const image = this.tile.getImage();
     const sourceWidth = image.width;
     const sourceHeight = image.height;
 
@@ -404,6 +386,71 @@ class TileTexture extends EventTarget {
       return null;
     }
     return data;
+  }
+
+  /**
+   * @param {import("../DataTile.js").ArrayLike} data The data.
+   * @param {import("../size.js").Size} sourceSize The size.
+   * @param {number} renderCol The column index (in rendered tile space).
+   * @param {number} renderRow The row index (in rendered tile space).
+   * @return {import("../DataTile.js").ArrayLike|null} The data.
+   * @private
+   */
+  getArrayPixelData_(data, sourceSize, renderCol, renderRow) {
+    const gutter = this.gutter_;
+    const renderWidth = this.renderSize_[0];
+    const renderHeight = this.renderSize_[1];
+
+    const sourceWidthWithoutGutter = sourceSize[0];
+    const sourceHeightWithoutGutter = sourceSize[1];
+    const sourceWidth = sourceWidthWithoutGutter + 2 * gutter;
+    const sourceHeight = sourceHeightWithoutGutter + 2 * gutter;
+
+    const sourceCol =
+      gutter + Math.floor(sourceWidthWithoutGutter * (renderCol / renderWidth));
+
+    const sourceRow =
+      gutter +
+      Math.floor(sourceHeightWithoutGutter * (renderRow / renderHeight));
+
+    if (data instanceof DataView) {
+      const bytesPerPixel = data.byteLength / (sourceWidth * sourceHeight);
+      const offset = bytesPerPixel * (sourceRow * sourceWidth + sourceCol);
+      const buffer = data.buffer.slice(offset, offset + bytesPerPixel);
+      return new DataView(buffer);
+    }
+
+    const offset = this.bandCount * (sourceRow * sourceWidth + sourceCol);
+    return data.slice(offset, offset + this.bandCount);
+  }
+
+  /**
+   * Get data for a pixel.  If the tile is not loaded, null is returned.
+   * @param {number} renderCol The column index (in rendered tile space).
+   * @param {number} renderRow The row index (in rendered tile space).
+   * @return {import("../DataTile.js").ArrayLike|null} The data.
+   */
+  getPixelData(renderCol, renderRow) {
+    if (!this.loaded) {
+      return null;
+    }
+
+    if (this.tile instanceof DataTile) {
+      const data = this.tile.getData();
+      const arrayData = asArrayLike(data);
+      if (arrayData) {
+        const sourceSize = this.tile.getSize();
+        return this.getArrayPixelData_(
+          arrayData,
+          sourceSize,
+          renderCol,
+          renderRow
+        );
+      }
+      return this.getImagePixelData_(asImageLike(data), renderCol, renderRow);
+    }
+
+    return this.getImagePixelData_(this.tile.getImage(), renderCol, renderRow);
   }
 }
 
