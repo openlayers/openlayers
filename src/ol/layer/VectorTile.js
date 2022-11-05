@@ -85,7 +85,7 @@ import {assert} from '../asserts.js';
  * recreated during interactions. See also `updateWhileAnimating`.
  * @property {number} [preload=0] Preload. Load low-resolution tiles up to `preload` levels. `0`
  * means no preloading.
- * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
+ * @property {boolean} [useInterimTilesOnError=true] Deprecated.  Use interim tiles on error.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
@@ -205,7 +205,7 @@ class VectorTileLayer extends BaseVectorLayer {
   }
 
   /**
-   * Whether we use interim tiles on error.
+   * Deprecated.  Whether we use interim tiles on error.
    * @return {boolean} Use interim tiles on error.
    * @observable
    * @api
@@ -227,7 +227,7 @@ class VectorTileLayer extends BaseVectorLayer {
   }
 
   /**
-   * Set whether we use interim tiles on error.
+   * Deprecated.  Set whether we use interim tiles on error.
    * @param {boolean} useInterimTilesOnError Use interim tiles on error.
    * @observable
    * @api
