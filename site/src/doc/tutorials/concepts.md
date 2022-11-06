@@ -18,7 +18,7 @@ The markup below could be used to create a `<div>` that contains your map.
 The script below constructs a map that is rendered in the `<div>` above, using the `map` id of the element as a selector.
 
 ```js
-import Map from 'ol/Map';
+import Map from 'ol/Map.js';
 
 const map = new Map({target: 'map'});
 ```
@@ -28,7 +28,7 @@ const map = new Map({target: 'map'});
 The map is not responsible for things like center, zoom level and projection of the map. Instead, these are properties of a `ol/View` instance.
 
 ```js
-import View from 'ol/View';
+import View from 'ol/View.js';
 
 map.setView(new View({
   center: [0, 0],
@@ -46,7 +46,7 @@ The `zoom` option is a convenient way to specify the map resolution. The availab
 To get remote data for a layer, OpenLayers uses `ol/source/Source` subclasses. These are available for free and commercial map tile services like OpenStreetMap or Bing, for OGC sources like WMS or WMTS, and for vector data in formats like GeoJSON or KML.
 
 ```js
-import OSM from 'ol/source/OSM';
+import OSM from 'ol/source/OSM.js';
 
 const source = OSM();
 ```
@@ -61,7 +61,7 @@ A layer is a visual representation of data from a source. OpenLayers has four ba
  * `ol/layer/VectorTile` - Renders data that is provided as vector tiles.
 
 ```js
-import TileLayer from 'ol/layer/Tile';
+import TileLayer from 'ol/layer/Tile.js';
 
 // ...
 const layer = new TileLayer({source: source});
@@ -73,10 +73,10 @@ map.addLayer(layer);
 The above snippets can be combined into a single script that renders a map with a single tile layer:
 
 ```js
-import Map from 'ol/Map';
-import View from 'ol/View';
-import OSM from 'ol/source/OSM';
-import TileLayer from 'ol/layer/Tile';
+import Map from 'ol/Map.js';
+import View from 'ol/View.js';
+import OSM from 'ol/source/OSM.js';
+import TileLayer from 'ol/layer/Tile.js';
 
 new Map({
   layers: [

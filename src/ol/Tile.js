@@ -19,7 +19,7 @@ import {easeIn} from './easing.js';
  * error handling:
  *
  * ```js
- * import TileState from 'ol/TileState';
+ * import TileState from 'ol/TileState.js';
  *
  * source.setTileLoadFunction(function(tile, src) {
  *   const xhr = new XMLHttpRequest();
