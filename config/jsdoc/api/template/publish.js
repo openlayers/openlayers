@@ -13,7 +13,7 @@ Object.prototype.hasOwnProperty = function (property) {
 const template = require('jsdoc/lib/jsdoc/template');
 const fs = require('jsdoc/lib/jsdoc/fs');
 const path = require('jsdoc/lib/jsdoc/path');
-const taffy = require('taffydb').taffy;
+const taffy = require('@jsdoc/salty').taffy;
 const handle = require('jsdoc/lib/jsdoc/util/error').handle;
 const helper = require('jsdoc/lib/jsdoc/util/templateHelper');
 const htmlsafe = helper.htmlsafe;
@@ -429,7 +429,7 @@ function buildNav(members) {
 }
 
 /**
- * @param {Object} taffyData See {@link https://taffydb.com/}.
+ * @param {Object} taffyData See https://www.npmjs.com/package/@jsdoc/salty.
  * @param {Object} opts Options.
  * @param {Object} tutorials Tutorials.
  */
