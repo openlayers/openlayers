@@ -41,6 +41,7 @@ import {getUid} from './util.js';
 import {hasArea} from './size.js';
 import {listen, unlistenByKey} from './events.js';
 import {removeNode} from './dom.js';
+import {warn} from './console.js';
 
 /**
  * State of the current frame. Only `pixelRatio`, `time` and `viewState` should
@@ -1690,8 +1691,7 @@ class Map extends BaseObject {
             targetElement.getClientRects().length
           )
         ) {
-          // eslint-disable-next-line
-          console.warn(
+          warn(
             "No map visible because the map container's width or height are 0."
           );
         }

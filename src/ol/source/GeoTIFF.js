@@ -18,6 +18,7 @@ import {
 } from '../proj.js';
 import {clamp} from '../math.js';
 import {getCenter, getIntersection} from '../extent.js';
+import {error as logError} from '../console.js';
 import {fromCode as unitsFromCode} from '../proj/Units.js';
 
 /**
@@ -475,7 +476,7 @@ class GeoTIFFSource extends DataTile {
         self.configure_(sources);
       })
       .catch(function (error) {
-        console.error(error); // eslint-disable-line no-console
+        logError(error);
         self.error_ = error;
         self.setState('error');
       });
@@ -827,7 +828,7 @@ class GeoTIFFSource extends DataTile {
     return Promise.all(requests)
       .then(this.composeTile_.bind(this, sourceTileSize))
       .catch(function (error) {
-        console.error(error); // eslint-disable-line no-console
+        logError(error);
         throw error;
       });
   }
