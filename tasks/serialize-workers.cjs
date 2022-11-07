@@ -1,7 +1,6 @@
 /* eslint-disable import/no-commonjs */
 
 const path = require('path');
-const babel = require('@rollup/plugin-babel').babel;
 const resolve = require('@rollup/plugin-node-resolve').nodeResolve;
 const common = require('@rollup/plugin-commonjs');
 const rollup = require('rollup');
@@ -21,18 +20,6 @@ async function build(input, {minify = true} = {}) {
     },
     common(),
     resolve(),
-    babel({
-      babelHelpers: 'bundled',
-      presets: [
-        [
-          '@babel/preset-env',
-          {
-            'modules': false,
-            'targets': '> 1%, last 2 versions, not dead',
-          },
-        ],
-      ],
-    }),
   ];
 
   if (minify) {
