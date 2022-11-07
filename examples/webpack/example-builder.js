@@ -349,8 +349,7 @@ export default class ExampleBuilder {
         name: data.name,
         dependencies: getDependencies(jsSources, pkg),
         devDependencies: {
-          vite: '^3.0.3',
-          '@babel/core': 'latest',
+          vite: '^3.2.3',
         },
         scripts: {
           start: 'vite',

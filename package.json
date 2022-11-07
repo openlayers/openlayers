@@ -51,14 +51,11 @@
     "rbush": "^3.0.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.6.4",
-    "@babel/preset-env": "^7.4.4",
     "@metalsmith/in-place": "^4.5.0",
     "@metalsmith/layouts": "^2.5.1",
     "@metalsmith/markdown": "^1.6.0",
     "@octokit/rest": "^19.0.3",
     "@openlayers/eslint-plugin": "^4.0.0",
-    "@rollup/plugin-babel": "^6.0.0",
     "@rollup/plugin-commonjs": "^23.0.0",
     "@rollup/plugin-node-resolve": "^15.0.0",
     "@types/arcgis-rest-api": "^10.4.4",
@@ -67,7 +64,6 @@
     "@types/pbf": "^3.0.2",
     "@types/proj4": "^2.5.2",
     "@types/topojson-specification": "^1.0.1",
-    "babel-loader": "^8.2.2",
     "chaikin-smooth": "^1.0.4",
     "clean-css-cli": "5.6.1",
     "copy-webpack-plugin": "^11.0.0",
