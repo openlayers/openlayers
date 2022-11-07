@@ -4,6 +4,7 @@
 
 import VectorTile from './VectorTile.js';
 import {getTileSetInfo} from './ogcTileUtil.js';
+import {error as logError} from '../console.js';
 
 /**
  * @typedef {Object} Options
@@ -91,7 +92,7 @@ class OGCVectorTile extends VectorTile {
    * @param {Error} error The error.
    */
   handleError_(error) {
-    console.error(error); // eslint-disable-line no-console
+    logError(error);
     this.setState('error');
   }
 }

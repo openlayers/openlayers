@@ -75,6 +75,7 @@ import {applyTransform, getWidth} from './extent.js';
 import {clamp, modulo} from './math.js';
 import {equals, getWorldsAway} from './coordinate.js';
 import {getDistance} from './sphere.js';
+import {warn} from './console.js';
 
 /**
  * A projection as {@link module:ol/proj/Projection~Projection}, SRS identifier
@@ -617,8 +618,7 @@ export function fromUserCoordinate(coordinate, destProjection) {
       coordinate[1] <= 90
     ) {
       showCoordinateWarning = false;
-      // eslint-disable-next-line no-console
-      console.warn(
+      warn(
         'Call useGeographic() from ol/proj once to work with [longitude, latitude] coordinates.'
       );
     }
