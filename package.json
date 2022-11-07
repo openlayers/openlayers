@@ -67,7 +67,7 @@
     "@types/pbf": "^3.0.2",
     "@types/proj4": "^2.5.2",
     "@types/topojson-specification": "^1.0.1",
-    "babel-loader": "^8.2.2",
+    "babel-loader": "^9.1.0",
     "chaikin-smooth": "^1.0.4",
     "clean-css-cli": "5.6.1",
     "copy-webpack-plugin": "^11.0.0",
