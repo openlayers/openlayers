@@ -657,6 +657,9 @@ class RasterSource extends ImageSource {
           sourceOrLayer instanceof Source
             ? sourceOrLayer
             : sourceOrLayer.getSource();
+        if (!source) {
+          continue;
+        }
         const attributionGetter = source.getAttributions();
         if (typeof attributionGetter === 'function') {
           const sourceAttribution = attributionGetter(frameState);
@@ -734,7 +737,7 @@ class RasterSource extends ImageSource {
     let source;
     for (let i = 0, ii = this.layers_.length; i < ii; ++i) {
       source = this.layers_[i].getSource();
-      if (source.getState() !== 'ready') {
+      if (!source || source.getState() !== 'ready') {
         ready = false;
         break;
       }
