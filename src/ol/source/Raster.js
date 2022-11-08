@@ -514,6 +514,16 @@ export class RasterSourceEvent extends Event {
  * `'pixel'` operations are assumed, and operations will be called with an
  * array of pixels from input sources.  If set to `'image'`, operations will
  * be called with an array of ImageData objects from input sources.
+ * @property {Array<number>} [resolutions] Resolutions. If specified, raster operations will only
+ * be run at the given resolutions.  By default, operations will be run at the any view resolution.
+ * Use this option to optimize rendering of data from tile sources:
+ * ```js
+ * const raster = new RasterSource({
+ *   sources: [tileSource],
+ *   resolutions: tileSource.geTileGrid().getResolutions(),
+ *   // ...
+ * });
+ * ```
  */
 
 /***
@@ -542,6 +552,7 @@ class RasterSource extends ImageSource {
   constructor(options) {
     super({
       projection: null,
+      resolutions: options.resolutions,
     });
 
     /***
@@ -715,9 +726,14 @@ class RasterSource extends ImageSource {
 
     const center = getCenter(extent);
 
-    frameState.extent = extent.slice();
-    frameState.size[0] = Math.round(getWidth(extent) / resolution);
-    frameState.size[1] = Math.round(getHeight(extent) / resolution);
+    frameState.size[0] = Math.ceil(getWidth(extent) / resolution);
+    frameState.size[1] = Math.ceil(getHeight(extent) / resolution);
+    frameState.extent = [
+      center[0] - (frameState.size[0] * resolution) / 2,
+      center[1] - (frameState.size[1] * resolution) / 2,
+      center[0] + (frameState.size[0] * resolution) / 2,
+      center[1] + (frameState.size[1] * resolution) / 2,
+    ];
     frameState.time = Date.now();
 
     const viewState = frameState.viewState;
@@ -757,6 +773,7 @@ class RasterSource extends ImageSource {
       return null;
     }
 
+    resolution = this.findNearestResolution(resolution);
     const frameState = this.updateFrameState_(extent, resolution, projection);
     this.requestedFrameState_ = frameState;
 

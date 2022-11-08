@@ -138,6 +138,27 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
       view.setZoom(0);
     });
 
+    it('accepts a "resolutions" option', function (done) {
+      const source = new RasterSource({
+        threads: 0,
+        sources: [redSource],
+        resolutions: [1],
+        operation: function (inputs) {
+          return inputs[0];
+        },
+      });
+
+      source.on('afteroperations', function (event) {
+        expect(event.resolution).to.equal(1);
+        done();
+      });
+
+      map.getLayers().item(0).setSource(source);
+      const view = map.getView();
+      view.setCenter([0, 0]);
+      view.setZoom(0);
+    });
+
     it('disposes the processor when disposed', function () {
       const source = new RasterSource({
         threads: 0,
