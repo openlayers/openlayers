@@ -783,7 +783,7 @@ class RasterSource extends ImageSource {
       const renderedExtent = this.renderedImageCanvas_.getExtent();
       if (
         resolution !== renderedResolution ||
-        !equals(extent, renderedExtent)
+        !equals(frameState.extent, renderedExtent)
       ) {
         this.renderedImageCanvas_ = null;
       }
