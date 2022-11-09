@@ -4,16 +4,15 @@
 import Event from '../events/Event.js';
 import Source from './Source.js';
 import TileCache from '../TileCache.js';
-import TileState from '../TileState.js';
 import {abstract} from '../util.js';
 import {assert} from '../asserts.js';
 import {equivalent} from '../proj.js';
-import {getKeyZXY, withinExtentAndZ} from '../tilecoord.js';
 import {
   getForProjection as getTileGridForProjection,
   wrapX,
 } from '../tilegrid.js';
 import {scale as scaleSize, toSize} from '../size.js';
+import {withinExtentAndZ} from '../tilecoord.js';
 
 /***
  * @template Return
@@ -155,44 +154,6 @@ class TileSource extends Source {
     if (tileCache) {
       tileCache.expireCache(usedTiles);
     }
-  }
-
-  /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @param {number} z Zoom level.
-   * @param {import("../TileRange.js").default} tileRange Tile range.
-   * @param {function(import("../Tile.js").default):(boolean|void)} callback Called with each
-   *     loaded tile.  If the callback returns `false`, the tile will not be
-   *     considered loaded.
-   * @return {boolean} The tile range is fully covered with loaded tiles.
-   */
-  forEachLoadedTile(projection, z, tileRange, callback) {
-    const tileCache = this.getTileCacheForProjection(projection);
-    if (!tileCache) {
-      return false;
-    }
-
-    let covered = true;
-    let tile, tileCoordKey, loaded;
-    for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
-      for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
-        tileCoordKey = getKeyZXY(z, x, y);
-        loaded = false;
-        if (tileCache.containsKey(tileCoordKey)) {
-          tile = /** @type {!import("../Tile.js").default} */ (
-            tileCache.get(tileCoordKey)
-          );
-          loaded = tile.getState() === TileState.LOADED;
-          if (loaded) {
-            loaded = callback(tile) !== false;
-          }
-        }
-        if (!loaded) {
-          covered = false;
-        }
-      }
-    }
-    return covered;
   }
 
   /**

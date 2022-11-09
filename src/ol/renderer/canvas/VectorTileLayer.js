@@ -121,12 +121,15 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @return {!import("../../Tile.js").default} Tile.
    */
   getTile(z, x, y, frameState) {
+    const tile = /** @type {import("../../VectorRenderTile.js").default} */ (
+      this.getOrCreateTile(z, x, y, frameState)
+    );
+
     const pixelRatio = frameState.pixelRatio;
     const viewState = frameState.viewState;
     const resolution = viewState.resolution;
     const projection = viewState.projection;
     const layer = this.getLayer();
-    const tile = layer.getSource().getTile(z, x, y, pixelRatio, projection);
     const viewHints = frameState.viewHints;
     const hifi = !(
       viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]
@@ -142,7 +145,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     ) {
       this.renderTileImage_(tile, frameState);
     }
-    return super.getTile(z, x, y, frameState);
+
+    return this.getDrawableTile(tile);
   }
 
   /**
@@ -230,7 +234,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const builderExtent = buffer(
         sharedExtent,
         layer.getRenderBuffer() * resolution,
-        this.tmpExtent
+        this.tempExtent
       );
       const bufferedExtent = equals(sourceTileExtent, sharedExtent)
         ? null
@@ -600,7 +604,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const tileCoord = tile.tileCoord;
     const tileExtent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
     const worldOffset =
-      tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent)[0] - tileExtent[0];
+      tileGrid.getTileCoordExtent(tileCoord, this.tempExtent)[0] -
+      tileExtent[0];
     const transform = multiply(
       scale(this.inversePixelTransform.slice(), 1 / pixelRatio, 1 / pixelRatio),
       this.getRenderTransform(
@@ -832,7 +837,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       scaleTransform(canvasTransform, renderScale, renderScale);
       context.setTransform.apply(context, canvasTransform);
     }
-    const tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
+    const tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tempExtent);
     const pixelScale = renderPixelRatio / resolution;
     const transform = resetTransform(this.tmpTransform_);
     scaleTransform(transform, pixelScale, -pixelScale);
