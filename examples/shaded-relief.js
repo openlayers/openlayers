@@ -133,8 +133,6 @@ const raster = new Raster({
   sources: [elevation],
   operationType: 'image',
   operation: shade,
-  // avoid interpolation artefacts by only rendering native elevation resolutions
-  resolutions: elevation.getTileGrid().getResolutions(),
 });
 
 const map = new Map({

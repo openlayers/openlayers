@@ -24,6 +24,7 @@ const raster = new RasterSource({
       }),
     }),
   ],
+  resolutions: null,
   threads: 0, // Avoid using workers to work with puppeteer
   operation: function (pixels) {
     const pixel = pixels[0];
