@@ -2,6 +2,12 @@
 
 ### Next version
 
+#### Rendered resolutions of `ol/source/Raster`
+
+Previously, `ol/source/Raster` processed input sources at the current view resolution, which caused interpolation artefacts in cases where input sources were up- or downsampled. Now, `ol/source/Raster` picks up the resolutions from the first input source that has resolutions configured (either implicitly through a tile grid in the case of tile sources, or directly when configured through the `resolutions` constructor option). This improves the rendered output in most cases.
+
+If the previous behavior is desired, configure the source with `resolutions: null`.
+
 #### Fixed `wrapX` behavior of `ol/control/MousePosition`
 
 Previously, `ol/control/MousePosition` always displayed coordinates as-is. Now it has a `wrapX` option,

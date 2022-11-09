@@ -146,6 +146,13 @@ class ImageSource extends Source {
   }
 
   /**
+   * @param {Array<number>|null} resolutions Resolutions.
+   */
+  setResolutions(resolutions) {
+    this.resolutions_ = resolutions;
+  }
+
+  /**
    * @protected
    * @param {number} resolution Resolution.
    * @return {number} Resolution.

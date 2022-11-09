@@ -514,16 +514,9 @@ export class RasterSourceEvent extends Event {
  * `'pixel'` operations are assumed, and operations will be called with an
  * array of pixels from input sources.  If set to `'image'`, operations will
  * be called with an array of ImageData objects from input sources.
- * @property {Array<number>} [resolutions] Resolutions. If specified, raster operations will only
- * be run at the given resolutions.  By default, operations will be run at the any view resolution.
- * Use this option to optimize rendering of data from tile sources:
- * ```js
- * const raster = new RasterSource({
- *   sources: [tileSource],
- *   resolutions: tileSource.geTileGrid().getResolutions(),
- *   // ...
- * });
- * ```
+ * @property {Array<number>|null} [resolutions] Resolutions. If specified, raster operations will only
+ * be run at the given resolutions.  By default, the resolutions of the first source with resolutions
+ * specified will be used, if any. Set to `null` to use any view resolution instead.
  */
 
 /***
@@ -552,7 +545,6 @@ class RasterSource extends ImageSource {
   constructor(options) {
     super({
       projection: null,
-      resolutions: options.resolutions,
     });
 
     /***
@@ -598,6 +590,17 @@ class RasterSource extends ImageSource {
     const changed = this.changed.bind(this);
     for (let i = 0, ii = this.layers_.length; i < ii; ++i) {
       this.layers_[i].addEventListener(EventType.CHANGE, changed);
+    }
+
+    if (options.resolutions !== null) {
+      for (let i = 0, ii = this.layers_.length; i < ii; ++i) {
+        const source = this.layers_[i].getSource();
+        const resolutions = source.getResolutions();
+        if (resolutions) {
+          this.setResolutions(resolutions);
+          break;
+        }
+      }
     }
 
     /**
