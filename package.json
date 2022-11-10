@@ -25,7 +25,7 @@
     "build-full": "shx rm -rf build/full && npm run build-index && npx rollup --config config/rollup-full-build.js",
     "copy-css": "shx cp src/ol/ol.css build/ol/ol.css",
     "generate-types": "tsc --project config/tsconfig-build.json --declaration --declarationMap --emitDeclarationOnly --outdir build/ol",
-    "transpile": "shx rm -rf build/ol && shx mkdir -p build/ol && shx cp -rf src/ol build && node tasks/serialize-workers.cjs",
+    "transpile": "shx rm -rf build/ol && shx mkdir -p build/ol && shx cp -rf src/ol build && node tasks/serialize-workers.cjs && node tasks/set-version.js",
     "typecheck": "tsc --pretty",
     "apidoc-debug": "shx rm -rf build/apidoc && node --inspect-brk=9229 ./node_modules/jsdoc/jsdoc.js -R config/jsdoc/api/index.md -c config/jsdoc/api/conf.json -P package.json -d build/apidoc",
     "apidoc": "shx rm -rf build/apidoc && jsdoc -R config/jsdoc/api/index.md -c config/jsdoc/api/conf.json -P package.json -d build/apidoc"
