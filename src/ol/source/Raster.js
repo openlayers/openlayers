@@ -514,6 +514,9 @@ export class RasterSourceEvent extends Event {
  * `'pixel'` operations are assumed, and operations will be called with an
  * array of pixels from input sources.  If set to `'image'`, operations will
  * be called with an array of ImageData objects from input sources.
+ * @property {Array<number>|null} [resolutions] Resolutions. If specified, raster operations will only
+ * be run at the given resolutions.  By default, the resolutions of the first source with resolutions
+ * specified will be used, if any. Set to `null` to use any view resolution instead.
  */
 
 /***
@@ -588,6 +591,9 @@ class RasterSource extends ImageSource {
     for (let i = 0, ii = this.layers_.length; i < ii; ++i) {
       this.layers_[i].addEventListener(EventType.CHANGE, changed);
     }
+
+    /** @type {boolean} */
+    this.useResolutions_ = options.resolutions !== null;
 
     /**
      * @private
@@ -715,9 +721,14 @@ class RasterSource extends ImageSource {
 
     const center = getCenter(extent);
 
-    frameState.extent = extent.slice();
-    frameState.size[0] = Math.round(getWidth(extent) / resolution);
-    frameState.size[1] = Math.round(getHeight(extent) / resolution);
+    frameState.size[0] = Math.ceil(getWidth(extent) / resolution);
+    frameState.size[1] = Math.ceil(getHeight(extent) / resolution);
+    frameState.extent = [
+      center[0] - (frameState.size[0] * resolution) / 2,
+      center[1] - (frameState.size[1] * resolution) / 2,
+      center[0] + (frameState.size[0] * resolution) / 2,
+      center[1] + (frameState.size[1] * resolution) / 2,
+    ];
     frameState.time = Date.now();
 
     const viewState = frameState.viewState;
@@ -757,6 +768,7 @@ class RasterSource extends ImageSource {
       return null;
     }
 
+    resolution = this.findNearestResolution(resolution);
     const frameState = this.updateFrameState_(extent, resolution, projection);
     this.requestedFrameState_ = frameState;
 
@@ -766,7 +778,7 @@ class RasterSource extends ImageSource {
       const renderedExtent = this.renderedImageCanvas_.getExtent();
       if (
         resolution !== renderedResolution ||
-        !equals(extent, renderedExtent)
+        !equals(frameState.extent, renderedExtent)
       ) {
         this.renderedImageCanvas_ = null;
       }
@@ -865,6 +877,27 @@ class RasterSource extends ImageSource {
     if (frameState.animate) {
       requestAnimationFrame(this.changed.bind(this));
     }
+  }
+
+  /**
+   * @param {import("../proj/Projection").default} [projection] Projection.
+   * @return {Array<number>|null} Resolutions.
+   */
+  getResolutions(projection) {
+    if (!this.useResolutions_) {
+      return null;
+    }
+    let resolutions = super.getResolutions();
+    if (!resolutions) {
+      for (let i = 0, ii = this.layers_.length; i < ii; ++i) {
+        const source = this.layers_[i].getSource();
+        resolutions = source.getResolutions(projection);
+        if (resolutions) {
+          break;
+        }
+      }
+    }
+    return resolutions;
   }
 
   disposeInternal() {
