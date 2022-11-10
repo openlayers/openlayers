@@ -592,16 +592,8 @@ class RasterSource extends ImageSource {
       this.layers_[i].addEventListener(EventType.CHANGE, changed);
     }
 
-    if (options.resolutions !== null) {
-      for (let i = 0, ii = this.layers_.length; i < ii; ++i) {
-        const source = this.layers_[i].getSource();
-        const resolutions = source.getResolutions();
-        if (resolutions) {
-          this.setResolutions(resolutions);
-          break;
-        }
-      }
-    }
+    /** @type {boolean} */
+    this.useResolutions_ = options.resolutions !== null;
 
     /**
      * @private
@@ -885,6 +877,27 @@ class RasterSource extends ImageSource {
     if (frameState.animate) {
       requestAnimationFrame(this.changed.bind(this));
     }
+  }
+
+  /**
+   * @param {import("../proj/Projection").default} [projection] Projection.
+   * @return {Array<number>|null} Resolutions.
+   */
+  getResolutions(projection) {
+    if (!this.useResolutions_) {
+      return null;
+    }
+    let resolutions = super.getResolutions();
+    if (!resolutions) {
+      for (let i = 0, ii = this.layers_.length; i < ii; ++i) {
+        const source = this.layers_[i].getSource();
+        resolutions = source.getResolutions(projection);
+        if (resolutions) {
+          break;
+        }
+      }
+    }
+    return resolutions;
   }
 
   disposeInternal() {
