@@ -151,9 +151,10 @@ class Source extends BaseObject {
   }
 
   /**
+   * @param {import("../proj/Projection").default} [projection] Projection.
    * @return {Array<number>|null} Resolutions.
    */
-  getResolutions() {
+  getResolutions(projection) {
     return null;
   }
 
