@@ -15,7 +15,20 @@ import {createCanvasContext2D, releaseCanvas} from './dom.js';
 import {getPointResolution, transform} from './proj.js';
 import {solveLinearSystem} from './math.js';
 
-let brokenDiagonalRendering_;
+/**
+ * Browser specific workarounds needed, exported to assist testing.
+ * @typedef {Object} BrowserIssues
+ * @property {boolean} brokenDiagonalRendering true if the Diagonal Rendering is broken.
+ * @property {boolean} downscaleInterpolation true if drawImage() interpolates with imageSmoothingEnabled = false when downscaling.
+ */
+
+/**
+ * @type {BrowserIssues}
+ */
+export const browserIssues = {
+  brokenDiagonalRendering: undefined,
+  downscaleInterpolation: undefined,
+};
 
 /**
  * @type {Array<HTMLCanvasElement>}
@@ -71,22 +84,51 @@ function verifyBrokenDiagonalRendering(data, offset) {
  * @return {boolean} true if the Diagonal Rendering is broken.
  */
 function isBrokenDiagonalRendering() {
-  if (brokenDiagonalRendering_ === undefined) {
+  if (browserIssues.brokenDiagonalRendering === undefined) {
     const ctx = createCanvasContext2D(6, 6, canvasPool);
     ctx.globalCompositeOperation = 'lighter';
     ctx.fillStyle = 'rgba(210, 0, 0, 0.75)';
     drawTestTriangle(ctx, 4, 5, 4, 0);
     drawTestTriangle(ctx, 4, 5, 0, 5);
     const data = ctx.getImageData(0, 0, 3, 3).data;
-    brokenDiagonalRendering_ =
+    browserIssues.brokenDiagonalRendering =
       verifyBrokenDiagonalRendering(data, 0) ||
       verifyBrokenDiagonalRendering(data, 4) ||
       verifyBrokenDiagonalRendering(data, 8);
     releaseCanvas(ctx);
     canvasPool.push(ctx.canvas);
   }
+  return browserIssues.brokenDiagonalRendering;
+}
 
-  return brokenDiagonalRendering_;
+/**
+ * Determines if the current browser interpolates when downscaling with drawImage()
+ * with imageSmoothingEnabled = false
+ *
+ * @return {boolean} true if the browser interpolates.
+ */
+function getDownscaleInterpolation() {
+  if (browserIssues.downscaleInterpolation === undefined) {
+    const ctx1 = createCanvasContext2D(2, 2, canvasPool);
+    const imageData = ctx1.createImageData(2, 2);
+    imageData.data[0] = 255;
+    imageData.data[3] = 255;
+    imageData.data[7] = 255;
+    imageData.data[11] = 255;
+    imageData.data[12] = 255;
+    imageData.data[15] = 255;
+    ctx1.putImageData(imageData, 0, 0);
+    const ctx2 = createCanvasContext2D(1, 1, canvasPool);
+    ctx2.imageSmoothingEnabled = false;
+    ctx2.drawImage(ctx1.canvas, 0, 0, 2, 2, 0, 0, 1, 1);
+    const data = ctx2.getImageData(0, 0, 1, 1).data;
+    releaseCanvas(ctx1);
+    canvasPool.push(ctx1.canvas);
+    releaseCanvas(ctx2);
+    canvasPool.push(ctx2.canvas);
+    browserIssues.downscaleInterpolation = data[0] !== 0 && data[0] !== 255;
+  }
+  return browserIssues.downscaleInterpolation;
 }
 
 /**
@@ -220,21 +262,32 @@ export function render(
   renderEdges,
   interpolate
 ) {
-  const context = createCanvasContext2D(
-    Math.round(pixelRatio * width),
-    Math.round(pixelRatio * height),
-    canvasPool
-  );
+  const finalCols = Math.round(pixelRatio * width);
+  const finalRows = Math.round(pixelRatio * height);
+  const finalContext = createCanvasContext2D(finalCols, finalRows, canvasPool);
 
   if (!interpolate) {
-    context.imageSmoothingEnabled = false;
+    finalContext.imageSmoothingEnabled = false;
   }
 
   if (sources.length === 0) {
-    return context.canvas;
+    return finalContext.canvas;
   }
 
-  context.scale(pixelRatio, pixelRatio);
+  let context = finalContext;
+
+  // upscale to avoid possible unwanted interpolation
+  const upscale = !interpolate && getDownscaleInterpolation() ? 2 : 1;
+  if (upscale > 1) {
+    context = createCanvasContext2D(
+      finalCols * upscale,
+      finalRows * upscale,
+      canvasPool
+    );
+    context.imageSmoothingEnabled = finalContext.imageSmoothingEnabled;
+  }
+
+  context.scale(pixelRatio * upscale, pixelRatio * upscale);
 
   function pixelRound(value) {
     return Math.round(value * pixelRatio) / pixelRatio;
@@ -255,9 +308,7 @@ export function render(
     canvasPool
   );
 
-  if (!interpolate) {
-    stitchContext.imageSmoothingEnabled = false;
-  }
+  stitchContext.imageSmoothingEnabled = context.imageSmoothingEnabled;
 
   const stitchScale = pixelRatio / sourceResolution;
 
@@ -410,6 +461,21 @@ export function render(
 
   releaseCanvas(stitchContext);
   canvasPool.push(stitchContext.canvas);
+
+  // to avoid interpolation downscale columns and rows separately
+  if (upscale > 1) {
+    const cols = context.canvas.width;
+    const tempContext = createCanvasContext2D(cols, finalRows, canvasPool);
+    tempContext.imageSmoothingEnabled = finalContext.imageSmoothingEnabled;
+    tempContext.drawImage(context.canvas, 0, 0, cols, finalRows);
+    releaseCanvas(context);
+    canvasPool.push(context.canvas);
+    finalContext.drawImage(tempContext.canvas, 0, 0, finalCols, finalRows);
+    releaseCanvas(tempContext);
+    canvasPool.push(tempContext.canvas);
+    context = finalContext;
+    context.scale(pixelRatio, pixelRatio);
+  }
 
   if (renderEdges) {
     context.save();
