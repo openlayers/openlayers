@@ -82,7 +82,7 @@ OpenLayers appreciates contributions of all kinds.  We especially want to thank 
 
 [![Ubigu Oy logo](./sponsor-logos/ubigu-oy.svg)](https://www.ubigu.fi/)
 
-> We advance holistic utilization and avialability of spatial information,
+> We advance holistic utilization and availability of spatial information,
 > for a better planned, built and managed society.
 > https://www.ubigu.fi/
 
