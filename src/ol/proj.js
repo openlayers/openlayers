@@ -111,11 +111,10 @@ export function disableCoordinateWarning(disable) {
 /**
  * @param {Array<number>} input Input coordinate array.
  * @param {Array<number>} [output] Output array of coordinate values.
- * @param {number} [dimension] Dimension.
  * @return {Array<number>} Output coordinate array (new array, same coordinate
  *     values).
  */
-export function cloneTransform(input, output, dimension) {
+export function cloneTransform(input, output) {
   if (output !== undefined) {
     for (let i = 0, ii = input.length; i < ii; ++i) {
       output[i] = input[i];
@@ -130,10 +129,9 @@ export function cloneTransform(input, output, dimension) {
 /**
  * @param {Array<number>} input Input coordinate array.
  * @param {Array<number>} [output] Output array of coordinate values.
- * @param {number} [dimension] Dimension.
  * @return {Array<number>} Input coordinate array (same array as input).
  */
-export function identityTransform(input, output, dimension) {
+export function identityTransform(input, output) {
   if (output !== undefined && input !== output) {
     for (let i = 0, ii = input.length; i < ii; ++i) {
       output[i] = input[i];
