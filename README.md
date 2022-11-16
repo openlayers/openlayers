@@ -76,7 +76,7 @@ OpenLayers appreciates contributions of all kinds.  We especially want to thank 
 
 > We develop leading Physical Security Information Management (PSIM) software.
 > OpenLayers is the core of our map engine and we love it! 
-> https://elacompil.recruitee.com/
+> https://ela.pl/
 
 <br>
 
