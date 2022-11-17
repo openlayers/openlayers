@@ -4,10 +4,10 @@
 
 import CanvasImmediateRenderer from './Immediate.js';
 import {Icon} from '../../style.js';
+import {ascending} from '../../array.js';
 import {clamp} from '../../math.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {intersects} from '../../extent.js';
-import {numberSafeCompareFunction} from '../../array.js';
 
 export const HIT_DETECT_RESOLUTION = 0.5;
 
@@ -143,9 +143,7 @@ export function createHitDetectionImageData(
     }
   }
 
-  const zIndexKeys = Object.keys(featuresByZIndex)
-    .map(Number)
-    .sort(numberSafeCompareFunction);
+  const zIndexKeys = Object.keys(featuresByZIndex).map(Number).sort(ascending);
   for (let i = 0, ii = zIndexKeys.length; i < ii; ++i) {
     const byGeometryType = featuresByZIndex[zIndexKeys[i]];
     for (const type in byGeometryType) {

@@ -1,8 +1,8 @@
 /**
  * @module ol/geom/flat/interiorpoint
  */
+import {ascending} from '../../array.js';
 import {linearRingsContainsXY} from './contains.js';
-import {numberSafeCompareFunction} from '../../array.js';
 
 /**
  * Calculates a point that is likely to lie in the interior of the linear rings.
@@ -50,7 +50,7 @@ export function getInteriorPointOfArray(
   // inside the linear ring.
   let pointX = NaN;
   let maxSegmentLength = -Infinity;
-  intersections.sort(numberSafeCompareFunction);
+  intersections.sort(ascending);
   x1 = intersections[0];
   for (i = 1, ii = intersections.length; i < ii; ++i) {
     x2 = intersections[i];

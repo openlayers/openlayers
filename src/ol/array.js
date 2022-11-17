@@ -13,7 +13,7 @@
  */
 export function binarySearch(haystack, needle, comparator) {
   let mid, cmp;
-  comparator = comparator || numberSafeCompareFunction;
+  comparator = comparator || ascending;
   let low = 0;
   let high = haystack.length;
   let found = false;
@@ -39,13 +39,13 @@ export function binarySearch(haystack, needle, comparator) {
 }
 
 /**
- * Compare function for array sort that is safe for numbers.
+ * Compare function sorting arrays in ascending order.  Safe to use for numeric values.
  * @param {*} a The first object to be compared.
  * @param {*} b The second object to be compared.
  * @return {number} A negative number, zero, or a positive number as the first
  *     argument is less than, equal to, or greater than the second.
  */
-export function numberSafeCompareFunction(a, b) {
+export function ascending(a, b) {
   return a > b ? 1 : a < b ? -1 : 0;
 }
 
@@ -202,7 +202,7 @@ export function stableSort(arr, compareFnc) {
  * @return {boolean} Return index.
  */
 export function isSorted(arr, func, strict) {
-  const compare = func || numberSafeCompareFunction;
+  const compare = func || ascending;
   return arr.every(function (currentVal, index) {
     if (index === 0) {
       return true;

@@ -19,6 +19,7 @@ import {
   scale as scaleTransform,
   translate as translateTransform,
 } from '../../transform.js';
+import {ascending} from '../../array.js';
 import {
   boundingExtent,
   containsCoordinate,
@@ -35,7 +36,6 @@ import {
 } from '../../tilecoord.js';
 import {fromUserExtent} from '../../proj.js';
 import {getUid} from '../../util.js';
-import {numberSafeCompareFunction} from '../../array.js';
 import {toSize} from '../../size.js';
 
 export const Uniforms = {
@@ -562,9 +562,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     this.helper.useProgram(this.program_, frameState);
     this.helper.prepareDraw(frameState, !blend);
 
-    const zs = Object.keys(tileTexturesByZ)
-      .map(Number)
-      .sort(numberSafeCompareFunction);
+    const zs = Object.keys(tileTexturesByZ).map(Number).sort(ascending);
 
     const centerX = viewState.center[0];
     const centerY = viewState.center[1];
