@@ -515,10 +515,10 @@ describe('ol/array.js', function () {
 
   describe('numberSafeCompareFunction', function () {
     it('sorts as expected', function () {
-      const arr = [40, 200, 3000];
-      // default sort would yield [200, 3000, 40]
+      const arr = [3000, 40, 200];
       arr.sort(numberSafeCompareFunction);
-      expect(arr).to.eql(arr);
+      // default sort would yield [200, 3000, 40]
+      expect(arr).to.eql([40, 200, 3000]);
     });
   });
 
