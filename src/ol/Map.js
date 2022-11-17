@@ -1255,8 +1255,8 @@ class Map extends BaseObject {
 
     if (this.targetElement_) {
       this.resizeObserver_.unobserve(this.targetElement_);
-      const rootNode = /** @type {?} */ (this.targetElement_.getRootNode());
-      if (rootNode.host) {
+      const rootNode = this.targetElement_.getRootNode();
+      if (rootNode instanceof ShadowRoot) {
         this.resizeObserver_.unobserve(rootNode.host);
       }
     }
@@ -1326,8 +1326,8 @@ class Map extends BaseObject {
           this
         ),
       ];
-      const rootNode = /** @type {?} */ (targetElement.getRootNode());
-      if (rootNode.host) {
+      const rootNode = targetElement.getRootNode();
+      if (rootNode instanceof ShadowRoot) {
         this.resizeObserver_.observe(rootNode.host);
       }
       this.resizeObserver_.observe(targetElement);
