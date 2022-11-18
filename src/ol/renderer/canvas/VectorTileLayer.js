@@ -96,21 +96,25 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   }
 
   /**
-   * @param {import("../../VectorRenderTile.js").default} tile Tile.
-   * @param {number} pixelRatio Pixel ratio.
-   * @param {import("../../proj/Projection").default} projection Projection.
-   * @return {boolean|undefined} Tile needs to be rendered.
+   * @param {import("../../ImageTile.js").default} tile Tile.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {number} x Left of the tile.
+   * @param {number} y Top of the tile.
+   * @param {number} w Width of the tile.
+   * @param {number} h Height of the tile.
+   * @param {number} gutter Tile gutter.
+   * @param {boolean} transition Apply an alpha transition.
    */
-  prepareTile(tile, pixelRatio, projection) {
-    let render;
-    const state = tile.getState();
-    if (state === TileState.LOADED || state === TileState.ERROR) {
-      this.updateExecutorGroup_(tile, pixelRatio, projection);
-      if (this.tileImageNeedsRender_(tile)) {
-        render = true;
-      }
+  drawTileImage(tile, frameState, x, y, w, h, gutter, transition) {
+    this.updateExecutorGroup_(
+      tile,
+      frameState.pixelRatio,
+      frameState.viewState.projection
+    );
+    if (this.tileImageNeedsRender_(tile)) {
+      this.renderTileImage_(tile, frameState);
     }
-    return render;
+    super.drawTileImage(tile, frameState, x, y, w, h, gutter, transition);
   }
 
   /**
