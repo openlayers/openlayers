@@ -224,7 +224,7 @@ class Geolocation extends BaseObject {
       this.position_[1] = coords.latitude;
     }
     const projectedPosition = this.transform_(this.position_);
-    this.set(Property.POSITION, projectedPosition);
+    this.set(Property.POSITION, projectedPosition.slice());
     this.set(Property.SPEED, coords.speed === null ? undefined : coords.speed);
     const geometry = circularPolygon(this.position_, coords.accuracy);
     geometry.applyTransform(this.transform_);
