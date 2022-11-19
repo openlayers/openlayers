@@ -30,12 +30,13 @@ import {assert} from './asserts.js';
 import {
   clone,
   createOrUpdateEmpty,
-  equals,
+  equals as equalsExtent,
   getForViewAndSize,
   isEmpty,
 } from './extent.js';
 import {defaults as defaultControls} from './control/defaults.js';
 import {defaults as defaultInteractions} from './interaction/defaults.js';
+import {equals} from './array.js';
 import {fromUserCoordinate, toUserCoordinate} from './proj.js';
 import {getUid} from './util.js';
 import {hasArea} from './size.js';
@@ -420,6 +421,17 @@ class Map extends BaseObject {
     this.targetChangeHandlerKeys_ = null;
 
     /**
+     * @private
+     * @type {HTMLElement|null}
+     */
+    this.targetElement_ = null;
+
+    /**
+     * @type {ResizeObserver}
+     */
+    this.resizeObserver_ = new ResizeObserver(() => this.updateSize());
+
+    /**
      * @type {Collection<import("./control/Control.js").default>}
      * @protected
      */
@@ -645,6 +657,7 @@ class Map extends BaseObject {
     this.controls.clear();
     this.interactions.clear();
     this.overlays_.clear();
+    this.resizeObserver_.disconnect();
     this.setTarget(null);
     super.disposeInternal();
   }
@@ -825,13 +838,7 @@ class Map extends BaseObject {
    * @api
    */
   getTargetElement() {
-    const target = this.getTarget();
-    if (target !== undefined) {
-      return typeof target === 'string'
-        ? document.getElementById(target)
-        : target;
-    }
-    return null;
+    return this.targetElement_;
   }
 
   /**
@@ -1246,12 +1253,23 @@ class Map extends BaseObject {
       removeNode(this.viewport_);
     }
 
+    if (this.targetElement_) {
+      this.resizeObserver_.unobserve(this.targetElement_);
+      const rootNode = this.targetElement_.getRootNode();
+      if (rootNode instanceof ShadowRoot) {
+        this.resizeObserver_.unobserve(rootNode.host);
+      }
+    }
+
     // target may be undefined, null, a string or an Element.
     // If it's a string we convert it to an Element before proceeding.
     // If it's not now an Element we remove the viewport from the DOM.
     // If it's an Element we append the viewport element to it.
 
-    const targetElement = this.getTargetElement();
+    const target = this.getTarget();
+    const targetElement =
+      typeof target === 'string' ? document.getElementById(target) : target;
+    this.targetElement_ = targetElement;
     if (!targetElement) {
       if (this.renderer_) {
         clearTimeout(this.postRenderTimeoutHandle_);
@@ -1291,7 +1309,6 @@ class Map extends BaseObject {
         PASSIVE_EVENT_LISTENERS ? {passive: false} : false
       );
 
-      const defaultView = this.getOwnerDocument().defaultView;
       const keyboardEventTarget = !this.keyboardEventTarget_
         ? targetElement
         : this.keyboardEventTarget_;
@@ -1308,8 +1325,12 @@ class Map extends BaseObject {
           this.handleBrowserEvent,
           this
         ),
-        listen(defaultView, EventType.RESIZE, this.updateSize, this),
       ];
+      const rootNode = targetElement.getRootNode();
+      if (rootNode instanceof ShadowRoot) {
+        this.resizeObserver_.observe(rootNode.host);
+      }
+      this.resizeObserver_.observe(targetElement);
     }
 
     this.updateSize();
@@ -1559,7 +1580,7 @@ class Map extends BaseObject {
         const moveStart =
           !this.previousExtent_ ||
           (!isEmpty(this.previousExtent_) &&
-            !equals(frameState.extent, this.previousExtent_));
+            !equalsExtent(frameState.extent, this.previousExtent_));
         if (moveStart) {
           this.dispatchEvent(
             new MapEvent(MapEventType.MOVESTART, this, previousFrameState)
@@ -1572,7 +1593,7 @@ class Map extends BaseObject {
         this.previousExtent_ &&
         !frameState.viewHints[ViewHint.ANIMATING] &&
         !frameState.viewHints[ViewHint.INTERACTING] &&
-        !equals(frameState.extent, this.previousExtent_);
+        !equalsExtent(frameState.extent, this.previousExtent_);
 
       if (idle) {
         this.dispatchEvent(
@@ -1698,8 +1719,11 @@ class Map extends BaseObject {
       }
     }
 
-    this.setSize(size);
-    this.updateViewportSize_();
+    const oldSize = this.getSize();
+    if (size && (!oldSize || !equals(size, oldSize))) {
+      this.setSize(size);
+      this.updateViewportSize_();
+    }
   }
 
   /**
