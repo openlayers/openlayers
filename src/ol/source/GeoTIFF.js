@@ -181,7 +181,10 @@ function getProjection(image) {
     return null;
   }
 
-  if (geoKeys.ProjectedCSTypeGeoKey && geoKeys.ProjectedCSTypeGeoKey !== 32767) {
+  if (
+    geoKeys.ProjectedCSTypeGeoKey &&
+    geoKeys.ProjectedCSTypeGeoKey !== 32767
+  ) {
     const code = 'EPSG:' + geoKeys.ProjectedCSTypeGeoKey;
     let projection = getCachedProjection(code);
     if (!projection) {
@@ -503,7 +506,7 @@ class GeoTIFFSource extends DataTile {
    * The default implementation looks at the ProjectedCSTypeGeoKey and the GeographicTypeGeoKey
    * of each image in turn.
    * You can override this method in a subclass to support more projections.
-   * 
+   *
    * @param {Array<Array<GeoTIFFImage>>} sources Each source is a list of images
    * from a single GeoTIFF.
    */
