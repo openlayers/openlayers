@@ -3,10 +3,8 @@ import Map from '../src/ol/Map.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
 import XYZ from '../src/ol/source/XYZ.js';
-import {DEVICE_PIXEL_RATIO} from '../src/ol/has.js';
 import {Fill, Stroke, Style} from '../src/ol/style.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {asString} from '../src/ol/color.js';
 import {createXYZ} from '../src/ol/tilegrid.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import {tile as tileStrategy} from '../src/ol/loadingstrategy.js';
@@ -15,6 +13,30 @@ const serviceUrl =
   'https://services-eu1.arcgis.com/NPIbx47lsIiu2pqz/ArcGIS/rest/services/' +
   'Neptune_Coastline_Campaign_Open_Data_Land_Use_2014/FeatureServer/';
 const layer = '0';
+
+const fillColors = {
+  'Lost To Sea Since 1965': [0, 0, 0, 1],
+  'Urban/Built-up': [104, 104, 104, 1],
+  'Shacks': [115, 76, 0, 1],
+  'Industry': [230, 0, 0, 1],
+  'Wasteland': [230, 0, 0, 1],
+  'Caravans': [0, 112, 255, 0.5],
+  'Defence': [230, 152, 0, 0.5],
+  'Transport': [230, 152, 0, 1],
+  'Open Countryside': [255, 255, 115, 1],
+  'Woodland': [38, 115, 0, 1],
+  'Managed Recreation/Sport': [85, 255, 0, 1],
+  'Amenity Water': [0, 112, 255, 1],
+  'Inland Water': [0, 38, 115, 1],
+};
+
+const style = new Style({
+  fill: new Fill(),
+  stroke: new Stroke({
+    color: [0, 0, 0, 1],
+    width: 0.5,
+  }),
+});
 
 const vectorSource = new VectorSource({
   format: new EsriJSON(),
@@ -64,83 +86,14 @@ const vectorSource = new VectorSource({
 
 const vector = new VectorLayer({
   source: vectorSource,
+  style: function (feature) {
+    const classify = feature.get('LU_2014');
+    const color = fillColors[classify] || [0, 0, 0, 0];
+    style.getFill().setColor(color);
+    return style;
+  },
+  opacity: 0.7,
 });
-
-// Create an OpenLayers style cache for fill and outline
-// from the Arcgis layer's Drawing Info
-fetch(serviceUrl + layer + '?f=json')
-  .then(function (response) {
-    return response.json();
-  })
-  .then(function (json) {
-    if (json.drawingInfo.renderer.uniqueValueInfos) {
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d');
-
-      // Patterns are in canvas pixel space, so we adjust for the
-      // renderer's pixel ratio
-      const pixelRatio = DEVICE_PIXEL_RATIO;
-
-      const toColor = function (color, style) {
-        const rgba = asString(
-          color.map(function (value, index) {
-            return index < 3 ? value : value / 255;
-          })
-        );
-        const pattern =
-          style === 'esriSFSCross'
-            ? [0, 0.5, 1, 0.5, 0.5, 0, 0.5, 1]
-            : style === 'esriSFSDiagonalCross'
-            ? [0, 0, 1, 1, 0, 1, 1, 0]
-            : style === 'esriSFSBackwardDiagonal'
-            ? [0, 1, 1, 0]
-            : style === 'esriSFSForwardDiagonal'
-            ? [0, 0, 1, 1]
-            : style === 'esriSFSHorizontal'
-            ? [0, 0.5, 1, 0.5]
-            : style === 'esriSFSVertical'
-            ? [0.5, 0, 0.5, 1]
-            : null;
-        if (!pattern) {
-          return rgba;
-        }
-        canvas.width = 16 * pixelRatio;
-        canvas.height = 16 * pixelRatio;
-        context.lineWidth = 2 * pixelRatio;
-        context.strokeStyle = rgba;
-        for (let i = 0; i < pattern.length; i += 4) {
-          context.moveTo(
-            pattern[i] * canvas.width,
-            pattern[i + 1] * canvas.height
-          );
-          context.lineTo(
-            pattern[i + 2] * canvas.width,
-            pattern[i + 3] * canvas.height
-          );
-        }
-        context.stroke();
-        return context.createPattern(canvas, 'repeat');
-      };
-
-      const styleCache = {};
-      json.drawingInfo.renderer.uniqueValueInfos.forEach(function (info) {
-        styleCache[info.value] = new Style({
-          fill: new Fill({
-            color: toColor(info.symbol.color, info.symbol.style),
-          }),
-          stroke: new Stroke({
-            color: toColor(info.symbol.outline.color),
-            width: info.symbol.outline.width,
-          }),
-        });
-      });
-      vector.setStyle(function (feature) {
-        const classify = feature.get(json.drawingInfo.renderer.field1);
-        return styleCache[classify];
-      });
-      vector.setOpacity(1 - json.drawingInfo.transparency / 100);
-    }
-  });
 
 const raster = new TileLayer({
   source: new XYZ({
