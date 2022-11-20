@@ -181,7 +181,10 @@ function getProjection(image) {
     return null;
   }
 
-  if (geoKeys.ProjectedCSTypeGeoKey) {
+  if (
+    geoKeys.ProjectedCSTypeGeoKey &&
+    geoKeys.ProjectedCSTypeGeoKey !== 32767
+  ) {
     const code = 'EPSG:' + geoKeys.ProjectedCSTypeGeoKey;
     let projection = getCachedProjection(code);
     if (!projection) {
@@ -196,7 +199,7 @@ function getProjection(image) {
     return projection;
   }
 
-  if (geoKeys.GeographicTypeGeoKey) {
+  if (geoKeys.GeographicTypeGeoKey && geoKeys.GeographicTypeGeoKey !== 32767) {
     const code = 'EPSG:' + geoKeys.GeographicTypeGeoKey;
     let projection = getCachedProjection(code);
     if (!projection) {
@@ -499,6 +502,27 @@ class GeoTIFFSource extends DataTile {
   }
 
   /**
+   * Determine the projection of the images in this GeoTIFF.
+   * The default implementation looks at the ProjectedCSTypeGeoKey and the GeographicTypeGeoKey
+   * of each image in turn.
+   * You can override this method in a subclass to support more projections.
+   *
+   * @param {Array<Array<GeoTIFFImage>>} sources Each source is a list of images
+   * from a single GeoTIFF.
+   */
+  determineProjection(sources) {
+    const firstSource = sources[0];
+    for (let i = firstSource.length - 1; i >= 0; --i) {
+      const image = firstSource[i];
+      const projection = getProjection(image);
+      if (projection) {
+        this.projection = projection;
+        break;
+      }
+    }
+  }
+
+  /**
    * Configure the tile grid based on images within the source GeoTIFFs.  Each GeoTIFF
    * must have the same internal tiled structure.
    * @param {Array<Array<GeoTIFFImage>>} sources Each source is a list of images
@@ -660,15 +684,7 @@ class GeoTIFFSource extends DataTile {
     }
 
     if (!this.getProjection()) {
-      const firstSource = sources[0];
-      for (let i = firstSource.length - 1; i >= 0; --i) {
-        const image = firstSource[i];
-        const projection = getProjection(image);
-        if (projection) {
-          this.projection = projection;
-          break;
-        }
-      }
+      this.determineProjection(sources);
     }
 
     this.samplesPerPixel_ = samplesPerPixel;
