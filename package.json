@@ -109,7 +109,7 @@
     "walk": "^2.3.9",
     "webpack": "^5.27.2",
     "webpack-cli": "^4.5.0",
-    "webpack-dev-middleware": "^5.0.0",
+    "webpack-dev-middleware": "^6.0.0",
     "webpack-dev-server": "^4.0.0-beta.2",
     "webpack-sources": "^3.2.0",
     "worker-loader": "^3.0.8",
