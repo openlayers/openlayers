@@ -433,18 +433,13 @@ class TileGrid {
    * @return {import("../TileRange.js").default} Tile range.
    */
   getTileRangeForExtentAndZ(extent, z, tempTileRange) {
-    const tileCoord = tmpTileCoord;
-    this.getTileCoordForXYAndZ_(extent[0], extent[3], z, false, tileCoord);
-    const minX = tileCoord[1];
-    const minY = tileCoord[2];
-    this.getTileCoordForXYAndZ_(extent[2], extent[1], z, true, tileCoord);
-    return createOrUpdateTileRange(
-      minX,
-      tileCoord[1],
-      minY,
-      tileCoord[2],
-      tempTileRange
-    );
+    this.getTileCoordForXYAndZ_(extent[0], extent[3], z, false, tmpTileCoord);
+    const minX = tmpTileCoord[1];
+    const minY = tmpTileCoord[2];
+    this.getTileCoordForXYAndZ_(extent[2], extent[1], z, true, tmpTileCoord);
+    const maxX = tmpTileCoord[1];
+    const maxY = tmpTileCoord[2];
+    return createOrUpdateTileRange(minX, maxX, minY, maxY, tempTileRange);
   }
 
   /**
