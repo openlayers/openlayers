@@ -96,7 +96,9 @@ export function getVectorContext(event) {
   }
 
   // canvas may be at a different pixel ratio than frameState.pixelRatio
-  const canvasPixelRatio = event.inversePixelTransform[0];
+  const a = event.inversePixelTransform[0];
+  const b = event.inversePixelTransform[1];
+  const canvasPixelRatio = Math.sqrt(a * a + b * b);
   const frameState = event.frameState;
   const transform = multiplyTransform(
     event.inversePixelTransform.slice(),
