@@ -33,6 +33,7 @@ new Map({
   view: new View({
     center: center,
     zoom: 3,
+    rotation: Math.PI / 3,
   }),
   pixelRatio: 2,
 });
