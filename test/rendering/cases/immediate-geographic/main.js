@@ -1,8 +1,8 @@
 import TileLayer from '../../../../src/ol/layer/Tile.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
-import {Circle, Fill, Style} from '../../../../src/ol/style.js';
 import {Map, View} from '../../../../src/ol/index.js';
 import {Point} from '../../../../src/ol/geom.js';
+import {RegularShape, Stroke, Style} from '../../../../src/ol/style.js';
 import {getVectorContext} from '../../../../src/ol/render.js';
 import {useGeographic} from '../../../../src/ol/proj.js';
 
@@ -21,9 +21,13 @@ layer.on('postrender', (event) => {
   const context = getVectorContext(event);
   context.setStyle(
     new Style({
-      image: new Circle({
-        radius: 5,
-        fill: new Fill({color: 'red'}),
+      image: new RegularShape({
+        points: 3,
+        radius: 40,
+        stroke: new Stroke({
+          width: 5,
+          color: 'red',
+        }),
       }),
     })
   );
