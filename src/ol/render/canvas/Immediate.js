@@ -26,6 +26,7 @@ import {
 } from '../canvas.js';
 import {equals} from '../../array.js';
 import {intersects} from '../../extent.js';
+import {toFixed} from '../../math.js';
 import {transform2D} from '../../geom/flat/transform.js';
 import {transformGeom2D} from '../../geom/SimpleGeometry.js';
 
@@ -82,6 +83,14 @@ class CanvasImmediateRenderer extends VectorContext {
      * @type {import("../../transform.js").Transform}
      */
     this.transform_ = transform;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.transformRotation_ = transform
+      ? toFixed(Math.atan2(transform[1], transform[0]), 10)
+      : 0;
 
     /**
      * @private
@@ -290,6 +299,9 @@ class CanvasImmediateRenderer extends VectorContext {
       context.globalAlpha = alpha * this.imageOpacity_;
     }
     let rotation = this.imageRotation_;
+    if (this.transformRotation_ === 0) {
+      rotation -= this.viewRotation_;
+    }
     if (this.imageRotateWithView_) {
       rotation += this.viewRotation_;
     }
@@ -375,6 +387,9 @@ class CanvasImmediateRenderer extends VectorContext {
     );
     const context = this.context_;
     let rotation = this.textRotation_;
+    if (this.transformRotation_ === 0) {
+      rotation -= this.viewRotation_;
+    }
     if (this.textRotateWithView_) {
       rotation += this.viewRotation_;
     }
