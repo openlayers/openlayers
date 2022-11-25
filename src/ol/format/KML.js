@@ -1869,7 +1869,9 @@ function readStyle(node, objectStack) {
   let imageStyle;
   if ('imageStyle' in styleObject) {
     if (styleObject['imageStyle'] != DEFAULT_NO_IMAGE_STYLE) {
-      imageStyle = styleObject['imageStyle'];
+      imageStyle = /** @type {import("../style/Image.js").default} */ (
+        styleObject['imageStyle']
+      );
     }
   } else {
     imageStyle = DEFAULT_IMAGE_STYLE;
