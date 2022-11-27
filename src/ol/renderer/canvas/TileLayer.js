@@ -788,7 +788,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
             context.clearRect(x, y, w, h);
           }
         }
-        this.drawTile_(tile, frameState, x, y, w, h, tileGutter, transition);
+        this.drawTile(tile, frameState, x, y, w, h, tileGutter, transition);
         if (clips && !inTransition) {
           if (contextSaved) {
             context.restore();
@@ -847,9 +847,9 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @param {number} h Height of the tile.
    * @param {number} gutter Tile gutter.
    * @param {boolean} transition Apply an alpha transition.
-   * @private
+   * @protected
    */
-  drawTile_(tile, frameState, x, y, w, h, gutter, transition) {
+  drawTile(tile, frameState, x, y, w, h, gutter, transition) {
     let image;
     if (tile instanceof DataTile) {
       image = asImageLike(tile.getData());
@@ -895,20 +895,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     } else if (transition) {
       tile.endTransition(uid);
     }
-  }
-
-  /**
-   * @param {import("../../ImageTile.js").default} tile Tile.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
-   * @param {number} x Left of the tile.
-   * @param {number} y Top of the tile.
-   * @param {number} w Width of the tile.
-   * @param {number} h Height of the tile.
-   * @param {number} gutter Tile gutter.
-   * @param {boolean} transition Apply an alpha transition.
-   */
-  drawTileImage(tile, frameState, x, y, w, h, gutter, transition) {
-    this.drawTile_(tile, frameState, x, y, w, h, gutter, transition);
   }
 
   /**

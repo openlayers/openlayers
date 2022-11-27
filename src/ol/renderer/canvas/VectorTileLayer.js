@@ -105,7 +105,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {number} gutter Tile gutter.
    * @param {boolean} transition Apply an alpha transition.
    */
-  drawTileImage(tile, frameState, x, y, w, h, gutter, transition) {
+  drawTile(tile, frameState, x, y, w, h, gutter, transition) {
     this.updateExecutorGroup_(
       tile,
       frameState.pixelRatio,
@@ -114,7 +114,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     if (this.tileImageNeedsRender_(tile)) {
       this.renderTileImage_(tile, frameState);
     }
-    super.drawTileImage(tile, frameState, x, y, w, h, gutter, transition);
+    super.drawTile(tile, frameState, x, y, w, h, gutter, transition);
   }
 
   /**
@@ -129,11 +129,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       this.getOrCreateTile(z, x, y, frameState)
     );
 
-    const pixelRatio = frameState.pixelRatio;
     const viewState = frameState.viewState;
     const resolution = viewState.resolution;
-    const projection = viewState.projection;
-    const layer = this.getLayer();
     const viewHints = frameState.viewHints;
     const hifi = !(
       viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]
@@ -141,15 +138,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     if (hifi || !tile.wantedResolution) {
       tile.wantedResolution = resolution;
     }
-    const render = this.prepareTile(tile, pixelRatio, projection);
-    if (
-      render &&
-      (hifi || Date.now() - frameState.time < 8) &&
-      layer.getRenderMode() !== 'vector'
-    ) {
-      this.renderTileImage_(tile, frameState);
-    }
-
     return this.getDrawableTile(tile);
   }
 
