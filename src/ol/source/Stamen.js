@@ -21,11 +21,11 @@ const ATTRIBUTIONS = [
  */
 const LayerConfig = {
   'terrain': {
-    extension: 'jpg',
+    extension: 'png',
     opaque: true,
   },
   'terrain-background': {
-    extension: 'jpg',
+    extension: 'png',
     opaque: true,
   },
   'terrain-labels': {
