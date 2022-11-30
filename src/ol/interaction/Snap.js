@@ -500,14 +500,9 @@ class Snap extends PointerInteraction {
               .clone()
               .transform(userProjection, projection);
           }
-          vertex = toUserCoordinate(
-            closestOnCircle(
-              projectedCoordinate,
-              /** @type {import("../geom/Circle.js").default} */ (
-                circleGeometry
-              )
-            ),
-            projection
+          vertex = closestOnCircle(
+            projectedCoordinate,
+            /** @type {import("../geom/Circle.js").default} */ (circleGeometry)
           );
         } else {
           const [segmentStart, segmentEnd] = segmentData.segment;
@@ -521,7 +516,7 @@ class Snap extends PointerInteraction {
         if (vertex) {
           const delta = squaredDistance(projectedCoordinate, vertex);
           if (delta < minSquaredDistance) {
-            closestVertex = vertex;
+            closestVertex = toUserCoordinate(vertex, projection);
             minSquaredDistance = delta;
           }
         }
