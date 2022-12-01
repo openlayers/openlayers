@@ -76,6 +76,25 @@ describe('ol.interaction.Snap', function () {
       expect(event.coordinate).to.eql([0, 0]);
     });
 
+    it('can handle view rotation', function () {
+      map.getView().setRotation(Math.PI / 4);
+      map.renderSync();
+
+      const point = new Feature(new Point([0, 0]));
+      const snapInteraction = new Snap({
+        features: new Collection([point]),
+      });
+      snapInteraction.setMap(map);
+
+      const event = {
+        pixel: [6 + width / 2, height / 2 - 3],
+        coordinate: [1, 3],
+        map: map,
+      };
+      snapInteraction.handleEvent(event);
+      expect(event.coordinate).to.eql([0, 0]);
+    });
+
     it('snaps to edges only', function () {
       const point = new Feature(
         new LineString([

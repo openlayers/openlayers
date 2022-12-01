@@ -7,7 +7,7 @@ import PointerInteraction from './Pointer.js';
 import RBush from '../structs/RBush.js';
 import VectorEventType from '../source/VectorEventType.js';
 import {FALSE, TRUE} from '../functions.js';
-import {boundingExtent, createEmpty} from '../extent.js';
+import {boundingExtent, buffer, createEmpty} from '../extent.js';
 import {
   closestOnCircle,
   closestOnSegment,
@@ -18,6 +18,7 @@ import {
   fromUserCoordinate,
   getUserProjection,
   toUserCoordinate,
+  toUserExtent,
 } from '../proj.js';
 import {getUid} from '../util.js';
 import {listen, unlistenByKey} from '../events.js';
@@ -427,15 +428,16 @@ class Snap extends PointerInteraction {
    * @return {Result|null} Snap result
    */
   snapTo(pixel, pixelCoordinate, map) {
-    const lowerLeft = map.getCoordinateFromPixel([
-      pixel[0] - this.pixelTolerance_,
-      pixel[1] + this.pixelTolerance_,
-    ]);
-    const upperRight = map.getCoordinateFromPixel([
-      pixel[0] + this.pixelTolerance_,
-      pixel[1] - this.pixelTolerance_,
-    ]);
-    const box = boundingExtent([lowerLeft, upperRight]);
+    const projection = map.getView().getProjection();
+    const projectedCoordinate = fromUserCoordinate(pixelCoordinate, projection);
+
+    const box = toUserExtent(
+      buffer(
+        boundingExtent([projectedCoordinate]),
+        map.getView().getResolution() * this.pixelTolerance_
+      ),
+      projection
+    );
 
     const segments = this.rBush_.getInExtent(box);
 
@@ -443,9 +445,6 @@ class Snap extends PointerInteraction {
     if (segmentsLength === 0) {
       return null;
     }
-
-    const projection = map.getView().getProjection();
-    const projectedCoordinate = fromUserCoordinate(pixelCoordinate, projection);
 
     let closestVertex;
     let minSquaredDistance = Infinity;
