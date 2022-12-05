@@ -73,7 +73,7 @@
     "expect.js": "0.3.1",
     "express": "^4.17.1",
     "front-matter": "^4.0.0",
-    "fs-extra": "^10.0.0",
+    "fs-extra": "^11.1.0",
     "globby": "^13.0.0",
     "handlebars": "4.7.7",
     "jquery": "3.6.1",
