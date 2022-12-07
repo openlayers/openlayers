@@ -1,6 +1,5 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import Overlay from '../src/ol/Overlay.js';
 import Point from '../src/ol/geom/Point.js';
 import TileJSON from '../src/ol/source/TileJSON.js';
 import VectorSource from '../src/ol/source/Vector.js';
@@ -8,22 +7,45 @@ import View from '../src/ol/View.js';
 import {Icon, Style} from '../src/ol/style.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 
+const widthInput = document.getElementById('width-input');
+const heightInput = document.getElementById('height-input');
+const clearWidthButton = document.getElementById('clear-width-button');
+const clearHeightButton = document.getElementById('clear-height-button');
+
 const iconFeature = new Feature({
   geometry: new Point([0, 0]),
   name: 'Null Island',
   population: 4000,
   rainfall: 500,
 });
-
 const iconStyle = new Style({
   image: new Icon({
     src: 'data/icon.png',
-    width: 50,
-    height: 40,
+    width: widthInput.value,
+    height: heightInput.value,
   }),
 });
-
 iconFeature.setStyle(iconStyle);
+
+widthInput.addEventListener('input', (event) => {
+  iconStyle.getImage().setWidth(event.target.value);
+  iconFeature.changed();
+});
+heightInput.addEventListener('input', (event) => {
+  iconStyle.getImage().setHeight(event.target.value);
+  iconFeature.changed();
+});
+clearWidthButton.addEventListener('click', () => {
+  widthInput.value = undefined;
+  iconStyle.getImage().setWidth(undefined);
+  iconFeature.changed();
+});
+clearHeightButton.addEventListener('click', () => {
+  heightInput.value = undefined;
+  iconStyle.getImage().setHeight(undefined);
+  iconFeature.changed();
+});
+
 
 const vectorSource = new VectorSource({
   features: [iconFeature],
@@ -40,7 +62,7 @@ const rasterLayer = new TileLayer({
   }),
 });
 
-const map = new Map({
+new Map({
   layers: [rasterLayer, vectorLayer],
   target: document.getElementById('map'),
   view: new View({
@@ -48,46 +70,3 @@ const map = new Map({
     zoom: 3,
   }),
 });
-
-const element = document.getElementById('popup');
-
-const popup = new Overlay({
-  element: element,
-  positioning: 'bottom-center',
-  stopEvent: false,
-});
-map.addOverlay(popup);
-
-let popover;
-function disposePopover() {
-  if (popover) {
-    popover.dispose();
-    popover = undefined;
-  }
-}
-// display popup on click
-map.on('click', function (evt) {
-  const feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
-    return feature;
-  });
-  disposePopover();
-  if (!feature) {
-    return;
-  }
-  popup.setPosition(evt.coordinate);
-  popover = new bootstrap.Popover(element, {
-    placement: 'top',
-    html: true,
-    content: feature.get('name'),
-  });
-  popover.show();
-});
-
-// change mouse cursor when over marker
-map.on('pointermove', function (e) {
-  const pixel = map.getEventPixel(e.originalEvent);
-  const hit = map.hasFeatureAtPixel(pixel);
-  map.getTarget().style.cursor = hit ? 'pointer' : '';
-});
-// Close the popup when the map is moved
-map.on('movestart', disposePopover);
