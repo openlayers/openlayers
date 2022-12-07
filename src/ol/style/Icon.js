@@ -8,7 +8,6 @@ import {asArray} from '../color.js';
 import {assert} from '../asserts.js';
 import {get as getIconImage} from './IconImage.js';
 import {getUid} from '../util.js';
-import {toSize} from '../size.js';
 
 /**
  * @typedef {'fraction' | 'pixels'} IconAnchorUnits
@@ -166,11 +165,11 @@ class Icon extends ImageStyle {
     }
     assert(src !== undefined && src.length > 0, 6); // A defined and non-empty `src` or `image` must be provided
 
-    // `width` or `height` cannot be provided together with `scale`
+    // `width` or `height` cannot be provided together with `scale` or `imgSize`
     assert(
       !(
         (options.width !== undefined || options.height !== undefined) &&
-        options.scale !== undefined
+        (options.scale !== undefined || this.imgSize_ !== undefined)
       ),
       69
     );
@@ -284,28 +283,23 @@ class Icon extends ImageStyle {
   }
 
   /**
+   * Set the scale of the Icon by calculating it from given width and height and the
+   * width and height of the image.
+   *
    * @private
    * @param {number} width The width.
    * @param {number} height The height.
    */
   updateScaleFromWidthAndHeight(width, height) {
     const image = this.getImage(1);
-    const scale = toSize(this.getScale());
-    if (width > 0 && height > 0) {
-      this.setScale([
-        (width * scale[0]) / image.width,
-        (height * scale[1]) / image.height,
-      ]);
-    } else if (width > 0) {
-      this.setScale([
-        (width * scale[0]) / image.width,
-        (width * scale[1]) / image.width,
-      ]);
+    if (width !== undefined && height !== undefined) {
+      this.setScale([width / image.width, height / image.height]);
+    } else if (width !== undefined) {
+      this.setScale([width / image.width, width / image.width]);
+    } else if (height !== undefined) {
+      this.setScale([height / image.height, height / image.height]);
     } else {
-      this.setScale([
-        (height * scale[0]) / image.height,
-        (height * scale[1]) / image.height,
-      ]);
+      this.setScale([1, 1]);
     }
   }
 
@@ -507,6 +501,7 @@ class Icon extends ImageStyle {
    * @param {number} width The width to set.
    */
   setWidth(width) {
+    this.width_ = width;
     this.updateScaleFromWidthAndHeight(width, this.height_);
   }
 
@@ -516,6 +511,7 @@ class Icon extends ImageStyle {
    * @param {number} height The height to set.
    */
   setHeight(height) {
+    this.height_ = height;
     this.updateScaleFromWidthAndHeight(this.width_, height);
   }
 
