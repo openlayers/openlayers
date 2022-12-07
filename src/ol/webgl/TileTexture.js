@@ -94,12 +94,18 @@ function uploadDataTexture(
       break;
     }
     case 3: {
-      internalFormat = data instanceof Float32Array ? RGB32F : gl.RGB;
+      internalFormat =
+        data instanceof Float32Array && gl instanceof WebGL2RenderingContext
+          ? RGB32F
+          : gl.RGB;
       format = gl.RGB;
       break;
     }
     case 4: {
-      internalFormat = data instanceof Float32Array ? RGBA32F : gl.RGBA;
+      internalFormat =
+        data instanceof Float32Array && gl instanceof WebGL2RenderingContext
+          ? RGBA32F
+          : gl.RGBA;
       format = gl.RGBA;
       break;
     }
