@@ -356,4 +356,46 @@ describe('ol.style.Icon', function () {
       expect(iconStyle.getImageSize()).to.eql(imgSize);
     });
   });
+
+  describe('#width', function () {
+    it('getWidth returns the expected value', function () {
+      const iconStyle = new Icon({
+        src,
+        width: 10,
+        height: 20,
+      });
+      expect(iconStyle.getWidth()).to.eql(10);
+    });
+    it('setWidth updates the width', function () {
+      const iconStyle = new Icon({
+        src,
+        width: 10,
+        height: 20,
+      });
+      expect(iconStyle.getWidth()).to.eql(10);
+      iconStyle.setWidth(100);
+      expect(iconStyle.getWidth()).to.eql(100);
+    });
+  });
+
+  describe('#height', function () {
+    it('getHeight returns the expected value', function () {
+      const iconStyle = new Icon({
+        src,
+        width: 10,
+        height: 20,
+      });
+      expect(iconStyle.getHeight()).to.eql(20);
+    });
+    it('setHeight updates the height', function () {
+      const iconStyle = new Icon({
+        src,
+        width: 10,
+        height: 20,
+      });
+      expect(iconStyle.getHeight()).to.eql(20);
+      iconStyle.setHeight(200);
+      expect(iconStyle.getHeight()).to.eql(200);
+    });
+  });
 });
