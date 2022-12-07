@@ -165,11 +165,11 @@ class Icon extends ImageStyle {
     }
     assert(src !== undefined && src.length > 0, 6); // A defined and non-empty `src` or `image` must be provided
 
-    // `width` or `height` cannot be provided together with `scale` or `imgSize`
+    // `width` or `height` cannot be provided together with `scale` or `size`
     assert(
       !(
         (options.width !== undefined || options.height !== undefined) &&
-        (options.scale !== undefined || this.imgSize_ !== undefined)
+        (options.scale !== undefined || this.size_ !== undefined)
       ),
       69
     );
