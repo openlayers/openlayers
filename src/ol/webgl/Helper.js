@@ -338,7 +338,7 @@ class WebGLHelper extends Disposable {
 
     /**
      * @private
-     * @type {WebGLRenderingContext}
+     * @type {WebGLRenderingContext | WebGL2RenderingContext}
      */
     this.gl_ = getContext(this.canvas_);
 

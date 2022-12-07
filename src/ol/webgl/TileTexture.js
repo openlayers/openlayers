@@ -9,7 +9,7 @@ import ImageTile from '../ImageTile.js';
 import ReprojTile from '../reproj/Tile.js';
 import TileState from '../TileState.js';
 import WebGLArrayBuffer from './Buffer.js';
-import {ARRAY_BUFFER, STATIC_DRAW} from '../webgl.js';
+import {ARRAY_BUFFER, RGB32F, RGBA32F, STATIC_DRAW} from '../webgl.js';
 import {createCanvasContext2D} from '../dom.js';
 import {toSize} from '../size.js';
 
@@ -80,9 +80,13 @@ function uploadDataTexture(
   }
 
   let format;
+  let internalFormat;
   switch (bandCount) {
     case 1: {
       format = gl.LUMINANCE;
+      textureType = gl.UNSIGNED_BYTE;
+      data = new Uint8Array(Array.prototype.slice.call(data));
+
       break;
     }
     case 2: {
@@ -90,10 +94,12 @@ function uploadDataTexture(
       break;
     }
     case 3: {
+      internalFormat = data instanceof Float32Array ? RGB32F : gl.RGB;
       format = gl.RGB;
       break;
     }
     case 4: {
+      internalFormat = data instanceof Float32Array ? RGBA32F : gl.RGBA;
       format = gl.RGBA;
       break;
     }
@@ -104,10 +110,11 @@ function uploadDataTexture(
 
   const oldUnpackAlignment = gl.getParameter(gl.UNPACK_ALIGNMENT);
   gl.pixelStorei(gl.UNPACK_ALIGNMENT, unpackAlignment);
+
   gl.texImage2D(
     gl.TEXTURE_2D,
     0,
-    format,
+    internalFormat ? internalFormat : format,
     size[0],
     size[1],
     0,
@@ -115,6 +122,7 @@ function uploadDataTexture(
     textureType,
     data
   );
+
   gl.pixelStorei(gl.UNPACK_ALIGNMENT, oldUnpackAlignment);
 }
 
