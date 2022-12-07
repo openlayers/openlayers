@@ -46,7 +46,6 @@ clearHeightButton.addEventListener('click', () => {
   iconFeature.changed();
 });
 
-
 const vectorSource = new VectorSource({
   features: [iconFeature],
 });
