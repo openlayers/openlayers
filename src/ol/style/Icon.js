@@ -236,7 +236,7 @@ class Icon extends ImageStyle {
     /**
      * Recalculate the scale if width or height where given.
      */
-    if (this.width_ > 0 || this.height_ > 0) {
+    if (this.width_ !== undefined || this.height_ !== undefined) {
       const image = this.getImage(1);
       const setScale = () => {
         this.updateScaleFromWidthAndHeight(this.width_, this.height_);

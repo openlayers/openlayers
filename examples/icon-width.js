@@ -11,6 +11,7 @@ const widthInput = document.getElementById('width-input');
 const heightInput = document.getElementById('height-input');
 const clearWidthButton = document.getElementById('clear-width-button');
 const clearHeightButton = document.getElementById('clear-height-button');
+const scaleSpan = document.getElementById('scale');
 
 const iconFeature = new Feature({
   geometry: new Point([0, 0]),
@@ -27,13 +28,20 @@ const iconStyle = new Style({
 });
 iconFeature.setStyle(iconStyle);
 
+const image = iconStyle.getImage().getImage();
+image.addEventListener('load', () => {
+  scaleSpan.innerText = formatScale(iconStyle.getImage().getScale());
+});
+
 widthInput.addEventListener('input', (event) => {
   iconStyle.getImage().setWidth(event.target.value);
   iconFeature.changed();
+  scaleSpan.innerText = formatScale(iconStyle.getImage().getScale());
 });
 heightInput.addEventListener('input', (event) => {
   iconStyle.getImage().setHeight(event.target.value);
   iconFeature.changed();
+  scaleSpan.innerText = formatScale(iconStyle.getImage().getScale());
 });
 clearWidthButton.addEventListener('click', () => {
   widthInput.value = undefined;
@@ -69,3 +77,9 @@ new Map({
     zoom: 3,
   }),
 });
+
+function formatScale(scale) {
+  return Array.isArray(scale)
+    ? '[' + scale?.map((v) => v.toFixed(2)).join(', ') + ']'
+    : scale;
+}
