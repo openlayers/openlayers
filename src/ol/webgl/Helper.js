@@ -841,7 +841,7 @@ class WebGLHelper extends Disposable {
     gl.linkProgram(program);
 
     if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
-      const message = `Fragment shader compliation failed: ${gl.getShaderInfoLog(
+      const message = `Fragment shader compilation failed: ${gl.getShaderInfoLog(
         fragmentShader
       )}`;
       throw new Error(message);

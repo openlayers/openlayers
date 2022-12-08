@@ -226,7 +226,7 @@ describe('ol/webgl/WebGLHelper', function () {
         expect(() =>
           h.getProgram(INVALID_FRAGMENT_SHADER, VERTEX_SHADER)
         ).to.throwException(
-          /Fragment shader compliation failed: ERROR: 0:5: 'oops' : undeclared identifier/
+          /Fragment shader compilation failed: ERROR: 0:5: 'oops' : undeclared identifier/
         );
       });
     });
