@@ -169,7 +169,7 @@ class Icon extends ImageStyle {
     assert(
       !(
         (options.width !== undefined || options.height !== undefined) &&
-        (options.scale !== undefined || this.size_ !== undefined)
+        options.scale !== undefined
       ),
       69
     );
