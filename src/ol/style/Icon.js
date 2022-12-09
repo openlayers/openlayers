@@ -293,13 +293,13 @@ class Icon extends ImageStyle {
   updateScaleFromWidthAndHeight(width, height) {
     const image = this.getImage(1);
     if (width !== undefined && height !== undefined) {
-      this.setScale([width / image.width, height / image.height]);
+      super.setScale([width / image.width, height / image.height]);
     } else if (width !== undefined) {
-      this.setScale([width / image.width, width / image.width]);
+      super.setScale([width / image.width, width / image.width]);
     } else if (height !== undefined) {
-      this.setScale([height / image.height, height / image.height]);
+      super.setScale([height / image.height, height / image.height]);
     } else {
-      this.setScale([1, 1]);
+      super.setScale([1, 1]);
     }
   }
 
@@ -513,6 +513,28 @@ class Icon extends ImageStyle {
   setHeight(height) {
     this.height_ = height;
     this.updateScaleFromWidthAndHeight(this.width_, height);
+  }
+
+  /**
+   * Set the scale and updates the width and height correspondingly.
+   *
+   * @param {number|import("../size.js").Size} scale Scale.
+   * @override
+   * @api
+   */
+  setScale(scale) {
+    super.setScale(scale);
+    const image = this.getImage(1);
+    if (image) {
+      const widthScale = Array.isArray(scale) ? scale[0] : scale;
+      if (widthScale !== undefined) {
+        this.width_ = widthScale * image.width;
+      }
+      const heightScale = Array.isArray(scale) ? scale[1] : scale;
+      if (heightScale !== undefined) {
+        this.height_ = heightScale * image.height;
+      }
+    }
   }
 
   /**
