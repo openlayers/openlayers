@@ -36,14 +36,14 @@ import {getUid} from '../../util.js';
 import {toSize} from '../../size.js';
 
 /**
- * @param {import("../../source/Tile").default} source The source.
- * @param {number} z The tile z coordinate.
- * @param {number} x The tile x coordinate.
- * @param {number} y The tile y coordinate.
- * @return {string} The tile cache key.
+ * @param {string} sourceKey The source key.
+ * @param {number} z The tile z level.
+ * @param {number} x The tile x level.
+ * @param {number} y The tile y level.
+ * @return {string} The cache key.
  */
-function getCacheKey(source, z, x, y) {
-  return `${source.getKey()},${getKeyZXY(z, x, y)}`;
+function getCacheKey(sourceKey, z, x, y) {
+  return `${sourceKey},${getKeyZXY(z, x, y)}`;
 }
 
 /**
@@ -158,6 +158,12 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
+     * @type {string}
+     */
+    this.renderedSourceKey_;
+
+    /**
+     * @private
      * @type {boolean}
      */
     this.newTiles_ = false;
@@ -219,15 +225,14 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const tileCache = this.tileCache_;
     const tileLayer = this.getLayer();
     const tileSource = tileLayer.getSource();
-    const cacheKey = getCacheKey(tileSource, z, x, y);
+    const cacheKey = getCacheKey(tileSource.getKey(), z, x, y);
 
     /** @type {import("../../Tile.js").default} */
     let tile;
 
     if (tileCache.containsKey(cacheKey)) {
       tile = tileCache.get(cacheKey);
-    }
-    if (!tile || tile.key !== tileSource.getKey()) {
+    } else {
       tile = tileSource.getTile(
         z,
         x,
@@ -245,18 +250,18 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @return {import("../../Tile.js").default} A drawable tile.
    */
   getDrawableTile(tile) {
-    const tileLayer = this.getLayer();
-    if (tile.getState() == TileState.ERROR) {
-      if (tileLayer.getUseInterimTilesOnError() && tileLayer.getPreload() > 0) {
-        // Preloaded tiles for lower resolutions might have finished loading.
-        // TODO: determine if this is needed
-        this.newTiles_ = true;
-      }
-    }
+    // TODO: determine what part of this is needed
+    // const tileLayer = this.getLayer();
+    // if (tile.getState() == TileState.ERROR) {
+    //   if (tileLayer.getUseInterimTilesOnError() && tileLayer.getPreload() > 0) {
+    //     // Preloaded tiles for lower resolutions might have finished loading.
+    //     this.newTiles_ = true;
+    //   }
+    // }
 
-    if (!this.isDrawableTile(tile)) {
-      tile = tile.getInterimTile();
-    }
+    // if (!this.isDrawableTile(tile)) {
+    //   tile = tile.getInterimTile();
+    // }
     return tile;
   }
 
@@ -434,6 +439,34 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
   /**
    * Look for tiles covering the provided tile coordinate at an alternate
    * zoom level.  Loaded tiles will be added to the provided tile texture lookup.
+   * @param {import("../../tilecoord.js").TileCoord} tileCoord The target tile coordinate.
+   * @param {Object<number, Array<import("../../Tile.js").default>>} tilesByZ Lookup of
+   * tiles by zoom level.
+   * @return {boolean} The tile coordinate is covered by loaded tiles at the alternate zoom level.
+   * @private
+   */
+  findStaleTile_(tileCoord, tilesByZ) {
+    const tileCache = this.tileCache_;
+    const z = tileCoord[0];
+    const x = tileCoord[1];
+    const y = tileCoord[2];
+    const staleKeys = this.getStaleKeys();
+    for (let i = 0; i < staleKeys.length; ++i) {
+      const cacheKey = getCacheKey(staleKeys[i], z, x, y);
+      if (tileCache.containsKey(cacheKey)) {
+        const tile = tileCache.get(cacheKey);
+        if (tile.getState() === TileState.LOADED) {
+          addTileToLookup(tilesByZ, tile, z);
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Look for tiles covering the provided tile coordinate at an alternate
+   * zoom level.  Loaded tiles will be added to the provided tile texture lookup.
    * @param {import("../../tilegrid/TileGrid.js").default} tileGrid The tile grid.
    * @param {import("../../tilecoord.js").TileCoord} tileCoord The target tile coordinate.
    * @param {number} altZ The alternate zoom level.
@@ -456,9 +489,10 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     let covered = true;
     const tileCache = this.tileCache_;
     const source = this.getLayer().getRenderSource();
+    const sourceKey = source.getKey();
     for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
-        const cacheKey = getCacheKey(source, altZ, x, y);
+        const cacheKey = getCacheKey(sourceKey, altZ, x, y);
         let loaded = false;
         if (tileCache.containsKey(cacheKey)) {
           const tile = tileCache.get(cacheKey);
@@ -514,6 +548,14 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const tileGrid = tileSource.getTileGridForProjection(projection);
     const z = tileGrid.getZForResolution(viewResolution, tileSource.zDirection);
     const tileResolution = tileGrid.getResolution(z);
+
+    const sourceKey = tileSource.getKey();
+    if (!this.renderedSourceKey_) {
+      this.renderedSourceKey_ = sourceKey;
+    } else if (this.renderedSourceKey_ !== sourceKey) {
+      this.prependStaleKey(this.renderedSourceKey_);
+      this.renderedSourceKey_ = sourceKey;
+    }
 
     let extent = frameState.extent;
     const resolution = frameState.viewState.resolution;
@@ -605,6 +647,11 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         alphaLookup[tileCoordKey] = alpha;
       }
       this.renderComplete = false;
+
+      const hasStaleTile = this.findStaleTile_(tileCoord, tilesByZ);
+      if (hasStaleTile) {
+        continue;
+      }
 
       // first look for child tiles (at z + 1)
       const coveredByChildren = this.findAltTiles_(

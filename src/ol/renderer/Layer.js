@@ -6,6 +6,8 @@ import ImageState from '../ImageState.js';
 import Observable from '../Observable.js';
 import {abstract} from '../util.js';
 
+const maxStaleKeys = 5;
+
 /**
  * @template {import("../layer/Layer.js").default} LayerType
  */
@@ -35,6 +37,29 @@ class LayerRenderer extends Observable {
      * @type {import("../render/canvas/ExecutorGroup").default}
      */
     this.declutterExecutorGroup = null;
+
+    /**
+     * @type {Array<string>}
+     * @private
+     */
+    this.staleKeys_ = new Array();
+  }
+
+  /**
+   * @return {Array<string>} Get the list of stale keys.
+   */
+  getStaleKeys() {
+    return this.staleKeys_;
+  }
+
+  /**
+   * @param {string} key The new stale key.
+   */
+  prependStaleKey(key) {
+    this.staleKeys_.unshift(key);
+    if (this.staleKeys_.length > maxStaleKeys) {
+      this.staleKeys_.length = maxStaleKeys;
+    }
   }
 
   /**
