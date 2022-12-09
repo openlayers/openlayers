@@ -43,8 +43,8 @@ import {getUid} from '../util.js';
  * @property {Array<number>} [displacement=[0, 0]] Displacement of the icon in pixels.
  * Positive values will shift the icon right and up.
  * @property {number} [opacity=1] Opacity of the icon.
- * @property {number} [width] The width of the icon in pixels. This can't be used together with `scale` or `size`.
- * @property {number} [height] The height of the icon in pixels. This can't be used together with `scale` or `size`.
+ * @property {number} [width] The width of the icon in pixels. This can't be used together with `scale`.
+ * @property {number} [height] The height of the icon in pixels. This can't be used together with `scale`.
  * @property {number|import("../size.js").Size} [scale=1] Scale.
  * @property {boolean} [rotateWithView=false] Whether to rotate the icon with the view.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
@@ -165,7 +165,7 @@ class Icon extends ImageStyle {
     }
     assert(src !== undefined && src.length > 0, 6); // A defined and non-empty `src` or `image` must be provided
 
-    // `width` or `height` cannot be provided together with `scale` or `size`
+    // `width` or `height` cannot be provided together with `scale`
     assert(
       !(
         (options.width !== undefined || options.height !== undefined) &&
