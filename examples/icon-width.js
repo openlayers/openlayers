@@ -46,11 +46,13 @@ heightInput.addEventListener('input', (event) => {
 clearWidthButton.addEventListener('click', () => {
   widthInput.value = undefined;
   iconStyle.getImage().setWidth(undefined);
+  scaleSpan.innerText = formatScale(iconStyle.getImage().getScale());
   iconFeature.changed();
 });
 clearHeightButton.addEventListener('click', () => {
   heightInput.value = undefined;
   iconStyle.getImage().setHeight(undefined);
+  scaleSpan.innerText = formatScale(iconStyle.getImage().getScale());
   iconFeature.changed();
 });
 
