@@ -60,6 +60,7 @@ const messages = {
   66: '`forEachFeatureAtCoordinate` cannot be used on a WebGL layer if the hit detection logic has not been enabled. This is done by providing adequate shaders using the `hitVertexShader` and `hitFragmentShader` properties of `WebGLPointsLayerRenderer`',
   67: 'A layer can only be added to the map once. Use either `layer.setMap()` or `map.addLayer()`, not both',
   68: 'A VectorTile source can only be rendered if it has a projection compatible with the view projection',
+  69: '`width` or `height` cannot be provided together with `scale`',
 };
 
 /**

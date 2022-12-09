@@ -356,4 +356,106 @@ describe('ol.style.Icon', function () {
       expect(iconStyle.getImageSize()).to.eql(imgSize);
     });
   });
+
+  describe('#width/height', function () {
+    // 3px * 4px sized white gif
+    const img =
+      'data:image/gif;base64,' +
+      'R0lGODlhAwAEAIABAP7+/vDy9SH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAEALAAAAAADAAQAAAIDhI9WADs=';
+    it('scale is set correctly if configured with width only', function (done) {
+      const iconStyle = new Icon({
+        src: img,
+        width: 6,
+      });
+      const iconImage = iconStyle.iconImage_;
+      iconImage.addEventListener('change', function () {
+        expect(iconStyle.getScale()).to.eql([2, 2]);
+        done();
+      });
+      iconStyle.load();
+    });
+    it('scale is set correctly if configured with height only', function (done) {
+      const iconStyle = new Icon({
+        src: img,
+        height: 12,
+      });
+      const iconImage = iconStyle.iconImage_;
+      iconImage.addEventListener('change', function () {
+        expect(iconStyle.getScale()).to.eql([3, 3]);
+        done();
+      });
+      iconStyle.load();
+    });
+    it('scale is set correctly if used with width and height', function (done) {
+      const iconStyle = new Icon({
+        src: img,
+        width: 6,
+        height: 12,
+      });
+      const iconImage = iconStyle.iconImage_;
+      iconImage.addEventListener('change', function () {
+        expect(iconStyle.getScale()).to.eql([2, 3]);
+        done();
+      });
+      iconStyle.load();
+    });
+    it('getWidth returns the expected value', function () {
+      const iconStyle = new Icon({
+        src,
+        width: 10,
+      });
+      expect(iconStyle.getWidth()).to.eql(10);
+    });
+    it('setWidth updates the width', function () {
+      const iconStyle = new Icon({
+        src,
+        width: 10,
+      });
+      expect(iconStyle.getWidth()).to.eql(10);
+      iconStyle.setWidth(30);
+      expect(iconStyle.getWidth()).to.eql(30);
+    });
+    it('getHeight returns the expected value', function () {
+      const iconStyle = new Icon({
+        src,
+        height: 20,
+      });
+      expect(iconStyle.getHeight()).to.eql(20);
+    });
+    it('setHeight updates the height', function () {
+      const iconStyle = new Icon({
+        src,
+        height: 20,
+      });
+      expect(iconStyle.getHeight()).to.eql(20);
+      iconStyle.setHeight(200);
+      expect(iconStyle.getHeight()).to.eql(200);
+    });
+    it('setScale updates the width and height', function (done) {
+      const iconStyle = new Icon({
+        src: img,
+      });
+      const iconImage = iconStyle.iconImage_;
+      iconImage.addEventListener('change', function () {
+        iconStyle.setScale(2);
+        expect(iconStyle.getWidth()).to.eql(6);
+        expect(iconStyle.getHeight()).to.eql(8);
+        done();
+      });
+      iconStyle.load();
+    });
+    it('setScale with array updates the width and height', function (done) {
+      const iconStyle = new Icon({
+        src: img,
+      });
+      const iconImage = iconStyle.iconImage_;
+      iconImage.addEventListener('change', function () {
+        iconStyle.setScale([3, 4]);
+        expect(iconStyle.getWidth()).to.eql(9);
+        expect(iconStyle.getHeight()).to.eql(16);
+        done();
+      });
+      iconStyle.load();
+    });
+  });
 });
