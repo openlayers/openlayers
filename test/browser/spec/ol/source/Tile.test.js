@@ -1,13 +1,8 @@
-import Map from '../../../../../src/ol/Map.js';
 import Projection from '../../../../../src/ol/proj/Projection.js';
 import Source from '../../../../../src/ol/source/Source.js';
 import Tile from '../../../../../src/ol/Tile.js';
-import TileDebugSource from '../../../../../src/ol/source/TileDebug.js';
 import TileGrid from '../../../../../src/ol/tilegrid/TileGrid.js';
-import TileLayer from '../../../../../src/ol/layer/Tile.js';
-import TileRange from '../../../../../src/ol/TileRange.js';
 import TileSource from '../../../../../src/ol/source/Tile.js';
-import View from '../../../../../src/ol/View.js';
 import {getKeyZXY} from '../../../../../src/ol/tilecoord.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 
@@ -59,31 +54,6 @@ describe('ol/source/Tile', function () {
     it('sets 0 as initial cache size', function () {
       const source = new TileSource({});
       expect(source.tileCache.highWaterMark).to.be(0);
-    });
-    it('grows the cache', function () {
-      const source = new TileDebugSource();
-      const layer = new TileLayer({
-        source: source,
-      });
-      const target = document.createElement('div');
-      target.style.width = '100px';
-      target.style.height = '100px';
-      document.body.appendChild(target);
-      const map = new Map({
-        layers: [layer],
-        view: new View({
-          center: [0, 0],
-          zoom: 2,
-        }),
-        target: target,
-      });
-      map.renderSync();
-      expect(
-        source.getTileCacheForProjection(map.getView().getProjection())
-          .highWaterMark
-      ).to.be(4);
-      map.setTarget(null);
-      document.body.removeChild(target);
     });
     it('sets a custom cache size', function () {
       const projection = getProjection('EPSG:4326');
@@ -146,121 +116,6 @@ describe('ol/source/Tile', function () {
       });
 
       source.setKey(key); // this should result in a change event
-    });
-  });
-
-  describe('#forEachLoadedTile()', function () {
-    let callback;
-    beforeEach(function () {
-      callback = sinon.spy();
-    });
-
-    it('does not call the callback if no tiles are loaded', function () {
-      const source = new MockTile({});
-      const grid = source.getTileGrid();
-      const extent = [-180, -180, 180, 180];
-      const zoom = 3;
-      const range = grid.getTileRangeForExtentAndZ(extent, zoom);
-
-      source.forEachLoadedTile(source.getProjection(), zoom, range, callback);
-      expect(callback.callCount).to.be(0);
-    });
-
-    it('does not call getTile() if no tiles are loaded', function () {
-      const source = new MockTile({});
-      sinon.spy(source, 'getTile');
-      const grid = source.getTileGrid();
-      const extent = [-180, -180, 180, 180];
-      const zoom = 3;
-      const range = grid.getTileRangeForExtentAndZ(extent, zoom);
-
-      source.forEachLoadedTile(source.getProjection(), zoom, range, callback);
-      expect(source.getTile.callCount).to.be(0);
-      source.getTile.restore();
-    });
-
-    it('calls callback for each loaded tile', function () {
-      const source = new MockTile({
-        '1/0/0': 2, // LOADED
-        '1/0/1': 2, // LOADED
-        '1/1/0': 1, // LOADING,
-        '1/1/1': 2, // LOADED
-      });
-
-      const zoom = 1;
-      const range = new TileRange(0, 1, 0, 1);
-
-      source.forEachLoadedTile(source.getProjection(), zoom, range, callback);
-      expect(callback.callCount).to.be(3);
-    });
-
-    it('returns true if range is fully loaded', function () {
-      // a source with no loaded tiles
-      const source = new MockTile({
-        '1/0/0': 2, // LOADED,
-        '1/0/1': 2, // LOADED,
-        '1/1/0': 2, // LOADED,
-        '1/1/1': 2, // LOADED
-      });
-
-      const zoom = 1;
-      const range = new TileRange(0, 1, 0, 1);
-
-      const covered = source.forEachLoadedTile(
-        source.getProjection(),
-        zoom,
-        range,
-        function () {
-          return true;
-        }
-      );
-      expect(covered).to.be(true);
-    });
-
-    it('returns false if range is not fully loaded', function () {
-      // a source with no loaded tiles
-      const source = new MockTile({
-        '1/0/0': 2, // LOADED,
-        '1/0/1': 2, // LOADED,
-        '1/1/0': 1, // LOADING,
-        '1/1/1': 2, // LOADED
-      });
-
-      const zoom = 1;
-      const range = new TileRange(0, 1, 0, 1);
-
-      const covered = source.forEachLoadedTile(
-        source.getProjection(),
-        zoom,
-        range,
-        function () {
-          return true;
-        }
-      );
-      expect(covered).to.be(false);
-    });
-
-    it('allows callback to override loaded check', function () {
-      // a source with no loaded tiles
-      const source = new MockTile({
-        '1/0/0': 2, // LOADED,
-        '1/0/1': 2, // LOADED,
-        '1/1/0': 2, // LOADED,
-        '1/1/1': 2, // LOADED
-      });
-
-      const zoom = 1;
-      const range = new TileRange(0, 1, 0, 1);
-
-      const covered = source.forEachLoadedTile(
-        source.getProjection(),
-        zoom,
-        range,
-        function () {
-          return false;
-        }
-      );
-      expect(covered).to.be(false);
     });
   });
 

@@ -857,7 +857,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         throw new Error('Rendering array data is not yet supported');
       }
     } else {
-      // TODO: rework for vector tiles
       image = this.getTileImage(
         /** @type {import("../../ImageTile.js").default} */ (tile)
       );

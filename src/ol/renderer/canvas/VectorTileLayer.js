@@ -96,7 +96,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   }
 
   /**
-   * @param {import("../../ImageTile.js").default} tile Tile.
+   * @param {import("../../VectorRenderTile.js").default} tile Tile.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {number} x Left of the tile.
    * @param {number} y Top of the tile.
