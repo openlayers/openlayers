@@ -83,7 +83,13 @@ export const FLOAT = 0x1406;
  * @const
  * @type {Array<string>}
  */
-const CONTEXT_IDS = ['experimental-webgl', 'webgl', 'webkit-3d', 'moz-webgl'];
+const CONTEXT_IDS = [
+  'webgl2',
+  'experimental-webgl',
+  'webgl',
+  'webkit-3d',
+  'moz-webgl',
+];
 
 /**
  * @param {HTMLCanvasElement} canvas Canvas.

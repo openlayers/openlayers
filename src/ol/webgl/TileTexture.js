@@ -58,7 +58,8 @@ function uploadDataTexture(
   const gl = helper.getGL();
   let textureType;
   let canInterpolate;
-  if (data instanceof Float32Array) {
+  const float = data instanceof Float32Array;
+  if (float) {
     textureType = gl.FLOAT;
     helper.getExtension('OES_texture_float');
     const extension = helper.getExtension('OES_texture_float_linear');
@@ -79,22 +80,47 @@ function uploadDataTexture(
     unpackAlignment = 2;
   }
 
+  const webGL1 = gl instanceof WebGLRenderingContext;
   let format;
+  let internalFormat;
+
   switch (bandCount) {
     case 1: {
-      format = gl.LUMINANCE;
+      format =
+        webGL1 || !float
+          ? gl.LUMINANCE
+          : /** @type {WebGL2RenderingContext} */ (gl).RED;
+      internalFormat =
+        webGL1 || !float
+          ? format
+          : /** @type {WebGL2RenderingContext} */ (gl).R32F;
       break;
     }
     case 2: {
-      format = gl.LUMINANCE_ALPHA;
+      format = webGL1
+        ? gl.LUMINANCE_ALPHA
+        : /** @type {WebGL2RenderingContext} */ (gl).RG;
+      internalFormat = webGL1
+        ? format
+        : float
+        ? /** @type {WebGL2RenderingContext} */ (gl).RG32F
+        : /** @type {WebGL2RenderingContext} */ (gl).RG8;
       break;
     }
     case 3: {
       format = gl.RGB;
+      internalFormat =
+        webGL1 || !float
+          ? format
+          : /** @type {WebGL2RenderingContext} */ (gl).RGB32F;
       break;
     }
     case 4: {
       format = gl.RGBA;
+      internalFormat =
+        webGL1 || !float
+          ? format
+          : /** @type {WebGL2RenderingContext} */ (gl).RGBA32F;
       break;
     }
     default: {
@@ -107,7 +133,7 @@ function uploadDataTexture(
   gl.texImage2D(
     gl.TEXTURE_2D,
     0,
-    format,
+    internalFormat,
     size[0],
     size[1],
     0,
