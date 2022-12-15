@@ -252,6 +252,7 @@ function parseStyle(style, bandCount) {
     uniform float ${Uniforms.TEXTURE_PIXEL_HEIGHT};
     uniform float ${Uniforms.RESOLUTION};
     uniform float ${Uniforms.ZOOM};
+    uniform float ${Uniforms.VERSION};
 
     ${uniformDeclarations.join('\n')}
 

@@ -51,6 +51,7 @@ export const Uniforms = {
   RENDER_EXTENT: 'u_renderExtent', // intersection of layer, source, and view extent
   RESOLUTION: 'u_resolution',
   ZOOM: 'u_zoom',
+  VERSION: 'u_version',
 };
 
 export const Attributes = {
@@ -696,6 +697,10 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
           viewState.resolution
         );
         this.helper.setUniformFloatValue(Uniforms.ZOOM, viewState.zoom);
+        this.helper.setUniformFloatValue(
+          Uniforms.VERSION,
+          gl instanceof WebGLRenderingContext ? 1 : 2
+        );
 
         this.helper.drawElements(0, this.indices_.getSize());
       }
