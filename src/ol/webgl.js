@@ -2,7 +2,7 @@
  * @module ol/webgl
  */
 
-import {SAFARI_BUG_237906} from './has.js';
+import {SAFARI_BUG_237906, WEBGL2} from './has.js';
 
 /**
  * Constants taken from goog.webgl
@@ -95,13 +95,11 @@ export const RGBA32F = 0x8814;
  * @const
  * @type {Array<string>}
  */
-const CONTEXT_IDS = [
-  'webgl2',
-  'experimental-webgl',
-  'webgl',
-  'webkit-3d',
-  'moz-webgl',
-];
+const CONTEXT_IDS = ['experimental-webgl', 'webgl', 'webkit-3d', 'moz-webgl'];
+
+if (WEBGL2) {
+  CONTEXT_IDS.unshift('webgl2');
+}
 
 /**
  * @param {HTMLCanvasElement} canvas Canvas.

@@ -81,31 +81,26 @@ function uploadDataTexture(
 
   let format;
   let internalFormat;
+  const webGL2Float =
+    data instanceof Float32Array && gl instanceof WebGL2RenderingContext;
   switch (bandCount) {
     case 1: {
-      format = gl.LUMINANCE;
-      textureType = gl.UNSIGNED_BYTE;
-      data = new Uint8Array(Array.prototype.slice.call(data));
-
+      internalFormat = webGL2Float ? gl.R32F : gl.LUMINANCE;
+      format = webGL2Float ? gl.RED : gl.LUMINANCE;
       break;
     }
     case 2: {
-      format = gl.LUMINANCE_ALPHA;
+      internalFormat = webGL2Float ? gl.RG32F : gl.LUMINANCE_ALPHA;
+      format = webGL2Float ? gl.RG : gl.LUMINANCE_ALPHA;
       break;
     }
     case 3: {
-      internalFormat =
-        data instanceof Float32Array && gl instanceof WebGL2RenderingContext
-          ? RGB32F
-          : gl.RGB;
+      internalFormat = webGL2Float ? RGB32F : gl.RGB;
       format = gl.RGB;
       break;
     }
     case 4: {
-      internalFormat =
-        data instanceof Float32Array && gl instanceof WebGL2RenderingContext
-          ? RGBA32F
-          : gl.RGBA;
+      internalFormat = webGL2Float ? RGBA32F : gl.RGBA;
       format = gl.RGBA;
       break;
     }

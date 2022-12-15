@@ -6,6 +6,7 @@
 import PaletteTexture from '../webgl/PaletteTexture.js';
 import {Uniforms} from '../renderer/webgl/TileLayer.js';
 import {asArray, fromString, isStringColor} from '../color.js';
+import {WEBGL2} from '../has.js';
 
 /**
  * Base type used for literal style parameters; can be a number literal or the output of an operator,
@@ -194,6 +195,7 @@ export function isTypeUnique(valueType) {
  * @property {Object<string, number>} stringLiteralsMap This object maps all encountered string values to a number
  * @property {Object<string, string>} functions Lookup of functions used by the style.
  * @property {number} [bandCount] Number of bands per pixel.
+ * @property {boolean} [isWebgl2] Webgl2 context indicator
  * @property {Array<PaletteTexture>} [paletteTextures] List of palettes used by the style.
  */
 
@@ -503,7 +505,7 @@ Operators['band'] = {
       for (let i = 0; i < bandCount; i++) {
         const colorIndex = Math.floor(i / 4);
         let bandIndex = i % 4;
-        if (i === bandCount - 1 && bandIndex === 1) {
+        if (!WEBGL2 && i === bandCount - 1 && bandIndex === 1) {
           // LUMINANCE_ALPHA - band 1 assigned to rgb and band 2 assigned to alpha
           bandIndex = 3;
         }

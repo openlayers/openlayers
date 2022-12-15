@@ -86,3 +86,9 @@ export const PASSIVE_EVENT_LISTENERS = (function () {
   }
   return passive;
 })();
+
+/**
+ * @type {boolean}
+ */
+export const WEBGL2 =
+  document.createElement('canvas').getContext('webgl2') !== null;

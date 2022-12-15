@@ -29,7 +29,7 @@ function numpyTileLoader(z, x, y) {
           dataTile[px * 5 + 2] = numpyData.data[bandSize * 2 + y * 256 + x];
           dataTile[px * 5 + 3] = numpyData.data[bandSize * 3 + y * 256 + x];
           dataTile[px * 5 + 4] =
-            numpyData.data[bandSize * 4 + y * 256 + x] > 0 ? 255 : 0;
+            numpyData.data[bandSize * 4 + y * 256 + x] > 0 ? 1.0 : 0;
         }
       }
       return dataTile;
