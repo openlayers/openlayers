@@ -195,7 +195,6 @@ export function isTypeUnique(valueType) {
  * @property {Object<string, number>} stringLiteralsMap This object maps all encountered string values to a number
  * @property {Object<string, string>} functions Lookup of functions used by the style.
  * @property {number} [bandCount] Number of bands per pixel.
- * @property {boolean} [isWebgl2] Webgl2 context indicator
  * @property {Array<PaletteTexture>} [paletteTextures] List of palettes used by the style.
  */
 
