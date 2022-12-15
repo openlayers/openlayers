@@ -11,6 +11,9 @@ new Map({
   layers: [
     new TileLayer({
       source: source,
+      style: {
+        color: ['array', ['band', 1], ['band', 1], ['band', 1], ['band', 2]],
+      },
     }),
   ],
   target: 'map',

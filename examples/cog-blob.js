@@ -18,6 +18,15 @@ fetch('data/example.tif')
       layers: [
         new TileLayer({
           source: source,
+          style: {
+            color: [
+              'array',
+              ['band', 1],
+              ['band', 1],
+              ['band', 1],
+              ['band', 2],
+            ],
+          },
         }),
       ],
       view: source.getView().then((viewConfig) => {
