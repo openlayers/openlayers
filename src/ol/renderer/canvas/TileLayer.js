@@ -47,17 +47,27 @@ function getCacheKey(sourceKey, z, x, y) {
 }
 
 /**
+ * @typedef {Object<number, Set<import("../../Tile.js").default>>} TileLookup
+ */
+
+/**
  * Add a tile to the lookup.
- * @param {Object<number, Array<import("../../Tile.js").default>>} tilesByZ Lookup of
- * tiles by zoom level.
+ * @param {TileLookup} tilesByZ Lookup of tiles by zoom level.
  * @param {import("../../Tile.js").default} tile A tile.
  * @param {number} z The zoom level.
+ * @return {boolean} The tile was added to the lookup.
  */
 function addTileToLookup(tilesByZ, tile, z) {
   if (!(z in tilesByZ)) {
-    tilesByZ[z] = [];
+    tilesByZ[z] = new Set([tile]);
+    return true;
   }
-  tilesByZ[z].push(tile);
+  const set = tilesByZ[z];
+  const existing = set.has(tile);
+  if (!existing) {
+    set.add(tile);
+  }
+  return !existing;
 }
 
 /**
@@ -371,7 +381,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {import("../../extent.js").Extent} extent The extent to be rendered.
    * @param {number} initialZ The zoom level.
-   * @param {Object<number, Array<import("../../Tile.js").default>>} tilesByZ Tile lookup by zoom level.
+   * @param {TileLookup} tilesByZ Lookup of tiles by zoom level.
    * @param {number} preload Number of additional levels to load.
    */
   enqueueTiles(frameState, extent, initialZ, tilesByZ, preload) {
@@ -415,7 +425,10 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
         for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
           const tile = this.getTile(z, x, y, frameState);
-          addTileToLookup(tilesByZ, tile, z);
+          const added = addTileToLookup(tilesByZ, tile, z);
+          if (!added) {
+            continue;
+          }
 
           const tileQueueKey = tile.getKey();
           wantedTiles[tileQueueKey] = true;
@@ -440,8 +453,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * Look for tiles covering the provided tile coordinate at an alternate
    * zoom level.  Loaded tiles will be added to the provided tile texture lookup.
    * @param {import("../../tilecoord.js").TileCoord} tileCoord The target tile coordinate.
-   * @param {Object<number, Array<import("../../Tile.js").default>>} tilesByZ Lookup of
-   * tiles by zoom level.
+   * @param {TileLookup} tilesByZ Lookup of tiles by zoom level.
    * @return {boolean} The tile coordinate is covered by loaded tiles at the alternate zoom level.
    * @private
    */
@@ -470,8 +482,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @param {import("../../tilegrid/TileGrid.js").default} tileGrid The tile grid.
    * @param {import("../../tilecoord.js").TileCoord} tileCoord The target tile coordinate.
    * @param {number} altZ The alternate zoom level.
-   * @param {Object<number, Array<import("../../Tile.js").default>>} tilesByZ Lookup of
-   * tiles by zoom level.
+   * @param {TileLookup} tilesByZ Lookup of tiles by zoom level.
    * @return {boolean} The tile coordinate is covered by loaded tiles at the alternate zoom level.
    * @private
    */
@@ -583,7 +594,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     ];
 
     /**
-     * @type {Object<number, Array<import("../../Tile.js").default>>}
+     * @type {TileLookup}
      */
     const tilesByZ = {};
 
@@ -624,9 +635,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const time = frameState.time;
 
     // look for cached tiles to use if a target tile is not ready
-    const tiles = tilesByZ[z];
-    for (let i = 0, ii = tiles.length; i < ii; ++i) {
-      const tile = tiles[i];
+    for (const tile of tilesByZ[z]) {
       const tileState = tile.getState();
       if (
         (tile instanceof ReprojTile || tile instanceof ReprojDataTile) &&
