@@ -319,6 +319,8 @@ describe('ol/layer/WebGLTile', function () {
       uniform float u_texturePixelHeight;
       uniform float u_resolution;
       uniform float u_zoom;
+      uniform float u_version; 
+      uniform float u_float_data;
       uniform float u_var_r;
       uniform float u_var_g;
       uniform float u_var_b;
@@ -355,6 +357,8 @@ describe('ol/layer/WebGLTile', function () {
       uniform float u_textureOriginX;
       uniform float u_textureOriginY;
       uniform float u_depth;
+      uniform float u_version; 
+      uniform float u_float_data;
 
       varying vec2 v_textureCoord;
       varying vec2 v_mapCoord;
@@ -419,6 +423,8 @@ describe('ol/layer/WebGLTile', function () {
       uniform float u_texturePixelHeight;
       uniform float u_resolution;
       uniform float u_zoom;
+      uniform float u_version;
+      uniform float u_float_data;
       uniform sampler2D u_tileTextures[1];
 
       float getBandValue(float band, float xOffset, float yOffset) {

@@ -100,6 +100,8 @@ function parseStyle(style, bandCount) {
     uniform float ${Uniforms.TEXTURE_ORIGIN_X};
     uniform float ${Uniforms.TEXTURE_ORIGIN_Y};
     uniform float ${Uniforms.DEPTH};
+    uniform float ${Uniforms.WEBGL_VERSION};
+    uniform float ${Uniforms.IS_FLOAT_DATA};
 
     varying vec2 v_textureCoord;
     varying vec2 v_mapCoord;
@@ -252,6 +254,8 @@ function parseStyle(style, bandCount) {
     uniform float ${Uniforms.TEXTURE_PIXEL_HEIGHT};
     uniform float ${Uniforms.RESOLUTION};
     uniform float ${Uniforms.ZOOM};
+    uniform float ${Uniforms.WEBGL_VERSION};
+    uniform float ${Uniforms.IS_FLOAT_DATA};
 
     ${uniformDeclarations.join('\n')}
 
