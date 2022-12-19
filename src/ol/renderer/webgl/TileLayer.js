@@ -665,7 +665,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
         this.helper.setUniformFloatValue(Uniforms.TRANSITION_ALPHA, alpha);
         this.helper.setUniformFloatValue(Uniforms.DEPTH, depth);
 
-        const webglVersion = gl instanceof WebGL2RenderingContext ? 2.0 : 1.0;
+        const webglVersion = gl instanceof WebGLRenderingContext ? 1.0 : 2.0;
         this.helper.setUniformFloatValue(Uniforms.WEBGL_VERSION, webglVersion);
 
         const format =

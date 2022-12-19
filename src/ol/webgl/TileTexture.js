@@ -82,7 +82,7 @@ function uploadDataTexture(
   let format;
   let internalFormat;
   const webGL2Float =
-    data instanceof Float32Array && gl instanceof WebGL2RenderingContext;
+    data instanceof Float32Array && !(gl instanceof WebGLRenderingContext);
   switch (bandCount) {
     case 1: {
       internalFormat = webGL2Float ? gl.R32F : gl.LUMINANCE;
