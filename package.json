@@ -76,7 +76,7 @@
     "fs-extra": "^11.1.0",
     "globby": "^13.0.0",
     "handlebars": "4.7.7",
-    "jquery": "3.6.1",
+    "jquery": "3.6.2",
     "jsdoc": "4.0.0",
     "jsdoc-plugin-intersection": "^1.0.4",
     "jsdoc-plugin-typescript": "^2.2.0",
