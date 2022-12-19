@@ -47,6 +47,8 @@ import {toSize} from '../size.js';
  * @property {boolean} [wrapX=false] Render tiles beyond the antimeridian.
  * @property {number} [transition] Transition time when fading in new tiles (in miliseconds).
  * @property {number} [bandCount=4] Number of bands represented in the data.
+ * Be aware of using float data, bandCount is necessary to be provided explicitly,
+ * otherwise the output will differ depending on whether WebGL or WebGL2 is used
  * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
  * the nearest neighbor is used when resampling.
  */

@@ -9,7 +9,7 @@ import ImageTile from '../ImageTile.js';
 import ReprojTile from '../reproj/Tile.js';
 import TileState from '../TileState.js';
 import WebGLArrayBuffer from './Buffer.js';
-import {ARRAY_BUFFER, RGB32F, RGBA32F, STATIC_DRAW} from '../webgl.js';
+import {ARRAY_BUFFER, STATIC_DRAW} from '../webgl.js';
 import {createCanvasContext2D} from '../dom.js';
 import {toSize} from '../size.js';
 
@@ -95,12 +95,12 @@ function uploadDataTexture(
       break;
     }
     case 3: {
-      internalFormat = webGL2Float ? RGB32F : gl.RGB;
+      internalFormat = webGL2Float ? gl.RGB32F : gl.RGB;
       format = gl.RGB;
       break;
     }
     case 4: {
-      internalFormat = webGL2Float ? RGBA32F : gl.RGBA;
+      internalFormat = webGL2Float ? gl.RGBA32F : gl.RGBA;
       format = gl.RGBA;
       break;
     }
@@ -115,7 +115,7 @@ function uploadDataTexture(
   gl.texImage2D(
     gl.TEXTURE_2D,
     0,
-    internalFormat ? internalFormat : format,
+    internalFormat,
     size[0],
     size[1],
     0,

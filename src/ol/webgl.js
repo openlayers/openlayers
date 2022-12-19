@@ -76,18 +76,6 @@ export const UNSIGNED_INT = 0x1405;
  */
 export const FLOAT = 0x1406;
 
-/**
- * @const
- * @type {number}
- */
-export const RGB32F = 0x8815;
-
-/**
- * @const
- * @type {number}
- */
-export const RGBA32F = 0x8814;
-
 /** end of goog.webgl constants
  */
 
