@@ -15,6 +15,11 @@ which is `true` by default. This avoids longitudes aoutside the -180 to 180 degr
 
 If you want the previous behavior, which displays coordinates with longitudes less than -180 or greater than 180, configure the control with `wrapX: false`.
 
+#### WebGL2 support added
+OpenLayers now uses WebGL2 by default with fallback to WebGL, when WebGL2 is not supported. 
+This upgrade will support also devices that do not support floating point within WebGL, but can handle floating point in WebGL2. 
+Be aware of using float data - since now `bandCount` is necessary to be provided explicitly, otherwise the output will differ depending on whether WebGL or WebGL2 is used.
+
 ### 7.1.0
 
 #### Notice to full build users
