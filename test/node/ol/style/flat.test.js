@@ -46,6 +46,7 @@ describe('ol/style/flat.js', () => {
         'text-value': 'foo',
         'text-fill-color': 'blue',
         'text-stroke-width': 2,
+        'text-repeat': 250,
       });
 
       expect(style).to.be.a(Style);
@@ -53,6 +54,7 @@ describe('ol/style/flat.js', () => {
       const text = style.getText();
       expect(text).to.be.a(Text);
       expect(text.getText()).to.be('foo');
+      expect(text.getRepeat()).to.be(250);
 
       const textFill = text.getFill();
       expect(textFill).to.be.a(Fill);

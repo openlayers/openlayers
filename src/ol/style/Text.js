@@ -35,6 +35,8 @@ const DEFAULT_FILL_COLOR = '#333';
  * @property {boolean} [overflow=false] For polygon labels or when `placement` is set to `'line'`, allow text to exceed
  * the width of the polygon at the label position or the length of the path that it follows.
  * @property {TextPlacement} [placement='point'] Text placement.
+ * @property {number} [repeat] Repeat interval in pixels. When set, the text will be repeated at this interval. Only available
+ * when `placement` is set to `'line'`. Overrides 'textAlign'.
  * @property {number|import("../size.js").Size} [scale] Scale.
  * @property {boolean} [rotateWithView=false] Whether to rotate the text with the view.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
@@ -124,6 +126,12 @@ class Text {
 
     /**
      * @private
+     * @type {number|undefined}
+     */
+    this.repeat_ = options.repeat;
+
+    /**
+     * @private
      * @type {CanvasTextBaseline|undefined}
      */
     this.textBaseline_ = options.textBaseline;
@@ -208,6 +216,7 @@ class Text {
     return new Text({
       font: this.getFont(),
       placement: this.getPlacement(),
+      repeat: this.getRepeat(),
       maxAngle: this.getMaxAngle(),
       overflow: this.getOverflow(),
       rotation: this.getRotation(),
@@ -265,6 +274,15 @@ class Text {
    */
   getPlacement() {
     return this.placement_;
+  }
+
+  /**
+   * Get the repeat interval of the text.
+   * @return {number|undefined} Repeat interval in pixels.
+   * @api
+   */
+  getRepeat() {
+    return this.repeat_;
   }
 
   /**
@@ -459,6 +477,15 @@ class Text {
    */
   setPlacement(placement) {
     this.placement_ = placement;
+  }
+
+  /**
+   * Set the repeat interval of the text.
+   * @param {number|undefined} [repeat] Repeat interval in pixels.
+   * @api
+   */
+  setRepeat(repeat) {
+    this.repeat_ = repeat;
   }
 
   /**

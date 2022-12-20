@@ -59,6 +59,7 @@ import {getFontParameters} from '../css.js';
  * @typedef {Object} TextState
  * @property {string} font Font.
  * @property {CanvasTextAlign} [textAlign] TextAlign.
+ * @property {number} [repeat] Repeat.
  * @property {import("../style/Text.js").TextJustify} [justify] Justify.
  * @property {CanvasTextBaseline} textBaseline TextBaseline.
  * @property {import("../style/Text.js").TextPlacement} [placement] Placement.
