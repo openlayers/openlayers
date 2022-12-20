@@ -2,7 +2,7 @@
  * @module ol/source/ImageTile
  */
 import DataTileSource from './DataTile.js';
-import {pickUrl, renderXYZTemplate} from '../uri.js';
+import {expandUrl, pickUrl, renderXYZTemplate} from '../uri.js';
 
 /**
  * Image tile loading function.  The function is called with z, x, and y tile coordinates and
@@ -70,16 +70,6 @@ function loadImage(template, z, x, y, options) {
 }
 
 /**
- * @param {string} template The url template.
- * @return {Loader} The image loader.
- */
-function makeLoaderFromTemplate(template) {
-  return function (z, x, y, options) {
-    return loadImage(template, z, x, y, options);
-  };
-}
-
-/**
  * @param {Array<string>} templates The url templates.
  * @return {Loader} The image loader.
  */
@@ -122,7 +112,8 @@ class ImageTileSource extends DataTileSource {
       if (Array.isArray(options.url)) {
         loader = makeLoaderFromTemplates(options.url);
       } else if (typeof options.url === 'string') {
-        loader = makeLoaderFromTemplate(options.url);
+        const urls = expandUrl(options.url);
+        loader = makeLoaderFromTemplates(urls);
       } else if (typeof options.url === 'function') {
         loader = makeLoaderFromGetter(options.url);
       } else {

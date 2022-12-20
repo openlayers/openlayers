@@ -4,7 +4,8 @@
 import TileEventType from './TileEventType.js';
 import TileSource, {TileSourceEvent} from './Tile.js';
 import TileState from '../TileState.js';
-import {createFromTemplates, expandUrl} from '../tileurlfunction.js';
+import {createFromTemplates} from '../tileurlfunction.js';
+import {expandUrl} from '../uri.js';
 import {getKeyZXY} from '../tilecoord.js';
 import {getUid} from '../util.js';
 

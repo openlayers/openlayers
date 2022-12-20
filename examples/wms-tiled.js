@@ -1,6 +1,6 @@
 import Map from '../src/ol/Map.js';
 import OSM from '../src/ol/source/OSM.js';
-import TileLayer from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/WebGLTile.js';
 import TileWMS from '../src/ol/source/TileWMS.js';
 import View from '../src/ol/View.js';
 

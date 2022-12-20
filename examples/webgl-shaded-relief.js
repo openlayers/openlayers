@@ -1,6 +1,7 @@
+import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {OSM, XYZ} from '../src/ol/source.js';
+import {OSM} from '../src/ol/source.js';
 import {WebGLTile as TileLayer} from '../src/ol/layer.js';
 
 const variables = {};
@@ -45,7 +46,7 @@ const scaled = ['*', 255, cosIncidence];
 
 const shadedRelief = new TileLayer({
   opacity: 0.3,
-  source: new XYZ({
+  source: new ImageTile({
     url: 'https://{a-d}.tiles.mapbox.com/v3/aj.sf-dem/{z}/{x}/{y}.png',
   }),
   style: {

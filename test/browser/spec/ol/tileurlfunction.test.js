@@ -3,52 +3,10 @@ import {
   createFromTemplate,
   createFromTemplates,
   createFromTileUrlFunctions,
-  expandUrl,
 } from '../../../../src/ol/tileurlfunction.js';
 import {createXYZ} from '../../../../src/ol/tilegrid.js';
 
 describe('ol.TileUrlFunction', function () {
-  describe('expandUrl', function () {
-    describe('with number range', function () {
-      it('creates expected URLs', function () {
-        const template = 'http://tile-{1-3}/{z}/{x}/{y}';
-        const urls = expandUrl(template);
-        expect(urls).to.eql([
-          'http://tile-1/{z}/{x}/{y}',
-          'http://tile-2/{z}/{x}/{y}',
-          'http://tile-3/{z}/{x}/{y}',
-        ]);
-      });
-      it('creates expected URLs', function () {
-        const template = 'http://tile-{9-11}/{z}/{x}/{y}';
-        const urls = expandUrl(template);
-        expect(urls).to.eql([
-          'http://tile-9/{z}/{x}/{y}',
-          'http://tile-10/{z}/{x}/{y}',
-          'http://tile-11/{z}/{x}/{y}',
-        ]);
-      });
-    });
-    describe('with character range', function () {
-      it('creates expected URLs', function () {
-        const template = 'http://tile-{c-e}/{z}/{x}/{y}';
-        const urls = expandUrl(template);
-        expect(urls).to.eql([
-          'http://tile-c/{z}/{x}/{y}',
-          'http://tile-d/{z}/{x}/{y}',
-          'http://tile-e/{z}/{x}/{y}',
-        ]);
-      });
-    });
-    describe('without range', function () {
-      it('creates expected URLs', function () {
-        const template = 'http://tiles.example.com/{z}/{x}/{y}';
-        const urls = expandUrl(template);
-        expect(urls).to.eql(['http://tiles.example.com/{z}/{x}/{y}']);
-      });
-    });
-  });
-
   describe('createFromTemplate', function () {
     const tileGrid = createXYZ();
     it('creates expected URL', function () {

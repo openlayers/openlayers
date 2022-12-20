@@ -9,7 +9,8 @@ import TileImage from './TileImage.js';
 import TileState from '../TileState.js';
 import {assert} from '../asserts.js';
 import {createCanvasContext2D} from '../dom.js';
-import {createFromTileUrlFunctions, expandUrl} from '../tileurlfunction.js';
+import {createFromTileUrlFunctions} from '../tileurlfunction.js';
+import {expandUrl} from '../uri.js';
 import {getCenter} from '../extent.js';
 import {toSize} from '../size.js';
 

@@ -16,6 +16,7 @@ export {default as ImageArcGISRest} from './source/ImageArcGISRest.js';
 export {default as ImageCanvas} from './source/ImageCanvas.js';
 export {default as ImageMapGuide} from './source/ImageMapGuide.js';
 export {default as ImageStatic} from './source/ImageStatic.js';
+export {default as ImageTile} from './source/ImageTile.js';
 export {default as ImageWMS} from './source/ImageWMS.js';
 export {default as OSM} from './source/OSM.js';
 export {default as Raster} from './source/Raster.js';

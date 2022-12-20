@@ -3,10 +3,10 @@
  */
 
 import TileImage from './TileImage.js';
-import {appendParams} from '../uri.js';
+import {appendParams, expandUrl} from '../uri.js';
 import {containsExtent} from '../extent.js';
 import {createFromCapabilitiesMatrixSet} from '../tilegrid/WMTS.js';
-import {createFromTileUrlFunctions, expandUrl} from '../tileurlfunction.js';
+import {createFromTileUrlFunctions} from '../tileurlfunction.js';
 import {equivalent, get as getProjection, transformExtent} from '../proj.js';
 
 /**
