@@ -1,6 +1,6 @@
 {
   "name": "ol",
-  "version": "7.1.1-dev",
+  "version": "7.2.0",
   "description": "OpenLayers mapping library",
   "keywords": [
     "map",
