@@ -123,6 +123,8 @@ class ImageTileSource extends DataTileSource {
       }
     }
 
+    const wrapX = options.wrapX === undefined ? true : options.wrapX;
+
     super({
       loader: loader,
       attributions: options.attributions,
@@ -136,7 +138,7 @@ class ImageTileSource extends DataTileSource {
       tileGrid: options.tileGrid,
       opaque: options.opaque,
       state: options.state,
-      wrapX: options.wrapX,
+      wrapX: wrapX,
       transition: options.transition,
       interpolate: options.interpolate !== false,
       crossOrigin: options.crossOrigin,

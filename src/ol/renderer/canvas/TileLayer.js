@@ -541,7 +541,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
      *  * decide if we still need this.newTiles_
      *  * maybe skip transition when not fully opaque
      *  * decide if this.renderComplete is useful
-     *  * review use of getRenderExtent
      *  * remove alphaLookup if not useful
      */
 
@@ -568,21 +567,14 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       this.renderedSourceKey_ = sourceKey;
     }
 
-    let extent = frameState.extent;
+    const frameExtent = frameState.extent;
     const resolution = frameState.viewState.resolution;
     const tilePixelRatio = tileSource.getTilePixelRatio(pixelRatio);
     // desired dimensions of the canvas in pixels
-    const width = Math.round((getWidth(extent) / resolution) * pixelRatio);
-    const height = Math.round((getHeight(extent) / resolution) * pixelRatio);
-
-    const layerExtent =
-      layerState.extent && fromUserExtent(layerState.extent, projection);
-    if (layerExtent) {
-      extent = getIntersection(
-        extent,
-        fromUserExtent(layerState.extent, projection)
-      );
-    }
+    const width = Math.round((getWidth(frameExtent) / resolution) * pixelRatio);
+    const height = Math.round(
+      (getHeight(frameExtent) / resolution) * pixelRatio
+    );
 
     const dx = (tileResolution * width) / 2 / tilePixelRatio;
     const dy = (tileResolution * height) / 2 / tilePixelRatio;
@@ -612,10 +604,17 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       this.enqueueTiles(frameState, nextExtent, targetZ, tilesByZ, preload);
     }
 
-    this.enqueueTiles(frameState, extent, z, tilesByZ, 0);
+    const renderExtent = getRenderExtent(frameState, frameExtent);
+    this.enqueueTiles(frameState, renderExtent, z, tilesByZ, 0);
     if (preload > 0) {
       setTimeout(() => {
-        this.enqueueTiles(frameState, extent, z - 1, tilesByZ, preload - 1);
+        this.enqueueTiles(
+          frameState,
+          renderExtent,
+          z - 1,
+          tilesByZ,
+          preload - 1
+        );
       }, 0);
     }
 
@@ -736,7 +735,8 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       context.clearRect(0, 0, width, height);
     }
 
-    if (layerExtent) {
+    if (layerState.extent) {
+      const layerExtent = fromUserExtent(layerState.extent, projection);
       this.clipUnrotated(context, frameState, layerExtent);
     }
 
