@@ -2,6 +2,8 @@
 
 ### Next version
 
+### 7.2.0
+
 #### Rendered resolutions of `ol/source/Raster`
 
 Previously, `ol/source/Raster` processed input sources at the current view resolution, which caused interpolation artefacts in cases where input sources were up- or downsampled. Now, `ol/source/Raster` picks up the resolutions from the first input source that has resolutions configured (either implicitly through a tile grid in the case of tile sources, or directly when configured through the `resolutions` constructor option). This improves the rendered output in most cases.
