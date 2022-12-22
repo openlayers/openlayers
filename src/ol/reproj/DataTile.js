@@ -52,7 +52,7 @@ class ReprojDataTile extends DataTile {
   constructor(options) {
     super({
       tileCoord: options.tileCoord,
-      loader: () => Promise.resolve(new Uint8Array(4)),
+      loader: () => Promise.resolve(new Uint8ClampedArray(4)),
       interpolate: options.interpolate,
       transition: options.transition,
     });
@@ -265,6 +265,7 @@ class ReprojDataTile extends DataTile {
    */
   reproject_() {
     const dataSources = [];
+    let imageLike = false;
     this.sourceTiles_.forEach((tile) => {
       if (!tile || tile.getState() !== TileState.LOADED) {
         return;
@@ -279,12 +280,13 @@ class ReprojDataTile extends DataTile {
       if (arrayData) {
         tileData = arrayData;
       } else {
+        imageLike = true;
         tileData = toArray(asImageLike(tile.getData()));
       }
       const pixelSize = [size[0] + 2 * gutter, size[1] + 2 * gutter];
       const isFloat = tileData instanceof Float32Array;
       const pixelCount = pixelSize[0] * pixelSize[1];
-      const DataType = isFloat ? Float32Array : Uint8Array;
+      const DataType = isFloat ? Float32Array : Uint8ClampedArray;
       const tileDataR = new DataType(tileData.buffer);
       const bytesPerElement = DataType.BYTES_PER_ELEMENT;
       const bytesPerPixel = (bytesPerElement * tileDataR.length) / pixelCount;
@@ -308,7 +310,7 @@ class ReprojDataTile extends DataTile {
       }
       dataSources.push({
         extent: this.sourceTileGrid_.getTileCoordExtent(tile.tileCoord),
-        data: new Uint8Array(packedData.buffer),
+        data: new Uint8ClampedArray(packedData.buffer),
         dataType: DataType,
         bytesPerPixel: bytesPerPixel,
         pixelSize: pixelSize,
@@ -318,114 +320,116 @@ class ReprojDataTile extends DataTile {
 
     if (dataSources.length === 0) {
       this.state = TileState.ERROR;
-    } else {
-      const z = this.wrappedTileCoord_[0];
-      const size = this.targetTileGrid_.getTileSize(z);
-      const targetWidth = typeof size === 'number' ? size : size[0];
-      const targetHeight = typeof size === 'number' ? size : size[1];
-      const targetResolution = this.targetTileGrid_.getResolution(z);
-      const sourceResolution = this.sourceTileGrid_.getResolution(
-        this.sourceZ_
-      );
+      this.changed();
+      return;
+    }
 
-      const targetExtent = this.targetTileGrid_.getTileCoordExtent(
-        this.wrappedTileCoord_
-      );
+    const z = this.wrappedTileCoord_[0];
+    const size = this.targetTileGrid_.getTileSize(z);
+    const targetWidth = typeof size === 'number' ? size : size[0];
+    const targetHeight = typeof size === 'number' ? size : size[1];
+    const targetResolution = this.targetTileGrid_.getResolution(z);
+    const sourceResolution = this.sourceTileGrid_.getResolution(this.sourceZ_);
 
-      let dataR, dataU;
+    const targetExtent = this.targetTileGrid_.getTileCoordExtent(
+      this.wrappedTileCoord_
+    );
 
-      const bytesPerPixel = dataSources[0].bytesPerPixel;
+    let dataR, dataU;
 
-      const reprojs = Math.ceil(bytesPerPixel / 3);
-      for (let reproj = reprojs - 1; reproj >= 0; --reproj) {
-        const sources = [];
-        for (let i = 0, len = dataSources.length; i < len; ++i) {
-          const dataSource = dataSources[i];
-          const buffer = dataSource.data;
-          const pixelSize = dataSource.pixelSize;
-          const width = pixelSize[0];
-          const height = pixelSize[1];
-          const context = createCanvasContext2D(width, height, canvasPool);
-          const imageData = context.createImageData(width, height);
-          const data = imageData.data;
-          let offset = reproj * 3;
-          for (let j = 0, len = data.length; j < len; j += 4) {
-            data[j] = buffer[offset];
-            data[j + 1] = buffer[offset + 1];
-            data[j + 2] = buffer[offset + 2];
-            data[j + 3] = 255;
-            offset += bytesPerPixel;
-          }
-          context.putImageData(imageData, 0, 0);
-          sources.push({
-            extent: dataSource.extent,
-            image: context.canvas,
-          });
-        }
+    const bytesPerPixel = dataSources[0].bytesPerPixel;
 
-        const canvas = renderReprojected(
-          targetWidth,
-          targetHeight,
-          this.pixelRatio_,
-          sourceResolution,
-          this.sourceTileGrid_.getExtent(),
-          targetResolution,
-          targetExtent,
-          this.triangulation_,
-          sources,
-          this.gutter_,
-          false,
-          false
-        );
-
-        for (let i = 0, len = sources.length; i < len; ++i) {
-          const canvas = sources[i].image;
-          const context = canvas.getContext('2d');
-          releaseCanvas(context);
-          canvasPool.push(context.canvas);
-        }
-
-        const context = canvas.getContext('2d');
-        const imageData = context.getImageData(
-          0,
-          0,
-          canvas.width,
-          canvas.height
-        );
-
-        releaseCanvas(context);
-        canvasPool.push(canvas);
-
-        if (!dataR) {
-          dataU = new Uint8Array(
-            bytesPerPixel * imageData.width * imageData.height
-          );
-          dataR = new dataSources[0].dataType(dataU.buffer);
-        }
-
+    const reprojs = Math.ceil(bytesPerPixel / 3);
+    for (let reproj = reprojs - 1; reproj >= 0; --reproj) {
+      const sources = [];
+      for (let i = 0, len = dataSources.length; i < len; ++i) {
+        const dataSource = dataSources[i];
+        const buffer = dataSource.data;
+        const pixelSize = dataSource.pixelSize;
+        const width = pixelSize[0];
+        const height = pixelSize[1];
+        const context = createCanvasContext2D(width, height, canvasPool);
+        const imageData = context.createImageData(width, height);
         const data = imageData.data;
         let offset = reproj * 3;
-        for (let i = 0, len = data.length; i < len; i += 4) {
-          if (data[i + 3] === 255) {
-            dataU[offset] = data[i];
-            dataU[offset + 1] = data[i + 1];
-            dataU[offset + 2] = data[i + 2];
-          } else {
-            dataU[offset] = 0;
-            dataU[offset + 1] = 0;
-            dataU[offset + 2] = 0;
-          }
+        for (let j = 0, len = data.length; j < len; j += 4) {
+          data[j] = buffer[offset];
+          data[j + 1] = buffer[offset + 1];
+          data[j + 2] = buffer[offset + 2];
+          data[j + 3] = 255;
           offset += bytesPerPixel;
         }
+        context.putImageData(imageData, 0, 0);
+        sources.push({
+          extent: dataSource.extent,
+          image: context.canvas,
+        });
       }
 
-      this.reprojData_ = dataR;
-      this.reprojSize_ = [
-        Math.round(targetWidth * this.pixelRatio_),
-        Math.round(targetHeight * this.pixelRatio_),
-      ];
-      this.state = TileState.LOADED;
+      const canvas = renderReprojected(
+        targetWidth,
+        targetHeight,
+        this.pixelRatio_,
+        sourceResolution,
+        this.sourceTileGrid_.getExtent(),
+        targetResolution,
+        targetExtent,
+        this.triangulation_,
+        sources,
+        this.gutter_,
+        false,
+        false
+      );
+
+      for (let i = 0, len = sources.length; i < len; ++i) {
+        const canvas = sources[i].image;
+        const context = canvas.getContext('2d');
+        releaseCanvas(context);
+        canvasPool.push(context.canvas);
+      }
+
+      const context = canvas.getContext('2d');
+      const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+
+      releaseCanvas(context);
+      canvasPool.push(canvas);
+
+      if (!dataR) {
+        dataU = new Uint8ClampedArray(
+          bytesPerPixel * imageData.width * imageData.height
+        );
+        dataR = new dataSources[0].dataType(dataU.buffer);
+      }
+
+      const data = imageData.data;
+      let offset = reproj * 3;
+      for (let i = 0, len = data.length; i < len; i += 4) {
+        if (data[i + 3] === 255) {
+          dataU[offset] = data[i];
+          dataU[offset + 1] = data[i + 1];
+          dataU[offset + 2] = data[i + 2];
+        } else {
+          dataU[offset] = 0;
+          dataU[offset + 1] = 0;
+          dataU[offset + 2] = 0;
+        }
+        offset += bytesPerPixel;
+      }
     }
+
+    if (imageLike) {
+      const context = createCanvasContext2D(targetWidth, targetHeight);
+      const imageData = new ImageData(dataR, targetWidth);
+      context.putImageData(imageData, 0, 0);
+      this.reprojData_ = context.canvas;
+    } else {
+      this.reprojData_ = dataR;
+    }
+    this.reprojSize_ = [
+      Math.round(targetWidth * this.pixelRatio_),
+      Math.round(targetHeight * this.pixelRatio_),
+    ];
+    this.state = TileState.LOADED;
     this.changed();
   }
 

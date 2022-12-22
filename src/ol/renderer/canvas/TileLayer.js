@@ -317,8 +317,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       }
     }
 
-    const pixelRatio = frameState.pixelRatio;
-    const projection = frameState.viewState.projection;
     const viewState = frameState.viewState;
     const source = layer.getRenderSource();
     const tileGrid = source.getTileGridForProjection(viewState.projection);
@@ -330,27 +328,29 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       --z
     ) {
       const tileCoord = tileGrid.getTileCoordForCoordAndZ(coordinate, z);
-      const tile = source.getTile(
-        z,
-        tileCoord[1],
-        tileCoord[2],
-        pixelRatio,
-        projection
-      );
-      if (
-        !(tile instanceof ImageTile || tile instanceof ReprojTile) ||
-        (tile instanceof ReprojTile && tile.getState() === TileState.EMPTY)
-      ) {
-        return null;
-      }
-
-      if (tile.getState() !== TileState.LOADED) {
+      const tile = this.getTile(z, tileCoord[1], tileCoord[2], frameState);
+      if (!tile || tile.getState() !== TileState.LOADED) {
         continue;
       }
 
       const tileOrigin = tileGrid.getOrigin(z);
       const tileSize = toSize(tileGrid.getTileSize(z));
       const tileResolution = tileGrid.getResolution(z);
+
+      /**
+       * @type {import('../../DataTile.js').ImageLike}
+       */
+      let image;
+      if (tile instanceof ImageTile) {
+        image = tile.getImage();
+      } else if (tile instanceof DataTile) {
+        image = asImageLike(tile.getData());
+        if (!image) {
+          continue;
+        }
+      } else {
+        continue;
+      }
 
       const col = Math.floor(
         tilePixelRatio *
@@ -368,7 +368,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         tilePixelRatio * source.getGutterForProjection(viewState.projection)
       );
 
-      return this.getImageData(tile.getImage(), col + gutter, row + gutter);
+      return this.getImageData(image, col + gutter, row + gutter);
     }
 
     return null;
