@@ -92,6 +92,50 @@ function makeLoaderFromGetter(getter) {
 }
 
 /**
+ * @param {UrlLike} url The URL-like option.
+ * @return {Loader} The tile loader.
+ */
+function makeLoaderFromUrlLike(url) {
+  /**
+   * @type {Loader}
+   */
+  let loader;
+
+  if (Array.isArray(url)) {
+    loader = makeLoaderFromTemplates(url);
+  } else if (typeof url === 'string') {
+    const urls = expandUrl(url);
+    loader = makeLoaderFromTemplates(urls);
+  } else if (typeof url === 'function') {
+    loader = makeLoaderFromGetter(url);
+  } else {
+    throw new Error(
+      'The url option must be a single template, an array of templates, or a function for getting a URL'
+    );
+  }
+  return loader;
+}
+
+let keyCount = 0;
+
+/**
+ * @param {UrlLike} url The URL-like option.
+ * @return {string} A key for the URL.
+ */
+function keyFromUrlLike(url) {
+  if (Array.isArray(url)) {
+    return url.join('\n');
+  }
+
+  if (typeof url === 'string') {
+    return url;
+  }
+
+  ++keyCount;
+  return 'url-function-key-' + keyCount;
+}
+
+/**
  * @classdesc
  * A source for typed array data tiles.
  *
@@ -100,33 +144,36 @@ function makeLoaderFromGetter(getter) {
  */
 class ImageTileSource extends DataTileSource {
   /**
-   * @param {Options} options DataTile source options.
+   * @param {Options} [options] DataTile source options.
    */
   constructor(options) {
+    options = options || {};
+
     /**
      * @type {Loader}
      */
     let loader = options.loader;
 
+    /**
+     * @type {string}
+     */
+    let key;
+
     if (options.url) {
-      if (Array.isArray(options.url)) {
-        loader = makeLoaderFromTemplates(options.url);
-      } else if (typeof options.url === 'string') {
-        const urls = expandUrl(options.url);
-        loader = makeLoaderFromTemplates(urls);
-      } else if (typeof options.url === 'function') {
-        loader = makeLoaderFromGetter(options.url);
-      } else {
-        throw new Error(
-          'The url option must be a single template, an array of templates, or a function for getting a URL'
-        );
-      }
+      loader = makeLoaderFromUrlLike(options.url);
+      key = keyFromUrlLike(options.url);
     }
+
+    /**
+     * @type {import('./Source.js').State}
+     */
+    const state = !loader ? 'loading' : options.state;
 
     const wrapX = options.wrapX === undefined ? true : options.wrapX;
 
     super({
       loader: loader,
+      key: key,
       attributions: options.attributions,
       attributionsCollapsible: options.attributionsCollapsible,
       maxZoom: options.maxZoom,
@@ -137,12 +184,25 @@ class ImageTileSource extends DataTileSource {
       projection: options.projection,
       tileGrid: options.tileGrid,
       opaque: options.opaque,
-      state: options.state,
+      state: state,
       wrapX: wrapX,
       transition: options.transition,
       interpolate: options.interpolate !== false,
       crossOrigin: options.crossOrigin,
     });
+  }
+
+  /**
+   * @param {UrlLike} url The new URL.
+   * @api
+   */
+  setUrl(url) {
+    const loader = makeLoaderFromUrlLike(url);
+    this.setLoader(loader);
+    this.setKey(keyFromUrlLike(url));
+    if (this.getState() !== 'ready') {
+      this.setState('ready');
+    }
   }
 }
 

@@ -62,6 +62,7 @@ import {toSize} from '../size.js';
  * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
  * the nearest neighbor is used when resampling.
  * @property {CrossOriginAttribute} [crossOrigin='anonymous'] The crossOrigin property to pass to loaders for image data.
+ * @property {string} [key] Key for use in caching tiles.
  */
 
 /**
@@ -101,6 +102,7 @@ class DataTileSource extends TileSource {
       wrapX: options.wrapX,
       transition: options.transition,
       interpolate: options.interpolate,
+      key: options.key,
     });
 
     /**
