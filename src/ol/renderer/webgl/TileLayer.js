@@ -396,6 +396,9 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
               frameState.pixelRatio,
               viewState.projection
             );
+            if (!tile) {
+              continue;
+            }
             if (!tileTexture) {
               tileTexture = new TileTexture({
                 tile: tile,

@@ -122,12 +122,15 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {number} x Tile coordinate x.
    * @param {number} y Tile coordinate y.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
-   * @return {!import("../../Tile.js").default} Tile.
+   * @return {import("../../Tile.js").default|null} Tile (or null if outside source extent).
    */
   getTile(z, x, y, frameState) {
     const tile = /** @type {import("../../VectorRenderTile.js").default} */ (
       this.getOrCreateTile(z, x, y, frameState)
     );
+    if (!tile) {
+      return null;
+    }
 
     const viewState = frameState.viewState;
     const resolution = viewState.resolution;

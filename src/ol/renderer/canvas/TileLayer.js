@@ -228,7 +228,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @param {number} x Tile coordinate x.
    * @param {number} y Tile coordinate y.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
-   * @return {!import("../../Tile.js").default} Tile.
+   * @return {import("../../Tile.js").default|null} Tile (or null if outside source extent).
    * @protected
    */
   getOrCreateTile(z, x, y, frameState) {
@@ -250,6 +250,9 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         frameState.pixelRatio,
         frameState.viewState.projection
       );
+      if (!tile) {
+        return null;
+      }
       tileCache.set(cacheKey, tile);
     }
     return tile;
@@ -280,11 +283,14 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @param {number} x Tile coordinate x.
    * @param {number} y Tile coordinate y.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
-   * @return {!import("../../Tile.js").default} Tile.
+   * @return {import("../../Tile.js").default|null} Tile (or null if outside source extent).
    * @protected
    */
   getTile(z, x, y, frameState) {
     const tile = this.getOrCreateTile(z, x, y, frameState);
+    if (!tile) {
+      return null;
+    }
     return this.getDrawableTile(tile);
   }
 
@@ -425,6 +431,9 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
         for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
           const tile = this.getTile(z, x, y, frameState);
+          if (!tile) {
+            continue;
+          }
           const added = addTileToLookup(tilesByZ, tile, z);
           if (!added) {
             continue;

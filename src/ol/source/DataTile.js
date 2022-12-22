@@ -272,7 +272,7 @@ class DataTileSource extends TileSource {
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {!DataTile} Tile.
+   * @return {DataTile|null} Tile (or null if outside source extent).
    */
   getTile(z, x, y, pixelRatio, projection) {
     const sourceProjection = this.getProjection();
@@ -302,9 +302,17 @@ class DataTileSource extends TileSource {
       crossOrigin: this.crossOrigin_,
     };
 
+    const tileCoord = this.getTileCoordForTileUrlFunction([z, x, y]);
+    if (!tileCoord) {
+      return null;
+    }
+
+    const requestZ = tileCoord[0];
+    const requestX = tileCoord[1];
+    const requestY = tileCoord[2];
     function loader() {
       return toPromise(function () {
-        return sourceLoader(z, x, y, loaderOptions);
+        return sourceLoader(requestZ, requestX, requestY, loaderOptions);
       });
     }
 
