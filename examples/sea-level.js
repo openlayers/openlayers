@@ -1,7 +1,8 @@
+import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
-import {Raster as RasterSource, XYZ} from '../src/ol/source.js';
+import {Raster as RasterSource} from '../src/ol/source.js';
 import {fromLonLat} from '../src/ol/proj.js';
 
 function flood(pixels, data) {
@@ -26,7 +27,7 @@ const attributions =
   '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
   '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
 
-const elevation = new XYZ({
+const elevation = new ImageTile({
   // The RGB values in the source collectively represent elevation.
   // Interpolation of individual colors would produce incorrect evelations and is disabled.
   url: 'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + key,
@@ -45,7 +46,7 @@ const map = new Map({
   target: 'map',
   layers: [
     new TileLayer({
-      source: new XYZ({
+      source: new ImageTile({
         attributions: attributions,
         url: 'https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=' + key,
         tileSize: 512,

@@ -1,7 +1,7 @@
+import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import TileLayer from '../src/ol/layer/WebGLTile.js';
 import View from '../src/ol/View.js';
-import XYZ from '../src/ol/source/XYZ.js';
 import {fromLonLat} from '../src/ol/proj.js';
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
@@ -28,7 +28,7 @@ const elevation = [
 
 const layer = new TileLayer({
   opacity: 0.6,
-  source: new XYZ({
+  source: new ImageTile({
     url:
       'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + key,
     tileSize: 512,
@@ -52,7 +52,7 @@ const map = new Map({
   target: 'map',
   layers: [
     new TileLayer({
-      source: new XYZ({
+      source: new ImageTile({
         url: 'https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=' + key,
         attributions: attributions,
         tileSize: 512,

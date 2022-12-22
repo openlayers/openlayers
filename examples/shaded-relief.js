@@ -1,7 +1,8 @@
+import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
-import {OSM, Raster, XYZ} from '../src/ol/source.js';
+import {OSM, Raster} from '../src/ol/source.js';
 
 /**
  * Generates a shaded relief image given elevation data.  Uses a 3x3
@@ -123,7 +124,7 @@ function shade(inputs, data) {
   return {data: shadeData, width: width, height: height};
 }
 
-const elevation = new XYZ({
+const elevation = new ImageTile({
   url: 'https://{a-d}.tiles.mapbox.com/v3/aj.sf-dem/{z}/{x}/{y}.png',
   crossOrigin: 'anonymous',
   maxZoom: 13,
