@@ -25,7 +25,6 @@ exports.publish = function (data, opts) {
       return true;
     }
     return (
-      typeof this.define === 'object' &&
       !['file', 'event', 'module'].includes(this.kind) &&
       this.meta &&
       this.meta.path &&
