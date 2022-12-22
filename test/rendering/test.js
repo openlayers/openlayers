@@ -66,6 +66,7 @@ function serve(options) {
 
   return new Promise((resolve, reject) => {
     const app = express();
+    app.use(serveStatic(path.join(baseDir, '..', '..', 'build', 'full')));
     app.use((req, res) => {
       if (req.url === '/favicon.ico') {
         res.writeHead(204);
