@@ -810,6 +810,7 @@ class RasterSource extends ImageSource {
     const imageDatas = new Array(len);
     for (let i = 0; i < len; ++i) {
       frameState.layerIndex = i;
+      frameState.renderTargets = {};
       const imageData = getImageData(this.layers_[i], frameState);
       if (imageData) {
         imageDatas[i] = imageData;
