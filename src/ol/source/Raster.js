@@ -517,6 +517,12 @@ export class RasterSourceEvent extends Event {
  * @property {Array<number>|null} [resolutions] Resolutions. If specified, raster operations will only
  * be run at the given resolutions.  By default, the resolutions of the first source with resolutions
  * specified will be used, if any. Set to `null` to use any view resolution instead.
+ * @property {boolean} [interpolate=true] Use interpolated values when resampling the
+ * output from operations `resolutions` to view resolution.
+ * By default, linear interpolation is used when resampling.
+ * Set to false to use the nearest neighbor instead.
+ * Note that this does not affect resampling of input sources to operations
+ * `resolutions` where the `interpolate` option of each source will apply.
  */
 
 /***
@@ -543,8 +549,10 @@ class RasterSource extends ImageSource {
    * @param {Options} options Options.
    */
   constructor(options) {
+    const layers = createLayers(options.sources);
     super({
       projection: null,
+      interpolate: options.interpolate,
     });
 
     /***
@@ -585,14 +593,17 @@ class RasterSource extends ImageSource {
      * @private
      * @type {Array<import("../layer/Layer.js").default>}
      */
-    this.layers_ = createLayers(options.sources);
+    this.layers_ = layers;
 
     const changed = this.changed.bind(this);
     for (let i = 0, ii = this.layers_.length; i < ii; ++i) {
       this.layers_[i].addEventListener(EventType.CHANGE, changed);
     }
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.useResolutions_ = options.resolutions !== null;
 
     /**
@@ -653,16 +664,8 @@ class RasterSource extends ImageSource {
 
     this.setAttributions(function (frameState) {
       const attributions = [];
-      for (
-        let index = 0, iMax = options.sources.length;
-        index < iMax;
-        ++index
-      ) {
-        const sourceOrLayer = options.sources[index];
-        const source =
-          sourceOrLayer instanceof Source
-            ? sourceOrLayer
-            : sourceOrLayer.getSource();
+      for (let i = 0, ii = layers.length; i < ii; ++i) {
+        const source = layers[i].getSource();
         if (!source) {
           continue;
         }
@@ -891,9 +894,11 @@ class RasterSource extends ImageSource {
     if (!resolutions) {
       for (let i = 0, ii = this.layers_.length; i < ii; ++i) {
         const source = this.layers_[i].getSource();
-        resolutions = source.getResolutions(projection);
-        if (resolutions) {
-          break;
+        if (source) {
+          resolutions = source.getResolutions(projection);
+          if (resolutions) {
+            break;
+          }
         }
       }
     }
