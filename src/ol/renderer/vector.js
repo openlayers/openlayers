@@ -353,41 +353,22 @@ function renderPointGeometry(
   const textStyle = style.getText();
   /** @type {import("../render/canvas.js").DeclutterImageWithText} */
   let declutterImageWithText;
+  if (declutterBuilderGroup) {
+    builderGroup = declutterBuilderGroup;
+    if (imageStyle && textStyle && textStyle.getText()) {
+      declutterImageWithText = {};
+    }
+  }
   if (imageStyle) {
     if (imageStyle.getImageState() != ImageState.LOADED) {
       return;
     }
-    let imageBuilderGroup = builderGroup;
-    if (declutterBuilderGroup) {
-      const declutterMode = imageStyle.getDeclutterMode();
-      if (declutterMode !== 'none') {
-        imageBuilderGroup = declutterBuilderGroup;
-        if (declutterMode === 'obstacle') {
-          // draw in non-declutter group:
-          const imageReplay = builderGroup.getBuilder(
-            style.getZIndex(),
-            'Image'
-          );
-          imageReplay.setImageStyle(imageStyle, declutterImageWithText);
-          imageReplay.drawPoint(geometry, feature);
-        } else if (textStyle && textStyle.getText()) {
-          declutterImageWithText = {};
-        }
-      }
-    }
-    const imageReplay = imageBuilderGroup.getBuilder(
-      style.getZIndex(),
-      'Image'
-    );
+    const imageReplay = builderGroup.getBuilder(style.getZIndex(), 'Image');
     imageReplay.setImageStyle(imageStyle, declutterImageWithText);
     imageReplay.drawPoint(geometry, feature);
   }
   if (textStyle && textStyle.getText()) {
-    let textBuilderGroup = builderGroup;
-    if (declutterBuilderGroup) {
-      textBuilderGroup = declutterBuilderGroup;
-    }
-    const textReplay = textBuilderGroup.getBuilder(style.getZIndex(), 'Text');
+    const textReplay = builderGroup.getBuilder(style.getZIndex(), 'Text');
     textReplay.setTextStyle(textStyle, declutterImageWithText);
     textReplay.drawText(geometry, feature);
   }
@@ -411,41 +392,22 @@ function renderMultiPointGeometry(
   const textStyle = style.getText();
   /** @type {import("../render/canvas.js").DeclutterImageWithText} */
   let declutterImageWithText;
+  if (declutterBuilderGroup) {
+    builderGroup = declutterBuilderGroup;
+    if (imageStyle && textStyle && textStyle.getText()) {
+      declutterImageWithText = {};
+    }
+  }
   if (imageStyle) {
     if (imageStyle.getImageState() != ImageState.LOADED) {
       return;
     }
-    let imageBuilderGroup = builderGroup;
-    if (declutterBuilderGroup) {
-      const declutterMode = imageStyle.getDeclutterMode();
-      if (declutterMode !== 'none') {
-        imageBuilderGroup = declutterBuilderGroup;
-        if (declutterMode === 'obstacle') {
-          // draw in non-declutter group:
-          const imageReplay = builderGroup.getBuilder(
-            style.getZIndex(),
-            'Image'
-          );
-          imageReplay.setImageStyle(imageStyle, declutterImageWithText);
-          imageReplay.drawMultiPoint(geometry, feature);
-        } else if (textStyle && textStyle.getText()) {
-          declutterImageWithText = {};
-        }
-      }
-    }
-    const imageReplay = imageBuilderGroup.getBuilder(
-      style.getZIndex(),
-      'Image'
-    );
+    const imageReplay = builderGroup.getBuilder(style.getZIndex(), 'Image');
     imageReplay.setImageStyle(imageStyle, declutterImageWithText);
     imageReplay.drawMultiPoint(geometry, feature);
   }
   if (textStyle && textStyle.getText()) {
-    let textBuilderGroup = builderGroup;
-    if (declutterBuilderGroup) {
-      textBuilderGroup = declutterBuilderGroup;
-    }
-    const textReplay = textBuilderGroup.getBuilder(style.getZIndex(), 'Text');
+    const textReplay = builderGroup.getBuilder(style.getZIndex(), 'Text');
     textReplay.setTextStyle(textStyle, declutterImageWithText);
     textReplay.drawText(geometry, feature);
   }

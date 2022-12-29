@@ -374,7 +374,7 @@ class CanvasTextBuilder extends CanvasBuilder {
       // render time.
       const pixelRatio = this.pixelRatio;
       this.instructions.push([
-        CanvasInstruction.DRAW_IMAGE,
+        CanvasInstruction.DRAW_TEXT,
         begin,
         end,
         null,

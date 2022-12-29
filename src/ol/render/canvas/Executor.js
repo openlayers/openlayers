@@ -46,7 +46,7 @@ import {transform2D} from '../../geom/flat/transform.js';
  */
 
 /**
- * @typedef {{0: CanvasRenderingContext2D, 1: number, 2: import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement, 3: ImageOrLabelDimensions, 4: number, 5: Array<*>, 6: Array<*>}} ReplayImageOrLabelArgs
+ * @typedef {{0: CanvasRenderingContext2D, 1: number, 2: import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement, 3: ImageOrLabelDimensions, 4: number, 5: Array<*>, 6: Array<*>, 7: 'declutter'|'obstacle'|'none'}} ReplayImageOrLabelArgs
  */
 
 /**
@@ -781,6 +781,7 @@ class Executor {
           ++i;
           break;
         case CanvasInstruction.DRAW_IMAGE:
+        case CanvasInstruction.DRAW_TEXT:
           d = /** @type {number} */ (instruction[1]);
           dd = /** @type {number} */ (instruction[2]);
           image =
@@ -788,7 +789,7 @@ class Executor {
               instruction[3]
             );
 
-          // Remaining arguments in DRAW_IMAGE are in alphabetical order
+          // Remaining arguments are in alphabetical order
           anchorX = /** @type {number} */ (instruction[4]);
           anchorY = /** @type {number} */ (instruction[5]);
           let height = /** @type {number} */ (instruction[6]);
@@ -804,7 +805,7 @@ class Executor {
           const declutterMode =
             /** @type {"declutter"|"obstacle"|"none"|undefined} */ (
               instruction[14]
-            );
+            ) || 'declutter';
           const declutterImageWithText =
             /** @type {import("../canvas.js").DeclutterImageWithText} */ (
               instruction[15]
@@ -898,46 +899,52 @@ class Executor {
               backgroundStroke
                 ? /** @type {Array<*>} */ (lastStrokeInstruction)
                 : null,
+              declutterMode,
             ];
             if (declutterTree) {
-              if (declutterMode === 'none') {
-                // not rendered in declutter group
-                continue;
-              } else if (declutterMode === 'obstacle') {
-                // will always be drawn, thus no collision detection, but insert as obstacle
-                declutterTree.insert(dimensions.declutterBox);
-                continue;
-              } else {
-                let imageArgs;
-                let imageDeclutterBox;
-                if (declutterImageWithText) {
-                  const index = dd - d;
-                  if (!declutterImageWithText[index]) {
-                    // We now have the image for an image+text combination.
-                    declutterImageWithText[index] = args;
-                    // Don't render anything for now, wait for the text.
-                    continue;
-                  }
-                  imageArgs = declutterImageWithText[index];
-                  delete declutterImageWithText[index];
-                  imageDeclutterBox = getDeclutterBox(imageArgs);
-                  if (declutterTree.collides(imageDeclutterBox)) {
-                    continue;
-                  }
-                }
-                if (declutterTree.collides(dimensions.declutterBox)) {
+              let imageArgs;
+              let imageDeclutterBox;
+              if (declutterImageWithText) {
+                const index = dd - d;
+                if (!declutterImageWithText[index]) {
+                  // We now have the image for an image+text combination.
+                  declutterImageWithText[index] = args;
+                  // Don't render anything for now, wait for the text.
                   continue;
                 }
-                if (imageArgs) {
-                  // We now have image and text for an image+text combination.
-                  declutterTree.insert(imageDeclutterBox);
+                imageArgs = declutterImageWithText[index];
+                delete declutterImageWithText[index];
+              }
+              if (imageArgs) {
+                // We now have image and text for an image+text combination.
+                imageDeclutterBox = getDeclutterBox(imageArgs);
+                if (
+                  imageArgs[7] !== 'declutter' ||
+                  (!declutterTree.collides(imageDeclutterBox) &&
+                    !declutterTree.collides(dimensions.declutterBox))
+                ) {
                   // Render the image before we render the text.
                   this.replayImageOrLabel_.apply(this, imageArgs);
+                } else {
+                  // Don't render the image, don't render the text.
+                  continue;
                 }
+              }
+              if (
+                declutterMode !== 'declutter' ||
+                !declutterTree.collides(dimensions.declutterBox)
+              ) {
+                this.replayImageOrLabel_.apply(this, args);
+              }
+              if (imageDeclutterBox && imageArgs[7] !== 'none') {
+                declutterTree.insert(imageDeclutterBox);
+              }
+              if (declutterMode !== 'none') {
                 declutterTree.insert(dimensions.declutterBox);
               }
+            } else {
+              this.replayImageOrLabel_.apply(this, args);
             }
-            this.replayImageOrLabel_.apply(this, args);
           }
           ++i;
           break;
@@ -1044,6 +1051,7 @@ class Executor {
                     1,
                     null,
                     null,
+                    'declutter',
                   ]);
                 }
               }
@@ -1086,6 +1094,7 @@ class Executor {
                     1,
                     null,
                     null,
+                    'declutter',
                   ]);
                 }
               }
