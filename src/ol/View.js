@@ -715,13 +715,18 @@ class View extends BaseObject {
    * Cancel any ongoing animations.
    * @api
    */
-  cancelAnimations() {
+  cancelAnimations(cancelCallback = false) {
     this.setHint(ViewHint.ANIMATING, -this.hints_[ViewHint.ANIMATING]);
     let anchor;
     for (let i = 0, ii = this.animations_.length; i < ii; ++i) {
       const series = this.animations_[i];
       if (series[0].callback) {
-        animationCallback(series[0].callback, false);
+        if(cancelCallback){
+          this.animations_[0].callback = function (){return false}
+        }
+        else {
+          animationCallback(series[0].callback, false);
+        }
       }
       if (!anchor) {
         for (let j = 0, jj = series.length; j < jj; ++j) {

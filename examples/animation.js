@@ -4,6 +4,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
 import {easeIn, easeOut} from '../src/ol/easing.js';
 import {fromLonLat} from '../src/ol/proj.js';
+import {never} from "ol/events/condition.js";
 
 const london = fromLonLat([-0.12755, 51.507222]);
 const moscow = fromLonLat([37.6178, 55.7517]);
@@ -195,3 +196,26 @@ function tour() {
 }
 
 onClick('tour', tour);
+
+function neverEndingTour() {
+  const locations = [london, bern, rome, moscow, istanbul];
+  const duration = 2000;
+  view.animate(
+      { center: london, duration: duration },
+              { center: bern, duration: duration },
+              { center: rome, duration: duration },
+              { center: moscow, duration: duration },
+              { center: istanbul, duration: duration },
+      neverEndingTour
+      );
+}
+
+onClick('never-ending-tour', neverEndingTour);
+
+onClick('cancel-animation', function () {
+  view.cancelAnimations(false);
+});
+
+onClick('cancel-animation-and-callback', function () {
+  view.cancelAnimations(true);
+});
