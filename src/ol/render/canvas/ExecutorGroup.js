@@ -312,6 +312,7 @@ class ExecutorGroup {
    * @param {Array<import("../canvas.js").BuilderType>} [builderTypes] Ordered replay types to replay.
    *     Default is {@link module:ol/render/replay~ORDER}
    * @param {import("rbush").default} [declutterTree] Declutter tree.
+   * @param {Array<{0: Executor, 1: Array<import('./Executor.js').ReplayImageOrLabelArgs>}>} [imageOrLabelArgs] Image or label args.
    */
   execute(
     context,
@@ -320,7 +321,8 @@ class ExecutorGroup {
     viewRotation,
     snapToPixel,
     builderTypes,
-    declutterTree
+    declutterTree,
+    imageOrLabelArgs
   ) {
     /** @type {Array<number>} */
     const zs = Object.keys(this.executorsByZIndex_).map(Number);
@@ -338,23 +340,37 @@ class ExecutorGroup {
     if (declutterTree) {
       zs.reverse();
     }
+    let zImageOrLabelArgs = imageOrLabelArgs ? [] : undefined;
     for (i = 0, ii = zs.length; i < ii; ++i) {
       const zIndexKey = zs[i].toString();
       replays = this.executorsByZIndex_[zIndexKey];
+      const jImageOrLabelArgs = imageOrLabelArgs ? [] : undefined;
       for (j = 0, jj = builderTypes.length; j < jj; ++j) {
         const builderType = builderTypes[j];
         replay = replays[builderType];
         if (replay !== undefined) {
+          /** @type {Array<import('./Executor.js').ReplayImageOrLabelArgs>} */
+          const replayImageOrLabelArgs = declutterTree ? [] : undefined;
           replay.execute(
             context,
             contextScale,
             transform,
             viewRotation,
             snapToPixel,
-            declutterTree
+            declutterTree,
+            replayImageOrLabelArgs
           );
+          if (replayImageOrLabelArgs && replayImageOrLabelArgs.length > 0) {
+            jImageOrLabelArgs.push([replay, replayImageOrLabelArgs]);
+          }
         }
       }
+      if (jImageOrLabelArgs) {
+        zImageOrLabelArgs = jImageOrLabelArgs.concat(zImageOrLabelArgs);
+      }
+    }
+    if (zImageOrLabelArgs) {
+      imageOrLabelArgs.push(...zImageOrLabelArgs);
     }
 
     if (this.maxExtent_) {

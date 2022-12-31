@@ -134,8 +134,19 @@ class CompositeMapRenderer extends MapRenderer {
         );
       }
     }
+    /** @type {Array<Array<{0: import('../render/canvas/Executor.js').default, 1: Array<import('../render/canvas/Executor.js').ReplayImageOrLabelArgs>}>>} */
+    const layerImageOrLabelArgs = [];
     for (let i = declutterLayers.length - 1; i >= 0; --i) {
-      declutterLayers[i].renderDeclutter(frameState);
+      const imageOrLabelArgs = [];
+      declutterLayers[i].renderDeclutter(frameState, imageOrLabelArgs);
+      layerImageOrLabelArgs.push(imageOrLabelArgs);
+    }
+    for (let l = layerImageOrLabelArgs.length - 1; l >= 0; --l) {
+      const imageOrLabelArgs = layerImageOrLabelArgs[l];
+      for (let i = 0, ii = imageOrLabelArgs.length; i < ii; ++i) {
+        const arg = imageOrLabelArgs[i];
+        arg[1].forEach((args) => arg[0].replayImageOrLabel.apply(arg[0], args));
+      }
     }
 
     replaceChildren(this.element_, this.children_);

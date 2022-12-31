@@ -160,8 +160,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @param {ExecutorGroup} executorGroup Executor group.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {import("rbush").default} [declutterTree] Declutter tree.
+   * @param {Array<{0: import('../../render/canvas/Executor.js').default, 1: Array<import('../../render/canvas/Executor.js').ReplayImageOrLabelArgs>}>} [imageOrLabelArgs] Decluttered images and labels.
    */
-  renderWorlds(executorGroup, frameState, declutterTree) {
+  renderWorlds(executorGroup, frameState, declutterTree, imageOrLabelArgs) {
     const extent = frameState.extent;
     const viewState = frameState.viewState;
     const center = viewState.center;
@@ -204,7 +205,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         rotation,
         snapToPixel,
         undefined,
-        declutterTree
+        declutterTree,
+        imageOrLabelArgs
       );
     } while (++world < endWorld);
   }
@@ -237,14 +239,16 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   /**
    * Render declutter items for this layer
    * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {Array<{0: import('../../render/canvas/Executor.js').default, 1: Array<import('../../render/canvas/Executor.js').ReplayImageOrLabelArgs>}>} imageOrLabelArgs Decluttered images and labels.
    */
-  renderDeclutter(frameState) {
+  renderDeclutter(frameState, imageOrLabelArgs) {
     if (this.declutterExecutorGroup) {
       this.setupCompositionContext_();
       this.renderWorlds(
         this.declutterExecutorGroup,
         frameState,
-        frameState.declutterTree
+        frameState.declutterTree,
+        imageOrLabelArgs
       );
       this.releaseCompositionContext_();
     }

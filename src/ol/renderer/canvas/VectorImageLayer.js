@@ -136,7 +136,18 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
           ) {
             vectorRenderer.clipping = false;
             if (vectorRenderer.renderFrame(imageFrameState, null)) {
-              vectorRenderer.renderDeclutter(imageFrameState);
+              /** @type {Array<{0: import('../../render/canvas/Executor.js').default, 1: Array<import('../../render/canvas/Executor.js').ReplayImageOrLabelArgs>}>} */
+              const imageOrLabelArgs = [];
+              vectorRenderer.renderDeclutter(imageFrameState, imageOrLabelArgs);
+              for (let i = imageOrLabelArgs.length - 1; i >= 0; --i) {
+                const arg = imageOrLabelArgs[i];
+                arg[1].forEach((replayImageOrLabelArgs) =>
+                  arg[0].replayImageOrLabel.apply(
+                    arg[0],
+                    replayImageOrLabelArgs
+                  )
+                );
+              }
               emptyImage = false;
             }
             callback();

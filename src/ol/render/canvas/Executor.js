@@ -489,7 +489,6 @@ class Executor {
   }
 
   /**
-   * @private
    * @param {CanvasRenderingContext2D} context Context.
    * @param {number} contextScale Scale of the context.
    * @param {import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} imageOrLabel Image.
@@ -499,7 +498,7 @@ class Executor {
    * @param {Array<*>} strokeInstruction Stroke instruction.
    * @return {boolean} The image or label was rendered.
    */
-  replayImageOrLabel_(
+  replayImageOrLabel(
     context,
     contextScale,
     imageOrLabel,
@@ -632,6 +631,7 @@ class Executor {
    * @param {import("../../extent.js").Extent} [hitExtent] Only check
    *     features that intersect this extent.
    * @param {import("rbush").default} [declutterTree] Declutter tree.
+   * @param {Array<ReplayImageOrLabelArgs>} [imageOrLabelArgs] Replay image or label args.
    * @return {T|undefined} Callback result.
    * @template T
    */
@@ -643,7 +643,8 @@ class Executor {
     snapToPixel,
     featureCallback,
     hitExtent,
-    declutterTree
+    declutterTree,
+    imageOrLabelArgs
   ) {
     /** @type {Array<number>} */
     let pixelCoordinates;
@@ -924,7 +925,7 @@ class Executor {
                     !declutterTree.collides(dimensions.declutterBox))
                 ) {
                   // Render the image before we render the text.
-                  this.replayImageOrLabel_.apply(this, imageArgs);
+                  imageOrLabelArgs.push(imageArgs);
                 } else {
                   // Don't render the image, don't render the text.
                   continue;
@@ -934,7 +935,7 @@ class Executor {
                 declutterMode !== 'declutter' ||
                 !declutterTree.collides(dimensions.declutterBox)
               ) {
-                this.replayImageOrLabel_.apply(this, args);
+                imageOrLabelArgs.push(args);
               }
               if (imageDeclutterBox && imageArgs[7] !== 'none') {
                 declutterTree.insert(imageDeclutterBox);
@@ -943,7 +944,7 @@ class Executor {
                 declutterTree.insert(dimensions.declutterBox);
               }
             } else {
-              this.replayImageOrLabel_.apply(this, args);
+              this.replayImageOrLabel.apply(this, args);
             }
           }
           ++i;
@@ -1100,9 +1101,18 @@ class Executor {
               }
               if (declutterTree) {
                 declutterTree.load(replayImageOrLabelArgs.map(getDeclutterBox));
-              }
-              for (let i = 0, ii = replayImageOrLabelArgs.length; i < ii; ++i) {
-                this.replayImageOrLabel_.apply(this, replayImageOrLabelArgs[i]);
+                imageOrLabelArgs.push(...replayImageOrLabelArgs);
+              } else {
+                for (
+                  let i = 0, ii = replayImageOrLabelArgs.length;
+                  i < ii;
+                  ++i
+                ) {
+                  this.replayImageOrLabel.apply(
+                    this,
+                    replayImageOrLabelArgs[i]
+                  );
+                }
               }
             }
           }
@@ -1210,6 +1220,7 @@ class Executor {
    * @param {number} viewRotation View rotation.
    * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
    * @param {import("rbush").default} [declutterTree] Declutter tree.
+   * @param {Array<ReplayImageOrLabelArgs>} [replayImageOrLabelArgs] Replay image or label args.
    */
   execute(
     context,
@@ -1217,7 +1228,8 @@ class Executor {
     transform,
     viewRotation,
     snapToPixel,
-    declutterTree
+    declutterTree,
+    replayImageOrLabelArgs
   ) {
     this.viewRotation_ = viewRotation;
     this.execute_(
@@ -1228,7 +1240,8 @@ class Executor {
       snapToPixel,
       undefined,
       undefined,
-      declutterTree
+      declutterTree,
+      replayImageOrLabelArgs
     );
   }
 

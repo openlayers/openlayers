@@ -549,8 +549,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   /**
    * Render declutter items for this layer
    * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {Array<{0: import('../../render/canvas/Executor.js').default, 1: Array<import('../../render/canvas/Executor.js').ReplayImageOrLabelArgs>}>} imageOrLabelArgs Decluttered images and labels.
    */
-  renderDeclutter(frameState) {
+  renderDeclutter(frameState, imageOrLabelArgs) {
     const context = this.context;
     const alpha = context.globalAlpha;
     context.globalAlpha = this.getLayer().getOpacity();
@@ -575,7 +576,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
             frameState.viewState.rotation,
             hifi,
             undefined,
-            frameState.declutterTree
+            frameState.declutterTree,
+            imageOrLabelArgs
           );
         }
       }

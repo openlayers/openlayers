@@ -228,12 +228,16 @@ class BaseVectorLayer extends Layer {
   /**
    * Render declutter items for this layer
    * @param {import("../Map.js").FrameState} frameState Frame state.
+   * @param {Array<{0: import('../render/canvas/Executor.js').default, 1: Array<import('../render/canvas/Executor.js').ReplayImageOrLabelArgs>}>} [imageOrLabelArgs] Decluttered images and labels.
    */
-  renderDeclutter(frameState) {
+  renderDeclutter(frameState, imageOrLabelArgs) {
     if (!frameState.declutterTree) {
       frameState.declutterTree = new RBush(9);
     }
-    /** @type {*} */ (this.getRenderer()).renderDeclutter(frameState);
+    /** @type {*} */ (this.getRenderer()).renderDeclutter(
+      frameState,
+      imageOrLabelArgs
+    );
   }
 
   /**
