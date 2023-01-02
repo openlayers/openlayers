@@ -5,7 +5,7 @@ import View from '../../../../../../src/ol/View.js';
 import XYZ from '../../../../../../src/ol/source/XYZ.js';
 import {fromLonLat} from '../../../../../../src/ol/proj.js';
 
-describe('ol.renderer.canvas.TileLayer', function () {
+describe('ol/renderer/canvas/TileLayer', function () {
   describe('#prepareFrame', function () {
     let map, target, source, tile;
     beforeEach(function (done) {

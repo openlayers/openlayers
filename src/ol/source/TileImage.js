@@ -338,8 +338,6 @@ class TileImage extends UrlTile {
     newTile.key = key;
 
     if (tile) {
-      newTile.interimTile = tile;
-      newTile.refreshInterimChain();
       cache.replace(tileCoordKey, newTile);
     } else {
       cache.set(tileCoordKey, newTile);
@@ -357,31 +355,18 @@ class TileImage extends UrlTile {
    * @protected
    */
   getTileInternal(z, x, y, pixelRatio, projection) {
-    let tile = null;
     const tileCoordKey = getKeyZXY(z, x, y);
     const key = this.getKey();
     if (!this.tileCache.containsKey(tileCoordKey)) {
-      tile = this.createTile_(z, x, y, pixelRatio, projection, key);
+      const tile = this.createTile_(z, x, y, pixelRatio, projection, key);
       this.tileCache.set(tileCoordKey, tile);
-    } else {
-      tile = this.tileCache.get(tileCoordKey);
-      if (tile.key != key) {
-        // The source's params changed. If the tile has an interim tile and if we
-        // can use it then we use it. Otherwise we create a new tile.  In both
-        // cases we attempt to assign an interim tile to the new tile.
-        const interimTile = tile;
-        tile = this.createTile_(z, x, y, pixelRatio, projection, key);
+      return tile;
+    }
 
-        //make the new tile the head of the list,
-        if (interimTile.getState() == TileState.IDLE) {
-          //the old tile hasn't begun loading yet, and is now outdated, so we can simply discard it
-          tile.interimTile = interimTile.interimTile;
-        } else {
-          tile.interimTile = interimTile;
-        }
-        tile.refreshInterimChain();
-        this.tileCache.replace(tileCoordKey, tile);
-      }
+    let tile = this.tileCache.get(tileCoordKey);
+    if (tile.key != key) {
+      tile = this.createTile_(z, x, y, pixelRatio, projection, key);
+      this.tileCache.replace(tileCoordKey, tile);
     }
     return tile;
   }

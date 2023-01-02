@@ -123,7 +123,7 @@ describe('ol/source/TileImage', function () {
 
     describe('change a dynamic param', function () {
       describe('tile is not loaded', function () {
-        it('returns a tile with no interim tile', function () {
+        it('returns a tile with the right key', function () {
           source.getKey = function () {
             return 'key0';
           };
@@ -136,55 +136,6 @@ describe('ol/source/TileImage', function () {
           );
           expect(returnedTile).not.to.be(tile);
           expect(returnedTile.key).to.be('key0');
-          expect(returnedTile.interimTile).to.be(null);
-        });
-      });
-
-      describe('tile is loaded', function () {
-        it('returns a tile with interim tile', function () {
-          source.getKey = function () {
-            return 'key0';
-          };
-          tile.state = 2; // LOADED
-          const returnedTile = source.getTileInternal(
-            0,
-            0,
-            0,
-            1,
-            getProjection('EPSG:3857')
-          );
-          expect(returnedTile).not.to.be(tile);
-          expect(returnedTile.key).to.be('key0');
-          expect(returnedTile.interimTile).to.be(tile);
-        });
-      });
-
-      describe('tile is not loaded but interim tile is', function () {
-        it('returns a tile with interim tile', function () {
-          let dynamicParamsKey, returnedTile;
-          source.getKey = function () {
-            return dynamicParamsKey;
-          };
-          dynamicParamsKey = 'key0';
-          tile.state = 2; // LOADED
-          returnedTile = source.getTileInternal(
-            0,
-            0,
-            0,
-            1,
-            getProjection('EPSG:3857')
-          );
-          dynamicParamsKey = 'key1';
-          returnedTile = source.getTileInternal(
-            0,
-            0,
-            0,
-            1,
-            getProjection('EPSG:3857')
-          );
-          expect(returnedTile).not.to.be(tile);
-          expect(returnedTile.key).to.be('key1');
-          expect(returnedTile.interimTile).to.be(tile);
         });
       });
     });

@@ -405,8 +405,6 @@ class VectorTile extends UrlTile {
 
     newTile.key = key;
     if (tile) {
-      newTile.interimTile = tile;
-      newTile.refreshInterimChain();
       this.tileCache.replace(coordKey, newTile);
     } else {
       this.tileCache.set(coordKey, newTile);

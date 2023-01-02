@@ -399,6 +399,12 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
             if (!tile) {
               continue;
             }
+
+            // TODO: consider removing isDrawableTile_
+            if (!this.isDrawableTile_(tile)) {
+              continue;
+            }
+
             if (!tileTexture) {
               tileTexture = new TileTexture({
                 tile: tile,
@@ -408,15 +414,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
               });
               tileTextureCache.set(cacheKey, tileTexture);
             } else {
-              if (this.isDrawableTile_(tile)) {
-                tileTexture.setTile(tile);
-              } else {
-                const interimTile =
-                  /** @type {import("../../webgl/TileTexture").TileType} */ (
-                    tile.getInterimTile()
-                  );
-                tileTexture.setTile(interimTile);
-              }
+              tileTexture.setTile(tile);
             }
           }
 
