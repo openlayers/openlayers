@@ -86,4 +86,7 @@ export function nullTileUrlFunction(tileCoord, pixelRatio, projection) {
   return undefined;
 }
 
+/**
+ * TODO: Update ol-mapbox-style to import this from the uri.js module.
+ */
 export {expandUrl} from './uri.js';

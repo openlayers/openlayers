@@ -27,7 +27,7 @@ import {withinExtentAndZ} from '../tilecoord.js';
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
- * @property {number} [cacheSize] CacheSize.
+ * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
  * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {number} [tilePixelRatio] TilePixelRatio.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection.

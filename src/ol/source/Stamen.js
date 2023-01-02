@@ -86,7 +86,7 @@ const ProviderConfig = {
 
 /**
  * @typedef {Object} Options
- * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
+ * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {string} layer Layer name.

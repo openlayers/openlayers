@@ -312,9 +312,6 @@ class WebGLTileLayer extends BaseTileLayer {
     const style = options.style || {};
     delete options.style;
 
-    const cacheSize = options.cacheSize;
-    delete options.cacheSize;
-
     super(options);
 
     /**
@@ -340,12 +337,6 @@ class WebGLTileLayer extends BaseTileLayer {
      * @private
      */
     this.style_ = style;
-
-    /**
-     * @type {number}
-     * @private
-     */
-    this.cacheSize_ = cacheSize;
 
     /**
      * @type {Object<string, (string|number)>}
@@ -419,7 +410,7 @@ class WebGLTileLayer extends BaseTileLayer {
       vertexShader: parsedStyle.vertexShader,
       fragmentShader: parsedStyle.fragmentShader,
       uniforms: parsedStyle.uniforms,
-      cacheSize: this.cacheSize_,
+      cacheSize: this.getCacheSize(),
       paletteTextures: parsedStyle.paletteTextures,
     });
   }

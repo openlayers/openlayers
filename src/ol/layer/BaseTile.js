@@ -43,6 +43,8 @@ import TileProperty from './TileProperty.js';
  * use {@link import("../Map.js").default#addLayer map.addLayer()}.
  * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+ * @property {number} [cacheSize=512] The internal tile cache size.  This needs to be large enough to render
+ * two zoom levels worth of tiles.
  */
 
 /**
@@ -67,6 +69,9 @@ class BaseTileLayer extends Layer {
 
     const baseOptions = Object.assign({}, options);
 
+    const cacheSize = options.cacheSize;
+    delete options.cacheSize;
+
     delete baseOptions.preload;
     delete baseOptions.useInterimTilesOnError;
     super(baseOptions);
@@ -86,12 +91,26 @@ class BaseTileLayer extends Layer {
      */
     this.un;
 
+    /**
+     * @type {number|undefined}
+     * @private
+     */
+    this.cacheSize_ = cacheSize;
+
     this.setPreload(options.preload !== undefined ? options.preload : 0);
     this.setUseInterimTilesOnError(
       options.useInterimTilesOnError !== undefined
         ? options.useInterimTilesOnError
         : true
     );
+  }
+
+  /**
+   * @return {number|undefined} The suggested cache size
+   * @protected
+   */
+  getCacheSize() {
+    return this.cacheSize_;
   }
 
   /**
