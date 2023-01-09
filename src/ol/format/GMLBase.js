@@ -5,6 +5,7 @@
 // of GEOMETRY_PARSERS_ and methods using GEOMETRY_PARSERS_ do not expect
 // envelopes/extents, only geometries!
 import Feature from '../Feature.js';
+import Geometry from '../geom/Geometry.js';
 import LineString from '../geom/LineString.js';
 import LinearRing from '../geom/LinearRing.js';
 import MultiLineString from '../geom/MultiLineString.js';
@@ -313,7 +314,7 @@ class GMLBase extends XMLFeature {
       }
 
       const len = n.attributes.length;
-      if (len > 0) {
+      if (len > 0 && !(value instanceof Geometry)) {
         value = {_content_: value};
         for (let i = 0; i < len; i++) {
           const attName = n.attributes[i].name;
