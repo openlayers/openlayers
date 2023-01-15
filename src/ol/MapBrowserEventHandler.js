@@ -8,7 +8,6 @@ import MapBrowserEventType from './MapBrowserEventType.js';
 import PointerEventType from './pointer/EventType.js';
 import Target from './events/Target.js';
 import {PASSIVE_EVENT_LISTENERS} from './has.js';
-import {VOID} from './functions.js';
 import {listen, unlistenByKey} from './events.js';
 
 class MapBrowserEventHandler extends Target {
@@ -259,12 +258,11 @@ class MapBrowserEventHandler extends Target {
     );
     this.dispatchEvent(newEvent);
 
-    // Store a copy of the down event
-    this.down_ = /** @type {PointerEvent} */ ({});
-    for (const property in pointerEvent) {
-      const value = pointerEvent[property];
-      this.down_[property] = typeof value === 'function' ? VOID : value;
-    }
+    this.down_ = new PointerEvent(pointerEvent.type, pointerEvent);
+    Object.defineProperty(this.down_, 'target', {
+      writable: false,
+      value: pointerEvent.target,
+    });
 
     if (this.dragListenerKeys_.length === 0) {
       const doc = this.map_.getOwnerDocument();
