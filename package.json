@@ -94,7 +94,7 @@
     "mocha": "10.2.0",
     "pixelmatch": "^5.1.0",
     "pngjs": "^6.0.0",
-    "proj4": "2.8.0",
+    "proj4": "2.8.1",
     "puppeteer": "19.5.2",
     "rollup": "^2.42.3",
     "rollup-plugin-external-globals": "^0.7.1",
