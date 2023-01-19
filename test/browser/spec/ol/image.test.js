@@ -1,4 +1,7 @@
-import {listenImage} from '../../../../src/ol/Image.js';
+import ImageState from '../../../../src/ol/ImageState.js';
+import ImageWrapper, {listenImage} from '../../../../src/ol/Image.js';
+import {createCanvasContext2D} from '../../../../src/ol/dom.js';
+import {defaultImageLoadFunction} from '../../../../src/ol/source/Image.js';
 
 describe('HTML Image loading', function () {
   let handleLoad, handleError, img;
@@ -51,5 +54,32 @@ describe('HTML Image loading', function () {
       expect(handleError.called).to.be(false);
       done();
     }, 200);
+  });
+});
+
+describe('getImage() with context', function () {
+  let image;
+  this.beforeEach(function (done) {
+    image = new ImageWrapper(
+      [0, 0, 1, 1],
+      1,
+      1,
+      'spec/ol/data/dot.png',
+      null,
+      defaultImageLoadFunction,
+      createCanvasContext2D()
+    );
+    image.addEventListener('change', function () {
+      if (image.getState() === ImageState.LOADED) {
+        done();
+      }
+    });
+    image.load();
+  });
+
+  it('renders the image to the provided context, returns its canvas', function () {
+    expect(image.image_).to.be.a(HTMLImageElement);
+    expect(image.getImage()).to.be.a(HTMLCanvasElement);
+    expect(image.context_.canvas).to.eql(image.getImage());
   });
 });

@@ -73,7 +73,8 @@ class Static extends ImageSource {
       1,
       this.url_,
       crossOrigin,
-      imageLoadFunction
+      imageLoadFunction,
+      createCanvasContext2D(1, 1)
     );
 
     /**
