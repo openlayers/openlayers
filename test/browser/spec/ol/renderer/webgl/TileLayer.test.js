@@ -10,7 +10,7 @@ import {create} from '../../../../../../src/ol/transform.js';
 import {createCanvasContext2D} from '../../../../../../src/ol/dom.js';
 import {get} from '../../../../../../src/ol/proj.js';
 import {getUid} from '../../../../../../src/ol/util.js';
-import {newTileTextureLookup} from '../../../../../../src/ol/renderer/webgl/TileLayerBase.js';
+import {newTileRepresentationLookup} from '../../../../../../src/ol/renderer/webgl/TileLayerBase.js';
 
 describe('ol/renderer/webgl/TileLayer', function () {
   /** @type {import("../../../../../../src/ol/renderer/webgl/TileLayer.js").default} */
@@ -74,7 +74,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
 
   it('maintains a cache on the renderer instead of the source', function () {
     expect(tileLayer.getSource().tileCache.highWaterMark).to.be(0.1);
-    expect(renderer.tileTextureCache_.highWaterMark).to.be(512);
+    expect(renderer.tileRepresentationCache_.highWaterMark).to.be(512);
   });
 
   it('#prepareFrame()', function () {
@@ -100,7 +100,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
     expect(frameState.tileQueue.getCount()).to.be(1);
     expect(Object.keys(frameState.wantedTiles).length).to.be(1);
     expect(frameState.postRenderFunctions.length).to.be(1); // clear source cache (use renderer cache)
-    expect(renderer.tileTextureCache_.count_).to.be(1);
+    expect(renderer.tileRepresentationCache_.count_).to.be(1);
   });
 
   it('#isDrawableTile_()', function (done) {
@@ -127,7 +127,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
         frameState,
         extent,
         10,
-        newTileTextureLookup(),
+        newTileRepresentationLookup(),
         tileLayer.getPreload()
       );
 
@@ -154,7 +154,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
         frameState,
         extent,
         10,
-        newTileTextureLookup(),
+        newTileRepresentationLookup(),
         tileLayer.getPreload()
       );
 
@@ -190,7 +190,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
         frameState,
         extent,
         10,
-        newTileTextureLookup(),
+        newTileRepresentationLookup(),
         tileLayer.getPreload()
       );
 
@@ -225,7 +225,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
         frameState,
         extent,
         10,
-        newTileTextureLookup(),
+        newTileRepresentationLookup(),
         tileLayer.getPreload()
       );
 
@@ -253,14 +253,14 @@ describe('ol/renderer/webgl/TileLayer', function () {
     });
   });
 
-  describe('#createTileTexture_', () => {
-    let tileTexture;
+  describe('#createTileRepresentation_', () => {
+    let tileRepresentation;
     beforeEach(() => {
       const source = tileLayer.getSource();
       const grid = source.getTileGrid();
       const tile = source.getTile(0, 0, 0);
       renderer.prepareFrame(frameState);
-      tileTexture = renderer.createTileTexture_({
+      tileRepresentation = renderer.createTileRepresentation_({
         tile,
         grid,
         helper: renderer.helper,
@@ -268,7 +268,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
       });
     });
     it('creates a TileTexture instance', () => {
-      expect(tileTexture).to.be.a(TileTexture);
+      expect(tileRepresentation).to.be.a(TileTexture);
     });
   });
 });

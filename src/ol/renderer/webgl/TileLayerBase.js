@@ -6,7 +6,6 @@ import ReprojDataTile from '../../reproj/DataTile.js';
 import ReprojTile from '../../reproj/Tile.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
-import TileTexture from '../../webgl/TileTexture.js';
 import WebGLLayerRenderer from './Layer.js';
 import {abstract, getUid} from '../../util.js';
 import {ascending} from '../../array.js';
@@ -53,41 +52,48 @@ function depthForZ(z) {
 }
 
 /**
- * @typedef {Object} TileTextureLookup
+ * @typedef {import("../../webgl/BaseTileRepresentation.js").default<import("../../Tile.js").default>} AbstractTileRepresentation
+ */
+/**
+ * @typedef {Object} TileRepresentationLookup
  * @property {Set<string>} tileIds The set of tile ids in the lookup.
- * @property {Object<number, Set<TileTexture>>} texturesByZ Tile textures by zoom level.
+ * @property {Object<number, Set<AbstractTileRepresentation>>} representationsByZ Tile representations by zoom level.
  */
 
 /**
- * @return {TileTextureLookup} A new tile texture lookup.
+ * @return {TileRepresentationLookup} A new tile representation lookup.
  */
-export function newTileTextureLookup() {
-  return {tileIds: new Set(), texturesByZ: {}};
+export function newTileRepresentationLookup() {
+  return {tileIds: new Set(), representationsByZ: {}};
 }
 
 /**
- * Check if a tile is already in the tile texture lookup.
- * @param {TileTextureLookup} tileTextureLookup Lookup of tile textures by zoom level.
+ * Check if a tile is already in the tile representation lookup.
+ * @param {TileRepresentationLookup} tileRepresentationLookup Lookup of tile representations by zoom level.
  * @param {import("../../Tile.js").default} tile A tile.
  * @return {boolean} The tile is already in the lookup.
  */
-function lookupHasTile(tileTextureLookup, tile) {
-  return tileTextureLookup.tileIds.has(getUid(tile));
+function lookupHasTile(tileRepresentationLookup, tile) {
+  return tileRepresentationLookup.tileIds.has(getUid(tile));
 }
 
 /**
- * Add a tile texture to the lookup.
- * @param {TileTextureLookup} tileTextureLookup Lookup of tile textures by zoom level.
- * @param {TileTexture} tileTexture A tile texture.
+ * Add a tile representation to the lookup.
+ * @param {TileRepresentationLookup} tileRepresentationLookup Lookup of tile representations by zoom level.
+ * @param {AbstractTileRepresentation} tileRepresentation A tile representation.
  * @param {number} z The zoom level.
  */
-function addTileTextureToLookup(tileTextureLookup, tileTexture, z) {
-  const texturesByZ = tileTextureLookup.texturesByZ;
-  if (!(z in texturesByZ)) {
-    texturesByZ[z] = new Set();
+function addTileRepresentationToLookup(
+  tileRepresentationLookup,
+  tileRepresentation,
+  z
+) {
+  const representationsByZ = tileRepresentationLookup.representationsByZ;
+  if (!(z in representationsByZ)) {
+    representationsByZ[z] = new Set();
   }
-  texturesByZ[z].add(tileTexture);
-  tileTextureLookup.tileIds.add(getUid(tileTexture.tile));
+  representationsByZ[z].add(tileRepresentation);
+  tileRepresentationLookup.tileIds.add(getUid(tileRepresentation.tile));
 }
 
 /**
@@ -125,7 +131,7 @@ export function getCacheKey(source, tileCoord) {
  * @typedef {Object} Options
  * @property {Object<string, import("../../webgl/Helper").UniformValue>} [uniforms] Additional uniforms
  * made available to shaders.
- * @property {number} [cacheSize=512] The tile texture cache size.
+ * @property {number} [cacheSize=512] The tile representation cache size.
  */
 
 /**
@@ -136,7 +142,8 @@ export function getCacheKey(source, tileCoord) {
  * @classdesc
  * Base WebGL renderer for tile layers.
  * @template {BaseLayerType} LayerType
- * @template {import("../../webgl/TileTexture.js").default} TileTexture
+ * @template {import("../../Tile.js").default} TileType
+ * @template {import("../../webgl/BaseTileRepresentation.js").default<TileType>} TileRepresentation
  * @extends {WebGLLayerRenderer<LayerType>}
  */
 class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
@@ -156,7 +163,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     this.renderComplete = false;
 
     /**
-     * This transform converts texture coordinates to screen coordinates.
+     * This transform converts representation coordinates to screen coordinates.
      * @type {import("../../transform.js").Transform}
      * @private
      */
@@ -188,10 +195,10 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
 
     const cacheSize = options.cacheSize !== undefined ? options.cacheSize : 512;
     /**
-     * @type {import("../../structs/LRUCache.js").default<TileTexture>}
+     * @type {import("../../structs/LRUCache.js").default<TileRepresentation>}
      * @protected
      */
-    this.tileTextureCache_ = new LRUCache(cacheSize);
+    this.tileRepresentationCache_ = new LRUCache(cacheSize);
 
     /**
      * @protected
@@ -216,7 +223,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
-   * @param {import("../../webgl/TileTexture").TileType} tile Tile.
+   * @param {TileType} tile Tile.
    * @return {boolean} Tile is drawable.
    * @private
    */
@@ -258,11 +265,11 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * @abstract
-   * @param {import("../../webgl/TileTexture.js").default} options tile texture options
-   * @return {TileTexture} A new tile texture
+   * @param {import("../../webgl/BaseTileRepresentation.js").TileRepresentationOptions<TileType>} options tile representation options
+   * @return {TileRepresentation} A new tile representation
    * @protected
    */
-  createTileTexture_(options) {
+  createTileRepresentation_(options) {
     return abstract();
   }
 
@@ -270,10 +277,16 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {import("../../extent.js").Extent} extent The extent to be rendered.
    * @param {number} initialZ The zoom level.
-   * @param {TileTextureLookup} tileTextureLookup The zoom level.
+   * @param {TileRepresentationLookup} tileRepresentationLookup The zoom level.
    * @param {number} preload Number of additional levels to load.
    */
-  enqueueTiles(frameState, extent, initialZ, tileTextureLookup, preload) {
+  enqueueTiles(
+    frameState,
+    extent,
+    initialZ,
+    tileRepresentationLookup,
+    preload
+  ) {
     const viewState = frameState.viewState;
     const tileLayer = this.getLayer();
     const tileSource = tileLayer.getRenderSource();
@@ -286,7 +299,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     }
 
     const wantedTiles = frameState.wantedTiles[tileSourceKey];
-    const tileTextureCache = this.tileTextureCache_;
+    const tileRepresentationCache = this.tileRepresentationCache_;
 
     const map = tileLayer.getMapInternal();
     const minZ = Math.max(
@@ -318,17 +331,20 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
           const tileCoord = createTileCoord(z, x, y, this.tempTileCoord_);
           const cacheKey = getCacheKey(tileSource, tileCoord);
 
-          /** @type {TileTexture} */
-          let tileTexture;
+          /** @type {TileRepresentation} */
+          let tileRepresentation;
 
-          /** @type {import("../../webgl/TileTexture").TileType} */
+          /** @type {TileType} */
           let tile;
 
-          if (tileTextureCache.containsKey(cacheKey)) {
-            tileTexture = tileTextureCache.get(cacheKey);
-            tile = tileTexture.tile;
+          if (tileRepresentationCache.containsKey(cacheKey)) {
+            tileRepresentation = tileRepresentationCache.get(cacheKey);
+            tile = tileRepresentation.tile;
           }
-          if (!tileTexture || tileTexture.tile.key !== tileSource.getKey()) {
+          if (
+            !tileRepresentation ||
+            tileRepresentation.tile.key !== tileSource.getKey()
+          ) {
             tile = tileSource.getTile(
               z,
               x,
@@ -338,31 +354,34 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
             );
           }
 
-          if (lookupHasTile(tileTextureLookup, tile)) {
+          if (lookupHasTile(tileRepresentationLookup, tile)) {
             continue;
           }
 
-          if (!tileTexture) {
-            tileTexture = this.createTileTexture_({
+          if (!tileRepresentation) {
+            tileRepresentation = this.createTileRepresentation_({
               tile: tile,
               grid: tileGrid,
               helper: this.helper,
               gutter: gutter,
             });
-            tileTextureCache.set(cacheKey, tileTexture);
+            tileRepresentationCache.set(cacheKey, tileRepresentation);
           } else {
             if (this.isDrawableTile_(tile)) {
-              tileTexture.setTile(tile);
+              tileRepresentation.setTile(tile);
             } else {
-              const interimTile =
-                /** @type {import("../../webgl/TileTexture").TileType} */ (
-                  tile.getInterimTile()
-                );
-              tileTexture.setTile(interimTile);
+              const interimTile = /** @type {TileType} */ (
+                tile.getInterimTile()
+              );
+              tileRepresentation.setTile(interimTile);
             }
           }
 
-          addTileTextureToLookup(tileTextureLookup, tileTexture, z);
+          addTileRepresentationToLookup(
+            tileRepresentationLookup,
+            tileRepresentation,
+            z
+          );
 
           const tileQueueKey = tile.getKey();
           wantedTiles[tileQueueKey] = true;
@@ -392,7 +411,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
-   * @param {TileTexture} tileTexture Tile texture
+   * @param {TileRepresentation} tileRepresentation Tile representation
    * @param {import("../../transform.js").Transform} tileTransform Tile transform
    * @param {import("../../Map.js").FrameState} frameState Frame state
    * @param {import("../../extent.js").Extent} renderExtent Render extent
@@ -406,7 +425,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
    * @protected
    */
   renderTile_(
-    tileTexture,
+    tileRepresentation,
     tileTransform,
     frameState,
     renderExtent,
@@ -442,9 +461,9 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     );
 
     /**
-     * @type {TileTextureLookup}
+     * @type {TileRepresentationLookup}
      */
-    const tileTextureLookup = newTileTextureLookup();
+    const tileRepresentationLookup = newTileRepresentationLookup();
 
     const preload = tileLayer.getPreload();
     if (frameState.nextExtent) {
@@ -457,19 +476,19 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
         frameState,
         nextExtent,
         targetZ,
-        tileTextureLookup,
+        tileRepresentationLookup,
         preload
       );
     }
 
-    this.enqueueTiles(frameState, extent, z, tileTextureLookup, 0);
+    this.enqueueTiles(frameState, extent, z, tileRepresentationLookup, 0);
     if (preload > 0) {
       setTimeout(() => {
         this.enqueueTiles(
           frameState,
           extent,
           z - 1,
-          tileTextureLookup,
+          tileRepresentationLookup,
           preload - 1
         );
       }, 0);
@@ -488,8 +507,9 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     let blend = false;
 
     // look for cached tiles to use if a target tile is not ready
-    for (const tileTexture of tileTextureLookup.texturesByZ[z]) {
-      const tile = tileTexture.tile;
+    for (const tileRepresentation of tileRepresentationLookup
+      .representationsByZ[z]) {
+      const tile = tileRepresentation.tile;
       if (
         (tile instanceof ReprojTile || tile instanceof ReprojDataTile) &&
         tile.getState() === TileState.EMPTY
@@ -498,7 +518,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
       }
       const tileCoord = tile.tileCoord;
 
-      if (tileTexture.loaded) {
+      if (tileRepresentation.loaded) {
         const alpha = tile.getAlpha(uid, time);
         if (alpha === 1) {
           // no need to look for alt tiles
@@ -516,7 +536,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
         tileGrid,
         tileCoord,
         z + 1,
-        tileTextureLookup
+        tileRepresentationLookup
       );
 
       if (coveredByChildren) {
@@ -530,7 +550,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
           tileGrid,
           tileCoord,
           parentZ,
-          tileTextureLookup
+          tileRepresentationLookup
         );
 
         if (coveredByParent) {
@@ -541,16 +561,16 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
 
     this.beforeTilesRender_(frameState, blend);
 
-    const texturesByZ = tileTextureLookup.texturesByZ;
-    const zs = Object.keys(texturesByZ).map(Number).sort(ascending);
+    const representationsByZ = tileRepresentationLookup.representationsByZ;
+    const zs = Object.keys(representationsByZ).map(Number).sort(ascending);
 
     for (let j = 0, jj = zs.length; j < jj; ++j) {
       const tileZ = zs[j];
-      for (const tileTexture of texturesByZ[tileZ]) {
-        if (!tileTexture.loaded) {
+      for (const tileRepresentation of representationsByZ[tileZ]) {
+        if (!tileRepresentation.loaded) {
           continue;
         }
-        const tile = tileTexture.tile;
+        const tile = tileRepresentation.tile;
         const tileCoord = tile.tileCoord;
         const tileCoordKey = getTileCoordKey(tileCoord);
         const alpha =
@@ -602,7 +622,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
         );
 
         this.renderTile_(
-          tileTexture,
+          /** @type {TileRepresentation} */ (tileRepresentation),
           this.tileTransform_,
           frameState,
           extent,
@@ -625,10 +645,10 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
 
     const canvas = this.helper.getCanvas();
 
-    const tileTextureCache = this.tileTextureCache_;
-    while (tileTextureCache.canExpireCache()) {
-      const tileTexture = tileTextureCache.pop();
-      tileTexture.dispose();
+    const tileRepresentationCache = this.tileRepresentationCache_;
+    while (tileRepresentationCache.canExpireCache()) {
+      const tileRepresentation = tileRepresentationCache.pop();
+      tileRepresentation.dispose();
     }
 
     // TODO: let the renderers manage their own cache instead of managing the source cache
@@ -651,16 +671,16 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * Look for tiles covering the provided tile coordinate at an alternate
-   * zoom level.  Loaded tiles will be added to the provided tile texture lookup.
+   * zoom level.  Loaded tiles will be added to the provided tile representation lookup.
    * @param {import("../../tilegrid/TileGrid.js").default} tileGrid The tile grid.
    * @param {import("../../tilecoord.js").TileCoord} tileCoord The target tile coordinate.
    * @param {number} altZ The alternate zoom level.
-   * @param {TileTextureLookup} tileTextureLookup Lookup of
-   * tile textures by zoom level.
+   * @param {TileRepresentationLookup} tileRepresentationLookup Lookup of
+   * tile representations by zoom level.
    * @return {boolean} The tile coordinate is covered by loaded tiles at the alternate zoom level.
    * @private
    */
-  findAltTiles_(tileGrid, tileCoord, altZ, tileTextureLookup) {
+  findAltTiles_(tileGrid, tileCoord, altZ, tileRepresentationLookup) {
     const tileRange = tileGrid.getTileRangeForTileCoordAndZ(
       tileCoord,
       altZ,
@@ -672,19 +692,23 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     }
 
     let covered = true;
-    const tileTextureCache = this.tileTextureCache_;
+    const tileRepresentationCache = this.tileRepresentationCache_;
     const source = this.getLayer().getRenderSource();
     for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
         const cacheKey = getCacheKey(source, [altZ, x, y]);
         let loaded = false;
-        if (tileTextureCache.containsKey(cacheKey)) {
-          const tileTexture = tileTextureCache.get(cacheKey);
+        if (tileRepresentationCache.containsKey(cacheKey)) {
+          const tileRepresentation = tileRepresentationCache.get(cacheKey);
           if (
-            tileTexture.loaded &&
-            !lookupHasTile(tileTextureLookup, tileTexture.tile)
+            tileRepresentation.loaded &&
+            !lookupHasTile(tileRepresentationLookup, tileRepresentation.tile)
           ) {
-            addTileTextureToLookup(tileTextureLookup, tileTexture, altZ);
+            addTileRepresentationToLookup(
+              tileRepresentationLookup,
+              tileRepresentation,
+              altZ
+            );
             loaded = true;
           }
         }
@@ -697,9 +721,11 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
   }
 
   clearCache() {
-    const tileTextureCache = this.tileTextureCache_;
-    tileTextureCache.forEach((tileTexture) => tileTexture.dispose());
-    tileTextureCache.clear();
+    const tileRepresentationCache = this.tileRepresentationCache_;
+    tileRepresentationCache.forEach((tileRepresentation) =>
+      tileRepresentation.dispose()
+    );
+    tileRepresentationCache.clear();
   }
 
   removeHelper() {

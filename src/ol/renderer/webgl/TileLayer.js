@@ -60,11 +60,17 @@ const attributeDescriptions = [
 /**
  * @typedef {import("../../layer/WebGLTile.js").default} LayerType
  */
+/**
+ * @typedef {import("../../webgl/TileTexture.js").TileType} TileTextureType
+ */
+/**
+ * @typedef {import("../../webgl/TileTexture.js").default} TileTextureRepresentation
+ */
 
 /**
  * @classdesc
  * WebGL renderer for tile layers.
- * @extends {WebGLBaseTileLayerRenderer<LayerType>}
+ * @extends {WebGLBaseTileLayerRenderer<LayerType, TileTextureType, TileTextureRepresentation>}
  * @api
  */
 class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
@@ -143,7 +149,7 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.helper.flushBufferData(this.indices_);
   }
 
-  createTileTexture_(options) {
+  createTileRepresentation_(options) {
     return new TileTexture(options);
   }
 
@@ -310,7 +316,7 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       return null;
     }
 
-    const tileTextureCache = this.tileTextureCache_;
+    const tileTextureCache = this.tileRepresentationCache_;
     for (
       let z = tileGrid.getZForResolution(viewState.resolution);
       z >= tileGrid.getMinZoom();
