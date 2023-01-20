@@ -13,6 +13,7 @@ import {
   getWidth,
   scaleFromCenter,
 } from '../extent.js';
+import {createCanvasContext2D} from '../dom.js';
 
 /**
  * @typedef {Object} Options
@@ -53,6 +54,12 @@ class ImageMapGuide extends ImageSource {
       projection: options.projection,
       resolutions: options.resolutions,
     });
+
+    /**
+     * @private
+     * @type {CanvasRenderingContext2D}
+     */
+    this.context_ = createCanvasContext2D(1, 1);
 
     /**
      * @private
@@ -182,7 +189,8 @@ class ImageMapGuide extends ImageSource {
         pixelRatio,
         imageUrl,
         this.crossOrigin_,
-        this.imageLoadFunction_
+        this.imageLoadFunction_,
+        this.context_
       );
       image.addEventListener(
         EventType.CHANGE,
