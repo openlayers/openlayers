@@ -53,6 +53,7 @@ class BaseTileRepresentation extends EventTarget {
     this.helper_ = options.helper;
 
     this.loaded = false;
+    this.ready = false;
   }
 
   /**
@@ -86,11 +87,15 @@ class BaseTileRepresentation extends EventTarget {
     abstract();
   }
 
+  setReady() {
+    this.ready = true;
+    this.dispatchEvent(EventType.CHANGE);
+  }
+
   handleTileChange_() {
     if (this.tile.getState() === TileState.LOADED) {
       this.loaded = true;
       this.uploadTile_();
-      this.dispatchEvent(EventType.CHANGE);
     }
   }
 

@@ -205,6 +205,7 @@ class TileTexture extends BaseTileRepresentation {
       this.textures.push(texture);
       this.bandCount = 4;
       uploadImageTexture(gl, texture, image, tile.interpolate);
+      this.setReady();
       return;
     }
 
@@ -235,6 +236,7 @@ class TileTexture extends BaseTileRepresentation {
         this.bandCount,
         tile.interpolate
       );
+      this.setReady();
       return;
     }
 
@@ -281,6 +283,8 @@ class TileTexture extends BaseTileRepresentation {
         tile.interpolate
       );
     }
+
+    this.setReady();
   }
 
   disposeInternal() {
