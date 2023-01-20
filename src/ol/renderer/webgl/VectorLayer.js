@@ -20,7 +20,12 @@ import {
   packColor,
 } from './shaders.js';
 import {buffer, createEmpty, equals, getWidth} from '../../extent.js';
-import {create as createTransform} from '../../transform.js';
+import {
+  create as createTransform,
+  multiply as multiplyTransform,
+  translate as translateTransform,
+  setFromArray as setFromTransform,
+} from '../../transform.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {listen, unlistenByKey} from '../../events.js';
 
@@ -102,6 +107,12 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
      * @private
      */
     this.currentTransform_ = projectionMatrixTransform;
+
+    /**
+     * @type {import("../../transform.js").Transform}
+     * @private
+     */
+    this.currentFrameStateTransform_ = createTransform();
 
     const fillAttributes = {
       color: function () {
@@ -276,25 +287,39 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       ? Math.floor((extent[0] - projectionExtent[0]) / worldWidth)
       : 0;
 
+    const baseTransform = this.helper.makeProjectionTransform(
+      frameState,
+      this.currentFrameStateTransform_
+    );
+    translateTransform(baseTransform, world * worldWidth, 0);
+
     do {
-      this.polygonRenderer_.render(
-        this.batch_.polygonBatch,
+      setFromTransform(this.currentTransform_, baseTransform);
+      multiplyTransform(
         this.currentTransform_,
-        frameState,
-        world * worldWidth
+        this.batch_.polygonBatch.invertVerticesBufferTransform
       );
-      this.lineStringRenderer_.render(
+      this.polygonRenderer_.preRender(this.batch_.polygonBatch, frameState);
+      this.polygonRenderer_.render(this.batch_.polygonBatch);
+      setFromTransform(this.currentTransform_, baseTransform);
+      multiplyTransform(
+        this.currentTransform_,
+        this.batch_.lineStringBatch.invertVerticesBufferTransform
+      );
+      this.lineStringRenderer_.preRender(
         this.batch_.lineStringBatch,
-        this.currentTransform_,
-        frameState,
-        world * worldWidth
+        frameState
       );
-      this.pointRenderer_.render(
-        this.batch_.pointBatch,
+      this.lineStringRenderer_.render(this.batch_.lineStringBatch);
+      setFromTransform(this.currentTransform_, baseTransform);
+      multiplyTransform(
         this.currentTransform_,
-        frameState,
-        world * worldWidth
+        this.batch_.lineStringBatch.invertVerticesBufferTransform
       );
+      this.pointRenderer_.preRender(this.batch_.pointBatch, frameState);
+      this.pointRenderer_.render(this.batch_.pointBatch);
+
+      translateTransform(baseTransform, worldWidth, 0);
     } while (++world < endWorld);
 
     this.helper.finalizeDraw(frameState);
@@ -346,28 +371,32 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
         this.getLayer().changed();
       };
 
+      const transform = this.helper.makeProjectionTransform(
+        frameState,
+        createTransform()
+      );
+
       this.polygonRenderer_.rebuild(
         this.batch_.polygonBatch,
-        frameState,
+        transform,
         'Polygon',
         rebuildCb
       );
       this.lineStringRenderer_.rebuild(
         this.batch_.lineStringBatch,
-        frameState,
+        transform,
         'LineString',
         rebuildCb
       );
       this.pointRenderer_.rebuild(
         this.batch_.pointBatch,
-        frameState,
+        transform,
         'Point',
         rebuildCb
       );
       this.previousExtent_ = frameState.extent.slice();
     }
 
-    this.helper.makeProjectionTransform(frameState, this.currentTransform_);
     this.helper.prepareDraw(frameState);
 
     return true;

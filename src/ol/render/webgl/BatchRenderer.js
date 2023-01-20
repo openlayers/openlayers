@@ -4,17 +4,15 @@
 import {WebGLWorkerMessageType} from './constants.js';
 import {abstract} from '../../util.js';
 import {
-  create as createTransform,
   makeInverse as makeInverseTransform,
-  multiply as multiplyTransform,
-  translate as translateTransform,
+  setFromArray as setFromTransform,
 } from '../../transform.js';
 
 /**
  * @typedef {Object} CustomAttribute A description of a custom attribute to be passed on to the GPU, with a value different
  * for each feature.
  * @property {string} name Attribute name.
- * @property {function(import("../../Feature").default):number} callback This callback computes the numerical value of the
+ * @property {function(import("../../Feature").FeatureLike):number} callback This callback computes the numerical value of the
  * attribute for a given feature.
  */
 
@@ -67,19 +65,15 @@ class AbstractBatchRenderer {
   }
 
   /**
-   * Rebuild rendering instructions and webgl buffers based on the provided frame state
-   * Note: this is a costly operation.
+   * Rebuild rendering instructions and generate webgl buffers from them
    * @param {import("./MixedGeometryBatch.js").GeometryBatch} batch Geometry batch
-   * @param {import("../../Map").FrameState} frameState Frame state.
+   * @param {import("../../transform.js").Transform} currentTransform Transform
    * @param {import("../../geom/Geometry.js").Type} geometryType Geometry type
    * @param {function(): void} callback Function called once the render buffers are updated
    */
-  rebuild(batch, frameState, geometryType, callback) {
-    // store transform for rendering instructions
-    batch.renderInstructionsTransform = this.helper_.makeProjectionTransform(
-      frameState,
-      createTransform()
-    );
+  rebuild(batch, currentTransform, geometryType, callback) {
+    // this transform is the frame of reference for the upcoming render instructions
+    setFromTransform(batch.renderInstructionsTransform, currentTransform);
     this.generateRenderInstructions(batch);
     this.generateBuffers_(batch, geometryType, callback);
   }
@@ -88,24 +82,24 @@ class AbstractBatchRenderer {
    * Render the geometries in the batch. This will also update the current transform used for rendering according to
    * the invert transform of the webgl buffers
    * @param {import("./MixedGeometryBatch.js").GeometryBatch} batch Geometry batch
-   * @param {import("../../transform.js").Transform} currentTransform Transform
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
-   * @param {number} offsetX X offset
    */
-  render(batch, currentTransform, frameState, offsetX) {
-    // multiply the current projection transform with the invert of the one used to fill buffers
-    this.helper_.makeProjectionTransform(frameState, currentTransform);
-    translateTransform(currentTransform, offsetX, 0);
-    multiplyTransform(currentTransform, batch.invertVerticesBufferTransform);
+  render(batch) {
+    const renderCount = batch.indicesBuffer.getSize();
+    this.helper_.drawElements(0, renderCount);
+  }
 
+  /**
+   * Render the geometries in the batch. This will also update the current transform used for rendering according to
+   * the invert transform of the webgl buffers
+   * @param {import("./MixedGeometryBatch.js").GeometryBatch} batch Geometry batch
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   */
+  preRender(batch, frameState) {
     // enable program, buffers and attributes
     this.helper_.useProgram(this.program_, frameState);
     this.helper_.bindBuffer(batch.verticesBuffer);
     this.helper_.bindBuffer(batch.indicesBuffer);
     this.helper_.enableAttributes(this.attributes);
-
-    const renderCount = batch.indicesBuffer.getSize();
-    this.helper_.drawElements(0, renderCount);
   }
 
   /**
@@ -172,11 +166,10 @@ class AbstractBatchRenderer {
         // we've received our response: stop listening
         this.worker_.removeEventListener('message', handleMessage);
 
-        // store transform & invert transform for webgl buffers
-        batch.verticesBufferTransform = received.renderInstructionsTransform;
+        // invert transform for webgl buffers
         makeInverseTransform(
           batch.invertVerticesBufferTransform,
-          batch.verticesBufferTransform
+          received.renderInstructionsTransform
         );
 
         // copy & flush received buffers to GPU

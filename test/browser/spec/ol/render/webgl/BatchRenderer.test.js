@@ -10,8 +10,8 @@ import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
 import {FLOAT} from '../../../../../../src/ol/webgl.js';
 import {WebGLWorkerMessageType} from '../../../../../../src/ol/render/webgl/constants.js';
 import {
+  compose as composeTransform,
   create as createTransform,
-  translate as translateTransform,
 } from '../../../../../../src/ol/transform.js';
 import {create as createWebGLWorker} from '../../../../../../src/ol/worker/webgl.js';
 
@@ -28,6 +28,16 @@ const SAMPLE_FRAMESTATE = {
   },
   size: [10, 10],
 };
+const SAMPLE_TRANSFORM = composeTransform(
+  createTransform(),
+  0,
+  0,
+  2 / (SAMPLE_FRAMESTATE.viewState.resolution * SAMPLE_FRAMESTATE.size[0]),
+  2 / (SAMPLE_FRAMESTATE.viewState.resolution * SAMPLE_FRAMESTATE.size[1]),
+  -SAMPLE_FRAMESTATE.viewState.rotation,
+  -SAMPLE_FRAMESTATE.viewState.center[0],
+  -SAMPLE_FRAMESTATE.viewState.center[1]
+);
 
 describe('Batch renderers', function () {
   let batchRenderer, helper, mixedBatch, worker, attributes;
@@ -103,7 +113,7 @@ describe('Batch renderers', function () {
         rebuildCb = sinon.spy();
         batchRenderer.rebuild(
           mixedBatch.pointBatch,
-          SAMPLE_FRAMESTATE,
+          SAMPLE_TRANSFORM,
           'Point',
           rebuildCb
         );
@@ -140,34 +150,14 @@ describe('Batch renderers', function () {
         expect(rebuildCb.calledOnce).to.be(true);
       });
     });
-    describe('#render (from parent)', function () {
-      let transform;
-      const offsetX = 12;
+    describe('#preRender and #render (from parent)', function () {
       beforeEach(function () {
-        sinon.spy(helper, 'makeProjectionTransform');
         sinon.spy(helper, 'useProgram');
         sinon.spy(helper, 'bindBuffer');
         sinon.spy(helper, 'enableAttributes');
         sinon.spy(helper, 'drawElements');
-
-        transform = createTransform();
-        batchRenderer.render(
-          mixedBatch.pointBatch,
-          transform,
-          SAMPLE_FRAMESTATE,
-          offsetX
-        );
-      });
-      it('computes current transform', function () {
-        expect(helper.makeProjectionTransform.calledOnce).to.be(true);
-      });
-      it('includes the X offset in the transform used for rendering', function () {
-        const expected = helper.makeProjectionTransform(
-          SAMPLE_FRAMESTATE,
-          createTransform()
-        );
-        translateTransform(expected, offsetX, 0);
-        expect(transform).to.eql(expected);
+        batchRenderer.preRender(mixedBatch.pointBatch, SAMPLE_FRAMESTATE);
+        batchRenderer.render(mixedBatch.pointBatch);
       });
       it('computes sets up render parameters', function () {
         expect(helper.useProgram.calledOnce).to.be(true);
@@ -207,7 +197,7 @@ describe('Batch renderers', function () {
         rebuildCb = sinon.spy();
         batchRenderer.rebuild(
           mixedBatch.lineStringBatch,
-          SAMPLE_FRAMESTATE,
+          SAMPLE_TRANSFORM,
           'LineString',
           rebuildCb
         );
@@ -270,7 +260,7 @@ describe('Batch renderers', function () {
         rebuildCb = sinon.spy();
         batchRenderer.rebuild(
           mixedBatch.polygonBatch,
-          SAMPLE_FRAMESTATE,
+          SAMPLE_TRANSFORM,
           'Polygon',
           rebuildCb
         );
