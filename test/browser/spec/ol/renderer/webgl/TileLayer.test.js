@@ -253,7 +253,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
     });
   });
 
-  describe('#createTileRepresentation_', () => {
+  describe('#createTileRepresentation', () => {
     let tileRepresentation;
     beforeEach(() => {
       const source = tileLayer.getSource();
