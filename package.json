@@ -65,7 +65,7 @@
     "@types/proj4": "^2.5.2",
     "@types/topojson-specification": "^1.0.1",
     "chaikin-smooth": "^1.0.4",
-    "clean-css-cli": "5.6.1",
+    "clean-css-cli": "5.6.2",
     "copy-webpack-plugin": "^11.0.0",
     "es-main": "^1.0.2",
     "eslint": "^8.0.1",
