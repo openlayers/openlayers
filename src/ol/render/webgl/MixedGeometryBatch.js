@@ -5,16 +5,15 @@ import WebGLArrayBuffer from '../../webgl/Buffer.js';
 import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
 import {create as createTransform} from '../../transform.js';
 import {getUid} from '../../util.js';
-import LinearRing from '../../geom/LinearRing.js';
-import LineString from '../../geom/LineString.js';
-import Point from '../../geom/Point.js';
-import Polygon from '../../geom/Polygon.js';
 
 /**
  * @typedef {import("../../render/Feature").default} RenderFeature
  */
 /**
  * @typedef {import("../../Feature").default} Feature
+ */
+/**
+ * @typedef {import("../../geom/Geometry.js").Type} GeometryType
  */
 
 /**
@@ -158,58 +157,6 @@ class MixedGeometryBatch {
 
   /**
    * @param {Feature|RenderFeature} feature Feature
-   * @return {GeometryBatchItem} Batch item added (or existing one)
-   * @private
-   */
-  addFeatureEntryInPointBatch_(feature) {
-    const uid = getUid(feature);
-    if (!(uid in this.pointBatch.entries)) {
-      this.pointBatch.entries[uid] = {
-        feature: feature,
-        flatCoordss: [],
-      };
-    }
-    return this.pointBatch.entries[uid];
-  }
-
-  /**
-   * @param {Feature|RenderFeature} feature Feature
-   * @return {GeometryBatchItem} Batch item added (or existing one)
-   * @private
-   */
-  addFeatureEntryInLineStringBatch_(feature) {
-    const uid = getUid(feature);
-    if (!(uid in this.lineStringBatch.entries)) {
-      this.lineStringBatch.entries[uid] = {
-        feature: feature,
-        flatCoordss: [],
-        verticesCount: 0,
-      };
-    }
-    return this.lineStringBatch.entries[uid];
-  }
-
-  /**
-   * @param {Feature|RenderFeature} feature Feature
-   * @return {GeometryBatchItem} Batch item added (or existing one)
-   * @private
-   */
-  addFeatureEntryInPolygonBatch_(feature) {
-    const uid = getUid(feature);
-    if (!(uid in this.polygonBatch.entries)) {
-      this.polygonBatch.entries[uid] = {
-        feature: feature,
-        flatCoordss: [],
-        verticesCount: 0,
-        ringsCount: 0,
-        ringsVerticesCounts: [],
-      };
-    }
-    return this.polygonBatch.entries[uid];
-  }
-
-  /**
-   * @param {Feature|RenderFeature} feature Feature
    * @private
    */
   clearFeatureEntryInPointBatch_(feature) {
@@ -257,118 +204,215 @@ class MixedGeometryBatch {
    */
   addGeometry_(geometry, feature) {
     const type = geometry.getType();
-    /** @type {number[]} */
-    let flatCoords;
-    /** @type {number} */
-    let verticesCount;
-    /** @type {GeometryBatchItem} */
-    let batchEntry;
     switch (type) {
       case 'GeometryCollection':
-        /** @type {import("../../geom").GeometryCollection} */ (geometry)
-          .getGeometries()
-          .forEach((geom) => this.addGeometry_(geom, feature));
+        const geometries =
+          /** @type {import("../../geom").GeometryCollection} */ (
+            geometry
+          ).getGeometriesArray();
+        for (const geometry of geometries) {
+          this.addGeometry_(geometry, feature);
+        }
         break;
       case 'MultiPolygon':
         const multiPolygonGeom =
           /** @type {import("../../geom").MultiPolygon|RenderFeature} */ (
             geometry
           );
-        flatCoords = multiPolygonGeom.getFlatCoordinates();
-        multiPolygonGeom
-          .getEndss()
-          .map((ends, ind, arr) => {
-            const prevEnds = arr[ind - 1];
-            const prevEnd = ind > 0 ? prevEnds[prevEnds.length - 1] : 0;
-            const end = ends[ends.length - 1];
-            const coords = flatCoords.slice(prevEnd, end);
-            return new Polygon(
-              coords,
-              'XY',
-              ends.map((end) => end - prevEnd)
-            );
-          })
-          .forEach((polygon) => this.addGeometry_(polygon, feature));
+        this.addCoordinates_(
+          type,
+          multiPolygonGeom.getFlatCoordinates(),
+          multiPolygonGeom.getEndss(),
+          feature,
+          getUid(feature)
+        );
         break;
       case 'MultiLineString':
         const multiLineGeom =
           /** @type {import("../../geom").MultiLineString|RenderFeature} */ (
             geometry
           );
-        flatCoords = multiLineGeom.getFlatCoordinates();
-        multiLineGeom
-          .getEnds()
-          .map((end, ind, arr) =>
-            ind > 0
-              ? flatCoords.slice(arr[ind - 1], end)
-              : flatCoords.slice(0, end)
-          )
-          .map((coords) => new LineString(coords, 'XY'))
-          .forEach((line) => this.addGeometry_(line, feature));
+        this.addCoordinates_(
+          type,
+          multiLineGeom.getFlatCoordinates(),
+          multiLineGeom.getEnds(),
+          feature,
+          getUid(feature)
+        );
         break;
       case 'MultiPoint':
         const multiPointGeom =
           /** @type {import("../../geom").MultiPoint|RenderFeature} */ (
             geometry
           );
-        flatCoords = multiPointGeom.getFlatCoordinates();
-        multiPointGeom
-          .getFlatCoordinates()
-          .reduce((prev, curr, index, array) => {
-            if (index % 2 === 0)
-              prev.push(new Point([array[index], array[index + 1]]));
-            return prev;
-          }, [])
-          .forEach((point) => this.addGeometry_(point, feature));
+        this.addCoordinates_(
+          type,
+          multiPointGeom.getFlatCoordinates(),
+          null,
+          feature,
+          getUid(feature)
+        );
         break;
       case 'Polygon':
         const polygonGeom =
           /** @type {import("../../geom").Polygon|RenderFeature} */ (geometry);
-        batchEntry = this.addFeatureEntryInPolygonBatch_(feature);
-        flatCoords = polygonGeom.getFlatCoordinates();
-        verticesCount = flatCoords.length / 2;
-        const ringsCount = polygonGeom.getEnds().length;
-        const ringsVerticesCount = polygonGeom
-          .getEnds()
-          .map((end, ind, arr) =>
-            ind > 0 ? (end - arr[ind - 1]) / 2 : end / 2
-          );
-        this.polygonBatch.verticesCount += verticesCount;
-        this.polygonBatch.ringsCount += ringsCount;
-        this.polygonBatch.geometriesCount++;
-        batchEntry.flatCoordss.push(flatCoords);
-        batchEntry.ringsVerticesCounts.push(ringsVerticesCount);
-        batchEntry.verticesCount += verticesCount;
-        batchEntry.ringsCount += ringsCount;
-        polygonGeom
-          .getEnds()
-          .map((end, ind, arr) =>
-            ind > 0
-              ? flatCoords.slice(arr[ind - 1], end)
-              : flatCoords.slice(0, end)
-          )
-          .map((coords) => new LinearRing(coords, 'XY'))
-          .forEach((ring) => this.addGeometry_(ring, feature));
+        this.addCoordinates_(
+          type,
+          polygonGeom.getFlatCoordinates(),
+          polygonGeom.getEnds(),
+          feature,
+          getUid(feature)
+        );
         break;
       case 'Point':
         const pointGeom = /** @type {import("../../geom").Point} */ (geometry);
-        batchEntry = this.addFeatureEntryInPointBatch_(feature);
-        flatCoords = pointGeom.getFlatCoordinates();
-        this.pointBatch.geometriesCount++;
-        batchEntry.flatCoordss.push(flatCoords);
+        this.addCoordinates_(
+          type,
+          pointGeom.getFlatCoordinates(),
+          null,
+          feature,
+          getUid(feature)
+        );
         break;
       case 'LineString':
       case 'LinearRing':
         const lineGeom = /** @type {import("../../geom").LineString} */ (
           geometry
         );
-        batchEntry = this.addFeatureEntryInLineStringBatch_(feature);
-        flatCoords = lineGeom.getFlatCoordinates();
+        this.addCoordinates_(
+          type,
+          lineGeom.getFlatCoordinates(),
+          null,
+          feature,
+          getUid(feature)
+        );
+        break;
+      default:
+      // pass
+    }
+  }
+
+  /**
+   * @param {GeometryType} type Geometry type
+   * @param {number[]} flatCoords Flat coordinates
+   * @param {number[]|number[][]|null} ends Coordinate ends
+   * @param {Feature|RenderFeature} feature Feature
+   * @param {string} featureUid Feature uid
+   * @private
+   */
+  addCoordinates_(type, flatCoords, ends, feature, featureUid) {
+    /** @type {number} */
+    let verticesCount;
+    switch (type) {
+      case 'MultiPolygon':
+        const multiPolygonEndss = /** @type {number[][]} */ (ends);
+        for (let i = 0, ii = multiPolygonEndss.length; i < ii; i++) {
+          let polygonEnds = multiPolygonEndss[i];
+          const prevPolygonEnds = i > 0 ? multiPolygonEndss[i - 1] : null;
+          const startIndex = prevPolygonEnds
+            ? prevPolygonEnds[prevPolygonEnds.length - 1]
+            : 0;
+          const endIndex = polygonEnds[polygonEnds.length - 1];
+          const polygonCoords = flatCoords.slice(startIndex, endIndex);
+          polygonEnds =
+            startIndex > 0
+              ? polygonEnds.map((end) => end - startIndex)
+              : polygonEnds;
+          this.addCoordinates_(
+            'Polygon',
+            polygonCoords,
+            polygonEnds,
+            feature,
+            featureUid
+          );
+        }
+        break;
+      case 'MultiLineString':
+        const multiLineEnds = /** @type {number[]} */ (ends);
+        for (let i = 0, ii = multiLineEnds.length; i < ii; i++) {
+          const startIndex = i > 0 ? multiLineEnds[i - 1] : 0;
+          const ringCoords = flatCoords.slice(startIndex, multiLineEnds[i]);
+          this.addCoordinates_(
+            'LinearRing',
+            ringCoords,
+            null,
+            feature,
+            featureUid
+          );
+        }
+        break;
+      case 'MultiPoint':
+        for (let i = 0, ii = flatCoords.length; i < ii; i += 2) {
+          this.addCoordinates_(
+            'Point',
+            flatCoords.slice(i, i + 2),
+            null,
+            feature,
+            featureUid
+          );
+        }
+        break;
+      case 'Polygon':
+        const polygonEnds = /** @type {number[]} */ (ends);
+        if (!this.polygonBatch.entries[featureUid]) {
+          this.polygonBatch.entries[featureUid] = {
+            feature: feature,
+            flatCoordss: [],
+            verticesCount: 0,
+            ringsCount: 0,
+            ringsVerticesCounts: [],
+          };
+        }
+        verticesCount = flatCoords.length / 2;
+        const ringsCount = ends.length;
+        const ringsVerticesCount = ends.map((end, ind, arr) =>
+          ind > 0 ? (end - arr[ind - 1]) / 2 : end / 2
+        );
+        this.polygonBatch.verticesCount += verticesCount;
+        this.polygonBatch.ringsCount += ringsCount;
+        this.polygonBatch.geometriesCount++;
+        this.polygonBatch.entries[featureUid].flatCoordss.push(flatCoords);
+        this.polygonBatch.entries[featureUid].ringsVerticesCounts.push(
+          ringsVerticesCount
+        );
+        this.polygonBatch.entries[featureUid].verticesCount += verticesCount;
+        this.polygonBatch.entries[featureUid].ringsCount += ringsCount;
+        for (let i = 0, ii = polygonEnds.length; i < ii; i++) {
+          const startIndex = i > 0 ? polygonEnds[i - 1] : 0;
+          const ringCoords = flatCoords.slice(startIndex, polygonEnds[i]);
+          this.addCoordinates_(
+            'LinearRing',
+            ringCoords,
+            null,
+            feature,
+            featureUid
+          );
+        }
+        break;
+      case 'Point':
+        if (!this.pointBatch.entries[featureUid]) {
+          this.pointBatch.entries[featureUid] = {
+            feature: feature,
+            flatCoordss: [],
+          };
+        }
+        this.pointBatch.geometriesCount++;
+        this.pointBatch.entries[featureUid].flatCoordss.push(flatCoords);
+        break;
+      case 'LineString':
+      case 'LinearRing':
+        if (!this.lineStringBatch.entries[featureUid]) {
+          this.lineStringBatch.entries[featureUid] = {
+            feature: feature,
+            flatCoordss: [],
+            verticesCount: 0,
+          };
+        }
         verticesCount = flatCoords.length / 2;
         this.lineStringBatch.verticesCount += verticesCount;
         this.lineStringBatch.geometriesCount++;
-        batchEntry.flatCoordss.push(flatCoords);
-        batchEntry.verticesCount += verticesCount;
+        this.lineStringBatch.entries[featureUid].flatCoordss.push(flatCoords);
+        this.lineStringBatch.entries[featureUid].verticesCount += verticesCount;
         break;
       default:
       // pass
