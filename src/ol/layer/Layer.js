@@ -385,6 +385,42 @@ class Layer extends BaseLayer {
   }
 
   /**
+   * Returns all source attributions if layer is in view
+   * @param {import("../Map").FrameState} frameState The frame state.
+   * @return {Array<string>} Attribution strings.
+   * @api
+   */
+  getAttributions(frameState) {
+    const layerState = frameState.layerStatesArray.find(
+      (layerState) => layerState.layer === this
+    );
+    if (!layerState) {
+      return [];
+    }
+
+    if (!inView(layerState, frameState.viewState)) {
+      return [];
+    }
+
+    const source = this.getSource();
+    if (!source) {
+      return [];
+    }
+
+    const attributionGetter = source.getAttributions();
+    if (!attributionGetter) {
+      return [];
+    }
+
+    const attributions = attributionGetter(frameState);
+    if (!attributions) {
+      return [];
+    }
+
+    return Array.isArray(attributions) ? attributions : [attributions];
+  }
+
+  /**
    * Get the renderer for this layer.
    * @return {RendererType|null} The layer renderer.
    */

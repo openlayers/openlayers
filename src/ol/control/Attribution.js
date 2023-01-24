@@ -5,7 +5,6 @@ import Control from './Control.js';
 import EventType from '../events/EventType.js';
 import {CLASS_COLLAPSED, CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {equals} from '../array.js';
-import {inView} from '../layer/Layer.js';
 import {removeChildren, replaceNode} from '../dom.js';
 
 /**
@@ -185,73 +184,6 @@ class Attribution extends Control {
   }
 
   /**
-   * Collect a list of visible attributions and set the collapsible state.
-   * @param {import("../Map.js").FrameState} frameState Frame state.
-   * @return {Array<string>} Attributions.
-   * @private
-   */
-  collectSourceAttributions_(frameState) {
-    /**
-     * Used to determine if an attribution already exists.
-     * @type {!Object<string, boolean>}
-     */
-    const lookup = {};
-
-    /**
-     * A list of visible attributions.
-     * @type {Array<string>}
-     */
-    const visibleAttributions = [];
-
-    let collapsible = true;
-    const layerStatesArray = frameState.layerStatesArray;
-    for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
-      const layerState = layerStatesArray[i];
-      if (!inView(layerState, frameState.viewState)) {
-        continue;
-      }
-
-      const source = /** @type {import("../layer/Layer.js").default} */ (
-        layerState.layer
-      ).getSource();
-      if (!source) {
-        continue;
-      }
-
-      const attributionGetter = source.getAttributions();
-      if (!attributionGetter) {
-        continue;
-      }
-
-      const attributions = attributionGetter(frameState);
-      if (!attributions) {
-        continue;
-      }
-
-      collapsible =
-        collapsible && source.getAttributionsCollapsible() !== false;
-
-      if (Array.isArray(attributions)) {
-        for (let j = 0, jj = attributions.length; j < jj; ++j) {
-          if (!(attributions[j] in lookup)) {
-            visibleAttributions.push(attributions[j]);
-            lookup[attributions[j]] = true;
-          }
-        }
-      } else {
-        if (!(attributions in lookup)) {
-          visibleAttributions.push(attributions);
-          lookup[attributions] = true;
-        }
-      }
-    }
-    if (!this.overrideCollapsible_) {
-      this.setCollapsible(collapsible);
-    }
-    return visibleAttributions;
-  }
-
-  /**
    * @private
    * @param {?import("../Map.js").FrameState} frameState Frame state.
    */
@@ -264,7 +196,23 @@ class Attribution extends Control {
       return;
     }
 
-    const attributions = this.collectSourceAttributions_(frameState);
+    const layers = frameState.layerStatesArray.map(
+      (layerState) => layerState.layer
+    );
+
+    const collapsible = layers.every(
+      (layer) => layer.getSource()?.getAttributionsCollapsible() !== false
+    );
+
+    const allAttributions = layers
+      .map((layer) => layer.getAttributions(frameState))
+      .reduce((flattened, attributions) => flattened.concat(attributions), []);
+
+    const attributions = Array.from(new Set(allAttributions));
+
+    if (!this.overrideCollapsible_) {
+      this.setCollapsible(collapsible);
+    }
 
     const visible = attributions.length > 0;
     if (this.renderedVisible_ != visible) {
