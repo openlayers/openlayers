@@ -5,6 +5,7 @@ import WebGLArrayBuffer from '../../webgl/Buffer.js';
 import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
 import {create as createTransform} from '../../transform.js';
 import {getUid} from '../../util.js';
+import {linearRingIsClockwise} from '../../geom/flat/orient.js';
 
 /**
  * @typedef {import("../../render/Feature").default} RenderFeature
@@ -354,6 +355,30 @@ class MixedGeometryBatch {
         break;
       case 'Polygon':
         const polygonEnds = /** @type {number[]} */ (ends);
+        // first look for a CW ring; if so, handle it and following rings as another polygon
+        for (let i = 1, ii = polygonEnds.length; i < ii; i++) {
+          const ringStartIndex = polygonEnds[i - 1];
+          if (
+            i > 0 &&
+            linearRingIsClockwise(flatCoords, ringStartIndex, polygonEnds[i], 2)
+          ) {
+            this.addCoordinates_(
+              'Polygon',
+              flatCoords.slice(0, ringStartIndex),
+              polygonEnds.slice(0, i),
+              feature,
+              featureUid
+            );
+            this.addCoordinates_(
+              'Polygon',
+              flatCoords.slice(ringStartIndex),
+              polygonEnds.slice(i).map((end) => end - polygonEnds[i - 1]),
+              feature,
+              featureUid
+            );
+            return;
+          }
+        }
         if (!this.polygonBatch.entries[featureUid]) {
           this.polygonBatch.entries[featureUid] = {
             feature: feature,
