@@ -158,6 +158,19 @@ describe('ol.style.Icon', function () {
       expect(original.size_).not.to.eql(clone.size_);
       expect(original.displacement_).not.to.eql(clone.displacement_);
     });
+
+    it('autocalculated scale (due to width/height) does not halt cloning', () => {
+      const original = new Icon({
+        src: src,
+        width: 10,
+        height: 5,
+      });
+      let clone;
+      expect(() => (clone = original.clone())).to.not.throwException();
+      expect(original.getWidth()).to.eql(clone.getWidth());
+      expect(original.getHeight()).to.eql(clone.getHeight());
+      expect(original.getScale()).to.eql(clone.getScale());
+    });
   });
 
   describe('#getAnchor', function () {
