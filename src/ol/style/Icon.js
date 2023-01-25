@@ -234,7 +234,7 @@ class Icon extends ImageStyle {
     this.height_ = options.height;
 
     /**
-     * Recalculate the scale if width or height where given.
+     * Recalculate the scale if width or height were given.
      */
     if (this.width_ !== undefined || this.height_ !== undefined) {
       const image = this.getImage(1);
@@ -255,7 +255,12 @@ class Icon extends ImageStyle {
    * @api
    */
   clone() {
-    const scale = this.getScale();
+    let scale = this.getScale();
+    scale = Array.isArray(scale) ? scale.slice() : scale;
+    // if either width or height are defined, do not pass scale.
+    if (this.width_ !== undefined || this.height_ !== undefined) {
+      scale = undefined;
+    }
     return new Icon({
       anchor: this.anchor_.slice(),
       anchorOrigin: this.anchorOrigin_,
@@ -272,7 +277,7 @@ class Icon extends ImageStyle {
       opacity: this.getOpacity(),
       rotateWithView: this.getRotateWithView(),
       rotation: this.getRotation(),
-      scale: Array.isArray(scale) ? scale.slice() : scale,
+      scale: scale,
       size: this.size_ !== null ? this.size_.slice() : undefined,
       src: this.getSrc(),
       displacement: this.getDisplacement().slice(),
