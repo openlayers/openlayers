@@ -8,7 +8,6 @@ import {createFromTileUrlFunctions} from '../tileurlfunction.js';
 import {createOrUpdate} from '../tilecoord.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
-import {jsonp as requestJSONP} from '../net.js';
 
 /**
  * @param {import('../tilecoord.js').TileCoord} tileCoord Tile coord.
@@ -173,12 +172,9 @@ class BingMaps extends TileImage {
       '&c=' +
       this.culture_;
 
-    requestJSONP(
-      url,
-      this.handleImageryMetadataResponse.bind(this),
-      undefined,
-      'jsonp'
-    );
+    fetch(url)
+      .then((response) => response.json())
+      .then((json) => this.handleImageryMetadataResponse(json));
   }
 
   /**
