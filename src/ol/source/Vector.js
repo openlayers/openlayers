@@ -495,32 +495,44 @@ class VectorSource extends Source {
         }
       }
     );
-    collection.addEventListener(
-      CollectionEventType.ADD,
-      /**
-       * @param {import("../Collection.js").CollectionEvent<import("../Feature.js").default<Geometry>>} evt The collection event
-       */
-      (evt) => {
-        if (!modifyingCollection) {
-          modifyingCollection = true;
-          this.addFeature(evt.element);
-          modifyingCollection = false;
-        }
+    /**
+      * @param {import("../Collection.js").CollectionEvent<import("../Feature.js").default<Geometry>>} evt The collection event
+      */
+    const handleCollectionAdd = (evt) => {
+      if (!modifyingCollection) {
+        modifyingCollection = true;
+        this.addFeature(evt.element);
+        modifyingCollection = false;
       }
+    }
+
+    /**
+      * @param {import("../Collection.js").CollectionEvent<import("../Feature.js").default<Geometry>>} evt The collection event
+      */
+    const handleCollectionRemove = (evt) => {
+      if (!modifyingCollection) {
+        modifyingCollection = true;
+        this.removeFeature(evt.element);
+        modifyingCollection = false;
+      }
+    }
+
+    collection.addEventListener(
+      CollectionEventType.ADD, handleCollectionAdd
     );
     collection.addEventListener(
-      CollectionEventType.REMOVE,
-      /**
-       * @param {import("../Collection.js").CollectionEvent<import("../Feature.js").default<Geometry>>} evt The collection event
-       */
-      (evt) => {
-        if (!modifyingCollection) {
-          modifyingCollection = true;
-          this.removeFeature(evt.element);
-          modifyingCollection = false;
-        }
-      }
+      CollectionEventType.REMOVE, handleCollectionRemove
     );
+
+    this.disposeTasks_.push(() => {
+      collection.removeEventListener(
+        CollectionEventType.ADD, handleCollectionAdd
+      );
+      collection.removeEventListener(
+        CollectionEventType.REMOVE, handleCollectionRemove
+      );
+    })
+
     this.featuresCollection_ = collection;
   }
 
@@ -1118,6 +1130,22 @@ class VectorSource extends Source {
     assert(this.format_, 7); // `format` must be set when `url` is set
     this.url_ = url;
     this.setLoader(xhr(url, this.format_));
+  }
+  /**
+   * Cleanup callbacks which will be executed during ```dispose()```
+   * @type {Array<(()=>void)>}
+   * @private
+   */
+  disposeTasks_ = []
+  /**
+   * Clean up.
+   * @api
+   */
+  dispose() {
+    for (const task of this.disposeTasks_) {
+      task()
+    }
+    super.dispose()
   }
 }
 
