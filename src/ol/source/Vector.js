@@ -1134,7 +1134,7 @@ class VectorSource extends Source {
   }
   /**
    * Cleanup callbacks which will be executed during ```dispose()```
-   * @type {Array<(()=>void)>}
+   * @type {Array<Function>}
    * @private
    */
   disposeTasks_ = [];
