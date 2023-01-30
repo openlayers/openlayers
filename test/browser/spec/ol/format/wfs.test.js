@@ -697,6 +697,49 @@ describe('ol.format.WFS', function () {
       expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
+    it('WFS v2 creates an intersects filter with a MultiSurface', function () {
+      const text = `
+        <wfs:Query xmlns:wfs="http://www.opengis.net/wfs/2.0"
+             typeNames="area" srsName="EPSG:4326"
+             xmlns:topp="http://www.openplans.org/topp">
+          <Filter xmlns="http://www.opengis.net/fes/2.0">
+            <Intersects>
+              <ValueReference>the_geom</ValueReference>
+                <MultiSurface xmlns="http://www.opengis.net/gml/3.2">
+                  <surfaceMember>
+                    <Polygon>
+                      <exterior>
+                        <LinearRing>
+                          <posList srsDimension="2">10 20 10 25 15 25 15 20 10 20</posList>
+                        </LinearRing>
+                      </exterior>
+                    </Polygon>
+                  </surfaceMember>
+                </MultiSurface>
+              </Intersects>
+            </Filter>        
+        </wfs:Query>`;
+      const serialized = new WFS({version: '2.0.0'}).writeGetFeature({
+        srsName: 'EPSG:4326',
+        featureTypes: ['area'],
+        filter: intersectsFilter(
+          'the_geom',
+          new MultiPolygon([
+            [
+              [
+                [10, 20],
+                [10, 25],
+                [15, 25],
+                [15, 20],
+                [10, 20],
+              ],
+            ],
+          ])
+        ),
+      });
+      expect(serialized.firstElementChild).to.xmleql(parse(text));
+    });
+
     it('creates a within filter', function () {
       const text =
         '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
