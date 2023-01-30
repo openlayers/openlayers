@@ -496,42 +496,43 @@ class VectorSource extends Source {
       }
     );
     /**
-      * @param {import("../Collection.js").CollectionEvent<import("../Feature.js").default<Geometry>>} evt The collection event
-      */
+     * @param {import("../Collection.js").CollectionEvent<import("../Feature.js").default<Geometry>>} evt The collection event
+     */
     const handleCollectionAdd = (evt) => {
       if (!modifyingCollection) {
         modifyingCollection = true;
         this.addFeature(evt.element);
         modifyingCollection = false;
       }
-    }
+    };
 
     /**
-      * @param {import("../Collection.js").CollectionEvent<import("../Feature.js").default<Geometry>>} evt The collection event
-      */
+     * @param {import("../Collection.js").CollectionEvent<import("../Feature.js").default<Geometry>>} evt The collection event
+     */
     const handleCollectionRemove = (evt) => {
       if (!modifyingCollection) {
         modifyingCollection = true;
         this.removeFeature(evt.element);
         modifyingCollection = false;
       }
-    }
+    };
 
+    collection.addEventListener(CollectionEventType.ADD, handleCollectionAdd);
     collection.addEventListener(
-      CollectionEventType.ADD, handleCollectionAdd
-    );
-    collection.addEventListener(
-      CollectionEventType.REMOVE, handleCollectionRemove
+      CollectionEventType.REMOVE,
+      handleCollectionRemove
     );
 
     this.disposeTasks_.push(() => {
       collection.removeEventListener(
-        CollectionEventType.ADD, handleCollectionAdd
+        CollectionEventType.ADD,
+        handleCollectionAdd
       );
       collection.removeEventListener(
-        CollectionEventType.REMOVE, handleCollectionRemove
+        CollectionEventType.REMOVE,
+        handleCollectionRemove
       );
-    })
+    });
 
     this.featuresCollection_ = collection;
   }
@@ -1136,16 +1137,16 @@ class VectorSource extends Source {
    * @type {Array<(()=>void)>}
    * @private
    */
-  disposeTasks_ = []
+  disposeTasks_ = [];
   /**
    * Clean up.
    * @api
    */
   dispose() {
     for (const task of this.disposeTasks_) {
-      task()
+      task();
     }
-    super.dispose()
+    super.dispose();
   }
 }
 
