@@ -517,22 +517,12 @@ class VectorSource extends Source {
       }
     };
 
-    collection.addEventListener(CollectionEventType.ADD, handleCollectionAdd);
-    collection.addEventListener(
-      CollectionEventType.REMOVE,
-      handleCollectionRemove
+    this.listenerKeys_.push(
+      listen(collection, CollectionEventType.ADD, handleCollectionAdd)
     );
-
-    this.disposeTasks_.push(() => {
-      collection.removeEventListener(
-        CollectionEventType.ADD,
-        handleCollectionAdd
-      );
-      collection.removeEventListener(
-        CollectionEventType.REMOVE,
-        handleCollectionRemove
-      );
-    });
+    this.listenerKeys_.push(
+      listen(collection, CollectionEventType.REMOVE, handleCollectionRemove)
+    );
 
     this.featuresCollection_ = collection;
   }
@@ -1133,18 +1123,18 @@ class VectorSource extends Source {
     this.setLoader(xhr(url, this.format_));
   }
   /**
-   * Cleanup callbacks which will be executed during ```dispose()```
-   * @type {Array<Function>}
+   * Listener Keys that should be unlistened when disposing
+   * @type {Array<import('../events.js').EventsKey>}
    * @private
    */
-  disposeTasks_ = [];
+  listenerKeys_ = [];
   /**
    * Clean up.
    * @api
    */
   dispose() {
-    for (const task of this.disposeTasks_) {
-      task();
+    for (const key of this.listenerKeys_) {
+      unlistenByKey(key);
     }
     super.dispose();
   }
