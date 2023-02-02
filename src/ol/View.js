@@ -213,6 +213,13 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
  */
 
 /**
+ * Like {@link import("./Map.js").FrameState}, but just `viewState` and `extent`.
+ * @typedef {Object} ViewStateAndExtent
+ * @property {State} viewState View state.
+ * @property {import("./extent.js").Extent} extent Extent.
+ */
+
+/**
  * Default min zoom level for the map view.
  * @type {number}
  */
@@ -1240,6 +1247,16 @@ class View extends BaseObject {
       nextRotation: this.nextRotation_,
       rotation: rotation,
       zoom: this.getZoom(),
+    };
+  }
+
+  /**
+   * @return {ViewStateAndExtent} Like `FrameState`, but just `viewState` and `extent`.
+   */
+  getViewStateAndExtent() {
+    return {
+      viewState: this.getState(),
+      extent: this.calculateExtent(),
     };
   }
 

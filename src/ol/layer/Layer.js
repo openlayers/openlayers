@@ -5,7 +5,9 @@ import BaseLayer from './Base.js';
 import EventType from '../events/EventType.js';
 import LayerProperty from './Property.js';
 import RenderEventType from '../render/EventType.js';
+import View from '../View.js';
 import {assert} from '../asserts.js';
+import {intersects} from '../extent.js';
 import {listen, unlistenByKey} from '../events.js';
 
 /**
@@ -281,6 +283,58 @@ class Layer extends BaseLayer {
       return null;
     }
     return this.renderer_.getData(pixel);
+  }
+
+  /**
+   * The layer is visible in the given view, i.e. within its min/max resolution or zoom and
+   * extent, and `getVisible()` is `true`.
+   * @param {View|import("../View.js").ViewStateAndExtent} view View or {@link import("../Map.js").FrameState}.
+   * @return {boolean} The layer is visible in the current view.
+   * @api
+   */
+  isVisible(view) {
+    let frameState;
+    if (view instanceof View) {
+      frameState = {
+        viewState: view.getState(),
+        extent: view.calculateExtent(),
+      };
+    } else {
+      frameState = view;
+    }
+    const layerExtent = this.getExtent();
+    return (
+      this.getVisible() &&
+      inView(this.getLayerState(), frameState.viewState) &&
+      (!layerExtent || intersects(layerExtent, frameState.extent))
+    );
+  }
+
+  /**
+   * Get the attributions of the source of this layer for the given view.
+   * @param {View|import("../View.js").ViewStateAndExtent} view View or  {@link import("../Map.js").FrameState}.
+   * @return {Array<string>} Attributions for this layer at the given view.
+   * @api
+   */
+  getAttributions(view) {
+    if (!this.isVisible(view)) {
+      return [];
+    }
+    let getAttributions;
+    const source = this.getSource();
+    if (source) {
+      getAttributions = source.getAttributions();
+    }
+    if (!getAttributions) {
+      return [];
+    }
+    const frameState =
+      view instanceof View ? view.getViewStateAndExtent() : view;
+    let attributions = getAttributions(frameState);
+    if (!Array.isArray(attributions)) {
+      attributions = [attributions];
+    }
+    return attributions;
   }
 
   /**
