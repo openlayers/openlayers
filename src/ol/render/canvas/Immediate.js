@@ -325,7 +325,8 @@ class CanvasImmediateRenderer extends VectorContext {
           -centerX,
           -centerY
         );
-        context.setTransform.apply(context, localTransform);
+        context.save();
+        context.transform.apply(context, localTransform);
         context.translate(centerX, centerY);
         context.scale(this.imageScale_[0], this.imageScale_[1]);
         context.drawImage(
@@ -339,7 +340,7 @@ class CanvasImmediateRenderer extends VectorContext {
           this.imageWidth_,
           this.imageHeight_
         );
-        context.setTransform(1, 0, 0, 1, 0, 0);
+        context.restore();
       } else {
         context.drawImage(
           this.image_,
@@ -401,6 +402,7 @@ class CanvasImmediateRenderer extends VectorContext {
         this.textScale_[0] != 1 ||
         this.textScale_[1] != 1
       ) {
+        context.save();
         context.translate(x - this.textOffsetX_, y - this.textOffsetY_);
         context.rotate(rotation);
         context.translate(this.textOffsetX_, this.textOffsetY_);
@@ -411,7 +413,7 @@ class CanvasImmediateRenderer extends VectorContext {
         if (this.textFillState_) {
           context.fillText(this.text_, 0, 0);
         }
-        context.setTransform(1, 0, 0, 1, 0, 0);
+        context.restore();
       } else {
         if (this.textStrokeState_) {
           context.strokeText(this.text_, x, y);
