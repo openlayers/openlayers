@@ -73,10 +73,7 @@ class KeyboardZoom extends Interaction {
         mapBrowserEvent.originalEvent
       );
       const key = keyEvent.key;
-      if (
-        this.condition_(mapBrowserEvent) &&
-        (key === '+' || key === '-')
-      ) {
+      if (this.condition_(mapBrowserEvent) && (key === '+' || key === '-')) {
         const map = mapBrowserEvent.map;
         const delta = key === '+' ? this.delta_ : -this.delta_;
         const view = map.getView();
