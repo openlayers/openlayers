@@ -84,10 +84,10 @@ export class GeolocationError extends BaseEvent {
 
 /***
  * @template Return
- * @typedef {import("./Observable").OnSignature<'change', import("./events/Event.js").default, Return> &
- *   import("./Observable").OnSignature<GeolocationObjectEventTypes, import("./Object").ObjectEvent, Return> &
+ * @typedef {import("./Observable").OnSignature<GeolocationObjectEventTypes, import("./Object").ObjectEvent, Return> &
  *   import("./Observable").OnSignature<'error', GeolocationError, Return> &
- *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|GeolocationObjectEventTypes, Return>} GeolocationOnSignature
+ *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|GeolocationObjectEventTypes, Return> &
+ *   import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return>} GeolocationOnSignature
  */
 
 /**
