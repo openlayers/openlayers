@@ -40,7 +40,6 @@ import Polygon from '../../geom/Polygon.js';
  * @property {WebGLArrayBuffer} verticesBuffer Vertices WebGL buffer
  * @property {WebGLArrayBuffer} indicesBuffer Indices WebGL buffer
  * @property {import("../../transform.js").Transform} renderInstructionsTransform Converts world space coordinates to screen space; applies to the rendering instructions
- * @property {import("../../transform.js").Transform} verticesBufferTransform Converts world space coordinates to screen space; applies to the webgl vertices buffer
  * @property {import("../../transform.js").Transform} invertVerticesBufferTransform Screen space to world space; applies to the webgl vertices buffer
  * @property {number} verticesCount Amount of vertices from geometries in the batch.
  * @property {number} ringsCount How many outer and inner rings in this batch.
@@ -56,7 +55,6 @@ import Polygon from '../../geom/Polygon.js';
  * @property {WebGLArrayBuffer} verticesBuffer Vertices WebGL buffer
  * @property {WebGLArrayBuffer} indicesBuffer Indices WebGL buffer
  * @property {import("../../transform.js").Transform} renderInstructionsTransform Converts world space coordinates to screen space; applies to the rendering instructions
- * @property {import("../../transform.js").Transform} verticesBufferTransform Converts world space coordinates to screen space; applies to the webgl vertices buffer
  * @property {import("../../transform.js").Transform} invertVerticesBufferTransform Screen space to world space; applies to the webgl vertices buffer
  * @property {number} verticesCount Amount of vertices from geometries in the batch.
  */
@@ -71,7 +69,6 @@ import Polygon from '../../geom/Polygon.js';
  * @property {WebGLArrayBuffer} verticesBuffer Vertices WebGL buffer
  * @property {WebGLArrayBuffer} indicesBuffer Indices WebGL buffer
  * @property {import("../../transform.js").Transform} renderInstructionsTransform Converts world space coordinates to screen space; applies to the rendering instructions
- * @property {import("../../transform.js").Transform} verticesBufferTransform Converts world space coordinates to screen space; applies to the webgl vertices buffer
  * @property {import("../../transform.js").Transform} invertVerticesBufferTransform Screen space to world space; applies to the webgl vertices buffer
  */
 
@@ -108,7 +105,6 @@ class MixedGeometryBatch {
       verticesBuffer: new WebGLArrayBuffer(ARRAY_BUFFER, DYNAMIC_DRAW),
       indicesBuffer: new WebGLArrayBuffer(ELEMENT_ARRAY_BUFFER, DYNAMIC_DRAW),
       renderInstructionsTransform: createTransform(),
-      verticesBufferTransform: createTransform(),
       invertVerticesBufferTransform: createTransform(),
     };
 
@@ -122,7 +118,6 @@ class MixedGeometryBatch {
       verticesBuffer: new WebGLArrayBuffer(ARRAY_BUFFER, DYNAMIC_DRAW),
       indicesBuffer: new WebGLArrayBuffer(ELEMENT_ARRAY_BUFFER, DYNAMIC_DRAW),
       renderInstructionsTransform: createTransform(),
-      verticesBufferTransform: createTransform(),
       invertVerticesBufferTransform: createTransform(),
     };
 
@@ -137,7 +132,6 @@ class MixedGeometryBatch {
       verticesBuffer: new WebGLArrayBuffer(ARRAY_BUFFER, DYNAMIC_DRAW),
       indicesBuffer: new WebGLArrayBuffer(ELEMENT_ARRAY_BUFFER, DYNAMIC_DRAW),
       renderInstructionsTransform: createTransform(),
-      verticesBufferTransform: createTransform(),
       invertVerticesBufferTransform: createTransform(),
     };
   }
