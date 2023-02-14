@@ -295,8 +295,8 @@ class MixedGeometryBatch {
 
   /**
    * @param {GeometryType} type Geometry type
-   * @param {number[]} flatCoords Flat coordinates
-   * @param {number[]|number[][]|null} ends Coordinate ends
+   * @param {Array<number>} flatCoords Flat coordinates
+   * @param {Array<number> | Array<Array<number>> | null} ends Coordinate ends
    * @param {Feature|RenderFeature} feature Feature
    * @param {string} featureUid Feature uid
    * @private
@@ -306,7 +306,7 @@ class MixedGeometryBatch {
     let verticesCount;
     switch (type) {
       case 'MultiPolygon':
-        const multiPolygonEndss = /** @type {number[][]} */ (ends);
+        const multiPolygonEndss = /** @type {Array<Array<number>>} */ (ends);
         for (let i = 0, ii = multiPolygonEndss.length; i < ii; i++) {
           let polygonEnds = multiPolygonEndss[i];
           const prevPolygonEnds = i > 0 ? multiPolygonEndss[i - 1] : null;
@@ -329,7 +329,7 @@ class MixedGeometryBatch {
         }
         break;
       case 'MultiLineString':
-        const multiLineEnds = /** @type {number[]} */ (ends);
+        const multiLineEnds = /** @type {Array<number>} */ (ends);
         for (let i = 0, ii = multiLineEnds.length; i < ii; i++) {
           const startIndex = i > 0 ? multiLineEnds[i - 1] : 0;
           const ringCoords = flatCoords.slice(startIndex, multiLineEnds[i]);
@@ -354,7 +354,7 @@ class MixedGeometryBatch {
         }
         break;
       case 'Polygon':
-        const polygonEnds = /** @type {number[]} */ (ends);
+        const polygonEnds = /** @type {Array<number>} */ (ends);
         // first look for a CW ring; if so, handle it and following rings as another polygon
         for (let i = 1, ii = polygonEnds.length; i < ii; i++) {
           const ringStartIndex = polygonEnds[i - 1];

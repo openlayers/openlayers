@@ -23,8 +23,8 @@ import {buffer, createEmpty, equals, getWidth} from '../../extent.js';
 import {
   create as createTransform,
   multiply as multiplyTransform,
-  translate as translateTransform,
   setFromArray as setFromTransform,
+  translate as translateTransform,
 } from '../../transform.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {listen, unlistenByKey} from '../../events.js';
