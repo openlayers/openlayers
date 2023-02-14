@@ -165,8 +165,8 @@ function getResolutions(image, referenceImage) {
   } catch (_) {
     return [
       referenceImage.fileDirectory.ImageWidth / image.fileDirectory.ImageWidth,
-      referenceImage.fileDirectory.ImageHeight /
-        image.fileDirectory.ImageHeight,
+      referenceImage.fileDirectory.ImageLength /
+        image.fileDirectory.ImageLength,
     ];
   }
 }
