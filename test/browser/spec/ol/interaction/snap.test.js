@@ -402,4 +402,58 @@ describe('ol.interaction.Snap', function () {
       expect(event.pixel).to.eql(expectedPixel);
     });
   });
+
+  describe('setMap', function () {
+    let target, map;
+
+    const width = 360;
+    const height = 180;
+
+    const featureNum = 10000;
+    const maxLon = 180;
+    const maxLat = 90;
+    const featureCollection = new Collection();
+
+    for (let i = 0; i < featureNum; i++) {
+      const point = new Feature(new Point([Math.random() * maxLon, Math.random() * maxLat]));
+      featureCollection.push(point);
+    }
+
+    beforeEach(function (done) {
+      target = document.createElement('div');
+
+      const style = target.style;
+      style.position = 'absolute';
+      style.left = '-1000px';
+      style.top = '-1000px';
+      style.width = width + 'px';
+      style.height = height + 'px';
+      document.body.appendChild(target);
+
+      map = new Map({
+        target: target,
+        view: new View({
+          projection: 'EPSG:4326',
+          center: [0, 0],
+          resolution: 1,
+        }),
+      });
+    });
+
+    afterEach(function () {
+      map.dispose();
+      document.body.removeChild(target);
+      clearUserProjection();
+    });
+    
+    it('add and remove snap interaction', function () {
+      const snapInteraction = new Snap({
+        features: featureCollection,
+      });
+      snapInteraction.setMap(map);
+      expect(snapInteraction.getMap()).to.eql(map);
+      snapInteraction.setMap(null);
+      expect(snapInteraction.getMap()).to.be(null);
+    });
+  });
 });
