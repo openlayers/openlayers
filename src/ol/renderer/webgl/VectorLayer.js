@@ -29,6 +29,12 @@ import {
 import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {listen, unlistenByKey} from '../../events.js';
 
+export const Uniforms = {
+  ...DefaultUniform,
+  RENDER_EXTENT: 'u_renderExtent', // intersection of layer, source, and view extent
+  GLOBAL_ALPHA: 'u_globalAlpha',
+};
+
 /**
  * @typedef {function(import("../../Feature").default, Object<string, *>):number} CustomAttributeCallback A callback computing
  * the value of a custom attribute (different for each feature) to be passed on to the GPU.
@@ -88,7 +94,9 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   constructor(layer, options) {
     const uniforms = options.uniforms || {};
     const projectionMatrixTransform = createTransform();
-    uniforms[DefaultUniform.PROJECTION_MATRIX] = projectionMatrixTransform;
+    uniforms[Uniforms.PROJECTION_MATRIX] = projectionMatrixTransform;
+    uniforms[Uniforms.RENDER_EXTENT] = [0, 0, 0, 0];
+    uniforms[Uniforms.GLOBAL_ALPHA] = 1;
 
     super(layer, {
       uniforms: uniforms,
