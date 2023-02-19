@@ -404,56 +404,38 @@ describe('ol.interaction.Snap', function () {
   });
 
   describe('setMap', function () {
-    let target, map;
+    let map, featureCollection;
 
-    const width = 360;
-    const height = 180;
-
-    const featureNum = 10000;
-    const maxLon = 180;
-    const maxLat = 90;
-    const featureCollection = new Collection();
-
-    for (let i = 0; i < featureNum; i++) {
-      const point = new Feature(new Point([Math.random() * maxLon, Math.random() * maxLat]));
-      featureCollection.push(point);
-    }
-
-    beforeEach(function (done) {
-      target = document.createElement('div');
-
-      const style = target.style;
-      style.position = 'absolute';
-      style.left = '-1000px';
-      style.top = '-1000px';
-      style.width = width + 'px';
-      style.height = height + 'px';
-      document.body.appendChild(target);
-
+    beforeEach(function () {
+      setUserProjection();
       map = new Map({
-        target: target,
+        target: createMapDiv(),
         view: new View({
-          projection: 'EPSG:4326',
           center: [0, 0],
-          resolution: 1,
+          zoom: 0,
         }),
       });
+      featureCollection = new Collection();
+      featureCollection.push(new Feature(new Point([0, 0])));
     });
 
     afterEach(function () {
-      map.dispose();
-      document.body.removeChild(target);
+      disposeMap(map);
       clearUserProjection();
     });
-    
-    it('add and remove snap interaction', function () {
+
+    it('adds and removes feature listeners', function () {
+      const feature = featureCollection.item(0);
       const snapInteraction = new Snap({
         features: featureCollection,
       });
+      expect(feature.getListeners('change')).to.be(undefined);
       snapInteraction.setMap(map);
       expect(snapInteraction.getMap()).to.eql(map);
+      expect(feature.getListeners('change').length).to.be(1);
       snapInteraction.setMap(null);
       expect(snapInteraction.getMap()).to.be(null);
+      expect(feature.getListeners('change')).to.be(undefined);
     });
   });
 });
