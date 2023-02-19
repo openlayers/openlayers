@@ -402,4 +402,40 @@ describe('ol.interaction.Snap', function () {
       expect(event.pixel).to.eql(expectedPixel);
     });
   });
+
+  describe('setMap', function () {
+    let map, featureCollection;
+
+    beforeEach(function () {
+      setUserProjection();
+      map = new Map({
+        target: createMapDiv(),
+        view: new View({
+          center: [0, 0],
+          zoom: 0,
+        }),
+      });
+      featureCollection = new Collection();
+      featureCollection.push(new Feature(new Point([0, 0])));
+    });
+
+    afterEach(function () {
+      disposeMap(map);
+      clearUserProjection();
+    });
+
+    it('adds and removes feature listeners', function () {
+      const feature = featureCollection.item(0);
+      const snapInteraction = new Snap({
+        features: featureCollection,
+      });
+      expect(feature.getListeners('change')).to.be(undefined);
+      snapInteraction.setMap(map);
+      expect(snapInteraction.getMap()).to.eql(map);
+      expect(feature.getListeners('change').length).to.be(1);
+      snapInteraction.setMap(null);
+      expect(snapInteraction.getMap()).to.be(null);
+      expect(feature.getListeners('change')).to.be(undefined);
+    });
+  });
 });

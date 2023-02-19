@@ -244,22 +244,6 @@ class Snap extends PointerInteraction {
   }
 
   /**
-   * @param {import("../Feature.js").default} feature Feature.
-   * @private
-   */
-  forEachFeatureAdd_(feature) {
-    this.addFeature(feature);
-  }
-
-  /**
-   * @param {import("../Feature.js").default} feature Feature.
-   * @private
-   */
-  forEachFeatureRemove_(feature) {
-    this.removeFeature(feature);
-  }
-
-  /**
    * @return {import("../Collection.js").default<import("../Feature.js").default>|Array<import("../Feature.js").default>} Features.
    * @private
    */
@@ -381,7 +365,9 @@ class Snap extends PointerInteraction {
     if (currentMap) {
       keys.forEach(unlistenByKey);
       keys.length = 0;
-      features.forEach(this.forEachFeatureRemove_.bind(this));
+      this.rBush_.clear();
+      Object.values(this.featureChangeListenerKeys_).forEach(unlistenByKey);
+      this.featureChangeListenerKeys_ = {};
     }
     super.setMap(map);
 
@@ -417,7 +403,7 @@ class Snap extends PointerInteraction {
           )
         );
       }
-      features.forEach(this.forEachFeatureAdd_.bind(this));
+      features.forEach((feature) => this.addFeature(feature));
     }
   }
 
