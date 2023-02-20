@@ -93,7 +93,7 @@
     "metalsmith": "^2.5.0",
     "mocha": "10.2.0",
     "pixelmatch": "^5.1.0",
-    "pngjs": "^6.0.0",
+    "pngjs": "^7.0.0",
     "proj4": "2.8.1",
     "puppeteer": "19.7.0",
     "rollup": "^2.42.3",
