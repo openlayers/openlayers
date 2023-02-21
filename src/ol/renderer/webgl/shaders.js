@@ -31,7 +31,11 @@ const DECODE_COLOR_EXPRESSION = `vec3(
  * @type {string}
  */
 export const FILL_VERTEX_SHADER = `
+  #ifdef GL_FRAGMENT_PRECISION_HIGH
+  precision highp float;
+  #else
   precision mediump float;
+  #endif
   uniform mat4 u_projectionMatrix;
   attribute vec2 a_position;
   attribute float a_color;
@@ -50,7 +54,11 @@ export const FILL_VERTEX_SHADER = `
  * @type {string}
  */
 export const FILL_FRAGMENT_SHADER = `
+  #ifdef GL_FRAGMENT_PRECISION_HIGH
+  precision highp float;
+  #else
   precision mediump float;
+  #endif
   uniform float u_globalAlpha;
   uniform mat4 u_projectionMatrix;
   uniform mat4 u_screenToWorldMatrix;
@@ -66,6 +74,7 @@ export const FILL_FRAGMENT_SHADER = `
   }
 
   void main(void) {
+    #ifdef GL_FRAGMENT_PRECISION_HIGH
     vec2 v_worldPos = pxToWorld(gl_FragCoord.xy / u_pixelRatio);
     if (
       abs(u_renderExtent[0] - u_renderExtent[2]) > 0.0 && (
@@ -77,6 +86,7 @@ export const FILL_FRAGMENT_SHADER = `
     ) {
       discard;
     }
+    #endif
     gl_FragColor = vec4(v_color, 1.0) * v_opacity * u_globalAlpha;
   }`;
 
@@ -86,7 +96,11 @@ export const FILL_FRAGMENT_SHADER = `
  * @type {string}
  */
 export const STROKE_VERTEX_SHADER = `
+  #ifdef GL_FRAGMENT_PRECISION_HIGH
+  precision highp float;
+  #else
   precision mediump float;
+  #endif
   uniform mat4 u_projectionMatrix;
   uniform vec2 u_sizePx;
   attribute vec2 a_segmentStart;
@@ -151,7 +165,11 @@ export const STROKE_VERTEX_SHADER = `
  * @type {string}
  */
 export const STROKE_FRAGMENT_SHADER = `
+  #ifdef GL_FRAGMENT_PRECISION_HIGH
+  precision highp float;
+  #else
   precision mediump float;
+  #endif
   uniform mat4 u_projectionMatrix;
   uniform mat4 u_screenToWorldMatrix;
   uniform vec2 u_sizePx;
@@ -181,6 +199,7 @@ export const STROKE_FRAGMENT_SHADER = `
 
   void main(void) {
     vec2 v_currentPoint = gl_FragCoord.xy / u_pixelRatio;
+    #ifdef GL_FRAGMENT_PRECISION_HIGH
     vec2 v_worldPos = pxToWorld(v_currentPoint);
     if (
       abs(u_renderExtent[0] - u_renderExtent[2]) > 0.0 && (
@@ -192,6 +211,7 @@ export const STROKE_FRAGMENT_SHADER = `
     ) {
       discard;
     }
+    #endif
     gl_FragColor = vec4(v_color, 1.0) * v_opacity * u_globalAlpha;
     gl_FragColor *= segmentDistanceField(v_currentPoint, v_segmentStart, v_segmentEnd, v_width);
   }`;
