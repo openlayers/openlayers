@@ -857,8 +857,8 @@ class WebGLHelper extends Disposable {
     gl.deleteShader(vertexShader);
 
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      const message = `GL program linking failed: ${gl.getShaderInfoLog(
-        vertexShader
+      const message = `GL program linking failed: ${gl.getProgramInfoLog(
+        program
       )}`;
       throw new Error(message);
     }
