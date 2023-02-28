@@ -162,19 +162,16 @@ const DrawEventType = {
   /**
    * Triggered upon feature draw start
    * @event DrawEvent#drawstart
-   * @api
    */
   DRAWSTART: 'drawstart',
   /**
    * Triggered upon feature draw end
    * @event DrawEvent#drawend
-   * @api
    */
   DRAWEND: 'drawend',
   /**
    * Triggered upon feature draw abortion
    * @event DrawEvent#drawabort
-   * @api
    */
   DRAWABORT: 'drawabort',
 };

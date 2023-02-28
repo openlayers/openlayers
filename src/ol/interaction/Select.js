@@ -21,7 +21,6 @@ const SelectEventType = {
   /**
    * Triggered when feature(s) has been (de)selected.
    * @event SelectEvent#select
-   * @api
    */
   SELECT: 'select',
 };

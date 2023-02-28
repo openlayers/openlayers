@@ -47,7 +47,6 @@ const ExtentEventType = {
   /**
    * Triggered after the extent is changed
    * @event ExtentEvent#extentchanged
-   * @api
    */
   EXTENTCHANGED: 'extentchanged',
 };

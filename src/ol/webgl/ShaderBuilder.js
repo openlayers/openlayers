@@ -414,14 +414,14 @@ ${hitDetectionBypass}
  */
 
 /**
- * Parses a {@link import("../style/literal").LiteralStyle} object and returns a {@link ShaderBuilder}
+ * Parses a {@link LiteralStyle} object and returns a {@link ShaderBuilder}
  * object that has been configured according to the given style, as well as `attributes` and `uniforms`
  * arrays to be fed to the `WebGLPointsRenderer` class.
  *
  * Also returns `uniforms` and `attributes` properties as expected by the
  * {@link module:ol/renderer/webgl/PointsLayer~WebGLPointsLayerRenderer}.
  *
- * @param {import("../style/literal").LiteralStyle} style Literal style.
+ * @param {LiteralStyle} style Literal style.
  * @return {StyleParseResult} Result containing shader params, attributes and uniforms.
  */
 export function parseLiteralStyle(style) {

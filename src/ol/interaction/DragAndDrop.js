@@ -30,7 +30,6 @@ const DragAndDropEventType = {
   /**
    * Triggered when features are added
    * @event DragAndDropEvent#addfeatures
-   * @api
    */
   ADD_FEATURES: 'addfeatures',
 };

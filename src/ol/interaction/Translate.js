@@ -16,19 +16,16 @@ const TranslateEventType = {
   /**
    * Triggered upon feature translation start.
    * @event TranslateEvent#translatestart
-   * @api
    */
   TRANSLATESTART: 'translatestart',
   /**
    * Triggered upon feature translation.
    * @event TranslateEvent#translating
-   * @api
    */
   TRANSLATING: 'translating',
   /**
    * Triggered upon feature translation end.
    * @event TranslateEvent#translateend
-   * @api
    */
   TRANSLATEEND: 'translateend',
 };
