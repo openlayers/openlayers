@@ -3,11 +3,16 @@
  */
 
 import TileImage from './TileImage.js';
-import {applyTransform, intersects} from '../extent.js';
+import {applyTransform, intersects, wrapAndSliceX, wrapX} from '../extent.js';
+import {calculateSourceExtentResolution} from '../reproj.js';
 import {createFromTileUrlFunctions} from '../tileurlfunction.js';
 import {createOrUpdate} from '../tilecoord.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
-import {get as getProjection, getTransformFromProjections} from '../proj.js';
+import {
+  equivalent,
+  get as getProjection,
+  getTransformFromProjections,
+} from '../proj.js';
 
 /**
  * @param {import('../tilecoord.js').TileCoord} tileCoord Tile coord.
@@ -268,41 +273,57 @@ class BingMaps extends TileImage {
     );
 
     if (resource.imageryProviders) {
-      const transform = getTransformFromProjections(
-        getProjection('EPSG:4326'),
-        this.getProjection()
-      );
-
       this.setAttributions((frameState) => {
         const attributions = [];
         const viewState = frameState.viewState;
-        const tileGrid = this.getTileGrid();
-        const z = tileGrid.getZForResolution(
-          viewState.resolution,
+        const viewProjection = viewState.projection;
+        const transformFunction = getTransformFromProjections(
+          getProjection('EPSG:4326'),
+          viewProjection
+        );
+
+        const viewResolution = viewState.resolution;
+        let sourceResolution = viewResolution;
+        if (!equivalent(sourceProjection, viewProjection)) {
+          sourceResolution = calculateSourceExtentResolution(
+            sourceProjection,
+            viewProjection,
+            wrapX(frameState.extent.slice(), viewProjection),
+            viewResolution
+          );
+          if (!isFinite(sourceResolution) || sourceResolution <= 0) {
+            return null;
+          }
+        }
+
+        const zoom = tileGrid.getZForResolution(
+          sourceResolution,
           this.zDirection
         );
-        const tileCoord = tileGrid.getTileCoordForCoordAndZ(
-          viewState.center,
-          z
-        );
-        const zoom = tileCoord[0];
-        resource.imageryProviders.map(function (imageryProvider) {
-          let intersecting = false;
+        const extents = this.getWrapX()
+          ? wrapAndSliceX(frameState.extent.slice(), viewProjection)
+          : [frameState.extent];
+
+        resource.imageryProviders.map((imageryProvider) => {
           const coverageAreas = imageryProvider.coverageAreas;
           for (let i = 0, ii = coverageAreas.length; i < ii; ++i) {
             const coverageArea = coverageAreas[i];
             if (zoom >= coverageArea.zoomMin && zoom <= coverageArea.zoomMax) {
               const bbox = coverageArea.bbox;
               const epsg4326Extent = [bbox[1], bbox[0], bbox[3], bbox[2]];
-              const extent = applyTransform(epsg4326Extent, transform);
-              if (intersects(extent, frameState.extent)) {
-                intersecting = true;
-                break;
+              const extent = applyTransform(
+                epsg4326Extent,
+                transformFunction,
+                undefined,
+                8
+              );
+              for (let i = 0, ii = extents.length; i < ii; ++i) {
+                if (intersects(extent, extents[i])) {
+                  attributions.push(imageryProvider.attribution);
+                  return;
+                }
               }
             }
-          }
-          if (intersecting) {
-            attributions.push(imageryProvider.attribution);
           }
         });
 
