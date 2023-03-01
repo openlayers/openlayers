@@ -1854,8 +1854,10 @@ class View extends BaseObject {
    * @param {import("./coordinate.js").Coordinate} [anchor] The origin of the transformation.
    */
   endInteractionInternal(duration, resolutionDirection, anchor) {
+    if (!this.getInteracting()) {
+      return;
+    }
     this.setHint(ViewHint.INTERACTING, -1);
-
     this.resolveConstraints(duration, resolutionDirection, anchor);
   }
 
