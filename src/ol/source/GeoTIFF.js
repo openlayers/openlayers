@@ -133,8 +133,7 @@ function getBoundingBox(image) {
   try {
     return image.getBoundingBox();
   } catch (_) {
-    const fileDirectory = image.fileDirectory;
-    return [0, 0, fileDirectory.ImageWidth, fileDirectory.ImageLength];
+    return [0, 0, image.getWidth(), image.getHeight()];
   }
 }
 
@@ -148,7 +147,7 @@ function getOrigin(image) {
   try {
     return image.getOrigin().slice(0, 2);
   } catch (_) {
-    return [0, image.fileDirectory.ImageLength];
+    return [0, image.getHeight()];
   }
 }
 
@@ -164,9 +163,8 @@ function getResolutions(image, referenceImage) {
     return image.getResolution(referenceImage);
   } catch (_) {
     return [
-      referenceImage.fileDirectory.ImageWidth / image.fileDirectory.ImageWidth,
-      referenceImage.fileDirectory.ImageHeight /
-        image.fileDirectory.ImageHeight,
+      referenceImage.getWidth() / image.getWidth(),
+      referenceImage.getHeight() / image.getHeight(),
     ];
   }
 }
