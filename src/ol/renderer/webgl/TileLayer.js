@@ -83,17 +83,41 @@ function depthForZ(z) {
 }
 
 /**
+ * @typedef {Object} TileTextureLookup
+ * @property {Set<string>} tileIds The set of tile ids in the lookup.
+ * @property {Object<number, Set<TileTexture>>} texturesByZ Tile textures by zoom level.
+ */
+
+/**
+ * @return {TileTextureLookup} A new tile texture lookup.
+ */
+export function newTileTextureLookup() {
+  return {tileIds: new Set(), texturesByZ: {}};
+}
+
+/**
+ * Check if a tile is already in the tile texture lookup.
+ * @param {TileTextureLookup} tileTextureLookup Lookup of tile textures by zoom level.
+ * @param {import("../../Tile.js").default} tile A tile.
+ * @return {boolean} The tile is already in the lookup.
+ */
+function lookupHasTile(tileTextureLookup, tile) {
+  return tileTextureLookup.tileIds.has(getUid(tile));
+}
+
+/**
  * Add a tile texture to the lookup.
- * @param {Object<number, Array<import("../../webgl/TileTexture.js").default>>} tileTexturesByZ Lookup of
- * tile textures by zoom level.
- * @param {import("../../webgl/TileTexture.js").default} tileTexture A tile texture.
+ * @param {TileTextureLookup} tileTextureLookup Lookup of tile textures by zoom level.
+ * @param {TileTexture} tileTexture A tile texture.
  * @param {number} z The zoom level.
  */
-function addTileTextureToLookup(tileTexturesByZ, tileTexture, z) {
-  if (!(z in tileTexturesByZ)) {
-    tileTexturesByZ[z] = [];
+function addTileTextureToLookup(tileTextureLookup, tileTexture, z) {
+  const texturesByZ = tileTextureLookup.texturesByZ;
+  if (!(z in texturesByZ)) {
+    texturesByZ[z] = new Set();
   }
-  tileTexturesByZ[z].push(tileTexture);
+  texturesByZ[z].add(tileTexture);
+  tileTextureLookup.tileIds.add(getUid(tileTexture.tile));
 }
 
 /**
@@ -330,10 +354,10 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {import("../../extent.js").Extent} extent The extent to be rendered.
    * @param {number} initialZ The zoom level.
-   * @param {Object<number, Array<TileTexture>>} tileTexturesByZ The zoom level.
+   * @param {TileTextureLookup} tileTextureLookup The zoom level.
    * @param {number} preload Number of additional levels to load.
    */
-  enqueueTiles(frameState, extent, initialZ, tileTexturesByZ, preload) {
+  enqueueTiles(frameState, extent, initialZ, tileTextureLookup, preload) {
     const viewState = frameState.viewState;
     const tileLayer = this.getLayer();
     const tileSource = tileLayer.getRenderSource();
@@ -396,28 +420,33 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
               frameState.pixelRatio,
               viewState.projection
             );
-            if (!tileTexture) {
-              tileTexture = new TileTexture({
-                tile: tile,
-                grid: tileGrid,
-                helper: this.helper,
-                gutter: gutter,
-              });
-              tileTextureCache.set(cacheKey, tileTexture);
+          }
+
+          if (lookupHasTile(tileTextureLookup, tile)) {
+            continue;
+          }
+
+          if (!tileTexture) {
+            tileTexture = new TileTexture({
+              tile: tile,
+              grid: tileGrid,
+              helper: this.helper,
+              gutter: gutter,
+            });
+            tileTextureCache.set(cacheKey, tileTexture);
+          } else {
+            if (this.isDrawableTile_(tile)) {
+              tileTexture.setTile(tile);
             } else {
-              if (this.isDrawableTile_(tile)) {
-                tileTexture.setTile(tile);
-              } else {
-                const interimTile =
-                  /** @type {import("../../webgl/TileTexture").TileType} */ (
-                    tile.getInterimTile()
-                  );
-                tileTexture.setTile(interimTile);
-              }
+              const interimTile =
+                /** @type {import("../../webgl/TileTexture").TileType} */ (
+                  tile.getInterimTile()
+                );
+              tileTexture.setTile(interimTile);
             }
           }
 
-          addTileTextureToLookup(tileTexturesByZ, tileTexture, z);
+          addTileTextureToLookup(tileTextureLookup, tileTexture, z);
 
           const tileQueueKey = tile.getKey();
           wantedTiles[tileQueueKey] = true;
@@ -460,9 +489,9 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     );
 
     /**
-     * @type {Object<number, Array<import("../../webgl/TileTexture.js").default>>}
+     * @type {TileTextureLookup}
      */
-    const tileTexturesByZ = {};
+    const tileTextureLookup = newTileTextureLookup();
 
     const preload = tileLayer.getPreload();
     if (frameState.nextExtent) {
@@ -475,19 +504,19 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
         frameState,
         nextExtent,
         targetZ,
-        tileTexturesByZ,
+        tileTextureLookup,
         preload
       );
     }
 
-    this.enqueueTiles(frameState, extent, z, tileTexturesByZ, 0);
+    this.enqueueTiles(frameState, extent, z, tileTextureLookup, 0);
     if (preload > 0) {
       setTimeout(() => {
         this.enqueueTiles(
           frameState,
           extent,
           z - 1,
-          tileTexturesByZ,
+          tileTextureLookup,
           preload - 1
         );
       }, 0);
@@ -506,9 +535,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     let blend = false;
 
     // look for cached tiles to use if a target tile is not ready
-    const tileTextures = tileTexturesByZ[z];
-    for (let i = 0, ii = tileTextures.length; i < ii; ++i) {
-      const tileTexture = tileTextures[i];
+    for (const tileTexture of tileTextureLookup.texturesByZ[z]) {
       const tile = tileTexture.tile;
       if (
         (tile instanceof ReprojTile || tile instanceof ReprojDataTile) &&
@@ -536,7 +563,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
         tileGrid,
         tileCoord,
         z + 1,
-        tileTexturesByZ
+        tileTextureLookup
       );
 
       if (coveredByChildren) {
@@ -550,7 +577,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
           tileGrid,
           tileCoord,
           parentZ,
-          tileTexturesByZ
+          tileTextureLookup
         );
 
         if (coveredByParent) {
@@ -562,7 +589,8 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     this.helper.useProgram(this.program_, frameState);
     this.helper.prepareDraw(frameState, !blend);
 
-    const zs = Object.keys(tileTexturesByZ).map(Number).sort(ascending);
+    const texturesByZ = tileTextureLookup.texturesByZ;
+    const zs = Object.keys(texturesByZ).map(Number).sort(ascending);
 
     const centerX = viewState.center[0];
     const centerY = viewState.center[1];
@@ -585,9 +613,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
       const tileScale = viewState.resolution / tileResolution;
 
       const depth = depthForZ(tileZ);
-      const tileTextures = tileTexturesByZ[tileZ];
-      for (let i = 0, ii = tileTextures.length; i < ii; ++i) {
-        const tileTexture = tileTextures[i];
+      for (const tileTexture of texturesByZ[tileZ]) {
         if (!tileTexture.loaded) {
           continue;
         }
@@ -835,12 +861,12 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
    * @param {import("../../tilegrid/TileGrid.js").default} tileGrid The tile grid.
    * @param {import("../../tilecoord.js").TileCoord} tileCoord The target tile coordinate.
    * @param {number} altZ The alternate zoom level.
-   * @param {Object<number, Array<import("../../webgl/TileTexture.js").default>>} tileTexturesByZ Lookup of
+   * @param {TileTextureLookup} tileTextureLookup Lookup of
    * tile textures by zoom level.
    * @return {boolean} The tile coordinate is covered by loaded tiles at the alternate zoom level.
    * @private
    */
-  findAltTiles_(tileGrid, tileCoord, altZ, tileTexturesByZ) {
+  findAltTiles_(tileGrid, tileCoord, altZ, tileTextureLookup) {
     const tileRange = tileGrid.getTileRangeForTileCoordAndZ(
       tileCoord,
       altZ,
@@ -860,8 +886,11 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
         let loaded = false;
         if (tileTextureCache.containsKey(cacheKey)) {
           const tileTexture = tileTextureCache.get(cacheKey);
-          if (tileTexture.loaded) {
-            addTileTextureToLookup(tileTexturesByZ, tileTexture, altZ);
+          if (
+            tileTexture.loaded &&
+            !lookupHasTile(tileTextureLookup, tileTexture.tile)
+          ) {
+            addTileTextureToLookup(tileTextureLookup, tileTexture, altZ);
             loaded = true;
           }
         }
