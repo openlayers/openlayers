@@ -9,6 +9,7 @@ import {create} from '../../../../../../src/ol/transform.js';
 import {createCanvasContext2D} from '../../../../../../src/ol/dom.js';
 import {get} from '../../../../../../src/ol/proj.js';
 import {getUid} from '../../../../../../src/ol/util.js';
+import {newTileTextureLookup} from '../../../../../../src/ol/renderer/webgl/TileLayer.js';
 
 describe('ol/renderer/webgl/TileLayer', function () {
   /** @type {import("../../../../../../src/ol/renderer/webgl/TileLayer.js").default} */
@@ -121,7 +122,13 @@ describe('ol/renderer/webgl/TileLayer', function () {
     it('enqueues tiles at a single zoom level (preload: 0)', () => {
       renderer.prepareFrame(frameState);
       const extent = [-1, -1, 1, 1];
-      renderer.enqueueTiles(frameState, extent, 10, {}, tileLayer.getPreload());
+      renderer.enqueueTiles(
+        frameState,
+        extent,
+        10,
+        newTileTextureLookup(),
+        tileLayer.getPreload()
+      );
 
       const source = tileLayer.getSource();
       const sourceKey = getUid(source);
@@ -142,7 +149,13 @@ describe('ol/renderer/webgl/TileLayer', function () {
       tileLayer.setPreload(2);
       renderer.prepareFrame(frameState);
       const extent = [-1, -1, 1, 1];
-      renderer.enqueueTiles(frameState, extent, 10, {}, tileLayer.getPreload());
+      renderer.enqueueTiles(
+        frameState,
+        extent,
+        10,
+        newTileTextureLookup(),
+        tileLayer.getPreload()
+      );
 
       const source = tileLayer.getSource();
       const sourceKey = getUid(source);
@@ -172,7 +185,13 @@ describe('ol/renderer/webgl/TileLayer', function () {
       tileLayer.setMinZoom(9);
       renderer.prepareFrame(frameState);
       const extent = [-1, -1, 1, 1];
-      renderer.enqueueTiles(frameState, extent, 10, {}, tileLayer.getPreload());
+      renderer.enqueueTiles(
+        frameState,
+        extent,
+        10,
+        newTileTextureLookup(),
+        tileLayer.getPreload()
+      );
 
       const source = tileLayer.getSource();
       const sourceKey = getUid(source);
@@ -201,7 +220,13 @@ describe('ol/renderer/webgl/TileLayer', function () {
       tileLayer.setMinZoom(9);
       renderer.prepareFrame(frameState);
       const extent = [-1, -1, 1, 1];
-      renderer.enqueueTiles(frameState, extent, 10, {}, tileLayer.getPreload());
+      renderer.enqueueTiles(
+        frameState,
+        extent,
+        10,
+        newTileTextureLookup(),
+        tileLayer.getPreload()
+      );
 
       const source = tileLayer.getSource();
       const sourceKey = getUid(source);
