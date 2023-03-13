@@ -6,9 +6,6 @@ Thanks for your interest in contributing to OpenLayers.  Please see the project'
 
 Please ask questions about using the library on [Stack Overflow using the tag 'openlayers'](https://stackoverflow.com/questions/tagged/openlayers).
 
-When you want to get involved and discuss new features or changes, please use [the mailing list](https://groups.google.com/forum/#!forum/openlayers-dev).
-
-
 ## Submitting Bug Reports
 
 Please use the [GitHub issue tracker](https://github.com/openlayers/openlayers/issues). Before creating a new issue, do a quick search to see if the problem has been reported already.
