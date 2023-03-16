@@ -93,9 +93,8 @@
     } else {
       params.set('q', text);
     }
-    
     let fullUrl = window.location.pathname;
-    if(params.toString().length !== 0) {
+    if (params.toString().length !== 0) {
       fullUrl += `?${params.toString()}`;
     }
     history.replaceState(null, '', fullUrl);
