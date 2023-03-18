@@ -282,24 +282,27 @@ class BingMaps extends TileImage {
           viewProjection
         );
 
-        const viewResolution = viewState.resolution;
+        let viewResolution = viewState.resolution;
         let sourceResolution = viewResolution;
+        let zDirection = this.zDirection;
+
         if (!equivalent(sourceProjection, viewProjection)) {
+          const viewGrid = this.getTileGridForProjection(viewProjection);
+          const zoom = viewGrid.getZForResolution(viewResolution, zDirection);
+          viewResolution = viewGrid.getResolution(zoom);
           sourceResolution = calculateSourceExtentResolution(
             sourceProjection,
             viewProjection,
             wrapX(frameState.extent.slice(), viewProjection),
             viewResolution
           );
+          zDirection = undefined;
           if (!isFinite(sourceResolution) || sourceResolution <= 0) {
             return null;
           }
         }
 
-        const zoom = tileGrid.getZForResolution(
-          sourceResolution,
-          this.zDirection
-        );
+        const zoom = tileGrid.getZForResolution(sourceResolution, zDirection);
         const extents = this.getWrapX()
           ? wrapAndSliceX(frameState.extent.slice(), viewProjection)
           : [frameState.extent];
