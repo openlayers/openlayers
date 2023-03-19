@@ -408,24 +408,6 @@ class TileGrid {
   }
 
   /**
-   * Get the extent for a tile range.
-   * @param {number} z Integer zoom level.
-   * @param {import("../TileRange.js").default} tileRange Tile range.
-   * @param {import("../extent.js").Extent} [tempExtent] Temporary import("../extent.js").Extent object.
-   * @return {import("../extent.js").Extent} Extent.
-   */
-  getTileRangeExtent(z, tileRange, tempExtent) {
-    const origin = this.getOrigin(z);
-    const resolution = this.getResolution(z);
-    const tileSize = toSize(this.getTileSize(z), this.tmpSize_);
-    const minX = origin[0] + tileRange.minX * tileSize[0] * resolution;
-    const maxX = origin[0] + (tileRange.maxX + 1) * tileSize[0] * resolution;
-    const minY = origin[1] + tileRange.minY * tileSize[1] * resolution;
-    const maxY = origin[1] + (tileRange.maxY + 1) * tileSize[1] * resolution;
-    return createOrUpdate(minX, minY, maxX, maxY, tempExtent);
-  }
-
-  /**
    * Get a tile range for the given extent and integer zoom level.
    * @param {import("../extent.js").Extent} extent Extent.
    * @param {number} z Integer zoom level.
