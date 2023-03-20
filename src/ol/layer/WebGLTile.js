@@ -131,6 +131,20 @@ function parseStyle(style, bandCount) {
   if (style.color !== undefined) {
     const color = expressionToGlsl(context, style.color, ValueTypes.COLOR);
     pipeline.push(`color = ${color};`);
+  } else if (bandCount === 1) {
+    const color = expressionToGlsl(
+      context,
+      ['array', ['band', 1], ['band', 1], ['band', 1], 1],
+      ValueTypes.COLOR
+    );
+    pipeline.push(`color = ${color};`);
+  } else if (bandCount === 2) {
+    const color = expressionToGlsl(
+      context,
+      ['array', ['band', 1], ['band', 1], ['band', 1], ['band', 2]],
+      ValueTypes.COLOR
+    );
+    pipeline.push(`color = ${color};`);
   }
 
   if (style.contrast !== undefined) {
@@ -252,6 +266,7 @@ function parseStyle(style, bandCount) {
     uniform float ${Uniforms.TEXTURE_PIXEL_HEIGHT};
     uniform float ${Uniforms.RESOLUTION};
     uniform float ${Uniforms.ZOOM};
+    uniform float ${Uniforms.VERSION};
 
     ${uniformDeclarations.join('\n')}
 

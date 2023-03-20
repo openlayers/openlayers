@@ -502,14 +502,20 @@ Operators['band'] = {
       const bandCount = context.bandCount || 1;
       for (let i = 0; i < bandCount; i++) {
         const colorIndex = Math.floor(i / 4);
-        let bandIndex = i % 4;
-        if (i === bandCount - 1 && bandIndex === 1) {
-          // LUMINANCE_ALPHA - band 1 assigned to rgb and band 2 assigned to alpha
-          bandIndex = 3;
-        }
         const textureName = `${Uniforms.TILE_TEXTURE_ARRAY}[${colorIndex}]`;
+        const bandIndex = i % 4;
+        let ifWebGL1 = '';
+        if (i === bandCount - 1 && bandIndex === 1) {
+          // WebGL 1.0 LUMINANCE_ALPHA - band 1 assigned to rgb and band 2 assigned to alpha
+          ifWebGL1 = `
+            if (${Uniforms.VERSION} == 1.0) {
+              return texture2D(${textureName}, v_textureCoord + vec2(dx, dy))[3];
+            }
+          `;
+        }
         ifBlocks += `
           if (band == ${i + 1}.0) {
+            ${ifWebGL1}
             return texture2D(${textureName}, v_textureCoord + vec2(dx, dy))[${bandIndex}];
           }
         `;
