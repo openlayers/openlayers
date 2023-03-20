@@ -117,7 +117,8 @@ class LRUCache {
     assert(entry !== undefined, 15); // Tried to get a value for a key that does not exist in the cache
     if (entry === this.newest_) {
       return entry.value_;
-    } else if (entry === this.oldest_) {
+    }
+    if (entry === this.oldest_) {
       this.oldest_ = /** @type {Entry} */ (this.oldest_.newer);
       this.oldest_.older = null;
     } else {

@@ -2095,9 +2095,11 @@ export function createRotationConstraint(options) {
     const constrainRotation = options.constrainRotation;
     if (constrainRotation === undefined || constrainRotation === true) {
       return createSnapToZero();
-    } else if (constrainRotation === false) {
+    }
+    if (constrainRotation === false) {
       return rotationNone;
-    } else if (typeof constrainRotation === 'number') {
+    }
+    if (typeof constrainRotation === 'number') {
       return createSnapToN(constrainRotation);
     }
     return rotationNone;

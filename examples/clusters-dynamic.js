@@ -72,11 +72,11 @@ let clickFeature, clickResolution;
  * Style for clusters with features that are too close to each other, activated on click.
  * @param {Feature} cluster A cluster with overlapping members.
  * @param {number} resolution The current view resolution.
- * @return {Style} A style to render an expanded view of the cluster members.
+ * @return {Style|null} A style to render an expanded view of the cluster members.
  */
 function clusterCircleStyle(cluster, resolution) {
   if (cluster !== clickFeature || resolution !== clickResolution) {
-    return;
+    return null;
   }
   const clusterMembers = cluster.get('features');
   const centerCoordinates = cluster.getGeometry().getCoordinates();
@@ -141,11 +141,11 @@ let hoverFeature;
 /**
  * Style for convex hulls of clusters, activated on hover.
  * @param {Feature} cluster The cluster feature.
- * @return {Style} Polygon style for the convex hull of the cluster.
+ * @return {Style|null} Polygon style for the convex hull of the cluster.
  */
 function clusterHullStyle(cluster) {
   if (cluster !== hoverFeature) {
-    return;
+    return null;
   }
   const originalFeatures = cluster.get('features');
   const points = originalFeatures.map((feature) =>

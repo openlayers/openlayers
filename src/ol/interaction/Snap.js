@@ -47,7 +47,7 @@ import {listen, unlistenByKey} from '../events.js';
 
 /**
  * @param  {import("../source/Vector.js").VectorSourceEvent|import("../Collection.js").CollectionEvent<import("../Feature.js").default>} evt Event.
- * @return {import("../Feature.js").default} Feature.
+ * @return {import("../Feature.js").default|null} Feature.
  */
 function getFeatureFromEvent(evt) {
   if (
@@ -55,7 +55,8 @@ function getFeatureFromEvent(evt) {
   ) {
     return /** @type {import("../source/Vector.js").VectorSourceEvent} */ (evt)
       .feature;
-  } else if (
+  }
+  if (
     /** @type {import("../Collection.js").CollectionEvent<import("../Feature.js").default>} */ (
       evt
     ).element
@@ -64,6 +65,7 @@ function getFeatureFromEvent(evt) {
       evt
     ).element;
   }
+  return null;
 }
 
 const tempSegment = [];
@@ -277,7 +279,9 @@ class Snap extends PointerInteraction {
    */
   handleFeatureAdd_(evt) {
     const feature = getFeatureFromEvent(evt);
-    this.addFeature(feature);
+    if (feature) {
+      this.addFeature(feature);
+    }
   }
 
   /**
@@ -286,7 +290,9 @@ class Snap extends PointerInteraction {
    */
   handleFeatureRemove_(evt) {
     const feature = getFeatureFromEvent(evt);
-    this.removeFeature(feature);
+    if (feature) {
+      this.removeFeature(feature);
+    }
   }
 
   /**

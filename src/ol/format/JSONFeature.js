@@ -200,7 +200,8 @@ function getObject(source) {
   if (typeof source === 'string') {
     const object = JSON.parse(source);
     return object ? /** @type {Object} */ (object) : null;
-  } else if (source !== null) {
+  }
+  if (source !== null) {
     return source;
   }
   return null;

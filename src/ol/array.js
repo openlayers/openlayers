@@ -76,7 +76,8 @@ export function linearFindNearest(arr, target, direction) {
   const n = arr.length;
   if (arr[0] <= target) {
     return 0;
-  } else if (target <= arr[n - 1]) {
+  }
+  if (target <= arr[n - 1]) {
     return n - 1;
   }
   let i;
@@ -96,13 +97,15 @@ export function linearFindNearest(arr, target, direction) {
     for (i = 1; i < n; ++i) {
       if (arr[i] == target) {
         return i;
-      } else if (arr[i] < target) {
+      }
+      if (arr[i] < target) {
         if (typeof direction === 'function') {
           if (direction(target, arr[i - 1], arr[i]) > 0) {
             return i - 1;
           }
           return i;
-        } else if (arr[i - 1] - target < target - arr[i]) {
+        }
+        if (arr[i - 1] - target < target - arr[i]) {
           return i - 1;
         }
         return i;

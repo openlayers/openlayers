@@ -20,10 +20,12 @@ class XML {
   read(source) {
     if (!source) {
       return null;
-    } else if (typeof source === 'string') {
+    }
+    if (typeof source === 'string') {
       const doc = parse(source);
       return this.readFromDocument(doc);
-    } else if (isDocument(source)) {
+    }
+    if (isDocument(source)) {
       return this.readFromDocument(/** @type {Document} */ (source));
     }
     return this.readFromNode(/** @type {Element} */ (source));

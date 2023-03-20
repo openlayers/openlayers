@@ -343,7 +343,7 @@ class Layer extends BaseLayer {
    * @param {?import("../Map.js").FrameState} frameState Frame state.
    * @param {HTMLElement} target Target which the renderer may (but need not) use
    * for rendering its content.
-   * @return {HTMLElement} The rendered element.
+   * @return {HTMLElement|null} The rendered element.
    */
   render(frameState, target) {
     const layerRenderer = this.getRenderer();
@@ -352,6 +352,7 @@ class Layer extends BaseLayer {
       this.rendered = true;
       return layerRenderer.renderFrame(frameState, target);
     }
+    return null;
   }
 
   /**

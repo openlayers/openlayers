@@ -580,7 +580,8 @@ class VectorSource extends Source {
   forEachFeature(callback) {
     if (this.featuresRtree_) {
       return this.featuresRtree_.forEach(callback);
-    } else if (this.featuresCollection_) {
+    }
+    if (this.featuresCollection_) {
       this.featuresCollection_.forEach(callback);
     }
   }
@@ -630,7 +631,8 @@ class VectorSource extends Source {
   forEachFeatureInExtent(extent, callback) {
     if (this.featuresRtree_) {
       return this.featuresRtree_.forEachInExtent(extent, callback);
-    } else if (this.featuresCollection_) {
+    }
+    if (this.featuresCollection_) {
       this.featuresCollection_.forEach(callback);
     }
   }
@@ -742,7 +744,8 @@ class VectorSource extends Source {
       return [].concat(
         ...extents.map((anExtent) => this.featuresRtree_.getInExtent(anExtent))
       );
-    } else if (this.featuresCollection_) {
+    }
+    if (this.featuresCollection_) {
       return this.featuresCollection_.getArray().slice(0);
     }
     return [];
