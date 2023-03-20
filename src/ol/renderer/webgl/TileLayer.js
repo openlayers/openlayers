@@ -1,6 +1,7 @@
 /**
  * @module ol/renderer/webgl/TileLayer
  */
+import DataTile from '../../DataTile.js';
 import LRUCache from '../../structs/LRUCache.js';
 import ReprojDataTile from '../../reproj/DataTile.js';
 import ReprojTile from '../../reproj/Tile.js';
@@ -51,6 +52,8 @@ export const Uniforms = {
   RENDER_EXTENT: 'u_renderExtent', // intersection of layer, source, and view extent
   RESOLUTION: 'u_resolution',
   ZOOM: 'u_zoom',
+  WEBGL_VERSION: 'u_version',
+  IS_FLOAT_DATA: 'u_float_data',
 };
 
 export const Attributes = {
@@ -687,6 +690,16 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
 
         this.helper.setUniformFloatValue(Uniforms.TRANSITION_ALPHA, alpha);
         this.helper.setUniformFloatValue(Uniforms.DEPTH, depth);
+
+        const webglVersion = gl instanceof WebGLRenderingContext ? 1.0 : 2.0;
+        this.helper.setUniformFloatValue(Uniforms.WEBGL_VERSION, webglVersion);
+
+        const format =
+          tile instanceof DataTile && tile.getData() instanceof Float32Array
+            ? 1.0
+            : 0.0;
+        this.helper.setUniformFloatValue(Uniforms.IS_FLOAT_DATA, format);
+
         this.helper.setUniformFloatValue(
           Uniforms.TEXTURE_PIXEL_WIDTH,
           tileWidthWithGutter

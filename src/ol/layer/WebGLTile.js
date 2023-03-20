@@ -100,6 +100,8 @@ function parseStyle(style, bandCount) {
     uniform float ${Uniforms.TEXTURE_ORIGIN_X};
     uniform float ${Uniforms.TEXTURE_ORIGIN_Y};
     uniform float ${Uniforms.DEPTH};
+    uniform float ${Uniforms.WEBGL_VERSION};
+    uniform float ${Uniforms.IS_FLOAT_DATA};
 
     varying vec2 v_textureCoord;
     varying vec2 v_mapCoord;
@@ -130,6 +132,20 @@ function parseStyle(style, bandCount) {
 
   if (style.color !== undefined) {
     const color = expressionToGlsl(context, style.color, ValueTypes.COLOR);
+    pipeline.push(`color = ${color};`);
+  } else if (bandCount === 1) {
+    const color = expressionToGlsl(
+      context,
+      ['array', ['band', 1], ['band', 1], ['band', 1], 1],
+      ValueTypes.COLOR
+    );
+    pipeline.push(`color = ${color};`);
+  } else if (bandCount === 2) {
+    const color = expressionToGlsl(
+      context,
+      ['array', ['band', 1], ['band', 1], ['band', 1], ['band', 2]],
+      ValueTypes.COLOR
+    );
     pipeline.push(`color = ${color};`);
   }
 
@@ -252,6 +268,8 @@ function parseStyle(style, bandCount) {
     uniform float ${Uniforms.TEXTURE_PIXEL_HEIGHT};
     uniform float ${Uniforms.RESOLUTION};
     uniform float ${Uniforms.ZOOM};
+    uniform float ${Uniforms.WEBGL_VERSION};
+    uniform float ${Uniforms.IS_FLOAT_DATA};
 
     ${uniformDeclarations.join('\n')}
 

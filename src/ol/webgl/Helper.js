@@ -338,7 +338,7 @@ class WebGLHelper extends Disposable {
 
     /**
      * @private
-     * @type {WebGLRenderingContext}
+     * @type {WebGLRenderingContext | WebGL2RenderingContext}
      */
     this.gl_ = getContext(this.canvas_);
 
@@ -649,7 +649,7 @@ class WebGLHelper extends Disposable {
 
   /**
    * Get the WebGL rendering context
-   * @return {WebGLRenderingContext} The rendering context.
+   * @return {WebGLRenderingContext | WebGL2RenderingContext} The rendering context.
    */
   getGL() {
     return this.gl_;

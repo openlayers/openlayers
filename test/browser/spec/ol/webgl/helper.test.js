@@ -80,7 +80,10 @@ describe('ol/webgl/WebGLHelper', function () {
       });
 
       it('initialized WebGL context & canvas', function () {
-        expect(h.getGL() instanceof WebGLRenderingContext).to.eql(true);
+        expect(
+          h.getGL() instanceof WebGLRenderingContext ||
+            h.getGL() instanceof WebGL2RenderingContext
+        ).to.eql(true);
         expect(h.getCanvas() instanceof HTMLCanvasElement).to.eql(true);
       });
 

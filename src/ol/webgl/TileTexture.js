@@ -80,20 +80,27 @@ function uploadDataTexture(
   }
 
   let format;
+  let internalFormat;
+  const webGL2Float =
+    data instanceof Float32Array && !(gl instanceof WebGLRenderingContext);
   switch (bandCount) {
     case 1: {
-      format = gl.LUMINANCE;
+      internalFormat = webGL2Float ? gl.R32F : gl.LUMINANCE;
+      format = webGL2Float ? gl.RED : gl.LUMINANCE;
       break;
     }
     case 2: {
-      format = gl.LUMINANCE_ALPHA;
+      internalFormat = webGL2Float ? gl.RG32F : gl.LUMINANCE_ALPHA;
+      format = webGL2Float ? gl.RG : gl.LUMINANCE_ALPHA;
       break;
     }
     case 3: {
+      internalFormat = webGL2Float ? gl.RGB32F : gl.RGB;
       format = gl.RGB;
       break;
     }
     case 4: {
+      internalFormat = webGL2Float ? gl.RGBA32F : gl.RGBA;
       format = gl.RGBA;
       break;
     }
@@ -104,10 +111,11 @@ function uploadDataTexture(
 
   const oldUnpackAlignment = gl.getParameter(gl.UNPACK_ALIGNMENT);
   gl.pixelStorei(gl.UNPACK_ALIGNMENT, unpackAlignment);
+
   gl.texImage2D(
     gl.TEXTURE_2D,
     0,
-    format,
+    internalFormat,
     size[0],
     size[1],
     0,
@@ -115,6 +123,7 @@ function uploadDataTexture(
     textureType,
     data
   );
+
   gl.pixelStorei(gl.UNPACK_ALIGNMENT, oldUnpackAlignment);
 }
 
