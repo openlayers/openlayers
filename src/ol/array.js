@@ -73,43 +73,58 @@ export function ascending(a, b) {
  * @return {number} Index.
  */
 export function linearFindNearest(arr, target, direction) {
-  const n = arr.length;
   if (arr[0] <= target) {
     return 0;
   }
+
+  const n = arr.length;
   if (target <= arr[n - 1]) {
     return n - 1;
   }
-  let i;
-  if (direction > 0) {
-    for (i = 1; i < n; ++i) {
-      if (arr[i] < target) {
-        return i - 1;
-      }
-    }
-  } else if (direction < 0) {
-    for (i = 1; i < n; ++i) {
-      if (arr[i] <= target) {
+
+  if (typeof direction === 'function') {
+    for (let i = 1; i < n; ++i) {
+      const candidate = arr[i];
+      if (candidate === target) {
         return i;
       }
-    }
-  } else {
-    for (i = 1; i < n; ++i) {
-      if (arr[i] == target) {
-        return i;
-      }
-      if (arr[i] < target) {
-        if (typeof direction === 'function') {
-          if (direction(target, arr[i - 1], arr[i]) > 0) {
-            return i - 1;
-          }
-          return i;
-        }
-        if (arr[i - 1] - target < target - arr[i]) {
+      if (candidate < target) {
+        if (direction(target, arr[i - 1], candidate) > 0) {
           return i - 1;
         }
         return i;
       }
+    }
+    return n - 1;
+  }
+
+  if (direction > 0) {
+    for (let i = 1; i < n; ++i) {
+      if (arr[i] < target) {
+        return i - 1;
+      }
+    }
+    return n - 1;
+  }
+
+  if (direction < 0) {
+    for (let i = 1; i < n; ++i) {
+      if (arr[i] <= target) {
+        return i;
+      }
+    }
+    return n - 1;
+  }
+
+  for (let i = 1; i < n; ++i) {
+    if (arr[i] == target) {
+      return i;
+    }
+    if (arr[i] < target) {
+      if (arr[i - 1] - target < target - arr[i]) {
+        return i - 1;
+      }
+      return i;
     }
   }
   return n - 1;
