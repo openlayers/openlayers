@@ -659,7 +659,8 @@ class KML extends XMLFeature {
         return features;
       }
       return [];
-    } else if (localName == 'Placemark') {
+    }
+    if (localName == 'Placemark') {
       const feature = this.readPlacemark_(node, [
         this.getReadOptions(node, options),
       ]);
@@ -667,7 +668,8 @@ class KML extends XMLFeature {
         return [feature];
       }
       return [];
-    } else if (localName == 'kml') {
+    }
+    if (localName == 'kml') {
       features = [];
       for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
         const fs = this.readFeaturesFromNode(n, options);
@@ -690,10 +692,12 @@ class KML extends XMLFeature {
   readName(source) {
     if (!source) {
       return undefined;
-    } else if (typeof source === 'string') {
+    }
+    if (typeof source === 'string') {
       const doc = parse(source);
       return this.readNameFromDocument(doc);
-    } else if (isDocument(source)) {
+    }
+    if (isDocument(source)) {
       return this.readNameFromDocument(/** @type {Document} */ (source));
     }
     return this.readNameFromNode(/** @type {Element} */ (source));
@@ -1062,7 +1066,8 @@ function createFeatureStyleFunction(
 function findStyle(styleValue, defaultStyle, sharedStyles) {
   if (Array.isArray(styleValue)) {
     return styleValue;
-  } else if (typeof styleValue === 'string') {
+  }
+  if (typeof styleValue === 'string') {
     return findStyle(sharedStyles[styleValue], defaultStyle, sharedStyles);
   }
   return defaultStyle;
@@ -1911,7 +1916,8 @@ function readStyle(node, objectStack) {
                   return type !== 'Polygon' && type !== 'MultiPolygon';
                 })
             );
-          } else if (type !== 'Polygon' && type !== 'MultiPolygon') {
+          }
+          if (type !== 'Polygon' && type !== 'MultiPolygon') {
             return geometry;
           }
         },
@@ -1938,7 +1944,8 @@ function readStyle(node, objectStack) {
                   return type === 'Polygon' || type === 'MultiPolygon';
                 })
             );
-          } else if (type === 'Polygon' || type === 'MultiPolygon') {
+          }
+          if (type === 'Polygon' || type === 'MultiPolygon') {
             return geometry;
           }
         },

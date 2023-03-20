@@ -368,10 +368,12 @@ class WFS extends XMLFeature {
   readTransactionResponse(source) {
     if (!source) {
       return undefined;
-    } else if (typeof source === 'string') {
+    }
+    if (typeof source === 'string') {
       const doc = parse(source);
       return this.readTransactionResponseFromDocument(doc);
-    } else if (isDocument(source)) {
+    }
+    if (isDocument(source)) {
       return this.readTransactionResponseFromDocument(
         /** @type {Document} */ (source)
       );
@@ -392,10 +394,12 @@ class WFS extends XMLFeature {
   readFeatureCollectionMetadata(source) {
     if (!source) {
       return undefined;
-    } else if (typeof source === 'string') {
+    }
+    if (typeof source === 'string') {
       const doc = parse(source);
       return this.readFeatureCollectionMetadataFromDocument(doc);
-    } else if (isDocument(source)) {
+    }
+    if (isDocument(source)) {
       return this.readFeatureCollectionMetadataFromDocument(
         /** @type {Document} */ (source)
       );
