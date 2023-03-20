@@ -56,7 +56,10 @@
       const js = document.getElementById('example-js-source').innerText;
       const workerContainer = document.getElementById('example-worker-source');
       const worker = workerContainer ? workerContainer.innerText : undefined;
-      const pkgJson = document.getElementById('example-pkg-source').innerText;
+      let pkgJson = document.getElementById('example-pkg-source').innerText;
+      pkgJson = JSON.parse(pkgJson);
+      pkgJson['devDependencies']['typescript'] = 'latest';
+      pkgJson = JSON.stringify(pkgJson, undefined, 2);
 
       const unique = new Set();
       const localResources = (js.match(/'(?:\.\/)?(?:data|resources)\/[^']*'/g) || [])
