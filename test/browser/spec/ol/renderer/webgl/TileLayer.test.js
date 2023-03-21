@@ -1,6 +1,7 @@
 import Map from '../../../../../../src/ol/Map.js';
 import TileQueue from '../../../../../../src/ol/TileQueue.js';
 import TileState from '../../../../../../src/ol/TileState.js';
+import TileTexture from '../../../../../../src/ol/webgl/TileTexture.js';
 import View from '../../../../../../src/ol/View.js';
 import WebGLTileLayer from '../../../../../../src/ol/layer/WebGLTile.js';
 import {DataTile} from '../../../../../../src/ol/source.js';
@@ -9,7 +10,7 @@ import {create} from '../../../../../../src/ol/transform.js';
 import {createCanvasContext2D} from '../../../../../../src/ol/dom.js';
 import {get} from '../../../../../../src/ol/proj.js';
 import {getUid} from '../../../../../../src/ol/util.js';
-import {newTileTextureLookup} from '../../../../../../src/ol/renderer/webgl/TileLayer.js';
+import {newTileTextureLookup} from '../../../../../../src/ol/renderer/webgl/TileLayerBase.js';
 
 describe('ol/renderer/webgl/TileLayer', function () {
   /** @type {import("../../../../../../src/ol/renderer/webgl/TileLayer.js").default} */
@@ -249,6 +250,25 @@ describe('ol/renderer/webgl/TileLayer', function () {
         '/8,128,128': true,
       };
       expect(wantedTiles).to.eql(expected);
+    });
+  });
+
+  describe('#createTileTexture_', () => {
+    let tileTexture;
+    beforeEach(() => {
+      const source = tileLayer.getSource();
+      const grid = source.getTileGrid();
+      const tile = source.getTile(0, 0, 0);
+      renderer.prepareFrame(frameState);
+      tileTexture = renderer.createTileTexture_({
+        tile,
+        grid,
+        helper: renderer.helper,
+        gutter: 4,
+      });
+    });
+    it('creates a TileTexture instance', () => {
+      expect(tileTexture).to.be.a(TileTexture);
     });
   });
 });
