@@ -149,16 +149,16 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.helper.flushBufferData(this.indices_);
   }
 
-  createTileRepresentation_(options) {
+  createTileRepresentation(options) {
     return new TileTexture(options);
   }
 
-  beforeTilesRender_(frameState, tilesWithAlpha) {
-    super.beforeTilesRender_(frameState, tilesWithAlpha);
+  beforeTilesRender(frameState, tilesWithAlpha) {
+    super.beforeTilesRender(frameState, tilesWithAlpha);
     this.helper.useProgram(this.program_, frameState);
   }
 
-  renderTile_(
+  renderTile(
     tileTexture,
     tileTransform,
     frameState,
@@ -215,7 +215,7 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
 
     this.helper.setUniformMatrixValue(
       Uniforms.TILE_TRANSFORM,
-      mat4FromTransform(this.tempMat4_, tileTransform)
+      mat4FromTransform(this.tempMat4, tileTransform)
     );
 
     this.helper.setUniformFloatValue(Uniforms.TRANSITION_ALPHA, alpha);
@@ -269,7 +269,7 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       return null;
     }
 
-    const frameState = this.frameState_;
+    const frameState = this.frameState;
     if (!frameState) {
       return null;
     }
@@ -316,7 +316,7 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       return null;
     }
 
-    const tileTextureCache = this.tileRepresentationCache_;
+    const tileTextureCache = this.tileRepresentationCache;
     for (
       let z = tileGrid.getZForResolution(viewState.resolution);
       z >= tileGrid.getMinZoom();

@@ -173,7 +173,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
      * @type {Array<number>}
      * @protected
      */
-    this.tempMat4_ = createMat4();
+    this.tempMat4 = createMat4();
 
     /**
      * @type {import("../../TileRange.js").default}
@@ -198,13 +198,13 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
      * @type {import("../../structs/LRUCache.js").default<TileRepresentation>}
      * @protected
      */
-    this.tileRepresentationCache_ = new LRUCache(cacheSize);
+    this.tileRepresentationCache = new LRUCache(cacheSize);
 
     /**
      * @protected
      * @type {import("../../Map.js").FrameState|null}
      */
-    this.frameState_ = null;
+    this.frameState = null;
 
     /**
      * @private
@@ -269,7 +269,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
    * @return {TileRepresentation} A new tile representation
    * @protected
    */
-  createTileRepresentation_(options) {
+  createTileRepresentation(options) {
     return abstract();
   }
 
@@ -299,7 +299,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     }
 
     const wantedTiles = frameState.wantedTiles[tileSourceKey];
-    const tileRepresentationCache = this.tileRepresentationCache_;
+    const tileRepresentationCache = this.tileRepresentationCache;
 
     const map = tileLayer.getMapInternal();
     const minZ = Math.max(
@@ -359,7 +359,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
           }
 
           if (!tileRepresentation) {
-            tileRepresentation = this.createTileRepresentation_({
+            tileRepresentation = this.createTileRepresentation({
               tile: tile,
               grid: tileGrid,
               helper: this.helper,
@@ -406,8 +406,8 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
    * @param {boolean} tilesWithAlpha True if at least one of the rendered tiles has alpha
    * @protected
    */
-  beforeTilesRender_(frameState, tilesWithAlpha) {
-    this.helper.prepareDraw(this.frameState_, !tilesWithAlpha);
+  beforeTilesRender(frameState, tilesWithAlpha) {
+    this.helper.prepareDraw(this.frameState, !tilesWithAlpha);
   }
 
   /**
@@ -424,7 +424,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
    * @param {number} alpha Alpha
    * @protected
    */
-  renderTile_(
+  renderTile(
     tileRepresentation,
     tileTransform,
     frameState,
@@ -444,7 +444,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
    * @return {HTMLElement} The rendered element.
    */
   renderFrame(frameState) {
-    this.frameState_ = frameState;
+    this.frameState = frameState;
     this.renderComplete = true;
     const gl = this.helper.getGL();
     this.preRender(gl, frameState);
@@ -559,7 +559,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
       }
     }
 
-    this.beforeTilesRender_(frameState, blend);
+    this.beforeTilesRender(frameState, blend);
 
     const representationsByZ = tileRepresentationLookup.representationsByZ;
     const zs = Object.keys(representationsByZ).map(Number).sort(ascending);
@@ -621,7 +621,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
             tileHeightWithGutter
         );
 
-        this.renderTile_(
+        this.renderTile(
           /** @type {TileRepresentation} */ (tileRepresentation),
           this.tileTransform_,
           frameState,
@@ -645,7 +645,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
 
     const canvas = this.helper.getCanvas();
 
-    const tileRepresentationCache = this.tileRepresentationCache_;
+    const tileRepresentationCache = this.tileRepresentationCache;
     while (tileRepresentationCache.canExpireCache()) {
       const tileRepresentation = tileRepresentationCache.pop();
       tileRepresentation.dispose();
@@ -692,7 +692,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     }
 
     let covered = true;
-    const tileRepresentationCache = this.tileRepresentationCache_;
+    const tileRepresentationCache = this.tileRepresentationCache;
     const source = this.getLayer().getRenderSource();
     for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
@@ -721,7 +721,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
   }
 
   clearCache() {
-    const tileRepresentationCache = this.tileRepresentationCache_;
+    const tileRepresentationCache = this.tileRepresentationCache;
     tileRepresentationCache.forEach((tileRepresentation) =>
       tileRepresentation.dispose()
     );
@@ -741,7 +741,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
    */
   disposeInternal() {
     super.disposeInternal();
-    delete this.frameState_;
+    delete this.frameState;
   }
 }
 

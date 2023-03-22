@@ -74,7 +74,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
 
   it('maintains a cache on the renderer instead of the source', function () {
     expect(tileLayer.getSource().tileCache.highWaterMark).to.be(0.1);
-    expect(renderer.tileRepresentationCache_.highWaterMark).to.be(512);
+    expect(renderer.tileRepresentationCache.highWaterMark).to.be(512);
   });
 
   it('#prepareFrame()', function () {
@@ -100,7 +100,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
     expect(frameState.tileQueue.getCount()).to.be(1);
     expect(Object.keys(frameState.wantedTiles).length).to.be(1);
     expect(frameState.postRenderFunctions.length).to.be(1); // clear source cache (use renderer cache)
-    expect(renderer.tileRepresentationCache_.count_).to.be(1);
+    expect(renderer.tileRepresentationCache.count_).to.be(1);
   });
 
   it('#isDrawableTile_()', function (done) {
@@ -260,7 +260,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
       const grid = source.getTileGrid();
       const tile = source.getTile(0, 0, 0);
       renderer.prepareFrame(frameState);
-      tileRepresentation = renderer.createTileRepresentation_({
+      tileRepresentation = renderer.createTileRepresentation({
         tile,
         grid,
         helper: renderer.helper,
