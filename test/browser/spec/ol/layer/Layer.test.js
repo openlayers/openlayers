@@ -507,7 +507,10 @@ describe('ol/layer/Layer', function () {
 
   describe('#getAttributions', function () {
     const attributions = ['foo'];
-    let layer, view;
+    /** @type {Layer} */
+    let layer;
+    /** @type {View} */
+    let view;
 
     beforeEach(function () {
       layer = new Layer({

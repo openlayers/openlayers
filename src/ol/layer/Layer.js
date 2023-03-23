@@ -330,7 +330,8 @@ class Layer extends BaseLayer {
 
   /**
    * Get the attributions of the source of this layer for the given view.
-   * @param {View|import("../View.js").ViewStateLayerStateExtent} view View or  {@link import("../Map.js").FrameState}.
+   * @param {View|import("../View.js").ViewStateLayerStateExtent} [view] View or {@link import("../Map.js").FrameState}.
+   * Only required when the layer is not added to a map.
    * @return {Array<string>} Attributions for this layer at the given view.
    * @api
    */
