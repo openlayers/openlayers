@@ -491,11 +491,26 @@ describe('ol/layer/Layer', function () {
       layer.setMinZoom(2);
       expect(layer.isVisible(view)).to.be(false);
     });
+
+    it('works without arguments on layers that are in a map', function () {
+      new Map({
+        view: view,
+        layers: [layer],
+      });
+      expect(layer.isVisible()).to.be(true);
+    });
+
+    it('throws when called without arguments', function () {
+      expect(() => layer.isVisible()).to.throwException();
+    });
   });
 
   describe('#getAttributions', function () {
     const attributions = ['foo'];
-    let layer, view;
+    /** @type {Layer} */
+    let layer;
+    /** @type {View} */
+    let view;
 
     beforeEach(function () {
       layer = new Layer({
@@ -518,6 +533,14 @@ describe('ol/layer/Layer', function () {
     it('returns an empty array when the layer is not visible', function () {
       layer.setVisible(false);
       expect(layer.getAttributions(view)).to.eql([]);
+    });
+
+    it('returns an empty array when the layer is in a hidden group', function () {
+      new Map({
+        layers: [new Group({layers: [layer], visible: false})],
+        view: view,
+      });
+      expect(layer.getAttributions()).to.eql([]);
     });
   });
 

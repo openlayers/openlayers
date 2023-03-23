@@ -214,9 +214,10 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
 
 /**
  * Like {@link import("./Map.js").FrameState}, but just `viewState` and `extent`.
- * @typedef {Object} ViewStateAndExtent
+ * @typedef {Object} ViewStateLayerStateExtent
  * @property {State} viewState View state.
  * @property {import("./extent.js").Extent} extent Extent.
+ * @property {Array<import("./layer/Layer.js").State>} [layerStatesArray] Layer states.
  */
 
 /**
@@ -1251,7 +1252,7 @@ class View extends BaseObject {
   }
 
   /**
-   * @return {ViewStateAndExtent} Like `FrameState`, but just `viewState` and `extent`.
+   * @return {ViewStateLayerStateExtent} Like `FrameState`, but just `viewState` and `extent`.
    */
   getViewStateAndExtent() {
     return {

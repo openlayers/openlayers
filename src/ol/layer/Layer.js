@@ -286,14 +286,20 @@ class Layer extends BaseLayer {
   }
 
   /**
-   * The layer is visible in the given view, i.e. within its min/max resolution or zoom and
-   * extent, and `getVisible()` is `true`.
-   * @param {View|import("../View.js").ViewStateAndExtent} view View or {@link import("../Map.js").FrameState}.
-   * @return {boolean} The layer is visible in the current view.
+   * The layer is visible on the map view, i.e. within its min/max resolution or zoom and
+   * extent, not set to `visible: false`, and not inside a layer group that is set
+   * to `visible: false`.
+   * @param {View|import("../View.js").ViewStateLayerStateExtent} [view] View or {@link import("../Map.js").FrameState}.
+   * Only required when the layer is not added to a map.
+   * @return {boolean} The layer is visible in the map view.
    * @api
    */
   isVisible(view) {
     let frameState;
+    const map = this.getMapInternal();
+    if (!view && map) {
+      view = map.getView();
+    }
     if (view instanceof View) {
       frameState = {
         viewState: view.getState(),
@@ -302,17 +308,30 @@ class Layer extends BaseLayer {
     } else {
       frameState = view;
     }
+    if (!frameState.layerStatesArray && map) {
+      frameState.layerStatesArray = map.getLayerGroup().getLayerStatesArray();
+    }
+    let layerState;
+    if (frameState.layerStatesArray) {
+      layerState = frameState.layerStatesArray.find(
+        (layerState) => layerState.layer === this
+      );
+    } else {
+      layerState = this.getLayerState();
+    }
+
     const layerExtent = this.getExtent();
+
     return (
-      this.getVisible() &&
-      inView(this.getLayerState(), frameState.viewState) &&
+      inView(layerState, frameState.viewState) &&
       (!layerExtent || intersects(layerExtent, frameState.extent))
     );
   }
 
   /**
    * Get the attributions of the source of this layer for the given view.
-   * @param {View|import("../View.js").ViewStateAndExtent} view View or  {@link import("../Map.js").FrameState}.
+   * @param {View|import("../View.js").ViewStateLayerStateExtent} [view] View or {@link import("../Map.js").FrameState}.
+   * Only required when the layer is not added to a map.
    * @return {Array<string>} Attributions for this layer at the given view.
    * @api
    */

@@ -10,10 +10,10 @@ import {get as getProjection} from '../proj.js';
  */
 
 /**
- * A function that takes a {@link import("../View.js").ViewStateAndExtent} and returns a string or
+ * A function that takes a {@link import("../View.js").ViewStateLayerStateExtent} and returns a string or
  * an array of strings representing source attributions.
  *
- * @typedef {function(import("../View.js").ViewStateAndExtent): (string|Array<string>)} Attribution
+ * @typedef {function(import("../View.js").ViewStateLayerStateExtent): (string|Array<string>)} Attribution
  */
 
 /**
