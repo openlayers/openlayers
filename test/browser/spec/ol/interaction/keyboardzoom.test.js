@@ -53,7 +53,7 @@ describe('ol.interaction.KeyboardZoom', function () {
         preventDefault: Event.prototype.preventDefault,
       });
 
-      event.originalEvent.charCode = '+';
+      event.originalEvent.key = '+';
       map.handleMapBrowserEvent(event);
       expect(spy.called).to.be(false);
     });
