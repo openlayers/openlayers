@@ -2,6 +2,10 @@
 
 ### Next version
 
+#### `ol/style/Icon`
+
+The `width` and `height` options cannot be used together with `scale`.  To prevent conflicts the `.setScale()` method will now clear any width or height settings.
+
 ### 7.2.0
 
 #### Rendered resolutions of `ol/source/Raster`
