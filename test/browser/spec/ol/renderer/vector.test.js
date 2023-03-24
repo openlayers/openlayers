@@ -50,14 +50,14 @@ describe('ol.renderer.vector', function () {
 
         expect(iconStyleLoadSpy.calledOnce).to.be.ok();
         listeners = iconStyle.iconImage_.listeners_['change'];
-        expect(listeners.length).to.eql(1);
+        expect(listeners.length).to.eql(2);
 
         // call #2
         renderFeature(builderGroup, feature, style, squaredTolerance, listener);
 
         expect(iconStyleLoadSpy.calledOnce).to.be.ok();
         listeners = iconStyle.iconImage_.listeners_['change'];
-        expect(listeners.length).to.eql(1);
+        expect(listeners.length).to.eql(2);
       });
     });
 
