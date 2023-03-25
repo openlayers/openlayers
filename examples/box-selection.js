@@ -84,7 +84,11 @@ dragBox.on('boxend', function () {
 
     const boxFeatures = vectorSource
       .getFeaturesInExtent(extent)
-      .filter((feature) => feature.getGeometry().intersectsExtent(extent));
+      .filter(
+        (feature) =>
+          !selectedFeatures.getArray().includes(feature) &&
+          feature.getGeometry().intersectsExtent(extent)
+      );
 
     // features that intersect the box geometry are added to the
     // collection of selected features
@@ -127,12 +131,9 @@ dragBox.on('boxstart', function () {
 const infoBox = document.getElementById('info');
 
 selectedFeatures.on(['add', 'remove'], function () {
-  const names = selectedFeatures
-    .getArray()
-    .filter((feature, index, array) => array.indexOf(feature) === index)
-    .map((feature) => {
-      return feature.get('ECO_NAME');
-    });
+  const names = selectedFeatures.getArray().map((feature) => {
+    return feature.get('ECO_NAME');
+  });
   if (names.length > 0) {
     infoBox.innerHTML = names.join(', ');
   } else {
