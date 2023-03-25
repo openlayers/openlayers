@@ -131,6 +131,22 @@ describe('ol.style.Icon', function () {
       });
     });
 
+    it('preserves the scale', (done) => {
+      const original = new Icon({
+        src: 'spec/ol/data/dot.png',
+      });
+      original.setScale(2);
+      expect(original.getScale()).to.be(2);
+      const clone = original.clone();
+      expect(original.getScale()).to.eql(clone.getScale());
+      original.load();
+      original.getImage(1).addEventListener('load', () => {
+        const clone = original.clone();
+        expect(original.getScale()).to.eql(clone.getScale());
+        done();
+      });
+    });
+
     it('the clone does not reference the same objects as the original', function () {
       const original = new Icon({
         anchor: [1, 0],

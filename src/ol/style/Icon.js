@@ -238,13 +238,13 @@ class Icon extends ImageStyle {
      */
     if (this.width_ !== undefined || this.height_ !== undefined) {
       const image = this.getImage(1);
-      const setScale = () => {
+      const updateScale = () => {
         this.updateScaleFromWidthAndHeight(this.width_, this.height_);
       };
-      if (image.width > 0) {
-        this.updateScaleFromWidthAndHeight(this.width_, this.height_);
+      if (image instanceof HTMLCanvasElement || (image.src && image.complete)) {
+        updateScale();
       } else {
-        image.addEventListener('load', setScale);
+        image.addEventListener('load', updateScale);
       }
     }
   }
@@ -530,7 +530,10 @@ class Icon extends ImageStyle {
   setScale(scale) {
     super.setScale(scale);
     const image = this.getImage(1);
-    if (image) {
+    if (
+      image &&
+      (image instanceof HTMLCanvasElement || (image.src && image.complete))
+    ) {
       const widthScale = Array.isArray(scale) ? scale[0] : scale;
       if (widthScale !== undefined) {
         this.width_ = widthScale * image.width;
