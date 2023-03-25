@@ -34,24 +34,53 @@ image.addEventListener('load', () => {
 });
 
 widthInput.addEventListener('input', (event) => {
-  iconStyle.getImage().setWidth(event.target.value);
-  iconFeature.changed();
+  const currentIcon = iconStyle.getImage();
+  iconStyle.setImage(
+    new Icon({
+      src: 'data/icon.png',
+      width: event.target.value,
+      height: currentIcon.getHeight(),
+    })
+  );
+  iconFeature.setStyle(iconStyle);
   scaleSpan.innerText = formatScale(iconStyle.getImage().getScale());
 });
 heightInput.addEventListener('input', (event) => {
-  iconStyle.getImage().setHeight(event.target.value);
-  iconFeature.changed();
+  const currentIcon = iconStyle.getImage();
+  iconStyle.setImage(
+    new Icon({
+      src: 'data/icon.png',
+      height: event.target.value,
+      width: currentIcon.getWidth(),
+    })
+  );
+  iconFeature.setStyle(iconStyle);
   scaleSpan.innerText = formatScale(iconStyle.getImage().getScale());
 });
 clearWidthButton.addEventListener('click', () => {
   widthInput.value = undefined;
-  iconStyle.getImage().setWidth(undefined);
+  const currentIcon = iconStyle.getImage();
+  iconStyle.setImage(
+    new Icon({
+      src: 'data/icon.png',
+      height: currentIcon.getHeight(),
+    })
+  );
+  iconFeature.setStyle(iconStyle);
   scaleSpan.innerText = formatScale(iconStyle.getImage().getScale());
   iconFeature.changed();
 });
 clearHeightButton.addEventListener('click', () => {
   heightInput.value = undefined;
-  iconStyle.getImage().setHeight(undefined);
+  const currentIcon = iconStyle.getImage();
+  iconStyle.setImage(
+    new Icon({
+      src: 'data/icon.png',
+      width: currentIcon.getWidth(),
+    })
+  );
+  iconFeature.setStyle(iconStyle);
+
   scaleSpan.innerText = formatScale(iconStyle.getImage().getScale());
   iconFeature.changed();
 });
