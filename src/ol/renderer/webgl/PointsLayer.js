@@ -135,8 +135,6 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       postProcesses: options.postProcesses,
     });
 
-    this.ready = false;
-
     this.sourceRevision_ = -1;
 
     this.verticesBuffer_ = new WebGLArrayBuffer(ARRAY_BUFFER, DYNAMIC_DRAW);
@@ -290,7 +288,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
      * @type {number}
      * @private
      */
-    this.generateBuffersRun_ = 0;
+    this.lastSentId = 0;
 
     /**
      * @private
@@ -329,7 +327,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
             this.renderInstructions_ = new Float32Array(
               event.data.renderInstructions
             );
-            if (received.generateBuffersRun === this.generateBuffersRun_) {
+            if (received.id === this.lastSentId) {
               this.ready = true;
             }
           }
@@ -638,14 +636,13 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
     /** @type {import('../../render/webgl/constants.js').WebGLWorkerGenerateBuffersMessage} */
     const message = {
-      id: 0,
+      id: ++this.lastSentId,
       type: WebGLWorkerMessageType.GENERATE_POINT_BUFFERS,
       renderInstructions: this.renderInstructions_.buffer,
       customAttributesCount: this.customAttributes.length,
     };
     // additional properties will be sent back as-is by the worker
     message['projectionTransform'] = projectionTransform;
-    message['generateBuffersRun'] = ++this.generateBuffersRun_;
     this.ready = false;
     this.worker_.postMessage(message, [this.renderInstructions_.buffer]);
     this.renderInstructions_ = null;
