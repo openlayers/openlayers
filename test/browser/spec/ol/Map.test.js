@@ -480,7 +480,6 @@ describe('ol/Map', function () {
 
       it('triggers when all tiles and sources are loaded and faded in', function (done) {
         const layers = map.getLayers().getArray();
-        expect(layers[6].getRenderer().ready).to.be(false);
         map.once('rendercomplete', function () {
           expect(map.tileQueue_.getTilesLoading()).to.be(0);
           expect(layers[1].getSource().image_.getState()).to.be(
@@ -713,8 +712,6 @@ describe('ol/Map', function () {
     });
 
     it('is a reliable start-end sequence', function (done) {
-      const layers = map.getLayers().getArray();
-      expect(layers[6].getRenderer().ready).to.be(false);
       let loading = 0;
       map.on('loadstart', () => {
         map.getView().setZoom(0.1);

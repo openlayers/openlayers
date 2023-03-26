@@ -135,8 +135,6 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       postProcesses: options.postProcesses,
     });
 
-    this.ready = false;
-
     this.sourceRevision_ = -1;
 
     this.verticesBuffer_ = new WebGLArrayBuffer(ARRAY_BUFFER, DYNAMIC_DRAW);
