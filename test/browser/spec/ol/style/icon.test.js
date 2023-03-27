@@ -388,12 +388,12 @@ describe('ol.style.Icon', function () {
 
   describe('#width/height', function () {
     // 3px * 4px sized white gif
-    const img =
+    const src =
       'data:image/gif;base64,' +
       'R0lGODlhAwAEAIABAP7+/vDy9SH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAEALAAAAAADAAQAAAIDhI9WADs=';
     it('scale is set correctly if configured with width only', function (done) {
       const iconStyle = new Icon({
-        src: img,
+        src,
         width: 6,
       });
       const iconImage = iconStyle.iconImage_;
@@ -405,7 +405,7 @@ describe('ol.style.Icon', function () {
     });
     it('scale is set correctly if configured with height only', function (done) {
       const iconStyle = new Icon({
-        src: img,
+        src,
         height: 12,
       });
       const iconImage = iconStyle.iconImage_;
@@ -417,7 +417,7 @@ describe('ol.style.Icon', function () {
     });
     it('scale is set correctly if used with width and height', function (done) {
       const iconStyle = new Icon({
-        src: img,
+        src,
         width: 6,
         height: 12,
       });
@@ -460,28 +460,26 @@ describe('ol.style.Icon', function () {
       iconStyle.setHeight(200);
       expect(iconStyle.getHeight()).to.eql(200);
     });
-    it('setScale updates the width and height', function (done) {
+    it('setScale throws when configured with width and height', function (done) {
       const iconStyle = new Icon({
-        src: img,
+        src,
+        width: 6,
       });
       const iconImage = iconStyle.iconImage_;
       iconImage.addEventListener('change', function () {
-        iconStyle.setScale(2);
-        expect(iconStyle.getWidth()).to.eql(6);
-        expect(iconStyle.getHeight()).to.eql(8);
+        expect(() => iconStyle.setScale(2)).to.throwException();
         done();
       });
       iconStyle.load();
     });
-    it('setScale with array updates the width and height', function (done) {
+    it('setScale throws when configured with width and height', function (done) {
       const iconStyle = new Icon({
-        src: img,
+        src,
+        height: 8,
       });
       const iconImage = iconStyle.iconImage_;
       iconImage.addEventListener('change', function () {
-        iconStyle.setScale([3, 4]);
-        expect(iconStyle.getWidth()).to.eql(9);
-        expect(iconStyle.getHeight()).to.eql(16);
+        expect(() => iconStyle.setScale([3, 4])).to.throwException();
         done();
       });
       iconStyle.load();

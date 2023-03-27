@@ -2,6 +2,10 @@
 
 ### Next version
 
+#### `ol/style/Icon#setScale()` restriction
+
+When an `Icon` style is configured with a `width` and/or `height`, calling `setScale()` on the `Icon` style now throws an exception. This is because depending on the type of the icon image (image or canvas) and its loading state, it cannot be guaranteed that `width`, `height` and `scale` can be kept in sync synchronously.
+
 ### 7.2.0
 
 #### Rendered resolutions of `ol/source/Raster`

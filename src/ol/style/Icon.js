@@ -43,8 +43,12 @@ import {getUid} from '../util.js';
  * @property {Array<number>} [displacement=[0, 0]] Displacement of the icon in pixels.
  * Positive values will shift the icon right and up.
  * @property {number} [opacity=1] Opacity of the icon.
- * @property {number} [width] The width of the icon in pixels. This can't be used together with `scale`.
- * @property {number} [height] The height of the icon in pixels. This can't be used together with `scale`.
+ * @property {number} [width] The width of the image in pixels. This can't be used together with `scale`,
+ * because the x `scale` will be calculated from the `width` divided by the image width (i.e. `imgSize` or the
+ * width of the provided `img` or `src`).
+ * @property {number} [height]  The height of the image in pixels. This can't be used together with `scale`,
+ * because the y `scale` will be calculated from the `height` divided by the image height (i.e. `imgSize` or the
+ * height of the provided `img` or `src`).
  * @property {number|import("../size.js").Size} [scale=1] Scale.
  * @property {boolean} [rotateWithView=false] Whether to rotate the icon with the view.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
@@ -521,28 +525,19 @@ class Icon extends ImageStyle {
   }
 
   /**
-   * Set the scale and updates the width and height correspondingly.
+   * Set the scale and updates the width and height correspondingly. Will throw an error when
+   * the icon style was constructed with a `width` or `height` option.
    *
    * @param {number|import("../size.js").Size} scale Scale.
-   * @override
    * @api
    */
   setScale(scale) {
-    super.setScale(scale);
-    const image = this.getImage(1);
-    if (
-      image &&
-      (image instanceof HTMLCanvasElement || (image.src && image.complete))
-    ) {
-      const widthScale = Array.isArray(scale) ? scale[0] : scale;
-      if (widthScale !== undefined) {
-        this.width_ = widthScale * image.width;
-      }
-      const heightScale = Array.isArray(scale) ? scale[1] : scale;
-      if (heightScale !== undefined) {
-        this.height_ = heightScale * image.height;
-      }
+    if (this.width_ !== undefined || this.height_ !== undefined) {
+      throw new Error(
+        'Can only set scale when `width` and `height` were not set'
+      );
     }
+    super.setScale(scale);
   }
 
   /**
