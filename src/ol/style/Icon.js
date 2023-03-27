@@ -43,10 +43,10 @@ import {getUid} from '../util.js';
  * @property {Array<number>} [displacement=[0, 0]] Displacement of the icon in pixels.
  * Positive values will shift the icon right and up.
  * @property {number} [opacity=1] Opacity of the icon.
- * @property {number} [width] The width of the image in pixels. This can't be used together with `scale`,
+ * @property {number} [width] The width of the image in pixels. This can't be used together with `scale` or `size`,
  * because the x `scale` will be calculated from the `width` divided by the image width (i.e. `imgSize` or the
  * width of the provided `img` or `src`).
- * @property {number} [height]  The height of the image in pixels. This can't be used together with `scale`,
+ * @property {number} [height]  The height of the image in pixels. This can't be used together with `scale` or `size`,
  * because the y `scale` will be calculated from the `height` divided by the image height (i.e. `imgSize` or the
  * height of the provided `img` or `src`).
  * @property {number|import("../size.js").Size} [scale=1] Scale.
@@ -169,11 +169,11 @@ class Icon extends ImageStyle {
     }
     assert(src !== undefined && src.length > 0, 6); // A defined and non-empty `src` or `image` must be provided
 
-    // `width` or `height` cannot be provided together with `scale`
+    // `width` or `height` cannot be provided together with `scale` or `size`
     assert(
       !(
         (options.width !== undefined || options.height !== undefined) &&
-        options.scale !== undefined
+        (options.scale !== undefined || options.size !== undefined)
       ),
       69
     );
