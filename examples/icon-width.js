@@ -1,11 +1,10 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import Point from '../src/ol/geom/Point.js';
-import TileJSON from '../src/ol/source/TileJSON.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
 import {Icon, Style} from '../src/ol/style.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import {Vector as VectorLayer} from '../src/ol/layer.js';
 
 const widthInput = document.getElementById('width-input');
 const heightInput = document.getElementById('height-input');
@@ -28,11 +27,6 @@ const iconStyle = new Style({
 });
 iconFeature.setStyle(iconStyle);
 
-const image = iconStyle.getImage().getImage();
-image.addEventListener('load', () => {
-  scaleSpan.innerText = formatScale(iconStyle.getImage().getScale());
-});
-
 widthInput.addEventListener('input', (event) => {
   const currentIcon = iconStyle.getImage();
   iconStyle.setImage(
@@ -43,7 +37,6 @@ widthInput.addEventListener('input', (event) => {
     })
   );
   iconFeature.setStyle(iconStyle);
-  scaleSpan.innerText = formatScale(iconStyle.getImage().getScale());
 });
 heightInput.addEventListener('input', (event) => {
   const currentIcon = iconStyle.getImage();
@@ -55,7 +48,6 @@ heightInput.addEventListener('input', (event) => {
     })
   );
   iconFeature.setStyle(iconStyle);
-  scaleSpan.innerText = formatScale(iconStyle.getImage().getScale());
 });
 clearWidthButton.addEventListener('click', () => {
   const currentIcon = iconStyle.getImage();
@@ -68,7 +60,7 @@ clearWidthButton.addEventListener('click', () => {
   iconFeature.setStyle(iconStyle);
   widthInput.value = Math.round(iconStyle.getImage().getWidth());
   scaleSpan.innerText = formatScale(iconStyle.getImage().getScale());
-  iconFeature.changed();
+  iconFeature.setStyle(iconStyle);
 });
 clearHeightButton.addEventListener('click', () => {
   const currentIcon = iconStyle.getImage();
@@ -80,8 +72,7 @@ clearHeightButton.addEventListener('click', () => {
   );
   iconFeature.setStyle(iconStyle);
   heightInput.value = Math.round(iconStyle.getImage().getHeight());
-  scaleSpan.innerText = formatScale(iconStyle.getImage().getScale());
-  iconFeature.changed();
+  iconFeature.setStyle(iconStyle);
 });
 
 const vectorSource = new VectorSource({
@@ -92,21 +83,18 @@ const vectorLayer = new VectorLayer({
   source: vectorSource,
 });
 
-const rasterLayer = new TileLayer({
-  source: new TileJSON({
-    url: 'https://a.tiles.mapbox.com/v3/aj.1x1-degrees.json?secure=1',
-    crossOrigin: '',
-  }),
-});
-
-new Map({
-  layers: [rasterLayer, vectorLayer],
-  target: document.getElementById('map'),
+const map = new Map({
+  layers: [vectorLayer],
+  target: 'map',
   view: new View({
     center: [0, 0],
     zoom: 3,
   }),
 });
+map.on(
+  'rendercomplete',
+  () => (scaleSpan.innerText = formatScale(iconStyle.getImage().getScale()))
+);
 
 function formatScale(scale) {
   return Array.isArray(scale)
