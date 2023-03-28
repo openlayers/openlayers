@@ -276,6 +276,7 @@ class Icon extends ImageStyle {
             );
           };
           this.listenImageChange(onload);
+          return;
         }
       }
       if (width !== undefined) {
