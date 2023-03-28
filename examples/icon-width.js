@@ -22,8 +22,8 @@ const iconFeature = new Feature({
 const iconStyle = new Style({
   image: new Icon({
     src: 'data/icon.png',
-    width: widthInput.value,
-    height: heightInput.value,
+    width: Number(widthInput.value),
+    height: Number(heightInput.value),
   }),
 });
 iconFeature.setStyle(iconStyle);
@@ -38,7 +38,7 @@ widthInput.addEventListener('input', (event) => {
   iconStyle.setImage(
     new Icon({
       src: 'data/icon.png',
-      width: event.target.value,
+      width: Number(event.target.value),
       height: currentIcon.getHeight(),
     })
   );
@@ -50,7 +50,7 @@ heightInput.addEventListener('input', (event) => {
   iconStyle.setImage(
     new Icon({
       src: 'data/icon.png',
-      height: event.target.value,
+      height: Number(event.target.value),
       width: currentIcon.getWidth(),
     })
   );
@@ -58,7 +58,6 @@ heightInput.addEventListener('input', (event) => {
   scaleSpan.innerText = formatScale(iconStyle.getImage().getScale());
 });
 clearWidthButton.addEventListener('click', () => {
-  widthInput.value = undefined;
   const currentIcon = iconStyle.getImage();
   iconStyle.setImage(
     new Icon({
@@ -67,11 +66,11 @@ clearWidthButton.addEventListener('click', () => {
     })
   );
   iconFeature.setStyle(iconStyle);
+  widthInput.value = Math.round(iconStyle.getImage().getWidth());
   scaleSpan.innerText = formatScale(iconStyle.getImage().getScale());
   iconFeature.changed();
 });
 clearHeightButton.addEventListener('click', () => {
-  heightInput.value = undefined;
   const currentIcon = iconStyle.getImage();
   iconStyle.setImage(
     new Icon({
@@ -80,7 +79,7 @@ clearHeightButton.addEventListener('click', () => {
     })
   );
   iconFeature.setStyle(iconStyle);
-
+  heightInput.value = Math.round(iconStyle.getImage().getHeight());
   scaleSpan.innerText = formatScale(iconStyle.getImage().getScale());
   iconFeature.changed();
 });
