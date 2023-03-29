@@ -857,8 +857,8 @@ class WebGLHelper extends Disposable {
     gl.deleteShader(vertexShader);
 
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      const message = `GL program linking failed: ${gl.getShaderInfoLog(
-        vertexShader
+      const message = `GL program linking failed: ${gl.getProgramInfoLog(
+        program
       )}`;
       throw new Error(message);
     }
@@ -897,8 +897,8 @@ class WebGLHelper extends Disposable {
   }
 
   /**
-   * Modifies the given transform to apply the rotation/translation/scaling of the given frame state.
-   * The resulting transform can be used to convert world space coordinates to view coordinates.
+   * Sets the given transform to apply the rotation/translation/scaling of the given frame state.
+   * The resulting transform can be used to convert world space coordinates to view coordinates in the [-1, 1] range.
    * @param {import("../Map.js").FrameState} frameState Frame state.
    * @param {import("../transform").Transform} transform Transform to update.
    * @return {import("../transform").Transform} The updated transform object.
@@ -908,8 +908,6 @@ class WebGLHelper extends Disposable {
     const rotation = frameState.viewState.rotation;
     const resolution = frameState.viewState.resolution;
     const center = frameState.viewState.center;
-
-    resetTransform(transform);
     composeTransform(
       transform,
       0,

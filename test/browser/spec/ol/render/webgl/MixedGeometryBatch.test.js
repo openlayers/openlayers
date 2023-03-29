@@ -8,6 +8,7 @@ import MultiPoint from '../../../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../../src/ol/geom/Polygon.js';
+import RenderFeature from '../../../../../../src/ol/render/Feature.js';
 import {getUid} from '../../../../../../src/ol/index.js';
 
 describe('MixedGeometryBatch', function () {
@@ -262,12 +263,12 @@ describe('MixedGeometryBatch', function () {
           [0, 1],
           [2, 3],
           [4, 5],
-          [6, 7],
+          [60, 7],
         ],
         [
           [20, 21],
           [22, 23],
-          [24, 25],
+          [-24, 25],
         ],
       ]);
       feature1 = new Feature({
@@ -279,18 +280,18 @@ describe('MixedGeometryBatch', function () {
         [
           [8, 9],
           [10, 11],
-          [12, 13],
+          [120, 13],
         ],
         [
           [30, 31],
           [32, 33],
-          [34, 35],
+          [-34, 35],
         ],
         [
           [40, 41],
           [42, 43],
           [44, 45],
-          [46, 47],
+          [-46, 47],
         ],
       ]);
       feature2 = new Feature({
@@ -312,7 +313,7 @@ describe('MixedGeometryBatch', function () {
         expect(keys).to.eql([uid1, uid2]);
         expect(mixedBatch.polygonBatch.entries[uid1]).to.eql({
           feature: feature1,
-          flatCoordss: [[0, 1, 2, 3, 4, 5, 6, 7, 20, 21, 22, 23, 24, 25]],
+          flatCoordss: [[0, 1, 2, 3, 4, 5, 60, 7, 20, 21, 22, 23, -24, 25]],
           verticesCount: 7,
           ringsCount: 2,
           ringsVerticesCounts: [[4, 3]],
@@ -321,8 +322,8 @@ describe('MixedGeometryBatch', function () {
           feature: feature2,
           flatCoordss: [
             [
-              8, 9, 10, 11, 12, 13, 30, 31, 32, 33, 34, 35, 40, 41, 42, 43, 44,
-              45, 46, 47,
+              8, 9, 10, 11, 120, 13, 30, 31, 32, 33, -34, 35, 40, 41, 42, 43,
+              44, 45, -46, 47,
             ],
           ],
           verticesCount: 10,
@@ -341,17 +342,17 @@ describe('MixedGeometryBatch', function () {
         expect(mixedBatch.lineStringBatch.entries[getUid(feature1)]).to.eql({
           feature: feature1,
           flatCoordss: [
-            [0, 1, 2, 3, 4, 5, 6, 7],
-            [20, 21, 22, 23, 24, 25],
+            [0, 1, 2, 3, 4, 5, 60, 7],
+            [20, 21, 22, 23, -24, 25],
           ],
           verticesCount: 7,
         });
         expect(mixedBatch.lineStringBatch.entries[getUid(feature2)]).to.eql({
           feature: feature2,
           flatCoordss: [
-            [8, 9, 10, 11, 12, 13],
-            [30, 31, 32, 33, 34, 35],
-            [40, 41, 42, 43, 44, 45, 46, 47],
+            [8, 9, 10, 11, 120, 13],
+            [30, 31, 32, 33, -34, 35],
+            [40, 41, 42, 43, 44, 45, -46, 47],
           ],
           verticesCount: 10,
         });
@@ -404,7 +405,7 @@ describe('MixedGeometryBatch', function () {
               [201, 202],
               [203, 204],
               [205, 206],
-              [207, 208],
+              [2070, 208],
             ],
           ]);
           feature1.setGeometry(newGeom);
@@ -417,7 +418,7 @@ describe('MixedGeometryBatch', function () {
           expect(entry.ringsCount).to.eql(1);
           expect(entry.ringsVerticesCounts).to.eql([[4]]);
           expect(entry.flatCoordss).to.eql([
-            [201, 202, 203, 204, 205, 206, 207, 208],
+            [201, 202, 203, 204, 205, 206, 2070, 208],
           ]);
         });
         it('updates the aggregated metrics on all geoms', () => {
@@ -474,30 +475,30 @@ describe('MixedGeometryBatch', function () {
             [0, 1],
             [2, 3],
             [4, 5],
-            [6, 7],
+            [60, 7],
           ],
           [
             [20, 21],
             [22, 23],
-            [24, 25],
+            [-24, 25],
           ],
         ],
         [
           [
             [8, 9],
             [10, 11],
-            [12, 13],
+            [120, 13],
           ],
           [
             [30, 31],
             [32, 33],
-            [34, 35],
+            [-34, 35],
           ],
           [
             [40, 41],
             [42, 43],
             [44, 45],
-            [46, 47],
+            [-46, 47],
           ],
         ],
       ]);
@@ -522,10 +523,10 @@ describe('MixedGeometryBatch', function () {
         expect(mixedBatch.polygonBatch.entries[uid]).to.eql({
           feature: feature,
           flatCoordss: [
-            [0, 1, 2, 3, 4, 5, 6, 7, 20, 21, 22, 23, 24, 25],
+            [0, 1, 2, 3, 4, 5, 60, 7, 20, 21, 22, 23, -24, 25],
             [
-              8, 9, 10, 11, 12, 13, 30, 31, 32, 33, 34, 35, 40, 41, 42, 43, 44,
-              45, 46, 47,
+              8, 9, 10, 11, 120, 13, 30, 31, 32, 33, -34, 35, 40, 41, 42, 43,
+              44, 45, -46, 47,
             ],
           ],
           verticesCount: 17,
@@ -541,11 +542,11 @@ describe('MixedGeometryBatch', function () {
         expect(mixedBatch.lineStringBatch.entries[uid]).to.eql({
           feature: feature,
           flatCoordss: [
-            [0, 1, 2, 3, 4, 5, 6, 7],
-            [20, 21, 22, 23, 24, 25],
-            [8, 9, 10, 11, 12, 13],
-            [30, 31, 32, 33, 34, 35],
-            [40, 41, 42, 43, 44, 45, 46, 47],
+            [0, 1, 2, 3, 4, 5, 60, 7],
+            [20, 21, 22, 23, -24, 25],
+            [8, 9, 10, 11, 120, 13],
+            [30, 31, 32, 33, -34, 35],
+            [40, 41, 42, 43, 44, 45, -46, 47],
             [0, 1, 2, 3, 4, 5, 6, 7],
             [8, 9, 10, 11, 12, 13],
           ],
@@ -598,7 +599,7 @@ describe('MixedGeometryBatch', function () {
                 [203, 204],
                 [205, 206],
                 [207, 208],
-                [209, 210],
+                [2090, 210],
               ],
             ])
           );
@@ -609,12 +610,12 @@ describe('MixedGeometryBatch', function () {
           expect(entry).to.eql({
             feature: feature,
             flatCoordss: [
-              [0, 1, 2, 3, 4, 5, 6, 7, 20, 21, 22, 23, 24, 25],
+              [0, 1, 2, 3, 4, 5, 60, 7, 20, 21, 22, 23, -24, 25],
               [
-                8, 9, 10, 11, 12, 13, 30, 31, 32, 33, 34, 35, 40, 41, 42, 43,
-                44, 45, 46, 47,
+                8, 9, 10, 11, 120, 13, 30, 31, 32, 33, -34, 35, 40, 41, 42, 43,
+                44, 45, -46, 47,
               ],
-              [201, 202, 203, 204, 205, 206, 207, 208, 209, 210],
+              [201, 202, 203, 204, 205, 206, 207, 208, 2090, 210],
             ],
             verticesCount: 22,
             ringsCount: 6,
@@ -626,12 +627,12 @@ describe('MixedGeometryBatch', function () {
           expect(entry).to.eql({
             feature: feature,
             flatCoordss: [
-              [0, 1, 2, 3, 4, 5, 6, 7],
-              [20, 21, 22, 23, 24, 25],
-              [8, 9, 10, 11, 12, 13],
-              [30, 31, 32, 33, 34, 35],
-              [40, 41, 42, 43, 44, 45, 46, 47],
-              [201, 202, 203, 204, 205, 206, 207, 208, 209, 210],
+              [0, 1, 2, 3, 4, 5, 60, 7],
+              [20, 21, 22, 23, -24, 25],
+              [8, 9, 10, 11, 120, 13],
+              [30, 31, 32, 33, -34, 35],
+              [40, 41, 42, 43, 44, 45, -46, 47],
+              [201, 202, 203, 204, 205, 206, 207, 208, 2090, 210],
               [0, 1, 2, 3, 4, 5, 6, 7],
               [8, 9, 10, 11, 12, 13],
               [500, 501, 502, 503, 504, 505, 506, 507],
@@ -657,7 +658,7 @@ describe('MixedGeometryBatch', function () {
                 [201, 202],
                 [203, 204],
                 [205, 206],
-                [207, 208],
+                [2070, 208],
               ],
             ])
           );
@@ -667,7 +668,7 @@ describe('MixedGeometryBatch', function () {
           const entry = mixedBatch.polygonBatch.entries[getUid(feature)];
           expect(entry).to.eql({
             feature: feature,
-            flatCoordss: [[201, 202, 203, 204, 205, 206, 207, 208]],
+            flatCoordss: [[201, 202, 203, 204, 205, 206, 2070, 208]],
             verticesCount: 4,
             ringsCount: 1,
             ringsVerticesCounts: [[4]],
@@ -677,7 +678,7 @@ describe('MixedGeometryBatch', function () {
           const entry = mixedBatch.lineStringBatch.entries[getUid(feature)];
           expect(entry).to.eql({
             feature: feature,
-            flatCoordss: [[201, 202, 203, 204, 205, 206, 207, 208]],
+            flatCoordss: [[201, 202, 203, 204, 205, 206, 2070, 208]],
             verticesCount: 4,
           });
         });
@@ -720,6 +721,316 @@ describe('MixedGeometryBatch', function () {
         const keys = Object.keys(mixedBatch.pointBatch.entries);
         expect(keys).to.have.length(0);
         expect(mixedBatch.pointBatch.geometriesCount).to.be(0);
+      });
+    });
+  });
+
+  describe('render feature with Polygon geometry', () => {
+    let geometry, feature, uid;
+
+    beforeEach(() => {
+      geometry = new Polygon([
+        [
+          [0, 1],
+          [2, 3],
+          [4, 5],
+          [60, 7],
+        ],
+        [
+          [20, 21],
+          [22, 23],
+          [-24, 25],
+        ],
+      ]);
+      feature = new RenderFeature(
+        'Polygon',
+        geometry.getFlatCoordinates(),
+        geometry.getEnds(),
+        {
+          prop1: 'abcd',
+          prop2: 'efgh',
+        }
+      );
+      uid = getUid(feature);
+    });
+
+    describe('#addFeature', () => {
+      beforeEach(() => {
+        mixedBatch.addFeature(feature);
+      });
+      it('puts the polygons in the polygon batch', () => {
+        const keys = Object.keys(mixedBatch.polygonBatch.entries);
+        expect(keys).to.eql([uid]);
+        expect(mixedBatch.polygonBatch.entries[uid]).to.eql({
+          feature: feature,
+          flatCoordss: [[0, 1, 2, 3, 4, 5, 60, 7, 20, 21, 22, 23, -24, 25]],
+          verticesCount: 7,
+          ringsCount: 2,
+          ringsVerticesCounts: [[4, 3]],
+        });
+      });
+      it('computes the aggregated metrics on all polygons', () => {
+        expect(mixedBatch.polygonBatch.verticesCount).to.be(7);
+        expect(mixedBatch.polygonBatch.geometriesCount).to.be(1);
+        expect(mixedBatch.polygonBatch.ringsCount).to.be(2);
+      });
+      it('puts the linear rings in the linestring batch', () => {
+        const keys = Object.keys(mixedBatch.lineStringBatch.entries);
+        expect(keys).to.eql([uid]);
+        expect(mixedBatch.lineStringBatch.entries[uid]).to.eql({
+          feature: feature,
+          flatCoordss: [
+            [0, 1, 2, 3, 4, 5, 60, 7],
+            [20, 21, 22, 23, -24, 25],
+          ],
+          verticesCount: 7,
+        });
+      });
+      it('computes the aggregated metrics on all linestrings', () => {
+        expect(mixedBatch.lineStringBatch.verticesCount).to.be(7);
+        expect(mixedBatch.lineStringBatch.geometriesCount).to.be(2);
+      });
+      it('leaves point batch untouched', () => {
+        expect(Object.keys(mixedBatch.pointBatch.entries)).to.have.length(0);
+      });
+    });
+
+    describe('#removeFeature', () => {
+      beforeEach(() => {
+        mixedBatch.addFeature(feature);
+        mixedBatch.removeFeature(feature);
+      });
+      it('clears the entry related to this feature', () => {
+        const keys = Object.keys(mixedBatch.polygonBatch.entries);
+        expect(keys).to.not.contain(uid);
+      });
+      it('updates the aggregated metrics on all geoms', () => {
+        expect(mixedBatch.polygonBatch.verticesCount).to.be(0);
+        expect(mixedBatch.polygonBatch.geometriesCount).to.be(0);
+        expect(mixedBatch.polygonBatch.ringsCount).to.be(0);
+      });
+    });
+  });
+
+  describe('render feature with alternating CW and CCW rings', () => {
+    let geometry, feature, uid;
+
+    beforeEach(() => {
+      geometry = new Polygon([
+        [
+          [0, 1],
+          [2, 3],
+          [4, 5],
+          [60, 7],
+        ],
+        [
+          [20, 21],
+          [22, 23],
+          [-24, 25],
+        ],
+        [
+          [8, 9],
+          [10, 11],
+          [120, 13],
+        ],
+        [
+          [30, 31],
+          [32, 33],
+          [-34, 35],
+        ],
+      ]);
+      feature = new RenderFeature(
+        'Polygon',
+        geometry.getFlatCoordinates(),
+        geometry.getEnds(),
+        {
+          prop1: 'abcd',
+          prop2: 'efgh',
+        }
+      );
+      uid = getUid(feature);
+      mixedBatch.addFeature(feature);
+    });
+
+    it('puts two different polygons with holes in the polygon batch', () => {
+      expect(mixedBatch.polygonBatch.geometriesCount).to.be(2);
+      expect(mixedBatch.polygonBatch.entries[uid]).to.eql({
+        feature: feature,
+        flatCoordss: [
+          [0, 1, 2, 3, 4, 5, 60, 7, 20, 21, 22, 23, -24, 25],
+          [8, 9, 10, 11, 120, 13, 30, 31, 32, 33, -34, 35],
+        ],
+        verticesCount: 13,
+        ringsCount: 4,
+        ringsVerticesCounts: [
+          [4, 3],
+          [3, 3],
+        ],
+      });
+    });
+    it('puts the linear rings in the linestring batch', () => {
+      expect(mixedBatch.lineStringBatch.entries[uid]).to.eql({
+        feature: feature,
+        flatCoordss: [
+          [0, 1, 2, 3, 4, 5, 60, 7],
+          [20, 21, 22, 23, -24, 25],
+          [8, 9, 10, 11, 120, 13],
+          [30, 31, 32, 33, -34, 35],
+        ],
+        verticesCount: 13,
+      });
+    });
+  });
+
+  describe('feature with multi geometry', () => {
+    let feature1,
+      feature2,
+      feature3,
+      uid1,
+      uid2,
+      multiPolygon,
+      multiLine,
+      multiPoint;
+
+    beforeEach(() => {
+      multiLine = new MultiLineString([
+        [
+          [0, 1],
+          [2, 3],
+          [4, 5],
+          [6, 7],
+        ],
+        [
+          [8, 9],
+          [10, 11],
+          [12, 13],
+        ],
+      ]);
+      multiPolygon = new MultiPolygon([
+        [
+          [
+            [0, 1],
+            [2, 3],
+            [4, 5],
+            [6, 7],
+          ],
+          [
+            [20, 21],
+            [22, 23],
+            [24, 25],
+          ],
+        ],
+        [
+          [
+            [8, 9],
+            [10, 11],
+            [12, 13],
+          ],
+          [
+            [30, 31],
+            [32, 33],
+            [34, 35],
+          ],
+          [
+            [40, 41],
+            [42, 43],
+            [44, 45],
+            [46, 47],
+          ],
+        ],
+      ]);
+      multiPoint = new MultiPoint([
+        [101, 102],
+        [201, 202],
+        [301, 302],
+      ]);
+      feature1 = new RenderFeature(
+        'MultiLineString',
+        multiLine.getFlatCoordinates(),
+        multiLine.getEnds(),
+        {
+          prop3: 'abcd',
+          prop4: 'efgh',
+        }
+      );
+      feature2 = new RenderFeature(
+        'MultiPolygon',
+        multiPolygon.getFlatCoordinates(),
+        multiPolygon.getEndss(),
+        {
+          prop3: 'uvw',
+          prop4: 'xyz',
+        }
+      );
+      feature3 = new RenderFeature(
+        'MultiPoint',
+        multiPoint.getFlatCoordinates(),
+        multiPoint.getPoints().map((p, i) => i + 1),
+        {
+          prop3: 'uvw',
+          prop4: 'xyz',
+        }
+      );
+      uid1 = getUid(feature1);
+      uid2 = getUid(feature2);
+    });
+
+    describe('#addFeature', () => {
+      beforeEach(() => {
+        mixedBatch.addFeature(feature1);
+        mixedBatch.addFeature(feature2);
+        mixedBatch.addFeature(feature3);
+      });
+      it('puts the polygons in the polygon batch', () => {
+        expect(mixedBatch.polygonBatch.entries[uid2]).to.eql({
+          feature: feature2,
+          flatCoordss: [
+            [0, 1, 2, 3, 4, 5, 6, 7, 20, 21, 22, 23, 24, 25],
+            [
+              8, 9, 10, 11, 12, 13, 30, 31, 32, 33, 34, 35, 40, 41, 42, 43, 44,
+              45, 46, 47,
+            ],
+          ],
+          verticesCount: 17,
+          ringsCount: 5,
+          ringsVerticesCounts: [
+            [4, 3],
+            [3, 3, 4],
+          ],
+        });
+      });
+      it('puts the polygon rings and linestrings in the linestring batch', () => {
+        expect(mixedBatch.lineStringBatch.entries[uid1]).to.eql({
+          feature: feature1,
+          flatCoordss: [
+            [0, 1, 2, 3, 4, 5, 6, 7],
+            [8, 9, 10, 11, 12, 13],
+          ],
+          verticesCount: 7,
+        });
+        expect(mixedBatch.lineStringBatch.entries[uid2]).to.eql({
+          feature: feature2,
+          flatCoordss: [
+            [0, 1, 2, 3, 4, 5, 6, 7],
+            [20, 21, 22, 23, 24, 25],
+            [8, 9, 10, 11, 12, 13],
+            [30, 31, 32, 33, 34, 35],
+            [40, 41, 42, 43, 44, 45, 46, 47],
+          ],
+          verticesCount: 17,
+        });
+      });
+      it('computes the aggregated metrics on all polygons', () => {
+        expect(mixedBatch.polygonBatch.verticesCount).to.be(17);
+        expect(mixedBatch.polygonBatch.geometriesCount).to.be(2);
+        expect(mixedBatch.polygonBatch.ringsCount).to.be(5);
+      });
+      it('computes the aggregated metrics on all linestring', () => {
+        expect(mixedBatch.lineStringBatch.verticesCount).to.be(24);
+        expect(mixedBatch.lineStringBatch.geometriesCount).to.be(7);
+      });
+      it('computes the aggregated metrics on all points', () => {
+        expect(mixedBatch.pointBatch.geometriesCount).to.be(3);
       });
     });
   });

@@ -31,7 +31,11 @@ const DECODE_COLOR_EXPRESSION = `vec3(
  * @type {string}
  */
 export const FILL_VERTEX_SHADER = `
+  #ifdef GL_FRAGMENT_PRECISION_HIGH
+  precision highp float;
+  #else
   precision mediump float;
+  #endif
   uniform mat4 u_projectionMatrix;
   attribute vec2 a_position;
   attribute float a_color;
@@ -50,12 +54,40 @@ export const FILL_VERTEX_SHADER = `
  * @type {string}
  */
 export const FILL_FRAGMENT_SHADER = `
+  #ifdef GL_FRAGMENT_PRECISION_HIGH
+  precision highp float;
+  #else
   precision mediump float;
+  #endif
+  uniform float u_globalAlpha;
+  uniform mat4 u_projectionMatrix;
+  uniform mat4 u_screenToWorldMatrix;
+  uniform vec2 u_sizePx;
+  uniform float u_pixelRatio;
+  uniform vec4 u_renderExtent;
   varying vec3 v_color;
   varying float v_opacity;
 
+  vec2 pxToWorld(vec2 pxPos) {
+    vec2 screenPos = 2.0 * pxPos / u_sizePx - 1.0;
+    return (u_screenToWorldMatrix * vec4(screenPos, 0.0, 1.0)).xy;
+  }
+
   void main(void) {
-    gl_FragColor = vec4(v_color, 1.0) * v_opacity;
+    #ifdef GL_FRAGMENT_PRECISION_HIGH
+    vec2 v_worldPos = pxToWorld(gl_FragCoord.xy / u_pixelRatio);
+    if (
+      abs(u_renderExtent[0] - u_renderExtent[2]) > 0.0 && (
+        v_worldPos[0] < u_renderExtent[0] ||
+        v_worldPos[1] < u_renderExtent[1] ||
+        v_worldPos[0] > u_renderExtent[2] ||
+        v_worldPos[1] > u_renderExtent[3]
+      )
+    ) {
+      discard;
+    }
+    #endif
+    gl_FragColor = vec4(v_color, 1.0) * v_opacity * u_globalAlpha;
   }`;
 
 /**
@@ -64,7 +96,11 @@ export const FILL_FRAGMENT_SHADER = `
  * @type {string}
  */
 export const STROKE_VERTEX_SHADER = `
+  #ifdef GL_FRAGMENT_PRECISION_HIGH
+  precision highp float;
+  #else
   precision mediump float;
+  #endif
   uniform mat4 u_projectionMatrix;
   uniform vec2 u_sizePx;
   attribute vec2 a_segmentStart;
@@ -129,8 +165,17 @@ export const STROKE_VERTEX_SHADER = `
  * @type {string}
  */
 export const STROKE_FRAGMENT_SHADER = `
+  #ifdef GL_FRAGMENT_PRECISION_HIGH
+  precision highp float;
+  #else
   precision mediump float;
+  #endif
+  uniform mat4 u_projectionMatrix;
+  uniform mat4 u_screenToWorldMatrix;
+  uniform vec2 u_sizePx;
   uniform float u_pixelRatio;
+  uniform float u_globalAlpha;
+  uniform vec4 u_renderExtent;
   varying vec2 v_segmentStart;
   varying vec2 v_segmentEnd;
   varying float v_angleStart;
@@ -138,6 +183,11 @@ export const STROKE_FRAGMENT_SHADER = `
   varying vec3 v_color;
   varying float v_opacity;
   varying float v_width;
+
+  vec2 pxToWorld(vec2 pxPos) {
+    vec2 screenPos = 2.0 * pxPos / u_sizePx - 1.0;
+    return (u_screenToWorldMatrix * vec4(screenPos, 0.0, 1.0)).xy;
+  }
 
   float segmentDistanceField(vec2 point, vec2 start, vec2 end, float radius) {
     vec2 startToPoint = point - start;
@@ -149,7 +199,20 @@ export const STROKE_FRAGMENT_SHADER = `
 
   void main(void) {
     vec2 v_currentPoint = gl_FragCoord.xy / u_pixelRatio;
-    gl_FragColor = vec4(v_color, 1.0) * v_opacity;
+    #ifdef GL_FRAGMENT_PRECISION_HIGH
+    vec2 v_worldPos = pxToWorld(v_currentPoint);
+    if (
+      abs(u_renderExtent[0] - u_renderExtent[2]) > 0.0 && (
+        v_worldPos[0] < u_renderExtent[0] ||
+        v_worldPos[1] < u_renderExtent[1] ||
+        v_worldPos[0] > u_renderExtent[2] ||
+        v_worldPos[1] > u_renderExtent[3]
+      )
+    ) {
+      discard;
+    }
+    #endif
+    gl_FragColor = vec4(v_color, 1.0) * v_opacity * u_globalAlpha;
     gl_FragColor *= segmentDistanceField(v_currentPoint, v_segmentStart, v_segmentEnd, v_width);
   }`;
 
@@ -190,9 +253,11 @@ export const POINT_VERTEX_SHADER = `
  */
 export const POINT_FRAGMENT_SHADER = `
   precision mediump float;
+  uniform float u_globalAlpha;
+  uniform vec4 u_renderExtent;
   varying vec3 v_color;
   varying float v_opacity;
 
   void main(void) {
-      gl_FragColor = vec4(v_color, 1.0) * v_opacity;
+      gl_FragColor = vec4(v_color, 1.0) * v_opacity * u_globalAlpha;
   }`;
