@@ -1259,6 +1259,7 @@ class Map extends BaseObject {
       if (rootNode instanceof ShadowRoot) {
         this.resizeObserver_.unobserve(rootNode.host);
       }
+      this.setSize(undefined);
     }
 
     // target may be undefined, null, a string or an Element.
