@@ -1173,6 +1173,41 @@ describe('ol/Map', function () {
         expect(map.targetChangeHandlerKeys_).to.be.ok();
       });
     });
+
+    it('detach and re-attach', function (done) {
+      const target = map.getTargetElement();
+      map.setTarget(null);
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      map.setTarget(target);
+      map.addLayer(
+        new VectorLayer({
+          source: new VectorSource({
+            features: [new Feature(new Point([0, 0]))],
+          }),
+        })
+      );
+      map.getView().setCenter([0, 0]);
+      map.getView().setZoom(0);
+      map.renderSync();
+      try {
+        expect(target.querySelector('canvas')).to.be.a(HTMLCanvasElement);
+        map.setTarget(null);
+        expect(target.querySelector('canvas')).to.be(null);
+        map.setTarget(target);
+        map.once('rendercomplete', () => {
+          try {
+            expect(target.querySelector('canvas')).to.be.a(HTMLCanvasElement);
+            done();
+          } catch (e) {
+            done(e);
+          }
+        });
+      } finally {
+        document.body.removeChild(target);
+      }
+    });
   });
 
   describe('create interactions', function () {
