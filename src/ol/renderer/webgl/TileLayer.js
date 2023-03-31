@@ -178,11 +178,12 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
 
     let textureSlot = 0;
     while (textureSlot < tileTexture.textures.length) {
-      const textureProperty = 'TEXTURE' + textureSlot;
       const uniformName = `${Uniforms.TILE_TEXTURE_ARRAY}[${textureSlot}]`;
-      gl.activeTexture(gl[textureProperty]);
-      gl.bindTexture(gl.TEXTURE_2D, tileTexture.textures[textureSlot]);
-      gl.uniform1i(this.helper.getUniformLocation(uniformName), textureSlot);
+      this.helper.bindTexture(
+        tileTexture.textures[textureSlot],
+        textureSlot,
+        uniformName
+      );
       ++textureSlot;
     }
 
@@ -192,13 +193,8 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       ++paletteIndex
     ) {
       const paletteTexture = this.paletteTextures_[paletteIndex];
-      gl.activeTexture(gl['TEXTURE' + textureSlot]);
       const texture = paletteTexture.getTexture(gl);
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.uniform1i(
-        this.helper.getUniformLocation(paletteTexture.name),
-        textureSlot
-      );
+      this.helper.bindTexture(texture, textureSlot, paletteTexture.name);
       ++textureSlot;
     }
 

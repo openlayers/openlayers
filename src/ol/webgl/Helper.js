@@ -578,6 +578,19 @@ class WebGLHelper extends Disposable {
   }
 
   /**
+   * Prepare a program to use a texture.
+   * @param {WebGLTexture} texture The texture.
+   * @param {number} slot The texture slot.
+   * @param {string} uniformName The corresponding uniform name.
+   */
+  bindTexture(texture, slot, uniformName) {
+    const gl = this.getGL();
+    gl.activeTexture(gl.TEXTURE0 + slot);
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.uniform1i(this.getUniformLocation(uniformName), slot);
+  }
+
+  /**
    * Clear the render target & bind it for future draw operations.
    * This is similar to `prepareDraw`, only post processes will not be applied.
    * Note: the whole viewport will be drawn to the render target, regardless of its size.
