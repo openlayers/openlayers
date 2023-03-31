@@ -818,6 +818,21 @@ describe('ol/extent.js', function () {
       expect(destinationExtent[3]).to.roughlyEqual(8399737.889818361, 1e-8);
     });
 
+    it('does not treat a single point as empty', function () {
+      const transformFn = getTransform('EPSG:4326', 'EPSG:3857');
+      const sourceExtent = _ol_extent_.boundingExtent([[45, 60]]);
+      const destinationExtent = _ol_extent_.applyTransform(
+        sourceExtent,
+        transformFn
+      );
+      expect(destinationExtent).not.to.be(undefined);
+      expect(destinationExtent).not.to.be(null);
+      expect(destinationExtent[0]).to.roughlyEqual(5009377.085697311, 1e-9);
+      expect(destinationExtent[2]).to.eql(destinationExtent[0]);
+      expect(destinationExtent[1]).to.roughlyEqual(8399737.889818361, 1e-8);
+      expect(destinationExtent[3]).to.eql(destinationExtent[1]);
+    });
+
     it('takes arbitrary function', function () {
       const transformFn = function (input, output, opt_dimension) {
         const dimension = opt_dimension !== undefined ? opt_dimension : 2;
