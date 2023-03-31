@@ -2697,7 +2697,7 @@ function writeLabelStyle(node, style, objectStack) {
   if (fill) {
     properties['color'] = fill.getColor();
   }
-  const scale = style.getScale();
+  const scale = style.getScaleArray()[0];
   if (scale && scale !== 1) {
     properties['scale'] = scale;
   }
