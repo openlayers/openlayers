@@ -809,6 +809,9 @@ export function intersectsSegment(extent, start, end) {
  * @api
  */
 export function applyTransform(extent, transformFn, dest, stops) {
+  if (isEmpty(extent)) {
+    return createOrUpdateEmpty(dest);
+  }
   let coordinates = [];
   if (stops > 1) {
     const width = extent[2] - extent[0];

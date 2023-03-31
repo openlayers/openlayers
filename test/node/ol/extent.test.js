@@ -781,6 +781,27 @@ describe('ol/extent.js', function () {
   });
 
   describe('#applyTransform()', function () {
+    it('returns empty for empty extents', function () {
+      const transformFn = getTransform('EPSG:4326', 'EPSG:3857');
+      const emptyExtent = _ol_extent_.createEmpty();
+      const destEmpty = _ol_extent_.applyTransform(emptyExtent, transformFn);
+      expect(destEmpty).to.eql(emptyExtent);
+
+      const extentDeltaXNeg = [45, 67, 44, 78];
+      const destDeltaXNeg = _ol_extent_.applyTransform(
+        extentDeltaXNeg,
+        transformFn
+      );
+      expect(destDeltaXNeg).to.eql(emptyExtent);
+
+      const extentDeltaYNeg = [11, 67, 44, 66];
+      const destDeltaYNeg = _ol_extent_.applyTransform(
+        extentDeltaYNeg,
+        transformFn
+      );
+      expect(destDeltaYNeg).to.eql(emptyExtent);
+    });
+
     it('does transform', function () {
       const transformFn = getTransform('EPSG:4326', 'EPSG:3857');
       const sourceExtent = [-15, -30, 45, 60];
