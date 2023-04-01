@@ -132,6 +132,7 @@ export function getCacheKey(source, tileCoord) {
  * @property {Object<string, import("../../webgl/Helper").UniformValue>} [uniforms] Additional uniforms
  * made available to shaders.
  * @property {number} [cacheSize=512] The tile representation cache size.
+ * @property {Array<import('./Layer.js').PostProcessesOptions>} [postProcesses] Post-processes definitions.
  */
 
 /**
@@ -154,6 +155,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
   constructor(tileLayer, options) {
     super(tileLayer, {
       uniforms: options.uniforms,
+      postProcesses: options.postProcesses,
     });
 
     /**
