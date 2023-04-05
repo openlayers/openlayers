@@ -19,6 +19,7 @@ import {MultiPoint} from '../../../../../src/ol/geom.js';
 import {
   clearUserProjection,
   setUserProjection,
+  useGeographic,
 } from '../../../../../src/ol/proj.js';
 import {
   click,
@@ -1155,9 +1156,47 @@ describe('ol.interaction.Modify', function () {
       map.renderSync();
       simulateEvent('pointermove', 10, -10, null, 0);
       expect(modify.vertexFeature_.get('features')[0]).to.eql(pointFeature);
-      expect(modify.vertexFeature_.get('geometries')[0]).to.eql(
-        pointFeature.getGeometry()
+      expect(
+        modify.vertexFeature_.get('geometries')[0].getCoordinates()
+      ).to.eql(pointFeature.getGeometry().getCoordinates());
+    });
+
+    it('works with hit detection of point features with userGeographic()', function () {
+      useGeographic();
+      const modify = new Modify({
+        hitDetection: layer,
+        source: source,
+      });
+      map.setView(
+        new View({
+          center: [16, 48],
+          zoom: map.getView().getZoom(),
+        })
       );
+      map.addInteraction(modify);
+      source.clear();
+      const pointFeature = new Feature(new Point([16, 48]));
+      source.addFeature(pointFeature);
+      layer.setStyle(
+        new Style({
+          image: new CircleStyle({
+            radius: 30,
+            fill: new Fill({
+              color: 'fuchsia',
+            }),
+          }),
+        })
+      );
+      map.renderSync();
+      simulateEvent('pointermove', 10, -10, null, 0);
+      simulateEvent('pointerdown', 10, -10, null, 0);
+      simulateEvent('pointerdrag', 0, 0, null, 0);
+      simulateEvent('pointerup', 0, 0, null, 0);
+      expect(modify.vertexFeature_.get('features')[0]).to.eql(pointFeature);
+      expect(
+        modify.vertexFeature_.get('geometries')[0].getCoordinates()
+      ).to.eql(pointFeature.getGeometry().getCoordinates());
+      clearUserProjection();
     });
 
     it('snaps to pointer by default', function () {
