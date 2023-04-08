@@ -70,7 +70,8 @@ export function toArray(image) {
   if (canvas.height !== height) {
     canvas.height = height;
   }
-  sharedContext.drawImage(image, width, height);
+  sharedContext.clearRect(0, 0, width, height);
+  sharedContext.drawImage(image, 0, 0);
   return sharedContext.getImageData(0, 0, width, height).data;
 }
 
