@@ -28,7 +28,7 @@ import {
  *   .addVarying('v_width', 'float', 'a_width')
  *   .addUniform('u_time')
  *   .setColorExpression('...')
- *   .setSizeExpression('...')
+ *   .setSymbolSizeExpression('...')
  *   .outputSymbolFragmentShader();
  * ```
  */
@@ -59,25 +59,25 @@ export class ShaderBuilder {
      * @type {string}
      * @private
      */
-    this.sizeExpression = 'vec2(1.0)';
+    this.symbolSizeExpression = 'vec2(1.0)';
 
     /**
      * @type {string}
      * @private
      */
-    this.rotationExpression = '0.0';
+    this.symbolRotationExpression = '0.0';
 
     /**
      * @type {string}
      * @private
      */
-    this.offsetExpression = 'vec2(0.0)';
+    this.symbolOffsetExpression = 'vec2(0.0)';
 
     /**
      * @type {string}
      * @private
      */
-    this.colorExpression = 'vec4(1.0)';
+    this.symbolColorExpression = 'vec4(1.0)';
 
     /**
      * @type {string}
@@ -95,7 +95,7 @@ export class ShaderBuilder {
      * @type {boolean}
      * @private
      */
-    this.rotateWithView = false;
+    this.symbolRotateWithView = false;
   }
 
   /**
@@ -144,8 +144,8 @@ export class ShaderBuilder {
    * @param {string} expression Size expression
    * @return {ShaderBuilder} the builder object
    */
-  setSizeExpression(expression) {
-    this.sizeExpression = expression;
+  setSymbolSizeExpression(expression) {
+    this.symbolSizeExpression = expression;
     return this;
   }
 
@@ -156,8 +156,8 @@ export class ShaderBuilder {
    * @param {string} expression Size expression
    * @return {ShaderBuilder} the builder object
    */
-  setRotationExpression(expression) {
-    this.rotationExpression = expression;
+  setSymbolRotationExpression(expression) {
+    this.symbolRotationExpression = expression;
     return this;
   }
 
@@ -170,7 +170,7 @@ export class ShaderBuilder {
    * @return {ShaderBuilder} the builder object
    */
   setSymbolOffsetExpression(expression) {
-    this.offsetExpression = expression;
+    this.symbolOffsetExpression = expression;
     return this;
   }
 
@@ -181,8 +181,8 @@ export class ShaderBuilder {
    * @param {string} expression Color expression
    * @return {ShaderBuilder} the builder object
    */
-  setColorExpression(expression) {
-    this.colorExpression = expression;
+  setSymbolColorExpression(expression) {
+    this.symbolColorExpression = expression;
     return this;
   }
 
@@ -219,29 +219,29 @@ export class ShaderBuilder {
    * @return {ShaderBuilder} the builder object
    */
   setSymbolRotateWithView(rotateWithView) {
-    this.rotateWithView = rotateWithView;
+    this.symbolRotateWithView = rotateWithView;
     return this;
   }
 
   /**
    * @return {string} Previously set size expression
    */
-  getSizeExpression() {
-    return this.sizeExpression;
+  getSymbolSizeExpression() {
+    return this.symbolSizeExpression;
   }
 
   /**
    * @return {string} Previously set symbol offset expression
    */
-  getOffsetExpression() {
-    return this.offsetExpression;
+  getOffsetVectorExpression() {
+    return this.symbolOffsetExpression;
   }
 
   /**
    * @return {string} Previously set color expression
    */
-  getColorExpression() {
-    return this.colorExpression;
+  getSymbolColorExpression() {
+    return this.symbolColorExpression;
   }
 
   /**
@@ -276,7 +276,7 @@ export class ShaderBuilder {
    * @return {string} The full shader as a string.
    */
   getSymbolVertexShader(forHitDetection) {
-    const offsetMatrix = this.rotateWithView
+    const offsetMatrix = this.symbolRotateWithView
       ? 'u_offsetScaleMatrix * u_offsetRotateMatrix'
       : 'u_offsetScaleMatrix';
 
@@ -320,9 +320,9 @@ ${varyings
   .join('\n')}
 void main(void) {
   mat4 offsetMatrix = ${offsetMatrix};
-  vec2 halfSize = ${this.sizeExpression} * 0.5;
-  vec2 offset = ${this.offsetExpression};
-  float angle = ${this.rotationExpression};
+  vec2 halfSize = ${this.symbolSizeExpression} * 0.5;
+  vec2 offset = ${this.symbolOffsetExpression};
+  float angle = ${this.symbolRotationExpression};
   float offsetX;
   float offsetY;
   if (a_index == 0.0) {
@@ -399,7 +399,7 @@ ${varyings
   .join('\n')}
 void main(void) {
   if (${this.discardExpression}) { discard; }
-  gl_FragColor = ${this.colorExpression};
+  gl_FragColor = ${this.symbolColorExpression};
   gl_FragColor.rgb *= gl_FragColor.a;
 ${hitDetectionBypass}
 }`;
@@ -507,12 +507,12 @@ export function parseLiteralStyle(style) {
   }
 
   const builder = new ShaderBuilder()
-    .setSizeExpression(`vec2(${parsedSize})`)
-    .setRotationExpression(parsedRotation)
+    .setSymbolSizeExpression(`vec2(${parsedSize})`)
+    .setSymbolRotationExpression(parsedRotation)
     .setSymbolOffsetExpression(parsedOffset)
     .setTextureCoordinateExpression(parsedTexCoord)
     .setSymbolRotateWithView(!!symbStyle.rotateWithView)
-    .setColorExpression(
+    .setSymbolColorExpression(
       `vec4(${parsedColor}.rgb, ${parsedColor}.a * ${parsedOpacity} * ${opacityFilter})`
     );
 
@@ -553,8 +553,9 @@ export function parseLiteralStyle(style) {
     texture.src = symbStyle.src;
     builder
       .addUniform('sampler2D u_texture')
-      .setColorExpression(
-        builder.getColorExpression() + ' * texture2D(u_texture, v_texCoord)'
+      .setSymbolColorExpression(
+        builder.getSymbolColorExpression() +
+          ' * texture2D(u_texture, v_texCoord)'
       );
     uniforms['u_texture'] = texture;
   }

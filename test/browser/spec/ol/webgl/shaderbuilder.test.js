@@ -15,9 +15,9 @@ describe('ol.webgl.ShaderBuilder', function () {
       const builder = new ShaderBuilder();
       builder.addVarying('v_opacity', 'float', numberToGlsl(0.4));
       builder.addVarying('v_test', 'vec3', arrayToGlsl([1, 2, 3]));
-      builder.setSizeExpression(`vec2(${numberToGlsl(6)})`);
+      builder.setSymbolSizeExpression(`vec2(${numberToGlsl(6)})`);
       builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
-      builder.setColorExpression(colorToGlsl([80, 0, 255, 1]));
+      builder.setSymbolColorExpression(colorToGlsl([80, 0, 255, 1]));
       builder.setTextureCoordinateExpression(arrayToGlsl([0, 0.5, 0.5, 1]));
 
       expect(builder.getSymbolVertexShader()).to.eql(`precision mediump float;
@@ -72,9 +72,9 @@ void main(void) {
       const builder = new ShaderBuilder();
       builder.addUniform('float u_myUniform');
       builder.addAttribute('vec2 a_myAttr');
-      builder.setSizeExpression(`vec2(${numberToGlsl(6)})`);
+      builder.setSymbolSizeExpression(`vec2(${numberToGlsl(6)})`);
       builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
-      builder.setColorExpression(colorToGlsl([80, 0, 255, 1]));
+      builder.setSymbolColorExpression(colorToGlsl([80, 0, 255, 1]));
       builder.setTextureCoordinateExpression(arrayToGlsl([0, 0.5, 0.5, 1]));
 
       expect(builder.getSymbolVertexShader()).to.eql(`precision mediump float;
@@ -125,9 +125,9 @@ void main(void) {
     });
     it('generates a symbol vertex shader (with rotateWithView)', function () {
       const builder = new ShaderBuilder();
-      builder.setSizeExpression(`vec2(${numberToGlsl(6)})`);
+      builder.setSymbolSizeExpression(`vec2(${numberToGlsl(6)})`);
       builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
-      builder.setColorExpression(colorToGlsl([80, 0, 255, 1]));
+      builder.setSymbolColorExpression(colorToGlsl([80, 0, 255, 1]));
       builder.setTextureCoordinateExpression(arrayToGlsl([0, 0.5, 0.5, 1]));
       builder.setSymbolRotateWithView(true);
 
@@ -229,9 +229,9 @@ void main(void) {
     });
     it('generates a symbol vertex shader (with a rotation expression)', function () {
       const builder = new ShaderBuilder();
-      builder.setSizeExpression(`vec2(${numberToGlsl(6)})`);
+      builder.setSymbolSizeExpression(`vec2(${numberToGlsl(6)})`);
       builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
-      builder.setRotationExpression('u_time * 0.2');
+      builder.setSymbolRotationExpression('u_time * 0.2');
 
       expect(builder.getSymbolVertexShader()).to.eql(`precision mediump float;
 uniform mat4 u_projectionMatrix;
@@ -286,9 +286,9 @@ void main(void) {
       const builder = new ShaderBuilder();
       builder.addVarying('v_opacity', 'float', numberToGlsl(0.4));
       builder.addVarying('v_test', 'vec3', arrayToGlsl([1, 2, 3]));
-      builder.setSizeExpression(`vec2(${numberToGlsl(6)})`);
+      builder.setSymbolSizeExpression(`vec2(${numberToGlsl(6)})`);
       builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
-      builder.setColorExpression(colorToGlsl([80, 0, 255]));
+      builder.setSymbolColorExpression(colorToGlsl([80, 0, 255]));
       builder.setTextureCoordinateExpression(arrayToGlsl([0, 0.5, 0.5, 1]));
 
       expect(builder.getSymbolFragmentShader()).to.eql(`precision mediump float;
@@ -311,9 +311,9 @@ void main(void) {
       const builder = new ShaderBuilder();
       builder.addUniform('float u_myUniform');
       builder.addUniform('vec2 u_myUniform2');
-      builder.setSizeExpression(`vec2(${numberToGlsl(6)})`);
+      builder.setSymbolSizeExpression(`vec2(${numberToGlsl(6)})`);
       builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
-      builder.setColorExpression(colorToGlsl([255, 255, 255, 1]));
+      builder.setSymbolColorExpression(colorToGlsl([255, 255, 255, 1]));
       builder.setTextureCoordinateExpression(arrayToGlsl([0, 0.5, 0.5, 1]));
       builder.setFragmentDiscardExpression('u_myUniform > 0.5');
 
@@ -354,7 +354,7 @@ void main(void) {
     });
   });
 
-  describe('parseSymbolStyle', function () {
+  describe('parseLiteralStyle', function () {
     it('parses a style without expressions', function () {
       const result = parseLiteralStyle({
         symbol: {
@@ -368,15 +368,17 @@ void main(void) {
       expect(result.builder.uniforms).to.eql([]);
       expect(result.builder.attributes).to.eql([]);
       expect(result.builder.varyings).to.eql([]);
-      expect(result.builder.colorExpression).to.eql(
+      expect(result.builder.symbolColorExpression).to.eql(
         'vec4(vec4(1.0, 0.0, 0.0, 1.0).rgb, vec4(1.0, 0.0, 0.0, 1.0).a * 1.0 * 1.0)'
       );
-      expect(result.builder.sizeExpression).to.eql('vec2(vec2(4.0, 8.0))');
-      expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
+      expect(result.builder.symbolSizeExpression).to.eql(
+        'vec2(vec2(4.0, 8.0))'
+      );
+      expect(result.builder.symbolOffsetExpression).to.eql('vec2(0.0, 0.0)');
       expect(result.builder.texCoordExpression).to.eql(
         'vec4(0.0, 0.0, 1.0, 1.0)'
       );
-      expect(result.builder.rotateWithView).to.eql(true);
+      expect(result.builder.symbolRotateWithView).to.eql(true);
       expect(result.attributes).to.eql([]);
       expect(result.uniforms).to.eql({});
     });
@@ -412,17 +414,17 @@ void main(void) {
           expression: 'a_attr1',
         },
       ]);
-      expect(result.builder.colorExpression).to.eql(
+      expect(result.builder.symbolColorExpression).to.eql(
         'vec4(vec4(1.0, 0.5, 0.25, 0.25).rgb, vec4(1.0, 0.5, 0.25, 0.25).a * 1.0 * 1.0)'
       );
-      expect(result.builder.sizeExpression).to.eql('vec2(a_attr1)');
-      expect(result.builder.offsetExpression).to.eql(
+      expect(result.builder.symbolSizeExpression).to.eql('vec2(a_attr1)');
+      expect(result.builder.symbolOffsetExpression).to.eql(
         '(a_attr3 == 1.0 ? vec2(6.0, 0.0) : (a_attr3 == 0.0 ? vec2(3.0, 0.0) : vec2(0.0, 0.0)))'
       );
       expect(result.builder.texCoordExpression).to.eql(
         'vec4(0.5, 0.5, 0.5, 1.0)'
       );
-      expect(result.builder.rotateWithView).to.eql(false);
+      expect(result.builder.symbolRotateWithView).to.eql(false);
       expect(result.attributes.length).to.eql(2);
       expect(result.attributes[0].name).to.eql('attr1');
       expect(result.attributes[1].name).to.eql('attr3');
@@ -443,15 +445,15 @@ void main(void) {
       expect(result.builder.uniforms).to.eql(['sampler2D u_texture']);
       expect(result.builder.attributes).to.eql([]);
       expect(result.builder.varyings).to.eql([]);
-      expect(result.builder.colorExpression).to.eql(
+      expect(result.builder.symbolColorExpression).to.eql(
         'vec4(vec4(0.2, 0.4, 0.6, 1.0).rgb, vec4(0.2, 0.4, 0.6, 1.0).a * 0.5 * 1.0) * texture2D(u_texture, v_texCoord)'
       );
-      expect(result.builder.sizeExpression).to.eql('vec2(6.0)');
-      expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
+      expect(result.builder.symbolSizeExpression).to.eql('vec2(6.0)');
+      expect(result.builder.symbolOffsetExpression).to.eql('vec2(0.0, 0.0)');
       expect(result.builder.texCoordExpression).to.eql(
         'vec4(0.0, 0.0, 1.0, 1.0)'
       );
-      expect(result.builder.rotateWithView).to.eql(false);
+      expect(result.builder.symbolRotateWithView).to.eql(false);
       expect(result.attributes).to.eql([]);
       expect(result.uniforms).to.have.property('u_texture');
     });
@@ -492,17 +494,17 @@ void main(void) {
           expression: 'a_population',
         },
       ]);
-      expect(result.builder.colorExpression).to.eql(
+      expect(result.builder.symbolColorExpression).to.eql(
         'vec4(vec4(0.2, 0.4, 0.6, 1.0).rgb, vec4(0.2, 0.4, 0.6, 1.0).a * 0.5 * 1.0)'
       );
-      expect(result.builder.sizeExpression).to.eql(
+      expect(result.builder.symbolSizeExpression).to.eql(
         `vec2(mix(4.0, 8.0, pow(clamp((a_population - ${lowerUniformName}) / (${higherUniformName} - ${lowerUniformName}), 0.0, 1.0), 1.0)))`
       );
-      expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
+      expect(result.builder.symbolOffsetExpression).to.eql('vec2(0.0, 0.0)');
       expect(result.builder.texCoordExpression).to.eql(
         'vec4(0.0, 0.0, 1.0, 1.0)'
       );
-      expect(result.builder.rotateWithView).to.eql(false);
+      expect(result.builder.symbolRotateWithView).to.eql(false);
       expect(result.attributes.length).to.eql(1);
       expect(result.attributes[0].name).to.eql('population');
       expect(result.uniforms).to.have.property(lowerUniformName);
@@ -527,18 +529,18 @@ void main(void) {
           expression: 'a_attr0',
         },
       ]);
-      expect(result.builder.colorExpression).to.eql(
+      expect(result.builder.symbolColorExpression).to.eql(
         'vec4(vec4(0.2, 0.4, 0.6, 1.0).rgb, vec4(0.2, 0.4, 0.6, 1.0).a * 1.0 * 1.0)'
       );
-      expect(result.builder.sizeExpression).to.eql('vec2(6.0)');
-      expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
+      expect(result.builder.symbolSizeExpression).to.eql('vec2(6.0)');
+      expect(result.builder.symbolOffsetExpression).to.eql('vec2(0.0, 0.0)');
       expect(result.builder.texCoordExpression).to.eql(
         'vec4(0.0, 0.0, 1.0, 1.0)'
       );
       expect(result.builder.discardExpression).to.eql(
         '!(v_attr0 >= 0.0 && v_attr0 <= 10.0)'
       );
-      expect(result.builder.rotateWithView).to.eql(false);
+      expect(result.builder.symbolRotateWithView).to.eql(false);
       expect(result.attributes.length).to.eql(1);
       expect(result.attributes[0].name).to.eql('attr0');
     });
@@ -564,15 +566,15 @@ void main(void) {
 
       expect(result.builder.attributes).to.eql([]);
       expect(result.builder.varyings).to.eql([]);
-      expect(result.builder.colorExpression).to.eql(
+      expect(result.builder.symbolColorExpression).to.eql(
         `vec4(mix(vec4(1.0, 1.0, 0.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), pow(clamp((${uniformName} - 0.0) / (1.0 - 0.0), 0.0, 1.0), 1.0)).rgb, mix(vec4(1.0, 1.0, 0.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), pow(clamp((${uniformName} - 0.0) / (1.0 - 0.0), 0.0, 1.0), 1.0)).a * 1.0 * 1.0)`
       );
-      expect(result.builder.sizeExpression).to.eql('vec2(6.0)');
-      expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
+      expect(result.builder.symbolSizeExpression).to.eql('vec2(6.0)');
+      expect(result.builder.symbolOffsetExpression).to.eql('vec2(0.0, 0.0)');
       expect(result.builder.texCoordExpression).to.eql(
         'vec4(0.0, 0.0, 1.0, 1.0)'
       );
-      expect(result.builder.rotateWithView).to.eql(false);
+      expect(result.builder.symbolRotateWithView).to.eql(false);
       expect(result.attributes).to.eql([]);
       expect(result.uniforms).to.have.property(uniformName);
     });
@@ -588,7 +590,7 @@ void main(void) {
 
       expect(result.builder.attributes).to.eql(['float a_heading']);
       expect(result.builder.varyings).to.eql([]);
-      expect(result.builder.rotationExpression).to.eql('a_heading');
+      expect(result.builder.symbolRotationExpression).to.eql('a_heading');
     });
 
     it('correctly adds string variables to the string literals mapping', function () {
