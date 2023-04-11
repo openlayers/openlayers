@@ -3,7 +3,6 @@
  */
 
 import EventType from '../events/EventType.js';
-import SourceState from './State.js';
 import Tile from '../Tile.js';
 import TileSource from './Tile.js';
 import TileState from '../TileState.js';
@@ -132,11 +131,11 @@ export class CustomTile extends Tile {
    * for given coordinate (or `null` if not yet loaded).
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {function(*): void} callback Callback.
-   * @param {boolean} [opt_request] If `true` the callback is always async.
+   * @param {boolean} [request] If `true` the callback is always async.
    *                               The tile data is requested if not yet loaded.
    */
-  forDataAtCoordinate(coordinate, callback, opt_request) {
-    if (this.state == TileState.EMPTY && opt_request === true) {
+  forDataAtCoordinate(coordinate, callback, request) {
+    if (this.state == TileState.EMPTY && request === true) {
       this.state = TileState.IDLE;
       listenOnce(
         this,
@@ -148,13 +147,10 @@ export class CustomTile extends Tile {
       );
       this.loadInternal_();
     } else {
-      if (opt_request === true) {
-        setTimeout(
-          function () {
-            callback(this.getData(coordinate));
-          }.bind(this),
-          0
-        );
+      if (request === true) {
+        setTimeout(() => {
+          callback(this.getData(coordinate));
+        }, 0);
       } else {
         callback(this.getData(coordinate));
       }
@@ -260,7 +256,7 @@ export class CustomTile extends Tile {
  * If `true` the UTFGrid source loads the tiles based on their "visibility".
  * This improves the speed of response, but increases traffic.
  * Note that if set to `false` (lazy loading), you need to pass `true` as
- * `opt_request` to the `forDataAtCoordinateAndResolution` method otherwise no
+ * `request` to the `forDataAtCoordinateAndResolution` method otherwise no
  * data will ever be loaded.
  * @property {boolean} [jsonp=false] Use JSONP with callback to load the TileJSON.
  * Useful when the server does not support CORS..
@@ -285,7 +281,7 @@ class UTFGrid extends TileSource {
   constructor(options) {
     super({
       projection: getProjection('EPSG:3857'),
-      state: SourceState.LOADING,
+      state: 'loading',
       zDirection: options.zDirection,
     });
 
@@ -382,16 +378,11 @@ class UTFGrid extends TileSource {
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {number} resolution Resolution.
    * @param {function(*): void} callback Callback.
-   * @param {boolean} [opt_request] If `true` the callback is always async.
+   * @param {boolean} [request] If `true` the callback is always async.
    *                               The tile data is requested if not yet loaded.
    * @api
    */
-  forDataAtCoordinateAndResolution(
-    coordinate,
-    resolution,
-    callback,
-    opt_request
-  ) {
+  forDataAtCoordinateAndResolution(coordinate, resolution, callback, request) {
     if (this.tileGrid) {
       const z = this.tileGrid.getZForResolution(resolution, this.zDirection);
       const tileCoord = this.tileGrid.getTileCoordForCoordAndZ(coordinate, z);
@@ -404,9 +395,9 @@ class UTFGrid extends TileSource {
           this.getProjection()
         )
       );
-      tile.forDataAtCoordinate(coordinate, callback, opt_request);
+      tile.forDataAtCoordinate(coordinate, callback, request);
     } else {
-      if (opt_request === true) {
+      if (request === true) {
         setTimeout(function () {
           callback(null);
         }, 0);
@@ -420,7 +411,7 @@ class UTFGrid extends TileSource {
    * @protected
    */
   handleTileJSONError() {
-    this.setState(SourceState.ERROR);
+    this.setState('error');
   }
 
   /**
@@ -455,7 +446,7 @@ class UTFGrid extends TileSource {
 
     const grids = tileJSON['grids'];
     if (!grids) {
-      this.setState(SourceState.ERROR);
+      this.setState('error');
       return;
     }
 
@@ -471,7 +462,7 @@ class UTFGrid extends TileSource {
       });
     }
 
-    this.setState(SourceState.READY);
+    this.setState('ready');
   }
 
   /**
@@ -486,28 +477,23 @@ class UTFGrid extends TileSource {
     const tileCoordKey = getKeyZXY(z, x, y);
     if (this.tileCache.containsKey(tileCoordKey)) {
       return this.tileCache.get(tileCoordKey);
-    } else {
-      const tileCoord = [z, x, y];
-      const urlTileCoord = this.getTileCoordForTileUrlFunction(
-        tileCoord,
-        projection
-      );
-      const tileUrl = this.tileUrlFunction_(
-        urlTileCoord,
-        pixelRatio,
-        projection
-      );
-      const tile = new CustomTile(
-        tileCoord,
-        tileUrl !== undefined ? TileState.IDLE : TileState.EMPTY,
-        tileUrl !== undefined ? tileUrl : '',
-        this.tileGrid.getTileCoordExtent(tileCoord),
-        this.preemptive_,
-        this.jsonp_
-      );
-      this.tileCache.set(tileCoordKey, tile);
-      return tile;
     }
+    const tileCoord = [z, x, y];
+    const urlTileCoord = this.getTileCoordForTileUrlFunction(
+      tileCoord,
+      projection
+    );
+    const tileUrl = this.tileUrlFunction_(urlTileCoord, pixelRatio, projection);
+    const tile = new CustomTile(
+      tileCoord,
+      tileUrl !== undefined ? TileState.IDLE : TileState.EMPTY,
+      tileUrl !== undefined ? tileUrl : '',
+      this.tileGrid.getTileCoordExtent(tileCoord),
+      this.preemptive_,
+      this.jsonp_
+    );
+    this.tileCache.set(tileCoordKey, tile);
+    return tile;
   }
 
   /**

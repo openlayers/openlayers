@@ -11,7 +11,6 @@ import TileState from '../../../../../../src/ol/TileState.js';
 import VectorRenderTile from '../../../../../../src/ol/VectorRenderTile.js';
 import VectorTile from '../../../../../../src/ol/VectorTile.js';
 import VectorTileLayer from '../../../../../../src/ol/layer/VectorTile.js';
-import VectorTileRenderType from '../../../../../../src/ol/layer/VectorTileRenderType.js';
 import VectorTileSource from '../../../../../../src/ol/source/VectorTile.js';
 import View from '../../../../../../src/ol/View.js';
 import XYZ from '../../../../../../src/ol/source/XYZ.js';
@@ -124,7 +123,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
 
     it('does not render images for pure vector rendering', function () {
       const testLayer = new VectorTileLayer({
-        renderMode: VectorTileRenderType.VECTOR,
+        renderMode: 'vector',
         source: source,
         style: layerStyle,
       });
@@ -398,6 +397,88 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       layer.changed();
       renderer.renderFrame(frameState, null);
       expect(replayState.renderedTileRevision).to.be(revision + 1);
+    });
+  });
+
+  describe('#renderFrame', function () {
+    it('uses correct image - vector sequence in vector mode', function () {
+      const layer = new VectorTileLayer({
+        renderMode: 'vector',
+        source: new VectorTileSource({
+          tileGrid: createXYZ(),
+        }),
+      });
+      const sourceTile = new VectorTile([0, 0, 0], 2);
+      sourceTile.features_ = [new RenderFeature('Point', [0, 0])];
+      sourceTile.getImage = function () {
+        return document.createElement('canvas');
+      };
+      layer.getSource().getSourceTiles = () => [sourceTile];
+      const tile = new VectorRenderTile([0, 0, 0], 1, [0, 0, 0], function () {
+        return sourceTile;
+      });
+      tile.transition_ = 0;
+      tile.replayState_[getUid(layer)] = [{dirty: true}];
+      tile.setState(TileState.LOADED);
+      layer.getSource().getTile = function () {
+        return tile;
+      };
+      const renderer = new CanvasVectorTileLayerRenderer(layer);
+      renderer.isDrawableTile = function () {
+        return true;
+      };
+      const proj = getProjection('EPSG:3857');
+      const frameState = {
+        layerStatesArray: [layer.getLayerState()],
+        layerIndex: 0,
+        extent: proj.getExtent(),
+        pixelRatio: 1,
+        pixelToCoordinateTransform: create(),
+        time: Date.now(),
+        viewHints: [],
+        viewState: {
+          center: [0, 0],
+          resolution: 156543.03392804097,
+          projection: proj,
+        },
+        size: [256, 256],
+        usedTiles: {},
+        wantedTiles: {},
+      };
+
+      renderer.container = {};
+      const sequence = [];
+      renderer.context = {
+        clearRect: () => sequence.push('clearRect'),
+        save: () => sequence.push('save'),
+        restore: () => sequence.push('restore'),
+        beginPath: () => sequence.push('beginPath'),
+        moveTo: () => sequence.push('moveTo'),
+        lineTo: () => sequence.push('lineTo'),
+        clip: () => sequence.push('clip'),
+        canvas: {
+          style: {
+            transform: '',
+          },
+        },
+      };
+
+      layer.on('prerender', () => sequence.push('prerender'));
+      layer.on('postrender', () => sequence.push('postrender'));
+      renderer.renderFrame(frameState);
+      expect(sequence).to.eql([
+        'prerender',
+        'clearRect',
+        'save',
+        'beginPath',
+        'moveTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'clip',
+        'restore',
+        'postrender',
+      ]);
     });
   });
 

@@ -13,18 +13,17 @@
  * @param {number} z Z.
  * @param {number} x X.
  * @param {number} y Y.
- * @param {TileCoord} [opt_tileCoord] Tile coordinate.
+ * @param {TileCoord} [tileCoord] Tile coordinate.
  * @return {TileCoord} Tile coordinate.
  */
-export function createOrUpdate(z, x, y, opt_tileCoord) {
-  if (opt_tileCoord !== undefined) {
-    opt_tileCoord[0] = z;
-    opt_tileCoord[1] = x;
-    opt_tileCoord[2] = y;
-    return opt_tileCoord;
-  } else {
-    return [z, x, y];
+export function createOrUpdate(z, x, y, tileCoord) {
+  if (tileCoord !== undefined) {
+    tileCoord[0] = z;
+    tileCoord[1] = x;
+    tileCoord[2] = y;
+    return tileCoord;
   }
+  return [z, x, y];
 }
 
 /**
@@ -92,7 +91,6 @@ export function withinExtentAndZ(tileCoord, tileGrid) {
   const tileRange = tileGrid.getFullTileRange(z);
   if (!tileRange) {
     return true;
-  } else {
-    return tileRange.containsXY(x, y);
   }
+  return tileRange.containsXY(x, y);
 }

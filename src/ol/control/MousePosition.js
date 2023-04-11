@@ -11,6 +11,7 @@ import {
   identityTransform,
 } from '../proj.js';
 import {listen} from '../events.js';
+import {wrapX} from '../coordinate.js';
 
 /**
  * @type {string}
@@ -41,13 +42,13 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  * callback.
  * @property {HTMLElement|string} [target] Specify a target if you want the
  * control to be rendered outside of the map's viewport.
- * @property {string|boolean} [placeholder] Markup to show when the mouse position is not
- * available (e.g. when the pointer leaves the map viewport).  By default, a non-breaking space
- * is rendered when the mouse leaves the viewport.  To render something else, provide a string
- * to be used as the text content (e.g. 'no position' or '' for an empty string).  Set the placeholder
- * to `false` to retain the last position when the mouse leaves the viewport.  In a future release, this
- * will be the default behavior.
- * @property {string} [undefinedHTML='&#160;'] This option is deprecated.  Use the `placeholder` option instead.
+ * @property {string} [placeholder] Markup to show when the mouse position is not
+ * available (e.g. when the pointer leaves the map viewport).  By default, a non-breaking space is rendered
+ * initially and the last position is retained when the mouse leaves the viewport.
+ * When a string is provided (e.g. `'no position'` or `''` for an empty string) it is used as a
+ * placeholder.
+ * @property {boolean} [wrapX=true] Wrap the world horizontally on the projection's antimeridian, if it
+ * is a global projection.
  */
 
 /**
@@ -64,10 +65,10 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  */
 class MousePosition extends Control {
   /**
-   * @param {Options} [opt_options] Mouse position options.
+   * @param {Options} [options] Mouse position options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
     const element = document.createElement('div');
     element.className =
@@ -104,41 +105,16 @@ class MousePosition extends Control {
     }
 
     /**
-     * Change this to `false` when removing the deprecated `undefinedHTML` option.
+     * @private
      * @type {boolean}
      */
-    let renderOnMouseOut = true;
-
-    /**
-     * @type {string}
-     */
-    let placeholder = '&#160;';
-
-    if ('undefinedHTML' in options) {
-      // deprecated behavior
-      if (options.undefinedHTML !== undefined) {
-        placeholder = options.undefinedHTML;
-      }
-      renderOnMouseOut = !!placeholder;
-    } else if ('placeholder' in options) {
-      if (options.placeholder === false) {
-        renderOnMouseOut = false;
-      } else {
-        placeholder = String(options.placeholder);
-      }
-    }
+    this.renderOnMouseOut_ = options.placeholder !== undefined;
 
     /**
      * @private
      * @type {string}
      */
-    this.placeholder_ = placeholder;
-
-    /**
-     * @private
-     * @type {boolean}
-     */
-    this.renderOnMouseOut_ = renderOnMouseOut;
+    this.placeholder_ = this.renderOnMouseOut_ ? options.placeholder : '&#160;';
 
     /**
      * @private
@@ -157,6 +133,12 @@ class MousePosition extends Control {
      * @type {?import("../proj.js").TransformFunction}
      */
     this.transform_ = null;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.wrapX_ = options.wrapX === false ? false : true;
   }
 
   /**
@@ -215,7 +197,7 @@ class MousePosition extends Control {
    * Pass `null` to just remove the control from the current map.
    * Subclasses may set up event handlers to get notified about changes to
    * the map here.
-   * @param {import("../PluggableMap.js").default|null} map Map.
+   * @param {import("../Map.js").default|null} map Map.
    * @api
    */
   setMap(map) {
@@ -285,6 +267,11 @@ class MousePosition extends Control {
           );
         }
         this.transform_(coordinate, coordinate);
+        if (this.wrapX_) {
+          const projection =
+            userProjection || this.getProjection() || this.mapProjection_;
+          wrapX(coordinate, projection);
+        }
         const coordinateFormat = this.getCoordinateFormat();
         if (coordinateFormat) {
           html = coordinateFormat(coordinate);

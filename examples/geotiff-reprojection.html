@@ -1,0 +1,43 @@
+---
+layout: example.html
+title: GeoTIFF Reprojection
+shortdesc: GeoTIFF Reprojection
+docs: >
+  Example of reprojection of an EPSG:4326 GeoTIFF source with 20 bytes of raw values per pixel to EPSG:3857.
+tags: "cog, webgl, style, reprojection"
+---
+<div id="map" class="map"></div>
+<div class="controls">
+  <label for="red">Red channel</label>
+  <select id="red">
+    <option value="1" selected>visible red</option>
+    <option value="2">visible green</option>
+    <option value="3">visible blue</option>
+    <option value="4">near infrared</option>
+  </select>
+  <label>max
+    <input type="range" id="redMax" value="3000" min="2000" max="5000">
+  </label>
+
+  <label for="green">Green channel</label>
+  <select id="green">
+    <option value="1">visible red</option>
+    <option value="2" selected>visible green</option>
+    <option value="3">visible blue</option>
+    <option value="4">near infrared</option>
+  </select>
+  <label>max
+    <input type="range" id="greenMax" value="3000" min="2000" max="5000">
+  </label>
+
+  <label for="blue">Blue channel</label>
+  <select id="blue">
+    <option value="1">visible red</option>
+    <option value="2">visible green</option>
+    <option value="3" selected>visible blue</option>
+    <option value="4">near infrared</option>
+  </select>
+  <label>max
+    <input type="range" id="blueMax" value="3000" min="2000" max="5000">
+  </label>
+</div>

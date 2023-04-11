@@ -7,7 +7,6 @@
 import Control from '../../../../src/ol/control/Control.js';
 import Layer from '../../../../src/ol/layer/Layer.js';
 import Map from '../../../../src/ol/Map.js';
-import SourceState from '../../../../src/ol/source/State.js';
 import View from '../../../../src/ol/View.js';
 
 class Element extends Layer {
@@ -22,7 +21,7 @@ class Element extends Layer {
   }
 
   getSourceState() {
-    return SourceState.READY;
+    return 'ready';
   }
 
   render() {

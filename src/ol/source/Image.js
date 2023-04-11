@@ -5,7 +5,6 @@ import Event from '../events/Event.js';
 import ImageState from '../ImageState.js';
 import ReprojImage from '../reproj/Image.js';
 import Source from './Source.js';
-import {ENABLE_RASTER_REPROJECTION} from '../reproj/common.js';
 import {abstract} from '../util.js';
 import {equals} from '../extent.js';
 import {equivalent} from '../proj.js';
@@ -75,12 +74,11 @@ export class ImageSourceEvent extends Event {
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
- * @property {boolean} [imageSmoothing=true] Deprecated.  Use the `interpolate` option instead.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection.
  * @property {Array<number>} [resolutions] Resolutions.
- * @property {import("./State.js").default} [state] State.
+ * @property {import("./Source.js").State} [state] State.
  */
 
 /**
@@ -97,17 +95,12 @@ class ImageSource extends Source {
    * @param {Options} options Single image source options.
    */
   constructor(options) {
-    let interpolate =
-      options.imageSmoothing !== undefined ? options.imageSmoothing : true;
-    if (options.interpolate !== undefined) {
-      interpolate = options.interpolate;
-    }
-
     super({
       attributions: options.attributions,
       projection: options.projection,
       state: options.state,
-      interpolate: interpolate,
+      interpolate:
+        options.interpolate !== undefined ? options.interpolate : true,
     });
 
     /***
@@ -153,14 +146,22 @@ class ImageSource extends Source {
   }
 
   /**
+   * @param {Array<number>|null} resolutions Resolutions.
+   */
+  setResolutions(resolutions) {
+    this.resolutions_ = resolutions;
+  }
+
+  /**
    * @protected
    * @param {number} resolution Resolution.
    * @return {number} Resolution.
    */
   findNearestResolution(resolution) {
-    if (this.resolutions_) {
-      const idx = linearFindNearest(this.resolutions_, resolution, 0);
-      resolution = this.resolutions_[idx];
+    const resolutions = this.getResolutions();
+    if (resolutions) {
+      const idx = linearFindNearest(resolutions, resolution, 0);
+      resolution = resolutions[idx];
     }
     return resolution;
   }
@@ -175,7 +176,6 @@ class ImageSource extends Source {
   getImage(extent, resolution, pixelRatio, projection) {
     const sourceProjection = this.getProjection();
     if (
-      !ENABLE_RASTER_REPROJECTION ||
       !sourceProjection ||
       !projection ||
       equivalent(sourceProjection, projection)
@@ -184,40 +184,33 @@ class ImageSource extends Source {
         projection = sourceProjection;
       }
       return this.getImageInternal(extent, resolution, pixelRatio, projection);
-    } else {
-      if (this.reprojectedImage_) {
-        if (
-          this.reprojectedRevision_ == this.getRevision() &&
-          equivalent(this.reprojectedImage_.getProjection(), projection) &&
-          this.reprojectedImage_.getResolution() == resolution &&
-          equals(this.reprojectedImage_.getExtent(), extent)
-        ) {
-          return this.reprojectedImage_;
-        }
-        this.reprojectedImage_.dispose();
-        this.reprojectedImage_ = null;
-      }
-
-      this.reprojectedImage_ = new ReprojImage(
-        sourceProjection,
-        projection,
-        extent,
-        resolution,
-        pixelRatio,
-        function (extent, resolution, pixelRatio) {
-          return this.getImageInternal(
-            extent,
-            resolution,
-            pixelRatio,
-            sourceProjection
-          );
-        }.bind(this),
-        this.getInterpolate()
-      );
-      this.reprojectedRevision_ = this.getRevision();
-
-      return this.reprojectedImage_;
     }
+    if (this.reprojectedImage_) {
+      if (
+        this.reprojectedRevision_ == this.getRevision() &&
+        equivalent(this.reprojectedImage_.getProjection(), projection) &&
+        this.reprojectedImage_.getResolution() == resolution &&
+        equals(this.reprojectedImage_.getExtent(), extent)
+      ) {
+        return this.reprojectedImage_;
+      }
+      this.reprojectedImage_.dispose();
+      this.reprojectedImage_ = null;
+    }
+
+    this.reprojectedImage_ = new ReprojImage(
+      sourceProjection,
+      projection,
+      extent,
+      resolution,
+      pixelRatio,
+      (extent, resolution, pixelRatio) =>
+        this.getImageInternal(extent, resolution, pixelRatio, sourceProjection),
+      this.getInterpolate()
+    );
+    this.reprojectedRevision_ = this.getRevision();
+
+    return this.reprojectedImage_;
   }
 
   /**

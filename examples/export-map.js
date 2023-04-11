@@ -64,13 +64,6 @@ document.getElementById('export-png').addEventListener('click', function () {
           const opacity =
             canvas.parentNode.style.opacity || canvas.style.opacity;
           mapContext.globalAlpha = opacity === '' ? 1 : Number(opacity);
-
-          const backgroundColor = canvas.parentNode.style.backgroundColor;
-          if (backgroundColor) {
-            mapContext.fillStyle = backgroundColor;
-            mapContext.fillRect(0, 0, canvas.width, canvas.height);
-          }
-
           let matrix;
           const transform = canvas.style.transform;
           if (transform) {
@@ -94,19 +87,20 @@ document.getElementById('export-png').addEventListener('click', function () {
             mapContext,
             matrix
           );
+          const backgroundColor = canvas.parentNode.style.backgroundColor;
+          if (backgroundColor) {
+            mapContext.fillStyle = backgroundColor;
+            mapContext.fillRect(0, 0, canvas.width, canvas.height);
+          }
           mapContext.drawImage(canvas, 0, 0);
         }
       }
     );
     mapContext.globalAlpha = 1;
-    if (navigator.msSaveBlob) {
-      // link download attribute does not work on MS browsers
-      navigator.msSaveBlob(mapCanvas.msToBlob(), 'map.png');
-    } else {
-      const link = document.getElementById('image-download');
-      link.href = mapCanvas.toDataURL();
-      link.click();
-    }
+    mapContext.setTransform(1, 0, 0, 1, 0, 0);
+    const link = document.getElementById('image-download');
+    link.href = mapCanvas.toDataURL();
+    link.click();
   });
   map.renderSync();
 });

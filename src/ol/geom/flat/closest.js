@@ -138,7 +138,7 @@ export function multiArrayMaxSquaredDelta(
  * @param {number} y Y.
  * @param {Array<number>} closestPoint Closest point.
  * @param {number} minSquaredDistance Minimum squared distance.
- * @param {Array<number>} [opt_tmpPoint] Temporary point object.
+ * @param {Array<number>} [tmpPoint] Temporary point object.
  * @return {number} Minimum squared distance.
  */
 export function assignClosestPoint(
@@ -152,7 +152,7 @@ export function assignClosestPoint(
   y,
   closestPoint,
   minSquaredDistance,
-  opt_tmpPoint
+  tmpPoint
 ) {
   if (offset == end) {
     return minSquaredDistance;
@@ -172,11 +172,10 @@ export function assignClosestPoint(
       }
       closestPoint.length = stride;
       return squaredDistance;
-    } else {
-      return minSquaredDistance;
     }
+    return minSquaredDistance;
   }
-  const tmpPoint = opt_tmpPoint ? opt_tmpPoint : [NaN, NaN];
+  tmpPoint = tmpPoint ? tmpPoint : [NaN, NaN];
   let index = offset + stride;
   while (index < end) {
     assignClosest(
@@ -251,7 +250,7 @@ export function assignClosestPoint(
  * @param {number} y Y.
  * @param {Array<number>} closestPoint Closest point.
  * @param {number} minSquaredDistance Minimum squared distance.
- * @param {Array<number>} [opt_tmpPoint] Temporary point object.
+ * @param {Array<number>} [tmpPoint] Temporary point object.
  * @return {number} Minimum squared distance.
  */
 export function assignClosestArrayPoint(
@@ -265,9 +264,9 @@ export function assignClosestArrayPoint(
   y,
   closestPoint,
   minSquaredDistance,
-  opt_tmpPoint
+  tmpPoint
 ) {
-  const tmpPoint = opt_tmpPoint ? opt_tmpPoint : [NaN, NaN];
+  tmpPoint = tmpPoint ? tmpPoint : [NaN, NaN];
   for (let i = 0, ii = ends.length; i < ii; ++i) {
     const end = ends[i];
     minSquaredDistance = assignClosestPoint(
@@ -299,7 +298,7 @@ export function assignClosestArrayPoint(
  * @param {number} y Y.
  * @param {Array<number>} closestPoint Closest point.
  * @param {number} minSquaredDistance Minimum squared distance.
- * @param {Array<number>} [opt_tmpPoint] Temporary point object.
+ * @param {Array<number>} [tmpPoint] Temporary point object.
  * @return {number} Minimum squared distance.
  */
 export function assignClosestMultiArrayPoint(
@@ -313,9 +312,9 @@ export function assignClosestMultiArrayPoint(
   y,
   closestPoint,
   minSquaredDistance,
-  opt_tmpPoint
+  tmpPoint
 ) {
-  const tmpPoint = opt_tmpPoint ? opt_tmpPoint : [NaN, NaN];
+  tmpPoint = tmpPoint ? tmpPoint : [NaN, NaN];
   for (let i = 0, ii = endss.length; i < ii; ++i) {
     const ends = endss[i];
     minSquaredDistance = assignClosestArrayPoint(

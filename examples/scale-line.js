@@ -4,31 +4,32 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
 import {ScaleLine, defaults as defaultControls} from '../src/ol/control.js';
 
+const scaleBarOptionsContainer = document.getElementById('scaleBarOptions');
 const unitsSelect = document.getElementById('units');
 const typeSelect = document.getElementById('type');
-const stepsSelect = document.getElementById('steps');
+const stepsRange = document.getElementById('steps');
 const scaleTextCheckbox = document.getElementById('showScaleText');
-const showScaleTextDiv = document.getElementById('showScaleTextDiv');
+const invertColorsCheckbox = document.getElementById('invertColors');
 
-let scaleType = 'scaleline';
-let scaleBarSteps = 4;
-let scaleBarText = true;
 let control;
 
 function scaleControl() {
-  if (scaleType === 'scaleline') {
+  if (typeSelect.value === 'scaleline') {
     control = new ScaleLine({
       units: unitsSelect.value,
     });
-    return control;
+    scaleBarOptionsContainer.style.display = 'none';
+  } else {
+    control = new ScaleLine({
+      units: unitsSelect.value,
+      bar: true,
+      steps: parseInt(stepsRange.value, 10),
+      text: scaleTextCheckbox.checked,
+      minWidth: 140,
+    });
+    onInvertColorsChange();
+    scaleBarOptionsContainer.style.display = 'block';
   }
-  control = new ScaleLine({
-    units: unitsSelect.value,
-    bar: true,
-    steps: scaleBarSteps,
-    text: scaleBarText,
-    minWidth: 140,
-  });
   return control;
 }
 const map = new Map({
@@ -45,34 +46,21 @@ const map = new Map({
   }),
 });
 
-function onChange() {
+function reconfigureScaleLine() {
+  map.removeControl(control);
+  map.addControl(scaleControl());
+}
+function onChangeUnit() {
   control.setUnits(unitsSelect.value);
 }
-function onChangeType() {
-  scaleType = typeSelect.value;
-  if (typeSelect.value === 'scalebar') {
-    stepsSelect.style.display = 'inline';
-    showScaleTextDiv.style.display = 'inline';
-    map.removeControl(control);
-    map.addControl(scaleControl());
-  } else {
-    stepsSelect.style.display = 'none';
-    showScaleTextDiv.style.display = 'none';
-    map.removeControl(control);
-    map.addControl(scaleControl());
-  }
+function onInvertColorsChange() {
+  control.element.classList.toggle(
+    'ol-scale-bar-inverted',
+    invertColorsCheckbox.checked
+  );
 }
-function onChangeSteps() {
-  scaleBarSteps = parseInt(stepsSelect.value, 10);
-  map.removeControl(control);
-  map.addControl(scaleControl());
-}
-function onChangeScaleText() {
-  scaleBarText = scaleTextCheckbox.checked;
-  map.removeControl(control);
-  map.addControl(scaleControl());
-}
-unitsSelect.addEventListener('change', onChange);
-typeSelect.addEventListener('change', onChangeType);
-stepsSelect.addEventListener('change', onChangeSteps);
-scaleTextCheckbox.addEventListener('change', onChangeScaleText);
+unitsSelect.addEventListener('change', onChangeUnit);
+typeSelect.addEventListener('change', reconfigureScaleLine);
+stepsRange.addEventListener('input', reconfigureScaleLine);
+scaleTextCheckbox.addEventListener('change', reconfigureScaleLine);
+invertColorsCheckbox.addEventListener('change', onInvertColorsChange);

@@ -14,9 +14,8 @@ import {toRadians} from './math.js';
 export function disable(rotation) {
   if (rotation !== undefined) {
     return 0;
-  } else {
-    return undefined;
   }
+  return undefined;
 }
 
 /**
@@ -26,9 +25,8 @@ export function disable(rotation) {
 export function none(rotation) {
   if (rotation !== undefined) {
     return rotation;
-  } else {
-    return undefined;
   }
+  return undefined;
 }
 
 /**
@@ -40,50 +38,47 @@ export function createSnapToN(n) {
   return (
     /**
      * @param {number|undefined} rotation Rotation.
-     * @param {boolean} [opt_isMoving] True if an interaction or animation is in progress.
+     * @param {boolean} [isMoving] True if an interaction or animation is in progress.
      * @return {number|undefined} Rotation.
      */
-    function (rotation, opt_isMoving) {
-      if (opt_isMoving) {
+    function (rotation, isMoving) {
+      if (isMoving) {
         return rotation;
       }
 
       if (rotation !== undefined) {
         rotation = Math.floor(rotation / theta + 0.5) * theta;
         return rotation;
-      } else {
-        return undefined;
       }
+      return undefined;
     }
   );
 }
 
 /**
- * @param {number} [opt_tolerance] Tolerance.
+ * @param {number} [tolerance] Tolerance.
  * @return {Type} Rotation constraint.
  */
-export function createSnapToZero(opt_tolerance) {
-  const tolerance = opt_tolerance || toRadians(5);
+export function createSnapToZero(tolerance) {
+  tolerance = tolerance || toRadians(5);
   return (
     /**
      * @param {number|undefined} rotation Rotation.
-     * @param {boolean} [opt_isMoving] True if an interaction or animation is in progress.
+     * @param {boolean} [isMoving] True if an interaction or animation is in progress.
      * @return {number|undefined} Rotation.
      */
-    function (rotation, opt_isMoving) {
-      if (opt_isMoving) {
+    function (rotation, isMoving) {
+      if (isMoving) {
         return rotation;
       }
 
       if (rotation !== undefined) {
         if (Math.abs(rotation) <= tolerance) {
           return 0;
-        } else {
-          return rotation;
         }
-      } else {
-        return undefined;
+        return rotation;
       }
+      return undefined;
     }
   );
 }

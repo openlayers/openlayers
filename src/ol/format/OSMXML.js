@@ -3,7 +3,6 @@
  */
 // FIXME add typedef for stack state objects
 import Feature from '../Feature.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
@@ -60,11 +59,11 @@ class OSMXML extends XMLFeature {
   /**
    * @protected
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
+   * @param {import("./Feature.js").ReadOptions} [options] Options.
    * @return {Array<import("../Feature.js").default>} Features.
    */
-  readFeaturesFromNode(node, opt_options) {
-    const options = this.getReadOptions(node, opt_options);
+  readFeaturesFromNode(node, options) {
+    options = this.getReadOptions(node, options);
     if (node.localName == 'osm') {
       const state = pushParseAndPop(
         {
@@ -88,11 +87,11 @@ class OSMXML extends XMLFeature {
         let geometry;
         if (values.ndrefs[0] == values.ndrefs[values.ndrefs.length - 1]) {
           // closed way
-          geometry = new Polygon(flatCoordinates, GeometryLayout.XY, [
+          geometry = new Polygon(flatCoordinates, 'XY', [
             flatCoordinates.length,
           ]);
         } else {
-          geometry = new LineString(flatCoordinates, GeometryLayout.XY);
+          geometry = new LineString(flatCoordinates, 'XY');
         }
         transformGeometryWithOptions(geometry, false, options);
         const feature = new Feature(geometry);

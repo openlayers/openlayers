@@ -3,7 +3,6 @@
  */
 import BaseVector from './BaseVector.js';
 import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer.js';
-import {assign} from '../obj.js';
 import {clamp} from '../math.js';
 import {createCanvasContext2D} from '../dom.js';
 
@@ -66,12 +65,12 @@ const DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
  */
 class Heatmap extends BaseVector {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
-    const baseOptions = assign({}, options);
+    const baseOptions = Object.assign({}, options);
 
     delete baseOptions.gradient;
     delete baseOptions.radius;
@@ -180,10 +179,10 @@ class Heatmap extends BaseVector {
       attributes: [
         {
           name: 'weight',
-          callback: function (feature) {
+          callback: (feature) => {
             const weight = this.weightFunction_(feature);
             return weight !== undefined ? clamp(weight, 0, 1) : 1;
-          }.bind(this),
+          },
         },
       ],
       vertexShader: `
@@ -269,14 +268,14 @@ class Heatmap extends BaseVector {
           gl_FragColor = v_hitColor;
         }`,
       uniforms: {
-        u_size: function () {
+        u_size: () => {
           return (this.get(Property.RADIUS) + this.get(Property.BLUR)) * 2;
-        }.bind(this),
-        u_blurSlope: function () {
+        },
+        u_blurSlope: () => {
           return (
             this.get(Property.RADIUS) / Math.max(1, this.get(Property.BLUR))
           );
-        }.bind(this),
+        },
       },
       postProcesses: [
         {
@@ -296,12 +295,12 @@ class Heatmap extends BaseVector {
               gl_FragColor.rgb *= gl_FragColor.a;
             }`,
           uniforms: {
-            u_gradientTexture: function () {
+            u_gradientTexture: () => {
               return this.gradient_;
-            }.bind(this),
-            u_opacity: function () {
+            },
+            u_opacity: () => {
               return this.getOpacity();
-            }.bind(this),
+            },
           },
         },
       ],

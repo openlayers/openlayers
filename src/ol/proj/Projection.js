@@ -6,20 +6,20 @@ import {METERS_PER_UNIT} from './Units.js';
 /**
  * @typedef {Object} Options
  * @property {string} code The SRS identifier code, e.g. `EPSG:4326`.
- * @property {import("./Units.js").default|string} [units] Units. Required unless a
+ * @property {import("./Units.js").Units} [units] Units. Required unless a
  * proj4 projection is defined for `code`.
  * @property {import("../extent.js").Extent} [extent] The validity extent for the SRS.
  * @property {string} [axisOrientation='enu'] The axis orientation as specified in Proj4.
  * @property {boolean} [global=false] Whether the projection is valid for the whole globe.
  * @property {number} [metersPerUnit] The meters per unit for the SRS.
- * If not provided, the `units` are used to get the meters per unit from the {@link module:ol/proj/Units~METERS_PER_UNIT}
+ * If not provided, the `units` are used to get the meters per unit from the {@link METERS_PER_UNIT}
  * lookup table.
  * @property {import("../extent.js").Extent} [worldExtent] The world extent for the SRS.
  * @property {function(number, import("../coordinate.js").Coordinate):number} [getPointResolution]
  * Function to determine resolution at a point. The function is called with a
- * `number` view resolution and a {@link module:ol/coordinate~Coordinate Coordinate} as arguments, and returns
+ * `number` view resolution and a {@link module:ol/coordinate~Coordinate} as arguments, and returns
  * the `number` resolution in projection units at the passed coordinate. If this is `undefined`,
- * the default {@link module:ol/proj.getPointResolution getPointResolution()} function will be used.
+ * the default {@link module:ol/proj.getPointResolution} function will be used.
  */
 
 /**
@@ -65,9 +65,9 @@ class Projection {
      * `this.extent_` and `this.worldExtent_` must be configured properly for each
      * tile.
      * @private
-     * @type {import("./Units.js").default}
+     * @type {import("./Units.js").Units}
      */
-    this.units_ = /** @type {import("./Units.js").default} */ (options.units);
+    this.units_ = /** @type {import("./Units.js").Units} */ (options.units);
 
     /**
      * Validity extent of the projection in projected coordinates. For projections
@@ -153,7 +153,7 @@ class Projection {
 
   /**
    * Get the units of this projection.
-   * @return {import("./Units.js").default} Units.
+   * @return {import("./Units.js").Units} Units.
    * @api
    */
   getUnits() {

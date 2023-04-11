@@ -17,11 +17,8 @@ function elevation(xOffset, yOffset) {
   return [
     '+',
     ['*', 256, ['band', 1, xOffset, yOffset]],
-    [
-      '+',
-      ['*', 2 * 256, ['band', 2, xOffset, yOffset]],
-      ['*', 3 * 256, ['band', 3, xOffset, yOffset]],
-    ],
+    ['*', 2 * 256, ['band', 2, xOffset, yOffset]],
+    ['*', 3 * 256, ['band', 3, xOffset, yOffset]],
   ];
 }
 
@@ -66,12 +63,10 @@ controlIds.forEach(function (id) {
     variables[id] = Number(control.value);
   }
   updateValues();
-  const listener = function () {
+  control.addEventListener('input', function () {
     updateValues();
     shadedRelief.updateStyleVariables(variables);
-  };
-  control.addEventListener('input', listener);
-  control.addEventListener('change', listener);
+  });
 });
 
 const map = new Map({

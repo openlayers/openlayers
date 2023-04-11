@@ -103,8 +103,8 @@ jobs:
       - name: Build the Package
         run: npm run build-package
 
-      - name: Generate the Legacy Build
-        run: "npm run build-legacy && npx eslint --rule 'import/no-duplicates: off' --fix build/index.js"
+      - name: Generate the Full Build
+        run: "npm run build-full"
 
   rendering:
     name: Rendering

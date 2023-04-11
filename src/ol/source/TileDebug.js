@@ -28,13 +28,13 @@ import {toSize} from '../size.js';
  */
 class TileDebug extends XYZ {
   /**
-   * @param {Options} [opt_options] Debug tile options.
+   * @param {Options} [options] Debug tile options.
    */
-  constructor(opt_options) {
+  constructor(options) {
     /**
      * @type {Options}
      */
-    const options = opt_options || {};
+    options = options || {};
 
     super({
       opaque: false,

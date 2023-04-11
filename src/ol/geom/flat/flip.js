@@ -7,22 +7,14 @@
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
- * @param {Array<number>} [opt_dest] Destination.
- * @param {number} [opt_destOffset] Destination offset.
+ * @param {Array<number>} [dest] Destination.
+ * @param {number} [destOffset] Destination offset.
  * @return {Array<number>} Flat coordinates.
  */
-export function flipXY(
-  flatCoordinates,
-  offset,
-  end,
-  stride,
-  opt_dest,
-  opt_destOffset
-) {
-  let dest, destOffset;
-  if (opt_dest !== undefined) {
-    dest = opt_dest;
-    destOffset = opt_destOffset !== undefined ? opt_destOffset : 0;
+export function flipXY(flatCoordinates, offset, end, stride, dest, destOffset) {
+  if (dest !== undefined) {
+    dest = dest;
+    destOffset = destOffset !== undefined ? destOffset : 0;
   } else {
     dest = [];
     destOffset = 0;

@@ -3,7 +3,6 @@
  */
 import CanvasInstruction from './Instruction.js';
 import {TEXT_ALIGN} from './TextBuilder.js';
-import {WORKER_OFFSCREEN_CANVAS} from '../../has.js';
 import {
   apply as applyTransform,
   compose as composeTransform,
@@ -91,7 +90,7 @@ const rtlRegEx = new RegExp(
 
 /**
  * @param {string} text Text.
- * @param {string} align Alignment.
+ * @param {CanvasTextAlign} align Alignment.
  * @return {number} Text alignment.
  */
 function horizontalTextAlign(text, align) {
@@ -276,12 +275,8 @@ class Executor {
       contextInstructions.push('lineCap', strokeState.lineCap);
       contextInstructions.push('lineJoin', strokeState.lineJoin);
       contextInstructions.push('miterLimit', strokeState.miterLimit);
-      // eslint-disable-next-line
-      const Context = WORKER_OFFSCREEN_CANVAS ? OffscreenCanvasRenderingContext2D : CanvasRenderingContext2D;
-      if (Context.prototype.setLineDash) {
-        contextInstructions.push('setLineDash', [strokeState.lineDash]);
-        contextInstructions.push('lineDashOffset', strokeState.lineDashOffset);
-      }
+      contextInstructions.push('setLineDash', [strokeState.lineDash]);
+      contextInstructions.push('lineDashOffset', strokeState.lineDashOffset);
     }
     if (fillKey) {
       contextInstructions.push('fillStyle', fillState.fillStyle);
@@ -585,10 +580,8 @@ class Executor {
     context.lineCap = /** @type {CanvasLineCap} */ (instruction[3]);
     context.lineJoin = /** @type {CanvasLineJoin} */ (instruction[4]);
     context.miterLimit = /** @type {number} */ (instruction[5]);
-    if (context.setLineDash) {
-      context.lineDashOffset = /** @type {number} */ (instruction[7]);
-      context.setLineDash(/** @type {Array<number>} */ (instruction[6]));
-    }
+    context.lineDashOffset = /** @type {number} */ (instruction[7]);
+    context.setLineDash(/** @type {Array<number>} */ (instruction[6]));
   }
 
   /**
@@ -635,10 +628,10 @@ class Executor {
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {Array<*>} instructions Instructions array.
    * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
-   * @param {FeatureCallback<T>} [opt_featureCallback] Feature callback.
-   * @param {import("../../extent.js").Extent} [opt_hitExtent] Only check
+   * @param {FeatureCallback<T>} [featureCallback] Feature callback.
+   * @param {import("../../extent.js").Extent} [hitExtent] Only check
    *     features that intersect this extent.
-   * @param {import("rbush").default} [opt_declutterTree] Declutter tree.
+   * @param {import("rbush").default} [declutterTree] Declutter tree.
    * @return {T|undefined} Callback result.
    * @template T
    */
@@ -648,9 +641,9 @@ class Executor {
     transform,
     instructions,
     snapToPixel,
-    opt_featureCallback,
-    opt_hitExtent,
-    opt_declutterTree
+    featureCallback,
+    hitExtent,
+    declutterTree
   ) {
     /** @type {Array<number>} */
     let pixelCoordinates;
@@ -721,8 +714,8 @@ class Executor {
           if (!feature.getGeometry()) {
             i = /** @type {number} */ (instruction[2]);
           } else if (
-            opt_hitExtent !== undefined &&
-            !intersects(opt_hitExtent, currentGeometry.getExtent())
+            hitExtent !== undefined &&
+            !intersects(hitExtent, currentGeometry.getExtent())
           ) {
             i = /** @type {number} */ (instruction[2]) + 1;
           } else {
@@ -906,13 +899,13 @@ class Executor {
                 ? /** @type {Array<*>} */ (lastStrokeInstruction)
                 : null,
             ];
-            if (opt_declutterTree) {
+            if (declutterTree) {
               if (declutterMode === 'none') {
                 // not rendered in declutter group
                 continue;
               } else if (declutterMode === 'obstacle') {
                 // will always be drawn, thus no collision detection, but insert as obstacle
-                opt_declutterTree.insert(dimensions.declutterBox);
+                declutterTree.insert(dimensions.declutterBox);
                 continue;
               } else {
                 let imageArgs;
@@ -928,20 +921,20 @@ class Executor {
                   imageArgs = declutterImageWithText[index];
                   delete declutterImageWithText[index];
                   imageDeclutterBox = getDeclutterBox(imageArgs);
-                  if (opt_declutterTree.collides(imageDeclutterBox)) {
+                  if (declutterTree.collides(imageDeclutterBox)) {
                     continue;
                   }
                 }
-                if (opt_declutterTree.collides(dimensions.declutterBox)) {
+                if (declutterTree.collides(dimensions.declutterBox)) {
                   continue;
                 }
                 if (imageArgs) {
                   // We now have image and text for an image+text combination.
-                  opt_declutterTree.insert(imageDeclutterBox);
+                  declutterTree.insert(imageDeclutterBox);
                   // Render the image before we render the text.
                   this.replayImageOrLabel_.apply(this, imageArgs);
                 }
-                opt_declutterTree.insert(dimensions.declutterBox);
+                declutterTree.insert(dimensions.declutterBox);
               }
             }
             this.replayImageOrLabel_.apply(this, args);
@@ -1038,8 +1031,8 @@ class Executor {
                     feature
                   );
                   if (
-                    opt_declutterTree &&
-                    opt_declutterTree.collides(dimensions.declutterBox)
+                    declutterTree &&
+                    declutterTree.collides(dimensions.declutterBox)
                   ) {
                     break drawChars;
                   }
@@ -1080,8 +1073,8 @@ class Executor {
                     feature
                   );
                   if (
-                    opt_declutterTree &&
-                    opt_declutterTree.collides(dimensions.declutterBox)
+                    declutterTree &&
+                    declutterTree.collides(dimensions.declutterBox)
                   ) {
                     break drawChars;
                   }
@@ -1096,10 +1089,8 @@ class Executor {
                   ]);
                 }
               }
-              if (opt_declutterTree) {
-                opt_declutterTree.load(
-                  replayImageOrLabelArgs.map(getDeclutterBox)
-                );
+              if (declutterTree) {
+                declutterTree.load(replayImageOrLabelArgs.map(getDeclutterBox));
               }
               for (let i = 0, ii = replayImageOrLabelArgs.length; i < ii; ++i) {
                 this.replayImageOrLabel_.apply(this, replayImageOrLabelArgs[i]);
@@ -1109,11 +1100,11 @@ class Executor {
           ++i;
           break;
         case CanvasInstruction.END_GEOMETRY:
-          if (opt_featureCallback !== undefined) {
+          if (featureCallback !== undefined) {
             feature = /** @type {import("../../Feature.js").FeatureLike} */ (
               instruction[1]
             );
-            const result = opt_featureCallback(feature, currentGeometry);
+            const result = featureCallback(feature, currentGeometry);
             if (result) {
               return result;
             }
@@ -1209,7 +1200,7 @@ class Executor {
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
    * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
-   * @param {import("rbush").default} [opt_declutterTree] Declutter tree.
+   * @param {import("rbush").default} [declutterTree] Declutter tree.
    */
   execute(
     context,
@@ -1217,7 +1208,7 @@ class Executor {
     transform,
     viewRotation,
     snapToPixel,
-    opt_declutterTree
+    declutterTree
   ) {
     this.viewRotation_ = viewRotation;
     this.execute_(
@@ -1228,7 +1219,7 @@ class Executor {
       snapToPixel,
       undefined,
       undefined,
-      opt_declutterTree
+      declutterTree
     );
   }
 
@@ -1236,8 +1227,8 @@ class Executor {
    * @param {CanvasRenderingContext2D} context Context.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
-   * @param {FeatureCallback<T>} [opt_featureCallback] Feature callback.
-   * @param {import("../../extent.js").Extent} [opt_hitExtent] Only check
+   * @param {FeatureCallback<T>} [featureCallback] Feature callback.
+   * @param {import("../../extent.js").Extent} [hitExtent] Only check
    *     features that intersect this extent.
    * @return {T|undefined} Callback result.
    * @template T
@@ -1246,8 +1237,8 @@ class Executor {
     context,
     transform,
     viewRotation,
-    opt_featureCallback,
-    opt_hitExtent
+    featureCallback,
+    hitExtent
   ) {
     this.viewRotation_ = viewRotation;
     return this.execute_(
@@ -1256,8 +1247,8 @@ class Executor {
       transform,
       this.hitDetectionInstructions,
       true,
-      opt_featureCallback,
-      opt_hitExtent
+      featureCallback,
+      hitExtent
     );
   }
 }

@@ -19,10 +19,10 @@ import {FALSE} from '../functions.js';
  */
 class PinchZoom extends PointerInteraction {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
     const pointerOptions = /** @type {import("./Pointer.js").Options} */ (
       options
@@ -87,11 +87,9 @@ class PinchZoom extends PointerInteraction {
     }
 
     // scale anchor point.
-    const viewportPosition = map.getViewport().getBoundingClientRect();
-    const centroid = centroidFromPointers(this.targetPointers);
-    centroid[0] -= viewportPosition.left;
-    centroid[1] -= viewportPosition.top;
-    this.anchor_ = map.getCoordinateFromPixelInternal(centroid);
+    this.anchor_ = map.getCoordinateFromPixelInternal(
+      map.getEventPixel(centroidFromPointers(this.targetPointers))
+    );
 
     // scale, bypass the resolution constraint
     map.render();
@@ -110,9 +108,8 @@ class PinchZoom extends PointerInteraction {
       const direction = this.lastScaleDelta_ > 1 ? 1 : -1;
       view.endInteraction(this.duration_, direction);
       return false;
-    } else {
-      return true;
     }
+    return true;
   }
 
   /**
@@ -130,9 +127,8 @@ class PinchZoom extends PointerInteraction {
         map.getView().beginInteraction();
       }
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 }
 

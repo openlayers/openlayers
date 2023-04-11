@@ -37,11 +37,13 @@ class IconImage extends EventTarget {
      * @private
      * @type {HTMLImageElement|HTMLCanvasElement}
      */
-    this.image_ = !image ? new Image() : image;
+    this.image_ = image;
 
-    if (crossOrigin !== null) {
-      /** @type {HTMLImageElement} */ (this.image_).crossOrigin = crossOrigin;
-    }
+    /**
+     * @private
+     * @type {string|null}
+     */
+    this.crossOrigin_ = crossOrigin;
 
     /**
      * @private
@@ -87,12 +89,24 @@ class IconImage extends EventTarget {
 
   /**
    * @private
+   */
+  initializeImage_() {
+    this.image_ = new Image();
+    if (this.crossOrigin_ !== null) {
+      this.image_.crossOrigin = this.crossOrigin_;
+    }
+  }
+
+  /**
+   * @private
    * @return {boolean} The image canvas is tainted.
    */
   isTainted_() {
     if (this.tainted_ === undefined && this.imageState_ === ImageState.LOADED) {
       if (!taintedTestContext) {
-        taintedTestContext = createCanvasContext2D(1, 1);
+        taintedTestContext = createCanvasContext2D(1, 1, undefined, {
+          willReadFrequently: true,
+        });
       }
       taintedTestContext.drawImage(this.image_, 0, 0);
       try {
@@ -142,6 +156,9 @@ class IconImage extends EventTarget {
    * @return {HTMLImageElement|HTMLCanvasElement} Image or Canvas element.
    */
   getImage(pixelRatio) {
+    if (!this.image_) {
+      this.initializeImage_();
+    }
     this.replaceColor_(pixelRatio);
     return this.canvas_[pixelRatio] ? this.canvas_[pixelRatio] : this.image_;
   }
@@ -166,6 +183,9 @@ class IconImage extends EventTarget {
    * @return {HTMLImageElement|HTMLCanvasElement} Image element.
    */
   getHitDetectionImage() {
+    if (!this.image_) {
+      this.initializeImage_();
+    }
     if (!this.hitDetectionImage_) {
       if (this.isTainted_()) {
         const width = this.size_[0];
@@ -199,19 +219,24 @@ class IconImage extends EventTarget {
    * Load not yet loaded URI.
    */
   load() {
-    if (this.imageState_ == ImageState.IDLE) {
-      this.imageState_ = ImageState.LOADING;
-      try {
-        /** @type {HTMLImageElement} */ (this.image_).src = this.src_;
-      } catch (e) {
-        this.handleImageError_();
-      }
-      this.unlisten_ = listenImage(
-        this.image_,
-        this.handleImageLoad_.bind(this),
-        this.handleImageError_.bind(this)
-      );
+    if (this.imageState_ !== ImageState.IDLE) {
+      return;
     }
+    if (!this.image_) {
+      this.initializeImage_();
+    }
+
+    this.imageState_ = ImageState.LOADING;
+    try {
+      /** @type {HTMLImageElement} */ (this.image_).src = this.src_;
+    } catch (e) {
+      this.handleImageError_();
+    }
+    this.unlisten_ = listenImage(
+      this.image_,
+      this.handleImageLoad_.bind(this),
+      this.handleImageError_.bind(this)
+    );
   }
 
   /**
@@ -227,42 +252,23 @@ class IconImage extends EventTarget {
       return;
     }
 
+    const image = this.image_;
     const canvas = document.createElement('canvas');
-    this.canvas_[pixelRatio] = canvas;
-
-    canvas.width = Math.ceil(this.image_.width * pixelRatio);
-    canvas.height = Math.ceil(this.image_.height * pixelRatio);
+    canvas.width = Math.ceil(image.width * pixelRatio);
+    canvas.height = Math.ceil(image.height * pixelRatio);
 
     const ctx = canvas.getContext('2d');
     ctx.scale(pixelRatio, pixelRatio);
-    ctx.drawImage(this.image_, 0, 0);
+    ctx.drawImage(image, 0, 0);
 
     ctx.globalCompositeOperation = 'multiply';
-    // Internet Explorer 11 does not support the multiply operation.
-    // If the canvas is tainted in Internet Explorer this still produces
-    // a solid color image with the shape of the icon.
-    if (ctx.globalCompositeOperation === 'multiply' || this.isTainted_()) {
-      ctx.fillStyle = asString(this.color_);
-      ctx.fillRect(0, 0, canvas.width / pixelRatio, canvas.height / pixelRatio);
+    ctx.fillStyle = asString(this.color_);
+    ctx.fillRect(0, 0, canvas.width / pixelRatio, canvas.height / pixelRatio);
 
-      ctx.globalCompositeOperation = 'destination-in';
-      ctx.drawImage(this.image_, 0, 0);
-    } else {
-      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const data = imgData.data;
-      const r = this.color_[0] / 255.0;
-      const g = this.color_[1] / 255.0;
-      const b = this.color_[2] / 255.0;
-      const a = this.color_[3];
+    ctx.globalCompositeOperation = 'destination-in';
+    ctx.drawImage(image, 0, 0);
 
-      for (let i = 0, ii = data.length; i < ii; i += 4) {
-        data[i] *= r;
-        data[i + 1] *= g;
-        data[i + 2] *= b;
-        data[i + 3] *= a;
-      }
-      ctx.putImageData(imgData, 0, 0);
-    }
+    this.canvas_[pixelRatio] = canvas;
   }
 
   /**

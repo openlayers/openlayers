@@ -32,7 +32,7 @@ import {scale as scaleSize, toSize} from '../size.js';
  * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {number} [tilePixelRatio] TilePixelRatio.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection.
- * @property {import("./State.js").default} [state] State.
+ * @property {import("./Source.js").State} [state] State.
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] TileGrid.
  * @property {boolean} [wrapX=false] WrapX.
  * @property {number} [transition] Transition.
@@ -232,13 +232,17 @@ class TileSource extends Source {
   }
 
   /**
+   * @param {import("../proj/Projection").default} [projection] Projection.
    * @return {Array<number>|null} Resolutions.
    */
-  getResolutions() {
-    if (!this.tileGrid) {
+  getResolutions(projection) {
+    const tileGrid = projection
+      ? this.getTileGridForProjection(projection)
+      : this.tileGrid;
+    if (!tileGrid) {
       return null;
     }
-    return this.tileGrid.getResolutions();
+    return tileGrid.getResolutions();
   }
 
   /**
@@ -270,9 +274,8 @@ class TileSource extends Source {
   getTileGridForProjection(projection) {
     if (!this.tileGrid) {
       return getTileGridForProjection(projection);
-    } else {
-      return this.tileGrid;
     }
+    return this.tileGrid;
   }
 
   /**
@@ -312,9 +315,8 @@ class TileSource extends Source {
     const tileSize = toSize(tileGrid.getTileSize(z), this.tmpSize);
     if (tilePixelRatio == 1) {
       return tileSize;
-    } else {
-      return scaleSize(tileSize, tilePixelRatio, this.tmpSize);
     }
+    return scaleSize(tileSize, tilePixelRatio, this.tmpSize);
   }
 
   /**
@@ -322,13 +324,12 @@ class TileSource extends Source {
    * is outside the resolution and extent range of the tile grid, `null` will be
    * returned.
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
-   * @param {import("../proj/Projection.js").default} [opt_projection] Projection.
+   * @param {import("../proj/Projection.js").default} [projection] Projection.
    * @return {import("../tilecoord.js").TileCoord} Tile coordinate to be passed to the tileUrlFunction or
    *     null if no tile URL should be created for the passed `tileCoord`.
    */
-  getTileCoordForTileUrlFunction(tileCoord, opt_projection) {
-    const projection =
-      opt_projection !== undefined ? opt_projection : this.getProjection();
+  getTileCoordForTileUrlFunction(tileCoord, projection) {
+    projection = projection !== undefined ? projection : this.getProjection();
     const tileGrid = this.getTileGridForProjection(projection);
     if (this.getWrapX() && projection.isGlobal()) {
       tileCoord = wrapX(tileGrid, tileCoord, projection);

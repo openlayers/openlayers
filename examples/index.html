@@ -1,18 +1,20 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="./resources/layout.css" type="text/css">
+    <title>OpenLayers Examples</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.2/css/fontawesome.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.2/css/solid.css" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.2/css/brands.css" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/theme/ol.css">
+    <link rel="stylesheet" type="text/css" href="/theme/site.css">
+    <link rel="icon" type="image/svg+xml" href="/theme/img/logo-light.svg" media="(prefers-color-scheme: light)" />
+    <link rel="icon" type="image/svg+xml" href="/theme/img/logo-dark.svg" media="(prefers-color-scheme: dark)" />
     <style>
-      body {
-        padding-top: 70px;
-      }
       input.search-query {
-        color: #333;
+        color: var(--ol-foreground-color);
       }
       .example {
         display: block;
@@ -25,58 +27,58 @@
         font-size: smaller;
         margin: 5px 0;
       }
-      .example:hover {
-        background-color: #F5F5F5;
+      a.example {
+        text-decoration: none;
+      }
+      a.example:hover :first-child {
+        text-decoration: underline;
+      }
+      a.bg-light:focus,
+      a.bg-light:hover,
+      button.bg-light:focus,
+      button.bg-light:hover {
+        background-color: #f8f9fa !important;
       }
     </style>
-    <script type="text/javascript" src="resources/Jugl.js"></script>
-    <script type="text/javascript" src="examples-info.js"></script>
-    <script type="text/javascript" src="index.js"></script>
-
-    <title>OpenLayers Examples</title>
   </head>
   <body>
-
-    <header class="navbar navbar-expand-md navbar-dark mb-3 py-0 fixed-top" role="navigation">
-      <a class="navbar-brand" href="https://openlayers.org/"><img class="header-logo" src="./resources/logo-70x70.png" alt="">&nbsp;OpenLayers</a>
-
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#olmenu" aria-controls="olmenu" aria-expanded="false" aria-label="Toggle navigation">
+    <header class="navbar navbar-expand-md navbar-dark mb-3 px-3 py-0 fixed-top" role="navigation">
+      <a class="navbar-brand" href="/"><img src="/theme/img/logo-dark.svg" width="70" height="70" alt="">&nbsp;OpenLayers</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#olmenu" aria-controls="olmenu" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
       <!-- menu items that get hidden below 768px width -->
       <nav class="collapse navbar-collapse" id="olmenu">
-        <form class="form-inline" role="search">
+        <form role="search">
           <div class="input-group">
-          <input name="q" type="text" id="keywords" class="form-control search-query" placeholder="Search" aria-label="Examples" aria-describedby="count" autocomplete="off" autofocus>
-          <div class="input-group-append">
-              <span class="input-group-text text-white bg-transparent" id="count"></span>
-          </div>
+            <input name="q" type="search" id="keywords" class="form-control search-query" placeholder="Search" aria-label="Examples" aria-describedby="count" autocomplete="off" autofocus>
+            <span class="input-group-text text-white bg-transparent" id="count"></span>
           </div>
         </form>
-        <ul class="navbar-nav ml-auto">
+        <ul class="navbar-nav ms-auto">
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="docdropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Docs</a>
-            <div class="dropdown-menu dropdown-menu-right mb-3" aria-labelledby="docdropdown">
-              <a class="dropdown-item" href="../doc/">Docs</a>
+            <a class="nav-link dropdown-toggle" href="#" id="docdropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Docs</a>
+            <div class="dropdown-menu dropdown-menu-end mb-3" aria-labelledby="docdropdown">
+              <a class="dropdown-item" href="/doc/">Docs</a>
               <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="../doc/quickstart.html"><i class="fa fa-check fa-fw mr-2 fa-lg"></i>Quick Start</a>
-                <a class="dropdown-item" href="../doc/faq.html"><i class="fa fa-question fa-fw mr-2 fa-lg"></i>FAQ</a>
-                <a class="dropdown-item" href="../doc/tutorials/"><i class="fa fa-book fa-fw mr-2 fa-lg"></i>Tutorials</a>
-                <a class="dropdown-item" href="/workshop/"><i class="fa fa-graduation-cap fa-fw mr-2 fa-lg"></i>Workshop</a>
+                <a class="dropdown-item" href="/doc/quickstart.html"><i class="fa fa-check fa-fw me-2 fa-lg"></i>Quick Start</a>
+                <a class="dropdown-item" href="/doc/faq.html"><i class="fa fa-question fa-fw me-2 fa-lg"></i>FAQ</a>
+                <a class="dropdown-item" href="/doc/tutorials/"><i class="fa fa-book fa-fw me-2 fa-lg"></i>Tutorials</a>
+                <a class="dropdown-item" href="/workshop/"><i class="fa fa-graduation-cap fa-fw me-2 fa-lg"></i>Workshop</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="https://stackoverflow.com/questions/tagged/openlayers"><i class="fa fa-stack-overflow fa-fw mr-2"></i>Ask a Question</a>
+                <a class="dropdown-item" href="https://stackoverflow.com/questions/tagged/openlayers"><i class="fab fa-stack-overflow fa-fw me-2"></i>Ask a Question</a>
             </div>
           </li>
           <li class="nav-item active"><a class="nav-link" href="../examples/">Examples</a></li>
-          <li class="nav-item"><a class="nav-link" href="../apidoc/"><i class="fa fa-sitemap mr-1"></i>API</a></li>
+          <li class="nav-item"><a class="nav-link" href="../apidoc/"><i class="fa fa-sitemap me-1"></i>API</a></li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="codedropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Code</a>
-            <div class="dropdown-menu dropdown-menu-right mb-3" aria-labelledby="codedropdown">
-              <a class="dropdown-item" href="https://github.com/openlayers/openlayers"><i class="fa fa-github fa-fw mr-2 fa-lg"></i>Repository</a>
-              <a class="dropdown-item" href="/download/"><i class="fa fa-download fa-fw mr-2 fa-lg"></i>Download</a>
+            <a class="nav-link dropdown-toggle" href="#" id="codedropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Code</a>
+            <div class="dropdown-menu dropdown-menu-end mb-3" aria-labelledby="codedropdown">
+              <a class="dropdown-item" href="https://github.com/openlayers/openlayers"><i class="fab fa-github fa-fw me-2 fa-lg"></i>Repository</a>
+              <a class="dropdown-item" href="/download/"><i class="fa fa-download fa-fw me-2 fa-lg"></i>Download</a>
             </div>
-           </li>
+          </li>
         </ul>
       </nav>
     </header>
@@ -87,17 +89,17 @@
         <div id="template" class="row mt-3">
           <div class="col-md-4 col-sm-6" jugl:repeat="example examples">
             <a jugl:attributes="href example.link" class="example  bg-light border rounded">
-              <span class="mainlink">
-                <strong><span jugl:replace="example.title">title</span></strong><br>
-                <small jugl:content="'(' + example.link + ')'"></small>
-              </span>
+              <strong><span jugl:replace="example.title">title</span></strong><br>
+              <small jugl:content="'(' + example.link + ')'"></small>
               <p class="description" jugl:content="example.shortdesc"></p>
             </a>
           </div>
         </div>
       </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="resources/Jugl.js"></script>
+    <script type="text/javascript" src="examples-info.js"></script>
+    <script type="text/javascript" src="index.js"></script>
   </body>
 </html>

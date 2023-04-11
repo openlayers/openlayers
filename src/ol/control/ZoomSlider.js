@@ -41,10 +41,10 @@ const Direction = {
  */
 class ZoomSlider extends Control {
   /**
-   * @param {Options} [opt_options] Zoom slider options.
+   * @param {Options} [options] Zoom slider options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
     super({
       element: document.createElement('div'),
@@ -164,7 +164,7 @@ class ZoomSlider extends Control {
    * Pass `null` to just remove the control from the current map.
    * Subclasses may set up event handlers to get notified about changes to
    * the map here.
-   * @param {import("../PluggableMap.js").default|null} map Map.
+   * @param {import("../Map.js").default|null} map Map.
    * @api
    */
   setMap(map) {

@@ -67,5 +67,4 @@ const updateSourceDimension = function () {
   document.getElementById('theinfo').innerHTML = slider.value + ' meters';
 };
 slider.addEventListener('input', updateSourceDimension);
-slider.addEventListener('change', updateSourceDimension);
 updateSourceDimension();

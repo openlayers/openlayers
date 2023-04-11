@@ -1,4 +1,4 @@
-name: Deploy Preview
+name: Deploy Website (Preview)
 
 on:
   workflow_run:
@@ -85,18 +85,34 @@ jobs:
             );
 
             if (!commentExists) {
-              const body = [
-                `${start} Preview the [examples](https://deploy-preview-${pullRequestNumber}--ol-site.netlify.app/examples/) and`,
-                `[docs](https://deploy-preview-${pullRequestNumber}--ol-site.netlify.app/apidoc/) from this branch`,
-                `here: https://deploy-preview-${pullRequestNumber}--ol-site.netlify.app/.`
-              ].join(' ');
-
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: pullRequestNumber,
-                body: body
+                body: `${start} Preview the website for this branch here: https://deploy-preview-${pullRequestNumber}--ol-site.netlify.app/.`
               });
             } else {
               console.log(`Preview URL comment already added to PR #${pullRequestNumber}`);
             }
+            
+      - name: Clean up artifact
+        uses: actions/github-script@v6
+        with:
+          result-encoding: string
+          script: |
+            const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: ${{github.event.workflow_run.id}}
+            });
+            const artifact = artifacts.data.artifacts.filter(
+              artifact => artifact.name === 'site'
+            )[0];
+            if (!artifact) {
+              throw new Error('No site artifact found');
+            }
+            await github.rest.actions.deleteArtifact({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              artifact_id: artifact.id
+            });

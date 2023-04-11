@@ -58,35 +58,55 @@ const map = new Map({
   }),
 });
 
-const info = $('#info');
-info.tooltip({
+const info = document.getElementById('info');
+info.style.pointerEvents = 'none';
+const tooltip = new bootstrap.Tooltip(info, {
   animation: false,
+  customClass: 'pe-none',
+  offset: [0, 5],
+  title: '-',
   trigger: 'manual',
 });
 
-const displayFeatureInfo = function (pixel) {
-  info.css({
-    left: pixel[0] + 'px',
-    top: pixel[1] - 15 + 'px',
-  });
-  const feature = map.forEachFeatureAtPixel(pixel, function (feature) {
-    return feature;
-  });
+let currentFeature;
+const displayFeatureInfo = function (pixel, target) {
+  const feature = target.closest('.ol-control')
+    ? undefined
+    : map.forEachFeatureAtPixel(pixel, function (feature) {
+        return feature;
+      });
   if (feature) {
-    info.attr('data-original-title', feature.get('name')).tooltip('show');
+    info.style.left = pixel[0] + 'px';
+    info.style.top = pixel[1] + 'px';
+    if (feature !== currentFeature) {
+      tooltip.setContent({'.tooltip-inner': feature.get('name')});
+    }
+    if (currentFeature) {
+      tooltip.update();
+    } else {
+      tooltip.show();
+    }
   } else {
-    info.tooltip('hide');
+    tooltip.hide();
   }
+  currentFeature = feature;
 };
 
 map.on('pointermove', function (evt) {
   if (evt.dragging) {
-    info.tooltip('hide');
+    tooltip.hide();
+    currentFeature = undefined;
     return;
   }
-  displayFeatureInfo(map.getEventPixel(evt.originalEvent));
+  const pixel = map.getEventPixel(evt.originalEvent);
+  displayFeatureInfo(pixel, evt.originalEvent.target);
 });
 
 map.on('click', function (evt) {
-  displayFeatureInfo(evt.pixel);
+  displayFeatureInfo(evt.pixel, evt.originalEvent.target);
+});
+
+map.getTargetElement().addEventListener('pointerleave', function () {
+  tooltip.hide();
+  currentFeature = undefined;
 });

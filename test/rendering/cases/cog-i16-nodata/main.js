@@ -3,6 +3,7 @@ import Map from '../../../../src/ol/Map.js';
 import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
 
 const source = new GeoTIFF({
+  transition: 0,
   sources: [{url: '/data/raster/elevation-i16.tif'}],
 });
 

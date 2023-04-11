@@ -1,8 +1,6 @@
 /**
  * @module ol/reproj
  */
-import {IMAGE_SMOOTHING_DISABLED} from './renderer/canvas/common.js';
-import {assign} from './obj.js';
 import {
   containsCoordinate,
   createEmpty,
@@ -13,11 +11,16 @@ import {
   getTopLeft,
   getWidth,
 } from './extent.js';
-import {createCanvasContext2D} from './dom.js';
+import {createCanvasContext2D, releaseCanvas} from './dom.js';
 import {getPointResolution, transform} from './proj.js';
 import {solveLinearSystem} from './math.js';
 
 let brokenDiagonalRendering_;
+
+/**
+ * @type {Array<HTMLCanvasElement>}
+ */
+export const canvasPool = [];
 
 /**
  * This draws a small triangle into a canvas by setting the triangle as the clip region
@@ -61,7 +64,7 @@ function verifyBrokenDiagonalRendering(data, offset) {
  * Determines if the current browser configuration can render triangular clip regions correctly.
  * This value is cached so the function is only expensive the first time called.
  * Firefox on Windows (as of now) does not if HWA is enabled. See https://bugzilla.mozilla.org/show_bug.cgi?id=1606976
- * IE also doesn't. Chrome works, and everything seems to work on OSX and Android. This function caches the
+ * Chrome works, and everything seems to work on OSX and Android. This function caches the
  * result. I suppose that it is conceivably possible that a browser might flip modes while the app is
  * running, but lets hope not.
  *
@@ -69,7 +72,7 @@ function verifyBrokenDiagonalRendering(data, offset) {
  */
 function isBrokenDiagonalRendering() {
   if (brokenDiagonalRendering_ === undefined) {
-    const ctx = document.createElement('canvas').getContext('2d');
+    const ctx = createCanvasContext2D(6, 6, canvasPool);
     ctx.globalCompositeOperation = 'lighter';
     ctx.fillStyle = 'rgba(210, 0, 0, 0.75)';
     drawTestTriangle(ctx, 4, 5, 4, 0);
@@ -79,6 +82,8 @@ function isBrokenDiagonalRendering() {
       verifyBrokenDiagonalRendering(data, 0) ||
       verifyBrokenDiagonalRendering(data, 4) ||
       verifyBrokenDiagonalRendering(data, 8);
+    releaseCanvas(ctx);
+    canvasPool.push(ctx.canvas);
   }
 
   return brokenDiagonalRendering_;
@@ -197,8 +202,8 @@ export function calculateSourceExtentResolution(
  * @param {import("./reproj/Triangulation.js").default} triangulation Calculated triangulation.
  * @param {Array<ImageExtent>} sources Array of sources.
  * @param {number} gutter Gutter of the sources.
- * @param {boolean} [opt_renderEdges] Render reprojection edges.
- * @param {boolean} [opt_interpolate] Use linear interpolation when resampling.
+ * @param {boolean} [renderEdges] Render reprojection edges.
+ * @param {boolean} [interpolate] Use linear interpolation when resampling.
  * @return {HTMLCanvasElement} Canvas with reprojected data.
  */
 export function render(
@@ -212,16 +217,17 @@ export function render(
   triangulation,
   sources,
   gutter,
-  opt_renderEdges,
-  opt_interpolate
+  renderEdges,
+  interpolate
 ) {
   const context = createCanvasContext2D(
     Math.round(pixelRatio * width),
-    Math.round(pixelRatio * height)
+    Math.round(pixelRatio * height),
+    canvasPool
   );
 
-  if (!opt_interpolate) {
-    assign(context, IMAGE_SMOOTHING_DISABLED);
+  if (!interpolate) {
+    context.imageSmoothingEnabled = false;
   }
 
   if (sources.length === 0) {
@@ -245,11 +251,12 @@ export function render(
   const canvasHeightInUnits = getHeight(sourceDataExtent);
   const stitchContext = createCanvasContext2D(
     Math.round((pixelRatio * canvasWidthInUnits) / sourceResolution),
-    Math.round((pixelRatio * canvasHeightInUnits) / sourceResolution)
+    Math.round((pixelRatio * canvasHeightInUnits) / sourceResolution),
+    canvasPool
   );
 
-  if (!opt_interpolate) {
-    assign(stitchContext, IMAGE_SMOOTHING_DISABLED);
+  if (!interpolate) {
+    stitchContext.imageSmoothingEnabled = false;
   }
 
   const stitchScale = pixelRatio / sourceResolution;
@@ -347,7 +354,7 @@ export function render(
     context.save();
     context.beginPath();
 
-    if (isBrokenDiagonalRendering() || !opt_interpolate) {
+    if (isBrokenDiagonalRendering() || !interpolate) {
       // Make sure that all lines are horizontal or vertical
       context.moveTo(u1, v1);
       // This is the diagonal line. Do it in 4 steps
@@ -401,7 +408,10 @@ export function render(
     context.restore();
   });
 
-  if (opt_renderEdges) {
+  releaseCanvas(stitchContext);
+  canvasPool.push(stitchContext.canvas);
+
+  if (renderEdges) {
     context.save();
 
     context.globalCompositeOperation = 'source-over';

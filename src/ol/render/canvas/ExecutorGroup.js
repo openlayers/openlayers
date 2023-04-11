@@ -2,8 +2,8 @@
  * @module ol/render/canvas/ExecutorGroup
  */
 
-import BuilderType from './BuilderType.js';
 import Executor from './Executor.js';
+import {ascending} from '../../array.js';
 import {buffer, createEmpty, extendCoordinate} from '../../extent.js';
 import {
   compose as composeTransform,
@@ -11,21 +11,13 @@ import {
 } from '../../transform.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {isEmpty} from '../../obj.js';
-import {numberSafeCompareFunction} from '../../array.js';
 import {transform2D} from '../../geom/flat/transform.js';
 
 /**
  * @const
- * @type {Array<import("./BuilderType.js").default>}
+ * @type {Array<import("../canvas.js").BuilderType>}
  */
-const ORDER = [
-  BuilderType.POLYGON,
-  BuilderType.CIRCLE,
-  BuilderType.LINE_STRING,
-  BuilderType.IMAGE,
-  BuilderType.TEXT,
-  BuilderType.DEFAULT,
-];
+const ORDER = ['Polygon', 'Circle', 'LineString', 'Image', 'Text', 'Default'];
 
 class ExecutorGroup {
   /**
@@ -36,9 +28,9 @@ class ExecutorGroup {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The executor group can have overlapping geometries.
-   * @param {!Object<string, !Object<import("./BuilderType.js").default, import("../canvas.js").SerializableInstructions>>} allInstructions
+   * @param {!Object<string, !Object<import("../canvas.js").BuilderType, import("../canvas.js").SerializableInstructions>>} allInstructions
    * The serializable instructions.
-   * @param {number} [opt_renderBuffer] Optional rendering buffer.
+   * @param {number} [renderBuffer] Optional rendering buffer.
    */
   constructor(
     maxExtent,
@@ -46,7 +38,7 @@ class ExecutorGroup {
     pixelRatio,
     overlaps,
     allInstructions,
-    opt_renderBuffer
+    renderBuffer
   ) {
     /**
      * @private
@@ -76,11 +68,11 @@ class ExecutorGroup {
      * @private
      * @type {number|undefined}
      */
-    this.renderBuffer_ = opt_renderBuffer;
+    this.renderBuffer_ = renderBuffer;
 
     /**
      * @private
-     * @type {!Object<string, !Object<import("./BuilderType.js").default, import("./Executor").default>>}
+     * @type {!Object<string, !Object<import("../canvas.js").BuilderType, import("./Executor").default>>}
      */
     this.executorsByZIndex_ = {};
 
@@ -116,7 +108,7 @@ class ExecutorGroup {
   /**
    * Create executors and populate them using the provided instructions.
    * @private
-   * @param {!Object<string, !Object<import("./BuilderType.js").default, import("../canvas.js").SerializableInstructions>>} allInstructions The serializable instructions
+   * @param {!Object<string, !Object<import("../canvas.js").BuilderType, import("../canvas.js").SerializableInstructions>>} allInstructions The serializable instructions
    */
   createExecutors_(allInstructions) {
     for (const zIndex in allInstructions) {
@@ -139,7 +131,7 @@ class ExecutorGroup {
   }
 
   /**
-   * @param {Array<import("./BuilderType.js").default>} executors Executors.
+   * @param {Array<import("../canvas.js").BuilderType>} executors Executors.
    * @return {boolean} Has executors of the provided types.
    */
   hasExecutors(executors) {
@@ -189,7 +181,9 @@ class ExecutorGroup {
     if (newContext) {
       this.hitDetectionContext_ = createCanvasContext2D(
         contextSize,
-        contextSize
+        contextSize,
+        undefined,
+        {willReadFrequently: true}
       );
     }
     const context = this.hitDetectionContext_;
@@ -238,9 +232,8 @@ class ExecutorGroup {
         if (imageData[indexes[i]] > 0) {
           if (
             !declutteredFeatures ||
-            (builderType !== BuilderType.IMAGE &&
-              builderType !== BuilderType.TEXT) ||
-            declutteredFeatures.indexOf(feature) !== -1
+            (builderType !== 'Image' && builderType !== 'Text') ||
+            declutteredFeatures.includes(feature)
           ) {
             const idx = (indexes[i] - 3) / 4;
             const x = hitTolerance - (idx % contextSize);
@@ -259,7 +252,7 @@ class ExecutorGroup {
 
     /** @type {Array<number>} */
     const zs = Object.keys(this.executorsByZIndex_).map(Number);
-    zs.sort(numberSafeCompareFunction);
+    zs.sort(ascending);
 
     let i, j, executors, executor, result;
     for (i = zs.length - 1; i >= 0; --i) {
@@ -316,9 +309,9 @@ class ExecutorGroup {
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
    * @param {boolean} snapToPixel Snap point symbols and test to integer pixel.
-   * @param {Array<import("./BuilderType.js").default>} [opt_builderTypes] Ordered replay types to replay.
+   * @param {Array<import("../canvas.js").BuilderType>} [builderTypes] Ordered replay types to replay.
    *     Default is {@link module:ol/render/replay~ORDER}
-   * @param {import("rbush").default} [opt_declutterTree] Declutter tree.
+   * @param {import("rbush").default} [declutterTree] Declutter tree.
    */
   execute(
     context,
@@ -326,12 +319,12 @@ class ExecutorGroup {
     transform,
     viewRotation,
     snapToPixel,
-    opt_builderTypes,
-    opt_declutterTree
+    builderTypes,
+    declutterTree
   ) {
     /** @type {Array<number>} */
     const zs = Object.keys(this.executorsByZIndex_).map(Number);
-    zs.sort(numberSafeCompareFunction);
+    zs.sort(ascending);
 
     // setup clipping so that the parts of over-simplified geometries are not
     // visible outside the current extent when panning
@@ -340,9 +333,9 @@ class ExecutorGroup {
       this.clip(context, transform);
     }
 
-    const builderTypes = opt_builderTypes ? opt_builderTypes : ORDER;
+    builderTypes = builderTypes ? builderTypes : ORDER;
     let i, ii, j, jj, replays, replay;
-    if (opt_declutterTree) {
+    if (declutterTree) {
       zs.reverse();
     }
     for (i = 0, ii = zs.length; i < ii; ++i) {
@@ -358,7 +351,7 @@ class ExecutorGroup {
             transform,
             viewRotation,
             snapToPixel,
-            opt_declutterTree
+            declutterTree
           );
         }
       }

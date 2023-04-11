@@ -85,9 +85,8 @@ const flightsLayer = new VectorLayer({
     // render the feature with the layer style
     if (feature.get('finished')) {
       return style;
-    } else {
-      return null;
     }
+    return null;
   },
 });
 

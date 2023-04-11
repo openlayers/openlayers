@@ -38,9 +38,8 @@ const NAMED_COLOR_RE_ = /^([a-z]*)$|^hsla?\(.*\)$/i;
 export function asString(color) {
   if (typeof color === 'string') {
     return color;
-  } else {
-    return toString(color);
   }
+  return toString(color);
 }
 
 /**
@@ -56,9 +55,8 @@ function fromNamed(color) {
     const rgb = getComputedStyle(el).color;
     document.body.removeChild(el);
     return rgb;
-  } else {
-    return '';
   }
+  return '';
 }
 
 /**
@@ -124,9 +122,8 @@ export const fromString = (function () {
 export function asArray(color) {
   if (Array.isArray(color)) {
     return color;
-  } else {
-    return fromString(color);
   }
+  return fromString(color);
 }
 
 /**
@@ -168,11 +165,11 @@ function fromStringInternal_(s) {
       }
     }
     color = [r, g, b, a / 255];
-  } else if (s.indexOf('rgba(') == 0) {
+  } else if (s.startsWith('rgba(')) {
     // rgba()
     color = s.slice(5, -1).split(',').map(Number);
     normalize(color);
-  } else if (s.indexOf('rgb(') == 0) {
+  } else if (s.startsWith('rgb(')) {
     // rgb()
     color = s.slice(4, -1).split(',').map(Number);
     color.push(1);
@@ -225,7 +222,5 @@ export function isStringColor(s) {
   if (NAMED_COLOR_RE_.test(s)) {
     s = fromNamed(s);
   }
-  return (
-    HEX_COLOR_RE_.test(s) || s.indexOf('rgba(') === 0 || s.indexOf('rgb(') === 0
-  );
+  return HEX_COLOR_RE_.test(s) || s.startsWith('rgba(') || s.startsWith('rgb(');
 }

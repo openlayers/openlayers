@@ -26,10 +26,10 @@ import RegularShape from './RegularShape.js';
  */
 class CircleStyle extends RegularShape {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {radius: 5};
 
     super({
       points: Infinity,

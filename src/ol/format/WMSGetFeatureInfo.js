@@ -3,8 +3,7 @@
  */
 import GML2 from './GML2.js';
 import XMLFeature from './XMLFeature.js';
-import {assign} from '../obj.js';
-import {extend, includes} from '../array.js';
+import {extend} from '../array.js';
 import {makeArrayPusher, makeStructureNS, pushParseAndPop} from '../xml.js';
 
 /**
@@ -33,12 +32,12 @@ const layerIdentifier = '_layer';
  */
 class WMSGetFeatureInfo extends XMLFeature {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
+  constructor(options) {
     super();
 
-    const options = opt_options ? opt_options : {};
+    options = options ? options : {};
 
     /**
      * @private
@@ -100,7 +99,7 @@ class WMSGetFeatureInfo extends XMLFeature {
         const toRemove = layerIdentifier;
         const layerName = layerElement.localName.replace(toRemove, '');
 
-        if (this.layers_ && !includes(this.layers_, layerName)) {
+        if (this.layers_ && !this.layers_.includes(layerName)) {
           continue;
         }
 
@@ -151,15 +150,15 @@ class WMSGetFeatureInfo extends XMLFeature {
   /**
    * @protected
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Options.
+   * @param {import("./Feature.js").ReadOptions} [options] Options.
    * @return {Array<import("../Feature.js").default>} Features.
    */
-  readFeaturesFromNode(node, opt_options) {
-    const options = {};
-    if (opt_options) {
-      assign(options, this.getReadOptions(node, opt_options));
+  readFeaturesFromNode(node, options) {
+    const internalOptions = {};
+    if (options) {
+      Object.assign(internalOptions, this.getReadOptions(node, options));
     }
-    return this.readFeatures_(node, [options]);
+    return this.readFeatures_(node, [internalOptions]);
   }
 }
 

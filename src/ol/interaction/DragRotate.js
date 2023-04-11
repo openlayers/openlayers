@@ -30,10 +30,10 @@ import {disable} from '../rotationconstraint.js';
  */
 class DragRotate extends PointerInteraction {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
     super({
       stopDown: FALSE,
@@ -116,9 +116,8 @@ class DragRotate extends PointerInteraction {
       map.getView().beginInteraction();
       this.lastAngle_ = undefined;
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 }
 

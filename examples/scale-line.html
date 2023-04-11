@@ -7,6 +7,7 @@ docs: >
 tags: "scale-line, openstreetmap"
 ---
 <div id="map" class="map"></div>
+<label for="units">Units:</label>
 <select id="units">
   <option value="degrees">degrees</option>
   <option value="imperial">imperial inch</option>
@@ -15,18 +16,17 @@ tags: "scale-line, openstreetmap"
   <option value="metric" selected>metric</option>
 </select>
 
+<label for="type">Type:</label>
 <select id="type">
   <option value="scaleline">ScaleLine</option>
   <option value="scalebar">ScaleBar</option>
 </select>
 
-<select id="steps" style="display:none">
-  <option value=2>2 steps</option>
-  <option value=4 selected>4 steps</option>
-  <option value=6>6 steps</option>
-  <option value=8>8 steps</option>
-</select>
+<div id="scaleBarOptions">
+  <label for="steps">Steps:</label>
+  <input id="steps" type="range" value="4" min="1" max="8">
 
-<div id="showScaleTextDiv" style="display:none">
   <label><input type="checkbox" id="showScaleText" checked> Show scale text</label>
+
+  <label><input type="checkbox" id="invertColors"> Invert colors</label>
 </div>

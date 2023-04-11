@@ -8,7 +8,7 @@
  * @param {number} end End.
  * @param {number} stride Stride.
  * @param {import("../../transform.js").Transform} transform Transform.
- * @param {Array<number>} [opt_dest] Destination.
+ * @param {Array<number>} [dest] Destination.
  * @return {Array<number>} Transformed coordinates.
  */
 export function transform2D(
@@ -17,9 +17,9 @@ export function transform2D(
   end,
   stride,
   transform,
-  opt_dest
+  dest
 ) {
-  const dest = opt_dest ? opt_dest : [];
+  dest = dest ? dest : [];
   let i = 0;
   for (let j = offset; j < end; j += stride) {
     const x = flatCoordinates[j];
@@ -27,7 +27,7 @@ export function transform2D(
     dest[i++] = transform[0] * x + transform[2] * y + transform[4];
     dest[i++] = transform[1] * x + transform[3] * y + transform[5];
   }
-  if (opt_dest && dest.length != i) {
+  if (dest && dest.length != i) {
     dest.length = i;
   }
   return dest;
@@ -40,7 +40,7 @@ export function transform2D(
  * @param {number} stride Stride.
  * @param {number} angle Angle.
  * @param {Array<number>} anchor Rotation anchor point.
- * @param {Array<number>} [opt_dest] Destination.
+ * @param {Array<number>} [dest] Destination.
  * @return {Array<number>} Transformed coordinates.
  */
 export function rotate(
@@ -50,9 +50,9 @@ export function rotate(
   stride,
   angle,
   anchor,
-  opt_dest
+  dest
 ) {
-  const dest = opt_dest ? opt_dest : [];
+  dest = dest ? dest : [];
   const cos = Math.cos(angle);
   const sin = Math.sin(angle);
   const anchorX = anchor[0];
@@ -67,7 +67,7 @@ export function rotate(
       dest[i++] = flatCoordinates[k];
     }
   }
-  if (opt_dest && dest.length != i) {
+  if (dest && dest.length != i) {
     dest.length = i;
   }
   return dest;
@@ -82,7 +82,7 @@ export function rotate(
  * @param {number} sx Scale factor in the x-direction.
  * @param {number} sy Scale factor in the y-direction.
  * @param {Array<number>} anchor Scale anchor point.
- * @param {Array<number>} [opt_dest] Destination.
+ * @param {Array<number>} [dest] Destination.
  * @return {Array<number>} Transformed coordinates.
  */
 export function scale(
@@ -93,9 +93,9 @@ export function scale(
   sx,
   sy,
   anchor,
-  opt_dest
+  dest
 ) {
-  const dest = opt_dest ? opt_dest : [];
+  dest = dest ? dest : [];
   const anchorX = anchor[0];
   const anchorY = anchor[1];
   let i = 0;
@@ -108,7 +108,7 @@ export function scale(
       dest[i++] = flatCoordinates[k];
     }
   }
-  if (opt_dest && dest.length != i) {
+  if (dest && dest.length != i) {
     dest.length = i;
   }
   return dest;
@@ -121,7 +121,7 @@ export function scale(
  * @param {number} stride Stride.
  * @param {number} deltaX Delta X.
  * @param {number} deltaY Delta Y.
- * @param {Array<number>} [opt_dest] Destination.
+ * @param {Array<number>} [dest] Destination.
  * @return {Array<number>} Transformed coordinates.
  */
 export function translate(
@@ -131,9 +131,9 @@ export function translate(
   stride,
   deltaX,
   deltaY,
-  opt_dest
+  dest
 ) {
-  const dest = opt_dest ? opt_dest : [];
+  dest = dest ? dest : [];
   let i = 0;
   for (let j = offset; j < end; j += stride) {
     dest[i++] = flatCoordinates[j] + deltaX;
@@ -142,7 +142,7 @@ export function translate(
       dest[i++] = flatCoordinates[k];
     }
   }
-  if (opt_dest && dest.length != i) {
+  if (dest && dest.length != i) {
     dest.length = i;
   }
   return dest;

@@ -31,12 +31,12 @@ describe('ol.interaction.KeyboardZoom', function () {
         preventDefault: Event.prototype.preventDefault,
       });
 
-      event.originalEvent.charCode = '+'.charCodeAt(0);
+      event.originalEvent.key = '+';
       map.handleMapBrowserEvent(event);
       expect(spy.getCall(0).args[0].resolution).to.eql(1);
       view.setResolution(2);
 
-      event.originalEvent.charCode = '-'.charCodeAt(0);
+      event.originalEvent.key = '-';
       map.handleMapBrowserEvent(event);
       expect(spy.getCall(1).args[0].resolution).to.eql(4);
       view.setResolution(2);
@@ -53,7 +53,7 @@ describe('ol.interaction.KeyboardZoom', function () {
         preventDefault: Event.prototype.preventDefault,
       });
 
-      event.originalEvent.charCode = '+'.charCodeAt(0);
+      event.originalEvent.key = '+';
       map.handleMapBrowserEvent(event);
       expect(spy.called).to.be(false);
     });

@@ -1,0 +1,39 @@
+---
+layout: example.html
+title: Multiple COG sources
+shortdesc: Displaying two Sentinel 2 COGs with different projections
+docs: >
+  Two Sentinel 2 COGs each with sources for visible red, green and blue bands,
+  and a near-infrared band.  The adjacent regions are at the edge of their respective
+  UTM zones so at least one COG must be reprojected to be displayed on the same map.
+tags: "cog, webgl, projection, reprojection"
+---
+<div id="map" class="map"></div>
+<div class="controls">
+  <label for="red">Red channel</label>
+  <select id="red">
+    <option value="1" selected>visible red</option>
+    <option value="2">visible green</option>
+    <option value="3">visible blue</option>
+    <option value="4">near infrared</option>
+  </select>
+  <label></label>
+
+  <label for="green">Green channel</label>
+  <select id="green">
+    <option value="1">visible red</option>
+    <option value="2" selected>visible green</option>
+    <option value="3">visible blue</option>
+    <option value="4">near infrared</option>
+  </select>
+  <label></label>
+
+  <label for="blue">Blue channel</label>
+  <select id="blue">
+    <option value="1">visible red</option>
+    <option value="2">visible green</option>
+    <option value="3" selected>visible blue</option>
+    <option value="4">near infrared</option>
+  </select>
+  <label></label>
+</div>

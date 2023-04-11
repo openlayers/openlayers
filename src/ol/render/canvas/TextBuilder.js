@@ -3,8 +3,6 @@
  */
 import CanvasBuilder from './Builder.js';
 import CanvasInstruction from './Instruction.js';
-import GeometryType from '../../geom/GeometryType.js';
-import TextPlacement from '../../style/TextPlacement.js';
 import {asColorLike} from '../../colorlike.js';
 import {
   defaultFillStyle,
@@ -23,6 +21,7 @@ import {
 } from '../canvas.js';
 import {getUid} from '../../util.js';
 import {intersects} from '../../extent.js';
+import {lineChunk} from '../../geom/flat/linechunk.js';
 import {matchingChunk} from '../../geom/flat/straightchunk.js';
 /**
  * @const
@@ -178,28 +177,28 @@ class CanvasTextBuilder extends CanvasBuilder {
     let stride = geometry.getStride();
 
     if (
-      textState.placement === TextPlacement.LINE &&
-      (geometryType == GeometryType.LINE_STRING ||
-        geometryType == GeometryType.MULTI_LINE_STRING ||
-        geometryType == GeometryType.POLYGON ||
-        geometryType == GeometryType.MULTI_POLYGON)
+      textState.placement === 'line' &&
+      (geometryType == 'LineString' ||
+        geometryType == 'MultiLineString' ||
+        geometryType == 'Polygon' ||
+        geometryType == 'MultiPolygon')
     ) {
       if (!intersects(this.getBufferedMaxExtent(), geometry.getExtent())) {
         return;
       }
       let ends;
       flatCoordinates = geometry.getFlatCoordinates();
-      if (geometryType == GeometryType.LINE_STRING) {
+      if (geometryType == 'LineString') {
         ends = [flatCoordinates.length];
-      } else if (geometryType == GeometryType.MULTI_LINE_STRING) {
+      } else if (geometryType == 'MultiLineString') {
         ends = /** @type {import("../../geom/MultiLineString.js").default} */ (
           geometry
         ).getEnds();
-      } else if (geometryType == GeometryType.POLYGON) {
+      } else if (geometryType == 'Polygon') {
         ends = /** @type {import("../../geom/Polygon.js").default} */ (geometry)
           .getEnds()
           .slice(0, 1);
-      } else if (geometryType == GeometryType.MULTI_POLYGON) {
+      } else if (geometryType == 'MultiPolygon') {
         const endss =
           /** @type {import("../../geom/MultiPolygon.js").default} */ (
             geometry
@@ -210,63 +209,78 @@ class CanvasTextBuilder extends CanvasBuilder {
         }
       }
       this.beginGeometry(geometry, feature);
-      const textAlign = textState.textAlign;
+      const repeat = textState.repeat;
+      const textAlign = repeat ? undefined : textState.textAlign;
       // No `justify` support for line placement.
       let flatOffset = 0;
-      let flatEnd;
       for (let o = 0, oo = ends.length; o < oo; ++o) {
-        if (textAlign == undefined) {
-          const range = matchingChunk(
-            textState.maxAngle,
+        let chunks;
+        if (repeat) {
+          chunks = lineChunk(
+            repeat * this.resolution,
             flatCoordinates,
             flatOffset,
             ends[o],
             stride
           );
-          flatOffset = range[0];
-          flatEnd = range[1];
         } else {
-          flatEnd = ends[o];
+          chunks = [flatCoordinates.slice(flatOffset, ends[o])];
         }
-        for (let i = flatOffset; i < flatEnd; i += stride) {
-          coordinates.push(flatCoordinates[i], flatCoordinates[i + 1]);
+        for (let c = 0, cc = chunks.length; c < cc; ++c) {
+          const chunk = chunks[c];
+          let chunkBegin = 0;
+          let chunkEnd = chunk.length;
+          if (textAlign == undefined) {
+            const range = matchingChunk(
+              textState.maxAngle,
+              chunk,
+              0,
+              chunk.length,
+              2
+            );
+            chunkBegin = range[0];
+            chunkEnd = range[1];
+          }
+          for (let i = chunkBegin; i < chunkEnd; i += stride) {
+            coordinates.push(chunk[i], chunk[i + 1]);
+          }
+          const end = coordinates.length;
+          flatOffset = ends[o];
+          this.drawChars_(begin, end);
+          begin = end;
         }
-        const end = coordinates.length;
-        flatOffset = ends[o];
-        this.drawChars_(begin, end);
-        begin = end;
       }
       this.endGeometry(feature);
     } else {
       let geometryWidths = textState.overflow ? null : [];
       switch (geometryType) {
-        case GeometryType.POINT:
-        case GeometryType.MULTI_POINT:
+        case 'Point':
+        case 'MultiPoint':
           flatCoordinates =
             /** @type {import("../../geom/MultiPoint.js").default} */ (
               geometry
             ).getFlatCoordinates();
           break;
-        case GeometryType.LINE_STRING:
+        case 'LineString':
           flatCoordinates =
             /** @type {import("../../geom/LineString.js").default} */ (
               geometry
             ).getFlatMidpoint();
           break;
-        case GeometryType.CIRCLE:
+        case 'Circle':
           flatCoordinates =
             /** @type {import("../../geom/Circle.js").default} */ (
               geometry
             ).getCenter();
           break;
-        case GeometryType.MULTI_LINE_STRING:
+        case 'MultiLineString':
           flatCoordinates =
             /** @type {import("../../geom/MultiLineString.js").default} */ (
               geometry
             ).getFlatMidpoints();
           stride = 2;
           break;
-        case GeometryType.POLYGON:
+        case 'Polygon':
           flatCoordinates =
             /** @type {import("../../geom/Polygon.js").default} */ (
               geometry
@@ -276,7 +290,7 @@ class CanvasTextBuilder extends CanvasBuilder {
           }
           stride = 3;
           break;
-        case GeometryType.MULTI_POLYGON:
+        case 'MultiPolygon':
           const interiorPoints =
             /** @type {import("../../geom/MultiPolygon.js").default} */ (
               geometry
@@ -526,9 +540,9 @@ class CanvasTextBuilder extends CanvasBuilder {
 
   /**
    * @param {import("../../style/Text.js").default} textStyle Text style.
-   * @param {Object} [opt_sharedData] Shared data.
+   * @param {Object} [sharedData] Shared data.
    */
-  setTextStyle(textStyle, opt_sharedData) {
+  setTextStyle(textStyle, sharedData) {
     let textState, fillState, strokeState;
     if (!textStyle) {
       this.text_ = '';
@@ -585,6 +599,7 @@ class CanvasTextBuilder extends CanvasBuilder {
       textState.maxAngle = textStyle.getMaxAngle();
       textState.placement = textStyle.getPlacement();
       textState.textAlign = textStyle.getTextAlign();
+      textState.repeat = textStyle.getRepeat();
       textState.justify = textStyle.getJustify();
       textState.textBaseline =
         textStyle.getTextBaseline() || defaultTextBaseline;
@@ -622,6 +637,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         textState.font +
         textState.scale +
         (textState.textAlign || '?') +
+        (textState.repeat || '?') +
         (textState.justify || '?') +
         (textState.textBaseline || '?');
       this.fillKey_ = fillState
@@ -630,7 +646,7 @@ class CanvasTextBuilder extends CanvasBuilder {
           : '|' + getUid(fillState.fillStyle)
         : '';
     }
-    this.declutterImageWithText_ = opt_sharedData;
+    this.declutterImageWithText_ = sharedData;
   }
 }
 

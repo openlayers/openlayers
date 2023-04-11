@@ -1,11 +1,11 @@
 <?js
     var params = obj;
-    
+
     /* sort subparams under their parent params (like opts.classname) */
     var parentParam = null;
     params.forEach(function(param, i) {
         if (!param) { return; }
-        if ( parentParam && param.name && param.name.indexOf(parentParam.name + '.') === 0 ) {
+        if (parentParam && param.name && param.name.startsWith(parentParam.name + '.')) {
             param.name = param.name.substr(parentParam.name.length+1);
             parentParam.subparams = parentParam.subparams || [];
             parentParam.subparams.push(param);
@@ -15,30 +15,30 @@
             parentParam = param;
         }
     });
-    
+
     /* determine if we need extra "attributes" column */
     params.hasAttributes = false;
     params.hasName = false;
-    
+
     var colspan = 2;
     params.forEach(function(param) {
         if (!param) { return; }
-        if (param.type && param.type.names && param.type.names.indexOf('undefined') !== -1) {
+        if (param.type && param.type.names && param.type.names.includes('undefined')) {
             param.optional = true;
         }
-        if (param.name.indexOf('var_') == 0) {
+        if (param.name.startsWith('var_')) {
             params.hasAttributes = true;
             param.variable = true;
         }
-        
+
         if (param.optional || param.nullable) {
             params.hasAttributes = true;
         }
-        
+
         if (param.name) {
             params.hasName = true;
         }
-        
+
     });
 ?>
 
@@ -48,29 +48,45 @@
 		<?js if (params.hasName) {?>
 		<th>Name</th>
 		<?js } ?>
-		
+
 		<th>Type</th>
-		
+
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-	
+
 	<tbody>
 	<?js
         var self = this;
+
+        if (params[0].name === 'options' && params[0].subparams) {
+            var onlyOptions = true;
+            for (var i = 1; i < params.length; ++i) {
+                if (params[i]) {
+                    onlyOptions = false;
+                    break;
+                }
+            }
+            if (onlyOptions) {
+                var hasName = params.hasName;
+                params = params[0].subparams;
+                params.hasName = hasName;
+            }
+        }
+
 	    params.forEach(function(param) {
 	        if (!param) { return; }
 	?>
-	
+
         <tr class="<?js= (param.stability && param.stability !== 'stable') ? 'unstable' : '' ?>">
             <?js if (params.hasName) {?>
-                <td class="name"><code><?js= param.name.replace(/^opt_/, "") ?></code></td>
+                <td class="name"><code><?js= param.name ?></code></td>
             <?js } ?>
-            
+
             <?js if (!param.subparams) {?>
             <td class="type">
             <?js if (param.type && param.type.names) {?>
-                <?js= self.partial('type.tmpl', param.type.names) + (param.optional && typeof param.defaultvalue === 'undefined' && param.type.names.indexOf('undefined') === -1 ? ' | undefined' : '') ?>
+                <?js= self.partial('type.tmpl', param.type.names) + (param.optional && typeof param.defaultvalue === 'undefined' && !param.type.names.includes('undefined') ? ' | undefined' : '') ?>
                 <?js if (typeof param.defaultvalue !== 'undefined') { ?>
                     (defaults to <?js= self.htmlsafe(param.defaultvalue) ?>)
                 <?js } ?>
@@ -87,7 +103,7 @@
                 <?js= self.partial('params.tmpl', param.subparams) ?>
             <?js } ?></td>
         </tr>
-	
+
 	<?js }); ?>
 	</tbody>
 </table>

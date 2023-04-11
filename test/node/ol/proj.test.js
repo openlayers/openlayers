@@ -1,5 +1,4 @@
 import Projection from '../../../src/ol/proj/Projection.js';
-import Units from '../../../src/ol/proj/Units.js';
 import View from '../../../src/ol/View.js';
 import expect from '../expect.js';
 import proj4 from 'proj4';
@@ -159,13 +158,13 @@ describe('ol/proj.js', function () {
   describe('fromUserResolution()', function () {
     it("adjusts a resolution for the user projection's units", function () {
       useGeographic();
-      const user = 1 / METERS_PER_UNIT['degrees'];
+      const user = 1 / METERS_PER_UNIT.degrees;
       const resolution = fromUserResolution(user, 'EPSG:3857');
       expect(resolution).to.roughlyEqual(1, 1e-9);
     });
 
     it('returns the original if no user projection is set', function () {
-      const user = METERS_PER_UNIT['meters'];
+      const user = METERS_PER_UNIT.meters;
       const resolution = fromUserResolution(user, 'EPSG:3857');
       expect(resolution).to.eql(user);
     });
@@ -176,11 +175,11 @@ describe('ol/proj.js', function () {
       useGeographic();
       const dest = 1;
       const resolution = toUserResolution(dest, 'EPSG:3857');
-      expect(resolution).to.eql(1 / METERS_PER_UNIT['degrees']);
+      expect(resolution).to.eql(1 / METERS_PER_UNIT.degrees);
     });
 
     it('returns the original if no user projection is set', function () {
-      const dest = METERS_PER_UNIT['degrees'];
+      const dest = METERS_PER_UNIT.degrees;
       const resolution = toUserResolution(dest, 'EPSG:3857');
       expect(resolution).to.eql(dest);
     });
@@ -435,7 +434,7 @@ describe('ol/proj.js', function () {
     it('returns the correct point resolution for EPSG:3857 with custom units', function () {
       let pointResolution = getPointResolution(
         'EPSG:3857',
-        METERS_PER_UNIT['degrees'],
+        METERS_PER_UNIT.degrees,
         [0, 0],
         'degrees'
       );
@@ -506,7 +505,7 @@ describe('ol/proj.js', function () {
       const proj = getProjection('EPSG:4258');
       expect(proj.getCode()).to.eql('EPSG:4258');
       expect(proj.getUnits()).to.eql('degrees');
-      expect(proj.getMetersPerUnit()).to.eql(METERS_PER_UNIT[Units.DEGREES]);
+      expect(proj.getMetersPerUnit()).to.eql(METERS_PER_UNIT.degrees);
 
       delete proj4.defs['EPSG:4258'];
     });

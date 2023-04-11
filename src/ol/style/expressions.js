@@ -6,7 +6,6 @@
 import PaletteTexture from '../webgl/PaletteTexture.js';
 import {Uniforms} from '../renderer/webgl/TileLayer.js';
 import {asArray, fromString, isStringColor} from '../color.js';
-import {log2} from '../math.js';
 
 /**
  * Base type used for literal style parameters; can be a number literal or the output of an operator,
@@ -183,7 +182,7 @@ export function getValueType(value) {
  * @return {boolean} True if only one type flag is enabled, false if zero or multiple
  */
 export function isTypeUnique(valueType) {
-  return log2(valueType) % 1 === 0;
+  return Math.log2(valueType) % 1 === 0;
 }
 
 /**
@@ -205,7 +204,7 @@ export function isTypeUnique(valueType) {
  */
 export function numberToGlsl(v) {
   const s = v.toString();
-  return s.indexOf('.') === -1 ? s + '.0' : s;
+  return s.includes('.') ? s : s + '.0';
 }
 
 /**
@@ -396,7 +395,7 @@ Operators['get'] = {
     assertArgsCount(args, 1);
     assertString(args[0]);
     const value = args[0].toString();
-    if (context.attributes.indexOf(value) === -1) {
+    if (!context.attributes.includes(value)) {
       context.attributes.push(value);
     }
     const prefix = context.inFragmentShader ? 'v_' : 'a_';
@@ -421,7 +420,7 @@ Operators['var'] = {
     assertArgsCount(args, 1);
     assertString(args[0]);
     const value = args[0].toString();
-    if (context.variables.indexOf(value) === -1) {
+    if (!context.variables.includes(value)) {
       context.variables.push(value);
     }
     return uniformNameForVariable(value);
@@ -504,7 +503,7 @@ Operators['band'] = {
       for (let i = 0; i < bandCount; i++) {
         const colorIndex = Math.floor(i / 4);
         let bandIndex = i % 4;
-        if (bandIndex === bandCount - 1 && bandIndex === 1) {
+        if (i === bandCount - 1 && bandIndex === 1) {
           // LUMINANCE_ALPHA - band 1 assigned to rgb and band 2 assigned to alpha
           bandIndex = 3;
         }
@@ -567,12 +566,9 @@ Operators['*'] = {
     return ValueTypes.NUMBER;
   },
   toGlsl: function (context, args) {
-    assertArgsCount(args, 2);
+    assertArgsMinCount(args, 2);
     assertNumbers(args);
-    return `(${expressionToGlsl(context, args[0])} * ${expressionToGlsl(
-      context,
-      args[1]
-    )})`;
+    return `(${args.map((arg) => expressionToGlsl(context, arg)).join(' * ')})`;
   },
 };
 
@@ -595,12 +591,10 @@ Operators['+'] = {
     return ValueTypes.NUMBER;
   },
   toGlsl: function (context, args) {
-    assertArgsCount(args, 2);
+    assertArgsMinCount(args, 2);
     assertNumbers(args);
-    return `(${expressionToGlsl(context, args[0])} + ${expressionToGlsl(
-      context,
-      args[1]
-    )})`;
+
+    return `(${args.map((arg) => expressionToGlsl(context, arg)).join(' + ')})`;
   },
 };
 
@@ -930,7 +924,7 @@ Operators['interpolate'] = {
     }
     return type;
   },
-  toGlsl: function (context, args, opt_typeHint) {
+  toGlsl: function (context, args, typeHint) {
     assertArgsEven(args);
     assertArgsMinCount(args, 6);
 
@@ -956,7 +950,7 @@ Operators['interpolate'] = {
     }
 
     // compute input/output types
-    const typeHint = opt_typeHint !== undefined ? opt_typeHint : ValueTypes.ANY;
+    typeHint = typeHint !== undefined ? typeHint : ValueTypes.ANY;
     const outputType = Operators['interpolate'].getReturnType(args) & typeHint;
     assertUniqueInferredType(args, outputType);
 
@@ -985,11 +979,11 @@ Operators['match'] = {
     type = type & getValueType(args[args.length - 1]);
     return type;
   },
-  toGlsl: function (context, args, opt_typeHint) {
+  toGlsl: function (context, args, typeHint) {
     assertArgsEven(args);
     assertArgsMinCount(args, 4);
 
-    const typeHint = opt_typeHint !== undefined ? opt_typeHint : ValueTypes.ANY;
+    typeHint = typeHint !== undefined ? typeHint : ValueTypes.ANY;
     const outputType = Operators['match'].getReturnType(args) & typeHint;
     assertUniqueInferredType(args, outputType);
 
@@ -1018,11 +1012,11 @@ Operators['case'] = {
     type = type & getValueType(args[args.length - 1]);
     return type;
   },
-  toGlsl: function (context, args, opt_typeHint) {
+  toGlsl: function (context, args, typeHint) {
     assertArgsOdd(args);
     assertArgsMinCount(args, 3);
 
-    const typeHint = opt_typeHint !== undefined ? opt_typeHint : ValueTypes.ANY;
+    typeHint = typeHint !== undefined ? typeHint : ValueTypes.ANY;
     const outputType = Operators['case'].getReturnType(args) & typeHint;
     assertUniqueInferredType(args, outputType);
     for (let i = 0; i < args.length - 1; i += 2) {

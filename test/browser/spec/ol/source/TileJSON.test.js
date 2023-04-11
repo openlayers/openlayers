@@ -27,14 +27,6 @@ describe('ol/source/TileJSON', function () {
       });
       expect(source.getInterpolate()).to.be(false);
     });
-
-    it('is false if constructed with imageSmoothing: false', function () {
-      const source = new TileJSON({
-        imageSmoothing: false,
-        url: 'spec/ol/data/tilejson.json',
-      });
-      expect(source.getInterpolate()).to.be(false);
-    });
   });
 
   describe('#getTileJSON', function () {

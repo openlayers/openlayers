@@ -1,4 +1,3 @@
-import GeometryType from '../../../../src/ol/geom/GeometryType.js';
 import RenderFeature, {
   toFeature,
   toGeometry,
@@ -141,7 +140,7 @@ describe('ol/render/Feature', function () {
         ],
       ]);
       const renderFeature = new RenderFeature(
-        GeometryType.POLYGON,
+        'Polygon',
         geometry.getFlatCoordinates().slice(),
         geometry.getEndss().flat(1)
       );

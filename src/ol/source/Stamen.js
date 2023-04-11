@@ -21,11 +21,11 @@ const ATTRIBUTIONS = [
  */
 const LayerConfig = {
   'terrain': {
-    extension: 'jpg',
+    extension: 'png',
     opaque: true,
   },
   'terrain-background': {
-    extension: 'jpg',
+    extension: 'png',
     opaque: true,
   },
   'terrain-labels': {
@@ -87,7 +87,6 @@ const ProviderConfig = {
 /**
  * @typedef {Object} Options
  * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
- * @property {boolean} [imageSmoothing=true] Deprecated.  Use the `interpolate` option instead.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {string} layer Layer name.
@@ -121,12 +120,6 @@ class Stamen extends XYZ {
    * @param {Options} options Stamen options.
    */
   constructor(options) {
-    let interpolate =
-      options.imageSmoothing !== undefined ? options.imageSmoothing : true;
-    if (options.interpolate !== undefined) {
-      interpolate = options.interpolate;
-    }
-
     const i = options.layer.indexOf('-');
     const provider = i == -1 ? options.layer : options.layer.slice(0, i);
     const providerConfig = ProviderConfig[provider];
@@ -145,7 +138,7 @@ class Stamen extends XYZ {
       attributions: ATTRIBUTIONS,
       cacheSize: options.cacheSize,
       crossOrigin: 'anonymous',
-      interpolate: interpolate,
+      interpolate: options.interpolate,
       maxZoom:
         options.maxZoom != undefined ? options.maxZoom : providerConfig.maxZoom,
       minZoom:

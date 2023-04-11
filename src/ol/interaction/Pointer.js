@@ -3,7 +3,6 @@
  */
 import Interaction from './Interaction.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
-import {getValues} from '../obj.js';
 
 /**
  * @typedef {Object} Options
@@ -45,10 +44,10 @@ import {getValues} from '../obj.js';
  */
 class PointerInteraction extends Interaction {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
     super(
       /** @type {import("./Interaction.js").InteractionOptions} */ (options)
@@ -79,12 +78,6 @@ class PointerInteraction extends Interaction {
      * @protected
      */
     this.handlingDownUpSequence = false;
-
-    /**
-     * @type {!Object<string, PointerEvent>}
-     * @private
-     */
-    this.trackedPointers_ = {};
 
     /**
      * @type {Array<PointerEvent>}
@@ -189,26 +182,15 @@ class PointerInteraction extends Interaction {
    * @private
    */
   updateTrackedPointers_(mapBrowserEvent) {
-    if (isPointerDraggingEvent(mapBrowserEvent)) {
-      const event = mapBrowserEvent.originalEvent;
-
-      const id = event.pointerId.toString();
-      if (mapBrowserEvent.type == MapBrowserEventType.POINTERUP) {
-        delete this.trackedPointers_[id];
-      } else if (mapBrowserEvent.type == MapBrowserEventType.POINTERDOWN) {
-        this.trackedPointers_[id] = event;
-      } else if (id in this.trackedPointers_) {
-        // update only when there was a pointerdown event for this pointer
-        this.trackedPointers_[id] = event;
-      }
-      this.targetPointers = getValues(this.trackedPointers_);
+    if (mapBrowserEvent.activePointers) {
+      this.targetPointers = mapBrowserEvent.activePointers;
     }
   }
 }
 
 /**
  * @param {Array<PointerEvent>} pointerEvents List of events.
- * @return {import("../pixel.js").Pixel} Centroid pixel.
+ * @return {{clientX: number, clientY: number}} Centroid pixel.
  */
 export function centroid(pointerEvents) {
   const length = pointerEvents.length;
@@ -218,21 +200,7 @@ export function centroid(pointerEvents) {
     clientX += pointerEvents[i].clientX;
     clientY += pointerEvents[i].clientY;
   }
-  return [clientX / length, clientY / length];
-}
-
-/**
- * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
- * @return {boolean} Whether the event is a pointerdown, pointerdrag
- *     or pointerup event.
- */
-function isPointerDraggingEvent(mapBrowserEvent) {
-  const type = mapBrowserEvent.type;
-  return (
-    type === MapBrowserEventType.POINTERDOWN ||
-    type === MapBrowserEventType.POINTERDRAG ||
-    type === MapBrowserEventType.POINTERUP
-  );
+  return {clientX: clientX / length, clientY: clientY / length};
 }
 
 export default PointerInteraction;

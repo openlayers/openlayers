@@ -1,5 +1,6 @@
+import Map from '../../../../../src/ol/Map.js';
 import MapboxVectorLayer from '../../../../../src/ol/layer/MapboxVector.js';
-import {asString} from '../../../../../src/ol/color.js';
+import View from '../../../../../src/ol/View.js';
 import {unByKey} from '../../../../../src/ol/Observable.js';
 
 describe('ol/layer/MapboxVector', () => {
@@ -90,77 +91,18 @@ describe('ol/layer/MapboxVector', () => {
   });
 
   describe('background', function () {
-    it('configures the layer with a background function', function (done) {
-      const layer = new MapboxVectorLayer({
-        styleUrl:
-          'data:,' +
-          encodeURIComponent(
-            JSON.stringify({
-              version: 8,
-              sources: {
-                'foo': {
-                  tiles: ['/spec/ol/data/{z}-{x}-{y}.vector.pbf'],
-                  type: 'vector',
-                },
-              },
-              layers: [
-                {
-                  id: 'background',
-                  type: 'background',
-                  paint: {
-                    'background-color': '#ff0000',
-                    'background-opacity': 0.8,
-                  },
-                },
-              ],
-            })
-          ),
-      });
-      const source = layer.getSource();
-      const key = source.on('change', function () {
-        if (source.getState() === 'ready') {
-          unByKey(key);
-          expect(layer.getBackground()(1)).to.eql(asString([255, 0, 0, 0.8]));
-          done();
-        }
+    let map;
+    beforeEach(function () {
+      map = new Map({
+        target: createMapDiv(20, 20),
+        view: new View({
+          zoom: 2,
+          center: [0, 0],
+        }),
       });
     });
-
-    it("avoids the style's background with `background: false`", function (done) {
-      const layer = new MapboxVectorLayer({
-        styleUrl:
-          'data:,' +
-          encodeURIComponent(
-            JSON.stringify({
-              version: 8,
-              sources: {
-                'foo': {
-                  tiles: ['/spec/ol/data/{z}-{x}-{y}.vector.pbf'],
-                  type: 'vector',
-                },
-              },
-              layers: [
-                {
-                  id: 'background',
-                  type: 'background',
-                  paint: {
-                    'background-color': '#ff0000',
-                    'background-opacity': 0.8,
-                  },
-                },
-              ],
-            })
-          ),
-        background: false,
-      });
-      const source = layer.getSource();
-      const key = source.on('change', function () {
-        if (source.getState() === 'ready') {
-          unByKey(key);
-          expect(layer.getBackground()).to.be(false);
-          done();
-        }
-      });
+    this.afterEach(function () {
+      disposeMap(map);
     });
 
     it('works for styles without background', function (done) {
@@ -191,13 +133,13 @@ describe('ol/layer/MapboxVector', () => {
             })
           ),
       });
-      const source = layer.getSource();
-      const key = source.on('change', function () {
-        if (source.getState() === 'ready') {
-          unByKey(key);
-          expect(layer.getBackground()).to.be(undefined);
+      map.addLayer(layer);
+      layer.getSource().once('change', () => {
+        layer.once('postrender', (e) => {
+          const pixel = Array.from(e.context.getImageData(0, 0, 1, 1).data);
+          expect(pixel).to.eql([0, 0, 0, 0]);
           done();
-        }
+        });
       });
     });
   });

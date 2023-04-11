@@ -25,14 +25,14 @@ import {wrapX} from '../coordinate.js';
  */
 class MapRenderer extends Disposable {
   /**
-   * @param {import("../PluggableMap.js").default} map Map.
+   * @param {import("../Map.js").default} map Map.
    */
   constructor(map) {
     super();
 
     /**
      * @private
-     * @type {import("../PluggableMap.js").default}
+     * @type {import("../Map.js").default}
      */
     this.map_ = map;
   }
@@ -40,14 +40,14 @@ class MapRenderer extends Disposable {
   /**
    * @abstract
    * @param {import("../render/EventType.js").default} type Event type.
-   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../Map.js").FrameState} frameState Frame state.
    */
   dispatchRenderEvent(type, frameState) {
     abstract();
   }
 
   /**
-   * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
+   * @param {import("../Map.js").FrameState} frameState FrameState.
    * @protected
    */
   calculateMatrices2D(frameState) {
@@ -71,7 +71,7 @@ class MapRenderer extends Disposable {
 
   /**
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
-   * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
+   * @param {import("../Map.js").FrameState} frameState FrameState.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {boolean} checkWrapped Check for wrapped geometries.
    * @param {import("./vector.js").FeatureCallback<T>} callback Feature callback.
@@ -171,26 +171,8 @@ class MapRenderer extends Disposable {
   }
 
   /**
-   * @abstract
-   * @param {import("../pixel.js").Pixel} pixel Pixel.
-   * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
-   * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {function(import("../layer/Layer.js").default<import("../source/Source").default>, (Uint8ClampedArray|Uint8Array)): T} callback Layer
-   *     callback.
-   * @param {function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean} layerFilter Layer filter
-   *     function, only layers which are visible and for which this function
-   *     returns `true` will be tested for features.  By default, all visible
-   *     layers will be tested.
-   * @return {T|undefined} Callback result.
-   * @template T
-   */
-  forEachLayerAtPixel(pixel, frameState, hitTolerance, callback, layerFilter) {
-    return abstract();
-  }
-
-  /**
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
-   * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
+   * @param {import("../Map.js").FrameState} frameState FrameState.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {boolean} checkWrapped Check for wrapped geometries.
    * @param {function(this: U, import("../layer/Layer.js").default): boolean} layerFilter Layer filter
@@ -224,7 +206,7 @@ class MapRenderer extends Disposable {
   }
 
   /**
-   * @return {import("../PluggableMap.js").default} Map.
+   * @return {import("../Map.js").default} Map.
    */
   getMap() {
     return this.map_;
@@ -233,14 +215,14 @@ class MapRenderer extends Disposable {
   /**
    * Render.
    * @abstract
-   * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {?import("../Map.js").FrameState} frameState Frame state.
    */
   renderFrame(frameState) {
     abstract();
   }
 
   /**
-   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../Map.js").FrameState} frameState Frame state.
    * @protected
    */
   scheduleExpireIconCache(frameState) {
@@ -251,8 +233,8 @@ class MapRenderer extends Disposable {
 }
 
 /**
- * @param {import("../PluggableMap.js").default} map Map.
- * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+ * @param {import("../Map.js").default} map Map.
+ * @param {import("../Map.js").FrameState} frameState Frame state.
  */
 function expireIconCache(map, frameState) {
   iconImageCache.expire();

@@ -228,17 +228,13 @@ describe('ol.source.VectorTile', function () {
   });
 
   describe('different source and render tile grids', function () {
-    let source, map, loaded, requested, target;
+    let source, map, loaded, target;
 
     beforeEach(function () {
       loaded = [];
-      requested = 0;
 
       function tileUrlFunction(tileCoord) {
-        ++requested;
-        if (tileCoord.toString() == '5,13,-29') {
-          return tileCoord.join('/');
-        }
+        return tileCoord.join('/');
       }
 
       function tileLoadFunction(tile, src) {
@@ -286,11 +282,10 @@ describe('ol.source.VectorTile', function () {
       document.body.removeChild(target);
     });
 
-    it('loads available tiles', function (done) {
+    it('loads only required tiles', function (done) {
       map.renderSync();
       setTimeout(function () {
-        expect(requested).to.be.greaterThan(1);
-        expect(loaded).to.eql(['5/13/-29']);
+        expect(loaded).to.eql(['5/13/-28']);
         done();
       }, 0);
     });

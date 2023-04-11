@@ -2,21 +2,15 @@
  * @module ol/format/IGC
  */
 import Feature from '../Feature.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import TextFeature from './TextFeature.js';
 import {get as getProjection} from '../proj.js';
 import {transformGeometryWithOptions} from './Feature.js';
 
 /**
+ * @typedef {'barometric' | 'gps' | 'none'} IGCZ
  * IGC altitude/z. One of 'barometric', 'gps', 'none'.
- * @enum {string}
  */
-const IGCZ = {
-  BAROMETRIC: 'barometric',
-  GPS: 'gps',
-  NONE: 'none',
-};
 
 /**
  * @const
@@ -47,7 +41,7 @@ const NEWLINE_RE = /\r\n|\r|\n/;
 
 /**
  * @typedef {Object} Options
- * @property {IGCZ|string} [altitudeMode='none'] Altitude mode. Possible
+ * @property {IGCZ} [altitudeMode='none'] Altitude mode. Possible
  * values are `'barometric'`, `'gps'`, and `'none'`.
  */
 
@@ -63,12 +57,12 @@ const NEWLINE_RE = /\r\n|\r|\n/;
  */
 class IGC extends TextFeature {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
+  constructor(options) {
     super();
 
-    const options = opt_options ? opt_options : {};
+    options = options ? options : {};
 
     /**
      * @type {import("../proj/Projection.js").default}
@@ -79,18 +73,16 @@ class IGC extends TextFeature {
      * @private
      * @type {IGCZ}
      */
-    this.altitudeMode_ = options.altitudeMode
-      ? options.altitudeMode
-      : IGCZ.NONE;
+    this.altitudeMode_ = options.altitudeMode ? options.altitudeMode : 'none';
   }
 
   /**
    * @protected
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {import("../Feature.js").default} Feature.
    */
-  readFeatureFromText(text, opt_options) {
+  readFeatureFromText(text, options) {
     const altitudeMode = this.altitudeMode_;
     const lines = text.split(NEWLINE_RE);
     /** @type {Object<string, string>} */
@@ -119,11 +111,11 @@ class IGC extends TextFeature {
             x = -x;
           }
           flatCoordinates.push(x, y);
-          if (altitudeMode != IGCZ.NONE) {
+          if (altitudeMode != 'none') {
             let z;
-            if (altitudeMode == IGCZ.GPS) {
+            if (altitudeMode == 'gps') {
               z = parseInt(m[11], 10);
-            } else if (altitudeMode == IGCZ.BAROMETRIC) {
+            } else if (altitudeMode == 'barometric') {
               z = parseInt(m[12], 10);
             } else {
               z = 0;
@@ -155,11 +147,10 @@ class IGC extends TextFeature {
     if (flatCoordinates.length === 0) {
       return null;
     }
-    const layout =
-      altitudeMode == IGCZ.NONE ? GeometryLayout.XYM : GeometryLayout.XYZM;
+    const layout = altitudeMode == 'none' ? 'XYM' : 'XYZM';
     const lineString = new LineString(flatCoordinates, layout);
     const feature = new Feature(
-      transformGeometryWithOptions(lineString, false, opt_options)
+      transformGeometryWithOptions(lineString, false, options)
     );
     feature.setProperties(properties, true);
     return feature;
@@ -167,17 +158,16 @@ class IGC extends TextFeature {
 
   /**
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
    * @return {Array<Feature>} Features.
    */
-  readFeaturesFromText(text, opt_options) {
-    const feature = this.readFeatureFromText(text, opt_options);
+  readFeaturesFromText(text, options) {
+    const feature = this.readFeatureFromText(text, options);
     if (feature) {
       return [feature];
-    } else {
-      return [];
     }
+    return [];
   }
 }
 

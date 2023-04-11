@@ -18,10 +18,10 @@ import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
  */
 class TileLayer extends BaseTileLayer {
   /**
-   * @param {import("./BaseTile.js").Options<TileSourceType>} [opt_options] Tile layer options.
+   * @param {import("./BaseTile.js").Options<TileSourceType>} [options] Tile layer options.
    */
-  constructor(opt_options) {
-    super(opt_options);
+  constructor(options) {
+    super(options);
   }
 
   createRenderer() {

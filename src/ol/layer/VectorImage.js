@@ -3,7 +3,6 @@
  */
 import BaseVectorLayer from './BaseVector.js';
 import CanvasVectorImageLayerRenderer from '../renderer/canvas/VectorImageLayer.js';
-import {assign} from '../obj.js';
 
 /**
  * @template {import("../source/Vector.js").default} VectorSourceType
@@ -32,10 +31,10 @@ import {assign} from '../obj.js';
  * renderer when getting features from the vector source for the rendering or hit-detection.
  * Recommended value: the size of the largest symbol, line width or label.
  * @property {VectorSourceType} [source] Source.
- * @property {import("../PluggableMap.js").default} [map] Sets the layer as overlay on a map. The map will not manage
+ * @property {import("../Map.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
- * use {@link import("../PluggableMap.js").default#addLayer map.addLayer()}.
+ * use [map.addLayer()]{@link import("../Map.js").default#addLayer}.
  * @property {boolean} [declutter=false] Declutter images and text on this layer. The priority is defined
  * by the `zIndex` of the style and the render order of features. Higher z-index means higher priority.
  * Within the same z-index, a feature rendered before another has higher priority.
@@ -64,12 +63,12 @@ import {assign} from '../obj.js';
  */
 class VectorImageLayer extends BaseVectorLayer {
   /**
-   * @param {Options<VectorSourceType>} [opt_options] Options.
+   * @param {Options<VectorSourceType>} [options] Options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
-    const baseOptions = assign({}, options);
+    const baseOptions = Object.assign({}, options);
     delete baseOptions.imageRatio;
     super(baseOptions);
 

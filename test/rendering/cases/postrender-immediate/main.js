@@ -1,6 +1,6 @@
-import {Circle, Stroke, Style} from '../../../../src/ol/style.js';
 import {Map, View} from '../../../../src/ol/index.js';
 import {Point} from '../../../../src/ol/geom.js';
+import {RegularShape, Stroke, Style} from '../../../../src/ol/style.js';
 import {Tile as TileLayer} from '../../../../src/ol/layer.js';
 import {XYZ} from '../../../../src/ol/source.js';
 import {getVectorContext} from '../../../../src/ol/render.js';
@@ -11,7 +11,8 @@ useGeographic();
 const center = [8.6, 50.1];
 const point = new Point(center);
 const style = new Style({
-  image: new Circle({
+  image: new RegularShape({
+    points: 3,
     radius: 40,
     stroke: new Stroke({
       width: 5,
@@ -33,6 +34,7 @@ new Map({
   view: new View({
     center: center,
     zoom: 3,
+    rotation: Math.PI / 3,
   }),
   pixelRatio: 2,
 });

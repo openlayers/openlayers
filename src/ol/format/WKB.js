@@ -3,10 +3,7 @@
  */
 import Feature from '../Feature.js';
 import FeatureFormat, {transformGeometryWithOptions} from './Feature.js';
-import FormatType from './FormatType.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
-import GeometryType from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
@@ -16,7 +13,6 @@ import Polygon from '../geom/Polygon.js';
 import {get as getProjection} from '../proj.js';
 
 import SimpleGeometry from '../geom/SimpleGeometry.js';
-import {assign} from '../obj.js';
 
 // WKB spec: https://www.ogc.org/standards/sfa
 // EWKB spec: https://raw.githubusercontent.com/postgis/postgis/2.1.0/doc/ZMSgeoms.txt
@@ -55,17 +51,50 @@ class WkbReader {
    * @param {DataView} view source to read
    */
   constructor(view) {
+    /** @private */
     this.view_ = view;
+
+    /**
+     * @type {number}
+     * @private
+     */
     this.pos_ = 0;
 
+    /**
+     * @type {boolean}
+     * @private
+     */
     this.initialized_ = false;
+
+    /**
+     * @type {boolean}
+     * @private
+     */
     this.isLittleEndian_ = false;
+
+    /**
+     * @type {boolean}
+     * @private
+     */
     this.hasZ_ = false;
+
+    /**
+     * @type {boolean}
+     * @private
+     */
     this.hasM_ = false;
-    /** @type {number|null} */
+
+    /**
+     * @type {number|null}
+     * @private
+     */
     this.srid_ = null;
 
-    this.layout_ = GeometryLayout.XY;
+    /**
+     * @type {import("../geom/Geometry.js").GeometryLayout}
+     * @private
+     */
+    this.layout_ = 'XY';
   }
 
   /**
@@ -166,7 +195,9 @@ class WkbReader {
       wkbTypeThousandth === 3;
     const hasSRID = Boolean(wkbType & 0x20000000);
     const typeId = (wkbType & 0x0fffffff) % 1000; // Assume 1000 is an upper limit for type ID
-    const layout = ['XY', hasZ ? 'Z' : '', hasM ? 'M' : ''].join('');
+    const layout = /** @type {import("../geom/Geometry.js").GeometryLayout} */ (
+      ['XY', hasZ ? 'Z' : '', hasM ? 'M' : ''].join('')
+    );
 
     const srid = hasSRID ? this.readUint32(isLittleEndian) : null;
 
@@ -391,7 +422,7 @@ class WkbWriter {
      * @property {number} Z NoData value for Z
      * @property {number} M NoData value for M
      */
-    this.nodata_ = assign({X: 0, Y: 0, Z: 0, M: 0}, opts.nodata);
+    this.nodata_ = Object.assign({X: 0, Y: 0, Z: 0, M: 0}, opts.nodata);
   }
 
   /**
@@ -417,7 +448,7 @@ class WkbWriter {
 
   /**
    * @param {import('../coordinate.js').Coordinate} coords coords
-   * @param {import("../geom/GeometryLayout").default} layout layout
+   * @param {import("../geom/Geometry.js").GeometryLayout} layout layout
    */
   writePoint(coords, layout) {
     /**
@@ -427,7 +458,7 @@ class WkbWriter {
      * @property {number} [Z] NoData value for Z
      * @property {number} [M] NoData value for M
      */
-    const coordsObj = assign.apply(
+    const coordsObj = Object.assign.apply(
       null,
       layout.split('').map((axis, idx) => ({[axis]: coords[idx]}))
     );
@@ -441,7 +472,7 @@ class WkbWriter {
 
   /**
    * @param {Array<import('../coordinate.js').Coordinate>} coords coords
-   * @param {import("../geom/GeometryLayout").default} layout layout
+   * @param {import("../geom/Geometry.js").GeometryLayout} layout layout
    */
   writeLineString(coords, layout) {
     this.writeUint32(coords.length); // numPoints
@@ -452,7 +483,7 @@ class WkbWriter {
 
   /**
    * @param {Array<Array<import('../coordinate.js').Coordinate>>} rings rings
-   * @param {import("../geom/GeometryLayout").default} layout layout
+   * @param {import("../geom/Geometry.js").GeometryLayout} layout layout
    */
   writePolygon(rings, layout) {
     this.writeUint32(rings.length); // numRings
@@ -467,10 +498,10 @@ class WkbWriter {
    */
   writeWkbHeader(wkbType, srid) {
     wkbType %= 1000; // Assume 1000 is an upper limit for type ID
-    if (this.layout_.indexOf('Z') >= 0) {
+    if (this.layout_.includes('Z')) {
       wkbType += this.isEWKB_ ? 0x80000000 : 1000;
     }
-    if (this.layout_.indexOf('M') >= 0) {
+    if (this.layout_.includes('M')) {
       wkbType += this.isEWKB_ ? 0x40000000 : 2000;
     }
     if (this.isEWKB_ && Number.isInteger(srid)) {
@@ -486,7 +517,7 @@ class WkbWriter {
 
   /**
    * @param {Array<import('../coordinate.js').Coordinate>} coords coords
-   * @param {string} layout layout
+   * @param {import("../geom/Geometry.js").GeometryLayout} layout layout
    */
   writeMultiPoint(coords, layout) {
     this.writeUint32(coords.length); // numItems
@@ -498,7 +529,7 @@ class WkbWriter {
 
   /**
    * @param {Array<Array<import('../coordinate.js').Coordinate>>} coords coords
-   * @param {string} layout layout
+   * @param {import("../geom/Geometry.js").GeometryLayout} layout layout
    */
   writeMultiLineString(coords, layout) {
     this.writeUint32(coords.length); // numItems
@@ -510,7 +541,7 @@ class WkbWriter {
 
   /**
    * @param {Array<Array<Array<import('../coordinate.js').Coordinate>>>} coords coords
-   * @param {string} layout layout
+   * @param {import("../geom/Geometry.js").GeometryLayout} layout layout
    */
   writeMultiPolygon(coords, layout) {
     this.writeUint32(coords.length); // numItems
@@ -533,31 +564,31 @@ class WkbWriter {
 
   /**
    * @param {import("../geom/Geometry.js").default} geom geometry
-   * @param {import("../geom/GeometryLayout.js").default} [layout] layout
-   * @return {import("../geom/GeometryLayout.js").default} minumum layout made by common axes
+   * @param {import("../geom/Geometry.js").GeometryLayout} [layout] layout
+   * @return {import("../geom/Geometry.js").GeometryLayout} minumum layout made by common axes
    */
-  findMinimumLayout(geom, layout = GeometryLayout.XYZM) {
+  findMinimumLayout(geom, layout = 'XYZM') {
     /**
-     * @param {import("../geom/GeometryLayout.js").default} a A
-     * @param {import("../geom/GeometryLayout.js").default} b B
-     * @return {import("../geom/GeometryLayout.js").default} minumum layout made by common axes
+     * @param {import("../geom/Geometry.js").GeometryLayout} a A
+     * @param {import("../geom/Geometry.js").GeometryLayout} b B
+     * @return {import("../geom/Geometry.js").GeometryLayout} minumum layout made by common axes
      */
     const GeometryLayout_min = (a, b) => {
       if (a === b) {
         return a;
       }
 
-      if (a === GeometryLayout.XYZM) {
+      if (a === 'XYZM') {
         // anything `b` is minimum
         return b;
       }
-      if (b === GeometryLayout.XYZM) {
+      if (b === 'XYZM') {
         // anything `a` is minimum
         return a;
       }
 
       // otherwise, incompatible
-      return GeometryLayout.XY;
+      return 'XY';
     };
 
     if (geom instanceof SimpleGeometry) {
@@ -566,7 +597,7 @@ class WkbWriter {
 
     if (geom instanceof GeometryCollection) {
       const geoms = geom.getGeometriesArray();
-      for (let i = 0; i < geoms.length && layout !== GeometryLayout.XY; i++) {
+      for (let i = 0; i < geoms.length && layout !== 'XY'; i++) {
         layout = this.findMinimumLayout(geoms[i], layout);
       }
     }
@@ -579,14 +610,17 @@ class WkbWriter {
    * @param {number} [srid] SRID
    */
   writeGeometry(geom, srid) {
+    /**
+     * @type {Object<import("../geom/Geometry.js").Type, WKBGeometryType>}
+     */
     const wkblut = {
-      [GeometryType.POINT]: WKBGeometryType.POINT,
-      [GeometryType.LINE_STRING]: WKBGeometryType.LINE_STRING,
-      [GeometryType.POLYGON]: WKBGeometryType.POLYGON,
-      [GeometryType.MULTI_POINT]: WKBGeometryType.MULTI_POINT,
-      [GeometryType.MULTI_LINE_STRING]: WKBGeometryType.MULTI_LINE_STRING,
-      [GeometryType.MULTI_POLYGON]: WKBGeometryType.MULTI_POLYGON,
-      [GeometryType.GEOMETRY_COLLECTION]: WKBGeometryType.GEOMETRY_COLLECTION,
+      Point: WKBGeometryType.POINT,
+      LineString: WKBGeometryType.LINE_STRING,
+      Polygon: WKBGeometryType.POLYGON,
+      MultiPoint: WKBGeometryType.MULTI_POINT,
+      MultiLineString: WKBGeometryType.MULTI_LINE_STRING,
+      MultiPolygon: WKBGeometryType.MULTI_POLYGON,
+      GeometryCollection: WKBGeometryType.GEOMETRY_COLLECTION,
     };
     const geomType = geom.getType();
     const typeId = wkblut[geomType];
@@ -604,12 +638,12 @@ class WkbWriter {
 
     if (geom instanceof SimpleGeometry) {
       const writerLUT = {
-        [GeometryType.POINT]: this.writePoint,
-        [GeometryType.LINE_STRING]: this.writeLineString,
-        [GeometryType.POLYGON]: this.writePolygon,
-        [GeometryType.MULTI_POINT]: this.writeMultiPoint,
-        [GeometryType.MULTI_LINE_STRING]: this.writeMultiLineString,
-        [GeometryType.MULTI_POLYGON]: this.writeMultiPolygon,
+        Point: this.writePoint,
+        LineString: this.writeLineString,
+        Polygon: this.writePolygon,
+        MultiPoint: this.writeMultiPoint,
+        MultiLineString: this.writeMultiLineString,
+        MultiPolygon: this.writeMultiPolygon,
       };
       writerLUT[geomType].call(this, geom.getCoordinates(), geom.getLayout());
     } else if (geom instanceof GeometryCollection) {
@@ -651,7 +685,7 @@ class WkbWriter {
  * @property {boolean} [hex=true] Returns hex string instead of ArrayBuffer for output. This also is used as a hint internally whether it should load contents as text or ArrayBuffer on reading.
  * @property {boolean} [littleEndian=true] Use littleEndian for output.
  * @property {boolean} [ewkb=true] Use EWKB format for output.
- * @property {import("../geom/GeometryLayout").default} [geometryLayout=null] Use specific coordinate layout for output features (null: auto detect)
+ * @property {import("../geom/Geometry.js").GeometryLayout} [geometryLayout=null] Use specific coordinate layout for output features (null: auto detect)
  * @property {number} [nodataZ=0] If the `geometryLayout` doesn't match with geometry to be output, this value is used to fill missing coordinate value of Z.
  * @property {number} [nodataM=0] If the `geometryLayout` doesn't match with geometry to be output, this value is used to fill missing coordinate value of M.
  * @property {number|boolean} [srid=true] SRID for output. Specify integer value to enforce the value as a SRID. Specify `true` to extract from `dataProjection`. `false` to suppress the output. This option only takes effect when `ewkb` is `true`.
@@ -666,12 +700,12 @@ class WkbWriter {
  */
 class WKB extends FeatureFormat {
   /**
-   * @param {Options} [opt_options] Optional configuration object.
+   * @param {Options} [options] Optional configuration object.
    */
-  constructor(opt_options) {
+  constructor(options) {
     super();
 
-    const options = opt_options ? opt_options : {};
+    options = options ? options : {};
 
     this.splitCollection = Boolean(options.splitCollection);
 
@@ -689,23 +723,23 @@ class WKB extends FeatureFormat {
   }
 
   /**
-   * @return {import("./FormatType.js").default} Format.
+   * @return {import("./Feature.js").Type} Format.
    */
   getType() {
-    return this.hex_ ? FormatType.TEXT : FormatType.ARRAY_BUFFER;
+    return this.hex_ ? 'text' : 'arraybuffer';
   }
 
   /**
    * Read a single feature from a source.
    *
    * @param {string|ArrayBuffer|ArrayBufferView} source Source.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
-   * @return {import("../Feature.js").FeatureLike} Feature.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
+   * @return {import("../Feature.js").default} Feature.
    * @api
    */
-  readFeature(source, opt_options) {
+  readFeature(source, options) {
     return new Feature({
-      geometry: this.readGeometry(source, opt_options),
+      geometry: this.readGeometry(source, options),
     });
   }
 
@@ -713,13 +747,13 @@ class WKB extends FeatureFormat {
    * Read all features from a source.
    *
    * @param {string|ArrayBuffer|ArrayBufferView} source Source.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
-   * @return {Array<import("../Feature.js").FeatureLike>} Features.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
+   * @return {Array<import("../Feature.js").default>} Features.
    * @api
    */
-  readFeatures(source, opt_options) {
+  readFeatures(source, options) {
     let geometries = [];
-    const geometry = this.readGeometry(source, opt_options);
+    const geometry = this.readGeometry(source, options);
     if (this.splitCollection && geometry instanceof GeometryCollection) {
       geometries = geometry.getGeometriesArray();
     } else {
@@ -732,11 +766,11 @@ class WKB extends FeatureFormat {
    * Read a single geometry from a source.
    *
    * @param {string|ArrayBuffer|ArrayBufferView} source Source.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {import("../geom/Geometry.js").default} Geometry.
    * @api
    */
-  readGeometry(source, opt_options) {
+  readGeometry(source, options) {
     const view = getDataView(source);
     if (!view) {
       return null;
@@ -746,7 +780,7 @@ class WKB extends FeatureFormat {
     const geometry = reader.readGeometry();
 
     this.viewCache_ = view; // cache for internal subsequent call of readProjection()
-    const options = this.getReadOptions(source, opt_options);
+    options = this.getReadOptions(source, options);
     this.viewCache_ = null; // release
 
     return transformGeometryWithOptions(geometry, false, options);
@@ -778,26 +812,26 @@ class WKB extends FeatureFormat {
    * Encode a feature in this format.
    *
    * @param {import("../Feature.js").default} feature Feature.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+   * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string|ArrayBuffer} Result.
    * @api
    */
-  writeFeature(feature, opt_options) {
-    return this.writeGeometry(feature.getGeometry(), opt_options);
+  writeFeature(feature, options) {
+    return this.writeGeometry(feature.getGeometry(), options);
   }
 
   /**
    * Encode an array of features in this format.
    *
    * @param {Array<import("../Feature.js").default>} features Features.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+   * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string|ArrayBuffer} Result.
    * @api
    */
-  writeFeatures(features, opt_options) {
+  writeFeatures(features, options) {
     return this.writeGeometry(
       new GeometryCollection(features.map((f) => f.getGeometry())),
-      opt_options
+      options
     );
   }
 
@@ -805,12 +839,12 @@ class WKB extends FeatureFormat {
    * Write a single geometry in this format.
    *
    * @param {import("../geom/Geometry.js").default} geometry Geometry.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+   * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string|ArrayBuffer} Result.
    * @api
    */
-  writeGeometry(geometry, opt_options) {
-    const options = this.adaptOptions(opt_options);
+  writeGeometry(geometry, options) {
+    options = this.adaptOptions(options);
 
     const writer = new WkbWriter({
       layout: this.layout_,
@@ -830,7 +864,7 @@ class WKB extends FeatureFormat {
         options.dataProjection && getProjection(options.dataProjection);
       if (dataProjection) {
         const code = dataProjection.getCode();
-        if (code.indexOf('EPSG:') === 0) {
+        if (code.startsWith('EPSG:')) {
           srid = Number(code.substring(5));
         }
       }
@@ -876,16 +910,17 @@ function decodeHexString(text) {
 function getDataView(source) {
   if (typeof source === 'string') {
     return decodeHexString(source);
-  } else if (ArrayBuffer.isView(source)) {
+  }
+  if (ArrayBuffer.isView(source)) {
     if (source instanceof DataView) {
       return source;
     }
     return new DataView(source.buffer, source.byteOffset, source.byteLength);
-  } else if (source instanceof ArrayBuffer) {
-    return new DataView(source);
-  } else {
-    return null;
   }
+  if (source instanceof ArrayBuffer) {
+    return new DataView(source);
+  }
+  return null;
 }
 
 export default WKB;

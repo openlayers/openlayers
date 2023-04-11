@@ -42,11 +42,6 @@ describe('ol/source/TileWMS', function () {
       const source = new TileWMS({interpolate: false});
       expect(source.getInterpolate()).to.be(false);
     });
-
-    it('is false if constructed with imageSmoothing: false', function () {
-      const source = new TileWMS({imageSmoothing: false});
-      expect(source.getInterpolate()).to.be(false);
-    });
   });
 
   describe('#getTile', function () {
@@ -155,8 +150,8 @@ describe('ol/source/TileWMS', function () {
 
     it('extends FORMAT_OPTIONS if it is already present', function () {
       options.serverType = 'geoserver';
-      const source = new TileWMS(options);
       options.params.FORMAT_OPTIONS = 'param1:value1';
+      const source = new TileWMS(options);
       const tile = source.getTile(3, 2, 2, 2, getProjection('CRS:84'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;

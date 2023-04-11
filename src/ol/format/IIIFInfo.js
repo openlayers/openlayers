@@ -3,7 +3,6 @@
  */
 
 import {assert} from '../asserts.js';
-import {includes} from '../array.js';
 
 /**
  * @typedef {Object} PreferredOptions
@@ -249,10 +248,10 @@ function generateVersion3Options(iiifInfo) {
       iiifInfo.imageInfo.preferredFormats.length > 0
         ? iiifInfo.imageInfo.preferredFormats
             .filter(function (format) {
-              return includes(['jpg', 'png', 'gif'], format);
+              return ['jpg', 'png', 'gif'].includes(format);
             })
             .reduce(function (acc, format) {
-              return acc === undefined && includes(formats, format)
+              return acc === undefined && formats.includes(format)
                 ? format
                 : acc;
             }, undefined)
@@ -330,12 +329,12 @@ class IIIFInfo {
   }
 
   /**
-   * @return {Versions} Major IIIF version.
+   * @return {Versions|undefined} Major IIIF version.
    * @api
    */
   getImageApiVersion() {
     if (this.imageInfo === undefined) {
-      return;
+      return undefined;
     }
     let context = this.imageInfo['@context'] || 'ol-no-context';
     if (typeof context == 'string') {
@@ -367,12 +366,12 @@ class IIIFInfo {
 
   /**
    * @param {Versions} version Optional IIIF image API version
-   * @return {string} Compliance level as it appears in the IIIF image information
+   * @return {string|undefined} Compliance level as it appears in the IIIF image information
    * response.
    */
   getComplianceLevelEntryFromProfile(version) {
     if (this.imageInfo === undefined || this.imageInfo.profile === undefined) {
-      return;
+      return undefined;
     }
     if (version === undefined) {
       version = this.getImageApiVersion();
@@ -406,6 +405,7 @@ class IIIFInfo {
         break;
       default:
     }
+    return undefined;
   }
 
   /**
@@ -422,12 +422,12 @@ class IIIFInfo {
   }
 
   /**
-   * @return {SupportedFeatures} Image formats, qualities and region / size calculation
+   * @return {SupportedFeatures|undefined} Image formats, qualities and region / size calculation
    * methods that are supported by the IIIF service.
    */
   getComplianceLevelSupportedFeatures() {
     if (this.imageInfo === undefined) {
-      return;
+      return undefined;
     }
     const version = this.getImageApiVersion();
     const level = this.getComplianceLevelFromProfile(version);
@@ -438,20 +438,20 @@ class IIIFInfo {
   }
 
   /**
-   * @param {PreferredOptions} [opt_preferredOptions] Optional options for preferred format and quality.
-   * @return {import("../source/IIIF.js").Options} IIIF tile source ready constructor options.
+   * @param {PreferredOptions} [preferredOptions] Optional options for preferred format and quality.
+   * @return {import("../source/IIIF.js").Options|undefined} IIIF tile source ready constructor options.
    * @api
    */
-  getTileSourceOptions(opt_preferredOptions) {
-    const options = opt_preferredOptions || {},
+  getTileSourceOptions(preferredOptions) {
+    const options = preferredOptions || {},
       version = this.getImageApiVersion();
     if (version === undefined) {
-      return;
+      return undefined;
     }
     const imageOptions =
       version === undefined ? undefined : versionFunctions[version](this);
     if (imageOptions === undefined) {
-      return;
+      return undefined;
     }
     return {
       url: imageOptions.url,
@@ -460,16 +460,16 @@ class IIIFInfo {
       sizes: imageOptions.sizes,
       format:
         options.format !== undefined &&
-        includes(imageOptions.formats, options.format)
+        imageOptions.formats.includes(options.format)
           ? options.format
           : imageOptions.preferredFormat !== undefined
           ? imageOptions.preferredFormat
           : 'jpg',
       supports: imageOptions.supports,
       quality:
-        options.quality && includes(imageOptions.qualities, options.quality)
+        options.quality && imageOptions.qualities.includes(options.quality)
           ? options.quality
-          : includes(imageOptions.qualities, 'native')
+          : imageOptions.qualities.includes('native')
           ? 'native'
           : 'default',
       resolutions: Array.isArray(imageOptions.resolutions)

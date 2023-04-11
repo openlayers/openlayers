@@ -80,10 +80,10 @@ const FullScreenEventType = {
  */
 class FullScreen extends Control {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
     super({
       element: document.createElement('div'),
@@ -285,7 +285,7 @@ class FullScreen extends Control {
    * Pass `null` to just remove the control from the current map.
    * Subclasses may set up event handlers to get notified about changes to
    * the map here.
-   * @param {import("../PluggableMap.js").default|null} map Map.
+   * @param {import("../Map.js").default|null} map Map.
    * @api
    */
   setMap(map) {
@@ -345,7 +345,6 @@ function isFullScreenSupported(doc) {
   const body = doc.body;
   return !!(
     body['webkitRequestFullscreen'] ||
-    (body['msRequestFullscreen'] && doc['msFullscreenEnabled']) ||
     (body.requestFullscreen && doc.fullscreenEnabled)
   );
 }
@@ -355,11 +354,7 @@ function isFullScreenSupported(doc) {
  * @return {boolean} Element is currently in fullscreen.
  */
 function isFullScreen(doc) {
-  return !!(
-    doc['webkitIsFullScreen'] ||
-    doc['msFullscreenElement'] ||
-    doc.fullscreenElement
-  );
+  return !!(doc['webkitIsFullScreen'] || doc.fullscreenElement);
 }
 
 /**
@@ -369,8 +364,6 @@ function isFullScreen(doc) {
 function requestFullScreen(element) {
   if (element.requestFullscreen) {
     element.requestFullscreen();
-  } else if (element['msRequestFullscreen']) {
-    element['msRequestFullscreen']();
   } else if (element['webkitRequestFullscreen']) {
     element['webkitRequestFullscreen']();
   }
@@ -395,8 +388,6 @@ function requestFullScreenWithKeys(element) {
 function exitFullScreen(doc) {
   if (doc.exitFullscreen) {
     doc.exitFullscreen();
-  } else if (doc['msExitFullscreen']) {
-    doc['msExitFullscreen']();
   } else if (doc['webkitExitFullscreen']) {
     doc['webkitExitFullscreen']();
   }

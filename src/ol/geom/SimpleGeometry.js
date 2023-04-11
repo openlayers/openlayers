@@ -2,7 +2,6 @@
  * @module ol/geom/SimpleGeometry
  */
 import Geometry from './Geometry.js';
-import GeometryLayout from './GeometryLayout.js';
 import {abstract} from '../util.js';
 import {createOrUpdateFromFlatCoordinates, getCenter} from '../extent.js';
 import {rotate, scale, transform2D, translate} from './flat/transform.js';
@@ -21,9 +20,9 @@ class SimpleGeometry extends Geometry {
 
     /**
      * @protected
-     * @type {import("./GeometryLayout.js").default}
+     * @type {import("./Geometry.js").GeometryLayout}
      */
-    this.layout = GeometryLayout.XY;
+    this.layout = 'XY';
 
     /**
      * @protected
@@ -89,8 +88,8 @@ class SimpleGeometry extends Geometry {
   }
 
   /**
-   * Return the {@link module:ol/geom/GeometryLayout layout} of the geometry.
-   * @return {import("./GeometryLayout.js").default} Layout.
+   * Return the {@link import("./Geometry.js").GeometryLayout layout} of the geometry.
+   * @return {import("./Geometry.js").GeometryLayout} Layout.
    * @api
    */
   getLayout() {
@@ -122,16 +121,15 @@ class SimpleGeometry extends Geometry {
     const simplifiedFlatCoordinates = simplifiedGeometry.getFlatCoordinates();
     if (simplifiedFlatCoordinates.length < this.flatCoordinates.length) {
       return simplifiedGeometry;
-    } else {
-      // Simplification did not actually remove any coordinates.  We now know
-      // that any calls to getSimplifiedGeometry with a squaredTolerance less
-      // than or equal to the current squaredTolerance will also not have any
-      // effect.  This allows us to short circuit simplification (saving CPU
-      // cycles) and prevents the cache of simplified geometries from filling
-      // up with useless identical copies of this geometry (saving memory).
-      this.simplifiedGeometryMaxMinSquaredTolerance = squaredTolerance;
-      return this;
     }
+    // Simplification did not actually remove any coordinates.  We now know
+    // that any calls to getSimplifiedGeometry with a squaredTolerance less
+    // than or equal to the current squaredTolerance will also not have any
+    // effect.  This allows us to short circuit simplification (saving CPU
+    // cycles) and prevents the cache of simplified geometries from filling
+    // up with useless identical copies of this geometry (saving memory).
+    this.simplifiedGeometryMaxMinSquaredTolerance = squaredTolerance;
+    return this;
   }
 
   /**
@@ -151,7 +149,7 @@ class SimpleGeometry extends Geometry {
   }
 
   /**
-   * @param {import("./GeometryLayout.js").default} layout Layout.
+   * @param {import("./Geometry.js").GeometryLayout} layout Layout.
    * @param {Array<number>} flatCoordinates Flat coordinates.
    */
   setFlatCoordinates(layout, flatCoordinates) {
@@ -163,14 +161,14 @@ class SimpleGeometry extends Geometry {
   /**
    * @abstract
    * @param {!Array<*>} coordinates Coordinates.
-   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
+   * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
    */
-  setCoordinates(coordinates, opt_layout) {
+  setCoordinates(coordinates, layout) {
     abstract();
   }
 
   /**
-   * @param {import("./GeometryLayout.js").default|undefined} layout Layout.
+   * @param {import("./Geometry.js").GeometryLayout|undefined} layout Layout.
    * @param {Array<*>} coordinates Coordinates.
    * @param {number} nesting Nesting.
    * @protected
@@ -183,12 +181,11 @@ class SimpleGeometry extends Geometry {
     } else {
       for (let i = 0; i < nesting; ++i) {
         if (coordinates.length === 0) {
-          this.layout = GeometryLayout.XY;
+          this.layout = 'XY';
           this.stride = 2;
           return;
-        } else {
-          coordinates = /** @type {Array} */ (coordinates[0]);
         }
+        coordinates = /** @type {Array} */ (coordinates[0]);
       }
       stride = coordinates.length;
       layout = getLayoutForStride(stride);
@@ -241,17 +238,15 @@ class SimpleGeometry extends Geometry {
    * Scale the geometry (with an optional origin).  This modifies the geometry
    * coordinates in place.
    * @param {number} sx The scaling factor in the x-direction.
-   * @param {number} [opt_sy] The scaling factor in the y-direction (defaults to sx).
-   * @param {import("../coordinate.js").Coordinate} [opt_anchor] The scale origin (defaults to the center
+   * @param {number} [sy] The scaling factor in the y-direction (defaults to sx).
+   * @param {import("../coordinate.js").Coordinate} [anchor] The scale origin (defaults to the center
    *     of the geometry extent).
    * @api
    */
-  scale(sx, opt_sy, opt_anchor) {
-    let sy = opt_sy;
+  scale(sx, sy, anchor) {
     if (sy === undefined) {
       sy = sx;
     }
-    let anchor = opt_anchor;
     if (!anchor) {
       anchor = getCenter(this.getExtent());
     }
@@ -299,31 +294,31 @@ class SimpleGeometry extends Geometry {
 
 /**
  * @param {number} stride Stride.
- * @return {import("./GeometryLayout.js").default} layout Layout.
+ * @return {import("./Geometry.js").GeometryLayout} layout Layout.
  */
 function getLayoutForStride(stride) {
   let layout;
   if (stride == 2) {
-    layout = GeometryLayout.XY;
+    layout = 'XY';
   } else if (stride == 3) {
-    layout = GeometryLayout.XYZ;
+    layout = 'XYZ';
   } else if (stride == 4) {
-    layout = GeometryLayout.XYZM;
+    layout = 'XYZM';
   }
-  return /** @type {import("./GeometryLayout.js").default} */ (layout);
+  return /** @type {import("./Geometry.js").GeometryLayout} */ (layout);
 }
 
 /**
- * @param {import("./GeometryLayout.js").default} layout Layout.
+ * @param {import("./Geometry.js").GeometryLayout} layout Layout.
  * @return {number} Stride.
  */
 export function getStrideForLayout(layout) {
   let stride;
-  if (layout == GeometryLayout.XY) {
+  if (layout == 'XY') {
     stride = 2;
-  } else if (layout == GeometryLayout.XYZ || layout == GeometryLayout.XYM) {
+  } else if (layout == 'XYZ' || layout == 'XYM') {
     stride = 3;
-  } else if (layout == GeometryLayout.XYZM) {
+  } else if (layout == 'XYZM') {
     stride = 4;
   }
   return /** @type {number} */ (stride);
@@ -332,24 +327,23 @@ export function getStrideForLayout(layout) {
 /**
  * @param {SimpleGeometry} simpleGeometry Simple geometry.
  * @param {import("../transform.js").Transform} transform Transform.
- * @param {Array<number>} [opt_dest] Destination.
+ * @param {Array<number>} [dest] Destination.
  * @return {Array<number>} Transformed flat coordinates.
  */
-export function transformGeom2D(simpleGeometry, transform, opt_dest) {
+export function transformGeom2D(simpleGeometry, transform, dest) {
   const flatCoordinates = simpleGeometry.getFlatCoordinates();
   if (!flatCoordinates) {
     return null;
-  } else {
-    const stride = simpleGeometry.getStride();
-    return transform2D(
-      flatCoordinates,
-      0,
-      flatCoordinates.length,
-      stride,
-      transform,
-      opt_dest
-    );
   }
+  const stride = simpleGeometry.getStride();
+  return transform2D(
+    flatCoordinates,
+    0,
+    flatCoordinates.length,
+    stride,
+    transform,
+    dest
+  );
 }
 
 export default SimpleGeometry;

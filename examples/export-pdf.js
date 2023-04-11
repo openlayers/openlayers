@@ -84,6 +84,7 @@ exportButton.addEventListener(
         }
       );
       mapContext.globalAlpha = 1;
+      mapContext.setTransform(1, 0, 0, 1, 0, 0);
       const pdf = new jspdf.jsPDF('landscape', undefined, format);
       pdf.addImage(
         mapCanvas.toDataURL('image/jpeg'),

@@ -1,0 +1,21 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm ci
+      - name: Build Release Assets
+        run: ./tasks/build-website.sh -l ${GITHUB_REF_NAME} -v ${GITHUB_REF_NAME}
+      - name: Create Release
+        run: node tasks/create-release.js --token ${{secrets.GITHUB_TOKEN}} --tag ${GITHUB_REF_NAME} --package build/${GITHUB_REF_NAME}-package.zip --site build/${GITHUB_REF_NAME}-site.zip

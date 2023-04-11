@@ -1,6 +1,76 @@
 ## Upgrade notes
 
-### Next Release
+### Next version
+
+### 7.2.0
+
+#### Rendered resolutions of `ol/source/Raster`
+
+Previously, `ol/source/Raster` processed input sources at the current view resolution, which caused interpolation artefacts in cases where input sources were up- or downsampled. Now, `ol/source/Raster` picks up the resolutions from the first input source that has resolutions configured (either implicitly through a tile grid in the case of tile sources, or directly when configured through the `resolutions` constructor option). This improves the rendered output in most cases.
+
+If the previous behavior is desired, configure the source with `resolutions: null`.
+
+#### Fixed `wrapX` behavior of `ol/control/MousePosition`
+
+Previously, `ol/control/MousePosition` always displayed coordinates as-is. Now it has a `wrapX` option,
+which is `true` by default. This avoids longitudes aoutside the -180 to 180 degrees range.
+
+If you want the previous behavior, which displays coordinates with longitudes less than -180 or greater than 180, configure the control with `wrapX: false`.
+
+### 7.1.0
+
+#### Notice to full build users
+
+If you have been using the full (or legacy) build of the library, note that the location of these scripts is changing for this and future releases.  The previous locations were not stable, and although we do not recommend linking to the full build for production applications, there are many instances of this that were breaking due to changing URLs.  See the [download page](https://openlayers.org/download/) for details on the new versioned URLs for the full build.
+
+#### Deprecation of `ol/AssertionError` and error codes
+
+Future versions will no longer throw `ol/AssertionError` with an error `code`. Instead, they will throw `Error` with just the error message.
+
+#### Updating parameters in `ol/source/ImageWMS` and `ol/source/TileWMS`
+
+The `updateParams()` method is the only way to update WMS parameters. Changes made directly to the `params` object passed as a constructor option will have no effect.
+
+### 7.0.0
+
+#### Removal of deprecated properties and methods
+
+ * The `tilePixelRatio` has been removed from the `DataTile` source.
+ * The `imageSmoothing` option has been removed from sources.
+ * The `undefinedHTML` option has been removed from the `MousePosition` control.
+ * The `forEachLayerAtPixel` method has been removed from the `Map` class.
+ * Deprecated options have been removed from the `Overlay` component.
+ * The `labelCache` has been removed from the `ol/render/canvas.js` module.
+
+#### Internet Explorer is no longer supported
+
+Please see https://docs.microsoft.com/en-us/lifecycle/announcements/internet-explorer-11-end-of-support.
+
+#### ol/coordinate.js
+
+The `toStringHDMS` function from the `ol/coordinate.js` module now formats longitude, latitude pairs so that the minutes and seconds are omitted if they are zero.  This changes the values displayed on graticules.
+
+#### ol/layer/Graticule
+
+The default `intervals` now align with integer minutes and seconds better suited to the default label formatter.  If formatting in decimal degrees you may wish to specify custom `intervals` suited to that format.
+
+#### ol/Collection
+
+Inserting with `setAt` or `insertAt` beyond the current length used to create a sparse Collection with `undefined` inserted for any missing indexes.  This will now throw an error instead.
+
+#### ol/control/MousePosition
+
+The control will now by default keep displaying the last mouse position when the mouse leaves the viewport.  With `placeholder: '&#160;'` you can keep the old behaviour.  The `placeholder` option no longer accepts `false` as a valid value, instead simply omit the option.  The `undefinedHTML` option has been removed. You should use `placeholder` instead.
+
+#### ol/PluggableMap
+
+The `PluggableMap` class has been removed.  If you want to create a custom map class, extend the `Map` class instead.
+
+#### ol/style/Icon and ol/style/RegularShape
+
+`ol/style/Image` and subclasses `displacement` is no longer scaled with the image.  If you previously expected this unintended behavior you should now increase the displacement when setting the scale.
+
+### 6.15.0
 
 #### Deprecated `tilePixelRatio` option for data tile sources.
 
@@ -33,6 +103,20 @@ addCoordinateTransforms(
     function(coordinate) { return coordinate.slice(0, 2).reverse() }
 );
 ```
+
+#### Replacement of string enums with union types
+
+This change only affects users that were using the non-API string enums
+
+* ol/OverlayPositioning
+* ol/extent/Corner
+* ol/format/FormatType
+* ol/geom/GeometryType
+* ol/source/State
+* ol/source/WMSServerType
+* ol/source/WMTSRequestEncoding
+
+Instead of these, use the respective `string`s, which are now typesafe by means of union types.
 
 ### v6.14.0
 

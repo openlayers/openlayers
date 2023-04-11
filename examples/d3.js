@@ -1,5 +1,4 @@
 import Map from '../src/ol/Map.js';
-import SourceState from '../src/ol/source/State.js';
 import Stamen from '../src/ol/source/Stamen.js';
 import View from '../src/ol/View.js';
 import {Layer, Tile as TileLayer} from '../src/ol/layer.js';
@@ -21,7 +20,7 @@ class CanvasLayer extends Layer {
   }
 
   getSourceState() {
-    return SourceState.READY;
+    return 'ready';
   }
 
   render(frameState) {

@@ -8,12 +8,8 @@ import {all, always, focusWithTabindex} from '../events/condition.js';
 import {clamp} from '../math.js';
 
 /**
- * @enum {string}
+ * @typedef {'trackpad' | 'wheel'} Mode
  */
-export const Mode = {
-  TRACKPAD: 'trackpad',
-  WHEEL: 'wheel',
-};
 
 /**
  * @typedef {Object} Options
@@ -41,10 +37,10 @@ export const Mode = {
  */
 class MouseWheelZoom extends Interaction {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
     super(
       /** @type {import("./Interaction.js").InteractionOptions} */ (options)
@@ -207,9 +203,8 @@ class MouseWheelZoom extends Interaction {
 
     if (delta === 0) {
       return false;
-    } else {
-      this.lastDelta_ = delta;
     }
+    this.lastDelta_ = delta;
 
     const now = Date.now();
 
@@ -218,12 +213,12 @@ class MouseWheelZoom extends Interaction {
     }
 
     if (!this.mode_ || now - this.startTime_ > this.trackpadEventGap_) {
-      this.mode_ = Math.abs(delta) < 4 ? Mode.TRACKPAD : Mode.WHEEL;
+      this.mode_ = Math.abs(delta) < 4 ? 'trackpad' : 'wheel';
     }
 
     const view = map.getView();
     if (
-      this.mode_ === Mode.TRACKPAD &&
+      this.mode_ === 'trackpad' &&
       !(view.getConstrainResolution() || this.constrainResolution_)
     ) {
       if (this.trackpadTimeoutId_) {
@@ -258,7 +253,7 @@ class MouseWheelZoom extends Interaction {
 
   /**
    * @private
-   * @param {import("../PluggableMap.js").default} map Map.
+   * @param {import("../Map.js").default} map Map.
    */
   handleWheelZoom_(map) {
     const view = map.getView();

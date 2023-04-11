@@ -1,4 +1,3 @@
-import {Circle, Fill, Style} from '../src/ol/style.js';
 import {Feature, Map, Overlay, View} from '../src/ol/index.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {Point} from '../src/ol/geom.js';
@@ -25,12 +24,10 @@ const map = new Map({
       source: new VectorSource({
         features: [new Feature(point)],
       }),
-      style: new Style({
-        image: new Circle({
-          radius: 9,
-          fill: new Fill({color: 'red'}),
-        }),
-      }),
+      style: {
+        'circle-radius': 9,
+        'circle-fill-color': 'red',
+      },
     }),
   ],
 });
@@ -39,9 +36,7 @@ const element = document.getElementById('popup');
 
 const popup = new Overlay({
   element: element,
-  positioning: 'bottom-center',
   stopEvent: false,
-  offset: [0, -10],
 });
 map.addOverlay(popup);
 
@@ -62,31 +57,34 @@ map.on('moveend', function () {
   info.innerHTML = formatCoordinate(center);
 });
 
+let popover;
 map.on('click', function (event) {
-  $(element).popover('dispose');
-
-  const feature = map.getFeaturesAtPixel(event.pixel)[0];
-  if (feature) {
-    const coordinate = feature.getGeometry().getCoordinates();
-    popup.setPosition([
-      coordinate[0] + Math.round(event.coordinate[0] / 360) * 360,
-      coordinate[1],
-    ]);
-    $(element).popover({
-      container: element.parentElement,
-      html: true,
-      sanitize: false,
-      content: formatCoordinate(coordinate),
-      placement: 'top',
-    });
-    $(element).popover('show');
+  if (popover) {
+    popover.dispose();
+    popover = undefined;
   }
+  const feature = map.getFeaturesAtPixel(event.pixel)[0];
+  if (!feature) {
+    return;
+  }
+  const coordinate = feature.getGeometry().getCoordinates();
+  popup.setPosition([
+    coordinate[0] + Math.round(event.coordinate[0] / 360) * 360,
+    coordinate[1],
+  ]);
+
+  popover = new bootstrap.Popover(element, {
+    container: element.parentElement,
+    content: formatCoordinate(coordinate),
+    html: true,
+    offset: [0, 20],
+    placement: 'top',
+    sanitize: false,
+  });
+  popover.show();
 });
 
 map.on('pointermove', function (event) {
-  if (map.hasFeatureAtPixel(event.pixel)) {
-    map.getViewport().style.cursor = 'pointer';
-  } else {
-    map.getViewport().style.cursor = 'inherit';
-  }
+  const type = map.hasFeatureAtPixel(event.pixel) ? 'pointer' : 'inherit';
+  map.getViewport().style.cursor = type;
 });

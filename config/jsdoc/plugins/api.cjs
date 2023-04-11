@@ -37,7 +37,7 @@ function includeAugments(doclet) {
   if (doclet.fires && cls.fires) {
     for (let i = 0, ii = cls.fires.length; i < ii; ++i) {
       const fires = cls.fires[i];
-      if (doclet.fires.indexOf(fires) == -1) {
+      if (!doclet.fires.includes(fires)) {
         doclet.fires.push(fires);
       }
     }
@@ -58,7 +58,7 @@ function includeAugments(doclet) {
             doclet.fires = [];
           }
           cls.fires.forEach(function (f) {
-            if (doclet.fires.indexOf(f) == -1) {
+            if (!doclet.fires.includes(f)) {
               doclet.fires.push(f);
             }
           });
@@ -68,7 +68,7 @@ function includeAugments(doclet) {
             doclet.observables = [];
           }
           cls.observables.forEach(function (f) {
-            if (doclet.observables.indexOf(f) == -1) {
+            if (!doclet.observables.includes(f)) {
               doclet.observables.push(f);
             }
           });
@@ -81,10 +81,10 @@ function includeAugments(doclet) {
 
 function extractTypes(item) {
   item.type.names.forEach(function (type) {
-    const match = type.match(/^(.*<)?([^>]*)>?$/);
+    const match = type.match(/^(?:.*<)?([^>]*)>?$/);
     if (match) {
-      modules[match[2]] = true;
-      types[match[2]] = true;
+      modules[match[1]] = true;
+      types[match[1]] = true;
     }
   });
 }

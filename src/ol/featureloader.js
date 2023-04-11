@@ -1,7 +1,6 @@
 /**
  * @module ol/featureloader
  */
-import FormatType from './format/FormatType.js';
 import {VOID} from './functions.js';
 
 /**
@@ -72,7 +71,7 @@ export function loadFeaturesXhr(
     typeof url === 'function' ? url(extent, resolution, projection) : url,
     true
   );
-  if (format.getType() == FormatType.ARRAY_BUFFER) {
+  if (format.getType() == 'arraybuffer') {
     xhr.responseType = 'arraybuffer';
   }
   xhr.withCredentials = withCredentials;
@@ -86,9 +85,9 @@ export function loadFeaturesXhr(
       const type = format.getType();
       /** @type {Document|Node|Object|string|undefined} */
       let source;
-      if (type == FormatType.JSON || type == FormatType.TEXT) {
+      if (type == 'json' || type == 'text') {
         source = xhr.responseText;
-      } else if (type == FormatType.XML) {
+      } else if (type == 'xml') {
         source = xhr.responseXML;
         if (!source) {
           source = new DOMParser().parseFromString(
@@ -96,7 +95,7 @@ export function loadFeaturesXhr(
             'application/xml'
           );
         }
-      } else if (type == FormatType.ARRAY_BUFFER) {
+      } else if (type == 'arraybuffer') {
         source = /** @type {ArrayBuffer} */ (xhr.response);
       }
       if (source) {
@@ -142,7 +141,6 @@ export function xhr(url, format) {
    *      Function called when loading succeeded.
    * @param {function(): void} [failure] Failure
    *      Function called when loading failed.
-   * @this {import("./source/Vector").default}
    */
   return function (extent, resolution, projection, success, failure) {
     const source = /** @type {import("./source/Vector").default} */ (this);

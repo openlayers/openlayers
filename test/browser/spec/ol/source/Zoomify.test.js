@@ -151,15 +151,6 @@ describe('ol/source/Zoomify', function () {
       const source = new Zoomify({interpolate: false, url: '', size: [47, 11]});
       expect(source.getInterpolate()).to.be(false);
     });
-
-    it('is false if constructed with imageSmoothing: false', function () {
-      const source = new Zoomify({
-        imageSmoothing: false,
-        url: '',
-        size: [47, 11],
-      });
-      expect(source.getInterpolate()).to.be(false);
-    });
   });
 
   describe('generated tileGrid', function () {

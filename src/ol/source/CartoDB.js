@@ -2,9 +2,7 @@
  * @module ol/source/CartoDB
  */
 
-import SourceState from './State.js';
 import XYZ from './XYZ.js';
-import {assign} from '../obj.js';
 
 /**
  * @typedef {Object} Options
@@ -105,7 +103,7 @@ class CartoDB extends XYZ {
    * @api
    */
   updateConfig(config) {
-    assign(this.config_, config);
+    Object.assign(this.config_, config);
     this.initializeMap_();
   }
 
@@ -165,14 +163,14 @@ class CartoDB extends XYZ {
           JSON.parse(client.responseText)
         );
       } catch (err) {
-        this.setState(SourceState.ERROR);
+        this.setState('error');
         return;
       }
       this.applyTemplate_(response);
       this.templateCache_[paramHash] = response;
-      this.setState(SourceState.READY);
+      this.setState('ready');
     } else {
-      this.setState(SourceState.ERROR);
+      this.setState('error');
     }
   }
 
@@ -181,7 +179,7 @@ class CartoDB extends XYZ {
    * @param {Event} event Event.
    */
   handleInitError_(event) {
-    this.setState(SourceState.ERROR);
+    this.setState('error');
   }
 
   /**

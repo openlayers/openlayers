@@ -19,7 +19,6 @@ import PinchZoom from '../../../../src/ol/interaction/PinchZoom.js';
 import Property from '../../../../src/ol/layer/Property.js';
 import Select from '../../../../src/ol/interaction/Select.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
-import TileLayerRenderer from '../../../../src/ol/renderer/canvas/TileLayer.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
@@ -481,7 +480,6 @@ describe('ol/Map', function () {
 
       it('triggers when all tiles and sources are loaded and faded in', function (done) {
         const layers = map.getLayers().getArray();
-        expect(layers[6].getRenderer().ready).to.be(false);
         map.once('rendercomplete', function () {
           expect(map.tileQueue_.getTilesLoading()).to.be(0);
           expect(layers[1].getSource().image_.getState()).to.be(
@@ -714,8 +712,6 @@ describe('ol/Map', function () {
     });
 
     it('is a reliable start-end sequence', function (done) {
-      const layers = map.getLayers().getArray();
-      expect(layers[6].getRenderer().ready).to.be(false);
       let loading = 0;
       map.on('loadstart', () => {
         map.getView().setZoom(0.1);
@@ -1027,66 +1023,6 @@ describe('ol/Map', function () {
     });
   });
 
-  describe('#forEachLayerAtPixel()', function () {
-    let target, map, original, log;
-
-    beforeEach(function (done) {
-      log = [];
-      original = TileLayerRenderer.prototype.getDataAtPixel;
-      TileLayerRenderer.prototype.getDataAtPixel = function (pixel) {
-        log.push(pixel.slice());
-      };
-
-      target = document.createElement('div');
-      const style = target.style;
-      style.position = 'absolute';
-      style.left = '-1000px';
-      style.top = '-1000px';
-      style.width = '360px';
-      style.height = '180px';
-      document.body.appendChild(target);
-
-      map = new Map({
-        target: target,
-        view: new View({
-          center: [0, 0],
-          zoom: 1,
-        }),
-        layers: [
-          new TileLayer({
-            source: new XYZ(),
-          }),
-          new TileLayer({
-            source: new XYZ(),
-          }),
-          new TileLayer({
-            source: new XYZ(),
-          }),
-        ],
-      });
-
-      map.once('postrender', function () {
-        done();
-      });
-    });
-
-    afterEach(function () {
-      TileLayerRenderer.prototype.getDataAtPixel = original;
-      map.dispose();
-      document.body.removeChild(target);
-      log = null;
-    });
-
-    it('calls each layer renderer with the same pixel', function () {
-      const pixel = [10, 20];
-      map.forEachLayerAtPixel(pixel, function () {});
-      expect(log.length).to.equal(3);
-      expect(log[0].length).to.equal(2);
-      expect(log[0]).to.eql(log[1]);
-      expect(log[1]).to.eql(log[2]);
-    });
-  });
-
   describe('#render()', function () {
     let target, map;
 
@@ -1131,41 +1067,32 @@ describe('ol/Map', function () {
       expect(spy.callCount).to.be(0);
     });
 
-    it('calls renderFrame_ and results in an postrender event', function (done) {
+    it('calls renderFrame_ and results in a postrender event', function (done) {
       const spy = sinon.spy(map, 'renderFrame_');
       map.render();
       map.once('postrender', function (event) {
         expect(event).to.be.a(MapEvent);
         expect(typeof spy.firstCall.args[0]).to.be('number');
         spy.restore();
-        const frameState = event.frameState;
-        expect(frameState).not.to.be(null);
+        expect(event.frameState).not.to.be(null);
         done();
       });
     });
 
-    it('uses the same render frame for subsequent calls', function (done) {
+    it('uses the same render frame for subsequent calls', function () {
       map.render();
       const id1 = map.animationDelayKey_;
-      let id2 = null;
-      map.once('postrender', function () {
-        expect(id2).to.be(id1);
-        done();
-      });
       map.render();
-      id2 = map.animationDelayKey_;
+      const id2 = map.animationDelayKey_;
+      expect(id1).to.be(id2);
     });
 
-    it('creates a new render frame after renderSync()', function (done) {
-      let id2 = null;
+    it('creates a new render frame after renderSync()', function () {
       map.render();
-      const id1 = map.animationDelayKey_;
-      map.once('postrender', function () {
-        expect(id2).to.not.be(id1);
-        done();
-      });
+      expect(map.animationDelayKey_).to.not.be(undefined);
+
       map.renderSync();
-      id2 = map.animationDelayKey_;
+      expect(map.animationDelayKey_).to.be(undefined);
     });
 
     it('results in an postrender event (for zero height map)', function (done) {
@@ -1245,6 +1172,41 @@ describe('ol/Map', function () {
         map.setTarget(document.createElement('div'));
         expect(map.targetChangeHandlerKeys_).to.be.ok();
       });
+    });
+
+    it('detach and re-attach', function (done) {
+      const target = map.getTargetElement();
+      map.setTarget(null);
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      map.setTarget(target);
+      map.addLayer(
+        new VectorLayer({
+          source: new VectorSource({
+            features: [new Feature(new Point([0, 0]))],
+          }),
+        })
+      );
+      map.getView().setCenter([0, 0]);
+      map.getView().setZoom(0);
+      map.renderSync();
+      try {
+        expect(target.querySelector('canvas')).to.be.a(HTMLCanvasElement);
+        map.setTarget(null);
+        expect(target.querySelector('canvas')).to.be(null);
+        map.setTarget(target);
+        map.once('rendercomplete', () => {
+          try {
+            expect(target.querySelector('canvas')).to.be.a(HTMLCanvasElement);
+            done();
+          } catch (e) {
+            done(e);
+          }
+        });
+      } finally {
+        document.body.removeChild(target);
+      }
     });
   });
 

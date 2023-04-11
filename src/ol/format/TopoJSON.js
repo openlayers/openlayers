@@ -56,12 +56,12 @@ import {transformGeometryWithOptions} from './Feature.js';
  */
 class TopoJSON extends JSONFeature {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
+  constructor(options) {
     super();
 
-    const options = opt_options ? opt_options : {};
+    options = options ? options : {};
 
     /**
      * @private
@@ -85,11 +85,11 @@ class TopoJSON extends JSONFeature {
 
   /**
    * @param {Object} object Object.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
    * @return {Array<Feature>} Features.
    */
-  readFeaturesFromObject(object, opt_options) {
+  readFeaturesFromObject(object, options) {
     if (object.type == 'Topology') {
       const topoJSONTopology = /** @type {TopoJSONTopology} */ (object);
       let transform,
@@ -110,7 +110,7 @@ class TopoJSON extends JSONFeature {
       const property = this.layerName_;
       let feature;
       for (const objectName in topoJSONFeatures) {
-        if (this.layers_ && this.layers_.indexOf(objectName) == -1) {
+        if (this.layers_ && !this.layers_.includes(objectName)) {
           continue;
         }
         if (topoJSONFeatures[objectName].type === 'GeometryCollection') {
@@ -126,7 +126,7 @@ class TopoJSON extends JSONFeature {
               translate,
               property,
               objectName,
-              opt_options
+              options
             )
           );
         } else {
@@ -141,15 +141,14 @@ class TopoJSON extends JSONFeature {
               translate,
               property,
               objectName,
-              opt_options
+              options
             )
           );
         }
       }
       return features;
-    } else {
-      return [];
     }
+    return [];
   }
 
   /**
@@ -319,7 +318,7 @@ function readMultiPolygonGeometry(object, arcs) {
  * @param {string|undefined} property Property to set the `GeometryCollection`'s parent
  *     object to.
  * @param {string} name Name of the `Topology`'s child object.
- * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+ * @param {import("./Feature.js").ReadOptions} [options] Read options.
  * @return {Array<Feature>} Array of features.
  */
 function readFeaturesFromGeometryCollection(
@@ -329,7 +328,7 @@ function readFeaturesFromGeometryCollection(
   translate,
   property,
   name,
-  opt_options
+  options
 ) {
   const geometries = collection['geometries'];
   const features = [];
@@ -341,7 +340,7 @@ function readFeaturesFromGeometryCollection(
       translate,
       property,
       name,
-      opt_options
+      options
     );
   }
   return features;
@@ -357,7 +356,7 @@ function readFeaturesFromGeometryCollection(
  * @param {string|undefined} property Property to set the `GeometryCollection`'s parent
  *     object to.
  * @param {string} name Name of the `Topology`'s child object.
- * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+ * @param {import("./Feature.js").ReadOptions} [options] Read options.
  * @return {Feature} Feature.
  */
 function readFeatureFromGeometry(
@@ -367,7 +366,7 @@ function readFeatureFromGeometry(
   translate,
   property,
   name,
-  opt_options
+  options
 ) {
   let geometry = null;
   const type = object.type;
@@ -378,7 +377,7 @@ function readFeatureFromGeometry(
     } else {
       geometry = geometryReader(object, arcs);
     }
-    geometry = transformGeometryWithOptions(geometry, false, opt_options);
+    geometry = transformGeometryWithOptions(geometry, false, options);
   }
   const feature = new Feature({geometry: geometry});
   if (object.id !== undefined) {

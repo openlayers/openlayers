@@ -4,9 +4,6 @@
 //FIXME Implement projection handling
 
 import FeatureFormat, {transformGeometryWithOptions} from './Feature.js';
-import FormatType from './FormatType.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
-import GeometryType from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
@@ -16,7 +13,6 @@ import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
 import Projection from '../proj/Projection.js';
 import RenderFeature from '../render/Feature.js';
-import Units from '../proj/Units.js';
 import {assert} from '../asserts.js';
 import {get} from '../proj.js';
 import {inflateEnds} from '../geom/flat/orient.js';
@@ -38,24 +34,24 @@ import {inflateEnds} from '../geom/flat/orient.js';
  * @classdesc
  * Feature format for reading data in the Mapbox MVT format.
  *
- * @param {Options} [opt_options] Options.
+ * @param {Options} [options] Options.
  * @api
  */
 class MVT extends FeatureFormat {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
+  constructor(options) {
     super();
 
-    const options = opt_options ? opt_options : {};
+    options = options ? options : {};
 
     /**
      * @type {Projection}
      */
     this.dataProjection = new Projection({
       code: '',
-      units: Units.TILE_PIXELS,
+      units: 'tile-pixels',
     });
 
     /**
@@ -202,24 +198,22 @@ class MVT extends FeatureFormat {
       feature.transform(options.dataProjection);
     } else {
       let geom;
-      if (geometryType == GeometryType.POLYGON) {
+      if (geometryType == 'Polygon') {
         const endss = inflateEnds(flatCoordinates, ends);
         geom =
           endss.length > 1
-            ? new MultiPolygon(flatCoordinates, GeometryLayout.XY, endss)
-            : new Polygon(flatCoordinates, GeometryLayout.XY, ends);
+            ? new MultiPolygon(flatCoordinates, 'XY', endss)
+            : new Polygon(flatCoordinates, 'XY', ends);
       } else {
         geom =
-          geometryType === GeometryType.POINT
-            ? new Point(flatCoordinates, GeometryLayout.XY)
-            : geometryType === GeometryType.LINE_STRING
-            ? new LineString(flatCoordinates, GeometryLayout.XY)
-            : geometryType === GeometryType.POLYGON
-            ? new Polygon(flatCoordinates, GeometryLayout.XY, ends)
-            : geometryType === GeometryType.MULTI_POINT
-            ? new MultiPoint(flatCoordinates, GeometryLayout.XY)
-            : geometryType === GeometryType.MULTI_LINE_STRING
-            ? new MultiLineString(flatCoordinates, GeometryLayout.XY, ends)
+          geometryType === 'Point'
+            ? new Point(flatCoordinates, 'XY')
+            : geometryType === 'LineString'
+            ? new LineString(flatCoordinates, 'XY')
+            : geometryType === 'MultiPoint'
+            ? new MultiPoint(flatCoordinates, 'XY')
+            : geometryType === 'MultiLineString'
+            ? new MultiLineString(flatCoordinates, 'XY', ends)
             : null;
       }
       const ctor = /** @type {typeof import("../Feature.js").default} */ (
@@ -241,25 +235,23 @@ class MVT extends FeatureFormat {
   }
 
   /**
-   * @return {import("./FormatType.js").default} Format.
+   * @return {import("./Feature.js").Type} Format.
    */
   getType() {
-    return FormatType.ARRAY_BUFFER;
+    return 'arraybuffer';
   }
 
   /**
    * Read all features.
    *
    * @param {ArrayBuffer} source Source.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {Array<import("../Feature.js").FeatureLike>} Features.
    * @api
    */
-  readFeatures(source, opt_options) {
+  readFeatures(source, options) {
     const layers = this.layers_;
-    const options = /** @type {import("./Feature.js").ReadOptions} */ (
-      this.adaptOptions(opt_options)
-    );
+    options = this.adaptOptions(options);
     const dataProjection = get(options.dataProjection);
     dataProjection.setWorldExtent(options.extent);
     options.dataProjection = dataProjection;
@@ -268,7 +260,7 @@ class MVT extends FeatureFormat {
     const pbfLayers = pbf.readFields(layersPBFReader, {});
     const features = [];
     for (const name in pbfLayers) {
-      if (layers && layers.indexOf(name) == -1) {
+      if (layers && !layers.includes(name)) {
         continue;
       }
       const pbfLayer = pbfLayers[name];
@@ -421,19 +413,17 @@ function readRawFeature(pbf, layer, i) {
  * @param {number} type The raw feature's geometry type
  * @param {number} numEnds Number of ends of the flat coordinates of the
  * geometry.
- * @return {import("../geom/GeometryType.js").default} The geometry type.
+ * @return {import("../geom/Geometry.js").Type} The geometry type.
  */
 function getGeometryType(type, numEnds) {
-  /** @type {import("../geom/GeometryType.js").default} */
+  /** @type {import("../geom/Geometry.js").Type} */
   let geometryType;
   if (type === 1) {
-    geometryType =
-      numEnds === 1 ? GeometryType.POINT : GeometryType.MULTI_POINT;
+    geometryType = numEnds === 1 ? 'Point' : 'MultiPoint';
   } else if (type === 2) {
-    geometryType =
-      numEnds === 1 ? GeometryType.LINE_STRING : GeometryType.MULTI_LINE_STRING;
+    geometryType = numEnds === 1 ? 'LineString' : 'MultiLineString';
   } else if (type === 3) {
-    geometryType = GeometryType.POLYGON;
+    geometryType = 'Polygon';
     // MultiPolygon not relevant for rendering - winding order determines
     // outer rings of polygons.
   }

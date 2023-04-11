@@ -322,6 +322,7 @@ describe('ol/geom/MultiPolygon.js', function () {
         [cw, ccw],
         [cw2, ccw2],
       ]);
+      const withEmptyPolygon = new MultiPolygon([[ccw], []]);
 
       it('returns coordinates as they were constructed', function () {
         expect(right.getCoordinates()).to.eql([
@@ -332,6 +333,7 @@ describe('ol/geom/MultiPolygon.js', function () {
           [cw, ccw],
           [cw2, ccw2],
         ]);
+        expect(withEmptyPolygon.getCoordinates()).to.eql([[ccw], []]);
       });
 
       it('can return coordinates with right-hand orientation', function () {

@@ -9,14 +9,16 @@ import TileState from '../TileState.js';
 import Triangulation from './Triangulation.js';
 import {
   calculateSourceExtentResolution,
+  canvasPool,
   render as renderReprojected,
 } from '../reproj.js';
 import {clamp} from '../math.js';
 import {getArea, getIntersection} from '../extent.js';
 import {listen, unlistenByKey} from '../events.js';
+import {releaseCanvas} from '../dom.js';
 
 /**
- * @typedef {function(number, number, number, number) : import("../Tile.js").default} FunctionType
+ * @typedef {function(number, number, number, number) : (import("../ImageTile.js").default)} FunctionType
  */
 
 /**
@@ -37,9 +39,9 @@ class ReprojTile extends Tile {
    * @param {number} gutter Gutter of the source tiles.
    * @param {FunctionType} getTileFunction
    *     Function returning source tiles (z, x, y, pixelRatio).
-   * @param {number} [opt_errorThreshold] Acceptable reprojection error (in px).
-   * @param {boolean} [opt_renderEdges] Render reprojection edges.
-   * @param {boolean} [opt_interpolate] Use linear interpolation when resampling.
+   * @param {number} [errorThreshold] Acceptable reprojection error (in px).
+   * @param {boolean} [renderEdges] Render reprojection edges.
+   * @param {boolean} [interpolate] Use linear interpolation when resampling.
    */
   constructor(
     sourceProj,
@@ -51,17 +53,17 @@ class ReprojTile extends Tile {
     pixelRatio,
     gutter,
     getTileFunction,
-    opt_errorThreshold,
-    opt_renderEdges,
-    opt_interpolate
+    errorThreshold,
+    renderEdges,
+    interpolate
   ) {
-    super(tileCoord, TileState.IDLE, {interpolate: !!opt_interpolate});
+    super(tileCoord, TileState.IDLE, {interpolate: !!interpolate});
 
     /**
      * @private
      * @type {boolean}
      */
-    this.renderEdges_ = opt_renderEdges !== undefined ? opt_renderEdges : false;
+    this.renderEdges_ = renderEdges !== undefined ? renderEdges : false;
 
     /**
      * @private
@@ -101,7 +103,7 @@ class ReprojTile extends Tile {
 
     /**
      * @private
-     * @type {!Array<import("../Tile.js").default>}
+     * @type {!Array<import("../ImageTile.js").default>}
      */
     this.sourceTiles_ = [];
 
@@ -162,7 +164,7 @@ class ReprojTile extends Tile {
     }
 
     const errorThresholdInPixels =
-      opt_errorThreshold !== undefined ? opt_errorThreshold : ERROR_THRESHOLD;
+      errorThreshold !== undefined ? errorThreshold : ERROR_THRESHOLD;
 
     /**
      * @private
@@ -239,16 +241,14 @@ class ReprojTile extends Tile {
    */
   reproject_() {
     const sources = [];
-    this.sourceTiles_.forEach(
-      function (tile, i, arr) {
-        if (tile && tile.getState() == TileState.LOADED) {
-          sources.push({
-            extent: this.sourceTileGrid_.getTileCoordExtent(tile.tileCoord),
-            image: tile.getImage(),
-          });
-        }
-      }.bind(this)
-    );
+    this.sourceTiles_.forEach((tile) => {
+      if (tile && tile.getState() == TileState.LOADED) {
+        sources.push({
+          extent: this.sourceTileGrid_.getTileCoordExtent(tile.tileCoord),
+          image: tile.getImage(),
+        });
+      }
+    });
     this.sourceTiles_.length = 0;
 
     if (sources.length === 0) {
@@ -298,36 +298,34 @@ class ReprojTile extends Tile {
       let leftToLoad = 0;
 
       this.sourcesListenerKeys_ = [];
-      this.sourceTiles_.forEach(
-        function (tile, i, arr) {
-          const state = tile.getState();
-          if (state == TileState.IDLE || state == TileState.LOADING) {
-            leftToLoad++;
+      this.sourceTiles_.forEach((tile) => {
+        const state = tile.getState();
+        if (state == TileState.IDLE || state == TileState.LOADING) {
+          leftToLoad++;
 
-            const sourceListenKey = listen(
-              tile,
-              EventType.CHANGE,
-              function (e) {
-                const state = tile.getState();
-                if (
-                  state == TileState.LOADED ||
-                  state == TileState.ERROR ||
-                  state == TileState.EMPTY
-                ) {
-                  unlistenByKey(sourceListenKey);
-                  leftToLoad--;
-                  if (leftToLoad === 0) {
-                    this.unlistenSources_();
-                    this.reproject_();
-                  }
+          const sourceListenKey = listen(
+            tile,
+            EventType.CHANGE,
+            function (e) {
+              const state = tile.getState();
+              if (
+                state == TileState.LOADED ||
+                state == TileState.ERROR ||
+                state == TileState.EMPTY
+              ) {
+                unlistenByKey(sourceListenKey);
+                leftToLoad--;
+                if (leftToLoad === 0) {
+                  this.unlistenSources_();
+                  this.reproject_();
                 }
-              },
-              this
-            );
-            this.sourcesListenerKeys_.push(sourceListenKey);
-          }
-        }.bind(this)
-      );
+              }
+            },
+            this
+          );
+          this.sourcesListenerKeys_.push(sourceListenKey);
+        }
+      });
 
       if (leftToLoad === 0) {
         setTimeout(this.reproject_.bind(this), 0);
@@ -348,6 +346,18 @@ class ReprojTile extends Tile {
   unlistenSources_() {
     this.sourcesListenerKeys_.forEach(unlistenByKey);
     this.sourcesListenerKeys_ = null;
+  }
+
+  /**
+   * Remove from the cache due to expiry
+   */
+  release() {
+    if (this.canvas_) {
+      releaseCanvas(this.canvas_.getContext('2d'));
+      canvasPool.push(this.canvas_);
+      this.canvas_ = null;
+    }
+    super.release();
   }
 }
 

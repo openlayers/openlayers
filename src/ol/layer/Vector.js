@@ -21,10 +21,10 @@ import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer.js';
  */
 class VectorLayer extends BaseVectorLayer {
   /**
-   * @param {import("./BaseVector.js").Options<VectorSourceType>} [opt_options] Options.
+   * @param {import("./BaseVector.js").Options<VectorSourceType>} [options] Options.
    */
-  constructor(opt_options) {
-    super(opt_options);
+  constructor(options) {
+    super(options);
   }
 
   createRenderer() {

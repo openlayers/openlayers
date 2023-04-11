@@ -3,11 +3,17 @@
  */
 import BaseObject from './Object.js';
 import MapEventType from './MapEventType.js';
-import OverlayPositioning from './OverlayPositioning.js';
 import {CLASS_SELECTABLE} from './css.js';
 import {containsExtent} from './extent.js';
 import {listen, unlistenByKey} from './events.js';
 import {outerHeight, outerWidth, removeChildren, removeNode} from './dom.js';
+
+/**
+ * @typedef {'bottom-left' | 'bottom-center' | 'bottom-right' | 'center-left' | 'center-center' | 'center-right' | 'top-left' | 'top-center' | 'top-right'} Positioning
+ * The overlay position: `'bottom-left'`, `'bottom-center'`,  `'bottom-right'`,
+ * `'center-left'`, `'center-center'`, `'center-right'`, `'top-left'`,
+ * `'top-center'`, or `'top-right'`.
+ */
 
 /**
  * @typedef {Object} Options
@@ -21,7 +27,7 @@ import {outerHeight, outerWidth, removeChildren, removeNode} from './dom.js';
  * shifts the overlay down.
  * @property {import("./coordinate.js").Coordinate} [position] The overlay position
  * in map projection.
- * @property {import("./OverlayPositioning.js").default} [positioning='top-left'] Defines how
+ * @property {Positioning} [positioning='top-left'] Defines how
  * the overlay is actually positioned with respect to its `position` property.
  * Possible values are `'bottom-left'`, `'bottom-center'`, `'bottom-right'`,
  * `'center-left'`, `'center-center'`, `'center-right'`, `'top-left'`,
@@ -37,20 +43,7 @@ import {outerHeight, outerWidth, removeChildren, removeNode} from './dom.js';
  * probably set `insertFirst` to `true` so the overlay is displayed below the
  * controls.
  * @property {PanIntoViewOptions|boolean} [autoPan=false] Pan the map when calling
- * `setPosition`, so that the overlay is entirely visible in the current viewport?
- * If `true` (deprecated), then `autoPanAnimation` and `autoPanMargin` will be
- * used to determine the panning parameters; if an object is supplied then other
- * parameters are ignored.
- * @property {PanOptions} [autoPanAnimation] The animation options used to pan
- * the overlay into view. This animation is only used when `autoPan` is enabled.
- * A `duration` and `easing` may be provided to customize the animation.
- * Deprecated and ignored if `autoPan` is supplied as an object.
- * @property {number} [autoPanMargin=20] The margin (in pixels) between the
- * overlay and the borders of the map when autopanning. Deprecated and ignored
- * if `autoPan` is supplied as an object.
- * @property {PanIntoViewOptions} [autoPanOptions] The options to use for the
- * autoPan. This is only used when `autoPan` is enabled and has preference over
- * the individual `autoPanMargin` and `autoPanOptions`.
+ * `setPosition`, so that the overlay is entirely visible in the current viewport.
  * @property {string} [className='ol-overlay-container ol-selectable'] CSS class
  * name.
  */
@@ -105,10 +98,11 @@ const Property = {
  *
  * Example:
  *
- *     import Overlay from 'ol/Overlay';
+ *     import Overlay from 'ol/Overlay.js';
  *
- *     var popup = new Overlay({
- *       element: document.getElementById('popup')
+ *     // ...
+ *     const popup = new Overlay({
+ *       element: document.getElementById('popup'),
  *     });
  *     popup.setPosition(coordinate);
  *     map.addOverlay(popup);
@@ -174,18 +168,11 @@ class Overlay extends BaseObject {
     this.element.style.position = 'absolute';
     this.element.style.pointerEvents = 'auto';
 
-    let autoPan = options.autoPan;
-    if (autoPan && 'object' !== typeof autoPan) {
-      autoPan = {
-        animation: options.autoPanAnimation,
-        margin: options.autoPanMargin,
-      };
-    }
     /**
      * @protected
-     * @type {PanIntoViewOptions|false}
+     * @type {PanIntoViewOptions|undefined}
      */
-    this.autoPan = /** @type {PanIntoViewOptions} */ (autoPan) || false;
+    this.autoPan = options.autoPan === true ? {} : options.autoPan || undefined;
 
     /**
      * @protected
@@ -215,13 +202,7 @@ class Overlay extends BaseObject {
 
     this.setOffset(options.offset !== undefined ? options.offset : [0, 0]);
 
-    this.setPositioning(
-      options.positioning !== undefined
-        ? /** @type {import("./OverlayPositioning.js").default} */ (
-            options.positioning
-          )
-        : OverlayPositioning.TOP_LEFT
-    );
+    this.setPositioning(options.positioning || 'top-left');
 
     if (options.position !== undefined) {
       this.setPosition(options.position);
@@ -249,13 +230,13 @@ class Overlay extends BaseObject {
 
   /**
    * Get the map associated with this overlay.
-   * @return {import("./PluggableMap.js").default|null} The map that the
+   * @return {import("./Map.js").default|null} The map that the
    * overlay is part of.
    * @observable
    * @api
    */
   getMap() {
-    return /** @type {import("./PluggableMap.js").default|null} */ (
+    return /** @type {import("./Map.js").default|null} */ (
       this.get(Property.MAP) || null
     );
   }
@@ -285,15 +266,13 @@ class Overlay extends BaseObject {
 
   /**
    * Get the current positioning of this overlay.
-   * @return {import("./OverlayPositioning.js").default} How the overlay is positioned
+   * @return {Positioning} How the overlay is positioned
    *     relative to its point on the map.
    * @observable
    * @api
    */
   getPositioning() {
-    return /** @type {import("./OverlayPositioning.js").default} */ (
-      this.get(Property.POSITIONING)
-    );
+    return /** @type {Positioning} */ (this.get(Property.POSITIONING));
   }
 
   /**
@@ -378,7 +357,7 @@ class Overlay extends BaseObject {
 
   /**
    * Set the map to be associated with this overlay.
-   * @param {import("./PluggableMap.js").default|null} map The map that the
+   * @param {import("./Map.js").default|null} map The map that the
    * overlay is part of. Pass `null` to just remove the overlay from the current map.
    * @observable
    * @api
@@ -423,10 +402,10 @@ class Overlay extends BaseObject {
   /**
    * Pan the map so that the overlay is entirely visible in the current viewport
    * (if necessary).
-   * @param {PanIntoViewOptions} [opt_panIntoViewOptions] Options for the pan action
+   * @param {PanIntoViewOptions} [panIntoViewOptions] Options for the pan action
    * @api
    */
-  panIntoView(opt_panIntoViewOptions) {
+  panIntoView(panIntoViewOptions) {
     const map = this.getMap();
 
     if (!map || !map.getTargetElement() || !this.get(Property.POSITION)) {
@@ -440,7 +419,7 @@ class Overlay extends BaseObject {
       outerHeight(element),
     ]);
 
-    const panIntoViewOptions = opt_panIntoViewOptions || {};
+    panIntoViewOptions = panIntoViewOptions || {};
 
     const myMargin =
       panIntoViewOptions.margin === undefined ? 20 : panIntoViewOptions.margin;
@@ -503,7 +482,7 @@ class Overlay extends BaseObject {
 
   /**
    * Set the positioning for this overlay.
-   * @param {import("./OverlayPositioning.js").default} positioning how the overlay is
+   * @param {Positioning} positioning how the overlay is
    *     positioned relative to its point on the map.
    * @observable
    * @api
@@ -559,28 +538,28 @@ class Overlay extends BaseObject {
     let posX = '0%';
     let posY = '0%';
     if (
-      positioning == OverlayPositioning.BOTTOM_RIGHT ||
-      positioning == OverlayPositioning.CENTER_RIGHT ||
-      positioning == OverlayPositioning.TOP_RIGHT
+      positioning == 'bottom-right' ||
+      positioning == 'center-right' ||
+      positioning == 'top-right'
     ) {
       posX = '-100%';
     } else if (
-      positioning == OverlayPositioning.BOTTOM_CENTER ||
-      positioning == OverlayPositioning.CENTER_CENTER ||
-      positioning == OverlayPositioning.TOP_CENTER
+      positioning == 'bottom-center' ||
+      positioning == 'center-center' ||
+      positioning == 'top-center'
     ) {
       posX = '-50%';
     }
     if (
-      positioning == OverlayPositioning.BOTTOM_LEFT ||
-      positioning == OverlayPositioning.BOTTOM_CENTER ||
-      positioning == OverlayPositioning.BOTTOM_RIGHT
+      positioning == 'bottom-left' ||
+      positioning == 'bottom-center' ||
+      positioning == 'bottom-right'
     ) {
       posY = '-100%';
     } else if (
-      positioning == OverlayPositioning.CENTER_LEFT ||
-      positioning == OverlayPositioning.CENTER_CENTER ||
-      positioning == OverlayPositioning.CENTER_RIGHT
+      positioning == 'center-left' ||
+      positioning == 'center-center' ||
+      positioning == 'center-right'
     ) {
       posY = '-50%';
     }
@@ -588,8 +567,6 @@ class Overlay extends BaseObject {
     if (this.rendered.transform_ != transform) {
       this.rendered.transform_ = transform;
       style.transform = transform;
-      // @ts-ignore IE9
-      style.msTransform = transform;
     }
   }
 

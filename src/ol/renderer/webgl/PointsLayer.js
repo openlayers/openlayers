@@ -2,18 +2,14 @@
  * @module ol/renderer/webgl/PointsLayer
  */
 import BaseVector from '../../layer/BaseVector.js';
-import GeometryType from '../../geom/GeometryType.js';
 import VectorEventType from '../../source/VectorEventType.js';
 import ViewHint from '../../ViewHint.js';
 import WebGLArrayBuffer from '../../webgl/Buffer.js';
-import WebGLLayerRenderer, {
-  WebGLWorkerMessageType,
-  colorDecodeId,
-  colorEncodeId,
-} from './Layer.js';
+import WebGLLayerRenderer from './Layer.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
 import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
 import {AttributeType, DefaultUniform} from '../../webgl/Helper.js';
+import {WebGLWorkerMessageType} from '../../render/webgl/constants.js';
 import {
   apply as applyTransform,
   create as createTransform,
@@ -23,6 +19,7 @@ import {
 } from '../../transform.js';
 import {assert} from '../../asserts.js';
 import {buffer, createEmpty, equals, getWidth} from '../../extent.js';
+import {colorDecodeId, colorEncodeId} from '../../render/webgl/utils.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {getUid} from '../../util.js';
 import {listen, unlistenByKey} from '../../events.js';
@@ -137,8 +134,6 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       uniforms: uniforms,
       postProcesses: options.postProcesses,
     });
-
-    this.ready = false;
 
     this.sourceRevision_ = -1;
 
@@ -293,18 +288,21 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
      * @type {number}
      * @private
      */
-    this.generateBuffersRun_ = 0;
+    this.lastSentId = 0;
 
+    /**
+     * @private
+     */
     this.worker_ = createWebGLWorker();
+
     this.worker_.addEventListener(
       'message',
       /**
        * @param {*} event Event.
-       * @this {WebGLPointsLayerRenderer}
        */
-      function (event) {
+      (event) => {
         const received = event.data;
-        if (received.type === WebGLWorkerMessageType.GENERATE_BUFFERS) {
+        if (received.type === WebGLWorkerMessageType.GENERATE_POINT_BUFFERS) {
           const projectionTransform = received.projectionTransform;
           if (received.hitDetection) {
             this.hitVerticesBuffer_.fromArrayBuffer(received.vertexBuffer);
@@ -329,14 +327,14 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
             this.renderInstructions_ = new Float32Array(
               event.data.renderInstructions
             );
-            if (received.generateBuffersRun === this.generateBuffersRun_) {
+            if (received.id === this.lastSentId) {
               this.ready = true;
             }
           }
 
           this.getLayer().changed();
         }
-      }.bind(this)
+      }
     );
 
     /**
@@ -380,16 +378,14 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
         this
       ),
     ];
-    source.forEachFeature(
-      function (feature) {
-        this.featureCache_[getUid(feature)] = {
-          feature: feature,
-          properties: feature.getProperties(),
-          geometry: feature.getGeometry(),
-        };
-        this.featureCount_++;
-      }.bind(this)
-    );
+    source.forEachFeature((feature) => {
+      this.featureCache_[getUid(feature)] = {
+        feature: feature,
+        properties: feature.getProperties(),
+        geometry: feature.getGeometry(),
+      };
+      this.featureCount_++;
+    });
   }
 
   afterHelperCreated() {
@@ -455,7 +451,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * Render the layer.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {HTMLElement} The rendered element.
    */
   renderFrame(frameState) {
@@ -511,7 +507,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * Determine whether renderFrame should be called.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrameInternal(frameState) {
@@ -541,7 +537,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       this.previousExtent_ = frameState.extent.slice();
     }
 
-    this.helper.useProgram(this.program_);
+    this.helper.useProgram(this.program_, frameState);
     this.helper.prepareDraw(frameState);
 
     // write new data
@@ -554,7 +550,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * Rebuild internal webgl buffers based on current view extent; costly, should not be called too much
-   * @param {import("../../PluggableMap").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @private
    */
   rebuildBuffers_(frameState) {
@@ -599,7 +595,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       geometry = /** @type {import("../../geom").Point} */ (
         featureCache.geometry
       );
-      if (!geometry || geometry.getType() !== GeometryType.POINT) {
+      if (!geometry || geometry.getType() !== 'Point') {
         continue;
       }
 
@@ -638,23 +634,24 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       }
     }
 
-    /** @type {import('./Layer').WebGLWorkerGenerateBuffersMessage} */
+    /** @type {import('../../render/webgl/constants.js').WebGLWorkerGenerateBuffersMessage} */
     const message = {
-      type: WebGLWorkerMessageType.GENERATE_BUFFERS,
+      id: ++this.lastSentId,
+      type: WebGLWorkerMessageType.GENERATE_POINT_BUFFERS,
       renderInstructions: this.renderInstructions_.buffer,
       customAttributesCount: this.customAttributes.length,
     };
     // additional properties will be sent back as-is by the worker
     message['projectionTransform'] = projectionTransform;
-    message['generateBuffersRun'] = ++this.generateBuffersRun_;
     this.ready = false;
     this.worker_.postMessage(message, [this.renderInstructions_.buffer]);
     this.renderInstructions_ = null;
 
-    /** @type {import('./Layer').WebGLWorkerGenerateBuffersMessage} */
+    /** @type {import('../../render/webgl/constants.js').WebGLWorkerGenerateBuffersMessage} */
     if (this.hitDetectionEnabled_) {
       const hitMessage = {
-        type: WebGLWorkerMessageType.GENERATE_BUFFERS,
+        id: 0,
+        type: WebGLWorkerMessageType.GENERATE_POINT_BUFFERS,
         renderInstructions: this.hitRenderInstructions_.buffer,
         customAttributesCount: 5 + this.customAttributes.length,
       };
@@ -669,7 +666,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {import("../vector.js").FeatureCallback<T>} callback Feature callback.
    * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
@@ -709,7 +706,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * Render the hit detection data to the corresponding render target
-   * @param {import("../../PluggableMap.js").FrameState} frameState current frame state
+   * @param {import("../../Map.js").FrameState} frameState current frame state
    * @param {number} startWorld the world to render in the first iteration
    * @param {number} endWorld the last world to render
    * @param {number} worldWidth the width of the worlds being rendered
@@ -727,7 +724,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       Math.floor(frameState.size[1] / 2),
     ]);
 
-    this.helper.useProgram(this.hitProgram_);
+    this.helper.useProgram(this.hitProgram_, frameState);
     this.helper.prepareDrawToRenderTarget(
       frameState,
       this.hitRenderTarget_,

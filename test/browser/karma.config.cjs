@@ -82,17 +82,6 @@ module.exports = function (karma) {
           {
             test: /\.js$/,
             use: {
-              loader: 'babel-loader',
-              options: {
-                presets: ['@babel/preset-env'],
-              },
-            },
-            include: path.resolve('src/ol/'),
-            exclude: path.resolve('node_modules/'),
-          },
-          {
-            test: /\.js$/,
-            use: {
               loader: path.join(
                 __dirname,
                 '../../examples/webpack/worker-loader.cjs'

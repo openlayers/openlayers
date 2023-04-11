@@ -34,6 +34,9 @@ class ImageWrapper extends ImageBase {
    * @param {string} src Image source URI.
    * @param {?string} crossOrigin Cross origin.
    * @param {LoadFunction} imageLoadFunction Image load function.
+   * @param {CanvasRenderingContext2D} [context] Canvas context. When provided, the image will be
+   *    drawn into the context's canvas, and `getImage()` will return the canvas once the image
+   *    has finished loading.
    */
   constructor(
     extent,
@@ -41,7 +44,8 @@ class ImageWrapper extends ImageBase {
     pixelRatio,
     src,
     crossOrigin,
-    imageLoadFunction
+    imageLoadFunction,
+    context
   ) {
     super(extent, resolution, pixelRatio, ImageState.IDLE);
 
@@ -59,6 +63,12 @@ class ImageWrapper extends ImageBase {
     if (crossOrigin !== null) {
       this.image_.crossOrigin = crossOrigin;
     }
+
+    /**
+     * @private
+     * @type {CanvasRenderingContext2D}
+     */
+    this.context_ = context;
 
     /**
      * @private
@@ -84,6 +94,17 @@ class ImageWrapper extends ImageBase {
    * @api
    */
   getImage() {
+    if (
+      this.state == ImageState.LOADED &&
+      this.context_ &&
+      !(this.image_ instanceof HTMLCanvasElement)
+    ) {
+      const canvas = this.context_.canvas;
+      canvas.width = this.image_.width;
+      canvas.height = this.image_.height;
+      this.context_.drawImage(this.image_, 0, 0);
+      this.image_ = this.context_.canvas;
+    }
     return this.image_;
   }
 

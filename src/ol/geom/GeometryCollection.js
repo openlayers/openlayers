@@ -3,7 +3,6 @@
  */
 import EventType from '../events/EventType.js';
 import Geometry from './Geometry.js';
-import GeometryType from './GeometryType.js';
 import {
   closestSquaredDistanceXY,
   createOrUpdateEmpty,
@@ -20,16 +19,16 @@ import {listen, unlistenByKey} from '../events.js';
  */
 class GeometryCollection extends Geometry {
   /**
-   * @param {Array<Geometry>} [opt_geometries] Geometries.
+   * @param {Array<Geometry>} [geometries] Geometries.
    */
-  constructor(opt_geometries) {
+  constructor(geometries) {
     super();
 
     /**
      * @private
      * @type {Array<Geometry>}
      */
-    this.geometries_ = opt_geometries ? opt_geometries : null;
+    this.geometries_ = geometries ? geometries : null;
 
     /**
      * @type {Array<import("../events.js").EventsKey>}
@@ -196,19 +195,18 @@ class GeometryCollection extends Geometry {
       const simplifiedGeometryCollection = new GeometryCollection(null);
       simplifiedGeometryCollection.setGeometriesArray(simplifiedGeometries);
       return simplifiedGeometryCollection;
-    } else {
-      this.simplifiedGeometryMaxMinSquaredTolerance = squaredTolerance;
-      return this;
     }
+    this.simplifiedGeometryMaxMinSquaredTolerance = squaredTolerance;
+    return this;
   }
 
   /**
    * Get the type of this geometry.
-   * @return {import("./GeometryType.js").default} Geometry type.
+   * @return {import("./Geometry.js").Type} Geometry type.
    * @api
    */
   getType() {
-    return GeometryType.GEOMETRY_COLLECTION;
+    return 'GeometryCollection';
   }
 
   /**
@@ -254,19 +252,18 @@ class GeometryCollection extends Geometry {
    * coordinates in place.
    * @abstract
    * @param {number} sx The scaling factor in the x-direction.
-   * @param {number} [opt_sy] The scaling factor in the y-direction (defaults to sx).
-   * @param {import("../coordinate.js").Coordinate} [opt_anchor] The scale origin (defaults to the center
+   * @param {number} [sy] The scaling factor in the y-direction (defaults to sx).
+   * @param {import("../coordinate.js").Coordinate} [anchor] The scale origin (defaults to the center
    *     of the geometry extent).
    * @api
    */
-  scale(sx, opt_sy, opt_anchor) {
-    let anchor = opt_anchor;
+  scale(sx, sy, anchor) {
     if (!anchor) {
       anchor = getCenter(this.getExtent());
     }
     const geometries = this.geometries_;
     for (let i = 0, ii = geometries.length; i < ii; ++i) {
-      geometries[i].scale(sx, opt_sy, anchor);
+      geometries[i].scale(sx, sy, anchor);
     }
     this.changed();
   }

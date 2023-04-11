@@ -20,11 +20,11 @@ export function createExtent(extent, onlyCenter, smooth) {
      * @param {import("./coordinate.js").Coordinate|undefined} center Center.
      * @param {number|undefined} resolution Resolution.
      * @param {import("./size.js").Size} size Viewport size; unused if `onlyCenter` was specified.
-     * @param {boolean} [opt_isMoving] True if an interaction or animation is in progress.
-     * @param {Array<number>} [opt_centerShift] Shift between map center and viewport center.
+     * @param {boolean} [isMoving] True if an interaction or animation is in progress.
+     * @param {Array<number>} [centerShift] Shift between map center and viewport center.
      * @return {import("./coordinate.js").Coordinate|undefined} Center.
      */
-    function (center, resolution, size, opt_isMoving, opt_centerShift) {
+    function (center, resolution, size, isMoving, centerShift) {
       if (!center) {
         return undefined;
       }
@@ -33,8 +33,8 @@ export function createExtent(extent, onlyCenter, smooth) {
       }
       const viewWidth = onlyCenter ? 0 : size[0] * resolution;
       const viewHeight = onlyCenter ? 0 : size[1] * resolution;
-      const shiftX = opt_centerShift ? opt_centerShift[0] : 0;
-      const shiftY = opt_centerShift ? opt_centerShift[1] : 0;
+      const shiftX = centerShift ? centerShift[0] : 0;
+      const shiftY = centerShift ? centerShift[1] : 0;
       let minX = extent[0] + viewWidth / 2 + shiftX;
       let maxX = extent[2] - viewWidth / 2 + shiftX;
       let minY = extent[1] + viewHeight / 2 + shiftY;
@@ -55,7 +55,7 @@ export function createExtent(extent, onlyCenter, smooth) {
       let y = clamp(center[1], minY, maxY);
 
       // during an interaction, allow some overscroll
-      if (opt_isMoving && smooth && resolution) {
+      if (isMoving && smooth && resolution) {
         const ratio = 30 * resolution;
         x +=
           -ratio * Math.log(1 + Math.max(0, minX - center[0]) / ratio) +

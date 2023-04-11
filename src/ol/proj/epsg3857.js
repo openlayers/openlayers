@@ -2,8 +2,6 @@
  * @module ol/proj/epsg3857
  */
 import Projection from './Projection.js';
-import Units from './Units.js';
-import {cosh} from '../math.js';
 
 /**
  * Radius of WGS84 sphere
@@ -49,12 +47,12 @@ class EPSG3857Projection extends Projection {
   constructor(code) {
     super({
       code: code,
-      units: Units.METERS,
+      units: 'm',
       extent: EXTENT,
       global: true,
       worldExtent: WORLD_EXTENT,
       getPointResolution: function (resolution, point) {
-        return resolution / cosh(point[1] / RADIUS);
+        return resolution / Math.cosh(point[1] / RADIUS);
       },
     });
   }
@@ -79,14 +77,13 @@ export const PROJECTIONS = [
  * Transformation from EPSG:4326 to EPSG:3857.
  *
  * @param {Array<number>} input Input array of coordinate values.
- * @param {Array<number>} [opt_output] Output array of coordinate values.
- * @param {number} [opt_dimension] Dimension (default is `2`).
+ * @param {Array<number>} [output] Output array of coordinate values.
+ * @param {number} [dimension] Dimension (default is `2`).
  * @return {Array<number>} Output array of coordinate values.
  */
-export function fromEPSG4326(input, opt_output, opt_dimension) {
+export function fromEPSG4326(input, output, dimension) {
   const length = input.length;
-  const dimension = opt_dimension > 1 ? opt_dimension : 2;
-  let output = opt_output;
+  dimension = dimension > 1 ? dimension : 2;
   if (output === undefined) {
     if (dimension > 2) {
       // preserve values beyond second dimension
@@ -112,14 +109,13 @@ export function fromEPSG4326(input, opt_output, opt_dimension) {
  * Transformation from EPSG:3857 to EPSG:4326.
  *
  * @param {Array<number>} input Input array of coordinate values.
- * @param {Array<number>} [opt_output] Output array of coordinate values.
- * @param {number} [opt_dimension] Dimension (default is `2`).
+ * @param {Array<number>} [output] Output array of coordinate values.
+ * @param {number} [dimension] Dimension (default is `2`).
  * @return {Array<number>} Output array of coordinate values.
  */
-export function toEPSG4326(input, opt_output, opt_dimension) {
+export function toEPSG4326(input, output, dimension) {
   const length = input.length;
-  const dimension = opt_dimension > 1 ? opt_dimension : 2;
-  let output = opt_output;
+  dimension = dimension > 1 ? dimension : 2;
   if (output === undefined) {
     if (dimension > 2) {
       // preserve values beyond second dimension

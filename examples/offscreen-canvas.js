@@ -21,7 +21,7 @@ let container,
   workerFrameState,
   mainThreadFrameState;
 
-// Transform the container to account for the differnece between the (newer)
+// Transform the container to account for the difference between the (newer)
 // main thread frameState and the (older) worker frameState
 function updateContainerTransform() {
   if (workerFrameState) {

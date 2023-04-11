@@ -43,7 +43,8 @@ describe('ol.source.Cluster', function () {
           const geom = feature.getGeometry();
           if (geom.getType() == 'Point') {
             return geom;
-          } else if (geom.getType() == 'Polygon') {
+          }
+          if (geom.getType() == 'Polygon') {
             return geom.getInteriorPoint();
           }
           return null;

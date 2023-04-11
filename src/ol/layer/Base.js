@@ -5,7 +5,6 @@ import BaseObject from '../Object.js';
 import LayerProperty from './Property.js';
 import {abstract} from '../util.js';
 import {assert} from '../asserts.js';
-import {assign} from '../obj.js';
 import {clamp} from '../math.js';
 
 /**
@@ -92,10 +91,10 @@ class BaseLayer extends BaseObject {
     /**
      * @type {Object<string, *>}
      */
-    const properties = assign({}, options);
+    const properties = Object.assign({}, options);
     if (typeof options.properties === 'object') {
       delete properties.properties;
-      assign(properties, options.properties);
+      Object.assign(properties, options.properties);
     }
 
     properties[LayerProperty.OPACITY] =
@@ -150,16 +149,16 @@ class BaseLayer extends BaseObject {
    * This method is not meant to be called by layers or layer renderers because the state
    * is incorrect if the layer is included in a layer group.
    *
-   * @param {boolean} [opt_managed] Layer is managed.
+   * @param {boolean} [managed] Layer is managed.
    * @return {import("./Layer.js").State} Layer state.
    */
-  getLayerState(opt_managed) {
+  getLayerState(managed) {
     /** @type {import("./Layer.js").State} */
     const state =
       this.state_ ||
       /** @type {?} */ ({
         layer: this,
-        managed: opt_managed === undefined ? true : opt_managed,
+        managed: managed === undefined ? true : managed,
       });
     const zIndex = this.getZIndex();
     state.opacity = clamp(Math.round(this.getOpacity() * 100) / 100, 0, 1);
@@ -177,21 +176,21 @@ class BaseLayer extends BaseObject {
 
   /**
    * @abstract
-   * @param {Array<import("./Layer.js").default>} [opt_array] Array of layers (to be
+   * @param {Array<import("./Layer.js").default>} [array] Array of layers (to be
    *     modified in place).
    * @return {Array<import("./Layer.js").default>} Array of layers.
    */
-  getLayersArray(opt_array) {
+  getLayersArray(array) {
     return abstract();
   }
 
   /**
    * @abstract
-   * @param {Array<import("./Layer.js").State>} [opt_states] Optional list of layer
+   * @param {Array<import("./Layer.js").State>} [states] Optional list of layer
    *     states (to be modified in place).
    * @return {Array<import("./Layer.js").State>} List of layer states.
    */
-  getLayerStatesArray(opt_states) {
+  getLayerStatesArray(states) {
     return abstract();
   }
 
@@ -260,15 +259,16 @@ class BaseLayer extends BaseObject {
 
   /**
    * @abstract
-   * @return {import("../source/State.js").default} Source state.
+   * @return {import("../source/Source.js").State} Source state.
    */
   getSourceState() {
     return abstract();
   }
 
   /**
-   * Return the visibility of the layer (`true` or `false`).
-   * @return {boolean} The visibility of the layer.
+   * Return the value of this layer's `visible` property. To find out whether the layer
+   * is visible on a map, use `isVisible()` instead.
+   * @return {boolean} The value of the `visible` property of the layer.
    * @observable
    * @api
    */
@@ -289,10 +289,10 @@ class BaseLayer extends BaseObject {
 
   /**
    * Sets the background color.
-   * @param {BackgroundColor} [opt_background] Background color.
+   * @param {BackgroundColor} [background] Background color.
    */
-  setBackground(opt_background) {
-    this.background_ = opt_background;
+  setBackground(background) {
+    this.background_ = background;
     this.changed();
   }
 

@@ -5,7 +5,6 @@ import Collection from '../Collection.js';
 import EventType from '../render/EventType.js';
 import Feature from '../Feature.js';
 import Fill from '../style/Fill.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import Point from '../geom/Point.js';
 import Stroke from '../style/Stroke.js';
@@ -26,7 +25,6 @@ import {
   isEmpty,
   wrapX as wrapExtentX,
 } from '../extent.js';
-import {assign} from '../obj.js';
 import {clamp} from '../math.js';
 import {degreesToStringHDMS} from '../coordinate.js';
 import {
@@ -51,7 +49,26 @@ const DEFAULT_STROKE_STYLE = new Stroke({
  * @private
  */
 const INTERVALS = [
-  90, 45, 30, 20, 10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05, 0.01, 0.005, 0.002, 0.001,
+  90,
+  45,
+  30,
+  20,
+  10,
+  5,
+  2,
+  1,
+  30 / 60,
+  20 / 60,
+  10 / 60,
+  5 / 60,
+  2 / 60,
+  1 / 60,
+  30 / 3600,
+  20 / 3600,
+  10 / 3600,
+  5 / 3600,
+  2 / 3600,
+  1 / 3600,
 ];
 
 /**
@@ -146,7 +163,7 @@ const INTERVALS = [
  * Note that the default's `textAlign` configuration will not work well for
  * `latLabelPosition` configurations that position labels close to the left of
  * the viewport.
- * @property {Array<number>} [intervals=[90, 45, 30, 20, 10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05, 0.01, 0.005, 0.002, 0.001]]
+ * @property {Array<number>} [intervals=[90, 45, 30, 20, 10, 5, 2, 1, 30/60, 20/60, 10/60, 5/60, 2/60, 1/60, 30/3600, 20/3600, 10/3600, 5/3600, 2/3600, 1/3600]]
  * Intervals (in degrees) for the graticule. Example to limit graticules to 30 and 10 degrees intervals:
  * ```js
  * [30, 10]
@@ -166,12 +183,12 @@ const INTERVALS = [
  */
 class Graticule extends VectorLayer {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    options = options ? options : {};
 
-    const baseOptions = assign(
+    const baseOptions = Object.assign(
       {
         updateWhileAnimating: true,
         updateWhileInteracting: true,
@@ -397,11 +414,11 @@ class Graticule extends VectorLayer {
        * @param {import("../Feature").default} feature Feature
        * @return {Style} style
        */
-      this.lonLabelStyle_ = function (feature) {
+      this.lonLabelStyle_ = (feature) => {
         const label = feature.get('graticule_label');
         this.lonLabelStyleBase_.getText().setText(label);
         return this.lonLabelStyleBase_;
-      }.bind(this);
+      };
 
       /**
        * @type {Style}
@@ -429,11 +446,11 @@ class Graticule extends VectorLayer {
        * @param {import("../Feature").default} feature Feature
        * @return {Style} style
        */
-      this.latLabelStyle_ = function (feature) {
+      this.latLabelStyle_ = (feature) => {
         const label = feature.get('graticule_label');
         this.latLabelStyleBase_.getText().setText(label);
         return this.latLabelStyleBase_;
-      }.bind(this);
+      };
 
       this.meridiansLabels_ = [];
       this.parallelsLabels_ = [];
@@ -1037,10 +1054,10 @@ class Graticule extends VectorLayer {
     );
     let lineString = this.meridians_[index];
     if (!lineString) {
-      lineString = new LineString(flatCoordinates, GeometryLayout.XY);
+      lineString = new LineString(flatCoordinates, 'XY');
       this.meridians_[index] = lineString;
     } else {
-      lineString.setFlatCoordinates(GeometryLayout.XY, flatCoordinates);
+      lineString.setFlatCoordinates('XY', flatCoordinates);
       lineString.changed();
     }
     return lineString;
@@ -1107,9 +1124,9 @@ class Graticule extends VectorLayer {
     );
     let lineString = this.parallels_[index];
     if (!lineString) {
-      lineString = new LineString(flatCoordinates, GeometryLayout.XY);
+      lineString = new LineString(flatCoordinates, 'XY');
     } else {
-      lineString.setFlatCoordinates(GeometryLayout.XY, flatCoordinates);
+      lineString.setFlatCoordinates('XY', flatCoordinates);
       lineString.changed();
     }
     return lineString;
@@ -1180,15 +1197,11 @@ class Graticule extends VectorLayer {
     } else {
       const split = this.minLon_ + this.maxLon_ / 2;
       this.maxLon_ += 360;
-      this.toLonLatTransform_ = function (
-        coordinates,
-        opt_output,
-        opt_dimension
-      ) {
-        const dimension = opt_dimension || 2;
+      this.toLonLatTransform_ = function (coordinates, output, dimension) {
+        dimension = dimension || 2;
         const lonLatCoordinates = toLonLatTransform(
           coordinates,
-          opt_output,
+          output,
           dimension
         );
         for (let i = 0, l = lonLatCoordinates.length; i < l; i += dimension) {

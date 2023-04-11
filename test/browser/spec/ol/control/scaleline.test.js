@@ -37,10 +37,7 @@ describe('ol.control.ScaleLine', function () {
       it('defaults to "ol-scale-line"', function () {
         const ctrl = new ScaleLine();
         ctrl.setMap(map);
-        const element = document.querySelector(
-          '.ol-scale-line',
-          map.getTarget()
-        );
+        const element = document.querySelector('.ol-scale-line');
         expect(element).to.not.be(null);
         expect(element).to.be.a(HTMLDivElement);
       });
@@ -51,16 +48,10 @@ describe('ol.control.ScaleLine', function () {
         ctrl.setMap(map);
 
         // check that the default was not chosen
-        const element1 = document.querySelector(
-          '.ol-scale-line',
-          map.getTarget()
-        );
+        const element1 = document.querySelector('.ol-scale-line');
         expect(element1).to.be(null);
         // check if the configured classname was chosen
-        const element2 = document.querySelector(
-          '.humpty-dumpty',
-          map.getTarget()
-        );
+        const element2 = document.querySelector('.humpty-dumpty');
         expect(element2).to.not.be(null);
         expect(element2).to.be.a(HTMLDivElement);
       });
@@ -515,23 +506,24 @@ describe('ol.control.ScaleLine', function () {
     const getMetricUnit = function (zoom) {
       if (zoom > 30) {
         return 'μm';
-      } else if (zoom > 20) {
-        return 'mm';
-      } else if (zoom > 10) {
-        return 'm';
-      } else {
-        return 'km';
       }
+      if (zoom > 20) {
+        return 'mm';
+      }
+      if (zoom > 10) {
+        return 'm';
+      }
+      return 'km';
     };
 
     const getImperialUnit = function (zoom) {
       if (zoom >= 21) {
         return 'in';
-      } else if (zoom >= 10) {
-        return 'ft';
-      } else {
-        return 'mi';
       }
+      if (zoom >= 10) {
+        return 'ft';
+      }
+      return 'mi';
     };
 
     beforeEach(function () {
@@ -640,7 +632,7 @@ describe('ol.control.ScaleLine', function () {
         })
       );
       map.renderSync();
-      const element = document.querySelector('.ol-scale-text', map.getTarget());
+      const element = document.querySelector('.ol-scale-text');
       expect(element).to.not.be(null);
       expect(element).to.be.a(HTMLDivElement);
       const text = element.innerText;
@@ -661,7 +653,7 @@ describe('ol.control.ScaleLine', function () {
         })
       );
       map.renderSync();
-      const element = document.querySelector('.ol-scale-text', map.getTarget());
+      const element = document.querySelector('.ol-scale-text');
       expect(element).to.not.be(null);
       expect(element).to.be.a(HTMLDivElement);
       const text = element.innerText;
@@ -683,7 +675,7 @@ describe('ol.control.ScaleLine', function () {
         })
       );
       map.renderSync();
-      const element = document.querySelector('.ol-scale-text', map.getTarget());
+      const element = document.querySelector('.ol-scale-text');
       expect(element).to.not.be(null);
       expect(element).to.be.a(HTMLDivElement);
       const text = element.innerText;
@@ -705,7 +697,7 @@ describe('ol.control.ScaleLine', function () {
         })
       );
       map.renderSync();
-      const element = document.querySelector('.ol-scale-text', map.getTarget());
+      const element = document.querySelector('.ol-scale-text');
       expect(element).to.not.be(null);
       expect(element).to.be.a(HTMLDivElement);
       const text = element.innerText;

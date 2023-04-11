@@ -238,8 +238,9 @@ export const shiftKeyOnly = function (mapBrowserEvent) {
 };
 
 /**
- * Return `true` if the target element is not editable, i.e. not a `<input>`-,
- * `<select>`- or `<textarea>`-element, `false` otherwise.
+ * Return `true` if the target element is not editable, i.e. not an `input`,
+ * `select`, or `textarea` element and no `contenteditable` attribute is
+ * set or inherited, `false` otherwise.
  *
  * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
  * @return {boolean} True only if the target element is not editable.
@@ -250,7 +251,15 @@ export const targetNotEditable = function (mapBrowserEvent) {
     mapBrowserEvent.originalEvent
   );
   const tagName = /** @type {Element} */ (originalEvent.target).tagName;
-  return tagName !== 'INPUT' && tagName !== 'SELECT' && tagName !== 'TEXTAREA';
+  return (
+    tagName !== 'INPUT' &&
+    tagName !== 'SELECT' &&
+    tagName !== 'TEXTAREA' &&
+    // `isContentEditable` is only available on `HTMLElement`, but it may also be a
+    // different type like `SVGElement`.
+    // @ts-ignore
+    !originalEvent.target.isContentEditable
+  );
 };
 
 /**

@@ -7,37 +7,44 @@ import {WORKER_OFFSCREEN_CANVAS} from './has.js';
 //FIXME Move this function to the canvas module
 /**
  * Create an html canvas element and returns its 2d context.
- * @param {number} [opt_width] Canvas width.
- * @param {number} [opt_height] Canvas height.
- * @param {Array<HTMLCanvasElement>} [opt_canvasPool] Canvas pool to take existing canvas from.
- * @param {CanvasRenderingContext2DSettings} [opt_Context2DSettings] CanvasRenderingContext2DSettings
+ * @param {number} [width] Canvas width.
+ * @param {number} [height] Canvas height.
+ * @param {Array<HTMLCanvasElement>} [canvasPool] Canvas pool to take existing canvas from.
+ * @param {CanvasRenderingContext2DSettings} [settings] CanvasRenderingContext2DSettings
  * @return {CanvasRenderingContext2D} The context.
  */
-export function createCanvasContext2D(
-  opt_width,
-  opt_height,
-  opt_canvasPool,
-  opt_Context2DSettings
-) {
+export function createCanvasContext2D(width, height, canvasPool, settings) {
   /** @type {HTMLCanvasElement|OffscreenCanvas} */
   let canvas;
-  if (opt_canvasPool && opt_canvasPool.length) {
-    canvas = opt_canvasPool.shift();
+  if (canvasPool && canvasPool.length) {
+    canvas = canvasPool.shift();
   } else if (WORKER_OFFSCREEN_CANVAS) {
-    canvas = new OffscreenCanvas(opt_width || 300, opt_height || 300);
+    canvas = new OffscreenCanvas(width || 300, height || 300);
   } else {
     canvas = document.createElement('canvas');
   }
-  if (opt_width) {
-    canvas.width = opt_width;
+  if (width) {
+    canvas.width = width;
   }
-  if (opt_height) {
-    canvas.height = opt_height;
+  if (height) {
+    canvas.height = height;
   }
   //FIXME Allow OffscreenCanvasRenderingContext2D as return type
   return /** @type {CanvasRenderingContext2D} */ (
-    canvas.getContext('2d', opt_Context2DSettings)
+    canvas.getContext('2d', settings)
   );
+}
+
+/**
+ * Releases canvas memory to avoid exceeding memory limits in Safari.
+ * See https://pqina.nl/blog/total-canvas-memory-use-exceeds-the-maximum-limit/
+ * @param {CanvasRenderingContext2D} context Context.
+ */
+export function releaseCanvas(context) {
+  const canvas = context.canvas;
+  canvas.width = 1;
+  canvas.height = 1;
+  context.clearRect(0, 0, 1, 1);
 }
 
 /**

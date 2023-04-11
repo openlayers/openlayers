@@ -4,8 +4,6 @@ import Fill from '../../../../../src/ol/style/Fill.js';
 import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
 import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js';
 import Icon from '../../../../../src/ol/style/Icon.js';
-import IconAnchorUnits from '../../../../../src/ol/style/IconAnchorUnits.js';
-import IconOrigin from '../../../../../src/ol/style/IconOrigin.js';
 import ImageState from '../../../../../src/ol/ImageState.js';
 import KML, {
   getDefaultFillStyle,
@@ -33,7 +31,6 @@ import {
   get as getProjection,
   transform,
 } from '../../../../../src/ol/proj.js';
-import {find} from '../../../../../src/ol/array.js';
 import {parse} from '../../../../../src/ol/xml.js';
 import {remove as removeTransform} from '../../../../../src/ol/proj/transforms.js';
 
@@ -2430,25 +2427,25 @@ describe('ol.format.KML', function () {
             if (f.getId() == 1) {
               expect(imageStyle.anchor_[0]).to.be(0.5);
               expect(imageStyle.anchor_[1]).to.be(0.5);
-              expect(imageStyle.anchorOrigin_).to.be(IconOrigin.BOTTOM_LEFT);
-              expect(imageStyle.anchorXUnits_).to.be(IconAnchorUnits.FRACTION);
-              expect(imageStyle.anchorYUnits_).to.be(IconAnchorUnits.FRACTION);
+              expect(imageStyle.anchorOrigin_).to.be('bottom-left');
+              expect(imageStyle.anchorXUnits_).to.be('fraction');
+              expect(imageStyle.anchorYUnits_).to.be('fraction');
             } else {
               expect(imageStyle.anchor_[0]).to.be(5);
               expect(imageStyle.anchor_[1]).to.be(5);
-              expect(imageStyle.anchorXUnits_).to.be(IconAnchorUnits.PIXELS);
-              expect(imageStyle.anchorYUnits_).to.be(IconAnchorUnits.PIXELS);
+              expect(imageStyle.anchorXUnits_).to.be('pixels');
+              expect(imageStyle.anchorYUnits_).to.be('pixels');
               if (f.getId() == 2) {
-                expect(imageStyle.anchorOrigin_).to.be(IconOrigin.BOTTOM_LEFT);
+                expect(imageStyle.anchorOrigin_).to.be('bottom-left');
               }
               if (f.getId() == 3) {
-                expect(imageStyle.anchorOrigin_).to.be(IconOrigin.BOTTOM_RIGHT);
+                expect(imageStyle.anchorOrigin_).to.be('bottom-right');
               }
               if (f.getId() == 4) {
-                expect(imageStyle.anchorOrigin_).to.be(IconOrigin.TOP_LEFT);
+                expect(imageStyle.anchorOrigin_).to.be('top-left');
               }
               if (f.getId() == 5) {
-                expect(imageStyle.anchorOrigin_).to.be(IconOrigin.TOP_RIGHT);
+                expect(imageStyle.anchorOrigin_).to.be('top-right');
               }
             }
             expect(imageStyle.getRotation()).to.eql(0);
@@ -4258,7 +4255,7 @@ describe('ol.format.KML', function () {
       });
 
       it('creates a Point and a MultiPolygon for Alaska', function () {
-        const alaska = find(features, function (feature) {
+        const alaska = features.find(function (feature) {
           return feature.get('name') === 'Alaska';
         });
         expect(alaska).to.be.an(Feature);

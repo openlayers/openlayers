@@ -3,7 +3,6 @@
  */
 
 import TileGrid from './TileGrid.js';
-import {find} from '../array.js';
 import {get as getProjection} from '../proj.js';
 
 /**
@@ -34,7 +33,7 @@ import {get as getProjection} from '../proj.js';
  * an extent is used as `origin` or `origins`, then the `y` value must be
  * negative because OpenLayers tile coordinates use the top left as the origin.
  * @property {number|import("../size.js").Size} [tileSize] Tile size.
- * @property {Array<import("../size.js").Size>} [tileSizes] Tile sizes. The length of
+ * @property {Array<number|import("../size.js").Size>} [tileSizes] Tile sizes. The length of
  * this array needs to match the length of the `resolutions` array.
  */
 
@@ -90,17 +89,17 @@ export default WMTSTileGrid;
  * optional TileMatrixSetLimits.
  * @param {Object} matrixSet An object representing a matrixSet in the
  *     capabilities document.
- * @param {import("../extent.js").Extent} [opt_extent] An optional extent to restrict the tile
+ * @param {import("../extent.js").Extent} [extent] An optional extent to restrict the tile
  *     ranges the server provides.
- * @param {Array<Object>} [opt_matrixLimits] An optional object representing
+ * @param {Array<Object>} [matrixLimits] An optional object representing
  *     the available matrices for tileGrid.
  * @return {WMTSTileGrid} WMTS tileGrid instance.
  * @api
  */
 export function createFromCapabilitiesMatrixSet(
   matrixSet,
-  opt_extent,
-  opt_matrixLimits
+  extent,
+  matrixLimits
 ) {
   /** @type {!Array<number>} */
   const resolutions = [];
@@ -108,12 +107,12 @@ export function createFromCapabilitiesMatrixSet(
   const matrixIds = [];
   /** @type {!Array<import("../coordinate.js").Coordinate>} */
   const origins = [];
-  /** @type {!Array<import("../size.js").Size>} */
+  /** @type {!Array<number|import("../size.js").Size>} */
   const tileSizes = [];
   /** @type {!Array<import("../size.js").Size>} */
   const sizes = [];
 
-  const matrixLimits = opt_matrixLimits !== undefined ? opt_matrixLimits : [];
+  matrixLimits = matrixLimits !== undefined ? matrixLimits : [];
 
   const supportedCRSPropName = 'SupportedCRS';
   const matrixIdsPropName = 'TileMatrix';
@@ -138,13 +137,13 @@ export function createFromCapabilitiesMatrixSet(
     // use of matrixLimits to filter TileMatrices from GetCapabilities
     // TileMatrixSet from unavailable matrix levels.
     if (matrixLimits.length > 0) {
-      matrixAvailable = find(matrixLimits, function (elt_ml) {
+      matrixAvailable = matrixLimits.find(function (elt_ml) {
         if (elt[identifierPropName] == elt_ml[matrixIdsPropName]) {
           return true;
         }
         // Fallback for tileMatrix identifiers that don't get prefixed
         // by their tileMatrixSet identifiers.
-        if (elt[identifierPropName].indexOf(':') === -1) {
+        if (!elt[identifierPropName].includes(':')) {
           return (
             matrixSet[identifierPropName] + ':' + elt[identifierPropName] ===
             elt_ml[matrixIdsPropName]
@@ -179,7 +178,7 @@ export function createFromCapabilitiesMatrixSet(
   });
 
   return new WMTSTileGrid({
-    extent: opt_extent,
+    extent: extent,
     origins: origins,
     resolutions: resolutions,
     matrixIds: matrixIds,

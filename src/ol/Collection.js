@@ -18,37 +18,39 @@ const Property = {
  * @classdesc
  * Events emitted by {@link module:ol/Collection~Collection} instances are instances of this
  * type.
+ * @template T
  */
 export class CollectionEvent extends Event {
   /**
    * @param {import("./CollectionEventType.js").default} type Type.
-   * @param {*} [opt_element] Element.
-   * @param {number} [opt_index] The index of the added or removed element.
+   * @param {T} element Element.
+   * @param {number} index The index of the added or removed element.
    */
-  constructor(type, opt_element, opt_index) {
+  constructor(type, element, index) {
     super(type);
 
     /**
      * The element that is added to or removed from the collection.
-     * @type {*}
+     * @type {T}
      * @api
      */
-    this.element = opt_element;
+    this.element = element;
 
     /**
      * The index of the added or removed element.
      * @type {number}
      * @api
      */
-    this.index = opt_index;
+    this.index = index;
   }
 }
 
 /***
+ * @template T
  * @template Return
  * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return> &
  *   import("./Observable").OnSignature<import("./ObjectEventType").Types|'change:length', import("./Object").ObjectEvent, Return> &
- *   import("./Observable").OnSignature<'add'|'remove', CollectionEvent, Return> &
+ *   import("./Observable").OnSignature<'add'|'remove', CollectionEvent<T>, Return> &
  *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|import("./ObjectEventType").Types|
  *     'change:length'|'add'|'remove',Return>} CollectionOnSignature
  */
@@ -74,28 +76,28 @@ export class CollectionEvent extends Event {
  */
 class Collection extends BaseObject {
   /**
-   * @param {Array<T>} [opt_array] Array.
-   * @param {Options} [opt_options] Collection options.
+   * @param {Array<T>} [array] Array.
+   * @param {Options} [options] Collection options.
    */
-  constructor(opt_array, opt_options) {
+  constructor(array, options) {
     super();
 
     /***
-     * @type {CollectionOnSignature<import("./events").EventsKey>}
+     * @type {CollectionOnSignature<T, import("./events").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {CollectionOnSignature<import("./events").EventsKey>}
+     * @type {CollectionOnSignature<T, import("./events").EventsKey>}
      */
     this.once;
 
     /***
-     * @type {CollectionOnSignature<void>}
+     * @type {CollectionOnSignature<T, void>}
      */
     this.un;
 
-    const options = opt_options || {};
+    options = options || {};
 
     /**
      * @private
@@ -107,7 +109,7 @@ class Collection extends BaseObject {
      * @private
      * @type {!Array<T>}
      */
-    this.array_ = opt_array ? opt_array : [];
+    this.array_ = array ? array : [];
 
     if (this.unique_) {
       for (let i = 0, ii = this.array_.length; i < ii; ++i) {
@@ -195,6 +197,9 @@ class Collection extends BaseObject {
    * @api
    */
   insertAt(index, elem) {
+    if (index < 0 || index > this.getLength()) {
+      throw new Error('Index out of bounds: ' + index);
+    }
     if (this.unique_) {
       this.assertUnique_(elem);
     }
@@ -254,11 +259,16 @@ class Collection extends BaseObject {
    * @api
    */
   removeAt(index) {
+    if (index < 0 || index >= this.getLength()) {
+      return undefined;
+    }
     const prev = this.array_[index];
     this.array_.splice(index, 1);
     this.updateLength_();
     this.dispatchEvent(
-      new CollectionEvent(CollectionEventType.REMOVE, prev, index)
+      /** @type {CollectionEvent<T>} */ (
+        new CollectionEvent(CollectionEventType.REMOVE, prev, index)
+      )
     );
     return prev;
   }
@@ -271,24 +281,28 @@ class Collection extends BaseObject {
    */
   setAt(index, elem) {
     const n = this.getLength();
-    if (index < n) {
-      if (this.unique_) {
-        this.assertUnique_(elem, index);
-      }
-      const prev = this.array_[index];
-      this.array_[index] = elem;
-      this.dispatchEvent(
-        new CollectionEvent(CollectionEventType.REMOVE, prev, index)
-      );
-      this.dispatchEvent(
-        new CollectionEvent(CollectionEventType.ADD, elem, index)
-      );
-    } else {
-      for (let j = n; j < index; ++j) {
-        this.insertAt(j, undefined);
-      }
+    if (index >= n) {
       this.insertAt(index, elem);
+      return;
     }
+    if (index < 0) {
+      throw new Error('Index out of bounds: ' + index);
+    }
+    if (this.unique_) {
+      this.assertUnique_(elem, index);
+    }
+    const prev = this.array_[index];
+    this.array_[index] = elem;
+    this.dispatchEvent(
+      /** @type {CollectionEvent<T>} */ (
+        new CollectionEvent(CollectionEventType.REMOVE, prev, index)
+      )
+    );
+    this.dispatchEvent(
+      /** @type {CollectionEvent<T>} */ (
+        new CollectionEvent(CollectionEventType.ADD, elem, index)
+      )
+    );
   }
 
   /**
@@ -301,11 +315,11 @@ class Collection extends BaseObject {
   /**
    * @private
    * @param {T} elem Element.
-   * @param {number} [opt_except] Optional index to ignore.
+   * @param {number} [except] Optional index to ignore.
    */
-  assertUnique_(elem, opt_except) {
+  assertUnique_(elem, except) {
     for (let i = 0, ii = this.array_.length; i < ii; ++i) {
-      if (this.array_[i] === elem && i !== opt_except) {
+      if (this.array_[i] === elem && i !== except) {
         throw new AssertionError(58);
       }
     }

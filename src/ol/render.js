@@ -48,26 +48,29 @@ import {getTransformFromProjections, getUserProjection} from './proj.js';
  * The units for geometry coordinates are css pixels relative to the top left
  * corner of the canvas element.
  * ```js
- * import {toContext} from 'ol/render';
- * import Fill from 'ol/style/Fill';
- * import Polygon from 'ol/geom/Polygon';
+ * import {toContext} from 'ol/render.js';
+ * import Fill from 'ol/style/Fill.js';
+ * import Polygon from 'ol/geom/Polygon.js';
  *
- * var canvas = document.createElement('canvas');
- * var render = toContext(canvas.getContext('2d'),
- *     { size: [100, 100] });
+ * const canvas = document.createElement('canvas');
+ * const render = toContext(
+ *     canvas.getContext('2d'),
+ *     {size: [100, 100]}
+ * );
  * render.setFillStrokeStyle(new Fill({ color: blue }));
  * render.drawPolygon(
- *     new Polygon([[[0, 0], [100, 100], [100, 0], [0, 0]]]));
+ *     new Polygon([[[0, 0], [100, 100], [100, 0], [0, 0]]])
+ * );
  * ```
  *
  * @param {CanvasRenderingContext2D} context Canvas context.
- * @param {ToContextOptions} [opt_options] Options.
+ * @param {ToContextOptions} [options] Options.
  * @return {CanvasImmediateRenderer} Canvas Immediate.
  * @api
  */
-export function toContext(context, opt_options) {
+export function toContext(context, options) {
   const canvas = context.canvas;
-  const options = opt_options ? opt_options : {};
+  options = options ? options : {};
   const pixelRatio = options.pixelRatio || DEVICE_PIXEL_RATIO;
   const size = options.size;
   if (size) {
@@ -93,7 +96,9 @@ export function getVectorContext(event) {
   }
 
   // canvas may be at a different pixel ratio than frameState.pixelRatio
-  const canvasPixelRatio = event.inversePixelTransform[0];
+  const a = event.inversePixelTransform[0];
+  const b = event.inversePixelTransform[1];
+  const canvasPixelRatio = Math.sqrt(a * a + b * b);
   const frameState = event.frameState;
   const transform = multiplyTransform(
     event.inversePixelTransform.slice(),

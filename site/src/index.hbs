@@ -1,0 +1,128 @@
+---
+title: Welcome
+layout: default.hbs
+uncontained: true
+head:
+ - <link rel="stylesheet" type="text/css" href="./theme/index.css">
+---
+<div id='map'></div>
+<div class='container'>
+  <blockquote id='tagline' class='text-end plain'>
+    <p>A high-performance, feature-packed library for all your mapping needs.</p>
+  </blockquote>
+  <div class='row' id='news'>
+    <div class='col-sm-12'>
+      <h1 class='topic'><i class='fa fa-rss'></i> Latest</h1>
+      <p><strong>OpenLayers <a href="/download/">{{ version }}</a> is here!</strong> Check out the <a href="/doc/">docs</a> and the <a href="/en/latest/examples/">examples</a> to get started. The full distribution can be downloaded from the <a href="/download/">release page</a>.</p>
+    </div>
+  </div>
+  <div class='row'>
+    <h1 class='topic col-sm-12'>Overview</h1>
+  </div>
+  <div class='row'>
+    <div class='col-sm-12'>
+      <p>OpenLayers makes it easy to put a dynamic map in any web page. It can display map tiles, vector data and markers loaded from any source. OpenLayers has been developed to further the use of geographic information of all kinds. It is completely free, Open Source JavaScript, released under the 2-clause BSD License (also known as the FreeBSD).</p>
+    </div>
+  </div>
+  <div class='row'>
+    <h1 class='topic col-sm-12'>Features</h1>
+  </div>
+  <div class='row'>
+    <div class='col-sm-6'>
+      <h3>Tiled Layers</h3>
+      <img src='/theme/img/tiled-layers.png' width="102" height="84" class='thumb' alt="tiled layers">
+      <p>Pull tiles from OSM, Bing, MapBox, Stamen, and any other XYZ source you can find.  OGC mapping services and untiled layers also supported.</p>
+    </div>
+    <div class='col-sm-6'>
+      <h3>Vector Layers</h3>
+      <img src='/theme/img/vector-layers.png' width="102" height="84" class='thumb' alt="vector layers">
+      <p>Render vector data from GeoJSON, TopoJSON, KML, GML, Mapbox vector tiles, and other formats.</p>
+    </div>
+  </div>
+  <div class='row'>
+    <div class='col-sm-6'>
+      <h3>Cutting Edge, Fast &amp; Mobile Ready</h3>
+      <img src='/theme/img/timeline.png' width="102" height="84" class='thumb' alt="mobile ready">
+      <p>Leverages Canvas 2D, WebGL, and all the latest greatness from HTML5.  Mobile support out of the box.  Build lightweight custom profiles with just the components you need.</p>
+    </div>
+    <div class='col-sm-6'>
+      <h3>Easy to Customize and Extend</h3>
+      <img src='/theme/img/popup.png' width="102" height="84" class='thumb' alt="customizable">
+      <p>Style your map controls with straight-forward CSS. Hook into different levels of the API or use <a href="/3rd-party/">3rd party libraries</a> to customize and extend functionality.</p>
+    </div>
+  </div>
+  <div class='row'>
+    <h1 class='topic col-sm-12'>Learn More</h1>
+  </div>
+  <div class='row'>
+    <div class='col-sm-6'>
+      <a href='/doc/quickstart.html'>
+        <h3><i class='fa fa-check'></i> Quick Start</h3>
+      </a>
+      <p>Seen enough already? Go here to get started.</p>
+    </div>
+    <div class='col-sm-6'>
+      <a href='/download/'>
+        <h3><i class='fa fa-download'></i> Get the Code</h3>
+      </a>
+      <p>Get the latest release or dig through the archives.</p>
+    </div>
+  </div>
+  <div class='row'>
+    <div class='col-sm-6'>
+      <a href='/doc/tutorials/'>
+        <h3><i class='fa fa-book'></i> Tutorials</h3>
+      </a>
+      <p>Spend time learning the basics and graduate up to advanced mapping techniques.</p>
+    </div>
+    <div class='col-sm-6'>
+      <a href='/workshop/'>
+        <h3><i class='fa fa-graduation-cap'></i> Workshop</h3>
+      </a>
+      <p>Want to learn OpenLayers hands-on? Get started with the workshop.</p>
+    </div>
+  </div>
+  <div class='row'>
+    <div class='col-sm-6'>
+      <a href='/en/latest/apidoc/'>
+        <h3><i class='fa fa-sitemap'></i> API Docs</h3>
+      </a>
+      <p>Browse through the API docs for details on code usage.</p>
+    </div>
+  </div>
+  <div class='row'>
+    <h1 class='topic col-sm-12'>Older versions</h1>
+    <div class='col-sm-12'>
+      <p>In case you are not ready (yet) for the latest version of OpenLayers, we provide links to selected resources of older major versions of the software.</p>
+      <ul>
+        <li>Latest v6: <a href="https://github.com/openlayers/openlayers/releases/tag/v6.15.1">v6.15.1</a> released 2022-07-18 &mdash; <a href="/en/v6.15.1/doc/">docs</a>, <a href="/en/v6.15.1/apidoc/">API</a> &amp;  <a href="/en/v6.15.1/examples/">examples</a></li>
+        <li>Latest v5: <a href="https://github.com/openlayers/openlayers/releases/tag/v5.3.0">v5.3.0</a> released 2018-11-06 &mdash; <a href="/en/v5.3.0/doc/">docs</a>, <a href="/en/v5.3.0/apidoc/">API</a> &amp;  <a href="/en/v5.3.0/examples/">examples</a></li>
+        <li>Latest v4: <a href="https://github.com/openlayers/openlayers/releases/tag/v4.6.5">v4.6.5</a> released 2018-03-20 &mdash; <a href="/en/v4.6.5/doc/">docs</a>, <a href="/en/v4.6.5/apidoc/">API</a> &amp;  <a href="/en/v4.6.5/examples/">examples</a></li>
+        <li>Latest v3: <a href="https://github.com/openlayers/openlayers/releases/tag/v3.20.1">v3.20.1</a>, released 2016-12-12 &mdash; <a href="/en/v3.20.1/doc/">docs</a>, <a href="/en/v3.20.1/apidoc/">API</a> &amp;  <a href="/en/v3.20.1/examples/">examples</a></li>
+        <li>Latest v2: v2.13.1, released 2013-07-09 &mdash; you'll find everything you need on the <a href="./two/">2.x page</a></li>
+      </ul>
+      <p>Please consider upgrading to benefit from the latest features and bug fixes. Get better performance and usability for free by using recent versions of OpenLayers.</p>
+    </div>
+  </div>
+  <div class='row'>
+    <h1 class='topic col-sm-12'>Get Involved</h1>
+  </div>
+  <div class='row'>
+    <div class='col-sm-4'>
+      <a href='https://github.com/openlayers/openlayers'>
+        <h3><i class="fa fa-code-fork"></i> Fork the repo</h3>
+      </a>
+    </div>
+    <div class='col-sm-4'>
+      <a href='https://github.com/openlayers/openlayers/issues'>
+        <h3><i class="fa fa-bug"></i> Open a ticket</h3>
+      </a>
+    </div>
+    <div class='col-sm-4'>
+      <a href='http://stackoverflow.com/questions/tagged/openlayers'>
+        <h3><i class="fa fa-user"></i> Ask a question</h3>
+      </a>
+    </div>
+  </div>
+</div>
+<script src="./main.js"></script>

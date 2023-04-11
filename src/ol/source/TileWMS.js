@@ -2,13 +2,10 @@
  * @module ol/source/TileWMS
  */
 
-import {DEFAULT_WMS_VERSION} from './common.js';
-
 import TileImage from './TileImage.js';
-import WMSServerType from './WMSServerType.js';
+import {DEFAULT_VERSION} from './wms.js';
 import {appendParams} from '../uri.js';
 import {assert} from '../asserts.js';
-import {assign} from '../obj.js';
 import {buffer, createEmpty} from '../extent.js';
 import {buffer as bufferSize, scale as scaleSize, toSize} from '../size.js';
 import {calculateSourceResolution} from '../reproj.js';
@@ -25,7 +22,6 @@ import {hash as tileCoordHash} from '../tilecoord.js';
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
- * @property {boolean} [imageSmoothing=true] Deprecated.  Use the `interpolate` option instead.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {Object<string,*>} params WMS request parameters.
@@ -52,10 +48,10 @@ import {hash as tileCoordHash} from '../tilecoord.js';
  * tilesize and extent supported by the server.
  * If this is not defined, a default grid will be used: if there is a projection
  * extent, the grid will be based on that; if not, a grid based on a global
- * extent with origin at 0,0 will be used..
- * @property {import("./WMSServerType.js").default|string} [serverType]
- * The type of the remote WMS server. Currently only used when `hidpi` is
- * `true`.
+ * extent with origin at 0,0 will be used.
+ * @property {import("./wms.js").ServerType} [serverType] The type of
+ * the remote WMS server: `mapserver`, `geoserver`, `carmentaserver`, or `qgis`.
+ * Only needed if `hidpi` is `true`.
  * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
@@ -83,18 +79,12 @@ import {hash as tileCoordHash} from '../tilecoord.js';
  */
 class TileWMS extends TileImage {
   /**
-   * @param {Options} [opt_options] Tile WMS options.
+   * @param {Options} [options] Tile WMS options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : /** @type {Options} */ ({});
+  constructor(options) {
+    options = options ? options : /** @type {Options} */ ({});
 
-    let interpolate =
-      options.imageSmoothing !== undefined ? options.imageSmoothing : true;
-    if (options.interpolate !== undefined) {
-      interpolate = options.interpolate;
-    }
-
-    const params = options.params || {};
+    const params = Object.assign({}, options.params);
 
     const transparent = 'TRANSPARENT' in params ? params['TRANSPARENT'] : true;
 
@@ -103,7 +93,7 @@ class TileWMS extends TileImage {
       attributionsCollapsible: options.attributionsCollapsible,
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
-      interpolate: interpolate,
+      interpolate: options.interpolate,
       opaque: !transparent,
       projection: options.projection,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
@@ -137,12 +127,9 @@ class TileWMS extends TileImage {
 
     /**
      * @private
-     * @type {import("./WMSServerType.js").default|undefined}
+     * @type {import("./wms.js").ServerType}
      */
-    this.serverType_ =
-      /** @type {import("./WMSServerType.js").default|undefined} */ (
-        options.serverType
-      );
+    this.serverType_ = options.serverType;
 
     /**
      * @private
@@ -217,13 +204,13 @@ class TileWMS extends TileImage {
 
     const baseParams = {
       'SERVICE': 'WMS',
-      'VERSION': DEFAULT_WMS_VERSION,
+      'VERSION': DEFAULT_VERSION,
       'REQUEST': 'GetFeatureInfo',
       'FORMAT': 'image/png',
       'TRANSPARENT': true,
       'QUERY_LAYERS': this.params_['LAYERS'],
     };
-    assign(baseParams, this.params_, params);
+    Object.assign(baseParams, this.params_, params);
 
     const x = Math.floor((coordinate[0] - tileExtent[0]) / tileResolution);
     const y = Math.floor((tileExtent[3] - coordinate[1]) / tileResolution);
@@ -262,7 +249,7 @@ class TileWMS extends TileImage {
 
     const baseParams = {
       'SERVICE': 'WMS',
-      'VERSION': DEFAULT_WMS_VERSION,
+      'VERSION': DEFAULT_VERSION,
       'REQUEST': 'GetLegendGraphic',
       'FORMAT': 'image/png',
     };
@@ -284,7 +271,7 @@ class TileWMS extends TileImage {
       baseParams['SCALE'] = (resolution * mpu) / pixelSize;
     }
 
-    assign(baseParams, params);
+    Object.assign(baseParams, params);
 
     return appendParams(/** @type {string} */ (this.urls[0]), baseParams);
   }
@@ -340,7 +327,7 @@ class TileWMS extends TileImage {
 
     if (pixelRatio != 1) {
       switch (this.serverType_) {
-        case WMSServerType.GEOSERVER:
+        case 'geoserver':
           const dpi = (90 * pixelRatio + 0.5) | 0;
           if ('FORMAT_OPTIONS' in params) {
             params['FORMAT_OPTIONS'] += ';dpi:' + dpi;
@@ -348,11 +335,11 @@ class TileWMS extends TileImage {
             params['FORMAT_OPTIONS'] = 'dpi:' + dpi;
           }
           break;
-        case WMSServerType.MAPSERVER:
+        case 'mapserver':
           params['MAP_RESOLUTION'] = 90 * pixelRatio;
           break;
-        case WMSServerType.CARMENTA_SERVER:
-        case WMSServerType.QGIS:
+        case 'carmentaserver':
+        case 'qgis':
           params['DPI'] = 90 * pixelRatio;
           break;
         default: // Unknown `serverType` configured
@@ -412,7 +399,7 @@ class TileWMS extends TileImage {
    * @api
    */
   updateParams(params) {
-    assign(this.params_, params);
+    Object.assign(this.params_, params);
     this.updateV13_();
     this.setKey(this.getKeyForParams_());
   }
@@ -421,7 +408,7 @@ class TileWMS extends TileImage {
    * @private
    */
   updateV13_() {
-    const version = this.params_['VERSION'] || DEFAULT_WMS_VERSION;
+    const version = this.params_['VERSION'] || DEFAULT_VERSION;
     this.v13_ = compareVersions(version, '1.3') >= 0;
   }
 
@@ -462,12 +449,12 @@ class TileWMS extends TileImage {
 
     const baseParams = {
       'SERVICE': 'WMS',
-      'VERSION': DEFAULT_WMS_VERSION,
+      'VERSION': DEFAULT_VERSION,
       'REQUEST': 'GetMap',
       'FORMAT': 'image/png',
       'TRANSPARENT': true,
     };
-    assign(baseParams, this.params_);
+    Object.assign(baseParams, this.params_);
 
     return this.getRequestUrl_(
       tileCoord,

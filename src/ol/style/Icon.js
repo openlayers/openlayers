@@ -2,8 +2,6 @@
  * @module ol/style/Icon
  */
 import EventType from '../events/EventType.js';
-import IconAnchorUnits from './IconAnchorUnits.js';
-import IconOrigin from './IconOrigin.js';
 import ImageState from '../ImageState.js';
 import ImageStyle from './Image.js';
 import {asArray} from '../color.js';
@@ -12,14 +10,24 @@ import {get as getIconImage} from './IconImage.js';
 import {getUid} from '../util.js';
 
 /**
+ * @typedef {'fraction' | 'pixels'} IconAnchorUnits
+ * Anchor unit can be either a fraction of the icon size or in pixels.
+ */
+
+/**
+ * @typedef {'bottom-left' | 'bottom-right' | 'top-left' | 'top-right'} IconOrigin
+ * Icon origin. One of 'bottom-left', 'bottom-right', 'top-left', 'top-right'.
+ */
+
+/**
  * @typedef {Object} Options
  * @property {Array<number>} [anchor=[0.5, 0.5]] Anchor. Default value is the icon center.
- * @property {import("./IconOrigin.js").default} [anchorOrigin='top-left'] Origin of the anchor: `bottom-left`, `bottom-right`,
+ * @property {IconOrigin} [anchorOrigin='top-left'] Origin of the anchor: `bottom-left`, `bottom-right`,
  * `top-left` or `top-right`.
- * @property {import("./IconAnchorUnits.js").default} [anchorXUnits='fraction'] Units in which the anchor x value is
+ * @property {IconAnchorUnits} [anchorXUnits='fraction'] Units in which the anchor x value is
  * specified. A value of `'fraction'` indicates the x value is a fraction of the icon. A value of `'pixels'` indicates
  * the x value in pixels.
- * @property {import("./IconAnchorUnits.js").default} [anchorYUnits='fraction'] Units in which the anchor y value is
+ * @property {IconAnchorUnits} [anchorYUnits='fraction'] Units in which the anchor y value is
  * specified. A value of `'fraction'` indicates the y value is a fraction of the icon. A value of `'pixels'` indicates
  * the y value in pixels.
  * @property {import("../color.js").Color|string} [color] Color to tint the icon. If not specified,
@@ -30,22 +38,45 @@ import {getUid} from '../util.js';
  * @property {HTMLImageElement|HTMLCanvasElement} [img] Image object for the icon. If the `src` option is not provided then the
  * provided image must already be loaded. And in that case, it is required
  * to provide the size of the image, with the `imgSize` option.
- * @property {Array<number>} [offset=[0, 0]] Offset, which, together with the size and the offset origin, define the
- * sub-rectangle to use from the original icon image.
- * @property {Array<number>} [displacement=[0,0]] Displacement of the icon.
- * @property {import("./IconOrigin.js").default} [offsetOrigin='top-left'] Origin of the offset: `bottom-left`, `bottom-right`,
- * `top-left` or `top-right`.
+ * @property {import("../size.js").Size} [imgSize] Image size in pixels. Only required if `img` is set and `src` is not.
+ * The provided `imgSize` needs to match the actual size of the image.
+ * @property {Array<number>} [displacement=[0, 0]] Displacement of the icon in pixels.
+ * Positive values will shift the icon right and up.
  * @property {number} [opacity=1] Opacity of the icon.
+ * @property {number} [width] The width of the icon in pixels. This can't be used together with `scale`.
+ * @property {number} [height] The height of the icon in pixels. This can't be used together with `scale`.
  * @property {number|import("../size.js").Size} [scale=1] Scale.
  * @property {boolean} [rotateWithView=false] Whether to rotate the icon with the view.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
- * @property {import("../size.js").Size} [size] Icon size in pixel. Can be used together with `offset` to define the
- * sub-rectangle to use from the origin (sprite) icon image.
- * @property {import("../size.js").Size} [imgSize] Image size in pixels. Only required if `img` is set and `src` is not, and
- * for SVG images in Internet Explorer 11. The provided `imgSize` needs to match the actual size of the image.
+ * @property {Array<number>} [offset=[0, 0]] Offset which, together with `size` and `offsetOrigin`, defines the
+ * sub-rectangle to use from the original (sprite) image.
+ * @property {IconOrigin} [offsetOrigin='top-left'] Origin of the offset: `bottom-left`, `bottom-right`,
+ * `top-left` or `top-right`.
+ * @property {import("../size.js").Size} [size] Icon size in pixels. Used together with `offset` to define the
+ * sub-rectangle to use from the original (sprite) image.
  * @property {string} [src] Image source URI.
- * @property {"declutter"|"obstacle"|"none"|undefined} [declutterMode] Declutter mode
+ * @property {"declutter"|"obstacle"|"none"|undefined} [declutterMode] Declutter mode.
  */
+
+/**
+ * @param {number} width The width.
+ * @param {number} height The height.
+ * @param {number|undefined} wantedWidth The wanted width.
+ * @param {number|undefined} wantedHeight The wanted height.
+ * @return {number|Array<number>} The scale.
+ */
+function calculateScale(width, height, wantedWidth, wantedHeight) {
+  if (wantedWidth !== undefined && wantedHeight !== undefined) {
+    return [wantedWidth / width, wantedHeight / height];
+  }
+  if (wantedWidth !== undefined) {
+    return wantedWidth / width;
+  }
+  if (wantedHeight !== undefined) {
+    return wantedHeight / height;
+  }
+  return 1;
+}
 
 /**
  * @classdesc
@@ -54,10 +85,10 @@ import {getUid} from '../util.js';
  */
 class Icon extends ImageStyle {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
-    const options = opt_options || {};
+  constructor(options) {
+    options = options || {};
 
     /**
      * @type {number}
@@ -104,30 +135,24 @@ class Icon extends ImageStyle {
 
     /**
      * @private
-     * @type {import("./IconOrigin.js").default}
+     * @type {IconOrigin}
      */
     this.anchorOrigin_ =
-      options.anchorOrigin !== undefined
-        ? options.anchorOrigin
-        : IconOrigin.TOP_LEFT;
+      options.anchorOrigin !== undefined ? options.anchorOrigin : 'top-left';
 
     /**
      * @private
-     * @type {import("./IconAnchorUnits.js").default}
+     * @type {IconAnchorUnits}
      */
     this.anchorXUnits_ =
-      options.anchorXUnits !== undefined
-        ? options.anchorXUnits
-        : IconAnchorUnits.FRACTION;
+      options.anchorXUnits !== undefined ? options.anchorXUnits : 'fraction';
 
     /**
      * @private
-     * @type {import("./IconAnchorUnits.js").default}
+     * @type {IconAnchorUnits}
      */
     this.anchorYUnits_ =
-      options.anchorYUnits !== undefined
-        ? options.anchorYUnits
-        : IconAnchorUnits.FRACTION;
+      options.anchorYUnits !== undefined ? options.anchorYUnits : 'fraction';
 
     /**
      * @private
@@ -159,6 +184,15 @@ class Icon extends ImageStyle {
       src = /** @type {HTMLImageElement} */ (image).src || getUid(image);
     }
     assert(src !== undefined && src.length > 0, 6); // A defined and non-empty `src` or `image` must be provided
+
+    // `width` or `height` cannot be provided together with `scale`
+    assert(
+      !(
+        (options.width !== undefined || options.height !== undefined) &&
+        options.scale !== undefined
+      ),
+      69
+    );
 
     /**
      * @type {import("../ImageState.js").default}
@@ -192,12 +226,10 @@ class Icon extends ImageStyle {
     this.offset_ = options.offset !== undefined ? options.offset : [0, 0];
     /**
      * @private
-     * @type {import("./IconOrigin.js").default}
+     * @type {IconOrigin}
      */
     this.offsetOrigin_ =
-      options.offsetOrigin !== undefined
-        ? options.offsetOrigin
-        : IconOrigin.TOP_LEFT;
+      options.offsetOrigin !== undefined ? options.offsetOrigin : 'top-left';
 
     /**
      * @private
@@ -210,6 +242,49 @@ class Icon extends ImageStyle {
      * @type {import("../size.js").Size}
      */
     this.size_ = options.size !== undefined ? options.size : null;
+
+    /**
+     * Calculate the scale if width or height were given.
+     */
+    if (options.width !== undefined || options.height !== undefined) {
+      let width, height;
+      if (options.size) {
+        [width, height] = options.size;
+      } else {
+        const image = this.getImage(1);
+        if (
+          image instanceof HTMLCanvasElement ||
+          (image.src && image.complete)
+        ) {
+          width = image.width;
+          height = image.height;
+        } else {
+          this.initialOptions_ = options;
+          const onload = () => {
+            this.unlistenImageChange(onload);
+            if (!this.initialOptions_) {
+              return;
+            }
+            const imageSize = this.iconImage_.getSize();
+            this.setScale(
+              calculateScale(
+                imageSize[0],
+                imageSize[1],
+                options.width,
+                options.height
+              )
+            );
+          };
+          this.listenImageChange(onload);
+          return;
+        }
+      }
+      if (width !== undefined) {
+        this.setScale(
+          calculateScale(width, height, options.width, options.height)
+        );
+      }
+    }
   }
 
   /**
@@ -218,8 +293,15 @@ class Icon extends ImageStyle {
    * @api
    */
   clone() {
-    const scale = this.getScale();
-    return new Icon({
+    let scale, width, height;
+    if (this.initialOptions_) {
+      width = this.initialOptions_.width;
+      height = this.initialOptions_.height;
+    } else {
+      scale = this.getScale();
+      scale = Array.isArray(scale) ? scale.slice() : scale;
+    }
+    const clone = new Icon({
       anchor: this.anchor_.slice(),
       anchorOrigin: this.anchorOrigin_,
       anchorXUnits: this.anchorXUnits_,
@@ -235,10 +317,15 @@ class Icon extends ImageStyle {
       opacity: this.getOpacity(),
       rotateWithView: this.getRotateWithView(),
       rotation: this.getRotation(),
-      scale: Array.isArray(scale) ? scale.slice() : scale,
+      scale,
+      width,
+      height,
       size: this.size_ !== null ? this.size_.slice() : undefined,
       src: this.getSrc(),
+      displacement: this.getDisplacement().slice(),
+      declutterMode: this.getDeclutterMode(),
     });
+    return clone;
   }
 
   /**
@@ -253,22 +340,22 @@ class Icon extends ImageStyle {
       anchor = this.anchor_;
       const size = this.getSize();
       if (
-        this.anchorXUnits_ == IconAnchorUnits.FRACTION ||
-        this.anchorYUnits_ == IconAnchorUnits.FRACTION
+        this.anchorXUnits_ == 'fraction' ||
+        this.anchorYUnits_ == 'fraction'
       ) {
         if (!size) {
           return null;
         }
         anchor = this.anchor_.slice();
-        if (this.anchorXUnits_ == IconAnchorUnits.FRACTION) {
+        if (this.anchorXUnits_ == 'fraction') {
           anchor[0] *= size[0];
         }
-        if (this.anchorYUnits_ == IconAnchorUnits.FRACTION) {
+        if (this.anchorYUnits_ == 'fraction') {
           anchor[1] *= size[1];
         }
       }
 
-      if (this.anchorOrigin_ != IconOrigin.TOP_LEFT) {
+      if (this.anchorOrigin_ != 'top-left') {
         if (!size) {
           return null;
         }
@@ -276,14 +363,14 @@ class Icon extends ImageStyle {
           anchor = this.anchor_.slice();
         }
         if (
-          this.anchorOrigin_ == IconOrigin.TOP_RIGHT ||
-          this.anchorOrigin_ == IconOrigin.BOTTOM_RIGHT
+          this.anchorOrigin_ == 'top-right' ||
+          this.anchorOrigin_ == 'bottom-right'
         ) {
           anchor[0] = -anchor[0] + size[0];
         }
         if (
-          this.anchorOrigin_ == IconOrigin.BOTTOM_LEFT ||
-          this.anchorOrigin_ == IconOrigin.BOTTOM_RIGHT
+          this.anchorOrigin_ == 'bottom-left' ||
+          this.anchorOrigin_ == 'bottom-right'
         ) {
           anchor[1] = -anchor[1] + size[1];
         }
@@ -291,7 +378,13 @@ class Icon extends ImageStyle {
       this.normalizedAnchor_ = anchor;
     }
     const displacement = this.getDisplacement();
-    return [anchor[0] - displacement[0], anchor[1] + displacement[1]];
+    const scale = this.getScaleArray();
+    // anchor is scaled by renderer but displacement should not be scaled
+    // so divide by scale here
+    return [
+      anchor[0] - displacement[0] / scale[0],
+      anchor[1] + displacement[1] / scale[1],
+    ];
   }
 
   /**
@@ -367,7 +460,7 @@ class Icon extends ImageStyle {
     }
     let offset = this.offset_;
 
-    if (this.offsetOrigin_ != IconOrigin.TOP_LEFT) {
+    if (this.offsetOrigin_ != 'top-left') {
       const size = this.getSize();
       const iconImageSize = this.iconImage_.getSize();
       if (!size || !iconImageSize) {
@@ -375,14 +468,14 @@ class Icon extends ImageStyle {
       }
       offset = offset.slice();
       if (
-        this.offsetOrigin_ == IconOrigin.TOP_RIGHT ||
-        this.offsetOrigin_ == IconOrigin.BOTTOM_RIGHT
+        this.offsetOrigin_ == 'top-right' ||
+        this.offsetOrigin_ == 'bottom-right'
       ) {
         offset[0] = iconImageSize[0] - size[0] - offset[0];
       }
       if (
-        this.offsetOrigin_ == IconOrigin.BOTTOM_LEFT ||
-        this.offsetOrigin_ == IconOrigin.BOTTOM_RIGHT
+        this.offsetOrigin_ == 'bottom-left' ||
+        this.offsetOrigin_ == 'bottom-right'
       ) {
         offset[1] = iconImageSize[1] - size[1] - offset[1];
       }
@@ -407,6 +500,49 @@ class Icon extends ImageStyle {
    */
   getSize() {
     return !this.size_ ? this.iconImage_.getSize() : this.size_;
+  }
+
+  /**
+   * Get the width of the icon (in pixels). Will return undefined when the icon image is not yet loaded.
+   * @return {number} Icon width (in pixels).
+   * @api
+   */
+  getWidth() {
+    const scale = this.getScaleArray();
+    if (this.size_) {
+      return this.size_[0] * scale[0];
+    }
+    if (this.iconImage_.getImageState() == ImageState.LOADED) {
+      return this.iconImage_.getSize()[0] * scale[0];
+    }
+    return undefined;
+  }
+
+  /**
+   * Get the height of the icon (in pixels). Will return undefined when the icon image is not yet loaded.
+   * @return {number} Icon height (in pixels).
+   * @api
+   */
+  getHeight() {
+    const scale = this.getScaleArray();
+    if (this.size_) {
+      return this.size_[1] * scale[1];
+    }
+    if (this.iconImage_.getImageState() == ImageState.LOADED) {
+      return this.iconImage_.getSize()[1] * scale[1];
+    }
+    return undefined;
+  }
+
+  /**
+   * Set the scale.
+   *
+   * @param {number|import("../size.js").Size} scale Scale.
+   * @api
+   */
+  setScale(scale) {
+    delete this.initialOptions_;
+    super.setScale(scale);
   }
 
   /**

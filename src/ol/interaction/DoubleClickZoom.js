@@ -18,14 +18,12 @@ import {getValues} from '../obj.js';
  */
 class DoubleClickZoom extends Interaction {
   /**
-   * @param {Options} [opt_options] Options.
+   * @param {Options} [options] Options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
+  constructor(options) {
+    super();
 
-    super(
-      /** @type {import("./Interaction.js").InteractionOptions} */ (options)
-    );
+    options = options ? options : {};
 
     /**
      * @private

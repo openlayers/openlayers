@@ -5,7 +5,7 @@ var typeSignature = '';
 
 if (data.type && data.type.names) {
     data.type.names.forEach(function (name) {
-        typeSignature += '<span class="type-signature type ' + name.toLowerCase() + '">{' + self.linkto(name, self.htmlsafe(name)) + '}</span> ';
+        typeSignature += '<span class="type-signature type ' + name.toLowerCase() + '">{' + self.linkto(name) + '}</span> ';
     });
 }
 ?>
@@ -14,7 +14,7 @@ if (data.type && data.type.names) {
         <div class="anchor" id="<?js= id ?>">
         </div>
         <h4 class="name">
-            <?js= data.attribs + (data.scope === 'static' ? longname : name.indexOf('module:') === 0 ? name.split('/').pop() : name)  + typeSignature ?>
+            <?js= data.attribs + (data.scope === 'static' ? longname : name.startsWith('module:') ? name.split('/').pop() : name)  + typeSignature ?>
             <?js= this.partial('stability.tmpl', data) ?>
         </h4>
     </div>

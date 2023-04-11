@@ -1,9 +1,7 @@
 /**
  * @module ol/tilegrid
  */
-import Corner from './extent/Corner.js';
 import TileGrid from './tilegrid/TileGrid.js';
-import Units from './proj/Units.js';
 import {DEFAULT_MAX_ZOOM, DEFAULT_TILE_SIZE} from './tilegrid/common.js';
 import {METERS_PER_UNIT, get as getProjection} from './proj.js';
 import {
@@ -46,30 +44,29 @@ export function wrapX(tileGrid, tileCoord, projection) {
     );
     center[0] += worldWidth * worldsAway;
     return tileGrid.getTileCoordForCoordAndZ(center, z);
-  } else {
-    return tileCoord;
   }
+  return tileCoord;
 }
 
 /**
  * @param {import("./extent.js").Extent} extent Extent.
- * @param {number} [opt_maxZoom] Maximum zoom level (default is
+ * @param {number} [maxZoom] Maximum zoom level (default is
  *     DEFAULT_MAX_ZOOM).
- * @param {number|import("./size.js").Size} [opt_tileSize] Tile size (default uses
+ * @param {number|import("./size.js").Size} [tileSize] Tile size (default uses
  *     DEFAULT_TILE_SIZE).
- * @param {import("./extent/Corner.js").default} [opt_corner] Extent corner (default is `'top-left'`).
+ * @param {import("./extent.js").Corner} [corner] Extent corner (default is `'top-left'`).
  * @return {!TileGrid} TileGrid instance.
  */
-export function createForExtent(extent, opt_maxZoom, opt_tileSize, opt_corner) {
-  const corner = opt_corner !== undefined ? opt_corner : Corner.TOP_LEFT;
+export function createForExtent(extent, maxZoom, tileSize, corner) {
+  corner = corner !== undefined ? corner : 'top-left';
 
-  const resolutions = resolutionsFromExtent(extent, opt_maxZoom, opt_tileSize);
+  const resolutions = resolutionsFromExtent(extent, maxZoom, tileSize);
 
   return new TileGrid({
     extent: extent,
     origin: getCorner(extent, corner),
     resolutions: resolutions,
-    tileSize: opt_tileSize,
+    tileSize: tileSize,
   });
 }
 
@@ -87,12 +84,12 @@ export function createForExtent(extent, opt_maxZoom, opt_tileSize, opt_corner) {
 
 /**
  * Creates a tile grid with a standard XYZ tiling scheme.
- * @param {XYZOptions} [opt_options] Tile grid options.
+ * @param {XYZOptions} [options] Tile grid options.
  * @return {!TileGrid} Tile grid instance.
  * @api
  */
-export function createXYZ(opt_options) {
-  const xyzOptions = opt_options || {};
+export function createXYZ(options) {
+  const xyzOptions = options || {};
 
   const extent = xyzOptions.extent || getProjection('EPSG:3857').getExtent();
 
@@ -113,30 +110,23 @@ export function createXYZ(opt_options) {
 /**
  * Create a resolutions array from an extent.  A zoom factor of 2 is assumed.
  * @param {import("./extent.js").Extent} extent Extent.
- * @param {number} [opt_maxZoom] Maximum zoom level (default is
+ * @param {number} [maxZoom] Maximum zoom level (default is
  *     DEFAULT_MAX_ZOOM).
- * @param {number|import("./size.js").Size} [opt_tileSize] Tile size (default uses
+ * @param {number|import("./size.js").Size} [tileSize] Tile size (default uses
  *     DEFAULT_TILE_SIZE).
- * @param {number} [opt_maxResolution] Resolution at level zero.
+ * @param {number} [maxResolution] Resolution at level zero.
  * @return {!Array<number>} Resolutions array.
  */
-function resolutionsFromExtent(
-  extent,
-  opt_maxZoom,
-  opt_tileSize,
-  opt_maxResolution
-) {
-  const maxZoom = opt_maxZoom !== undefined ? opt_maxZoom : DEFAULT_MAX_ZOOM;
+function resolutionsFromExtent(extent, maxZoom, tileSize, maxResolution) {
+  maxZoom = maxZoom !== undefined ? maxZoom : DEFAULT_MAX_ZOOM;
+  tileSize = toSize(tileSize !== undefined ? tileSize : DEFAULT_TILE_SIZE);
 
   const height = getHeight(extent);
   const width = getWidth(extent);
 
-  const tileSize = toSize(
-    opt_tileSize !== undefined ? opt_tileSize : DEFAULT_TILE_SIZE
-  );
-  const maxResolution =
-    opt_maxResolution > 0
-      ? opt_maxResolution
+  maxResolution =
+    maxResolution > 0
+      ? maxResolution
       : Math.max(width / tileSize[0], height / tileSize[1]);
 
   const length = maxZoom + 1;
@@ -149,21 +139,16 @@ function resolutionsFromExtent(
 
 /**
  * @param {import("./proj.js").ProjectionLike} projection Projection.
- * @param {number} [opt_maxZoom] Maximum zoom level (default is
+ * @param {number} [maxZoom] Maximum zoom level (default is
  *     DEFAULT_MAX_ZOOM).
- * @param {number|import("./size.js").Size} [opt_tileSize] Tile size (default uses
+ * @param {number|import("./size.js").Size} [tileSize] Tile size (default uses
  *     DEFAULT_TILE_SIZE).
- * @param {import("./extent/Corner.js").default} [opt_corner] Extent corner (default is `'top-left'`).
+ * @param {import("./extent.js").Corner} [corner] Extent corner (default is `'top-left'`).
  * @return {!TileGrid} TileGrid instance.
  */
-export function createForProjection(
-  projection,
-  opt_maxZoom,
-  opt_tileSize,
-  opt_corner
-) {
+export function createForProjection(projection, maxZoom, tileSize, corner) {
   const extent = extentFromProjection(projection);
-  return createForExtent(extent, opt_maxZoom, opt_tileSize, opt_corner);
+  return createForExtent(extent, maxZoom, tileSize, corner);
 }
 
 /**
@@ -177,7 +162,7 @@ export function extentFromProjection(projection) {
   let extent = projection.getExtent();
   if (!extent) {
     const half =
-      (180 * METERS_PER_UNIT[Units.DEGREES]) / projection.getMetersPerUnit();
+      (180 * METERS_PER_UNIT.degrees) / projection.getMetersPerUnit();
     extent = createOrUpdate(-half, -half, half, half);
   }
   return extent;

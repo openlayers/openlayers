@@ -1,13 +1,11 @@
 import expect from '../expect.js';
 import {
+  ascending,
   binarySearch,
   equals,
   extend,
-  find,
-  findIndex,
   isSorted,
   linearFindNearest,
-  numberSafeCompareFunction,
   remove,
   reverseSubArray,
   stableSort,
@@ -383,64 +381,6 @@ describe('ol/array.js', function () {
     });
   });
 
-  describe('find', function () {
-    it('finds numbers in an array', function () {
-      const a = [0, 1, 2, 3];
-      const b = find(a, function (val, index, a2) {
-        expect(a).to.equal(a2);
-        expect(typeof index).to.be('number');
-        return val > 1;
-      });
-      expect(b).to.be(2);
-    });
-
-    it('returns null when an item in an array is not found', function () {
-      const a = [0, 1, 2, 3];
-      const b = find(a, function (val, index, a2) {
-        return val > 100;
-      });
-      expect(b).to.be(null);
-    });
-
-    it('finds items in an array-like', function () {
-      const a = 'abCD';
-      const b = find(a, function (val, index, a2) {
-        expect(a).to.equal(a2);
-        expect(typeof index).to.be('number');
-        return val >= 'A' && val <= 'Z';
-      });
-      expect(b).to.be('C');
-    });
-
-    it('returns null when nothing in an array-like is found', function () {
-      const a = 'abcd';
-      const b = find(a, function (val, index, a2) {
-        return val >= 'A' && val <= 'Z';
-      });
-      expect(b).to.be(null);
-    });
-  });
-
-  describe('findIndex', function () {
-    it('finds index of numbers in an array', function () {
-      const a = [0, 1, 2, 3];
-      const b = findIndex(a, function (val, index, a2) {
-        expect(a).to.equal(a2);
-        expect(typeof index).to.be('number');
-        return val > 1;
-      });
-      expect(b).to.be(2);
-    });
-
-    it('returns -1 when an item in an array is not found', function () {
-      const a = [0, 1, 2, 3];
-      const b = findIndex(a, function (val, index, a2) {
-        return val > 100;
-      });
-      expect(b).to.be(-1);
-    });
-  });
-
   describe('isSorted', function () {
     it('works with just an array as argument', function () {
       expect(isSorted([1, 2, 3])).to.be(true);
@@ -573,12 +513,24 @@ describe('ol/array.js', function () {
     });
   });
 
-  describe('numberSafeCompareFunction', function () {
-    it('sorts as expected', function () {
-      const arr = [40, 200, 3000];
+  describe('ascending', function () {
+    it('sorts integers in ascending order', function () {
+      const arr = [3000, 40, 200];
+      arr.sort(ascending);
       // default sort would yield [200, 3000, 40]
-      arr.sort(numberSafeCompareFunction);
-      expect(arr).to.eql(arr);
+      expect(arr).to.eql([40, 200, 3000]);
+    });
+
+    it('sorts floats in ascending order', function () {
+      const arr = [-2.0, -2.1, -1.9];
+      arr.sort(ascending);
+      expect(arr).to.eql([-2.1, -2.0, -1.9]);
+    });
+
+    it('sorts strings in ascending order', function () {
+      const arr = ['bravo', 'alpha', 'delta'];
+      arr.sort(ascending);
+      expect(arr).to.eql(['alpha', 'bravo', 'delta']);
     });
   });
 

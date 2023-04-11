@@ -13,25 +13,18 @@ const baseDir = dirname(fileURLToPath(import.meta.url));
 
 const isCssRegEx = /\.css(\?.*)?$/;
 const isJsRegEx = /\.js(\?.*)?$/;
-const importRegEx = /(?:^|\n)import .* from '(.*)';(?:\n|$)/g;
-const isTemplateJs =
-  /\/(jquery(-\d+\.\d+\.\d+)?|(bootstrap(\.bundle)?))(\.min)?\.js(\?.*)?$/;
-const isTemplateCss = /\/bootstrap(\.min)?\.css(\?.*)?$/;
+const importRegEx = /\s?import .*? from '([^']+)'/g;
+const isTemplateJs = /\/(?:bootstrap(?:\.bundle)?)(?:\.min)?\.js(?:\?.*)?$/;
+const isTemplateCss =
+  /\/(?:bootstrap|fontawesome-free@[\d.]+\/css\/(?:fontawesome|brands|solid))(?:\.min)?\.css(?:\?.*)?$/;
 
 const exampleDirContents = fs
   .readdirSync(path.join(baseDir, '..'))
   .filter((name) => /^(?!index).*\.html$/.test(name))
   .map((name) => name.replace(/\.html$/, ''));
 
-let cachedPackageInfo = null;
-async function getPackageInfo() {
-  if (cachedPackageInfo) {
-    return cachedPackageInfo;
-  }
-  cachedPackageInfo = await fse.readJSON(
-    path.resolve(baseDir, '../../package.json')
-  );
-  return cachedPackageInfo;
+function getPackageInfo() {
+  return fse.readJSON(path.resolve(baseDir, '../../package.json'));
 }
 
 handlebars.registerHelper(
@@ -146,6 +139,8 @@ function getDependencies(jsSource, pkg) {
       const dep = imp.startsWith('@') ? parts.slice(0, 2).join('/') : parts[0];
       if (dep in pkg.devDependencies) {
         dependencies[dep] = pkg.devDependencies[dep];
+      } else if (dep in pkg.dependencies) {
+        dependencies[dep] = pkg.dependencies[dep];
       }
     }
   }
@@ -198,17 +193,15 @@ export default class ExampleBuilder {
     }
 
     const exampleData = await Promise.all(
-      names.map(async (name) => await this.parseExample(dir, name))
+      names.map((name) => this.parseExample(dir, name))
     );
 
-    const examples = exampleData.map((data) => {
-      return {
-        link: data.filename,
-        title: data.title,
-        shortdesc: data.shortdesc,
-        tags: data.tags,
-      };
-    });
+    const examples = exampleData.map((data) => ({
+      link: data.filename,
+      title: data.title,
+      shortdesc: data.shortdesc,
+      tags: data.tags,
+    }));
 
     examples.sort((a, b) =>
       a.title.localeCompare(b.title, 'en', {sensitivity: 'base'})
@@ -237,9 +230,10 @@ export default class ExampleBuilder {
       });
     });
 
+    const pkg = await getPackageInfo();
     await Promise.all(
       exampleData.map(async (data) => {
-        const newAssets = await this.render(data);
+        const newAssets = await this.render(data, pkg);
         for (const file in newAssets) {
           assets[file] = new RawSource(newAssets[file]);
         }
@@ -254,60 +248,72 @@ export default class ExampleBuilder {
     const htmlName = `${name}.html`;
     const htmlPath = path.join(dir, htmlName);
     const htmlSource = await fse.readFile(htmlPath, {encoding: 'utf8'});
-
-    const jsName = `${name}.js`;
-    const jsPath = path.join(dir, jsName);
-    const jsSource = await fse.readFile(jsPath, {encoding: 'utf8'});
-
-    const {attributes, body} = frontMatter(htmlSource);
-    assert(!!attributes.layout, `missing layout in ${htmlPath}`);
-    const data = Object.assign(attributes, {contents: body});
-
-    const pkg = await getPackageInfo();
-    data.olVersion = pkg.version;
-    data.filename = htmlName;
-    data.dir = dir;
-    data.name = name;
-    data.jsSource = jsSource;
-
-    // process tags
-    data.tags = data.tags ? data.tags.replace(/[\s"]+/g, '').split(',') : [];
-    return data;
+    const {attributes: data, body} = frontMatter(
+      this.ensureNewLineAtEnd(htmlSource)
+    );
+    assert(!!data.layout, `missing layout in ${htmlPath}`);
+    return Object.assign(data, {
+      contents: body,
+      filename: htmlName,
+      dir: dir,
+      name: name,
+      // process tags
+      tags: data.tags ? data.tags.replace(/[\s"]+/g, '').split(',') : [],
+    });
   }
 
+  /**
+   * @param {string} source A string
+   * @return {string} Same string without a newline character at end
+   */
+  ensureNewLineAtEnd(source) {
+    if (source[source.length - 1] !== '\n') {
+      source += '\n';
+    }
+    return source;
+  }
+
+  /**
+   * @param {string} source Source code
+   * @return {string} Transformed source
+   */
   transformJsSource(source) {
     return (
       source
-        // remove "../src/" prefix and ".js" to have the same import syntax as the documentation
+        // remove "../src/" prefix to have the same import syntax as the documentation
         .replace(/'\.\.\/src\//g, "'")
-        .replace(/\.js';/g, "';")
         // Remove worker loader import and modify `new Worker()` to add source
         .replace(/import Worker from 'worker-loader![^\n]*\n/g, '')
         .replace('new Worker()', "new Worker('./worker.js', {type: 'module'})")
     );
   }
 
+  /**
+   * @param {string} source Source file
+   * @param {Array<{key: string, value: string}>|undefined} cloak Replacement rules
+   * @return {string} The source with all keys replaced by value
+   */
   cloakSource(source, cloak) {
     if (cloak) {
       for (const entry of cloak) {
-        source = source.replace(new RegExp(entry.key, 'g'), entry.value);
+        source = source.replaceAll(entry.key, entry.value);
       }
     }
     return source;
   }
 
-  async render(data) {
+  async render(data, pkg) {
     const assets = {};
     const readOptions = {encoding: 'utf8'};
 
     // add in script tag
     const jsName = `${data.name}.js`;
-    const jsSource = this.transformJsSource(
-      this.cloakSource(data.jsSource, data.cloak)
-    );
+    const jsPath = path.join(data.dir, jsName);
+    let jsSource = await fse.readFile(jsPath, {encoding: 'utf8'});
+    jsSource = this.transformJsSource(this.cloakSource(jsSource, data.cloak));
     data.js = {
-      tag: `<script src="${this.common}.js"></script>
-        <script src="${jsName}"></script>`,
+      local: [],
+      remote: [],
       source: jsSource,
     };
 
@@ -337,71 +343,64 @@ export default class ExampleBuilder {
       );
     }
 
-    const pkg = await getPackageInfo();
+    data.olVersion = pkg.version;
     data.pkgJson = JSON.stringify(
       {
         name: data.name,
         dependencies: getDependencies(jsSources, pkg),
         devDependencies: {
-          parcel: '^2.0.0',
+          vite: '^3.2.3',
         },
         scripts: {
-          start: 'parcel index.html',
-          build: 'parcel build --public-url . index.html',
+          start: 'vite',
+          build: 'vite build',
         },
       },
       null,
       2
     );
 
-    // check for example css
-    const cssName = `${data.name}.css`;
-    const cssPath = path.join(data.dir, cssName);
-    let cssSource;
-    try {
-      cssSource = await fse.readFile(cssPath, readOptions);
-    } catch (err) {
-      // pass
-    }
-    if (cssSource) {
-      data.css = {
-        tag: `<link rel="stylesheet" href="${cssName}">`,
-        source: cssSource,
-      };
-      assets[cssName] = cssSource;
-    }
+    data.css = {
+      local: [],
+      remote: [],
+      source: undefined,
+    };
 
     // add additional resources
     if (data.resources) {
-      const pkg = await getPackageInfo();
-      const localResources = [];
-      const remoteResources = [];
       data.resources.forEach((resource) => {
-        const remoteResource = /^https?:\/\//.test(resource)
+        const absoluteUrl = /^https?:\/\//.test(resource)
           ? resource
           : `https://openlayers.org/en/v${pkg.version}/examples/${resource}`;
         if (isJsRegEx.test(resource)) {
           if (!isTemplateJs.test(resource)) {
-            localResources.push(`<script src="${resource}"></script>`);
+            data.js.local.push(resource);
           }
-          remoteResources.push(`<script src="${remoteResource}"></script>`);
+          data.js.remote.push(absoluteUrl);
         } else if (isCssRegEx.test(resource)) {
           if (!isTemplateCss.test(resource)) {
-            localResources.push(`<link rel="stylesheet" href="${resource}">`);
+            data.css.local.push(resource);
           }
-          remoteResources.push(
-            `<link rel="stylesheet" href="${remoteResource}">`
-          );
+          data.css.remote.push(absoluteUrl);
         } else {
           throw new Error(
             `Invalid resource: '${resource}' is not .js or .css: ${data.filename}`
           );
         }
       });
-      data.extraHead = {
-        local: localResources.join('\n'),
-        remote: remoteResources.join('\n'),
-      };
+    }
+
+    data.js.local.push(`${this.common}.js`, jsName);
+
+    // check for example css
+    const cssName = `${data.name}.css`;
+    const cssPath = path.join(data.dir, cssName);
+    try {
+      assets[cssName] = await fse.readFile(cssPath, readOptions);
+      data.css.local.push(cssName);
+      data.css.source = this.ensureNewLineAtEnd(assets[cssName]);
+    } catch (err) {
+      // pass, no css for this example
     }
 
     const templatePath = path.join(this.templates, data.layout);

@@ -2,7 +2,6 @@
  * @module ol/format/TextFeature
  */
 import FeatureFormat from '../format/Feature.js';
-import FormatType from '../format/FormatType.js';
 import {abstract} from '../util.js';
 
 /**
@@ -19,35 +18,35 @@ class TextFeature extends FeatureFormat {
   }
 
   /**
-   * @return {import("./FormatType.js").default} Format.
+   * @return {import("./Feature.js").Type} Format.
    */
   getType() {
-    return FormatType.TEXT;
+    return 'text';
   }
 
   /**
    * Read the feature from the source.
    *
    * @param {Document|Element|Object|string} source Source.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {import("../Feature.js").default} Feature.
    * @api
    */
-  readFeature(source, opt_options) {
+  readFeature(source, options) {
     return this.readFeatureFromText(
       getText(source),
-      this.adaptOptions(opt_options)
+      this.adaptOptions(options)
     );
   }
 
   /**
    * @abstract
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
    * @return {import("../Feature.js").default} Feature.
    */
-  readFeatureFromText(text, opt_options) {
+  readFeatureFromText(text, options) {
     return abstract();
   }
 
@@ -55,25 +54,25 @@ class TextFeature extends FeatureFormat {
    * Read the features from the source.
    *
    * @param {Document|Element|Object|string} source Source.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {Array<import("../Feature.js").default>} Features.
    * @api
    */
-  readFeatures(source, opt_options) {
+  readFeatures(source, options) {
     return this.readFeaturesFromText(
       getText(source),
-      this.adaptOptions(opt_options)
+      this.adaptOptions(options)
     );
   }
 
   /**
    * @abstract
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
    * @return {Array<import("../Feature.js").default>} Features.
    */
-  readFeaturesFromText(text, opt_options) {
+  readFeaturesFromText(text, options) {
     return abstract();
   }
 
@@ -81,25 +80,25 @@ class TextFeature extends FeatureFormat {
    * Read the geometry from the source.
    *
    * @param {Document|Element|Object|string} source Source.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {import("../geom/Geometry.js").default} Geometry.
    * @api
    */
-  readGeometry(source, opt_options) {
+  readGeometry(source, options) {
     return this.readGeometryFromText(
       getText(source),
-      this.adaptOptions(opt_options)
+      this.adaptOptions(options)
     );
   }
 
   /**
    * @abstract
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions} [opt_options] Read options.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
    * @return {import("../geom/Geometry.js").default} Geometry.
    */
-  readGeometryFromText(text, opt_options) {
+  readGeometryFromText(text, options) {
     return abstract();
   }
 
@@ -127,22 +126,22 @@ class TextFeature extends FeatureFormat {
    * Encode a feature as a string.
    *
    * @param {import("../Feature.js").default} feature Feature.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+   * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string} Encoded feature.
    * @api
    */
-  writeFeature(feature, opt_options) {
-    return this.writeFeatureText(feature, this.adaptOptions(opt_options));
+  writeFeature(feature, options) {
+    return this.writeFeatureText(feature, this.adaptOptions(options));
   }
 
   /**
    * @abstract
    * @param {import("../Feature.js").default} feature Features.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+   * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @protected
    * @return {string} Text.
    */
-  writeFeatureText(feature, opt_options) {
+  writeFeatureText(feature, options) {
     return abstract();
   }
 
@@ -150,22 +149,22 @@ class TextFeature extends FeatureFormat {
    * Encode an array of features as string.
    *
    * @param {Array<import("../Feature.js").default>} features Features.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+   * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string} Encoded features.
    * @api
    */
-  writeFeatures(features, opt_options) {
-    return this.writeFeaturesText(features, this.adaptOptions(opt_options));
+  writeFeatures(features, options) {
+    return this.writeFeaturesText(features, this.adaptOptions(options));
   }
 
   /**
    * @abstract
    * @param {Array<import("../Feature.js").default>} features Features.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+   * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @protected
    * @return {string} Text.
    */
-  writeFeaturesText(features, opt_options) {
+  writeFeaturesText(features, options) {
     return abstract();
   }
 
@@ -173,22 +172,22 @@ class TextFeature extends FeatureFormat {
    * Write a single geometry.
    *
    * @param {import("../geom/Geometry.js").default} geometry Geometry.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+   * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string} Geometry.
    * @api
    */
-  writeGeometry(geometry, opt_options) {
-    return this.writeGeometryText(geometry, this.adaptOptions(opt_options));
+  writeGeometry(geometry, options) {
+    return this.writeGeometryText(geometry, this.adaptOptions(options));
   }
 
   /**
    * @abstract
    * @param {import("../geom/Geometry.js").default} geometry Geometry.
-   * @param {import("./Feature.js").WriteOptions} [opt_options] Write options.
+   * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @protected
    * @return {string} Text.
    */
-  writeGeometryText(geometry, opt_options) {
+  writeGeometryText(geometry, options) {
     return abstract();
   }
 }
@@ -200,9 +199,8 @@ class TextFeature extends FeatureFormat {
 function getText(source) {
   if (typeof source === 'string') {
     return source;
-  } else {
-    return '';
   }
+  return '';
 }
 
 export default TextFeature;

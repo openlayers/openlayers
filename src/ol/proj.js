@@ -54,13 +54,13 @@
  * this.
  */
 import Projection from './proj/Projection.js';
-import Units, {METERS_PER_UNIT} from './proj/Units.js';
 import {
   PROJECTIONS as EPSG3857_PROJECTIONS,
   fromEPSG4326,
   toEPSG4326,
 } from './proj/epsg3857.js';
 import {PROJECTIONS as EPSG4326_PROJECTIONS} from './proj/epsg4326.js';
+import {METERS_PER_UNIT} from './proj/Units.js';
 import {
   add as addProj,
   clear as clearProj,
@@ -75,6 +75,7 @@ import {applyTransform, getWidth} from './extent.js';
 import {clamp, modulo} from './math.js';
 import {equals, getWorldsAway} from './coordinate.js';
 import {getDistance} from './sphere.js';
+import {warn} from './console.js';
 
 /**
  * A projection as {@link module:ol/proj/Projection~Projection}, SRS identifier
@@ -100,27 +101,25 @@ export {Projection};
 let showCoordinateWarning = true;
 
 /**
- * @param {boolean} [opt_disable = true] Disable console info about `useGeographic()`
+ * @param {boolean} [disable = true] Disable console info about `useGeographic()`
  */
-export function disableCoordinateWarning(opt_disable) {
-  const hide = opt_disable === undefined ? true : opt_disable;
+export function disableCoordinateWarning(disable) {
+  const hide = disable === undefined ? true : disable;
   showCoordinateWarning = !hide;
 }
 
 /**
  * @param {Array<number>} input Input coordinate array.
- * @param {Array<number>} [opt_output] Output array of coordinate values.
- * @param {number} [opt_dimension] Dimension.
+ * @param {Array<number>} [output] Output array of coordinate values.
  * @return {Array<number>} Output coordinate array (new array, same coordinate
  *     values).
  */
-export function cloneTransform(input, opt_output, opt_dimension) {
-  let output;
-  if (opt_output !== undefined) {
+export function cloneTransform(input, output) {
+  if (output !== undefined) {
     for (let i = 0, ii = input.length; i < ii; ++i) {
-      opt_output[i] = input[i];
+      output[i] = input[i];
     }
-    output = opt_output;
+    output = output;
   } else {
     output = input.slice();
   }
@@ -129,16 +128,15 @@ export function cloneTransform(input, opt_output, opt_dimension) {
 
 /**
  * @param {Array<number>} input Input coordinate array.
- * @param {Array<number>} [opt_output] Output array of coordinate values.
- * @param {number} [opt_dimension] Dimension.
+ * @param {Array<number>} [output] Output array of coordinate values.
  * @return {Array<number>} Input coordinate array (same array as input).
  */
-export function identityTransform(input, opt_output, opt_dimension) {
-  if (opt_output !== undefined && input !== opt_output) {
+export function identityTransform(input, output) {
+  if (output !== undefined && input !== output) {
     for (let i = 0, ii = input.length; i < ii; ++i) {
-      opt_output[i] = input[i];
+      output[i] = input[i];
     }
-    input = opt_output;
+    input = output;
   }
   return input;
 }
@@ -192,27 +190,27 @@ export function get(projectionLike) {
  * @param {ProjectionLike} projection The projection.
  * @param {number} resolution Nominal resolution in projection units.
  * @param {import("./coordinate.js").Coordinate} point Point to find adjusted resolution at.
- * @param {import("./proj/Units.js").default} [opt_units] Units to get the point resolution in.
+ * @param {import("./proj/Units.js").Units} [units] Units to get the point resolution in.
  * Default is the projection's units.
  * @return {number} Point resolution.
  * @api
  */
-export function getPointResolution(projection, resolution, point, opt_units) {
+export function getPointResolution(projection, resolution, point, units) {
   projection = get(projection);
   let pointResolution;
   const getter = projection.getPointResolutionFunc();
   if (getter) {
     pointResolution = getter(resolution, point);
-    if (opt_units && opt_units !== projection.getUnits()) {
+    if (units && units !== projection.getUnits()) {
       const metersPerUnit = projection.getMetersPerUnit();
       if (metersPerUnit) {
         pointResolution =
-          (pointResolution * metersPerUnit) / METERS_PER_UNIT[opt_units];
+          (pointResolution * metersPerUnit) / METERS_PER_UNIT[units];
       }
     }
   } else {
-    const units = projection.getUnits();
-    if ((units == Units.DEGREES && !opt_units) || opt_units == Units.DEGREES) {
+    const projUnits = projection.getUnits();
+    if ((projUnits == 'degrees' && !units) || units == 'degrees') {
       pointResolution = resolution;
     } else {
       // Estimate point resolution by transforming the center pixel to EPSG:4326,
@@ -222,7 +220,7 @@ export function getPointResolution(projection, resolution, point, opt_units) {
         projection,
         get('EPSG:4326')
       );
-      if (toEPSG4326 === identityTransform && units !== Units.DEGREES) {
+      if (toEPSG4326 === identityTransform && projUnits !== 'degrees') {
         // no transform is available
         pointResolution = resolution * projection.getMetersPerUnit();
       } else {
@@ -241,8 +239,8 @@ export function getPointResolution(projection, resolution, point, opt_units) {
         const height = getDistance(vertices.slice(4, 6), vertices.slice(6, 8));
         pointResolution = (width + height) / 2;
       }
-      const metersPerUnit = opt_units
-        ? METERS_PER_UNIT[opt_units]
+      const metersPerUnit = units
+        ? METERS_PER_UNIT[units]
         : projection.getMetersPerUnit();
       if (metersPerUnit !== undefined) {
         pointResolution /= metersPerUnit;
@@ -313,11 +311,11 @@ export function clearAllProjections() {
 export function createProjection(projection, defaultCode) {
   if (!projection) {
     return get(defaultCode);
-  } else if (typeof projection === 'string') {
-    return get(projection);
-  } else {
-    return /** @type {Projection} */ (projection);
   }
+  if (typeof projection === 'string') {
+    return get(projection);
+  }
+  return /** @type {Projection} */ (projection);
 }
 
 /**
@@ -331,14 +329,14 @@ export function createTransformFromCoordinateTransform(coordTransform) {
   return (
     /**
      * @param {Array<number>} input Input.
-     * @param {Array<number>} [opt_output] Output.
-     * @param {number} [opt_dimension] Dimension.
+     * @param {Array<number>} [output] Output.
+     * @param {number} [dimension] Dimension.
      * @return {Array<number>} Output.
      */
-    function (input, opt_output, opt_dimension) {
+    function (input, output, dimension) {
       const length = input.length;
-      const dimension = opt_dimension !== undefined ? opt_dimension : 2;
-      const output = opt_output !== undefined ? opt_output : new Array(length);
+      dimension = dimension !== undefined ? dimension : 2;
+      output = output !== undefined ? output : new Array(length);
       for (let i = 0; i < length; i += dimension) {
         const point = coordTransform(input.slice(i, i + dimension));
         const pointLength = point.length;
@@ -392,33 +390,33 @@ export function addCoordinateTransforms(source, destination, forward, inverse) {
  * Transforms a coordinate from longitude/latitude to a different projection.
  * @param {import("./coordinate.js").Coordinate} coordinate Coordinate as longitude and latitude, i.e.
  *     an array with longitude as 1st and latitude as 2nd element.
- * @param {ProjectionLike} [opt_projection] Target projection. The
+ * @param {ProjectionLike} [projection] Target projection. The
  *     default is Web Mercator, i.e. 'EPSG:3857'.
  * @return {import("./coordinate.js").Coordinate} Coordinate projected to the target projection.
  * @api
  */
-export function fromLonLat(coordinate, opt_projection) {
+export function fromLonLat(coordinate, projection) {
   disableCoordinateWarning();
   return transform(
     coordinate,
     'EPSG:4326',
-    opt_projection !== undefined ? opt_projection : 'EPSG:3857'
+    projection !== undefined ? projection : 'EPSG:3857'
   );
 }
 
 /**
  * Transforms a coordinate to longitude/latitude.
  * @param {import("./coordinate.js").Coordinate} coordinate Projected coordinate.
- * @param {ProjectionLike} [opt_projection] Projection of the coordinate.
+ * @param {ProjectionLike} [projection] Projection of the coordinate.
  *     The default is Web Mercator, i.e. 'EPSG:3857'.
  * @return {import("./coordinate.js").Coordinate} Coordinate as longitude and latitude, i.e. an array
  *     with longitude as 1st and latitude as 2nd element.
  * @api
  */
-export function toLonLat(coordinate, opt_projection) {
+export function toLonLat(coordinate, projection) {
   const lonLat = transform(
     coordinate,
-    opt_projection !== undefined ? opt_projection : 'EPSG:3857',
+    projection !== undefined ? projection : 'EPSG:3857',
     'EPSG:4326'
   );
   const lon = lonLat[0];
@@ -445,10 +443,9 @@ export function equivalent(projection1, projection2) {
   const equalUnits = projection1.getUnits() === projection2.getUnits();
   if (projection1.getCode() === projection2.getCode()) {
     return equalUnits;
-  } else {
-    const transformFunc = getTransformFromProjections(projection1, projection2);
-    return transformFunc === cloneTransform && equalUnits;
   }
+  const transformFunc = getTransformFromProjections(projection1, projection2);
+  return transformFunc === cloneTransform && equalUnits;
 }
 
 /**
@@ -515,14 +512,14 @@ export function transform(coordinate, source, destination) {
  * @param {import("./extent.js").Extent} extent The extent to transform.
  * @param {ProjectionLike} source Source projection-like.
  * @param {ProjectionLike} destination Destination projection-like.
- * @param {number} [opt_stops] Number of stops per side used for the transform.
+ * @param {number} [stops] Number of stops per side used for the transform.
  * By default only the corners are used.
  * @return {import("./extent.js").Extent} The transformed extent.
  * @api
  */
-export function transformExtent(extent, source, destination, opt_stops) {
+export function transformExtent(extent, source, destination, stops) {
   const transformFunc = getTransform(source, destination);
-  return applyTransform(extent, transformFunc, undefined, opt_stops);
+  return applyTransform(extent, transformFunc, undefined, stops);
 }
 
 /**
@@ -620,8 +617,7 @@ export function fromUserCoordinate(coordinate, destProjection) {
       coordinate[1] <= 90
     ) {
       showCoordinateWarning = false;
-      // eslint-disable-next-line no-console
-      console.warn(
+      warn(
         'Call useGeographic() from ol/proj once to work with [longitude, latitude] coordinates.'
       );
     }

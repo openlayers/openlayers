@@ -2,6 +2,11 @@ import EventType from '../../../../../src/ol/pointer/EventType.js';
 import Map from '../../../../../src/ol/Map.js';
 import MousePosition from '../../../../../src/ol/control/MousePosition.js';
 import View from '../../../../../src/ol/View.js';
+import {
+  clearUserProjection,
+  fromLonLat,
+  useGeographic,
+} from '../../../../../src/ol/proj.js';
 
 describe('ol/control/MousePosition', function () {
   describe('constructor', function () {
@@ -46,6 +51,7 @@ describe('ol/control/MousePosition', function () {
       });
     });
     afterEach(function () {
+      clearUserProjection();
       map.dispose();
       document.body.removeChild(target);
     });
@@ -69,10 +75,7 @@ describe('ol/control/MousePosition', function () {
         ctrl.setMap(map);
         map.renderSync();
 
-        const element = document.querySelector(
-          '.ol-mouse-position',
-          map.getTarget()
-        );
+        const element = document.querySelector('.ol-mouse-position');
 
         simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
         expect(element.innerHTML).to.be('some text');
@@ -84,15 +87,12 @@ describe('ol/control/MousePosition', function () {
         expect(element.innerHTML).to.be('some text');
       });
 
-      it('renders the last posisition if placeholder is false and mouse moves outside the viewport', function () {
-        const ctrl = new MousePosition({placeholder: false});
+      it('renders the last posisition if placeholder is not set and mouse moves outside the viewport', function () {
+        const ctrl = new MousePosition();
         ctrl.setMap(map);
         map.renderSync();
 
-        const element = document.querySelector(
-          '.ol-mouse-position',
-          map.getTarget()
-        );
+        const element = document.querySelector('.ol-mouse-position');
 
         simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
         expect(element.innerHTML).to.be('&nbsp;');
@@ -105,17 +105,14 @@ describe('ol/control/MousePosition', function () {
         expect(element.innerHTML).to.be('20,-30');
       });
 
-      it('renders an empty space if placehodler is set to the same and mouse moves outside the viewport', function () {
+      it('renders an empty space if placeholder is set to the same and mouse moves outside the viewport', function () {
         const ctrl = new MousePosition({
           placeholder: '',
         });
         ctrl.setMap(map);
         map.renderSync();
 
-        const element = document.querySelector(
-          '.ol-mouse-position',
-          map.getTarget()
-        );
+        const element = document.querySelector('.ol-mouse-position');
 
         simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
         expect(element.innerHTML).to.be('');
@@ -129,72 +126,43 @@ describe('ol/control/MousePosition', function () {
       });
     });
 
-    describe('undefinedHTML (deprecated)', function () {
-      it('renders undefinedHTML when mouse moves out', function () {
-        const ctrl = new MousePosition({
-          undefinedHTML: 'some text',
-        });
-        ctrl.setMap(map);
-        map.renderSync();
+    it('can opt out of wrapX', function () {
+      const ctrl = new MousePosition({wrapX: false});
+      ctrl.setMap(map);
+      map.getView().setCenter([-360, 0]);
+      map.renderSync();
+      simulateEvent(EventType.POINTERMOVE, 0, 0);
+      expect(ctrl.element.innerHTML).to.be('-360,0');
+    });
 
-        const element = document.querySelector(
-          '.ol-mouse-position',
-          map.getTarget()
-        );
+    it('can wrapX', function () {
+      const ctrl = new MousePosition();
+      ctrl.setMap(map);
+      map.getView().setCenter([-360, 0]);
+      map.renderSync();
+      simulateEvent(EventType.POINTERMOVE, 0, 0);
+      expect(ctrl.element.innerHTML).to.be('0,0');
+    });
 
-        simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
-        expect(element.innerHTML).to.be('some text');
+    it('can wrapX with projection', function () {
+      const ctrl = new MousePosition({projection: 'EPSG:4326'});
+      map.setView(new View({resolution: 1}));
+      ctrl.setMap(map);
+      map.getView().setCenter(fromLonLat([-360, 0]));
+      map.renderSync();
+      simulateEvent(EventType.POINTERMOVE, 0, 0);
+      expect(ctrl.element.innerHTML).to.be('0,0');
+    });
 
-        simulateEvent(EventType.POINTERMOVE, 20, 30);
-        expect(element.innerHTML).to.be('20,-30');
-
-        simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
-        expect(element.innerHTML).to.be('some text');
-      });
-
-      it('clears the mouse position by default when the mouse moves outside the viewport', function () {
-        const ctrl = new MousePosition();
-        ctrl.setMap(map);
-        map.renderSync();
-
-        const element = document.querySelector(
-          '.ol-mouse-position',
-          map.getTarget()
-        );
-
-        simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
-        expect(element.innerHTML).to.be('&nbsp;');
-
-        target.dispatchEvent(new PointerEvent('pointermove'));
-        simulateEvent(EventType.POINTERMOVE, 20, 30);
-        expect(element.innerHTML).to.be('20,-30');
-
-        simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
-        expect(element.innerHTML).to.be('&nbsp;');
-      });
-
-      it('retains the mouse position when undefinedHTML is falsey and mouse moves outside the viewport', function () {
-        const ctrl = new MousePosition({
-          undefinedHTML: '',
-        });
-        ctrl.setMap(map);
-        map.renderSync();
-
-        const element = document.querySelector(
-          '.ol-mouse-position',
-          map.getTarget()
-        );
-
-        simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
-        expect(element.innerHTML).to.be('');
-
-        target.dispatchEvent(new PointerEvent('pointermove'));
-        simulateEvent(EventType.POINTERMOVE, 20, 30);
-        expect(element.innerHTML).to.be('20,-30');
-
-        simulateEvent(EventType.POINTEROUT, width + 1, height + 1);
-        expect(element.innerHTML).to.be('20,-30');
-      });
+    it('can wrapX with user projection', function () {
+      useGeographic();
+      const ctrl = new MousePosition({projection: 'EPSG:4326'});
+      map.setView(new View({resolution: 1}));
+      ctrl.setMap(map);
+      map.getView().setCenter([-360, 0]);
+      map.renderSync();
+      simulateEvent(EventType.POINTERMOVE, 0, 0);
+      expect(ctrl.element.innerHTML).to.be('0,0');
     });
   });
 });

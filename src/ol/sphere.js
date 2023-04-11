@@ -1,7 +1,6 @@
 /**
  * @module ol/sphere
  */
-import GeometryType from './geom/GeometryType.js';
 import {toDegrees, toRadians} from './math.js';
 
 /**
@@ -27,13 +26,13 @@ export const DEFAULT_RADIUS = 6371008.8;
  * Get the great circle distance (in meters) between two geographic coordinates.
  * @param {Array} c1 Starting coordinate.
  * @param {Array} c2 Ending coordinate.
- * @param {number} [opt_radius] The sphere radius to use.  Defaults to the Earth's
+ * @param {number} [radius] The sphere radius to use.  Defaults to the Earth's
  *     mean radius using the WGS84 ellipsoid.
  * @return {number} The great circle distance between the points (in meters).
  * @api
  */
-export function getDistance(c1, c2, opt_radius) {
-  const radius = opt_radius || DEFAULT_RADIUS;
+export function getDistance(c1, c2, radius) {
+  radius = radius || DEFAULT_RADIUS;
   const lat1 = toRadians(c1[1]);
   const lat2 = toRadians(c2[1]);
   const deltaLatBy2 = (lat2 - lat1) / 2;
@@ -67,37 +66,37 @@ function getLengthInternal(coordinates, radius) {
  * the sum of all rings.  For points, the length is zero.  For multi-part
  * geometries, the length is the sum of the length of each part.
  * @param {import("./geom/Geometry.js").default} geometry A geometry.
- * @param {SphereMetricOptions} [opt_options] Options for the
+ * @param {SphereMetricOptions} [options] Options for the
  * length calculation.  By default, geometries are assumed to be in 'EPSG:3857'.
  * You can change this by providing a `projection` option.
  * @return {number} The spherical length (in meters).
  * @api
  */
-export function getLength(geometry, opt_options) {
-  const options = opt_options || {};
+export function getLength(geometry, options) {
+  options = options || {};
   const radius = options.radius || DEFAULT_RADIUS;
   const projection = options.projection || 'EPSG:3857';
   const type = geometry.getType();
-  if (type !== GeometryType.GEOMETRY_COLLECTION) {
+  if (type !== 'GeometryCollection') {
     geometry = geometry.clone().transform(projection, 'EPSG:4326');
   }
   let length = 0;
   let coordinates, coords, i, ii, j, jj;
   switch (type) {
-    case GeometryType.POINT:
-    case GeometryType.MULTI_POINT: {
+    case 'Point':
+    case 'MultiPoint': {
       break;
     }
-    case GeometryType.LINE_STRING:
-    case GeometryType.LINEAR_RING: {
+    case 'LineString':
+    case 'LinearRing': {
       coordinates = /** @type {import("./geom/SimpleGeometry.js").default} */ (
         geometry
       ).getCoordinates();
       length = getLengthInternal(coordinates, radius);
       break;
     }
-    case GeometryType.MULTI_LINE_STRING:
-    case GeometryType.POLYGON: {
+    case 'MultiLineString':
+    case 'Polygon': {
       coordinates = /** @type {import("./geom/SimpleGeometry.js").default} */ (
         geometry
       ).getCoordinates();
@@ -106,7 +105,7 @@ export function getLength(geometry, opt_options) {
       }
       break;
     }
-    case GeometryType.MULTI_POLYGON: {
+    case 'MultiPolygon': {
       coordinates = /** @type {import("./geom/SimpleGeometry.js").default} */ (
         geometry
       ).getCoordinates();
@@ -118,13 +117,13 @@ export function getLength(geometry, opt_options) {
       }
       break;
     }
-    case GeometryType.GEOMETRY_COLLECTION: {
+    case 'GeometryCollection': {
       const geometries =
         /** @type {import("./geom/GeometryCollection.js").default} */ (
           geometry
         ).getGeometries();
       for (i = 0, ii = geometries.length; i < ii; ++i) {
-        length += getLength(geometries[i], opt_options);
+        length += getLength(geometries[i], options);
       }
       break;
     }
@@ -170,31 +169,31 @@ function getAreaInternal(coordinates, radius) {
  * Get the spherical area of a geometry.  This is the area (in meters) assuming
  * that polygon edges are segments of great circles on a sphere.
  * @param {import("./geom/Geometry.js").default} geometry A geometry.
- * @param {SphereMetricOptions} [opt_options] Options for the area
+ * @param {SphereMetricOptions} [options] Options for the area
  *     calculation.  By default, geometries are assumed to be in 'EPSG:3857'.
  *     You can change this by providing a `projection` option.
  * @return {number} The spherical area (in square meters).
  * @api
  */
-export function getArea(geometry, opt_options) {
-  const options = opt_options || {};
+export function getArea(geometry, options) {
+  options = options || {};
   const radius = options.radius || DEFAULT_RADIUS;
   const projection = options.projection || 'EPSG:3857';
   const type = geometry.getType();
-  if (type !== GeometryType.GEOMETRY_COLLECTION) {
+  if (type !== 'GeometryCollection') {
     geometry = geometry.clone().transform(projection, 'EPSG:4326');
   }
   let area = 0;
   let coordinates, coords, i, ii, j, jj;
   switch (type) {
-    case GeometryType.POINT:
-    case GeometryType.MULTI_POINT:
-    case GeometryType.LINE_STRING:
-    case GeometryType.MULTI_LINE_STRING:
-    case GeometryType.LINEAR_RING: {
+    case 'Point':
+    case 'MultiPoint':
+    case 'LineString':
+    case 'MultiLineString':
+    case 'LinearRing': {
       break;
     }
-    case GeometryType.POLYGON: {
+    case 'Polygon': {
       coordinates = /** @type {import("./geom/Polygon.js").default} */ (
         geometry
       ).getCoordinates();
@@ -204,7 +203,7 @@ export function getArea(geometry, opt_options) {
       }
       break;
     }
-    case GeometryType.MULTI_POLYGON: {
+    case 'MultiPolygon': {
       coordinates = /** @type {import("./geom/SimpleGeometry.js").default} */ (
         geometry
       ).getCoordinates();
@@ -217,13 +216,13 @@ export function getArea(geometry, opt_options) {
       }
       break;
     }
-    case GeometryType.GEOMETRY_COLLECTION: {
+    case 'GeometryCollection': {
       const geometries =
         /** @type {import("./geom/GeometryCollection.js").default} */ (
           geometry
         ).getGeometries();
       for (i = 0, ii = geometries.length; i < ii; ++i) {
-        area += getArea(geometries[i], opt_options);
+        area += getArea(geometries[i], options);
       }
       break;
     }
@@ -241,12 +240,12 @@ export function getArea(geometry, opt_options) {
  * @param {number} distance The great-circle distance between the origin
  *     point and the target point.
  * @param {number} bearing The bearing (in radians).
- * @param {number} [opt_radius] The sphere radius to use.  Defaults to the Earth's
+ * @param {number} [radius] The sphere radius to use.  Defaults to the Earth's
  *     mean radius using the WGS84 ellipsoid.
  * @return {import("./coordinate.js").Coordinate} The target point.
  */
-export function offset(c1, distance, bearing, opt_radius) {
-  const radius = opt_radius || DEFAULT_RADIUS;
+export function offset(c1, distance, bearing, radius) {
+  radius = radius || DEFAULT_RADIUS;
   const lat1 = toRadians(c1[1]);
   const lon1 = toRadians(c1[0]);
   const dByR = distance / radius;

@@ -4,7 +4,6 @@
 
 import EventType from '../events/EventType.js';
 import Feature from '../Feature.js';
-import GeometryType from '../geom/GeometryType.js';
 import Point from '../geom/Point.js';
 import VectorSource from './Vector.js';
 import {add as addCoordinate, scale as scaleCoordinate} from '../coordinate.js';
@@ -116,7 +115,7 @@ class Cluster extends VectorSource {
       options.geometryFunction ||
       function (feature) {
         const geometry = /** @type {Point} */ (feature.getGeometry());
-        assert(geometry.getType() == GeometryType.POINT, 10); // The default `geometryFunction` can only handle `Point` geometries
+        assert(geometry.getType() == 'Point', 10); // The default `geometryFunction` can only handle `Point` geometries
         return geometry;
       };
 
@@ -143,12 +142,12 @@ class Cluster extends VectorSource {
 
   /**
    * Remove all features from the source.
-   * @param {boolean} [opt_fast] Skip dispatching of {@link module:ol/source/VectorEventType~VectorEventType#removefeature} events.
+   * @param {boolean} [fast] Skip dispatching of {@link module:ol/source/VectorEventType~VectorEventType#removefeature} events.
    * @api
    */
-  clear(opt_fast) {
+  clear(fast) {
     this.features.length = 0;
-    super.clear(opt_fast);
+    super.clear(fast);
   }
 
   /**
@@ -317,12 +316,11 @@ class Cluster extends VectorSource {
     ]);
     if (this.createCustomCluster_) {
       return this.createCustomCluster_(geometry, features);
-    } else {
-      return new Feature({
-        geometry,
-        features,
-      });
     }
+    return new Feature({
+      geometry,
+      features,
+    });
   }
 }
 

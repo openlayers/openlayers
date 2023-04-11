@@ -9,7 +9,7 @@ class OLComponent extends HTMLElement {
     this.shadow = this.attachShadow({mode: 'open'});
     const link = document.createElement('link');
     link.setAttribute('rel', 'stylesheet');
-    link.setAttribute('href', 'css/ol.css');
+    link.setAttribute('href', 'theme/ol.css');
     this.shadow.appendChild(link);
     const style = document.createElement('style');
     style.innerText = `

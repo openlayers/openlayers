@@ -1,14 +1,16 @@
 import Feature from '../../../../../../src/ol/Feature.js';
 import GeoJSON from '../../../../../../src/ol/format/GeoJSON.js';
 import Map from '../../../../../../src/ol/Map.js';
+import OSM from '../../../../../../src/ol/source/OSM.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
+import TileLayer from '../../../../../../src/ol/layer/Tile.js';
 import VectorLayer from '../../../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../../../src/ol/source/Vector.js';
 import View from '../../../../../../src/ol/View.js';
 import ViewHint from '../../../../../../src/ol/ViewHint.js';
 import WebGLPointsLayer from '../../../../../../src/ol/layer/WebGLPoints.js';
 import WebGLPointsLayerRenderer from '../../../../../../src/ol/renderer/webgl/PointsLayer.js';
-import {WebGLWorkerMessageType} from '../../../../../../src/ol/renderer/webgl/Layer.js';
+import {WebGLWorkerMessageType} from '../../../../../../src/ol/render/webgl/constants.js';
 import {
   compose as composeTransform,
   create as createTransform,
@@ -16,6 +18,7 @@ import {
 import {createCanvasContext2D} from '../../../../../../src/ol/dom.js';
 import {get as getProjection} from '../../../../../../src/ol/proj.js';
 import {getUid} from '../../../../../../src/ol/util.js';
+import {unByKey} from '../../../../../../src/ol/Observable.js';
 
 const baseFrameState = {
   viewHints: [],
@@ -156,7 +159,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       const attributePerVertex = 3;
 
       renderer.worker_.addEventListener('message', function (event) {
-        if (event.data.type !== WebGLWorkerMessageType.GENERATE_BUFFERS) {
+        if (event.data.type !== WebGLWorkerMessageType.GENERATE_POINT_BUFFERS) {
           return;
         }
         expect(renderer.verticesBuffer_.getArray().length).to.eql(
@@ -192,7 +195,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       const attributePerVertex = 8;
 
       renderer.worker_.addEventListener('message', function (event) {
-        if (event.data.type !== WebGLWorkerMessageType.GENERATE_BUFFERS) {
+        if (event.data.type !== WebGLWorkerMessageType.GENERATE_POINT_BUFFERS) {
           return;
         }
         if (!renderer.hitVerticesBuffer_.getArray()) {
@@ -231,7 +234,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       renderer.prepareFrame(frameState);
 
       renderer.worker_.addEventListener('message', function (event) {
-        if (event.data.type !== WebGLWorkerMessageType.GENERATE_BUFFERS) {
+        if (event.data.type !== WebGLWorkerMessageType.GENERATE_POINT_BUFFERS) {
           return;
         }
         const attributePerVertex = 3;
@@ -627,14 +630,14 @@ describe('ol/renderer/webgl/PointsLayer', function () {
     beforeEach(function () {
       source = new VectorSource({
         features: new GeoJSON().readFeatures({
-          'type': 'FeatureCollection',
-          'features': [
+          type: 'FeatureCollection',
+          features: [
             {
-              'type': 'Feature',
-              'properties': {},
-              'geometry': {
-                'type': 'Point',
-                'coordinates': [13, 52],
+              type: 'Feature',
+              properties: {},
+              geometry: {
+                type: 'Point',
+                coordinates: [13, 52],
               },
             },
           ],
@@ -766,16 +769,60 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       map.getView().setCenter([10, 10]);
       map.renderSync();
       let changed = 0;
-      layer.on('change', function () {
+      const key = layer.on('change', function () {
         try {
           expect(layer.getRenderer().ready).to.be(++changed > 2);
           if (changed === 4) {
+            unByKey(key);
             done();
           }
         } catch (e) {
           done(e);
         }
       });
+    });
+  });
+
+  describe('layer not visible initially', function () {
+    let map, layer;
+    beforeEach(function () {
+      layer = new WebGLPointsLayer({
+        source: new VectorSource(),
+        style: {
+          symbol: {
+            symbolType: 'circle',
+            size: 14,
+            color: 'red',
+          },
+        },
+        maxZoom: 8,
+      });
+      const visibleLayer = new TileLayer({
+        source: new OSM(),
+      });
+      map = new Map({
+        pixelRatio: 1,
+        target: createMapDiv(100, 100),
+        layers: [layer, visibleLayer],
+        view: new View({
+          center: [0, 0],
+          zoom: 10,
+        }),
+      });
+    });
+
+    afterEach(function () {
+      disposeMap(map);
+      layer.dispose();
+    });
+
+    it('loadstart and loadend events trigger normally', function (done) {
+      map.once('loadstart', () => {
+        map.once('loadend', () => {
+          done();
+        });
+      });
+      map.renderSync();
     });
   });
 

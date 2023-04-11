@@ -40,9 +40,9 @@ import {easeOut, linear} from '../easing.js';
  */
 class Interaction extends BaseObject {
   /**
-   * @param {InteractionOptions} [opt_options] Options.
+   * @param {InteractionOptions} [options] Options.
    */
-  constructor(opt_options) {
+  constructor(options) {
     super();
 
     /***
@@ -60,13 +60,13 @@ class Interaction extends BaseObject {
      */
     this.un;
 
-    if (opt_options && opt_options.handleEvent) {
-      this.handleEvent = opt_options.handleEvent;
+    if (options && options.handleEvent) {
+      this.handleEvent = options.handleEvent;
     }
 
     /**
      * @private
-     * @type {import("../PluggableMap.js").default|null}
+     * @type {import("../Map.js").default|null}
      */
     this.map_ = null;
 
@@ -85,7 +85,7 @@ class Interaction extends BaseObject {
 
   /**
    * Get the map associated with this interaction.
-   * @return {import("../PluggableMap.js").default|null} Map.
+   * @return {import("../Map.js").default|null} Map.
    * @api
    */
   getMap() {
@@ -116,7 +116,7 @@ class Interaction extends BaseObject {
    * Remove the interaction from its current map and attach it to the new map.
    * Subclasses may set up event handlers to get notified about changes to
    * the map here.
-   * @param {import("../PluggableMap.js").default|null} map Map.
+   * @param {import("../Map.js").default|null} map Map.
    */
   setMap(map) {
     this.map_ = map;
@@ -126,14 +126,14 @@ class Interaction extends BaseObject {
 /**
  * @param {import("../View.js").default} view View.
  * @param {import("../coordinate.js").Coordinate} delta Delta.
- * @param {number} [opt_duration] Duration.
+ * @param {number} [duration] Duration.
  */
-export function pan(view, delta, opt_duration) {
+export function pan(view, delta, duration) {
   const currentCenter = view.getCenterInternal();
   if (currentCenter) {
     const center = [currentCenter[0] + delta[0], currentCenter[1] + delta[1]];
     view.animateInternal({
-      duration: opt_duration !== undefined ? opt_duration : 250,
+      duration: duration !== undefined ? duration : 250,
       easing: linear,
       center: view.getConstrainedCenter(center),
     });
@@ -143,10 +143,10 @@ export function pan(view, delta, opt_duration) {
 /**
  * @param {import("../View.js").default} view View.
  * @param {number} delta Delta from previous zoom level.
- * @param {import("../coordinate.js").Coordinate} [opt_anchor] Anchor coordinate in the user projection.
- * @param {number} [opt_duration] Duration.
+ * @param {import("../coordinate.js").Coordinate} [anchor] Anchor coordinate in the user projection.
+ * @param {number} [duration] Duration.
  */
-export function zoomByDelta(view, delta, opt_anchor, opt_duration) {
+export function zoomByDelta(view, delta, anchor, duration) {
   const currentZoom = view.getZoom();
 
   if (currentZoom === undefined) {
@@ -161,8 +161,8 @@ export function zoomByDelta(view, delta, opt_anchor, opt_duration) {
   }
   view.animate({
     resolution: newResolution,
-    anchor: opt_anchor,
-    duration: opt_duration !== undefined ? opt_duration : 250,
+    anchor: anchor,
+    duration: duration !== undefined ? duration : 250,
     easing: easeOut,
   });
 }

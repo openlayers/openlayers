@@ -16,9 +16,9 @@ const tmpArray4 = new Uint8Array(4);
 class WebGLRenderTarget {
   /**
    * @param {import("./Helper.js").default} helper WebGL helper; mandatory.
-   * @param {Array<number>} [opt_size] Expected size of the render target texture; note: this can be changed later on.
+   * @param {Array<number>} [size] Expected size of the render target texture; note: this can be changed later on.
    */
-  constructor(helper, opt_size) {
+  constructor(helper, size) {
     /**
      * @private
      * @type {import("./Helper.js").default}
@@ -42,7 +42,7 @@ class WebGLRenderTarget {
      * @type {Array<number>}
      * @private
      */
-    this.size_ = opt_size || [1, 1];
+    this.size_ = size || [1, 1];
 
     /**
      * @type {Uint8Array}

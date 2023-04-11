@@ -180,7 +180,7 @@ const featureOverlay = new VectorLayer({
 });
 
 const control = document.getElementById('time');
-const listener = function () {
+control.addEventListener('input', function () {
   const value = parseInt(control.value, 10) / 100;
   const m = time.start + time.duration * value;
   vectorSource.forEachFeature(function (feature) {
@@ -199,6 +199,4 @@ const listener = function () {
     }
   });
   map.render();
-};
-control.addEventListener('input', listener);
-control.addEventListener('change', listener);
+});

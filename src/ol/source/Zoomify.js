@@ -14,12 +14,8 @@ import {getCenter} from '../extent.js';
 import {toSize} from '../size.js';
 
 /**
- * @enum {string}
+ * @typedef {'default' | 'truncated'} TierSizeCalculation
  */
-const TierSizeCalculation = {
-  DEFAULT: 'default',
-  TRUNCATED: 'truncated',
-};
 
 export class CustomTile extends ImageTile {
   /**
@@ -29,7 +25,7 @@ export class CustomTile extends ImageTile {
    * @param {string} src Image source URI.
    * @param {?string} crossOrigin Cross origin.
    * @param {import("../Tile.js").LoadFunction} tileLoadFunction Tile load function.
-   * @param {import("../Tile.js").Options} [opt_options] Tile options.
+   * @param {import("../Tile.js").Options} [options] Tile options.
    */
   constructor(
     tileSize,
@@ -38,9 +34,9 @@ export class CustomTile extends ImageTile {
     src,
     crossOrigin,
     tileLoadFunction,
-    opt_options
+    options
   ) {
-    super(tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options);
+    super(tileCoord, state, src, crossOrigin, tileLoadFunction, options);
 
     /**
      * @private
@@ -68,15 +64,13 @@ export class CustomTile extends ImageTile {
       if (image.width == tileSize[0] && image.height == tileSize[1]) {
         this.zoomifyImage_ = image;
         return image;
-      } else {
-        const context = createCanvasContext2D(tileSize[0], tileSize[1]);
-        context.drawImage(image, 0, 0);
-        this.zoomifyImage_ = context.canvas;
-        return context.canvas;
       }
-    } else {
-      return image;
+      const context = createCanvasContext2D(tileSize[0], tileSize[1]);
+      context.drawImage(image, 0, 0);
+      this.zoomifyImage_ = context.canvas;
+      return context.canvas;
     }
+    return image;
   }
 }
 
@@ -87,7 +81,6 @@ export class CustomTile extends ImageTile {
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value  you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
- * @property {boolean} [imageSmoothing=true] Deprecated.  Use the `interpolate` option instead.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection.
@@ -105,7 +98,7 @@ export class CustomTile extends ImageTile {
  * `http://my.zoomify.info?FIF=IMAGE.TIF&JTL={z},{tileIndex}`.
  * A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`, may be
  * used instead of defining each one separately in the `urls` option.
- * @property {string} [tierSizeCalculation] Tier size calculation method: `default` or `truncated`.
+ * @property {TierSizeCalculation} [tierSizeCalculation] Tier size calculation method: `default` or `truncated`.
  * @property {import("../size.js").Size} size Size.
  * @property {import("../extent.js").Extent} [extent] Extent for the TileGrid that is created.
  * Default sets the TileGrid in the
@@ -128,22 +121,14 @@ export class CustomTile extends ImageTile {
  */
 class Zoomify extends TileImage {
   /**
-   * @param {Options} opt_options Options.
+   * @param {Options} options Options.
    */
-  constructor(opt_options) {
-    const options = opt_options;
-
-    let interpolate =
-      options.imageSmoothing !== undefined ? options.imageSmoothing : true;
-    if (options.interpolate !== undefined) {
-      interpolate = options.interpolate;
-    }
-
+  constructor(options) {
     const size = options.size;
     const tierSizeCalculation =
       options.tierSizeCalculation !== undefined
         ? options.tierSizeCalculation
-        : TierSizeCalculation.DEFAULT;
+        : 'default';
 
     const tilePixelRatio = options.tilePixelRatio || 1;
     const imageWidth = size[0];
@@ -153,7 +138,7 @@ class Zoomify extends TileImage {
     let tileSizeForTierSizeCalculation = tileSize * tilePixelRatio;
 
     switch (tierSizeCalculation) {
-      case TierSizeCalculation.DEFAULT:
+      case 'default':
         while (
           imageWidth > tileSizeForTierSizeCalculation ||
           imageHeight > tileSizeForTierSizeCalculation
@@ -165,7 +150,7 @@ class Zoomify extends TileImage {
           tileSizeForTierSizeCalculation += tileSizeForTierSizeCalculation;
         }
         break;
-      case TierSizeCalculation.TRUNCATED:
+      case 'truncated':
         let width = imageWidth;
         let height = imageHeight;
         while (
@@ -206,11 +191,7 @@ class Zoomify extends TileImage {
     });
 
     let url = options.url;
-    if (
-      url &&
-      url.indexOf('{TileGroup}') == -1 &&
-      url.indexOf('{tileIndex}') == -1
-    ) {
+    if (url && !url.includes('{TileGroup}') && !url.includes('{tileIndex}')) {
       url += '{TileGroup}/{z}-{x}-{y}.jpg';
     }
     const urls = expandUrl(url);
@@ -232,25 +213,24 @@ class Zoomify extends TileImage {
         function (tileCoord, pixelRatio, projection) {
           if (!tileCoord) {
             return undefined;
-          } else {
-            const tileCoordZ = tileCoord[0];
-            const tileCoordX = tileCoord[1];
-            const tileCoordY = tileCoord[2];
-            const tileIndex =
-              tileCoordX + tileCoordY * tierSizeInTiles[tileCoordZ][0];
-            const tileGroup =
-              ((tileIndex + tileCountUpToTier[tileCoordZ]) / tileWidth) | 0;
-            const localContext = {
-              'z': tileCoordZ,
-              'x': tileCoordX,
-              'y': tileCoordY,
-              'tileIndex': tileIndex,
-              'TileGroup': 'TileGroup' + tileGroup,
-            };
-            return template.replace(/\{(\w+?)\}/g, function (m, p) {
-              return localContext[p];
-            });
           }
+          const tileCoordZ = tileCoord[0];
+          const tileCoordX = tileCoord[1];
+          const tileCoordY = tileCoord[2];
+          const tileIndex =
+            tileCoordX + tileCoordY * tierSizeInTiles[tileCoordZ][0];
+          const tileGroup =
+            ((tileIndex + tileCountUpToTier[tileCoordZ]) / tileWidth) | 0;
+          const localContext = {
+            'z': tileCoordZ,
+            'x': tileCoordX,
+            'y': tileCoordY,
+            'tileIndex': tileIndex,
+            'TileGroup': 'TileGroup' + tileGroup,
+          };
+          return template.replace(/\{(\w+?)\}/g, function (m, p) {
+            return localContext[p];
+          });
         }
       );
     }
@@ -268,7 +248,7 @@ class Zoomify extends TileImage {
       attributions: options.attributions,
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
-      interpolate: interpolate,
+      interpolate: options.interpolate,
       projection: options.projection,
       tilePixelRatio: tilePixelRatio,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
@@ -293,13 +273,10 @@ class Zoomify extends TileImage {
     );
     const testTileUrl = tileUrlFunction(tileUrl, 1, null);
     const image = new Image();
-    image.addEventListener(
-      'error',
-      function () {
-        tileWidth = tileSize;
-        this.changed();
-      }.bind(this)
-    );
+    image.addEventListener('error', () => {
+      tileWidth = tileSize;
+      this.changed();
+    });
     image.src = testTileUrl;
   }
 }

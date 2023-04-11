@@ -240,11 +240,6 @@ describe('ol/source/WMTS', function () {
       const source = new WMTS({interpolate: false});
       expect(source.getInterpolate()).to.be(false);
     });
-
-    it('is false if constructed with imageSmoothing: false', function () {
-      const source = new WMTS({imageSmoothing: false});
-      expect(source.getInterpolate()).to.be(false);
-    });
   });
 
   describe('when creating tileUrlFunction', function () {
@@ -320,6 +315,9 @@ describe('ol/source/WMTS', function () {
         projection
       );
       expect(url).to.be.eql('http://host/layer/default/42/EPSG:3857/1/1/1.jpg');
+      expect(source.getKey()).to.be.eql(
+        'http://host/{Layer}/{Style}/{Time}/{tilematrixset}/{TileMatrix}/{TileCol}/{TileRow}.jpg/Time-42'
+      );
     });
   });
 

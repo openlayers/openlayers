@@ -1,7 +1,6 @@
 /**
  * @module ol/geom/Point
  */
-import GeometryType from './GeometryType.js';
 import SimpleGeometry from './SimpleGeometry.js';
 import {containsXY, createOrUpdateFromCoordinate} from '../extent.js';
 import {deflateCoordinate} from './flat/deflate.js';
@@ -16,11 +15,11 @@ import {squaredDistance as squaredDx} from '../math.js';
 class Point extends SimpleGeometry {
   /**
    * @param {import("../coordinate.js").Coordinate} coordinates Coordinates.
-   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
+   * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
    */
-  constructor(coordinates, opt_layout) {
+  constructor(coordinates, layout) {
     super();
-    this.setCoordinates(coordinates, opt_layout);
+    this.setCoordinates(coordinates, layout);
   }
 
   /**
@@ -56,9 +55,8 @@ class Point extends SimpleGeometry {
       }
       closestPoint.length = stride;
       return squaredDistance;
-    } else {
-      return minSquaredDistance;
     }
+    return minSquaredDistance;
   }
 
   /**
@@ -81,11 +79,11 @@ class Point extends SimpleGeometry {
 
   /**
    * Get the type of this geometry.
-   * @return {import("./GeometryType.js").default} Geometry type.
+   * @return {import("./Geometry.js").Type} Geometry type.
    * @api
    */
   getType() {
-    return GeometryType.POINT;
+    return 'Point';
   }
 
   /**
@@ -100,11 +98,11 @@ class Point extends SimpleGeometry {
 
   /**
    * @param {!Array<*>} coordinates Coordinates.
-   * @param {import("./GeometryLayout.js").default} [opt_layout] Layout.
+   * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
    * @api
    */
-  setCoordinates(coordinates, opt_layout) {
-    this.setLayout(opt_layout, coordinates, 0);
+  setCoordinates(coordinates, layout) {
+    this.setLayout(layout, coordinates, 0);
     if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }

@@ -23,7 +23,6 @@ import {toString} from './color.js';
 export function asColorLike(color) {
   if (Array.isArray(color)) {
     return toString(color);
-  } else {
-    return color;
   }
+  return color;
 }

@@ -1,10 +1,9 @@
 import GeoTIFFSource from '../../../../../src/ol/source/GeoTIFF.js';
-import State from '../../../../../src/ol/source/State.js';
 import TileState from '../../../../../src/ol/TileState.js';
 
 describe('ol/source/GeoTIFF', function () {
   describe('constructor', function () {
-    it('configures readMethod_ to read rasters', function () {
+    it('sets convertToRGB false by default', function () {
       const source = new GeoTIFFSource({
         sources: [
           {
@@ -12,10 +11,10 @@ describe('ol/source/GeoTIFF', function () {
           },
         ],
       });
-      expect(source.readMethod_).to.be('readRasters');
+      expect(source.convertToRGB_).to.be(false);
     });
 
-    it('configures readMethod_ to read RGB', function () {
+    it('respects the convertToRGB option', function () {
       const source = new GeoTIFFSource({
         convertToRGB: true,
         sources: [
@@ -24,7 +23,19 @@ describe('ol/source/GeoTIFF', function () {
           },
         ],
       });
-      expect(source.readMethod_).to.be('readRGB');
+      expect(source.convertToRGB_).to.be(true);
+    });
+
+    it('accepts auto convertToRGB', function () {
+      const source = new GeoTIFFSource({
+        convertToRGB: 'auto',
+        sources: [
+          {
+            url: 'spec/ol/source/images/0-0-0.tif',
+          },
+        ],
+      });
+      expect(source.convertToRGB_).to.be('auto');
     });
 
     it('defaults to wrapX: false', function () {
@@ -115,9 +126,9 @@ describe('ol/source/GeoTIFF', function () {
     });
 
     it('manages load states', function (done) {
-      expect(source.getState()).to.be(State.LOADING);
+      expect(source.getState()).to.be('loading');
       source.on('change', () => {
-        expect(source.getState()).to.be(State.READY);
+        expect(source.getState()).to.be('ready');
         done();
       });
     });
@@ -141,7 +152,8 @@ describe('ol/source/GeoTIFF', function () {
         expect(projection.getUnits()).to.be('degrees');
         expect(viewOptions.extent).to.eql([-180, -90, 180, 90]);
         expect(viewOptions.center).to.eql([0, 0]);
-        expect(viewOptions.resolutions).to.eql([0.703125]);
+        expect(viewOptions.resolutions).to.eql([1.40625, 0.703125, 0.3515625]);
+        expect(viewOptions.showFullExtent).to.be(true);
         done();
       });
     });

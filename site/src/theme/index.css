@@ -1,0 +1,50 @@
+#map {
+  position: relative;
+  height: 120px;
+}
+
+#map:fullscreen {
+  height: 100%;
+}
+
+#map:-webkit-full-screen {
+  height: 100%;
+  margin: 0;
+}
+
+#tagline {
+  padding-left: 25%;
+  margin-bottom: 10px;
+}
+
+#tagline p {
+  font-size: 150%;
+  font-style: italic;
+}
+
+#news {
+  background-color: var(--ol-accent-background-color);
+  border-radius: 4px;
+  padding: 1rem 0 0;
+}
+
+#news h1 {
+  margin: 0;
+}
+
+img.thumb {
+  float: right;
+  margin-left: 10px;
+}
+
+/* ol customizations */
+
+.ol-overlaycontainer-stopevent {
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+/* not done with :hover because the overlay blocks events and has no height */
+.over .ol-overlaycontainer-stopevent {
+  opacity: 1;
+}

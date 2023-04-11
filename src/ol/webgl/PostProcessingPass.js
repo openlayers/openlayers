@@ -46,7 +46,7 @@ const DEFAULT_FRAGMENT_SHADER = `
 /**
  * @typedef {Object} UniformInternalDescription
  * @property {import("./Helper").UniformValue} value Value
- * @property {number} location Location
+ * @property {WebGLUniformLocation} location Location
  * @property {WebGLTexture} [texture] Texture
  * @private
  */
@@ -168,14 +168,12 @@ class WebGLPostProcessingPass {
      */
     this.uniforms_ = [];
     options.uniforms &&
-      Object.keys(options.uniforms).forEach(
-        function (name) {
-          this.uniforms_.push({
-            value: options.uniforms[name],
-            location: gl.getUniformLocation(this.renderTargetProgram_, name),
-          });
-        }.bind(this)
-      );
+      Object.keys(options.uniforms).forEach((name) => {
+        this.uniforms_.push({
+          value: options.uniforms[name],
+          location: gl.getUniformLocation(this.renderTargetProgram_, name),
+        });
+      });
   }
 
   /**
@@ -191,7 +189,7 @@ class WebGLPostProcessingPass {
    * Initialize the render target texture of the post process, make sure it is at the
    * right size and bind it as a render target for the next draw calls.
    * The last step to be initialized will be the one where the primitives are rendered.
-   * @param {import("../PluggableMap.js").FrameState} frameState current frame state
+   * @param {import("../Map.js").FrameState} frameState current frame state
    * @api
    */
   init(frameState) {
@@ -250,10 +248,10 @@ class WebGLPostProcessingPass {
 
   /**
    * Render to the next postprocessing pass (or to the canvas if final pass).
-   * @param {import("../PluggableMap.js").FrameState} frameState current frame state
+   * @param {import("../Map.js").FrameState} frameState current frame state
    * @param {WebGLPostProcessingPass} [nextPass] Next pass, optional
-   * @param {function(WebGLRenderingContext, import("../PluggableMap.js").FrameState):void} [preCompose] Called before composing.
-   * @param {function(WebGLRenderingContext, import("../PluggableMap.js").FrameState):void} [postCompose] Called before composing.
+   * @param {function(WebGLRenderingContext, import("../Map.js").FrameState):void} [preCompose] Called before composing.
+   * @param {function(WebGLRenderingContext, import("../Map.js").FrameState):void} [postCompose] Called before composing.
    * @api
    */
   apply(frameState, nextPass, preCompose, postCompose) {
@@ -325,7 +323,7 @@ class WebGLPostProcessingPass {
 
   /**
    * Sets the custom uniforms based on what was given in the constructor.
-   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../Map.js").FrameState} frameState Frame state.
    * @private
    */
   applyUniforms(frameState) {

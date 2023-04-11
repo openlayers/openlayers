@@ -24,7 +24,7 @@
       if (ancestors) {
         parts.push(ancestors.split('~').shift());
       }
-      var importPath = parts.join('/');
+      var importPath = parts.join('/') + '.js';
     ?>
       <?js
         var nameParts = doc.name.split('/');
@@ -46,7 +46,7 @@
         <script async type="text/javascript" src="https://cdn.carbonads.com/carbon.js?serve=CE7DV53U&placement=openlayersorg" id="_carbonads_js"></script>
       </div>
     <?js if (doc.classdesc) { ?>
-      <div class="class-description col-lg-7 align-self-center pl-0"><?js= doc.classdesc ?></div>
+      <div class="class-description col-lg-7 align-self-center ps-0"><?js= doc.classdesc ?></div>
     <?js } ?>
     </div>
 </header>
@@ -79,13 +79,13 @@
 
     <?js if (doc.kind == 'class') {
       var subclasses = self.find(function() {
-        return this.augments && this.augments.indexOf(doc.longname) > -1;
+        return this.augments && this.augments.includes(doc.longname);
       })
       if (subclasses.length) {
     ?>
         <h3 class="subsection-title">Subclasses</h3>
         <ul><?js subclasses.forEach(function(s) { ?>
-          <li><?js= self.linkto(s.longname, s.longname) ?>
+          <li><?js= self.linkto(s.longname) ?>
             <?js= (s.interface ? '(Interface)' : '') ?>
           </li>
         <?js }); ?></ul>
@@ -95,7 +95,7 @@
         <h3 class="subsection-title">Extends</h3>
 
         <ul><?js doc.augments.forEach(function(a) { ?>
-            <li><?js= self.linkto(a, a) ?></li>
+            <li><?js= self.linkto(a) ?></li>
         <?js }); ?></ul>
     <?js } ?>
 
@@ -103,7 +103,7 @@
         <h3 class="subsection-title">Mixes In</h3>
 
         <ul><?js doc.mixes.forEach(function(a) { ?>
-            <li><?js= self.linkto(a, a) ?></li>
+            <li><?js= self.linkto(a) ?></li>
         <?js }); ?></ul>
     <?js } ?>
 
@@ -111,7 +111,7 @@
         <h3 class="subsection-title">Requires</h3>
 
         <ul><?js doc.requires.forEach(function(r) { ?>
-            <li><?js= self.linkto(r, r) ?></li>
+            <li><?js= self.linkto(r) ?></li>
         <?js }); ?></ul>
     <?js } ?>
 
@@ -162,7 +162,7 @@
         var methods = self.find({kind: 'function', memberof: title === 'Global' ? {isUndefined: true} : doc.longname});
         if (methods && methods.length && methods.forEach) {
     ?>
-        <h3 class="subsection-title">Methods</h3>
+        <h3 class="subsection-title"><?js= doc.kind === 'module' ? 'Functions' : 'Methods' ?></h3>
 
         <dl><?js methods.forEach(function(m) { ?>
             <?js m.parent = doc ?>

@@ -244,9 +244,9 @@ class CanvasImageBuilder extends CanvasBuilder {
 
   /**
    * @param {import("../../style/Image.js").default} imageStyle Image style.
-   * @param {Object} [opt_sharedData] Shared data.
+   * @param {Object} [sharedData] Shared data.
    */
-  setImageStyle(imageStyle, opt_sharedData) {
+  setImageStyle(imageStyle, sharedData) {
     const anchor = imageStyle.getAnchor();
     const size = imageStyle.getSize();
     const origin = imageStyle.getOrigin();
@@ -264,7 +264,7 @@ class CanvasImageBuilder extends CanvasBuilder {
     this.scale_ = imageStyle.getScaleArray();
     this.width_ = size[0];
     this.declutterMode_ = imageStyle.getDeclutterMode();
-    this.declutterImageWithText_ = opt_sharedData;
+    this.declutterImageWithText_ = sharedData;
   }
 }
 

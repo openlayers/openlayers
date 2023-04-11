@@ -7,8 +7,8 @@ import ImageSource, {defaultImageLoadFunction} from './Image.js';
 import ImageWrapper from '../Image.js';
 import {appendParams} from '../uri.js';
 import {assert} from '../asserts.js';
-import {assign} from '../obj.js';
 import {containsExtent, getHeight, getWidth} from '../extent.js';
+import {createCanvasContext2D} from '../dom.js';
 
 /**
  * @typedef {Object} Options
@@ -20,7 +20,6 @@ import {containsExtent, getHeight, getWidth} from '../extent.js';
  * the remote server.
  * @property {import("../Image.js").LoadFunction} [imageLoadFunction] Optional function to load an image given
  * a URL.
- * @property {boolean} [imageSmoothing=true] Deprecated.  Use the `interpolate` option instead.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {Object<string,*>} [params] ArcGIS Rest parameters. This field is optional. Service
@@ -54,23 +53,23 @@ import {containsExtent, getHeight, getWidth} from '../extent.js';
  */
 class ImageArcGISRest extends ImageSource {
   /**
-   * @param {Options} [opt_options] Image ArcGIS Rest Options.
+   * @param {Options} [options] Image ArcGIS Rest Options.
    */
-  constructor(opt_options) {
-    const options = opt_options ? opt_options : {};
-
-    let interpolate =
-      options.imageSmoothing !== undefined ? options.imageSmoothing : true;
-    if (options.interpolate !== undefined) {
-      interpolate = options.interpolate;
-    }
+  constructor(options) {
+    options = options ? options : {};
 
     super({
       attributions: options.attributions,
-      interpolate: interpolate,
+      interpolate: options.interpolate,
       projection: options.projection,
       resolutions: options.resolutions,
     });
+
+    /**
+     * @private
+     * @type {CanvasRenderingContext2D}
+     */
+    this.context_ = createCanvasContext2D(1, 1);
 
     /**
      * @private
@@ -172,7 +171,7 @@ class ImageArcGISRest extends ImageSource {
       'FORMAT': 'PNG32',
       'TRANSPARENT': true,
     };
-    assign(params, this.params_);
+    Object.assign(params, this.params_);
 
     extent = extent.slice();
     const centerX = (extent[0] + extent[2]) / 2;
@@ -215,7 +214,8 @@ class ImageArcGISRest extends ImageSource {
       pixelRatio,
       url,
       this.crossOrigin_,
-      this.imageLoadFunction_
+      this.imageLoadFunction_,
+      this.context_
     );
 
     this.renderedRevision_ = this.getRevision();
@@ -311,7 +311,7 @@ class ImageArcGISRest extends ImageSource {
    * @api
    */
   updateParams(params) {
-    assign(this.params_, params);
+    Object.assign(this.params_, params);
     this.image_ = null;
     this.changed();
   }

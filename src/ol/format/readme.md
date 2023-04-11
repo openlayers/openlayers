@@ -23,7 +23,6 @@ The document ends with guidelines for implementing a new format.
 
 The `ol/xml` namespace contains a number of useful functions for parsing XML documents. All code in OpenLayers that reads data from XML documents should use it. It has several features:
 
-* Browser support back to IE9
 * Correct treatment of XML namespaces
 * Robust handling of errors
 * Modular design to promote the re-use of parsers
@@ -42,7 +41,7 @@ The `ol/format/XML` class includes a number of methods for reading arrays of fea
 
     read{Features,Feature,Geometry}From{Document,Node}
 
-`Document`s are top-level XML document objects, `Node`s are children of the top-level XML document object. In modern browsers `Document` is a subclass of `Node`, and inherits all of `Node`'s methods.  In IE, this is not the case: `Document` is not a subclass of `Node`, and `Document` only has some of `Node`'s functionality.  The distinction between the two is therefore necessary.
+`Document`s are top-level XML document objects, `Node`s are children of the top-level XML document object. In modern browsers `Document` is a subclass of `Node`, and inherits all of `Node`'s methods.
 
 ## `ol/xml`
 
@@ -60,7 +59,7 @@ It's handy to have the [`src/ol/xml.js` source code](https://github.com/openlaye
 The `parserNS` argument to `parse` is an `Object` whose keys are XML namespaces and whose values are `Objects` whose keys are local element names and whose values are functions.  A simple example might look like this:
 
 ```js
-var parserNS = {
+const parserNS = {
   'http://my/first/namespace': {
     'elementLocalName': function(/* ... */) {
       // parse an <elementLocalName> element in the http://my/first/namespace namespace
