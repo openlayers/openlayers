@@ -1,12 +1,8 @@
-import {
-  ShaderBuilder,
-  parseLiteralStyle,
-} from '../../../../../src/ol/webgl/ShaderBuilder.js';
+import {ShaderBuilder} from '../../../../../src/ol/webgl/ShaderBuilder.js';
 import {
   arrayToGlsl,
   colorToGlsl,
   numberToGlsl,
-  uniformNameForVariable,
 } from '../../../../../src/ol/style/expressions.js';
 
 describe('ol.webgl.ShaderBuilder', function () {
@@ -15,9 +11,9 @@ describe('ol.webgl.ShaderBuilder', function () {
       const builder = new ShaderBuilder();
       builder.addVarying('v_opacity', 'float', numberToGlsl(0.4));
       builder.addVarying('v_test', 'vec3', arrayToGlsl([1, 2, 3]));
-      builder.setSizeExpression(`vec2(${numberToGlsl(6)})`);
+      builder.setSymbolSizeExpression(`vec2(${numberToGlsl(6)})`);
       builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
-      builder.setColorExpression(colorToGlsl([80, 0, 255, 1]));
+      builder.setSymbolColorExpression(colorToGlsl([80, 0, 255, 1]));
       builder.setTextureCoordinateExpression(arrayToGlsl([0, 0.5, 0.5, 1]));
 
       expect(builder.getSymbolVertexShader()).to.eql(`precision mediump float;
@@ -72,9 +68,9 @@ void main(void) {
       const builder = new ShaderBuilder();
       builder.addUniform('float u_myUniform');
       builder.addAttribute('vec2 a_myAttr');
-      builder.setSizeExpression(`vec2(${numberToGlsl(6)})`);
+      builder.setSymbolSizeExpression(`vec2(${numberToGlsl(6)})`);
       builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
-      builder.setColorExpression(colorToGlsl([80, 0, 255, 1]));
+      builder.setSymbolColorExpression(colorToGlsl([80, 0, 255, 1]));
       builder.setTextureCoordinateExpression(arrayToGlsl([0, 0.5, 0.5, 1]));
 
       expect(builder.getSymbolVertexShader()).to.eql(`precision mediump float;
@@ -125,9 +121,9 @@ void main(void) {
     });
     it('generates a symbol vertex shader (with rotateWithView)', function () {
       const builder = new ShaderBuilder();
-      builder.setSizeExpression(`vec2(${numberToGlsl(6)})`);
+      builder.setSymbolSizeExpression(`vec2(${numberToGlsl(6)})`);
       builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
-      builder.setColorExpression(colorToGlsl([80, 0, 255, 1]));
+      builder.setSymbolColorExpression(colorToGlsl([80, 0, 255, 1]));
       builder.setTextureCoordinateExpression(arrayToGlsl([0, 0.5, 0.5, 1]));
       builder.setSymbolRotateWithView(true);
 
@@ -229,9 +225,9 @@ void main(void) {
     });
     it('generates a symbol vertex shader (with a rotation expression)', function () {
       const builder = new ShaderBuilder();
-      builder.setSizeExpression(`vec2(${numberToGlsl(6)})`);
+      builder.setSymbolSizeExpression(`vec2(${numberToGlsl(6)})`);
       builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
-      builder.setRotationExpression('u_time * 0.2');
+      builder.setSymbolRotationExpression('u_time * 0.2');
 
       expect(builder.getSymbolVertexShader()).to.eql(`precision mediump float;
 uniform mat4 u_projectionMatrix;
@@ -280,15 +276,14 @@ void main(void) {
 }`);
     });
   });
-
   describe('getSymbolFragmentShader', function () {
     it('generates a symbol fragment shader (with varying)', function () {
       const builder = new ShaderBuilder();
       builder.addVarying('v_opacity', 'float', numberToGlsl(0.4));
       builder.addVarying('v_test', 'vec3', arrayToGlsl([1, 2, 3]));
-      builder.setSizeExpression(`vec2(${numberToGlsl(6)})`);
+      builder.setSymbolSizeExpression(`vec2(${numberToGlsl(6)})`);
       builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
-      builder.setColorExpression(colorToGlsl([80, 0, 255]));
+      builder.setSymbolColorExpression(colorToGlsl([80, 0, 255]));
       builder.setTextureCoordinateExpression(arrayToGlsl([0, 0.5, 0.5, 1]));
 
       expect(builder.getSymbolFragmentShader()).to.eql(`precision mediump float;
@@ -311,9 +306,9 @@ void main(void) {
       const builder = new ShaderBuilder();
       builder.addUniform('float u_myUniform');
       builder.addUniform('vec2 u_myUniform2');
-      builder.setSizeExpression(`vec2(${numberToGlsl(6)})`);
+      builder.setSymbolSizeExpression(`vec2(${numberToGlsl(6)})`);
       builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
-      builder.setColorExpression(colorToGlsl([255, 255, 255, 1]));
+      builder.setSymbolColorExpression(colorToGlsl([255, 255, 255, 1]));
       builder.setTextureCoordinateExpression(arrayToGlsl([0, 0.5, 0.5, 1]));
       builder.setFragmentDiscardExpression('u_myUniform > 0.5');
 
@@ -353,300 +348,459 @@ void main(void) {
 }`);
     });
   });
+  describe('getStrokeVertexShader', function () {
+    it('generates a stroke vertex shader (with uniforms, varying and attributes)', function () {
+      const builder = new ShaderBuilder();
+      builder.addVarying('v_opacity', 'float', numberToGlsl(0.4));
+      builder.addVarying('v_test', 'vec3', arrayToGlsl([1, 2, 3]));
+      builder.addUniform('float u_myUniform');
+      builder.addAttribute('vec2 a_myAttr');
+      builder.setStrokeWidthExpression(numberToGlsl(4));
+      builder.setStrokeColorExpression(colorToGlsl([80, 0, 255, 1]));
 
-  describe('parseSymbolStyle', function () {
-    it('parses a style without expressions', function () {
-      const result = parseLiteralStyle({
-        symbol: {
-          symbolType: 'square',
-          size: [4, 8],
-          color: '#ff0000',
-          rotateWithView: true,
-        },
-      });
+      expect(builder.getStrokeVertexShader()).to
+        .eql(`#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+uniform mat4 u_projectionMatrix;
+uniform mat4 u_screenToWorldMatrix;
+uniform vec2 u_viewportSizePx;
+uniform float u_pixelRatio;
+uniform float u_globalAlpha;
+uniform float u_time;
+uniform float u_zoom;
+uniform float u_resolution;
+uniform vec4 u_renderExtent;
+uniform float u_myUniform;
+attribute vec2 a_position;
+attribute float a_index;
+attribute vec2 a_segmentStart;
+attribute vec2 a_segmentEnd;
+attribute float a_parameters;
+attribute vec2 a_myAttr;
+varying vec2 v_segmentStart;
+varying vec2 v_segmentEnd;
+varying float v_angleStart;
+varying float v_angleEnd;
+varying float v_width;
+varying float v_opacity;
+varying vec3 v_test;
 
-      expect(result.builder.uniforms).to.eql([]);
-      expect(result.builder.attributes).to.eql([]);
-      expect(result.builder.varyings).to.eql([]);
-      expect(result.builder.colorExpression).to.eql(
-        'vec4(vec4(1.0, 0.0, 0.0, 1.0).rgb, vec4(1.0, 0.0, 0.0, 1.0).a * 1.0 * 1.0)'
-      );
-      expect(result.builder.sizeExpression).to.eql('vec2(vec2(4.0, 8.0))');
-      expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
-      expect(result.builder.texCoordExpression).to.eql(
-        'vec4(0.0, 0.0, 1.0, 1.0)'
-      );
-      expect(result.builder.rotateWithView).to.eql(true);
-      expect(result.attributes).to.eql([]);
-      expect(result.uniforms).to.eql({});
+vec2 worldToPx(vec2 worldPos) {
+  vec4 screenPos = u_projectionMatrix * vec4(worldPos, 0.0, 1.0);
+  return (0.5 * screenPos.xy + 0.5) * u_viewportSizePx;
+}
+
+vec4 pxToScreen(vec2 pxPos) {
+  vec2 screenPos = pxPos * 4.0 / u_viewportSizePx;
+  return vec4(screenPos.xy, 0.0, 0.0);
+}
+
+vec2 getOffsetDirection(vec2 normalPx, vec2 tangentPx, float joinAngle) {
+  if (cos(joinAngle) > 0.93) return normalPx - tangentPx;
+  float halfAngle = joinAngle / 2.0;
+  vec2 angleBisectorNormal = vec2(
+    sin(halfAngle) * normalPx.x + cos(halfAngle) * normalPx.y,
+    -cos(halfAngle) * normalPx.x + sin(halfAngle) * normalPx.y
+  );
+  float length = 1.0 / sin(halfAngle);
+  return angleBisectorNormal * length;
+}
+
+void main(void) {
+  float lineWidth = 4.0;
+  float anglePrecision = 1500.0;
+  float paramShift = 10000.0;
+  v_angleStart = fract(a_parameters / paramShift) * paramShift / anglePrecision;
+  v_angleEnd = fract(floor(a_parameters / paramShift + 0.5) / paramShift) * paramShift / anglePrecision;
+  float vertexNumber = floor(a_parameters / paramShift / paramShift + 0.0001);
+  vec2 tangentPx = worldToPx(a_segmentEnd) - worldToPx(a_segmentStart);
+  tangentPx = normalize(tangentPx);
+  vec2 normalPx = vec2(-tangentPx.y, tangentPx.x);
+  float normalDir = vertexNumber < 0.5 || (vertexNumber > 1.5 && vertexNumber < 2.5) ? 1.0 : -1.0;
+  float tangentDir = vertexNumber < 1.5 ? 1.0 : -1.0;
+  float angle = vertexNumber < 1.5 ? v_angleStart : v_angleEnd;
+  vec2 offsetPx = getOffsetDirection(normalPx * normalDir, tangentDir * tangentPx, angle) * lineWidth * 0.5;
+  vec2 position =  vertexNumber < 1.5 ? a_segmentStart : a_segmentEnd;
+  gl_Position = u_projectionMatrix * vec4(position, 0.0, 1.0) + pxToScreen(offsetPx);
+  v_segmentStart = worldToPx(a_segmentStart);
+  v_segmentEnd = worldToPx(a_segmentEnd);
+  v_width = lineWidth;
+  v_opacity = 0.4;
+  v_test = vec3(1.0, 2.0, 3.0);
+}`);
     });
+    it('generates a stroke vertex shader for hitDetection', function () {
+      const builder = new ShaderBuilder();
 
-    it('parses a style with expressions', function () {
-      const result = parseLiteralStyle({
-        symbol: {
-          symbolType: 'square',
-          size: ['get', 'attr1'],
-          color: [255, 127.5, 63.75, 0.25],
-          textureCoord: [0.5, 0.5, 0.5, 1],
-          offset: [
-            'match',
-            ['get', 'attr3'],
-            'red',
-            [6, 0],
-            'green',
-            [3, 0],
-            [0, 0],
-          ],
-        },
-      });
+      expect(builder.getStrokeVertexShader(true)).to
+        .eql(`#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+uniform mat4 u_projectionMatrix;
+uniform mat4 u_screenToWorldMatrix;
+uniform vec2 u_viewportSizePx;
+uniform float u_pixelRatio;
+uniform float u_globalAlpha;
+uniform float u_time;
+uniform float u_zoom;
+uniform float u_resolution;
+uniform vec4 u_renderExtent;
 
-      expect(result.builder.uniforms).to.eql([]);
-      expect(result.builder.attributes).to.eql([
-        'float a_attr1',
-        'float a_attr3',
-      ]);
-      expect(result.builder.varyings).to.eql([
-        {
-          name: 'v_attr1',
-          type: 'float',
-          expression: 'a_attr1',
-        },
-      ]);
-      expect(result.builder.colorExpression).to.eql(
-        'vec4(vec4(1.0, 0.5, 0.25, 0.25).rgb, vec4(1.0, 0.5, 0.25, 0.25).a * 1.0 * 1.0)'
-      );
-      expect(result.builder.sizeExpression).to.eql('vec2(a_attr1)');
-      expect(result.builder.offsetExpression).to.eql(
-        '(a_attr3 == 1.0 ? vec2(6.0, 0.0) : (a_attr3 == 0.0 ? vec2(3.0, 0.0) : vec2(0.0, 0.0)))'
-      );
-      expect(result.builder.texCoordExpression).to.eql(
-        'vec4(0.5, 0.5, 0.5, 1.0)'
-      );
-      expect(result.builder.rotateWithView).to.eql(false);
-      expect(result.attributes.length).to.eql(2);
-      expect(result.attributes[0].name).to.eql('attr1');
-      expect(result.attributes[1].name).to.eql('attr3');
-      expect(result.uniforms).to.eql({});
+attribute vec2 a_position;
+attribute float a_index;
+attribute vec2 a_segmentStart;
+attribute vec2 a_segmentEnd;
+attribute float a_parameters;
+attribute vec4 a_hitColor;
+varying vec2 v_segmentStart;
+varying vec2 v_segmentEnd;
+varying float v_angleStart;
+varying float v_angleEnd;
+varying float v_width;
+varying vec4 v_hitColor;
+
+vec2 worldToPx(vec2 worldPos) {
+  vec4 screenPos = u_projectionMatrix * vec4(worldPos, 0.0, 1.0);
+  return (0.5 * screenPos.xy + 0.5) * u_viewportSizePx;
+}
+
+vec4 pxToScreen(vec2 pxPos) {
+  vec2 screenPos = pxPos * 4.0 / u_viewportSizePx;
+  return vec4(screenPos.xy, 0.0, 0.0);
+}
+
+vec2 getOffsetDirection(vec2 normalPx, vec2 tangentPx, float joinAngle) {
+  if (cos(joinAngle) > 0.93) return normalPx - tangentPx;
+  float halfAngle = joinAngle / 2.0;
+  vec2 angleBisectorNormal = vec2(
+    sin(halfAngle) * normalPx.x + cos(halfAngle) * normalPx.y,
+    -cos(halfAngle) * normalPx.x + sin(halfAngle) * normalPx.y
+  );
+  float length = 1.0 / sin(halfAngle);
+  return angleBisectorNormal * length;
+}
+
+void main(void) {
+  float lineWidth = 1.0;
+  float anglePrecision = 1500.0;
+  float paramShift = 10000.0;
+  v_angleStart = fract(a_parameters / paramShift) * paramShift / anglePrecision;
+  v_angleEnd = fract(floor(a_parameters / paramShift + 0.5) / paramShift) * paramShift / anglePrecision;
+  float vertexNumber = floor(a_parameters / paramShift / paramShift + 0.0001);
+  vec2 tangentPx = worldToPx(a_segmentEnd) - worldToPx(a_segmentStart);
+  tangentPx = normalize(tangentPx);
+  vec2 normalPx = vec2(-tangentPx.y, tangentPx.x);
+  float normalDir = vertexNumber < 0.5 || (vertexNumber > 1.5 && vertexNumber < 2.5) ? 1.0 : -1.0;
+  float tangentDir = vertexNumber < 1.5 ? 1.0 : -1.0;
+  float angle = vertexNumber < 1.5 ? v_angleStart : v_angleEnd;
+  vec2 offsetPx = getOffsetDirection(normalPx * normalDir, tangentDir * tangentPx, angle) * lineWidth * 0.5;
+  vec2 position =  vertexNumber < 1.5 ? a_segmentStart : a_segmentEnd;
+  gl_Position = u_projectionMatrix * vec4(position, 0.0, 1.0) + pxToScreen(offsetPx);
+  v_segmentStart = worldToPx(a_segmentStart);
+  v_segmentEnd = worldToPx(a_segmentEnd);
+  v_width = lineWidth;
+  v_hitColor = a_hitColor;
+}`);
     });
+  });
+  describe('getStrokeFragmentShader', function () {
+    it('generates a stroke fragment shader (with varying, attribute and uniform)', function () {
+      const builder = new ShaderBuilder();
+      builder.addVarying('v_opacity', 'float', numberToGlsl(0.4));
+      builder.addVarying('v_test', 'vec3', arrayToGlsl([1, 2, 3]));
+      builder.addUniform('float u_myUniform');
+      builder.addAttribute('vec2 a_myAttr');
+      builder.setStrokeWidthExpression(numberToGlsl(4));
+      builder.setStrokeColorExpression(colorToGlsl([80, 0, 255, 1]));
+      builder.setFragmentDiscardExpression('u_myUniform > 0.5');
 
-    it('parses a style with a uniform (texture)', function () {
-      const result = parseLiteralStyle({
-        symbol: {
-          symbolType: 'image',
-          src: '../data/image.png',
-          size: 6,
-          color: '#336699',
-          opacity: 0.5,
-        },
-      });
+      expect(builder.getStrokeFragmentShader()).to
+        .eql(`#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+uniform mat4 u_projectionMatrix;
+uniform mat4 u_screenToWorldMatrix;
+uniform vec2 u_viewportSizePx;
+uniform float u_pixelRatio;
+uniform float u_globalAlpha;
+uniform float u_time;
+uniform float u_zoom;
+uniform float u_resolution;
+uniform vec4 u_renderExtent;
+uniform float u_myUniform;
+varying vec2 v_segmentStart;
+varying vec2 v_segmentEnd;
+varying float v_angleStart;
+varying float v_angleEnd;
+varying float v_width;
+varying float v_opacity;
+varying vec3 v_test;
 
-      expect(result.builder.uniforms).to.eql(['sampler2D u_texture']);
-      expect(result.builder.attributes).to.eql([]);
-      expect(result.builder.varyings).to.eql([]);
-      expect(result.builder.colorExpression).to.eql(
-        'vec4(vec4(0.2, 0.4, 0.6, 1.0).rgb, vec4(0.2, 0.4, 0.6, 1.0).a * 0.5 * 1.0) * texture2D(u_texture, v_texCoord)'
-      );
-      expect(result.builder.sizeExpression).to.eql('vec2(6.0)');
-      expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
-      expect(result.builder.texCoordExpression).to.eql(
-        'vec4(0.0, 0.0, 1.0, 1.0)'
-      );
-      expect(result.builder.rotateWithView).to.eql(false);
-      expect(result.attributes).to.eql([]);
-      expect(result.uniforms).to.have.property('u_texture');
+vec2 pxToWorld(vec2 pxPos) {
+  vec2 screenPos = 2.0 * pxPos / u_viewportSizePx - 1.0;
+  return (u_screenToWorldMatrix * vec4(screenPos, 0.0, 1.0)).xy;
+}
+
+float segmentDistanceField(vec2 point, vec2 start, vec2 end, float radius) {
+  vec2 startToPoint = point - start;
+  vec2 startToEnd = end - start;
+  float ratio = clamp(dot(startToPoint, startToEnd) / dot(startToEnd, startToEnd), 0.0, 1.0);
+  float dist = length(startToPoint - ratio * startToEnd);
+  return 1.0 - smoothstep(radius - 1.0, radius, dist);
+}
+
+void main(void) {
+  vec2 v_currentPoint = gl_FragCoord.xy / u_pixelRatio;
+  #ifdef GL_FRAGMENT_PRECISION_HIGH
+  vec2 v_worldPos = pxToWorld(v_currentPoint);
+  if (
+    abs(u_renderExtent[0] - u_renderExtent[2]) > 0.0 && (
+      v_worldPos[0] < u_renderExtent[0] ||
+      v_worldPos[1] < u_renderExtent[1] ||
+      v_worldPos[0] > u_renderExtent[2] ||
+      v_worldPos[1] > u_renderExtent[3]
+    )
+  ) {
+    discard;
+  }
+  #endif
+  if (u_myUniform > 0.5) { discard; }
+  gl_FragColor = vec4(0.3137254901960784, 0.0, 1.0, 1.0) * u_globalAlpha;
+  gl_FragColor *= segmentDistanceField(v_currentPoint, v_segmentStart, v_segmentEnd, v_width);
+
+}`);
     });
+    it('generates a stroke fragment shader for hitDetection', function () {
+      const builder = new ShaderBuilder();
 
-    it('parses a style with variables', function () {
-      const result = parseLiteralStyle({
-        variables: {
-          lower: 100,
-          higher: 400,
-        },
-        symbol: {
-          symbolType: 'square',
-          size: [
-            'interpolate',
-            ['linear'],
-            ['get', 'population'],
-            ['var', 'lower'],
-            4,
-            ['var', 'higher'],
-            8,
-          ],
-          color: '#336699',
-          opacity: 0.5,
-        },
-      });
+      expect(builder.getStrokeFragmentShader(true)).to
+        .eql(`#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+uniform mat4 u_projectionMatrix;
+uniform mat4 u_screenToWorldMatrix;
+uniform vec2 u_viewportSizePx;
+uniform float u_pixelRatio;
+uniform float u_globalAlpha;
+uniform float u_time;
+uniform float u_zoom;
+uniform float u_resolution;
+uniform vec4 u_renderExtent;
 
-      const lowerUniformName = uniformNameForVariable('lower');
-      const higherUniformName = uniformNameForVariable('higher');
-      expect(result.builder.uniforms).to.eql([
-        `float ${lowerUniformName}`,
-        `float ${higherUniformName}`,
-      ]);
-      expect(result.builder.attributes).to.eql(['float a_population']);
-      expect(result.builder.varyings).to.eql([
-        {
-          name: 'v_population',
-          type: 'float',
-          expression: 'a_population',
-        },
-      ]);
-      expect(result.builder.colorExpression).to.eql(
-        'vec4(vec4(0.2, 0.4, 0.6, 1.0).rgb, vec4(0.2, 0.4, 0.6, 1.0).a * 0.5 * 1.0)'
-      );
-      expect(result.builder.sizeExpression).to.eql(
-        `vec2(mix(4.0, 8.0, pow(clamp((a_population - ${lowerUniformName}) / (${higherUniformName} - ${lowerUniformName}), 0.0, 1.0), 1.0)))`
-      );
-      expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
-      expect(result.builder.texCoordExpression).to.eql(
-        'vec4(0.0, 0.0, 1.0, 1.0)'
-      );
-      expect(result.builder.rotateWithView).to.eql(false);
-      expect(result.attributes.length).to.eql(1);
-      expect(result.attributes[0].name).to.eql('population');
-      expect(result.uniforms).to.have.property(lowerUniformName);
-      expect(result.uniforms).to.have.property(higherUniformName);
+varying vec2 v_segmentStart;
+varying vec2 v_segmentEnd;
+varying float v_angleStart;
+varying float v_angleEnd;
+varying float v_width;
+varying vec4 v_hitColor;
+
+vec2 pxToWorld(vec2 pxPos) {
+  vec2 screenPos = 2.0 * pxPos / u_viewportSizePx - 1.0;
+  return (u_screenToWorldMatrix * vec4(screenPos, 0.0, 1.0)).xy;
+}
+
+float segmentDistanceField(vec2 point, vec2 start, vec2 end, float radius) {
+  vec2 startToPoint = point - start;
+  vec2 startToEnd = end - start;
+  float ratio = clamp(dot(startToPoint, startToEnd) / dot(startToEnd, startToEnd), 0.0, 1.0);
+  float dist = length(startToPoint - ratio * startToEnd);
+  return 1.0 - smoothstep(radius - 1.0, radius, dist);
+}
+
+void main(void) {
+  vec2 v_currentPoint = gl_FragCoord.xy / u_pixelRatio;
+  #ifdef GL_FRAGMENT_PRECISION_HIGH
+  vec2 v_worldPos = pxToWorld(v_currentPoint);
+  if (
+    abs(u_renderExtent[0] - u_renderExtent[2]) > 0.0 && (
+      v_worldPos[0] < u_renderExtent[0] ||
+      v_worldPos[1] < u_renderExtent[1] ||
+      v_worldPos[0] > u_renderExtent[2] ||
+      v_worldPos[1] > u_renderExtent[3]
+    )
+  ) {
+    discard;
+  }
+  #endif
+  if (false) { discard; }
+  gl_FragColor = vec4(1.0) * u_globalAlpha;
+  gl_FragColor *= segmentDistanceField(v_currentPoint, v_segmentStart, v_segmentEnd, v_width);
+  if (gl_FragColor.a < 0.1) { discard; } gl_FragColor = v_hitColor;
+}`);
     });
+  });
+  describe('getFillVertexShader', function () {
+    it('generates a fill vertex shader (with varying, attribute and uniform)', function () {
+      const builder = new ShaderBuilder();
+      builder.addVarying('v_opacity', 'float', numberToGlsl(0.4));
+      builder.addVarying('v_test', 'vec3', arrayToGlsl([1, 2, 3]));
+      builder.addUniform('float u_myUniform');
+      builder.addAttribute('vec2 a_myAttr');
+      builder.setFillColorExpression(colorToGlsl([80, 0, 255, 1]));
+      builder.setFragmentDiscardExpression('u_myUniform > 0.5');
 
-    it('parses a style with a filter', function () {
-      const result = parseLiteralStyle({
-        filter: ['between', ['get', 'attr0'], 0, 10],
-        symbol: {
-          symbolType: 'square',
-          size: 6,
-          color: '#336699',
-        },
-      });
+      expect(builder.getFillVertexShader()).to
+        .eql(`#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+uniform mat4 u_projectionMatrix;
+uniform mat4 u_screenToWorldMatrix;
+uniform vec2 u_viewportSizePx;
+uniform float u_pixelRatio;
+uniform float u_globalAlpha;
+uniform float u_time;
+uniform float u_zoom;
+uniform float u_resolution;
+uniform vec4 u_renderExtent;
+uniform float u_myUniform;
+attribute vec2 a_position;
+attribute vec2 a_myAttr;
+varying float v_opacity;
+varying vec3 v_test;
 
-      expect(result.builder.attributes).to.eql(['float a_attr0']);
-      expect(result.builder.varyings).to.eql([
-        {
-          name: 'v_attr0',
-          type: 'float',
-          expression: 'a_attr0',
-        },
-      ]);
-      expect(result.builder.colorExpression).to.eql(
-        'vec4(vec4(0.2, 0.4, 0.6, 1.0).rgb, vec4(0.2, 0.4, 0.6, 1.0).a * 1.0 * 1.0)'
-      );
-      expect(result.builder.sizeExpression).to.eql('vec2(6.0)');
-      expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
-      expect(result.builder.texCoordExpression).to.eql(
-        'vec4(0.0, 0.0, 1.0, 1.0)'
-      );
-      expect(result.builder.discardExpression).to.eql(
-        '!(v_attr0 >= 0.0 && v_attr0 <= 10.0)'
-      );
-      expect(result.builder.rotateWithView).to.eql(false);
-      expect(result.attributes.length).to.eql(1);
-      expect(result.attributes[0].name).to.eql('attr0');
+void main(void) {
+  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0);
+  v_opacity = 0.4;
+  v_test = vec3(1.0, 2.0, 3.0);
+}`);
     });
+    it('generates a fill vertex shader for hitDetection', function () {
+      const builder = new ShaderBuilder();
 
-    it('parses a style with a color interpolation', function () {
-      const varName = 'ratio';
-      const uniformName = uniformNameForVariable(varName);
-      const result = parseLiteralStyle({
-        symbol: {
-          symbolType: 'square',
-          size: 6,
-          color: [
-            'interpolate',
-            ['linear'],
-            ['var', varName],
-            0,
-            [255, 255, 0],
-            1,
-            'red',
-          ],
-        },
-      });
+      expect(builder.getFillVertexShader(true)).to
+        .eql(`#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+uniform mat4 u_projectionMatrix;
+uniform mat4 u_screenToWorldMatrix;
+uniform vec2 u_viewportSizePx;
+uniform float u_pixelRatio;
+uniform float u_globalAlpha;
+uniform float u_time;
+uniform float u_zoom;
+uniform float u_resolution;
+uniform vec4 u_renderExtent;
 
-      expect(result.builder.attributes).to.eql([]);
-      expect(result.builder.varyings).to.eql([]);
-      expect(result.builder.colorExpression).to.eql(
-        `vec4(mix(vec4(1.0, 1.0, 0.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), pow(clamp((${uniformName} - 0.0) / (1.0 - 0.0), 0.0, 1.0), 1.0)).rgb, mix(vec4(1.0, 1.0, 0.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), pow(clamp((${uniformName} - 0.0) / (1.0 - 0.0), 0.0, 1.0), 1.0)).a * 1.0 * 1.0)`
-      );
-      expect(result.builder.sizeExpression).to.eql('vec2(6.0)');
-      expect(result.builder.offsetExpression).to.eql('vec2(0.0, 0.0)');
-      expect(result.builder.texCoordExpression).to.eql(
-        'vec4(0.0, 0.0, 1.0, 1.0)'
-      );
-      expect(result.builder.rotateWithView).to.eql(false);
-      expect(result.attributes).to.eql([]);
-      expect(result.uniforms).to.have.property(uniformName);
+attribute vec2 a_position;
+attribute vec4 a_hitColor;
+varying vec4 v_hitColor;
+
+void main(void) {
+  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0);
+  v_hitColor = a_hitColor;
+}`);
     });
+  });
+  describe('getFillFragmentShader', function () {
+    it('generates a fill fragment shader (with varying, attribute and uniform)', function () {
+      const builder = new ShaderBuilder();
+      builder.addVarying('v_opacity', 'float', numberToGlsl(0.4));
+      builder.addVarying('v_test', 'vec3', arrayToGlsl([1, 2, 3]));
+      builder.addUniform('float u_myUniform');
+      builder.addAttribute('vec2 a_myAttr');
+      builder.setFillColorExpression(colorToGlsl([80, 0, 255, 1]));
+      builder.setFragmentDiscardExpression('u_myUniform > 0.5');
 
-    it('parses a style with a rotation expression using an attribute', function () {
-      const result = parseLiteralStyle({
-        symbol: {
-          symbolType: 'square',
-          size: 6,
-          rotation: ['get', 'heading'],
-        },
-      });
+      expect(builder.getFillFragmentShader()).to
+        .eql(`#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+uniform mat4 u_projectionMatrix;
+uniform mat4 u_screenToWorldMatrix;
+uniform vec2 u_viewportSizePx;
+uniform float u_pixelRatio;
+uniform float u_globalAlpha;
+uniform float u_time;
+uniform float u_zoom;
+uniform float u_resolution;
+uniform vec4 u_renderExtent;
+uniform float u_myUniform;
+varying float v_opacity;
+varying vec3 v_test;
 
-      expect(result.builder.attributes).to.eql(['float a_heading']);
-      expect(result.builder.varyings).to.eql([]);
-      expect(result.builder.rotationExpression).to.eql('a_heading');
+vec2 pxToWorld(vec2 pxPos) {
+  vec2 screenPos = 2.0 * pxPos / u_viewportSizePx - 1.0;
+  return (u_screenToWorldMatrix * vec4(screenPos, 0.0, 1.0)).xy;
+}
+
+void main(void) {
+  #ifdef GL_FRAGMENT_PRECISION_HIGH
+  vec2 v_worldPos = pxToWorld(gl_FragCoord.xy / u_pixelRatio);
+  if (
+    abs(u_renderExtent[0] - u_renderExtent[2]) > 0.0 && (
+      v_worldPos[0] < u_renderExtent[0] ||
+      v_worldPos[1] < u_renderExtent[1] ||
+      v_worldPos[0] > u_renderExtent[2] ||
+      v_worldPos[1] > u_renderExtent[3]
+    )
+  ) {
+    discard;
+  }
+  #endif
+  if (u_myUniform > 0.5) { discard; }
+  gl_FragColor = vec4(0.3137254901960784, 0.0, 1.0, 1.0) * u_globalAlpha;
+
+}`);
     });
+    it('generates a fill fragment shader for hit detection', function () {
+      const builder = new ShaderBuilder();
 
-    it('correctly adds string variables to the string literals mapping', function () {
-      const varName = 'mySize';
-      const uniformName = uniformNameForVariable(varName);
+      expect(builder.getFillFragmentShader(true)).to
+        .eql(`#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+uniform mat4 u_projectionMatrix;
+uniform mat4 u_screenToWorldMatrix;
+uniform vec2 u_viewportSizePx;
+uniform float u_pixelRatio;
+uniform float u_globalAlpha;
+uniform float u_time;
+uniform float u_zoom;
+uniform float u_resolution;
+uniform vec4 u_renderExtent;
 
-      const result = parseLiteralStyle({
-        variables: {
-          mySize: 'abcdef',
-        },
-        symbol: {
-          symbolType: 'square',
-          size: ['match', ['var', varName], 'abc', 10, 'def', 20, 30],
-          color: 'red',
-        },
-      });
+varying vec4 v_hitColor;
 
-      expect(result.uniforms[uniformName]()).to.be.greaterThan(0);
-    });
+vec2 pxToWorld(vec2 pxPos) {
+  vec2 screenPos = 2.0 * pxPos / u_viewportSizePx - 1.0;
+  return (u_screenToWorldMatrix * vec4(screenPos, 0.0, 1.0)).xy;
+}
 
-    it('throws when a variable is requested but not present in the style', function (done) {
-      const varName = 'mySize';
-      const uniformName = uniformNameForVariable(varName);
-
-      const result = parseLiteralStyle({
-        variables: {},
-        symbol: {
-          symbolType: 'square',
-          size: ['var', varName],
-          color: 'red',
-        },
-      });
-
-      try {
-        result.uniforms[uniformName]();
-      } catch (e) {
-        done();
-      }
-      done(true);
-    });
-
-    it('throws when a variable is requested but the style does not have a variables dict', function (done) {
-      const variableName = 'mySize';
-      const uniformName = uniformNameForVariable(variableName);
-      const result = parseLiteralStyle({
-        symbol: {
-          symbolType: 'square',
-          size: ['var', variableName],
-          color: 'red',
-        },
-      });
-
-      try {
-        result.uniforms[uniformName]();
-      } catch (e) {
-        done();
-      }
-      done(true);
+void main(void) {
+  #ifdef GL_FRAGMENT_PRECISION_HIGH
+  vec2 v_worldPos = pxToWorld(gl_FragCoord.xy / u_pixelRatio);
+  if (
+    abs(u_renderExtent[0] - u_renderExtent[2]) > 0.0 && (
+      v_worldPos[0] < u_renderExtent[0] ||
+      v_worldPos[1] < u_renderExtent[1] ||
+      v_worldPos[0] > u_renderExtent[2] ||
+      v_worldPos[1] > u_renderExtent[3]
+    )
+  ) {
+    discard;
+  }
+  #endif
+  if (false) { discard; }
+  gl_FragColor = vec4(1.0) * u_globalAlpha;
+  if (gl_FragColor.a < 0.1) { discard; } gl_FragColor = v_hitColor;
+}`);
     });
   });
 });

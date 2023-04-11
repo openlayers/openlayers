@@ -1,14 +1,17 @@
 /**
- * Classes and utilities for generating shaders from literal style objects
+ * Class for generating shaders from literal style objects
  * @module ol/webgl/ShaderBuilder
  */
 
-import {
-  ValueTypes,
-  expressionToGlsl,
-  getStringNumberEquivalent,
-  uniformNameForVariable,
-} from '../style/expressions.js';
+const BASE_UNIFORMS = `uniform mat4 u_projectionMatrix;
+uniform mat4 u_screenToWorldMatrix;
+uniform vec2 u_viewportSizePx;
+uniform float u_pixelRatio;
+uniform float u_globalAlpha;
+uniform float u_time;
+uniform float u_zoom;
+uniform float u_resolution;
+uniform vec4 u_renderExtent;`;
 
 /**
  * @typedef {Object} VaryingDescription
@@ -28,7 +31,7 @@ import {
  *   .addVarying('v_width', 'float', 'a_width')
  *   .addUniform('u_time')
  *   .setColorExpression('...')
- *   .setSizeExpression('...')
+ *   .setSymbolSizeExpression('...')
  *   .outputSymbolFragmentShader();
  * ```
  */
@@ -59,25 +62,25 @@ export class ShaderBuilder {
      * @type {string}
      * @private
      */
-    this.sizeExpression = 'vec2(1.0)';
+    this.symbolSizeExpression = 'vec2(1.0)';
 
     /**
      * @type {string}
      * @private
      */
-    this.rotationExpression = '0.0';
+    this.symbolRotationExpression = '0.0';
 
     /**
      * @type {string}
      * @private
      */
-    this.offsetExpression = 'vec2(0.0)';
+    this.symbolOffsetExpression = 'vec2(0.0)';
 
     /**
      * @type {string}
      * @private
      */
-    this.colorExpression = 'vec4(1.0)';
+    this.symbolColorExpression = 'vec4(1.0)';
 
     /**
      * @type {string}
@@ -95,7 +98,25 @@ export class ShaderBuilder {
      * @type {boolean}
      * @private
      */
-    this.rotateWithView = false;
+    this.symbolRotateWithView = false;
+
+    /**
+     * @type {string}
+     * @private
+     */
+    this.strokeWidthExpression = '1.0';
+
+    /**
+     * @type {string}
+     * @private
+     */
+    this.strokeColorExpression = 'vec4(1.0)';
+
+    /**
+     * @type {string}
+     * @private
+     */
+    this.fillColorExpression = 'vec4(1.0)';
   }
 
   /**
@@ -144,8 +165,8 @@ export class ShaderBuilder {
    * @param {string} expression Size expression
    * @return {ShaderBuilder} the builder object
    */
-  setSizeExpression(expression) {
-    this.sizeExpression = expression;
+  setSymbolSizeExpression(expression) {
+    this.symbolSizeExpression = expression;
     return this;
   }
 
@@ -156,8 +177,8 @@ export class ShaderBuilder {
    * @param {string} expression Size expression
    * @return {ShaderBuilder} the builder object
    */
-  setRotationExpression(expression) {
-    this.rotationExpression = expression;
+  setSymbolRotationExpression(expression) {
+    this.symbolRotationExpression = expression;
     return this;
   }
 
@@ -170,7 +191,7 @@ export class ShaderBuilder {
    * @return {ShaderBuilder} the builder object
    */
   setSymbolOffsetExpression(expression) {
-    this.offsetExpression = expression;
+    this.symbolOffsetExpression = expression;
     return this;
   }
 
@@ -181,8 +202,8 @@ export class ShaderBuilder {
    * @param {string} expression Color expression
    * @return {ShaderBuilder} the builder object
    */
-  setColorExpression(expression) {
-    this.colorExpression = expression;
+  setSymbolColorExpression(expression) {
+    this.symbolColorExpression = expression;
     return this;
   }
 
@@ -219,48 +240,31 @@ export class ShaderBuilder {
    * @return {ShaderBuilder} the builder object
    */
   setSymbolRotateWithView(rotateWithView) {
-    this.rotateWithView = rotateWithView;
+    this.symbolRotateWithView = rotateWithView;
     return this;
   }
 
   /**
-   * @return {string} Previously set size expression
+   * @param {string} expression Stroke width expression, returning value in pixels
+   * @return {ShaderBuilder} the builder object
    */
-  getSizeExpression() {
-    return this.sizeExpression;
+  setStrokeWidthExpression(expression) {
+    this.strokeWidthExpression = expression;
+    return this;
+  }
+
+  setStrokeColorExpression(expression) {
+    this.strokeColorExpression = expression;
+    return this;
+  }
+
+  setFillColorExpression(expression) {
+    this.fillColorExpression = expression;
+    return this;
   }
 
   /**
-   * @return {string} Previously set symbol offset expression
-   */
-  getOffsetExpression() {
-    return this.offsetExpression;
-  }
-
-  /**
-   * @return {string} Previously set color expression
-   */
-  getColorExpression() {
-    return this.colorExpression;
-  }
-
-  /**
-   * @return {string} Previously set texture coordinate expression
-   */
-  getTextureCoordinateExpression() {
-    return this.texCoordExpression;
-  }
-
-  /**
-   * @return {string} Previously set fragment discard expression
-   */
-  getFragmentDiscardExpression() {
-    return this.discardExpression;
-  }
-
-  /**
-   * Generates a symbol vertex shader from the builder parameters,
-   * intended to be used on point geometries.
+   * Generates a symbol vertex shader from the builder parameters
    *
    * Four uniforms are hardcoded in all shaders: `u_projectionMatrix`, `u_offsetScaleMatrix`,
    * `u_offsetRotateMatrix`, `u_time`.
@@ -276,7 +280,7 @@ export class ShaderBuilder {
    * @return {string} The full shader as a string.
    */
   getSymbolVertexShader(forHitDetection) {
-    const offsetMatrix = this.rotateWithView
+    const offsetMatrix = this.symbolRotateWithView
       ? 'u_offsetScaleMatrix * u_offsetRotateMatrix'
       : 'u_offsetScaleMatrix';
 
@@ -320,9 +324,9 @@ ${varyings
   .join('\n')}
 void main(void) {
   mat4 offsetMatrix = ${offsetMatrix};
-  vec2 halfSize = ${this.sizeExpression} * 0.5;
-  vec2 offset = ${this.offsetExpression};
-  float angle = ${this.rotationExpression};
+  vec2 halfSize = ${this.symbolSizeExpression} * 0.5;
+  vec2 offset = ${this.symbolOffsetExpression};
+  float angle = ${this.symbolRotationExpression};
   float offsetX;
   float offsetY;
   if (a_index == 0.0) {
@@ -356,8 +360,7 @@ ${varyings
   }
 
   /**
-   * Generates a symbol fragment shader from the builder parameters,
-   * intended to be used on point geometries.
+   * Generates a symbol fragment shader from the builder parameters
    *
    * Expects the following varyings to be transmitted by the vertex shader:
    * `vec2 v_quadCoord`, `vec2 v_texCoord`
@@ -399,194 +402,305 @@ ${varyings
   .join('\n')}
 void main(void) {
   if (${this.discardExpression}) { discard; }
-  gl_FragColor = ${this.colorExpression};
+  gl_FragColor = ${this.symbolColorExpression};
   gl_FragColor.rgb *= gl_FragColor.a;
 ${hitDetectionBypass}
 }`;
   }
+
+  /**
+   * Generates a stroke vertex shader from the builder parameters
+   *
+   * @param {boolean} [forHitDetection] If true, the shader will be modified to include hit detection variables
+   * (namely, hit color with encoded feature id).
+   * @return {string} The full shader as a string.
+   */
+  getStrokeVertexShader(forHitDetection) {
+    let attributes = this.attributes;
+    let varyings = this.varyings;
+
+    if (forHitDetection) {
+      attributes = attributes.concat('vec4 a_hitColor');
+      varyings = varyings.concat({
+        name: 'v_hitColor',
+        type: 'vec4',
+        expression: 'a_hitColor',
+      });
+    }
+
+    return `#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+${BASE_UNIFORMS}
+${this.uniforms
+  .map(function (uniform) {
+    return 'uniform ' + uniform + ';';
+  })
+  .join('\n')}
+attribute vec2 a_position;
+attribute float a_index;
+attribute vec2 a_segmentStart;
+attribute vec2 a_segmentEnd;
+attribute float a_parameters;
+${attributes
+  .map(function (attribute) {
+    return 'attribute ' + attribute + ';';
+  })
+  .join('\n')}
+varying vec2 v_segmentStart;
+varying vec2 v_segmentEnd;
+varying float v_angleStart;
+varying float v_angleEnd;
+varying float v_width;
+${varyings
+  .map(function (varying) {
+    return 'varying ' + varying.type + ' ' + varying.name + ';';
+  })
+  .join('\n')}
+
+vec2 worldToPx(vec2 worldPos) {
+  vec4 screenPos = u_projectionMatrix * vec4(worldPos, 0.0, 1.0);
+  return (0.5 * screenPos.xy + 0.5) * u_viewportSizePx;
 }
 
-/**
- * @typedef {Object} StyleParseResult
- * @property {ShaderBuilder} builder Shader builder pre-configured according to a given style
- * @property {Object<string,import("./Helper").UniformValue>} uniforms Uniform definitions.
- * @property {Array<import("../renderer/webgl/PointsLayer").CustomAttribute>} attributes Attribute descriptions.
- */
+vec4 pxToScreen(vec2 pxPos) {
+  vec2 screenPos = pxPos * 4.0 / u_viewportSizePx;
+  return vec4(screenPos.xy, 0.0, 0.0);
+}
 
-/**
- * Parses a {@link import("../style/literal").LiteralStyle} object and returns a {@link ShaderBuilder}
- * object that has been configured according to the given style, as well as `attributes` and `uniforms`
- * arrays to be fed to the `WebGLPointsRenderer` class.
- *
- * Also returns `uniforms` and `attributes` properties as expected by the
- * {@link module:ol/renderer/webgl/PointsLayer~WebGLPointsLayerRenderer}.
- *
- * @param {import("../style/literal").LiteralStyle} style Literal style.
- * @return {StyleParseResult} Result containing shader params, attributes and uniforms.
- */
-export function parseLiteralStyle(style) {
-  const symbStyle = style.symbol;
-  const size = symbStyle.size !== undefined ? symbStyle.size : 1;
-  const color = symbStyle.color || 'white';
-  const texCoord = symbStyle.textureCoord || [0, 0, 1, 1];
-  const offset = symbStyle.offset || [0, 0];
-  const opacity = symbStyle.opacity !== undefined ? symbStyle.opacity : 1;
-  const rotation = symbStyle.rotation !== undefined ? symbStyle.rotation : 0;
+vec2 getOffsetDirection(vec2 normalPx, vec2 tangentPx, float joinAngle) {
+  if (cos(joinAngle) > 0.93) return normalPx - tangentPx;
+  float halfAngle = joinAngle / 2.0;
+  vec2 angleBisectorNormal = vec2(
+    sin(halfAngle) * normalPx.x + cos(halfAngle) * normalPx.y,
+    -cos(halfAngle) * normalPx.x + sin(halfAngle) * normalPx.y
+  );
+  float length = 1.0 / sin(halfAngle);
+  return angleBisectorNormal * length;
+}
+
+void main(void) {
+  float lineWidth = ${this.strokeWidthExpression};
+  float anglePrecision = 1500.0;
+  float paramShift = 10000.0;
+  v_angleStart = fract(a_parameters / paramShift) * paramShift / anglePrecision;
+  v_angleEnd = fract(floor(a_parameters / paramShift + 0.5) / paramShift) * paramShift / anglePrecision;
+  float vertexNumber = floor(a_parameters / paramShift / paramShift + 0.0001);
+  vec2 tangentPx = worldToPx(a_segmentEnd) - worldToPx(a_segmentStart);
+  tangentPx = normalize(tangentPx);
+  vec2 normalPx = vec2(-tangentPx.y, tangentPx.x);
+  float normalDir = vertexNumber < 0.5 || (vertexNumber > 1.5 && vertexNumber < 2.5) ? 1.0 : -1.0;
+  float tangentDir = vertexNumber < 1.5 ? 1.0 : -1.0;
+  float angle = vertexNumber < 1.5 ? v_angleStart : v_angleEnd;
+  vec2 offsetPx = getOffsetDirection(normalPx * normalDir, tangentDir * tangentPx, angle) * lineWidth * 0.5;
+  vec2 position =  vertexNumber < 1.5 ? a_segmentStart : a_segmentEnd;
+  gl_Position = u_projectionMatrix * vec4(position, 0.0, 1.0) + pxToScreen(offsetPx);
+  v_segmentStart = worldToPx(a_segmentStart);
+  v_segmentEnd = worldToPx(a_segmentEnd);
+  v_width = lineWidth;
+${varyings
+  .map(function (varying) {
+    return '  ' + varying.name + ' = ' + varying.expression + ';';
+  })
+  .join('\n')}
+}`;
+  }
 
   /**
-   * @type {import("../style/expressions.js").ParsingContext}
+   * Generates a stroke fragment shader from the builder parameters
+   *
+   * @param {boolean} [forHitDetection] If true, the shader will be modified to include hit detection variables
+   * (namely, hit color with encoded feature id).
+   * @return {string} The full shader as a string.
    */
-  const vertContext = {
-    inFragmentShader: false,
-    variables: [],
-    attributes: [],
-    stringLiteralsMap: {},
-    functions: {},
-  };
-  const parsedSize = expressionToGlsl(
-    vertContext,
-    size,
-    ValueTypes.NUMBER_ARRAY | ValueTypes.NUMBER
-  );
-  const parsedOffset = expressionToGlsl(
-    vertContext,
-    offset,
-    ValueTypes.NUMBER_ARRAY
-  );
-  const parsedTexCoord = expressionToGlsl(
-    vertContext,
-    texCoord,
-    ValueTypes.NUMBER_ARRAY
-  );
-  const parsedRotation = expressionToGlsl(
-    vertContext,
-    rotation,
-    ValueTypes.NUMBER
-  );
+  getStrokeFragmentShader(forHitDetection) {
+    const hitDetectionBypass = forHitDetection
+      ? '  if (gl_FragColor.a < 0.1) { discard; } gl_FragColor = v_hitColor;'
+      : '';
 
-  /**
-   * @type {import("../style/expressions.js").ParsingContext}
-   */
-  const fragContext = {
-    inFragmentShader: true,
-    variables: vertContext.variables,
-    attributes: [],
-    stringLiteralsMap: vertContext.stringLiteralsMap,
-    functions: {},
-  };
-  const parsedColor = expressionToGlsl(fragContext, color, ValueTypes.COLOR);
-  const parsedOpacity = expressionToGlsl(
-    fragContext,
-    opacity,
-    ValueTypes.NUMBER
-  );
+    let varyings = this.varyings;
 
-  let opacityFilter = '1.0';
-  const visibleSize = `vec2(${expressionToGlsl(
-    fragContext,
-    size,
-    ValueTypes.NUMBER_ARRAY | ValueTypes.NUMBER
-  )}).x`;
-  switch (symbStyle.symbolType) {
-    case 'square':
-      break;
-    case 'image':
-      break;
-    // taken from https://thebookofshaders.com/07/
-    case 'circle':
-      opacityFilter = `(1.0-smoothstep(1.-4./${visibleSize},1.,dot(v_quadCoord-.5,v_quadCoord-.5)*4.))`;
-      break;
-    case 'triangle':
-      const st = '(v_quadCoord*2.-1.)';
-      const a = `(atan(${st}.x,${st}.y))`;
-      opacityFilter = `(1.0-smoothstep(.5-3./${visibleSize},.5,cos(floor(.5+${a}/2.094395102)*2.094395102-${a})*length(${st})))`;
-      break;
-
-    default:
-      throw new Error('Unexpected symbol type: ' + symbStyle.symbolType);
-  }
-
-  const builder = new ShaderBuilder()
-    .setSizeExpression(`vec2(${parsedSize})`)
-    .setRotationExpression(parsedRotation)
-    .setSymbolOffsetExpression(parsedOffset)
-    .setTextureCoordinateExpression(parsedTexCoord)
-    .setSymbolRotateWithView(!!symbStyle.rotateWithView)
-    .setColorExpression(
-      `vec4(${parsedColor}.rgb, ${parsedColor}.a * ${parsedOpacity} * ${opacityFilter})`
-    );
-
-  if (style.filter) {
-    const parsedFilter = expressionToGlsl(
-      fragContext,
-      style.filter,
-      ValueTypes.BOOLEAN
-    );
-    builder.setFragmentDiscardExpression(`!${parsedFilter}`);
-  }
-
-  /** @type {Object<string,import("../webgl/Helper").UniformValue>} */
-  const uniforms = {};
-
-  // define one uniform per variable
-  fragContext.variables.forEach(function (varName) {
-    const uniformName = uniformNameForVariable(varName);
-    builder.addUniform(`float ${uniformName}`);
-    uniforms[uniformName] = function () {
-      if (!style.variables || style.variables[varName] === undefined) {
-        throw new Error(
-          `The following variable is missing from the style: ${varName}`
-        );
-      }
-      let value = style.variables[varName];
-      if (typeof value === 'string') {
-        value = getStringNumberEquivalent(vertContext, value);
-      }
-      return value !== undefined ? value : -9999999; // to avoid matching with the first string literal
-    };
-  });
-
-  if (symbStyle.symbolType === 'image' && symbStyle.src) {
-    const texture = new Image();
-    texture.crossOrigin =
-      symbStyle.crossOrigin === undefined ? 'anonymous' : symbStyle.crossOrigin;
-    texture.src = symbStyle.src;
-    builder
-      .addUniform('sampler2D u_texture')
-      .setColorExpression(
-        builder.getColorExpression() + ' * texture2D(u_texture, v_texCoord)'
-      );
-    uniforms['u_texture'] = texture;
-  }
-
-  // for each feature attribute used in the fragment shader, define a varying that will be used to pass data
-  // from the vertex to the fragment shader, as well as an attribute in the vertex shader (if not already present)
-  fragContext.attributes.forEach(function (attrName) {
-    if (!vertContext.attributes.includes(attrName)) {
-      vertContext.attributes.push(attrName);
+    if (forHitDetection) {
+      varyings = varyings.concat({
+        name: 'v_hitColor',
+        type: 'vec4',
+        expression: 'a_hitColor',
+      });
     }
-    builder.addVarying(`v_${attrName}`, 'float', `a_${attrName}`);
-  });
 
-  // for each feature attribute used in the vertex shader, define an attribute in the vertex shader.
-  vertContext.attributes.forEach(function (attrName) {
-    builder.addAttribute(`float a_${attrName}`);
-  });
+    return `#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+${BASE_UNIFORMS}
+${this.uniforms
+  .map(function (uniform) {
+    return 'uniform ' + uniform + ';';
+  })
+  .join('\n')}
+varying vec2 v_segmentStart;
+varying vec2 v_segmentEnd;
+varying float v_angleStart;
+varying float v_angleEnd;
+varying float v_width;
+${varyings
+  .map(function (varying) {
+    return 'varying ' + varying.type + ' ' + varying.name + ';';
+  })
+  .join('\n')}
 
-  return {
-    builder: builder,
-    attributes: vertContext.attributes.map(function (attributeName) {
-      return {
-        name: attributeName,
-        callback: function (feature, props) {
-          let value = props[attributeName];
-          if (typeof value === 'string') {
-            value = getStringNumberEquivalent(vertContext, value);
-          }
-          return value !== undefined ? value : -9999999; // to avoid matching with the first string literal
-        },
-      };
-    }),
-    uniforms: uniforms,
-  };
+vec2 pxToWorld(vec2 pxPos) {
+  vec2 screenPos = 2.0 * pxPos / u_viewportSizePx - 1.0;
+  return (u_screenToWorldMatrix * vec4(screenPos, 0.0, 1.0)).xy;
+}
+
+float segmentDistanceField(vec2 point, vec2 start, vec2 end, float radius) {
+  vec2 startToPoint = point - start;
+  vec2 startToEnd = end - start;
+  float ratio = clamp(dot(startToPoint, startToEnd) / dot(startToEnd, startToEnd), 0.0, 1.0);
+  float dist = length(startToPoint - ratio * startToEnd);
+  return 1.0 - smoothstep(radius - 1.0, radius, dist);
+}
+
+void main(void) {
+  vec2 v_currentPoint = gl_FragCoord.xy / u_pixelRatio;
+  #ifdef GL_FRAGMENT_PRECISION_HIGH
+  vec2 v_worldPos = pxToWorld(v_currentPoint);
+  if (
+    abs(u_renderExtent[0] - u_renderExtent[2]) > 0.0 && (
+      v_worldPos[0] < u_renderExtent[0] ||
+      v_worldPos[1] < u_renderExtent[1] ||
+      v_worldPos[0] > u_renderExtent[2] ||
+      v_worldPos[1] > u_renderExtent[3]
+    )
+  ) {
+    discard;
+  }
+  #endif
+  if (${this.discardExpression}) { discard; }
+  gl_FragColor = ${this.strokeColorExpression} * u_globalAlpha;
+  gl_FragColor *= segmentDistanceField(v_currentPoint, v_segmentStart, v_segmentEnd, v_width);
+${hitDetectionBypass}
+}`;
+  }
+
+  /**
+   * Generates a fill vertex shader from the builder parameters
+   *
+   * @param {boolean} [forHitDetection] If true, the shader will be modified to include hit detection variables
+   * (namely, hit color with encoded feature id).
+   * @return {string} The full shader as a string.
+   */
+  getFillVertexShader(forHitDetection) {
+    let attributes = this.attributes;
+    let varyings = this.varyings;
+
+    if (forHitDetection) {
+      attributes = attributes.concat('vec4 a_hitColor');
+      varyings = varyings.concat({
+        name: 'v_hitColor',
+        type: 'vec4',
+        expression: 'a_hitColor',
+      });
+    }
+
+    return `#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+${BASE_UNIFORMS}
+${this.uniforms
+  .map(function (uniform) {
+    return 'uniform ' + uniform + ';';
+  })
+  .join('\n')}
+attribute vec2 a_position;
+${attributes
+  .map(function (attribute) {
+    return 'attribute ' + attribute + ';';
+  })
+  .join('\n')}
+${varyings
+  .map(function (varying) {
+    return 'varying ' + varying.type + ' ' + varying.name + ';';
+  })
+  .join('\n')}
+
+void main(void) {
+  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0);
+${varyings
+  .map(function (varying) {
+    return '  ' + varying.name + ' = ' + varying.expression + ';';
+  })
+  .join('\n')}
+}`;
+  }
+
+  /**
+   * Generates a fill fragment shader from the builder parameters
+   *
+   * @param {boolean} [forHitDetection] If true, the shader will be modified to include hit detection variables
+   * (namely, hit color with encoded feature id).
+   * @return {string} The full shader as a string.
+   */
+  getFillFragmentShader(forHitDetection) {
+    const hitDetectionBypass = forHitDetection
+      ? '  if (gl_FragColor.a < 0.1) { discard; } gl_FragColor = v_hitColor;'
+      : '';
+
+    let varyings = this.varyings;
+
+    if (forHitDetection) {
+      varyings = varyings.concat({
+        name: 'v_hitColor',
+        type: 'vec4',
+        expression: 'a_hitColor',
+      });
+    }
+
+    return `#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+${BASE_UNIFORMS}
+${this.uniforms
+  .map(function (uniform) {
+    return 'uniform ' + uniform + ';';
+  })
+  .join('\n')}
+${varyings
+  .map(function (varying) {
+    return 'varying ' + varying.type + ' ' + varying.name + ';';
+  })
+  .join('\n')}
+
+vec2 pxToWorld(vec2 pxPos) {
+  vec2 screenPos = 2.0 * pxPos / u_viewportSizePx - 1.0;
+  return (u_screenToWorldMatrix * vec4(screenPos, 0.0, 1.0)).xy;
+}
+
+void main(void) {
+  #ifdef GL_FRAGMENT_PRECISION_HIGH
+  vec2 v_worldPos = pxToWorld(gl_FragCoord.xy / u_pixelRatio);
+  if (
+    abs(u_renderExtent[0] - u_renderExtent[2]) > 0.0 && (
+      v_worldPos[0] < u_renderExtent[0] ||
+      v_worldPos[1] < u_renderExtent[1] ||
+      v_worldPos[0] > u_renderExtent[2] ||
+      v_worldPos[1] > u_renderExtent[3]
+    )
+  ) {
+    discard;
+  }
+  #endif
+  if (${this.discardExpression}) { discard; }
+  gl_FragColor = ${this.fillColorExpression} * u_globalAlpha;
+${hitDetectionBypass}
+}`;
+  }
 }

@@ -3,7 +3,7 @@
  */
 import Layer from './Layer.js';
 import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer.js';
-import {parseLiteralStyle} from '../webgl/ShaderBuilder.js';
+import {parseLiteralStyle} from '../webgl/styleparser.js';
 
 /**
  * @template {import("../source/Vector.js").default<import("../geom/Point.js").default>} VectorSourceType
@@ -82,7 +82,7 @@ class WebGLPointsLayer extends Layer {
 
     /**
      * @private
-     * @type {import('../webgl/ShaderBuilder.js').StyleParseResult}
+     * @type {import('../webgl/styleparser.js').StyleParseResult}
      */
     this.parseResult_ = parseLiteralStyle(options.style);
 
