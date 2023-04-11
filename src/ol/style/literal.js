@@ -8,7 +8,7 @@
  * @typedef {import("./expressions.js").ExpressionValue} ExpressionValue
  */
 /**
- * @typedef {import("../color.js").Color|string|Array<ExpressionValue>} ColorWithExpression
+ * @typedef {import("../color.js").Color|string|Array<ExpressionValue>} ColorExpression
  */
 
 /**
@@ -36,7 +36,7 @@ export const SymbolType = {
  * @property {SymbolType} symbolType Symbol type to use, either a regular shape or an image.
  * @property {string} [src] Path to the image to be used for the symbol. Only required with `symbolType: 'image'`.
  * @property {string} [crossOrigin='anonymous'] The `crossOrigin` attribute for loading `src`.
- * @property {ColorWithExpression} [color] Color used for the representation (either fill, line or symbol).
+ * @property {ColorExpression} [color] Color used for the representation (either fill, line or symbol).
  * @property {ExpressionValue} [opacity=1] Opacity.
  * @property {ExpressionValue} [rotation=0] Symbol rotation in radians.
  * @property {Array<ExpressionValue, ExpressionValue>} [offset] Offset on X and Y axis for symbols. If not specified, the symbol will be centered.
@@ -46,12 +46,12 @@ export const SymbolType = {
 
 /**
  * @typedef {Object} FillProps
- * @property {ColorWithExpression} [fill-color] The fill color.
+ * @property {ColorExpression} [fill-color] The fill color.
  */
 
 /**
  * @typedef {Object} StrokeProps
- * @property {ColorWithExpression} [stroke-color] The stroke color.
+ * @property {ColorExpression} [stroke-color] The stroke color.
  * @property {number|ExpressionValue} [stroke-width] Stroke pixel width.
  */
 
@@ -72,7 +72,7 @@ export const SymbolType = {
  * @property {import("./Icon.js").IconAnchorUnits} [icon-anchor-y-units='fraction'] Units in which the anchor y value is
  * specified. A value of `'fraction'` indicates the y value is a fraction of the icon. A value of `'pixels'` indicates
  * the y value in pixels.
- * @property {ColorWithExpression} [icon-color] Color to tint the icon. If not specified,
+ * @property {ColorExpression} [icon-color] Color to tint the icon. If not specified,
  * the icon will be left as is.
  * @property {null|string} [icon-cross-origin] The `crossOrigin` attribute for loaded images. Note that you must provide a
  * `icon-cross-origin` value if you want to access pixel data with the Canvas renderer.
@@ -98,8 +98,8 @@ export const SymbolType = {
  * @typedef {Object} ShapeProps
  * @property {number} [shape-points] Number of points for stars and regular polygons. In case of a polygon, the number of points
  * is the number of sides.
- * @property {ColorWithExpression} [shape-fill-color] The fill color.
- * @property {ColorWithExpression} [shape-stroke-color] The stroke color.
+ * @property {ColorExpression} [shape-fill-color] The fill color.
+ * @property {ColorExpression} [shape-stroke-color] The stroke color.
  * @property {ExpressionValue|number} [shape-stroke-width] Stroke pixel width.
  * @property {ExpressionValue|number} [shape-radius] Radius of a regular polygon.
  * @property {ExpressionValue|number} [shape-radius1] First radius of a star. Ignored if radius is set.
@@ -115,8 +115,8 @@ export const SymbolType = {
 /**
  * @typedef {Object} CircleProps
  * @property {ExpressionValue|number} [circle-radius] Circle radius.
- * @property {ColorWithExpression} [circle-fill-color] The fill color.
- * @property {ColorWithExpression} [circle-stroke-color] The stroke color.
+ * @property {ColorExpression} [circle-fill-color] The fill color.
+ * @property {ColorExpression} [circle-stroke-color] The stroke color.
  * @property {ExpressionValue|number} [circle-stroke-width] Stroke pixel width.
  * @property {Array<ExpressionValue>|Array<number>} [circle-displacement=[0,0]] displacement
  * @property {ExpressionValue|Array<ExpressionValue>|number|import("../size.js").Size} [circle-scale=1] Scale. A two dimensional scale will produce an ellipse.
