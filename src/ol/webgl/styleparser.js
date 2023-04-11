@@ -39,6 +39,7 @@ export function getSymbolOpacityGlslFunction(type, sizeExpressionGlsl) {
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms
  * @param {import("../style/expressions.js").ParsingContext} vertContext
  * @param {import("../style/expressions.js").ParsingContext} fragContext
+ * @return {boolean} Whether a symbol style was found
  */
 function parseSymbolProperties(
   style,
@@ -47,6 +48,8 @@ function parseSymbolProperties(
   vertContext,
   fragContext
 ) {
+  if (!('symbol' in style)) return false;
+
   const symbStyle = style.symbol;
   const size = symbStyle.size !== undefined ? symbStyle.size : 1;
   const color = symbStyle.color || 'white';
@@ -115,11 +118,72 @@ function parseSymbolProperties(
       );
     uniforms['u_texture'] = texture;
   }
+
+  return true;
+}
+
+/**
+ * @param {import("../style/literal").LiteralStyle} style
+ * @param {ShaderBuilder} builder
+ * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms
+ * @param {import("../style/expressions.js").ParsingContext} vertContext
+ * @param {import("../style/expressions.js").ParsingContext} fragContext
+ * @return {boolean} Whether a stroke style was found
+ */
+function parseStrokeProperties(
+  style,
+  builder,
+  uniforms,
+  vertContext,
+  fragContext
+) {
+  // do not apply a stroke style if these properties are missing
+  if (!('stroke-color' in style) && !('stroke-width' in style)) return false;
+
+  const color = style['stroke-color'] || 'white';
+  const width = style['stroke-width'] || 1;
+  const parsedColor = expressionToGlsl(fragContext, color, ValueTypes.COLOR);
+  const parsedWidth = expressionToGlsl(fragContext, width, ValueTypes.NUMBER);
+
+  builder
+    .setStrokeColorExpression(parsedColor)
+    .setStrokeWidthExpression(parsedWidth);
+
+  return true;
+}
+
+/**
+ * @param {import("../style/literal").LiteralStyle} style
+ * @param {ShaderBuilder} builder
+ * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms
+ * @param {import("../style/expressions.js").ParsingContext} vertContext
+ * @param {import("../style/expressions.js").ParsingContext} fragContext
+ * @return {boolean} Whether a fill style was found
+ */
+function parseFillProperties(
+  style,
+  builder,
+  uniforms,
+  vertContext,
+  fragContext
+) {
+  // do not apply a fill style if these properties are missing
+  if (!('fill-color' in style)) return false;
+
+  const color = style['fill-color'] || 'rgba(255, 255, 255, 0.3)';
+  const parsedColor = expressionToGlsl(fragContext, color, ValueTypes.COLOR);
+
+  builder.setFillColorExpression(parsedColor);
+
+  return true;
 }
 
 /**
  * @typedef {Object} StyleParseResult
  * @property {ShaderBuilder} builder Shader builder pre-configured according to a given style
+ * @property {boolean} hasSymbol Has a symbol style defined
+ * @property {boolean} hasStroke Has a stroke style defined
+ * @property {boolean} hasFill Has a fill style defined
  * @property {Object<string,import("./Helper").UniformValue>} uniforms Uniform definitions.
  * @property {Array<import("../renderer/webgl/PointsLayer").CustomAttribute>} attributes Attribute descriptions.
  */
@@ -163,7 +227,27 @@ export function parseLiteralStyle(style) {
   /** @type {Object<string,import("../webgl/Helper").UniformValue>} */
   const uniforms = {};
 
-  parseSymbolProperties(style, builder, uniforms, vertContext, fragContext);
+  const hasSymbol = parseSymbolProperties(
+    style,
+    builder,
+    uniforms,
+    vertContext,
+    fragContext
+  );
+  const hasStroke = parseStrokeProperties(
+    style,
+    builder,
+    uniforms,
+    vertContext,
+    fragContext
+  );
+  const hasFill = parseFillProperties(
+    style,
+    builder,
+    uniforms,
+    vertContext,
+    fragContext
+  );
 
   if (style.filter) {
     const parsedFilter = expressionToGlsl(
@@ -208,6 +292,9 @@ export function parseLiteralStyle(style) {
 
   return {
     builder: builder,
+    hasSymbol,
+    hasStroke,
+    hasFill,
     attributes: vertContext.attributes.map(function (attributeName) {
       return {
         name: attributeName,

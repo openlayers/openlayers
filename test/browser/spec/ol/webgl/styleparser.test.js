@@ -148,6 +148,37 @@ describe('ol.webgl.styleparser', function () {
       done(true);
     });
 
+    it('reads when symbol, stroke or fill styles are present', function () {
+      const result = parseLiteralStyle({
+        variables: {
+          mySize: 'abcdef',
+        },
+        symbol: {
+          symbolType: 'square',
+          size: 1,
+          color: 'red',
+        },
+        ['stroke-width']: 1,
+        ['fill-color']: 'blue',
+      });
+
+      expect(result.hasSymbol).to.be(true);
+      expect(result.hasStroke).to.be(true);
+      expect(result.hasFill).to.be(true);
+    });
+
+    it('reads when symbol, stroke or fill styles are absent', function () {
+      const result = parseLiteralStyle({
+        variables: {
+          mySize: 'abcdef',
+        },
+      });
+
+      expect(result.hasSymbol).to.be(false);
+      expect(result.hasStroke).to.be(false);
+      expect(result.hasFill).to.be(false);
+    });
+
     describe('symbol style', function () {
       it('without expressions', function () {
         const result = parseLiteralStyle({
@@ -298,6 +329,80 @@ describe('ol.webgl.styleparser', function () {
         expect(result.builder.attributes).to.eql(['float a_heading']);
         expect(result.builder.varyings).to.eql([]);
         expect(result.builder.symbolRotationExpression).to.eql('a_heading');
+      });
+    });
+
+    describe('stroke style', function () {
+      it('parses style', function () {
+        const result = parseLiteralStyle({
+          variables: {
+            width: 1,
+          },
+          ['stroke-color']: [
+            'interpolate',
+            ['linear'],
+            ['get', 'intensity'],
+            0,
+            'blue',
+            1,
+            'red',
+          ],
+          ['stroke-width']: ['*', ['var', 'width'], 3],
+        });
+
+        expect(result.builder.uniforms).to.eql(['float u_var_width']);
+        expect(result.builder.attributes).to.eql(['float a_intensity']);
+        expect(result.builder.varyings).to.eql([
+          {
+            name: 'v_intensity',
+            type: 'float',
+            expression: 'a_intensity',
+          },
+        ]);
+        expect(result.builder.strokeColorExpression).to.eql(
+          'mix(vec4(0.0, 0.0, 1.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), pow(clamp((v_intensity - 0.0) / (1.0 - 0.0), 0.0, 1.0), 1.0))'
+        );
+        expect(result.builder.strokeWidthExpression).to.eql(
+          '(u_var_width * 3.0)'
+        );
+        expect(result.attributes.length).to.eql(1);
+        expect(result.attributes[0].name).to.eql('intensity');
+        expect(result.uniforms).to.have.property('u_var_width');
+      });
+    });
+
+    describe('fill style', function () {
+      it('parses style', function () {
+        const result = parseLiteralStyle({
+          variables: {
+            scale: 10,
+          },
+          ['fill-color']: [
+            'interpolate',
+            ['linear'],
+            ['*', ['get', 'intensity'], ['var', 'scale']],
+            0,
+            'blue',
+            10,
+            'red',
+          ],
+        });
+
+        expect(result.builder.uniforms).to.eql(['float u_var_scale']);
+        expect(result.builder.attributes).to.eql(['float a_intensity']);
+        expect(result.builder.varyings).to.eql([
+          {
+            name: 'v_intensity',
+            type: 'float',
+            expression: 'a_intensity',
+          },
+        ]);
+        expect(result.builder.fillColorExpression).to.eql(
+          'mix(vec4(0.0, 0.0, 1.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), pow(clamp(((v_intensity * u_var_scale) - 0.0) / (10.0 - 0.0), 0.0, 1.0), 1.0))'
+        );
+        expect(result.attributes.length).to.eql(1);
+        expect(result.attributes[0].name).to.eql('intensity');
+        expect(result.uniforms).to.have.property('u_var_scale');
       });
     });
   });
