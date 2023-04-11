@@ -3,7 +3,6 @@
  */
 import Interaction, {zoomByDelta} from './Interaction.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
-import {getValues} from '../obj.js';
 
 /**
  * @typedef {Object} Options
@@ -156,7 +155,7 @@ class DoubleClickZoom extends Interaction {
         // update only when there was a pointerdown event for this pointer
         this.trackedPointers_[id] = event;
       }
-      this.targetPointers = getValues(this.trackedPointers_);
+      this.targetPointers = Object.values(this.trackedPointers_);
     }
   }
 }
