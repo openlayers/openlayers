@@ -62,14 +62,14 @@ export const FILL_FRAGMENT_SHADER = `
   uniform float u_globalAlpha;
   uniform mat4 u_projectionMatrix;
   uniform mat4 u_screenToWorldMatrix;
-  uniform vec2 u_sizePx;
+  uniform vec2 u_viewportSizePx;
   uniform float u_pixelRatio;
   uniform vec4 u_renderExtent;
   varying vec3 v_color;
   varying float v_opacity;
 
   vec2 pxToWorld(vec2 pxPos) {
-    vec2 screenPos = 2.0 * pxPos / u_sizePx - 1.0;
+    vec2 screenPos = 2.0 * pxPos / u_viewportSizePx - 1.0;
     return (u_screenToWorldMatrix * vec4(screenPos, 0.0, 1.0)).xy;
   }
 
@@ -102,7 +102,7 @@ export const STROKE_VERTEX_SHADER = `
   precision mediump float;
   #endif
   uniform mat4 u_projectionMatrix;
-  uniform vec2 u_sizePx;
+  uniform vec2 u_viewportSizePx;
   attribute vec2 a_segmentStart;
   attribute vec2 a_segmentEnd;
   attribute float a_parameters;
@@ -119,11 +119,11 @@ export const STROKE_VERTEX_SHADER = `
 
   vec2 worldToPx(vec2 worldPos) {
     vec4 screenPos = u_projectionMatrix * vec4(worldPos, 0.0, 1.0);
-    return (0.5 * screenPos.xy + 0.5) * u_sizePx;
+    return (0.5 * screenPos.xy + 0.5) * u_viewportSizePx;
   }
 
   vec4 pxToScreen(vec2 pxPos) {
-    vec2 screenPos = pxPos * 4.0 / u_sizePx;
+    vec2 screenPos = pxPos * 4.0 / u_viewportSizePx;
     return vec4(screenPos.xy, 0.0, 0.0);
   }
 
@@ -172,7 +172,7 @@ export const STROKE_FRAGMENT_SHADER = `
   #endif
   uniform mat4 u_projectionMatrix;
   uniform mat4 u_screenToWorldMatrix;
-  uniform vec2 u_sizePx;
+  uniform vec2 u_viewportSizePx;
   uniform float u_pixelRatio;
   uniform float u_globalAlpha;
   uniform vec4 u_renderExtent;
@@ -185,7 +185,7 @@ export const STROKE_FRAGMENT_SHADER = `
   varying float v_width;
 
   vec2 pxToWorld(vec2 pxPos) {
-    vec2 screenPos = 2.0 * pxPos / u_sizePx - 1.0;
+    vec2 screenPos = 2.0 * pxPos / u_viewportSizePx - 1.0;
     return (u_screenToWorldMatrix * vec4(screenPos, 0.0, 1.0)).xy;
   }
 

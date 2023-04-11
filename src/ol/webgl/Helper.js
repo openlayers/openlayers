@@ -49,7 +49,7 @@ export const DefaultUniform = {
   TIME: 'u_time',
   ZOOM: 'u_zoom',
   RESOLUTION: 'u_resolution',
-  SIZE_PX: 'u_sizePx',
+  VIEWPORT_SIZE_PX: 'u_viewportSizePx',
   PIXEL_RATIO: 'u_pixelRatio',
 };
 
@@ -704,7 +704,10 @@ class WebGLHelper extends Disposable {
       frameState.viewState.resolution
     );
     this.setUniformFloatValue(DefaultUniform.PIXEL_RATIO, pixelRatio);
-    this.setUniformFloatVec2(DefaultUniform.SIZE_PX, [size[0], size[1]]);
+    this.setUniformFloatVec2(DefaultUniform.VIEWPORT_SIZE_PX, [
+      size[0],
+      size[1],
+    ]);
   }
 
   /**

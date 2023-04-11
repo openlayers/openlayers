@@ -159,7 +159,7 @@ describe('ol/webgl/WebGLHelper', function () {
         expect(h.uniformLocations_[DefaultUniform.RESOLUTION]).not.to.eql(
           undefined
         );
-        expect(h.uniformLocations_[DefaultUniform.SIZE_PX]).not.to.eql(
+        expect(h.uniformLocations_[DefaultUniform.VIEWPORT_SIZE_PX]).not.to.eql(
           undefined
         );
         expect(h.uniformLocations_[DefaultUniform.PIXEL_RATIO]).not.to.eql(
@@ -465,7 +465,7 @@ describe('ol/webgl/WebGLHelper', function () {
       expect(stubFloat.getCall(3).args).to.eql([DefaultUniform.PIXEL_RATIO, 2]);
 
       expect(stubVec2.getCall(0).args).to.eql([
-        DefaultUniform.SIZE_PX,
+        DefaultUniform.VIEWPORT_SIZE_PX,
         [100, 150],
       ]);
     });
