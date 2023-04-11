@@ -33,24 +33,20 @@ export function getSymbolOpacityGlslFunction(type, sizeExpressionGlsl) {
 }
 
 /**
- * @typedef {Object} StyleParseResult
- * @property {ShaderBuilder} builder Shader builder pre-configured according to a given style
- * @property {Object<string,import("./Helper").UniformValue>} uniforms Uniform definitions.
- * @property {Array<import("../renderer/webgl/PointsLayer").CustomAttribute>} attributes Attribute descriptions.
- */
-
-/**
- * Parses a {@link import("../style/literal").LiteralStyle} object and returns a {@link ShaderBuilder}
- * object that has been configured according to the given style, as well as `attributes` and `uniforms`
- * arrays to be fed to the `WebGLPointsRenderer` class.
  *
- * Also returns `uniforms` and `attributes` properties as expected by the
- * {@link module:ol/renderer/webgl/PointsLayer~WebGLPointsLayerRenderer}.
- *
- * @param {import("../style/literal").LiteralStyle} style Literal style.
- * @return {StyleParseResult} Result containing shader params, attributes and uniforms.
+ * @param {import("../style/literal").LiteralStyle} style
+ * @param {ShaderBuilder} builder
+ * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms
+ * @param {import("../style/expressions.js").ParsingContext} vertContext
+ * @param {import("../style/expressions.js").ParsingContext} fragContext
  */
-export function parseLiteralStyle(style) {
+function parseSymbolProperties(
+  style,
+  builder,
+  uniforms,
+  vertContext,
+  fragContext
+) {
   const symbStyle = style.symbol;
   const size = symbStyle.size !== undefined ? symbStyle.size : 1;
   const color = symbStyle.color || 'white';
@@ -59,16 +55,6 @@ export function parseLiteralStyle(style) {
   const opacity = symbStyle.opacity !== undefined ? symbStyle.opacity : 1;
   const rotation = symbStyle.rotation !== undefined ? symbStyle.rotation : 0;
 
-  /**
-   * @type {import("../style/expressions.js").ParsingContext}
-   */
-  const vertContext = {
-    inFragmentShader: false,
-    variables: [],
-    attributes: [],
-    stringLiteralsMap: {},
-    functions: {},
-  };
   const parsedSize = expressionToGlsl(
     vertContext,
     size,
@@ -90,16 +76,6 @@ export function parseLiteralStyle(style) {
     ValueTypes.NUMBER
   );
 
-  /**
-   * @type {import("../style/expressions.js").ParsingContext}
-   */
-  const fragContext = {
-    inFragmentShader: true,
-    variables: vertContext.variables,
-    attributes: [],
-    stringLiteralsMap: vertContext.stringLiteralsMap,
-    functions: {},
-  };
   const parsedColor = expressionToGlsl(fragContext, color, ValueTypes.COLOR);
   const parsedOpacity = expressionToGlsl(
     fragContext,
@@ -117,15 +93,77 @@ export function parseLiteralStyle(style) {
     visibleSize
   );
 
-  const builder = new ShaderBuilder()
+  const colorExpression = `vec4(${parsedColor}.rgb, ${parsedColor}.a * ${parsedOpacity} * ${opacityFilter})`;
+
+  builder
     .setSymbolSizeExpression(`vec2(${parsedSize})`)
     .setSymbolRotationExpression(parsedRotation)
     .setSymbolOffsetExpression(parsedOffset)
     .setTextureCoordinateExpression(parsedTexCoord)
     .setSymbolRotateWithView(!!symbStyle.rotateWithView)
-    .setSymbolColorExpression(
-      `vec4(${parsedColor}.rgb, ${parsedColor}.a * ${parsedOpacity} * ${opacityFilter})`
-    );
+    .setSymbolColorExpression(colorExpression);
+
+  if (symbStyle.symbolType === 'image' && symbStyle.src) {
+    const texture = new Image();
+    texture.crossOrigin =
+      symbStyle.crossOrigin === undefined ? 'anonymous' : symbStyle.crossOrigin;
+    texture.src = symbStyle.src;
+    builder
+      .addUniform('sampler2D u_texture')
+      .setSymbolColorExpression(
+        `${colorExpression} * texture2D(u_texture, v_texCoord)`
+      );
+    uniforms['u_texture'] = texture;
+  }
+}
+
+/**
+ * @typedef {Object} StyleParseResult
+ * @property {ShaderBuilder} builder Shader builder pre-configured according to a given style
+ * @property {Object<string,import("./Helper").UniformValue>} uniforms Uniform definitions.
+ * @property {Array<import("../renderer/webgl/PointsLayer").CustomAttribute>} attributes Attribute descriptions.
+ */
+
+/**
+ * Parses a {@link import("../style/literal").LiteralStyle} object and returns a {@link ShaderBuilder}
+ * object that has been configured according to the given style, as well as `attributes` and `uniforms`
+ * arrays to be fed to the `WebGLPointsRenderer` class.
+ *
+ * Also returns `uniforms` and `attributes` properties as expected by the
+ * {@link module:ol/renderer/webgl/PointsLayer~WebGLPointsLayerRenderer}.
+ *
+ * @param {import("../style/literal").LiteralStyle} style Literal style.
+ * @return {StyleParseResult} Result containing shader params, attributes and uniforms.
+ */
+export function parseLiteralStyle(style) {
+  /**
+   * @type {import("../style/expressions.js").ParsingContext}
+   */
+  const vertContext = {
+    inFragmentShader: false,
+    variables: [],
+    attributes: [],
+    stringLiteralsMap: {},
+    functions: {},
+  };
+
+  /**
+   * @type {import("../style/expressions.js").ParsingContext}
+   */
+  const fragContext = {
+    inFragmentShader: true,
+    variables: vertContext.variables,
+    attributes: [],
+    stringLiteralsMap: vertContext.stringLiteralsMap,
+    functions: {},
+  };
+
+  const builder = new ShaderBuilder();
+
+  /** @type {Object<string,import("../webgl/Helper").UniformValue>} */
+  const uniforms = {};
+
+  parseSymbolProperties(style, builder, uniforms, vertContext, fragContext);
 
   if (style.filter) {
     const parsedFilter = expressionToGlsl(
@@ -135,9 +173,6 @@ export function parseLiteralStyle(style) {
     );
     builder.setFragmentDiscardExpression(`!${parsedFilter}`);
   }
-
-  /** @type {Object<string,import("../webgl/Helper").UniformValue>} */
-  const uniforms = {};
 
   // define one uniform per variable
   fragContext.variables.forEach(function (varName) {
@@ -156,20 +191,6 @@ export function parseLiteralStyle(style) {
       return value !== undefined ? value : -9999999; // to avoid matching with the first string literal
     };
   });
-
-  if (symbStyle.symbolType === 'image' && symbStyle.src) {
-    const texture = new Image();
-    texture.crossOrigin =
-      symbStyle.crossOrigin === undefined ? 'anonymous' : symbStyle.crossOrigin;
-    texture.src = symbStyle.src;
-    builder
-      .addUniform('sampler2D u_texture')
-      .setSymbolColorExpression(
-        builder.getSymbolColorExpression() +
-          ' * texture2D(u_texture, v_texCoord)'
-      );
-    uniforms['u_texture'] = texture;
-  }
 
   // for each feature attribute used in the fragment shader, define a varying that will be used to pass data
   // from the vertex to the fragment shader, as well as an attribute in the vertex shader (if not already present)

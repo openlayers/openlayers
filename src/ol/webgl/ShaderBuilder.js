@@ -263,10 +263,6 @@ export class ShaderBuilder {
     return this;
   }
 
-  getSymbolColorExpression() {
-    return this.symbolColorExpression;
-  }
-
   /**
    * Generates a symbol vertex shader from the builder parameters
    *
