@@ -2,17 +2,17 @@
  * Utilities for parsing literal style objects
  * @module ol/webgl/styleparser
  */
+import {ShaderBuilder} from './ShaderBuilder.js';
 import {
+  ValueTypes,
   expressionToGlsl,
   getStringNumberEquivalent,
   uniformNameForVariable,
-  ValueTypes,
 } from '../style/expressions.js';
-import {ShaderBuilder} from './ShaderBuilder.js';
 
 /**
- * @param {import('../style/literal.js').SymbolType} type
- * @param {string} sizeExpressionGlsl
+ * @param {import('../style/literal.js').SymbolType} type Symbol type
+ * @param {string} sizeExpressionGlsl Size expression
  * @return {string} The GLSL opacity function
  */
 export function getSymbolOpacityGlslFunction(type, sizeExpressionGlsl) {
@@ -34,11 +34,11 @@ export function getSymbolOpacityGlslFunction(type, sizeExpressionGlsl) {
 
 /**
  *
- * @param {import("../style/literal").LiteralStyle} style
- * @param {ShaderBuilder} builder
- * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms
- * @param {import("../style/expressions.js").ParsingContext} vertContext
- * @param {import("../style/expressions.js").ParsingContext} fragContext
+ * @param {import("../style/literal").LiteralStyle} style Style
+ * @param {ShaderBuilder} builder Shader builder
+ * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {import("../style/expressions.js").ParsingContext} vertContext Vertex shader parsing context
+ * @param {import("../style/expressions.js").ParsingContext} fragContext Fragment shader parsing context
  * @return {boolean} Whether a symbol style was found
  */
 function parseSymbolProperties(
@@ -48,7 +48,9 @@ function parseSymbolProperties(
   vertContext,
   fragContext
 ) {
-  if (!('symbol' in style)) return false;
+  if (!('symbol' in style)) {
+    return false;
+  }
 
   const symbStyle = style.symbol;
   const size = symbStyle.size !== undefined ? symbStyle.size : 1;
@@ -123,11 +125,11 @@ function parseSymbolProperties(
 }
 
 /**
- * @param {import("../style/literal").LiteralStyle} style
- * @param {ShaderBuilder} builder
- * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms
- * @param {import("../style/expressions.js").ParsingContext} vertContext
- * @param {import("../style/expressions.js").ParsingContext} fragContext
+ * @param {import("../style/literal").LiteralStyle} style Style
+ * @param {ShaderBuilder} builder Shader Builder
+ * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {import("../style/expressions.js").ParsingContext} vertContext Vertex shader parsing context
+ * @param {import("../style/expressions.js").ParsingContext} fragContext Fragment shader parsing context
  * @return {boolean} Whether a stroke style was found
  */
 function parseStrokeProperties(
@@ -138,7 +140,9 @@ function parseStrokeProperties(
   fragContext
 ) {
   // do not apply a stroke style if these properties are missing
-  if (!('stroke-color' in style) && !('stroke-width' in style)) return false;
+  if (!('stroke-color' in style) && !('stroke-width' in style)) {
+    return false;
+  }
 
   const color = style['stroke-color'] || 'white';
   const width = style['stroke-width'] || 1;
@@ -153,11 +157,11 @@ function parseStrokeProperties(
 }
 
 /**
- * @param {import("../style/literal").LiteralStyle} style
- * @param {ShaderBuilder} builder
- * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms
- * @param {import("../style/expressions.js").ParsingContext} vertContext
- * @param {import("../style/expressions.js").ParsingContext} fragContext
+ * @param {import("../style/literal").LiteralStyle} style Style
+ * @param {ShaderBuilder} builder Shader Builder
+ * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {import("../style/expressions.js").ParsingContext} vertContext Vertex shader parsing context
+ * @param {import("../style/expressions.js").ParsingContext} fragContext Fragment shader parsing context
  * @return {boolean} Whether a fill style was found
  */
 function parseFillProperties(
@@ -168,7 +172,9 @@ function parseFillProperties(
   fragContext
 ) {
   // do not apply a fill style if these properties are missing
-  if (!('fill-color' in style)) return false;
+  if (!('fill-color' in style)) {
+    return false;
+  }
 
   const color = style['fill-color'] || 'rgba(255, 255, 255, 0.3)';
   const parsedColor = expressionToGlsl(fragContext, color, ValueTypes.COLOR);
