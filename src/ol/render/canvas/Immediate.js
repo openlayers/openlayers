@@ -625,16 +625,6 @@ class CanvasImmediateRenderer extends VectorContext {
     if (!geometry) {
       return;
     }
-    let drawGeometry = geometry;
-    if (this.squaredTolerance_) {
-      drawGeometry = geometry.simplifyTransformed(
-        this.squaredTolerance_,
-        this.userTransform_
-      );
-    }
-    if (!intersects(this.extent_, drawGeometry.getExtent())) {
-      return;
-    }
     this.setStyle(style);
     this.drawGeometry(geometry);
   }
