@@ -485,6 +485,14 @@ class CanvasImmediateRenderer extends VectorContext {
    * @api
    */
   drawCircle(geometry) {
+    if (this.squaredTolerance_) {
+      geometry = /** @type {import("../../geom/Circle.js").default} */ (
+        geometry.simplifyTransformed(
+          this.squaredTolerance_,
+          this.userTransform_
+        )
+      );
+    }
     if (!intersects(this.extent_, geometry.getExtent())) {
       return;
     }
@@ -614,7 +622,7 @@ class CanvasImmediateRenderer extends VectorContext {
    */
   drawFeature(feature, style) {
     const geometry = style.getGeometryFunction()(feature);
-    if (!geometry || !intersects(this.extent_, geometry.getExtent())) {
+    if (!geometry) {
       return;
     }
     this.setStyle(style);
