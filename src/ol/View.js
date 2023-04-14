@@ -202,7 +202,7 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
 
 /**
  * @typedef {Object} State
- * @property {import("./coordinate.js").Coordinate} center Center.
+ * @property {import("./coordinate.js").Coordinate} center Center (in view projection coordinates).
  * @property {import("./proj/Projection.js").default} projection Projection.
  * @property {number} resolution Resolution.
  * @property {import("./coordinate.js").Coordinate} [nextCenter] The next center during an animation series.
@@ -216,7 +216,7 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
  * Like {@link import("./Map.js").FrameState}, but just `viewState` and `extent`.
  * @typedef {Object} ViewStateLayerStateExtent
  * @property {State} viewState View state.
- * @property {import("./extent.js").Extent} extent Extent.
+ * @property {import("./extent.js").Extent} extent Extent (in user projection coordinates).
  * @property {Array<import("./layer/Layer.js").State>} [layerStatesArray] Layer states.
  */
 
