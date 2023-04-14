@@ -15,12 +15,9 @@ class WebGLLayer extends Layer {
       fill: {
         attributes: {
           color: function (feature) {
-            const color = asArray(feature.get('COLOR') || '#eee');
-            color[3] = 0.85;
+            const color = [...asArray(feature.get('COLOR') || '#eee')];
+            color[3] = 0.6;
             return packColor(color);
-          },
-          opacity: function () {
-            return 0.6;
           },
         },
       },
@@ -33,9 +30,6 @@ class WebGLLayer extends Layer {
           },
           width: function () {
             return 1.5;
-          },
-          opacity: function () {
-            return 1;
           },
         },
       },

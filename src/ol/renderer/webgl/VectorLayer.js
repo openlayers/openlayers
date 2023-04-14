@@ -61,14 +61,6 @@ export const Uniforms = {
  */
 
 /**
- * @param {Object<import("./shaders.js").DefaultAttributes,CustomAttributeCallback>} obj Lookup of attribute getters.
- * @return {Array<import("../../render/webgl/BatchRenderer").CustomAttribute>} An array of attribute descriptors.
- */
-function toAttributesArray(obj) {
-  return Object.keys(obj).map((key) => ({name: key, callback: obj[key]}));
-}
-
-/**
  * @classdesc
  * Experimental WebGL vector renderer. Supports polygons, lines and points:
  *  * Polygons are broken down into triangles
@@ -122,57 +114,50 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
      */
     this.currentFrameStateTransform_ = createTransform();
 
-    const fillAttributes = {
-      color: function () {
-        return packColor('#ddd');
-      },
-      opacity: function () {
-        return 1;
-      },
-      ...(options.fill && options.fill.attributes),
-    };
-
-    const strokeAttributes = {
-      color: function () {
-        return packColor('#eee');
-      },
-      opacity: function () {
-        return 1;
-      },
-      width: function () {
-        return 1.5;
-      },
-      ...(options.stroke && options.stroke.attributes),
-    };
-
-    const pointAttributes = {
-      color: function () {
-        return packColor('#eee');
-      },
-      opacity: function () {
-        return 1;
-      },
-      ...(options.point && options.point.attributes),
-    };
-
     this.fillVertexShader_ =
       (options.fill && options.fill.vertexShader) || FILL_VERTEX_SHADER;
     this.fillFragmentShader_ =
       (options.fill && options.fill.fragmentShader) || FILL_FRAGMENT_SHADER;
-    this.fillAttributes_ = toAttributesArray(fillAttributes);
+    const fillAttributes = (options.fill && options.fill.attributes) || {};
+    this.fillAttributes_ = [
+      {
+        name: 'color',
+        dimension: 2,
+        callback: fillAttributes.color || (() => packColor('#eee')),
+      },
+    ];
 
     this.strokeVertexShader_ =
       (options.stroke && options.stroke.vertexShader) || STROKE_VERTEX_SHADER;
     this.strokeFragmentShader_ =
       (options.stroke && options.stroke.fragmentShader) ||
       STROKE_FRAGMENT_SHADER;
-    this.strokeAttributes_ = toAttributesArray(strokeAttributes);
+    const strokeAttributes =
+      (options.stroke && options.stroke.attributes) || {};
+    this.strokeAttributes_ = [
+      {
+        name: 'color',
+        dimension: 2,
+        callback: strokeAttributes.color || (() => packColor('#eee')),
+      },
+      {
+        name: 'width',
+        callback: strokeAttributes.width || (() => 1.5),
+      },
+    ];
 
     this.pointVertexShader_ =
       (options.point && options.point.vertexShader) || POINT_VERTEX_SHADER;
     this.pointFragmentShader_ =
       (options.point && options.point.fragmentShader) || POINT_FRAGMENT_SHADER;
-    this.pointAttributes_ = toAttributesArray(pointAttributes);
+    const pointAttributes = (options.point && options.point.attributes) || {};
+    this.pointAttributes_ = [
+      {
+        name: 'color',
+        dimension: 2,
+        callback: pointAttributes.color || (() => packColor('#eee')),
+      },
+    ];
 
     /**
      * @private
