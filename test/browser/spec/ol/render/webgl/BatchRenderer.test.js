@@ -48,8 +48,16 @@ describe('Batch renderers', function () {
     attributes = [
       {
         name: 'test',
-        callback: function (feature, properties) {
+        size: 1,
+        callback: function (feature) {
           return feature.get('test');
+        },
+      },
+      {
+        name: 'testVec',
+        size: 3,
+        callback: function (feature) {
+          return feature.get('test2');
         },
       },
     ];
@@ -58,14 +66,17 @@ describe('Batch renderers', function () {
     mixedBatch.addFeatures([
       new Feature({
         test: 1000,
+        test2: [22, 33, 44],
         geometry: new Point([10, 20]),
       }),
       new Feature({
         test: 2000,
+        test2: [44, 55, 66],
         geometry: new Point([30, 40]),
       }),
       new Feature({
         test: 3000,
+        test2: [66, 77, 88],
         geometry: new Polygon([
           [
             [10, 10],
@@ -78,6 +89,7 @@ describe('Batch renderers', function () {
       }),
       new Feature({
         test: 4000,
+        test2: [88, 99, 0],
         geometry: new LineString([
           [100, 200],
           [300, 400],
@@ -103,6 +115,7 @@ describe('Batch renderers', function () {
           {name: 'a_position', size: 2, type: FLOAT},
           {name: 'a_index', size: 1, type: FLOAT},
           {name: 'a_test', size: 1, type: FLOAT},
+          {name: 'a_testVec', size: 3, type: FLOAT},
         ]);
       });
     });
@@ -129,7 +142,7 @@ describe('Batch renderers', function () {
       });
       it('generates render instructions and updates buffers from the worker response', function () {
         expect(Array.from(mixedBatch.pointBatch.renderInstructions)).to.eql([
-          2, 2, 1000, 6, 6, 2000,
+          2, 2, 1000, 22, 33, 44, 6, 6, 2000, 44, 55, 66,
         ]);
       });
       it('updates buffers', function () {
@@ -187,6 +200,7 @@ describe('Batch renderers', function () {
           {name: 'a_segmentEnd', size: 2, type: FLOAT},
           {name: 'a_parameters', size: 1, type: FLOAT},
           {name: 'a_test', size: 1, type: FLOAT},
+          {name: 'a_testVec', size: 3, type: FLOAT},
         ]);
       });
     });
@@ -216,8 +230,8 @@ describe('Batch renderers', function () {
         expect(
           Array.from(mixedBatch.lineStringBatch.renderInstructions)
         ).to.eql([
-          3000, 5, 2, 0, 4, 0, 6, 2, 4, 6, 2, 0, 4000, 3, 20, 38, 60, 78, 100,
-          118,
+          3000, 66, 77, 88, 5, 2, 0, 4, 0, 6, 2, 4, 6, 2, 0, 4000, 88, 99, 0, 3,
+          20, 38, 60, 78, 100, 118,
         ]);
       });
       it('updates buffers', function () {
@@ -250,6 +264,7 @@ describe('Batch renderers', function () {
         expect(batchRenderer.attributes).to.eql([
           {name: 'a_position', size: 2, type: FLOAT},
           {name: 'a_test', size: 1, type: FLOAT},
+          {name: 'a_testVec', size: 3, type: FLOAT},
         ]);
       });
     });
@@ -277,7 +292,7 @@ describe('Batch renderers', function () {
       });
       it('generates render instructions and updates buffers from the worker response', function () {
         expect(Array.from(mixedBatch.polygonBatch.renderInstructions)).to.eql([
-          3000, 1, 5, 2, 0, 4, 0, 6, 2, 4, 6, 2, 0,
+          3000, 66, 77, 88, 1, 5, 2, 0, 4, 0, 6, 2, 4, 6, 2, 0,
         ]);
       });
       it('updates buffers', function () {

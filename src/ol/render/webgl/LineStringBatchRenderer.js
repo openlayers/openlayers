@@ -48,7 +48,7 @@ class LineStringBatchRenderer extends AbstractBatchRenderer {
       customAttributes.map(function (attribute) {
         return {
           name: 'a_' + attribute.name,
-          size: 1,
+          size: attribute.size || 1,
           type: AttributeType.FLOAT,
         };
       })
@@ -68,7 +68,7 @@ class LineStringBatchRenderer extends AbstractBatchRenderer {
     // + 1 instruction per line (for vertices count)
     const totalInstructionsCount =
       2 * batch.verticesCount +
-      (1 + this.customAttributes.length) * batch.geometriesCount;
+      (1 + this.customAttributesSize) * batch.geometriesCount;
     if (
       !batch.renderInstructions ||
       batch.renderInstructions.length !== totalInstructionsCount
@@ -91,12 +91,11 @@ class LineStringBatchRenderer extends AbstractBatchRenderer {
           batch.renderInstructionsTransform,
           flatCoords
         );
-
-        // custom attributes
-        for (let k = 0, kk = this.customAttributes.length; k < kk; k++) {
-          const value = this.customAttributes[k].callback(batchEntry.feature);
-          batch.renderInstructions[renderIndex++] = value;
-        }
+        renderIndex += this.pushCustomAttributesInRenderInstructions(
+          batch,
+          batchEntry,
+          renderIndex
+        );
 
         // vertices count
         batch.renderInstructions[renderIndex++] = flatCoords.length / 2;

@@ -27,7 +27,7 @@ function writePointVertex(buffer, pos, x, y, index) {
  * @param {number} elementIndex Index from which render instructions will be read.
  * @param {Float32Array} vertexBuffer Buffer in the form of a typed array.
  * @param {Uint32Array} indexBuffer Buffer in the form of a typed array.
- * @param {number} customAttributesCount Amount of custom attributes for each element.
+ * @param {number} customAttributesSize Amount of custom attributes for each element.
  * @param {BufferPositions} [bufferPositions] Buffer write positions; if not specified, positions will be set at 0.
  * @return {BufferPositions} New buffer positions where to write next
  * @property {number} vertexPosition New position in the vertex buffer where future writes should start.
@@ -39,20 +39,20 @@ export function writePointFeatureToBuffers(
   elementIndex,
   vertexBuffer,
   indexBuffer,
-  customAttributesCount,
+  customAttributesSize,
   bufferPositions
 ) {
   // This is for x, y and index
   const baseVertexAttrsCount = 3;
   const baseInstructionsCount = 2;
-  const stride = baseVertexAttrsCount + customAttributesCount;
+  const stride = baseVertexAttrsCount + customAttributesSize;
 
   const x = instructions[elementIndex + 0];
   const y = instructions[elementIndex + 1];
 
   // read custom numerical attributes on the feature
   const customAttrs = tmpArray_;
-  customAttrs.length = customAttributesCount;
+  customAttrs.length = customAttributesSize;
   for (let i = 0; i < customAttrs.length; i++) {
     customAttrs[i] = instructions[elementIndex + baseInstructionsCount + i];
   }
@@ -255,7 +255,7 @@ export function writeLineSegmentToBuffers(
  * @param {number} polygonStartIndex Index of the polygon start point from which render instructions will be read.
  * @param {Array<number>} vertexArray Array containing vertices.
  * @param {Array<number>} indexArray Array containing indices.
- * @param {number} customAttributesCount Amount of custom attributes for each element.
+ * @param {number} customAttributesSize Amount of custom attributes for each element.
  * @return {number} Next polygon instructions index
  * @private
  */
@@ -264,16 +264,16 @@ export function writePolygonTrianglesToBuffers(
   polygonStartIndex,
   vertexArray,
   indexArray,
-  customAttributesCount
+  customAttributesSize
 ) {
   const instructionsPerVertex = 2; // x, y
-  const attributesPerVertex = 2 + customAttributesCount;
+  const attributesPerVertex = 2 + customAttributesSize;
   let instructionsIndex = polygonStartIndex;
   const customAttributes = instructions.slice(
     instructionsIndex,
-    instructionsIndex + customAttributesCount
+    instructionsIndex + customAttributesSize
   );
-  instructionsIndex += customAttributesCount;
+  instructionsIndex += customAttributesSize;
   const ringsCount = instructions[instructionsIndex++];
   let verticesCount = 0;
   const holes = new Array(ringsCount - 1);

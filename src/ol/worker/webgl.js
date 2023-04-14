@@ -24,7 +24,7 @@ worker.onmessage = (event) => {
       const baseVertexAttrsCount = 3;
       const baseInstructionsCount = 2;
 
-      const customAttrsCount = received.customAttributesCount;
+      const customAttrsCount = received.customAttributesSize;
       const instructionsCount = baseInstructionsCount + customAttrsCount;
       const renderInstructions = new Float32Array(received.renderInstructions);
 
@@ -68,7 +68,7 @@ worker.onmessage = (event) => {
       const vertices = [];
       const indices = [];
 
-      const customAttrsCount = received.customAttributesCount;
+      const customAttrsCount = received.customAttributesSize;
       const instructionsPerVertex = 2;
 
       const renderInstructions = new Float32Array(received.renderInstructions);
@@ -135,7 +135,7 @@ worker.onmessage = (event) => {
       const vertices = [];
       const indices = [];
 
-      const customAttrsCount = received.customAttributesCount;
+      const customAttrsCount = received.customAttributesSize;
       const renderInstructions = new Float32Array(received.renderInstructions);
 
       let currentInstructionsIndex = 0;
