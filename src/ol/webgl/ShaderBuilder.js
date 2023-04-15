@@ -276,11 +276,15 @@ export class ShaderBuilder {
   }
 
   addVertexShaderFunction(code) {
-    if (this.vertexShaderFunctions.includes(code)) return;
+    if (this.vertexShaderFunctions.includes(code)) {
+      return;
+    }
     this.vertexShaderFunctions.push(code);
   }
   addFragmentShaderFunction(code) {
-    if (this.fragmentShaderFunctions.includes(code)) return;
+    if (this.fragmentShaderFunctions.includes(code)) {
+      return;
+    }
     this.fragmentShaderFunctions.push(code);
   }
 

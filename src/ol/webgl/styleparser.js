@@ -36,7 +36,7 @@ export function getSymbolOpacityGlslFunction(type, sizeExpressionGlsl) {
 /**
  * Packs all components of a color into a two-floats array
  * @param {import("../color.js").Color|string} color Color as array of numbers or string
- * @return {[number, number]} Vec2 array containing the color in compressed form
+ * @return {Array<number>} Vec2 array containing the color in compressed form
  */
 export function packColor(color) {
   const array = asArray(color);
@@ -57,21 +57,22 @@ const UNPACK_COLOR_FN = `vec4 unpackColor(vec2 packedColor) {
 }`;
 
 /**
- * @param {ValueTypes} type
- * @return {1|2|3|4}
+ * @param {ValueTypes} type Value type
+ * @return {1|2|3|4} The amount of components for this value
  */
 function getGlslSizeFromType(type) {
   if (type === ValueTypes.COLOR) {
     return 2;
-  } else if (type === ValueTypes.NUMBER_ARRAY) {
+  }
+  if (type === ValueTypes.NUMBER_ARRAY) {
     return 4;
   }
   return 1;
 }
 
 /**
- * @param {ValueTypes}type
- * @return {'float'|'vec2'|'vec3'|'vec4'}
+ * @param {ValueTypes} type Value type
+ * @return {'float'|'vec2'|'vec3'|'vec4'} The corresponding GLSL type for this value
  */
 function getGlslTypeFromType(type) {
   const size = getGlslSizeFromType(type);
@@ -82,7 +83,6 @@ function getGlslTypeFromType(type) {
 }
 
 /**
- *
  * @param {import("../style/literal").LiteralStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
@@ -318,7 +318,9 @@ export function parseLiteralStyle(style) {
     const uniformName = uniformNameForVariable(variable.name);
     builder.addUniform(`${getGlslTypeFromType(variable.type)} ${uniformName}`);
 
-    /** @return {any} */
+    /**
+     * @return {any} Current variable value
+     */
     const getValue = () => {
       if (!style.variables || style.variables[variable.name] === undefined) {
         throw new Error(

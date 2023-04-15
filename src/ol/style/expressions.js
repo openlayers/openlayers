@@ -116,7 +116,7 @@ export const ValueTypes = {
 };
 
 /**
- * @param {string} typeHint
+ * @param {string} typeHint Type hint
  * @return {ValueTypes} Resulting value type (will be a single type)
  */
 function getTypeFromHint(typeHint) {
@@ -131,8 +131,9 @@ function getTypeFromHint(typeHint) {
       return ValueTypes.BOOLEAN;
     case 'number_array':
       return ValueTypes.NUMBER_ARRAY;
+    default:
+      throw new Error(`Unrecognized type hint: ${typeHint}`);
   }
-  throw new Error(`Unrecognized type hint: ${typeHint}`);
 }
 
 /**
@@ -373,7 +374,7 @@ export function expressionToGlsl(context, value, expectedType) {
 }
 
 function assertNumber(value) {
-  if (!(getValueType(value) & ValueTypes.NUMBER)) {
+  if ((getValueType(value) & ValueTypes.NUMBER) === 0) {
     throw new Error(
       `A numeric value was expected, got ${JSON.stringify(value)} instead`
     );
@@ -385,14 +386,14 @@ function assertNumbers(values) {
   }
 }
 function assertString(value) {
-  if (!(getValueType(value) & ValueTypes.STRING)) {
+  if ((getValueType(value) & ValueTypes.STRING) === 0) {
     throw new Error(
       `A string value was expected, got ${JSON.stringify(value)} instead`
     );
   }
 }
 function assertBoolean(value) {
-  if (!(getValueType(value) & ValueTypes.BOOLEAN)) {
+  if ((getValueType(value) & ValueTypes.BOOLEAN) === 0) {
     throw new Error(
       `A boolean value was expected, got ${JSON.stringify(value)} instead`
     );
@@ -538,7 +539,7 @@ export const PALETTE_TEXTURE_ARRAY = 'u_paletteTextures';
 
 // ['palette', index, colors]
 Operators['palette'] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.COLOR;
   },
   toGlsl: function (context, args) {
@@ -596,7 +597,7 @@ Operators['palette'] = {
 const GET_BAND_VALUE_FUNC = 'getBandValue';
 
 Operators['band'] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.NUMBER;
   },
   toGlsl: function (context, args) {
@@ -639,7 +640,7 @@ Operators['band'] = {
 };
 
 Operators['time'] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.NUMBER;
   },
   toGlsl: function (context, args) {
@@ -649,7 +650,7 @@ Operators['time'] = {
 };
 
 Operators['zoom'] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.NUMBER;
   },
   toGlsl: function (context, args) {
@@ -659,7 +660,7 @@ Operators['zoom'] = {
 };
 
 Operators['resolution'] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.NUMBER;
   },
   toGlsl: function (context, args) {
@@ -695,7 +696,7 @@ Operators['*'] = {
 };
 
 Operators['/'] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.NUMBER;
   },
   toGlsl: function (context, args) {
@@ -709,7 +710,7 @@ Operators['/'] = {
 };
 
 Operators['+'] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.NUMBER;
   },
   toGlsl: function (context, args) {
@@ -720,7 +721,7 @@ Operators['+'] = {
 };
 
 Operators['-'] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.NUMBER;
   },
   toGlsl: function (context, args) {
@@ -734,7 +735,7 @@ Operators['-'] = {
 };
 
 Operators['clamp'] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.NUMBER;
   },
   toGlsl: function (context, args) {
@@ -747,7 +748,7 @@ Operators['clamp'] = {
 };
 
 Operators['%'] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.NUMBER;
   },
   toGlsl: function (context, args) {
@@ -761,7 +762,7 @@ Operators['%'] = {
 };
 
 Operators['^'] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.NUMBER;
   },
   toGlsl: function (context, args) {
@@ -775,7 +776,7 @@ Operators['^'] = {
 };
 
 Operators['abs'] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.NUMBER;
   },
   toGlsl: function (context, args) {
@@ -786,7 +787,7 @@ Operators['abs'] = {
 };
 
 Operators['floor'] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.NUMBER;
   },
   toGlsl: function (context, args) {
@@ -797,7 +798,7 @@ Operators['floor'] = {
 };
 
 Operators['round'] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.NUMBER;
   },
   toGlsl: function (context, args) {
@@ -808,7 +809,7 @@ Operators['round'] = {
 };
 
 Operators['ceil'] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.NUMBER;
   },
   toGlsl: function (context, args) {
@@ -819,7 +820,7 @@ Operators['ceil'] = {
 };
 
 Operators['sin'] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.NUMBER;
   },
   toGlsl: function (context, args) {
@@ -830,7 +831,7 @@ Operators['sin'] = {
 };
 
 Operators['cos'] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.NUMBER;
   },
   toGlsl: function (context, args) {
@@ -841,7 +842,7 @@ Operators['cos'] = {
 };
 
 Operators['atan'] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.NUMBER;
   },
   toGlsl: function (context, args) {
@@ -858,7 +859,7 @@ Operators['atan'] = {
 };
 
 Operators['>'] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.BOOLEAN;
   },
   toGlsl: function (context, args) {
@@ -872,7 +873,7 @@ Operators['>'] = {
 };
 
 Operators['>='] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.BOOLEAN;
   },
   toGlsl: function (context, args) {
@@ -886,7 +887,7 @@ Operators['>='] = {
 };
 
 Operators['<'] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.BOOLEAN;
   },
   toGlsl: function (context, args) {
@@ -900,7 +901,7 @@ Operators['<'] = {
 };
 
 Operators['<='] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.BOOLEAN;
   },
   toGlsl: function (context, args) {
@@ -915,7 +916,7 @@ Operators['<='] = {
 
 function getEqualOperator(operator) {
   return {
-    getReturnType: function (args) {
+    getReturnType: function () {
       return ValueTypes.BOOLEAN;
     },
     toGlsl: function (context, args) {
@@ -952,7 +953,7 @@ Operators['=='] = getEqualOperator('==');
 Operators['!='] = getEqualOperator('!=');
 
 Operators['!'] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.BOOLEAN;
   },
   toGlsl: function (context, args) {
@@ -964,7 +965,7 @@ Operators['!'] = {
 
 function getDecisionOperator(operator) {
   return {
-    getReturnType: function (args) {
+    getReturnType: function () {
       return ValueTypes.BOOLEAN;
     },
     toGlsl: function (context, args) {
@@ -972,8 +973,7 @@ function getDecisionOperator(operator) {
       for (let i = 0; i < args.length; i++) {
         assertBoolean(args[i]);
       }
-      let result = '';
-      result = args
+      let result = args
         .map((arg) => expressionToGlsl(context, arg, ValueTypes.BOOLEAN))
         .join(` ${operator} `);
       result = `(${result})`;
@@ -987,7 +987,7 @@ Operators['all'] = getDecisionOperator('&&');
 Operators['any'] = getDecisionOperator('||');
 
 Operators['between'] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.BOOLEAN;
   },
   toGlsl: function (context, args) {
@@ -1001,7 +1001,7 @@ Operators['between'] = {
 };
 
 Operators['array'] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.NUMBER_ARRAY;
   },
   toGlsl: function (context, args) {
@@ -1016,7 +1016,7 @@ Operators['array'] = {
 };
 
 Operators['color'] = {
-  getReturnType: function (args) {
+  getReturnType: function () {
     return ValueTypes.COLOR;
   },
   toGlsl: function (context, args) {

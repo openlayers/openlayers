@@ -1,10 +1,10 @@
+import Feature from '../../../../../src/ol/Feature.js';
+import {asArray} from '../../../../../src/ol/color.js';
 import {
   packColor,
   parseLiteralStyle,
 } from '../../../../../src/ol/webgl/styleparser.js';
 import {uniformNameForVariable} from '../../../../../src/ol/style/expressions.js';
-import {asArray} from '../../../../../src/ol/color.js';
-import Feature from '../../../../../src/ol/Feature.js';
 
 describe('ol.webgl.styleparser', function () {
   describe('parseLiteralStyle', function () {

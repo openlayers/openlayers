@@ -15,7 +15,7 @@
  * @typedef {Object} BaseProps
  * @property {ExpressionValue} [filter] Filter expression. If it resolves to a number strictly greater than 0, the
  * point will be displayed. If undefined, all points will show.
- * @property {Object<string, number|number[]|string|boolean>} [variables] Style variables; each variable must hold a number.
+ * @property {Object<string, number | Array<number> | string | boolean>} [variables] Style variables; each variable must hold a number.
  * Note: **this object is meant to be mutated**: changes to the values will immediately be visible on the rendered features
  * @property {LiteralSymbolStyle} [symbol] Symbol representation.
  */

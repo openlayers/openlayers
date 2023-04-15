@@ -203,9 +203,9 @@ class AbstractBatchRenderer {
 
   /**
    * @protected
-   * @param {import("./MixedGeometryBatch.js").GeometryBatch} batch
-   * @param {import("./MixedGeometryBatch.js").GeometryBatchItem} batchEntry
-   * @param {number} currentIndex
+   * @param {import("./MixedGeometryBatch.js").GeometryBatch} batch Geometry batch
+   * @param {import("./MixedGeometryBatch.js").GeometryBatchItem} batchEntry Batch item
+   * @param {number} currentIndex Current index
    * @return {number} The amount of values pushed
    */
   pushCustomAttributesInRenderInstructions(batch, batchEntry, currentIndex) {
@@ -214,11 +214,17 @@ class AbstractBatchRenderer {
       const attr = this.customAttributes[k];
       const value = attr.callback(batchEntry.feature);
       batch.renderInstructions[currentIndex + shift++] = value[0] || value;
-      if (!attr.size || attr.size === 1) continue;
+      if (!attr.size || attr.size === 1) {
+        continue;
+      }
       batch.renderInstructions[currentIndex + shift++] = value[1];
-      if (attr.size < 3) continue;
+      if (attr.size < 3) {
+        continue;
+      }
       batch.renderInstructions[currentIndex + shift++] = value[2];
-      if (attr.size < 4) continue;
+      if (attr.size < 4) {
+        continue;
+      }
       batch.renderInstructions[currentIndex + shift++] = value[3];
     }
     return shift;

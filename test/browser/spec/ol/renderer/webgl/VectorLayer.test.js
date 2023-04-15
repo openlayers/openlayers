@@ -1,7 +1,12 @@
+import Feature from '../../../../../../src/ol/Feature.js';
+import LineString from '../../../../../../src/ol/geom/LineString.js';
 import LineStringBatchRenderer from '../../../../../../src/ol/render/webgl/LineStringBatchRenderer.js';
 import Map from '../../../../../../src/ol/Map.js';
+import Point from '../../../../../../src/ol/geom/Point.js';
 import PointBatchRenderer from '../../../../../../src/ol/render/webgl/PointBatchRenderer.js';
+import Polygon from '../../../../../../src/ol/geom/Polygon.js';
 import PolygonBatchRenderer from '../../../../../../src/ol/render/webgl/PolygonBatchRenderer.js';
+import VectorEventType from '../../../../../../src/ol/source/VectorEventType.js';
 import VectorLayer from '../../../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../../../src/ol/source/Vector.js';
 import View from '../../../../../../src/ol/View.js';
@@ -12,13 +17,8 @@ import {
   get as getProjection,
 } from '../../../../../../src/ol/proj.js';
 import {create} from '../../../../../../src/ol/transform.js';
-import Feature from '../../../../../../src/ol/Feature.js';
-import {packColor} from '../../../../../../src/ol/webgl/styleparser.js';
-import Polygon from '../../../../../../src/ol/geom/Polygon.js';
-import Point from '../../../../../../src/ol/geom/Point.js';
-import LineString from '../../../../../../src/ol/geom/LineString.js';
 import {getUid} from '../../../../../../src/ol/util.js';
-import VectorEventType from '../../../../../../src/ol/source/VectorEventType.js';
+import {packColor} from '../../../../../../src/ol/webgl/styleparser.js';
 
 describe('ol/renderer/webgl/VectorLayer', function () {
   /** @type {import("../../../../../../src/ol/renderer/webgl/VectorLayer.js").default} */

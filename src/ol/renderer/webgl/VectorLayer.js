@@ -20,8 +20,11 @@ import {
 } from './shaders.js';
 import {buffer, createEmpty, equals, getWidth} from '../../extent.js';
 import {
+  create as createMat4,
+  fromTransform as mat4FromTransform,
+} from '../../vec/mat4.js';
+import {
   create as createTransform,
-  makeInverse as makeInverseTransform,
   multiply as multiplyTransform,
   setFromArray as setFromTransform,
   translate as translateTransform,
@@ -29,10 +32,6 @@ import {
 import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {listen, unlistenByKey} from '../../events.js';
 import {packColor} from '../../webgl/styleparser.js';
-import {
-  create as createMat4,
-  fromTransform as mat4FromTransform,
-} from '../../vec/mat4.js';
 
 export const Uniforms = {
   ...DefaultUniform,
@@ -41,7 +40,7 @@ export const Uniforms = {
 };
 
 /**
- * @typedef {function(import("../../Feature").default):number|[number,number]} AttributeCallback A callback computing
+ * @typedef {function(import("../../Feature").default):number|Array<number>} AttributeCallback A callback computing
  * the value of a custom attribute (different for each feature) to be passed on to the GPU.
  * Properties are available as 2nd arg for quicker access.
  */
