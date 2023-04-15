@@ -259,29 +259,31 @@ class Circle extends SimpleGeometry {
     );
     this.changed();
   }
-}
 
-/**
- * Transform each coordinate of the circle from one coordinate reference system
- * to another. The geometry is modified in place.
- * If you do not want the geometry modified in place, first clone() it and
- * then use this function on the clone.
- *
- * Internally a circle is currently represented by two points: the center of
- * the circle `[cx, cy]`, and the point to the right of the circle
- * `[cx + r, cy]`. This `transform` function just transforms these two points.
- * So the resulting geometry is also a circle, and that circle does not
- * correspond to the shape that would be obtained by transforming every point
- * of the original circle.
- *
- * @param {import("../proj.js").ProjectionLike} source The current projection.  Can be a
- *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
- * @param {import("../proj.js").ProjectionLike} destination The desired projection.  Can be a
- *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
- * @return {Circle} This geometry.  Note that original geometry is
- *     modified in place.
- * @function
- * @api
- */
-Circle.prototype.transform;
+  /**
+   * Transform each coordinate of the circle from one coordinate reference system
+   * to another. The geometry is modified in place.
+   * If you do not want the geometry modified in place, first clone() it and
+   * then use this function on the clone.
+   *
+   * Internally a circle is currently represented by two points: the center of
+   * the circle `[cx, cy]`, and the point to the right of the circle
+   * `[cx + r, cy]`. This `transform` function just transforms these two points.
+   * So the resulting geometry is also a circle, and that circle does not
+   * correspond to the shape that would be obtained by transforming every point
+   * of the original circle.
+   *
+   * @param {import("../proj.js").ProjectionLike} source The current projection.  Can be a
+   *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
+   * @param {import("../proj.js").ProjectionLike} destination The desired projection.  Can be a
+   *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
+   * @return {Circle} This geometry.  Note that original geometry is
+   *     modified in place.
+   * @function
+   * @api
+   */
+  transform(source, destination) {
+    return /** @type {Circle} */ (super.transform(source, destination));
+  }
+}
 export default Circle;
