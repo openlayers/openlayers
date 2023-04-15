@@ -1,24 +1,8 @@
 /**
  * @module ol/renderer/webgl/shaders
  */
-import {asArray} from '../../color.js';
 
 /** @typedef {'color'|'width'} DefaultAttributes */
-
-/**
- * Packs red/green/blue channels of a color into a single float value; alpha is ignored.
- * This is how the color is expected to be computed.
- * @param {import("../../color.js").Color|string} color Color as array of numbers or string
- * @return {[number, number]} Vec2 array containing the color in compressed form
- */
-export function packColor(color) {
-  const array = asArray(color);
-  const r = array[0] * 256;
-  const g = array[1];
-  const b = array[2] * 256;
-  const a = Math.round(array[3] * 255);
-  return [r + g, b + a];
-}
 
 const DECODE_COLOR_EXPRESSION = `vec4(
   fract(a_color[1] / 256.0) * fract(floor(a_color[0] / 256.0) / 256.0),

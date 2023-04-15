@@ -117,6 +117,18 @@ export class ShaderBuilder {
      * @private
      */
     this.fillColorExpression = 'vec4(1.0)';
+
+    /**
+     * @type {Array<string>}
+     * @private
+     */
+    this.vertexShaderFunctions = [];
+
+    /**
+     * @type {Array<string>}
+     * @private
+     */
+    this.fragmentShaderFunctions = [];
   }
 
   /**
@@ -263,6 +275,15 @@ export class ShaderBuilder {
     return this;
   }
 
+  addVertexShaderFunction(code) {
+    if (this.vertexShaderFunctions.includes(code)) return;
+    this.vertexShaderFunctions.push(code);
+  }
+  addFragmentShaderFunction(code) {
+    if (this.fragmentShaderFunctions.includes(code)) return;
+    this.fragmentShaderFunctions.push(code);
+  }
+
   /**
    * Generates a symbol vertex shader from the builder parameters
    *
@@ -322,6 +343,7 @@ ${varyings
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   })
   .join('\n')}
+${this.vertexShaderFunctions.join('\n')}
 void main(void) {
   mat4 offsetMatrix = ${offsetMatrix};
   vec2 halfSize = ${this.symbolSizeExpression} * 0.5;
@@ -400,6 +422,7 @@ ${varyings
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   })
   .join('\n')}
+${this.fragmentShaderFunctions.join('\n')}
 void main(void) {
   if (${this.discardExpression}) { discard; }
   gl_FragColor = ${this.symbolColorExpression};
@@ -459,7 +482,7 @@ ${varyings
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   })
   .join('\n')}
-
+${this.vertexShaderFunctions.join('\n')}
 vec2 worldToPx(vec2 worldPos) {
   vec4 screenPos = u_projectionMatrix * vec4(worldPos, 0.0, 1.0);
   return (0.5 * screenPos.xy + 0.5) * u_viewportSizePx;
@@ -551,7 +574,7 @@ ${varyings
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   })
   .join('\n')}
-
+${this.fragmentShaderFunctions.join('\n')}
 vec2 pxToWorld(vec2 pxPos) {
   vec2 screenPos = 2.0 * pxPos / u_viewportSizePx - 1.0;
   return (u_screenToWorldMatrix * vec4(screenPos, 0.0, 1.0)).xy;
@@ -629,7 +652,7 @@ ${varyings
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   })
   .join('\n')}
-
+${this.vertexShaderFunctions.join('\n')}
 void main(void) {
   gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0);
 ${varyings
@@ -678,7 +701,7 @@ ${varyings
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   })
   .join('\n')}
-
+${this.fragmentShaderFunctions.join('\n')}
 vec2 pxToWorld(vec2 pxPos) {
   vec2 screenPos = 2.0 * pxPos / u_viewportSizePx - 1.0;
   return (u_screenToWorldMatrix * vec4(screenPos, 0.0, 1.0)).xy;

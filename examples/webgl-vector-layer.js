@@ -7,7 +7,7 @@ import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
 import WebGLVectorLayerRenderer from '../src/ol/renderer/webgl/VectorLayer.js';
 import {asArray} from '../src/ol/color.js';
-import {packColor} from '../src/ol/renderer/webgl/shaders.js';
+import {packColor} from '../src/ol/webgl/styleparser.js';
 
 class WebGLLayer extends Layer {
   createRenderer() {

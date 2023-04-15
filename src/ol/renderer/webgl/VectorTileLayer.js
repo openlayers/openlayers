@@ -14,7 +14,6 @@ import {
   POINT_VERTEX_SHADER,
   STROKE_FRAGMENT_SHADER,
   STROKE_VERTEX_SHADER,
-  packColor,
 } from './shaders.js';
 import {
   create as createMat4,
@@ -28,6 +27,7 @@ import {
 } from '../../transform.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {getIntersection} from '../../extent.js';
+import {packColor} from '../../webgl/styleparser.js';
 
 /**
  * @param {Object<import("./shaders.js").DefaultAttributes,CustomAttributeCallback>} obj Lookup of attribute getters.

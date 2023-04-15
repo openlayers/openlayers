@@ -1,5 +1,9 @@
-import {parseLiteralStyle} from '../../../../../src/ol/webgl/styleparser.js';
+import {
+  packColor,
+  parseLiteralStyle,
+} from '../../../../../src/ol/webgl/styleparser.js';
 import {uniformNameForVariable} from '../../../../../src/ol/style/expressions.js';
+import {asArray} from '../../../../../src/ol/color.js';
 
 describe('ol.webgl.styleparser', function () {
   describe('parseLiteralStyle', function () {
@@ -404,6 +408,13 @@ describe('ol.webgl.styleparser', function () {
         expect(result.attributes[0].name).to.eql('intensity');
         expect(result.uniforms).to.have.property('u_var_scale');
       });
+    });
+  });
+
+  describe('packColor', () => {
+    it('compresses all the components of a color into a [number, number] array', () => {
+      expect(packColor(asArray('red'))).to.eql([65280, 255]);
+      expect(packColor(asArray('rgba(0, 255, 255, 0.5)'))).to.eql([255, 65408]);
     });
   });
 });

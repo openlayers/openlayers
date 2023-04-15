@@ -9,6 +9,7 @@ import {
   getStringNumberEquivalent,
   uniformNameForVariable,
 } from '../style/expressions.js';
+import {asArray} from '../color.js';
 
 /**
  * @param {import('../style/literal.js').SymbolType} type Symbol type
@@ -31,6 +32,29 @@ export function getSymbolOpacityGlslFunction(type, sizeExpressionGlsl) {
       throw new Error(`Unexpected symbol type: ${type}`);
   }
 }
+
+/**
+ * Packs all components of a color into a two-floats array
+ * @param {import("../color.js").Color|string} color Color as array of numbers or string
+ * @return {[number, number]} Vec2 array containing the color in compressed form
+ */
+export function packColor(color) {
+  const array = asArray(color);
+  const r = array[0] * 256;
+  const g = array[1];
+  const b = array[2] * 256;
+  const a = Math.round(array[3] * 255);
+  return [r + g, b + a];
+}
+
+const UNPACK_COLOR_FN = `vec4 unpackColor(vec2 packedColor) {
+  return fract(packedColor[1] / 256.0) * vec4(
+    fract(floor(packedColor[0] / 256.0) / 256.0),
+    fract(packedColor[0] / 256.0),
+    fract(floor(packedColor[1] / 256.0) / 256.0),
+    1.0
+  );
+}`;
 
 /**
  *

@@ -17,7 +17,6 @@ import {
   POINT_VERTEX_SHADER,
   STROKE_FRAGMENT_SHADER,
   STROKE_VERTEX_SHADER,
-  packColor,
 } from './shaders.js';
 import {buffer, createEmpty, equals, getWidth} from '../../extent.js';
 import {
@@ -28,6 +27,7 @@ import {
 } from '../../transform.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {listen, unlistenByKey} from '../../events.js';
+import {packColor} from '../../webgl/styleparser.js';
 
 export const Uniforms = {
   ...DefaultUniform,

@@ -31,6 +31,7 @@ varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
 varying float v_opacity;
 varying vec3 v_test;
+
 void main(void) {
   mat4 offsetMatrix = u_offsetScaleMatrix;
   vec2 halfSize = vec2(6.0) * 0.5;
@@ -87,6 +88,7 @@ attribute vec2 a_myAttr;
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
 
+
 void main(void) {
   mat4 offsetMatrix = u_offsetScaleMatrix;
   vec2 halfSize = vec2(6.0) * 0.5;
@@ -141,6 +143,7 @@ attribute float a_index;
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
 
+
 void main(void) {
   mat4 offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;
   vec2 halfSize = vec2(6.0) * 0.5;
@@ -191,6 +194,7 @@ attribute vec4 a_hitColor;
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
 varying vec4 v_hitColor;
+
 void main(void) {
   mat4 offsetMatrix = u_offsetScaleMatrix;
   vec2 halfSize = vec2(1.0) * 0.5;
@@ -242,6 +246,7 @@ attribute float a_index;
 
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
+
 
 void main(void) {
   mat4 offsetMatrix = u_offsetScaleMatrix;
@@ -295,6 +300,7 @@ varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
 varying float v_opacity;
 varying vec3 v_test;
+
 void main(void) {
   if (false) { discard; }
   gl_FragColor = vec4(0.3137254901960784, 0.0, 1.0, 1.0);
@@ -321,6 +327,7 @@ uniform vec2 u_myUniform2;
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
 
+
 void main(void) {
   if (u_myUniform > 0.5) { discard; }
   gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
@@ -340,6 +347,7 @@ uniform float u_resolution;
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
 varying vec4 v_hitColor;
+
 void main(void) {
   if (false) { discard; }
   gl_FragColor = vec4(1.0);
@@ -801,6 +809,34 @@ void main(void) {
   gl_FragColor = vec4(1.0) * u_globalAlpha;
   if (gl_FragColor.a < 0.1) { discard; } gl_FragColor = v_hitColor;
 }`);
+    });
+  });
+
+  describe('addVertexShaderFunction', () => {
+    const FN1 = `vec4 getRed() { return vec4(1.0, 0.0, 0.0, 1.0); }`;
+    let builder;
+    beforeEach(() => {
+      builder = new ShaderBuilder();
+      builder.addVertexShaderFunction(FN1);
+    });
+    it('adds the function in all vertex shaders', () => {
+      expect(builder.getFillVertexShader()).to.contain(FN1);
+      expect(builder.getStrokeVertexShader()).to.contain(FN1);
+      expect(builder.getSymbolVertexShader()).to.contain(FN1);
+    });
+  });
+
+  describe('addFragmentShaderFunction', () => {
+    const FN2 = `vec2 getUp() { return [1.0, 1.0]; }`;
+    let builder;
+    beforeEach(() => {
+      builder = new ShaderBuilder();
+      builder.addFragmentShaderFunction(FN2);
+    });
+    it('adds the function in all vertex shaders', () => {
+      expect(builder.getFillFragmentShader()).to.contain(FN2);
+      expect(builder.getStrokeFragmentShader()).to.contain(FN2);
+      expect(builder.getSymbolFragmentShader()).to.contain(FN2);
     });
   });
 });
