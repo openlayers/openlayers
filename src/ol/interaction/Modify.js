@@ -23,6 +23,7 @@ import {
   boundingExtent,
   buffer as bufferExtent,
   createOrUpdateFromCoordinate as createExtent,
+  extend as extendExtent,
 } from '../extent.js';
 import {
   closestOnSegment,
@@ -780,20 +781,13 @@ class Modify extends PointerInteraction {
     centerSegmentData.featureSegments = featureSegments;
     circumferenceSegmentData.featureSegments = featureSegments;
     this.rBush_.insert(createExtent(coordinates), centerSegmentData);
-    let circleGeometry = /** @type {import("../geom/Geometry.js").default} */ (
-      geometry
+    this.rBush_.insert(
+      getBufferedCircleExtent(
+        geometry,
+        this.getMap()?.getView().getProjection()
+      ),
+      circumferenceSegmentData
     );
-    const userProjection = getUserProjection();
-    if (userProjection && this.getMap()) {
-      const projection = this.getMap().getView().getProjection();
-      circleGeometry = circleGeometry
-        .clone()
-        .transform(userProjection, projection);
-      circleGeometry = fromCircle(
-        /** @type {import("../geom/Circle.js").default} */ (circleGeometry)
-      ).transform(projection, userProjection);
-    }
-    this.rBush_.insert(circleGeometry.getExtent(), circumferenceSegmentData);
   }
 
   /**
@@ -938,31 +932,40 @@ class Modify extends PointerInteraction {
         case 'Circle':
           segment[0] = vertex;
           segment[1] = vertex;
+          const projection = evt.map.getView().getProjection();
+          const userProjection = getUserProjection();
+          this.changingFeature_ = true;
           if (segmentData.index === CIRCLE_CENTER_INDEX) {
-            this.changingFeature_ = true;
+            // We're dragging the circle's center:
+            if (userProjection) {
+              const circleGeometry = geometry
+                .clone()
+                .transform(userProjection, projection);
+              circleGeometry.setCenter(fromUserCoordinate(vertex, projection));
+              const radius = circleGeometry
+                .transformToNormalCircle(projection, userProjection)
+                .getRadius();
+              geometry.setRadius(radius);
+            }
             geometry.setCenter(vertex);
-            this.changingFeature_ = false;
           } else {
             // We're dragging the circle's circumference:
-            this.changingFeature_ = true;
-            const projection = evt.map.getView().getProjection();
             let radius = coordinateDistance(
               fromUserCoordinate(geometry.getCenter(), projection),
               fromUserCoordinate(vertex, projection)
             );
-            const userProjection = getUserProjection();
             if (userProjection) {
               const circleGeometry = geometry
                 .clone()
                 .transform(userProjection, projection);
               circleGeometry.setRadius(radius);
               radius = circleGeometry
-                .transform(projection, userProjection)
+                .transformToNormalCircle(projection, userProjection)
                 .getRadius();
             }
             geometry.setRadius(radius);
-            this.changingFeature_ = false;
           }
+          this.changingFeature_ = false;
           break;
         default:
         // pass
@@ -1114,20 +1117,8 @@ class Modify extends PointerInteraction {
         circumferenceSegmentData.segment[0] = coordinates;
         circumferenceSegmentData.segment[1] = coordinates;
         this.rBush_.update(createExtent(coordinates), centerSegmentData);
-        let circleGeometry = geometry;
-        const userProjection = getUserProjection();
-        if (userProjection) {
-          const projection = evt.map.getView().getProjection();
-          circleGeometry = circleGeometry
-            .clone()
-            .transform(userProjection, projection);
-          circleGeometry = fromCircle(circleGeometry).transform(
-            projection,
-            userProjection
-          );
-        }
         this.rBush_.update(
-          circleGeometry.getExtent(),
+          getBufferedCircleExtent(geometry, evt.map.getView().getProjection()),
           circumferenceSegmentData
         );
       } else {
@@ -1646,6 +1637,33 @@ function closestOnSegmentData(pointCoordinates, segmentData, projection) {
   return toUserCoordinate(
     closestOnSegment(coordinate, tempSegment),
     projection
+  );
+}
+
+/**
+ * Returns a circle extent suitable for non-parallel user projections.
+ *
+ * @param {import("../geom/Circle.js").default} circle The circle (in user projection if there is one).
+ * @param {import("../proj/Projection.js").default} [projection] The view projection, if known.
+ * @return {import("../extent.js").Extent} The extent.
+ */
+function getBufferedCircleExtent(circle, projection) {
+  const userProjection = getUserProjection();
+  if (!userProjection || !projection) {
+    return circle.getExtent();
+  }
+  const circleGeometry = circle.clone().transform(userProjection, projection);
+  const sides = 16;
+  const extent = fromCircle(circleGeometry, sides)
+    .transform(projection, userProjection)
+    .getExtent();
+  const angle = Math.PI / sides;
+  circleGeometry.setRadius(circleGeometry.getRadius() / Math.cos(angle));
+  return extendExtent(
+    extent,
+    fromCircle(circleGeometry, sides, angle)
+      .transform(projection, userProjection)
+      .getExtent()
   );
 }
 
