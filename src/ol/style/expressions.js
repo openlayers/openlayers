@@ -29,7 +29,7 @@ import {asArray, fromString, isStringColor} from '../color.js';
  *   * `['zoom']` returns the current zoom level
  *
  * * Math operators:
- *   * `['*', value1, value2]` multiplies `value1` by `value2`
+ *   * `['*', value1, value2]` multiplies `value1` by `value2` (either numbers or colors)
  *   * `['/', value1, value2]` divides `value1` by `value2`
  *   * `['+', value1, value2]` adds `value1` and `value2`
  *   * `['-', value1, value2]` subtracts `value2` from `value1`
@@ -640,12 +640,27 @@ Operators['resolution'] = {
 
 Operators['*'] = {
   getReturnType: function (args) {
-    return ValueTypes.NUMBER;
+    let outputType = ValueTypes.NUMBER | ValueTypes.COLOR;
+    for (let i = 0; i < args.length; i++) {
+      outputType = outputType & getValueType(args[i]);
+    }
+    return outputType;
   },
-  toGlsl: function (context, args) {
+  toGlsl: function (context, args, expectedType) {
     assertArgsMinCount(args, 2);
-    assertNumbers(args);
-    return `(${args.map((arg) => expressionToGlsl(context, arg)).join(' * ')})`;
+    let outputType = expectedType;
+    for (let i = 0; i < args.length; i++) {
+      outputType = outputType & getValueType(args[i]);
+    }
+    assertOfType(
+      args,
+      outputType,
+      ValueTypes.NUMBER | ValueTypes.COLOR,
+      'output'
+    );
+    return `(${args
+      .map((arg) => expressionToGlsl(context, arg, outputType))
+      .join(' * ')})`;
   },
 };
 

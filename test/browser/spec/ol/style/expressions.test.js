@@ -227,6 +227,13 @@ describe('ol/style/expressions', function () {
       expect(expressionToGlsl(context, ['*', 1, 2, 3, 4])).to.eql(
         '(1.0 * 2.0 * 3.0 * 4.0)'
       );
+      expect(
+        expressionToGlsl(
+          context,
+          ['*', [255, 127.5, 0, 0.5], 'red'],
+          ValueTypes.ANY
+        )
+      ).to.eql('(vec4(0.5, 0.25, 0.0, 0.5) * vec4(1.0, 0.0, 0.0, 1.0))');
 
       expect(
         expressionToGlsl(context, ['+', ['*', ['get', 'size'], 0.001], 12])
