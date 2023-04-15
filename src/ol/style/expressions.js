@@ -212,11 +212,17 @@ function printTypes(valueType) {
 }
 
 /**
+ * @typedef {Object} ParsingContextExternal
+ * @property {string} name Name, unprefixed
+ * @property {ValueTypes} type One of the value types constants
+ */
+
+/**
  * Context available during the parsing of an expression.
  * @typedef {Object} ParsingContext
  * @property {boolean} [inFragmentShader] If false, means the expression output should be made for a vertex shader
- * @property {Array<string>} variables List of variables used in the expression; contains **unprefixed names**
- * @property {Array<string>} attributes List of attributes used in the expression; contains **unprefixed names**
+ * @property {Array<ParsingContextExternal>} variables External variables used in the expression
+ * @property {Array<ParsingContextExternal>} attributes External attributes used in the expression
  * @property {Object<string, number>} stringLiteralsMap This object maps all encountered string values to a number
  * @property {Object<string, string>} functions Lookup of functions used by the style.
  * @property {number} [bandCount] Number of bands per pixel.
@@ -443,15 +449,25 @@ Operators['get'] = {
   getReturnType: function (args) {
     return ValueTypes.ANY;
   },
-  toGlsl: function (context, args) {
+  toGlsl: function (context, args, expectedType) {
     assertArgsCount(args, 1);
     assertString(args[0]);
-    const value = args[0].toString();
-    if (!context.attributes.includes(value)) {
-      context.attributes.push(value);
+    assertSingleType(['get', ...args], expectedType, '');
+    const name = args[0].toString();
+    const existing = context.attributes.find((a) => a.name === name);
+    if (!existing) {
+      context.attributes.push({
+        name: name,
+        type: expectedType,
+      });
+    } else if (expectedType !== existing.type) {
+      throw new Error(
+        `The following attribute was used in different places with incompatible types: ${name}
+Types were: ${printTypes(existing.type)} and ${printTypes(expectedType)}`
+      );
     }
     const prefix = context.inFragmentShader ? 'v_' : 'a_';
-    return prefix + value;
+    return prefix + name;
   },
 };
 
@@ -468,14 +484,23 @@ Operators['var'] = {
   getReturnType: function (args) {
     return ValueTypes.ANY;
   },
-  toGlsl: function (context, args) {
+  toGlsl: function (context, args, expectedType) {
     assertArgsCount(args, 1);
     assertString(args[0]);
-    const value = args[0].toString();
-    if (!context.variables.includes(value)) {
-      context.variables.push(value);
+    const name = args[0].toString();
+    const existing = context.variables.find((a) => a.name === name);
+    if (!existing) {
+      context.variables.push({
+        name: name,
+        type: expectedType,
+      });
+    } else if (expectedType !== existing.type) {
+      throw new Error(
+        `The following variable was used in different places with incompatible types: ${name}
+Types were: ${printTypes(existing.type)} and ${printTypes(expectedType)}`
+      );
     }
-    return uniformNameForVariable(value);
+    return uniformNameForVariable(name);
   },
 };
 
