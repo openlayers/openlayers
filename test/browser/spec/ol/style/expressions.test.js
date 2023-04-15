@@ -277,26 +277,26 @@ describe('ol/style/expressions', function () {
       expect(expressionToGlsl(context, ['==', 10, ['get', 'attr4']])).to.eql(
         '(10.0 == a_attr4)'
       );
-      expect(expressionToGlsl(context, ['==', 'red', ['get', 'attr4']])).to.eql(
-        `(${stringToGlsl(context, 'red')} == a_attr4)`
+      expect(expressionToGlsl(context, ['==', 'red', ['get', 'attr5']])).to.eql(
+        `(${stringToGlsl(context, 'red')} == a_attr5)`
       );
       expect(expressionToGlsl(context, ['!=', 10, ['get', 'attr4']])).to.eql(
         '(10.0 != a_attr4)'
       );
-      expect(expressionToGlsl(context, ['all', true, ['get', 'attr4']])).to.eql(
-        '(true && a_attr4)'
+      expect(expressionToGlsl(context, ['all', true, ['get', 'attr6']])).to.eql(
+        '(true && a_attr6)'
       );
-      expect(expressionToGlsl(context, ['any', true, ['get', 'attr4']])).to.eql(
-        '(true || a_attr4)'
+      expect(expressionToGlsl(context, ['any', true, ['get', 'attr6']])).to.eql(
+        '(true || a_attr6)'
       );
       expect(
-        expressionToGlsl(context, ['any', true, ['get', 'attr4'], true])
-      ).to.eql('(true || a_attr4 || true)');
+        expressionToGlsl(context, ['any', true, ['get', 'attr6'], true])
+      ).to.eql('(true || a_attr6 || true)');
       expect(
         expressionToGlsl(context, ['between', ['get', 'attr4'], -4.0, 5.0])
       ).to.eql('(a_attr4 >= -4.0 && a_attr4 <= 5.0)');
-      expect(expressionToGlsl(context, ['!', ['get', 'attr4']])).to.eql(
-        '(!a_attr4)'
+      expect(expressionToGlsl(context, ['!', ['get', 'attr6']])).to.eql(
+        '(!a_attr6)'
       );
       expect(
         expressionToGlsl(context, ['array', ['get', 'attr4'], 1, 2, 3])
@@ -316,7 +316,7 @@ describe('ol/style/expressions', function () {
       const call = function () {
         expressionToGlsl(context, '42', ValueTypes.NUMBER);
       };
-      expect(call).to.throwException(/Unexpected expression/);
+      expect(call).to.throwException(/No matching type was found/);
     });
 
     it('correctly adapts output for fragment shaders', function () {
@@ -340,7 +340,9 @@ describe('ol/style/expressions', function () {
     });
 
     it('gives precedence to the string type unless asked otherwise', function () {
-      expect(expressionToGlsl(context, 'lightgreen')).to.eql('0.0');
+      expect(expressionToGlsl(context, 'lightgreen', ValueTypes.ANY)).to.eql(
+        '0.0'
+      );
       expect(expressionToGlsl(context, 'lightgreen', ValueTypes.COLOR)).to.eql(
         'vec4(0.5647058823529412, 0.9333333333333333, 0.5647058823529412, 1.0)'
       );
@@ -796,15 +798,11 @@ describe('ol/style/expressions', function () {
         return stringToGlsl(context, string);
       }
       expect(
-        expressionToGlsl(context, [
-          'match',
-          ['get', 'attr'],
-          'low',
-          [0, 0],
-          'high',
-          [0, 1],
-          [1, 0],
-        ])
+        expressionToGlsl(
+          context,
+          ['match', ['get', 'attr'], 'low', [0, 0], 'high', [0, 1], [1, 0]],
+          ValueTypes.NUMBER_ARRAY
+        )
       ).to.eql(
         `(a_attr == ${toGlsl('low')} ? vec2(0.0, 0.0) : (a_attr == ${toGlsl(
           'high'
@@ -815,7 +813,7 @@ describe('ol/style/expressions', function () {
           context,
           [
             'match',
-            ['get', 'attr'],
+            ['get', 'attr2'],
             0,
             [0, 0, 1, 1],
             1,
@@ -827,7 +825,7 @@ describe('ol/style/expressions', function () {
           ValueTypes.NUMBER_ARRAY
         )
       ).to.eql(
-        '(a_attr == 0.0 ? vec4(0.0, 0.0, 1.0, 1.0) : (a_attr == 1.0 ? vec4(1.0, 1.0, 2.0, 2.0) : (a_attr == 2.0 ? vec4(2.0, 2.0, 3.0, 3.0) : vec4(3.0, 3.0, 4.0, 4.0))))'
+        '(a_attr2 == 0.0 ? vec4(0.0, 0.0, 1.0, 1.0) : (a_attr2 == 1.0 ? vec4(1.0, 1.0, 2.0, 2.0) : (a_attr2 == 2.0 ? vec4(2.0, 2.0, 3.0, 3.0) : vec4(3.0, 3.0, 4.0, 4.0))))'
       );
     });
   });
@@ -1013,30 +1011,38 @@ describe('ol/style/expressions', function () {
 
     it('correctly parses the expression (colors, linear)', function () {
       expect(
-        expressionToGlsl(context, [
-          'interpolate',
-          ['linear'],
-          ['get', 'attr'],
-          1000,
-          [255, 0, 0],
-          2000,
-          [0, 255, 0],
-        ])
+        expressionToGlsl(
+          context,
+          [
+            'interpolate',
+            ['linear'],
+            ['get', 'attr'],
+            1000,
+            [255, 0, 0],
+            2000,
+            [0, 255, 0],
+          ],
+          ValueTypes.ANY
+        )
       ).to.eql(
         'mix(vec4(1.0, 0.0, 0.0, 1.0), vec4(0.0, 1.0, 0.0, 1.0), pow(clamp((a_attr - 1000.0) / (2000.0 - 1000.0), 0.0, 1.0), 1.0))'
       );
       expect(
-        expressionToGlsl(context, [
-          'interpolate',
-          ['linear'],
-          ['get', 'attr'],
-          1000,
-          [255, 0, 0],
-          2000,
-          [0, 255, 0],
-          5000,
-          [0, 0, 255],
-        ])
+        expressionToGlsl(
+          context,
+          [
+            'interpolate',
+            ['linear'],
+            ['get', 'attr'],
+            1000,
+            [255, 0, 0],
+            2000,
+            [0, 255, 0],
+            5000,
+            [0, 0, 255],
+          ],
+          ValueTypes.ANY
+        )
       ).to.eql(
         'mix(mix(vec4(1.0, 0.0, 0.0, 1.0), vec4(0.0, 1.0, 0.0, 1.0), pow(clamp((a_attr - 1000.0) / (2000.0 - 1000.0), 0.0, 1.0), 1.0)), vec4(0.0, 0.0, 1.0, 1.0), pow(clamp((a_attr - 2000.0) / (5000.0 - 2000.0), 0.0, 1.0), 1.0))'
       );
@@ -1119,6 +1125,40 @@ describe('ol/style/expressions', function () {
       ];
       expect(expressionToGlsl(context, expression)).to.eql(
         'mix(vec4(1.0, 1.0, 0.0, 0.5), (a_year == 2000.0 ? vec4(0.0, 0.5019607843137255, 0.0, 1.0) : vec4(1.0, 0.8980392156862745, 0.17254901960784313, 1.0)), pow(clamp((pow((mod((u_time + mix(0.0, 8.0, pow(clamp((a_year - 1850.0) / (2015.0 - 1850.0), 0.0, 1.0), 1.0))), 8.0) / 8.0), 0.5) - 0.0) / (1.0 - 0.0), 0.0, 1.0), 1.0))'
+      );
+    });
+
+    it('correctly parses the expression (array for symbol size, variables and attributes)', function () {
+      expect(
+        expressionToGlsl(
+          context,
+          [
+            'array',
+            [
+              'ceil',
+              [
+                'match',
+                ['get', 'width'],
+                0,
+                ['var', 'defaultWidth'],
+                ['get', 'width'],
+              ],
+            ],
+            [
+              'ceil',
+              [
+                'match',
+                ['get', 'height'],
+                0,
+                ['var', 'defaultHeight'],
+                ['get', 'height'],
+              ],
+            ],
+          ],
+          ValueTypes.NUMBER | ValueTypes.NUMBER_ARRAY
+        )
+      ).to.eql(
+        'vec2(ceil((a_width == 0.0 ? u_var_defaultWidth : a_width)), ceil((a_height == 0.0 ? u_var_defaultHeight : a_height)))'
       );
     });
   });

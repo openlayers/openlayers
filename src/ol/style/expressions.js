@@ -118,8 +118,9 @@ export const ValueTypes = {
  * Note: both methods can process arguments recursively.
  * @typedef {Object} Operator
  * @property {function(Array<ExpressionValue>): ValueTypes|number} getReturnType Returns one or several types
- * @property {function(ParsingContext, Array<ExpressionValue>, ValueTypes=): string} toGlsl Returns a GLSL-compatible string
- * Note: takes in an optional type hint as 3rd parameter
+ * @property {function(ParsingContext, Array<ExpressionValue>, ValueTypes): string} toGlsl Returns a GLSL-compatible string
+ * given a parsing context, an array of arguments and an expected type.
+ * Note: the expected type can be a combination such as ValueTypes.NUMBER | ValueTypes.STRING or ValueTypes.ANY for instance
  */
 
 /**
@@ -183,6 +184,31 @@ export function getValueType(value) {
  */
 export function isTypeUnique(valueType) {
   return Math.log2(valueType) % 1 === 0;
+}
+
+/**
+ * Print types as a readable string
+ * @param {ValueTypes|number} valueType Number containing value type binary flags
+ * @return {string} Types
+ */
+function printTypes(valueType) {
+  const result = [];
+  if ((valueType & ValueTypes.NUMBER) > 0) {
+    result.push('number');
+  }
+  if ((valueType & ValueTypes.COLOR) > 0) {
+    result.push('color');
+  }
+  if ((valueType & ValueTypes.BOOLEAN) > 0) {
+    result.push('boolean');
+  }
+  if ((valueType & ValueTypes.NUMBER_ARRAY) > 0) {
+    result.push('number[]');
+  }
+  if ((valueType & ValueTypes.STRING) > 0) {
+    result.push('string');
+  }
+  return result.length > 0 ? result.join(', ') : '(no type)';
 }
 
 /**
@@ -271,10 +297,13 @@ export function stringToGlsl(context, string) {
  * will be read and modified during the parsing operation.
  * @param {ParsingContext} context Parsing context
  * @param {ExpressionValue} value Value
- * @param {ValueTypes|number} [typeHint] Hint for the expected final type (can be several types combined)
+ * @param {ValueTypes|number} [expectedType] Expected final type (can be several types combined)
+ * If omitted, defaults to ValueTypes.NUMBER
  * @return {string} GLSL-compatible output
  */
-export function expressionToGlsl(context, value, typeHint) {
+export function expressionToGlsl(context, value, expectedType) {
+  const returnType =
+    expectedType !== undefined ? expectedType : ValueTypes.NUMBER;
   // operator
   if (Array.isArray(value) && typeof value[0] === 'string') {
     const operator = Operators[value[0]];
@@ -283,37 +312,35 @@ export function expressionToGlsl(context, value, typeHint) {
         `Unrecognized expression operator: ${JSON.stringify(value)}`
       );
     }
-    return operator.toGlsl(context, value.slice(1), typeHint);
+    return operator.toGlsl(context, value.slice(1), returnType);
   }
 
-  const valueType = getValueType(value);
-  if ((valueType & ValueTypes.NUMBER) > 0) {
+  const possibleType = getValueType(value) & returnType;
+  assertNotEmptyType(value, possibleType, '');
+
+  if ((possibleType & ValueTypes.NUMBER) > 0) {
     return numberToGlsl(/** @type {number} */ (value));
   }
 
-  if ((valueType & ValueTypes.BOOLEAN) > 0) {
+  if ((possibleType & ValueTypes.BOOLEAN) > 0) {
     return value.toString();
   }
 
-  if (
-    (valueType & ValueTypes.STRING) > 0 &&
-    (typeHint === undefined || typeHint == ValueTypes.STRING)
-  ) {
+  if ((possibleType & ValueTypes.STRING) > 0) {
     return stringToGlsl(context, value.toString());
   }
 
-  if (
-    (valueType & ValueTypes.COLOR) > 0 &&
-    (typeHint === undefined || typeHint == ValueTypes.COLOR)
-  ) {
+  if ((possibleType & ValueTypes.COLOR) > 0) {
     return colorToGlsl(/** @type {Array<number> | string} */ (value));
   }
 
-  if ((valueType & ValueTypes.NUMBER_ARRAY) > 0) {
+  if ((possibleType & ValueTypes.NUMBER_ARRAY) > 0) {
     return arrayToGlsl(/** @type {Array<number>} */ (value));
   }
 
-  throw new Error(`Unexpected expression ${value} (expected type ${typeHint})`);
+  throw new Error(
+    `Unexpected expression ${value} (expected type ${printTypes(returnType)})`
+  );
 }
 
 function assertNumber(value) {
@@ -366,23 +393,48 @@ function assertArgsMaxCount(args, count) {
 function assertArgsEven(args) {
   if (args.length % 2 !== 0) {
     throw new Error(
-      `An even amount of arguments was expected, got ${args} instead`
+      `An even amount of arguments was expected, got ${JSON.stringify(
+        args
+      )} instead`
     );
   }
 }
 function assertArgsOdd(args) {
   if (args.length % 2 === 0) {
     throw new Error(
-      `An odd amount of arguments was expected, got ${args} instead`
+      `An odd amount of arguments was expected, got ${JSON.stringify(
+        args
+      )} instead`
     );
   }
 }
-function assertUniqueInferredType(args, types) {
-  if (!isTypeUnique(types)) {
+function assertNotEmptyType(args, types, descriptor) {
+  if (types === ValueTypes.NONE) {
     throw new Error(
-      `Could not infer only one type from the following expression: ${JSON.stringify(
+      `No matching type was found for the following expression ${descriptor}: ${JSON.stringify(
         args
       )}`
+    );
+  }
+}
+function assertSingleType(args, types, descriptor) {
+  assertNotEmptyType(args, types, descriptor);
+  if (!isTypeUnique(types)) {
+    throw new Error(
+      `Expected to have a unique type for the following expression ${descriptor}: ${JSON.stringify(
+        args
+      )}
+Got the following types instead: ${printTypes(types)}`
+    );
+  }
+}
+function assertOfType(args, types, expectedTypes, descriptor) {
+  if ((types & expectedTypes) === ValueTypes.NONE) {
+    throw new Error(
+      `Expected the ${descriptor} type of the following expression: ${JSON.stringify(
+        args
+      )} to be of the following types: ${printTypes(expectedTypes)}
+Got these types instead: ${printTypes(types)}`
     );
   }
 }
@@ -593,7 +645,6 @@ Operators['+'] = {
   toGlsl: function (context, args) {
     assertArgsMinCount(args, 2);
     assertNumbers(args);
-
     return `(${args.map((arg) => expressionToGlsl(context, arg)).join(' + ')})`;
   },
 };
@@ -837,7 +888,7 @@ Operators['!'] = {
   toGlsl: function (context, args) {
     assertArgsCount(args, 1);
     assertBoolean(args[0]);
-    return `(!${expressionToGlsl(context, args[0])})`;
+    return `(!${expressionToGlsl(context, args[0], ValueTypes.BOOLEAN)})`;
   },
 };
 
@@ -853,7 +904,7 @@ function getDecisionOperator(operator) {
       }
       let result = '';
       result = args
-        .map((arg) => expressionToGlsl(context, arg))
+        .map((arg) => expressionToGlsl(context, arg, ValueTypes.BOOLEAN))
         .join(` ${operator} `);
       result = `(${result})`;
       return result;
@@ -888,7 +939,7 @@ Operators['array'] = {
     assertArgsMaxCount(args, 4);
     assertNumbers(args);
     const parsedArgs = args.map(function (val) {
-      return expressionToGlsl(context, val, ValueTypes.NUMBER);
+      return expressionToGlsl(context, val);
     });
     return `vec${args.length}(${parsedArgs.join(', ')})`;
   },
@@ -907,10 +958,7 @@ Operators['color'] = {
       array.push(1);
     }
     const parsedArgs = args.map(function (val, i) {
-      return (
-        expressionToGlsl(context, val, ValueTypes.NUMBER) +
-        (i < 3 ? ' / 255.0' : '')
-      );
+      return expressionToGlsl(context, val) + (i < 3 ? ' / 255.0' : '');
     });
     return `vec${args.length}(${parsedArgs.join(', ')})`;
   },
@@ -924,7 +972,7 @@ Operators['interpolate'] = {
     }
     return type;
   },
-  toGlsl: function (context, args, typeHint) {
+  toGlsl: function (context, args, expectedType) {
     assertArgsEven(args);
     assertArgsMinCount(args, 6);
 
@@ -950,19 +998,29 @@ Operators['interpolate'] = {
     }
 
     // compute input/output types
-    typeHint = typeHint !== undefined ? typeHint : ValueTypes.ANY;
-    const outputType = Operators['interpolate'].getReturnType(args) & typeHint;
-    assertUniqueInferredType(args, outputType);
+    let inputType = getValueType(args[1]);
+    for (let i = 2; i < args.length - 1; i += 2) {
+      inputType = inputType & getValueType(args[i]);
+    }
+    assertOfType(
+      ['interpolate', ...args],
+      inputType,
+      ValueTypes.NUMBER | ValueTypes.BOOLEAN,
+      'input'
+    );
+    const outputType =
+      Operators['interpolate'].getReturnType(args) & expectedType;
+    assertSingleType(['interpolate', ...args], outputType, 'output');
 
-    const input = expressionToGlsl(context, args[1]);
+    const input = expressionToGlsl(context, args[1], inputType);
     const exponent = numberToGlsl(interpolation);
 
     let result = '';
     for (let i = 2; i < args.length - 2; i += 2) {
-      const stop1 = expressionToGlsl(context, args[i]);
+      const stop1 = expressionToGlsl(context, args[i], inputType);
       const output1 =
         result || expressionToGlsl(context, args[i + 1], outputType);
-      const stop2 = expressionToGlsl(context, args[i + 2]);
+      const stop2 = expressionToGlsl(context, args[i + 2], inputType);
       const output2 = expressionToGlsl(context, args[i + 3], outputType);
       result = `mix(${output1}, ${output2}, pow(clamp((${input} - ${stop1}) / (${stop2} - ${stop1}), 0.0, 1.0), ${exponent}))`;
     }
@@ -979,15 +1037,25 @@ Operators['match'] = {
     type = type & getValueType(args[args.length - 1]);
     return type;
   },
-  toGlsl: function (context, args, typeHint) {
+  toGlsl: function (context, args, expectedType) {
     assertArgsEven(args);
     assertArgsMinCount(args, 4);
 
-    typeHint = typeHint !== undefined ? typeHint : ValueTypes.ANY;
-    const outputType = Operators['match'].getReturnType(args) & typeHint;
-    assertUniqueInferredType(args, outputType);
+    let inputType = getValueType(args[0]);
+    for (let i = 1; i < args.length - 1; i += 2) {
+      inputType = inputType & getValueType(args[i]);
+    }
+    assertOfType(
+      ['match', ...args],
+      inputType,
+      ValueTypes.STRING | ValueTypes.NUMBER | ValueTypes.BOOLEAN,
+      'input'
+    );
 
-    const input = expressionToGlsl(context, args[0]);
+    const outputType = Operators['match'].getReturnType(args) & expectedType;
+    assertSingleType(['match', ...args], outputType, 'output');
+
+    const input = expressionToGlsl(context, args[0], inputType);
     const fallback = expressionToGlsl(
       context,
       args[args.length - 1],
@@ -995,7 +1063,7 @@ Operators['match'] = {
     );
     let result = null;
     for (let i = args.length - 3; i >= 1; i -= 2) {
-      const match = expressionToGlsl(context, args[i]);
+      const match = expressionToGlsl(context, args[i], inputType);
       const output = expressionToGlsl(context, args[i + 1], outputType);
       result = `(${input} == ${match} ? ${output} : ${result || fallback})`;
     }
@@ -1012,13 +1080,12 @@ Operators['case'] = {
     type = type & getValueType(args[args.length - 1]);
     return type;
   },
-  toGlsl: function (context, args, typeHint) {
+  toGlsl: function (context, args, expectedType) {
     assertArgsOdd(args);
     assertArgsMinCount(args, 3);
 
-    typeHint = typeHint !== undefined ? typeHint : ValueTypes.ANY;
-    const outputType = Operators['case'].getReturnType(args) & typeHint;
-    assertUniqueInferredType(args, outputType);
+    const outputType = Operators['case'].getReturnType(args) & expectedType;
+    assertSingleType(['case', ...args], outputType, 'output');
     for (let i = 0; i < args.length - 1; i += 2) {
       assertBoolean(args[i]);
     }
@@ -1030,7 +1097,7 @@ Operators['case'] = {
     );
     let result = null;
     for (let i = args.length - 3; i >= 0; i -= 2) {
-      const condition = expressionToGlsl(context, args[i]);
+      const condition = expressionToGlsl(context, args[i], ValueTypes.BOOLEAN);
       const output = expressionToGlsl(context, args[i + 1], outputType);
       result = `(${condition} ? ${output} : ${result || fallback})`;
     }
