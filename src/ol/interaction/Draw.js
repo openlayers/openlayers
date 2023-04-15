@@ -763,7 +763,7 @@ class Draw extends PointerInteraction {
           );
           const userProjection = getUserProjection();
           if (userProjection) {
-            circle.transform(projection, userProjection);
+            circle.transformToNormalCircle(projection, userProjection);
           }
           return circle;
         };

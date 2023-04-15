@@ -18,15 +18,17 @@ import VectorSource from '../../../../../src/ol/source/Vector.js';
 import View from '../../../../../src/ol/View.js';
 import proj4 from 'proj4';
 import {
-  altKeyOnly,
-  always,
-  shiftKeyOnly,
-} from '../../../../../src/ol/events/condition.js';
-import {
+  addCommon,
+  clearAllProjections,
   clearUserProjection,
   setUserProjection,
   transform,
 } from '../../../../../src/ol/proj.js';
+import {
+  altKeyOnly,
+  always,
+  shiftKeyOnly,
+} from '../../../../../src/ol/events/condition.js';
 import {equals} from '../../../../../src/ol/array.js';
 import {listen} from '../../../../../src/ol/events.js';
 import {register} from '../../../../../src/ol/proj/proj4.js';
@@ -80,6 +82,10 @@ describe('ol/interaction/Draw', function () {
     map.dispose();
     document.body.removeChild(target);
     clearUserProjection();
+    delete proj4.defs['EPSG:32732'];
+    delete proj4.defs['ESRI:54009'];
+    clearAllProjections();
+    addCommon();
   });
 
   /**
@@ -1335,6 +1341,9 @@ describe('ol/interaction/Draw', function () {
       expect(features).to.have.length(1);
       const geometry = features[0].getGeometry();
       expect(geometry).to.be.a(Circle);
+      const flatCoordinates = geometry.getFlatCoordinates();
+      expect(flatCoordinates[2]).to.be.greaterThan(flatCoordinates[0]);
+      expect(flatCoordinates[3]).to.equal(flatCoordinates[1]);
       const viewProjection = map.getView().getProjection();
       expect(geometry.getCenter()).to.eql(
         transform([10, -20], viewProjection, userProjection)
@@ -1364,10 +1373,89 @@ describe('ol/interaction/Draw', function () {
       expect(features).to.have.length(1);
       const geometry = features[0].getGeometry();
       expect(geometry).to.be.a(Circle);
+      const flatCoordinates = geometry.getFlatCoordinates();
+      expect(flatCoordinates[2]).to.be.greaterThan(flatCoordinates[0]);
+      expect(flatCoordinates[3]).to.equal(flatCoordinates[1]);
       const viewProjection = map.getView().getProjection();
       expect(geometry.getCenter()).to.eql(
         transform([10, -20], viewProjection, userProjection)
       );
+      const radius = geometry
+        .clone()
+        .transform(userProjection, viewProjection)
+        .getRadius();
+      expect(radius).to.roughlyEqual(20, 1e-9);
+    });
+
+    it('draws circle with clicks in a non-parallel user projection, finishing along x axis', function () {
+      proj4.defs(
+        'EPSG:32732',
+        '+proj=utm +zone=32 +south +datum=WGS84 +units=m +no_defs +type=crs'
+      );
+      register(proj4);
+      const userProjection = 'EPSG:32732';
+      setUserProjection(userProjection);
+
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      // finish on second point
+      simulateEvent('pointermove', 30, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
+
+      const features = source.getFeatures();
+      expect(features).to.have.length(1);
+      const geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(Circle);
+      const flatCoordinates = geometry.getFlatCoordinates();
+      expect(flatCoordinates[2]).to.be.greaterThan(flatCoordinates[0]);
+      expect(flatCoordinates[3]).to.equal(flatCoordinates[1]);
+      const viewProjection = map.getView().getProjection();
+      const center = geometry.getCenter();
+      const t = transform([10, -20], viewProjection, userProjection);
+      expect(center[0]).to.roughlyEqual(t[0], 1e-9);
+      expect(center[1]).to.roughlyEqual(t[1], 1e-9);
+      const radius = geometry
+        .clone()
+        .transform(userProjection, viewProjection)
+        .getRadius();
+      expect(radius).to.roughlyEqual(20, 1e-9);
+    });
+
+    it('draws circle with clicks in a non-parallel user projection, finishing along y axis', function () {
+      proj4.defs(
+        'EPSG:32732',
+        '+proj=utm +zone=32 +south +datum=WGS84 +units=m +no_defs +type=crs'
+      );
+      register(proj4);
+      const userProjection = 'EPSG:32732';
+      setUserProjection(userProjection);
+
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      // finish on second point
+      simulateEvent('pointermove', 10, 40);
+      simulateEvent('pointerdown', 10, 40);
+      simulateEvent('pointerup', 10, 40);
+
+      const features = source.getFeatures();
+      expect(features).to.have.length(1);
+      const geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(Circle);
+      const flatCoordinates = geometry.getFlatCoordinates();
+      expect(flatCoordinates[2]).to.be.greaterThan(flatCoordinates[0]);
+      expect(flatCoordinates[3]).to.equal(flatCoordinates[1]);
+      const viewProjection = map.getView().getProjection();
+      const center = geometry.getCenter();
+      const t = transform([10, -20], viewProjection, userProjection);
+      expect(center[0]).to.roughlyEqual(t[0], 1e-9);
+      expect(center[1]).to.roughlyEqual(t[1], 1e-9);
       const radius = geometry
         .clone()
         .transform(userProjection, viewProjection)
