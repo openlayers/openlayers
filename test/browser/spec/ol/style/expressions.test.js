@@ -45,12 +45,12 @@ describe('ol/style/expressions', function () {
   });
 
   describe('colorToGlsl', function () {
-    it('normalizes color and outputs numbers with dot separators', function () {
+    it('normalizes color and outputs numbers with dot separators, including premultiplied alpha', function () {
       expect(colorToGlsl([100, 0, 255])).to.eql(
         'vec4(0.39215686274509803, 0.0, 1.0, 1.0)'
       );
-      expect(colorToGlsl([100, 0, 255, 1])).to.eql(
-        'vec4(0.39215686274509803, 0.0, 1.0, 1.0)'
+      expect(colorToGlsl([100, 0, 255, 0.7])).to.eql(
+        'vec4(0.2745098039215686, 0.0, 0.7, 0.7)'
       );
     });
     it('handles colors in string format', function () {
@@ -60,7 +60,7 @@ describe('ol/style/expressions', function () {
         'vec4(0.39215686274509803, 0.0, 1.0, 1.0)'
       );
       expect(colorToGlsl('rgba(100, 0, 255, 0.3)')).to.eql(
-        'vec4(0.39215686274509803, 0.0, 1.0, 0.3)'
+        'vec4(0.11764705882352941, 0.0, 0.3, 0.3)'
       );
     });
   });
@@ -303,7 +303,7 @@ describe('ol/style/expressions', function () {
       ).to.eql('vec4(a_attr4, 1.0, 2.0, 3.0)');
       expect(
         expressionToGlsl(context, ['color', ['get', 'attr4'], 1, 2, 0.5])
-      ).to.eql('vec4(a_attr4 / 255.0, 1.0 / 255.0, 2.0 / 255.0, 0.5)');
+      ).to.eql('(0.5 * vec4(a_attr4 / 255.0, 1.0 / 255.0, 2.0 / 255.0, 1.0))');
       expect(expressionToGlsl(context, ['band', 1])).to.eql(
         'getBandValue(1.0, 0.0, 0.0)'
       );
@@ -1131,7 +1131,7 @@ describe('ol/style/expressions', function () {
         ['match', ['get', 'year'], 2000, 'green', '#ffe52c'],
       ];
       expect(expressionToGlsl(context, expression, ValueTypes.COLOR)).to.eql(
-        'mix(vec4(1.0, 1.0, 0.0, 0.5), (a_year == 2000.0 ? vec4(0.0, 0.5019607843137255, 0.0, 1.0) : vec4(1.0, 0.8980392156862745, 0.17254901960784313, 1.0)), pow(clamp((pow((mod((u_time + mix(0.0, 8.0, pow(clamp((a_year - 1850.0) / (2015.0 - 1850.0), 0.0, 1.0), 1.0))), 8.0) / 8.0), 0.5) - 0.0) / (1.0 - 0.0), 0.0, 1.0), 1.0))'
+        'mix(vec4(0.5, 0.5, 0.0, 0.5), (a_year == 2000.0 ? vec4(0.0, 0.5019607843137255, 0.0, 1.0) : vec4(1.0, 0.8980392156862745, 0.17254901960784313, 1.0)), pow(clamp((pow((mod((u_time + mix(0.0, 8.0, pow(clamp((a_year - 1850.0) / (2015.0 - 1850.0), 0.0, 1.0), 1.0))), 8.0) / 8.0), 0.5) - 0.0) / (1.0 - 0.0), 0.0, 1.0), 1.0))'
       );
     });
 

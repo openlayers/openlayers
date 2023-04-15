@@ -240,7 +240,7 @@ describe('ol.webgl.styleparser', function () {
           },
         ]);
         expect(result.builder.symbolColorExpression).to.eql(
-          'vec4(vec4(1.0, 0.5, 0.25, 0.25).rgb, vec4(1.0, 0.5, 0.25, 0.25).a * 1.0 * 1.0)'
+          'vec4(vec4(0.25, 0.125, 0.0625, 0.25).rgb, vec4(0.25, 0.125, 0.0625, 0.25).a * 1.0 * 1.0)'
         );
         expect(result.builder.symbolSizeExpression).to.eql('vec2(a_attr1)');
         expect(result.builder.symbolOffsetExpression).to.eql(

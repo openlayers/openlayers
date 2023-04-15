@@ -261,15 +261,15 @@ export function arrayToGlsl(array) {
  * @return {string} The color expressed in the `vec4(1.0, 1.0, 1.0, 1.0)` form.
  */
 export function colorToGlsl(color) {
-  const array = asArray(color).slice();
-  if (array.length < 4) {
-    array.push(1);
-  }
-  return arrayToGlsl(
-    array.map(function (c, i) {
-      return i < 3 ? c / 255 : c;
-    })
-  );
+  const array = asArray(color);
+  const alpha = array.length > 3 ? array[3] : 1;
+  // all components are premultiplied with alpha value
+  return arrayToGlsl([
+    (array[0] / 255) * alpha,
+    (array[1] / 255) * alpha,
+    (array[2] / 255) * alpha,
+    alpha,
+  ]);
 }
 
 /**
@@ -978,14 +978,14 @@ Operators['color'] = {
     assertArgsMinCount(args, 3);
     assertArgsMaxCount(args, 4);
     assertNumbers(args);
-    const array = /** @type {Array<number>} */ (args);
+    const parsedArgs = args
+      .slice(0, 3)
+      .map((val) => `${expressionToGlsl(context, val)} / 255.0`);
     if (args.length === 3) {
-      array.push(1);
+      return `vec4(${parsedArgs.join(', ')}, 1.0)`;
     }
-    const parsedArgs = args.map(function (val, i) {
-      return expressionToGlsl(context, val) + (i < 3 ? ' / 255.0' : '');
-    });
-    return `vec${args.length}(${parsedArgs.join(', ')})`;
+    const alpha = expressionToGlsl(context, args[3]);
+    return `(${alpha} * vec4(${parsedArgs.join(', ')}, 1.0))`;
   },
 };
 
