@@ -113,6 +113,28 @@ describe('ol.format.OSMXML', function () {
       ]);
     });
 
+    it('can read coordinates from ways', function () {
+      const text =
+        '<?xml version="1.0" encoding="UTF-8"?>' +
+        '<osm version="0.6" generator="my hand">' +
+        '  <way id="3">' +
+        '    <tag k="name" v="3"/>' +
+        '    <nd ref="1" lat="1" lon="2" />' +
+        '    <nd ref="2" lat="3" lon="4" />' +
+        '  </way>' +
+        '</osm>';
+      const fs = format.readFeatures(text);
+      expect(fs).to.have.length(1);
+      const line = fs[0];
+      expect(line).to.be.an(Feature);
+      const g = line.getGeometry();
+      expect(g).to.be.an(LineString);
+      expect(g.getCoordinates()).to.eql([
+        [2, 1],
+        [4, 3],
+      ]);
+    });
+
     it('can transform and read nodes', function () {
       const text =
         '<?xml version="1.0" encoding="UTF-8"?>' +

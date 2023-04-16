@@ -79,10 +79,12 @@ class OSMXML extends XMLFeature {
       for (let j = 0; j < state.ways.length; j++) {
         const values = /** @type {Object} */ (state.ways[j]);
         /** @type {Array<number>} */
-        const flatCoordinates = [];
-        for (let i = 0, ii = values.ndrefs.length; i < ii; i++) {
-          const point = state.nodes[values.ndrefs[i]];
-          extend(flatCoordinates, point);
+        const flatCoordinates = values.flatCoordinates;
+        if (!flatCoordinates.length) {
+          for (let i = 0, ii = values.ndrefs.length; i < ii; i++) {
+            const point = state.nodes[values.ndrefs[i]];
+            extend(flatCoordinates, point);
+          }
         }
         let geometry;
         if (values.ndrefs[0] == values.ndrefs[values.ndrefs.length - 1]) {
@@ -165,6 +167,7 @@ function readWay(node, objectStack) {
     {
       id: id,
       ndrefs: [],
+      flatCoordinates: [],
       tags: {},
     },
     WAY_PARSERS,
@@ -182,6 +185,10 @@ function readWay(node, objectStack) {
 function readNd(node, objectStack) {
   const values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   values.ndrefs.push(node.getAttribute('ref'));
+  if (node.hasAttribute('lon') && node.hasAttribute('lat')) {
+    values.flatCoordinates.push(parseFloat(node.getAttribute('lon')));
+    values.flatCoordinates.push(parseFloat(node.getAttribute('lat')));
+  }
 }
 
 /**
