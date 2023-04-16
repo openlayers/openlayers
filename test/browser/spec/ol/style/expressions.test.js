@@ -198,6 +198,44 @@ describe('ol/style/expressions', function () {
         ValueTypes.COLOR
       );
     });
+    it('correctly analyzes get operator return type with hint', function () {
+      expect(getValueType(['get', 'myAttr', 'number'])).to.eql(
+        ValueTypes.NUMBER
+      );
+      expect(getValueType(['get', 'myAttr', 'string'])).to.eql(
+        ValueTypes.STRING
+      );
+      expect(getValueType(['get', 'myAttr', 'boolean'])).to.eql(
+        ValueTypes.BOOLEAN
+      );
+      expect(getValueType(['get', 'myAttr', 'number_array'])).to.eql(
+        ValueTypes.NUMBER_ARRAY
+      );
+      expect(getValueType(['get', 'myAttr', 'color'])).to.eql(ValueTypes.COLOR);
+    });
+    it('correctly analyzes var operator return type with hint', function () {
+      expect(getValueType(['var', 'myAttr', 'number'])).to.eql(
+        ValueTypes.NUMBER
+      );
+      expect(getValueType(['var', 'myAttr', 'string'])).to.eql(
+        ValueTypes.STRING
+      );
+      expect(getValueType(['var', 'myAttr', 'boolean'])).to.eql(
+        ValueTypes.BOOLEAN
+      );
+      expect(getValueType(['var', 'myAttr', 'number_array'])).to.eql(
+        ValueTypes.NUMBER_ARRAY
+      );
+      expect(getValueType(['var', 'myAttr', 'color'])).to.eql(ValueTypes.COLOR);
+    });
+    it('throws on invalid hint', function () {
+      expect(() => getValueType(['get', 'myAttr', 'weird-type'])).to.throwError(
+        /Unrecognized type hint/
+      );
+      expect(() => getValueType(['var', 'myAttr', 'weird-type'])).to.throwError(
+        /Unrecognized type hint/
+      );
+    });
   });
 
   describe('expressionToGlsl', function () {

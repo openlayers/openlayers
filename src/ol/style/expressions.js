@@ -21,11 +21,14 @@ import {asArray, fromString, isStringColor} from '../color.js';
  *     of bands, depending on the underlying data source and
  *     {@link import("../source/GeoTIFF.js").Options configuration}. `xOffset` and `yOffset` are optional
  *     and allow specifying pixel offsets for x and y. This is used for sampling data from neighboring pixels.
- *   * `['get', 'attributeName']` fetches a feature attribute (it will be prefixed by `a_` in the shader)
+ *   * `['get', 'attributeName', typeHint]` fetches a feature attribute (it will be prefixed by `a_` in the shader)
  *     Note: those will be taken from the attributes provided to the renderer
+ *     A type hint can optionally be specified, in case the resulting expression contains a type uncertainty which
+ *     will make it invalid. Type hints can be one of: 'string', 'color', 'number', 'boolean', 'number_array'
  *   * `['resolution']` returns the current resolution
  *   * `['time']` returns the time in seconds since the creation of the layer
- *   * `['var', 'varName']` fetches a value from the style variables, or 0 if undefined
+ *   * `['var', 'varName', typeHint]` fetches a value from the style variables; will throw an error if variable is undefined
+ *     A type hint can optionally be specified (see 'get' operator)
  *   * `['zoom']` returns the current zoom level
  *
  * * Math operators:
@@ -111,6 +114,26 @@ export const ValueTypes = {
   ANY: 0b11111,
   NONE: 0,
 };
+
+/**
+ * @param {string} typeHint
+ * @return {ValueTypes} Resulting value type (will be a single type)
+ */
+function getTypeFromHint(typeHint) {
+  switch (typeHint) {
+    case 'string':
+      return ValueTypes.STRING;
+    case 'color':
+      return ValueTypes.COLOR;
+    case 'number':
+      return ValueTypes.NUMBER;
+    case 'boolean':
+      return ValueTypes.BOOLEAN;
+    case 'number_array':
+      return ValueTypes.NUMBER_ARRAY;
+  }
+  throw new Error(`Unrecognized type hint: ${typeHint}`);
+}
 
 /**
  * An operator declaration must contain two methods: `getReturnType` which returns a type based on
@@ -447,23 +470,29 @@ Got these types instead: ${printTypes(types)}`
 
 Operators['get'] = {
   getReturnType: function (args) {
+    if (args.length === 2) {
+      const hint = args[1];
+      return getTypeFromHint(/** @type {string} */ (hint));
+    }
     return ValueTypes.ANY;
   },
   toGlsl: function (context, args, expectedType) {
-    assertArgsCount(args, 1);
+    assertArgsMinCount(args, 1);
+    assertArgsMaxCount(args, 2);
     assertString(args[0]);
-    assertSingleType(['get', ...args], expectedType, '');
+    const outputType = expectedType & Operators['get'].getReturnType(args);
+    assertSingleType(['get', ...args], outputType, '');
     const name = args[0].toString();
     const existing = context.attributes.find((a) => a.name === name);
     if (!existing) {
       context.attributes.push({
         name: name,
-        type: expectedType,
+        type: outputType,
       });
-    } else if (expectedType !== existing.type) {
+    } else if (outputType !== existing.type) {
       throw new Error(
         `The following attribute was used in different places with incompatible types: ${name}
-Types were: ${printTypes(existing.type)} and ${printTypes(expectedType)}`
+Types were: ${printTypes(existing.type)} and ${printTypes(outputType)}`
       );
     }
     const prefix = context.inFragmentShader ? 'v_' : 'a_';
@@ -481,23 +510,24 @@ export function uniformNameForVariable(variableName) {
 }
 
 Operators['var'] = {
-  getReturnType: function (args) {
-    return ValueTypes.ANY;
-  },
+  getReturnType: Operators['get'].getReturnType,
   toGlsl: function (context, args, expectedType) {
-    assertArgsCount(args, 1);
+    assertArgsMinCount(args, 1);
+    assertArgsMaxCount(args, 2);
     assertString(args[0]);
+    const outputType = expectedType & Operators['get'].getReturnType(args);
+    assertSingleType(['get', ...args], outputType, '');
     const name = args[0].toString();
     const existing = context.variables.find((a) => a.name === name);
     if (!existing) {
       context.variables.push({
         name: name,
-        type: expectedType,
+        type: outputType,
       });
-    } else if (expectedType !== existing.type) {
+    } else if (outputType !== existing.type) {
       throw new Error(
         `The following variable was used in different places with incompatible types: ${name}
-Types were: ${printTypes(existing.type)} and ${printTypes(expectedType)}`
+Types were: ${printTypes(existing.type)} and ${printTypes(outputType)}`
       );
     }
     return uniformNameForVariable(name);
