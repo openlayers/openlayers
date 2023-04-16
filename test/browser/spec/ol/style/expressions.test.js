@@ -842,6 +842,17 @@ describe('ol/style/expressions', function () {
         '(a_attr2 == 0.0 ? vec4(0.0, 0.0, 1.0, 1.0) : (a_attr2 == 1.0 ? vec4(1.0, 1.0, 2.0, 2.0) : (a_attr2 == 2.0 ? vec4(2.0, 2.0, 3.0, 3.0) : vec4(3.0, 3.0, 4.0, 4.0))))'
       );
     });
+
+    it('only expects string, number or boolean as input', (done) => {
+      // match input is only expressed through get operator and values which can be strings or colors
+      // the call shouldn't throw because match does not allow color as input (so the final input type is string)
+      expressionToGlsl(
+        context,
+        ['match', ['get', 'attr3'], 'red', [6, 0], 'green', [3, 0], [0, 0]],
+        ValueTypes.ANY
+      );
+      done();
+    });
   });
 
   describe('interpolate operator', function () {
@@ -1096,6 +1107,25 @@ describe('ol/style/expressions', function () {
       ).to.eql(
         'mix(mix(-10.0, 0.0, pow(clamp((a_attr - 1000.0) / (2000.0 - 1000.0), 0.0, 1.0), 0.5)), 10.0, pow(clamp((a_attr - 2000.0) / (5000.0 - 2000.0), 0.0, 1.0), 0.5))'
       );
+    });
+
+    it('only expects number as input', (done) => {
+      // interpolation input is only expressed through get and var operators, which means that it is unspecified on its own
+      // the call shouldn't throw because interpolation only accepts numerical input
+      expressionToGlsl(
+        context,
+        [
+          'interpolate',
+          ['linear'],
+          ['get', 'attr'],
+          1000,
+          ['var', 'value'],
+          2000,
+          3000,
+        ],
+        ValueTypes.ANY
+      );
+      done();
     });
   });
 

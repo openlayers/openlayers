@@ -1038,16 +1038,7 @@ Operators['interpolate'] = {
     }
 
     // compute input/output types
-    let inputType = getValueType(args[1]);
-    for (let i = 2; i < args.length - 1; i += 2) {
-      inputType = inputType & getValueType(args[i]);
-    }
-    assertOfType(
-      ['interpolate', ...args],
-      inputType,
-      ValueTypes.NUMBER | ValueTypes.BOOLEAN,
-      'input'
-    );
+    const inputType = ValueTypes.NUMBER;
     const outputType =
       Operators['interpolate'].getReturnType(args) & expectedType;
     assertSingleType(['interpolate', ...args], outputType, 'output');
@@ -1091,6 +1082,8 @@ Operators['match'] = {
       ValueTypes.STRING | ValueTypes.NUMBER | ValueTypes.BOOLEAN,
       'input'
     );
+    inputType =
+      (ValueTypes.STRING | ValueTypes.NUMBER | ValueTypes.BOOLEAN) & inputType;
 
     const outputType = Operators['match'].getReturnType(args) & expectedType;
     assertSingleType(['match', ...args], outputType, 'output');
