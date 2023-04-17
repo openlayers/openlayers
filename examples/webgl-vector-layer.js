@@ -13,24 +13,20 @@ class WebGLLayer extends Layer {
   createRenderer() {
     return new WebGLVectorLayerRenderer(this, {
       fill: {
-        attributes: {
-          color: function (feature) {
-            const color = [...asArray(feature.get('COLOR') || '#eee')];
-            color[3] = 0.6;
-            return packColor(color);
-          },
+        color: function (feature) {
+          const color = [...asArray(feature.get('COLOR') || '#eee')];
+          color[3] = 0.6;
+          return packColor(color);
         },
       },
       stroke: {
-        attributes: {
-          color: function (feature) {
-            const color = [...asArray(feature.get('COLOR') || '#eee')];
-            color.forEach((_, i) => (color[i] = Math.round(color[i] * 0.75))); // darken slightly
-            return packColor(color);
-          },
-          width: function () {
-            return 1.5;
-          },
+        color: function (feature) {
+          const color = [...asArray(feature.get('COLOR') || '#eee')];
+          color.forEach((_, i) => (color[i] = Math.round(color[i] * 0.75))); // darken slightly
+          return packColor(color);
+        },
+        width: function () {
+          return 1.5;
         },
       },
     });
