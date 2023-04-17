@@ -15,13 +15,15 @@ class WebGLVectorTileLayer extends VectorTile {
       fill: {
         attributes: {
           color: () => packColor(asArray('#eee')),
-          opacity: () => 1,
         },
       },
       stroke: {
         attributes: {
-          color: () => packColor(asArray('#888')),
-          opacity: () => 0.5,
+          color: () => {
+            const color = [...asArray('#888')];
+            color[3] = 0.5;
+            return packColor(color);
+          },
           width: () => 1,
         },
       },

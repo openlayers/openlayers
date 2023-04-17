@@ -117,17 +117,17 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       expect(renderer.lineStringRenderer_).to.be.a(LineStringBatchRenderer);
     });
     it('use options provided initially', () => {
-      expect(renderer.polygonRenderer_.attributes[3]).to.eql({
+      expect(renderer.polygonRenderer_.attributes[2]).to.eql({
         name: 'a_returnOne',
         size: 1,
         type: 5126,
       });
-      expect(renderer.pointRenderer_.attributes[4]).to.eql({
+      expect(renderer.pointRenderer_.attributes[3]).to.eql({
         name: 'a_returnOne',
         size: 1,
         type: 5126,
       });
-      expect(renderer.lineStringRenderer_.attributes[6]).to.eql({
+      expect(renderer.lineStringRenderer_.attributes[5]).to.eql({
         name: 'a_returnOne',
         size: 1,
         type: 5126,
@@ -161,17 +161,17 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       });
     });
     it('recreates renderers with the new options', () => {
-      expect(renderer.polygonRenderer_.attributes[3]).to.eql({
+      expect(renderer.polygonRenderer_.attributes[2]).to.eql({
         name: 'a_returnTwo',
         size: 1,
         type: 5126,
       });
-      expect(renderer.pointRenderer_.attributes[4]).to.eql({
+      expect(renderer.pointRenderer_.attributes[3]).to.eql({
         name: 'a_returnTwo',
         size: 1,
         type: 5126,
       });
-      expect(renderer.lineStringRenderer_.attributes[6]).to.eql({
+      expect(renderer.lineStringRenderer_.attributes[5]).to.eql({
         name: 'a_returnTwo',
         size: 1,
         type: 5126,

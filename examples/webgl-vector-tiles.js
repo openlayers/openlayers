@@ -21,7 +21,6 @@ class WebGLVectorTileLayer extends VectorTile {
             const color = asArray(style?.getFill()?.getColor() || '#eee');
             return packColor(color);
           },
-          opacity: () => 1,
         },
       },
       stroke: {
@@ -35,7 +34,6 @@ class WebGLVectorTileLayer extends VectorTile {
             const style = this.getStyle()(feature, 1)[0];
             return style?.getStroke()?.getWidth() || 0;
           },
-          opacity: () => 1,
         },
       },
       point: {

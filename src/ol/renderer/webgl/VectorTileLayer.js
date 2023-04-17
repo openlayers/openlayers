@@ -34,7 +34,11 @@ import {packColor} from '../../webgl/styleparser.js';
  * @return {Array<import("../../render/webgl/BatchRenderer").CustomAttribute>} An array of attribute descriptors.
  */
 function toAttributesArray(obj) {
-  return Object.keys(obj).map((key) => ({name: key, callback: obj[key]}));
+  return Object.keys(obj).map((key) => ({
+    name: key,
+    size: key === 'color' ? 2 : 1,
+    callback: obj[key],
+  }));
 }
 
 /**
@@ -136,18 +140,12 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       color: function () {
         return packColor('#ddd');
       },
-      opacity: function () {
-        return 1;
-      },
       ...(options.fill && options.fill.attributes),
     };
 
     const strokeAttributes = {
       color: function () {
         return packColor('#eee');
-      },
-      opacity: function () {
-        return 1;
       },
       width: function () {
         return 1.5;
@@ -158,9 +156,6 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     const pointAttributes = {
       color: function () {
         return packColor('#eee');
-      },
-      opacity: function () {
-        return 1;
       },
       ...(options.point && options.point.attributes),
     };
