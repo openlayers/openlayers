@@ -6,29 +6,29 @@ import TileLayer from '../src/ol/layer/WebGLTile.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
 import WebGLVectorLayerRenderer from '../src/ol/renderer/webgl/VectorLayer.js';
-import {asArray} from '../src/ol/color.js';
-import {packColor} from '../src/ol/webgl/styleparser.js';
+import {parseLiteralStyle} from '../src/ol/webgl/styleparser.js';
+
+/** @type {import('../src/ol/style/literal.js').LiteralStyle} */
+const style = {
+  'stroke-color': ['*', ['get', 'COLOR'], [220, 220, 220]],
+  'stroke-width': 1.5,
+  'fill-color': ['*', ['get', 'COLOR'], [255, 255, 255, 0.6]],
+};
 
 class WebGLLayer extends Layer {
   createRenderer() {
+    const parseResult = parseLiteralStyle(style);
     return new WebGLVectorLayerRenderer(this, {
       fill: {
-        color: function (feature) {
-          const color = [...asArray(feature.get('COLOR') || '#eee')];
-          color[3] = 0.6;
-          return packColor(color);
-        },
+        vertexShader: parseResult.builder.getFillVertexShader(),
+        fragmentShader: parseResult.builder.getFillFragmentShader(),
       },
       stroke: {
-        color: function (feature) {
-          const color = [...asArray(feature.get('COLOR') || '#eee')];
-          color.forEach((_, i) => (color[i] = Math.round(color[i] * 0.75))); // darken slightly
-          return packColor(color);
-        },
-        width: function () {
-          return 1.5;
-        },
+        vertexShader: parseResult.builder.getStrokeVertexShader(),
+        fragmentShader: parseResult.builder.getStrokeFragmentShader(),
       },
+      attributes: parseResult.attributes,
+      uniforms: parseResult.uniforms,
     });
   }
 }
