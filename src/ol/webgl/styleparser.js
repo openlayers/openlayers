@@ -57,6 +57,31 @@ const UNPACK_COLOR_FN = `vec4 unpackColor(vec2 packedColor) {
 }`;
 
 /**
+ * @param {ValueTypes} type
+ * @return {1|2|3|4}
+ */
+function getGlslSizeFromType(type) {
+  if (type === ValueTypes.COLOR) {
+    return 2;
+  } else if (type === ValueTypes.NUMBER_ARRAY) {
+    return 4;
+  }
+  return 1;
+}
+
+/**
+ * @param {ValueTypes}type
+ * @return {'float'|'vec2'|'vec3'|'vec4'}
+ */
+function getGlslTypeFromType(type) {
+  const size = getGlslSizeFromType(type);
+  if (size > 1) {
+    return /** @type {'vec2'|'vec3'|'vec4'} */ (`vec${size}`);
+  }
+  return 'float';
+}
+
+/**
  *
  * @param {import("../style/literal").LiteralStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
@@ -289,35 +314,74 @@ export function parseLiteralStyle(style) {
   }
 
   // define one uniform per variable
-  fragContext.variables.forEach(function (varName) {
-    const uniformName = uniformNameForVariable(varName);
-    builder.addUniform(`float ${uniformName}`);
-    uniforms[uniformName] = function () {
-      if (!style.variables || style.variables[varName] === undefined) {
+  fragContext.variables.forEach(function (variable) {
+    const uniformName = uniformNameForVariable(variable.name);
+    builder.addUniform(`${getGlslTypeFromType(variable.type)} ${uniformName}`);
+
+    /** @return {any} */
+    const getValue = () => {
+      if (!style.variables || style.variables[variable.name] === undefined) {
         throw new Error(
-          `The following variable is missing from the style: ${varName}`
+          `The following variable is missing from the style: ${variable.name}`
         );
       }
-      let value = style.variables[varName];
-      if (typeof value === 'string') {
-        value = getStringNumberEquivalent(vertContext, value);
-      }
-      return value !== undefined ? value : -9999999; // to avoid matching with the first string literal
+      return style.variables[variable.name];
     };
+    let callback;
+    if (variable.type === ValueTypes.STRING) {
+      callback = () => getStringNumberEquivalent(vertContext, getValue());
+    } else if (variable.type === ValueTypes.COLOR) {
+      callback = () => packColor([...asArray(getValue() || '#eee')]);
+    } else if (variable.type === ValueTypes.BOOLEAN) {
+      callback = () => (getValue() ? 1.0 : 0.0);
+    } else {
+      callback = getValue;
+    }
+    uniforms[uniformName] = callback;
   });
 
   // for each feature attribute used in the fragment shader, define a varying that will be used to pass data
   // from the vertex to the fragment shader, as well as an attribute in the vertex shader (if not already present)
-  fragContext.attributes.forEach(function (attrName) {
-    if (!vertContext.attributes.includes(attrName)) {
-      vertContext.attributes.push(attrName);
+  fragContext.attributes.forEach(function (attribute) {
+    if (!vertContext.attributes.find((a) => a.name === attribute.name)) {
+      vertContext.attributes.push(attribute);
     }
-    builder.addVarying(`v_${attrName}`, 'float', `a_${attrName}`);
+    let type = getGlslTypeFromType(attribute.type);
+    let expression = `a_${attribute.name}`;
+    if (attribute.type === ValueTypes.COLOR) {
+      type = 'vec4';
+      expression = `unpackColor(${expression})`;
+      builder.addVertexShaderFunction(UNPACK_COLOR_FN);
+    }
+    builder.addVarying(`v_${attribute.name}`, type, expression);
   });
 
   // for each feature attribute used in the vertex shader, define an attribute in the vertex shader.
-  vertContext.attributes.forEach(function (attrName) {
-    builder.addAttribute(`float a_${attrName}`);
+  vertContext.attributes.forEach(function (attribute) {
+    builder.addAttribute(
+      `${getGlslTypeFromType(attribute.type)} a_${attribute.name}`
+    );
+  });
+
+  const attributes = vertContext.attributes.map(function (attribute) {
+    let callback;
+    if (attribute.type === ValueTypes.STRING) {
+      callback = (feature) =>
+        getStringNumberEquivalent(vertContext, feature.get(attribute.name));
+    } else if (attribute.type === ValueTypes.COLOR) {
+      callback = (feature) =>
+        packColor([...asArray(feature.get(attribute.name) || '#eee')]);
+    } else if (attribute.type === ValueTypes.BOOLEAN) {
+      callback = (feature) => (feature.get(attribute.name) ? 1.0 : 0.0);
+    } else {
+      callback = (feature) => feature.get(attribute.name);
+    }
+
+    return {
+      name: attribute.name,
+      size: getGlslSizeFromType(attribute.type),
+      callback,
+    };
   });
 
   return {
@@ -325,18 +389,7 @@ export function parseLiteralStyle(style) {
     hasSymbol,
     hasStroke,
     hasFill,
-    attributes: vertContext.attributes.map(function (attributeName) {
-      return {
-        name: attributeName,
-        callback: function (feature, props) {
-          let value = props[attributeName];
-          if (typeof value === 'string') {
-            value = getStringNumberEquivalent(vertContext, value);
-          }
-          return value !== undefined ? value : -9999999; // to avoid matching with the first string literal
-        },
-      };
-    }),
+    attributes: attributes,
     uniforms: uniforms,
   };
 }

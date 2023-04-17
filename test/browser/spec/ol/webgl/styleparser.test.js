@@ -4,6 +4,7 @@ import {
 } from '../../../../../src/ol/webgl/styleparser.js';
 import {uniformNameForVariable} from '../../../../../src/ol/style/expressions.js';
 import {asArray} from '../../../../../src/ol/color.js';
+import Feature from '../../../../../src/ol/Feature.js';
 
 describe('ol.webgl.styleparser', function () {
   describe('parseLiteralStyle', function () {
@@ -120,7 +121,7 @@ describe('ol.webgl.styleparser', function () {
         variables: {},
         symbol: {
           symbolType: 'square',
-          size: ['var', varName],
+          size: ['var', varName, 'number_array'],
           color: 'red',
         },
       });
@@ -139,7 +140,7 @@ describe('ol.webgl.styleparser', function () {
       const result = parseLiteralStyle({
         symbol: {
           symbolType: 'square',
-          size: ['var', variableName],
+          size: ['var', variableName, 'number_array'],
           color: 'red',
         },
       });
@@ -216,7 +217,7 @@ describe('ol.webgl.styleparser', function () {
         const result = parseLiteralStyle({
           symbol: {
             symbolType: 'square',
-            size: ['get', 'attr1'],
+            size: ['get', 'attr1', 'number'],
             color: [255, 127.5, 63.75, 0.25],
             textureCoord: [0.5, 0.5, 0.5, 1],
             offset: [
@@ -407,6 +408,162 @@ describe('ol.webgl.styleparser', function () {
         expect(result.attributes.length).to.eql(1);
         expect(result.attributes[0].name).to.eql('intensity');
         expect(result.uniforms).to.have.property('u_var_scale');
+      });
+    });
+
+    describe('handle attributes of types other that number', () => {
+      let parseResult;
+      beforeEach(() => {
+        parseResult = parseLiteralStyle({
+          ['fill-color']: [
+            'case',
+            ['get', 'transparent'],
+            'transparent',
+            ['get', 'fillColor'],
+          ],
+          ['stroke-width']: [
+            'match',
+            ['get', 'lineType'],
+            'low',
+            ['get', 'lineWidth'],
+            'high',
+            ['*', ['get', 'lineWidth'], 2],
+            1.5,
+          ],
+          symbol: {
+            symbolType: 'square',
+            color: ['get', 'color'],
+            size: ['get', 'iconSize', 'number_array'],
+          },
+        });
+      });
+      it('adds attributes to the shader builder', () => {
+        expect(parseResult.builder.attributes).to.eql([
+          'vec4 a_iconSize',
+          'vec2 a_color',
+          'float a_lineType',
+          'float a_lineWidth',
+          'vec2 a_fillColor',
+          'float a_transparent',
+        ]);
+      });
+      it('adds varyings to the shader builder', () => {
+        expect(parseResult.builder.varyings).to.eql([
+          {name: 'v_color', type: 'vec4', expression: 'unpackColor(a_color)'},
+          {name: 'v_iconSize', type: 'vec4', expression: 'a_iconSize'},
+          {name: 'v_lineType', type: 'float', expression: 'a_lineType'},
+          {name: 'v_lineWidth', type: 'float', expression: 'a_lineWidth'},
+          {
+            name: 'v_fillColor',
+            type: 'vec4',
+            expression: 'unpackColor(a_fillColor)',
+          },
+          {name: 'v_transparent', type: 'float', expression: 'a_transparent'},
+        ]);
+      });
+      it('adds unpack color function to the shader builder', () => {
+        expect(parseResult.builder.vertexShaderFunctions.length).to.eql(1);
+        expect(parseResult.builder.vertexShaderFunctions[0]).to.contain(
+          'vec4 unpackColor('
+        );
+      });
+      it('returns attributes with their callbacks in the result', () => {
+        expect(parseResult.attributes).to.eql([
+          {name: 'iconSize', size: 4, callback: {}},
+          {name: 'color', size: 2, callback: {}},
+          {name: 'lineType', size: 1, callback: {}},
+          {name: 'lineWidth', size: 1, callback: {}},
+          {name: 'fillColor', size: 2, callback: {}},
+          {name: 'transparent', size: 1, callback: {}},
+        ]);
+      });
+      it('processes the feature attributes according to their types', () => {
+        const feature = new Feature({
+          iconSize: [12, 18],
+          color: 'pink',
+          lineType: 'low',
+          lineWidth: 0.5,
+          fillColor: 'rgba(123, 240, 100, 0.3)',
+          transparent: true,
+        });
+        expect(parseResult.attributes[0].callback(feature)).to.eql([12, 18]);
+        expect(parseResult.attributes[1].callback(feature)).to.eql(
+          packColor(asArray('pink'))
+        );
+        expect(parseResult.attributes[2].callback(feature)).to.be.a('number');
+        expect(parseResult.attributes[3].callback(feature)).to.eql(0.5);
+        expect(parseResult.attributes[4].callback(feature)).to.eql(
+          packColor(asArray('rgba(123, 240, 100, 0.3)'))
+        );
+        expect(parseResult.attributes[5].callback(feature)).to.eql(1);
+      });
+    });
+
+    describe('handle uniforms of types other that number', () => {
+      let parseResult;
+      beforeEach(() => {
+        parseResult = parseLiteralStyle({
+          variables: {
+            iconSize: [12, 18],
+            color: 'pink',
+            lineType: 'low',
+            lineWidth: 0.5,
+            fillColor: 'rgba(123, 240, 100, 0.3)',
+            transparent: true,
+          },
+          ['fill-color']: [
+            'case',
+            ['var', 'transparent'],
+            'transparent',
+            ['var', 'fillColor'],
+          ],
+          ['stroke-width']: [
+            'match',
+            ['var', 'lineType'],
+            'low',
+            ['var', 'lineWidth'],
+            'high',
+            ['*', ['var', 'lineWidth'], 2],
+            1.5,
+          ],
+          symbol: {
+            symbolType: 'square',
+            color: ['var', 'color'],
+            size: ['var', 'iconSize', 'number_array'],
+          },
+        });
+      });
+      it('adds uniforms to the shader builder', () => {
+        expect(parseResult.builder.uniforms).to.eql([
+          'vec4 u_var_iconSize',
+          'vec2 u_var_color',
+          'float u_var_lineType',
+          'float u_var_lineWidth',
+          'vec2 u_var_fillColor',
+          'float u_var_transparent',
+        ]);
+      });
+      it('returns uniforms in the result', () => {
+        expect(Object.keys(parseResult.uniforms)).to.eql([
+          'u_var_iconSize',
+          'u_var_color',
+          'u_var_lineType',
+          'u_var_lineWidth',
+          'u_var_fillColor',
+          'u_var_transparent',
+        ]);
+      });
+      it('processes uniforms according to their types', () => {
+        expect(parseResult.uniforms['u_var_iconSize']()).to.eql([12, 18]);
+        expect(parseResult.uniforms['u_var_color']()).to.eql(
+          packColor(asArray('pink'))
+        );
+        expect(parseResult.uniforms['u_var_lineType']()).to.be.a('number');
+        expect(parseResult.uniforms['u_var_lineWidth']()).to.eql(0.5);
+        expect(parseResult.uniforms['u_var_fillColor']()).to.eql(
+          packColor(asArray('rgba(123, 240, 100, 0.3)'))
+        );
+        expect(parseResult.uniforms['u_var_transparent']()).to.eql(1);
       });
     });
   });
