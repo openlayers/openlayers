@@ -285,5 +285,59 @@ class Circle extends SimpleGeometry {
   transform(source, destination) {
     return /** @type {Circle} */ (super.transform(source, destination));
   }
+
+  /**
+   * Transform the circle from one coordinate reference system to another.
+   * The geometry is modified in place.
+   * If you do not want the geometry modified in place, first clone() it and
+   * then use this function on the clone.
+   *
+   * Internally the resulting geometry is represented by two points: the center of
+   * the circle `[cx, cy]`, and the point to the right of the circle
+   * `[cx + r, cy]`. This function is not reversible but the `transform` method can be
+   * used to return a circle in the original projection with center and radius similar
+   * to the original values although the second point from which the radius is calculated
+   * may be different.  This is useful for interactions which work internally in view
+   * projection and return results in a user projection.
+   *
+   * @param {import("../proj.js").ProjectionLike} source The current projection.  Can be a
+   *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
+   * @param {import("../proj.js").ProjectionLike} destination The desired projection.  Can be a
+   *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
+   * @return {Circle} This geometry.  Note that original geometry is
+   *     modified in place.
+   */
+  transformToNormalCircle(source, destination) {
+    const TARGET_TOLERANCE = 1e-11;
+    const MAX_ATTEMPTS = 6;
+
+    const circle = this.clone();
+    const radius = circle.getRadius();
+    // adjust radius to fit [cx + r, cy] when transformed
+    for (let i = 0; i < MAX_ATTEMPTS; ++i) {
+      const circleGeometry = circle.clone();
+      circleGeometry.transform(source, destination);
+      circleGeometry.setRadius(circleGeometry.getRadius());
+      const currentRadius = circleGeometry
+        .transform(destination, source)
+        .getRadius();
+      if (
+        currentRadius === radius ||
+        Math.abs(currentRadius - radius) / radius < TARGET_TOLERANCE
+      ) {
+        break;
+      }
+      if (currentRadius > 0) {
+        circle.scale(radius / currentRadius, undefined, circle.getCenter());
+      }
+    }
+    circle.transform(source, destination);
+    this.setCenterAndRadius(
+      circle.getCenter(),
+      circle.getRadius(),
+      this.layout
+    );
+    return this;
+  }
 }
 export default Circle;
