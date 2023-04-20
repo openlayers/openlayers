@@ -396,7 +396,7 @@ describe('ol.webgl.styleparser', function () {
           symbol: {
             symbolType: 'square',
             color: ['get', 'color'],
-            size: ['get', 'iconSize', 'number_array'],
+            size: ['get', 'iconSize', 'number[]'],
           },
         });
       });

@@ -209,7 +209,7 @@ describe('ol/style/expressions', function () {
       expect(getValueType(['get', 'myAttr', 'boolean'])).to.eql(
         ValueTypes.BOOLEAN
       );
-      expect(getValueType(['get', 'myAttr', 'number_array'])).to.eql(
+      expect(getValueType(['get', 'myAttr', 'number[]'])).to.eql(
         ValueTypes.NUMBER_ARRAY
       );
       expect(getValueType(['get', 'myAttr', 'color'])).to.eql(ValueTypes.COLOR);

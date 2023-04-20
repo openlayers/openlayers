@@ -128,7 +128,7 @@ function getTypeFromHint(typeHint) {
       return ValueTypes.NUMBER;
     case 'boolean':
       return ValueTypes.BOOLEAN;
-    case 'number_array':
+    case 'number[]':
       return ValueTypes.NUMBER_ARRAY;
     default:
       throw new Error(`Unrecognized type hint: ${typeHint}`);
