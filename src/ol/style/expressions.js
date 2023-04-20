@@ -21,10 +21,9 @@ import {asArray, fromString, isStringColor} from '../color.js';
  *     of bands, depending on the underlying data source and
  *     {@link import("../source/GeoTIFF.js").Options configuration}. `xOffset` and `yOffset` are optional
  *     and allow specifying pixel offsets for x and y. This is used for sampling data from neighboring pixels.
- *   * `['get', 'attributeName', typeHint]` fetches a feature attribute (it will be prefixed by `a_` in the shader)
- *     Note: those will be taken from the attributes provided to the renderer
- *     A type hint can optionally be specified, in case the resulting expression contains a type uncertainty which
- *     will make it invalid. Type hints can be one of: 'string', 'color', 'number', 'boolean', 'number_array'
+ *   * `['get', 'attributeName', typeHint]` fetches a feature property value, similar to `feature.get('attributeName')`
+ *     A type hint can optionally be specified, in case the resulting expression contains a type ambiguity which
+ *     will make it invalid. Type hints can be one of: 'string', 'color', 'number', 'boolean', 'number[]'
  *   * `['resolution']` returns the current resolution
  *   * `['time']` returns the time in seconds since the creation of the layer
  *   * `['var', 'varName']` fetches a value from the style variables; will throw an error if that variable is undefined
@@ -92,6 +91,7 @@ import {asArray, fromString, isStringColor} from '../color.js';
  * Literal values can be of the following types:
  * * `boolean`
  * * `number`
+ * * `number[]` (number arrays can only have a length of 2, 3 or 4)
  * * `string`
  * * {@link module:ol/color~Color}
  *
