@@ -113,46 +113,6 @@ describe('ol.webgl.styleparser', function () {
       expect(result.uniforms[uniformName]()).to.be.greaterThan(0);
     });
 
-    it('throws when a variable is requested but not present in the style', function (done) {
-      const varName = 'mySize';
-      const uniformName = uniformNameForVariable(varName);
-
-      const result = parseLiteralStyle({
-        variables: {},
-        symbol: {
-          symbolType: 'square',
-          size: ['var', varName, 'number_array'],
-          color: 'red',
-        },
-      });
-
-      try {
-        result.uniforms[uniformName]();
-      } catch (e) {
-        done();
-      }
-      done(true);
-    });
-
-    it('throws when a variable is requested but the style does not have a variables dict', function (done) {
-      const variableName = 'mySize';
-      const uniformName = uniformNameForVariable(variableName);
-      const result = parseLiteralStyle({
-        symbol: {
-          symbolType: 'square',
-          size: ['var', variableName, 'number_array'],
-          color: 'red',
-        },
-      });
-
-      try {
-        result.uniforms[uniformName]();
-      } catch (e) {
-        done();
-      }
-      done(true);
-    });
-
     it('reads when symbol, stroke or fill styles are present', function () {
       const result = parseLiteralStyle({
         variables: {
@@ -292,6 +252,9 @@ describe('ol.webgl.styleparser', function () {
         const varName = 'ratio';
         const uniformName = uniformNameForVariable(varName);
         const result = parseLiteralStyle({
+          variables: {
+            [varName]: 0.5,
+          },
           symbol: {
             symbolType: 'square',
             size: 6,
@@ -529,7 +492,7 @@ describe('ol.webgl.styleparser', function () {
           symbol: {
             symbolType: 'square',
             color: ['var', 'color'],
-            size: ['var', 'iconSize', 'number_array'],
+            size: ['var', 'iconSize'],
           },
         });
       });

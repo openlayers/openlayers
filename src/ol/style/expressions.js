@@ -27,8 +27,7 @@ import {asArray, fromString, isStringColor} from '../color.js';
  *     will make it invalid. Type hints can be one of: 'string', 'color', 'number', 'boolean', 'number_array'
  *   * `['resolution']` returns the current resolution
  *   * `['time']` returns the time in seconds since the creation of the layer
- *   * `['var', 'varName', typeHint]` fetches a value from the style variables; will throw an error if variable is undefined
- *     A type hint can optionally be specified (see 'get' operator)
+ *   * `['var', 'varName']` fetches a value from the style variables; will throw an error if that variable is undefined
  *   * `['zoom']` returns the current zoom level
  *
  * * Math operators:
@@ -251,6 +250,7 @@ function printTypes(valueType) {
  * @property {Object<string, string>} functions Lookup of functions used by the style.
  * @property {number} [bandCount] Number of bands per pixel.
  * @property {Array<PaletteTexture>} [paletteTextures] List of palettes used by the style.
+ * @property {import("../style/literal").LiteralStyle} style The style being parsed
  */
 
 /**
@@ -511,14 +511,24 @@ export function uniformNameForVariable(variableName) {
 }
 
 Operators['var'] = {
-  getReturnType: Operators['get'].getReturnType,
+  getReturnType: function () {
+    return ValueTypes.ANY;
+  },
   toGlsl: function (context, args, expectedType) {
-    assertArgsMinCount(args, 1);
-    assertArgsMaxCount(args, 2);
+    assertArgsCount(args, 1);
     assertString(args[0]);
-    const outputType = expectedType & Operators['get'].getReturnType(args);
-    assertSingleType(['get', ...args], outputType, '');
     const name = args[0].toString();
+    if (
+      !context.style.variables ||
+      context.style.variables[name] === undefined
+    ) {
+      throw new Error(
+        `The following variable is missing from the style: ${name}`
+      );
+    }
+    const initialValue = context.style.variables[name];
+    const outputType = expectedType & getValueType(initialValue);
+    assertSingleType(['var', ...args], outputType, '');
     const existing = context.variables.find((a) => a.name === name);
     if (!existing) {
       context.variables.push({

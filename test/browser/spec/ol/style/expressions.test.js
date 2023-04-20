@@ -71,6 +71,7 @@ describe('ol/style/expressions', function () {
       context = {
         stringLiteralsMap: {},
         functions: {},
+        style: {},
       };
     });
 
@@ -142,7 +143,7 @@ describe('ol/style/expressions', function () {
 
     it('correctly analyzes operator return types', function () {
       expect(getValueType(['get', 'myAttr'])).to.eql(ValueTypes.ANY);
-      expect(getValueType(['var', 'myValue'])).to.eql(ValueTypes.ANY);
+      expect(getValueType(['var', 'myVar'])).to.eql(ValueTypes.ANY);
       expect(getValueType(['time'])).to.eql(ValueTypes.NUMBER);
       expect(getValueType(['zoom'])).to.eql(ValueTypes.NUMBER);
       expect(getValueType(['resolution'])).to.eql(ValueTypes.NUMBER);
@@ -213,26 +214,8 @@ describe('ol/style/expressions', function () {
       );
       expect(getValueType(['get', 'myAttr', 'color'])).to.eql(ValueTypes.COLOR);
     });
-    it('correctly analyzes var operator return type with hint', function () {
-      expect(getValueType(['var', 'myAttr', 'number'])).to.eql(
-        ValueTypes.NUMBER
-      );
-      expect(getValueType(['var', 'myAttr', 'string'])).to.eql(
-        ValueTypes.STRING
-      );
-      expect(getValueType(['var', 'myAttr', 'boolean'])).to.eql(
-        ValueTypes.BOOLEAN
-      );
-      expect(getValueType(['var', 'myAttr', 'number_array'])).to.eql(
-        ValueTypes.NUMBER_ARRAY
-      );
-      expect(getValueType(['var', 'myAttr', 'color'])).to.eql(ValueTypes.COLOR);
-    });
     it('throws on invalid hint', function () {
       expect(() => getValueType(['get', 'myAttr', 'weird-type'])).to.throwError(
-        /Unrecognized type hint/
-      );
-      expect(() => getValueType(['var', 'myAttr', 'weird-type'])).to.throwError(
         /Unrecognized type hint/
       );
     });
@@ -247,13 +230,19 @@ describe('ol/style/expressions', function () {
         attributes: [],
         stringLiteralsMap: {},
         functions: {},
+        style: {
+          variables: {
+            myVar: 12,
+            myVar2: 16,
+          },
+        },
       };
     });
 
     it('correctly converts expressions to GLSL', function () {
       expect(expressionToGlsl(context, ['get', 'myAttr'])).to.eql('a_myAttr');
-      expect(expressionToGlsl(context, ['var', 'myValue'])).to.eql(
-        uniformNameForVariable('myValue')
+      expect(expressionToGlsl(context, ['var', 'myVar'])).to.eql(
+        uniformNameForVariable('myVar')
       );
       expect(expressionToGlsl(context, ['time'])).to.eql('u_time');
       expect(expressionToGlsl(context, ['zoom'])).to.eql('u_zoom');
@@ -525,6 +514,12 @@ describe('ol/style/expressions', function () {
       }
       expect(thrown).to.be(true);
     });
+
+    it('throws when using a variable not defined in the style', () => {
+      expect(() => expressionToGlsl(context, ['var', 'myAttr'])).to.throwError(
+        /variable is missing/
+      );
+    });
   });
 
   describe('case operator', function () {
@@ -536,6 +531,7 @@ describe('ol/style/expressions', function () {
         attributes: [],
         stringLiteralsMap: {},
         functions: {},
+        style: {},
       };
     });
 
@@ -681,6 +677,7 @@ describe('ol/style/expressions', function () {
         attributes: [],
         stringLiteralsMap: {},
         functions: {},
+        style: {},
       };
     });
 
@@ -902,6 +899,11 @@ describe('ol/style/expressions', function () {
         attributes: [],
         stringLiteralsMap: {},
         functions: {},
+        style: {
+          variables: {
+            value: 12,
+          },
+        },
       };
     });
 
@@ -1176,6 +1178,12 @@ describe('ol/style/expressions', function () {
         attributes: [],
         stringLiteralsMap: {},
         functions: {},
+        style: {
+          variables: {
+            defaultWidth: 12,
+            defaultHeight: 24,
+          },
+        },
       };
     });
 
@@ -1253,6 +1261,18 @@ describe('ol/style/expressions', function () {
         attributes: [],
         stringLiteralsMap: {},
         functions: {},
+        style: {
+          variables: {
+            color: 'red',
+            fixedSize: [10, 20],
+            selected: true,
+            symbolType: 'dynamic',
+            oldColor: 'blue',
+            newColor: 'green',
+            lowHeight: 6,
+            mediumHeight: 12,
+          },
+        },
       };
     });
 
@@ -1441,6 +1461,25 @@ describe('ol/style/expressions', function () {
         thrown = true;
       }
       expect(thrown).to.eql(true);
+    });
+
+    it('throws if a variable is used with the wrong type', () => {
+      expect(() =>
+        expressionToGlsl(context, ['var', 'oldColor'], ValueTypes.NUMBER)
+      ).to.throwError(/No matching type/);
+    });
+
+    it('throws if a type ambiguity remains when using a variable', () => {
+      expect(() =>
+        expressionToGlsl(context, ['var', 'oldColor'], ValueTypes.ANY)
+      ).to.throwError(/unique type/);
+    });
+
+    it('throws a variable initial value is null', () => {
+      context.style.variables.oldColor = null;
+      expect(() =>
+        expressionToGlsl(context, ['var', 'oldColor'], ValueTypes.COLOR)
+      ).to.throwError(/Unhandled value type/);
     });
   });
 });

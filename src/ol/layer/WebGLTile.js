@@ -124,6 +124,7 @@ function parseStyle(style, bandCount) {
     stringLiteralsMap: {},
     functions: {},
     bandCount: bandCount,
+    style: style,
   };
 
   const pipeline = [];

@@ -264,6 +264,7 @@ export function parseLiteralStyle(style) {
     attributes: [],
     stringLiteralsMap: {},
     functions: {},
+    style: style,
   };
 
   /**
@@ -275,6 +276,7 @@ export function parseLiteralStyle(style) {
     attributes: [],
     stringLiteralsMap: vertContext.stringLiteralsMap,
     functions: {},
+    style: style,
   };
 
   const builder = new ShaderBuilder();
@@ -318,26 +320,27 @@ export function parseLiteralStyle(style) {
     const uniformName = uniformNameForVariable(variable.name);
     builder.addUniform(`${getGlslTypeFromType(variable.type)} ${uniformName}`);
 
-    /**
-     * @return {any} Current variable value
-     */
-    const getValue = () => {
-      if (!style.variables || style.variables[variable.name] === undefined) {
-        throw new Error(
-          `The following variable is missing from the style: ${variable.name}`
-        );
-      }
-      return style.variables[variable.name];
-    };
     let callback;
     if (variable.type === ValueTypes.STRING) {
-      callback = () => getStringNumberEquivalent(vertContext, getValue());
+      callback = () =>
+        getStringNumberEquivalent(
+          vertContext,
+          /** @type {string} */ (style.variables[variable.name])
+        );
     } else if (variable.type === ValueTypes.COLOR) {
-      callback = () => packColor([...asArray(getValue() || '#eee')]);
+      callback = () =>
+        packColor([
+          ...asArray(
+            /** @type {string|Array<number>} */ (
+              style.variables[variable.name]
+            ) || '#eee'
+          ),
+        ]);
     } else if (variable.type === ValueTypes.BOOLEAN) {
-      callback = () => (getValue() ? 1.0 : 0.0);
+      callback = () =>
+        /** @type {boolean} */ (style.variables[variable.name]) ? 1.0 : 0.0;
     } else {
-      callback = getValue;
+      callback = () => /** @type {number} */ (style.variables[variable.name]);
     }
     uniforms[uniformName] = callback;
   });
