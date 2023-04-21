@@ -20,7 +20,7 @@ export const WebGLWorkerMessageType = {
  * @property {number} id Message id; will be used both in request and response as a means of identification
  * @property {WebGLWorkerMessageType} type Message type
  * @property {ArrayBuffer} renderInstructions Polygon render instructions raw binary buffer.
- * @property {number} [customAttributesCount] Amount of custom attributes count in the polygon render instructions.
+ * @property {number} [customAttributesSize] Amount of custom attributes count in the polygon render instructions.
  * @property {ArrayBuffer} [vertexBuffer] Vertices array raw binary buffer (sent by the worker).
  * @property {ArrayBuffer} [indexBuffer] Indices array raw binary buffer (sent by the worker).
  * @property {import("../../transform").Transform} [renderInstructionsTransform] Transformation matrix used to project the instructions coordinates

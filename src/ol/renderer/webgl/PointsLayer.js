@@ -639,7 +639,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       id: ++this.lastSentId,
       type: WebGLWorkerMessageType.GENERATE_POINT_BUFFERS,
       renderInstructions: this.renderInstructions_.buffer,
-      customAttributesCount: this.customAttributes.length,
+      customAttributesSize: this.customAttributes.length,
     };
     // additional properties will be sent back as-is by the worker
     message['projectionTransform'] = projectionTransform;
@@ -653,7 +653,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
         id: 0,
         type: WebGLWorkerMessageType.GENERATE_POINT_BUFFERS,
         renderInstructions: this.hitRenderInstructions_.buffer,
-        customAttributesCount: 5 + this.customAttributes.length,
+        customAttributesSize: 5 + this.customAttributes.length,
       };
       hitMessage['projectionTransform'] = projectionTransform;
       hitMessage['hitDetection'] = true;

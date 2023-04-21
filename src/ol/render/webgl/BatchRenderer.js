@@ -12,7 +12,9 @@ import {
  * @typedef {Object} CustomAttribute A description of a custom attribute to be passed on to the GPU, with a value different
  * for each feature.
  * @property {string} name Attribute name.
- * @property {function(import("../../Feature").FeatureLike):number} callback This callback computes the numerical value of the
+ * @property {number} [size] Amount of numerical values composing the attribute, either 1, 2, 3 or 4; in case size is > 1, the return value
+ * of the callback should be an array; if unspecified, assumed to be a single float value
+ * @property {function(import("../../Feature").FeatureLike):number|Array<number>} callback This callback computes the numerical value of the
  * attribute for a given feature.
  */
 
@@ -62,6 +64,16 @@ class AbstractBatchRenderer {
      * @protected
      */
     this.customAttributes = customAttributes;
+
+    /**
+     * Amount of numerical values taken by the custom attributes
+     * @type {number}
+     * @protected
+     */
+    this.customAttributesSize = this.customAttributes.reduce(
+      (prev, curr) => prev + (curr.size || 1),
+      0
+    );
   }
 
   /**
@@ -144,7 +156,7 @@ class AbstractBatchRenderer {
       type: messageType,
       renderInstructions: batch.renderInstructions.buffer,
       renderInstructionsTransform: batch.renderInstructionsTransform,
-      customAttributesCount: this.customAttributes.length,
+      customAttributesSize: this.customAttributesSize,
     };
     this.worker_.postMessage(message, [batch.renderInstructions.buffer]);
 
@@ -187,6 +199,35 @@ class AbstractBatchRenderer {
       };
 
     this.worker_.addEventListener('message', handleMessage);
+  }
+
+  /**
+   * @protected
+   * @param {import("./MixedGeometryBatch.js").GeometryBatch} batch Geometry batch
+   * @param {import("./MixedGeometryBatch.js").GeometryBatchItem} batchEntry Batch item
+   * @param {number} currentIndex Current index
+   * @return {number} The amount of values pushed
+   */
+  pushCustomAttributesInRenderInstructions(batch, batchEntry, currentIndex) {
+    let shift = 0;
+    for (let k = 0, kk = this.customAttributes.length; k < kk; k++) {
+      const attr = this.customAttributes[k];
+      const value = attr.callback(batchEntry.feature);
+      batch.renderInstructions[currentIndex + shift++] = value[0] || value;
+      if (!attr.size || attr.size === 1) {
+        continue;
+      }
+      batch.renderInstructions[currentIndex + shift++] = value[1];
+      if (attr.size < 3) {
+        continue;
+      }
+      batch.renderInstructions[currentIndex + shift++] = value[2];
+      if (attr.size < 4) {
+        continue;
+      }
+      batch.renderInstructions[currentIndex + shift++] = value[3];
+    }
+    return shift;
   }
 }
 

@@ -17,9 +17,12 @@ import {
   POINT_VERTEX_SHADER,
   STROKE_FRAGMENT_SHADER,
   STROKE_VERTEX_SHADER,
-  packColor,
 } from './shaders.js';
 import {buffer, createEmpty, equals, getWidth} from '../../extent.js';
+import {
+  create as createMat4,
+  fromTransform as mat4FromTransform,
+} from '../../vec/mat4.js';
 import {
   create as createTransform,
   multiply as multiplyTransform,
@@ -28,6 +31,7 @@ import {
 } from '../../transform.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {listen, unlistenByKey} from '../../events.js';
+import {packColor} from '../../webgl/styleparser.js';
 
 export const Uniforms = {
   ...DefaultUniform,
@@ -36,37 +40,34 @@ export const Uniforms = {
 };
 
 /**
- * @typedef {function(import("../../Feature").default, Object<string, *>):number} CustomAttributeCallback A callback computing
+ * @typedef {function(import("../../Feature").default):number|Array<number>} AttributeCallback A callback computing
  * the value of a custom attribute (different for each feature) to be passed on to the GPU.
  * Properties are available as 2nd arg for quicker access.
  */
 
 /**
- * @typedef {Object} ShaderProgram An object containing both shaders (vertex and fragment) as well as the required attributes
- * @property {string} [vertexShader] Vertex shader source (using the default one if unspecified).
- * @property {string} [fragmentShader] Fragment shader source (using the default one if unspecified).
- * @property {Object<import("./shaders.js").DefaultAttributes,CustomAttributeCallback>} attributes Custom attributes made available in the vertex shader.
- * Keys are the names of the attributes which are then accessible in the vertex shader using the `a_` prefix, e.g.: `a_opacity`.
- * Default shaders rely on the attributes in {@link module:ol/render/webgl/shaders~DefaultAttributes}.
+ * @typedef {Object} CustomShaderProgram An object containing custom shaders (vertex and fragment); uses attributes and uniforms
+ * provided to the renderer
+ * @property {string} vertexShader Vertex shader source.
+ * @property {string} fragmentShader Fragment shader source.
+ */
+
+/**
+ * @typedef {Object} DefaultShaderProgram An object containing attribute callbacks for the default shaders
+ * @property {AttributeCallback} [color] Color value, encoded in a [number, number] array (use the {@link module:ol/webgl/styleparser~packColor} function)
+ * @property {AttributeCallback} [width] Stroke width value
  */
 
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the canvas element.
- * @property {ShaderProgram} [fill] Attributes and shaders for filling polygons.
- * @property {ShaderProgram} [stroke] Attributes and shaders for line strings and polygon strokes.
- * @property {ShaderProgram} [point] Attributes and shaders for points.
+ * @property {CustomShaderProgram|DefaultShaderProgram} [fill] Shaders for filling polygons.
+ * @property {CustomShaderProgram|DefaultShaderProgram} [stroke] Shaders for line strings and polygon strokes.
+ * @property {CustomShaderProgram|DefaultShaderProgram} [point] Shaders for points.
  * @property {Object<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions.
+ * @property {Array<import("../../render/webgl/BatchRenderer.js").CustomAttribute>} [attributes] Attribute definitions.
  * @property {Array<import("./Layer").PostProcessesOptions>} [postProcesses] Post-processes definitions
  */
-
-/**
- * @param {Object<import("./shaders.js").DefaultAttributes,CustomAttributeCallback>} obj Lookup of attribute getters.
- * @return {Array<import("../../render/webgl/BatchRenderer").CustomAttribute>} An array of attribute descriptors.
- */
-function toAttributesArray(obj) {
-  return Object.keys(obj).map((key) => ({name: key, callback: obj[key]}));
-}
 
 /**
  * @classdesc
@@ -93,8 +94,6 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    */
   constructor(layer, options) {
     const uniforms = options.uniforms || {};
-    const projectionMatrixTransform = createTransform();
-    uniforms[Uniforms.PROJECTION_MATRIX] = projectionMatrixTransform;
     uniforms[Uniforms.RENDER_EXTENT] = [0, 0, 0, 0];
     uniforms[Uniforms.GLOBAL_ALPHA] = 1;
 
@@ -114,7 +113,10 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
      * @type {import("../../transform.js").Transform}
      * @private
      */
-    this.currentTransform_ = projectionMatrixTransform;
+    this.currentTransform_ = createTransform();
+
+    this.tmpTransform_ = createTransform();
+    this.tmpMat4_ = createMat4();
 
     /**
      * @type {import("../../transform.js").Transform}
@@ -122,62 +124,83 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
      */
     this.currentFrameStateTransform_ = createTransform();
 
-    const fillAttributes = {
-      color: function () {
-        return packColor('#ddd');
-      },
-      opacity: function () {
-        return 1;
-      },
-      ...(options.fill && options.fill.attributes),
-    };
-
-    const strokeAttributes = {
-      color: function () {
-        return packColor('#eee');
-      },
-      opacity: function () {
-        return 1;
-      },
-      width: function () {
-        return 1.5;
-      },
-      ...(options.stroke && options.stroke.attributes),
-    };
-
-    const pointAttributes = {
-      color: function () {
-        return packColor('#eee');
-      },
-      opacity: function () {
-        return 1;
-      },
-      ...(options.point && options.point.attributes),
-    };
-
-    this.fillVertexShader_ =
-      (options.fill && options.fill.vertexShader) || FILL_VERTEX_SHADER;
-    this.fillFragmentShader_ =
-      (options.fill && options.fill.fragmentShader) || FILL_FRAGMENT_SHADER;
-    this.fillAttributes_ = toAttributesArray(fillAttributes);
-
-    this.strokeVertexShader_ =
-      (options.stroke && options.stroke.vertexShader) || STROKE_VERTEX_SHADER;
-    this.strokeFragmentShader_ =
-      (options.stroke && options.stroke.fragmentShader) ||
-      STROKE_FRAGMENT_SHADER;
-    this.strokeAttributes_ = toAttributesArray(strokeAttributes);
-
-    this.pointVertexShader_ =
-      (options.point && options.point.vertexShader) || POINT_VERTEX_SHADER;
-    this.pointFragmentShader_ =
-      (options.point && options.point.fragmentShader) || POINT_FRAGMENT_SHADER;
-    this.pointAttributes_ = toAttributesArray(pointAttributes);
-
     /**
      * @private
      */
     this.worker_ = createWebGLWorker();
+
+    /**
+     * @type {PolygonBatchRenderer}
+     * @private
+     */
+    this.polygonRenderer_ = null;
+    /**
+     * @type {PointBatchRenderer}
+     * @private
+     */
+    this.pointRenderer_ = null;
+
+    /**
+     * @type {LineStringBatchRenderer}
+     * @private
+     */
+    this.lineStringRenderer_ = null;
+
+    /**
+     * @type {string}
+     * @private
+     */
+    this.fillVertexShader_;
+
+    /**
+     * @type {string}
+     * @private
+     */
+    this.fillFragmentShader_;
+
+    /**
+     * @type {string}
+     * @private
+     */
+    this.strokeVertexShader_;
+
+    /**
+     * @type {string}
+     * @private
+     */
+    this.strokeFragmentShader_;
+
+    /**
+     * @type {string}
+     * @private
+     */
+    this.pointVertexShader_;
+
+    /**
+     * @type {string}
+     * @private
+     */
+    this.pointFragmentShader_;
+
+    /**
+     * @type {Array<import('../../render/webgl/BatchRenderer.js').CustomAttribute>}
+     * @private
+     */
+    this.fillAttributes_;
+
+    /**
+     * @type {Array<import('../../render/webgl/BatchRenderer.js').CustomAttribute>}
+     * @private
+     */
+    this.strokeAttributes_;
+
+    /**
+     * @type {Array<import('../../render/webgl/BatchRenderer.js').CustomAttribute>}
+     * @private
+     */
+    this.pointAttributes_;
+
+    this.applyOptions_(options);
 
     /**
      * @private
@@ -214,7 +237,89 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     ];
   }
 
-  afterHelperCreated() {
+  /**
+   * @param {Options} options Options.
+   * @private
+   */
+  applyOptions_(options) {
+    this.fillAttributes_ = [];
+    this.strokeAttributes_ = [];
+    this.pointAttributes_ = [];
+
+    if (options.fill && 'vertexShader' in options.fill) {
+      this.fillVertexShader_ = options.fill.vertexShader;
+      this.fillFragmentShader_ = options.fill.fragmentShader;
+    } else {
+      this.fillVertexShader_ = FILL_VERTEX_SHADER;
+      this.fillFragmentShader_ = FILL_FRAGMENT_SHADER;
+      const colorCallback =
+        options.fill && 'color' in options.fill
+          ? options.fill.color
+          : () => packColor('#ddd');
+      this.fillAttributes_.push({
+        name: 'color',
+        size: 2,
+        callback: colorCallback,
+      });
+    }
+
+    if (options.stroke && 'vertexShader' in options.stroke) {
+      this.strokeVertexShader_ = options.stroke.vertexShader;
+      this.strokeFragmentShader_ = options.stroke.fragmentShader;
+    } else {
+      this.strokeVertexShader_ = STROKE_VERTEX_SHADER;
+      this.strokeFragmentShader_ = STROKE_FRAGMENT_SHADER;
+      const colorCallback =
+        options.stroke && 'color' in options.stroke
+          ? options.stroke.color
+          : () => packColor('#eee');
+      const widthCallback =
+        options.stroke && 'width' in options.stroke
+          ? options.stroke.width
+          : () => 1.5;
+      this.strokeAttributes_.push(
+        {
+          name: 'color',
+          size: 2,
+          callback: colorCallback,
+        },
+        {
+          name: 'width',
+          callback: widthCallback,
+        }
+      );
+    }
+
+    if (options.point && 'vertexShader' in options.point) {
+      this.pointVertexShader_ = options.point.vertexShader;
+      this.pointFragmentShader_ = options.point.fragmentShader;
+    } else {
+      this.pointVertexShader_ = POINT_VERTEX_SHADER;
+      this.pointFragmentShader_ = POINT_FRAGMENT_SHADER;
+      const colorCallback =
+        options.point && 'color' in options.point
+          ? options.point.color
+          : () => packColor('#eee');
+      this.pointAttributes_.push({
+        name: 'color',
+        size: 2,
+        callback: colorCallback,
+      });
+    }
+
+    if (options.attributes) {
+      this.fillAttributes_ = this.fillAttributes_.concat(options.attributes);
+      this.strokeAttributes_ = this.strokeAttributes_.concat(
+        options.attributes
+      );
+      this.pointAttributes_ = this.pointAttributes_.concat(options.attributes);
+    }
+  }
+
+  /**
+   * @private
+   */
+  createRenderers_() {
     this.polygonRenderer_ = new PolygonBatchRenderer(
       this.helper,
       this.worker_,
@@ -236,6 +341,18 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       this.strokeFragmentShader_,
       this.strokeAttributes_
     );
+  }
+
+  reset(options) {
+    this.applyOptions_(options);
+    if (this.helper) {
+      this.createRenderers_();
+    }
+    super.reset(options);
+  }
+
+  afterHelperCreated() {
+    this.createRenderers_();
   }
 
   /**
@@ -273,6 +390,20 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
+   * @param {import("../../transform.js").Transform} batchInvertTransform Inverse of the transformation in which geometries are expressed
+   * @private
+   */
+  applyUniforms_(batchInvertTransform) {
+    // world to screen matrix
+    setFromTransform(this.tmpTransform_, this.currentFrameStateTransform_);
+    multiplyTransform(this.tmpTransform_, batchInvertTransform);
+    this.helper.setUniformMatrixValue(
+      Uniforms.PROJECTION_MATRIX,
+      mat4FromTransform(this.tmpMat4_, this.tmpTransform_)
+    );
+  }
+
+  /**
    * Render the layer.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {HTMLElement} The rendered element.
@@ -280,6 +411,12 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   renderFrame(frameState) {
     const gl = this.helper.getGL();
     this.preRender(gl, frameState);
+
+    this.helper.prepareDraw(frameState);
+    this.currentFrameStateTransform_ = this.helper.makeProjectionTransform(
+      frameState,
+      this.currentFrameStateTransform_
+    );
 
     const layer = this.getLayer();
     const vectorSource = layer.getSource();
@@ -295,39 +432,28 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       ? Math.floor((extent[0] - projectionExtent[0]) / worldWidth)
       : 0;
 
-    const baseTransform = this.helper.makeProjectionTransform(
-      frameState,
-      this.currentFrameStateTransform_
-    );
-    translateTransform(baseTransform, world * worldWidth, 0);
-
+    translateTransform(this.tmpTransform_, world * worldWidth, 0);
     do {
-      setFromTransform(this.currentTransform_, baseTransform);
-      multiplyTransform(
-        this.currentTransform_,
+      this.polygonRenderer_.preRender(this.batch_.polygonBatch, frameState);
+      this.applyUniforms_(
         this.batch_.polygonBatch.invertVerticesBufferTransform
       );
-      this.polygonRenderer_.preRender(this.batch_.polygonBatch, frameState);
       this.polygonRenderer_.render(this.batch_.polygonBatch);
-      setFromTransform(this.currentTransform_, baseTransform);
-      multiplyTransform(
-        this.currentTransform_,
-        this.batch_.lineStringBatch.invertVerticesBufferTransform
-      );
+
       this.lineStringRenderer_.preRender(
         this.batch_.lineStringBatch,
         frameState
       );
-      this.lineStringRenderer_.render(this.batch_.lineStringBatch);
-      setFromTransform(this.currentTransform_, baseTransform);
-      multiplyTransform(
-        this.currentTransform_,
+      this.applyUniforms_(
         this.batch_.lineStringBatch.invertVerticesBufferTransform
       );
+      this.lineStringRenderer_.render(this.batch_.lineStringBatch);
+
       this.pointRenderer_.preRender(this.batch_.pointBatch, frameState);
+      this.applyUniforms_(this.batch_.pointBatch.invertVerticesBufferTransform);
       this.pointRenderer_.render(this.batch_.pointBatch);
 
-      translateTransform(baseTransform, worldWidth, 0);
+      translateTransform(this.currentFrameStateTransform_, worldWidth, 0);
     } while (++world < endWorld);
 
     this.helper.finalizeDraw(frameState);
@@ -404,8 +530,6 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       );
       this.previousExtent_ = frameState.extent.slice();
     }
-
-    this.helper.prepareDraw(frameState);
 
     return true;
   }

@@ -43,7 +43,7 @@ class PointBatchRenderer extends AbstractBatchRenderer {
       customAttributes.map(function (attribute) {
         return {
           name: 'a_' + attribute.name,
-          size: 1,
+          size: attribute.size || 1,
           type: AttributeType.FLOAT,
         };
       })
@@ -61,7 +61,7 @@ class PointBatchRenderer extends AbstractBatchRenderer {
     // 2 instructions per vertex for position (x and y)
     // + 1 instruction per vertex per custom attributes
     const totalInstructionsCount =
-      (2 + this.customAttributes.length) * batch.geometriesCount;
+      (2 + this.customAttributesSize) * batch.geometriesCount;
     if (
       !batch.renderInstructions ||
       batch.renderInstructions.length !== totalInstructionsCount
@@ -81,12 +81,11 @@ class PointBatchRenderer extends AbstractBatchRenderer {
 
         batch.renderInstructions[renderIndex++] = tmpCoords[0];
         batch.renderInstructions[renderIndex++] = tmpCoords[1];
-
-        // pushing custom attributes
-        for (let j = 0, jj = this.customAttributes.length; j < jj; j++) {
-          const value = this.customAttributes[j].callback(batchEntry.feature);
-          batch.renderInstructions[renderIndex++] = value;
-        }
+        renderIndex += this.pushCustomAttributesInRenderInstructions(
+          batch,
+          batchEntry,
+          renderIndex
+        );
       }
     }
   }

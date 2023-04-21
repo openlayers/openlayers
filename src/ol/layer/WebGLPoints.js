@@ -87,7 +87,7 @@ class WebGLPointsLayer extends Layer {
     this.parseResult_ = parseLiteralStyle(options.style);
 
     /**
-     * @type {Object<string, (string|number)>}
+     * @type {Object<string, (string|number|Array<number>|boolean)>}
      * @private
      */
     this.styleVariables_ = options.style.variables || {};

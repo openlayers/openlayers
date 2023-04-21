@@ -3,67 +3,14 @@ layout: example.html
 title: WebGL points layer
 shortdesc: Using a WebGL-optimized layer to render a large quantities of points
 docs: >
-  This example shows how to use a `WebGLPointsLayer` to show a large amount of points on the map.
-  The layer is given a style in JSON format which allows a certain level of customization of the final reprensentation.
+  <p>
+    This example shows how to use a `WebGLPointsLayer` to show a large amount of points on the map.
+    The layer is given a style in JSON format which allows a certain level of customization of the final representation.
+  </p>
 
-  The following operators can be used:
-
-   * Reading operators:
-     * `['get', 'attributeName']` fetches a feature attribute (it will be prefixed by `a_` in the shader)
-       Note: those will be taken from the attributes provided to the renderer
-     * `['var', 'varName']` fetches a value from the style variables, or 0 if undefined
-     * `['time']` returns the time in seconds since the creation of the layer
-     * `['zoom']` returns the current zoom level
-     * `['resolution']` returns the current resolution
-
-   * Math operators:
-     * `['*', value1, value2]` multiplies `value1` by `value2`
-     * `['/', value1, value2]` divides `value1` by `value2`
-     * `['+', value1, value2]` adds `value1` and `value2`
-     * `['-', value1, value2]` subtracts `value2` from `value1`
-     * `['clamp', value, low, high]` clamps `value` between `low` and `high`
-     * `['%', value1, value2]` returns the result of `value1 % value2` (modulo)
-     * `['^', value1, value2]` returns the value of `value1` raised to the `value2` power
-
-   * Transform operators:
-     * `['case', condition1, output1, ...conditionN, outputN, fallback]` selects the first output whose corresponding
-       condition evaluates to `true`. If no match is found, returns the `fallback` value.
-       All conditions should be `boolean`, output and fallback can be any kind.
-     * `['match', input, match1, output1, ...matchN, outputN, fallback]` compares the `input` value against all
-       provided `matchX` values, returning the output associated with the first valid match. If no match is found,
-       returns the `fallback` value.
-       `input` and `matchX` values must all be of the same type, and can be `number` or `string`. `outputX` and
-       `fallback` values must be of the same type, and can be of any kind.
-     * `['interpolate', interpolation, input, stop1, output1, ...stopN, outputN]` returns a value by interpolating between
-       pairs of inputs and outputs; `interpolation` can either be `['linear']` or `['exponential', base]` where `base` is
-       the rate of increase from stop A to stop B (i.e. power to which the interpolation ratio is raised); a value
-       of 1 is equivalent to `['linear']`.
-       `input` and `stopX` values must all be of type `number`. `outputX` values can be `number` or `color` values.
-       Note: `input` will be clamped between `stop1` and `stopN`, meaning that all output values will be comprised
-       between `output1` and `outputN`.
-
-   * Logical operators:
-     * `['<', value1, value2]` returns `true` if `value1` is strictly lower than `value2`, or `false` otherwise.
-     * `['<=', value1, value2]` returns `true` if `value1` is lower than or equals `value2`, or `false` otherwise.
-     * `['>', value1, value2]` returns `true` if `value1` is strictly greater than `value2`, or `false` otherwise.
-     * `['>=', value1, value2]` returns `true` if `value1` is greater than or equals `value2`, or `false` otherwise.
-     * `['==', value1, value2]` returns `true` if `value1` equals `value2`, or `false` otherwise.
-     * `['!=', value1, value2]` returns `true` if `value1` does not equal `value2`, or `false` otherwise.
-     * `['!', value1]` returns `false` if `value1` is `true` or greater than `0`, or `true` otherwise.
-     * `['between', value1, value2, value3]` returns `true` if `value1` is contained between `value2` and `value3`
-       (inclusively), or `false` otherwise.
-
-   * Conversion operators:
-     * `['array', value1, ...valueN]` creates a numerical array from `number` values; please note that the amount of
-       values can currently only be 2, 3 or 4.
-     * `['color', red, green, blue, alpha]` creates a `color` value from `number` values; the `alpha` parameter is
-       optional; if not specified, it will be set to 1.
-       Note: `red`, `green` and `blue` components must be values between 0 and 255; `alpha` between 0 and 1.
-   Values can either be literals or another operator, as they will be evaluated recursively.
-   Literal values can be of the following types:
-    * `boolean`
-    * `number`
-    * `string`
+  <p>
+    Consult the <a href="/en/latest/apidoc/module-ol_style_expressions.html#~ExpressionValue">documentation on expressions</a> to know which operators to use and how.
+  </p>
 
 tags: "webgl, point, layer, feature"
 experimental: true

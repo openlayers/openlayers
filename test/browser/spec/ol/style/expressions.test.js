@@ -45,12 +45,12 @@ describe('ol/style/expressions', function () {
   });
 
   describe('colorToGlsl', function () {
-    it('normalizes color and outputs numbers with dot separators', function () {
+    it('normalizes color and outputs numbers with dot separators, including premultiplied alpha', function () {
       expect(colorToGlsl([100, 0, 255])).to.eql(
         'vec4(0.39215686274509803, 0.0, 1.0, 1.0)'
       );
-      expect(colorToGlsl([100, 0, 255, 1])).to.eql(
-        'vec4(0.39215686274509803, 0.0, 1.0, 1.0)'
+      expect(colorToGlsl([100, 0, 255, 0.7])).to.eql(
+        'vec4(0.2745098039215686, 0.0, 0.7, 0.7)'
       );
     });
     it('handles colors in string format', function () {
@@ -60,7 +60,7 @@ describe('ol/style/expressions', function () {
         'vec4(0.39215686274509803, 0.0, 1.0, 1.0)'
       );
       expect(colorToGlsl('rgba(100, 0, 255, 0.3)')).to.eql(
-        'vec4(0.39215686274509803, 0.0, 1.0, 0.3)'
+        'vec4(0.11764705882352941, 0.0, 0.3, 0.3)'
       );
     });
   });
@@ -71,6 +71,7 @@ describe('ol/style/expressions', function () {
       context = {
         stringLiteralsMap: {},
         functions: {},
+        style: {},
       };
     });
 
@@ -142,7 +143,7 @@ describe('ol/style/expressions', function () {
 
     it('correctly analyzes operator return types', function () {
       expect(getValueType(['get', 'myAttr'])).to.eql(ValueTypes.ANY);
-      expect(getValueType(['var', 'myValue'])).to.eql(ValueTypes.ANY);
+      expect(getValueType(['var', 'myVar'])).to.eql(ValueTypes.ANY);
       expect(getValueType(['time'])).to.eql(ValueTypes.NUMBER);
       expect(getValueType(['zoom'])).to.eql(ValueTypes.NUMBER);
       expect(getValueType(['resolution'])).to.eql(ValueTypes.NUMBER);
@@ -198,6 +199,26 @@ describe('ol/style/expressions', function () {
         ValueTypes.COLOR
       );
     });
+    it('correctly analyzes get operator return type with hint', function () {
+      expect(getValueType(['get', 'myAttr', 'number'])).to.eql(
+        ValueTypes.NUMBER
+      );
+      expect(getValueType(['get', 'myAttr', 'string'])).to.eql(
+        ValueTypes.STRING
+      );
+      expect(getValueType(['get', 'myAttr', 'boolean'])).to.eql(
+        ValueTypes.BOOLEAN
+      );
+      expect(getValueType(['get', 'myAttr', 'number[]'])).to.eql(
+        ValueTypes.NUMBER_ARRAY
+      );
+      expect(getValueType(['get', 'myAttr', 'color'])).to.eql(ValueTypes.COLOR);
+    });
+    it('throws on invalid hint', function () {
+      expect(() => getValueType(['get', 'myAttr', 'weird-type'])).to.throwError(
+        /Unrecognized type hint/
+      );
+    });
   });
 
   describe('expressionToGlsl', function () {
@@ -209,13 +230,19 @@ describe('ol/style/expressions', function () {
         attributes: [],
         stringLiteralsMap: {},
         functions: {},
+        style: {
+          variables: {
+            myVar: 12,
+            myVar2: 16,
+          },
+        },
       };
     });
 
     it('correctly converts expressions to GLSL', function () {
       expect(expressionToGlsl(context, ['get', 'myAttr'])).to.eql('a_myAttr');
-      expect(expressionToGlsl(context, ['var', 'myValue'])).to.eql(
-        uniformNameForVariable('myValue')
+      expect(expressionToGlsl(context, ['var', 'myVar'])).to.eql(
+        uniformNameForVariable('myVar')
       );
       expect(expressionToGlsl(context, ['time'])).to.eql('u_time');
       expect(expressionToGlsl(context, ['zoom'])).to.eql('u_zoom');
@@ -227,6 +254,13 @@ describe('ol/style/expressions', function () {
       expect(expressionToGlsl(context, ['*', 1, 2, 3, 4])).to.eql(
         '(1.0 * 2.0 * 3.0 * 4.0)'
       );
+      expect(
+        expressionToGlsl(
+          context,
+          ['*', [255, 127.5, 0, 0.5], 'red'],
+          ValueTypes.ANY
+        )
+      ).to.eql('(vec4(0.5, 0.25, 0.0, 0.5) * vec4(1.0, 0.0, 0.0, 1.0))');
 
       expect(
         expressionToGlsl(context, ['+', ['*', ['get', 'size'], 0.001], 12])
@@ -277,33 +311,33 @@ describe('ol/style/expressions', function () {
       expect(expressionToGlsl(context, ['==', 10, ['get', 'attr4']])).to.eql(
         '(10.0 == a_attr4)'
       );
-      expect(expressionToGlsl(context, ['==', 'red', ['get', 'attr4']])).to.eql(
-        `(${stringToGlsl(context, 'red')} == a_attr4)`
+      expect(expressionToGlsl(context, ['==', 'red', ['get', 'attr5']])).to.eql(
+        `(${stringToGlsl(context, 'red')} == a_attr5)`
       );
       expect(expressionToGlsl(context, ['!=', 10, ['get', 'attr4']])).to.eql(
         '(10.0 != a_attr4)'
       );
-      expect(expressionToGlsl(context, ['all', true, ['get', 'attr4']])).to.eql(
-        '(true && a_attr4)'
+      expect(expressionToGlsl(context, ['all', true, ['get', 'attr6']])).to.eql(
+        '(true && a_attr6)'
       );
-      expect(expressionToGlsl(context, ['any', true, ['get', 'attr4']])).to.eql(
-        '(true || a_attr4)'
+      expect(expressionToGlsl(context, ['any', true, ['get', 'attr6']])).to.eql(
+        '(true || a_attr6)'
       );
       expect(
-        expressionToGlsl(context, ['any', true, ['get', 'attr4'], true])
-      ).to.eql('(true || a_attr4 || true)');
+        expressionToGlsl(context, ['any', true, ['get', 'attr6'], true])
+      ).to.eql('(true || a_attr6 || true)');
       expect(
         expressionToGlsl(context, ['between', ['get', 'attr4'], -4.0, 5.0])
       ).to.eql('(a_attr4 >= -4.0 && a_attr4 <= 5.0)');
-      expect(expressionToGlsl(context, ['!', ['get', 'attr4']])).to.eql(
-        '(!a_attr4)'
+      expect(expressionToGlsl(context, ['!', ['get', 'attr6']])).to.eql(
+        '(!a_attr6)'
       );
       expect(
         expressionToGlsl(context, ['array', ['get', 'attr4'], 1, 2, 3])
       ).to.eql('vec4(a_attr4, 1.0, 2.0, 3.0)');
       expect(
         expressionToGlsl(context, ['color', ['get', 'attr4'], 1, 2, 0.5])
-      ).to.eql('vec4(a_attr4 / 255.0, 1.0 / 255.0, 2.0 / 255.0, 0.5)');
+      ).to.eql('(0.5 * vec4(a_attr4 / 255.0, 1.0 / 255.0, 2.0 / 255.0, 1.0))');
       expect(expressionToGlsl(context, ['band', 1])).to.eql(
         'getBandValue(1.0, 0.0, 0.0)'
       );
@@ -316,7 +350,7 @@ describe('ol/style/expressions', function () {
       const call = function () {
         expressionToGlsl(context, '42', ValueTypes.NUMBER);
       };
-      expect(call).to.throwException(/Unexpected expression/);
+      expect(call).to.throwException(/No matching type was found/);
     });
 
     it('correctly adapts output for fragment shaders', function () {
@@ -335,12 +369,21 @@ describe('ol/style/expressions', function () {
       ]);
       expressionToGlsl(context, ['*', ['get', 'attr2'], ['var', 'myVar']]);
       expressionToGlsl(context, ['*', ['get', 'attr3'], ['var', 'myVar2']]);
-      expect(context.attributes).to.eql(['myAttr', 'attr2', 'attr3']);
-      expect(context.variables).to.eql(['myVar', 'myVar2']);
+      expect(context.attributes).to.eql([
+        {name: 'myAttr', type: ValueTypes.NUMBER},
+        {name: 'attr2', type: ValueTypes.NUMBER},
+        {name: 'attr3', type: ValueTypes.NUMBER},
+      ]);
+      expect(context.variables).to.eql([
+        {name: 'myVar', type: ValueTypes.NUMBER},
+        {name: 'myVar2', type: ValueTypes.NUMBER},
+      ]);
     });
 
     it('gives precedence to the string type unless asked otherwise', function () {
-      expect(expressionToGlsl(context, 'lightgreen')).to.eql('0.0');
+      expect(expressionToGlsl(context, 'lightgreen', ValueTypes.ANY)).to.eql(
+        '0.0'
+      );
       expect(expressionToGlsl(context, 'lightgreen', ValueTypes.COLOR)).to.eql(
         'vec4(0.5647058823529412, 0.9333333333333333, 0.5647058823529412, 1.0)'
       );
@@ -471,6 +514,12 @@ describe('ol/style/expressions', function () {
       }
       expect(thrown).to.be(true);
     });
+
+    it('throws when using a variable not defined in the style', () => {
+      expect(() => expressionToGlsl(context, ['var', 'myAttr'])).to.throwError(
+        /variable is missing/
+      );
+    });
   });
 
   describe('case operator', function () {
@@ -482,6 +531,7 @@ describe('ol/style/expressions', function () {
         attributes: [],
         stringLiteralsMap: {},
         functions: {},
+        style: {},
       };
     });
 
@@ -627,6 +677,7 @@ describe('ol/style/expressions', function () {
         attributes: [],
         stringLiteralsMap: {},
         functions: {},
+        style: {},
       };
     });
 
@@ -796,15 +847,11 @@ describe('ol/style/expressions', function () {
         return stringToGlsl(context, string);
       }
       expect(
-        expressionToGlsl(context, [
-          'match',
-          ['get', 'attr'],
-          'low',
-          [0, 0],
-          'high',
-          [0, 1],
-          [1, 0],
-        ])
+        expressionToGlsl(
+          context,
+          ['match', ['get', 'attr'], 'low', [0, 0], 'high', [0, 1], [1, 0]],
+          ValueTypes.NUMBER_ARRAY
+        )
       ).to.eql(
         `(a_attr == ${toGlsl('low')} ? vec2(0.0, 0.0) : (a_attr == ${toGlsl(
           'high'
@@ -815,7 +862,7 @@ describe('ol/style/expressions', function () {
           context,
           [
             'match',
-            ['get', 'attr'],
+            ['get', 'attr2'],
             0,
             [0, 0, 1, 1],
             1,
@@ -827,8 +874,19 @@ describe('ol/style/expressions', function () {
           ValueTypes.NUMBER_ARRAY
         )
       ).to.eql(
-        '(a_attr == 0.0 ? vec4(0.0, 0.0, 1.0, 1.0) : (a_attr == 1.0 ? vec4(1.0, 1.0, 2.0, 2.0) : (a_attr == 2.0 ? vec4(2.0, 2.0, 3.0, 3.0) : vec4(3.0, 3.0, 4.0, 4.0))))'
+        '(a_attr2 == 0.0 ? vec4(0.0, 0.0, 1.0, 1.0) : (a_attr2 == 1.0 ? vec4(1.0, 1.0, 2.0, 2.0) : (a_attr2 == 2.0 ? vec4(2.0, 2.0, 3.0, 3.0) : vec4(3.0, 3.0, 4.0, 4.0))))'
       );
+    });
+
+    it('only expects string, number or boolean as input', (done) => {
+      // match input is only expressed through get operator and values which can be strings or colors
+      // the call shouldn't throw because match does not allow color as input (so the final input type is string)
+      expressionToGlsl(
+        context,
+        ['match', ['get', 'attr3'], 'red', [6, 0], 'green', [3, 0], [0, 0]],
+        ValueTypes.ANY
+      );
+      done();
     });
   });
 
@@ -841,6 +899,11 @@ describe('ol/style/expressions', function () {
         attributes: [],
         stringLiteralsMap: {},
         functions: {},
+        style: {
+          variables: {
+            value: 12,
+          },
+        },
       };
     });
 
@@ -1013,30 +1076,38 @@ describe('ol/style/expressions', function () {
 
     it('correctly parses the expression (colors, linear)', function () {
       expect(
-        expressionToGlsl(context, [
-          'interpolate',
-          ['linear'],
-          ['get', 'attr'],
-          1000,
-          [255, 0, 0],
-          2000,
-          [0, 255, 0],
-        ])
+        expressionToGlsl(
+          context,
+          [
+            'interpolate',
+            ['linear'],
+            ['get', 'attr'],
+            1000,
+            [255, 0, 0],
+            2000,
+            [0, 255, 0],
+          ],
+          ValueTypes.ANY
+        )
       ).to.eql(
         'mix(vec4(1.0, 0.0, 0.0, 1.0), vec4(0.0, 1.0, 0.0, 1.0), pow(clamp((a_attr - 1000.0) / (2000.0 - 1000.0), 0.0, 1.0), 1.0))'
       );
       expect(
-        expressionToGlsl(context, [
-          'interpolate',
-          ['linear'],
-          ['get', 'attr'],
-          1000,
-          [255, 0, 0],
-          2000,
-          [0, 255, 0],
-          5000,
-          [0, 0, 255],
-        ])
+        expressionToGlsl(
+          context,
+          [
+            'interpolate',
+            ['linear'],
+            ['get', 'attr'],
+            1000,
+            [255, 0, 0],
+            2000,
+            [0, 255, 0],
+            5000,
+            [0, 0, 255],
+          ],
+          ValueTypes.ANY
+        )
       ).to.eql(
         'mix(mix(vec4(1.0, 0.0, 0.0, 1.0), vec4(0.0, 1.0, 0.0, 1.0), pow(clamp((a_attr - 1000.0) / (2000.0 - 1000.0), 0.0, 1.0), 1.0)), vec4(0.0, 0.0, 1.0, 1.0), pow(clamp((a_attr - 2000.0) / (5000.0 - 2000.0), 0.0, 1.0), 1.0))'
       );
@@ -1077,6 +1148,25 @@ describe('ol/style/expressions', function () {
         'mix(mix(-10.0, 0.0, pow(clamp((a_attr - 1000.0) / (2000.0 - 1000.0), 0.0, 1.0), 0.5)), 10.0, pow(clamp((a_attr - 2000.0) / (5000.0 - 2000.0), 0.0, 1.0), 0.5))'
       );
     });
+
+    it('only expects number as input', (done) => {
+      // interpolation input is only expressed through get and var operators, which means that it is unspecified on its own
+      // the call shouldn't throw because interpolation only accepts numerical input
+      expressionToGlsl(
+        context,
+        [
+          'interpolate',
+          ['linear'],
+          ['get', 'attr'],
+          1000,
+          ['var', 'value'],
+          2000,
+          3000,
+        ],
+        ValueTypes.ANY
+      );
+      done();
+    });
   });
 
   describe('complex expressions', function () {
@@ -1088,6 +1178,12 @@ describe('ol/style/expressions', function () {
         attributes: [],
         stringLiteralsMap: {},
         functions: {},
+        style: {
+          variables: {
+            defaultWidth: 12,
+            defaultHeight: 24,
+          },
+        },
       };
     });
 
@@ -1117,9 +1213,273 @@ describe('ol/style/expressions', function () {
         1,
         ['match', ['get', 'year'], 2000, 'green', '#ffe52c'],
       ];
-      expect(expressionToGlsl(context, expression)).to.eql(
-        'mix(vec4(1.0, 1.0, 0.0, 0.5), (a_year == 2000.0 ? vec4(0.0, 0.5019607843137255, 0.0, 1.0) : vec4(1.0, 0.8980392156862745, 0.17254901960784313, 1.0)), pow(clamp((pow((mod((u_time + mix(0.0, 8.0, pow(clamp((a_year - 1850.0) / (2015.0 - 1850.0), 0.0, 1.0), 1.0))), 8.0) / 8.0), 0.5) - 0.0) / (1.0 - 0.0), 0.0, 1.0), 1.0))'
+      expect(expressionToGlsl(context, expression, ValueTypes.COLOR)).to.eql(
+        'mix(vec4(0.5, 0.5, 0.0, 0.5), (a_year == 2000.0 ? vec4(0.0, 0.5019607843137255, 0.0, 1.0) : vec4(1.0, 0.8980392156862745, 0.17254901960784313, 1.0)), pow(clamp((pow((mod((u_time + mix(0.0, 8.0, pow(clamp((a_year - 1850.0) / (2015.0 - 1850.0), 0.0, 1.0), 1.0))), 8.0) / 8.0), 0.5) - 0.0) / (1.0 - 0.0), 0.0, 1.0), 1.0))'
       );
+    });
+
+    it('correctly parses the expression (array for symbol size, variables and attributes)', function () {
+      expect(
+        expressionToGlsl(
+          context,
+          [
+            'array',
+            [
+              'ceil',
+              [
+                'match',
+                ['get', 'width'],
+                0,
+                ['var', 'defaultWidth'],
+                ['get', 'width'],
+              ],
+            ],
+            [
+              'ceil',
+              [
+                'match',
+                ['get', 'height'],
+                0,
+                ['var', 'defaultHeight'],
+                ['get', 'height'],
+              ],
+            ],
+          ],
+          ValueTypes.NUMBER | ValueTypes.NUMBER_ARRAY
+        )
+      ).to.eql(
+        'vec2(ceil((a_width == 0.0 ? u_var_defaultWidth : a_width)), ceil((a_height == 0.0 ? u_var_defaultHeight : a_height)))'
+      );
+    });
+  });
+
+  describe('attributes and variables collection', () => {
+    let context;
+    beforeEach(function () {
+      context = {
+        variables: [],
+        attributes: [],
+        stringLiteralsMap: {},
+        functions: {},
+        style: {
+          variables: {
+            color: 'red',
+            fixedSize: [10, 20],
+            selected: true,
+            symbolType: 'dynamic',
+            oldColor: 'blue',
+            newColor: 'green',
+            lowHeight: 6,
+            mediumHeight: 12,
+          },
+        },
+      };
+    });
+
+    it('get operator with type hint', () => {
+      const result = expressionToGlsl(
+        context,
+        ['get', 'color'],
+        ValueTypes.COLOR
+      );
+      expect(result).to.eql('a_color');
+      expect(context.attributes).to.eql([
+        {
+          name: 'color',
+          type: ValueTypes.COLOR,
+        },
+      ]);
+    });
+
+    it('var operator with type hint', () => {
+      const result = expressionToGlsl(
+        context,
+        ['var', 'color'],
+        ValueTypes.COLOR
+      );
+      expect(result).to.eql('u_var_color');
+      expect(context.variables).to.eql([
+        {
+          name: 'color',
+          type: ValueTypes.COLOR,
+        },
+      ]);
+    });
+
+    it('get and var operators, nested, color and number', () => {
+      expressionToGlsl(
+        context,
+        [
+          'interpolate',
+          ['linear'],
+          ['get', 'intensity'],
+          0,
+          ['get', 'low_color'],
+          1,
+          ['get', 'high_color'],
+        ],
+        ValueTypes.COLOR
+      );
+      expect(context.attributes).to.eql([
+        {
+          name: 'intensity',
+          type: ValueTypes.NUMBER,
+        },
+        {
+          name: 'low_color',
+          type: ValueTypes.COLOR,
+        },
+        {
+          name: 'high_color',
+          type: ValueTypes.COLOR,
+        },
+      ]);
+      expect(context.variables).to.eql([]);
+    });
+
+    it('get and var operators, nested, string and number array', () => {
+      expressionToGlsl(
+        context,
+        [
+          'case',
+          ['==', ['var', 'symbolType'], 'dynamic'],
+          [
+            'array',
+            [
+              'match',
+              ['get', 'type'],
+              'low',
+              ['var', 'lowHeight'],
+              'medium',
+              ['var', 'mediumHeight'],
+              ['get', 'height'],
+            ],
+            10,
+          ],
+          ['var', 'fixedSize'],
+        ],
+        ValueTypes.ANY
+      );
+      expect(context.attributes).to.eql([
+        {
+          name: 'type',
+          type: ValueTypes.STRING,
+        },
+        {
+          name: 'height',
+          type: ValueTypes.NUMBER,
+        },
+      ]);
+      expect(context.variables).to.eql([
+        {
+          name: 'fixedSize',
+          type: ValueTypes.NUMBER_ARRAY,
+        },
+        {
+          name: 'symbolType',
+          type: ValueTypes.STRING,
+        },
+        {
+          name: 'mediumHeight',
+          type: ValueTypes.NUMBER,
+        },
+        {
+          name: 'lowHeight',
+          type: ValueTypes.NUMBER,
+        },
+      ]);
+    });
+
+    it('var and get operators, nested, boolean and color', () => {
+      expressionToGlsl(
+        context,
+        [
+          'match',
+          ['var', 'selected'],
+          false,
+          'red',
+          ['get', 'validValue'],
+          'green',
+          [
+            'case',
+            ['<', ['time'], 10000],
+            ['var', 'oldColor'],
+            ['var', 'newColor'],
+          ],
+        ],
+        ValueTypes.COLOR
+      );
+      expect(context.attributes).to.eql([
+        {name: 'validValue', type: ValueTypes.BOOLEAN},
+      ]);
+      expect(context.variables).to.eql([
+        {name: 'selected', type: ValueTypes.BOOLEAN},
+        {name: 'newColor', type: ValueTypes.COLOR},
+        {name: 'oldColor', type: ValueTypes.COLOR},
+      ]);
+    });
+
+    it('throws when an attribute is used with conflicting types', () => {
+      let thrown = false;
+      try {
+        expressionToGlsl(
+          context,
+          [
+            'interpolate',
+            ['linear'],
+            ['get', 'intensity'],
+            0,
+            ['get', 'intensity'],
+            1,
+            'red',
+          ],
+          ValueTypes.COLOR
+        );
+      } catch {
+        thrown = true;
+      }
+      expect(thrown).to.eql(true);
+    });
+
+    it('throws when a variable is used with conflicting types', () => {
+      let thrown = false;
+      try {
+        expressionToGlsl(
+          context,
+          [
+            'interpolate',
+            ['linear'],
+            ['var', 'intensity'],
+            0,
+            ['var', 'intensity'],
+            1,
+            'red',
+          ],
+          ValueTypes.COLOR
+        );
+      } catch {
+        thrown = true;
+      }
+      expect(thrown).to.eql(true);
+    });
+
+    it('throws if a variable is used with the wrong type', () => {
+      expect(() =>
+        expressionToGlsl(context, ['var', 'oldColor'], ValueTypes.NUMBER)
+      ).to.throwError(/No matching type/);
+    });
+
+    it('throws if a type ambiguity remains when using a variable', () => {
+      expect(() =>
+        expressionToGlsl(context, ['var', 'oldColor'], ValueTypes.ANY)
+      ).to.throwError(/unique type/);
+    });
+
+    it('throws a variable initial value is null', () => {
+      context.style.variables.oldColor = null;
+      expect(() =>
+        expressionToGlsl(context, ['var', 'oldColor'], ValueTypes.COLOR)
+      ).to.throwError(/Unhandled value type/);
     });
   });
 });

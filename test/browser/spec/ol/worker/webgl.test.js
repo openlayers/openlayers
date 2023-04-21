@@ -27,7 +27,7 @@ describe('ol/worker/webgl', function () {
         const message = {
           type: WebGLWorkerMessageType.GENERATE_POINT_BUFFERS,
           renderInstructions,
-          customAttributesCount: 1,
+          customAttributesSize: 1,
           testInt: 101,
           testString: 'abcd',
           id,
@@ -74,7 +74,7 @@ describe('ol/worker/webgl', function () {
         const message = {
           type: WebGLWorkerMessageType.GENERATE_LINE_STRING_BUFFERS,
           renderInstructions,
-          customAttributesCount: 1,
+          customAttributesSize: 1,
           testInt: 101,
           testString: 'abcd',
           id,
@@ -128,7 +128,7 @@ describe('ol/worker/webgl', function () {
         const message = {
           type: WebGLWorkerMessageType.GENERATE_POLYGON_BUFFERS,
           renderInstructions,
-          customAttributesCount: 1,
+          customAttributesSize: 1,
           testInt: 101,
           testString: 'abcd',
           id,

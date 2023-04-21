@@ -124,6 +124,7 @@ function parseStyle(style, bandCount) {
     stringLiteralsMap: {},
     functions: {},
     bandCount: bandCount,
+    style: style,
   };
 
   const pipeline = [];
@@ -202,13 +203,13 @@ function parseStyle(style, bandCount) {
   }
 
   for (let i = 0; i < numVariables; ++i) {
-    const variableName = context.variables[i];
-    if (!(variableName in style.variables)) {
-      throw new Error(`Missing '${variableName}' in style variables`);
+    const variable = context.variables[i];
+    if (!(variable.name in style.variables)) {
+      throw new Error(`Missing '${variable.name}' in style variables`);
     }
-    const uniformName = uniformNameForVariable(variableName);
+    const uniformName = uniformNameForVariable(variable.name);
     uniforms[uniformName] = function () {
-      let value = style.variables[variableName];
+      let value = style.variables[variable.name];
       if (typeof value === 'string') {
         value = getStringNumberEquivalent(context, value);
       }

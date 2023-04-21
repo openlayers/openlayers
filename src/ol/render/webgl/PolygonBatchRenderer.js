@@ -36,7 +36,7 @@ class PolygonBatchRenderer extends AbstractBatchRenderer {
       customAttributes.map(function (attribute) {
         return {
           name: 'a_' + attribute.name,
-          size: 1,
+          size: attribute.size || 1,
           type: AttributeType.FLOAT,
         };
       })
@@ -57,7 +57,7 @@ class PolygonBatchRenderer extends AbstractBatchRenderer {
     // + 1 instruction per ring (for vertices count in ring)
     const totalInstructionsCount =
       2 * batch.verticesCount +
-      (1 + this.customAttributes.length) * batch.geometriesCount +
+      (1 + this.customAttributesSize) * batch.geometriesCount +
       batch.ringsCount;
     if (
       !batch.renderInstructions ||
@@ -81,12 +81,11 @@ class PolygonBatchRenderer extends AbstractBatchRenderer {
           batch.renderInstructionsTransform,
           flatCoords
         );
-
-        // custom attributes
-        for (let k = 0, kk = this.customAttributes.length; k < kk; k++) {
-          const value = this.customAttributes[k].callback(batchEntry.feature);
-          batch.renderInstructions[renderIndex++] = value;
-        }
+        renderIndex += this.pushCustomAttributesInRenderInstructions(
+          batch,
+          batchEntry,
+          renderIndex
+        );
 
         // ring count
         batch.renderInstructions[renderIndex++] =

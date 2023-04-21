@@ -6,7 +6,7 @@ import View from '../../../../src/ol/View.js';
 import WebGLVectorTileLayerRenderer from '../../../../src/ol/renderer/webgl/VectorTileLayer.js';
 import {asArray} from '../../../../src/ol/color.js';
 import {createXYZ} from '../../../../src/ol/tilegrid.js';
-import {packColor} from '../../../../src/ol/renderer/webgl/shaders.js';
+import {packColor} from '../../../../src/ol/webgl/styleparser.js';
 
 class WebGLVectorTileLayer extends VectorTile {
   createRenderer() {
@@ -15,13 +15,15 @@ class WebGLVectorTileLayer extends VectorTile {
       fill: {
         attributes: {
           color: () => packColor(asArray('#eee')),
-          opacity: () => 1,
         },
       },
       stroke: {
         attributes: {
-          color: () => packColor(asArray('#888')),
-          opacity: () => 0.5,
+          color: () => {
+            const color = [...asArray('#888')];
+            color[3] = 0.5;
+            return packColor(color);
+          },
           width: () => 1,
         },
       },

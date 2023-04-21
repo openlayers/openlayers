@@ -6,7 +6,7 @@ import View from '../src/ol/View.js';
 import WebGLVectorTileLayerRenderer from '../src/ol/renderer/webgl/VectorTileLayer.js';
 import {Fill, Icon, Stroke, Style, Text} from '../src/ol/style.js';
 import {asArray} from '../src/ol/color.js';
-import {packColor} from '../src/ol/renderer/webgl/shaders.js';
+import {packColor} from '../src/ol/webgl/styleparser.js';
 
 const key =
   'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2t0cGdwMHVnMGdlbzMxbDhwazBic2xrNSJ9.WbcTL9uj8JPAsnT9mgb7oQ';
@@ -21,7 +21,6 @@ class WebGLVectorTileLayer extends VectorTile {
             const color = asArray(style?.getFill()?.getColor() || '#eee');
             return packColor(color);
           },
-          opacity: () => 1,
         },
       },
       stroke: {
@@ -35,7 +34,6 @@ class WebGLVectorTileLayer extends VectorTile {
             const style = this.getStyle()(feature, 1)[0];
             return style?.getStroke()?.getWidth() || 0;
           },
-          opacity: () => 1,
         },
       },
       point: {
