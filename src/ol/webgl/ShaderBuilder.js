@@ -42,93 +42,93 @@ export class ShaderBuilder {
      * @type {Array<string>}
      * @private
      */
-    this.uniforms = [];
+    this.uniforms_ = [];
 
     /**
      * Attributes; these will be declared in the header (should include the type).
      * @type {Array<string>}
      * @private
      */
-    this.attributes = [];
+    this.attributes_ = [];
 
     /**
      * Varyings with a name, a type and an expression.
      * @type {Array<VaryingDescription>}
      * @private
      */
-    this.varyings = [];
+    this.varyings_ = [];
 
     /**
      * @type {string}
      * @private
      */
-    this.symbolSizeExpression = 'vec2(1.0)';
+    this.symbolSizeExpression_ = 'vec2(1.0)';
 
     /**
      * @type {string}
      * @private
      */
-    this.symbolRotationExpression = '0.0';
+    this.symbolRotationExpression_ = '0.0';
 
     /**
      * @type {string}
      * @private
      */
-    this.symbolOffsetExpression = 'vec2(0.0)';
+    this.symbolOffsetExpression_ = 'vec2(0.0)';
 
     /**
      * @type {string}
      * @private
      */
-    this.symbolColorExpression = 'vec4(1.0)';
+    this.symbolColorExpression_ = 'vec4(1.0)';
 
     /**
      * @type {string}
      * @private
      */
-    this.texCoordExpression = 'vec4(0.0, 0.0, 1.0, 1.0)';
+    this.texCoordExpression_ = 'vec4(0.0, 0.0, 1.0, 1.0)';
 
     /**
      * @type {string}
      * @private
      */
-    this.discardExpression = 'false';
+    this.discardExpression_ = 'false';
 
     /**
      * @type {boolean}
      * @private
      */
-    this.symbolRotateWithView = false;
+    this.symbolRotateWithView_ = false;
 
     /**
      * @type {string}
      * @private
      */
-    this.strokeWidthExpression = '1.0';
+    this.strokeWidthExpression_ = '1.0';
 
     /**
      * @type {string}
      * @private
      */
-    this.strokeColorExpression = 'vec4(1.0)';
+    this.strokeColorExpression_ = 'vec4(1.0)';
 
     /**
      * @type {string}
      * @private
      */
-    this.fillColorExpression = 'vec4(1.0)';
+    this.fillColorExpression_ = 'vec4(1.0)';
 
     /**
      * @type {Array<string>}
      * @private
      */
-    this.vertexShaderFunctions = [];
+    this.vertexShaderFunctions_ = [];
 
     /**
      * @type {Array<string>}
      * @private
      */
-    this.fragmentShaderFunctions = [];
+    this.fragmentShaderFunctions_ = [];
   }
 
   /**
@@ -138,7 +138,7 @@ export class ShaderBuilder {
    * @return {ShaderBuilder} the builder object
    */
   addUniform(name) {
-    this.uniforms.push(name);
+    this.uniforms_.push(name);
     return this;
   }
 
@@ -149,7 +149,7 @@ export class ShaderBuilder {
    * @return {ShaderBuilder} the builder object
    */
   addAttribute(name) {
-    this.attributes.push(name);
+    this.attributes_.push(name);
     return this;
   }
 
@@ -162,7 +162,7 @@ export class ShaderBuilder {
    * @return {ShaderBuilder} the builder object
    */
   addVarying(name, type, expression) {
-    this.varyings.push({
+    this.varyings_.push({
       name: name,
       type: type,
       expression: expression,
@@ -178,7 +178,7 @@ export class ShaderBuilder {
    * @return {ShaderBuilder} the builder object
    */
   setSymbolSizeExpression(expression) {
-    this.symbolSizeExpression = expression;
+    this.symbolSizeExpression_ = expression;
     return this;
   }
 
@@ -190,7 +190,7 @@ export class ShaderBuilder {
    * @return {ShaderBuilder} the builder object
    */
   setSymbolRotationExpression(expression) {
-    this.symbolRotationExpression = expression;
+    this.symbolRotationExpression_ = expression;
     return this;
   }
 
@@ -203,7 +203,7 @@ export class ShaderBuilder {
    * @return {ShaderBuilder} the builder object
    */
   setSymbolOffsetExpression(expression) {
-    this.symbolOffsetExpression = expression;
+    this.symbolOffsetExpression_ = expression;
     return this;
   }
 
@@ -215,7 +215,7 @@ export class ShaderBuilder {
    * @return {ShaderBuilder} the builder object
    */
   setSymbolColorExpression(expression) {
-    this.symbolColorExpression = expression;
+    this.symbolColorExpression_ = expression;
     return this;
   }
 
@@ -227,7 +227,7 @@ export class ShaderBuilder {
    * @return {ShaderBuilder} the builder object
    */
   setTextureCoordinateExpression(expression) {
-    this.texCoordExpression = expression;
+    this.texCoordExpression_ = expression;
     return this;
   }
 
@@ -241,7 +241,7 @@ export class ShaderBuilder {
    * @return {ShaderBuilder} the builder object
    */
   setFragmentDiscardExpression(expression) {
-    this.discardExpression = expression;
+    this.discardExpression_ = expression;
     return this;
   }
 
@@ -252,7 +252,7 @@ export class ShaderBuilder {
    * @return {ShaderBuilder} the builder object
    */
   setSymbolRotateWithView(rotateWithView) {
-    this.symbolRotateWithView = rotateWithView;
+    this.symbolRotateWithView_ = rotateWithView;
     return this;
   }
 
@@ -261,31 +261,31 @@ export class ShaderBuilder {
    * @return {ShaderBuilder} the builder object
    */
   setStrokeWidthExpression(expression) {
-    this.strokeWidthExpression = expression;
+    this.strokeWidthExpression_ = expression;
     return this;
   }
 
   setStrokeColorExpression(expression) {
-    this.strokeColorExpression = expression;
+    this.strokeColorExpression_ = expression;
     return this;
   }
 
   setFillColorExpression(expression) {
-    this.fillColorExpression = expression;
+    this.fillColorExpression_ = expression;
     return this;
   }
 
   addVertexShaderFunction(code) {
-    if (this.vertexShaderFunctions.includes(code)) {
+    if (this.vertexShaderFunctions_.includes(code)) {
       return;
     }
-    this.vertexShaderFunctions.push(code);
+    this.vertexShaderFunctions_.push(code);
   }
   addFragmentShaderFunction(code) {
-    if (this.fragmentShaderFunctions.includes(code)) {
+    if (this.fragmentShaderFunctions_.includes(code)) {
       return;
     }
-    this.fragmentShaderFunctions.push(code);
+    this.fragmentShaderFunctions_.push(code);
   }
 
   /**
@@ -305,12 +305,12 @@ export class ShaderBuilder {
    * @return {string} The full shader as a string.
    */
   getSymbolVertexShader(forHitDetection) {
-    const offsetMatrix = this.symbolRotateWithView
+    const offsetMatrix = this.symbolRotateWithView_
       ? 'u_offsetScaleMatrix * u_offsetRotateMatrix'
       : 'u_offsetScaleMatrix';
 
-    let attributes = this.attributes;
-    let varyings = this.varyings;
+    let attributes = this.attributes_;
+    let varyings = this.varyings_;
 
     if (forHitDetection) {
       attributes = attributes.concat('vec4 a_hitColor');
@@ -328,7 +328,7 @@ uniform mat4 u_offsetRotateMatrix;
 uniform float u_time;
 uniform float u_zoom;
 uniform float u_resolution;
-${this.uniforms
+${this.uniforms_
   .map(function (uniform) {
     return 'uniform ' + uniform + ';';
   })
@@ -347,12 +347,12 @@ ${varyings
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   })
   .join('\n')}
-${this.vertexShaderFunctions.join('\n')}
+${this.vertexShaderFunctions_.join('\n')}
 void main(void) {
   mat4 offsetMatrix = ${offsetMatrix};
-  vec2 halfSize = ${this.symbolSizeExpression} * 0.5;
-  vec2 offset = ${this.symbolOffsetExpression};
-  float angle = ${this.symbolRotationExpression};
+  vec2 halfSize = ${this.symbolSizeExpression_} * 0.5;
+  vec2 offset = ${this.symbolOffsetExpression_};
+  float angle = ${this.symbolRotationExpression_};
   float offsetX;
   float offsetY;
   if (a_index == 0.0) {
@@ -370,7 +370,7 @@ void main(void) {
   }
   vec4 offsets = offsetMatrix * vec4(offsetX, offsetY, 0.0, 0.0);
   gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
-  vec4 texCoord = ${this.texCoordExpression};
+  vec4 texCoord = ${this.texCoordExpression_};
   float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.p;
   float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.q;
   v_texCoord = vec2(u, v);
@@ -400,7 +400,7 @@ ${varyings
       ? '  if (gl_FragColor.a < 0.1) { discard; } gl_FragColor = v_hitColor;'
       : '';
 
-    let varyings = this.varyings;
+    let varyings = this.varyings_;
 
     if (forHitDetection) {
       varyings = varyings.concat({
@@ -414,7 +414,7 @@ ${varyings
 uniform float u_time;
 uniform float u_zoom;
 uniform float u_resolution;
-${this.uniforms
+${this.uniforms_
   .map(function (uniform) {
     return 'uniform ' + uniform + ';';
   })
@@ -426,10 +426,10 @@ ${varyings
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   })
   .join('\n')}
-${this.fragmentShaderFunctions.join('\n')}
+${this.fragmentShaderFunctions_.join('\n')}
 void main(void) {
-  if (${this.discardExpression}) { discard; }
-  gl_FragColor = ${this.symbolColorExpression};
+  if (${this.discardExpression_}) { discard; }
+  gl_FragColor = ${this.symbolColorExpression_};
   gl_FragColor.rgb *= gl_FragColor.a;
 ${hitDetectionBypass}
 }`;
@@ -443,8 +443,8 @@ ${hitDetectionBypass}
    * @return {string} The full shader as a string.
    */
   getStrokeVertexShader(forHitDetection) {
-    let attributes = this.attributes;
-    let varyings = this.varyings;
+    let attributes = this.attributes_;
+    let varyings = this.varyings_;
 
     if (forHitDetection) {
       attributes = attributes.concat('vec4 a_hitColor');
@@ -461,7 +461,7 @@ precision highp float;
 precision mediump float;
 #endif
 ${BASE_UNIFORMS}
-${this.uniforms
+${this.uniforms_
   .map(function (uniform) {
     return 'uniform ' + uniform + ';';
   })
@@ -486,7 +486,7 @@ ${varyings
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   })
   .join('\n')}
-${this.vertexShaderFunctions.join('\n')}
+${this.vertexShaderFunctions_.join('\n')}
 vec2 worldToPx(vec2 worldPos) {
   vec4 screenPos = u_projectionMatrix * vec4(worldPos, 0.0, 1.0);
   return (0.5 * screenPos.xy + 0.5) * u_viewportSizePx;
@@ -509,7 +509,7 @@ vec2 getOffsetDirection(vec2 normalPx, vec2 tangentPx, float joinAngle) {
 }
 
 void main(void) {
-  float lineWidth = ${this.strokeWidthExpression};
+  float lineWidth = ${this.strokeWidthExpression_};
   float anglePrecision = 1500.0;
   float paramShift = 10000.0;
   v_angleStart = fract(a_parameters / paramShift) * paramShift / anglePrecision;
@@ -547,7 +547,7 @@ ${varyings
       ? '  if (gl_FragColor.a < 0.1) { discard; } gl_FragColor = v_hitColor;'
       : '';
 
-    let varyings = this.varyings;
+    let varyings = this.varyings_;
 
     if (forHitDetection) {
       varyings = varyings.concat({
@@ -563,7 +563,7 @@ precision highp float;
 precision mediump float;
 #endif
 ${BASE_UNIFORMS}
-${this.uniforms
+${this.uniforms_
   .map(function (uniform) {
     return 'uniform ' + uniform + ';';
   })
@@ -578,7 +578,7 @@ ${varyings
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   })
   .join('\n')}
-${this.fragmentShaderFunctions.join('\n')}
+${this.fragmentShaderFunctions_.join('\n')}
 vec2 pxToWorld(vec2 pxPos) {
   vec2 screenPos = 2.0 * pxPos / u_viewportSizePx - 1.0;
   return (u_screenToWorldMatrix * vec4(screenPos, 0.0, 1.0)).xy;
@@ -607,8 +607,8 @@ void main(void) {
     discard;
   }
   #endif
-  if (${this.discardExpression}) { discard; }
-  gl_FragColor = ${this.strokeColorExpression} * u_globalAlpha;
+  if (${this.discardExpression_}) { discard; }
+  gl_FragColor = ${this.strokeColorExpression_} * u_globalAlpha;
   gl_FragColor *= segmentDistanceField(v_currentPoint, v_segmentStart, v_segmentEnd, v_width);
 ${hitDetectionBypass}
 }`;
@@ -622,8 +622,8 @@ ${hitDetectionBypass}
    * @return {string} The full shader as a string.
    */
   getFillVertexShader(forHitDetection) {
-    let attributes = this.attributes;
-    let varyings = this.varyings;
+    let attributes = this.attributes_;
+    let varyings = this.varyings_;
 
     if (forHitDetection) {
       attributes = attributes.concat('vec4 a_hitColor');
@@ -640,7 +640,7 @@ precision highp float;
 precision mediump float;
 #endif
 ${BASE_UNIFORMS}
-${this.uniforms
+${this.uniforms_
   .map(function (uniform) {
     return 'uniform ' + uniform + ';';
   })
@@ -656,7 +656,7 @@ ${varyings
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   })
   .join('\n')}
-${this.vertexShaderFunctions.join('\n')}
+${this.vertexShaderFunctions_.join('\n')}
 void main(void) {
   gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0);
 ${varyings
@@ -679,7 +679,7 @@ ${varyings
       ? '  if (gl_FragColor.a < 0.1) { discard; } gl_FragColor = v_hitColor;'
       : '';
 
-    let varyings = this.varyings;
+    let varyings = this.varyings_;
 
     if (forHitDetection) {
       varyings = varyings.concat({
@@ -695,7 +695,7 @@ precision highp float;
 precision mediump float;
 #endif
 ${BASE_UNIFORMS}
-${this.uniforms
+${this.uniforms_
   .map(function (uniform) {
     return 'uniform ' + uniform + ';';
   })
@@ -705,7 +705,7 @@ ${varyings
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   })
   .join('\n')}
-${this.fragmentShaderFunctions.join('\n')}
+${this.fragmentShaderFunctions_.join('\n')}
 vec2 pxToWorld(vec2 pxPos) {
   vec2 screenPos = 2.0 * pxPos / u_viewportSizePx - 1.0;
   return (u_screenToWorldMatrix * vec4(screenPos, 0.0, 1.0)).xy;
@@ -725,8 +725,8 @@ void main(void) {
     discard;
   }
   #endif
-  if (${this.discardExpression}) { discard; }
-  gl_FragColor = ${this.fillColorExpression} * u_globalAlpha;
+  if (${this.discardExpression_}) { discard; }
+  gl_FragColor = ${this.fillColorExpression_} * u_globalAlpha;
 ${hitDetectionBypass}
 }`;
   }
