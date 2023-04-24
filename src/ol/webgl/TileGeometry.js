@@ -49,7 +49,7 @@ class TileGeometry extends BaseTileRepresentation {
     this.setTile(options.tile);
   }
 
-  uploadTile_() {
+  uploadTile() {
     this.batch.clear();
     const sourceTiles = this.tile.getSourceTiles();
     const features = sourceTiles.reduce(
