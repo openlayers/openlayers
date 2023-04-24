@@ -67,7 +67,7 @@ class BaseTileRepresentation extends EventTarget {
       this.tile = tile;
       this.loaded = tile.getState() === TileState.LOADED;
       if (this.loaded) {
-        this.uploadTile_();
+        this.uploadTile();
       } else {
         if (tile instanceof ImageTile) {
           const image = tile.getImage();
@@ -82,8 +82,9 @@ class BaseTileRepresentation extends EventTarget {
 
   /**
    * @abstract
+   * @protected
    */
-  uploadTile_() {
+  uploadTile() {
     abstract();
   }
 
@@ -95,7 +96,7 @@ class BaseTileRepresentation extends EventTarget {
   handleTileChange_() {
     if (this.tile.getState() === TileState.LOADED) {
       this.loaded = true;
-      this.uploadTile_();
+      this.uploadTile();
     }
   }
 

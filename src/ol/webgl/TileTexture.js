@@ -181,7 +181,7 @@ class TileTexture extends BaseTileRepresentation {
     this.setTile(options.tile);
   }
 
-  uploadTile_() {
+  uploadTile() {
     const helper = this.helper_;
     const gl = helper.getGL();
     const tile = this.tile;
