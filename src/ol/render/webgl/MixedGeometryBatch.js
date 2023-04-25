@@ -78,7 +78,7 @@ import {linearRingIsClockwise} from '../../geom/flat/orient.js';
  * from the batch, these inner batches are modified accordingly in order to keep them up-to-date.
  *
  * A feature can be present in several inner batches, for example a polygon geometry will be present in the polygon batch
- * and its linar rings will be present in the line batch. Multi geometries are also broken down into individual geometries
+ * and its linear rings will be present in the line batch. Multi geometries are also broken down into individual geometries
  * and added to the corresponding batches in a recursive manner.
  *
  * Corresponding {@link module:ol/render/webgl/BatchRenderer} instances are then used to generate the render instructions

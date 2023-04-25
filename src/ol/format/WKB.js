@@ -565,13 +565,13 @@ class WkbWriter {
   /**
    * @param {import("../geom/Geometry.js").default} geom geometry
    * @param {import("../geom/Geometry.js").GeometryLayout} [layout] layout
-   * @return {import("../geom/Geometry.js").GeometryLayout} minumum layout made by common axes
+   * @return {import("../geom/Geometry.js").GeometryLayout} minimum layout made by common axes
    */
   findMinimumLayout(geom, layout = 'XYZM') {
     /**
      * @param {import("../geom/Geometry.js").GeometryLayout} a A
      * @param {import("../geom/Geometry.js").GeometryLayout} b B
-     * @return {import("../geom/Geometry.js").GeometryLayout} minumum layout made by common axes
+     * @return {import("../geom/Geometry.js").GeometryLayout} minimum layout made by common axes
      */
     const GeometryLayout_min = (a, b) => {
       if (a === b) {

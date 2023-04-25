@@ -24,7 +24,7 @@ export function isRegistered() {
 }
 
 /**
- * Unsets the shared proj4 previsouly set with register.
+ * Unsets the shared proj4 previously set with register.
  */
 export function unregister() {
   registered = null;
