@@ -283,7 +283,7 @@ class BaseVectorLayer extends Layer {
  * @param {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike|null} [style] Layer style.
  * @return {import("../style/Style.js").StyleLike|null} The style.
  */
-function toStyleLike(style) {
+export function toStyleLike(style) {
   if (style === undefined) {
     return createDefaultStyle;
   }

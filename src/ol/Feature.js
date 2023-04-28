@@ -3,8 +3,10 @@
  */
 import BaseObject from './Object.js';
 import EventType from './events/EventType.js';
+import Style from './style/Style.js';
 import {assert} from './asserts.js';
 import {listen, unlistenByKey} from './events.js';
+import {toStyleLike} from './layer/BaseVector.js';
 
 /**
  * @typedef {typeof Feature|typeof import("./render/Feature.js").default} FeatureClass
@@ -265,13 +267,24 @@ class Feature extends BaseObject {
    * single style object, an array of styles, or a function that takes a
    * resolution and returns an array of styles. To unset the feature style, call
    * `setStyle()` without arguments or a falsey value.
-   * @param {import("./style/Style.js").StyleLike} [style] Style for this feature.
+   * @param {import("./style/Style.js").StyleLike|import("./style/flat.js").FlatStyleLike} [style] Style for this feature.
    * @api
    * @fires module:ol/events/Event~BaseEvent#event:change
    */
   setStyle(style) {
-    this.style_ = style;
-    this.styleFunction_ = !style ? undefined : createStyleFunction(style);
+    let styleLike;
+    if (
+      !style ||
+      typeof style === 'function' ||
+      style instanceof Style ||
+      (Array.isArray(style) && style.every((s) => s instanceof Style))
+    ) {
+      styleLike = /** @type {import("./style/Style.js").StyleLike} */ (style);
+    } else {
+      styleLike = toStyleLike(style);
+    }
+    this.style_ = styleLike;
+    this.styleFunction_ = !style ? undefined : createStyleFunction(styleLike);
     this.changed();
   }
 
