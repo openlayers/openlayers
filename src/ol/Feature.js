@@ -3,8 +3,7 @@
  */
 import BaseObject from './Object.js';
 import EventType from './events/EventType.js';
-import Style from './style/Style.js';
-import {assert} from './asserts.js';
+import Style, {toFunction as toStyleFunction} from './style/Style.js';
 import {listen, unlistenByKey} from './events.js';
 import {toStyleLike} from './layer/BaseVector.js';
 
@@ -284,7 +283,7 @@ class Feature extends BaseObject {
       styleLike = toStyleLike(style);
     }
     this.style_ = styleLike;
-    this.styleFunction_ = !style ? undefined : createStyleFunction(styleLike);
+    this.styleFunction_ = !style ? undefined : toStyleFunction(styleLike);
     this.changed();
   }
 
@@ -324,27 +323,9 @@ class Feature extends BaseObject {
  * @param {!import("./style/Style.js").StyleFunction|!Array<import("./style/Style.js").default>|!import("./style/Style.js").default} obj
  *     A feature style function, a single style, or an array of styles.
  * @return {import("./style/Style.js").StyleFunction} A style function.
+ * @deprecated
  */
 export function createStyleFunction(obj) {
-  if (typeof obj === 'function') {
-    return obj;
-  }
-  /**
-   * @type {Array<import("./style/Style.js").default>}
-   */
-  let styles;
-  if (Array.isArray(obj)) {
-    styles = obj;
-  } else {
-    assert(
-      typeof (/** @type {?} */ (obj).getZIndex) === 'function',
-      'Expected an `ol/style/Style` or an array of `ol/style/Style.js`'
-    );
-    const style = /** @type {import("./style/Style.js").default} */ (obj);
-    styles = [style];
-  }
-  return function () {
-    return styles;
-  };
+  return toStyleFunction(obj);
 }
 export default Feature;
