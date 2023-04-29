@@ -25,7 +25,10 @@ import {xhr} from '../featureloader.js';
  * returns an array of {@link module:ol/extent~Extent} with the extents to load. Usually this
  * is one of the standard {@link module:ol/loadingstrategy} strategies.
  *
- * @typedef {function(import("../extent.js").Extent, number, import("../proj/Projection.js").default): Array<import("../extent.js").Extent>} LoadingStrategy
+ * @typedef {function(import("../extent.js").Extent,
+ *           number,
+ *           import("../proj/Projection.js").default,
+ *           import("../featureloader.js").FeatureLoaderInternal=): Array<import("../extent.js").Extent>} LoadingStrategy
  * @api
  */
 
@@ -957,10 +960,16 @@ class VectorSource extends Source {
    * @param {import("../extent.js").Extent} extent Extent.
    * @param {number} resolution Resolution.
    * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {import("../featureloader.js").FeatureLoaderInternal} [internal] Internal properties.
    */
-  loadFeatures(extent, resolution, projection) {
+  loadFeatures(extent, resolution, projection, internal) {
     const loadedExtentsRtree = this.loadedExtentsRtree_;
-    const extentsToLoad = this.strategy_(extent, resolution, projection);
+    const extentsToLoad = this.strategy_(
+      extent,
+      resolution,
+      projection,
+      internal
+    );
     for (let i = 0, ii = extentsToLoad.length; i < ii; ++i) {
       const extentToLoad = extentsToLoad[i];
       const alreadyLoaded = loadedExtentsRtree.forEachInExtent(
@@ -985,20 +994,23 @@ class VectorSource extends Source {
           projection,
           (features) => {
             --this.loadingExtentsCount_;
-            this.dispatchEvent(
-              new VectorSourceEvent(
-                VectorEventType.FEATURESLOADEND,
-                undefined,
-                features
-              )
-            );
+            if (features) {
+              this.dispatchEvent(
+                new VectorSourceEvent(
+                  VectorEventType.FEATURESLOADEND,
+                  undefined,
+                  features
+                )
+              );
+            }
           },
           () => {
             --this.loadingExtentsCount_;
             this.dispatchEvent(
               new VectorSourceEvent(VectorEventType.FEATURESLOADERROR)
             );
-          }
+          },
+          internal
         );
         loadedExtentsRtree.insert(extentToLoad, {extent: extentToLoad.slice()});
       }
