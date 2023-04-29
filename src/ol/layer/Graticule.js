@@ -29,8 +29,10 @@ import {clamp} from '../math.js';
 import {degreesToStringHDMS} from '../coordinate.js';
 import {
   equivalent as equivalentProjection,
+  fromUserExtent,
   get as getProjection,
   getTransform,
+  getUserProjection,
 } from '../proj.js';
 import {getVectorContext} from '../render.js';
 import {meridian, parallel} from '../geom/flat/geodesic.js';
@@ -70,6 +72,18 @@ const INTERVALS = [
   2 / 3600,
   1 / 3600,
 ];
+
+/**
+ * @type {number}
+ * @private
+ */
+const LABEL_EDGE_TOLERANCE = 1e-10;
+
+/**
+ * @type {number}
+ * @private
+ */
+const POLE_TOLERANCE = 90 - 1e-10;
 
 /**
  * @typedef {Object} GraticuleLabelDataType
@@ -518,9 +532,15 @@ class Graticule extends VectorLayer {
    * resolution.
    * @param {import("../extent.js").Extent} extent Extent.
    * @param {number} resolution Resolution.
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {import("../featureloader.js").FeatureLoaderInternal} [internal] Internal properties.
    * @return {Array<import("../extent.js").Extent>} Extents.
    */
-  strategyFunction(extent, resolution) {
+  strategyFunction(extent, resolution, projection, internal) {
+    if (internal) {
+      extent = internal.extent;
+      resolution = internal.resolution;
+    }
     // extents may be passed in different worlds, to avoid endless loop we use only one
     let realWorldExtent = extent.slice();
     if (this.projection_ && this.getSource().getWrapX()) {
@@ -545,19 +565,26 @@ class Graticule extends VectorLayer {
    * @param {import("../extent").Extent} extent Extent
    * @param {number} resolution Resolution
    * @param {import("../proj/Projection.js").default} projection Projection
+   * @param {function(): void} success Success
+   * @param {function(): void} failure Failure
+   * @param {import("../featureloader.js").FeatureLoaderInternal} [internal] Internal properties
    */
-  loaderFunction(extent, resolution, projection) {
+  loaderFunction(extent, resolution, projection, success, failure, internal) {
+    if (internal) {
+      extent = internal.extent;
+      resolution = internal.resolution;
+      projection = internal.projection;
+    }
     this.loadedExtent_ = extent;
     const source = this.getSource();
 
     // only consider the intersection between our own extent & the requested one
-    const layerExtent = this.getExtent() || [
-      -Infinity,
-      -Infinity,
-      Infinity,
-      Infinity,
-    ];
+    let layerExtent = this.getExtent();
+    layerExtent = layerExtent
+      ? fromUserExtent(layerExtent, projection)
+      : [-Infinity, -Infinity, Infinity, Infinity];
     const renderExtent = getIntersection(layerExtent, extent);
+    success();
 
     if (
       this.renderedExtent_ &&
@@ -610,16 +637,31 @@ class Graticule extends VectorLayer {
     let i, l;
     for (i = 0, l = this.meridians_.length; i < l; ++i) {
       feature = this.featurePool_[poolIndex++];
-      feature.setGeometry(this.meridians_[i]);
+      feature.setGeometry(this.toUserGeometry_(this.meridians_[i]));
       feature.setStyle(this.lineStyle_);
       featuresColl.push(feature);
     }
     for (i = 0, l = this.parallels_.length; i < l; ++i) {
       feature = this.featurePool_[poolIndex++];
-      feature.setGeometry(this.parallels_[i]);
+      feature.setGeometry(this.toUserGeometry_(this.parallels_[i]));
       feature.setStyle(this.lineStyle_);
       featuresColl.push(feature);
     }
+  }
+
+  /**
+   * @param {import("../geom/Geometry.js").default} geometry Geometry.
+   * @return {import("../geom/Geometry.js").default} Transformed geometry.
+   * @private
+   */
+  toUserGeometry_(geometry) {
+    const userProjection = getUserProjection();
+    if (userProjection) {
+      const clone = geometry.clone();
+      clone.transform(this.projection_, userProjection);
+      return clone;
+    }
+    return geometry;
   }
 
   /**
@@ -748,7 +790,7 @@ class Graticule extends VectorLayer {
             textPoint.rotate(rotation, rotationCenter);
           }
           feature = this.featurePool_[poolIndex++];
-          feature.setGeometry(textPoint);
+          feature.setGeometry(this.toUserGeometry_(textPoint));
           feature.set('graticule_label', this.meridiansLabels_[index].text);
           vectorContext.drawFeature(feature, this.lonLabelStyle_(feature));
         }
@@ -770,7 +812,7 @@ class Graticule extends VectorLayer {
               textPoint.rotate(rotation, rotationCenter);
             }
             feature = this.featurePool_[poolIndex++];
-            feature.setGeometry(textPoint);
+            feature.setGeometry(this.toUserGeometry_(textPoint));
             feature.set('graticule_label', this.parallelsLabels_[index].text);
             vectorContext.drawFeature(feature, this.latLabelStyle_(feature));
           }
@@ -1081,7 +1123,13 @@ class Graticule extends VectorLayer {
     const clampedBottom = Math.max(extent[1], flatCoordinates[bottom]);
     const clampedTop = Math.min(extent[3], flatCoordinates[top]);
     const lat = clamp(
-      extent[1] + Math.abs(extent[1] - extent[3]) * this.lonLabelPosition_,
+      extent[1] +
+        Math.abs(extent[1] - extent[3]) *
+          clamp(
+            this.lonLabelPosition_,
+            LABEL_EDGE_TOLERANCE,
+            1 - LABEL_EDGE_TOLERANCE
+          ),
       clampedBottom,
       clampedTop
     );
@@ -1102,7 +1150,10 @@ class Graticule extends VectorLayer {
    * @api
    */
   getMeridians() {
-    return this.meridians_;
+    return this.meridians_.map(
+      (lineString) =>
+        /** @type {LineString} */ (this.toUserGeometry_(lineString))
+    );
   }
 
   /**
@@ -1150,7 +1201,13 @@ class Graticule extends VectorLayer {
     const clampedLeft = Math.max(extent[0], flatCoordinates[left]);
     const clampedRight = Math.min(extent[2], flatCoordinates[right]);
     const lon = clamp(
-      extent[0] + Math.abs(extent[0] - extent[2]) * this.latLabelPosition_,
+      extent[0] +
+        Math.abs(extent[0] - extent[2]) *
+          clamp(
+            this.latLabelPosition_,
+            LABEL_EDGE_TOLERANCE,
+            1 - LABEL_EDGE_TOLERANCE
+          ),
       clampedLeft,
       clampedRight
     );
@@ -1171,7 +1228,10 @@ class Graticule extends VectorLayer {
    * @api
    */
   getParallels() {
-    return this.parallels_;
+    return this.parallels_.map(
+      (lineString) =>
+        /** @type {LineString} */ (this.toUserGeometry_(lineString))
+    );
   }
 
   /**
@@ -1183,9 +1243,9 @@ class Graticule extends VectorLayer {
 
     const worldExtent = projection.getWorldExtent();
 
-    this.maxLat_ = worldExtent[3];
+    this.maxLat_ = Math.min(worldExtent[3], POLE_TOLERANCE);
     this.maxLon_ = worldExtent[2];
-    this.minLat_ = worldExtent[1];
+    this.minLat_ = Math.max(worldExtent[1], -POLE_TOLERANCE);
     this.minLon_ = worldExtent[0];
 
     // If the world extent crosses the dateline define a custom transform to

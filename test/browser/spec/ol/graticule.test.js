@@ -3,7 +3,12 @@ import Graticule from '../../../../src/ol/layer/Graticule.js';
 import Map from '../../../../src/ol/Map.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
 import Text from '../../../../src/ol/style/Text.js';
-import {fromLonLat, get as getProjection} from '../../../../src/ol/proj.js';
+import {
+  clearUserProjection,
+  fromLonLat,
+  get as getProjection,
+  useGeographic,
+} from '../../../../src/ol/proj.js';
 
 describe('ol.layer.Graticule', function () {
   let graticule;
@@ -16,6 +21,10 @@ describe('ol.layer.Graticule', function () {
   }
 
   describe('#createGraticule', function () {
+    afterEach(function () {
+      clearUserProjection();
+    });
+
     it('creates a graticule without labels', function () {
       createGraticule();
       const extent = [
@@ -27,8 +36,48 @@ describe('ol.layer.Graticule', function () {
       const squaredTolerance = (resolution * resolution) / 4.0;
       graticule.updateProjectionInfo_(projection);
       graticule.createGraticule_(extent, [0, 0], resolution, squaredTolerance);
-      expect(graticule.getMeridians().length).to.be(13);
-      expect(graticule.getParallels().length).to.be(3);
+      const meridians = graticule.getMeridians();
+      expect(meridians.length).to.be(13);
+      const coordinatesM = meridians[1]
+        .clone()
+        .transform('EPSG:3857', 'EPSG:4326')
+        .getCoordinates();
+      expect(coordinatesM[0][0]).to.roughlyEqual(-30, 1e-9);
+      expect(coordinatesM[1][0]).to.roughlyEqual(-30, 1e-9);
+      const parallels = graticule.getParallels();
+      expect(parallels.length).to.be(3);
+      const coordinatesP = parallels[1]
+        .clone()
+        .transform('EPSG:3857', 'EPSG:4326')
+        .getCoordinates();
+      expect(coordinatesP[0][1]).to.roughlyEqual(-30, 1e-9);
+      expect(coordinatesP[1][1]).to.roughlyEqual(-30, 1e-9);
+      expect(graticule.meridiansLabels_).to.be(null);
+      expect(graticule.parallelsLabels_).to.be(null);
+    });
+
+    it('returns user coordinates in a user projection', function () {
+      useGeographic();
+      createGraticule();
+      const extent = [
+        -25614353.926475704, -7827151.696402049, 25614353.926475704,
+        7827151.696402049,
+      ];
+      const projection = getProjection('EPSG:3857');
+      const resolution = 39135.75848201024;
+      const squaredTolerance = (resolution * resolution) / 4.0;
+      graticule.updateProjectionInfo_(projection);
+      graticule.createGraticule_(extent, [0, 0], resolution, squaredTolerance);
+      const meridians = graticule.getMeridians();
+      expect(meridians.length).to.be(13);
+      const coordinatesM = meridians[1].getCoordinates();
+      expect(coordinatesM[0][0]).to.roughlyEqual(-30, 1e-9);
+      expect(coordinatesM[1][0]).to.roughlyEqual(-30, 1e-9);
+      const parallels = graticule.getParallels();
+      expect(parallels.length).to.be(3);
+      const coordinatesP = parallels[1].getCoordinates();
+      expect(coordinatesP[0][1]).to.roughlyEqual(-30, 1e-9);
+      expect(coordinatesP[1][1]).to.roughlyEqual(-30, 1e-9);
       expect(graticule.meridiansLabels_).to.be(null);
       expect(graticule.parallelsLabels_).to.be(null);
     });
@@ -48,7 +97,8 @@ describe('ol.layer.Graticule', function () {
       ];
       const projection = getProjection('EPSG:3857');
       const resolution = 39135.75848201024;
-      graticule.loaderFunction(extent, resolution, projection);
+      const success = function () {};
+      graticule.loaderFunction(extent, resolution, projection, success);
       const event = {
         context: document.createElement('canvas').getContext('2d'),
         inversePixelTransform: [1, 0, 0, 1, 0, 0],
@@ -94,7 +144,8 @@ describe('ol.layer.Graticule', function () {
       ];
       const projection = getProjection('EPSG:3857');
       const resolution = 39135.75848201024;
-      graticule.loaderFunction(extent, resolution, projection);
+      const success = function () {};
+      graticule.loaderFunction(extent, resolution, projection, success);
       const event = {
         context: document.createElement('canvas').getContext('2d'),
         inversePixelTransform: [1, 0, 0, 1, 0, 0],
