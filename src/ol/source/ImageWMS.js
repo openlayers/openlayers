@@ -306,14 +306,10 @@ class ImageWMS extends ImageSource {
       viewWidth,
       viewHeight,
     ]);
-    const requestWidth = ceil(
-      (this.ratio_ * getWidth(extent)) / imageResolution,
-      DECIMALS
-    );
-    const requestHeight = ceil(
-      (this.ratio_ * getHeight(extent)) / imageResolution,
-      DECIMALS
-    );
+    const marginWidth = ceil(((this.ratio_ - 1) * viewWidth) / 2, DECIMALS);
+    const requestWidth = viewWidth + 2 * marginWidth;
+    const marginHeight = ceil(((this.ratio_ - 1) * viewHeight) / 2, DECIMALS);
+    const requestHeight = viewHeight + 2 * marginHeight;
     const requestExtent = getForViewAndSize(center, imageResolution, 0, [
       requestWidth,
       requestHeight,
