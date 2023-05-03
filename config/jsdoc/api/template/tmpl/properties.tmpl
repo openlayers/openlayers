@@ -67,7 +67,7 @@
             <?js if (prop.type && prop.type.names) {?>
                 <?js= self.partial('type.tmpl', prop.type.names) + (prop.optional && typeof prop.defaultvalue === 'undefined' && !prop.type.names.includes('undefined') ? ' | undefined' : '') ?>
                 <?js if (typeof prop.defaultvalue !== 'undefined') { ?>
-                    (defaults to <?js= self.htmlsafe(prop.defaultvalue) ?>)
+                    <br>(defaults to <?js= self.htmlsafe(prop.defaultvalue) ?>)
                 <?js } ?>
             <?js } ?>
             </td>

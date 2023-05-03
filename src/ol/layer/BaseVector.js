@@ -7,7 +7,10 @@ import Style, {
   createDefaultStyle,
   toFunction as toStyleFunction,
 } from '../style/Style.js';
-import {toStyle} from '../style/flat.js';
+import {
+  flatStylesToStyleFunction,
+  rulesToStyleFunction,
+} from '../render/canvas/style.js';
 
 /**
  * @template {import("../source/Vector.js").default|import("../source/VectorTile.js").default} VectorSourceType
@@ -266,45 +269,76 @@ class BaseVectorLayer extends Layer {
    * @api
    */
   setStyle(style) {
-    /**
-     * @type {import("../style/Style.js").StyleLike|null}
-     */
-    let styleLike;
-
-    if (style === undefined) {
-      styleLike = createDefaultStyle;
-    } else if (style === null) {
-      styleLike = null;
-    } else if (typeof style === 'function') {
-      styleLike = style;
-    } else if (style instanceof Style) {
-      styleLike = style;
-    } else if (Array.isArray(style)) {
-      const len = style.length;
-
-      /**
-       * @type {Array<Style>}
-       */
-      const styles = new Array(len);
-
-      for (let i = 0; i < len; ++i) {
-        const s = style[i];
-        if (s instanceof Style) {
-          styles[i] = s;
-        } else {
-          styles[i] = toStyle(s);
-        }
-      }
-      styleLike = styles;
-    } else {
-      styleLike = toStyle(style);
-    }
-
-    this.style_ = styleLike;
+    this.style_ = toStyleLike(style);
     this.styleFunction_ =
       style === null ? undefined : toStyleFunction(this.style_);
     this.changed();
   }
+}
+
+/**
+ * Coerce the allowed style types into a shorter list of types.  Flat styles, arrays of flat
+ * styles, and arrays of rules are converted into style functions.
+ *
+ * @param {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike|null} [style] Layer style.
+ * @return {import("../style/Style.js").StyleLike|null} The style.
+ */
+function toStyleLike(style) {
+  if (style === undefined) {
+    return createDefaultStyle;
+  }
+  if (!style) {
+    return null;
+  }
+  if (typeof style === 'function') {
+    return style;
+  }
+  if (style instanceof Style) {
+    return style;
+  }
+  if (!Array.isArray(style)) {
+    return flatStylesToStyleFunction([style]);
+  }
+  if (style.length === 0) {
+    return [];
+  }
+
+  const length = style.length;
+  const first = style[0];
+
+  if (first instanceof Style) {
+    /**
+     * @type {Array<Style>}
+     */
+    const styles = new Array(length);
+    for (let i = 0; i < length; ++i) {
+      const candidate = style[i];
+      if (!(candidate instanceof Style)) {
+        throw new Error('Expected a list of style instances');
+      }
+      styles[i] = candidate;
+    }
+    return styles;
+  }
+
+  if ('style' in first) {
+    /**
+     * @type Array<import("../style/flat.js").Rule>
+     */
+    const rules = new Array(length);
+    for (let i = 0; i < length; ++i) {
+      const candidate = style[i];
+      if (!('style' in candidate)) {
+        throw new Error('Expected a list of rules with a style property');
+      }
+      rules[i] = candidate;
+    }
+    return rulesToStyleFunction(rules);
+  }
+
+  const flatStyles =
+    /** @type {Array<import("../style/flat.js").FlatStyle>} */ (style);
+  return flatStylesToStyleFunction(flatStyles);
 }
 
 export default BaseVectorLayer;

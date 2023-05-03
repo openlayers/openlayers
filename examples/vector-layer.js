@@ -3,13 +3,6 @@ import Map from '../src/ol/Map.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
-import {Fill, Stroke, Style} from '../src/ol/style.js';
-
-const style = new Style({
-  fill: new Fill({
-    color: '#eeeeee',
-  }),
-});
 
 const vectorLayer = new VectorLayer({
   background: '#1a2b39',
@@ -17,11 +10,20 @@ const vectorLayer = new VectorLayer({
     url: 'https://openlayers.org/data/vector/ecoregions.json',
     format: new GeoJSON(),
   }),
-  style: function (feature) {
-    const color = feature.get('COLOR') || '#eeeeee';
-    style.getFill().setColor(color);
-    return style;
-  },
+  style: [
+    {
+      // if features have a COLOR property, use that in the style
+      filter: ['get', 'COLOR'],
+      style: {
+        'fill-color': ['get', 'COLOR'],
+      },
+    },
+    {
+      // otherwise, use this style
+      else: true,
+      style: {'fill-color': '#eee'},
+    },
+  ],
 });
 
 const map = new Map({
@@ -36,12 +38,10 @@ const map = new Map({
 const featureOverlay = new VectorLayer({
   source: new VectorSource(),
   map: map,
-  style: new Style({
-    stroke: new Stroke({
-      color: 'rgba(255, 255, 255, 0.7)',
-      width: 2,
-    }),
-  }),
+  style: {
+    'stroke-color': 'rgba(255, 255, 255, 0.7)',
+    'stroke-width': 2,
+  },
 });
 
 let highlight;
