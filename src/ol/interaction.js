@@ -2,6 +2,7 @@
  * @module ol/interaction
  */
 export {default as DoubleClickZoom} from './interaction/DoubleClickZoom.js';
+export {default as DblPointerClickZoom} from './interaction/DblPointerClickZoom.js';
 export {default as DragAndDrop} from './interaction/DragAndDrop.js';
 export {default as DragBox} from './interaction/DragBox.js';
 export {default as DragPan} from './interaction/DragPan.js';
