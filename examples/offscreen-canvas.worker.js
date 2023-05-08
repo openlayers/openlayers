@@ -30,7 +30,7 @@ const sources = {
     format: new MVT(),
     url: 'https://api.maptiler.com/tiles/contours/{z}/{x}/{y}.pbf?key=get_your_own_D6rA4zTHduk6KOKTXzGB',
   }),
-  openmaptiles: new VectorTileSource({
+  maptiler_planet: new VectorTileSource({
     format: new MVT(),
     maxZoom: 14,
     url: 'https://api.maptiler.com/tiles/v3/{z}/{x}/{y}.pbf?key=get_your_own_D6rA4zTHduk6KOKTXzGB',
