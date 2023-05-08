@@ -126,7 +126,7 @@ class Triangulation {
       this.sourceProj_.canWrapX() &&
       !!maxSourceExtent &&
       !!this.sourceProj_.getExtent() &&
-      getWidth(maxSourceExtent) == getWidth(this.sourceProj_.getExtent());
+      getWidth(maxSourceExtent) >= getWidth(this.sourceProj_.getExtent());
 
     /**
      * @type {?number}
