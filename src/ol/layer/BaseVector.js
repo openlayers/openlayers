@@ -252,7 +252,7 @@ class BaseVectorLayer extends Layer {
    * `setStyle()` without arguments to reset to the default style. See
    * [the ol/style/Style module]{@link module:ol/style/Style~Style} for information on the default style.
    *
-   * If your layer has a static style, you can use [flat style](@link module:ol/style/flat~FlatStyle) object
+   * If your layer has a static style, you can use [flat style]{@link module:ol/style/flat~FlatStyle} object
    * literals instead of using the `Style` and symbolizer constructors (`Fill`, `Stroke`, etc.):
    * ```js
    * vectorLayer.setStyle({
