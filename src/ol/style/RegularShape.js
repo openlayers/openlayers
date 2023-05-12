@@ -407,7 +407,7 @@ class RegularShape extends ImageStyle {
     if (lineJoin === 'miter' && miterRatio <= miterLimit) {
       return miterRatio * strokeWidth;
     }
-    // Calculate the distnce from center to the stroke corner where
+    // Calculate the distance from center to the stroke corner where
     // it was cut short because of the miter limit.
     //              l
     //        ----+---- <= distance from center to here is maxr

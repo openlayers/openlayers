@@ -4,7 +4,7 @@
 import SimpleGeometry from './SimpleGeometry.js';
 import {createOrUpdate, forEachCorner, intersects} from '../extent.js';
 import {deflateCoordinate} from './flat/deflate.js';
-import {rotate, translate} from './flat/transform.js';
+import {rotate} from './flat/transform.js';
 
 /**
  * @classdesc
@@ -240,22 +240,6 @@ class Circle extends SimpleGeometry {
     const stride = this.getStride();
     this.setCenter(
       rotate(center, 0, center.length, stride, angle, anchor, center)
-    );
-    this.changed();
-  }
-
-  /**
-   * Translate the geometry.  This modifies the geometry coordinates in place.  If
-   * instead you want a new geometry, first `clone()` this geometry.
-   * @param {number} deltaX Delta X.
-   * @param {number} deltaY Delta Y.
-   * @api
-   */
-  translate(deltaX, deltaY) {
-    const center = this.getCenter();
-    const stride = this.getStride();
-    this.setCenter(
-      translate(center, 0, center.length, stride, deltaX, deltaY, center)
     );
     this.changed();
   }

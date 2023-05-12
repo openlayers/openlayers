@@ -35,8 +35,8 @@ const DEFAULT_FILL_COLOR = '#333';
  * @property {boolean} [overflow=false] For polygon labels or when `placement` is set to `'line'`, allow text to exceed
  * the width of the polygon at the label position or the length of the path that it follows.
  * @property {TextPlacement} [placement='point'] Text placement.
- * @property {number} [repeat] Repeat interval in pixels. When set, the text will be repeated at this interval. Only available
- * when `placement` is set to `'line'`. Overrides 'textAlign'.
+ * @property {number} [repeat] Repeat interval. When set, the text will be repeated at this interval, which specifies
+ * the distance between two text anchors in pixels. Only available when `placement` is set to `'line'`. Overrides 'textAlign'.
  * @property {number|import("../size.js").Size} [scale] Scale.
  * @property {boolean} [rotateWithView=false] Whether to rotate the text with the view.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).

@@ -85,7 +85,7 @@ map.addControl(new FullScreen());
 
 apply(
   map,
-  'https://api.maptiler.com/maps/topo/style.json?key=get_your_own_D6rA4zTHduk6KOKTXzGB'
+  'https://api.maptiler.com/maps/topo-v2/style.json?key=get_your_own_D6rA4zTHduk6KOKTXzGB'
 );
 
 container.onmouseover = function () {
