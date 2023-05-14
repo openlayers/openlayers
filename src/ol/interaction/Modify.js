@@ -33,7 +33,6 @@ import {
 } from '../coordinate.js';
 import {createEditingStyle} from '../style/Style.js';
 import {equals} from '../array.js';
-import {fromCircle} from '../geom/Polygon.js';
 import {
   fromUserCoordinate,
   fromUserExtent,
@@ -780,20 +779,10 @@ class Modify extends PointerInteraction {
     centerSegmentData.featureSegments = featureSegments;
     circumferenceSegmentData.featureSegments = featureSegments;
     this.rBush_.insert(createExtent(coordinates), centerSegmentData);
-    let circleGeometry = /** @type {import("../geom/Geometry.js").default} */ (
-      geometry
+    this.rBush_.insert(
+      [-Infinity, -Infinity, Infinity, Infinity],
+      circumferenceSegmentData
     );
-    const userProjection = getUserProjection();
-    if (userProjection && this.getMap()) {
-      const projection = this.getMap().getView().getProjection();
-      circleGeometry = circleGeometry
-        .clone()
-        .transform(userProjection, projection);
-      circleGeometry = fromCircle(
-        /** @type {import("../geom/Circle.js").default} */ (circleGeometry)
-      ).transform(projection, userProjection);
-    }
-    this.rBush_.insert(circleGeometry.getExtent(), circumferenceSegmentData);
   }
 
   /**
@@ -938,31 +927,34 @@ class Modify extends PointerInteraction {
         case 'Circle':
           segment[0] = vertex;
           segment[1] = vertex;
+          const projection = evt.map.getView().getProjection();
+          const userProjection = getUserProjection();
+          this.changingFeature_ = true;
           if (segmentData.index === CIRCLE_CENTER_INDEX) {
-            this.changingFeature_ = true;
-            geometry.setCenter(vertex);
-            this.changingFeature_ = false;
+            // We're dragging the circle's center:
+            if (userProjection) {
+              geometry.transform(userProjection, projection);
+              geometry.setCenter(fromUserCoordinate(vertex, projection));
+              geometry.transform(projection, userProjection);
+            } else {
+              geometry.setCenter(vertex);
+            }
           } else {
             // We're dragging the circle's circumference:
-            this.changingFeature_ = true;
-            const projection = evt.map.getView().getProjection();
-            let radius = coordinateDistance(
-              fromUserCoordinate(geometry.getCenter(), projection),
-              fromUserCoordinate(vertex, projection)
-            );
-            const userProjection = getUserProjection();
             if (userProjection) {
-              const circleGeometry = geometry
-                .clone()
-                .transform(userProjection, projection);
-              circleGeometry.setRadius(radius);
-              radius = circleGeometry
-                .transform(projection, userProjection)
-                .getRadius();
+              geometry.transform(userProjection, projection);
+              const radius = coordinateDistance(
+                geometry.getCenter(),
+                fromUserCoordinate(vertex, projection)
+              );
+              geometry.setRadius(radius);
+              geometry.transform(projection, userProjection);
+            } else {
+              const radius = coordinateDistance(geometry.getCenter(), vertex);
+              geometry.setRadius(radius);
             }
-            geometry.setRadius(radius);
-            this.changingFeature_ = false;
           }
+          this.changingFeature_ = false;
           break;
         default:
         // pass
@@ -1114,20 +1106,8 @@ class Modify extends PointerInteraction {
         circumferenceSegmentData.segment[0] = coordinates;
         circumferenceSegmentData.segment[1] = coordinates;
         this.rBush_.update(createExtent(coordinates), centerSegmentData);
-        let circleGeometry = geometry;
-        const userProjection = getUserProjection();
-        if (userProjection) {
-          const projection = evt.map.getView().getProjection();
-          circleGeometry = circleGeometry
-            .clone()
-            .transform(userProjection, projection);
-          circleGeometry = fromCircle(circleGeometry).transform(
-            projection,
-            userProjection
-          );
-        }
         this.rBush_.update(
-          circleGeometry.getExtent(),
+          [-Infinity, -Infinity, Infinity, Infinity],
           circumferenceSegmentData
         );
       } else {

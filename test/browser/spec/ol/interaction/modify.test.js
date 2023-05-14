@@ -14,9 +14,12 @@ import Snap from '../../../../../src/ol/interaction/Snap.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
 import View from '../../../../../src/ol/View.js';
+import proj4 from 'proj4';
 import {Fill, Style} from '../../../../../src/ol/style.js';
 import {MultiPoint} from '../../../../../src/ol/geom.js';
 import {
+  addCommon,
+  clearAllProjections,
   clearUserProjection,
   setUserProjection,
   useGeographic,
@@ -26,6 +29,7 @@ import {
   doubleClick,
   never,
 } from '../../../../../src/ol/events/condition.js';
+import {register} from '../../../../../src/ol/proj/proj4.js';
 
 describe('ol.interaction.Modify', function () {
   let target, map, layer, source, features;
@@ -83,6 +87,9 @@ describe('ol.interaction.Modify', function () {
     map.dispose();
     document.body.removeChild(target);
     clearUserProjection();
+    delete proj4.defs['EPSG:32632'];
+    clearAllProjections();
+    addCommon();
   });
 
   /**
@@ -616,7 +623,7 @@ describe('ol.interaction.Modify', function () {
         .getGeometry()
         .clone()
         .transform(userProjection, viewProjection);
-      expect(geometry2.getRadius()).to.roughlyEqual(25, 0.1);
+      expect(geometry2.getRadius()).to.roughlyEqual(25, 1e-9);
       expect(geometry2.getCenter()).to.eql([5, 5]);
 
       // Increase radius along y axis
@@ -630,8 +637,78 @@ describe('ol.interaction.Modify', function () {
         .getGeometry()
         .clone()
         .transform(userProjection, viewProjection);
-      expect(geometry3.getRadius()).to.roughlyEqual(30, 0.1);
+      expect(geometry3.getRadius()).to.roughlyEqual(30, 1e-9);
       expect(geometry3.getCenter()).to.eql([5, 5]);
+    });
+
+    it('changes the circle radius and center in a non-parallel user projection', function () {
+      proj4.defs(
+        'EPSG:32632',
+        '+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +type=crs'
+      );
+      register(proj4);
+      const userProjection = 'EPSG:32632';
+      setUserProjection(userProjection);
+      const viewProjection = map.getView().getProjection();
+
+      const circleFeature = new Feature(
+        new Circle([10, 10], 20).transform(viewProjection, userProjection)
+      );
+      features.length = 0;
+      features.push(circleFeature);
+
+      const modify = new Modify({
+        features: new Collection(features),
+      });
+      map.addInteraction(modify);
+
+      // Change center
+      simulateEvent('pointermove', 10, -10, null, 0);
+      simulateEvent('pointerdown', 10, -10, null, 0);
+      simulateEvent('pointermove', 5, -5, null, 0);
+      simulateEvent('pointerdrag', 5, -5, null, 0);
+      simulateEvent('pointerup', 5, -5, null, 0);
+
+      const geometry1 = circleFeature
+        .getGeometry()
+        .clone()
+        .transform(userProjection, viewProjection);
+      expect(geometry1.getRadius()).to.roughlyEqual(20, 1e-9);
+      const center1 = geometry1.getCenter();
+      expect(center1[0]).to.roughlyEqual(5, 1e-9);
+      expect(center1[1]).to.roughlyEqual(5, 1e-9);
+
+      // Increase radius along x axis
+      simulateEvent('pointermove', 25, -4, null, 0);
+      simulateEvent('pointerdown', 25, -4, null, 0);
+      simulateEvent('pointermove', 30, -5, null, 0);
+      simulateEvent('pointerdrag', 30, -5, null, 0);
+      simulateEvent('pointerup', 30, -5, null, 0);
+
+      const geometry2 = circleFeature
+        .getGeometry()
+        .clone()
+        .transform(userProjection, viewProjection);
+      expect(geometry2.getRadius()).to.roughlyEqual(25, 1e-9);
+      const center2 = geometry2.getCenter();
+      expect(center2[0]).to.roughlyEqual(5, 1e-9);
+      expect(center2[1]).to.roughlyEqual(5, 1e-9);
+
+      // Increase radius along y axis
+      simulateEvent('pointermove', 4, -30, null, 0);
+      simulateEvent('pointerdown', 4, -30, null, 0);
+      simulateEvent('pointermove', 5, -35, null, 0);
+      simulateEvent('pointerdrag', 5, -35, null, 0);
+      simulateEvent('pointerup', 5, -35, null, 0);
+
+      const geometry3 = circleFeature
+        .getGeometry()
+        .clone()
+        .transform(userProjection, viewProjection);
+      expect(geometry3.getRadius()).to.roughlyEqual(30, 1e-9);
+      const center3 = geometry3.getCenter();
+      expect(center3[0]).to.roughlyEqual(5, 1e-9);
+      expect(center3[1]).to.roughlyEqual(5, 1e-9);
     });
   });
 
@@ -1351,6 +1428,82 @@ describe('ol.interaction.Modify', function () {
         .transform(userProjection, viewProjection);
       expect(geometry3.getRadius()).to.roughlyEqual(30, 1e-9);
       expect(geometry3.getCenter()).to.eql([5, 5]);
+    });
+
+    it('changes the circle radius and center in a non-parallel user projection', function () {
+      proj4.defs(
+        'EPSG:32632',
+        '+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +type=crs'
+      );
+      register(proj4);
+      const userProjection = 'EPSG:32632';
+      setUserProjection(userProjection);
+      const viewProjection = map.getView().getProjection();
+
+      const circleFeature = new Feature(
+        new Circle([10, 10], 20).transform(viewProjection, userProjection)
+      );
+      features.length = 0;
+      features.push(circleFeature);
+
+      const modify = new Modify({
+        features: new Collection(features),
+      });
+      map.addInteraction(modify);
+
+      const snap = new Snap({
+        features: new Collection(features),
+        pixelTolerance: 1,
+      });
+      map.addInteraction(snap);
+
+      // Change center
+      simulateEvent('pointermove', 10, -10, null, 0);
+      simulateEvent('pointerdown', 10, -10, null, 0);
+      simulateEvent('pointermove', 5, -5, null, 0);
+      simulateEvent('pointerdrag', 5, -5, null, 0);
+      simulateEvent('pointerup', 5, -5, null, 0);
+
+      const geometry1 = circleFeature
+        .getGeometry()
+        .clone()
+        .transform(userProjection, viewProjection);
+      expect(geometry1.getRadius()).to.roughlyEqual(20, 1e-9);
+      const center1 = geometry1.getCenter();
+      expect(center1[0]).to.roughlyEqual(5, 1e-9);
+      expect(center1[1]).to.roughlyEqual(5, 1e-9);
+
+      // Increase radius along x axis
+      simulateEvent('pointermove', 25, -4, null, 0);
+      simulateEvent('pointerdown', 25, -4, null, 0);
+      simulateEvent('pointermove', 30, -5, null, 0);
+      simulateEvent('pointerdrag', 30, -5, null, 0);
+      simulateEvent('pointerup', 30, -5, null, 0);
+
+      const geometry2 = circleFeature
+        .getGeometry()
+        .clone()
+        .transform(userProjection, viewProjection);
+      expect(geometry2.getRadius()).to.roughlyEqual(25, 1e-9);
+      const center2 = geometry2.getCenter();
+      expect(center2[0]).to.roughlyEqual(5, 1e-9);
+      expect(center2[1]).to.roughlyEqual(5, 1e-9);
+
+      // Increase radius along y axis
+      simulateEvent('pointermove', 4, -30, null, 0);
+      simulateEvent('pointerdown', 4, -30, null, 0);
+      simulateEvent('pointermove', 5, -35, null, 0);
+      simulateEvent('pointerdrag', 5, -35, null, 0);
+      simulateEvent('pointerup', 5, -35, null, 0);
+
+      const geometry3 = circleFeature
+        .getGeometry()
+        .clone()
+        .transform(userProjection, viewProjection);
+      expect(geometry3.getRadius()).to.roughlyEqual(30, 1e-9);
+      const center3 = geometry3.getCenter();
+      expect(center3[0]).to.roughlyEqual(5, 1e-9);
+      expect(center3[1]).to.roughlyEqual(5, 1e-9);
     });
   });
 });

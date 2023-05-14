@@ -104,7 +104,7 @@ class Circle extends SimpleGeometry {
    */
   computeExtent(extent) {
     const flatCoordinates = this.flatCoordinates;
-    const radius = flatCoordinates[this.stride] - flatCoordinates[0];
+    const radius = this.getRadius();
     return createOrUpdate(
       flatCoordinates[0] - radius,
       flatCoordinates[1] - radius,
@@ -172,10 +172,12 @@ class Circle extends SimpleGeometry {
    */
   setCenter(center) {
     const stride = this.stride;
-    const radius = this.flatCoordinates[stride] - this.flatCoordinates[0];
+    const radiusX = this.flatCoordinates[stride] - this.flatCoordinates[0];
+    const radiusY = this.flatCoordinates[stride + 1] - this.flatCoordinates[1];
     const flatCoordinates = center.slice();
-    flatCoordinates[stride] = flatCoordinates[0] + radius;
-    for (let i = 1; i < stride; ++i) {
+    flatCoordinates[stride] = flatCoordinates[0] + radiusX;
+    flatCoordinates[stride + 1] = flatCoordinates[1] + radiusY;
+    for (let i = 2; i < stride; ++i) {
       flatCoordinates[stride + i] = center[i];
     }
     this.setFlatCoordinates(this.layout, flatCoordinates);
@@ -218,7 +220,11 @@ class Circle extends SimpleGeometry {
    * @api
    */
   setRadius(radius) {
-    this.flatCoordinates[this.stride] = this.flatCoordinates[0] + radius;
+    const stride = this.stride;
+    this.flatCoordinates[stride] = this.flatCoordinates[0] + radius;
+    for (let i = 1; i < stride; ++i) {
+      this.flatCoordinates[stride + i] = this.flatCoordinates[i];
+    }
     this.changed();
   }
 
