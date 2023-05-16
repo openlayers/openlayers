@@ -51,6 +51,7 @@ export const DefaultUniform = {
   RESOLUTION: 'u_resolution',
   VIEWPORT_SIZE_PX: 'u_viewportSizePx',
   PIXEL_RATIO: 'u_pixelRatio',
+  HIT_DETECTION: 'u_hitDetection',
 };
 
 /**
