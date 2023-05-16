@@ -305,6 +305,30 @@ class GeometryCollection extends Geometry {
   }
 
   /**
+   * Transform each coordinate of the geometry from one coordinate reference
+   * system to another. The geometry is modified in place.
+   * For example, a line will be transformed to a line and a circle to a circle.
+   * If you do not want the geometry modified in place, first `clone()` it and
+   * then use this function on the clone.
+   *
+   * @param {import("../proj.js").ProjectionLike} source The current projection.  Can be a
+   *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
+   * @param {import("../proj.js").ProjectionLike} destination The desired projection.  Can be a
+   *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
+   * @return {Geometry} This geometry.  Note that original geometry is
+   *     modified in place.
+   * @api
+   */
+  transform(source, destination) {
+    const geometries = this.geometries_;
+    for (let i = 0, ii = geometries.length; i < ii; ++i) {
+      geometries[i].transform(source, destination);
+    }
+    this.changed();
+    return this;
+  }
+
+  /**
    * Translate the geometry.  This modifies the geometry coordinates in place.  If
    * instead you want a new geometry, first `clone()` this geometry.
    * @param {number} deltaX Delta X.
