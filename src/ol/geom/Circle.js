@@ -4,6 +4,7 @@
 import SimpleGeometry from './SimpleGeometry.js';
 import {createOrUpdate, forEachCorner, intersects} from '../extent.js';
 import {deflateCoordinate} from './flat/deflate.js';
+import {equivalent, get as getProjection} from '../proj.js';
 import {rotate} from './flat/transform.js';
 
 /**
@@ -243,29 +244,118 @@ class Circle extends SimpleGeometry {
     );
     this.changed();
   }
-}
 
-/**
- * Transform each coordinate of the circle from one coordinate reference system
- * to another. The geometry is modified in place.
- * If you do not want the geometry modified in place, first clone() it and
- * then use this function on the clone.
- *
- * Internally a circle is currently represented by two points: the center of
- * the circle `[cx, cy]`, and the point to the right of the circle
- * `[cx + r, cy]`. This `transform` function just transforms these two points.
- * So the resulting geometry is also a circle, and that circle does not
- * correspond to the shape that would be obtained by transforming every point
- * of the original circle.
- *
- * @param {import("../proj.js").ProjectionLike} source The current projection.  Can be a
- *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
- * @param {import("../proj.js").ProjectionLike} destination The desired projection.  Can be a
- *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
- * @return {Circle} This geometry.  Note that original geometry is
- *     modified in place.
- * @function
- * @api
- */
-Circle.prototype.transform;
+  /**
+   * @param {import("../proj.js").ProjectionLike} source The current projection.  Can be a
+   *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
+   * @param {import("../proj.js").ProjectionLike} destination The desired projection.  Can be a
+   *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
+   * @return {Circle} This geometry.  Note that original geometry is
+   *     modified in place.
+   * @function
+   */
+  transformInternal(source, destination) {
+    return /** @type {Circle} */ (super.transform(source, destination));
+  }
+
+  /**
+   * Transform each coordinate of the circle from one coordinate reference system
+   * to another. The geometry is modified in place.
+   * If you do not want the geometry modified in place, first clone() it and
+   * then use this function on the clone.
+   *
+   * Internally a circle is currently represented by two points: the center of
+   * the circle `[cx, cy]`, and the point to the right of the circle
+   * `[cx + r, cy]`. This `transform` function just transforms these two points.
+   * So the resulting geometry is also a circle, and that circle does not
+   * correspond to the shape that would be obtained by transforming every point
+   * of the original circle.
+   *
+   * @param {import("../proj.js").ProjectionLike} source The current projection.  Can be a
+   *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
+   * @param {import("../proj.js").ProjectionLike} destination The desired projection.  Can be a
+   *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
+   * @return {Circle} This geometry.  Note that original geometry is
+   *     modified in place.
+   * @function
+   * @api
+   */
+  transform(source, destination) {
+    source = getProjection(source);
+    destination = getProjection(destination);
+    const proj3857 = getProjection('EPSG:3857');
+    const proj4326 = getProjection('EPSG:4326');
+    const sourceParallel =
+      equivalent(source, proj3857) || equivalent(source, proj4326);
+    const destinationParallel =
+      equivalent(destination, proj3857) || equivalent(destination, proj4326);
+
+    if (
+      sourceParallel === destinationParallel ||
+      source.getUnits() === 'tile-pixels'
+    ) {
+      return this.transformInternal(source, destination);
+    }
+    if (sourceParallel) {
+      this.transformInternal(source, destination);
+      this.setRadius(this.getRadius());
+      return this;
+    }
+    return this.transformToNormalCircle(source, destination);
+  }
+
+  /**
+   * Transform the circle from one coordinate reference system to another.
+   * The geometry is modified in place.
+   * If you do not want the geometry modified in place, first clone() it and
+   * then use this function on the clone.
+   *
+   * Internally the resulting geometry is represented by two points: the center of
+   * the circle `[cx, cy]`, and the point to the right of the circle
+   * `[cx + r, cy]`. This function is not reversible but the `transform` method can be
+   * used to return a circle in the original projection with center and radius similar
+   * to the original values although the second point from which the radius is calculated
+   * may be different.  This is useful for interactions which work internally in view
+   * projection and return results in a user projection.
+   *
+   * @param {import("../proj.js").ProjectionLike} source The current projection.  Can be a
+   *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
+   * @param {import("../proj.js").ProjectionLike} destination The desired projection.  Can be a
+   *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
+   * @return {Circle} This geometry.  Note that original geometry is
+   *     modified in place.
+   */
+  transformToNormalCircle(source, destination) {
+    const TARGET_TOLERANCE = 1e-11;
+    const MAX_ATTEMPTS = 6;
+
+    const circle = this.clone();
+    const radius = circle.getRadius();
+    // adjust radius to fit [cx + r, cy] when transformed
+    for (let i = 0; i < MAX_ATTEMPTS; ++i) {
+      const circleGeometry = circle.clone();
+      circleGeometry.transformInternal(source, destination);
+      circleGeometry.setRadius(circleGeometry.getRadius());
+      const currentRadius = circleGeometry
+        .transformInternal(destination, source)
+        .getRadius();
+      if (
+        currentRadius === radius ||
+        Math.abs(currentRadius - radius) / radius < TARGET_TOLERANCE
+      ) {
+        break;
+      }
+      if (currentRadius > 0) {
+        circle.scale(radius / currentRadius, undefined, circle.getCenter());
+      }
+    }
+    circle.transformInternal(source, destination);
+    this.setCenterAndRadius(
+      circle.getCenter(),
+      circle.getRadius(),
+      this.layout
+    );
+    return this;
+  }
+}
 export default Circle;
