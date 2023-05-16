@@ -669,6 +669,9 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 5, -5, null, 0);
       simulateEvent('pointerup', 5, -5, null, 0);
 
+      const coordinates1 = circleFeature.getGeometry().getFlatCoordinates();
+      expect(coordinates1[2]).to.be.greaterThan(coordinates1[0]);
+      expect(coordinates1[3]).to.equal(coordinates1[1]);
       const geometry1 = circleFeature
         .getGeometry()
         .clone()
@@ -685,6 +688,9 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 30, -5, null, 0);
       simulateEvent('pointerup', 30, -5, null, 0);
 
+      const coordinates2 = circleFeature.getGeometry().getFlatCoordinates();
+      expect(coordinates2[2]).to.be.greaterThan(coordinates2[0]);
+      expect(coordinates2[3]).to.equal(coordinates2[1]);
       const geometry2 = circleFeature
         .getGeometry()
         .clone()
@@ -701,6 +707,9 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 5, -35, null, 0);
       simulateEvent('pointerup', 5, -35, null, 0);
 
+      const coordinates3 = circleFeature.getGeometry().getFlatCoordinates();
+      expect(coordinates3[2]).to.be.greaterThan(coordinates3[0]);
+      expect(coordinates3[3]).to.equal(coordinates3[1]);
       const geometry3 = circleFeature
         .getGeometry()
         .clone()
@@ -1464,6 +1473,9 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 5, -5, null, 0);
       simulateEvent('pointerup', 5, -5, null, 0);
 
+      const coordinates1 = circleFeature.getGeometry().getFlatCoordinates();
+      expect(coordinates1[2]).to.be.greaterThan(coordinates1[0]);
+      expect(coordinates1[3]).to.equal(coordinates1[1]);
       const geometry1 = circleFeature
         .getGeometry()
         .clone()
@@ -1480,6 +1492,9 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 30, -5, null, 0);
       simulateEvent('pointerup', 30, -5, null, 0);
 
+      const coordinates2 = circleFeature.getGeometry().getFlatCoordinates();
+      expect(coordinates2[2]).to.be.greaterThan(coordinates2[0]);
+      expect(coordinates2[3]).to.equal(coordinates2[1]);
       const geometry2 = circleFeature
         .getGeometry()
         .clone()
@@ -1496,6 +1511,9 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 5, -35, null, 0);
       simulateEvent('pointerup', 5, -35, null, 0);
 
+      const coordinates3 = circleFeature.getGeometry().getFlatCoordinates();
+      expect(coordinates3[2]).to.be.greaterThan(coordinates3[0]);
+      expect(coordinates3[3]).to.equal(coordinates3[1]);
       const geometry3 = circleFeature
         .getGeometry()
         .clone()
