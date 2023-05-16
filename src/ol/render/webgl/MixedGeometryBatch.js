@@ -1,9 +1,6 @@
 /**
  * @module ol/render/webgl/MixedGeometryBatch
  */
-import WebGLArrayBuffer from '../../webgl/Buffer.js';
-import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
-import {create as createTransform} from '../../transform.js';
 import {getUid} from '../../util.js';
 import {linearRingIsClockwise} from '../../geom/flat/orient.js';
 
@@ -35,12 +32,6 @@ import {linearRingIsClockwise} from '../../geom/flat/orient.js';
  * @property {Object<string, GeometryBatchItem>} entries Dictionary of all entries in the batch with associated computed values.
  * One entry corresponds to one feature. Key is feature uid.
  * @property {number} geometriesCount Amount of geometries in the batch.
- * @property {Float32Array} renderInstructions Render instructions for polygons are structured like so:
- * [ numberOfRings, numberOfVerticesInRing0, ..., numberOfVerticesInRingN, x0, y0, customAttr0, ..., xN, yN, customAttrN, numberOfRings,... ]
- * @property {WebGLArrayBuffer} verticesBuffer Vertices WebGL buffer
- * @property {WebGLArrayBuffer} indicesBuffer Indices WebGL buffer
- * @property {import("../../transform.js").Transform} renderInstructionsTransform Converts world space coordinates to screen space; applies to the rendering instructions
- * @property {import("../../transform.js").Transform} invertVerticesBufferTransform Screen space to world space; applies to the webgl vertices buffer
  * @property {number} verticesCount Amount of vertices from geometries in the batch.
  * @property {number} ringsCount How many outer and inner rings in this batch.
  */
@@ -50,12 +41,6 @@ import {linearRingIsClockwise} from '../../geom/flat/orient.js';
  * @property {Object<string, GeometryBatchItem>} entries Dictionary of all entries in the batch with associated computed values.
  * One entry corresponds to one feature. Key is feature uid.
  * @property {number} geometriesCount Amount of geometries in the batch.
- * @property {Float32Array} renderInstructions Render instructions for polygons are structured like so:
- * [ numberOfRings, numberOfVerticesInRing0, ..., numberOfVerticesInRingN, x0, y0, customAttr0, ..., xN, yN, customAttrN, numberOfRings,... ]
- * @property {WebGLArrayBuffer} verticesBuffer Vertices WebGL buffer
- * @property {WebGLArrayBuffer} indicesBuffer Indices WebGL buffer
- * @property {import("../../transform.js").Transform} renderInstructionsTransform Converts world space coordinates to screen space; applies to the rendering instructions
- * @property {import("../../transform.js").Transform} invertVerticesBufferTransform Screen space to world space; applies to the webgl vertices buffer
  * @property {number} verticesCount Amount of vertices from geometries in the batch.
  */
 
@@ -64,12 +49,6 @@ import {linearRingIsClockwise} from '../../geom/flat/orient.js';
  * @property {Object<string, GeometryBatchItem>} entries Dictionary of all entries in the batch with associated computed values.
  * One entry corresponds to one feature. Key is feature uid.
  * @property {number} geometriesCount Amount of geometries in the batch.
- * @property {Float32Array} renderInstructions Render instructions for polygons are structured like so:
- * [ numberOfRings, numberOfVerticesInRing0, ..., numberOfVerticesInRingN, x0, y0, customAttr0, ..., xN, yN, customAttrN, numberOfRings,... ]
- * @property {WebGLArrayBuffer} verticesBuffer Vertices WebGL buffer
- * @property {WebGLArrayBuffer} indicesBuffer Indices WebGL buffer
- * @property {import("../../transform.js").Transform} renderInstructionsTransform Converts world space coordinates to screen space; applies to the rendering instructions
- * @property {import("../../transform.js").Transform} invertVerticesBufferTransform Screen space to world space; applies to the webgl vertices buffer
  */
 
 /**
@@ -101,11 +80,6 @@ class MixedGeometryBatch {
       geometriesCount: 0,
       verticesCount: 0,
       ringsCount: 0,
-      renderInstructions: new Float32Array(0),
-      verticesBuffer: new WebGLArrayBuffer(ARRAY_BUFFER, DYNAMIC_DRAW),
-      indicesBuffer: new WebGLArrayBuffer(ELEMENT_ARRAY_BUFFER, DYNAMIC_DRAW),
-      renderInstructionsTransform: createTransform(),
-      invertVerticesBufferTransform: createTransform(),
     };
 
     /**
@@ -114,11 +88,6 @@ class MixedGeometryBatch {
     this.pointBatch = {
       entries: {},
       geometriesCount: 0,
-      renderInstructions: new Float32Array(0),
-      verticesBuffer: new WebGLArrayBuffer(ARRAY_BUFFER, DYNAMIC_DRAW),
-      indicesBuffer: new WebGLArrayBuffer(ELEMENT_ARRAY_BUFFER, DYNAMIC_DRAW),
-      renderInstructionsTransform: createTransform(),
-      invertVerticesBufferTransform: createTransform(),
     };
 
     /**
@@ -128,11 +97,6 @@ class MixedGeometryBatch {
       entries: {},
       geometriesCount: 0,
       verticesCount: 0,
-      renderInstructions: new Float32Array(0),
-      verticesBuffer: new WebGLArrayBuffer(ARRAY_BUFFER, DYNAMIC_DRAW),
-      indicesBuffer: new WebGLArrayBuffer(ELEMENT_ARRAY_BUFFER, DYNAMIC_DRAW),
-      renderInstructionsTransform: createTransform(),
-      invertVerticesBufferTransform: createTransform(),
     };
   }
 
