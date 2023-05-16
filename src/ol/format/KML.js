@@ -163,6 +163,21 @@ const LINK_PARSERS = makeStructureNS(NAMESPACE_URIS, {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 // @ts-ignore
+const CAMERA_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+  Altitude: makeObjectPropertySetter(readDecimal),
+  Longitude: makeObjectPropertySetter(readDecimal),
+  Latitude: makeObjectPropertySetter(readDecimal),
+  Tilt: makeObjectPropertySetter(readDecimal),
+  AltitudeMode: makeObjectPropertySetter(readString),
+  Heading: makeObjectPropertySetter(readDecimal),
+  Roll: makeObjectPropertySetter(readDecimal),
+});
+
+/**
+ * @const
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ */
+// @ts-ignore
 const REGION_PARSERS = makeStructureNS(NAMESPACE_URIS, {
   'LatLonAltBox': latLonAltBoxParser,
   'Lod': lodParser,
@@ -877,6 +892,82 @@ class KML extends XMLFeature {
       }
     }
     return regions;
+  }
+
+  /**
+   * @typedef {Object} KMLCamera Specifies the observer's viewpoint and associated view parameters.
+   * @property {number} [Latitude] Latitude of the camera.
+   * @property {number} [Longitude] Longitude of the camera.
+   * @property {number} [Altitude] Altitude of the camera.
+   * @property {string} [AltitudeMode] Floor-related altitude mode.
+   * @property {number} [Heading] Horizontal camera rotation.
+   * @property {number} [Tilt] Lateral camera rotation.
+   * @property {number} [Roll] Vertical camera rotation.
+   */
+
+  /**
+   * Read the cameras of the KML.
+   *
+   * @param {Document|Element|string} source Source.
+   * @return {Array<KMLCamera>} Cameras.
+   * @api
+   */
+  readCamera(source) {
+    const cameras = [];
+    if (typeof source === 'string') {
+      const doc = parse(source);
+      extend(cameras, this.readCameraFromDocument(doc));
+    } else if (isDocument(source)) {
+      extend(
+        cameras,
+        this.readCameraFromDocument(/** @type {Document} */ (source))
+      );
+    } else {
+      extend(cameras, this.readCameraFromNode(/** @type {Element} */ (source)));
+    }
+    return cameras;
+  }
+
+  /**
+   * @param {Document} doc Document.
+   * @return {Array<KMLCamera>} Cameras.
+   */
+  readCameraFromDocument(doc) {
+    const cameras = [];
+    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
+      if (n.nodeType === Node.ELEMENT_NODE) {
+        extend(cameras, this.readCameraFromNode(/** @type {Element} */ (n)));
+      }
+    }
+    return cameras;
+  }
+
+  /**
+   * @param {Element} node Node.
+   * @return {Array<KMLCamera>} Cameras.
+   * @api
+   */
+  readCameraFromNode(node) {
+    const cameras = [];
+    for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
+      if (NAMESPACE_URIS.includes(n.namespaceURI) && n.localName === 'Camera') {
+        const obj = pushParseAndPop({}, CAMERA_PARSERS, n, []);
+        cameras.push(obj);
+      }
+    }
+    for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
+      const localName = n.localName;
+      if (
+        NAMESPACE_URIS.includes(n.namespaceURI) &&
+        (localName === 'Document' ||
+          localName === 'Folder' ||
+          localName === 'Placemark' ||
+          localName === 'kml')
+      ) {
+        extend(cameras, this.readCameraFromNode(n));
+      }
+    }
+    return cameras;
   }
 
   /**
