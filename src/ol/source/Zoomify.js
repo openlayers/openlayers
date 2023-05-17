@@ -93,6 +93,7 @@ export class CustomTile extends ImageTile {
  * `http://my.zoomify.info/IMAGE.TIF/`. A URL template must include
  * `{TileGroup}`, `{x}`, `{y}`, and `{z}` placeholders, e.g.
  * `http://my.zoomify.info/IMAGE.TIF/{TileGroup}/{z}-{x}-{y}.jpg`.
+ * Custom templates with only the `{x}`, `{y}`, and `{z}` placeholders are accepted.
  * Internet Imaging Protocol (IIP) with JTL extension can be also used with
  * `{tileIndex}` and `{z}` placeholders, e.g.
  * `http://my.zoomify.info?FIF=IMAGE.TIF&JTL={z},{tileIndex}`.
@@ -191,7 +192,11 @@ class Zoomify extends TileImage {
     });
 
     let url = options.url;
-    if (url && !url.includes('{TileGroup}') && !url.includes('{tileIndex}')) {
+    if (
+      url &&
+      !(url.includes('{x}') && url.includes('{y}') && url.includes('{z}')) &&
+      !url.includes('{tileIndex}')
+    ) {
       url += '{TileGroup}/{z}-{x}-{y}.jpg';
     }
     const urls = expandUrl(url);

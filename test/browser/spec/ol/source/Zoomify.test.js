@@ -295,6 +295,30 @@ describe('ol/source/Zoomify', function () {
         'spec/ol/source/images/zoomify?JTL=1,3'
       );
     });
+    it('creates an expected tileUrlFunction with custom template', function () {
+      const source = new Zoomify({
+        url: 'spec/ol/source/images/zoomify/{z}/{x}/{y}.jpg',
+        size: size,
+      });
+      const tileUrlFunction = source.getTileUrlFunction();
+      // zoomlevel 0
+      expect(tileUrlFunction([0, 0, 0])).to.eql(
+        'spec/ol/source/images/zoomify/0/0/0.jpg'
+      );
+      // zoomlevel 1
+      expect(tileUrlFunction([1, 0, 0])).to.eql(
+        'spec/ol/source/images/zoomify/1/0/0.jpg'
+      );
+      expect(tileUrlFunction([1, 1, 0])).to.eql(
+        'spec/ol/source/images/zoomify/1/1/0.jpg'
+      );
+      expect(tileUrlFunction([1, 0, 1])).to.eql(
+        'spec/ol/source/images/zoomify/1/0/1.jpg'
+      );
+      expect(tileUrlFunction([1, 1, 1])).to.eql(
+        'spec/ol/source/images/zoomify/1/1/1.jpg'
+      );
+    });
 
     it('creates an expected tileUrlFunction without template', function () {
       const source = new Zoomify({
