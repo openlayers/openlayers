@@ -84,6 +84,9 @@ import {assert} from '../asserts.js';
  * means no preloading.
  * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+ * @property {boolean} [startDeclutterGroup=false] Signals to the renderer to start a new declutter group, which causes previous vector(tile)
+ * layers with the declutter option set true to declutter before rendering the current layer. May be set on multiple layers to manage
+ * multiple declutter efforts.
  */
 
 /**

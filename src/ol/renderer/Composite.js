@@ -80,6 +80,17 @@ class CompositeMapRenderer extends MapRenderer {
   }
 
   /**
+   * @param {Array<import("../layer/BaseVector.js").default>} declutterLayers Layers to declutter.
+   * @param {import("../Map.js").FrameState} frameState Frame state.
+   */
+  renderDeclutterGroup(declutterLayers, frameState) {
+    for (let i = declutterLayers.length - 1; i >= 0; --i) {
+      declutterLayers[i].renderDeclutter(frameState);
+    }
+    declutterLayers.length = 0;
+  }
+
+  /**
    * Render.
    * @param {?import("../Map.js").FrameState} frameState Frame state.
    */
@@ -94,7 +105,6 @@ class CompositeMapRenderer extends MapRenderer {
 
     this.calculateMatrices2D(frameState);
     this.dispatchRenderEvent(RenderEventType.PRECOMPOSE, frameState);
-
     const layerStatesArray = frameState.layerStatesArray.sort(function (a, b) {
       return a.zIndex - b.zIndex;
     });
@@ -120,6 +130,10 @@ class CompositeMapRenderer extends MapRenderer {
         continue;
       }
 
+      if (layer.getStartDeclutterGroup()) {
+        this.renderDeclutterGroup(declutterLayers, frameState);
+      }
+
       const element = layer.render(frameState, previousElement);
       if (!element) {
         continue;
@@ -134,10 +148,7 @@ class CompositeMapRenderer extends MapRenderer {
         );
       }
     }
-    for (let i = declutterLayers.length - 1; i >= 0; --i) {
-      declutterLayers[i].renderDeclutter(frameState);
-    }
-
+    this.renderDeclutterGroup(declutterLayers, frameState);
     replaceChildren(this.element_, this.children_);
 
     this.dispatchRenderEvent(RenderEventType.POSTCOMPOSE, frameState);

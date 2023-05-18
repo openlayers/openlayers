@@ -44,6 +44,9 @@ import CanvasVectorImageLayerRenderer from '../renderer/canvas/VectorImageLayer.
  * @property {number} [imageRatio=1] Ratio by which the rendered extent should be larger than the
  * viewport extent. A larger ratio avoids cut images during panning, but will cause a decrease in performance.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+ * @property {boolean} [startDeclutterGroup=false] Signals to the renderer to start a new declutter group, which causes previous vector(tile)
+ * layers with the declutter option set true to declutter before rendering the current layer. May be set on multiple layers to manage
+ * multiple declutter efforts.
  */
 
 /**

@@ -1,0 +1,14 @@
+---
+layout: example.html
+title: Declutter Group
+shortdesc: Declutter vector layers by groups
+docs: >
+  This shows how to specify the frequency that vector(tile) layers are decluttered if declutter is set to true. If not 
+  specified, it will default to only one group and decluttering will overlay all layers. When specified, 
+  decluttering will occur before the layer is rendered every time `startDeclutterGroup` is set to `true`. This is useful 
+  for layers that need to be remain above the declutter effort of lower layers. In the example, the blue square displays
+  over the decluttered vector layer labels.
+
+tags: "mapbox, declutter, vector"
+---
+<div id="map" class="map"></div>

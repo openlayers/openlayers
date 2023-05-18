@@ -53,6 +53,10 @@ describe('ol/layer/Layer', function () {
       expect(layer.getMaxZoom()).to.be(Infinity);
     });
 
+    it('provides default startDeclutterGroup', function () {
+      expect(layer.getStartDeclutterGroup()).to.be(false);
+    });
+
     it('provides default layerState', function () {
       expect(layer.getLayerState()).to.eql({
         layer: layer,
@@ -83,6 +87,7 @@ describe('ol/layer/Layer', function () {
         minZoom: 1,
         maxZoom: 10,
         foo: 42,
+        startDeclutterGroup: true,
       });
 
       expect(layer.getOpacity()).to.be(0.5);
@@ -92,6 +97,7 @@ describe('ol/layer/Layer', function () {
       expect(layer.getMinZoom()).to.be(1);
       expect(layer.getMaxZoom()).to.be(10);
       expect(layer.get('foo')).to.be(42);
+      expect(layer.getStartDeclutterGroup()).to.be(true);
       expect(layer.getLayerState()).to.eql({
         layer: layer,
         opacity: 0.5,
@@ -639,6 +645,34 @@ describe('ol/layer/Layer', function () {
 
       // remove spy
       Layer.prototype.handleSourceChange_.restore();
+    });
+  });
+
+  describe('#getStartDeclutterGroup', function () {
+    let layer;
+
+    afterEach(function () {
+      layer.dispose();
+    });
+
+    it('returns a true value', function () {
+      layer = new Layer({
+        source: new Source({
+          projection: getProjection('EPSG:4326'),
+        }),
+        startDeclutterGroup: true,
+      });
+      expect(layer.getStartDeclutterGroup()).to.be(true);
+    });
+
+    it('returns a false value', function () {
+      layer = new Layer({
+        source: new Source({
+          projection: getProjection('EPSG:4326'),
+        }),
+        startDeclutterGroup: false,
+      });
+      expect(layer.getStartDeclutterGroup()).to.be(false);
     });
   });
 

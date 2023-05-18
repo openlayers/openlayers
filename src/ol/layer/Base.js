@@ -48,6 +48,9 @@ import {clamp} from '../math.js';
  * @property {BackgroundColor} [background] Background color for the layer. If not specified, no background
  * will be rendered.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+ * @property {boolean} [startDeclutterGroup] Signals to the renderer to start a new declutter group, which causes previous vector(tile)
+ * layers with the declutter option set true to declutter before rendering the current layer. May be set on multiple layers to manage
+ * multiple declutter efforts.
  */
 
 /**

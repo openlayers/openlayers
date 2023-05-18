@@ -55,6 +55,9 @@ import {listen, unlistenByKey} from '../events.js';
  * @property {RenderFunction} [render] Render function. Takes the frame state as input and is expected to return an
  * HTML element. Will overwrite the default rendering for the layer.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+ * @property {boolean} [startDeclutterGroup=false] Signals to the renderer to start a new declutter group, which causes previous vector(tile)
+ * layers with the declutter option set true to declutter before rendering the current layer. May be set on multiple layers to manage
+ * multiple declutter efforts.
  */
 
 /**
@@ -142,6 +145,12 @@ class Layer extends BaseLayer {
 
     /**
      * @private
+     * @type {boolean}
+     */
+    this.startDeclutterGroup = false;
+
+    /**
+     * @private
      * @type {RendererType}
      */
     this.renderer_ = null;
@@ -157,6 +166,10 @@ class Layer extends BaseLayer {
      * @type {boolean}
      */
     this.rendered = false;
+
+    if (options.startDeclutterGroup) {
+      this.startDeclutterGroup = options.startDeclutterGroup;
+    }
 
     // Overwrite default render method with a custom one
     if (options.render) {
@@ -283,6 +296,13 @@ class Layer extends BaseLayer {
       return null;
     }
     return this.renderer_.getData(pixel);
+  }
+
+  /**
+   * @return {boolean} The layer should start a new declutter group
+   */
+  getStartDeclutterGroup() {
+    return this.startDeclutterGroup;
   }
 
   /**

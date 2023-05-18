@@ -1,0 +1,13 @@
+.map .ol-rotate {
+  left: .5em;
+  bottom: .5em;
+  top: auto;
+  right: auto;
+}
+.map:-webkit-full-screen {
+  height: 100%;
+  margin: 0;
+}
+.map:fullscreen {
+  height: 100%;
+}
