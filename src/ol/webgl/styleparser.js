@@ -196,7 +196,7 @@ function parseStrokeProperties(
   const color = style['stroke-color'] || 'white';
   const width = style['stroke-width'] || 1;
   const parsedColor = expressionToGlsl(fragContext, color, ValueTypes.COLOR);
-  const parsedWidth = expressionToGlsl(fragContext, width, ValueTypes.NUMBER);
+  const parsedWidth = expressionToGlsl(vertContext, width, ValueTypes.NUMBER);
 
   builder
     .setStrokeColorExpression(parsedColor)

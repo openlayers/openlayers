@@ -403,9 +403,9 @@ describe('ol.webgl.styleparser', function () {
       it('adds attributes to the shader builder', () => {
         expect(parseResult.builder.attributes_).to.eql([
           'vec4 a_iconSize',
-          'vec2 a_color',
           'float a_lineType',
           'float a_lineWidth',
+          'vec2 a_color',
           'vec2 a_fillColor',
           'float a_transparent',
         ]);
@@ -414,8 +414,6 @@ describe('ol.webgl.styleparser', function () {
         expect(parseResult.builder.varyings_).to.eql([
           {name: 'v_color', type: 'vec4', expression: 'unpackColor(a_color)'},
           {name: 'v_iconSize', type: 'vec4', expression: 'a_iconSize'},
-          {name: 'v_lineType', type: 'float', expression: 'a_lineType'},
-          {name: 'v_lineWidth', type: 'float', expression: 'a_lineWidth'},
           {
             name: 'v_fillColor',
             type: 'vec4',
