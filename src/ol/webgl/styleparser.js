@@ -239,8 +239,8 @@ function parseFillProperties(
  * @property {boolean} hasSymbol Has a symbol style defined
  * @property {boolean} hasStroke Has a stroke style defined
  * @property {boolean} hasFill Has a fill style defined
- * @property {Object<string,import("./Helper").UniformValue>} uniforms Uniform definitions.
- * @property {Array<import("../renderer/webgl/PointsLayer").CustomAttribute>} attributes Attribute descriptions.
+ * @property {import("../render/webgl/VectorStyleRenderer.js").UniformDefinitions} uniforms Uniform definitions
+ * @property {import("../render/webgl/VectorStyleRenderer.js").AttributeDefinitions} attributes Attribute definitions
  */
 
 /**
@@ -394,7 +394,13 @@ export function parseLiteralStyle(style) {
     hasSymbol,
     hasStroke,
     hasFill,
-    attributes: attributes,
+    attributes: attributes.reduce(
+      (prev, curr) => ({
+        ...prev,
+        [curr.name]: {callback: curr.callback, size: curr.size},
+      }),
+      {}
+    ),
     uniforms: uniforms,
   };
 }
