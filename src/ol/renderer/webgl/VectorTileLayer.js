@@ -2,19 +2,9 @@
  * @module ol/renderer/webgl/VectorTileLayer
  */
 import EventType from '../../events/EventType.js';
-import LineStringBatchRenderer from '../../render/webgl/LineStringBatchRenderer.js';
-import PointBatchRenderer from '../../render/webgl/PointBatchRenderer.js';
-import PolygonBatchRenderer from '../../render/webgl/PolygonBatchRenderer.js';
 import TileGeometry from '../../webgl/TileGeometry.js';
+import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
 import WebGLBaseTileLayerRenderer, {Uniforms} from './TileLayerBase.js';
-import {
-  FILL_FRAGMENT_SHADER,
-  FILL_VERTEX_SHADER,
-  POINT_FRAGMENT_SHADER,
-  POINT_VERTEX_SHADER,
-  STROKE_FRAGMENT_SHADER,
-  STROKE_VERTEX_SHADER,
-} from './shaders.js';
 import {
   create as createMat4,
   fromTransform as mat4FromTransform,
@@ -25,44 +15,15 @@ import {
   multiply as multiplyTransform,
   setFromArray as setFromTransform,
 } from '../../transform.js';
-import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {getIntersection} from '../../extent.js';
-import {packColor} from '../../webgl/styleparser.js';
 
 /**
- * @param {Object<import("./shaders.js").DefaultAttributes,CustomAttributeCallback>} obj Lookup of attribute getters.
- * @return {Array<import("../../render/webgl/BatchRenderer").CustomAttribute>} An array of attribute descriptors.
- */
-function toAttributesArray(obj) {
-  return Object.keys(obj).map((key) => ({
-    name: key,
-    size: key === 'color' ? 2 : 1,
-    callback: obj[key],
-  }));
-}
-
-/**
- * @typedef {function(import("../../Feature").default, Object<string, *>):number} CustomAttributeCallback A callback computing
- * the value of a custom attribute (different for each feature) to be passed on to the GPU.
- * Properties are available as 2nd arg for quicker access.
- */
-
-/**
- * @typedef {Object} ShaderProgram An object containing both shaders (vertex and fragment) as well as the required attributes
- * @property {string} [vertexShader] Vertex shader source (using the default one if unspecified).
- * @property {string} [fragmentShader] Fragment shader source (using the default one if unspecified).
- * @property {Object<import("./shaders.js").DefaultAttributes,CustomAttributeCallback>} attributes Custom attributes made available in the vertex shader.
- * Keys are the names of the attributes which are then accessible in the vertex shader using the `a_` prefix, e.g.: `a_opacity`.
- * Default shaders rely on the attributes in {@link module:ol/render/webgl/shaders~DefaultAttributes}.
+ * @typedef {import('../../render/webgl/VectorStyleRenderer.js').VectorStyle} VectorStyle
  */
 
 /**
  * @typedef {Object} Options
- * @property {ShaderProgram} [fill] Attributes and shaders for filling polygons.
- * @property {ShaderProgram} [stroke] Attributes and shaders for line strings and polygon strokes.
- * @property {ShaderProgram} [point] Attributes and shaders for points.
- * @property {Object<string, import("../../webgl/Helper").UniformValue>} [uniforms] Additional uniforms
- * made available to shaders.
+ * @property {VectorStyle|Array<VectorStyle>} style Vector style as literal style or shaders; can also accept an array of styles
  * @property {number} [cacheSize=512] The vector tile cache size.
  */
 
@@ -84,25 +45,16 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     super(tileLayer, options);
 
     /**
+     * @type {Array<VectorStyle>}
      * @private
      */
-    this.worker_ = createWebGLWorker();
+    this.styles_ = [];
 
     /**
-     * @type {PolygonBatchRenderer}
+     * @type {Array<VectorStyleRenderer>}
      * @private
      */
-    this.polygonRenderer_ = null;
-    /**
-     * @type {PointBatchRenderer}
-     * @private
-     */
-    this.pointRenderer_ = null;
-    /**
-     * @type {LineStringBatchRenderer}
-     * @private
-     */
-    this.lineStringRenderer_ = null;
+    this.styleRenderers_ = [];
 
     /**
      * This transform is updated on every frame and is the composition of:
@@ -136,74 +88,17 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    * @private
    */
   applyOptions_(options) {
-    const fillAttributes = {
-      color: function () {
-        return packColor('#ddd');
-      },
-      ...(options.fill && options.fill.attributes),
-    };
-
-    const strokeAttributes = {
-      color: function () {
-        return packColor('#eee');
-      },
-      width: function () {
-        return 1.5;
-      },
-      ...(options.stroke && options.stroke.attributes),
-    };
-
-    const pointAttributes = {
-      color: function () {
-        return packColor('#eee');
-      },
-      ...(options.point && options.point.attributes),
-    };
-
-    this.fillVertexShader_ =
-      (options.fill && options.fill.vertexShader) || FILL_VERTEX_SHADER;
-    this.fillFragmentShader_ =
-      (options.fill && options.fill.fragmentShader) || FILL_FRAGMENT_SHADER;
-    this.fillAttributes_ = toAttributesArray(fillAttributes);
-
-    this.strokeVertexShader_ =
-      (options.stroke && options.stroke.vertexShader) || STROKE_VERTEX_SHADER;
-    this.strokeFragmentShader_ =
-      (options.stroke && options.stroke.fragmentShader) ||
-      STROKE_FRAGMENT_SHADER;
-    this.strokeAttributes_ = toAttributesArray(strokeAttributes);
-
-    this.pointVertexShader_ =
-      (options.point && options.point.vertexShader) || POINT_VERTEX_SHADER;
-    this.pointFragmentShader_ =
-      (options.point && options.point.fragmentShader) || POINT_FRAGMENT_SHADER;
-    this.pointAttributes_ = toAttributesArray(pointAttributes);
+    this.styles_ = Array.isArray(options.style)
+      ? options.style
+      : [options.style];
   }
 
   /**
    * @private
    */
   createRenderers_() {
-    this.polygonRenderer_ = new PolygonBatchRenderer(
-      this.helper,
-      this.worker_,
-      this.fillVertexShader_,
-      this.fillFragmentShader_,
-      this.fillAttributes_
-    );
-    this.pointRenderer_ = new PointBatchRenderer(
-      this.helper,
-      this.worker_,
-      this.pointVertexShader_,
-      this.pointFragmentShader_,
-      this.pointAttributes_
-    );
-    this.lineStringRenderer_ = new LineStringBatchRenderer(
-      this.helper,
-      this.worker_,
-      this.strokeVertexShader_,
-      this.strokeFragmentShader_,
-      this.strokeAttributes_
+    this.styleRenderers_ = this.styles_.map(
+      (style) => new VectorStyleRenderer(style, this.helper)
     );
   }
 
@@ -212,12 +107,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
   }
 
   createTileRepresentation(options) {
-    const tileRep = new TileGeometry(
-      options,
-      this.polygonRenderer_,
-      this.lineStringRenderer_,
-      this.pointRenderer_
-    );
+    const tileRep = new TileGeometry(options, this.styleRenderers_);
     // redraw the layer when the tile is ready
     const listener = () => {
       if (tileRep.ready) {
@@ -278,38 +168,20 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
   ) {
     const gutterExtent = getIntersection(tileExtent, renderExtent, tileExtent);
 
-    this.polygonRenderer_.preRender(
-      tileRepresentation.batch.polygonBatch,
-      this.frameState
-    );
-    this.applyUniforms_(
-      alpha,
-      gutterExtent,
-      tileRepresentation.batch.polygonBatch.invertVerticesBufferTransform
-    );
-    this.polygonRenderer_.render(tileRepresentation.batch.polygonBatch);
-
-    this.lineStringRenderer_.preRender(
-      tileRepresentation.batch.lineStringBatch,
-      this.frameState
-    );
-    this.applyUniforms_(
-      alpha,
-      gutterExtent,
-      tileRepresentation.batch.lineStringBatch.invertVerticesBufferTransform
-    );
-    this.lineStringRenderer_.render(tileRepresentation.batch.lineStringBatch);
-
-    this.pointRenderer_.preRender(
-      tileRepresentation.batch.pointBatch,
-      this.frameState
-    );
-    this.applyUniforms_(
-      alpha,
-      gutterExtent,
-      tileRepresentation.batch.pointBatch.invertVerticesBufferTransform
-    );
-    this.pointRenderer_.render(tileRepresentation.batch.pointBatch);
+    for (let i = 0, ii = this.styleRenderers_.length; i < ii; i++) {
+      const renderer = this.styleRenderers_[i];
+      const buffers = tileRepresentation.buffers[i];
+      if (!buffers) {
+        continue;
+      }
+      renderer.render(buffers, frameState, () => {
+        this.applyUniforms_(
+          alpha,
+          gutterExtent,
+          buffers.invertVerticesTransform
+        );
+      });
+    }
   }
 
   /**
@@ -322,7 +194,6 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    * Clean up.
    */
   disposeInternal() {
-    this.worker_.terminate();
     super.disposeInternal();
   }
 }
