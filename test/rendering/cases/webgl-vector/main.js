@@ -11,6 +11,16 @@ class WebGLLayer extends Layer {
   createRenderer() {
     return new WebGLVectorLayerRenderer(this, {
       className: this.getClassName(),
+      style: {
+        'fill-color': '#ddd',
+        'stroke-color': '#eee',
+        'stroke-width': 1.5,
+        symbol: {
+          symbolType: 'square',
+          color: 'transparent',
+          size: 6,
+        },
+      },
     });
   }
 }
