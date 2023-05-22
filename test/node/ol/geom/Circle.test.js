@@ -1,6 +1,9 @@
 import Circle from '../../../../src/ol/geom/Circle.js';
 import expect from '../../expect.js';
+import proj4 from 'proj4';
 import sinon from 'sinon';
+import {METERS_PER_UNIT, fromLonLat} from '../../../../src/ol/proj.js';
+import {register, unregister} from '../../../../src/ol/proj/proj4.js';
 
 describe('ol/geom/Circle.js', function () {
   describe('with a unit circle', function () {
@@ -261,6 +264,60 @@ describe('ol/geom/Circle.js', function () {
         expect(circle.getCenter()).to.eql([6, 11]);
         expect(circle.getExtent()).to.eql([5, 10, 7, 12]);
       });
+    });
+  });
+
+  describe('#transform', function () {
+    beforeEach(function () {
+      proj4.defs(
+        'EPSG:32633',
+        '+proj=utm +zone=33 +datum=WGS84 +units=m +no_defs +type=crs'
+      );
+      register(proj4);
+    });
+
+    this.afterEach(function () {
+      unregister();
+    });
+
+    it('preserves the radius', function () {
+      const original = new Circle(fromLonLat([16, 48], 'EPSG:32633'), 100);
+      const transformed = original.clone().transform('EPSG:32633', 'EPSG:4326');
+      const transformedBack = transformed
+        .clone()
+        .transform('EPSG:4326', 'EPSG:32633');
+      expect(transformed.getRadius()).to.roughlyEqual(
+        original.getRadius() / METERS_PER_UNIT.degrees,
+        1e-9
+      );
+      expect(transformedBack.getRadius()).to.roughlyEqual(
+        original.getRadius(),
+        1e-9
+      );
+    });
+
+    it('encodes the radius in [cx, cy], [cx + r, cy]]', function () {
+      const original = new Circle(fromLonLat([16, 48], 'EPSG:32633'), 100);
+      const transformed = original.clone().transform('EPSG:32633', 'EPSG:4326');
+      const transformedBack = transformed
+        .clone()
+        .transform('EPSG:4326', 'EPSG:32633');
+      expect(transformed.getFlatCoordinates()[3]).to.roughlyEqual(
+        transformed.getFlatCoordinates()[1],
+        1e-9
+      );
+      expect(transformed.getFlatCoordinates()[2]).to.roughlyEqual(
+        transformed.getFlatCoordinates()[0] + transformed.getRadius(),
+        1e-9
+      );
+      expect(transformedBack.getFlatCoordinates()[3]).to.roughlyEqual(
+        transformedBack.getFlatCoordinates()[1],
+        1e-9
+      );
+      expect(transformedBack.getFlatCoordinates()[2]).to.roughlyEqual(
+        transformedBack.getFlatCoordinates()[0] + transformedBack.getRadius(),
+        1e-9
+      );
     });
   });
 });

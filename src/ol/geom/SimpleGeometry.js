@@ -201,9 +201,10 @@ class SimpleGeometry extends Geometry {
    * then use this function on the clone.
    * @param {import("../proj.js").TransformFunction} transformFn Transform function.
    * Called with a flat array of geometry coordinates.
-   * @api
+   * @param {import("../proj/Projection.js").default} [sourceProj] Source projection.
+   * @param {import("../proj/Projection.js").default} [destProj] Destination projection.
    */
-  applyTransform(transformFn) {
+  applyTransformInternal(transformFn, sourceProj, destProj) {
     if (this.flatCoordinates) {
       transformFn(this.flatCoordinates, this.flatCoordinates, this.stride);
       this.changed();

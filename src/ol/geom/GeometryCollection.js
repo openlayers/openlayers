@@ -294,12 +294,13 @@ class GeometryCollection extends Geometry {
    * then use this function on the clone.
    * @param {import("../proj.js").TransformFunction} transformFn Transform function.
    * Called with a flat array of geometry coordinates.
-   * @api
+   * @param {import("../proj/Projection.js").default} [sourceProj] Source projection.
+   * @param {import("../proj/Projection.js").default} [destProj] Destination projection.
    */
-  applyTransform(transformFn) {
+  applyTransformInternal(transformFn, sourceProj, destProj) {
     const geometries = this.geometries_;
     for (let i = 0, ii = geometries.length; i < ii; ++i) {
-      geometries[i].applyTransform(transformFn);
+      geometries[i].applyTransformInternal(transformFn, sourceProj, destProj);
     }
     this.changed();
   }
