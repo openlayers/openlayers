@@ -331,7 +331,15 @@ describe('ol/renderer/webgl/VectorLayer', function () {
         }
       );
 
-      renderer.renderFrame(frameState);
+      renderer.renderFrame({
+        ...frameState,
+        viewState: {
+          ...frameState.viewState,
+          // zoom out and move center
+          resolution: 0.5,
+          center: [16, 0],
+        },
+      });
     });
     it('sets PROJECTION matrix uniform once for each geometry type', () => {
       const calls = renderer.helper.setUniformMatrixValue
@@ -340,11 +348,12 @@ describe('ol/renderer/webgl/VectorLayer', function () {
       expect(calls.length).to.be(6);
       expect(calls[0].args).to.eql([
         'u_projectionMatrix',
-        // 0.04   0     0     0      combination of:
-        // 0      0.08  0     0        translate( 0 , -16 )  ->  subtract view center
-        // 0      0     1     0        scale( 2 / ( 0.25 * 200px ) , 2 / ( 0.25 * 100px ) )  ->  divide by resolution and viewport size
-        // 0     -1.28  0     1
-        [0.04, 0, 0, 0, 0, 0.08, 0, 0, 0, 0, 1, 0, 0, -1.28, 0, 1],
+        // 0.5   0     0     0      combination of:
+        // 0     0.5   0     0        scale( 0.25 * 200px / 2 , 0.25 * 100px / 2 )  ->  multiply by initial resolution & viewport size
+        // 0     0     1     0        translate( 0 , 16 )  ->  add initial view center
+        // -0.32 0.64  0     1        translate( -16 , 0 )  ->  subtract current view center
+        //                            scale( 2 / ( 0.5 * 200px ) , 2 / ( 0.5 * 100px ) )  ->  divide by current resolution & viewport size
+        [0.5, 0, 0, 0, 0, 0.5, 0, 0, 0, 0, 1, 0, -0.32, 0.64, 0, 1],
       ]);
     });
     it('calls render once for each renderer', () => {
