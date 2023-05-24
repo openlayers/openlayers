@@ -131,4 +131,7 @@ ExampleModify.setActive(false);
 const snap = new Snap({
   source: vector.getSource(),
 });
+snap.on('snap', (e) => {
+  console.debug(e)
+})
 map.addInteraction(snap);

@@ -7,6 +7,7 @@ import PointerInteraction from './Pointer.js';
 import RBush from '../structs/RBush.js';
 import VectorEventType from '../source/VectorEventType.js';
 import {FALSE, TRUE} from '../functions.js';
+import {SnapEvent} from '../events/SnapEvent.js';
 import {boundingExtent, buffer, createEmpty} from '../extent.js';
 import {
   closestOnCircle,
@@ -58,8 +59,8 @@ function getFeatureFromEvent(evt) {
   }
   if (
     /** @type {import("../Collection.js").CollectionEvent<import("../Feature.js").default>} */ (
-      evt
-    ).element
+    evt
+  ).element
   ) {
     return /** @type {import("../Collection.js").CollectionEvent<import("../Feature.js").default>} */ (
       evt
@@ -113,6 +114,12 @@ class Snap extends PointerInteraction {
     }
 
     super(pointerOptions);
+
+    this.on;
+
+    this.once;
+
+    this.un;
 
     /**
      * @type {import("../source/Vector.js").default|null}
@@ -197,6 +204,10 @@ class Snap extends PointerInteraction {
       'GeometryCollection': this.segmentGeometryCollectionGeometry_.bind(this),
       'Circle': this.segmentCircleGeometry_.bind(this),
     };
+
+    // As you suggested in Stack Overflow you can use forEachFeatureAtPixel.
+    // That could be done in a condition function for any interaction, as well as drawstart and drawend, and done using only documented API methods as in https://codesandbox.io/s/draw-and-modify-features-forked-enrgqv?file=/main.js
+    // If the Snap interaction was constructed with features: snapFeatures instead of source: snapSource just replace snapSource.getFeatures().includes with snapFeatures.getArray().includes.
   }
 
   /**
@@ -270,6 +281,13 @@ class Snap extends PointerInteraction {
       evt.coordinate = result.vertex.slice(0, 2);
       evt.pixel = result.vertexPixel;
       evt.feature = result.feature;
+      this.dispatchEvent(
+        new SnapEvent({
+          vertex: result.vertex,
+          vertexPixel: result.vertexPixel,
+          feature: result.feature,
+        })
+      );
     }
     return super.handleEvent(evt);
   }
@@ -439,7 +457,6 @@ class Snap extends PointerInteraction {
     );
 
     const segments = this.rBush_.getInExtent(box);
-
     const segmentsLength = segments.length;
     if (segmentsLength === 0) {
       return null;
