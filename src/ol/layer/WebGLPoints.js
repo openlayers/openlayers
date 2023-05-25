@@ -100,6 +100,12 @@ class WebGLPointsLayer extends Layer {
   }
 
   createRenderer() {
+    const attributes = Object.keys(this.parseResult_.attributes).map(
+      (name) => ({
+        name,
+        ...this.parseResult_.attributes[name],
+      })
+    );
     return new WebGLPointsLayerRenderer(this, {
       vertexShader: this.parseResult_.builder.getSymbolVertexShader(),
       fragmentShader: this.parseResult_.builder.getSymbolFragmentShader(),
@@ -110,7 +116,10 @@ class WebGLPointsLayer extends Layer {
         !this.hitDetectionDisabled_ &&
         this.parseResult_.builder.getSymbolFragmentShader(true),
       uniforms: this.parseResult_.uniforms,
-      attributes: this.parseResult_.attributes,
+      attributes:
+        /** @type {Array<import('../renderer/webgl/PointsLayer.js').CustomAttribute>} */ (
+          attributes
+        ),
     });
   }
 

@@ -11,12 +11,10 @@ import {VOID} from '../../../../../src/ol/functions.js';
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
 
 class MockRenderer {
-  rebuild = sinon
+  generateBuffers = sinon
     .stub()
-    .callsFake(
-      (batch, transform, type, callback) => (this.callback = callback)
-    );
-  endRebuild_ = () => this.callback();
+    .callsFake(() => new Promise((resolve) => (this.endGenerate_ = resolve)));
+  endGenerate_ = null;
 }
 
 describe('ol/webgl/TileGeometry', function () {
@@ -26,16 +24,12 @@ describe('ol/webgl/TileGeometry', function () {
   /** @type {VectorRenderTile} */
   let tile;
 
-  let polygonBatchRenderer;
-  let lineStringBatchRenderer;
-  let pointBatchRenderer;
+  let styleRenderers;
   let helper;
 
   beforeEach(function () {
     tile = new VectorRenderTile([3, 2, 1], TileState.IDLE, [3, 2, 1], () => []);
-    polygonBatchRenderer = new MockRenderer();
-    lineStringBatchRenderer = new MockRenderer();
-    pointBatchRenderer = new MockRenderer();
+    styleRenderers = [new MockRenderer(), new MockRenderer()];
     helper = new WebGLHelper();
 
     tileGeometry = new TileGeometry(
@@ -48,9 +42,7 @@ describe('ol/webgl/TileGeometry', function () {
         }),
         helper,
       },
-      polygonBatchRenderer,
-      lineStringBatchRenderer,
-      pointBatchRenderer
+      styleRenderers
     );
   });
 
@@ -59,7 +51,7 @@ describe('ol/webgl/TileGeometry', function () {
       expect(tileGeometry.tile).to.be.a(VectorRenderTile);
     });
     it('creates a new geometry batch', () => {
-      expect(tileGeometry.batch).to.be.a(MixedGeometryBatch);
+      expect(tileGeometry.batch_).to.be.a(MixedGeometryBatch);
     });
   });
 
@@ -97,33 +89,36 @@ describe('ol/webgl/TileGeometry', function () {
         () => [sourceTile]
       );
 
-      sinon.spy(tileGeometry.batch, 'clear');
-      sinon.spy(tileGeometry.batch, 'addFeatures');
+      sinon.spy(tileGeometry.batch_, 'clear');
+      sinon.spy(tileGeometry.batch_, 'addFeatures');
       tileGeometry.setTile(newTile);
       setTimeout(done, 10);
     });
     it('first clears the geometry batch', () => {
-      expect(tileGeometry.batch.clear.calledOnce).to.be(true);
+      expect(tileGeometry.batch_.clear.calledOnce).to.be(true);
     });
     it('adds all features from the source tiles into the batch', () => {
-      expect(tileGeometry.batch.addFeatures.calledOnce).to.be(true);
-      expect(tileGeometry.batch.addFeatures.calledWith(features)).to.be(true);
+      expect(tileGeometry.batch_.addFeatures.calledOnce).to.be(true);
+      expect(tileGeometry.batch_.addFeatures.calledWith(features)).to.be(true);
     });
-    it('translates the render instructions transform according to the tile origin', () => {
-      expect(tileGeometry.renderInstructionsTransform_).to.eql([
-        1, 0, 0, 1, 100, 200,
-      ]);
+    it('calls generateBuffers for each renderer with the tile origin as transform', () => {
+      const originTransform = [1, 0, 0, 1, 100, 200];
+      expect(styleRenderers[0].generateBuffers.callCount).to.be(1);
+      expect(styleRenderers[0].generateBuffers.getCall(0).args[1]).to.eql(
+        originTransform
+      );
+      expect(styleRenderers[1].generateBuffers.callCount).to.be(1);
+      expect(styleRenderers[1].generateBuffers.getCall(0).args[1]).to.eql(
+        originTransform
+      );
     });
-    it('becomes ready when the render buffers of each geometry type have been generated', () => {
+    it('becomes ready when each of the renderers have finished generating buffers', async () => {
       expect(tileGeometry.ready).to.be(false);
-      polygonBatchRenderer.endRebuild_();
+      styleRenderers[0].endGenerate_();
       expect(tileGeometry.ready).to.be(false);
-      lineStringBatchRenderer.endRebuild_();
-      expect(tileGeometry.ready).to.be(false);
-      pointBatchRenderer.endRebuild_();
+      styleRenderers[1].endGenerate_();
+      await new Promise((resolve) => setTimeout(resolve));
       expect(tileGeometry.ready).to.be(true);
     });
   });
-
-  describe('setTile (async tile loading)', () => {});
 });

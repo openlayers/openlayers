@@ -6,7 +6,6 @@ import TileLayer from '../src/ol/layer/WebGLTile.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
 import WebGLVectorLayerRenderer from '../src/ol/renderer/webgl/VectorLayer.js';
-import {parseLiteralStyle} from '../src/ol/webgl/styleparser.js';
 
 /** @type {import('../src/ol/style/literal.js').LiteralStyle} */
 const style = {
@@ -17,18 +16,8 @@ const style = {
 
 class WebGLLayer extends Layer {
   createRenderer() {
-    const parseResult = parseLiteralStyle(style);
     return new WebGLVectorLayerRenderer(this, {
-      fill: {
-        vertexShader: parseResult.builder.getFillVertexShader(),
-        fragmentShader: parseResult.builder.getFillFragmentShader(),
-      },
-      stroke: {
-        vertexShader: parseResult.builder.getStrokeVertexShader(),
-        fragmentShader: parseResult.builder.getStrokeFragmentShader(),
-      },
-      attributes: parseResult.attributes,
-      uniforms: parseResult.uniforms,
+      style,
     });
   }
 }

@@ -1,14 +1,12 @@
 import Feature from '../../../../../../src/ol/Feature.js';
 import LineString from '../../../../../../src/ol/geom/LineString.js';
-import LineStringBatchRenderer from '../../../../../../src/ol/render/webgl/LineStringBatchRenderer.js';
 import Map from '../../../../../../src/ol/Map.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
-import PointBatchRenderer from '../../../../../../src/ol/render/webgl/PointBatchRenderer.js';
 import Polygon from '../../../../../../src/ol/geom/Polygon.js';
-import PolygonBatchRenderer from '../../../../../../src/ol/render/webgl/PolygonBatchRenderer.js';
 import VectorEventType from '../../../../../../src/ol/source/VectorEventType.js';
 import VectorLayer from '../../../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../../../src/ol/source/Vector.js';
+import VectorStyleRenderer, * as ol_render_webgl_vectorstylerenderer from '../../../../../../src/ol/render/webgl/VectorStyleRenderer.js';
 import View from '../../../../../../src/ol/View.js';
 import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
 import WebGLVectorLayerRenderer from '../../../../../../src/ol/renderer/webgl/VectorLayer.js';
@@ -18,7 +16,51 @@ import {
 } from '../../../../../../src/ol/proj.js';
 import {create} from '../../../../../../src/ol/transform.js';
 import {getUid} from '../../../../../../src/ol/util.js';
-import {packColor} from '../../../../../../src/ol/webgl/styleparser.js';
+
+const SAMPLE_STYLE = {
+  ['fill-color']: ['get', 'color'],
+  ['stroke-width']: 2,
+};
+
+const SAMPLE_STYLE2 = {
+  symbol: {
+    symbolType: 'square',
+    color: 'red',
+    size: ['array', 4, ['get', 'size']],
+  },
+};
+
+const SAMPLE_VERTEX_SHADER = `
+void main(void) {
+  gl_Position = vec4(1.0);
+}`;
+const SAMPLE_FRAGMENT_SHADER = `
+void main(void) {
+  gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+}`;
+
+const SAMPLE_SHADERS = {
+  fill: {
+    fragment: SAMPLE_FRAGMENT_SHADER,
+    vertex: SAMPLE_VERTEX_SHADER,
+  },
+  stroke: {
+    fragment: SAMPLE_FRAGMENT_SHADER,
+    vertex: SAMPLE_VERTEX_SHADER,
+  },
+  symbol: {
+    fragment: SAMPLE_FRAGMENT_SHADER,
+    vertex: SAMPLE_VERTEX_SHADER,
+  },
+  attributes: {
+    attr1: {
+      callback: () => 456,
+    },
+  },
+  uniforms: {
+    custom: () => 123,
+  },
+};
 
 describe('ol/renderer/webgl/VectorLayer', function () {
   /** @type {import("../../../../../../src/ol/renderer/webgl/VectorLayer.js").default} */
@@ -68,26 +110,7 @@ describe('ol/renderer/webgl/VectorLayer', function () {
       source: vectorSource,
     });
     renderer = new WebGLVectorLayerRenderer(vectorLayer, {
-      uniforms: {
-        u_returnOne: () => 1,
-      },
-      attributes: [
-        {
-          name: 'myAttr',
-          size: 1,
-          callback: () => 10,
-        },
-      ],
-      point: {
-        color: () => packColor('green'),
-      },
-      fill: {
-        color: () => packColor('blue'),
-      },
-      stroke: {
-        color: () => packColor('red'),
-        width: () => 2.5,
-      },
+      style: [SAMPLE_STYLE, SAMPLE_SHADERS],
     });
 
     const proj = new Projection({
@@ -131,38 +154,29 @@ describe('ol/renderer/webgl/VectorLayer', function () {
   });
 
   it('do not create renderers initially', function () {
-    expect(renderer.polygonRenderer_).to.be(null);
-    expect(renderer.pointRenderer_).to.be(null);
-    expect(renderer.lineStringRenderer_).to.be(null);
+    expect(renderer.styleRenderers_).to.eql([]);
   });
 
   describe('#afterHelperCreated', () => {
+    let spy;
     beforeEach(() => {
+      spy = sinon.spy(ol_render_webgl_vectorstylerenderer, 'default');
       renderer.helper = new WebGLHelper();
       renderer.afterHelperCreated(frameState);
     });
+    afterEach(() => {
+      spy.restore();
+    });
 
     it('creates renderers', () => {
-      expect(renderer.polygonRenderer_).to.be.a(PolygonBatchRenderer);
-      expect(renderer.pointRenderer_).to.be.a(PointBatchRenderer);
-      expect(renderer.lineStringRenderer_).to.be.a(LineStringBatchRenderer);
+      expect(renderer.styleRenderers_.length).to.be(2);
+      expect(renderer.styleRenderers_[0]).to.be.a(VectorStyleRenderer);
+      expect(renderer.styleRenderers_[1]).to.be.a(VectorStyleRenderer);
     });
-    it('passes custom attributes to renderers', () => {
-      expect(renderer.polygonRenderer_.attributes[2]).to.eql({
-        name: 'a_myAttr',
-        size: 1,
-        type: 5126,
-      });
-      expect(renderer.pointRenderer_.attributes[3]).to.eql({
-        name: 'a_myAttr',
-        size: 1,
-        type: 5126,
-      });
-      expect(renderer.lineStringRenderer_.attributes[5]).to.eql({
-        name: 'a_myAttr',
-        size: 1,
-        type: 5126,
-      });
+    it('passes the correct styles to renderers', () => {
+      expect(spy.callCount).to.be(2);
+      expect(spy.calledWith(SAMPLE_SHADERS)).to.be(true);
+      expect(spy.calledWith(SAMPLE_STYLE)).to.be(true);
     });
   });
 
@@ -172,140 +186,27 @@ describe('ol/renderer/webgl/VectorLayer', function () {
       renderer.prepareFrame(frameState);
     });
 
-    describe('changing uniforms and attributes', () => {
-      const changedUniforms = {u_returnTwo: () => 2};
+    describe('use a single style', () => {
+      let spy;
       beforeEach(() => {
-        sinon.spy(renderer.helper, 'setUniforms');
-
+        spy = sinon.spy(ol_render_webgl_vectorstylerenderer, 'default');
         renderer.reset({
-          uniforms: changedUniforms,
-          attributes: [
-            {
-              name: 'otherAttr',
-              size: 2,
-              callback: () => [100, 200],
-            },
-          ],
-          point: {},
-          fill: {},
-          stroke: {
-            color: () => packColor('red'),
-          },
+          style: SAMPLE_STYLE2,
         });
       });
-      it('recreates renderers with the default attributes as well as the custom ones', () => {
-        const polygonAttrs = renderer.polygonRenderer_.attributes.map(
-          (a) => a.name
-        );
-        const pointAttrs = renderer.pointRenderer_.attributes.map(
-          (a) => a.name
-        );
-        const lineStringAttrs = renderer.lineStringRenderer_.attributes.map(
-          (a) => a.name
-        );
-        expect(polygonAttrs).to.eql(['a_position', 'a_color', 'a_otherAttr']);
-        expect(pointAttrs).to.eql([
-          'a_position',
-          'a_index',
-          'a_color',
-          'a_otherAttr',
-        ]);
-        expect(lineStringAttrs).to.eql([
-          'a_segmentStart',
-          'a_segmentEnd',
-          'a_parameters',
-          'a_color',
-          'a_width',
-          'a_otherAttr',
-        ]);
-        expect(renderer.polygonRenderer_.attributes[2]).to.eql({
-          name: 'a_otherAttr',
-          size: 2,
-          type: 5126,
-        });
+      afterEach(() => {
+        spy.restore();
       });
-      it('calls setUniforms on the helper with the new uniforms', () => {
-        expect(renderer.helper.setUniforms.calledWith(changedUniforms)).to.be(
-          true
-        );
+
+      it('recreates renderers', () => {
+        expect(renderer.styleRenderers_.length).to.be(1);
+        expect(renderer.styleRenderers_[0]).to.be.a(VectorStyleRenderer);
+      });
+      it('passes the correct styles to renderers', () => {
+        expect(spy.callCount).to.be(1);
+        expect(spy.calledWith(SAMPLE_STYLE2)).to.be(true);
       });
     });
-
-    describe('provide custom shaders instead of default ones', () => {
-      beforeEach(() => {
-        sinon.spy(renderer.helper, 'setUniforms');
-
-        renderer.reset({
-          attributes: [
-            {
-              name: 'otherAttr',
-              size: 2,
-              callback: () => [100, 200],
-            },
-            {
-              name: 'otherAttr2',
-              size: 4,
-              callback: () => [1, 2, 3, 4],
-            },
-          ],
-          point: {
-            vertexShader: 'void main(void) {}',
-            fragmentShader: 'void main(void) {}',
-          },
-          fill: {
-            vertexShader: 'void main(void) {}',
-            fragmentShader: 'void main(void) {}',
-          },
-          stroke: {
-            vertexShader: 'void main(void) {}',
-            fragmentShader: 'void main(void) {}',
-          },
-        });
-      });
-      it('recreates renderers with the only provided attributes', () => {
-        const polygonAttrs = renderer.polygonRenderer_.attributes.map(
-          (a) => a.name
-        );
-        const pointAttrs = renderer.pointRenderer_.attributes.map(
-          (a) => a.name
-        );
-        const lineStringAttrs = renderer.lineStringRenderer_.attributes.map(
-          (a) => a.name
-        );
-        expect(polygonAttrs).to.eql([
-          'a_position',
-          'a_otherAttr',
-          'a_otherAttr2',
-        ]);
-        expect(pointAttrs).to.eql([
-          'a_position',
-          'a_index',
-          'a_otherAttr',
-          'a_otherAttr2',
-        ]);
-        expect(lineStringAttrs).to.eql([
-          'a_segmentStart',
-          'a_segmentEnd',
-          'a_parameters',
-          'a_otherAttr',
-          'a_otherAttr2',
-        ]);
-        expect(renderer.polygonRenderer_.attributes[1]).to.eql({
-          name: 'a_otherAttr',
-          size: 2,
-          type: 5126,
-        });
-        expect(renderer.polygonRenderer_.attributes[2]).to.eql({
-          name: 'a_otherAttr2',
-          size: 4,
-          type: 5126,
-        });
-      });
-    });
-  });
-
-  describe('#renderFrame', () => {
-    beforeEach(async () => {});
   });
 
   describe('source changes', () => {
@@ -404,22 +305,20 @@ describe('ol/renderer/webgl/VectorLayer', function () {
   });
 
   describe('#renderFrame', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       // call once without tracking in order to initialize helper
       renderer.prepareFrame(frameState);
       renderer.renderFrame(frameState);
+      // wait for buffer generation to complete
+      await new Promise((resolve) => setTimeout(resolve, 150));
 
       sinon.spy(renderer.helper, 'setUniformFloatValue');
       sinon.spy(renderer.helper, 'setUniformFloatVec4');
       sinon.spy(renderer.helper, 'setUniformMatrixValue');
       sinon.spy(renderer.helper, 'prepareDraw');
       sinon.spy(renderer.helper, 'finalizeDraw');
-      sinon.spy(renderer.pointRenderer_, 'preRender');
-      sinon.spy(renderer.pointRenderer_, 'render');
-      sinon.spy(renderer.lineStringRenderer_, 'preRender');
-      sinon.spy(renderer.lineStringRenderer_, 'render');
-      sinon.spy(renderer.polygonRenderer_, 'preRender');
-      sinon.spy(renderer.polygonRenderer_, 'render');
+      sinon.spy(renderer.styleRenderers_[0], 'render');
+      sinon.spy(renderer.styleRenderers_[1], 'render');
 
       // this is required to keep a "snapshot" of the input matrix
       // (since the same object is reused for various calls)
@@ -432,29 +331,34 @@ describe('ol/renderer/webgl/VectorLayer', function () {
         }
       );
 
-      renderer.renderFrame(frameState);
+      renderer.renderFrame({
+        ...frameState,
+        viewState: {
+          ...frameState.viewState,
+          // zoom out and move center
+          resolution: 0.5,
+          center: [16, 0],
+        },
+      });
     });
     it('sets PROJECTION matrix uniform once for each geometry type', () => {
       const calls = renderer.helper.setUniformMatrixValue
         .getCalls()
         .filter((c) => c.args[0] === 'u_projectionMatrix');
-      expect(calls.length).to.be(3);
+      expect(calls.length).to.be(6);
       expect(calls[0].args).to.eql([
         'u_projectionMatrix',
-        // 0.04   0     0     0      combination of:
-        // 0      0.08  0     0        translate( 0 , -16 )  ->  subtract view center
-        // 0      0     1     0        scale( 2 / ( 0.25 * 200px ) , 2 / ( 0.25 * 100px ) )  ->  divide by resolution and viewport size
-        // 0     -1.28  0     1
-        [0.04, 0, 0, 0, 0, 0.08, 0, 0, 0, 0, 1, 0, 0, -1.28, 0, 1],
+        // 0.5   0     0     0      combination of:
+        // 0     0.5   0     0        scale( 0.25 * 200px / 2 , 0.25 * 100px / 2 )  ->  multiply by initial resolution & viewport size
+        // 0     0     1     0        translate( 0 , 16 )  ->  add initial view center
+        // -0.32 0.64  0     1        translate( -16 , 0 )  ->  subtract current view center
+        //                            scale( 2 / ( 0.5 * 200px ) , 2 / ( 0.5 * 100px ) )  ->  divide by current resolution & viewport size
+        [0.5, 0, 0, 0, 0, 0.5, 0, 0, 0, 0, 1, 0, -0.32, 0.64, 0, 1],
       ]);
     });
-    it('calls preRender and render once for each renderer', () => {
-      expect(renderer.pointRenderer_.preRender.callCount).to.be(1);
-      expect(renderer.pointRenderer_.render.callCount).to.be(1);
-      expect(renderer.lineStringRenderer_.preRender.callCount).to.be(1);
-      expect(renderer.lineStringRenderer_.render.callCount).to.be(1);
-      expect(renderer.polygonRenderer_.preRender.callCount).to.be(1);
-      expect(renderer.polygonRenderer_.render.callCount).to.be(1);
+    it('calls render once for each renderer', () => {
+      expect(renderer.styleRenderers_[0].render.callCount).to.be(1);
+      expect(renderer.styleRenderers_[1].render.callCount).to.be(1);
     });
     it('calls helper.prepareDraw once', () => {
       expect(renderer.helper.prepareDraw.calledOnce).to.eql(true);
@@ -478,33 +382,21 @@ describe('ol/renderer/webgl/VectorLayer', function () {
           20037508.34 * 1.5,
           10000,
         ];
-        renderer.pointRenderer_.preRender.resetHistory();
-        renderer.pointRenderer_.render.resetHistory();
-        renderer.lineStringRenderer_.preRender.resetHistory();
-        renderer.lineStringRenderer_.render.resetHistory();
-        renderer.polygonRenderer_.preRender.resetHistory();
-        renderer.polygonRenderer_.render.resetHistory();
+        renderer.styleRenderers_[0].render.resetHistory();
+        renderer.styleRenderers_[1].render.resetHistory();
         renderer.renderFrame(frameState);
       });
-      it('calls preRender and render three times for each renderer', () => {
-        expect(renderer.pointRenderer_.preRender.callCount).to.be(3);
-        expect(renderer.pointRenderer_.render.callCount).to.be(3);
-        expect(renderer.lineStringRenderer_.preRender.callCount).to.be(3);
-        expect(renderer.lineStringRenderer_.render.callCount).to.be(3);
-        expect(renderer.polygonRenderer_.preRender.callCount).to.be(3);
-        expect(renderer.polygonRenderer_.render.callCount).to.be(3);
+      it('calls render three times for each renderer', () => {
+        expect(renderer.styleRenderers_[0].render.callCount).to.be(3);
+        expect(renderer.styleRenderers_[1].render.callCount).to.be(3);
       });
     });
   });
 
   describe('#dispose', () => {
     beforeEach(() => {
-      sinon.spy(renderer.worker_, 'terminate');
       sinon.spy(vectorSource, 'removeEventListener');
       renderer.dispose();
-    });
-    it('disposes of the webgl worker', () => {
-      expect(renderer.worker_.terminate.callCount).to.be(1);
     });
     it('unlistens to source events', () => {
       expect(

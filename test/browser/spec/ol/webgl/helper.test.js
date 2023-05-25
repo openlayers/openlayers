@@ -118,6 +118,7 @@ describe('ol/webgl/WebGLHelper', function () {
 
   describe('operations', function () {
     describe('prepare draw', function () {
+      let program;
       beforeEach(function () {
         h = new WebGLHelper({
           uniforms: {
@@ -127,10 +128,8 @@ describe('ol/webgl/WebGLHelper', function () {
             u_test4: createTransform(),
           },
         });
-        h.useProgram(
-          h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER),
-          SAMPLE_FRAMESTATE
-        );
+        program = h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER);
+        h.useProgram(program, SAMPLE_FRAMESTATE);
         h.prepareDraw({
           pixelRatio: 2,
           size: [50, 80],
@@ -148,21 +147,22 @@ describe('ol/webgl/WebGLHelper', function () {
       });
 
       it('has processed default uniforms', function () {
+        const uniformLocations = h.uniformLocationsByProgram_[getUid(program)];
         expect(
-          h.uniformLocations_[DefaultUniform.OFFSET_ROTATION_MATRIX]
+          uniformLocations[DefaultUniform.OFFSET_ROTATION_MATRIX]
         ).not.to.eql(undefined);
-        expect(
-          h.uniformLocations_[DefaultUniform.OFFSET_SCALE_MATRIX]
-        ).not.to.eql(undefined);
-        expect(h.uniformLocations_[DefaultUniform.TIME]).not.to.eql(undefined);
-        expect(h.uniformLocations_[DefaultUniform.ZOOM]).not.to.eql(undefined);
-        expect(h.uniformLocations_[DefaultUniform.RESOLUTION]).not.to.eql(
+        expect(uniformLocations[DefaultUniform.OFFSET_SCALE_MATRIX]).not.to.eql(
           undefined
         );
-        expect(h.uniformLocations_[DefaultUniform.VIEWPORT_SIZE_PX]).not.to.eql(
+        expect(uniformLocations[DefaultUniform.TIME]).not.to.eql(undefined);
+        expect(uniformLocations[DefaultUniform.ZOOM]).not.to.eql(undefined);
+        expect(uniformLocations[DefaultUniform.RESOLUTION]).not.to.eql(
           undefined
         );
-        expect(h.uniformLocations_[DefaultUniform.PIXEL_RATIO]).not.to.eql(
+        expect(uniformLocations[DefaultUniform.VIEWPORT_SIZE_PX]).not.to.eql(
+          undefined
+        );
+        expect(uniformLocations[DefaultUniform.PIXEL_RATIO]).not.to.eql(
           undefined
         );
       });
@@ -178,6 +178,29 @@ describe('ol/webgl/WebGLHelper', function () {
         expect(h.uniforms_[2].location).to.not.eql(-1);
         expect(h.uniforms_[3].location).to.not.eql(-1);
         expect(h.uniforms_[2].texture).to.not.eql(undefined);
+      });
+
+      describe('avoid resizing the canvas if not required', () => {
+        let widthSpy, heightSpy;
+        beforeEach(function () {
+          widthSpy = sinon.spy(h.getCanvas(), 'width', ['set']);
+          heightSpy = sinon.spy(h.getCanvas(), 'height', ['set']);
+          // same size and pixel ratio
+          h.prepareDraw({
+            pixelRatio: 2,
+            size: [50, 80],
+            viewState: {
+              rotation: 10,
+              resolution: 10,
+              center: [0, 0],
+            },
+          });
+        });
+
+        it('does not resize the canvas', function () {
+          expect(widthSpy.set.callCount).to.be(0);
+          expect(heightSpy.set.callCount).to.be(0);
+        });
       });
     });
 
