@@ -715,6 +715,15 @@ class WebGLHelper extends Disposable {
   }
 
   /**
+   * Sets the `u_hitDetection` uniform.
+   * @param {boolean} enabled Whether to enable the hit detection code path
+   */
+  applyHitDetectionUniform(enabled) {
+    const loc = this.getUniformLocation(DefaultUniform.HIT_DETECTION);
+    this.getGL().uniform1i(loc, enabled ? 1 : 0);
+  }
+
+  /**
    * Sets the custom uniforms based on what was given in the constructor. This is called internally in `prepareDraw`.
    * @param {import("../Map.js").FrameState} frameState Frame state.
    */
@@ -991,7 +1000,7 @@ class WebGLHelper extends Disposable {
    */
   enableAttributeArray_(attribName, size, type, stride, offset) {
     const location = this.getAttributeLocation(attribName);
-    // the attribute has not been found in the shaders; do not enable it
+    // the attribute has not been found in the shaders or is not used; do not enable it
     if (location < 0) {
       return;
     }

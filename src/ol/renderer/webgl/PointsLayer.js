@@ -50,8 +50,7 @@ import {listen, unlistenByKey} from '../../events.js';
  * Please note that these can only be numerical values.
  * @property {string} vertexShader Vertex shader source, mandatory.
  * @property {string} fragmentShader Fragment shader source, mandatory.
- * @property {string} [hitVertexShader] Vertex shader source for hit detection rendering.
- * @property {string} [hitFragmentShader] Fragment shader source for hit detection rendering.
+ * @property {boolean} [hitDetectionEnabled] Whether shader is hit detection aware.
  * @property {Object<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
  * Please note that `u_texture` is reserved for the main texture slot and `u_opacity` is reserved for the layer opacity.
  * @property {Array<import("./Layer").PostProcessesOptions>} [postProcesses] Post-processes definitions
@@ -163,24 +162,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
      * @type {boolean}
      * @private
      */
-    this.hitDetectionEnabled_ =
-      options.hitFragmentShader && options.hitVertexShader ? true : false;
-
-    /**
-     * @private
-     */
-    this.hitVertexShader_ = options.hitVertexShader;
-
-    /**
-     * @private
-     */
-    this.hitFragmentShader_ = options.hitFragmentShader;
-
-    /**
-     * @type {WebGLProgram}
-     * @private
-     */
-    this.hitProgram_;
+    this.hitDetectionEnabled_ = !!options.hitDetectionEnabled;
 
     const customAttributes = options.attributes
       ? options.attributes.map(function (attribute) {
@@ -211,20 +193,16 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     ];
 
     if (this.hitDetectionEnabled_) {
-      this.attributes.push(
-        ...[
-          {
-            name: 'a_hitColor',
-            size: 4,
-            type: AttributeType.FLOAT,
-          },
-          {
-            name: 'a_featureUid',
-            size: 1,
-            type: AttributeType.FLOAT,
-          },
-        ]
-      );
+      this.attributes.push({
+        name: 'a_hitColor',
+        size: 4,
+        type: AttributeType.FLOAT,
+      });
+      this.attributes.push({
+        name: 'a_featureUid',
+        size: 1,
+        type: AttributeType.FLOAT,
+      });
     }
     this.attributes.push(...customAttributes);
 
@@ -366,16 +344,6 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     );
 
     if (this.hitDetectionEnabled_) {
-      this.hitProgram_ = this.helper.getProgram(
-        this.hitFragmentShader_,
-        this.hitVertexShader_
-      );
-      // FIXME: only do that when the program can be driven by a u_hitDetection uniform
-      this.program_ = this.helper.getProgram(
-        this.fragmentShader_,
-        this.vertexShader_
-      );
-
       this.hitRenderTarget_ = new WebGLRenderTarget(this.helper);
     }
   }
@@ -461,7 +429,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * Compute world params
    * @private
    * @param {import("../../Map.js").FrameState} frameState Frame state.
-   * @return {[number, number, number]} The world start, end and width.
+   * @return {Array<number>} The world start, end and width.
    */
   getWorldParameters_(frameState) {
     const projection = frameState.viewState.projection;
@@ -547,13 +515,6 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     ) {
       this.renderInstructions_ = new Float32Array(totalSize);
     }
-    console.log(
-      'rebuilding buffers',
-      this.featureCount_,
-      'features',
-      totalSize,
-      'buffer size'
-    );
 
     // loop on features to fill the buffer
     let featureCache, geometry;
@@ -661,33 +622,30 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
   renderWorlds(frameState, forHitDetection, startWorld, endWorld, worldWidth) {
     let world = startWorld;
 
+    this.helper.useProgram(this.program_, frameState);
+
     if (forHitDetection) {
       this.hitRenderTarget_.setSize([
         Math.floor(frameState.size[0] / 2),
         Math.floor(frameState.size[1] / 2),
       ]);
-
-      this.helper.useProgram(this.hitProgram_, frameState);
       this.helper.prepareDrawToRenderTarget(
         frameState,
         this.hitRenderTarget_,
         true
       );
-    } else {
-      this.helper.useProgram(this.program_, frameState);
     }
 
     this.helper.bindBuffer(this.verticesBuffer_);
     this.helper.bindBuffer(this.indicesBuffer_);
-    if (forHitDetection) {
-      this.helper.enableAttributes(this.attributes);
-    }
+    this.helper.enableAttributes(this.attributes);
 
     do {
       this.helper.makeProjectionTransform(frameState, this.currentTransform_);
       translateTransform(this.currentTransform_, world * worldWidth, 0);
       multiplyTransform(this.currentTransform_, this.invertRenderTransform_);
       this.helper.applyUniforms(frameState);
+      this.helper.applyHitDetectionUniform(forHitDetection);
       const renderCount = this.indicesBuffer_.getSize();
       this.helper.drawElements(0, renderCount);
     } while (++world < endWorld);

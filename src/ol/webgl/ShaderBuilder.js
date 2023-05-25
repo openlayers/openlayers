@@ -11,7 +11,9 @@ uniform float u_globalAlpha;
 uniform float u_time;
 uniform float u_zoom;
 uniform float u_resolution;
-uniform vec4 u_renderExtent;`;
+uniform vec4 u_renderExtent;
+uniform mediump int u_hitDetection;
+`;
 
 /**
  * @typedef {Object} VaryingDescription
@@ -291,35 +293,21 @@ export class ShaderBuilder {
   /**
    * Generates a symbol vertex shader from the builder parameters
    *
-   * Four uniforms are hardcoded in all shaders: `u_projectionMatrix`, `u_offsetScaleMatrix`,
-   * `u_offsetRotateMatrix`, `u_time`.
+   * The following uniforms are hardcoded in all shaders: `u_projectionMatrix`, `u_offsetScaleMatrix`,
+   * `u_offsetRotateMatrix`, `u_time`, `u_zoom`, `u_resolution`, `u_hitDetection`.
    *
    * The following attributes are hardcoded and expected to be present in the vertex buffers:
-   * `vec2 a_position`, `float a_index` (being the index of the vertex in the quad, 0 to 3).
+   * `vec2 a_position`, `float a_index` (being the index of the vertex in the quad, 0 to 3), `vec4 a_hitColor`.
    *
    * The following varyings are hardcoded and gives the coordinate of the pixel both in the quad and on the texture:
-   * `vec2 v_quadCoord`, `vec2 v_texCoord`
+   * `vec2 v_quadCoord`, `vec2 v_texCoord`, `vec4 v_hitColor`.
    *
-   * @param {boolean} [forHitDetection] If true, the shader will be modified to include hit detection variables
-   * (namely, hit color with encoded feature id).
    * @return {string} The full shader as a string.
    */
-  getSymbolVertexShader(forHitDetection) {
+  getSymbolVertexShader() {
     const offsetMatrix = this.symbolRotateWithView_
       ? 'u_offsetScaleMatrix * u_offsetRotateMatrix'
       : 'u_offsetScaleMatrix';
-
-    let attributes = this.attributes_;
-    let varyings = this.varyings_;
-
-    if (forHitDetection) {
-      attributes = attributes.concat('vec4 a_hitColor');
-      varyings = varyings.concat({
-        name: 'v_hitColor',
-        type: 'vec4',
-        expression: 'a_hitColor',
-      });
-    }
 
     return `precision mediump float;
 uniform mat4 u_projectionMatrix;
@@ -328,6 +316,8 @@ uniform mat4 u_offsetRotateMatrix;
 uniform float u_time;
 uniform float u_zoom;
 uniform float u_resolution;
+uniform mediump int u_hitDetection;
+
 ${this.uniforms_
   .map(function (uniform) {
     return 'uniform ' + uniform + ';';
@@ -335,14 +325,16 @@ ${this.uniforms_
   .join('\n')}
 attribute vec2 a_position;
 attribute float a_index;
-${attributes
+attribute vec4 a_hitColor;
+${this.attributes_
   .map(function (attribute) {
     return 'attribute ' + attribute + ';';
   })
   .join('\n')}
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
-${varyings
+varying vec4 v_hitColor;
+${this.varyings_
   .map(function (varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   })
@@ -377,7 +369,8 @@ void main(void) {
   u = a_index == 0.0 || a_index == 3.0 ? 0.0 : 1.0;
   v = a_index == 2.0 || a_index == 3.0 ? 0.0 : 1.0;
   v_quadCoord = vec2(u, v);
-${varyings
+  v_hitColor = a_hitColor;
+${this.varyings_
   .map(function (varying) {
     return '  ' + varying.name + ' = ' + varying.expression + ';';
   })
@@ -389,31 +382,16 @@ ${varyings
    * Generates a symbol fragment shader from the builder parameters
    *
    * Expects the following varyings to be transmitted by the vertex shader:
-   * `vec2 v_quadCoord`, `vec2 v_texCoord`
+   * `vec2 v_quadCoord`, `vec2 v_texCoord`, `vec4 v_hitColor`.
    *
-   * @param {boolean} [forHitDetection] If true, the shader will be modified to include hit detection variables
-   * (namely, hit color with encoded feature id).
    * @return {string} The full shader as a string.
    */
-  getSymbolFragmentShader(forHitDetection) {
-    const hitDetectionBypass = forHitDetection
-      ? '  if (gl_FragColor.a < 0.1) { discard; } gl_FragColor = v_hitColor;'
-      : '';
-
-    let varyings = this.varyings_;
-
-    if (forHitDetection) {
-      varyings = varyings.concat({
-        name: 'v_hitColor',
-        type: 'vec4',
-        expression: 'a_hitColor',
-      });
-    }
-
+  getSymbolFragmentShader() {
     return `precision mediump float;
 uniform float u_time;
 uniform float u_zoom;
 uniform float u_resolution;
+uniform mediump int u_hitDetection;
 ${this.uniforms_
   .map(function (uniform) {
     return 'uniform ' + uniform + ';';
@@ -421,7 +399,8 @@ ${this.uniforms_
   .join('\n')}
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
-${varyings
+varying vec4 v_hitColor;
+${this.varyings_
   .map(function (varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   })
@@ -431,30 +410,18 @@ void main(void) {
   if (${this.discardExpression_}) { discard; }
   gl_FragColor = ${this.symbolColorExpression_};
   gl_FragColor.rgb *= gl_FragColor.a;
-${hitDetectionBypass}
+  if (u_hitDetection > 0) {
+    if (gl_FragColor.a < 0.1) { discard; };
+    gl_FragColor = v_hitColor;
+  }
 }`;
   }
 
   /**
    * Generates a stroke vertex shader from the builder parameters
-   *
-   * @param {boolean} [forHitDetection] If true, the shader will be modified to include hit detection variables
-   * (namely, hit color with encoded feature id).
    * @return {string} The full shader as a string.
    */
-  getStrokeVertexShader(forHitDetection) {
-    let attributes = this.attributes_;
-    let varyings = this.varyings_;
-
-    if (forHitDetection) {
-      attributes = attributes.concat('vec4 a_hitColor');
-      varyings = varyings.concat({
-        name: 'v_hitColor',
-        type: 'vec4',
-        expression: 'a_hitColor',
-      });
-    }
-
+  getStrokeVertexShader() {
     return `#ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
@@ -471,7 +438,8 @@ attribute float a_index;
 attribute vec2 a_segmentStart;
 attribute vec2 a_segmentEnd;
 attribute float a_parameters;
-${attributes
+attribute vec4 a_hitColor;
+${this.attributes_
   .map(function (attribute) {
     return 'attribute ' + attribute + ';';
   })
@@ -481,7 +449,8 @@ varying vec2 v_segmentEnd;
 varying float v_angleStart;
 varying float v_angleEnd;
 varying float v_width;
-${varyings
+varying vec4 v_hitColor;
+${this.varyings_
   .map(function (varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   })
@@ -527,7 +496,8 @@ void main(void) {
   v_segmentStart = worldToPx(a_segmentStart);
   v_segmentEnd = worldToPx(a_segmentEnd);
   v_width = lineWidth;
-${varyings
+  v_hitColor = a_hitColor;
+${this.varyings_
   .map(function (varying) {
     return '  ' + varying.name + ' = ' + varying.expression + ';';
   })
@@ -538,25 +508,9 @@ ${varyings
   /**
    * Generates a stroke fragment shader from the builder parameters
    *
-   * @param {boolean} [forHitDetection] If true, the shader will be modified to include hit detection variables
-   * (namely, hit color with encoded feature id).
    * @return {string} The full shader as a string.
    */
-  getStrokeFragmentShader(forHitDetection) {
-    const hitDetectionBypass = forHitDetection
-      ? '  if (gl_FragColor.a < 0.1) { discard; } gl_FragColor = v_hitColor;'
-      : '';
-
-    let varyings = this.varyings_;
-
-    if (forHitDetection) {
-      varyings = varyings.concat({
-        name: 'v_hitColor',
-        type: 'vec4',
-        expression: 'a_hitColor',
-      });
-    }
-
+  getStrokeFragmentShader() {
     return `#ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
@@ -573,7 +527,8 @@ varying vec2 v_segmentEnd;
 varying float v_angleStart;
 varying float v_angleEnd;
 varying float v_width;
-${varyings
+varying vec4 v_hitColor;
+${this.varyings_
   .map(function (varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   })
@@ -610,30 +565,19 @@ void main(void) {
   if (${this.discardExpression_}) { discard; }
   gl_FragColor = ${this.strokeColorExpression_} * u_globalAlpha;
   gl_FragColor *= segmentDistanceField(v_currentPoint, v_segmentStart, v_segmentEnd, v_width);
-${hitDetectionBypass}
+  if (u_hitDetection > 0) {
+    if (gl_FragColor.a < 0.1) { discard; };
+    gl_FragColor = v_hitColor;
+  }
 }`;
   }
 
   /**
    * Generates a fill vertex shader from the builder parameters
    *
-   * @param {boolean} [forHitDetection] If true, the shader will be modified to include hit detection variables
-   * (namely, hit color with encoded feature id).
    * @return {string} The full shader as a string.
    */
-  getFillVertexShader(forHitDetection) {
-    let attributes = this.attributes_;
-    let varyings = this.varyings_;
-
-    if (forHitDetection) {
-      attributes = attributes.concat('vec4 a_hitColor');
-      varyings = varyings.concat({
-        name: 'v_hitColor',
-        type: 'vec4',
-        expression: 'a_hitColor',
-      });
-    }
-
+  getFillVertexShader() {
     return `#ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
@@ -646,12 +590,14 @@ ${this.uniforms_
   })
   .join('\n')}
 attribute vec2 a_position;
-${attributes
+attribute vec4 a_hitColor;
+${this.attributes_
   .map(function (attribute) {
     return 'attribute ' + attribute + ';';
   })
   .join('\n')}
-${varyings
+varying vec4 v_hitColor;
+${this.varyings_
   .map(function (varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   })
@@ -659,7 +605,7 @@ ${varyings
 ${this.vertexShaderFunctions_.join('\n')}
 void main(void) {
   gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0);
-${varyings
+${this.varyings_
   .map(function (varying) {
     return '  ' + varying.name + ' = ' + varying.expression + ';';
   })
@@ -669,26 +615,9 @@ ${varyings
 
   /**
    * Generates a fill fragment shader from the builder parameters
-   *
-   * @param {boolean} [forHitDetection] If true, the shader will be modified to include hit detection variables
-   * (namely, hit color with encoded feature id).
    * @return {string} The full shader as a string.
    */
-  getFillFragmentShader(forHitDetection) {
-    const hitDetectionBypass = forHitDetection
-      ? '  if (gl_FragColor.a < 0.1) { discard; } gl_FragColor = v_hitColor;'
-      : '';
-
-    let varyings = this.varyings_;
-
-    if (forHitDetection) {
-      varyings = varyings.concat({
-        name: 'v_hitColor',
-        type: 'vec4',
-        expression: 'a_hitColor',
-      });
-    }
-
+  getFillFragmentShader() {
     return `#ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
@@ -700,7 +629,9 @@ ${this.uniforms_
     return 'uniform ' + uniform + ';';
   })
   .join('\n')}
-${varyings
+attribute vec4 a_hitColor;
+varying vec4 v_hitColor;
+${this.varyings_
   .map(function (varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   })
@@ -727,7 +658,10 @@ void main(void) {
   #endif
   if (${this.discardExpression_}) { discard; }
   gl_FragColor = ${this.fillColorExpression_} * u_globalAlpha;
-${hitDetectionBypass}
+  if (u_hitDetection > 0) {
+    if (gl_FragColor.a < 0.1) { discard; };
+    gl_FragColor = v_hitColor;
+  }
 }`;
   }
 }
