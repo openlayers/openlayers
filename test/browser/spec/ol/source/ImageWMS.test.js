@@ -55,8 +55,19 @@ describe('ol/source/ImageWMS', function () {
         const bbox = queryData.get('BBOX').split(',').map(Number);
         const bboxAspectRatio = (bbox[3] - bbox[1]) / (bbox[2] - bbox[0]);
         const imageAspectRatio = imageWidth / imageHeight;
-        expect(imageWidth).to.be(Math.ceil((viewWidth / resolution) * ratio));
-        expect(imageHeight).to.be(Math.ceil((viewHeight / resolution) * ratio));
+        const marginWidth = Math.ceil(
+          ((ratio - 1) * viewWidth) / resolution / 2
+        );
+        const marginHeight = Math.ceil(
+          ((ratio - 1) * viewHeight) / resolution / 2
+        );
+
+        expect(imageWidth).to.be(
+          Math.round(viewWidth / resolution) + 2 * marginWidth
+        );
+        expect(imageHeight).to.be(
+          Math.round(viewHeight / resolution) + 2 * marginHeight
+        );
         expect(bboxAspectRatio).to.roughlyEqual(imageAspectRatio, 1e-12);
       });
     });
