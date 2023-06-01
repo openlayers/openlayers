@@ -361,28 +361,6 @@ describe('ol/style/expressions', function () {
       expect(expressionToGlsl(context, ['get', 'myAttr'])).to.eql('v_myAttr');
     });
 
-    it('correctly adapts output for fragment shaders', function () {
-      expressionToGlsl(context, ['get', 'myAttr']);
-      expressionToGlsl(context, ['var', 'myVar']);
-      expressionToGlsl(context, [
-        'clamp',
-        ['get', 'attr2'],
-        ['get', 'attr2'],
-        ['get', 'myAttr'],
-      ]);
-      expressionToGlsl(context, ['*', ['get', 'attr2'], ['var', 'myVar']]);
-      expressionToGlsl(context, ['*', ['get', 'attr3'], ['var', 'myVar2']]);
-      expect(context.attributes).to.eql([
-        {name: 'myAttr', type: ValueTypes.NUMBER},
-        {name: 'attr2', type: ValueTypes.NUMBER},
-        {name: 'attr3', type: ValueTypes.NUMBER},
-      ]);
-      expect(context.variables).to.eql([
-        {name: 'myVar', type: ValueTypes.NUMBER},
-        {name: 'myVar2', type: ValueTypes.NUMBER},
-      ]);
-    });
-
     it('gives precedence to the string type unless asked otherwise', function () {
       expect(expressionToGlsl(context, 'lightgreen', ValueTypes.ANY)).to.eql(
         '0.0'
@@ -1368,6 +1346,30 @@ describe('ol/style/expressions', function () {
           name: 'color',
           type: ValueTypes.COLOR,
         },
+      ]);
+    });
+
+    it('get and var operators, numbers', function () {
+      context.style.variables['myVar'] = 123;
+      context.style.variables['myVar2'] = 456;
+      expressionToGlsl(context, ['get', 'myAttr']);
+      expressionToGlsl(context, ['var', 'myVar']);
+      expressionToGlsl(context, [
+        'clamp',
+        ['get', 'attr2'],
+        ['get', 'attr2'],
+        ['get', 'myAttr'],
+      ]);
+      expressionToGlsl(context, ['*', ['get', 'attr2'], ['var', 'myVar']]);
+      expressionToGlsl(context, ['*', ['get', 'attr3'], ['var', 'myVar2']]);
+      expect(context.attributes).to.eql([
+        {name: 'myAttr', type: ValueTypes.NUMBER},
+        {name: 'attr2', type: ValueTypes.NUMBER},
+        {name: 'attr3', type: ValueTypes.NUMBER},
+      ]);
+      expect(context.variables).to.eql([
+        {name: 'myVar', type: ValueTypes.NUMBER},
+        {name: 'myVar2', type: ValueTypes.NUMBER},
       ]);
     });
 
