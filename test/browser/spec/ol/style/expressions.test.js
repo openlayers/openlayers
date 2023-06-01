@@ -198,6 +198,9 @@ describe('ol/style/expressions', function () {
       expect(getValueType(['color', ['get', 'attr4'], 1, 2])).to.eql(
         ValueTypes.COLOR
       );
+      expect(getValueType(['in', ['get', 'attr4'], 1, 2, 3])).to.eql(
+        ValueTypes.BOOLEAN
+      );
     });
     it('correctly analyzes get operator return type with hint', function () {
       expect(getValueType(['get', 'myAttr', 'number'])).to.eql(
@@ -1166,6 +1169,68 @@ describe('ol/style/expressions', function () {
         ValueTypes.ANY
       );
       done();
+    });
+  });
+
+  describe('in operator', function () {
+    let context;
+
+    beforeEach(function () {
+      context = {
+        variables: [],
+        attributes: [],
+        stringLiteralsMap: {},
+        functions: {},
+        style: {},
+      };
+    });
+
+    it('outputs boolean', function () {
+      expect(getValueType(['in', ['get', 'attr'], 0, 50, 100])).to.eql(
+        ValueTypes.BOOLEAN
+      );
+    });
+
+    it('throws if no single output type could be inferred', function () {
+      expect(() => {
+        expressionToGlsl(
+          context,
+          ['in', ['get', 'attr'], 0, 'abc', 50],
+          ValueTypes.COLOR
+        );
+      }).to.throwException();
+    });
+
+    it('throws if invalid argument count', function () {
+      expect(() => {
+        expressionToGlsl(context, ['in', ['get', 'attr'], 'abcd', 'efgh']);
+      }).to.throwException();
+    });
+
+    it('throws if second argument is not an array literal', function () {
+      expect(() => {
+        expressionToGlsl(context, ['in', ['get', 'attr'], 'abcd']);
+      }).to.throwException();
+    });
+
+    it('correctly parses the expression', function () {
+      context.functions['a_function'] = 'float a_function() { return 1.0; }';
+      context.functions['another_function'] =
+        'float another_function() { return 1.0; }';
+      const glsl = expressionToGlsl(context, [
+        'in',
+        ['get', 'attr'],
+        [0, 20, 50],
+      ]);
+      expect(glsl).to.eql('operator_in_2(a_attr)');
+      expect(context.functions).to.have.property('operator_in_2');
+      expect(context.functions['operator_in_2']).to
+        .eql(`bool operator_in_2(float inputValue) {
+  if (inputValue == 0.0) { return true; }
+  if (inputValue == 20.0) { return true; }
+  if (inputValue == 50.0) { return true; }
+  return false;
+}`);
     });
   });
 

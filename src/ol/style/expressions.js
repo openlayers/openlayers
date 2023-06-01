@@ -74,6 +74,10 @@ import {asArray, fromString, isStringColor} from '../color.js';
  *   * `['any', value1, value2, ...]` returns `true` if any of the inputs are `true`, `false` otherwise.
  *   * `['between', value1, value2, value3]` returns `true` if `value1` is contained between `value2` and `value3`
  *     (inclusively), or `false` otherwise.
+ *   * `['in', input, [value1, value2, ...valueN]]` returns `true` if `input` equals any of the provided values, and
+ *     `false` otherwise; only supports number, string or boolean values.
+ *     Note that the second argument must be a fixed-size array literal and cannot be the result of an expression
+ *     (this is a known limitation as arrays of size > 4 are currently not supported in expressions).
  *
  * * Conversion operators:
  *   * `['array', value1, ...valueN]` creates a numerical array from `number` values; please note that the amount of
@@ -252,6 +256,15 @@ function printTypes(valueType) {
  * @property {Array<PaletteTexture>} [paletteTextures] List of palettes used by the style.
  * @property {import("../style/literal").LiteralStyle} style The style being parsed
  */
+
+/**
+ * @param {string} operator Operator
+ * @param {ParsingContext} context Parsing context
+ * @return {string} A function name based on the operator, unique in the given context
+ */
+function computeOperatorFunctionName(operator, context) {
+  return `operator_${operator}_${Object.keys(context.functions).length}`;
+}
 
 /**
  * Will return the number as a float with a dot separator, which is required by GLSL.
@@ -1175,5 +1188,51 @@ Operators['case'] = {
       result = `(${condition} ? ${output} : ${result || fallback})`;
     }
     return result;
+  },
+};
+
+Operators['in'] = {
+  getReturnType: function (args) {
+    return ValueTypes.BOOLEAN;
+  },
+  toGlsl: function (context, args) {
+    assertArgsCount(args, 2);
+    const needle = args[0];
+    const haystack = args[1];
+    if (!Array.isArray(haystack)) {
+      throw new Error(
+        `The "in" operator expects an array literal as its second argument.`
+      );
+    }
+
+    let inputType = getValueType(needle);
+    for (let i = 0; i < haystack.length - 1; i += 1) {
+      inputType = inputType & getValueType(haystack[i]);
+    }
+    assertOfType(
+      ['match', ...args],
+      inputType,
+      ValueTypes.STRING | ValueTypes.NUMBER | ValueTypes.BOOLEAN,
+      'input'
+    );
+    inputType =
+      (ValueTypes.STRING | ValueTypes.NUMBER | ValueTypes.BOOLEAN) & inputType;
+
+    const funcName = computeOperatorFunctionName('in', context);
+    const tests = [];
+    for (let i = 0; i < haystack.length; i += 1) {
+      tests.push(
+        `  if (inputValue == ${expressionToGlsl(
+          context,
+          haystack[i],
+          inputType
+        )}) { return true; }`
+      );
+    }
+    context.functions[funcName] = `bool ${funcName}(float inputValue) {
+${tests.join('\n')}
+  return false;
+}`;
+    return `${funcName}(${expressionToGlsl(context, needle, inputType)})`;
   },
 };
