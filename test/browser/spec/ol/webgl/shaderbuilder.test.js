@@ -23,12 +23,16 @@ uniform mat4 u_offsetRotateMatrix;
 uniform float u_time;
 uniform float u_zoom;
 uniform float u_resolution;
+uniform mediump int u_hitDetection;
+
 
 attribute vec2 a_position;
 attribute float a_index;
+attribute vec4 a_hitColor;
 
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
+varying vec4 v_hitColor;
 varying float v_opacity;
 varying vec3 v_test;
 
@@ -61,6 +65,7 @@ void main(void) {
   u = a_index == 0.0 || a_index == 3.0 ? 0.0 : 1.0;
   v = a_index == 2.0 || a_index == 3.0 ? 0.0 : 1.0;
   v_quadCoord = vec2(u, v);
+  v_hitColor = a_hitColor;
   v_opacity = 0.4;
   v_test = vec3(1.0, 2.0, 3.0);
 }`);
@@ -81,12 +86,16 @@ uniform mat4 u_offsetRotateMatrix;
 uniform float u_time;
 uniform float u_zoom;
 uniform float u_resolution;
+uniform mediump int u_hitDetection;
+
 uniform float u_myUniform;
 attribute vec2 a_position;
 attribute float a_index;
+attribute vec4 a_hitColor;
 attribute vec2 a_myAttr;
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
+varying vec4 v_hitColor;
 
 
 void main(void) {
@@ -118,6 +127,7 @@ void main(void) {
   u = a_index == 0.0 || a_index == 3.0 ? 0.0 : 1.0;
   v = a_index == 2.0 || a_index == 3.0 ? 0.0 : 1.0;
   v_quadCoord = vec2(u, v);
+  v_hitColor = a_hitColor;
 
 }`);
     });
@@ -136,12 +146,16 @@ uniform mat4 u_offsetRotateMatrix;
 uniform float u_time;
 uniform float u_zoom;
 uniform float u_resolution;
+uniform mediump int u_hitDetection;
+
 
 attribute vec2 a_position;
 attribute float a_index;
+attribute vec4 a_hitColor;
 
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
+varying vec4 v_hitColor;
 
 
 void main(void) {
@@ -173,6 +187,7 @@ void main(void) {
   u = a_index == 0.0 || a_index == 3.0 ? 0.0 : 1.0;
   v = a_index == 2.0 || a_index == 3.0 ? 0.0 : 1.0;
   v_quadCoord = vec2(u, v);
+  v_hitColor = a_hitColor;
 
 }`);
     });
@@ -190,12 +205,16 @@ uniform mat4 u_offsetRotateMatrix;
 uniform float u_time;
 uniform float u_zoom;
 uniform float u_resolution;
+uniform mediump int u_hitDetection;
+
 
 attribute vec2 a_position;
 attribute float a_index;
+attribute vec4 a_hitColor;
 
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
+varying vec4 v_hitColor;
 
 
 void main(void) {
@@ -227,6 +246,7 @@ void main(void) {
   u = a_index == 0.0 || a_index == 3.0 ? 0.0 : 1.0;
   v = a_index == 2.0 || a_index == 3.0 ? 0.0 : 1.0;
   v_quadCoord = vec2(u, v);
+  v_hitColor = a_hitColor;
 
 }`);
     });
@@ -245,9 +265,11 @@ void main(void) {
 uniform float u_time;
 uniform float u_zoom;
 uniform float u_resolution;
+uniform mediump int u_hitDetection;
 
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
+varying vec4 v_hitColor;
 varying float v_opacity;
 varying vec3 v_test;
 
@@ -255,7 +277,10 @@ void main(void) {
   if (false) { discard; }
   gl_FragColor = vec4(0.3137254901960784, 0.0, 1.0, 1.0);
   gl_FragColor.rgb *= gl_FragColor.a;
-
+  if (u_hitDetection > 0) {
+    if (gl_FragColor.a < 0.1) { discard; };
+    gl_FragColor = v_hitColor;
+  }
 }`);
     });
     it('generates a symbol fragment shader (with uniforms)', function () {
@@ -272,17 +297,22 @@ void main(void) {
 uniform float u_time;
 uniform float u_zoom;
 uniform float u_resolution;
+uniform mediump int u_hitDetection;
 uniform float u_myUniform;
 uniform vec2 u_myUniform2;
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
+varying vec4 v_hitColor;
 
 
 void main(void) {
   if (u_myUniform > 0.5) { discard; }
   gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
   gl_FragColor.rgb *= gl_FragColor.a;
-
+  if (u_hitDetection > 0) {
+    if (gl_FragColor.a < 0.1) { discard; };
+    gl_FragColor = v_hitColor;
+  }
 }`);
     });
   });
@@ -311,18 +341,22 @@ uniform float u_time;
 uniform float u_zoom;
 uniform float u_resolution;
 uniform vec4 u_renderExtent;
+uniform mediump int u_hitDetection;
+
 uniform float u_myUniform;
 attribute vec2 a_position;
 attribute float a_index;
 attribute vec2 a_segmentStart;
 attribute vec2 a_segmentEnd;
 attribute float a_parameters;
+attribute vec4 a_hitColor;
 attribute vec2 a_myAttr;
 varying vec2 v_segmentStart;
 varying vec2 v_segmentEnd;
 varying float v_angleStart;
 varying float v_angleEnd;
 varying float v_width;
+varying vec4 v_hitColor;
 varying float v_opacity;
 varying vec3 v_test;
 
@@ -366,6 +400,7 @@ void main(void) {
   v_segmentStart = worldToPx(a_segmentStart);
   v_segmentEnd = worldToPx(a_segmentEnd);
   v_width = lineWidth;
+  v_hitColor = a_hitColor;
   v_opacity = 0.4;
   v_test = vec3(1.0, 2.0, 3.0);
 }`);
@@ -397,12 +432,15 @@ uniform float u_time;
 uniform float u_zoom;
 uniform float u_resolution;
 uniform vec4 u_renderExtent;
+uniform mediump int u_hitDetection;
+
 uniform float u_myUniform;
 varying vec2 v_segmentStart;
 varying vec2 v_segmentEnd;
 varying float v_angleStart;
 varying float v_angleEnd;
 varying float v_width;
+varying vec4 v_hitColor;
 varying float v_opacity;
 varying vec3 v_test;
 
@@ -437,7 +475,10 @@ void main(void) {
   if (u_myUniform > 0.5) { discard; }
   gl_FragColor = vec4(0.3137254901960784, 0.0, 1.0, 1.0) * u_globalAlpha;
   gl_FragColor *= segmentDistanceField(v_currentPoint, v_segmentStart, v_segmentEnd, v_width);
-
+  if (u_hitDetection > 0) {
+    if (gl_FragColor.a < 0.1) { discard; };
+    gl_FragColor = v_hitColor;
+  }
 }`);
     });
   });
@@ -466,9 +507,13 @@ uniform float u_time;
 uniform float u_zoom;
 uniform float u_resolution;
 uniform vec4 u_renderExtent;
+uniform mediump int u_hitDetection;
+
 uniform float u_myUniform;
 attribute vec2 a_position;
+attribute vec4 a_hitColor;
 attribute vec2 a_myAttr;
+varying vec4 v_hitColor;
 varying float v_opacity;
 varying vec3 v_test;
 
@@ -504,7 +549,10 @@ uniform float u_time;
 uniform float u_zoom;
 uniform float u_resolution;
 uniform vec4 u_renderExtent;
+uniform mediump int u_hitDetection;
+
 uniform float u_myUniform;
+varying vec4 v_hitColor;
 varying float v_opacity;
 varying vec3 v_test;
 
@@ -529,7 +577,10 @@ void main(void) {
   #endif
   if (u_myUniform > 0.5) { discard; }
   gl_FragColor = vec4(0.3137254901960784, 0.0, 1.0, 1.0) * u_globalAlpha;
-
+  if (u_hitDetection > 0) {
+    if (gl_FragColor.a < 0.1) { discard; };
+    gl_FragColor = v_hitColor;
+  }
 }`);
     });
   });
