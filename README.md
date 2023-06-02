@@ -65,13 +65,6 @@ OpenLayers appreciates contributions of all kinds.  We especially want to thank 
 
 <br>
 
-[![GeoSolutions logo](./sponsor-logos/geosolutions.png)](https://www.geosolutionsgroup.com/)
-
-> Your one-stop-shop for geospatial open source software.
-> https://www.geosolutionsgroup.com/
-
-<br>
-
 [![ela-compil logo](./sponsor-logos/ela-compil.png)](https://ela.pl/)
 
 > We develop leading Physical Security Information Management (PSIM) software.
@@ -85,6 +78,13 @@ OpenLayers appreciates contributions of all kinds.  We especially want to thank 
 > We advance holistic utilization and availability of spatial information,
 > for a better planned, built and managed society.
 > https://www.ubigu.fi/
+
+<br>
+
+[![Scribble Maps logo](./sponsor-logos/scribble-maps.png)](https://www.scribblemaps.com/)
+
+> Build custom maps and identify insights across real estate, engineering, research, business, exploration, construction, manufacturing - and so much more.
+> https://www.scribblemaps.com/
 
 <br>
 
