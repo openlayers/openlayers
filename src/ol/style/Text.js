@@ -44,7 +44,7 @@ const DEFAULT_FILL_COLOR = '#333';
  * contain line breaks (`\n`). For rich text provide an array of text/font tuples. A tuple consists of the text to
  * render and the font to use (or `''` to use the text style's font). A line break has to be a separate tuple (i.e. `'\n', ''`).
  * **Example:** `['foo', 'bold 10px sans-serif', ' bar', 'italic 10px sans-serif', ' baz', '']` will yield "**foo** *bar* baz".
- * **Note:** Rich text is not supported for the immediate rendering API.
+ * **Note:** Rich text is not supported for `placement: 'line'` or the immediate rendering API.
  * @property {CanvasTextAlign} [textAlign] Text alignment. Possible values: `'left'`, `'right'`, `'center'`, `'end'` or `'start'`.
  * Default is `'center'` for `placement: 'point'`. For `placement: 'line'`, the default is to let the renderer choose a
  * placement where `maxAngle` is not exceeded.
