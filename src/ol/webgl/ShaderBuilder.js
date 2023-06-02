@@ -629,7 +629,6 @@ ${this.uniforms_
     return 'uniform ' + uniform + ';';
   })
   .join('\n')}
-attribute vec4 a_hitColor;
 varying vec4 v_hitColor;
 ${this.varyings_
   .map(function (varying) {

@@ -18,7 +18,6 @@ import {
 import {createCanvasContext2D} from '../../../../../../src/ol/dom.js';
 import {get as getProjection} from '../../../../../../src/ol/proj.js';
 import {getUid} from '../../../../../../src/ol/util.js';
-import {unByKey} from '../../../../../../src/ol/Observable.js';
 
 const baseFrameState = {
   viewHints: [],
@@ -34,30 +33,9 @@ const baseFrameState = {
   renderTargets: {},
 };
 
-const simpleVertexShader = `
-  precision mediump float;
-  uniform mat4 u_projectionMatrix;
-  uniform mat4 u_offsetScaleMatrix;
-  attribute vec2 a_position;
-  attribute float a_index;
-
-  void main(void) {
-    mat4 offsetMatrix = u_offsetScaleMatrix;
-    float offsetX = a_index == 0.0 || a_index == 3.0 ? -2.0 : 2.0;
-    float offsetY = a_index == 0.0 || a_index == 1.0 ? -2.0 : 2.0;
-    vec4 offsets = offsetMatrix * vec4(offsetX, offsetY, 0.0, 0.0);
-    gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
-  }`;
-const simpleFragmentShader = `
-  precision mediump float;
-
-  void main(void) {
-    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-  }`;
-
 // these shaders support hit detection
 // they have a built-in size value of 4
-const hitVertexShader = `
+const simpleVertexShader = `
   precision mediump float;
   uniform mat4 u_projectionMatrix;
   uniform mat4 u_offsetScaleMatrix;
@@ -74,12 +52,16 @@ const hitVertexShader = `
     gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
     v_hitColor = a_hitColor;
   }`;
-const hitFragmentShader = `
+const simpleFragmentShader = `
   precision mediump float;
   varying vec4 v_hitColor;
+  uniform mediump int u_hitDetection;
 
   void main(void) {
-    gl_FragColor = v_hitColor;
+    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+    if (u_hitDetection > 0) {
+      gl_FragColor = v_hitColor;
+    }
   }`;
 
 describe('ol/renderer/webgl/PointsLayer', function () {
@@ -121,8 +103,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       renderer = new WebGLPointsLayerRenderer(layer, {
         vertexShader: simpleVertexShader,
         fragmentShader: simpleFragmentShader,
-        hitVertexShader: hitVertexShader,
-        hitFragmentShader: hitFragmentShader,
+        hitDetectionEnabled: false,
       });
       frameState = Object.assign({}, baseFrameState, {
         size: [2, 2],
@@ -180,6 +161,12 @@ describe('ol/renderer/webgl/PointsLayer', function () {
     });
 
     it('fills up the hit render buffer with 2 triangles per point', function (done) {
+      renderer.dispose();
+      renderer = new WebGLPointsLayerRenderer(layer, {
+        vertexShader: simpleVertexShader,
+        fragmentShader: simpleFragmentShader,
+        hitDetectionEnabled: true,
+      });
       layer.getSource().addFeature(
         new Feature({
           geometry: new Point([10, 20]),
@@ -198,21 +185,21 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         if (event.data.type !== WebGLWorkerMessageType.GENERATE_POINT_BUFFERS) {
           return;
         }
-        if (!renderer.hitVerticesBuffer_.getArray()) {
+        if (!renderer.verticesBuffer_.getArray()) {
           return;
         }
-        expect(renderer.hitVerticesBuffer_.getArray().length).to.eql(
+        expect(renderer.verticesBuffer_.getArray().length).to.eql(
           2 * 4 * attributePerVertex
         );
         expect(renderer.indicesBuffer_.getArray().length).to.eql(2 * 6);
 
-        expect(renderer.hitVerticesBuffer_.getArray()[0]).to.eql(10);
-        expect(renderer.hitVerticesBuffer_.getArray()[1]).to.eql(20);
+        expect(renderer.verticesBuffer_.getArray()[0]).to.eql(10);
+        expect(renderer.verticesBuffer_.getArray()[1]).to.eql(20);
         expect(
-          renderer.hitVerticesBuffer_.getArray()[4 * attributePerVertex + 0]
+          renderer.verticesBuffer_.getArray()[4 * attributePerVertex + 0]
         ).to.eql(30);
         expect(
-          renderer.hitVerticesBuffer_.getArray()[4 * attributePerVertex + 1]
+          renderer.verticesBuffer_.getArray()[4 * attributePerVertex + 1]
         ).to.eql(40);
         done();
       });
@@ -323,8 +310,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       renderer = new WebGLPointsLayerRenderer(layer, {
         vertexShader: simpleVertexShader,
         fragmentShader: simpleFragmentShader,
-        hitVertexShader: hitVertexShader,
-        hitFragmentShader: hitFragmentShader,
+        hitDetectionEnabled: true,
       });
     });
 
@@ -352,7 +338,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
 
       renderer.prepareFrame(frameState);
       renderer.worker_.addEventListener('message', function () {
-        if (!renderer.hitRenderInstructions_) {
+        if (!renderer.renderInstructions_) {
           return;
         }
         renderer.prepareFrame(frameState);
@@ -420,7 +406,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
 
       renderer.prepareFrame(frameState);
       renderer.worker_.addEventListener('message', function () {
-        if (!renderer.hitRenderInstructions_) {
+        if (!renderer.renderInstructions_) {
           return;
         }
         renderer.prepareFrame(frameState);
@@ -762,23 +748,6 @@ describe('ol/renderer/webgl/PointsLayer', function () {
           ).to.eql([255, 0, 0, 255]);
           done();
         });
-      });
-    });
-    it('is not ready until after second rebuildBuffers_ worker calls completed', function (done) {
-      map.renderSync();
-      map.getView().setCenter([10, 10]);
-      map.renderSync();
-      let changed = 0;
-      const key = layer.on('change', function () {
-        try {
-          expect(layer.getRenderer().ready).to.be(++changed > 2);
-          if (changed === 4) {
-            unByKey(key);
-            done();
-          }
-        } catch (e) {
-          done(e);
-        }
       });
     });
   });

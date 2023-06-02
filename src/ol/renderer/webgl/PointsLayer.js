@@ -162,7 +162,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
      * @type {boolean}
      * @private
      */
-    this.hitDetectionEnabled_ = !!options.hitDetectionEnabled;
+    this.hitDetectionEnabled_ = options.hitDetectionEnabled ?? true;
 
     const customAttributes = options.attributes
       ? options.attributes.map(function (attribute) {
