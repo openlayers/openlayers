@@ -389,6 +389,14 @@ export function parseLiteralStyle(style) {
     };
   });
 
+  // add functions that were collected in the parsing contexts
+  for (const functionName in vertContext.functions) {
+    builder.addVertexShaderFunction(vertContext.functions[functionName]);
+  }
+  for (const functionName in fragContext.functions) {
+    builder.addFragmentShaderFunction(fragContext.functions[functionName]);
+  }
+
   return {
     builder: builder,
     hasSymbol,

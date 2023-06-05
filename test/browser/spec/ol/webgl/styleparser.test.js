@@ -543,4 +543,23 @@ describe('ol.webgl.styleparser', function () {
       expect(packColor(asArray('rgba(0, 255, 255, 0.5)'))).to.eql([255, 65408]);
     });
   });
+
+  describe('shader functions', () => {
+    it('adds shader functions in the vertex and fragment shaders', () => {
+      const result = parseLiteralStyle({
+        ['stroke-width']: 2,
+        filter: ['in', ['get', 'type'], ['road', 'path', 'street']],
+      });
+
+      expect(result.builder.vertexShaderFunctions_).to.eql([]);
+      expect(result.builder.fragmentShaderFunctions_).to.contain(
+        `bool operator_in_0(float inputValue) {
+  if (inputValue == 0.0) { return true; }
+  if (inputValue == 1.0) { return true; }
+  if (inputValue == 2.0) { return true; }
+  return false;
+}`
+      );
+    });
+  });
 });
