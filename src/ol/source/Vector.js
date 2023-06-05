@@ -70,6 +70,7 @@ export class VectorSourceEvent extends Event {
  */
 
 /**
+ * @template {import("../geom/Geometry.js").default} [Geometry=import("../geom/Geometry.js").default]
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {Array<import("../Feature.js").default<Geometry>>|Collection<import("../Feature.js").default<Geometry>>} [features]
@@ -159,7 +160,6 @@ export class VectorSourceEvent extends Event {
  * @property {boolean} [wrapX=true] Wrap the world horizontally. For vector editing across the
  * -180° and 180° meridians to work properly, this should be set to `false`. The
  * resulting geometry coordinates will then exceed the world bounds.
- * @template {import("../geom/Geometry.js").default} [Geometry=import("../geom/Geometry.js").default]
  */
 
 /**
