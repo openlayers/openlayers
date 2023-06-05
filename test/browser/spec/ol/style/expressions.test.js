@@ -299,6 +299,8 @@ describe('ol/style/expressions', function () {
       expect(expressionToGlsl(context, ['atan', 1, 0.5])).to.eql(
         'atan(1.0, 0.5)'
       );
+      expect(expressionToGlsl(context, ['sqrt', 100])).to.eql('sqrt(100.0)');
+
       expect(expressionToGlsl(context, ['>', 10, ['get', 'attr4']])).to.eql(
         '(10.0 > a_attr4)'
       );
@@ -480,6 +482,14 @@ describe('ol/style/expressions', function () {
       thrown = false;
       try {
         expressionToGlsl(context, ['color', 1, 2, 3, 4, 5]);
+      } catch (e) {
+        thrown = true;
+      }
+      expect(thrown).to.be(true);
+
+      thrown = false;
+      try {
+        expressionToGlsl(context, ['sqrt', 1, 2]);
       } catch (e) {
         thrown = true;
       }

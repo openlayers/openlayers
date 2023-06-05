@@ -44,6 +44,7 @@ import {asArray, fromString, isStringColor} from '../color.js';
  *   * `['sin', value1]` returns the sine of `value1`
  *   * `['cos', value1]` returns the cosine of `value1`
  *   * `['atan', value1, value2]` returns `atan2(value1, value2)`. If `value2` is not provided, returns `atan(value1)`
+ *   * `['sqrt', value1]` returns the square root of `value1`
  *
  * * Transform operators:
  *   * `['case', condition1, output1, ...conditionN, outputN, fallback]` selects the first output whose corresponding
@@ -878,6 +879,17 @@ Operators['atan'] = {
           args[1]
         )})`
       : `atan(${expressionToGlsl(context, args[0])})`;
+  },
+};
+
+Operators['sqrt'] = {
+  getReturnType: function () {
+    return ValueTypes.NUMBER;
+  },
+  toGlsl: function (context, args) {
+    assertArgsCount(args, 1);
+    assertNumbers(args);
+    return `sqrt(${expressionToGlsl(context, args[0])})`;
   },
 };
 
