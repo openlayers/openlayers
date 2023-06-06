@@ -177,7 +177,8 @@ class MapboxVectorLayer extends VectorTileLayer {
       this.accessToken = options.accessToken;
     }
     const url = options.styleUrl;
-    applyStyle(this, url, options.layers || options.source, {
+    //FIXME Remove type cast as soon as we know why it is needed
+    applyStyle(/** @type {*} */ (this), url, options.layers || options.source, {
       accessToken: this.accessToken,
     })
       .then(() => {
@@ -189,7 +190,8 @@ class MapboxVectorLayer extends VectorTileLayer {
         source.setState('error');
       });
     if (this.getBackground() === undefined) {
-      applyBackground(this, options.styleUrl, {
+      //FIXME Remove type cast as soon as we know why it is needed
+      applyBackground(/** @type {*} */ (this), options.styleUrl, {
         accessToken: this.accessToken,
       });
     }
