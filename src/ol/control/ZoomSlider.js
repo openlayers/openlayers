@@ -27,6 +27,8 @@ const Direction = {
  * @property {number} [duration=200] Animation duration in milliseconds.
  * @property {function(import("../MapEvent.js").default):void} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
+ * @property {HTMLElement|string} [target] Specify a target if you want the control to be
+ * rendered outside of the map's viewport.
  */
 
 /**
@@ -47,6 +49,7 @@ class ZoomSlider extends Control {
     options = options ? options : {};
 
     super({
+      target: options.target,
       element: document.createElement('div'),
       render: options.render,
     });
