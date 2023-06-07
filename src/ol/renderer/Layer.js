@@ -152,7 +152,7 @@ class LayerRenderer extends Observable {
    */
   handleImageChange_(event) {
     const image = /** @type {import("../Image.js").default} */ (event.target);
-    if (image.getState() === ImageState.LOADED) {
+    if (image.getState() === ImageState.LOADED || image.getState() === ImageState.ERROR) {
       this.renderIfReadyAndVisible();
     }
   }
