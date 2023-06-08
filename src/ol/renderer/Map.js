@@ -164,9 +164,7 @@ class MapRenderer extends Disposable {
     const order = 1 / matches.length;
     matches.forEach((m, i) => (m.distanceSq += i * order));
     matches.sort((a, b) => a.distanceSq - b.distanceSq);
-    matches.some((m) => {
-      return (result = m.callback(m.feature, m.layer, m.geometry));
-    });
+    matches.some((m) => (result = m.callback(m.feature, m.layer, m.geometry)));
     return result;
   }
 

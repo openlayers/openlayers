@@ -347,8 +347,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const hitExtent = boundingExtent([coordinate]);
     buffer(hitExtent, resolution * hitTolerance, hitExtent);
 
-    /** @type {!Object<string, import("../Map.js").HitMatch<T>|true>} */
-    const features = {};
+    /** @type {!Object<string, true>} */
+    const alreadyMatched = {};
 
     /**
      * @param {import("../../Feature.js").FeatureLike} feature Feature.
@@ -361,31 +361,21 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       if (key === undefined) {
         key = getUid(feature);
       }
-      const match = features[key];
-      if (!match) {
-        if (distanceSq === 0) {
-          features[key] = true;
-          return callback(feature, layer, geometry);
-        }
-        matches.push(
-          (features[key] = {
-            feature: feature,
-            layer: layer,
-            geometry: geometry,
-            distanceSq: distanceSq,
-            callback: callback,
-          })
-        );
-      } else if (match !== true && distanceSq < match.distanceSq) {
-        if (distanceSq === 0) {
-          features[key] = true;
-          matches.splice(matches.lastIndexOf(match), 1);
-          return callback(feature, layer, geometry);
-        }
-        match.geometry = geometry;
-        match.distanceSq = distanceSq;
+      if (key in alreadyMatched) {
+        return undefined;
       }
-      return undefined;
+      alreadyMatched[key] = true;
+      if (distanceSq > 0) {
+        matches.push({
+          feature: feature,
+          layer: layer,
+          geometry: geometry,
+          distanceSq: distanceSq,
+          callback: callback,
+        });
+        return undefined;
+      }
+      return callback(feature, layer, geometry);
     };
 
     const renderedTiles =
