@@ -548,7 +548,11 @@ describe('ol.webgl.styleparser', function () {
     it('adds shader functions in the vertex and fragment shaders', () => {
       const result = parseLiteralStyle({
         ['stroke-width']: 2,
-        filter: ['in', ['get', 'type'], ['road', 'path', 'street']],
+        filter: [
+          'in',
+          ['get', 'type'],
+          ['literal', ['road', 'path', 'street']],
+        ],
       });
 
       expect(result.builder.vertexShaderFunctions_).to.eql([]);

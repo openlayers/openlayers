@@ -1174,7 +1174,7 @@ describe('ol/style/expressions', function () {
     });
 
     it('outputs boolean', function () {
-      expect(getValueType(['in', ['get', 'attr'], 0, 50, 100])).to.eql(
+      expect(getValueType(['in', ['get', 'attr'], [0, 50, 100]])).to.eql(
         ValueTypes.BOOLEAN
       );
     });
@@ -1183,25 +1183,41 @@ describe('ol/style/expressions', function () {
       expect(() => {
         expressionToGlsl(
           context,
-          ['in', ['get', 'attr'], 0, 'abc', 50],
+          ['in', ['get', 'attr'], [0, 'abc', 50]],
           ValueTypes.COLOR
         );
-      }).to.throwException();
+      }).to.throwException(/got these types instead/i);
     });
 
     it('throws if invalid argument count', function () {
       expect(() => {
         expressionToGlsl(context, ['in', ['get', 'attr'], 'abcd', 'efgh']);
-      }).to.throwException();
+      }).to.throwException(/2 arguments were expected/);
     });
 
-    it('throws if second argument is not an array literal', function () {
+    it('throws if second argument is not an array', function () {
       expect(() => {
         expressionToGlsl(context, ['in', ['get', 'attr'], 'abcd']);
-      }).to.throwException();
+      }).to.throwException(/expects an array literal/);
     });
 
-    it('correctly parses the expression', function () {
+    it('throws if second argument is a string array but not wrapped in a literal operator', function () {
+      expect(() => {
+        expressionToGlsl(context, [
+          'in',
+          ['get', 'attr'],
+          ['abcd', 'efgh', 'ijkl'],
+        ]);
+      }).to.throwException(/should be wrapped in a "literal" operator/);
+    });
+
+    it('throws if second argument is a literal value but not an array', function () {
+      expect(() => {
+        expressionToGlsl(context, ['in', ['get', 'attr'], ['literal', 123]]);
+      }).to.throwException(/a literal value which was not an array/);
+    });
+
+    it('correctly parses the expression (number haystack)', function () {
       context.functions['a_function'] = 'float a_function() { return 1.0; }';
       context.functions['another_function'] =
         'float another_function() { return 1.0; }';
@@ -1217,6 +1233,23 @@ describe('ol/style/expressions', function () {
   if (inputValue == 0.0) { return true; }
   if (inputValue == 20.0) { return true; }
   if (inputValue == 50.0) { return true; }
+  return false;
+}`);
+    });
+
+    it('correctly parses the expression (string haystack)', function () {
+      const glsl = expressionToGlsl(context, [
+        'in',
+        ['get', 'attr'],
+        ['literal', ['abc', 'def', 'ghi']],
+      ]);
+      expect(glsl).to.eql('operator_in_0(a_attr)');
+      expect(context.functions).to.have.property('operator_in_0');
+      expect(context.functions['operator_in_0']).to
+        .eql(`bool operator_in_0(float inputValue) {
+  if (inputValue == 0.0) { return true; }
+  if (inputValue == 1.0) { return true; }
+  if (inputValue == 2.0) { return true; }
   return false;
 }`);
     });

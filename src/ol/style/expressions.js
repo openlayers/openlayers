@@ -75,10 +75,13 @@ import {asArray, fromString, isStringColor} from '../color.js';
  *   * `['any', value1, value2, ...]` returns `true` if any of the inputs are `true`, `false` otherwise.
  *   * `['between', value1, value2, value3]` returns `true` if `value1` is contained between `value2` and `value3`
  *     (inclusively), or `false` otherwise.
- *   * `['in', input, [value1, value2, ...valueN]]` returns `true` if `input` equals any of the provided values, and
- *     `false` otherwise; only supports number, string or boolean values.
- *     Note that the second argument must be a fixed-size array literal and cannot be the result of an expression
- *     (this is a known limitation as arrays of size > 4 are currently not supported in expressions).
+ *   * `['in', needle, haystack]` returns `true` if `needle` is found in `haystack`, and
+ *     `false` otherwise.
+ *     This operator has the following limitations:
+ *     * `haystack` has to be an array of numbers or strings (searching for a substring in a string is not supported yet)
+ *     * Only literal arrays are supported as `haystack` for now; this means that `haystack` cannot be the result of an
+ *     expression. If `haystack` is an array of strings, use the `literal` operator to disambiguate from an expression:
+ *     `['literal', ['abc', 'def', 'ghi']]`
  *
  * * Conversion operators:
  *   * `['array', value1, ...valueN]` creates a numerical array from `number` values; please note that the amount of
@@ -1210,11 +1213,24 @@ Operators['in'] = {
   toGlsl: function (context, args) {
     assertArgsCount(args, 2);
     const needle = args[0];
-    const haystack = args[1];
+    let haystack = args[1];
     if (!Array.isArray(haystack)) {
       throw new Error(
         `The "in" operator expects an array literal as its second argument.`
       );
+    }
+    if (typeof haystack[0] === 'string') {
+      if (haystack[0] !== 'literal') {
+        throw new Error(
+          `For the "in" operator, a string array should be wrapped in a "literal" operator to disambiguate from expressions.`
+        );
+      }
+      if (!Array.isArray(haystack[1])) {
+        throw new Error(
+          `The "in" operator was provided a literal value which was not an array as second argument.`
+        );
+      }
+      haystack = haystack[1];
     }
 
     let inputType = getValueType(needle);
