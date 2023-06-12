@@ -71,6 +71,16 @@ function getFeatureFromEvent(evt) {
 
 const tempSegment = [];
 
+/***
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
+ *     'change:active', import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").OnSignature<'snap', SnapEvent, Return> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ *     'change:active'|'snap', Return>} SnapOnSignature
+ */
+
 /**
  * @classdesc
  * Handles snapping of vector features while modifying or drawing them.  The
@@ -115,10 +125,19 @@ class Snap extends PointerInteraction {
 
     super(pointerOptions);
 
+    /***
+     * @type {SnapOnSignature<import("../events").EventsKey>}
+     */
     this.on;
 
+    /***
+     * @type {SnapOnSignature<import("../events").EventsKey>}
+     */
     this.once;
 
+    /***
+     * @type {SnapOnSignature<import("../events").EventsKey>}
+     */
     this.un;
 
     /**
@@ -204,10 +223,6 @@ class Snap extends PointerInteraction {
       'GeometryCollection': this.segmentGeometryCollectionGeometry_.bind(this),
       'Circle': this.segmentCircleGeometry_.bind(this),
     };
-
-    // As you suggested in Stack Overflow you can use forEachFeatureAtPixel.
-    // That could be done in a condition function for any interaction, as well as drawstart and drawend, and done using only documented API methods as in https://codesandbox.io/s/draw-and-modify-features-forked-enrgqv?file=/main.js
-    // If the Snap interaction was constructed with features: snapFeatures instead of source: snapSource just replace snapSource.getFeatures().includes with snapFeatures.getArray().includes.
   }
 
   /**
@@ -432,12 +447,6 @@ class Snap extends PointerInteraction {
     }
   }
 
-  getLastSnapToResult() {
-    if (this.lastSnapToResult_) {
-      return this.lastSnapToResult_;
-    }
-  }
-
   /**
    * @param {import("../pixel.js").Pixel} pixel Pixel
    * @param {import("../coordinate.js").Coordinate} pixelCoordinate Coordinate
@@ -502,7 +511,6 @@ class Snap extends PointerInteraction {
       }
       const result = getResult();
       if (result) {
-        this.lastSnapToResult_ = result;
         return result;
       }
     }
