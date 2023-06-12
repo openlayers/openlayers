@@ -7,7 +7,7 @@ import PointerInteraction from './Pointer.js';
 import RBush from '../structs/RBush.js';
 import VectorEventType from '../source/VectorEventType.js';
 import {FALSE, TRUE} from '../functions.js';
-import {SnapEvent} from '../events/SnapEvent.js';
+import {SnapEvent, SnapEventType} from '../events/SnapEvent.js';
 import {boundingExtent, buffer, createEmpty} from '../extent.js';
 import {
   closestOnCircle,
@@ -28,6 +28,7 @@ import {listen, unlistenByKey} from '../events.js';
  * @typedef {Object} Result
  * @property {import("../coordinate.js").Coordinate|null} vertex Vertex.
  * @property {import("../pixel.js").Pixel|null} vertexPixel VertexPixel.
+ * @property {import("../Feature.js").default|null} feature Feature.
  */
 
 /**
@@ -59,8 +60,8 @@ function getFeatureFromEvent(evt) {
   }
   if (
     /** @type {import("../Collection.js").CollectionEvent<import("../Feature.js").default>} */ (
-    evt
-  ).element
+      evt
+    ).element
   ) {
     return /** @type {import("../Collection.js").CollectionEvent<import("../Feature.js").default>} */ (
       evt
@@ -102,6 +103,7 @@ const tempSegment = [];
  *
  *     map.addInteraction(snap);
  *
+ * @fires SnapEvent
  * @api
  */
 class Snap extends PointerInteraction {
@@ -136,7 +138,7 @@ class Snap extends PointerInteraction {
     this.once;
 
     /***
-     * @type {SnapOnSignature<import("../events").EventsKey>}
+     * @type {SnapOnSignature<void>}
      */
     this.un;
 
@@ -289,16 +291,16 @@ class Snap extends PointerInteraction {
   /**
    * @param {import("../MapBrowserEvent.js").default} evt Map browser event.
    * @return {boolean} `false` to stop event propagation.
+   * @api
    */
   handleEvent(evt) {
     const result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
     if (result) {
       evt.coordinate = result.vertex.slice(0, 2);
       evt.pixel = result.vertexPixel;
-      evt.feature = result.feature;
       this.dispatchEvent(
-        new SnapEvent({
-          vertex: result.vertex,
+        new SnapEvent(SnapEventType.SNAP, {
+          vertex: result.vertex.slice(0, 2),
           vertexPixel: result.vertexPixel,
           feature: result.feature,
         })
