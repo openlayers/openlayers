@@ -44,6 +44,7 @@ import {asArray, fromString, isStringColor} from '../color.js';
  *   * `['sin', value1]` returns the sine of `value1`
  *   * `['cos', value1]` returns the cosine of `value1`
  *   * `['atan', value1, value2]` returns `atan2(value1, value2)`. If `value2` is not provided, returns `atan(value1)`
+ *   * `['sqrt', value1]` returns the square root of `value1`
  *
  * * Transform operators:
  *   * `['case', condition1, output1, ...conditionN, outputN, fallback]` selects the first output whose corresponding
@@ -74,6 +75,13 @@ import {asArray, fromString, isStringColor} from '../color.js';
  *   * `['any', value1, value2, ...]` returns `true` if any of the inputs are `true`, `false` otherwise.
  *   * `['between', value1, value2, value3]` returns `true` if `value1` is contained between `value2` and `value3`
  *     (inclusively), or `false` otherwise.
+ *   * `['in', needle, haystack]` returns `true` if `needle` is found in `haystack`, and
+ *     `false` otherwise.
+ *     This operator has the following limitations:
+ *     * `haystack` has to be an array of numbers or strings (searching for a substring in a string is not supported yet)
+ *     * Only literal arrays are supported as `haystack` for now; this means that `haystack` cannot be the result of an
+ *     expression. If `haystack` is an array of strings, use the `literal` operator to disambiguate from an expression:
+ *     `['literal', ['abc', 'def', 'ghi']]`
  *
  * * Conversion operators:
  *   * `['array', value1, ...valueN]` creates a numerical array from `number` values; please note that the amount of
@@ -252,6 +260,15 @@ function printTypes(valueType) {
  * @property {Array<PaletteTexture>} [paletteTextures] List of palettes used by the style.
  * @property {import("../style/literal").LiteralStyle} style The style being parsed
  */
+
+/**
+ * @param {string} operator Operator
+ * @param {ParsingContext} context Parsing context
+ * @return {string} A function name based on the operator, unique in the given context
+ */
+function computeOperatorFunctionName(operator, context) {
+  return `operator_${operator}_${Object.keys(context.functions).length}`;
+}
 
 /**
  * Will return the number as a float with a dot separator, which is required by GLSL.
@@ -868,6 +885,17 @@ Operators['atan'] = {
   },
 };
 
+Operators['sqrt'] = {
+  getReturnType: function () {
+    return ValueTypes.NUMBER;
+  },
+  toGlsl: function (context, args) {
+    assertArgsCount(args, 1);
+    assertNumbers(args);
+    return `sqrt(${expressionToGlsl(context, args[0])})`;
+  },
+};
+
 Operators['>'] = {
   getReturnType: function () {
     return ValueTypes.BOOLEAN;
@@ -1175,5 +1203,64 @@ Operators['case'] = {
       result = `(${condition} ? ${output} : ${result || fallback})`;
     }
     return result;
+  },
+};
+
+Operators['in'] = {
+  getReturnType: function (args) {
+    return ValueTypes.BOOLEAN;
+  },
+  toGlsl: function (context, args) {
+    assertArgsCount(args, 2);
+    const needle = args[0];
+    let haystack = args[1];
+    if (!Array.isArray(haystack)) {
+      throw new Error(
+        `The "in" operator expects an array literal as its second argument.`
+      );
+    }
+    if (typeof haystack[0] === 'string') {
+      if (haystack[0] !== 'literal') {
+        throw new Error(
+          `For the "in" operator, a string array should be wrapped in a "literal" operator to disambiguate from expressions.`
+        );
+      }
+      if (!Array.isArray(haystack[1])) {
+        throw new Error(
+          `The "in" operator was provided a literal value which was not an array as second argument.`
+        );
+      }
+      haystack = haystack[1];
+    }
+
+    let inputType = getValueType(needle);
+    for (let i = 0; i < haystack.length - 1; i += 1) {
+      inputType = inputType & getValueType(haystack[i]);
+    }
+    assertOfType(
+      ['match', ...args],
+      inputType,
+      ValueTypes.STRING | ValueTypes.NUMBER | ValueTypes.BOOLEAN,
+      'input'
+    );
+    inputType =
+      (ValueTypes.STRING | ValueTypes.NUMBER | ValueTypes.BOOLEAN) & inputType;
+
+    const funcName = computeOperatorFunctionName('in', context);
+    const tests = [];
+    for (let i = 0; i < haystack.length; i += 1) {
+      tests.push(
+        `  if (inputValue == ${expressionToGlsl(
+          context,
+          haystack[i],
+          inputType
+        )}) { return true; }`
+      );
+    }
+    context.functions[funcName] = `bool ${funcName}(float inputValue) {
+${tests.join('\n')}
+  return false;
+}`;
+    return `${funcName}(${expressionToGlsl(context, needle, inputType)})`;
   },
 };

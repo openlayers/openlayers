@@ -29,18 +29,8 @@ describe('ol/style/expressions', function () {
       expect(arrayToGlsl([3, 4])).to.eql('vec2(3.0, 4.0)');
     });
     it('throws on invalid lengths', function () {
-      let thrown = false;
-      try {
-        arrayToGlsl([3]);
-      } catch (e) {
-        thrown = true;
-      }
-      try {
-        arrayToGlsl([3, 2, 1, 0, -1]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+      expect(() => arrayToGlsl([3])).to.throwException();
+      expect(() => arrayToGlsl([3, 2, 1, 0, -1])).to.throwException();
     });
   });
 
@@ -123,22 +113,12 @@ describe('ol/style/expressions', function () {
       expect(getValueType(true)).to.eql(ValueTypes.BOOLEAN);
     });
 
-    it('throws on an unsupported type (object)', function (done) {
-      try {
-        getValueType(new Object());
-      } catch (e) {
-        done();
-      }
-      done(true);
+    it('throws on an unsupported type (object)', function () {
+      expect(() => getValueType(new Object())).to.throwException();
     });
 
-    it('throws on an unsupported type (mixed array)', function (done) {
-      try {
-        getValueType([1, true, 'aa']);
-      } catch (e) {
-        done();
-      }
-      done(true);
+    it('throws on an unsupported type (mixed array)', function () {
+      expect(() => getValueType([1, true, 'aa'])).to.throwException();
     });
 
     it('correctly analyzes operator return types', function () {
@@ -197,6 +177,9 @@ describe('ol/style/expressions', function () {
       );
       expect(getValueType(['color', ['get', 'attr4'], 1, 2])).to.eql(
         ValueTypes.COLOR
+      );
+      expect(getValueType(['in', ['get', 'attr4'], 1, 2, 3])).to.eql(
+        ValueTypes.BOOLEAN
       );
     });
     it('correctly analyzes get operator return type with hint', function () {
@@ -296,6 +279,8 @@ describe('ol/style/expressions', function () {
       expect(expressionToGlsl(context, ['atan', 1, 0.5])).to.eql(
         'atan(1.0, 0.5)'
       );
+      expect(expressionToGlsl(context, ['sqrt', 100])).to.eql('sqrt(100.0)');
+
       expect(expressionToGlsl(context, ['>', 10, ['get', 'attr4']])).to.eql(
         '(10.0 > a_attr4)'
       );
@@ -358,28 +343,6 @@ describe('ol/style/expressions', function () {
       expect(expressionToGlsl(context, ['get', 'myAttr'])).to.eql('v_myAttr');
     });
 
-    it('correctly adapts output for fragment shaders', function () {
-      expressionToGlsl(context, ['get', 'myAttr']);
-      expressionToGlsl(context, ['var', 'myVar']);
-      expressionToGlsl(context, [
-        'clamp',
-        ['get', 'attr2'],
-        ['get', 'attr2'],
-        ['get', 'myAttr'],
-      ]);
-      expressionToGlsl(context, ['*', ['get', 'attr2'], ['var', 'myVar']]);
-      expressionToGlsl(context, ['*', ['get', 'attr3'], ['var', 'myVar2']]);
-      expect(context.attributes).to.eql([
-        {name: 'myAttr', type: ValueTypes.NUMBER},
-        {name: 'attr2', type: ValueTypes.NUMBER},
-        {name: 'attr3', type: ValueTypes.NUMBER},
-      ]);
-      expect(context.variables).to.eql([
-        {name: 'myVar', type: ValueTypes.NUMBER},
-        {name: 'myVar2', type: ValueTypes.NUMBER},
-      ]);
-    });
-
     it('gives precedence to the string type unless asked otherwise', function () {
       expect(expressionToGlsl(context, 'lightgreen', ValueTypes.ANY)).to.eql(
         '0.0'
@@ -390,129 +353,65 @@ describe('ol/style/expressions', function () {
     });
 
     it('throws on unsupported types for operators', function () {
-      let thrown = false;
-      try {
-        expressionToGlsl(context, ['var', 1234]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+      expect(() =>
+        expressionToGlsl(context, ['var', 1234])
+      ).to.throwException();
 
-      thrown = false;
-      try {
-        expressionToGlsl(context, ['any', ['var', 'aa'], 10]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+      expect(() =>
+        expressionToGlsl(context, ['any', ['var', 'aa'], 10])
+      ).to.throwException();
 
-      thrown = false;
-      try {
-        expressionToGlsl(context, ['all', ['var', 'aa'], 10]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+      expect(() =>
+        expressionToGlsl(context, ['all', ['var', 'aa'], 10])
+      ).to.throwException();
 
-      thrown = false;
-      try {
-        expressionToGlsl(context, ['<', 0, 'aa']);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+      expect(() =>
+        expressionToGlsl(context, ['<', 0, 'aa'])
+      ).to.throwException();
 
-      thrown = false;
-      try {
-        expressionToGlsl(context, ['+', true, ['get', 'attr']]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+      expect(() =>
+        expressionToGlsl(context, ['+', true, ['get', 'attr']])
+      ).to.throwException();
 
-      thrown = false;
-      try {
-        expressionToGlsl(context, ['color', 1, 2, 'red']);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+      expect(() =>
+        expressionToGlsl(context, ['color', 1, 2, 'red'])
+      ).to.throwException();
 
-      thrown = false;
-      try {
-        expressionToGlsl(context, ['array', 1, '2', 3]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+      expect(() =>
+        expressionToGlsl(context, ['array', 1, '2', 3])
+      ).to.throwException();
     });
 
     it('throws with the wrong number of arguments', function () {
-      let thrown = false;
-      try {
-        expressionToGlsl(context, ['var', 1234, 456]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+      expect(() =>
+        expressionToGlsl(context, ['var', 1234, 456])
+      ).to.throwException();
 
-      thrown = false;
-      try {
-        expressionToGlsl(context, ['all', ['var', true], ['get', true], true]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+      expect(() =>
+        expressionToGlsl(context, ['all', ['var', true], ['get', true], true])
+      ).to.throwException();
 
-      thrown = false;
-      try {
-        expressionToGlsl(context, ['any', ['var', true]]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+      expect(() =>
+        expressionToGlsl(context, ['any', ['var', true]])
+      ).to.throwException();
 
-      thrown = false;
-      try {
-        expressionToGlsl(context, ['<', 4]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+      expect(() => expressionToGlsl(context, ['<', 4])).to.throwException();
 
-      thrown = false;
-      try {
-        expressionToGlsl(context, ['+']);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+      expect(() => expressionToGlsl(context, ['+'])).to.throwException();
 
-      thrown = false;
-      try {
-        expressionToGlsl(context, ['array', 1]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+      expect(() => expressionToGlsl(context, ['array', 1])).to.throwException();
 
-      thrown = false;
-      try {
-        expressionToGlsl(context, ['color', 1, 2, 3, 4, 5]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+      expect(() =>
+        expressionToGlsl(context, ['color', 1, 2, 3, 4, 5])
+      ).to.throwException();
+
+      expect(() =>
+        expressionToGlsl(context, ['sqrt', 1, 2])
+      ).to.throwException();
     });
 
     it('throws on invalid expressions', function () {
-      let thrown = false;
-      try {
-        expressionToGlsl(context, null);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+      expect(() => expressionToGlsl(context, null)).to.throwException();
     });
 
     it('throws when using a variable not defined in the style', () => {
@@ -572,19 +471,15 @@ describe('ol/style/expressions', function () {
     });
 
     it('throws if no single output type could be inferred', function () {
-      let thrown = false;
-      try {
+      expect(() =>
         expressionToGlsl(
           context,
           ['case', false, 'red', true, 'yellow', 'green'],
           ValueTypes.COLOR
-        );
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(false);
+        )
+      ).not.to.throwException();
 
-      try {
+      expect(() =>
         expressionToGlsl(context, [
           'case',
           true,
@@ -592,60 +487,38 @@ describe('ol/style/expressions', function () {
           true,
           'yellow',
           'green',
-        ]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+        ])
+      ).to.throwException();
 
-      thrown = false;
-      try {
+      expect(() =>
         expressionToGlsl(
           context,
           ['case', true, 'red', false, 'yellow', 'green'],
           ValueTypes.NUMBER
-        );
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+        )
+      ).to.throwException();
 
-      thrown = false;
-      try {
+      expect(() =>
         expressionToGlsl(
           context,
           ['case', true, 'red', false, 'yellow', 'not_a_color'],
           ValueTypes.COLOR
-        );
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+        )
+      ).to.throwException();
     });
 
     it('throws if invalid argument count', function () {
-      let thrown = false;
-      try {
-        expressionToGlsl(context, ['case', true, 0, false, 1]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+      expect(() =>
+        expressionToGlsl(context, ['case', true, 0, false, 1])
+      ).to.throwException();
 
-      thrown = false;
-      try {
-        expressionToGlsl(context, ['case', true, 0]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+      expect(() =>
+        expressionToGlsl(context, ['case', true, 0])
+      ).to.throwException();
 
-      try {
-        expressionToGlsl(context, ['case', false]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+      expect(() =>
+        expressionToGlsl(context, ['case', false])
+      ).to.throwException();
     });
 
     it('correctly parses the expression (colors)', function () {
@@ -741,19 +614,15 @@ describe('ol/style/expressions', function () {
     });
 
     it('throws if no single output type could be inferred', function () {
-      let thrown = false;
-      try {
+      expect(() =>
         expressionToGlsl(
           context,
           ['match', ['get', 'attr'], 0, 'red', 1, 'yellow', 'green'],
           ValueTypes.COLOR
-        );
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(false);
+        )
+      ).not.to.throwException();
 
-      try {
+      expect(() =>
         expressionToGlsl(context, [
           'match',
           ['get', 'attr'],
@@ -762,28 +631,20 @@ describe('ol/style/expressions', function () {
           1,
           'yellow',
           'green',
-        ]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+        ])
+      ).to.throwException();
 
-      thrown = false;
-      try {
+      expect(() =>
         expressionToGlsl(
           context,
           ['match', ['get', 'attr'], 0, 'red', 1, 'yellow', 'green'],
           ValueTypes.NUMBER
-        );
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+        )
+      ).to.throwException();
     });
 
     it('throws if invalid argument count', function () {
-      let thrown = false;
-      try {
+      expect(() =>
         expressionToGlsl(context, [
           'match',
           ['get', 'attr'],
@@ -791,26 +652,16 @@ describe('ol/style/expressions', function () {
           true,
           false,
           false,
-        ]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+        ])
+      ).to.throwException();
 
-      thrown = false;
-      try {
-        expressionToGlsl(context, ['match', ['get', 'attr'], 0, true]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+      expect(() =>
+        expressionToGlsl(context, ['match', ['get', 'attr'], 0, true])
+      ).to.throwException();
 
-      try {
-        expressionToGlsl(context, ['match', ['get', 'attr'], 0]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+      expect(() =>
+        expressionToGlsl(context, ['match', ['get', 'attr'], 0])
+      ).to.throwException();
     });
 
     it('correctly parses the expression (colors)', function () {
@@ -878,15 +729,16 @@ describe('ol/style/expressions', function () {
       );
     });
 
-    it('only expects string, number or boolean as input', (done) => {
+    it('only expects string, number or boolean as input', () => {
       // match input is only expressed through get operator and values which can be strings or colors
       // the call shouldn't throw because match does not allow color as input (so the final input type is string)
-      expressionToGlsl(
-        context,
-        ['match', ['get', 'attr3'], 'red', [6, 0], 'green', [3, 0], [0, 0]],
-        ValueTypes.ANY
-      );
-      done();
+      expect(() =>
+        expressionToGlsl(
+          context,
+          ['match', ['get', 'attr3'], 'red', [6, 0], 'green', [3, 0], [0, 0]],
+          ValueTypes.ANY
+        )
+      ).not.to.throwException();
     });
   });
 
@@ -944,19 +796,15 @@ describe('ol/style/expressions', function () {
     });
 
     it('throws if no single output type could be inferred', function () {
-      let thrown = false;
-      try {
+      expect(() =>
         expressionToGlsl(
           context,
           ['interpolate', ['linear'], ['get', 'attr'], 1000, -10, 2000, 10],
           ValueTypes.COLOR
-        );
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+        )
+      ).to.throwException();
 
-      try {
+      expect(() =>
         expressionToGlsl(context, [
           'interpolate',
           ['linear'],
@@ -965,14 +813,10 @@ describe('ol/style/expressions', function () {
           [1, 2, 3],
           1,
           222,
-        ]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+        ])
+      ).to.throwException();
 
-      thrown = false;
-      try {
+      expect(() =>
         expressionToGlsl(
           context,
           [
@@ -985,29 +829,21 @@ describe('ol/style/expressions', function () {
             [0, 0, 0, 4],
           ],
           ValueTypes.NUMBER
-        );
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+        )
+      ).to.throwException();
     });
 
     it('throws if invalid argument count', function () {
-      let thrown = false;
-      try {
+      expect(() =>
         expressionToGlsl(context, [
           'interpolate',
           ['linear'],
           ['get', 'attr'],
           1000,
-        ]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+        ])
+      ).to.throwException();
 
-      thrown = false;
-      try {
+      expect(() =>
         expressionToGlsl(context, [
           'interpolate',
           ['linear'],
@@ -1017,16 +853,12 @@ describe('ol/style/expressions', function () {
           2000,
           10,
           5000,
-        ]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+        ])
+      ).to.throwException();
     });
 
     it('throws if an invalid interpolation type is given', function () {
-      let thrown = false;
-      try {
+      expect(() =>
         expressionToGlsl(context, [
           'interpolate',
           'linear',
@@ -1035,14 +867,10 @@ describe('ol/style/expressions', function () {
           0,
           2000,
           1,
-        ]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+        ])
+      ).to.throwException();
 
-      thrown = false;
-      try {
+      expect(() =>
         expressionToGlsl(context, [
           'interpolate',
           ['exponential'],
@@ -1051,14 +879,10 @@ describe('ol/style/expressions', function () {
           -10,
           2000,
           1,
-        ]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+        ])
+      ).to.throwException();
 
-      thrown = false;
-      try {
+      expect(() =>
         expressionToGlsl(context, [
           'interpolate',
           ['not_a_type'],
@@ -1067,11 +891,8 @@ describe('ol/style/expressions', function () {
           -10,
           2000,
           1,
-        ]);
-      } catch (e) {
-        thrown = true;
-      }
-      expect(thrown).to.be(true);
+        ])
+      ).to.throwException();
     });
 
     it('correctly parses the expression (colors, linear)', function () {
@@ -1149,23 +970,119 @@ describe('ol/style/expressions', function () {
       );
     });
 
-    it('only expects number as input', (done) => {
+    it('only expects number as input', () => {
       // interpolation input is only expressed through get and var operators, which means that it is unspecified on its own
       // the call shouldn't throw because interpolation only accepts numerical input
-      expressionToGlsl(
-        context,
-        [
-          'interpolate',
-          ['linear'],
-          ['get', 'attr'],
-          1000,
-          ['var', 'value'],
-          2000,
-          3000,
-        ],
-        ValueTypes.ANY
+      expect(() =>
+        expressionToGlsl(
+          context,
+          [
+            'interpolate',
+            ['linear'],
+            ['get', 'attr'],
+            1000,
+            ['var', 'value'],
+            2000,
+            3000,
+          ],
+          ValueTypes.ANY
+        )
+      ).not.to.throwException();
+    });
+  });
+
+  describe('in operator', function () {
+    let context;
+
+    beforeEach(function () {
+      context = {
+        variables: [],
+        attributes: [],
+        stringLiteralsMap: {},
+        functions: {},
+        style: {},
+      };
+    });
+
+    it('outputs boolean', function () {
+      expect(getValueType(['in', ['get', 'attr'], [0, 50, 100]])).to.eql(
+        ValueTypes.BOOLEAN
       );
-      done();
+    });
+
+    it('throws if no single output type could be inferred', function () {
+      expect(() => {
+        expressionToGlsl(
+          context,
+          ['in', ['get', 'attr'], [0, 'abc', 50]],
+          ValueTypes.COLOR
+        );
+      }).to.throwException(/got these types instead/i);
+    });
+
+    it('throws if invalid argument count', function () {
+      expect(() => {
+        expressionToGlsl(context, ['in', ['get', 'attr'], 'abcd', 'efgh']);
+      }).to.throwException(/2 arguments were expected/);
+    });
+
+    it('throws if second argument is not an array', function () {
+      expect(() => {
+        expressionToGlsl(context, ['in', ['get', 'attr'], 'abcd']);
+      }).to.throwException(/expects an array literal/);
+    });
+
+    it('throws if second argument is a string array but not wrapped in a literal operator', function () {
+      expect(() => {
+        expressionToGlsl(context, [
+          'in',
+          ['get', 'attr'],
+          ['abcd', 'efgh', 'ijkl'],
+        ]);
+      }).to.throwException(/should be wrapped in a "literal" operator/);
+    });
+
+    it('throws if second argument is a literal value but not an array', function () {
+      expect(() => {
+        expressionToGlsl(context, ['in', ['get', 'attr'], ['literal', 123]]);
+      }).to.throwException(/a literal value which was not an array/);
+    });
+
+    it('correctly parses the expression (number haystack)', function () {
+      context.functions['a_function'] = 'float a_function() { return 1.0; }';
+      context.functions['another_function'] =
+        'float another_function() { return 1.0; }';
+      const glsl = expressionToGlsl(context, [
+        'in',
+        ['get', 'attr'],
+        [0, 20, 50],
+      ]);
+      expect(glsl).to.eql('operator_in_2(a_attr)');
+      expect(context.functions).to.have.property('operator_in_2');
+      expect(context.functions['operator_in_2']).to
+        .eql(`bool operator_in_2(float inputValue) {
+  if (inputValue == 0.0) { return true; }
+  if (inputValue == 20.0) { return true; }
+  if (inputValue == 50.0) { return true; }
+  return false;
+}`);
+    });
+
+    it('correctly parses the expression (string haystack)', function () {
+      const glsl = expressionToGlsl(context, [
+        'in',
+        ['get', 'attr'],
+        ['literal', ['abc', 'def', 'ghi']],
+      ]);
+      expect(glsl).to.eql('operator_in_0(a_attr)');
+      expect(context.functions).to.have.property('operator_in_0');
+      expect(context.functions['operator_in_0']).to
+        .eql(`bool operator_in_0(float inputValue) {
+  if (inputValue == 0.0) { return true; }
+  if (inputValue == 1.0) { return true; }
+  if (inputValue == 2.0) { return true; }
+  return false;
+}`);
     });
   });
 
@@ -1306,6 +1223,30 @@ describe('ol/style/expressions', function () {
       ]);
     });
 
+    it('get and var operators, numbers', function () {
+      context.style.variables['myVar'] = 123;
+      context.style.variables['myVar2'] = 456;
+      expressionToGlsl(context, ['get', 'myAttr']);
+      expressionToGlsl(context, ['var', 'myVar']);
+      expressionToGlsl(context, [
+        'clamp',
+        ['get', 'attr2'],
+        ['get', 'attr2'],
+        ['get', 'myAttr'],
+      ]);
+      expressionToGlsl(context, ['*', ['get', 'attr2'], ['var', 'myVar']]);
+      expressionToGlsl(context, ['*', ['get', 'attr3'], ['var', 'myVar2']]);
+      expect(context.attributes).to.eql([
+        {name: 'myAttr', type: ValueTypes.NUMBER},
+        {name: 'attr2', type: ValueTypes.NUMBER},
+        {name: 'attr3', type: ValueTypes.NUMBER},
+      ]);
+      expect(context.variables).to.eql([
+        {name: 'myVar', type: ValueTypes.NUMBER},
+        {name: 'myVar2', type: ValueTypes.NUMBER},
+      ]);
+    });
+
     it('get and var operators, nested, color and number', () => {
       expressionToGlsl(
         context,
@@ -1420,8 +1361,7 @@ describe('ol/style/expressions', function () {
     });
 
     it('throws when an attribute is used with conflicting types', () => {
-      let thrown = false;
-      try {
+      expect(() =>
         expressionToGlsl(
           context,
           [
@@ -1434,16 +1374,12 @@ describe('ol/style/expressions', function () {
             'red',
           ],
           ValueTypes.COLOR
-        );
-      } catch {
-        thrown = true;
-      }
-      expect(thrown).to.eql(true);
+        )
+      ).to.throwException();
     });
 
     it('throws when a variable is used with conflicting types', () => {
-      let thrown = false;
-      try {
+      expect(() =>
         expressionToGlsl(
           context,
           [
@@ -1456,11 +1392,8 @@ describe('ol/style/expressions', function () {
             'red',
           ],
           ValueTypes.COLOR
-        );
-      } catch {
-        thrown = true;
-      }
-      expect(thrown).to.eql(true);
+        )
+      ).to.throwException();
     });
 
     it('throws if a variable is used with the wrong type', () => {
