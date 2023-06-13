@@ -37,6 +37,7 @@ class ImageWrapper extends ImageBase {
    * @param {CanvasRenderingContext2D} [context] Canvas context. When provided, the image will be
    *    drawn into the context's canvas, and `getImage()` will return the canvas once the image
    *    has finished loading.
+   * @param {imageSize} Array,image width and height
    */
   constructor(
     extent,
@@ -45,7 +46,8 @@ class ImageWrapper extends ImageBase {
     src,
     crossOrigin,
     imageLoadFunction,
-    context
+    context,
+    imageSize
   ) {
     super(extent, resolution, pixelRatio, ImageState.IDLE);
 
@@ -87,6 +89,12 @@ class ImageWrapper extends ImageBase {
      * @type {LoadFunction}
      */
     this.imageLoadFunction_ = imageLoadFunction;
+
+    /**
+     * @private
+     * @type {imageSize_}
+     */
+    this.imageSize_ = imageSize
   }
 
   /**
@@ -100,9 +108,15 @@ class ImageWrapper extends ImageBase {
       !(this.image_ instanceof HTMLCanvasElement)
     ) {
       const canvas = this.context_.canvas;
-      canvas.width = this.image_.width;
-      canvas.height = this.image_.height;
-      this.context_.drawImage(this.image_, 0, 0);
+      if (this.imageSize_) {
+        canvas.width = this.imageSize_[0];
+        canvas.height = this.imageSize_[1];
+        this.context_.drawImage(this.image_, 0, 0, ...this.imageSize_);
+      } else {
+        canvas.width = this.image_.width;
+        canvas.height = this.image_.height;
+        this.context_.drawImage(this.image_, 0, 0);
+      }
       this.image_ = this.context_.canvas;
     }
     return this.image_;

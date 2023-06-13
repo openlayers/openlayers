@@ -65,6 +65,12 @@ class Static extends ImageSource {
 
     /**
      * @private
+     * @type {import("../size.js").Size|null}
+     */
+    this.imageSize_ = options.imageSize ? options.imageSize : null;
+
+    /**
+     * @private
      * @type {import("../Image.js").default}
      */
     this.image_ = new ImageWrapper(
@@ -74,14 +80,9 @@ class Static extends ImageSource {
       this.url_,
       crossOrigin,
       imageLoadFunction,
-      createCanvasContext2D(1, 1)
+      createCanvasContext2D(1, 1),
+      this.imageSize_
     );
-
-    /**
-     * @private
-     * @type {import("../size.js").Size|null}
-     */
-    this.imageSize_ = options.imageSize ? options.imageSize : null;
 
     this.image_.addEventListener(
       EventType.CHANGE,
