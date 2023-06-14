@@ -12,7 +12,7 @@ new Map({
   target: 'map',
   view: new View({
     center: [1825927.7316762917, 6143091.089223046],
-    zoom: 15,
+    zoom: 15.4,
   }),
 });
 
