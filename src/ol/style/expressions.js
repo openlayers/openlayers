@@ -1167,7 +1167,13 @@ Operators['interpolate'] = {
         result || expressionToGlsl(context, args[i + 1], outputType);
       const stop2 = expressionToGlsl(context, args[i + 2], inputType);
       const output2 = expressionToGlsl(context, args[i + 3], outputType);
-      result = `mix(${output1}, ${output2}, pow(clamp((${input} - ${stop1}) / (${stop2} - ${stop1}), 0.0, 1.0), ${exponent}))`;
+      let ratio;
+      if (interpolation === 1) {
+        ratio = `(${input} - ${stop1}) / (${stop2} - ${stop1})`;
+      } else {
+        ratio = `(pow(${exponent}, (${input} - ${stop1})) - 1.0) / (pow(${exponent}, (${stop2} - ${stop1})) - 1.0)`;
+      }
+      result = `mix(${output1}, ${output2}, clamp(${ratio}, 0.0, 1.0))`;
     }
     return result;
   },

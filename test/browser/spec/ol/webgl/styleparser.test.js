@@ -48,7 +48,7 @@ describe('ol.webgl.styleparser', function () {
         'vec4(vec4(0.2, 0.4, 0.6, 1.0).rgb, vec4(0.2, 0.4, 0.6, 1.0).a * 0.5 * 1.0)'
       );
       expect(result.builder.symbolSizeExpression_).to.eql(
-        `vec2(mix(4.0, 8.0, pow(clamp((a_population - ${lowerUniformName}) / (${higherUniformName} - ${lowerUniformName}), 0.0, 1.0), 1.0)))`
+        `vec2(mix(4.0, 8.0, clamp((a_population - ${lowerUniformName}) / (${higherUniformName} - ${lowerUniformName}), 0.0, 1.0)))`
       );
       expect(result.builder.symbolOffsetExpression_).to.eql('vec2(0.0, 0.0)');
       expect(result.builder.texCoordExpression_).to.eql(
@@ -273,7 +273,7 @@ describe('ol.webgl.styleparser', function () {
         expect(result.builder.attributes_).to.eql([]);
         expect(result.builder.varyings_).to.eql([]);
         expect(result.builder.symbolColorExpression_).to.eql(
-          `vec4(mix(vec4(1.0, 1.0, 0.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), pow(clamp((${uniformName} - 0.0) / (1.0 - 0.0), 0.0, 1.0), 1.0)).rgb, mix(vec4(1.0, 1.0, 0.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), pow(clamp((${uniformName} - 0.0) / (1.0 - 0.0), 0.0, 1.0), 1.0)).a * 1.0 * 1.0)`
+          `vec4(mix(vec4(1.0, 1.0, 0.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), clamp((${uniformName} - 0.0) / (1.0 - 0.0), 0.0, 1.0)).rgb, mix(vec4(1.0, 1.0, 0.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), clamp((${uniformName} - 0.0) / (1.0 - 0.0), 0.0, 1.0)).a * 1.0 * 1.0)`
         );
         expect(result.builder.symbolSizeExpression_).to.eql('vec2(6.0)');
         expect(result.builder.symbolOffsetExpression_).to.eql('vec2(0.0, 0.0)');
@@ -328,7 +328,7 @@ describe('ol.webgl.styleparser', function () {
           },
         ]);
         expect(result.builder.strokeColorExpression_).to.eql(
-          'mix(vec4(0.0, 0.0, 1.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), pow(clamp((v_intensity - 0.0) / (1.0 - 0.0), 0.0, 1.0), 1.0))'
+          'mix(vec4(0.0, 0.0, 1.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), clamp((v_intensity - 0.0) / (1.0 - 0.0), 0.0, 1.0))'
         );
         expect(result.builder.strokeWidthExpression_).to.eql(
           '(u_var_width * 3.0)'
@@ -366,7 +366,7 @@ describe('ol.webgl.styleparser', function () {
           },
         ]);
         expect(result.builder.fillColorExpression_).to.eql(
-          'mix(vec4(0.0, 0.0, 1.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), pow(clamp(((v_intensity * u_var_scale) - 0.0) / (10.0 - 0.0), 0.0, 1.0), 1.0))'
+          'mix(vec4(0.0, 0.0, 1.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), clamp(((v_intensity * u_var_scale) - 0.0) / (10.0 - 0.0), 0.0, 1.0))'
         );
         expect(Object.keys(result.attributes).length).to.eql(1);
         expect(result.attributes).to.have.property('intensity');
