@@ -1,3 +1,12 @@
+import Feature from '../../../../../src/ol/Feature.js';
+import {
+  Circle,
+  GeometryCollection,
+  MultiLineString,
+  MultiPoint,
+  MultiPolygon,
+  Point,
+} from '../../../../../src/ol/geom.js';
 import {
   ValueTypes,
   arrayToGlsl,
@@ -1083,6 +1092,63 @@ describe('ol/style/expressions', function () {
   if (inputValue == 2.0) { return true; }
   return false;
 }`);
+    });
+  });
+
+  describe('geometry-type operator', function () {
+    let context;
+
+    beforeEach(function () {
+      context = {
+        variables: [],
+        attributes: [],
+        stringLiteralsMap: {},
+        functions: {},
+        style: {},
+      };
+    });
+
+    it('outputs string', function () {
+      expect(getValueType(['geometry-type'])).to.eql(ValueTypes.STRING);
+    });
+
+    it('throws if invalid argument count', function () {
+      expect(() => {
+        expressionToGlsl(context, ['geometry-type', 'abcd']);
+      }).to.throwException(/0 arguments were expected/);
+    });
+
+    it('correctly parses the expression and add a new attribute', function () {
+      const glsl = expressionToGlsl(context, ['geometry-type']);
+      expect(glsl).to.eql('a_geometryType');
+      expect(context.attributes[0].name).to.be('geometryType');
+      expect(context.attributes[0].type).to.be(ValueTypes.STRING);
+      expect(context.attributes[0].callback).to.be.a(Function);
+    });
+
+    describe('geometry type computation', () => {
+      let features, callback;
+      beforeEach(() => {
+        expressionToGlsl(context, ['geometry-type']);
+        callback = context.attributes[0]['callback'];
+        features = [
+          new Feature(new Point([0, 1])),
+          new Feature(new MultiPolygon([])),
+          new Feature(new MultiLineString([])),
+          new Feature(new GeometryCollection([new Circle([0, 1])])),
+          new Feature(new GeometryCollection([new MultiPoint([])])),
+        ];
+      });
+
+      it('computes a standard geometry type from the given features', function () {
+        expect(features.map(callback)).to.eql([
+          'Point',
+          'Polygon',
+          'LineString',
+          'Polygon',
+          'Point',
+        ]);
+      });
     });
   });
 
