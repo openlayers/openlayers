@@ -68,6 +68,8 @@ const TOS_ATTRIBUTION =
  * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
  * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
+ * @property {boolean} placeholderTiles Whether to show BingMaps placeholder tiles when zoomed past the maximum level provided in an area. When `false`, requests beyond
+ * the maximum zoom level will return no tile. When `true`, the placeholder tile will be returned.
  */
 
 /**
@@ -164,6 +166,12 @@ class BingMaps extends TileImage {
      */
     this.imagerySet_ = options.imagerySet;
 
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.placeholderTiles_ = options.placeholderTiles;
+
     const url =
       'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
       this.imagerySet_ +
@@ -233,6 +241,7 @@ class BingMaps extends TileImage {
 
     const culture = this.culture_;
     const hidpi = this.hidpi_;
+    const placeholderTiles = this.placeholderTiles_;
     this.tileUrlFunction = createFromTileUrlFunctions(
       resource.imageUrlSubdomains.map(function (subdomain) {
         /** @type {import('../tilecoord.js').TileCoord} */
@@ -261,7 +270,17 @@ class BingMaps extends TileImage {
             if (hidpi) {
               url += '&dpi=d1&device=mobile';
             }
-            return url.replace('{quadkey}', quadKey(quadKeyTileCoord));
+            url = url.replace('{quadkey}', quadKey(quadKeyTileCoord));
+            const uri = new URL(url);
+            const params = uri.searchParams;
+            if (placeholderTiles === true && params.has('n')) {
+              params.delete('n');
+              url = uri.toString();
+            } else if (placeholderTiles === false && !params.has('n')) {
+              params.append('n', 'z');
+              url = uri.toString();
+            }
+            return url;
           }
         );
       })
