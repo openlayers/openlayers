@@ -61,6 +61,12 @@ export class ShaderBuilder {
     this.varyings_ = [];
 
     /**
+     * @type {boolean}
+     * @private
+     */
+    this.hasSymbol_ = false;
+
+    /**
      * @type {string}
      * @private
      */
@@ -103,6 +109,12 @@ export class ShaderBuilder {
     this.symbolRotateWithView_ = false;
 
     /**
+     * @type {boolean}
+     * @private
+     */
+    this.hasStroke_ = false;
+
+    /**
      * @type {string}
      * @private
      */
@@ -113,6 +125,12 @@ export class ShaderBuilder {
      * @private
      */
     this.strokeColorExpression_ = 'vec4(1.0)';
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this.hasFill_ = false;
 
     /**
      * @type {string}
@@ -180,6 +198,7 @@ export class ShaderBuilder {
    * @return {ShaderBuilder} the builder object
    */
   setSymbolSizeExpression(expression) {
+    this.hasSymbol_ = true;
     this.symbolSizeExpression_ = expression;
     return this;
   }
@@ -200,7 +219,6 @@ export class ShaderBuilder {
    * Sets an expression to compute the offset of the symbol from the point center.
    * This expression can use all the uniforms and attributes available
    * in the vertex shader, and should evaluate to a `vec2` value.
-   * Note: will only be used for point geometry shaders.
    * @param {string} expression Offset expression
    * @return {ShaderBuilder} the builder object
    */
@@ -217,6 +235,7 @@ export class ShaderBuilder {
    * @return {ShaderBuilder} the builder object
    */
   setSymbolColorExpression(expression) {
+    this.hasSymbol_ = true;
     this.symbolColorExpression_ = expression;
     return this;
   }
@@ -263,16 +282,19 @@ export class ShaderBuilder {
    * @return {ShaderBuilder} the builder object
    */
   setStrokeWidthExpression(expression) {
+    this.hasStroke_ = true;
     this.strokeWidthExpression_ = expression;
     return this;
   }
 
   setStrokeColorExpression(expression) {
+    this.hasStroke_ = true;
     this.strokeColorExpression_ = expression;
     return this;
   }
 
   setFillColorExpression(expression) {
+    this.hasFill_ = true;
     this.fillColorExpression_ = expression;
     return this;
   }
@@ -302,9 +324,13 @@ export class ShaderBuilder {
    * The following varyings are hardcoded and gives the coordinate of the pixel both in the quad and on the texture:
    * `vec2 v_quadCoord`, `vec2 v_texCoord`, `vec4 v_hitColor`.
    *
-   * @return {string} The full shader as a string.
+   * @return {string|null} The full shader as a string; null if no size or color specified
    */
   getSymbolVertexShader() {
+    if (!this.hasSymbol_) {
+      return null;
+    }
+
     const offsetMatrix = this.symbolRotateWithView_
       ? 'u_offsetScaleMatrix * u_offsetRotateMatrix'
       : 'u_offsetScaleMatrix';
@@ -384,9 +410,13 @@ ${this.varyings_
    * Expects the following varyings to be transmitted by the vertex shader:
    * `vec2 v_quadCoord`, `vec2 v_texCoord`, `vec4 v_hitColor`.
    *
-   * @return {string} The full shader as a string.
+   * @return {string|null} The full shader as a string; null if no size or color specified
    */
   getSymbolFragmentShader() {
+    if (!this.hasSymbol_) {
+      return null;
+    }
+
     return `precision mediump float;
 uniform float u_time;
 uniform float u_zoom;
@@ -419,9 +449,13 @@ void main(void) {
 
   /**
    * Generates a stroke vertex shader from the builder parameters
-   * @return {string} The full shader as a string.
+   * @return {string|null} The full shader as a string; null if no size or color specified
    */
   getStrokeVertexShader() {
+    if (!this.hasStroke_) {
+      return null;
+    }
+
     return `#ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
@@ -508,9 +542,13 @@ ${this.varyings_
   /**
    * Generates a stroke fragment shader from the builder parameters
    *
-   * @return {string} The full shader as a string.
+   * @return {string|null} The full shader as a string; null if no size or color specified
    */
   getStrokeFragmentShader() {
+    if (!this.hasStroke_) {
+      return null;
+    }
+
     return `#ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
@@ -575,9 +613,13 @@ void main(void) {
   /**
    * Generates a fill vertex shader from the builder parameters
    *
-   * @return {string} The full shader as a string.
+   * @return {string|null} The full shader as a string; null if no color specified
    */
   getFillVertexShader() {
+    if (!this.hasFill_) {
+      return null;
+    }
+
     return `#ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
@@ -615,9 +657,13 @@ ${this.varyings_
 
   /**
    * Generates a fill fragment shader from the builder parameters
-   * @return {string} The full shader as a string.
+   * @return {string|null} The full shader as a string; null if no color specified
    */
   getFillFragmentShader() {
+    if (!this.hasFill_) {
+      return null;
+    }
+
     return `#ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
