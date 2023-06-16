@@ -2,6 +2,8 @@
  * Class for generating shaders from literal style objects
  * @module ol/webgl/ShaderBuilder
  */
+import {colorToGlsl, numberToGlsl} from '../style/expressions.js';
+import {createDefaultStyle} from '../style/flat.js';
 
 const BASE_UNIFORMS = `uniform mat4 u_projectionMatrix;
 uniform mat4 u_screenToWorldMatrix;
@@ -14,6 +16,8 @@ uniform float u_resolution;
 uniform vec4 u_renderExtent;
 uniform mediump int u_hitDetection;
 `;
+
+const DEFAULT_STYLE = createDefaultStyle();
 
 /**
  * @typedef {Object} VaryingDescription
@@ -70,7 +74,9 @@ export class ShaderBuilder {
      * @type {string}
      * @private
      */
-    this.symbolSizeExpression_ = 'vec2(1.0)';
+    this.symbolSizeExpression_ = `vec2(${numberToGlsl(
+      DEFAULT_STYLE['circle-radius']
+    )})`;
 
     /**
      * @type {string}
@@ -88,7 +94,9 @@ export class ShaderBuilder {
      * @type {string}
      * @private
      */
-    this.symbolColorExpression_ = 'vec4(1.0)';
+    this.symbolColorExpression_ = colorToGlsl(
+      /** @type {string} */ (DEFAULT_STYLE['circle-fill-color'])
+    );
 
     /**
      * @type {string}
@@ -118,13 +126,15 @@ export class ShaderBuilder {
      * @type {string}
      * @private
      */
-    this.strokeWidthExpression_ = '1.0';
+    this.strokeWidthExpression_ = numberToGlsl(DEFAULT_STYLE['stroke-width']);
 
     /**
      * @type {string}
      * @private
      */
-    this.strokeColorExpression_ = 'vec4(1.0)';
+    this.strokeColorExpression_ = colorToGlsl(
+      /** @type {string} */ (DEFAULT_STYLE['stroke-color'])
+    );
 
     /**
      * @type {boolean}
@@ -136,7 +146,9 @@ export class ShaderBuilder {
      * @type {string}
      * @private
      */
-    this.fillColorExpression_ = 'vec4(1.0)';
+    this.fillColorExpression_ = colorToGlsl(
+      /** @type {string} */ (DEFAULT_STYLE['fill-color'])
+    );
 
     /**
      * @type {Array<string>}
