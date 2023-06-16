@@ -44,7 +44,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
    * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
    */
   getImage() {
-    return this.image_ ? this.image_.getImage() : null;
+    return !this.image_ ? null : this.image_.getImage();
   }
 
   /**
@@ -122,7 +122,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     }
 
     const imageExtent = this.image_.getExtent();
-    const img = this.getImage();
+    const img = this.image_.getImage();
 
     const imageMapWidth = getWidth(imageExtent);
     const col = Math.floor(
@@ -211,7 +211,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       }
     }
 
-    const img = this.getImage();
+    const img = image.getImage();
 
     const transform = composeTransform(
       this.tempTransform,
