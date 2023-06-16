@@ -7,7 +7,7 @@ import View from '../../../../src/ol/View.js';
 import Projection from '../../../../src/ol/proj/Projection.js';
 import { getCenter } from '../../../../src/ol/extent.js';
 
-const extent = [0, 0, 60000, 40000];
+const extent = [0, 0, 52354, 33614];
 const projection = new Projection({
   code: 'xkcd-image',
   units: 'pixels',
@@ -18,11 +18,10 @@ new Map({
   layers: [
     new ImageLayer({
       source: new ImageStatic({
-        attributions: '© <a href="https://xkcd.com/license.html">xkcd</a>',
-        url: 'https://test-1309221889.cos.ap-guangzhou.myqcloud.com/qhj/test-svg/test.svg',
+        url: '/data/test.svg',
         projection: projection,
         imageExtent: extent,
-        imageSize: [800, 600]
+        imageSize: [500, 500]
       }),
       extent: extent,
     }),
@@ -30,7 +29,7 @@ new Map({
   target: 'map',
   view: new View({
     projection: projection,
-    center: getCenter(extent),
+    center: [0, 33614],
     zoom: 1,
   }),
 });
