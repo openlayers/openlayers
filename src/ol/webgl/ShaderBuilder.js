@@ -204,6 +204,13 @@ export class ShaderBuilder {
   }
 
   /**
+   * @return {string} The current symbol size expression
+   */
+  getSymbolSizeExpression() {
+    return this.symbolSizeExpression_;
+  }
+
+  /**
    * Sets an expression to compute the rotation of the shape.
    * This expression can use all the uniforms and attributes available
    * in the vertex shader, and should evaluate to a `float` value in radians.
@@ -238,6 +245,13 @@ export class ShaderBuilder {
     this.hasSymbol_ = true;
     this.symbolColorExpression_ = expression;
     return this;
+  }
+
+  /**
+   * @return {string} The current symbol color expression
+   */
+  getSymbolColorExpression() {
+    return this.symbolColorExpression_;
   }
 
   /**
@@ -287,12 +301,20 @@ export class ShaderBuilder {
     return this;
   }
 
+  /**
+   * @param {string} expression Stroke color expression, evaluate to `vec4`
+   * @return {ShaderBuilder} the builder object
+   */
   setStrokeColorExpression(expression) {
     this.hasStroke_ = true;
     this.strokeColorExpression_ = expression;
     return this;
   }
 
+  /**
+   * @param {string} expression Fill color expression, evaluate to `vec4`
+   * @return {ShaderBuilder} the builder object
+   */
   setFillColorExpression(expression) {
     this.hasFill_ = true;
     this.fillColorExpression_ = expression;

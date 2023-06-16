@@ -88,7 +88,6 @@ function getGlslTypeFromType(type) {
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
  * @param {import("../style/expressions.js").ParsingContext} vertContext Vertex shader parsing context
  * @param {import("../style/expressions.js").ParsingContext} fragContext Fragment shader parsing context
- * @return {boolean} Whether a symbol style was found
  */
 function parseSymbolProperties(
   style,
@@ -98,79 +97,84 @@ function parseSymbolProperties(
   fragContext
 ) {
   if (!('symbol' in style)) {
-    return false;
+    return;
   }
 
-  const symbStyle = style.symbol;
-  const size = symbStyle.size !== undefined ? symbStyle.size : 1;
-  const color = symbStyle.color || 'white';
-  const texCoord = symbStyle.textureCoord || [0, 0, 1, 1];
-  const offset = symbStyle.offset || [0, 0];
-  const opacity = symbStyle.opacity !== undefined ? symbStyle.opacity : 1;
-  const rotation = symbStyle.rotation !== undefined ? symbStyle.rotation : 0;
-
-  const parsedSize = expressionToGlsl(
-    vertContext,
-    size,
-    ValueTypes.NUMBER_ARRAY | ValueTypes.NUMBER
-  );
-  const parsedOffset = expressionToGlsl(
-    vertContext,
-    offset,
-    ValueTypes.NUMBER_ARRAY
-  );
-  const parsedTexCoord = expressionToGlsl(
-    vertContext,
-    texCoord,
-    ValueTypes.NUMBER_ARRAY
-  );
-  const parsedRotation = expressionToGlsl(
-    vertContext,
-    rotation,
-    ValueTypes.NUMBER
-  );
-
-  const parsedColor = expressionToGlsl(fragContext, color, ValueTypes.COLOR);
-  const parsedOpacity = expressionToGlsl(
-    fragContext,
-    opacity,
-    ValueTypes.NUMBER
-  );
-
-  const visibleSize = `vec2(${expressionToGlsl(
-    fragContext,
-    size,
-    ValueTypes.NUMBER_ARRAY | ValueTypes.NUMBER
-  )}).x`;
-  const opacityFilter = getSymbolOpacityGlslFunction(
-    symbStyle.symbolType,
-    visibleSize
-  );
-
-  const colorExpression = `vec4(${parsedColor}.rgb, ${parsedColor}.a * ${parsedOpacity} * ${opacityFilter})`;
-
-  builder
-    .setSymbolSizeExpression(`vec2(${parsedSize})`)
-    .setSymbolRotationExpression(parsedRotation)
-    .setSymbolOffsetExpression(parsedOffset)
-    .setTextureCoordinateExpression(parsedTexCoord)
-    .setSymbolRotateWithView(!!symbStyle.rotateWithView)
-    .setSymbolColorExpression(colorExpression);
-
-  if (symbStyle.symbolType === 'image' && symbStyle.src) {
+  const symbolStyle = style.symbol;
+  if ('color' in symbolStyle) {
+    const color = symbolStyle.color;
+    const opacity = symbolStyle.opacity !== undefined ? symbolStyle.opacity : 1;
+    const parsedColor = expressionToGlsl(fragContext, color, ValueTypes.COLOR);
+    const parsedOpacity = expressionToGlsl(
+      fragContext,
+      opacity,
+      ValueTypes.NUMBER
+    );
+    builder.setSymbolColorExpression(
+      `vec4(${parsedColor}.rgb, ${parsedColor}.a * ${parsedOpacity})`
+    );
+  }
+  if (symbolStyle.symbolType === 'image' && symbolStyle.src) {
     const texture = new Image();
     texture.crossOrigin =
-      symbStyle.crossOrigin === undefined ? 'anonymous' : symbStyle.crossOrigin;
-    texture.src = symbStyle.src;
+      symbolStyle.crossOrigin === undefined
+        ? 'anonymous'
+        : symbolStyle.crossOrigin;
+    texture.src = symbolStyle.src;
     builder
       .addUniform('sampler2D u_texture')
       .setSymbolColorExpression(
-        `${colorExpression} * texture2D(u_texture, v_texCoord)`
+        `${builder.getSymbolColorExpression()} * texture2D(u_texture, v_texCoord)`
       );
     uniforms['u_texture'] = texture;
+  } else if ('symbolType' in symbolStyle) {
+    let visibleSize = builder.getSymbolSizeExpression();
+    if ('size' in symbolStyle) {
+      visibleSize = expressionToGlsl(
+        fragContext,
+        symbolStyle.size,
+        ValueTypes.NUMBER_ARRAY | ValueTypes.NUMBER
+      );
+    }
+    const symbolOpacity = getSymbolOpacityGlslFunction(
+      symbolStyle.symbolType,
+      `vec2(${visibleSize}).x`
+    );
+    builder.setSymbolColorExpression(
+      `${builder.getSymbolColorExpression()} * vec4(1.0, 1.0, 1.0, ${symbolOpacity})`
+    );
   }
-
-  return true;
+  if ('size' in symbolStyle) {
+    const size = symbolStyle.size;
+    const parsedSize = expressionToGlsl(
+      vertContext,
+      size,
+      ValueTypes.NUMBER_ARRAY | ValueTypes.NUMBER
+    );
+    builder.setSymbolSizeExpression(`vec2(${parsedSize})`);
+  }
+  if ('textureCoord' in symbolStyle) {
+    builder.setTextureCoordinateExpression(
+      expressionToGlsl(
+        vertContext,
+        symbolStyle.textureCoord,
+        ValueTypes.NUMBER_ARRAY
+      )
+    );
+  }
+  if ('offset' in symbolStyle) {
+    builder.setSymbolOffsetExpression(
+      expressionToGlsl(vertContext, symbolStyle.offset, ValueTypes.NUMBER_ARRAY)
+    );
+  }
+  if ('rotation' in symbolStyle) {
+    builder.setSymbolRotationExpression(
+      expressionToGlsl(vertContext, symbolStyle.rotation, ValueTypes.NUMBER)
+    );
+  }
+  if ('rotateWithView' in symbolStyle) {
+    builder.setSymbolRotateWithView(!!symbolStyle.rotateWithView);
+  }
 }
 
 /**
@@ -179,7 +183,6 @@ function parseSymbolProperties(
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
  * @param {import("../style/expressions.js").ParsingContext} vertContext Vertex shader parsing context
  * @param {import("../style/expressions.js").ParsingContext} fragContext Fragment shader parsing context
- * @return {boolean} Whether a stroke style was found
  */
 function parseStrokeProperties(
   style,
@@ -188,21 +191,17 @@ function parseStrokeProperties(
   vertContext,
   fragContext
 ) {
-  // do not apply a stroke style if these properties are missing
-  if (!('stroke-color' in style) && !('stroke-width' in style)) {
-    return false;
+  if ('stroke-color' in style) {
+    builder.setStrokeColorExpression(
+      expressionToGlsl(fragContext, style['stroke-color'], ValueTypes.COLOR)
+    );
   }
 
-  const color = style['stroke-color'] || 'white';
-  const width = style['stroke-width'] || 1;
-  const parsedColor = expressionToGlsl(fragContext, color, ValueTypes.COLOR);
-  const parsedWidth = expressionToGlsl(vertContext, width, ValueTypes.NUMBER);
-
-  builder
-    .setStrokeColorExpression(parsedColor)
-    .setStrokeWidthExpression(parsedWidth);
-
-  return true;
+  if ('stroke-width' in style) {
+    builder.setStrokeWidthExpression(
+      expressionToGlsl(vertContext, style['stroke-width'], ValueTypes.NUMBER)
+    );
+  }
 }
 
 /**
@@ -211,7 +210,6 @@ function parseStrokeProperties(
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
  * @param {import("../style/expressions.js").ParsingContext} vertContext Vertex shader parsing context
  * @param {import("../style/expressions.js").ParsingContext} fragContext Fragment shader parsing context
- * @return {boolean} Whether a fill style was found
  */
 function parseFillProperties(
   style,
@@ -220,25 +218,16 @@ function parseFillProperties(
   vertContext,
   fragContext
 ) {
-  // do not apply a fill style if these properties are missing
-  if (!('fill-color' in style)) {
-    return false;
+  if ('fill-color' in style) {
+    builder.setFillColorExpression(
+      expressionToGlsl(fragContext, style['fill-color'], ValueTypes.COLOR)
+    );
   }
-
-  const color = style['fill-color'] || 'rgba(255, 255, 255, 0.3)';
-  const parsedColor = expressionToGlsl(fragContext, color, ValueTypes.COLOR);
-
-  builder.setFillColorExpression(parsedColor);
-
-  return true;
 }
 
 /**
  * @typedef {Object} StyleParseResult
  * @property {ShaderBuilder} builder Shader builder pre-configured according to a given style
- * @property {boolean} hasSymbol Has a symbol style defined
- * @property {boolean} hasStroke Has a stroke style defined
- * @property {boolean} hasFill Has a fill style defined
  * @property {import("../render/webgl/VectorStyleRenderer.js").UniformDefinitions} uniforms Uniform definitions
  * @property {import("../render/webgl/VectorStyleRenderer.js").AttributeDefinitions} attributes Attribute definitions
  */
@@ -284,27 +273,9 @@ export function parseLiteralStyle(style) {
   /** @type {Object<string,import("../webgl/Helper").UniformValue>} */
   const uniforms = {};
 
-  const hasSymbol = parseSymbolProperties(
-    style,
-    builder,
-    uniforms,
-    vertContext,
-    fragContext
-  );
-  const hasStroke = parseStrokeProperties(
-    style,
-    builder,
-    uniforms,
-    vertContext,
-    fragContext
-  );
-  const hasFill = parseFillProperties(
-    style,
-    builder,
-    uniforms,
-    vertContext,
-    fragContext
-  );
+  parseSymbolProperties(style, builder, uniforms, vertContext, fragContext);
+  parseStrokeProperties(style, builder, uniforms, vertContext, fragContext);
+  parseFillProperties(style, builder, uniforms, vertContext, fragContext);
 
   if (style.filter) {
     const parsedFilter = expressionToGlsl(
@@ -401,9 +372,6 @@ export function parseLiteralStyle(style) {
 
   return {
     builder: builder,
-    hasSymbol,
-    hasStroke,
-    hasFill,
     attributes: attributes.reduce(
       (prev, curr) => ({
         ...prev,
