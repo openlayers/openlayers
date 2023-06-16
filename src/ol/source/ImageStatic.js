@@ -4,7 +4,6 @@
 
 import EventType from '../events/EventType.js';
 import ImageSource, {defaultImageLoadFunction} from './Image.js';
-import ImageState from '../ImageState.js';
 import ImageWrapper from '../Image.js';
 import {createCanvasContext2D} from '../dom.js';
 import {getHeight, getWidth, intersects} from '../extent.js';
@@ -22,8 +21,10 @@ import {get as getProjection} from '../proj.js';
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
- * @property {import("../size.js").Size} [imageSize] Size of the image in pixels. Usually the image size is auto-detected, so this
- * only needs to be set if auto-detection fails for some reason.
+ * @property {import("../size.js").Size} [imageSize] Size of the image in pixels.  If specified the image will be drawn to a canvas
+ * of at least this width and height after being scaled to match the aspect ratio of the `imageExtent`.  For images with a very large
+ * natural size specify a smaller size if browser canvas limits may become an issue.  For SVG images with a samll natural size specify
+ * a larger size to render the SVG in more detail.
  * @property {string} url Image URL.
  */
 
@@ -74,7 +75,8 @@ class Static extends ImageSource {
       this.url_,
       crossOrigin,
       imageLoadFunction,
-      createCanvasContext2D(1, 1)
+      undefined,
+      this.resize_.bind(this)
     );
 
     /**
@@ -122,52 +124,36 @@ class Static extends ImageSource {
   }
 
   /**
-   * @param {import("../events/Event.js").default} evt Event.
+   * @private
+   * @param {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} image Image.
    */
-  handleImageChange(evt) {
-    if (this.image_.getState() == ImageState.LOADED) {
-      const imageExtent = this.image_.getExtent();
-      const image = this.image_.getImage();
-      let imageWidth, imageHeight;
-      if (this.imageSize_) {
-        imageWidth = this.imageSize_[0];
-        imageHeight = this.imageSize_[1];
-      } else {
-        imageWidth = image.width;
-        imageHeight = image.height;
-      }
-      const extentWidth = getWidth(imageExtent);
-      const extentHeight = getHeight(imageExtent);
-      const xResolution = extentWidth / imageWidth;
-      const yResolution = extentHeight / imageHeight;
-      let targetWidth = imageWidth;
-      let targetHeight = imageHeight;
-      if (xResolution > yResolution) {
-        targetWidth = Math.round(extentWidth / yResolution);
-      } else {
-        targetHeight = Math.round(extentHeight / xResolution);
-      }
-      if (targetWidth !== imageWidth || targetHeight !== imageHeight) {
-        const context = createCanvasContext2D(targetWidth, targetHeight);
-        if (!this.getInterpolate()) {
-          context.imageSmoothingEnabled = false;
-        }
-        const canvas = context.canvas;
-        context.drawImage(
-          image,
-          0,
-          0,
-          imageWidth,
-          imageHeight,
-          0,
-          0,
-          canvas.width,
-          canvas.height
-        );
-        this.image_.setImage(canvas);
-      }
+  resize_(image) {
+    const imageExtent = this.image_.getExtent();
+    let imageWidth, imageHeight;
+    if (this.imageSize_) {
+      imageWidth = this.imageSize_[0];
+      imageHeight = this.imageSize_[1];
+    } else {
+      imageWidth = image.width;
+      imageHeight = image.height;
     }
-    super.handleImageChange(evt);
+    const extentWidth = getWidth(imageExtent);
+    const extentHeight = getHeight(imageExtent);
+    const xResolution = extentWidth / imageWidth;
+    const yResolution = extentHeight / imageHeight;
+    let targetWidth = imageWidth;
+    let targetHeight = imageHeight;
+    if (xResolution > yResolution) {
+      targetWidth = Math.round(extentWidth / yResolution);
+    } else {
+      targetHeight = Math.round(extentHeight / xResolution);
+    }
+    const context = createCanvasContext2D(targetWidth, targetHeight);
+    if (!this.getInterpolate()) {
+      context.imageSmoothingEnabled = false;
+    }
+    context.drawImage(image, 0, 0, targetWidth, targetHeight);
+    this.image_.setImage(context.canvas);
   }
 }
 

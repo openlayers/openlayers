@@ -26,6 +26,10 @@ import {listenOnce, unlistenByKey} from './events.js';
  * @api
  */
 
+/**
+ * @typedef {function((HTMLCanvasElement|HTMLImageElement|HTMLVideoElement)): void} ResizeFunction
+ */
+
 class ImageWrapper extends ImageBase {
   /**
    * @param {import("./extent.js").Extent} extent Extent.
@@ -37,6 +41,7 @@ class ImageWrapper extends ImageBase {
    * @param {CanvasRenderingContext2D} [context] Canvas context. When provided, the image will be
    *    drawn into the context's canvas, and `getImage()` will return the canvas once the image
    *    has finished loading.
+   * @param {ResizeFunction} [imageResizeFunction] Image resize function.
    */
   constructor(
     extent,
@@ -45,7 +50,8 @@ class ImageWrapper extends ImageBase {
     src,
     crossOrigin,
     imageLoadFunction,
-    context
+    context,
+    imageResizeFunction
   ) {
     super(extent, resolution, pixelRatio, ImageState.IDLE);
 
@@ -87,6 +93,12 @@ class ImageWrapper extends ImageBase {
      * @type {LoadFunction}
      */
     this.imageLoadFunction_ = imageLoadFunction;
+
+    /**
+     * @private
+     * @type {ResizeFunction}
+     */
+    this.imageResizeFunction_ = imageResizeFunction;
   }
 
   /**
@@ -125,6 +137,9 @@ class ImageWrapper extends ImageBase {
    * @private
    */
   handleImageLoad_() {
+    if (this.imageResizeFunction_) {
+      this.imageResizeFunction_(this.image_);
+    }
     if (this.resolution === undefined) {
       this.resolution = getHeight(this.extent) / this.image_.height;
     }
