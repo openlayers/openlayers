@@ -370,7 +370,9 @@ export function parseLiteralStyle(style) {
 
   const attributes = vertContext.attributes.map(function (attribute) {
     let callback;
-    if (attribute.type === ValueTypes.STRING) {
+    if (attribute.callback) {
+      callback = attribute.callback;
+    } else if (attribute.type === ValueTypes.STRING) {
       callback = (feature) =>
         getStringNumberEquivalent(vertContext, feature.get(attribute.name));
     } else if (attribute.type === ValueTypes.COLOR) {

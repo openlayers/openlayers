@@ -13,7 +13,7 @@ const vectorSource = new Vector({
 });
 
 const predefinedStyles = {
-  'icons': {
+  icons: {
     symbol: {
       symbolType: 'image',
       src: 'data/icon.png',
@@ -23,7 +23,7 @@ const predefinedStyles = {
       offset: [0, 9],
     },
   },
-  'triangles': {
+  triangles: {
     symbol: {
       symbolType: 'triangle',
       size: 18,
@@ -68,7 +68,7 @@ const predefinedStyles = {
       opacity: 0.95,
     },
   },
-  'circles': {
+  circles: {
     symbol: {
       symbolType: 'circle',
       size: [
@@ -97,7 +97,17 @@ const predefinedStyles = {
   'circles-zoom': {
     symbol: {
       symbolType: 'circle',
-      size: ['interpolate', ['exponential', 2.5], ['zoom'], 2, 1, 14, 32],
+      // by using an exponential interpolation with a base of 2 we can make it so that circles will have a fixed size
+      // in world coordinates between zoom level 5 and 15
+      size: [
+        'interpolate',
+        ['exponential', 2],
+        ['zoom'],
+        5,
+        3,
+        15,
+        3 * Math.pow(2, 10),
+      ],
       color: ['match', ['get', 'hover'], 1, '#ff3f3f', '#006688'],
       offset: [0, 0],
       opacity: 0.95,
