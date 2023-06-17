@@ -266,21 +266,20 @@ class BingMaps extends TileImage {
               tileCoord[2],
               quadKeyTileCoord
             );
-            let url = imageUrl;
+            const url = new URL(
+              imageUrl.replace('{quadkey}', quadKey(quadKeyTileCoord))
+            );
+            const params = url.searchParams;
             if (hidpi) {
-              url += '&dpi=d1&device=mobile';
+              params.set('dpi', 'd1');
+              params.set('device', 'mobile');
             }
-            url = url.replace('{quadkey}', quadKey(quadKeyTileCoord));
-            const uri = new URL(url);
-            const params = uri.searchParams;
-            if (placeholderTiles === true && params.has('n')) {
+            if (placeholderTiles === true) {
               params.delete('n');
-              url = uri.toString();
-            } else if (placeholderTiles === false && !params.has('n')) {
-              params.append('n', 'z');
-              url = uri.toString();
+            } else if (placeholderTiles === false) {
+              params.set('n', 'z');
             }
-            return url;
+            return url.toString();
           }
         );
       })
