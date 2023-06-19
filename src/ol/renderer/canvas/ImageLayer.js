@@ -235,7 +235,11 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       this.imageBitmap_.close();
       this.imageBitmap_ = null;
     }
-    if (!(img instanceof HTMLCanvasElement) && img === this.previousImg_) {
+    if (
+      !this.getLayer().getSource()?.scaleable &&
+      !(img instanceof HTMLCanvasElement) &&
+      img === this.previousImg_
+    ) {
       if (!this.imageBitmap_) {
         // First draw image to a canvas to convert the image data to the fastest format possible
         // for repeatedly calling drawImage(), then store the result in an image bitmap to avoid

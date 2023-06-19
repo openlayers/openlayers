@@ -136,6 +136,12 @@ class ImageSource extends Source {
      * @type {number}
      */
     this.reprojectedRevision_ = 0;
+
+    /**
+     * Images from this source are scaleable, i.e. SVG
+     * @type {boolean}
+     */
+    this.scaleable = false;
   }
 
   /**

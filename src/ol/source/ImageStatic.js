@@ -43,7 +43,48 @@ class Static extends ImageSource {
     const /** @type {import("../Image.js").LoadFunction} */ imageLoadFunction =
         options.imageLoadFunction !== undefined
           ? options.imageLoadFunction
-          : defaultImageLoadFunction;
+          : (image, src) => {
+              if (
+                crossOrigin !== null ||
+                location?.origin === new URL(src, location?.origin).origin
+              ) {
+                fetch(src, {
+                  mode: crossOrigin === null ? 'cors' : 'same-origin',
+                })
+                  .then((response) => {
+                    if (
+                      response.headers.get('content-type') === 'image/svg+xml'
+                    ) {
+                      this.scaleable = true;
+                    }
+                    return response.blob();
+                  })
+                  .then((blob) => {
+                    const objectUrl = URL.createObjectURL(blob);
+                    image.addEventListener(
+                      EventType.CHANGE,
+                      function revokeObjectURL() {
+                        if (
+                          image.getState() == ImageState.LOADED ||
+                          image.getState() == ImageState.ERROR
+                        ) {
+                          this.image_.removeEventListener(
+                            EventType.CHANGE,
+                            revokeObjectURL
+                          );
+                          URL.revokeObjectURL(objectUrl);
+                        }
+                      }
+                    );
+                    defaultImageLoadFunction(image, objectUrl);
+                  })
+                  .catch(() => {
+                    defaultImageLoadFunction(image, src);
+                  });
+              } else {
+                defaultImageLoadFunction(image, src);
+              }
+            };
 
     super({
       attributions: options.attributions,
