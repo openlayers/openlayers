@@ -19,6 +19,7 @@ import {
   intersects as intersectsExtent,
   isEmpty,
 } from '../../extent.js';
+import {createCanvasContext2D} from '../../dom.js';
 import {fromUserExtent} from '../../proj.js';
 
 /**
@@ -38,6 +39,21 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
      * @type {?import("../../ImageBase.js").default}
      */
     this.image_ = null;
+
+    /**
+     * @type {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement}
+     */
+    this.previousImg_ = null;
+
+    /**
+     * @type {ImageBitmap}
+     */
+    this.imageBitmap_ = null;
+
+    /**
+     * @type {CanvasRenderingContext2D}
+     */
+    this.conversionContext_ = createCanvasContext2D(1, 1);
   }
 
   /**
@@ -211,7 +227,41 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       }
     }
 
-    const img = image.getImage();
+    /**
+     * @type {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|ImageBitmap}
+     */
+    let img = image.getImage();
+    if (img !== this.previousImg_ && this.imageBitmap_) {
+      this.imageBitmap_.close();
+      this.imageBitmap_ = null;
+    }
+    if (!(img instanceof HTMLCanvasElement) && img === this.previousImg_) {
+      if (!this.imageBitmap_) {
+        // First draw image to a canvas to convert the image data to the fastest format possible
+        // for repeatedly calling drawImage(), then store the result in an image bitmap to avoid
+        // canvas memory shortage in Safari.
+        const context = this.conversionContext_;
+        context.canvas.width = img.width;
+        context.canvas.height = img.height;
+        context.drawImage(img, 0, 0);
+        createImageBitmap(context.canvas)
+          .then((imageBitmap) => {
+            this.imageBitmap_ = imageBitmap;
+          })
+          .catch(() => {
+            // cannot allocate image bitmap
+          })
+          .finally(() => {
+            context.canvas.width = 1;
+            context.canvas.height = 1;
+          });
+      } else {
+        img = this.imageBitmap_;
+      }
+    }
+    if (!(img instanceof ImageBitmap)) {
+      this.previousImg_ = img;
+    }
 
     const transform = composeTransform(
       this.tempTransform,
