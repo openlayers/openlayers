@@ -143,8 +143,7 @@
 {{#if css.source}}{{ indent css.source spaces=6 }}{{/if}}    &lt;/style&gt;
   &lt;/head&gt;
   &lt;body&gt;
-{{ indent contents spaces=4 }}    &lt;!-- Pointer events polyfill for old browsers, see https://caniuse.com/#feat=pointer --&gt;
-    &lt;script src="https://cdn.jsdelivr.net/npm/elm-pep@1.0.6/dist/elm-pep.js"&gt;&lt;/script&gt;
+{{ indent contents spaces=4 }}
 {{#each js.remote}}
     &lt;script src="{{ . }}"&gt;&lt;/script&gt;
 {{/each}}
@@ -165,7 +164,6 @@
       </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/elm-pep@1.0.6/dist/elm-pep.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
 {{#each js.local}}
     <script src="{{{ . }}}"></script>
