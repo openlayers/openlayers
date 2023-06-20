@@ -239,6 +239,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       img === this.previousImg_ &&
       !this.getLayer().getSource()?.scaleable &&
       !(img instanceof HTMLCanvasElement) &&
+      // See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas#maximum_canvas_size
       img.width * img.height < 268435456
     ) {
       if (!this.imageBitmap_) {
