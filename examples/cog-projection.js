@@ -43,9 +43,12 @@ const map = new Map({
         maxZoom: 20,
         crossOrigin: '',
       }),
+      style: {exposure: 0.2},
     }),
     new TileLayer({
       source: cogSource,
+      opacity: 0.7,
+      style: {gamma: 0.7},
     }),
   ],
   view: cogSource
