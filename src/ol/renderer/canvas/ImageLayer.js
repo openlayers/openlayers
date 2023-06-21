@@ -46,9 +46,9 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     this.previousImg_ = null;
 
     /**
-     * @type {ImageBitmap}
+     * @type {HTMLCanvasElement|ImageBitmap}
      */
-    this.imageBitmap_ = null;
+    this.optimizedImage_ = null;
 
     /**
      * @type {CanvasRenderingContext2D}
@@ -231,9 +231,11 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
      * @type {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|ImageBitmap}
      */
     let img = image.getImage();
-    if (img !== this.previousImg_ && this.imageBitmap_) {
-      this.imageBitmap_.close();
-      this.imageBitmap_ = null;
+    if (img !== this.previousImg_ && this.optimizedImage_) {
+      if (this.optimizedImage_ instanceof ImageBitmap) {
+        this.optimizedImage_.close();
+      }
+      this.optimizedImage_ = null;
     }
     if (
       img === this.previousImg_ &&
@@ -242,17 +244,18 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       // See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas#maximum_canvas_size
       img.width * img.height < 268435456
     ) {
-      if (!this.imageBitmap_) {
+      if (!this.optimizedImage_) {
         // First draw image to a canvas to convert the image data to the fastest format possible
         // for repeatedly calling drawImage(), then store the result in an image bitmap to avoid
         // canvas memory shortage in Safari.
         const context = this.conversionContext_;
         context.canvas.width = img.width;
         context.canvas.height = img.height;
+        this.optimizedImage_ = context.canvas;
         context.drawImage(img, 0, 0);
         createImageBitmap(context.canvas)
           .then((imageBitmap) => {
-            this.imageBitmap_ = imageBitmap;
+            this.optimizedImage_ = imageBitmap;
           })
           .catch(() => {
             // cannot allocate image bitmap
@@ -262,10 +265,9 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
             context.canvas.height = 1;
           });
       } else {
-        img = this.imageBitmap_;
+        img = this.optimizedImage_;
       }
-    }
-    if (!(img instanceof ImageBitmap)) {
+    } else {
       this.previousImg_ = img;
     }
 
