@@ -587,9 +587,12 @@ class RasterSource extends ImageSource {
      */
     this.layers_ = createLayers(options.sources);
 
-    const changed = this.changed.bind(this);
     for (let i = 0, ii = this.layers_.length; i < ii; ++i) {
-      this.layers_[i].addEventListener(EventType.CHANGE, changed);
+      this.layers_[i].addEventListener(EventType.CHANGE, () => {
+        if (this.requestedFrameState_) {
+          this.processSources_();
+        }
+      });
     }
 
     /** @type {boolean} */
@@ -869,15 +872,16 @@ class RasterSource extends ImageSource {
     }
     context.putImageData(output, 0, 0);
 
-    this.changed();
+    if (frameState.animate) {
+      requestAnimationFrame(this.changed.bind(this));
+    } else {
+      this.changed();
+    }
     this.renderedRevision_ = this.getRevision();
 
     this.dispatchEvent(
       new RasterSourceEvent(RasterEventType.AFTEROPERATIONS, frameState, data)
     );
-    if (frameState.animate) {
-      requestAnimationFrame(this.changed.bind(this));
-    }
   }
 
   /**
