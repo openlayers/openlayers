@@ -82,6 +82,7 @@ class Static extends ImageSource {
                     defaultImageLoadFunction(image, src);
                   });
               } else {
+                this.scaleable = src.startsWith('data:image/svg+xml');
                 defaultImageLoadFunction(image, src);
               }
             };
