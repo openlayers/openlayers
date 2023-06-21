@@ -18,6 +18,9 @@ import {createXYZ} from '../../../../../../src/ol/tilegrid.js';
 const SAMPLE_STYLE = {
   ['fill-color']: ['get', 'color'],
   ['stroke-width']: 2,
+  symbol: {
+    size: 3,
+  },
 };
 
 const SAMPLE_STYLE2 = {
