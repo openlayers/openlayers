@@ -768,6 +768,8 @@ class RasterSource extends ImageSource {
       return null;
     }
 
+    this.tileQueue_.loadMoreTiles(16, 16);
+
     resolution = this.findNearestResolution(resolution);
     const frameState = this.updateFrameState_(extent, resolution, projection);
     this.requestedFrameState_ = frameState;
@@ -790,8 +792,6 @@ class RasterSource extends ImageSource {
     ) {
       this.processSources_();
     }
-
-    frameState.tileQueue.loadMoreTiles(16, 16);
 
     if (frameState.animate) {
       requestAnimationFrame(this.changed.bind(this));
@@ -869,15 +869,16 @@ class RasterSource extends ImageSource {
     }
     context.putImageData(output, 0, 0);
 
-    this.changed();
+    if (frameState.animate) {
+      requestAnimationFrame(this.changed.bind(this));
+    } else {
+      this.changed();
+    }
     this.renderedRevision_ = this.getRevision();
 
     this.dispatchEvent(
       new RasterSourceEvent(RasterEventType.AFTEROPERATIONS, frameState, data)
     );
-    if (frameState.animate) {
-      requestAnimationFrame(this.changed.bind(this));
-    }
   }
 
   /**
