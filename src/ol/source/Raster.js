@@ -587,12 +587,9 @@ class RasterSource extends ImageSource {
      */
     this.layers_ = createLayers(options.sources);
 
+    const changed = this.changed.bind(this);
     for (let i = 0, ii = this.layers_.length; i < ii; ++i) {
-      this.layers_[i].addEventListener(EventType.CHANGE, () => {
-        if (this.requestedFrameState_) {
-          this.processSources_();
-        }
-      });
+      this.layers_[i].addEventListener(EventType.CHANGE, changed);
     }
 
     /** @type {boolean} */
@@ -771,6 +768,8 @@ class RasterSource extends ImageSource {
       return null;
     }
 
+    this.tileQueue_.loadMoreTiles(16, 16);
+
     resolution = this.findNearestResolution(resolution);
     const frameState = this.updateFrameState_(extent, resolution, projection);
     this.requestedFrameState_ = frameState;
@@ -793,8 +792,6 @@ class RasterSource extends ImageSource {
     ) {
       this.processSources_();
     }
-
-    frameState.tileQueue.loadMoreTiles(16, 16);
 
     if (frameState.animate) {
       requestAnimationFrame(this.changed.bind(this));
