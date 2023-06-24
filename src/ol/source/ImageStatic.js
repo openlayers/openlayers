@@ -48,9 +48,7 @@ class Static extends ImageSource {
                 crossOrigin !== null ||
                 location?.origin === new URL(src, location?.origin).origin
               ) {
-                fetch(src, {
-                  mode: crossOrigin === null ? 'cors' : 'same-origin',
-                })
+                fetch(src)
                   .then((response) => {
                     if (
                       response.headers.get('content-type') === 'image/svg+xml'
