@@ -16,6 +16,8 @@ import {create as createTransform} from '../transform.js';
 import {equals, getCenter, getHeight, getWidth} from '../extent.js';
 import {getUid} from '../util.js';
 
+const resolve = Promise.resolve();
+
 let hasImageData = true;
 try {
   new ImageData(10, 10);
@@ -812,7 +814,7 @@ class RasterSource extends ImageSource {
   processSources_() {
     const frameState = this.requestedFrameState_;
     if (!frameState) {
-      return Promise.resolve();
+      return resolve;
     }
     const len = this.layers_.length;
     const imageDatas = new Array(len);
@@ -823,7 +825,7 @@ class RasterSource extends ImageSource {
       if (imageData) {
         imageDatas[i] = imageData;
       } else {
-        return Promise.resolve();
+        return resolve;
       }
     }
 
