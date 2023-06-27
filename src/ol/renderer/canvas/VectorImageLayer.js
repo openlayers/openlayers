@@ -107,7 +107,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
       vectorRenderer.useContainer(null, null);
       const context = vectorRenderer.context;
       const layerState = frameState.layerStatesArray[frameState.layerIndex];
-      context.globalAlpha = layerState.opacity;
+      this.globalAlpha = layerState.opacity;
       const imageLayerState = Object.assign({}, layerState, {opacity: 1});
       const imageFrameState = /** @type {import("../../Map.js").FrameState} */ (
         Object.assign({}, frameState, {
