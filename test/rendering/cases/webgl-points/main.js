@@ -5,6 +5,7 @@ import VectorSource from '../../../../src/ol/source/Vector.js';
 import View from '../../../../src/ol/View.js';
 import WebGLPointsLayer from '../../../../src/ol/layer/WebGLPoints.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
+import {createDefaultStyle} from '../../../../src/ol/style/flat.js';
 
 const vector = new WebGLPointsLayer({
   source: new VectorSource({
@@ -13,13 +14,7 @@ const vector = new WebGLPointsLayer({
       extractStyles: false,
     }),
   }),
-  style: {
-    symbol: {
-      symbolType: 'square',
-      size: 4,
-      color: 'white',
-    },
-  },
+  style: createDefaultStyle(),
 });
 
 const raster = new TileLayer({
@@ -39,5 +34,5 @@ new Map({
 });
 
 render({
-  message: 'Points are rendered using webgl as 4px pixel squares',
+  message: 'Points are rendered using webgl with the default style',
 });
