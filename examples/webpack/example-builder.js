@@ -29,7 +29,8 @@ function getPackageInfo() {
 
 handlebars.registerHelper(
   'md',
-  (str) => new handlebars.SafeString(marked(str))
+  (str) =>
+    new handlebars.SafeString(marked(str, {headerIds: false, mangle: false}))
 );
 
 /**
