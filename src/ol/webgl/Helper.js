@@ -450,6 +450,13 @@ class WebGLHelper extends Disposable {
    */
   setUniforms(uniforms) {
     this.uniforms_ = [];
+    this.addUniforms(uniforms);
+  }
+
+  /**
+   * @param {Object<string, UniformValue>} uniforms Uniform definitions.
+   */
+  addUniforms(uniforms) {
     for (const name in uniforms) {
       this.uniforms_.push({
         name: name,
@@ -774,8 +781,7 @@ class WebGLHelper extends Disposable {
           uniform.prevValue = undefined;
           uniform.texture = gl.createTexture();
         }
-        gl.activeTexture(gl[`TEXTURE${textureSlot}`]);
-        gl.bindTexture(gl.TEXTURE_2D, uniform.texture);
+        this.bindTexture(uniform.texture, textureSlot, uniform.name);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -794,9 +800,7 @@ class WebGLHelper extends Disposable {
             value
           );
         }
-
-        // fill texture slots by increasing index
-        gl.uniform1i(this.getUniformLocation(uniform.name), textureSlot++);
+        textureSlot++;
       } else if (Array.isArray(value) && value.length === 6) {
         this.setUniformMatrixValue(
           uniform.name,

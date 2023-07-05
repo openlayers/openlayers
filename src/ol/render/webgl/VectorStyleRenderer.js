@@ -238,6 +238,10 @@ class VectorStyleRenderer {
       },
       ...customAttributesDesc,
     ];
+
+    if (shaders.uniforms) {
+      this.helper_.addUniforms(shaders.uniforms);
+    }
   }
 
   /**
