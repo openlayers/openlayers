@@ -35,11 +35,8 @@ new Map({
         }),
       }),
       style: {
-        symbol: {
-          symbolType: 'circle',
-          size: 6,
-          color: 'orange',
-        },
+        'circle-radius': 3,
+        'circle-fill-color': 'orange',
       },
     }),
     new TileLayer({

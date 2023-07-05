@@ -16,19 +16,14 @@ import {create} from '../../../../../../src/ol/transform.js';
 import {createXYZ} from '../../../../../../src/ol/tilegrid.js';
 
 const SAMPLE_STYLE = {
-  ['fill-color']: ['get', 'color'],
-  ['stroke-width']: 2,
-  symbol: {
-    size: 3,
-  },
+  'fill-color': ['get', 'color'],
+  'stroke-width': 2,
+  'circle-radius': 1.5,
 };
 
 const SAMPLE_STYLE2 = {
-  symbol: {
-    symbolType: 'square',
-    color: 'red',
-    size: ['array', 4, ['get', 'size']],
-  },
+  'circle-radius': ['get', 'size'],
+  'circle-fill-color': 'red',
 };
 
 const SAMPLE_VERTEX_SHADER = `

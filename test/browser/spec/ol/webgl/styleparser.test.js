@@ -604,7 +604,7 @@ describe('ol.webgl.styleparser', () => {
           variables: {
             width: 1,
           },
-          ['stroke-color']: [
+          'stroke-color': [
             'interpolate',
             ['linear'],
             ['get', 'intensity'],
@@ -613,7 +613,7 @@ describe('ol.webgl.styleparser', () => {
             1,
             'red',
           ],
-          ['stroke-width']: ['*', ['var', 'width'], 3],
+          'stroke-width': ['*', ['var', 'width'], 3],
         });
 
         expect(result.builder.uniforms_).to.eql(['float u_var_width']);
@@ -643,7 +643,7 @@ describe('ol.webgl.styleparser', () => {
           variables: {
             scale: 10,
           },
-          ['fill-color']: [
+          'fill-color': [
             'interpolate',
             ['linear'],
             ['*', ['get', 'intensity'], ['var', 'scale']],
@@ -676,13 +676,13 @@ describe('ol.webgl.styleparser', () => {
       let parseResult;
       beforeEach(() => {
         parseResult = parseLiteralStyle({
-          ['fill-color']: [
+          'fill-color': [
             'case',
             ['get', 'transparent'],
             'transparent',
             ['get', 'fillColor'],
           ],
-          ['stroke-width']: [
+          'stroke-width': [
             'match',
             ['get', 'lineType'],
             'low',
@@ -776,13 +776,13 @@ describe('ol.webgl.styleparser', () => {
             fillColor: 'rgba(123, 240, 100, 0.3)',
             transparent: true,
           },
-          ['fill-color']: [
+          'fill-color': [
             'case',
             ['var', 'transparent'],
             'transparent',
             ['var', 'fillColor'],
           ],
-          ['stroke-width']: [
+          'stroke-width': [
             'match',
             ['var', 'lineType'],
             'low',
@@ -841,7 +841,7 @@ describe('ol.webgl.styleparser', () => {
   describe('shader functions', () => {
     it('adds shader functions in the vertex and fragment shaders', () => {
       const result = parseLiteralStyle({
-        ['stroke-width']: 2,
+        'stroke-width': 2,
         filter: [
           'in',
           ['get', 'type'],

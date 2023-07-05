@@ -58,13 +58,10 @@ const SAMPLE_SHADERS = {
  * @type {import('../../../../../../src/ol/style/literal.js').LiteralStyle}
  */
 const SAMPLE_STYLE = {
-  ['fill-color']: ['get', 'color'],
-  ['stroke-width']: 2,
-  symbol: {
-    symbolType: 'square',
-    color: 'red',
-    size: ['array', 4, ['get', 'size']],
-  },
+  'fill-color': ['get', 'color'],
+  'stroke-width': 2,
+  'circle-radius': ['get', 'size'],
+  'circle-fill-color': 'red',
 };
 
 const SAMPLE_FRAMESTATE = {

@@ -14,11 +14,8 @@ class WebGLVectorTileLayer extends VectorTile {
         'fill-color': '#eee',
         'stroke-color': 'rgb(136,136,136, 0.5)',
         'stroke-width': 1,
-        symbol: {
-          symbolType: 'square',
-          color: '#eee',
-          size: 6,
-        },
+        'circle-radius': 2,
+        'circle-fill-color': '#707070',
       },
     });
   }
