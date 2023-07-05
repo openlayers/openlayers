@@ -17,31 +17,6 @@
  * point will be displayed. If undefined, all points will show.
  * @property {Object<string, number | Array<number> | string | boolean>} [variables] Style variables; each variable must hold a number.
  * Note: **this object is meant to be mutated**: changes to the values will immediately be visible on the rendered features
- * @property {LiteralSymbolStyle} [symbol] Symbol representation.
- */
-
-/**
- * @enum {string}
- */
-export const SymbolType = {
-  CIRCLE: 'circle',
-  SQUARE: 'square',
-  TRIANGLE: 'triangle',
-  IMAGE: 'image',
-};
-
-/**
- * @typedef {Object} LiteralSymbolStyle
- * @property {ExpressionValue|Array<ExpressionValue>} size Size, mandatory.
- * @property {SymbolType} symbolType Symbol type to use, either a regular shape or an image.
- * @property {string} [src] Path to the image to be used for the symbol. Only required with `symbolType: 'image'`.
- * @property {string} [crossOrigin='anonymous'] The `crossOrigin` attribute for loading `src`.
- * @property {ColorExpression} [color] Color used for the representation (either fill, line or symbol).
- * @property {ExpressionValue} [opacity=1] Opacity.
- * @property {ExpressionValue} [rotation=0] Symbol rotation in radians.
- * @property {Array<ExpressionValue, ExpressionValue>} [offset] Offset on X and Y axis for symbols. If not specified, the symbol will be centered.
- * @property {Array<ExpressionValue, ExpressionValue, ExpressionValue, ExpressionValue>} [textureCoord] Texture coordinates. If not specified, the whole texture will be used (range for 0 to 1 on both axes).
- * @property {boolean} [rotateWithView=false] Specify whether the symbol must rotate with the view or stay upwards.
  */
 
 /**
@@ -63,7 +38,7 @@ export const SymbolType = {
  * to provide the size of the image, with the `icon-img-size` option.
  * @property {import("../size.js").Size} [icon-img-size] Image size in pixels. Only required if `icon-img` is set and `icon-src` is not.
  * The provided size needs to match the actual size of the image.
- * @property {Array<number>} [icon-anchor=[0.5, 0.5]] Anchor. Default value is the icon center.
+ * @property {Array<number>|ExpressionValue} [icon-anchor=[0.5, 0.5]] Anchor. Default value is the icon center.
  * @property {import("./Icon.js").IconOrigin} [icon-anchor-origin='top-left'] Origin of the anchor: `bottom-left`, `bottom-right`,
  * `top-left` or `top-right`.
  * @property {import("./Icon.js").IconAnchorUnits} [icon-anchor-x-units='fraction'] Units in which the anchor x value is
@@ -74,33 +49,34 @@ export const SymbolType = {
  * the y value in pixels.
  * @property {ColorExpression} [icon-color] Color to tint the icon. If not specified,
  * the icon will be left as is.
+ * @property {ExpressionValue|number} [icon-opacity=1] Opacity of the icon.
  * @property {null|string} [icon-cross-origin] The `crossOrigin` attribute for loaded images. Note that you must provide a
  * `icon-cross-origin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
- * @property {Array<number>|Array<ExpressionValue>} [icon-offset=[0, 0]] Offset, which, together with the size and the offset origin, define the
- * sub-rectangle to use from the original icon image.
- * @property {Array<number>|Array<ExpressionValue>} [icon-displacement=[0,0]] Displacement of the icon.
- * @property {import("./Icon.js").IconOrigin} [icon-offset-origin='top-left'] Origin of the offset: `bottom-left`, `bottom-right`,
- * `top-left` or `top-right`.
- * @property {number} [icon-opacity=1] Opacity of the icon.
- * @property {ExpressionValue|Array<ExpressionValue>|number|import("../size.js").Size} [icon-scale=1] Scale.
+ * @property {Array<number>|ExpressionValue} [icon-displacement=[0,0]] Displacement of the icon.
+ * @property {ExpressionValue|number|import("../size.js").Size} [icon-scale=1] Scale.
  * @property {ExpressionValue|number} [icon-width] Width of the icon. If not specified, the actual image width will be used. Cannot be combined
  * with `scale`.
  * @property {ExpressionValue|number} [icon-height] Height of the icon. If not specified, the actual image height will be used. Cannot be combined
  * with `scale`.
  * @property {ExpressionValue|number} [icon-rotation=0] Rotation in radians (positive rotation clockwise).
  * @property {boolean} [icon-rotate-with-view=false] Whether to rotate the icon with the view.
- * @property {Array<ExpressionValue>|import("../size.js").Size} [icon-size] Icon size in pixel. Can be used together with `icon-offset` to define the
+ * @property {Array<number>|ExpressionValue} [icon-offset=[0, 0]] Offset, which, together with the size and the offset origin, define the
+ * sub-rectangle to use from the original icon image.
+ * @property {import("./Icon.js").IconOrigin} [icon-offset-origin='top-left'] Origin of the offset: `bottom-left`, `bottom-right`,
+ * `top-left` or `top-right`.
+ * @property {ExpressionValue|import("../size.js").Size} [icon-size] Icon size in pixel. Can be used together with `icon-offset` to define the
  * sub-rectangle to use from the origin (sprite) icon image.
  */
 
 /**
  * @typedef {Object} ShapeProps
- * @property {number} [shape-points] Number of points for stars and regular polygons. In case of a polygon, the number of points
+ * @property {ExpressionValue|number} [shape-points] Number of points for stars and regular polygons. In case of a polygon, the number of points
  * is the number of sides.
  * @property {ColorExpression} [shape-fill-color] The fill color.
  * @property {ColorExpression} [shape-stroke-color] The stroke color.
  * @property {ExpressionValue|number} [shape-stroke-width] Stroke pixel width.
+ * @property {ExpressionValue|number} [shape-opacity] Shape opacity.
  * @property {ExpressionValue|number} [shape-radius] Radius of a regular polygon.
  * @property {ExpressionValue|number} [shape-radius1] First radius of a star. Ignored if radius is set.
  * @property {ExpressionValue|number} [shape-radius2] Second radius of a star.
@@ -118,6 +94,7 @@ export const SymbolType = {
  * @property {ColorExpression} [circle-fill-color] The fill color.
  * @property {ColorExpression} [circle-stroke-color] The stroke color.
  * @property {ExpressionValue|number} [circle-stroke-width] Stroke pixel width.
+ * @property {ExpressionValue|number} [circle-opacity] Circle opacity.
  * @property {Array<ExpressionValue>|Array<number>} [circle-displacement=[0,0]] displacement
  * @property {ExpressionValue|Array<ExpressionValue>|number|import("../size.js").Size} [circle-scale=1] Scale. A two dimensional scale will produce an ellipse.
  * Unless two dimensional scaling is required a better result may be obtained with an appropriate setting for `circle-radius`.
@@ -143,3 +120,5 @@ export const SymbolType = {
 /**
  * @typedef {BaseProps & IconProps & StrokeProps & FillProps & CircleProps & ShapeProps} LiteralStyle
  */
+
+export {};
