@@ -33,7 +33,6 @@ const map = new Map({
 
 const oldColor = [255, 160, 110];
 const newColor = [180, 255, 200];
-const size = 16;
 
 const style = {
   variables: {
@@ -44,41 +43,39 @@ const style = {
     ['==', ['var', 'filterShape'], 'all'],
     ['==', ['var', 'filterShape'], ['get', 'shape', 'string']],
   ],
-  symbol: {
-    symbolType: 'image',
-    src: 'data/ufo_shapes.png',
-    size: size,
-    color: [
-      'interpolate',
-      ['linear'],
-      ['get', 'year'],
-      1950,
-      oldColor,
-      2013,
-      newColor,
-    ],
-    rotateWithView: false,
-    offset: [0, 0],
-    textureCoord: [
-      'match',
-      ['get', 'shape'],
-      'light',
-      [0, 0, 0.25, 0.5],
-      'sphere',
-      [0.25, 0, 0.5, 0.5],
-      'circle',
-      [0.25, 0, 0.5, 0.5],
-      'disc',
-      [0.5, 0, 0.75, 0.5],
-      'oval',
-      [0.5, 0, 0.75, 0.5],
-      'triangle',
-      [0.75, 0, 1, 0.5],
-      'fireball',
-      [0, 0.5, 0.25, 1],
-      [0.75, 0.5, 1, 1],
-    ],
-  },
+  'icon-src': 'data/ufo_shapes.png',
+  'icon-width': 128,
+  'icon-height': 64,
+  'icon-color': [
+    'interpolate',
+    ['linear'],
+    ['get', 'year'],
+    1950,
+    oldColor,
+    2013,
+    newColor,
+  ],
+  'icon-offset': [
+    'match',
+    ['get', 'shape'],
+    'light',
+    [0, 0],
+    'sphere',
+    [32, 0],
+    'circle',
+    [32, 0],
+    'disc',
+    [64, 0],
+    'oval',
+    [64, 0],
+    'triangle',
+    [96, 0],
+    'fireball',
+    [0, 32],
+    [96, 32],
+  ],
+  'icon-size': [32, 32],
+  'icon-scale': 0.5,
 };
 
 const shapeSelect = document.getElementById('shape-filter');

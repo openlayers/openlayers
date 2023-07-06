@@ -15,11 +15,8 @@ const result = parseLiteralStyle({
   'fill-color': ['get', 'fillColor'],
   'stroke-color': ['get', 'strokeColor'],
   'stroke-width': ['get', 'strokeWidth'],
-  symbol: {
-    symbolType: 'circle',
-    size: 8,
-    color: '#777',
-  },
+  'circle-radius': 4,
+  'circle-fill-color': '#777',
 });
 
 class WebGLVectorTileLayer extends VectorTile {

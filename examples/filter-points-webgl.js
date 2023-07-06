@@ -39,16 +39,21 @@ const style = {
     maxYear: 2015,
   },
   filter: ['between', ['get', 'year'], ['var', 'minYear'], ['var', 'maxYear']],
-  symbol: {
-    symbolType: 'circle',
-    size: [
-      '*',
-      ['interpolate', ['linear'], ['get', 'mass'], 0, 8, 200000, 26],
-      ['-', 1.75, ['*', animRatio, 0.75]],
-    ],
-    color: ['interpolate', ['linear'], animRatio, 0, newColor, 1, oldColor],
-    opacity: ['-', 1.0, ['*', animRatio, 0.75]],
-  },
+  'circle-radius': [
+    '*',
+    ['interpolate', ['linear'], ['get', 'mass'], 0, 4, 200000, 13],
+    ['-', 1.75, ['*', animRatio, 0.75]],
+  ],
+  'circle-fill-color': [
+    'interpolate',
+    ['linear'],
+    animRatio,
+    0,
+    newColor,
+    1,
+    oldColor,
+  ],
+  'circle-opacity': ['-', 1.0, ['*', animRatio, 0.75]],
 };
 
 // handle input values & events
