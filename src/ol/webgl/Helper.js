@@ -733,6 +733,11 @@ class WebGLHelper extends Disposable {
   applyHitDetectionUniform(enabled) {
     const loc = this.getUniformLocation(DefaultUniform.HIT_DETECTION);
     this.getGL().uniform1i(loc, enabled ? 1 : 0);
+
+    // hit detection uses a fixed pixel ratio
+    if (enabled) {
+      this.setUniformFloatValue(DefaultUniform.PIXEL_RATIO, 0.5);
+    }
   }
 
   /**
