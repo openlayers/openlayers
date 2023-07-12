@@ -328,12 +328,17 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
     });
 
     it('changes background when function returns a different color', function (done) {
-      let first = true;
+      let count = 0;
       layer.setBackground(function (resolution) {
+        const backgrounds = [
+          undefined,
+          'rgba(255, 0, 0, 0.5)',
+          'rgba(0, 0, 255, 0.5)',
+          undefined,
+        ];
+
         expect(resolution).to.be(map.getView().getResolution());
-        const background = first === true ? undefined : 'rgba(255, 0, 0, 0.5)';
-        first = false;
-        return background;
+        return backgrounds[count++];
       });
       map.once('rendercomplete', function () {
         expect(layer.getRenderer().container.style.backgroundColor).to.be('');
@@ -341,6 +346,12 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         expect(layer.getRenderer().container.style.backgroundColor).to.be(
           'rgba(255, 0, 0, 0.5)'
         );
+        map.renderSync();
+        expect(layer.getRenderer().container.style.backgroundColor).to.be(
+          'rgba(0, 0, 255, 0.5)'
+        );
+        map.renderSync();
+        expect(layer.getRenderer().container.style.backgroundColor).to.be('');
         done();
       });
     });
