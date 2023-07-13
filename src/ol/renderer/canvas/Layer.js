@@ -177,7 +177,7 @@ class CanvasLayerRenderer extends LayerRenderer {
       this.container = null;
       this.context = null;
       this.containerReused = false;
-    } else if (this.container && this.container.style) {
+    } else if (this.container) {
       this.container.style.backgroundColor = null;
     }
     if (!this.container) {
