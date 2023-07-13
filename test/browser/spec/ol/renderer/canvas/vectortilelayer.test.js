@@ -457,7 +457,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         wantedTiles: {},
       };
 
-      renderer.container = {};
+      renderer.container = document.createElement('div');
       const sequence = [];
       renderer.context = {
         clearRect: () => sequence.push('clearRect'),
