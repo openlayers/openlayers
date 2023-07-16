@@ -73,14 +73,17 @@ describe('ol.interaction.Snap', function () {
       };
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.type).to.be('snap');
-        expect(snapEvent.vertex).to.eql([0, 0]);
-        expect(snapEvent.vertexPixel).to.eql([width / 2, height / 2]);
+        expect(snapEvent.vertex).to.be(event.coordinate);
+        expect(snapEvent.vertexPixel).to.be(event.pixel);
         expect(snapEvent.feature).to.eql(point);
+
+        // check that the coordinate is in XY and not XYZ
+        expect(event.coordinate).to.eql([0, 0]);
+
         done();
       });
+
       snapInteraction.handleEvent(event);
-      // check that the coordinate is in XY and not XYZ
-      expect(event.coordinate).to.eql([0, 0]);
     });
 
     it('can handle view rotation', function (done) {
@@ -99,14 +102,16 @@ describe('ol.interaction.Snap', function () {
         map: map,
       };
       snapInteraction.on('snap', function (snapEvent) {
-        expect(snapEvent.type).to.be('snap');
-        expect(snapEvent.vertex).to.eql([0, 0]);
-        expect(snapEvent.vertexPixel).to.eql([width / 2, height / 2]);
+        expect(snapEvent.vertex).to.be(event.coordinate);
+        expect(snapEvent.vertexPixel).to.be(event.pixel);
         expect(snapEvent.feature).to.be(point);
+
+        expect(event.coordinate).to.eql([0, 0]);
+        expect(event.pixel).to.eql([width / 2, height / 2]);
+
         done();
       });
       snapInteraction.handleEvent(event);
-      expect(event.coordinate).to.eql([0, 0]);
     });
 
     it('snaps to edges only', function (done) {
@@ -122,19 +127,21 @@ describe('ol.interaction.Snap', function () {
         vertex: false,
       });
       snapInteraction.setMap(map);
-      snapInteraction.on('snap', function (snapEvent) {
-        expect(snapEvent.type).to.be('snap');
-        expect(snapEvent.vertex).to.eql([7, 0]);
-        expect(snapEvent.feature).to.be(undefined);
-        done();
-      });
       const event = {
         pixel: [7 + width / 2, height / 2 - 4],
         coordinate: [7, 4],
         map: map,
       };
+
+      snapInteraction.on('snap', function (snapEvent) {
+        expect(snapEvent.feature).to.be(undefined);
+
+        expect(event.coordinate).to.eql([7, 0]);
+
+        done();
+      });
+
       snapInteraction.handleEvent(event);
-      expect(event.coordinate).to.eql([7, 0]);
     });
 
     it('snaps to edges in a user projection', function (done) {
@@ -163,14 +170,14 @@ describe('ol.interaction.Snap', function () {
       const coordinate = transform([7, 0], viewProjection, userProjection);
 
       snapInteraction.on('snap', function (snapEvent) {
-        expect(snapEvent.vertex[0]).to.roughlyEqual(coordinate[0], 1e-10);
-        expect(snapEvent.vertex[1]).to.roughlyEqual(coordinate[1], 1e-10);
+        expect(snapEvent.feature).to.be(undefined);
+
+        expect(event.coordinate[0]).to.roughlyEqual(coordinate[0], 1e-10);
+        expect(event.coordinate[1]).to.roughlyEqual(coordinate[1], 1e-10);
+
         done();
       });
       snapInteraction.handleEvent(event);
-
-      expect(event.coordinate[0]).to.roughlyEqual(coordinate[0], 1e-10);
-      expect(event.coordinate[1]).to.roughlyEqual(coordinate[1], 1e-10);
     });
 
     it('snaps to vertices only', function (done) {
@@ -193,12 +200,13 @@ describe('ol.interaction.Snap', function () {
         map: map,
       };
       snapInteraction.on('snap', function (snapEvent) {
-        expect(snapEvent.vertex).to.eql([10, 0]);
         expect(snapEvent.feature).to.be(point);
+
+        expect(event.coordinate).to.eql([10, 0]);
+
         done();
       });
       snapInteraction.handleEvent(event);
-      expect(event.coordinate).to.eql([10, 0]);
     });
 
     it('snaps to vertex on line', function (done) {
@@ -219,12 +227,13 @@ describe('ol.interaction.Snap', function () {
         map: map,
       };
       snapInteraction.on('snap', function (snapEvent) {
-        expect(snapEvent.vertex).to.eql([5, 0]);
         expect(snapEvent.feature).to.be(point);
+
+        expect(event.coordinate).to.eql([5, 0]);
+
         done();
       });
       snapInteraction.handleEvent(event);
-      expect(event.coordinate).to.eql([5, 0]);
     });
 
     it('snaps to circle', function (done) {
@@ -241,27 +250,20 @@ describe('ol.interaction.Snap', function () {
         map: map,
       };
       snapInteraction.on('snap', function (snapEvent) {
-        expect(snapEvent.vertex[0]).to.roughlyEqual(
-          Math.sin(Math.PI / 4) * 10,
-          1e-10
-        );
-        expect(snapEvent.vertex[1]).to.roughlyEqual(
-          Math.sin(Math.PI / 4) * 10,
-          1e-10
-        );
         expect(snapEvent.feature).to.be(undefined);
+
+        expect(event.coordinate[0]).to.roughlyEqual(
+          Math.sin(Math.PI / 4) * 10,
+          1e-10
+        );
+        expect(event.coordinate[1]).to.roughlyEqual(
+          Math.sin(Math.PI / 4) * 10,
+          1e-10
+        );
+
         done();
       });
       snapInteraction.handleEvent(event);
-
-      expect(event.coordinate[0]).to.roughlyEqual(
-        Math.sin(Math.PI / 4) * 10,
-        1e-10
-      );
-      expect(event.coordinate[1]).to.roughlyEqual(
-        Math.sin(Math.PI / 4) * 10,
-        1e-10
-      );
     });
 
     it('snaps to circle in a user projection', function (done) {
@@ -291,15 +293,14 @@ describe('ol.interaction.Snap', function () {
       );
 
       snapInteraction.on('snap', function (snapEvent) {
-        expect(snapEvent.vertex[0]).to.roughlyEqual(coordinate[0], 1e-10);
-        expect(snapEvent.vertex[1]).to.roughlyEqual(coordinate[1], 1e-10);
         expect(snapEvent.feature).to.be(undefined);
+
+        expect(event.coordinate[0]).to.roughlyEqual(coordinate[0], 1e-10);
+        expect(event.coordinate[1]).to.roughlyEqual(coordinate[1], 1e-10);
+
         done();
       });
       snapInteraction.handleEvent(event);
-
-      expect(event.coordinate[0]).to.roughlyEqual(coordinate[0], 1e-10);
-      expect(event.coordinate[1]).to.roughlyEqual(coordinate[1], 1e-10);
     });
 
     it('handle feature without geometry', function (done) {
@@ -324,12 +325,13 @@ describe('ol.interaction.Snap', function () {
         map: map,
       };
       snapInteraction.on('snap', function (snapEvent) {
-        expect(snapEvent.vertex).to.eql([10, 0]);
         expect(snapEvent.feature).to.be(feature);
+
+        expect(event.coordinate).to.eql([10, 0]);
+
         done();
       });
       snapInteraction.handleEvent(event);
-      expect(event.coordinate).to.eql([10, 0]);
     });
 
     it('handle geometry changes', function (done) {
@@ -357,12 +359,13 @@ describe('ol.interaction.Snap', function () {
         map: map,
       };
       snapInteraction.on('snap', function (snapEvent) {
-        expect(snapEvent.vertex).to.eql([10, 0]);
         expect(snapEvent.feature).to.be(line);
+
+        expect(event.coordinate).to.eql([10, 0]);
+
         done();
       });
       snapInteraction.handleEvent(event);
-      expect(event.coordinate).to.eql([10, 0]);
     });
 
     it('handle geometry name changes', function (done) {
@@ -392,13 +395,14 @@ describe('ol.interaction.Snap', function () {
       };
 
       snapInteraction.on('snap', function (snapEvent) {
-        expect(snapEvent.vertex).to.eql([10, 0]);
         expect(snapEvent.feature).to.be(line);
+
+        expect(event.coordinate).to.eql([10, 0]);
+
         done();
       });
 
       snapInteraction.handleEvent(event);
-      expect(event.coordinate).to.eql([10, 0]);
     });
   });
 
@@ -470,15 +474,14 @@ describe('ol.interaction.Snap', function () {
         map: map,
       };
       snapInteraction.on('snap', function (snapEvent) {
-        expect(snapEvent.vertex).to.eql([lon, lat]);
-        expect(snapEvent.vertexPixel).to.eql(expectedPixel);
         expect(snapEvent.feature).to.be(point);
+
+        expect(event.coordinate).to.eql([lon, lat]);
+        expect(event.pixel).to.eql(expectedPixel);
+
         done();
       });
       snapInteraction.handleEvent(event);
-
-      expect(event.coordinate).to.eql([lon, lat]);
-      expect(event.pixel).to.eql(expectedPixel);
     });
   });
 

@@ -300,8 +300,8 @@ class Snap extends PointerInteraction {
       evt.pixel = result.vertexPixel;
       this.dispatchEvent(
         new SnapEvent(SnapEventType.SNAP, {
-          vertex: result.vertex.slice(0, 2),
-          vertexPixel: result.vertexPixel,
+          vertex: evt.coordinate,
+          vertexPixel: evt.pixel,
           feature: result.feature,
         })
       );
