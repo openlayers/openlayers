@@ -16,6 +16,7 @@ const blueStar = {
   'shape-stroke-width': 4,
   'shape-stroke-color': '#3399CC',
   'shape-displacement': [-40, 0],
+  'shape-angle': Math.PI / 16,
 };
 const dataDriven = {
   'shape-points': 4,
@@ -24,6 +25,7 @@ const dataDriven = {
   'shape-stroke-width': 2,
   'shape-stroke-color': ['*', ['get', 'color'], '#bbb'],
   'shape-displacement': [40, 0],
+  'shape-angle': -Math.PI / 16,
 };
 const scaledRotated = {
   'shape-points': 10,

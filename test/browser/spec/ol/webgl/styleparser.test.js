@@ -214,6 +214,7 @@ describe('ol.webgl.styleparser', () => {
             'shape-opacity': ['*', 0.5, 0.75],
             'shape-rotation': ['get', 'heading'],
             'shape-rotate-with-view': true,
+            'shape-angle': ['*', 0.5, Math.PI],
           });
         });
         it('sets up builder accordingly', () => {
@@ -242,7 +243,7 @@ describe('ol.webgl.styleparser', () => {
             },
           ]);
           expect(result.builder.symbolColorExpression_).to.eql(
-            'mix(v_color2, v_color1, smoothstep(-(3.0 + 4.0) + 0.63, -(3.0 + 4.0) - 0.58, starDistanceField(coordsPx / vec2(1.5, 1.7), (10.0 - 3.0), (2.0 * 5.0) + (3.0 + 4.0) * 0.5, v_attr1 + (3.0 + 4.0) * 0.5))) * (1.0 - smoothstep(-0.63, 0.58, starDistanceField(coordsPx / vec2(1.5, 1.7), (10.0 - 3.0), (2.0 * 5.0) + (3.0 + 4.0) * 0.5, v_attr1 + (3.0 + 4.0) * 0.5))) * (0.5 * 0.75)'
+            'mix(v_color2, v_color1, smoothstep(-(3.0 + 4.0) + 0.63, -(3.0 + 4.0) - 0.58, starDistanceField(coordsPx / vec2(1.5, 1.7), (10.0 - 3.0), (2.0 * 5.0) + (3.0 + 4.0) * 0.5, v_attr1 + (3.0 + 4.0) * 0.5, (0.5 * 3.141592653589793)))) * (1.0 - smoothstep(-0.63, 0.58, starDistanceField(coordsPx / vec2(1.5, 1.7), (10.0 - 3.0), (2.0 * 5.0) + (3.0 + 4.0) * 0.5, v_attr1 + (3.0 + 4.0) * 0.5, (0.5 * 3.141592653589793)))) * (0.5 * 0.75)'
           );
           expect(result.builder.symbolSizeExpression_).to.eql(
             'vec2((a_attr1 + (3.0 + 4.0) * 0.5) * 2. + 0.5) * vec2(1.5, 1.7)'
@@ -271,7 +272,7 @@ describe('ol.webgl.styleparser', () => {
         });
         it('uses a regular shape formula, ignores radius1 and radius2', () => {
           expect(result.builder.symbolColorExpression_).to.eql(
-            'vec4(0.5, 0.5, 0.5, 0.5) * (1.0 - smoothstep(-0.63, 0.58, regularDistanceField(coordsPx, 5.0, 10.0)))'
+            'vec4(0.5, 0.5, 0.5, 0.5) * (1.0 - smoothstep(-0.63, 0.58, regularDistanceField(coordsPx, 5.0, 10.0, 0.)))'
           );
         });
       });
@@ -285,7 +286,7 @@ describe('ol.webgl.styleparser', () => {
         });
         it('uses a simplified color expression', () => {
           expect(result.builder.symbolColorExpression_).to.eql(
-            'vec4(0.5, 0.5, 0.5, 0.5) * (1.0 - smoothstep(-0.63, 0.58, regularDistanceField(coordsPx, 5.0, 10.0)))'
+            'vec4(0.5, 0.5, 0.5, 0.5) * (1.0 - smoothstep(-0.63, 0.58, regularDistanceField(coordsPx, 5.0, 10.0, 0.)))'
           );
         });
       });
@@ -300,7 +301,7 @@ describe('ol.webgl.styleparser', () => {
         });
         it('uses a transparent fill color', () => {
           expect(result.builder.symbolColorExpression_).to.eql(
-            'mix(vec4(1.0, 0.0, 0.0, 1.0), vec4(0.), smoothstep(-4.0 + 0.63, -4.0 - 0.58, regularDistanceField(coordsPx, 5.0, 10.0 + 4.0 * 0.5))) * (1.0 - smoothstep(-0.63, 0.58, regularDistanceField(coordsPx, 5.0, 10.0 + 4.0 * 0.5)))'
+            'mix(vec4(1.0, 0.0, 0.0, 1.0), vec4(0.), smoothstep(-4.0 + 0.63, -4.0 - 0.58, regularDistanceField(coordsPx, 5.0, 10.0 + 4.0 * 0.5, 0.))) * (1.0 - smoothstep(-0.63, 0.58, regularDistanceField(coordsPx, 5.0, 10.0 + 4.0 * 0.5, 0.)))'
           );
         });
       });

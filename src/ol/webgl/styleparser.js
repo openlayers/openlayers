@@ -277,13 +277,16 @@ function parseShapeProperties(
   // inspired by https://github.com/zranger1/PixelblazePatterns/blob/master/Toolkit/sdf2d.md#n-sided-regular-polygon
   fragContext.functions[
     'starDistanceField'
-  ] = `float starDistanceField(vec2 point, float numPoints, float radiusIn, float radiusOut) {
+  ] = `float starDistanceField(vec2 point, float numPoints, float radiusIn, float radiusOut, float angle) {
+  float startAngle = -PI * 0.5 + angle; // tip starts upwards and rotates clockwise with angle
+  float c = cos(startAngle);
+  float s = sin(startAngle);
+  vec2 pointRotated = vec2(c * point.x - s * point.y, s * point.x + c * point.y); 
   float alpha = TWO_PI / numPoints; // the angle of one sector
-  vec2 pointRotated = vec2(point.y, -point.x); // rotate -PI/2 to have tip at the top
   float beta = atan(pointRotated.y, pointRotated.x);
   float gamma = round(beta / alpha) * alpha; // angle in sector
-  float c = cos(-gamma);
-  float s = sin(-gamma);
+  c = cos(-gamma);
+  s = sin(-gamma);
   vec2 inSector = vec2(c * pointRotated.x - s * pointRotated.y, abs(s * pointRotated.x + c * pointRotated.y));
   vec2 tipToPoint = inSector + vec2(-radiusOut, 0.);
   vec2 edgeNormal = vec2(radiusIn * sin(alpha * 0.5), -radiusIn * cos(alpha * 0.5) + radiusOut);
@@ -291,14 +294,17 @@ function parseShapeProperties(
 }`;
   fragContext.functions[
     'regularDistanceField'
-  ] = `float regularDistanceField(vec2 point, float numPoints, float radius) {
-  float radiusIn = radius * cos(PI / numPoints);
+  ] = `float regularDistanceField(vec2 point, float numPoints, float radius, float angle) {
+  float startAngle = -PI * 0.5 + angle; // tip starts upwards and rotates clockwise with angle
+  float c = cos(startAngle);
+  float s = sin(startAngle);
+  vec2 pointRotated = vec2(c * point.x - s * point.y, s * point.x + c * point.y); 
   float alpha = TWO_PI / numPoints; // the angle of one sector
-  vec2 pointRotated = vec2(point.y, -point.x); // rotate -PI/2 to have tip at the top
+  float radiusIn = radius * cos(PI / numPoints);
   float beta = atan(pointRotated.y, pointRotated.x);
   float gamma = round((beta - alpha * 0.5) / alpha) * alpha + alpha * 0.5; // angle in sector from mid
-  float c = cos(-gamma);
-  float s = sin(-gamma);
+  c = cos(-gamma);
+  s = sin(-gamma);
   vec2 inSector = vec2(c * pointRotated.x - s * pointRotated.y, abs(s * pointRotated.x + c * pointRotated.y));
   return inSector.x - radiusIn;
 }`;
@@ -362,6 +368,14 @@ function parseShapeProperties(
     style['shape-points'],
     ValueTypes.NUMBER
   );
+  let angle = '0.';
+  if ('shape-angle' in style) {
+    angle = expressionToGlsl(
+      fragContext,
+      style['shape-angle'],
+      ValueTypes.NUMBER
+    );
+  }
   let shapeField;
   if ('shape-radius' in style) {
     let radius = expressionToGlsl(
@@ -372,7 +386,7 @@ function parseShapeProperties(
     if (strokeWidth !== null) {
       radius = `${radius} + ${strokeWidth} * 0.5`;
     }
-    shapeField = `regularDistanceField(${currentPoint}, ${numPoints}, ${radius})`;
+    shapeField = `regularDistanceField(${currentPoint}, ${numPoints}, ${radius}, ${angle})`;
   } else {
     let radiusOuter = expressionToGlsl(
       fragContext,
@@ -388,7 +402,7 @@ function parseShapeProperties(
       radiusOuter = `${radiusOuter} + ${strokeWidth} * 0.5`;
       radiusInner = `${radiusInner} + ${strokeWidth} * 0.5`;
     }
-    shapeField = `starDistanceField(${currentPoint}, ${numPoints}, ${radiusInner}, ${radiusOuter})`;
+    shapeField = `starDistanceField(${currentPoint}, ${numPoints}, ${radiusInner}, ${radiusOuter}, ${angle})`;
   }
 
   // FINAL COLOR
