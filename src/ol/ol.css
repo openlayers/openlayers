@@ -111,7 +111,7 @@
   all: unset;
 }
 
-.ol-viewport * {
+.ol-viewport {
   touch-action: none;
 }
 
