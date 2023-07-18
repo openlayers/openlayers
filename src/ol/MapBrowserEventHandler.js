@@ -171,14 +171,11 @@ class MapBrowserEventHandler extends Target {
       event.type == MapBrowserEventType.POINTERCANCEL
     ) {
       delete this.trackedTouches_[id];
+      // Some platforms assign a new pointerId when the target changes.
+      // If this happens, delete pointers with the old target.
       for (const pointerId in this.trackedTouches_) {
         if (this.trackedTouches_[pointerId].target !== event.target) {
-          // Some platforms assign a new pointerId when the target changes.
-          // If this happens, delete one tracked pointer. If there is more
-          // than one tracked pointer for the old target, it will be cleared
-          // by subsequent POINTERUP events from other pointers.
           delete this.trackedTouches_[pointerId];
-          break;
         }
       }
     } else if (
