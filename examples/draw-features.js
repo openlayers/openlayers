@@ -1,4 +1,5 @@
 import Draw from '../src/ol/interaction/Draw.js';
+import {Circle, Fill, Stroke, Style} from '../src/ol/style.js'
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
@@ -22,6 +23,58 @@ const map = new Map({
     zoom: 4,
   }),
 });
+const styles = {
+  Point: new Style({
+    image: new Circle({
+        radius: 5,
+        fill: new Fill({
+            color: 'red'
+        })
+    })
+  }),
+  LineString: new Style({
+    image: new Circle({
+        radius: 5,
+        fill: new Fill({
+            color: 'red'
+        })
+    }),
+    stroke: new Stroke({
+        color: 'yellow',
+        width: 2
+    })
+  }),
+  Polygon: new Style({
+    image: new Circle({
+        radius: 5,
+        fill: new Fill({
+            color: 'red',
+        })
+    }),
+    stroke: new Stroke({
+        color: 'yellow',
+        width: 2
+    }),
+    fill: new Fill({
+        color: 'blue'
+    })
+  }),
+  Circle: new Style({
+    image: new Circle({
+        radius: 5,
+        fill: new Fill({
+            color: 'red'
+        })
+    }),
+    stroke: new Stroke({
+        color: 'yellow',
+        width: 2
+    }),
+    fill: new Fill({
+        color: 'blue'
+    })
+  })
+}
 
 const typeSelect = document.getElementById('type');
 
@@ -32,6 +85,7 @@ function addInteraction() {
     draw = new Draw({
       source: source,
       type: typeSelect.value,
+      style: styles[value],
     });
     map.addInteraction(draw);
   }
