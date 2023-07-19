@@ -601,7 +601,7 @@ class RasterSource extends ImageSource {
      */
     this.tileQueue_ = new TileQueue(function () {
       return 1;
-    }, this.changed.bind(this));
+    }, this.processSources_.bind(this));
 
     /**
      * The most recently requested frame state.
