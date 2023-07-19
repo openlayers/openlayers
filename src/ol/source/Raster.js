@@ -794,13 +794,10 @@ class RasterSource extends ImageSource {
 
     if (
       !this.renderedImageCanvas_ ||
-      this.getRevision() !== this.renderedRevision_
+      this.getRevision() !== this.renderedRevision_ ||
+      frameState.animate
     ) {
       this.changed();
-    }
-
-    if (frameState.animate) {
-      requestAnimationFrame(this.changed.bind(this));
     }
 
     return canvas;
@@ -825,7 +822,7 @@ class RasterSource extends ImageSource {
       if (imageData) {
         imageDatas[i] = imageData;
       } else {
-        return resolve;
+        return new Promise((resolve) => requestAnimationFrame(() => resolve));
       }
     }
 
