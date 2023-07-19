@@ -1,0 +1,28 @@
+---
+layout: example.html
+title: Drawing Features Style
+shortdesc: Example of using the ol/interaction/Draw interaction with drawing style configured.
+docs: >
+  The Draw interaction in this example uses a custom drawing style. Select a geometry type from the
+  dropdown above to start drawing. To finish drawing, click the last
+  point. To activate freehand drawing for lines, polygons, and circles, hold
+  the `Shift` key. 
+tags: "draw, style"
+resources:
+  - https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css
+---
+<div id="map" class="map"></div>
+<div class="row">
+  <div class="col-auto">
+    <span class="input-group">
+      <label class="input-group-text" for="type">Geometry type:</label>
+      <select class="form-select" id="type">
+        <option value="Point">Point</option>
+        <option value="LineString">LineString</option>
+        <option value="Polygon">Polygon</option>
+        <option value="Circle">Circle</option>
+        <option value="None">None</option>
+      </select>
+    </span>
+  </div>
+</div>
