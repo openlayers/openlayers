@@ -16,8 +16,6 @@ import {create as createTransform} from '../transform.js';
 import {equals, getCenter, getHeight, getWidth} from '../extent.js';
 import {getUid} from '../util.js';
 
-const resolve = Promise.resolve();
-
 let hasImageData = true;
 try {
   new ImageData(10, 10);
@@ -601,7 +599,9 @@ class RasterSource extends ImageSource {
      * @private
      * @type {import("../TileQueue.js").default}
      */
-    this.tileQueue_ = new TileQueue(() => 1, changed);
+    this.tileQueue_ = new TileQueue(function () {
+      return 1;
+    }, this.changed.bind(this));
 
     /**
      * The most recently requested frame state.
@@ -678,10 +678,6 @@ class RasterSource extends ImageSource {
     if (options.operation !== undefined) {
       this.setOperation(options.operation, options.lib);
     }
-  }
-
-  changed() {
-    this.processSources_().then(() => super.changed());
   }
 
   /**
@@ -778,12 +774,10 @@ class RasterSource extends ImageSource {
     const frameState = this.updateFrameState_(extent, resolution, projection);
     this.requestedFrameState_ = frameState;
 
-    const canvas = this.renderedImageCanvas_;
-
     // check if we can't reuse the existing ol/ImageCanvas
-    if (canvas) {
-      const renderedResolution = canvas.getResolution();
-      const renderedExtent = canvas.getExtent();
+    if (this.renderedImageCanvas_) {
+      const renderedResolution = this.renderedImageCanvas_.getResolution();
+      const renderedExtent = this.renderedImageCanvas_.getExtent();
       if (
         resolution !== renderedResolution ||
         !equals(frameState.extent, renderedExtent)
@@ -796,26 +790,22 @@ class RasterSource extends ImageSource {
       !this.renderedImageCanvas_ ||
       this.getRevision() !== this.renderedRevision_
     ) {
-      this.changed();
+      this.processSources_();
     }
 
     if (frameState.animate) {
       requestAnimationFrame(this.changed.bind(this));
     }
 
-    return canvas;
+    return this.renderedImageCanvas_;
   }
 
   /**
    * Start processing source data.
-   * @return {Promise<void>} Promise resolving when the worker result is available.
    * @private
    */
   processSources_() {
     const frameState = this.requestedFrameState_;
-    if (!frameState) {
-      return resolve;
-    }
     const len = this.layers_.length;
     const imageDatas = new Array(len);
     for (let i = 0; i < len; ++i) {
@@ -825,7 +815,7 @@ class RasterSource extends ImageSource {
       if (imageData) {
         imageDatas[i] = imageData;
       } else {
-        return resolve;
+        return;
       }
     }
 
@@ -833,11 +823,10 @@ class RasterSource extends ImageSource {
     this.dispatchEvent(
       new RasterSourceEvent(RasterEventType.BEFOREOPERATIONS, frameState, data)
     );
-    return new Promise((resolve) =>
-      this.processor_.process(imageDatas, data, (error, output, data) => {
-        this.onWorkerComplete_(frameState, error, output, data);
-        resolve();
-      })
+    this.processor_.process(
+      imageDatas,
+      data,
+      this.onWorkerComplete_.bind(this, frameState)
     );
   }
 
@@ -858,32 +847,38 @@ class RasterSource extends ImageSource {
     const extent = frameState.extent;
     const resolution = frameState.viewState.resolution;
     if (
-      resolution === this.requestedFrameState_.viewState.resolution &&
-      equals(extent, this.requestedFrameState_.extent)
+      resolution !== this.requestedFrameState_.viewState.resolution ||
+      !equals(extent, this.requestedFrameState_.extent)
     ) {
-      let context;
-      if (this.renderedImageCanvas_) {
-        context = this.renderedImageCanvas_.getImage().getContext('2d');
-      } else {
-        const width = Math.round(getWidth(extent) / resolution);
-        const height = Math.round(getHeight(extent) / resolution);
-        context = createCanvasContext2D(width, height);
-        this.renderedImageCanvas_ = new ImageCanvas(
-          extent,
-          resolution,
-          1,
-          context.canvas
-        );
-      }
-      context.putImageData(output, 0, 0);
-      this.renderedRevision_ = this.getRevision();
-
-      this.dispatchEvent(
-        new RasterSourceEvent(RasterEventType.AFTEROPERATIONS, frameState, data)
-      );
+      return;
     }
 
-    this.changed();
+    let context;
+    if (this.renderedImageCanvas_) {
+      context = this.renderedImageCanvas_.getImage().getContext('2d');
+    } else {
+      const width = Math.round(getWidth(extent) / resolution);
+      const height = Math.round(getHeight(extent) / resolution);
+      context = createCanvasContext2D(width, height);
+      this.renderedImageCanvas_ = new ImageCanvas(
+        extent,
+        resolution,
+        1,
+        context.canvas
+      );
+    }
+    context.putImageData(output, 0, 0);
+
+    if (frameState.animate) {
+      requestAnimationFrame(this.changed.bind(this));
+    } else {
+      this.changed();
+    }
+    this.renderedRevision_ = this.getRevision();
+
+    this.dispatchEvent(
+      new RasterSourceEvent(RasterEventType.AFTEROPERATIONS, frameState, data)
+    );
   }
 
   /**
