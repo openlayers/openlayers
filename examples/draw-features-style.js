@@ -24,30 +24,30 @@ const map = new Map({
 });
 const styles = {
   Point: {
-    'circle-radius': 5, 
+    'circle-radius': 5,
     'circle-fill-color': 'red',
   },
-  LineString:{
-    'circle-radius': 5, 
+  LineString: {
+    'circle-radius': 5,
     'circle-fill-color': 'red',
     'stroke-color': 'yellow',
     'stroke-width': 2,
   },
   Polygon: {
-    'circle-radius': 5, 
+    'circle-radius': 5,
     'circle-fill-color': 'red',
     'stroke-color': 'yellow',
     'stroke-width': 2,
     'fill-color': 'blue',
   },
   Circle: {
-    'circle-radius': 5, 
+    'circle-radius': 5,
     'circle-fill-color': 'red',
     'stroke-color': 'blue',
     'stroke-width': 2,
     'fill-color': 'yellow',
-  }
-}
+  },
+};
 
 const typeSelect = document.getElementById('type');
 
