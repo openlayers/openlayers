@@ -15,6 +15,7 @@ import {
 } from '../../vec/mat4.js';
 import {
   create as createTransform,
+  makeInverse as makeInverseTransform,
   multiply as multiplyTransform,
   setFromArray as setFromTransform,
   translate as translateTransform,
@@ -225,6 +226,13 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     multiplyTransform(this.tmpTransform_, batchInvertTransform);
     this.helper.setUniformMatrixValue(
       Uniforms.PROJECTION_MATRIX,
+      mat4FromTransform(this.tmpMat4_, this.tmpTransform_)
+    );
+
+    // screen to world matrix
+    makeInverseTransform(this.tmpTransform_, this.tmpTransform_);
+    this.helper.setUniformMatrixValue(
+      Uniforms.SCREEN_TO_WORLD_MATRIX,
       mat4FromTransform(this.tmpMat4_, this.tmpTransform_)
     );
   }

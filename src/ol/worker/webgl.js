@@ -89,22 +89,41 @@ worker.onmessage = (event) => {
         currentInstructionsIndex += customAttrsCount;
         verticesCount = renderInstructions[currentInstructionsIndex++];
 
+        const firstInstructionsIndex = currentInstructionsIndex;
+        const lastInstructionsIndex =
+          currentInstructionsIndex +
+          (verticesCount - 1) * instructionsPerVertex;
+        const isLoop =
+          renderInstructions[firstInstructionsIndex] ===
+            renderInstructions[lastInstructionsIndex] &&
+          renderInstructions[firstInstructionsIndex + 1] ===
+            renderInstructions[lastInstructionsIndex + 1];
+
         // last point is only a segment end, do not loop over it
         for (let i = 0; i < verticesCount - 1; i++) {
+          let beforeIndex = null;
+          if (i > 0) {
+            beforeIndex =
+              currentInstructionsIndex + (i - 1) * instructionsPerVertex;
+          } else if (isLoop) {
+            beforeIndex = lastInstructionsIndex - instructionsPerVertex;
+          }
+          let afterIndex = null;
+          if (i < verticesCount - 2) {
+            afterIndex =
+              currentInstructionsIndex + (i + 2) * instructionsPerVertex;
+          } else if (isLoop) {
+            afterIndex = firstInstructionsIndex + instructionsPerVertex;
+          }
           writeLineSegmentToBuffers(
             renderInstructions,
             currentInstructionsIndex + i * instructionsPerVertex,
             currentInstructionsIndex + (i + 1) * instructionsPerVertex,
-            i > 0
-              ? currentInstructionsIndex + (i - 1) * instructionsPerVertex
-              : null,
-            i < verticesCount - 2
-              ? currentInstructionsIndex + (i + 2) * instructionsPerVertex
-              : null,
+            beforeIndex,
+            afterIndex,
             vertices,
             indices,
             customAttributes,
-            transform,
             invertTransform
           );
         }

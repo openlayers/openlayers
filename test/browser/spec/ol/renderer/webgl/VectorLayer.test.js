@@ -1,3 +1,4 @@
+import {} from '../../../../../../src/ol/math.js';
 import Feature from '../../../../../../src/ol/Feature.js';
 import LineString from '../../../../../../src/ol/geom/LineString.js';
 import Map from '../../../../../../src/ol/Map.js';
@@ -353,6 +354,20 @@ describe('ol/renderer/webgl/VectorLayer', function () {
         // -0.32 0.64  0     1        translate( -16 , 0 )  ->  subtract current view center
         //                            scale( 2 / ( 0.5 * 200px ) , 2 / ( 0.5 * 100px ) )  ->  divide by current resolution & viewport size
         [0.5, 0, 0, 0, 0, 0.5, 0, 0, 0, 0, 1, 0, -0.32, 0.64, 0, 1],
+      ]);
+    });
+    it('sets SCREEN_TO_WORLD matrix uniform once for each geometry type', () => {
+      const calls = renderer.helper.setUniformMatrixValue
+        .getCalls()
+        .filter((c) => c.args[0] === 'u_screenToWorldMatrix');
+      expect(calls.length).to.be(6);
+      expect(calls[1].args).to.eql([
+        'u_screenToWorldMatrix',
+        // 2     0     0     0      invert of u_projectionMatrix
+        // 0     2     0     0
+        // 0     0     1     0
+        // 0.64  -1.28 0     1
+        [2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0.64, -1.28, 0, 1],
       ]);
     });
     it('calls render once for each renderer', () => {

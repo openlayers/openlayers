@@ -28,6 +28,9 @@
  * @typedef {Object} StrokeProps
  * @property {ColorExpression} [stroke-color] The stroke color.
  * @property {number|ExpressionValue} [stroke-width] Stroke pixel width.
+ * @property {number|ExpressionValue} [stroke-offset] Stroke offset in pixel. A positive value offsets the line to the right, relative to the direction of the line.
+ * @property {CanvasLineCap|ExpressionValue} [stroke-line-cap='round'] Line cap style: `butt`, `round`, or `square`.
+ * @property {CanvasLineJoin|ExpressionValue} [stroke-line-join='round'] Line join style: `bevel`, `round`, or `miter`.
  */
 
 /**

@@ -603,41 +603,87 @@ describe('ol.webgl.styleparser', () => {
     });
 
     describe('stroke style', () => {
-      it('parses style', () => {
-        const result = parseLiteralStyle({
-          variables: {
-            width: 1,
-          },
-          'stroke-color': [
-            'interpolate',
-            ['linear'],
-            ['get', 'intensity'],
-            0,
-            'blue',
-            1,
-            'red',
-          ],
-          'stroke-width': ['*', ['var', 'width'], 3],
-        });
+      describe('simple style', () => {
+        it('parses style', () => {
+          const result = parseLiteralStyle({
+            'stroke-color': '#ff0000',
+            'stroke-width': 4,
+          });
 
-        expect(result.builder.uniforms_).to.eql(['float u_var_width']);
-        expect(result.builder.attributes_).to.eql(['float a_intensity']);
-        expect(result.builder.varyings_).to.eql([
-          {
-            name: 'v_intensity',
-            type: 'float',
-            expression: 'a_intensity',
-          },
-        ]);
-        expect(result.builder.strokeColorExpression_).to.eql(
-          'mix(vec4(0.0, 0.0, 1.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), clamp((v_intensity - 0.0) / (1.0 - 0.0), 0.0, 1.0))'
-        );
-        expect(result.builder.strokeWidthExpression_).to.eql(
-          '(u_var_width * 3.0)'
-        );
-        expect(Object.keys(result.attributes).length).to.eql(1);
-        expect(result.attributes).to.have.property('intensity');
-        expect(result.uniforms).to.have.property('u_var_width');
+          expect(result.builder.uniforms_).to.eql([]);
+          expect(result.builder.attributes_).to.eql([]);
+          expect(result.builder.varyings_).to.eql([]);
+          expect(result.builder.strokeColorExpression_).to.eql(
+            'vec4(1.0, 0.0, 0.0, 1.0)'
+          );
+          expect(result.builder.strokeWidthExpression_).to.eql('4.0');
+          expect(result.builder.strokeCapExpression_).to.eql(
+            stringToGlsl('round')
+          );
+          expect(result.builder.strokeJoinExpression_).to.eql(
+            stringToGlsl('round')
+          );
+          expect(result.builder.strokeOffsetExpression_).to.eql('0.');
+          expect(Object.keys(result.attributes).length).to.eql(0);
+        });
+      });
+      describe('dynamic properties, color, width joins, caps, offset', () => {
+        it('parses style', () => {
+          const result = parseLiteralStyle({
+            variables: {
+              width: 1,
+              capType: 'butt',
+              joinType: 'bevel',
+            },
+            'stroke-color': [
+              'interpolate',
+              ['linear'],
+              ['get', 'intensity'],
+              0,
+              'blue',
+              1,
+              'red',
+            ],
+            'stroke-width': ['*', ['var', 'width'], 3],
+            'stroke-line-join': ['var', 'joinType'],
+            'stroke-line-cap': ['var', 'capType'],
+            'stroke-offset': ['+', ['get', 'offset'], 4],
+          });
+
+          expect(result.builder.uniforms_).to.eql([
+            'float u_var_width',
+            'float u_var_capType',
+            'float u_var_joinType',
+          ]);
+          expect(result.builder.attributes_).to.eql([
+            'float a_offset',
+            'float a_intensity',
+          ]);
+          expect(result.builder.varyings_).to.eql([
+            {
+              name: 'v_intensity',
+              type: 'float',
+              expression: 'a_intensity',
+            },
+          ]);
+          expect(result.builder.strokeColorExpression_).to.eql(
+            'mix(vec4(0.0, 0.0, 1.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), clamp((v_intensity - 0.0) / (1.0 - 0.0), 0.0, 1.0))'
+          );
+          expect(result.builder.strokeWidthExpression_).to.eql(
+            '(u_var_width * 3.0)'
+          );
+          expect(result.builder.strokeCapExpression_).to.eql('u_var_capType');
+          expect(result.builder.strokeJoinExpression_).to.eql('u_var_joinType');
+          expect(result.builder.strokeOffsetExpression_).to.eql(
+            '(a_offset + 4.0)'
+          );
+          expect(Object.keys(result.attributes).length).to.eql(2);
+          expect(result.attributes).to.have.property('intensity');
+          expect(result.attributes).to.have.property('offset');
+          expect(result.uniforms).to.have.property('u_var_width');
+          expect(result.uniforms).to.have.property('u_var_capType');
+          expect(result.uniforms).to.have.property('u_var_joinType');
+        });
       });
     });
 

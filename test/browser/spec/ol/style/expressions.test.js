@@ -12,12 +12,12 @@ import {
   arrayToGlsl,
   colorToGlsl,
   expressionToGlsl,
+  getStringNumberEquivalent,
   getValueType,
   isTypeUnique,
   numberToGlsl,
   stringToGlsl,
   uniformNameForVariable,
-  getStringNumberEquivalent,
 } from '../../../../../src/ol/style/expressions.js';
 
 describe('ol/style/expressions', function () {

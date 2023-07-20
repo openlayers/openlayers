@@ -100,14 +100,13 @@ export function writePointFeatureToBuffers(
  * segment, in order to be able to offset the vertices correctly in the shader
  * @param {Float32Array} instructions Array of render instructions for lines.
  * @param {number} segmentStartIndex Index of the segment start point from which render instructions will be read.
- * @param {number} segmentEndIndex Index of the segment start point from which render instructions will be read.
+ * @param {number} segmentEndIndex Index of the segment end point from which render instructions will be read.
  * @param {number|null} beforeSegmentIndex Index of the point right before the segment (null if none, e.g this is a line start)
  * @param {number|null} afterSegmentIndex Index of the point right after the segment (null if none, e.g this is a line end)
  * @param {Array<number>} vertexArray Array containing vertices.
  * @param {Array<number>} indexArray Array containing indices.
  * @param {Array<number>} customAttributes Array of custom attributes value
- * @param {import('../../transform.js').Transform} instructionsTransform Transform matrix used to project coordinates in instructions
- * @param {import('../../transform.js').Transform} invertInstructionsTransform Transform matrix used to project coordinates in instructions
+ * @param {import('../../transform.js').Transform} toWorldTransform Transform matrix used to obtain world coordinates from instructions
  * @private
  */
 export function writeLineSegmentToBuffers(
@@ -119,11 +118,10 @@ export function writeLineSegmentToBuffers(
   vertexArray,
   indexArray,
   customAttributes,
-  instructionsTransform,
-  invertInstructionsTransform
+  toWorldTransform
 ) {
   // compute the stride to determine how many vertices were already pushed
-  const baseVertexAttrsCount = 5; // base attributes: x0, y0, x1, y1, params (vertex number [0-3], join angle 1, join angle 2)
+  const baseVertexAttrsCount = 7; // base attributes: x0, y0, x1, y1, angle0, angle1, params
   const stride = baseVertexAttrsCount + customAttributes.length;
   const baseIndex = vertexArray.length / stride;
 
@@ -138,18 +136,8 @@ export function writeLineSegmentToBuffers(
 
   // to compute offsets from the line center we need to reproject
   // coordinates back in world units and compute the length of the segment
-  const p0world = applyTransform(invertInstructionsTransform, [...p0]);
-  const p1world = applyTransform(invertInstructionsTransform, [...p1]);
-
-  function computeVertexParameters(vertexNumber, joinAngle1, joinAngle2) {
-    const shift = 10000;
-    const anglePrecision = 1500;
-    return (
-      Math.round(joinAngle1 * anglePrecision) +
-      Math.round(joinAngle2 * anglePrecision) * shift +
-      vertexNumber * shift * shift
-    );
-  }
+  const p0world = applyTransform(toWorldTransform, [...p0]);
+  const p1world = applyTransform(toWorldTransform, [...p1]);
 
   // compute the angle between p0pA and p0pB
   // returns a value in [0, 2PI]
@@ -175,11 +163,12 @@ export function writeLineSegmentToBuffers(
     return !isClockwise ? Math.PI * 2 - angle : angle;
   }
 
+  // an angle above TWO_PI indicates a line cap
+  let angle0 = -1;
+  let angle1 = -1;
+
   const joinBefore = beforeSegmentIndex !== null;
   const joinAfter = afterSegmentIndex !== null;
-
-  let angle0 = 0;
-  let angle1 = 0;
 
   // add vertices and adapt offsets for P0 in case of join
   if (joinBefore) {
@@ -188,7 +177,7 @@ export function writeLineSegmentToBuffers(
       instructions[beforeSegmentIndex],
       instructions[beforeSegmentIndex + 1],
     ];
-    const pBworld = applyTransform(invertInstructionsTransform, [...pB]);
+    const pBworld = applyTransform(toWorldTransform, [...pB]);
     angle0 = angleBetween(p0world, p1world, pBworld);
   }
   // adapt offsets for P1 in case of join
@@ -198,45 +187,21 @@ export function writeLineSegmentToBuffers(
       instructions[afterSegmentIndex],
       instructions[afterSegmentIndex + 1],
     ];
-    const pAworld = applyTransform(invertInstructionsTransform, [...pA]);
+    const pAworld = applyTransform(toWorldTransform, [...pA]);
     angle1 = angleBetween(p1world, p0world, pAworld);
   }
 
   // add main segment triangles
-  vertexArray.push(
-    p0[0],
-    p0[1],
-    p1[0],
-    p1[1],
-    computeVertexParameters(0, angle0, angle1)
-  );
+  vertexArray.push(p0[0], p0[1], p1[0], p1[1], angle0, angle1, 0);
   vertexArray.push(...customAttributes);
 
-  vertexArray.push(
-    p0[0],
-    p0[1],
-    p1[0],
-    p1[1],
-    computeVertexParameters(1, angle0, angle1)
-  );
+  vertexArray.push(p0[0], p0[1], p1[0], p1[1], angle0, angle1, 1);
   vertexArray.push(...customAttributes);
 
-  vertexArray.push(
-    p0[0],
-    p0[1],
-    p1[0],
-    p1[1],
-    computeVertexParameters(2, angle0, angle1)
-  );
+  vertexArray.push(p0[0], p0[1], p1[0], p1[1], angle0, angle1, 2);
   vertexArray.push(...customAttributes);
 
-  vertexArray.push(
-    p0[0],
-    p0[1],
-    p1[0],
-    p1[1],
-    computeVertexParameters(3, angle0, angle1)
-  );
+  vertexArray.push(p0[0], p0[1], p1[0], p1[1], angle0, angle1, 3);
   vertexArray.push(...customAttributes);
 
   indexArray.push(

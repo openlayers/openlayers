@@ -266,8 +266,6 @@ function parseShapeProperties(
   vertContext,
   fragContext
 ) {
-  fragContext.functions['PI'] = 'const float PI = 3.141592653589793238;';
-  fragContext.functions['TWO_PI'] = 'const float TWO_PI = 2.0 * PI;';
   fragContext.functions['round'] = `float round(float v) {
   return sign(v) * floor(abs(v) + 0.5);
 }`;
@@ -609,6 +607,28 @@ function parseStrokeProperties(
   if ('stroke-width' in style) {
     builder.setStrokeWidthExpression(
       expressionToGlsl(vertContext, style['stroke-width'], ValueTypes.NUMBER)
+    );
+  }
+
+  if ('stroke-offset' in style) {
+    builder.setStrokeOffsetExpression(
+      expressionToGlsl(vertContext, style['stroke-offset'], ValueTypes.NUMBER)
+    );
+  }
+
+  if ('stroke-line-cap' in style) {
+    builder.setStrokeCapExpression(
+      expressionToGlsl(vertContext, style['stroke-line-cap'], ValueTypes.STRING)
+    );
+  }
+
+  if ('stroke-line-join' in style) {
+    builder.setStrokeJoinExpression(
+      expressionToGlsl(
+        vertContext,
+        style['stroke-line-join'],
+        ValueTypes.STRING
+      )
     );
   }
 }

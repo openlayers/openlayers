@@ -41,6 +41,7 @@ export const ShaderType = {
  */
 export const DefaultUniform = {
   PROJECTION_MATRIX: 'u_projectionMatrix',
+  SCREEN_TO_WORLD_MATRIX: 'u_screenToWorldMatrix',
   TIME: 'u_time',
   ZOOM: 'u_zoom',
   RESOLUTION: 'u_resolution',

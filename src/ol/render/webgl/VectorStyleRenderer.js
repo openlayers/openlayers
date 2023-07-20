@@ -32,6 +32,7 @@ export const Attributes = {
   SEGMENT_START: 'a_segmentStart',
   SEGMENT_END: 'a_segmentEnd',
   PARAMETERS: 'a_parameters',
+  JOIN_ANGLES: 'a_joinAngles',
 };
 
 /**
@@ -211,6 +212,11 @@ class VectorStyleRenderer {
       },
       {
         name: Attributes.SEGMENT_END,
+        size: 2,
+        type: AttributeType.FLOAT,
+      },
+      {
+        name: Attributes.JOIN_ANGLES,
         size: 2,
         type: AttributeType.FLOAT,
       },

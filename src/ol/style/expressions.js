@@ -318,7 +318,7 @@ export function colorToGlsl(color) {
   ]);
 }
 
-/** @type {Object.<string, number>} */
+/** @type {Object<string, number>} */
 const stringToFloatMap = {};
 let stringToFloatCounter = 0;
 
