@@ -59,6 +59,12 @@ class DblClickDragZoom extends Interaction {
     this.handlingDoubleDownSequence_ = false;
 
     /**
+     * @type {?}
+     * @private
+     */
+    this.doubleTapTimeoutId_ = undefined;
+
+    /**
      * @type {!Object<string, PointerEvent>}
      * @private
      */
@@ -104,7 +110,7 @@ class DblClickDragZoom extends Interaction {
           stopEvent = this.stopDown(handled);
         } else {
           stopEvent = this.stopDown(false);
-          this.waitForDblTap();
+          this.waitForDblTap_();
         }
       }
     }
@@ -210,8 +216,9 @@ class DblClickDragZoom extends Interaction {
 
   /**
    * Wait the second double finger tap.
+   * @private
    */
-  waitForDblTap() {
+  waitForDblTap_() {
     if (this.doubleTapTimeoutId_ !== undefined) {
       // double-click
       clearTimeout(this.doubleTapTimeoutId_);
@@ -219,7 +226,7 @@ class DblClickDragZoom extends Interaction {
     } else {
       this.handlingDoubleDownSequence_ = true;
       this.doubleTapTimeoutId_ = setTimeout(
-        this.endInteraction.bind(this),
+        this.endInteraction_.bind(this),
         250
       );
     }
@@ -228,7 +235,7 @@ class DblClickDragZoom extends Interaction {
   /**
    * @private
    */
-  endInteraction() {
+  endInteraction_() {
     this.handlingDoubleDownSequence_ = false;
     this.doubleTapTimeoutId_ = undefined;
   }
