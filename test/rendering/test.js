@@ -240,7 +240,7 @@ async function renderEach(page, entries, options) {
 async function render(entries, options) {
   const browser = await puppeteer.launch({
     args: options.puppeteerArgs,
-    headless: options.headless,
+    headless: options.headless ? 'new' : false,
   });
 
   let fail = false;
