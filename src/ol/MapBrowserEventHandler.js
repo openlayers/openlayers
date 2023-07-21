@@ -26,7 +26,7 @@ class MapBrowserEventHandler extends Target {
     this.map_ = map;
 
     /**
-     * @type {any}
+     * @type {ReturnType<typeof setTimeout>}
      * @private
      */
     this.clickTimeoutId_;
