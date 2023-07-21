@@ -145,6 +145,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       renderer.afterHelperCreated(frameState);
     });
     afterEach(() => {
+      renderer.helper.dispose();
       spy.restore();
     });
 

@@ -168,6 +168,7 @@ describe('ol/renderer/webgl/VectorLayer', function () {
       renderer.afterHelperCreated(frameState);
     });
     afterEach(() => {
+      renderer.helper.dispose();
       spy.restore();
     });
 
