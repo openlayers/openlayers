@@ -570,3 +570,67 @@ export function getDocument() {
   }
   return document_;
 }
+
+/**
+ * Ensures both width and height attributes are set in an SVG string
+ * for browser consistent drawing to canvas.
+ * Based on any partial dimensions, viewBox and Chrome defaults.
+ * If viewBox is present preserveAspectRatio is explicitly disabled.
+ * @param {string} text SVG text.
+ * @return {string} SVG text.
+ */
+export function svgDimensions(text) {
+  const xml = parse(text);
+  const svg = xml.getElementsByTagName('svg')[0];
+  const defaultWidth = 300;
+  const defaultHeight = 150;
+  // extract any width or height values with 2 character units
+  const defaultUnit = '';
+  const ww = svg?.getAttribute('width');
+  const wUnit = ww?.match(/[a-z]{2}$/)?.[0] || defaultUnit;
+  let w = Number(ww?.replace(new RegExp(wUnit + '$'), ''));
+  const hh = svg?.getAttribute('height');
+  const hUnit = hh?.match(/[a-z]{2}$/)?.[0] || defaultUnit;
+  let h = Number(hh?.replace(new RegExp(hUnit + '$'), ''));
+  // disregard NaN percentage values
+  w = w > 0 ? w : 0;
+  h = h > 0 ? h : 0;
+  const absent = !(w > 0 && h > 0);
+  const viewBox = svg
+    ?.getAttribute('viewBox')
+    ?.split(/[\s,]+?/)
+    .map(Number);
+  if (viewBox || absent) {
+    const wView = viewBox?.[2];
+    const hView = viewBox?.[3];
+    if (absent && wView > 0 && hView > 0) {
+      // calculate missing dimensions based on viewBox aspect ratio
+      // and default height
+      if (w > 0) {
+        h = (w * hView) / wView;
+        svg.setAttribute('height', h + wUnit);
+      } else if (h > 0) {
+        w = (h * wView) / hView;
+        svg.setAttribute('width', w + hUnit);
+      } else {
+        h = defaultHeight;
+        w = (h * wView) / hView;
+        svg.setAttribute('width', w + defaultUnit);
+        svg.setAttribute('height', h + defaultUnit);
+      }
+    } else {
+      // if no valid viewBox use dafaults for missing dimensions
+      if (w === 0) {
+        w = defaultWidth;
+        svg.setAttribute('width', w + defaultUnit);
+      }
+      if (h === 0) {
+        h = defaultHeight;
+        svg.setAttribute('height', h + defaultUnit);
+      }
+    }
+    svg.setAttribute('preserveAspectRatio', 'none');
+    text = getXMLSerializer()?.serializeToString(xml) || text;
+  }
+  return text;
+}
