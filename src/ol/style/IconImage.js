@@ -9,6 +9,7 @@ import {asString} from '../color.js';
 import {createCanvasContext2D} from '../dom.js';
 import {shared as iconImageCache} from './IconImageCache.js';
 import {listenImage} from '../Image.js';
+import {svgDimensions} from '../xml.js';
 
 /**
  * @type {CanvasRenderingContext2D}
@@ -83,6 +84,12 @@ class IconImage extends EventTarget {
 
     /**
      * @private
+     * @type {string|undefined}
+     */
+    this.objectUrl_ = undefined;
+
+    /**
+     * @private
      */
     this.tainted_;
   }
@@ -131,6 +138,7 @@ class IconImage extends EventTarget {
    * @private
    */
   handleImageError_() {
+    this.revokeObjectUrl_();
     this.imageState_ = ImageState.ERROR;
     this.unlistenImage_();
     this.dispatchChangeEvent_();
@@ -140,6 +148,7 @@ class IconImage extends EventTarget {
    * @private
    */
   handleImageLoad_() {
+    this.revokeObjectUrl_();
     this.imageState_ = ImageState.LOADED;
     if (this.size_) {
       this.image_.width = this.size_[0];
@@ -149,6 +158,33 @@ class IconImage extends EventTarget {
     }
     this.unlistenImage_();
     this.dispatchChangeEvent_();
+  }
+
+  /**
+   * @private
+   */
+  revokeObjectUrl_() {
+    if (this.objectUrl_) {
+      URL.revokeObjectURL(this.objectUrl_);
+      this.objectUrl_ = undefined;
+    }
+  }
+
+  /**
+   * @param {string} src Src or object URL.
+   * @private
+   */
+  loadImage_(src) {
+    try {
+      /** @type {HTMLImageElement} */ (this.image_).src = src;
+    } catch (e) {
+      this.handleImageError_();
+    }
+    this.unlisten_ = listenImage(
+      this.image_,
+      this.handleImageLoad_.bind(this),
+      this.handleImageError_.bind(this)
+    );
   }
 
   /**
@@ -225,18 +261,32 @@ class IconImage extends EventTarget {
     if (!this.image_) {
       this.initializeImage_();
     }
-
     this.imageState_ = ImageState.LOADING;
-    try {
-      /** @type {HTMLImageElement} */ (this.image_).src = this.src_;
-    } catch (e) {
-      this.handleImageError_();
+
+    if (
+      this.crossOrigin_ !== null ||
+      this.src_.startsWith('data:image/svg+xml') ||
+      location?.origin === new URL(this.src_, location?.origin).origin
+    ) {
+      fetch(this.src_)
+        .then((response) => {
+          if (response.headers.get('content-type').includes('image/svg+xml')) {
+            return response.text().then((text) => {
+              return new Blob([svgDimensions(text)], {type: 'image/svg+xml'});
+            });
+          }
+          return response.blob();
+        })
+        .then((blob) => {
+          this.objectUrl_ = URL.createObjectURL(blob);
+          this.loadImage_(this.objectUrl_);
+        })
+        .catch(() => {
+          this.loadImage_(this.src_);
+        });
+    } else {
+      this.loadImage_(this.src_);
     }
-    this.unlisten_ = listenImage(
-      this.image_,
-      this.handleImageLoad_.bind(this),
-      this.handleImageError_.bind(this)
-    );
   }
 
   /**
