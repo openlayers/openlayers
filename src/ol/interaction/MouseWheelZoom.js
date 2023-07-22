@@ -116,7 +116,7 @@ class MouseWheelZoom extends Interaction {
 
     /**
      * @private
-     * @type {?}
+     * @type {ReturnType<typeof setTimeout>}
      */
     this.timeoutId_;
 
@@ -129,12 +129,14 @@ class MouseWheelZoom extends Interaction {
     /**
      * Trackpad events separated by this delay will be considered separate
      * interactions.
+     * @private
      * @type {number}
      */
     this.trackpadEventGap_ = 400;
 
     /**
-     * @type {?}
+     * @private
+     * @type {ReturnType<typeof setTimeout>}
      */
     this.trackpadTimeoutId_;
 

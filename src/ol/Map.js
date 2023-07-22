@@ -294,7 +294,7 @@ class Map extends BaseObject {
 
     /**
      * @private
-     * @type {*}
+     * @type {ReturnType<typeof setTimeout>}
      */
     this.postRenderTimeoutHandle_;
 
