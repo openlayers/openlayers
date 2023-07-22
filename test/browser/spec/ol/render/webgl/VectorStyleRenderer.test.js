@@ -123,6 +123,10 @@ describe('VectorStyleRenderer', () => {
       }),
     ]);
   });
+  afterEach(() => {
+    helper.dispose();
+  });
+
   describe('constructor using style', () => {
     beforeEach(() => {
       vectorStyleRenderer = new VectorStyleRenderer(SAMPLE_STYLE, helper);
