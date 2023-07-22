@@ -5,7 +5,10 @@ import {
   packColor,
   parseLiteralStyle,
 } from '../../../../../src/ol/webgl/styleparser.js';
-import {uniformNameForVariable} from '../../../../../src/ol/style/expressions.js';
+import {
+  stringToGlsl,
+  uniformNameForVariable,
+} from '../../../../../src/ol/style/expressions.js';
 
 describe('ol.webgl.styleparser', () => {
   describe('parseLiteralStyle', () => {
@@ -853,9 +856,9 @@ describe('ol.webgl.styleparser', () => {
       expect(result.builder.vertexShaderFunctions_).to.eql([]);
       expect(result.builder.fragmentShaderFunctions_).to.contain(
         `bool operator_in_0(float inputValue) {
-  if (inputValue == 0.0) { return true; }
-  if (inputValue == 1.0) { return true; }
-  if (inputValue == 2.0) { return true; }
+  if (inputValue == ${stringToGlsl('road')}) { return true; }
+  if (inputValue == ${stringToGlsl('path')}) { return true; }
+  if (inputValue == ${stringToGlsl('street')}) { return true; }
   return false;
 }`
       );

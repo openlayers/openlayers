@@ -660,7 +660,6 @@ export function parseLiteralStyle(style) {
     inFragmentShader: false,
     variables: [],
     attributes: [],
-    stringLiteralsMap: {},
     functions: {},
     style: style,
   };
@@ -672,7 +671,6 @@ export function parseLiteralStyle(style) {
     inFragmentShader: true,
     variables: vertContext.variables,
     attributes: [],
-    stringLiteralsMap: vertContext.stringLiteralsMap,
     functions: {},
     style: style,
   };
@@ -710,7 +708,6 @@ export function parseLiteralStyle(style) {
     if (variable.type === ValueTypes.STRING) {
       callback = () =>
         getStringNumberEquivalent(
-          vertContext,
           /** @type {string} */ (style.variables[variable.name])
         );
     } else if (variable.type === ValueTypes.COLOR) {
@@ -760,7 +757,7 @@ export function parseLiteralStyle(style) {
       callback = attribute.callback;
     } else if (attribute.type === ValueTypes.STRING) {
       callback = (feature) =>
-        getStringNumberEquivalent(vertContext, feature.get(attribute.name));
+        getStringNumberEquivalent(feature.get(attribute.name));
     } else if (attribute.type === ValueTypes.COLOR) {
       callback = (feature) =>
         packColor([...asArray(feature.get(attribute.name) || '#eee')]);
