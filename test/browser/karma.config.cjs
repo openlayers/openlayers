@@ -4,7 +4,13 @@ const path = require('path');
 
 module.exports = function (karma) {
   karma.set({
-    browsers: ['ChromeHeadless'],
+    browsers: ['ChromeHeadlessLauncher'],
+    customLaunchers: {
+      ChromeHeadlessLauncher: {
+        base: 'Chrome',
+        flags: ['--headless=new'],
+      },
+    },
     browserDisconnectTolerance: 2,
     frameworks: ['webpack', 'mocha', 'source-map-support'],
     client: {
