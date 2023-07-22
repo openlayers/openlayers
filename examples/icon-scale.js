@@ -54,7 +54,7 @@ const vectorLayer = new VectorLayer({
 
 const rasterLayer = new TileLayer({
   source: new TileJSON({
-    url: 'https://a.tiles.mapbox.com/v3/aj.1x1-degrees.json?secure=1',
+    url: 'https://maps.gnosis.earth/ogcapi/collections/NaturalEarth:raster:HYP_HR_SR_OB_DR/map/tiles/WebMercatorQuad?f=tilejson',
     crossOrigin: '',
   }),
 });

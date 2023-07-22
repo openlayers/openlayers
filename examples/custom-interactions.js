@@ -129,17 +129,13 @@ const polygonFeature = new Feature(
   ])
 );
 
-const key =
-  'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2t0cGdwMHVnMGdlbzMxbDhwazBic2xrNSJ9.WbcTL9uj8JPAsnT9mgb7oQ';
-
 const map = new Map({
   interactions: defaultInteractions().extend([new Drag()]),
   layers: [
     new TileLayer({
       source: new TileJSON({
-        url:
-          'https://a.tiles.mapbox.com/v4/aj.1x1-degrees.json?secure&access_token=' +
-          key,
+        url: 'https://maps.gnosis.earth/ogcapi/collections/NaturalEarth:raster:HYP_HR_SR_OB_DR/map/tiles/WebMercatorQuad?f=tilejson',
+        crossOrigin: '',
       }),
     }),
     new VectorLayer({
