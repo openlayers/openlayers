@@ -2,11 +2,11 @@ import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {LineString, Point, Polygon} from '../src/ol/geom.js';
+import {OGCMapTile, Vector as VectorSource} from '../src/ol/source.js';
 import {
   Pointer as PointerInteraction,
   defaults as defaultInteractions,
 } from '../src/ol/interaction.js';
-import {TileJSON, Vector as VectorSource} from '../src/ol/source.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 
 class Drag extends PointerInteraction {
@@ -133,8 +133,8 @@ const map = new Map({
   interactions: defaultInteractions().extend([new Drag()]),
   layers: [
     new TileLayer({
-      source: new TileJSON({
-        url: 'https://maps.gnosis.earth/ogcapi/collections/NaturalEarth:raster:HYP_HR_SR_OB_DR/map/tiles/WebMercatorQuad?f=tilejson',
+      source: new OGCMapTile({
+        url: 'https://maps.gnosis.earth/ogcapi/collections/NaturalEarth:raster:HYP_HR_SR_OB_DR/map/tiles/WebMercatorQuad',
         crossOrigin: '',
       }),
     }),
