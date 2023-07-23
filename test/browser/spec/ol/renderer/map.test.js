@@ -7,10 +7,14 @@ import VectorSource from '../../../../../src/ol/source/Vector.js';
 import View from '../../../../../src/ol/View.js';
 import {Circle, Fill, Stroke, Style} from '../../../../../src/ol/style.js';
 import {
+  Circle as CircleGeometry,
   GeometryCollection,
   LineString,
+  MultiLineString,
   MultiPoint,
+  MultiPolygon,
   Point,
+  Polygon,
 } from '../../../../../src/ol/geom.js';
 import {Projection} from '../../../../../src/ol/proj.js';
 import {fromExtent} from '../../../../../src/ol/geom/Polygon.js';
@@ -92,11 +96,9 @@ describe('ol.renderer.Map', function () {
     });
 
     it('hits lines even if they are dashed', function () {
-      const geometry = new LineString([
-        [-1e6, 0],
-        [1e6, 0],
-      ]);
-      const feature = new Feature(geometry);
+      map.getView().setResolution(1);
+      let geometry, hit;
+      const feature = new Feature();
       const layer = new VectorLayer({
         source: new VectorSource({
           features: [feature],
@@ -110,16 +112,93 @@ describe('ol.renderer.Map', function () {
         }),
       });
       map.addLayer(layer);
-      map.renderSync();
-      const hit = map.forEachFeatureAtPixel(
-        [50, 50],
-        (feature, layer, geometry) => ({
-          feature,
-          layer,
-          geometry,
-        })
-      );
 
+      geometry = new LineString([
+        [-20, 0],
+        [20, 0],
+      ]);
+      feature.setGeometry(geometry);
+      map.renderSync();
+      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
+        feature,
+        layer,
+        geometry,
+      }));
+      expect(hit).to.be.ok();
+      expect(hit.feature).to.be(feature);
+      expect(hit.layer).to.be(layer);
+      expect(hit.geometry).to.be(geometry);
+
+      geometry = new MultiLineString([
+        [
+          [-20, 0],
+          [20, 0],
+        ],
+      ]);
+      feature.setGeometry(geometry);
+      map.renderSync();
+      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
+        feature,
+        layer,
+        geometry,
+      }));
+      expect(hit).to.be.ok();
+      expect(hit.feature).to.be(feature);
+      expect(hit.layer).to.be(layer);
+      expect(hit.geometry).to.be(geometry);
+
+      geometry = new Polygon([
+        [
+          [-20, 0],
+          [20, 0],
+          [20, -20],
+          [-20, -20],
+          [-20, 0],
+        ],
+      ]);
+      feature.setGeometry(geometry);
+      map.renderSync();
+      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
+        feature,
+        layer,
+        geometry,
+      }));
+      expect(hit).to.be.ok();
+      expect(hit.feature).to.be(feature);
+      expect(hit.layer).to.be(layer);
+      expect(hit.geometry).to.be(geometry);
+
+      geometry = new MultiPolygon([
+        [
+          [
+            [-20, 0],
+            [20, 0],
+            [20, -20],
+            [-20, -20],
+            [-20, 0],
+          ],
+        ],
+      ]);
+      feature.setGeometry(geometry);
+      map.renderSync();
+      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
+        feature,
+        layer,
+        geometry,
+      }));
+      expect(hit).to.be.ok();
+      expect(hit.feature).to.be(feature);
+      expect(hit.layer).to.be(layer);
+      expect(hit.geometry).to.be(geometry);
+
+      geometry = new CircleGeometry([0, -40 / Math.PI], 40 / Math.PI);
+      feature.setGeometry(geometry);
+      map.renderSync();
+      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
+        feature,
+        layer,
+        geometry,
+      }));
       expect(hit).to.be.ok();
       expect(hit.feature).to.be(feature);
       expect(hit.layer).to.be(layer);
