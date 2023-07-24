@@ -95,6 +95,7 @@ class CanvasTextBuilder extends CanvasBuilder {
      * @type {!Object<string, import("../canvas.js").FillState>}
      */
     this.fillStates = {};
+    this.fillStates[defaultFillStyle] = {fillStyle: defaultFillStyle};
 
     /**
      * @private
@@ -427,7 +428,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.text_,
         this.textKey_,
         this.strokeKey_,
-        this.fillKey_,
+        this.fillKey_ ? defaultFillStyle : this.fillKey_,
         this.textOffsetX_,
         this.textOffsetY_,
         geometryWidths,
@@ -524,7 +525,7 @@ class CanvasTextBuilder extends CanvasBuilder {
       end,
       baseline,
       textState.overflow,
-      fillKey,
+      fillKey ? defaultFillStyle : fillKey,
       textState.maxAngle,
       1,
       offsetY,
