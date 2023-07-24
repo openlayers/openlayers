@@ -337,7 +337,6 @@ class CanvasTextBuilder extends CanvasBuilder {
         );
         if (textState.backgroundFill) {
           this.updateFillStyle(this.state, this.createFill);
-          this.hitDetectionInstructions.push(this.createFill(this.state));
         }
         if (textState.backgroundStroke) {
           this.updateStrokeStyle(this.state, this.applyStroke);
@@ -405,6 +404,12 @@ class CanvasTextBuilder extends CanvasBuilder {
         geometryWidths,
       ]);
       const scale = 1 / pixelRatio;
+      // Set default fill for hit detection background
+      const currentFillStyle = this.state.fillStyle;
+      if (textState.backgroundFill) {
+        this.state.fillStyle = defaultFillStyle;
+        this.hitDetectionInstructions.push(this.createFill(this.state));
+      }
       this.hitDetectionInstructions.push([
         CanvasInstruction.DRAW_IMAGE,
         begin,
@@ -433,6 +438,11 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.textOffsetY_,
         geometryWidths,
       ]);
+      // Reset previous fill
+      if (textState.backgroundFill) {
+        this.state.fillStyle = currentFillStyle;
+        this.hitDetectionInstructions.push(this.createFill(this.state));
+      }
 
       this.endGeometry(feature);
     }
