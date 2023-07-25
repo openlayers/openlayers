@@ -51,7 +51,7 @@
     "rbush": "^3.0.1"
   },
   "devDependencies": {
-    "@metalsmith/in-place": "^4.5.0",
+    "@metalsmith/in-place": "^5.0.0",
     "@metalsmith/layouts": "^2.5.1",
     "@metalsmith/markdown": "^1.6.0",
     "@octokit/rest": "^20.0.1",
