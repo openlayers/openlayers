@@ -57,5 +57,20 @@ describe('ol.interaction.KeyboardZoom', function () {
       map.handleMapBrowserEvent(event);
       expect(spy.called).to.be(false);
     });
+
+    it('does nothing if ctrl key is pressed at the same time', function () {
+      const view = map.getView();
+      const spy = sinon.spy(view, 'animateInternal');
+      const event = new MapBrowserEvent('keydown', map, {
+        type: 'keydown',
+        target: map.getTargetElement(),
+        preventDefault: Event.prototype.preventDefault,
+      });
+
+      event.originalEvent.key = '+';
+      event.originalEvent.ctrlKey = true;
+      map.handleMapBrowserEvent(event);
+      expect(spy.called).to.be(false);
+    });
   });
 });
