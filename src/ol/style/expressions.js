@@ -34,9 +34,9 @@ import {asArray, fromString, isStringColor} from '../color.js';
  *   * `['zoom']` returns the current zoom level
  *
  * * Math operators:
- *   * `['*', value1, value2]` multiplies `value1` by `value2` (either numbers or colors)
+ *   * `['*', value1, value2, ...]` multiplies the values (either numbers or colors)
  *   * `['/', value1, value2]` divides `value1` by `value2`
- *   * `['+', value1, value2]` adds `value1` and `value2`
+ *   * `['+', value1, value2, ...]` adds the values
  *   * `['-', value1, value2]` subtracts `value2` from `value1`
  *   * `['clamp', value, low, high]` clamps `value` between `low` and `high`
  *   * `['%', value1, value2]` returns the result of `value1 % value2` (modulo)
