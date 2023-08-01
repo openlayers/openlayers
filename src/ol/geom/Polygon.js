@@ -5,7 +5,7 @@ import LinearRing from './LinearRing.js';
 import Point from './Point.js';
 import SimpleGeometry from './SimpleGeometry.js';
 import {arrayMaxSquaredDelta, assignClosestArrayPoint} from './flat/closest.js';
-import {closestSquaredDistanceXY, getCenter} from '../extent.js';
+import {closestSquaredDistanceXY, getCenter, isEmpty} from '../extent.js';
 import {deflateCoordinatesArray} from './flat/deflate.js';
 import {extend} from '../array.js';
 import {getInteriorPointOfArray} from './flat/interiorpoint.js';
@@ -438,6 +438,9 @@ export function circular(center, radius, n, sphereRadius) {
  * @api
  */
 export function fromExtent(extent) {
+  if (isEmpty(extent)) {
+    throw new Error('Cannot create polygon from empty extent');
+  }
   const minX = extent[0];
   const minY = extent[1];
   const maxX = extent[2];
