@@ -631,6 +631,75 @@ function parseStrokeProperties(
       )
     );
   }
+
+  if ('stroke-miter-limit' in style) {
+    builder.setStrokeMiterLimitExpression(
+      expressionToGlsl(
+        vertContext,
+        style['stroke-miter-limit'],
+        ValueTypes.NUMBER
+      )
+    );
+  }
+
+  if ('stroke-line-dash' in style) {
+    fragContext.functions[
+      'getSingleDashDistance'
+    ] = `float getSingleDashDistance(float distance, float dashOffset, float dashLength, float dashLengthTotal) {
+  return abs(mod(distance, dashLengthTotal) - dashOffset - dashLength * 0.5) - dashLength * 0.5;
+}`;
+
+    let dashPattern = style['stroke-line-dash'].map((v) =>
+      expressionToGlsl(fragContext, v, ValueTypes.NUMBER)
+    );
+    // if pattern has odd length, concatenate it with itself to be even
+    if (dashPattern.length % 2 === 1) {
+      dashPattern = [...dashPattern, ...dashPattern];
+    }
+
+    let offsetExpression = '0.';
+    if ('stroke-line-dash-offset' in style) {
+      offsetExpression = expressionToGlsl(
+        vertContext,
+        style['stroke-line-dash-offset'],
+        ValueTypes.NUMBER
+      );
+    }
+
+    // define a function for this dash specifically (identified using a simple hash)
+    // see https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
+    let uniqueDashKey = JSON.stringify(style['stroke-line-dash'])
+      .split('')
+      .reduce((prev, curr) => (prev << 5) - prev + curr.charCodeAt(0), 0);
+    uniqueDashKey = uniqueDashKey >>> 0;
+    const dashFunctionName = `dashDistanceField_${uniqueDashKey}`;
+
+    const dashLengthsDef = dashPattern.map(
+      (v, i) => `float dashLength${i} = ${v};`
+    );
+    const totalLengthDef = dashPattern
+      .map((v, i) => `dashLength${i}`)
+      .join(' + ');
+    let currentDashOffset = '0.';
+    let distanceExpression = `getSingleDashDistance(distance, ${currentDashOffset}, dashLength0 , totalDashLength)`;
+    for (let i = 2; i < dashPattern.length; i += 2) {
+      currentDashOffset = `${currentDashOffset} + dashLength${
+        i - 2
+      } + dashLength${i - 1}`;
+      distanceExpression = `min(${distanceExpression}, getSingleDashDistance(distance, ${currentDashOffset}, dashLength${i}, totalDashLength))`;
+    }
+
+    fragContext.functions[
+      dashFunctionName
+    ] = `float ${dashFunctionName}(float distance) {
+  ${dashLengthsDef.join('\n  ')}
+  float totalDashLength = ${totalLengthDef};
+  return ${distanceExpression};
+}`;
+    builder.setStrokeDistanceFieldExpression(
+      `${dashFunctionName}(currentLengthPx + ${offsetExpression})`
+    );
+  }
 }
 
 /**

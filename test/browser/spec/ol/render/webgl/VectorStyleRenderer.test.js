@@ -152,6 +152,7 @@ describe('VectorStyleRenderer', () => {
         {name: 'a_segmentStart', size: 2, type: FLOAT},
         {name: 'a_segmentEnd', size: 2, type: FLOAT},
         {name: 'a_joinAngles', size: 2, type: FLOAT},
+        {name: 'a_distance', size: 1, type: FLOAT},
         {name: 'a_parameters', size: 1, type: FLOAT},
         {name: 'a_size', size: 1, type: FLOAT},
         {name: 'a_color', size: 2, type: FLOAT},
@@ -193,6 +194,7 @@ describe('VectorStyleRenderer', () => {
         {name: 'a_segmentStart', size: 2, type: FLOAT},
         {name: 'a_segmentEnd', size: 2, type: FLOAT},
         {name: 'a_joinAngles', size: 2, type: FLOAT},
+        {name: 'a_distance', size: 1, type: FLOAT},
         {name: 'a_parameters', size: 1, type: FLOAT},
         {name: 'a_attr1', size: 1, type: FLOAT},
         {name: 'a_attr2', size: 3, type: FLOAT},
@@ -239,9 +241,9 @@ describe('VectorStyleRenderer', () => {
         expect(buffers.lineStringBuffers[1]).to.be.an(WebGLArrayBuffer);
         expect(buffers.lineStringBuffers[1].getType()).to.be(ARRAY_BUFFER);
         expect(buffers.lineStringBuffers[1].getUsage()).to.be(DYNAMIC_DRAW);
-        expect(buffers.lineStringBuffers[1].getArray().slice(0, 11)).to.eql([
-          -45, -47.5, -40, -47.5, 1.5707963705062866, 4.71238899230957, 0, 3000,
-          10, 20, 30,
+        expect(buffers.lineStringBuffers[1].getArray().slice(0, 12)).to.eql([
+          -45, -47.5, -40, -47.5, 1.5707963705062866, 4.71238899230957, 0, 0,
+          3000, 10, 20, 30,
         ]);
 
         expect(buffers.pointBuffers[0]).to.be.an(WebGLArrayBuffer);

@@ -107,6 +107,8 @@ export function writePointFeatureToBuffers(
  * @param {Array<number>} indexArray Array containing indices.
  * @param {Array<number>} customAttributes Array of custom attributes value
  * @param {import('../../transform.js').Transform} toWorldTransform Transform matrix used to obtain world coordinates from instructions
+ * @param {number} currentLength Cumulated length of segments processed so far
+ * @return {number} Cumulated length with the newly processed segment (in world units)
  * @private
  */
 export function writeLineSegmentToBuffers(
@@ -118,10 +120,11 @@ export function writeLineSegmentToBuffers(
   vertexArray,
   indexArray,
   customAttributes,
-  toWorldTransform
+  toWorldTransform,
+  currentLength
 ) {
   // compute the stride to determine how many vertices were already pushed
-  const baseVertexAttrsCount = 7; // base attributes: x0, y0, x1, y1, angle0, angle1, params
+  const baseVertexAttrsCount = 8; // base attributes: x0, y0, x1, y1, angle0, angle1, distance, params
   const stride = baseVertexAttrsCount + customAttributes.length;
   const baseIndex = vertexArray.length / stride;
 
@@ -134,8 +137,7 @@ export function writeLineSegmentToBuffers(
   ];
   const p1 = [instructions[segmentEndIndex], instructions[segmentEndIndex + 1]];
 
-  // to compute offsets from the line center we need to reproject
-  // coordinates back in world units and compute the length of the segment
+  // to compute join angles we need to reproject coordinates back in world units
   const p0world = applyTransform(toWorldTransform, [...p0]);
   const p1world = applyTransform(toWorldTransform, [...p1]);
 
@@ -163,7 +165,7 @@ export function writeLineSegmentToBuffers(
     return !isClockwise ? Math.PI * 2 - angle : angle;
   }
 
-  // an angle above TWO_PI indicates a line cap
+  // a negative angle indicates a line cap
   let angle0 = -1;
   let angle1 = -1;
 
@@ -192,16 +194,52 @@ export function writeLineSegmentToBuffers(
   }
 
   // add main segment triangles
-  vertexArray.push(p0[0], p0[1], p1[0], p1[1], angle0, angle1, 0);
+  vertexArray.push(
+    p0[0],
+    p0[1],
+    p1[0],
+    p1[1],
+    angle0,
+    angle1,
+    currentLength,
+    0
+  );
   vertexArray.push(...customAttributes);
 
-  vertexArray.push(p0[0], p0[1], p1[0], p1[1], angle0, angle1, 1);
+  vertexArray.push(
+    p0[0],
+    p0[1],
+    p1[0],
+    p1[1],
+    angle0,
+    angle1,
+    currentLength,
+    1
+  );
   vertexArray.push(...customAttributes);
 
-  vertexArray.push(p0[0], p0[1], p1[0], p1[1], angle0, angle1, 2);
+  vertexArray.push(
+    p0[0],
+    p0[1],
+    p1[0],
+    p1[1],
+    angle0,
+    angle1,
+    currentLength,
+    2
+  );
   vertexArray.push(...customAttributes);
 
-  vertexArray.push(p0[0], p0[1], p1[0], p1[1], angle0, angle1, 3);
+  vertexArray.push(
+    p0[0],
+    p0[1],
+    p1[0],
+    p1[1],
+    angle0,
+    angle1,
+    currentLength,
+    3
+  );
   vertexArray.push(...customAttributes);
 
   indexArray.push(
@@ -211,6 +249,14 @@ export function writeLineSegmentToBuffers(
     baseIndex + 1,
     baseIndex + 3,
     baseIndex + 2
+  );
+
+  return (
+    currentLength +
+    Math.sqrt(
+      (p1world[0] - p0world[0]) * (p1world[0] - p0world[0]) +
+        (p1world[1] - p0world[1]) * (p1world[1] - p0world[1])
+    )
   );
 }
 

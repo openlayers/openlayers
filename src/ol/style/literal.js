@@ -31,6 +31,9 @@
  * @property {number|ExpressionValue} [stroke-offset] Stroke offset in pixel. A positive value offsets the line to the right, relative to the direction of the line.
  * @property {CanvasLineCap|ExpressionValue} [stroke-line-cap='round'] Line cap style: `butt`, `round`, or `square`.
  * @property {CanvasLineJoin|ExpressionValue} [stroke-line-join='round'] Line join style: `bevel`, `round`, or `miter`.
+ * @property {Array<number>|Array<ExpressionValue>} [stroke-line-dash] Line dash pattern.
+ * @property {number|ExpressionValue} [stroke-line-dash-offset=0] Line dash offset.
+ * @property {number|ExpressionValue} [stroke-miter-limit=10] Miter limit.
  */
 
 /**
@@ -109,8 +112,6 @@
 
 // FIXME Present in flat style but not implemented in literal webgl style:
 //  - color like (fill patterns etc.)
-//  - stroke line cap/join/miter limit
-//  - stroke dash pattern/offset
 //  - icon declutter mode
 //  - circle line cap/join/miter limit
 //  - circle dash pattern/offset

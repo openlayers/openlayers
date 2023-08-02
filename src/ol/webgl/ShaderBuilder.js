@@ -161,6 +161,16 @@ export class ShaderBuilder {
     this.strokeJoinExpression_ = stringToGlsl('round');
 
     /**
+     * @private
+     */
+    this.strokeMiterLimitExpression_ = '10.';
+
+    /**
+     * @private
+     */
+    this.strokeDistanceFieldExpression_ = '-1000.';
+
+    /**
      * @type {boolean}
      * @private
      */
@@ -382,6 +392,25 @@ export class ShaderBuilder {
   }
 
   /**
+   * @param {string} expression Stroke miter limit expression, evaluate to `float`
+   * @return {ShaderBuilder} the builder object
+   */
+  setStrokeMiterLimitExpression(expression) {
+    this.strokeMiterLimitExpression_ = expression;
+    return this;
+  }
+
+  /**
+   * @param {string} expression Stroke distance field expression, evaluate to `float`
+   * This can override the default distance field; can rely on currentLengthPx and currentRadiusPx
+   * @return {ShaderBuilder} the builder object
+   */
+  setStrokeDistanceFieldExpression(expression) {
+    this.strokeDistanceFieldExpression_ = expression;
+    return this;
+  }
+
+  /**
    * @param {string} expression Fill color expression, evaluate to `vec4`
    * @return {ShaderBuilder} the builder object
    */
@@ -553,6 +582,7 @@ attribute float a_index;
 attribute vec2 a_segmentStart;
 attribute vec2 a_segmentEnd;
 attribute float a_parameters;
+attribute float a_distance;
 attribute vec2 a_joinAngles;
 attribute vec4 a_hitColor;
 ${this.attributes_
@@ -566,6 +596,7 @@ varying float v_angleStart;
 varying float v_angleEnd;
 varying float v_width;
 varying vec4 v_hitColor;
+varying float v_distanceOffsetPx;
 ${this.varyings_
   .map(function (varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
@@ -598,8 +629,7 @@ vec2 getJoinOffsetDirection(vec2 normalPx, float joinAngle) {
 vec2 getOffsetPoint(vec2 point, vec2 normal, float joinAngle, float offsetPx) {
   // offset is applied along the inverted normal (positive offset goes "right" relative to line direction)
   if (isCap(joinAngle)) {
-    // return point - normal * offsetPx;
-    return point;
+    return point - normal * offsetPx;
   }
   return point - getJoinOffsetDirection(normal, joinAngle) * offsetPx;
 }
@@ -607,8 +637,7 @@ vec2 getOffsetPoint(vec2 point, vec2 normal, float joinAngle, float offsetPx) {
 void main(void) {
   v_angleStart = a_joinAngles.x;
   v_angleEnd = a_joinAngles.y;
-  float vertexNumber = fract(a_parameters / 4.0) * 4.0;
-  float distance = floor(a_parameters / 4.0);
+  float vertexNumber = a_parameters;
 
   float lineWidth = ${this.strokeWidthExpression_};
   float lineOffsetPx = ${this.strokeOffsetExpression_};
@@ -628,7 +657,7 @@ void main(void) {
   vec2 joinDirection;
   vec2 positionPx = vertexNumber < 1.5 ? segmentStartPx : segmentEndPx;
   // if angle is too high, do not make a proper join
-  if (cos(angle) > 0.98 || isCap(angle)) {
+  if (cos(angle) > 0.985 || isCap(angle)) {
     joinDirection = normalPx * normalDir - tangentPx * tangentDir;
   } else {
     joinDirection = getJoinOffsetDirection(normalPx * normalDir, angle);
@@ -640,6 +669,7 @@ void main(void) {
   v_segmentEnd = segmentEndPx;
   v_width = lineWidth;
   v_hitColor = a_hitColor;
+  v_distanceOffsetPx = a_distance / u_resolution;
 ${this.varyings_
   .map(function (varying) {
     return '  ' + varying.name + ' = ' + varying.expression + ';';
@@ -670,6 +700,7 @@ varying float v_angleStart;
 varying float v_angleEnd;
 varying float v_width;
 varying vec4 v_hitColor;
+varying float v_distanceOffsetPx;
 ${this.varyings_
   .map(function (varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
@@ -707,7 +738,7 @@ float roundCapDistanceField(vec2 point, vec2 start, vec2 end, float width) {
   return length(point - start) - width * 0.5 - onSegment;
 }
 
-float roundJoinField(vec2 point, vec2 start, vec2 end, float width) {
+float roundJoinDistanceField(vec2 point, vec2 start, vec2 end, float width) {
   return roundCapDistanceField(point, start, end, width);
 }
 
@@ -722,12 +753,13 @@ float bevelJoinField(vec2 point, vec2 start, vec2 end, float width, float joinAn
   return dot(startToPoint, bisector * direction) - radius;
 }
 
-float miterJoinField(vec2 point, vec2 start, vec2 end, float width, float joinAngle) {
-  if (cos(joinAngle) > 0.98) { // avoid risking a division by zero
+float miterJoinDistanceField(vec2 point, vec2 start, vec2 end, float width, float joinAngle) {
+  if (cos(joinAngle) > 0.985) { // avoid risking a division by zero
     return bevelJoinField(point, start, end, width, joinAngle);
   }
-  float miterLength = width / sin(joinAngle * 0.5);
-  if (miterLength > width * 10.0) {
+  float miterLength = 1. / sin(joinAngle * 0.5);
+  float miterLimit = ${this.strokeMiterLimitExpression_};
+  if (miterLength > miterLimit) {
     return bevelJoinField(point, start, end, width, joinAngle);
   }
   return -1000.;
@@ -743,9 +775,9 @@ float computeSegmentPointDistance(vec2 point, vec2 start, vec2 end, float width,
   } else if (joinType == ${stringToGlsl('bevel')}) {
     return bevelJoinField(point, start, end, width, joinAngle);
   } else if (joinType == ${stringToGlsl('miter')}) {
-    return miterJoinField(point, start, end, width, joinAngle);
+    return miterJoinDistanceField(point, start, end, width, joinAngle);
   }
-  return roundJoinField(point, start, end, width);
+  return roundJoinDistanceField(point, start, end, width);
 }
 
 void main(void) {
@@ -764,7 +796,14 @@ void main(void) {
   }
   #endif
   if (${this.discardExpression_}) { discard; }
-    
+
+  float segmentLength = length(v_segmentEnd - v_segmentStart);
+  vec2 segmentTangent = (v_segmentEnd - v_segmentStart) / segmentLength;
+  vec2 segmentNormal = vec2(-segmentTangent.y, segmentTangent.x);
+  vec2 startToPoint = currentPoint - v_segmentStart;
+  float currentLengthPx = max(0., min(dot(segmentTangent, startToPoint), segmentLength)) + v_distanceOffsetPx; 
+  float currentRadiusPx = dot(segmentNormal, startToPoint) + v_distanceOffsetPx;
+
   vec4 color = ${this.strokeColorExpression_} * u_globalAlpha;
   
   float capType = ${this.strokeCapExpression_};
@@ -775,10 +814,8 @@ void main(void) {
     segmentDistanceField(currentPoint, v_segmentStart, v_segmentEnd, v_width),
     max(segmentStartDistance, segmentEndDistance)
   );
-  float inside = max(0., -distance / 10.0);
-  float outside = max(0., distance / 10.0);
-  gl_FragColor = vec4(inside, outside, 0., 1.);
-  // gl_FragColor = color * smoothstep(0., -1., distance);
+  distance = max(distance, ${this.strokeDistanceFieldExpression_});
+  gl_FragColor = color * smoothstep(0., -1., distance);
   if (u_hitDetection > 0) {
     if (gl_FragColor.a < 0.1) { discard; };
     gl_FragColor = v_hitColor;

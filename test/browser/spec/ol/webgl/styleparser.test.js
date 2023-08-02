@@ -624,6 +624,10 @@ describe('ol.webgl.styleparser', () => {
             stringToGlsl('round')
           );
           expect(result.builder.strokeOffsetExpression_).to.eql('0.');
+          expect(result.builder.strokeMiterLimitExpression_).to.eql('10.');
+          expect(result.builder.strokeDistanceFieldExpression_).to.eql(
+            '-1000.'
+          );
           expect(Object.keys(result.attributes).length).to.eql(0);
         });
       });
@@ -634,6 +638,7 @@ describe('ol.webgl.styleparser', () => {
               width: 1,
               capType: 'butt',
               joinType: 'bevel',
+              miterLimit: 20,
             },
             'stroke-color': [
               'interpolate',
@@ -648,22 +653,37 @@ describe('ol.webgl.styleparser', () => {
             'stroke-line-join': ['var', 'joinType'],
             'stroke-line-cap': ['var', 'capType'],
             'stroke-offset': ['+', ['get', 'offset'], 4],
+            'stroke-miter-limit': ['-', ['var', 'miterLimit'], 10],
+            'stroke-line-dash': [
+              ['*', ['get', 'size'], 10],
+              ['*', ['get', 'size'], 20],
+              5,
+              ['*', ['get', 'size'], 20],
+            ],
+            'stroke-line-dash-offset': ['*', ['time'], 5],
           });
 
           expect(result.builder.uniforms_).to.eql([
             'float u_var_width',
             'float u_var_capType',
             'float u_var_joinType',
+            'float u_var_miterLimit',
           ]);
           expect(result.builder.attributes_).to.eql([
             'float a_offset',
             'float a_intensity',
+            'float a_size',
           ]);
           expect(result.builder.varyings_).to.eql([
             {
               name: 'v_intensity',
               type: 'float',
               expression: 'a_intensity',
+            },
+            {
+              name: 'v_size',
+              type: 'float',
+              expression: 'a_size',
             },
           ]);
           expect(result.builder.strokeColorExpression_).to.eql(
@@ -677,12 +697,33 @@ describe('ol.webgl.styleparser', () => {
           expect(result.builder.strokeOffsetExpression_).to.eql(
             '(a_offset + 4.0)'
           );
-          expect(Object.keys(result.attributes).length).to.eql(2);
+          expect(result.builder.strokeMiterLimitExpression_).to.eql(
+            '(u_var_miterLimit - 10.0)'
+          );
+          expect(result.builder.strokeDistanceFieldExpression_).to.eql(
+            'dashDistanceField_450289113(currentLengthPx + (u_time * 5.0))'
+          );
+          expect(Object.keys(result.attributes).length).to.eql(3);
           expect(result.attributes).to.have.property('intensity');
           expect(result.attributes).to.have.property('offset');
+          expect(result.attributes).to.have.property('size');
           expect(result.uniforms).to.have.property('u_var_width');
           expect(result.uniforms).to.have.property('u_var_capType');
           expect(result.uniforms).to.have.property('u_var_joinType');
+          expect(result.uniforms).to.have.property('u_var_miterLimit');
+
+          expect(result.builder.fragmentShaderFunctions_[0]).to.contain(
+            'float getSingleDashDistance'
+          );
+          expect(result.builder.fragmentShaderFunctions_).to
+            .contain(`float dashDistanceField_450289113(float distance) {
+  float dashLength0 = (v_size * 10.0);
+  float dashLength1 = (v_size * 20.0);
+  float dashLength2 = 5.0;
+  float dashLength3 = (v_size * 20.0);
+  float totalDashLength = dashLength0 + dashLength1 + dashLength2 + dashLength3;
+  return min(getSingleDashDistance(distance, 0., dashLength0 , totalDashLength), getSingleDashDistance(distance, 0. + dashLength0 + dashLength1, dashLength2, totalDashLength));
+}`);
         });
       });
     });

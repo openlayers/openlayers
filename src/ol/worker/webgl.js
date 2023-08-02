@@ -99,6 +99,8 @@ worker.onmessage = (event) => {
           renderInstructions[firstInstructionsIndex + 1] ===
             renderInstructions[lastInstructionsIndex + 1];
 
+        let currentLength = 0;
+
         // last point is only a segment end, do not loop over it
         for (let i = 0; i < verticesCount - 1; i++) {
           let beforeIndex = null;
@@ -115,7 +117,7 @@ worker.onmessage = (event) => {
           } else if (isLoop) {
             afterIndex = firstInstructionsIndex + instructionsPerVertex;
           }
-          writeLineSegmentToBuffers(
+          currentLength = writeLineSegmentToBuffers(
             renderInstructions,
             currentInstructionsIndex + i * instructionsPerVertex,
             currentInstructionsIndex + (i + 1) * instructionsPerVertex,
@@ -124,7 +126,8 @@ worker.onmessage = (event) => {
             vertices,
             indices,
             customAttributes,
-            invertTransform
+            invertTransform,
+            currentLength
           );
         }
         currentInstructionsIndex += verticesCount * instructionsPerVertex;
