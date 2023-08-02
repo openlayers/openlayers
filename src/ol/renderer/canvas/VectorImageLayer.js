@@ -9,6 +9,7 @@ import ImageState from '../../ImageState.js';
 import RBush from 'rbush';
 import ViewHint from '../../ViewHint.js';
 import {apply, compose, create} from '../../transform.js';
+import {fromResolutionLike} from '../../resolution.js';
 import {getHeight, getWidth, isEmpty, scaleFromCenter} from '../../extent.js';
 
 /**
@@ -148,10 +149,10 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
           return;
         }
         this.image_ = emptyImage ? null : image;
-        const imageResolution = image.getResolution();
         const imagePixelRatio = image.getPixelRatio();
         const renderedResolution =
-          (imageResolution * pixelRatio) / imagePixelRatio;
+          (fromResolutionLike(image.getResolution()) * pixelRatio) /
+          imagePixelRatio;
         this.renderedResolution = renderedResolution;
         this.coordinateToVectorPixelTransform_ = compose(
           this.coordinateToVectorPixelTransform_,

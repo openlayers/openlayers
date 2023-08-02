@@ -10,7 +10,7 @@ describe('ol/source/ImageArcGISRest', function () {
     resolution = 0.1;
     options = {
       params: {},
-      url: 'http://example.com/MapServer',
+      url: new URL('/MapServer', window.location.href).toString(),
     };
   });
 
@@ -31,18 +31,23 @@ describe('ol/source/ImageArcGISRest', function () {
   describe('#getImage', function () {
     it('returns a image with the expected URL', function () {
       const source = new ImageArcGISRest(options);
+      const viewExtent = [3, 2, -7, 1];
       const image = source.getImage(
-        [3, 2, -7, 1],
+        viewExtent,
         resolution,
         pixelRatio,
         proj3857
       );
-      const uri = new URL(image.src_);
+      image.load();
+
+      const uri = new URL(image.getImage().src);
       expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be('example.com');
+      expect(uri.hostname).to.be(window.location.hostname);
       expect(uri.pathname).to.be('/MapServer/export');
+
       const queryData = uri.searchParams;
-      expect(queryData.get('BBOX')).to.be('5.5,2.25,-9.5,0.75');
+      expect(queryData.get('SIZE')).to.be('150,16');
+      expect(queryData.get('BBOX')).to.be('-9.5,0.7,5.5,2.3');
       expect(queryData.get('FORMAT')).to.be('PNG32');
       expect(queryData.get('IMAGESR')).to.be('3857');
       expect(queryData.get('BBOXSR')).to.be('3857');
@@ -57,13 +62,14 @@ describe('ol/source/ImageArcGISRest', function () {
         1.01,
         proj3857
       );
-      const uri = new URL(image.src_);
+      image.load();
+      const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
       expect(queryData.get('DPI')).to.be('91');
     });
 
     it('returns a image with the expected URL for ImageServer', function () {
-      options.url = 'http://example.com/ImageServer';
+      options.url = new URL('/ImageServer', window.location.href).toString();
       const source = new ImageArcGISRest(options);
       const image = source.getImage(
         [3, 2, -7, 1],
@@ -71,12 +77,13 @@ describe('ol/source/ImageArcGISRest', function () {
         pixelRatio,
         proj3857
       );
-      const uri = new URL(image.src_);
+      image.load();
+      const uri = new URL(image.getImage().src);
       expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be('example.com');
+      expect(uri.hostname).to.be(window.location.hostname);
       expect(uri.pathname).to.be('/ImageServer/exportImage');
       const queryData = uri.searchParams;
-      expect(queryData.get('BBOX')).to.be('5.5,2.25,-9.5,0.75');
+      expect(queryData.get('BBOX')).to.be('-9.5,0.7,5.5,2.3');
       expect(queryData.get('FORMAT')).to.be('PNG32');
       expect(queryData.get('IMAGESR')).to.be('3857');
       expect(queryData.get('BBOXSR')).to.be('3857');
@@ -93,7 +100,8 @@ describe('ol/source/ImageArcGISRest', function () {
         pixelRatio,
         projection
       );
-      const uri = new URL(image.src_);
+      image.load();
+      const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
       expect(queryData.get('FORMAT')).to.be('png');
       expect(queryData.get('TRANSPARENT')).to.be('false');
@@ -108,7 +116,8 @@ describe('ol/source/ImageArcGISRest', function () {
         pixelRatio,
         proj3857
       );
-      const uri = new URL(image.src_);
+      image.load();
+      const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
       expect(queryData.get('LAYERS')).to.be('show:1,3,4');
     });
@@ -125,7 +134,8 @@ describe('ol/source/ImageArcGISRest', function () {
         pixelRatio,
         proj3857
       );
-      const uri = new URL(image.src_);
+      image.load();
+      const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
       expect(queryData.get('TEST')).to.be('value');
     });
@@ -142,7 +152,8 @@ describe('ol/source/ImageArcGISRest', function () {
         pixelRatio,
         proj3857
       );
-      const uri = new URL(image.src_);
+      image.load();
+      const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
       expect(queryData.get('TEST')).to.be('newValue');
     });

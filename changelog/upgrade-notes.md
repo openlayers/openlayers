@@ -40,6 +40,31 @@ If you were previously using the `Stamen` source in your application, update thi
    ],
 ```
 
+##### Removal of `ol/source/ImageStatic`'s `imageSize` pseudo option
+
+Simply remove this option if you used it as intended, i.e. to provide the actual image size.
+
+The `imageSize` option never worked as advertised. The intended use of `imageSize` was to provide the actual size of the `image`. This was redundant for all images except SVG images with intrinsic sizing, but for those it never worked.
+
+What the `imageSize` option actually did when a size different from the actual image size was provided (unintended use), was a modification of the `imageExtent`.
+
+So for an image with an actual width and height of 256 pixels and an incorrectly configured image size of `[254, 254]`, this was what actually happened:
+```js
+const extent = [
+  -13629027.891360067, 4539747.983913189,
+  -13619243.951739565, 4559315.863154193,
+];
+const staticOptions = {
+  url: myImageUrl,
+  imageExtent: [
+    ...getBottomLeft(extent),
+    imageExtent[0] + (getWidth(extent) / 254) * 256,
+    imageExtent[1] + (getHeight(extent) / 254) * 256,
+  ]
+};
+```
+Try to get rid of such an unintended use, or replace the `imageSize` option with an extent calculation like the above.
+
 ### 7.5.0
 
 #### Hit detection with Text fill

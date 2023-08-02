@@ -11,7 +11,7 @@ import {
 } from '../../../../../src/ol/extent.js';
 
 describe('ol/source/ImageWMS', function () {
-  let extent, pixelRatio, options, optionsReproj, projection, resolution;
+  let extent, pixelRatio, options, optionsReproj, resolution, projection;
   beforeEach(function () {
     extent = [10, 20, 30, 40];
     pixelRatio = 1;
@@ -22,20 +22,20 @@ describe('ol/source/ImageWMS', function () {
         'LAYERS': 'layer',
       },
       ratio: 1,
-      url: 'http://example.com/wms',
+      url: new URL('/wms', window.location.href).toString(),
     };
     optionsReproj = {
       params: {
         'LAYERS': 'layer',
       },
       ratio: 1,
-      url: 'http://example.com/wms',
+      url: new URL('/wms', window.location.href).toString(),
       projection: 'EPSG:3857',
     };
   });
 
   describe('#getImage', function () {
-    it('returns the expected image URL', function () {
+    it('creates an image with the expected URL', function () {
       [1, 1.5].forEach(function (ratio) {
         options.ratio = ratio;
         const source = new ImageWMS(options);
@@ -48,7 +48,8 @@ describe('ol/source/ImageWMS', function () {
           pixelRatio,
           projection
         );
-        const uri = new URL(image.src_);
+        image.load();
+        const uri = new URL(image.getImage().src);
         const queryData = uri.searchParams;
         const imageWidth = Number(queryData.get('WIDTH'));
         const imageHeight = Number(queryData.get('HEIGHT'));
@@ -77,7 +78,8 @@ describe('ol/source/ImageWMS', function () {
       options.serverType = 'geoserver';
       const source = new ImageWMS(options);
       const image = source.getImage(extent, resolution, pixelRatio, projection);
-      const uri = new URL(image.src_);
+      image.load();
+      const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
       const width = Number(queryData.get('WIDTH'));
       const height = Number(queryData.get('HEIGHT'));
@@ -94,7 +96,8 @@ describe('ol/source/ImageWMS', function () {
         pixelRatio,
         projection
       );
-      const uri = new URL(image.src_);
+      image.load();
+      const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
       const width = parseFloat(queryData.get('WIDTH'));
       const height = parseFloat(queryData.get('HEIGHT'));
@@ -105,7 +108,7 @@ describe('ol/source/ImageWMS', function () {
     it('does not request extra pixels due to floating point issues', function () {
       const source = new ImageWMS({
         params: {LAYERS: 'layer'},
-        url: 'http://example.com/wms',
+        url: new URL('/wms', window.location.href).toString(),
         ratio: 1,
       });
 
@@ -116,7 +119,8 @@ describe('ol/source/ImageWMS', function () {
       const extent = getForViewAndSize(center, resolution, rotation, mapSize);
       const projection = getProjection('EPSG:3857');
       const image = source.getImage(extent, resolution, 1, projection);
-      const params = new URL(image.src_).searchParams;
+      image.load();
+      const params = new URL(image.getImage().src).searchParams;
 
       const imageWidth = Number(params.get('WIDTH'));
       const imageHeight = Number(params.get('HEIGHT'));
@@ -127,9 +131,10 @@ describe('ol/source/ImageWMS', function () {
     it('sets WIDTH and HEIGHT to match the aspect ratio of BBOX', function () {
       const source = new ImageWMS(options);
       const image = source.getImage(extent, resolution, pixelRatio, projection);
-      const uri = new URL(image.src_);
+      image.load();
+      const uri = new URL(image.getImage().src);
       expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be('example.com');
+      expect(uri.hostname).to.be(window.location.hostname);
       expect(uri.pathname).to.be('/wms');
       const queryData = uri.searchParams;
       expect(queryData.get('BBOX')).to.be('20,10,40,30');
@@ -151,7 +156,8 @@ describe('ol/source/ImageWMS', function () {
       options.params.VERSION = '1.2';
       const source = new ImageWMS(options);
       const image = source.getImage(extent, resolution, pixelRatio, projection);
-      const uri = new URL(image.src_);
+      image.load();
+      const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
       expect(queryData.get('CRS')).to.be(null);
       expect(queryData.get('SRS')).to.be('EPSG:4326');
@@ -162,7 +168,8 @@ describe('ol/source/ImageWMS', function () {
       options.params.TRANSPARENT = false;
       const source = new ImageWMS(options);
       const image = source.getImage(extent, resolution, pixelRatio, projection);
-      const uri = new URL(image.src_);
+      image.load();
+      const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
       expect(queryData.get('FORMAT')).to.be('image/jpeg');
       expect(queryData.get('TRANSPARENT')).to.be('false');
@@ -172,7 +179,8 @@ describe('ol/source/ImageWMS', function () {
       options.params.STYLES = 'foo';
       const source = new ImageWMS(options);
       const image = source.getImage(extent, resolution, pixelRatio, projection);
-      const uri = new URL(image.src_);
+      image.load();
+      const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
       expect(queryData.get('STYLES')).to.be('foo');
     });
@@ -181,7 +189,8 @@ describe('ol/source/ImageWMS', function () {
       const source = new ImageWMS(options);
       projection = getProjection('CRS:84');
       const image = source.getImage(extent, resolution, pixelRatio, projection);
-      const uri = new URL(image.src_);
+      image.load();
+      const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
       expect(queryData.get('BBOX')).to.be('10,20,30,40');
     });
@@ -190,7 +199,8 @@ describe('ol/source/ImageWMS', function () {
       options.params.VERSION = '1.1.0';
       const source = new ImageWMS(options);
       const image = source.getImage(extent, resolution, pixelRatio, projection);
-      const uri = new URL(image.src_);
+      image.load();
+      const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
       expect(queryData.get('BBOX')).to.be('10,20,30,40');
     });
@@ -200,7 +210,8 @@ describe('ol/source/ImageWMS', function () {
       const source = new ImageWMS(options);
       pixelRatio = 2;
       const image = source.getImage(extent, resolution, pixelRatio, projection);
-      const uri = new URL(image.src_);
+      image.load();
+      const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
       expect(queryData.get('MAP_RESOLUTION')).to.be('180');
     });
@@ -210,7 +221,8 @@ describe('ol/source/ImageWMS', function () {
       const source = new ImageWMS(options);
       pixelRatio = 2;
       const image = source.getImage(extent, resolution, pixelRatio, projection);
-      const uri = new URL(image.src_);
+      image.load();
+      const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
       expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:180');
     });
@@ -221,7 +233,8 @@ describe('ol/source/ImageWMS', function () {
       const source = new ImageWMS(options);
       pixelRatio = 2;
       const image = source.getImage(extent, resolution, pixelRatio, projection);
-      const uri = new URL(image.src_);
+      image.load();
+      const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
       expect(queryData.get('FORMAT_OPTIONS')).to.be('param1:value1;dpi:180');
     });
@@ -231,7 +244,8 @@ describe('ol/source/ImageWMS', function () {
       const source = new ImageWMS(options);
       pixelRatio = 1.325;
       const image = source.getImage(extent, resolution, pixelRatio, projection);
-      const uri = new URL(image.src_);
+      image.load();
+      const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
       expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:119');
     });
@@ -241,7 +255,8 @@ describe('ol/source/ImageWMS', function () {
       const source = new ImageWMS(options);
       pixelRatio = 2;
       const image = source.getImage(extent, resolution, pixelRatio, projection);
-      const uri = new URL(image.src_);
+      image.load();
+      const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
       expect(queryData.get('DPI')).to.be('180');
     });
@@ -253,7 +268,11 @@ describe('ol/source/ImageWMS', function () {
       const image = source.getImage(extent, resolution, pixelRatio, projection);
       image.load();
       expect(imageLoadFunction.called).to.be(true);
-      expect(imageLoadFunction.calledWith(image, image.src_)).to.be(true);
+      expect(imageLoadFunction.getCall(0).args[0]).to.eql(image);
+      expect(imageLoadFunction.getCall(0).args[1]).to.be(
+        window.location.origin +
+          '/wms?REQUEST=GetMap&SERVICE=WMS&VERSION=1.3.0&FORMAT=image%2Fpng&STYLES=&TRANSPARENT=true&LAYERS=layer&WIDTH=200&HEIGHT=200&CRS=EPSG%3A4326&BBOX=20%2C10%2C40%2C30'
+      );
     });
 
     it('returns same image for consecutive calls with same args', function () {
@@ -274,32 +293,39 @@ describe('ol/source/ImageWMS', function () {
       expect(image1).to.equal(image2);
     });
 
-    it('returns same image for calls with similar extents', function () {
+    it('returns same image for calls with similar extents', function (done) {
       options.ratio = 1.5;
       const source = new ImageWMS(options);
+      let image1 = undefined;
+      let image2 = undefined;
       let extent = [10.01, 20, 30.01, 40];
-      const image1 = source.getImage(
-        extent,
-        resolution,
-        pixelRatio,
-        projection
-      );
-      extent = [10.01, 20.1, 30.01, 40.1];
-      const image2 = source.getImage(
-        extent,
-        resolution,
-        pixelRatio,
-        projection
-      );
-      expect(image1).to.equal(image2);
+      image1 = source.getImage(extent, resolution, pixelRatio, projection);
+      source.on('imageloadend', function onloadend() {
+        source.un('imageloadend', onloadend);
+        extent = [10.01, 20.1, 30.01, 40.1];
+        image2 = source.getImage(extent, resolution, pixelRatio, projection);
+        try {
+          expect(image1).to.equal(image2);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      });
+      image1.load();
     });
 
     it('calculates correct image size with ratio', function () {
       options.ratio = 1.5;
       const source = new ImageWMS(options);
       const extent = [10, 5, 30, 45];
-      source.getImage(extent, resolution, pixelRatio, projection);
-      expect(source.imageSize_).to.eql([300, 600]);
+      const image = source.getImage(extent, resolution, pixelRatio, projection);
+      image.load();
+      const uri = new URL(image.getImage().src);
+      const size = [
+        Number(uri.searchParams.get('WIDTH')),
+        Number(uri.searchParams.get('HEIGHT')),
+      ];
+      expect(size).to.eql([300, 600]);
     });
   });
 
@@ -311,7 +337,7 @@ describe('ol/source/ImageWMS', function () {
       });
       const uri = new URL(url);
       expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be('example.com');
+      expect(uri.hostname).to.be(window.location.hostname);
       expect(uri.pathname).to.be('/wms');
       const queryData = uri.searchParams;
       expect(queryData.get('BBOX')).to.be('24.95,14.95,35.05,25.05');
@@ -339,7 +365,7 @@ describe('ol/source/ImageWMS', function () {
       });
       const uri = new URL(url);
       expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be('example.com');
+      expect(uri.hostname).to.be(window.location.hostname);
       expect(uri.pathname).to.be('/wms');
       const queryData = uri.searchParams;
       expect(queryData.get('BBOX')).to.be(
@@ -370,7 +396,7 @@ describe('ol/source/ImageWMS', function () {
       });
       const uri = new URL(url);
       expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be('example.com');
+      expect(uri.hostname).to.be(window.location.hostname);
       expect(uri.pathname).to.be('/wms');
       const queryData = uri.searchParams;
       expect(queryData.get('BBOX')).to.be('24.95,14.95,35.05,25.05');
@@ -398,7 +424,7 @@ describe('ol/source/ImageWMS', function () {
       const url = source.getLegendUrl(resolution);
       const uri = new URL(url);
       expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be('example.com');
+      expect(uri.hostname).to.be(window.location.hostname);
       expect(uri.pathname).to.be('/wms');
       const queryData = uri.searchParams;
       expect(queryData.get('FORMAT')).to.be('image/png');
@@ -434,7 +460,7 @@ describe('ol/source/ImageWMS', function () {
       });
       const uri = new URL(url);
       expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be('example.com');
+      expect(uri.hostname).to.be(window.location.hostname);
       expect(uri.pathname).to.be('/wms');
       const queryData = uri.searchParams;
       expect(queryData.get('FORMAT')).to.be('FORMAT_VALUE');
@@ -511,7 +537,7 @@ describe('ol/source/ImageWMS', function () {
           LAYERS: 'layer',
         },
         ratio: 1,
-        url: 'http://example.com/wms',
+        url: new URL('/wms', window.location.href).toString(),
         projection: 'EPSG:4326',
       };
       source = new ImageWMS(options);

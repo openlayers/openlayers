@@ -1,4 +1,9 @@
 import Static from '../../../../../src/ol/source/ImageStatic.js';
+import {
+  getBottomLeft,
+  getHeight,
+  getWidth,
+} from '../../../../../src/ol/extent.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 
 describe('ol/source/ImageStatic', function () {
@@ -39,9 +44,13 @@ describe('ol/source/ImageStatic', function () {
       const image = source.getImage(extent, resolution, pixelRatio, projection);
 
       source.on('imageloadend', function (event) {
-        expect(image.getImage().width).to.be(256);
-        expect(image.getImage().height).to.be(512);
-        done();
+        try {
+          const [resolutionX, resolutionY] = image.getResolution();
+          expect(resolutionY).to.be(resolutionX * 2);
+          done();
+        } catch (e) {
+          done(e);
+        }
       });
 
       image.load();
@@ -60,31 +69,49 @@ describe('ol/source/ImageStatic', function () {
       const image = source.getImage(extent, resolution, pixelRatio, projection);
 
       source.on('imageloadend', function (event) {
-        expect(image.getImage().width).to.be(512);
-        expect(image.getImage().height).to.be(256);
-        done();
+        try {
+          const [resolutionX, resolutionY] = image.getResolution();
+          expect(resolutionX).to.be(2 * resolutionY);
+          done();
+        } catch (e) {
+          done(e);
+        }
       });
 
       image.load();
     });
 
-    it('respects imageSize', function (done) {
+    it('Had an imageSize option which changed the imageExtent when used with incorrect image sizes', function (done) {
+      const imageExtent = [
+        -13629027.891360067, 4539747.983913189, -13619243.951739565,
+        4559315.863154193,
+      ];
+      const correctImageSize = [256, 256];
+      const imageSize = [254, 254]; // this was set as `imageSize` option in the source config
+      const wantedExtent = [
+        ...getBottomLeft(imageExtent),
+        imageExtent[0] +
+          (getWidth(imageExtent) / imageSize[0]) * correctImageSize[0],
+        imageExtent[1] +
+          (getHeight(imageExtent) / imageSize[1]) * correctImageSize[1],
+      ];
       const source = new Static({
         url: 'spec/ol/source/images/12-655-1583.png',
-        imageExtent: [
-          -13629027.891360067, 4539747.983913189, -13619243.951739565,
-          4559315.863154193,
-        ],
-        imageSize: [254, 254],
+        imageExtent: wantedExtent,
         projection: projection,
       });
 
       const image = source.getImage(extent, resolution, pixelRatio, projection);
 
       source.on('imageloadend', function (event) {
-        expect(image.getImage().width).to.be(254);
-        expect(image.getImage().height).to.be(508);
-        done();
+        try {
+          const [resolutionX, resolutionY] = image.getResolution();
+          expect(Math.round(getWidth(imageExtent) / resolutionX)).to.be(254);
+          expect(Math.round(getHeight(imageExtent) / resolutionY)).to.be(254);
+          done();
+        } catch (e) {
+          done(e);
+        }
       });
 
       image.load();
