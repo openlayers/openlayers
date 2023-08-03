@@ -39,6 +39,12 @@ class WebGLRenderTarget {
     this.framebuffer_ = gl.createFramebuffer();
 
     /**
+     * @private
+     * @type {WebGLRenderbuffer}
+     */
+    this.depthbuffer_ = gl.createRenderbuffer();
+
+    /**
      * @type {Array<number>}
      * @private
      */
@@ -162,6 +168,13 @@ class WebGLRenderTarget {
   }
 
   /**
+   * @return {WebGLRenderbuffer} Depth buffer of the render target
+   */
+  getDepthbuffer() {
+    return this.depthbuffer_;
+  }
+
+  /**
    * @private
    */
   updateSize_() {
@@ -178,6 +191,20 @@ class WebGLRenderTarget {
       gl.TEXTURE_2D,
       this.texture_,
       0
+    );
+
+    gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthbuffer_);
+    gl.renderbufferStorage(
+      gl.RENDERBUFFER,
+      gl.DEPTH_COMPONENT16,
+      size[0],
+      size[1]
+    );
+    gl.framebufferRenderbuffer(
+      gl.FRAMEBUFFER,
+      gl.DEPTH_ATTACHMENT,
+      gl.RENDERBUFFER,
+      this.depthbuffer_
     );
 
     this.data_ = new Uint8Array(size[0] * size[1] * 4);
