@@ -1,0 +1,16 @@
+---
+layout: example.html
+title: Declutter Group
+shortdesc: Declutter vector layers by groups
+docs: >
+  This shows how to specify when vector(tile) layers are decluttered if `declutter` is set to true. By default,
+  all decluttering will happen after all layers have been rendered. Calling the map's `flushDeclutter()` method 
+  makes decluttering occur immediately. This is useful for layers that need to be entirely rendered above the declutter items
+  of layers lower in the layer stack. In the example, the blue square overlay displays above the decluttered vector symbols
+  and labels.
+tags: "mapbox, declutter, vector"
+cloak:
+  - key: get_your_own_D6rA4zTHduk6KOKTXzGB
+    value: Get your own API key at https://www.maptiler.com/cloud/
+---
+<div id="map" class="map"></div>
