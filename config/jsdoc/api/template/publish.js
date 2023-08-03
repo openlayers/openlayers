@@ -89,7 +89,7 @@ function linkto(longname, linkText, cssClass, fragmentId) {
   if (match) {
     return (
       linkto(match[1], '', cssClass, fragmentId) +
-      '<' +
+      '&lt;' +
       linkto(match[2], '', cssClass, fragmentId) +
       '>'
     );
