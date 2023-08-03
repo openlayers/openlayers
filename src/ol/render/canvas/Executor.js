@@ -94,8 +94,10 @@ const rtlRegEx = new RegExp(
  * @return {number} Text alignment.
  */
 function horizontalTextAlign(text, align) {
-  if ((align === 'start' || align === 'end') && !rtlRegEx.test(text)) {
-    align = align === 'start' ? 'left' : 'right';
+  if (align === 'start') {
+    align = rtlRegEx.test(text) ? 'right' : 'left';
+  } else if (align === 'end') {
+    align = rtlRegEx.test(text) ? 'left' : 'right';
   }
   return TEXT_ALIGN[align];
 }
@@ -980,7 +982,8 @@ class Executor {
             measureAndCacheTextWidth(font, text, cachedWidths);
           if (overflow || textLength <= pathLength) {
             const textAlign = this.textStates[textKey].textAlign;
-            const startM = (pathLength - textLength) * TEXT_ALIGN[textAlign];
+            const startM =
+              (pathLength - textLength) * horizontalTextAlign(text, textAlign);
             const parts = drawTextOnPath(
               pixelCoordinates,
               begin,
