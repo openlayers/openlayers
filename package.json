@@ -47,7 +47,8 @@
     "earcut": "^2.2.3",
     "geotiff": "^2.0.7",
     "pbf": "3.2.1",
-    "rbush": "^3.0.1"
+    "rbush": "^3.0.1",
+    "stac-js": "0.0.8"
   },
   "devDependencies": {
     "@metalsmith/in-place": "^5.0.0",
