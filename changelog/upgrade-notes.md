@@ -6,6 +6,10 @@
 
 The `start` and `end` behavior previously was equivalent to `right` and `left`. Now it takes the text direction into account, so it will mean `left` and `right` for left-to-right text.
 
+#### Consistent hit detection of dashed lines
+
+MultiLineString stroke, and Polygon, MultiPolygon and Circle geometry outlines are now hit detected along their entire length by `ol/Map` methods (`forEachFeatureAtPixel`, `getFeaturesAtPixel`, `hasFeatureAtPixel`) even if the line is dashed.  This is consistent with LineString stroke and the `getFeatures` methods of `ol/layer/Vector` and `ol/layer/VectorTile`.
+
 ### 7.2.0
 
 #### Rendered resolutions of `ol/source/Raster`
