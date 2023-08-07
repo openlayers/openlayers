@@ -53,7 +53,7 @@ export function createHitDetectionImageData(
   for (let i = 1; i <= featureCount; ++i) {
     const feature = features[i - 1];
     const featureStyleFunction = feature.getStyleFunction() || styleFunction;
-    if (!styleFunction) {
+    if (!featureStyleFunction) {
       continue;
     }
     let styles = featureStyleFunction(feature, resolution);
@@ -83,7 +83,7 @@ export function createHitDetectionImageData(
       }
       style.setText(undefined);
       const image = originalStyle.getImage();
-      if (image && image.getOpacity() !== 0) {
+      if (image) {
         const imgSize = image.getImageSize();
         if (!imgSize) {
           continue;

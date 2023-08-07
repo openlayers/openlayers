@@ -10,6 +10,10 @@ The `start` and `end` behavior previously was equivalent to `right` and `left`. 
 
 MultiLineString stroke, and Polygon, MultiPolygon and Circle geometry outlines are now hit detected along their entire length by `ol/Map` methods (`forEachFeatureAtPixel`, `getFeaturesAtPixel`, `hasFeatureAtPixel`) even if the line is dashed.  This is consistent with LineString stroke and the `getFeatures` methods of `ol/layer/Vector` and `ol/layer/VectorTile`.
 
+#### Hit detection of zero opacity icons
+
+`ol/style/Image` subclasses are hit detected regardless of their `opacity` setting.  This makes icon styles consistent with the use of transparent fill in regular shapes.
+
 ### 7.2.0
 
 #### Rendered resolutions of `ol/source/Raster`

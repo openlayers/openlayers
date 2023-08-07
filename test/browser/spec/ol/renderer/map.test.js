@@ -318,6 +318,13 @@ describe('ol.renderer.Map', function () {
       expect(features.length).to.be(1);
     });
 
+    it('works with zero opacity image', function () {
+      style.getImage().setOpacity(0);
+      map.renderSync();
+      const features = map.getFeaturesAtPixel([50, 50]);
+      expect(features.length).to.be(1);
+    });
+
     it('only draws features that intersect the hit detection viewport', function () {
       const resolution = map.getView().getResolution();
       source.addFeature(
