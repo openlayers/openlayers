@@ -2,6 +2,10 @@
 
 ### Next version
 
+#### Hit detection with Text fill
+
+Hit detection of fill for Text styles is now consistent with that for Circle and RegularShape styles. Transparent `fill` and `backgroundFill` is detected, with no hit detection over unfilled shapes. To get the previous behavior in Text styles where a transparent fill may have been used to avoid the default fill specify `fill: null`. If using FlatStyle notation specify `'text-fill-color': null`.
+
 #### Fixed `textAlign` with `placement: 'line'`
 
 The `start` and `end` behavior previously was equivalent to `right` and `left`. Now it takes the text direction into account, so it will mean `left` and `right` for left-to-right text.

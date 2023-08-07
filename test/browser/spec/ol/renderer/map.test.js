@@ -205,6 +205,174 @@ describe('ol.renderer.Map', function () {
       expect(hit.geometry).to.be(geometry);
     });
 
+    it('hits Text stroke, transparent fill and background fill', function () {
+      let hit;
+      const geometry = new Point([0, 0]);
+      const feature = new Feature(geometry);
+      const layer = new VectorLayer({
+        source: new VectorSource({
+          features: [feature],
+        }),
+      });
+      map.addLayer(layer);
+
+      layer.setStyle({
+        'text-value': 'X',
+        'text-font': 'bold 100px sans-serif',
+        'text-baseline': 'top',
+        'text-offset-y': -50,
+        'text-stroke-width': 20,
+        'text-stroke-color': 'black',
+        'text-fill-color': null,
+      });
+      map.renderSync();
+      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
+        feature,
+        layer,
+        geometry,
+      }));
+      expect(hit).to.be.ok();
+      expect(hit.feature).to.be(feature);
+      expect(hit.layer).to.be(layer);
+      expect(hit.geometry).to.be(geometry);
+
+      layer.setStyle({
+        'text-value': 'X',
+        'text-font': 'bold 100px sans-serif',
+        'text-baseline': 'top',
+        'text-offset-y': -50,
+        'text-stroke-width': 1,
+        'text-stroke-color': 'black',
+        'text-fill-color': null,
+      });
+      map.renderSync();
+      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
+        feature,
+        layer,
+        geometry,
+      }));
+      expect(hit).to.be(undefined);
+
+      layer.setStyle({
+        'text-value': 'X',
+        'text-font': 'bold 100px sans-serif',
+        'text-baseline': 'top',
+        'text-offset-y': -50,
+        'text-stroke-width': 1,
+        'text-stroke-color': 'black',
+        'text-fill-color': 'transparent',
+      });
+      map.renderSync();
+      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
+        feature,
+        layer,
+        geometry,
+      }));
+      expect(hit).to.be.ok();
+      expect(hit.feature).to.be(feature);
+      expect(hit.layer).to.be(layer);
+      expect(hit.geometry).to.be(geometry);
+
+      layer.setStyle({
+        'text-value': 'X',
+        'text-font': 'bold 100px sans-serif',
+        'text-baseline': 'top',
+        'text-offset-y': -50,
+        'text-stroke-width': 1,
+        'text-stroke-color': 'black',
+        'text-fill-color': null,
+        'text-background-fill-color': 'transparent',
+      });
+      map.renderSync();
+      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
+        feature,
+        layer,
+        geometry,
+      }));
+      expect(hit).to.be.ok();
+      expect(hit.feature).to.be(feature);
+      expect(hit.layer).to.be(layer);
+      expect(hit.geometry).to.be(geometry);
+    });
+
+    it('hits line placement Text stroke and transparent fill', function () {
+      let hit;
+      const geometry = new LineString([
+        [-1e6, 0],
+        [1e6, 0],
+      ]);
+      const feature = new Feature(geometry);
+      const layer = new VectorLayer({
+        source: new VectorSource({
+          features: [feature],
+        }),
+      });
+      map.addLayer(layer);
+
+      layer.setStyle({
+        'text-value': 'X',
+        'text-font': 'bold 100px sans-serif',
+        'text-baseline': 'top',
+        'text-offset-y': -50,
+        'text-stroke-width': 20,
+        'text-stroke-color': 'black',
+        'text-fill-color': null,
+        'text-placement': 'line',
+        'text-overflow': true,
+      });
+      map.renderSync();
+      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
+        feature,
+        layer,
+        geometry,
+      }));
+      expect(hit).to.be.ok();
+      expect(hit.feature).to.be(feature);
+      expect(hit.layer).to.be(layer);
+      expect(hit.geometry).to.be(geometry);
+
+      layer.setStyle({
+        'text-value': 'X',
+        'text-font': 'bold 100px sans-serif',
+        'text-baseline': 'top',
+        'text-offset-y': -50,
+        'text-stroke-width': 1,
+        'text-stroke-color': 'black',
+        'text-fill-color': null,
+        'text-placement': 'line',
+        'text-overflow': true,
+      });
+      map.renderSync();
+      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
+        feature,
+        layer,
+        geometry,
+      }));
+      expect(hit).to.be(undefined);
+
+      layer.setStyle({
+        'text-value': 'X',
+        'text-font': 'bold 100px sans-serif',
+        'text-baseline': 'top',
+        'text-offset-y': -50,
+        'text-stroke-width': 1,
+        'text-stroke-color': 'black',
+        'text-fill-color': 'transparent',
+        'text-placement': 'line',
+        'text-overflow': true,
+      });
+      map.renderSync();
+      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
+        feature,
+        layer,
+        geometry,
+      }));
+      expect(hit).to.be.ok();
+      expect(hit.feature).to.be(feature);
+      expect(hit.layer).to.be(layer);
+      expect(hit.geometry).to.be(geometry);
+    });
+
     it('prioritizes closer features when no direct hit is found', function () {
       map.getView().setResolution(1);
       map.addLayer(
