@@ -274,10 +274,6 @@ function parseStyle(style, bandCount) {
 
       ${pipeline.join('\n')}
 
-      if (color.a == 0.0) {
-        discard;
-      }
-
       gl_FragColor = color;
       gl_FragColor.rgb *= gl_FragColor.a;
       gl_FragColor *= ${Uniforms.TRANSITION_ALPHA};
