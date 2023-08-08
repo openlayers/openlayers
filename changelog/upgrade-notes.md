@@ -2,6 +2,22 @@
 
 ### Next version
 
+#### Hit detection with Text fill
+
+Hit detection of fill for Text styles is now consistent with that for Circle and RegularShape styles. Transparent `fill` and `backgroundFill` is detected, with no hit detection over unfilled shapes. To get the previous behavior in Text styles where a transparent fill may have been used to avoid the default fill specify `fill: null`. If using FlatStyle notation specify `'text-fill-color': null`.
+
+#### Fixed `textAlign` with `placement: 'line'`
+
+The `start` and `end` behavior previously was equivalent to `right` and `left`. Now it takes the text direction into account, so it will mean `left` and `right` for left-to-right text.
+
+#### Consistent hit detection of dashed lines
+
+MultiLineString stroke, and Polygon, MultiPolygon and Circle geometry outlines are now hit detected along their entire length by `ol/Map` methods (`forEachFeatureAtPixel`, `getFeaturesAtPixel`, `hasFeatureAtPixel`) even if the line is dashed.  This is consistent with LineString stroke and the `getFeatures` methods of `ol/layer/Vector` and `ol/layer/VectorTile`.
+
+#### Hit detection of zero opacity icons
+
+`ol/style/Image` subclasses are hit detected regardless of their `opacity` setting.  This makes icon styles consistent with the use of transparent fill in regular shapes.
+
 ### 7.2.0
 
 #### Rendered resolutions of `ol/source/Raster`

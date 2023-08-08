@@ -2,6 +2,7 @@ import Event from '../../../../../src/ol/events/Event.js';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
 import View from '../../../../../src/ol/View.js';
+import {MAC} from '../../../../../src/ol/has.js';
 
 describe('ol.interaction.KeyboardZoom', function () {
   let map;
@@ -54,6 +55,25 @@ describe('ol.interaction.KeyboardZoom', function () {
       });
 
       event.originalEvent.key = '+';
+      map.handleMapBrowserEvent(event);
+      expect(spy.called).to.be(false);
+    });
+
+    it('does nothing if platform modifier key is pressed at the same time', function () {
+      const view = map.getView();
+      const spy = sinon.spy(view, 'animateInternal');
+      const event = new MapBrowserEvent('keydown', map, {
+        type: 'keydown',
+        target: map.getTargetElement(),
+        preventDefault: Event.prototype.preventDefault,
+      });
+
+      event.originalEvent.key = '+';
+      if (MAC) {
+        event.originalEvent.metaKey = true;
+      } else {
+        event.originalEvent.ctrlKey = true;
+      }
       map.handleMapBrowserEvent(event);
       expect(spy.called).to.be(false);
     });

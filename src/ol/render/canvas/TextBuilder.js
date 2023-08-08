@@ -25,14 +25,12 @@ import {lineChunk} from '../../geom/flat/linechunk.js';
 import {matchingChunk} from '../../geom/flat/straightchunk.js';
 /**
  * @const
- * @enum {number}
+ * @type {{left: 0, center: 0.5, right: 1, top: 0, middle: 0.5, hanging: 0.2, alphabetic: 0.8, ideographic: 0.8, bottom: 1}}
  */
 export const TEXT_ALIGN = {
   'left': 0,
-  'end': 0,
   'center': 0.5,
   'right': 1,
-  'start': 1,
   'top': 0,
   'middle': 0.5,
   'hanging': 0.2,
@@ -97,6 +95,7 @@ class CanvasTextBuilder extends CanvasBuilder {
      * @type {!Object<string, import("../canvas.js").FillState>}
      */
     this.fillStates = {};
+    this.fillStates[defaultFillStyle] = {fillStyle: defaultFillStyle};
 
     /**
      * @private
@@ -338,7 +337,6 @@ class CanvasTextBuilder extends CanvasBuilder {
         );
         if (textState.backgroundFill) {
           this.updateFillStyle(this.state, this.createFill);
-          this.hitDetectionInstructions.push(this.createFill(this.state));
         }
         if (textState.backgroundStroke) {
           this.updateStrokeStyle(this.state, this.applyStroke);
@@ -406,6 +404,12 @@ class CanvasTextBuilder extends CanvasBuilder {
         geometryWidths,
       ]);
       const scale = 1 / pixelRatio;
+      // Set default fill for hit detection background
+      const currentFillStyle = this.state.fillStyle;
+      if (textState.backgroundFill) {
+        this.state.fillStyle = defaultFillStyle;
+        this.hitDetectionInstructions.push(this.createFill(this.state));
+      }
       this.hitDetectionInstructions.push([
         CanvasInstruction.DRAW_IMAGE,
         begin,
@@ -429,11 +433,16 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.text_,
         this.textKey_,
         this.strokeKey_,
-        this.fillKey_,
+        this.fillKey_ ? defaultFillStyle : this.fillKey_,
         this.textOffsetX_,
         this.textOffsetY_,
         geometryWidths,
       ]);
+      // Reset previous fill
+      if (textState.backgroundFill) {
+        this.state.fillStyle = currentFillStyle;
+        this.hitDetectionInstructions.push(this.createFill(this.state));
+      }
 
       this.endGeometry(feature);
     }
@@ -526,7 +535,7 @@ class CanvasTextBuilder extends CanvasBuilder {
       end,
       baseline,
       textState.overflow,
-      fillKey,
+      fillKey ? defaultFillStyle : fillKey,
       textState.maxAngle,
       1,
       offsetY,

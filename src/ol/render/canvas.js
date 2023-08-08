@@ -93,7 +93,7 @@ export const defaultFont = '10px sans-serif';
 
 /**
  * @const
- * @type {import("../colorlike.js").ColorLike}
+ * @type {string}
  */
 export const defaultFillStyle = '#000';
 

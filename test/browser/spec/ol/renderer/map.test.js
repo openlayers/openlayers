@@ -7,10 +7,14 @@ import VectorSource from '../../../../../src/ol/source/Vector.js';
 import View from '../../../../../src/ol/View.js';
 import {Circle, Fill, Stroke, Style} from '../../../../../src/ol/style.js';
 import {
+  Circle as CircleGeometry,
   GeometryCollection,
   LineString,
+  MultiLineString,
   MultiPoint,
+  MultiPolygon,
   Point,
+  Polygon,
 } from '../../../../../src/ol/geom.js';
 import {Projection} from '../../../../../src/ol/proj.js';
 import {fromExtent} from '../../../../../src/ol/geom/Polygon.js';
@@ -92,11 +96,9 @@ describe('ol.renderer.Map', function () {
     });
 
     it('hits lines even if they are dashed', function () {
-      const geometry = new LineString([
-        [-1e6, 0],
-        [1e6, 0],
-      ]);
-      const feature = new Feature(geometry);
+      map.getView().setResolution(1);
+      let geometry, hit;
+      const feature = new Feature();
       const layer = new VectorLayer({
         source: new VectorSource({
           features: [feature],
@@ -110,16 +112,261 @@ describe('ol.renderer.Map', function () {
         }),
       });
       map.addLayer(layer);
-      map.renderSync();
-      const hit = map.forEachFeatureAtPixel(
-        [50, 50],
-        (feature, layer, geometry) => ({
-          feature,
-          layer,
-          geometry,
-        })
-      );
 
+      geometry = new LineString([
+        [-20, 0],
+        [20, 0],
+      ]);
+      feature.setGeometry(geometry);
+      map.renderSync();
+      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
+        feature,
+        layer,
+        geometry,
+      }));
+      expect(hit).to.be.ok();
+      expect(hit.feature).to.be(feature);
+      expect(hit.layer).to.be(layer);
+      expect(hit.geometry).to.be(geometry);
+
+      geometry = new MultiLineString([
+        [
+          [-20, 0],
+          [20, 0],
+        ],
+      ]);
+      feature.setGeometry(geometry);
+      map.renderSync();
+      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
+        feature,
+        layer,
+        geometry,
+      }));
+      expect(hit).to.be.ok();
+      expect(hit.feature).to.be(feature);
+      expect(hit.layer).to.be(layer);
+      expect(hit.geometry).to.be(geometry);
+
+      geometry = new Polygon([
+        [
+          [-20, 0],
+          [20, 0],
+          [20, -20],
+          [-20, -20],
+          [-20, 0],
+        ],
+      ]);
+      feature.setGeometry(geometry);
+      map.renderSync();
+      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
+        feature,
+        layer,
+        geometry,
+      }));
+      expect(hit).to.be.ok();
+      expect(hit.feature).to.be(feature);
+      expect(hit.layer).to.be(layer);
+      expect(hit.geometry).to.be(geometry);
+
+      geometry = new MultiPolygon([
+        [
+          [
+            [-20, 0],
+            [20, 0],
+            [20, -20],
+            [-20, -20],
+            [-20, 0],
+          ],
+        ],
+      ]);
+      feature.setGeometry(geometry);
+      map.renderSync();
+      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
+        feature,
+        layer,
+        geometry,
+      }));
+      expect(hit).to.be.ok();
+      expect(hit.feature).to.be(feature);
+      expect(hit.layer).to.be(layer);
+      expect(hit.geometry).to.be(geometry);
+
+      geometry = new CircleGeometry([0, -40 / Math.PI], 40 / Math.PI);
+      feature.setGeometry(geometry);
+      map.renderSync();
+      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
+        feature,
+        layer,
+        geometry,
+      }));
+      expect(hit).to.be.ok();
+      expect(hit.feature).to.be(feature);
+      expect(hit.layer).to.be(layer);
+      expect(hit.geometry).to.be(geometry);
+    });
+
+    it('hits Text stroke, transparent fill and background fill', function () {
+      let hit;
+      const geometry = new Point([0, 0]);
+      const feature = new Feature(geometry);
+      const layer = new VectorLayer({
+        source: new VectorSource({
+          features: [feature],
+        }),
+      });
+      map.addLayer(layer);
+
+      layer.setStyle({
+        'text-value': 'X',
+        'text-font': 'bold 100px sans-serif',
+        'text-baseline': 'top',
+        'text-offset-y': -50,
+        'text-stroke-width': 20,
+        'text-stroke-color': 'black',
+        'text-fill-color': null,
+      });
+      map.renderSync();
+      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
+        feature,
+        layer,
+        geometry,
+      }));
+      expect(hit).to.be.ok();
+      expect(hit.feature).to.be(feature);
+      expect(hit.layer).to.be(layer);
+      expect(hit.geometry).to.be(geometry);
+
+      layer.setStyle({
+        'text-value': 'X',
+        'text-font': 'bold 100px sans-serif',
+        'text-baseline': 'top',
+        'text-offset-y': -50,
+        'text-stroke-width': 1,
+        'text-stroke-color': 'black',
+        'text-fill-color': null,
+      });
+      map.renderSync();
+      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
+        feature,
+        layer,
+        geometry,
+      }));
+      expect(hit).to.be(undefined);
+
+      layer.setStyle({
+        'text-value': 'X',
+        'text-font': 'bold 100px sans-serif',
+        'text-baseline': 'top',
+        'text-offset-y': -50,
+        'text-stroke-width': 1,
+        'text-stroke-color': 'black',
+        'text-fill-color': 'transparent',
+      });
+      map.renderSync();
+      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
+        feature,
+        layer,
+        geometry,
+      }));
+      expect(hit).to.be.ok();
+      expect(hit.feature).to.be(feature);
+      expect(hit.layer).to.be(layer);
+      expect(hit.geometry).to.be(geometry);
+
+      layer.setStyle({
+        'text-value': 'X',
+        'text-font': 'bold 100px sans-serif',
+        'text-baseline': 'top',
+        'text-offset-y': -50,
+        'text-stroke-width': 1,
+        'text-stroke-color': 'black',
+        'text-fill-color': null,
+        'text-background-fill-color': 'transparent',
+      });
+      map.renderSync();
+      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
+        feature,
+        layer,
+        geometry,
+      }));
+      expect(hit).to.be.ok();
+      expect(hit.feature).to.be(feature);
+      expect(hit.layer).to.be(layer);
+      expect(hit.geometry).to.be(geometry);
+    });
+
+    it('hits line placement Text stroke and transparent fill', function () {
+      let hit;
+      const geometry = new LineString([
+        [-1e6, 0],
+        [1e6, 0],
+      ]);
+      const feature = new Feature(geometry);
+      const layer = new VectorLayer({
+        source: new VectorSource({
+          features: [feature],
+        }),
+      });
+      map.addLayer(layer);
+
+      layer.setStyle({
+        'text-value': 'X',
+        'text-font': 'bold 100px sans-serif',
+        'text-baseline': 'top',
+        'text-offset-y': -50,
+        'text-stroke-width': 20,
+        'text-stroke-color': 'black',
+        'text-fill-color': null,
+        'text-placement': 'line',
+        'text-overflow': true,
+      });
+      map.renderSync();
+      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
+        feature,
+        layer,
+        geometry,
+      }));
+      expect(hit).to.be.ok();
+      expect(hit.feature).to.be(feature);
+      expect(hit.layer).to.be(layer);
+      expect(hit.geometry).to.be(geometry);
+
+      layer.setStyle({
+        'text-value': 'X',
+        'text-font': 'bold 100px sans-serif',
+        'text-baseline': 'top',
+        'text-offset-y': -50,
+        'text-stroke-width': 1,
+        'text-stroke-color': 'black',
+        'text-fill-color': null,
+        'text-placement': 'line',
+        'text-overflow': true,
+      });
+      map.renderSync();
+      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
+        feature,
+        layer,
+        geometry,
+      }));
+      expect(hit).to.be(undefined);
+
+      layer.setStyle({
+        'text-value': 'X',
+        'text-font': 'bold 100px sans-serif',
+        'text-baseline': 'top',
+        'text-offset-y': -50,
+        'text-stroke-width': 1,
+        'text-stroke-color': 'black',
+        'text-fill-color': 'transparent',
+        'text-placement': 'line',
+        'text-overflow': true,
+      });
+      map.renderSync();
+      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
+        feature,
+        layer,
+        geometry,
+      }));
       expect(hit).to.be.ok();
       expect(hit.feature).to.be(feature);
       expect(hit.layer).to.be(layer);
@@ -234,6 +481,13 @@ describe('ol.renderer.Map', function () {
 
     it('works with negative image scale', function () {
       style.getImage().setScale([-1, -1]);
+      map.renderSync();
+      const features = map.getFeaturesAtPixel([50, 50]);
+      expect(features.length).to.be(1);
+    });
+
+    it('works with zero opacity image', function () {
+      style.getImage().setOpacity(0);
       map.renderSync();
       const features = map.getFeaturesAtPixel([50, 50]);
       expect(features.length).to.be(1);
