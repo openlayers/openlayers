@@ -20,9 +20,7 @@ for (i = 0, ii = styles.length; i < ii; ++i) {
       source: new BingMaps({
         key: 'AlEoTLTlzFB6Uf4Sy-ugXcRO21skQO7K8eObA5_L-8d20rjqZJLs2nkO1RMjGSPN',
         imagerySet: styles[i],
-        // use maxZoom 19 to see stretched tiles instead of the BingMaps
-        // "no photos at this zoom level" tiles
-        // maxZoom: 19
+        // placeholderTiles: false, // Optional. Prevents showing of BingMaps placeholder tiles
       }),
     })
   );

@@ -250,6 +250,14 @@ void main(void) {
 
 }`);
     });
+
+    it('returns null if no color or size specified', function () {
+      const builder = new ShaderBuilder();
+      builder.setSymbolRotationExpression('1.0');
+      builder.setSymbolOffsetExpression('vec2(1.0)');
+      builder.setSymbolRotateWithView('0.0');
+      expect(builder.getSymbolVertexShader()).to.be(null);
+    });
   });
   describe('getSymbolFragmentShader', function () {
     it('generates a symbol fragment shader (with varying)', function () {
@@ -314,6 +322,14 @@ void main(void) {
     gl_FragColor = v_hitColor;
   }
 }`);
+    });
+
+    it('returns null if no color or size specified', function () {
+      const builder = new ShaderBuilder();
+      builder.setSymbolRotationExpression('1.0');
+      builder.setSymbolOffsetExpression('vec2(1.0)');
+      builder.setSymbolRotateWithView('0.0');
+      expect(builder.getSymbolFragmentShader()).to.be(null);
     });
   });
   describe('getStrokeVertexShader', function () {
@@ -405,6 +421,11 @@ void main(void) {
   v_test = vec3(1.0, 2.0, 3.0);
 }`);
     });
+
+    it('returns null if no color or size specified', function () {
+      const builder = new ShaderBuilder();
+      expect(builder.getStrokeVertexShader()).to.be(null);
+    });
   });
   describe('getStrokeFragmentShader', function () {
     it('generates a stroke fragment shader (with varying, attribute and uniform)', function () {
@@ -481,6 +502,11 @@ void main(void) {
   }
 }`);
     });
+
+    it('returns null if no color or size specified', function () {
+      const builder = new ShaderBuilder();
+      expect(builder.getStrokeFragmentShader()).to.be(null);
+    });
   });
   describe('getFillVertexShader', function () {
     it('generates a fill vertex shader (with varying, attribute and uniform)', function () {
@@ -522,6 +548,11 @@ void main(void) {
   v_opacity = 0.4;
   v_test = vec3(1.0, 2.0, 3.0);
 }`);
+    });
+
+    it('returns null if no color specified', function () {
+      const builder = new ShaderBuilder();
+      expect(builder.getFillVertexShader()).to.be(null);
     });
   });
   describe('getFillFragmentShader', function () {
@@ -583,6 +614,11 @@ void main(void) {
   }
 }`);
     });
+
+    it('returns null if no color specified', function () {
+      const builder = new ShaderBuilder();
+      expect(builder.getFillFragmentShader()).to.be(null);
+    });
   });
 
   describe('addVertexShaderFunction', () => {
@@ -591,6 +627,9 @@ void main(void) {
     beforeEach(() => {
       builder = new ShaderBuilder();
       builder.addVertexShaderFunction(FN1);
+      builder.setFillColorExpression('vec4(1.0)');
+      builder.setStrokeColorExpression('vec4(1.0)');
+      builder.setSymbolColorExpression('vec4(1.0)');
     });
     it('adds the function in all vertex shaders', () => {
       expect(builder.getFillVertexShader()).to.contain(FN1);
@@ -605,6 +644,9 @@ void main(void) {
     beforeEach(() => {
       builder = new ShaderBuilder();
       builder.addFragmentShaderFunction(FN2);
+      builder.setFillColorExpression('vec4(1.0)');
+      builder.setStrokeColorExpression('vec4(1.0)');
+      builder.setSymbolColorExpression('vec4(1.0)');
     });
     it('adds the function in all vertex shaders', () => {
       expect(builder.getFillFragmentShader()).to.contain(FN2);

@@ -6,19 +6,25 @@ import {WebGLTile as TileLayer} from '../src/ol/layer.js';
 const variables = {};
 
 // The method used to extract elevations from the DEM.
-// In this case the format used is
-// red + green * 2 + blue * 3
+// In this case the format used is Terrarium
+// red * 256 + green + blue / 256 - 32768
 //
 // Other frequently used methods include the Mapbox format
 // (red * 256 * 256 + green * 256 + blue) * 0.1 - 10000
-// and the Terrarium format
-// (red * 256 + green + blue / 256) - 32768
+//
 function elevation(xOffset, yOffset) {
+  const red = ['band', 1, xOffset, yOffset];
+  const green = ['band', 2, xOffset, yOffset];
+  const blue = ['band', 3, xOffset, yOffset];
+
+  // band math operates on normalized values from 0-1
+  // so we scale by 255
   return [
     '+',
-    ['*', 256, ['band', 1, xOffset, yOffset]],
-    ['*', 2 * 256, ['band', 2, xOffset, yOffset]],
-    ['*', 3 * 256, ['band', 3, xOffset, yOffset]],
+    ['*', 255 * 256, red],
+    ['*', 255, green],
+    ['*', 255 / 256, blue],
+    -32768,
   ];
 }
 
@@ -31,7 +37,7 @@ const dzdx = ['/', ['-', z1x, z0x], dp];
 const z0y = ['*', ['var', 'vert'], elevation(0, -1)];
 const z1y = ['*', ['var', 'vert'], elevation(0, 1)];
 const dzdy = ['/', ['-', z1y, z0y], dp];
-const slope = ['atan', ['^', ['+', ['^', dzdx, 2], ['^', dzdy, 2]], 0.5]];
+const slope = ['atan', ['sqrt', ['+', ['^', dzdx, 2], ['^', dzdy, 2]]]];
 const aspect = ['clamp', ['atan', ['-', 0, dzdx], dzdy], -Math.PI, Math.PI];
 const sunEl = ['*', Math.PI / 180, ['var', 'sunEl']];
 const sunAz = ['*', Math.PI / 180, ['var', 'sunAz']];
@@ -39,14 +45,17 @@ const sunAz = ['*', Math.PI / 180, ['var', 'sunAz']];
 const cosIncidence = [
   '+',
   ['*', ['sin', sunEl], ['cos', slope]],
-  ['*', ['*', ['cos', sunEl], ['sin', slope]], ['cos', ['-', sunAz, aspect]]],
+  ['*', ['cos', sunEl], ['sin', slope], ['cos', ['-', sunAz, aspect]]],
 ];
 const scaled = ['*', 255, cosIncidence];
 
 const shadedRelief = new TileLayer({
   opacity: 0.3,
   source: new XYZ({
-    url: 'https://{a-d}.tiles.mapbox.com/v3/aj.sf-dem/{z}/{x}/{y}.png',
+    url: 'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png',
+    maxZoom: 15,
+    attributions:
+      '<a href="https://github.com/tilezen/joerd/blob/master/docs/attribution.md" target="_blank">Data sources and attribution</a>',
   }),
   style: {
     variables: variables,
@@ -78,10 +87,7 @@ const map = new Map({
     shadedRelief,
   ],
   view: new View({
-    extent: [-13675026, 4439648, -13580856, 4580292],
     center: [-13615645, 4497969],
-    minZoom: 10,
-    maxZoom: 16,
     zoom: 13,
   }),
 });

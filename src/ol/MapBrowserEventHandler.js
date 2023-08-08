@@ -26,7 +26,7 @@ class MapBrowserEventHandler extends Target {
     this.map_ = map;
 
     /**
-     * @type {any}
+     * @type {ReturnType<typeof setTimeout>}
      * @private
      */
     this.clickTimeoutId_;
@@ -360,7 +360,8 @@ class MapBrowserEventHandler extends Target {
    */
   handleTouchMove_(event) {
     // Due to https://github.com/mpizenberg/elm-pep/issues/2, `this.originalPointerMoveEvent_`
-    // may not be initialized yet when we get here on a platform without native pointer events.
+    // may not be initialized yet when we get here on a platform without native pointer events,
+    // when elm-pep is used as pointer events polyfill.
     const originalEvent = this.originalPointerMoveEvent_;
     if (
       (!originalEvent || originalEvent.defaultPrevented) &&

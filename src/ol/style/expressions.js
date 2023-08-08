@@ -24,15 +24,19 @@ import {asArray, fromString, isStringColor} from '../color.js';
  *   * `['get', 'attributeName', typeHint]` fetches a feature property value, similar to `feature.get('attributeName')`
  *     A type hint can optionally be specified, in case the resulting expression contains a type ambiguity which
  *     will make it invalid. Type hints can be one of: 'string', 'color', 'number', 'boolean', 'number[]'
+ *   * `['geometry-type']` returns a feature's geometry type as string, either: 'LineString', 'Point' or 'Polygon'
+ *     `Multi*` values are returned as their singular equivalent
+ *     `Circle` geometries are returned as 'Polygon'
+ *     `GeometryCollection` geometries are returned as the type of the first geometry found in the collection
  *   * `['resolution']` returns the current resolution
  *   * `['time']` returns the time in seconds since the creation of the layer
  *   * `['var', 'varName']` fetches a value from the style variables; will throw an error if that variable is undefined
  *   * `['zoom']` returns the current zoom level
  *
  * * Math operators:
- *   * `['*', value1, value2]` multiplies `value1` by `value2` (either numbers or colors)
+ *   * `['*', value1, value2, ...]` multiplies the values (either numbers or colors)
  *   * `['/', value1, value2]` divides `value1` by `value2`
- *   * `['+', value1, value2]` adds `value1` and `value2`
+ *   * `['+', value1, value2, ...]` adds the values
  *   * `['-', value1, value2]` subtracts `value2` from `value1`
  *   * `['clamp', value, low, high]` clamps `value` between `low` and `high`
  *   * `['%', value1, value2]` returns the result of `value1 % value2` (modulo)
@@ -246,6 +250,8 @@ function printTypes(valueType) {
  * @typedef {Object} ParsingContextExternal
  * @property {string} name Name, unprefixed
  * @property {ValueTypes} type One of the value types constants
+ * @property {function(import("../Feature.js").FeatureLike): *} [callback] Function used for computing the attribute value;
+ *   if undefined, `feature.get(attribute.name)` will be used
  */
 
 /**
@@ -696,6 +702,46 @@ Operators['resolution'] = {
   },
 };
 
+Operators['geometry-type'] = {
+  getReturnType: function () {
+    return ValueTypes.STRING;
+  },
+  toGlsl: function (context, args) {
+    assertArgsCount(args, 0);
+    const name = 'geometryType';
+    const computeType = (geometry) => {
+      const type = geometry.getType();
+      switch (type) {
+        case 'Point':
+        case 'LineString':
+        case 'Polygon':
+          return type;
+        case 'MultiPoint':
+        case 'MultiLineString':
+        case 'MultiPolygon':
+          return type.substring(5);
+        case 'Circle':
+          return 'Polygon';
+        case 'GeometryCollection':
+          return computeType(geometry.getGeometries()[0]);
+        default:
+      }
+    };
+    const existing = context.attributes.find((a) => a.name === name);
+    if (!existing) {
+      context.attributes.push({
+        name: name,
+        type: ValueTypes.STRING,
+        callback: (feature) => {
+          return computeType(feature.getGeometry());
+        },
+      });
+    }
+    const prefix = context.inFragmentShader ? 'v_' : 'a_';
+    return prefix + name;
+  },
+};
+
 Operators['*'] = {
   getReturnType: function (args) {
     let outputType = ValueTypes.NUMBER | ValueTypes.COLOR;
@@ -1121,7 +1167,13 @@ Operators['interpolate'] = {
         result || expressionToGlsl(context, args[i + 1], outputType);
       const stop2 = expressionToGlsl(context, args[i + 2], inputType);
       const output2 = expressionToGlsl(context, args[i + 3], outputType);
-      result = `mix(${output1}, ${output2}, pow(clamp((${input} - ${stop1}) / (${stop2} - ${stop1}), 0.0, 1.0), ${exponent}))`;
+      let ratio;
+      if (interpolation === 1) {
+        ratio = `(${input} - ${stop1}) / (${stop2} - ${stop1})`;
+      } else {
+        ratio = `(pow(${exponent}, (${input} - ${stop1})) - 1.0) / (pow(${exponent}, (${stop2} - ${stop1})) - 1.0)`;
+      }
+      result = `mix(${output1}, ${output2}, clamp(${ratio}, 0.0, 1.0))`;
     }
     return result;
   },

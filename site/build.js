@@ -19,7 +19,7 @@ const builder = Metalsmith(baseDir)
   .metadata({
     version: env.OL_VERSION || 'dev',
   })
-  .use(inPlace())
+  .use(inPlace({transform: 'handlebars'}))
   .use(markdown())
   .use(layouts());
 

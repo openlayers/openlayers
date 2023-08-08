@@ -50,20 +50,17 @@ export const Attributes = {
 
 /**
  * @typedef {Object} WebGLBuffers
- * @property {WebGLArrayBuffer} polygonIndicesBuffer Polygon indices buffer
- * @property {WebGLArrayBuffer} polygonVerticesBuffer Polygon vertices buffer
- * @property {WebGLArrayBuffer} lineStringIndicesBuffer LineString indices buffer
- * @property {WebGLArrayBuffer} lineStringVerticesBuffer LineString vertices buffer
- * @property {WebGLArrayBuffer} pointIndicesBuffer Point indices buffer
- * @property {WebGLArrayBuffer} pointVerticesBuffer Point vertices buffer
+ * @property {Array<WebGLArrayBuffer>} polygonBuffers Array containing indices and vertices buffers for polygons
+ * @property {Array<WebGLArrayBuffer>} lineStringBuffers Array containing indices and vertices buffers for line strings
+ * @property {Array<WebGLArrayBuffer>} pointBuffers Array containing indices and vertices buffers for points
  * @property {import("../../transform.js").Transform} invertVerticesTransform Inverse of the transform applied when generating buffers
  */
 
 /**
  * @typedef {Object} RenderInstructions
- * @property {Float32Array} polygonInstructions Polygon instructions
- * @property {Float32Array} lineStringInstructions LineString instructions
- * @property {Float32Array} pointInstructions Point instructions
+ * @property {Float32Array|null} polygonInstructions Polygon instructions; null if nothing to render
+ * @property {Float32Array|null} lineStringInstructions LineString instructions; null if nothing to render
+ * @property {Float32Array|null} pointInstructions Point instructions; null if nothing to render
  */
 
 /**
@@ -110,12 +107,11 @@ class VectorStyleRenderer {
     let shaders = /** @type {StyleShaders} */ (styleOrShaders);
 
     // TODO: improve discrimination between shaders and style
-    if (
-      !('fill' in styleOrShaders || 'stroke' in styleOrShaders) ||
-      ('symbol' in styleOrShaders &&
-        'symbolType' in styleOrShaders.symbol &&
-        'size' in styleOrShaders.symbol)
-    ) {
+    const isShaders =
+      'fill' in styleOrShaders ||
+      'stroke' in styleOrShaders ||
+      ('symbol' in styleOrShaders && 'vertex' in styleOrShaders.symbol);
+    if (!isShaders) {
       const parseResult = parseLiteralStyle(
         /** @type {import('../../style/literal.js').LiteralStyle} */ (
           styleOrShaders
@@ -139,26 +135,47 @@ class VectorStyleRenderer {
       };
     }
 
-    this.fillVertexShader_ = shaders.fill && shaders.fill.vertex;
-    this.fillFragmentShader_ = shaders.fill && shaders.fill.fragment;
-    this.fillProgram_ = this.helper_.getProgram(
-      this.fillFragmentShader_,
-      this.fillVertexShader_
-    );
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this.hasFill_ = !!shaders.fill?.vertex;
+    if (this.hasFill_) {
+      this.fillVertexShader_ = shaders.fill.vertex;
+      this.fillFragmentShader_ = shaders.fill.fragment;
+      this.fillProgram_ = this.helper_.getProgram(
+        this.fillFragmentShader_,
+        this.fillVertexShader_
+      );
+    }
 
-    this.strokeVertexShader_ = shaders.stroke && shaders.stroke.vertex;
-    this.strokeFragmentShader_ = shaders.stroke && shaders.stroke.fragment;
-    this.strokeProgram_ = this.helper_.getProgram(
-      this.strokeFragmentShader_,
-      this.strokeVertexShader_
-    );
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this.hasStroke_ = !!shaders.stroke?.vertex;
+    if (this.hasStroke_) {
+      this.strokeVertexShader_ = shaders.stroke && shaders.stroke.vertex;
+      this.strokeFragmentShader_ = shaders.stroke && shaders.stroke.fragment;
+      this.strokeProgram_ = this.helper_.getProgram(
+        this.strokeFragmentShader_,
+        this.strokeVertexShader_
+      );
+    }
 
-    this.symbolVertexShader_ = shaders.symbol && shaders.symbol.vertex;
-    this.symbolFragmentShader_ = shaders.symbol && shaders.symbol.fragment;
-    this.symbolProgram_ = this.helper_.getProgram(
-      this.symbolFragmentShader_,
-      this.symbolVertexShader_
-    );
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this.hasSymbol_ = !!shaders.symbol?.vertex;
+    if (this.hasSymbol_) {
+      this.symbolVertexShader_ = shaders.symbol && shaders.symbol.vertex;
+      this.symbolFragmentShader_ = shaders.symbol && shaders.symbol.fragment;
+      this.symbolProgram_ = this.helper_.getProgram(
+        this.symbolFragmentShader_,
+        this.symbolVertexShader_
+      );
+    }
 
     this.customAttributes_ = shaders.attributes;
     this.uniforms_ = shaders.uniforms;
@@ -258,12 +275,9 @@ class VectorStyleRenderer {
       transform
     );
     return {
-      polygonVerticesBuffer: polygonBuffers[0],
-      polygonIndicesBuffer: polygonBuffers[1],
-      lineStringVerticesBuffer: lineStringBuffers[0],
-      lineStringIndicesBuffer: lineStringBuffers[1],
-      pointVerticesBuffer: pointBuffers[0],
-      pointIndicesBuffer: pointBuffers[1],
+      polygonBuffers: polygonBuffers,
+      lineStringBuffers: lineStringBuffers,
+      pointBuffers: pointBuffers,
       invertVerticesTransform: invertVerticesTransform,
     };
   }
@@ -275,24 +289,30 @@ class VectorStyleRenderer {
    * @private
    */
   generateRenderInstructions_(geometryBatch, transform) {
-    const polygonInstructions = generatePolygonRenderInstructions(
-      geometryBatch.polygonBatch,
-      new Float32Array(0),
-      this.customAttributes_,
-      transform
-    );
-    const lineStringInstructions = generateLineStringRenderInstructions(
-      geometryBatch.lineStringBatch,
-      new Float32Array(0),
-      this.customAttributes_,
-      transform
-    );
-    const pointInstructions = generatePointRenderInstructions(
-      geometryBatch.pointBatch,
-      new Float32Array(0),
-      this.customAttributes_,
-      transform
-    );
+    const polygonInstructions = this.hasFill_
+      ? generatePolygonRenderInstructions(
+          geometryBatch.polygonBatch,
+          new Float32Array(0),
+          this.customAttributes_,
+          transform
+        )
+      : null;
+    const lineStringInstructions = this.hasStroke_
+      ? generateLineStringRenderInstructions(
+          geometryBatch.lineStringBatch,
+          new Float32Array(0),
+          this.customAttributes_,
+          transform
+        )
+      : null;
+    const pointInstructions = this.hasSymbol_
+      ? generatePointRenderInstructions(
+          geometryBatch.pointBatch,
+          new Float32Array(0),
+          this.customAttributes_,
+          transform
+        )
+      : null;
 
     return {
       polygonInstructions,
@@ -302,13 +322,17 @@ class VectorStyleRenderer {
   }
 
   /**
-   * @param {Float32Array} renderInstructions Render instructions
+   * @param {Float32Array|null} renderInstructions Render instructions
    * @param {import("../../geom/Geometry.js").Type} geometryType Geometry type
    * @param {import("../../transform.js").Transform} transform Transform to apply to coordinates
-   * @return {Promise<Array<WebGLArrayBuffer>>} Vertices buffer and indices buffer
+   * @return {Promise<Array<WebGLArrayBuffer>>|null} Indices buffer and vertices buffer; null if nothing to render
    * @private
    */
   generateBuffersForType_(renderInstructions, geometryType, transform) {
+    if (renderInstructions === null) {
+      return null;
+    }
+
     const messageId = workerMessageCounter++;
     let messageType;
     switch (geometryType) {
@@ -370,7 +394,7 @@ class VectorStyleRenderer {
         this.helper_.flushBufferData(verticesBuffer);
         this.helper_.flushBufferData(indicesBuffer);
 
-        resolve([verticesBuffer, indicesBuffer]);
+        resolve([indicesBuffer, verticesBuffer]);
       };
 
       WEBGL_WORKER.addEventListener('message', handleMessage);
@@ -384,30 +408,33 @@ class VectorStyleRenderer {
    * @param {function(): void} preRenderCallback This callback will be called right before drawing, and can be used to set uniforms
    */
   render(buffers, frameState, preRenderCallback) {
-    this.renderInternal_(
-      buffers.polygonIndicesBuffer,
-      buffers.polygonVerticesBuffer,
-      this.fillProgram_,
-      this.polygonAttributesDesc_,
-      frameState,
-      preRenderCallback
-    );
-    this.renderInternal_(
-      buffers.lineStringIndicesBuffer,
-      buffers.lineStringVerticesBuffer,
-      this.strokeProgram_,
-      this.lineStringAttributesDesc_,
-      frameState,
-      preRenderCallback
-    );
-    this.renderInternal_(
-      buffers.pointIndicesBuffer,
-      buffers.pointVerticesBuffer,
-      this.symbolProgram_,
-      this.pointAttributesDesc_,
-      frameState,
-      preRenderCallback
-    );
+    this.hasFill_ &&
+      this.renderInternal_(
+        buffers.polygonBuffers[0],
+        buffers.polygonBuffers[1],
+        this.fillProgram_,
+        this.polygonAttributesDesc_,
+        frameState,
+        preRenderCallback
+      );
+    this.hasStroke_ &&
+      this.renderInternal_(
+        buffers.lineStringBuffers[0],
+        buffers.lineStringBuffers[1],
+        this.strokeProgram_,
+        this.lineStringAttributesDesc_,
+        frameState,
+        preRenderCallback
+      );
+    this.hasSymbol_ &&
+      this.renderInternal_(
+        buffers.pointBuffers[0],
+        buffers.pointBuffers[1],
+        this.symbolProgram_,
+        this.pointAttributesDesc_,
+        frameState,
+        preRenderCallback
+      );
   }
 
   /**

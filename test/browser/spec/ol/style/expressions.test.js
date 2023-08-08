@@ -1,3 +1,12 @@
+import Feature from '../../../../../src/ol/Feature.js';
+import {
+  Circle,
+  GeometryCollection,
+  MultiLineString,
+  MultiPoint,
+  MultiPolygon,
+  Point,
+} from '../../../../../src/ol/geom.js';
 import {
   ValueTypes,
   arrayToGlsl,
@@ -911,7 +920,7 @@ describe('ol/style/expressions', function () {
           ValueTypes.ANY
         )
       ).to.eql(
-        'mix(vec4(1.0, 0.0, 0.0, 1.0), vec4(0.0, 1.0, 0.0, 1.0), pow(clamp((a_attr - 1000.0) / (2000.0 - 1000.0), 0.0, 1.0), 1.0))'
+        'mix(vec4(1.0, 0.0, 0.0, 1.0), vec4(0.0, 1.0, 0.0, 1.0), clamp((a_attr - 1000.0) / (2000.0 - 1000.0), 0.0, 1.0))'
       );
       expect(
         expressionToGlsl(
@@ -930,7 +939,7 @@ describe('ol/style/expressions', function () {
           ValueTypes.ANY
         )
       ).to.eql(
-        'mix(mix(vec4(1.0, 0.0, 0.0, 1.0), vec4(0.0, 1.0, 0.0, 1.0), pow(clamp((a_attr - 1000.0) / (2000.0 - 1000.0), 0.0, 1.0), 1.0)), vec4(0.0, 0.0, 1.0, 1.0), pow(clamp((a_attr - 2000.0) / (5000.0 - 2000.0), 0.0, 1.0), 1.0))'
+        'mix(mix(vec4(1.0, 0.0, 0.0, 1.0), vec4(0.0, 1.0, 0.0, 1.0), clamp((a_attr - 1000.0) / (2000.0 - 1000.0), 0.0, 1.0)), vec4(0.0, 0.0, 1.0, 1.0), clamp((a_attr - 2000.0) / (5000.0 - 2000.0), 0.0, 1.0))'
       );
     });
 
@@ -948,7 +957,7 @@ describe('ol/style/expressions', function () {
           10,
         ])
       ).to.eql(
-        'mix(mix(-10.0, 0.0, pow(clamp((a_attr - 1000.0) / (2000.0 - 1000.0), 0.0, 1.0), 1.0)), 10.0, pow(clamp((a_attr - 2000.0) / (5000.0 - 2000.0), 0.0, 1.0), 1.0))'
+        'mix(mix(-10.0, 0.0, clamp((a_attr - 1000.0) / (2000.0 - 1000.0), 0.0, 1.0)), 10.0, clamp((a_attr - 2000.0) / (5000.0 - 2000.0), 0.0, 1.0))'
       );
     });
 
@@ -966,7 +975,7 @@ describe('ol/style/expressions', function () {
           10,
         ])
       ).to.eql(
-        'mix(mix(-10.0, 0.0, pow(clamp((a_attr - 1000.0) / (2000.0 - 1000.0), 0.0, 1.0), 0.5)), 10.0, pow(clamp((a_attr - 2000.0) / (5000.0 - 2000.0), 0.0, 1.0), 0.5))'
+        'mix(mix(-10.0, 0.0, clamp((pow(0.5, (a_attr - 1000.0)) - 1.0) / (pow(0.5, (2000.0 - 1000.0)) - 1.0), 0.0, 1.0)), 10.0, clamp((pow(0.5, (a_attr - 2000.0)) - 1.0) / (pow(0.5, (5000.0 - 2000.0)) - 1.0), 0.0, 1.0))'
       );
     });
 
@@ -1086,6 +1095,63 @@ describe('ol/style/expressions', function () {
     });
   });
 
+  describe('geometry-type operator', function () {
+    let context;
+
+    beforeEach(function () {
+      context = {
+        variables: [],
+        attributes: [],
+        stringLiteralsMap: {},
+        functions: {},
+        style: {},
+      };
+    });
+
+    it('outputs string', function () {
+      expect(getValueType(['geometry-type'])).to.eql(ValueTypes.STRING);
+    });
+
+    it('throws if invalid argument count', function () {
+      expect(() => {
+        expressionToGlsl(context, ['geometry-type', 'abcd']);
+      }).to.throwException(/0 arguments were expected/);
+    });
+
+    it('correctly parses the expression and add a new attribute', function () {
+      const glsl = expressionToGlsl(context, ['geometry-type']);
+      expect(glsl).to.eql('a_geometryType');
+      expect(context.attributes[0].name).to.be('geometryType');
+      expect(context.attributes[0].type).to.be(ValueTypes.STRING);
+      expect(context.attributes[0].callback).to.be.a(Function);
+    });
+
+    describe('geometry type computation', () => {
+      let features, callback;
+      beforeEach(() => {
+        expressionToGlsl(context, ['geometry-type']);
+        callback = context.attributes[0]['callback'];
+        features = [
+          new Feature(new Point([0, 1])),
+          new Feature(new MultiPolygon([])),
+          new Feature(new MultiLineString([])),
+          new Feature(new GeometryCollection([new Circle([0, 1])])),
+          new Feature(new GeometryCollection([new MultiPoint([])])),
+        ];
+      });
+
+      it('computes a standard geometry type from the given features', function () {
+        expect(features.map(callback)).to.eql([
+          'Point',
+          'Polygon',
+          'LineString',
+          'Polygon',
+          'Point',
+        ]);
+      });
+    });
+  });
+
   describe('complex expressions', function () {
     let context;
 
@@ -1131,7 +1197,7 @@ describe('ol/style/expressions', function () {
         ['match', ['get', 'year'], 2000, 'green', '#ffe52c'],
       ];
       expect(expressionToGlsl(context, expression, ValueTypes.COLOR)).to.eql(
-        'mix(vec4(0.5, 0.5, 0.0, 0.5), (a_year == 2000.0 ? vec4(0.0, 0.5019607843137255, 0.0, 1.0) : vec4(1.0, 0.8980392156862745, 0.17254901960784313, 1.0)), pow(clamp((pow((mod((u_time + mix(0.0, 8.0, pow(clamp((a_year - 1850.0) / (2015.0 - 1850.0), 0.0, 1.0), 1.0))), 8.0) / 8.0), 0.5) - 0.0) / (1.0 - 0.0), 0.0, 1.0), 1.0))'
+        'mix(vec4(0.5, 0.5, 0.0, 0.5), (a_year == 2000.0 ? vec4(0.0, 0.5019607843137255, 0.0, 1.0) : vec4(1.0, 0.8980392156862745, 0.17254901960784313, 1.0)), clamp((pow((mod((u_time + mix(0.0, 8.0, clamp((a_year - 1850.0) / (2015.0 - 1850.0), 0.0, 1.0))), 8.0) / 8.0), 0.5) - 0.0) / (1.0 - 0.0), 0.0, 1.0))'
       );
     });
 

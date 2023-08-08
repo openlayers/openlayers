@@ -114,7 +114,7 @@ export const AttributeType = {
 
 /**
  * @typedef {Object} CanvasCacheItem
- * @property {HTMLCanvasElement} canvas Canvas element.
+ * @property {WebGLRenderingContext} context The context of this canvas.
  * @property {number} users The count of users of this canvas.
  */
 
@@ -144,20 +144,23 @@ function getUniqueCanvasCacheKey() {
 
 /**
  * @param {string} key The cache key for the canvas.
- * @return {HTMLCanvasElement} The canvas.
+ * @return {WebGLRenderingContext} The canvas.
  */
-function getCanvas(key) {
+function getOrCreateContext(key) {
   let cacheItem = canvasCache[key];
   if (!cacheItem) {
     const canvas = document.createElement('canvas');
+    canvas.width = 1;
+    canvas.height = 1;
     canvas.style.position = 'absolute';
     canvas.style.left = '0';
-    cacheItem = {users: 0, canvas};
+    const context = getContext(canvas);
+    cacheItem = {users: 0, context};
     canvasCache[key] = cacheItem;
   }
 
   cacheItem.users += 1;
-  return cacheItem.canvas;
+  return cacheItem.context;
 }
 
 /**
@@ -174,12 +177,14 @@ function releaseCanvas(key) {
     return;
   }
 
-  const canvas = cacheItem.canvas;
-  const gl = getContext(canvas);
+  const gl = cacheItem.context;
   const extension = gl.getExtension('WEBGL_lose_context');
   if (extension) {
     extension.loseContext();
   }
+  const canvas = gl.canvas;
+  canvas.width = 1;
+  canvas.height = 1;
 
   delete canvasCache[key];
 }
@@ -333,15 +338,9 @@ class WebGLHelper extends Disposable {
 
     /**
      * @private
-     * @type {HTMLCanvasElement}
-     */
-    this.canvas_ = getCanvas(this.canvasCacheKey_);
-
-    /**
-     * @private
      * @type {WebGLRenderingContext}
      */
-    this.gl_ = getContext(this.canvas_);
+    this.gl_ = getOrCreateContext(this.canvasCacheKey_);
 
     /**
      * @private
@@ -361,11 +360,13 @@ class WebGLHelper extends Disposable {
      */
     this.currentProgram_ = null;
 
-    this.canvas_.addEventListener(
+    const canvas = this.gl_.canvas;
+
+    canvas.addEventListener(
       ContextEventType.LOST,
       this.boundHandleWebGLContextLost_
     );
-    this.canvas_.addEventListener(
+    canvas.addEventListener(
       ContextEventType.RESTORED,
       this.boundHandleWebGLContextRestored_
     );
@@ -529,11 +530,12 @@ class WebGLHelper extends Disposable {
    * Clean up.
    */
   disposeInternal() {
-    this.canvas_.removeEventListener(
+    const canvas = this.gl_.canvas;
+    canvas.removeEventListener(
       ContextEventType.LOST,
       this.boundHandleWebGLContextLost_
     );
-    this.canvas_.removeEventListener(
+    canvas.removeEventListener(
       ContextEventType.RESTORED,
       this.boundHandleWebGLContextRestored_
     );
@@ -541,7 +543,6 @@ class WebGLHelper extends Disposable {
     releaseCanvas(this.canvasCacheKey_);
 
     delete this.gl_;
-    delete this.canvas_;
   }
 
   /**
@@ -661,7 +662,7 @@ class WebGLHelper extends Disposable {
    * @return {HTMLCanvasElement} Canvas.
    */
   getCanvas() {
-    return this.canvas_;
+    return /** @type {HTMLCanvasElement} */ (this.gl_.canvas);
   }
 
   /**

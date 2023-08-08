@@ -45,6 +45,9 @@ describe('ol/webgl/TileGeometry', function () {
       styleRenderers
     );
   });
+  this.afterEach(() => {
+    helper.dispose();
+  });
 
   describe('tile provided initially', () => {
     it('assigns the given tile', () => {
