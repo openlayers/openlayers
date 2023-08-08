@@ -4,7 +4,7 @@ const path = require('path');
 const resolve = require('@rollup/plugin-node-resolve').nodeResolve;
 const common = require('@rollup/plugin-commonjs');
 const rollup = require('rollup');
-const terser = require('rollup-plugin-terser').terser;
+const terser = require('@rollup/plugin-terser');
 const fse = require('fs-extra');
 
 async function build(input, {minify = true} = {}) {
