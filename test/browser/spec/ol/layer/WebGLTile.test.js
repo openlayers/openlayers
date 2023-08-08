@@ -335,9 +335,6 @@ describe('ol/layer/WebGLTile', function () {
         }
         vec4 color = texture2D(u_tileTextures[0], v_textureCoord);
         color = vec4(u_var_r / 255.0, u_var_g / 255.0, u_var_b / 255.0, 1.0);
-        if (color.a == 0.0) {
-          discard;
-        }
         gl_FragColor = color;
         gl_FragColor.rgb *= gl_FragColor.a;
         gl_FragColor *= u_transitionAlpha;
@@ -449,9 +446,6 @@ describe('ol/layer/WebGLTile', function () {
         }
         vec4 color = texture2D(u_tileTextures[0], v_textureCoord);
         color = vec4((getBandValue(4.0, 0.0, 0.0) / 3000.0), (getBandValue(1.0, 0.0, 0.0) / 3000.0), (getBandValue(2.0, 0.0, 0.0) / 3000.0), 1.0);
-        if (color.a == 0.0) {
-          discard;
-        }
         gl_FragColor = color;
         gl_FragColor.rgb *= gl_FragColor.a;
         gl_FragColor *= u_transitionAlpha;

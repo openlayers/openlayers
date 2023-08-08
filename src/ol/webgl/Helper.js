@@ -551,8 +551,9 @@ class WebGLHelper extends Disposable {
    * subsequent draw calls.
    * @param {import("../Map.js").FrameState} frameState current frame state
    * @param {boolean} [disableAlphaBlend] If true, no alpha blending will happen.
+   * @param {boolean} [enableDepth] If true, enables depth testing.
    */
-  prepareDraw(frameState, disableAlphaBlend) {
+  prepareDraw(frameState, disableAlphaBlend, enableDepth) {
     const gl = this.gl_;
     const canvas = this.getCanvas();
     const size = frameState.size;
@@ -576,10 +577,18 @@ class WebGLHelper extends Disposable {
     gl.bindTexture(gl.TEXTURE_2D, null);
 
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.depthRange(0.0, 1.0);
+    gl.clearDepth(1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, disableAlphaBlend ? gl.ZERO : gl.ONE_MINUS_SRC_ALPHA);
+    if (enableDepth) {
+      gl.enable(gl.DEPTH_TEST);
+      gl.depthFunc(gl.LEQUAL);
+    } else {
+      gl.disable(gl.DEPTH_TEST);
+    }
   }
 
   /**
@@ -602,18 +611,33 @@ class WebGLHelper extends Disposable {
    * @param {import("../Map.js").FrameState} frameState current frame state
    * @param {import("./RenderTarget.js").default} renderTarget Render target to draw to
    * @param {boolean} [disableAlphaBlend] If true, no alpha blending will happen.
+   * @param {boolean} [enableDepth] If true, enables depth testing.
    */
-  prepareDrawToRenderTarget(frameState, renderTarget, disableAlphaBlend) {
+  prepareDrawToRenderTarget(
+    frameState,
+    renderTarget,
+    disableAlphaBlend,
+    enableDepth
+  ) {
     const gl = this.gl_;
     const size = renderTarget.getSize();
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, renderTarget.getFramebuffer());
+    gl.bindRenderbuffer(gl.RENDERBUFFER, renderTarget.getDepthbuffer());
     gl.viewport(0, 0, size[0], size[1]);
     gl.bindTexture(gl.TEXTURE_2D, renderTarget.getTexture());
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.depthRange(0.0, 1.0);
+    gl.clearDepth(1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, disableAlphaBlend ? gl.ZERO : gl.ONE_MINUS_SRC_ALPHA);
+    if (enableDepth) {
+      gl.enable(gl.DEPTH_TEST);
+      gl.depthFunc(gl.LEQUAL);
+    } else {
+      gl.disable(gl.DEPTH_TEST);
+    }
   }
 
   /**

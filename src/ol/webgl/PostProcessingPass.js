@@ -114,6 +114,7 @@ class WebGLPostProcessingPass {
     this.renderTargetTextureSize_ = null;
 
     this.frameBuffer_ = gl.createFramebuffer();
+    this.depthBuffer_ = gl.createRenderbuffer();
 
     // compile the program for the frame buffer
     // TODO: make compilation errors show up
@@ -201,6 +202,7 @@ class WebGLPostProcessingPass {
 
     // rendering goes to my buffer
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.getFrameBuffer());
+    gl.bindRenderbuffer(gl.RENDERBUFFER, this.getDepthBuffer());
     gl.viewport(0, 0, textureSize[0], textureSize[1]);
 
     // if size has changed: adjust canvas & render target texture
@@ -243,6 +245,19 @@ class WebGLPostProcessingPass {
         this.renderTargetTexture_,
         0
       );
+
+      gl.renderbufferStorage(
+        gl.RENDERBUFFER,
+        gl.DEPTH_COMPONENT16,
+        textureSize[0],
+        textureSize[1]
+      );
+      gl.framebufferRenderbuffer(
+        gl.FRAMEBUFFER,
+        gl.DEPTH_ATTACHMENT,
+        gl.RENDERBUFFER,
+        this.depthBuffer_
+      );
     }
   }
 
@@ -273,13 +288,15 @@ class WebGLPostProcessingPass {
         const attributes = gl.getContextAttributes();
         if (attributes && attributes.preserveDrawingBuffer) {
           gl.clearColor(0.0, 0.0, 0.0, 0.0);
-          gl.clear(gl.COLOR_BUFFER_BIT);
+          gl.clearDepth(1.0);
+          gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         }
 
         frameState.renderTargets[canvasId] = true;
       }
     }
 
+    gl.disable(gl.DEPTH_TEST);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
@@ -319,6 +336,14 @@ class WebGLPostProcessingPass {
    */
   getFrameBuffer() {
     return this.frameBuffer_;
+  }
+
+  /**
+   * @return {WebGLRenderbuffer} Depth buffer
+   * @api
+   */
+  getDepthBuffer() {
+    return this.depthBuffer_;
   }
 
   /**
