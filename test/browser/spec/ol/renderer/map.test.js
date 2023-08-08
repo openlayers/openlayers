@@ -95,6 +95,218 @@ describe('ol.renderer.Map', function () {
       expect(hit.geometry).to.be(multiPoint);
     });
 
+    it('hits Polygon, Circle geometry, Circle style stroke and transparent fill', function () {
+      const target = map.getTargetElement();
+      target.style.width = '300px';
+      target.style.height = '300px';
+      map.updateSize();
+      map.setView(
+        new View({
+          center: [4.5, 7],
+          resolution: 0.05,
+        })
+      );
+
+      const styles = {
+        transparent: new Style({
+          stroke: new Stroke({
+            color: 'blue',
+            width: 3,
+          }),
+          fill: new Fill({
+            color: 'transparent',
+          }),
+          image: new Circle({
+            radius: 30,
+            stroke: new Stroke({
+              color: 'blue',
+              width: 3,
+            }),
+            fill: new Fill({
+              color: 'transparent',
+            }),
+          }),
+        }),
+        none: new Style({
+          stroke: new Stroke({
+            color: 'blue',
+            width: 3,
+          }),
+          image: new Circle({
+            radius: 30,
+            stroke: new Stroke({
+              color: 'blue',
+              width: 3,
+            }),
+          }),
+        }),
+      };
+
+      const source = new VectorSource({
+        features: [
+          new Feature({
+            geometry: fromExtent([0, 10, 3, 13]),
+            fillType: 'none',
+          }),
+          new Feature({
+            geometry: fromExtent([1, 11, 4, 14]),
+            fillType: 'none',
+          }),
+          new Feature({
+            geometry: fromExtent([5, 10, 8, 13]),
+            fillType: 'transparent',
+          }),
+          new Feature({
+            geometry: fromExtent([6, 11, 9, 14]),
+            fillType: 'transparent',
+          }),
+          new Feature({
+            geometry: new CircleGeometry([1.5, 6.5], 1.5),
+            fillType: 'none',
+          }),
+          new Feature({
+            geometry: new CircleGeometry([2.5, 7.5], 1.5),
+            fillType: 'none',
+          }),
+          new Feature({
+            geometry: new CircleGeometry([6.5, 6.5], 1.5),
+            fillType: 'transparent',
+          }),
+          new Feature({
+            geometry: new CircleGeometry([7.5, 7.5], 1.5),
+            fillType: 'transparent',
+          }),
+          new Feature({
+            geometry: new Point([1.5, 1.5]),
+            fillType: 'none',
+          }),
+          new Feature({
+            geometry: new Point([2.5, 2.5]),
+            fillType: 'none',
+          }),
+          new Feature({
+            geometry: new Point([6.5, 1.5]),
+            fillType: 'transparent',
+          }),
+          new Feature({
+            geometry: new Point([7.5, 2.5]),
+            fillType: 'transparent',
+          }),
+        ],
+      });
+      const layer = new VectorLayer({
+        source: source,
+        style: function (feature, resolution) {
+          return styles[feature.get('fillType')];
+        },
+      });
+      map.addLayer(layer);
+      map.renderSync();
+
+      function hitTest(coordinate) {
+        const features = map.getFeaturesAtPixel(
+          map.getPixelFromCoordinate(coordinate)
+        );
+        const result = {count: 0};
+        if (features && features.length > 0) {
+          result.count = features.length;
+          result.extent = features[0].getGeometry().getExtent();
+        }
+        return result;
+      }
+      let res;
+
+      res = hitTest([0, 12]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(0);
+      res = hitTest([1, 12]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(1);
+      res = hitTest([2, 12]);
+      expect(res.count).to.be(0);
+      res = hitTest([3, 12]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(0);
+      res = hitTest([4, 12]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(1);
+      res = hitTest([5, 12]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(5);
+      res = hitTest([6, 12]);
+      expect(res.count).to.be(2);
+      expect(res.extent[0]).to.be(6);
+      res = hitTest([7, 12]);
+      expect(res.count).to.be(2);
+      expect(res.extent[0]).to.be(6);
+      res = hitTest([8, 12]);
+      expect(res.count).to.be(2);
+      expect(res.extent[0]).to.be(6);
+      res = hitTest([9, 12]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(6);
+
+      res = hitTest([0, 6.5]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(0);
+      res = hitTest([1, 7.5]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(1);
+      res = hitTest([2, 7.0]);
+      expect(res.count).to.be(0);
+      res = hitTest([3, 6.5]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(0);
+      res = hitTest([4, 7.5]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(1);
+      res = hitTest([5, 6.5]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(5);
+      res = hitTest([6, 7.5]);
+      expect(res.count).to.be(2);
+      expect(res.extent[0]).to.be(6);
+      res = hitTest([7, 7.0]);
+      expect(res.count).to.be(2);
+      expect(res.extent[0]).to.be(6);
+      res = hitTest([8, 6.5]);
+      expect(res.count).to.be(2);
+      expect(res.extent[0]).to.be(6);
+      res = hitTest([9, 7.5]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(6);
+
+      res = hitTest([0, 1.5]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(1.5);
+      res = hitTest([1, 2.5]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(2.5);
+      res = hitTest([2, 2.0]);
+      expect(res.count).to.be(0);
+      res = hitTest([3, 1.5]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(1.5);
+      res = hitTest([4, 2.5]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(2.5);
+      res = hitTest([5, 1.5]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(6.5);
+      res = hitTest([6, 2.5]);
+      expect(res.count).to.be(2);
+      expect(res.extent[0]).to.be(7.5);
+      res = hitTest([7, 2.0]);
+      expect(res.count).to.be(2);
+      expect(res.extent[0]).to.be(7.5);
+      res = hitTest([8, 1.5]);
+      expect(res.count).to.be(2);
+      expect(res.extent[0]).to.be(7.5);
+      res = hitTest([9, 2.5]);
+      expect(res.count).to.be(1);
+      expect(res.extent[0]).to.be(7.5);
+    });
+
     it('hits lines even if they are dashed', function () {
       map.getView().setResolution(1);
       let geometry, hit;
