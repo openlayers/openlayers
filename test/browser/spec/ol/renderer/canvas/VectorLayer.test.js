@@ -418,23 +418,35 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       expect(renderer.replayGroupChanged).to.be(false);
     });
 
-    it('dispatches a postrender event when rendering', function (done) {
+    it('dispatches a postrender event when rendering', function () {
       const layer = renderer.getLayer();
       layer.getSource().addFeature(new Feature(new Point([0, 0])));
-      layer.once('postrender', function () {
-        expect(true);
-        done();
-      });
+      const postrenderSpy = sinon.spy();
+      layer.once('postrender', postrenderSpy);
       frameState.layerStatesArray = [layer.getLayerState()];
       frameState.layerIndex = 0;
       frameState.size = [100, 100];
       setExtent([-10000, -10000, 10000, 10000]);
-      let rendered = false;
+      let container = null;
       if (renderer.prepareFrame(frameState)) {
-        rendered = true;
-        renderer.renderFrame(frameState, null);
+        container = renderer.renderFrame(frameState, null);
       }
-      expect(rendered).to.be(true);
+      expect(postrenderSpy.callCount).to.be(1);
+      expect(container).to.not.be(null);
+    });
+    it('renders an empty source if a postrender event listener is added', function () {
+      const layer = renderer.getLayer();
+      const postrenderSpy = sinon.spy();
+      layer.once('postrender', postrenderSpy);
+      frameState.layerStatesArray = [layer.getLayerState()];
+      frameState.layerIndex = 0;
+      frameState.size = [100, 100];
+      setExtent([-10000, -10000, 10000, 10000]);
+      let container = null;
+      if (renderer.prepareFrame(frameState)) {
+        container = renderer.renderFrame(frameState, null);
+      }
+      expect(container).to.not.be(null);
     });
   });
 

@@ -4,6 +4,7 @@
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
 import CanvasLayerRenderer, {canvasPool} from './Layer.js';
 import ExecutorGroup from '../../render/canvas/ExecutorGroup.js';
+import RenderEventType from '../../render/EventType.js';
 import ViewHint from '../../ViewHint.js';
 import {
   HIT_DETECT_RESOLUTION,
@@ -253,8 +254,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   /**
    * Render the layer.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
-   * @param {HTMLElement} target Target that may be used to render content to.
-   * @return {HTMLElement} The rendered element.
+   * @param {HTMLElement|null} target Target that may be used to render content to.
+   * @return {HTMLElement|null} The rendered element.
    */
   renderFrame(frameState, target) {
     const pixelRatio = frameState.pixelRatio;
@@ -272,11 +273,16 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     const replayGroup = this.replayGroup_;
     const declutterExecutorGroup = this.declutterExecutorGroup;
-    if (
-      (!replayGroup || replayGroup.isEmpty()) &&
-      (!declutterExecutorGroup || declutterExecutorGroup.isEmpty())
-    ) {
-      return null;
+    let render =
+      (replayGroup && !replayGroup.isEmpty()) ||
+      (declutterExecutorGroup && !declutterExecutorGroup.isEmpty());
+    if (!render) {
+      const hasRenderListeners =
+        this.getLayer().hasListener(RenderEventType.PRERENDER) ||
+        this.getLayer().hasListener(RenderEventType.POSTRENDER);
+      if (!hasRenderListeners) {
+        return null;
+      }
     }
 
     // resize and clear
@@ -302,8 +308,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     // clipped rendering if layer extent is set
     let clipped = false;
-    let render = true;
-    if (layerState.extent && this.clipping) {
+    if (render && layerState.extent && this.clipping) {
       const layerExtent = fromUserExtent(layerState.extent, projection);
       render = intersectsExtent(layerExtent, frameState.extent);
       clipped = render && !containsExtent(layerExtent, frameState.extent);
