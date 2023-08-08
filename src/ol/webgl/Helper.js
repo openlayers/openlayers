@@ -585,7 +585,7 @@ class WebGLHelper extends Disposable {
     gl.blendFunc(gl.ONE, disableAlphaBlend ? gl.ZERO : gl.ONE_MINUS_SRC_ALPHA);
     if (enableDepth) {
       gl.enable(gl.DEPTH_TEST);
-      gl.depthFunc(gl.LESS);
+      gl.depthFunc(gl.LEQUAL);
     } else {
       gl.disable(gl.DEPTH_TEST);
     }
@@ -634,7 +634,7 @@ class WebGLHelper extends Disposable {
     gl.blendFunc(gl.ONE, disableAlphaBlend ? gl.ZERO : gl.ONE_MINUS_SRC_ALPHA);
     if (enableDepth) {
       gl.enable(gl.DEPTH_TEST);
-      gl.depthFunc(gl.LESS);
+      gl.depthFunc(gl.LEQUAL);
     } else {
       gl.disable(gl.DEPTH_TEST);
     }
