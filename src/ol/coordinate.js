@@ -6,7 +6,8 @@ import {modulo, toFixed} from './math.js';
 import {padNumber} from './string.js';
 
 /**
- * An array of numbers representing an xy coordinate. Example: `[16, 48]`.
+ * An array of numbers representing an `xy`, `xyz` or `xyzm` coordinate.
+ * Example: `[16, 48]`.
  * @typedef {Array<number>} Coordinate
  * @api
  */
