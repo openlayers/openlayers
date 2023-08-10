@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import Stamen from '../src/ol/source/Stamen.js';
+import StadiaMaps from '../src/ol/source/StadiaMaps.js';
 import View from '../src/ol/View.js';
 import {Layer, Tile as TileLayer} from '../src/ol/layer.js';
 import {fromLonLat, toLonLat} from '../src/ol/proj.js';
@@ -72,8 +72,8 @@ class CanvasLayer extends Layer {
 const map = new Map({
   layers: [
     new TileLayer({
-      source: new Stamen({
-        layer: 'watercolor',
+      source: new StadiaMaps({
+        layer: 'stamen_watercolor',
       }),
     }),
   ],

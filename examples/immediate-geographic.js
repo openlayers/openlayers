@@ -1,4 +1,4 @@
-import Stamen from '../src/ol/source/Stamen.js';
+import StadiaMaps from '../src/ol/source/StadiaMaps.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {Circle, Fill, Style} from '../src/ol/style.js';
 import {Map, View} from '../src/ol/index.js';
@@ -10,8 +10,8 @@ import {useGeographic} from '../src/ol/proj.js';
 useGeographic();
 
 const layer = new TileLayer({
-  source: new Stamen({
-    layer: 'toner',
+  source: new StadiaMaps({
+    layer: 'stamen_toner',
   }),
 });
 

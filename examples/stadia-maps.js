@@ -10,20 +10,15 @@ const map = new Map({
     // web deployments. See https://docs.stadiamaps.com/authentication/ for details.
     new TileLayer({
       source: new StadiaMaps({
-        layer: 'stamen_watercolor',
-        // apiKey: 'OPTIONAL'
-      }),
-    }),
-    new TileLayer({
-      source: new StadiaMaps({
-        layer: 'stamen_terrain_labels',
+        layer: 'alidade_smooth_dark',
+        retina: true,
         // apiKey: 'OPTIONAL'
       }),
     }),
   ],
   target: 'map',
   view: new View({
-    center: fromLonLat([-122.416667, 37.783333]),
-    zoom: 12,
+    center: fromLonLat([24.750645, 59.444351]),
+    zoom: 14,
   }),
 });

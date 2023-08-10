@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import Stamen from '../src/ol/source/Stamen.js';
+import StadiaMaps from '../src/ol/source/StadiaMaps.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import TileWMS from '../src/ol/source/TileWMS.js';
 import View from '../src/ol/View.js';
@@ -17,8 +17,8 @@ let animationId = null;
 
 const layers = [
   new TileLayer({
-    source: new Stamen({
-      layer: 'terrain',
+    source: new StadiaMaps({
+      layer: 'stamen_terrain',
     }),
   }),
   new TileLayer({
