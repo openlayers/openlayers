@@ -9,19 +9,22 @@ import {ATTRIBUTION as OSM_ATTRIBUTION} from './OSM.js';
  * @const
  * @type string
  */
-const STADIA_ATTRIBUTION = '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a>';
+const STADIA_ATTRIBUTION =
+  '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a>';
 
 /**
  * @const
  * @type string
  */
-const OMT_ATTRIBUTION = '&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a>';
+const OMT_ATTRIBUTION =
+  '&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a>';
 
 /**
  * @const
  * @type string
  */
-const STAMEN_ATTRIBUTION = '&copy; <a href="https://stamen.com/" target="_blank">Stamen Design</a>';
+const STAMEN_ATTRIBUTION =
+  '&copy; <a href="https://stamen.com/" target="_blank">Stamen Design</a>';
 
 /**
  * @type {Object<string, {extension: string, opaque: boolean}>}
