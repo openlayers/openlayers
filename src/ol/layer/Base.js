@@ -33,7 +33,7 @@ import {clamp} from '../math.js';
  * @property {boolean} [visible=true] Visibility.
  * @property {import("../extent.js").Extent} [extent] The bounding extent for layer rendering.  The layer will not be
  * rendered outside of this extent.
- * @property {number} [zIndex] The z-index for layer rendering.  At rendering time, the layers
+ * @property {number | undefined} [zIndex] The z-index for layer rendering.  At rendering time, the layers
  * will be ordered, first by Z-index and then by position. When `undefined`, a `zIndex` of 0 is assumed
  * for layers that are added to the map's `layers` collection, or `Infinity` when the layer's `setMap()`
  * method was used.
@@ -208,7 +208,8 @@ class BaseLayer extends BaseObject {
   }
 
   /**
-   * Return the maximum resolution of the layer.
+   * Return the maximum resolution of the layer. Returns Infinity if
+   * the layer has no maximum resolution set.
    * @return {number} The maximum resolution of the layer.
    * @observable
    * @api
@@ -218,7 +219,8 @@ class BaseLayer extends BaseObject {
   }
 
   /**
-   * Return the minimum resolution of the layer.
+   * Return the minimum resolution of the layer. Returns 0 if
+   * the layer has no minimum resolution set.
    * @return {number} The minimum resolution of the layer.
    * @observable
    * @api
@@ -228,7 +230,8 @@ class BaseLayer extends BaseObject {
   }
 
   /**
-   * Return the minimum zoom level of the layer.
+   * Return the minimum zoom level of the layer. Returns -Infinity if
+   * the layer has no minimum zoom set.
    * @return {number} The minimum zoom level of the layer.
    * @observable
    * @api
@@ -238,7 +241,8 @@ class BaseLayer extends BaseObject {
   }
 
   /**
-   * Return the maximum zoom level of the layer.
+   * Return the maximum zoom level of the layer. Returns Infinity if
+   * the layer has no maximum zoom set.
    * @return {number} The maximum zoom level of the layer.
    * @observable
    * @api
@@ -278,13 +282,13 @@ class BaseLayer extends BaseObject {
 
   /**
    * Return the Z-index of the layer, which is used to order layers before
-   * rendering. The default Z-index is 0.
-   * @return {number} The Z-index of the layer.
+   * rendering. Returns undefined if the layer is unmanaged.
+   * @return {number|undefined} The Z-index of the layer.
    * @observable
    * @api
    */
   getZIndex() {
-    return /** @type {number} */ (this.get(LayerProperty.Z_INDEX));
+    return /** @type {number|undefined} */ (this.get(LayerProperty.Z_INDEX));
   }
 
   /**

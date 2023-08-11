@@ -64,7 +64,7 @@ import {listen, unlistenByKey} from '../events.js';
  * @property {boolean} visible Visible.
  * @property {boolean} managed Managed.
  * @property {import("../extent.js").Extent} [extent] Extent.
- * @property {number} zIndex ZIndex.
+ * @property {number | undefined} zIndex ZIndex.
  * @property {number} maxResolution Maximum resolution.
  * @property {number} minResolution Minimum resolution.
  * @property {number} minZoom Minimum zoom.
