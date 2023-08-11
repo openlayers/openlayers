@@ -79,7 +79,7 @@ import Text from './Text.js';
  * `'hanging'`, `'ideographic'`.
  * @property {Array<number>} [text-padding=[0, 0, 0, 0]] Padding in pixels around the text for decluttering and background. The order of
  * values in the array is `[top, right, bottom, left]`.
- * @property {import("../color.js").Color|import("../colorlike.js").ColorLike|null} [text-fill-color] The fill color. Specify `null` for no fill.
+ * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [text-fill-color] The fill color. Specify `'none'` to avoid hit detection on the fill.
  * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [text-background-fill-color] The fill color.
  * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [text-stroke-color] The stroke color.
  * @property {CanvasLineCap} [text-stroke-line-cap='round'] Line cap style: `butt`, `round`, or `square`.
@@ -212,7 +212,10 @@ export function toStyle(flatStyle) {
 function getFill(flatStyle, prefix) {
   const color = flatStyle[prefix + 'fill-color'];
   if (!color) {
-    return color;
+    return;
+  }
+  if (color === 'none') {
+    return null;
   }
 
   return new Fill({color: color});
