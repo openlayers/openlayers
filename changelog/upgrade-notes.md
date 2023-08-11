@@ -46,7 +46,7 @@ If you were previously using the `Stamen` source in your application, update thi
 
 Previously, text labels with transparent fills were not hit detected.  Now, you can control whether a transparent fill in a text label is hit detected or not.
 
-To create a text style with a transparent fill that will be hit detected, simply exclude the `fill` or use a fill with `'transparent'` as the color.
+To create a text style with a transparent fill that will be hit detected, use a fill with `'transparent'` as the color.
 ```js
 // transparent fill, will be hit detected
 const style = Style({
