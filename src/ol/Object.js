@@ -159,6 +159,14 @@ class BaseObject extends Observable {
   }
 
   /**
+   * Get an object of all property names and values.
+   * @return {Object<string, *>?} Object.
+   */
+  getPropertiesInternal() {
+    return this.values_;
+  }
+
+  /**
    * @return {boolean} The object has properties.
    */
   hasProperties() {
