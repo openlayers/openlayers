@@ -22,7 +22,7 @@ export {default as OGCVectorTile} from './source/OGCVectorTile.js';
 export {default as OSM} from './source/OSM.js';
 export {default as Raster} from './source/Raster.js';
 export {default as Source} from './source/Source.js';
-export {default as Stamen} from './source/Stamen.js';
+export {default as StadiaMaps} from './source/StadiaMaps.js';
 export {default as Tile} from './source/Tile.js';
 export {default as TileArcGISRest} from './source/TileArcGISRest.js';
 export {default as TileDebug} from './source/TileDebug.js';

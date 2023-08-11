@@ -1,7 +1,7 @@
 import Feature from '../src/ol/Feature.js';
 import LineString from '../src/ol/geom/LineString.js';
 import Map from '../src/ol/Map.js';
-import Stamen from '../src/ol/source/Stamen.js';
+import StadiaMaps from '../src/ol/source/StadiaMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
 import {Stroke, Style} from '../src/ol/style.js';
@@ -10,8 +10,8 @@ import {getVectorContext} from '../src/ol/render.js';
 import {getWidth} from '../src/ol/extent.js';
 
 const tileLayer = new TileLayer({
-  source: new Stamen({
-    layer: 'toner',
+  source: new StadiaMaps({
+    layer: 'stamen_toner',
   }),
 });
 
