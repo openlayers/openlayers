@@ -1,6 +1,6 @@
 ## Upgrade notes
 
-### Next version
+### 7.5.0
 
 #### Hit detection with Text fill
 
