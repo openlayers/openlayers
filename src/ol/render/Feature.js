@@ -266,6 +266,15 @@ class RenderFeature {
   }
 
   /**
+   * Get an object of all property names and values.  This has the same behavior as getProperties,
+   * but is here to conform with the {@link module:ol/Feature~Feature} interface.
+   * @return {Object<string, *>?} Object.
+   */
+  getPropertiesInternal() {
+    return this.properties_;
+  }
+
+  /**
    * @return {number} Stride.
    */
   getStride() {

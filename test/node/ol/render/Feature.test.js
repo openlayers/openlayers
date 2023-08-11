@@ -13,7 +13,7 @@ import {
 } from '../../../../src/ol/geom.js';
 
 describe('ol/render/Feature', function () {
-  describe('ol/render/Feature.toGeometry()', function () {
+  describe('toGeometry()', function () {
     it('creates a Point', function () {
       const geometry = new Point([0, 0]);
       const renderFeature = new RenderFeature(
@@ -154,7 +154,25 @@ describe('ol/render/Feature', function () {
     });
   });
 
-  describe('ol/render/Feature.toFeature()', function () {
+  describe('getPropertiesInternal()', () => {
+    it('returns the properties', () => {
+      const id = 'asdf';
+      const properties = {test: '123'};
+      const geometry = new Point([0, 0]);
+      const feature = new RenderFeature(
+        geometry.getType(),
+        geometry.getFlatCoordinates().slice(),
+        [],
+        properties,
+        id
+      );
+
+      const got = feature.getPropertiesInternal();
+      expect(got).to.eql(properties);
+    });
+  });
+
+  describe('toFeature()', function () {
     it('creates a Feature<Point>', function () {
       const id = 'asdf';
       const properties = {test: '123'};
