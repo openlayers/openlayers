@@ -19,7 +19,7 @@ import {
 import {Projection} from '../../../../../src/ol/proj.js';
 import {fromExtent} from '../../../../../src/ol/geom/Polygon.js';
 
-describe('ol.renderer.Map', function () {
+describe('ol/renderer/Map.js', function () {
   describe('constructor', function () {
     it('createst an instance', function () {
       const map = new Map({});
@@ -435,7 +435,7 @@ describe('ol.renderer.Map', function () {
         'text-offset-y': -50,
         'text-stroke-width': 20,
         'text-stroke-color': 'black',
-        'text-fill-color': null,
+        'text-fill-color': 'none',
       });
       map.renderSync();
       hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
@@ -455,7 +455,7 @@ describe('ol.renderer.Map', function () {
         'text-offset-y': -50,
         'text-stroke-width': 1,
         'text-stroke-color': 'black',
-        'text-fill-color': null,
+        'text-fill-color': 'none',
       });
       map.renderSync();
       hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
@@ -492,7 +492,7 @@ describe('ol.renderer.Map', function () {
         'text-offset-y': -50,
         'text-stroke-width': 1,
         'text-stroke-color': 'black',
-        'text-fill-color': null,
+        'text-fill-color': 'none',
         'text-background-fill-color': 'transparent',
       });
       map.renderSync();
@@ -528,7 +528,7 @@ describe('ol.renderer.Map', function () {
         'text-offset-y': -50,
         'text-stroke-width': 20,
         'text-stroke-color': 'black',
-        'text-fill-color': null,
+        'text-fill-color': 'none',
         'text-placement': 'line',
         'text-overflow': true,
       });
@@ -550,7 +550,7 @@ describe('ol.renderer.Map', function () {
         'text-offset-y': -50,
         'text-stroke-width': 1,
         'text-stroke-color': 'black',
-        'text-fill-color': null,
+        'text-fill-color': 'none',
         'text-placement': 'line',
         'text-overflow': true,
       });
