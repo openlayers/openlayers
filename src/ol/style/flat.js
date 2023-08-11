@@ -11,6 +11,19 @@ import Style from './Style.js';
 import Text from './Text.js';
 
 /**
+ * @api
+ * @fileoverview Vector layers can be styled with an object literal containing properties for
+ * stroke, fill, image, and text styles.  The types below can be composed into a single object.
+ * For example, a style with both stroke and fill properties could look like this:
+ *
+ *     const style = {
+ *       'stroke-color': 'yellow',
+ *       'stroke-width': 1.5,
+ *       'fill-color': 'orange',
+ *     };
+ */
+
+/**
  * For static styling, the [layer.setStyle()]{@link module:ol/layer/Vector~VectorLayer#setStyle} method
  * can be called with an object literal that has fill, stroke, text, icon, regular shape, and/or circle properties.
  * @api
