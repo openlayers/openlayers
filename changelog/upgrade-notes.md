@@ -4,7 +4,55 @@
 
 #### Hit detection with Text fill
 
-Hit detection of fill for Text styles is now consistent with that for Circle and RegularShape styles. Transparent `fill` and `backgroundFill` is detected, with no hit detection over unfilled shapes. To get the previous behavior in Text styles where a transparent fill may have been used to avoid the default fill specify `fill: null`. If using FlatStyle notation specify `'text-fill-color': 'none'`.
+Previously, text labels with transparent fills were not hit detected.  Now, you can control whether a transparent fill in a text label is hit detected or not.
+
+To create a text style with a transparent fill that will be hit detected, simply exclude the `fill` or use a fill with `'transparent'` as the color.
+```js
+// transparent fill, will be hit detected
+const style = Style({
+  text: new Text({
+    fill: new Fill({
+      color: 'transparent',
+    }),
+    stroke: new Stroke({
+      color: 'red',
+      width: 2,
+    }),
+  }),
+});
+```
+Or, if using the flat literal style syntax:
+```js
+// transparent fill, will be hit detected
+const style = {
+  'text-fill-color': 'transparent',
+  'text-stroke-color': 'red',
+  'text-stroke-width': 2,
+}
+```
+
+By contrast, if you want a transparent fill that will not be hit detected, do the following:
+```js
+// absent fill, will not be hit detected
+const style = Style({
+  text: new Text({
+    fill: null,
+    stroke: new Stroke({
+      color: 'red',
+      width: 2,
+    }),
+  }),
+});
+```
+Or, if using the flat literal style syntax:
+```js
+// absent fill, will not be hit detected
+const style = {
+  'text-fill-color': 'none',
+  'text-stroke-color': 'red',
+  'text-stroke-width': 2,
+}
+```
 
 #### Fixed `textAlign` with `placement: 'line'`
 
