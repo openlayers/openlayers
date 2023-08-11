@@ -223,6 +223,11 @@ class MapRenderer extends Disposable {
 
   /**
    * @param {import("../Map.js").FrameState} frameState Frame state.
+   */
+  flushDeclutterItems(frameState) {}
+
+  /**
+   * @param {import("../Map.js").FrameState} frameState Frame state.
    * @protected
    */
   scheduleExpireIconCache(frameState) {
