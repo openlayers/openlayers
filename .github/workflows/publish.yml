@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   publish-branch:
@@ -18,7 +19,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '20'
           registry-url: 'https://registry.npmjs.org'
       - name: Install dependencies
         run: npm ci
@@ -28,7 +29,7 @@ jobs:
           npm --no-git-tag-version version ${VERSION}
           npm run build-package
           cd build/ol
-          npm publish --tag dev
+          npm publish --provenance --tag dev
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
   publish-tag:
@@ -38,7 +39,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '20'
           registry-url: 'https://registry.npmjs.org'
       - name: Install dependencies
         run: npm ci
@@ -48,6 +49,6 @@ jobs:
         run: |
           npm run build-package
           cd build/ol
-          npm publish
+          npm publish --provenance
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
