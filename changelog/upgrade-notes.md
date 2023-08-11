@@ -1,5 +1,45 @@
 ## Upgrade notes
 
+### Next Release
+
+#### Backwards incompatible changes
+
+##### New StadiaMaps source replaces the Stamen source
+
+The Stamen map tiles are now hosted by Stadia Maps.  See [the announcement](http://maps.stamen.com/stadia-partnership/) about the partnership and the [migration guide](https://docs.stadiamaps.com/guides/migrating-from-stamen-map-tiles/) from Stadia Maps.
+
+If you were previously using the `Stamen` source in your application, update this to use the `StadiaMaps` source instead.
+
+```diff
+ import Map from 'ol/Map.js';
+-import Stamen from 'ol/source/Stamen.js';
++import StadiaMaps from 'ol/source/StadiaMaps.js';
+ import TileLayer from 'ol/layer/Tile.js';
+ import View from 'ol/View.js';
+
+ const map = new Map({
+   layers: [
++    // NOTE: Layers from Stadia Maps do not require an API key for localhost development or most production
++    // web deployments. See https://docs.stadiamaps.com/authentication/ for details.
+     new TileLayer({
+-      source: new Stamen({
+-        layer: 'watercolor',
++      source: new StadiaMaps({
++        layer: 'stamen_watercolor',
++        // apiKey: 'OPTIONAL'
+       }),
+     }),
+     new TileLayer({
+-      source: new Stamen({
+-        layer: 'terrain-labels',
++      source: new StadiaMaps({
++        layer: 'stamen_terrain_labels',
++        // apiKey: 'OPTIONAL'
+       }),
+     }),
+   ],
+```
+
 ### 7.5.0
 
 #### Hit detection with Text fill
