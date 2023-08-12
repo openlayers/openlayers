@@ -621,8 +621,8 @@ exports.publish = function (taffyData, opts, tutorials) {
     generate('Global', [{kind: 'globalobj'}], globalUrl);
   }
 
-  // index page displays information from package.json and lists files
-  const files = find({kind: 'file'});
+  // the file type doclets come from @fileoverview tags in comment blocks with an @api tag
+  const fileOverviews = find({kind: 'file'});
 
   view.navigationItems = view.nav.reduce(function (dict, item) {
     dict[item.longname] = item;
@@ -642,7 +642,7 @@ exports.publish = function (taffyData, opts, tutorials) {
         readme: opts.readme,
         longname: opts.mainpagetitle ? opts.mainpagetitle : 'Main Page',
       },
-    ].concat(files),
+    ],
     indexUrl
   );
 
@@ -666,6 +666,15 @@ exports.publish = function (taffyData, opts, tutorials) {
 
       const myModules = helper.find(modules, {longname: longname});
       if (myModules.length) {
+        // assign any file overview description as the module description
+        myModules.forEach((moduleDoclet) => {
+          fileOverviews.forEach((fileDoclet) => {
+            if (fileDoclet.memberof !== moduleDoclet.longname) {
+              return;
+            }
+            moduleDoclet.description = fileDoclet.description;
+          });
+        });
         generate(
           'Module: ' + myModules[0].name,
           myModules,
