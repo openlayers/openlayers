@@ -10,20 +10,9 @@ const vectorLayer = new VectorLayer({
     url: 'https://openlayers.org/data/vector/ecoregions.json',
     format: new GeoJSON(),
   }),
-  style: [
-    {
-      // if features have a COLOR property, use that in the style
-      filter: ['get', 'COLOR'],
-      style: {
-        'fill-color': ['get', 'COLOR'],
-      },
-    },
-    {
-      // otherwise, use this style
-      else: true,
-      style: {'fill-color': '#eee'},
-    },
-  ],
+  style: {
+    'fill-color': ['string', ['get', 'COLOR'], '#eee'],
+  },
 });
 
 const map = new Map({

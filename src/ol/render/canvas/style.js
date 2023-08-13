@@ -179,7 +179,11 @@ export function buildRuleSet(rules, context) {
       }
       someMatched = true;
       for (const styleEvaluator of compiledRules[i].styles) {
-        styles.push(styleEvaluator(context));
+        const style = styleEvaluator(context);
+        if (!style) {
+          continue;
+        }
+        styles.push(style);
       }
     }
 
@@ -206,20 +210,40 @@ export function buildStyle(flatStyle, context) {
 
   const style = new Style();
   return function (context) {
+    let empty = true;
     if (evaluateFill) {
-      style.setFill(evaluateFill(context));
+      const fill = evaluateFill(context);
+      if (fill) {
+        empty = false;
+      }
+      style.setFill(fill);
     }
     if (evaluateStroke) {
-      style.setStroke(evaluateStroke(context));
+      const stroke = evaluateStroke(context);
+      if (stroke) {
+        empty = false;
+      }
+      style.setStroke(stroke);
     }
     if (evaluateText) {
-      style.setText(evaluateText(context));
+      const text = evaluateText(context);
+      if (text) {
+        empty = false;
+      }
+      style.setText(text);
     }
     if (evaluateImage) {
-      style.setImage(evaluateImage(context));
+      const image = evaluateImage(context);
+      if (image) {
+        empty = false;
+      }
+      style.setImage(image);
     }
     if (evaluateZIndex) {
       style.setZIndex(evaluateZIndex(context));
+    }
+    if (empty) {
+      return null;
     }
     return style;
   };
@@ -315,12 +339,16 @@ function buildStroke(flatStyle, prefix, context) {
 
   const stroke = new Stroke();
   return function (context) {
-    if (evaluateWidth) {
-      stroke.setWidth(evaluateWidth(context));
+    if (evaluateColor) {
+      const color = evaluateColor(context);
+      if (color === 'none') {
+        return null;
+      }
+      stroke.setColor(color);
     }
 
-    if (evaluateColor) {
-      stroke.setColor(evaluateColor(context));
+    if (evaluateWidth) {
+      stroke.setWidth(evaluateWidth(context));
     }
 
     if (evaluateLineCap) {

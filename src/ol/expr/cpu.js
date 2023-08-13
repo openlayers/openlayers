@@ -99,9 +99,21 @@ function compileExpression(expression, context) {
   }
   const operator = expression.operator;
   switch (operator) {
+    case Ops.Number:
+    case Ops.String: {
+      return compileAssertionExpression(expression, context);
+    }
     case Ops.Get:
     case Ops.Var: {
       return compileAccessorExpression(expression, context);
+    }
+    case Ops.Resolution: {
+      return (context) => context.resolution;
+    }
+    case Ops.Any:
+    case Ops.All:
+    case Ops.Not: {
+      return compileLogicalExpression(expression, context);
     }
     case Ops.Equal:
     case Ops.NotEqual:
@@ -133,6 +145,38 @@ function compileExpression(expression, context) {
     }
     default: {
       throw new Error(`Unsupported operator ${operator}`);
+    }
+  }
+}
+
+/**
+ * @param {import('./expression.js').CallExpression} expression The call expression.
+ * @param {import('./expression.js').ParsingContext} context The parsing context.
+ * @return {ExpressionEvaluator} The evaluator function.
+ */
+function compileAssertionExpression(expression, context) {
+  const type = expression.operator;
+  const length = expression.args.length;
+
+  const args = new Array(length);
+  for (let i = 0; i < length; ++i) {
+    args[i] = compileExpression(expression.args[i], context);
+  }
+  switch (type) {
+    case Ops.Number:
+    case Ops.String: {
+      return (context) => {
+        for (let i = 0; i < length; ++i) {
+          const value = args[i](context);
+          if (typeof value === type) {
+            return value;
+          }
+        }
+        throw new Error(`Expected one of the values to be a ${type}`);
+      };
+    }
+    default: {
+      throw new Error(`Unsupported assertion operator ${type}`);
     }
   }
 }
@@ -194,6 +238,49 @@ function compileComparisonExpression(expression, context) {
     }
     default: {
       throw new Error(`Unsupported comparison operator ${op}`);
+    }
+  }
+}
+
+/**
+ * @param {import('./expression.js').CallExpression} expression The call expression.
+ * @param {import('./expression.js').ParsingContext} context The parsing context.
+ * @return {BooleanEvaluator} The evaluator function.
+ */
+function compileLogicalExpression(expression, context) {
+  const op = expression.operator;
+  const length = expression.args.length;
+
+  const args = new Array(length);
+  for (let i = 0; i < length; ++i) {
+    args[i] = compileExpression(expression.args[i], context);
+  }
+  switch (op) {
+    case Ops.Any: {
+      return (context) => {
+        for (let i = 0; i < length; ++i) {
+          if (args[i](context)) {
+            return true;
+          }
+        }
+        return false;
+      };
+    }
+    case Ops.All: {
+      return (context) => {
+        for (let i = 0; i < length; ++i) {
+          if (!args[i](context)) {
+            return false;
+          }
+        }
+        return true;
+      };
+    }
+    case Ops.Not: {
+      return (context) => !args[0](context);
+    }
+    default: {
+      throw new Error(`Unsupported logical operator ${op}`);
     }
   }
 }
