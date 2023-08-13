@@ -31,93 +31,95 @@ describe('ol/renderer/Map.js', function () {
     });
   });
 
-  describe('#forEachFeatureAtPixel', function () {
-    let map;
-    beforeEach(function () {
-      const target = document.createElement('div');
-      target.style.width = '100px';
-      target.style.height = '100px';
-      document.body.appendChild(target);
-      map = new Map({
-        target: target,
-        view: new View({
-          center: [0, 0],
-          zoom: 2,
-        }),
-      });
-    });
-
-    afterEach(function () {
-      document.body.removeChild(map.getTargetElement());
-      map.setTarget(null);
-    });
-
-    it('calls callback with feature, layer and geometry', function () {
-      let hit;
-      const point = new Point([0, 0]);
-      const polygon = fromExtent([0, -1e6, 1e6, 1e6]);
-      const geometryCollection = new Feature(
-        new GeometryCollection([polygon, point])
-      );
-      const multiPoint = new MultiPoint([
-        [-1e6, -1e6],
-        [-1e6, 1e6],
-      ]);
-      const multiGeometry = new Feature(multiPoint);
-      const layer = new VectorLayer({
-        source: new VectorSource({
-          features: [geometryCollection, multiGeometry],
-        }),
-      });
-      map.addLayer(layer);
-      map.renderSync();
-      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
-        feature,
-        layer,
-        geometry,
-      }));
-      expect(hit.feature).to.be(geometryCollection);
-      expect(hit.layer).to.be(layer);
-      expect(hit.geometry).to.be(point);
-      hit = map.forEachFeatureAtPixel([75, 50], (feature, layer, geometry) => ({
-        feature,
-        layer,
-        geometry,
-      }));
-      expect(hit.feature).to.be(geometryCollection);
-      expect(hit.geometry).to.be(polygon);
-      hit = map.forEachFeatureAtPixel([25, 25], (feature, layer, geometry) => ({
-        feature,
-        layer,
-        geometry,
-      }));
-      expect(hit.feature).to.be(multiGeometry);
-      expect(hit.geometry).to.be(multiPoint);
-    });
-
-    it('hits Polygon, Circle geometry, Circle style stroke and transparent fill', function () {
-      const target = map.getTargetElement();
-      target.style.width = '300px';
-      target.style.height = '300px';
-      map.updateSize();
-      map.setView(
-        new View({
-          center: [4.5, 7],
-          resolution: 0.05,
-        })
-      );
-
-      const styles = {
-        transparent: new Style({
-          stroke: new Stroke({
-            color: 'blue',
-            width: 3,
+  [1, 2].forEach((pixelRatio) => {
+    describe('#forEachFeatureAtPixel', function () {
+      let map;
+      beforeEach(function () {
+        const target = document.createElement('div');
+        target.style.width = '100px';
+        target.style.height = '100px';
+        document.body.appendChild(target);
+        map = new Map({
+          target: target,
+          pixelRatio,
+          view: new View({
+            center: [0, 0],
+            zoom: 2,
           }),
-          fill: new Fill({
-            color: 'transparent',
+        });
+      });
+
+      afterEach(function () {
+        document.body.removeChild(map.getTargetElement());
+        map.setTarget(null);
+      });
+
+      it('calls callback with feature, layer and geometry', function () {
+        let hit;
+        const point = new Point([0, 0]);
+        const polygon = fromExtent([0, -1e6, 1e6, 1e6]);
+        const geometryCollection = new Feature(
+          new GeometryCollection([polygon, point])
+        );
+        const multiPoint = new MultiPoint([
+          [-1e6, -1e6],
+          [-1e6, 1e6],
+        ]);
+        const multiGeometry = new Feature(multiPoint);
+        const layer = new VectorLayer({
+          source: new VectorSource({
+            features: [geometryCollection, multiGeometry],
           }),
-          image: new Circle({
-            radius: 30,
+        });
+        map.addLayer(layer);
+        map.renderSync();
+        hit = map.forEachFeatureAtPixel(
+          [50, 50],
+          (feature, layer, geometry) => ({
+            feature,
+            layer,
+            geometry,
+          })
+        );
+        expect(hit.feature).to.be(geometryCollection);
+        expect(hit.layer).to.be(layer);
+        expect(hit.geometry).to.be(point);
+        hit = map.forEachFeatureAtPixel(
+          [75, 50],
+          (feature, layer, geometry) => ({
+            feature,
+            layer,
+            geometry,
+          })
+        );
+        expect(hit.feature).to.be(geometryCollection);
+        expect(hit.geometry).to.be(polygon);
+        hit = map.forEachFeatureAtPixel(
+          [25, 25],
+          (feature, layer, geometry) => ({
+            feature,
+            layer,
+            geometry,
+          })
+        );
+        expect(hit.feature).to.be(multiGeometry);
+        expect(hit.geometry).to.be(multiPoint);
+      });
+
+      it('hits Polygon, Circle geometry, Circle style stroke and transparent fill', function () {
+        const target = map.getTargetElement();
+        target.style.width = '300px';
+        target.style.height = '300px';
+        map.updateSize();
+        map.setView(
+          new View({
+            center: [4.5, 7],
+            resolution: 0.05,
+          })
+        );
+
+        const styles = {
+          transparent: new Style({
             stroke: new Stroke({
               color: 'blue',
               width: 3,
@@ -125,263 +127,256 @@ describe('ol/renderer/Map.js', function () {
             fill: new Fill({
               color: 'transparent',
             }),
+            image: new Circle({
+              radius: 30,
+              stroke: new Stroke({
+                color: 'blue',
+                width: 3,
+              }),
+              fill: new Fill({
+                color: 'transparent',
+              }),
+            }),
           }),
-        }),
-        none: new Style({
-          stroke: new Stroke({
-            color: 'blue',
-            width: 3,
-          }),
-          image: new Circle({
-            radius: 30,
+          none: new Style({
             stroke: new Stroke({
               color: 'blue',
               width: 3,
             }),
+            image: new Circle({
+              radius: 30,
+              stroke: new Stroke({
+                color: 'blue',
+                width: 3,
+              }),
+            }),
           }),
-        }),
-      };
+        };
 
-      const source = new VectorSource({
-        features: [
-          new Feature({
-            geometry: fromExtent([0, 10, 3, 13]),
-            fillType: 'none',
-          }),
-          new Feature({
-            geometry: fromExtent([1, 11, 4, 14]),
-            fillType: 'none',
-          }),
-          new Feature({
-            geometry: fromExtent([5, 10, 8, 13]),
-            fillType: 'transparent',
-          }),
-          new Feature({
-            geometry: fromExtent([6, 11, 9, 14]),
-            fillType: 'transparent',
-          }),
-          new Feature({
-            geometry: new CircleGeometry([1.5, 6.5], 1.5),
-            fillType: 'none',
-          }),
-          new Feature({
-            geometry: new CircleGeometry([2.5, 7.5], 1.5),
-            fillType: 'none',
-          }),
-          new Feature({
-            geometry: new CircleGeometry([6.5, 6.5], 1.5),
-            fillType: 'transparent',
-          }),
-          new Feature({
-            geometry: new CircleGeometry([7.5, 7.5], 1.5),
-            fillType: 'transparent',
-          }),
-          new Feature({
-            geometry: new Point([1.5, 1.5]),
-            fillType: 'none',
-          }),
-          new Feature({
-            geometry: new Point([2.5, 2.5]),
-            fillType: 'none',
-          }),
-          new Feature({
-            geometry: new Point([6.5, 1.5]),
-            fillType: 'transparent',
-          }),
-          new Feature({
-            geometry: new Point([7.5, 2.5]),
-            fillType: 'transparent',
-          }),
-        ],
-      });
-      const layer = new VectorLayer({
-        source: source,
-        style: function (feature, resolution) {
-          return styles[feature.get('fillType')];
-        },
-      });
-      map.addLayer(layer);
-      map.renderSync();
+        const source = new VectorSource({
+          features: [
+            new Feature({
+              geometry: fromExtent([0, 10, 3, 13]),
+              fillType: 'none',
+            }),
+            new Feature({
+              geometry: fromExtent([1, 11, 4, 14]),
+              fillType: 'none',
+            }),
+            new Feature({
+              geometry: fromExtent([5, 10, 8, 13]),
+              fillType: 'transparent',
+            }),
+            new Feature({
+              geometry: fromExtent([6, 11, 9, 14]),
+              fillType: 'transparent',
+            }),
+            new Feature({
+              geometry: new CircleGeometry([1.5, 6.5], 1.5),
+              fillType: 'none',
+            }),
+            new Feature({
+              geometry: new CircleGeometry([2.5, 7.5], 1.5),
+              fillType: 'none',
+            }),
+            new Feature({
+              geometry: new CircleGeometry([6.5, 6.5], 1.5),
+              fillType: 'transparent',
+            }),
+            new Feature({
+              geometry: new CircleGeometry([7.5, 7.5], 1.5),
+              fillType: 'transparent',
+            }),
+            new Feature({
+              geometry: new Point([1.5, 1.5]),
+              fillType: 'none',
+            }),
+            new Feature({
+              geometry: new Point([2.5, 2.5]),
+              fillType: 'none',
+            }),
+            new Feature({
+              geometry: new Point([6.5, 1.5]),
+              fillType: 'transparent',
+            }),
+            new Feature({
+              geometry: new Point([7.5, 2.5]),
+              fillType: 'transparent',
+            }),
+          ],
+        });
+        const layer = new VectorLayer({
+          source: source,
+          style: function (feature, resolution) {
+            return styles[feature.get('fillType')];
+          },
+        });
+        map.addLayer(layer);
+        map.renderSync();
 
-      function hitTest(coordinate) {
-        const features = map.getFeaturesAtPixel(
-          map.getPixelFromCoordinate(coordinate)
-        );
-        const result = {count: 0};
-        if (features && features.length > 0) {
-          result.count = features.length;
-          result.extent = features[0].getGeometry().getExtent();
+        function hitTest(coordinate) {
+          const features = map.getFeaturesAtPixel(
+            map.getPixelFromCoordinate(coordinate)
+          );
+          const result = {count: 0};
+          if (features && features.length > 0) {
+            result.count = features.length;
+            result.extent = features[0].getGeometry().getExtent();
+          }
+          return result;
         }
-        return result;
-      }
-      let res;
+        let res;
 
-      res = hitTest([0, 12]);
-      expect(res.count).to.be(1);
-      expect(res.extent[0]).to.be(0);
-      res = hitTest([1, 12]);
-      expect(res.count).to.be(1);
-      expect(res.extent[0]).to.be(1);
-      res = hitTest([2, 12]);
-      expect(res.count).to.be(0);
-      res = hitTest([3, 12]);
-      expect(res.count).to.be(1);
-      expect(res.extent[0]).to.be(0);
-      res = hitTest([4, 12]);
-      expect(res.count).to.be(1);
-      expect(res.extent[0]).to.be(1);
-      res = hitTest([5, 12]);
-      expect(res.count).to.be(1);
-      expect(res.extent[0]).to.be(5);
-      res = hitTest([6, 12]);
-      expect(res.count).to.be(2);
-      expect(res.extent[0]).to.be(6);
-      res = hitTest([7, 12]);
-      expect(res.count).to.be(2);
-      expect(res.extent[0]).to.be(6);
-      res = hitTest([8, 12]);
-      expect(res.count).to.be(2);
-      expect(res.extent[0]).to.be(6);
-      res = hitTest([9, 12]);
-      expect(res.count).to.be(1);
-      expect(res.extent[0]).to.be(6);
+        res = hitTest([0, 12]);
+        expect(res.count).to.be(1);
+        expect(res.extent[0]).to.be(0);
+        res = hitTest([1, 12]);
+        expect(res.count).to.be(1);
+        expect(res.extent[0]).to.be(1);
+        res = hitTest([2, 12]);
+        expect(res.count).to.be(0);
+        res = hitTest([3, 12]);
+        expect(res.count).to.be(1);
+        expect(res.extent[0]).to.be(0);
+        res = hitTest([4, 12]);
+        expect(res.count).to.be(1);
+        expect(res.extent[0]).to.be(1);
+        res = hitTest([5, 12]);
+        expect(res.count).to.be(1);
+        expect(res.extent[0]).to.be(5);
+        res = hitTest([6, 12]);
+        expect(res.count).to.be(2);
+        expect(res.extent[0]).to.be(6);
+        res = hitTest([7, 12]);
+        expect(res.count).to.be(2);
+        expect(res.extent[0]).to.be(6);
+        res = hitTest([8, 12]);
+        expect(res.count).to.be(2);
+        expect(res.extent[0]).to.be(6);
+        res = hitTest([9, 12]);
+        expect(res.count).to.be(1);
+        expect(res.extent[0]).to.be(6);
 
-      res = hitTest([0, 6.5]);
-      expect(res.count).to.be(1);
-      expect(res.extent[0]).to.be(0);
-      res = hitTest([1, 7.5]);
-      expect(res.count).to.be(1);
-      expect(res.extent[0]).to.be(1);
-      res = hitTest([2, 7.0]);
-      expect(res.count).to.be(0);
-      res = hitTest([3, 6.5]);
-      expect(res.count).to.be(1);
-      expect(res.extent[0]).to.be(0);
-      res = hitTest([4, 7.5]);
-      expect(res.count).to.be(1);
-      expect(res.extent[0]).to.be(1);
-      res = hitTest([5, 6.5]);
-      expect(res.count).to.be(1);
-      expect(res.extent[0]).to.be(5);
-      res = hitTest([6, 7.5]);
-      expect(res.count).to.be(2);
-      expect(res.extent[0]).to.be(6);
-      res = hitTest([7, 7.0]);
-      expect(res.count).to.be(2);
-      expect(res.extent[0]).to.be(6);
-      res = hitTest([8, 6.5]);
-      expect(res.count).to.be(2);
-      expect(res.extent[0]).to.be(6);
-      res = hitTest([9, 7.5]);
-      expect(res.count).to.be(1);
-      expect(res.extent[0]).to.be(6);
+        res = hitTest([0, 6.5]);
+        expect(res.count).to.be(1);
+        expect(res.extent[0]).to.be(0);
+        res = hitTest([1, 7.5]);
+        expect(res.count).to.be(1);
+        expect(res.extent[0]).to.be(1);
+        res = hitTest([2, 7.0]);
+        expect(res.count).to.be(0);
+        res = hitTest([3, 6.5]);
+        expect(res.count).to.be(1);
+        expect(res.extent[0]).to.be(0);
+        res = hitTest([4, 7.5]);
+        expect(res.count).to.be(1);
+        expect(res.extent[0]).to.be(1);
+        res = hitTest([5, 6.5]);
+        expect(res.count).to.be(1);
+        expect(res.extent[0]).to.be(5);
+        res = hitTest([6, 7.5]);
+        expect(res.count).to.be(2);
+        expect(res.extent[0]).to.be(6);
+        res = hitTest([7, 7.0]);
+        expect(res.count).to.be(2);
+        expect(res.extent[0]).to.be(6);
+        res = hitTest([8, 6.5]);
+        expect(res.count).to.be(2);
+        expect(res.extent[0]).to.be(6);
+        res = hitTest([9, 7.5]);
+        expect(res.count).to.be(1);
+        expect(res.extent[0]).to.be(6);
 
-      res = hitTest([0, 1.5]);
-      expect(res.count).to.be(1);
-      expect(res.extent[0]).to.be(1.5);
-      res = hitTest([1, 2.5]);
-      expect(res.count).to.be(1);
-      expect(res.extent[0]).to.be(2.5);
-      res = hitTest([2, 2.0]);
-      expect(res.count).to.be(0);
-      res = hitTest([3, 1.5]);
-      expect(res.count).to.be(1);
-      expect(res.extent[0]).to.be(1.5);
-      res = hitTest([4, 2.5]);
-      expect(res.count).to.be(1);
-      expect(res.extent[0]).to.be(2.5);
-      res = hitTest([5, 1.5]);
-      expect(res.count).to.be(1);
-      expect(res.extent[0]).to.be(6.5);
-      res = hitTest([6, 2.5]);
-      expect(res.count).to.be(2);
-      expect(res.extent[0]).to.be(7.5);
-      res = hitTest([7, 2.0]);
-      expect(res.count).to.be(2);
-      expect(res.extent[0]).to.be(7.5);
-      res = hitTest([8, 1.5]);
-      expect(res.count).to.be(2);
-      expect(res.extent[0]).to.be(7.5);
-      res = hitTest([9, 2.5]);
-      expect(res.count).to.be(1);
-      expect(res.extent[0]).to.be(7.5);
-    });
-
-    it('hits lines even if they are dashed', function () {
-      map.getView().setResolution(1);
-      let geometry, hit;
-      const feature = new Feature();
-      const layer = new VectorLayer({
-        source: new VectorSource({
-          features: [feature],
-        }),
-        style: new Style({
-          stroke: new Stroke({
-            color: 'black',
-            width: 8,
-            lineDash: [10, 20],
-          }),
-        }),
+        res = hitTest([0, 1.5]);
+        expect(res.count).to.be(1);
+        expect(res.extent[0]).to.be(1.5);
+        res = hitTest([1, 2.5]);
+        expect(res.count).to.be(1);
+        expect(res.extent[0]).to.be(2.5);
+        res = hitTest([2, 2.0]);
+        expect(res.count).to.be(0);
+        res = hitTest([3, 1.5]);
+        expect(res.count).to.be(1);
+        expect(res.extent[0]).to.be(1.5);
+        res = hitTest([4, 2.5]);
+        expect(res.count).to.be(1);
+        expect(res.extent[0]).to.be(2.5);
+        res = hitTest([5, 1.5]);
+        expect(res.count).to.be(1);
+        expect(res.extent[0]).to.be(6.5);
+        res = hitTest([6, 2.5]);
+        expect(res.count).to.be(2);
+        expect(res.extent[0]).to.be(7.5);
+        res = hitTest([7, 2.0]);
+        expect(res.count).to.be(2);
+        expect(res.extent[0]).to.be(7.5);
+        res = hitTest([8, 1.5]);
+        expect(res.count).to.be(2);
+        expect(res.extent[0]).to.be(7.5);
+        res = hitTest([9, 2.5]);
+        expect(res.count).to.be(1);
+        expect(res.extent[0]).to.be(7.5);
       });
-      map.addLayer(layer);
 
-      geometry = new LineString([
-        [-20, 0],
-        [20, 0],
-      ]);
-      feature.setGeometry(geometry);
-      map.renderSync();
-      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
-        feature,
-        layer,
-        geometry,
-      }));
-      expect(hit).to.be.ok();
-      expect(hit.feature).to.be(feature);
-      expect(hit.layer).to.be(layer);
-      expect(hit.geometry).to.be(geometry);
+      it('hits lines even if they are dashed', function () {
+        map.getView().setResolution(1);
+        let geometry, hit;
+        const feature = new Feature();
+        const layer = new VectorLayer({
+          source: new VectorSource({
+            features: [feature],
+          }),
+          style: new Style({
+            stroke: new Stroke({
+              color: 'black',
+              width: 8,
+              lineDash: [10, 20],
+            }),
+          }),
+        });
+        map.addLayer(layer);
 
-      geometry = new MultiLineString([
-        [
+        geometry = new LineString([
           [-20, 0],
           [20, 0],
-        ],
-      ]);
-      feature.setGeometry(geometry);
-      map.renderSync();
-      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
-        feature,
-        layer,
-        geometry,
-      }));
-      expect(hit).to.be.ok();
-      expect(hit.feature).to.be(feature);
-      expect(hit.layer).to.be(layer);
-      expect(hit.geometry).to.be(geometry);
+        ]);
+        feature.setGeometry(geometry);
+        map.renderSync();
+        hit = map.forEachFeatureAtPixel(
+          [50, 50],
+          (feature, layer, geometry) => ({
+            feature,
+            layer,
+            geometry,
+          })
+        );
+        expect(hit).to.be.ok();
+        expect(hit.feature).to.be(feature);
+        expect(hit.layer).to.be(layer);
+        expect(hit.geometry).to.be(geometry);
 
-      geometry = new Polygon([
-        [
-          [-20, 0],
-          [20, 0],
-          [20, -20],
-          [-20, -20],
-          [-20, 0],
-        ],
-      ]);
-      feature.setGeometry(geometry);
-      map.renderSync();
-      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
-        feature,
-        layer,
-        geometry,
-      }));
-      expect(hit).to.be.ok();
-      expect(hit.feature).to.be(feature);
-      expect(hit.layer).to.be(layer);
-      expect(hit.geometry).to.be(geometry);
+        geometry = new MultiLineString([
+          [
+            [-20, 0],
+            [20, 0],
+          ],
+        ]);
+        feature.setGeometry(geometry);
+        map.renderSync();
+        hit = map.forEachFeatureAtPixel(
+          [50, 50],
+          (feature, layer, geometry) => ({
+            feature,
+            layer,
+            geometry,
+          })
+        );
+        expect(hit).to.be.ok();
+        expect(hit.feature).to.be(feature);
+        expect(hit.layer).to.be(layer);
+        expect(hit.geometry).to.be(geometry);
 
-      geometry = new MultiPolygon([
-        [
+        geometry = new Polygon([
           [
             [-20, 0],
             [20, 0],
@@ -389,253 +384,369 @@ describe('ol/renderer/Map.js', function () {
             [-20, -20],
             [-20, 0],
           ],
-        ],
-      ]);
-      feature.setGeometry(geometry);
-      map.renderSync();
-      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
-        feature,
-        layer,
-        geometry,
-      }));
-      expect(hit).to.be.ok();
-      expect(hit.feature).to.be(feature);
-      expect(hit.layer).to.be(layer);
-      expect(hit.geometry).to.be(geometry);
+        ]);
+        feature.setGeometry(geometry);
+        map.renderSync();
+        hit = map.forEachFeatureAtPixel(
+          [50, 50],
+          (feature, layer, geometry) => ({
+            feature,
+            layer,
+            geometry,
+          })
+        );
+        expect(hit).to.be.ok();
+        expect(hit.feature).to.be(feature);
+        expect(hit.layer).to.be(layer);
+        expect(hit.geometry).to.be(geometry);
 
-      geometry = new CircleGeometry([0, -40 / Math.PI], 40 / Math.PI);
-      feature.setGeometry(geometry);
-      map.renderSync();
-      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
-        feature,
-        layer,
-        geometry,
-      }));
-      expect(hit).to.be.ok();
-      expect(hit.feature).to.be(feature);
-      expect(hit.layer).to.be(layer);
-      expect(hit.geometry).to.be(geometry);
-    });
+        geometry = new MultiPolygon([
+          [
+            [
+              [-20, 0],
+              [20, 0],
+              [20, -20],
+              [-20, -20],
+              [-20, 0],
+            ],
+          ],
+        ]);
+        feature.setGeometry(geometry);
+        map.renderSync();
+        hit = map.forEachFeatureAtPixel(
+          [50, 50],
+          (feature, layer, geometry) => ({
+            feature,
+            layer,
+            geometry,
+          })
+        );
+        expect(hit).to.be.ok();
+        expect(hit.feature).to.be(feature);
+        expect(hit.layer).to.be(layer);
+        expect(hit.geometry).to.be(geometry);
 
-    it('hits Text stroke, transparent fill and background fill', function () {
-      let hit;
-      const geometry = new Point([0, 0]);
-      const feature = new Feature(geometry);
-      const layer = new VectorLayer({
-        source: new VectorSource({
-          features: [feature],
-        }),
+        geometry = new CircleGeometry([0, -40 / Math.PI], 40 / Math.PI);
+        feature.setGeometry(geometry);
+        map.renderSync();
+        hit = map.forEachFeatureAtPixel(
+          [50, 50],
+          (feature, layer, geometry) => ({
+            feature,
+            layer,
+            geometry,
+          })
+        );
+        expect(hit).to.be.ok();
+        expect(hit.feature).to.be(feature);
+        expect(hit.layer).to.be(layer);
+        expect(hit.geometry).to.be(geometry);
       });
-      map.addLayer(layer);
 
-      layer.setStyle({
-        'text-value': 'X',
-        'text-font': 'bold 100px sans-serif',
-        'text-baseline': 'top',
-        'text-offset-y': -50,
-        'text-stroke-width': 20,
-        'text-stroke-color': 'black',
-        'text-fill-color': 'none',
+      it('hits Text stroke, transparent fill and background fill', function () {
+        let hit;
+        const geometry = new Point([0, 0]);
+        const feature = new Feature(geometry);
+        const layer = new VectorLayer({
+          source: new VectorSource({
+            features: [feature],
+          }),
+        });
+        map.addLayer(layer);
+
+        layer.setStyle({
+          'text-value': 'X',
+          'text-font': 'bold 100px sans-serif',
+          'text-baseline': 'top',
+          'text-offset-y': -50,
+          'text-stroke-width': 20,
+          'text-stroke-color': 'black',
+          'text-fill-color': 'none',
+        });
+        map.renderSync();
+        hit = map.forEachFeatureAtPixel(
+          [50, 50],
+          (feature, layer, geometry) => ({
+            feature,
+            layer,
+            geometry,
+          })
+        );
+        expect(hit).to.be.ok();
+        expect(hit.feature).to.be(feature);
+        expect(hit.layer).to.be(layer);
+        expect(hit.geometry).to.be(geometry);
+
+        layer.setStyle({
+          'text-value': 'X',
+          'text-font': 'bold 100px sans-serif',
+          'text-baseline': 'top',
+          'text-offset-y': -50,
+          'text-stroke-width': 1,
+          'text-stroke-color': 'black',
+          'text-fill-color': 'none',
+        });
+        map.renderSync();
+        hit = map.forEachFeatureAtPixel(
+          [50, 50],
+          (feature, layer, geometry) => ({
+            feature,
+            layer,
+            geometry,
+          })
+        );
+        expect(hit).to.be(undefined);
+
+        layer.setStyle({
+          'text-value': 'X',
+          'text-font': 'bold 100px sans-serif',
+          'text-baseline': 'top',
+          'text-offset-y': -50,
+          'text-stroke-width': 1,
+          'text-stroke-color': 'black',
+          'text-fill-color': 'transparent',
+        });
+        map.renderSync();
+        hit = map.forEachFeatureAtPixel(
+          [50, 50],
+          (feature, layer, geometry) => ({
+            feature,
+            layer,
+            geometry,
+          })
+        );
+        expect(hit).to.be.ok();
+        expect(hit.feature).to.be(feature);
+        expect(hit.layer).to.be(layer);
+        expect(hit.geometry).to.be(geometry);
+
+        layer.setStyle({
+          'text-value': 'X',
+          'text-font': 'bold 100px sans-serif',
+          'text-baseline': 'top',
+          'text-offset-y': -50,
+          'text-stroke-width': 1,
+          'text-stroke-color': 'black',
+          'text-fill-color': 'none',
+          'text-background-fill-color': 'transparent',
+        });
+        map.renderSync();
+        hit = map.forEachFeatureAtPixel(
+          [50, 50],
+          (feature, layer, geometry) => ({
+            feature,
+            layer,
+            geometry,
+          })
+        );
+        expect(hit).to.be.ok();
+        expect(hit.feature).to.be(feature);
+        expect(hit.layer).to.be(layer);
+        expect(hit.geometry).to.be(geometry);
       });
-      map.renderSync();
-      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
-        feature,
-        layer,
-        geometry,
-      }));
-      expect(hit).to.be.ok();
-      expect(hit.feature).to.be(feature);
-      expect(hit.layer).to.be(layer);
-      expect(hit.geometry).to.be(geometry);
 
-      layer.setStyle({
-        'text-value': 'X',
-        'text-font': 'bold 100px sans-serif',
-        'text-baseline': 'top',
-        'text-offset-y': -50,
-        'text-stroke-width': 1,
-        'text-stroke-color': 'black',
-        'text-fill-color': 'none',
+      describe('Line placement text', function () {
+        let layer, feature, geometry;
+        beforeEach(function () {
+          geometry = new LineString([
+            [-1e6, 0],
+            [1e6, 0],
+          ]);
+          feature = new Feature(geometry);
+          layer = new VectorLayer({
+            source: new VectorSource({
+              features: [feature],
+            }),
+          });
+          map.addLayer(layer);
+        });
+
+        this.afterEach(function () {
+          map.removeLayer(layer);
+        });
+
+        it('with wide stroke', function (done) {
+          layer.setStyle({
+            'text-value': 'X',
+            'text-font': 'bold 100px sans-serif',
+            'text-baseline': 'top',
+            'text-offset-y': -50,
+            'text-stroke-width': 20,
+            'text-stroke-color': 'black',
+            'text-fill-color': 'none',
+            'text-placement': 'line',
+            'text-overflow': true,
+          });
+          map.once('rendercomplete', () => {
+            try {
+              const hit = map.forEachFeatureAtPixel(
+                [50, 50],
+                (feature, layer, geometry) => ({
+                  feature,
+                  layer,
+                  geometry,
+                })
+              );
+              expect(hit).to.be.ok();
+              expect(hit.feature).to.be(feature);
+              expect(hit.layer).to.be(layer);
+              expect(hit.geometry).to.be(geometry);
+              done();
+            } catch (e) {
+              done(e);
+            }
+          });
+        });
+
+        it('with no fill', function (done) {
+          layer.setStyle({
+            'text-value': 'X',
+            'text-font': 'bold 100px sans-serif',
+            'text-baseline': 'top',
+            'text-offset-y': -50,
+            'text-stroke-width': 1,
+            'text-stroke-color': 'black',
+            'text-fill-color': 'none',
+            'text-placement': 'line',
+            'text-overflow': true,
+          });
+          map.once('rendercomplete', () => {
+            try {
+              const hit = map.forEachFeatureAtPixel(
+                [50, 50],
+                (feature, layer, geometry) => ({
+                  feature,
+                  layer,
+                  geometry,
+                })
+              );
+              expect(hit).to.be(undefined);
+              done();
+            } catch (e) {
+              done(e);
+            }
+          });
+        });
+
+        it('with transparent fill', function (done) {
+          layer.setStyle({
+            'text-value': 'X',
+            'text-font': 'bold 100px sans-serif',
+            'text-baseline': 'top',
+            'text-offset-y': -50,
+            'text-stroke-width': 1,
+            'text-stroke-color': 'black',
+            'text-fill-color': 'transparent',
+            'text-placement': 'line',
+            'text-overflow': true,
+          });
+          map.once('rendercomplete', () => {
+            try {
+              const hit = map.forEachFeatureAtPixel(
+                [50, 50],
+                (feature, layer, geometry) => ({
+                  feature,
+                  layer,
+                  geometry,
+                })
+              );
+              expect(hit).to.be.ok();
+              expect(hit.feature).to.be(feature);
+              expect(hit.layer).to.be(layer);
+              expect(hit.geometry).to.be(geometry);
+              done();
+            } catch (e) {
+              done(e);
+            }
+          });
+        });
+
+        it('with transparent fill', function (done) {
+          layer.setStyle({
+            'text-value': 'X',
+            'text-font': 'bold 100px sans-serif',
+            'text-baseline': 'top',
+            'text-offset-y': -50,
+            'text-stroke-width': 1,
+            'text-stroke-color': 'black',
+            'text-fill-color': 'transparent',
+            'text-placement': 'line',
+            'text-overflow': true,
+          });
+          map.once('rendercomplete', () => {
+            try {
+              const hit = map.forEachFeatureAtPixel(
+                [50, 50],
+                (feature, layer, geometry) => ({
+                  feature,
+                  layer,
+                  geometry,
+                })
+              );
+              expect(hit).to.be.ok();
+              expect(hit.feature).to.be(feature);
+              expect(hit.layer).to.be(layer);
+              expect(hit.geometry).to.be(geometry);
+              done();
+            } catch (e) {
+              done(e);
+            }
+          });
+        });
       });
-      map.renderSync();
-      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
-        feature,
-        layer,
-        geometry,
-      }));
-      expect(hit).to.be(undefined);
 
-      layer.setStyle({
-        'text-value': 'X',
-        'text-font': 'bold 100px sans-serif',
-        'text-baseline': 'top',
-        'text-offset-y': -50,
-        'text-stroke-width': 1,
-        'text-stroke-color': 'black',
-        'text-fill-color': 'transparent',
-      });
-      map.renderSync();
-      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
-        feature,
-        layer,
-        geometry,
-      }));
-      expect(hit).to.be.ok();
-      expect(hit.feature).to.be(feature);
-      expect(hit.layer).to.be(layer);
-      expect(hit.geometry).to.be(geometry);
-
-      layer.setStyle({
-        'text-value': 'X',
-        'text-font': 'bold 100px sans-serif',
-        'text-baseline': 'top',
-        'text-offset-y': -50,
-        'text-stroke-width': 1,
-        'text-stroke-color': 'black',
-        'text-fill-color': 'none',
-        'text-background-fill-color': 'transparent',
-      });
-      map.renderSync();
-      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
-        feature,
-        layer,
-        geometry,
-      }));
-      expect(hit).to.be.ok();
-      expect(hit.feature).to.be(feature);
-      expect(hit.layer).to.be(layer);
-      expect(hit.geometry).to.be(geometry);
-    });
-
-    it('hits line placement Text stroke and transparent fill', function () {
-      let hit;
-      const geometry = new LineString([
-        [-1e6, 0],
-        [1e6, 0],
-      ]);
-      const feature = new Feature(geometry);
-      const layer = new VectorLayer({
-        source: new VectorSource({
-          features: [feature],
-        }),
-      });
-      map.addLayer(layer);
-
-      layer.setStyle({
-        'text-value': 'X',
-        'text-font': 'bold 100px sans-serif',
-        'text-baseline': 'top',
-        'text-offset-y': -50,
-        'text-stroke-width': 20,
-        'text-stroke-color': 'black',
-        'text-fill-color': 'none',
-        'text-placement': 'line',
-        'text-overflow': true,
-      });
-      map.renderSync();
-      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
-        feature,
-        layer,
-        geometry,
-      }));
-      expect(hit).to.be.ok();
-      expect(hit.feature).to.be(feature);
-      expect(hit.layer).to.be(layer);
-      expect(hit.geometry).to.be(geometry);
-
-      layer.setStyle({
-        'text-value': 'X',
-        'text-font': 'bold 100px sans-serif',
-        'text-baseline': 'top',
-        'text-offset-y': -50,
-        'text-stroke-width': 1,
-        'text-stroke-color': 'black',
-        'text-fill-color': 'none',
-        'text-placement': 'line',
-        'text-overflow': true,
-      });
-      map.renderSync();
-      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
-        feature,
-        layer,
-        geometry,
-      }));
-      expect(hit).to.be(undefined);
-
-      layer.setStyle({
-        'text-value': 'X',
-        'text-font': 'bold 100px sans-serif',
-        'text-baseline': 'top',
-        'text-offset-y': -50,
-        'text-stroke-width': 1,
-        'text-stroke-color': 'black',
-        'text-fill-color': 'transparent',
-        'text-placement': 'line',
-        'text-overflow': true,
-      });
-      map.renderSync();
-      hit = map.forEachFeatureAtPixel([50, 50], (feature, layer, geometry) => ({
-        feature,
-        layer,
-        geometry,
-      }));
-      expect(hit).to.be.ok();
-      expect(hit.feature).to.be(feature);
-      expect(hit.layer).to.be(layer);
-      expect(hit.geometry).to.be(geometry);
-    });
-
-    it('prioritizes closer features when no direct hit is found', function () {
-      map.getView().setResolution(1);
-      map.addLayer(
-        new VectorLayer({
-          style: new Style({
-            image: new Circle({
-              radius: 4,
-              fill: new Fill({
-                color: 'black',
+      it('prioritizes closer features when no direct hit is found', function () {
+        map.getView().setResolution(1);
+        map.addLayer(
+          new VectorLayer({
+            style: new Style({
+              image: new Circle({
+                radius: 4,
+                fill: new Fill({
+                  color: 'black',
+                }),
               }),
             }),
-          }),
-          source: new VectorSource({
-            features: [
-              [0, -10],
-              [0, 0],
-              [0, 10],
-              [10, 0],
-            ].map((coordinate) => new Feature(new Point(coordinate))),
-          }),
-        })
-      );
-      map.renderSync();
+            source: new VectorSource({
+              features: [
+                [0, -10],
+                [0, 0],
+                [0, 10],
+                [10, 0],
+              ].map((coordinate) => new Feature(new Point(coordinate))),
+            }),
+          })
+        );
+        map.renderSync();
 
-      let feature = map.forEachFeatureAtPixel(
-        map.getPixelFromCoordinate([8, 6]),
-        (feature) => feature,
-        {hitTolerance: 20}
-      );
-      expect(feature.getGeometry().getCoordinates()).to.eql([10, 0]);
+        let feature = map.forEachFeatureAtPixel(
+          map.getPixelFromCoordinate([8, 6]),
+          (feature) => feature,
+          {hitTolerance: 20}
+        );
+        expect(feature.getGeometry().getCoordinates()).to.eql([10, 0]);
 
-      feature = map.forEachFeatureAtPixel(
-        map.getPixelFromCoordinate([6, -8]),
-        (feature) => feature,
-        {hitTolerance: 20}
-      );
-      expect(feature.getGeometry().getCoordinates()).to.eql([0, -10]);
+        feature = map.forEachFeatureAtPixel(
+          map.getPixelFromCoordinate([6, -8]),
+          (feature) => feature,
+          {hitTolerance: 20}
+        );
+        expect(feature.getGeometry().getCoordinates()).to.eql([0, -10]);
 
-      feature = map.forEachFeatureAtPixel(
-        map.getPixelFromCoordinate([-6, -4]),
-        (feature) => feature,
-        {hitTolerance: 20}
-      );
-      expect(feature.getGeometry().getCoordinates()).to.eql([0, 0]);
+        feature = map.forEachFeatureAtPixel(
+          map.getPixelFromCoordinate([-6, -4]),
+          (feature) => feature,
+          {hitTolerance: 20}
+        );
+        expect(feature.getGeometry().getCoordinates()).to.eql([0, 0]);
 
-      feature = map.forEachFeatureAtPixel(
-        map.getPixelFromCoordinate([-6, 7]),
-        (feature) => feature,
-        {hitTolerance: 20}
-      );
-      expect(feature.getGeometry().getCoordinates()).to.eql([0, 10]);
+        feature = map.forEachFeatureAtPixel(
+          map.getPixelFromCoordinate([-6, 7]),
+          (feature) => feature,
+          {hitTolerance: 20}
+        );
+        expect(feature.getGeometry().getCoordinates()).to.eql([0, 10]);
+      });
     });
   });
 
