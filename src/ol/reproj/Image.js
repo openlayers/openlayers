@@ -4,13 +4,14 @@
 import {ERROR_THRESHOLD} from './common.js';
 
 import EventType from '../events/EventType.js';
-import ImageBase from '../ImageBase.js';
 import ImageState from '../ImageState.js';
+import ImageWrapper from '../Image.js';
 import Triangulation from './Triangulation.js';
 import {
   calculateSourceResolution,
   render as renderReprojected,
 } from '../reproj.js';
+import {fromResolutionLike} from '../resolution.js';
 import {
   getCenter,
   getHeight,
@@ -21,7 +22,7 @@ import {
 import {listen, unlistenByKey} from '../events.js';
 
 /**
- * @typedef {function(import("../extent.js").Extent, number, number) : import("../ImageBase.js").default} FunctionType
+ * @typedef {function(import("../extent.js").Extent, number, number) : import("../Image.js").default} FunctionType
  */
 
 /**
@@ -29,7 +30,7 @@ import {listen, unlistenByKey} from '../events.js';
  * Class encapsulating single reprojected image.
  * See {@link module:ol/source/Image~ImageSource}.
  */
-class ReprojImage extends ImageBase {
+class ReprojImage extends ImageWrapper {
   /**
    * @param {import("../proj/Projection.js").default} sourceProj Source projection (of the data).
    * @param {import("../proj/Projection.js").default} targetProj Target projection.
@@ -126,7 +127,7 @@ class ReprojImage extends ImageBase {
 
     /**
      * @private
-     * @type {import("../ImageBase.js").default}
+     * @type {import("../Image.js").default}
      */
     this.sourceImage_ = sourceImage;
 
@@ -187,12 +188,11 @@ class ReprojImage extends ImageBase {
     if (sourceState == ImageState.LOADED) {
       const width = getWidth(this.targetExtent_) / this.targetResolution_;
       const height = getHeight(this.targetExtent_) / this.targetResolution_;
-
       this.canvas_ = renderReprojected(
         width,
         height,
         this.sourcePixelRatio_,
-        this.sourceImage_.getResolution(),
+        fromResolutionLike(this.sourceImage_.getResolution()),
         this.maxSourceExtent_,
         this.targetResolution_,
         this.targetExtent_,

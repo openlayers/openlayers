@@ -60,6 +60,9 @@ module.exports = function (karma) {
     ],
     proxies: {
       '/spec/': '/base/spec/',
+      '/wms': '/base/spec/ol/data/blank.png',
+      '/ImageServer/exportImage': '/base/spec/ol/data/blank.png',
+      '/MapServer/export': '/base/spec/ol/data/blank.png',
     },
     preprocessors: {
       '**/*.js': ['webpack'], //, 'sourcemap'],

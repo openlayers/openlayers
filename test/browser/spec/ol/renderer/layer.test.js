@@ -41,15 +41,17 @@ describe('ol/renderer/Layer', function () {
       const extent = [];
       const resolution = 1;
       const pixelRatio = 1;
-      const src = '';
-      const crossOrigin = '';
-      imageLoadFunction = sinon.spy();
+
+      const spy = sinon.spy();
+      imageLoadFunction = (...args) => {
+        spy(...args);
+        const img = new Image();
+        return img;
+      };
       image = new ImageWrapper(
         extent,
         resolution,
         pixelRatio,
-        src,
-        crossOrigin,
         imageLoadFunction
       );
     });

@@ -6,7 +6,7 @@ import TileState from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
 
 /**
- * @typedef {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} ImageLike
+ * @typedef {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|ImageBitmap} ImageLike
  */
 
 /**
@@ -25,7 +25,8 @@ import {createCanvasContext2D} from './dom.js';
 export function asImageLike(data) {
   return data instanceof Image ||
     data instanceof HTMLCanvasElement ||
-    data instanceof HTMLVideoElement
+    data instanceof HTMLVideoElement ||
+    data instanceof ImageBitmap
     ? data
     : null;
 }

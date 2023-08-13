@@ -284,7 +284,7 @@ describe('ol/renderer/canvas/ImageLayer', function () {
         }),
         extent: extent,
       });
-      layer.getSource().image_.load();
+      layer.getSource().getImage([0, 0, 100, 100], 1, 1, projection).load();
       renderer = layer.getRenderer();
       renderer.renderWorlds = sinon.spy();
       renderer.clipUnrotated = sinon.spy();
@@ -359,11 +359,16 @@ describe('ol/renderer/canvas/ImageLayer', function () {
         if (renderer.prepareFrame(frameState)) {
           renderer.renderFrame(frameState, null);
         }
-        expect(renderer.image_).to.be.a(ImageWrapper);
-        renderer.image_.state = ImageState.EMPTY;
-        expect(renderer.prepareFrame(frameState)).to.be(false);
-        expect(renderer.image_).to.be(null);
-        done();
+        try {
+          const image = renderer.image_;
+          expect(image).to.be.a(ImageWrapper);
+          image.state = ImageState.EMPTY;
+          expect(renderer.prepareFrame(frameState)).to.be(false);
+          expect(renderer.image_).to.be(null);
+          done();
+        } catch (e) {
+          done(e);
+        }
       });
     });
   });

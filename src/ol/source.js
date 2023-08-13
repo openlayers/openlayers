@@ -36,6 +36,10 @@ export {default as VectorTile} from './source/VectorTile.js';
 export {default as WMTS} from './source/WMTS.js';
 export {default as XYZ} from './source/XYZ.js';
 export {default as Zoomify} from './source/Zoomify.js';
+export {createLoader as createWMSLoader} from './source/wms.js';
+export {createLoader as createArcGISRestLoader} from './source/arcgisRest.js';
+export {createLoader as creaetStaticLoader} from './source/static.js';
+export {createLoader as createMapGuideLoader} from './source/mapguide.js';
 
 /**
  * Creates a sources function from a tile grid. This function can be used as value for the

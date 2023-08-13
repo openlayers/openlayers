@@ -163,7 +163,7 @@ class LayerRenderer extends Observable {
   /**
    * Load the image if not already loaded, and register the image change
    * listener if needed.
-   * @param {import("../ImageBase.js").default} image Image.
+   * @param {import("../Image.js").default} image Image.
    * @return {boolean} `true` if the image is already loaded, `false` otherwise.
    * @protected
    */

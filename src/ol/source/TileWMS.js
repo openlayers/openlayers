@@ -3,14 +3,12 @@
  */
 
 import TileImage from './TileImage.js';
-import {DEFAULT_VERSION} from './wms.js';
+import {DEFAULT_VERSION, getImageSrc, getRequestParams} from './wms.js';
 import {appendParams} from '../uri.js';
-import {assert} from '../asserts.js';
 import {buffer, createEmpty} from '../extent.js';
-import {buffer as bufferSize, scale as scaleSize, toSize} from '../size.js';
 import {calculateSourceResolution} from '../reproj.js';
 import {compareVersions} from '../string.js';
-import {get as getProjection, transform, transformExtent} from '../proj.js';
+import {get as getProjection, transform} from '../proj.js';
 import {modulo} from '../math.js';
 import {hash as tileCoordHash} from '../tilecoord.js';
 
@@ -163,64 +161,57 @@ class TileWMS extends TileImage {
    */
   getFeatureInfoUrl(coordinate, resolution, projection, params) {
     const projectionObj = getProjection(projection);
-    const sourceProjectionObj = this.getProjection();
+    const sourceProjectionObj = this.getProjection() || projectionObj;
 
     let tileGrid = this.getTileGrid();
     if (!tileGrid) {
-      tileGrid = this.getTileGridForProjection(projectionObj);
+      tileGrid = this.getTileGridForProjection(sourceProjectionObj);
     }
 
-    const z = tileGrid.getZForResolution(resolution, this.zDirection);
-    const tileCoord = tileGrid.getTileCoordForCoordAndZ(coordinate, z);
+    const sourceProjCoord = transform(
+      coordinate,
+      projectionObj,
+      sourceProjectionObj
+    );
+    const sourceResolution = calculateSourceResolution(
+      sourceProjectionObj,
+      projectionObj,
+      coordinate,
+      resolution
+    );
+
+    const z = tileGrid.getZForResolution(sourceResolution, this.zDirection);
+    const tileResolution = tileGrid.getResolution(z);
+    const tileCoord = tileGrid.getTileCoordForCoordAndZ(sourceProjCoord, z);
 
     if (tileGrid.getResolutions().length <= tileCoord[0]) {
       return undefined;
     }
 
-    let tileResolution = tileGrid.getResolution(tileCoord[0]);
     let tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
-    let tileSize = toSize(tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
 
     const gutter = this.gutter_;
     if (gutter !== 0) {
-      tileSize = bufferSize(tileSize, gutter, this.tmpSize);
       tileExtent = buffer(tileExtent, tileResolution * gutter, tileExtent);
     }
 
-    if (sourceProjectionObj && sourceProjectionObj !== projectionObj) {
-      tileResolution = calculateSourceResolution(
-        sourceProjectionObj,
-        projectionObj,
-        coordinate,
-        tileResolution
-      );
-      tileExtent = transformExtent(
-        tileExtent,
-        projectionObj,
-        sourceProjectionObj
-      );
-      coordinate = transform(coordinate, projectionObj, sourceProjectionObj);
-    }
-
     const baseParams = {
-      'SERVICE': 'WMS',
-      'VERSION': DEFAULT_VERSION,
-      'REQUEST': 'GetFeatureInfo',
-      'FORMAT': 'image/png',
-      'TRANSPARENT': true,
       'QUERY_LAYERS': this.params_['LAYERS'],
     };
-    Object.assign(baseParams, this.params_, params);
+    Object.assign(
+      baseParams,
+      getRequestParams(this.params_, 'GetFeatureInfo'),
+      params
+    );
 
-    const x = Math.floor((coordinate[0] - tileExtent[0]) / tileResolution);
-    const y = Math.floor((tileExtent[3] - coordinate[1]) / tileResolution);
+    const x = Math.floor((sourceProjCoord[0] - tileExtent[0]) / tileResolution);
+    const y = Math.floor((tileExtent[3] - sourceProjCoord[1]) / tileResolution);
 
     baseParams[this.v13_ ? 'I' : 'X'] = x;
     baseParams[this.v13_ ? 'J' : 'Y'] = y;
 
     return this.getRequestUrl_(
       tileCoord,
-      tileSize,
       tileExtent,
       1,
       sourceProjectionObj || projectionObj,
@@ -295,7 +286,6 @@ class TileWMS extends TileImage {
 
   /**
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
-   * @param {import("../size.js").Size} tileSize Tile size.
    * @param {import("../extent.js").Extent} tileExtent Tile extent.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
@@ -303,64 +293,11 @@ class TileWMS extends TileImage {
    * @return {string|undefined} Request URL.
    * @private
    */
-  getRequestUrl_(
-    tileCoord,
-    tileSize,
-    tileExtent,
-    pixelRatio,
-    projection,
-    params
-  ) {
+  getRequestUrl_(tileCoord, tileExtent, pixelRatio, projection, params) {
     const urls = this.urls;
     if (!urls) {
       return undefined;
     }
-
-    params['WIDTH'] = tileSize[0];
-    params['HEIGHT'] = tileSize[1];
-
-    params[this.v13_ ? 'CRS' : 'SRS'] = projection.getCode();
-
-    if (!('STYLES' in this.params_)) {
-      params['STYLES'] = '';
-    }
-
-    if (pixelRatio != 1) {
-      switch (this.serverType_) {
-        case 'geoserver':
-          const dpi = (90 * pixelRatio + 0.5) | 0;
-          if ('FORMAT_OPTIONS' in params) {
-            params['FORMAT_OPTIONS'] += ';dpi:' + dpi;
-          } else {
-            params['FORMAT_OPTIONS'] = 'dpi:' + dpi;
-          }
-          break;
-        case 'mapserver':
-          params['MAP_RESOLUTION'] = 90 * pixelRatio;
-          break;
-        case 'carmentaserver':
-        case 'qgis':
-          params['DPI'] = 90 * pixelRatio;
-          break;
-        default: // Unknown `serverType` configured
-          assert(false, 52);
-          break;
-      }
-    }
-
-    const axisOrientation = projection.getAxisOrientation();
-    const bbox = tileExtent;
-    if (this.v13_ && axisOrientation.substr(0, 2) == 'ne') {
-      let tmp;
-      tmp = tileExtent[0];
-      bbox[0] = tileExtent[1];
-      bbox[1] = tmp;
-      tmp = tileExtent[2];
-      bbox[2] = tileExtent[3];
-      bbox[3] = tmp;
-    }
-    params['BBOX'] = bbox.join(',');
-
     let url;
     if (urls.length == 1) {
       url = urls[0];
@@ -368,7 +305,18 @@ class TileWMS extends TileImage {
       const index = modulo(tileCoordHash(tileCoord), urls.length);
       url = urls[index];
     }
-    return appendParams(url, params);
+
+    return getImageSrc(
+      tileExtent,
+      (
+        this.tileGrid || this.getTileGridForProjection(projection)
+      ).getResolution(tileCoord[0]),
+      pixelRatio,
+      projection,
+      url,
+      params,
+      this.serverType_
+    );
   }
 
   /**
@@ -435,30 +383,19 @@ class TileWMS extends TileImage {
 
     const tileResolution = tileGrid.getResolution(tileCoord[0]);
     let tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
-    let tileSize = toSize(tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
 
     const gutter = this.gutter_;
     if (gutter !== 0) {
-      tileSize = bufferSize(tileSize, gutter, this.tmpSize);
       tileExtent = buffer(tileExtent, tileResolution * gutter, tileExtent);
     }
 
-    if (pixelRatio != 1) {
-      tileSize = scaleSize(tileSize, pixelRatio, this.tmpSize);
-    }
-
-    const baseParams = {
-      'SERVICE': 'WMS',
-      'VERSION': DEFAULT_VERSION,
-      'REQUEST': 'GetMap',
-      'FORMAT': 'image/png',
-      'TRANSPARENT': true,
-    };
-    Object.assign(baseParams, this.params_);
+    const baseParams = Object.assign(
+      {},
+      getRequestParams(this.params_, 'GetMap')
+    );
 
     return this.getRequestUrl_(
       tileCoord,
-      tileSize,
       tileExtent,
       pixelRatio,
       projection,

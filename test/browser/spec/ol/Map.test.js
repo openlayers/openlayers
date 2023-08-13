@@ -482,9 +482,17 @@ describe('ol/Map', function () {
         const layers = map.getLayers().getArray();
         map.once('rendercomplete', function () {
           expect(map.tileQueue_.getTilesLoading()).to.be(0);
-          expect(layers[1].getSource().image_.getState()).to.be(
-            ImageState.LOADED
-          );
+          expect(
+            layers[1]
+              .getSource()
+              .getImage(
+                map.getView().calculateExtent(),
+                map.getView().getResolution(),
+                1,
+                map.getView().getProjection()
+              )
+              .getState()
+          ).to.be(ImageState.LOADED);
           expect(layers[2].getSource().getFeatures().length).to.be(1);
           expect(layers[6].getRenderer().ready).to.be(true);
           done();

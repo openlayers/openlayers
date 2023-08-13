@@ -9,6 +9,7 @@ const layer = new TileLayer({
     size: [200, 200],
     tileSize: 100,
     zDirection: -1,
+    transition: 0,
   }),
 });
 

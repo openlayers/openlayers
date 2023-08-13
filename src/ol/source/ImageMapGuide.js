@@ -2,18 +2,9 @@
  * @module ol/source/ImageMapGuide
  */
 
-import EventType from '../events/EventType.js';
 import ImageSource, {defaultImageLoadFunction} from './Image.js';
-import ImageWrapper from '../Image.js';
-import {appendParams} from '../uri.js';
-import {
-  containsExtent,
-  getCenter,
-  getHeight,
-  getWidth,
-  scaleFromCenter,
-} from '../extent.js';
-import {createCanvasContext2D} from '../dom.js';
+import {createLoader} from './mapguide.js';
+import {decode} from '../Image.js';
 
 /**
  * @typedef {Object} Options
@@ -54,12 +45,6 @@ class ImageMapGuide extends ImageSource {
       projection: options.projection,
       resolutions: options.resolutions,
     });
-
-    /**
-     * @private
-     * @type {CanvasRenderingContext2D}
-     */
-    this.context_ = createCanvasContext2D(1, 1);
 
     /**
      * @private
@@ -153,56 +138,28 @@ class ImageMapGuide extends ImageSource {
    * @return {import("../Image.js").default} Single image.
    */
   getImageInternal(extent, resolution, pixelRatio, projection) {
-    resolution = this.findNearestResolution(resolution);
-    pixelRatio = this.hidpi_ ? pixelRatio : 1;
-
-    let image = this.image_;
-    if (
-      image &&
-      this.renderedRevision_ == this.getRevision() &&
-      image.getResolution() == resolution &&
-      image.getPixelRatio() == pixelRatio &&
-      containsExtent(image.getExtent(), extent)
-    ) {
-      return image;
+    if (this.url_ === undefined) {
+      return null;
+    }
+    if (!this.loader) {
+      // Lazily create loader to pick up the view projection and to allow `params` updates
+      this.loader = createLoader({
+        crossOrigin: this.crossOrigin_,
+        params: this.params_,
+        hidpi: this.hidpi_,
+        metersPerUnit: this.metersPerUnit_,
+        url: this.url_,
+        useOverlay: this.useOverlay_,
+        ratio: this.ratio_,
+        load: (image, src) => {
+          this.image.setImage(image);
+          this.imageLoadFunction_(this.image, src);
+          return decode(image);
+        },
+      });
     }
 
-    if (this.ratio_ != 1) {
-      extent = extent.slice();
-      scaleFromCenter(extent, this.ratio_);
-    }
-    const width = getWidth(extent) / resolution;
-    const height = getHeight(extent) / resolution;
-    const size = [width * pixelRatio, height * pixelRatio];
-
-    if (this.url_ !== undefined) {
-      const imageUrl = this.getUrl(
-        this.url_,
-        this.params_,
-        extent,
-        size,
-        projection
-      );
-      image = new ImageWrapper(
-        extent,
-        resolution,
-        pixelRatio,
-        imageUrl,
-        this.crossOrigin_,
-        this.imageLoadFunction_,
-        this.context_
-      );
-      image.addEventListener(
-        EventType.CHANGE,
-        this.handleImageChange.bind(this)
-      );
-    } else {
-      image = null;
-    }
-    this.image_ = image;
-    this.renderedRevision_ = this.getRevision();
-
-    return image;
+    return super.getImageInternal(extent, resolution, pixelRatio, projection);
   }
 
   /**
@@ -225,36 +182,6 @@ class ImageMapGuide extends ImageSource {
   }
 
   /**
-   * @param {string} baseUrl The mapagent url.
-   * @param {Object<string, string|number>} params Request parameters.
-   * @param {import("../extent.js").Extent} extent Extent.
-   * @param {import("../size.js").Size} size Size.
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {string} The mapagent map image request URL.
-   */
-  getUrl(baseUrl, params, extent, size, projection) {
-    const scale = getScale(extent, size, this.metersPerUnit_, this.displayDpi_);
-    const center = getCenter(extent);
-    const baseParams = {
-      'OPERATION': this.useOverlay_
-        ? 'GETDYNAMICMAPOVERLAYIMAGE'
-        : 'GETMAPIMAGE',
-      'VERSION': '2.0.0',
-      'LOCALE': 'en',
-      'CLIENTAGENT': 'ol/source/ImageMapGuide source',
-      'CLIP': '1',
-      'SETDISPLAYDPI': this.displayDpi_,
-      'SETDISPLAYWIDTH': Math.round(size[0]),
-      'SETDISPLAYHEIGHT': Math.round(size[1]),
-      'SETVIEWSCALE': scale,
-      'SETVIEWCENTERX': center[0],
-      'SETVIEWCENTERY': center[1],
-    };
-    Object.assign(baseParams, params);
-    return appendParams(baseUrl, baseParams);
-  }
-
-  /**
    * Set the image load function of the MapGuide source.
    * @param {import("../Image.js").LoadFunction} imageLoadFunction Image load function.
    * @api
@@ -264,25 +191,6 @@ class ImageMapGuide extends ImageSource {
     this.imageLoadFunction_ = imageLoadFunction;
     this.changed();
   }
-}
-
-/**
- * @param {import("../extent.js").Extent} extent The map extents.
- * @param {import("../size.js").Size} size The viewport size.
- * @param {number} metersPerUnit The meters-per-unit value.
- * @param {number} dpi The display resolution.
- * @return {number} The computed map scale.
- */
-function getScale(extent, size, metersPerUnit, dpi) {
-  const mcsW = getWidth(extent);
-  const mcsH = getHeight(extent);
-  const devW = size[0];
-  const devH = size[1];
-  const mpp = 0.0254 / dpi;
-  if (devH * mcsW > devW * mcsH) {
-    return (mcsW * metersPerUnit) / (devW * mpp); // width limited
-  }
-  return (mcsH * metersPerUnit) / (devH * mpp); // height limited
 }
 
 export default ImageMapGuide;
