@@ -1,0 +1,19 @@
+---
+layout: example.html
+title: Style Expressions
+shortdesc: Demonstrates rule based styling.
+docs: >
+  To style all features in a layer in the same way, you can use a symbolizer object with literal values
+  as shown below for the land layer.  In this case, all features have the same fill color.
+
+  To style features in a layer based on a feature property, an expression can be provided in a symbolizer
+  instead of literal values.  In the first populated places layer below, the circle radius is based on the
+  `scalerank` property.
+
+  To conditionally apply different symbolizers based on a feature property, a list of rules can be provided.
+  Each rule can have a `filter` expression.  If this expression evaluates to true, the rule's `style` is
+  applied.  A rule with `else: true` applies if no previous rules have applied.  The populated place labels
+  are rendered with a list of rules given to the third layer.
+tags: "vector, style, expression"
+---
+<div id="map" class="map"></div>
