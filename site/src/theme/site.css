@@ -525,3 +525,7 @@ div.code-toolbar>.toolbar button:before {
     max-width: 1140px;
   }
 }
+
+table.featureInfo {
+  caption-side: initial;
+}
