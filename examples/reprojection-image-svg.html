@@ -1,0 +1,18 @@
+---
+layout: example.html
+title: SVG Image Reprojection
+shortdesc: Demonstrates client-side reprojection of single SVG image source.
+docs: >
+  This example shows client-side reprojection of a single SVG image source.
+  When using the `ol/source/Image.load()` function SVG images will scale during
+  zooming.  Compared to the [Image Reprojection](reprojection-image.html) example
+  on most browsers there is minimal blurring (or pixelation if interpolation is
+  disabled) when zooming in.  Due to performance issues a low quality rasterized
+  fallback will be seen on Firefox.
+tags: "reprojection, projection, proj4js, image, imagestatic, svg"
+---
+<div id="map" class="map"></div>
+<div>
+  <input type="checkbox" id="interpolate" checked />
+  <label for="interpolate">Interpolate</label>
+</div>
