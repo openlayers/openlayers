@@ -15,11 +15,6 @@ class WebGLLayer extends Layer {
         'fill-color': '#ddd',
         'stroke-color': '#eee',
         'stroke-width': 1.5,
-        symbol: {
-          symbolType: 'square',
-          color: 'transparent',
-          size: 6,
-        },
       },
     });
   }

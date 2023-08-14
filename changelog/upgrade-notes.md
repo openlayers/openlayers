@@ -65,6 +65,90 @@ const staticOptions = {
 ```
 Try to get rid of such an unintended use, or replace the `imageSize` option with an extent calculation like the above.
 
+##### Change of the symbol style format in `ol/layer/WebGLPointsLayer`
+
+The `WebGLPointsLayer` class used to rely on a custom style format that was made specifically for this layer and which looked like this:
+
+```js
+const circleStyle = {
+    symbol: {
+        symbolType: 'circle',
+        size: 10,
+        color: 'orange'
+    }
+}
+
+const iconStyle = {
+    symbol: {
+        symbolType: 'image',
+        src: '../images/icon.png',
+        size: [16, 32],
+        textureCoord: [0, 0, 0.25, 1]
+    }
+}
+```
+
+Since then, a [flat style format](https://openlayers.org/en/latest/apidoc/module-ol_style_flat.html) was introduced in the library which offered a more complete way to express styling for points, and covered the capabilities of the other renderers as well:
+
+```js
+const circleStyle = {
+    'circle-radius': 8,
+    'circle-fill-color': 'blue',
+    'circle-stroke-width': 2,
+    'circle-stroke-color': 'darkblue',
+}
+
+const starStyle = {
+    'shape-radius1': 12,
+    'shape-radius2': 6,
+    'shape-points': 5,
+    'shape-fill-color': 'blue',
+    'shape-stroke-width': 2,
+    'shape-stroke-color': 'darkblue',
+}
+
+const iconStyle = {
+    'icon-src': '../images/icon.png',
+    'icon-scale': 2,
+    'icon-size': [16, 16],
+    'icon-offset': [32, 64],
+}
+```
+
+**From now on, only this new styling format will be supported. Support for the previous styling format is dropped and any usage of it will not show anything on screen.** This is also true for the `WebGLVectorLayerRenderer` and `WebGLVectorTileRenderer` classes.
+
+Here is a quick guide to help you migrate to the new style format:
+* for `symbolType: 'circle'`:
+  * set `circle-radius` to half of the `symbol.size` value
+  * if using an array for the `symbol.size` property, use a combination of `circle-radius` and `circle-scale`
+  * set `circle-fill-color` to the `symbol.color` value
+* for `symbolType: 'triangle'`:
+  * set `shape-points` to `3`
+  * set `shape-radius` to half of the `symbol.size` value
+  * if using an array for the `symbol.size` property, use a combination of `shape-radius` and `shape-scale`
+* for `symbolType: 'square'`:
+  * set `shape-points` to `4`
+  * set `shape-radius1` to half ot the `symbol.size` value
+  * set `shape-radius2` to half ot the `symbol.size` value multiplied by `Math.sqrt(2)`
+  * if using an array for the `symbol.size` property, use a combination of `shape-radius1`, `shape-radius2` and `shape-scale`
+  * set `shape-fill-color` to the `symbol.color` value
+* for `symbolType: 'image'`:
+  * set `icon-src` to the `symbol.src` value
+  * set `icon-width` and `icon-height` according to the `symbol.size` value
+  * set `icon-color` to the `symbol.color` value
+  * if using the `symbol.textureCoord` property, use a combination of `icon-size` and `icon-offset` to achieve the same result; note that these are expressed in pixels!
+* for all symbol types (`*` has to be replaced by `circle`, `shape` or `icon` accordingly):
+  * set `*-rotation` to the `symbol.rotation` value
+  * set `*-opacity` to the `symbol.opacity` value
+  * set `*-displacement` to the `symbol.offset` value
+  * set `*-rotate-with-view` to the `symbol.rotateWithView` value
+
+Please note that not all the point styling options are yet supported by WebGL renderers. Unsupported options are:
+* decluttering
+* dash and line joins for outlines
+* fill patterns
+
+
 ### 7.5.0
 
 #### Hit detection with Text fill
@@ -142,7 +226,7 @@ If the previous behavior is desired, configure the source with `resolutions: nul
 #### Fixed `wrapX` behavior of `ol/control/MousePosition`
 
 Previously, `ol/control/MousePosition` always displayed coordinates as-is. Now it has a `wrapX` option,
-which is `true` by default. This avoids longitudes aoutside the -180 to 180 degrees range.
+which is `true` by default. This avoids longitudes outside the -180 to 180 degrees range.
 
 If you want the previous behavior, which displays coordinates with longitudes less than -180 or greater than 180, configure the control with `wrapX: false`.
 

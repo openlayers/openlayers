@@ -148,12 +148,6 @@ describe('ol/webgl/WebGLHelper', function () {
 
       it('has processed default uniforms', function () {
         const uniformLocations = h.uniformLocationsByProgram_[getUid(program)];
-        expect(
-          uniformLocations[DefaultUniform.OFFSET_ROTATION_MATRIX]
-        ).not.to.eql(undefined);
-        expect(uniformLocations[DefaultUniform.OFFSET_SCALE_MATRIX]).not.to.eql(
-          undefined
-        );
         expect(uniformLocations[DefaultUniform.TIME]).not.to.eql(undefined);
         expect(uniformLocations[DefaultUniform.ZOOM]).not.to.eql(undefined);
         expect(uniformLocations[DefaultUniform.RESOLUTION]).not.to.eql(
@@ -165,6 +159,7 @@ describe('ol/webgl/WebGLHelper', function () {
         expect(uniformLocations[DefaultUniform.PIXEL_RATIO]).not.to.eql(
           undefined
         );
+        expect(uniformLocations[DefaultUniform.ROTATION]).not.to.eql(undefined);
       });
 
       it('has processed uniforms', function () {
@@ -449,12 +444,11 @@ describe('ol/webgl/WebGLHelper', function () {
   });
 
   describe('#applyFrameState', function () {
-    let stubMatrix, stubFloat, stubVec2, stubTime;
+    let stubFloat, stubVec2, stubTime;
     beforeEach(function () {
       stubTime = sinon.stub(Date, 'now');
       stubTime.returns(1000);
       h = new WebGLHelper();
-      stubMatrix = sinon.stub(h, 'setUniformMatrixValue');
       stubFloat = sinon.stub(h, 'setUniformFloatValue');
       stubVec2 = sinon.stub(h, 'setUniformFloatVec2');
 
@@ -467,26 +461,11 @@ describe('ol/webgl/WebGLHelper', function () {
     });
 
     it('sets the default uniforms according the frame state', function () {
-      expect(stubMatrix.getCall(0).args).to.eql([
-        DefaultUniform.OFFSET_SCALE_MATRIX,
-        [
-          0.9210609940028851, -0.3894183423086505, 0, 0, 0.3894183423086505,
-          0.9210609940028851, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1,
-        ],
-      ]);
-      expect(stubMatrix.getCall(1).args).to.eql([
-        DefaultUniform.OFFSET_ROTATION_MATRIX,
-        [
-          0.9210609940028851, -0.3894183423086505, 0, 0, 0.3894183423086505,
-          0.9210609940028851, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1,
-        ],
-      ]);
-
       expect(stubFloat.getCall(0).args).to.eql([DefaultUniform.TIME, 1]);
       expect(stubFloat.getCall(1).args).to.eql([DefaultUniform.ZOOM, 3]);
       expect(stubFloat.getCall(2).args).to.eql([DefaultUniform.RESOLUTION, 2]);
       expect(stubFloat.getCall(3).args).to.eql([DefaultUniform.PIXEL_RATIO, 2]);
-
+      expect(stubFloat.getCall(4).args).to.eql([DefaultUniform.ROTATION, 0.4]);
       expect(stubVec2.getCall(0).args).to.eql([
         DefaultUniform.VIEWPORT_SIZE_PX,
         [100, 150],

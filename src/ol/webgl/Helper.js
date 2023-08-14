@@ -15,9 +15,6 @@ import {clear} from '../obj.js';
 import {
   compose as composeTransform,
   create as createTransform,
-  reset as resetTransform,
-  rotate as rotateTransform,
-  scale as scaleTransform,
 } from '../transform.js';
 import {create, fromTransform} from '../vec/mat4.js';
 import {getUid} from '../util.js';
@@ -44,11 +41,10 @@ export const ShaderType = {
  */
 export const DefaultUniform = {
   PROJECTION_MATRIX: 'u_projectionMatrix',
-  OFFSET_SCALE_MATRIX: 'u_offsetScaleMatrix',
-  OFFSET_ROTATION_MATRIX: 'u_offsetRotateMatrix',
   TIME: 'u_time',
   ZOOM: 'u_zoom',
   RESOLUTION: 'u_resolution',
+  ROTATION: 'u_rotation',
   VIEWPORT_SIZE_PX: 'u_viewportSizePx',
   PIXEL_RATIO: 'u_pixelRatio',
   HIT_DETECTION: 'u_hitDetection',
@@ -450,6 +446,13 @@ class WebGLHelper extends Disposable {
    */
   setUniforms(uniforms) {
     this.uniforms_ = [];
+    this.addUniforms(uniforms);
+  }
+
+  /**
+   * @param {Object<string, UniformValue>} uniforms Uniform definitions.
+   */
+  addUniforms(uniforms) {
     for (const name in uniforms) {
       this.uniforms_.push({
         name: name,
@@ -706,23 +709,6 @@ class WebGLHelper extends Disposable {
     const rotation = frameState.viewState.rotation;
     const pixelRatio = frameState.pixelRatio;
 
-    const offsetScaleMatrix = resetTransform(this.offsetScaleMatrix_);
-    scaleTransform(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
-
-    const offsetRotateMatrix = resetTransform(this.offsetRotateMatrix_);
-    if (rotation !== 0) {
-      rotateTransform(offsetRotateMatrix, -rotation);
-    }
-
-    this.setUniformMatrixValue(
-      DefaultUniform.OFFSET_SCALE_MATRIX,
-      fromTransform(this.tmpMat4_, offsetScaleMatrix)
-    );
-    this.setUniformMatrixValue(
-      DefaultUniform.OFFSET_ROTATION_MATRIX,
-      fromTransform(this.tmpMat4_, offsetRotateMatrix)
-    );
-
     this.setUniformFloatValue(
       DefaultUniform.TIME,
       (Date.now() - this.startTime_) * 0.001
@@ -737,6 +723,7 @@ class WebGLHelper extends Disposable {
       size[0],
       size[1],
     ]);
+    this.setUniformFloatValue(DefaultUniform.ROTATION, rotation);
   }
 
   /**
@@ -746,6 +733,11 @@ class WebGLHelper extends Disposable {
   applyHitDetectionUniform(enabled) {
     const loc = this.getUniformLocation(DefaultUniform.HIT_DETECTION);
     this.getGL().uniform1i(loc, enabled ? 1 : 0);
+
+    // hit detection uses a fixed pixel ratio
+    if (enabled) {
+      this.setUniformFloatValue(DefaultUniform.PIXEL_RATIO, 0.5);
+    }
   }
 
   /**
@@ -774,8 +766,7 @@ class WebGLHelper extends Disposable {
           uniform.prevValue = undefined;
           uniform.texture = gl.createTexture();
         }
-        gl.activeTexture(gl[`TEXTURE${textureSlot}`]);
-        gl.bindTexture(gl.TEXTURE_2D, uniform.texture);
+        this.bindTexture(uniform.texture, textureSlot, uniform.name);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -794,9 +785,7 @@ class WebGLHelper extends Disposable {
             value
           );
         }
-
-        // fill texture slots by increasing index
-        gl.uniform1i(this.getUniformLocation(uniform.name), textureSlot++);
+        textureSlot++;
       } else if (Array.isArray(value) && value.length === 6) {
         this.setUniformMatrixValue(
           uniform.name,

@@ -10,6 +10,7 @@ import View from '../../../../../../src/ol/View.js';
 import ViewHint from '../../../../../../src/ol/ViewHint.js';
 import WebGLPointsLayer from '../../../../../../src/ol/layer/WebGLPoints.js';
 import WebGLPointsLayerRenderer from '../../../../../../src/ol/renderer/webgl/PointsLayer.js';
+import {ShaderBuilder} from '../../../../../../src/ol/webgl/ShaderBuilder.js';
 import {WebGLWorkerMessageType} from '../../../../../../src/ol/render/webgl/constants.js';
 import {
   compose as composeTransform,
@@ -33,36 +34,9 @@ const baseFrameState = {
   renderTargets: {},
 };
 
-// these shaders support hit detection
-// they have a built-in size value of 4
-const simpleVertexShader = `
-  precision mediump float;
-  uniform mat4 u_projectionMatrix;
-  uniform mat4 u_offsetScaleMatrix;
-  attribute vec2 a_position;
-  attribute float a_index;
-  attribute vec4 a_hitColor;
-  varying vec4 v_hitColor;
-
-  void main(void) {
-    mat4 offsetMatrix = u_offsetScaleMatrix;
-    float offsetX = a_index == 0.0 || a_index == 3.0 ? -2.0 : 2.0;
-    float offsetY = a_index == 0.0 || a_index == 1.0 ? -2.0 : 2.0;
-    vec4 offsets = offsetMatrix * vec4(offsetX, offsetY, 0.0, 0.0);
-    gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
-    v_hitColor = a_hitColor;
-  }`;
-const simpleFragmentShader = `
-  precision mediump float;
-  varying vec4 v_hitColor;
-  uniform mediump int u_hitDetection;
-
-  void main(void) {
-    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-    if (u_hitDetection > 0) {
-      gl_FragColor = v_hitColor;
-    }
-  }`;
+const builder = new ShaderBuilder().setSymbolSizeExpression('vec2(4.)');
+const simpleVertexShader = builder.getSymbolVertexShader();
+const simpleFragmentShader = builder.getSymbolFragmentShader();
 
 describe('ol/renderer/webgl/PointsLayer', function () {
   describe('constructor', function () {
@@ -633,9 +607,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       layer = new WebGLPointsLayer({
         source,
         style: {
-          symbol: {
-            symbolType: 'square',
-          },
+          'circle-radius': 4,
         },
       });
 
@@ -702,11 +674,8 @@ describe('ol/renderer/webgl/PointsLayer', function () {
           features: [new Feature(new Point([0, 0]))],
         }),
         style: {
-          symbol: {
-            symbolType: 'circle',
-            size: 14,
-            color: 'red',
-          },
+          'circle-radius': 14,
+          'circle-fill-color': 'red',
         },
       });
       map = new Map({
@@ -758,11 +727,8 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       layer = new WebGLPointsLayer({
         source: new VectorSource(),
         style: {
-          symbol: {
-            symbolType: 'circle',
-            size: 14,
-            color: 'red',
-          },
+          'circle-radius': 14,
+          'circle-fill-color': 'red',
         },
         maxZoom: 8,
       });
@@ -818,11 +784,13 @@ describe('ol/renderer/webgl/PointsLayer', function () {
             g: 255,
             b: 0,
           },
-          symbol: {
-            symbolType: 'circle',
-            size: 14,
-            color: ['color', ['var', 'r'], ['var', 'g'], ['var', 'b']],
-          },
+          'circle-radius': 14,
+          'circle-fill-color': [
+            'color',
+            ['var', 'r'],
+            ['var', 'g'],
+            ['var', 'b'],
+          ],
         },
       });
       map = new Map({

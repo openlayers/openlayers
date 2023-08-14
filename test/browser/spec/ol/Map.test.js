@@ -468,10 +468,7 @@ describe('ol/Map', function () {
                 features: [new Feature(new Point([0, 0]))],
               }),
               style: {
-                symbol: {
-                  color: 'red',
-                  symbolType: 'circle',
-                },
+                'circle-radius': 4,
               },
             }),
           ],
@@ -702,10 +699,8 @@ describe('ol/Map', function () {
               features: [new Feature(new Point([0, 0]))],
             }),
             style: {
-              symbol: {
-                color: 'red',
-                symbolType: 'circle',
-              },
+              'circle-radius': 4,
+              'circle-fill-color': 'red',
             },
           }),
         ],

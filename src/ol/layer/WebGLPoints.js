@@ -40,23 +40,18 @@ import {parseLiteralStyle} from '../webgl/styleparser.js';
  * Here are a few samples of literal style objects:
  * ```js
  * const style = {
- *   symbol: {
- *     symbolType: 'circle',
- *     size: 8,
- *     color: '#33AAFF',
- *     opacity: 0.9
- *   }
+ *   'circle-radius': 8,
+ *   'circle-fill-color': '#33AAFF',
+ *   'circle-opacity': 0.9
  * }
  * ```
  *
  * ```js
  * const style = {
- *   symbol: {
- *     symbolType: 'image',
- *     offset: [0, 12],
- *     size: [4, 8],
- *     src: '../static/exclamation-mark.png'
- *   }
+ *   'icon-src': '../static/exclamation-mark.png',
+ *   'icon-offset': [0, 12],
+ *   'icon-width': 4,
+ *   'icon-height': 8
  * }
  * ```
  *

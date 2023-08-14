@@ -17,6 +17,12 @@ uniform vec4 u_renderExtent;
 uniform mediump int u_hitDetection;
 `;
 
+const PRECISION_HEADER = `#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif`;
+
 const DEFAULT_STYLE = createDefaultStyle();
 
 /**
@@ -76,7 +82,7 @@ export class ShaderBuilder {
      */
     this.symbolSizeExpression_ = `vec2(${numberToGlsl(
       DEFAULT_STYLE['circle-radius']
-    )})`;
+    )} + ${numberToGlsl(DEFAULT_STYLE['circle-stroke-width'] * 0.5)})`;
 
     /**
      * @type {string}
@@ -247,6 +253,13 @@ export class ShaderBuilder {
   }
 
   /**
+   * @return {string} The current symbol offset expression
+   */
+  getSymbolOffsetExpression() {
+    return this.symbolOffsetExpression_;
+  }
+
+  /**
    * Sets an expression to compute the color of the shape.
    * This expression can use all the uniforms, varyings and attributes available
    * in the fragment shader, and should evaluate to a `vec4` value.
@@ -348,16 +361,6 @@ export class ShaderBuilder {
 
   /**
    * Generates a symbol vertex shader from the builder parameters
-   *
-   * The following uniforms are hardcoded in all shaders: `u_projectionMatrix`, `u_offsetScaleMatrix`,
-   * `u_offsetRotateMatrix`, `u_time`, `u_zoom`, `u_resolution`, `u_hitDetection`.
-   *
-   * The following attributes are hardcoded and expected to be present in the vertex buffers:
-   * `vec2 a_position`, `float a_index` (being the index of the vertex in the quad, 0 to 3), `vec4 a_hitColor`.
-   *
-   * The following varyings are hardcoded and gives the coordinate of the pixel both in the quad and on the texture:
-   * `vec2 v_quadCoord`, `vec2 v_texCoord`, `vec4 v_hitColor`.
-   *
    * @return {string|null} The full shader as a string; null if no size or color specified
    */
   getSymbolVertexShader() {
@@ -365,17 +368,13 @@ export class ShaderBuilder {
       return null;
     }
 
-    const offsetMatrix = this.symbolRotateWithView_
-      ? 'u_offsetScaleMatrix * u_offsetRotateMatrix'
-      : 'u_offsetScaleMatrix';
-
-    return `precision mediump float;
+    return `${PRECISION_HEADER}
 uniform mat4 u_projectionMatrix;
-uniform mat4 u_offsetScaleMatrix;
-uniform mat4 u_offsetRotateMatrix;
 uniform float u_time;
 uniform float u_zoom;
 uniform float u_resolution;
+uniform float u_rotation;
+uniform vec2 u_viewportSizePx;
 uniform mediump int u_hitDetection;
 
 ${this.uniforms_
@@ -394,42 +393,60 @@ ${this.attributes_
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
 varying vec4 v_hitColor;
+varying vec2 v_centerPx;
+varying float v_angle;
+varying vec2 v_quadSizePx;
 ${this.varyings_
   .map(function (varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   })
   .join('\n')}
 ${this.vertexShaderFunctions_.join('\n')}
-void main(void) {
-  mat4 offsetMatrix = ${offsetMatrix};
-  vec2 halfSize = ${this.symbolSizeExpression_} * 0.5;
-  vec2 offset = ${this.symbolOffsetExpression_};
-  float angle = ${this.symbolRotationExpression_};
-  float offsetX;
-  float offsetY;
-  if (a_index == 0.0) {
-    offsetX = (offset.x - halfSize.x) * cos(angle) + (offset.y - halfSize.y) * sin(angle);
-    offsetY = (offset.y - halfSize.y) * cos(angle) - (offset.x - halfSize.x) * sin(angle);
-  } else if (a_index == 1.0) {
-    offsetX = (offset.x + halfSize.x) * cos(angle) + (offset.y - halfSize.y) * sin(angle);
-    offsetY = (offset.y - halfSize.y) * cos(angle) - (offset.x + halfSize.x) * sin(angle);
-  } else if (a_index == 2.0) {
-    offsetX = (offset.x + halfSize.x) * cos(angle) + (offset.y + halfSize.y) * sin(angle);
-    offsetY = (offset.y + halfSize.y) * cos(angle) - (offset.x + halfSize.x) * sin(angle);
-  } else {
-    offsetX = (offset.x - halfSize.x) * cos(angle) + (offset.y + halfSize.y) * sin(angle);
-    offsetY = (offset.y + halfSize.y) * cos(angle) - (offset.x - halfSize.x) * sin(angle);
+vec2 pxToScreen(vec2 coordPx) {
+  vec2 scaled = coordPx / u_viewportSizePx / 0.5;
+  ${
+    this.symbolRotateWithView_
+      ? 'scaled = vec2(scaled.x * cos(-u_rotation) - scaled.y * sin(-u_rotation), scaled.x * sin(-u_rotation) + scaled.y * cos(-u_rotation));'
+      : ''
   }
-  vec4 offsets = offsetMatrix * vec4(offsetX, offsetY, 0.0, 0.0);
-  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
+  return scaled;
+}
+
+vec2 screenToPx(vec2 coordScreen) {
+  return (coordScreen * 0.5 + 0.5) * u_viewportSizePx;
+}
+
+void main(void) {
+  v_quadSizePx = ${this.symbolSizeExpression_};
+  vec2 halfSizePx = v_quadSizePx * 0.5;
+  vec2 centerOffsetPx = ${this.symbolOffsetExpression_};
+  vec2 offsetPx = centerOffsetPx;
+  if (a_index == 0.0) {
+    offsetPx -= halfSizePx;
+  } else if (a_index == 1.0) {
+    offsetPx += halfSizePx * vec2(1., -1.);
+  } else if (a_index == 2.0) {
+    offsetPx += halfSizePx;
+  } else {
+    offsetPx += halfSizePx * vec2(-1., 1.);
+  }
+  float angle = ${this.symbolRotationExpression_};
+  float c = cos(-angle);
+  float s = sin(-angle);
+  offsetPx = vec2(c * offsetPx.x - s * offsetPx.y, s * offsetPx.x + c * offsetPx.y);
+  vec4 center = u_projectionMatrix * vec4(a_position, 0.0, 1.0);
+  gl_Position = center + vec4(pxToScreen(offsetPx), 0., 0.);
   vec4 texCoord = ${this.texCoordExpression_};
   float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.p;
   float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.q;
   v_texCoord = vec2(u, v);
-  u = a_index == 0.0 || a_index == 3.0 ? 0.0 : 1.0;
-  v = a_index == 2.0 || a_index == 3.0 ? 0.0 : 1.0;
-  v_quadCoord = vec2(u, v);
   v_hitColor = a_hitColor;
+  v_angle = angle;
+  ${this.symbolRotateWithView_ ? 'v_angle += u_rotation;' : ''}
+  c = cos(-v_angle);
+  s = sin(-v_angle);
+  centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y); 
+  v_centerPx = screenToPx(center.xy) + centerOffsetPx;
 ${this.varyings_
   .map(function (varying) {
     return '  ' + varying.name + ' = ' + varying.expression + ';';
@@ -440,10 +457,6 @@ ${this.varyings_
 
   /**
    * Generates a symbol fragment shader from the builder parameters
-   *
-   * Expects the following varyings to be transmitted by the vertex shader:
-   * `vec2 v_quadCoord`, `vec2 v_texCoord`, `vec4 v_hitColor`.
-   *
    * @return {string|null} The full shader as a string; null if no size or color specified
    */
   getSymbolFragmentShader() {
@@ -451,31 +464,34 @@ ${this.varyings_
       return null;
     }
 
-    return `precision mediump float;
-uniform float u_time;
-uniform float u_zoom;
-uniform float u_resolution;
-uniform mediump int u_hitDetection;
+    return `${PRECISION_HEADER}
+${BASE_UNIFORMS}
 ${this.uniforms_
   .map(function (uniform) {
     return 'uniform ' + uniform + ';';
   })
   .join('\n')}
 varying vec2 v_texCoord;
-varying vec2 v_quadCoord;
 varying vec4 v_hitColor;
+varying vec2 v_centerPx;
+varying float v_angle;
+varying vec2 v_quadSizePx;
 ${this.varyings_
   .map(function (varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
   })
   .join('\n')}
 ${this.fragmentShaderFunctions_.join('\n')}
+
 void main(void) {
   if (${this.discardExpression_}) { discard; }
+  vec2 coordsPx = gl_FragCoord.xy / u_pixelRatio - v_centerPx; // relative to center
+  float c = cos(v_angle);
+  float s = sin(v_angle);
+  coordsPx = vec2(c * coordsPx.x - s * coordsPx.y, s * coordsPx.x + c * coordsPx.y);
   gl_FragColor = ${this.symbolColorExpression_};
-  gl_FragColor.rgb *= gl_FragColor.a;
   if (u_hitDetection > 0) {
-    if (gl_FragColor.a < 0.1) { discard; };
+    if (gl_FragColor.a < 0.05) { discard; };
     gl_FragColor = v_hitColor;
   }
 }`;
@@ -490,11 +506,7 @@ void main(void) {
       return null;
     }
 
-    return `#ifdef GL_FRAGMENT_PRECISION_HIGH
-precision highp float;
-#else
-precision mediump float;
-#endif
+    return `${PRECISION_HEADER}
 ${BASE_UNIFORMS}
 ${this.uniforms_
   .map(function (uniform) {
@@ -583,11 +595,7 @@ ${this.varyings_
       return null;
     }
 
-    return `#ifdef GL_FRAGMENT_PRECISION_HIGH
-precision highp float;
-#else
-precision mediump float;
-#endif
+    return `${PRECISION_HEADER}
 ${BASE_UNIFORMS}
 ${this.uniforms_
   .map(function (uniform) {
@@ -620,9 +628,9 @@ float segmentDistanceField(vec2 point, vec2 start, vec2 end, float radius) {
 }
 
 void main(void) {
-  vec2 v_currentPoint = gl_FragCoord.xy / u_pixelRatio;
+  vec2 currentPoint = gl_FragCoord.xy / u_pixelRatio;
   #ifdef GL_FRAGMENT_PRECISION_HIGH
-  vec2 v_worldPos = pxToWorld(v_currentPoint);
+  vec2 v_worldPos = pxToWorld(currentPoint);
   if (
     abs(u_renderExtent[0] - u_renderExtent[2]) > 0.0 && (
       v_worldPos[0] < u_renderExtent[0] ||
@@ -636,7 +644,7 @@ void main(void) {
   #endif
   if (${this.discardExpression_}) { discard; }
   gl_FragColor = ${this.strokeColorExpression_} * u_globalAlpha;
-  gl_FragColor *= segmentDistanceField(v_currentPoint, v_segmentStart, v_segmentEnd, v_width);
+  gl_FragColor *= segmentDistanceField(currentPoint, v_segmentStart, v_segmentEnd, v_width);
   if (u_hitDetection > 0) {
     if (gl_FragColor.a < 0.1) { discard; };
     gl_FragColor = v_hitColor;
@@ -654,11 +662,7 @@ void main(void) {
       return null;
     }
 
-    return `#ifdef GL_FRAGMENT_PRECISION_HIGH
-precision highp float;
-#else
-precision mediump float;
-#endif
+    return `${PRECISION_HEADER}
 ${BASE_UNIFORMS}
 ${this.uniforms_
   .map(function (uniform) {
@@ -698,11 +702,7 @@ ${this.varyings_
       return null;
     }
 
-    return `#ifdef GL_FRAGMENT_PRECISION_HIGH
-precision highp float;
-#else
-precision mediump float;
-#endif
+    return `${PRECISION_HEADER}
 ${BASE_UNIFORMS}
 ${this.uniforms_
   .map(function (uniform) {

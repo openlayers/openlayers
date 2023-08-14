@@ -16,13 +16,18 @@ describe('ol.webgl.ShaderBuilder', function () {
       builder.setSymbolColorExpression(colorToGlsl([80, 0, 255, 1]));
       builder.setTextureCoordinateExpression(arrayToGlsl([0, 0.5, 0.5, 1]));
 
-      expect(builder.getSymbolVertexShader()).to.eql(`precision mediump float;
+      expect(builder.getSymbolVertexShader()).to
+        .eql(`#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
 uniform mat4 u_projectionMatrix;
-uniform mat4 u_offsetScaleMatrix;
-uniform mat4 u_offsetRotateMatrix;
 uniform float u_time;
 uniform float u_zoom;
 uniform float u_resolution;
+uniform float u_rotation;
+uniform vec2 u_viewportSizePx;
 uniform mediump int u_hitDetection;
 
 
@@ -33,39 +38,53 @@ attribute vec4 a_hitColor;
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
 varying vec4 v_hitColor;
+varying vec2 v_centerPx;
+varying float v_angle;
+varying vec2 v_quadSizePx;
 varying float v_opacity;
 varying vec3 v_test;
 
+vec2 pxToScreen(vec2 coordPx) {
+  vec2 scaled = coordPx / u_viewportSizePx / 0.5;
+  
+  return scaled;
+}
+
+vec2 screenToPx(vec2 coordScreen) {
+  return (coordScreen * 0.5 + 0.5) * u_viewportSizePx;
+}
+
 void main(void) {
-  mat4 offsetMatrix = u_offsetScaleMatrix;
-  vec2 halfSize = vec2(6.0) * 0.5;
-  vec2 offset = vec2(5.0, -7.0);
-  float angle = 0.0;
-  float offsetX;
-  float offsetY;
+  v_quadSizePx = vec2(6.0);
+  vec2 halfSizePx = v_quadSizePx * 0.5;
+  vec2 centerOffsetPx = vec2(5.0, -7.0);
+  vec2 offsetPx = centerOffsetPx;
   if (a_index == 0.0) {
-    offsetX = (offset.x - halfSize.x) * cos(angle) + (offset.y - halfSize.y) * sin(angle);
-    offsetY = (offset.y - halfSize.y) * cos(angle) - (offset.x - halfSize.x) * sin(angle);
+    offsetPx -= halfSizePx;
   } else if (a_index == 1.0) {
-    offsetX = (offset.x + halfSize.x) * cos(angle) + (offset.y - halfSize.y) * sin(angle);
-    offsetY = (offset.y - halfSize.y) * cos(angle) - (offset.x + halfSize.x) * sin(angle);
+    offsetPx += halfSizePx * vec2(1., -1.);
   } else if (a_index == 2.0) {
-    offsetX = (offset.x + halfSize.x) * cos(angle) + (offset.y + halfSize.y) * sin(angle);
-    offsetY = (offset.y + halfSize.y) * cos(angle) - (offset.x + halfSize.x) * sin(angle);
+    offsetPx += halfSizePx;
   } else {
-    offsetX = (offset.x - halfSize.x) * cos(angle) + (offset.y + halfSize.y) * sin(angle);
-    offsetY = (offset.y + halfSize.y) * cos(angle) - (offset.x - halfSize.x) * sin(angle);
+    offsetPx += halfSizePx * vec2(-1., 1.);
   }
-  vec4 offsets = offsetMatrix * vec4(offsetX, offsetY, 0.0, 0.0);
-  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
+  float angle = 0.0;
+  float c = cos(-angle);
+  float s = sin(-angle);
+  offsetPx = vec2(c * offsetPx.x - s * offsetPx.y, s * offsetPx.x + c * offsetPx.y);
+  vec4 center = u_projectionMatrix * vec4(a_position, 0.0, 1.0);
+  gl_Position = center + vec4(pxToScreen(offsetPx), 0., 0.);
   vec4 texCoord = vec4(0.0, 0.5, 0.5, 1.0);
   float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.p;
   float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.q;
   v_texCoord = vec2(u, v);
-  u = a_index == 0.0 || a_index == 3.0 ? 0.0 : 1.0;
-  v = a_index == 2.0 || a_index == 3.0 ? 0.0 : 1.0;
-  v_quadCoord = vec2(u, v);
   v_hitColor = a_hitColor;
+  v_angle = angle;
+  
+  c = cos(-v_angle);
+  s = sin(-v_angle);
+  centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y); 
+  v_centerPx = screenToPx(center.xy) + centerOffsetPx;
   v_opacity = 0.4;
   v_test = vec3(1.0, 2.0, 3.0);
 }`);
@@ -79,13 +98,18 @@ void main(void) {
       builder.setSymbolColorExpression(colorToGlsl([80, 0, 255, 1]));
       builder.setTextureCoordinateExpression(arrayToGlsl([0, 0.5, 0.5, 1]));
 
-      expect(builder.getSymbolVertexShader()).to.eql(`precision mediump float;
+      expect(builder.getSymbolVertexShader()).to
+        .eql(`#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
 uniform mat4 u_projectionMatrix;
-uniform mat4 u_offsetScaleMatrix;
-uniform mat4 u_offsetRotateMatrix;
 uniform float u_time;
 uniform float u_zoom;
 uniform float u_resolution;
+uniform float u_rotation;
+uniform vec2 u_viewportSizePx;
 uniform mediump int u_hitDetection;
 
 uniform float u_myUniform;
@@ -96,38 +120,52 @@ attribute vec2 a_myAttr;
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
 varying vec4 v_hitColor;
+varying vec2 v_centerPx;
+varying float v_angle;
+varying vec2 v_quadSizePx;
 
+
+vec2 pxToScreen(vec2 coordPx) {
+  vec2 scaled = coordPx / u_viewportSizePx / 0.5;
+  
+  return scaled;
+}
+
+vec2 screenToPx(vec2 coordScreen) {
+  return (coordScreen * 0.5 + 0.5) * u_viewportSizePx;
+}
 
 void main(void) {
-  mat4 offsetMatrix = u_offsetScaleMatrix;
-  vec2 halfSize = vec2(6.0) * 0.5;
-  vec2 offset = vec2(5.0, -7.0);
-  float angle = 0.0;
-  float offsetX;
-  float offsetY;
+  v_quadSizePx = vec2(6.0);
+  vec2 halfSizePx = v_quadSizePx * 0.5;
+  vec2 centerOffsetPx = vec2(5.0, -7.0);
+  vec2 offsetPx = centerOffsetPx;
   if (a_index == 0.0) {
-    offsetX = (offset.x - halfSize.x) * cos(angle) + (offset.y - halfSize.y) * sin(angle);
-    offsetY = (offset.y - halfSize.y) * cos(angle) - (offset.x - halfSize.x) * sin(angle);
+    offsetPx -= halfSizePx;
   } else if (a_index == 1.0) {
-    offsetX = (offset.x + halfSize.x) * cos(angle) + (offset.y - halfSize.y) * sin(angle);
-    offsetY = (offset.y - halfSize.y) * cos(angle) - (offset.x + halfSize.x) * sin(angle);
+    offsetPx += halfSizePx * vec2(1., -1.);
   } else if (a_index == 2.0) {
-    offsetX = (offset.x + halfSize.x) * cos(angle) + (offset.y + halfSize.y) * sin(angle);
-    offsetY = (offset.y + halfSize.y) * cos(angle) - (offset.x + halfSize.x) * sin(angle);
+    offsetPx += halfSizePx;
   } else {
-    offsetX = (offset.x - halfSize.x) * cos(angle) + (offset.y + halfSize.y) * sin(angle);
-    offsetY = (offset.y + halfSize.y) * cos(angle) - (offset.x - halfSize.x) * sin(angle);
+    offsetPx += halfSizePx * vec2(-1., 1.);
   }
-  vec4 offsets = offsetMatrix * vec4(offsetX, offsetY, 0.0, 0.0);
-  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
+  float angle = 0.0;
+  float c = cos(-angle);
+  float s = sin(-angle);
+  offsetPx = vec2(c * offsetPx.x - s * offsetPx.y, s * offsetPx.x + c * offsetPx.y);
+  vec4 center = u_projectionMatrix * vec4(a_position, 0.0, 1.0);
+  gl_Position = center + vec4(pxToScreen(offsetPx), 0., 0.);
   vec4 texCoord = vec4(0.0, 0.5, 0.5, 1.0);
   float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.p;
   float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.q;
   v_texCoord = vec2(u, v);
-  u = a_index == 0.0 || a_index == 3.0 ? 0.0 : 1.0;
-  v = a_index == 2.0 || a_index == 3.0 ? 0.0 : 1.0;
-  v_quadCoord = vec2(u, v);
   v_hitColor = a_hitColor;
+  v_angle = angle;
+  
+  c = cos(-v_angle);
+  s = sin(-v_angle);
+  centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y); 
+  v_centerPx = screenToPx(center.xy) + centerOffsetPx;
 
 }`);
     });
@@ -139,13 +177,18 @@ void main(void) {
       builder.setTextureCoordinateExpression(arrayToGlsl([0, 0.5, 0.5, 1]));
       builder.setSymbolRotateWithView(true);
 
-      expect(builder.getSymbolVertexShader()).to.eql(`precision mediump float;
+      expect(builder.getSymbolVertexShader()).to
+        .eql(`#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
 uniform mat4 u_projectionMatrix;
-uniform mat4 u_offsetScaleMatrix;
-uniform mat4 u_offsetRotateMatrix;
 uniform float u_time;
 uniform float u_zoom;
 uniform float u_resolution;
+uniform float u_rotation;
+uniform vec2 u_viewportSizePx;
 uniform mediump int u_hitDetection;
 
 
@@ -156,38 +199,52 @@ attribute vec4 a_hitColor;
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
 varying vec4 v_hitColor;
+varying vec2 v_centerPx;
+varying float v_angle;
+varying vec2 v_quadSizePx;
 
+
+vec2 pxToScreen(vec2 coordPx) {
+  vec2 scaled = coordPx / u_viewportSizePx / 0.5;
+  scaled = vec2(scaled.x * cos(-u_rotation) - scaled.y * sin(-u_rotation), scaled.x * sin(-u_rotation) + scaled.y * cos(-u_rotation));
+  return scaled;
+}
+
+vec2 screenToPx(vec2 coordScreen) {
+  return (coordScreen * 0.5 + 0.5) * u_viewportSizePx;
+}
 
 void main(void) {
-  mat4 offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;
-  vec2 halfSize = vec2(6.0) * 0.5;
-  vec2 offset = vec2(5.0, -7.0);
-  float angle = 0.0;
-  float offsetX;
-  float offsetY;
+  v_quadSizePx = vec2(6.0);
+  vec2 halfSizePx = v_quadSizePx * 0.5;
+  vec2 centerOffsetPx = vec2(5.0, -7.0);
+  vec2 offsetPx = centerOffsetPx;
   if (a_index == 0.0) {
-    offsetX = (offset.x - halfSize.x) * cos(angle) + (offset.y - halfSize.y) * sin(angle);
-    offsetY = (offset.y - halfSize.y) * cos(angle) - (offset.x - halfSize.x) * sin(angle);
+    offsetPx -= halfSizePx;
   } else if (a_index == 1.0) {
-    offsetX = (offset.x + halfSize.x) * cos(angle) + (offset.y - halfSize.y) * sin(angle);
-    offsetY = (offset.y - halfSize.y) * cos(angle) - (offset.x + halfSize.x) * sin(angle);
+    offsetPx += halfSizePx * vec2(1., -1.);
   } else if (a_index == 2.0) {
-    offsetX = (offset.x + halfSize.x) * cos(angle) + (offset.y + halfSize.y) * sin(angle);
-    offsetY = (offset.y + halfSize.y) * cos(angle) - (offset.x + halfSize.x) * sin(angle);
+    offsetPx += halfSizePx;
   } else {
-    offsetX = (offset.x - halfSize.x) * cos(angle) + (offset.y + halfSize.y) * sin(angle);
-    offsetY = (offset.y + halfSize.y) * cos(angle) - (offset.x - halfSize.x) * sin(angle);
+    offsetPx += halfSizePx * vec2(-1., 1.);
   }
-  vec4 offsets = offsetMatrix * vec4(offsetX, offsetY, 0.0, 0.0);
-  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
+  float angle = 0.0;
+  float c = cos(-angle);
+  float s = sin(-angle);
+  offsetPx = vec2(c * offsetPx.x - s * offsetPx.y, s * offsetPx.x + c * offsetPx.y);
+  vec4 center = u_projectionMatrix * vec4(a_position, 0.0, 1.0);
+  gl_Position = center + vec4(pxToScreen(offsetPx), 0., 0.);
   vec4 texCoord = vec4(0.0, 0.5, 0.5, 1.0);
   float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.p;
   float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.q;
   v_texCoord = vec2(u, v);
-  u = a_index == 0.0 || a_index == 3.0 ? 0.0 : 1.0;
-  v = a_index == 2.0 || a_index == 3.0 ? 0.0 : 1.0;
-  v_quadCoord = vec2(u, v);
   v_hitColor = a_hitColor;
+  v_angle = angle;
+  v_angle += u_rotation;
+  c = cos(-v_angle);
+  s = sin(-v_angle);
+  centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y); 
+  v_centerPx = screenToPx(center.xy) + centerOffsetPx;
 
 }`);
     });
@@ -198,13 +255,18 @@ void main(void) {
       builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
       builder.setSymbolRotationExpression('u_time * 0.2');
 
-      expect(builder.getSymbolVertexShader()).to.eql(`precision mediump float;
+      expect(builder.getSymbolVertexShader()).to
+        .eql(`#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
 uniform mat4 u_projectionMatrix;
-uniform mat4 u_offsetScaleMatrix;
-uniform mat4 u_offsetRotateMatrix;
 uniform float u_time;
 uniform float u_zoom;
 uniform float u_resolution;
+uniform float u_rotation;
+uniform vec2 u_viewportSizePx;
 uniform mediump int u_hitDetection;
 
 
@@ -215,38 +277,52 @@ attribute vec4 a_hitColor;
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
 varying vec4 v_hitColor;
+varying vec2 v_centerPx;
+varying float v_angle;
+varying vec2 v_quadSizePx;
 
+
+vec2 pxToScreen(vec2 coordPx) {
+  vec2 scaled = coordPx / u_viewportSizePx / 0.5;
+  
+  return scaled;
+}
+
+vec2 screenToPx(vec2 coordScreen) {
+  return (coordScreen * 0.5 + 0.5) * u_viewportSizePx;
+}
 
 void main(void) {
-  mat4 offsetMatrix = u_offsetScaleMatrix;
-  vec2 halfSize = vec2(6.0) * 0.5;
-  vec2 offset = vec2(5.0, -7.0);
-  float angle = u_time * 0.2;
-  float offsetX;
-  float offsetY;
+  v_quadSizePx = vec2(6.0);
+  vec2 halfSizePx = v_quadSizePx * 0.5;
+  vec2 centerOffsetPx = vec2(5.0, -7.0);
+  vec2 offsetPx = centerOffsetPx;
   if (a_index == 0.0) {
-    offsetX = (offset.x - halfSize.x) * cos(angle) + (offset.y - halfSize.y) * sin(angle);
-    offsetY = (offset.y - halfSize.y) * cos(angle) - (offset.x - halfSize.x) * sin(angle);
+    offsetPx -= halfSizePx;
   } else if (a_index == 1.0) {
-    offsetX = (offset.x + halfSize.x) * cos(angle) + (offset.y - halfSize.y) * sin(angle);
-    offsetY = (offset.y - halfSize.y) * cos(angle) - (offset.x + halfSize.x) * sin(angle);
+    offsetPx += halfSizePx * vec2(1., -1.);
   } else if (a_index == 2.0) {
-    offsetX = (offset.x + halfSize.x) * cos(angle) + (offset.y + halfSize.y) * sin(angle);
-    offsetY = (offset.y + halfSize.y) * cos(angle) - (offset.x + halfSize.x) * sin(angle);
+    offsetPx += halfSizePx;
   } else {
-    offsetX = (offset.x - halfSize.x) * cos(angle) + (offset.y + halfSize.y) * sin(angle);
-    offsetY = (offset.y + halfSize.y) * cos(angle) - (offset.x - halfSize.x) * sin(angle);
+    offsetPx += halfSizePx * vec2(-1., 1.);
   }
-  vec4 offsets = offsetMatrix * vec4(offsetX, offsetY, 0.0, 0.0);
-  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
+  float angle = u_time * 0.2;
+  float c = cos(-angle);
+  float s = sin(-angle);
+  offsetPx = vec2(c * offsetPx.x - s * offsetPx.y, s * offsetPx.x + c * offsetPx.y);
+  vec4 center = u_projectionMatrix * vec4(a_position, 0.0, 1.0);
+  gl_Position = center + vec4(pxToScreen(offsetPx), 0., 0.);
   vec4 texCoord = vec4(0.0, 0.0, 1.0, 1.0);
   float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.p;
   float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.q;
   v_texCoord = vec2(u, v);
-  u = a_index == 0.0 || a_index == 3.0 ? 0.0 : 1.0;
-  v = a_index == 2.0 || a_index == 3.0 ? 0.0 : 1.0;
-  v_quadCoord = vec2(u, v);
   v_hitColor = a_hitColor;
+  v_angle = angle;
+  
+  c = cos(-v_angle);
+  s = sin(-v_angle);
+  centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y); 
+  v_centerPx = screenToPx(center.xy) + centerOffsetPx;
 
 }`);
     });
@@ -269,24 +345,42 @@ void main(void) {
       builder.setSymbolColorExpression(colorToGlsl([80, 0, 255]));
       builder.setTextureCoordinateExpression(arrayToGlsl([0, 0.5, 0.5, 1]));
 
-      expect(builder.getSymbolFragmentShader()).to.eql(`precision mediump float;
+      expect(builder.getSymbolFragmentShader()).to
+        .eql(`#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+uniform mat4 u_projectionMatrix;
+uniform mat4 u_screenToWorldMatrix;
+uniform vec2 u_viewportSizePx;
+uniform float u_pixelRatio;
+uniform float u_globalAlpha;
 uniform float u_time;
 uniform float u_zoom;
 uniform float u_resolution;
+uniform vec4 u_renderExtent;
 uniform mediump int u_hitDetection;
 
+
 varying vec2 v_texCoord;
-varying vec2 v_quadCoord;
 varying vec4 v_hitColor;
+varying vec2 v_centerPx;
+varying float v_angle;
+varying vec2 v_quadSizePx;
 varying float v_opacity;
 varying vec3 v_test;
 
+
 void main(void) {
   if (false) { discard; }
+  vec2 coordsPx = gl_FragCoord.xy / u_pixelRatio - v_centerPx; // relative to center
+  float c = cos(v_angle);
+  float s = sin(v_angle);
+  coordsPx = vec2(c * coordsPx.x - s * coordsPx.y, s * coordsPx.x + c * coordsPx.y);
   gl_FragColor = vec4(0.3137254901960784, 0.0, 1.0, 1.0);
-  gl_FragColor.rgb *= gl_FragColor.a;
   if (u_hitDetection > 0) {
-    if (gl_FragColor.a < 0.1) { discard; };
+    if (gl_FragColor.a < 0.05) { discard; };
     gl_FragColor = v_hitColor;
   }
 }`);
@@ -301,24 +395,42 @@ void main(void) {
       builder.setTextureCoordinateExpression(arrayToGlsl([0, 0.5, 0.5, 1]));
       builder.setFragmentDiscardExpression('u_myUniform > 0.5');
 
-      expect(builder.getSymbolFragmentShader()).to.eql(`precision mediump float;
+      expect(builder.getSymbolFragmentShader()).to
+        .eql(`#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+uniform mat4 u_projectionMatrix;
+uniform mat4 u_screenToWorldMatrix;
+uniform vec2 u_viewportSizePx;
+uniform float u_pixelRatio;
+uniform float u_globalAlpha;
 uniform float u_time;
 uniform float u_zoom;
 uniform float u_resolution;
+uniform vec4 u_renderExtent;
 uniform mediump int u_hitDetection;
+
 uniform float u_myUniform;
 uniform vec2 u_myUniform2;
 varying vec2 v_texCoord;
-varying vec2 v_quadCoord;
 varying vec4 v_hitColor;
+varying vec2 v_centerPx;
+varying float v_angle;
+varying vec2 v_quadSizePx;
+
 
 
 void main(void) {
   if (u_myUniform > 0.5) { discard; }
+  vec2 coordsPx = gl_FragCoord.xy / u_pixelRatio - v_centerPx; // relative to center
+  float c = cos(v_angle);
+  float s = sin(v_angle);
+  coordsPx = vec2(c * coordsPx.x - s * coordsPx.y, s * coordsPx.x + c * coordsPx.y);
   gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-  gl_FragColor.rgb *= gl_FragColor.a;
   if (u_hitDetection > 0) {
-    if (gl_FragColor.a < 0.1) { discard; };
+    if (gl_FragColor.a < 0.05) { discard; };
     gl_FragColor = v_hitColor;
   }
 }`);
@@ -479,9 +591,9 @@ float segmentDistanceField(vec2 point, vec2 start, vec2 end, float radius) {
 }
 
 void main(void) {
-  vec2 v_currentPoint = gl_FragCoord.xy / u_pixelRatio;
+  vec2 currentPoint = gl_FragCoord.xy / u_pixelRatio;
   #ifdef GL_FRAGMENT_PRECISION_HIGH
-  vec2 v_worldPos = pxToWorld(v_currentPoint);
+  vec2 v_worldPos = pxToWorld(currentPoint);
   if (
     abs(u_renderExtent[0] - u_renderExtent[2]) > 0.0 && (
       v_worldPos[0] < u_renderExtent[0] ||
@@ -495,7 +607,7 @@ void main(void) {
   #endif
   if (u_myUniform > 0.5) { discard; }
   gl_FragColor = vec4(0.3137254901960784, 0.0, 1.0, 1.0) * u_globalAlpha;
-  gl_FragColor *= segmentDistanceField(v_currentPoint, v_segmentStart, v_segmentEnd, v_width);
+  gl_FragColor *= segmentDistanceField(currentPoint, v_segmentStart, v_segmentEnd, v_width);
   if (u_hitDetection > 0) {
     if (gl_FragColor.a < 0.1) { discard; };
     gl_FragColor = v_hitColor;
