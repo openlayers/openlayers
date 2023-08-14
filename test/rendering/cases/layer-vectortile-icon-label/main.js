@@ -1,11 +1,11 @@
 import Map from '../../../../src/ol/Map.js';
-import MapboxVector from '../../../../src/ol/layer/MapboxVector.js';
+import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
 import View from '../../../../src/ol/View.js';
+import {applyBackground, applyStyle} from 'ol-mapbox-style';
 
-const mapboxVectorLayer = new MapboxVector({
-  styleUrl: '/data/styles/bright-v9/style.json',
-  accessToken: 'test-token',
-});
+const mapboxVectorLayer = new VectorTileLayer({declutter: true});
+applyStyle(mapboxVectorLayer, '/data/styles/bright-v9/style.json');
+applyBackground(mapboxVectorLayer, '/data/styles/bright-v9/style.json');
 
 new Map({
   layers: [mapboxVectorLayer],

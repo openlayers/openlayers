@@ -1,11 +1,11 @@
 import Map from '../src/ol/Map.js';
-import MapboxVector from '../src/ol/layer/MapboxVector.js';
 import View from '../src/ol/View.js';
+import {MapboxVectorLayer} from 'ol-mapbox-style';
 
 const map = new Map({
   target: 'map',
   layers: [
-    new MapboxVector({
+    new MapboxVectorLayer({
       styleUrl: 'mapbox://styles/mapbox/bright-v9',
       accessToken:
         'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2t0cGdwMHVnMGdlbzMxbDhwazBic2xrNSJ9.WbcTL9uj8JPAsnT9mgb7oQ',
