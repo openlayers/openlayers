@@ -2,7 +2,7 @@
  * @module ol/source/OGCVectorTile
  */
 
-import VectorTile from './VectorTile.js';
+import VectorTileSource from './VectorTile.js';
 import {getTileSetInfo} from './ogcTileUtil.js';
 import {error as logError} from '../console.js';
 
@@ -46,7 +46,7 @@ import {error as logError} from '../console.js';
  * provide the `mediaType` option.
  * @api
  */
-class OGCVectorTile extends VectorTile {
+class OGCVectorTile extends VectorTileSource {
   /**
    * @param {Options} options OGC vector tile options.
    */
