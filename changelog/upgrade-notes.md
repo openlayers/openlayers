@@ -148,6 +148,9 @@ Please note that not all the point styling options are yet supported by WebGL re
 * dash and line joins for outlines
 * fill patterns
 
+##### Immediate renderer does not change the context transform
+
+Previously with some styles involving image or text scale or rotation, or view rotation `ol/render/canvas/Immediate#drawFeature` and `ol/render/canvas/Immediate#drawGeometry` might reset any canvas context transform set by the application.  If you were relying on this unintended and inconsistent behavior the application must now reset the context itself.
 
 ### 7.5.0
 

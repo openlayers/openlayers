@@ -439,7 +439,7 @@ export function drawImageOrLabel(
     context.globalAlpha *= opacity;
   }
   if (transform) {
-    context.setTransform.apply(context, transform);
+    context.transform.apply(context, transform);
   }
 
   if (/** @type {*} */ (labelOrImage).contextInstructions) {
