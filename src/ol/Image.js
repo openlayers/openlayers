@@ -6,6 +6,7 @@ import EventType from './events/EventType.js';
 import ImageState from './ImageState.js';
 import {CREATE_IMAGE_BITMAP, IMAGE_DECODE} from './has.js';
 import {listenOnce, unlistenByKey} from './events.js';
+import {svgDimensions} from './xml.js';
 import {toPromise} from './functions.js';
 
 /**
@@ -318,6 +319,56 @@ export function decode(image, src) {
   return IMAGE_DECODE && CREATE_IMAGE_BITMAP
     ? image.decode().then(() => createImageBitmap(image))
     : decodeFallback(image);
+}
+
+/**
+ * Loads any image.  Improves browser compatibility when the image is expected to be an SVG
+ * and has a `crossOrigin` attribute.
+ * @param {HTMLImageElement} image Image, not yet loaded.
+ * @param {string} [src] `src` attribute of the image. Optional, not required if already present.
+ * @return {Promise<HTMLImageElement>} Promise resolving to an `HTMLImageElement`.
+ * @api
+ */
+export function svgLoad(image, src) {
+  if (!src) {
+    return decodeFallback(image);
+  }
+
+  if (
+    image.crossOrigin === undefined &&
+    !src.startsWith('data:image/svg+xml') &&
+    location?.origin !== new URL(src, location?.origin).origin
+  ) {
+    return decodeFallback(image, src);
+  }
+
+  return new Promise((resolve, reject) => {
+    fetch(src)
+      .then((response) => {
+        if (response.headers.get('content-type').includes('image/svg+xml')) {
+          return response.text().then((text) => {
+            return new Blob([svgDimensions(text)], {type: 'image/svg+xml'});
+          });
+        }
+        return response.blob();
+      })
+      .then((blob) => {
+        const objectUrl = URL.createObjectURL(blob);
+        decodeFallback(image, objectUrl).then(
+          () => {
+            resolve(image);
+            URL.revokeObjectURL(objectUrl);
+          },
+          () => {
+            reject();
+            URL.revokeObjectURL(objectUrl);
+          }
+        );
+      })
+      .catch(() => {
+        decodeFallback(image, src).then(() => resolve(image), reject);
+      });
+  });
 }
 
 export default ImageWrapper;
