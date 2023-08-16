@@ -181,8 +181,13 @@ export function parse(encoded, context) {
  * @type {Object<string, string>}
  */
 export const Ops = {
+  Number: 'number',
+  String: 'string',
   Get: 'get',
   Var: 'var',
+  Any: 'any',
+  All: 'all',
+  Not: '!',
   Resolution: 'resolution',
   Equal: '==',
   NotEqual: '!=',
@@ -216,9 +221,14 @@ export const Ops = {
  * @type {Object<string, Parser>}
  */
 const parsers = {
+  [Ops.Number]: createParser(withArgs(1, Infinity, AnyType), NumberType),
+  [Ops.String]: createParser(withArgs(1, Infinity, AnyType), StringType),
   [Ops.Get]: createParser(withGetArgs, AnyType),
   [Ops.Var]: createParser(withVarArgs, AnyType),
   [Ops.Resolution]: createParser(withNoArgs, NumberType),
+  [Ops.Any]: createParser(withArgs(2, Infinity, BooleanType), BooleanType),
+  [Ops.All]: createParser(withArgs(2, Infinity, BooleanType), BooleanType),
+  [Ops.Not]: createParser(withArgs(1, 1, BooleanType), BooleanType),
   [Ops.Equal]: createParser(withArgs(2, 2, AnyType), BooleanType),
   [Ops.NotEqual]: createParser(withArgs(2, 2, AnyType), BooleanType),
   [Ops.GreaterThan]: createParser(withArgs(2, 2, AnyType), BooleanType),

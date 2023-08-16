@@ -38,6 +38,90 @@ describe('ol/expr/cpu.js', () => {
         expected: false,
       },
       {
+        name: 'number assertion',
+        type: NumberType,
+        expression: ['number', 'not', 'a', 'number', 42, false],
+        expected: 42,
+      },
+      {
+        name: 'string assertion',
+        type: StringType,
+        expression: ['string', 42, 'chicken', false],
+        expected: 'chicken',
+      },
+      {
+        name: 'resolution',
+        type: NumberType,
+        expression: ['resolution'],
+        context: {
+          resolution: 10,
+        },
+        expected: 10,
+      },
+      {
+        name: 'resolution (comparison)',
+        type: BooleanType,
+        expression: ['>', ['resolution'], 10],
+        context: {
+          resolution: 11,
+        },
+        expected: true,
+      },
+      {
+        name: 'any (true)',
+        type: BooleanType,
+        expression: ['any', ['get', 'nope'], ['get', 'yep'], ['get', 'nope']],
+        context: {
+          properties: {nope: false, yep: true},
+        },
+        expected: true,
+      },
+      {
+        name: 'any (false)',
+        type: BooleanType,
+        expression: ['any', ['get', 'nope'], false, ['!', ['get', 'yep']]],
+        context: {
+          properties: {nope: false, yep: true},
+        },
+        expected: false,
+      },
+      {
+        name: 'all (true)',
+        type: BooleanType,
+        expression: ['all', ['get', 'yep'], true, ['!', ['get', 'nope']]],
+        context: {
+          properties: {yep: true, nope: false},
+        },
+        expected: true,
+      },
+      {
+        name: 'all (false)',
+        type: BooleanType,
+        expression: ['all', ['!', ['get', 'nope']], ['get', 'yep'], false],
+        context: {
+          properties: {nope: false, yep: true},
+        },
+        expected: false,
+      },
+      {
+        name: 'not (true)',
+        type: BooleanType,
+        expression: ['!', ['get', 'nope']],
+        context: {
+          properties: {nope: false, yep: true},
+        },
+        expected: true,
+      },
+      {
+        name: 'not (false)',
+        type: BooleanType,
+        expression: ['!', ['get', 'yep']],
+        context: {
+          properties: {nope: false, yep: true},
+        },
+        expected: false,
+      },
+      {
         name: 'equal comparison (true)',
         type: BooleanType,
         expression: ['==', ['get', 'number'], 42],
