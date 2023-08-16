@@ -8,7 +8,7 @@
  */
 
 import TileImage from './TileImage.js';
-import {applyTransform, intersects} from '../extent.js';
+import {applyTransform, intersects, wrapAndSliceX} from '../extent.js';
 import {assert} from '../asserts.js';
 import {createFromTemplates} from '../tileurlfunction.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
@@ -190,9 +190,25 @@ class TileJSON extends TileImage {
 
     if (tileJSON['attribution'] && !this.getAttributions()) {
       const attributionExtent = extent !== undefined ? extent : gridExtent;
-      this.setAttributions(function (frameState) {
-        if (intersects(attributionExtent, frameState.extent)) {
-          return [tileJSON['attribution']];
+      this.setAttributions((frameState) => {
+        const viewProjection = frameState.viewState.projection;
+        const extents = this.getWrapX()
+          ? wrapAndSliceX(frameState.extent.slice(), viewProjection)
+          : [frameState.extent];
+        const transformFunction = getTransformFromProjections(
+          sourceProjection,
+          viewProjection
+        );
+        const extent = applyTransform(
+          attributionExtent,
+          transformFunction,
+          undefined,
+          8
+        );
+        for (let i = 0, ii = extents.length; i < ii; ++i) {
+          if (intersects(extent, extents[i])) {
+            return [tileJSON['attribution']];
+          }
         }
         return null;
       });

@@ -1,6 +1,9 @@
 import Source from '../../../../../src/ol/source/Source.js';
 import TileJSON from '../../../../../src/ol/source/TileJSON.js';
-import {transformExtent} from '../../../../../src/ol/proj.js';
+import {
+  get as getProjection,
+  transformExtent,
+} from '../../../../../src/ol/proj.js';
 import {unByKey} from '../../../../../src/ol/Observable.js';
 
 describe('ol/source/TileJSON', function () {
@@ -105,6 +108,7 @@ describe('ol/source/TileJSON', function () {
       expect(attributions).to.not.be(null);
       expect(typeof attributions).to.be('function');
       const frameState = {};
+      frameState.viewState = {projection: getProjection('EPSG:3857')};
       frameState.extent = transformExtent(
         [1, 51, 2, 52],
         'EPSG:4326',
@@ -113,6 +117,71 @@ describe('ol/source/TileJSON', function () {
       expect(attributions(frameState)).to.eql(['TileMill']);
       frameState.extent = transformExtent(
         [2, 51, 3, 52],
+        'EPSG:4326',
+        'EPSG:3857'
+      );
+      expect(attributions(frameState)).to.be(null);
+      frameState.extent = transformExtent(
+        [361, 51, 362, 52],
+        'EPSG:4326',
+        'EPSG:3857'
+      );
+      expect(attributions(frameState)).to.eql(['TileMill']);
+      frameState.extent = transformExtent(
+        [362, 51, 363, 52],
+        'EPSG:4326',
+        'EPSG:3857'
+      );
+      expect(attributions(frameState)).to.be(null);
+    });
+
+    it('returns attributions when reprojected, but not when outside bounds', function () {
+      tileJSON.bounds = [
+        -10.764179999935878, 49.528423000201656, 1.9134115551745678,
+        61.3311509999582,
+      ];
+      const source = new TileJSON({
+        tileJSON: tileJSON,
+      });
+      expect(source.getState()).to.be('ready');
+      const attributions = source.getAttributions();
+      expect(attributions).to.not.be(null);
+      expect(typeof attributions).to.be('function');
+      const frameState = {};
+      frameState.viewState = {projection: getProjection('EPSG:4326')};
+      frameState.extent = [1, 51, 2, 52];
+      expect(attributions(frameState)).to.eql(['TileMill']);
+      frameState.extent = [2, 51, 3, 52];
+      expect(attributions(frameState)).to.be(null);
+      frameState.extent = [361, 51, 362, 52];
+      expect(attributions(frameState)).to.eql(['TileMill']);
+      frameState.extent = [362, 51, 363, 52];
+      expect(attributions(frameState)).to.be(null);
+    });
+
+    it('returns attributions, but not in wrapped worlds if wrapX false', function () {
+      tileJSON.bounds = [
+        -10.764179999935878, 49.528423000201656, 1.9134115551745678,
+        61.3311509999582,
+      ];
+      const source = new TileJSON({
+        tileJSON: tileJSON,
+        wrapX: false,
+      });
+      expect(source.getState()).to.be('ready');
+      const attributions = source.getAttributions();
+      expect(attributions).to.not.be(null);
+      expect(typeof attributions).to.be('function');
+      const frameState = {};
+      frameState.viewState = {projection: getProjection('EPSG:3857')};
+      frameState.extent = transformExtent(
+        [1, 51, 2, 52],
+        'EPSG:4326',
+        'EPSG:3857'
+      );
+      expect(attributions(frameState)).to.eql(['TileMill']);
+      frameState.extent = transformExtent(
+        [361, 51, 362, 52],
         'EPSG:4326',
         'EPSG:3857'
       );
@@ -129,6 +198,7 @@ describe('ol/source/TileJSON', function () {
       expect(attributions).to.not.be(null);
       expect(typeof attributions).to.be('function');
       const frameState = {};
+      frameState.viewState = {projection: getProjection('EPSG:3857')};
       frameState.extent = transformExtent(
         [1, 51, 2, 52],
         'EPSG:4326',

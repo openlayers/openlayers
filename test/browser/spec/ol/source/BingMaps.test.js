@@ -1,4 +1,10 @@
 import BingMaps, {quadKey} from '../../../../../src/ol/source/BingMaps.js';
+import View from '../../../../../src/ol/View.js';
+import {getCenter} from '../../../../../src/ol/extent.js';
+import {
+  get as getProjection,
+  transformExtent,
+} from '../../../../../src/ol/proj.js';
 import {unByKey} from '../../../../../src/ol/Observable.js';
 
 describe('ol/source/BingMaps', function () {
@@ -109,6 +115,175 @@ describe('ol/source/BingMaps', function () {
       expect(url.searchParams.get('dpi')).to.equal('d1');
       expect(url.searchParams.get('device')).to.equal('mobile');
       expect(url.searchParams.get('n')).to.equal('z');
+    });
+  });
+
+  describe('#getAttributions()', function () {
+    let attributions;
+
+    beforeEach(function (done) {
+      const source = new BingMaps({
+        imagerySet: 'AerialWithLabelsOnDemand',
+        key: '',
+      });
+
+      const client = new XMLHttpRequest();
+      client.open('GET', 'spec/ol/data/bing_aerialwithlabels.json', true);
+      client.onload = function () {
+        source.handleImageryMetadataResponse(JSON.parse(client.responseText));
+      };
+      client.send();
+
+      const key = source.on('change', function () {
+        if (source.getState() === 'ready') {
+          unByKey(key);
+          attributions = source.getAttributions();
+          done();
+        }
+      });
+    });
+
+    it('returns attributions, but not when outside bounds', function () {
+      expect(attributions).to.not.be(null);
+      expect(typeof attributions).to.be('function');
+      const projection = getProjection('EPSG:3857');
+      const view = new View({projection: projection});
+      const expected = '© Province of British Columbia';
+      const frameState = {};
+      let extent;
+
+      extent = transformExtent([-115, 59, -114, 61], 'EPSG:4326', 'EPSG:3857');
+      frameState.viewState = {
+        center: getCenter(extent),
+        projection: projection,
+        resolution: view.getResolutionForZoom(18.4),
+      };
+      frameState.extent = extent;
+      expect(attributions(frameState)).to.contain(expected);
+
+      frameState.viewState = {
+        center: getCenter(extent),
+        projection: projection,
+        resolution: view.getResolutionForZoom(18.5),
+      };
+      frameState.extent = extent;
+      expect(attributions(frameState)).to.not.contain(expected);
+
+      extent = transformExtent([-114, 59, -113, 61], 'EPSG:4326', 'EPSG:3857');
+      frameState.viewState = {
+        center: getCenter(extent),
+        projection: projection,
+        resolution: view.getResolutionForZoom(18.4),
+      };
+      frameState.extent = extent;
+      expect(attributions(frameState)).to.not.contain(expected);
+
+      extent = transformExtent([-475, 59, -474, 61], 'EPSG:4326', 'EPSG:3857');
+      frameState.viewState = {
+        center: getCenter(extent),
+        projection: projection,
+        resolution: view.getResolutionForZoom(18.4),
+      };
+      frameState.extent = extent;
+      expect(attributions(frameState)).to.contain(expected);
+    });
+
+    it('returns attributions when reprojected, but not when outside bounds', function () {
+      const projection = getProjection('EPSG:4326');
+      const view = new View({projection: projection});
+      const expected = '© Province of British Columbia';
+      const frameState = {};
+      let extent;
+
+      extent = [-115, 59, -114, 61];
+      frameState.viewState = {
+        center: getCenter(extent),
+        projection: projection,
+        resolution: view.getResolutionForZoom(19.4),
+      };
+      frameState.extent = extent;
+      expect(attributions(frameState)).to.contain(expected);
+
+      frameState.viewState = {
+        center: getCenter(extent),
+        projection: projection,
+        resolution: view.getResolutionForZoom(19.5),
+      };
+      frameState.extent = extent;
+      expect(attributions(frameState)).to.not.contain(expected);
+
+      extent = [-114, 59, -113, 61];
+      frameState.viewState = {
+        center: getCenter(extent),
+        projection: projection,
+        resolution: view.getResolutionForZoom(19.4),
+      };
+      frameState.extent = extent;
+      expect(attributions(frameState)).to.not.contain(expected);
+
+      extent = [-475, 59, -474, 61];
+      frameState.viewState = {
+        center: getCenter(extent),
+        projection: projection,
+        resolution: view.getResolutionForZoom(19.4),
+      };
+      frameState.extent = extent;
+      expect(attributions(frameState)).to.contain(expected);
+    });
+  });
+
+  describe('wrapX', function () {
+    let attributions;
+
+    beforeEach(function (done) {
+      const source = new BingMaps({
+        imagerySet: 'AerialWithLabelsOnDemand',
+        key: '',
+        wrapX: false,
+      });
+
+      const client = new XMLHttpRequest();
+      client.open('GET', 'spec/ol/data/bing_aerialwithlabels.json', true);
+      client.onload = function () {
+        source.handleImageryMetadataResponse(JSON.parse(client.responseText));
+      };
+      client.send();
+
+      const key = source.on('change', function () {
+        if (source.getState() === 'ready') {
+          unByKey(key);
+          attributions = source.getAttributions();
+          done();
+        }
+      });
+    });
+
+    it('returns attributions, but not in wrapped worlds if wrapX false', function () {
+      expect(attributions).to.not.be(null);
+      expect(typeof attributions).to.be('function');
+      const projection = getProjection('EPSG:3857');
+      const view = new View({projection: projection});
+      const expected = '© Province of British Columbia';
+      const frameState = {};
+      let extent;
+
+      extent = transformExtent([-115, 59, -114, 61], 'EPSG:4326', 'EPSG:3857');
+      frameState.viewState = {
+        center: getCenter(extent),
+        projection: projection,
+        resolution: view.getResolutionForZoom(18.4),
+      };
+      frameState.extent = extent;
+      expect(attributions(frameState)).to.contain(expected);
+
+      extent = transformExtent([-475, 59, -474, 61], 'EPSG:4326', 'EPSG:3857');
+      frameState.viewState = {
+        center: getCenter(extent),
+        projection: projection,
+        resolution: view.getResolutionForZoom(18.4),
+      };
+      frameState.extent = extent;
+      expect(attributions(frameState)).to.not.contain(expected);
     });
   });
 });
