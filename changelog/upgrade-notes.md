@@ -128,8 +128,8 @@ Here is a quick guide to help you migrate to the new style format:
   * if using an array for the `symbol.size` property, use a combination of `shape-radius` and `shape-scale`
 * for `symbolType: 'square'`:
   * set `shape-points` to `4`
-  * set `shape-radius1` to half ot the `symbol.size` value
-  * set `shape-radius2` to half ot the `symbol.size` value multiplied by `Math.sqrt(2)`
+  * set `shape-radius1` to half of the `symbol.size` value
+  * set `shape-radius2` to half of the `symbol.size` value multiplied by `Math.sqrt(2)`
   * if using an array for the `symbol.size` property, use a combination of `shape-radius1`, `shape-radius2` and `shape-scale`
   * set `shape-fill-color` to the `symbol.color` value
 * for `symbolType: 'image'`:
@@ -301,7 +301,7 @@ const source = new DataTileSource({
 
 #### Fixed coordinate dimension handling in `ol/proj`'s `addCoordinateTransforms`
 
-The `forward` and `inverse` functions passed to `addCooordinateTransforms` now receive a coordinate with all dimensions of the original coordinate, not just two. If you previosly had coordinates with more than two dimensions and added a transform like
+The `forward` and `inverse` functions passed to `addCooordinateTransforms` now receive a coordinate with all dimensions of the original coordinate, not just two. If you previously had coordinates with more than two dimensions and added a transform like
 ```js
 addCoordinateTransforms(
     'EPSG:4326',
@@ -484,7 +484,7 @@ new Layer({
 ```
 
 Please note that this may incur a significant performance loss when dealing with many layers and/or
-targetting mobile devices.
+targeting mobile devices.
 
 ##### Removal of `TOUCH` constant from `ol/has`
 

@@ -79,7 +79,7 @@ describe('ol.format.OWS 1.1', function () {
     const serviceIdentification = obj.ServiceIdentification;
     expect(serviceIdentification).to.be.ok();
     expect(serviceIdentification.Abstract).to.eql(
-      'Service that contrains the map access interface to some TileMatrixSets'
+      'Service that contains the map access interface to some TileMatrixSets'
     );
     expect(serviceIdentification.AccessConstraints).to.eql('none');
     expect(serviceIdentification.Fees).to.eql('none');

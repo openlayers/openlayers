@@ -1840,7 +1840,7 @@ describe('ol.format.GML3', function () {
       expect(features[0].values_['name']).to.have.length(2);
     });
 
-    it('parses mutliple simple elements to strings', function () {
+    it('parses multiple simple elements to strings', function () {
       expect(features[0].values_['name'][0]).to.be.a('string');
     });
 
@@ -2277,7 +2277,7 @@ describe('ol.format.GML32', function () {
         format = new GML32({srsName: 'CRS:84', curve: true});
         const serialized = format.writeGeometryNode(g);
         // Conversion back to GML is not lossless, because we don't know
-        // the mapping of original LineString segements to the OpenLayers
+        // the mapping of original LineString segments to the OpenLayers
         // LineString geometry's coordinates.
         const expected =
           '<gml:Curve xmlns:gml="http://www.opengis.net/gml/3.2" ' +
@@ -3002,7 +3002,7 @@ describe('ol.format.GML32', function () {
       expect(features[0].values_['attributeB']).to.have.length(2);
     });
 
-    it('parses mutliple complex elements to an array of objects', function () {
+    it('parses multiple complex elements to an array of objects', function () {
       expect(features[0].values_['attributeA'][0]).to.be.a('object');
     });
 

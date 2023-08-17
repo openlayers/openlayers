@@ -304,7 +304,7 @@ export function decodeFallback(image, src) {
 
 /**
  * Loads an image and decodes it to an `ImageBitmap` if `createImageBitmap()` is supported. Returns
- * the laoded image otherwise.
+ * the loaded image otherwise.
  * @param {HTMLImageElement} image Image, not yet loaded.
  * @param {string} [src] `src` attribute of the image. Optional, not required if already present.
  * @return {Promise<ImageBitmap|HTMLImageElement>} Promise resolving to an `ImageBitmap` or an

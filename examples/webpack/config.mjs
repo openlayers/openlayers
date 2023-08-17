@@ -84,7 +84,7 @@ export default {
       https: false,
     },
     alias: {
-      // allow imports from 'ol/module' instead of specifiying the source path
+      // allow imports from 'ol/module' instead of specifying the source path
       ol: path.join(root, 'src', 'ol'),
     },
   },
