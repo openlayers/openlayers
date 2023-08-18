@@ -16,7 +16,7 @@ describe('ol.style.Text', function () {
       expect(style.getFill().getColor()).to.be('#123456');
     });
 
-    it('can always be resetted to no color', function () {
+    it('can always be reset to no color', function () {
       const style = new Text();
       style.getFill().setColor();
       expect(style.getFill().getColor()).to.be(undefined);
