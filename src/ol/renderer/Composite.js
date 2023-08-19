@@ -161,7 +161,6 @@ class CompositeMapRenderer extends MapRenderer {
     for (let i = layers.length - 1; i >= 0; --i) {
       layers[i].renderDeclutter(frameState);
     }
-    frameState.declutterTree = null;
     layers.length = 0;
   }
 }

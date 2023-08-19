@@ -14,6 +14,7 @@ import VectorTileLayer from '../../../../../../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../../../../../../src/ol/source/VectorTile.js';
 import View from '../../../../../../src/ol/View.js';
 import XYZ from '../../../../../../src/ol/source/XYZ.js';
+import {VOID} from '../../../../../../src/ol/functions.js';
 import {checkedFonts} from '../../../../../../src/ol/render/canvas.js';
 import {create} from '../../../../../../src/ol/transform.js';
 import {createFontStyle} from '../../../util.js';
@@ -606,6 +607,54 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
           expect(features).to.be.empty();
           done();
         }, 200);
+      });
+    });
+
+    it('does not fail after flushDeclutterItems()', (done) => {
+      const target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      const extent = [
+        1824704.739223726, 6141868.096770482, 1827150.7241288517,
+        6144314.081675608,
+      ];
+      const source = new VectorTileSource({
+        format: new MVT(),
+        url: 'spec/ol/data/14-8938-5680.vector.pbf',
+        minZoom: 14,
+        maxZoom: 14,
+      });
+      const layer = new VectorTileLayer({
+        declutter: true,
+        extent: extent,
+        source: source,
+      });
+      const map = new Map({
+        target: target,
+        layers: [layer],
+        view: new View({
+          center: getCenter(extent),
+          zoom: 14,
+        }),
+      });
+      map.once('rendercomplete', () => {
+        setTimeout(() => {
+          map.setTarget(null);
+          document.body.removeChild(target);
+        }, 0);
+        expect(() => {
+          layer
+            .getRenderer()
+            .forEachFeatureAtCoordinate(
+              getCenter(extent),
+              map.frameState_,
+              1,
+              VOID,
+              []
+            );
+        }).to.not.throwException();
+        done();
       });
     });
   });
