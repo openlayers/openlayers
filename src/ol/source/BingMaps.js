@@ -71,6 +71,9 @@ const TOS_ATTRIBUTION =
  * @property {boolean} [placeholderTiles] Whether to show BingMaps placeholder tiles when zoomed past the maximum level provided in an area. When `false`, requests beyond
  * the maximum zoom level will return no tile. When `true`, the placeholder tile will be returned. When not set, the default behaviour of the imagery set takes place,
  * which is unique for each imagery set in BingMaps.
+ * @property {Object<string,string>} [params] Additional customization parameters accepted by the imagery set. These might include
+ * a custom `style` https://learn.microsoft.com/en-us/bingmaps/articles/custom-map-styles-in-bing-maps
+ * or `userRegion` https://learn.microsoft.com/en-us/bingmaps/rest-services/common-parameters-and-types/user-context-parameters.
  */
 
 /**
@@ -179,7 +182,10 @@ class BingMaps extends TileImage {
       '?uriScheme=https&include=ImageryProviders&key=' +
       this.apiKey_ +
       '&c=' +
-      this.culture_;
+      this.culture_ +
+      Object.entries(options.params || {})
+        .map(([key, value]) => '&' + key + '=' + value)
+        .join('');
 
     fetch(url)
       .then((response) => response.json())
