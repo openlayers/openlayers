@@ -152,6 +152,21 @@ Please note that not all the point styling options are yet supported by WebGL re
 
 Previously with some styles involving image or text scale or rotation, or view rotation `ol/render/canvas/Immediate#drawFeature` and `ol/render/canvas/Immediate#drawGeometry` might reset any canvas context transform set by the application.  If you were relying on this unintended and inconsistent behavior the application must now reset the context itself.
 
+#### Removal of `ol/layer/MapboxVector`
+
+To avoid a circular dependency between the `ol` and `ol-mapbox-style` packages, this layer has been removed. If you have been using `ol/layer/MapboxVector`, you can easily switch to using `MapboxVectorLayer` from the `ol-mapbox-style` package, version 11 or greater.
+
+Before:
+```js
+import MapboxVectorLayer from 'ol/layer/MapboxVector';
+```
+
+After:
+```js
+import {MapboxVectorLayer} from 'ol-mapbox-style';
+```
+
+
 ### 7.5.0
 
 #### Hit detection with Text fill
