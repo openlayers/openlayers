@@ -16,7 +16,10 @@ new Map({
   }),
 });
 
-render({
-  message: 'Vector tile layer declutters image with text correctly',
-  tolerance: 0.01,
-});
+setTimeout(() => {
+  // wait until fonts are loaded
+  render({
+    message: 'Vector tile layer declutters image with text correctly',
+    tolerance: 0.01,
+  });
+}, 500);
