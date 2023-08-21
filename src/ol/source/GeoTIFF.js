@@ -359,6 +359,8 @@ function getMaxForDataType(array) {
  * If instead you want to work with the raw values in a style expression, set this to `false`.  Setting this option
  * to `false` will make it so any `min` and `max` properties on sources are ignored.
  * @property {boolean} [opaque=false] Whether the layer is opaque.
+ * @property {import("../proj.js").ProjectionLike} [projection] Source projection.  If not provided, the GeoTIFF metadata
+ * will be read for projection information.
  * @property {number} [transition=250] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
  * @property {boolean} [wrapX=false] Render tiles beyond the tile grid extent.
@@ -382,7 +384,7 @@ class GeoTIFFSource extends DataTile {
     super({
       state: 'loading',
       tileGrid: null,
-      projection: null,
+      projection: options.projection || null,
       opaque: options.opaque,
       transition: options.transition,
       interpolate: options.interpolate !== false,
