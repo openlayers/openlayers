@@ -38,7 +38,7 @@ export {default as XYZ} from './source/XYZ.js';
 export {default as Zoomify} from './source/Zoomify.js';
 export {createLoader as createWMSLoader} from './source/wms.js';
 export {createLoader as createArcGISRestLoader} from './source/arcgisRest.js';
-export {createLoader as creaetStaticLoader} from './source/static.js';
+export {createLoader as createStaticLoader} from './source/static.js';
 export {createLoader as createMapGuideLoader} from './source/mapguide.js';
 
 /**
