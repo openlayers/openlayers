@@ -69,7 +69,7 @@ const map = new Map({
           layerName: 'layer',
           layers: ['water', 'roads', 'buildings'],
         }),
-        maxZoom: 19,
+        maxZoom: 16,
         url:
           'https://tile.nextzen.org/tilezen/vector/v1/all/{z}/{x}/{y}.topojson?api_key=' +
           key,
