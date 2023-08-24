@@ -4,7 +4,6 @@
 
 import {DECIMALS} from './common.js';
 import {appendParams} from '../uri.js';
-import {assert} from '../asserts.js';
 import {decode} from '../Image.js';
 import {getHeight, getWidth} from '../extent.js';
 import {get as getProjection} from '../proj.js';
@@ -55,7 +54,7 @@ export function getRequestUrl(
     .replace(/MapServer\/?$/, 'MapServer/export')
     .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
   if (modifiedUrl == baseUrl) {
-    assert(false, 50); // `options.featureTypes` should be an Array
+    throw new Error('`options.featureTypes` should be an Array');
   }
   return appendParams(modifiedUrl, params);
 }

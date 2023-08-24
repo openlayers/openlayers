@@ -99,7 +99,10 @@ class BaseLayer extends BaseObject {
 
     properties[LayerProperty.OPACITY] =
       options.opacity !== undefined ? options.opacity : 1;
-    assert(typeof properties[LayerProperty.OPACITY] === 'number', 64); // Layer opacity must be a number
+    assert(
+      typeof properties[LayerProperty.OPACITY] === 'number',
+      'Layer opacity must be a number'
+    );
 
     properties[LayerProperty.VISIBLE] =
       options.visible !== undefined ? options.visible : true;
@@ -362,7 +365,7 @@ class BaseLayer extends BaseObject {
    * @api
    */
   setOpacity(opacity) {
-    assert(typeof opacity === 'number', 64); // Layer opacity must be a number
+    assert(typeof opacity === 'number', 'Layer opacity must be a number');
     this.set(LayerProperty.OPACITY, opacity);
   }
 

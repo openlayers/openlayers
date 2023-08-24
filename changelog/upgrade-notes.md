@@ -2,6 +2,10 @@
 
 ### Next Release
 
+#### Removal of deprecated properties and methods
+
+ * Deprecated `ol/AssertionError` and error codes have been removed.
+
 #### Backwards incompatible changes
 
 ##### New StadiaMaps source replaces the Stamen source

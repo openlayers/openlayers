@@ -13,7 +13,6 @@ import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
 import Projection from '../proj/Projection.js';
 import RenderFeature from '../render/Feature.js';
-import {assert} from '../asserts.js';
 import {get} from '../proj.js';
 import {inflateEnds} from '../geom/flat/orient.js';
 
@@ -145,7 +144,7 @@ class MVT extends FeatureFormat {
           coordsLen += 2;
         }
       } else {
-        assert(false, 59); // Invalid command found in the PBF
+        throw new Error('Invalid command found in the PBF');
       }
     }
 

@@ -132,7 +132,10 @@ class LayerGroup extends BaseLayer {
       if (Array.isArray(layers)) {
         layers = new Collection(layers.slice(), {unique: true});
       } else {
-        assert(typeof (/** @type {?} */ (layers).getArray) === 'function', 43); // Expected `layers` to be an array or a `Collection`
+        assert(
+          typeof (/** @type {?} */ (layers).getArray) === 'function',
+          'Expected `layers` to be an array or a `Collection`'
+        );
       }
     } else {
       layers = new Collection(undefined, {unique: true});

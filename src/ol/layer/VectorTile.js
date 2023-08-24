@@ -130,8 +130,10 @@ class VectorTileLayer extends BaseVectorLayer {
     this.un;
 
     const renderMode = options.renderMode || 'hybrid';
-    // `renderMode` must be `'hybrid'` or `'vector'`.
-    assert(renderMode == 'hybrid' || renderMode == 'vector', 28);
+    assert(
+      renderMode == 'hybrid' || renderMode == 'vector',
+      "`renderMode` must be `'hybrid'` or `'vector'`"
+    );
 
     /**
      * @private

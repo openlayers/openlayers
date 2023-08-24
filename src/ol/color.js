@@ -1,7 +1,6 @@
 /**
  * @module ol/color
  */
-import {assert} from './asserts.js';
 import {clamp} from './math.js';
 
 /**
@@ -175,7 +174,7 @@ function fromStringInternal_(s) {
     color.push(1);
     normalize(color);
   } else {
-    assert(false, 14); // Invalid color
+    throw new Error('Invalid color');
   }
   return color;
 }

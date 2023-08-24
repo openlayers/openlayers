@@ -56,7 +56,10 @@ class WebGLArrayBuffer {
      */
     this.type = type;
 
-    assert(type === ARRAY_BUFFER || type === ELEMENT_ARRAY_BUFFER, 62);
+    assert(
+      type === ARRAY_BUFFER || type === ELEMENT_ARRAY_BUFFER,
+      'A `WebGLArrayBuffer` must either be of type `ELEMENT_ARRAY_BUFFER` or `ARRAY_BUFFER`'
+    );
 
     /**
      * @private

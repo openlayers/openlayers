@@ -86,8 +86,8 @@ class TileGrid {
         },
         true
       ),
-      17
-    ); // `resolutions` must be sorted in descending order
+      '`resolutions` must be sorted in descending order'
+    );
 
     // check if we've got a consistent zoom factor and origin
     let zoomFactor;
@@ -129,7 +129,10 @@ class TileGrid {
     this.origins_ = null;
     if (options.origins !== undefined) {
       this.origins_ = options.origins;
-      assert(this.origins_.length == this.resolutions_.length, 20); // Number of `origins` and `resolutions` must be equal
+      assert(
+        this.origins_.length == this.resolutions_.length,
+        'Number of `origins` and `resolutions` must be equal'
+      );
     }
 
     const extent = options.extent;
@@ -140,8 +143,8 @@ class TileGrid {
 
     assert(
       (!this.origin_ && this.origins_) || (this.origin_ && !this.origins_),
-      18
-    ); // Either `origin` or `origins` must be configured, never both
+      'Either `origin` or `origins` must be configured, never both'
+    );
 
     /**
      * @private
@@ -150,7 +153,10 @@ class TileGrid {
     this.tileSizes_ = null;
     if (options.tileSizes !== undefined) {
       this.tileSizes_ = options.tileSizes;
-      assert(this.tileSizes_.length == this.resolutions_.length, 19); // Number of `tileSizes` and `resolutions` must be equal
+      assert(
+        this.tileSizes_.length == this.resolutions_.length,
+        'Number of `tileSizes` and `resolutions` must be equal'
+      );
     }
 
     /**
@@ -166,8 +172,8 @@ class TileGrid {
     assert(
       (!this.tileSize_ && this.tileSizes_) ||
         (this.tileSize_ && !this.tileSizes_),
-      22
-    ); // Either `tileSize` or `tileSizes` must be configured, never both
+      'Either `tileSize` or `tileSizes` must be configured, never both'
+    );
 
     /**
      * @private

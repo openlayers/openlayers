@@ -442,7 +442,10 @@ export function toFunction(obj) {
     if (Array.isArray(obj)) {
       styles = obj;
     } else {
-      assert(typeof (/** @type {?} */ (obj).getZIndex) === 'function', 41); // Expected an `Style` or an array of `Style`
+      assert(
+        typeof (/** @type {?} */ (obj).getZIndex) === 'function',
+        'Expected an `Style` or an array of `Style`'
+      );
       const style = /** @type {Style} */ (obj);
       styles = [style];
     }

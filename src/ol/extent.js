@@ -2,7 +2,6 @@
  * @module ol/extent
  */
 import Relationship from './extent/Relationship.js';
-import {assert} from './asserts.js';
 
 /**
  * An array of numbers representing an extent: `[minx, miny, maxx, maxy]`.
@@ -499,7 +498,7 @@ export function getCorner(extent, corner) {
   } else if (corner === 'top-right') {
     coordinate = getTopRight(extent);
   } else {
-    assert(false, 13); // Invalid corner
+    throw new Error('Invalid corner');
   }
   return coordinate;
 }

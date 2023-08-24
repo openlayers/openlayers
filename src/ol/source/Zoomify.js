@@ -7,7 +7,6 @@ import ImageTile from '../ImageTile.js';
 import TileGrid from '../tilegrid/TileGrid.js';
 import TileImage from './TileImage.js';
 import TileState from '../TileState.js';
-import {assert} from '../asserts.js';
 import {createCanvasContext2D} from '../dom.js';
 import {createFromTileUrlFunctions, expandUrl} from '../tileurlfunction.js';
 import {getCenter} from '../extent.js';
@@ -165,9 +164,8 @@ class Zoomify extends TileImage {
           height >>= 1;
         }
         break;
-      default: // Unknown `tierSizeCalculation` configured
-        assert(false, 53);
-        break;
+      default:
+        throw new Error('Unknown `tierSizeCalculation` configured');
     }
 
     tierSizeInTiles.push([1, 1]);
