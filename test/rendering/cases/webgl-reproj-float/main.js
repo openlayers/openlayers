@@ -9,7 +9,7 @@ const source = new GeoTIFF({
   normalize: false,
   sources: [
     {
-      nodata: NaN,
+      nodata: null,
       url: '/data/raster/non-square-pixels.tif',
     },
   ],
