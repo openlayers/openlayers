@@ -2905,7 +2905,6 @@
       "interactive": true,
       "layout": {
         "text-font": [
-          "Open Sans Italic",
           "Arial Unicode MS Regular"
         ],
         "text-field": "{name_en}",
@@ -2936,7 +2935,6 @@
       "layout": {
         "icon-image": "{maki}-11",
         "text-font": [
-          "Open Sans Semibold",
           "Arial Unicode MS Bold"
         ],
         "text-field": "{name_en}",
@@ -2982,7 +2980,6 @@
       "layout": {
         "icon-image": "{maki}-11",
         "text-font": [
-          "Open Sans Semibold",
           "Arial Unicode MS Bold"
         ],
         "text-field": "{name_en}",
@@ -3028,7 +3025,6 @@
       "layout": {
         "icon-image": "{maki}-11",
         "text-font": [
-          "Open Sans Semibold",
           "Arial Unicode MS Bold"
         ],
         "text-field": "{name_en}",
@@ -3073,7 +3069,6 @@
         "text-size": 12,
         "icon-image": "{maki}-11",
         "text-font": [
-          "Open Sans Semibold",
           "Arial Unicode MS Bold"
         ],
         "text-padding": 2,
@@ -3107,7 +3102,6 @@
       "layout": {
         "icon-image": "{maki}-11",
         "text-font": [
-          "Open Sans Semibold",
           "Arial Unicode MS Bold"
         ],
         "text-field": "{name_en}",
@@ -3153,7 +3147,6 @@
       "layout": {
         "icon-image": "{maki}-11",
         "text-font": [
-          "Open Sans Semibold",
           "Arial Unicode MS Bold"
         ],
         "text-field": "{name_en}",
@@ -3200,7 +3193,6 @@
       "layout": {
         "text-field": "{name_en}",
         "text-font": [
-          "Open Sans Regular",
           "Arial Unicode MS Regular"
         ],
         "text-size": {
@@ -3242,7 +3234,6 @@
       "layout": {
         "text-field": "{ref}",
         "text-font": [
-          "Open Sans Semibold",
           "Arial Unicode MS Bold"
         ],
         "text-size": 11,
@@ -3282,7 +3273,6 @@
       "interactive": true,
       "layout": {
         "text-font": [
-          "Open Sans Bold",
           "Arial Unicode MS Bold"
         ],
         "text-transform": "uppercase",
@@ -3329,7 +3319,6 @@
       "interactive": true,
       "layout": {
         "text-font": [
-          "Open Sans Regular",
           "Arial Unicode MS Regular"
         ],
         "text-field": "{name_en}",
@@ -3370,7 +3359,6 @@
       "interactive": true,
       "layout": {
         "text-font": [
-          "Open Sans Regular",
           "Arial Unicode MS Regular"
         ],
         "text-field": "{name_en}",
@@ -3411,7 +3399,6 @@
       "interactive": true,
       "layout": {
         "text-font": [
-          "Open Sans Semibold",
           "Arial Unicode MS Bold"
         ],
         "text-field": "{name_en}",
@@ -3452,7 +3439,6 @@
       "interactive": true,
       "layout": {
         "text-font": [
-          "Open Sans Italic",
           "Arial Unicode MS Regular"
         ],
         "text-field": "{name_en}",
@@ -3502,7 +3488,6 @@
       "interactive": true,
       "layout": {
         "text-font": [
-          "Open Sans Italic",
           "Arial Unicode MS Regular"
         ],
         "text-field": "{name_en}",
@@ -3553,7 +3538,6 @@
       "interactive": true,
       "layout": {
         "text-font": [
-          "Open Sans Italic",
           "Arial Unicode MS Regular"
         ],
         "text-field": "{name_en}",
@@ -3603,7 +3587,6 @@
       "interactive": true,
       "layout": {
         "text-font": [
-          "Open Sans Italic",
           "Arial Unicode MS Regular"
         ],
         "text-field": "{name_en}",
@@ -3654,7 +3637,6 @@
       "interactive": true,
       "layout": {
         "text-font": [
-          "Open Sans Italic",
           "Arial Unicode MS Regular"
         ],
         "text-field": "{name_en}",
@@ -3704,7 +3686,6 @@
       "interactive": true,
       "layout": {
         "text-font": [
-          "Open Sans Italic",
           "Arial Unicode MS Regular"
         ],
         "text-field": "{name_en}",
@@ -3755,7 +3736,6 @@
       "interactive": true,
       "layout": {
         "text-font": [
-          "Open Sans Italic",
           "Arial Unicode MS Regular"
         ],
         "text-field": "{name_en}",
@@ -3805,7 +3785,6 @@
       "interactive": true,
       "layout": {
         "text-font": [
-          "Open Sans Italic",
           "Arial Unicode MS Regular"
         ],
         "text-field": "{name_en}",
@@ -3861,7 +3840,6 @@
       "interactive": true,
       "layout": {
         "text-font": [
-          "Open Sans Bold",
           "Arial Unicode MS Bold"
         ],
         "text-field": "{name_en}",
@@ -3903,7 +3881,6 @@
       "interactive": true,
       "layout": {
         "text-font": [
-          "Open Sans Bold",
           "Arial Unicode MS Bold"
         ],
         "text-field": "{name_en}",
@@ -3945,7 +3922,6 @@
       "interactive": true,
       "layout": {
         "text-font": [
-          "Open Sans Bold",
           "Arial Unicode MS Bold"
         ],
         "text-field": "{name_en}",
@@ -3987,7 +3963,6 @@
       "interactive": true,
       "layout": {
         "text-font": [
-          "Open Sans Bold",
           "Arial Unicode MS Bold"
         ],
         "text-field": "{name_en}",
