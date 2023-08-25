@@ -4,7 +4,7 @@
 
 /**
  * @param {*} assertion Assertion we expected to be truthy.
- * @param {string} errorMessage Error code.
+ * @param {string} errorMessage Error message.
  */
 export function assert(assertion, errorMessage) {
   if (!assertion) {
