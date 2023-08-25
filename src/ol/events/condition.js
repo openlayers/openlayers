@@ -288,7 +288,10 @@ export const mouseOnly = function (mapBrowserEvent) {
   const pointerEvent = /** @type {import("../MapBrowserEvent").default} */ (
     mapBrowserEvent
   ).originalEvent;
-  assert(pointerEvent !== undefined, 56); // mapBrowserEvent must originate from a pointer event
+  assert(
+    pointerEvent !== undefined,
+    'mapBrowserEvent must originate from a pointer event'
+  );
   // see https://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
   return pointerEvent.pointerType == 'mouse';
 };
@@ -304,7 +307,10 @@ export const touchOnly = function (mapBrowserEvent) {
   const pointerEvt = /** @type {import("../MapBrowserEvent").default} */ (
     mapBrowserEvent
   ).originalEvent;
-  assert(pointerEvt !== undefined, 56); // mapBrowserEvent must originate from a pointer event
+  assert(
+    pointerEvt !== undefined,
+    'mapBrowserEvent must originate from a pointer event'
+  );
   // see https://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
   return pointerEvt.pointerType === 'touch';
 };
@@ -320,7 +326,10 @@ export const penOnly = function (mapBrowserEvent) {
   const pointerEvt = /** @type {import("../MapBrowserEvent").default} */ (
     mapBrowserEvent
   ).originalEvent;
-  assert(pointerEvt !== undefined, 56); // mapBrowserEvent must originate from a pointer event
+  assert(
+    pointerEvt !== undefined,
+    'mapBrowserEvent must originate from a pointer event'
+  );
   // see https://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
   return pointerEvt.pointerType === 'pen';
 };
@@ -338,6 +347,9 @@ export const primaryAction = function (mapBrowserEvent) {
   const pointerEvent = /** @type {import("../MapBrowserEvent").default} */ (
     mapBrowserEvent
   ).originalEvent;
-  assert(pointerEvent !== undefined, 56); // mapBrowserEvent must originate from a pointer event
+  assert(
+    pointerEvent !== undefined,
+    'mapBrowserEvent must originate from a pointer event'
+  );
   return pointerEvent.isPrimary && pointerEvent.button === 0;
 };

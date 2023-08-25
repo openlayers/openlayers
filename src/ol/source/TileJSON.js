@@ -9,7 +9,6 @@
 
 import TileImage from './TileImage.js';
 import {applyTransform, intersects} from '../extent.js';
-import {assert} from '../asserts.js';
 import {createFromTemplates} from '../tileurlfunction.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
@@ -117,7 +116,7 @@ class TileJSON extends TileImage {
     } else if (options.tileJSON) {
       this.handleTileJSONResponse(options.tileJSON);
     } else {
-      assert(false, 51); // Either `url` or `tileJSON` options must be provided
+      throw new Error('Either `url` or `tileJSON` options must be provided');
     }
   }
 

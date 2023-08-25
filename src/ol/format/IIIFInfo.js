@@ -361,7 +361,10 @@ class IIIFInfo {
         default:
       }
     }
-    assert(false, 61);
+    assert(
+      false,
+      'Cannot determine IIIF Image API version from provided image information JSON'
+    );
   }
 
   /**

@@ -11,7 +11,6 @@ import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
-import {assert} from '../asserts.js';
 import {get as getProjection} from '../proj.js';
 import {isEmpty} from '../obj.js';
 import {transformGeometryWithOptions} from './Feature.js';
@@ -183,7 +182,7 @@ class GeoJSON extends JSONFeature {
       } else if (crs['type'] === 'EPSG') {
         projection = getProjection('EPSG:' + crs['properties']['code']);
       } else {
-        assert(false, 36); // Unknown SRS type
+        throw new Error('Unknown SRS type');
       }
     } else {
       projection = this.dataProjection;

@@ -237,7 +237,7 @@ export function invert(source) {
  */
 export function makeInverse(target, source) {
   const det = determinant(source);
-  assert(det !== 0, 32); // Transformation matrix cannot be inverted
+  assert(det !== 0, 'Transformation matrix cannot be inverted');
 
   const a = source[0];
   const b = source[1];

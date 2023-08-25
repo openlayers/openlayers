@@ -4,7 +4,6 @@
 import Control from './Control.js';
 import {CLASS_UNSELECTABLE} from '../css.js';
 import {METERS_PER_UNIT, getPointResolution} from '../proj.js';
-import {assert} from '../asserts.js';
 
 /**
  * @type {string}
@@ -309,7 +308,7 @@ class ScaleLine extends Control {
         pointResolution /= 1609.3472;
       }
     } else {
-      assert(false, 33); // Invalid units
+      throw new Error('Invalid units');
     }
 
     let i = 3 * Math.floor(Math.log(minWidth * pointResolution) / Math.log(10));

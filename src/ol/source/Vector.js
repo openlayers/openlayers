@@ -229,7 +229,7 @@ class VectorSource extends Source {
     if (options.loader !== undefined) {
       this.loader_ = options.loader;
     } else if (this.url_ !== undefined) {
-      assert(this.format_, 7); // `format` must be set when `url` is set
+      assert(this.format_, '`format` must be set when `url` is set');
       // create a XHR feature loader for "url" and "format"
       this.loader_ = xhr(
         this.url_,
@@ -402,7 +402,10 @@ class VectorSource extends Source {
       }
     }
     if (valid) {
-      assert(!(featureKey in this.uidIndex_), 30); // The passed `feature` was already added to the source
+      assert(
+        !(featureKey in this.uidIndex_),
+        'The passed `feature` was already added to the source'
+      );
       this.uidIndex_[featureKey] = feature;
     }
     return valid;
@@ -1118,7 +1121,7 @@ class VectorSource extends Source {
    * @api
    */
   setUrl(url) {
-    assert(this.format_, 7); // `format` must be set when `url` is set
+    assert(this.format_, '`format` must be set when `url` is set');
     this.url_ = url;
     this.setLoader(xhr(url, this.format_));
   }

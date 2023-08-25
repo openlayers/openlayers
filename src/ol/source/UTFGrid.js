@@ -7,7 +7,6 @@ import Tile from '../Tile.js';
 import TileSource from './Tile.js';
 import TileState from '../TileState.js';
 import {applyTransform, intersects} from '../extent.js';
-import {assert} from '../asserts.js';
 import {createFromTemplates, nullTileUrlFunction} from '../tileurlfunction.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 import {getKeyZXY} from '../tilecoord.js';
@@ -327,7 +326,7 @@ class UTFGrid extends TileSource {
     } else if (options.tileJSON) {
       this.handleTileJSONResponse(options.tileJSON);
     } else {
-      assert(false, 51); // Either `url` or `tileJSON` options must be provided
+      throw new Error('Either `url` or `tileJSON` options must be provided');
     }
   }
 

@@ -86,7 +86,7 @@ class IIIF extends TileImage {
         size[0] > 0 &&
         !isNaN(size[1]) &&
         size[1] > 0,
-      60
+      'Missing or invalid `size`'
     );
     const width = size[0];
     const height = size[1];

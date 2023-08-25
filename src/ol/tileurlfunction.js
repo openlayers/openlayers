@@ -33,7 +33,10 @@ export function createFromTemplate(template, tileGrid) {
         .replace(dashYRegEx, function () {
           const z = tileCoord[0];
           const range = tileGrid.getFullTileRange(z);
-          assert(range, 55); // The {-y} placeholder requires a tile grid with extent
+          assert(
+            range,
+            'The {-y} placeholder requires a tile grid with extent'
+          );
           const y = range.getHeight() - tileCoord[2] - 1;
           return y.toString();
         });

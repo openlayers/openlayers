@@ -587,7 +587,10 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     callback,
     matches
   ) {
-    assert(this.hitDetectionEnabled_, 66);
+    assert(
+      this.hitDetectionEnabled_,
+      '`forEachFeatureAtCoordinate` cannot be used on a WebGL layer if the hit detection logic has not been enabled. This is done by providing adequate shaders using the `hitVertexShader` and `hitFragmentShader` properties of `WebGLPointsLayerRenderer`'
+    );
     if (!this.renderInstructions_ || !this.hitDetectionEnabled_) {
       return undefined;
     }

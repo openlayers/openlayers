@@ -1010,11 +1010,11 @@ class View extends BaseObject {
     const center = /** @type {!import("./coordinate.js").Coordinate} */ (
       this.getCenterInternal()
     );
-    assert(center, 1); // The view center is not defined
+    assert(center, 'The view center is not defined');
     const resolution = /** @type {!number} */ (this.getResolution());
-    assert(resolution !== undefined, 2); // The view resolution is not defined
+    assert(resolution !== undefined, 'The view resolution is not defined');
     const rotation = /** @type {!number} */ (this.getRotation());
-    assert(rotation !== undefined, 3); // The view rotation is not defined
+    assert(rotation !== undefined, 'The view rotation is not defined');
 
     return getForViewAndSize(center, resolution, rotation, size);
   }
@@ -1347,10 +1347,13 @@ class View extends BaseObject {
       Array.isArray(geometryOrExtent) ||
         typeof (/** @type {?} */ (geometryOrExtent).getSimplifiedGeometry) ===
           'function',
-      24
-    ); // Invalid extent or geometry provided as `geometry`
+      'Invalid extent or geometry provided as `geometry`'
+    );
     if (Array.isArray(geometryOrExtent)) {
-      assert(!isEmpty(geometryOrExtent), 25); // Cannot fit empty extent provided as `geometry`
+      assert(
+        !isEmpty(geometryOrExtent),
+        'Cannot fit empty extent provided as `geometry`'
+      );
       const extent = fromUserExtent(geometryOrExtent, this.getProjection());
       geometry = polygonFromExtent(extent);
     } else if (geometryOrExtent.getType() === 'Circle') {

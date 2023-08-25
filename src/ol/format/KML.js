@@ -36,7 +36,6 @@ import {
   pushSerializeAndPop,
 } from '../xml.js';
 import {asArray} from '../color.js';
-import {assert} from '../asserts.js';
 import {extend} from '../array.js';
 import {get as getProjection} from '../proj.js';
 import {
@@ -1853,7 +1852,7 @@ function readMultiGeometry(node, objectStack) {
     } else if (type == 'GeometryCollection') {
       multiGeometry = new GeometryCollection(geometries);
     } else {
-      assert(false, 37); // Unknown geometry type found
+      throw new Error('Unknown geometry type found');
     }
   } else {
     multiGeometry = new GeometryCollection(geometries);
@@ -2203,7 +2202,7 @@ function placemarkStyleMapParser(node, objectStack) {
   } else if (typeof styleMapValue === 'string') {
     placemarkObject['styleUrl'] = styleMapValue;
   } else {
-    assert(false, 38); // `styleMapValue` has an unknown type
+    throw new Error('`styleMapValue` has an unknown type');
   }
 }
 
@@ -2425,7 +2424,7 @@ function writeCoordinatesTextNode(node, coordinates, objectStack) {
   } else if (layout == 'XYZ' || layout == 'XYZM') {
     dimension = 3;
   } else {
-    assert(false, 34); // Invalid geometry layout
+    throw new Error('Invalid geometry layout');
   }
 
   const ii = coordinates.length;
@@ -2957,7 +2956,7 @@ function writeMultiGeometry(node, geometry, objectStack) {
         ) {
           geometries.push(geometry);
         } else {
-          assert(false, 39); // Unknown geometry type
+          throw new Error('Unknown geometry type');
         }
       });
     factory = GEOMETRY_NODE_FACTORY;
@@ -2971,7 +2970,7 @@ function writeMultiGeometry(node, geometry, objectStack) {
     geometries = /** @type {MultiPolygon} */ (geometry).getPolygons();
     factory = POLYGON_NODE_FACTORY;
   } else {
-    assert(false, 39); // Unknown geometry type
+    throw new Error('Unknown geometry type');
   }
   pushSerializeAndPop(
     context,

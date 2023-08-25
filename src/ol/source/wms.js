@@ -4,7 +4,6 @@
 
 import {DECIMALS} from './common.js';
 import {appendParams} from '../uri.js';
-import {assert} from '../asserts.js';
 import {compareVersions} from '../string.js';
 import {decode} from '../Image.js';
 import {getHeight, getWidth} from '../extent.js';
@@ -99,9 +98,8 @@ export function getImageSrc(
       case 'qgis':
         params['DPI'] = 90 * pixelRatio;
         break;
-      default: // Unknown `serverType` configured
-        assert(false, 8);
-        break;
+      default:
+        throw new Error('Unknown `serverType` configured');
     }
   }
 

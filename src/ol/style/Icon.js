@@ -177,21 +177,29 @@ class Icon extends ImageStyle {
      */
     let src = options.src;
 
-    assert(!(src !== undefined && image), 4); // `image` and `src` cannot be provided at the same time
-    assert(!image || (image && this.imgSize_), 5); // `imgSize` must be set when `image` is provided
+    assert(
+      !(src !== undefined && image),
+      '`image` and `src` cannot be provided at the same time'
+    );
+    assert(
+      !image || (image && this.imgSize_),
+      '`imgSize` must be set when `image` is provided'
+    );
 
     if ((src === undefined || src.length === 0) && image) {
       src = /** @type {HTMLImageElement} */ (image).src || getUid(image);
     }
-    assert(src !== undefined && src.length > 0, 6); // A defined and non-empty `src` or `image` must be provided
+    assert(
+      src !== undefined && src.length > 0,
+      'A defined and non-empty `src` or `image` must be provided'
+    );
 
-    // `width` or `height` cannot be provided together with `scale`
     assert(
       !(
         (options.width !== undefined || options.height !== undefined) &&
         options.scale !== undefined
       ),
-      69
+      '`width` or `height` cannot be provided together with `scale`'
     );
 
     /**

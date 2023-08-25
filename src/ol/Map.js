@@ -1808,8 +1808,8 @@ function createOptionsInternal(options) {
     } else {
       assert(
         typeof (/** @type {?} */ (options.controls).getArray) === 'function',
-        47
-      ); // Expected `controls` to be an array or an `import("./Collection.js").Collection`
+        'Expected `controls` to be an array or an `ol/Collection.js`'
+      );
       controls = options.controls;
     }
   }
@@ -1823,8 +1823,8 @@ function createOptionsInternal(options) {
       assert(
         typeof (/** @type {?} */ (options.interactions).getArray) ===
           'function',
-        48
-      ); // Expected `interactions` to be an array or an `import("./Collection.js").Collection`
+        'Expected `interactions` to be an array or an `ol/Collection.js`'
+      );
       interactions = options.interactions;
     }
   }
@@ -1837,8 +1837,8 @@ function createOptionsInternal(options) {
     } else {
       assert(
         typeof (/** @type {?} */ (options.overlays).getArray) === 'function',
-        49
-      ); // Expected `overlays` to be an array or an `import("./Collection.js").Collection`
+        'Expected `overlays` to be an array or an `ol/Collection.js`'
+      );
       overlays = options.overlays;
     }
   } else {
