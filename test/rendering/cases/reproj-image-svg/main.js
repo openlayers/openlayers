@@ -4,14 +4,14 @@ import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import {createLoader} from '../../../../src/ol/source/static.js';
 import {fromLonLat} from '../../../../src/ol/proj.js';
-import {load} from '../../../../src/ol/Image.js';
+import {svgLoad} from '../../../../src/ol/Image.js';
 
 const source = new ImageSource({
   loader: createLoader({
     url: '/data/cross.svg',
     crossOrigin: '',
     imageExtent: [-10, 50, 10, 70],
-    load: load,
+    load: svgLoad,
   }),
   projection: 'EPSG:4326',
 });

@@ -111,6 +111,10 @@ export function createLoader(options) {
       options.metersPerUnit || 1,
       options.displayDpi || 96
     );
-    return load(image, src).then((image) => ({image, extent, pixelRatio}));
+    return load(image, src).then((image) => {
+      // Update resolution, because the loader may return a different size than requested
+      const resolution = (getWidth(extent) / image.width) * pixelRatio;
+      return {image, extent, resolution, pixelRatio};
+    });
   };
 }

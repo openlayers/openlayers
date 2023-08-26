@@ -5,6 +5,7 @@ import EventTarget from './events/Target.js';
 import EventType from './events/EventType.js';
 import ImageState from './ImageState.js';
 import {CREATE_IMAGE_BITMAP, IMAGE_DECODE} from './has.js';
+import {createCanvasContext2D} from './dom.js';
 import {listenOnce, unlistenByKey} from './events.js';
 import {toPromise} from './functions.js';
 
@@ -332,6 +333,68 @@ export function decode(image, src) {
           throw e;
         })
     : decodeFallback(image);
+}
+
+/**
+ * @type {boolean}
+ */
+let canScaleSVG;
+
+/**
+ * Determines if two dimensional SVG scaling is supported by the browserr.
+ * @return {Promise<boolean>} Promise resolving to a `boolean`.
+ */
+export function getCanScaleSVG() {
+  return new Promise((resolve, reject) => {
+    if (canScaleSVG !== undefined) {
+      return resolve(canScaleSVG);
+    }
+    const image = new Image();
+    image.addEventListener('load', () => {
+      const context = createCanvasContext2D(3, 1);
+      context.drawImage(image, 0, 0, 3, 1);
+      canScaleSVG = context.getImageData(0, 0, 1, 1).data[0] !== 0;
+      resolve(canScaleSVG);
+    });
+    image.src =
+      'data:image/svg+xml,' +
+      encodeURIComponent(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1" viewBox="0 0 1 1">' +
+          '<rect width="1" height="1" fill="#ff0000" />' +
+          '</svg>'
+      );
+  });
+}
+
+/**
+ * Loads an image. Intended for SVG sources and returns the image if two dimensional SVG scaling is supported by the browser
+ * or an upscaled canvas representation if not.
+ * @param {HTMLImageElement} image Image, not yet loaded.
+ * @param {string} [src] `src` attribute of the image. Optional, not required if already present.
+ * @return {Promise<HTMLImageElement|HTMLCanvasElement>} Promise resolving to an `HTMLImageElement` or `HTMLCanvasElement`.
+ * @api
+ */
+export function svgLoad(image, src) {
+  return decodeFallback(image, src)
+    .then(() => getCanScaleSVG())
+    .then((canScale) => {
+      if (canScale) {
+        return image;
+      }
+      const maxDimension = 8192;
+      let scale = Math.min(
+        maxDimension / image.width,
+        maxDimension / image.height
+      );
+      scale = scale > 1 ? Math.floor(scale) : scale;
+      const context = createCanvasContext2D(
+        Math.round(image.width * scale),
+        Math.round(image.height * scale)
+      );
+      const canvas = context.canvas;
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+      return canvas;
+    });
 }
 
 export default ImageWrapper;

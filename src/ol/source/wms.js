@@ -188,7 +188,11 @@ export function createLoader(options) {
     if (options.crossOrigin !== null) {
       image.crossOrigin = options.crossOrigin;
     }
-    return load(image, src).then((image) => ({image, extent, pixelRatio}));
+    return load(image, src).then((image) => {
+      // Update resolution, because the loader may return a different size than requested
+      const resolution = (getWidth(extent) / image.width) * pixelRatio;
+      return {image, extent, resolution, pixelRatio};
+    });
   };
 }
 

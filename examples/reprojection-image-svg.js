@@ -6,8 +6,8 @@ import proj4 from 'proj4';
 import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
 import {createLoader} from '../src/ol/source/static.js';
 import {getCenter} from '../src/ol/extent.js';
-import {load} from '../src/ol/Image.js';
 import {register} from '../src/ol/proj/proj4.js';
+import {svgLoad} from '../src/ol/Image.js';
 import {transform} from '../src/ol/proj.js';
 
 proj4.defs(
@@ -44,7 +44,7 @@ function setSource() {
       url: 'https://upload.wikimedia.org/wikipedia/commons/1/18/British_National_Grid.svg',
       crossOrigin: '',
       imageExtent: imageExtent,
-      load: load,
+      load: svgLoad,
     }),
     projection: 'EPSG:27700',
     interpolate: interpolate.checked,
