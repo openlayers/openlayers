@@ -89,7 +89,7 @@
     "karma-source-map-support": "^1.4.0",
     "karma-webpack": "^5.0.0",
     "loglevelnext": "^5.0.5",
-    "marked": "7.0.4",
+    "marked": "7.0.5",
     "metalsmith": "^2.5.0",
     "mocha": "10.2.0",
     "ol-mapbox-style": "^11.0.1",
