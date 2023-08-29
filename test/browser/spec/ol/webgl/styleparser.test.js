@@ -326,7 +326,6 @@ describe('ol.webgl.styleparser', () => {
         beforeEach(() => {
           const style = {
             'icon-img': new Image(10, 20),
-            'icon-img-size': [10, 10],
             'icon-opacity': ['*', 0.5, 0.75],
             'icon-color': ['get', 'color1'],
             'icon-displacement': ['array', -2, 1],
@@ -365,7 +364,7 @@ describe('ol.webgl.styleparser', () => {
             'vec2(-2.0, 1.0)'
           );
           expect(result.builder.texCoordExpression_).to.eql(
-            '(vec4((vec2(a_attr1, 20.0)).xyxy) + vec4(0., 0., vec2(30.0, 40.0))) / (vec2(10.0, 10.0)).xyxy'
+            '(vec4((vec2(a_attr1, 20.0)).xyxy) + vec4(0., 0., vec2(30.0, 40.0))) / (vec2(10.0, 20.0)).xyxy'
           );
           expect(result.builder.symbolRotateWithView_).to.eql(true);
           expect(Object.keys(result.attributes).length).to.eql(3);

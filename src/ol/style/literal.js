@@ -33,11 +33,7 @@
 /**
  * @typedef {Object} IconProps
  * @property {string} [icon-src] Image source URI.
- * @property {HTMLImageElement|HTMLCanvasElement} [icon-img] Image object for the icon. If the `icon-src` option is not provided then the
- * provided image must already be loaded. And in that case, it is required
- * to provide the size of the image, with the `icon-img-size` option.
- * @property {import("../size.js").Size} [icon-img-size] Image size in pixels. Only required if `icon-img` is set and `icon-src` is not.
- * The provided size needs to match the actual size of the image.
+ * @property {HTMLImageElement|HTMLCanvasElement} [icon-img] Image object for the icon. Required if the `icon-src` option is not provided.
  * @property {Array<number>|ExpressionValue} [icon-anchor=[0.5, 0.5]] Anchor. Default value is the icon center.
  * @property {import("./Icon.js").IconOrigin} [icon-anchor-origin='top-left'] Origin of the anchor: `bottom-left`, `bottom-right`,
  * `top-left` or `top-right`.

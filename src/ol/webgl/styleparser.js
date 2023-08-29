@@ -475,8 +475,19 @@ function parseIconProperties(
     builder.addUniform(`vec2 u_texture${textureId}_size`);
   } else {
     image = style['icon-img'];
-    const imgSize = style['icon-img-size'];
-    size = arrayToGlsl(imgSize);
+    if (image instanceof HTMLImageElement) {
+      if (image.complete && image.width && image.height) {
+        size = arrayToGlsl([image.width, image.height]);
+      } else {
+        // the size is provided asynchronously using a uniform
+        uniforms[`u_texture${textureId}_size`] = () => {
+          return image.complete ? [image.width, image.height] : [0, 0];
+        };
+        size = `u_texture${textureId}_size`;
+      }
+    } else {
+      size = arrayToGlsl([image.width, image.height]);
+    }
   }
   uniforms[`u_texture${textureId}`] = image;
   builder
