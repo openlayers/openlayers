@@ -54,8 +54,8 @@ document.getElementById('export-png').addEventListener('click', function () {
   map.once('rendercomplete', function () {
     const mapCanvas = document.createElement('canvas');
     const size = map.getSize();
-    mapCanvas.width = size[0];
-    mapCanvas.height = size[1];
+    mapCanvas.width = size[0] * window.devicePixelRatio;
+    mapCanvas.height = size[1] * window.devicePixelRatio;
     const mapContext = mapCanvas.getContext('2d');
     Array.prototype.forEach.call(
       map.getViewport().querySelectorAll('.ol-layer canvas, canvas.ol-layer'),
@@ -82,10 +82,15 @@ document.getElementById('export-png').addEventListener('click', function () {
               0,
             ];
           }
+          const [a, b, c, d, e, f] = matrix;
           // Apply the transform to the export map context
-          CanvasRenderingContext2D.prototype.setTransform.apply(
-            mapContext,
-            matrix
+          mapContext.setTransform(
+            a * window.devicePixelRatio,
+            b,
+            c,
+            d * window.devicePixelRatio,
+            e,
+            f
           );
           const backgroundColor = canvas.parentNode.style.backgroundColor;
           if (backgroundColor) {
