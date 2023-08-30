@@ -627,10 +627,11 @@ vec2 getJoinOffsetDirection(vec2 normalPx, float joinAngle) {
 }
 
 vec2 getOffsetPoint(vec2 point, vec2 normal, float joinAngle, float offsetPx) {
-  // offset is applied along the inverted normal (positive offset goes "right" relative to line direction)
-  if (isCap(joinAngle)) {
+  // if on a cap or the join angle is too high, offset the line along the segment normal
+  if (cos(joinAngle) > 0.998 || isCap(joinAngle)) {
     return point - normal * offsetPx;
   }
+  // offset is applied along the inverted normal (positive offset goes "right" relative to line direction)
   return point - getJoinOffsetDirection(normal, joinAngle) * offsetPx;
 }
 
