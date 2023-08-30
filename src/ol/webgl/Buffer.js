@@ -35,7 +35,6 @@ export const BufferUsage = {
  * Note:
  * See the documentation of [WebGLRenderingContext.bufferData](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bufferData)
  * for more info on buffer usage.
- * @api
  */
 class WebGLArrayBuffer {
   /**
