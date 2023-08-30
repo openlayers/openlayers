@@ -97,8 +97,6 @@ const DEFAULT_FRAGMENT_SHADER = `
  *     gl_FragColor = texture2D(u_image, v_texCoord) * u_opacity;
  *   }
  *   ```
- *
- * @api
  */
 class WebGLPostProcessingPass {
   /**
@@ -180,7 +178,6 @@ class WebGLPostProcessingPass {
   /**
    * Get the WebGL rendering context
    * @return {WebGLRenderingContext} The rendering context.
-   * @api
    */
   getGL() {
     return this.gl_;
@@ -191,7 +188,6 @@ class WebGLPostProcessingPass {
    * right size and bind it as a render target for the next draw calls.
    * The last step to be initialized will be the one where the primitives are rendered.
    * @param {import("../Map.js").FrameState} frameState current frame state
-   * @api
    */
   init(frameState) {
     const gl = this.getGL();
@@ -267,7 +263,6 @@ class WebGLPostProcessingPass {
    * @param {WebGLPostProcessingPass} [nextPass] Next pass, optional
    * @param {function(WebGLRenderingContext, import("../Map.js").FrameState):void} [preCompose] Called before composing.
    * @param {function(WebGLRenderingContext, import("../Map.js").FrameState):void} [postCompose] Called before composing.
-   * @api
    */
   apply(frameState, nextPass, preCompose, postCompose) {
     const gl = this.getGL();
@@ -332,7 +327,6 @@ class WebGLPostProcessingPass {
 
   /**
    * @return {WebGLFramebuffer} Frame buffer
-   * @api
    */
   getFrameBuffer() {
     return this.frameBuffer_;
@@ -340,7 +334,6 @@ class WebGLPostProcessingPass {
 
   /**
    * @return {WebGLRenderbuffer} Depth buffer
-   * @api
    */
   getDepthBuffer() {
     return this.depthBuffer_;

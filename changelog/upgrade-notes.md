@@ -156,7 +156,7 @@ Please note that not all the point styling options are yet supported by WebGL re
 
 Previously with some styles involving image or text scale or rotation, or view rotation `ol/render/canvas/Immediate#drawFeature` and `ol/render/canvas/Immediate#drawGeometry` might reset any canvas context transform set by the application.  If you were relying on this unintended and inconsistent behavior the application must now reset the context itself.
 
-#### Removal of `ol/layer/MapboxVector`
+##### Removal of `ol/layer/MapboxVector`
 
 To avoid a circular dependency between the `ol` and `ol-mapbox-style` packages, this layer has been removed. If you have been using `ol/layer/MapboxVector`, you can easily switch to using `MapboxVectorLayer` from the `ol-mapbox-style` package, version 11 or greater.
 
@@ -169,6 +169,10 @@ After:
 ```js
 import {MapboxVectorLayer} from 'ol-mapbox-style';
 ```
+
+##### Removal of WebGL utility classes from the API
+
+The `ol/webGL/Buffer`, `ol/webgl/PostProcessingPass` and `ol/webgl/RenderTarget` classes have been removed from the API. If you rely on these, try to stop depending on them, or at least watch out for changes with every new relase, because changes or removal won't be mentioned any more in the upgrade notes.
 
 
 ### 7.5.0
