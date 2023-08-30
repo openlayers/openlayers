@@ -16,13 +16,13 @@ class CanvasImageBuilder extends CanvasBuilder {
 
     /**
      * @private
-     * @type {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement}
+     * @type {import('../../DataTile.js').ImageLike}
      */
     this.hitDetectionImage_ = null;
 
     /**
      * @private
-     * @type {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement}
+     * @type {import('../../DataTile.js').ImageLike}
      */
     this.image_ = null;
 

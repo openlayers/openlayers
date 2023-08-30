@@ -142,7 +142,7 @@ class CanvasImmediateRenderer extends VectorContext {
 
     /**
      * @private
-     * @type {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement}
+     * @type {import('../../DataTile.js').ImageLike}
      */
     this.image_ = null;
 

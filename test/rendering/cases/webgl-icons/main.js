@@ -24,7 +24,6 @@ const iconSimple = {
 };
 const dataDriven = {
   'icon-img': canvas,
-  'icon-img-size': [20, 20],
   'icon-color': ['get', 'color'],
   'icon-displacement': [40, 0],
 };

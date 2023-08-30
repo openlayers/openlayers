@@ -69,6 +69,14 @@ const staticOptions = {
 ```
 Try to get rid of such an unintended use, or replace the `imageSize` option with an extent calculation like the above.
 
+##### Removal of `ol/style/Icon`'s `imgSize` property
+
+The `imgSize` property is no longer needed. If you had it configured, simply remove it.
+
+##### Removal of the `icon-img-size` flat style property
+
+This property is no longer needed and can simply be removed.
+
 ##### Change of the symbol style format in `ol/layer/WebGLPointsLayer`
 
 The `WebGLPointsLayer` class used to rely on a custom style format that was made specifically for this layer and which looked like this:

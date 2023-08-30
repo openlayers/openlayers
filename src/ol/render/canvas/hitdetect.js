@@ -101,7 +101,6 @@ export function createHitDetectionImageData(
         style.setImage(
           new Icon({
             img: img,
-            imgSize: imgSize,
             anchor: image.getAnchor(),
             anchorXUnits: 'pixels',
             anchorYUnits: 'pixels',

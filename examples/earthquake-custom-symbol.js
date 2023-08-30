@@ -48,7 +48,6 @@ const styleFunction = function (feature) {
     style = new Style({
       image: new Icon({
         img: canvas,
-        imgSize: [size, size],
         rotation: 1.2,
       }),
     });

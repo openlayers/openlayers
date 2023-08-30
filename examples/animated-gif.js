@@ -43,7 +43,6 @@ gif.frames(
         new Style({
           image: new Icon({
             img: ctx.canvas,
-            imgSize: [frame.width, frame.height],
             opacity: 0.8,
           }),
         })
