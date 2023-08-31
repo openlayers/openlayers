@@ -1,6 +1,6 @@
 ## Upgrade notes
 
-### Next Release
+### 8.0.0
 
 #### Removal of deprecated properties and methods
 
