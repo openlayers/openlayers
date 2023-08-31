@@ -182,6 +182,10 @@ import {MapboxVectorLayer} from 'ol-mapbox-style';
 
 The `ol/webGL/Buffer`, `ol/webgl/PostProcessingPass` and `ol/webgl/RenderTarget` classes have been removed from the API. If you rely on these, try to stop depending on them, or at least watch out for changes with every new relase, because changes or removal won't be mentioned any more in the upgrade notes.
 
+##### Default line cap changed for RegularShape and Circle style
+
+If `ol/style/RegularShape` or `ol/style/Circle` is passed an `ol/style/Stroke` with the lineDash option, the new default lineCap is 'round'. Previously the lineCap option was ignored and the canvas' default of 'butt' was used.
+
 
 ### 7.5.0
 
