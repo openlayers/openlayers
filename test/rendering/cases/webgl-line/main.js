@@ -56,7 +56,7 @@ const dashed = {
   'stroke-color': 'rgb(0,104,218)',
   'stroke-offset': -10,
   'stroke-width': 4,
-  'stroke-line-dash': [18, 3, 10, 3],
+  'stroke-line-dash': [18, 10, 10, 10],
   'stroke-line-dash-offset': 10,
 };
 const style = [bevelJoins, dataDriven, miterJoins, dashed];

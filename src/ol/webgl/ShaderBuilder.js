@@ -708,6 +708,7 @@ ${this.varyings_
   })
   .join('\n')}
 ${this.fragmentShaderFunctions_.join('\n')}
+
 vec2 pxToWorld(vec2 pxPos) {
   vec2 screenPos = 2.0 * pxPos / u_viewportSizePx - 1.0;
   return (u_screenToWorldMatrix * vec4(screenPos, 0.0, 1.0)).xy;
@@ -766,19 +767,29 @@ float miterJoinDistanceField(vec2 point, vec2 start, vec2 end, float width, floa
   return -1000.;
 }
 
-float computeSegmentPointDistance(vec2 point, vec2 start, vec2 end, float width, float joinAngle, float capType, float joinType) {
-  if (isCap(joinAngle) && capType == ${stringToGlsl('butt')}) {
+float capDistanceField(vec2 point, vec2 start, vec2 end, float width, float capType) {
+   if (capType == ${stringToGlsl('butt')}) {
     return buttCapDistanceField(point, start, end);
-  } else if (isCap(joinAngle) && capType == ${stringToGlsl('square')}) {
+  } else if (capType == ${stringToGlsl('square')}) {
     return squareCapDistanceField(point, start, end, width);
-  } else if (isCap(joinAngle)) {
-    return roundCapDistanceField(point, start, end, width);
-  } else if (joinType == ${stringToGlsl('bevel')}) {
+  }
+  return roundCapDistanceField(point, start, end, width);
+}
+
+float joinDistanceField(vec2 point, vec2 start, vec2 end, float width, float joinAngle, float joinType) {
+  if (joinType == ${stringToGlsl('bevel')}) {
     return bevelJoinField(point, start, end, width, joinAngle);
   } else if (joinType == ${stringToGlsl('miter')}) {
     return miterJoinDistanceField(point, start, end, width, joinAngle);
   }
   return roundJoinDistanceField(point, start, end, width);
+}
+
+float computeSegmentPointDistance(vec2 point, vec2 start, vec2 end, float width, float joinAngle, float capType, float joinType) {
+  if (isCap(joinAngle)) {
+    return capDistanceField(point, start, end, width, capType);
+  }
+  return joinDistanceField(point, start, end, width, joinAngle, joinType);
 }
 
 void main(void) {
@@ -803,10 +814,8 @@ void main(void) {
   vec2 segmentNormal = vec2(-segmentTangent.y, segmentTangent.x);
   vec2 startToPoint = currentPoint - v_segmentStart;
   float currentLengthPx = max(0., min(dot(segmentTangent, startToPoint), segmentLength)) + v_distanceOffsetPx; 
-  float currentRadiusPx = dot(segmentNormal, startToPoint) + v_distanceOffsetPx;
-
+  float currentRadiusPx = abs(dot(segmentNormal, startToPoint));
   vec4 color = ${this.strokeColorExpression_} * u_globalAlpha;
-  
   float capType = ${this.strokeCapExpression_};
   float joinType = ${this.strokeJoinExpression_};
   float segmentStartDistance = computeSegmentPointDistance(currentPoint, v_segmentStart, v_segmentEnd, v_width, v_angleStart, capType, joinType);

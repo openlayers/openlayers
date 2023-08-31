@@ -701,7 +701,7 @@ describe('ol.webgl.styleparser', () => {
             '(u_var_miterLimit - 10.0)'
           );
           expect(result.builder.strokeDistanceFieldExpression_).to.eql(
-            'dashDistanceField_450289113(currentLengthPx + (u_time * 5.0))'
+            'dashDistanceField_450289113(currentLengthPx + (u_time * 5.0), currentRadiusPx, capType)'
           );
           expect(Object.keys(result.attributes).length).to.eql(3);
           expect(result.attributes).to.have.property('intensity');
@@ -716,13 +716,13 @@ describe('ol.webgl.styleparser', () => {
             'float getSingleDashDistance'
           );
           expect(result.builder.fragmentShaderFunctions_).to
-            .contain(`float dashDistanceField_450289113(float distance) {
+            .contain(`float dashDistanceField_450289113(float distance, float radius, float capType) {
   float dashLength0 = (v_size * 10.0);
   float dashLength1 = (v_size * 20.0);
   float dashLength2 = 5.0;
   float dashLength3 = (v_size * 20.0);
   float totalDashLength = dashLength0 + dashLength1 + dashLength2 + dashLength3;
-  return min(getSingleDashDistance(distance, 0., dashLength0 , totalDashLength), getSingleDashDistance(distance, 0. + dashLength0 + dashLength1, dashLength2, totalDashLength));
+  return min(getSingleDashDistance(distance, radius, 0., dashLength0, totalDashLength, capType), getSingleDashDistance(distance, radius, 0. + dashLength0 + dashLength1, dashLength2, totalDashLength, capType));
 }`);
         });
       });
