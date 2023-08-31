@@ -356,6 +356,12 @@ class WebGLHelper extends Disposable {
      */
     this.currentProgram_ = null;
 
+    /**
+     * @private
+     * @type boolean
+     */
+    this.needsToBeRecreated_ = false;
+
     const canvas = this.gl_.canvas;
 
     canvas.addEventListener(
@@ -1046,18 +1052,31 @@ class WebGLHelper extends Disposable {
 
   /**
    * WebGL context was lost
+   * @param {WebGLContextEvent} event The context loss event.
    * @private
    */
-  handleWebGLContextLost() {
+  handleWebGLContextLost(event) {
     clear(this.bufferCache_);
     this.currentProgram_ = null;
+
+    event.preventDefault();
   }
 
   /**
    * WebGL context was restored
    * @private
    */
-  handleWebGLContextRestored() {}
+  handleWebGLContextRestored() {
+    this.needsToBeRecreated_ = true;
+  }
+
+  /**
+   * Returns whether this helper needs to be recreated, as the context was lost and then restored.
+   * @return {boolean} Whether this helper needs to be recreated.
+   */
+  needsToBeRecreated() {
+    return this.needsToBeRecreated_;
+  }
 
   /**
    * Will create or reuse a given webgl texture and apply the given size. If no image data
