@@ -172,6 +172,12 @@ class ImageSource extends Source {
      * @type {number}
      */
     this.wantedResolution_;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.static_ = options.loader ? options.loader.length === 0 : false;
   }
 
   /**
@@ -263,18 +269,19 @@ class ImageSource extends Source {
     if (this.loader) {
       const requestExtent = getRequestExtent(extent, resolution, pixelRatio, 1);
       const requestResolution = this.findNearestResolution(resolution);
-      if (this.image) {
-        if (
-          ((this.wantedExtent_ &&
+      if (
+        this.image &&
+        (this.static_ ||
+          (((this.wantedExtent_ &&
             containsExtent(this.wantedExtent_, requestExtent)) ||
             containsExtent(this.image.getExtent(), requestExtent)) &&
-          ((this.wantedResolution_ &&
-            fromResolutionLike(this.wantedResolution_) === requestResolution) ||
-            fromResolutionLike(this.image.getResolution()) ===
-              requestResolution)
-        ) {
-          return this.image;
-        }
+            ((this.wantedResolution_ &&
+              fromResolutionLike(this.wantedResolution_) ===
+                requestResolution) ||
+              fromResolutionLike(this.image.getResolution()) ===
+                requestResolution)))
+      ) {
+        return this.image;
       }
       this.wantedExtent_ = requestExtent;
       this.wantedResolution_ = requestResolution;

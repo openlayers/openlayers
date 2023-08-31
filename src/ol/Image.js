@@ -37,7 +37,8 @@ import {toPromise} from './functions.js';
 
 /**
  * Loader function used for image sources. Receives extent, resolution and pixel ratio as arguments.
- * The function returns an {@link import("./DataTile.js").ImageLike image}, an
+ * For images that cover any extent and resolution (static images), the loader function should not accept
+ * any arguments. The function returns an {@link import("./DataTile.js").ImageLike image}, an
  * {@link import("./Image.js").ImageObject image object}, or a promise for the same.
  * For loaders that generate images, the promise should not resolve until the image is loaded.
  * If the returned image does not match the extent, resolution or pixel ratio passed to the loader,
