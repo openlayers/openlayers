@@ -189,7 +189,8 @@ class MixedGeometryBatch {
           multiPolygonGeom.getFlatCoordinates(),
           multiPolygonGeom.getEndss(),
           feature,
-          getUid(feature)
+          getUid(feature),
+          multiPolygonGeom.getStride()
         );
         break;
       case 'MultiLineString':
@@ -202,7 +203,8 @@ class MixedGeometryBatch {
           multiLineGeom.getFlatCoordinates(),
           multiLineGeom.getEnds(),
           feature,
-          getUid(feature)
+          getUid(feature),
+          multiLineGeom.getStride()
         );
         break;
       case 'MultiPoint':
@@ -215,7 +217,8 @@ class MixedGeometryBatch {
           multiPointGeom.getFlatCoordinates(),
           null,
           feature,
-          getUid(feature)
+          getUid(feature),
+          multiPointGeom.getStride()
         );
         break;
       case 'Polygon':
@@ -226,7 +229,8 @@ class MixedGeometryBatch {
           polygonGeom.getFlatCoordinates(),
           polygonGeom.getEnds(),
           feature,
-          getUid(feature)
+          getUid(feature),
+          polygonGeom.getStride()
         );
         break;
       case 'Point':
@@ -236,7 +240,8 @@ class MixedGeometryBatch {
           pointGeom.getFlatCoordinates(),
           null,
           feature,
-          getUid(feature)
+          getUid(feature),
+          pointGeom.getStride()
         );
         break;
       case 'LineString':
@@ -249,7 +254,8 @@ class MixedGeometryBatch {
           lineGeom.getFlatCoordinates(),
           null,
           feature,
-          getUid(feature)
+          getUid(feature),
+          lineGeom.getStride()
         );
         break;
       default:
@@ -263,9 +269,10 @@ class MixedGeometryBatch {
    * @param {Array<number> | Array<Array<number>> | null} ends Coordinate ends
    * @param {Feature|RenderFeature} feature Feature
    * @param {string} featureUid Feature uid
+   * @param {number} stride Stride
    * @private
    */
-  addCoordinates_(type, flatCoords, ends, feature, featureUid) {
+  addCoordinates_(type, flatCoords, ends, feature, featureUid, stride) {
     /** @type {number} */
     let verticesCount;
     switch (type) {
@@ -278,17 +285,17 @@ class MixedGeometryBatch {
             ? prevPolygonEnds[prevPolygonEnds.length - 1]
             : 0;
           const endIndex = polygonEnds[polygonEnds.length - 1];
-          const polygonCoords = flatCoords.slice(startIndex, endIndex);
           polygonEnds =
             startIndex > 0
               ? polygonEnds.map((end) => end - startIndex)
               : polygonEnds;
           this.addCoordinates_(
             'Polygon',
-            polygonCoords,
+            flatCoords.slice(startIndex, endIndex),
             polygonEnds,
             feature,
-            featureUid
+            featureUid,
+            stride
           );
         }
         break;
@@ -296,24 +303,25 @@ class MixedGeometryBatch {
         const multiLineEnds = /** @type {Array<number>} */ (ends);
         for (let i = 0, ii = multiLineEnds.length; i < ii; i++) {
           const startIndex = i > 0 ? multiLineEnds[i - 1] : 0;
-          const ringCoords = flatCoords.slice(startIndex, multiLineEnds[i]);
           this.addCoordinates_(
             'LinearRing',
-            ringCoords,
+            flatCoords.slice(startIndex, multiLineEnds[i]),
             null,
             feature,
-            featureUid
+            featureUid,
+            stride
           );
         }
         break;
       case 'MultiPoint':
-        for (let i = 0, ii = flatCoords.length; i < ii; i += 2) {
+        for (let i = 0, ii = flatCoords.length; i < ii; i += stride) {
           this.addCoordinates_(
             'Point',
             flatCoords.slice(i, i + 2),
             null,
             feature,
-            featureUid
+            featureUid,
+            null
           );
         }
         break;
@@ -324,21 +332,28 @@ class MixedGeometryBatch {
           const ringStartIndex = polygonEnds[i - 1];
           if (
             i > 0 &&
-            linearRingIsClockwise(flatCoords, ringStartIndex, polygonEnds[i], 2)
+            linearRingIsClockwise(
+              flatCoords,
+              ringStartIndex,
+              polygonEnds[i],
+              stride
+            )
           ) {
             this.addCoordinates_(
               'Polygon',
               flatCoords.slice(0, ringStartIndex),
               polygonEnds.slice(0, i),
               feature,
-              featureUid
+              featureUid,
+              stride
             );
             this.addCoordinates_(
               'Polygon',
               flatCoords.slice(ringStartIndex),
               polygonEnds.slice(i).map((end) => end - polygonEnds[i - 1]),
               feature,
-              featureUid
+              featureUid,
+              stride
             );
             return;
           }
@@ -352,15 +367,17 @@ class MixedGeometryBatch {
             ringsVerticesCounts: [],
           };
         }
-        verticesCount = flatCoords.length / 2;
+        verticesCount = flatCoords.length / stride;
         const ringsCount = ends.length;
         const ringsVerticesCount = ends.map((end, ind, arr) =>
-          ind > 0 ? (end - arr[ind - 1]) / 2 : end / 2
+          ind > 0 ? (end - arr[ind - 1]) / stride : end / stride
         );
         this.polygonBatch.verticesCount += verticesCount;
         this.polygonBatch.ringsCount += ringsCount;
         this.polygonBatch.geometriesCount++;
-        this.polygonBatch.entries[featureUid].flatCoordss.push(flatCoords);
+        this.polygonBatch.entries[featureUid].flatCoordss.push(
+          getFlatCoordinatesXY(flatCoords, stride)
+        );
         this.polygonBatch.entries[featureUid].ringsVerticesCounts.push(
           ringsVerticesCount
         );
@@ -368,13 +385,13 @@ class MixedGeometryBatch {
         this.polygonBatch.entries[featureUid].ringsCount += ringsCount;
         for (let i = 0, ii = polygonEnds.length; i < ii; i++) {
           const startIndex = i > 0 ? polygonEnds[i - 1] : 0;
-          const ringCoords = flatCoords.slice(startIndex, polygonEnds[i]);
           this.addCoordinates_(
             'LinearRing',
-            ringCoords,
+            flatCoords.slice(startIndex, polygonEnds[i]),
             null,
             feature,
-            featureUid
+            featureUid,
+            stride
           );
         }
         break;
@@ -397,10 +414,12 @@ class MixedGeometryBatch {
             verticesCount: 0,
           };
         }
-        verticesCount = flatCoords.length / 2;
+        verticesCount = flatCoords.length / stride;
         this.lineStringBatch.verticesCount += verticesCount;
         this.lineStringBatch.geometriesCount++;
-        this.lineStringBatch.entries[featureUid].flatCoordss.push(flatCoords);
+        this.lineStringBatch.entries[featureUid].flatCoordss.push(
+          getFlatCoordinatesXY(flatCoords, stride)
+        );
         this.lineStringBatch.entries[featureUid].verticesCount += verticesCount;
         break;
       default:
@@ -442,6 +461,18 @@ class MixedGeometryBatch {
     this.pointBatch.entries = {};
     this.pointBatch.geometriesCount = 0;
   }
+}
+
+/**
+ * @param {Array<number>} flatCoords Flat coords
+ * @param {number} stride Stride
+ * @return {Array<number>} Flat coords with only XY components
+ */
+function getFlatCoordinatesXY(flatCoords, stride) {
+  if (stride === 2) {
+    return flatCoords;
+  }
+  return flatCoords.filter((v, i) => i % stride < 2);
 }
 
 export default MixedGeometryBatch;

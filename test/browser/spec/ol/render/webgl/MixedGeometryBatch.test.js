@@ -553,7 +553,7 @@ describe('MixedGeometryBatch', function () {
           verticesCount: 24,
         });
       });
-      it('puts the points in the linestring batch', () => {
+      it('puts the points in the point batch', () => {
         const uid = getUid(feature);
         expect(mixedBatch.pointBatch.entries[uid]).to.eql({
           feature: feature,
@@ -721,6 +721,92 @@ describe('MixedGeometryBatch', function () {
         const keys = Object.keys(mixedBatch.pointBatch.entries);
         expect(keys).to.have.length(0);
         expect(mixedBatch.pointBatch.geometriesCount).to.be(0);
+      });
+    });
+  });
+
+  describe('geometries with XYM layout', () => {
+    let feature, geomCollection, multiPolygon, multiPoint, multiLine;
+
+    beforeEach(() => {
+      multiPoint = new MultiPoint([
+        [101, 102, 10],
+        [201, 202, 20],
+        [301, 302, 30],
+      ]);
+      multiLine = new MultiLineString([
+        [
+          [0, 1, 0],
+          [2, 3, 0],
+          [4, 5, 0],
+          [6, 7, 0],
+        ],
+      ]);
+      multiPolygon = new MultiPolygon([
+        [
+          [
+            [0, 1, 0],
+            [2, 3, 0],
+            [4, 5, 0],
+            [60, 7, 0],
+          ],
+        ],
+      ]);
+      geomCollection = new GeometryCollection([
+        multiPolygon,
+        multiLine,
+        multiPoint,
+      ]);
+      feature = new Feature({
+        geometry: geomCollection,
+      });
+      mixedBatch.addFeature(feature);
+    });
+
+    describe('#addFeature', () => {
+      it('puts the polygons in the polygon batch', () => {
+        const uid = getUid(feature);
+        expect(mixedBatch.polygonBatch.entries[uid]).to.eql({
+          feature: feature,
+          flatCoordss: [[0, 1, 2, 3, 4, 5, 60, 7]],
+          verticesCount: 4,
+          ringsCount: 1,
+          ringsVerticesCounts: [[4]],
+        });
+      });
+      it('puts the polygon rings and linestrings in the linestring batch', () => {
+        const uid = getUid(feature);
+        expect(mixedBatch.lineStringBatch.entries[uid]).to.eql({
+          feature: feature,
+          flatCoordss: [
+            [0, 1, 2, 3, 4, 5, 60, 7],
+            [0, 1, 2, 3, 4, 5, 6, 7],
+          ],
+          verticesCount: 8,
+        });
+      });
+      it('puts the points in the point batch', () => {
+        const uid = getUid(feature);
+        expect(mixedBatch.pointBatch.entries[uid]).to.eql({
+          feature: feature,
+          flatCoordss: [
+            [101, 102],
+            [201, 202],
+            [301, 302],
+          ],
+        });
+      });
+      it('computes the aggregated metrics on all polygons', () => {
+        expect(mixedBatch.polygonBatch.verticesCount).to.be(4);
+        expect(mixedBatch.polygonBatch.ringsCount).to.be(1);
+        expect(mixedBatch.polygonBatch.geometriesCount).to.be(1);
+      });
+      it('computes the aggregated metrics on all linestring', () => {
+        expect(mixedBatch.lineStringBatch.verticesCount).to.be(8);
+        expect(mixedBatch.lineStringBatch.geometriesCount).to.be(2);
+      });
+      it('computes the aggregated metrics on all points', () => {
+        expect(mixedBatch.pointBatch.geometriesCount).to.be(3);
       });
     });
   });
