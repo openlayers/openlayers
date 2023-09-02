@@ -56,7 +56,7 @@ class WebGLVectorTileLayer extends VectorTile {
             size: 1,
             callback: (feature) => {
               const style = this.getStyle()(feature, 1)[0];
-              return style?.getStroke()?.getWidth() || 0;
+              return style?.getStroke()?.getWidth() * 2 || 0;
             },
           },
         },

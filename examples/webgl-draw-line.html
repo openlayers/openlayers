@@ -1,0 +1,68 @@
+---
+layout: example.html
+title: Draw lines rendered with WebGL
+shortdesc: Example showing how stroke styling options are represented with the WebGL renderer
+docs: >
+  This example lets you tweak the stroke styling options dynamically to see how they affect line rendering. The line string showing by default can be modified and new ones can be drawn by single-clicking on the map.
+tags: "draw, vector, webgl, line, dash"
+---
+<div id="map" class="map"></div>
+<form>
+  <div class="form-group">Cap type &nbsp;
+    <label class="radio-inline">
+      <input type="radio" class="uniform" name="capType" value="butt" checked/> <code>butt</code>&nbsp;
+    </label>
+    <label class="radio-inline">
+      <input type="radio" class="uniform" name="capType" value="round"/> <code>round</code>&nbsp;
+    </label>
+    <label class="radio-inline">
+      <input type="radio" class="uniform" name="capType" value="square"/> <code>square</code>&nbsp;
+    </label>
+  </div>
+  <div class="form-group">Join type &nbsp;
+    <label class="radio-inline">
+      <input type="radio" class="uniform" name="joinType" value="miter" checked/> <code>miter</code>&nbsp;
+    </label>
+    <label class="radio-inline">
+      <input type="radio" class="uniform" name="joinType" value="round"/> <code>round</code>&nbsp;
+    </label>
+    <label class="radio-inline">
+      <input type="radio" class="uniform" name="joinType" value="bevel"/> <code>bevel</code>&nbsp;
+    </label>
+  </div>
+  <div class="form-group">
+    <label>
+      Line width (pixels)
+      <input type="range" class="uniform" name="width" min="1" max="40" value="8">
+    </label>
+    <span id="value-width">12</span>
+  </div>
+  <div class="form-group">
+    <label>
+      Miter limit (ratio)
+      <input type="range" class="uniform" name="miterLimit" min="1" max="20" value="10" step="0.1">
+    </label>
+    <span id="value-miterLimit">10</span>
+  </div>
+  <div class="form-group">
+    <label>
+      Line offset (pixels)
+      <input type="range" class="uniform" name="offset" min="-40" max="40" value="0">
+    </label>
+    <span id="value-offset">0</span>
+  </div>
+  <div class="form-group">
+    <label>
+      Line dash pattern (px)
+      <input type="number" class="uniform" name="dashLength1" min="0" max="100" value="25">
+      <input type="number" class="uniform" name="dashLength2" min="0" max="100" value="15">
+      <input type="number" class="uniform" name="dashLength3" min="0" max="100" value="15">
+      <input type="number" class="uniform" name="dashLength4" min="0" max="100" value="15">
+    </label>
+  </div>
+  <label>
+    Line dash offset (pixels)
+    <input type="range" class="uniform" name="dashOffset" min="-200" max="200" value="0">
+  </label>
+  <span id="value-dashOffset">0</span>
+</form>

@@ -12,6 +12,7 @@ import {
   arrayToGlsl,
   colorToGlsl,
   expressionToGlsl,
+  getStringNumberEquivalent,
   getValueType,
   isTypeUnique,
   numberToGlsl,
@@ -65,21 +66,22 @@ describe('ol/style/expressions', function () {
   });
 
   describe('stringToGlsl', function () {
-    let context;
-    beforeEach(function () {
-      context = {
-        stringLiteralsMap: {},
-        functions: {},
-        style: {},
-      };
-    });
-
     it('maps input string to stable numbers', function () {
-      expect(stringToGlsl(context, 'abcd')).to.eql('0.0');
-      expect(stringToGlsl(context, 'defg')).to.eql('1.0');
-      expect(stringToGlsl(context, 'hijk')).to.eql('2.0');
-      expect(stringToGlsl(context, 'abcd')).to.eql('0.0');
-      expect(stringToGlsl(context, 'def')).to.eql('3.0');
+      expect(stringToGlsl('abcd')).to.eql(
+        numberToGlsl(getStringNumberEquivalent('abcd'))
+      );
+      expect(stringToGlsl('defg')).to.eql(
+        numberToGlsl(getStringNumberEquivalent('defg'))
+      );
+      expect(stringToGlsl('hijk')).to.eql(
+        numberToGlsl(getStringNumberEquivalent('hijk'))
+      );
+      expect(stringToGlsl('abcd')).to.eql(
+        numberToGlsl(getStringNumberEquivalent('abcd'))
+      );
+      expect(stringToGlsl('def')).to.eql(
+        numberToGlsl(getStringNumberEquivalent('def'))
+      );
     });
   });
 
@@ -220,7 +222,6 @@ describe('ol/style/expressions', function () {
       context = {
         variables: [],
         attributes: [],
-        stringLiteralsMap: {},
         functions: {},
         style: {
           variables: {
@@ -306,7 +307,7 @@ describe('ol/style/expressions', function () {
         '(10.0 == a_attr4)'
       );
       expect(expressionToGlsl(context, ['==', 'red', ['get', 'attr5']])).to.eql(
-        `(${stringToGlsl(context, 'red')} == a_attr5)`
+        `(${stringToGlsl('red')} == a_attr5)`
       );
       expect(expressionToGlsl(context, ['!=', 10, ['get', 'attr4']])).to.eql(
         '(10.0 != a_attr4)'
@@ -354,7 +355,7 @@ describe('ol/style/expressions', function () {
 
     it('gives precedence to the string type unless asked otherwise', function () {
       expect(expressionToGlsl(context, 'lightgreen', ValueTypes.ANY)).to.eql(
-        '0.0'
+        stringToGlsl('lightgreen')
       );
       expect(expressionToGlsl(context, 'lightgreen', ValueTypes.COLOR)).to.eql(
         'vec4(0.5647058823529412, 0.9333333333333333, 0.5647058823529412, 1.0)'
@@ -437,7 +438,6 @@ describe('ol/style/expressions', function () {
       context = {
         variables: [],
         attributes: [],
-        stringLiteralsMap: {},
         functions: {},
         style: {},
       };
@@ -557,7 +557,6 @@ describe('ol/style/expressions', function () {
       context = {
         variables: [],
         attributes: [],
-        stringLiteralsMap: {},
         functions: {},
         style: {},
       };
@@ -687,7 +686,7 @@ describe('ol/style/expressions', function () {
 
     it('correctly parses the expression (strings)', function () {
       function toGlsl(string) {
-        return stringToGlsl(context, string);
+        return stringToGlsl(string);
       }
       expect(
         expressionToGlsl(
@@ -704,7 +703,7 @@ describe('ol/style/expressions', function () {
 
     it('correctly parses the expression (number arrays)', function () {
       function toGlsl(string) {
-        return stringToGlsl(context, string);
+        return stringToGlsl(string);
       }
       expect(
         expressionToGlsl(
@@ -758,7 +757,6 @@ describe('ol/style/expressions', function () {
       context = {
         variables: [],
         attributes: [],
-        stringLiteralsMap: {},
         functions: {},
         style: {
           variables: {
@@ -1007,7 +1005,6 @@ describe('ol/style/expressions', function () {
       context = {
         variables: [],
         attributes: [],
-        stringLiteralsMap: {},
         functions: {},
         style: {},
       };
@@ -1087,9 +1084,9 @@ describe('ol/style/expressions', function () {
       expect(context.functions).to.have.property('operator_in_0');
       expect(context.functions['operator_in_0']).to
         .eql(`bool operator_in_0(float inputValue) {
-  if (inputValue == 0.0) { return true; }
-  if (inputValue == 1.0) { return true; }
-  if (inputValue == 2.0) { return true; }
+  if (inputValue == ${stringToGlsl('abc')}) { return true; }
+  if (inputValue == ${stringToGlsl('def')}) { return true; }
+  if (inputValue == ${stringToGlsl('ghi')}) { return true; }
   return false;
 }`);
     });
@@ -1102,7 +1099,6 @@ describe('ol/style/expressions', function () {
       context = {
         variables: [],
         attributes: [],
-        stringLiteralsMap: {},
         functions: {},
         style: {},
       };
@@ -1159,7 +1155,6 @@ describe('ol/style/expressions', function () {
       context = {
         variables: [],
         attributes: [],
-        stringLiteralsMap: {},
         functions: {},
         style: {
           variables: {
@@ -1242,7 +1237,6 @@ describe('ol/style/expressions', function () {
       context = {
         variables: [],
         attributes: [],
-        stringLiteralsMap: {},
         functions: {},
         style: {
           variables: {

@@ -260,7 +260,6 @@ function printTypes(valueType) {
  * @property {boolean} [inFragmentShader] If false, means the expression output should be made for a vertex shader
  * @property {Array<ParsingContextExternal>} variables External variables used in the expression
  * @property {Array<ParsingContextExternal>} attributes External attributes used in the expression
- * @property {Object<string, number>} stringLiteralsMap This object maps all encountered string values to a number
  * @property {Object<string, string>} functions Lookup of functions used by the style.
  * @property {number} [bandCount] Number of bands per pixel.
  * @property {Array<PaletteTexture>} [paletteTextures] List of palettes used by the style.
@@ -319,30 +318,31 @@ export function colorToGlsl(color) {
   ]);
 }
 
+/** @type {Object<string, number>} */
+const stringToFloatMap = {};
+let stringToFloatCounter = 0;
+
 /**
  * Returns a stable equivalent number for the string literal.
- * @param {ParsingContext} context Parsing context
  * @param {string} string String literal value
  * @return {number} Number equivalent
  */
-export function getStringNumberEquivalent(context, string) {
-  if (context.stringLiteralsMap[string] === undefined) {
-    context.stringLiteralsMap[string] = Object.keys(
-      context.stringLiteralsMap
-    ).length;
+export function getStringNumberEquivalent(string) {
+  if (!(string in stringToFloatMap)) {
+    stringToFloatMap[string] = stringToFloatCounter++;
   }
-  return context.stringLiteralsMap[string];
+  return stringToFloatMap[string];
 }
 
 /**
  * Returns a stable equivalent number for the string literal, for use in shaders. This number is then
  * converted to be a GLSL-compatible string.
- * @param {ParsingContext} context Parsing context
+ * Note: with a float precision of `mediump`, the amount of unique strings supported is 16,777,216
  * @param {string} string String literal value
  * @return {string} GLSL-compatible string containing a number
  */
-export function stringToGlsl(context, string) {
-  return numberToGlsl(getStringNumberEquivalent(context, string));
+export function stringToGlsl(string) {
+  return numberToGlsl(getStringNumberEquivalent(string));
 }
 
 /**
@@ -380,7 +380,7 @@ export function expressionToGlsl(context, value, expectedType) {
   }
 
   if ((possibleType & ValueTypes.STRING) > 0) {
-    return stringToGlsl(context, value.toString());
+    return stringToGlsl(value.toString());
   }
 
   if ((possibleType & ValueTypes.COLOR) > 0) {

@@ -168,6 +168,7 @@ describe('webgl render utils', function () {
   describe('writeLineSegmentToBuffers', function () {
     let vertexArray, indexArray, instructions;
     let instructionsTransform, invertInstructionsTransform;
+    let currentLength;
 
     beforeEach(function () {
       vertexArray = [];
@@ -177,14 +178,14 @@ describe('webgl render utils', function () {
 
       instructionsTransform = createTransform();
       invertInstructionsTransform = createTransform();
-      composeTransform(instructionsTransform, 0, 0, 10, 20, 0, -50, 200);
+      composeTransform(instructionsTransform, 0, 0, 10, 10, 0, -50, 200);
       makeInverseTransform(invertInstructionsTransform, instructionsTransform);
     });
 
     describe('isolated segment', function () {
       beforeEach(function () {
         instructions.set([0, 0, 0, 2, 5, 5, 25, 5]);
-        writeLineSegmentToBuffers(
+        currentLength = writeLineSegmentToBuffers(
           instructions,
           4,
           6,
@@ -193,25 +194,30 @@ describe('webgl render utils', function () {
           vertexArray,
           indexArray,
           [],
-          instructionsTransform,
-          invertInstructionsTransform
+          invertInstructionsTransform,
+          100
         );
       });
+      // we expect 4 vertices (one quad) with 8 attributes each:
+      // Xstart, Ystart, Xend, Yend, joinAngleStart, joinAngleEnd, base distance, vertex number (0..3)
       it('generates a quad for the segment', function () {
-        expect(vertexArray).to.have.length(20);
-        expect(vertexArray).to.eql([
-          5, 5, 25, 5, 0, 5, 5, 25, 5, 100000000, 5, 5, 25, 5, 200000000, 5, 5,
-          25, 5, 300000000,
-        ]);
+        expect(vertexArray).to.have.length(32);
+        expect(vertexArray.slice(0, 8)).to.eql([5, 5, 25, 5, -1, -1, 100, 0]);
+        expect(vertexArray.slice(8, 16)).to.eql([5, 5, 25, 5, -1, -1, 100, 1]);
+        expect(vertexArray.slice(16, 24)).to.eql([5, 5, 25, 5, -1, -1, 100, 2]);
+        expect(vertexArray.slice(24, 32)).to.eql([5, 5, 25, 5, -1, -1, 100, 3]);
         expect(indexArray).to.have.length(6);
         expect(indexArray).to.eql([0, 1, 2, 1, 3, 2]);
+      });
+      it('computes the new current length', () => {
+        expect(currentLength).to.eql(102);
       });
     });
 
     describe('isolated segment with custom attributes', function () {
       beforeEach(function () {
         instructions.set([888, 999, 2, 5, 5, 25, 5]);
-        writeLineSegmentToBuffers(
+        currentLength = writeLineSegmentToBuffers(
           instructions,
           3,
           5,
@@ -220,19 +226,32 @@ describe('webgl render utils', function () {
           vertexArray,
           indexArray,
           [888, 999],
-          instructionsTransform,
-          invertInstructionsTransform
+          invertInstructionsTransform,
+          100
         );
       });
+      // we expect 4 vertices (one quad) with 10 attributes each:
+      // Xstart, Ystart, Xend, Yend, joinAngleStart, joinAngleEnd, base distance, vertex number (0..3), + 2 custom attributes
       it('adds custom attributes in the vertices buffer', function () {
-        expect(vertexArray).to.have.length(28);
-        expect(vertexArray).to.eql([
-          5, 5, 25, 5, 0, 888, 999, 5, 5, 25, 5, 100000000, 888, 999, 5, 5, 25,
-          5, 200000000, 888, 999, 5, 5, 25, 5, 300000000, 888, 999,
+        expect(vertexArray).to.have.length(40);
+        expect(vertexArray.slice(0, 10)).to.eql([
+          5, 5, 25, 5, -1, -1, 100, 0, 888, 999,
+        ]);
+        expect(vertexArray.slice(10, 20)).to.eql([
+          5, 5, 25, 5, -1, -1, 100, 1, 888, 999,
+        ]);
+        expect(vertexArray.slice(20, 30)).to.eql([
+          5, 5, 25, 5, -1, -1, 100, 2, 888, 999,
+        ]);
+        expect(vertexArray.slice(30, 40)).to.eql([
+          5, 5, 25, 5, -1, -1, 100, 3, 888, 999,
         ]);
       });
       it('does not impact indices array', function () {
         expect(indexArray).to.have.length(6);
+      });
+      it('computes the new current length', () => {
+        expect(currentLength).to.eql(102);
       });
     });
 
@@ -248,18 +267,18 @@ describe('webgl render utils', function () {
           vertexArray,
           indexArray,
           [],
-          instructionsTransform,
-          invertInstructionsTransform
+          invertInstructionsTransform,
+          0
         );
       });
       it('generate the correct amount of vertices', () => {
-        expect(vertexArray).to.have.length(20);
+        expect(vertexArray).to.have.length(32);
       });
-      it('correctly encodes the join angle', () => {
-        expect(vertexArray[4]).to.eql(2356);
-        expect(vertexArray[9]).to.eql(100002356);
-        expect(vertexArray[14]).to.eql(200002356);
-        expect(vertexArray[19]).to.eql(300002356);
+      it('correctly encodes the join angles', () => {
+        expect(vertexArray.slice(4, 6)).to.eql([Math.PI / 2, -1]);
+        expect(vertexArray.slice(12, 14)).to.eql([Math.PI / 2, -1]);
+        expect(vertexArray.slice(20, 22)).to.eql([Math.PI / 2, -1]);
+        expect(vertexArray.slice(28, 30)).to.eql([Math.PI / 2, -1]);
       });
       it('does not impact indices array', function () {
         expect(indexArray).to.have.length(6);
@@ -278,27 +297,27 @@ describe('webgl render utils', function () {
           vertexArray,
           indexArray,
           [],
-          instructionsTransform,
-          invertInstructionsTransform
+          invertInstructionsTransform,
+          0
         );
       });
       it('generate the correct amount of vertices', () => {
-        expect(vertexArray).to.have.length(20);
+        expect(vertexArray).to.have.length(32);
       });
       it('correctly encodes the join angle', () => {
-        expect(vertexArray[4]).to.eql(7069);
-        expect(vertexArray[9]).to.eql(100007069);
-        expect(vertexArray[14]).to.eql(200007069);
-        expect(vertexArray[19]).to.eql(300007069);
+        expect(vertexArray.slice(4, 6)).to.eql([(Math.PI * 3) / 2, -1]);
+        expect(vertexArray.slice(12, 14)).to.eql([(Math.PI * 3) / 2, -1]);
+        expect(vertexArray.slice(20, 22)).to.eql([(Math.PI * 3) / 2, -1]);
+        expect(vertexArray.slice(28, 30)).to.eql([(Math.PI * 3) / 2, -1]);
       });
       it('does not impact indices array', function () {
         expect(indexArray).to.have.length(6);
       });
     });
 
-    describe('segment with a point coming after it, join angle < PI', function () {
+    describe('segment with a point coming after it, join angle > PI', function () {
       beforeEach(function () {
-        instructions.set([2, 5, 5, 25, 5, 5, 20]);
+        instructions.set([2, 5, 5, 25, 5, 5, 25]);
         writeLineSegmentToBuffers(
           instructions,
           1,
@@ -308,25 +327,25 @@ describe('webgl render utils', function () {
           vertexArray,
           indexArray,
           [],
-          instructionsTransform,
-          invertInstructionsTransform
+          invertInstructionsTransform,
+          0
         );
       });
       it('generate the correct amount of vertices', () => {
-        expect(vertexArray).to.have.length(20);
+        expect(vertexArray).to.have.length(32);
       });
       it('correctly encodes the join angle', () => {
-        expect(vertexArray[4]).to.eql(88870000);
-        expect(vertexArray[9]).to.eql(188870000);
-        expect(vertexArray[14]).to.eql(288870000);
-        expect(vertexArray[19]).to.eql(388870000);
+        expect(vertexArray.slice(4, 6)).to.eql([-1, (Math.PI * 7) / 4]);
+        expect(vertexArray.slice(12, 14)).to.eql([-1, (Math.PI * 7) / 4]);
+        expect(vertexArray.slice(20, 22)).to.eql([-1, (Math.PI * 7) / 4]);
+        expect(vertexArray.slice(28, 30)).to.eql([-1, (Math.PI * 7) / 4]);
       });
       it('does not impact indices array', function () {
         expect(indexArray).to.have.length(6);
       });
     });
 
-    describe('segment with a point coming after it, join angle > PI', function () {
+    describe('segment with a point coming after it, join angle < PI', function () {
       beforeEach(function () {
         instructions.set([2, 5, 5, 25, 5, 25, -10]);
         writeLineSegmentToBuffers(
@@ -338,18 +357,18 @@ describe('webgl render utils', function () {
           vertexArray,
           indexArray,
           [],
-          instructionsTransform,
-          invertInstructionsTransform
+          invertInstructionsTransform,
+          0
         );
       });
       it('generate the correct amount of vertices', () => {
-        expect(vertexArray).to.have.length(20);
+        expect(vertexArray).to.have.length(32);
       });
       it('correctly encodes join angles', () => {
-        expect(vertexArray[4]).to.eql(23560000);
-        expect(vertexArray[9]).to.eql(123560000);
-        expect(vertexArray[14]).to.eql(223560000);
-        expect(vertexArray[19]).to.eql(323560000);
+        expect(vertexArray.slice(4, 6)).to.eql([-1, Math.PI / 2]);
+        expect(vertexArray.slice(12, 14)).to.eql([-1, Math.PI / 2]);
+        expect(vertexArray.slice(20, 22)).to.eql([-1, Math.PI / 2]);
+        expect(vertexArray.slice(28, 30)).to.eql([-1, Math.PI / 2]);
       });
       it('does not impact indices array', function () {
         expect(indexArray).to.have.length(6);

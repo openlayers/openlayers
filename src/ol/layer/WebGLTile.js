@@ -121,7 +121,6 @@ function parseStyle(style, bandCount) {
     inFragmentShader: true,
     variables: [],
     attributes: [],
-    stringLiteralsMap: {},
     functions: {},
     bandCount: bandCount,
     style: style,
@@ -211,7 +210,7 @@ function parseStyle(style, bandCount) {
     uniforms[uniformName] = function () {
       let value = style.variables[variable.name];
       if (typeof value === 'string') {
-        value = getStringNumberEquivalent(context, value);
+        value = getStringNumberEquivalent(value);
       }
       return value !== undefined ? value : -9999999; // to avoid matching with the first string literal
     };

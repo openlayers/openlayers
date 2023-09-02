@@ -8,6 +8,7 @@ import {
   arrayToGlsl,
   expressionToGlsl,
   getStringNumberEquivalent,
+  stringToGlsl,
   uniformNameForVariable,
 } from '../style/expressions.js';
 import {asArray} from '../color.js';
@@ -266,8 +267,6 @@ function parseShapeProperties(
   vertContext,
   fragContext
 ) {
-  fragContext.functions['PI'] = 'const float PI = 3.141592653589793238;';
-  fragContext.functions['TWO_PI'] = 'const float TWO_PI = 2.0 * PI;';
   fragContext.functions['round'] = `float round(float v) {
   return sign(v) * floor(abs(v) + 0.5);
 }`;
@@ -622,6 +621,105 @@ function parseStrokeProperties(
       expressionToGlsl(vertContext, style['stroke-width'], ValueTypes.NUMBER)
     );
   }
+
+  if ('stroke-offset' in style) {
+    builder.setStrokeOffsetExpression(
+      expressionToGlsl(vertContext, style['stroke-offset'], ValueTypes.NUMBER)
+    );
+  }
+
+  if ('stroke-line-cap' in style) {
+    builder.setStrokeCapExpression(
+      expressionToGlsl(vertContext, style['stroke-line-cap'], ValueTypes.STRING)
+    );
+  }
+
+  if ('stroke-line-join' in style) {
+    builder.setStrokeJoinExpression(
+      expressionToGlsl(
+        vertContext,
+        style['stroke-line-join'],
+        ValueTypes.STRING
+      )
+    );
+  }
+
+  if ('stroke-miter-limit' in style) {
+    builder.setStrokeMiterLimitExpression(
+      expressionToGlsl(
+        vertContext,
+        style['stroke-miter-limit'],
+        ValueTypes.NUMBER
+      )
+    );
+  }
+
+  if ('stroke-line-dash' in style) {
+    fragContext.functions[
+      'getSingleDashDistance'
+    ] = `float getSingleDashDistance(float distance, float radius, float dashOffset, float dashLength, float dashLengthTotal, float capType) {
+  float localDistance = mod(distance, dashLengthTotal);
+  float distanceSegment = abs(localDistance - dashOffset - dashLength * 0.5) - dashLength * 0.5;
+  distanceSegment = min(distanceSegment, dashLengthTotal - localDistance);
+  if (capType == ${stringToGlsl('square')}) {
+    distanceSegment -= v_width * 0.5;
+  } else if (capType == ${stringToGlsl('round')}) {
+    distanceSegment = min(distanceSegment, sqrt(distanceSegment * distanceSegment + radius * radius) - v_width * 0.5);
+  }
+  return distanceSegment;
+}`;
+
+    let dashPattern = style['stroke-line-dash'].map((v) =>
+      expressionToGlsl(fragContext, v, ValueTypes.NUMBER)
+    );
+    // if pattern has odd length, concatenate it with itself to be even
+    if (dashPattern.length % 2 === 1) {
+      dashPattern = [...dashPattern, ...dashPattern];
+    }
+
+    let offsetExpression = '0.';
+    if ('stroke-line-dash-offset' in style) {
+      offsetExpression = expressionToGlsl(
+        vertContext,
+        style['stroke-line-dash-offset'],
+        ValueTypes.NUMBER
+      );
+    }
+
+    // define a function for this dash specifically (identified using a simple hash)
+    // see https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
+    let uniqueDashKey = JSON.stringify(style['stroke-line-dash'])
+      .split('')
+      .reduce((prev, curr) => (prev << 5) - prev + curr.charCodeAt(0), 0);
+    uniqueDashKey = uniqueDashKey >>> 0;
+    const dashFunctionName = `dashDistanceField_${uniqueDashKey}`;
+
+    const dashLengthsDef = dashPattern.map(
+      (v, i) => `float dashLength${i} = ${v};`
+    );
+    const totalLengthDef = dashPattern
+      .map((v, i) => `dashLength${i}`)
+      .join(' + ');
+    let currentDashOffset = '0.';
+    let distanceExpression = `getSingleDashDistance(distance, radius, ${currentDashOffset}, dashLength0, totalDashLength, capType)`;
+    for (let i = 2; i < dashPattern.length; i += 2) {
+      currentDashOffset = `${currentDashOffset} + dashLength${
+        i - 2
+      } + dashLength${i - 1}`;
+      distanceExpression = `min(${distanceExpression}, getSingleDashDistance(distance, radius, ${currentDashOffset}, dashLength${i}, totalDashLength, capType))`;
+    }
+
+    fragContext.functions[
+      dashFunctionName
+    ] = `float ${dashFunctionName}(float distance, float radius, float capType) {
+  ${dashLengthsDef.join('\n  ')}
+  float totalDashLength = ${totalLengthDef};
+  return ${distanceExpression};
+}`;
+    builder.setStrokeDistanceFieldExpression(
+      `${dashFunctionName}(currentLengthPx + ${offsetExpression}, currentRadiusPx, capType)`
+    );
+  }
 }
 
 /**
@@ -671,7 +769,6 @@ export function parseLiteralStyle(style) {
     inFragmentShader: false,
     variables: [],
     attributes: [],
-    stringLiteralsMap: {},
     functions: {},
     style: style,
   };
@@ -683,7 +780,6 @@ export function parseLiteralStyle(style) {
     inFragmentShader: true,
     variables: vertContext.variables,
     attributes: [],
-    stringLiteralsMap: vertContext.stringLiteralsMap,
     functions: {},
     style: style,
   };
@@ -721,7 +817,6 @@ export function parseLiteralStyle(style) {
     if (variable.type === ValueTypes.STRING) {
       callback = () =>
         getStringNumberEquivalent(
-          vertContext,
           /** @type {string} */ (style.variables[variable.name])
         );
     } else if (variable.type === ValueTypes.COLOR) {
@@ -771,7 +866,7 @@ export function parseLiteralStyle(style) {
       callback = attribute.callback;
     } else if (attribute.type === ValueTypes.STRING) {
       callback = (feature) =>
-        getStringNumberEquivalent(vertContext, feature.get(attribute.name));
+        getStringNumberEquivalent(feature.get(attribute.name));
     } else if (attribute.type === ValueTypes.COLOR) {
       callback = (feature) =>
         packColor([...asArray(feature.get(attribute.name) || '#eee')]);
