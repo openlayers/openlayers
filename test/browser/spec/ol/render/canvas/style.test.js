@@ -1,4 +1,6 @@
 import Fill from '../../../../../../src/ol/style/Fill.js';
+import Icon from '../../../../../../src/ol/style/Icon.js';
+import Image from '../../../../../../src/ol/style/Image.js';
 import Stroke from '../../../../../../src/ol/style/Stroke.js';
 import Style from '../../../../../../src/ol/style/Style.js';
 import {
@@ -30,6 +32,14 @@ function expectStyleEquals(style, expected) {
   } else {
     expect(gotStroke).to.be(null);
   }
+
+  const gotImage = style.getImage();
+  const expectedImage = expected.getImage();
+  if (expectedImage) {
+    expectImageEquals(gotImage, expectedImage);
+  } else {
+    expect(gotImage).to.be(null);
+  }
 }
 
 /**
@@ -55,6 +65,30 @@ function expectStrokeEquals(stroke, expected) {
 
   const expectedWidth = expected.getWidth();
   expect(stroke.getWidth()).to.eql(expectedWidth);
+}
+
+/**
+ * @param {Image} image The image symbolizer to test.
+ * @param {Image} expected The expected image symbolizer.
+ */
+function expectImageEquals(image, expected) {
+  expect(image).to.be.a(Image);
+
+  const expectedScale = expected.getScale();
+  expect(image.getScale()).to.eql(expectedScale);
+
+  if (expected instanceof Icon) {
+    if (!(image instanceof Icon)) {
+      throw new Error('Expected image to be an Icon');
+    }
+    const expectedSrc = expected.getSrc();
+    expect(image.getSrc()).to.eql(expectedSrc);
+    return;
+  }
+
+  throw new Error(
+    `Comparison not implemented for ${expected.constructor.name}`
+  );
 }
 
 describe('ol/render/canvas/style.js', () => {
@@ -191,6 +225,41 @@ describe('ol/render/canvas/style.js', () => {
         }),
       },
       {
+        name: 'scaled icon (number)',
+        style: {
+          'icon-src': 'icon.svg',
+          'icon-scale': 2,
+        },
+        expected: new Style({
+          image: new Icon({
+            src: 'icon.svg',
+            scale: 2,
+          }),
+        }),
+      },
+      {
+        name: 'scaled icon (array)',
+        style: {
+          'icon-src': 'icon.svg',
+          'icon-scale': [2, 3],
+        },
+        expected: new Style({
+          image: new Icon({
+            src: 'icon.svg',
+            scale: [2, 3],
+          }),
+        }),
+      },
+      {
+        name: 'scaled icon (string)',
+        style: {
+          'icon-src': 'icon.svg',
+          'icon-scale': 'oops',
+        },
+        error:
+          'Expected expression to be of type number or number[], got string',
+      },
+      {
         name: 'get and var expressions',
         style: {
           'fill-color': ['get', 'color'],
@@ -219,7 +288,21 @@ describe('ol/render/canvas/style.js', () => {
 
     for (const c of cases) {
       it(c.name, () => {
-        const evaluator = buildStyle(c.style, newParsingContext());
+        let error, evaluator;
+        try {
+          evaluator = buildStyle(c.style, newParsingContext());
+        } catch (err) {
+          error = err;
+        }
+
+        if (c.error) {
+          expect(error).to.be.an(Error);
+          expect(error.message).to.be(c.error);
+          return;
+        }
+        if (error) {
+          throw error;
+        }
 
         const context = c.context || newEvaluationContext();
         expectStyleEquals(evaluator(context), c.expected);
