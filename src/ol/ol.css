@@ -109,6 +109,7 @@
 
 .ol-viewport canvas {
   all: unset;
+  overflow: hidden;
 }
 
 .ol-viewport {
