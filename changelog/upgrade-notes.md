@@ -309,6 +309,18 @@ The default `intervals` now align with integer minutes and seconds better suited
 
 Inserting with `setAt` or `insertAt` beyond the current length used to create a sparse Collection with `undefined` inserted for any missing indexes.  This will now throw an error instead.
 
+#### `ol/source/Vector#removeFeature()` returns the removed feature
+
+For consistency with other remove methods such as `map.removeLayer()`, `removeFeature()` now returns the removed feature (or undefined if the feature was not found).
+This could affect its direct use in `forEach` methods which exit on a truthy return, for example
+```js
+map.forEachFeatureAtPixel(pixel, source.removeFeature.bind(source));
+```
+would need to be replaced by
+```js
+map.forEachFeatureAtPixel(pixel, (feature) => { source.removeFeature(feature); });
+```
+
 #### ol/control/MousePosition
 
 The control will now by default keep displaying the last mouse position when the mouse leaves the viewport.  With `placeholder: '&#160;'` you can keep the old behaviour.  The `placeholder` option no longer accepts `false` as a valid value, instead simply omit the option.  The `undefinedHTML` option has been removed. You should use `placeholder` instead.

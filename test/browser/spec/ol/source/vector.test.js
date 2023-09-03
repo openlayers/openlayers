@@ -348,10 +348,11 @@ describe('ol.source.Vector', function () {
       it('works as expected', function () {
         let i;
         for (i = features.length - 1; i >= 0; --i) {
-          vectorSource.removeFeature(features[i]);
+          const result = vectorSource.removeFeature(features[i]);
           expect(vectorSource.getFeaturesInExtent(infiniteExtent)).have.length(
             i
           );
+          expect(result).to.be(features[i]);
         }
       });
 
@@ -377,9 +378,10 @@ describe('ol.source.Vector', function () {
         listen(vectorSource, 'removefeature', removeFeatureListener);
 
         const feature = new Feature(new Point([0, 0]));
-        vectorSource.removeFeature(feature);
+        const result = vectorSource.removeFeature(feature);
         expect(changeListener.called).to.be(false);
         expect(removeFeatureListener.called).to.be(false);
+        expect(result).to.be(undefined);
       });
     });
 
