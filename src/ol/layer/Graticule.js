@@ -33,7 +33,7 @@ import {
   getTransform,
 } from '../proj.js';
 import {getVectorContext} from '../render.js';
-import {meridian, parallel} from '../geom/flat/geodesic.js';
+import {meridian, parallel} from '../geom/flat/geodesic.js';  // altered version
 
 /**
  * @type {Stroke}
@@ -208,12 +208,21 @@ class Graticule extends VectorLayer {
     delete baseOptions.lonLabelStyle;
     delete baseOptions.latLabelStyle;
     delete baseOptions.intervals;
+    delete baseOptions.gridProjection;
     super(baseOptions);
 
     /**
      * @type {import("../proj/Projection.js").default}
      */
     this.projection_ = null;
+
+    /**
+     * @type {Projection|PorjectionLike}
+     * @private
+     */
+    this.gridProjection_ = (options.gridProjection === undefined)?       getProjection('EPSG:4326'):   //default WGS84;
+                           (typeof options.gridProjection === "string")? getProjection(options.gridProjection):
+                           options.gridProjection;
 
     /**
      * @type {number}
@@ -1017,9 +1026,9 @@ class Graticule extends VectorLayer {
     /** @type {Array<number>} **/
     const p2 = [];
     for (let i = 0, ii = this.intervals_.length; i < ii; ++i) {
-      const delta = clamp(this.intervals_[i] / 2, 0, 90);
+      const delta = clamp(this.intervals_[i] / 2, 0, this.maxLat_);
       // Don't attempt to transform latitudes beyond the poles!
-      const clampedLat = clamp(centerLat, -90 + delta, 90 - delta);
+      const clampedLat = clamp(centerLat, this.minLat_ + delta, this.maxLat_ - delta);
       p1[0] = centerLon - delta;
       p1[1] = clampedLat - delta;
       p2[0] = centerLon + delta;
@@ -1050,7 +1059,8 @@ class Graticule extends VectorLayer {
       minLat,
       maxLat,
       this.projection_,
-      squaredTolerance
+      squaredTolerance,
+      this.gridProjection_,
     );
     let lineString = this.meridians_[index];
     if (!lineString) {
@@ -1120,7 +1130,8 @@ class Graticule extends VectorLayer {
       minLon,
       maxLon,
       this.projection_,
-      squaredTolerance
+      squaredTolerance,
+      this.gridProjection_
     );
     let lineString = this.parallels_[index];
     if (!lineString) {
@@ -1179,9 +1190,7 @@ class Graticule extends VectorLayer {
    * @private
    */
   updateProjectionInfo_(projection) {
-    const epsg4326Projection = getProjection('EPSG:4326');
-
-    const worldExtent = projection.getWorldExtent();
+    const worldExtent = this.gridProjection_.getExtent();
 
     this.maxLat_ = worldExtent[3];
     this.maxLon_ = worldExtent[2];
@@ -1191,7 +1200,7 @@ class Graticule extends VectorLayer {
     // If the world extent crosses the dateline define a custom transform to
     // return longitudes which wrap the dateline
 
-    const toLonLatTransform = getTransform(projection, epsg4326Projection);
+    const toLonLatTransform = getTransform(projection, this.gridProjection_);
     if (this.minLon_ < this.maxLon_) {
       this.toLonLatTransform_ = toLonLatTransform;
     } else {
@@ -1216,7 +1225,7 @@ class Graticule extends VectorLayer {
     // Transform the extent to get the limits of the view projection extent
     // which should be available to the graticule
 
-    this.fromLonLatTransform_ = getTransform(epsg4326Projection, projection);
+    this.fromLonLatTransform_ = getTransform(this.gridProjection_, projection);
     const worldExtentP = applyTransform(
       [this.minLon_, this.minLat_, this.maxLon_, this.maxLat_],
       this.fromLonLatTransform_,
@@ -1241,9 +1250,10 @@ class Graticule extends VectorLayer {
     // Some projections may have a void area at the poles
     // so replace any NaN latitudes with the min or max value closest to a pole
 
-    this.projectionCenterLonLat_ = this.toLonLatTransform_(
-      getCenter(projection.getExtent())
-    );
+    this.projectionCenterLonLat_ = this.gridProjection_.getExtent()?
+      getCenter(this.gridProjection_.getExtent()):
+      this.toLonLatTransform_(projection.getExtent());
+
     if (isNaN(this.projectionCenterLonLat_[1])) {
       this.projectionCenterLonLat_[1] =
         Math.abs(this.maxLat_) >= Math.abs(this.minLat_)
