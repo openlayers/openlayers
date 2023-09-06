@@ -28,11 +28,13 @@ const vectorLayer = new VectorLayer({
     url: 'data/kml/states.kml',
     format: new KML({extractStyles: false}),
   }),
-  style: {
-    'fill-color': gradient,
-    'stroke-width': 1,
-    'stroke-color': '#333',
-  },
+  style: new Style({
+    fill: new Fill({color: gradient}),
+    stroke: new Stroke({
+      color: '#333',
+      width: 1,
+    }),
+  }),
 });
 
 const map = new Map({
