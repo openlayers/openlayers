@@ -327,12 +327,12 @@ class MixedGeometryBatch {
         break;
       case 'Polygon':
         const polygonEnds = /** @type {Array<number>} */ (ends);
-        // first look for a CW ring; if so, handle it and following rings as another polygon
+        // first look for a counterclockwise ring; if so, handle it and following rings as another polygon
         for (let i = 1, ii = polygonEnds.length; i < ii; i++) {
           const ringStartIndex = polygonEnds[i - 1];
           if (
             i > 0 &&
-            linearRingIsClockwise(
+            !linearRingIsClockwise(
               flatCoords,
               ringStartIndex,
               polygonEnds[i],
