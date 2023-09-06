@@ -4,6 +4,7 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
 import {DEVICE_PIXEL_RATIO} from '../src/ol/has.js';
+import {Fill, Stroke, Style} from '../src/ol/style.js';
 import {fromLonLat} from '../src/ol/proj.js';
 
 // Gradient and pattern are in canvas pixel space, so we adjust for the
