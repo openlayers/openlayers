@@ -17,5 +17,12 @@ describe('ol.source.StadiaMaps', function () {
       });
       expect(source.getTileGrid().getMaxZoom()).to.be(8);
     });
+
+    it('uses the correct identifier for the outdoors style', function () {
+      const source = new StadiaMaps({
+        layer: 'outdoors',
+      });
+      expect(source.getUrls()[0]).to.contain('/outdoors/');
+    });
   });
 });
