@@ -17,14 +17,17 @@ const context = canvas.getContext('2d');
 function createPattern(color1, color2) {
   // Set equal width and height for diagonal gradient
   // Set width or height 0 for horizontal or vertical gradient
-  const width = 32 * pixelRatio;
+  const width = 16 * pixelRatio;
   const height = width;
   const gradient = context.createLinearGradient(0, 0, width, height);
-  gradient.addColorStop(0, color1);
-  gradient.addColorStop(0.25, color2);
-  gradient.addColorStop(0.5, color1);
-  gradient.addColorStop(0.75, color2);
-  gradient.addColorStop(1, color1);
+  gradient.addColorStop(2 / 16, color1);
+  gradient.addColorStop(3 / 16, color2);
+  gradient.addColorStop(5 / 16, color2);
+  gradient.addColorStop(6 / 16, color1);
+  gradient.addColorStop(10 / 16, color1);
+  gradient.addColorStop(11 / 16, color2);
+  gradient.addColorStop(13 / 16, color2);
+  gradient.addColorStop(14 / 16, color1);
   canvas.width = Math.max(width, 1);
   canvas.height = Math.max(height, 1);
   context.fillStyle = gradient;
