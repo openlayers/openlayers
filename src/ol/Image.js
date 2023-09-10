@@ -296,11 +296,25 @@ export function decodeFallback(image, src) {
   if (src) {
     image.src = src;
   }
-  return image.src && IMAGE_DECODE
-    ? new Promise((resolve, reject) =>
-        image.decode().then(() => resolve(image), reject)
-      )
-    : load(image);
+  if (image.src && IMAGE_DECODE) {
+    let loaded = false;
+    const listener = () => {
+      loaded = true;
+      image.removeEventListener('load', listener);
+    };
+    image.addEventListener('load', listener);
+    return image
+      .decode()
+      .then(() => image)
+      .catch((e) => {
+        if (loaded) {
+          return image;
+        }
+        listener();
+        return Promise.reject(e.message);
+      });
+  }
+  return load(image);
 }
 
 /**
@@ -316,9 +330,25 @@ export function decode(image, src) {
   if (src) {
     image.src = src;
   }
-  return image.src && IMAGE_DECODE && CREATE_IMAGE_BITMAP
-    ? image.decode().then(() => createImageBitmap(image))
-    : decodeFallback(image);
+  if (image.src && IMAGE_DECODE && CREATE_IMAGE_BITMAP) {
+    let loaded = false;
+    const listener = () => {
+      loaded = true;
+      image.removeEventListener('load', listener);
+    };
+    image.addEventListener('load', listener);
+    return image
+      .decode()
+      .then(() => createImageBitmap(image))
+      .catch((e) => {
+        if (loaded) {
+          return image;
+        }
+        listener();
+        return Promise.reject(e.message);
+      });
+  }
+  return decodeFallback(image);
 }
 
 export default ImageWrapper;
