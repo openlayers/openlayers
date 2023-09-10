@@ -72,6 +72,37 @@ const ndvi = {
   ],
 };
 
+const ndviPalettePlasma = {
+  color: [
+    'palette',
+    [
+      'interpolate',
+      ['linear'],
+      ['/', ['-', nir, red], ['+', nir, red]],
+      -0.2,
+      0,
+      0.65,
+      4,
+    ],
+    ['#0d0887', '#7e03a8', '#cb4778', '#f89540', '#f0f921'],
+  ],
+};
+const ndviPaletteViridis = {
+  color: [
+    'palette',
+    [
+      'interpolate',
+      ['linear'],
+      ['/', ['-', nir, red], ['+', nir, red]],
+      -0.2,
+      0,
+      0.65,
+      4,
+    ],
+    ['#440154', '#3b528b', '#21918c', '#5ec962', '#fde725'],
+  ],
+};
+
 const layer = new TileLayer({
   style: trueColor,
   source: new GeoTIFF({
@@ -95,7 +126,14 @@ const map = new Map({
   }),
 });
 
-const styles = {trueColor, falseColor, ndvi};
+const styles = {
+  trueColor,
+  falseColor,
+  ndvi,
+  ndviPalettePlasma,
+  ndviPaletteViridis,
+};
+
 const styleSelector = document.getElementById('style');
 
 function update() {
