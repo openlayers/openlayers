@@ -35,12 +35,8 @@ const map = new Map({
 });
 
 const info = document.getElementById('info');
+info.style.visibility = 'hidden';
 info.style.pointerEvents = 'none';
-info.style.backgroundColor = 'red';
-info.style.width = 'auto';
-info.style.height = 'auto';
-info.style.display = 'block';
-const tooltip = new bootstrap.Tooltip(info, {offset: [0, 5]});
 
 let currentFeature;
 const displayFeatureInfo = function (pixel, target) {
@@ -50,25 +46,21 @@ const displayFeatureInfo = function (pixel, target) {
         return feature;
       });
   if (feature) {
-    info.style.left = pixel[0] + 10 + 'px';
+    info.style.left = pixel[0] + 'px';
     info.style.top = pixel[1] + 'px';
     if (feature !== currentFeature) {
+      info.style.visibility = 'visible';
       info.innerText = feature.get('ECO_NAME');
     }
-    if (currentFeature) {
-      tooltip.update();
-    } else {
-      tooltip.show();
-    }
   } else {
-    info.innerText = '';
+    info.style.visibility = 'hidden';
   }
   currentFeature = feature;
 };
 
 map.on('pointermove', function (evt) {
   if (evt.dragging) {
-    tooltip.hide();
+    info.style.display = 'none';
     currentFeature = undefined;
     return;
   }
@@ -81,6 +73,5 @@ map.on('click', function (evt) {
 });
 
 map.getTargetElement().addEventListener('pointerleave', function () {
-  tooltip.hide();
   currentFeature = undefined;
 });
