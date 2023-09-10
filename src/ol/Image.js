@@ -298,7 +298,12 @@ export function decodeFallback(image, src) {
   }
   return image.src && IMAGE_DECODE
     ? new Promise((resolve, reject) =>
-        image.decode().then(() => resolve(image), reject)
+        image
+          .decode()
+          .then(() => resolve(image))
+          .catch((e) =>
+            image.complete && image.width ? resolve(image) : reject(e)
+          )
       )
     : load(image);
 }
@@ -317,7 +322,15 @@ export function decode(image, src) {
     image.src = src;
   }
   return image.src && IMAGE_DECODE && CREATE_IMAGE_BITMAP
-    ? image.decode().then(() => createImageBitmap(image))
+    ? image
+        .decode()
+        .then(() => createImageBitmap(image))
+        .catch((e) => {
+          if (image.complete && image.width) {
+            return image;
+          }
+          throw e;
+        })
     : decodeFallback(image);
 }
 
