@@ -311,7 +311,7 @@ export function decodeFallback(image, src) {
           return image;
         }
         listener();
-        return Promise.reject(e.message);
+        return Promise.reject(e);
       });
   }
   return load(image);
@@ -345,7 +345,7 @@ export function decode(image, src) {
           return image;
         }
         listener();
-        return Promise.reject(e.message);
+        return Promise.reject(e);
       });
   }
   return decodeFallback(image);
