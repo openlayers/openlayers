@@ -7,6 +7,14 @@ docs: >
   The view center, zoom level, and rotation will be reflected in the URL as you
   navigate around the map.  Layer visibility is also reflected in the URL.
   Reloading the page restores the map view state.
+
+  The interaction can also be used to track other parts of your application state.
+  For example, toggling the checkbox below updates the URL.  Navigating back through
+  history will also update the state of the checkbox.
 tags: "link, permalink, url, query, search, params"
 ---
 <div id="map" class="map"></div>
+<label>
+  <input type="checkbox" id="example-checkbox">
+  See the <code>example</code> search parameter update when toggling this checkbox.
+</label>

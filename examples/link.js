@@ -17,4 +17,22 @@ const map = new Map({
   }),
 });
 
-map.addInteraction(new Link());
+const link = new Link();
+
+const exampleCheckbox = document.getElementById('example-checkbox');
+exampleCheckbox.addEventListener('change', function () {
+  if (exampleCheckbox.checked) {
+    link.update('example', 'checked');
+  } else {
+    // updating to null will remove the param from the URL
+    link.update('example', null);
+  }
+});
+
+const initialValue = link.track('example', (newValue) => {
+  exampleCheckbox.checked = newValue === 'checked';
+});
+
+exampleCheckbox.checked = initialValue === 'checked';
+
+map.addInteraction(link);
