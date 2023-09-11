@@ -100,20 +100,26 @@ class MixedGeometryBatch {
 
   /**
    * @param {Array<Feature|RenderFeature>} features Array of features to add to the batch
+   * @param {import("../../proj.js").TransformFunction} [projectionTransform] Projection transform.
    */
-  addFeatures(features) {
+  addFeatures(features, projectionTransform) {
     for (let i = 0; i < features.length; i++) {
-      this.addFeature(features[i]);
+      this.addFeature(features[i], projectionTransform);
     }
   }
 
   /**
    * @param {Feature|RenderFeature} feature Feature to add to the batch
+   * @param {import("../../proj.js").TransformFunction} [projectionTransform] Projection transform.
    */
-  addFeature(feature) {
-    const geometry = feature.getGeometry();
+  addFeature(feature, projectionTransform) {
+    let geometry = feature.getGeometry();
     if (!geometry) {
       return;
+    }
+    if (projectionTransform) {
+      geometry = geometry.clone();
+      geometry.applyTransform(projectionTransform);
     }
     this.addGeometry_(geometry, feature);
   }

@@ -20,6 +20,12 @@ import {
   setFromArray as setFromTransform,
   translate as translateTransform,
 } from '../../transform.js';
+import {
+  getTransformFromProjections,
+  getUserProjection,
+  toUserExtent,
+  toUserResolution,
+} from '../../proj.js';
 import {listen, unlistenByKey} from '../../events.js';
 
 export const Uniforms = {
@@ -120,13 +126,39 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
      */
     this.batch_ = new MixedGeometryBatch();
 
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.initialFeaturesAdded_ = false;
+
+    /**
+     * @private
+     * @type {Array<import("../../events.js").EventsKey|null>}
+     */
+    this.sourceListenKeys_ = null;
+  }
+
+  /**
+   * @private
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   */
+  addInitialFeatures_(frameState) {
     const source = this.getLayer().getSource();
-    this.batch_.addFeatures(source.getFeatures());
+    const userProjection = getUserProjection();
+    let projectionTransform;
+    if (userProjection) {
+      projectionTransform = getTransformFromProjections(
+        userProjection,
+        frameState.viewState.projection
+      );
+    }
+    this.batch_.addFeatures(source.getFeatures(), projectionTransform);
     this.sourceListenKeys_ = [
       listen(
         source,
         VectorEventType.ADDFEATURE,
-        this.handleSourceFeatureAdded_,
+        this.handleSourceFeatureAdded_.bind(this, projectionTransform),
         this
       ),
       listen(
@@ -183,12 +215,13 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
+   * @param {import("../../proj.js").TransformFunction} projectionTransform Transform function.
    * @param {import("../../source/Vector.js").VectorSourceEvent} event Event.
    * @private
    */
-  handleSourceFeatureAdded_(event) {
+  handleSourceFeatureAdded_(projectionTransform, event) {
     const feature = event.feature;
-    this.batch_.addFeature(feature);
+    this.batch_.addFeature(feature, projectionTransform);
   }
 
   /**
@@ -300,6 +333,11 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrameInternal(frameState) {
+    if (!this.initialFeaturesAdded_) {
+      this.addInitialFeatures_(frameState);
+      this.initialFeaturesAdded_ = true;
+    }
+
     const layer = this.getLayer();
     const vectorSource = layer.getSource();
     const viewState = frameState.viewState;
@@ -320,7 +358,17 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       const renderBuffer =
         layer instanceof BaseVector ? layer.getRenderBuffer() : 0;
       const extent = buffer(frameState.extent, renderBuffer * resolution);
-      vectorSource.loadFeatures(extent, resolution, projection);
+
+      const userProjection = getUserProjection();
+      if (userProjection) {
+        vectorSource.loadFeatures(
+          toUserExtent(extent, userProjection),
+          toUserResolution(resolution, projection),
+          userProjection
+        );
+      } else {
+        vectorSource.loadFeatures(extent, resolution, projection);
+      }
 
       this.ready = false;
 
@@ -368,10 +416,12 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    * Clean up.
    */
   disposeInternal() {
-    this.sourceListenKeys_.forEach(function (key) {
-      unlistenByKey(key);
-    });
-    this.sourceListenKeys_ = null;
+    if (this.sourceListenKeys_) {
+      this.sourceListenKeys_.forEach(function (key) {
+        unlistenByKey(key);
+      });
+      this.sourceListenKeys_ = null;
+    }
     super.disposeInternal();
   }
 }
