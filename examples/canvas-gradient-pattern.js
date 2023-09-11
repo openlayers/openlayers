@@ -14,28 +14,49 @@ const pixelRatio = DEVICE_PIXEL_RATIO;
 const canvas = document.createElement('canvas');
 const context = canvas.getContext('2d');
 
-function createPattern(color1, color2) {
-  // Set equal width and height for diagonal gradient
-  // Set width or height 0 for horizontal or vertical gradient
-  const width = 16 * pixelRatio;
-  const height = width;
-  const gradient = context.createLinearGradient(0, 0, width, height);
-  gradient.addColorStop(2 / 16, color1);
-  gradient.addColorStop(3 / 16, color2);
-  gradient.addColorStop(5 / 16, color2);
-  gradient.addColorStop(6 / 16, color1);
-  gradient.addColorStop(10 / 16, color1);
-  gradient.addColorStop(11 / 16, color2);
-  gradient.addColorStop(13 / 16, color2);
-  gradient.addColorStop(14 / 16, color1);
-  canvas.width = Math.max(width, 1);
-  canvas.height = Math.max(height, 1);
-  context.fillStyle = gradient;
-  context.fillRect(0, 0, canvas.width, canvas.height);
-  return context.createPattern(canvas, 'repeat');
-}
+const createPatternMethods = {
+  linear: function (color1, color2) {
+    // set equal width and height for diagonal gradient
+    // set width or height 0 for horizontal or vertical gradient
+    const width = 8 * pixelRatio;
+    const height = width;
+    const gradient = context.createLinearGradient(0, 0, width, height);
+    gradient.addColorStop(2 / 16, color1);
+    gradient.addColorStop(3 / 16, color2);
+    gradient.addColorStop(5 / 16, color2);
+    gradient.addColorStop(6 / 16, color1);
+    gradient.addColorStop(10 / 16, color1);
+    gradient.addColorStop(11 / 16, color2);
+    gradient.addColorStop(13 / 16, color2);
+    gradient.addColorStop(14 / 16, color1);
+    canvas.width = Math.max(width, 1);
+    canvas.height = Math.max(height, 1);
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    return context.createPattern(canvas, 'repeat');
+  },
 
-const styleCache = {};
+  radial: function (color1, color2) {
+    const radius = 4 * pixelRatio;
+    const gradient = context.createRadialGradient(
+      radius,
+      radius,
+      0,
+      radius,
+      radius,
+      radius
+    );
+    gradient.addColorStop(3 / 8, color2);
+    gradient.addColorStop(5 / 8, color1);
+    canvas.width = radius * 2;
+    canvas.height = radius * 2;
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    return context.createPattern(canvas, 'repeat');
+  },
+};
+
+let createPatternFunction, styleCache;
 
 const vectorLayer = new VectorLayer({
   background: '#1a2b39',
@@ -51,7 +72,7 @@ const vectorLayer = new VectorLayer({
     let style = styleCache[bioColor]?.[nnhColor];
     if (!style) {
       style = new Style({
-        fill: new Fill({color: createPattern(bioColor, nnhColor)}),
+        fill: new Fill({color: createPatternFunction(bioColor, nnhColor)}),
       });
       if (!styleCache[bioColor]) {
         styleCache[bioColor] = {};
@@ -61,6 +82,14 @@ const vectorLayer = new VectorLayer({
     return style;
   },
 });
+
+const typeSelect = document.getElementById('type');
+typeSelect.onchange = function () {
+  createPatternFunction = createPatternMethods[typeSelect.value];
+  styleCache = {};
+  vectorLayer.changed();
+};
+typeSelect.onchange();
 
 const map = new Map({
   layers: [vectorLayer],
