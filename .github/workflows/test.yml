@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - name: Clone Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set Node.js Version
         uses: actions/setup-node@v3
@@ -46,7 +46,7 @@ jobs:
 
     steps:
       - name: Clone Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set Node.js Version
         uses: actions/setup-node@v3
@@ -68,7 +68,7 @@ jobs:
 
     steps:
       - name: Clone Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set Node.js Version
         uses: actions/setup-node@v3
@@ -90,7 +90,7 @@ jobs:
 
     steps:
       - name: Clone Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set Node.js Version
         uses: actions/setup-node@v3
@@ -115,7 +115,7 @@ jobs:
 
     steps:
       - name: Clone Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set Node.js Version
         uses: actions/setup-node@v3
