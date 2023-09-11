@@ -3,26 +3,10 @@
  */
 
 import ImageSource, {defaultImageLoadFunction} from './Image.js';
-import {DECIMALS} from './common.js';
-import {
-  DEFAULT_VERSION,
-  createLoader,
-  getRequestParams,
-  getRequestUrl,
-} from './wms.js';
-import {appendParams} from '../uri.js';
 import {calculateSourceResolution} from '../reproj.js';
-import {compareVersions} from '../string.js';
+import {createLoader, getFeatureInfoUrl, getLegendUrl} from './wms.js';
 import {decode} from '../Image.js';
-import {floor} from '../math.js';
-import {getForViewAndSize} from '../extent.js';
 import {get as getProjection, transform} from '../proj.js';
-
-/**
- * @const
- * @type {import("../size.js").Size}
- */
-const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
 
 /**
  * @typedef {Object} Options
@@ -139,9 +123,6 @@ class ImageWMS extends ImageSource {
    * @api
    */
   getFeatureInfoUrl(coordinate, resolution, projection, params) {
-    if (this.url_ === undefined) {
-      return undefined;
-    }
     const projectionObj = getProjection(projection);
     const sourceProjectionObj = this.getProjection();
 
@@ -155,35 +136,15 @@ class ImageWMS extends ImageSource {
       coordinate = transform(coordinate, projectionObj, sourceProjectionObj);
     }
 
-    const extent = getForViewAndSize(
-      coordinate,
-      resolution,
-      0,
-      GETFEATUREINFO_IMAGE_SIZE
-    );
-
-    const baseParams = {
-      'QUERY_LAYERS': this.params_['LAYERS'],
+    const options = {
+      url: this.url_,
+      params: {
+        ...this.params_,
+        ...params,
+      },
+      projection: sourceProjectionObj || projectionObj,
     };
-    Object.assign(
-      baseParams,
-      getRequestParams(this.params_, 'GetFeatureInfo'),
-      params
-    );
-
-    const x = floor((coordinate[0] - extent[0]) / resolution, DECIMALS);
-    const y = floor((extent[3] - coordinate[1]) / resolution, DECIMALS);
-    const v13 = compareVersions(baseParams['VERSION'], '1.3') >= 0;
-    baseParams[v13 ? 'I' : 'X'] = x;
-    baseParams[v13 ? 'J' : 'Y'] = y;
-
-    return getRequestUrl(
-      this.url_,
-      extent,
-      GETFEATUREINFO_IMAGE_SIZE,
-      sourceProjectionObj || projectionObj,
-      baseParams
-    );
+    return getFeatureInfoUrl(options, coordinate, resolution);
   }
 
   /**
@@ -201,37 +162,16 @@ class ImageWMS extends ImageSource {
    * @api
    */
   getLegendUrl(resolution, params) {
-    if (this.url_ === undefined) {
-      return undefined;
-    }
-
-    const baseParams = {
-      'SERVICE': 'WMS',
-      'VERSION': DEFAULT_VERSION,
-      'REQUEST': 'GetLegendGraphic',
-      'FORMAT': 'image/png',
-    };
-
-    if (params === undefined || params['LAYER'] === undefined) {
-      const layers = this.params_.LAYERS;
-      const isSingleLayer = !Array.isArray(layers) || layers.length === 1;
-      if (!isSingleLayer) {
-        return undefined;
-      }
-      baseParams['LAYER'] = layers;
-    }
-
-    if (resolution !== undefined) {
-      const mpu = this.getProjection()
-        ? this.getProjection().getMetersPerUnit()
-        : 1;
-      const pixelSize = 0.00028;
-      baseParams['SCALE'] = (resolution * mpu) / pixelSize;
-    }
-
-    Object.assign(baseParams, params);
-
-    return appendParams(/** @type {string} */ (this.url_), baseParams);
+    return getLegendUrl(
+      {
+        url: this.url_,
+        params: {
+          ...this.params_,
+          ...params,
+        },
+      },
+      resolution
+    );
   }
 
   /**
