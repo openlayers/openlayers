@@ -1,12 +1,10 @@
 /**
  * @module ol/render/webgl/MixedGeometryBatch
  */
+import RenderFeature from '../../render/Feature.js';
 import {getUid} from '../../util.js';
-import {linearRingIsClockwise} from '../../geom/flat/orient.js';
+import {inflateEnds} from '../../geom/flat/orient.js';
 
-/**
- * @typedef {import("../../render/Feature").default} RenderFeature
- */
 /**
  * @typedef {import("../../Feature").default} Feature
  */
@@ -327,30 +325,13 @@ class MixedGeometryBatch {
         break;
       case 'Polygon':
         const polygonEnds = /** @type {Array<number>} */ (ends);
-        // first look for a CW ring; if so, handle it and following rings as another polygon
-        for (let i = 1, ii = polygonEnds.length; i < ii; i++) {
-          const ringStartIndex = polygonEnds[i - 1];
-          if (
-            i > 0 &&
-            linearRingIsClockwise(
+        if (feature instanceof RenderFeature) {
+          const multiPolygonEnds = inflateEnds(flatCoords, polygonEnds);
+          if (multiPolygonEnds.length > 1) {
+            this.addCoordinates_(
+              'MultiPolygon',
               flatCoords,
-              ringStartIndex,
-              polygonEnds[i],
-              stride
-            )
-          ) {
-            this.addCoordinates_(
-              'Polygon',
-              flatCoords.slice(0, ringStartIndex),
-              polygonEnds.slice(0, i),
-              feature,
-              featureUid,
-              stride
-            );
-            this.addCoordinates_(
-              'Polygon',
-              flatCoords.slice(ringStartIndex),
-              polygonEnds.slice(i).map((end) => end - polygonEnds[i - 1]),
+              multiPolygonEnds,
               feature,
               featureUid,
               stride
