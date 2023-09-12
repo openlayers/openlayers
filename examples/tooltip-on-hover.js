@@ -18,10 +18,8 @@ const vector = new VectorLayer({
     format: new GeoJSON(),
   }),
   background: 'white',
-  style: function (feature) {
-    const color = feature.get('COLOR') || '#eeeeee';
-    style.getFill().setColor(color);
-    return style;
+  style: {
+    'fill-color': ['string', ['get', 'COLOR'], '#eeeeee'],
   },
 });
 
