@@ -132,7 +132,7 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
 
     this.vertexShader_ = options.vertexShader;
     this.fragmentShader_ = options.fragmentShader;
-
+    this.paletteTextures_ = options.paletteTextures || [];
     if (this.helper) {
       this.program_ = this.helper.getProgram(
         this.fragmentShader_,
