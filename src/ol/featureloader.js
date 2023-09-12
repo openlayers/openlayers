@@ -85,7 +85,9 @@ export function loadFeaturesXhr(
       const type = format.getType();
       /** @type {Document|Node|Object|string|undefined} */
       let source;
-      if (type == 'json' || type == 'text') {
+      if (type == 'json') {
+        source = JSON.parse(xhr.responseText);
+      } else if (type == 'text') {
         source = xhr.responseText;
       } else if (type == 'xml') {
         source = xhr.responseXML;
