@@ -64,4 +64,5 @@ map.on('click', function (evt) {
 
 map.getTargetElement().addEventListener('pointerleave', function () {
   currentFeature = undefined;
+  info.style.visibility = 'hidden';
 });
