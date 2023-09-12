@@ -211,6 +211,9 @@ describe('ol/renderer/webgl/VectorLayer', function () {
 
   describe('source changes', () => {
     beforeEach(() => {
+      // first call prepareFrame to load initial data
+      renderer.prepareFrame(frameState);
+
       sinon.spy(renderer.batch_, 'addFeature');
       sinon.spy(renderer.batch_, 'removeFeature');
       sinon.spy(renderer.batch_, 'changeFeature');
@@ -409,6 +412,8 @@ describe('ol/renderer/webgl/VectorLayer', function () {
 
   describe('#dispose', () => {
     beforeEach(() => {
+      // first call prepareFrame to load initial data and register listeners
+      renderer.prepareFrame(frameState);
       sinon.spy(vectorSource, 'removeEventListener');
       renderer.dispose();
     });
