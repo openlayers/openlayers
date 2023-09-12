@@ -328,6 +328,33 @@ class RenderFeature {
       );
     }
   }
+
+  /**
+   * Apply a transform function to the coordinates of the geometry.
+   * The geometry is modified in place.
+   * If you do not want the geometry modified in place, first `clone()` it and
+   * then use this function on the clone.
+   * @param {import("../proj.js").TransformFunction} transformFn Transform function.
+   */
+  applyTransform(transformFn) {
+    if (this.flatCoordinates_) {
+      transformFn(this.flatCoordinates_, this.flatCoordinates_, 2);
+    }
+  }
+
+  /**
+   * @return {RenderFeature} A cloned render feature.
+   */
+  clone() {
+    return new RenderFeature(
+      this.type_,
+      this.flatCoordinates_.slice(),
+      this.ends_.slice(),
+      Object.assign({}, this.properties_),
+      this.id_
+    );
+  }
+
   /**
    * @return {Array<number>|Array<Array<number>>} Ends or endss.
    */
