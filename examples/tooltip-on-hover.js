@@ -50,7 +50,7 @@ const displayFeatureInfo = function (pixel, target) {
 
 map.on('pointermove', function (evt) {
   if (evt.dragging) {
-    info.style.display = 'none';
+    info.style.visibility = 'hidden';
     currentFeature = undefined;
     return;
   }
