@@ -832,6 +832,7 @@ describe('MixedGeometryBatch', function () {
         'Polygon',
         geometry.getFlatCoordinates(),
         geometry.getEnds(),
+        2,
         {
           prop1: 'abcd',
           prop2: 'efgh',
@@ -929,6 +930,7 @@ describe('MixedGeometryBatch', function () {
         'Polygon',
         geometry.getFlatCoordinates(),
         geometry.getEnds(),
+        2,
         {
           prop1: 'abcd',
           prop2: 'efgh',
@@ -1034,15 +1036,17 @@ describe('MixedGeometryBatch', function () {
         'MultiLineString',
         multiLine.getFlatCoordinates(),
         multiLine.getEnds(),
+        2,
         {
           prop3: 'abcd',
           prop4: 'efgh',
         }
       );
       feature2 = new RenderFeature(
-        'MultiPolygon',
+        'Polygon',
         multiPolygon.getFlatCoordinates(),
-        multiPolygon.getEndss(),
+        multiPolygon.getEndss().flat(),
+        2,
         {
           prop3: 'uvw',
           prop4: 'xyz',
@@ -1052,6 +1056,7 @@ describe('MixedGeometryBatch', function () {
         'MultiPoint',
         multiPoint.getFlatCoordinates(),
         multiPoint.getPoints().map((p, i) => i + 1),
+        2,
         {
           prop3: 'uvw',
           prop4: 'xyz',

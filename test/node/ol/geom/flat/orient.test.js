@@ -245,6 +245,7 @@ describe('ol/geom/flat/orient.js', function () {
         'Polygon',
         flatCoordinates,
         ends,
+        2,
         {},
         feature.getId()
       );

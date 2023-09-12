@@ -6,7 +6,7 @@ import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer.js';
 import {parseLiteralStyle} from '../webgl/styleparser.js';
 
 /**
- * @template {import("../source/Vector.js").default<import("../geom/Point.js").default>} VectorSourceType
+ * @template {import("../source/Vector.js").default} VectorSourceType
  * @typedef {Object} Options
  * @property {import('../style/literal.js').LiteralStyle} style Literal style to apply to the layer features.
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
@@ -62,7 +62,7 @@ import {parseLiteralStyle} from '../webgl/styleparser.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @template {import("../source/Vector.js").default<import("../geom/Point.js").default>} VectorSourceType
+ * @template {import("../source/Vector.js").default} VectorSourceType
  * @extends {Layer<VectorSourceType, WebGLPointsLayerRenderer>}
  * @fires import("../render/Event.js").RenderEvent
  */
