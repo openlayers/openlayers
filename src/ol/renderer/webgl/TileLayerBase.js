@@ -449,7 +449,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     alphaLookup,
     tileGrid
   ) {
-    if (!tileRepresentation.loaded) {
+    if (!tileRepresentation.ready) {
       return;
     }
     const tile = tileRepresentation.tile;
@@ -593,7 +593,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
       }
       const tileCoord = tile.tileCoord;
 
-      if (tileRepresentation.loaded) {
+      if (tileRepresentation.ready) {
         const alpha = tile.getAlpha(uid, time);
         if (alpha === 1) {
           // no need to look for alt tiles
@@ -739,7 +739,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
         if (tileRepresentationCache.containsKey(cacheKey)) {
           const tileRepresentation = tileRepresentationCache.get(cacheKey);
           if (
-            tileRepresentation.loaded &&
+            tileRepresentation.ready &&
             !lookupHasTile(tileRepresentationLookup, tileRepresentation.tile)
           ) {
             addTileRepresentationToLookup(
