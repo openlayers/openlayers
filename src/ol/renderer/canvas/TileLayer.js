@@ -166,7 +166,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const viewState = frameState.viewState;
     const source = layer.getRenderSource();
     const tileGrid = source.getTileGridForProjection(viewState.projection);
-    const tilePixelRatio = source.getTilePixelRatio(frameState.pixelRatio);
 
     for (
       let z = tileGrid.getZForResolution(viewState.resolution);
@@ -195,24 +194,26 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       const tileOrigin = tileGrid.getOrigin(z);
       const tileSize = toSize(tileGrid.getTileSize(z));
       const tileResolution = tileGrid.getResolution(z);
+      const gutter = source.getGutterForProjection(viewState.projection);
+      const image = tile.getImage();
 
       const col = Math.floor(
-        tilePixelRatio *
-          ((coordinate[0] - tileOrigin[0]) / tileResolution -
-            tileCoord[1] * tileSize[0])
+        (((coordinate[0] - tileOrigin[0]) / tileResolution -
+          tileCoord[1] * tileSize[0] +
+          gutter) *
+          image.width) /
+          (tileSize[0] + 2 * gutter)
       );
 
       const row = Math.floor(
-        tilePixelRatio *
-          ((tileOrigin[1] - coordinate[1]) / tileResolution -
-            tileCoord[2] * tileSize[1])
+        (((tileOrigin[1] - coordinate[1]) / tileResolution -
+          tileCoord[2] * tileSize[1] +
+          gutter) *
+          image.height) /
+          (tileSize[1] + 2 * gutter)
       );
 
-      const gutter = Math.round(
-        tilePixelRatio * source.getGutterForProjection(viewState.projection)
-      );
-
-      return this.getImageData(tile.getImage(), col + gutter, row + gutter);
+      return this.getImageData(image, col, row);
     }
 
     return null;
@@ -523,7 +524,8 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
           y,
           w,
           h,
-          tileGutter,
+          tileGutter / (currentTilePixelSize[0] + 2 * tileGutter),
+          tileGutter / (currentTilePixelSize[1] + 2 * tileGutter),
           transition
         );
         if (clips && !inTransition) {
@@ -579,10 +581,11 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @param {number} y Top of the tile.
    * @param {number} w Width of the tile.
    * @param {number} h Height of the tile.
-   * @param {number} gutter Tile gutter.
+   * @param {number} gutterX Tile gutter as fraction of image width.
+   * @param {number} gutterY Tile gutter as fraction of image height.
    * @param {boolean} transition Apply an alpha transition.
    */
-  drawTileImage(tile, frameState, x, y, w, h, gutter, transition) {
+  drawTileImage(tile, frameState, x, y, w, h, gutterX, gutterY, transition) {
     const image = this.getTileImage(tile);
     if (!image) {
       return;
@@ -599,10 +602,10 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     }
     this.context.drawImage(
       image,
-      gutter,
-      gutter,
-      image.width - 2 * gutter,
-      image.height - 2 * gutter,
+      image.width * gutterX,
+      image.height * gutterY,
+      image.width * (1 - 2 * gutterX),
+      image.height * (1 - 2 * gutterY),
       x,
       y,
       w,

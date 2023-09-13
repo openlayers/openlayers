@@ -78,6 +78,49 @@ describe('ol/layer/Tile', function () {
     });
   });
 
+  describe('scaled image', () => {
+    let map, target, layer;
+    beforeEach((done) => {
+      target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+
+      layer = new TileLayer({
+        source: new XYZ({
+          url: 'spec/ol/data/osm-0-0-0.png',
+          tileSize: [256, 512],
+        }),
+      });
+
+      map = new Map({
+        target: target,
+        layers: [layer],
+        view: new View({
+          center: [0, 0],
+          zoom: 0,
+        }),
+      });
+
+      map.once('rendercomplete', () => done());
+    });
+
+    afterEach(() => {
+      map.setTarget(null);
+      document.body.removeChild(target);
+    });
+
+    it('gets pixel data', () => {
+      const data = layer.getData([50, 90]);
+      expect(data).to.be.a(Uint8ClampedArray);
+      expect(data.length).to.be(4);
+      expect(data[0]).to.be(237);
+      expect(data[1]).to.be(236);
+      expect(data[2]).to.be(231);
+      expect(data[3]).to.be(255);
+    });
+  });
+
   describe('gutter', () => {
     let map, target, layer, data;
     beforeEach((done) => {
