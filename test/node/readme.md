@@ -9,3 +9,7 @@ To attach a debugger to the tests, add a `debugger` statement in the module that
     npm run test-node -- --inspect-brk
 
 Then open chrome://inspect/ and attach to the remote target (or see https://nodejs.org/en/docs/guides/debugging-getting-started/ for other options).
+
+If you want to target a specific test, use:
+
+    npm run test-node -- --grep myTest*
