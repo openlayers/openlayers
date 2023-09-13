@@ -10,6 +10,7 @@ import {
   transform,
   transformExtent,
 } from '../../../../../src/ol/proj.js';
+import {browserIssues} from '../../../../../src/ol/reproj.js';
 import {createXYZ, getForProjection} from '../../../../../src/ol/tilegrid.js';
 import {register} from '../../../../../src/ol/proj/proj4.js';
 
@@ -59,6 +60,7 @@ describe('ol/reproj/DataTile', () => {
     delete proj4.defs['EPSG:32636'];
     clearAllProjections();
     addCommon();
+    browserIssues.downscaleInterpolation = undefined;
   });
 
   it('accepts a transition option', () => {
@@ -215,7 +217,7 @@ describe('ol/reproj/DataTile', () => {
     });
   });
 
-  it('pixel data reprojected from EPSG:32636 to EPSG:32632 exactly matches original', (done) => {
+  const testNonParallel = (done) => {
     proj4.defs(
       'EPSG:32632',
       '+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs'
@@ -375,5 +377,14 @@ describe('ol/reproj/DataTile', () => {
         done();
       });
     });
+  };
+
+  it('pixel data reprojected from EPSG:32636 to EPSG:32632 exactly matches original', (done) => {
+    testNonParallel(done);
+  });
+
+  it('pixel data reprojected using Gecko workaround exactly matches original', (done) => {
+    browserIssues.downscaleInterpolation = true;
+    testNonParallel(done);
   });
 });
