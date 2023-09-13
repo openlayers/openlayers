@@ -560,7 +560,7 @@ class TileGrid {
   /**
    * Get a tile coordinate given a map coordinate and zoom level.
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
-   * @param {number} z Zoom level.
+   * @param {number} z Integer zoom level, e.g. the result of a `getZForResolution()` method call
    * @param {import("../tilecoord.js").TileCoord} [opt_tileCoord] Destination import("../tilecoord.js").TileCoord object.
    * @return {import("../tilecoord.js").TileCoord} Tile coordinate.
    * @api
