@@ -15,6 +15,7 @@ import {
   Projection,
   get as getProjection,
 } from '../../../../../../src/ol/proj.js';
+import {ShaderBuilder} from '../../../../../../src/ol/webgl/ShaderBuilder.js';
 import {create} from '../../../../../../src/ol/transform.js';
 import {getUid} from '../../../../../../src/ol/util.js';
 
@@ -29,28 +30,11 @@ const SAMPLE_STYLE2 = {
   'circle-fill-color': 'red',
 };
 
-const SAMPLE_VERTEX_SHADER = `
-void main(void) {
-  gl_Position = vec4(1.0);
-}`;
-const SAMPLE_FRAGMENT_SHADER = `
-void main(void) {
-  gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-}`;
-
 const SAMPLE_SHADERS = {
-  fill: {
-    fragment: SAMPLE_FRAGMENT_SHADER,
-    vertex: SAMPLE_VERTEX_SHADER,
-  },
-  stroke: {
-    fragment: SAMPLE_FRAGMENT_SHADER,
-    vertex: SAMPLE_VERTEX_SHADER,
-  },
-  symbol: {
-    fragment: SAMPLE_FRAGMENT_SHADER,
-    vertex: SAMPLE_VERTEX_SHADER,
-  },
+  builder: new ShaderBuilder()
+    .setFillColorExpression('vec4(1.0)')
+    .setStrokeColorExpression('vec4(1.0)')
+    .setSymbolColorExpression('vec4(1.0)'),
   attributes: {
     attr1: {
       callback: () => 456,
