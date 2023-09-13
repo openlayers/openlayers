@@ -31,6 +31,7 @@
     "../src/ol/events/SnapEvent.js",
     "../src/ol/events/Target.js",
     "../src/ol/expr/cpu.js",
+    "../src/ol/expr/gpu.js",
     "../src/ol/expr/expression.js",
     "../src/ol/extent.js",
     "../src/ol/Feature.js",
