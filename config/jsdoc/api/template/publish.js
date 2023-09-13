@@ -72,7 +72,7 @@ function linkto(longname, linkText, cssClass, fragmentId) {
   }
   if (parseTypes) {
     // collections or generics with unions get parsed by catharsis and
-    // will unfortunamely include long module:ol/foo names
+    // will unfortunately include long module:ol/foo names
     return helper.linkto(longname, '', cssClass, fragmentId);
   }
 

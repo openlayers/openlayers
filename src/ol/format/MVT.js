@@ -191,6 +191,7 @@ class MVT extends FeatureFormat {
         geometryType,
         flatCoordinates,
         ends,
+        2,
         values,
         id
       );
@@ -412,10 +413,10 @@ function readRawFeature(pbf, layer, i) {
  * @param {number} type The raw feature's geometry type
  * @param {number} numEnds Number of ends of the flat coordinates of the
  * geometry.
- * @return {import("../geom/Geometry.js").Type} The geometry type.
+ * @return {import("../render/Feature.js").Type} The geometry type.
  */
 function getGeometryType(type, numEnds) {
-  /** @type {import("../geom/Geometry.js").Type} */
+  /** @type {import("../render/Feature.js").Type} */
   let geometryType;
   if (type === 1) {
     geometryType = numEnds === 1 ? 'Point' : 'MultiPoint';

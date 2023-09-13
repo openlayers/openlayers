@@ -19,7 +19,8 @@ describe('ol/render/Feature', function () {
       const renderFeature = new RenderFeature(
         geometry.getType(),
         geometry.getFlatCoordinates().slice(),
-        []
+        [],
+        2
       );
       const converted = toGeometry(renderFeature);
       expect(converted).to.be.a(Point);
@@ -36,7 +37,8 @@ describe('ol/render/Feature', function () {
       const renderFeature = new RenderFeature(
         geometry.getType(),
         geometry.getFlatCoordinates().slice(),
-        []
+        [],
+        2
       );
       const converted = toGeometry(renderFeature);
       expect(converted).to.be.a(MultiPoint);
@@ -53,7 +55,8 @@ describe('ol/render/Feature', function () {
       const renderFeature = new RenderFeature(
         geometry.getType(),
         geometry.getFlatCoordinates().slice(),
-        []
+        [],
+        2
       );
       const converted = toGeometry(renderFeature);
       expect(converted).to.be.a(LineString);
@@ -76,7 +79,8 @@ describe('ol/render/Feature', function () {
       const renderFeature = new RenderFeature(
         geometry.getType(),
         geometry.getFlatCoordinates().slice(),
-        geometry.getEnds().slice()
+        geometry.getEnds().slice(),
+        2
       );
       const converted = toGeometry(renderFeature);
       expect(converted).to.be.a(MultiLineString);
@@ -104,7 +108,8 @@ describe('ol/render/Feature', function () {
       const renderFeature = new RenderFeature(
         geometry.getType(),
         geometry.getFlatCoordinates().slice(),
-        geometry.getEnds().slice()
+        geometry.getEnds().slice(),
+        2
       );
       const converted = toGeometry(renderFeature);
       expect(converted).to.be.a(Polygon);
@@ -142,7 +147,8 @@ describe('ol/render/Feature', function () {
       const renderFeature = new RenderFeature(
         'Polygon',
         geometry.getFlatCoordinates().slice(),
-        geometry.getEndss().flat(1)
+        geometry.getEndss().flat(1),
+        2
       );
       const converted = toGeometry(renderFeature);
       expect(converted).to.be.a(MultiPolygon);
@@ -163,6 +169,7 @@ describe('ol/render/Feature', function () {
         geometry.getType(),
         geometry.getFlatCoordinates().slice(),
         [],
+        2,
         properties,
         id
       );
@@ -181,6 +188,7 @@ describe('ol/render/Feature', function () {
         geometry.getType(),
         geometry.getFlatCoordinates().slice(),
         [],
+        2,
         properties,
         id
       );
@@ -207,6 +215,7 @@ describe('ol/render/Feature', function () {
       geometry.getType(),
       geometry.getFlatCoordinates().slice(),
       [],
+      2,
       properties,
       id
     );
@@ -242,6 +251,7 @@ describe('ol/render/Feature', function () {
         geometry.getType(),
         geometry.getFlatCoordinates().slice(),
         geometry.getEnds().slice(),
+        2,
         properties,
         id
       );

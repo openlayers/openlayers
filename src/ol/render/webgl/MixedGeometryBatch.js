@@ -185,9 +185,7 @@ class MixedGeometryBatch {
         break;
       case 'MultiPolygon':
         const multiPolygonGeom =
-          /** @type {import("../../geom").MultiPolygon|RenderFeature} */ (
-            geometry
-          );
+          /** @type {import("../../geom").MultiPolygon} */ (geometry);
         this.addCoordinates_(
           type,
           multiPolygonGeom.getFlatCoordinates(),
