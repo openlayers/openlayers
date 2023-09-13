@@ -75,9 +75,7 @@ export const Attributes = {
 
 /**
  * @typedef {Object} StyleShaders
- * @property {ShaderProgram} [fill] Shaders for filling polygons.
- * @property {ShaderProgram} [stroke] Shaders for line strings and polygon strokes.
- * @property {ShaderProgram} [symbol] Shaders for symbols.
+ * @property {import("../../webgl/ShaderBuilder.js").ShaderBuilder} builder Shader builder with the appropriate presets.
  * @property {AttributeDefinitions} [attributes] Custom attributes made available in the vertex shaders.
  * Default shaders rely on the attributes in {@link Attributes}.
  * @property {UniformDefinitions} [uniforms] Additional uniforms usable in shaders.
@@ -95,7 +93,8 @@ export const Attributes = {
  * A layer renderer will typically maintain several of these in order to have several styles rendered separately.
  *
  * A VectorStyleRenderer instance can be created either from a literal style or from shaders using either
- * `VectorStyleRenderer.fromStyle` or `VectorStyleRenderer.fromShaders`.
+ * `VectorStyleRenderer.fromStyle` or `VectorStyleRenderer.fromShaders`. The shaders should not be provided explicitly
+ * but instead as a preconfigured ShaderBuilder instance.
  *
  * The `generateBuffers` method returns a promise resolving to WebGL buffers that are intended to be rendered by the
  * same renderer.
@@ -111,12 +110,7 @@ class VectorStyleRenderer {
 
     this.hitDetectionEnabled_ = enableHitDetection;
     let shaders = /** @type {StyleShaders} */ (styleOrShaders);
-
-    // TODO: improve discrimination between shaders and style
-    const isShaders =
-      'fill' in styleOrShaders ||
-      'stroke' in styleOrShaders ||
-      ('symbol' in styleOrShaders && 'vertex' in styleOrShaders.symbol);
+    const isShaders = 'builder' in styleOrShaders;
     if (!isShaders) {
       const parseResult = parseLiteralStyle(
         /** @type {import('../../style/literal.js').LiteralStyle} */ (
@@ -124,18 +118,7 @@ class VectorStyleRenderer {
         )
       );
       shaders = {
-        fill: {
-          vertex: parseResult.builder.getFillVertexShader(),
-          fragment: parseResult.builder.getFillFragmentShader(),
-        },
-        stroke: {
-          vertex: parseResult.builder.getStrokeVertexShader(),
-          fragment: parseResult.builder.getStrokeFragmentShader(),
-        },
-        symbol: {
-          vertex: parseResult.builder.getSymbolVertexShader(),
-          fragment: parseResult.builder.getSymbolFragmentShader(),
-        },
+        builder: parseResult.builder,
         attributes: parseResult.attributes,
         uniforms: parseResult.uniforms,
       };
@@ -145,10 +128,10 @@ class VectorStyleRenderer {
      * @type {boolean}
      * @private
      */
-    this.hasFill_ = !!shaders.fill?.vertex;
+    this.hasFill_ = !!shaders.builder.getFillVertexShader();
     if (this.hasFill_) {
-      this.fillVertexShader_ = shaders.fill.vertex;
-      this.fillFragmentShader_ = shaders.fill.fragment;
+      this.fillVertexShader_ = shaders.builder.getFillVertexShader();
+      this.fillFragmentShader_ = shaders.builder.getFillFragmentShader();
       this.fillProgram_ = this.helper_.getProgram(
         this.fillFragmentShader_,
         this.fillVertexShader_
@@ -159,10 +142,10 @@ class VectorStyleRenderer {
      * @type {boolean}
      * @private
      */
-    this.hasStroke_ = !!shaders.stroke?.vertex;
+    this.hasStroke_ = !!shaders.builder.getStrokeVertexShader();
     if (this.hasStroke_) {
-      this.strokeVertexShader_ = shaders.stroke && shaders.stroke.vertex;
-      this.strokeFragmentShader_ = shaders.stroke && shaders.stroke.fragment;
+      this.strokeVertexShader_ = shaders.builder.getStrokeVertexShader();
+      this.strokeFragmentShader_ = shaders.builder.getStrokeFragmentShader();
       this.strokeProgram_ = this.helper_.getProgram(
         this.strokeFragmentShader_,
         this.strokeVertexShader_
@@ -173,10 +156,10 @@ class VectorStyleRenderer {
      * @type {boolean}
      * @private
      */
-    this.hasSymbol_ = !!shaders.symbol?.vertex;
+    this.hasSymbol_ = !!shaders.builder.getSymbolVertexShader();
     if (this.hasSymbol_) {
-      this.symbolVertexShader_ = shaders.symbol && shaders.symbol.vertex;
-      this.symbolFragmentShader_ = shaders.symbol && shaders.symbol.fragment;
+      this.symbolVertexShader_ = shaders.builder.getSymbolVertexShader();
+      this.symbolFragmentShader_ = shaders.builder.getSymbolFragmentShader();
       this.symbolProgram_ = this.helper_.getProgram(
         this.symbolFragmentShader_,
         this.symbolVertexShader_
