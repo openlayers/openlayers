@@ -123,5 +123,10 @@ describe('ol/webgl/TileGeometry', function () {
       await new Promise((resolve) => setTimeout(resolve));
       expect(tileGeometry.ready).to.be(true);
     });
+    it('fills the mask buffer with the tile extent', () => {
+      expect(tileGeometry.maskVertices.getArray()).to.eql([
+        -100, -200, 300, -200, 300, 400, -100, 400,
+      ]);
+    });
   });
 });
