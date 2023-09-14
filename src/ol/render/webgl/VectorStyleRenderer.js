@@ -41,7 +41,7 @@ export const Attributes = {
  * for each feature.
  * @property {number} [size] Amount of numerical values composing the attribute, either 1, 2, 3 or 4; in case size is > 1, the return value
  * of the callback should be an array; if unspecified, assumed to be a single float value
- * @property {function(import("../../Feature").FeatureLike):number|Array<number>} callback This callback computes the numerical value of the
+ * @property {function(this:import("./MixedGeometryBatch.js").GeometryBatchItem, import("../../Feature").FeatureLike):number|Array<number>} callback This callback computes the numerical value of the
  * attribute for a given feature.
  */
 
