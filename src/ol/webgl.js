@@ -80,15 +80,9 @@ export const FLOAT = 0x1406;
  */
 
 /**
- * @const
- * @type {Array<string>}
- */
-const CONTEXT_IDS = ['experimental-webgl', 'webgl', 'webkit-3d', 'moz-webgl'];
-
-/**
  * @param {HTMLCanvasElement} canvas Canvas.
  * @param {Object} [attributes] Attributes.
- * @return {WebGLRenderingContext} WebGL rendering context.
+ * @return {WebGL2RenderingContext} WebGL rendering context.
  */
 export function getContext(canvas, attributes) {
   attributes = Object.assign(
@@ -98,16 +92,13 @@ export function getContext(canvas, attributes) {
     },
     attributes
   );
-  const ii = CONTEXT_IDS.length;
-  for (let i = 0; i < ii; ++i) {
-    try {
-      const context = canvas.getContext(CONTEXT_IDS[i], attributes);
-      if (context) {
-        return /** @type {!WebGLRenderingContext} */ (context);
-      }
-    } catch (e) {
-      // pass
+  try {
+    const context = canvas.getContext('webgl2', attributes);
+    if (context) {
+      return /** @type {!WebGL2RenderingContext} */ (context);
     }
+  } catch (e) {
+    // pass
   }
   return null;
 }

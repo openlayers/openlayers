@@ -111,7 +111,7 @@ export const AttributeType = {
 
 /**
  * @typedef {Object} CanvasCacheItem
- * @property {WebGLRenderingContext} context The context of this canvas.
+ * @property {WebGL2RenderingContext} context The context of this canvas.
  * @property {number} users The count of users of this canvas.
  */
 
@@ -141,7 +141,7 @@ function getUniqueCanvasCacheKey() {
 
 /**
  * @param {string} key The cache key for the canvas.
- * @return {WebGLRenderingContext} The canvas.
+ * @return {WebGL2RenderingContext} The canvas.
  */
 function getOrCreateContext(key) {
   let cacheItem = canvasCache[key];
@@ -274,7 +274,7 @@ function releaseCanvas(key) {
  *   Attributes are used to specify these uses. Specify the attribute names with
  *   {@link module:ol/webgl/Helper~WebGLHelper#enableAttributes} (see code snippet below).
  *
- *   Please note that you will have to specify the type and offset of the attributes in the data array. You can refer to the documentation of [WebGLRenderingContext.vertexAttribPointer](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/vertexAttribPointer) for more explanation.
+ *   Please note that you will have to specify the type and offset of the attributes in the data array. You can refer to the documentation of [WebGL2RenderingContext.vertexAttribPointer](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/vertexAttribPointer) for more explanation.
  *   ```js
  *   // here we indicate that the data array has the following structure:
  *   // [posX, posY, offsetX, offsetY, texCoordU, texCoordV, posX, posY, ...]
@@ -335,7 +335,7 @@ class WebGLHelper extends Disposable {
 
     /**
      * @private
-     * @type {WebGLRenderingContext}
+     * @type {WebGL2RenderingContext}
      */
     this.gl_ = getOrCreateContext(this.canvasCacheKey_);
 
@@ -670,8 +670,8 @@ class WebGLHelper extends Disposable {
   /**
    * Apply the successive post process passes which will eventually render to the actual canvas.
    * @param {import("../Map.js").FrameState} frameState current frame state
-   * @param {function(WebGLRenderingContext, import("../Map.js").FrameState):void} [preCompose] Called before composing.
-   * @param {function(WebGLRenderingContext, import("../Map.js").FrameState):void} [postCompose] Called before composing.
+   * @param {function(WebGL2RenderingContext, import("../Map.js").FrameState):void} [preCompose] Called before composing.
+   * @param {function(WebGL2RenderingContext, import("../Map.js").FrameState):void} [postCompose] Called before composing.
    */
   finalizeDraw(frameState, preCompose, postCompose) {
     // apply post processes using the next one as target
@@ -701,7 +701,7 @@ class WebGLHelper extends Disposable {
 
   /**
    * Get the WebGL rendering context
-   * @return {WebGLRenderingContext} The rendering context.
+   * @return {WebGL2RenderingContext} The rendering context.
    */
   getGL() {
     return this.gl_;

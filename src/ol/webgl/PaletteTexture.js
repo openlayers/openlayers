@@ -19,7 +19,7 @@ class PaletteTexture {
   }
 
   /**
-   * @param {WebGLRenderingContext} gl Rendering context.
+   * @param {WebGL2RenderingContext} gl Rendering context.
    * @return {WebGLTexture} The texture.
    */
   getTexture(gl) {

@@ -13,7 +13,7 @@ import {createCanvasContext2D} from '../dom.js';
 import {toSize} from '../size.js';
 
 /**
- * @param {WebGLRenderingContext} gl The WebGL context.
+ * @param {WebGL2RenderingContext} gl The WebGL context.
  * @param {WebGLTexture} texture The texture.
  * @param {boolean} interpolate Interpolate when resampling.
  */
@@ -27,7 +27,7 @@ function bindAndConfigure(gl, texture, interpolate) {
 }
 
 /**
- * @param {WebGLRenderingContext} gl The WebGL context.
+ * @param {WebGL2RenderingContext} gl The WebGL context.
  * @param {WebGLTexture} texture The texture.
  * @param {import("../DataTile.js").ImageLike} image The image.
  * @param {boolean} interpolate Interpolate when resampling.
@@ -57,9 +57,9 @@ function uploadDataTexture(
   const gl = helper.getGL();
   let textureType;
   let canInterpolate;
-  if (data instanceof Float32Array) {
+  const isFloat32 = data instanceof Float32Array;
+  if (isFloat32) {
     textureType = gl.FLOAT;
-    helper.getExtension('OES_texture_float');
     const extension = helper.getExtension('OES_texture_float_linear');
     canInterpolate = extension !== null;
   } else {
@@ -78,21 +78,29 @@ function uploadDataTexture(
     unpackAlignment = 2;
   }
 
+  // See https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texImage2D
+  // And https://registry.khronos.org/webgl/specs/latest/2.0/
+  // "Sized internal formats are supported in WebGL 2.0 and internalformat is no longer required to be the same as format"
   let format;
+  let internalFormat;
   switch (bandCount) {
     case 1: {
-      format = gl.LUMINANCE;
+      internalFormat = isFloat32 ? gl.R32F : gl.LUMINANCE;
+      format = isFloat32 ? gl.RED : gl.LUMINANCE;
       break;
     }
     case 2: {
-      format = gl.LUMINANCE_ALPHA;
+      internalFormat = isFloat32 ? gl.RG32F : gl.LUMINANCE_ALPHA;
+      format = isFloat32 ? gl.RG : gl.LUMINANCE_ALPHA;
       break;
     }
     case 3: {
+      internalFormat = isFloat32 ? gl.RGB32F : gl.RGB;
       format = gl.RGB;
       break;
     }
     case 4: {
+      internalFormat = isFloat32 ? gl.RGBA32F : gl.RGBA;
       format = gl.RGBA;
       break;
     }
@@ -106,7 +114,7 @@ function uploadDataTexture(
   gl.texImage2D(
     gl.TEXTURE_2D,
     0,
-    format,
+    internalFormat,
     size[0],
     size[1],
     0,

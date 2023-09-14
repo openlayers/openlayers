@@ -6,13 +6,13 @@ import {getUid} from '../util.js';
 
 const DEFAULT_VERTEX_SHADER = `
   precision mediump float;
-  
+
   attribute vec2 a_position;
   varying vec2 v_texCoord;
   varying vec2 v_screenCoord;
-  
+
   uniform vec2 u_screenSize;
-   
+
   void main() {
     v_texCoord = a_position * 0.5 + 0.5;
     v_screenCoord = v_texCoord * u_screenSize;
@@ -22,12 +22,12 @@ const DEFAULT_VERTEX_SHADER = `
 
 const DEFAULT_FRAGMENT_SHADER = `
   precision mediump float;
-   
+
   uniform sampler2D u_image;
   uniform float u_opacity;
-   
+
   varying vec2 v_texCoord;
-   
+
   void main() {
     gl_FragColor = texture2D(u_image, v_texCoord) * u_opacity;
   }
@@ -35,7 +35,7 @@ const DEFAULT_FRAGMENT_SHADER = `
 
 /**
  * @typedef {Object} Options
- * @property {WebGLRenderingContext} webGlContext WebGL context; mandatory.
+ * @property {WebGL2RenderingContext} webGlContext WebGL context; mandatory.
  * @property {number} [scaleRatio] Scale ratio; if < 1, the post process will render to a texture smaller than
  * the main canvas that will then be sampled up (useful for saving resource on blur steps).
  * @property {string} [vertexShader] Vertex shader source
@@ -177,7 +177,7 @@ class WebGLPostProcessingPass {
 
   /**
    * Get the WebGL rendering context
-   * @return {WebGLRenderingContext} The rendering context.
+   * @return {WebGL2RenderingContext} The rendering context.
    */
   getGL() {
     return this.gl_;
@@ -261,8 +261,8 @@ class WebGLPostProcessingPass {
    * Render to the next postprocessing pass (or to the canvas if final pass).
    * @param {import("../Map.js").FrameState} frameState current frame state
    * @param {WebGLPostProcessingPass} [nextPass] Next pass, optional
-   * @param {function(WebGLRenderingContext, import("../Map.js").FrameState):void} [preCompose] Called before composing.
-   * @param {function(WebGLRenderingContext, import("../Map.js").FrameState):void} [postCompose] Called before composing.
+   * @param {function(WebGL2RenderingContext, import("../Map.js").FrameState):void} [preCompose] Called before composing.
+   * @param {function(WebGL2RenderingContext, import("../Map.js").FrameState):void} [postCompose] Called before composing.
    */
   apply(frameState, nextPass, preCompose, postCompose) {
     const gl = this.getGL();
