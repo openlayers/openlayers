@@ -865,6 +865,7 @@ ${this.varyings_
 ${this.vertexShaderFunctions_.join('\n')}
 void main(void) {
   gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0);
+  v_hitColor = a_hitColor;
 ${this.varyings_
   .map(function (varying) {
     return '  ' + varying.name + ' = ' + varying.expression + ';';

@@ -826,6 +826,7 @@ varying vec3 v_test;
 
 void main(void) {
   gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0);
+  v_hitColor = a_hitColor;
   v_opacity = 0.4;
   v_test = vec3(1.0, 2.0, 3.0);
 }`);
