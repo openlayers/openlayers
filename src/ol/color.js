@@ -27,7 +27,7 @@ const HEX_COLOR_RE_ = /^#([a-f0-9]{3}|[a-f0-9]{4}(?:[a-f0-9]{2}){0,2})$/i;
  * @type {RegExp}
  * @private
  */
-const NAMED_COLOR_RE_ = /^([a-z]*)$|^hsla?\(.*\)$/i;
+const NAMED_COLOR_RE_ = /^([a-z]*)$/i;
 
 /**
  * Return the color as an rgba string.
@@ -127,6 +127,43 @@ export function asArray(color) {
 }
 
 /**
+ * @param {Array<number>} hsla HSLA.
+ * @private
+ * @return {Array<number>} RGBA.
+ */
+function hslaToRgba(hsla) {
+  const h = hsla[0] / 360;
+  const s = hsla[1] / 100;
+  const l = hsla[2] / 100;
+  const a = hsla.length > 3 ? hsla[3] : 1;
+
+  function hueToRgb(p, q, t) {
+    t = t < 0 ? t + 1 : t > 1 ? t - 1 : t;
+    return t < 1 / 6
+      ? p + (q - p) * 6 * t
+      : t < 1 / 2
+      ? q
+      : t < 2 / 3
+      ? p + (q - p) * (2 / 3 - t) * 6
+      : p;
+  }
+
+  let r = l;
+  let g = l;
+  let b = l;
+
+  if (s > 0) {
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+    r = hueToRgb(p, q, h + 1 / 3);
+    g = hueToRgb(p, q, h);
+    b = hueToRgb(p, q, h - 1 / 3);
+  }
+
+  return [r * 255, g * 255, b * 255, a];
+}
+
+/**
  * @param {string} s String.
  * @private
  * @return {Color} Color.
@@ -173,6 +210,14 @@ function fromStringInternal_(s) {
     // rgb()
     color = s.slice(4, -1).split(',').map(Number);
     color.push(1);
+    normalize(color);
+  } else if (s.startsWith('hsla(')) {
+    // hsla()
+    color = hslaToRgba(s.slice(5, -1).split(',').map(parseFloat));
+    normalize(color);
+  } else if (s.startsWith('hsl(')) {
+    // hsl()
+    color = hslaToRgba(s.slice(4, -1).split(',').map(parseFloat));
     normalize(color);
   } else {
     throw new Error('Invalid color');
@@ -222,5 +267,11 @@ export function isStringColor(s) {
   if (NAMED_COLOR_RE_.test(s)) {
     s = fromNamed(s);
   }
-  return HEX_COLOR_RE_.test(s) || s.startsWith('rgba(') || s.startsWith('rgb(');
+  return (
+    HEX_COLOR_RE_.test(s) ||
+    s.startsWith('rgba(') ||
+    s.startsWith('rgb(') ||
+    s.startsWith('hsla(') ||
+    s.startsWith('hsl(')
+  );
 }
