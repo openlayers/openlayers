@@ -5,6 +5,7 @@ import WebGLArrayBuffer from '../../webgl/Buffer.js';
 import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
 import {AttributeType} from '../../webgl/Helper.js';
 import {WebGLWorkerMessageType} from './constants.js';
+import {colorEncodeId} from './utils.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
@@ -18,6 +19,7 @@ import {
 } from './renderinstructions.js';
 import {parseLiteralStyle} from '../../webgl/styleparser.js';
 
+const tmpColor = [];
 const WEBGL_WORKER = createWebGLWorker();
 let workerMessageCounter = 0;
 
@@ -102,10 +104,12 @@ class VectorStyleRenderer {
   /**
    * @param {VectorStyle} styleOrShaders Literal style or custom shaders
    * @param {import('../../webgl/Helper.js').default} helper Helper
+   * @param {boolean} enableHitDetection Whether to enable the hit detection (needs compatible shader)
    */
-  constructor(styleOrShaders, helper) {
+  constructor(styleOrShaders, helper, enableHitDetection) {
     this.helper_ = helper;
 
+    this.hitDetectionEnabled_ = enableHitDetection;
     let shaders = /** @type {StyleShaders} */ (styleOrShaders);
 
     // TODO: improve discrimination between shaders and style
@@ -179,7 +183,22 @@ class VectorStyleRenderer {
       );
     }
 
-    this.customAttributes_ = shaders.attributes;
+    const hitDetectionAttributes = this.hitDetectionEnabled_
+      ? {
+          hitColor: {
+            callback() {
+              return colorEncodeId(this.ref, tmpColor);
+            },
+            size: 4,
+          },
+        }
+      : {};
+
+    this.customAttributes_ = Object.assign(
+      {},
+      hitDetectionAttributes,
+      shaders.attributes
+    );
     this.uniforms_ = shaders.uniforms;
 
     const customAttributesDesc = Object.entries(this.customAttributes_).map(

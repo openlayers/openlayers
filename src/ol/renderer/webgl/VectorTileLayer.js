@@ -24,6 +24,8 @@ import {getIntersection} from '../../extent.js';
 /**
  * @typedef {Object} Options
  * @property {VectorStyle|Array<VectorStyle>} style Vector style as literal style or shaders; can also accept an array of styles
+ * @property {boolean} [disableHitDetection=false] Setting this to true will provide a slight performance boost, but will
+ * prevent all hit detection on the layer.
  * @property {number} [cacheSize=512] The vector tile cache size.
  */
 
@@ -43,6 +45,12 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    */
   constructor(tileLayer, options) {
     super(tileLayer, options);
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this.hitDetectionEnabled_ = !options.disableHitDetection;
 
     /**
      * @type {Array<VectorStyle>}
@@ -98,7 +106,8 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    */
   createRenderers_() {
     this.styleRenderers_ = this.styles_.map(
-      (style) => new VectorStyleRenderer(style, this.helper)
+      (style) =>
+        new VectorStyleRenderer(style, this.helper, this.hitDetectionEnabled_)
     );
   }
 

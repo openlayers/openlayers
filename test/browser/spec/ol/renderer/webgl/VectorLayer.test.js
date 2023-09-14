@@ -308,6 +308,8 @@ describe('ol/renderer/webgl/VectorLayer', function () {
   });
 
   describe('#renderFrame', () => {
+    const withHit = 2;
+
     beforeEach(async () => {
       // call once without tracking in order to initialize helper
       renderer.prepareFrame(frameState);
@@ -348,7 +350,7 @@ describe('ol/renderer/webgl/VectorLayer', function () {
       const calls = renderer.helper.setUniformMatrixValue
         .getCalls()
         .filter((c) => c.args[0] === 'u_projectionMatrix');
-      expect(calls.length).to.be(6);
+      expect(calls.length).to.be(6 * withHit);
       expect(calls[0].args).to.eql([
         'u_projectionMatrix',
         // 0.5   0     0     0      combination of:
@@ -363,7 +365,7 @@ describe('ol/renderer/webgl/VectorLayer', function () {
       const calls = renderer.helper.setUniformMatrixValue
         .getCalls()
         .filter((c) => c.args[0] === 'u_screenToWorldMatrix');
-      expect(calls.length).to.be(6);
+      expect(calls.length).to.be(6 * withHit);
       expect(calls[1].args).to.eql([
         'u_screenToWorldMatrix',
         // 2     0     0     0      invert of u_projectionMatrix
@@ -374,8 +376,8 @@ describe('ol/renderer/webgl/VectorLayer', function () {
       ]);
     });
     it('calls render once for each renderer', () => {
-      expect(renderer.styleRenderers_[0].render.callCount).to.be(1);
-      expect(renderer.styleRenderers_[1].render.callCount).to.be(1);
+      expect(renderer.styleRenderers_[0].render.callCount).to.be(1 * withHit);
+      expect(renderer.styleRenderers_[1].render.callCount).to.be(1 * withHit);
     });
     it('calls helper.prepareDraw once', () => {
       expect(renderer.helper.prepareDraw.calledOnce).to.eql(true);
@@ -404,8 +406,8 @@ describe('ol/renderer/webgl/VectorLayer', function () {
         renderer.renderFrame(frameState);
       });
       it('calls render three times for each renderer', () => {
-        expect(renderer.styleRenderers_[0].render.callCount).to.be(3);
-        expect(renderer.styleRenderers_[1].render.callCount).to.be(3);
+        expect(renderer.styleRenderers_[0].render.callCount).to.be(3 * withHit);
+        expect(renderer.styleRenderers_[1].render.callCount).to.be(3 * withHit);
       });
     });
   });
