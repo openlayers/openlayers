@@ -1,6 +1,7 @@
 /**
  * @module ol/color
  */
+import colorNames from 'color-name';
 import {clamp} from './math.js';
 
 /**
@@ -42,20 +43,20 @@ export function asString(color) {
 }
 
 /**
- * Return named color as an rgba string.
+ * Return named color as an rgb(a) string.
  * @param {string} color Named color.
- * @return {string} Rgb string.
+ * @return {string} RGB(A) string.
  */
 function fromNamed(color) {
-  const el = document.createElement('div');
-  el.style.color = color;
-  if (el.style.color !== '') {
-    document.body.appendChild(el);
-    const rgb = getComputedStyle(el).color;
-    document.body.removeChild(el);
-    return rgb;
+  const name = color.toLowerCase();
+  if (!colorNames.hasOwnProperty(name)) {
+    if (name === 'transparent') {
+      return 'rgba(0,0,0,0)';
+    }
+    return '';
   }
-  return '';
+  const rgb = colorNames[name];
+  return 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
 }
 
 /**
@@ -180,7 +181,7 @@ function fromStringInternal_(s) {
 }
 
 /**
- * TODO this function is only used in the test, we probably shouldn't export it
+ * Exported for the tests.
  * @param {Color} color Color.
  * @return {Color} Clamped color.
  */

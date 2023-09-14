@@ -44,6 +44,7 @@
     "url": "https://opencollective.com/openlayers"
   },
   "dependencies": {
+    "color-name": "^2.0.0",
     "earcut": "^2.2.3",
     "geotiff": "^2.0.7",
     "pbf": "3.2.1",
