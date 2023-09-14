@@ -10,6 +10,7 @@ const source = new VectorTileSource({
   tileSize: 64,
   url: '{z}/{x}/{y}',
   tileLoadFunction: (tile) => {
+    console.debug('tileLoadFunction', tile.tileCoord.join('/'));
     const z = tile.tileCoord[0];
     if (z > 2 && tile.tileCoord[1] > tile.tileCoord[2]) {
       return;
@@ -70,7 +71,7 @@ class WebGLVectorTileLayer extends VectorTile {
   }
 }
 
-const map = new Map({
+new Map({
   pixelRatio: 2,
   layers: [
     new WebGLVectorTileLayer({
@@ -80,17 +81,13 @@ const map = new Map({
   target: 'map',
   view: new View({
     center: [0, -100000000],
-    zoom: 0,
+    zoom: 1,
+    rotation: Math.PI / 8,
   }),
 });
-map.getView().setRotation(Math.PI / 8);
-setTimeout(() => {
-  map.getView().setZoom(1);
-  setTimeout(() => {
-    render({
-      message:
-        'Vector tiles from lower zoom levels are hidden by higher zoom levels',
-      tolerance: 0.001,
-    });
-  }, 5);
-}, 5);
+
+render({
+  message:
+    'Vector tiles from lower zoom levels are hidden by higher zoom levels',
+  tolerance: 0.001,
+});
