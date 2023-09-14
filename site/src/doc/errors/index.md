@@ -225,7 +225,6 @@ Layer opacity must be a number.
 ### 66
 
 `forEachFeatureAtCoordinate` cannot be used on a WebGL layer if the hit detection logic has not been enabled.
-This is done by providing adequate shaders using the `hitVertexShader` and `hitFragmentShader` properties of `WebGLPointsLayerRenderer`.
 
 ### 67
 

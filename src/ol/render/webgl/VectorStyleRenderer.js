@@ -5,6 +5,7 @@ import WebGLArrayBuffer from '../../webgl/Buffer.js';
 import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
 import {AttributeType} from '../../webgl/Helper.js';
 import {WebGLWorkerMessageType} from './constants.js';
+import {colorEncodeId} from './utils.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
@@ -18,6 +19,7 @@ import {
 } from './renderinstructions.js';
 import {parseLiteralStyle} from '../../webgl/styleparser.js';
 
+const tmpColor = [];
 const WEBGL_WORKER = createWebGLWorker();
 let workerMessageCounter = 0;
 
@@ -41,7 +43,7 @@ export const Attributes = {
  * for each feature.
  * @property {number} [size] Amount of numerical values composing the attribute, either 1, 2, 3 or 4; in case size is > 1, the return value
  * of the callback should be an array; if unspecified, assumed to be a single float value
- * @property {function(import("../../Feature").FeatureLike):number|Array<number>} callback This callback computes the numerical value of the
+ * @property {function(this:import("./MixedGeometryBatch.js").GeometryBatchItem, import("../../Feature").FeatureLike):number|Array<number>} callback This callback computes the numerical value of the
  * attribute for a given feature.
  */
 
@@ -102,10 +104,12 @@ class VectorStyleRenderer {
   /**
    * @param {VectorStyle} styleOrShaders Literal style or custom shaders
    * @param {import('../../webgl/Helper.js').default} helper Helper
+   * @param {boolean} enableHitDetection Whether to enable the hit detection (needs compatible shader)
    */
-  constructor(styleOrShaders, helper) {
+  constructor(styleOrShaders, helper, enableHitDetection) {
     this.helper_ = helper;
 
+    this.hitDetectionEnabled_ = enableHitDetection;
     let shaders = /** @type {StyleShaders} */ (styleOrShaders);
 
     // TODO: improve discrimination between shaders and style
@@ -179,13 +183,28 @@ class VectorStyleRenderer {
       );
     }
 
-    this.customAttributes_ = shaders.attributes;
+    const hitDetectionAttributes = this.hitDetectionEnabled_
+      ? {
+          hitColor: {
+            callback() {
+              return colorEncodeId(this.ref, tmpColor);
+            },
+            size: 4,
+          },
+        }
+      : {};
+
+    this.customAttributes_ = Object.assign(
+      {},
+      hitDetectionAttributes,
+      shaders.attributes
+    );
     this.uniforms_ = shaders.uniforms;
 
-    const customAttributesDesc = Object.keys(this.customAttributes_).map(
-      (name) => ({
+    const customAttributesDesc = Object.entries(this.customAttributes_).map(
+      ([name, value]) => ({
         name: `a_${name}`,
-        size: this.customAttributes_[name].size || 1,
+        size: value.size || 1,
         type: AttributeType.FLOAT,
       })
     );
@@ -470,12 +489,15 @@ class VectorStyleRenderer {
     frameState,
     preRenderCallback
   ) {
+    const renderCount = indicesBuffer.getSize();
+    if (renderCount === 0) {
+      return;
+    }
     this.helper_.useProgram(program, frameState);
     this.helper_.bindBuffer(verticesBuffer);
     this.helper_.bindBuffer(indicesBuffer);
     this.helper_.enableAttributes(attributes);
     preRenderCallback();
-    const renderCount = indicesBuffer.getSize();
     this.helper_.drawElements(0, renderCount);
   }
 }

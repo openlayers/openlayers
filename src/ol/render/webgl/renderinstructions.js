@@ -20,7 +20,7 @@ function pushCustomAttributesInRenderInstructions(
   let shift = 0;
   for (const key in customAttributes) {
     const attr = customAttributes[key];
-    const value = attr.callback(batchEntry.feature);
+    const value = attr.callback.call(batchEntry, batchEntry.feature);
     renderInstructions[currentIndex + shift++] = value[0] || value;
     if (!attr.size || attr.size === 1) {
       continue;

@@ -7,25 +7,30 @@ import VectorEventType from '../../source/VectorEventType.js';
 import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
 import ViewHint from '../../ViewHint.js';
 import WebGLLayerRenderer from './Layer.js';
+import WebGLRenderTarget from '../../webgl/RenderTarget.js';
 import {DefaultUniform} from '../../webgl/Helper.js';
-import {buffer, createEmpty, equals, getWidth} from '../../extent.js';
 import {
-  create as createMat4,
-  fromTransform as mat4FromTransform,
-} from '../../vec/mat4.js';
-import {
+  apply as applyTransform,
   create as createTransform,
   makeInverse as makeInverseTransform,
   multiply as multiplyTransform,
   setFromArray as setFromTransform,
   translate as translateTransform,
 } from '../../transform.js';
+import {assert} from '../../asserts.js';
+import {buffer, createEmpty, equals} from '../../extent.js';
+import {colorDecodeId} from '../../render/webgl/utils.js';
+import {
+  create as createMat4,
+  fromTransform as mat4FromTransform,
+} from '../../vec/mat4.js';
 import {
   getTransformFromProjections,
   getUserProjection,
   toUserExtent,
   toUserResolution,
 } from '../../proj.js';
+import {getWorldParameters} from './worldUtil.js';
 import {listen, unlistenByKey} from '../../events.js';
 
 export const Uniforms = {
@@ -42,6 +47,8 @@ export const Uniforms = {
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the canvas element.
  * @property {VectorStyle|Array<VectorStyle>} style Vector style as literal style or shaders; can also accept an array of styles
+ * @property {boolean} [disableHitDetection=false] Setting this to true will provide a slight performance boost, but will
+ * prevent all hit detection on the layer.
  * @property {Array<import("./Layer").PostProcessesOptions>} [postProcesses] Post-processes definitions
  */
 
@@ -78,6 +85,18 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       uniforms: uniforms,
       postProcesses: options.postProcesses,
     });
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this.hitDetectionEnabled_ = !options.disableHitDetection;
+
+    /**
+     * @type {WebGLRenderTarget}
+     * @private
+     */
+    this.hitRenderTarget_;
 
     this.sourceRevision_ = -1;
 
@@ -198,7 +217,8 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   createRenderers_() {
     this.buffers_ = [];
     this.styleRenderers_ = this.styles_.map(
-      (style) => new VectorStyleRenderer(style, this.helper)
+      (style) =>
+        new VectorStyleRenderer(style, this.helper, this.hitDetectionEnabled_)
     );
   }
 
@@ -212,6 +232,9 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
   afterHelperCreated() {
     this.createRenderers_();
+    if (this.hitDetectionEnabled_) {
+      this.hitRenderTarget_ = new WebGLRenderTarget(this.helper);
+    }
   }
 
   /**
@@ -279,41 +302,14 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     const gl = this.helper.getGL();
     this.preRender(gl, frameState);
 
-    this.helper.prepareDraw(frameState);
-    this.currentFrameStateTransform_ = this.helper.makeProjectionTransform(
+    const [startWorld, endWorld, worldWidth] = getWorldParameters(
       frameState,
-      this.currentFrameStateTransform_
+      this.getLayer()
     );
 
-    const layer = this.getLayer();
-    const vectorSource = layer.getSource();
-    const projection = frameState.viewState.projection;
-    const multiWorld = vectorSource.getWrapX() && projection.canWrapX();
-    const projectionExtent = projection.getExtent();
-    const extent = frameState.extent;
-    const worldWidth = multiWorld ? getWidth(projectionExtent) : null;
-    const endWorld = multiWorld
-      ? Math.ceil((extent[2] - projectionExtent[2]) / worldWidth) + 1
-      : 1;
-    let world = multiWorld
-      ? Math.floor((extent[0] - projectionExtent[0]) / worldWidth)
-      : 0;
-
-    translateTransform(this.currentFrameStateTransform_, world * worldWidth, 0);
-    do {
-      for (let i = 0, ii = this.styleRenderers_.length; i < ii; i++) {
-        const renderer = this.styleRenderers_[i];
-        const buffers = this.buffers_[i];
-        if (!buffers) {
-          continue;
-        }
-        renderer.render(buffers, frameState, () => {
-          this.applyUniforms_(buffers.invertVerticesTransform);
-        });
-      }
-      translateTransform(this.currentFrameStateTransform_, worldWidth, 0);
-    } while (++world < endWorld);
-
+    // draw the normal canvas
+    this.helper.prepareDraw(frameState);
+    this.renderWorlds(frameState, false, startWorld, endWorld, worldWidth);
     this.helper.finalizeDraw(frameState);
 
     const canvas = this.helper.getCanvas();
@@ -323,7 +319,13 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       canvas.style.opacity = String(opacity);
     }
 
+    if (this.hitDetectionEnabled_) {
+      this.renderWorlds(frameState, true, startWorld, endWorld, worldWidth);
+      this.hitRenderTarget_.clearCachedData();
+    }
+
     this.postRender(gl, frameState);
+
     return canvas;
   }
 
@@ -394,6 +396,50 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
+   * Render the world, either to the main framebuffer or to the hit framebuffer
+   * @param {import("../../Map.js").FrameState} frameState current frame state
+   * @param {boolean} forHitDetection whether the rendering is for hit detection
+   * @param {number} startWorld the world to render in the first iteration
+   * @param {number} endWorld the last world to render
+   * @param {number} worldWidth the width of the worlds being rendered
+   */
+  renderWorlds(frameState, forHitDetection, startWorld, endWorld, worldWidth) {
+    let world = startWorld;
+
+    if (forHitDetection) {
+      this.hitRenderTarget_.setSize([
+        Math.floor(frameState.size[0] / 2),
+        Math.floor(frameState.size[1] / 2),
+      ]);
+      this.helper.prepareDrawToRenderTarget(
+        frameState,
+        this.hitRenderTarget_,
+        true
+      );
+    }
+
+    this.currentFrameStateTransform_ = this.helper.makeProjectionTransform(
+      frameState,
+      this.currentFrameStateTransform_
+    );
+
+    do {
+      for (let i = 0, ii = this.styleRenderers_.length; i < ii; i++) {
+        const renderer = this.styleRenderers_[i];
+        const buffers = this.buffers_[i];
+        if (!buffers) {
+          continue;
+        }
+        renderer.render(buffers, frameState, () => {
+          this.applyUniforms_(buffers.invertVerticesTransform);
+          this.helper.applyHitDetectionUniform(forHitDetection);
+        });
+      }
+      translateTransform(this.currentFrameStateTransform_, worldWidth, 0);
+    } while (++world < endWorld);
+  }
+
+  /**
    * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
@@ -409,6 +455,26 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     callback,
     matches
   ) {
+    assert(
+      this.hitDetectionEnabled_,
+      '`forEachFeatureAtCoordinate` cannot be used on a WebGL layer if the hit detection logic has been disabled using the `disableHitDetection: true` option.'
+    );
+    if (!this.styleRenderers_.length || !this.hitDetectionEnabled_) {
+      return undefined;
+    }
+
+    const pixel = applyTransform(
+      frameState.coordinateToPixelTransform,
+      coordinate.slice()
+    );
+
+    const data = this.hitRenderTarget_.readPixel(pixel[0] / 2, pixel[1] / 2);
+    const color = [data[0] / 255, data[1] / 255, data[2] / 255, data[3] / 255];
+    const ref = colorDecodeId(color);
+    const feature = this.batch_.getFeatureFromRef(ref);
+    if (feature) {
+      return callback(feature, this.getLayer(), null);
+    }
     return undefined;
   }
 

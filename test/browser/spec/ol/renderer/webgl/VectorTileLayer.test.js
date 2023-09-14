@@ -1,4 +1,5 @@
 import Map from '../../../../../../src/ol/Map.js';
+import RenderFeature from '../../../../../../src/ol/render/Feature.js';
 import TileGeometry from '../../../../../../src/ol/webgl/TileGeometry.js';
 import TileQueue from '../../../../../../src/ol/TileQueue.js';
 import TileState from '../../../../../../src/ol/TileState.js';
@@ -10,6 +11,7 @@ import VectorTileSource from '../../../../../../src/ol/source/VectorTile.js';
 import View from '../../../../../../src/ol/View.js';
 import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
 import WebGLVectorTileLayerRenderer from '../../../../../../src/ol/renderer/webgl/VectorTileLayer.js';
+import {Polygon} from '../../../../../../src/ol/geom.js';
 import {Projection} from '../../../../../../src/ol/proj.js';
 import {VOID} from '../../../../../../src/ol/functions.js';
 import {create} from '../../../../../../src/ol/transform.js';
@@ -77,7 +79,38 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
           extent: [-128, -128, 128, 128],
         }),
         tileUrlFunction: (tileCoord) => tileCoord.join('/'),
-        tileLoadFunction: (tile) => tile.setFeatures([]),
+        tileLoadFunction: (tile) => {
+          const polygon = new Polygon([
+            [
+              [0, 0],
+              [0, 10],
+              [10, 10],
+              [10, 0],
+              [0, 0],
+            ],
+          ]);
+          tile.setFeatures([
+            new RenderFeature('Point', [0, 16], [], 2, {}, 1),
+            new RenderFeature(
+              'LineString',
+              [0, 5, 4, 12],
+              [],
+              2,
+              {
+                'color': 'red',
+              },
+              2
+            ),
+            new RenderFeature(
+              'Polygon',
+              polygon.getOrientedFlatCoordinates(),
+              polygon.getEnds(),
+              2,
+              {},
+              3
+            ),
+          ]);
+        },
       }),
     });
 

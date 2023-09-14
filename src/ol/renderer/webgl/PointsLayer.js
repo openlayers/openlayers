@@ -18,10 +18,11 @@ import {
   translate as translateTransform,
 } from '../../transform.js';
 import {assert} from '../../asserts.js';
-import {buffer, createEmpty, equals, getWidth} from '../../extent.js';
+import {buffer, createEmpty, equals} from '../../extent.js';
 import {colorDecodeId, colorEncodeId} from '../../render/webgl/utils.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {getUid} from '../../util.js';
+import {getWorldParameters} from './worldUtil.js';
 import {listen, unlistenByKey} from '../../events.js';
 
 /**
@@ -401,55 +402,29 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
   renderFrame(frameState) {
     const gl = this.helper.getGL();
     this.preRender(gl, frameState);
-
-    const [startWorld, endWorld, worldWidth] =
-      this.getWorldParameters_(frameState);
+    const [startWorld, endWorld, worldWidth] = getWorldParameters(
+      frameState,
+      this.getLayer()
+    );
 
     // draw the normal canvas
     this.renderWorlds(frameState, false, startWorld, endWorld, worldWidth);
-
     this.helper.finalizeDraw(
       frameState,
       this.dispatchPreComposeEvent,
       this.dispatchPostComposeEvent
     );
-    const canvas = this.helper.getCanvas();
 
     if (this.hitDetectionEnabled_) {
+      // draw the hit buffer
       this.renderWorlds(frameState, true, startWorld, endWorld, worldWidth);
       this.hitRenderTarget_.clearCachedData();
     }
 
     this.postRender(gl, frameState);
 
+    const canvas = this.helper.getCanvas();
     return canvas;
-  }
-
-  /**
-   * Compute world params
-   * @private
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
-   * @return {Array<number>} The world start, end and width.
-   */
-  getWorldParameters_(frameState) {
-    const projection = frameState.viewState.projection;
-    const layer = this.getLayer();
-    const vectorSource = layer.getSource();
-    // FIXME fix hit detection isn't reliable when rendering multiple worlds
-    const multiWorld = vectorSource.getWrapX() && projection.canWrapX();
-    const projectionExtent = projection.getExtent();
-
-    const extent = frameState.extent;
-    const worldWidth = multiWorld ? getWidth(projectionExtent) : null;
-    const endWorld = multiWorld
-      ? Math.ceil((extent[2] - projectionExtent[2]) / worldWidth) + 1
-      : 1;
-
-    const startWorld = multiWorld
-      ? Math.floor((extent[0] - projectionExtent[0]) / worldWidth)
-      : 0;
-
-    return [startWorld, endWorld, worldWidth];
   }
 
   /**
@@ -589,7 +564,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
   ) {
     assert(
       this.hitDetectionEnabled_,
-      '`forEachFeatureAtCoordinate` cannot be used on a WebGL layer if the hit detection logic has not been enabled. This is done by providing adequate shaders using the `hitVertexShader` and `hitFragmentShader` properties of `WebGLPointsLayerRenderer`'
+      '`forEachFeatureAtCoordinate` cannot be used on a WebGL layer if the hit detection logic has been disabled using the `disableHitDetection: true` option.'
     );
     if (!this.renderInstructions_ || !this.hitDetectionEnabled_) {
       return undefined;
