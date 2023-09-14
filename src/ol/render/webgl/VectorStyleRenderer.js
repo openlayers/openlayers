@@ -182,10 +182,10 @@ class VectorStyleRenderer {
     this.customAttributes_ = shaders.attributes;
     this.uniforms_ = shaders.uniforms;
 
-    const customAttributesDesc = Object.keys(this.customAttributes_).map(
-      (name) => ({
+    const customAttributesDesc = Object.entries(this.customAttributes_).map(
+      ([name, value]) => ({
         name: `a_${name}`,
-        size: this.customAttributes_[name].size || 1,
+        size: value.size || 1,
         type: AttributeType.FLOAT,
       })
     );
@@ -470,12 +470,15 @@ class VectorStyleRenderer {
     frameState,
     preRenderCallback
   ) {
+    const renderCount = indicesBuffer.getSize();
+    if (renderCount === 0) {
+      return;
+    }
     this.helper_.useProgram(program, frameState);
     this.helper_.bindBuffer(verticesBuffer);
     this.helper_.bindBuffer(indicesBuffer);
     this.helper_.enableAttributes(attributes);
     preRenderCallback();
-    const renderCount = indicesBuffer.getSize();
     this.helper_.drawElements(0, renderCount);
   }
 }
