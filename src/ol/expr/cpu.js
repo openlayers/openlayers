@@ -187,14 +187,8 @@ function compileAssertionExpression(expression, context) {
  * @return {ExpressionEvaluator} The evaluator function.
  */
 function compileAccessorExpression(expression, context) {
-  const nameExpression = expression.args[0];
-  if (!(nameExpression instanceof LiteralExpression)) {
-    throw new Error('Expected literal name');
-  }
-  const name = nameExpression.value;
-  if (typeof name !== 'string') {
-    throw new Error('Expected string name');
-  }
+  const nameExpression = /** @type {LiteralExpression} */ (expression.args[0]);
+  const name = /** @type {string} */ (nameExpression.value);
   switch (expression.operator) {
     case Ops.Get: {
       return (context) => context.properties[name];
