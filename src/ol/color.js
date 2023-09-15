@@ -1,7 +1,10 @@
 /**
  * @module ol/color
  */
+import lchuv from 'color-space/lchuv.js';
 import parseRgba from 'color-rgba';
+import rgb from 'color-space/rgb.js';
+import xyz from 'color-space/xyz.js';
 import {clamp} from './math.js';
 
 /**
@@ -43,6 +46,41 @@ const cache = {};
  * @type {number}
  */
 let cacheSize = 0;
+
+/**
+ * @param {Color} color A color that may or may not have an alpha channel.
+ * @return {Color} The input color with an alpha channel.  If the input color has
+ * an alpha channel, the input color will be returned unchanged.  Otherwise, a new
+ * array will be returned with the input color and an alpha channel of 1.
+ */
+export function withAlpha(color) {
+  if (color.length === 4) {
+    return color;
+  }
+  const output = color.slice();
+  output[3] = 1;
+  return output;
+}
+
+/**
+ * @param {Color} color RGBA color.
+ * @return {Color} LCHuv color with alpha.
+ */
+export function rgbaToLcha(color) {
+  const output = xyz.lchuv(rgb.xyz(color));
+  output[3] = color[3];
+  return output;
+}
+
+/**
+ * @param {Color} color LCHuv color with alpha.
+ * @return {Color} RGBA color.
+ */
+export function lchaToRgba(color) {
+  const output = xyz.rgb(lchuv.xyz(color));
+  output[3] = color[3];
+  return output;
+}
 
 /**
  * @param {string} s String.

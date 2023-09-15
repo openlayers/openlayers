@@ -2,7 +2,7 @@
  * @module ol/expr/expression
  */
 import {ascending} from '../array.js';
-import {isStringColor} from '../color.js';
+import {fromString, isStringColor} from '../color.js';
 
 /**
  * @fileoverview This module includes types and functions for parsing array encoded expressions.
@@ -505,12 +505,16 @@ function withArgsCount(minArgs, maxArgs) {
       if (argCount !== minArgs) {
         const plural = minArgs === 1 ? '' : 's';
         throw new Error(
-          `Expected ${minArgs} argument${plural} for operation ${operation}, got ${argCount}`
+          `Expected ${minArgs} argument${plural} for ${operation}, got ${argCount}`
         );
       }
     } else if (argCount < minArgs || argCount > maxArgs) {
+      const range =
+        maxArgs === Infinity
+          ? `${minArgs} or more`
+          : `${minArgs} to ${maxArgs}`;
       throw new Error(
-        `Expected ${minArgs} to ${maxArgs} arguments for operation ${operation}, got ${argCount}`
+        `Expected ${range} arguments for ${operation}, got ${argCount}`
       );
     }
   };
@@ -535,7 +539,7 @@ function parseArgsOfType(argType) {
         const expectedType = typeName(expression.type);
         throw new Error(
           `Unexpected type for argument ${i} of ${operation} operation` +
-            ` : got ${gotType} but expected ${expectedType}`
+            `, got ${gotType} but expected ${expectedType}`
         );
       }
       args[i] = expression;
@@ -624,7 +628,7 @@ function parseMatchArgs(encoded, context, typeHint) {
     throw new Error(
       `Expected an input of type ${typeName(
         expectedInputType
-      )} for the interpolate operation` + ` : got ${inputType} instead`
+      )} for the interpolate operation` + `, got ${inputType} instead`
     );
   }
 
@@ -643,6 +647,12 @@ function parseInterpolateArgs(encoded, context) {
       break;
     case 'exponential':
       interpolation = interpolationType[1];
+      if (typeof interpolation !== 'number') {
+        throw new Error(
+          `Expected a number base for exponential interpolation` +
+            `, got ${JSON.stringify(interpolation)} instead`
+        );
+      }
       break;
     default:
       interpolation = null;
@@ -659,12 +669,34 @@ function parseInterpolateArgs(encoded, context) {
   ];
 
   // check input types
-  const input = parsedArgs[0];
+  const input = parsedArgs[1];
   if (!overlapsType(NumberType, input.type)) {
     throw new Error(
       `Expected an input of type number for the interpolate operation` +
-        ` : got ${typeName(input.type)} instead`
+        `, got ${typeName(input.type)} instead`
     );
+  }
+  for (let i = 2; i < parsedArgs.length; i += 2) {
+    const input = parsedArgs[i];
+    if (!overlapsType(NumberType, input.type)) {
+      throw new Error(
+        `Expected all stop input values in the interpolate operation to be of type number` +
+          `, got ${typeName(input.type)} at position ${i} instead`
+      );
+    }
+    const output = parsedArgs[i + 1];
+    if (!overlapsType(NumberType | ColorType, output.type)) {
+      throw new Error(
+        `Expected all stop output values in the interpolate operation to be a number or color` +
+          `, got ${typeName(output.type)} at position ${i + 1} instead`
+      );
+    }
+    if (output instanceof LiteralExpression) {
+      if (typeof output.value === 'string') {
+        output.value = fromString(output.value);
+        output.type = ColorType;
+      }
+    }
   }
 
   return parsedArgs;
@@ -681,7 +713,7 @@ function parseCaseArgs(encoded, context) {
     if (!overlapsType(BooleanType, parsedArgs[i].type)) {
       throw new Error(
         `Expected all conditions in the case operation to be of type boolean` +
-          ` : got ${typeName(parsedArgs[i].type)} at position ${i} instead`
+          `, got ${typeName(parsedArgs[i].type)} at position ${i} instead`
       );
     }
   }

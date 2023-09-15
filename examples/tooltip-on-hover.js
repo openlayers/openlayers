@@ -25,8 +25,6 @@ const map = new Map({
 });
 
 const info = document.getElementById('info');
-info.style.visibility = 'hidden';
-info.style.pointerEvents = 'none';
 
 let currentFeature;
 const displayFeatureInfo = function (pixel, target) {

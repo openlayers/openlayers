@@ -1158,7 +1158,7 @@ Operators['interpolate'] = {
     assertSingleType(['interpolate', ...args], outputType, 'output');
 
     const input = expressionToGlsl(context, args[1], inputType);
-    const exponent = numberToGlsl(interpolation);
+    const base = numberToGlsl(interpolation);
 
     let result = '';
     for (let i = 2; i < args.length - 2; i += 2) {
@@ -1171,7 +1171,7 @@ Operators['interpolate'] = {
       if (interpolation === 1) {
         ratio = `(${input} - ${stop1}) / (${stop2} - ${stop1})`;
       } else {
-        ratio = `(pow(${exponent}, (${input} - ${stop1})) - 1.0) / (pow(${exponent}, (${stop2} - ${stop1})) - 1.0)`;
+        ratio = `(pow(${base}, (${input} - ${stop1})) - 1.0) / (pow(${base}, (${stop2} - ${stop1})) - 1.0)`;
       }
       result = `mix(${output1}, ${output2}, clamp(${ratio}, 0.0, 1.0))`;
     }
