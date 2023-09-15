@@ -56,8 +56,9 @@ describe('ol/color', () => {
   });
 
   describe('fromString()', () => {
-    describe('with named colors', () => {
+    describe('parses a variety of formats', () => {
       const cases = [
+        // named colors
         ['red', [255, 0, 0, 1]],
         ['green', [0, 128, 0, 1]],
         ['blue', [0, 0, 255, 1]],
@@ -70,7 +71,23 @@ describe('ol/color', () => {
         ['wheat', [245, 222, 179, 1]],
         ['olive', [128, 128, 0, 1]],
         ['transparent', [0, 0, 0, 0]],
-        ['oops', 'Invalid color'],
+        ['oops', 'Failed to parse "oops" as color'],
+
+        // rgb(a) varieties
+        ['rgba(255,122,127,0.8)', [255, 122, 127, 0.8]],
+        ['rgb(255 122 127 / 80%)', [255, 122, 127, 1]],
+        ['rgb(255 122 127 / .2)', [255, 122, 127, 1]],
+        ['rgb(30% 20% 50%)', [77, 51, 128, 1]],
+
+        // hsl(a) varieties
+        ['hsla(84, 51%, 87%, 0.7)', [225, 239, 205, 0.7]],
+        ['hsl(46, 24%, 82%)', [220, 215, 198, 1]],
+        ['hsl(50 80% 40%)', [184, 156, 20, 1]],
+        ['hsl(150deg 30% 60%)', [122, 184, 153, 1]],
+        ['hsl(0 80% 50% / 25%)', [230, 25, 25, 0.25]],
+
+        // hwb
+        ['hwb(50deg 30% 40%)', [133, 122, 71, 1]],
       ];
       for (const c of cases) {
         it(`works for ${c[0]}`, () => {
@@ -78,7 +95,9 @@ describe('ol/color', () => {
           if (typeof expected === 'string') {
             expect(() => {
               fromString(c[0]);
-            }).to.throwException(expected);
+            }).to.throwException((e) => {
+              expect(e.message).to.be(expected);
+            });
             return;
           }
           expect(fromString(c[0])).to.eql(c[1]);
@@ -145,13 +164,24 @@ describe('ol/color', () => {
       );
     });
 
-    it('throws an error on invalid colors', () => {
-      const invalidColors = ['tuesday', '#12345', '#1234567'];
-      let i, ii;
-      for (i = 0, ii = invalidColors.length; i < ii; ++i) {
-        expect(() => {
-          fromString(invalidColors[i]);
-        }).to.throwException();
+    describe('with invalid colors', () => {
+      const cases = [
+        'tuesday',
+        'rgb(garbage)',
+        'hsl(oops)',
+        'rgba(42)',
+        'hsla(5)',
+      ];
+
+      for (const c of cases) {
+        it(`throws an error on ${c}`, () => {
+          try {
+            const color = fromString(c);
+            expect().fail(`Expected an error, got ${color}`);
+          } catch (err) {
+            expect(err.message).to.be(`Failed to parse "${c}" as color`);
+          }
+        });
       }
     });
   });
