@@ -93,7 +93,7 @@
     "marked": "9.0.2",
     "metalsmith": "^2.5.0",
     "mocha": "10.2.0",
-    "ol-mapbox-style": "^11.0.1",
+    "ol-mapbox-style": "^12.0.0",
     "ol-stac": "^1.0.0-beta.6",
     "pixelmatch": "^5.1.0",
     "pngjs": "^7.0.0",
