@@ -2,7 +2,7 @@ import CircleStyle from '../../../../../src/ol/style/Circle.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../../src/ol/style/Stroke.js';
 
-describe('ol.style.Circle', function () {
+describe('ol/style/Circle', function () {
   describe('#constructor', function () {
     it('creates a canvas (no fill-style)', function () {
       const style = new CircleStyle({radius: 10});
@@ -126,8 +126,17 @@ describe('ol.style.Circle', function () {
         }),
       });
       expect(style.getRadius()).to.eql(10);
+
+      const hitImageBefore = style.getHitDetectionImage();
+      expect(hitImageBefore).to.be.an(HTMLCanvasElement);
+      expect(hitImageBefore.width).to.eql(20);
+
       style.setRadius(20);
       expect(style.getRadius()).to.eql(20);
+
+      const hitImageAfter = style.getHitDetectionImage();
+      expect(hitImageAfter).to.be.an(HTMLCanvasElement);
+      expect(hitImageAfter.width).to.eql(40);
     });
   });
 });

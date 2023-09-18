@@ -505,6 +505,7 @@ class RegularShape extends ImageStyle {
     this.renderOptions_ = this.createRenderOptions();
     const size = this.renderOptions_.size;
     this.canvas_ = {};
+    this.hitDetectionCanvas_ = null;
     this.size_ = [size, size];
   }
 
