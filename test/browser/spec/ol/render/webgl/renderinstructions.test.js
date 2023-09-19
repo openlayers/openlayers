@@ -140,4 +140,28 @@ describe('Render instructions utilities', function () {
       ]);
     });
   });
+
+  describe('custom attribute returning an array', () => {
+    beforeEach(function () {
+      renderInstructions = generatePointRenderInstructions(
+        mixedBatch.pointBatch,
+        new Float32Array(0),
+        [
+          {
+            name: 'test',
+            size: 4,
+            callback: function () {
+              return [0, 1, 2, 3];
+            },
+          },
+        ],
+        SAMPLE_TRANSFORM
+      );
+    });
+    it('generates render instructions', function () {
+      expect(Array.from(renderInstructions)).to.eql([
+        2, 2, 0, 1, 2, 3, 6, 6, 0, 1, 2, 3,
+      ]);
+    });
+  });
 });
