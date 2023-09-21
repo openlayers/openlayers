@@ -71,7 +71,15 @@ import {getStrideForLayout} from '../geom/SimpleGeometry.js';
  * boolean to indicate whether the drawing can be finished. Not used when drawing
  * POINT or MULTI_POINT geometries.
  * @property {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike} [style]
- * Style for sketch features.
+ * Style for sketch features. The draw interaction can have up to three sketch features, depending on the mode.
+ * It will always contain a feature with a `Point` geometry that corresponds to the current cursor position.
+ * If the mode is `LineString` or `Polygon`, and there is at least one drawn point, it will also contain a feature with
+ * a `LineString` geometry that corresponds to the line between the already drawn points and the current cursor position.
+ * If the mode is `Polygon`, and there is at least one drawn point, it will also contain a feature with a `Polygon`
+ * geometry that corresponds to the polygon between the already drawn points and the current cursor position
+ * (note that this polygon has only two points if only one point is drawn).
+ * If the mode is `Circle`, and there is one point drawn, it will also contain a feature with a `Circle` geometry whose
+ * center is the drawn point and the radius is determined by the distance between the drawn point and the cursor.
  * @property {GeometryFunction} [geometryFunction]
  * Function that is called when a geometry's coordinates are updated.
  * @property {string} [geometryName] Geometry name to use for features created
