@@ -284,6 +284,22 @@ describe('ol/render/canvas/style.js', () => {
           }),
         }),
       },
+      {
+        name: 'missing circle-radius',
+        style: {
+          'circle-stroke-color': 'red',
+          'circle-size': 10,
+        },
+        error: 'No fill, stroke, point, or text symbolizer properties in style',
+      },
+      {
+        name: 'missing fill-color or stroke-color',
+        style: {
+          'fill': 'red',
+          'stroke': 'white',
+        },
+        error: 'No fill, stroke, point, or text symbolizer properties in style',
+      },
     ];
 
     for (const c of cases) {
@@ -297,7 +313,7 @@ describe('ol/render/canvas/style.js', () => {
 
         if (c.error) {
           expect(error).to.be.an(Error);
-          expect(error.message).to.be(c.error);
+          expect(error.message).to.contain(c.error);
           return;
         }
         if (error) {
