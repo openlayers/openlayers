@@ -75,6 +75,7 @@ import {
  * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
  * @property {number} [cacheSize=512] The internal texture cache size.  This needs to be large enough to render
  * two zoom levels worth of tiles.
+ * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
