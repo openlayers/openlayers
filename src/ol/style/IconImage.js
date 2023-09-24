@@ -273,10 +273,7 @@ class IconImage extends EventTarget {
  * @return {IconImage} Icon image.
  */
 export function get(image, cacheKey, crossOrigin, imageState, color) {
-  let iconImage =
-    cacheKey === undefined
-      ? undefined
-      : iconImageCache.get(cacheKey, crossOrigin, color);
+  let iconImage = iconImageCache.get(cacheKey, crossOrigin, color);
   if (!iconImage) {
     iconImage = new IconImage(
       image,

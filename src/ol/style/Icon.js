@@ -209,7 +209,7 @@ class Icon extends ImageStyle {
      */
     this.iconImage_ = getIconImage(
       image,
-      /** @type {string} */ (cacheKey),
+      cacheKey,
       this.crossOrigin_,
       imageState,
       this.color_
