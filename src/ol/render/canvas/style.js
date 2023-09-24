@@ -55,6 +55,10 @@ import {toSize} from '../../size.js';
  */
 
 /**
+ * @typedef {import("../../expr/cpu.js").DeclutterModeEvaluator} DeclutterModeEvaluator
+ */
+
+/**
  * @param {EvaluationContext} context The evaluation context.
  * @return {boolean} Always true.
  */
@@ -730,9 +734,10 @@ function buildIcon(flatStyle, context) {
   const width = optionalNumber(flatStyle, prefix + 'width');
   const height = optionalNumber(flatStyle, prefix + 'height');
   const size = optionalSize(flatStyle, prefix + 'size');
-  const declutterMode = optionalDeclutterMode(
+  const evaluateDeclutterMode = declutterModeEvaluator(
     flatStyle,
-    prefix + 'declutter-mode'
+    prefix + 'declutter-mode',
+    context
   );
 
   const icon = new Icon({
@@ -747,7 +752,6 @@ function buildIcon(flatStyle, context) {
     height,
     width,
     size,
-    declutterMode,
   });
 
   return function (context) {
@@ -773,6 +777,10 @@ function buildIcon(flatStyle, context) {
 
     if (evaluateAnchor) {
       icon.setAnchor(evaluateAnchor(context));
+    }
+
+    if (evaluateDeclutterMode) {
+      icon.setDeclutterMode(evaluateDeclutterMode(context));
     }
     return icon;
   };
@@ -862,9 +870,10 @@ function buildShape(flatStyle, context) {
     context
   );
   const evaluateAngle = numberEvaluator(flatStyle, prefix + 'angle', context);
-  const declutterMode = optionalDeclutterMode(
+  const evaluateDeclutterMode = declutterModeEvaluator(
     flatStyle,
-    prefix + 'declutter-mode'
+    prefix + 'declutter-mode',
+    context
   );
 
   const defaultDisplacement = [0, 0];
@@ -885,13 +894,15 @@ function buildShape(flatStyle, context) {
       ? evaluateRotateWithView(context)
       : true;
     const scale = evaluateScale ? evaluateScale(context) : defaultScale;
+    const declutterMode = evaluateDeclutterMode
+      ? evaluateDeclutterMode(context)
+      : undefined;
 
     const cachableProperties = {
       points,
       radius,
       radius2,
       angle,
-      declutterMode,
     };
     addStyleCacheProperties(cachableProperties, fill, stroke);
     const cacheKey = 'RegularShape-' + JSON.stringify(cachableProperties);
@@ -907,11 +918,11 @@ function buildShape(flatStyle, context) {
         angle,
         fill,
         stroke,
-        declutterMode,
       });
       sharedIconCache.set(cacheKey, shape);
     }
 
+    shape.setDeclutterMode(declutterMode);
     shape.setDisplacement(displacement);
     shape.setRotateWithView(rotateWithView);
     shape.setRotation(rotation);
@@ -953,9 +964,10 @@ function buildCircle(flatStyle, context) {
   );
 
   // the remaining properties are not currently settable
-  const declutterMode = optionalDeclutterMode(
+  const evaluateDeclutterMode = declutterModeEvaluator(
     flatStyle,
-    prefix + 'declutter-mode'
+    prefix + 'declutter-mode',
+    context
   );
 
   const defaultDisplacement = [0, 0];
@@ -973,10 +985,12 @@ function buildCircle(flatStyle, context) {
       ? evaluateRotateWithView(context)
       : true;
     const scale = evaluateScale ? evaluateScale(context) : defaultScale;
+    const declutterMode = evaluateDeclutterMode
+      ? evaluateDeclutterMode(context)
+      : undefined;
 
     const cachableProperties = {
       radius,
-      declutterMode,
     };
     addStyleCacheProperties(cachableProperties, fill, stroke);
     const cacheKey = 'Circle-' + JSON.stringify(cachableProperties);
@@ -987,11 +1001,11 @@ function buildCircle(flatStyle, context) {
         radius,
         fill,
         stroke,
-        declutterMode,
       });
       sharedIconCache.set(cacheKey, circle);
     }
 
+    circle.setDeclutterMode(declutterMode);
     circle.setDisplacement(displacement);
     circle.setRotation(rotation);
     circle.setRotateWithView(rotateWithView);
@@ -1132,6 +1146,28 @@ function sizeLikeEvaluator(flatStyle, name, context) {
 /**
  * @param {FlatStyle} flatStyle The flat style.
  * @param {string} property The symbolizer property.
+ * @param {ParsingContext} context The parsing context
+ * @return {DeclutterModeEvaluator|null} Icon declutter mode.
+ */
+function declutterModeEvaluator(flatStyle, property, context) {
+  if (flatStyle[property] === undefined) {
+    return null;
+  }
+  const evaluator = buildExpression(flatStyle[property], StringType, context);
+  return (context) => {
+    const value = requireString(evaluator(context), property);
+    if (value !== 'declutter' && value !== 'obstacle' && value !== 'none') {
+      throw new Error(
+        `Expected 'declutter', 'obstacle', or 'none' for ${property}`
+      );
+    }
+    return value;
+  };
+}
+
+/**
+ * @param {FlatStyle} flatStyle The flat style.
+ * @param {string} property The symbolizer property.
  * @return {number|undefined} A number or undefined.
  */
 function optionalNumber(flatStyle, property) {
@@ -1237,25 +1273,6 @@ function optionalNumberArray(flatStyle, property) {
     return undefined;
   }
   return requireNumberArray(encoded, property);
-}
-
-/**
- * @param {FlatStyle} flatStyle The flat style.
- * @param {string} property The symbolizer property.
- * @return {"declutter"|"obstacle"|"none"|undefined} Icon declutter mode.
- */
-function optionalDeclutterMode(flatStyle, property) {
-  const encoded = flatStyle[property];
-  if (encoded === undefined) {
-    return undefined;
-  }
-  if (typeof encoded !== 'string') {
-    throw new Error(`Expected a string for ${property}`);
-  }
-  if (encoded !== 'declutter' && encoded !== 'obstacle' && encoded !== 'none') {
-    throw new Error(`Expected declutter, obstacle, or none for ${property}`);
-  }
-  return encoded;
 }
 
 /**
