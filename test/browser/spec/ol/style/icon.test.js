@@ -149,21 +149,19 @@ describe('ol.style.Icon', function () {
         size: [10, 12],
         displacement: [5, 6],
       });
+      // getColor may return a reference to an object in the ol/color#cache
       const clone = original.clone();
       expect(original.getAnchor()).not.to.be(clone.getAnchor());
       expect(original.offset_).not.to.be(clone.offset_);
-      expect(original.getColor()).not.to.be(clone.getColor());
       expect(original.getSize()).not.to.be(clone.getSize());
       expect(original.getDisplacement()).not.to.be(clone.getDisplacement());
 
       clone.anchor_[0] = 0;
       clone.offset_[0] = 0;
-      clone.color_[0] = 0;
       clone.size_[0] = 5;
       clone.displacement_[0] = 10;
       expect(original.anchor_).not.to.eql(clone.anchor_);
       expect(original.offset_).not.to.eql(clone.offset_);
-      expect(original.color_).not.to.eql(clone.color_);
       expect(original.size_).not.to.eql(clone.size_);
       expect(original.displacement_).not.to.eql(clone.displacement_);
     });

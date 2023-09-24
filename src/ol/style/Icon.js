@@ -4,7 +4,7 @@
 import EventType from '../events/EventType.js';
 import ImageState from '../ImageState.js';
 import ImageStyle from './Image.js';
-import {asArray} from '../color.js';
+import {asArray, asString} from '../color.js';
 import {assert} from '../asserts.js';
 import {get as getIconImage} from './IconImage.js';
 import {getUid} from '../util.js';
@@ -199,9 +199,9 @@ class Icon extends ImageStyle {
 
     /**
      * @private
-     * @type {import("../color.js").Color}
+     * @type {string|null}
      */
-    this.color_ = options.color !== undefined ? asArray(options.color) : null;
+    this.color_ = options.color !== undefined ? asString(options.color) : null;
 
     /**
      * @private
@@ -299,10 +299,7 @@ class Icon extends ImageStyle {
       anchorOrigin: this.anchorOrigin_,
       anchorXUnits: this.anchorXUnits_,
       anchorYUnits: this.anchorYUnits_,
-      color:
-        this.color_ && this.color_.slice
-          ? this.color_.slice()
-          : this.color_ || undefined,
+      color: this.color_ === null ? undefined : this.color_,
       crossOrigin: this.crossOrigin_,
       offset: this.offset_.slice(),
       offsetOrigin: this.offsetOrigin_,
@@ -396,7 +393,7 @@ class Icon extends ImageStyle {
    * @api
    */
   getColor() {
-    return this.color_;
+    return this.color_ === null ? null : asArray(this.color_);
   }
 
   /**

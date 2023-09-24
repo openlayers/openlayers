@@ -1,7 +1,6 @@
 /**
  * @module ol/style/IconImageCache
  */
-import {asString} from '../color.js';
 
 /**
  * @classdesc
@@ -62,7 +61,7 @@ class IconImageCache {
   /**
    * @param {string} src Src.
    * @param {?string} crossOrigin Cross origin.
-   * @param {import("../color.js").Color} color Color.
+   * @param {string|null} color Color.
    * @return {import("./IconImage.js").default} Icon image.
    */
   get(src, crossOrigin, color) {
@@ -73,7 +72,7 @@ class IconImageCache {
   /**
    * @param {string} src Src.
    * @param {?string} crossOrigin Cross origin.
-   * @param {import("../color.js").Color} color Color.
+   * @param {string|null} color Color.
    * @param {import("./IconImage.js").default} iconImage Icon image.
    */
   set(src, crossOrigin, color, iconImage) {
@@ -98,12 +97,11 @@ class IconImageCache {
 /**
  * @param {string} src Src.
  * @param {?string} crossOrigin Cross origin.
- * @param {import("../color.js").Color} color Color.
+ * @param {string|null} color Color.
  * @return {string} Cache key.
  */
 function getKey(src, crossOrigin, color) {
-  const colorString = color ? asString(color) : 'null';
-  return crossOrigin + ':' + src + ':' + colorString;
+  return crossOrigin + ':' + src + ':' + color;
 }
 
 export default IconImageCache;

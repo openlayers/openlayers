@@ -21,7 +21,7 @@ class IconImage extends EventTarget {
    * @param {string|undefined} src Src.
    * @param {?string} crossOrigin Cross origin.
    * @param {import("../ImageState.js").default} imageState Image state.
-   * @param {import("../color.js").Color} color Color.
+   * @param {string|null} color Color.
    */
   constructor(image, src, crossOrigin, imageState, color) {
     super();
@@ -52,7 +52,7 @@ class IconImage extends EventTarget {
 
     /**
      * @private
-     * @type {import("../color.js").Color}
+     * @type {string|null}
      */
     this.color_ = color;
 
@@ -269,7 +269,7 @@ class IconImage extends EventTarget {
  * @param {string} cacheKey Src.
  * @param {?string} crossOrigin Cross origin.
  * @param {import("../ImageState.js").default} imageState Image state.
- * @param {import("../color.js").Color} color Color.
+ * @param {string|null} color Color.
  * @return {IconImage} Icon image.
  */
 export function get(image, cacheKey, crossOrigin, imageState, color) {
