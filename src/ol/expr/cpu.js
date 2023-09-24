@@ -9,6 +9,7 @@ import {
   parse,
   typeName,
 } from './expression.js';
+import {lchaToRgba, normalize, rgbaToLcha, withAlpha} from '../color.js';
 
 /**
  * @fileoverview This module includes functions to build expressions for evaluation on the CPU.
@@ -142,6 +143,9 @@ function compileExpression(expression, context) {
     }
     case Ops.Match: {
       return compileMatchExpression(expression, context);
+    }
+    case Ops.Interpolate: {
+      return compileInterpolateExpression(expression, context);
     }
     default: {
       throw new Error(`Unsupported operator ${operator}`);
@@ -390,4 +394,112 @@ function compileMatchExpression(expression, context) {
     }
     return args[length - 1](context);
   };
+}
+
+/**
+ * @param {import('./expression.js').CallExpression} expression The call expression.
+ * @param {import('./expression.js').ParsingContext} context The parsing context.
+ * @return {ExpressionEvaluator} The evaluator function.
+ */
+function compileInterpolateExpression(expression, context) {
+  const length = expression.args.length;
+  const args = new Array(length);
+  for (let i = 0; i < length; ++i) {
+    args[i] = compileExpression(expression.args[i], context);
+  }
+  return (context) => {
+    const base = args[0](context);
+    const value = args[1](context);
+
+    let previousInput;
+    let previousOutput;
+    for (let i = 2; i < length; i += 2) {
+      const input = args[i](context);
+      let output = args[i + 1](context);
+      const isColor = Array.isArray(output);
+      if (isColor) {
+        output = withAlpha(output);
+      }
+      if (input >= value) {
+        if (i === 2) {
+          return output;
+        }
+        if (isColor) {
+          return interpolateColor(
+            base,
+            value,
+            previousInput,
+            previousOutput,
+            input,
+            output
+          );
+        }
+        return interpolateNumber(
+          base,
+          value,
+          previousInput,
+          previousOutput,
+          input,
+          output
+        );
+      }
+      previousInput = input;
+      previousOutput = output;
+    }
+    return previousOutput;
+  };
+}
+
+/**
+ * @param {number} base The base.
+ * @param {number} value The value.
+ * @param {number} input1 The first input value.
+ * @param {number} output1 The first output value.
+ * @param {number} input2 The second input value.
+ * @param {number} output2 The second output value.
+ * @return {number} The interpolated value.
+ */
+function interpolateNumber(base, value, input1, output1, input2, output2) {
+  const delta = input2 - input1;
+  if (delta === 0) {
+    return output1;
+  }
+  const along = value - input1;
+  const factor =
+    base === 1
+      ? along / delta
+      : (Math.pow(base, along) - 1) / (Math.pow(base, delta) - 1);
+  return output1 + factor * (output2 - output1);
+}
+
+/**
+ * @param {number} base The base.
+ * @param {number} value The value.
+ * @param {number} input1 The first input value.
+ * @param {import('../color.js').Color} rgba1 The first output value.
+ * @param {number} input2 The second input value.
+ * @param {import('../color.js').Color} rgba2 The second output value.
+ * @return {import('../color.js').Color} The interpolated color.
+ */
+function interpolateColor(base, value, input1, rgba1, input2, rgba2) {
+  const delta = input2 - input1;
+  if (delta === 0) {
+    return rgba1;
+  }
+  const lcha1 = rgbaToLcha(rgba1);
+  const lcha2 = rgbaToLcha(rgba2);
+  let deltaHue = lcha2[2] - lcha1[2];
+  if (deltaHue > 180) {
+    deltaHue -= 360;
+  } else if (deltaHue < -180) {
+    deltaHue += 360;
+  }
+
+  const lcha = [
+    interpolateNumber(base, value, input1, lcha1[0], input2, lcha2[0]),
+    interpolateNumber(base, value, input1, lcha1[1], input2, lcha2[1]),
+    lcha1[2] + interpolateNumber(base, value, input1, 0, input2, deltaHue),
+    interpolateNumber(base, value, input1, rgba1[3], input2, rgba2[3]),
+  ];
+  return normalize(lchaToRgba(lcha));
 }
