@@ -8,7 +8,7 @@ import ImageState from '../ImageState.js';
 import {asString} from '../color.js';
 import {createCanvasContext2D} from '../dom.js';
 import {decodeFallback} from '../Image.js';
-import {shared as iconImageCache} from './IconImageCache.js';
+import {getIconKey, shared as iconImageCache} from './IconImageCache.js';
 
 /**
  * @type {CanvasRenderingContext2D}
@@ -273,7 +273,8 @@ class IconImage extends EventTarget {
  * @return {IconImage} Icon image.
  */
 export function get(image, cacheKey, crossOrigin, imageState, color) {
-  let iconImage = iconImageCache.get(cacheKey, crossOrigin, color);
+  const iconKey = getIconKey(cacheKey, crossOrigin, color);
+  let iconImage = /** @type {IconImage|null} */ (iconImageCache.get(iconKey));
   if (!iconImage) {
     iconImage = new IconImage(
       image,
@@ -282,7 +283,7 @@ export function get(image, cacheKey, crossOrigin, imageState, color) {
       imageState,
       color
     );
-    iconImageCache.set(cacheKey, crossOrigin, color, iconImage);
+    iconImageCache.set(iconKey, iconImage);
   }
   return iconImage;
 }

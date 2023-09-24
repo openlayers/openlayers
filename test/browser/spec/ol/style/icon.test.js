@@ -3,8 +3,11 @@ import IconImage, {
   get as getIconImage,
 } from '../../../../../src/ol/style/IconImage.js';
 import ImageState from '../../../../../src/ol/ImageState.js';
+import {
+  getIconKey,
+  shared as iconImageCache,
+} from '../../../../../src/ol/style/IconImageCache.js';
 import {getUid} from '../../../../../src/ol/util.js';
-import {shared as iconImageCache} from '../../../../../src/ol/style/IconImageCache.js';
 
 describe('ol.style.Icon', function () {
   const size = [36, 48];
@@ -356,7 +359,7 @@ describe('ol.style.Icon', function () {
     it('uses the cache', function (done) {
       const src = './spec/ol/data/dot.png';
       const iconImage = new IconImage(new Image(), src);
-      iconImageCache.set(src, null, null, iconImage);
+      iconImageCache.set(getIconKey(src, null, null), iconImage);
       iconImage.load();
 
       const iconStyle = new Icon({

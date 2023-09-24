@@ -19,6 +19,7 @@ import {
 } from '../../expr/expression.js';
 import {buildExpression, newEvaluationContext} from '../../expr/cpu.js';
 import {isEmpty} from '../../obj.js';
+import {shared as sharedIconCache} from '../../style/IconImageCache.js';
 import {toSize} from '../../size.js';
 
 /**
@@ -777,6 +778,47 @@ function buildIcon(flatStyle, context) {
   };
 }
 
+let colorObjectId = 0;
+/** @type {WeakMap<CanvasPattern|CanvasGradient, number>} */
+const colorObjectLookup = new WeakMap();
+
+/**
+ * @param {import('../../color.js').Color|import('../../colorlike.js').ColorLike|null} color Color
+ * @return {number|string|import('../../color.js').Color|null} A unique number for a gradient
+ */
+function getCachableColorValue(color) {
+  if (!(color instanceof CanvasPattern) && !(color instanceof CanvasGradient)) {
+    return color;
+  }
+  let id = colorObjectLookup.get(color);
+  if (!id) {
+    id = ++colorObjectId;
+    colorObjectLookup.set(color, id);
+  }
+  return id;
+}
+
+/**
+ * @param {Object<string, string|number|Array<number|null>>} cacheKeys Object to store the values in
+ * @param {Fill|null} fill Fill
+ * @param {Stroke|null} stroke Stroke
+ */
+function addStyleCacheProperties(cacheKeys, fill, stroke) {
+  cacheKeys['fill-color'] = getCachableColorValue(fill.getColor());
+  if (stroke) {
+    if (
+      (cacheKeys['stroke-style'] = getCachableColorValue(stroke.getColor()))
+    ) {
+      cacheKeys['stroke-width'] = stroke.getWidth();
+      if ((cacheKeys['line-dash'] = stroke.getLineDash())) {
+        cacheKeys['line-dash-offset'] = stroke.getLineDashOffset();
+      }
+      cacheKeys['line-cap'] = stroke.getLineCap();
+      cacheKeys['miter-limit'] = stroke.getMiterLimit();
+    }
+  }
+}
+
 /**
  * @param {FlatStyle} flatStyle The flat style.
  * @param {ParsingContext} context The parsing context.
@@ -785,13 +827,22 @@ function buildIcon(flatStyle, context) {
 function buildShape(flatStyle, context) {
   const prefix = 'shape-';
 
-  // required property
-  const pointsName = prefix + 'points';
-  const radiusName = prefix + 'radius';
-  const points = requireNumber(flatStyle[pointsName], pointsName);
-  const radius = requireNumber(flatStyle[radiusName], radiusName);
+  // required properties
+  const evaluatePoints = numberEvaluator(flatStyle, prefix + 'points', context);
+  if (!evaluatePoints) {
+    throw new Error(`Missing ${prefix}points value`);
+  }
+  const evaluateRadius = numberEvaluator(flatStyle, prefix + 'radius', context);
+  if (!evaluateRadius) {
+    throw new Error(`Missing ${prefix}radius or ${prefix}radius1 value`);
+  }
 
-  // settable properties
+  // optional properties
+  const evaluateRadius2 = numberEvaluator(
+    flatStyle,
+    prefix + 'radius2',
+    context
+  );
   const evaluateFill = buildFill(flatStyle, prefix, context);
   const evaluateStroke = buildStroke(flatStyle, prefix, context);
   const evaluateScale = sizeLikeEvaluator(flatStyle, prefix + 'scale', context);
@@ -810,42 +861,61 @@ function buildShape(flatStyle, context) {
     prefix + 'rotate-with-view',
     context
   );
-
-  // the remaining properties are not currently settable
-  const radius2 = optionalNumber(flatStyle, prefix + 'radius2');
-  const angle = optionalNumber(flatStyle, prefix + 'angle');
+  const evaluateAngle = numberEvaluator(flatStyle, prefix + 'angle', context);
   const declutterMode = optionalDeclutterMode(
     flatStyle,
     prefix + 'declutter-mode'
   );
 
-  const shape = new RegularShape({
-    points,
-    radius,
-    radius2,
-    angle,
-    declutterMode,
-  });
+  const defaultDisplacement = [0, 0];
+  const defaultScale = [1, 1];
 
   return function (context) {
-    if (evaluateFill) {
-      shape.setFill(evaluateFill(context));
+    const points = evaluatePoints(context);
+    const radius = evaluateRadius(context);
+    const radius2 = evaluateRadius2 ? evaluateRadius2(context) : undefined;
+    const angle = evaluateAngle ? evaluateAngle(context) : 0;
+    const fill = evaluateFill ? evaluateFill(context) : null;
+    const stroke = evaluateStroke ? evaluateStroke(context) : null;
+    const displacement = evaluateDisplacement
+      ? evaluateDisplacement(context)
+      : defaultDisplacement;
+    const rotation = evaluateRotation ? evaluateRotation(context) : 0;
+    const rotateWithView = evaluateRotateWithView
+      ? evaluateRotateWithView(context)
+      : true;
+    const scale = evaluateScale ? evaluateScale(context) : defaultScale;
+
+    const cachableProperties = {
+      points,
+      radius,
+      radius2,
+      angle,
+      declutterMode,
+    };
+    addStyleCacheProperties(cachableProperties, fill, stroke);
+    const cacheKey = 'RegularShape-' + JSON.stringify(cachableProperties);
+
+    let shape = /** @type {RegularShape|null} */ (
+      sharedIconCache.get(cacheKey)
+    );
+    if (!shape) {
+      shape = new RegularShape({
+        points,
+        radius,
+        radius2,
+        angle,
+        fill,
+        stroke,
+        declutterMode,
+      });
+      sharedIconCache.set(cacheKey, shape);
     }
-    if (evaluateStroke) {
-      shape.setStroke(evaluateStroke(context));
-    }
-    if (evaluateDisplacement) {
-      shape.setDisplacement(evaluateDisplacement(context));
-    }
-    if (evaluateRotation) {
-      shape.setRotation(evaluateRotation(context));
-    }
-    if (evaluateRotateWithView) {
-      shape.setRotateWithView(evaluateRotateWithView(context));
-    }
-    if (evaluateScale) {
-      shape.setScale(evaluateScale(context));
-    }
+
+    shape.setDisplacement(displacement);
+    shape.setRotateWithView(rotateWithView);
+    shape.setRotation(rotation);
+    shape.setScale(scale);
 
     return shape;
   };
@@ -859,10 +929,12 @@ function buildShape(flatStyle, context) {
 function buildCircle(flatStyle, context) {
   const prefix = 'circle-';
 
-  // settable properties
+  // required property
+  const evaluateRadius = numberEvaluator(flatStyle, prefix + 'radius', context);
+
+  // optional properties
   const evaluateFill = buildFill(flatStyle, prefix, context);
   const evaluateStroke = buildStroke(flatStyle, prefix, context);
-  const evaluateRadius = numberEvaluator(flatStyle, prefix + 'radius', context);
   const evaluateScale = sizeLikeEvaluator(flatStyle, prefix + 'scale', context);
   const evaluateDisplacement = coordinateEvaluator(
     flatStyle,
@@ -886,33 +958,44 @@ function buildCircle(flatStyle, context) {
     prefix + 'declutter-mode'
   );
 
-  const circle = new Circle({
-    radius: 5, // this is arbitrary, but required - the evaluated radius is used below
-    declutterMode,
-  });
+  const defaultDisplacement = [0, 0];
+  const defaultScale = [1, 1];
 
   return function (context) {
-    if (evaluateRadius) {
-      circle.setRadius(evaluateRadius(context));
+    const radius = evaluateRadius(context);
+    const fill = evaluateFill ? evaluateFill(context) : null;
+    const stroke = evaluateStroke ? evaluateStroke(context) : null;
+    const displacement = evaluateDisplacement
+      ? evaluateDisplacement(context)
+      : defaultDisplacement;
+    const rotation = evaluateRotation ? evaluateRotation(context) : 0;
+    const rotateWithView = evaluateRotateWithView
+      ? evaluateRotateWithView(context)
+      : true;
+    const scale = evaluateScale ? evaluateScale(context) : defaultScale;
+
+    const cachableProperties = {
+      radius,
+      declutterMode,
+    };
+    addStyleCacheProperties(cachableProperties, fill, stroke);
+    const cacheKey = 'Circle-' + JSON.stringify(cachableProperties);
+
+    let circle = /** @type {Circle|null} */ (sharedIconCache.get(cacheKey));
+    if (!circle) {
+      circle = new Circle({
+        radius,
+        fill,
+        stroke,
+        declutterMode,
+      });
+      sharedIconCache.set(cacheKey, circle);
     }
-    if (evaluateFill) {
-      circle.setFill(evaluateFill(context));
-    }
-    if (evaluateStroke) {
-      circle.setStroke(evaluateStroke(context));
-    }
-    if (evaluateDisplacement) {
-      circle.setDisplacement(evaluateDisplacement(context));
-    }
-    if (evaluateRotation) {
-      circle.setRotation(evaluateRotation(context));
-    }
-    if (evaluateRotateWithView) {
-      circle.setRotateWithView(evaluateRotateWithView(context));
-    }
-    if (evaluateScale) {
-      circle.setScale(evaluateScale(context));
-    }
+
+    circle.setDisplacement(displacement);
+    circle.setRotation(rotation);
+    circle.setRotateWithView(rotateWithView);
+    circle.setScale(scale);
 
     return circle;
   };
