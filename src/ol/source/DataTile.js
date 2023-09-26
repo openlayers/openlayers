@@ -272,10 +272,14 @@ class DataTileSource extends TileSource {
     }
 
     const sourceLoader = this.loader_;
+    const wrappedTileCoord = this.getTileCoordForTileUrlFunction(
+      [z, x, y],
+      projection
+    );
 
     function loader() {
       return toPromise(function () {
-        return sourceLoader(z, x, y);
+        return sourceLoader.apply(null, wrappedTileCoord);
       });
     }
 

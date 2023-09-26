@@ -292,7 +292,8 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     // determine last source suitable for rendering at coordinate
     const sources = layer.getSources(
       boundingExtent([coordinate]),
-      viewState.resolution
+      viewState.resolution,
+      viewState.projection
     );
     let i, source, tileGrid;
     for (i = sources.length - 1; i >= 0; --i) {
