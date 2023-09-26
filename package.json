@@ -11,7 +11,7 @@
   "homepage": "https://openlayers.org/",
   "scripts": {
     "lint": "eslint tasks test src/ol examples config",
-    "pretest": "npm run lint && npm run typecheck",
+    "pretest": "npm run lint && npm run typecheck && npm run typecheck-strict",
     "test-rendering": "npm run build-full && node test/rendering/test.js",
     "test-browser": "npm run karma -- --single-run --log-level error",
     "test-node": "mocha --recursive test/node",
@@ -27,6 +27,7 @@
     "generate-types": "tsc --project config/tsconfig-build.json --declaration --declarationMap --emitDeclarationOnly --outdir build/ol",
     "transpile": "shx rm -rf build/ol && shx mkdir -p build/ol && shx cp -rf src/ol build && node tasks/serialize-workers.cjs && node tasks/set-version.js",
     "typecheck": "tsc --pretty",
+    "typecheck-strict": "tsc --project config/tsconfig-strict.json",
     "apidoc-debug": "shx rm -rf build/apidoc && node --inspect-brk=9229 ./node_modules/jsdoc/jsdoc.js --readme config/jsdoc/api/index.md --configure config/jsdoc/api/conf.json --package package.json --destination build/apidoc",
     "apidoc": "shx rm -rf build/apidoc && jsdoc --readme config/jsdoc/api/index.md --configure config/jsdoc/api/conf.json --package package.json --destination build/apidoc"
   },

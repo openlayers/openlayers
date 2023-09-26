@@ -60,7 +60,7 @@ export function squaredDistance(x1, y1, x2, y2) {
  *
  * @param {Array<Array<number>>} mat Augmented matrix (n x n + 1 column)
  *                                     in row-major order.
- * @return {Array<number>} The resulting vector.
+ * @return {Array<number>|null} The resulting vector.
  */
 export function solveLinearSystem(mat) {
   const n = mat.length;
