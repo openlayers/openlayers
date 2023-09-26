@@ -38,7 +38,7 @@ import {
 
 /**
  * @typedef {Object} RenderOptions
- * @property {import("../colorlike.js").ColorLike} [strokeStyle] StrokeStyle.
+ * @property {import("../colorlike.js").ColorLike|undefined} strokeStyle StrokeStyle.
  * @property {number} strokeWidth StrokeWidth.
  * @property {number} size Size.
  * @property {CanvasLineCap} lineCap LineCap.
@@ -80,17 +80,17 @@ class RegularShape extends ImageStyle {
      * @private
      * @type {Object<number, HTMLCanvasElement>}
      */
-    this.canvas_ = undefined;
+    this.canvases_;
 
     /**
      * @private
-     * @type {HTMLCanvasElement}
+     * @type {HTMLCanvasElement|null}
      */
     this.hitDetectionCanvas_ = null;
 
     /**
      * @private
-     * @type {import("./Fill.js").default}
+     * @type {import("./Fill.js").default|null}
      */
     this.fill_ = options.fill !== undefined ? options.fill : null;
 
@@ -127,7 +127,7 @@ class RegularShape extends ImageStyle {
 
     /**
      * @private
-     * @type {import("./Stroke.js").default}
+     * @type {import("./Stroke.js").default|null}
      */
     this.stroke_ = options.stroke !== undefined ? options.stroke : null;
 
@@ -135,13 +135,13 @@ class RegularShape extends ImageStyle {
      * @private
      * @type {import("../size.js").Size}
      */
-    this.size_ = null;
+    this.size_;
 
     /**
      * @private
      * @type {RenderOptions}
      */
-    this.renderOptions_ = null;
+    this.renderOptions_;
 
     this.render();
   }
@@ -178,9 +178,6 @@ class RegularShape extends ImageStyle {
    */
   getAnchor() {
     const size = this.size_;
-    if (!size) {
-      return null;
-    }
     const displacement = this.getDisplacement();
     const scale = this.getScaleArray();
     // anchor is scaled by renderer but displacement should not be scaled
@@ -202,7 +199,7 @@ class RegularShape extends ImageStyle {
 
   /**
    * Get the fill style for the shape.
-   * @return {import("./Fill.js").default} Fill style.
+   * @return {import("./Fill.js").default|null} Fill style.
    * @api
    */
   getFill() {
@@ -211,7 +208,7 @@ class RegularShape extends ImageStyle {
 
   /**
    * Set the fill style.
-   * @param {import("./Fill.js").default} fill Fill style.
+   * @param {import("./Fill.js").default|null} fill Fill style.
    * @api
    */
   setFill(fill) {
@@ -224,7 +221,9 @@ class RegularShape extends ImageStyle {
    */
   getHitDetectionImage() {
     if (!this.hitDetectionCanvas_) {
-      this.createHitDetectionCanvas_(this.renderOptions_);
+      this.hitDetectionCanvas_ = this.createHitDetectionCanvas_(
+        this.renderOptions_
+      );
     }
     return this.hitDetectionCanvas_;
   }
@@ -236,7 +235,7 @@ class RegularShape extends ImageStyle {
    * @api
    */
   getImage(pixelRatio) {
-    let image = this.canvas_[pixelRatio];
+    let image = this.canvases_[pixelRatio];
     if (!image) {
       const renderOptions = this.renderOptions_;
       const context = createCanvasContext2D(
@@ -246,7 +245,7 @@ class RegularShape extends ImageStyle {
       this.draw_(renderOptions, context, pixelRatio);
 
       image = context.canvas;
-      this.canvas_[pixelRatio] = image;
+      this.canvases_[pixelRatio] = image;
     }
     return image;
   }
@@ -321,7 +320,7 @@ class RegularShape extends ImageStyle {
 
   /**
    * Get the stroke style for the shape.
-   * @return {import("./Stroke.js").default} Stroke style.
+   * @return {import("./Stroke.js").default|null} Stroke style.
    * @api
    */
   getStroke() {
@@ -330,7 +329,7 @@ class RegularShape extends ImageStyle {
 
   /**
    * Set the stroke style.
-   * @param {import("./Stroke.js").default} stroke Stroke style.
+   * @param {import("./Stroke.js").default|null} stroke Stroke style.
    * @api
    */
   setStroke(stroke) {
@@ -457,29 +456,13 @@ class RegularShape extends ImageStyle {
     let strokeWidth = 0;
 
     if (this.stroke_) {
-      strokeStyle = this.stroke_.getColor();
-      if (strokeStyle === null) {
-        strokeStyle = defaultStrokeStyle;
-      }
-      strokeStyle = asColorLike(strokeStyle);
-      strokeWidth = this.stroke_.getWidth();
-      if (strokeWidth === undefined) {
-        strokeWidth = defaultLineWidth;
-      }
+      strokeStyle = asColorLike(this.stroke_.getColor() ?? defaultStrokeStyle);
+      strokeWidth = this.stroke_.getWidth() ?? defaultLineWidth;
       lineDash = this.stroke_.getLineDash();
-      lineDashOffset = this.stroke_.getLineDashOffset();
-      lineJoin = this.stroke_.getLineJoin();
-      if (lineJoin === undefined) {
-        lineJoin = defaultLineJoin;
-      }
-      lineCap = this.stroke_.getLineCap();
-      if (lineCap === undefined) {
-        lineCap = defaultLineCap;
-      }
-      miterLimit = this.stroke_.getMiterLimit();
-      if (miterLimit === undefined) {
-        miterLimit = defaultMiterLimit;
-      }
+      lineDashOffset = this.stroke_.getLineDashOffset() ?? 0;
+      lineJoin = this.stroke_.getLineJoin() ?? defaultLineJoin;
+      lineCap = this.stroke_.getLineCap() ?? defaultLineCap;
+      miterLimit = this.stroke_.getMiterLimit() ?? defaultMiterLimit;
     }
 
     const add = this.calculateLineJoinSize_(lineJoin, strokeWidth, miterLimit);
@@ -504,7 +487,7 @@ class RegularShape extends ImageStyle {
   render() {
     this.renderOptions_ = this.createRenderOptions();
     const size = this.renderOptions_.size;
-    this.canvas_ = {};
+    this.canvases_ = {};
     this.hitDetectionCanvas_ = null;
     this.size_ = [size, size];
   }
@@ -530,7 +513,7 @@ class RegularShape extends ImageStyle {
       context.fillStyle = asColorLike(color);
       context.fill();
     }
-    if (this.stroke_) {
+    if (renderOptions.strokeStyle) {
       context.strokeStyle = renderOptions.strokeStyle;
       context.lineWidth = renderOptions.strokeWidth;
       if (renderOptions.lineDash) {
@@ -547,8 +530,10 @@ class RegularShape extends ImageStyle {
   /**
    * @private
    * @param {RenderOptions} renderOptions Render options.
+   * @return {HTMLCanvasElement} Canvas containing the icon
    */
   createHitDetectionCanvas_(renderOptions) {
+    let context;
     if (this.fill_) {
       let color = this.fill_.getColor();
 
@@ -565,18 +550,11 @@ class RegularShape extends ImageStyle {
       if (opacity === 0) {
         // if a transparent fill style is set, create an extra hit-detection image
         // with a default fill style
-        const context = createCanvasContext2D(
-          renderOptions.size,
-          renderOptions.size
-        );
-        this.hitDetectionCanvas_ = context.canvas;
-
+        context = createCanvasContext2D(renderOptions.size, renderOptions.size);
         this.drawHitDetectionCanvas_(renderOptions, context);
       }
     }
-    if (!this.hitDetectionCanvas_) {
-      this.hitDetectionCanvas_ = this.getImage(1);
-    }
+    return context ? context.canvas : this.getImage(1);
   }
 
   /**
@@ -617,7 +595,7 @@ class RegularShape extends ImageStyle {
 
     context.fillStyle = defaultFillStyle;
     context.fill();
-    if (this.stroke_) {
+    if (renderOptions.strokeStyle) {
       context.strokeStyle = renderOptions.strokeStyle;
       context.lineWidth = renderOptions.strokeWidth;
       if (renderOptions.lineDash) {

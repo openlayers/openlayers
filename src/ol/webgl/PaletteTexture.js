@@ -12,7 +12,7 @@ class PaletteTexture {
     this.data = data;
 
     /**
-     * @type {WebGLTexture}
+     * @type {WebGLTexture|null}
      * @private
      */
     this.texture_ = null;

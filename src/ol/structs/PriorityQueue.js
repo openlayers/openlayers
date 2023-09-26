@@ -79,8 +79,8 @@ class PriorityQueue {
       elements.length = 0;
       priorities.length = 0;
     } else {
-      elements[0] = elements.pop();
-      priorities[0] = priorities.pop();
+      elements[0] = /** @type {T} */ (elements.pop());
+      priorities[0] = /** @type {number} */ (priorities.pop());
       this.siftUp_(0);
     }
     const elementKey = this.keyFunction_(element);

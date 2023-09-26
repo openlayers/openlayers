@@ -85,7 +85,9 @@ export const PASSIVE_EVENT_LISTENERS = (function () {
       },
     });
 
+    // @ts-ignore Ignore invalid event type '_'
     window.addEventListener('_', null, options);
+    // @ts-ignore Ignore invalid event type '_'
     window.removeEventListener('_', null, options);
   } catch (error) {
     // passive not supported

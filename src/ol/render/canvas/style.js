@@ -199,7 +199,7 @@ export function buildRuleSet(rules, context) {
 }
 
 /**
- * @typedef {function(EvaluationContext):Style} StyleEvaluator
+ * @typedef {function(EvaluationContext):Style|null} StyleEvaluator
  */
 
 /**
@@ -272,7 +272,7 @@ export function buildStyle(flatStyle, context) {
 }
 
 /**
- * @typedef {function(EvaluationContext):Fill} FillEvaluator
+ * @typedef {function(EvaluationContext):Fill|null} FillEvaluator
  */
 
 /**
@@ -303,7 +303,7 @@ function buildFill(flatStyle, prefix, context) {
 }
 
 /**
- * @typedef {function(EvaluationContext):Stroke} StrokeEvaluator
+ * @typedef {function(EvaluationContext):Stroke|null} StrokeEvaluator
  */
 
 /**
