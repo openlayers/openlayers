@@ -138,7 +138,7 @@ class Text {
 
     /**
      * @private
-     * @type {import("./Fill.js").default}
+     * @type {import("./Fill.js").default|null}
      */
     this.fill_ =
       options.fill !== undefined
@@ -167,7 +167,7 @@ class Text {
 
     /**
      * @private
-     * @type {import("./Stroke.js").default}
+     * @type {import("./Stroke.js").default|null}
      */
     this.stroke_ = options.stroke !== undefined ? options.stroke : null;
 
@@ -185,7 +185,7 @@ class Text {
 
     /**
      * @private
-     * @type {import("./Fill.js").default}
+     * @type {import("./Fill.js").default|null}
      */
     this.backgroundFill_ = options.backgroundFill
       ? options.backgroundFill
@@ -193,7 +193,7 @@ class Text {
 
     /**
      * @private
-     * @type {import("./Stroke.js").default}
+     * @type {import("./Stroke.js").default|null}
      */
     this.backgroundStroke_ = options.backgroundStroke
       ? options.backgroundStroke
@@ -305,7 +305,7 @@ class Text {
 
   /**
    * Get the fill style for the text.
-   * @return {import("./Fill.js").default} Fill style.
+   * @return {import("./Fill.js").default|null} Fill style.
    * @api
    */
   getFill() {
@@ -349,7 +349,7 @@ class Text {
 
   /**
    * Get the stroke style for the text.
-   * @return {import("./Stroke.js").default} Stroke style.
+   * @return {import("./Stroke.js").default|null} Stroke style.
    * @api
    */
   getStroke() {
@@ -394,7 +394,7 @@ class Text {
 
   /**
    * Get the background fill style for the text.
-   * @return {import("./Fill.js").default} Fill style.
+   * @return {import("./Fill.js").default|null} Fill style.
    * @api
    */
   getBackgroundFill() {
@@ -403,7 +403,7 @@ class Text {
 
   /**
    * Get the background stroke style for the text.
-   * @return {import("./Stroke.js").default} Stroke style.
+   * @return {import("./Stroke.js").default|null} Stroke style.
    * @api
    */
   getBackgroundStroke() {
@@ -501,7 +501,7 @@ class Text {
   /**
    * Set the fill.
    *
-   * @param {import("./Fill.js").default} fill Fill style.
+   * @param {import("./Fill.js").default|null} fill Fill style.
    * @api
    */
   setFill(fill) {
@@ -532,7 +532,7 @@ class Text {
   /**
    * Set the stroke.
    *
-   * @param {import("./Stroke.js").default} stroke Stroke style.
+   * @param {import("./Stroke.js").default|null} stroke Stroke style.
    * @api
    */
   setStroke(stroke) {
@@ -582,7 +582,7 @@ class Text {
   /**
    * Set the background fill.
    *
-   * @param {import("./Fill.js").default} fill Fill style.
+   * @param {import("./Fill.js").default|null} fill Fill style.
    * @api
    */
   setBackgroundFill(fill) {
@@ -592,7 +592,7 @@ class Text {
   /**
    * Set the background stroke.
    *
-   * @param {import("./Stroke.js").default} stroke Stroke style.
+   * @param {import("./Stroke.js").default|null} stroke Stroke style.
    * @api
    */
   setBackgroundStroke(stroke) {

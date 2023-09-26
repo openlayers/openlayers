@@ -17,7 +17,7 @@ export function createCanvasContext2D(width, height, canvasPool, settings) {
   /** @type {HTMLCanvasElement|OffscreenCanvas} */
   let canvas;
   if (canvasPool && canvasPool.length) {
-    canvas = canvasPool.shift();
+    canvas = /** @type {HTMLCanvasElement} */ (canvasPool.shift());
   } else if (WORKER_OFFSCREEN_CANVAS) {
     canvas = new OffscreenCanvas(width || 300, height || 300);
   } else {
