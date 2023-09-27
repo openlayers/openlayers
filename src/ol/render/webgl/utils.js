@@ -5,6 +5,7 @@ import earcut from 'earcut';
 import {apply as applyTransform} from '../../transform.js';
 import {clamp} from '../../math.js';
 
+/** @type {Array<number>} */
 const tmpArray_ = [];
 
 /**
@@ -15,6 +16,13 @@ const tmpArray_ = [];
  */
 const bufferPositions_ = {vertexPosition: 0, indexPosition: 0};
 
+/**
+ * @param {Float32Array} buffer Buffer
+ * @param {number} pos Position
+ * @param {number} x X
+ * @param {number} y Y
+ * @param {number} index Index
+ */
 function writePointVertex(buffer, pos, x, y, index) {
   buffer[pos + 0] = x;
   buffer[pos + 1] = y;
@@ -141,8 +149,13 @@ export function writeLineSegmentToBuffers(
   const p0world = applyTransform(toWorldTransform, [...p0]);
   const p1world = applyTransform(toWorldTransform, [...p1]);
 
-  // compute the angle between p0pA and p0pB
-  // returns a value in [0, 2PI]
+  /**
+   * Compute the angle between p0pA and p0pB
+   * @param {import("../../coordinate.js").Coordinate} p0 Point 0
+   * @param {import("../../coordinate.js").Coordinate} pA Point A
+   * @param {import("../../coordinate.js").Coordinate} pB Point B
+   * @return {number} a value in [0, 2PI]
+   */
   function angleBetween(p0, pA, pB) {
     const lenA = Math.sqrt(
       (pA[0] - p0[0]) * (pA[0] - p0[0]) + (pA[1] - p0[1]) * (pA[1] - p0[1])

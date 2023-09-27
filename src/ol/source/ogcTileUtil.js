@@ -296,6 +296,7 @@ function parseTileMatrixSet(
   const context = sourceInfo.context;
   const base = sourceInfo.url;
 
+  /** @type {import('../Tile.js').UrlFunction} */
   function tileUrlFunction(tileCoord, pixelRatio, projection) {
     if (!tileCoord) {
       return undefined;
@@ -346,6 +347,7 @@ function parseTileMatrixSet(
  */
 function parseTileSetMetadata(sourceInfo, tileSet) {
   const tileMatrixSetLimits = tileSet.tileMatrixSetLimits;
+  /** @type {string} */
   let tileUrlTemplate;
 
   if (tileSet.dataType === 'map') {

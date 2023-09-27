@@ -214,6 +214,7 @@ export function douglasPeuckerMultiArray(
 ) {
   for (let i = 0, ii = endss.length; i < ii; ++i) {
     const ends = endss[i];
+    /** @type {Array<number>} */
     const simplifiedEnds = [];
     simplifiedOffset = douglasPeuckerArray(
       flatCoordinates,
@@ -458,6 +459,7 @@ export function quantizeMultiArray(
 ) {
   for (let i = 0, ii = endss.length; i < ii; ++i) {
     const ends = endss[i];
+    /** @type {Array<number>} */
     const simplifiedEnds = [];
     simplifiedOffset = quantizeArray(
       flatCoordinates,

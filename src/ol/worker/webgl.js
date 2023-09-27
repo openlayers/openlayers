@@ -65,7 +65,9 @@ worker.onmessage = (event) => {
       break;
     }
     case WebGLWorkerMessageType.GENERATE_LINE_STRING_BUFFERS: {
+      /** @type {Array<number>} */
       const vertices = [];
+      /** @type {Array<number>} */
       const indices = [];
 
       const customAttrsCount = received.customAttributesSize;
@@ -154,7 +156,9 @@ worker.onmessage = (event) => {
       break;
     }
     case WebGLWorkerMessageType.GENERATE_POLYGON_BUFFERS: {
+      /** @type {Array<number>} */
       const vertices = [];
+      /** @type {Array<number>} */
       const indices = [];
 
       const customAttrsCount = received.customAttributesSize;

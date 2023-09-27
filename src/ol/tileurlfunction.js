@@ -1,7 +1,6 @@
 /**
  * @module ol/tileurlfunction
  */
-import {assert} from './asserts.js';
 import {modulo} from './math.js';
 import {hash as tileCoordHash} from './tilecoord.js';
 
@@ -33,10 +32,11 @@ export function createFromTemplate(template, tileGrid) {
         .replace(dashYRegEx, function () {
           const z = tileCoord[0];
           const range = tileGrid.getFullTileRange(z);
-          assert(
-            range,
-            'The {-y} placeholder requires a tile grid with extent'
-          );
+          if (!range) {
+            throw new Error(
+              'The {-y} placeholder requires a tile grid with extent'
+            );
+          }
           const y = range.getHeight() - tileCoord[2] - 1;
           return y.toString();
         });

@@ -92,6 +92,7 @@ export function getInteriorPointsOfMultiArray(
   stride,
   flatCenters
 ) {
+  /** @type {Array<number>} */
   let interiorPoints = [];
   for (let i = 0, ii = endss.length; i < ii; ++i) {
     const ends = endss[i];
