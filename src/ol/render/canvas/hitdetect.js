@@ -170,6 +170,7 @@ export function createHitDetectionImageData(
  * @template {import("../../Feature.js").FeatureLike} F
  */
 export function hitDetect(pixel, features, imageData) {
+  /** @type {Array<F>} */
   const resultFeatures = [];
   if (imageData) {
     const x = Math.floor(Math.round(pixel[0]) * HIT_DETECT_RESOLUTION);
@@ -190,6 +191,5 @@ export function hitDetect(pixel, features, imageData) {
       resultFeatures.push(features[i / indexFactor - 1]);
     }
   }
-  // @ts-ignore Features are copied from `features` to `resultFeatures` so the type should be the same
   return resultFeatures;
 }

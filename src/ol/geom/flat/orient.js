@@ -11,7 +11,7 @@ import {coordinates as reverseCoordinates} from './reverse.js';
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
- * @return {boolean} Is clockwise.
+ * @return {boolean|undefined} Is clockwise.
  */
 export function linearRingIsClockwise(flatCoordinates, offset, end, stride) {
   // https://stackoverflow.com/q/1165647/clockwise-method#1165943

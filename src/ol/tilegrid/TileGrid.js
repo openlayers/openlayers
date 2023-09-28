@@ -81,9 +81,12 @@ class TileGrid {
     assert(
       isSorted(
         this.resolutions_,
-        function (a, b) {
-          return b - a;
-        },
+        /**
+         * @param {number} a First resolution
+         * @param {number} b Second resolution
+         * @return {number} Comparison result
+         */
+        (a, b) => b - a,
         true
       ),
       '`resolutions` must be sorted in descending order'
@@ -200,7 +203,7 @@ class TileGrid {
     this.tmpExtent_ = [0, 0, 0, 0];
 
     if (options.sizes !== undefined) {
-      this.fullTileRanges_ = options.sizes.map(function (size, z) {
+      this.fullTileRanges_ = options.sizes.map((size, z) => {
         const tileRange = new TileRange(
           Math.min(0, size[0]),
           Math.max(size[0] - 1, -1),
@@ -215,7 +218,7 @@ class TileGrid {
           tileRange.maxY = Math.min(restrictedTileRange.maxY, tileRange.maxY);
         }
         return tileRange;
-      }, this);
+      });
     } else if (extent) {
       this.calculateTileRanges_(extent);
     }
@@ -261,7 +264,7 @@ class TileGrid {
       tileCoordExtent = this.getTileCoordExtent(tileCoord, tempExtent);
     }
     while (z >= this.minZoom) {
-      if (this.zoomFactor_ === 2) {
+      if (x !== undefined && y !== undefined) {
         x = Math.floor(x / 2);
         y = Math.floor(y / 2);
         tileRange = createOrUpdateTileRange(x, x, y, y, tempTileRange);
@@ -600,7 +603,7 @@ class TileGrid {
 
   /**
    * @param {number} z Zoom level.
-   * @return {import("../TileRange.js").default} Extent tile range for the specified zoom level.
+   * @return {import("../TileRange.js").default|null} Extent tile range for the specified zoom level.
    */
   getFullTileRange(z) {
     if (!this.fullTileRanges_) {

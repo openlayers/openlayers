@@ -45,15 +45,15 @@ class WebGLArrayBuffer {
   constructor(type, usage) {
     /**
      * @private
-     * @type {Float32Array|Uint32Array}
+     * @type {Float32Array|Uint32Array|null}
      */
-    this.array = null;
+    this.array_ = null;
 
     /**
      * @private
      * @type {number}
      */
-    this.type = type;
+    this.type_ = type;
 
     assert(
       type === ARRAY_BUFFER || type === ELEMENT_ARRAY_BUFFER,
@@ -64,7 +64,7 @@ class WebGLArrayBuffer {
      * @private
      * @type {number}
      */
-    this.usage = usage !== undefined ? usage : BufferUsage.STATIC_DRAW;
+    this.usage_ = usage !== undefined ? usage : BufferUsage.STATIC_DRAW;
   }
 
   /**
@@ -73,7 +73,7 @@ class WebGLArrayBuffer {
    * @return {WebGLArrayBuffer} This
    */
   ofSize(size) {
-    this.array = new (getArrayClassForType(this.type))(size);
+    this.array_ = new (getArrayClassForType(this.type_))(size);
     return this;
   }
 
@@ -83,7 +83,7 @@ class WebGLArrayBuffer {
    * @return {WebGLArrayBuffer} This
    */
   fromArray(array) {
-    this.array = getArrayClassForType(this.type).from(array);
+    this.array_ = getArrayClassForType(this.type_).from(array);
     return this;
   }
 
@@ -94,7 +94,7 @@ class WebGLArrayBuffer {
    * @return {WebGLArrayBuffer} This
    */
   fromArrayBuffer(buffer) {
-    this.array = new (getArrayClassForType(this.type))(buffer);
+    this.array_ = new (getArrayClassForType(this.type_))(buffer);
     return this;
   }
 
@@ -102,22 +102,22 @@ class WebGLArrayBuffer {
    * @return {number} Buffer type.
    */
   getType() {
-    return this.type;
+    return this.type_;
   }
 
   /**
    * Will return null if the buffer was not initialized
-   * @return {Float32Array|Uint32Array} Array.
+   * @return {Float32Array|Uint32Array|null} Array.
    */
   getArray() {
-    return this.array;
+    return this.array_;
   }
 
   /**
    * @return {number} Usage.
    */
   getUsage() {
-    return this.usage;
+    return this.usage_;
   }
 
   /**
@@ -125,7 +125,7 @@ class WebGLArrayBuffer {
    * @return {number} Array size
    */
   getSize() {
-    return this.array ? this.array.length : 0;
+    return this.array_ ? this.array_.length : 0;
   }
 }
 
