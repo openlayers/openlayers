@@ -33,7 +33,7 @@ export const BufferUsage = {
  * * A plain array using `#fromArray(array)`
  *
  * Note:
- * See the documentation of [WebGLRenderingContext.bufferData](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bufferData)
+ * See the documentation of [WebGL2RenderingContext.bufferData](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/bufferData)
  * for more info on buffer usage.
  */
 class WebGLArrayBuffer {

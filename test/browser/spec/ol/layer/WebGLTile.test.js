@@ -581,7 +581,7 @@ describe('ol/layer/WebGLTile', function () {
   it('dispatches a precompose event with WebGL context', (done) => {
     let called = false;
     layer.on('precompose', (event) => {
-      expect(event.context).to.be.a(WebGLRenderingContext);
+      expect(event.context).to.be.a(WebGL2RenderingContext);
       called = true;
     });
 
@@ -596,7 +596,7 @@ describe('ol/layer/WebGLTile', function () {
   it('dispatches a prerender event with WebGL context and inverse pixel transform', (done) => {
     let called = false;
     layer.on('prerender', (event) => {
-      expect(event.context).to.be.a(WebGLRenderingContext);
+      expect(event.context).to.be.a(WebGL2RenderingContext);
       const mapSize = event.frameState.size;
       const bottomLeft = getRenderPixel(event, [0, mapSize[1]]);
       expect(bottomLeft).to.eql([0, 0]);
@@ -614,7 +614,7 @@ describe('ol/layer/WebGLTile', function () {
   it('dispatches a postrender event with WebGL context and inverse pixel transform', (done) => {
     let called = false;
     layer.on('postrender', (event) => {
-      expect(event.context).to.be.a(WebGLRenderingContext);
+      expect(event.context).to.be.a(WebGL2RenderingContext);
       const mapSize = event.frameState.size;
       const topRight = getRenderPixel(event, [mapSize[1], 0]);
       const pixelRatio = event.frameState.pixelRatio;

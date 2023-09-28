@@ -80,7 +80,7 @@ class WebGLLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * @param {WebGLRenderingContext} context The WebGL rendering context.
+   * @param {WebGL2RenderingContext} context The WebGL rendering context.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @protected
    */
@@ -98,7 +98,7 @@ class WebGLLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * @param {WebGLRenderingContext} context The WebGL rendering context.
+   * @param {WebGL2RenderingContext} context The WebGL rendering context.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @protected
    */
@@ -216,7 +216,7 @@ class WebGLLayerRenderer extends LayerRenderer {
 
   /**
    * @param {import("../../render/EventType.js").default} type Event type.
-   * @param {WebGLRenderingContext} context The rendering context.
+   * @param {WebGL2RenderingContext} context The rendering context.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @private
    */
@@ -245,7 +245,7 @@ class WebGLLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * @param {WebGLRenderingContext} context The rendering context.
+   * @param {WebGL2RenderingContext} context The rendering context.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @protected
    */
@@ -254,7 +254,7 @@ class WebGLLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * @param {WebGLRenderingContext} context The rendering context.
+   * @param {WebGL2RenderingContext} context The rendering context.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @protected
    */
