@@ -219,14 +219,13 @@
  * @property {NumberExpression} [shape-stroke-line-dash-offset=0] Line dash offset.
  * @property {NumberExpression} [shape-stroke-miter-limit=10] Miter limit.
  * @property {number} [shape-radius] Radius of a regular polygon.
- * @property {number} [shape-radius1] First radius of a star. Ignored if radius is set.
- * @property {number} [shape-radius2] Second radius of a star.
+ * @property {number} [shape-radius2] Second radius to make a star instead of a regular polygon.
  * @property {number} [shape-angle=0] Shape's angle in radians. A value of 0 will have one of the shape's point facing up.
  * @property {NumberArrayExpression} [shape-displacement=[0,0]] Displacement of the shape
  * @property {NumberExpression} [shape-rotation=0] Rotation in radians (positive rotation clockwise).
  * @property {BooleanExpression} [shape-rotate-with-view=false] Whether to rotate the shape with the view.
  * @property {SizeExpression} [shape-scale=1] Scale. Unless two dimensional scaling is required a better
- * result may be obtained with appropriate settings for `shape-radius`, `shape-radius1` and `shape-radius2`.
+ * result may be obtained with appropriate settings for `shape-radius` and `shape-radius2`.
  * @property {"declutter"|"obstacle"|"none"|undefined} [shape-declutter-mode] Declutter mode.
  * @property {NumberExpression} [z-index] The zIndex of the style.
  */

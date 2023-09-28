@@ -1,8 +1,12 @@
 ## Upgrade notes
 
-### Next Release
+### 9.0.0
 
- * `ol/geom/GeometryCollection` can no longer be created without providing a Geometry array. Emtpy arrays are still valid.
+ Removed the `ol/style/RegularShape`'s `radius1` property. Use `radius` for regular polygons or `radius` and `radius2` for stars.
+
+ Removed the `shape-radius1` property from `ol/style/flat~FlatShape`. Use  `shape-radius` instead.
+
+ `ol/geom/GeometryCollection` can no longer be created without providing a Geometry array. Emtpy arrays are still valid.
 
 ### 8.0.0
 

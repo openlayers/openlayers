@@ -46,7 +46,7 @@ function createEarthquakeStyle(feature) {
   return new Style({
     geometry: feature.getGeometry(),
     image: new RegularShape({
-      radius1: radius,
+      radius: radius,
       radius2: 3,
       points: 5,
       angle: Math.PI,

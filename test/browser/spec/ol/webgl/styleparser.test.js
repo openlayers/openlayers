@@ -207,7 +207,7 @@ describe('ol.webgl.styleparser', () => {
         beforeEach(() => {
           result = parseLiteralStyle({
             'shape-points': ['-', 10, 3],
-            'shape-radius1': ['get', 'attr1'],
+            'shape-radius': ['get', 'attr1'],
             'shape-radius2': ['*', 2, 5],
             'shape-fill-color': ['get', 'color1'],
             'shape-stroke-color': ['get', 'color2'],
@@ -261,22 +261,6 @@ describe('ol.webgl.styleparser', () => {
           expect(result.attributes).to.have.property('color1');
           expect(result.attributes).to.have.property('color2');
           expect(result.uniforms).to.eql({});
-        });
-      });
-      describe('contains radius, radius1 and radius2', () => {
-        beforeEach(() => {
-          result = parseLiteralStyle({
-            'shape-points': 5,
-            'shape-radius': 10,
-            'shape-radius1': 15,
-            'shape-radius2': 7,
-            'shape-fill-color': 'rgba(255, 255, 255, 0.5)',
-          });
-        });
-        it('uses a regular shape formula, ignores radius1 and radius2', () => {
-          expect(result.builder.symbolColorExpression_).to.eql(
-            'vec4(0.5, 0.5, 0.5, 0.5) * (1.0 - smoothstep(-0.63, 0.58, regularDistanceField(coordsPx, 5.0, 10.0, 0.)))'
-          );
         });
       });
       describe('contains no stroke', () => {
