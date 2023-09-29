@@ -113,6 +113,14 @@ function parseCommonSymbolProperties(style, builder, vertContext, prefix) {
       style[`${prefix}radius`],
       NumberType
     );
+    if (`${prefix}radius2` in style) {
+      const radius2 = expressionToGlsl(
+        vertContext,
+        style[`${prefix}radius2`],
+        NumberType
+      );
+      radius = `max(${radius}, ${radius2})`;
+    }
     if (`${prefix}stroke-width` in style) {
       radius = `(${radius} + ${expressionToGlsl(
         vertContext,
@@ -372,7 +380,7 @@ function parseShapeProperties(
   // inspired by https://github.com/zranger1/PixelblazePatterns/blob/master/Toolkit/sdf2d.md#n-sided-regular-polygon
   fragContext.functions[
     'starDistanceField'
-  ] = `float starDistanceField(vec2 point, float numPoints, float radiusIn, float radiusOut, float angle) {
+  ] = `float starDistanceField(vec2 point, float numPoints, float radius, float radius2, float angle) {
   float startAngle = -PI * 0.5 + angle; // tip starts upwards and rotates clockwise with angle
   float c = cos(startAngle);
   float s = sin(startAngle);
@@ -383,8 +391,8 @@ function parseShapeProperties(
   c = cos(-gamma);
   s = sin(-gamma);
   vec2 inSector = vec2(c * pointRotated.x - s * pointRotated.y, abs(s * pointRotated.x + c * pointRotated.y));
-  vec2 tipToPoint = inSector + vec2(-radiusOut, 0.);
-  vec2 edgeNormal = vec2(radiusIn * sin(alpha * 0.5), -radiusIn * cos(alpha * 0.5) + radiusOut);
+  vec2 tipToPoint = inSector + vec2(-radius, 0.);
+  vec2 edgeNormal = vec2(radius2 * sin(alpha * 0.5), -radius2 * cos(alpha * 0.5) + radius);
   return dot(normalize(edgeNormal), tipToPoint);
 }`;
   fragContext.functions[
@@ -477,7 +485,7 @@ function parseShapeProperties(
     if (strokeWidth !== null) {
       radius2 = `${radius2} + ${strokeWidth} * 0.5`;
     }
-    shapeField = `starDistanceField(${currentPoint}, ${numPoints}, ${radius2}, ${radius}, ${angle})`;
+    shapeField = `starDistanceField(${currentPoint}, ${numPoints}, ${radius}, ${radius2}, ${angle})`;
   } else {
     shapeField = `regularDistanceField(${currentPoint}, ${numPoints}, ${radius}, ${angle})`;
   }

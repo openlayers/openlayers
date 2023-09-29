@@ -246,10 +246,10 @@ describe('ol.webgl.styleparser', () => {
             },
           ]);
           expect(result.builder.symbolColorExpression_).to.eql(
-            'mix(v_prop_color2, v_prop_color1, smoothstep(-(3.0 + 4.0) + 0.63, -(3.0 + 4.0) - 0.58, starDistanceField(coordsPx / vec2(1.5, 1.7), (10.0 - 3.0), (2.0 * 5.0) + (3.0 + 4.0) * 0.5, v_prop_attr1 + (3.0 + 4.0) * 0.5, (0.5 * 3.141592653589793)))) * (1.0 - smoothstep(-0.63, 0.58, starDistanceField(coordsPx / vec2(1.5, 1.7), (10.0 - 3.0), (2.0 * 5.0) + (3.0 + 4.0) * 0.5, v_prop_attr1 + (3.0 + 4.0) * 0.5, (0.5 * 3.141592653589793)))) * (0.5 * 0.75)'
+            'mix(v_prop_color2, v_prop_color1, smoothstep(-(3.0 + 4.0) + 0.63, -(3.0 + 4.0) - 0.58, starDistanceField(coordsPx / vec2(1.5, 1.7), (10.0 - 3.0), v_prop_attr1 + (3.0 + 4.0) * 0.5, (2.0 * 5.0) + (3.0 + 4.0) * 0.5, (0.5 * 3.141592653589793)))) * (1.0 - smoothstep(-0.63, 0.58, starDistanceField(coordsPx / vec2(1.5, 1.7), (10.0 - 3.0), v_prop_attr1 + (3.0 + 4.0) * 0.5, (2.0 * 5.0) + (3.0 + 4.0) * 0.5, (0.5 * 3.141592653589793)))) * (0.5 * 0.75)'
           );
           expect(result.builder.symbolSizeExpression_).to.eql(
-            'vec2((a_prop_attr1 + (3.0 + 4.0) * 0.5) * 2. + 0.5) * vec2(1.5, 1.7)'
+            'vec2((max(a_prop_attr1, (2.0 * 5.0)) + (3.0 + 4.0) * 0.5) * 2. + 0.5) * vec2(1.5, 1.7)'
           );
           expect(result.builder.symbolOffsetExpression_).to.eql(
             'vec2(-2.0, 1.0)'
