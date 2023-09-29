@@ -65,7 +65,7 @@ class Point extends SimpleGeometry {
    * @api
    */
   getCoordinates() {
-    return !this.flatCoordinates ? [] : this.flatCoordinates.slice();
+    return this.flatCoordinates.slice();
   }
 
   /**

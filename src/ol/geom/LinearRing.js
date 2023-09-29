@@ -132,6 +132,7 @@ class LinearRing extends SimpleGeometry {
    * @protected
    */
   getSimplifiedGeometryInternal(squaredTolerance) {
+    /** @type {Array<number>} */
     const simplifiedFlatCoordinates = [];
     simplifiedFlatCoordinates.length = douglasPeucker(
       this.flatCoordinates,

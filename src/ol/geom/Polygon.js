@@ -53,7 +53,7 @@ class Polygon extends SimpleGeometry {
 
     /**
      * @private
-     * @type {import("../coordinate.js").Coordinate}
+     * @type {import("../coordinate.js").Coordinate|null}
      */
     this.flatInteriorPoint_ = null;
 
@@ -77,7 +77,7 @@ class Polygon extends SimpleGeometry {
 
     /**
      * @private
-     * @type {Array<number>}
+     * @type {Array<number>|null}
      */
     this.orientedFlatCoordinates_ = null;
 
@@ -242,7 +242,9 @@ class Polygon extends SimpleGeometry {
       );
       this.flatInteriorPointRevision_ = this.getRevision();
     }
-    return this.flatInteriorPoint_;
+    return /** @type {import("../coordinate.js").Coordinate} */ (
+      this.flatInteriorPoint_
+    );
   }
 
   /**
@@ -331,7 +333,7 @@ class Polygon extends SimpleGeometry {
       }
       this.orientedRevision_ = this.getRevision();
     }
-    return this.orientedFlatCoordinates_;
+    return /** @type {Array<number>} */ (this.orientedFlatCoordinates_);
   }
 
   /**
@@ -340,7 +342,9 @@ class Polygon extends SimpleGeometry {
    * @protected
    */
   getSimplifiedGeometryInternal(squaredTolerance) {
+    /** @type {Array<number>} */
     const simplifiedFlatCoordinates = [];
+    /** @type {Array<number>} */
     const simplifiedEnds = [];
     simplifiedFlatCoordinates.length = quantizeArray(
       this.flatCoordinates,
