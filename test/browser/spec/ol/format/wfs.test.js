@@ -1318,6 +1318,30 @@ describe('ol.format.WFS', function () {
       });
       expect(serialized).to.xmleql(parse(text));
     });
+
+    it('should use <Name> tag for property names', () => {
+      const testFeature = new Feature();
+      testFeature.setId('12345');
+      testFeature.setProperties({
+        name: 'SampleFeature',
+      });
+      const testOptions = {
+        featureNS: 'http://foo',
+        featureType: 'FAULTS',
+        featurePrefix: 'foo',
+        gmlOptions: {srsName: 'EPSG:900913'},
+      };
+      const wfs = new WFS({version: '1.1.0'});
+      const serialized = wfs.writeTransaction(
+        [],
+        [testFeature],
+        [],
+        testOptions
+      );
+      const xmlSerializer = new XMLSerializer();
+      const xmlString = xmlSerializer.serializeToString(serialized);
+      expect(xmlString).contain('<Name>');
+    });
   });
 
   describe('when writing out a GetFeature request', function () {
@@ -1937,6 +1961,31 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         ),
       });
       expect(serialized.firstElementChild).to.xmleql(parse(text));
+    });
+
+    it('should use <ValueReference> tag for property names', () => {
+      const testFeature = new Feature();
+      testFeature.setId('12345');
+      testFeature.setProperties({
+        name: 'SampleFeature',
+      });
+      const testOptions = {
+        featureNS: 'http://foo',
+        featureType: 'FAULTS',
+        featurePrefix: 'foo',
+        gmlOptions: {srsName: 'EPSG:900913'},
+      };
+      const wfs = new WFS({version: '2.0.0'});
+      const serialized = wfs.writeTransaction(
+        [],
+        [testFeature],
+        [],
+        testOptions
+      );
+      const xmlSerializer = new XMLSerializer();
+      const xmlString = xmlSerializer.serializeToString(serialized);
+      expect(xmlString).contain('<ValueReference>');
+      expect(xmlString).not.contain('<Name>');
     });
   });
 });
