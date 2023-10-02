@@ -35,6 +35,23 @@ export function asString(color) {
 const MAX_CACHE_SIZE = 1024;
 
 /**
+ * Return named color as an rgba string.
+ * @param {string} color Named color.
+ * @return {string} Rgb string.
+ */
+export function fromNamed(color) {
+  const el = document.createElement('div');
+  el.style.color = color;
+  if (el.style.color !== '') {
+    document.body.appendChild(el);
+    const rgb = getComputedStyle(el).color;
+    document.body.removeChild(el);
+    return rgb;
+  }
+  return '';
+}
+
+/**
  * We maintain a small cache of parsed strings.  Whenever the cache grows too large,
  * we delete an arbitrary set of the entries.
  *

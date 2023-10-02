@@ -7,6 +7,7 @@
  * @property {import("../color.js").Color|import("../colorlike.js").ColorLike|null} [color=null] A color, gradient or pattern.
  * See {@link module:ol/color~Color} and {@link module:ol/colorlike~ColorLike} for possible formats.
  * Default null; if null, the Canvas/renderer default black will be used.
+ * @property {number} [opacity=1] Opacity.
  */
 
 /**
@@ -26,6 +27,7 @@ class Fill {
      * @type {import("../color.js").Color|import("../colorlike.js").ColorLike|null}
      */
     this.color_ = options.color !== undefined ? options.color : null;
+    this.opacity_ = options.opacity !== undefined ? options.opacity : 1;
   }
 
   /**
@@ -35,8 +37,10 @@ class Fill {
    */
   clone() {
     const color = this.getColor();
+    const opacity = this.getOpacity();
     return new Fill({
       color: Array.isArray(color) ? color.slice() : color || undefined,
+      opacity: opacity,
     });
   }
 
@@ -47,6 +51,15 @@ class Fill {
    */
   getColor() {
     return this.color_;
+  }
+
+  /**
+   * Get the fill opacity.
+   * @return {number} Opacity.
+   * @api
+   */
+  getOpacity() {
+    return this.opacity_;
   }
 
   /**
