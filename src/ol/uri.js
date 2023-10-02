@@ -11,6 +11,7 @@
  * @return {string} The new URI.
  */
 export function appendParams(uri, params) {
+  /** @type {Array<string>} */
   const keyParams = [];
   // Skip any null or undefined parameter values
   Object.keys(params).forEach(function (k) {

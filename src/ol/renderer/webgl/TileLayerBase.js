@@ -43,7 +43,8 @@ export const Uniforms = {
 const empty = {};
 
 /**
- * Transform a zoom level into a depth value ranging from -1 to 1.
+ * Transform a zoom level into a depth value; zoom level zero has a depth value of 0.5, and increasing values
+ * have a depth trending towards 0
  * @param {number} z A zoom level.
  * @return {number} A depth value.
  */
@@ -413,6 +414,15 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @return {boolean} If returns false, tile mask rendering will be skipped
+   * @protected
+   */
+  beforeTilesMaskRender(frameState) {
+    return false;
+  }
+
+  /**
    * @param {TileRepresentation} tileRepresentation Tile representation
    * @param {import("../../transform.js").Transform} tileTransform Tile transform
    * @param {import("../../Map.js").FrameState} frameState Frame state
@@ -440,6 +450,15 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     alpha
   ) {}
 
+  /**
+   * @param {TileRepresentation} tileRepresentation Tile representation
+   * @param {number} tileZ Tile Z
+   * @param {import("../../extent.js").Extent} extent Render extent
+   * @param {number} depth Depth
+   * @protected
+   */
+  renderTileMask(tileRepresentation, tileZ, extent, depth) {}
+
   drawTile_(
     frameState,
     tileRepresentation,
@@ -449,7 +468,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     alphaLookup,
     tileGrid
   ) {
-    if (!tileRepresentation.loaded) {
+    if (!tileRepresentation.ready) {
       return;
     }
     const tile = tileRepresentation.tile;
@@ -593,7 +612,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
       }
       const tileCoord = tile.tileCoord;
 
-      if (tileRepresentation.loaded) {
+      if (tileRepresentation.ready) {
         const alpha = tile.getAlpha(uid, time);
         if (alpha === 1) {
           // no need to look for alt tiles
@@ -634,10 +653,34 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
       }
     }
 
-    this.beforeTilesRender(frameState, blend);
-
     const representationsByZ = tileRepresentationLookup.representationsByZ;
     const zs = Object.keys(representationsByZ).map(Number).sort(descending);
+
+    const renderTileMask = this.beforeTilesMaskRender(frameState);
+
+    if (renderTileMask) {
+      for (let j = 0, jj = zs.length; j < jj; ++j) {
+        const tileZ = zs[j];
+        for (const tileRepresentation of representationsByZ[tileZ]) {
+          const tileCoord = tileRepresentation.tile.tileCoord;
+          const tileCoordKey = getTileCoordKey(tileCoord);
+          // do not render the tile mask if alpha < 1
+          if (tileCoordKey in alphaLookup) {
+            continue;
+          }
+          const tileExtent = tileGrid.getTileCoordExtent(tileCoord);
+          this.renderTileMask(
+            /** @type {TileRepresentation} */ (tileRepresentation),
+            tileZ,
+            tileExtent,
+            depthForZ(tileZ)
+          );
+        }
+      }
+    }
+
+    this.beforeTilesRender(frameState, blend);
+
     for (let j = 0, jj = zs.length; j < jj; ++j) {
       const tileZ = zs[j];
       for (const tileRepresentation of representationsByZ[tileZ]) {
@@ -739,7 +782,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
         if (tileRepresentationCache.containsKey(cacheKey)) {
           const tileRepresentation = tileRepresentationCache.get(cacheKey);
           if (
-            tileRepresentation.loaded &&
+            tileRepresentation.ready &&
             !lookupHasTile(tileRepresentationLookup, tileRepresentation.tile)
           ) {
             addTileRepresentationToLookup(

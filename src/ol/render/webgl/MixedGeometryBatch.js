@@ -1,14 +1,12 @@
 /**
  * @module ol/render/webgl/MixedGeometryBatch
  */
+import RenderFeature from '../../render/Feature.js';
 import {getUid} from '../../util.js';
-import {linearRingIsClockwise} from '../../geom/flat/orient.js';
+import {inflateEnds} from '../../geom/flat/orient.js';
 
 /**
- * @typedef {import("../../render/Feature").default} RenderFeature
- */
-/**
- * @typedef {import("../../Feature").default} Feature
+ * @typedef {import("../../Feature.js").default} Feature
  */
 /**
  * @typedef {import("../../geom/Geometry.js").Type} GeometryType
@@ -21,6 +19,7 @@ import {linearRingIsClockwise} from '../../geom/flat/orient.js';
  * @property {number} [verticesCount] Only defined for linestring and polygon batches
  * @property {number} [ringsCount] Only defined for polygon batches
  * @property {Array<Array<number>>} [ringsVerticesCounts] Array of vertices counts in each ring for each geometry; only defined for polygons batches
+ * @property {number} [ref] The reference in the global batch (used for hit detection)
  */
 
 /**
@@ -72,6 +71,29 @@ import {linearRingIsClockwise} from '../../geom/flat/orient.js';
  */
 class MixedGeometryBatch {
   constructor() {
+    this.globalCounter_ = 0;
+    /**
+     * Refs are used as keys for hit detection.
+     * @type {Map<number, Feature|RenderFeature>}
+     * @private
+     */
+    this.refToFeature_ = new Map();
+
+    /**
+     * Features are split in "entries", which are individual geometries. We use the following map to share a single ref for all those entries.
+     * @type {Map<string, number>}
+     * @private
+     */
+    this.uidToRef_ = new Map();
+
+    /**
+     * The precision in WebGL shaders is limited.
+     * To keep the refs as small as possible we maintain an array of returned references.
+     * @type {Array<number>}
+     * @private
+     */
+    this.freeGlobalRef_ = [];
+
     /**
      * @type {PolygonGeometryBatch}
      */
@@ -102,26 +124,33 @@ class MixedGeometryBatch {
 
   /**
    * @param {Array<Feature|RenderFeature>} features Array of features to add to the batch
+   * @param {import("../../proj.js").TransformFunction} [projectionTransform] Projection transform.
    */
-  addFeatures(features) {
+  addFeatures(features, projectionTransform) {
     for (let i = 0; i < features.length; i++) {
-      this.addFeature(features[i]);
+      this.addFeature(features[i], projectionTransform);
     }
   }
 
   /**
    * @param {Feature|RenderFeature} feature Feature to add to the batch
+   * @param {import("../../proj.js").TransformFunction} [projectionTransform] Projection transform.
    */
-  addFeature(feature) {
-    const geometry = feature.getGeometry();
+  addFeature(feature, projectionTransform) {
+    let geometry = feature.getGeometry();
     if (!geometry) {
       return;
+    }
+    if (projectionTransform) {
+      geometry = geometry.clone();
+      geometry.applyTransform(projectionTransform);
     }
     this.addGeometry_(geometry, feature);
   }
 
   /**
    * @param {Feature|RenderFeature} feature Feature
+   * @return {GeometryBatchItem|void} the cleared entry
    * @private
    */
   clearFeatureEntryInPointBatch_(feature) {
@@ -131,10 +160,12 @@ class MixedGeometryBatch {
     }
     this.pointBatch.geometriesCount -= entry.flatCoordss.length;
     delete this.pointBatch.entries[getUid(feature)];
+    return entry;
   }
 
   /**
    * @param {Feature|RenderFeature} feature Feature
+   * @return {GeometryBatchItem|void} the cleared entry
    * @private
    */
   clearFeatureEntryInLineStringBatch_(feature) {
@@ -145,10 +176,12 @@ class MixedGeometryBatch {
     this.lineStringBatch.verticesCount -= entry.verticesCount;
     this.lineStringBatch.geometriesCount -= entry.flatCoordss.length;
     delete this.lineStringBatch.entries[getUid(feature)];
+    return entry;
   }
 
   /**
    * @param {Feature|RenderFeature} feature Feature
+   * @return {GeometryBatchItem|void} the cleared entry
    * @private
    */
   clearFeatureEntryInPolygonBatch_(feature) {
@@ -160,30 +193,30 @@ class MixedGeometryBatch {
     this.polygonBatch.ringsCount -= entry.ringsCount;
     this.polygonBatch.geometriesCount -= entry.flatCoordss.length;
     delete this.polygonBatch.entries[getUid(feature)];
+    return entry;
   }
 
   /**
-   * @param {import("../../geom").Geometry|RenderFeature} geometry Geometry
+   * @param {import("../../geom.js").Geometry|RenderFeature} geometry Geometry
    * @param {Feature|RenderFeature} feature Feature
    * @private
    */
   addGeometry_(geometry, feature) {
     const type = geometry.getType();
     switch (type) {
-      case 'GeometryCollection':
+      case 'GeometryCollection': {
         const geometries =
-          /** @type {import("../../geom").GeometryCollection} */ (
+          /** @type {import("../../geom.js").GeometryCollection} */ (
             geometry
           ).getGeometriesArray();
         for (const geometry of geometries) {
           this.addGeometry_(geometry, feature);
         }
         break;
-      case 'MultiPolygon':
+      }
+      case 'MultiPolygon': {
         const multiPolygonGeom =
-          /** @type {import("../../geom").MultiPolygon|RenderFeature} */ (
-            geometry
-          );
+          /** @type {import("../../geom.js").MultiPolygon} */ (geometry);
         this.addCoordinates_(
           type,
           multiPolygonGeom.getFlatCoordinates(),
@@ -193,9 +226,10 @@ class MixedGeometryBatch {
           multiPolygonGeom.getStride()
         );
         break;
-      case 'MultiLineString':
+      }
+      case 'MultiLineString': {
         const multiLineGeom =
-          /** @type {import("../../geom").MultiLineString|RenderFeature} */ (
+          /** @type {import("../../geom.js").MultiLineString|RenderFeature} */ (
             geometry
           );
         this.addCoordinates_(
@@ -207,9 +241,10 @@ class MixedGeometryBatch {
           multiLineGeom.getStride()
         );
         break;
-      case 'MultiPoint':
+      }
+      case 'MultiPoint': {
         const multiPointGeom =
-          /** @type {import("../../geom").MultiPoint|RenderFeature} */ (
+          /** @type {import("../../geom.js").MultiPoint|RenderFeature} */ (
             geometry
           );
         this.addCoordinates_(
@@ -221,9 +256,12 @@ class MixedGeometryBatch {
           multiPointGeom.getStride()
         );
         break;
-      case 'Polygon':
+      }
+      case 'Polygon': {
         const polygonGeom =
-          /** @type {import("../../geom").Polygon|RenderFeature} */ (geometry);
+          /** @type {import("../../geom.js").Polygon|RenderFeature} */ (
+            geometry
+          );
         this.addCoordinates_(
           type,
           polygonGeom.getFlatCoordinates(),
@@ -233,8 +271,11 @@ class MixedGeometryBatch {
           polygonGeom.getStride()
         );
         break;
-      case 'Point':
-        const pointGeom = /** @type {import("../../geom").Point} */ (geometry);
+      }
+      case 'Point': {
+        const pointGeom = /** @type {import("../../geom.js").Point} */ (
+          geometry
+        );
         this.addCoordinates_(
           type,
           pointGeom.getFlatCoordinates(),
@@ -244,9 +285,10 @@ class MixedGeometryBatch {
           pointGeom.getStride()
         );
         break;
+      }
       case 'LineString':
-      case 'LinearRing':
-        const lineGeom = /** @type {import("../../geom").LineString} */ (
+      case 'LinearRing': {
+        const lineGeom = /** @type {import("../../geom.js").LineString} */ (
           geometry
         );
         this.addCoordinates_(
@@ -258,6 +300,7 @@ class MixedGeometryBatch {
           lineGeom.getStride()
         );
         break;
+      }
       default:
       // pass
     }
@@ -276,7 +319,7 @@ class MixedGeometryBatch {
     /** @type {number} */
     let verticesCount;
     switch (type) {
-      case 'MultiPolygon':
+      case 'MultiPolygon': {
         const multiPolygonEndss = /** @type {Array<Array<number>>} */ (ends);
         for (let i = 0, ii = multiPolygonEndss.length; i < ii; i++) {
           let polygonEnds = multiPolygonEndss[i];
@@ -299,12 +342,13 @@ class MixedGeometryBatch {
           );
         }
         break;
-      case 'MultiLineString':
+      }
+      case 'MultiLineString': {
         const multiLineEnds = /** @type {Array<number>} */ (ends);
         for (let i = 0, ii = multiLineEnds.length; i < ii; i++) {
           const startIndex = i > 0 ? multiLineEnds[i - 1] : 0;
           this.addCoordinates_(
-            'LinearRing',
+            'LineString',
             flatCoords.slice(startIndex, multiLineEnds[i]),
             null,
             feature,
@@ -313,6 +357,7 @@ class MixedGeometryBatch {
           );
         }
         break;
+      }
       case 'MultiPoint':
         for (let i = 0, ii = flatCoords.length; i < ii; i += stride) {
           this.addCoordinates_(
@@ -325,32 +370,15 @@ class MixedGeometryBatch {
           );
         }
         break;
-      case 'Polygon':
+      case 'Polygon': {
         const polygonEnds = /** @type {Array<number>} */ (ends);
-        // first look for a CW ring; if so, handle it and following rings as another polygon
-        for (let i = 1, ii = polygonEnds.length; i < ii; i++) {
-          const ringStartIndex = polygonEnds[i - 1];
-          if (
-            i > 0 &&
-            linearRingIsClockwise(
+        if (feature instanceof RenderFeature) {
+          const multiPolygonEnds = inflateEnds(flatCoords, polygonEnds);
+          if (multiPolygonEnds.length > 1) {
+            this.addCoordinates_(
+              'MultiPolygon',
               flatCoords,
-              ringStartIndex,
-              polygonEnds[i],
-              stride
-            )
-          ) {
-            this.addCoordinates_(
-              'Polygon',
-              flatCoords.slice(0, ringStartIndex),
-              polygonEnds.slice(0, i),
-              feature,
-              featureUid,
-              stride
-            );
-            this.addCoordinates_(
-              'Polygon',
-              flatCoords.slice(ringStartIndex),
-              polygonEnds.slice(i).map((end) => end - polygonEnds[i - 1]),
+              multiPolygonEnds,
               feature,
               featureUid,
               stride
@@ -359,13 +387,16 @@ class MixedGeometryBatch {
           }
         }
         if (!this.polygonBatch.entries[featureUid]) {
-          this.polygonBatch.entries[featureUid] = {
-            feature: feature,
-            flatCoordss: [],
-            verticesCount: 0,
-            ringsCount: 0,
-            ringsVerticesCounts: [],
-          };
+          this.polygonBatch.entries[featureUid] = this.addRefToEntry_(
+            featureUid,
+            {
+              feature: feature,
+              flatCoordss: [],
+              verticesCount: 0,
+              ringsCount: 0,
+              ringsVerticesCounts: [],
+            }
+          );
         }
         verticesCount = flatCoords.length / stride;
         const ringsCount = ends.length;
@@ -395,12 +426,16 @@ class MixedGeometryBatch {
           );
         }
         break;
+      }
       case 'Point':
         if (!this.pointBatch.entries[featureUid]) {
-          this.pointBatch.entries[featureUid] = {
-            feature: feature,
-            flatCoordss: [],
-          };
+          this.pointBatch.entries[featureUid] = this.addRefToEntry_(
+            featureUid,
+            {
+              feature: feature,
+              flatCoordss: [],
+            }
+          );
         }
         this.pointBatch.geometriesCount++;
         this.pointBatch.entries[featureUid].flatCoordss.push(flatCoords);
@@ -408,11 +443,14 @@ class MixedGeometryBatch {
       case 'LineString':
       case 'LinearRing':
         if (!this.lineStringBatch.entries[featureUid]) {
-          this.lineStringBatch.entries[featureUid] = {
-            feature: feature,
-            flatCoordss: [],
-            verticesCount: 0,
-          };
+          this.lineStringBatch.entries[featureUid] = this.addRefToEntry_(
+            featureUid,
+            {
+              feature: feature,
+              flatCoordss: [],
+              verticesCount: 0,
+            }
+          );
         }
         verticesCount = flatCoords.length / stride;
         this.lineStringBatch.verticesCount += verticesCount;
@@ -428,12 +466,45 @@ class MixedGeometryBatch {
   }
 
   /**
+   * @param {string} featureUid Feature uid
+   * @param {GeometryBatchItem} entry The entry to add
+   * @return {GeometryBatchItem} the added entry
+   * @private
+   */
+  addRefToEntry_(featureUid, entry) {
+    const currentRef = this.uidToRef_.get(featureUid);
+
+    // the ref starts at 1 to distinguish from white color (no feature)
+    const ref =
+      currentRef || this.freeGlobalRef_.pop() || ++this.globalCounter_;
+    entry.ref = ref;
+    if (!currentRef) {
+      this.refToFeature_.set(ref, entry.feature);
+      this.uidToRef_.set(featureUid, ref);
+    }
+    return entry;
+  }
+
+  /**
+   * Return a ref to the pool of available refs.
+   * @param {number} ref the ref to return
+   * @param {string} featureUid the feature uid
+   * @private
+   */
+  returnRef_(ref, featureUid) {
+    if (!ref) {
+      throw new Error('This feature has no ref: ' + featureUid);
+    }
+    this.refToFeature_.delete(ref);
+    this.uidToRef_.delete(featureUid);
+    this.freeGlobalRef_.push(ref);
+  }
+
+  /**
    * @param {Feature|RenderFeature} feature Feature
    */
   changeFeature(feature) {
-    this.clearFeatureEntryInPointBatch_(feature);
-    this.clearFeatureEntryInPolygonBatch_(feature);
-    this.clearFeatureEntryInLineStringBatch_(feature);
+    this.removeFeature(feature);
     const geometry = feature.getGeometry();
     if (!geometry) {
       return;
@@ -445,9 +516,13 @@ class MixedGeometryBatch {
    * @param {Feature|RenderFeature} feature Feature
    */
   removeFeature(feature) {
-    this.clearFeatureEntryInPointBatch_(feature);
-    this.clearFeatureEntryInPolygonBatch_(feature);
-    this.clearFeatureEntryInLineStringBatch_(feature);
+    let entry;
+    entry = this.clearFeatureEntryInPointBatch_(feature) || entry;
+    entry = this.clearFeatureEntryInPolygonBatch_(feature) || entry;
+    entry = this.clearFeatureEntryInLineStringBatch_(feature) || entry;
+    if (entry) {
+      this.returnRef_(entry.ref, getUid(entry.feature));
+    }
   }
 
   clear() {
@@ -460,6 +535,19 @@ class MixedGeometryBatch {
     this.lineStringBatch.verticesCount = 0;
     this.pointBatch.entries = {};
     this.pointBatch.geometriesCount = 0;
+    this.globalCounter_ = 0;
+    this.freeGlobalRef_ = [];
+    this.refToFeature_.clear();
+    this.uidToRef_.clear();
+  }
+
+  /**
+   * Resolve the feature associated to a ref.
+   * @param {number} ref Hit detected ref
+   * @return {Feature|RenderFeature} feature
+   */
+  getFeatureFromRef(ref) {
+    return this.refToFeature_.get(ref);
   }
 }
 

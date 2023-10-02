@@ -84,6 +84,59 @@ describe('ol/expr/expression.js', () => {
     });
   });
 
+  describe('parse() errors', () => {
+    /**
+     * @typedef {Object} Case
+     * @property {string} name The case name.
+     * @property {Array<*>} expression The expression to parse.
+     * @property {RegExp} error The expected error message.
+     */
+
+    /**
+     * @type {Array<Case>}
+     */
+    const cases = [
+      {
+        name: 'interpolate with invalid method',
+        expression: ['interpolate', ['invalid'], 0.5, 0, 0, 1, 1],
+        error: 'Invalid interpolation type: ["invalid"]',
+      },
+      {
+        name: 'interpolate with missing stop output',
+        expression: ['interpolate', ['linear'], 0.5, 0, 0, 1, 1, 2, 2, 3],
+        error:
+          'An even amount of arguments was expected for operation interpolate, got 9 instead',
+      },
+      {
+        name: 'interpolate with string input',
+        expression: ['interpolate', ['linear'], 'oops', 0, 0, 1, 1],
+        error:
+          'Expected an input of type number for the interpolate operation, got string instead',
+      },
+      {
+        name: 'interpolate with string stop input',
+        expression: ['interpolate', ['linear'], 0.5, 0, 0, 1, 1, 'x', 2, 3, 3],
+        error:
+          'Expected all stop input values in the interpolate operation to be of type number, got string at position 6 instead',
+      },
+      {
+        name: 'interpolate with string base',
+        expression: ['interpolate', ['exponential', 'x'], 0.5, 0, 0, 1, 1],
+        error:
+          'Expected a number base for exponential interpolation, got "x" instead',
+      },
+    ];
+
+    for (const {name, expression, error} of cases) {
+      it(`throws for ${name}`, () => {
+        const context = newParsingContext();
+        expect(() => parse(expression, context)).to.throwError((e) =>
+          expect(e.message).to.eql(error)
+        );
+      });
+    }
+  });
+
   describe('typeName()', () => {
     const cases = [
       {type: BooleanType, name: 'boolean'},

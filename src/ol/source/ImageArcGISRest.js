@@ -118,6 +118,12 @@ class ImageArcGISRest extends ImageSource {
      * @type {number}
      */
     this.ratio_ = options.ratio !== undefined ? options.ratio : 1.5;
+
+    /**
+     * @private
+     * @type {import("../proj/Projection.js").default}
+     */
+    this.loaderProjection_ = null;
   }
 
   /**
@@ -141,8 +147,9 @@ class ImageArcGISRest extends ImageSource {
     if (this.url_ === undefined) {
       return null;
     }
-    if (!this.loader) {
+    if (!this.loader || this.loaderProjection_ !== projection) {
       // Lazily create loader to pick up the view projection and to allow `params` updates
+      this.loaderProjection_ = projection;
       this.loader = createLoader({
         crossOrigin: this.crossOrigin_,
         params: this.params_,

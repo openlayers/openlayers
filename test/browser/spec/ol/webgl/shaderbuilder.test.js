@@ -33,6 +33,7 @@ uniform float u_zoom;
 uniform float u_resolution;
 uniform float u_rotation;
 uniform vec4 u_renderExtent;
+uniform float u_depth;
 uniform mediump int u_hitDetection;
 
 const float PI = 3.141592653589793238;
@@ -81,7 +82,7 @@ void main(void) {
   float s = sin(-angle);
   offsetPx = vec2(c * offsetPx.x - s * offsetPx.y, s * offsetPx.x + c * offsetPx.y);
   vec4 center = u_projectionMatrix * vec4(a_position, 0.0, 1.0);
-  gl_Position = center + vec4(pxToScreen(offsetPx), 0., 0.);
+  gl_Position = center + vec4(pxToScreen(offsetPx), u_depth, 0.);
   vec4 texCoord = vec4(0.0, 0.5, 0.5, 1.0);
   float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.p;
   float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.q;
@@ -122,6 +123,7 @@ uniform float u_zoom;
 uniform float u_resolution;
 uniform float u_rotation;
 uniform vec4 u_renderExtent;
+uniform float u_depth;
 uniform mediump int u_hitDetection;
 
 const float PI = 3.141592653589793238;
@@ -169,7 +171,7 @@ void main(void) {
   float s = sin(-angle);
   offsetPx = vec2(c * offsetPx.x - s * offsetPx.y, s * offsetPx.x + c * offsetPx.y);
   vec4 center = u_projectionMatrix * vec4(a_position, 0.0, 1.0);
-  gl_Position = center + vec4(pxToScreen(offsetPx), 0., 0.);
+  gl_Position = center + vec4(pxToScreen(offsetPx), u_depth, 0.);
   vec4 texCoord = vec4(0.0, 0.5, 0.5, 1.0);
   float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.p;
   float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.q;
@@ -208,6 +210,7 @@ uniform float u_zoom;
 uniform float u_resolution;
 uniform float u_rotation;
 uniform vec4 u_renderExtent;
+uniform float u_depth;
 uniform mediump int u_hitDetection;
 
 const float PI = 3.141592653589793238;
@@ -255,7 +258,7 @@ void main(void) {
   float s = sin(-angle);
   offsetPx = vec2(c * offsetPx.x - s * offsetPx.y, s * offsetPx.x + c * offsetPx.y);
   vec4 center = u_projectionMatrix * vec4(a_position, 0.0, 1.0);
-  gl_Position = center + vec4(pxToScreen(offsetPx), 0., 0.);
+  gl_Position = center + vec4(pxToScreen(offsetPx), u_depth, 0.);
   vec4 texCoord = vec4(0.0, 0.5, 0.5, 1.0);
   float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.p;
   float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.q;
@@ -293,6 +296,7 @@ uniform float u_zoom;
 uniform float u_resolution;
 uniform float u_rotation;
 uniform vec4 u_renderExtent;
+uniform float u_depth;
 uniform mediump int u_hitDetection;
 
 const float PI = 3.141592653589793238;
@@ -340,7 +344,7 @@ void main(void) {
   float s = sin(-angle);
   offsetPx = vec2(c * offsetPx.x - s * offsetPx.y, s * offsetPx.x + c * offsetPx.y);
   vec4 center = u_projectionMatrix * vec4(a_position, 0.0, 1.0);
-  gl_Position = center + vec4(pxToScreen(offsetPx), 0., 0.);
+  gl_Position = center + vec4(pxToScreen(offsetPx), u_depth, 0.);
   vec4 texCoord = vec4(0.0, 0.0, 1.0, 1.0);
   float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.p;
   float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.q;
@@ -390,6 +394,7 @@ uniform float u_zoom;
 uniform float u_resolution;
 uniform float u_rotation;
 uniform vec4 u_renderExtent;
+uniform float u_depth;
 uniform mediump int u_hitDetection;
 
 const float PI = 3.141592653589793238;
@@ -444,6 +449,7 @@ uniform float u_zoom;
 uniform float u_resolution;
 uniform float u_rotation;
 uniform vec4 u_renderExtent;
+uniform float u_depth;
 uniform mediump int u_hitDetection;
 
 const float PI = 3.141592653589793238;
@@ -516,6 +522,7 @@ uniform float u_zoom;
 uniform float u_resolution;
 uniform float u_rotation;
 uniform vec4 u_renderExtent;
+uniform float u_depth;
 uniform mediump int u_hitDetection;
 
 const float PI = 3.141592653589793238;
@@ -548,7 +555,7 @@ vec2 worldToPx(vec2 worldPos) {
 
 vec4 pxToScreen(vec2 pxPos) {
   vec2 screenPos = 2.0 * pxPos / u_viewportSizePx - 1.0;
-  return vec4(screenPos, 0.0, 1.0);
+  return vec4(screenPos, u_depth, 1.0);
 }
 
 bool isCap(float joinAngle) {
@@ -637,6 +644,7 @@ uniform float u_zoom;
 uniform float u_resolution;
 uniform float u_rotation;
 uniform vec4 u_renderExtent;
+uniform float u_depth;
 uniform mediump int u_hitDetection;
 
 const float PI = 3.141592653589793238;
@@ -740,13 +748,13 @@ float computeSegmentPointDistance(vec2 point, vec2 start, vec2 end, float width,
 void main(void) {
   vec2 currentPoint = gl_FragCoord.xy / u_pixelRatio;
   #ifdef GL_FRAGMENT_PRECISION_HIGH
-  vec2 v_worldPos = pxToWorld(currentPoint);
+  vec2 worldPos = pxToWorld(currentPoint);
   if (
     abs(u_renderExtent[0] - u_renderExtent[2]) > 0.0 && (
-      v_worldPos[0] < u_renderExtent[0] ||
-      v_worldPos[1] < u_renderExtent[1] ||
-      v_worldPos[0] > u_renderExtent[2] ||
-      v_worldPos[1] > u_renderExtent[3]
+      worldPos[0] < u_renderExtent[0] ||
+      worldPos[1] < u_renderExtent[1] ||
+      worldPos[0] > u_renderExtent[2] ||
+      worldPos[1] > u_renderExtent[3]
     )
   ) {
     discard;
@@ -811,6 +819,7 @@ uniform float u_zoom;
 uniform float u_resolution;
 uniform float u_rotation;
 uniform vec4 u_renderExtent;
+uniform float u_depth;
 uniform mediump int u_hitDetection;
 
 const float PI = 3.141592653589793238;
@@ -825,7 +834,8 @@ varying float v_opacity;
 varying vec3 v_test;
 
 void main(void) {
-  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0);
+  gl_Position = u_projectionMatrix * vec4(a_position, u_depth, 1.0);
+  v_hitColor = a_hitColor;
   v_opacity = 0.4;
   v_test = vec3(1.0, 2.0, 3.0);
 }`);
@@ -862,6 +872,7 @@ uniform float u_zoom;
 uniform float u_resolution;
 uniform float u_rotation;
 uniform vec4 u_renderExtent;
+uniform float u_depth;
 uniform mediump int u_hitDetection;
 
 const float PI = 3.141592653589793238;
@@ -879,13 +890,13 @@ vec2 pxToWorld(vec2 pxPos) {
 
 void main(void) {
   #ifdef GL_FRAGMENT_PRECISION_HIGH
-  vec2 v_worldPos = pxToWorld(gl_FragCoord.xy / u_pixelRatio);
+  vec2 worldPos = pxToWorld(gl_FragCoord.xy / u_pixelRatio);
   if (
     abs(u_renderExtent[0] - u_renderExtent[2]) > 0.0 && (
-      v_worldPos[0] < u_renderExtent[0] ||
-      v_worldPos[1] < u_renderExtent[1] ||
-      v_worldPos[0] > u_renderExtent[2] ||
-      v_worldPos[1] > u_renderExtent[3]
+      worldPos[0] < u_renderExtent[0] ||
+      worldPos[1] < u_renderExtent[1] ||
+      worldPos[0] > u_renderExtent[2] ||
+      worldPos[1] > u_renderExtent[3]
     )
   ) {
     discard;

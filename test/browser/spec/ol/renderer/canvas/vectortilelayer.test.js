@@ -74,7 +74,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       ];
       feature1 = new Feature(new Point([1, -1]));
       feature2 = new Feature(new Point([0, 0]));
-      feature3 = new RenderFeature('Point', [1, -1], []);
+      feature3 = new RenderFeature('Point', [1, -1], [], 2);
       feature2.setStyle(featureStyle);
       class TileClass extends VectorTile {
         constructor() {
@@ -421,7 +421,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         }),
       });
       const sourceTile = new VectorTile([0, 0, 0], 2);
-      sourceTile.features_ = [new RenderFeature('Point', [0, 0])];
+      sourceTile.features_ = [new RenderFeature('Point', [0, 0], [], 2)];
       sourceTile.getImage = function () {
         return document.createElement('canvas');
       };

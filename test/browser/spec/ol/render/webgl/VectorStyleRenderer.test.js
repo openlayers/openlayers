@@ -12,37 +12,21 @@ import {
   ELEMENT_ARRAY_BUFFER,
   FLOAT,
 } from '../../../../../../src/ol/webgl.js';
+import {ShaderBuilder} from '../../../../../../src/ol/webgl/ShaderBuilder.js';
 import {
   compose as composeTransform,
   create as createTransform,
   makeInverse as makeInverseTransform,
 } from '../../../../../../src/ol/transform.js';
 
-const SAMPLE_VERTEX_SHADER = `
-void main(void) {
-  gl_Position = vec4(1.0);
-}`;
-const SAMPLE_FRAGMENT_SHADER = `
-void main(void) {
-  gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-}`;
-
 /**
  * @type {import('../../../../../../src/ol/render/webgl/VectorStyleRenderer.js').StyleShaders}
  */
-const SAMPLE_SHADERS = {
-  fill: {
-    fragment: SAMPLE_FRAGMENT_SHADER,
-    vertex: SAMPLE_VERTEX_SHADER,
-  },
-  stroke: {
-    fragment: SAMPLE_FRAGMENT_SHADER,
-    vertex: SAMPLE_VERTEX_SHADER,
-  },
-  symbol: {
-    fragment: SAMPLE_FRAGMENT_SHADER,
-    vertex: SAMPLE_VERTEX_SHADER,
-  },
+const SAMPLE_SHADERS = () => ({
+  builder: new ShaderBuilder()
+    .setFillColorExpression('vec4(1.0)')
+    .setStrokeColorExpression('vec4(1.0)')
+    .setSymbolColorExpression('vec4(1.0)'),
   attributes: {
     attr1: {
       callback: (feature) => feature.get('test'),
@@ -52,7 +36,7 @@ const SAMPLE_SHADERS = {
   uniforms: {
     custom: () => 1234,
   },
-};
+});
 
 /**
  * @type {import('../../../../../../src/ol/style/literal.js').LiteralStyle}
@@ -167,7 +151,7 @@ describe('VectorStyleRenderer', () => {
   });
   describe('constructor using shaders', () => {
     beforeEach(() => {
-      vectorStyleRenderer = new VectorStyleRenderer(SAMPLE_SHADERS, helper);
+      vectorStyleRenderer = new VectorStyleRenderer(SAMPLE_SHADERS(), helper);
     });
     it('creates a VectorStyleRenderer', () => {
       expect(vectorStyleRenderer.customAttributes_).to.eql({
@@ -209,7 +193,7 @@ describe('VectorStyleRenderer', () => {
   });
   describe('methods', () => {
     beforeEach(() => {
-      vectorStyleRenderer = new VectorStyleRenderer(SAMPLE_SHADERS, helper);
+      vectorStyleRenderer = new VectorStyleRenderer(SAMPLE_SHADERS(), helper);
     });
     describe('generateBuffers', () => {
       let buffers;
@@ -339,9 +323,10 @@ describe('VectorStyleRenderer', () => {
   describe('rendering only fill', () => {
     let buffers, preRenderCb;
     beforeEach(async () => {
-      const fillOnlyShaders = {...SAMPLE_SHADERS};
-      delete fillOnlyShaders.stroke;
-      delete fillOnlyShaders.symbol;
+      const fillOnlyShaders = SAMPLE_SHADERS();
+      fillOnlyShaders.builder = new ShaderBuilder().setFillColorExpression(
+        'vec4(1.0)'
+      );
       sinon.spy(helper, 'flushBufferData');
       sinon.spy(helper, 'enableAttributes');
       sinon.spy(helper, 'useProgram');
@@ -379,9 +364,10 @@ describe('VectorStyleRenderer', () => {
   describe('rendering only stroke', () => {
     let buffers, preRenderCb;
     beforeEach(async () => {
-      const strokeOnlyShaders = {...SAMPLE_SHADERS};
-      delete strokeOnlyShaders.fill;
-      delete strokeOnlyShaders.symbol;
+      const strokeOnlyShaders = SAMPLE_SHADERS();
+      strokeOnlyShaders.builder = new ShaderBuilder().setStrokeColorExpression(
+        'vec4(1.0)'
+      );
       sinon.spy(helper, 'flushBufferData');
       sinon.spy(helper, 'enableAttributes');
       sinon.spy(helper, 'useProgram');
@@ -419,9 +405,10 @@ describe('VectorStyleRenderer', () => {
   describe('rendering only symbol', () => {
     let buffers, preRenderCb;
     beforeEach(async () => {
-      const symbolOnlyShaders = {...SAMPLE_SHADERS};
-      delete symbolOnlyShaders.fill;
-      delete symbolOnlyShaders.stroke;
+      const symbolOnlyShaders = SAMPLE_SHADERS();
+      symbolOnlyShaders.builder = new ShaderBuilder().setSymbolColorExpression(
+        'vec4(1.)'
+      );
       sinon.spy(helper, 'flushBufferData');
       sinon.spy(helper, 'enableAttributes');
       sinon.spy(helper, 'useProgram');

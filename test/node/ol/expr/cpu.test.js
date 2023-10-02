@@ -1,6 +1,7 @@
 import expect from '../../expect.js';
 import {
   BooleanType,
+  ColorType,
   NumberType,
   StringType,
   newParsingContext,
@@ -19,6 +20,7 @@ describe('ol/expr/cpu.js', () => {
      * @property {import('../../../../src/ol/expr/cpu.js').EvaluationContext} [context] The evaluation context.
      * @property {number} type The expression type.
      * @property {import('../../../../src/ol/expr/expression.js').LiteralValue} expected The expected value.
+     * @property {number} [tolerance] Optional tolerance for numeric comparisons.
      */
 
     /**
@@ -421,6 +423,50 @@ describe('ol/expr/cpu.js', () => {
         },
         expected: 'got other',
       },
+      {
+        name: 'interpolate (linear number)',
+        type: NumberType,
+        expression: [
+          'interpolate',
+          ['linear'],
+          ['get', 'number'],
+          0,
+          0,
+          1,
+          100,
+        ],
+        context: {
+          properties: {number: 0.5},
+        },
+        expected: 50,
+      },
+      {
+        name: 'interpolate (exponential base 2 number)',
+        type: NumberType,
+        expression: ['interpolate', ['exponential', 2], 0.5, 0, 0, 1, 100],
+        expected: 41.42135623730952,
+        tolerance: 1e-6,
+      },
+      {
+        name: 'interpolate (linear no delta)',
+        type: NumberType,
+        expression: ['interpolate', ['linear'], 42, 42, 1, 42, 2],
+        expected: 1,
+      },
+      {
+        name: 'interpolate (linear color)',
+        type: ColorType,
+        expression: [
+          'interpolate',
+          ['linear'],
+          0.5,
+          0,
+          [255, 0, 0],
+          1,
+          [0, 255, 0],
+        ],
+        expected: [219, 170, 0, 1],
+      },
     ];
 
     for (const c of cases) {
@@ -429,7 +475,91 @@ describe('ol/expr/cpu.js', () => {
         const evaluator = buildExpression(c.expression, c.type, parsingContext);
         const evaluationContext = c.context || newEvaluationContext();
         const value = evaluator(evaluationContext);
-        expect(value).to.eql(c.expected);
+        if (c.tolerance !== undefined) {
+          expect(value).to.roughlyEqual(c.expected, c.tolerance);
+        } else {
+          expect(value).to.eql(c.expected);
+        }
+      });
+    }
+  });
+
+  describe('interpolate expressions', () => {
+    /**
+     * @typedef {Object} InterpolateTest
+     * @property {Array} method The interpolation method.
+     * @property {Array} stops The stops.
+     * @property {Array<Array>} cases The test cases.
+     */
+
+    /**
+     * @type {Array<InterpolateTest}
+     */
+    const tests = [
+      {
+        method: ['linear'],
+        stops: [-1, -1, 0, 0, 1, 100, 2, 1000],
+        cases: [
+          [-2, -1],
+          [-1, -1],
+          [-0.5, -0.5],
+          [0, 0],
+          [0.25, 25],
+          [0.5, 50],
+          [0.9, 90],
+          [1, 100],
+          [1.5, 550],
+          [2, 1000],
+          [3, 1000],
+        ],
+      },
+      {
+        method: ['exponential', 2],
+        stops: [0, 0, 1, 100],
+        cases: [
+          [-1, 0],
+          [0, 0],
+          [0.25, 18.920711500272102],
+          [0.5, 41.42135623730952],
+          [0.9, 86.60659830736148],
+          [1, 100],
+          [1.5, 100],
+        ],
+      },
+      {
+        method: ['exponential', 3],
+        stops: [0, 0, 1, 100],
+        cases: [
+          [-1, 0],
+          [0, 0],
+          [0.25, 15.80370064762462],
+          [0.5, 36.60254037844386],
+          [0.9, 84.39376897611433],
+          [1, 100],
+          [1.5, 100],
+        ],
+      },
+    ];
+
+    for (const t of tests) {
+      const expression = [
+        'interpolate',
+        t.method,
+        ['var', 'input'],
+        ...t.stops,
+      ];
+      const type = typeof t.stops[1] === 'number' ? NumberType : ColorType;
+      describe(JSON.stringify(expression), () => {
+        const parsingContext = newParsingContext();
+        const evaluator = buildExpression(expression, type, parsingContext);
+        const evaluationContext = newEvaluationContext();
+        for (const [input, output] of t.cases) {
+          it(`works for ${input}`, () => {
+            evaluationContext.variables.input = input;
+            const got = evaluator(evaluationContext);
+            expect(got).to.roughlyEqual(output, 1e-6);
+          });
+        }
       });
     }
   });

@@ -205,7 +205,8 @@ class ReprojImage extends ImageWrapper {
         ],
         0,
         undefined,
-        this.interpolate_
+        this.interpolate_,
+        true
       );
     }
     this.state = sourceState;

@@ -42,3 +42,48 @@ const map = new Map({
     zoom: 1,
   }),
 });
+
+const featureOverlay = new WebGLLayer({
+  source: new VectorSource(),
+  map: map,
+  style: {
+    'stroke-color': 'rgba(255, 255, 255, 0.7)',
+    'stroke-width': 2,
+  },
+});
+
+let highlight;
+const displayFeatureInfo = function (pixel) {
+  const feature = map.forEachFeatureAtPixel(pixel, function (feature) {
+    return feature;
+  });
+
+  const info = document.getElementById('info');
+  if (feature) {
+    info.innerHTML = feature.get('ECO_NAME') || '&nbsp;';
+  } else {
+    info.innerHTML = '&nbsp;';
+  }
+
+  if (feature !== highlight) {
+    if (highlight) {
+      featureOverlay.getSource().removeFeature(highlight);
+    }
+    if (feature) {
+      featureOverlay.getSource().addFeature(feature);
+    }
+    highlight = feature;
+  }
+};
+
+map.on('pointermove', function (evt) {
+  if (evt.dragging) {
+    return;
+  }
+  const pixel = map.getEventPixel(evt.originalEvent);
+  displayFeatureInfo(pixel);
+});
+
+map.on('click', function (evt) {
+  displayFeatureInfo(evt.pixel);
+});

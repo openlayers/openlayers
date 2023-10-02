@@ -30,7 +30,7 @@ class JSONFeature extends FeatureFormat {
    *
    * @param {ArrayBuffer|Document|Element|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
-   * @return {import("../Feature.js").default} Feature.
+   * @return {import("../Feature.js").FeatureLike|Array<import("../render/Feature.js").default>} Feature.
    * @api
    */
   readFeature(source, options) {
@@ -46,7 +46,7 @@ class JSONFeature extends FeatureFormat {
    *
    * @param {ArrayBuffer|Document|Element|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
-   * @return {Array<import("../Feature.js").default>} Features.
+   * @return {Array<import("../Feature.js").FeatureLike>} Features.
    * @api
    */
   readFeatures(source, options) {
@@ -61,7 +61,7 @@ class JSONFeature extends FeatureFormat {
    * @param {Object} object Object.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
-   * @return {import("../Feature.js").default} Feature.
+   * @return {import("../Feature.js").default|import("../render/Feature.js").default|Array<import("../render/Feature.js").default>} Feature.
    */
   readFeatureFromObject(object, options) {
     return abstract();
@@ -72,7 +72,7 @@ class JSONFeature extends FeatureFormat {
    * @param {Object} object Object.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
-   * @return {Array<import("../Feature.js").default>} Features.
+   * @return {Array<import("../Feature.js").default|import("../render/Feature.js").default>} Features.
    */
   readFeaturesFromObject(object, options) {
     return abstract();

@@ -12,6 +12,9 @@ import RenderFeature from '../../../../../../src/ol/render/Feature.js';
 import {getUid} from '../../../../../../src/ol/index.js';
 
 describe('MixedGeometryBatch', function () {
+  /**
+   * @type {MixedGeometryBatch}
+   */
   let mixedBatch;
 
   beforeEach(() => {
@@ -63,10 +66,12 @@ describe('MixedGeometryBatch', function () {
         expect(keys).to.eql([uid1, uid2]);
         expect(mixedBatch.pointBatch.entries[uid1]).to.eql({
           feature: feature1,
+          ref: 1,
           flatCoordss: [[0, 1]],
         });
         expect(mixedBatch.pointBatch.entries[uid2]).to.eql({
           feature: feature2,
+          ref: 2,
           flatCoordss: [[2, 3]],
         });
       });
@@ -78,6 +83,12 @@ describe('MixedGeometryBatch', function () {
         expect(Object.keys(mixedBatch.lineStringBatch.entries)).to.have.length(
           0
         );
+      });
+      it('assigns a hit detection ref to the entry', () => {
+        expect(mixedBatch.globalCounter_).to.be(2);
+        expect(mixedBatch.freeGlobalRef_.length).to.be(0);
+        expect(mixedBatch.getFeatureFromRef(1)).to.be(feature1);
+        expect(mixedBatch.getFeatureFromRef(2)).to.be(feature2);
       });
     });
 
@@ -174,11 +185,13 @@ describe('MixedGeometryBatch', function () {
           feature: feature1,
           flatCoordss: [[0, 1, 2, 3, 4, 5, 6, 7]],
           verticesCount: 4,
+          ref: 1,
         });
         expect(mixedBatch.lineStringBatch.entries[uid2]).to.eql({
           feature: feature2,
           flatCoordss: [[8, 9, 10, 11, 12, 13]],
           verticesCount: 3,
+          ref: 2,
         });
       });
       it('computes the aggregated metrics on all geoms', () => {
@@ -317,6 +330,7 @@ describe('MixedGeometryBatch', function () {
           verticesCount: 7,
           ringsCount: 2,
           ringsVerticesCounts: [[4, 3]],
+          ref: 1,
         });
         expect(mixedBatch.polygonBatch.entries[uid2]).to.eql({
           feature: feature2,
@@ -329,6 +343,7 @@ describe('MixedGeometryBatch', function () {
           verticesCount: 10,
           ringsCount: 3,
           ringsVerticesCounts: [[3, 3, 4]],
+          ref: 2,
         });
       });
       it('computes the aggregated metrics on all polygons', () => {
@@ -346,6 +361,7 @@ describe('MixedGeometryBatch', function () {
             [20, 21, 22, 23, -24, 25],
           ],
           verticesCount: 7,
+          ref: 1,
         });
         expect(mixedBatch.lineStringBatch.entries[getUid(feature2)]).to.eql({
           feature: feature2,
@@ -355,6 +371,7 @@ describe('MixedGeometryBatch', function () {
             [40, 41, 42, 43, 44, 45, -46, 47],
           ],
           verticesCount: 10,
+          ref: 2,
         });
       });
       it('computes the aggregated metrics on all linestrings', () => {
@@ -443,6 +460,11 @@ describe('MixedGeometryBatch', function () {
         expect(mixedBatch.polygonBatch.verticesCount).to.be(10);
         expect(mixedBatch.polygonBatch.geometriesCount).to.be(1);
         expect(mixedBatch.polygonBatch.ringsCount).to.be(3);
+      });
+      it('keeps the removed ref for later use', () => {
+        expect(mixedBatch.freeGlobalRef_).to.eql([1]);
+        expect(mixedBatch.globalCounter_).to.be(2);
+        expect(mixedBatch.refToFeature_.size).to.be(1);
       });
     });
   });
@@ -535,6 +557,7 @@ describe('MixedGeometryBatch', function () {
             [4, 3],
             [3, 3, 4],
           ],
+          ref: 1,
         });
       });
       it('puts the polygon rings and linestrings in the linestring batch', () => {
@@ -551,6 +574,7 @@ describe('MixedGeometryBatch', function () {
             [8, 9, 10, 11, 12, 13],
           ],
           verticesCount: 24,
+          ref: 1,
         });
       });
       it('puts the points in the point batch', () => {
@@ -562,6 +586,7 @@ describe('MixedGeometryBatch', function () {
             [201, 202],
             [301, 302],
           ],
+          ref: 1,
         });
       });
       it('computes the aggregated metrics on all polygons', () => {
@@ -620,6 +645,7 @@ describe('MixedGeometryBatch', function () {
             verticesCount: 22,
             ringsCount: 6,
             ringsVerticesCounts: [[4, 3], [3, 3, 4], [5]],
+            ref: 1,
           });
         });
         it('updates the geometries in the linestring batch', () => {
@@ -638,6 +664,7 @@ describe('MixedGeometryBatch', function () {
               [500, 501, 502, 503, 504, 505, 506, 507],
             ],
             verticesCount: 33,
+            ref: 1,
           });
         });
         it('updates the aggregated metrics on the polygon batch', () => {
@@ -672,6 +699,7 @@ describe('MixedGeometryBatch', function () {
             verticesCount: 4,
             ringsCount: 1,
             ringsVerticesCounts: [[4]],
+            ref: 1,
           });
         });
         it('updates the geometries in the linestring batch', () => {
@@ -680,6 +708,7 @@ describe('MixedGeometryBatch', function () {
             feature: feature,
             flatCoordss: [[201, 202, 203, 204, 205, 206, 2070, 208]],
             verticesCount: 4,
+            ref: 1,
           });
         });
         it('updates the aggregated metrics on the polygon batch', () => {
@@ -772,6 +801,7 @@ describe('MixedGeometryBatch', function () {
           verticesCount: 4,
           ringsCount: 1,
           ringsVerticesCounts: [[4]],
+          ref: 1,
         });
       });
       it('puts the polygon rings and linestrings in the linestring batch', () => {
@@ -783,6 +813,7 @@ describe('MixedGeometryBatch', function () {
             [0, 1, 2, 3, 4, 5, 6, 7],
           ],
           verticesCount: 8,
+          ref: 1,
         });
       });
       it('puts the points in the point batch', () => {
@@ -794,6 +825,7 @@ describe('MixedGeometryBatch', function () {
             [201, 202],
             [301, 302],
           ],
+          ref: 1,
         });
       });
       it('computes the aggregated metrics on all polygons', () => {
@@ -832,6 +864,7 @@ describe('MixedGeometryBatch', function () {
         'Polygon',
         geometry.getFlatCoordinates(),
         geometry.getEnds(),
+        2,
         {
           prop1: 'abcd',
           prop2: 'efgh',
@@ -853,6 +886,7 @@ describe('MixedGeometryBatch', function () {
           verticesCount: 7,
           ringsCount: 2,
           ringsVerticesCounts: [[4, 3]],
+          ref: 1,
         });
       });
       it('computes the aggregated metrics on all polygons', () => {
@@ -870,6 +904,7 @@ describe('MixedGeometryBatch', function () {
             [20, 21, 22, 23, -24, 25],
           ],
           verticesCount: 7,
+          ref: 1,
         });
       });
       it('computes the aggregated metrics on all linestrings', () => {
@@ -929,6 +964,7 @@ describe('MixedGeometryBatch', function () {
         'Polygon',
         geometry.getFlatCoordinates(),
         geometry.getEnds(),
+        2,
         {
           prop1: 'abcd',
           prop2: 'efgh',
@@ -952,6 +988,7 @@ describe('MixedGeometryBatch', function () {
           [4, 3],
           [3, 3],
         ],
+        ref: 1,
       });
     });
     it('puts the linear rings in the linestring batch', () => {
@@ -964,6 +1001,7 @@ describe('MixedGeometryBatch', function () {
           [30, 31, 32, 33, -34, 35],
         ],
         verticesCount: 13,
+        ref: 1,
       });
     });
   });
@@ -998,30 +1036,30 @@ describe('MixedGeometryBatch', function () {
             [0, 1],
             [2, 3],
             [4, 5],
-            [6, 7],
+            [-6, 7],
           ],
           [
             [20, 21],
             [22, 23],
-            [24, 25],
+            [24, -25],
           ],
         ],
         [
           [
             [8, 9],
             [10, 11],
-            [12, 13],
+            [-12, 13],
           ],
           [
             [30, 31],
             [32, 33],
-            [34, 35],
+            [34, -35],
           ],
           [
             [40, 41],
             [42, 43],
             [44, 45],
-            [46, 47],
+            [46, -47],
           ],
         ],
       ]);
@@ -1034,15 +1072,17 @@ describe('MixedGeometryBatch', function () {
         'MultiLineString',
         multiLine.getFlatCoordinates(),
         multiLine.getEnds(),
+        2,
         {
           prop3: 'abcd',
           prop4: 'efgh',
         }
       );
       feature2 = new RenderFeature(
-        'MultiPolygon',
+        'Polygon',
         multiPolygon.getFlatCoordinates(),
-        multiPolygon.getEndss(),
+        multiPolygon.getEndss().flat(),
+        2,
         {
           prop3: 'uvw',
           prop4: 'xyz',
@@ -1052,6 +1092,7 @@ describe('MixedGeometryBatch', function () {
         'MultiPoint',
         multiPoint.getFlatCoordinates(),
         multiPoint.getPoints().map((p, i) => i + 1),
+        2,
         {
           prop3: 'uvw',
           prop4: 'xyz',
@@ -1071,10 +1112,10 @@ describe('MixedGeometryBatch', function () {
         expect(mixedBatch.polygonBatch.entries[uid2]).to.eql({
           feature: feature2,
           flatCoordss: [
-            [0, 1, 2, 3, 4, 5, 6, 7, 20, 21, 22, 23, 24, 25],
+            [0, 1, 2, 3, 4, 5, -6, 7, 20, 21, 22, 23, 24, -25],
             [
-              8, 9, 10, 11, 12, 13, 30, 31, 32, 33, 34, 35, 40, 41, 42, 43, 44,
-              45, 46, 47,
+              8, 9, 10, 11, -12, 13, 30, 31, 32, 33, 34, -35, 40, 41, 42, 43,
+              44, 45, 46, -47,
             ],
           ],
           verticesCount: 17,
@@ -1083,6 +1124,7 @@ describe('MixedGeometryBatch', function () {
             [4, 3],
             [3, 3, 4],
           ],
+          ref: 2,
         });
       });
       it('puts the polygon rings and linestrings in the linestring batch', () => {
@@ -1093,17 +1135,19 @@ describe('MixedGeometryBatch', function () {
             [8, 9, 10, 11, 12, 13],
           ],
           verticesCount: 7,
+          ref: 1,
         });
         expect(mixedBatch.lineStringBatch.entries[uid2]).to.eql({
           feature: feature2,
           flatCoordss: [
-            [0, 1, 2, 3, 4, 5, 6, 7],
-            [20, 21, 22, 23, 24, 25],
-            [8, 9, 10, 11, 12, 13],
-            [30, 31, 32, 33, 34, 35],
-            [40, 41, 42, 43, 44, 45, 46, 47],
+            [0, 1, 2, 3, 4, 5, -6, 7],
+            [20, 21, 22, 23, 24, -25],
+            [8, 9, 10, 11, -12, 13],
+            [30, 31, 32, 33, 34, -35],
+            [40, 41, 42, 43, 44, 45, 46, -47],
           ],
           verticesCount: 17,
+          ref: 2,
         });
       });
       it('computes the aggregated metrics on all polygons', () => {

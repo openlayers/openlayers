@@ -296,7 +296,7 @@ class SimpleGeometry extends Geometry {
  * @param {number} stride Stride.
  * @return {import("./Geometry.js").GeometryLayout} layout Layout.
  */
-function getLayoutForStride(stride) {
+export function getLayoutForStride(stride) {
   let layout;
   if (stride == 2) {
     layout = 'XY';

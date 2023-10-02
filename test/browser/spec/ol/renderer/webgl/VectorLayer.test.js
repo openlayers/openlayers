@@ -15,6 +15,7 @@ import {
   Projection,
   get as getProjection,
 } from '../../../../../../src/ol/proj.js';
+import {ShaderBuilder} from '../../../../../../src/ol/webgl/ShaderBuilder.js';
 import {create} from '../../../../../../src/ol/transform.js';
 import {getUid} from '../../../../../../src/ol/util.js';
 
@@ -29,28 +30,11 @@ const SAMPLE_STYLE2 = {
   'circle-fill-color': 'red',
 };
 
-const SAMPLE_VERTEX_SHADER = `
-void main(void) {
-  gl_Position = vec4(1.0);
-}`;
-const SAMPLE_FRAGMENT_SHADER = `
-void main(void) {
-  gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-}`;
-
 const SAMPLE_SHADERS = {
-  fill: {
-    fragment: SAMPLE_FRAGMENT_SHADER,
-    vertex: SAMPLE_VERTEX_SHADER,
-  },
-  stroke: {
-    fragment: SAMPLE_FRAGMENT_SHADER,
-    vertex: SAMPLE_VERTEX_SHADER,
-  },
-  symbol: {
-    fragment: SAMPLE_FRAGMENT_SHADER,
-    vertex: SAMPLE_VERTEX_SHADER,
-  },
+  builder: new ShaderBuilder()
+    .setFillColorExpression('vec4(1.0)')
+    .setStrokeColorExpression('vec4(1.0)')
+    .setSymbolColorExpression('vec4(1.0)'),
   attributes: {
     attr1: {
       callback: () => 456,
@@ -211,6 +195,9 @@ describe('ol/renderer/webgl/VectorLayer', function () {
 
   describe('source changes', () => {
     beforeEach(() => {
+      // first call prepareFrame to load initial data
+      renderer.prepareFrame(frameState);
+
       sinon.spy(renderer.batch_, 'addFeature');
       sinon.spy(renderer.batch_, 'removeFeature');
       sinon.spy(renderer.batch_, 'changeFeature');
@@ -305,6 +292,8 @@ describe('ol/renderer/webgl/VectorLayer', function () {
   });
 
   describe('#renderFrame', () => {
+    const withHit = 2;
+
     beforeEach(async () => {
       // call once without tracking in order to initialize helper
       renderer.prepareFrame(frameState);
@@ -345,7 +334,7 @@ describe('ol/renderer/webgl/VectorLayer', function () {
       const calls = renderer.helper.setUniformMatrixValue
         .getCalls()
         .filter((c) => c.args[0] === 'u_projectionMatrix');
-      expect(calls.length).to.be(6);
+      expect(calls.length).to.be(6 * withHit);
       expect(calls[0].args).to.eql([
         'u_projectionMatrix',
         // 0.5   0     0     0      combination of:
@@ -360,7 +349,7 @@ describe('ol/renderer/webgl/VectorLayer', function () {
       const calls = renderer.helper.setUniformMatrixValue
         .getCalls()
         .filter((c) => c.args[0] === 'u_screenToWorldMatrix');
-      expect(calls.length).to.be(6);
+      expect(calls.length).to.be(6 * withHit);
       expect(calls[1].args).to.eql([
         'u_screenToWorldMatrix',
         // 2     0     0     0      invert of u_projectionMatrix
@@ -371,8 +360,8 @@ describe('ol/renderer/webgl/VectorLayer', function () {
       ]);
     });
     it('calls render once for each renderer', () => {
-      expect(renderer.styleRenderers_[0].render.callCount).to.be(1);
-      expect(renderer.styleRenderers_[1].render.callCount).to.be(1);
+      expect(renderer.styleRenderers_[0].render.callCount).to.be(1 * withHit);
+      expect(renderer.styleRenderers_[1].render.callCount).to.be(1 * withHit);
     });
     it('calls helper.prepareDraw once', () => {
       expect(renderer.helper.prepareDraw.calledOnce).to.eql(true);
@@ -401,14 +390,16 @@ describe('ol/renderer/webgl/VectorLayer', function () {
         renderer.renderFrame(frameState);
       });
       it('calls render three times for each renderer', () => {
-        expect(renderer.styleRenderers_[0].render.callCount).to.be(3);
-        expect(renderer.styleRenderers_[1].render.callCount).to.be(3);
+        expect(renderer.styleRenderers_[0].render.callCount).to.be(3 * withHit);
+        expect(renderer.styleRenderers_[1].render.callCount).to.be(3 * withHit);
       });
     });
   });
 
   describe('#dispose', () => {
     beforeEach(() => {
+      // first call prepareFrame to load initial data and register listeners
+      renderer.prepareFrame(frameState);
       sinon.spy(vectorSource, 'removeEventListener');
       renderer.dispose();
     });

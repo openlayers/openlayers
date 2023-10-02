@@ -5,6 +5,7 @@ import WebGLArrayBuffer from '../../webgl/Buffer.js';
 import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
 import {AttributeType} from '../../webgl/Helper.js';
 import {WebGLWorkerMessageType} from './constants.js';
+import {colorEncodeId} from './utils.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
@@ -18,6 +19,7 @@ import {
 } from './renderinstructions.js';
 import {parseLiteralStyle} from '../../webgl/styleparser.js';
 
+const tmpColor = [];
 const WEBGL_WORKER = createWebGLWorker();
 let workerMessageCounter = 0;
 
@@ -41,7 +43,7 @@ export const Attributes = {
  * for each feature.
  * @property {number} [size] Amount of numerical values composing the attribute, either 1, 2, 3 or 4; in case size is > 1, the return value
  * of the callback should be an array; if unspecified, assumed to be a single float value
- * @property {function(import("../../Feature").FeatureLike):number|Array<number>} callback This callback computes the numerical value of the
+ * @property {function(this:import("./MixedGeometryBatch.js").GeometryBatchItem, import("../../Feature").FeatureLike):number|Array<number>} callback This callback computes the numerical value of the
  * attribute for a given feature.
  */
 
@@ -73,9 +75,7 @@ export const Attributes = {
 
 /**
  * @typedef {Object} StyleShaders
- * @property {ShaderProgram} [fill] Shaders for filling polygons.
- * @property {ShaderProgram} [stroke] Shaders for line strings and polygon strokes.
- * @property {ShaderProgram} [symbol] Shaders for symbols.
+ * @property {import("../../webgl/ShaderBuilder.js").ShaderBuilder} builder Shader builder with the appropriate presets.
  * @property {AttributeDefinitions} [attributes] Custom attributes made available in the vertex shaders.
  * Default shaders rely on the attributes in {@link Attributes}.
  * @property {UniformDefinitions} [uniforms] Additional uniforms usable in shaders.
@@ -93,7 +93,8 @@ export const Attributes = {
  * A layer renderer will typically maintain several of these in order to have several styles rendered separately.
  *
  * A VectorStyleRenderer instance can be created either from a literal style or from shaders using either
- * `VectorStyleRenderer.fromStyle` or `VectorStyleRenderer.fromShaders`.
+ * `VectorStyleRenderer.fromStyle` or `VectorStyleRenderer.fromShaders`. The shaders should not be provided explicitly
+ * but instead as a preconfigured ShaderBuilder instance.
  *
  * The `generateBuffers` method returns a promise resolving to WebGL buffers that are intended to be rendered by the
  * same renderer.
@@ -102,17 +103,14 @@ class VectorStyleRenderer {
   /**
    * @param {VectorStyle} styleOrShaders Literal style or custom shaders
    * @param {import('../../webgl/Helper.js').default} helper Helper
+   * @param {boolean} enableHitDetection Whether to enable the hit detection (needs compatible shader)
    */
-  constructor(styleOrShaders, helper) {
+  constructor(styleOrShaders, helper, enableHitDetection) {
     this.helper_ = helper;
 
+    this.hitDetectionEnabled_ = enableHitDetection;
     let shaders = /** @type {StyleShaders} */ (styleOrShaders);
-
-    // TODO: improve discrimination between shaders and style
-    const isShaders =
-      'fill' in styleOrShaders ||
-      'stroke' in styleOrShaders ||
-      ('symbol' in styleOrShaders && 'vertex' in styleOrShaders.symbol);
+    const isShaders = 'builder' in styleOrShaders;
     if (!isShaders) {
       const parseResult = parseLiteralStyle(
         /** @type {import('../../style/literal.js').LiteralStyle} */ (
@@ -120,18 +118,7 @@ class VectorStyleRenderer {
         )
       );
       shaders = {
-        fill: {
-          vertex: parseResult.builder.getFillVertexShader(),
-          fragment: parseResult.builder.getFillFragmentShader(),
-        },
-        stroke: {
-          vertex: parseResult.builder.getStrokeVertexShader(),
-          fragment: parseResult.builder.getStrokeFragmentShader(),
-        },
-        symbol: {
-          vertex: parseResult.builder.getSymbolVertexShader(),
-          fragment: parseResult.builder.getSymbolFragmentShader(),
-        },
+        builder: parseResult.builder,
         attributes: parseResult.attributes,
         uniforms: parseResult.uniforms,
       };
@@ -141,10 +128,10 @@ class VectorStyleRenderer {
      * @type {boolean}
      * @private
      */
-    this.hasFill_ = !!shaders.fill?.vertex;
+    this.hasFill_ = !!shaders.builder.getFillVertexShader();
     if (this.hasFill_) {
-      this.fillVertexShader_ = shaders.fill.vertex;
-      this.fillFragmentShader_ = shaders.fill.fragment;
+      this.fillVertexShader_ = shaders.builder.getFillVertexShader();
+      this.fillFragmentShader_ = shaders.builder.getFillFragmentShader();
       this.fillProgram_ = this.helper_.getProgram(
         this.fillFragmentShader_,
         this.fillVertexShader_
@@ -155,10 +142,10 @@ class VectorStyleRenderer {
      * @type {boolean}
      * @private
      */
-    this.hasStroke_ = !!shaders.stroke?.vertex;
+    this.hasStroke_ = !!shaders.builder.getStrokeVertexShader();
     if (this.hasStroke_) {
-      this.strokeVertexShader_ = shaders.stroke && shaders.stroke.vertex;
-      this.strokeFragmentShader_ = shaders.stroke && shaders.stroke.fragment;
+      this.strokeVertexShader_ = shaders.builder.getStrokeVertexShader();
+      this.strokeFragmentShader_ = shaders.builder.getStrokeFragmentShader();
       this.strokeProgram_ = this.helper_.getProgram(
         this.strokeFragmentShader_,
         this.strokeVertexShader_
@@ -169,23 +156,38 @@ class VectorStyleRenderer {
      * @type {boolean}
      * @private
      */
-    this.hasSymbol_ = !!shaders.symbol?.vertex;
+    this.hasSymbol_ = !!shaders.builder.getSymbolVertexShader();
     if (this.hasSymbol_) {
-      this.symbolVertexShader_ = shaders.symbol && shaders.symbol.vertex;
-      this.symbolFragmentShader_ = shaders.symbol && shaders.symbol.fragment;
+      this.symbolVertexShader_ = shaders.builder.getSymbolVertexShader();
+      this.symbolFragmentShader_ = shaders.builder.getSymbolFragmentShader();
       this.symbolProgram_ = this.helper_.getProgram(
         this.symbolFragmentShader_,
         this.symbolVertexShader_
       );
     }
 
-    this.customAttributes_ = shaders.attributes;
+    const hitDetectionAttributes = this.hitDetectionEnabled_
+      ? {
+          hitColor: {
+            callback() {
+              return colorEncodeId(this.ref, tmpColor);
+            },
+            size: 4,
+          },
+        }
+      : {};
+
+    this.customAttributes_ = Object.assign(
+      {},
+      hitDetectionAttributes,
+      shaders.attributes
+    );
     this.uniforms_ = shaders.uniforms;
 
-    const customAttributesDesc = Object.keys(this.customAttributes_).map(
-      (name) => ({
+    const customAttributesDesc = Object.entries(this.customAttributes_).map(
+      ([name, value]) => ({
         name: `a_${name}`,
-        size: this.customAttributes_[name].size || 1,
+        size: value.size || 1,
         type: AttributeType.FLOAT,
       })
     );
@@ -470,12 +472,15 @@ class VectorStyleRenderer {
     frameState,
     preRenderCallback
   ) {
+    const renderCount = indicesBuffer.getSize();
+    if (renderCount === 0) {
+      return;
+    }
     this.helper_.useProgram(program, frameState);
     this.helper_.bindBuffer(verticesBuffer);
     this.helper_.bindBuffer(indicesBuffer);
     this.helper_.enableAttributes(attributes);
     preRenderCallback();
-    const renderCount = indicesBuffer.getSize();
     this.helper_.drawElements(0, renderCount);
   }
 }

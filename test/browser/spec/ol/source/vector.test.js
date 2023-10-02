@@ -4,6 +4,7 @@ import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import Map from '../../../../../src/ol/Map.js';
 import Point from '../../../../../src/ol/geom/Point.js';
+import RenderFeature from '../../../../../src/ol/render/Feature.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
 import View from '../../../../../src/ol/View.js';
@@ -17,7 +18,7 @@ import {
 import {getUid} from '../../../../../src/ol/util.js';
 import {listen} from '../../../../../src/ol/events.js';
 
-describe('ol.source.Vector', function () {
+describe('ol/source/Vector', function () {
   let pointFeature;
   let infiniteExtent;
   beforeEach(function () {
@@ -106,6 +107,16 @@ describe('ol.source.Vector', function () {
         source.addFeature(feature1);
         source.addFeature(feature2);
         expect(source.getFeatures().length).to.be(1);
+      });
+
+      it('Render features with the same id are gathered in an array', function () {
+        const source = new VectorSource();
+        const feature1 = new RenderFeature('Point', [1, 1], [], 2, {}, 1);
+        const feature2 = new RenderFeature('Point', [2, 2], [], 2, {}, 1);
+        source.addFeature(feature1);
+        source.addFeature(feature2);
+        expect(source.getFeatures().length).to.be(2);
+        expect(source.getFeatureById(1)).to.eql([feature1, feature2]);
       });
     });
 

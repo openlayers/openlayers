@@ -18,6 +18,7 @@ import {
   newParsingContext,
 } from '../../expr/expression.js';
 import {buildExpression, newEvaluationContext} from '../../expr/cpu.js';
+import {isEmpty} from '../../obj.js';
 import {toSize} from '../../size.js';
 
 /**
@@ -108,9 +109,15 @@ export function flatStylesToStyleFunction(flatStyles) {
   return function (feature, resolution) {
     evaluationContext.properties = feature.getPropertiesInternal();
     evaluationContext.resolution = resolution;
+    let nonNullCount = 0;
     for (let i = 0; i < length; ++i) {
-      styles[i] = evaluators[i](evaluationContext);
+      const style = evaluators[i](evaluationContext);
+      if (style) {
+        styles[nonNullCount] = style;
+        nonNullCount += 1;
+      }
     }
+    styles.length = nonNullCount;
     return styles;
   };
 }
@@ -207,6 +214,21 @@ export function buildStyle(flatStyle, context) {
   const evaluateText = buildText(flatStyle, context);
   const evaluateImage = buildImage(flatStyle, context);
   const evaluateZIndex = numberEvaluator(flatStyle, 'z-index', context);
+
+  if (
+    !evaluateFill &&
+    !evaluateStroke &&
+    !evaluateText &&
+    !evaluateImage &&
+    !isEmpty(flatStyle)
+  ) {
+    // assume this is a user error
+    // would be nice to check the properties and suggest "did you mean..."
+    throw new Error(
+      'No fill, stroke, point, or text symbolizer properties in style: ' +
+        JSON.stringify(flatStyle)
+    );
+  }
 
   const style = new Style();
   return function (context) {

@@ -2,7 +2,7 @@ import Fill from '../../../../../src/ol/style/Fill.js';
 import RegularShape from '../../../../../src/ol/style/RegularShape.js';
 import Stroke from '../../../../../src/ol/style/Stroke.js';
 
-describe('ol.style.RegularShape', function () {
+describe('ol/style/RegularShape', function () {
   describe('#constructor', function () {
     it('can use rotateWithView', function () {
       const style = new RegularShape({

@@ -152,6 +152,47 @@ describe('ol/source/ImageWMS', function () {
       expect(uri.hash.replace('#', '')).to.be.empty();
     });
 
+    it('sets CRS to match the projection', function () {
+      const source = new ImageWMS(options);
+      const image1 = source.getImage(
+        extent,
+        resolution,
+        pixelRatio,
+        projection
+      );
+      image1.load();
+      const uri1 = new URL(image1.getImage().src);
+      const queryData1 = uri1.searchParams;
+      expect(queryData1.get('BBOX')).to.be('20,10,40,30');
+      expect(queryData1.get('CRS')).to.be('EPSG:4326');
+
+      const projection2 = getProjection('EPSG:3857');
+      const image2 = source.getImage(
+        extent,
+        resolution,
+        pixelRatio,
+        projection2
+      );
+      image2.load();
+      const uri2 = new URL(image2.getImage().src);
+      const queryData2 = uri2.searchParams;
+      expect(queryData2.get('BBOX')).to.be('10,20,30,40');
+      expect(queryData2.get('CRS')).to.be('EPSG:3857');
+
+      const projection3 = getProjection('EPSG:900913');
+      const image3 = source.getImage(
+        extent,
+        resolution,
+        pixelRatio,
+        projection3
+      );
+      image3.load();
+      const uri3 = new URL(image3.getImage().src);
+      const queryData3 = uri3.searchParams;
+      expect(queryData3.get('BBOX')).to.be('10,20,30,40');
+      expect(queryData3.get('CRS')).to.be('EPSG:900913');
+    });
+
     it('sets the SRS query value instead of CRS if version < 1.3', function () {
       options.params.VERSION = '1.2';
       const source = new ImageWMS(options);

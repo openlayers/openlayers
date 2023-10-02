@@ -178,6 +178,12 @@ class ImageSource extends Source {
      * @type {boolean}
      */
     this.static_ = options.loader ? options.loader.length === 0 : false;
+
+    /**
+     * @private
+     * @type {import("../proj/Projection.js").default}
+     */
+    this.wantedProjection_ = null;
   }
 
   /**
@@ -272,9 +278,10 @@ class ImageSource extends Source {
       if (
         this.image &&
         (this.static_ ||
-          (((this.wantedExtent_ &&
-            containsExtent(this.wantedExtent_, requestExtent)) ||
-            containsExtent(this.image.getExtent(), requestExtent)) &&
+          (this.wantedProjection_ === projection &&
+            ((this.wantedExtent_ &&
+              containsExtent(this.wantedExtent_, requestExtent)) ||
+              containsExtent(this.image.getExtent(), requestExtent)) &&
             ((this.wantedResolution_ &&
               fromResolutionLike(this.wantedResolution_) ===
                 requestResolution) ||
@@ -283,6 +290,7 @@ class ImageSource extends Source {
       ) {
         return this.image;
       }
+      this.wantedProjection_ = projection;
       this.wantedExtent_ = requestExtent;
       this.wantedResolution_ = requestResolution;
       this.image = new ImageWrapper(

@@ -23,7 +23,7 @@ import {listen, unlistenByKey} from './events.js';
  */
 
 /***
- * @template Geometry
+ * @template {import("./geom/Geometry.js").default} [Geometry=import("./geom/Geometry.js").default]
  * @typedef {Object<string, *> & { geometry?: Geometry }} ObjectWithGeometry
  */
 
