@@ -46,7 +46,7 @@ export function asString(color) {
  * @param {string} color Named color.
  * @return {string} Rgb string.
  */
-function fromNamed(color) {
+export function fromNamed(color) {
   const el = document.createElement('div');
   el.style.color = color;
   if (el.style.color !== '') {
