@@ -21,21 +21,21 @@ describe('ol/expr/expression.js', () => {
     it('parses a literal boolean', () => {
       const expression = parse(true, newParsingContext());
       expect(expression).to.be.a(LiteralExpression);
-      expect(isType(expression.type, BooleanType));
+      expect(isType(expression.type, BooleanType)).to.be(true);
       expect(expression.value).to.be(true);
     });
 
     it('parses a literal string', () => {
       const expression = parse('foo', newParsingContext());
       expect(expression).to.be.a(LiteralExpression);
-      expect(isType(expression.type, StringType));
+      expect(isType(expression.type, StringType)).to.be(true);
       expect(expression.value).to.be('foo');
     });
 
     it('parses a literal number', () => {
       const expression = parse(42, newParsingContext());
       expect(expression).to.be.a(LiteralExpression);
-      expect(isType(expression.type, NumberType));
+      expect(isType(expression.type, NumberType)).to.be(true);
       expect(expression.value).to.be(42);
     });
 
@@ -58,7 +58,7 @@ describe('ol/expr/expression.js', () => {
       const expression = parse(['get', 'foo'], context);
       expect(expression).to.be.a(CallExpression);
       expect(expression.operator).to.be('get');
-      expect(isType(expression.type, AnyType));
+      expect(isType(expression.type, AnyType)).to.be(true);
       expect(context.properties.has('foo')).to.be(true);
     });
 
@@ -67,7 +67,7 @@ describe('ol/expr/expression.js', () => {
       const expression = parse(['var', 'foo'], context);
       expect(expression).to.be.a(CallExpression);
       expect(expression.operator).to.be('var');
-      expect(isType(expression.type, AnyType));
+      expect(isType(expression.type, AnyType)).to.be(true);
       expect(context.variables.has('foo')).to.be(true);
     });
 
@@ -98,11 +98,26 @@ describe('ol/expr/expression.js', () => {
       const expression = parse(['==', ['get', 'foo'], 'bar'], context);
       expect(expression).to.be.a(CallExpression);
       expect(expression.operator).to.be('==');
-      expect(isType(expression.type, BooleanType));
+      expect(isType(expression.type, BooleanType)).to.be(true);
       expect(expression.args).to.have.length(2);
       expect(expression.args[0]).to.be.a(CallExpression);
       expect(expression.args[1]).to.be.a(LiteralExpression);
       expect(context.properties.has('foo')).to.be(true);
+    });
+
+    it('parses a * expression, narrows argument types', () => {
+      const context = newParsingContext();
+      const expression = parse(
+        ['*', ['get', 'foo'], 'red', [255, 0, 0, 1]],
+        context
+      );
+      expect(expression).to.be.a(CallExpression);
+      expect(expression.operator).to.be('*');
+      expect(isType(expression.type, ColorType)).to.be(true);
+      expect(expression.args).to.have.length(3);
+      expect(isType(expression.args[0].type, ColorType)).to.be(true);
+      expect(isType(expression.args[1].type, ColorType)).to.be(true);
+      expect(isType(expression.args[2].type, ColorType)).to.be(true);
     });
   });
 

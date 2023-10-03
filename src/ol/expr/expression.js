@@ -153,6 +153,9 @@ export function parse(encoded, context, typeHint) {
       if (isStringColor(encoded)) {
         type |= ColorType;
       }
+      if (typeHint) {
+        type &= typeHint;
+      }
       return new LiteralExpression(type, encoded);
     }
     default: {
@@ -182,7 +185,9 @@ export function parse(encoded, context, typeHint) {
   if (encoded.length === 3 || encoded.length === 4) {
     type |= ColorType;
   }
-
+  if (typeHint) {
+    type &= typeHint;
+  }
   return new LiteralExpression(type, encoded);
 }
 
