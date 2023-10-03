@@ -3,13 +3,20 @@
  */
 
 import {
+  ColorType,
   LiteralExpression,
   Ops,
   overlapsType,
   parse,
   typeName,
 } from './expression.js';
-import {lchaToRgba, normalize, rgbaToLcha, withAlpha} from '../color.js';
+import {
+  fromString,
+  lchaToRgba,
+  normalize,
+  rgbaToLcha,
+  withAlpha,
+} from '../color.js';
 
 /**
  * @fileoverview This module includes functions to build expressions for evaluation on the CPU.
@@ -96,6 +103,13 @@ export function buildExpression(encoded, type, context) {
  */
 function compileExpression(expression, context) {
   if (expression instanceof LiteralExpression) {
+    // convert colors to array if possible
+    if (expression.type === ColorType && typeof expression.value === 'string') {
+      const colorValue = fromString(expression.value);
+      return function () {
+        return colorValue;
+      };
+    }
     return function () {
       return expression.value;
     };

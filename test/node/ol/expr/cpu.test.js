@@ -501,15 +501,7 @@ describe('ol/expr/cpu.js', () => {
       {
         name: 'interpolate (linear color)',
         type: ColorType,
-        expression: [
-          'interpolate',
-          ['linear'],
-          0.5,
-          0,
-          [255, 0, 0],
-          1,
-          [0, 255, 0],
-        ],
+        expression: ['interpolate', ['linear'], 0.5, 0, 'red', 1, [0, 255, 0]],
         expected: [219, 170, 0, 1],
       },
     ];
