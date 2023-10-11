@@ -41,7 +41,7 @@ const style = {
   filter: [
     'any',
     ['==', ['var', 'filterShape'], 'all'],
-    ['==', ['var', 'filterShape'], ['get', 'shape', 'string']],
+    ['==', ['var', 'filterShape'], ['get', 'shape']],
   ],
   'icon-src': 'data/ufo_shapes.png',
   'icon-width': 128,
