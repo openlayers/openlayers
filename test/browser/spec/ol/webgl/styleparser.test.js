@@ -37,19 +37,19 @@ describe('ol.webgl.styleparser', () => {
         `float ${lowerUniformName}`,
         `float ${higherUniformName}`,
       ]);
-      expect(result.builder.attributes_).to.eql(['float a_population']);
+      expect(result.builder.attributes_).to.eql(['float a_prop_population']);
       expect(result.builder.varyings_).to.eql([
         {
-          name: 'v_population',
+          name: 'v_prop_population',
           type: 'float',
-          expression: 'a_population',
+          expression: 'a_prop_population',
         },
       ]);
       expect(result.builder.symbolColorExpression_).to.eql(
-        'vec4(0.2, 0.4, 0.6, 1.0) * (1.0 - smoothstep(-0.63, 0.58, circleDistanceField(coordsPx, mix(4.0, 8.0, clamp((v_population - u_var_lower) / (u_var_higher - u_var_lower), 0.0, 1.0))))) * 0.5'
+        'vec4(0.2, 0.4, 0.6, 1.0) * (1.0 - smoothstep(-0.63, 0.58, circleDistanceField(coordsPx, mix(4.0, 8.0, clamp((v_prop_population - u_var_lower) / (u_var_higher - u_var_lower), 0.0, 1.0))))) * 0.5'
       );
       expect(result.builder.symbolSizeExpression_).to.eql(
-        `vec2(mix(4.0, 8.0, clamp((a_population - u_var_lower) / (u_var_higher - u_var_lower), 0.0, 1.0)) * 2. + 0.5)`
+        `vec2(mix(4.0, 8.0, clamp((a_prop_population - u_var_lower) / (u_var_higher - u_var_lower), 0.0, 1.0)) * 2. + 0.5)`
       );
       expect(Object.keys(result.attributes).length).to.eql(1);
       expect(result.attributes).to.have.property('population');
@@ -64,12 +64,12 @@ describe('ol.webgl.styleparser', () => {
         'circle-fill-color': '#336699',
       });
 
-      expect(result.builder.attributes_).to.eql(['float a_attr0']);
+      expect(result.builder.attributes_).to.eql(['float a_prop_attr0']);
       expect(result.builder.varyings_).to.eql([
         {
-          name: 'v_attr0',
+          name: 'v_prop_attr0',
           type: 'float',
-          expression: 'a_attr0',
+          expression: 'a_prop_attr0',
         },
       ]);
       expect(result.builder.symbolColorExpression_).to.eql(
@@ -79,7 +79,7 @@ describe('ol.webgl.styleparser', () => {
         'vec2(6.0 * 2. + 0.5)'
       );
       expect(result.builder.discardExpression_).to.eql(
-        '!(v_attr0 >= 0.0 && v_attr0 <= 10.0)'
+        '!(v_prop_attr0 >= 0.0 && v_prop_attr0 <= 10.0)'
       );
       expect(Object.keys(result.attributes).length).to.eql(1);
       expect(result.attributes).to.have.property('attr0');
@@ -119,33 +119,33 @@ describe('ol.webgl.styleparser', () => {
         it('sets up builder accordingly', () => {
           expect(result.builder.uniforms_).to.eql([]);
           expect(result.builder.attributes_).to.eql([
-            'float a_attr1',
-            'float a_heading',
-            'vec2 a_color1',
-            'vec2 a_color2',
+            'float a_prop_attr1',
+            'float a_prop_heading',
+            'vec2 a_prop_color1',
+            'vec2 a_prop_color2',
           ]);
           expect(result.builder.varyings_).to.eql([
             {
-              expression: 'unpackColor(a_color1)',
-              name: 'v_color1',
+              expression: 'unpackColor(a_prop_color1)',
+              name: 'v_prop_color1',
               type: 'vec4',
             },
             {
-              expression: 'unpackColor(a_color2)',
-              name: 'v_color2',
+              expression: 'unpackColor(a_prop_color2)',
+              name: 'v_prop_color2',
               type: 'vec4',
             },
             {
-              expression: 'a_attr1',
-              name: 'v_attr1',
+              expression: 'a_prop_attr1',
+              name: 'v_prop_attr1',
               type: 'float',
             },
           ]);
           expect(result.builder.symbolColorExpression_).to.eql(
-            'mix(v_color2, v_color1, smoothstep(-(3.0 + 4.0) + 0.63, -(3.0 + 4.0) - 0.58, circleDistanceField(coordsPx / vec2(1.5, 1.7), (v_attr1 + (3.0 + 4.0) * 0.5)))) * (1.0 - smoothstep(-0.63, 0.58, circleDistanceField(coordsPx / vec2(1.5, 1.7), (v_attr1 + (3.0 + 4.0) * 0.5)))) * (0.5 * 0.75)'
+            'mix(v_prop_color2, v_prop_color1, smoothstep(-(3.0 + 4.0) + 0.63, -(3.0 + 4.0) - 0.58, circleDistanceField(coordsPx / vec2(1.5, 1.7), (v_prop_attr1 + (3.0 + 4.0) * 0.5)))) * (1.0 - smoothstep(-0.63, 0.58, circleDistanceField(coordsPx / vec2(1.5, 1.7), (v_prop_attr1 + (3.0 + 4.0) * 0.5)))) * (0.5 * 0.75)'
           );
           expect(result.builder.symbolSizeExpression_).to.eql(
-            'vec2((a_attr1 + (3.0 + 4.0) * 0.5) * 2. + 0.5) * vec2(1.5, 1.7)'
+            'vec2((a_prop_attr1 + (3.0 + 4.0) * 0.5) * 2. + 0.5) * vec2(1.5, 1.7)'
           );
           expect(result.builder.symbolOffsetExpression_).to.eql(
             'vec2(-2.0, 1.0)'
@@ -223,33 +223,33 @@ describe('ol.webgl.styleparser', () => {
         it('sets up builder accordingly', () => {
           expect(result.builder.uniforms_).to.eql([]);
           expect(result.builder.attributes_).to.eql([
-            'float a_attr1',
-            'float a_heading',
-            'vec2 a_color1',
-            'vec2 a_color2',
+            'float a_prop_attr1',
+            'float a_prop_heading',
+            'vec2 a_prop_color1',
+            'vec2 a_prop_color2',
           ]);
           expect(result.builder.varyings_).to.eql([
             {
-              expression: 'unpackColor(a_color1)',
-              name: 'v_color1',
+              expression: 'unpackColor(a_prop_color1)',
+              name: 'v_prop_color1',
               type: 'vec4',
             },
             {
-              expression: 'unpackColor(a_color2)',
-              name: 'v_color2',
+              expression: 'unpackColor(a_prop_color2)',
+              name: 'v_prop_color2',
               type: 'vec4',
             },
             {
-              expression: 'a_attr1',
-              name: 'v_attr1',
+              expression: 'a_prop_attr1',
+              name: 'v_prop_attr1',
               type: 'float',
             },
           ]);
           expect(result.builder.symbolColorExpression_).to.eql(
-            'mix(v_color2, v_color1, smoothstep(-(3.0 + 4.0) + 0.63, -(3.0 + 4.0) - 0.58, starDistanceField(coordsPx / vec2(1.5, 1.7), (10.0 - 3.0), (2.0 * 5.0) + (3.0 + 4.0) * 0.5, v_attr1 + (3.0 + 4.0) * 0.5, (0.5 * 3.141592653589793)))) * (1.0 - smoothstep(-0.63, 0.58, starDistanceField(coordsPx / vec2(1.5, 1.7), (10.0 - 3.0), (2.0 * 5.0) + (3.0 + 4.0) * 0.5, v_attr1 + (3.0 + 4.0) * 0.5, (0.5 * 3.141592653589793)))) * (0.5 * 0.75)'
+            'mix(v_prop_color2, v_prop_color1, smoothstep(-(3.0 + 4.0) + 0.63, -(3.0 + 4.0) - 0.58, starDistanceField(coordsPx / vec2(1.5, 1.7), (10.0 - 3.0), (2.0 * 5.0) + (3.0 + 4.0) * 0.5, v_prop_attr1 + (3.0 + 4.0) * 0.5, (0.5 * 3.141592653589793)))) * (1.0 - smoothstep(-0.63, 0.58, starDistanceField(coordsPx / vec2(1.5, 1.7), (10.0 - 3.0), (2.0 * 5.0) + (3.0 + 4.0) * 0.5, v_prop_attr1 + (3.0 + 4.0) * 0.5, (0.5 * 3.141592653589793)))) * (0.5 * 0.75)'
           );
           expect(result.builder.symbolSizeExpression_).to.eql(
-            'vec2((a_attr1 + (3.0 + 4.0) * 0.5) * 2. + 0.5) * vec2(1.5, 1.7)'
+            'vec2((a_prop_attr1 + (3.0 + 4.0) * 0.5) * 2. + 0.5) * vec2(1.5, 1.7)'
           );
           expect(result.builder.symbolOffsetExpression_).to.eql(
             'vec2(-2.0, 1.0)'
@@ -346,19 +346,19 @@ describe('ol.webgl.styleparser', () => {
             `sampler2D u_texture${uid}`,
           ]);
           expect(result.builder.attributes_).to.eql([
-            'float a_attr1',
-            'float a_heading',
-            'vec2 a_color1',
+            'float a_prop_attr1',
+            'float a_prop_heading',
+            'vec2 a_prop_color1',
           ]);
           expect(result.builder.varyings_).to.eql([
             {
-              expression: 'unpackColor(a_color1)',
-              name: 'v_color1',
+              expression: 'unpackColor(a_prop_color1)',
+              name: 'v_prop_color1',
               type: 'vec4',
             },
           ]);
           expect(result.builder.symbolColorExpression_).to.eql(
-            `v_color1 * (0.5 * 0.75) * samplePremultiplied(u_texture${uid}, v_texCoord)`
+            `v_prop_color1 * (0.5 * 0.75) * samplePremultiplied(u_texture${uid}, v_texCoord)`
           );
           expect(result.builder.symbolSizeExpression_).to.eql(
             'vec2(30.0, 40.0) * vec2(1.5, 1.7)'
@@ -367,7 +367,7 @@ describe('ol.webgl.styleparser', () => {
             'vec2(-2.0, 1.0)'
           );
           expect(result.builder.texCoordExpression_).to.eql(
-            '(vec4((vec2(a_attr1, 20.0)).xyxy) + vec4(0., 0., vec2(30.0, 40.0))) / (vec2(10.0, 20.0)).xyxy'
+            '(vec4((vec2(a_prop_attr1, 20.0)).xyxy) + vec4(0., 0., vec2(30.0, 40.0))) / (vec2(10.0, 20.0)).xyxy'
           );
           expect(result.builder.symbolRotateWithView_).to.eql(true);
           expect(Object.keys(result.attributes).length).to.eql(3);
@@ -669,24 +669,24 @@ describe('ol.webgl.styleparser', () => {
             'float u_var_miterLimit',
           ]);
           expect(result.builder.attributes_).to.eql([
-            'float a_offset',
-            'float a_intensity',
-            'float a_size',
+            'float a_prop_offset',
+            'float a_prop_intensity',
+            'float a_prop_size',
           ]);
           expect(result.builder.varyings_).to.eql([
             {
-              name: 'v_intensity',
+              name: 'v_prop_intensity',
               type: 'float',
-              expression: 'a_intensity',
+              expression: 'a_prop_intensity',
             },
             {
-              name: 'v_size',
+              name: 'v_prop_size',
               type: 'float',
-              expression: 'a_size',
+              expression: 'a_prop_size',
             },
           ]);
           expect(result.builder.strokeColorExpression_).to.eql(
-            'mix(vec4(0.0, 0.0, 1.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), clamp((v_intensity - 0.0) / (1.0 - 0.0), 0.0, 1.0))'
+            'mix(vec4(0.0, 0.0, 1.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), clamp((v_prop_intensity - 0.0) / (1.0 - 0.0), 0.0, 1.0))'
           );
           expect(result.builder.strokeWidthExpression_).to.eql(
             '(u_var_width * 3.0)'
@@ -694,7 +694,7 @@ describe('ol.webgl.styleparser', () => {
           expect(result.builder.strokeCapExpression_).to.eql('u_var_capType');
           expect(result.builder.strokeJoinExpression_).to.eql('u_var_joinType');
           expect(result.builder.strokeOffsetExpression_).to.eql(
-            '(a_offset + 4.0)'
+            '(a_prop_offset + 4.0)'
           );
           expect(result.builder.strokeMiterLimitExpression_).to.eql(
             '(u_var_miterLimit - 10.0)'
@@ -716,10 +716,10 @@ describe('ol.webgl.styleparser', () => {
           );
           expect(result.builder.fragmentShaderFunctions_).to
             .contain(`float dashDistanceField_450289113(float distance, float radius, float capType) {
-  float dashLength0 = (v_size * 10.0);
-  float dashLength1 = (v_size * 20.0);
+  float dashLength0 = (v_prop_size * 10.0);
+  float dashLength1 = (v_prop_size * 20.0);
   float dashLength2 = 5.0;
-  float dashLength3 = (v_size * 20.0);
+  float dashLength3 = (v_prop_size * 20.0);
   float totalDashLength = dashLength0 + dashLength1 + dashLength2 + dashLength3;
   return min(getSingleDashDistance(distance, radius, 0., dashLength0, totalDashLength, capType), getSingleDashDistance(distance, radius, 0. + dashLength0 + dashLength1, dashLength2, totalDashLength, capType));
 }`);
@@ -745,16 +745,16 @@ describe('ol.webgl.styleparser', () => {
         });
 
         expect(result.builder.uniforms_).to.eql(['float u_var_scale']);
-        expect(result.builder.attributes_).to.eql(['float a_intensity']);
+        expect(result.builder.attributes_).to.eql(['float a_prop_intensity']);
         expect(result.builder.varyings_).to.eql([
           {
-            name: 'v_intensity',
+            name: 'v_prop_intensity',
             type: 'float',
-            expression: 'a_intensity',
+            expression: 'a_prop_intensity',
           },
         ]);
         expect(result.builder.fillColorExpression_).to.eql(
-          'mix(vec4(0.0, 0.0, 1.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), clamp(((v_intensity * u_var_scale) - 0.0) / (10.0 - 0.0), 0.0, 1.0))'
+          'mix(vec4(0.0, 0.0, 1.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), clamp(((v_prop_intensity * u_var_scale) - 0.0) / (10.0 - 0.0), 0.0, 1.0))'
         );
         expect(Object.keys(result.attributes).length).to.eql(1);
         expect(result.attributes).to.have.property('intensity');
@@ -788,24 +788,36 @@ describe('ol.webgl.styleparser', () => {
       });
       it('adds attributes to the shader builder', () => {
         expect(parseResult.builder.attributes_).to.eql([
-          'vec4 a_iconSize',
-          'float a_lineType',
-          'float a_lineWidth',
-          'vec2 a_color',
-          'vec2 a_fillColor',
-          'float a_transparent',
+          'vec4 a_prop_iconSize',
+          'float a_prop_lineType',
+          'float a_prop_lineWidth',
+          'vec2 a_prop_color',
+          'float a_prop_transparent',
+          'vec2 a_prop_fillColor',
         ]);
       });
       it('adds varyings to the shader builder', () => {
         expect(parseResult.builder.varyings_).to.eql([
-          {name: 'v_iconSize', type: 'vec4', expression: 'a_iconSize'},
-          {name: 'v_color', type: 'vec4', expression: 'unpackColor(a_color)'},
           {
-            name: 'v_fillColor',
+            name: 'v_prop_iconSize',
             type: 'vec4',
-            expression: 'unpackColor(a_fillColor)',
+            expression: 'a_prop_iconSize',
           },
-          {name: 'v_transparent', type: 'float', expression: 'a_transparent'},
+          {
+            name: 'v_prop_color',
+            type: 'vec4',
+            expression: 'unpackColor(a_prop_color)',
+          },
+          {
+            name: 'v_prop_transparent',
+            type: 'float',
+            expression: 'a_prop_transparent',
+          },
+          {
+            name: 'v_prop_fillColor',
+            type: 'vec4',
+            expression: 'unpackColor(a_prop_fillColor)',
+          },
         ]);
       });
       it('adds unpack color function to the shader builder', () => {
@@ -820,8 +832,8 @@ describe('ol.webgl.styleparser', () => {
           color: {size: 2, callback: {}},
           lineType: {size: 1, callback: {}},
           lineWidth: {size: 1, callback: {}},
-          fillColor: {size: 2, callback: {}},
           transparent: {size: 1, callback: {}},
+          fillColor: {size: 2, callback: {}},
         });
       });
       it('processes the feature attributes according to their types', () => {
@@ -892,8 +904,8 @@ describe('ol.webgl.styleparser', () => {
           'vec2 u_var_color',
           'float u_var_lineType',
           'float u_var_lineWidth',
-          'vec2 u_var_fillColor',
           'float u_var_transparent',
+          'vec2 u_var_fillColor',
         ]);
       });
       it('returns uniforms in the result', () => {
@@ -902,8 +914,8 @@ describe('ol.webgl.styleparser', () => {
           'u_var_color',
           'u_var_lineType',
           'u_var_lineWidth',
-          'u_var_fillColor',
           'u_var_transparent',
+          'u_var_fillColor',
         ]);
       });
       it('processes uniforms according to their types', () => {

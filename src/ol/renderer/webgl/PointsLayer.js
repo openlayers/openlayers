@@ -169,7 +169,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const customAttributes = options.attributes
       ? options.attributes.map(function (attribute) {
           return {
-            name: 'a_' + attribute.name,
+            name: 'a_prop_' + attribute.name,
             size: 1,
             type: AttributeType.FLOAT,
           };
