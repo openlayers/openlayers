@@ -131,6 +131,27 @@ export function newParsingContext() {
 }
 
 /**
+ * @param {string} typeHint Type hint
+ * @return {number} Resulting value type (will be a single type)
+ */
+function getTypeFromHint(typeHint) {
+  switch (typeHint) {
+    case 'string':
+      return StringType;
+    case 'color':
+      return ColorType;
+    case 'number':
+      return NumberType;
+    case 'boolean':
+      return BooleanType;
+    case 'number[]':
+      return NumberArrayType;
+    default:
+      throw new Error(`Unrecognized type hint: ${typeHint}`);
+  }
+}
+
+/**
  * @typedef {LiteralValue|Array} EncodedExpression
  */
 
@@ -249,7 +270,20 @@ export const Ops = {
  * @type {Object<string, Parser>}
  */
 const parsers = {
-  [Ops.Get]: createParser(AnyType, withArgsCount(1, 1), withGetArgs),
+  [Ops.Get]: createParser(
+    ([_, typeHint]) => {
+      if (typeHint !== undefined) {
+        return getTypeFromHint(
+          /** @type {string} */ (
+            /** @type {LiteralExpression} */ (typeHint).value
+          )
+        );
+      }
+      return AnyType;
+    },
+    withArgsCount(1, 2),
+    withGetArgs
+  ),
   [Ops.Var]: createParser(
     ([firstArg]) => firstArg.type,
     withArgsCount(1, 1),
@@ -493,6 +527,10 @@ function withGetArgs(encoded, context) {
     throw new Error('Expected a string argument for get operation');
   }
   context.properties.add(arg.value);
+  if (encoded.length === 3) {
+    const hint = parse(encoded[2], context);
+    return [arg, hint];
+  }
   return [arg];
 }
 

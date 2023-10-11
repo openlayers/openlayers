@@ -62,6 +62,12 @@ describe('ol/expr/expression.js', () => {
       expect(context.properties.has('foo')).to.be(true);
     });
 
+    it('parses a get expression with type hint', () => {
+      const context = newParsingContext();
+      const expression = parse(['get', 'foo', 'number[]'], context);
+      expect(isType(expression.type, NumberArrayType)).to.be(true);
+    });
+
     it('parses a var expression', () => {
       const context = newParsingContext();
       const expression = parse(['var', 'foo'], context);
@@ -344,6 +350,11 @@ describe('ol/expr/expression.js', () => {
         type: StringType,
         error:
           'The variable myAttr has type number but the following type was expected: string',
+      },
+      {
+        name: 'invalid type hint (get)',
+        expression: ['get', 'myAttr', 'invalid_type'],
+        error: 'Unrecognized type hint: invalid_type',
       },
       {
         name: 'invalid expression',
