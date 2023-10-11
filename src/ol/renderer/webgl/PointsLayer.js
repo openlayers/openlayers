@@ -21,6 +21,7 @@ import {assert} from '../../asserts.js';
 import {buffer, createEmpty, equals} from '../../extent.js';
 import {colorDecodeId, colorEncodeId} from '../../render/webgl/utils.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
+import {fromUserCoordinate, getUserProjection} from '../../proj.js';
 import {getUid} from '../../util.js';
 import {getWorldParameters} from './worldUtil.js';
 import {listen, unlistenByKey} from '../../events.js';
@@ -480,6 +481,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const projectionTransform = createTransform();
     this.helper.makeProjectionTransform(frameState, projectionTransform);
 
+    const userProjection = getUserProjection();
+
     const baseInstructionLength = this.hitDetectionEnabled_ ? 7 : 2; // see below
     const singleInstructionLength =
       baseInstructionLength + this.customAttributes.length;
@@ -504,8 +507,17 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       if (!geometry || geometry.getType() !== 'Point') {
         continue;
       }
-      tmpCoords[0] = geometry.getFlatCoordinates()[0];
-      tmpCoords[1] = geometry.getFlatCoordinates()[1];
+      if (userProjection) {
+        const userCoords = fromUserCoordinate(
+          geometry.getFlatCoordinates(),
+          frameState.viewState.projection
+        );
+        tmpCoords[0] = userCoords[0];
+        tmpCoords[1] = userCoords[1];
+      } else {
+        tmpCoords[0] = geometry.getFlatCoordinates()[0];
+        tmpCoords[1] = geometry.getFlatCoordinates()[1];
+      }
       applyTransform(projectionTransform, tmpCoords);
 
       this.renderInstructions_[++idx] = tmpCoords[0];
