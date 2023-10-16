@@ -8,7 +8,7 @@ import {
 import {
   stringToGlsl,
   uniformNameForVariable,
-} from '../../../../../src/ol/style/expressions.js';
+} from '../../../../../src/ol/expr/gpu.js';
 
 describe('ol.webgl.styleparser', () => {
   describe('parseLiteralStyle', () => {

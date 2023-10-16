@@ -2,7 +2,7 @@
  * Class for generating shaders from literal style objects
  * @module ol/webgl/ShaderBuilder
  */
-import {colorToGlsl, numberToGlsl, stringToGlsl} from '../style/expressions.js';
+import {colorToGlsl, numberToGlsl, stringToGlsl} from '../expr/gpu.js';
 import {createDefaultStyle} from '../style/flat.js';
 
 const COMMON_HEADER = `#ifdef GL_FRAGMENT_PRECISION_HIGH
