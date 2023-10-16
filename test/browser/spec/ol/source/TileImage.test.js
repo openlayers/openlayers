@@ -19,7 +19,7 @@ import {listen} from '../../../../../src/ol/events.js';
 import {register} from '../../../../../src/ol/proj/proj4.js';
 
 describe('ol/source/TileImage', function () {
-  function createSource(opt_proj, opt_tileGrid, opt_cacheSize) {
+  function createSource(opt_proj, opt_tileGrid, opt_cacheSize, opt_transition) {
     const proj = opt_proj || 'EPSG:3857';
     return new TileImage({
       cacheSize: opt_cacheSize,
@@ -28,6 +28,7 @@ describe('ol/source/TileImage', function () {
       tileUrlFunction: createFromTemplate(
         'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs='
       ),
+      transition: opt_transition,
     });
   }
 
@@ -313,6 +314,22 @@ describe('ol/source/TileImage', function () {
       });
       const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
       tile.load();
+    });
+  });
+
+  describe('transition option', function () {
+    it('reproj tile transition should be same with source tile', function () {
+      const transition = 0;
+      const source = createSource(
+        'EPSG:3857',
+        undefined,
+        undefined,
+        transition
+      );
+      const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:4326'));
+
+      expect(tile).to.be.a(ReprojTile);
+      expect(tile.transition_).to.be(transition);
     });
   });
 });
