@@ -248,7 +248,6 @@
     "../src/ol/structs/RBush.js",
     "../src/ol/style.js",
     "../src/ol/style/Circle.js",
-    "../src/ol/style/expressions.js",
     "../src/ol/style/Fill.js",
     "../src/ol/style/flat.js",
     "../src/ol/style/Icon.js",

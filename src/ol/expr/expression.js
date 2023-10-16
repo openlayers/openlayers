@@ -11,6 +11,110 @@ import {isStringColor} from '../color.js';
  * expression.
  */
 
+/**
+ * Base type used for literal style parameters; can be a number literal or the output of an operator,
+ * which in turns takes {@link import("./expression.js").ExpressionValue} arguments.
+ *
+ * The following operators can be used:
+ *
+ * * Reading operators:
+ *   * `['band', bandIndex, xOffset, yOffset]` For tile layers only. Fetches pixel values from band
+ *     `bandIndex` of the source's data. The first `bandIndex` of the source data is `1`. Fetched values
+ *     are in the 0..1 range. {@link import("../source/TileImage.js").default} sources have 4 bands: red,
+ *     green, blue and alpha. {@link import("../source/DataTile.js").default} sources can have any number
+ *     of bands, depending on the underlying data source and
+ *     {@link import("../source/GeoTIFF.js").Options configuration}. `xOffset` and `yOffset` are optional
+ *     and allow specifying pixel offsets for x and y. This is used for sampling data from neighboring pixels.
+ *   * `['get', 'attributeName', typeHint]` fetches a feature property value, similar to `feature.get('attributeName')`
+ *     A type hint can optionally be specified, in case the resulting expression contains a type ambiguity which
+ *     will make it invalid. Type hints can be one of: 'string', 'color', 'number', 'boolean', 'number[]'
+ *   * `['geometry-type']` returns a feature's geometry type as string, either: 'LineString', 'Point' or 'Polygon'
+ *     `Multi*` values are returned as their singular equivalent
+ *     `Circle` geometries are returned as 'Polygon'
+ *     `GeometryCollection` geometries are returned as the type of the first geometry found in the collection
+ *   * `['resolution']` returns the current resolution
+ *   * `['time']` returns the time in seconds since the creation of the layer
+ *   * `['var', 'varName']` fetches a value from the style variables; will throw an error if that variable is undefined
+ *   * `['zoom']` returns the current zoom level
+ *
+ * * Math operators:
+ *   * `['*', value1, value2, ...]` multiplies the values (either numbers or colors)
+ *   * `['/', value1, value2]` divides `value1` by `value2`
+ *   * `['+', value1, value2, ...]` adds the values
+ *   * `['-', value1, value2]` subtracts `value2` from `value1`
+ *   * `['clamp', value, low, high]` clamps `value` between `low` and `high`
+ *   * `['%', value1, value2]` returns the result of `value1 % value2` (modulo)
+ *   * `['^', value1, value2]` returns the value of `value1` raised to the `value2` power
+ *   * `['abs', value1]` returns the absolute value of `value1`
+ *   * `['floor', value1]` returns the nearest integer less than or equal to `value1`
+ *   * `['round', value1]` returns the nearest integer to `value1`
+ *   * `['ceil', value1]` returns the nearest integer greater than or equal to `value1`
+ *   * `['sin', value1]` returns the sine of `value1`
+ *   * `['cos', value1]` returns the cosine of `value1`
+ *   * `['atan', value1, value2]` returns `atan2(value1, value2)`. If `value2` is not provided, returns `atan(value1)`
+ *   * `['sqrt', value1]` returns the square root of `value1`
+ *
+ * * Transform operators:
+ *   * `['case', condition1, output1, ...conditionN, outputN, fallback]` selects the first output whose corresponding
+ *     condition evaluates to `true`. If no match is found, returns the `fallback` value.
+ *     All conditions should be `boolean`, output and fallback can be any kind.
+ *   * `['match', input, match1, output1, ...matchN, outputN, fallback]` compares the `input` value against all
+ *     provided `matchX` values, returning the output associated with the first valid match. If no match is found,
+ *     returns the `fallback` value.
+ *     `input` and `matchX` values must all be of the same type, and can be `number` or `string`. `outputX` and
+ *     `fallback` values must be of the same type, and can be of any kind.
+ *   * `['interpolate', interpolation, input, stop1, output1, ...stopN, outputN]` returns a value by interpolating between
+ *     pairs of inputs and outputs; `interpolation` can either be `['linear']` or `['exponential', base]` where `base` is
+ *     the rate of increase from stop A to stop B (i.e. power to which the interpolation ratio is raised); a value
+ *     of 1 is equivalent to `['linear']`.
+ *     `input` and `stopX` values must all be of type `number`. `outputX` values can be `number` or `color` values.
+ *     Note: `input` will be clamped between `stop1` and `stopN`, meaning that all output values will be comprised
+ *     between `output1` and `outputN`.
+ *
+ * * Logical operators:
+ *   * `['<', value1, value2]` returns `true` if `value1` is strictly lower than `value2`, or `false` otherwise.
+ *   * `['<=', value1, value2]` returns `true` if `value1` is lower than or equals `value2`, or `false` otherwise.
+ *   * `['>', value1, value2]` returns `true` if `value1` is strictly greater than `value2`, or `false` otherwise.
+ *   * `['>=', value1, value2]` returns `true` if `value1` is greater than or equals `value2`, or `false` otherwise.
+ *   * `['==', value1, value2]` returns `true` if `value1` equals `value2`, or `false` otherwise.
+ *   * `['!=', value1, value2]` returns `true` if `value1` does not equal `value2`, or `false` otherwise.
+ *   * `['!', value1]` returns `false` if `value1` is `true` or greater than `0`, or `true` otherwise.
+ *   * `['all', value1, value2, ...]` returns `true` if all the inputs are `true`, `false` otherwise.
+ *   * `['any', value1, value2, ...]` returns `true` if any of the inputs are `true`, `false` otherwise.
+ *   * `['between', value1, value2, value3]` returns `true` if `value1` is contained between `value2` and `value3`
+ *     (inclusively), or `false` otherwise.
+ *   * `['in', needle, haystack]` returns `true` if `needle` is found in `haystack`, and
+ *     `false` otherwise.
+ *     This operator has the following limitations:
+ *     * `haystack` has to be an array of numbers or strings (searching for a substring in a string is not supported yet)
+ *     * Only literal arrays are supported as `haystack` for now; this means that `haystack` cannot be the result of an
+ *     expression. If `haystack` is an array of strings, use the `literal` operator to disambiguate from an expression:
+ *     `['literal', ['abc', 'def', 'ghi']]`
+ *
+ * * Conversion operators:
+ *   * `['array', value1, ...valueN]` creates a numerical array from `number` values; please note that the amount of
+ *     values can currently only be 2, 3 or 4.
+ *   * `['color', red, green, blue, alpha]` creates a `color` value from `number` values; the `alpha` parameter is
+ *     optional; if not specified, it will be set to 1.
+ *     Note: `red`, `green` and `blue` components must be values between 0 and 255; `alpha` between 0 and 1.
+ *   * `['palette', index, colors]` picks a `color` value from an array of colors using the given index; the `index`
+ *     expression must evaluate to a number; the items in the `colors` array must be strings with hex colors
+ *     (e.g. `'#86A136'`), colors using the rgba[a] functional notation (e.g. `'rgb(134, 161, 54)'` or `'rgba(134, 161, 54, 1)'`),
+ *     named colors (e.g. `'red'`), or array literals with 3 ([r, g, b]) or 4 ([r, g, b, a]) values (with r, g, and b
+ *     in the 0-255 range and a in the 0-1 range).
+ *
+ * Values can either be literals or another operator, as they will be evaluated recursively.
+ * Literal values can be of the following types:
+ * * `boolean`
+ * * `number`
+ * * `number[]` (number arrays can only have a length of 2, 3 or 4)
+ * * `string`
+ * * {@link module:ol/color~Color}
+ *
+ * @typedef {Array<*>|import("../color.js").Color|string|number|boolean} ExpressionValue
+ * @api
+ */
+
 let numTypes = 0;
 export const NoneType = 0;
 export const BooleanType = 1 << numTypes++;
