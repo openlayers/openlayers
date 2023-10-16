@@ -2,7 +2,7 @@
  * @module ol/expr/expression
  */
 import {ascending} from '../array.js';
-import {fromString, isStringColor} from '../color.js';
+import {isStringColor} from '../color.js';
 
 /**
  * @fileoverview This module includes types and functions for parsing array encoded expressions.
@@ -153,7 +153,8 @@ export function parse(encoded, context, typeHint) {
       if (isStringColor(encoded)) {
         type |= ColorType;
       }
-      if (typeHint) {
+      // apply the given type hint only if it won't result in an empty type
+      if (!isType(type & typeHint, NoneType)) {
         type &= typeHint;
       }
       return new LiteralExpression(type, encoded);
@@ -236,6 +237,7 @@ export const Ops = {
   Array: 'array',
   Color: 'color',
   Id: 'id',
+  Band: 'band',
 };
 
 /**
@@ -248,7 +250,11 @@ export const Ops = {
  */
 const parsers = {
   [Ops.Get]: createParser(AnyType, withArgsCount(1, 1), withGetArgs),
-  [Ops.Var]: createParser(AnyType, withArgsCount(1, 1), withVarArgs),
+  [Ops.Var]: createParser(
+    ([firstArg]) => firstArg.type,
+    withArgsCount(1, 1),
+    withVarArgs
+  ),
   [Ops.Id]: createParser(NumberType | StringType, withNoArgs, usesFeatureId),
   [Ops.Concat]: createParser(
     StringType,
@@ -447,13 +453,22 @@ const parsers = {
     parseArgsOfType(AnyType)
   ),
   [Ops.Array]: createParser(
-    NumberArrayType,
+    (parsedArgs) => {
+      return parsedArgs.length === 3 || parsedArgs.length === 4
+        ? NumberArrayType | ColorType
+        : NumberArrayType;
+    },
     withArgsCount(1, Infinity),
     parseArgsOfType(NumberType)
   ),
   [Ops.Color]: createParser(
     ColorType,
     withArgsCount(3, 4),
+    parseArgsOfType(NumberType)
+  ),
+  [Ops.Band]: createParser(
+    NumberType,
+    withArgsCount(1, 3),
     parseArgsOfType(NumberType)
   ),
 };
@@ -484,15 +499,28 @@ function withGetArgs(encoded, context) {
 /**
  * @type ArgValidator
  */
-function withVarArgs(encoded, context) {
-  const arg = parse(encoded[1], context);
-  if (!(arg instanceof LiteralExpression)) {
-    throw new Error('Expected a literal argument for var operation');
+function withVarArgs(encoded, context, parsedArgs, typeHint) {
+  const varName = encoded[1];
+  if (typeof varName !== 'string') {
+    throw new Error('Expected a string argument for var operation');
   }
-  if (typeof arg.value !== 'string') {
-    throw new Error('Expected a string argument for get operation');
+  context.variables.add(varName);
+  if (
+    !context.style.variables ||
+    context.style.variables[varName] === undefined
+  ) {
+    return [new LiteralExpression(AnyType, varName)];
   }
-  context.variables.add(arg.value);
+  const initialValue = context.style.variables[varName];
+  const arg = /** @type {LiteralExpression} */ (parse(initialValue, context));
+  arg.value = varName;
+  if (typeHint && !overlapsType(typeHint, arg.type)) {
+    throw new Error(
+      `The variable ${varName} has type ${typeName(
+        arg.type
+      )} but the following type was expected: ${typeName(typeHint)}`
+    );
+  }
   return [arg];
 }
 
@@ -547,7 +575,7 @@ function withArgsCount(minArgs, maxArgs) {
  * @return {ArgValidator} The argument validator
  */
 function parseArgsOfType(argType) {
-  return function (encoded, context, parsedArgs, typeHint) {
+  return function (encoded, context) {
     const operation = encoded[0];
     const argCount = encoded.length - 1;
     /**
@@ -555,7 +583,7 @@ function parseArgsOfType(argType) {
      */
     const args = new Array(argCount);
     for (let i = 0; i < argCount; ++i) {
-      const expression = parse(encoded[i + 1], context, typeHint);
+      const expression = parse(encoded[i + 1], context);
       if (!overlapsType(argType, expression.type)) {
         const gotType = typeName(argType);
         const expectedType = typeName(expression.type);
@@ -564,6 +592,7 @@ function parseArgsOfType(argType) {
             `, got ${gotType} but expected ${expectedType}`
         );
       }
+      expression.type &= argType;
       args[i] = expression;
     }
     return args;
@@ -573,12 +602,12 @@ function parseArgsOfType(argType) {
 /**
  * @type {ArgValidator}
  */
-function narrowArgsType(encoded, context, parsedArgs, typeHint) {
+function narrowArgsType(encoded, context, parsedArgs) {
   const operation = encoded[0];
   const argCount = encoded.length - 1;
 
   // first pass to determine a narrowed down type
-  let sameType = typeHint !== undefined ? typeHint : AnyType;
+  let sameType = AnyType;
   for (let i = 0; i < parsedArgs.length; ++i) {
     sameType &= parsedArgs[i].type;
   }
@@ -630,37 +659,61 @@ function withEvenArgs(encoded, context) {
 /**
  * @type ArgValidator
  */
-function parseMatchArgs(encoded, context, typeHint) {
+function parseMatchArgs(encoded, context, parsedArgs, typeHint) {
   const argsCount = encoded.length - 1;
 
   const input = parse(encoded[1], context);
   let inputType = input.type;
   const fallback = parse(encoded[encoded.length - 1], context);
+  let outputType =
+    typeHint !== undefined ? typeHint & fallback.type : fallback.type;
 
+  // first parse args to figure out possible types
   const args = new Array(argsCount - 2);
   for (let i = 0; i < argsCount - 2; i += 2) {
     const match = parse(encoded[i + 2], context);
     const output = parse(encoded[i + 3], context);
     inputType &= match.type;
+    outputType &= output.type;
     args[i] = match;
     args[i + 1] = output;
   }
+
+  // check input and output types validity
   const expectedInputType = StringType | NumberType | BooleanType;
   if (!overlapsType(expectedInputType, inputType)) {
     throw new Error(
       `Expected an input of type ${typeName(
         expectedInputType
-      )} for the interpolate operation` + `, got ${inputType} instead`
+      )} for the interpolate operation` + `, got ${typeName(inputType)} instead`
+    );
+  }
+  if (isType(outputType, NoneType)) {
+    throw new Error(
+      `Could not find a common output type for the following match operation: ` +
+        JSON.stringify(encoded)
     );
   }
 
-  return [input, ...args, fallback];
+  // parse again inputs and outputs with common type
+  for (let i = 0; i < argsCount - 2; i += 2) {
+    const match = parse(encoded[i + 2], context, inputType);
+    const output = parse(encoded[i + 3], context, outputType);
+    args[i] = match;
+    args[i + 1] = output;
+  }
+
+  return [
+    parse(encoded[1], context, inputType),
+    ...args,
+    parse(encoded[encoded.length - 1], context, outputType),
+  ];
 }
 
 /**
  * @type ArgValidator
  */
-function parseInterpolateArgs(encoded, context) {
+function parseInterpolateArgs(encoded, context, parsedArgs, typeHint) {
   const interpolationType = encoded[1];
   let interpolation;
   switch (interpolationType[0]) {
@@ -684,70 +737,129 @@ function parseInterpolateArgs(encoded, context) {
       `Invalid interpolation type: ${JSON.stringify(interpolationType)}`
     );
   }
-
-  const parsedArgs = [
-    parse(interpolation, context),
-    ...encoded.slice(2).map((arg) => parse(arg, context)),
-  ];
+  interpolation = parse(interpolation, context);
 
   // check input types
-  const input = parsedArgs[1];
+  let input = parse(encoded[2], context);
   if (!overlapsType(NumberType, input.type)) {
     throw new Error(
       `Expected an input of type number for the interpolate operation` +
         `, got ${typeName(input.type)} instead`
     );
   }
-  for (let i = 2; i < parsedArgs.length; i += 2) {
-    const input = parsedArgs[i];
-    if (!overlapsType(NumberType, input.type)) {
+  input = parse(encoded[2], context, NumberType); // parse again with narrower output
+
+  const args = new Array(encoded.length - 3);
+  for (let i = 0; i < args.length; i += 2) {
+    let stop = parse(encoded[i + 3], context);
+    if (!overlapsType(NumberType, stop.type)) {
       throw new Error(
         `Expected all stop input values in the interpolate operation to be of type number` +
-          `, got ${typeName(input.type)} at position ${i} instead`
+          `, got ${typeName(stop.type)} at position ${i + 2} instead`
       );
     }
-    const output = parsedArgs[i + 1];
+    let output = parse(encoded[i + 4], context);
     if (!overlapsType(NumberType | ColorType, output.type)) {
       throw new Error(
         `Expected all stop output values in the interpolate operation to be a number or color` +
-          `, got ${typeName(output.type)} at position ${i + 1} instead`
+          `, got ${typeName(output.type)} at position ${i + 3} instead`
       );
     }
-    if (output instanceof LiteralExpression) {
-      if (typeof output.value === 'string') {
-        output.value = fromString(output.value);
-        output.type = ColorType;
-      }
-    }
+    // parse again with narrower types
+    stop = parse(encoded[i + 3], context, NumberType);
+    output = parse(encoded[i + 4], context, NumberType | ColorType);
+    args[i] = stop;
+    args[i + 1] = output;
   }
 
-  return parsedArgs;
+  return [interpolation, input, ...args];
 }
 
 /**
  * @type ArgValidator
  */
-function parseCaseArgs(encoded, context) {
-  const parsedArgs = encoded.slice(1).map((arg) => parse(arg, context));
+function parseCaseArgs(encoded, context, parsedArgs, typeHint) {
+  const fallback = parse(encoded[encoded.length - 1], context);
+  let outputType =
+    typeHint !== undefined ? typeHint & fallback.type : fallback.type;
 
-  // check condition types
-  for (let i = 0; i < parsedArgs.length - 1; i += 2) {
-    if (!overlapsType(BooleanType, parsedArgs[i].type)) {
+  // first parse args to figure out possible types
+  const args = new Array(encoded.length - 1);
+  for (let i = 0; i < args.length - 1; i += 2) {
+    const condition = parse(encoded[i + 1], context);
+    const output = parse(encoded[i + 2], context);
+    if (!overlapsType(BooleanType, condition.type)) {
       throw new Error(
         `Expected all conditions in the case operation to be of type boolean` +
-          `, got ${typeName(parsedArgs[i].type)} at position ${i} instead`
+          `, got ${typeName(condition.type)} at position ${i} instead`
       );
     }
+    outputType &= output.type;
+    args[i] = condition;
+    args[i + 1] = output;
   }
 
-  return encoded.slice(1).map((arg) => parse(arg, context));
+  if (isType(outputType, NoneType)) {
+    throw new Error(
+      `Could not find a common output type for the following case operation: ` +
+        JSON.stringify(encoded)
+    );
+  }
+
+  // parse again args with common output type
+  for (let i = 0; i < args.length - 1; i += 2) {
+    args[i + 1] = parse(encoded[i + 2], context, outputType);
+  }
+  args[args.length - 1] = parse(
+    encoded[encoded.length - 1],
+    context,
+    outputType
+  );
+
+  return args;
 }
 
 /**
  * @type ArgValidator
  */
 function parseInArgs(encoded, context) {
-  return encoded.slice(1).map((arg) => parse(arg, context));
+  /** @type {Array<number|string>} */
+  let haystack = /** @type {any} */ (encoded[2]);
+  if (!Array.isArray(haystack)) {
+    throw new Error(
+      `The "in" operator was provided a literal value which was not an array as second argument.`
+    );
+  }
+  if (typeof haystack[0] === 'string') {
+    if (haystack[0] !== 'literal') {
+      throw new Error(
+        `For the "in" operator, a string array should be wrapped in a "literal" operator to disambiguate from expressions.`
+      );
+    }
+    if (!Array.isArray(haystack[1])) {
+      throw new Error(
+        `The "in" operator was provided a literal value which was not an array as second argument.`
+      );
+    }
+    haystack = haystack[1];
+  }
+
+  let needleType = StringType | NumberType;
+  const args = new Array(haystack.length);
+  for (let i = 0; i < args.length; i++) {
+    const arg = parse(haystack[i], context);
+    needleType &= arg.type;
+    args[i] = arg;
+  }
+  if (isType(needleType, NoneType)) {
+    throw new Error(
+      `Could not find a common type for the following in operation: ` +
+        JSON.stringify(encoded)
+    );
+  }
+
+  const needle = parse(encoded[1], context, needleType);
+  return [needle, ...args];
 }
 
 /**
@@ -768,6 +880,15 @@ function createParser(returnType, ...argValidators) {
     let actualType =
       typeof returnType === 'function' ? returnType(parsedArgs) : returnType;
     if (typeHint !== undefined) {
+      if (!overlapsType(actualType, typeHint)) {
+        throw new Error(
+          `The following expression was expected to return ${typeName(
+            typeHint
+          )}, but returns ${typeName(actualType)} instead: ${JSON.stringify(
+            encoded
+          )}`
+        );
+      }
       actualType &= typeHint;
     }
     if (actualType === NoneType) {
