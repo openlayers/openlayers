@@ -332,7 +332,7 @@ class TileImage extends UrlTile {
         this.getTileInternal(z, x, y, pixelRatio, sourceProjection),
       this.reprojectionErrorThreshold_,
       this.renderReprojectionEdges_,
-      this.getInterpolate()
+      this.tileOptions
     );
     newTile.key = key;
 
