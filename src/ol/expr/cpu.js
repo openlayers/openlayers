@@ -203,9 +203,11 @@ function compileAccessorExpression(expression, context) {
     }
     case Ops.Concat: {
       return (context_) => {
-        return "".concat(...expression.args.reduce((a, c) => {
-          return [...a, compileExpression(c, context)(context_).toString()];
-        }, []));
+        return ''.concat(
+          ...expression.args.reduce((a, c) => {
+            return [...a, compileExpression(c, context)(context_).toString()];
+          }, [])
+        );
       }
     }
     default: {

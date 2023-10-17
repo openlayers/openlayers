@@ -241,7 +241,11 @@ export const Ops = {
 const parsers = {
   [Ops.Get]: createParser(AnyType, withArgsCount(1, 1), withGetArgs),
   [Ops.Var]: createParser(AnyType, withArgsCount(1, 1), withVarArgs),
-  [Ops.Concat]: createParser(AnyType, withArgsCount(2, Infinity), parseArgsOfType(AnyType)),
+  [Ops.Concat]: createParser(
+    AnyType,
+    withArgsCount(2, Infinity),
+    parseArgsOfType(AnyType)
+  ),
   [Ops.GeometryType]: createParser(StringType, withNoArgs),
   [Ops.Resolution]: createParser(NumberType, withNoArgs),
   [Ops.Zoom]: createParser(NumberType, withNoArgs),
