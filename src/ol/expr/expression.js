@@ -242,7 +242,7 @@ const parsers = {
   [Ops.Get]: createParser(AnyType, withArgsCount(1, 1), withGetArgs),
   [Ops.Var]: createParser(AnyType, withArgsCount(1, 1), withVarArgs),
   [Ops.Concat]: createParser(
-    AnyType,
+    StringType,
     withArgsCount(2, Infinity),
     parseArgsOfType(AnyType)
   ),

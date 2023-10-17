@@ -202,13 +202,10 @@ function compileAccessorExpression(expression, context) {
       return (context) => context.variables[name];
     }
     case Ops.Concat: {
-      return (context_) => {
-        return ''.concat(
-          ...expression.args.reduce((a, c) => {
-            return [...a, compileExpression(c, context)(context_).toString()];
-          }, [])
-        );
-      }
+      const args = expression.args.map((e) => compileExpression(e, context));
+      return (context) => ''.concat(
+        ...args.map((arg) => arg(context).toString())
+      );
     }
     default: {
       throw new Error(`Unsupported accessor operator ${expression.operator}`);

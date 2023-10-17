@@ -44,7 +44,7 @@ const map = new Map({
               'concat',
               ['get', 'adm1name'],
               ', ',
-              ['get', 'adm0name']
+              ['get', 'adm0name'],
             ],
             'text-font': '16px sans-serif',
             'text-fill-color': 'white',
