@@ -71,7 +71,7 @@ describe('ol/expr/cpu.js', () => {
       },
       {
         name: 'concat (2 arguments)',
-        type: BooleanType,
+        type: StringType,
         expression: ['concat', ['get', 'val'], ' '],
         context: {
           properties: {val: 'test'},
@@ -80,7 +80,7 @@ describe('ol/expr/cpu.js', () => {
       },
       {
         name: 'concat (3 arguments)',
-        type: BooleanType,
+        type: StringType,
         expression: ['concat', ['get', 'val'], ' ', ['get', 'val2']],
         context: {
           properties: {val: 'test', val2: 'another'},
