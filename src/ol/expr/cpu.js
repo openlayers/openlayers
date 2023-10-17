@@ -174,6 +174,17 @@ function compileExpression(expression, context) {
     default: {
       throw new Error(`Unsupported operator ${operator}`);
     }
+    // TODO: unimplemented
+    // Ops.GeometryType
+    // Ops.Zoom
+    // Ops.Time
+    // Ops.Between
+    // Ops.Case
+    // Ops.In
+    // Ops.Array
+    // Ops.Color
+    // Ops.Band
+    // Ops.Palette
   }
 }
 
