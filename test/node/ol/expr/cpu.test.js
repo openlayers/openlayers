@@ -70,6 +70,24 @@ describe('ol/expr/cpu.js', () => {
         expected: true,
       },
       {
+        name: 'concat (2 arguments)',
+        type: BooleanType,
+        expression: ['concat', ['get', 'val'], ' '],
+        context: {
+          properties: {val: 'test'},
+        },
+        expected: 'test ',
+      },
+      {
+        name: 'concat (3 arguments)',
+        type: BooleanType,
+        expression: ['concat', ['get', 'val'], ' ', ['get', 'val2']],
+        context: {
+          properties: {val: 'test', val2: 'another'},
+        },
+        expected: 'test another',
+      },
+      {
         name: 'any (true)',
         type: BooleanType,
         expression: ['any', ['get', 'nope'], ['get', 'yep'], ['get', 'nope']],

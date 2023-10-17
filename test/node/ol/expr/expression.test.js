@@ -71,6 +71,15 @@ describe('ol/expr/expression.js', () => {
       expect(context.variables.has('foo')).to.be(true);
     });
 
+    it('parses a concat expression', () => {
+      const context = newParsingContext();
+      const expression = parse(['concat', ['get', 'foo'], ' ', 'random'], context);
+      expect(expression).to.be.a(CallExpression);
+      expect(expression.operator).to.be('concat');
+      expect(isType(expression.type, AnyType));
+      expect(context.properties.has('foo')).to.be(true);
+    });
+
     it('parses a == expression', () => {
       const context = newParsingContext();
       const expression = parse(['==', ['get', 'foo'], 'bar'], context);

@@ -105,7 +105,8 @@ function compileExpression(expression, context) {
       return compileAssertionExpression(expression, context);
     }
     case Ops.Get:
-    case Ops.Var: {
+    case Ops.Var:
+    case Ops.Concat: {
       return compileAccessorExpression(expression, context);
     }
     case Ops.Resolution: {
@@ -199,6 +200,13 @@ function compileAccessorExpression(expression, context) {
     }
     case Ops.Var: {
       return (context) => context.variables[name];
+    }
+    case Ops.Concat: {
+      return (context_) => {
+        return "".concat(...expression.args.reduce((a, c) => {
+          return [...a, compileExpression(c, context)(context_).toString()];
+        }, []));
+      }
     }
     default: {
       throw new Error(`Unsupported accessor operator ${expression.operator}`);
