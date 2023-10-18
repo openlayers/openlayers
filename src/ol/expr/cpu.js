@@ -105,9 +105,13 @@ function compileExpression(expression, context) {
       return compileAssertionExpression(expression, context);
     }
     case Ops.Get:
-    case Ops.Var:
-    case Ops.Concat: {
+    case Ops.Var: {
       return compileAccessorExpression(expression, context);
+    }
+    case Ops.Concat: {
+      const args = expression.args.map((e) => compileExpression(e, context));
+      return (context) =>
+        ''.concat(...args.map((arg) => arg(context).toString()));
     }
     case Ops.Resolution: {
       return (context) => context.resolution;
@@ -200,11 +204,6 @@ function compileAccessorExpression(expression, context) {
     }
     case Ops.Var: {
       return (context) => context.variables[name];
-    }
-    case Ops.Concat: {
-      const args = expression.args.map((e) => compileExpression(e, context));
-      return (context) =>
-        ''.concat(...args.map((arg) => arg(context).toString()));
     }
     default: {
       throw new Error(`Unsupported accessor operator ${expression.operator}`);
