@@ -40,7 +40,12 @@ const map = new Map({
         {
           filter: ['>', ['get', 'pop_max'], 10_000_000],
           style: {
-            'text-value': ['get', 'nameascii'],
+            'text-value': [
+              'concat',
+              ['get', 'adm1name'],
+              ', ',
+              ['get', 'adm0name'],
+            ],
             'text-font': '16px sans-serif',
             'text-fill-color': 'white',
             'text-stroke-color': 'gray',

@@ -108,6 +108,11 @@ function compileExpression(expression, context) {
     case Ops.Var: {
       return compileAccessorExpression(expression, context);
     }
+    case Ops.Concat: {
+      const args = expression.args.map((e) => compileExpression(e, context));
+      return (context) =>
+        ''.concat(...args.map((arg) => arg(context).toString()));
+    }
     case Ops.Resolution: {
       return (context) => context.resolution;
     }
