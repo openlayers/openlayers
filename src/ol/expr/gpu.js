@@ -1,6 +1,7 @@
 /**
  * @module ol/expr/gpu
  */
+import PaletteTexture from '../webgl/PaletteTexture.js';
 import {
   BooleanType,
   CallExpression,
@@ -139,6 +140,7 @@ export function uniformNameForVariable(variableName) {
  * @property {Object<string, CompilationContextVariable>} variables The values for variables used in 'var' expressions.
  * @property {Object<string, string>} functions Lookup of functions used by the style.
  * @property {number} [bandCount] Number of bands per pixel.
+ * @property {Array<PaletteTexture>} [paletteTextures] List of palettes used by the style.
  * @property {import("../style/literal.js").LiteralStyle} style Literal style.
  */
 
@@ -157,6 +159,8 @@ export function newCompilationContext() {
 }
 
 const GET_BAND_VALUE_FUNC = 'getBandValue';
+
+export const PALETTE_TEXTURE_ARRAY = 'u_paletteTextures';
 
 /**
  * @typedef {string} CompiledExpression
@@ -398,26 +402,49 @@ ${tests.join('\n')}
           bandIndex = 3;
         }
         const textureName = `${Uniforms.TILE_TEXTURE_ARRAY}[${colorIndex}]`;
-        ifBlocks += `
-          if (band == ${i + 1}.0) {
-            return texture2D(${textureName}, v_textureCoord + vec2(dx, dy))[${bandIndex}];
-          }
-        `;
+        ifBlocks += `  if (band == ${i + 1}.0) {
+    return texture2D(${textureName}, v_textureCoord + vec2(dx, dy))[${bandIndex}];
+  }
+`;
       }
 
-      context.functions[GET_BAND_VALUE_FUNC] = `
-        float getBandValue(float band, float xOffset, float yOffset) {
-          float dx = xOffset / ${Uniforms.TEXTURE_PIXEL_WIDTH};
-          float dy = yOffset / ${Uniforms.TEXTURE_PIXEL_HEIGHT};
-          ${ifBlocks}
-        }
-      `;
+      context.functions[
+        GET_BAND_VALUE_FUNC
+      ] = `float getBandValue(float band, float xOffset, float yOffset) {
+  float dx = xOffset / ${Uniforms.TEXTURE_PIXEL_WIDTH};
+  float dy = yOffset / ${Uniforms.TEXTURE_PIXEL_HEIGHT};
+${ifBlocks}
+}`;
     }
 
     return `${GET_BAND_VALUE_FUNC}(${band}, ${xOffset ?? '0.0'}, ${
       yOffset ?? '0.0'
     })`;
   }),
+  [Ops.Palette]: (context, expression) => {
+    const [index, ...colors] = expression.args;
+    const numColors = colors.length;
+    const palette = new Uint8Array(numColors * 4);
+    for (let i = 0; i < colors.length; i++) {
+      const parsedValue = /** @type {string | Array<number>} */ (
+        /** @type {LiteralExpression} */ (colors[i]).value
+      );
+      const color = asArray(parsedValue);
+      const offset = i * 4;
+      palette[offset] = color[0];
+      palette[offset + 1] = color[1];
+      palette[offset + 2] = color[2];
+      palette[offset + 3] = color[3] * 255;
+    }
+    if (!context.paletteTextures) {
+      context.paletteTextures = [];
+    }
+    const paletteName = `${PALETTE_TEXTURE_ARRAY}[${context.paletteTextures.length}]`;
+    const paletteTexture = new PaletteTexture(paletteName, palette);
+    context.paletteTextures.push(paletteTexture);
+    const compiledIndex = compile(index, NumberType, context);
+    return `texture2D(${paletteName}, vec2((${compiledIndex} + 0.5) / ${numColors}.0, 0.5))`;
+  },
   // TODO: unimplemented
   // Ops.Number
   // Ops.String

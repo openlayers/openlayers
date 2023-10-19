@@ -408,6 +408,26 @@ describe('ol/expr/gpu.js', () => {
         type: AnyType,
         expression: ['band', 1],
         expected: 'getBandValue(1.0, 0.0, 0.0)',
+        context: {
+          bandCount: 3,
+        },
+        contextAssertion: (context) => {
+          expect(context.functions['getBandValue']).to
+            .equal(`float getBandValue(float band, float xOffset, float yOffset) {
+  float dx = xOffset / u_texturePixelWidth;
+  float dy = yOffset / u_texturePixelHeight;
+  if (band == 1.0) {
+    return texture2D(u_tileTextures[0], v_textureCoord + vec2(dx, dy))[0];
+  }
+  if (band == 2.0) {
+    return texture2D(u_tileTextures[0], v_textureCoord + vec2(dx, dy))[1];
+  }
+  if (band == 3.0) {
+    return texture2D(u_tileTextures[0], v_textureCoord + vec2(dx, dy))[2];
+  }
+
+}`);
+        },
       },
       {
         name: 'band with offsets',
@@ -566,6 +586,31 @@ describe('ol/expr/gpu.js', () => {
   if (inputValue == ${stringToGlsl('ghi')}) { return true; }
   return false;
 }`);
+        },
+      },
+      {
+        name: 'palette',
+        expression: [
+          'palette',
+          ['get', 'color'],
+          ['red', 'rgb(0, 255, 0)', [0, 0, 255, 0.5]],
+        ],
+        type: AnyType,
+        expected:
+          'texture2D(u_paletteTextures[0], vec2((a_prop_color + 0.5) / 3.0, 0.5))',
+        contextAssertion: (context) => {
+          expect(context.paletteTextures[0]).to.eql({
+            name: 'u_paletteTextures[0]',
+            data: Uint8Array.from([
+              // red
+              255, 0, 0, 255,
+              // green
+              0, 255, 0, 255,
+              // blue, 0.5 alpha
+              0, 0, 255, 127,
+            ]),
+            texture_: null,
+          });
         },
       },
       {
@@ -791,7 +836,7 @@ describe('ol/expr/gpu.js', () => {
         name: 'expected type not matching actual type',
         expression: '42',
         type: NumberType,
-        exception: 'No matching type was found',
+        exception: 'Expected expression to be of type number, got string',
       },
       {
         name: 'argument type unexpected (var)',

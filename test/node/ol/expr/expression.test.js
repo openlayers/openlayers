@@ -292,6 +292,52 @@ describe('ol/expr/expression.js', () => {
         expect(isType(expression.args[4].type, StringType)).to.be(true);
       });
     });
+
+    describe('palette operator', () => {
+      it('outputs color type and list of colors as args', () => {
+        const expression = parse(
+          ['palette', 1, ['red', 'rgba(255, 255, 0, 1)', [0, 255, 255]]],
+          newParsingContext()
+        );
+        expect(expression.operator).to.be('palette');
+        expect(isType(expression.type, ColorType)).to.be(true);
+        expect(expression.args).to.have.length(4);
+        expect(isType(expression.args[0].type, NumberType)).to.be(true);
+        expect(isType(expression.args[1].type, ColorType)).to.be(true);
+        expect(isType(expression.args[2].type, ColorType)).to.be(true);
+        expect(isType(expression.args[3].type, ColorType)).to.be(true);
+      });
+    });
+
+    describe('array operator', () => {
+      it('outputs number array type if args count is not 3 or 4', () => {
+        const expression = parse(
+          ['array', 1, 2, ['get', 'third'], 4, 5],
+          newParsingContext()
+        );
+        expect(expression.operator).to.be('array');
+        expect(isType(expression.type, NumberArrayType)).to.be(true);
+        expect(expression.args).to.have.length(5);
+        expect(isType(expression.args[0].type, NumberType)).to.be(true);
+        expect(isType(expression.args[1].type, NumberType)).to.be(true);
+        expect(isType(expression.args[2].type, NumberType)).to.be(true);
+        expect(isType(expression.args[3].type, NumberType)).to.be(true);
+        expect(isType(expression.args[4].type, NumberType)).to.be(true);
+      });
+      it('outputs number array or color type if args count is 3 or 4', () => {
+        const expression = parse(
+          ['array', 1, 2, ['get', 'blue']],
+          newParsingContext()
+        );
+        expect(isType(expression.type, NumberArrayType | ColorType)).to.be(
+          true
+        );
+        expect(expression.args).to.have.length(3);
+        expect(isType(expression.args[0].type, NumberType)).to.be(true);
+        expect(isType(expression.args[1].type, NumberType)).to.be(true);
+        expect(isType(expression.args[2].type, NumberType)).to.be(true);
+      });
+    });
   });
 
   describe('parse() errors', () => {
@@ -419,6 +465,23 @@ describe('ol/expr/expression.js', () => {
         expression: ['in', ['get', 'attr'], ['literal', 123]],
         error:
           'The "in" operator was provided a literal value which was not an array as second argument.',
+      },
+      {
+        name: 'first argument is not a number (palette)',
+        expression: ['palette', 'abc', ['red', 'green', 'blue']],
+        error:
+          'The first argument of palette must be an number, got string instead',
+      },
+      {
+        name: 'second argument is not an array (palette)',
+        expression: ['palette', ['band', 2], 'red'],
+        error: 'The second argument of palette must be an array',
+      },
+      {
+        name: 'second argument is not an array of colors (palette)',
+        expression: ['palette', ['band', 2], ['red', 'green', 'abcd']],
+        error:
+          'The palette color at index 2 should be of type color, got string instead',
       },
     ];
 
