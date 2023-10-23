@@ -53,6 +53,12 @@ tags: "draw, vector, webgl, line, dash"
   </div>
   <div class="form-group">
     <label>
+      <input type="checkbox" class="rebuild" id="dashEnable">
+      Enable dashes
+    </label>
+    </div>
+  <div class="form-group" style="margin-left: 18px">
+    <label>
       Line dash pattern (px)
       <input type="number" class="uniform" name="dashLength1" min="0" max="100" value="25">
       <input type="number" class="uniform" name="dashLength2" min="0" max="100" value="15">
@@ -60,9 +66,24 @@ tags: "draw, vector, webgl, line, dash"
       <input type="number" class="uniform" name="dashLength4" min="0" max="100" value="15">
     </label>
   </div>
-  <label>
-    Line dash offset (pixels)
-    <input type="range" class="uniform" name="dashOffset" min="-200" max="200" value="0">
-  </label>
-  <span id="value-dashOffset">0</span>
+  <div class="form-group" style="margin-left: 18px">
+    <label>
+      Line dash offset (pixels)
+      <input type="range" class="uniform" name="dashOffset" min="-200" max="200" value="0">
+    </label>
+    <span id="value-dashOffset">0</span>
+  </div>
+  <div class="form-group">
+    <label>
+      <input type="checkbox" class="rebuild" id="patternEnable">
+      Enable image pattern
+    </label>
+  </div>
+  <div class="form-group" style="margin-left: 18px">
+    <label>
+      Pattern spacing (pixels)
+      <input type="range" class="uniform" name="patternSpacing" min="0" max="64" value="0">
+    </label>
+    <span id="value-patternSpacing">0</span>
+  </div>
 </form>
