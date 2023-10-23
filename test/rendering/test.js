@@ -12,7 +12,7 @@ import serveStatic from 'serve-static';
 import webpack from 'webpack';
 import webpackMiddleware from 'webpack-dev-middleware';
 import yargs from 'yargs';
-import {LogLevel} from 'loglevelnext/dist/LogLevel.js';
+import {LogLevel} from 'loglevelnext';
 import {fileURLToPath} from 'url';
 import {globby} from 'globby';
 import {hideBin} from 'yargs/helpers';
