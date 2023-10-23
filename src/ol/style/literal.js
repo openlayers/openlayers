@@ -21,7 +21,15 @@
 
 /**
  * @typedef {Object} FillProps
- * @property {ColorExpression} [fill-color] The fill color.
+ * @property {ColorExpression} [fill-color] Fill color.
+ * @property {string} [fill-pattern-src] Fill pattern image source URI. If `fill-color` is defined as well, it will be used to tint this image.
+ * @property {HTMLImageElement|HTMLCanvasElement} [fill-pattern-img] Fill pattern image object. Can be provided as an alternative to `fill-pattern-src`.
+ * @property {Array<number>|ExpressionValue} [fill-pattern-offset=[0, 0]] Offset, which, together with the size and the offset origin, define the
+ * sub-rectangle to use from the original fill pattern image.
+ * @property {import("./Icon.js").IconOrigin} [fill-pattern-offset-origin='top-left'] Origin of the offset: `bottom-left`, `bottom-right`,
+ * `top-left` or `top-right`.
+ * @property {ExpressionValue|import("../size.js").Size} [fill-pattern-size] Fill pattern image size in pixel. Can be used together with `fill-pattern-offset` to define the
+ * sub-rectangle to use from the origin (sprite) fill pattern image.
  */
 
 /**
@@ -34,6 +42,15 @@
  * @property {Array<number>|Array<ExpressionValue>} [stroke-line-dash] Line dash pattern.
  * @property {number|ExpressionValue} [stroke-line-dash-offset=0] Line dash offset.
  * @property {number|ExpressionValue} [stroke-miter-limit=10] Miter limit.
+ * @property {string} [stroke-pattern-src] Stroke pattern image source URI. If `stroke-color` is defined as well, it will be used to tint this image.
+ * @property {HTMLImageElement|HTMLCanvasElement} [stroke-pattern-img] Stroke pattern image object. Can be provided as an alternative to `stroke-pattern-src`.
+ * @property {Array<number>|ExpressionValue} [stroke-pattern-offset=[0, 0]] Offset, which, together with the size and the offset origin, define the
+ * sub-rectangle to use from the original fill pattern image.
+ * @property {import("./Icon.js").IconOrigin} [stroke-pattern-offset-origin='top-left'] Origin of the offset: `bottom-left`, `bottom-right`,
+ * `top-left` or `top-right`.
+ * @property {ExpressionValue|import("../size.js").Size} [stroke-pattern-size] Stroke pattern image size in pixel. Can be used together with `stroke-pattern-offset` to define the
+ * sub-rectangle to use from the origin (sprite) fill pattern image.
+ * @property {number|ExpressionValue} [stroke-pattern-spacing] Spacing between each pattern occurrence in pixels; 0 if undefined.
  */
 
 /**
@@ -107,7 +124,6 @@
  */
 
 // FIXME Present in flat style but not implemented in literal webgl style:
-//  - color like (fill patterns etc.)
 //  - icon declutter mode
 //  - circle line cap/join/miter limit
 //  - circle dash pattern/offset
