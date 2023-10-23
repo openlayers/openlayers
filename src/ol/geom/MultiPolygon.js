@@ -53,7 +53,7 @@ class MultiPolygon extends SimpleGeometry {
 
     /**
      * @private
-     * @type {Array<number>}
+     * @type {Array<number>|null}
      */
     this.flatInteriorPoints_ = null;
 
@@ -77,20 +77,17 @@ class MultiPolygon extends SimpleGeometry {
 
     /**
      * @private
-     * @type {Array<number>}
+     * @type {Array<number>|null}
      */
     this.orientedFlatCoordinates_ = null;
 
     if (!endss && !Array.isArray(coordinates[0])) {
-      let thisLayout = this.getLayout();
       const polygons = /** @type {Array<Polygon>} */ (coordinates);
+      /** @type {Array<number>} */
       const flatCoordinates = [];
       const thisEndss = [];
       for (let i = 0, ii = polygons.length; i < ii; ++i) {
         const polygon = polygons[i];
-        if (i === 0) {
-          thisLayout = polygon.getLayout();
-        }
         const offset = flatCoordinates.length;
         const ends = polygon.getEnds();
         for (let j = 0, jj = ends.length; j < jj; ++j) {
@@ -99,7 +96,8 @@ class MultiPolygon extends SimpleGeometry {
         extend(flatCoordinates, polygon.getFlatCoordinates());
         thisEndss.push(ends);
       }
-      layout = thisLayout;
+      layout =
+        polygons.length === 0 ? this.getLayout() : polygons[0].getLayout();
       coordinates = flatCoordinates;
       endss = thisEndss;
     }
@@ -295,7 +293,7 @@ class MultiPolygon extends SimpleGeometry {
       );
       this.flatInteriorPointsRevision_ = this.getRevision();
     }
-    return this.flatInteriorPoints_;
+    return /** @type {Array<number>} */ (this.flatInteriorPoints_);
   }
 
   /**
@@ -329,7 +327,7 @@ class MultiPolygon extends SimpleGeometry {
       }
       this.orientedRevision_ = this.getRevision();
     }
-    return this.orientedFlatCoordinates_;
+    return /** @type {Array<number>} */ (this.orientedFlatCoordinates_);
   }
 
   /**
@@ -338,7 +336,9 @@ class MultiPolygon extends SimpleGeometry {
    * @protected
    */
   getSimplifiedGeometryInternal(squaredTolerance) {
+    /** @type {Array<number>} */
     const simplifiedFlatCoordinates = [];
+    /** @type {Array<Array<number>>} */
     const simplifiedEndss = [];
     simplifiedFlatCoordinates.length = quantizeMultiArray(
       this.flatCoordinates,
