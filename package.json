@@ -100,7 +100,7 @@
     "pixelmatch": "^5.1.0",
     "pngjs": "^7.0.0",
     "proj4": "2.9.1",
-    "puppeteer": "21.3.6",
+    "puppeteer": "21.4.0",
     "rollup": "^3.28.0",
     "rollup-plugin-external-globals": "^0.8.0",
     "semver": "^7.3.7",
