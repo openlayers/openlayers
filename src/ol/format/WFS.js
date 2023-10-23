@@ -912,7 +912,8 @@ function writeProperty(node, pair, objectStack) {
   const context = objectStack[objectStack.length - 1];
   const version = context['version'];
   const ns = WFSNS[version];
-  const name = createElementNS(ns, 'Name');
+  const tagName = version === '2.0.0' ? 'ValueReference' : 'Name';
+  const name = createElementNS(ns, tagName);
   const gmlVersion = context['gmlVersion'];
   node.appendChild(name);
   writeStringTextNode(name, pair.name);
