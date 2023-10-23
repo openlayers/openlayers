@@ -106,7 +106,7 @@
     "semver": "^7.3.7",
     "serve-static": "^1.14.0",
     "shx": "^0.3.2",
-    "sinon": "^16.0.0",
+    "sinon": "^17.0.0",
     "source-map-loader": "^4.0.0",
     "threads": "^1.6.5",
     "typescript": "5.2.2",
