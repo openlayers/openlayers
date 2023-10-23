@@ -74,9 +74,11 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
 
 /**
  * @typedef {Object} FitOptions
- * @property {import("./size.js").Size} [size] The size in pixels of the box to fit
- * the extent into. Default is the current size of the first map in the DOM that
- * uses this view, or `[100, 100]` if no such map is found.
+ * @property {import("./size.js").Size} [size] The size in pixels of the box to
+ * fit the extent into. If the view is associated with one map, it defaults to
+ * the size of the map. If it is associated with multiple maps, the size can be
+ * of any one of the maps, so the desired size should be specified. If no map
+ * is associated it uses `[100, 100]` as the size.
  * @property {!Array<number>} [padding=[0, 0, 0, 0]] Padding (in pixels) to be
  * cleared inside the view. Values in the array are top, right, bottom and left
  * padding.
