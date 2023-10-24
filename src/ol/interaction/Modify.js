@@ -1184,14 +1184,13 @@ class Modify extends PointerInteraction {
       map.forEachFeatureAtPixel(
         pixel,
         (feature, layer, geometry) => {
-          if (geometry) {
+          if (geometry && geometry.getType() === 'Point') {
             geometry = new Point(
               toUserCoordinate(geometry.getCoordinates(), projection)
             );
           }
           const geom = geometry || feature.getGeometry();
           if (
-            geom.getType() === 'Point' &&
             feature instanceof Feature &&
             this.features_.getArray().includes(feature)
           ) {
