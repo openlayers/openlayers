@@ -228,6 +228,7 @@ export const Ops = {
   String: 'string',
   Array: 'array',
   Color: 'color',
+  Id: 'id',
 };
 
 /**
@@ -241,6 +242,7 @@ export const Ops = {
 const parsers = {
   [Ops.Get]: createParser(AnyType, withArgsCount(1, 1), withGetArgs),
   [Ops.Var]: createParser(AnyType, withArgsCount(1, 1), withVarArgs),
+  [Ops.Id]: createParser(StringType, withNoArgs),
   [Ops.Concat]: createParser(
     StringType,
     withArgsCount(2, Infinity),

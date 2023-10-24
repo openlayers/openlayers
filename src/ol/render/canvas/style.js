@@ -76,6 +76,7 @@ export function rulesToStyleFunction(rules) {
   return function (feature, resolution) {
     evaluationContext.properties = feature.getPropertiesInternal();
     evaluationContext.resolution = resolution;
+    evaluationContext.variables.id = feature['ol_uid'];
     return evaluator(evaluationContext);
   };
 }

@@ -108,6 +108,9 @@ function compileExpression(expression, context) {
     case Ops.Var: {
       return compileAccessorExpression(expression, context);
     }
+    case Ops.Id: {
+      return (expression) => expression.variables.id;
+    }
     case Ops.Concat: {
       const args = expression.args.map((e) => compileExpression(e, context));
       return (context) =>
