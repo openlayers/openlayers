@@ -55,7 +55,6 @@ varying vec3 v_test;
 
 vec2 pxToScreen(vec2 coordPx) {
   vec2 scaled = coordPx / u_viewportSizePx / 0.5;
-  
   return scaled;
 }
 
@@ -78,6 +77,7 @@ void main(void) {
     offsetPx += halfSizePx * vec2(-1., 1.);
   }
   float angle = 0.0;
+  
   float c = cos(-angle);
   float s = sin(-angle);
   offsetPx = vec2(c * offsetPx.x - s * offsetPx.y, s * offsetPx.x + c * offsetPx.y);
@@ -89,7 +89,6 @@ void main(void) {
   v_texCoord = vec2(u, v);
   v_hitColor = a_hitColor;
   v_angle = angle;
-  
   c = cos(-v_angle);
   s = sin(-v_angle);
   centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y); 
@@ -144,7 +143,6 @@ varying vec2 v_quadSizePx;
 
 vec2 pxToScreen(vec2 coordPx) {
   vec2 scaled = coordPx / u_viewportSizePx / 0.5;
-  
   return scaled;
 }
 
@@ -167,6 +165,7 @@ void main(void) {
     offsetPx += halfSizePx * vec2(-1., 1.);
   }
   float angle = 0.0;
+  
   float c = cos(-angle);
   float s = sin(-angle);
   offsetPx = vec2(c * offsetPx.x - s * offsetPx.y, s * offsetPx.x + c * offsetPx.y);
@@ -178,7 +177,6 @@ void main(void) {
   v_texCoord = vec2(u, v);
   v_hitColor = a_hitColor;
   v_angle = angle;
-  
   c = cos(-v_angle);
   s = sin(-v_angle);
   centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y); 
@@ -231,7 +229,6 @@ varying vec2 v_quadSizePx;
 
 vec2 pxToScreen(vec2 coordPx) {
   vec2 scaled = coordPx / u_viewportSizePx / 0.5;
-  scaled = vec2(scaled.x * cos(-u_rotation) - scaled.y * sin(-u_rotation), scaled.x * sin(-u_rotation) + scaled.y * cos(-u_rotation));
   return scaled;
 }
 
@@ -254,6 +251,7 @@ void main(void) {
     offsetPx += halfSizePx * vec2(-1., 1.);
   }
   float angle = 0.0;
+  angle += u_rotation;
   float c = cos(-angle);
   float s = sin(-angle);
   offsetPx = vec2(c * offsetPx.x - s * offsetPx.y, s * offsetPx.x + c * offsetPx.y);
@@ -265,7 +263,6 @@ void main(void) {
   v_texCoord = vec2(u, v);
   v_hitColor = a_hitColor;
   v_angle = angle;
-  v_angle += u_rotation;
   c = cos(-v_angle);
   s = sin(-v_angle);
   centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y); 
@@ -317,7 +314,6 @@ varying vec2 v_quadSizePx;
 
 vec2 pxToScreen(vec2 coordPx) {
   vec2 scaled = coordPx / u_viewportSizePx / 0.5;
-  
   return scaled;
 }
 
@@ -340,6 +336,7 @@ void main(void) {
     offsetPx += halfSizePx * vec2(-1., 1.);
   }
   float angle = u_time * 0.2;
+  
   float c = cos(-angle);
   float s = sin(-angle);
   offsetPx = vec2(c * offsetPx.x - s * offsetPx.y, s * offsetPx.x + c * offsetPx.y);
@@ -351,7 +348,6 @@ void main(void) {
   v_texCoord = vec2(u, v);
   v_hitColor = a_hitColor;
   v_angle = angle;
-  
   c = cos(-v_angle);
   s = sin(-v_angle);
   centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y); 
