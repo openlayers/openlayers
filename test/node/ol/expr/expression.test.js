@@ -83,14 +83,14 @@ describe('ol/expr/expression.js', () => {
       expect(context.properties.has('foo')).to.be(true);
     });
 
-    it('parses Id expression', () => {
+    it('parses id expression', () => {
       const context = newParsingContext();
-      context.variables.id = '12345';
       const expression = parse(['id'], context);
+      expect(context.featureId).to.be(true);
+
       expect(expression).to.be.a(CallExpression);
       expect(expression.operator).to.be('id');
-      expect(isType(expression.type, AnyType));
-      expect(context.variables.id).to.be('12345');
+      expect(isType(expression.type, StringType | NumberType));
     });
 
     it('parses a == expression', () => {

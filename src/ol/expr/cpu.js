@@ -24,6 +24,7 @@ import {lchaToRgba, normalize, rgbaToLcha, withAlpha} from '../color.js';
  * @property {Object} properties The values for properties used in 'get' expressions.
  * @property {Object} variables The values for variables used in 'var' expressions.
  * @property {number} resolution The map resolution.
+ * @property {string|number|null} featureId The feature id.
  */
 
 /**
@@ -34,6 +35,7 @@ export function newEvaluationContext() {
     variables: {},
     properties: {},
     resolution: NaN,
+    featureId: null,
   };
 }
 
@@ -109,7 +111,7 @@ function compileExpression(expression, context) {
       return compileAccessorExpression(expression, context);
     }
     case Ops.Id: {
-      return (expression) => expression.variables.id;
+      return (expression) => expression.featureId;
     }
     case Ops.Concat: {
       const args = expression.args.map((e) => compileExpression(e, context));
