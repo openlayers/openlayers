@@ -52,6 +52,24 @@ describe('ol/expr/cpu.js', () => {
         expected: 'chicken',
       },
       {
+        name: 'id (number)',
+        type: NumberType,
+        expression: ['id'],
+        context: {
+          featureId: 42,
+        },
+        expected: 42,
+      },
+      {
+        name: 'id (string)',
+        type: StringType,
+        expression: ['id'],
+        context: {
+          featureId: 'forty-two',
+        },
+        expected: 'forty-two',
+      },
+      {
         name: 'resolution',
         type: NumberType,
         expression: ['resolution'],
@@ -86,6 +104,15 @@ describe('ol/expr/cpu.js', () => {
           properties: {val: 'test', val2: 'another'},
         },
         expected: 'test another',
+      },
+      {
+        name: 'concat (with id)',
+        type: StringType,
+        expression: ['concat', 'Feature ', ['id']],
+        context: {
+          featureId: 'foo',
+        },
+        expected: 'Feature foo',
       },
       {
         name: 'any (true)',

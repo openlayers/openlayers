@@ -83,6 +83,16 @@ describe('ol/expr/expression.js', () => {
       expect(context.properties.has('foo')).to.be(true);
     });
 
+    it('parses id expression', () => {
+      const context = newParsingContext();
+      const expression = parse(['id'], context);
+      expect(context.featureId).to.be(true);
+
+      expect(expression).to.be.a(CallExpression);
+      expect(expression.operator).to.be('id');
+      expect(isType(expression.type, StringType | NumberType));
+    });
+
     it('parses a == expression', () => {
       const context = newParsingContext();
       const expression = parse(['==', ['get', 'foo'], 'bar'], context);

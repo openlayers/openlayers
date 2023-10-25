@@ -114,6 +114,7 @@ export class CallExpression {
  * @typedef {Object} ParsingContext
  * @property {Set<string>} variables Variables referenced with the 'var' operator.
  * @property {Set<string>} properties Properties referenced with the 'get' operator.
+ * @property {boolean} featureId The style uses the feature id.
  * @property {import("../style/literal").LiteralStyle} style The style being parsed
  */
 
@@ -124,6 +125,7 @@ export function newParsingContext() {
   return {
     variables: new Set(),
     properties: new Set(),
+    featureId: false,
     style: {},
   };
 }
@@ -228,6 +230,7 @@ export const Ops = {
   String: 'string',
   Array: 'array',
   Color: 'color',
+  Id: 'id',
 };
 
 /**
@@ -241,6 +244,7 @@ export const Ops = {
 const parsers = {
   [Ops.Get]: createParser(AnyType, withArgsCount(1, 1), withGetArgs),
   [Ops.Var]: createParser(AnyType, withArgsCount(1, 1), withVarArgs),
+  [Ops.Id]: createParser(NumberType | StringType, withNoArgs, usesFeatureId),
   [Ops.Concat]: createParser(
     StringType,
     withArgsCount(2, Infinity),
@@ -485,6 +489,13 @@ function withVarArgs(encoded, context) {
   }
   context.variables.add(arg.value);
   return [arg];
+}
+
+/**
+ * @type ArgValidator
+ */
+function usesFeatureId(encoded, context) {
+  context.featureId = true;
 }
 
 /**
