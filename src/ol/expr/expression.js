@@ -219,7 +219,7 @@ export class CallExpression {
  * @property {Set<string>} variables Variables referenced with the 'var' operator.
  * @property {Set<string>} properties Properties referenced with the 'get' operator.
  * @property {boolean} featureId The style uses the feature id.
- * @property {import("../style/literal").LiteralStyle} style The style being parsed
+ * @property {import("../style/flat.js").FlatStyle|import("../style/webgl.js").WebGLStyle} style The style being parsed
  */
 
 /**
@@ -650,7 +650,7 @@ function withVarArgs(encoded, context, parsedArgs, typeHint) {
   }
   context.variables.add(varName);
   if (
-    !context.style.variables ||
+    !('variables' in context.style) ||
     context.style.variables[varName] === undefined
   ) {
     return [new LiteralExpression(AnyType, varName)];
