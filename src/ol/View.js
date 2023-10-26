@@ -76,8 +76,8 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
  * @typedef {Object} FitOptions
  * @property {import("./size.js").Size} [size] The size in pixels of the box to
  * fit the extent into. Defaults to the size of the map the view is associated with.
- * If no map or multiple maps are connected to the view, the desired box size
- * (e.g. `map.getSize()`) has to be provided to get a usable result.
+ * If no map or multiple maps are connected to the view, provide the desired box size
+ * (e.g. `map.getSize()`).
  * @property {!Array<number>} [padding=[0, 0, 0, 0]] Padding (in pixels) to be
  * cleared inside the view. Values in the array are top, right, bottom and left
  * padding.
@@ -991,8 +991,8 @@ class View extends BaseObject {
    * @param {import("./size.js").Size} [size] The pixel dimensions of the box
    * into which the calculated extent should fit. Defaults to the size of the
    * map the view is associated with.
-   * If no map or multiple maps are connected to the view, the desired box size
-   * (e.g. `map.getSize()`) has to be provided to get a usable result.
+   * If no map or multiple maps are connected to the view, provide the desired
+   * box size (e.g. `map.getSize()`).
    * @return {import("./extent.js").Extent} Extent.
    * @api
    */
