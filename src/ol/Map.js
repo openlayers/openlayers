@@ -1367,7 +1367,7 @@ class Map extends BaseObject {
     }
     const view = this.getView();
     if (view) {
-      this.updateViewportSize_();
+      this.updateViewportSize_(this.getSize());
 
       this.viewPropertyListenerKey_ = listen(
         view,
@@ -1738,25 +1738,18 @@ class Map extends BaseObject {
     const oldSize = this.getSize();
     if (size && (!oldSize || !equals(size, oldSize))) {
       this.setSize(size);
-      this.updateViewportSize_();
+      this.updateViewportSize_(size);
     }
   }
 
   /**
    * Recomputes the viewport size and save it on the view object (if any)
+   * @param {import("./size.js").Size|undefined} size The size.
    * @private
    */
-  updateViewportSize_() {
+  updateViewportSize_(size) {
     const view = this.getView();
     if (view) {
-      let size = undefined;
-      const computedStyle = getComputedStyle(this.viewport_);
-      if (computedStyle.width && computedStyle.height) {
-        size = [
-          parseInt(computedStyle.width, 10),
-          parseInt(computedStyle.height, 10),
-        ];
-      }
       view.setViewportSize(size);
     }
   }
