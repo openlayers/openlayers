@@ -602,13 +602,16 @@ describe('ol.webgl.styleparser', () => {
     });
 
     describe('stroke style', () => {
+      let result, uid;
       describe('simple style', () => {
-        it('parses style', () => {
-          const result = parseLiteralStyle({
+        beforeEach(() => {
+          const style = {
             'stroke-color': '#ff0000',
             'stroke-width': 4,
-          });
-
+          };
+          result = parseLiteralStyle(style);
+        });
+        it('parses style', () => {
           expect(result.builder.uniforms_).to.eql([]);
           expect(result.builder.attributes_).to.eql([]);
           expect(result.builder.varyings_).to.eql([]);
@@ -631,8 +634,8 @@ describe('ol.webgl.styleparser', () => {
         });
       });
       describe('dynamic properties, color, width joins, caps, offset', () => {
-        it('parses style', () => {
-          const result = parseLiteralStyle({
+        beforeEach(() => {
+          const style = {
             variables: {
               width: 1,
               capType: 'butt',
@@ -660,8 +663,10 @@ describe('ol.webgl.styleparser', () => {
               ['*', ['get', 'size'], 20],
             ],
             'stroke-line-dash-offset': ['*', ['time'], 5],
-          });
-
+          };
+          result = parseLiteralStyle(style);
+        });
+        it('parses style', () => {
           expect(result.builder.uniforms_).to.eql([
             'float u_var_width',
             'float u_var_capType',
@@ -725,40 +730,163 @@ describe('ol.webgl.styleparser', () => {
 }`);
         });
       });
+      describe('stroke pattern, image as path', () => {
+        beforeEach(() => {
+          const style = {
+            'stroke-pattern-src': '../data/icon.png',
+          };
+          uid = computeHash(style['stroke-pattern-src']);
+          result = parseLiteralStyle(style);
+        });
+        it('registers a uniform for the icon size, which is set asynchronously', () => {
+          expect(Object.keys(result.uniforms).length).to.eql(2);
+          expect(result.uniforms).to.have.property(`u_texture${uid}`);
+          expect(result.uniforms).to.have.property(`u_texture${uid}_size`);
+        });
+        it('creates an Image with the given path and crossOrigin set to anonymous', () => {
+          const image = /** @type {Image} */ (
+            result.uniforms[`u_texture${uid}`]
+          );
+          expect(image).to.be.an(Image);
+          expect(new URL(image.src).pathname).to.eql('/data/icon.png');
+          expect(image.crossOrigin).to.eql('anonymous');
+        });
+        it('sets the color expression', () => {
+          expect(result.builder.fragmentShaderFunctions_[0]).to.contain(
+            'vec4 sampleStrokePattern'
+          );
+          expect(result.builder.strokeColorExpression_).to.eql(
+            `1. * sampleStrokePattern(u_texture${uid}, u_texture${uid}_size, vec2(0.), u_texture${uid}_size, 0., currentLengthPx, currentRadiusRatio)`
+          );
+        });
+      });
+      describe('stroke pattern, tint, spacing, offset and size', () => {
+        beforeEach(() => {
+          const style = {
+            'stroke-color': 'red',
+            'stroke-pattern-img': new Image(10, 20),
+            'stroke-pattern-offset': [5, 10],
+            'stroke-pattern-offset-origin': 'bottom-left',
+            'stroke-pattern-size': [5, 5],
+            'stroke-pattern-spacing': ['*', 2, 10],
+          };
+          uid = computeHash(style['stroke-pattern-img']);
+          result = parseLiteralStyle(style);
+        });
+        it('sets the color expression', () => {
+          expect(result.builder.fragmentShaderFunctions_[0]).to.contain(
+            'vec4 sampleStrokePattern'
+          );
+          expect(result.builder.strokeColorExpression_).to.eql(
+            `vec4(1.0, 0.0, 0.0, 1.0) * sampleStrokePattern(u_texture${uid}, vec2(10.0, 20.0), vec2(0., vec2(10.0, 20.0).y) + vec2(5.0, 5.0) * vec2(0., -1.) + vec2(5.0, 10.0) * vec2(1., -1.), vec2(5.0, 5.0), (2.0 * 10.0), currentLengthPx, currentRadiusRatio)`
+          );
+        });
+      });
     });
 
     describe('fill style', () => {
-      it('parses style', () => {
-        const result = parseLiteralStyle({
-          variables: {
-            scale: 10,
-          },
-          'fill-color': [
-            'interpolate',
-            ['linear'],
-            ['*', ['get', 'intensity'], ['var', 'scale']],
-            0,
-            'blue',
-            10,
-            'red',
-          ],
+      let result, uid;
+      describe('color expression', () => {
+        beforeEach(() => {
+          const style = {
+            variables: {
+              scale: 10,
+            },
+            'fill-color': [
+              'interpolate',
+              ['linear'],
+              ['*', ['get', 'intensity'], ['var', 'scale']],
+              0,
+              'blue',
+              10,
+              'red',
+            ],
+          };
+          result = parseLiteralStyle(style);
         });
+        it('parses style', () => {
+          const result = parseLiteralStyle({
+            variables: {
+              scale: 10,
+            },
+            'fill-color': [
+              'interpolate',
+              ['linear'],
+              ['*', ['get', 'intensity'], ['var', 'scale']],
+              0,
+              'blue',
+              10,
+              'red',
+            ],
+          });
 
-        expect(result.builder.uniforms_).to.eql(['float u_var_scale']);
-        expect(result.builder.attributes_).to.eql(['float a_prop_intensity']);
-        expect(result.builder.varyings_).to.eql([
-          {
-            name: 'v_prop_intensity',
-            type: 'float',
-            expression: 'a_prop_intensity',
-          },
-        ]);
-        expect(result.builder.fillColorExpression_).to.eql(
-          'mix(vec4(0.0, 0.0, 1.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), clamp(((v_prop_intensity * u_var_scale) - 0.0) / (10.0 - 0.0), 0.0, 1.0))'
-        );
-        expect(Object.keys(result.attributes).length).to.eql(1);
-        expect(result.attributes).to.have.property('intensity');
-        expect(result.uniforms).to.have.property('u_var_scale');
+          expect(result.builder.uniforms_).to.eql(['float u_var_scale']);
+          expect(result.builder.attributes_).to.eql(['float a_prop_intensity']);
+          expect(result.builder.varyings_).to.eql([
+            {
+              name: 'v_prop_intensity',
+              type: 'float',
+              expression: 'a_prop_intensity',
+            },
+          ]);
+          expect(result.builder.fillColorExpression_).to.eql(
+            'mix(vec4(0.0, 0.0, 1.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), clamp(((v_prop_intensity * u_var_scale) - 0.0) / (10.0 - 0.0), 0.0, 1.0))'
+          );
+          expect(Object.keys(result.attributes).length).to.eql(1);
+          expect(result.attributes).to.have.property('intensity');
+          expect(result.uniforms).to.have.property('u_var_scale');
+        });
+      });
+      describe('fill pattern, image as path', () => {
+        beforeEach(() => {
+          const style = {
+            'fill-pattern-src': '../data/icon.png',
+          };
+          uid = computeHash(style['fill-pattern-src']); // unique hash based on style
+          result = parseLiteralStyle(style);
+        });
+        it('registers a uniform for the icon size, which is set asynchronously', () => {
+          expect(Object.keys(result.uniforms).length).to.eql(2);
+          expect(result.uniforms).to.have.property(`u_texture${uid}`);
+          expect(result.uniforms).to.have.property(`u_texture${uid}_size`);
+        });
+        it('creates an Image with the given path and crossOrigin set to anonymous', () => {
+          const image = /** @type {Image} */ (
+            result.uniforms[`u_texture${uid}`]
+          );
+          expect(image).to.be.an(Image);
+          expect(new URL(image.src).pathname).to.eql('/data/icon.png');
+          expect(image.crossOrigin).to.eql('anonymous');
+        });
+        it('sets the color expression', () => {
+          expect(result.builder.fragmentShaderFunctions_[0]).to.contain(
+            'vec4 sampleFillPattern'
+          );
+          expect(result.builder.fillColorExpression_).to.eql(
+            `1. * sampleFillPattern(u_texture${uid}, u_texture${uid}_size, vec2(0.), u_texture${uid}_size, pxOrigin, pxPos)`
+          );
+        });
+      });
+      describe('fill pattern, tint, offset and size', () => {
+        beforeEach(() => {
+          const style = {
+            'fill-color': 'red',
+            'fill-pattern-img': new Image(10, 20),
+            'fill-pattern-offset': [5, 10],
+            'fill-pattern-offset-origin': 'bottom-left',
+            'fill-pattern-size': [5, 5],
+          };
+          uid = computeHash(style['fill-pattern-img']);
+          result = parseLiteralStyle(style);
+        });
+        it('sets the color expression', () => {
+          expect(result.builder.fragmentShaderFunctions_[0]).to.contain(
+            'vec4 sampleFillPattern'
+          );
+          expect(result.builder.fillColorExpression_).to.eql(
+            `vec4(1.0, 0.0, 0.0, 1.0) * sampleFillPattern(u_texture${uid}, vec2(10.0, 20.0), vec2(0., vec2(10.0, 20.0).y) + vec2(5.0, 5.0) * vec2(0., -1.) + vec2(5.0, 10.0) * vec2(1., -1.), vec2(5.0, 5.0), pxOrigin, pxPos)`
+          );
+        });
       });
     });
 

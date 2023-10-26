@@ -26,6 +26,12 @@ uniform mediump int u_hitDetection;
 
 const float PI = 3.141592653589793238;
 const float TWO_PI = 2.0 * PI;
+
+// this used to produce an alpha-premultiplied color from a texture
+vec4 samplePremultiplied(sampler2D sampler, vec2 texCoord) {
+  vec4 color = texture2D(sampler, texCoord);
+  return vec4(color.rgb * color.a, color.a);
+}
 `;
 
 const DEFAULT_STYLE = createDefaultStyle();
@@ -364,7 +370,7 @@ export class ShaderBuilder {
   }
 
   /**
-   * @param {string} expression Stroke color expression, evaluate to `vec4`
+   * @param {string} expression Stroke color expression, evaluate to `vec4`: can rely on currentLengthPx and currentRadiusPx
    * @return {ShaderBuilder} the builder object
    */
   setStrokeColorExpression(expression) {
@@ -833,6 +839,7 @@ void main(void) {
   vec2 startToPoint = currentPoint - v_segmentStart;
   float currentLengthPx = max(0., min(dot(segmentTangent, startToPoint), segmentLength)) + v_distanceOffsetPx; 
   float currentRadiusPx = abs(dot(segmentNormal, startToPoint));
+  float currentRadiusRatio = dot(segmentNormal, startToPoint) * 2. / v_width;
   vec4 color = ${this.strokeColorExpression_} * u_globalAlpha;
   float capType = ${this.strokeCapExpression_};
   float joinType = ${this.strokeJoinExpression_};
@@ -919,9 +926,16 @@ vec2 pxToWorld(vec2 pxPos) {
   return (u_screenToWorldMatrix * vec4(screenPos, 0.0, 1.0)).xy;
 }
 
+vec2 worldToPx(vec2 worldPos) {
+  vec4 screenPos = u_projectionMatrix * vec4(worldPos, 0.0, 1.0);
+  return (0.5 * screenPos.xy + 0.5) * u_viewportSizePx;
+}
+
 void main(void) {
+  vec2 pxPos = gl_FragCoord.xy / u_pixelRatio;
+  vec2 pxOrigin = worldToPx(u_patternOrigin);
   #ifdef GL_FRAGMENT_PRECISION_HIGH
-  vec2 worldPos = pxToWorld(gl_FragCoord.xy / u_pixelRatio);
+  vec2 worldPos = pxToWorld(pxPos);
   if (
     abs(u_renderExtent[0] - u_renderExtent[2]) > 0.0 && (
       worldPos[0] < u_renderExtent[0] ||
