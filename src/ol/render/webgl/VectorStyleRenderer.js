@@ -82,7 +82,7 @@ export const Attributes = {
  */
 
 /**
- * @typedef {import('../../style/literal.js').LiteralStyle|StyleShaders} VectorStyle
+ * @typedef {import('../../style/webgl.js').WebGLStyle|StyleShaders} VectorStyle
  */
 
 /**
@@ -113,7 +113,7 @@ class VectorStyleRenderer {
     const isShaders = 'builder' in styleOrShaders;
     if (!isShaders) {
       const parseResult = parseLiteralStyle(
-        /** @type {import('../../style/literal.js').LiteralStyle} */ (
+        /** @type {import('../../style/webgl.js').WebGLStyle} */ (
           styleOrShaders
         )
       );

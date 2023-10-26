@@ -173,7 +173,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       let shaders;
       if (!isShaders) {
         const parseResult = parseLiteralStyle(
-          /** @type {import('../../style/literal.js').LiteralStyle} */ (style)
+          /** @type {import('../../style/webgl.js').WebGLStyle} */ (style)
         );
         addBuilderParams(parseResult.builder);
         shaders = {

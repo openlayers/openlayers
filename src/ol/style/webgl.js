@@ -1,7 +1,6 @@
 /**
- * Literal style objects differ from standard styles in that they cannot
- * be functions and are made up of simple objects instead of classes.
- * @module ol/style/literal
+ * WebGL style objects slightly differ from standard flat styles for certain properties
+ * @module ol/style/webgl
  */
 
 /**
@@ -123,7 +122,7 @@
  * (meaningful only when used in conjunction with a two dimensional scale).
  */
 
-// FIXME Present in flat style but not implemented in literal webgl style:
+// FIXME Present in flat style but not implemented in webgl style:
 //  - icon declutter mode
 //  - circle line cap/join/miter limit
 //  - circle dash pattern/offset
@@ -134,7 +133,7 @@
 //  - text style
 
 /**
- * @typedef {BaseProps & IconProps & StrokeProps & FillProps & CircleProps & ShapeProps} LiteralStyle
+ * @typedef {BaseProps & IconProps & StrokeProps & FillProps & CircleProps & ShapeProps} WebGLStyle
  */
 
 export {};

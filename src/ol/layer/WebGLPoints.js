@@ -8,7 +8,7 @@ import {parseLiteralStyle} from '../webgl/styleparser.js';
 /**
  * @template {import("../source/Vector.js").default} VectorSourceType
  * @typedef {Object} Options
- * @property {import('../style/literal.js').LiteralStyle} style Literal style to apply to the layer features.
+ * @property {import('../style/webgl.js').WebGLStyle} style Literal style to apply to the layer features.
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.

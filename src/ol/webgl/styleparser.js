@@ -90,7 +90,7 @@ function getGlslTypeFromType(type) {
 }
 
 /**
- * @param {import("../style/literal.js").LiteralStyle} style Style
+ * @param {import("../style/webgl.js").WebGLStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
  * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
  * @param {'shape-'|'circle-'|'icon-'} prefix Properties prefix
@@ -181,7 +181,7 @@ function getColorFromDistanceField(
 }
 
 /**
- * @param {import("../style/literal.js").LiteralStyle} style Style
+ * @param {import("../style/webgl.js").WebGLStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
  * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
@@ -276,7 +276,7 @@ function parseCircleProperties(
 }
 
 /**
- * @param {import("../style/literal.js").LiteralStyle} style Style
+ * @param {import("../style/webgl.js").WebGLStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
  * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
@@ -430,7 +430,7 @@ function parseShapeProperties(
 }
 
 /**
- * @param {import("../style/literal.js").LiteralStyle} style Style
+ * @param {import("../style/webgl.js").WebGLStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
  * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
@@ -603,7 +603,7 @@ function parseIconProperties(
 }
 
 /**
- * @param {import("../style/literal.js").LiteralStyle} style Style
+ * @param {import("../style/webgl.js").WebGLStyle} style Style
  * @param {ShaderBuilder} builder Shader Builder
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
  * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
@@ -721,7 +721,7 @@ function parseStrokeProperties(
 }
 
 /**
- * @param {import("../style/literal.js").LiteralStyle} style Style
+ * @param {import("../style/webgl.js").WebGLStyle} style Style
  * @param {ShaderBuilder} builder Shader Builder
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
  * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
@@ -749,14 +749,14 @@ function parseFillProperties(
  */
 
 /**
- * Parses a {@link import("../style/literal.js").LiteralStyle} object and returns a {@link ShaderBuilder}
+ * Parses a {@link import("../style/webgl.js").WebGLStyle} object and returns a {@link ShaderBuilder}
  * object that has been configured according to the given style, as well as `attributes` and `uniforms`
  * arrays to be fed to the `WebGLPointsRenderer` class.
  *
  * Also returns `uniforms` and `attributes` properties as expected by the
  * {@link module:ol/renderer/webgl/PointsLayer~WebGLPointsLayerRenderer}.
  *
- * @param {import("../style/literal.js").LiteralStyle} style Literal style.
+ * @param {import("../style/webgl.js").WebGLStyle} style Literal style.
  * @return {StyleParseResult} Result containing shader params, attributes and uniforms.
  */
 export function parseLiteralStyle(style) {
