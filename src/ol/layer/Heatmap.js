@@ -176,13 +176,13 @@ class Heatmap extends BaseVector {
 
   createRenderer() {
     const builder = new ShaderBuilder()
-      .addAttribute('float a_weight')
-      .addVarying('v_weight', 'float', 'a_weight')
+      .addAttribute('float a_prop_weight')
+      .addVarying('v_prop_weight', 'float', 'a_prop_weight')
       .addUniform('float u_size')
       .addUniform('float u_blurSlope')
       .setSymbolSizeExpression('vec2(u_size)')
       .setSymbolColorExpression(
-        'vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * u_blurSlope) * v_weight)'
+        'vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * u_blurSlope) * v_prop_weight)'
       );
 
     return new WebGLPointsLayerRenderer(this, {

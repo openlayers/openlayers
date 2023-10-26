@@ -2,17 +2,43 @@
  * Utilities for parsing literal style objects
  * @module ol/webgl/styleparser
  */
+import {
+  BooleanType,
+  ColorType,
+  NumberArrayType,
+  NumberType,
+  StringType,
+  newParsingContext,
+} from '../expr/expression.js';
 import {ShaderBuilder} from './ShaderBuilder.js';
 import {
-  ValueTypes,
   arrayToGlsl,
-  expressionToGlsl,
+  buildExpression,
   getStringNumberEquivalent,
   stringToGlsl,
   uniformNameForVariable,
-} from '../style/expressions.js';
+} from '../expr/gpu.js';
 import {asArray} from '../color.js';
 import {getUid} from '../util.js';
+
+/**
+ * Recursively parses a style expression and outputs a GLSL-compatible string. Takes in a compilation context that
+ * will be read and modified during the parsing operation.
+ * @param {import("../expr/gpu.js").CompilationContext} compilationContext Compilation context
+ * @param {import("../expr/expression.js").EncodedExpression} value Value
+ * @param {number} [expectedType] Expected final type (can be several types combined)
+ * @return {string} GLSL-compatible output
+ */
+export function expressionToGlsl(compilationContext, value, expectedType) {
+  const parsingContext = newParsingContext();
+  parsingContext.style = compilationContext.style;
+  return buildExpression(
+    value,
+    expectedType,
+    parsingContext,
+    compilationContext
+  );
+}
 
 /**
  * Packs all components of a color into a two-floats array
@@ -38,21 +64,21 @@ const UNPACK_COLOR_FN = `vec4 unpackColor(vec2 packedColor) {
 }`;
 
 /**
- * @param {ValueTypes} type Value type
+ * @param {number} type Value type
  * @return {1|2|3|4} The amount of components for this value
  */
 function getGlslSizeFromType(type) {
-  if (type === ValueTypes.COLOR) {
+  if (type === ColorType) {
     return 2;
   }
-  if (type === ValueTypes.NUMBER_ARRAY) {
+  if (type === NumberArrayType) {
     return 4;
   }
   return 1;
 }
 
 /**
- * @param {ValueTypes} type Value type
+ * @param {number} type Value type
  * @return {'float'|'vec2'|'vec3'|'vec4'} The corresponding GLSL type for this value
  */
 function getGlslTypeFromType(type) {
@@ -66,7 +92,7 @@ function getGlslTypeFromType(type) {
 /**
  * @param {import("../style/literal.js").LiteralStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
- * @param {import("../style/expressions.js").ParsingContext} vertContext Vertex shader parsing context
+ * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
  * @param {'shape-'|'circle-'|'icon-'} prefix Properties prefix
  */
 function parseCommonSymbolProperties(style, builder, vertContext, prefix) {
@@ -75,13 +101,13 @@ function parseCommonSymbolProperties(style, builder, vertContext, prefix) {
     radius = expressionToGlsl(
       vertContext,
       style[`${prefix}radius`],
-      ValueTypes.NUMBER
+      NumberType
     );
   } else if (`${prefix}radius1` in style && prefix === 'shape-') {
     radius = expressionToGlsl(
       vertContext,
       style[`${prefix}radius1`],
-      ValueTypes.NUMBER
+      NumberType
     );
   }
   if (radius !== undefined) {
@@ -89,7 +115,7 @@ function parseCommonSymbolProperties(style, builder, vertContext, prefix) {
       radius = `(${radius} + ${expressionToGlsl(
         vertContext,
         style[`${prefix}stroke-width`],
-        ValueTypes.NUMBER
+        NumberType
       )} * 0.5)`;
     }
     builder.setSymbolSizeExpression(`vec2(${radius} * 2. + 0.5)`); // adding some padding for antialiasing
@@ -98,7 +124,7 @@ function parseCommonSymbolProperties(style, builder, vertContext, prefix) {
     const scale = expressionToGlsl(
       vertContext,
       style[`${prefix}scale`],
-      ValueTypes.NUMBER | ValueTypes.NUMBER_ARRAY
+      NumberType | NumberArrayType
     );
     builder.setSymbolSizeExpression(
       `${builder.getSymbolSizeExpression()} * ${scale}`
@@ -109,17 +135,13 @@ function parseCommonSymbolProperties(style, builder, vertContext, prefix) {
       expressionToGlsl(
         vertContext,
         style[`${prefix}displacement`],
-        ValueTypes.NUMBER_ARRAY
+        NumberArrayType
       )
     );
   }
   if (`${prefix}rotation` in style) {
     builder.setSymbolRotationExpression(
-      expressionToGlsl(
-        vertContext,
-        style[`${prefix}rotation`],
-        ValueTypes.NUMBER
-      )
+      expressionToGlsl(vertContext, style[`${prefix}rotation`], NumberType)
     );
   }
   if (`${prefix}rotate-with-view` in style) {
@@ -162,8 +184,8 @@ function getColorFromDistanceField(
  * @param {import("../style/literal.js").LiteralStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
- * @param {import("../style/expressions.js").ParsingContext} vertContext Vertex shader parsing context
- * @param {import("../style/expressions.js").ParsingContext} fragContext Fragment shader parsing context
+ * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
+ * @param {import("../expr/gpu.js").CompilationContext} fragContext Fragment shader compilation context
  */
 function parseCircleProperties(
   style,
@@ -188,7 +210,7 @@ function parseCircleProperties(
     opacity = expressionToGlsl(
       fragContext,
       style['circle-opacity'],
-      ValueTypes.NUMBER
+      NumberType
     );
   }
 
@@ -198,7 +220,7 @@ function parseCircleProperties(
     const scale = expressionToGlsl(
       fragContext,
       style['circle-scale'],
-      ValueTypes.NUMBER | ValueTypes.NUMBER_ARRAY
+      NumberType | NumberArrayType
     );
     currentPoint = `coordsPx / ${scale}`;
   }
@@ -209,7 +231,7 @@ function parseCircleProperties(
     fillColor = expressionToGlsl(
       fragContext,
       style['circle-fill-color'],
-      ValueTypes.COLOR
+      ColorType
     );
   }
 
@@ -219,7 +241,7 @@ function parseCircleProperties(
     strokeColor = expressionToGlsl(
       fragContext,
       style['circle-stroke-color'],
-      ValueTypes.COLOR
+      ColorType
     );
   }
 
@@ -227,7 +249,7 @@ function parseCircleProperties(
   let radius = expressionToGlsl(
     fragContext,
     style['circle-radius'],
-    ValueTypes.NUMBER
+    NumberType
   );
 
   // STROKE WIDTH
@@ -236,7 +258,7 @@ function parseCircleProperties(
     strokeWidth = expressionToGlsl(
       fragContext,
       style['circle-stroke-width'],
-      ValueTypes.NUMBER
+      NumberType
     );
     radius = `(${radius} + ${strokeWidth} * 0.5)`;
   }
@@ -257,8 +279,8 @@ function parseCircleProperties(
  * @param {import("../style/literal.js").LiteralStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
- * @param {import("../style/expressions.js").ParsingContext} vertContext Vertex shader parsing context
- * @param {import("../style/expressions.js").ParsingContext} fragContext Fragment shader parsing context
+ * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
+ * @param {import("../expr/gpu.js").CompilationContext} fragContext Fragment shader compilation context
  */
 function parseShapeProperties(
   style,
@@ -313,11 +335,7 @@ function parseShapeProperties(
   // OPACITY
   let opacity = null;
   if ('shape-opacity' in style) {
-    opacity = expressionToGlsl(
-      fragContext,
-      style['shape-opacity'],
-      ValueTypes.NUMBER
-    );
+    opacity = expressionToGlsl(fragContext, style['shape-opacity'], NumberType);
   }
 
   // SCALE
@@ -326,7 +344,7 @@ function parseShapeProperties(
     const scale = expressionToGlsl(
       fragContext,
       style['shape-scale'],
-      ValueTypes.NUMBER | ValueTypes.NUMBER_ARRAY
+      NumberType | NumberArrayType
     );
     currentPoint = `coordsPx / ${scale}`;
   }
@@ -337,7 +355,7 @@ function parseShapeProperties(
     fillColor = expressionToGlsl(
       fragContext,
       style['shape-fill-color'],
-      ValueTypes.COLOR
+      ColorType
     );
   }
 
@@ -347,7 +365,7 @@ function parseShapeProperties(
     strokeColor = expressionToGlsl(
       fragContext,
       style['shape-stroke-color'],
-      ValueTypes.COLOR
+      ColorType
     );
   }
 
@@ -357,7 +375,7 @@ function parseShapeProperties(
     strokeWidth = expressionToGlsl(
       fragContext,
       style['shape-stroke-width'],
-      ValueTypes.NUMBER
+      NumberType
     );
   }
 
@@ -365,22 +383,18 @@ function parseShapeProperties(
   const numPoints = expressionToGlsl(
     fragContext,
     style['shape-points'],
-    ValueTypes.NUMBER
+    NumberType
   );
   let angle = '0.';
   if ('shape-angle' in style) {
-    angle = expressionToGlsl(
-      fragContext,
-      style['shape-angle'],
-      ValueTypes.NUMBER
-    );
+    angle = expressionToGlsl(fragContext, style['shape-angle'], NumberType);
   }
   let shapeField;
   if ('shape-radius' in style) {
     let radius = expressionToGlsl(
       fragContext,
       style['shape-radius'],
-      ValueTypes.NUMBER
+      NumberType
     );
     if (strokeWidth !== null) {
       radius = `${radius} + ${strokeWidth} * 0.5`;
@@ -390,12 +404,12 @@ function parseShapeProperties(
     let radiusOuter = expressionToGlsl(
       fragContext,
       style['shape-radius1'],
-      ValueTypes.NUMBER
+      NumberType
     );
     let radiusInner = expressionToGlsl(
       fragContext,
       style['shape-radius2'],
-      ValueTypes.NUMBER
+      NumberType
     );
     if (strokeWidth !== null) {
       radiusOuter = `${radiusOuter} + ${strokeWidth} * 0.5`;
@@ -419,8 +433,8 @@ function parseShapeProperties(
  * @param {import("../style/literal.js").LiteralStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
- * @param {import("../style/expressions.js").ParsingContext} vertContext Vertex shader parsing context
- * @param {import("../style/expressions.js").ParsingContext} fragContext Fragment shader parsing context
+ * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
+ * @param {import("../expr/gpu.js").CompilationContext} fragContext Fragment shader compilation context
  */
 function parseIconProperties(
   style,
@@ -439,11 +453,7 @@ function parseIconProperties(
   // COLOR
   let color = 'vec4(1.0)';
   if ('icon-color' in style) {
-    color = expressionToGlsl(
-      fragContext,
-      style['icon-color'],
-      ValueTypes.COLOR
-    );
+    color = expressionToGlsl(fragContext, style['icon-color'], ColorType);
   }
 
   // OPACITY
@@ -451,7 +461,7 @@ function parseIconProperties(
     color = `${color} * ${expressionToGlsl(
       fragContext,
       style['icon-opacity'],
-      ValueTypes.NUMBER
+      NumberType
     )}`;
   }
 
@@ -502,12 +512,8 @@ function parseIconProperties(
       `vec2(${expressionToGlsl(
         vertContext,
         style['icon-width'],
-        ValueTypes.NUMBER
-      )}, ${expressionToGlsl(
-        vertContext,
-        style['icon-height'],
-        ValueTypes.NUMBER
-      )})`
+        NumberType
+      )}, ${expressionToGlsl(vertContext, style['icon-height'], NumberType)})`
     );
   }
 
@@ -516,12 +522,12 @@ function parseIconProperties(
     let offset = expressionToGlsl(
       vertContext,
       style['icon-offset'],
-      ValueTypes.NUMBER_ARRAY
+      NumberArrayType
     );
     const sampleSize = expressionToGlsl(
       vertContext,
       style['icon-size'],
-      ValueTypes.NUMBER_ARRAY
+      NumberArrayType
     );
     const fullsize = builder.getSymbolSizeExpression();
     builder.setSymbolSizeExpression(sampleSize);
@@ -551,14 +557,14 @@ function parseIconProperties(
     const anchor = expressionToGlsl(
       vertContext,
       style['icon-anchor'],
-      ValueTypes.NUMBER_ARRAY
+      NumberArrayType
     );
     let scale = `1.0`;
     if (`icon-scale` in style) {
       scale = expressionToGlsl(
         vertContext,
         style[`icon-scale`],
-        ValueTypes.NUMBER | ValueTypes.NUMBER_ARRAY
+        NumberType | NumberArrayType
       );
     }
     let shiftPx;
@@ -600,8 +606,8 @@ function parseIconProperties(
  * @param {import("../style/literal.js").LiteralStyle} style Style
  * @param {ShaderBuilder} builder Shader Builder
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
- * @param {import("../style/expressions.js").ParsingContext} vertContext Vertex shader parsing context
- * @param {import("../style/expressions.js").ParsingContext} fragContext Fragment shader parsing context
+ * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
+ * @param {import("../expr/gpu.js").CompilationContext} fragContext Fragment shader compilation context
  */
 function parseStrokeProperties(
   style,
@@ -612,45 +618,37 @@ function parseStrokeProperties(
 ) {
   if ('stroke-color' in style) {
     builder.setStrokeColorExpression(
-      expressionToGlsl(fragContext, style['stroke-color'], ValueTypes.COLOR)
+      expressionToGlsl(fragContext, style['stroke-color'], ColorType)
     );
   }
 
   if ('stroke-width' in style) {
     builder.setStrokeWidthExpression(
-      expressionToGlsl(vertContext, style['stroke-width'], ValueTypes.NUMBER)
+      expressionToGlsl(vertContext, style['stroke-width'], NumberType)
     );
   }
 
   if ('stroke-offset' in style) {
     builder.setStrokeOffsetExpression(
-      expressionToGlsl(vertContext, style['stroke-offset'], ValueTypes.NUMBER)
+      expressionToGlsl(vertContext, style['stroke-offset'], NumberType)
     );
   }
 
   if ('stroke-line-cap' in style) {
     builder.setStrokeCapExpression(
-      expressionToGlsl(vertContext, style['stroke-line-cap'], ValueTypes.STRING)
+      expressionToGlsl(vertContext, style['stroke-line-cap'], StringType)
     );
   }
 
   if ('stroke-line-join' in style) {
     builder.setStrokeJoinExpression(
-      expressionToGlsl(
-        vertContext,
-        style['stroke-line-join'],
-        ValueTypes.STRING
-      )
+      expressionToGlsl(vertContext, style['stroke-line-join'], StringType)
     );
   }
 
   if ('stroke-miter-limit' in style) {
     builder.setStrokeMiterLimitExpression(
-      expressionToGlsl(
-        vertContext,
-        style['stroke-miter-limit'],
-        ValueTypes.NUMBER
-      )
+      expressionToGlsl(vertContext, style['stroke-miter-limit'], NumberType)
     );
   }
 
@@ -670,7 +668,7 @@ function parseStrokeProperties(
 }`;
 
     let dashPattern = style['stroke-line-dash'].map((v) =>
-      expressionToGlsl(fragContext, v, ValueTypes.NUMBER)
+      expressionToGlsl(fragContext, v, NumberType)
     );
     // if pattern has odd length, concatenate it with itself to be even
     if (dashPattern.length % 2 === 1) {
@@ -682,7 +680,7 @@ function parseStrokeProperties(
       offsetExpression = expressionToGlsl(
         vertContext,
         style['stroke-line-dash-offset'],
-        ValueTypes.NUMBER
+        NumberType
       );
     }
 
@@ -726,8 +724,8 @@ function parseStrokeProperties(
  * @param {import("../style/literal.js").LiteralStyle} style Style
  * @param {ShaderBuilder} builder Shader Builder
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
- * @param {import("../style/expressions.js").ParsingContext} vertContext Vertex shader parsing context
- * @param {import("../style/expressions.js").ParsingContext} fragContext Fragment shader parsing context
+ * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
+ * @param {import("../expr/gpu.js").CompilationContext} fragContext Fragment shader compilation context
  */
 function parseFillProperties(
   style,
@@ -738,7 +736,7 @@ function parseFillProperties(
 ) {
   if ('fill-color' in style) {
     builder.setFillColorExpression(
-      expressionToGlsl(fragContext, style['fill-color'], ValueTypes.COLOR)
+      expressionToGlsl(fragContext, style['fill-color'], ColorType)
     );
   }
 }
@@ -763,25 +761,25 @@ function parseFillProperties(
  */
 export function parseLiteralStyle(style) {
   /**
-   * @type {import("../style/expressions.js").ParsingContext}
+   * @type {import("../expr/gpu.js").CompilationContext}
    */
   const vertContext = {
     inFragmentShader: false,
-    variables: [],
-    attributes: [],
+    properties: {},
+    variables: {},
     functions: {},
-    style: style,
+    style,
   };
 
   /**
-   * @type {import("../style/expressions.js").ParsingContext}
+   * @type {import("../expr/gpu.js").CompilationContext}
    */
   const fragContext = {
     inFragmentShader: true,
     variables: vertContext.variables,
-    attributes: [],
+    properties: {},
     functions: {},
-    style: style,
+    style,
   };
 
   const builder = new ShaderBuilder();
@@ -803,23 +801,24 @@ export function parseLiteralStyle(style) {
     const parsedFilter = expressionToGlsl(
       fragContext,
       style.filter,
-      ValueTypes.BOOLEAN
+      BooleanType
     );
     builder.setFragmentDiscardExpression(`!${parsedFilter}`);
   }
 
   // define one uniform per variable
-  fragContext.variables.forEach(function (variable) {
+  Object.keys(fragContext.variables).forEach(function (varName) {
+    const variable = fragContext.variables[varName];
     const uniformName = uniformNameForVariable(variable.name);
     builder.addUniform(`${getGlslTypeFromType(variable.type)} ${uniformName}`);
 
     let callback;
-    if (variable.type === ValueTypes.STRING) {
+    if (variable.type === StringType) {
       callback = () =>
         getStringNumberEquivalent(
           /** @type {string} */ (style.variables[variable.name])
         );
-    } else if (variable.type === ValueTypes.COLOR) {
+    } else if (variable.type === ColorType) {
       callback = () =>
         packColor([
           ...asArray(
@@ -828,7 +827,7 @@ export function parseLiteralStyle(style) {
             ) || '#eee'
           ),
         ]);
-    } else if (variable.type === ValueTypes.BOOLEAN) {
+    } else if (variable.type === BooleanType) {
       callback = () =>
         /** @type {boolean} */ (style.variables[variable.name]) ? 1.0 : 0.0;
     } else {
@@ -839,51 +838,56 @@ export function parseLiteralStyle(style) {
 
   // for each feature attribute used in the fragment shader, define a varying that will be used to pass data
   // from the vertex to the fragment shader, as well as an attribute in the vertex shader (if not already present)
-  fragContext.attributes.forEach(function (attribute) {
-    if (!vertContext.attributes.find((a) => a.name === attribute.name)) {
-      vertContext.attributes.push(attribute);
+  Object.keys(fragContext.properties).forEach(function (propName) {
+    const property = fragContext.properties[propName];
+    if (!vertContext.properties[propName]) {
+      vertContext.properties[propName] = property;
     }
-    let type = getGlslTypeFromType(attribute.type);
-    let expression = `a_${attribute.name}`;
-    if (attribute.type === ValueTypes.COLOR) {
+    let type = getGlslTypeFromType(property.type);
+    let expression = `a_prop_${property.name}`;
+    if (property.type === ColorType) {
       type = 'vec4';
       expression = `unpackColor(${expression})`;
       builder.addVertexShaderFunction(UNPACK_COLOR_FN);
     }
-    builder.addVarying(`v_${attribute.name}`, type, expression);
+    builder.addVarying(`v_prop_${property.name}`, type, expression);
   });
 
   // for each feature attribute used in the vertex shader, define an attribute in the vertex shader.
-  vertContext.attributes.forEach(function (attribute) {
+  Object.keys(vertContext.properties).forEach(function (propName) {
+    const property = vertContext.properties[propName];
     builder.addAttribute(
-      `${getGlslTypeFromType(attribute.type)} a_${attribute.name}`
+      `${getGlslTypeFromType(property.type)} a_prop_${property.name}`
     );
   });
 
-  const attributes = vertContext.attributes.map(function (attribute) {
+  const attributes = Object.keys(vertContext.properties).map(function (
+    propName
+  ) {
+    const property = vertContext.properties[propName];
     let callback;
-    if (attribute.callback) {
-      callback = attribute.callback;
-    } else if (attribute.type === ValueTypes.STRING) {
+    if (property.evaluator) {
+      callback = property.evaluator;
+    } else if (property.type === StringType) {
       callback = (feature) =>
-        getStringNumberEquivalent(feature.get(attribute.name));
-    } else if (attribute.type === ValueTypes.COLOR) {
+        getStringNumberEquivalent(feature.get(property.name));
+    } else if (property.type === ColorType) {
       callback = (feature) =>
-        packColor([...asArray(feature.get(attribute.name) || '#eee')]);
-    } else if (attribute.type === ValueTypes.BOOLEAN) {
-      callback = (feature) => (feature.get(attribute.name) ? 1.0 : 0.0);
+        packColor([...asArray(feature.get(property.name) || '#eee')]);
+    } else if (property.type === BooleanType) {
+      callback = (feature) => (feature.get(property.name) ? 1.0 : 0.0);
     } else {
-      callback = (feature) => feature.get(attribute.name);
+      callback = (feature) => feature.get(property.name);
     }
 
     return {
-      name: attribute.name,
-      size: getGlslSizeFromType(attribute.type),
+      name: property.name,
+      size: getGlslSizeFromType(property.type),
       callback,
     };
   });
 
-  // add functions that were collected in the parsing contexts
+  // add functions that were collected in the compilation contexts
   for (const functionName in vertContext.functions) {
     builder.addVertexShaderFunction(vertContext.functions[functionName]);
   }

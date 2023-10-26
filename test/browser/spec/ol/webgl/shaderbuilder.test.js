@@ -4,7 +4,7 @@ import {
   colorToGlsl,
   numberToGlsl,
   stringToGlsl,
-} from '../../../../../src/ol/style/expressions.js';
+} from '../../../../../src/ol/expr/gpu.js';
 
 describe('ol.webgl.ShaderBuilder', () => {
   describe('getSymbolVertexShader', () => {

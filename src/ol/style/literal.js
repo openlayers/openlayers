@@ -5,7 +5,7 @@
  */
 
 /**
- * @typedef {import("./expressions.js").ExpressionValue} ExpressionValue
+ * @typedef {import("../expr/expression.js").ExpressionValue} ExpressionValue
  */
 /**
  * @typedef {import("../color.js").Color|string|Array<ExpressionValue>} ColorExpression

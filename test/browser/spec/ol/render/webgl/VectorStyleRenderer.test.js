@@ -129,8 +129,8 @@ describe('VectorStyleRenderer', () => {
       expect(vectorStyleRenderer.symbolProgram_).to.be.an(WebGLProgram);
       expect(vectorStyleRenderer.polygonAttributesDesc_).to.eql([
         {name: 'a_position', size: 2, type: FLOAT},
-        {name: 'a_size', size: 1, type: FLOAT},
-        {name: 'a_color', size: 2, type: FLOAT},
+        {name: 'a_prop_size', size: 1, type: FLOAT},
+        {name: 'a_prop_color', size: 2, type: FLOAT},
       ]);
       expect(vectorStyleRenderer.lineStringAttributesDesc_).to.eql([
         {name: 'a_segmentStart', size: 2, type: FLOAT},
@@ -138,14 +138,14 @@ describe('VectorStyleRenderer', () => {
         {name: 'a_joinAngles', size: 2, type: FLOAT},
         {name: 'a_distance', size: 1, type: FLOAT},
         {name: 'a_parameters', size: 1, type: FLOAT},
-        {name: 'a_size', size: 1, type: FLOAT},
-        {name: 'a_color', size: 2, type: FLOAT},
+        {name: 'a_prop_size', size: 1, type: FLOAT},
+        {name: 'a_prop_color', size: 2, type: FLOAT},
       ]);
       expect(vectorStyleRenderer.pointAttributesDesc_).to.eql([
         {name: 'a_position', size: 2, type: FLOAT},
         {name: 'a_index', size: 1, type: FLOAT},
-        {name: 'a_size', size: 1, type: FLOAT},
-        {name: 'a_color', size: 2, type: FLOAT},
+        {name: 'a_prop_size', size: 1, type: FLOAT},
+        {name: 'a_prop_color', size: 2, type: FLOAT},
       ]);
     });
   });
@@ -171,8 +171,8 @@ describe('VectorStyleRenderer', () => {
       expect(vectorStyleRenderer.symbolProgram_).to.be.an(WebGLProgram);
       expect(vectorStyleRenderer.polygonAttributesDesc_).to.eql([
         {name: 'a_position', size: 2, type: FLOAT},
-        {name: 'a_attr1', size: 1, type: FLOAT},
-        {name: 'a_attr2', size: 3, type: FLOAT},
+        {name: 'a_prop_attr1', size: 1, type: FLOAT},
+        {name: 'a_prop_attr2', size: 3, type: FLOAT},
       ]);
       expect(vectorStyleRenderer.lineStringAttributesDesc_).to.eql([
         {name: 'a_segmentStart', size: 2, type: FLOAT},
@@ -180,14 +180,14 @@ describe('VectorStyleRenderer', () => {
         {name: 'a_joinAngles', size: 2, type: FLOAT},
         {name: 'a_distance', size: 1, type: FLOAT},
         {name: 'a_parameters', size: 1, type: FLOAT},
-        {name: 'a_attr1', size: 1, type: FLOAT},
-        {name: 'a_attr2', size: 3, type: FLOAT},
+        {name: 'a_prop_attr1', size: 1, type: FLOAT},
+        {name: 'a_prop_attr2', size: 3, type: FLOAT},
       ]);
       expect(vectorStyleRenderer.pointAttributesDesc_).to.eql([
         {name: 'a_position', size: 2, type: FLOAT},
         {name: 'a_index', size: 1, type: FLOAT},
-        {name: 'a_attr1', size: 1, type: FLOAT},
-        {name: 'a_attr2', size: 3, type: FLOAT},
+        {name: 'a_prop_attr1', size: 1, type: FLOAT},
+        {name: 'a_prop_attr2', size: 3, type: FLOAT},
       ]);
     });
   });

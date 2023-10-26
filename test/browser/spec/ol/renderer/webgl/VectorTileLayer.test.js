@@ -177,7 +177,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       expect(spy.callCount).to.be(2);
       const firstBuilder = spy.firstCall.args[0].builder;
       const secondBuilder = spy.secondCall.args[0].builder;
-      expect(firstBuilder.getFillColorExpression()).to.be('v_color');
+      expect(firstBuilder.getFillColorExpression()).to.be('v_prop_color');
       expect(secondBuilder.getFillColorExpression()).to.be('vec4(1.0)');
     });
     it('adds a discard expression and uniforms to the styles', () => {
@@ -227,7 +227,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       it('passes the correct styles to renderers', () => {
         expect(spy.callCount).to.be(1);
         const builder = spy.firstCall.args[0].builder;
-        expect(builder.getSymbolColorExpression()).to.contain('v_size');
+        expect(builder.getSymbolColorExpression()).to.contain('v_prop_size');
       });
     });
   });
