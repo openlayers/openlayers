@@ -302,6 +302,7 @@ describe('ol/renderer/webgl/VectorLayer', function () {
       await new Promise((resolve) => setTimeout(resolve, 150));
 
       sinon.spy(renderer.helper, 'setUniformFloatValue');
+      sinon.spy(renderer.helper, 'setUniformFloatVec2');
       sinon.spy(renderer.helper, 'setUniformFloatVec4');
       sinon.spy(renderer.helper, 'setUniformMatrixValue');
       sinon.spy(renderer.helper, 'prepareDraw');
@@ -357,6 +358,19 @@ describe('ol/renderer/webgl/VectorLayer', function () {
         // 0     0     1     0
         // 0.64  -1.28 0     1
         [2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0.64, -1.28, 0, 1],
+      ]);
+    });
+    it('sets PATTERN_ORIGIN vec2 uniform once for each geometry type', () => {
+      const calls = renderer.helper.setUniformFloatVec2
+        .getCalls()
+        .filter((c) => c.args[0] === 'u_patternOrigin');
+      expect(calls.length).to.be(6 * withHit);
+      expect(calls[1].args).to.eql([
+        'u_patternOrigin',
+        // combination of:
+        //   [ 0, 16 ]  ->  initial view center
+        //   scale( 2 / (0.25 * 200px), 2 / (0.25 * 100px) )  ->  divide by initial resolution & viewport size
+        [0, -1.28],
       ]);
     });
     it('calls render once for each renderer', () => {

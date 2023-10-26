@@ -20,6 +20,7 @@ uniform float u_zoom;
 uniform float u_resolution;
 uniform float u_rotation;
 uniform vec4 u_renderExtent;
+uniform vec2 u_patternOrigin;
 uniform float u_depth;
 uniform mediump int u_hitDetection;
 

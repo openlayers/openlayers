@@ -30,6 +30,7 @@ export const Uniforms = {
   TRANSITION_ALPHA: 'u_transitionAlpha',
   DEPTH: 'u_depth',
   RENDER_EXTENT: 'u_renderExtent', // intersection of layer, source, and view extent
+  PATTERN_ORIGIN: 'u_patternOrigin',
   RESOLUTION: 'u_resolution',
   ZOOM: 'u_zoom',
   GLOBAL_ALPHA: 'u_globalAlpha',

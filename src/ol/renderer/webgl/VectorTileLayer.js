@@ -62,7 +62,12 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    * @param {Options} options Options.
    */
   constructor(tileLayer, options) {
-    super(tileLayer, options);
+    super(tileLayer, {
+      cacheSize: options.cacheSize,
+      uniforms: {
+        [Uniforms.PATTERN_ORIGIN]: [0, 0],
+      },
+    });
 
     /**
      * @type {boolean}

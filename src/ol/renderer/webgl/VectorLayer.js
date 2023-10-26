@@ -36,6 +36,7 @@ import {listen, unlistenByKey} from '../../events.js';
 export const Uniforms = {
   ...DefaultUniform,
   RENDER_EXTENT: 'u_renderExtent', // intersection of layer, source, and view extent
+  PATTERN_ORIGIN: 'u_patternOrigin',
   GLOBAL_ALPHA: 'u_globalAlpha',
 };
 
@@ -78,6 +79,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   constructor(layer, options) {
     const uniforms = {
       [Uniforms.RENDER_EXTENT]: [0, 0, 0, 0],
+      [Uniforms.PATTERN_ORIGIN]: [0, 0],
       [Uniforms.GLOBAL_ALPHA]: 1,
     };
 
@@ -111,6 +113,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
      */
     this.currentTransform_ = createTransform();
 
+    this.tmpCoords_ = [0, 0];
     this.tmpTransform_ = createTransform();
     this.tmpMat4_ = createMat4();
 
@@ -291,6 +294,13 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       Uniforms.SCREEN_TO_WORLD_MATRIX,
       mat4FromTransform(this.tmpMat4_, this.tmpTransform_)
     );
+
+    // pattern origin should always be [0, 0] in world coordinates
+    this.tmpCoords_[0] = 0;
+    this.tmpCoords_[1] = 0;
+    makeInverseTransform(this.tmpTransform_, batchInvertTransform);
+    applyTransform(this.tmpTransform_, this.tmpCoords_);
+    this.helper.setUniformFloatVec2(Uniforms.PATTERN_ORIGIN, this.tmpCoords_);
   }
 
   /**
