@@ -1,5 +1,4 @@
 import commonjs from '@rollup/plugin-commonjs';
-import externalGlobals from 'rollup-plugin-external-globals';
 import resolve from '@rollup/plugin-node-resolve';
 import terser from '@rollup/plugin-terser';
 
@@ -11,14 +10,14 @@ export default {
     exports: 'default',
     file: 'build/full/ol.js',
     sourcemap: true,
+    globals: {
+      geotiff: 'GeoTIFF',
+      'ol-mapbox-style': 'olms',
+    },
   },
   plugins: [
     resolve({moduleDirectories: ['build', 'node_modules']}),
     commonjs(),
-    externalGlobals({
-      geotiff: 'GeoTIFF',
-      'ol-mapbox-style': 'olms',
-    }),
     terser(),
   ],
 };
