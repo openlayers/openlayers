@@ -86,5 +86,5 @@ new Map({
 });
 
 render({
-  message: 'renders to lines side-by-side, one closed and one open',
+  message: 'renders two lines side-by-side, one closed and one open',
 });
