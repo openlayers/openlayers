@@ -102,6 +102,7 @@ worker.onmessage = (event) => {
             renderInstructions[lastInstructionsIndex + 1];
 
         let currentLength = 0;
+        let currentAngleTangentSum = 0;
 
         // last point is only a segment end, do not loop over it
         for (let i = 0; i < verticesCount - 1; i++) {
@@ -119,7 +120,7 @@ worker.onmessage = (event) => {
           } else if (isLoop) {
             afterIndex = firstInstructionsIndex + instructionsPerVertex;
           }
-          currentLength = writeLineSegmentToBuffers(
+          const measures = writeLineSegmentToBuffers(
             renderInstructions,
             currentInstructionsIndex + i * instructionsPerVertex,
             currentInstructionsIndex + (i + 1) * instructionsPerVertex,
@@ -129,8 +130,11 @@ worker.onmessage = (event) => {
             indices,
             customAttributes,
             invertTransform,
-            currentLength
+            currentLength,
+            currentAngleTangentSum
           );
+          currentLength = measures.length;
+          currentAngleTangentSum = measures.angle;
         }
         currentInstructionsIndex += verticesCount * instructionsPerVertex;
       }

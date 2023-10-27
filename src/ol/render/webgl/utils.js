@@ -5,6 +5,8 @@ import earcut from 'earcut';
 import {apply as applyTransform} from '../../transform.js';
 import {clamp} from '../../math.js';
 
+export const LINESTRING_ANGLE_COSINE_CUTOFF = 0.985;
+
 /** @type {Array<number>} */
 const tmpArray_ = [];
 
@@ -105,8 +107,25 @@ export function writePointFeatureToBuffers(
 
 /**
  * Pushes a single quad to form a line segment; also includes a computation for the join angles with previous and next
- * segment, in order to be able to offset the vertices correctly in the shader
- * @param {Float32Array} instructions Array of render instructions for lines.
+ * segment, in order to be able to offset the vertices correctly in the shader.
+ * Join angles are between 0 and 2PI.
+ * This also computes the length of the current segment and the sum of the join angle tangents in order
+ * to store this information on each subsequent segment along the line. This is necessary to correctly render dashes
+ * and symbols along the line.
+ *
+ *   pB (before)                          pA (after)
+ *    X             negative             X
+ *     \             offset             /
+ *      \                              /
+ *       \   join              join   /
+ *        \ angle 0          angle 1 /
+ *         \←---                ←---/      positive
+ *          \   ←--          ←--   /        offset
+ *           \     ↑       ↓      /
+ *            X────┴───────┴─────X
+ *            p0                  p1
+ *
+ * @param {Float32Array} instructions Array of render instructions for lines.s
  * @param {number} segmentStartIndex Index of the segment start point from which render instructions will be read.
  * @param {number} segmentEndIndex Index of the segment end point from which render instructions will be read.
  * @param {number|null} beforeSegmentIndex Index of the point right before the segment (null if none, e.g this is a line start)
@@ -116,7 +135,8 @@ export function writePointFeatureToBuffers(
  * @param {Array<number>} customAttributes Array of custom attributes value
  * @param {import('../../transform.js').Transform} toWorldTransform Transform matrix used to obtain world coordinates from instructions
  * @param {number} currentLength Cumulated length of segments processed so far
- * @return {number} Cumulated length with the newly processed segment (in world units)
+ * @param {number} currentAngleTangentSum Cumulated tangents of the join angles processed so far
+ * @return {{length: number, angle: number}} Cumulated length with the newly processed segment (in world units), new sum of the join angle tangents
  * @private
  */
 export function writeLineSegmentToBuffers(
@@ -129,7 +149,8 @@ export function writeLineSegmentToBuffers(
   indexArray,
   customAttributes,
   toWorldTransform,
-  currentLength
+  currentLength,
+  currentAngleTangentSum
 ) {
   // compute the stride to determine how many vertices were already pushed
   const baseVertexAttrsCount = 8; // base attributes: x0, y0, x1, y1, angle0, angle1, distance, params
@@ -181,6 +202,7 @@ export function writeLineSegmentToBuffers(
   // a negative angle indicates a line cap
   let angle0 = -1;
   let angle1 = -1;
+  let newAngleTangentSum = currentAngleTangentSum;
 
   const joinBefore = beforeSegmentIndex !== null;
   const joinAfter = afterSegmentIndex !== null;
@@ -194,8 +216,13 @@ export function writeLineSegmentToBuffers(
     ];
     const pBworld = applyTransform(toWorldTransform, [...pB]);
     angle0 = angleBetween(p0world, p1world, pBworld);
+
+    // only add to the sum if the angle isn't too close to 0 or 2PI
+    if (Math.cos(angle0) <= LINESTRING_ANGLE_COSINE_CUTOFF) {
+      newAngleTangentSum += Math.tan((angle0 - Math.PI) / 2);
+    }
   }
-  // adapt offsets for P1 in case of join
+  // adapt offsets for P1 in case of join; add to angle sum
   if (joinAfter) {
     // A for after
     const pA = [
@@ -204,6 +231,23 @@ export function writeLineSegmentToBuffers(
     ];
     const pAworld = applyTransform(toWorldTransform, [...pA]);
     angle1 = angleBetween(p1world, p0world, pAworld);
+
+    // only add to the sum if the angle isn't too close to 0 or 2PI
+    if (Math.cos(angle1) <= LINESTRING_ANGLE_COSINE_CUTOFF) {
+      newAngleTangentSum += Math.tan((Math.PI - angle1) / 2);
+    }
+  }
+
+  /**
+   * @param {number} vertexIndex From 0 to 3, indicating position in the quad
+   * @param {number} angleSum Sum of the join angles encountered so far (used to compute distance offset
+   * @return {number} A float value containing both information
+   */
+  function computeParameters(vertexIndex, angleSum) {
+    if (angleSum === 0) {
+      return vertexIndex * 10000;
+    }
+    return Math.sign(angleSum) * (vertexIndex * 10000 + Math.abs(angleSum));
   }
 
   // add main segment triangles
@@ -215,7 +259,7 @@ export function writeLineSegmentToBuffers(
     angle0,
     angle1,
     currentLength,
-    0
+    computeParameters(0, currentAngleTangentSum)
   );
   vertexArray.push(...customAttributes);
 
@@ -227,7 +271,7 @@ export function writeLineSegmentToBuffers(
     angle0,
     angle1,
     currentLength,
-    1
+    computeParameters(1, currentAngleTangentSum)
   );
   vertexArray.push(...customAttributes);
 
@@ -239,7 +283,7 @@ export function writeLineSegmentToBuffers(
     angle0,
     angle1,
     currentLength,
-    2
+    computeParameters(2, currentAngleTangentSum)
   );
   vertexArray.push(...customAttributes);
 
@@ -251,7 +295,7 @@ export function writeLineSegmentToBuffers(
     angle0,
     angle1,
     currentLength,
-    3
+    computeParameters(3, currentAngleTangentSum)
   );
   vertexArray.push(...customAttributes);
 
@@ -264,13 +308,15 @@ export function writeLineSegmentToBuffers(
     baseIndex + 2
   );
 
-  return (
-    currentLength +
-    Math.sqrt(
-      (p1world[0] - p0world[0]) * (p1world[0] - p0world[0]) +
-        (p1world[1] - p0world[1]) * (p1world[1] - p0world[1])
-    )
-  );
+  return {
+    length:
+      currentLength +
+      Math.sqrt(
+        (p1world[0] - p0world[0]) * (p1world[0] - p0world[0]) +
+          (p1world[1] - p0world[1]) * (p1world[1] - p0world[1])
+      ),
+    angle: newAngleTangentSum,
+  };
 }
 
 /**

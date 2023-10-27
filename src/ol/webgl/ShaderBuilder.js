@@ -2,10 +2,11 @@
  * Class for generating shaders from literal style objects
  * @module ol/webgl/ShaderBuilder
  */
+import {LINESTRING_ANGLE_COSINE_CUTOFF} from '../render/webgl/utils.js';
 import {colorToGlsl, numberToGlsl, stringToGlsl} from '../expr/gpu.js';
 import {createDefaultStyle} from '../style/flat.js';
 
-const COMMON_HEADER = `#ifdef GL_FRAGMENT_PRECISION_HIGH
+export const COMMON_HEADER = `#ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
 precision mediump float;
@@ -55,7 +56,7 @@ const DEFAULT_STYLE = createDefaultStyle();
  *   .addUniform('u_time')
  *   .setColorExpression('...')
  *   .setSymbolSizeExpression('...')
- *   .outputSymbolFragmentShader();
+ *   .getSymbolFragmentShader();
  * ```
  */
 export class ShaderBuilder {
@@ -662,7 +663,9 @@ vec2 getOffsetPoint(vec2 point, vec2 normal, float joinAngle, float offsetPx) {
 void main(void) {
   v_angleStart = a_joinAngles.x;
   v_angleEnd = a_joinAngles.y;
-  float vertexNumber = a_parameters;
+  float vertexNumber = floor(abs(a_parameters) / 10000. + 0.5);
+  // we're reading the fractional part while keeping the sign (so -4.12 gives -0.12, 3.45 gives 0.45)
+  float angleTangentSum = fract(abs(a_parameters) / 10000.) * 10000. * sign(a_parameters);
 
   float lineWidth = ${this.strokeWidthExpression_};
   float lineOffsetPx = ${this.strokeOffsetExpression_};
@@ -682,7 +685,7 @@ void main(void) {
   vec2 joinDirection;
   vec2 positionPx = vertexNumber < 1.5 ? segmentStartPx : segmentEndPx;
   // if angle is too high, do not make a proper join
-  if (cos(angle) > 0.985 || isCap(angle)) {
+  if (cos(angle) > ${LINESTRING_ANGLE_COSINE_CUTOFF} || isCap(angle)) {
     joinDirection = normalPx * normalDir - tangentPx * tangentDir;
   } else {
     joinDirection = getJoinOffsetDirection(normalPx * normalDir, angle);
@@ -694,7 +697,7 @@ void main(void) {
   v_segmentEnd = segmentEndPx;
   v_width = lineWidth;
   v_hitColor = a_hitColor;
-  v_distanceOffsetPx = a_distance / u_resolution;
+  v_distanceOffsetPx = a_distance / u_resolution - (lineOffsetPx * angleTangentSum);
 ${this.varyings_
   .map(function (varying) {
     return '  ' + varying.name + ' = ' + varying.expression + ';';
@@ -780,7 +783,7 @@ float bevelJoinField(vec2 point, vec2 start, vec2 end, float width, float joinAn
 }
 
 float miterJoinDistanceField(vec2 point, vec2 start, vec2 end, float width, float joinAngle) {
-  if (cos(joinAngle) > 0.985) { // avoid risking a division by zero
+  if (cos(joinAngle) > ${LINESTRING_ANGLE_COSINE_CUTOFF}) { // avoid risking a division by zero
     return bevelJoinField(point, start, end, width, joinAngle);
   }
   float miterLength = 1. / sin(joinAngle * 0.5);
