@@ -90,6 +90,21 @@ function getGlslTypeFromType(type) {
 }
 
 /**
+ * see https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
+ * @param {Object|string} input The hash input, either an object or string
+ * @return {string} Hash (if the object cannot be serialized, it is based on `getUid`)
+ */
+export function computeHash(input) {
+  if (input instanceof Element) {
+    return `UID${getUid(input)}`;
+  }
+  const hash = JSON.stringify(input)
+    .split('')
+    .reduce((prev, curr) => (prev << 5) - prev + curr.charCodeAt(0), 0);
+  return (hash >>> 0).toString();
+}
+
+/**
  * @param {import("../style/webgl.js").WebGLStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
  * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
@@ -684,12 +699,8 @@ function parseStrokeProperties(
       );
     }
 
-    // define a function for this dash specifically (identified using a simple hash)
-    // see https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
-    let uniqueDashKey = JSON.stringify(style['stroke-line-dash'])
-      .split('')
-      .reduce((prev, curr) => (prev << 5) - prev + curr.charCodeAt(0), 0);
-    uniqueDashKey = uniqueDashKey >>> 0;
+    // define a function for this dash specifically
+    const uniqueDashKey = computeHash(style['stroke-line-dash']);
     const dashFunctionName = `dashDistanceField_${uniqueDashKey}`;
 
     const dashLengthsDef = dashPattern.map(

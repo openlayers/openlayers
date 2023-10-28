@@ -1,7 +1,7 @@
 import Feature from '../../../../../src/ol/Feature.js';
 import {asArray} from '../../../../../src/ol/color.js';
-import {getUid} from '../../../../../src/ol/index.js';
 import {
+  computeHash,
   packColor,
   parseLiteralStyle,
 } from '../../../../../src/ol/webgl/styleparser.js';
@@ -338,7 +338,7 @@ describe('ol.webgl.styleparser', () => {
             'icon-offset': ['array', ['get', 'attr1'], 20],
             'icon-size': ['array', 30, 40],
           };
-          uid = getUid(style);
+          uid = computeHash(style['icon-img']);
           result = parseLiteralStyle(style);
         });
         it('sets up builder accordingly', () => {
@@ -389,7 +389,7 @@ describe('ol.webgl.styleparser', () => {
           const style = {
             'icon-src': '../data/icon.png',
           };
-          uid = getUid(style);
+          uid = computeHash(style['icon-src']);
           result = parseLiteralStyle(style);
         });
         it('registers a uniform for the icon size, which is set asynchronously', () => {
@@ -429,7 +429,7 @@ describe('ol.webgl.styleparser', () => {
             'icon-src': '../data/icon.png',
             'icon-cross-origin': 'use-credentials',
           };
-          uid = getUid(style);
+          uid = computeHash(style['icon-src']);
           result = parseLiteralStyle(style);
         });
         it('sets the crossOrigin attribute on the image', () => {
@@ -937,6 +937,39 @@ describe('ol.webgl.styleparser', () => {
     it('compresses all the components of a color into a [number, number] array', () => {
       expect(packColor(asArray('red'))).to.eql([65280, 255]);
       expect(packColor(asArray('rgba(0, 255, 255, 0.5)'))).to.eql([255, 65408]);
+    });
+  });
+
+  describe('computeHash', () => {
+    it('produces stable hashes for primitive types', () => {
+      const path = '../../path/img';
+      expect(computeHash(path)).to.eql(computeHash(path));
+      const array = [{hello: 'world'}, [1, 2, 3]];
+      expect(computeHash(array)).to.eql(computeHash(array));
+    });
+    it('produces unique hashes for primitive types', () => {
+      const path1 = '../../path/img1';
+      const path2 = '../../path/img2';
+      const array1 = [{hello: 'world'}, [1, 2, 3]];
+      const array2 = [[1, 2, 3], {'hello world': true}];
+      expect(computeHash(path1)).not.to.eql(computeHash(path2));
+      expect(computeHash(array1)).not.to.eql(computeHash(array2));
+      expect(computeHash(path1)).not.to.eql(computeHash(array1));
+    });
+    it('produces stable hashes for non-serializable objects', () => {
+      const image = new Image(10, 20);
+      expect(computeHash(image)).to.eql(computeHash(image));
+      const canvas = document.createElement('canvas');
+      expect(computeHash(canvas)).to.eql(computeHash(canvas));
+    });
+    it('produces unique hashes for non-serializable objects', () => {
+      const image1 = new Image(10, 20);
+      const image2 = new Image(10, 20);
+      const canvas1 = document.createElement('canvas');
+      const canvas2 = document.createElement('canvas');
+      expect(computeHash(image1)).not.to.eql(computeHash(image2));
+      expect(computeHash(canvas1)).not.to.eql(computeHash(canvas2));
+      expect(computeHash(image1)).not.to.eql(computeHash(canvas1));
     });
   });
 
