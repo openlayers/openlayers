@@ -133,8 +133,8 @@ const ProviderConfig = {
  * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
  * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
- * @property {string} apiKey Stadia Maps API key. Not required for localhost or most public web deployments. See https://docs.stadiamaps.com/authentication/ for details.
- * @property {boolean} retina Use retina tiles (if available; not available for Stamen Watercolor).
+ * @property {string} [apiKey] Stadia Maps API key. Not required for localhost or most public web deployments. See https://docs.stadiamaps.com/authentication/ for details.
+ * @property {boolean} [retina] Use retina tiles (if available; not available for Stamen Watercolor).
  */
 
 /**
