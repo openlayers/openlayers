@@ -666,10 +666,10 @@ export function toUserResolution(resolution, sourceProjection) {
   if (!userProjection) {
     return resolution;
   }
-  const sourceUnits = get(sourceProjection).getUnits();
-  const userUnits = userProjection.getUnits();
-  return sourceUnits && userUnits
-    ? (resolution * METERS_PER_UNIT[sourceUnits]) / METERS_PER_UNIT[userUnits]
+  const sourceMetersPerUnit = get(sourceProjection).getMetersPerUnit();
+  const userMetersPerUnit = userProjection.getMetersPerUnit();
+  return sourceMetersPerUnit && userMetersPerUnit
+    ? (resolution * sourceMetersPerUnit) / userMetersPerUnit
     : resolution;
 }
 
@@ -685,10 +685,10 @@ export function fromUserResolution(resolution, destProjection) {
   if (!userProjection) {
     return resolution;
   }
-  const sourceUnits = get(destProjection).getUnits();
-  const userUnits = userProjection.getUnits();
-  return sourceUnits && userUnits
-    ? (resolution * METERS_PER_UNIT[userUnits]) / METERS_PER_UNIT[sourceUnits]
+  const destMetersPerUnit = get(destProjection).getMetersPerUnit();
+  const userMetersPerUnit = userProjection.getMetersPerUnit();
+  return destMetersPerUnit && userMetersPerUnit
+    ? (resolution * userMetersPerUnit) / destMetersPerUnit
     : resolution;
 }
 
