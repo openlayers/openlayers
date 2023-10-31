@@ -19,7 +19,6 @@ import {
   uniformNameForVariable,
 } from '../expr/gpu.js';
 import {asArray} from '../color.js';
-import {getUid} from '../util.js';
 
 /**
  * Recursively parses a style expression and outputs a GLSL-compatible string. Takes in a compilation context that
@@ -95,9 +94,6 @@ function getGlslTypeFromType(type) {
  * @return {string} Hash (if the object cannot be serialized, it is based on `getUid`)
  */
 export function computeHash(input) {
-  if (input instanceof Element) {
-    return `UID${getUid(input)}`;
-  }
   const hash = JSON.stringify(input)
     .split('')
     .reduce((prev, curr) => (prev << 5) - prev + curr.charCodeAt(0), 0);
@@ -196,7 +192,7 @@ function getColorFromDistanceField(
 }
 
 /**
- * This will parse an image property provided either by `<prefix>-img` or `<prefix>-src`
+ * This will parse an image property provided by `<prefix>-src`
  * The image size expression in GLSL will be returned
  * @param {import("../style/webgl.js").WebGLStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
@@ -206,22 +202,15 @@ function getColorFromDistanceField(
  * @return {string} The image size expression
  */
 function parseImageProperties(style, builder, uniforms, prefix, textureId) {
-  let image;
+  const image = new Image();
   let size;
-  if (`${prefix}src` in style) {
-    image = new Image();
-    image.crossOrigin =
-      style[`${prefix}cross-origin`] === undefined
-        ? 'anonymous'
-        : style[`${prefix}cross-origin`];
-    image.src = style[`${prefix}src`];
-  } else {
-    image = style[`${prefix}img`];
-  }
-  if (
-    image instanceof HTMLCanvasElement ||
-    (image.complete && image.width && image.height)
-  ) {
+  image.crossOrigin =
+    style[`${prefix}cross-origin`] === undefined
+      ? 'anonymous'
+      : style[`${prefix}cross-origin`];
+  image.src = style[`${prefix}src`];
+
+  if (image.complete && image.width && image.height) {
     size = arrayToGlsl([image.width, image.height]);
   } else {
     // the size is provided asynchronously using a uniform
@@ -553,7 +542,7 @@ function parseIconProperties(
   }
 
   // IMAGE & SIZE
-  const textureId = computeHash(style['icon-img'] || style['icon-src']);
+  const textureId = computeHash(style['icon-src']);
   const sizeExpression = parseImageProperties(
     style,
     builder,
@@ -669,10 +658,8 @@ function parseStrokeProperties(
       expressionToGlsl(fragContext, style['stroke-color'], ColorType)
     );
   }
-  if ('stroke-pattern-img' in style || 'stroke-pattern-src' in style) {
-    const textureId = computeHash(
-      style['stroke-pattern-img'] || style['stroke-pattern-src']
-    );
+  if ('stroke-pattern-src' in style) {
+    const textureId = computeHash(style['stroke-pattern-src']);
     const sizeExpression = parseImageProperties(
       style,
       builder,
@@ -837,10 +824,8 @@ function parseFillProperties(
       expressionToGlsl(fragContext, style['fill-color'], ColorType)
     );
   }
-  if ('fill-pattern-img' in style || 'fill-pattern-src' in style) {
-    const textureId = computeHash(
-      style['fill-pattern-img'] || style['fill-pattern-src']
-    );
+  if ('fill-pattern-src' in style) {
+    const textureId = computeHash(style['fill-pattern-src']);
     const sizeExpression = parseImageProperties(
       style,
       builder,
@@ -929,7 +914,7 @@ export function parseLiteralStyle(style) {
   /** @type {Object<string,import("../webgl/Helper").UniformValue>} */
   const uniforms = {};
 
-  if ('icon-src' in style || 'icon-img' in style) {
+  if ('icon-src' in style) {
     parseIconProperties(style, builder, uniforms, vertContext, fragContext);
   } else if ('shape-points' in style) {
     parseShapeProperties(style, builder, uniforms, vertContext, fragContext);

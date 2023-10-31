@@ -22,7 +22,6 @@
  * @typedef {Object} FillProps
  * @property {ColorExpression} [fill-color] Fill color.
  * @property {string} [fill-pattern-src] Fill pattern image source URI. If `fill-color` is defined as well, it will be used to tint this image.
- * @property {HTMLImageElement|HTMLCanvasElement} [fill-pattern-img] Fill pattern image object. Can be provided as an alternative to `fill-pattern-src`.
  * @property {Array<number>|ExpressionValue} [fill-pattern-offset=[0, 0]] Offset, which, together with the size and the offset origin, define the
  * sub-rectangle to use from the original fill pattern image.
  * @property {import("./Icon.js").IconOrigin} [fill-pattern-offset-origin='top-left'] Origin of the offset: `bottom-left`, `bottom-right`,
@@ -42,7 +41,6 @@
  * @property {number|ExpressionValue} [stroke-line-dash-offset=0] Line dash offset.
  * @property {number|ExpressionValue} [stroke-miter-limit=10] Miter limit.
  * @property {string} [stroke-pattern-src] Stroke pattern image source URI. If `stroke-color` is defined as well, it will be used to tint this image.
- * @property {HTMLImageElement|HTMLCanvasElement} [stroke-pattern-img] Stroke pattern image object. Can be provided as an alternative to `stroke-pattern-src`.
  * @property {Array<number>|ExpressionValue} [stroke-pattern-offset=[0, 0]] Offset, which, together with the size and the offset origin, define the
  * sub-rectangle to use from the original fill pattern image.
  * @property {import("./Icon.js").IconOrigin} [stroke-pattern-offset-origin='top-left'] Origin of the offset: `bottom-left`, `bottom-right`,
@@ -55,7 +53,6 @@
 /**
  * @typedef {Object} IconProps
  * @property {string} [icon-src] Image source URI.
- * @property {HTMLImageElement|HTMLCanvasElement} [icon-img] Image object for the icon. Required if the `icon-src` option is not provided.
  * @property {Array<number>|ExpressionValue} [icon-anchor=[0.5, 0.5]] Anchor. Default value is the icon center.
  * @property {import("./Icon.js").IconOrigin} [icon-anchor-origin='top-left'] Origin of the anchor: `bottom-left`, `bottom-right`,
  * `top-left` or `top-right`.

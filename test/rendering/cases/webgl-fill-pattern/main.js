@@ -57,7 +57,7 @@ const srcPattern = {
   'fill-offset': -32,
 };
 const imagePattern = {
-  'fill-pattern-img': canvas,
+  'fill-pattern-src': canvas.toDataURL('png'),
   'fill-width': 16,
   'fill-offset': -12,
 };

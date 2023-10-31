@@ -325,10 +325,11 @@ describe('ol.webgl.styleparser', () => {
 
     describe('icon style', () => {
       let result, uid;
-      describe('contains main properties and expressions, icon specified as image', () => {
+      describe('contains main properties and expressions, icon specified as data url', () => {
         beforeEach(() => {
           const style = {
-            'icon-img': new Image(10, 20),
+            'icon-src':
+              'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',
             'icon-opacity': ['*', 0.5, 0.75],
             'icon-color': ['get', 'color1'],
             'icon-displacement': ['array', -2, 1],
@@ -338,7 +339,7 @@ describe('ol.webgl.styleparser', () => {
             'icon-offset': ['array', ['get', 'attr1'], 20],
             'icon-size': ['array', 30, 40],
           };
-          uid = computeHash(style['icon-img']);
+          uid = computeHash(style['icon-src']);
           result = parseLiteralStyle(style);
         });
         it('sets up builder accordingly', () => {
@@ -367,7 +368,7 @@ describe('ol.webgl.styleparser', () => {
             'vec2(-2.0, 1.0)'
           );
           expect(result.builder.texCoordExpression_).to.eql(
-            '(vec4((vec2(a_prop_attr1, 20.0)).xyxy) + vec4(0., 0., vec2(30.0, 40.0))) / (vec2(10.0, 20.0)).xyxy'
+            '(vec4((vec2(a_prop_attr1, 20.0)).xyxy) + vec4(0., 0., vec2(30.0, 40.0))) / (vec2(1.0, 1.0)).xyxy'
           );
           expect(result.builder.symbolRotateWithView_).to.eql(true);
           expect(Object.keys(result.attributes).length).to.eql(3);
@@ -764,13 +765,14 @@ describe('ol.webgl.styleparser', () => {
         beforeEach(() => {
           const style = {
             'stroke-color': 'red',
-            'stroke-pattern-img': new Image(10, 20),
+            'stroke-pattern-src':
+              'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',
             'stroke-pattern-offset': [5, 10],
             'stroke-pattern-offset-origin': 'bottom-left',
             'stroke-pattern-size': [5, 5],
             'stroke-pattern-spacing': ['*', 2, 10],
           };
-          uid = computeHash(style['stroke-pattern-img']);
+          uid = computeHash(style['stroke-pattern-src']);
           result = parseLiteralStyle(style);
         });
         it('sets the color expression', () => {
@@ -778,7 +780,7 @@ describe('ol.webgl.styleparser', () => {
             'vec4 sampleStrokePattern'
           );
           expect(result.builder.strokeColorExpression_).to.eql(
-            `vec4(1.0, 0.0, 0.0, 1.0) * sampleStrokePattern(u_texture${uid}, vec2(10.0, 20.0), vec2(0., vec2(10.0, 20.0).y) + vec2(5.0, 5.0) * vec2(0., -1.) + vec2(5.0, 10.0) * vec2(1., -1.), vec2(5.0, 5.0), (2.0 * 10.0), currentLengthPx, currentRadiusRatio)`
+            `vec4(1.0, 0.0, 0.0, 1.0) * sampleStrokePattern(u_texture${uid}, vec2(1.0, 1.0), vec2(0., vec2(1.0, 1.0).y) + vec2(5.0, 5.0) * vec2(0., -1.) + vec2(5.0, 10.0) * vec2(1., -1.), vec2(5.0, 5.0), (2.0 * 10.0), currentLengthPx, currentRadiusRatio)`
           );
         });
       });
@@ -871,12 +873,13 @@ describe('ol.webgl.styleparser', () => {
         beforeEach(() => {
           const style = {
             'fill-color': 'red',
-            'fill-pattern-img': new Image(10, 20),
+            'fill-pattern-src':
+              'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',
             'fill-pattern-offset': [5, 10],
             'fill-pattern-offset-origin': 'bottom-left',
             'fill-pattern-size': [5, 5],
           };
-          uid = computeHash(style['fill-pattern-img']);
+          uid = computeHash(style['fill-pattern-src']);
           result = parseLiteralStyle(style);
         });
         it('sets the color expression', () => {
@@ -884,7 +887,7 @@ describe('ol.webgl.styleparser', () => {
             'vec4 sampleFillPattern'
           );
           expect(result.builder.fillColorExpression_).to.eql(
-            `vec4(1.0, 0.0, 0.0, 1.0) * sampleFillPattern(u_texture${uid}, vec2(10.0, 20.0), vec2(0., vec2(10.0, 20.0).y) + vec2(5.0, 5.0) * vec2(0., -1.) + vec2(5.0, 10.0) * vec2(1., -1.), vec2(5.0, 5.0), pxOrigin, pxPos)`
+            `vec4(1.0, 0.0, 0.0, 1.0) * sampleFillPattern(u_texture${uid}, vec2(1.0, 1.0), vec2(0., vec2(1.0, 1.0).y) + vec2(5.0, 5.0) * vec2(0., -1.) + vec2(5.0, 10.0) * vec2(1., -1.), vec2(5.0, 5.0), pxOrigin, pxPos)`
           );
         });
       });
@@ -1083,21 +1086,6 @@ describe('ol.webgl.styleparser', () => {
       expect(computeHash(path1)).not.to.eql(computeHash(path2));
       expect(computeHash(array1)).not.to.eql(computeHash(array2));
       expect(computeHash(path1)).not.to.eql(computeHash(array1));
-    });
-    it('produces stable hashes for non-serializable objects', () => {
-      const image = new Image(10, 20);
-      expect(computeHash(image)).to.eql(computeHash(image));
-      const canvas = document.createElement('canvas');
-      expect(computeHash(canvas)).to.eql(computeHash(canvas));
-    });
-    it('produces unique hashes for non-serializable objects', () => {
-      const image1 = new Image(10, 20);
-      const image2 = new Image(10, 20);
-      const canvas1 = document.createElement('canvas');
-      const canvas2 = document.createElement('canvas');
-      expect(computeHash(image1)).not.to.eql(computeHash(image2));
-      expect(computeHash(canvas1)).not.to.eql(computeHash(canvas2));
-      expect(computeHash(image1)).not.to.eql(computeHash(canvas1));
     });
   });
 

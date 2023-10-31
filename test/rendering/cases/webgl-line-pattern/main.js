@@ -37,7 +37,7 @@ const srcPattern = {
   'stroke-offset': -32,
 };
 const imagePattern = {
-  'stroke-pattern-img': canvas,
+  'stroke-pattern-src': canvas.toDataURL('png'),
   'stroke-width': 16,
   'stroke-offset': -12,
 };
