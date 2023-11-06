@@ -168,7 +168,7 @@ describe('webgl render utils', function () {
   describe('writeLineSegmentToBuffers', function () {
     let vertexArray, indexArray, instructions;
     let instructionsTransform, invertInstructionsTransform;
-    let currentLength;
+    let currentLength, currentAngleTangentSum;
 
     beforeEach(function () {
       vertexArray = [];
@@ -185,7 +185,7 @@ describe('webgl render utils', function () {
     describe('isolated segment', function () {
       beforeEach(function () {
         instructions.set([0, 0, 0, 2, 5, 5, 25, 5]);
-        currentLength = writeLineSegmentToBuffers(
+        const result = writeLineSegmentToBuffers(
           instructions,
           4,
           6,
@@ -195,29 +195,41 @@ describe('webgl render utils', function () {
           indexArray,
           [],
           invertInstructionsTransform,
+          100,
           100
         );
+        currentLength = result.length;
+        currentAngleTangentSum = result.angle;
       });
       // we expect 4 vertices (one quad) with 8 attributes each:
       // Xstart, Ystart, Xend, Yend, joinAngleStart, joinAngleEnd, base distance, vertex number (0..3)
       it('generates a quad for the segment', function () {
         expect(vertexArray).to.have.length(32);
-        expect(vertexArray.slice(0, 8)).to.eql([5, 5, 25, 5, -1, -1, 100, 0]);
-        expect(vertexArray.slice(8, 16)).to.eql([5, 5, 25, 5, -1, -1, 100, 1]);
-        expect(vertexArray.slice(16, 24)).to.eql([5, 5, 25, 5, -1, -1, 100, 2]);
-        expect(vertexArray.slice(24, 32)).to.eql([5, 5, 25, 5, -1, -1, 100, 3]);
+        expect(vertexArray.slice(0, 8)).to.eql([5, 5, 25, 5, -1, -1, 100, 100]);
+        expect(vertexArray.slice(8, 16)).to.eql([
+          5, 5, 25, 5, -1, -1, 100, 10100,
+        ]);
+        expect(vertexArray.slice(16, 24)).to.eql([
+          5, 5, 25, 5, -1, -1, 100, 20100,
+        ]);
+        expect(vertexArray.slice(24, 32)).to.eql([
+          5, 5, 25, 5, -1, -1, 100, 30100,
+        ]);
         expect(indexArray).to.have.length(6);
         expect(indexArray).to.eql([0, 1, 2, 1, 3, 2]);
       });
       it('computes the new current length', () => {
         expect(currentLength).to.eql(102);
       });
+      it('angle tangent sum stays the same', () => {
+        expect(currentAngleTangentSum).to.eql(100);
+      });
     });
 
     describe('isolated segment with custom attributes', function () {
       beforeEach(function () {
         instructions.set([888, 999, 2, 5, 5, 25, 5]);
-        currentLength = writeLineSegmentToBuffers(
+        const result = writeLineSegmentToBuffers(
           instructions,
           3,
           5,
@@ -227,24 +239,27 @@ describe('webgl render utils', function () {
           indexArray,
           [888, 999],
           invertInstructionsTransform,
+          100,
           100
         );
+        currentLength = result.length;
+        currentAngleTangentSum = result.angle;
       });
       // we expect 4 vertices (one quad) with 10 attributes each:
       // Xstart, Ystart, Xend, Yend, joinAngleStart, joinAngleEnd, base distance, vertex number (0..3), + 2 custom attributes
       it('adds custom attributes in the vertices buffer', function () {
         expect(vertexArray).to.have.length(40);
         expect(vertexArray.slice(0, 10)).to.eql([
-          5, 5, 25, 5, -1, -1, 100, 0, 888, 999,
+          5, 5, 25, 5, -1, -1, 100, 100, 888, 999,
         ]);
         expect(vertexArray.slice(10, 20)).to.eql([
-          5, 5, 25, 5, -1, -1, 100, 1, 888, 999,
+          5, 5, 25, 5, -1, -1, 100, 10100, 888, 999,
         ]);
         expect(vertexArray.slice(20, 30)).to.eql([
-          5, 5, 25, 5, -1, -1, 100, 2, 888, 999,
+          5, 5, 25, 5, -1, -1, 100, 20100, 888, 999,
         ]);
         expect(vertexArray.slice(30, 40)).to.eql([
-          5, 5, 25, 5, -1, -1, 100, 3, 888, 999,
+          5, 5, 25, 5, -1, -1, 100, 30100, 888, 999,
         ]);
       });
       it('does not impact indices array', function () {
@@ -253,12 +268,15 @@ describe('webgl render utils', function () {
       it('computes the new current length', () => {
         expect(currentLength).to.eql(102);
       });
+      it('angle tangent sum stays the same', () => {
+        expect(currentAngleTangentSum).to.eql(100);
+      });
     });
 
     describe('segment with a point coming before it, join angle < PI', function () {
       beforeEach(function () {
         instructions.set([2, 5, 5, 25, 5, 5, 20]);
-        writeLineSegmentToBuffers(
+        const result = writeLineSegmentToBuffers(
           instructions,
           1,
           3,
@@ -268,8 +286,10 @@ describe('webgl render utils', function () {
           indexArray,
           [],
           invertInstructionsTransform,
-          0
+          0,
+          10
         );
+        currentAngleTangentSum = result.angle;
       });
       it('generate the correct amount of vertices', () => {
         expect(vertexArray).to.have.length(32);
@@ -283,12 +303,15 @@ describe('webgl render utils', function () {
       it('does not impact indices array', function () {
         expect(indexArray).to.have.length(6);
       });
+      it('angle tangent sum decreases by one', () => {
+        expect(currentAngleTangentSum).roughlyEqual(9, 1e-9);
+      });
     });
 
     describe('segment with a point coming before it, join angle > PI', function () {
       beforeEach(function () {
         instructions.set([2, 5, 5, 25, 5, 5, -10]);
-        writeLineSegmentToBuffers(
+        const result = writeLineSegmentToBuffers(
           instructions,
           1,
           3,
@@ -298,8 +321,10 @@ describe('webgl render utils', function () {
           indexArray,
           [],
           invertInstructionsTransform,
-          0
+          0,
+          10
         );
+        currentAngleTangentSum = result.angle;
       });
       it('generate the correct amount of vertices', () => {
         expect(vertexArray).to.have.length(32);
@@ -313,12 +338,15 @@ describe('webgl render utils', function () {
       it('does not impact indices array', function () {
         expect(indexArray).to.have.length(6);
       });
+      it('angle tangent sum increases by one', () => {
+        expect(currentAngleTangentSum).roughlyEqual(11, 1e-9);
+      });
     });
 
     describe('segment with a point coming after it, join angle > PI', function () {
       beforeEach(function () {
         instructions.set([2, 5, 5, 25, 5, 5, 25]);
-        writeLineSegmentToBuffers(
+        const result = writeLineSegmentToBuffers(
           instructions,
           1,
           3,
@@ -328,8 +356,10 @@ describe('webgl render utils', function () {
           indexArray,
           [],
           invertInstructionsTransform,
-          0
+          0,
+          10
         );
+        currentAngleTangentSum = result.angle;
       });
       it('generate the correct amount of vertices', () => {
         expect(vertexArray).to.have.length(32);
@@ -343,12 +373,18 @@ describe('webgl render utils', function () {
       it('does not impact indices array', function () {
         expect(indexArray).to.have.length(6);
       });
+      it('angle tangent sum decreases', () => {
+        expect(currentAngleTangentSum).roughlyEqual(
+          10 - (1 + Math.sqrt(2)),
+          1e-9
+        );
+      });
     });
 
     describe('segment with a point coming after it, join angle < PI', function () {
       beforeEach(function () {
         instructions.set([2, 5, 5, 25, 5, 25, -10]);
-        writeLineSegmentToBuffers(
+        const result = writeLineSegmentToBuffers(
           instructions,
           1,
           3,
@@ -358,8 +394,10 @@ describe('webgl render utils', function () {
           indexArray,
           [],
           invertInstructionsTransform,
-          0
+          0,
+          10
         );
+        currentAngleTangentSum = result.angle;
       });
       it('generate the correct amount of vertices', () => {
         expect(vertexArray).to.have.length(32);
@@ -372,6 +410,9 @@ describe('webgl render utils', function () {
       });
       it('does not impact indices array', function () {
         expect(indexArray).to.have.length(6);
+      });
+      it('angle tangent sum increases', () => {
+        expect(currentAngleTangentSum).roughlyEqual(11, 1e-9);
       });
     });
   });

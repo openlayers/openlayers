@@ -19,7 +19,6 @@ import {
   uniformNameForVariable,
 } from '../expr/gpu.js';
 import {asArray} from '../color.js';
-import {getUid} from '../util.js';
 
 /**
  * Recursively parses a style expression and outputs a GLSL-compatible string. Takes in a compilation context that
@@ -90,7 +89,19 @@ function getGlslTypeFromType(type) {
 }
 
 /**
- * @param {import("../style/literal.js").LiteralStyle} style Style
+ * see https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
+ * @param {Object|string} input The hash input, either an object or string
+ * @return {string} Hash (if the object cannot be serialized, it is based on `getUid`)
+ */
+export function computeHash(input) {
+  const hash = JSON.stringify(input)
+    .split('')
+    .reduce((prev, curr) => (prev << 5) - prev + curr.charCodeAt(0), 0);
+  return (hash >>> 0).toString();
+}
+
+/**
+ * @param {import("../style/webgl.js").WebGLStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
  * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
  * @param {'shape-'|'circle-'|'icon-'} prefix Properties prefix
@@ -181,7 +192,79 @@ function getColorFromDistanceField(
 }
 
 /**
- * @param {import("../style/literal.js").LiteralStyle} style Style
+ * This will parse an image property provided by `<prefix>-src`
+ * The image size expression in GLSL will be returned
+ * @param {import("../style/webgl.js").WebGLStyle} style Style
+ * @param {ShaderBuilder} builder Shader builder
+ * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {'icon-'|'fill-pattern-'|'stroke-pattern-'} prefix Property prefix
+ * @param {string} textureId A identifier that will be used in the generated uniforms: `sample2d u_texture<id>` and `vec2 u_texture<id>_size`
+ * @return {string} The image size expression
+ */
+function parseImageProperties(style, builder, uniforms, prefix, textureId) {
+  const image = new Image();
+  let size;
+  image.crossOrigin =
+    style[`${prefix}cross-origin`] === undefined
+      ? 'anonymous'
+      : style[`${prefix}cross-origin`];
+  image.src = style[`${prefix}src`];
+
+  if (image.complete && image.width && image.height) {
+    size = arrayToGlsl([image.width, image.height]);
+  } else {
+    // the size is provided asynchronously using a uniform
+    uniforms[`u_texture${textureId}_size`] = () => {
+      return image.complete ? [image.width, image.height] : [0, 0];
+    };
+    builder.addUniform(`vec2 u_texture${textureId}_size`);
+    size = `u_texture${textureId}_size`;
+  }
+  uniforms[`u_texture${textureId}`] = image;
+  builder.addUniform(`sampler2D u_texture${textureId}`);
+  return size;
+}
+
+/**
+ * This will parse an image's offset properties provided by `<prefix>-offset`, `<prefix>-offset-origin` and `<prefix>-size`
+ * @param {import("../style/webgl.js").WebGLStyle} style Style
+ * @param {'icon-'|'fill-pattern-'|'stroke-pattern-'} prefix Property prefix
+ * @param {import("../expr/gpu.js").CompilationContext} context Shader compilation context (vertex or fragment)
+ * @param {string} imageSize Pixel size of the full image as a GLSL expression
+ * @param {string} sampleSize Pixel size of the sample in the image as a GLSL expression
+ * @return {string} The offset expression
+ */
+function parseImageOffsetProperties(
+  style,
+  prefix,
+  context,
+  imageSize,
+  sampleSize
+) {
+  let offsetExpression = expressionToGlsl(
+    context,
+    style[`${prefix}offset`],
+    NumberArrayType
+  );
+  if (`${prefix}offset-origin` in style) {
+    switch (style[`${prefix}offset-origin`]) {
+      case 'top-right':
+        offsetExpression = `vec2(${imageSize}.x, 0.) + ${sampleSize} * vec2(-1., 0.) + ${offsetExpression} * vec2(-1., 1.)`;
+        break;
+      case 'bottom-left':
+        offsetExpression = `vec2(0., ${imageSize}.y) + ${sampleSize} * vec2(0., -1.) + ${offsetExpression} * vec2(1., -1.)`;
+        break;
+      case 'bottom-right':
+        offsetExpression = `${imageSize} - ${sampleSize} - ${offsetExpression}`;
+        break;
+      default: // pass
+    }
+  }
+  return offsetExpression;
+}
+
+/**
+ * @param {import("../style/webgl.js").WebGLStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
  * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
@@ -276,7 +359,7 @@ function parseCircleProperties(
 }
 
 /**
- * @param {import("../style/literal.js").LiteralStyle} style Style
+ * @param {import("../style/webgl.js").WebGLStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
  * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
@@ -430,7 +513,7 @@ function parseShapeProperties(
 }
 
 /**
- * @param {import("../style/literal.js").LiteralStyle} style Style
+ * @param {import("../style/webgl.js").WebGLStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
  * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
@@ -443,13 +526,6 @@ function parseIconProperties(
   vertContext,
   fragContext
 ) {
-  fragContext.functions[
-    'samplePremultiplied'
-  ] = `vec4 samplePremultiplied(sampler2D sampler, vec2 texCoord) {
-  vec4 color = texture2D(sampler, texCoord);
-  return vec4(color.rgb * color.a, color.a);
-}`;
-
   // COLOR
   let color = 'vec4(1.0)';
   if ('icon-color' in style) {
@@ -466,45 +542,19 @@ function parseIconProperties(
   }
 
   // IMAGE & SIZE
-  let image;
-  let size;
-  const textureId = getUid(style);
-  if ('icon-src' in style) {
-    image = new Image();
-    image.crossOrigin =
-      style['icon-cross-origin'] === undefined
-        ? 'anonymous'
-        : style['icon-cross-origin'];
-    image.src = style['icon-src'];
-    // the size is provided asynchronously using a uniform
-    uniforms[`u_texture${textureId}_size`] = () => {
-      return image.complete ? [image.width, image.height] : [0, 0];
-    };
-    size = `u_texture${textureId}_size`;
-    builder.addUniform(`vec2 u_texture${textureId}_size`);
-  } else {
-    image = style['icon-img'];
-    if (image instanceof HTMLImageElement) {
-      if (image.complete && image.width && image.height) {
-        size = arrayToGlsl([image.width, image.height]);
-      } else {
-        // the size is provided asynchronously using a uniform
-        uniforms[`u_texture${textureId}_size`] = () => {
-          return image.complete ? [image.width, image.height] : [0, 0];
-        };
-        size = `u_texture${textureId}_size`;
-      }
-    } else {
-      size = arrayToGlsl([image.width, image.height]);
-    }
-  }
-  uniforms[`u_texture${textureId}`] = image;
+  const textureId = computeHash(style['icon-src']);
+  const sizeExpression = parseImageProperties(
+    style,
+    builder,
+    uniforms,
+    'icon-',
+    textureId
+  );
   builder
-    .addUniform(`sampler2D u_texture${textureId}`)
     .setSymbolColorExpression(
       `${color} * samplePremultiplied(u_texture${textureId}, v_texCoord)`
     )
-    .setSymbolSizeExpression(size);
+    .setSymbolSizeExpression(sizeExpression);
 
   // override size if width/height were specified
   if ('icon-width' in style && 'icon-height' in style) {
@@ -519,11 +569,6 @@ function parseIconProperties(
 
   // tex coord
   if ('icon-offset' in style && 'icon-size' in style) {
-    let offset = expressionToGlsl(
-      vertContext,
-      style['icon-offset'],
-      NumberArrayType
-    );
     const sampleSize = expressionToGlsl(
       vertContext,
       style['icon-size'],
@@ -531,21 +576,13 @@ function parseIconProperties(
     );
     const fullsize = builder.getSymbolSizeExpression();
     builder.setSymbolSizeExpression(sampleSize);
-
-    if ('icon-offset-origin' in style) {
-      switch (style['icon-offset-origin']) {
-        case 'top-right':
-          offset = `vec2(v_quadSizePx.x, 0.) + ${sampleSize} * vec2(-1., 0.) + ${offset} * vec2(-1., 1.)`;
-          break;
-        case 'bottom-left':
-          offset = `vec2(0., v_quadSizePx.y) + ${sampleSize} * vec2(0., -1.) + ${offset} * vec2(1., -1.)`;
-          break;
-        case 'bottom-right':
-          offset = `v_quadSizePx - ${sampleSize} - ${offset}`;
-          break;
-        default: // pass
-      }
-    }
+    const offset = parseImageOffsetProperties(
+      style,
+      'icon-',
+      vertContext,
+      'v_quadSizePx',
+      sampleSize
+    );
     builder.setTextureCoordinateExpression(
       `(vec4((${offset}).xyxy) + vec4(0., 0., ${sampleSize})) / (${fullsize}).xyxy`
     );
@@ -603,7 +640,7 @@ function parseIconProperties(
 }
 
 /**
- * @param {import("../style/literal.js").LiteralStyle} style Style
+ * @param {import("../style/webgl.js").WebGLStyle} style Style
  * @param {ShaderBuilder} builder Shader Builder
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
  * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
@@ -619,6 +656,58 @@ function parseStrokeProperties(
   if ('stroke-color' in style) {
     builder.setStrokeColorExpression(
       expressionToGlsl(fragContext, style['stroke-color'], ColorType)
+    );
+  }
+  if ('stroke-pattern-src' in style) {
+    const textureId = computeHash(style['stroke-pattern-src']);
+    const sizeExpression = parseImageProperties(
+      style,
+      builder,
+      uniforms,
+      'stroke-pattern-',
+      textureId
+    );
+    let sampleSizeExpression = sizeExpression;
+    let offsetExpression = 'vec2(0.)';
+    if ('stroke-pattern-offset' in style && 'stroke-pattern-size' in style) {
+      sampleSizeExpression = expressionToGlsl(
+        fragContext,
+        style[`stroke-pattern-size`],
+        NumberArrayType
+      );
+      offsetExpression = parseImageOffsetProperties(
+        style,
+        'stroke-pattern-',
+        fragContext,
+        sizeExpression,
+        sampleSizeExpression
+      );
+    }
+    let spacingExpression = '0.';
+    if ('stroke-pattern-spacing' in style) {
+      spacingExpression = expressionToGlsl(
+        fragContext,
+        style['stroke-pattern-spacing'],
+        NumberType
+      );
+    }
+    fragContext.functions[
+      'sampleStrokePattern'
+    ] = `vec4 sampleStrokePattern(sampler2D texture, vec2 textureSize, vec2 textureOffset, vec2 sampleSize, float spacingPx, float currentLengthPx, float currentRadiusRatio) {
+      float currentLengthScaled = currentLengthPx * sampleSize.y / v_width;
+      float spacingScaled = spacingPx * sampleSize.y / v_width;
+      float uCoordPx = mod(currentLengthScaled, (sampleSize.x + spacingScaled));
+      float vCoordPx = (currentRadiusRatio * 0.5 + 0.5) * sampleSize.y;
+      vec2 texCoord = (vec2(uCoordPx, vCoordPx) + textureOffset) / textureSize;
+      return uCoordPx > sampleSize.x ? vec4(0.) : samplePremultiplied(texture, texCoord);
+    }`;
+    const textureName = `u_texture${textureId}`;
+    let tintExpression = '1.';
+    if ('stroke-color' in style) {
+      tintExpression = builder.getStrokeColorExpression();
+    }
+    builder.setStrokeColorExpression(
+      `${tintExpression} * sampleStrokePattern(${textureName}, ${sizeExpression}, ${offsetExpression}, ${sampleSizeExpression}, ${spacingExpression}, currentLengthPx, currentRadiusRatio)`
     );
   }
 
@@ -684,12 +773,8 @@ function parseStrokeProperties(
       );
     }
 
-    // define a function for this dash specifically (identified using a simple hash)
-    // see https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
-    let uniqueDashKey = JSON.stringify(style['stroke-line-dash'])
-      .split('')
-      .reduce((prev, curr) => (prev << 5) - prev + curr.charCodeAt(0), 0);
-    uniqueDashKey = uniqueDashKey >>> 0;
+    // define a function for this dash specifically
+    const uniqueDashKey = computeHash(style['stroke-line-dash']);
     const dashFunctionName = `dashDistanceField_${uniqueDashKey}`;
 
     const dashLengthsDef = dashPattern.map(
@@ -721,7 +806,7 @@ function parseStrokeProperties(
 }
 
 /**
- * @param {import("../style/literal.js").LiteralStyle} style Style
+ * @param {import("../style/webgl.js").WebGLStyle} style Style
  * @param {ShaderBuilder} builder Shader Builder
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
  * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
@@ -739,6 +824,48 @@ function parseFillProperties(
       expressionToGlsl(fragContext, style['fill-color'], ColorType)
     );
   }
+  if ('fill-pattern-src' in style) {
+    const textureId = computeHash(style['fill-pattern-src']);
+    const sizeExpression = parseImageProperties(
+      style,
+      builder,
+      uniforms,
+      'fill-pattern-',
+      textureId
+    );
+    let sampleSizeExpression = sizeExpression;
+    let offsetExpression = 'vec2(0.)';
+    if ('fill-pattern-offset' in style && 'fill-pattern-size' in style) {
+      sampleSizeExpression = expressionToGlsl(
+        fragContext,
+        style[`fill-pattern-size`],
+        NumberArrayType
+      );
+      offsetExpression = parseImageOffsetProperties(
+        style,
+        'fill-pattern-',
+        fragContext,
+        sizeExpression,
+        sampleSizeExpression
+      );
+    }
+    fragContext.functions[
+      'sampleFillPattern'
+    ] = `vec4 sampleFillPattern(sampler2D texture, vec2 textureSize, vec2 textureOffset, vec2 sampleSize, vec2 pxOrigin, vec2 pxPosition) {
+  float scaleRatio = pow(2., mod(u_zoom + 0.5, 1.) - 0.5);
+  vec2 samplePos = mod((pxPosition - pxOrigin) / scaleRatio, sampleSize);
+  samplePos.y = sampleSize.y - samplePos.y; // invert y axis so that images appear upright
+  return samplePremultiplied(texture, (samplePos + textureOffset) / textureSize);
+}`;
+    const textureName = `u_texture${textureId}`;
+    let tintExpression = '1.';
+    if ('fill-color' in style) {
+      tintExpression = builder.getFillColorExpression();
+    }
+    builder.setFillColorExpression(
+      `${tintExpression} * sampleFillPattern(${textureName}, ${sizeExpression}, ${offsetExpression}, ${sampleSizeExpression}, pxOrigin, pxPos)`
+    );
+  }
 }
 
 /**
@@ -749,14 +876,14 @@ function parseFillProperties(
  */
 
 /**
- * Parses a {@link import("../style/literal.js").LiteralStyle} object and returns a {@link ShaderBuilder}
+ * Parses a {@link import("../style/webgl.js").WebGLStyle} object and returns a {@link ShaderBuilder}
  * object that has been configured according to the given style, as well as `attributes` and `uniforms`
  * arrays to be fed to the `WebGLPointsRenderer` class.
  *
  * Also returns `uniforms` and `attributes` properties as expected by the
  * {@link module:ol/renderer/webgl/PointsLayer~WebGLPointsLayerRenderer}.
  *
- * @param {import("../style/literal.js").LiteralStyle} style Literal style.
+ * @param {import("../style/webgl.js").WebGLStyle} style Literal style.
  * @return {StyleParseResult} Result containing shader params, attributes and uniforms.
  */
 export function parseLiteralStyle(style) {
@@ -787,7 +914,7 @@ export function parseLiteralStyle(style) {
   /** @type {Object<string,import("../webgl/Helper").UniformValue>} */
   const uniforms = {};
 
-  if ('icon-src' in style || 'icon-img' in style) {
+  if ('icon-src' in style) {
     parseIconProperties(style, builder, uniforms, vertContext, fragContext);
   } else if ('shape-points' in style) {
     parseShapeProperties(style, builder, uniforms, vertContext, fragContext);

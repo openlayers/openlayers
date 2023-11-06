@@ -254,7 +254,7 @@
     "../src/ol/style/IconImage.js",
     "../src/ol/style/IconImageCache.js",
     "../src/ol/style/Image.js",
-    "../src/ol/style/literal.js",
+    "../src/ol/style/webgl.js",
     "../src/ol/style/RegularShape.js",
     "../src/ol/style/Stroke.js",
     "../src/ol/style/Style.js",

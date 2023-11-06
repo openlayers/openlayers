@@ -39,7 +39,7 @@ const SAMPLE_SHADERS = () => ({
 });
 
 /**
- * @type {import('../../../../../../src/ol/style/literal.js').LiteralStyle}
+ * @type {import('../../../../../../src/ol/style/webgl.js').WebGLStyle}
  */
 const SAMPLE_STYLE = {
   'fill-color': ['get', 'color'],

@@ -166,7 +166,7 @@
  */
 
 /**
- * Icon style properties applied to point features.  One of `icon-src` or `icon-img` must be provided to render
+ * Icon style properties applied to point features. `icon-src` must be provided to render
  * points with an icon.
  *
  * @typedef {Object} FlatIcon

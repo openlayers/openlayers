@@ -7,7 +7,7 @@ import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
 import WebGLVectorLayerRenderer from '../src/ol/renderer/webgl/VectorLayer.js';
 
-/** @type {import('../src/ol/style/literal.js').LiteralStyle} */
+/** @type {import('../src/ol/style/webgl.js').WebGLStyle} */
 const style = {
   'stroke-color': ['*', ['get', 'COLOR'], [220, 220, 220]],
   'stroke-width': 3,

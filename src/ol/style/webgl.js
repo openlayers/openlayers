@@ -1,7 +1,6 @@
 /**
- * Literal style objects differ from standard styles in that they cannot
- * be functions and are made up of simple objects instead of classes.
- * @module ol/style/literal
+ * WebGL style objects slightly differ from standard flat styles for certain properties
+ * @module ol/style/webgl
  */
 
 /**
@@ -21,7 +20,14 @@
 
 /**
  * @typedef {Object} FillProps
- * @property {ColorExpression} [fill-color] The fill color.
+ * @property {ColorExpression} [fill-color] Fill color.
+ * @property {string} [fill-pattern-src] Fill pattern image source URI. If `fill-color` is defined as well, it will be used to tint this image.
+ * @property {Array<number>|ExpressionValue} [fill-pattern-offset=[0, 0]] Offset, which, together with the size and the offset origin, define the
+ * sub-rectangle to use from the original fill pattern image.
+ * @property {import("./Icon.js").IconOrigin} [fill-pattern-offset-origin='top-left'] Origin of the offset: `bottom-left`, `bottom-right`,
+ * `top-left` or `top-right`.
+ * @property {ExpressionValue|import("../size.js").Size} [fill-pattern-size] Fill pattern image size in pixel. Can be used together with `fill-pattern-offset` to define the
+ * sub-rectangle to use from the origin (sprite) fill pattern image.
  */
 
 /**
@@ -34,12 +40,19 @@
  * @property {Array<number>|Array<ExpressionValue>} [stroke-line-dash] Line dash pattern.
  * @property {number|ExpressionValue} [stroke-line-dash-offset=0] Line dash offset.
  * @property {number|ExpressionValue} [stroke-miter-limit=10] Miter limit.
+ * @property {string} [stroke-pattern-src] Stroke pattern image source URI. If `stroke-color` is defined as well, it will be used to tint this image.
+ * @property {Array<number>|ExpressionValue} [stroke-pattern-offset=[0, 0]] Offset, which, together with the size and the offset origin, define the
+ * sub-rectangle to use from the original fill pattern image.
+ * @property {import("./Icon.js").IconOrigin} [stroke-pattern-offset-origin='top-left'] Origin of the offset: `bottom-left`, `bottom-right`,
+ * `top-left` or `top-right`.
+ * @property {ExpressionValue|import("../size.js").Size} [stroke-pattern-size] Stroke pattern image size in pixel. Can be used together with `stroke-pattern-offset` to define the
+ * sub-rectangle to use from the origin (sprite) fill pattern image.
+ * @property {number|ExpressionValue} [stroke-pattern-spacing] Spacing between each pattern occurrence in pixels; 0 if undefined.
  */
 
 /**
  * @typedef {Object} IconProps
  * @property {string} [icon-src] Image source URI.
- * @property {HTMLImageElement|HTMLCanvasElement} [icon-img] Image object for the icon. Required if the `icon-src` option is not provided.
  * @property {Array<number>|ExpressionValue} [icon-anchor=[0.5, 0.5]] Anchor. Default value is the icon center.
  * @property {import("./Icon.js").IconOrigin} [icon-anchor-origin='top-left'] Origin of the anchor: `bottom-left`, `bottom-right`,
  * `top-left` or `top-right`.
@@ -106,8 +119,7 @@
  * (meaningful only when used in conjunction with a two dimensional scale).
  */
 
-// FIXME Present in flat style but not implemented in literal webgl style:
-//  - color like (fill patterns etc.)
+// FIXME Present in flat style but not implemented in webgl style:
 //  - icon declutter mode
 //  - circle line cap/join/miter limit
 //  - circle dash pattern/offset
@@ -118,7 +130,7 @@
 //  - text style
 
 /**
- * @typedef {BaseProps & IconProps & StrokeProps & FillProps & CircleProps & ShapeProps} LiteralStyle
+ * @typedef {BaseProps & IconProps & StrokeProps & FillProps & CircleProps & ShapeProps} WebGLStyle
  */
 
 export {};

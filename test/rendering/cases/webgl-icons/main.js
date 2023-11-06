@@ -23,7 +23,7 @@ const iconSimple = {
   'icon-displacement': [-40, 0],
 };
 const dataDriven = {
-  'icon-img': canvas,
+  'icon-src': canvas.toDataURL('png'),
   'icon-color': ['get', 'color'],
   'icon-displacement': [40, 0],
 };

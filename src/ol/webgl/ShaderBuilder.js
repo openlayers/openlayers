@@ -2,10 +2,11 @@
  * Class for generating shaders from literal style objects
  * @module ol/webgl/ShaderBuilder
  */
+import {LINESTRING_ANGLE_COSINE_CUTOFF} from '../render/webgl/utils.js';
 import {colorToGlsl, numberToGlsl, stringToGlsl} from '../expr/gpu.js';
 import {createDefaultStyle} from '../style/flat.js';
 
-const COMMON_HEADER = `#ifdef GL_FRAGMENT_PRECISION_HIGH
+export const COMMON_HEADER = `#ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
 precision mediump float;
@@ -20,11 +21,18 @@ uniform float u_zoom;
 uniform float u_resolution;
 uniform float u_rotation;
 uniform vec4 u_renderExtent;
+uniform vec2 u_patternOrigin;
 uniform float u_depth;
 uniform mediump int u_hitDetection;
 
 const float PI = 3.141592653589793238;
 const float TWO_PI = 2.0 * PI;
+
+// this used to produce an alpha-premultiplied color from a texture
+vec4 samplePremultiplied(sampler2D sampler, vec2 texCoord) {
+  vec4 color = texture2D(sampler, texCoord);
+  return vec4(color.rgb * color.a, color.a);
+}
 `;
 
 const DEFAULT_STYLE = createDefaultStyle();
@@ -48,7 +56,7 @@ const DEFAULT_STYLE = createDefaultStyle();
  *   .addUniform('u_time')
  *   .setColorExpression('...')
  *   .setSymbolSizeExpression('...')
- *   .outputSymbolFragmentShader();
+ *   .getSymbolFragmentShader();
  * ```
  */
 export class ShaderBuilder {
@@ -363,7 +371,7 @@ export class ShaderBuilder {
   }
 
   /**
-   * @param {string} expression Stroke color expression, evaluate to `vec4`
+   * @param {string} expression Stroke color expression, evaluate to `vec4`: can rely on currentLengthPx and currentRadiusPx
    * @return {ShaderBuilder} the builder object
    */
   setStrokeColorExpression(expression) {
@@ -655,7 +663,9 @@ vec2 getOffsetPoint(vec2 point, vec2 normal, float joinAngle, float offsetPx) {
 void main(void) {
   v_angleStart = a_joinAngles.x;
   v_angleEnd = a_joinAngles.y;
-  float vertexNumber = a_parameters;
+  float vertexNumber = floor(abs(a_parameters) / 10000. + 0.5);
+  // we're reading the fractional part while keeping the sign (so -4.12 gives -0.12, 3.45 gives 0.45)
+  float angleTangentSum = fract(abs(a_parameters) / 10000.) * 10000. * sign(a_parameters);
 
   float lineWidth = ${this.strokeWidthExpression_};
   float lineOffsetPx = ${this.strokeOffsetExpression_};
@@ -675,7 +685,7 @@ void main(void) {
   vec2 joinDirection;
   vec2 positionPx = vertexNumber < 1.5 ? segmentStartPx : segmentEndPx;
   // if angle is too high, do not make a proper join
-  if (cos(angle) > 0.985 || isCap(angle)) {
+  if (cos(angle) > ${LINESTRING_ANGLE_COSINE_CUTOFF} || isCap(angle)) {
     joinDirection = normalPx * normalDir - tangentPx * tangentDir;
   } else {
     joinDirection = getJoinOffsetDirection(normalPx * normalDir, angle);
@@ -687,7 +697,7 @@ void main(void) {
   v_segmentEnd = segmentEndPx;
   v_width = lineWidth;
   v_hitColor = a_hitColor;
-  v_distanceOffsetPx = a_distance / u_resolution;
+  v_distanceOffsetPx = a_distance / u_resolution - (lineOffsetPx * angleTangentSum);
 ${this.varyings_
   .map(function (varying) {
     return '  ' + varying.name + ' = ' + varying.expression + ';';
@@ -773,7 +783,7 @@ float bevelJoinField(vec2 point, vec2 start, vec2 end, float width, float joinAn
 }
 
 float miterJoinDistanceField(vec2 point, vec2 start, vec2 end, float width, float joinAngle) {
-  if (cos(joinAngle) > 0.985) { // avoid risking a division by zero
+  if (cos(joinAngle) > ${LINESTRING_ANGLE_COSINE_CUTOFF}) { // avoid risking a division by zero
     return bevelJoinField(point, start, end, width, joinAngle);
   }
   float miterLength = 1. / sin(joinAngle * 0.5);
@@ -832,6 +842,7 @@ void main(void) {
   vec2 startToPoint = currentPoint - v_segmentStart;
   float currentLengthPx = max(0., min(dot(segmentTangent, startToPoint), segmentLength)) + v_distanceOffsetPx; 
   float currentRadiusPx = abs(dot(segmentNormal, startToPoint));
+  float currentRadiusRatio = dot(segmentNormal, startToPoint) * 2. / v_width;
   vec4 color = ${this.strokeColorExpression_} * u_globalAlpha;
   float capType = ${this.strokeCapExpression_};
   float joinType = ${this.strokeJoinExpression_};
@@ -918,9 +929,16 @@ vec2 pxToWorld(vec2 pxPos) {
   return (u_screenToWorldMatrix * vec4(screenPos, 0.0, 1.0)).xy;
 }
 
+vec2 worldToPx(vec2 worldPos) {
+  vec4 screenPos = u_projectionMatrix * vec4(worldPos, 0.0, 1.0);
+  return (0.5 * screenPos.xy + 0.5) * u_viewportSizePx;
+}
+
 void main(void) {
+  vec2 pxPos = gl_FragCoord.xy / u_pixelRatio;
+  vec2 pxOrigin = worldToPx(u_patternOrigin);
   #ifdef GL_FRAGMENT_PRECISION_HIGH
-  vec2 worldPos = pxToWorld(gl_FragCoord.xy / u_pixelRatio);
+  vec2 worldPos = pxToWorld(pxPos);
   if (
     abs(u_renderExtent[0] - u_renderExtent[2]) > 0.0 && (
       worldPos[0] < u_renderExtent[0] ||

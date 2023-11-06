@@ -62,7 +62,12 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    * @param {Options} options Options.
    */
   constructor(tileLayer, options) {
-    super(tileLayer, options);
+    super(tileLayer, {
+      cacheSize: options.cacheSize,
+      uniforms: {
+        [Uniforms.PATTERN_ORIGIN]: [0, 0],
+      },
+    });
 
     /**
      * @type {boolean}
@@ -173,7 +178,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       let shaders;
       if (!isShaders) {
         const parseResult = parseLiteralStyle(
-          /** @type {import('../../style/literal.js').LiteralStyle} */ (style)
+          /** @type {import('../../style/webgl.js').WebGLStyle} */ (style)
         );
         addBuilderParams(parseResult.builder);
         shaders = {

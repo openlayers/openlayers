@@ -1,0 +1,11 @@
+.form-group label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+}
+.form-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
