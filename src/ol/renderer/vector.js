@@ -116,19 +116,29 @@ export function renderFeature(
   transform,
   declutterBuilderGroup
 ) {
-  let loading = false;
+  const loadingPromises = [];
   const imageStyle = style.getImage();
   if (imageStyle) {
+    let loading = true;
     const imageState = imageStyle.getImageState();
     if (imageState == ImageState.LOADED || imageState == ImageState.ERROR) {
-      imageStyle.unlistenImageChange(listener);
+      loading = false;
     } else {
       if (imageState == ImageState.IDLE) {
         imageStyle.load();
       }
-      imageStyle.listenImageChange(listener);
-      loading = true;
     }
+    if (loading) {
+      loadingPromises.push(imageStyle.ready());
+    }
+  }
+  const fillStyle = style.getFill();
+  if (fillStyle && fillStyle.loading()) {
+    loadingPromises.push(fillStyle.ready());
+  }
+  const loading = loadingPromises.length > 0;
+  if (loading) {
+    Promise.all(loadingPromises).then(() => listener(null));
   }
   renderFeatureInternal(
     replayGroup,

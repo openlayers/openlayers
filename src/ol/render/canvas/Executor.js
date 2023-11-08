@@ -145,9 +145,9 @@ class Executor {
 
     /**
      * @private
-     * @type {boolean}
+     * @type {number}
      */
-    this.alignFill_;
+    this.alignAndScaleFill_;
 
     /**
      * @protected
@@ -361,7 +361,7 @@ class Executor {
     context.lineTo.apply(context, p4);
     context.lineTo.apply(context, p1);
     if (fillInstruction) {
-      this.alignFill_ = /** @type {boolean} */ (fillInstruction[2]);
+      this.alignAndScaleFill_ = /** @type {number} */ (fillInstruction[2]);
       this.fill_(context);
     }
     if (strokeInstruction) {
@@ -557,15 +557,19 @@ class Executor {
    * @param {CanvasRenderingContext2D} context Context.
    */
   fill_(context) {
-    if (this.alignFill_) {
+    const alignAndScale = this.alignAndScaleFill_;
+    if (alignAndScale) {
       const origin = applyTransform(this.renderedTransform_, [0, 0]);
       const repeatSize = 512 * this.pixelRatio;
       context.save();
       context.translate(origin[0] % repeatSize, origin[1] % repeatSize);
+      if (alignAndScale !== 1) {
+        context.scale(alignAndScale, alignAndScale);
+      }
       context.rotate(this.viewRotation_);
     }
     context.fill();
-    if (this.alignFill_) {
+    if (alignAndScale) {
       context.restore();
     }
   }
@@ -1149,7 +1153,7 @@ class Executor {
           break;
         case CanvasInstruction.SET_FILL_STYLE:
           lastFillInstruction = instruction;
-          this.alignFill_ = instruction[2];
+          this.alignAndScaleFill_ = instruction[2];
 
           if (pendingFill) {
             this.fill_(context);
@@ -1160,10 +1164,8 @@ class Executor {
             }
           }
 
-          context.fillStyle =
-            /** @type {import("../../colorlike.js").ColorLike} */ (
-              instruction[1]
-            );
+          /** @type {import("../../colorlike.js").ColorLike} */
+          context.fillStyle = instruction[1];
           ++i;
           break;
         case CanvasInstruction.SET_STROKE_STYLE:

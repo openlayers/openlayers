@@ -75,6 +75,10 @@ export function newEvaluationContext() {
  */
 
 /**
+ * @typedef {function(EvaluationContext):(Array<number>)} SizeEvaluator
+ */
+
+/**
  * @typedef {function(EvaluationContext):(Array<number>|number)} SizeLikeEvaluator
  */
 

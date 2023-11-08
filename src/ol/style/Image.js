@@ -293,6 +293,13 @@ class ImageStyle {
   unlistenImageChange(listener) {
     abstract();
   }
+
+  /**
+   * @return {Promise<void>} `false` or Promise that resolves when the style is ready to use.
+   */
+  ready() {
+    return Promise.resolve();
+  }
 }
 
 export default ImageStyle;

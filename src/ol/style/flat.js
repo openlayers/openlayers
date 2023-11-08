@@ -100,6 +100,11 @@
  *
  * @typedef {Object} FlatFill
  * @property {ColorExpression} [fill-color] The fill color.
+ * @property {StringExpression} [fill-pattern-src] Fill pattern image URL.
+ * @property {SizeExpression} [fill-pattern-size] Fill pattern image size in pixels.
+ * Can be used together with `fill-pattern-offset` to define the sub-rectangle to use
+ * from a fill pattern image sprite sheet.
+ * @property {SizeExpression} [fill-pattern-offset] Fill pattern image offset in pixels.
  */
 
 /**

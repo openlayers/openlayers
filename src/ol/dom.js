@@ -35,6 +35,19 @@ export function createCanvasContext2D(width, height, canvasPool, settings) {
   );
 }
 
+/** @type {CanvasRenderingContext2D} */
+let sharedCanvasContext;
+
+/**
+ * @return {CanvasRenderingContext2D} Shared canvas context.
+ */
+export function getSharedCanvasContext2D() {
+  if (!sharedCanvasContext) {
+    sharedCanvasContext = createCanvasContext2D(1, 1);
+  }
+  return sharedCanvasContext;
+}
+
 /**
  * Releases canvas memory to avoid exceeding memory limits in Safari.
  * See https://pqina.nl/blog/total-canvas-memory-use-exceeds-the-maximum-limit/
