@@ -304,6 +304,7 @@ class Snap extends PointerInteraction {
           vertex: evt.coordinate,
           vertexPixel: evt.pixel,
           feature: result.feature,
+          segment: result.segment,
         })
       );
     }
