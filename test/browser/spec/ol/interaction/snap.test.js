@@ -76,6 +76,7 @@ describe('ol.interaction.Snap', function () {
         expect(snapEvent.vertex).to.be(event.coordinate);
         expect(snapEvent.vertexPixel).to.be(event.pixel);
         expect(snapEvent.feature).to.eql(point);
+        expect(snapEvent.segment).to.be(null);
 
         // check that the coordinate is in XY and not XYZ
         expect(event.coordinate).to.eql([0, 0]);
@@ -105,6 +106,7 @@ describe('ol.interaction.Snap', function () {
         expect(snapEvent.vertex).to.be(event.coordinate);
         expect(snapEvent.vertexPixel).to.be(event.pixel);
         expect(snapEvent.feature).to.be(point);
+        expect(snapEvent.segment).to.be(null);
 
         expect(event.coordinate).to.eql([0, 0]);
         expect(event.pixel).to.eql([width / 2, height / 2]);
@@ -135,6 +137,10 @@ describe('ol.interaction.Snap', function () {
 
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.be(undefined);
+        expect(snapEvent.segment).to.eql([
+          [-10, 0],
+          [10, 0],
+        ]);
 
         expect(event.coordinate).to.eql([7, 0]);
 
@@ -171,6 +177,10 @@ describe('ol.interaction.Snap', function () {
 
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.be(undefined);
+        expect(snapEvent.segment).to.eql([
+          [-10, 0],
+          [10, 0],
+        ]);
 
         expect(event.coordinate[0]).to.roughlyEqual(coordinate[0], 1e-10);
         expect(event.coordinate[1]).to.roughlyEqual(coordinate[1], 1e-10);
@@ -201,6 +211,7 @@ describe('ol.interaction.Snap', function () {
       };
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.be(point);
+        expect(snapEvent.segment).to.be(null);
 
         expect(event.coordinate).to.eql([10, 0]);
 
@@ -228,6 +239,10 @@ describe('ol.interaction.Snap', function () {
       };
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.be(point);
+        expect(snapEvent.segment).to.eql([
+          [0, 0],
+          [50, 0],
+        ]);
 
         expect(event.coordinate).to.eql([5, 0]);
 
@@ -251,6 +266,7 @@ describe('ol.interaction.Snap', function () {
       };
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.be(undefined);
+        expect(snapEvent.segment).to.be(null);
 
         expect(event.coordinate[0]).to.roughlyEqual(
           Math.sin(Math.PI / 4) * 10,
@@ -294,6 +310,7 @@ describe('ol.interaction.Snap', function () {
 
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.be(undefined);
+        expect(snapEvent.segment).to.be(null);
 
         expect(event.coordinate[0]).to.roughlyEqual(coordinate[0], 1e-10);
         expect(event.coordinate[1]).to.roughlyEqual(coordinate[1], 1e-10);
@@ -326,6 +343,7 @@ describe('ol.interaction.Snap', function () {
       };
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.be(feature);
+        expect(snapEvent.segment).to.be(null);
 
         expect(event.coordinate).to.eql([10, 0]);
 
@@ -360,6 +378,7 @@ describe('ol.interaction.Snap', function () {
       };
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.be(line);
+        expect(snapEvent.segment).to.be(null);
 
         expect(event.coordinate).to.eql([10, 0]);
 
@@ -396,6 +415,7 @@ describe('ol.interaction.Snap', function () {
 
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.be(line);
+        expect(snapEvent.segment).to.be(null);
 
         expect(event.coordinate).to.eql([10, 0]);
 
@@ -475,6 +495,7 @@ describe('ol.interaction.Snap', function () {
       };
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.be(point);
+        expect(snapEvent.segment).to.be(null);
 
         expect(event.coordinate).to.eql([lon, lat]);
         expect(event.pixel).to.eql(expectedPixel);
