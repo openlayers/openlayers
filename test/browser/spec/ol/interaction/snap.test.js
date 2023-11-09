@@ -178,8 +178,8 @@ describe('ol.interaction.Snap', function () {
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.be(undefined);
         expect(snapEvent.segment).to.eql([
-          [-10, 0],
-          [10, 0],
+          transform([-10, 0], viewProjection, userProjection),
+          transform([10, 0], viewProjection, userProjection),
         ]);
 
         expect(event.coordinate[0]).to.roughlyEqual(coordinate[0], 1e-10);
@@ -239,10 +239,7 @@ describe('ol.interaction.Snap', function () {
       };
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.be(point);
-        expect(snapEvent.segment).to.eql([
-          [0, 0],
-          [50, 0],
-        ]);
+        expect(snapEvent.segment).to.be(null);
 
         expect(event.coordinate).to.eql([5, 0]);
 

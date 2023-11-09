@@ -550,7 +550,10 @@ class Snap extends PointerInteraction {
           const delta = squaredDistance(projectedCoordinate, vertex);
           if (delta < minSquaredDistance) {
             closestVertex = toUserCoordinate(vertex, projection);
-            closestSegment = segmentData.segment;
+            closestSegment =
+              segmentData.feature.getGeometry().getType() === 'Circle'
+                ? null
+                : segmentData.segment;
             minSquaredDistance = delta;
           }
         }
