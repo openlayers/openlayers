@@ -4,7 +4,7 @@
 import CanvasInstruction from './Instruction.js';
 import Relationship from '../../extent/Relationship.js';
 import VectorContext from '../VectorContext.js';
-import {asColorLike} from '../../colorlike.js';
+import {addOpacityToColor,asColorLike} from '../../colorlike.js';
 import {
   buffer,
   clone,
@@ -129,8 +129,8 @@ class CanvasBuilder extends VectorContext {
     return pixelRatio == 1
       ? dashArray
       : dashArray.map(function (dash) {
-          return dash * pixelRatio;
-        });
+        return dash * pixelRatio;
+      });
   }
 
   /**
@@ -304,8 +304,8 @@ class CanvasBuilder extends VectorContext {
         flatCoordinates =
           type == 'Polygon'
             ? /** @type {import("../../geom/Polygon.js").default} */ (
-                geometry
-              ).getOrientedFlatCoordinates()
+              geometry
+            ).getOrientedFlatCoordinates()
             : geometry.getFlatCoordinates();
         offset = this.drawCustomCoordinates_(
           flatCoordinates,
@@ -479,6 +479,12 @@ class CanvasBuilder extends VectorContext {
       state.fillStyle = asColorLike(
         fillStyleColor ? fillStyleColor : defaultFillStyle
       );
+      if (fillStyle.getOpacity() && fillStyle.getOpacity() != 1) {
+        state.fillStyle = addOpacityToColor(
+          state.fillStyle.toString(),
+          fillStyle.getOpacity()
+        );
+      }
     } else {
       state.fillStyle = undefined;
     }
