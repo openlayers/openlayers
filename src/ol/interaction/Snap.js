@@ -29,6 +29,7 @@ import {listen, unlistenByKey} from '../events.js';
  * @property {import("../coordinate.js").Coordinate|null} vertex Vertex.
  * @property {import("../pixel.js").Pixel|null} vertexPixel VertexPixel.
  * @property {import("../Feature.js").default|null} feature Feature.
+ * @property {Array<import("../coordinate.js").Coordinate>|null} segment Segment, or `null` if snapped to a vertex.
  */
 
 /**
@@ -303,6 +304,7 @@ class Snap extends PointerInteraction {
           vertex: evt.coordinate,
           vertexPixel: evt.pixel,
           feature: result.feature,
+          segment: result.segment,
         })
       );
     }
@@ -476,6 +478,7 @@ class Snap extends PointerInteraction {
     let closestVertex;
     let minSquaredDistance = Infinity;
     let closestFeature;
+    let closestSegment = null;
 
     const squaredPixelTolerance = this.pixelTolerance_ * this.pixelTolerance_;
     const getResult = () => {
@@ -490,6 +493,7 @@ class Snap extends PointerInteraction {
               Math.round(vertexPixel[1]),
             ],
             feature: closestFeature,
+            segment: closestSegment,
           };
         }
       }
@@ -546,6 +550,10 @@ class Snap extends PointerInteraction {
           const delta = squaredDistance(projectedCoordinate, vertex);
           if (delta < minSquaredDistance) {
             closestVertex = toUserCoordinate(vertex, projection);
+            closestSegment =
+              segmentData.feature.getGeometry().getType() === 'Circle'
+                ? null
+                : segmentData.segment;
             minSquaredDistance = delta;
           }
         }
