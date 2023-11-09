@@ -13,6 +13,9 @@ import {
 } from './extent.js';
 import {toSize} from './size.js';
 
+export {TileGrid};
+export {default as WMTS} from './tilegrid/WMTS.js';
+
 /**
  * @param {import("./proj/Projection.js").default} projection Projection.
  * @return {!TileGrid} Default tile grid for the
