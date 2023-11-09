@@ -66,6 +66,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       cacheSize: options.cacheSize,
       uniforms: {
         [Uniforms.PATTERN_ORIGIN]: [0, 0],
+        [Uniforms.TILE_MASK_TEXTURE]: () => this.tileMaskTarget_.getTexture(),
       },
     });
 
@@ -242,11 +243,6 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.helper.makeProjectionTransform(
       frameState,
       this.currentFrameStateTransform_
-    );
-    this.helper.bindTexture(
-      this.tileMaskTarget_.getTexture(),
-      0,
-      Uniforms.TILE_MASK_TEXTURE
     );
   }
 
