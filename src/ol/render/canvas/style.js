@@ -729,7 +729,10 @@ function buildIcon(flatStyle, context) {
   const width = optionalNumber(flatStyle, prefix + 'width');
   const height = optionalNumber(flatStyle, prefix + 'height');
   const size = optionalSize(flatStyle, prefix + 'size');
-  const declutterMode = optionalDeclutterMode(flatStyle, prefix + 'declutter');
+  const declutterMode = optionalDeclutterMode(
+    flatStyle,
+    prefix + 'declutter-mode'
+  );
 
   const icon = new Icon({
     src,
