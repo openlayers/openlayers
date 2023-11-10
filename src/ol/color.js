@@ -159,7 +159,7 @@ export function toString(color) {
   if (b != (b | 0)) {
     b = (b + 0.5) | 0;
   }
-  const a = color[3] === undefined ? 1 : Math.round(color[3] * 100) / 100;
+  const a = color[3] === undefined ? 1 : Math.round(color[3] * 1000) / 1000;
   return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
 }
 
