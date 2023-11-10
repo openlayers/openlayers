@@ -3,8 +3,11 @@ import IconImage, {
   get as getIconImage,
 } from '../../../../../src/ol/style/IconImage.js';
 import ImageState from '../../../../../src/ol/ImageState.js';
+import {
+  getIconKey,
+  shared as iconImageCache,
+} from '../../../../../src/ol/style/IconImageCache.js';
 import {getUid} from '../../../../../src/ol/util.js';
-import {shared as iconImageCache} from '../../../../../src/ol/style/IconImageCache.js';
 
 describe('ol.style.Icon', function () {
   const size = [36, 48];
@@ -149,21 +152,19 @@ describe('ol.style.Icon', function () {
         size: [10, 12],
         displacement: [5, 6],
       });
+      // getColor may return a reference to an object in the ol/color#cache
       const clone = original.clone();
       expect(original.getAnchor()).not.to.be(clone.getAnchor());
       expect(original.offset_).not.to.be(clone.offset_);
-      expect(original.getColor()).not.to.be(clone.getColor());
       expect(original.getSize()).not.to.be(clone.getSize());
       expect(original.getDisplacement()).not.to.be(clone.getDisplacement());
 
       clone.anchor_[0] = 0;
       clone.offset_[0] = 0;
-      clone.color_[0] = 0;
       clone.size_[0] = 5;
       clone.displacement_[0] = 10;
       expect(original.anchor_).not.to.eql(clone.anchor_);
       expect(original.offset_).not.to.eql(clone.offset_);
-      expect(original.color_).not.to.eql(clone.color_);
       expect(original.size_).not.to.eql(clone.size_);
       expect(original.displacement_).not.to.eql(clone.displacement_);
     });
@@ -358,7 +359,7 @@ describe('ol.style.Icon', function () {
     it('uses the cache', function (done) {
       const src = './spec/ol/data/dot.png';
       const iconImage = new IconImage(new Image(), src);
-      iconImageCache.set(src, null, null, iconImage);
+      iconImageCache.set(getIconKey(src, null, null), iconImage);
       iconImage.load();
 
       const iconStyle = new Icon({

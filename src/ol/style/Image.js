@@ -220,6 +220,14 @@ class ImageStyle {
   }
 
   /**
+   * @param {"declutter"|"obstacle"|"none"|undefined} declutterMode Set the declutter mode.
+   * @api
+   */
+  setDeclutterMode(declutterMode) {
+    this.declutterMode_ = declutterMode;
+  }
+
+  /**
    * Set the displacement.
    *
    * @param {Array<number>} displacement Displacement.

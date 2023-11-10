@@ -79,6 +79,10 @@ export function newEvaluationContext() {
  */
 
 /**
+ * @typedef {function (EvaluationContext): "declutter"|"obstacle"|"none"} DeclutterModeEvaluator
+ */
+
+/**
  * @param {import('./expression.js').EncodedExpression} encoded The encoded expression.
  * @param {number} type The expected type.
  * @param {import('./expression.js').ParsingContext} context The parsing context.

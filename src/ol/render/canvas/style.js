@@ -19,6 +19,7 @@ import {
 } from '../../expr/expression.js';
 import {buildExpression, newEvaluationContext} from '../../expr/cpu.js';
 import {isEmpty} from '../../obj.js';
+import {shared as sharedIconCache} from '../../style/IconImageCache.js';
 import {toSize} from '../../size.js';
 
 /**
@@ -51,6 +52,10 @@ import {toSize} from '../../size.js';
 
 /**
  * @typedef {import("../../expr/cpu.js").ExpressionEvaluator} ExpressionEvaluator
+ */
+
+/**
+ * @typedef {import("../../expr/cpu.js").DeclutterModeEvaluator} DeclutterModeEvaluator
  */
 
 /**
@@ -729,9 +734,10 @@ function buildIcon(flatStyle, context) {
   const width = optionalNumber(flatStyle, prefix + 'width');
   const height = optionalNumber(flatStyle, prefix + 'height');
   const size = optionalSize(flatStyle, prefix + 'size');
-  const declutterMode = optionalDeclutterMode(
+  const evaluateDeclutterMode = declutterModeEvaluator(
     flatStyle,
-    prefix + 'declutter-mode'
+    prefix + 'declutter-mode',
+    context
   );
 
   const icon = new Icon({
@@ -746,7 +752,6 @@ function buildIcon(flatStyle, context) {
     height,
     width,
     size,
-    declutterMode,
   });
 
   return function (context) {
@@ -773,8 +778,53 @@ function buildIcon(flatStyle, context) {
     if (evaluateAnchor) {
       icon.setAnchor(evaluateAnchor(context));
     }
+
+    if (evaluateDeclutterMode) {
+      icon.setDeclutterMode(evaluateDeclutterMode(context));
+    }
     return icon;
   };
+}
+
+let colorObjectId = 0;
+/** @type {WeakMap<CanvasPattern|CanvasGradient, number>} */
+const colorObjectLookup = new WeakMap();
+
+/**
+ * @param {import('../../color.js').Color|import('../../colorlike.js').ColorLike|null} color Color
+ * @return {number|string|import('../../color.js').Color|null} A unique number for a gradient
+ */
+function getCachableColorValue(color) {
+  if (!(color instanceof CanvasPattern) && !(color instanceof CanvasGradient)) {
+    return color;
+  }
+  let id = colorObjectLookup.get(color);
+  if (!id) {
+    id = ++colorObjectId;
+    colorObjectLookup.set(color, id);
+  }
+  return id;
+}
+
+/**
+ * @param {Object<string, string|number|Array<number|null>>} cacheKeys Object to store the values in
+ * @param {Fill|null} fill Fill
+ * @param {Stroke|null} stroke Stroke
+ */
+function addStyleCacheProperties(cacheKeys, fill, stroke) {
+  cacheKeys['fill-color'] = getCachableColorValue(fill.getColor());
+  if (stroke) {
+    if (
+      (cacheKeys['stroke-style'] = getCachableColorValue(stroke.getColor()))
+    ) {
+      cacheKeys['stroke-width'] = stroke.getWidth();
+      if ((cacheKeys['line-dash'] = stroke.getLineDash())) {
+        cacheKeys['line-dash-offset'] = stroke.getLineDashOffset();
+      }
+      cacheKeys['line-cap'] = stroke.getLineCap();
+      cacheKeys['miter-limit'] = stroke.getMiterLimit();
+    }
+  }
 }
 
 /**
@@ -785,13 +835,22 @@ function buildIcon(flatStyle, context) {
 function buildShape(flatStyle, context) {
   const prefix = 'shape-';
 
-  // required property
-  const pointsName = prefix + 'points';
-  const radiusName = prefix + 'radius';
-  const points = requireNumber(flatStyle[pointsName], pointsName);
-  const radius = requireNumber(flatStyle[radiusName], radiusName);
+  // required properties
+  const evaluatePoints = numberEvaluator(flatStyle, prefix + 'points', context);
+  if (!evaluatePoints) {
+    throw new Error(`Missing ${prefix}points value`);
+  }
+  const evaluateRadius = numberEvaluator(flatStyle, prefix + 'radius', context);
+  if (!evaluateRadius) {
+    throw new Error(`Missing ${prefix}radius or ${prefix}radius1 value`);
+  }
 
-  // settable properties
+  // optional properties
+  const evaluateRadius2 = numberEvaluator(
+    flatStyle,
+    prefix + 'radius2',
+    context
+  );
   const evaluateFill = buildFill(flatStyle, prefix, context);
   const evaluateStroke = buildStroke(flatStyle, prefix, context);
   const evaluateScale = sizeLikeEvaluator(flatStyle, prefix + 'scale', context);
@@ -810,42 +869,64 @@ function buildShape(flatStyle, context) {
     prefix + 'rotate-with-view',
     context
   );
-
-  // the remaining properties are not currently settable
-  const radius2 = optionalNumber(flatStyle, prefix + 'radius2');
-  const angle = optionalNumber(flatStyle, prefix + 'angle');
-  const declutterMode = optionalDeclutterMode(
+  const evaluateAngle = numberEvaluator(flatStyle, prefix + 'angle', context);
+  const evaluateDeclutterMode = declutterModeEvaluator(
     flatStyle,
-    prefix + 'declutter-mode'
+    prefix + 'declutter-mode',
+    context
   );
 
-  const shape = new RegularShape({
-    points,
-    radius,
-    radius2,
-    angle,
-    declutterMode,
-  });
+  const defaultDisplacement = [0, 0];
+  const defaultScale = [1, 1];
 
   return function (context) {
-    if (evaluateFill) {
-      shape.setFill(evaluateFill(context));
+    const points = evaluatePoints(context);
+    const radius = evaluateRadius(context);
+    const radius2 = evaluateRadius2 ? evaluateRadius2(context) : undefined;
+    const angle = evaluateAngle ? evaluateAngle(context) : 0;
+    const fill = evaluateFill ? evaluateFill(context) : null;
+    const stroke = evaluateStroke ? evaluateStroke(context) : null;
+    const displacement = evaluateDisplacement
+      ? evaluateDisplacement(context)
+      : defaultDisplacement;
+    const rotation = evaluateRotation ? evaluateRotation(context) : 0;
+    const rotateWithView = evaluateRotateWithView
+      ? evaluateRotateWithView(context)
+      : true;
+    const scale = evaluateScale ? evaluateScale(context) : defaultScale;
+    const declutterMode = evaluateDeclutterMode
+      ? evaluateDeclutterMode(context)
+      : undefined;
+
+    const cachableProperties = {
+      points,
+      radius,
+      radius2,
+      angle,
+    };
+    addStyleCacheProperties(cachableProperties, fill, stroke);
+    const cacheKey = 'RegularShape-' + JSON.stringify(cachableProperties);
+
+    let shape = /** @type {RegularShape|null} */ (
+      sharedIconCache.get(cacheKey)
+    );
+    if (!shape) {
+      shape = new RegularShape({
+        points,
+        radius,
+        radius2,
+        angle,
+        fill,
+        stroke,
+      });
+      sharedIconCache.set(cacheKey, shape);
     }
-    if (evaluateStroke) {
-      shape.setStroke(evaluateStroke(context));
-    }
-    if (evaluateDisplacement) {
-      shape.setDisplacement(evaluateDisplacement(context));
-    }
-    if (evaluateRotation) {
-      shape.setRotation(evaluateRotation(context));
-    }
-    if (evaluateRotateWithView) {
-      shape.setRotateWithView(evaluateRotateWithView(context));
-    }
-    if (evaluateScale) {
-      shape.setScale(evaluateScale(context));
-    }
+
+    shape.setDeclutterMode(declutterMode);
+    shape.setDisplacement(displacement);
+    shape.setRotateWithView(rotateWithView);
+    shape.setRotation(rotation);
+    shape.setScale(scale);
 
     return shape;
   };
@@ -859,10 +940,12 @@ function buildShape(flatStyle, context) {
 function buildCircle(flatStyle, context) {
   const prefix = 'circle-';
 
-  // settable properties
+  // required property
+  const evaluateRadius = numberEvaluator(flatStyle, prefix + 'radius', context);
+
+  // optional properties
   const evaluateFill = buildFill(flatStyle, prefix, context);
   const evaluateStroke = buildStroke(flatStyle, prefix, context);
-  const evaluateRadius = numberEvaluator(flatStyle, prefix + 'radius', context);
   const evaluateScale = sizeLikeEvaluator(flatStyle, prefix + 'scale', context);
   const evaluateDisplacement = coordinateEvaluator(
     flatStyle,
@@ -881,38 +964,52 @@ function buildCircle(flatStyle, context) {
   );
 
   // the remaining properties are not currently settable
-  const declutterMode = optionalDeclutterMode(
+  const evaluateDeclutterMode = declutterModeEvaluator(
     flatStyle,
-    prefix + 'declutter-mode'
+    prefix + 'declutter-mode',
+    context
   );
 
-  const circle = new Circle({
-    radius: 5, // this is arbitrary, but required - the evaluated radius is used below
-    declutterMode,
-  });
+  const defaultDisplacement = [0, 0];
+  const defaultScale = [1, 1];
 
   return function (context) {
-    if (evaluateRadius) {
-      circle.setRadius(evaluateRadius(context));
+    const radius = evaluateRadius(context);
+    const fill = evaluateFill ? evaluateFill(context) : null;
+    const stroke = evaluateStroke ? evaluateStroke(context) : null;
+    const displacement = evaluateDisplacement
+      ? evaluateDisplacement(context)
+      : defaultDisplacement;
+    const rotation = evaluateRotation ? evaluateRotation(context) : 0;
+    const rotateWithView = evaluateRotateWithView
+      ? evaluateRotateWithView(context)
+      : true;
+    const scale = evaluateScale ? evaluateScale(context) : defaultScale;
+    const declutterMode = evaluateDeclutterMode
+      ? evaluateDeclutterMode(context)
+      : undefined;
+
+    const cachableProperties = {
+      radius,
+    };
+    addStyleCacheProperties(cachableProperties, fill, stroke);
+    const cacheKey = 'Circle-' + JSON.stringify(cachableProperties);
+
+    let circle = /** @type {Circle|null} */ (sharedIconCache.get(cacheKey));
+    if (!circle) {
+      circle = new Circle({
+        radius,
+        fill,
+        stroke,
+      });
+      sharedIconCache.set(cacheKey, circle);
     }
-    if (evaluateFill) {
-      circle.setFill(evaluateFill(context));
-    }
-    if (evaluateStroke) {
-      circle.setStroke(evaluateStroke(context));
-    }
-    if (evaluateDisplacement) {
-      circle.setDisplacement(evaluateDisplacement(context));
-    }
-    if (evaluateRotation) {
-      circle.setRotation(evaluateRotation(context));
-    }
-    if (evaluateRotateWithView) {
-      circle.setRotateWithView(evaluateRotateWithView(context));
-    }
-    if (evaluateScale) {
-      circle.setScale(evaluateScale(context));
-    }
+
+    circle.setDeclutterMode(declutterMode);
+    circle.setDisplacement(displacement);
+    circle.setRotation(rotation);
+    circle.setRotateWithView(rotateWithView);
+    circle.setScale(scale);
 
     return circle;
   };
@@ -1049,6 +1146,28 @@ function sizeLikeEvaluator(flatStyle, name, context) {
 /**
  * @param {FlatStyle} flatStyle The flat style.
  * @param {string} property The symbolizer property.
+ * @param {ParsingContext} context The parsing context
+ * @return {DeclutterModeEvaluator|null} Icon declutter mode.
+ */
+function declutterModeEvaluator(flatStyle, property, context) {
+  if (flatStyle[property] === undefined) {
+    return null;
+  }
+  const evaluator = buildExpression(flatStyle[property], StringType, context);
+  return (context) => {
+    const value = requireString(evaluator(context), property);
+    if (value !== 'declutter' && value !== 'obstacle' && value !== 'none') {
+      throw new Error(
+        `Expected 'declutter', 'obstacle', or 'none' for ${property}`
+      );
+    }
+    return value;
+  };
+}
+
+/**
+ * @param {FlatStyle} flatStyle The flat style.
+ * @param {string} property The symbolizer property.
  * @return {number|undefined} A number or undefined.
  */
 function optionalNumber(flatStyle, property) {
@@ -1154,25 +1273,6 @@ function optionalNumberArray(flatStyle, property) {
     return undefined;
   }
   return requireNumberArray(encoded, property);
-}
-
-/**
- * @param {FlatStyle} flatStyle The flat style.
- * @param {string} property The symbolizer property.
- * @return {"declutter"|"obstacle"|"none"|undefined} Icon declutter mode.
- */
-function optionalDeclutterMode(flatStyle, property) {
-  const encoded = flatStyle[property];
-  if (encoded === undefined) {
-    return undefined;
-  }
-  if (typeof encoded !== 'string') {
-    throw new Error(`Expected a string for ${property}`);
-  }
-  if (encoded !== 'declutter' && encoded !== 'obstacle' && encoded !== 'none') {
-    throw new Error(`Expected declutter, obstacle, or none for ${property}`);
-  }
-  return encoded;
 }
 
 /**

@@ -8,7 +8,7 @@ import ImageState from '../ImageState.js';
 import {asString} from '../color.js';
 import {createCanvasContext2D} from '../dom.js';
 import {decodeFallback} from '../Image.js';
-import {shared as iconImageCache} from './IconImageCache.js';
+import {getIconKey, shared as iconImageCache} from './IconImageCache.js';
 
 /**
  * @type {CanvasRenderingContext2D}
@@ -21,7 +21,7 @@ class IconImage extends EventTarget {
    * @param {string|undefined} src Src.
    * @param {?string} crossOrigin Cross origin.
    * @param {import("../ImageState.js").default} imageState Image state.
-   * @param {import("../color.js").Color} color Color.
+   * @param {string|null} color Color.
    */
   constructor(image, src, crossOrigin, imageState, color) {
     super();
@@ -52,7 +52,7 @@ class IconImage extends EventTarget {
 
     /**
      * @private
-     * @type {import("../color.js").Color}
+     * @type {string|null}
      */
     this.color_ = color;
 
@@ -269,14 +269,12 @@ class IconImage extends EventTarget {
  * @param {string} cacheKey Src.
  * @param {?string} crossOrigin Cross origin.
  * @param {import("../ImageState.js").default} imageState Image state.
- * @param {import("../color.js").Color} color Color.
+ * @param {string|null} color Color.
  * @return {IconImage} Icon image.
  */
 export function get(image, cacheKey, crossOrigin, imageState, color) {
-  let iconImage =
-    cacheKey === undefined
-      ? undefined
-      : iconImageCache.get(cacheKey, crossOrigin, color);
+  const iconKey = getIconKey(cacheKey, crossOrigin, color);
+  let iconImage = /** @type {IconImage|null} */ (iconImageCache.get(iconKey));
   if (!iconImage) {
     iconImage = new IconImage(
       image,
@@ -285,7 +283,7 @@ export function get(image, cacheKey, crossOrigin, imageState, color) {
       imageState,
       color
     );
-    iconImageCache.set(cacheKey, crossOrigin, color, iconImage);
+    iconImageCache.set(iconKey, iconImage);
   }
   return iconImage;
 }
