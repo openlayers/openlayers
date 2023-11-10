@@ -21,15 +21,6 @@ describe('ol/style/RegularShape', function () {
       expect(style.getRadius2()).to.eql(10);
     });
 
-    it('can use radius1 as an alias for radius', function () {
-      const style = new RegularShape({
-        radius1: 5,
-        radius2: 10,
-      });
-      expect(style.getRadius()).to.eql(5);
-      expect(style.getRadius2()).to.eql(10);
-    });
-
     it('creates a canvas (no fill-style)', function () {
       const style = new RegularShape({radius: 10});
       expect(style.getImage(1)).to.be.an(HTMLCanvasElement);

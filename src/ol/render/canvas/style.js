@@ -787,7 +787,9 @@ function buildShape(flatStyle, context) {
 
   // required property
   const pointsName = prefix + 'points';
+  const radiusName = prefix + 'radius';
   const points = requireNumber(flatStyle[pointsName], pointsName);
+  const radius = requireNumber(flatStyle[radiusName], radiusName);
 
   // settable properties
   const evaluateFill = buildFill(flatStyle, prefix, context);
@@ -810,8 +812,6 @@ function buildShape(flatStyle, context) {
   );
 
   // the remaining properties are not currently settable
-  const radius = optionalNumber(flatStyle, prefix + 'radius');
-  const radius1 = optionalNumber(flatStyle, prefix + 'radius1');
   const radius2 = optionalNumber(flatStyle, prefix + 'radius2');
   const angle = optionalNumber(flatStyle, prefix + 'angle');
   const declutterMode = optionalDeclutterMode(
@@ -822,7 +822,6 @@ function buildShape(flatStyle, context) {
   const shape = new RegularShape({
     points,
     radius,
-    radius1,
     radius2,
     angle,
     declutterMode,

@@ -103,7 +103,7 @@ const predefinedStyles = {
   'rotating-bars': {
     'shape-rotation': ['*', ['time'], 0.13],
     'shape-points': 4,
-    'shape-radius1': 4,
+    'shape-radius': 4,
     'shape-radius2': 4 * Math.sqrt(2),
     'shape-scale': [
       'array',

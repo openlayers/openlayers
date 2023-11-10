@@ -10,7 +10,7 @@ import XYZ from '../../../../src/ol/source/XYZ.js';
 
 const blueStar = {
   'shape-points': 5,
-  'shape-radius1': 20,
+  'shape-radius': 20,
   'shape-radius2': 10,
   'shape-fill-color': 'rgba(255,255,255,0.4)',
   'shape-stroke-width': 4,
@@ -29,7 +29,7 @@ const dataDriven = {
 };
 const scaledRotated = {
   'shape-points': 10,
-  'shape-radius1': 12,
+  'shape-radius': 12,
   'shape-radius2': 9,
   'shape-scale': [4, 0.5],
   'shape-fill-color': 'rgba(255,255,255,0.4)',

@@ -93,14 +93,13 @@
  * @property {ExpressionValue|number} [shape-stroke-width] Stroke pixel width.
  * @property {ExpressionValue|number} [shape-opacity] Shape opacity.
  * @property {ExpressionValue|number} [shape-radius] Radius of a regular polygon.
- * @property {ExpressionValue|number} [shape-radius1] First radius of a star. Ignored if radius is set.
- * @property {ExpressionValue|number} [shape-radius2] Second radius of a star.
+ * @property {ExpressionValue|number} [shape-radius2] Second radius to make a star instead of a regular polygon.
  * @property {ExpressionValue|number} [shape-angle=0] Shape's angle in radians. A value of 0 will have one of the shape's point facing up.
  * @property {Array<ExpressionValue>|Array<number>} [shape-displacement=[0,0]] Displacement of the shape
  * @property {ExpressionValue|number} [shape-rotation=0] Rotation in radians (positive rotation clockwise).
  * @property {boolean} [shape-rotate-with-view=false] Whether to rotate the shape with the view.
  * @property {ExpressionValue|Array<ExpressionValue>|number|import("../size.js").Size} [shape-scale=1] Scale. Unless two dimensional scaling is required a better
- * result may be obtained with appropriate settings for `shape-radius`, `shape-radius1` and `shape-radius2`.
+ * result may be obtained with appropriate settings for `shape-radius` and `shape-radius2`.
  */
 
 /**
