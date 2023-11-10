@@ -1,5 +1,9 @@
 ## Upgrade notes
 
+### Next Release
+
+ * `ol/geom/GeometryCollection` can no longer be created without providing a Geometry array. Emtpy arrays are still valid.
+
 ### 8.0.0
 
 #### Removal of deprecated properties and methods
