@@ -686,9 +686,11 @@ function parseStrokeProperties(
   float currentLengthScaled = currentLengthPx * sampleSize.y / lineWidth;
   float spacingScaled = spacingPx * sampleSize.y / lineWidth;
   float uCoordPx = mod(currentLengthScaled, (sampleSize.x + spacingScaled));
-  float vCoordPx = (currentRadiusRatio * 0.5 + 0.5) * sampleSize.y;
+  // make sure that we're not sampling too close to the borders to avoid interpolation with outside pixels
+  uCoordPx = clamp(uCoordPx, 0.5, sampleSize.x - 0.5);
+  float vCoordPx = (-currentRadiusRatio * 0.5 + 0.5) * sampleSize.y;
   vec2 texCoord = (vec2(uCoordPx, vCoordPx) + textureOffset) / textureSize;
-  return uCoordPx > sampleSize.x ? vec4(0.) : samplePremultiplied(texture, texCoord);
+  return samplePremultiplied(texture, texCoord);
 }`;
     const textureName = `u_texture${textureId}`;
     let tintExpression = '1.';
@@ -843,8 +845,12 @@ function parseFillProperties(
     ] = `vec4 sampleFillPattern(sampler2D texture, vec2 textureSize, vec2 textureOffset, vec2 sampleSize, vec2 pxOrigin, vec2 pxPosition) {
   float scaleRatio = pow(2., mod(u_zoom + 0.5, 1.) - 0.5);
   vec2 pxRelativePos = pxPosition - pxOrigin;
+  // rotate the relative position from origin by the current view rotation
   pxRelativePos = vec2(pxRelativePos.x * cos(u_rotation) - pxRelativePos.y * sin(u_rotation), pxRelativePos.x * sin(u_rotation) + pxRelativePos.y * cos(u_rotation));
+  // sample position is computed according to the sample offset & size
   vec2 samplePos = mod(pxRelativePos / scaleRatio, sampleSize);
+  // also make sure that we're not sampling too close to the borders to avoid interpolation with outside pixels
+  samplePos = clamp(samplePos, vec2(0.5), sampleSize - vec2(0.5));
   samplePos.y = sampleSize.y - samplePos.y; // invert y axis so that images appear upright
   return samplePremultiplied(texture, (samplePos + textureOffset) / textureSize);
 }`;
