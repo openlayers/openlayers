@@ -89,7 +89,7 @@ class GeoJSON extends JSONFeature {
     this.geometryName_ = options.geometryName;
 
     /**
-     * Look for the geometry name in the feature GeoJSON
+     * Look for the `geometry_name` in the feature GeoJSON
      * @type {boolean|undefined}
      * @private
      */
@@ -137,10 +137,7 @@ class GeoJSON extends JSONFeature {
     const feature = new Feature();
     if (this.geometryName_) {
       feature.setGeometryName(this.geometryName_);
-    } else if (
-      this.extractGeometryName_ &&
-      'geometry_name' in geoJSONFeature !== undefined
-    ) {
+    } else if (this.extractGeometryName_ && geoJSONFeature['geometry_name']) {
       feature.setGeometryName(geoJSONFeature['geometry_name']);
     }
     feature.setGeometry(createGeometry(geometry, options));
