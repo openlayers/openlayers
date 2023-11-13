@@ -159,6 +159,41 @@ describe('ol/format/GeoJSON.js', function () {
     ],
   };
 
+  describe('extractGeometryName', () => {
+    it('makes it so the geometry name will be set to the value of the `geometry_name` value', () => {
+      const data = {
+        type: 'Feature',
+        properties: {},
+        geometry_name: 'the_geom',
+        geometry: {
+          type: 'Point',
+          coordinates: [0, 0],
+        },
+      };
+      const format = new GeoJSON({extractGeometryName: true});
+      const feature = format.readFeature(data);
+      expect(feature.getGeometryName()).to.be('the_geom');
+      expect(feature.getGeometry()).to.be.a(Point);
+      expect(feature.getGeometry().getCoordinates()).to.eql([0, 0]);
+    });
+
+    it('does nothing if `geometry_name` is missing', () => {
+      const data = {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'Point',
+          coordinates: [0, 0],
+        },
+      };
+      const format = new GeoJSON({extractGeometryName: true});
+      const feature = format.readFeature(data);
+      expect(feature.getGeometryName()).to.be('geometry');
+      expect(feature.getGeometry()).to.be.a(Point);
+      expect(feature.getGeometry().getCoordinates()).to.eql([0, 0]);
+    });
+  });
+
   describe('#readFeature', function () {
     it('can read a single point feature', function () {
       const feature = format.readFeature(pointGeoJSON);
