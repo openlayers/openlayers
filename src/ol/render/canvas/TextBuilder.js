@@ -649,11 +649,12 @@ class CanvasTextBuilder extends CanvasBuilder {
         (textState.repeat || '?') +
         (textState.justify || '?') +
         (textState.textBaseline || '?');
-      this.fillKey_ = fillState
-        ? typeof fillState.fillStyle == 'string'
-          ? fillState.fillStyle
-          : '|' + getUid(fillState.fillStyle)
-        : '';
+      this.fillKey_ =
+        fillState && fillState.fillStyle
+          ? typeof fillState.fillStyle == 'string'
+            ? fillState.fillStyle
+            : '|' + getUid(fillState.fillStyle)
+          : '';
     }
     this.declutterImageWithText_ = sharedData;
   }

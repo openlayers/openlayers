@@ -299,8 +299,8 @@ export function buildStyle(flatStyle, context) {
  */
 function buildFill(flatStyle, prefix, context) {
   let evaluateColor;
-  if ('fill-pattern-src' in flatStyle) {
-    evaluateColor = patternEvaluator(flatStyle, 'fill-', context);
+  if (prefix + 'fill-pattern-src' in flatStyle) {
+    evaluateColor = patternEvaluator(flatStyle, prefix + 'fill-', context);
   } else {
     evaluateColor = colorLikeEvaluator(
       flatStyle,
