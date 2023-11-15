@@ -298,11 +298,16 @@ export function buildStyle(flatStyle, context) {
  * @return {FillEvaluator?} A function that evaluates to a fill.
  */
 function buildFill(flatStyle, prefix, context) {
-  const evaluateColor = colorLikeEvaluator(
-    flatStyle,
-    prefix + 'fill-color',
-    context
-  );
+  let evaluateColor;
+  if (prefix + 'fill-pattern-src' in flatStyle) {
+    evaluateColor = patternEvaluator(flatStyle, prefix + 'fill-', context);
+  } else {
+    evaluateColor = colorLikeEvaluator(
+      flatStyle,
+      prefix + 'fill-color',
+      context
+    );
+  }
   if (!evaluateColor) {
     return null;
   }
@@ -950,6 +955,37 @@ function stringEvaluator(flatStyle, name, context) {
   };
 }
 
+function patternEvaluator(flatStyle, prefix, context) {
+  const srcEvaluator = stringEvaluator(
+    flatStyle,
+    prefix + 'pattern-src',
+    context
+  );
+  const offsetEvaluator = sizeEvaluator(
+    flatStyle,
+    prefix + 'pattern-offset',
+    context
+  );
+  const patternSizeEvaluator = sizeEvaluator(
+    flatStyle,
+    prefix + 'pattern-size',
+    context
+  );
+  const colorEvaluator = colorLikeEvaluator(
+    flatStyle,
+    prefix + 'color',
+    context
+  );
+  return function (context) {
+    return {
+      src: srcEvaluator(context),
+      offset: offsetEvaluator && offsetEvaluator(context),
+      size: patternSizeEvaluator && patternSizeEvaluator(context),
+      color: colorEvaluator && colorEvaluator(context),
+    };
+  };
+}
+
 /**
  * @param {FlatStyle} flatStyle The flat style.
  * @param {string} name The property name.
@@ -1023,6 +1059,22 @@ function coordinateEvaluator(flatStyle, name, context) {
       throw new Error(`Expected two numbers for ${name}`);
     }
     return array;
+  };
+}
+
+/**
+ * @param {FlatStyle} flatStyle The flat style.
+ * @param {string} name The property name.
+ * @param {ParsingContext} context The parsing context.
+ * @return {import('../../expr/cpu.js').SizeEvaluator?} The expression evaluator.
+ */
+function sizeEvaluator(flatStyle, name, context) {
+  if (!(name in flatStyle)) {
+    return null;
+  }
+  const evaluator = buildExpression(flatStyle[name], NumberArrayType, context);
+  return function (context) {
+    return requireSize(evaluator(context), name);
   };
 }
 
@@ -1250,15 +1302,24 @@ function requireColorLike(value, property) {
 /**
  * @param {any} value The value.
  * @param {string} property The property.
+ * @return {Array<number>} A number or an array of two numbers.
+ */
+function requireSize(value, property) {
+  const size = requireNumberArray(value, property);
+  if (size.length !== 2) {
+    throw new Error(`Expected an array of two numbers for ${property}`);
+  }
+  return size;
+}
+
+/**
+ * @param {any} value The value.
+ * @param {string} property The property.
  * @return {number|Array<number>} A number or an array of two numbers.
  */
 function requireSizeLike(value, property) {
   if (typeof value === 'number') {
     return value;
   }
-  const size = requireNumberArray(value, property);
-  if (size.length !== 2) {
-    throw new Error(`Expected an array of two numbers for ${property}`);
-  }
-  return size;
+  return requireSize(value, property);
 }

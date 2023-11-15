@@ -476,6 +476,12 @@ class CanvasBuilder extends VectorContext {
     const state = this.state;
     if (fillStyle) {
       const fillStyleColor = fillStyle.getColor();
+      state.fillPatternScale =
+        fillStyleColor &&
+        typeof fillStyleColor === 'object' &&
+        'src' in fillStyleColor
+          ? this.pixelRatio
+          : 1;
       state.fillStyle = asColorLike(
         fillStyleColor ? fillStyleColor : defaultFillStyle
       );
@@ -537,8 +543,8 @@ class CanvasBuilder extends VectorContext {
     /** @type {Array<*>} */
     const fillInstruction = [CanvasInstruction.SET_FILL_STYLE, fillStyle];
     if (typeof fillStyle !== 'string') {
-      // Fill is a pattern or gradient - align it!
-      fillInstruction.push(true);
+      // Fill is a pattern or gradient - align and scale it!
+      fillInstruction.push(state.fillPatternScale);
     }
     return fillInstruction;
   }

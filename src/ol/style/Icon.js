@@ -561,6 +561,10 @@ class Icon extends ImageStyle {
   unlistenImageChange(listener) {
     this.iconImage_.removeEventListener(EventType.CHANGE, listener);
   }
+
+  ready() {
+    return this.iconImage_.ready();
+  }
 }
 
 export default Icon;

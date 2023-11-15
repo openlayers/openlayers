@@ -136,6 +136,13 @@ class RegularShape extends ImageStyle {
      */
     this.renderOptions_;
 
+    this.imageState_ =
+      this.fill_ && this.fill_.loading()
+        ? ImageState.LOADING
+        : ImageState.LOADED;
+    if (this.imageState_ === ImageState.LOADING) {
+      this.ready().then(() => (this.imageState_ = ImageState.LOADED));
+    }
     this.render();
   }
 
@@ -263,7 +270,7 @@ class RegularShape extends ImageStyle {
    * @return {import("../ImageState.js").default} Image state.
    */
   getImageState() {
-    return ImageState.LOADED;
+    return this.imageState_;
   }
 
   /**
@@ -599,6 +606,10 @@ class RegularShape extends ImageStyle {
       context.miterLimit = renderOptions.miterLimit;
       context.stroke();
     }
+  }
+
+  ready() {
+    return this.fill_ ? this.fill_.ready() : Promise.resolve();
   }
 }
 
