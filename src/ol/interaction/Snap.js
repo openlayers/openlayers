@@ -27,6 +27,7 @@ import {listen, unlistenByKey} from '../events.js';
 /**
  * @typedef {Object} Result
  * @property {import("../coordinate.js").Coordinate|null} vertex Vertex.
+ * @property {boolean} vertexIsExtremity Whether the vertex is a line extremity.
  * @property {import("../pixel.js").Pixel|null} vertexPixel VertexPixel.
  * @property {import("../Feature.js").default|null} feature Feature.
  * @property {Array<import("../coordinate.js").Coordinate>|null} segment Segment, or `null` if snapped to a vertex.
@@ -302,6 +303,7 @@ class Snap extends PointerInteraction {
       this.dispatchEvent(
         new SnapEvent(SnapEventType.SNAP, {
           vertex: evt.coordinate,
+          vertexIsExtremity: result.vertexIsExtremity,
           vertexPixel: evt.pixel,
           feature: result.feature,
           segment: result.segment,
@@ -476,6 +478,7 @@ class Snap extends PointerInteraction {
     }
 
     let closestVertex;
+    let closestVertexIsExtremity = null;
     let minSquaredDistance = Infinity;
     let closestFeature;
     let closestSegment = null;
@@ -488,6 +491,7 @@ class Snap extends PointerInteraction {
         if (squaredPixelDistance <= squaredPixelTolerance) {
           return {
             vertex: closestVertex,
+            vertexIsExtremity: closestVertexIsExtremity,
             vertexPixel: [
               Math.round(vertexPixel[0]),
               Math.round(vertexPixel[1]),
@@ -503,12 +507,19 @@ class Snap extends PointerInteraction {
     if (this.vertex_) {
       for (let i = 0; i < segmentsLength; ++i) {
         const segmentData = segments[i];
+        const isLine = segmentData.feature
+          .getGeometry()
+          .getType()
+          .endsWith('LineString');
         if (segmentData.feature.getGeometry().getType() !== 'Circle') {
-          segmentData.segment.forEach((vertex) => {
+          segmentData.segment.forEach((vertex, j, list) => {
             const tempVertexCoord = fromUserCoordinate(vertex, projection);
             const delta = squaredDistance(projectedCoordinate, tempVertexCoord);
             if (delta < minSquaredDistance) {
               closestVertex = vertex;
+              const isStart = i === 0 && j === 0;
+              const isEnd = i === segmentsLength - 1 && j === list.length - 1;
+              closestVertexIsExtremity = isLine && (isStart || isEnd);
               minSquaredDistance = delta;
               closestFeature = segmentData.feature;
             }

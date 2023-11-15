@@ -24,6 +24,7 @@ export class SnapEvent extends Event {
    * @param {SnapEventType} type Type.
    * @param {Object} options Options.
    * @param {import("../coordinate.js").Coordinate} options.vertex The snapped vertex.
+   * @param {boolean} options.vertexIsExtremity Whether the snapped vertex is a line extremity.
    * @param {import("../coordinate.js").Coordinate} options.vertexPixel The pixel of the snapped vertex.
    * @param {import("../Feature.js").default} options.feature The feature being snapped.
    * @param {Array<import("../coordinate.js").Coordinate>|null} options.segment Segment, or `null` if snapped to a vertex.
@@ -36,6 +37,14 @@ export class SnapEvent extends Event {
      * @api
      */
     this.vertex = options.vertex;
+
+    /**
+     * Whether the snapped vertex is a line extremity.
+     * @type {boolean}
+     * @api
+     */
+    this.vertexIsExtremity = options.vertexIsExtremity;
+
     /**
      * The Map pixel of the snapped point.
      * @type {Array<number>&Array<number>}

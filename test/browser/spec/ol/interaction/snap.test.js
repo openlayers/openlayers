@@ -220,6 +220,87 @@ describe('ol.interaction.Snap', function () {
       snapInteraction.handleEvent(event);
     });
 
+    it('snap to extremities', function (done) {
+      const line = new Feature(
+        new LineString([
+          [-20, 0],
+          [-10, 0],
+          [10, 0],
+          [20, 0],
+        ])
+      );
+      const snapInteraction = new Snap({
+        features: new Collection([line]),
+        pixelTolerance: 5,
+        edge: false,
+      });
+      snapInteraction.setMap(map);
+
+      let event = {
+        pixel: [-22 + width / 2, height / 2 - 4],
+        coordinate: [-22, 4],
+        map: map,
+      };
+      snapInteraction.on('snap', function (snapEvent) {
+        expect(snapEvent.feature).to.be(line);
+        expect(snapEvent.segment).to.be(null);
+
+        expect(event.coordinate).to.eql([-20, 0]);
+        expect(event.vertexIsExtremity).to.be(true);
+
+        done();
+      });
+      snapInteraction.handleEvent(event);
+
+      event = {
+        pixel: [-12 + width / 2, height / 2 - 4],
+        coordinate: [-12, 4],
+        map: map,
+      };
+      snapInteraction.on('snap', function (snapEvent) {
+        expect(snapEvent.feature).to.be(line);
+        expect(snapEvent.segment).to.be(null);
+
+        expect(event.coordinate).to.eql([-10, 0]);
+        expect(event.vertexIsExtremity).to.be(false);
+
+        done();
+      });
+      snapInteraction.handleEvent(event);
+
+      event = {
+        pixel: [12 + width / 2, height / 2 - 4],
+        coordinate: [12, 4],
+        map: map,
+      };
+      snapInteraction.on('snap', function (snapEvent) {
+        expect(snapEvent.feature).to.be(line);
+        expect(snapEvent.segment).to.be(null);
+
+        expect(event.coordinate).to.eql([10, 0]);
+        expect(event.vertexIsExtremity).to.be(false);
+
+        done();
+      });
+      snapInteraction.handleEvent(event);
+
+      event = {
+        pixel: [22 + width / 2, height / 2 - 4],
+        coordinate: [22, 4],
+        map: map,
+      };
+      snapInteraction.on('snap', function (snapEvent) {
+        expect(snapEvent.feature).to.be(line);
+        expect(snapEvent.segment).to.be(null);
+
+        expect(event.coordinate).to.eql([20, 0]);
+        expect(event.vertexIsExtremity).to.be(true);
+
+        done();
+      });
+      snapInteraction.handleEvent(event);
+    });
+
     it('snaps to point', function (done) {
       const line = new Feature(
         new LineString([
