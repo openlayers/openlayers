@@ -39,11 +39,11 @@ export function asColorLike(color) {
   if (!color) {
     return null;
   }
-  if (typeof color === 'object' && 'src' in color) {
-    return asCanvasPattern(color);
-  }
   if (Array.isArray(color)) {
     return toString(color);
+  }
+  if (typeof color === 'object' && 'src' in color) {
+    return asCanvasPattern(color);
   }
   return color;
 }
@@ -54,47 +54,47 @@ export function asColorLike(color) {
  * PatternDescriptor was not found in the icon image cache.
  */
 function asCanvasPattern(pattern) {
-  if (pattern.offset && pattern.size) {
-    const cacheKey = pattern.src + ':' + pattern.offset;
-    let canvasPattern = iconCache.getPattern(
-      cacheKey,
-      undefined,
-      pattern.color
-    );
-    if (!canvasPattern) {
-      const patternCanvasContext = createCanvasContext2D(
-        pattern.size[0],
-        pattern.size[1]
-      );
-      const iconImage = iconCache.get(pattern.src, 'anonymous', null);
-      if (iconImage.getImageState() === ImageState.LOADED) {
-        patternCanvasContext.drawImage(
-          iconImage.getImage(1),
-          pattern.offset[0],
-          pattern.offset[1],
-          pattern.size[0],
-          pattern.size[1],
-          0,
-          0,
-          pattern.size[0],
-          pattern.size[1]
-        );
-        getIconImage(
-          patternCanvasContext.canvas,
-          cacheKey,
-          undefined,
-          ImageState.LOADED,
-          pattern.color,
-          true
-        );
-        canvasPattern = iconCache.getPattern(
-          cacheKey,
-          undefined,
-          pattern.color
-        );
-      }
-    }
+  if (!pattern.offset || !pattern.size) {
+    return iconCache.getPattern(pattern.src, 'anonymous', pattern.color);
+  }
+
+  const cacheKey = pattern.src + ':' + pattern.offset;
+
+  const canvasPattern = iconCache.getPattern(
+    cacheKey,
+    undefined,
+    pattern.color
+  );
+  if (canvasPattern) {
     return canvasPattern;
   }
-  return iconCache.getPattern(pattern.src, 'anonymous', pattern.color);
+
+  const iconImage = iconCache.get(pattern.src, 'anonymous', null);
+  if (iconImage.getImageState() !== ImageState.LOADED) {
+    return null;
+  }
+  const patternCanvasContext = createCanvasContext2D(
+    pattern.size[0],
+    pattern.size[1]
+  );
+  patternCanvasContext.drawImage(
+    iconImage.getImage(1),
+    pattern.offset[0],
+    pattern.offset[1],
+    pattern.size[0],
+    pattern.size[1],
+    0,
+    0,
+    pattern.size[0],
+    pattern.size[1]
+  );
+  getIconImage(
+    patternCanvasContext.canvas,
+    cacheKey,
+    undefined,
+    ImageState.LOADED,
+    pattern.color,
+    true
+  );
+  return iconCache.getPattern(cacheKey, undefined, pattern.color);
 }
