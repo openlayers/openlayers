@@ -4,12 +4,18 @@
 import FeatureFormat from './Feature.js';
 import {abstract} from '../util.js';
 
+/***
+ * @template {import("../Feature.js").FeatureClass} T
+ * @typedef {T extends typeof import("../render/Feature.js").default ? import("../render/Feature.js").default : import("../Feature.js").default} FeatureOrRenderFeature<T>
+ */
+
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
  * Base class for JSON feature formats.
  *
+ * @template {import('../Feature.js').FeatureClass} [T=typeof import('../Feature.js').default]
  * @abstract
  */
 class JSONFeature extends FeatureFormat {
@@ -46,13 +52,15 @@ class JSONFeature extends FeatureFormat {
    *
    * @param {ArrayBuffer|Document|Element|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
-   * @return {Array<import("../Feature.js").FeatureLike>} Features.
+   * @return {Array<FeatureOrRenderFeature<T>>} Features.
    * @api
    */
   readFeatures(source, options) {
-    return this.readFeaturesFromObject(
-      getObject(source),
-      this.getReadOptions(source, options)
+    return /** @type {Array<FeatureOrRenderFeature<T>>} */ (
+      this.readFeaturesFromObject(
+        getObject(source),
+        this.getReadOptions(source, options)
+      )
     );
   }
 

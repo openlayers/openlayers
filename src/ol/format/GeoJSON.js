@@ -33,7 +33,9 @@ import {isEmpty} from '../obj.js';
  */
 
 /**
+ * @template {import("../Feature.js").FeatureClass} FeatureOrRenderFeature
  * @typedef {Object} Options
+ *
  * @property {import("../proj.js").ProjectionLike} [dataProjection='EPSG:4326'] Default data projection.
  * @property {import("../proj.js").ProjectionLike} [featureProjection] Projection for features read or
  * written by the format.  Options passed to read or write methods will take precedence.
@@ -42,7 +44,7 @@ import {isEmpty} from '../obj.js';
  * the geometry_name field in the feature GeoJSON. If set to `true` the GeoJSON reader
  * will look for that field to set the geometry name. If both this field is set to `true`
  * and a `geometryName` is provided, the `geometryName` will take precedence.
- * @property {import("../Feature.js").FeatureClass} [featureClass] Feature class
+ * @property {FeatureOrRenderFeature} [featureClass] Feature class
  * to be used when reading features. The default is {@link module:ol/Feature~Feature}. If performance is
  * the primary concern, and features are not going to be modified or round-tripped through the format,
  * consider using {@link module:ol/render/Feature~RenderFeature}
@@ -52,11 +54,13 @@ import {isEmpty} from '../obj.js';
  * @classdesc
  * Feature format for reading and writing data in the GeoJSON format.
  *
+ * @template {import('../Feature.js').FeatureClass} [T=typeof Feature]
+ * @extends {JSONFeature<T>}
  * @api
  */
 class GeoJSON extends JSONFeature {
   /**
-   * @param {Options} [options] Options.
+   * @param {Options<T>} [options] Options.
    */
   constructor(options) {
     options = options ? options : {};
