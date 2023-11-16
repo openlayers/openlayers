@@ -196,7 +196,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
     if (this.hitDetectionEnabled_) {
       this.attributes.push({
-        name: 'a_hitColor',
+        name: 'a_prop_hitColor',
         size: 4,
         type: AttributeType.FLOAT,
       });
