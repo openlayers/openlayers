@@ -266,10 +266,10 @@ export function render(
     const stitchScale = pixelRatio / sourceResolution;
 
     sources.forEach(function (src, i, arr) {
-      const xPos = src.extent[0] - sourceDataExtent[0];
-      const yPos = -(src.extent[3] - sourceDataExtent[3]);
-      const srcWidth = getWidth(src.extent);
-      const srcHeight = getHeight(src.extent);
+      const xPos = (src.extent[0] - sourceDataExtent[0]) * stitchScale;
+      const yPos = -(src.extent[3] - sourceDataExtent[3]) * stitchScale;
+      const srcWidth = getWidth(src.extent) * stitchScale;
+      const srcHeight = getHeight(src.extent) * stitchScale;
 
       // This test should never fail -- but it does. Need to find a fix the upstream condition
       if (src.image.width > 0 && src.image.height > 0) {
@@ -279,10 +279,14 @@ export function render(
           gutter,
           src.image.width - 2 * gutter,
           src.image.height - 2 * gutter,
-          xPos * stitchScale,
-          yPos * stitchScale,
-          srcWidth * stitchScale,
-          srcHeight * stitchScale
+          interpolate ? xPos : Math.round(xPos),
+          interpolate ? yPos : Math.round(yPos),
+          interpolate
+            ? srcWidth
+            : Math.round(xPos + srcWidth) - Math.round(xPos),
+          interpolate
+            ? srcHeight
+            : Math.round(yPos + srcHeight) - Math.round(yPos)
         );
       }
     });
