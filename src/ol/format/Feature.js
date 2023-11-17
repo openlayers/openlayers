@@ -94,6 +94,11 @@ import {
  * @property {Object<string, *>} [properties] Properties.
  */
 
+/***
+ * @template {import("../Feature.js").FeatureClass} T
+ * @typedef {T extends typeof import("../render/Feature.js").default ? import("../render/Feature.js").default : import("../Feature.js").default} FeatureOrRenderFeature<T>
+ */
+
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -103,6 +108,7 @@ import {
  * {@link module:ol/Feature~Feature} objects from a variety of commonly used geospatial
  * file formats.  See the documentation for each format for more details.
  *
+ * @template {import('../Feature.js').FeatureClass} [T=typeof import('../Feature.js').default]
  * @abstract
  * @api
  */
@@ -207,7 +213,7 @@ class FeatureFormat {
    * @abstract
    * @param {Document|Element|ArrayBuffer|Object|string} source Source.
    * @param {ReadOptions} [options] Read options.
-   * @return {Array<import("../Feature.js").FeatureLike>} Features.
+   * @return {Array<FeatureOrRenderFeature<T>>} Features.
    */
   readFeatures(source, options) {
     return abstract();

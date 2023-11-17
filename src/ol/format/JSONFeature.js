@@ -10,6 +10,8 @@ import {abstract} from '../util.js';
  * instantiated in apps.
  * Base class for JSON feature formats.
  *
+ * @template {import('../Feature.js').FeatureClass} [T=typeof import('../Feature.js').default]
+ * @extends {FeatureFormat<T>}
  * @abstract
  */
 class JSONFeature extends FeatureFormat {
@@ -46,13 +48,15 @@ class JSONFeature extends FeatureFormat {
    *
    * @param {ArrayBuffer|Document|Element|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
-   * @return {Array<import("../Feature.js").FeatureLike>} Features.
+   * @return {Array<import('./Feature.js').FeatureOrRenderFeature<T>>} Features.
    * @api
    */
   readFeatures(source, options) {
-    return this.readFeaturesFromObject(
-      getObject(source),
-      this.getReadOptions(source, options)
+    return /** @type {Array<import('./Feature.js').FeatureOrRenderFeature<T>>} */ (
+      this.readFeaturesFromObject(
+        getObject(source),
+        this.getReadOptions(source, options)
+      )
     );
   }
 
