@@ -741,7 +741,7 @@ describe('ol.webgl.styleparser', () => {
             'vec4 sampleStrokePattern'
           );
           expect(result.builder.strokeColorExpression_).to.eql(
-            `1. * sampleStrokePattern(u_texture${uid}, u_texture${uid}_size, vec2(0.), u_texture${uid}_size, 0., currentLengthPx, currentRadiusRatio)`
+            `1. * sampleStrokePattern(u_texture${uid}, u_texture${uid}_size, vec2(0.), u_texture${uid}_size, 0., currentLengthPx, currentRadiusRatio, v_width)`
           );
         });
       });
@@ -764,7 +764,7 @@ describe('ol.webgl.styleparser', () => {
             'vec4 sampleStrokePattern'
           );
           expect(result.builder.strokeColorExpression_).to.eql(
-            `vec4(1.0, 0.0, 0.0, 1.0) * sampleStrokePattern(u_texture${uid}, vec2(1.0, 1.0), vec2(0., vec2(1.0, 1.0).y) + vec2(5.0, 5.0) * vec2(0., -1.) + vec2(5.0, 10.0) * vec2(1., -1.), vec2(5.0, 5.0), (2.0 * 10.0), currentLengthPx, currentRadiusRatio)`
+            `vec4(1.0, 0.0, 0.0, 1.0) * sampleStrokePattern(u_texture${uid}, vec2(1.0, 1.0), vec2(0., vec2(1.0, 1.0).y) + vec2(5.0, 5.0) * vec2(0., -1.) + vec2(5.0, 10.0) * vec2(1., -1.), vec2(5.0, 5.0), (2.0 * 10.0), currentLengthPx, currentRadiusRatio, v_width)`
           );
         });
       });

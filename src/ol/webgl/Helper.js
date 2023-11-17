@@ -74,7 +74,7 @@ export const AttributeType = {
  */
 
 /**
- * @typedef {number|Array<number>|HTMLCanvasElement|HTMLImageElement|ImageData|import("../transform").Transform} UniformLiteralValue
+ * @typedef {number|Array<number>|HTMLCanvasElement|HTMLImageElement|ImageData|WebGLTexture|import("../transform").Transform} UniformLiteralValue
  */
 
 /**
@@ -766,10 +766,14 @@ class WebGLHelper extends Disposable {
       if (
         value instanceof HTMLCanvasElement ||
         value instanceof HTMLImageElement ||
-        value instanceof ImageData
+        value instanceof ImageData ||
+        value instanceof WebGLTexture
       ) {
         // create a texture & put data
-        if (!uniform.texture) {
+        if (value instanceof WebGLTexture && !uniform.texture) {
+          uniform.prevValue = undefined;
+          uniform.texture = value;
+        } else if (!uniform.texture) {
           uniform.prevValue = undefined;
           uniform.texture = gl.createTexture();
         }
@@ -781,7 +785,11 @@ class WebGLHelper extends Disposable {
         const imageReady =
           !(value instanceof HTMLImageElement) ||
           /** @type {HTMLImageElement} */ (value).complete;
-        if (imageReady && uniform.prevValue !== value) {
+        if (
+          !(value instanceof WebGLTexture) &&
+          imageReady &&
+          uniform.prevValue !== value
+        ) {
           uniform.prevValue = value;
           gl.texImage2D(
             gl.TEXTURE_2D,

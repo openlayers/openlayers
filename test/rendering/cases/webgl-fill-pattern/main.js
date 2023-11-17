@@ -42,24 +42,22 @@ const polygon3 = new Feature({
 
 // create pattern
 const canvas = document.createElement('canvas');
-canvas.width = 64;
-canvas.height = 64;
+canvas.width = 36;
+canvas.height = 36;
 const context = canvas.getContext('2d');
 const gradient = context.createLinearGradient(0, 0, 32, 32);
 gradient.addColorStop(0, 'rgba(11,152,167,1)');
 gradient.addColorStop(1, 'rgba(255,0,204,1)');
 context.fillStyle = gradient;
-context.fillRect(2, 2, 60, 60);
+context.fillRect(2, 2, 32, 32);
 
 const srcPattern = {
   'fill-pattern-src': '/data/fish.png',
-  'fill-width': 20,
-  'fill-offset': -32,
 };
 const imagePattern = {
   'fill-pattern-src': canvas.toDataURL('png'),
-  'fill-width': 16,
-  'fill-offset': -12,
+  'fill-pattern-offset': [2, 2],
+  'fill-pattern-size': [32, 32],
 };
 const subImageTint = {
   'fill-pattern-src': '/data/sprites/bright-v9/sprite.png',
@@ -67,8 +65,6 @@ const subImageTint = {
   'fill-pattern-offset-origin': 'top-right',
   'fill-pattern-size': [21, 21],
   'fill-color': 'red',
-  'fill-width': 20,
-  'fill-offset': 32,
 };
 
 class WebGLLayer extends Layer {

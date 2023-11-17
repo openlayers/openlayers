@@ -324,7 +324,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       expect(calls[2].args).to.eql([Uniforms.RENDER_EXTENT, [-31, 1, 0, 31]]);
       expect(calls[8].args).to.eql([Uniforms.RENDER_EXTENT, [0, 1, 31, 31]]);
     });
-    it('sets PROJECTION matrix uniform three times for each tile and style renderer, plus one tile before rendering tile masks', () => {
+    it('sets PROJECTION matrix uniform three times for each tile and style renderer, plus one time before rendering tile masks', () => {
       const calls = renderer.helper.setUniformMatrixValue
         .getCalls()
         .filter((c) => c.args[0] === Uniforms.PROJECTION_MATRIX);
@@ -354,7 +354,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         [0.04, 0, 0, 0, 0, 0.08, 0, 0, 0, 0, 1, 0, 0, -1.28, 0, 1],
       ]);
     });
-    it('sets SCREEN_TO_WORLD matrix uniform three times for each tile and style renderer, plus one tile before rendering tile masks', () => {
+    it('sets SCREEN_TO_WORLD matrix uniform three times for each tile and style renderer, plus one time before rendering tile masks', () => {
       const calls = renderer.helper.setUniformMatrixValue
         .getCalls()
         .filter((c) => c.args[0] === Uniforms.SCREEN_TO_WORLD_MATRIX);
@@ -376,9 +376,9 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         [25, 0, 0, 0, 0, 12.5, 0, 0, 0, 0, 1, 0, 0, 16, 0, 1],
       ]);
     });
-    it('bind TILE_MASK_TEXTURE uniform three times once before rendering tiles', () => {
+    it('bind TILE_MASK_TEXTURE uniform three times for each tile and style renderer, plus one time before rendering tile masks', () => {
       const calls = renderer.helper.bindTexture.getCalls();
-      expect(calls.length).to.be(1);
+      expect(calls.length).to.be(13);
       expect(calls[0].args).to.eql([
         renderer.tileMaskTarget_.getTexture(),
         0,
