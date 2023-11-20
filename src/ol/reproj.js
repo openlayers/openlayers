@@ -250,20 +250,20 @@ export function render(
   });
 
   let stitchContext;
+  const stitchScale = pixelRatio / sourceResolution;
+  // Round up Float32 scale values to prevent interpolation in Firefox.
+  const inverseScale = (interpolate ? 1 : 1 + Math.pow(2, -24)) / stitchScale;
+
   if (!drawSingle || sources.length !== 1 || gutter !== 0) {
-    const canvasWidthInUnits = getWidth(sourceDataExtent);
-    const canvasHeightInUnits = getHeight(sourceDataExtent);
     stitchContext = createCanvasContext2D(
-      Math.round((pixelRatio * canvasWidthInUnits) / sourceResolution),
-      Math.round((pixelRatio * canvasHeightInUnits) / sourceResolution),
+      Math.round(getWidth(sourceDataExtent) * stitchScale),
+      Math.round(getHeight(sourceDataExtent) * stitchScale),
       canvasPool
     );
 
     if (!interpolate) {
       stitchContext.imageSmoothingEnabled = false;
     }
-
-    const stitchScale = pixelRatio / sourceResolution;
 
     sources.forEach(function (src, i, arr) {
       const xPos = (src.extent[0] - sourceDataExtent[0]) * stitchScale;
@@ -410,10 +410,7 @@ export function render(
     let image;
     if (stitchContext) {
       image = stitchContext.canvas;
-      context.scale(
-        sourceResolution / pixelRatio,
-        -sourceResolution / pixelRatio
-      );
+      context.scale(inverseScale, -inverseScale);
     } else {
       const source = sources[0];
       const extent = source.extent;
