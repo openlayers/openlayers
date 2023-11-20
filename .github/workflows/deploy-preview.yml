@@ -18,7 +18,7 @@ jobs:
       - run: npm install unzipper@0.10
 
       - name: Get pull request number
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         id: pull-request-number
         with:
           result-encoding: string
@@ -66,7 +66,7 @@ jobs:
         run: netlify deploy --dir=build/site --alias=deploy-preview-${{steps.pull-request-number.outputs.result}}
 
       - name: Add comment to pull request
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const pullRequestNumber = parseInt(${{steps.pull-request-number.outputs.result}}, 10);
@@ -96,7 +96,7 @@ jobs:
             }
             
       - name: Clean up artifact
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           result-encoding: string
           script: |
