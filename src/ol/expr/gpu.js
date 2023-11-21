@@ -56,11 +56,19 @@ export function arrayToGlsl(array) {
  * Will normalize and converts to string a `vec4` color array compatible with GLSL.
  * @param {string|import("../color.js").Color} color Color either in string format or [r, g, b, a] array format,
  * with RGB components in the 0..255 range and the alpha component in the 0..1 range.
- * Note that the final array will always have 4 components.
+ * Alternatively only 2 element array can be supplied as [shade, alpha] for grayscale colors.
+ * Alpha value is optional. Note that the final array will always have 4 components.
  * @return {string} The color expressed in the `vec4(1.0, 1.0, 1.0, 1.0)` form.
  */
 export function colorToGlsl(color) {
   const array = asArray(color);
+  if (array.length < 3) {
+    if (array.length == 2) {
+      array[3] = array[1];
+    }
+    array[1] = array[0];
+    array[2] = array[0];
+  }
   const alpha = array.length > 3 ? array[3] : 1;
   // all components are premultiplied with alpha value
   return arrayToGlsl([
@@ -383,6 +391,14 @@ ${tests.join('\n')}
     (args) => `vec${args.length}(${args.join(', ')})`
   ),
   [Ops.Color]: createCompiler((compiledArgs) => {
+    if (compiledArgs.length == 1) {
+      //grayscale
+      return `vec4(vec3(${compiledArgs[0]} / 255.0), 1.0)`;
+    }
+    if (compiledArgs.length == 2) {
+      //grayscale with alpha
+      return `(${compiledArgs[1]} * vec4(vec3(${compiledArgs[0]} / 255.0), 1.0))`;
+    }
     const rgb = compiledArgs.slice(0, 3).map((color) => `${color} / 255.0`);
     if (compiledArgs.length === 3) {
       return `vec4(${rgb.join(', ')}, 1.0)`;
