@@ -66,6 +66,7 @@ const incidence = [
   ['*', ['sin', sunEl], ['cos', slope]],
   ['*', ['cos', sunEl], ['sin', slope], ['cos', ['-', sunAz, aspect]]],
 ];
+const scaled = ['*', 255, incidence];
 
 const variables = {};
 
@@ -79,7 +80,7 @@ const layer = new TileLayer({
   }),
   style: {
     variables: variables,
-    color: ['array', incidence, incidence, incidence, 1],
+    color: ['color', scaled],
   },
 });
 

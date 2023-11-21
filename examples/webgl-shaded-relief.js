@@ -59,7 +59,7 @@ const shadedRelief = new TileLayer({
   }),
   style: {
     variables: variables,
-    color: ['color', scaled, scaled, scaled],
+    color: ['color', scaled],
   },
 });
 
