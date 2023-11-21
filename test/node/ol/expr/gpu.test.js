@@ -53,12 +53,6 @@ describe('ol/expr/gpu.js', () => {
 
   describe('colorToGlsl()', () => {
     it('normalizes color and outputs numbers with dot separators, including premultiplied alpha', () => {
-      expect(colorToGlsl([100])).to.eql(
-        'vec4(0.39215686274509803, 0.39215686274509803, 0.39215686274509803, 1.0)'
-      );
-      expect(colorToGlsl([100, 0.7])).to.eql(
-        'vec4(0.2745098039215686, 0.2745098039215686, 0.2745098039215686, 0.7)'
-      );
       expect(colorToGlsl([100, 0, 255])).to.eql(
         'vec4(0.39215686274509803, 0.0, 1.0, 1.0)'
       );

@@ -56,19 +56,11 @@ export function arrayToGlsl(array) {
  * Will normalize and converts to string a `vec4` color array compatible with GLSL.
  * @param {string|import("../color.js").Color} color Color either in string format or [r, g, b, a] array format,
  * with RGB components in the 0..255 range and the alpha component in the 0..1 range.
- * Alternatively only 2 element array can be supplied as [shade, alpha] for grayscale colors.
- * Alpha value is optional. Note that the final array will always have 4 components.
+ * Note that the final array will always have 4 components.
  * @return {string} The color expressed in the `vec4(1.0, 1.0, 1.0, 1.0)` form.
  */
 export function colorToGlsl(color) {
   const array = asArray(color);
-  if (array.length < 3) {
-    if (array.length == 2) {
-      array[3] = array[1];
-    }
-    array[1] = array[0];
-    array[2] = array[0];
-  }
   const alpha = array.length > 3 ? array[3] : 1;
   // all components are premultiplied with alpha value
   return arrayToGlsl([
