@@ -383,6 +383,14 @@ ${tests.join('\n')}
     (args) => `vec${args.length}(${args.join(', ')})`
   ),
   [Ops.Color]: createCompiler((compiledArgs) => {
+    if (compiledArgs.length === 1) {
+      //grayscale
+      return `vec4(vec3(${compiledArgs[0]} / 255.0), 1.0)`;
+    }
+    if (compiledArgs.length === 2) {
+      //grayscale with alpha
+      return `(${compiledArgs[1]} * vec4(vec3(${compiledArgs[0]} / 255.0), 1.0))`;
+    }
     const rgb = compiledArgs.slice(0, 3).map((color) => `${color} / 255.0`);
     if (compiledArgs.length === 3) {
       return `vec4(${rgb.join(', ')}, 1.0)`;

@@ -94,9 +94,9 @@ import {isStringColor} from '../color.js';
  * * Conversion operators:
  *   * `['array', value1, ...valueN]` creates a numerical array from `number` values; please note that the amount of
  *     values can currently only be 2, 3 or 4.
- *   * `['color', red, green, blue, alpha]` creates a `color` value from `number` values; the `alpha` parameter is
- *     optional; if not specified, it will be set to 1.
- *     Note: `red`, `green` and `blue` components must be values between 0 and 255; `alpha` between 0 and 1.
+ *   * `['color', red, green, blue, alpha]` or `['color', shade, alpha]` creates a `color` value from `number` values;
+ *     the `alpha` parameter is optional; if not specified, it will be set to 1.
+ *     Note: `red`, `green` and `blue` or `shade` components must be values between 0 and 255; `alpha` between 0 and 1.
  *   * `['palette', index, colors]` picks a `color` value from an array of colors using the given index; the `index`
  *     expression must evaluate to a number; the items in the `colors` array must be strings with hex colors
  *     (e.g. `'#86A136'`), colors using the rgba[a] functional notation (e.g. `'rgb(134, 161, 54)'` or `'rgba(134, 161, 54, 1)'`),
@@ -602,7 +602,7 @@ const parsers = {
   ),
   [Ops.Color]: createParser(
     ColorType,
-    withArgsCount(3, 4),
+    withArgsCount(1, 4),
     parseArgsOfType(NumberType)
   ),
   [Ops.Band]: createParser(

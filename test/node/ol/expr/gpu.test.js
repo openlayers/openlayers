@@ -404,6 +404,31 @@ describe('ol/expr/gpu.js', () => {
           '(0.5 * vec4(a_prop_attr4 / 255.0, 1.0 / 255.0, 2.0 / 255.0, 1.0))',
       },
       {
+        name: 'grayscale color',
+        type: AnyType,
+        expression: ['color', 100],
+        expected: 'vec4(vec3(100.0 / 255.0), 1.0)',
+      },
+      {
+        name: 'grayscale color with alpha',
+        type: AnyType,
+        expression: ['color', 100, 0.5],
+        expected: '(0.5 * vec4(vec3(100.0 / 255.0), 1.0))',
+      },
+      {
+        name: 'rgb color',
+        type: AnyType,
+        expression: ['color', 100, 150, 200],
+        expected: 'vec4(100.0 / 255.0, 150.0 / 255.0, 200.0 / 255.0, 1.0)',
+      },
+      {
+        name: 'rgb color with alpha',
+        type: AnyType,
+        expression: ['color', 100, 150, 200, 0.5],
+        expected:
+          '(0.5 * vec4(100.0 / 255.0, 150.0 / 255.0, 200.0 / 255.0, 1.0))',
+      },
+      {
         name: 'band',
         type: AnyType,
         expression: ['band', 1],
