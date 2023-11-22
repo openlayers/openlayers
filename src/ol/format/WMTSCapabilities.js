@@ -104,6 +104,7 @@ const LAYER_PARSERS = makeStructureNS(
     'Title': makeObjectPropertySetter(readString),
     'Abstract': makeObjectPropertySetter(readString),
     'WGS84BoundingBox': makeObjectPropertySetter(readBoundingBox),
+    'BoundingBox': makeObjectPropertySetter(readBoundingBox),
     'Identifier': makeObjectPropertySetter(readString),
   })
 );
