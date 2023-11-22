@@ -73,6 +73,14 @@ access interface to some TileMatrixSets</ows:Abstract>
 				<ows:LowerCorner>-180 -90</ows:LowerCorner>
 				<ows:UpperCorner>180 90</ows:UpperCorner>
 			</ows:WGS84BoundingBox>
+			<ows:BoundingBox crs="urn:ogc:def:crs:CRS::84">
+				<ows:LowerCorner>-180 -90</ows:LowerCorner>
+				<ows:UpperCorner>180 90</ows:UpperCorner>
+			</ows:BoundingBox>
+			<ows:BoundingBox>
+				<ows:LowerCorner>-180 -90</ows:LowerCorner>
+				<ows:UpperCorner>180 90</ows:UpperCorner>
+			</ows:BoundingBox>
 			<ows:Identifier>BlueMarbleNextGeneration</ows:Identifier>
 			<Style isDefault="true">
 				<ows:Title>Dark Blue</ows:Title>
