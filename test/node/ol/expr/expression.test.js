@@ -9,12 +9,21 @@ import {
   NumberArrayType,
   NumberType,
   StringType,
+  computeGeometryType,
   includesType,
   isType,
   newParsingContext,
   parse,
   typeName,
 } from '../../../../src/ol/expr/expression.js';
+import {
+  Circle,
+  GeometryCollection,
+  MultiLineString,
+  MultiPoint,
+  MultiPolygon,
+  Point,
+} from '../../../../src/ol/geom.js';
 
 describe('ol/expr/expression.js', () => {
   describe('parse()', () => {
@@ -622,6 +631,31 @@ describe('ol/expr/expression.js', () => {
       expect(isType(ColorType, NumberArrayType)).to.be(false);
       expect(isType(NumberArrayType, NumberArrayType)).to.be(true);
       expect(isType(AnyType, NumberArrayType)).to.be(false);
+    });
+  });
+  describe('computeGeometryType', () => {
+    it('returns empty string for falsy geom', () => {
+      expect(computeGeometryType(undefined)).to.eql('');
+    });
+    it('returns Point for Point geom', () => {
+      expect(computeGeometryType(new Point([0, 1]))).to.eql('Point');
+    });
+    it('returns Polygon for MultiPolygon geom', () => {
+      expect(computeGeometryType(new MultiPolygon([]))).to.eql('Polygon');
+    });
+    it('returns LineString for MultiLineString geom', () => {
+      expect(computeGeometryType(new MultiLineString([]))).to.eql('LineString');
+    });
+    it('returns first geom type in geometry collection', () => {
+      expect(
+        computeGeometryType(new GeometryCollection([new Circle([0, 1])]))
+      ).to.eql('Polygon');
+      expect(
+        computeGeometryType(new GeometryCollection([new MultiPoint([])]))
+      ).to.eql('Point');
+    });
+    it('returns empty string for empty geom collection', () => {
+      expect(computeGeometryType(new GeometryCollection([]))).to.eql('');
     });
   });
 });

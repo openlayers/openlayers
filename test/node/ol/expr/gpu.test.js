@@ -9,14 +9,7 @@ import {
   StringType,
   newParsingContext,
 } from '../../../../src/ol/expr/expression.js';
-import {
-  Circle,
-  GeometryCollection,
-  MultiLineString,
-  MultiPoint,
-  MultiPolygon,
-  Point,
-} from '../../../../src/ol/geom.js';
+import {MultiPolygon} from '../../../../src/ol/geom.js';
 import {
   arrayToGlsl,
   buildExpression,
@@ -171,20 +164,8 @@ describe('ol/expr/gpu.js', () => {
           expect(prop.name).to.equal('geometryType');
           expect(prop.type).to.equal(StringType);
           expect(prop.evaluator).to.be.an(Function);
-          const results = [
-            new Feature(new Point([0, 1])),
-            new Feature(new MultiPolygon([])),
-            new Feature(new MultiLineString([])),
-            new Feature(new GeometryCollection([new Circle([0, 1])])),
-            new Feature(new GeometryCollection([new MultiPoint([])])),
-          ].map(prop.evaluator);
-          expect(results).to.eql([
-            'Point',
-            'Polygon',
-            'LineString',
-            'Polygon',
-            'Point',
-          ]);
+          const feature = new Feature(new MultiPolygon([]));
+          expect(prop.evaluator(feature)).to.eql('Polygon');
         },
       },
       {

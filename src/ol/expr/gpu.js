@@ -11,6 +11,7 @@ import {
   NumberType,
   Ops,
   StringType,
+  computeGeometryType,
   isType,
   overlapsType,
   parse,
@@ -232,31 +233,13 @@ const compilers = {
   },
   [Ops.GeometryType]: (context, expression, type) => {
     const propName = 'geometryType';
-    const computeType = (geometry) => {
-      const type = geometry.getType();
-      switch (type) {
-        case 'Point':
-        case 'LineString':
-        case 'Polygon':
-          return type;
-        case 'MultiPoint':
-        case 'MultiLineString':
-        case 'MultiPolygon':
-          return type.substring(5);
-        case 'Circle':
-          return 'Polygon';
-        case 'GeometryCollection':
-          return computeType(geometry.getGeometries()[0]);
-        default:
-      }
-    };
     const isExisting = propName in context.properties;
     if (!isExisting) {
       context.properties[propName] = {
         name: propName,
         type: StringType,
         evaluator: (feature) => {
-          return computeType(feature.getGeometry());
+          return computeGeometryType(feature.getGeometry());
         },
       };
     }
