@@ -4,52 +4,18 @@ import VectorTile from '../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
 import View from '../src/ol/View.js';
 import WebGLVectorTileLayerRenderer from '../src/ol/renderer/webgl/VectorTileLayer.js';
-import {Fill, Icon, Stroke, Style, Text} from '../src/ol/style.js';
-import {asArray} from '../src/ol/color.js';
-import {packColor, parseLiteralStyle} from '../src/ol/webgl/styleparser.js';
 
 const key =
   'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2t0cGdwMHVnMGdlbzMxbDhwazBic2xrNSJ9.WbcTL9uj8JPAsnT9mgb7oQ';
 
-const result = parseLiteralStyle({
-  'fill-color': ['get', 'fillColor'],
-  'stroke-color': ['get', 'strokeColor'],
-  'stroke-width': ['get', 'strokeWidth'],
-  'circle-radius': 4,
-  'circle-fill-color': '#777',
-});
-
 class WebGLVectorTileLayer extends VectorTile {
   createRenderer() {
     return new WebGLVectorTileLayerRenderer(this, {
-      style: {
-        builder: result.builder,
-        attributes: {
-          fillColor: {
-            size: 2,
-            callback: (feature) => {
-              const style = this.getStyle()(feature, 1)[0];
-              const color = asArray(style?.getFill()?.getColor() || '#eee');
-              return packColor(color);
-            },
-          },
-          strokeColor: {
-            size: 2,
-            callback: (feature) => {
-              const style = this.getStyle()(feature, 1)[0];
-              const color = asArray(style?.getStroke()?.getColor() || '#eee');
-              return packColor(color);
-            },
-          },
-          strokeWidth: {
-            size: 1,
-            callback: (feature) => {
-              const style = this.getStyle()(feature, 1)[0];
-              return style?.getStroke()?.getWidth() * 2 || 0;
-            },
-          },
-        },
-      },
+      // FIXME: this mapping is due to a difference between webgl and flat style formats
+      style: getMapboxStreetsV6Style().map((rule) => ({
+        ...rule.style,
+        filter: rule.filter,
+      })),
     });
   }
 }
@@ -64,11 +30,10 @@ const map = new Map({
           'OpenStreetMap contributors</a>',
         format: new MVT(),
         url:
-          'https://{a-d}.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6/' +
+          'https://api.mapbox.com/v4/mapbox.mapbox-streets-v6/' +
           '{z}/{x}/{y}.vector.pbf?access_token=' +
           key,
       }),
-      style: createMapboxStreetsV6Style(Style, Fill, Stroke, Icon, Text),
     }),
   ],
   target: 'map',

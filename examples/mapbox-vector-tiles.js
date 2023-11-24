@@ -3,7 +3,6 @@ import Map from '../src/ol/Map.js';
 import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
 import View from '../src/ol/View.js';
-import {Fill, Icon, Stroke, Style, Text} from '../src/ol/style.js';
 
 const key =
   'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2t0cGdwMHVnMGdlbzMxbDhwazBic2xrNSJ9.WbcTL9uj8JPAsnT9mgb7oQ';
@@ -23,7 +22,7 @@ const map = new Map({
           '{z}/{x}/{y}.vector.pbf?access_token=' +
           key,
       }),
-      style: createMapboxStreetsV6Style(Style, Fill, Stroke, Icon, Text),
+      style: getMapboxStreetsV6Style(),
     }),
   ],
   target: 'map',
