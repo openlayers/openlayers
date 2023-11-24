@@ -549,11 +549,12 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   /**
    * Render declutter items for this layer
    * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../layer/Layer.js").State} layerState Layer state.
    */
-  renderDeclutter(frameState) {
+  renderDeclutter(frameState, layerState) {
     const context = this.context;
     const alpha = context.globalAlpha;
-    context.globalAlpha = this.getLayer().getOpacity();
+    context.globalAlpha = layerState.opacity;
     const viewHints = frameState.viewHints;
     const hifi = !(
       viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]
@@ -636,7 +637,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     );
     const renderMode = layer.getRenderMode();
     const alpha = context.globalAlpha;
-    context.globalAlpha = layer.getOpacity();
+    context.globalAlpha =
+      frameState.layerStatesArray[frameState.layerIndex].opacity;
     const replayTypes = VECTOR_REPLAYS[renderMode];
     const viewState = frameState.viewState;
     const rotation = viewState.rotation;

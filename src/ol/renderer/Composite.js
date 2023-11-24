@@ -159,7 +159,7 @@ class CompositeMapRenderer extends MapRenderer {
   flushDeclutterItems(frameState) {
     const layers = this.declutterLayers_;
     for (let i = layers.length - 1; i >= 0; --i) {
-      layers[i].renderDeclutter(frameState);
+      layers[i].renderDeclutter(frameState, frameState.layerStatesArray[i]);
     }
     layers.length = 0;
   }
