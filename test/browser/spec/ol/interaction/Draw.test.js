@@ -1935,6 +1935,34 @@ describe('ol/interaction/Draw', function () {
     });
   });
 
+  describe('append coordinates when drawing a LineString feature with maxPoints', () => {
+    let draw;
+    beforeEach(() => {
+      draw = new Draw({
+        source: source,
+        type: 'LineString',
+        maxPoints: 2,
+      });
+      map.addInteraction(draw);
+    });
+    it('finishes drawing when starting empty and appending maxPoints coordinates', (done) => {
+      draw.once('drawend', () => {
+        try {
+          setTimeout(() => {
+            expect(source.getFeatures()).to.have.length(1);
+            done();
+          }, 0);
+        } catch (e) {
+          done(e);
+        }
+      });
+      draw.appendCoordinates([
+        [0, 0],
+        [1, 1],
+      ]);
+    });
+  });
+
   describe('append coordinates when drawing a Polygon feature', function () {
     let draw;
     let coordinates;
