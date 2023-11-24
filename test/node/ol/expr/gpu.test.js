@@ -17,6 +17,7 @@ import {
   getStringNumberEquivalent,
   newCompilationContext,
   numberToGlsl,
+  packColor,
   stringToGlsl,
 } from '../../../../src/ol/expr/gpu.js';
 
@@ -724,14 +725,36 @@ describe('ol/expr/gpu.js', () => {
         expected:
           '(u_var_selected == false ? vec4(1.0, 0.0, 0.0, 1.0) : (u_var_selected == a_prop_validValue ? vec4(0.0, 0.5019607843137255, 0.0, 1.0) : ((u_time < 10000.0) ? u_var_oldColor : u_var_newColor)))',
         contextAssertion: (context) => {
-          expect(context.properties).to.eql({
-            validValue: {name: 'validValue', type: BooleanType},
-          });
-          expect(context.variables).to.eql({
-            selected: {name: 'selected', type: BooleanType},
-            newColor: {name: 'newColor', type: ColorType},
-            oldColor: {name: 'oldColor', type: ColorType},
-          });
+          expect(Object.keys(context.properties)).to.eql(['validValue']);
+          expect(Object.keys(context.variables)).to.eql([
+            'selected',
+            'oldColor',
+            'newColor',
+          ]);
+
+          const feature = new Feature({validValue: true});
+          expect(context.properties.validValue.name).to.equal('validValue');
+          expect(context.properties.validValue.type).to.equal(BooleanType);
+          expect(context.properties.validValue.evaluator(feature)).to.equal(1);
+
+          const variables = {
+            selected: false,
+            newColor: 'red',
+            oldColor: [0, 0, 255, 0.5],
+          };
+          expect(context.variables.selected.name).to.equal('selected');
+          expect(context.variables.selected.type).to.equal(BooleanType);
+          expect(context.variables.selected.evaluator(variables)).to.equal(0);
+          expect(context.variables.newColor.name).to.equal('newColor');
+          expect(context.variables.newColor.type).to.equal(ColorType);
+          expect(context.variables.newColor.evaluator(variables)).to.eql(
+            packColor('red')
+          );
+          expect(context.variables.oldColor.name).to.equal('oldColor');
+          expect(context.variables.oldColor.type).to.equal(ColorType);
+          expect(context.variables.oldColor.evaluator(variables)).to.eql(
+            packColor([0, 0, 255, 0.5])
+          );
         },
       },
       {
@@ -768,34 +791,47 @@ describe('ol/expr/gpu.js', () => {
         expected:
           '((u_var_symbolType == 11.0) ? vec2((a_prop_type == 3.0 ? u_var_lowHeight : (a_prop_type == 12.0 ? u_var_mediumHeight : a_prop_height)), 10.0) : u_var_fixedSize)',
         contextAssertion: (context) => {
-          expect(context.properties).to.eql({
-            type: {
-              name: 'type',
-              type: StringType,
-            },
-            height: {
-              name: 'height',
-              type: NumberType,
-            },
-          });
-          expect(context.variables).to.eql({
-            fixedSize: {
-              name: 'fixedSize',
-              type: NumberArrayType,
-            },
-            symbolType: {
-              name: 'symbolType',
-              type: StringType,
-            },
-            mediumHeight: {
-              name: 'mediumHeight',
-              type: NumberType,
-            },
-            lowHeight: {
-              name: 'lowHeight',
-              type: NumberType,
-            },
-          });
+          expect(Object.keys(context.properties)).to.eql(['type', 'height']);
+          expect(Object.keys(context.variables)).to.eql([
+            'symbolType',
+            'lowHeight',
+            'mediumHeight',
+            'fixedSize',
+          ]);
+          const feature = new Feature({type: 'abcd', height: 12});
+          expect(context.properties.type.name).to.equal('type');
+          expect(context.properties.type.type).to.equal(StringType);
+          expect(context.properties.type.evaluator(feature)).to.equal(
+            getStringNumberEquivalent('abcd')
+          );
+          expect(context.properties.height.name).to.equal('height');
+          expect(context.properties.height.type).to.equal(NumberType);
+          expect(context.properties.height.evaluator(feature)).to.equal(12);
+
+          const variables = {
+            fixedSize: [20, 30],
+            symbolType: 'efgh',
+            mediumHeight: 24,
+            lowHeight: 6,
+          };
+          expect(context.variables.fixedSize.name).to.equal('fixedSize');
+          expect(context.variables.fixedSize.type).to.equal(NumberArrayType);
+          expect(context.variables.fixedSize.evaluator(variables)).to.eql([
+            20, 30,
+          ]);
+          expect(context.variables.symbolType.name).to.equal('symbolType');
+          expect(context.variables.symbolType.type).to.equal(StringType);
+          expect(context.variables.symbolType.evaluator(variables)).to.equal(
+            getStringNumberEquivalent('efgh')
+          );
+          expect(context.variables.mediumHeight.name).to.equal('mediumHeight');
+          expect(context.variables.mediumHeight.type).to.equal(NumberType);
+          expect(context.variables.mediumHeight.evaluator(variables)).to.equal(
+            24
+          );
+          expect(context.variables.lowHeight.name).to.equal('lowHeight');
+          expect(context.variables.lowHeight.type).to.equal(NumberType);
+          expect(context.variables.lowHeight.evaluator(variables)).to.equal(6);
         },
       },
     ];

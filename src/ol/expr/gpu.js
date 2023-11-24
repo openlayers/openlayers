@@ -72,6 +72,29 @@ export function colorToGlsl(color) {
   ]);
 }
 
+/**
+ * Packs all components of a color into a two-floats array; can be reversed in GLSL using UNPACK_COLOR_FN
+ * @param {import("../color.js").Color|string} color Color as array of numbers or string
+ * @return {Array<number>} Vec2 array containing the color in compressed form
+ */
+export function packColor(color) {
+  const array = asArray(color);
+  const r = array[0] * 256;
+  const g = array[1];
+  const b = array[2] * 256;
+  const a = Math.round(array[3] * 255);
+  return [r + g, b + a];
+}
+
+export const UNPACK_COLOR_FN = `vec4 unpackColor(vec2 packedColor) {
+  return fract(packedColor[1] / 256.0) * vec4(
+    fract(floor(packedColor[0] / 256.0) / 256.0),
+    fract(packedColor[0] / 256.0),
+    fract(floor(packedColor[1] / 256.0) / 256.0),
+    1.0
+  );
+}`;
+
 /** @type {Object<string, number>} */
 const stringToFloatMap = {};
 let stringToFloatCounter = 0;
@@ -121,17 +144,24 @@ export function uniformNameForVariable(variableName) {
  */
 
 /**
+ * @typedef {function(import("../Feature.js").FeatureLike): *} CompilationContextPropertyEvaluator
+ */
+/**
  * @typedef {Object} CompilationContextProperty
  * @property {string} name Name
  * @property {number} type Resolved property type
- * @property {function(import("../Feature.js").FeatureLike): *} [evaluator] Function used for evaluating the value;
+ * @property {CompilationContextPropertyEvaluator} evaluator Function used for evaluating the current value
  */
 
+/**
+ * The argument is the style variables object
+ * @typedef {function(Object): *} CompilationContextVariableEvaluator
+ */
 /**
  * @typedef {Object} CompilationContextVariable
  * @property {string} name Name
  * @property {number} type Resolved variable type
- * @property {function(Object): *} [evaluator] Function used for evaluating the value; argument is the style variables object
+ * @property {CompilationContextVariableEvaluator} evaluator Function used for evaluating the current value
  */
 
 /**
@@ -218,14 +248,28 @@ function createCompiler(output) {
  * @type {Object<string, Compiler>}
  */
 const compilers = {
-  [Ops.Get]: (context, expression) => {
+  [Ops.Get]: (context, expression, type) => {
     const firstArg = /** @type {LiteralExpression} */ (expression.args[0]);
     const propName = /** @type {string} */ (firstArg.value);
     const isExisting = propName in context.properties;
     if (!isExisting) {
+      /** @type {CompilationContextPropertyEvaluator} */
+      let evaluator;
+      if (expression.type === StringType) {
+        evaluator = (feature) =>
+          getStringNumberEquivalent(feature.get(propName));
+      } else if (expression.type === ColorType) {
+        evaluator = (feature) =>
+          packColor([...asArray(feature.get(propName) || '#eee')]);
+      } else if (expression.type === BooleanType) {
+        evaluator = (feature) => (feature.get(propName) ? 1.0 : 0.0);
+      } else {
+        evaluator = (feature) => feature.get(propName);
+      }
       context.properties[propName] = {
         name: propName,
         type: expression.type,
+        evaluator,
       };
     }
     const prefix = context.inFragmentShader ? 'v_prop_' : 'a_prop_';
@@ -246,14 +290,33 @@ const compilers = {
     const prefix = context.inFragmentShader ? 'v_prop_' : 'a_prop_';
     return prefix + propName;
   },
-  [Ops.Var]: (context, expression) => {
+  [Ops.Var]: (context, expression, type) => {
     const firstArg = /** @type {LiteralExpression} */ (expression.args[0]);
     const varName = /** @type {string} */ (firstArg.value);
     const isExisting = varName in context.variables;
     if (!isExisting) {
+      /** @type {CompilationContextVariableEvaluator} */
+      let evaluator;
+      if (expression.type === StringType) {
+        evaluator = (variables) =>
+          getStringNumberEquivalent(/** @type {string} */ (variables[varName]));
+      } else if (expression.type === ColorType) {
+        evaluator = (variables) =>
+          packColor([
+            ...asArray(
+              /** @type {string|Array<number>} */ (variables[varName]) || '#eee'
+            ),
+          ]);
+      } else if (expression.type === BooleanType) {
+        evaluator = (variables) =>
+          /** @type {boolean} */ (variables[varName]) ? 1.0 : 0.0;
+      } else {
+        evaluator = (variables) => /** @type {number} */ (variables[varName]);
+      }
       context.variables[varName] = {
         name: varName,
         type: expression.type,
+        evaluator,
       };
     }
     return uniformNameForVariable(varName);

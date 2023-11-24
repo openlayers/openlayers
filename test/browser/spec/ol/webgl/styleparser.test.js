@@ -2,10 +2,10 @@ import Feature from '../../../../../src/ol/Feature.js';
 import {asArray} from '../../../../../src/ol/color.js';
 import {
   computeHash,
-  packColor,
   parseLiteralStyle,
 } from '../../../../../src/ol/webgl/styleparser.js';
 import {
+  packColor,
   stringToGlsl,
   uniformNameForVariable,
 } from '../../../../../src/ol/expr/gpu.js';
