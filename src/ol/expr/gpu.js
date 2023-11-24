@@ -17,6 +17,7 @@ import {
   parse,
   typeName,
 } from './expression.js';
+import {GLSL_UNDEFINED_VALUE} from '../render/webgl/constants.js';
 import {Uniforms} from '../renderer/webgl/TileLayer.js';
 import {asArray} from '../color.js';
 
@@ -256,15 +257,31 @@ const compilers = {
       /** @type {CompilationContextPropertyEvaluator} */
       let evaluator;
       if (expression.type === StringType) {
-        evaluator = (feature) =>
-          getStringNumberEquivalent(feature.get(propName));
+        evaluator = (feature) => {
+          const value = feature.get(propName);
+          if (value === undefined || value === null) {
+            return GLSL_UNDEFINED_VALUE;
+          }
+          return getStringNumberEquivalent(value);
+        };
       } else if (expression.type === ColorType) {
-        evaluator = (feature) =>
-          packColor([...asArray(feature.get(propName) || '#eee')]);
+        evaluator = (feature) => {
+          const value = feature.get(propName);
+          if (value === undefined || value === null) {
+            return GLSL_UNDEFINED_VALUE;
+          }
+          return packColor([...asArray(value)]);
+        };
       } else if (expression.type === BooleanType) {
-        evaluator = (feature) => (feature.get(propName) ? 1.0 : 0.0);
+        evaluator = (feature) => {
+          const value = feature.get(propName);
+          if (value === undefined || value === null) {
+            return GLSL_UNDEFINED_VALUE;
+          }
+          return value ? 1.0 : 0.0;
+        };
       } else {
-        evaluator = (feature) => feature.get(propName);
+        evaluator = (feature) => feature.get(propName) ?? GLSL_UNDEFINED_VALUE;
       }
       context.properties[propName] = {
         name: propName,
@@ -298,20 +315,34 @@ const compilers = {
       /** @type {CompilationContextVariableEvaluator} */
       let evaluator;
       if (expression.type === StringType) {
-        evaluator = (variables) =>
-          getStringNumberEquivalent(/** @type {string} */ (variables[varName]));
+        evaluator = (variables) => {
+          const value = variables[varName];
+          if (value === undefined || value === null) {
+            return GLSL_UNDEFINED_VALUE;
+          }
+          return getStringNumberEquivalent(/** @type {string} */ value);
+        };
       } else if (expression.type === ColorType) {
-        evaluator = (variables) =>
-          packColor([
-            ...asArray(
-              /** @type {string|Array<number>} */ (variables[varName]) || '#eee'
-            ),
+        evaluator = (variables) => {
+          const value = variables[varName];
+          if (value === undefined || value === null) {
+            return GLSL_UNDEFINED_VALUE;
+          }
+          return packColor([
+            ...asArray(/** @type {string|Array<number>} */ value),
           ]);
+        };
       } else if (expression.type === BooleanType) {
-        evaluator = (variables) =>
-          /** @type {boolean} */ (variables[varName]) ? 1.0 : 0.0;
+        evaluator = (variables) => {
+          const value = variables[varName];
+          if (value === undefined || value === null) {
+            return GLSL_UNDEFINED_VALUE;
+          }
+          return /** @type {boolean} */ (value) ? 1.0 : 0.0;
+        };
       } else {
-        evaluator = (variables) => /** @type {number} */ (variables[varName]);
+        evaluator = (variables) =>
+          /** @type {number} */ (variables[varName]) ?? GLSL_UNDEFINED_VALUE;
       }
       context.variables[varName] = {
         name: varName,

@@ -25,3 +25,9 @@ export const WebGLWorkerMessageType = {
  * @property {ArrayBuffer} [indexBuffer] Indices array raw binary buffer (sent by the worker).
  * @property {import("../../transform").Transform} [renderInstructionsTransform] Transformation matrix used to project the instructions coordinates
  */
+
+/**
+ * This value is passed to a shader when an input is undefined
+ * @type {number}
+ */
+export const GLSL_UNDEFINED_VALUE = -999999;

@@ -9,6 +9,7 @@ import {
   StringType,
   newParsingContext,
 } from '../../../../src/ol/expr/expression.js';
+import {GLSL_UNDEFINED_VALUE} from '../../../../src/ol/render/webgl/constants.js';
 import {MultiPolygon} from '../../../../src/ol/geom.js';
 import {
   arrayToGlsl,
@@ -127,6 +128,19 @@ describe('ol/expr/gpu.js', () => {
         type: AnyType,
         expression: ['get', 'myAttr'],
         expected: 'a_prop_myAttr',
+        contextAssertion(context) {
+          const evaluator = context.properties.myAttr.evaluator;
+          // attribute is defined
+          expect(evaluator(new Feature({myAttr: 123}))).to.equal(123);
+          // attribute is null
+          expect(evaluator(new Feature({myAttr: null}))).to.equal(
+            GLSL_UNDEFINED_VALUE
+          );
+          // attribute is undefined
+          expect(evaluator(new Feature({myAttr: undefined}))).to.equal(
+            GLSL_UNDEFINED_VALUE
+          );
+        },
       },
       {
         name: 'get (in fragment shader)',
@@ -153,6 +167,16 @@ describe('ol/expr/gpu.js', () => {
           const variable = context.variables['myVar'];
           expect(variable.name).to.equal('myVar');
           expect(variable.type).to.equal(StringType);
+
+          const evaluator = variable.evaluator;
+          // attribute is defined
+          expect(evaluator({myVar: 'abcd'})).to.equal(
+            getStringNumberEquivalent('abcd')
+          );
+          // attribute is null
+          expect(evaluator({myVar: null})).to.equal(GLSL_UNDEFINED_VALUE);
+          // attribute is undefined
+          expect(evaluator({myVar: undefined})).to.equal(GLSL_UNDEFINED_VALUE);
         },
       },
       {
