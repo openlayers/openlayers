@@ -53,9 +53,6 @@ export function getRequestUrl(
   const modifiedUrl = baseUrl
     .replace(/MapServer\/?$/, 'MapServer/export')
     .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
-  if (modifiedUrl == baseUrl) {
-    throw new Error('`options.featureTypes` should be an Array');
-  }
   return appendParams(modifiedUrl, params);
 }
 
