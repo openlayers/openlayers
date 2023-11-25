@@ -91,7 +91,7 @@ function getGlslTypeFromType(type) {
 /**
  * see https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
  * @param {Object|string} input The hash input, either an object or string
- * @return {string} Hash (if the object cannot be serialized, it is based on `getUid`)
+ * @return {string} Hash
  */
 export function computeHash(input) {
   const hash = JSON.stringify(input)

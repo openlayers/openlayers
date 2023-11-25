@@ -42,12 +42,12 @@ export function numberToGlsl(v) {
 /**
  * Will return the number array as a float with a dot separator, concatenated with ', '.
  * @param {Array<number>} array Numerical values array.
- * @return {string} The array as a vector, e. g.: `vec3(1.0, 2.0, 3.0)`.
+ * @return {string} The array as a vector, e.g.: `vec3(1.0, 2.0, 3.0)`.
  */
 export function arrayToGlsl(array) {
   if (array.length < 2 || array.length > 4) {
     throw new Error(
-      '`formatArray` can only output `vec2`, `vec3` or `vec4` arrays.'
+      '`arrayToGlsl` can only output `vec2`, `vec3` or `vec4` arrays.'
     );
   }
   return `vec${array.length}(${array.map(numberToGlsl).join(', ')})`;
@@ -201,7 +201,7 @@ export function buildExpression(
 
 /**
  * @param {function(Array<CompiledExpression>, CompilationContext): string} output Function that takes in parsed arguments and returns a string
- * @return {function(CompilationContext, import("./expression.js").CallExpression, number): string} Compiler for the call expression
+ * @return {Compiler} Compiler for the call expression
  */
 function createCompiler(output) {
   return (context, expression, type) => {
