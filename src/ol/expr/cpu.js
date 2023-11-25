@@ -169,6 +169,9 @@ function compileExpression(expression, context) {
     case Ops.Sqrt: {
       return compileNumericExpression(expression, context);
     }
+    case Ops.Case: {
+      return compileCaseExpression(expression, context);
+    }
     case Ops.Match: {
       return compileMatchExpression(expression, context);
     }
@@ -183,7 +186,6 @@ function compileExpression(expression, context) {
     // Ops.Zoom
     // Ops.Time
     // Ops.Between
-    // Ops.Case
     // Ops.In
     // Ops.Array
     // Ops.Color
@@ -411,6 +413,28 @@ function compileNumericExpression(expression, context) {
       throw new Error(`Unsupported numeric operator ${op}`);
     }
   }
+}
+
+/**
+ * @param {import('./expression.js').CallExpression} expression The call expression.
+ * @param {import('./expression.js').ParsingContext} context The parsing context.
+ * @return {ExpressionEvaluator} The evaluator function.
+ */
+function compileCaseExpression(expression, context) {
+  const length = expression.args.length;
+  const args = new Array(length);
+  for (let i = 0; i < length; ++i) {
+    args[i] = compileExpression(expression.args[i], context);
+  }
+  return (context) => {
+    for (let i = 0; i < length - 1; i += 2) {
+      const condition = args[i](context);
+      if (condition) {
+        return args[i + 1](context);
+      }
+    }
+    return args[length - 1](context);
+  };
 }
 
 /**
