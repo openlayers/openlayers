@@ -182,11 +182,16 @@ const TRANSACTION_SERIALIZERS = {
  */
 
 /**
- * Total deleted; total inserted; total updated; array of insert ids.
- * @typedef {Object} TransactionResponse
+ * @typedef {Object} TransactionSummary
  * @property {number} totalDeleted TotalDeleted.
  * @property {number} totalInserted TotalInserted.
  * @property {number} totalUpdated TotalUpdated.
+ */
+
+/**
+ * Total deleted; total inserted; total updated; array of insert ids.
+ * @typedef {Object} TransactionResponse
+ * @property {TransactionSummary} transactionSummary Transaction summary.
  * @property {Array<string>} insertIds InsertIds.
  */
 
