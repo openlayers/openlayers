@@ -24,18 +24,18 @@ import {isStringColor} from '../color.js';
  *     green, blue and alpha. {@link import("../source/DataTile.js").default} sources can have any number
  *     of bands, depending on the underlying data source and
  *     {@link import("../source/GeoTIFF.js").Options configuration}. `xOffset` and `yOffset` are optional
- *     and allow specifying pixel offsets for x and y. This is used for sampling data from neighboring pixels.
+ *     and allow specifying pixel offsets for x and y. This is used for sampling data from neighboring pixels (WebGL only).
  *   * `['get', 'attributeName', typeHint]` fetches a feature property value, similar to `feature.get('attributeName')`
  *     A type hint can optionally be specified, in case the resulting expression contains a type ambiguity which
  *     will make it invalid. Type hints can be one of: 'string', 'color', 'number', 'boolean', 'number[]'
  *   * `['geometry-type']` returns a feature's geometry type as string, either: 'LineString', 'Point' or 'Polygon'
  *     `Multi*` values are returned as their singular equivalent
  *     `Circle` geometries are returned as 'Polygon'
- *     `GeometryCollection` geometries are returned as the type of the first geometry found in the collection
+ *     `GeometryCollection` geometries are returned as the type of the first geometry found in the collection (WebGL only).
  *   * `['resolution']` returns the current resolution
- *   * `['time']` returns the time in seconds since the creation of the layer
+ *   * `['time']` The time in seconds since the creation of the layer (WebGL only).
  *   * `['var', 'varName']` fetches a value from the style variables; will throw an error if that variable is undefined
- *   * `['zoom']` returns the current zoom level
+ *   * `['zoom']` The current zoom level (WebGL only).
  *
  * * Math operators:
  *   * `['*', value1, value2, ...]` multiplies the values (either numbers or colors)
@@ -82,9 +82,9 @@ import {isStringColor} from '../color.js';
  *   * `['all', value1, value2, ...]` returns `true` if all the inputs are `true`, `false` otherwise.
  *   * `['any', value1, value2, ...]` returns `true` if any of the inputs are `true`, `false` otherwise.
  *   * `['between', value1, value2, value3]` returns `true` if `value1` is contained between `value2` and `value3`
- *     (inclusively), or `false` otherwise.
+ *     (inclusively), or `false` otherwise (WebGL only).
  *   * `['in', needle, haystack]` returns `true` if `needle` is found in `haystack`, and
- *     `false` otherwise.
+ *     `false` otherwise (WebGL only).
  *     This operator has the following limitations:
  *     * `haystack` has to be an array of numbers or strings (searching for a substring in a string is not supported yet)
  *     * Only literal arrays are supported as `haystack` for now; this means that `haystack` cannot be the result of an
@@ -93,15 +93,15 @@ import {isStringColor} from '../color.js';
  *
  * * Conversion operators:
  *   * `['array', value1, ...valueN]` creates a numerical array from `number` values; please note that the amount of
- *     values can currently only be 2, 3 or 4.
+ *     values can currently only be 2, 3 or 4 (WebGL only).
  *   * `['color', red, green, blue, alpha]` or `['color', shade, alpha]` creates a `color` value from `number` values;
- *     the `alpha` parameter is optional; if not specified, it will be set to 1.
+ *     the `alpha` parameter is optional; if not specified, it will be set to 1 (WebGL only).
  *     Note: `red`, `green` and `blue` or `shade` components must be values between 0 and 255; `alpha` between 0 and 1.
  *   * `['palette', index, colors]` picks a `color` value from an array of colors using the given index; the `index`
  *     expression must evaluate to a number; the items in the `colors` array must be strings with hex colors
  *     (e.g. `'#86A136'`), colors using the rgba[a] functional notation (e.g. `'rgb(134, 161, 54)'` or `'rgba(134, 161, 54, 1)'`),
  *     named colors (e.g. `'red'`), or array literals with 3 ([r, g, b]) or 4 ([r, g, b, a]) values (with r, g, and b
- *     in the 0-255 range and a in the 0-1 range).
+ *     in the 0-255 range and a in the 0-1 range) (WebGL only).
  *
  * Values can either be literals or another operator, as they will be evaluated recursively.
  * Literal values can be of the following types:

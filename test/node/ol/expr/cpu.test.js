@@ -433,6 +433,54 @@ describe('ol/expr/cpu.js', () => {
         expected: Math.sqrt(42),
       },
       {
+        name: 'case (first condition)',
+        type: StringType,
+        expression: [
+          'case',
+          ['<', ['get', 'value'], 42],
+          'small',
+          ['<', ['get', 'value'], 100],
+          'big',
+          'bigger',
+        ],
+        context: {
+          properties: {value: 40},
+        },
+        expected: 'small',
+      },
+      {
+        name: 'case (second condition)',
+        type: StringType,
+        expression: [
+          'case',
+          ['<', ['get', 'value'], 42],
+          'small',
+          ['<', ['get', 'value'], 100],
+          'big',
+          'bigger',
+        ],
+        context: {
+          properties: {value: 50},
+        },
+        expected: 'big',
+      },
+      {
+        name: 'case (fallback)',
+        type: StringType,
+        expression: [
+          'case',
+          ['<', ['get', 'value'], 42],
+          'small',
+          ['<', ['get', 'value'], 100],
+          'big',
+          'biggest',
+        ],
+        context: {
+          properties: {value: 200},
+        },
+        expected: 'biggest',
+      },
+      {
         name: 'match (string match)',
         type: StringType,
         expression: ['match', ['get', 'string'], 'foo', 'got foo', 'got other'],
