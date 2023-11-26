@@ -351,7 +351,12 @@ describe('ol/expr/gpu.js', () => {
         expression: ['sqrt', 100],
         expected: 'sqrt(100.0)',
       },
-
+      {
+        name: 'concat',
+        type: StringType,
+        expression: ['concat', 'hello', 'World', '!'],
+        expected: getStringNumberEquivalent('helloWorld!'),
+      },
       {
         name: 'greater than',
         type: AnyType,
@@ -834,8 +839,13 @@ describe('ol/expr/gpu.js', () => {
             },
           },
         },
-        expected:
-          '((u_var_symbolType == 11.0) ? vec2((a_prop_type == 3.0 ? u_var_lowHeight : (a_prop_type == 12.0 ? u_var_mediumHeight : a_prop_height)), 10.0) : u_var_fixedSize)',
+        expected: `((u_var_symbolType == ${stringToGlsl(
+          'dynamic'
+        )}) ? vec2((a_prop_type == ${stringToGlsl(
+          'low'
+        )} ? u_var_lowHeight : (a_prop_type == ${stringToGlsl(
+          'medium'
+        )} ? u_var_mediumHeight : a_prop_height)), 10.0) : u_var_fixedSize)`,
         contextAssertion: (context) => {
           expect(Object.keys(context.properties)).to.eql(['type', 'height']);
           expect(Object.keys(context.variables)).to.eql([

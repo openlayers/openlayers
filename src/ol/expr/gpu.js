@@ -423,6 +423,13 @@ const compilers = {
       : `atan(${firstValue})`;
   }),
   [Ops.Sqrt]: createCompiler(([value]) => `sqrt(${value})`),
+  [Ops.Concat]: (context, expression) => {
+    // this operator is evaluated entirely on the CPU
+    const result = /** @type {string} */ (
+      evaluateOnCpu(expression, StringType)
+    );
+    return stringToGlsl(result);
+  },
   [Ops.Match]: createCompiler((compiledArgs) => {
     const input = compiledArgs[0];
     const fallback = compiledArgs[compiledArgs.length - 1];
@@ -553,7 +560,6 @@ ${ifBlocks}
   // TODO: unimplemented
   // Ops.Number
   // Ops.String
-  // Ops.Concat
 };
 
 /**
