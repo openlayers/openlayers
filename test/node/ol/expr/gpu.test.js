@@ -152,6 +152,17 @@ describe('ol/expr/gpu.js', () => {
         },
       },
       {
+        name: 'get (dynamic property name)',
+        type: AnyType,
+        expression: ['get', ['concat', 'hello', 'World']],
+        expected: 'a_prop_helloWorld',
+        contextAssertion(context) {
+          expect(context.properties).to.have.property('helloWorld');
+          const evaluator = context.properties.helloWorld.evaluator;
+          expect(evaluator(new Feature({helloWorld: 123}))).to.equal(123);
+        },
+      },
+      {
         name: 'var',
         type: AnyType,
         expression: ['var', 'myVar'],
@@ -177,6 +188,17 @@ describe('ol/expr/gpu.js', () => {
           expect(evaluator({myVar: null})).to.equal(GLSL_UNDEFINED_VALUE);
           // attribute is undefined
           expect(evaluator({myVar: undefined})).to.equal(GLSL_UNDEFINED_VALUE);
+        },
+      },
+      {
+        name: 'var (dynamic variable name)',
+        type: AnyType,
+        expression: ['var', ['concat', 'hello', 'World']],
+        expected: 'u_var_helloWorld',
+        contextAssertion(context) {
+          expect(context.variables).to.have.property('helloWorld');
+          const evaluator = context.variables.helloWorld.evaluator;
+          expect(evaluator({helloWorld: 123})).to.equal(123);
         },
       },
       {

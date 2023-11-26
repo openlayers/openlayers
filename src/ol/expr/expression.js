@@ -216,8 +216,6 @@ export class CallExpression {
 
 /**
  * @typedef {Object} ParsingContext
- * @property {Set<string>} variables Variables referenced with the 'var' operator.
- * @property {Set<string>} properties Properties referenced with the 'get' operator.
  * @property {boolean} featureId The style uses the feature id.
  * @property {boolean} geometryType The style uses the feature geometry type.
  * @property {import("../style/flat.js").FlatStyle|import("../style/webgl.js").WebGLStyle} style The style being parsed
@@ -228,8 +226,6 @@ export class CallExpression {
  */
 export function newParsingContext() {
   return {
-    variables: new Set(),
-    properties: new Set(),
     featureId: false,
     geometryType: false,
     style: {},
@@ -389,11 +385,13 @@ const parsers = {
       return AnyType;
     },
     withArgsCount(1, 2),
+    parseArgsOfType(StringType),
     withGetArgs
   ),
   [Ops.Var]: createParser(
-    ([firstArg]) => firstArg.type,
+    ([_, initialValue]) => initialValue?.type || AnyType,
     withArgsCount(1, 1),
+    parseArgsOfType(StringType),
     withVarArgs
   ),
   [Ops.Id]: createParser(NumberType | StringType, withNoArgs, usesFeatureId),
@@ -626,48 +624,52 @@ const parsers = {
 /**
  * @type ArgValidator
  */
-function withGetArgs(encoded, context) {
-  const arg = parse(encoded[1], context);
-  if (!(arg instanceof LiteralExpression)) {
-    throw new Error('Expected a literal argument for get operation');
+function withGetArgs(encoded, context, parsedArgs) {
+  const nameArg = parsedArgs[0];
+  const typeHint = parsedArgs[1];
+  if (typeHint && !(typeHint instanceof LiteralExpression)) {
+    throw new Error(
+      `The type hint for a get operation has to be a literal value, got: ${JSON.stringify(
+        encoded[2]
+      )}`
+    );
   }
-  if (typeof arg.value !== 'string') {
-    throw new Error('Expected a string argument for get operation');
+  if (nameArg instanceof CallExpression) {
+    if (!overlapsType(StringType, nameArg.type)) {
+      throw new Error(
+        `The variable name expression has type ${typeName(
+          nameArg.type
+        )} but it is expected to be a string`
+      );
+    }
   }
-  context.properties.add(arg.value);
-  if (encoded.length === 3) {
-    const hint = parse(encoded[2], context);
-    return [arg, hint];
-  }
-  return [arg];
+  return parsedArgs;
 }
 
 /**
  * @type ArgValidator
  */
-function withVarArgs(encoded, context, parsedArgs, typeHint) {
-  const varName = encoded[1];
-  if (typeof varName !== 'string') {
-    throw new Error('Expected a string argument for var operation');
+function withVarArgs(encoded, context, parsedArgs) {
+  const nameArg = parsedArgs[0];
+  if (nameArg instanceof CallExpression) {
+    if (!overlapsType(StringType, nameArg.type)) {
+      throw new Error(
+        `The variable name expression has type ${typeName(
+          nameArg.type
+        )} but it is expected to be a string`
+      );
+    }
+    return [nameArg];
   }
-  context.variables.add(varName);
+  const varName = /** @type {string} */ (nameArg.value);
   if (
     !('variables' in context.style) ||
     context.style.variables[varName] === undefined
   ) {
-    return [new LiteralExpression(AnyType, varName)];
+    return [nameArg];
   }
-  const initialValue = context.style.variables[varName];
-  const arg = /** @type {LiteralExpression} */ (parse(initialValue, context));
-  arg.value = varName;
-  if (typeHint && !overlapsType(typeHint, arg.type)) {
-    throw new Error(
-      `The variable ${varName} has type ${typeName(
-        arg.type
-      )} but the following type was expected: ${typeName(typeHint)}`
-    );
-  }
-  return [arg];
+  const initialValue = parse(context.style.variables[varName], context);
+  return [nameArg, initialValue];
 }
 
 /**
@@ -738,8 +740,8 @@ function parseArgsOfType(argType) {
     for (let i = 0; i < argCount; ++i) {
       const expression = parse(encoded[i + 1], context);
       if (!overlapsType(argType, expression.type)) {
-        const gotType = typeName(argType);
-        const expectedType = typeName(expression.type);
+        const gotType = typeName(expression.type);
+        const expectedType = typeName(argType);
         throw new Error(
           `Unexpected type for argument ${i} of ${operation} operation` +
             `, got ${gotType} but expected ${expectedType}`

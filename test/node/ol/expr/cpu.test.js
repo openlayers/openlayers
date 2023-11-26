@@ -1,5 +1,6 @@
 import expect from '../../expect.js';
 import {
+  AnyType,
   BooleanType,
   ColorType,
   NumberType,
@@ -87,6 +88,28 @@ describe('ol/expr/cpu.js', () => {
           geometryType: '',
         },
         expected: '',
+      },
+      {
+        name: 'get (dynamic property name)',
+        type: AnyType,
+        expression: ['get', ['concat', 'hello', '_world']],
+        context: {
+          properties: {
+            hello_world: 1234,
+          },
+        },
+        expected: 1234,
+      },
+      {
+        name: 'var (dynamic variable name)',
+        type: AnyType,
+        expression: ['var', ['concat', 'hello', '_world']],
+        context: {
+          variables: {
+            hello_world: 1234,
+          },
+        },
+        expected: 1234,
       },
       {
         name: 'resolution',

@@ -13,6 +13,7 @@ import {
   StringType,
   computeGeometryType,
   isType,
+  newParsingContext,
   overlapsType,
   parse,
   typeName,
@@ -20,6 +21,10 @@ import {
 import {GLSL_UNDEFINED_VALUE} from '../render/webgl/constants.js';
 import {Uniforms} from '../renderer/webgl/TileLayer.js';
 import {asArray} from '../color.js';
+import {
+  compileExpression as compileExpressionCpu,
+  newEvaluationContext as newEvaluationContextCpu,
+} from './cpu.js';
 
 /**
  * @param {string} operator Operator
@@ -246,12 +251,27 @@ function createCompiler(output) {
 }
 
 /**
+ * Will compile an expression on the CPU and return a value right away
+ * @param {Expression} expression The expression
+ * @param {number} expectedType Expected return type
+ * @return {import("./expression.js").LiteralValue} Return value
+ */
+function evaluateOnCpu(expression, expectedType) {
+  const parsingContext = newParsingContext();
+  const compiled = compileExpressionCpu(expression, parsingContext);
+  const evalContext = newEvaluationContextCpu();
+  evalContext.properties = {};
+  evalContext.resolution = 1;
+  return compiled(evalContext);
+}
+
+/**
  * @type {Object<string, Compiler>}
  */
 const compilers = {
   [Ops.Get]: (context, expression, type) => {
-    const firstArg = /** @type {LiteralExpression} */ (expression.args[0]);
-    const propName = /** @type {string} */ (firstArg.value);
+    const nameArg = expression.args[0];
+    const propName = /** @type {string} */ (evaluateOnCpu(nameArg, StringType));
     const isExisting = propName in context.properties;
     if (!isExisting) {
       /** @type {CompilationContextPropertyEvaluator} */
@@ -308,8 +328,8 @@ const compilers = {
     return prefix + propName;
   },
   [Ops.Var]: (context, expression, type) => {
-    const firstArg = /** @type {LiteralExpression} */ (expression.args[0]);
-    const varName = /** @type {string} */ (firstArg.value);
+    const nameArg = expression.args[0];
+    const varName = /** @type {string} */ (evaluateOnCpu(nameArg, StringType));
     const isExisting = varName in context.variables;
     if (!isExisting) {
       /** @type {CompilationContextVariableEvaluator} */

@@ -114,7 +114,7 @@ export function buildExpression(encoded, type, context) {
  * @param {import('./expression.js').ParsingContext} context The parsing context.
  * @return {ExpressionEvaluator} The evaluator function.
  */
-function compileExpression(expression, context) {
+export function compileExpression(expression, context) {
   if (expression instanceof LiteralExpression) {
     // convert colors to array if possible
     if (expression.type === ColorType && typeof expression.value === 'string') {
@@ -247,20 +247,19 @@ function compileAssertionExpression(expression, context) {
  * @return {ExpressionEvaluator} The evaluator function.
  */
 function compileAccessorExpression(expression, context) {
-  const nameExpression = /** @type {LiteralExpression} */ (expression.args[0]);
-  const name = /** @type {string} */ (nameExpression.value);
+  const nameExpression = compileExpression(expression.args[0], context);
   switch (expression.operator) {
     case Ops.Get: {
       return (context) =>
         context.properties === UNKNOWN_VALUE
           ? UNKNOWN_VALUE
-          : context.properties[name];
+          : context.properties[/** @type {string} */ (nameExpression(context))];
     }
     case Ops.Var: {
       return (context) =>
         context.variables === UNKNOWN_VALUE
           ? UNKNOWN_VALUE
-          : context.variables[name];
+          : context.variables[/** @type {string} */ (nameExpression(context))];
     }
     default: {
       throw new Error(`Unsupported accessor operator ${expression.operator}`);
