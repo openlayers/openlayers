@@ -88,7 +88,7 @@ class MixedGeometryBatch {
 
     /**
      * The precision in WebGL shaders is limited.
-     * To keep the refs as small as possible we maintain an array of returned references.
+     * To keep the refs as small as possible we maintain an array of freed up references.
      * @type {Array<number>}
      * @private
      */
@@ -516,8 +516,7 @@ class MixedGeometryBatch {
    * @param {Feature|RenderFeature} feature Feature
    */
   removeFeature(feature) {
-    let entry;
-    entry = this.clearFeatureEntryInPointBatch_(feature) || entry;
+    let entry = this.clearFeatureEntryInPointBatch_(feature);
     entry = this.clearFeatureEntryInPolygonBatch_(feature) || entry;
     entry = this.clearFeatureEntryInLineStringBatch_(feature) || entry;
     if (entry) {
@@ -548,6 +547,27 @@ class MixedGeometryBatch {
    */
   getFeatureFromRef(ref) {
     return this.refToFeature_.get(ref);
+  }
+
+  isEmpty() {
+    return this.globalCounter_ === 0;
+  }
+
+  /**
+   * Will return a new instance of this class that only contains the features
+   * for which the provided callback returned true
+   * @param {function((Feature|RenderFeature)): boolean} featureFilter Feature filter callback
+   * @return {MixedGeometryBatch} Filtered geometry batch
+   */
+  filter(featureFilter) {
+    const filtered = new MixedGeometryBatch();
+    const features = this.refToFeature_.entries();
+    for (const [, feature] of features) {
+      if (featureFilter(feature)) {
+        filtered.addFeature(feature);
+      }
+    }
+    return filtered;
   }
 }
 
