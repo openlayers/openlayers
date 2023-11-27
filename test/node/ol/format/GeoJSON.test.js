@@ -553,7 +553,7 @@ describe('ol/format/GeoJSON.js', function () {
       expect(array[1].getLayout()).to.eql('XY');
     });
 
-    it('works with empty coordinate arrays', function () {
+    it('works with empty coordinate subarrays', function () {
       const coordinates = [
         [
           [
@@ -571,6 +571,25 @@ describe('ol/format/GeoJSON.js', function () {
       };
       const geometry = format.readGeometry(geojson);
       expect(geometry.getCoordinates()).to.eql(coordinates);
+    });
+
+    it('works with empty coordinate array', () => {
+      const types = [
+        'Point',
+        'LineString',
+        'Polygon',
+        'MultiPoint',
+        'MultiLineString',
+        'MultiPolygon',
+      ];
+      types.forEach((type) => {
+        const geojson = {
+          type,
+          coordinates: [],
+        };
+        const geometry = format.readGeometry(geojson);
+        expect(geometry.getCoordinates()).to.eql([]);
+      });
     });
   });
 

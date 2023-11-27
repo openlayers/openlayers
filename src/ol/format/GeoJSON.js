@@ -405,7 +405,7 @@ function readLineStringGeometry(object) {
     type: 'LineString',
     flatCoordinates,
     ends: [flatCoordinates.length],
-    layout: getLayoutForStride(coordinates[0].length),
+    layout: getLayoutForStride(coordinates[0]?.length || 2),
   };
 }
 
@@ -415,7 +415,7 @@ function readLineStringGeometry(object) {
  */
 function readMultiLineStringGeometry(object) {
   const coordinates = object['coordinates'];
-  const stride = coordinates[0][0].length;
+  const stride = coordinates[0]?.[0]?.length || 2;
   const flatCoordinates = [];
   const ends = deflateCoordinatesArray(flatCoordinates, 0, coordinates, stride);
   return {
@@ -435,7 +435,7 @@ function readMultiPointGeometry(object) {
   return {
     type: 'MultiPoint',
     flatCoordinates: coordinates.flat(),
-    layout: getLayoutForStride(coordinates[0].length),
+    layout: getLayoutForStride(coordinates[0]?.length || 2),
   };
 }
 
@@ -446,7 +446,7 @@ function readMultiPointGeometry(object) {
 function readMultiPolygonGeometry(object) {
   const coordinates = object['coordinates'];
   const flatCoordinates = [];
-  const stride = coordinates[0][0][0].length;
+  const stride = coordinates[0]?.[0]?.[0].length || 2;
   const endss = deflateMultiCoordinatesArray(
     flatCoordinates,
     0,
@@ -468,7 +468,7 @@ function readMultiPolygonGeometry(object) {
 function readPolygonGeometry(object) {
   const coordinates = object['coordinates'];
   const flatCoordinates = [];
-  const stride = coordinates[0][0].length;
+  const stride = coordinates[0]?.[0]?.length;
   const ends = deflateCoordinatesArray(flatCoordinates, 0, coordinates, stride);
   return {
     type: 'Polygon',
