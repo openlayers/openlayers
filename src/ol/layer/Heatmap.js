@@ -102,6 +102,20 @@ class Heatmap extends BaseVector {
       this.weightFunction_ = weight;
     }
 
+    const blur = options.blur ? options.blur : 15;
+    if (typeof blur === 'number') {
+      this.blurFunction_ = (feature) => blur;
+    } else {
+      this.blurFunction_ = blur;
+    }
+
+    const radius = options.radius ? options.radius : 8;
+    if (typeof radius === 'number') {
+      this.radiusFunction_ = (feature) => radius;
+    } else {
+      this.radiusFunction_ = radius;
+    }
+
     // For performance reasons, don't sort the features before rendering.
     // The render order is not relevant for a heatmap representation.
     this.setRenderOrder(null);
@@ -177,12 +191,15 @@ class Heatmap extends BaseVector {
   createRenderer() {
     const builder = new ShaderBuilder()
       .addAttribute('float a_prop_weight')
+      .addAttribute('float a_prop_radius')
+      .addAttribute('float a_prop_blur')
       .addVarying('v_prop_weight', 'float', 'a_prop_weight')
+      .addVarying('v_prop_size', 'float', 'a_prop_radius')
+      .addVarying('v_prop_blurSlope', 'float', 'a_prop_blur')
       .addUniform('float u_size')
-      .addUniform('float u_blurSlope')
       .setSymbolSizeExpression('vec2(u_size)')
       .setSymbolColorExpression(
-        'vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * u_blurSlope) * v_prop_weight)'
+        'vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * v_prop_blurSlope) * v_prop_weight)'
       );
 
     return new WebGLPointsLayerRenderer(this, {
@@ -195,15 +212,26 @@ class Heatmap extends BaseVector {
             return weight !== undefined ? clamp(weight, 0, 1) : 1;
           },
         },
+        {
+          name: 'radius',
+          callback: (feature) => {
+            const radius = this.radiusFunction_(feature);
+            const blur = this.blurFunction_(feature);
+            return (radius + blur) * 2;
+          },
+        },
+        {
+          name: 'blur',
+          callback: (feature) => {
+            const radius = this.radiusFunction_(feature);
+            const blur = this.blurFunction_(feature);
+            return radius / Math.max(1, blur);
+          },
+        },
       ],
       uniforms: {
         u_size: () => {
           return (this.get(Property.RADIUS) + this.get(Property.BLUR)) * 2;
-        },
-        u_blurSlope: () => {
-          return (
-            this.get(Property.RADIUS) / Math.max(1, this.get(Property.BLUR))
-          );
         },
       },
       hitDetectionEnabled: true,
