@@ -152,14 +152,27 @@ describe('ol/expr/gpu.js', () => {
         },
       },
       {
-        name: 'get (dynamic property name)',
+        name: 'get (property name as expression)',
         type: AnyType,
-        expression: ['get', ['concat', 'hello', 'World']],
-        expected: 'a_prop_helloWorld',
+        expression: ['get', ['concat', 'hello-', 'world']],
+        expected: 'a_prop_get3868214767',
         contextAssertion(context) {
-          expect(context.properties).to.have.property('helloWorld');
-          const evaluator = context.properties.helloWorld.evaluator;
-          expect(evaluator(new Feature({helloWorld: 123}))).to.equal(123);
+          expect(context.properties).to.have.property('get3868214767');
+          const evaluator = context.properties['get3868214767'].evaluator;
+          expect(evaluator(new Feature({'hello-world': 123}))).to.equal(123);
+        },
+      },
+      {
+        name: 'get (property name as expression relying on properties)',
+        type: AnyType,
+        expression: ['get', ['concat', 'hello-', ['get', 'type']]],
+        expected: 'a_prop_get4130076217',
+        contextAssertion(context) {
+          expect(context.properties).to.have.property('get4130076217');
+          const evaluator = context.properties['get4130076217'].evaluator;
+          expect(
+            evaluator(new Feature({type: 'world', 'hello-world': 123}))
+          ).to.equal(123);
         },
       },
       {
@@ -191,14 +204,32 @@ describe('ol/expr/gpu.js', () => {
         },
       },
       {
-        name: 'var (dynamic variable name)',
+        name: 'var (variable name as expression)',
         type: AnyType,
-        expression: ['var', ['concat', 'hello', 'World']],
-        expected: 'u_var_helloWorld',
+        expression: ['var', ['concat', 'hello-', 'world']],
+        expected: 'u_var_var3868214767',
         contextAssertion(context) {
-          expect(context.variables).to.have.property('helloWorld');
-          const evaluator = context.variables.helloWorld.evaluator;
-          expect(evaluator({helloWorld: 123})).to.equal(123);
+          expect(context.variables).to.have.property('var3868214767');
+          const evaluator = context.variables['var3868214767'].evaluator;
+          expect(evaluator({'hello-world': 123})).to.equal(123);
+        },
+      },
+      {
+        name: 'var (variable name as expression relying on properties)',
+        type: AnyType,
+        expression: ['var', ['concat', 'hello-', ['get', 'type']]],
+        expected: 'a_prop_var4130076217',
+        context: {
+          style: {
+            variables: {
+              'hello-world': 123,
+            },
+          },
+        },
+        contextAssertion(context) {
+          expect(context.properties).to.have.property('var4130076217');
+          const evaluator = context.properties['var4130076217'].evaluator;
+          expect(evaluator(new Feature({type: 'world'}))).to.equal(123);
         },
       },
       {
@@ -356,6 +387,18 @@ describe('ol/expr/gpu.js', () => {
         type: StringType,
         expression: ['concat', 'hello', 'World', '!'],
         expected: getStringNumberEquivalent('helloWorld!'),
+      },
+      {
+        name: 'concat (rely on variables, return value unknown)',
+        type: StringType,
+        expression: ['concat', 'hello-', ['var', 'type']],
+        expected: GLSL_UNDEFINED_VALUE,
+      },
+      {
+        name: 'concat (rely on properties, return value unknown)',
+        type: StringType,
+        expression: ['concat', 'hello-', ['get', 'type']],
+        expected: GLSL_UNDEFINED_VALUE,
       },
       {
         name: 'greater than',

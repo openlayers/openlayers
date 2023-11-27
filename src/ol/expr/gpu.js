@@ -6,6 +6,7 @@ import {
   BooleanType,
   CallExpression,
   ColorType,
+  LiteralExpression,
   NoneType,
   NumberArrayType,
   NumberType,
@@ -19,12 +20,13 @@ import {
   typeName,
 } from './expression.js';
 import {GLSL_UNDEFINED_VALUE} from '../render/webgl/constants.js';
-import {Uniforms} from '../renderer/webgl/TileLayer.js';
-import {asArray} from '../color.js';
 import {
+  UNKNOWN_VALUE,
   compileExpression as compileExpressionCpu,
   newEvaluationContext as newEvaluationContextCpu,
 } from './cpu.js';
+import {Uniforms} from '../renderer/webgl/TileLayer.js';
+import {asArray} from '../color.js';
 
 /**
  * @param {string} operator Operator
@@ -138,15 +140,34 @@ export function uniformNameForVariable(variableName) {
 }
 
 /**
+ * Get the attribute name given a property name.
+ * @param {string} propertyName The property name.
+ * @param {boolean} inFragmentShader Whether the compilation targets a fragment shader
+ * @return {string} The attribute name.
+ */
+export function attributeNameForProperty(propertyName, inFragmentShader) {
+  const prefix = inFragmentShader ? 'v_prop_' : 'a_prop_';
+  return prefix + propertyName;
+}
+
+/**
+ * see https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
+ * @param {Object|string} input The hash input, either an object or string
+ * @return {string} Hash
+ */
+export function computeHash(input) {
+  const hash = JSON.stringify(input)
+    .split('')
+    .reduce((prev, curr) => (prev << 5) - prev + curr.charCodeAt(0), 0);
+  return (hash >>> 0).toString();
+}
+
+/**
  * @typedef {import('./expression.js').ParsingContext} ParsingContext
  */
 /**
  *
  * @typedef {import("./expression.js").Expression} Expression
- */
-/**
- *
- * @typedef {import("./expression.js").LiteralExpression} LiteralExpression
  */
 
 /**
@@ -254,14 +275,20 @@ function createCompiler(output) {
  * Will compile an expression on the CPU and return a value right away
  * @param {Expression} expression The expression
  * @param {number} expectedType Expected return type
+ * @param {Object} [properties] Properties used for evaluation
+ * @param {Object} [variables] Variables used for evaluation
  * @return {import("./expression.js").LiteralValue} Return value
  */
-function evaluateOnCpu(expression, expectedType) {
+function evaluateOnCpu(expression, expectedType, properties, variables) {
   const parsingContext = newParsingContext();
   const compiled = compileExpressionCpu(expression, parsingContext);
   const evalContext = newEvaluationContextCpu();
-  evalContext.properties = {};
-  evalContext.resolution = 1;
+  if (properties) {
+    evalContext.properties = properties;
+  }
+  if (variables) {
+    evalContext.variables = variables;
+  }
   return compiled(evalContext);
 }
 
@@ -269,49 +296,8 @@ function evaluateOnCpu(expression, expectedType) {
  * @type {Object<string, Compiler>}
  */
 const compilers = {
-  [Ops.Get]: (context, expression, type) => {
-    const nameArg = expression.args[0];
-    const propName = /** @type {string} */ (evaluateOnCpu(nameArg, StringType));
-    const isExisting = propName in context.properties;
-    if (!isExisting) {
-      /** @type {CompilationContextPropertyEvaluator} */
-      let evaluator;
-      if (expression.type === StringType) {
-        evaluator = (feature) => {
-          const value = feature.get(propName);
-          if (value === undefined || value === null) {
-            return GLSL_UNDEFINED_VALUE;
-          }
-          return getStringNumberEquivalent(value);
-        };
-      } else if (expression.type === ColorType) {
-        evaluator = (feature) => {
-          const value = feature.get(propName);
-          if (value === undefined || value === null) {
-            return GLSL_UNDEFINED_VALUE;
-          }
-          return packColor([...asArray(value)]);
-        };
-      } else if (expression.type === BooleanType) {
-        evaluator = (feature) => {
-          const value = feature.get(propName);
-          if (value === undefined || value === null) {
-            return GLSL_UNDEFINED_VALUE;
-          }
-          return value ? 1.0 : 0.0;
-        };
-      } else {
-        evaluator = (feature) => feature.get(propName) ?? GLSL_UNDEFINED_VALUE;
-      }
-      context.properties[propName] = {
-        name: propName,
-        type: expression.type,
-        evaluator,
-      };
-    }
-    const prefix = context.inFragmentShader ? 'v_prop_' : 'a_prop_';
-    return prefix + propName;
-  },
+  [Ops.Get]: compileGet,
+  [Ops.Var]: compileVar,
   [Ops.GeometryType]: (context, expression, type) => {
     const propName = 'geometryType';
     const isExisting = propName in context.properties;
@@ -326,51 +312,6 @@ const compilers = {
     }
     const prefix = context.inFragmentShader ? 'v_prop_' : 'a_prop_';
     return prefix + propName;
-  },
-  [Ops.Var]: (context, expression, type) => {
-    const nameArg = expression.args[0];
-    const varName = /** @type {string} */ (evaluateOnCpu(nameArg, StringType));
-    const isExisting = varName in context.variables;
-    if (!isExisting) {
-      /** @type {CompilationContextVariableEvaluator} */
-      let evaluator;
-      if (expression.type === StringType) {
-        evaluator = (variables) => {
-          const value = variables[varName];
-          if (value === undefined || value === null) {
-            return GLSL_UNDEFINED_VALUE;
-          }
-          return getStringNumberEquivalent(/** @type {string} */ value);
-        };
-      } else if (expression.type === ColorType) {
-        evaluator = (variables) => {
-          const value = variables[varName];
-          if (value === undefined || value === null) {
-            return GLSL_UNDEFINED_VALUE;
-          }
-          return packColor([
-            ...asArray(/** @type {string|Array<number>} */ value),
-          ]);
-        };
-      } else if (expression.type === BooleanType) {
-        evaluator = (variables) => {
-          const value = variables[varName];
-          if (value === undefined || value === null) {
-            return GLSL_UNDEFINED_VALUE;
-          }
-          return /** @type {boolean} */ (value) ? 1.0 : 0.0;
-        };
-      } else {
-        evaluator = (variables) =>
-          /** @type {number} */ (variables[varName]) ?? GLSL_UNDEFINED_VALUE;
-      }
-      context.variables[varName] = {
-        name: varName,
-        type: expression.type,
-        evaluator,
-      };
-    }
-    return uniformNameForVariable(varName);
   },
   [Ops.Resolution]: () => 'u_resolution',
   [Ops.Zoom]: () => 'u_zoom',
@@ -428,7 +369,9 @@ const compilers = {
     const result = /** @type {string} */ (
       evaluateOnCpu(expression, StringType)
     );
-    return stringToGlsl(result);
+    return result === UNKNOWN_VALUE
+      ? numberToGlsl(GLSL_UNDEFINED_VALUE)
+      : stringToGlsl(result);
   },
   [Ops.Match]: createCompiler((compiledArgs) => {
     const input = compiledArgs[0];
@@ -561,6 +504,230 @@ ${ifBlocks}
   // Ops.Number
   // Ops.String
 };
+
+/**
+ * @type {Compiler}
+ */
+function compileGet(context, expression, type) {
+  const nameArg = expression.args[0];
+  const isNameLiteral = nameArg instanceof LiteralExpression;
+  const propName = isNameLiteral
+    ? /** @type {string} */ (nameArg.value)
+    : `get${computeHash(nameArg)}`;
+
+  // property is already defined
+  if (propName in context.properties) {
+    return attributeNameForProperty(propName, context.inFragmentShader);
+  }
+
+  /** @type {CompilationContextPropertyEvaluator} */
+  let evaluator;
+  if (expression.type === StringType) {
+    evaluator = (feature) => {
+      const name = isNameLiteral
+        ? propName
+        : /** @type {string} */ (
+            evaluateOnCpu(nameArg, StringType, feature.getPropertiesInternal())
+          );
+      const value = feature.get(name);
+      if (value === undefined || value === null) {
+        return GLSL_UNDEFINED_VALUE;
+      }
+      return getStringNumberEquivalent(value);
+    };
+  } else if (expression.type === ColorType) {
+    evaluator = (feature) => {
+      const name = isNameLiteral
+        ? propName
+        : /** @type {string} */ (
+            evaluateOnCpu(nameArg, StringType, feature.getPropertiesInternal())
+          );
+      const value = feature.get(name);
+      if (value === undefined || value === null) {
+        return GLSL_UNDEFINED_VALUE;
+      }
+      return packColor([...asArray(value)]);
+    };
+  } else if (expression.type === BooleanType) {
+    evaluator = (feature) => {
+      const name = isNameLiteral
+        ? propName
+        : /** @type {string} */ (
+            evaluateOnCpu(nameArg, StringType, feature.getPropertiesInternal())
+          );
+      const value = feature.get(name);
+      if (value === undefined || value === null) {
+        return GLSL_UNDEFINED_VALUE;
+      }
+      return value ? 1.0 : 0.0;
+    };
+  } else {
+    evaluator = (feature) => {
+      const name = isNameLiteral
+        ? propName
+        : /** @type {string} */ (
+            evaluateOnCpu(nameArg, StringType, feature.getPropertiesInternal())
+          );
+      return feature.get(name) ?? GLSL_UNDEFINED_VALUE;
+    };
+  }
+  context.properties[propName] = {
+    name: propName,
+    type: expression.type,
+    evaluator,
+  };
+  return attributeNameForProperty(propName, context.inFragmentShader);
+}
+
+/**
+ * @type {Compiler}
+ */
+function compileVar(context, expression, type) {
+  const nameArg = expression.args[0];
+  const isNameLiteral = nameArg instanceof LiteralExpression;
+  const varName = isNameLiteral
+    ? /** @type {string} */ (nameArg.value)
+    : `var${computeHash(nameArg)}`;
+
+  // the variable is already defined
+  if (varName in context.variables) {
+    return uniformNameForVariable(varName);
+  }
+
+  if (!isNameLiteral && nameArg.reliesOnProperties) {
+    const variables = context?.style?.variables || undefined;
+    /** @type {CompilationContextPropertyEvaluator} */
+    let evaluator;
+    if (expression.type === StringType) {
+      evaluator = (feature) => {
+        const name = /** @type {string} */ (
+          evaluateOnCpu(
+            nameArg,
+            StringType,
+            feature.getPropertiesInternal(),
+            variables
+          )
+        );
+        const value = variables?.[name];
+        if (value === undefined || value === null) {
+          return GLSL_UNDEFINED_VALUE;
+        }
+        return getStringNumberEquivalent(/** @type {string} */ (value));
+      };
+    } else if (expression.type === ColorType) {
+      evaluator = (feature) => {
+        const name = /** @type {string} */ (
+          evaluateOnCpu(
+            nameArg,
+            StringType,
+            feature.getPropertiesInternal(),
+            variables
+          )
+        );
+        const value = variables?.[name];
+        if (value === undefined || value === null) {
+          return GLSL_UNDEFINED_VALUE;
+        }
+        return packColor([
+          ...asArray(/** @type {string|import("../color.js").Color} */ (value)),
+        ]);
+      };
+    } else if (expression.type === BooleanType) {
+      evaluator = (feature) => {
+        const name = /** @type {string} */ (
+          evaluateOnCpu(
+            nameArg,
+            StringType,
+            feature.getPropertiesInternal(),
+            variables
+          )
+        );
+        const value = variables?.[name];
+        if (value === undefined || value === null) {
+          return GLSL_UNDEFINED_VALUE;
+        }
+        return value ? 1.0 : 0.0;
+      };
+    } else {
+      evaluator = (feature) => {
+        const name = /** @type {string} */ (
+          evaluateOnCpu(
+            nameArg,
+            StringType,
+            feature.getPropertiesInternal(),
+            variables
+          )
+        );
+        return variables?.[name] ?? GLSL_UNDEFINED_VALUE;
+      };
+    }
+    context.properties[varName] = {
+      name: varName,
+      type: expression.type,
+      evaluator,
+    };
+    return attributeNameForProperty(varName, context.inFragmentShader);
+  }
+
+  /** @type {CompilationContextVariableEvaluator} */
+  let evaluator;
+  if (expression.type === StringType) {
+    evaluator = (variables) => {
+      const name = isNameLiteral
+        ? varName
+        : /** @type {string} */ (
+            evaluateOnCpu(nameArg, StringType, undefined, variables)
+          );
+      const value = variables[name];
+      if (value === undefined || value === null) {
+        return GLSL_UNDEFINED_VALUE;
+      }
+      return getStringNumberEquivalent(/** @type {string} */ value);
+    };
+  } else if (expression.type === ColorType) {
+    evaluator = (variables) => {
+      const name = isNameLiteral
+        ? varName
+        : /** @type {string} */ (
+            evaluateOnCpu(nameArg, StringType, undefined, variables)
+          );
+      const value = variables[name];
+      if (value === undefined || value === null) {
+        return GLSL_UNDEFINED_VALUE;
+      }
+      return packColor([...asArray(/** @type {string|Array<number>} */ value)]);
+    };
+  } else if (expression.type === BooleanType) {
+    evaluator = (variables) => {
+      const name = isNameLiteral
+        ? varName
+        : /** @type {string} */ (
+            evaluateOnCpu(nameArg, StringType, undefined, variables)
+          );
+      const value = variables[name];
+      if (value === undefined || value === null) {
+        return GLSL_UNDEFINED_VALUE;
+      }
+      return /** @type {boolean} */ (value) ? 1.0 : 0.0;
+    };
+  } else {
+    evaluator = (variables) => {
+      const name = isNameLiteral
+        ? varName
+        : /** @type {string} */ (
+            evaluateOnCpu(nameArg, StringType, undefined, variables)
+          );
+      return /** @type {number} */ (variables[name]) ?? GLSL_UNDEFINED_VALUE;
+    };
+  }
+  context.variables[varName] = {
+    name: varName,
+    type: expression.type,
+    evaluator,
+  };
+
+  return uniformNameForVariable(varName);
+}
 
 /**
  * @param {Expression} expression The expression.

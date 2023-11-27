@@ -15,6 +15,7 @@ import {
   UNPACK_COLOR_FN,
   arrayToGlsl,
   buildExpression,
+  computeHash,
   stringToGlsl,
   uniformNameForVariable,
 } from '../expr/gpu.js';
@@ -62,18 +63,6 @@ function getGlslTypeFromType(type) {
     return /** @type {'vec2'|'vec3'|'vec4'} */ (`vec${size}`);
   }
   return 'float';
-}
-
-/**
- * see https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
- * @param {Object|string} input The hash input, either an object or string
- * @return {string} Hash
- */
-export function computeHash(input) {
-  const hash = JSON.stringify(input)
-    .split('')
-    .reduce((prev, curr) => (prev << 5) - prev + curr.charCodeAt(0), 0);
-  return (hash >>> 0).toString();
 }
 
 /**

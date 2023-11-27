@@ -197,6 +197,20 @@ export class LiteralExpression {
   }
 }
 
+/**
+ * @param {Expression} expr Expression
+ * @return {boolean} Whether the expression relies on properties
+ */
+function checkReliesOnProperties(expr) {
+  if (expr instanceof LiteralExpression) {
+    return false;
+  }
+  if (expr.reliesOnProperties) {
+    return true;
+  }
+  return expr.args.some(checkReliesOnProperties);
+}
+
 export class CallExpression {
   /**
    * @param {number} type The return type.
@@ -207,6 +221,8 @@ export class CallExpression {
     this.type = type;
     this.operator = operator;
     this.args = args;
+    this.reliesOnProperties =
+      operator === 'get' || args.some(checkReliesOnProperties);
   }
 }
 
