@@ -62,6 +62,11 @@ export class VectorSourceEvent extends Event {
 }
 
 /***
+ * @template {import("../Feature.js").FeatureLike} [T=import("../Feature.js").default]
+ * @typedef {T extends RenderFeature ? T|Array<T> : T} FeatureClassOrArrayOfRenderFeatures
+ */
+
+/***
  * @template Return
  * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
  *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent, Return> &
@@ -275,7 +280,7 @@ class VectorSource extends Source {
     /**
      * A lookup of features by id (the return from feature.getId()).
      * @private
-     * @type {!Object<string, FeatureClass|Array<RenderFeature>>}
+     * @type {!Object<string, import('../Feature.js').FeatureLike|Array<import('../Feature.js').FeatureLike>>}
      */
     this.idIndex_ = {};
 
@@ -860,12 +865,16 @@ class VectorSource extends Source {
    * `source.getFeatureById(2)` will return a feature with id `'2'` or `2`.
    *
    * @param {string|number} id Feature identifier.
-   * @return {FeatureClass|Array<RenderFeature>|null} The feature (or `null` if not found).
+   * @return {FeatureClassOrArrayOfRenderFeatures<FeatureClass>|null} The feature (or `null` if not found).
    * @api
    */
   getFeatureById(id) {
     const feature = this.idIndex_[id.toString()];
-    return feature !== undefined ? feature : null;
+    return feature !== undefined
+      ? /** @type {FeatureClassOrArrayOfRenderFeatures<FeatureClass>} */ (
+          feature
+        )
+      : null;
   }
 
   /**
