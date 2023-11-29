@@ -7,6 +7,10 @@ docs: >
   used to manipulate the WebGL context before and after rendering.  In this case, the 
   <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/scissor"><code>gl.scissor()</code></a>
   method is called to clip the top layer based on the position of a slider.
+  <p><b>Note: </b>This example is minimalist and works as there is only one WebGL layer rendered. That might works as well if the layers are drawn to different contexts. This does not apply to
+    to several layers drawn to a single context, such as set with the 'className' property to 'canvas3d' on multiple layers. In such case, it's would be wise 
+    adapt your code using 'gl.clear' and other tweaks to the prerender/postrender event.
+  </p>
 tags: "swipe, webgl"
 cloak:
   - key: get_your_own_D6rA4zTHduk6KOKTXzGB
