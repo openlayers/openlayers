@@ -66,6 +66,16 @@ describe('ol.format.WMTSCapabilities', function () {
       expect(wgs84Bbox[1]).to.be.eql(-90);
       expect(wgs84Bbox[3]).to.be.eql(90.0);
 
+      const bbox = layer.BoundingBox;
+      expect(bbox).to.be.an('array');
+      expect(bbox[0].extent).to.be.an('array');
+      expect(bbox[0].extent[0]).to.be.eql(-180);
+      expect(bbox[0].extent[2]).to.be.eql(180);
+      expect(bbox[0].extent[1]).to.be.eql(-90);
+      expect(bbox[0].extent[3]).to.be.eql(90.0);
+      expect(bbox[0].crs).to.be.eql('urn:ogc:def:crs:CRS::84');
+      expect(bbox[1].crs).to.be.eql(null);
+
       expect(layer.ResourceURL).to.be.an('array');
       expect(layer.ResourceURL).to.have.length(2);
       expect(layer.ResourceURL[0].format).to.be.eql('image/png');
