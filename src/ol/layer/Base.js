@@ -16,7 +16,8 @@ import {clamp} from '../math.js';
 
 /**
  * @typedef {import("../ObjectEventType").Types|'change:extent'|'change:maxResolution'|'change:maxZoom'|
- *    'change:minResolution'|'change:minZoom'|'change:opacity'|'change:visible'|'change:zIndex'} BaseLayerObjectEventTypes
+ *    'change:minResolution'|'change:minZoom'|'change:opacity'|'change:visible'|'change:zIndex'|
+ *    'change:source'} BaseLayerObjectEventTypes
  */
 
 /***
