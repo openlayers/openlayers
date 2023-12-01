@@ -4,7 +4,7 @@
 
 /**
  * Removes all properties from an object.
- * @param {Object} object The object to clear.
+ * @param {Object<string, unknown>} object The object to clear.
  */
 export function clear(object) {
   for (const property in object) {

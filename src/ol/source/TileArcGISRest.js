@@ -3,8 +3,8 @@
  */
 
 import TileImage from './TileImage.js';
-import {appendParams} from '../uri.js';
 import {createEmpty} from '../extent.js';
+import {getRequestUrl} from './arcgisRest.js';
 import {modulo} from '../math.js';
 import {scale as scaleSize, toSize} from '../size.js';
 import {hash as tileCoordHash} from '../tilecoord.js';
@@ -154,23 +154,6 @@ class TileArcGISRest extends TileImage {
     if (!urls) {
       return undefined;
     }
-
-    // ArcGIS Server only wants the numeric portion of the projection ID.
-    // (if there is no numeric portion the entire projection code must
-    // form a valid ArcGIS SpatialReference definition).
-    const srid = projection
-      .getCode()
-      .split(/:(?=\d+$)/)
-      .pop();
-
-    params['SIZE'] = tileSize[0] + ',' + tileSize[1];
-    params['BBOX'] = tileExtent.join(',');
-    params['BBOXSR'] = srid;
-    params['IMAGESR'] = srid;
-    params['DPI'] = Math.round(
-      params['DPI'] ? params['DPI'] * pixelRatio : 90 * pixelRatio
-    );
-
     let url;
     if (urls.length == 1) {
       url = urls[0];
@@ -179,10 +162,16 @@ class TileArcGISRest extends TileImage {
       url = urls[index];
     }
 
-    const modifiedUrl = url
-      .replace(/MapServer\/?$/, 'MapServer/export')
-      .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
-    return appendParams(modifiedUrl, params);
+    return getRequestUrl(
+      url,
+      tileExtent,
+      (
+        this.tileGrid || this.getTileGridForProjection(projection)
+      ).getResolution(tileCoord[0]),
+      pixelRatio,
+      projection,
+      params
+    );
   }
 
   /**

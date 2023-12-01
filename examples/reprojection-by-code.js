@@ -107,7 +107,7 @@ function search(query) {
           if (result) {
             const code = result['code'];
             const name = result['name'];
-            const proj4def = result['proj4'];
+            const proj4def = result['wkt'];
             const bbox = result['bbox'];
             if (
               code &&

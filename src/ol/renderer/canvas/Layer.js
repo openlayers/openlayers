@@ -107,7 +107,7 @@ class CanvasLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * @param {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} image Image.
+   * @param {import('../../DataTile.js').ImageLike} image Image.
    * @param {number} col The column index.
    * @param {number} row The row index.
    * @return {Uint8ClampedArray|null} The image data.
@@ -177,6 +177,8 @@ class CanvasLayerRenderer extends LayerRenderer {
       this.container = null;
       this.context = null;
       this.containerReused = false;
+    } else if (this.container) {
+      this.container.style.backgroundColor = null;
     }
     if (!this.container) {
       container = document.createElement('div');

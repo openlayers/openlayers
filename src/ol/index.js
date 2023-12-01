@@ -2,14 +2,13 @@
  * @module ol
  */
 
-export {default as AssertionError} from './AssertionError.js';
 export {default as Collection} from './Collection.js';
 export {default as Disposable} from './Disposable.js';
 export {default as Feature} from './Feature.js';
 export {default as Geolocation} from './Geolocation.js';
 export {default as Graticule} from './layer/Graticule.js';
 export {default as Image} from './Image.js';
-export {default as ImageBase} from './ImageBase.js';
+export {default as ImageWrapper} from './Image.js';
 export {default as ImageCanvas} from './ImageCanvas.js';
 export {default as ImageTile} from './ImageTile.js';
 export {default as Kinetic} from './Kinetic.js';

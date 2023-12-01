@@ -8,7 +8,6 @@ import {createFromTileUrlFunctions} from '../tileurlfunction.js';
 import {createOrUpdate} from '../tilecoord.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
-import {jsonp as requestJSONP} from '../net.js';
 
 /**
  * @param {import('../tilecoord.js').TileCoord} tileCoord Tile coord.
@@ -69,6 +68,9 @@ const TOS_ATTRIBUTION =
  * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
  * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
+ * @property {boolean} [placeholderTiles] Whether to show BingMaps placeholder tiles when zoomed past the maximum level provided in an area. When `false`, requests beyond
+ * the maximum zoom level will return no tile. When `true`, the placeholder tile will be returned. When not set, the default behaviour of the imagery set takes place,
+ * which is unique for each imagery set in BingMaps.
  */
 
 /**
@@ -165,6 +167,12 @@ class BingMaps extends TileImage {
      */
     this.imagerySet_ = options.imagerySet;
 
+    /**
+     * @private
+     * @type {boolean|undefined}
+     */
+    this.placeholderTiles_ = options.placeholderTiles;
+
     const url =
       'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
       this.imagerySet_ +
@@ -173,12 +181,9 @@ class BingMaps extends TileImage {
       '&c=' +
       this.culture_;
 
-    requestJSONP(
-      url,
-      this.handleImageryMetadataResponse.bind(this),
-      undefined,
-      'jsonp'
-    );
+    fetch(url)
+      .then((response) => response.json())
+      .then((json) => this.handleImageryMetadataResponse(json));
   }
 
   /**
@@ -237,6 +242,7 @@ class BingMaps extends TileImage {
 
     const culture = this.culture_;
     const hidpi = this.hidpi_;
+    const placeholderTiles = this.placeholderTiles_;
     this.tileUrlFunction = createFromTileUrlFunctions(
       resource.imageUrlSubdomains.map(function (subdomain) {
         /** @type {import('../tilecoord.js').TileCoord} */
@@ -261,11 +267,20 @@ class BingMaps extends TileImage {
               tileCoord[2],
               quadKeyTileCoord
             );
-            let url = imageUrl;
+            const url = new URL(
+              imageUrl.replace('{quadkey}', quadKey(quadKeyTileCoord))
+            );
+            const params = url.searchParams;
             if (hidpi) {
-              url += '&dpi=d1&device=mobile';
+              params.set('dpi', 'd1');
+              params.set('device', 'mobile');
             }
-            return url.replace('{quadkey}', quadKey(quadKeyTileCoord));
+            if (placeholderTiles === true) {
+              params.delete('n');
+            } else if (placeholderTiles === false) {
+              params.set('n', 'z');
+            }
+            return url.toString();
           }
         );
       })

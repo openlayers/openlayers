@@ -71,7 +71,15 @@ import {getStrideForLayout} from '../geom/SimpleGeometry.js';
  * boolean to indicate whether the drawing can be finished. Not used when drawing
  * POINT or MULTI_POINT geometries.
  * @property {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike} [style]
- * Style for sketch features.
+ * Style for sketch features. The draw interaction can have up to three sketch features, depending on the mode.
+ * It will always contain a feature with a `Point` geometry that corresponds to the current cursor position.
+ * If the mode is `LineString` or `Polygon`, and there is at least one drawn point, it will also contain a feature with
+ * a `LineString` geometry that corresponds to the line between the already drawn points and the current cursor position.
+ * If the mode is `Polygon`, and there is at least one drawn point, it will also contain a feature with a `Polygon`
+ * geometry that corresponds to the polygon between the already drawn points and the current cursor position
+ * (note that this polygon has only two points if only one point is drawn).
+ * If the mode is `Circle`, and there is one point drawn, it will also contain a feature with a `Circle` geometry whose
+ * center is the drawn point and the radius is determined by the distance between the drawn point and the cursor.
  * @property {GeometryFunction} [geometryFunction]
  * Function that is called when a geometry's coordinates are updated.
  * @property {string} [geometryName] Geometry name to use for features created
@@ -625,7 +633,7 @@ class Draw extends PointerInteraction {
     this.downPx_ = null;
 
     /**
-     * @type {?}
+     * @type {ReturnType<typeof setTimeout>}
      * @private
      */
     this.downTimeout_;
@@ -1554,6 +1562,7 @@ class Draw extends PointerInteraction {
   /**
    * Add a new coordinate to the drawing.
    * @param {!PointCoordType} coordinate Coordinate
+   * @return {Feature<import("../geom/SimpleGeometry.js").default>} The sketch feature.
    * @private
    */
   addToDrawing_(coordinate) {
@@ -1592,8 +1601,9 @@ class Draw extends PointerInteraction {
     this.createOrUpdateSketchPoint_(coordinate.slice());
     this.updateSketchFeatures_();
     if (done) {
-      this.finishDrawing();
+      return this.finishDrawing();
     }
+    return this.sketchFeature_;
   }
 
   /**
@@ -1658,12 +1668,13 @@ class Draw extends PointerInteraction {
    * Stop drawing and add the sketch feature to the target layer.
    * The {@link module:ol/interaction/Draw~DrawEventType.DRAWEND} event is
    * dispatched before inserting the feature.
+   * @return {Feature<import("../geom/SimpleGeometry.js").default>|null} The drawn feature.
    * @api
    */
   finishDrawing() {
     const sketchFeature = this.abortDrawing_();
     if (!sketchFeature) {
-      return;
+      return null;
     }
     let coordinates = this.sketchCoords_;
     const geometry = sketchFeature.getGeometry();
@@ -1704,6 +1715,7 @@ class Draw extends PointerInteraction {
     if (this.source_) {
       this.source_.addFeature(sketchFeature);
     }
+    return sketchFeature;
   }
 
   /**
@@ -1775,7 +1787,7 @@ class Draw extends PointerInteraction {
 
     const ending = coordinates[coordinates.length - 1];
     // Duplicate last coordinate for sketch drawing (cursor position)
-    this.addToDrawing_(ending);
+    this.sketchFeature_ = this.addToDrawing_(ending);
     this.modifyDrawing_(ending);
   }
 

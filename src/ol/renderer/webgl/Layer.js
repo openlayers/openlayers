@@ -167,7 +167,11 @@ class WebGLLayerRenderer extends LayerRenderer {
       const canvasCacheKey =
         'map/' + frameState.mapId + '/group/' + groupNumber;
 
-      if (!this.helper || !this.helper.canvasCacheKeyMatches(canvasCacheKey)) {
+      if (
+        !this.helper ||
+        !this.helper.canvasCacheKeyMatches(canvasCacheKey) ||
+        this.helper.needsToBeRecreated()
+      ) {
         this.removeHelper();
 
         this.helper = new WebGLHelper({

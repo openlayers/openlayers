@@ -63,7 +63,11 @@ function parse(source) {
 
   source = escapeUnderscoresAndTildes(source);
 
-  result = marked(source, {renderer: markedRenderer})
+  result = marked(source, {
+    renderer: markedRenderer,
+    headerIds: false,
+    mangle: false,
+  })
     .replace(/\s+$/, '')
     .replace(/&#39;/g, "'");
 

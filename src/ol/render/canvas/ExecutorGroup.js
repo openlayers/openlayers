@@ -3,6 +3,7 @@
  */
 
 import Executor from './Executor.js';
+import {ascending} from '../../array.js';
 import {buffer, createEmpty, extendCoordinate} from '../../extent.js';
 import {
   compose as composeTransform,
@@ -10,7 +11,6 @@ import {
 } from '../../transform.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {isEmpty} from '../../obj.js';
-import {numberSafeCompareFunction} from '../../array.js';
 import {transform2D} from '../../geom/flat/transform.js';
 
 /**
@@ -252,7 +252,7 @@ class ExecutorGroup {
 
     /** @type {Array<number>} */
     const zs = Object.keys(this.executorsByZIndex_).map(Number);
-    zs.sort(numberSafeCompareFunction);
+    zs.sort(ascending);
 
     let i, j, executors, executor, result;
     for (i = zs.length - 1; i >= 0; --i) {
@@ -324,7 +324,7 @@ class ExecutorGroup {
   ) {
     /** @type {Array<number>} */
     const zs = Object.keys(this.executorsByZIndex_).map(Number);
-    zs.sort(numberSafeCompareFunction);
+    zs.sort(ascending);
 
     // setup clipping so that the parts of over-simplified geometries are not
     // visible outside the current extent when panning

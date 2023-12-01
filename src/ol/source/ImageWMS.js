@@ -2,35 +2,11 @@
  * @module ol/source/ImageWMS
  */
 
-import EventType from '../events/EventType.js';
 import ImageSource, {defaultImageLoadFunction} from './Image.js';
-import ImageWrapper from '../Image.js';
-import {DEFAULT_VERSION} from './wms.js';
-import {appendParams} from '../uri.js';
-import {assert} from '../asserts.js';
 import {calculateSourceResolution} from '../reproj.js';
-import {ceil, floor, round} from '../math.js';
-import {compareVersions} from '../string.js';
-import {
-  containsExtent,
-  getCenter,
-  getForViewAndSize,
-  getHeight,
-  getWidth,
-} from '../extent.js';
+import {createLoader, getFeatureInfoUrl, getLegendUrl} from './wms.js';
+import {decode} from '../Image.js';
 import {get as getProjection, transform} from '../proj.js';
-
-/**
- * Number of decimal digits to consider in integer values when rounding.
- * @type {number}
- */
-const DECIMALS = 4;
-
-/**
- * @const
- * @type {import("../size.js").Size}
- */
-const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
 
 /**
  * @typedef {Object} Options
@@ -52,8 +28,7 @@ const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
  * and `CRS` (`SRS` for WMS version < 1.3.0) will be set dynamically.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {number} [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport, `2` means
- * twice the width and height of the map viewport, and so on. Must be `1` or
- * higher.
+ * twice the width and height of the map viewport, and so on. Must be `1` or higher.
  * @property {Array<number>} [resolutions] Resolutions.
  * If specified, requests will be made for these resolutions only.
  * @property {string} [url] WMS service URL.
@@ -106,14 +81,7 @@ class ImageWMS extends ImageSource {
      * @private
      * @type {!Object}
      */
-    this.params_ = Object.assign({}, options.params);
-
-    /**
-     * @private
-     * @type {boolean}
-     */
-    this.v13_ = true;
-    this.updateV13_();
+    this.params_ = options.params;
 
     /**
      * @private
@@ -129,18 +97,6 @@ class ImageWMS extends ImageSource {
 
     /**
      * @private
-     * @type {import("../Image.js").default}
-     */
-    this.image_ = null;
-
-    /**
-     * @private
-     * @type {import("../size.js").Size}
-     */
-    this.imageSize_ = [0, 0];
-
-    /**
-     * @private
      * @type {number}
      */
     this.renderedRevision_ = 0;
@@ -150,6 +106,12 @@ class ImageWMS extends ImageSource {
      * @type {number}
      */
     this.ratio_ = options.ratio !== undefined ? options.ratio : 1.5;
+
+    /**
+     * @private
+     * @type {import("../proj/Projection.js").default}
+     */
+    this.loaderProjection_ = null;
   }
 
   /**
@@ -167,9 +129,6 @@ class ImageWMS extends ImageSource {
    * @api
    */
   getFeatureInfoUrl(coordinate, resolution, projection, params) {
-    if (this.url_ === undefined) {
-      return undefined;
-    }
     const projectionObj = getProjection(projection);
     const sourceProjectionObj = this.getProjection();
 
@@ -183,35 +142,15 @@ class ImageWMS extends ImageSource {
       coordinate = transform(coordinate, projectionObj, sourceProjectionObj);
     }
 
-    const extent = getForViewAndSize(
-      coordinate,
-      resolution,
-      0,
-      GETFEATUREINFO_IMAGE_SIZE
-    );
-
-    const baseParams = {
-      'SERVICE': 'WMS',
-      'VERSION': DEFAULT_VERSION,
-      'REQUEST': 'GetFeatureInfo',
-      'FORMAT': 'image/png',
-      'TRANSPARENT': true,
-      'QUERY_LAYERS': this.params_['LAYERS'],
+    const options = {
+      url: this.url_,
+      params: {
+        ...this.params_,
+        ...params,
+      },
+      projection: sourceProjectionObj || projectionObj,
     };
-    Object.assign(baseParams, this.params_, params);
-
-    const x = floor((coordinate[0] - extent[0]) / resolution, DECIMALS);
-    const y = floor((extent[3] - coordinate[1]) / resolution, DECIMALS);
-    baseParams[this.v13_ ? 'I' : 'X'] = x;
-    baseParams[this.v13_ ? 'J' : 'Y'] = y;
-
-    return this.getRequestUrl_(
-      extent,
-      GETFEATUREINFO_IMAGE_SIZE,
-      1,
-      sourceProjectionObj || projectionObj,
-      baseParams
-    );
+    return getFeatureInfoUrl(options, coordinate, resolution);
   }
 
   /**
@@ -229,37 +168,16 @@ class ImageWMS extends ImageSource {
    * @api
    */
   getLegendUrl(resolution, params) {
-    if (this.url_ === undefined) {
-      return undefined;
-    }
-
-    const baseParams = {
-      'SERVICE': 'WMS',
-      'VERSION': DEFAULT_VERSION,
-      'REQUEST': 'GetLegendGraphic',
-      'FORMAT': 'image/png',
-    };
-
-    if (params === undefined || params['LAYER'] === undefined) {
-      const layers = this.params_.LAYERS;
-      const isSingleLayer = !Array.isArray(layers) || layers.length === 1;
-      if (!isSingleLayer) {
-        return undefined;
-      }
-      baseParams['LAYER'] = layers;
-    }
-
-    if (resolution !== undefined) {
-      const mpu = this.getProjection()
-        ? this.getProjection().getMetersPerUnit()
-        : 1;
-      const pixelSize = 0.00028;
-      baseParams['SCALE'] = (resolution * mpu) / pixelSize;
-    }
-
-    Object.assign(baseParams, params);
-
-    return appendParams(/** @type {string} */ (this.url_), baseParams);
+    return getLegendUrl(
+      {
+        url: this.url_,
+        params: {
+          ...this.params_,
+          ...params,
+        },
+      },
+      resolution
+    );
   }
 
   /**
@@ -283,89 +201,26 @@ class ImageWMS extends ImageSource {
     if (this.url_ === undefined) {
       return null;
     }
-
-    resolution = this.findNearestResolution(resolution);
-
-    if (pixelRatio != 1 && (!this.hidpi_ || this.serverType_ === undefined)) {
-      pixelRatio = 1;
+    if (!this.loader || this.loaderProjection_ !== projection) {
+      // Lazily create loader to pick up the view projection and to allow `params` updates
+      this.loaderProjection_ = projection;
+      this.loader = createLoader({
+        crossOrigin: this.crossOrigin_,
+        params: this.params_,
+        projection: projection,
+        serverType: this.serverType_,
+        hidpi: this.hidpi_,
+        url: this.url_,
+        ratio: this.ratio_,
+        load: (image, src) => {
+          this.image.setImage(image);
+          this.imageLoadFunction_(this.image, src);
+          return decode(image);
+        },
+      });
     }
 
-    const imageResolution = resolution / pixelRatio;
-
-    const center = getCenter(extent);
-    const viewWidth = ceil(getWidth(extent) / imageResolution, DECIMALS);
-    const viewHeight = ceil(getHeight(extent) / imageResolution, DECIMALS);
-    const viewExtent = getForViewAndSize(center, imageResolution, 0, [
-      viewWidth,
-      viewHeight,
-    ]);
-    const requestWidth = ceil(
-      (this.ratio_ * getWidth(extent)) / imageResolution,
-      DECIMALS
-    );
-    const requestHeight = ceil(
-      (this.ratio_ * getHeight(extent)) / imageResolution,
-      DECIMALS
-    );
-    const requestExtent = getForViewAndSize(center, imageResolution, 0, [
-      requestWidth,
-      requestHeight,
-    ]);
-
-    const image = this.image_;
-    if (
-      image &&
-      this.renderedRevision_ == this.getRevision() &&
-      image.getResolution() == resolution &&
-      image.getPixelRatio() == pixelRatio &&
-      containsExtent(image.getExtent(), viewExtent)
-    ) {
-      return image;
-    }
-
-    const params = {
-      'SERVICE': 'WMS',
-      'VERSION': DEFAULT_VERSION,
-      'REQUEST': 'GetMap',
-      'FORMAT': 'image/png',
-      'TRANSPARENT': true,
-    };
-    Object.assign(params, this.params_);
-
-    this.imageSize_[0] = round(
-      getWidth(requestExtent) / imageResolution,
-      DECIMALS
-    );
-    this.imageSize_[1] = round(
-      getHeight(requestExtent) / imageResolution,
-      DECIMALS
-    );
-
-    const url = this.getRequestUrl_(
-      requestExtent,
-      this.imageSize_,
-      pixelRatio,
-      projection,
-      params
-    );
-
-    this.image_ = new ImageWrapper(
-      requestExtent,
-      resolution,
-      pixelRatio,
-      url,
-      this.crossOrigin_,
-      this.imageLoadFunction_
-    );
-
-    this.renderedRevision_ = this.getRevision();
-
-    this.image_.addEventListener(
-      EventType.CHANGE,
-      this.handleImageChange.bind(this)
-    );
-
-    return this.image_;
+    return super.getImageInternal(extent, resolution, pixelRatio, projection);
   }
 
   /**
@@ -375,62 +230,6 @@ class ImageWMS extends ImageSource {
    */
   getImageLoadFunction() {
     return this.imageLoadFunction_;
-  }
-
-  /**
-   * @param {import("../extent.js").Extent} extent Extent.
-   * @param {import("../size.js").Size} size Size.
-   * @param {number} pixelRatio Pixel ratio.
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @param {Object} params Params.
-   * @return {string} Request URL.
-   * @private
-   */
-  getRequestUrl_(extent, size, pixelRatio, projection, params) {
-    assert(this.url_ !== undefined, 9); // `url` must be configured or set using `#setUrl()`
-
-    params[this.v13_ ? 'CRS' : 'SRS'] = projection.getCode();
-
-    if (!('STYLES' in this.params_)) {
-      params['STYLES'] = '';
-    }
-
-    if (pixelRatio != 1) {
-      switch (this.serverType_) {
-        case 'geoserver':
-          const dpi = (90 * pixelRatio + 0.5) | 0;
-          if ('FORMAT_OPTIONS' in params) {
-            params['FORMAT_OPTIONS'] += ';dpi:' + dpi;
-          } else {
-            params['FORMAT_OPTIONS'] = 'dpi:' + dpi;
-          }
-          break;
-        case 'mapserver':
-          params['MAP_RESOLUTION'] = 90 * pixelRatio;
-          break;
-        case 'carmentaserver':
-        case 'qgis':
-          params['DPI'] = 90 * pixelRatio;
-          break;
-        default: // Unknown `serverType` configured
-          assert(false, 8);
-          break;
-      }
-    }
-
-    params['WIDTH'] = size[0];
-    params['HEIGHT'] = size[1];
-
-    const axisOrientation = projection.getAxisOrientation();
-    let bbox;
-    if (this.v13_ && axisOrientation.substr(0, 2) == 'ne') {
-      bbox = [extent[1], extent[0], extent[3], extent[2]];
-    } else {
-      bbox = extent;
-    }
-    params['BBOX'] = bbox.join(',');
-
-    return appendParams(/** @type {string} */ (this.url_), params);
   }
 
   /**
@@ -448,7 +247,6 @@ class ImageWMS extends ImageSource {
    * @api
    */
   setImageLoadFunction(imageLoadFunction) {
-    this.image_ = null;
     this.imageLoadFunction_ = imageLoadFunction;
     this.changed();
   }
@@ -461,7 +259,7 @@ class ImageWMS extends ImageSource {
   setUrl(url) {
     if (url != this.url_) {
       this.url_ = url;
-      this.image_ = null;
+      this.loader = null;
       this.changed();
     }
   }
@@ -473,17 +271,12 @@ class ImageWMS extends ImageSource {
    */
   updateParams(params) {
     Object.assign(this.params_, params);
-    this.updateV13_();
-    this.image_ = null;
     this.changed();
   }
 
-  /**
-   * @private
-   */
-  updateV13_() {
-    const version = this.params_['VERSION'] || DEFAULT_VERSION;
-    this.v13_ = compareVersions(version, '1.3') >= 0;
+  changed() {
+    this.image = null;
+    super.changed();
   }
 }
 

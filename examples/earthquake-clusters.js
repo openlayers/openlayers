@@ -9,7 +9,7 @@ import {
   Style,
   Text,
 } from '../src/ol/style.js';
-import {Cluster, Stamen, Vector as VectorSource} from '../src/ol/source.js';
+import {Cluster, StadiaMaps, Vector as VectorSource} from '../src/ol/source.js';
 import {
   Select,
   defaults as defaultInteractions,
@@ -46,7 +46,7 @@ function createEarthquakeStyle(feature) {
   return new Style({
     geometry: feature.getGeometry(),
     image: new RegularShape({
-      radius1: radius,
+      radius: radius,
       radius2: 3,
       points: 5,
       angle: Math.PI,
@@ -137,8 +137,8 @@ vector = new VectorLayer({
 });
 
 const raster = new TileLayer({
-  source: new Stamen({
-    layer: 'toner',
+  source: new StadiaMaps({
+    layer: 'stamen_toner',
   }),
 });
 

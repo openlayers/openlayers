@@ -1,4 +1,5 @@
 import Feature from '../../../../../src/ol/Feature.js';
+import Icon from '../../../../../src/ol/style/Icon.js';
 import ImageStyle from '../../../../../src/ol/style/Image.js';
 import Layer from '../../../../../src/ol/layer/Layer.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
@@ -190,6 +191,86 @@ describe('ol.layer.Vector', function () {
         expect(features.length).to.equal(1);
         expect(features[0].get('name')).to.be('feature1');
         done();
+      });
+    });
+
+    it('detects zero opacity images', function (done) {
+      const source = new VectorSource({
+        features: [
+          new Feature({
+            geometry: new Point([-1000000, 0]),
+            name: 'feature1',
+          }),
+          new Feature({
+            geometry: new Point([1000000, 0]),
+            name: 'feature2',
+          }),
+        ],
+      });
+
+      const style = new Style({
+        image: new Icon({
+          src: 'spec/ol/data/dot.png',
+          opacity: 0,
+        }),
+      });
+
+      const layer = new VectorLayer({
+        source,
+        style,
+      });
+      map.addLayer(layer);
+
+      map.once('rendercomplete', () => {
+        const pixel = map.getPixelFromCoordinate([-1000000, 0]);
+
+        layer.getFeatures(pixel).then(function (features) {
+          expect(features.length).to.equal(1);
+          expect(features[0].get('name')).to.be('feature1');
+          done();
+        });
+      });
+    });
+
+    it('detects feature styles when layer style is null', function (done) {
+      const source = new VectorSource({
+        features: [
+          new Feature({
+            geometry: new Point([-1000000, 0]),
+            name: 'feature1',
+          }),
+          new Feature({
+            geometry: new Point([1000000, 0]),
+            name: 'feature2',
+          }),
+        ],
+      });
+
+      const style = new Style({
+        image: new Icon({
+          src: 'spec/ol/data/dot.png',
+          opacity: 0,
+        }),
+      });
+
+      source.forEachFeature((feature) => {
+        feature.setStyle(style);
+      });
+
+      const layer = new VectorLayer({
+        source,
+        style: null,
+      });
+      map.addLayer(layer);
+
+      map.once('rendercomplete', () => {
+        const pixel = map.getPixelFromCoordinate([-1000000, 0]);
+
+        layer.getFeatures(pixel).then(function (features) {
+          expect(features.length).to.equal(1);
+          expect(features[0].get('name')).to.be('feature1');
+          done();
+        });
       });
     });
 

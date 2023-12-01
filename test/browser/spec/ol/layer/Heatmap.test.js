@@ -96,13 +96,12 @@ describe('ol/layer/Heatmap', function () {
 
       const renderer = layer.getRenderer();
       renderer.worker_.addEventListener('message', function (event) {
-        if (!renderer.hitRenderInstructions_) {
+        if (!renderer.renderInstructions_) {
           return;
         }
         map.renderSync();
 
         let res;
-
         res = hitTest([0, 0]);
         expect(res).to.be(feature);
         res = hitTest([20, 0]);
@@ -111,7 +110,6 @@ describe('ol/layer/Heatmap', function () {
         expect(res).to.be(feature2);
         res = hitTest([0, 14]);
         expect(res).to.be(null);
-
         done();
       });
     });

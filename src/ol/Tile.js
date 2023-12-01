@@ -19,7 +19,7 @@ import {easeIn} from './easing.js';
  * error handling:
  *
  * ```js
- * import TileState from 'ol/TileState';
+ * import TileState from 'ol/TileState.js';
  *
  * source.setTileLoadFunction(function(tile, src) {
  *   const xhr = new XMLHttpRequest();
@@ -100,7 +100,7 @@ class Tile extends EventTarget {
      * An "interim" tile for this tile. The interim tile may be used while this
      * one is loading, for "smooth" transitions when changing params/dimensions
      * on the source.
-     * @type {Tile}
+     * @type {Tile|null}
      */
     this.interimTile = null;
 
@@ -163,11 +163,11 @@ class Tile extends EventTarget {
    * @return {!Tile} Best tile for rendering.
    */
   getInterimTile() {
-    if (!this.interimTile) {
+    let tile = this.interimTile;
+    if (!tile) {
       //empty chain
       return this;
     }
-    let tile = this.interimTile;
 
     // find the first loaded tile and return it. Since the chain is sorted in
     // decreasing order of creation time, there is no need to search the remainder
@@ -192,17 +192,13 @@ class Tile extends EventTarget {
    * that are no longer relevant.
    */
   refreshInterimChain() {
-    if (!this.interimTile) {
+    let tile = this.interimTile;
+    if (!tile) {
       return;
     }
 
-    let tile = this.interimTile;
-
-    /**
-     * @type {Tile}
-     */
+    /** @type {Tile} */
     let prev = this;
-
     do {
       if (tile.getState() == TileState.LOADED) {
         //we have a loaded tile, we can discard the rest of the list
@@ -210,7 +206,8 @@ class Tile extends EventTarget {
         //older than this tile (i.e. any LOADING tile following this entry in the chain)
         tile.interimTile = null;
         break;
-      } else if (tile.getState() == TileState.LOADING) {
+      }
+      if (tile.getState() == TileState.LOADING) {
         //keep this LOADING tile any loaded tiles later in the chain are
         //older than this tile, so we're still interested in the request
         prev = tile;

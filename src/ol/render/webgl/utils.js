@@ -5,6 +5,9 @@ import earcut from 'earcut';
 import {apply as applyTransform} from '../../transform.js';
 import {clamp} from '../../math.js';
 
+export const LINESTRING_ANGLE_COSINE_CUTOFF = 0.985;
+
+/** @type {Array<number>} */
 const tmpArray_ = [];
 
 /**
@@ -15,6 +18,13 @@ const tmpArray_ = [];
  */
 const bufferPositions_ = {vertexPosition: 0, indexPosition: 0};
 
+/**
+ * @param {Float32Array} buffer Buffer
+ * @param {number} pos Position
+ * @param {number} x X
+ * @param {number} y Y
+ * @param {number} index Index
+ */
 function writePointVertex(buffer, pos, x, y, index) {
   buffer[pos + 0] = x;
   buffer[pos + 1] = y;
@@ -27,7 +37,7 @@ function writePointVertex(buffer, pos, x, y, index) {
  * @param {number} elementIndex Index from which render instructions will be read.
  * @param {Float32Array} vertexBuffer Buffer in the form of a typed array.
  * @param {Uint32Array} indexBuffer Buffer in the form of a typed array.
- * @param {number} customAttributesCount Amount of custom attributes for each element.
+ * @param {number} customAttributesSize Amount of custom attributes for each element.
  * @param {BufferPositions} [bufferPositions] Buffer write positions; if not specified, positions will be set at 0.
  * @return {BufferPositions} New buffer positions where to write next
  * @property {number} vertexPosition New position in the vertex buffer where future writes should start.
@@ -39,20 +49,20 @@ export function writePointFeatureToBuffers(
   elementIndex,
   vertexBuffer,
   indexBuffer,
-  customAttributesCount,
+  customAttributesSize,
   bufferPositions
 ) {
   // This is for x, y and index
   const baseVertexAttrsCount = 3;
   const baseInstructionsCount = 2;
-  const stride = baseVertexAttrsCount + customAttributesCount;
+  const stride = baseVertexAttrsCount + customAttributesSize;
 
   const x = instructions[elementIndex + 0];
   const y = instructions[elementIndex + 1];
 
   // read custom numerical attributes on the feature
   const customAttrs = tmpArray_;
-  customAttrs.length = customAttributesCount;
+  customAttrs.length = customAttributesSize;
   for (let i = 0; i < customAttrs.length; i++) {
     customAttrs[i] = instructions[elementIndex + baseInstructionsCount + i];
   }
@@ -97,17 +107,36 @@ export function writePointFeatureToBuffers(
 
 /**
  * Pushes a single quad to form a line segment; also includes a computation for the join angles with previous and next
- * segment, in order to be able to offset the vertices correctly in the shader
- * @param {Float32Array} instructions Array of render instructions for lines.
+ * segment, in order to be able to offset the vertices correctly in the shader.
+ * Join angles are between 0 and 2PI.
+ * This also computes the length of the current segment and the sum of the join angle tangents in order
+ * to store this information on each subsequent segment along the line. This is necessary to correctly render dashes
+ * and symbols along the line.
+ *
+ *   pB (before)                          pA (after)
+ *    X             negative             X
+ *     \             offset             /
+ *      \                              /
+ *       \   join              join   /
+ *        \ angle 0          angle 1 /
+ *         \←---                ←---/      positive
+ *          \   ←--          ←--   /        offset
+ *           \     ↑       ↓      /
+ *            X────┴───────┴─────X
+ *            p0                  p1
+ *
+ * @param {Float32Array} instructions Array of render instructions for lines.s
  * @param {number} segmentStartIndex Index of the segment start point from which render instructions will be read.
- * @param {number} segmentEndIndex Index of the segment start point from which render instructions will be read.
+ * @param {number} segmentEndIndex Index of the segment end point from which render instructions will be read.
  * @param {number|null} beforeSegmentIndex Index of the point right before the segment (null if none, e.g this is a line start)
  * @param {number|null} afterSegmentIndex Index of the point right after the segment (null if none, e.g this is a line end)
  * @param {Array<number>} vertexArray Array containing vertices.
  * @param {Array<number>} indexArray Array containing indices.
  * @param {Array<number>} customAttributes Array of custom attributes value
- * @param {import('../../transform.js').Transform} instructionsTransform Transform matrix used to project coordinates in instructions
- * @param {import('../../transform.js').Transform} invertInstructionsTransform Transform matrix used to project coordinates in instructions
+ * @param {import('../../transform.js').Transform} toWorldTransform Transform matrix used to obtain world coordinates from instructions
+ * @param {number} currentLength Cumulated length of segments processed so far
+ * @param {number} currentAngleTangentSum Cumulated tangents of the join angles processed so far
+ * @return {{length: number, angle: number}} Cumulated length with the newly processed segment (in world units), new sum of the join angle tangents
  * @private
  */
 export function writeLineSegmentToBuffers(
@@ -119,11 +148,12 @@ export function writeLineSegmentToBuffers(
   vertexArray,
   indexArray,
   customAttributes,
-  instructionsTransform,
-  invertInstructionsTransform
+  toWorldTransform,
+  currentLength,
+  currentAngleTangentSum
 ) {
   // compute the stride to determine how many vertices were already pushed
-  const baseVertexAttrsCount = 5; // base attributes: x0, y0, x1, y1, params (vertex number [0-3], join angle 1, join angle 2)
+  const baseVertexAttrsCount = 8; // base attributes: x0, y0, x1, y1, angle0, angle1, distance, params
   const stride = baseVertexAttrsCount + customAttributes.length;
   const baseIndex = vertexArray.length / stride;
 
@@ -136,23 +166,17 @@ export function writeLineSegmentToBuffers(
   ];
   const p1 = [instructions[segmentEndIndex], instructions[segmentEndIndex + 1]];
 
-  // to compute offsets from the line center we need to reproject
-  // coordinates back in world units and compute the length of the segment
-  const p0world = applyTransform(invertInstructionsTransform, [...p0]);
-  const p1world = applyTransform(invertInstructionsTransform, [...p1]);
+  // to compute join angles we need to reproject coordinates back in world units
+  const p0world = applyTransform(toWorldTransform, [...p0]);
+  const p1world = applyTransform(toWorldTransform, [...p1]);
 
-  function computeVertexParameters(vertexNumber, joinAngle1, joinAngle2) {
-    const shift = 10000;
-    const anglePrecision = 1500;
-    return (
-      Math.round(joinAngle1 * anglePrecision) +
-      Math.round(joinAngle2 * anglePrecision) * shift +
-      vertexNumber * shift * shift
-    );
-  }
-
-  // compute the angle between p0pA and p0pB
-  // returns a value in [0, 2PI]
+  /**
+   * Compute the angle between p0pA and p0pB
+   * @param {import("../../coordinate.js").Coordinate} p0 Point 0
+   * @param {import("../../coordinate.js").Coordinate} pA Point A
+   * @param {import("../../coordinate.js").Coordinate} pB Point B
+   * @return {number} a value in [0, 2PI]
+   */
   function angleBetween(p0, pA, pB) {
     const lenA = Math.sqrt(
       (pA[0] - p0[0]) * (pA[0] - p0[0]) + (pA[1] - p0[1]) * (pA[1] - p0[1])
@@ -175,11 +199,13 @@ export function writeLineSegmentToBuffers(
     return !isClockwise ? Math.PI * 2 - angle : angle;
   }
 
+  // a negative angle indicates a line cap
+  let angle0 = -1;
+  let angle1 = -1;
+  let newAngleTangentSum = currentAngleTangentSum;
+
   const joinBefore = beforeSegmentIndex !== null;
   const joinAfter = afterSegmentIndex !== null;
-
-  let angle0 = 0;
-  let angle1 = 0;
 
   // add vertices and adapt offsets for P0 in case of join
   if (joinBefore) {
@@ -188,18 +214,40 @@ export function writeLineSegmentToBuffers(
       instructions[beforeSegmentIndex],
       instructions[beforeSegmentIndex + 1],
     ];
-    const pBworld = applyTransform(invertInstructionsTransform, [...pB]);
+    const pBworld = applyTransform(toWorldTransform, [...pB]);
     angle0 = angleBetween(p0world, p1world, pBworld);
+
+    // only add to the sum if the angle isn't too close to 0 or 2PI
+    if (Math.cos(angle0) <= LINESTRING_ANGLE_COSINE_CUTOFF) {
+      newAngleTangentSum += Math.tan((angle0 - Math.PI) / 2);
+    }
   }
-  // adapt offsets for P1 in case of join
+  // adapt offsets for P1 in case of join; add to angle sum
   if (joinAfter) {
     // A for after
     const pA = [
       instructions[afterSegmentIndex],
       instructions[afterSegmentIndex + 1],
     ];
-    const pAworld = applyTransform(invertInstructionsTransform, [...pA]);
+    const pAworld = applyTransform(toWorldTransform, [...pA]);
     angle1 = angleBetween(p1world, p0world, pAworld);
+
+    // only add to the sum if the angle isn't too close to 0 or 2PI
+    if (Math.cos(angle1) <= LINESTRING_ANGLE_COSINE_CUTOFF) {
+      newAngleTangentSum += Math.tan((Math.PI - angle1) / 2);
+    }
+  }
+
+  /**
+   * @param {number} vertexIndex From 0 to 3, indicating position in the quad
+   * @param {number} angleSum Sum of the join angles encountered so far (used to compute distance offset
+   * @return {number} A float value containing both information
+   */
+  function computeParameters(vertexIndex, angleSum) {
+    if (angleSum === 0) {
+      return vertexIndex * 10000;
+    }
+    return Math.sign(angleSum) * (vertexIndex * 10000 + Math.abs(angleSum));
   }
 
   // add main segment triangles
@@ -208,7 +256,10 @@ export function writeLineSegmentToBuffers(
     p0[1],
     p1[0],
     p1[1],
-    computeVertexParameters(0, angle0, angle1)
+    angle0,
+    angle1,
+    currentLength,
+    computeParameters(0, currentAngleTangentSum)
   );
   vertexArray.push(...customAttributes);
 
@@ -217,7 +268,10 @@ export function writeLineSegmentToBuffers(
     p0[1],
     p1[0],
     p1[1],
-    computeVertexParameters(1, angle0, angle1)
+    angle0,
+    angle1,
+    currentLength,
+    computeParameters(1, currentAngleTangentSum)
   );
   vertexArray.push(...customAttributes);
 
@@ -226,7 +280,10 @@ export function writeLineSegmentToBuffers(
     p0[1],
     p1[0],
     p1[1],
-    computeVertexParameters(2, angle0, angle1)
+    angle0,
+    angle1,
+    currentLength,
+    computeParameters(2, currentAngleTangentSum)
   );
   vertexArray.push(...customAttributes);
 
@@ -235,7 +292,10 @@ export function writeLineSegmentToBuffers(
     p0[1],
     p1[0],
     p1[1],
-    computeVertexParameters(3, angle0, angle1)
+    angle0,
+    angle1,
+    currentLength,
+    computeParameters(3, currentAngleTangentSum)
   );
   vertexArray.push(...customAttributes);
 
@@ -247,6 +307,16 @@ export function writeLineSegmentToBuffers(
     baseIndex + 3,
     baseIndex + 2
   );
+
+  return {
+    length:
+      currentLength +
+      Math.sqrt(
+        (p1world[0] - p0world[0]) * (p1world[0] - p0world[0]) +
+          (p1world[1] - p0world[1]) * (p1world[1] - p0world[1])
+      ),
+    angle: newAngleTangentSum,
+  };
 }
 
 /**
@@ -255,7 +325,7 @@ export function writeLineSegmentToBuffers(
  * @param {number} polygonStartIndex Index of the polygon start point from which render instructions will be read.
  * @param {Array<number>} vertexArray Array containing vertices.
  * @param {Array<number>} indexArray Array containing indices.
- * @param {number} customAttributesCount Amount of custom attributes for each element.
+ * @param {number} customAttributesSize Amount of custom attributes for each element.
  * @return {number} Next polygon instructions index
  * @private
  */
@@ -264,16 +334,16 @@ export function writePolygonTrianglesToBuffers(
   polygonStartIndex,
   vertexArray,
   indexArray,
-  customAttributesCount
+  customAttributesSize
 ) {
   const instructionsPerVertex = 2; // x, y
-  const attributesPerVertex = 2 + customAttributesCount;
+  const attributesPerVertex = 2 + customAttributesSize;
   let instructionsIndex = polygonStartIndex;
   const customAttributes = instructions.slice(
     instructionsIndex,
-    instructionsIndex + customAttributesCount
+    instructionsIndex + customAttributesSize
   );
-  instructionsIndex += customAttributesCount;
+  instructionsIndex += customAttributesSize;
   const ringsCount = instructions[instructionsIndex++];
   let verticesCount = 0;
   const holes = new Array(ringsCount - 1);

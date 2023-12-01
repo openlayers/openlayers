@@ -4510,4 +4510,56 @@ describe('ol.format.KML', function () {
       });
     });
   });
+
+  describe('#readCamera', function () {
+    it('returns an array of cameras', function () {
+      const text =
+        '<kml xmlns="http://www.opengis.net/kml/2.2">' +
+        '  <Document>' +
+        '    <Camera>' +
+        '      <Latitude>11</Latitude>' +
+        '      <Longitude>46</Longitude>' +
+        '      <Altitude>4000</Altitude>' +
+        '      <AltitudeMode>clampToGround</AltitudeMode>' +
+        '      <Heading>18.0</Heading>' +
+        '      <Tilt>85</Tilt>' +
+        '      <Roll>0</Roll>' +
+        '    </Camera>' +
+        '  </Document>' +
+        '  <Placemark>' +
+        '    <Point>' +
+        '      <coordinates>' +
+        '        8.167492844000884,46.88946232784758' +
+        '      </coordinates>' +
+        '    </Point>' +
+        '    <Camera>' +
+        '      <Latitude>22</Latitude>' +
+        '      <Longitude>10</Longitude>' +
+        '      <Altitude>40</Altitude>' +
+        '      <AltitudeMode>clampToGround</AltitudeMode>' +
+        '      <Heading>75</Heading>' +
+        '      <Tilt>30</Tilt>' +
+        '      <Roll>80</Roll>' +
+        '    </Camera>' +
+        '  </Placemark>' +
+        '</kml>';
+
+      const nl = format.readCamera(text);
+      expect(nl).to.have.length(2);
+      expect(nl[0].Latitude).to.be(11);
+      expect(nl[0].Longitude).to.be(46);
+      expect(nl[0].Altitude).to.be(4000);
+      expect(nl[0].Heading).to.be(18.0);
+      expect(nl[0].Tilt).to.be(85);
+      expect(nl[0].Roll).to.be(0);
+      expect(nl[0].AltitudeMode).to.be('clampToGround');
+      expect(nl[1].Latitude).to.be(22);
+      expect(nl[1].Longitude).to.be(10);
+      expect(nl[1].Altitude).to.be(40);
+      expect(nl[1].Heading).to.be(75);
+      expect(nl[1].Tilt).to.be(30);
+      expect(nl[1].Roll).to.be(80);
+      expect(nl[1].AltitudeMode).to.be('clampToGround');
+    });
+  });
 });

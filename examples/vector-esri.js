@@ -10,53 +10,43 @@ import {fromLonLat} from '../src/ol/proj.js';
 import {tile as tileStrategy} from '../src/ol/loadingstrategy.js';
 
 const serviceUrl =
-  'https://sampleserver3.arcgisonline.com/ArcGIS/rest/services/' +
-  'Petroleum/KSFields/FeatureServer/';
+  'https://services-eu1.arcgis.com/NPIbx47lsIiu2pqz/ArcGIS/rest/services/' +
+  'Neptune_Coastline_Campaign_Open_Data_Land_Use_2014/FeatureServer/';
 const layer = '0';
 
-const esrijsonFormat = new EsriJSON();
-
-const styleCache = {
-  'ABANDONED': new Style({
-    fill: new Fill({
-      color: 'rgba(225, 225, 225, 255)',
-    }),
-    stroke: new Stroke({
-      color: 'rgba(0, 0, 0, 255)',
-      width: 0.4,
-    }),
-  }),
-  'GAS': new Style({
-    fill: new Fill({
-      color: 'rgba(255, 0, 0, 255)',
-    }),
-    stroke: new Stroke({
-      color: 'rgba(110, 110, 110, 255)',
-      width: 0.4,
-    }),
-  }),
-  'OIL': new Style({
-    fill: new Fill({
-      color: 'rgba(56, 168, 0, 255)',
-    }),
-    stroke: new Stroke({
-      color: 'rgba(110, 110, 110, 255)',
-      width: 0,
-    }),
-  }),
-  'OILGAS': new Style({
-    fill: new Fill({
-      color: 'rgba(168, 112, 0, 255)',
-    }),
-    stroke: new Stroke({
-      color: 'rgba(110, 110, 110, 255)',
-      width: 0.4,
-    }),
-  }),
+const fillColors = {
+  'Lost To Sea Since 1965': [0, 0, 0, 1],
+  'Urban/Built-up': [104, 104, 104, 1],
+  'Shacks': [115, 76, 0, 1],
+  'Industry': [230, 0, 0, 1],
+  'Wasteland': [230, 0, 0, 1],
+  'Caravans': [0, 112, 255, 0.5],
+  'Defence': [230, 152, 0, 0.5],
+  'Transport': [230, 152, 0, 1],
+  'Open Countryside': [255, 255, 115, 1],
+  'Woodland': [38, 115, 0, 1],
+  'Managed Recreation/Sport': [85, 255, 0, 1],
+  'Amenity Water': [0, 112, 255, 1],
+  'Inland Water': [0, 38, 115, 1],
 };
 
+const style = new Style({
+  fill: new Fill(),
+  stroke: new Stroke({
+    color: [0, 0, 0, 1],
+    width: 0.5,
+  }),
+});
+
 const vectorSource = new VectorSource({
-  loader: function (extent, resolution, projection, success, failure) {
+  format: new EsriJSON(),
+  url: function (extent, resolution, projection) {
+    // ArcGIS Server only wants the numeric portion of the projection ID.
+    const srid = projection
+      .getCode()
+      .split(/:(?=\d+$)/)
+      .pop();
+
     const url =
       serviceUrl +
       layer +
@@ -71,46 +61,38 @@ const vectorSource = new VectorSource({
           extent[2] +
           ',"ymax":' +
           extent[3] +
-          ',"spatialReference":{"wkid":102100}}'
+          ',"spatialReference":{"wkid":' +
+          srid +
+          '}}'
       ) +
-      '&geometryType=esriGeometryEnvelope&inSR=102100&outFields=*' +
-      '&outSR=102100';
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      success: function (response) {
-        if (response.error) {
-          alert(
-            response.error.message + '\n' + response.error.details.join('\n')
-          );
-          failure();
-        } else {
-          // dataProjection will be read from document
-          const features = esrijsonFormat.readFeatures(response, {
-            featureProjection: projection,
-          });
-          if (features.length > 0) {
-            vectorSource.addFeatures(features);
-          }
-          success(features);
-        }
-      },
-      error: failure,
-    });
+      '&geometryType=esriGeometryEnvelope&inSR=' +
+      srid +
+      '&outFields=*' +
+      '&outSR=' +
+      srid;
+
+    return url;
   },
   strategy: tileStrategy(
     createXYZ({
       tileSize: 512,
     })
   ),
+  attributions:
+    'University of Leicester (commissioned by the ' +
+    '<a href="https://www.arcgis.com/home/item.html?id=' +
+    'd5f05b1dc3dd4d76906c421bc1727805">National Trust</a>)',
 });
 
 const vector = new VectorLayer({
   source: vectorSource,
   style: function (feature) {
-    const classify = feature.get('activeprod');
-    return styleCache[classify];
+    const classify = feature.get('LU_2014');
+    const color = fillColors[classify] || [0, 0, 0, 0];
+    style.getFill().setColor(color);
+    return style;
   },
+  opacity: 0.7,
 });
 
 const raster = new TileLayer({
@@ -128,38 +110,32 @@ const map = new Map({
   layers: [raster, vector],
   target: document.getElementById('map'),
   view: new View({
-    center: fromLonLat([-97.6114, 38.8403]),
-    zoom: 7,
+    center: fromLonLat([1.72, 52.4]),
+    zoom: 14,
   }),
 });
 
 const displayFeatureInfo = function (pixel) {
-  const features = [];
-  map.forEachFeatureAtPixel(pixel, function (feature) {
-    features.push(feature);
+  const feature = map.forEachFeatureAtPixel(pixel, function (feature) {
+    return feature;
   });
-  if (features.length > 0) {
-    const info = [];
-    let i, ii;
-    for (i = 0, ii = features.length; i < ii; ++i) {
-      info.push(features[i].get('field_name'));
-    }
-    document.getElementById('info').innerHTML = info.join(', ') || '(unknown)';
+  if (feature) {
+    const info =
+      '2014 Land Use: ' +
+      feature.get('LU_2014') +
+      '<br>1965 Land Use: ' +
+      feature.get('LU_1965');
+    document.getElementById('info').innerHTML = info;
     map.getTarget().style.cursor = 'pointer';
   } else {
-    document.getElementById('info').innerHTML = '&nbsp;';
+    document.getElementById('info').innerHTML = '&nbsp;<br>&nbsp;';
     map.getTarget().style.cursor = '';
   }
 };
 
-map.on('pointermove', function (evt) {
+map.on(['click', 'pointermove'], function (evt) {
   if (evt.dragging) {
     return;
   }
-  const pixel = map.getEventPixel(evt.originalEvent);
-  displayFeatureInfo(pixel);
-});
-
-map.on('click', function (evt) {
   displayFeatureInfo(evt.pixel);
 });

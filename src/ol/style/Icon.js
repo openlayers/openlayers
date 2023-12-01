@@ -35,14 +35,12 @@ import {getUid} from '../util.js';
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images. Note that you must provide a
  * `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
- * @property {HTMLImageElement|HTMLCanvasElement} [img] Image object for the icon. If the `src` option is not provided then the
- * provided image must already be loaded. And in that case, it is required
- * to provide the size of the image, with the `imgSize` option.
- * @property {import("../size.js").Size} [imgSize] Image size in pixels. Only required if `img` is set and `src` is not.
- * The provided `imgSize` needs to match the actual size of the image.
+ * @property {HTMLImageElement|HTMLCanvasElement|ImageBitmap} [img] Image object for the icon.
  * @property {Array<number>} [displacement=[0, 0]] Displacement of the icon in pixels.
  * Positive values will shift the icon right and up.
  * @property {number} [opacity=1] Opacity of the icon.
+ * @property {number} [width] The width of the icon in pixels. This can't be used together with `scale`.
+ * @property {number} [height] The height of the icon in pixels. This can't be used together with `scale`.
  * @property {number|import("../size.js").Size} [scale=1] Scale.
  * @property {boolean} [rotateWithView=false] Whether to rotate the icon with the view.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
@@ -55,6 +53,26 @@ import {getUid} from '../util.js';
  * @property {string} [src] Image source URI.
  * @property {"declutter"|"obstacle"|"none"|undefined} [declutterMode] Declutter mode.
  */
+
+/**
+ * @param {number} width The width.
+ * @param {number} height The height.
+ * @param {number|undefined} wantedWidth The wanted width.
+ * @param {number|undefined} wantedHeight The wanted height.
+ * @return {number|Array<number>} The scale.
+ */
+function calculateScale(width, height, wantedWidth, wantedHeight) {
+  if (wantedWidth !== undefined && wantedHeight !== undefined) {
+    return [wantedWidth / width, wantedHeight / height];
+  }
+  if (wantedWidth !== undefined) {
+    return wantedWidth / width;
+  }
+  if (wantedHeight !== undefined) {
+    return wantedHeight / height;
+  }
+  return 1;
+}
 
 /**
  * @classdesc
@@ -139,35 +157,45 @@ class Icon extends ImageStyle {
     this.crossOrigin_ =
       options.crossOrigin !== undefined ? options.crossOrigin : null;
 
-    /**
-     * @type {HTMLImageElement|HTMLCanvasElement}
-     */
     const image = options.img !== undefined ? options.img : null;
 
-    /**
-     * @private
-     * @type {import("../size.js").Size|undefined}
-     */
-    this.imgSize_ = options.imgSize;
+    let cacheKey = options.src;
 
-    /**
-     * @type {string|undefined}
-     */
-    let src = options.src;
+    assert(
+      !(cacheKey !== undefined && image),
+      '`image` and `src` cannot be provided at the same time'
+    );
 
-    assert(!(src !== undefined && image), 4); // `image` and `src` cannot be provided at the same time
-    assert(!image || (image && this.imgSize_), 5); // `imgSize` must be set when `image` is provided
-
-    if ((src === undefined || src.length === 0) && image) {
-      src = /** @type {HTMLImageElement} */ (image).src || getUid(image);
+    if ((cacheKey === undefined || cacheKey.length === 0) && image) {
+      cacheKey = /** @type {HTMLImageElement} */ (image).src || getUid(image);
     }
-    assert(src !== undefined && src.length > 0, 6); // A defined and non-empty `src` or `image` must be provided
+    assert(
+      cacheKey !== undefined && cacheKey.length > 0,
+      'A defined and non-empty `src` or `image` must be provided'
+    );
 
-    /**
-     * @type {import("../ImageState.js").default}
-     */
-    const imageState =
-      options.src !== undefined ? ImageState.IDLE : ImageState.LOADED;
+    assert(
+      !(
+        (options.width !== undefined || options.height !== undefined) &&
+        options.scale !== undefined
+      ),
+      '`width` or `height` cannot be provided together with `scale`'
+    );
+
+    let imageState;
+    if (options.src !== undefined) {
+      imageState = ImageState.IDLE;
+    } else if (image !== undefined) {
+      if (image instanceof HTMLImageElement) {
+        if (image.complete) {
+          imageState = image.src ? ImageState.LOADED : ImageState.IDLE;
+        } else {
+          imageState = ImageState.LOADING;
+        }
+      } else {
+        imageState = ImageState.LOADED;
+      }
+    }
 
     /**
      * @private
@@ -181,8 +209,7 @@ class Icon extends ImageStyle {
      */
     this.iconImage_ = getIconImage(
       image,
-      /** @type {string} */ (src),
-      this.imgSize_ !== undefined ? this.imgSize_ : null,
+      /** @type {string} */ (cacheKey),
       this.crossOrigin_,
       imageState,
       this.color_
@@ -211,6 +238,46 @@ class Icon extends ImageStyle {
      * @type {import("../size.js").Size}
      */
     this.size_ = options.size !== undefined ? options.size : null;
+
+    /**
+     * Calculate the scale if width or height were given.
+     */
+    if (options.width !== undefined || options.height !== undefined) {
+      let width, height;
+      if (options.size) {
+        [width, height] = options.size;
+      } else {
+        const image = this.getImage(1);
+        if (image.width && image.height) {
+          width = image.width;
+          height = image.height;
+        } else if (image instanceof HTMLImageElement) {
+          this.initialOptions_ = options;
+          const onload = () => {
+            this.unlistenImageChange(onload);
+            if (!this.initialOptions_) {
+              return;
+            }
+            const imageSize = this.iconImage_.getSize();
+            this.setScale(
+              calculateScale(
+                imageSize[0],
+                imageSize[1],
+                options.width,
+                options.height
+              )
+            );
+          };
+          this.listenImageChange(onload);
+          return;
+        }
+      }
+      if (width !== undefined) {
+        this.setScale(
+          calculateScale(width, height, options.width, options.height)
+        );
+      }
+    }
   }
 
   /**
@@ -219,7 +286,14 @@ class Icon extends ImageStyle {
    * @api
    */
   clone() {
-    const scale = this.getScale();
+    let scale, width, height;
+    if (this.initialOptions_) {
+      width = this.initialOptions_.width;
+      height = this.initialOptions_.height;
+    } else {
+      scale = this.getScale();
+      scale = Array.isArray(scale) ? scale.slice() : scale;
+    }
     return new Icon({
       anchor: this.anchor_.slice(),
       anchorOrigin: this.anchorOrigin_,
@@ -230,13 +304,14 @@ class Icon extends ImageStyle {
           ? this.color_.slice()
           : this.color_ || undefined,
       crossOrigin: this.crossOrigin_,
-      imgSize: this.imgSize_,
       offset: this.offset_.slice(),
       offsetOrigin: this.offsetOrigin_,
       opacity: this.getOpacity(),
       rotateWithView: this.getRotateWithView(),
       rotation: this.getRotation(),
-      scale: Array.isArray(scale) ? scale.slice() : scale,
+      scale,
+      width,
+      height,
       size: this.size_ !== null ? this.size_.slice() : undefined,
       src: this.getSrc(),
       displacement: this.getDisplacement().slice(),
@@ -327,7 +402,8 @@ class Icon extends ImageStyle {
   /**
    * Get the image icon.
    * @param {number} pixelRatio Pixel ratio.
-   * @return {HTMLImageElement|HTMLCanvasElement} Image or Canvas element.
+   * @return {HTMLImageElement|HTMLCanvasElement|ImageBitmap} Image or Canvas element. If the Icon
+   * style was configured with `src` or with a not let loaded `img`, an `ImageBitmap` will be returned.
    * @api
    */
   getImage(pixelRatio) {
@@ -359,7 +435,7 @@ class Icon extends ImageStyle {
   }
 
   /**
-   * @return {HTMLImageElement|HTMLCanvasElement} Image element.
+   * @return {HTMLImageElement|HTMLCanvasElement|ImageBitmap} Image element.
    */
   getHitDetectionImage() {
     return this.iconImage_.getHitDetectionImage();
@@ -419,6 +495,49 @@ class Icon extends ImageStyle {
   }
 
   /**
+   * Get the width of the icon (in pixels). Will return undefined when the icon image is not yet loaded.
+   * @return {number} Icon width (in pixels).
+   * @api
+   */
+  getWidth() {
+    const scale = this.getScaleArray();
+    if (this.size_) {
+      return this.size_[0] * scale[0];
+    }
+    if (this.iconImage_.getImageState() == ImageState.LOADED) {
+      return this.iconImage_.getSize()[0] * scale[0];
+    }
+    return undefined;
+  }
+
+  /**
+   * Get the height of the icon (in pixels). Will return undefined when the icon image is not yet loaded.
+   * @return {number} Icon height (in pixels).
+   * @api
+   */
+  getHeight() {
+    const scale = this.getScaleArray();
+    if (this.size_) {
+      return this.size_[1] * scale[1];
+    }
+    if (this.iconImage_.getImageState() == ImageState.LOADED) {
+      return this.iconImage_.getSize()[1] * scale[1];
+    }
+    return undefined;
+  }
+
+  /**
+   * Set the scale.
+   *
+   * @param {number|import("../size.js").Size} scale Scale.
+   * @api
+   */
+  setScale(scale) {
+    delete this.initialOptions_;
+    super.setScale(scale);
+  }
+
+  /**
    * @param {function(import("../events/Event.js").default): void} listener Listener function.
    */
   listenImageChange(listener) {
@@ -441,6 +560,10 @@ class Icon extends ImageStyle {
    */
   unlistenImageChange(listener) {
     this.iconImage_.removeEventListener(EventType.CHANGE, listener);
+  }
+
+  ready() {
+    return this.iconImage_.ready();
   }
 }
 

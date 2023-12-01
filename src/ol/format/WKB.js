@@ -565,13 +565,13 @@ class WkbWriter {
   /**
    * @param {import("../geom/Geometry.js").default} geom geometry
    * @param {import("../geom/Geometry.js").GeometryLayout} [layout] layout
-   * @return {import("../geom/Geometry.js").GeometryLayout} minumum layout made by common axes
+   * @return {import("../geom/Geometry.js").GeometryLayout} minimum layout made by common axes
    */
   findMinimumLayout(geom, layout = 'XYZM') {
     /**
      * @param {import("../geom/Geometry.js").GeometryLayout} a A
      * @param {import("../geom/Geometry.js").GeometryLayout} b B
-     * @return {import("../geom/Geometry.js").GeometryLayout} minumum layout made by common axes
+     * @return {import("../geom/Geometry.js").GeometryLayout} minimum layout made by common axes
      */
     const GeometryLayout_min = (a, b) => {
       if (a === b) {
@@ -910,12 +910,14 @@ function decodeHexString(text) {
 function getDataView(source) {
   if (typeof source === 'string') {
     return decodeHexString(source);
-  } else if (ArrayBuffer.isView(source)) {
+  }
+  if (ArrayBuffer.isView(source)) {
     if (source instanceof DataView) {
       return source;
     }
     return new DataView(source.buffer, source.byteOffset, source.byteLength);
-  } else if (source instanceof ArrayBuffer) {
+  }
+  if (source instanceof ArrayBuffer) {
     return new DataView(source);
   }
   return null;

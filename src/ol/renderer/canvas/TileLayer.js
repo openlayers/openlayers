@@ -12,6 +12,7 @@ import {
   makeInverse,
   toString as toTransformString,
 } from '../../transform.js';
+import {ascending} from '../../array.js';
 import {
   containsCoordinate,
   createEmpty,
@@ -25,7 +26,6 @@ import {
 } from '../../extent.js';
 import {fromUserExtent} from '../../proj.js';
 import {getUid} from '../../util.js';
-import {numberSafeCompareFunction} from '../../array.js';
 import {toSize} from '../../size.js';
 
 /**
@@ -420,7 +420,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     this.renderedTiles.length = 0;
     /** @type {Array<number>} */
     let zs = Object.keys(tilesToDrawByZ).map(Number);
-    zs.sort(numberSafeCompareFunction);
+    zs.sort(ascending);
 
     let clips, clipZs, currentClip;
     if (

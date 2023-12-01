@@ -8,7 +8,11 @@ import CanvasInstruction, {
   fillInstruction,
   strokeInstruction,
 } from './Instruction.js';
-import {defaultFillStyle} from '../canvas.js';
+import {
+  defaultFillStyle,
+  defaultLineDash,
+  defaultLineDashOffset,
+} from '../canvas.js';
 import {snap} from '../../geom/flat/simplify.js';
 
 class CanvasPolygonBuilder extends CanvasBuilder {
@@ -101,8 +105,8 @@ class CanvasPolygonBuilder extends CanvasBuilder {
         state.lineCap,
         state.lineJoin,
         state.miterLimit,
-        state.lineDash,
-        state.lineDashOffset,
+        defaultLineDash,
+        defaultLineDashOffset,
       ]);
     }
     const flatCoordinates = circleGeometry.getFlatCoordinates();
@@ -157,8 +161,8 @@ class CanvasPolygonBuilder extends CanvasBuilder {
         state.lineCap,
         state.lineJoin,
         state.miterLimit,
-        state.lineDash,
-        state.lineDashOffset,
+        defaultLineDash,
+        defaultLineDashOffset,
       ]);
     }
     const ends = polygonGeometry.getEnds();
@@ -200,8 +204,8 @@ class CanvasPolygonBuilder extends CanvasBuilder {
         state.lineCap,
         state.lineJoin,
         state.miterLimit,
-        state.lineDash,
-        state.lineDashOffset,
+        defaultLineDash,
+        defaultLineDashOffset,
       ]);
     }
     const endss = multiPolygonGeometry.getEndss();

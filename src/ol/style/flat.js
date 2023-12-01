@@ -2,13 +2,84 @@
  * @module ol/style/flat
  */
 
-import Circle from '../style/Circle.js';
-import Fill from './Fill.js';
-import Icon from './Icon.js';
-import RegularShape from './RegularShape.js';
-import Stroke from './Stroke.js';
-import Style from './Style.js';
-import Text from './Text.js';
+/**
+ * @api
+ * @fileoverview Vector layers can be styled with an object literal containing properties for
+ * stroke, fill, image, and text styles.  The types below can be composed into a single object.
+ * For example, a style with both stroke and fill properties could look like this:
+ *
+ *     const style = {
+ *       'stroke-color': 'yellow',
+ *       'stroke-width': 1.5,
+ *       'fill-color': 'orange',
+ *     };
+ *
+ * See details about the available properties depending on what type of symbolizer should be applied:
+ *  * {@link module:ol/style/flat~FlatStroke Stroke} - properties for applying a stroke to lines and polygons
+ *  * {@link module:ol/style/flat~FlatFill Fill} - properties for filling polygons
+ *  * {@link module:ol/style/flat~FlatText Text} - properties for labeling points, lines, and polygons
+ *  * {@link module:ol/style/flat~FlatIcon Icon} - properties for rendering points with an icon
+ *  * {@link module:ol/style/flat~FlatCircle Circle} - properties for rendering points with a circle
+ *  * {@link module:ol/style/flat~FlatShape Shape} - properties for rendering points with a regular shape
+ *
+ * To conditionally apply styles based on a filter, a list of {@link module:ol/style/flat~Rule rules} can be used.
+ * For example, to style points with a big orange circle if the population is greater than 1 million and
+ * a smaller blue circle otherwise:
+ *
+ *     const rules = [
+ *       {
+ *         filter: ['>', ['get', 'population'], 1_000_000],
+ *         style: {
+ *           'circle-radius': 10,
+ *           'circle-fill-color': 'red',
+ *         }
+ *       },
+ *       {
+ *         else: true,
+ *         style: {
+ *           'circle-radius': 5,
+ *           'circle-fill-color': 'blue',
+ *         },
+ *       },
+ *     ];
+ */
+
+/**
+ * A literal boolean (e.g. `true`) or an expression that evaluates to a boolean (e.g. `['>', ['get', 'population'], 1_000_000]`).
+ *
+ * @typedef {boolean|Array} BooleanExpression
+ */
+
+/**
+ * A literal string (e.g. `'hello'`) or an expression that evaluates to a string (e.g. `['get', 'greeting']`).
+ *
+ * @typedef {string|Array} StringExpression
+ */
+
+/**
+ * A literal number (e.g. `42`) or an expression that evaluates to a number (e.g. `['+', 40, 2]`).
+ *
+ * @typedef {number|Array} NumberExpression
+ */
+
+/**
+ * A CSS named color (e.g. `'blue'`), an array of 3 RGB values (e.g. `[0, 255, 0]`), an array of 4 RGBA values
+ * (e.g. `[0, 255, 0, 0.5]`), or an expression that evaluates to one of these color types (e.g. `['get', 'color']`).
+ *
+ * @typedef {import("../color.js").Color|string|Array} ColorExpression
+ */
+
+/**
+ * An array of numbers (e.g. `[1, 2, 3]`) or an expression that evaluates to the same (e.g. `['get', 'values']`).
+ *
+ * @typedef {Array<number>|Array} NumberArrayExpression
+ */
+
+/**
+ * An array of two numbers (e.g. `[10, 20]`) or an expression that evaluates to the same (e.g. `['get', 'size']`).
+ *
+ * @typedef {number|Array<number>|Array} SizeExpression
+ */
 
 /**
  * For static styling, the [layer.setStyle()]{@link module:ol/layer/Vector~VectorLayer#setStyle} method
@@ -21,14 +92,19 @@ import Text from './Text.js';
 /**
  * A flat style literal or an array of the same.
  *
- * @typedef {FlatStyle|Array<FlatStyle>} FlatStyleLike
+ * @typedef {FlatStyle|Array<FlatStyle>|Array<Rule>} FlatStyleLike
  */
 
 /**
  * Fill style properties applied to polygon features.
  *
  * @typedef {Object} FlatFill
- * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [fill-color] The fill color.
+ * @property {ColorExpression} [fill-color] The fill color.
+ * @property {StringExpression} [fill-pattern-src] Fill pattern image URL.
+ * @property {SizeExpression} [fill-pattern-size] Fill pattern image size in pixels.
+ * Can be used together with `fill-pattern-offset` to define the sub-rectangle to use
+ * from a fill pattern image sprite sheet.
+ * @property {SizeExpression} [fill-pattern-offset] Fill pattern image offset in pixels.
  */
 
 /**
@@ -36,77 +112,71 @@ import Text from './Text.js';
  * `stroke-color` or `stroke-width` must be provided.
  *
  * @typedef {Object} FlatStroke
- * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [stroke-color] The stroke color.
- * @property {number} [stroke-width] Stroke pixel width.
- * @property {CanvasLineCap} [stroke-line-cap='round'] Line cap style: `butt`, `round`, or `square`.
- * @property {CanvasLineJoin} [stroke-line-join='round'] Line join style: `bevel`, `round`, or `miter`.
- * @property {Array<number>} [stroke-line-dash] Line dash pattern.
- * @property {number} [stroke-line-dash-offset=0] Line dash offset.
- * @property {number} [stroke-miter-limit=10] Miter limit.
+ * @property {ColorExpression} [stroke-color] The stroke color.
+ * @property {NumberExpression} [stroke-width] Stroke pixel width.
+ * @property {StringExpression} [stroke-line-cap='round'] Line cap style: `butt`, `round`, or `square`.
+ * @property {StringExpression} [stroke-line-join='round'] Line join style: `bevel`, `round`, or `miter`.
+ * @property {NumberArrayExpression} [stroke-line-dash] Line dash pattern.
+ * @property {NumberExpression} [stroke-line-dash-offset=0] Line dash offset.
+ * @property {NumberExpression} [stroke-miter-limit=10] Miter limit.
+ * @property {NumberExpression} [z-index] The zIndex of the style.
  */
 
 /**
  * Label style properties applied to all features.  At a minimum, a `text-value` must be provided.
  *
  * @typedef {Object} FlatText
- * @property {string|Array<string>} [text-value] Text content or rich text content. For plain text provide a string, which can
- * contain line breaks (`\n`). For rich text provide an array of text/font tuples. A tuple consists of the text to
- * render and the font to use (or `''` to use the text style's font). A line break has to be a separate tuple (i.e. `'\n', ''`).
- * **Example:** `['foo', 'bold 10px sans-serif', ' bar', 'italic 10px sans-serif', ' baz', '']` will yield "**foo** *bar* baz".
- * **Note:** Rich text is not supported for the immediate rendering API.
- * @property {string} [text-font] Font style as CSS `font` value, see:
- * https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/font. Default is `'10px sans-serif'`
- * @property {number} [text-max-angle=Math.PI/4] When `text-placement` is set to `'line'`, allow a maximum angle between adjacent characters.
+ * @property {StringExpression} [text-value] Text content (with `\n` for line breaks).
+ * @property {StringExpression} [text-font='10px sans-serif'] Font style as [CSS `font`](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/font) value.
+ * @property {NumberExpression} [text-max-angle=Math.PI/4] When `text-placement` is set to `'line'`, allow a maximum angle between adjacent characters.
  * The expected value is in radians, and the default is 45° (`Math.PI / 4`).
- * @property {number} [text-offset-x=0] Horizontal text offset in pixels. A positive will shift the text right.
- * @property {number} [text-offset-y=0] Vertical text offset in pixels. A positive will shift the text down.
- * @property {boolean} [text-overflow=false] For polygon labels or when `placement` is set to `'line'`, allow text to exceed
+ * @property {NumberExpression} [text-offset-x=0] Horizontal text offset in pixels. A positive will shift the text right.
+ * @property {NumberExpression} [text-offset-y=0] Vertical text offset in pixels. A positive will shift the text down.
+ * @property {BooleanExpression} [text-overflow=false] For polygon labels or when `placement` is set to `'line'`, allow text to exceed
  * the width of the polygon at the label position or the length of the path that it follows.
- * @property {import("./Text.js").TextPlacement} [text-placement='point'] Text placement.
- * @property {number|import("../size.js").Size} [text-scale] Scale.
- * @property {boolean} [text-rotate-with-view=false] Whether to rotate the text with the view.
- * @property {number} [text-rotation=0] Rotation in radians (positive rotation clockwise).
- * @property {CanvasTextAlign} [text-align] Text alignment. Possible values: `'left'`, `'right'`, `'center'`, `'end'` or `'start'`.
- * Default is `'center'` for `text-placement: 'point'`. For `text-placement: 'line'`, the default is to let the renderer choose a
+ * @property {StringExpression} [text-placement='point'] Text placement.
+ * @property {NumberExpression} [text-repeat] Repeat interval in pixels. When set, the text will be repeated at this interval. Only available when
+ * `text-placement` is set to `'line'`. Overrides `text-align`.
+ * @property {SizeExpression} [text-scale] Scale.
+ * @property {BooleanExpression} [text-rotate-with-view=false] Whether to rotate the text with the view.
+ * @property {NumberExpression} [text-rotation=0] Rotation in radians (positive rotation clockwise).
+ * @property {StringExpression} [text-align] Text alignment. Possible values: `'left'`, `'right'`, `'center'`, `'end'` or `'start'`.
+ * Default is `'center'` for `'text-placement': 'point'`. For `'text-placement': 'line'`, the default is to let the renderer choose a
  * placement where `text-max-angle` is not exceeded.
- * @property {import('./Text.js').TextJustify} [text-justify] Text justification within the text box.
+ * @property {StringExpression} [text-justify] Text justification within the text box.
  * If not set, text is justified towards the `textAlign` anchor.
  * Otherwise, use options `'left'`, `'center'`, or `'right'` to justify the text within the text box.
- * **Note:** `text-justify` is ignored for immediate rendering and also for `text-placement: 'line'`.
- * @property {CanvasTextBaseline} [text-baseline='middle'] Text base line. Possible values: `'bottom'`, `'top'`, `'middle'`, `'alphabetic'`,
+ * **Note:** `text-justify` is ignored for immediate rendering and also for `'text-placement': 'line'`.
+ * @property {StringExpression} [text-baseline='middle'] Text base line. Possible values: `'bottom'`, `'top'`, `'middle'`, `'alphabetic'`,
  * `'hanging'`, `'ideographic'`.
- * @property {Array<number>} [text-padding=[0, 0, 0, 0]] Padding in pixels around the text for decluttering and background. The order of
+ * @property {NumberArrayExpression} [text-padding=[0, 0, 0, 0]] Padding in pixels around the text for decluttering and background. The order of
  * values in the array is `[top, right, bottom, left]`.
- * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [text-fill-color] The fill color.
- * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [text-background-fill-color] The fill color.
- * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [text-stroke-color] The stroke color.
- * @property {CanvasLineCap} [text-stroke-line-cap='round'] Line cap style: `butt`, `round`, or `square`.
- * @property {CanvasLineJoin} [text-stroke-line-join='round'] Line join style: `bevel`, `round`, or `miter`.
- * @property {Array<number>} [text-stroke-line-dash] Line dash pattern.
- * @property {number} [text-stroke-line-dash-offset=0] Line dash offset.
- * @property {number} [text-stroke-miter-limit=10] Miter limit.
- * @property {number} [text-stroke-width] Stroke pixel width.
- * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [text-background-stroke-color] The stroke color.
- * @property {CanvasLineCap} [text-background-stroke-line-cap='round'] Line cap style: `butt`, `round`, or `square`.
- * @property {CanvasLineJoin} [text-background-stroke-line-join='round'] Line join style: `bevel`, `round`, or `miter`.
- * @property {Array<number>} [text-background-stroke-line-dash] Line dash pattern.
- * @property {number} [text-background-stroke-line-dash-offset=0] Line dash offset.
- * @property {number} [text-background-stroke-miter-limit=10] Miter limit.
- * @property {number} [text-background-stroke-width] Stroke pixel width.
+ * @property {ColorExpression} [text-fill-color] The fill color. Specify `'none'` to avoid hit detection on the fill.
+ * @property {ColorExpression} [text-background-fill-color] The fill color.
+ * @property {ColorExpression} [text-stroke-color] The stroke color.
+ * @property {StringExpression} [text-stroke-line-cap='round'] Line cap style: `butt`, `round`, or `square`.
+ * @property {StringExpression} [text-stroke-line-join='round'] Line join style: `bevel`, `round`, or `miter`.
+ * @property {NumberArrayExpression} [text-stroke-line-dash] Line dash pattern.
+ * @property {NumberExpression} [text-stroke-line-dash-offset=0] Line dash offset.
+ * @property {NumberExpression} [text-stroke-miter-limit=10] Miter limit.
+ * @property {NumberExpression} [text-stroke-width] Stroke pixel width.
+ * @property {ColorExpression} [text-background-stroke-color] The stroke color.
+ * @property {StringExpression} [text-background-stroke-line-cap='round'] Line cap style: `butt`, `round`, or `square`.
+ * @property {StringExpression} [text-background-stroke-line-join='round'] Line join style: `bevel`, `round`, or `miter`.
+ * @property {NumberArrayExpression} [text-background-stroke-line-dash] Line dash pattern.
+ * @property {NumberExpression} [text-background-stroke-line-dash-offset=0] Line dash offset.
+ * @property {NumberExpression} [text-background-stroke-miter-limit=10] Miter limit.
+ * @property {NumberExpression} [text-background-stroke-width] Stroke pixel width.
+ * @property {NumberExpression} [z-index] The zIndex of the style.
  */
 
 /**
- * Icon style properties applied to point features.  One of `icon-src` or `icon-img` must be provided to render
+ * Icon style properties applied to point features. `icon-src` must be provided to render
  * points with an icon.
  *
  * @typedef {Object} FlatIcon
  * @property {string} [icon-src] Image source URI.
- * @property {HTMLImageElement|HTMLCanvasElement} [icon-img] Image object for the icon. If the `icon-src` option is not provided then the
- * provided image must already be loaded. And in that case, it is required
- * to provide the size of the image, with the `icon-img-size` option.
- * @property {import("../size.js").Size} [icon-img-size] Image size in pixels. Only required if `icon-img` is set and `icon-src` is not.
- * The provided size needs to match the actual size of the image.
- * @property {Array<number>} [icon-anchor=[0.5, 0.5]] Anchor. Default value is the icon center.
+ * @property {NumberArrayExpression} [icon-anchor=[0.5, 0.5]] Anchor. Default value is the icon center.
  * @property {import("./Icon.js").IconOrigin} [icon-anchor-origin='top-left'] Origin of the anchor: `bottom-left`, `bottom-right`,
  * `top-left` or `top-right`.
  * @property {import("./Icon.js").IconAnchorUnits} [icon-anchor-x-units='fraction'] Units in which the anchor x value is
@@ -122,16 +192,21 @@ import Text from './Text.js';
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {Array<number>} [icon-offset=[0, 0]] Offset, which, together with the size and the offset origin, define the
  * sub-rectangle to use from the original icon image.
- * @property {Array<number>} [icon-displacement=[0,0]] Displacement of the icon.
+ * @property {NumberArrayExpression} [icon-displacement=[0,0]] Displacement of the icon.
  * @property {import("./Icon.js").IconOrigin} [icon-offset-origin='top-left'] Origin of the offset: `bottom-left`, `bottom-right`,
  * `top-left` or `top-right`.
- * @property {number} [icon-opacity=1] Opacity of the icon.
- * @property {number|import("../size.js").Size} [icon-scale=1] Scale.
- * @property {number} [icon-rotation=0] Rotation in radians (positive rotation clockwise).
- * @property {boolean} [icon-rotate-with-view=false] Whether to rotate the icon with the view.
+ * @property {NumberExpression} [icon-opacity=1] Opacity of the icon.
+ * @property {SizeExpression} [icon-scale=1] Scale.
+ * @property {number} [icon-width] Width of the icon. If not specified, the actual image width will be used. Cannot be combined
+ * with `scale`.
+ * @property {number} [icon-height] Height of the icon. If not specified, the actual image height will be used. Cannot be combined
+ * with `scale`.
+ * @property {NumberExpression} [icon-rotation=0] Rotation in radians (positive rotation clockwise).
+ * @property {BooleanExpression} [icon-rotate-with-view=false] Whether to rotate the icon with the view.
  * @property {import("../size.js").Size} [icon-size] Icon size in pixel. Can be used together with `icon-offset` to define the
  * sub-rectangle to use from the origin (sprite) icon image.
  * @property {"declutter"|"obstacle"|"none"|undefined} [icon-declutter-mode] Declutter mode
+ * @property {NumberExpression} [z-index] The zIndex of the style.
  */
 
 /**
@@ -140,24 +215,24 @@ import Text from './Text.js';
  * @typedef {Object} FlatShape
  * @property {number} [shape-points] Number of points for stars and regular polygons. In case of a polygon, the number of points
  * is the number of sides.
- * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [shape-fill-color] The fill color.
- * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [shape-stroke-color] The stroke color.
- * @property {number} [shape-stroke-width] Stroke pixel width.
- * @property {CanvasLineCap} [shape-stroke-line-cap='round'] Line cap style: `butt`, `round`, or `square`.
- * @property {CanvasLineJoin} [shape-stroke-line-join='round'] Line join style: `bevel`, `round`, or `miter`.
- * @property {Array<number>} [shape-stroke-line-dash] Line dash pattern.
- * @property {number} [shape-stroke-line-dash-offset=0] Line dash offset.
- * @property {number} [shape-stroke-miter-limit=10] Miter limit.
+ * @property {ColorExpression} [shape-fill-color] The fill color.
+ * @property {ColorExpression} [shape-stroke-color] The stroke color.
+ * @property {NumberExpression} [shape-stroke-width] Stroke pixel width.
+ * @property {StringExpression} [shape-stroke-line-cap='round'] Line cap style: `butt`, `round`, or `square`.
+ * @property {StringExpression} [shape-stroke-line-join='round'] Line join style: `bevel`, `round`, or `miter`.
+ * @property {NumberArrayExpression} [shape-stroke-line-dash] Line dash pattern.
+ * @property {NumberExpression} [shape-stroke-line-dash-offset=0] Line dash offset.
+ * @property {NumberExpression} [shape-stroke-miter-limit=10] Miter limit.
  * @property {number} [shape-radius] Radius of a regular polygon.
- * @property {number} [shape-radius1] First radius of a star. Ignored if radius is set.
- * @property {number} [shape-radius2] Second radius of a star.
+ * @property {number} [shape-radius2] Second radius to make a star instead of a regular polygon.
  * @property {number} [shape-angle=0] Shape's angle in radians. A value of 0 will have one of the shape's point facing up.
- * @property {Array<number>} [shape-displacement=[0,0]] Displacement of the shape
- * @property {number} [shape-rotation=0] Rotation in radians (positive rotation clockwise).
- * @property {boolean} [shape-rotate-with-view=false] Whether to rotate the shape with the view.
- * @property {number|import("../size.js").Size} [shape-scale=1] Scale. Unless two dimensional scaling is required a better
- * result may be obtained with appropriate settings for `shape-radius`, `shape-radius1` and `shape-radius2`.
+ * @property {NumberArrayExpression} [shape-displacement=[0,0]] Displacement of the shape
+ * @property {NumberExpression} [shape-rotation=0] Rotation in radians (positive rotation clockwise).
+ * @property {BooleanExpression} [shape-rotate-with-view=false] Whether to rotate the shape with the view.
+ * @property {SizeExpression} [shape-scale=1] Scale. Unless two dimensional scaling is required a better
+ * result may be obtained with appropriate settings for `shape-radius` and `shape-radius2`.
  * @property {"declutter"|"obstacle"|"none"|undefined} [shape-declutter-mode] Declutter mode.
+ * @property {NumberExpression} [z-index] The zIndex of the style.
  */
 
 /**
@@ -165,177 +240,62 @@ import Text from './Text.js';
  *
  * @typedef {Object} FlatCircle
  * @property {number} [circle-radius] Circle radius.
- * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [circle-fill-color] The fill color.
- * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [circle-stroke-color] The stroke color.
- * @property {number} [circle-stroke-width] Stroke pixel width.
- * @property {CanvasLineCap} [circle-stroke-line-cap='round'] Line cap style: `butt`, `round`, or `square`.
- * @property {CanvasLineJoin} [circle-stroke-line-join='round'] Line join style: `bevel`, `round`, or `miter`.
- * @property {Array<number>} [circle-stroke-line-dash] Line dash pattern.
- * @property {number} [circle-stroke-line-dash-offset=0] Line dash offset.
- * @property {number} [circle-stroke-miter-limit=10] Miter limit.
- * @property {Array<number>} [circle-displacement=[0,0]] displacement
- * @property {number|import("../size.js").Size} [circle-scale=1] Scale. A two dimensional scale will produce an ellipse.
+ * @property {ColorExpression} [circle-fill-color] The fill color.
+ * @property {ColorExpression} [circle-stroke-color] The stroke color.
+ * @property {NumberExpression} [circle-stroke-width] Stroke pixel width.
+ * @property {StringExpression} [circle-stroke-line-cap='round'] Line cap style: `butt`, `round`, or `square`.
+ * @property {StringExpression} [circle-stroke-line-join='round'] Line join style: `bevel`, `round`, or `miter`.
+ * @property {NumberArrayExpression} [circle-stroke-line-dash] Line dash pattern.
+ * @property {NumberExpression} [circle-stroke-line-dash-offset=0] Line dash offset.
+ * @property {NumberExpression} [circle-stroke-miter-limit=10] Miter limit.
+ * @property {NumberArrayExpression} [circle-displacement=[0,0]] displacement
+ * @property {SizeExpression} [circle-scale=1] Scale. A two dimensional scale will produce an ellipse.
  * Unless two dimensional scaling is required a better result may be obtained with an appropriate setting for `circle-radius`.
- * @property {number} [circle-rotation=0] Rotation in radians
+ * @property {NumberExpression} [circle-rotation=0] Rotation in radians
  * (positive rotation clockwise, meaningful only when used in conjunction with a two dimensional scale).
- * @property {boolean} [circle-rotate-with-view=false] Whether to rotate the shape with the view
+ * @property {BooleanExpression} [circle-rotate-with-view=false] Whether to rotate the shape with the view
  * (meaningful only when used in conjunction with a two dimensional scale).
  * @property {"declutter"|"obstacle"|"none"|undefined} [circle-declutter-mode] Declutter mode
+ * @property {NumberExpression} [z-index] The zIndex of the style.
  */
 
 /**
- * @param {FlatStyle} flatStyle A flat style literal.
- * @return {import("./Style.js").default} A style instance.
+ * These default style properties are applied when no other style is given.
+ *
+ * @typedef {Object} DefaultStyle
+ * @property {string} fill-color `'rgba(255,255,255,0.4)'`
+ * @property {string} stroke-color `'#3399CC'`
+ * @property {number} stroke-width `1.25`
+ * @property {number} circle-radius `5`
+ * @property {string} circle-fill-color `'rgba(255,255,255,0.4)'`
+ * @property {number} circle-stroke-width `1.25`
+ * @property {string} circle-stroke-color `'#3399CC'`
  */
-export function toStyle(flatStyle) {
-  const style = new Style({
-    fill: getFill(flatStyle, ''),
-    stroke: getStroke(flatStyle, ''),
-    text: getText(flatStyle),
-    image: getImage(flatStyle),
-  });
 
-  return style;
+/**
+ * @return {DefaultStyle} The default flat style.
+ */
+export function createDefaultStyle() {
+  return {
+    'fill-color': 'rgba(255,255,255,0.4)',
+    'stroke-color': '#3399CC',
+    'stroke-width': 1.25,
+    'circle-radius': 5,
+    'circle-fill-color': 'rgba(255,255,255,0.4)',
+    'circle-stroke-width': 1.25,
+    'circle-stroke-color': '#3399CC',
+  };
 }
 
 /**
- * @param {FlatStyle} flatStyle The flat style.
- * @param {string} prefix The property prefix.
- * @return {Fill|undefined} The fill (if any).
+ * A rule is used to conditionally apply a style.  If the rule's filter evaluates to true,
+ * the style will be applied.
+ *
+ * @typedef {Object} Rule
+ * @property {FlatStyle|Array<FlatStyle>} style The style to be applied if the filter matches.
+ * @property {import("../expr/expression.js").EncodedExpression} [filter] The filter used
+ * to determine if a style applies.  If no filter is included, the rule always applies
+ * (unless it is an else rule).
+ * @property {boolean} [else] If true, the rule applies only if no other previous rule applies.
+ * If the else rule also has a filter, the rule will not apply if the filter does not match.
  */
-function getFill(flatStyle, prefix) {
-  const color = flatStyle[prefix + 'fill-color'];
-  if (!color) {
-    return;
-  }
-
-  return new Fill({color: color});
-}
-
-/**
- * @param {FlatStyle} flatStyle The flat style.
- * @param {string} prefix The property prefix.
- * @return {Stroke|undefined} The stroke (if any).
- */
-function getStroke(flatStyle, prefix) {
-  const width = flatStyle[prefix + 'stroke-width'];
-  const color = flatStyle[prefix + 'stroke-color'];
-  if (!width && !color) {
-    return;
-  }
-
-  return new Stroke({
-    width: width,
-    color: color,
-    lineCap: flatStyle[prefix + 'stroke-line-cap'],
-    lineJoin: flatStyle[prefix + 'stroke-line-join'],
-    lineDash: flatStyle[prefix + 'stroke-line-dash'],
-    lineDashOffset: flatStyle[prefix + 'stroke-line-dash-offset'],
-    miterLimit: flatStyle[prefix + 'stroke-miter-limit'],
-  });
-}
-
-/**
- * @param {FlatStyle} flatStyle The flat style.
- * @return {Text|undefined} The text (if any).
- */
-function getText(flatStyle) {
-  const value = flatStyle['text-value'];
-  if (!value) {
-    return;
-  }
-
-  const text = new Text({
-    text: value,
-    font: flatStyle['text-font'],
-    maxAngle: flatStyle['text-max-angle'],
-    offsetX: flatStyle['text-offset-x'],
-    offsetY: flatStyle['text-offset-y'],
-    overflow: flatStyle['text-overflow'],
-    placement: flatStyle['text-placement'],
-    scale: flatStyle['text-scale'],
-    rotateWithView: flatStyle['text-rotate-with-view'],
-    rotation: flatStyle['text-rotation'],
-    textAlign: flatStyle['text-align'],
-    justify: flatStyle['text-justify'],
-    textBaseline: flatStyle['text-baseline'],
-    padding: flatStyle['text-padding'],
-    fill: getFill(flatStyle, 'text-'),
-    backgroundFill: getFill(flatStyle, 'text-background-'),
-    stroke: getStroke(flatStyle, 'text-'),
-    backgroundStroke: getStroke(flatStyle, 'text-background-'),
-  });
-
-  return text;
-}
-
-/**
- * @param {FlatStyle} flatStyle The flat style.
- * @return {import("./Image.js").default|undefined} The image (if any).
- */
-function getImage(flatStyle) {
-  const iconSrc = flatStyle['icon-src'];
-  const iconImg = flatStyle['icon-img'];
-  if (iconSrc || iconImg) {
-    const icon = new Icon({
-      src: iconSrc,
-      img: iconImg,
-      imgSize: flatStyle['icon-img-size'],
-      anchor: flatStyle['icon-anchor'],
-      anchorOrigin: flatStyle['icon-anchor-origin'],
-      anchorXUnits: flatStyle['icon-anchor-x-units'],
-      anchorYUnits: flatStyle['icon-anchor-y-units'],
-      color: flatStyle['icon-color'],
-      crossOrigin: flatStyle['icon-cross-origin'],
-      offset: flatStyle['icon-offset'],
-      displacement: flatStyle['icon-displacement'],
-      opacity: flatStyle['icon-opacity'],
-      scale: flatStyle['icon-scale'],
-      rotation: flatStyle['icon-rotation'],
-      rotateWithView: flatStyle['icon-rotate-with-view'],
-      size: flatStyle['icon-size'],
-      declutterMode: flatStyle['icon-declutter-mode'],
-    });
-    return icon;
-  }
-
-  const shapePoints = flatStyle['shape-points'];
-  if (shapePoints) {
-    const prefix = 'shape-';
-    const shape = new RegularShape({
-      points: shapePoints,
-      fill: getFill(flatStyle, prefix),
-      stroke: getStroke(flatStyle, prefix),
-      radius: flatStyle['shape-radius'],
-      radius1: flatStyle['shape-radius1'],
-      radius2: flatStyle['shape-radius2'],
-      angle: flatStyle['shape-angle'],
-      displacement: flatStyle['shape-displacement'],
-      rotation: flatStyle['shape-rotation'],
-      rotateWithView: flatStyle['shape-rotate-with-view'],
-      scale: flatStyle['shape-scale'],
-      declutterMode: flatStyle['shape-declutter-mode'],
-    });
-
-    return shape;
-  }
-
-  const circleRadius = flatStyle['circle-radius'];
-  if (circleRadius) {
-    const prefix = 'circle-';
-    const circle = new Circle({
-      radius: circleRadius,
-      fill: getFill(flatStyle, prefix),
-      stroke: getStroke(flatStyle, prefix),
-      displacement: flatStyle['circle-displacement'],
-      scale: flatStyle['circle-scale'],
-      rotation: flatStyle['circle-rotation'],
-      rotateWithView: flatStyle['circle-rotate-with-view'],
-      declutterMode: flatStyle['circle-declutter-mode'],
-    });
-
-    return circle;
-  }
-
-  return;
-}

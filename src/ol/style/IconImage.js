@@ -7,8 +7,8 @@ import EventType from '../events/EventType.js';
 import ImageState from '../ImageState.js';
 import {asString} from '../color.js';
 import {createCanvasContext2D} from '../dom.js';
+import {decodeFallback} from '../Image.js';
 import {shared as iconImageCache} from './IconImageCache.js';
-import {listenImage} from '../Image.js';
 
 /**
  * @type {CanvasRenderingContext2D}
@@ -17,25 +17,24 @@ let taintedTestContext = null;
 
 class IconImage extends EventTarget {
   /**
-   * @param {HTMLImageElement|HTMLCanvasElement} image Image.
+   * @param {HTMLImageElement|HTMLCanvasElement|ImageBitmap|null} image Image.
    * @param {string|undefined} src Src.
-   * @param {import("../size.js").Size} size Size.
    * @param {?string} crossOrigin Cross origin.
-   * @param {import("../ImageState.js").default} imageState Image state.
-   * @param {import("../color.js").Color} color Color.
+   * @param {import("../ImageState.js").default|undefined} imageState Image state.
+   * @param {import("../color.js").Color|string|null} color Color.
    */
-  constructor(image, src, size, crossOrigin, imageState, color) {
+  constructor(image, src, crossOrigin, imageState, color) {
     super();
 
     /**
      * @private
-     * @type {HTMLImageElement|HTMLCanvasElement}
+     * @type {HTMLImageElement|HTMLCanvasElement|ImageBitmap}
      */
     this.hitDetectionImage_ = null;
 
     /**
      * @private
-     * @type {HTMLImageElement|HTMLCanvasElement}
+     * @type {HTMLImageElement|HTMLCanvasElement|ImageBitmap|null}
      */
     this.image_ = image;
 
@@ -53,27 +52,22 @@ class IconImage extends EventTarget {
 
     /**
      * @private
-     * @type {import("../color.js").Color}
+     * @type {import("../color.js").Color|string|null}
      */
     this.color_ = color;
 
     /**
      * @private
-     * @type {?function():void}
-     */
-    this.unlisten_ = null;
-
-    /**
-     * @private
      * @type {import("../ImageState.js").default}
      */
-    this.imageState_ = imageState;
+    this.imageState_ = imageState === undefined ? ImageState.IDLE : imageState;
 
     /**
      * @private
-     * @type {import("../size.js").Size}
+     * @type {import("../size.js").Size|null}
      */
-    this.size_ = size;
+    this.size_ =
+      image && image.width && image.height ? [image.width, image.height] : null;
 
     /**
      * @private
@@ -85,6 +79,12 @@ class IconImage extends EventTarget {
      * @private
      */
     this.tainted_;
+
+    /**
+     * @private
+     * @type {Promise<void>|null}
+     */
+    this.ready_ = null;
   }
 
   /**
@@ -132,7 +132,6 @@ class IconImage extends EventTarget {
    */
   handleImageError_() {
     this.imageState_ = ImageState.ERROR;
-    this.unlistenImage_();
     this.dispatchChangeEvent_();
   }
 
@@ -141,19 +140,13 @@ class IconImage extends EventTarget {
    */
   handleImageLoad_() {
     this.imageState_ = ImageState.LOADED;
-    if (this.size_) {
-      this.image_.width = this.size_[0];
-      this.image_.height = this.size_[1];
-    } else {
-      this.size_ = [this.image_.width, this.image_.height];
-    }
-    this.unlistenImage_();
+    this.size_ = [this.image_.width, this.image_.height];
     this.dispatchChangeEvent_();
   }
 
   /**
    * @param {number} pixelRatio Pixel ratio.
-   * @return {HTMLImageElement|HTMLCanvasElement} Image or Canvas element.
+   * @return {HTMLImageElement|HTMLCanvasElement|ImageBitmap} Image or Canvas element or image bitmap.
    */
   getImage(pixelRatio) {
     if (!this.image_) {
@@ -180,7 +173,7 @@ class IconImage extends EventTarget {
   }
 
   /**
-   * @return {HTMLImageElement|HTMLCanvasElement} Image element.
+   * @return {HTMLImageElement|HTMLCanvasElement|ImageBitmap} Image element.
    */
   getHitDetectionImage() {
     if (!this.image_) {
@@ -228,15 +221,20 @@ class IconImage extends EventTarget {
 
     this.imageState_ = ImageState.LOADING;
     try {
-      /** @type {HTMLImageElement} */ (this.image_).src = this.src_;
+      if (this.src_ !== undefined) {
+        /** @type {HTMLImageElement} */ (this.image_).src = this.src_;
+      }
     } catch (e) {
       this.handleImageError_();
     }
-    this.unlisten_ = listenImage(
-      this.image_,
-      this.handleImageLoad_.bind(this),
-      this.handleImageError_.bind(this)
-    );
+    if (this.image_ instanceof HTMLImageElement) {
+      decodeFallback(this.image_, this.src_)
+        .then((image) => {
+          this.image_ = image;
+          this.handleImageLoad_();
+        })
+        .catch(this.handleImageError_.bind(this));
+    }
   }
 
   /**
@@ -272,32 +270,63 @@ class IconImage extends EventTarget {
   }
 
   /**
-   * Discards event handlers which listen for load completion or errors.
-   *
-   * @private
+   * @return {Promise<void>} Promise that resolves when the image is loaded.
    */
-  unlistenImage_() {
-    if (this.unlisten_) {
-      this.unlisten_();
-      this.unlisten_ = null;
+  ready() {
+    if (!this.ready_) {
+      this.ready_ = new Promise((resolve) => {
+        if (
+          this.imageState_ === ImageState.LOADED ||
+          this.imageState_ === ImageState.ERROR
+        ) {
+          resolve();
+        } else {
+          this.addEventListener(EventType.CHANGE, function onChange() {
+            if (
+              this.imageState_ === ImageState.LOADED ||
+              this.imageState_ === ImageState.ERROR
+            ) {
+              this.removeEventListener(EventType.CHANGE, onChange);
+              resolve();
+            }
+          });
+        }
+      });
     }
+    return this.ready_;
   }
 }
 
 /**
- * @param {HTMLImageElement|HTMLCanvasElement} image Image.
- * @param {string} src Src.
- * @param {import("../size.js").Size} size Size.
+ * @param {HTMLImageElement|HTMLCanvasElement|ImageBitmap|null} image Image.
+ * @param {string|undefined} cacheKey Src.
  * @param {?string} crossOrigin Cross origin.
- * @param {import("../ImageState.js").default} imageState Image state.
- * @param {import("../color.js").Color} color Color.
+ * @param {import("../ImageState.js").default|undefined} imageState Image state.
+ * @param {import("../color.js").Color|string|null} color Color.
+ * @param {boolean} [pattern] Also cache a `repeat` pattern with the icon image.
  * @return {IconImage} Icon image.
  */
-export function get(image, src, size, crossOrigin, imageState, color) {
-  let iconImage = iconImageCache.get(src, crossOrigin, color);
+export function get(image, cacheKey, crossOrigin, imageState, color, pattern) {
+  let iconImage =
+    cacheKey === undefined
+      ? undefined
+      : iconImageCache.get(cacheKey, crossOrigin, color);
   if (!iconImage) {
-    iconImage = new IconImage(image, src, size, crossOrigin, imageState, color);
-    iconImageCache.set(src, crossOrigin, color, iconImage);
+    iconImage = new IconImage(
+      image,
+      image instanceof HTMLImageElement ? image.src || undefined : cacheKey,
+      crossOrigin,
+      imageState,
+      color
+    );
+    iconImageCache.set(cacheKey, crossOrigin, color, iconImage, pattern);
+  }
+  if (
+    pattern &&
+    iconImage &&
+    !iconImageCache.getPattern(cacheKey, crossOrigin, color)
+  ) {
+    iconImageCache.set(cacheKey, crossOrigin, color, iconImage, pattern);
   }
   return iconImage;
 }

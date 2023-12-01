@@ -84,6 +84,31 @@ describe('ol/Feature.js', function () {
     });
   });
 
+  describe('getPropertiesInternal()', () => {
+    it('returns the feature properties and geometry', () => {
+      const point = new Point([15, 30]);
+      const feature = new Feature({
+        foo: 'bar',
+        ten: 10,
+        geometry: point,
+      });
+
+      const attributes = feature.getPropertiesInternal();
+
+      const keys = Object.keys(attributes);
+      expect(keys.sort()).to.eql(['foo', 'geometry', 'ten']);
+
+      expect(attributes.foo).to.be('bar');
+      expect(attributes.geometry).to.be(point);
+      expect(attributes.ten).to.be(10);
+    });
+
+    it('is null by default', () => {
+      const feature = new Feature();
+      expect(feature.getPropertiesInternal()).to.be(null);
+    });
+  });
+
   describe('#getGeometry()', function () {
     const point = new Point([15, 30]);
 

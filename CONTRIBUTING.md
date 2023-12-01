@@ -6,9 +6,6 @@ Thanks for your interest in contributing to OpenLayers.  Please see the project'
 
 Please ask questions about using the library on [Stack Overflow using the tag 'openlayers'](https://stackoverflow.com/questions/tagged/openlayers).
 
-When you want to get involved and discuss new features or changes, please use [the mailing list](https://groups.google.com/forum/#!forum/openlayers-dev).
-
-
 ## Submitting Bug Reports
 
 Please use the [GitHub issue tracker](https://github.com/openlayers/openlayers/issues). Before creating a new issue, do a quick search to see if the problem has been reported already.
@@ -21,12 +18,9 @@ Look for `readme.md` files! Several directories contain a `readme.md` file that 
 
 ## Contributing Code
 
-See [`DEVELOPING.md`](https://github.com/openlayers/openlayers/blob/main/DEVELOPING.md) to learn how to get started developing.
+See [`DEVELOPING.md`](https://github.com/openlayers/openlayers/blob/main/DEVELOPING.md) for details on getting set up for OpenLayers development.  This includes information on installing dependencies, running the tests, and conforming with the style guidelines.
 
-Our preferred means of receiving contributions is through [pull requests](https://help.github.com/articles/using-pull-requests). Make sure
-that your pull request follows our pull request guidelines below before submitting it.
-
-This page describes what you need to know to contribute code to OpenLayers as a developer.
+Code contributions are made through [pull requests](https://help.github.com/articles/using-pull-requests). Make sure that your pull request follows our pull request guidelines below before submitting it.
 
 
 ## Contributor License Agreement
@@ -40,7 +34,7 @@ Before working on a pull request, create an issue explaining what you want to co
 
 Your pull request must:
 
- * Follow OpenLayers's coding style.
+ * Follow OpenLayers's coding style.  See the [`DEVELOPING.md` doc](https://github.com/openlayers/openlayers/blob/main/DEVELOPING.md) for details on setting up your editor to conform with the style guidelines.
 
  * Pass the integration tests run automatically by the Continuous Integration system.
 

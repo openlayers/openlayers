@@ -1,0 +1,11 @@
+---
+layout: example.html
+title: WMS loader with SVG format
+shortdesc: Using the WMS loader to use SVG images with an Image source.
+docs: >
+  The Image source can be configured with service specific loaders. By default, the loader returns the image
+  as decoded `ImageBitmap`. When using the `ol/source/Image.load()` function instead, SVG images will scale during
+  zooming, because they will be used as `HTMLImageElement` directly instead of an `ImageBitmap`.
+tags: "wms, image, svg"
+---
+<div id="map" class="map"></div>

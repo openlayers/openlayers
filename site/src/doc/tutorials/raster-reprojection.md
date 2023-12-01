@@ -14,9 +14,10 @@ The view in any Proj4js supported coordinate reference system is possible and pr
 The API usage is very simple. Just specify proper projection (e.g. using [EPSG](https://epsg.io) code) on `ol/View`:
 
 ```js
-import {Map, View} from 'ol';
-import TileLayer from 'ol/layer/Tile';
-import TileWMS from 'ol/source/TileWMS';
+import Map from 'ol/Map.js';
+import TileLayer from 'ol/layer/Tile.js';
+import TileWMS from 'ol/source/TileWMS.js';
+import View from 'ol/View.js';
 
 const map = new Map({
   target: 'map',
@@ -58,8 +59,8 @@ Following example shows definition of a [British National Grid](https://epsg.io/
 
 ```js
 import proj4 from 'proj4';
-import {get as getProjection} from 'ol/proj';
-import {register} from 'ol/proj/proj4';
+import {get as getProjection} from 'ol/proj.js';
+import {register} from 'ol/proj/proj4.js';
 
 proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
     '+x_0=400000 +y_0=-100000 +ellps=airy ' +

@@ -20,6 +20,11 @@ import {
   getCenter,
   getHeight,
 } from '../extent.js';
+import {
+  douglasPeucker,
+  douglasPeuckerArray,
+  quantizeArray,
+} from '../geom/flat/simplify.js';
 import {extend} from '../array.js';
 import {
   getInteriorPointOfArray,
@@ -29,7 +34,14 @@ import {get as getProjection} from '../proj.js';
 import {inflateEnds} from '../geom/flat/orient.js';
 import {interpolatePoint} from '../geom/flat/interpolate.js';
 import {linearRingss as linearRingssCenter} from '../geom/flat/center.js';
+import {memoizeOne} from '../functions.js';
 import {transform2D} from '../geom/flat/transform.js';
+
+/**
+ * @typedef {'Point' | 'LineString' | 'LinearRing' | 'Polygon' | 'MultiPoint' | 'MultiLineString'} Type
+ * The geometry type.  One of `'Point'`, `'LineString'`, `'LinearRing'`,
+ * `'Polygon'`, `'MultiPoint'` or 'MultiLineString'`.
+ */
 
 /**
  * @type {import("../transform.js").Transform}
@@ -43,14 +55,15 @@ const tmpTransform = createTransform();
  */
 class RenderFeature {
   /**
-   * @param {import("../geom/Geometry.js").Type} type Geometry type.
+   * @param {Type} type Geometry type.
    * @param {Array<number>} flatCoordinates Flat coordinates. These always need
    *     to be right-handed for polygons.
-   * @param {Array<number>|Array<Array<number>>} ends Ends or Endss.
+   * @param {Array<number>} ends Ends.
+   * @param {number} stride Stride.
    * @param {Object<string, *>} properties Properties.
    * @param {number|string|undefined} id Feature id.
    */
-  constructor(type, flatCoordinates, ends, properties, id) {
+  constructor(type, flatCoordinates, ends, stride, properties, id) {
     /**
      * @type {import("../style/Style.js").StyleFunction|undefined}
      */
@@ -70,7 +83,7 @@ class RenderFeature {
 
     /**
      * @private
-     * @type {import("../geom/Geometry.js").Type}
+     * @type {Type}
      */
     this.type_ = type;
 
@@ -94,7 +107,7 @@ class RenderFeature {
 
     /**
      * @private
-     * @type {Array<number>|Array<Array<number>>}
+     * @type {Array<number>}
      */
     this.ends_ = ends;
 
@@ -103,6 +116,22 @@ class RenderFeature {
      * @type {Object<string, *>}
      */
     this.properties_ = properties;
+
+    /**
+     * @type {number}
+     */
+    this.squaredTolerance_;
+
+    /**
+     * @type {number}
+     */
+    this.stride_ = stride;
+
+    /**
+     * @private
+     * @type {RenderFeature}
+     */
+    this.simplifiedGeometry_;
   }
 
   /**
@@ -158,16 +187,12 @@ class RenderFeature {
    */
   getFlatInteriorPoints() {
     if (!this.flatInteriorPoints_) {
-      const flatCenters = linearRingssCenter(
-        this.flatCoordinates_,
-        0,
-        /** @type {Array<Array<number>>} */ (this.ends_),
-        2
-      );
+      const ends = inflateEnds(this.flatCoordinates_, this.ends_);
+      const flatCenters = linearRingssCenter(this.flatCoordinates_, 0, ends, 2);
       this.flatInteriorPoints_ = getInteriorPointsOfMultiArray(
         this.flatCoordinates_,
         0,
-        /** @type {Array<Array<number>>} */ (this.ends_),
+        ends,
         2,
         flatCenters
       );
@@ -247,7 +272,6 @@ class RenderFeature {
 
   /**
    * Get a transformed and simplified version of the geometry.
-   * @abstract
    * @param {number} squaredTolerance Squared tolerance.
    * @param {import("../proj.js").TransformFunction} [transform] Optional transform function.
    * @return {RenderFeature} Simplified geometry.
@@ -266,10 +290,19 @@ class RenderFeature {
   }
 
   /**
+   * Get an object of all property names and values.  This has the same behavior as getProperties,
+   * but is here to conform with the {@link module:ol/Feature~Feature} interface.
+   * @return {Object<string, *>?} Object.
+   */
+  getPropertiesInternal() {
+    return this.properties_;
+  }
+
+  /**
    * @return {number} Stride.
    */
   getStride() {
-    return 2;
+    return this.stride_;
   }
 
   /**
@@ -281,7 +314,7 @@ class RenderFeature {
 
   /**
    * Get the type of this feature's geometry.
-   * @return {import("../geom/Geometry.js").Type} Geometry type.
+   * @return {Type} Geometry type.
    * @api
    */
   getType() {
@@ -319,15 +352,112 @@ class RenderFeature {
       );
     }
   }
+
   /**
-   * @return {Array<number>|Array<Array<number>>} Ends or endss.
+   * Apply a transform function to the coordinates of the geometry.
+   * The geometry is modified in place.
+   * If you do not want the geometry modified in place, first `clone()` it and
+   * then use this function on the clone.
+   * @param {import("../proj.js").TransformFunction} transformFn Transform function.
+   */
+  applyTransform(transformFn) {
+    transformFn(this.flatCoordinates_, this.flatCoordinates_, this.stride_);
+  }
+
+  /**
+   * @return {RenderFeature} A cloned render feature.
+   */
+  clone() {
+    return new RenderFeature(
+      this.type_,
+      this.flatCoordinates_.slice(),
+      this.ends_.slice(),
+      this.stride_,
+      Object.assign({}, this.properties_),
+      this.id_
+    );
+  }
+
+  /**
+   * @return {Array<number>} Ends.
    */
   getEnds() {
     return this.ends_;
   }
-}
 
-RenderFeature.prototype.getEndss = RenderFeature.prototype.getEnds;
+  /**
+   * Add transform and resolution based geometry simplification to this instance.
+   * @return {RenderFeature} This render feature.
+   */
+  enableSimplifyTransformed() {
+    this.simplifyTransformed = memoizeOne((squaredTolerance, transform) => {
+      if (squaredTolerance === this.squaredTolerance_) {
+        return this.simplifiedGeometry_;
+      }
+      this.simplifiedGeometry_ = this.clone();
+      if (transform) {
+        this.simplifiedGeometry_.applyTransform(transform);
+      }
+      const simplifiedFlatCoordinates =
+        this.simplifiedGeometry_.getFlatCoordinates();
+      let simplifiedEnds;
+      switch (this.type_) {
+        case 'LineString':
+          simplifiedFlatCoordinates.length = douglasPeucker(
+            simplifiedFlatCoordinates,
+            0,
+            this.simplifiedGeometry_.flatCoordinates_.length,
+            this.simplifiedGeometry_.stride_,
+            squaredTolerance,
+            simplifiedFlatCoordinates,
+            0
+          );
+          simplifiedEnds = [simplifiedFlatCoordinates.length];
+          break;
+        case 'MultiLineString':
+          simplifiedEnds = [];
+          simplifiedFlatCoordinates.length = douglasPeuckerArray(
+            simplifiedFlatCoordinates,
+            0,
+            this.simplifiedGeometry_.ends_,
+            this.simplifiedGeometry_.stride_,
+            squaredTolerance,
+            simplifiedFlatCoordinates,
+            0,
+            simplifiedEnds
+          );
+          break;
+        case 'Polygon':
+          simplifiedEnds = [];
+          simplifiedFlatCoordinates.length = quantizeArray(
+            simplifiedFlatCoordinates,
+            0,
+            this.simplifiedGeometry_.ends_,
+            this.simplifiedGeometry_.stride_,
+            Math.sqrt(squaredTolerance),
+            simplifiedFlatCoordinates,
+            0,
+            simplifiedEnds
+          );
+          break;
+        default:
+      }
+      if (simplifiedEnds) {
+        this.simplifiedGeometry_ = new RenderFeature(
+          this.type_,
+          simplifiedFlatCoordinates,
+          simplifiedEnds,
+          2,
+          this.properties_,
+          this.id_
+        );
+      }
+      this.squaredTolerance_ = squaredTolerance;
+      return this.simplifiedGeometry_;
+    });
+    return this;
+  }
+}
 
 /**
  * @return {Array<number>} Flat coordinates.

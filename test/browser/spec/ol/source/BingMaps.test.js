@@ -29,6 +29,8 @@ describe('ol/source/BingMaps', function () {
       source = new BingMaps({
         imagerySet: 'AerialWithLabelsOnDemand',
         key: '',
+        placeholderTiles: false,
+        hidpi: true,
       });
 
       const client = new XMLHttpRequest();
@@ -102,6 +104,11 @@ describe('ol/source/BingMaps', function () {
         projection
       );
       expect(tileUrl.match(regex)[1]).to.equal(quadKey([6, 33, 22]));
+
+      const url = new URL(tileUrl);
+      expect(url.searchParams.get('dpi')).to.equal('d1');
+      expect(url.searchParams.get('device')).to.equal('mobile');
+      expect(url.searchParams.get('n')).to.equal('z');
     });
   });
 });

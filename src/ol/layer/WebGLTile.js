@@ -7,13 +7,14 @@ import WebGLTileLayerRenderer, {
   Attributes,
   Uniforms,
 } from '../renderer/webgl/TileLayer.js';
+import {ColorType, NumberType} from '../expr/expression.js';
 import {
   PALETTE_TEXTURE_ARRAY,
-  ValueTypes,
-  expressionToGlsl,
   getStringNumberEquivalent,
+  newCompilationContext,
   uniformNameForVariable,
-} from '../style/expressions.js';
+} from '../expr/gpu.js';
+import {expressionToGlsl} from '../webgl/styleparser.js';
 
 /**
  * @typedef {import("../source/DataTile.js").default|import("../source/TileImage.js").default} SourceType
@@ -25,18 +26,18 @@ import {
  *
  * @property {Object<string, (string|number)>} [variables] Style variables.  Each variable must hold a number or string.  These
  * variables can be used in the `color`, `brightness`, `contrast`, `exposure`, `saturation` and `gamma`
- * {@link import("../style/expressions.js").ExpressionValue expressions}, using the `['var', 'varName']` operator.
+ * {@link import("../expr/expression.js").ExpressionValue expressions}, using the `['var', 'varName']` operator.
  * To update style variables, use the {@link import("./WebGLTile.js").default#updateStyleVariables} method.
- * @property {import("../style/expressions.js").ExpressionValue} [color] An expression applied to color values.
- * @property {import("../style/expressions.js").ExpressionValue} [brightness=0] Value used to decrease or increase
+ * @property {import("../expr/expression.js").ExpressionValue} [color] An expression applied to color values.
+ * @property {import("../expr/expression.js").ExpressionValue} [brightness=0] Value used to decrease or increase
  * the layer brightness.  Values range from -1 to 1.
- * @property {import("../style/expressions.js").ExpressionValue} [contrast=0] Value used to decrease or increase
+ * @property {import("../expr/expression.js").ExpressionValue} [contrast=0] Value used to decrease or increase
  * the layer contrast.  Values range from -1 to 1.
- * @property {import("../style/expressions.js").ExpressionValue} [exposure=0] Value used to decrease or increase
+ * @property {import("../expr/expression.js").ExpressionValue} [exposure=0] Value used to decrease or increase
  * the layer exposure.  Values range from -1 to 1.
- * @property {import("../style/expressions.js").ExpressionValue} [saturation=0] Value used to decrease or increase
+ * @property {import("../expr/expression.js").ExpressionValue} [saturation=0] Value used to decrease or increase
  * the layer saturation.  Values range from -1 to 1.
- * @property {import("../style/expressions.js").ExpressionValue} [gamma=1] Apply a gamma correction to the layer.
+ * @property {import("../expr/expression.js").ExpressionValue} [gamma=1] Apply a gamma correction to the layer.
  * Values range from 0 to infinity.
  */
 
@@ -75,6 +76,7 @@ import {
  * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
  * @property {number} [cacheSize=512] The internal texture cache size.  This needs to be large enough to render
  * two zoom levels worth of tiles.
+ * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
@@ -115,52 +117,38 @@ function parseStyle(style, bandCount) {
   `;
 
   /**
-   * @type {import("../style/expressions.js").ParsingContext}
+   * @type {import("../expr/gpu.js").CompilationContext}
    */
   const context = {
+    ...newCompilationContext(),
     inFragmentShader: true,
-    variables: [],
-    attributes: [],
-    stringLiteralsMap: {},
-    functions: {},
     bandCount: bandCount,
+    style: style,
   };
 
   const pipeline = [];
 
   if (style.color !== undefined) {
-    const color = expressionToGlsl(context, style.color, ValueTypes.COLOR);
+    const color = expressionToGlsl(context, style.color, ColorType);
     pipeline.push(`color = ${color};`);
   }
 
   if (style.contrast !== undefined) {
-    const contrast = expressionToGlsl(
-      context,
-      style.contrast,
-      ValueTypes.NUMBER
-    );
+    const contrast = expressionToGlsl(context, style.contrast, NumberType);
     pipeline.push(
       `color.rgb = clamp((${contrast} + 1.0) * color.rgb - (${contrast} / 2.0), vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0));`
     );
   }
 
   if (style.exposure !== undefined) {
-    const exposure = expressionToGlsl(
-      context,
-      style.exposure,
-      ValueTypes.NUMBER
-    );
+    const exposure = expressionToGlsl(context, style.exposure, NumberType);
     pipeline.push(
       `color.rgb = clamp((${exposure} + 1.0) * color.rgb, vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0));`
     );
   }
 
   if (style.saturation !== undefined) {
-    const saturation = expressionToGlsl(
-      context,
-      style.saturation,
-      ValueTypes.NUMBER
-    );
+    const saturation = expressionToGlsl(context, style.saturation, NumberType);
     pipeline.push(`
       float saturation = ${saturation} + 1.0;
       float sr = (1.0 - saturation) * 0.2126;
@@ -176,16 +164,12 @@ function parseStyle(style, bandCount) {
   }
 
   if (style.gamma !== undefined) {
-    const gamma = expressionToGlsl(context, style.gamma, ValueTypes.NUMBER);
+    const gamma = expressionToGlsl(context, style.gamma, NumberType);
     pipeline.push(`color.rgb = pow(color.rgb, vec3(1.0 / ${gamma}));`);
   }
 
   if (style.brightness !== undefined) {
-    const brightness = expressionToGlsl(
-      context,
-      style.brightness,
-      ValueTypes.NUMBER
-    );
+    const brightness = expressionToGlsl(context, style.brightness, NumberType);
     pipeline.push(
       `color.rgb = clamp(color.rgb + ${brightness}, vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0));`
     );
@@ -194,7 +178,7 @@ function parseStyle(style, bandCount) {
   /** @type {Object<string,import("../webgl/Helper").UniformValue>} */
   const uniforms = {};
 
-  const numVariables = context.variables.length;
+  const numVariables = Object.keys(context.variables).length;
   if (numVariables > 1 && !style.variables) {
     throw new Error(
       `Missing variables in style (expected ${context.variables})`
@@ -202,15 +186,15 @@ function parseStyle(style, bandCount) {
   }
 
   for (let i = 0; i < numVariables; ++i) {
-    const variableName = context.variables[i];
-    if (!(variableName in style.variables)) {
-      throw new Error(`Missing '${variableName}' in style variables`);
+    const variable = context.variables[Object.keys(context.variables)[i]];
+    if (!(variable.name in style.variables)) {
+      throw new Error(`Missing '${variable.name}' in style variables`);
     }
-    const uniformName = uniformNameForVariable(variableName);
+    const uniformName = uniformNameForVariable(variable.name);
     uniforms[uniformName] = function () {
-      let value = style.variables[variableName];
+      let value = style.variables[variable.name];
       if (typeof value === 'string') {
-        value = getStringNumberEquivalent(context, value);
+        value = getStringNumberEquivalent(value);
       }
       return value !== undefined ? value : -9999999; // to avoid matching with the first string literal
     };
@@ -272,10 +256,6 @@ function parseStyle(style, bandCount) {
       }[0],  v_textureCoord);
 
       ${pipeline.join('\n')}
-
-      if (color.a == 0.0) {
-        discard;
-      }
 
       gl_FragColor = color;
       gl_FragColor.rgb *= gl_FragColor.a;

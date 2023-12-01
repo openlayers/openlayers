@@ -1,19 +1,23 @@
 import Map from '../src/ol/Map.js';
-import Stamen from '../src/ol/source/Stamen.js';
+import StadiaMaps from '../src/ol/source/StadiaMaps.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
 import {fromLonLat} from '../src/ol/proj.js';
 
 const map = new Map({
   layers: [
+    // NOTE: Layers from Stadia Maps do not require an API key for localhost development or most production
+    // web deployments. See https://docs.stadiamaps.com/authentication/ for details.
     new TileLayer({
-      source: new Stamen({
-        layer: 'watercolor',
+      source: new StadiaMaps({
+        layer: 'stamen_watercolor',
+        // apiKey: 'OPTIONAL'
       }),
     }),
     new TileLayer({
-      source: new Stamen({
-        layer: 'terrain-labels',
+      source: new StadiaMaps({
+        layer: 'stamen_terrain_labels',
+        // apiKey: 'OPTIONAL'
       }),
     }),
   ],

@@ -34,7 +34,7 @@ class SimpleGeometry extends Geometry {
      * @protected
      * @type {Array<number>}
      */
-    this.flatCoordinates = null;
+    this.flatCoordinates;
   }
 
   /**
@@ -174,7 +174,6 @@ class SimpleGeometry extends Geometry {
    * @protected
    */
   setLayout(layout, coordinates, nesting) {
-    /** @type {number} */
     let stride;
     if (layout) {
       stride = getStrideForLayout(layout);
@@ -185,7 +184,7 @@ class SimpleGeometry extends Geometry {
           this.stride = 2;
           return;
         }
-        coordinates = /** @type {Array} */ (coordinates[0]);
+        coordinates = /** @type {Array<unknown>} */ (coordinates[0]);
       }
       stride = coordinates.length;
       layout = getLayoutForStride(stride);
@@ -296,7 +295,7 @@ class SimpleGeometry extends Geometry {
  * @param {number} stride Stride.
  * @return {import("./Geometry.js").GeometryLayout} layout Layout.
  */
-function getLayoutForStride(stride) {
+export function getLayoutForStride(stride) {
   let layout;
   if (stride == 2) {
     layout = 'XY';

@@ -79,8 +79,8 @@ class PriorityQueue {
       elements.length = 0;
       priorities.length = 0;
     } else {
-      elements[0] = elements.pop();
-      priorities[0] = priorities.pop();
+      elements[0] = /** @type {T} */ (elements.pop());
+      priorities[0] = /** @type {number} */ (priorities.pop());
       this.siftUp_(0);
     }
     const elementKey = this.keyFunction_(element);
@@ -94,7 +94,10 @@ class PriorityQueue {
    * @return {boolean} The element was added to the queue.
    */
   enqueue(element) {
-    assert(!(this.keyFunction_(element) in this.queuedElements_), 31); // Tried to enqueue an `element` that was already added to the queue
+    assert(
+      !(this.keyFunction_(element) in this.queuedElements_),
+      'Tried to enqueue an `element` that was already added to the queue'
+    );
     const priority = this.priorityFunction_(element);
     if (priority != DROP) {
       this.elements_.push(element);

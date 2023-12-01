@@ -117,7 +117,7 @@ class BaseObject extends Observable {
 
     /**
      * @private
-     * @type {Object<string, *>}
+     * @type {Object<string, *>|null}
      */
     this.values_ = null;
 
@@ -156,6 +156,14 @@ class BaseObject extends Observable {
    */
   getProperties() {
     return (this.values_ && Object.assign({}, this.values_)) || {};
+  }
+
+  /**
+   * Get an object of all property names and values.
+   * @return {Object<string, *>?} Object.
+   */
+  getPropertiesInternal() {
+    return this.values_;
   }
 
   /**

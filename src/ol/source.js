@@ -17,10 +17,12 @@ export {default as ImageCanvas} from './source/ImageCanvas.js';
 export {default as ImageMapGuide} from './source/ImageMapGuide.js';
 export {default as ImageStatic} from './source/ImageStatic.js';
 export {default as ImageWMS} from './source/ImageWMS.js';
+export {default as OGCMapTile} from './source/OGCMapTile.js';
+export {default as OGCVectorTile} from './source/OGCVectorTile.js';
 export {default as OSM} from './source/OSM.js';
 export {default as Raster} from './source/Raster.js';
 export {default as Source} from './source/Source.js';
-export {default as Stamen} from './source/Stamen.js';
+export {default as StadiaMaps} from './source/StadiaMaps.js';
 export {default as Tile} from './source/Tile.js';
 export {default as TileArcGISRest} from './source/TileArcGISRest.js';
 export {default as TileDebug} from './source/TileDebug.js';
@@ -34,6 +36,10 @@ export {default as VectorTile} from './source/VectorTile.js';
 export {default as WMTS} from './source/WMTS.js';
 export {default as XYZ} from './source/XYZ.js';
 export {default as Zoomify} from './source/Zoomify.js';
+export {createLoader as createWMSLoader} from './source/wms.js';
+export {createLoader as createArcGISRestLoader} from './source/arcgisRest.js';
+export {createLoader as createStaticLoader} from './source/static.js';
+export {createLoader as createMapGuideLoader} from './source/mapguide.js';
 
 /**
  * Creates a sources function from a tile grid. This function can be used as value for the

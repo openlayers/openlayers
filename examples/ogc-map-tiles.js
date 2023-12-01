@@ -8,7 +8,7 @@ const map = new Map({
   layers: [
     new TileLayer({
       source: new OGCMapTile({
-        url: 'https://maps.ecere.com/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad',
+        url: 'https://maps.gnosis.earth/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad',
       }),
     }),
   ],

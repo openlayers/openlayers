@@ -35,13 +35,13 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @protected
-     * @type {?import("../../ImageBase.js").default}
+     * @type {?import("../../Image.js").default}
      */
     this.image_ = null;
   }
 
   /**
-   * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
+   * @return {import('../../DataTile.js').ImageLike} Image.
    */
   getImage() {
     return !this.image_ ? null : this.image_.getImage();
@@ -153,14 +153,19 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     const image = this.image_;
     const imageExtent = image.getExtent();
     const imageResolution = image.getResolution();
+    const [imageResolutionX, imageResolutionY] = Array.isArray(imageResolution)
+      ? imageResolution
+      : [imageResolution, imageResolution];
     const imagePixelRatio = image.getPixelRatio();
     const layerState = frameState.layerStatesArray[frameState.layerIndex];
     const pixelRatio = frameState.pixelRatio;
     const viewState = frameState.viewState;
     const viewCenter = viewState.center;
     const viewResolution = viewState.resolution;
-    const scale =
-      (pixelRatio * imageResolution) / (viewResolution * imagePixelRatio);
+    const scaleX =
+      (pixelRatio * imageResolutionX) / (viewResolution * imagePixelRatio);
+    const scaleY =
+      (pixelRatio * imageResolutionY) / (viewResolution * imagePixelRatio);
 
     const extent = frameState.extent;
     const resolution = viewState.resolution;
@@ -217,14 +222,14 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       this.tempTransform,
       width / 2,
       height / 2,
-      scale,
-      scale,
+      scaleX,
+      scaleY,
       0,
-      (imagePixelRatio * (imageExtent[0] - viewCenter[0])) / imageResolution,
-      (imagePixelRatio * (viewCenter[1] - imageExtent[3])) / imageResolution
+      (imagePixelRatio * (imageExtent[0] - viewCenter[0])) / imageResolutionX,
+      (imagePixelRatio * (viewCenter[1] - imageExtent[3])) / imageResolutionY
     );
 
-    this.renderedResolution = (imageResolution * pixelRatio) / imagePixelRatio;
+    this.renderedResolution = (imageResolutionY * pixelRatio) / imagePixelRatio;
 
     const dw = img.width * transform[0];
     const dh = img.height * transform[3];

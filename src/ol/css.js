@@ -78,6 +78,7 @@ const fontRegEx = new RegExp(
   ].join(''),
   'i'
 );
+/** @type {Array<'style'|'variant'|'weight'|'size'|'lineHeight'|'family'>} */
 const fontRegExMatchIndex = [
   'style',
   'variant',

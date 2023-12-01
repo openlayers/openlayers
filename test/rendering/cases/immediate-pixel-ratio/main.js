@@ -18,7 +18,6 @@ const pointStyle = new Style({
   image: new Icon({
     img: img,
     size: [10, 10],
-    imgSize: [10, 10],
   }),
 });
 const line = new LineString(coordinates);

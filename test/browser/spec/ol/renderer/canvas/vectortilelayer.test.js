@@ -14,6 +14,7 @@ import VectorTileLayer from '../../../../../../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../../../../../../src/ol/source/VectorTile.js';
 import View from '../../../../../../src/ol/View.js';
 import XYZ from '../../../../../../src/ol/source/XYZ.js';
+import {VOID} from '../../../../../../src/ol/functions.js';
 import {checkedFonts} from '../../../../../../src/ol/render/canvas.js';
 import {create} from '../../../../../../src/ol/transform.js';
 import {createFontStyle} from '../../../util.js';
@@ -73,7 +74,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       ];
       feature1 = new Feature(new Point([1, -1]));
       feature2 = new Feature(new Point([0, 0]));
-      feature3 = new RenderFeature('Point', [1, -1], []);
+      feature3 = new RenderFeature('Point', [1, -1], [], 2);
       feature2.setStyle(featureStyle);
       class TileClass extends VectorTile {
         constructor() {
@@ -328,12 +329,17 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
     });
 
     it('changes background when function returns a different color', function (done) {
-      let first = true;
+      let count = 0;
       layer.setBackground(function (resolution) {
+        const backgrounds = [
+          undefined,
+          'rgba(255, 0, 0, 0.5)',
+          'rgba(0, 0, 255, 0.5)',
+          undefined,
+        ];
+
         expect(resolution).to.be(map.getView().getResolution());
-        const background = first === true ? undefined : 'rgba(255, 0, 0, 0.5)';
-        first = false;
-        return background;
+        return backgrounds[count++];
       });
       map.once('rendercomplete', function () {
         expect(layer.getRenderer().container.style.backgroundColor).to.be('');
@@ -341,6 +347,12 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         expect(layer.getRenderer().container.style.backgroundColor).to.be(
           'rgba(255, 0, 0, 0.5)'
         );
+        map.renderSync();
+        expect(layer.getRenderer().container.style.backgroundColor).to.be(
+          'rgba(0, 0, 255, 0.5)'
+        );
+        map.renderSync();
+        expect(layer.getRenderer().container.style.backgroundColor).to.be('');
         done();
       });
     });
@@ -409,7 +421,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         }),
       });
       const sourceTile = new VectorTile([0, 0, 0], 2);
-      sourceTile.features_ = [new RenderFeature('Point', [0, 0])];
+      sourceTile.features_ = [new RenderFeature('Point', [0, 0], [], 2)];
       sourceTile.getImage = function () {
         return document.createElement('canvas');
       };
@@ -446,7 +458,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         wantedTiles: {},
       };
 
-      renderer.container = {};
+      renderer.container = document.createElement('div');
       const sequence = [];
       renderer.context = {
         clearRect: () => sequence.push('clearRect'),
@@ -595,6 +607,54 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
           expect(features).to.be.empty();
           done();
         }, 200);
+      });
+    });
+
+    it('does not fail after flushDeclutterItems()', (done) => {
+      const target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      const extent = [
+        1824704.739223726, 6141868.096770482, 1827150.7241288517,
+        6144314.081675608,
+      ];
+      const source = new VectorTileSource({
+        format: new MVT(),
+        url: 'spec/ol/data/14-8938-5680.vector.pbf',
+        minZoom: 14,
+        maxZoom: 14,
+      });
+      const layer = new VectorTileLayer({
+        declutter: true,
+        extent: extent,
+        source: source,
+      });
+      const map = new Map({
+        target: target,
+        layers: [layer],
+        view: new View({
+          center: getCenter(extent),
+          zoom: 14,
+        }),
+      });
+      map.once('rendercomplete', () => {
+        setTimeout(() => {
+          map.setTarget(null);
+          document.body.removeChild(target);
+        }, 0);
+        expect(() => {
+          layer
+            .getRenderer()
+            .forEachFeatureAtCoordinate(
+              getCenter(extent),
+              map.frameState_,
+              1,
+              VOID,
+              []
+            );
+        }).to.not.throwException();
+        done();
       });
     });
   });

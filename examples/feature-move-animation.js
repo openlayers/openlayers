@@ -40,7 +40,7 @@ const map = new Map({
   ],
 });
 
-// The polyline string is read from a JSON similiar to those returned
+// The polyline string is read from a JSON similar to those returned
 // by directions APIs such as Openrouteservice and Mapbox.
 fetch('data/polyline/route.json').then(function (response) {
   response.json().then(function (result) {

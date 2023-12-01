@@ -3,7 +3,7 @@ import Map from '../src/ol/Map.js';
 import Point from '../src/ol/geom/Point.js';
 import View from '../src/ol/View.js';
 import {Icon, Style} from '../src/ol/style.js';
-import {Stamen, Vector as VectorSource} from '../src/ol/source.js';
+import {StadiaMaps, Vector as VectorSource} from '../src/ol/source.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 
 const iconFeature = new Feature({
@@ -19,8 +19,8 @@ const vectorLayer = new VectorLayer({
 });
 
 const rasterLayer = new TileLayer({
-  source: new Stamen({
-    layer: 'toner',
+  source: new StadiaMaps({
+    layer: 'stamen_toner',
   }),
 });
 
@@ -43,7 +43,6 @@ gif.frames(
         new Style({
           image: new Icon({
             img: ctx.canvas,
-            imgSize: [frame.width, frame.height],
             opacity: 0.8,
           }),
         })

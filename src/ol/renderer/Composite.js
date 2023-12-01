@@ -59,6 +59,11 @@ class CompositeMapRenderer extends MapRenderer {
      * @type {boolean}
      */
     this.renderedVisible_ = true;
+
+    /**
+     * @type {Array<import("../layer/BaseVector.js").default>}
+     */
+    this.declutterLayers_ = [];
   }
 
   /**
@@ -101,10 +106,10 @@ class CompositeMapRenderer extends MapRenderer {
     const viewState = frameState.viewState;
 
     this.children_.length = 0;
-    /**
-     * @type {Array<import("../layer/BaseVector.js").default>}
-     */
-    const declutterLayers = [];
+
+    const declutterLayers = this.declutterLayers_;
+    declutterLayers.length = 0;
+
     let previousElement = null;
     for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       const layerState = layerStatesArray[i];
@@ -134,9 +139,7 @@ class CompositeMapRenderer extends MapRenderer {
         );
       }
     }
-    for (let i = declutterLayers.length - 1; i >= 0; --i) {
-      declutterLayers[i].renderDeclutter(frameState);
-    }
+    this.flushDeclutterItems(frameState);
 
     replaceChildren(this.element_, this.children_);
 
@@ -148,6 +151,17 @@ class CompositeMapRenderer extends MapRenderer {
     }
 
     this.scheduleExpireIconCache(frameState);
+  }
+
+  /**
+   * @param {import("../Map.js").FrameState} frameState Frame state.
+   */
+  flushDeclutterItems(frameState) {
+    const layers = this.declutterLayers_;
+    for (let i = layers.length - 1; i >= 0; --i) {
+      layers[i].renderDeclutter(frameState, frameState.layerStatesArray[i]);
+    }
+    layers.length = 0;
   }
 }
 

@@ -109,6 +109,11 @@
 
 .ol-viewport canvas {
   all: unset;
+  overflow: hidden;
+}
+
+.ol-viewport {
+  touch-action: pan-x pan-y;
 }
 
 .ol-selectable {

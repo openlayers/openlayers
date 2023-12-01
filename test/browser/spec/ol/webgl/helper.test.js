@@ -118,19 +118,21 @@ describe('ol/webgl/WebGLHelper', function () {
 
   describe('operations', function () {
     describe('prepare draw', function () {
+      let program, uniformTexture;
       beforeEach(function () {
+        uniformTexture = null;
         h = new WebGLHelper({
           uniforms: {
             u_test1: 42,
             u_test2: [1, 3],
             u_test3: document.createElement('canvas'),
             u_test4: createTransform(),
+            u_test5: () => uniformTexture,
           },
         });
-        h.useProgram(
-          h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER),
-          SAMPLE_FRAMESTATE
-        );
+        uniformTexture = h.getGL().createTexture();
+        program = h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER);
+        h.useProgram(program, SAMPLE_FRAMESTATE);
         h.prepareDraw({
           pixelRatio: 2,
           size: [50, 80],
@@ -148,36 +150,58 @@ describe('ol/webgl/WebGLHelper', function () {
       });
 
       it('has processed default uniforms', function () {
-        expect(
-          h.uniformLocations_[DefaultUniform.OFFSET_ROTATION_MATRIX]
-        ).not.to.eql(undefined);
-        expect(
-          h.uniformLocations_[DefaultUniform.OFFSET_SCALE_MATRIX]
-        ).not.to.eql(undefined);
-        expect(h.uniformLocations_[DefaultUniform.TIME]).not.to.eql(undefined);
-        expect(h.uniformLocations_[DefaultUniform.ZOOM]).not.to.eql(undefined);
-        expect(h.uniformLocations_[DefaultUniform.RESOLUTION]).not.to.eql(
+        const uniformLocations = h.uniformLocationsByProgram_[getUid(program)];
+        expect(uniformLocations[DefaultUniform.TIME]).not.to.eql(undefined);
+        expect(uniformLocations[DefaultUniform.ZOOM]).not.to.eql(undefined);
+        expect(uniformLocations[DefaultUniform.RESOLUTION]).not.to.eql(
           undefined
         );
-        expect(h.uniformLocations_[DefaultUniform.SIZE_PX]).not.to.eql(
+        expect(uniformLocations[DefaultUniform.VIEWPORT_SIZE_PX]).not.to.eql(
           undefined
         );
-        expect(h.uniformLocations_[DefaultUniform.PIXEL_RATIO]).not.to.eql(
+        expect(uniformLocations[DefaultUniform.PIXEL_RATIO]).not.to.eql(
           undefined
         );
+        expect(uniformLocations[DefaultUniform.ROTATION]).not.to.eql(undefined);
       });
 
       it('has processed uniforms', function () {
-        expect(h.uniforms_.length).to.eql(4);
+        expect(h.uniforms_.length).to.eql(5);
         expect(h.uniforms_[0].name).to.eql('u_test1');
         expect(h.uniforms_[1].name).to.eql('u_test2');
         expect(h.uniforms_[2].name).to.eql('u_test3');
         expect(h.uniforms_[3].name).to.eql('u_test4');
+        expect(h.uniforms_[4].name).to.eql('u_test5');
         expect(h.uniforms_[0].location).to.not.eql(-1);
         expect(h.uniforms_[1].location).to.not.eql(-1);
         expect(h.uniforms_[2].location).to.not.eql(-1);
         expect(h.uniforms_[3].location).to.not.eql(-1);
+        expect(h.uniforms_[4].location).to.not.eql(-1);
         expect(h.uniforms_[2].texture).to.not.eql(undefined);
+        expect(h.uniforms_[4].texture).to.eql(uniformTexture);
+      });
+
+      describe('avoid resizing the canvas if not required', () => {
+        let widthSpy, heightSpy;
+        beforeEach(function () {
+          widthSpy = sinon.spy(h.getCanvas(), 'width', ['set']);
+          heightSpy = sinon.spy(h.getCanvas(), 'height', ['set']);
+          // same size and pixel ratio
+          h.prepareDraw({
+            pixelRatio: 2,
+            size: [50, 80],
+            viewState: {
+              rotation: 10,
+              resolution: 10,
+              center: [0, 0],
+            },
+          });
+        });
+
+        it('does not resize the canvas', function () {
+          expect(widthSpy.set.callCount).to.be(0);
+          expect(heightSpy.set.callCount).to.be(0);
+        });
       });
     });
 
@@ -226,7 +250,7 @@ describe('ol/webgl/WebGLHelper', function () {
         expect(() =>
           h.getProgram(INVALID_FRAGMENT_SHADER, VERTEX_SHADER)
         ).to.throwException(
-          /Fragment shader compliation failed: ERROR: 0:5: 'oops' : undeclared identifier/
+          /Fragment shader compilation failed: ERROR: 0:5: 'oops' : undeclared identifier/
         );
       });
     });
@@ -426,12 +450,11 @@ describe('ol/webgl/WebGLHelper', function () {
   });
 
   describe('#applyFrameState', function () {
-    let stubMatrix, stubFloat, stubVec2, stubTime;
+    let stubFloat, stubVec2, stubTime;
     beforeEach(function () {
       stubTime = sinon.stub(Date, 'now');
       stubTime.returns(1000);
       h = new WebGLHelper();
-      stubMatrix = sinon.stub(h, 'setUniformMatrixValue');
       stubFloat = sinon.stub(h, 'setUniformFloatValue');
       stubVec2 = sinon.stub(h, 'setUniformFloatVec2');
 
@@ -444,28 +467,13 @@ describe('ol/webgl/WebGLHelper', function () {
     });
 
     it('sets the default uniforms according the frame state', function () {
-      expect(stubMatrix.getCall(0).args).to.eql([
-        DefaultUniform.OFFSET_SCALE_MATRIX,
-        [
-          0.9210609940028851, -0.3894183423086505, 0, 0, 0.3894183423086505,
-          0.9210609940028851, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1,
-        ],
-      ]);
-      expect(stubMatrix.getCall(1).args).to.eql([
-        DefaultUniform.OFFSET_ROTATION_MATRIX,
-        [
-          0.9210609940028851, -0.3894183423086505, 0, 0, 0.3894183423086505,
-          0.9210609940028851, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1,
-        ],
-      ]);
-
       expect(stubFloat.getCall(0).args).to.eql([DefaultUniform.TIME, 1]);
       expect(stubFloat.getCall(1).args).to.eql([DefaultUniform.ZOOM, 3]);
       expect(stubFloat.getCall(2).args).to.eql([DefaultUniform.RESOLUTION, 2]);
       expect(stubFloat.getCall(3).args).to.eql([DefaultUniform.PIXEL_RATIO, 2]);
-
+      expect(stubFloat.getCall(4).args).to.eql([DefaultUniform.ROTATION, 0.4]);
       expect(stubVec2.getCall(0).args).to.eql([
-        DefaultUniform.SIZE_PX,
+        DefaultUniform.VIEWPORT_SIZE_PX,
         [100, 150],
       ]);
     });

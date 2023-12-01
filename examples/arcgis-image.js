@@ -4,8 +4,8 @@ import {ImageArcGISRest, OSM} from '../src/ol/source.js';
 import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
 
 const url =
-  'https://sampleserver1.arcgisonline.com/ArcGIS/rest/services/' +
-  'Specialty/ESRI_StateCityHighway_USA/MapServer';
+  'https://sampleserver6.arcgisonline.com/ArcGIS/rest/services/' +
+  'USA/MapServer';
 
 const layers = [
   new TileLayer({

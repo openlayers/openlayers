@@ -37,13 +37,24 @@ describe('ol.source.Cluster', function () {
       expect(source.getFeatures().length).to.be(1);
       expect(source.getFeatures()[0].get('features').length).to.be(2);
     });
+    it('clusters a source with point and null features', function () {
+      const source = new Cluster({
+        source: new VectorSource({
+          features: [new Feature(new Point([0, 0])), new Feature()],
+        }),
+      });
+      source.loadFeatures(extent, 1, projection);
+      expect(source.getFeatures().length).to.be(1);
+      expect(source.getFeatures()[0].get('features').length).to.be(1);
+    });
     it('clusters with a custom geometryFunction', function () {
       const source = new Cluster({
         geometryFunction: function (feature) {
           const geom = feature.getGeometry();
           if (geom.getType() == 'Point') {
             return geom;
-          } else if (geom.getType() == 'Polygon') {
+          }
+          if (geom.getType() == 'Polygon') {
             return geom.getInteriorPoint();
           }
           return null;

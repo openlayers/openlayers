@@ -40,19 +40,19 @@ class Target extends Disposable {
 
     /**
      * @private
-     * @type {Object<string, number>}
+     * @type {Object<string, number>|null}
      */
     this.pendingRemovals_ = null;
 
     /**
      * @private
-     * @type {Object<string, number>}
+     * @type {Object<string, number>|null}
      */
     this.dispatching_ = null;
 
     /**
      * @private
-     * @type {Object<string, Array<import("../events.js").Listener>>}
+     * @type {Object<string, Array<import("../events.js").Listener>>|null}
      */
     this.listeners_ = null;
   }
@@ -166,19 +166,23 @@ class Target extends Disposable {
    * @param {import("../events.js").Listener} listener Listener.
    */
   removeEventListener(type, listener) {
-    const listeners = this.listeners_ && this.listeners_[type];
-    if (listeners) {
-      const index = listeners.indexOf(listener);
-      if (index !== -1) {
-        if (this.pendingRemovals_ && type in this.pendingRemovals_) {
-          // make listener a no-op, and remove later in #dispatchEvent()
-          listeners[index] = VOID;
-          ++this.pendingRemovals_[type];
-        } else {
-          listeners.splice(index, 1);
-          if (listeners.length === 0) {
-            delete this.listeners_[type];
-          }
+    if (!this.listeners_) {
+      return;
+    }
+    const listeners = this.listeners_[type];
+    if (!listeners) {
+      return;
+    }
+    const index = listeners.indexOf(listener);
+    if (index !== -1) {
+      if (this.pendingRemovals_ && type in this.pendingRemovals_) {
+        // make listener a no-op, and remove later in #dispatchEvent()
+        listeners[index] = VOID;
+        ++this.pendingRemovals_[type];
+      } else {
+        listeners.splice(index, 1);
+        if (listeners.length === 0) {
+          delete this.listeners_[type];
         }
       }
     }

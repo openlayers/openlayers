@@ -35,6 +35,8 @@ const DEFAULT_FILL_COLOR = '#333';
  * @property {boolean} [overflow=false] For polygon labels or when `placement` is set to `'line'`, allow text to exceed
  * the width of the polygon at the label position or the length of the path that it follows.
  * @property {TextPlacement} [placement='point'] Text placement.
+ * @property {number} [repeat] Repeat interval. When set, the text will be repeated at this interval, which specifies
+ * the distance between two text anchors in pixels. Only available when `placement` is set to `'line'`. Overrides 'textAlign'.
  * @property {number|import("../size.js").Size} [scale] Scale.
  * @property {boolean} [rotateWithView=false] Whether to rotate the text with the view.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
@@ -42,7 +44,7 @@ const DEFAULT_FILL_COLOR = '#333';
  * contain line breaks (`\n`). For rich text provide an array of text/font tuples. A tuple consists of the text to
  * render and the font to use (or `''` to use the text style's font). A line break has to be a separate tuple (i.e. `'\n', ''`).
  * **Example:** `['foo', 'bold 10px sans-serif', ' bar', 'italic 10px sans-serif', ' baz', '']` will yield "**foo** *bar* baz".
- * **Note:** Rich text is not supported for the immediate rendering API.
+ * **Note:** Rich text is not supported for `placement: 'line'` or the immediate rendering API.
  * @property {CanvasTextAlign} [textAlign] Text alignment. Possible values: `'left'`, `'right'`, `'center'`, `'end'` or `'start'`.
  * Default is `'center'` for `placement: 'point'`. For `placement: 'line'`, the default is to let the renderer choose a
  * placement where `maxAngle` is not exceeded.
@@ -52,7 +54,7 @@ const DEFAULT_FILL_COLOR = '#333';
  * **Note:** `justify` is ignored for immediate rendering and also for `placement: 'line'`.
  * @property {CanvasTextBaseline} [textBaseline='middle'] Text base line. Possible values: `'bottom'`, `'top'`, `'middle'`, `'alphabetic'`,
  * `'hanging'`, `'ideographic'`.
- * @property {import("./Fill.js").default} [fill] Fill style. If none is provided, we'll use a dark fill-style (#333).
+ * @property {import("./Fill.js").default|null} [fill] Fill style. If none is provided, we'll use a dark fill-style (#333). Specify `null` for no fill.
  * @property {import("./Stroke.js").default} [stroke] Stroke style.
  * @property {import("./Fill.js").default} [backgroundFill] Fill style for the text background when `placement` is
  * `'point'`. Default is no fill.
@@ -124,13 +126,19 @@ class Text {
 
     /**
      * @private
+     * @type {number|undefined}
+     */
+    this.repeat_ = options.repeat;
+
+    /**
+     * @private
      * @type {CanvasTextBaseline|undefined}
      */
     this.textBaseline_ = options.textBaseline;
 
     /**
      * @private
-     * @type {import("./Fill.js").default}
+     * @type {import("./Fill.js").default|null}
      */
     this.fill_ =
       options.fill !== undefined
@@ -159,7 +167,7 @@ class Text {
 
     /**
      * @private
-     * @type {import("./Stroke.js").default}
+     * @type {import("./Stroke.js").default|null}
      */
     this.stroke_ = options.stroke !== undefined ? options.stroke : null;
 
@@ -177,7 +185,7 @@ class Text {
 
     /**
      * @private
-     * @type {import("./Fill.js").default}
+     * @type {import("./Fill.js").default|null}
      */
     this.backgroundFill_ = options.backgroundFill
       ? options.backgroundFill
@@ -185,7 +193,7 @@ class Text {
 
     /**
      * @private
-     * @type {import("./Stroke.js").default}
+     * @type {import("./Stroke.js").default|null}
      */
     this.backgroundStroke_ = options.backgroundStroke
       ? options.backgroundStroke
@@ -208,6 +216,7 @@ class Text {
     return new Text({
       font: this.getFont(),
       placement: this.getPlacement(),
+      repeat: this.getRepeat(),
       maxAngle: this.getMaxAngle(),
       overflow: this.getOverflow(),
       rotation: this.getRotation(),
@@ -268,6 +277,15 @@ class Text {
   }
 
   /**
+   * Get the repeat interval of the text.
+   * @return {number|undefined} Repeat interval in pixels.
+   * @api
+   */
+  getRepeat() {
+    return this.repeat_;
+  }
+
+  /**
    * Get the x-offset for the text.
    * @return {number} Horizontal text offset.
    * @api
@@ -287,7 +305,7 @@ class Text {
 
   /**
    * Get the fill style for the text.
-   * @return {import("./Fill.js").default} Fill style.
+   * @return {import("./Fill.js").default|null} Fill style.
    * @api
    */
   getFill() {
@@ -331,7 +349,7 @@ class Text {
 
   /**
    * Get the stroke style for the text.
-   * @return {import("./Stroke.js").default} Stroke style.
+   * @return {import("./Stroke.js").default|null} Stroke style.
    * @api
    */
   getStroke() {
@@ -376,7 +394,7 @@ class Text {
 
   /**
    * Get the background fill style for the text.
-   * @return {import("./Fill.js").default} Fill style.
+   * @return {import("./Fill.js").default|null} Fill style.
    * @api
    */
   getBackgroundFill() {
@@ -385,7 +403,7 @@ class Text {
 
   /**
    * Get the background stroke style for the text.
-   * @return {import("./Stroke.js").default} Stroke style.
+   * @return {import("./Stroke.js").default|null} Stroke style.
    * @api
    */
   getBackgroundStroke() {
@@ -462,6 +480,15 @@ class Text {
   }
 
   /**
+   * Set the repeat interval of the text.
+   * @param {number|undefined} [repeat] Repeat interval in pixels.
+   * @api
+   */
+  setRepeat(repeat) {
+    this.repeat_ = repeat;
+  }
+
+  /**
    * Set whether to rotate the text with the view.
    *
    * @param {boolean} rotateWithView Rotate with map.
@@ -474,7 +501,7 @@ class Text {
   /**
    * Set the fill.
    *
-   * @param {import("./Fill.js").default} fill Fill style.
+   * @param {import("./Fill.js").default|null} fill Fill style.
    * @api
    */
   setFill(fill) {
@@ -505,7 +532,7 @@ class Text {
   /**
    * Set the stroke.
    *
-   * @param {import("./Stroke.js").default} stroke Stroke style.
+   * @param {import("./Stroke.js").default|null} stroke Stroke style.
    * @api
    */
   setStroke(stroke) {
@@ -555,7 +582,7 @@ class Text {
   /**
    * Set the background fill.
    *
-   * @param {import("./Fill.js").default} fill Fill style.
+   * @param {import("./Fill.js").default|null} fill Fill style.
    * @api
    */
   setBackgroundFill(fill) {
@@ -565,7 +592,7 @@ class Text {
   /**
    * Set the background stroke.
    *
-   * @param {import("./Stroke.js").default} stroke Stroke style.
+   * @param {import("./Stroke.js").default|null} stroke Stroke style.
    * @api
    */
   setBackgroundStroke(stroke) {

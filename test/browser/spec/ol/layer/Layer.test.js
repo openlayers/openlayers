@@ -455,6 +455,95 @@ describe('ol/layer/Layer', function () {
     });
   });
 
+  describe('#isVisible', function () {
+    let layer, view;
+
+    beforeEach(function () {
+      layer = new Layer({
+        source: new Source({
+          projection: 'EPSG:4326',
+        }),
+      });
+      view = new View({
+        projection: 'EPSG:4326',
+        center: [0, 0],
+        zoom: 0,
+      });
+    });
+
+    it('returns true if the layer is visible', function () {
+      layer.setVisible(true);
+      expect(layer.isVisible(view)).to.be(true);
+    });
+
+    it('returns false if the layer is not visible', function () {
+      layer.setVisible(false);
+      expect(layer.isVisible(view)).to.be(false);
+    });
+
+    it('returns false if the layer is not in view', function () {
+      layer.setExtent([15, 47, 16, 48]);
+      view.setZoom(14);
+      expect(layer.isVisible(view)).to.be(false);
+    });
+
+    it('returns false if the layer is not within zoom range', function () {
+      layer.setMinZoom(2);
+      expect(layer.isVisible(view)).to.be(false);
+    });
+
+    it('works without arguments on layers that are in a map', function () {
+      new Map({
+        view: view,
+        layers: [layer],
+      });
+      expect(layer.isVisible()).to.be(true);
+    });
+
+    it('throws when called without arguments', function () {
+      expect(() => layer.isVisible()).to.throwException();
+    });
+  });
+
+  describe('#getAttributions', function () {
+    const attributions = ['foo'];
+    /** @type {Layer} */
+    let layer;
+    /** @type {View} */
+    let view;
+
+    beforeEach(function () {
+      layer = new Layer({
+        source: new Source({
+          attributions: attributions,
+          projection: getProjection('EPSG:4326'),
+        }),
+      });
+      view = new View({
+        projection: 'EPSG:4326',
+        center: [0, 0],
+        zoom: 0,
+      });
+    });
+
+    it('returns the attributions', function () {
+      expect(layer.getAttributions(view)).to.be(attributions);
+    });
+
+    it('returns an empty array when the layer is not visible', function () {
+      layer.setVisible(false);
+      expect(layer.getAttributions(view)).to.eql([]);
+    });
+
+    it('returns an empty array when the layer is in a hidden group', function () {
+      new Map({
+        layers: [new Group({layers: [layer], visible: false})],
+        view: view,
+      });
+      expect(layer.getAttributions()).to.eql([]);
+    });
+  });
+
   describe('#getSource', function () {
     it('gets the layer source', function () {
       const source = new Source({projection: getProjection('EPSG:4326')});

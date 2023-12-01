@@ -2,7 +2,7 @@
 <Capabilities version="1.0.0" xmlns="http://www.opengis.net/wmts/1.0" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0.0/wmtsGetCapabilities_response.xsd">
 	<ows:ServiceIdentification>
 		<ows:Title>Web Map Tile Service</ows:Title>
-		<ows:Abstract>Service that contrains the map
+		<ows:Abstract>Service that constrains the map
 access interface to some TileMatrixSets</ows:Abstract>
 		<ows:Keywords>
 			<ows:Keyword>tile</ows:Keyword>
@@ -73,6 +73,14 @@ access interface to some TileMatrixSets</ows:Abstract>
 				<ows:LowerCorner>-180 -90</ows:LowerCorner>
 				<ows:UpperCorner>180 90</ows:UpperCorner>
 			</ows:WGS84BoundingBox>
+			<ows:BoundingBox crs="urn:ogc:def:crs:CRS::84">
+				<ows:LowerCorner>-180 -90</ows:LowerCorner>
+				<ows:UpperCorner>180 90</ows:UpperCorner>
+			</ows:BoundingBox>
+			<ows:BoundingBox>
+				<ows:LowerCorner>-180 -90</ows:LowerCorner>
+				<ows:UpperCorner>180 90</ows:UpperCorner>
+			</ows:BoundingBox>
 			<ows:Identifier>BlueMarbleNextGeneration</ows:Identifier>
 			<Style isDefault="true">
 				<ows:Title>Dark Blue</ows:Title>

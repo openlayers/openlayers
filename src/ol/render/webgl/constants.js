@@ -19,8 +19,8 @@ export const WebGLWorkerMessageType = {
  * Note that any addition properties present in the message *will* be sent back to the main thread.
  * @property {number} id Message id; will be used both in request and response as a means of identification
  * @property {WebGLWorkerMessageType} type Message type
- * @property {ArrayBuffer} renderInstructions Polygon render instructions raw binary buffer.
- * @property {number} [customAttributesCount] Amount of custom attributes count in the polygon render instructions.
+ * @property {ArrayBuffer} renderInstructions render instructions raw binary buffer.
+ * @property {number} [customAttributesSize] Amount of hit detection + custom attributes count in the render instructions.
  * @property {ArrayBuffer} [vertexBuffer] Vertices array raw binary buffer (sent by the worker).
  * @property {ArrayBuffer} [indexBuffer] Indices array raw binary buffer (sent by the worker).
  * @property {import("../../transform").Transform} [renderInstructionsTransform] Transformation matrix used to project the instructions coordinates

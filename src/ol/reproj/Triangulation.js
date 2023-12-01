@@ -126,7 +126,7 @@ class Triangulation {
       this.sourceProj_.canWrapX() &&
       !!maxSourceExtent &&
       !!this.sourceProj_.getExtent() &&
-      getWidth(maxSourceExtent) == getWidth(this.sourceProj_.getExtent());
+      getWidth(maxSourceExtent) >= getWidth(this.sourceProj_.getExtent());
 
     /**
      * @type {?number}
@@ -156,7 +156,7 @@ class Triangulation {
     /*
      * The maxSubdivision controls how many splittings of the target area can
      * be done. The idea here is to do a linear mapping of the target areas
-     * but the actual overal reprojection (can be) extremely non-linear. The
+     * but the actual overall reprojection (can be) extremely non-linear. The
      * default value of MAX_SUBDIVISION was chosen based on mapping a 256x256
      * tile size. However this function is also called to remap canvas rendered
      * layers which can be much larger. This calculation increases the maxSubdivision

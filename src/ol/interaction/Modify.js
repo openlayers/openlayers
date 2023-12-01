@@ -1184,14 +1184,18 @@ class Modify extends PointerInteraction {
       map.forEachFeatureAtPixel(
         pixel,
         (feature, layer, geometry) => {
+          if (geometry && geometry.getType() === 'Point') {
+            geometry = new Point(
+              toUserCoordinate(geometry.getCoordinates(), projection)
+            );
+          }
           const geom = geometry || feature.getGeometry();
           if (
-            geom.getType() === 'Point' &&
             feature instanceof Feature &&
             this.features_.getArray().includes(feature)
           ) {
             hitPointGeometry = /** @type {Point} */ (geom);
-            const coordinate = hitPointGeometry
+            const coordinate = /** @type {Point} */ (feature.getGeometry())
               .getFlatCoordinates()
               .slice(0, 2);
             nodes = [

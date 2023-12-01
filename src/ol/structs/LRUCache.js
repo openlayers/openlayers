@@ -7,8 +7,8 @@ import {assert} from '../asserts.js';
 /**
  * @typedef {Object} Entry
  * @property {string} key_ Key.
- * @property {Object} newer Newer.
- * @property {Object} older Older.
+ * @property {Entry|null} newer Newer.
+ * @property {Entry|null} older Older.
  * @property {*} value_ Value.
  */
 
@@ -114,10 +114,14 @@ class LRUCache {
    */
   get(key, options) {
     const entry = this.entries_[key];
-    assert(entry !== undefined, 15); // Tried to get a value for a key that does not exist in the cache
+    assert(
+      entry !== undefined,
+      'Tried to get a value for a key that does not exist in the cache'
+    );
     if (entry === this.newest_) {
       return entry.value_;
-    } else if (entry === this.oldest_) {
+    }
+    if (entry === this.oldest_) {
       this.oldest_ = /** @type {Entry} */ (this.oldest_.newer);
       this.oldest_.older = null;
     } else {
@@ -138,7 +142,10 @@ class LRUCache {
    */
   remove(key) {
     const entry = this.entries_[key];
-    assert(entry !== undefined, 15); // Tried to get a value for a key that does not exist in the cache
+    assert(
+      entry !== undefined,
+      'Tried to get a value for a key that does not exist in the cache'
+    );
     if (entry === this.newest_) {
       this.newest_ = /** @type {Entry} */ (entry.older);
       if (this.newest_) {
@@ -216,13 +223,10 @@ class LRUCache {
   /**
    * Return an entry without updating least recently used time.
    * @param {string} key Key.
-   * @return {T} Value.
+   * @return {T|undefined} Value.
    */
   peek(key) {
-    if (!this.containsKey(key)) {
-      return undefined;
-    }
-    return this.entries_[key].value_;
+    return this.entries_[key]?.value_;
   }
 
   /**
@@ -256,7 +260,10 @@ class LRUCache {
    * @param {T} value Value.
    */
   set(key, value) {
-    assert(!(key in this.entries_), 16); // Tried to set a value for a key that is used already
+    assert(
+      !(key in this.entries_),
+      'Tried to set a value for a key that is used already'
+    );
     const entry = {
       key_: key,
       newer: null,

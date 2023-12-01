@@ -158,7 +158,7 @@ describe('ol/proj.js', function () {
   describe('fromUserResolution()', function () {
     it("adjusts a resolution for the user projection's units", function () {
       useGeographic();
-      const user = 1 / METERS_PER_UNIT.degrees;
+      const user = 1 / getProjection('EPSG:4326').getMetersPerUnit();
       const resolution = fromUserResolution(user, 'EPSG:3857');
       expect(resolution).to.roughlyEqual(1, 1e-9);
     });
@@ -175,7 +175,10 @@ describe('ol/proj.js', function () {
       useGeographic();
       const dest = 1;
       const resolution = toUserResolution(dest, 'EPSG:3857');
-      expect(resolution).to.eql(1 / METERS_PER_UNIT.degrees);
+      expect(resolution).to.roughlyEqual(
+        1 / getProjection('EPSG:4326').getMetersPerUnit(),
+        1e-9
+      );
     });
 
     it('returns the original if no user projection is set', function () {

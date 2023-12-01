@@ -83,18 +83,16 @@ class Geometry extends BaseObject {
      * @param {import("../proj.js").TransformFunction} [transform] Optional transform function.
      * @return {Geometry} Simplified geometry.
      */
-    this.simplifyTransformedInternal = memoizeOne(function (
-      revision,
-      squaredTolerance,
-      transform
-    ) {
-      if (!transform) {
-        return this.getSimplifiedGeometry(squaredTolerance);
+    this.simplifyTransformedInternal = memoizeOne(
+      (revision, squaredTolerance, transform) => {
+        if (!transform) {
+          return this.getSimplifiedGeometry(squaredTolerance);
+        }
+        const clone = this.clone();
+        clone.applyTransform(transform);
+        return clone.getSimplifiedGeometry(squaredTolerance);
       }
-      const clone = this.clone();
-      clone.applyTransform(transform);
-      return clone.getSimplifiedGeometry(squaredTolerance);
-    });
+    );
   }
 
   /**

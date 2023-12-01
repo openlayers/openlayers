@@ -2,14 +2,14 @@ import Icon from '../../../../../src/ol/style/Icon.js';
 import IconImage, {
   get as getIconImage,
 } from '../../../../../src/ol/style/IconImage.js';
+import ImageState from '../../../../../src/ol/ImageState.js';
 import {getUid} from '../../../../../src/ol/util.js';
 import {shared as iconImageCache} from '../../../../../src/ol/style/IconImageCache.js';
 
 describe('ol.style.Icon', function () {
   const size = [36, 48];
   const src =
-    'data:image/gif;base64,' +
-    'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=';
+    'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=';
 
   beforeEach(function () {
     iconImageCache.clear();
@@ -19,24 +19,8 @@ describe('ol.style.Icon', function () {
       const canvas = document.createElement('canvas');
       new Icon({
         img: canvas,
-        imgSize: size,
       });
-      expect(getIconImage(canvas, getUid(canvas), size, '').getImage()).to.eql(
-        canvas
-      );
-    });
-
-    it('imgSize overrides img.width and img.height', function (done) {
-      const style = new Icon({
-        src: src,
-        imgSize: size,
-      });
-      const iconImage = style.iconImage_;
-      iconImage.addEventListener('change', function () {
-        expect([iconImage.image_.width, iconImage.image_.height]).to.eql(size);
-        done();
-      });
-      style.load();
+      expect(getIconImage(canvas, getUid(canvas)).getImage()).to.eql(canvas);
     });
   });
 
@@ -60,7 +44,6 @@ describe('ol.style.Icon', function () {
         color: '#319FD3',
         crossOrigin: 'Anonymous',
         img: canvas,
-        imgSize: size,
         offset: [1, 2],
         offsetOrigin: 'bottom-left',
         opacity: 0.5,
@@ -80,7 +63,6 @@ describe('ol.style.Icon', function () {
       expect(original.anchorYUnits_).to.eql(clone.anchorYUnits_);
       expect(original.crossOrigin_).to.eql(clone.crossOrigin_);
       expect(original.getColor()).to.eql(clone.getColor());
-      expect(original.imgSize_).to.eql(clone.imgSize_);
       expect(original.offset_).to.eql(clone.offset_);
       expect(original.offsetOrigin_).to.eql(clone.offsetOrigin_);
       expect(original.getScale()).to.eql(clone.getScale());
@@ -102,10 +84,8 @@ describe('ol.style.Icon', function () {
       expect(original.getSrc()).to.be(clone.getSrc());
     });
     it('copies all values with src without shared IconImageCache', function (done) {
-      const imgSize = [11, 13];
       const original = new Icon({
         src: src,
-        imgSize: imgSize.slice(),
       });
       iconImageCache.clear();
 
@@ -123,12 +103,41 @@ describe('ol.style.Icon', function () {
       ]).then(function () {
         expect(original.getSrc()).to.be(clone.getSrc());
         expect(original.iconImage_).to.not.be(clone.iconImage_);
-        expect(original.getImage(1).width).to.be(imgSize[0]);
-        expect(original.getImage(1).height).to.be(imgSize[1]);
         expect(original.getImage(1).width).to.be(clone.getImage(1).width);
         expect(original.getImage(1).height).to.be(clone.getImage(1).height);
         done();
       });
+    });
+
+    it('preserves the scale', (done) => {
+      const original = new Icon({
+        src: 'spec/ol/data/dot.png',
+      });
+      original.setScale(2);
+      expect(original.getScale()).to.be(2);
+      const clone = original.clone();
+      expect(original.getScale()).to.eql(clone.getScale());
+      original.load();
+      original.getImage(1).addEventListener('load', () => {
+        const clone = original.clone();
+        expect(original.getScale()).to.eql(clone.getScale());
+        done();
+      });
+    });
+
+    it('preserves width and height', (done) => {
+      const original = new Icon({
+        src: 'spec/ol/data/dot.png',
+        width: 42,
+        height: 24,
+      });
+      const clone = original.clone();
+      clone.listenImageChange(() => {
+        expect(clone.getWidth()).to.eql(42);
+        expect(clone.getHeight()).to.eql(24);
+        done();
+      });
+      clone.load();
     });
 
     it('the clone does not reference the same objects as the original', function () {
@@ -157,6 +166,19 @@ describe('ol.style.Icon', function () {
       expect(original.color_).not.to.eql(clone.color_);
       expect(original.size_).not.to.eql(clone.size_);
       expect(original.displacement_).not.to.eql(clone.displacement_);
+    });
+
+    it('autocalculated scale (due to width/height) does not halt cloning', () => {
+      const original = new Icon({
+        src: src,
+        width: 10,
+        height: 5,
+      });
+      let clone;
+      expect(() => (clone = original.clone())).to.not.throwException();
+      expect(original.getWidth()).to.eql(clone.getWidth());
+      expect(original.getHeight()).to.eql(clone.getHeight());
+      expect(original.getScale()).to.eql(clone.getScale());
     });
   });
 
@@ -333,27 +355,165 @@ describe('ol.style.Icon', function () {
   });
 
   describe('#getImageSize', function () {
-    const imgSize = [144, 192];
-
-    it('takes the real image size', function () {
-      // pretend that the image is already in the cache,
-      // this image will be used for the icon.
-      const src = 'test.png';
-      const iconImage = new IconImage(null, 'test.png', imgSize);
+    it('uses the cache', function (done) {
+      const src = './spec/ol/data/dot.png';
+      const iconImage = new IconImage(new Image(), src);
       iconImageCache.set(src, null, null, iconImage);
+      iconImage.load();
 
       const iconStyle = new Icon({
-        src: 'test.png',
+        src: src,
       });
-      expect(iconStyle.getImageSize()).to.eql(imgSize);
+      iconImage.addEventListener('change', function changed() {
+        if (iconImage.getImageState() === ImageState.LOADED) {
+          iconImage.removeEventListener('change', changed);
+          try {
+            expect(iconStyle.getImage()).to.eql(iconImage.getImage());
+            expect(iconStyle.getImage()).to.be.a(HTMLImageElement);
+            expect(iconStyle.getImageSize()).to.eql([
+              iconStyle.getImage().width,
+              iconStyle.getImage().height,
+            ]);
+            done();
+          } catch (e) {
+            done(e);
+          }
+        }
+      });
     });
 
-    it('uses the given image size', function () {
+    it('has the image size after the image has finished loading', function (done) {
+      const image = new Image();
       const iconStyle = new Icon({
-        img: {src: 'test.png'},
-        imgSize: imgSize,
+        img: image,
       });
-      expect(iconStyle.getImageSize()).to.eql(imgSize);
+      iconStyle.iconImage_.addEventListener('change', function changed() {
+        if (iconStyle.getImageState() === ImageState.LOADED) {
+          iconStyle.iconImage_.removeEventListener('change', changed);
+          try {
+            expect(iconStyle.getImageSize()).to.eql([
+              image.width,
+              image.height,
+            ]);
+            done();
+          } catch (e) {
+            done(e);
+          }
+        }
+      });
+      image.src = './spec/ol/data/dot.png';
+      iconStyle.load();
+    });
+  });
+
+  describe('#width/height', function () {
+    // 3px * 4px sized white gif
+    const src =
+      'data:image/gif;base64,' +
+      'R0lGODlhAwAEAIABAP7+/vDy9SH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAEALAAAAAADAAQAAAIDhI9WADs=';
+    it('scale is set correctly if configured with width only', function (done) {
+      const iconStyle = new Icon({
+        src,
+        width: 6,
+      });
+      const iconImage = iconStyle.iconImage_;
+      iconImage.addEventListener('change', function () {
+        expect(iconStyle.getScale()).to.eql(2);
+        done();
+      });
+      iconStyle.load();
+    });
+    it('scale is set correctly if configured with height only', function (done) {
+      const iconStyle = new Icon({
+        src,
+        height: 12,
+      });
+      const iconImage = iconStyle.iconImage_;
+      iconImage.addEventListener('change', function () {
+        expect(iconStyle.getScale()).to.eql(3);
+        done();
+      });
+      iconStyle.load();
+    });
+    it('scale is set correctly if used with width and height', function (done) {
+      const iconStyle = new Icon({
+        src,
+        width: 6,
+        height: 12,
+      });
+      const iconImage = iconStyle.iconImage_;
+      iconImage.addEventListener('change', function () {
+        expect(iconStyle.getScale()).to.eql([2, 3]);
+        done();
+      });
+      iconStyle.load();
+    });
+    it('getWidth returns the expected value', function (done) {
+      const iconStyle = new Icon({
+        src,
+        width: 10,
+      });
+      iconStyle.listenImageChange(() => {
+        expect(iconStyle.getWidth()).to.eql(10);
+        done();
+      });
+      iconStyle.load();
+    });
+    it('getHeight returns the expected value', function (done) {
+      const iconStyle = new Icon({
+        src,
+        height: 20,
+      });
+      iconStyle.listenImageChange(() => {
+        expect(iconStyle.getHeight()).to.eql(20);
+        done();
+      });
+      iconStyle.load();
+    });
+    it('setScale updates the width and height', function (done) {
+      const iconStyle = new Icon({
+        src,
+      });
+      const iconImage = iconStyle.iconImage_;
+      iconImage.addEventListener('change', function () {
+        iconStyle.setScale(2);
+        expect(iconStyle.getWidth()).to.eql(6);
+        expect(iconStyle.getHeight()).to.eql(8);
+        done();
+      });
+      iconStyle.load();
+    });
+    it('setScale with array updates the width and height', function (done) {
+      const iconStyle = new Icon({
+        src,
+      });
+      const iconImage = iconStyle.iconImage_;
+      iconImage.addEventListener('change', function () {
+        iconStyle.setScale([3, 4]);
+        expect(iconStyle.getWidth()).to.eql(9);
+        expect(iconStyle.getHeight()).to.eql(16);
+        done();
+      });
+      iconStyle.load();
+    });
+    it('setScale overrides initial width and height', function (done) {
+      const iconStyle = new Icon({
+        src,
+        width: 42,
+        height: 24,
+      });
+      iconStyle.setScale(1);
+      iconStyle.listenImageChange(() => {
+        try {
+          expect(iconStyle.getWidth()).to.eql(3);
+          expect(iconStyle.getHeight()).to.eql(4);
+          expect(iconStyle.getScale()).to.eql(1);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      });
+      iconStyle.load();
     });
   });
 });

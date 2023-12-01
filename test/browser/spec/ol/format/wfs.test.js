@@ -697,6 +697,49 @@ describe('ol.format.WFS', function () {
       expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
+    it('WFS v2 creates an intersects filter with a MultiSurface', function () {
+      const text = `
+        <wfs:Query xmlns:wfs="http://www.opengis.net/wfs/2.0"
+             typeNames="area" srsName="EPSG:4326"
+             xmlns:topp="http://www.openplans.org/topp">
+          <Filter xmlns="http://www.opengis.net/fes/2.0">
+            <Intersects>
+              <ValueReference>the_geom</ValueReference>
+                <MultiSurface xmlns="http://www.opengis.net/gml/3.2">
+                  <surfaceMember>
+                    <Polygon>
+                      <exterior>
+                        <LinearRing>
+                          <posList srsDimension="2">10 20 10 25 15 25 15 20 10 20</posList>
+                        </LinearRing>
+                      </exterior>
+                    </Polygon>
+                  </surfaceMember>
+                </MultiSurface>
+              </Intersects>
+            </Filter>        
+        </wfs:Query>`;
+      const serialized = new WFS({version: '2.0.0'}).writeGetFeature({
+        srsName: 'EPSG:4326',
+        featureTypes: ['area'],
+        filter: intersectsFilter(
+          'the_geom',
+          new MultiPolygon([
+            [
+              [
+                [10, 20],
+                [10, 25],
+                [15, 25],
+                [15, 20],
+                [10, 20],
+              ],
+            ],
+          ])
+        ),
+      });
+      expect(serialized.firstElementChild).to.xmleql(parse(text));
+    });
+
     it('creates a within filter', function () {
       const text =
         '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
@@ -1274,6 +1317,30 @@ describe('ol.format.WFS', function () {
         featurePrefix: 'topp',
       });
       expect(serialized).to.xmleql(parse(text));
+    });
+
+    it('should use <Name> tag for property names', () => {
+      const testFeature = new Feature();
+      testFeature.setId('12345');
+      testFeature.setProperties({
+        name: 'SampleFeature',
+      });
+      const testOptions = {
+        featureNS: 'http://foo',
+        featureType: 'FAULTS',
+        featurePrefix: 'foo',
+        gmlOptions: {srsName: 'EPSG:900913'},
+      };
+      const wfs = new WFS({version: '1.1.0'});
+      const serialized = wfs.writeTransaction(
+        [],
+        [testFeature],
+        [],
+        testOptions
+      );
+      const xmlSerializer = new XMLSerializer();
+      const xmlString = xmlSerializer.serializeToString(serialized);
+      expect(xmlString).contain('<Name>');
     });
   });
 
@@ -1894,6 +1961,31 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         ),
       });
       expect(serialized.firstElementChild).to.xmleql(parse(text));
+    });
+
+    it('should use <ValueReference> tag for property names', () => {
+      const testFeature = new Feature();
+      testFeature.setId('12345');
+      testFeature.setProperties({
+        name: 'SampleFeature',
+      });
+      const testOptions = {
+        featureNS: 'http://foo',
+        featureType: 'FAULTS',
+        featurePrefix: 'foo',
+        gmlOptions: {srsName: 'EPSG:900913'},
+      };
+      const wfs = new WFS({version: '2.0.0'});
+      const serialized = wfs.writeTransaction(
+        [],
+        [testFeature],
+        [],
+        testOptions
+      );
+      const xmlSerializer = new XMLSerializer();
+      const xmlString = xmlSerializer.serializeToString(serialized);
+      expect(xmlString).contain('<ValueReference>');
+      expect(xmlString).not.contain('<Name>');
     });
   });
 });

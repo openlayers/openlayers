@@ -3,7 +3,7 @@
  */
 import EventType from '../events/EventType.js';
 import Interaction, {pan} from './Interaction.js';
-import KeyCode from '../events/KeyCode.js';
+import Key from '../events/Key.js';
 import {noModifierKeys, targetNotEditable} from '../events/condition.js';
 import {rotate as rotateCoordinate} from '../coordinate.js';
 
@@ -88,24 +88,24 @@ class KeyboardPan extends Interaction {
       const keyEvent = /** @type {KeyboardEvent} */ (
         mapBrowserEvent.originalEvent
       );
-      const keyCode = keyEvent.keyCode;
+      const key = keyEvent.key;
       if (
         this.condition_(mapBrowserEvent) &&
-        (keyCode == KeyCode.DOWN ||
-          keyCode == KeyCode.LEFT ||
-          keyCode == KeyCode.RIGHT ||
-          keyCode == KeyCode.UP)
+        (key == Key.DOWN ||
+          key == Key.LEFT ||
+          key == Key.RIGHT ||
+          key == Key.UP)
       ) {
         const map = mapBrowserEvent.map;
         const view = map.getView();
         const mapUnitsDelta = view.getResolution() * this.pixelDelta_;
         let deltaX = 0,
           deltaY = 0;
-        if (keyCode == KeyCode.DOWN) {
+        if (key == Key.DOWN) {
           deltaY = -mapUnitsDelta;
-        } else if (keyCode == KeyCode.LEFT) {
+        } else if (key == Key.LEFT) {
           deltaX = -mapUnitsDelta;
-        } else if (keyCode == KeyCode.RIGHT) {
+        } else if (key == Key.RIGHT) {
           deltaX = mapUnitsDelta;
         } else {
           deltaY = mapUnitsDelta;

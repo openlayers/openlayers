@@ -114,7 +114,7 @@ describe('ol.render.canvas', function () {
     it('draws the image with correct parameters', function () {
       const layerContext = {
         save: sinon.spy(),
-        setTransform: sinon.spy(),
+        transform: sinon.spy(),
         drawImage: sinon.spy(),
         restore: sinon.spy(),
         globalAlpha: 1,
@@ -143,8 +143,8 @@ describe('ol.render.canvas', function () {
       );
 
       expect(layerContext.save.callCount).to.be(1);
-      expect(layerContext.setTransform.callCount).to.be(1);
-      expect(layerContext.setTransform.firstCall.args).to.eql(transform);
+      expect(layerContext.transform.callCount).to.be(1);
+      expect(layerContext.transform.firstCall.args).to.eql(transform);
       expect(layerContext.drawImage.callCount).to.be(1);
       expect(layerContext.globalAlpha).to.be(0.5);
       expect(layerContext.restore.callCount).to.be(1);

@@ -44,11 +44,7 @@ class MultiPoint extends SimpleGeometry {
    * @api
    */
   appendPoint(point) {
-    if (!this.flatCoordinates) {
-      this.flatCoordinates = point.getFlatCoordinates().slice();
-    } else {
-      extend(this.flatCoordinates, point.getFlatCoordinates());
-    }
+    extend(this.flatCoordinates, point.getFlatCoordinates());
     this.changed();
   }
 
@@ -118,9 +114,7 @@ class MultiPoint extends SimpleGeometry {
    * @api
    */
   getPoint(index) {
-    const n = !this.flatCoordinates
-      ? 0
-      : this.flatCoordinates.length / this.stride;
+    const n = this.flatCoordinates.length / this.stride;
     if (index < 0 || n <= index) {
       return null;
     }

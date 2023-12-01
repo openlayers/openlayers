@@ -411,6 +411,9 @@ span.type-signature.static {
 .main table .name {
   width: 110px;
 }
+.main table .name code {
+  white-space: nowrap;
+}
 .main table .type {
   color: #aaa;
   font-size: 12px;

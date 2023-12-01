@@ -35,7 +35,6 @@ export const BufferUsage = {
  * Note:
  * See the documentation of [WebGLRenderingContext.bufferData](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bufferData)
  * for more info on buffer usage.
- * @api
  */
 class WebGLArrayBuffer {
   /**
@@ -46,70 +45,79 @@ class WebGLArrayBuffer {
   constructor(type, usage) {
     /**
      * @private
-     * @type {Float32Array|Uint32Array}
+     * @type {Float32Array|Uint32Array|null}
      */
-    this.array = null;
+    this.array_ = null;
 
     /**
      * @private
      * @type {number}
      */
-    this.type = type;
+    this.type_ = type;
 
-    assert(type === ARRAY_BUFFER || type === ELEMENT_ARRAY_BUFFER, 62);
+    assert(
+      type === ARRAY_BUFFER || type === ELEMENT_ARRAY_BUFFER,
+      'A `WebGLArrayBuffer` must either be of type `ELEMENT_ARRAY_BUFFER` or `ARRAY_BUFFER`'
+    );
 
     /**
      * @private
      * @type {number}
      */
-    this.usage = usage !== undefined ? usage : BufferUsage.STATIC_DRAW;
+    this.usage_ = usage !== undefined ? usage : BufferUsage.STATIC_DRAW;
   }
 
   /**
    * Populates the buffer with an array of the given size (all values will be zeroes).
    * @param {number} size Array size
+   * @return {WebGLArrayBuffer} This
    */
   ofSize(size) {
-    this.array = new (getArrayClassForType(this.type))(size);
+    this.array_ = new (getArrayClassForType(this.type_))(size);
+    return this;
   }
 
   /**
    * Populates the buffer with an array of the given size.
    * @param {Array<number>} array Numerical array
+   * @return {WebGLArrayBuffer} This
    */
   fromArray(array) {
-    this.array = getArrayClassForType(this.type).from(array);
+    this.array_ = getArrayClassForType(this.type_).from(array);
+    return this;
   }
 
   /**
    * Populates the buffer with a raw binary array buffer.
    * @param {ArrayBuffer} buffer Raw binary buffer to populate the array with. Note that this buffer must have been
    * initialized for the same typed array class.
+   * @return {WebGLArrayBuffer} This
    */
   fromArrayBuffer(buffer) {
-    this.array = new (getArrayClassForType(this.type))(buffer);
+    this.array_ = new (getArrayClassForType(this.type_))(buffer);
+    return this;
   }
 
   /**
    * @return {number} Buffer type.
    */
   getType() {
-    return this.type;
+    return this.type_;
   }
 
   /**
    * Will return null if the buffer was not initialized
-   * @return {Float32Array|Uint32Array} Array.
+   * @return {Float32Array|Uint32Array|null} Array.
    */
   getArray() {
-    return this.array;
+    return this.array_;
   }
 
   /**
    * @return {number} Usage.
    */
   getUsage() {
-    return this.usage;
+    return this.usage_;
   }
 
   /**
@@ -117,7 +125,7 @@ class WebGLArrayBuffer {
    * @return {number} Array size
    */
   getSize() {
-    return this.array ? this.array.length : 0;
+    return this.array_ ? this.array_.length : 0;
   }
 }
 

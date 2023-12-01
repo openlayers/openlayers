@@ -106,8 +106,8 @@ class CanvasLineStringBuilder extends CanvasBuilder {
         state.lineCap,
         state.lineJoin,
         state.miterLimit,
-        state.lineDash,
-        state.lineDashOffset,
+        defaultLineDash,
+        defaultLineDashOffset,
       ],
       beginPathInstruction
     );

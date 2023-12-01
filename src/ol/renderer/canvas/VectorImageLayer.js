@@ -9,6 +9,7 @@ import ImageState from '../../ImageState.js';
 import RBush from 'rbush';
 import ViewHint from '../../ViewHint.js';
 import {apply, compose, create} from '../../transform.js';
+import {fromResolutionLike} from '../../resolution.js';
 import {getHeight, getWidth, isEmpty, scaleFromCenter} from '../../extent.js';
 
 /**
@@ -107,7 +108,6 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
       vectorRenderer.useContainer(null, null);
       const context = vectorRenderer.context;
       const layerState = frameState.layerStatesArray[frameState.layerIndex];
-      context.globalAlpha = layerState.opacity;
       const imageLayerState = Object.assign({}, layerState, {opacity: 1});
       const imageFrameState = /** @type {import("../../Map.js").FrameState} */ (
         Object.assign({}, frameState, {
@@ -149,10 +149,10 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
           return;
         }
         this.image_ = emptyImage ? null : image;
-        const imageResolution = image.getResolution();
         const imagePixelRatio = image.getPixelRatio();
         const renderedResolution =
-          (imageResolution * pixelRatio) / imagePixelRatio;
+          (fromResolutionLike(image.getResolution()) * pixelRatio) /
+          imagePixelRatio;
         this.renderedResolution = renderedResolution;
         this.coordinateToVectorPixelTransform_ = compose(
           this.coordinateToVectorPixelTransform_,

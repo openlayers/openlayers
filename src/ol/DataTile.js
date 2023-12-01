@@ -3,17 +3,89 @@
  */
 import Tile from './Tile.js';
 import TileState from './TileState.js';
+import {createCanvasContext2D} from './dom.js';
 
 /**
- * Data that can be used with a DataTile.  For increased browser compatibility, use
- * Uint8Array instead of Uint8ClampedArray where possible.
- * @typedef {Uint8Array|Uint8ClampedArray|Float32Array|DataView} Data
+ * @typedef {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|ImageBitmap} ImageLike
  */
+
+/**
+ * @typedef {Uint8Array|Uint8ClampedArray|Float32Array|DataView} ArrayLike
+ */
+
+/**
+ * Data that can be used with a DataTile.
+ * @typedef {ArrayLike|ImageLike} Data
+ */
+
+/**
+ * @param {Data} data Tile data.
+ * @return {ImageLike|null} The image-like data.
+ */
+export function asImageLike(data) {
+  return data instanceof Image ||
+    data instanceof HTMLCanvasElement ||
+    data instanceof HTMLVideoElement ||
+    data instanceof ImageBitmap
+    ? data
+    : null;
+}
+
+/**
+ * @param {Data} data Tile data.
+ * @return {ArrayLike|null} The array-like data.
+ */
+export function asArrayLike(data) {
+  return data instanceof Uint8Array ||
+    data instanceof Uint8ClampedArray ||
+    data instanceof Float32Array ||
+    data instanceof DataView
+    ? data
+    : null;
+}
+
+/**
+ * @type {CanvasRenderingContext2D|null}
+ */
+let sharedContext = null;
+
+/**
+ * @param {ImageLike} image The image.
+ * @return {Uint8ClampedArray} The data.
+ */
+export function toArray(image) {
+  if (!sharedContext) {
+    sharedContext = createCanvasContext2D(
+      image.width,
+      image.height,
+      undefined,
+      {willReadFrequently: true}
+    );
+  }
+  const canvas = sharedContext.canvas;
+  const width = image.width;
+  if (canvas.width !== width) {
+    canvas.width = width;
+  }
+  const height = image.height;
+  if (canvas.height !== height) {
+    canvas.height = height;
+  }
+  sharedContext.clearRect(0, 0, width, height);
+  sharedContext.drawImage(image, 0, 0);
+  return sharedContext.getImageData(0, 0, width, height).data;
+}
+
+/**
+ * @type {import('./size.js').Size}
+ */
+const defaultSize = [256, 256];
 
 /**
  * @typedef {Object} Options
  * @property {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
- * @property {function(): Promise<Data>} loader Data loader.
+ * @property {function(): Promise<Data>} loader Data loader.  For loaders that generate images,
+ * the promise should not resolve until the image is loaded.
  * @property {number} [transition=250] A duration for tile opacity
  * transitions in milliseconds. A duration of 0 disables the opacity transition.
  * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
@@ -53,10 +125,10 @@ class DataTile extends Tile {
     this.error_ = null;
 
     /**
-     * @type {import('./size.js').Size}
+     * @type {import('./size.js').Size|null}
      * @private
      */
-    this.size_ = options.size || [256, 256];
+    this.size_ = options.size || null;
   }
 
   /**
@@ -64,7 +136,14 @@ class DataTile extends Tile {
    * @return {import('./size.js').Size} Tile size.
    */
   getSize() {
-    return this.size_;
+    if (this.size_) {
+      return this.size_;
+    }
+    const imageData = asImageLike(this.data_);
+    if (imageData) {
+      return [imageData.width, imageData.height];
+    }
+    return defaultSize;
   }
 
   /**

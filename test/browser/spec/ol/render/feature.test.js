@@ -16,6 +16,7 @@ describe('ol.render.Feature', function () {
         type,
         flatCoordinates,
         ends,
+        2,
         properties,
         'foo'
       );
@@ -29,6 +30,7 @@ describe('ol.render.Feature', function () {
         type,
         flatCoordinates,
         ends,
+        2,
         properties,
         'foo'
       );
@@ -42,6 +44,7 @@ describe('ol.render.Feature', function () {
         type,
         flatCoordinates,
         ends,
+        2,
         properties,
         'foo'
       );
@@ -55,6 +58,7 @@ describe('ol.render.Feature', function () {
         type,
         flatCoordinates,
         ends,
+        2,
         properties,
         'foo'
       );
@@ -66,6 +70,7 @@ describe('ol.render.Feature', function () {
         type,
         flatCoordinates,
         ends,
+        2,
         properties,
         'foo'
       );
@@ -73,7 +78,13 @@ describe('ol.render.Feature', function () {
     });
 
     it('returns the correct extent for a linestring', function () {
-      const feature = new RenderFeature('LineString', [-1, -2, 2, 1], null, {});
+      const feature = new RenderFeature(
+        'LineString',
+        [-1, -2, 2, 1],
+        null,
+        2,
+        {}
+      );
       expect(feature.getExtent()).to.eql([-1, -2, 2, 1]);
     });
   });
@@ -84,6 +95,7 @@ describe('ol.render.Feature', function () {
         type,
         flatCoordinates,
         ends,
+        2,
         properties,
         'foo'
       );
@@ -105,7 +117,8 @@ describe('ol.render.Feature', function () {
       const feature = new RenderFeature(
         'Polygon',
         polygon.getOrientedFlatCoordinates(),
-        polygon.getEnds()
+        polygon.getEnds(),
+        2
       );
       expect(feature.getFlatInteriorPoint()).to.eql([5, 5, 10]);
       expect(feature.getFlatInteriorPoint()).to.be(feature.flatInteriorPoints_);
@@ -135,9 +148,10 @@ describe('ol.render.Feature', function () {
         ],
       ]);
       const feature = new RenderFeature(
-        'MultiPolygon',
+        'Polygon',
         polygon.getOrientedFlatCoordinates(),
-        polygon.getEndss()
+        polygon.getEndss().flat(),
+        2
       );
       expect(feature.getFlatInteriorPoints()).to.eql([5, 5, 10, 15, 5, 10]);
       expect(feature.getFlatInteriorPoints()).to.be(
@@ -157,7 +171,9 @@ describe('ol.render.Feature', function () {
       ]);
       const feature = new RenderFeature(
         'LineString',
-        line.getFlatCoordinates()
+        line.getFlatCoordinates(),
+        [10],
+        2
       );
       expect(feature.getFlatMidpoint()).to.eql([10, 10]);
       expect(feature.getFlatMidpoint()).to.eql(feature.flatMidpoints_);
@@ -185,7 +201,8 @@ describe('ol.render.Feature', function () {
       const feature = new RenderFeature(
         'MultiLineString',
         line.getFlatCoordinates(),
-        line.getEnds()
+        line.getEnds(),
+        2
       );
       expect(feature.getFlatMidpoints()).to.eql([10, 10, 20, 10]);
       expect(feature.getFlatMidpoints()).to.be(feature.flatMidpoints_);
@@ -198,6 +215,7 @@ describe('ol.render.Feature', function () {
         type,
         flatCoordinates,
         ends,
+        2,
         properties,
         'foo'
       );
@@ -211,6 +229,7 @@ describe('ol.render.Feature', function () {
         type,
         flatCoordinates,
         ends,
+        2,
         properties,
         'foo'
       );
@@ -224,6 +243,7 @@ describe('ol.render.Feature', function () {
         type,
         flatCoordinates,
         ends,
+        2,
         properties,
         'foo'
       );
@@ -237,6 +257,7 @@ describe('ol.render.Feature', function () {
         type,
         flatCoordinates,
         ends,
+        2,
         properties,
         'foo'
       );
@@ -250,6 +271,7 @@ describe('ol.render.Feature', function () {
         type,
         flatCoordinates,
         ends,
+        2,
         properties,
         'foo'
       );
@@ -263,6 +285,7 @@ describe('ol.render.Feature', function () {
         type,
         flatCoordinates,
         ends,
+        2,
         properties,
         'foo'
       );
@@ -276,6 +299,7 @@ describe('ol.render.Feature', function () {
         type,
         flatCoordinates,
         ends,
+        2,
         properties,
         'foo'
       );

@@ -36,6 +36,7 @@ function getImport(symbol, member) {
     const importName = from.replace(/[.\/]+/g, '_');
     return `import {${member} as ${importName}$${member}} from '${from}.js';`;
   }
+  return '';
 }
 
 /**
@@ -66,6 +67,7 @@ function formatSymbolExport(symbol, namespaces, imports) {
     imports[imp] = true;
     return line;
   }
+  return '';
 }
 
 /**

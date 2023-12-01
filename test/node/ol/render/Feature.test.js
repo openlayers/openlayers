@@ -13,13 +13,14 @@ import {
 } from '../../../../src/ol/geom.js';
 
 describe('ol/render/Feature', function () {
-  describe('ol/render/Feature.toGeometry()', function () {
+  describe('toGeometry()', function () {
     it('creates a Point', function () {
       const geometry = new Point([0, 0]);
       const renderFeature = new RenderFeature(
         geometry.getType(),
         geometry.getFlatCoordinates().slice(),
-        []
+        [],
+        2
       );
       const converted = toGeometry(renderFeature);
       expect(converted).to.be.a(Point);
@@ -36,7 +37,8 @@ describe('ol/render/Feature', function () {
       const renderFeature = new RenderFeature(
         geometry.getType(),
         geometry.getFlatCoordinates().slice(),
-        []
+        [],
+        2
       );
       const converted = toGeometry(renderFeature);
       expect(converted).to.be.a(MultiPoint);
@@ -53,7 +55,8 @@ describe('ol/render/Feature', function () {
       const renderFeature = new RenderFeature(
         geometry.getType(),
         geometry.getFlatCoordinates().slice(),
-        []
+        [],
+        2
       );
       const converted = toGeometry(renderFeature);
       expect(converted).to.be.a(LineString);
@@ -76,7 +79,8 @@ describe('ol/render/Feature', function () {
       const renderFeature = new RenderFeature(
         geometry.getType(),
         geometry.getFlatCoordinates().slice(),
-        geometry.getEnds().slice()
+        geometry.getEnds().slice(),
+        2
       );
       const converted = toGeometry(renderFeature);
       expect(converted).to.be.a(MultiLineString);
@@ -104,7 +108,8 @@ describe('ol/render/Feature', function () {
       const renderFeature = new RenderFeature(
         geometry.getType(),
         geometry.getFlatCoordinates().slice(),
-        geometry.getEnds().slice()
+        geometry.getEnds().slice(),
+        2
       );
       const converted = toGeometry(renderFeature);
       expect(converted).to.be.a(Polygon);
@@ -142,7 +147,8 @@ describe('ol/render/Feature', function () {
       const renderFeature = new RenderFeature(
         'Polygon',
         geometry.getFlatCoordinates().slice(),
-        geometry.getEndss().flat(1)
+        geometry.getEndss().flat(1),
+        2
       );
       const converted = toGeometry(renderFeature);
       expect(converted).to.be.a(MultiPolygon);
@@ -154,7 +160,26 @@ describe('ol/render/Feature', function () {
     });
   });
 
-  describe('ol/render/Feature.toFeature()', function () {
+  describe('getPropertiesInternal()', () => {
+    it('returns the properties', () => {
+      const id = 'asdf';
+      const properties = {test: '123'};
+      const geometry = new Point([0, 0]);
+      const feature = new RenderFeature(
+        geometry.getType(),
+        geometry.getFlatCoordinates().slice(),
+        [],
+        2,
+        properties,
+        id
+      );
+
+      const got = feature.getPropertiesInternal();
+      expect(got).to.eql(properties);
+    });
+  });
+
+  describe('toFeature()', function () {
     it('creates a Feature<Point>', function () {
       const id = 'asdf';
       const properties = {test: '123'};
@@ -163,6 +188,7 @@ describe('ol/render/Feature', function () {
         geometry.getType(),
         geometry.getFlatCoordinates().slice(),
         [],
+        2,
         properties,
         id
       );
@@ -189,6 +215,7 @@ describe('ol/render/Feature', function () {
       geometry.getType(),
       geometry.getFlatCoordinates().slice(),
       [],
+      2,
       properties,
       id
     );
@@ -204,5 +231,56 @@ describe('ol/render/Feature', function () {
     const props = feature.getProperties();
     delete props.geom;
     expect(props).to.eql(properties);
+  });
+
+  describe('clone()', () => {
+    it('creates a clone', () => {
+      const id = 'asdf';
+      const properties = {geometry: '123'};
+      const geometry = new MultiLineString([
+        [
+          [0, 0],
+          [4, 5],
+        ],
+        [
+          [0, 0],
+          [4, 5],
+        ],
+      ]);
+      const feature = new RenderFeature(
+        geometry.getType(),
+        geometry.getFlatCoordinates().slice(),
+        geometry.getEnds().slice(),
+        2,
+        properties,
+        id
+      );
+
+      const clone = feature.clone();
+      expect(clone).to.be.a(RenderFeature);
+      expect(clone.getFlatCoordinates()).to.eql(feature.getFlatCoordinates());
+      expect(clone.getEnds()).to.eql(feature.getEnds());
+      expect(clone.getId()).to.be(feature.getId());
+      expect(clone.getProperties()).to.eql(feature.getProperties());
+
+      const modifiedCoordinates = clone.getFlatCoordinates();
+      modifiedCoordinates.length = 0;
+
+      const originalCoordinates = feature.getFlatCoordinates();
+      expect(originalCoordinates).to.not.be(modifiedCoordinates);
+
+      const modifiedEnds = clone.getEnds();
+      modifiedEnds.length = 0;
+
+      const originalEnds = feature.getEnds();
+      expect(originalEnds).to.not.be(modifiedEnds);
+
+      const modifiedProperties = clone.getProperties();
+      for (const key in modifiedProperties) {
+        delete modifiedProperties[key];
+      }
+      const originalProperties = feature.getProperties();
+      expect(originalProperties).to.not.be(modifiedProperties);
+    });
   });
 });

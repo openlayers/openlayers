@@ -5,7 +5,11 @@ import Polygon, {
   fromExtent,
 } from '../../../../src/ol/geom/Polygon.js';
 import expect from '../../expect.js';
-import {boundingExtent, isEmpty} from '../../../../src/ol/extent.js';
+import {
+  boundingExtent,
+  createEmpty,
+  isEmpty,
+} from '../../../../src/ol/extent.js';
 
 describe('ol/geom/Polygon.js', function () {
   it('cannot be constructed with a null geometry', function () {
@@ -692,6 +696,12 @@ describe('ol/geom/Polygon.js', function () {
       expect(flatCoordinates).to.eql([1, 2, 1, 5, 3, 5, 3, 2, 1, 2]);
       const orientedFlatCoordinates = polygon.getOrientedFlatCoordinates();
       expect(orientedFlatCoordinates).to.eql([1, 2, 1, 5, 3, 5, 3, 2, 1, 2]);
+    });
+
+    it('throws on empty extent', function () {
+      expect(function () {
+        fromExtent(createEmpty());
+      }).to.throwException();
     });
   });
 

@@ -2,12 +2,9 @@
  * @module ol/source/ImageArcGISRest
  */
 
-import EventType from '../events/EventType.js';
 import ImageSource, {defaultImageLoadFunction} from './Image.js';
-import ImageWrapper from '../Image.js';
-import {appendParams} from '../uri.js';
-import {assert} from '../asserts.js';
-import {containsExtent, getHeight, getWidth} from '../extent.js';
+import {createLoader} from './arcgisRest.js';
+import {decode} from '../Image.js';
 
 /**
  * @typedef {Object} Options
@@ -121,6 +118,12 @@ class ImageArcGISRest extends ImageSource {
      * @type {number}
      */
     this.ratio_ = options.ratio !== undefined ? options.ratio : 1.5;
+
+    /**
+     * @private
+     * @type {import("../proj/Projection.js").default}
+     */
+    this.loaderProjection_ = null;
   }
 
   /**
@@ -144,80 +147,25 @@ class ImageArcGISRest extends ImageSource {
     if (this.url_ === undefined) {
       return null;
     }
-
-    resolution = this.findNearestResolution(resolution);
-    pixelRatio = this.hidpi_ ? pixelRatio : 1;
-
-    const image = this.image_;
-    if (
-      image &&
-      this.renderedRevision_ == this.getRevision() &&
-      image.getResolution() == resolution &&
-      image.getPixelRatio() == pixelRatio &&
-      containsExtent(image.getExtent(), extent)
-    ) {
-      return image;
+    if (!this.loader || this.loaderProjection_ !== projection) {
+      // Lazily create loader to pick up the view projection and to allow `params` updates
+      this.loaderProjection_ = projection;
+      this.loader = createLoader({
+        crossOrigin: this.crossOrigin_,
+        params: this.params_,
+        projection: projection,
+        hidpi: this.hidpi_,
+        url: this.url_,
+        ratio: this.ratio_,
+        load: (image, src) => {
+          this.image.setImage(image);
+          this.imageLoadFunction_(this.image, src);
+          return decode(image);
+        },
+      });
     }
 
-    const params = {
-      'F': 'image',
-      'FORMAT': 'PNG32',
-      'TRANSPARENT': true,
-    };
-    Object.assign(params, this.params_);
-
-    extent = extent.slice();
-    const centerX = (extent[0] + extent[2]) / 2;
-    const centerY = (extent[1] + extent[3]) / 2;
-    if (this.ratio_ != 1) {
-      const halfWidth = (this.ratio_ * getWidth(extent)) / 2;
-      const halfHeight = (this.ratio_ * getHeight(extent)) / 2;
-      extent[0] = centerX - halfWidth;
-      extent[1] = centerY - halfHeight;
-      extent[2] = centerX + halfWidth;
-      extent[3] = centerY + halfHeight;
-    }
-
-    const imageResolution = resolution / pixelRatio;
-
-    // Compute an integer width and height.
-    const width = Math.ceil(getWidth(extent) / imageResolution);
-    const height = Math.ceil(getHeight(extent) / imageResolution);
-
-    // Modify the extent to match the integer width and height.
-    extent[0] = centerX - (imageResolution * width) / 2;
-    extent[2] = centerX + (imageResolution * width) / 2;
-    extent[1] = centerY - (imageResolution * height) / 2;
-    extent[3] = centerY + (imageResolution * height) / 2;
-
-    this.imageSize_[0] = width;
-    this.imageSize_[1] = height;
-
-    const url = this.getRequestUrl_(
-      extent,
-      this.imageSize_,
-      pixelRatio,
-      projection,
-      params
-    );
-
-    this.image_ = new ImageWrapper(
-      extent,
-      resolution,
-      pixelRatio,
-      url,
-      this.crossOrigin_,
-      this.imageLoadFunction_
-    );
-
-    this.renderedRevision_ = this.getRevision();
-
-    this.image_.addEventListener(
-      EventType.CHANGE,
-      this.handleImageChange.bind(this)
-    );
-
-    return this.image_;
+    return super.getImageInternal(extent, resolution, pixelRatio, projection);
   }
 
   /**
@@ -227,41 +175,6 @@ class ImageArcGISRest extends ImageSource {
    */
   getImageLoadFunction() {
     return this.imageLoadFunction_;
-  }
-
-  /**
-   * @param {import("../extent.js").Extent} extent Extent.
-   * @param {import("../size.js").Size} size Size.
-   * @param {number} pixelRatio Pixel ratio.
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @param {Object} params Params.
-   * @return {string} Request URL.
-   * @private
-   */
-  getRequestUrl_(extent, size, pixelRatio, projection, params) {
-    // ArcGIS Server only wants the numeric portion of the projection ID.
-    // (if there is no numeric portion the entire projection code must
-    // form a valid ArcGIS SpatialReference definition).
-    const srid = projection
-      .getCode()
-      .split(/:(?=\d+$)/)
-      .pop();
-
-    params['SIZE'] = size[0] + ',' + size[1];
-    params['BBOX'] = extent.join(',');
-    params['BBOXSR'] = srid;
-    params['IMAGESR'] = srid;
-    params['DPI'] = Math.round(90 * pixelRatio);
-
-    const url = this.url_;
-
-    const modifiedUrl = url
-      .replace(/MapServer\/?$/, 'MapServer/export')
-      .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
-    if (modifiedUrl == url) {
-      assert(false, 50); // `options.featureTypes` should be an Array
-    }
-    return appendParams(modifiedUrl, params);
   }
 
   /**

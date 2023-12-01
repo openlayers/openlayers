@@ -68,6 +68,12 @@ export const IMAGE_DECODE =
   typeof Image !== 'undefined' && Image.prototype.decode;
 
 /**
+ * createImageBitmap() is supported.
+ * @type {boolean}
+ */
+export const CREATE_IMAGE_BITMAP = typeof createImageBitmap === 'function';
+
+/**
  * @type {boolean}
  */
 export const PASSIVE_EVENT_LISTENERS = (function () {
@@ -79,7 +85,9 @@ export const PASSIVE_EVENT_LISTENERS = (function () {
       },
     });
 
+    // @ts-ignore Ignore invalid event type '_'
     window.addEventListener('_', null, options);
+    // @ts-ignore Ignore invalid event type '_'
     window.removeEventListener('_', null, options);
   } catch (error) {
     // passive not supported

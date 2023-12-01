@@ -18,6 +18,7 @@ import {
 } from '../proj.js';
 import {clamp} from '../math.js';
 import {getCenter, getIntersection} from '../extent.js';
+import {error as logError} from '../console.js';
 import {fromCode as unitsFromCode} from '../proj/Units.js';
 
 /**
@@ -108,6 +109,8 @@ function readRGB(preference, image) {
 const STATISTICS_MAXIMUM = 'STATISTICS_MAXIMUM';
 const STATISTICS_MINIMUM = 'STATISTICS_MINIMUM';
 
+const defaultTileSize = 256;
+
 /**
  * @typedef {import("geotiff").GeoTIFFImage} GeoTIFFImage
  */
@@ -130,8 +133,7 @@ function getBoundingBox(image) {
   try {
     return image.getBoundingBox();
   } catch (_) {
-    const fileDirectory = image.fileDirectory;
-    return [0, 0, fileDirectory.ImageWidth, fileDirectory.ImageLength];
+    return [0, 0, image.getWidth(), image.getHeight()];
   }
 }
 
@@ -145,7 +147,7 @@ function getOrigin(image) {
   try {
     return image.getOrigin().slice(0, 2);
   } catch (_) {
-    return [0, image.fileDirectory.ImageLength];
+    return [0, image.getHeight()];
   }
 }
 
@@ -161,9 +163,8 @@ function getResolutions(image, referenceImage) {
     return image.getResolution(referenceImage);
   } catch (_) {
     return [
-      referenceImage.fileDirectory.ImageWidth / image.fileDirectory.ImageWidth,
-      referenceImage.fileDirectory.ImageHeight /
-        image.fileDirectory.ImageHeight,
+      referenceImage.getWidth() / image.getWidth(),
+      referenceImage.getHeight() / image.getHeight(),
     ];
   }
 }
@@ -178,7 +179,10 @@ function getProjection(image) {
     return null;
   }
 
-  if (geoKeys.ProjectedCSTypeGeoKey) {
+  if (
+    geoKeys.ProjectedCSTypeGeoKey &&
+    geoKeys.ProjectedCSTypeGeoKey !== 32767
+  ) {
     const code = 'EPSG:' + geoKeys.ProjectedCSTypeGeoKey;
     let projection = getCachedProjection(code);
     if (!projection) {
@@ -193,7 +197,7 @@ function getProjection(image) {
     return projection;
   }
 
-  if (geoKeys.GeographicTypeGeoKey) {
+  if (geoKeys.GeographicTypeGeoKey && geoKeys.GeographicTypeGeoKey !== 32767) {
     const code = 'EPSG:' + geoKeys.GeographicTypeGeoKey;
     let projection = getCachedProjection(code);
     if (!projection) {
@@ -355,6 +359,8 @@ function getMaxForDataType(array) {
  * If instead you want to work with the raw values in a style expression, set this to `false`.  Setting this option
  * to `false` will make it so any `min` and `max` properties on sources are ignored.
  * @property {boolean} [opaque=false] Whether the layer is opaque.
+ * @property {import("../proj.js").ProjectionLike} [projection] Source projection.  If not provided, the GeoTIFF metadata
+ * will be read for projection information.
  * @property {number} [transition=250] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
  * @property {boolean} [wrapX=false] Render tiles beyond the tile grid extent.
@@ -378,7 +384,7 @@ class GeoTIFFSource extends DataTile {
     super({
       state: 'loading',
       tileGrid: null,
-      projection: null,
+      projection: options.projection || null,
       opaque: options.opaque,
       transition: options.transition,
       interpolate: options.interpolate !== false,
@@ -473,7 +479,7 @@ class GeoTIFFSource extends DataTile {
         self.configure_(sources);
       })
       .catch(function (error) {
-        console.error(error); // eslint-disable-line no-console
+        logError(error);
         self.error_ = error;
         self.setState('error');
       });
@@ -493,6 +499,27 @@ class GeoTIFFSource extends DataTile {
    */
   getError() {
     return this.error_;
+  }
+
+  /**
+   * Determine the projection of the images in this GeoTIFF.
+   * The default implementation looks at the ProjectedCSTypeGeoKey and the GeographicTypeGeoKey
+   * of each image in turn.
+   * You can override this method in a subclass to support more projections.
+   *
+   * @param {Array<Array<GeoTIFFImage>>} sources Each source is a list of images
+   * from a single GeoTIFF.
+   */
+  determineProjection(sources) {
+    const firstSource = sources[0];
+    for (let i = firstSource.length - 1; i >= 0; --i) {
+      const image = firstSource[i];
+      const projection = getProjection(image);
+      if (projection) {
+        this.projection = projection;
+        break;
+      }
+    }
   }
 
   /**
@@ -565,6 +592,16 @@ class GeoTIFFSource extends DataTile {
         sourceResolutions[level] = imageResolutions[0];
 
         const sourceTileSize = [image.getTileWidth(), image.getTileHeight()];
+
+        // request larger blocks for untiled layouts
+        if (
+          sourceTileSize[0] !== sourceTileSize[1] &&
+          sourceTileSize[1] < defaultTileSize
+        ) {
+          sourceTileSize[0] = defaultTileSize;
+          sourceTileSize[1] = defaultTileSize;
+        }
+
         sourceTileSizes[level] = sourceTileSize;
 
         const aspectRatio = imageResolutions[0] / Math.abs(imageResolutions[1]);
@@ -647,15 +684,7 @@ class GeoTIFFSource extends DataTile {
     }
 
     if (!this.getProjection()) {
-      const firstSource = sources[0];
-      for (let i = firstSource.length - 1; i >= 0; --i) {
-        const image = firstSource[i];
-        const projection = getProjection(image);
-        if (projection) {
-          this.projection = projection;
-          break;
-        }
-      }
+      this.determineProjection(sources);
     }
 
     this.samplesPerPixel_ = samplesPerPixel;
@@ -717,11 +746,13 @@ class GeoTIFFSource extends DataTile {
     this.setLoader(this.loadTile_.bind(this));
     this.setState('ready');
 
-    let zoom = 0;
-    if (resolutions.length === 1) {
-      resolutions = [resolutions[0] * 2, resolutions[0]];
-      zoom = 1;
+    const zoom = 1;
+    if (resolutions.length === 2) {
+      resolutions = [resolutions[0], resolutions[1], resolutions[1] / 2];
+    } else if (resolutions.length === 1) {
+      resolutions = [resolutions[0] * 2, resolutions[0], resolutions[0] / 2];
     }
+
     this.viewResolver({
       showFullExtent: true,
       projection: this.projection,
@@ -813,7 +844,7 @@ class GeoTIFFSource extends DataTile {
     return Promise.all(requests)
       .then(this.composeTile_.bind(this, sourceTileSize))
       .catch(function (error) {
-        console.error(error); // eslint-disable-line no-console
+        logError(error);
         throw error;
       });
   }

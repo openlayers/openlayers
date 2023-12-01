@@ -468,10 +468,7 @@ describe('ol/Map', function () {
                 features: [new Feature(new Point([0, 0]))],
               }),
               style: {
-                symbol: {
-                  color: 'red',
-                  symbolType: 'circle',
-                },
+                'circle-radius': 4,
               },
             }),
           ],
@@ -480,12 +477,19 @@ describe('ol/Map', function () {
 
       it('triggers when all tiles and sources are loaded and faded in', function (done) {
         const layers = map.getLayers().getArray();
-        expect(layers[6].getRenderer().ready).to.be(false);
         map.once('rendercomplete', function () {
           expect(map.tileQueue_.getTilesLoading()).to.be(0);
-          expect(layers[1].getSource().image_.getState()).to.be(
-            ImageState.LOADED
-          );
+          expect(
+            layers[1]
+              .getSource()
+              .getImage(
+                map.getView().calculateExtent(),
+                map.getView().getResolution(),
+                1,
+                map.getView().getProjection()
+              )
+              .getState()
+          ).to.be(ImageState.LOADED);
           expect(layers[2].getSource().getFeatures().length).to.be(1);
           expect(layers[6].getRenderer().ready).to.be(true);
           done();
@@ -695,10 +699,8 @@ describe('ol/Map', function () {
               features: [new Feature(new Point([0, 0]))],
             }),
             style: {
-              symbol: {
-                color: 'red',
-                symbolType: 'circle',
-              },
+              'circle-radius': 4,
+              'circle-fill-color': 'red',
             },
           }),
         ],
@@ -713,8 +715,6 @@ describe('ol/Map', function () {
     });
 
     it('is a reliable start-end sequence', function (done) {
-      const layers = map.getLayers().getArray();
-      expect(layers[6].getRenderer().ready).to.be(false);
       let loading = 0;
       map.on('loadstart', () => {
         map.getView().setZoom(0.1);
@@ -1125,6 +1125,62 @@ describe('ol/Map', function () {
     });
   });
 
+  describe('#fushDeclutterItems()', function () {
+    let map;
+
+    beforeEach(function () {
+      map = new Map({
+        target: createMapDiv(100, 100),
+        view: new View({
+          projection: 'EPSG:4326',
+          center: [0, 0],
+          resolution: 1,
+        }),
+      });
+    });
+
+    afterEach(function () {
+      disposeMap(map);
+    });
+
+    it('calls renderDeclutter() on all layers with a lower layer index', function () {
+      const createFeatures = () => [
+        new Feature(new Point([0, 0])),
+        new Feature(new Point([-1, 0])),
+        new Feature(new Point([1, 0])),
+      ];
+      const layer1 = new VectorLayer({
+        source: new VectorSource({features: createFeatures()}),
+      });
+      const layer2 = new VectorLayer({
+        source: new VectorSource({features: createFeatures()}),
+      });
+      const layer3 = new VectorLayer({
+        source: new VectorSource({features: createFeatures()}),
+      });
+      map.addLayer(layer1);
+      map.addLayer(layer2);
+      map.addLayer(layer3);
+
+      const spy1 = sinon.spy(layer1, 'renderDeclutter');
+      const spy2 = sinon.spy(layer2, 'renderDeclutter');
+      const spy3 = sinon.spy(layer3, 'renderDeclutter');
+
+      layer3.on('prerender', () => {
+        map.flushDeclutterItems();
+        expect(spy1.callCount).to.be(1);
+        expect(spy2.callCount).to.be(1);
+        expect(spy3.callCount).to.be(0);
+      });
+
+      map.renderSync();
+
+      expect(spy1.callCount).to.be(1);
+      expect(spy2.callCount).to.be(1);
+      expect(spy3.callCount).to.be(1);
+    });
+  });
+
   describe('dispose', function () {
     let map;
 
@@ -1175,6 +1231,41 @@ describe('ol/Map', function () {
         map.setTarget(document.createElement('div'));
         expect(map.targetChangeHandlerKeys_).to.be.ok();
       });
+    });
+
+    it('detach and re-attach', function (done) {
+      const target = map.getTargetElement();
+      map.setTarget(null);
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      map.setTarget(target);
+      map.addLayer(
+        new VectorLayer({
+          source: new VectorSource({
+            features: [new Feature(new Point([0, 0]))],
+          }),
+        })
+      );
+      map.getView().setCenter([0, 0]);
+      map.getView().setZoom(0);
+      map.renderSync();
+      try {
+        expect(target.querySelector('canvas')).to.be.a(HTMLCanvasElement);
+        map.setTarget(null);
+        expect(target.querySelector('canvas')).to.be(null);
+        map.setTarget(target);
+        map.once('rendercomplete', () => {
+          try {
+            expect(target.querySelector('canvas')).to.be.a(HTMLCanvasElement);
+            done();
+          } catch (e) {
+            done(e);
+          }
+        });
+      } finally {
+        document.body.removeChild(target);
+      }
     });
   });
 

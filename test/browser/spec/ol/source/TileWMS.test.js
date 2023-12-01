@@ -277,13 +277,11 @@ describe('ol/source/TileWMS', function () {
       expect(uri.hostname).to.be('example.com');
       expect(uri.pathname).to.be('/wms');
       const queryData = uri.searchParams;
-      expect(queryData.get('BBOX')).to.be(
-        '-79.17133464081945,-90,-66.51326044311186,-45'
-      );
+      expect(queryData.get('BBOX')).to.be('-78.75,-67.5,-67.5,-56.25');
       expect(queryData.get('CRS')).to.be('EPSG:4326');
       expect(queryData.get('FORMAT')).to.be('image/png');
       expect(queryData.get('HEIGHT')).to.be('256');
-      expect(queryData.get('I')).to.be('517');
+      expect(queryData.get('I')).to.be('105');
       expect(queryData.get('J')).to.be('117');
       expect(queryData.get('LAYERS')).to.be('layer');
       expect(queryData.get('QUERY_LAYERS')).to.be('layer');

@@ -2,7 +2,6 @@
  * @module ol/source/Source
  */
 import BaseObject from '../Object.js';
-import {abstract} from '../util.js';
 import {get as getProjection} from '../proj.js';
 
 /**
@@ -11,10 +10,10 @@ import {get as getProjection} from '../proj.js';
  */
 
 /**
- * A function that takes a {@link module:ol/Map~FrameState} and returns a string or
+ * A function that takes a {@link import("../View.js").ViewStateLayerStateExtent} and returns a string or
  * an array of strings representing source attributions.
  *
- * @typedef {function(import("../Map.js").FrameState): (string|Array<string>)} Attribution
+ * @typedef {function(import("../View.js").ViewStateLayerStateExtent): (string|Array<string>)} Attribution
  */
 
 /**
@@ -152,11 +151,11 @@ class Source extends BaseObject {
   }
 
   /**
-   * @abstract
+   * @param {import("../proj/Projection").default} [projection] Projection.
    * @return {Array<number>|null} Resolutions.
    */
-  getResolutions() {
-    return abstract();
+  getResolutions(projection) {
+    return null;
   }
 
   /**

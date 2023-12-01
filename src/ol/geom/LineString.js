@@ -30,7 +30,7 @@ class LineString extends SimpleGeometry {
 
     /**
      * @private
-     * @type {import("../coordinate.js").Coordinate}
+     * @type {import("../coordinate.js").Coordinate|null}
      */
     this.flatMidpoint_ = null;
 
@@ -73,11 +73,7 @@ class LineString extends SimpleGeometry {
    * @api
    */
   appendCoordinate(coordinate) {
-    if (!this.flatCoordinates) {
-      this.flatCoordinates = coordinate.slice();
-    } else {
-      extend(this.flatCoordinates, coordinate);
-    }
+    extend(this.flatCoordinates, coordinate);
     this.changed();
   }
 
@@ -237,10 +233,13 @@ class LineString extends SimpleGeometry {
    */
   getFlatMidpoint() {
     if (this.flatMidpointRevision_ != this.getRevision()) {
-      this.flatMidpoint_ = this.getCoordinateAt(0.5, this.flatMidpoint_);
+      this.flatMidpoint_ = this.getCoordinateAt(
+        0.5,
+        this.flatMidpoint_ ?? undefined
+      );
       this.flatMidpointRevision_ = this.getRevision();
     }
-    return this.flatMidpoint_;
+    return /** @type {Array<number>} */ (this.flatMidpoint_);
   }
 
   /**
@@ -249,6 +248,7 @@ class LineString extends SimpleGeometry {
    * @protected
    */
   getSimplifiedGeometryInternal(squaredTolerance) {
+    /** @type {Array<number>} */
     const simplifiedFlatCoordinates = [];
     simplifiedFlatCoordinates.length = douglasPeucker(
       this.flatCoordinates,

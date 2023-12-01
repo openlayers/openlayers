@@ -19,26 +19,19 @@ exports.publish = function (data, opts) {
 
   // get all doclets that have exports
   const classes = {};
-  const docs = data(
-    [
-      {define: {isObject: true}},
-      function () {
-        if (this.kind == 'class') {
-          classes[this.longname] = this;
-          return true;
-        }
-        return (
-          this.meta &&
-          this.meta.path &&
-          !this.longname.startsWith('<anonymous>') &&
-          this.longname !== 'module:ol'
-        );
-      },
-    ],
-    {kind: {'!is': 'file'}},
-    {kind: {'!is': 'event'}},
-    {kind: {'!is': 'module'}}
-  ).get();
+  const docs = data(function () {
+    if (this.kind == 'class') {
+      classes[this.longname] = this;
+      return true;
+    }
+    return (
+      !['file', 'event', 'module'].includes(this.kind) &&
+      this.meta &&
+      this.meta.path &&
+      !this.longname.startsWith('<anonymous>') &&
+      this.longname !== 'module:ol'
+    );
+  }).get();
 
   // get symbols data, filter out those that are members of private classes
   const symbols = [];

@@ -59,7 +59,7 @@ describe('ol.format.OWS 1.1', function () {
         'xmlns:xlink="http://www.w3.org/1999/xlink" >' +
         '<ows:ServiceIdentification>' +
         '<ows:Title>Web Map Tile Service</ows:Title>' +
-        '<ows:Abstract>Service that contrains the map access interface ' +
+        '<ows:Abstract>Service that constrains the map access interface ' +
         'to some TileMatrixSets</ows:Abstract>' +
         '<ows:Keywords>' +
         '<ows:Keyword>tile</ows:Keyword>' +
@@ -79,7 +79,7 @@ describe('ol.format.OWS 1.1', function () {
     const serviceIdentification = obj.ServiceIdentification;
     expect(serviceIdentification).to.be.ok();
     expect(serviceIdentification.Abstract).to.eql(
-      'Service that contrains the map access interface to some TileMatrixSets'
+      'Service that constrains the map access interface to some TileMatrixSets'
     );
     expect(serviceIdentification.AccessConstraints).to.eql('none');
     expect(serviceIdentification.Fees).to.eql('none');

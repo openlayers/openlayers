@@ -1,3 +1,4 @@
+import Feature from '../../../../src/ol/Feature.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
 import Style from '../../../../src/ol/style/Style.js';
@@ -12,9 +13,14 @@ describe('ol/layer/Vector.js', () => {
         'fill-color': 'red',
       });
 
-      const style = layer.getStyle();
-      expect(style).to.be.a(Style);
+      const styleFunction = layer.getStyle();
+      expect(styleFunction).to.be.a(Function);
 
+      const styles = styleFunction(new Feature(), 1);
+      expect(styles).to.be.an(Array);
+      expect(styles).to.have.length(1);
+
+      const style = styles[0];
       const fill = style.getFill();
       expect(fill).to.be.a(Fill);
       expect(fill.getColor()).to.be('red');
@@ -33,11 +39,14 @@ describe('ol/layer/Vector.js', () => {
         },
       ]);
 
-      const style = layer.getStyle();
-      expect(Array.isArray(style)).to.be(true);
-      expect(style).to.have.length(2);
+      const styleFunction = layer.getStyle();
+      expect(styleFunction).to.be.a(Function);
 
-      const first = style[0];
+      const styles = styleFunction(new Feature(), 1);
+      expect(styles).to.be.an(Array);
+      expect(styles).to.have.length(2);
+
+      const first = styles[0];
       expect(first).to.be.a(Style);
 
       const firstStroke = first.getStroke();
@@ -45,7 +54,7 @@ describe('ol/layer/Vector.js', () => {
       expect(firstStroke.getColor()).to.be('red');
       expect(firstStroke.getWidth()).to.be(10);
 
-      const second = style[1];
+      const second = styles[1];
       expect(second).to.be.a(Style);
 
       const secondStroke = second.getStroke();

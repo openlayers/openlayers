@@ -56,7 +56,10 @@
       const js = document.getElementById('example-js-source').innerText;
       const workerContainer = document.getElementById('example-worker-source');
       const worker = workerContainer ? workerContainer.innerText : undefined;
-      const pkgJson = document.getElementById('example-pkg-source').innerText;
+      let pkgJson = document.getElementById('example-pkg-source').innerText;
+      pkgJson = JSON.parse(pkgJson);
+      pkgJson['devDependencies']['typescript'] = 'latest';
+      pkgJson = JSON.stringify(pkgJson, undefined, 2);
 
       const unique = new Set();
       const localResources = (js.match(/'(?:\.\/)?(?:data|resources)\/[^']*'/g) || [])
@@ -78,7 +81,25 @@
             'index.html': {content: html},
             'main.js': {content: js},
             'package.json': {content: pkgJson},
-            'sandbox.config.json': {content: '{"template": "parcel"}'}
+            'sandbox.config.json': {content: '{"template": "parcel"}'},
+            '.babelrc': {content: '{}'},
+            '.prettierrc': {
+              content: JSON.stringify(
+                {
+                  printWidth: 80,
+                  tabWidth: 2,
+                  useTabs: false,
+                  semi: true,
+                  singleQuote: true,
+                  trailingComma: 'es5',
+                  bracketSpacing: false,
+                  jsxBracketSameLine: false,
+                  fluid: false,
+                },
+                undefined,
+                2
+              ),
+            },
           };
           if (worker) {
             files['worker.js'] = {content: worker}

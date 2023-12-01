@@ -4,11 +4,10 @@
 
 import EventType from '../events/EventType.js';
 import ImageSource, {defaultImageLoadFunction} from './Image.js';
-import ImageState from '../ImageState.js';
-import ImageWrapper from '../Image.js';
-import {createCanvasContext2D} from '../dom.js';
-import {getHeight, getWidth, intersects} from '../extent.js';
+import ImageWrapper, {decode} from '../Image.js';
+import {createLoader} from './static.js';
 import {get as getProjection} from '../proj.js';
+import {intersects} from '../extent.js';
 
 /**
  * @typedef {Object} Options
@@ -16,14 +15,12 @@ import {get as getProjection} from '../proj.js';
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
- * @property {import("../extent.js").Extent} [imageExtent] Extent of the image in map coordinates.
+ * @property {import("../extent.js").Extent} imageExtent Extent of the image in map coordinates.
  * This is the [left, bottom, right, top] map coordinates of your image.
  * @property {import("../Image.js").LoadFunction} [imageLoadFunction] Optional function to load an image given a URL.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
- * @property {import("../size.js").Size} [imageSize] Size of the image in pixels. Usually the image size is auto-detected, so this
- * only needs to be set if auto-detection fails for some reason.
  * @property {string} url Image URL.
  */
 
@@ -67,22 +64,25 @@ class Static extends ImageSource {
      * @private
      * @type {import("../Image.js").default}
      */
-    this.image_ = new ImageWrapper(
+    this.image = null;
+
+    this.image = new ImageWrapper(
       this.imageExtent_,
       undefined,
       1,
-      this.url_,
-      crossOrigin,
-      imageLoadFunction
+      createLoader({
+        url: options.url,
+        imageExtent: options.imageExtent,
+        crossOrigin,
+        load: (image, src) => {
+          this.image.setImage(image);
+          imageLoadFunction(this.image, src);
+          return decode(image);
+        },
+      })
     );
 
-    /**
-     * @private
-     * @type {import("../size.js").Size|null}
-     */
-    this.imageSize_ = options.imageSize ? options.imageSize : null;
-
-    this.image_.addEventListener(
+    this.image.addEventListener(
       EventType.CHANGE,
       this.handleImageChange.bind(this)
     );
@@ -105,8 +105,8 @@ class Static extends ImageSource {
    * @return {import("../Image.js").default} Single image.
    */
   getImageInternal(extent, resolution, pixelRatio, projection) {
-    if (intersects(extent, this.image_.getExtent())) {
-      return this.image_;
+    if (intersects(extent, this.image.getExtent())) {
+      return this.image;
     }
     return null;
   }
@@ -118,55 +118,6 @@ class Static extends ImageSource {
    */
   getUrl() {
     return this.url_;
-  }
-
-  /**
-   * @param {import("../events/Event.js").default} evt Event.
-   */
-  handleImageChange(evt) {
-    if (this.image_.getState() == ImageState.LOADED) {
-      const imageExtent = this.image_.getExtent();
-      const image = this.image_.getImage();
-      let imageWidth, imageHeight;
-      if (this.imageSize_) {
-        imageWidth = this.imageSize_[0];
-        imageHeight = this.imageSize_[1];
-      } else {
-        imageWidth = image.width;
-        imageHeight = image.height;
-      }
-      const extentWidth = getWidth(imageExtent);
-      const extentHeight = getHeight(imageExtent);
-      const xResolution = extentWidth / imageWidth;
-      const yResolution = extentHeight / imageHeight;
-      let targetWidth = imageWidth;
-      let targetHeight = imageHeight;
-      if (xResolution > yResolution) {
-        targetWidth = Math.round(extentWidth / yResolution);
-      } else {
-        targetHeight = Math.round(extentHeight / xResolution);
-      }
-      if (targetWidth !== imageWidth || targetHeight !== imageHeight) {
-        const context = createCanvasContext2D(targetWidth, targetHeight);
-        if (!this.getInterpolate()) {
-          context.imageSmoothingEnabled = false;
-        }
-        const canvas = context.canvas;
-        context.drawImage(
-          image,
-          0,
-          0,
-          imageWidth,
-          imageHeight,
-          0,
-          0,
-          canvas.width,
-          canvas.height
-        );
-        this.image_.setImage(canvas);
-      }
-    }
-    super.handleImageChange(evt);
   }
 }
 

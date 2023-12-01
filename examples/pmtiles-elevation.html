@@ -1,0 +1,37 @@
+---
+layout: example.html
+title: PMTiles Shaded Relief
+shortdesc: Elevation data from PMTiles.
+docs: >
+  This example shows a shaded relief rendering of elevation data from
+  a [PMTiles](https://github.com/protomaps/PMTiles) source.
+resources:
+  - https://unpkg.com/pmtiles@2.4.0/dist/index.js
+tags: "pmtiles, elevation, data tiles"
+---
+<div id="map" class="map"></div>
+<table class="controls">
+  <tr>
+    <td>elevation</td>
+    <td colspan="2" id="elevationOut"></td>
+  </tr>
+  <tr>
+    <td>location</td>
+    <td colspan="2" id="locationOut"></td>
+  </tr>
+  <tr>
+    <td><label for="vert">vertical exaggeration:</label></td>
+    <td><input id="vert" type="range" min="5" max="50" value="10"/></td>
+    <td><span id="vertOut"></span> x</td>
+  </tr>
+  <tr>
+    <td><label for="sunEl">sun elevation:</label></td>
+    <td><input id="sunEl" type="range" min="0" max="90" value="45"/></td>
+    <td><span id="sunElOut"></span> °</td>
+  </tr>
+  <tr>
+    <td><label for="sunAz">sun azimuth:</label></td>
+    <td><input id="sunAz" type="range" min="0" max="360" value="45"/></td>
+    <td><span id="sunAzOut"></span> °</td>
+  </tr>
+</table>

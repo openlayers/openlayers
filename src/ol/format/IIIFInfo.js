@@ -329,12 +329,12 @@ class IIIFInfo {
   }
 
   /**
-   * @return {Versions} Major IIIF version.
+   * @return {Versions|undefined} Major IIIF version.
    * @api
    */
   getImageApiVersion() {
     if (this.imageInfo === undefined) {
-      return;
+      return undefined;
     }
     let context = this.imageInfo['@context'] || 'ol-no-context';
     if (typeof context == 'string') {
@@ -361,17 +361,20 @@ class IIIFInfo {
         default:
       }
     }
-    assert(false, 61);
+    assert(
+      false,
+      'Cannot determine IIIF Image API version from provided image information JSON'
+    );
   }
 
   /**
    * @param {Versions} version Optional IIIF image API version
-   * @return {string} Compliance level as it appears in the IIIF image information
+   * @return {string|undefined} Compliance level as it appears in the IIIF image information
    * response.
    */
   getComplianceLevelEntryFromProfile(version) {
     if (this.imageInfo === undefined || this.imageInfo.profile === undefined) {
-      return;
+      return undefined;
     }
     if (version === undefined) {
       version = this.getImageApiVersion();
@@ -405,6 +408,7 @@ class IIIFInfo {
         break;
       default:
     }
+    return undefined;
   }
 
   /**
@@ -421,12 +425,12 @@ class IIIFInfo {
   }
 
   /**
-   * @return {SupportedFeatures} Image formats, qualities and region / size calculation
+   * @return {SupportedFeatures|undefined} Image formats, qualities and region / size calculation
    * methods that are supported by the IIIF service.
    */
   getComplianceLevelSupportedFeatures() {
     if (this.imageInfo === undefined) {
-      return;
+      return undefined;
     }
     const version = this.getImageApiVersion();
     const level = this.getComplianceLevelFromProfile(version);
@@ -438,19 +442,19 @@ class IIIFInfo {
 
   /**
    * @param {PreferredOptions} [preferredOptions] Optional options for preferred format and quality.
-   * @return {import("../source/IIIF.js").Options} IIIF tile source ready constructor options.
+   * @return {import("../source/IIIF.js").Options|undefined} IIIF tile source ready constructor options.
    * @api
    */
   getTileSourceOptions(preferredOptions) {
     const options = preferredOptions || {},
       version = this.getImageApiVersion();
     if (version === undefined) {
-      return;
+      return undefined;
     }
     const imageOptions =
       version === undefined ? undefined : versionFunctions[version](this);
     if (imageOptions === undefined) {
-      return;
+      return undefined;
     }
     return {
       url: imageOptions.url,

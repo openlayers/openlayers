@@ -1,7 +1,7 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import Point from '../src/ol/geom/Point.js';
-import Stamen from '../src/ol/source/Stamen.js';
+import StadiaMaps from '../src/ol/source/StadiaMaps.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
 import WebGLPointsLayer from '../src/ol/layer/WebGLPoints.js';
@@ -39,16 +39,21 @@ const style = {
     maxYear: 2015,
   },
   filter: ['between', ['get', 'year'], ['var', 'minYear'], ['var', 'maxYear']],
-  symbol: {
-    symbolType: 'circle',
-    size: [
-      '*',
-      ['interpolate', ['linear'], ['get', 'mass'], 0, 8, 200000, 26],
-      ['-', 1.75, ['*', animRatio, 0.75]],
-    ],
-    color: ['interpolate', ['linear'], animRatio, 0, newColor, 1, oldColor],
-    opacity: ['-', 1.0, ['*', animRatio, 0.75]],
-  },
+  'circle-radius': [
+    '*',
+    ['interpolate', ['linear'], ['get', 'mass'], 0, 4, 200000, 13],
+    ['-', 1.75, ['*', animRatio, 0.75]],
+  ],
+  'circle-fill-color': [
+    'interpolate',
+    ['linear'],
+    animRatio,
+    0,
+    newColor,
+    1,
+    oldColor,
+  ],
+  'circle-opacity': ['-', 1.0, ['*', animRatio, 0.75]],
 };
 
 // handle input values & events
@@ -107,8 +112,8 @@ client.send();
 const map = new Map({
   layers: [
     new TileLayer({
-      source: new Stamen({
-        layer: 'toner',
+      source: new StadiaMaps({
+        layer: 'stamen_toner',
       }),
     }),
     new WebGLPointsLayer({

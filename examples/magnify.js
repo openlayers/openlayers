@@ -32,11 +32,11 @@ const map = new Map({
 
 let radius = 75;
 document.addEventListener('keydown', function (evt) {
-  if (evt.which === 38) {
+  if (evt.key === 'ArrowUp') {
     radius = Math.min(radius + 5, 150);
     map.render();
     evt.preventDefault();
-  } else if (evt.which === 40) {
+  } else if (evt.key === 'ArrowDown') {
     radius = Math.max(radius - 5, 25);
     map.render();
     evt.preventDefault();

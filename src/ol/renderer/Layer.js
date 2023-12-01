@@ -69,8 +69,8 @@ class LayerRenderer extends Observable {
    * Render the layer.
    * @abstract
    * @param {import("../Map.js").FrameState} frameState Frame state.
-   * @param {HTMLElement} target Target that may be used to render content to.
-   * @return {HTMLElement} The rendered element.
+   * @param {HTMLElement|null} target Target that may be used to render content to.
+   * @return {HTMLElement|null} The rendered element.
    */
   renderFrame(frameState, target) {
     return abstract();
@@ -152,7 +152,10 @@ class LayerRenderer extends Observable {
    */
   handleImageChange_(event) {
     const image = /** @type {import("../Image.js").default} */ (event.target);
-    if (image.getState() === ImageState.LOADED) {
+    if (
+      image.getState() === ImageState.LOADED ||
+      image.getState() === ImageState.ERROR
+    ) {
       this.renderIfReadyAndVisible();
     }
   }
@@ -160,7 +163,7 @@ class LayerRenderer extends Observable {
   /**
    * Load the image if not already loaded, and register the image change
    * listener if needed.
-   * @param {import("../ImageBase.js").default} image Image.
+   * @param {import("../Image.js").default} image Image.
    * @return {boolean} `true` if the image is already loaded, `false` otherwise.
    * @protected
    */

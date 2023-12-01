@@ -506,9 +506,11 @@ describe('ol.control.ScaleLine', function () {
     const getMetricUnit = function (zoom) {
       if (zoom > 30) {
         return 'μm';
-      } else if (zoom > 20) {
+      }
+      if (zoom > 20) {
         return 'mm';
-      } else if (zoom > 10) {
+      }
+      if (zoom > 10) {
         return 'm';
       }
       return 'km';
@@ -517,7 +519,8 @@ describe('ol.control.ScaleLine', function () {
     const getImperialUnit = function (zoom) {
       if (zoom >= 21) {
         return 'in';
-      } else if (zoom >= 10) {
+      }
+      if (zoom >= 10) {
         return 'ft';
       }
       return 'mi';

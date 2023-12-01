@@ -55,6 +55,10 @@ function differentArray(a, b) {
 /** @typedef {'x'|'y'|'z'|'r'|'l'} Params */
 
 /**
+ * @typedef {function(string):void} Callback
+ */
+
+/**
  * @typedef {Object} Options
  * @property {boolean|import('../View.js').AnimationOptions} [animate=true] Animate view transitions.
  * @property {Array<Params>} [params=['x', 'y', 'z', 'r', 'l']] Properties to track. Default is to track
@@ -138,6 +142,20 @@ class Link extends Interaction {
     this.initial_ = true;
 
     this.updateState_ = this.updateState_.bind(this);
+
+    /**
+     * The tracked parameter callbacks.
+     * @private
+     * @type {Object<string, Callback>}
+     */
+    this.trackedCallbacks_ = {};
+
+    /**
+     * The tracked parameter values.
+     * @private
+     * @type {Object<string, string|null>}
+     */
+    this.trackedValues_ = {};
   }
 
   /**
@@ -264,6 +282,16 @@ class Link extends Interaction {
    * @private
    */
   updateState_() {
+    const url = new URL(window.location.href);
+    const params = url.searchParams;
+    for (const key in this.trackedCallbacks_) {
+      const value = params.get(key);
+      if (key in this.trackedCallbacks_ && value !== this.trackedValues_[key]) {
+        this.trackedValues_[key] = value;
+        this.trackedCallbacks_[key](value);
+      }
+    }
+
     const map = this.getMap();
     if (!map) {
       return;
@@ -272,8 +300,6 @@ class Link extends Interaction {
     if (!view) {
       return;
     }
-    const url = new URL(window.location.href);
-    const params = url.searchParams;
 
     let updateView = false;
 
@@ -343,6 +369,46 @@ class Link extends Interaction {
   }
 
   /**
+   * Register a listener for a URL search parameter.  The callback will be called with a new value
+   * when the corresponding search parameter changes due to history events (e.g. browser navigation).
+   *
+   * @param {string} key The URL search parameter.
+   * @param {Callback} callback The function to call when the search parameter changes.
+   * @return {string|null} The initial value of the search parameter (or null if absent from the URL).
+   * @api
+   */
+  track(key, callback) {
+    this.trackedCallbacks_[key] = callback;
+    const url = new URL(window.location.href);
+    const params = url.searchParams;
+    const value = params.get(key);
+    this.trackedValues_[key] = value;
+    return value;
+  }
+
+  /**
+   * Update the URL with a new search parameter value.  If the value is null, it will be
+   * deleted from the search parameters.
+   *
+   * @param {string} key The URL search parameter.
+   * @param {string|null} value The updated value (or null to remove it from the URL).
+   * @api
+   */
+  update(key, value) {
+    const url = new URL(window.location.href);
+    const params = url.searchParams;
+    if (value === null) {
+      params.delete(key);
+    } else {
+      params.set(key, value);
+    }
+    if (key in this.trackedValues_) {
+      this.trackedValues_[key] = value;
+    }
+    this.updateHistory_(url);
+  }
+
+  /**
    * @private
    */
   updateUrl_() {
@@ -354,8 +420,6 @@ class Link extends Interaction {
     if (!view) {
       return;
     }
-    const initial = this.initial_;
-    this.initial_ = false;
 
     const center = view.getCenter();
     const zoom = view.getZoom();
@@ -376,8 +440,17 @@ class Link extends Interaction {
     this.set_(params, 'r', writeNumber(rotation));
     this.set_(params, 'l', visibilities.join(''));
 
+    this.updateHistory_(url);
+    this.initial_ = false;
+  }
+
+  /**
+   * @private
+   * @param {URL} url The URL.
+   */
+  updateHistory_(url) {
     if (url.href !== window.location.href) {
-      if (initial || this.replace_) {
+      if (this.initial_ || this.replace_) {
         window.history.replaceState(history.state, '', url);
       } else {
         window.history.pushState(null, '', url);

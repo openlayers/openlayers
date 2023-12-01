@@ -26,8 +26,8 @@ The library is intended for use on both desktop/laptop and mobile devices, and s
 OpenLayers modules with CamelCase names provide classes as default exports, and may contain additional constants or functions as named exports:
 
 ```js
-import Map from 'ol/Map';
-import View from 'ol/View';
+import Map from 'ol/Map.js';
+import View from 'ol/View.js';
 ```
 
 Class hierarchies grouped by their parent are provided in a subfolder of the package, e.g. `layer/`.
@@ -36,12 +36,12 @@ For convenience, these are also available as named exports, e.g.
 
 ```js
 import {Map, View} from 'ol';
-import {Tile, Vector} from 'ol/layer';
+import {Tile, Vector} from 'ol/layer.js';
 ```
 
 In addition to these re-exported classes, modules with lowercase names also provide constants or functions as named exports:
 
 ```js
 import {getUid} from 'ol';
-import {fromLonLat} from 'ol/proj';
+import {fromLonLat} from 'ol/proj.js';
 ```

@@ -30,17 +30,19 @@ import {assert} from './asserts.js';
 import {
   clone,
   createOrUpdateEmpty,
-  equals,
+  equals as equalsExtent,
   getForViewAndSize,
   isEmpty,
 } from './extent.js';
 import {defaults as defaultControls} from './control/defaults.js';
 import {defaults as defaultInteractions} from './interaction/defaults.js';
+import {equals} from './array.js';
 import {fromUserCoordinate, toUserCoordinate} from './proj.js';
 import {getUid} from './util.js';
 import {hasArea} from './size.js';
 import {listen, unlistenByKey} from './events.js';
 import {removeNode} from './dom.js';
+import {warn} from './console.js';
 
 /**
  * State of the current frame. Only `pixelRatio`, `time` and `viewState` should
@@ -52,7 +54,7 @@ import {removeNode} from './dom.js';
  * @property {boolean} animate Animate.
  * @property {import("./transform.js").Transform} coordinateToPixelTransform CoordinateToPixelTransform.
  * @property {import("rbush").default} declutterTree DeclutterTree.
- * @property {null|import("./extent.js").Extent} extent Extent.
+ * @property {null|import("./extent.js").Extent} extent Extent (in view projection coordinates).
  * @property {import("./extent.js").Extent} [nextExtent] Next extent during an animation series.
  * @property {number} index Index.
  * @property {Array<import("./layer/Layer.js").State>} layerStatesArray LayerStatesArray.
@@ -186,10 +188,10 @@ function setLayerMapProperty(layer, map) {
  * The map is the core component of OpenLayers. For a map to render, a view,
  * one or more layers, and a target container are needed:
  *
- *     import Map from 'ol/Map';
- *     import View from 'ol/View';
- *     import TileLayer from 'ol/layer/Tile';
- *     import OSM from 'ol/source/OSM';
+ *     import Map from 'ol/Map.js';
+ *     import View from 'ol/View.js';
+ *     import TileLayer from 'ol/layer/Tile.js';
+ *     import OSM from 'ol/source/OSM.js';
  *
  *     const map = new Map({
  *       view: new View({
@@ -292,7 +294,7 @@ class Map extends BaseObject {
 
     /**
      * @private
-     * @type {*}
+     * @type {ReturnType<typeof setTimeout>}
      */
     this.postRenderTimeoutHandle_;
 
@@ -417,6 +419,17 @@ class Map extends BaseObject {
      * @type {?Array<import("./events.js").EventsKey>}
      */
     this.targetChangeHandlerKeys_ = null;
+
+    /**
+     * @private
+     * @type {HTMLElement|null}
+     */
+    this.targetElement_ = null;
+
+    /**
+     * @type {ResizeObserver}
+     */
+    this.resizeObserver_ = new ResizeObserver(() => this.updateSize());
 
     /**
      * @type {Collection<import("./control/Control.js").default>}
@@ -644,6 +657,7 @@ class Map extends BaseObject {
     this.controls.clear();
     this.interactions.clear();
     this.overlays_.clear();
+    this.resizeObserver_.disconnect();
     this.setTarget(null);
     super.disposeInternal();
   }
@@ -824,13 +838,7 @@ class Map extends BaseObject {
    * @api
    */
   getTargetElement() {
-    const target = this.getTarget();
-    if (target !== undefined) {
-      return typeof target === 'string'
-        ? document.getElementById(target)
-        : target;
-    }
-    return null;
+    return this.targetElement_;
   }
 
   /**
@@ -1245,12 +1253,24 @@ class Map extends BaseObject {
       removeNode(this.viewport_);
     }
 
+    if (this.targetElement_) {
+      this.resizeObserver_.unobserve(this.targetElement_);
+      const rootNode = this.targetElement_.getRootNode();
+      if (rootNode instanceof ShadowRoot) {
+        this.resizeObserver_.unobserve(rootNode.host);
+      }
+      this.setSize(undefined);
+    }
+
     // target may be undefined, null, a string or an Element.
     // If it's a string we convert it to an Element before proceeding.
     // If it's not now an Element we remove the viewport from the DOM.
     // If it's an Element we append the viewport element to it.
 
-    const targetElement = this.getTargetElement();
+    const target = this.getTarget();
+    const targetElement =
+      typeof target === 'string' ? document.getElementById(target) : target;
+    this.targetElement_ = targetElement;
     if (!targetElement) {
       if (this.renderer_) {
         clearTimeout(this.postRenderTimeoutHandle_);
@@ -1290,7 +1310,6 @@ class Map extends BaseObject {
         PASSIVE_EVENT_LISTENERS ? {passive: false} : false
       );
 
-      const defaultView = this.getOwnerDocument().defaultView;
       const keyboardEventTarget = !this.keyboardEventTarget_
         ? targetElement
         : this.keyboardEventTarget_;
@@ -1307,8 +1326,12 @@ class Map extends BaseObject {
           this.handleBrowserEvent,
           this
         ),
-        listen(defaultView, EventType.RESIZE, this.updateSize, this),
       ];
+      const rootNode = targetElement.getRootNode();
+      if (rootNode instanceof ShadowRoot) {
+        this.resizeObserver_.observe(rootNode.host);
+      }
+      this.resizeObserver_.observe(targetElement);
     }
 
     this.updateSize();
@@ -1344,7 +1367,7 @@ class Map extends BaseObject {
     }
     const view = this.getView();
     if (view) {
-      this.updateViewportSize_();
+      this.updateViewportSize_(this.getSize());
 
       this.viewPropertyListenerKey_ = listen(
         view,
@@ -1432,6 +1455,21 @@ class Map extends BaseObject {
     if (this.renderer_ && this.animationDelayKey_ === undefined) {
       this.animationDelayKey_ = requestAnimationFrame(this.animationDelay_);
     }
+  }
+
+  /**
+   * This method is meant to be called in a layer's `prerender` listener. It causes all collected
+   * declutter items to be decluttered and rendered on the map immediately. This is useful for
+   * layers that need to appear entirely above the decluttered items of layers lower in the layer
+   * stack.
+   * @api
+   */
+  flushDeclutterItems() {
+    const frameState = this.frameState_;
+    if (!frameState) {
+      return;
+    }
+    this.renderer_.flushDeclutterItems(frameState);
   }
 
   /**
@@ -1558,7 +1596,7 @@ class Map extends BaseObject {
         const moveStart =
           !this.previousExtent_ ||
           (!isEmpty(this.previousExtent_) &&
-            !equals(frameState.extent, this.previousExtent_));
+            !equalsExtent(frameState.extent, this.previousExtent_));
         if (moveStart) {
           this.dispatchEvent(
             new MapEvent(MapEventType.MOVESTART, this, previousFrameState)
@@ -1571,7 +1609,7 @@ class Map extends BaseObject {
         this.previousExtent_ &&
         !frameState.viewHints[ViewHint.ANIMATING] &&
         !frameState.viewHints[ViewHint.INTERACTING] &&
-        !equals(frameState.extent, this.previousExtent_);
+        !equalsExtent(frameState.extent, this.previousExtent_);
 
       if (idle) {
         this.dispatchEvent(
@@ -1690,33 +1728,28 @@ class Map extends BaseObject {
             targetElement.getClientRects().length
           )
         ) {
-          // eslint-disable-next-line
-          console.warn(
+          warn(
             "No map visible because the map container's width or height are 0."
           );
         }
       }
     }
 
-    this.setSize(size);
-    this.updateViewportSize_();
+    const oldSize = this.getSize();
+    if (size && (!oldSize || !equals(size, oldSize))) {
+      this.setSize(size);
+      this.updateViewportSize_(size);
+    }
   }
 
   /**
    * Recomputes the viewport size and save it on the view object (if any)
+   * @param {import("./size.js").Size|undefined} size The size.
    * @private
    */
-  updateViewportSize_() {
+  updateViewportSize_(size) {
     const view = this.getView();
     if (view) {
-      let size = undefined;
-      const computedStyle = getComputedStyle(this.viewport_);
-      if (computedStyle.width && computedStyle.height) {
-        size = [
-          parseInt(computedStyle.width, 10),
-          parseInt(computedStyle.height, 10),
-        ];
-      }
       view.setViewportSize(size);
     }
   }
@@ -1768,8 +1801,8 @@ function createOptionsInternal(options) {
     } else {
       assert(
         typeof (/** @type {?} */ (options.controls).getArray) === 'function',
-        47
-      ); // Expected `controls` to be an array or an `import("./Collection.js").Collection`
+        'Expected `controls` to be an array or an `ol/Collection.js`'
+      );
       controls = options.controls;
     }
   }
@@ -1783,8 +1816,8 @@ function createOptionsInternal(options) {
       assert(
         typeof (/** @type {?} */ (options.interactions).getArray) ===
           'function',
-        48
-      ); // Expected `interactions` to be an array or an `import("./Collection.js").Collection`
+        'Expected `interactions` to be an array or an `ol/Collection.js`'
+      );
       interactions = options.interactions;
     }
   }
@@ -1797,8 +1830,8 @@ function createOptionsInternal(options) {
     } else {
       assert(
         typeof (/** @type {?} */ (options.overlays).getArray) === 'function',
-        49
-      ); // Expected `overlays` to be an array or an `import("./Collection.js").Collection`
+        'Expected `overlays` to be an array or an `ol/Collection.js`'
+      );
       overlays = options.overlays;
     }
   } else {

@@ -1,7 +1,7 @@
 import KML from '../src/ol/format/KML.js';
 import Map from '../src/ol/Map.js';
 import Polygon from '../src/ol/geom/Polygon.js';
-import Stamen from '../src/ol/source/Stamen.js';
+import StadiaMaps from '../src/ol/source/StadiaMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
 import {Fill, Icon, Stroke, Style} from '../src/ol/style.js';
@@ -48,7 +48,6 @@ const styleFunction = function (feature) {
     style = new Style({
       image: new Icon({
         img: canvas,
-        imgSize: [size, size],
         rotation: 1.2,
       }),
     });
@@ -68,8 +67,8 @@ const vector = new VectorLayer({
 });
 
 const raster = new TileLayer({
-  source: new Stamen({
-    layer: 'toner',
+  source: new StadiaMaps({
+    layer: 'stamen_toner',
   }),
 });
 

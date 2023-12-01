@@ -81,13 +81,16 @@ class TileGrid {
     assert(
       isSorted(
         this.resolutions_,
-        function (a, b) {
-          return b - a;
-        },
+        /**
+         * @param {number} a First resolution
+         * @param {number} b Second resolution
+         * @return {number} Comparison result
+         */
+        (a, b) => b - a,
         true
       ),
-      17
-    ); // `resolutions` must be sorted in descending order
+      '`resolutions` must be sorted in descending order'
+    );
 
     // check if we've got a consistent zoom factor and origin
     let zoomFactor;
@@ -129,7 +132,10 @@ class TileGrid {
     this.origins_ = null;
     if (options.origins !== undefined) {
       this.origins_ = options.origins;
-      assert(this.origins_.length == this.resolutions_.length, 20); // Number of `origins` and `resolutions` must be equal
+      assert(
+        this.origins_.length == this.resolutions_.length,
+        'Number of `origins` and `resolutions` must be equal'
+      );
     }
 
     const extent = options.extent;
@@ -140,8 +146,8 @@ class TileGrid {
 
     assert(
       (!this.origin_ && this.origins_) || (this.origin_ && !this.origins_),
-      18
-    ); // Either `origin` or `origins` must be configured, never both
+      'Either `origin` or `origins` must be configured, never both'
+    );
 
     /**
      * @private
@@ -150,7 +156,10 @@ class TileGrid {
     this.tileSizes_ = null;
     if (options.tileSizes !== undefined) {
       this.tileSizes_ = options.tileSizes;
-      assert(this.tileSizes_.length == this.resolutions_.length, 19); // Number of `tileSizes` and `resolutions` must be equal
+      assert(
+        this.tileSizes_.length == this.resolutions_.length,
+        'Number of `tileSizes` and `resolutions` must be equal'
+      );
     }
 
     /**
@@ -166,8 +175,8 @@ class TileGrid {
     assert(
       (!this.tileSize_ && this.tileSizes_) ||
         (this.tileSize_ && !this.tileSizes_),
-      22
-    ); // Either `tileSize` or `tileSizes` must be configured, never both
+      'Either `tileSize` or `tileSizes` must be configured, never both'
+    );
 
     /**
      * @private
@@ -194,7 +203,7 @@ class TileGrid {
     this.tmpExtent_ = [0, 0, 0, 0];
 
     if (options.sizes !== undefined) {
-      this.fullTileRanges_ = options.sizes.map(function (size, z) {
+      this.fullTileRanges_ = options.sizes.map((size, z) => {
         const tileRange = new TileRange(
           Math.min(0, size[0]),
           Math.max(size[0] - 1, -1),
@@ -209,7 +218,7 @@ class TileGrid {
           tileRange.maxY = Math.min(restrictedTileRange.maxY, tileRange.maxY);
         }
         return tileRange;
-      }, this);
+      });
     } else if (extent) {
       this.calculateTileRanges_(extent);
     }
@@ -255,7 +264,7 @@ class TileGrid {
       tileCoordExtent = this.getTileCoordExtent(tileCoord, tempExtent);
     }
     while (z >= this.minZoom) {
-      if (this.zoomFactor_ === 2) {
+      if (x !== undefined && y !== undefined) {
         x = Math.floor(x / 2);
         y = Math.floor(y / 2);
         tileRange = createOrUpdateTileRange(x, x, y, y, tempTileRange);
@@ -408,24 +417,6 @@ class TileGrid {
   }
 
   /**
-   * Get the extent for a tile range.
-   * @param {number} z Integer zoom level.
-   * @param {import("../TileRange.js").default} tileRange Tile range.
-   * @param {import("../extent.js").Extent} [tempExtent] Temporary import("../extent.js").Extent object.
-   * @return {import("../extent.js").Extent} Extent.
-   */
-  getTileRangeExtent(z, tileRange, tempExtent) {
-    const origin = this.getOrigin(z);
-    const resolution = this.getResolution(z);
-    const tileSize = toSize(this.getTileSize(z), this.tmpSize_);
-    const minX = origin[0] + tileRange.minX * tileSize[0] * resolution;
-    const maxX = origin[0] + (tileRange.maxX + 1) * tileSize[0] * resolution;
-    const minY = origin[1] + tileRange.minY * tileSize[1] * resolution;
-    const maxY = origin[1] + (tileRange.maxY + 1) * tileSize[1] * resolution;
-    return createOrUpdate(minX, minY, maxX, maxY, tempExtent);
-  }
-
-  /**
    * Get a tile range for the given extent and integer zoom level.
    * @param {import("../extent.js").Extent} extent Extent.
    * @param {number} z Integer zoom level.
@@ -433,18 +424,13 @@ class TileGrid {
    * @return {import("../TileRange.js").default} Tile range.
    */
   getTileRangeForExtentAndZ(extent, z, tempTileRange) {
-    const tileCoord = tmpTileCoord;
-    this.getTileCoordForXYAndZ_(extent[0], extent[3], z, false, tileCoord);
-    const minX = tileCoord[1];
-    const minY = tileCoord[2];
-    this.getTileCoordForXYAndZ_(extent[2], extent[1], z, true, tileCoord);
-    return createOrUpdateTileRange(
-      minX,
-      tileCoord[1],
-      minY,
-      tileCoord[2],
-      tempTileRange
-    );
+    this.getTileCoordForXYAndZ_(extent[0], extent[3], z, false, tmpTileCoord);
+    const minX = tmpTileCoord[1];
+    const minY = tmpTileCoord[2];
+    this.getTileCoordForXYAndZ_(extent[2], extent[1], z, true, tmpTileCoord);
+    const maxX = tmpTileCoord[1];
+    const maxY = tmpTileCoord[2];
+    return createOrUpdateTileRange(minX, maxX, minY, maxY, tempTileRange);
   }
 
   /**
@@ -577,7 +563,7 @@ class TileGrid {
   /**
    * Get a tile coordinate given a map coordinate and zoom level.
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
-   * @param {number} z Zoom level.
+   * @param {number} z Integer zoom level, e.g. the result of a `getZForResolution()` method call
    * @param {import("../tilecoord.js").TileCoord} [opt_tileCoord] Destination import("../tilecoord.js").TileCoord object.
    * @return {import("../tilecoord.js").TileCoord} Tile coordinate.
    * @api
@@ -617,7 +603,7 @@ class TileGrid {
 
   /**
    * @param {number} z Zoom level.
-   * @return {import("../TileRange.js").default} Extent tile range for the specified zoom level.
+   * @return {import("../TileRange.js").default|null} Extent tile range for the specified zoom level.
    */
   getFullTileRange(z) {
     if (!this.fullTileRanges_) {

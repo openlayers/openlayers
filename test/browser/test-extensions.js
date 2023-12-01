@@ -1,5 +1,6 @@
-// avoid importing anything that results in an instanceof check
-// since these extensions are global, instanceof checks fail with modules
+import {setLevel as setLogLevel} from '../../src/ol/console.js';
+
+setLogLevel('error');
 
 (function (global) {
   function afterLoad(type, path, next) {

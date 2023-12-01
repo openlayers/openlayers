@@ -12,7 +12,7 @@ import serveStatic from 'serve-static';
 import webpack from 'webpack';
 import webpackMiddleware from 'webpack-dev-middleware';
 import yargs from 'yargs';
-import {LogLevel} from 'loglevelnext/dist/LogLevel.js';
+import {LogLevel} from 'loglevelnext';
 import {fileURLToPath} from 'url';
 import {globby} from 'globby';
 import {hideBin} from 'yargs/helpers';
@@ -66,6 +66,7 @@ function serve(options) {
 
   return new Promise((resolve, reject) => {
     const app = express();
+    app.use(serveStatic(path.join(baseDir, '..', '..', 'build', 'full')));
     app.use((req, res) => {
       if (req.url === '/favicon.ico') {
         res.writeHead(204);
@@ -239,7 +240,7 @@ async function renderEach(page, entries, options) {
 async function render(entries, options) {
   const browser = await puppeteer.launch({
     args: options.puppeteerArgs,
-    headless: options.headless,
+    headless: options.headless ? 'new' : false,
   });
 
   let fail = false;

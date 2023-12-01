@@ -26,6 +26,7 @@ import {
 } from '../canvas.js';
 import {equals} from '../../array.js';
 import {intersects} from '../../extent.js';
+import {toFixed} from '../../math.js';
 import {transform2D} from '../../geom/flat/transform.js';
 import {transformGeom2D} from '../../geom/SimpleGeometry.js';
 
@@ -87,6 +88,14 @@ class CanvasImmediateRenderer extends VectorContext {
      * @private
      * @type {number}
      */
+    this.transformRotation_ = transform
+      ? toFixed(Math.atan2(transform[1], transform[0]), 10)
+      : 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
     this.viewRotation_ = viewRotation;
 
     /**
@@ -133,7 +142,7 @@ class CanvasImmediateRenderer extends VectorContext {
 
     /**
      * @private
-     * @type {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement}
+     * @type {import('../../DataTile.js').ImageLike}
      */
     this.image_ = null;
 
@@ -290,6 +299,9 @@ class CanvasImmediateRenderer extends VectorContext {
       context.globalAlpha = alpha * this.imageOpacity_;
     }
     let rotation = this.imageRotation_;
+    if (this.transformRotation_ === 0) {
+      rotation -= this.viewRotation_;
+    }
     if (this.imageRotateWithView_) {
       rotation += this.viewRotation_;
     }
@@ -313,7 +325,8 @@ class CanvasImmediateRenderer extends VectorContext {
           -centerX,
           -centerY
         );
-        context.setTransform.apply(context, localTransform);
+        context.save();
+        context.transform.apply(context, localTransform);
         context.translate(centerX, centerY);
         context.scale(this.imageScale_[0], this.imageScale_[1]);
         context.drawImage(
@@ -327,7 +340,7 @@ class CanvasImmediateRenderer extends VectorContext {
           this.imageWidth_,
           this.imageHeight_
         );
-        context.setTransform(1, 0, 0, 1, 0, 0);
+        context.restore();
       } else {
         context.drawImage(
           this.image_,
@@ -375,6 +388,9 @@ class CanvasImmediateRenderer extends VectorContext {
     );
     const context = this.context_;
     let rotation = this.textRotation_;
+    if (this.transformRotation_ === 0) {
+      rotation -= this.viewRotation_;
+    }
     if (this.textRotateWithView_) {
       rotation += this.viewRotation_;
     }
@@ -386,6 +402,7 @@ class CanvasImmediateRenderer extends VectorContext {
         this.textScale_[0] != 1 ||
         this.textScale_[1] != 1
       ) {
+        context.save();
         context.translate(x - this.textOffsetX_, y - this.textOffsetY_);
         context.rotate(rotation);
         context.translate(this.textOffsetX_, this.textOffsetY_);
@@ -396,7 +413,7 @@ class CanvasImmediateRenderer extends VectorContext {
         if (this.textFillState_) {
           context.fillText(this.text_, 0, 0);
         }
-        context.setTransform(1, 0, 0, 1, 0, 0);
+        context.restore();
       } else {
         if (this.textStrokeState_) {
           context.strokeText(this.text_, x, y);
@@ -470,6 +487,14 @@ class CanvasImmediateRenderer extends VectorContext {
    * @api
    */
   drawCircle(geometry) {
+    if (this.squaredTolerance_) {
+      geometry = /** @type {import("../../geom/Circle.js").default} */ (
+        geometry.simplifyTransformed(
+          this.squaredTolerance_,
+          this.userTransform_
+        )
+      );
+    }
     if (!intersects(this.extent_, geometry.getExtent())) {
       return;
     }
@@ -599,7 +624,7 @@ class CanvasImmediateRenderer extends VectorContext {
    */
   drawFeature(feature, style) {
     const geometry = style.getGeometryFunction()(feature);
-    if (!geometry || !intersects(this.extent_, geometry.getExtent())) {
+    if (!geometry) {
       return;
     }
     this.setStyle(style);

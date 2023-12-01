@@ -15,9 +15,6 @@ import {clear} from '../obj.js';
 import {
   compose as composeTransform,
   create as createTransform,
-  reset as resetTransform,
-  rotate as rotateTransform,
-  scale as scaleTransform,
 } from '../transform.js';
 import {create, fromTransform} from '../vec/mat4.js';
 import {getUid} from '../util.js';
@@ -44,13 +41,14 @@ export const ShaderType = {
  */
 export const DefaultUniform = {
   PROJECTION_MATRIX: 'u_projectionMatrix',
-  OFFSET_SCALE_MATRIX: 'u_offsetScaleMatrix',
-  OFFSET_ROTATION_MATRIX: 'u_offsetRotateMatrix',
+  SCREEN_TO_WORLD_MATRIX: 'u_screenToWorldMatrix',
   TIME: 'u_time',
   ZOOM: 'u_zoom',
   RESOLUTION: 'u_resolution',
-  SIZE_PX: 'u_sizePx',
+  ROTATION: 'u_rotation',
+  VIEWPORT_SIZE_PX: 'u_viewportSizePx',
   PIXEL_RATIO: 'u_pixelRatio',
+  HIT_DETECTION: 'u_hitDetection',
 };
 
 /**
@@ -76,7 +74,7 @@ export const AttributeType = {
  */
 
 /**
- * @typedef {number|Array<number>|HTMLCanvasElement|HTMLImageElement|ImageData|import("../transform").Transform} UniformLiteralValue
+ * @typedef {number|Array<number>|HTMLCanvasElement|HTMLImageElement|ImageData|WebGLTexture|import("../transform").Transform} UniformLiteralValue
  */
 
 /**
@@ -113,7 +111,7 @@ export const AttributeType = {
 
 /**
  * @typedef {Object} CanvasCacheItem
- * @property {HTMLCanvasElement} canvas Canvas element.
+ * @property {WebGLRenderingContext} context The context of this canvas.
  * @property {number} users The count of users of this canvas.
  */
 
@@ -143,20 +141,23 @@ function getUniqueCanvasCacheKey() {
 
 /**
  * @param {string} key The cache key for the canvas.
- * @return {HTMLCanvasElement} The canvas.
+ * @return {WebGLRenderingContext} The canvas.
  */
-function getCanvas(key) {
+function getOrCreateContext(key) {
   let cacheItem = canvasCache[key];
   if (!cacheItem) {
     const canvas = document.createElement('canvas');
+    canvas.width = 1;
+    canvas.height = 1;
     canvas.style.position = 'absolute';
     canvas.style.left = '0';
-    cacheItem = {users: 0, canvas};
+    const context = getContext(canvas);
+    cacheItem = {users: 0, context};
     canvasCache[key] = cacheItem;
   }
 
   cacheItem.users += 1;
-  return cacheItem.canvas;
+  return cacheItem.context;
 }
 
 /**
@@ -173,12 +174,14 @@ function releaseCanvas(key) {
     return;
   }
 
-  const canvas = cacheItem.canvas;
-  const gl = getContext(canvas);
+  const gl = cacheItem.context;
   const extension = gl.getExtension('WEBGL_lose_context');
   if (extension) {
     extension.loseContext();
   }
+  const canvas = gl.canvas;
+  canvas.width = 1;
+  canvas.height = 1;
 
   delete canvasCache[key];
 }
@@ -332,15 +335,9 @@ class WebGLHelper extends Disposable {
 
     /**
      * @private
-     * @type {HTMLCanvasElement}
-     */
-    this.canvas_ = getCanvas(this.canvasCacheKey_);
-
-    /**
-     * @private
      * @type {WebGLRenderingContext}
      */
-    this.gl_ = getContext(this.canvas_);
+    this.gl_ = getOrCreateContext(this.canvasCacheKey_);
 
     /**
      * @private
@@ -360,11 +357,19 @@ class WebGLHelper extends Disposable {
      */
     this.currentProgram_ = null;
 
-    this.canvas_.addEventListener(
+    /**
+     * @private
+     * @type boolean
+     */
+    this.needsToBeRecreated_ = false;
+
+    const canvas = this.gl_.canvas;
+
+    canvas.addEventListener(
       ContextEventType.LOST,
       this.boundHandleWebGLContextLost_
     );
-    this.canvas_.addEventListener(
+    canvas.addEventListener(
       ContextEventType.RESTORED,
       this.boundHandleWebGLContextRestored_
     );
@@ -389,15 +394,15 @@ class WebGLHelper extends Disposable {
 
     /**
      * @private
-     * @type {Object<string, WebGLUniformLocation>}
+     * @type {Object<string, Object<string, WebGLUniformLocation>>}
      */
-    this.uniformLocations_ = {};
+    this.uniformLocationsByProgram_ = {};
 
     /**
      * @private
-     * @type {Object<string, number>}
+     * @type {Object<string, Object<string, number>>}
      */
-    this.attribLocations_ = {};
+    this.attribLocationsByProgram_ = {};
 
     /**
      * Holds info about custom uniforms used in the post processing pass.
@@ -410,8 +415,6 @@ class WebGLHelper extends Disposable {
       this.setUniforms(options.uniforms);
     }
 
-    const gl = this.getGL();
-
     /**
      * An array of PostProcessingPass objects is kept in this variable, built from the steps provided in the
      * options. If no post process was given, a default one is used (so as not to have to make an exception to
@@ -420,16 +423,17 @@ class WebGLHelper extends Disposable {
      * @private
      */
     this.postProcessPasses_ = options.postProcesses
-      ? options.postProcesses.map(function (options) {
-          return new WebGLPostProcessingPass({
-            webGlContext: gl,
-            scaleRatio: options.scaleRatio,
-            vertexShader: options.vertexShader,
-            fragmentShader: options.fragmentShader,
-            uniforms: options.uniforms,
-          });
-        })
-      : [new WebGLPostProcessingPass({webGlContext: gl})];
+      ? options.postProcesses.map(
+          (options) =>
+            new WebGLPostProcessingPass({
+              webGlContext: this.gl_,
+              scaleRatio: options.scaleRatio,
+              vertexShader: options.vertexShader,
+              fragmentShader: options.fragmentShader,
+              uniforms: options.uniforms,
+            })
+        )
+      : [new WebGLPostProcessingPass({webGlContext: this.gl_})];
 
     /**
      * @type {string|null}
@@ -449,13 +453,19 @@ class WebGLHelper extends Disposable {
    */
   setUniforms(uniforms) {
     this.uniforms_ = [];
+    this.addUniforms(uniforms);
+  }
+
+  /**
+   * @param {Object<string, UniformValue>} uniforms Uniform definitions.
+   */
+  addUniforms(uniforms) {
     for (const name in uniforms) {
       this.uniforms_.push({
         name: name,
         value: uniforms[name],
       });
     }
-    this.uniformLocations_ = {};
   }
 
   /**
@@ -488,7 +498,7 @@ class WebGLHelper extends Disposable {
    * @param {import("./Buffer").default} buffer Buffer.
    */
   bindBuffer(buffer) {
-    const gl = this.getGL();
+    const gl = this.gl_;
     const bufferKey = getUid(buffer);
     let bufferCache = this.bufferCache_[bufferKey];
     if (!bufferCache) {
@@ -508,7 +518,7 @@ class WebGLHelper extends Disposable {
    * @param {import("./Buffer").default} buffer Buffer.
    */
   flushBufferData(buffer) {
-    const gl = this.getGL();
+    const gl = this.gl_;
     this.bindBuffer(buffer);
     gl.bufferData(buffer.getType(), buffer.getArray(), buffer.getUsage());
   }
@@ -517,7 +527,7 @@ class WebGLHelper extends Disposable {
    * @param {import("./Buffer.js").default} buf Buffer.
    */
   deleteBuffer(buf) {
-    const gl = this.getGL();
+    const gl = this.gl_;
     const bufferKey = getUid(buf);
     const bufferCacheEntry = this.bufferCache_[bufferKey];
     if (bufferCacheEntry && !gl.isContextLost()) {
@@ -530,11 +540,12 @@ class WebGLHelper extends Disposable {
    * Clean up.
    */
   disposeInternal() {
-    this.canvas_.removeEventListener(
+    const canvas = this.gl_.canvas;
+    canvas.removeEventListener(
       ContextEventType.LOST,
       this.boundHandleWebGLContextLost_
     );
-    this.canvas_.removeEventListener(
+    canvas.removeEventListener(
       ContextEventType.RESTORED,
       this.boundHandleWebGLContextRestored_
     );
@@ -542,7 +553,6 @@ class WebGLHelper extends Disposable {
     releaseCanvas(this.canvasCacheKey_);
 
     delete this.gl_;
-    delete this.canvas_;
   }
 
   /**
@@ -551,17 +561,23 @@ class WebGLHelper extends Disposable {
    * subsequent draw calls.
    * @param {import("../Map.js").FrameState} frameState current frame state
    * @param {boolean} [disableAlphaBlend] If true, no alpha blending will happen.
+   * @param {boolean} [enableDepth] If true, enables depth testing.
    */
-  prepareDraw(frameState, disableAlphaBlend) {
-    const gl = this.getGL();
+  prepareDraw(frameState, disableAlphaBlend, enableDepth) {
+    const gl = this.gl_;
     const canvas = this.getCanvas();
     const size = frameState.size;
     const pixelRatio = frameState.pixelRatio;
 
-    canvas.width = size[0] * pixelRatio;
-    canvas.height = size[1] * pixelRatio;
-    canvas.style.width = size[0] + 'px';
-    canvas.style.height = size[1] + 'px';
+    if (
+      canvas.width !== size[0] * pixelRatio ||
+      canvas.height !== size[1] * pixelRatio
+    ) {
+      canvas.width = size[0] * pixelRatio;
+      canvas.height = size[1] * pixelRatio;
+      canvas.style.width = size[0] + 'px';
+      canvas.style.height = size[1] + 'px';
+    }
 
     // loop backwards in post processes list
     for (let i = this.postProcessPasses_.length - 1; i >= 0; i--) {
@@ -571,10 +587,31 @@ class WebGLHelper extends Disposable {
     gl.bindTexture(gl.TEXTURE_2D, null);
 
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.depthRange(0.0, 1.0);
+    gl.clearDepth(1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, disableAlphaBlend ? gl.ZERO : gl.ONE_MINUS_SRC_ALPHA);
+    if (enableDepth) {
+      gl.enable(gl.DEPTH_TEST);
+      gl.depthFunc(gl.LEQUAL);
+    } else {
+      gl.disable(gl.DEPTH_TEST);
+    }
+  }
+
+  /**
+   * Prepare a program to use a texture.
+   * @param {WebGLTexture} texture The texture.
+   * @param {number} slot The texture slot.
+   * @param {string} uniformName The corresponding uniform name.
+   */
+  bindTexture(texture, slot, uniformName) {
+    const gl = this.gl_;
+    gl.activeTexture(gl.TEXTURE0 + slot);
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.uniform1i(this.getUniformLocation(uniformName), slot);
   }
 
   /**
@@ -584,18 +621,33 @@ class WebGLHelper extends Disposable {
    * @param {import("../Map.js").FrameState} frameState current frame state
    * @param {import("./RenderTarget.js").default} renderTarget Render target to draw to
    * @param {boolean} [disableAlphaBlend] If true, no alpha blending will happen.
+   * @param {boolean} [enableDepth] If true, enables depth testing.
    */
-  prepareDrawToRenderTarget(frameState, renderTarget, disableAlphaBlend) {
-    const gl = this.getGL();
+  prepareDrawToRenderTarget(
+    frameState,
+    renderTarget,
+    disableAlphaBlend,
+    enableDepth
+  ) {
+    const gl = this.gl_;
     const size = renderTarget.getSize();
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, renderTarget.getFramebuffer());
+    gl.bindRenderbuffer(gl.RENDERBUFFER, renderTarget.getDepthbuffer());
     gl.viewport(0, 0, size[0], size[1]);
     gl.bindTexture(gl.TEXTURE_2D, renderTarget.getTexture());
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.depthRange(0.0, 1.0);
+    gl.clearDepth(1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, disableAlphaBlend ? gl.ZERO : gl.ONE_MINUS_SRC_ALPHA);
+    if (enableDepth) {
+      gl.enable(gl.DEPTH_TEST);
+      gl.depthFunc(gl.LEQUAL);
+    } else {
+      gl.disable(gl.DEPTH_TEST);
+    }
   }
 
   /**
@@ -604,7 +656,7 @@ class WebGLHelper extends Disposable {
    * @param {number} end End index.
    */
   drawElements(start, end) {
-    const gl = this.getGL();
+    const gl = this.gl_;
     this.getExtension('OES_element_index_uint');
 
     const elementType = gl.UNSIGNED_INT;
@@ -644,7 +696,7 @@ class WebGLHelper extends Disposable {
    * @return {HTMLCanvasElement} Canvas.
    */
   getCanvas() {
-    return this.canvas_;
+    return /** @type {HTMLCanvasElement} */ (this.gl_.canvas);
   }
 
   /**
@@ -664,23 +716,6 @@ class WebGLHelper extends Disposable {
     const rotation = frameState.viewState.rotation;
     const pixelRatio = frameState.pixelRatio;
 
-    const offsetScaleMatrix = resetTransform(this.offsetScaleMatrix_);
-    scaleTransform(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
-
-    const offsetRotateMatrix = resetTransform(this.offsetRotateMatrix_);
-    if (rotation !== 0) {
-      rotateTransform(offsetRotateMatrix, -rotation);
-    }
-
-    this.setUniformMatrixValue(
-      DefaultUniform.OFFSET_SCALE_MATRIX,
-      fromTransform(this.tmpMat4_, offsetScaleMatrix)
-    );
-    this.setUniformMatrixValue(
-      DefaultUniform.OFFSET_ROTATION_MATRIX,
-      fromTransform(this.tmpMat4_, offsetRotateMatrix)
-    );
-
     this.setUniformFloatValue(
       DefaultUniform.TIME,
       (Date.now() - this.startTime_) * 0.001
@@ -691,7 +726,25 @@ class WebGLHelper extends Disposable {
       frameState.viewState.resolution
     );
     this.setUniformFloatValue(DefaultUniform.PIXEL_RATIO, pixelRatio);
-    this.setUniformFloatVec2(DefaultUniform.SIZE_PX, [size[0], size[1]]);
+    this.setUniformFloatVec2(DefaultUniform.VIEWPORT_SIZE_PX, [
+      size[0],
+      size[1],
+    ]);
+    this.setUniformFloatValue(DefaultUniform.ROTATION, rotation);
+  }
+
+  /**
+   * Sets the `u_hitDetection` uniform.
+   * @param {boolean} enabled Whether to enable the hit detection code path
+   */
+  applyHitDetectionUniform(enabled) {
+    const loc = this.getUniformLocation(DefaultUniform.HIT_DETECTION);
+    this.getGL().uniform1i(loc, enabled ? 1 : 0);
+
+    // hit detection uses a fixed pixel ratio
+    if (enabled) {
+      this.setUniformFloatValue(DefaultUniform.PIXEL_RATIO, 0.5);
+    }
   }
 
   /**
@@ -699,7 +752,7 @@ class WebGLHelper extends Disposable {
    * @param {import("../Map.js").FrameState} frameState Frame state.
    */
   applyUniforms(frameState) {
-    const gl = this.getGL();
+    const gl = this.gl_;
 
     let value;
     let textureSlot = 0;
@@ -713,15 +766,18 @@ class WebGLHelper extends Disposable {
       if (
         value instanceof HTMLCanvasElement ||
         value instanceof HTMLImageElement ||
-        value instanceof ImageData
+        value instanceof ImageData ||
+        value instanceof WebGLTexture
       ) {
         // create a texture & put data
-        if (!uniform.texture) {
+        if (value instanceof WebGLTexture && !uniform.texture) {
+          uniform.prevValue = undefined;
+          uniform.texture = value;
+        } else if (!uniform.texture) {
           uniform.prevValue = undefined;
           uniform.texture = gl.createTexture();
         }
-        gl.activeTexture(gl[`TEXTURE${textureSlot}`]);
-        gl.bindTexture(gl.TEXTURE_2D, uniform.texture);
+        this.bindTexture(uniform.texture, textureSlot, uniform.name);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -729,7 +785,11 @@ class WebGLHelper extends Disposable {
         const imageReady =
           !(value instanceof HTMLImageElement) ||
           /** @type {HTMLImageElement} */ (value).complete;
-        if (imageReady && uniform.prevValue !== value) {
+        if (
+          !(value instanceof WebGLTexture) &&
+          imageReady &&
+          uniform.prevValue !== value
+        ) {
           uniform.prevValue = value;
           gl.texImage2D(
             gl.TEXTURE_2D,
@@ -740,9 +800,7 @@ class WebGLHelper extends Disposable {
             value
           );
         }
-
-        // fill texture slots by increasing index
-        gl.uniform1i(this.getUniformLocation(uniform.name), textureSlot++);
+        textureSlot++;
       } else if (Array.isArray(value) && value.length === 6) {
         this.setUniformMatrixValue(
           uniform.name,
@@ -790,11 +848,9 @@ class WebGLHelper extends Disposable {
    * @param {import("../Map.js").FrameState} frameState Frame state.
    */
   useProgram(program, frameState) {
-    const gl = this.getGL();
+    const gl = this.gl_;
     gl.useProgram(program);
     this.currentProgram_ = program;
-    this.uniformLocations_ = {};
-    this.attribLocations_ = {};
     this.applyFrameState(frameState);
     this.applyUniforms(frameState);
   }
@@ -809,7 +865,7 @@ class WebGLHelper extends Disposable {
    * @return {WebGLShader} Shader object
    */
   compileShader(source, type) {
-    const gl = this.getGL();
+    const gl = this.gl_;
     const shader = gl.createShader(type);
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
@@ -823,7 +879,7 @@ class WebGLHelper extends Disposable {
    * @return {WebGLProgram} Program
    */
   getProgram(fragmentShaderSource, vertexShaderSource) {
-    const gl = this.getGL();
+    const gl = this.gl_;
 
     const fragmentShader = this.compileShader(
       fragmentShaderSource,
@@ -841,7 +897,7 @@ class WebGLHelper extends Disposable {
     gl.linkProgram(program);
 
     if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
-      const message = `Fragment shader compliation failed: ${gl.getShaderInfoLog(
+      const message = `Fragment shader compilation failed: ${gl.getShaderInfoLog(
         fragmentShader
       )}`;
       throw new Error(message);
@@ -857,8 +913,8 @@ class WebGLHelper extends Disposable {
     gl.deleteShader(vertexShader);
 
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      const message = `GL program linking failed: ${gl.getShaderInfoLog(
-        vertexShader
+      const message = `GL program linking failed: ${gl.getProgramInfoLog(
+        program
       )}`;
       throw new Error(message);
     }
@@ -872,13 +928,15 @@ class WebGLHelper extends Disposable {
    * @return {WebGLUniformLocation} uniformLocation
    */
   getUniformLocation(name) {
-    if (this.uniformLocations_[name] === undefined) {
-      this.uniformLocations_[name] = this.getGL().getUniformLocation(
-        this.currentProgram_,
-        name
-      );
+    const programUid = getUid(this.currentProgram_);
+    if (this.uniformLocationsByProgram_[programUid] === undefined) {
+      this.uniformLocationsByProgram_[programUid] = {};
     }
-    return this.uniformLocations_[name];
+    if (this.uniformLocationsByProgram_[programUid][name] === undefined) {
+      this.uniformLocationsByProgram_[programUid][name] =
+        this.gl_.getUniformLocation(this.currentProgram_, name);
+    }
+    return this.uniformLocationsByProgram_[programUid][name];
   }
 
   /**
@@ -887,18 +945,20 @@ class WebGLHelper extends Disposable {
    * @return {number} attribLocation
    */
   getAttributeLocation(name) {
-    if (this.attribLocations_[name] === undefined) {
-      this.attribLocations_[name] = this.getGL().getAttribLocation(
-        this.currentProgram_,
-        name
-      );
+    const programUid = getUid(this.currentProgram_);
+    if (this.attribLocationsByProgram_[programUid] === undefined) {
+      this.attribLocationsByProgram_[programUid] = {};
     }
-    return this.attribLocations_[name];
+    if (this.attribLocationsByProgram_[programUid][name] === undefined) {
+      this.attribLocationsByProgram_[programUid][name] =
+        this.gl_.getAttribLocation(this.currentProgram_, name);
+    }
+    return this.attribLocationsByProgram_[programUid][name];
   }
 
   /**
-   * Modifies the given transform to apply the rotation/translation/scaling of the given frame state.
-   * The resulting transform can be used to convert world space coordinates to view coordinates.
+   * Sets the given transform to apply the rotation/translation/scaling of the given frame state.
+   * The resulting transform can be used to convert world space coordinates to view coordinates in the [-1, 1] range.
    * @param {import("../Map.js").FrameState} frameState Frame state.
    * @param {import("../transform").Transform} transform Transform to update.
    * @return {import("../transform").Transform} The updated transform object.
@@ -908,8 +968,6 @@ class WebGLHelper extends Disposable {
     const rotation = frameState.viewState.rotation;
     const resolution = frameState.viewState.resolution;
     const center = frameState.viewState.center;
-
-    resetTransform(transform);
     composeTransform(
       transform,
       0,
@@ -929,7 +987,7 @@ class WebGLHelper extends Disposable {
    * @param {number} value Value
    */
   setUniformFloatValue(uniform, value) {
-    this.getGL().uniform1f(this.getUniformLocation(uniform), value);
+    this.gl_.uniform1f(this.getUniformLocation(uniform), value);
   }
 
   /**
@@ -938,7 +996,7 @@ class WebGLHelper extends Disposable {
    * @param {Array<number>} value Array of length 4.
    */
   setUniformFloatVec2(uniform, value) {
-    this.getGL().uniform2fv(this.getUniformLocation(uniform), value);
+    this.gl_.uniform2fv(this.getUniformLocation(uniform), value);
   }
 
   /**
@@ -947,7 +1005,7 @@ class WebGLHelper extends Disposable {
    * @param {Array<number>} value Array of length 4.
    */
   setUniformFloatVec4(uniform, value) {
-    this.getGL().uniform4fv(this.getUniformLocation(uniform), value);
+    this.gl_.uniform4fv(this.getUniformLocation(uniform), value);
   }
 
   /**
@@ -956,11 +1014,7 @@ class WebGLHelper extends Disposable {
    * @param {Array<number>} value Matrix value
    */
   setUniformMatrixValue(uniform, value) {
-    this.getGL().uniformMatrix4fv(
-      this.getUniformLocation(uniform),
-      false,
-      value
-    );
+    this.gl_.uniformMatrix4fv(this.getUniformLocation(uniform), false, value);
   }
 
   /**
@@ -975,19 +1029,12 @@ class WebGLHelper extends Disposable {
    */
   enableAttributeArray_(attribName, size, type, stride, offset) {
     const location = this.getAttributeLocation(attribName);
-    // the attribute has not been found in the shaders; do not enable it
+    // the attribute has not been found in the shaders or is not used; do not enable it
     if (location < 0) {
       return;
     }
-    this.getGL().enableVertexAttribArray(location);
-    this.getGL().vertexAttribPointer(
-      location,
-      size,
-      type,
-      false,
-      stride,
-      offset
-    );
+    this.gl_.enableVertexAttribArray(location);
+    this.gl_.vertexAttribPointer(location, size, type, false, stride, offset);
   }
 
   /**
@@ -1014,18 +1061,31 @@ class WebGLHelper extends Disposable {
 
   /**
    * WebGL context was lost
+   * @param {WebGLContextEvent} event The context loss event.
    * @private
    */
-  handleWebGLContextLost() {
+  handleWebGLContextLost(event) {
     clear(this.bufferCache_);
     this.currentProgram_ = null;
+
+    event.preventDefault();
   }
 
   /**
    * WebGL context was restored
    * @private
    */
-  handleWebGLContextRestored() {}
+  handleWebGLContextRestored() {
+    this.needsToBeRecreated_ = true;
+  }
+
+  /**
+   * Returns whether this helper needs to be recreated, as the context was lost and then restored.
+   * @return {boolean} Whether this helper needs to be recreated.
+   */
+  needsToBeRecreated() {
+    return this.needsToBeRecreated_;
+  }
 
   /**
    * Will create or reuse a given webgl texture and apply the given size. If no image data
@@ -1038,7 +1098,7 @@ class WebGLHelper extends Disposable {
    * @return {WebGLTexture} The generated texture
    */
   createTexture(size, data, texture) {
-    const gl = this.getGL();
+    const gl = this.gl_;
     texture = texture || gl.createTexture();
 
     // set params & size

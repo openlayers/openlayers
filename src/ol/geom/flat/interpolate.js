@@ -95,7 +95,8 @@ export function lineStringCoordinateAtM(
       return coordinate;
     }
     return null;
-  } else if (flatCoordinates[end - 1] < m) {
+  }
+  if (flatCoordinates[end - 1] < m) {
     if (extrapolate) {
       coordinate = flatCoordinates.slice(end - stride, end);
       coordinate[stride - 1] = m;
@@ -190,7 +191,8 @@ export function lineStringsCoordinateAtM(
     }
     if (m < flatCoordinates[offset + stride - 1]) {
       return null;
-    } else if (m <= flatCoordinates[end - 1]) {
+    }
+    if (m <= flatCoordinates[end - 1]) {
       return lineStringCoordinateAtM(
         flatCoordinates,
         offset,

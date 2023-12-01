@@ -9,15 +9,6 @@ const buildDir = path.resolve(baseDir, '../build/ol');
 async function main() {
   const pkg = await fse.readJSON(path.resolve(baseDir, '../package.json'));
 
-  // update the version number in util.js
-  const utilPath = path.join(buildDir, 'util.js');
-  let utilSrc = await fse.readFile(utilPath, 'utf-8');
-  utilSrc = utilSrc.replace(
-    /const VERSION = '(?:[^']*)';/g,
-    `const VERSION = '${pkg.version}';`
-  );
-  await fse.writeFile(utilPath, utilSrc, 'utf-8');
-
   // write out simplified package.json
   pkg.main = 'index.js';
   delete pkg.scripts;

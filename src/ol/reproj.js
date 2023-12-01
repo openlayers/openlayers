@@ -186,7 +186,7 @@ export function calculateSourceExtentResolution(
 /**
  * @typedef {Object} ImageExtent
  * @property {import("./extent.js").Extent} extent Extent.
- * @property {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} image Image.
+ * @property {import('./DataTile.js').ImageLike} image Image.
  */
 
 /**
@@ -204,6 +204,7 @@ export function calculateSourceExtentResolution(
  * @param {number} gutter Gutter of the sources.
  * @param {boolean} [renderEdges] Render reprojection edges.
  * @param {boolean} [interpolate] Use linear interpolation when resampling.
+ * @param {boolean} [drawSingle] Draw single source images directly without stitchContext.
  * @return {HTMLCanvasElement} Canvas with reprojected data.
  */
 export function render(
@@ -218,7 +219,8 @@ export function render(
   sources,
   gutter,
   renderEdges,
-  interpolate
+  interpolate,
+  drawSingle
 ) {
   const context = createCanvasContext2D(
     Math.round(pixelRatio * width),
@@ -247,42 +249,48 @@ export function render(
     extend(sourceDataExtent, src.extent);
   });
 
-  const canvasWidthInUnits = getWidth(sourceDataExtent);
-  const canvasHeightInUnits = getHeight(sourceDataExtent);
-  const stitchContext = createCanvasContext2D(
-    Math.round((pixelRatio * canvasWidthInUnits) / sourceResolution),
-    Math.round((pixelRatio * canvasHeightInUnits) / sourceResolution),
-    canvasPool
-  );
-
-  if (!interpolate) {
-    stitchContext.imageSmoothingEnabled = false;
-  }
-
+  let stitchContext;
   const stitchScale = pixelRatio / sourceResolution;
+  // Round up Float32 scale values to prevent interpolation in Firefox.
+  const inverseScale = (interpolate ? 1 : 1 + Math.pow(2, -24)) / stitchScale;
 
-  sources.forEach(function (src, i, arr) {
-    const xPos = src.extent[0] - sourceDataExtent[0];
-    const yPos = -(src.extent[3] - sourceDataExtent[3]);
-    const srcWidth = getWidth(src.extent);
-    const srcHeight = getHeight(src.extent);
+  if (!drawSingle || sources.length !== 1 || gutter !== 0) {
+    stitchContext = createCanvasContext2D(
+      Math.round(getWidth(sourceDataExtent) * stitchScale),
+      Math.round(getHeight(sourceDataExtent) * stitchScale),
+      canvasPool
+    );
 
-    // This test should never fail -- but it does. Need to find a fix the upstream condition
-    if (src.image.width > 0 && src.image.height > 0) {
-      stitchContext.drawImage(
-        src.image,
-        gutter,
-        gutter,
-        src.image.width - 2 * gutter,
-        src.image.height - 2 * gutter,
-        xPos * stitchScale,
-        yPos * stitchScale,
-        srcWidth * stitchScale,
-        srcHeight * stitchScale
-      );
+    if (!interpolate) {
+      stitchContext.imageSmoothingEnabled = false;
     }
-  });
 
+    sources.forEach(function (src, i, arr) {
+      const xPos = (src.extent[0] - sourceDataExtent[0]) * stitchScale;
+      const yPos = -(src.extent[3] - sourceDataExtent[3]) * stitchScale;
+      const srcWidth = getWidth(src.extent) * stitchScale;
+      const srcHeight = getHeight(src.extent) * stitchScale;
+
+      // This test should never fail -- but it does. Need to find a fix the upstream condition
+      if (src.image.width > 0 && src.image.height > 0) {
+        stitchContext.drawImage(
+          src.image,
+          gutter,
+          gutter,
+          src.image.width - 2 * gutter,
+          src.image.height - 2 * gutter,
+          interpolate ? xPos : Math.round(xPos),
+          interpolate ? yPos : Math.round(yPos),
+          interpolate
+            ? srcWidth
+            : Math.round(xPos + srcWidth) - Math.round(xPos),
+          interpolate
+            ? srcHeight
+            : Math.round(yPos + srcHeight) - Math.round(yPos)
+        );
+      }
+    });
+  }
   const targetTopLeft = getTopLeft(targetExtent);
 
   triangulation.getTriangles().forEach(function (triangle, i, arr) {
@@ -399,17 +407,28 @@ export function render(
       sourceDataExtent[3] - sourceNumericalShiftY
     );
 
-    context.scale(
-      sourceResolution / pixelRatio,
-      -sourceResolution / pixelRatio
-    );
+    let image;
+    if (stitchContext) {
+      image = stitchContext.canvas;
+      context.scale(inverseScale, -inverseScale);
+    } else {
+      const source = sources[0];
+      const extent = source.extent;
+      image = source.image;
+      context.scale(
+        getWidth(extent) / image.width,
+        -getHeight(extent) / image.height
+      );
+    }
 
-    context.drawImage(stitchContext.canvas, 0, 0);
+    context.drawImage(image, 0, 0);
     context.restore();
   });
 
-  releaseCanvas(stitchContext);
-  canvasPool.push(stitchContext.canvas);
+  if (stitchContext) {
+    releaseCanvas(stitchContext);
+    canvasPool.push(stitchContext.canvas);
+  }
 
   if (renderEdges) {
     context.save();

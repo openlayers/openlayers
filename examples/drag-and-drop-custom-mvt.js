@@ -115,7 +115,7 @@ function download(fullpath, filename) {
 
 document.getElementById('download-mvt').addEventListener('click', function () {
   const fullpath =
-    'https://basemaps.arcgis.com/v1/arcgis/rest/services/World_Basemap/VectorTileServer/tile/' +
+    'https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer/tile/' +
     tileCoordZ.value +
     '/' +
     tileCoordY.value +

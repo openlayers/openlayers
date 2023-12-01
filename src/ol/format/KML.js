@@ -36,7 +36,6 @@ import {
   pushSerializeAndPop,
 } from '../xml.js';
 import {asArray} from '../color.js';
-import {assert} from '../asserts.js';
 import {extend} from '../array.js';
 import {get as getProjection} from '../proj.js';
 import {
@@ -156,6 +155,21 @@ const NETWORK_LINK_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 // @ts-ignore
 const LINK_PARSERS = makeStructureNS(NAMESPACE_URIS, {
   'href': makeObjectPropertySetter(readURI),
+});
+
+/**
+ * @const
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ */
+// @ts-ignore
+const CAMERA_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+  Altitude: makeObjectPropertySetter(readDecimal),
+  Longitude: makeObjectPropertySetter(readDecimal),
+  Latitude: makeObjectPropertySetter(readDecimal),
+  Tilt: makeObjectPropertySetter(readDecimal),
+  AltitudeMode: makeObjectPropertySetter(readString),
+  Heading: makeObjectPropertySetter(readDecimal),
+  Roll: makeObjectPropertySetter(readDecimal),
 });
 
 /**
@@ -659,7 +673,8 @@ class KML extends XMLFeature {
         return features;
       }
       return [];
-    } else if (localName == 'Placemark') {
+    }
+    if (localName == 'Placemark') {
       const feature = this.readPlacemark_(node, [
         this.getReadOptions(node, options),
       ]);
@@ -667,7 +682,8 @@ class KML extends XMLFeature {
         return [feature];
       }
       return [];
-    } else if (localName == 'kml') {
+    }
+    if (localName == 'kml') {
       features = [];
       for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
         const fs = this.readFeaturesFromNode(n, options);
@@ -690,10 +706,12 @@ class KML extends XMLFeature {
   readName(source) {
     if (!source) {
       return undefined;
-    } else if (typeof source === 'string') {
+    }
+    if (typeof source === 'string') {
       const doc = parse(source);
       return this.readNameFromDocument(doc);
-    } else if (isDocument(source)) {
+    }
+    if (isDocument(source)) {
       return this.readNameFromDocument(/** @type {Document} */ (source));
     }
     return this.readNameFromNode(/** @type {Element} */ (source));
@@ -873,6 +891,82 @@ class KML extends XMLFeature {
       }
     }
     return regions;
+  }
+
+  /**
+   * @typedef {Object} KMLCamera Specifies the observer's viewpoint and associated view parameters.
+   * @property {number} [Latitude] Latitude of the camera.
+   * @property {number} [Longitude] Longitude of the camera.
+   * @property {number} [Altitude] Altitude of the camera.
+   * @property {string} [AltitudeMode] Floor-related altitude mode.
+   * @property {number} [Heading] Horizontal camera rotation.
+   * @property {number} [Tilt] Lateral camera rotation.
+   * @property {number} [Roll] Vertical camera rotation.
+   */
+
+  /**
+   * Read the cameras of the KML.
+   *
+   * @param {Document|Element|string} source Source.
+   * @return {Array<KMLCamera>} Cameras.
+   * @api
+   */
+  readCamera(source) {
+    const cameras = [];
+    if (typeof source === 'string') {
+      const doc = parse(source);
+      extend(cameras, this.readCameraFromDocument(doc));
+    } else if (isDocument(source)) {
+      extend(
+        cameras,
+        this.readCameraFromDocument(/** @type {Document} */ (source))
+      );
+    } else {
+      extend(cameras, this.readCameraFromNode(/** @type {Element} */ (source)));
+    }
+    return cameras;
+  }
+
+  /**
+   * @param {Document} doc Document.
+   * @return {Array<KMLCamera>} Cameras.
+   */
+  readCameraFromDocument(doc) {
+    const cameras = [];
+    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
+      if (n.nodeType === Node.ELEMENT_NODE) {
+        extend(cameras, this.readCameraFromNode(/** @type {Element} */ (n)));
+      }
+    }
+    return cameras;
+  }
+
+  /**
+   * @param {Element} node Node.
+   * @return {Array<KMLCamera>} Cameras.
+   * @api
+   */
+  readCameraFromNode(node) {
+    const cameras = [];
+    for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
+      if (NAMESPACE_URIS.includes(n.namespaceURI) && n.localName === 'Camera') {
+        const obj = pushParseAndPop({}, CAMERA_PARSERS, n, []);
+        cameras.push(obj);
+      }
+    }
+    for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
+      const localName = n.localName;
+      if (
+        NAMESPACE_URIS.includes(n.namespaceURI) &&
+        (localName === 'Document' ||
+          localName === 'Folder' ||
+          localName === 'Placemark' ||
+          localName === 'kml')
+      ) {
+        extend(cameras, this.readCameraFromNode(n));
+      }
+    }
+    return cameras;
   }
 
   /**
@@ -1062,7 +1156,8 @@ function createFeatureStyleFunction(
 function findStyle(styleValue, defaultStyle, sharedStyles) {
   if (Array.isArray(styleValue)) {
     return styleValue;
-  } else if (typeof styleValue === 'string') {
+  }
+  if (typeof styleValue === 'string') {
     return findStyle(sharedStyles[styleValue], defaultStyle, sharedStyles);
   }
   return defaultStyle;
@@ -1757,7 +1852,7 @@ function readMultiGeometry(node, objectStack) {
     } else if (type == 'GeometryCollection') {
       multiGeometry = new GeometryCollection(geometries);
     } else {
-      assert(false, 37); // Unknown geometry type found
+      throw new Error('Unknown geometry type found');
     }
   } else {
     multiGeometry = new GeometryCollection(geometries);
@@ -1869,7 +1964,9 @@ function readStyle(node, objectStack) {
   let imageStyle;
   if ('imageStyle' in styleObject) {
     if (styleObject['imageStyle'] != DEFAULT_NO_IMAGE_STYLE) {
-      imageStyle = styleObject['imageStyle'];
+      imageStyle = /** @type {import("../style/Image.js").default} */ (
+        styleObject['imageStyle']
+      );
     }
   } else {
     imageStyle = DEFAULT_IMAGE_STYLE;
@@ -1909,7 +2006,8 @@ function readStyle(node, objectStack) {
                   return type !== 'Polygon' && type !== 'MultiPolygon';
                 })
             );
-          } else if (type !== 'Polygon' && type !== 'MultiPolygon') {
+          }
+          if (type !== 'Polygon' && type !== 'MultiPolygon') {
             return geometry;
           }
         },
@@ -1936,7 +2034,8 @@ function readStyle(node, objectStack) {
                   return type === 'Polygon' || type === 'MultiPolygon';
                 })
             );
-          } else if (type === 'Polygon' || type === 'MultiPolygon') {
+          }
+          if (type === 'Polygon' || type === 'MultiPolygon') {
             return geometry;
           }
         },
@@ -2103,7 +2202,7 @@ function placemarkStyleMapParser(node, objectStack) {
   } else if (typeof styleMapValue === 'string') {
     placemarkObject['styleUrl'] = styleMapValue;
   } else {
-    assert(false, 38); // `styleMapValue` has an unknown type
+    throw new Error('`styleMapValue` has an unknown type');
   }
 }
 
@@ -2325,7 +2424,7 @@ function writeCoordinatesTextNode(node, coordinates, objectStack) {
   } else if (layout == 'XYZ' || layout == 'XYZM') {
     dimension = 3;
   } else {
-    assert(false, 34); // Invalid geometry layout
+    throw new Error('Invalid geometry layout');
   }
 
   const ii = coordinates.length;
@@ -2857,7 +2956,7 @@ function writeMultiGeometry(node, geometry, objectStack) {
         ) {
           geometries.push(geometry);
         } else {
-          assert(false, 39); // Unknown geometry type
+          throw new Error('Unknown geometry type');
         }
       });
     factory = GEOMETRY_NODE_FACTORY;
@@ -2871,7 +2970,7 @@ function writeMultiGeometry(node, geometry, objectStack) {
     geometries = /** @type {MultiPolygon} */ (geometry).getPolygons();
     factory = POLYGON_NODE_FACTORY;
   } else {
-    assert(false, 39); // Unknown geometry type
+    throw new Error('Unknown geometry type');
   }
   pushSerializeAndPop(
     context,

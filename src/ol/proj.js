@@ -75,6 +75,7 @@ import {applyTransform, getWidth} from './extent.js';
 import {clamp, modulo} from './math.js';
 import {equals, getWorldsAway} from './coordinate.js';
 import {getDistance} from './sphere.js';
+import {warn} from './console.js';
 
 /**
  * A projection as {@link module:ol/proj/Projection~Projection}, SRS identifier
@@ -110,11 +111,10 @@ export function disableCoordinateWarning(disable) {
 /**
  * @param {Array<number>} input Input coordinate array.
  * @param {Array<number>} [output] Output array of coordinate values.
- * @param {number} [dimension] Dimension.
  * @return {Array<number>} Output coordinate array (new array, same coordinate
  *     values).
  */
-export function cloneTransform(input, output, dimension) {
+export function cloneTransform(input, output) {
   if (output !== undefined) {
     for (let i = 0, ii = input.length; i < ii; ++i) {
       output[i] = input[i];
@@ -129,10 +129,9 @@ export function cloneTransform(input, output, dimension) {
 /**
  * @param {Array<number>} input Input coordinate array.
  * @param {Array<number>} [output] Output array of coordinate values.
- * @param {number} [dimension] Dimension.
  * @return {Array<number>} Input coordinate array (same array as input).
  */
-export function identityTransform(input, output, dimension) {
+export function identityTransform(input, output) {
   if (output !== undefined && input !== output) {
     for (let i = 0, ii = input.length; i < ii; ++i) {
       output[i] = input[i];
@@ -312,7 +311,8 @@ export function clearAllProjections() {
 export function createProjection(projection, defaultCode) {
   if (!projection) {
     return get(defaultCode);
-  } else if (typeof projection === 'string') {
+  }
+  if (typeof projection === 'string') {
     return get(projection);
   }
   return /** @type {Projection} */ (projection);
@@ -549,7 +549,8 @@ let userProjection = null;
 
 /**
  * Set the projection for coordinates supplied from and returned by API methods.
- * This includes all API methods except for those interacting with tile grids.
+ * This includes all API methods except for those interacting with tile grids,
+ * plus {@link import("./Map.js").FrameState} and {@link import("./View.js").State}.
  * @param {ProjectionLike} projection The user projection.
  * @api
  */
@@ -567,8 +568,6 @@ export function clearUserProjection() {
 
 /**
  * Get the projection for coordinates supplied from and returned by API methods.
- * Note that this method is not yet a part of the stable API.  Support for user
- * projections is not yet complete and should be considered experimental.
  * @return {Projection|null} The user projection (or null if not set).
  * @api
  */
@@ -577,8 +576,9 @@ export function getUserProjection() {
 }
 
 /**
- * Use geographic coordinates (WGS-84 datum) in API methods.  This includes all API
- * methods except for those interacting with tile grids.
+ * Use geographic coordinates (WGS-84 datum) in API methods.
+ * This includes all API methods except for those interacting with tile grids,
+ * plus {@link import("./Map.js").FrameState} and {@link import("./View.js").State}.
  * @api
  */
 export function useGeographic() {
@@ -617,8 +617,7 @@ export function fromUserCoordinate(coordinate, destProjection) {
       coordinate[1] <= 90
     ) {
       showCoordinateWarning = false;
-      // eslint-disable-next-line no-console
-      console.warn(
+      warn(
         'Call useGeographic() from ol/proj once to work with [longitude, latitude] coordinates.'
       );
     }
@@ -667,10 +666,10 @@ export function toUserResolution(resolution, sourceProjection) {
   if (!userProjection) {
     return resolution;
   }
-  const sourceUnits = get(sourceProjection).getUnits();
-  const userUnits = userProjection.getUnits();
-  return sourceUnits && userUnits
-    ? (resolution * METERS_PER_UNIT[sourceUnits]) / METERS_PER_UNIT[userUnits]
+  const sourceMetersPerUnit = get(sourceProjection).getMetersPerUnit();
+  const userMetersPerUnit = userProjection.getMetersPerUnit();
+  return sourceMetersPerUnit && userMetersPerUnit
+    ? (resolution * sourceMetersPerUnit) / userMetersPerUnit
     : resolution;
 }
 
@@ -686,10 +685,10 @@ export function fromUserResolution(resolution, destProjection) {
   if (!userProjection) {
     return resolution;
   }
-  const sourceUnits = get(destProjection).getUnits();
-  const userUnits = userProjection.getUnits();
-  return sourceUnits && userUnits
-    ? (resolution * METERS_PER_UNIT[userUnits]) / METERS_PER_UNIT[sourceUnits]
+  const destMetersPerUnit = get(destProjection).getMetersPerUnit();
+  const userMetersPerUnit = userProjection.getMetersPerUnit();
+  return destMetersPerUnit && userMetersPerUnit
+    ? (resolution * userMetersPerUnit) / destMetersPerUnit
     : resolution;
 }
 
@@ -700,8 +699,8 @@ export function fromUserResolution(resolution, destProjection) {
  * clamped to the validity range.
  * @param {Projection} sourceProj Source projection.
  * @param {Projection} destProj Destination projection.
- * @param {function(import("./coordinate.js").Coordinate): import("./coordinate.js").Coordinate} transform Transform function (source to destiation).
- * @return {function(import("./coordinate.js").Coordinate): import("./coordinate.js").Coordinate} Safe transform function (source to destiation).
+ * @param {function(import("./coordinate.js").Coordinate): import("./coordinate.js").Coordinate} transform Transform function (source to destination).
+ * @return {function(import("./coordinate.js").Coordinate): import("./coordinate.js").Coordinate} Safe transform function (source to destination).
  */
 export function createSafeCoordinateTransform(sourceProj, destProj, transform) {
   return function (coord) {

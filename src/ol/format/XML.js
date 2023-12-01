@@ -1,6 +1,7 @@
 /**
  * @module ol/format/XML
  */
+import {abstract} from '../util.js';
 import {isDocument, parse} from '../xml.js';
 
 /**
@@ -14,16 +15,18 @@ class XML {
    * Read the source document.
    *
    * @param {Document|Element|string} source The XML source.
-   * @return {Object} An object representing the source.
+   * @return {Object|null} An object representing the source.
    * @api
    */
   read(source) {
     if (!source) {
       return null;
-    } else if (typeof source === 'string') {
+    }
+    if (typeof source === 'string') {
       const doc = parse(source);
       return this.readFromDocument(doc);
-    } else if (isDocument(source)) {
+    }
+    if (isDocument(source)) {
       return this.readFromDocument(/** @type {Document} */ (source));
     }
     return this.readFromNode(/** @type {Element} */ (source));
@@ -31,7 +34,7 @@ class XML {
 
   /**
    * @param {Document} doc Document.
-   * @return {Object} Object
+   * @return {Object|null} Object
    */
   readFromDocument(doc) {
     for (let n = doc.firstChild; n; n = n.nextSibling) {
@@ -45,9 +48,11 @@ class XML {
   /**
    * @abstract
    * @param {Element} node Node.
-   * @return {Object} Object
+   * @return {Object|null} Object
    */
-  readFromNode(node) {}
+  readFromNode(node) {
+    abstract();
+  }
 }
 
 export default XML;

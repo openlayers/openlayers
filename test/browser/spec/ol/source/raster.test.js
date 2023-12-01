@@ -138,6 +138,54 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
       view.setZoom(0);
     });
 
+    it('uses resolutions from the first source where available', function () {
+      greenSource.setResolutions([100, 10, 1]);
+      const source = new RasterSource({
+        threads: 0,
+        sources: [redSource, greenSource, blueSource],
+        operation: function (inputs) {
+          return inputs[0];
+        },
+      });
+
+      expect(source.getResolutions()).to.eql([100, 10, 1]);
+    });
+
+    it('accepts a "resolutions" option', function (done) {
+      const source = new RasterSource({
+        threads: 0,
+        sources: [redSource],
+        resolutions: [1],
+        operation: function (inputs) {
+          return inputs[0];
+        },
+      });
+
+      source.on('afteroperations', function (event) {
+        expect(event.resolution).to.equal(1);
+        done();
+      });
+
+      map.getLayers().item(0).setSource(source);
+      const view = map.getView();
+      view.setCenter([0, 0]);
+      view.setZoom(0);
+    });
+
+    it('uses the view resolution when "resolutions" are set to null', function () {
+      redSource.setResolutions([100, 10, 1]);
+      const source = new RasterSource({
+        threads: 0,
+        sources: [redSource],
+        resolutions: null,
+        operation: function (inputs) {
+          return inputs[0];
+        },
+      });
+
+      expect(source.getResolutions()).to.be(null);
+    });
+
     it('disposes the processor when disposed', function () {
       const source = new RasterSource({
         threads: 0,

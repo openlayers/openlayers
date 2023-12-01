@@ -13,7 +13,7 @@ Object.prototype.hasOwnProperty = function (property) {
 const template = require('jsdoc/lib/jsdoc/template');
 const fs = require('jsdoc/lib/jsdoc/fs');
 const path = require('jsdoc/lib/jsdoc/path');
-const taffy = require('taffydb').taffy;
+const taffy = require('@jsdoc/salty').taffy;
 const handle = require('jsdoc/lib/jsdoc/util/error').handle;
 const helper = require('jsdoc/lib/jsdoc/util/templateHelper');
 const htmlsafe = helper.htmlsafe;
@@ -72,7 +72,7 @@ function linkto(longname, linkText, cssClass, fragmentId) {
   }
   if (parseTypes) {
     // collections or generics with unions get parsed by catharsis and
-    // will unfortunamely include long module:ol/foo names
+    // will unfortunately include long module:ol/foo names
     return helper.linkto(longname, '', cssClass, fragmentId);
   }
 
@@ -89,7 +89,7 @@ function linkto(longname, linkText, cssClass, fragmentId) {
   if (match) {
     return (
       linkto(match[1], '', cssClass, fragmentId) +
-      '<' +
+      '&lt;' +
       linkto(match[2], '', cssClass, fragmentId) +
       '>'
     );
@@ -429,7 +429,7 @@ function buildNav(members) {
 }
 
 /**
- * @param {Object} taffyData See {@link https://taffydb.com/}.
+ * @param {Object} taffyData See https://www.npmjs.com/package/@jsdoc/salty.
  * @param {Object} opts Options.
  * @param {Object} tutorials Tutorials.
  */
@@ -621,8 +621,8 @@ exports.publish = function (taffyData, opts, tutorials) {
     generate('Global', [{kind: 'globalobj'}], globalUrl);
   }
 
-  // index page displays information from package.json and lists files
-  const files = find({kind: 'file'});
+  // the file type doclets come from @fileoverview tags in comment blocks with an @api tag
+  const fileOverviews = find({kind: 'file'});
 
   view.navigationItems = view.nav.reduce(function (dict, item) {
     dict[item.longname] = item;
@@ -642,7 +642,7 @@ exports.publish = function (taffyData, opts, tutorials) {
         readme: opts.readme,
         longname: opts.mainpagetitle ? opts.mainpagetitle : 'Main Page',
       },
-    ].concat(files),
+    ],
     indexUrl
   );
 
@@ -666,6 +666,15 @@ exports.publish = function (taffyData, opts, tutorials) {
 
       const myModules = helper.find(modules, {longname: longname});
       if (myModules.length) {
+        // assign any file overview description as the module description
+        myModules.forEach((moduleDoclet) => {
+          fileOverviews.forEach((fileDoclet) => {
+            if (fileDoclet.memberof !== moduleDoclet.longname) {
+              return;
+            }
+            moduleDoclet.description = fileDoclet.description;
+          });
+        });
         generate(
           'Module: ' + myModules[0].name,
           myModules,

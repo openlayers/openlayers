@@ -9,4 +9,5 @@
  * @api
  */
 
+/** @type {undefined} */
 export let nothing;

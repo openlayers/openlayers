@@ -41,7 +41,7 @@ class ReprojTile extends Tile {
    *     Function returning source tiles (z, x, y, pixelRatio).
    * @param {number} [errorThreshold] Acceptable reprojection error (in px).
    * @param {boolean} [renderEdges] Render reprojection edges.
-   * @param {boolean} [interpolate] Use linear interpolation when resampling.
+   * @param {import("../Tile.js").Options} [options] Tile options.
    */
   constructor(
     sourceProj,
@@ -55,9 +55,9 @@ class ReprojTile extends Tile {
     getTileFunction,
     errorThreshold,
     renderEdges,
-    interpolate
+    options
   ) {
-    super(tileCoord, TileState.IDLE, {interpolate: !!interpolate});
+    super(tileCoord, TileState.IDLE, options);
 
     /**
      * @private

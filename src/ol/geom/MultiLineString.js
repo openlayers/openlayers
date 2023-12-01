@@ -64,18 +64,19 @@ class MultiLineString extends SimpleGeometry {
       );
       this.ends_ = ends;
     } else {
-      let layout = this.getLayout();
       const lineStrings = /** @type {Array<LineString>} */ (coordinates);
+      /** @type {Array<number>} */
       const flatCoordinates = [];
       const ends = [];
       for (let i = 0, ii = lineStrings.length; i < ii; ++i) {
         const lineString = lineStrings[i];
-        if (i === 0) {
-          layout = lineString.getLayout();
-        }
         extend(flatCoordinates, lineString.getFlatCoordinates());
         ends.push(flatCoordinates.length);
       }
+      const layout =
+        lineStrings.length === 0
+          ? this.getLayout()
+          : lineStrings[0].getLayout();
       this.setFlatCoordinates(layout, flatCoordinates);
       this.ends_ = ends;
     }
@@ -87,11 +88,7 @@ class MultiLineString extends SimpleGeometry {
    * @api
    */
   appendLineString(lineString) {
-    if (!this.flatCoordinates) {
-      this.flatCoordinates = lineString.getFlatCoordinates().slice();
-    } else {
-      extend(this.flatCoordinates, lineString.getFlatCoordinates().slice());
-    }
+    extend(this.flatCoordinates, lineString.getFlatCoordinates().slice());
     this.ends_.push(this.flatCoordinates.length);
     this.changed();
   }
@@ -258,6 +255,7 @@ class MultiLineString extends SimpleGeometry {
    * @return {Array<number>} Flat midpoints.
    */
   getFlatMidpoints() {
+    /** @type {Array<number>} */
     const midpoints = [];
     const flatCoordinates = this.flatCoordinates;
     let offset = 0;
@@ -284,7 +282,9 @@ class MultiLineString extends SimpleGeometry {
    * @protected
    */
   getSimplifiedGeometryInternal(squaredTolerance) {
+    /** @type {Array<number>} */
     const simplifiedFlatCoordinates = [];
+    /** @type {Array<number>} */
     const simplifiedEnds = [];
     simplifiedFlatCoordinates.length = douglasPeuckerArray(
       this.flatCoordinates,

@@ -16,13 +16,13 @@ class CanvasImageBuilder extends CanvasBuilder {
 
     /**
      * @private
-     * @type {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement}
+     * @type {import('../../DataTile.js').ImageLike}
      */
     this.hitDetectionImage_ = null;
 
     /**
      * @private
-     * @type {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement}
+     * @type {import('../../DataTile.js').ImageLike}
      */
     this.image_ = null;
 
@@ -150,7 +150,7 @@ class CanvasImageBuilder extends CanvasBuilder {
       this.anchorX_,
       this.anchorY_,
       this.height_,
-      this.opacity_,
+      1,
       this.originX_,
       this.originY_,
       this.rotateWithView_,
@@ -207,7 +207,7 @@ class CanvasImageBuilder extends CanvasBuilder {
       this.anchorX_,
       this.anchorY_,
       this.height_,
-      this.opacity_,
+      1,
       this.originX_,
       this.originY_,
       this.rotateWithView_,

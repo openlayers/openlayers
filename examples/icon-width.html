@@ -1,0 +1,30 @@
+---
+layout: example.html
+title: Icon Symbolizer width and height
+shortdesc: Example using the width and height properties of an icon.
+docs: >
+  Example using the width and height properties of an icon.
+  Adjust the actual <strong>width</strong> and <strong>height</strong> with the input fields above.
+tags: "vector, style, icon, marker, width, height"
+resources:
+  - https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css
+  - https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js
+---
+<div id="map" class="map"><div id="popup"></div></div>
+
+<div class="controls">
+  <div style="margin: 1em 0;">
+    <label for="width">Width:</label>
+    <input id="width-input" name="width" type="number" value="40"/>
+    <button id="clear-width-button">clear</button>
+  </div>
+  <div style="margin: 1em 0;">
+    <label for="height">Height:</label>
+    <input id="height-input" name="height" type="number" value="40"/>
+    <button id="clear-height-button">clear</button>
+  </div>
+  <div style="margin: 1em 0;">
+    <label for="height">Scale approx.:</label>
+    <span id="scale"></span>
+  </div>
+</div>

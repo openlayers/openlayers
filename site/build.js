@@ -8,7 +8,7 @@ import {env} from 'node:process';
 import {fileURLToPath} from 'node:url';
 import {nodeResolve} from '@rollup/plugin-node-resolve';
 import {rollup} from 'rollup';
-import {terser} from 'rollup-plugin-terser';
+import terser from '@rollup/plugin-terser';
 
 const baseDir = dirname(fileURLToPath(import.meta.url));
 
@@ -19,7 +19,7 @@ const builder = Metalsmith(baseDir)
   .metadata({
     version: env.OL_VERSION || 'dev',
   })
-  .use(inPlace())
+  .use(inPlace({transform: 'handlebars'}))
   .use(markdown())
   .use(layouts());
 

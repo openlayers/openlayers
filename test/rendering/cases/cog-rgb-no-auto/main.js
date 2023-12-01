@@ -15,7 +15,10 @@ new Map({
     }),
   ],
   target: 'map',
-  view: source.getView(),
+  view: source.getView().then((config) => ({
+    ...config,
+    zoom: 0,
+  })),
 });
 
 render({

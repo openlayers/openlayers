@@ -16,7 +16,7 @@ describe('ol.style.Text', function () {
       expect(style.getFill().getColor()).to.be('#123456');
     });
 
-    it('can always be resetted to no color', function () {
+    it('can always be reset to no color', function () {
       const style = new Text();
       style.getFill().setColor();
       expect(style.getFill().getColor()).to.be(undefined);
@@ -42,6 +42,7 @@ describe('ol.style.Text', function () {
         text: 'test',
         textAlign: 'center',
         textBaseline: 'top',
+        repeat: 250,
         fill: new Fill({
           color: '#319FD3',
         }),
@@ -65,6 +66,7 @@ describe('ol.style.Text', function () {
       expect(original.getRotation()).to.eql(clone.getRotation());
       expect(original.getText()).to.eql(clone.getText());
       expect(original.getTextAlign()).to.eql(clone.getTextAlign());
+      expect(original.getRepeat()).to.eql(clone.getRepeat());
       expect(original.getTextBaseline()).to.eql(clone.getTextBaseline());
       expect(original.getStroke().getColor()).to.eql(
         clone.getStroke().getColor()

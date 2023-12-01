@@ -232,13 +232,17 @@ class TileSource extends Source {
   }
 
   /**
+   * @param {import("../proj/Projection").default} [projection] Projection.
    * @return {Array<number>|null} Resolutions.
    */
-  getResolutions() {
-    if (!this.tileGrid) {
+  getResolutions(projection) {
+    const tileGrid = projection
+      ? this.getTileGridForProjection(projection)
+      : this.tileGrid;
+    if (!tileGrid) {
       return null;
     }
-    return this.tileGrid.getResolutions();
+    return tileGrid.getResolutions();
   }
 
   /**
@@ -283,7 +287,7 @@ class TileSource extends Source {
     const sourceProjection = this.getProjection();
     assert(
       sourceProjection === null || equivalent(sourceProjection, projection),
-      68 // A VectorTile source can only be rendered if it has a projection compatible with the view projection.
+      'A VectorTile source can only be rendered if it has a projection compatible with the view projection.'
     );
     return this.tileCache;
   }

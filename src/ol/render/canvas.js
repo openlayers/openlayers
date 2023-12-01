@@ -42,6 +42,7 @@ import {getFontParameters} from '../css.js';
  * @property {CanvasLineJoin} [lineJoin] LineJoin.
  * @property {number} [lineWidth] LineWidth.
  * @property {number} [miterLimit] MiterLimit.
+ * @property {number} [fillPatternScale] Fill pattern scale.
  */
 
 /**
@@ -59,6 +60,7 @@ import {getFontParameters} from '../css.js';
  * @typedef {Object} TextState
  * @property {string} font Font.
  * @property {CanvasTextAlign} [textAlign] TextAlign.
+ * @property {number} [repeat] Repeat.
  * @property {import("../style/Text.js").TextJustify} [justify] Justify.
  * @property {CanvasTextBaseline} textBaseline TextBaseline.
  * @property {import("../style/Text.js").TextPlacement} [placement] Placement.
@@ -92,7 +94,7 @@ export const defaultFont = '10px sans-serif';
 
 /**
  * @const
- * @type {import("../colorlike.js").ColorLike}
+ * @type {string}
  */
 export const defaultFillStyle = '#000';
 
@@ -438,7 +440,7 @@ export function drawImageOrLabel(
     context.globalAlpha *= opacity;
   }
   if (transform) {
-    context.setTransform.apply(context, transform);
+    context.transform.apply(context, transform);
   }
 
   if (/** @type {*} */ (labelOrImage).contextInstructions) {

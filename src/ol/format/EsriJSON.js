@@ -10,7 +10,6 @@ import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
-import {assert} from '../asserts.js';
 import {containsExtent} from '../extent.js';
 import {deflateCoordinates} from '../geom/flat/deflate.js';
 import {get as getProjection} from '../proj.js';
@@ -452,7 +451,7 @@ function writePointGeometry(geometry, options) {
       y: coordinates[1],
     };
   } else {
-    assert(false, 34); // Invalid geometry layout
+    throw new Error('Invalid geometry layout');
   }
   return esriJSON;
 }

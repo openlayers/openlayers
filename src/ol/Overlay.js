@@ -98,7 +98,7 @@ const Property = {
  *
  * Example:
  *
- *     import Overlay from 'ol/Overlay';
+ *     import Overlay from 'ol/Overlay.js';
  *
  *     // ...
  *     const popup = new Overlay({

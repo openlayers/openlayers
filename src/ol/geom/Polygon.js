@@ -5,7 +5,7 @@ import LinearRing from './LinearRing.js';
 import Point from './Point.js';
 import SimpleGeometry from './SimpleGeometry.js';
 import {arrayMaxSquaredDelta, assignClosestArrayPoint} from './flat/closest.js';
-import {closestSquaredDistanceXY, getCenter} from '../extent.js';
+import {closestSquaredDistanceXY, getCenter, isEmpty} from '../extent.js';
 import {deflateCoordinatesArray} from './flat/deflate.js';
 import {extend} from '../array.js';
 import {getInteriorPointOfArray} from './flat/interiorpoint.js';
@@ -53,7 +53,7 @@ class Polygon extends SimpleGeometry {
 
     /**
      * @private
-     * @type {import("../coordinate.js").Coordinate}
+     * @type {import("../coordinate.js").Coordinate|null}
      */
     this.flatInteriorPoint_ = null;
 
@@ -77,7 +77,7 @@ class Polygon extends SimpleGeometry {
 
     /**
      * @private
-     * @type {Array<number>}
+     * @type {Array<number>|null}
      */
     this.orientedFlatCoordinates_ = null;
 
@@ -242,7 +242,9 @@ class Polygon extends SimpleGeometry {
       );
       this.flatInteriorPointRevision_ = this.getRevision();
     }
-    return this.flatInteriorPoint_;
+    return /** @type {import("../coordinate.js").Coordinate} */ (
+      this.flatInteriorPoint_
+    );
   }
 
   /**
@@ -331,7 +333,7 @@ class Polygon extends SimpleGeometry {
       }
       this.orientedRevision_ = this.getRevision();
     }
-    return this.orientedFlatCoordinates_;
+    return /** @type {Array<number>} */ (this.orientedFlatCoordinates_);
   }
 
   /**
@@ -340,7 +342,9 @@ class Polygon extends SimpleGeometry {
    * @protected
    */
   getSimplifiedGeometryInternal(squaredTolerance) {
+    /** @type {Array<number>} */
     const simplifiedFlatCoordinates = [];
+    /** @type {Array<number>} */
     const simplifiedEnds = [];
     simplifiedFlatCoordinates.length = quantizeArray(
       this.flatCoordinates,
@@ -438,6 +442,9 @@ export function circular(center, radius, n, sphereRadius) {
  * @api
  */
 export function fromExtent(extent) {
+  if (isEmpty(extent)) {
+    throw new Error('Cannot create polygon from empty extent');
+  }
   const minX = extent[0];
   const minY = extent[1];
   const maxX = extent[2];

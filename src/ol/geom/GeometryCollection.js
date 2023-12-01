@@ -19,7 +19,7 @@ import {listen, unlistenByKey} from '../events.js';
  */
 class GeometryCollection extends Geometry {
   /**
-   * @param {Array<Geometry>} [geometries] Geometries.
+   * @param {Array<Geometry>} geometries Geometries.
    */
   constructor(geometries) {
     super();
@@ -28,7 +28,7 @@ class GeometryCollection extends Geometry {
      * @private
      * @type {Array<Geometry>}
      */
-    this.geometries_ = geometries ? geometries : null;
+    this.geometries_ = geometries;
 
     /**
      * @type {Array<import("../events.js").EventsKey>}
@@ -50,12 +50,10 @@ class GeometryCollection extends Geometry {
    * @private
    */
   listenGeometriesChange_() {
-    if (!this.geometries_) {
-      return;
-    }
-    for (let i = 0, ii = this.geometries_.length; i < ii; ++i) {
+    const geometries = this.geometries_;
+    for (let i = 0, ii = geometries.length; i < ii; ++i) {
       this.changeEventsKeys_.push(
-        listen(this.geometries_[i], EventType.CHANGE, this.changed, this)
+        listen(geometries[i], EventType.CHANGE, this.changed, this)
       );
     }
   }
@@ -66,8 +64,9 @@ class GeometryCollection extends Geometry {
    * @api
    */
   clone() {
-    const geometryCollection = new GeometryCollection(null);
-    geometryCollection.setGeometries(this.geometries_);
+    const geometryCollection = new GeometryCollection(
+      cloneGeometries(this.geometries_)
+    );
     geometryCollection.applyProperties(this);
     return geometryCollection;
   }
@@ -192,8 +191,9 @@ class GeometryCollection extends Geometry {
       }
     }
     if (simplified) {
-      const simplifiedGeometryCollection = new GeometryCollection(null);
-      simplifiedGeometryCollection.setGeometriesArray(simplifiedGeometries);
+      const simplifiedGeometryCollection = new GeometryCollection(
+        simplifiedGeometries
+      );
       return simplifiedGeometryCollection;
     }
     this.simplifiedGeometryMaxMinSquaredTolerance = squaredTolerance;
@@ -333,11 +333,7 @@ class GeometryCollection extends Geometry {
  * @return {Array<Geometry>} Cloned geometries.
  */
 function cloneGeometries(geometries) {
-  const clonedGeometries = [];
-  for (let i = 0, ii = geometries.length; i < ii; ++i) {
-    clonedGeometries.push(geometries[i].clone());
-  }
-  return clonedGeometries;
+  return geometries.map((geometry) => geometry.clone());
 }
 
 export default GeometryCollection;
