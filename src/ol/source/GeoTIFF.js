@@ -19,6 +19,7 @@ import {
 import {clamp} from '../math.js';
 import {getCenter, getIntersection} from '../extent.js';
 import {error as logError} from '../console.js';
+import {multiply as multiplyTransform} from '../transform.js';
 import {fromCode as unitsFromCode} from '../proj/Units.js';
 
 /**
@@ -171,43 +172,69 @@ function getResolutions(image, referenceImage) {
 
 /**
  * @param {GeoTIFFImage} image A GeoTIFF.
+ * @param {import("../proj/Projection.js").default} [defaultProjection] Default projection.
  * @return {import("../proj/Projection.js").default} The image projection.
  */
-function getProjection(image) {
-  const geoKeys = image.geoKeys;
-  if (!geoKeys) {
-    return null;
-  }
+function getProjection(image, defaultProjection) {
+  let projection = defaultProjection;
 
-  if (
-    geoKeys.ProjectedCSTypeGeoKey &&
-    geoKeys.ProjectedCSTypeGeoKey !== 32767
-  ) {
-    const code = 'EPSG:' + geoKeys.ProjectedCSTypeGeoKey;
-    let projection = getCachedProjection(code);
-    if (!projection) {
-      const units = unitsFromCode(geoKeys.ProjLinearUnitsGeoKey);
-      if (units) {
+  if (!projection) {
+    const geoKeys = image.geoKeys;
+    if (!geoKeys) {
+      return null;
+    }
+
+    let code, units;
+    if (
+      geoKeys.ProjectedCSTypeGeoKey &&
+      geoKeys.ProjectedCSTypeGeoKey !== 32767
+    ) {
+      code = 'EPSG:' + geoKeys.ProjectedCSTypeGeoKey;
+      units = unitsFromCode(geoKeys.ProjLinearUnitsGeoKey);
+    } else if (
+      geoKeys.GeographicTypeGeoKey &&
+      geoKeys.GeographicTypeGeoKey !== 32767
+    ) {
+      code = 'EPSG:' + geoKeys.GeographicTypeGeoKey;
+      units = unitsFromCode(geoKeys.GeogAngularUnitsGeoKey);
+    }
+
+    if (code) {
+      projection = getCachedProjection(code);
+      if (units && !projection) {
         projection = new Projection({
           code: code,
           units: units,
         });
       }
     }
-    return projection;
   }
 
-  if (geoKeys.GeographicTypeGeoKey && geoKeys.GeographicTypeGeoKey !== 32767) {
-    const code = 'EPSG:' + geoKeys.GeographicTypeGeoKey;
-    let projection = getCachedProjection(code);
-    if (!projection) {
-      const units = unitsFromCode(geoKeys.GeogAngularUnitsGeoKey);
-      if (units) {
-        projection = new Projection({
-          code: code,
-          units: units,
-        });
-      }
+  if (projection) {
+    const modelTransformation = image.fileDirectory.ModelTransformation;
+    if (modelTransformation) {
+      // eslint-disable-next-line no-unused-vars
+      const [a, b, c, d, e, f, g, h] = modelTransformation;
+      const matrix = multiplyTransform(
+        multiplyTransform(
+          [
+            1 / Math.sqrt(a * a + e * e),
+            0,
+            0,
+            -1 / Math.sqrt(b * b + f * f),
+            d,
+            h,
+          ],
+          [a, e, b, f, 0, 0],
+        ),
+        [1, 0, 0, 1, -d, -h],
+      );
+
+      projection = new Projection({
+        code: projection.getCode(),
+        units: projection.getUnits(),
+      });
+      projection.setMatrix(matrix);
     }
     return projection;
   }
@@ -514,9 +541,21 @@ class GeoTIFFSource extends DataTile {
     const firstSource = sources[0];
     for (let i = firstSource.length - 1; i >= 0; --i) {
       const image = firstSource[i];
-      const projection = getProjection(image);
+      const projection = getProjection(image, this.projection);
       if (projection) {
-        this.projection = projection;
+        const matrix = projection.getMatrix();
+        if (!this.projection) {
+          this.projection = projection;
+        } else if (matrix) {
+          this.projection = new Projection({
+            code: this.projection.getCode(),
+            units: this.projection.getUnits(),
+          });
+          this.projection.setMatrix(matrix);
+        }
+        if (matrix) {
+          this.addAlpha_ = true;
+        }
         break;
       }
     }
@@ -683,9 +722,7 @@ class GeoTIFFSource extends DataTile {
       }
     }
 
-    if (!this.getProjection()) {
-      this.determineProjection(sources);
-    }
+    this.determineProjection(sources);
 
     this.samplesPerPixel_ = samplesPerPixel;
     this.nodataValues_ = nodataValues;
