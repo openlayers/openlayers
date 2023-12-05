@@ -15,6 +15,7 @@ import {
   get as getCachedProjection,
   toUserCoordinate,
   toUserExtent,
+  transformExtent,
 } from '../proj.js';
 import {clamp} from '../math.js';
 import {getCenter, getIntersection} from '../extent.js';
@@ -790,12 +791,25 @@ class GeoTIFFSource extends DataTile {
       resolutions = [resolutions[0] * 2, resolutions[0], resolutions[0] / 2];
     }
 
+    let viewProjection = this.projection;
+    let viewExtent = extent;
+    if (viewProjection && viewProjection.getMatrix()) {
+      viewProjection = getCachedProjection(this.projection.getCode());
+      if (!viewProjection) {
+        viewProjection = new Projection({
+          code: this.projection.getCode(),
+          units: this.projection.getUnits(),
+        });
+      }
+      viewExtent = transformExtent(viewExtent, this.projection, viewProjection);
+    }
+
     this.viewResolver({
       showFullExtent: true,
-      projection: this.projection,
+      projection: viewProjection,
       resolutions: resolutions,
-      center: toUserCoordinate(getCenter(extent), this.projection),
-      extent: toUserExtent(extent, this.projection),
+      center: toUserCoordinate(getCenter(viewExtent), viewProjection),
+      extent: toUserExtent(viewExtent, viewProjection),
       zoom: zoom,
     });
   }
