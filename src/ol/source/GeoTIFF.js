@@ -131,7 +131,7 @@ function getWorkerPool() {
  */
 function getBoundingBox(image) {
   try {
-    return image.getBoundingBox();
+    return image.getBoundingBox(true);
   } catch (_) {
     return [0, 0, image.getWidth(), image.getHeight()];
   }
