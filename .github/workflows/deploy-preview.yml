@@ -71,7 +71,7 @@ jobs:
           script: |
             const pullRequestNumber = parseInt(${{steps.pull-request-number.outputs.result}}, 10);
 
-            const start = ':package:';
+            const start = '📦';
             const author = 'github-actions[bot]';
 
             const comments = await github.rest.issues.listComments({
