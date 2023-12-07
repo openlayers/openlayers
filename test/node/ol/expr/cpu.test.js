@@ -7,6 +7,7 @@ import {
   newParsingContext,
 } from '../../../../src/ol/expr/expression.js';
 import {
+  UNKNOWN_VALUE,
   buildExpression,
   newEvaluationContext,
 } from '../../../../src/ol/expr/cpu.js';
@@ -570,6 +571,104 @@ describe('ol/expr/cpu.js', () => {
         expression: ['interpolate', ['linear'], 0.5, 0, 'red', 1, [0, 255, 0]],
         expected: [219, 170, 0, 1],
       },
+      {
+        name: 'incomplete context (unknown properties, color)',
+        type: ColorType,
+        expression: ['*', ['get', 'color'], [255, 255, 255, 0.5]],
+        context: {
+          properties: UNKNOWN_VALUE,
+        },
+        expected: UNKNOWN_VALUE,
+      },
+      {
+        name: 'incomplete context (unknown properties, string)',
+        type: StringType,
+        expression: ['concat', ['get', 'type'], '-icon'],
+        context: {
+          properties: UNKNOWN_VALUE,
+        },
+        expected: UNKNOWN_VALUE,
+      },
+      {
+        name: 'incomplete context (unknown properties, boolean)',
+        type: BooleanType,
+        expression: ['all', ['get', 'enabled'], true],
+        context: {
+          properties: UNKNOWN_VALUE,
+        },
+        expected: UNKNOWN_VALUE,
+      },
+      {
+        name: 'incomplete context (unknown properties, assertion)',
+        type: StringType,
+        expression: ['string', ['get', 'type'], 'hello'],
+        context: {
+          properties: UNKNOWN_VALUE,
+        },
+        expected: UNKNOWN_VALUE,
+      },
+      {
+        name: 'incomplete context (unknown properties, comparison)',
+        type: BooleanType,
+        expression: ['==', ['get', 'enabled'], false],
+        context: {
+          properties: UNKNOWN_VALUE,
+        },
+        expected: UNKNOWN_VALUE,
+      },
+      {
+        name: 'incomplete context (unknown properties, case)',
+        type: NumberType,
+        expression: ['case', ['get', 'enabled'], 10, false, 20, 30],
+        context: {
+          properties: UNKNOWN_VALUE,
+        },
+        expected: UNKNOWN_VALUE,
+      },
+      {
+        name: 'incomplete context (unknown properties, match)',
+        type: NumberType,
+        expression: ['match', ['get', 'type'], 'abc', 10, 'def', 20, 30],
+        context: {
+          properties: UNKNOWN_VALUE,
+        },
+        expected: UNKNOWN_VALUE,
+      },
+      {
+        name: 'incomplete context (unknown properties, interpolate)',
+        type: NumberType,
+        expression: [
+          'interpolate',
+          ['linear'],
+          ['get', 'value'],
+          0,
+          -50,
+          10,
+          50,
+        ],
+        context: {
+          properties: UNKNOWN_VALUE,
+        },
+        expected: UNKNOWN_VALUE,
+      },
+      {
+        name: 'incomplete context (unknown variables)',
+        type: ColorType,
+        expression: ['*', ['var', 'color'], [255, 255, 255, 0.5]],
+        context: {
+          variables: UNKNOWN_VALUE,
+        },
+        expected: UNKNOWN_VALUE,
+      },
+      {
+        name: 'incomplete context (unknown resolution)',
+        type: NumberType,
+        expression: ['-', ['resolution'], 100],
+        context: {
+          resolution: UNKNOWN_VALUE,
+        },
+        expected: UNKNOWN_VALUE,
+      },
     ];
 
     for (const c of cases) {
@@ -656,6 +755,7 @@ describe('ol/expr/cpu.js', () => {
         const parsingContext = newParsingContext();
         const evaluator = buildExpression(expression, type, parsingContext);
         const evaluationContext = newEvaluationContext();
+        evaluationContext.variables = {};
         for (const [input, output] of t.cases) {
           it(`works for ${input}`, () => {
             evaluationContext.variables.input = input;
