@@ -93,7 +93,7 @@ class ImageArcGISRest extends ImageSource {
      * @private
      * @type {!Object}
      */
-    this.params_ = options.params || {};
+    this.params_ = Object.assign({}, options.params);
 
     /**
      * @private
