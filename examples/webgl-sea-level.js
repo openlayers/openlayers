@@ -11,7 +11,7 @@ const attributions =
 
 // band math operates on normalized values from 0-1
 // so we scale by 255 to align with the elevation formula
-// from https://cloud.maptiler.com/tiles/terrain-rgb/
+// from https://cloud.maptiler.com/tiles/terrain-rgb-v2/
 const elevation = [
   '+',
   -10000,
@@ -24,9 +24,10 @@ const layer = new TileLayer({
   opacity: 0.6,
   source: new XYZ({
     url:
-      'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + key,
+      'https://api.maptiler.com/tiles/terrain-rgb-v2/{z}/{x}/{y}.webp?key=' +
+      key,
     tileSize: 512,
-    maxZoom: 12,
+    maxZoom: 14,
   }),
   style: {
     variables: {
