@@ -146,7 +146,11 @@ export function compileExpression(expression, context) {
     case Ops.Concat: {
       const args = expression.args.map((e) => compileExpression(e, context));
       return checkForUnknown(args, (evaluatedArgs) =>
-        ''.concat(...evaluatedArgs.map((arg) => arg.toString()))
+        ''.concat(
+          ...evaluatedArgs.map((arg) =>
+            arg !== null && arg !== undefined ? arg.toString() : ''
+          )
+        )
       );
     }
     case Ops.Resolution: {
