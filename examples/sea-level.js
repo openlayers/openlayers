@@ -28,10 +28,11 @@ const attributions =
 
 const elevation = new XYZ({
   // The RGB values in the source collectively represent elevation.
-  // Interpolation of individual colors would produce incorrect evelations and is disabled.
-  url: 'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + key,
+  // Interpolation of individual colors would produce incorrect elevations and is disabled.
+  url:
+    'https://api.maptiler.com/tiles/terrain-rgb-v2/{z}/{x}/{y}.webp?key=' + key,
   tileSize: 512,
-  maxZoom: 12,
+  maxZoom: 14,
   crossOrigin: '',
   interpolate: false,
 });
