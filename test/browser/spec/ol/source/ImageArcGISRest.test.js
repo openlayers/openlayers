@@ -1,4 +1,8 @@
 import ImageArcGISRest from '../../../../../src/ol/source/ImageArcGISRest.js';
+import ImageLayer from '../../../../../src/ol/layer/Image.js';
+import ImageState from '../../../../../src/ol/ImageState.js';
+import Map from '../../../../../src/ol/Map.js';
+import View from '../../../../../src/ol/View.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 
 describe('ol/source/ImageArcGISRest', function () {
@@ -124,6 +128,26 @@ describe('ol/source/ImageArcGISRest', function () {
   });
 
   describe('#updateParams', function () {
+    let map;
+    beforeEach(function () {
+      const target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      map = new Map({
+        target: target,
+        view: new View({
+          center: [0, 0],
+          zoom: 0,
+        }),
+      });
+    });
+
+    afterEach(function () {
+      document.body.removeChild(map.getTargetElement());
+      map.setTarget(null);
+    });
+
     it('add a new param', function () {
       const source = new ImageArcGISRest(options);
       source.updateParams({'TEST': 'value'});
@@ -156,6 +180,27 @@ describe('ol/source/ImageArcGISRest', function () {
       const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
       expect(queryData.get('TEST')).to.be('newValue');
+    });
+
+    it('reloads from server', function (done) {
+      const srcs = [];
+      options.params.TEST = 'value';
+      const source = new ImageArcGISRest(options);
+      source.setImageLoadFunction(function (image, src) {
+        srcs.push(src);
+        image.state = ImageState.LOADED;
+        source.loading = false;
+      });
+      map.addLayer(new ImageLayer({source: source}));
+      map.once('rendercomplete', function () {
+        source.updateParams({'TEST': 'newValue'});
+        map.once('rendercomplete', function () {
+          expect(srcs.length).to.be(2);
+          expect(new URL(srcs[0]).searchParams.get('TEST')).to.be('value');
+          expect(new URL(srcs[1]).searchParams.get('TEST')).to.be('newValue');
+          done();
+        });
+      });
     });
   });
 
