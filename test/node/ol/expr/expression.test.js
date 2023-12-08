@@ -9,12 +9,21 @@ import {
   NumberArrayType,
   NumberType,
   StringType,
+  computeGeometryType,
   includesType,
   isType,
   newParsingContext,
   parse,
   typeName,
 } from '../../../../src/ol/expr/expression.js';
+import {
+  Circle,
+  GeometryCollection,
+  MultiLineString,
+  MultiPoint,
+  MultiPolygon,
+  Point,
+} from '../../../../src/ol/geom.js';
 
 describe('ol/expr/expression.js', () => {
   describe('parse()', () => {
@@ -59,7 +68,10 @@ describe('ol/expr/expression.js', () => {
       expect(expression).to.be.a(CallExpression);
       expect(expression.operator).to.be('get');
       expect(isType(expression.type, AnyType)).to.be(true);
-      expect(context.properties.has('foo')).to.be(true);
+
+      expect(expression.args).to.have.length(1);
+      expect(expression.args[0]).to.be.a(LiteralExpression);
+      expect(expression.args[0].value).to.be('foo');
     });
 
     it('parses a get expression with type hint', () => {
@@ -68,23 +80,57 @@ describe('ol/expr/expression.js', () => {
       expect(isType(expression.type, NumberArrayType)).to.be(true);
     });
 
+    it('parses a get expression with dynamic name', () => {
+      const context = newParsingContext();
+      const expression = parse(['get', ['concat', 'foo', 'bar']], context);
+      expect(expression).to.be.a(CallExpression);
+      expect(expression.operator).to.be('get');
+      expect(isType(expression.type, AnyType)).to.be(true);
+
+      expect(expression.args).to.have.length(1);
+      expect(expression.args[0]).to.be.a(CallExpression);
+      expect(isType(expression.args[0].type, StringType)).to.be(true);
+      expect(expression.args[0].operator).to.be('concat');
+    });
+
     it('parses a var expression', () => {
       const context = newParsingContext();
       const expression = parse(['var', 'foo'], context);
       expect(expression).to.be.a(CallExpression);
       expect(expression.operator).to.be('var');
       expect(isType(expression.type, AnyType)).to.be(true);
-      expect(context.variables.has('foo')).to.be(true);
+
+      expect(expression.args).to.have.length(1);
+      expect(expression.args[0]).to.be.a(LiteralExpression);
+      expect(expression.args[0].value).to.be('foo');
     });
 
     it('parses a var expression with initial value', () => {
       const context = newParsingContext();
-      context.style.variables = {'foo': 'abcd'};
+      context.style.variables = {'foo': 1234};
       const expression = parse(['var', 'foo'], context);
       expect(expression).to.be.a(CallExpression);
       expect(expression.operator).to.be('var');
-      expect(isType(expression.type, StringType)).to.be(true);
-      expect(context.variables.has('foo')).to.be(true);
+      expect(isType(expression.type, NumberType)).to.be(true);
+
+      expect(expression.args).to.have.length(2);
+      expect(expression.args[0]).to.be.a(LiteralExpression);
+      expect(expression.args[0].value).to.be('foo');
+      expect(expression.args[1]).to.be.a(LiteralExpression);
+      expect(expression.args[1].value).to.be(1234);
+    });
+
+    it('parses a var expression with dynamic name', () => {
+      const context = newParsingContext();
+      const expression = parse(['var', ['concat', 'foo', 'bar']], context);
+      expect(expression).to.be.a(CallExpression);
+      expect(expression.operator).to.be('var');
+      expect(isType(expression.type, AnyType)).to.be(true);
+
+      expect(expression.args).to.have.length(1);
+      expect(expression.args[0]).to.be.a(CallExpression);
+      expect(isType(expression.args[0].type, StringType)).to.be(true);
+      expect(expression.args[0].operator).to.be('concat');
     });
 
     it('parses a concat expression', () => {
@@ -96,7 +142,6 @@ describe('ol/expr/expression.js', () => {
       expect(expression).to.be.a(CallExpression);
       expect(expression.operator).to.be('concat');
       expect(isType(expression.type, AnyType));
-      expect(context.properties.has('foo')).to.be(true);
     });
 
     it('parses id expression', () => {
@@ -120,7 +165,6 @@ describe('ol/expr/expression.js', () => {
       expect(isType(expression.args[0].type, StringType)).to.be(true);
       expect(expression.args[1]).to.be.a(LiteralExpression);
       expect(isType(expression.args[1].type, StringType)).to.be(true);
-      expect(context.properties.has('foo')).to.be(true);
     });
 
     it('parses a == expression with variable', () => {
@@ -137,7 +181,6 @@ describe('ol/expr/expression.js', () => {
       );
       expect(isType(expression.args[0].type, StringType)).to.be(true);
       expect(isType(expression.args[1].type, StringType)).to.be(true);
-      expect(context.variables.has('foo')).to.be(true);
     });
 
     it('parses a * expression, narrows argument types', () => {
@@ -395,12 +438,25 @@ describe('ol/expr/expression.js', () => {
         },
         type: StringType,
         error:
-          'The variable myAttr has type number but the following type was expected: string',
+          'The following expression was expected to return string, but returns number instead: ["var","myAttr"]',
+      },
+      {
+        name: 'variable name expression not returning a string',
+        expression: ['var', ['*', 3, 4]],
+        type: AnyType,
+        error:
+          'Unexpected type for argument 0 of var operation, got number but expected string',
       },
       {
         name: 'invalid type hint (get)',
         expression: ['get', 'myAttr', 'invalid_type'],
         error: 'Unrecognized type hint: invalid_type',
+      },
+      {
+        name: 'type hint not being a literal value',
+        expression: ['get', 'myAttr', ['concat', 'number', '[]']],
+        error:
+          'The type hint for a get operation has to be a literal value, got: ["concat","number","[]"]',
       },
       {
         name: 'invalid expression',
@@ -622,6 +678,31 @@ describe('ol/expr/expression.js', () => {
       expect(isType(ColorType, NumberArrayType)).to.be(false);
       expect(isType(NumberArrayType, NumberArrayType)).to.be(true);
       expect(isType(AnyType, NumberArrayType)).to.be(false);
+    });
+  });
+  describe('computeGeometryType', () => {
+    it('returns empty string for falsy geom', () => {
+      expect(computeGeometryType(undefined)).to.eql('');
+    });
+    it('returns Point for Point geom', () => {
+      expect(computeGeometryType(new Point([0, 1]))).to.eql('Point');
+    });
+    it('returns Polygon for MultiPolygon geom', () => {
+      expect(computeGeometryType(new MultiPolygon([]))).to.eql('Polygon');
+    });
+    it('returns LineString for MultiLineString geom', () => {
+      expect(computeGeometryType(new MultiLineString([]))).to.eql('LineString');
+    });
+    it('returns first geom type in geometry collection', () => {
+      expect(
+        computeGeometryType(new GeometryCollection([new Circle([0, 1])]))
+      ).to.eql('Polygon');
+      expect(
+        computeGeometryType(new GeometryCollection([new MultiPoint([])]))
+      ).to.eql('Point');
+    });
+    it('returns empty string for empty geom collection', () => {
+      expect(computeGeometryType(new GeometryCollection([]))).to.eql('');
     });
   });
 });

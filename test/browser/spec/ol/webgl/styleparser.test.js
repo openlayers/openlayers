@@ -3,12 +3,10 @@ import {asArray} from '../../../../../src/ol/color.js';
 import {
   computeHash,
   packColor,
-  parseLiteralStyle,
-} from '../../../../../src/ol/webgl/styleparser.js';
-import {
   stringToGlsl,
   uniformNameForVariable,
 } from '../../../../../src/ol/expr/gpu.js';
+import {parseLiteralStyle} from '../../../../../src/ol/webgl/styleparser.js';
 
 describe('ol.webgl.styleparser', () => {
   describe('parseLiteralStyle', () => {

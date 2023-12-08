@@ -26,11 +26,11 @@ function pushCustomAttributesInRenderInstructions(
       continue;
     }
     renderInstructions[currentIndex + shift++] = value[1];
-    if (attr.size < 3) {
+    if (attr.size === 2) {
       continue;
     }
     renderInstructions[currentIndex + shift++] = value[2];
-    if (attr.size < 4) {
+    if (attr.size === 3) {
       continue;
     }
     renderInstructions[currentIndex + shift++] = value[3];

@@ -5,7 +5,7 @@
     "bootstrap": false,
     "chroma": false,
     "common": false,
-    "createMapboxStreetsV6Style": false,
+    "getMapboxStreetsV6Style": false,
     "d3": false,
     "geojsonvt": false,
     "gifler": false,

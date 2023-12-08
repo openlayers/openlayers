@@ -198,7 +198,8 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       return new VectorStyleRenderer(
         shaders,
         this.helper,
-        this.hitDetectionEnabled_
+        this.hitDetectionEnabled_,
+        'filter' in style ? style.filter : null
       );
     });
   }
@@ -339,6 +340,9 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     for (let i = 0, ii = this.styleRenderers_.length; i < ii; i++) {
       const renderer = this.styleRenderers_[i];
       const buffers = tileRepresentation.buffers[i];
+      if (!buffers) {
+        continue;
+      }
       renderer.render(buffers, frameState, () => {
         this.applyUniforms_(
           alpha,

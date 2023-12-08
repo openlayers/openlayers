@@ -3,6 +3,7 @@ import LineString from '../../../../../../src/ol/geom/LineString.js';
 import MixedGeometryBatch from '../../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../../src/ol/geom/Polygon.js';
+import {GLSL_UNDEFINED_VALUE} from '../../../../../../src/ol/render/webgl/constants.js';
 import {
   compose as composeTransform,
   create as createTransform,

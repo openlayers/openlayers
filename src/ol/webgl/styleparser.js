@@ -12,13 +12,13 @@ import {
 } from '../expr/expression.js';
 import {ShaderBuilder} from './ShaderBuilder.js';
 import {
+  UNPACK_COLOR_FN,
   arrayToGlsl,
   buildExpression,
-  getStringNumberEquivalent,
+  computeHash,
   stringToGlsl,
   uniformNameForVariable,
 } from '../expr/gpu.js';
-import {asArray} from '../color.js';
 
 /**
  * Recursively parses a style expression and outputs a GLSL-compatible string. Takes in a compilation context that
@@ -38,29 +38,6 @@ export function expressionToGlsl(compilationContext, value, expectedType) {
     compilationContext
   );
 }
-
-/**
- * Packs all components of a color into a two-floats array
- * @param {import("../color.js").Color|string} color Color as array of numbers or string
- * @return {Array<number>} Vec2 array containing the color in compressed form
- */
-export function packColor(color) {
-  const array = asArray(color);
-  const r = array[0] * 256;
-  const g = array[1];
-  const b = array[2] * 256;
-  const a = Math.round(array[3] * 255);
-  return [r + g, b + a];
-}
-
-const UNPACK_COLOR_FN = `vec4 unpackColor(vec2 packedColor) {
-  return fract(packedColor[1] / 256.0) * vec4(
-    fract(floor(packedColor[0] / 256.0) / 256.0),
-    fract(packedColor[0] / 256.0),
-    fract(floor(packedColor[1] / 256.0) / 256.0),
-    1.0
-  );
-}`;
 
 /**
  * @param {number} type Value type
@@ -86,18 +63,6 @@ function getGlslTypeFromType(type) {
     return /** @type {'vec2'|'vec3'|'vec4'} */ (`vec${size}`);
   }
   return 'float';
-}
-
-/**
- * see https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
- * @param {Object|string} input The hash input, either an object or string
- * @return {string} Hash (if the object cannot be serialized, it is based on `getUid`)
- */
-export function computeHash(input) {
-  const hash = JSON.stringify(input)
-    .split('')
-    .reduce((prev, curr) => (prev << 5) - prev + curr.charCodeAt(0), 0);
-  return (hash >>> 0).toString();
 }
 
 /**
@@ -921,6 +886,8 @@ export function parseLiteralStyle(style) {
   parseStrokeProperties(style, builder, uniforms, vertContext, fragContext);
   parseFillProperties(style, builder, uniforms, vertContext, fragContext);
 
+  // note that the style filter may have already been applied earlier when building the rendering instructions
+  // this is still needed in case a filter cannot be evaluated statically beforehand (e.g. depending on time)
   if (style.filter) {
     const parsedFilter = expressionToGlsl(
       fragContext,
@@ -935,29 +902,7 @@ export function parseLiteralStyle(style) {
     const variable = fragContext.variables[varName];
     const uniformName = uniformNameForVariable(variable.name);
     builder.addUniform(`${getGlslTypeFromType(variable.type)} ${uniformName}`);
-
-    let callback;
-    if (variable.type === StringType) {
-      callback = () =>
-        getStringNumberEquivalent(
-          /** @type {string} */ (style.variables[variable.name])
-        );
-    } else if (variable.type === ColorType) {
-      callback = () =>
-        packColor([
-          ...asArray(
-            /** @type {string|Array<number>} */ (
-              style.variables[variable.name]
-            ) || '#eee'
-          ),
-        ]);
-    } else if (variable.type === BooleanType) {
-      callback = () =>
-        /** @type {boolean} */ (style.variables[variable.name]) ? 1.0 : 0.0;
-    } else {
-      callback = () => /** @type {number} */ (style.variables[variable.name]);
-    }
-    uniforms[uniformName] = callback;
+    uniforms[uniformName] = variable.evaluator.bind(this, style.variables);
   });
 
   // for each feature attribute used in the fragment shader, define a varying that will be used to pass data
@@ -989,25 +934,10 @@ export function parseLiteralStyle(style) {
     propName
   ) {
     const property = vertContext.properties[propName];
-    let callback;
-    if (property.evaluator) {
-      callback = property.evaluator;
-    } else if (property.type === StringType) {
-      callback = (feature) =>
-        getStringNumberEquivalent(feature.get(property.name));
-    } else if (property.type === ColorType) {
-      callback = (feature) =>
-        packColor([...asArray(feature.get(property.name) || '#eee')]);
-    } else if (property.type === BooleanType) {
-      callback = (feature) => (feature.get(property.name) ? 1.0 : 0.0);
-    } else {
-      callback = (feature) => feature.get(property.name);
-    }
-
     return {
       name: property.name,
       size: getGlslSizeFromType(property.type),
-      callback,
+      callback: property.evaluator,
     };
   });
 
@@ -1020,7 +950,7 @@ export function parseLiteralStyle(style) {
   }
 
   return {
-    builder: builder,
+    builder,
     attributes: attributes.reduce(
       (prev, curr) => ({
         ...prev,
@@ -1028,6 +958,6 @@ export function parseLiteralStyle(style) {
       }),
       {}
     ),
-    uniforms: uniforms,
+    uniforms,
   };
 }

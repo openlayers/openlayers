@@ -26,12 +26,16 @@ import {
  * value.  The evaluator function should do as little allocation and work as possible.
  */
 
+export const UNKNOWN_VALUE = null;
+
 /**
  * @typedef {Object} EvaluationContext
- * @property {Object} properties The values for properties used in 'get' expressions.
- * @property {Object} variables The values for variables used in 'var' expressions.
- * @property {number} resolution The map resolution.
- * @property {string|number|null} featureId The feature id.
+ * Each of these values can be set to null, which means that they are not known in the current context.
+ * @property {Object|UNKNOWN_VALUE} properties The values for properties used in 'get' expressions.
+ * @property {Object|UNKNOWN_VALUE} variables The values for variables used in 'var' expressions.
+ * @property {number|UNKNOWN_VALUE} resolution The map resolution.
+ * @property {string|number|UNKNOWN_VALUE} featureId The feature id.
+ * @property {string|UNKNOWN_VALUE} geometryType Geometry type of the current object.
  */
 
 /**
@@ -39,15 +43,20 @@ import {
  */
 export function newEvaluationContext() {
   return {
-    variables: {},
-    properties: {},
-    resolution: NaN,
-    featureId: null,
+    variables: UNKNOWN_VALUE,
+    properties: UNKNOWN_VALUE,
+    resolution: UNKNOWN_VALUE,
+    featureId: UNKNOWN_VALUE,
+    geometryType: UNKNOWN_VALUE,
   };
 }
 
 /**
- * @typedef {function(EvaluationContext):import("./expression.js").LiteralValue} ExpressionEvaluator
+ * @typedef {import("./expression.js").LiteralValue} LiteralValue
+ */
+
+/**
+ * @typedef {function(EvaluationContext):LiteralValue} ExpressionEvaluator
  */
 
 /**
@@ -105,7 +114,7 @@ export function buildExpression(encoded, type, context) {
  * @param {import('./expression.js').ParsingContext} context The parsing context.
  * @return {ExpressionEvaluator} The evaluator function.
  */
-function compileExpression(expression, context) {
+export function compileExpression(expression, context) {
   if (expression instanceof LiteralExpression) {
     // convert colors to array if possible
     if (expression.type === ColorType && typeof expression.value === 'string') {
@@ -129,12 +138,20 @@ function compileExpression(expression, context) {
       return compileAccessorExpression(expression, context);
     }
     case Ops.Id: {
-      return (expression) => expression.featureId;
+      return (context) => context.featureId;
+    }
+    case Ops.GeometryType: {
+      return (context) => context.geometryType;
     }
     case Ops.Concat: {
       const args = expression.args.map((e) => compileExpression(e, context));
-      return (context) =>
-        ''.concat(...args.map((arg) => arg(context).toString()));
+      return checkForUnknown(args, (evaluatedArgs) =>
+        ''.concat(
+          ...evaluatedArgs.map((arg) =>
+            arg !== null && arg !== undefined ? arg.toString() : ''
+          )
+        )
+      );
     }
     case Ops.Resolution: {
       return (context) => context.resolution;
@@ -182,7 +199,6 @@ function compileExpression(expression, context) {
       throw new Error(`Unsupported operator ${operator}`);
     }
     // TODO: unimplemented
-    // Ops.GeometryType
     // Ops.Zoom
     // Ops.Time
     // Ops.Between
@@ -213,6 +229,9 @@ function compileAssertionExpression(expression, context) {
       return (context) => {
         for (let i = 0; i < length; ++i) {
           const value = args[i](context);
+          if (value === UNKNOWN_VALUE) {
+            return UNKNOWN_VALUE;
+          }
           if (typeof value === type) {
             return value;
           }
@@ -232,19 +251,44 @@ function compileAssertionExpression(expression, context) {
  * @return {ExpressionEvaluator} The evaluator function.
  */
 function compileAccessorExpression(expression, context) {
-  const nameExpression = /** @type {LiteralExpression} */ (expression.args[0]);
-  const name = /** @type {string} */ (nameExpression.value);
+  const nameExpression = compileExpression(expression.args[0], context);
   switch (expression.operator) {
     case Ops.Get: {
-      return (context) => context.properties[name];
+      return (context) =>
+        context.properties === UNKNOWN_VALUE
+          ? UNKNOWN_VALUE
+          : context.properties[/** @type {string} */ (nameExpression(context))];
     }
     case Ops.Var: {
-      return (context) => context.variables[name];
+      return (context) =>
+        context.variables === UNKNOWN_VALUE
+          ? UNKNOWN_VALUE
+          : context.variables[/** @type {string} */ (nameExpression(context))];
     }
     default: {
       throw new Error(`Unsupported accessor operator ${expression.operator}`);
     }
   }
+}
+
+/**
+ * @param {Array<ExpressionEvaluator>} argEvaluators Argument evaluators
+ * @param {function(Array): ReturnType} evaluator Final evaluator taking in the evaluated args
+ * @return {function(EvaluationContext):ReturnType} the evaluator function; if any arg evaluated to UNKNOWN_VALUE, will return UNKNOWN_VALUE
+ * @template ReturnType
+ */
+function checkForUnknown(argEvaluators, evaluator) {
+  return (context) => {
+    const evaluatedArgs = new Array(argEvaluators.length);
+    for (let i = 0, ii = evaluatedArgs.length; i < ii; i++) {
+      const value = argEvaluators[i](context);
+      if (value === UNKNOWN_VALUE) {
+        return UNKNOWN_VALUE;
+      }
+      evaluatedArgs[i] = value;
+    }
+    return evaluator(evaluatedArgs);
+  };
 }
 
 /**
@@ -258,22 +302,22 @@ function compileComparisonExpression(expression, context) {
   const right = compileExpression(expression.args[1], context);
   switch (op) {
     case Ops.Equal: {
-      return (context) => left(context) === right(context);
+      return checkForUnknown([left, right], ([left, right]) => left === right);
     }
     case Ops.NotEqual: {
-      return (context) => left(context) !== right(context);
+      return checkForUnknown([left, right], ([left, right]) => left !== right);
     }
     case Ops.LessThan: {
-      return (context) => left(context) < right(context);
+      return checkForUnknown([left, right], ([left, right]) => left < right);
     }
     case Ops.LessThanOrEqualTo: {
-      return (context) => left(context) <= right(context);
+      return checkForUnknown([left, right], ([left, right]) => left <= right);
     }
     case Ops.GreaterThan: {
-      return (context) => left(context) > right(context);
+      return checkForUnknown([left, right], ([left, right]) => left > right);
     }
     case Ops.GreaterThanOrEqualTo: {
-      return (context) => left(context) >= right(context);
+      return checkForUnknown([left, right], ([left, right]) => left >= right);
     }
     default: {
       throw new Error(`Unsupported comparison operator ${op}`);
@@ -296,27 +340,27 @@ function compileLogicalExpression(expression, context) {
   }
   switch (op) {
     case Ops.Any: {
-      return (context) => {
+      return checkForUnknown(args, (evaluatedArgs) => {
         for (let i = 0; i < length; ++i) {
-          if (args[i](context)) {
+          if (evaluatedArgs[i]) {
             return true;
           }
         }
         return false;
-      };
+      });
     }
     case Ops.All: {
-      return (context) => {
+      return checkForUnknown(args, (evaluatedArgs) => {
         for (let i = 0; i < length; ++i) {
-          if (!args[i](context)) {
+          if (!evaluatedArgs[i]) {
             return false;
           }
         }
         return true;
-      };
+      });
     }
     case Ops.Not: {
-      return (context) => !args[0](context);
+      return checkForUnknown(args, ([arg]) => !arg);
     }
     default: {
       throw new Error(`Unsupported logical operator ${op}`);
@@ -339,75 +383,76 @@ function compileNumericExpression(expression, context) {
   }
   switch (op) {
     case Ops.Multiply: {
-      return (context) => {
+      return checkForUnknown(args, (evaluatedArgs) => {
         let value = 1;
         for (let i = 0; i < length; ++i) {
-          value *= args[i](context);
+          value *= evaluatedArgs[i];
         }
         return value;
-      };
+      });
     }
     case Ops.Divide: {
-      return (context) => args[0](context) / args[1](context);
+      return checkForUnknown(args, ([first, second]) => first / second);
     }
     case Ops.Add: {
-      return (context) => {
+      return checkForUnknown(args, (evaluatedArgs) => {
         let value = 0;
         for (let i = 0; i < length; ++i) {
-          value += args[i](context);
+          value += evaluatedArgs[i];
         }
         return value;
-      };
+      });
     }
     case Ops.Subtract: {
-      return (context) => args[0](context) - args[1](context);
+      return checkForUnknown(args, ([first, second]) => first - second);
     }
     case Ops.Clamp: {
-      return (context) => {
-        const value = args[0](context);
-        const min = args[1](context);
+      return checkForUnknown(args, ([value, min, max]) => {
         if (value < min) {
           return min;
         }
-        const max = args[2](context);
         if (value > max) {
           return max;
         }
         return value;
-      };
+      });
     }
     case Ops.Mod: {
-      return (context) => args[0](context) % args[1](context);
+      return checkForUnknown(args, ([first, second]) => first % second);
     }
     case Ops.Pow: {
-      return (context) => Math.pow(args[0](context), args[1](context));
+      return checkForUnknown(args, ([first, second]) =>
+        Math.pow(first, second)
+      );
     }
     case Ops.Abs: {
-      return (context) => Math.abs(args[0](context));
+      return checkForUnknown(args, ([arg]) => Math.abs(arg));
     }
     case Ops.Floor: {
-      return (context) => Math.floor(args[0](context));
+      return checkForUnknown(args, ([arg]) => Math.floor(arg));
     }
     case Ops.Ceil: {
-      return (context) => Math.ceil(args[0](context));
+      return checkForUnknown(args, ([arg]) => Math.ceil(arg));
     }
     case Ops.Round: {
-      return (context) => Math.round(args[0](context));
+      return checkForUnknown(args, ([arg]) => Math.round(arg));
     }
     case Ops.Sin: {
-      return (context) => Math.sin(args[0](context));
+      return checkForUnknown(args, ([arg]) => Math.sin(arg));
     }
     case Ops.Cos: {
-      return (context) => Math.cos(args[0](context));
+      return checkForUnknown(args, ([arg]) => Math.cos(arg));
     }
     case Ops.Atan: {
       if (length === 2) {
-        return (context) => Math.atan2(args[0](context), args[1](context));
+        return checkForUnknown(args, ([first, second]) =>
+          Math.atan2(first, second)
+        );
       }
-      return (context) => Math.atan(args[0](context));
+      return checkForUnknown(args, ([arg]) => Math.atan(arg));
     }
     case Ops.Sqrt: {
-      return (context) => Math.sqrt(args[0](context));
+      return checkForUnknown(args, ([arg]) => Math.sqrt(arg));
     }
     default: {
       throw new Error(`Unsupported numeric operator ${op}`);
@@ -429,6 +474,9 @@ function compileCaseExpression(expression, context) {
   return (context) => {
     for (let i = 0; i < length - 1; i += 2) {
       const condition = args[i](context);
+      if (condition === UNKNOWN_VALUE) {
+        return UNKNOWN_VALUE;
+      }
       if (condition) {
         return args[i + 1](context);
       }
@@ -450,8 +498,15 @@ function compileMatchExpression(expression, context) {
   }
   return (context) => {
     const value = args[0](context);
+    if (value === UNKNOWN_VALUE) {
+      return UNKNOWN_VALUE;
+    }
     for (let i = 1; i < length; i += 2) {
-      if (value === args[i](context)) {
+      const matched = args[i](context);
+      if (matched === UNKNOWN_VALUE) {
+        return UNKNOWN_VALUE;
+      }
+      if (value === matched) {
         return args[i + 1](context);
       }
     }
@@ -470,15 +525,15 @@ function compileInterpolateExpression(expression, context) {
   for (let i = 0; i < length; ++i) {
     args[i] = compileExpression(expression.args[i], context);
   }
-  return (context) => {
-    const base = args[0](context);
-    const value = args[1](context);
+  return checkForUnknown(args, (evaluatedArgs) => {
+    const base = evaluatedArgs[0];
+    const value = evaluatedArgs[1];
 
     let previousInput;
     let previousOutput;
     for (let i = 2; i < length; i += 2) {
-      const input = args[i](context);
-      let output = args[i + 1](context);
+      const input = evaluatedArgs[i];
+      let output = evaluatedArgs[i + 1];
       const isColor = Array.isArray(output);
       if (isColor) {
         output = withAlpha(output);
@@ -510,7 +565,7 @@ function compileInterpolateExpression(expression, context) {
       previousOutput = output;
     }
     return previousOutput;
-  };
+  });
 }
 
 /**
