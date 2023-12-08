@@ -93,13 +93,7 @@ class ImageArcGISRest extends ImageSource {
      * @private
      * @type {!Object}
      */
-    this.params_ = options.params || {};
-
-    /**
-     * @private
-     * @type {import("../Image.js").default}
-     */
-    this.image_ = null;
+    this.params_ = Object.assign({}, options.params);
 
     /**
      * @private
@@ -192,7 +186,6 @@ class ImageArcGISRest extends ImageSource {
    * @api
    */
   setImageLoadFunction(imageLoadFunction) {
-    this.image_ = null;
     this.imageLoadFunction_ = imageLoadFunction;
     this.changed();
   }
@@ -205,7 +198,7 @@ class ImageArcGISRest extends ImageSource {
   setUrl(url) {
     if (url != this.url_) {
       this.url_ = url;
-      this.image_ = null;
+      this.loader = null;
       this.changed();
     }
   }
@@ -217,8 +210,12 @@ class ImageArcGISRest extends ImageSource {
    */
   updateParams(params) {
     Object.assign(this.params_, params);
-    this.image_ = null;
     this.changed();
+  }
+
+  changed() {
+    this.image = null;
+    super.changed();
   }
 }
 

@@ -32,6 +32,30 @@ describe('ol/source/TileWMS', function () {
     });
   });
 
+  describe('#getParams', function () {
+    it('verify getting a param', function () {
+      const source = new TileWMS(options);
+      const setParams = source.getParams();
+      expect(setParams).to.eql({'LAYERS': 'layer'});
+    });
+
+    it('verify on adding a param', function () {
+      const source = new TileWMS(options);
+      source.updateParams({'TEST': 'value'});
+      const setParams = source.getParams();
+      expect(setParams).to.eql({'LAYERS': 'layer', TEST: 'value'});
+      expect(options.params).to.eql({'LAYERS': 'layer'});
+    });
+
+    it('verify on update a param', function () {
+      const source = new TileWMS(options);
+      source.updateParams({'LAYERS': 'newLayer'});
+      const setParams = source.getParams();
+      expect(setParams).to.eql({'LAYERS': 'newLayer'});
+      expect(options.params).to.eql({'LAYERS': 'layer'});
+    });
+  });
+
   describe('#getInterpolate()', function () {
     it('is true by default', function () {
       const source = new TileWMS();

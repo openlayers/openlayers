@@ -64,7 +64,7 @@ class ImageMapGuide extends ImageSource {
      * @private
      * @type {!Object}
      */
-    this.params_ = options.params || {};
+    this.params_ = Object.assign({}, options.params);
 
     /**
      * @private
@@ -106,12 +106,6 @@ class ImageMapGuide extends ImageSource {
      */
     this.useOverlay_ =
       options.useOverlay !== undefined ? options.useOverlay : false;
-
-    /**
-     * @private
-     * @type {import("../Image.js").default}
-     */
-    this.image_ = null;
 
     /**
      * @private
@@ -194,9 +188,13 @@ class ImageMapGuide extends ImageSource {
    * @api
    */
   setImageLoadFunction(imageLoadFunction) {
-    this.image_ = null;
     this.imageLoadFunction_ = imageLoadFunction;
     this.changed();
+  }
+
+  changed() {
+    this.image = null;
+    super.changed();
   }
 }
 

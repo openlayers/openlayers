@@ -148,32 +148,26 @@ describe('ol.source.TileArcGISRest', function () {
     it('verify getting a param', function () {
       options.params.TEST = 'value';
       const source = new TileArcGISRest(options);
-
       const setParams = source.getParams();
-
       expect(setParams).to.eql({TEST: 'value'});
     });
 
     it('verify on adding a param', function () {
       options.params.TEST = 'value';
-
       const source = new TileArcGISRest(options);
       source.updateParams({'TEST2': 'newValue'});
-
       const setParams = source.getParams();
-
       expect(setParams).to.eql({TEST: 'value', TEST2: 'newValue'});
+      expect(options.params).to.eql({TEST: 'value'});
     });
 
     it('verify on update a param', function () {
       options.params.TEST = 'value';
-
       const source = new TileArcGISRest(options);
       source.updateParams({'TEST': 'newValue'});
-
       const setParams = source.getParams();
-
       expect(setParams).to.eql({TEST: 'newValue'});
+      expect(options.params).to.eql({TEST: 'value'});
     });
   });
 
