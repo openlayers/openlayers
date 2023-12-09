@@ -462,7 +462,7 @@ void main(void) {
   } else {
     joinDirection = getJoinOffsetDirection(normalPx * normalDir, angle);
   }
-  positionPx = positionPx + joinDirection * lineWidth * 0.5;
+  positionPx = positionPx + joinDirection * (lineWidth * 0.5 + 1.); // adding 1 pixel for antialiasing
   gl_Position = pxToScreen(positionPx);
 
   v_segmentStart = segmentStartPx;
@@ -612,7 +612,7 @@ void main(void) {
     max(segmentStartDistance, segmentEndDistance)
   );
   distance = max(distance, cos(currentLengthPx));
-  gl_FragColor = color * smoothstep(0., -1., distance);
+  gl_FragColor = color * smoothstep(0.5, -0.5, distance);
   if (u_hitDetection > 0) {
     if (gl_FragColor.a < 0.1) { discard; };
     gl_FragColor = v_prop_hitColor;
