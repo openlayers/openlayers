@@ -37,6 +37,7 @@ import {listen, unlistenByKey} from '../events.js';
  * @property {number} [errorThreshold] Acceptable reprojection error (in px).
  * @property {number} [transition=250] A duration for tile opacity
  * transitions in milliseconds. A duration of 0 disables the opacity transition.
+ * @property {boolean} [clipExtent] Clip to source tile grid extent.
  */
 
 /**
@@ -173,6 +174,12 @@ class ReprojDataTile extends DataTile {
       options.errorThreshold !== undefined
         ? options.errorThreshold
         : ERROR_THRESHOLD;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.clipExtent_ = options.clipExtent;
 
     /**
      * @private
@@ -375,7 +382,9 @@ class ReprojDataTile extends DataTile {
           sources,
           this.gutter_,
           false,
-          false
+          false,
+          false,
+          this.clipExtent_
         );
 
         for (let i = 0, len = sources.length; i < len; ++i) {
@@ -394,7 +403,6 @@ class ReprojDataTile extends DataTile {
         );
 
         releaseCanvas(context);
-        canvasPool.push(canvas);
 
         if (!dataR) {
           dataU = new Uint8Array(

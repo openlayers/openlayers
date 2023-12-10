@@ -239,6 +239,7 @@ class DataTileSource extends TileSource {
         gutter: this.getGutterForProjection(sourceProj),
         getTileFunction: (z, x, y, pixelRatio) =>
           this.getTile(z, x, y, pixelRatio, sourceProj),
+        clipExtent: !this.getWrapX(),
       },
       this.tileOptions
     );
