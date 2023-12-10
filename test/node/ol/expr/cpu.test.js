@@ -669,6 +669,24 @@ describe('ol/expr/cpu.js', () => {
         },
         expected: UNKNOWN_VALUE,
       },
+      {
+        name: 'incomplete context, string assertion (unknown value after)',
+        type: StringType,
+        expression: ['string', 42, 'chicken', ['get', 'id']],
+        context: {
+          properties: UNKNOWN_VALUE,
+        },
+        expected: 'chicken',
+      },
+      {
+        name: 'incomplete context, string assertion (unknown value before)',
+        type: StringType,
+        expression: ['string', 42, ['get', 'id'], 'chicken'],
+        context: {
+          properties: UNKNOWN_VALUE,
+        },
+        expected: UNKNOWN_VALUE,
+      },
     ];
 
     for (const c of cases) {

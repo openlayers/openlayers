@@ -26,7 +26,7 @@ import {
  * value.  The evaluator function should do as little allocation and work as possible.
  */
 
-export const UNKNOWN_VALUE = null;
+export const UNKNOWN_VALUE = {};
 
 /**
  * @typedef {Object} EvaluationContext
@@ -271,7 +271,7 @@ function compileAccessorExpression(expression, context) {
 /**
  * @param {Array<ExpressionEvaluator>} argEvaluators Argument evaluators
  * @param {function(Array): ReturnType} evaluator Final evaluator taking in the evaluated args
- * @return {function(EvaluationContext):ReturnType} the evaluator function; if any arg evaluated to UNKNOWN_VALUE, will return UNKNOWN_VALUE
+ * @return {function(EvaluationContext):ReturnType|UNKNOWN_VALUE} the evaluator function; if any arg evaluated to UNKNOWN_VALUE, will return UNKNOWN_VALUE
  * @template ReturnType
  */
 function checkForUnknown(argEvaluators, evaluator) {
