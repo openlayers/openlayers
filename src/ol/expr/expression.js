@@ -219,6 +219,7 @@ export class CallExpression {
  * @property {Set<string>} variables Variables referenced with the 'var' operator.
  * @property {Set<string>} properties Properties referenced with the 'get' operator.
  * @property {boolean} featureId The style uses the feature id.
+ * @property {boolean} geometryType The style uses the feature geometry type.
  * @property {import("../style/flat.js").FlatStyle|import("../style/webgl.js").WebGLStyle} style The style being parsed
  */
 
@@ -230,6 +231,7 @@ export function newParsingContext() {
     variables: new Set(),
     properties: new Set(),
     featureId: false,
+    geometryType: false,
     style: {},
   };
 }
@@ -400,7 +402,7 @@ const parsers = {
     withArgsCount(2, Infinity),
     parseArgsOfType(AnyType)
   ),
-  [Ops.GeometryType]: createParser(StringType, withNoArgs),
+  [Ops.GeometryType]: createParser(StringType, withNoArgs, usesGeometryType),
   [Ops.Resolution]: createParser(NumberType, withNoArgs),
   [Ops.Zoom]: createParser(NumberType, withNoArgs),
   [Ops.Time]: createParser(NumberType, withNoArgs),
@@ -673,6 +675,13 @@ function withVarArgs(encoded, context, parsedArgs, typeHint) {
  */
 function usesFeatureId(encoded, context) {
   context.featureId = true;
+}
+
+/**
+ * @type ArgValidator
+ */
+function usesGeometryType(encoded, context) {
+  context.geometryType = true;
 }
 
 /**
@@ -1096,4 +1105,36 @@ function parseCallExpression(encoded, context, typeHint) {
     throw new Error(`Unknown operator: ${operator}`);
   }
   return parser(encoded, context, typeHint);
+}
+
+/**
+ * Returns a simplified geometry type suited for the `geometry-type` operator
+ * @param {import('../geom/Geometry.js').default|import('../render/Feature.js').default} geometry Geometry object
+ * @return {'Point'|'LineString'|'Polygon'|''} Simplified geometry type; empty string of no geometry found
+ */
+export function computeGeometryType(geometry) {
+  if (!geometry) {
+    return '';
+  }
+  const type = geometry.getType();
+  switch (type) {
+    case 'Point':
+    case 'LineString':
+    case 'Polygon':
+      return type;
+    case 'MultiPoint':
+    case 'MultiLineString':
+    case 'MultiPolygon':
+      return /** @type {'Point'|'LineString'|'Polygon'} */ (type.substring(5));
+    case 'Circle':
+      return 'Polygon';
+    case 'GeometryCollection':
+      return computeGeometryType(
+        /** @type {import("../geom/GeometryCollection.js").default} */ (
+          geometry
+        ).getGeometries()[0]
+      );
+    default:
+      return '';
+  }
 }

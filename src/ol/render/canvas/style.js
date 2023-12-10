@@ -15,6 +15,7 @@ import {
   NumberArrayType,
   NumberType,
   StringType,
+  computeGeometryType,
   newParsingContext,
 } from '../../expr/expression.js';
 import {buildExpression, newEvaluationContext} from '../../expr/cpu.js';
@@ -83,6 +84,11 @@ export function rulesToStyleFunction(rules) {
       } else {
         evaluationContext.featureId = null;
       }
+    }
+    if (parsingContext.geometryType) {
+      evaluationContext.geometryType = computeGeometryType(
+        feature.getGeometry()
+      );
     }
     return evaluator(evaluationContext);
   };
