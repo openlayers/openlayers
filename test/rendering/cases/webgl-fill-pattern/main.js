@@ -94,7 +94,7 @@ const vector3 = new WebGLLayer({
   }),
 });
 
-new Map({
+const map = new Map({
   layers: [vector1, vector2, vector3],
   target: 'map',
   view: new View({
@@ -104,6 +104,9 @@ new Map({
   }),
 });
 
-render({
-  message: 'renders four polygons with various pattern fills',
-});
+setTimeout(() => {
+  map.renderSync();
+  render({
+    message: 'renders four polygons with various pattern fills',
+  });
+}, 200);
