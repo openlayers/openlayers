@@ -152,7 +152,6 @@ class MouseWheelZoom extends Interaction {
    * @private
    */
   endInteraction_() {
-    this.trackpadTimeoutId_ = undefined;
     const map = this.getMap();
     if (!map) {
       return;
@@ -163,6 +162,11 @@ class MouseWheelZoom extends Interaction {
       this.lastDelta_ ? (this.lastDelta_ > 0 ? 1 : -1) : 0,
       this.lastAnchor_
     );
+
+    this.trackpadTimeoutId_ = undefined;
+    this.mode_ = undefined;
+    this.lastAnchor_ = null;
+    this.startTime_ = undefined;
   }
 
   /**
@@ -274,11 +278,11 @@ class MouseWheelZoom extends Interaction {
     }
     zoomByDelta(view, delta, this.lastAnchor_, this.duration_);
 
+    this.timeoutId_ = undefined;
     this.mode_ = undefined;
     this.totalDelta_ = 0;
     this.lastAnchor_ = null;
     this.startTime_ = undefined;
-    this.timeoutId_ = undefined;
   }
 
   /**
