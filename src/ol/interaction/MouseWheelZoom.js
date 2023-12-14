@@ -150,13 +150,9 @@ class MouseWheelZoom extends Interaction {
 
   /**
    * @private
+   * @param {import("../View.js").default} view View.
    */
-  endInteraction_() {
-    const map = this.getMap();
-    if (!map) {
-      return;
-    }
-    const view = map.getView();
+  endInteraction_(view) {
     view.endInteraction(
       undefined,
       this.lastDelta_ ? (this.lastDelta_ > 0 ? 1 : -1) : 0,
@@ -236,7 +232,7 @@ class MouseWheelZoom extends Interaction {
         view.beginInteraction();
       }
       this.trackpadTimeoutId_ = setTimeout(
-        this.endInteraction_.bind(this),
+        this.endInteraction_.bind(this, view),
         this.timeout_
       );
       view.adjustZoom(-delta / this.deltaPerZoom_, this.lastAnchor_);
@@ -250,7 +246,7 @@ class MouseWheelZoom extends Interaction {
 
     clearTimeout(this.timeoutId_);
     this.timeoutId_ = setTimeout(
-      this.handleWheelZoom_.bind(this, map),
+      this.handleWheelZoom_.bind(this, view),
       timeLeft
     );
 
@@ -259,10 +255,9 @@ class MouseWheelZoom extends Interaction {
 
   /**
    * @private
-   * @param {import("../Map.js").default} map Map.
+   * @param {import("../View.js").default} view View.
    */
-  handleWheelZoom_(map) {
-    const view = map.getView();
+  handleWheelZoom_(view) {
     if (view.getAnimating()) {
       view.cancelAnimations();
     }
