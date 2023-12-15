@@ -64,6 +64,11 @@ export const AttributeType = {
 };
 
 /**
+ * Hit uses a smaller scren size. This seems reasonable together with the concept of tolerance.
+ */
+export const HIT_FIXED_PIXEL_RATIO = 0.5;
+
+/**
  * Description of an attribute in a buffer
  * @typedef {Object} AttributeDescription
  * @property {string} name Attribute name to use in shaders
@@ -743,7 +748,10 @@ class WebGLHelper extends Disposable {
 
     // hit detection uses a fixed pixel ratio
     if (enabled) {
-      this.setUniformFloatValue(DefaultUniform.PIXEL_RATIO, 0.5);
+      this.setUniformFloatValue(
+        DefaultUniform.PIXEL_RATIO,
+        HIT_FIXED_PIXEL_RATIO
+      );
     }
   }
 
