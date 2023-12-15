@@ -22,6 +22,7 @@ const result = parseLiteralStyle({
 class WebGLVectorTileLayer extends VectorTile {
   createRenderer() {
     return new WebGLVectorTileLayerRenderer(this, {
+      disableHitDetection: false,
       style: {
         builder: result.builder,
         attributes: {
@@ -76,4 +77,13 @@ const map = new Map({
     center: [0, 0],
     zoom: 2,
   }),
+});
+map.on('pointermove', function (evt) {
+  if (evt.dragging) {
+    return;
+  }
+  const pixel = map.getEventPixel(evt.originalEvent);
+  const feature = map.forEachFeatureAtPixel(pixel, function (feature) {
+    return feature;
+  });
 });
