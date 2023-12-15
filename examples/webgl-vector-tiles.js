@@ -364,6 +364,7 @@ const map = new Map({
           key,
       }),
       style,
+      disableHitDetection: false,
     }),
   ],
   target: 'map',
@@ -371,4 +372,13 @@ const map = new Map({
     center: [0, 0],
     zoom: 2,
   }),
+});
+map.on('pointermove', function (evt) {
+  if (evt.dragging) {
+    return;
+  }
+  const pixel = map.getEventPixel(evt.originalEvent);
+  const feature = map.forEachFeatureAtPixel(pixel, function (feature) {
+    return feature;
+  });
 });
