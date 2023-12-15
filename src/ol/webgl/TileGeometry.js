@@ -123,6 +123,15 @@ class TileGeometry extends BaseTileRepresentation {
     }
     super.disposeInternal();
   }
+
+  /**
+   * Get hit detected feature.
+   * @param {number} ref the feature reference
+   * @return {import('ol/Feature.js').default | import('ol/render/Feature.js').default } the matching feature
+   */
+  getFeatureFromRef(ref) {
+    return this.batch_.getFeatureFromRef(ref);
+  }
 }
 
 export default TileGeometry;
