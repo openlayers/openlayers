@@ -2,29 +2,31 @@
  * @module ol/renderer/webgl/VectorTileLayer
  */
 import EventType from '../../events/EventType.js';
-import {getIntersection} from '../../extent.js';
-import {ShaderBuilder} from '../../render/webgl/ShaderBuilder.js';
+import TileGeometry from '../../webgl/TileGeometry.js';
 import VectorStyleRenderer, {
   convertStyleToShaders,
 } from '../../render/webgl/VectorStyleRenderer.js';
+import WebGLArrayBuffer from '../../webgl/Buffer.js';
+import WebGLBaseTileLayerRenderer, {
+  Uniforms as BaseUniforms,
+} from './TileLayerBase.js';
+import WebGLRenderTarget from '../../webgl/RenderTarget.js';
+import {AttributeType, HIT_FIXED_PIXEL_RATIO} from '../../webgl/Helper.js';
+import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
+import {ShaderBuilder} from '../../render/webgl/ShaderBuilder.js';
 import {
+  apply as applyTransform,
   create as createTransform,
   makeInverse as makeInverseTransform,
   multiply as multiplyTransform,
   setFromArray as setFromTransform,
 } from '../../transform.js';
+import {colorDecodeId} from '../../render/webgl/encodeUtil.js';
+import {containsCoordinate, getIntersection} from '../../extent.js';
 import {
   create as createMat4,
   fromTransform as mat4FromTransform,
 } from '../../vec/mat4.js';
-import WebGLArrayBuffer from '../../webgl/Buffer.js';
-import {AttributeType} from '../../webgl/Helper.js';
-import WebGLRenderTarget from '../../webgl/RenderTarget.js';
-import TileGeometry from '../../webgl/TileGeometry.js';
-import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
-import WebGLBaseTileLayerRenderer, {
-  Uniforms as BaseUniforms,
-} from './TileLayerBase.js';
 
 export const Uniforms = {
   ...BaseUniforms,
@@ -42,6 +44,11 @@ export const Attributes = {
 /**
  * @typedef {import('../../style/flat.js').FlatStyleLike | Array<StyleShaders> | StyleShaders} LayerStyle
  */
+
+/**
+ * The maximum number of levels that can be encoded in the tile mask.
+ */
+const TILE_MASK_MAX_LEVELS = 50.0;
 
 /**
  * @typedef {Object} Options
@@ -76,6 +83,12 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
         [Uniforms.TILE_MASK_TEXTURE]: () => this.tileMaskTarget_.getTexture(),
       },
     });
+
+    /**
+     * @type {Array<any>}
+     * @private
+     */
+    this.renderedTiles_ = [];
 
     /**
      * @type {boolean}
@@ -126,6 +139,12 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.tileMaskTarget_ = null;
 
     /**
+     * @type {WebGLRenderTarget}
+     * @private
+     */
+    this.hitRenderTarget_ = null;
+
+    /**
      * @private
      */
     this.tileMaskIndices_ = new WebGLArrayBuffer(
@@ -166,6 +185,9 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     if (this.helper) {
       this.createRenderers_();
       this.initTileMask_();
+      if (this.hitDetectionEnabled_) {
+        this.hitRenderTarget_ = new WebGLRenderTarget(this.helper);
+      }
     }
   }
 
@@ -183,7 +205,11 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
   createRenderers_() {
     function addBuilderParams(builder) {
       const exisitingDiscard = builder.getFragmentDiscardExpression();
-      const discardFromMask = `texture2D(${Uniforms.TILE_MASK_TEXTURE}, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > ${Uniforms.TILE_ZOOM_LEVEL} + 0.5`;
+      const discardFromMask = `texture2D(${
+        Uniforms.TILE_MASK_TEXTURE
+      }, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * ${TILE_MASK_MAX_LEVELS.toFixed(
+        1
+      )} > ${Uniforms.TILE_ZOOM_LEVEL} + 0.5`;
       builder.setFragmentDiscardExpression(
         exisitingDiscard !== 'false'
           ? `(${exisitingDiscard}) || (${discardFromMask})`
@@ -216,7 +242,9 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.tileMaskTarget_ = new WebGLRenderTarget(this.helper);
     const builder = new ShaderBuilder()
       .setFillColorExpression(
-        `vec4(${Uniforms.TILE_ZOOM_LEVEL} / 50., 0., 0., 1.)`,
+        `vec4(${Uniforms.TILE_ZOOM_LEVEL} / ${TILE_MASK_MAX_LEVELS.toFixed(
+          1
+        )}, 0., 0., 1.)`
       )
       .addUniform(Uniforms.TILE_ZOOM_LEVEL, 'float');
     this.tileMaskProgram_ = this.helper.getProgram(
@@ -232,6 +260,9 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
   afterHelperCreated() {
     this.createRenderers_();
     this.initTileMask_();
+    if (this.hitDetectionEnabled_) {
+      this.hitRenderTarget_ = new WebGLRenderTarget(this.helper);
+    }
   }
 
   /**
@@ -259,6 +290,19 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       frameState,
       this.currentFrameStateTransform_,
     );
+
+    if (forHitDetection) {
+      this.renderedTiles_.length = 0;
+      this.hitRenderTarget_.setSize([
+        Math.floor(frameState.size[0] / 2),
+        Math.floor(frameState.size[1] / 2),
+      ]);
+      this.helper.prepareDrawToRenderTarget(
+        frameState,
+        this.hitRenderTarget_,
+        true
+      );
+    }
   }
 
   /**
@@ -310,6 +354,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.helper.enableAttributes(this.tileMaskAttributes_);
     const renderCount = this.tileMaskIndices_.getSize();
     this.helper.drawElements(0, renderCount);
+    this.tileMaskTarget_.clearCachedData();
   }
 
   /**
@@ -348,6 +393,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.helper.setUniformFloatValue(Uniforms.DEPTH, depth);
     this.helper.setUniformFloatValue(Uniforms.TILE_ZOOM_LEVEL, tileZ);
     this.helper.setUniformFloatVec4(Uniforms.RENDER_EXTENT, renderExtent);
+    this.helper.applyHitDetectionUniform(forHitDetection);
   }
 
   /**
@@ -369,6 +415,14 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
   ) {
     const gutterExtent = getIntersection(tileExtent, renderExtent, tileExtent);
     const tileZ = tileRepresentation.tile.getTileCoord()[0];
+    if (forHitDetection) {
+      this.renderedTiles_.push({
+        tileZ: tileZ,
+        tileGeometry: tileRepresentation,
+        renderExtent: renderExtent,
+        tileExtent: tileExtent,
+      });
+    }
     const buffers = tileRepresentation.buffers;
     if (!buffers) {
       return;
@@ -397,6 +451,69 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    */
   disposeInternal() {
     super.disposeInternal();
+  }
+
+  /**
+   * @override
+   * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {number} hitTolerance Hit tolerance in pixels [this is ignored at the moment].
+   * @param {import("../vector.js").FeatureCallback<T>} callback Feature callback.
+   * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance [this is ignored at the moment].
+   * @return {T|undefined} Callback result.
+   * @template T
+   */
+  forEachFeatureAtCoordinate(
+    coordinate,
+    frameState,
+    hitTolerance,
+    callback,
+    matches
+  ) {
+    const pixel = applyTransform(
+      frameState.coordinateToPixelTransform,
+      coordinate.slice()
+    );
+
+    // Retrieve the z value of the tile actually rendered at this pixel from the mask.
+    const zData = this.tileMaskTarget_.readPixel(
+      pixel[0] * frameState.pixelRatio,
+      pixel[1] * frameState.pixelRatio
+    );
+
+    if (zData[3] !== 255) {
+      // the color value is only valid when alpha is 255.
+      return;
+    }
+
+    // Due to shader precision, this value may be approximative, so we round it
+    const approximateTileZ = (zData[0] * TILE_MASK_MAX_LEVELS) / 255;
+    const tileZ = Math.round(approximateTileZ);
+    for (const t of this.renderedTiles_) {
+      if (t.tileZ !== tileZ || !containsCoordinate(t.tileExtent, coordinate)) {
+        // It is not the tile used to render this pixel
+        continue;
+      }
+
+      // The hit render target is using a smaller size
+      const hitData = this.hitRenderTarget_.readPixel(
+        pixel[0] * HIT_FIXED_PIXEL_RATIO,
+        pixel[1] * HIT_FIXED_PIXEL_RATIO
+      );
+      const hitColor = [
+        hitData[0] / 255,
+        hitData[1] / 255,
+        hitData[2] / 255,
+        hitData[3] / 255,
+      ];
+      // It is assumed that there is no approximation with this color
+      const ref = colorDecodeId(hitColor);
+      const feature = t.tileGeometry.getFeatureFromRef(ref);
+      if (feature) {
+        return callback(feature, this.getLayer(), null);
+      }
+    }
+    return;
   }
 }
 
