@@ -401,6 +401,7 @@ class WebGLTileLayer extends BaseTileLayer {
       uniforms: parsedStyle.uniforms,
       cacheSize: this.cacheSize_,
       paletteTextures: parsedStyle.paletteTextures,
+      disableHitDetection: true,
     });
   }
 

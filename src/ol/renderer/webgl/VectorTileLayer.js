@@ -238,7 +238,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     return tileRep;
   }
 
-  beforeTilesRender(frameState, tilesWithAlpha) {
+  beforeTilesRender(frameState, tilesWithAlpha, forHitDetection) {
     super.beforeTilesRender(frameState, true); // always consider that tiles need alpha blending
     this.helper.makeProjectionTransform(
       frameState,
@@ -297,9 +297,17 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    * @param {import("../../transform.js").Transform} batchInvertTransform Inverse of the transformation in which tile geometries are expressed
    * @param {number} tileZ Tile zoom level
    * @param {number} depth Depth of the tile
+   * @param {boolean} forHitDetection Rendering hit detection
    * @private
    */
-  applyUniforms_(alpha, renderExtent, batchInvertTransform, tileZ, depth) {
+  applyUniforms_(
+    alpha,
+    renderExtent,
+    batchInvertTransform,
+    tileZ,
+    depth,
+    forHitDetection
+  ) {
     // world to screen matrix
     setFromTransform(this.tmpTransform_, this.currentFrameStateTransform_);
     multiplyTransform(this.tmpTransform_, batchInvertTransform);
@@ -332,7 +340,8 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     tileExtent,
     depth,
     gutter,
-    alpha
+    alpha,
+    forHitDetection
   ) {
     const gutterExtent = getIntersection(tileExtent, renderExtent, tileExtent);
     const tileZ = tileRepresentation.tile.getTileCoord()[0];
