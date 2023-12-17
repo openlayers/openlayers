@@ -117,6 +117,12 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
+     * @type {number}
+     */
+    this.renderedPixelRatio_ = 1;
+
+    /**
+     * @private
      * @type {function(import("../../Feature.js").default, import("../../Feature.js").default): number|null}
      */
     this.renderedRenderOrder_ = null;
@@ -413,7 +419,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
             startX -= worldWidth;
           }
         }
-
+        const userProjection = getUserProjection();
         this.hitDetectionImageData_ = createHitDetectionImageData(
           size,
           transforms,
@@ -421,7 +427,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
           layer.getStyleFunction(),
           extent,
           resolution,
-          rotation
+          rotation,
+          getSquaredRenderTolerance(resolution, this.renderedPixelRatio_),
+          userProjection ? projection : null
         );
       }
       resolve(
@@ -740,6 +748,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     this.wrappedRenderedExtent_ = extent;
     this.renderedCenter_ = center;
     this.renderedProjection_ = projection;
+    this.renderedPixelRatio_ = pixelRatio;
     this.replayGroup_ = executorGroup;
     this.hitDetectionImageData_ = null;
 
