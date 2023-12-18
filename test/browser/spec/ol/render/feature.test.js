@@ -306,4 +306,38 @@ describe('ol.render.Feature', function () {
       expect(feature.getType()).to.equal(type);
     });
   });
+
+  describe('#clone()', () => {
+    it('returns a clone of the feature', () => {
+      const feature = new RenderFeature(
+        type,
+        flatCoordinates,
+        ends,
+        2,
+        properties,
+        'foo'
+      );
+
+      const clone = feature.clone();
+      expect(clone).to.be.a(RenderFeature);
+      expect(clone.getType()).to.equal(feature.getType());
+      expect(clone.getFlatCoordinates()).to.eql(feature.getFlatCoordinates());
+      expect(clone.getEnds()).to.eql(feature.getEnds());
+      expect(clone.getStride()).to.equal(feature.getStride());
+      expect(clone.getProperties()).to.eql(feature.getProperties());
+      expect(clone.getId()).to.equal(feature.getId());
+    });
+
+    it('works with point geometries', () => {
+      const feature = new RenderFeature('Point', [1, 2], null, 2, {}, 'foo');
+      const clone = feature.clone();
+      expect(clone).to.be.a(RenderFeature);
+      expect(clone.getType()).to.equal(feature.getType());
+      expect(clone.getFlatCoordinates()).to.eql(feature.getFlatCoordinates());
+      expect(clone.getEnds()).to.eql(feature.getEnds());
+      expect(clone.getStride()).to.equal(feature.getStride());
+      expect(clone.getProperties()).to.eql(feature.getProperties());
+      expect(clone.getId()).to.equal(feature.getId());
+    });
+  });
 });

@@ -107,9 +107,9 @@ class RenderFeature {
 
     /**
      * @private
-     * @type {Array<number>}
+     * @type {Array<number>|null}
      */
-    this.ends_ = ends;
+    this.ends_ = ends || null;
 
     /**
      * @private
@@ -173,7 +173,7 @@ class RenderFeature {
       this.flatInteriorPoints_ = getInteriorPointOfArray(
         this.flatCoordinates_,
         0,
-        /** @type {Array<number>} */ (this.ends_),
+        this.ends_,
         2,
         flatCenter,
         0
@@ -371,7 +371,7 @@ class RenderFeature {
     return new RenderFeature(
       this.type_,
       this.flatCoordinates_.slice(),
-      this.ends_.slice(),
+      this.ends_?.slice(),
       this.stride_,
       Object.assign({}, this.properties_),
       this.id_
@@ -379,7 +379,7 @@ class RenderFeature {
   }
 
   /**
-   * @return {Array<number>} Ends.
+   * @return {Array<number>|null} Ends.
    */
   getEnds() {
     return this.ends_;
@@ -490,7 +490,7 @@ export function toGeometry(renderFeature) {
       );
     case 'Polygon':
       const flatCoordinates = renderFeature.getFlatCoordinates();
-      const ends = /** @type {Array<number>} */ (renderFeature.getEnds());
+      const ends = renderFeature.getEnds();
       const endss = inflateEnds(flatCoordinates, ends);
       return endss.length > 1
         ? new MultiPolygon(flatCoordinates, 'XY', endss)
