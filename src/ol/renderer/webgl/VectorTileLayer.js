@@ -482,6 +482,9 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       ];
       // It is assumed that there is no approximation with this color
       const ref = colorDecodeId(hitColor);
+      if (!ref) {
+        return;
+      }
       const feature = t.tileGeometry.getFeatureFromRef(ref);
       if (feature) {
         return callback(feature, this.getLayer(), null);
