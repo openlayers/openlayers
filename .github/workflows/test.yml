@@ -130,7 +130,7 @@ jobs:
 
       - name: Store Rendering Test Artifacts
         if: ${{ always() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: rendering-tests
           path: test/rendering/cases/**/actual.png
