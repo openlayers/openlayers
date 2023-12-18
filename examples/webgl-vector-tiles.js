@@ -1,353 +1,81 @@
 import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import MVT from '../src/ol/format/MVT.js';
-import WebGLVectorTileLayer from '../src/ol/layer/WebGLVectorTile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import VectorTile from '../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
+import View from '../src/ol/View.js';
+import WebGLVectorTileLayerRenderer from '../src/ol/renderer/webgl/VectorTileLayer.js';
+import MVT from '../src/ol/format/MVT.js';
+import {Fill, Icon, Stroke, Style, Text} from '../src/ol/style.js';
+import {asArray} from '../src/ol/color.js';
+import {log} from '../src/ol/console.js';
+import {packColor, parseLiteralStyle} from '../src/ol/webgl/styleparser.js';
 
 const key =
   'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2t0cGdwMHVnMGdlbzMxbDhwazBic2xrNSJ9.WbcTL9uj8JPAsnT9mgb7oQ';
 
-const style = [
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'landuse'],
-      ['==', ['get', 'class'], 'park'],
-    ],
-    style: {
-      'fill-color': '#d8e8c8',
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'landuse'],
-      ['==', ['get', 'class'], 'cemetery'],
-    ],
-    style: {
-      'fill-color': '#e0e4dd',
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'landuse'],
-      ['==', ['get', 'class'], 'hospital'],
-    ],
-    style: {
-      'fill-color': '#fde',
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'landuse'],
-      ['==', ['get', 'class'], 'school'],
-    ],
-    style: {
-      'fill-color': '#f0e8f8',
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'landuse'],
-      ['==', ['get', 'class'], 'wood'],
-    ],
-    style: {
-      'fill-color': 'rgb(233,238,223)',
-    },
-  },
-  {
-    filter: ['==', ['get', 'layer'], 'waterway'],
-    style: {
-      'stroke-color': '#a0c8f0',
-      'stroke-width': 1,
-    },
-  },
-  {
-    filter: ['==', ['get', 'layer'], 'water'],
-    style: {
-      'fill-color': '#a0c8f0',
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'aeroway'],
-      ['==', ['geometry-type'], 'Polygon'],
-    ],
-    style: {
-      'fill-color': 'rgb(242,239,235)',
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'aeroway'],
-      ['==', ['geometry-type'], 'LineString'],
-      ['<=', ['resolution'], 76.43702828517625],
-    ],
-    style: {
-      'fill-color': '#f0ede9',
-    },
-  },
-  {
-    filter: ['==', ['get', 'layer'], 'building'],
-    style: {
-      'fill-color': '#f2eae2',
-      'stroke-color': '#dfdbd7',
-      'stroke-width': 1,
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'tunnel'],
-      ['==', ['get', 'class'], 'motorway_link'],
-    ],
-    style: {
-      'stroke-color': '#e9ac77',
-      'stroke-width': 1,
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'tunnel'],
-      ['==', ['get', 'class'], 'service'],
-    ],
-    style: {
-      'stroke-color': '#cfcdca',
-      'stroke-width': 1,
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'tunnel'],
-      [
-        'any',
-        ['==', ['get', 'class'], 'street'],
-        ['==', ['get', 'class'], 'street_limited'],
-      ],
-    ],
-    style: {
-      'stroke-color': '#cfcdca',
-      'stroke-width': 1,
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'tunnel'],
-      ['==', ['get', 'class'], 'main'],
-      ['<=', ['resolution'], 1222.99245256282],
-    ],
-    style: {
-      'stroke-color': '#e9ac77',
-      'stroke-width': 1,
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'tunnel'],
-      ['==', ['get', 'class'], 'motorway'],
-    ],
-    style: {
-      'stroke-color': '#e9ac77',
-      'stroke-width': 1,
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'tunnel'],
-      ['==', ['get', 'class'], 'path'],
-    ],
-    style: {
-      'stroke-color': '#cba',
-      'stroke-width': 1,
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'tunnel'],
-      ['==', ['get', 'class'], 'major_rail'],
-    ],
-    style: {
-      'stroke-color': '#bbb',
-      'stroke-width': 2,
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'road'],
-      ['==', ['get', 'class'], 'motorway_link'],
-    ],
-    style: {
-      'stroke-color': '#e9ac77',
-      'stroke-width': 1,
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'road'],
-      [
-        'any',
-        ['==', ['get', 'class'], 'street'],
-        ['==', ['get', 'class'], 'street_limited'],
-      ],
-      ['==', ['geometry-type'], 'LineString'],
-    ],
-    style: {
-      'stroke-color': '#cfcdca',
-      'stroke-width': 1,
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'road'],
-      ['==', ['get', 'class'], 'main'],
-      ['<=', ['resolution'], 1222.99245256282],
-    ],
-    style: {
-      'stroke-color': '#e9ac77',
-      'stroke-width': 1,
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'road'],
-      ['==', ['get', 'class'], 'motorway'],
-      ['<=', ['resolution'], 4891.96981025128],
-    ],
-    style: {
-      'stroke-color': '#e9ac77',
-      'stroke-width': 1,
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'road'],
-      ['==', ['get', 'class'], 'path'],
-    ],
-    style: {
-      'stroke-color': '#cba',
-      'stroke-width': 1,
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'road'],
-      ['==', ['get', 'class'], 'major_rail'],
-    ],
-    style: {
-      'stroke-color': '#bbb',
-      'stroke-width': 2,
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'bridge'],
-      [
-        'any',
-        ['==', ['get', 'class'], 'motorway'],
-        ['==', ['get', 'class'], 'motorway_link'],
-      ],
-    ],
-    style: {
-      'stroke-color': '#e9ac77',
-      'stroke-width': 1,
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'bridge'],
-      [
-        'any',
-        ['==', ['get', 'class'], 'street'],
-        ['==', ['get', 'class'], 'street_limited'],
-        ['==', ['get', 'class'], 'service'],
-      ],
-    ],
-    style: {
-      'stroke-color': '#cfcdca',
-      'stroke-width': 1,
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'bridge'],
-      ['==', ['get', 'class'], 'main'],
-      ['<=', ['resolution'], 1222.99245256282],
-    ],
-    style: {
-      'stroke-color': '#e9ac77',
-      'stroke-width': 1,
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'bridge'],
-      ['==', ['get', 'class'], 'path'],
-    ],
-    style: {
-      'stroke-color': '#cba',
-      'stroke-width': 1,
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'bridge'],
-      ['==', ['get', 'class'], 'major_rail'],
-    ],
-    style: {
-      'stroke-color': '#bbb',
-      'stroke-width': 2,
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'admin'],
-      ['>=', ['get', 'admin_level'], 2],
-      ['==', ['get', 'maritime'], 0],
-    ],
-    style: {
-      'stroke-color': '#9e9cab',
-      'stroke-width': 1,
-    },
-  },
-  {
-    filter: [
-      'all',
-      ['==', ['get', 'layer'], 'admin'],
-      ['>=', ['get', 'admin_level'], 2],
-      ['==', ['get', 'maritime'], 1],
-    ],
-    style: {
-      'stroke-color': '#a0c8f0',
-      'stroke-width': 1,
-    },
-  },
-  {
-    style: {'circle-radius': 4, 'circle-fill-color': '#777'},
-  },
-];
+const result = parseLiteralStyle({
+  'fill-color': ['get', 'fillColor'],
+  'stroke-color': ['get', 'strokeColor'],
+  'stroke-width': ['get', 'strokeWidth'],
+  'circle-radius': 10,
+  'circle-fill-color': '#777',
+});
+
+const style = function (feature) {
+  return [
+    new Style({
+      fill: new Fill({
+        color: '#eee',
+      }),
+      stroke: new Stroke({
+        color: '#eee',
+        width: 1,
+      }),
+    }),
+  ];
+};
+
+class WebGLVectorTileLayer extends VectorTile {
+  createRenderer() {
+    return new WebGLVectorTileLayerRenderer(this, {
+      disableHitDetection: false,
+      style: {
+        builder: result.builder,
+        attributes: {
+          fillColor: {
+            size: 2,
+            callback: (feature) => {
+              const style = this.getStyle()(feature, 1)[0];
+              const color = asArray(style?.getFill()?.getColor() || '#eee');
+              return packColor(color);
+            },
+          },
+          strokeColor: {
+            size: 2,
+            callback: (feature) => {
+              const style = this.getStyle()(feature, 1)[0];
+              const color = asArray(style?.getStroke()?.getColor() || '#eee');
+              return packColor(color);
+            },
+          },
+          strokeWidth: {
+            size: 1,
+            callback: (feature) => {
+              const style = this.getStyle()(feature, 1)[0];
+              return style?.getStroke()?.getWidth() * 2 || 0;
+            },
+          },
+        },
+      },
+    });
+  }
+}
+
+const vectorSource = new VectorSource({
+  useSpatialIndex: false,
+  features: [],
+});
 
 const map = new Map({
   layers: [
@@ -366,6 +94,16 @@ const map = new Map({
       style,
       disableHitDetection: false,
     }),
+    new VectorLayer({
+      style: {
+        'fill-color': 'grey',
+        'stroke-color': 'green',
+        'stroke-width': 3,
+        'circle-fill-color': 'red',
+        'circle-radius': 10,
+      },
+      source: vectorSource,
+    }),
   ],
   target: 'map',
   view: new View({
@@ -373,12 +111,38 @@ const map = new Map({
     zoom: 2,
   }),
 });
+
+let activeFeature;
+
 map.on('pointermove', function (evt) {
   if (evt.dragging) {
     return;
   }
   const pixel = map.getEventPixel(evt.originalEvent);
-  const feature = map.forEachFeatureAtPixel(pixel, function (feature) {
-    return feature;
-  });
+  const feature = map.forEachFeatureAtPixel(
+    pixel,
+    function (feature) {
+      return feature;
+    },
+    {
+      layerFilter(layer) {
+        return layer instanceof WebGLVectorTileLayer;
+      },
+    }
+  );
+  if (feature) {
+    if (activeFeature === feature) {
+      // skip
+    } else {
+      log(feature);
+      vectorSource.removeFeature(activeFeature);
+      vectorSource.addFeature(feature);
+      activeFeature = feature;
+    }
+  } else {
+    if (activeFeature) {
+      vectorSource.removeFeature(activeFeature);
+      activeFeature = null;
+    }
+  }
 });
