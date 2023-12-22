@@ -389,13 +389,17 @@ describe('ol.interaction.Translate', function () {
         simulateEvent('pointerup', 50, -40);
 
         const geometries = feature.getGeometry().getGeometriesArray();
-        const circle = geometries[0]
-          .clone()
-          .transform(userProjection, viewProjection);
+
+        let circle = geometries[0];
+        const flatCoordinates = circle.getFlatCoordinates();
+        expect(flatCoordinates[2]).to.be.greaterThan(flatCoordinates[0]);
+        expect(flatCoordinates[3]).to.equal(flatCoordinates[1]);
+        circle = circle.clone().transform(userProjection, viewProjection);
         expect(circle.getRadius()).to.roughlyEqual(10, 1e-9);
         const center = circle.getCenter();
         expect(center[0]).to.roughlyEqual(50, 1e-9);
         expect(center[1]).to.roughlyEqual(50, 1e-9);
+
         const polygon = geometries[1]
           .clone()
           .transform(userProjection, viewProjection);

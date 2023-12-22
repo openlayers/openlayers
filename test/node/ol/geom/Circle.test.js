@@ -1,12 +1,25 @@
 import Circle from '../../../../src/ol/geom/Circle.js';
 import expect from '../../expect.js';
+import proj4 from 'proj4';
 import sinon from 'sinon';
+import {
+  addCommon,
+  clearAllProjections,
+  fromLonLat,
+} from '../../../../src/ol/proj.js';
+import {register, unregister} from '../../../../src/ol/proj/proj4.js';
 
 describe('ol/geom/Circle.js', function () {
   describe('with a unit circle', function () {
     let circle;
     beforeEach(function () {
       circle = new Circle([0, 0], 1);
+    });
+    afterEach(function () {
+      delete proj4.defs['EPSG:32632'];
+      clearAllProjections();
+      addCommon();
+      unregister();
     });
 
     describe('#clone', function () {
@@ -260,6 +273,69 @@ describe('ol/geom/Circle.js', function () {
         circle.translate(5, 10);
         expect(circle.getCenter()).to.eql([6, 11]);
         expect(circle.getExtent()).to.eql([5, 10, 7, 12]);
+      });
+    });
+
+    describe('#transform', function () {
+      it('transforms between parallel projections', function () {
+        const original = new Circle(fromLonLat([16, 48]), 100);
+        const transformed = original
+          .clone()
+          .transform('EPSG:3857', 'EPSG:4326');
+        const transformedBack = transformed
+          .clone()
+          .transform('EPSG:4326', 'EPSG:3857');
+        expect(transformedBack.getCenter()[0]).to.roughlyEqual(
+          original.getCenter()[0],
+          1e-8
+        );
+        expect(transformedBack.getCenter()[1]).to.roughlyEqual(
+          original.getCenter()[1],
+          1e-8
+        );
+        expect(transformedBack.getRadius()).to.roughlyEqual(
+          original.getRadius(),
+          1e-9
+        );
+        expect(transformed.getFlatCoordinates()[3]).to.equal(
+          transformed.getFlatCoordinates()[1]
+        );
+        expect(transformedBack.getFlatCoordinates()[3]).to.equal(
+          transformedBack.getFlatCoordinates()[1]
+        );
+      });
+
+      it('transforms between non-parallel and parallel projections', function () {
+        proj4.defs(
+          'EPSG:32632',
+          '+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +type=crs'
+        );
+        register(proj4);
+        const original = new Circle(fromLonLat([16, 48], 'EPSG:32632'), 100);
+        const transformed = original
+          .clone()
+          .transform('EPSG:32632', 'EPSG:4326');
+        const transformedBack = transformed
+          .clone()
+          .transform('EPSG:4326', 'EPSG:32632');
+        expect(transformedBack.getCenter()[0]).to.roughlyEqual(
+          original.getCenter()[0],
+          1e-8
+        );
+        expect(transformedBack.getCenter()[1]).to.roughlyEqual(
+          original.getCenter()[1],
+          1e-8
+        );
+        expect(transformedBack.getRadius()).to.roughlyEqual(
+          original.getRadius(),
+          1e-9
+        );
+        expect(transformed.getFlatCoordinates()[3]).to.equal(
+          transformed.getFlatCoordinates()[1]
+        );
+        expect(transformedBack.getFlatCoordinates()[3]).to.equal(
+          transformedBack.getFlatCoordinates()[1]
+        );
       });
     });
   });
