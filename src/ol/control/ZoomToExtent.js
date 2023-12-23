@@ -4,6 +4,7 @@
 import Control from './Control.js';
 import EventType from '../events/EventType.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
+import {fromUserExtent} from '../proj.js';
 import {fromExtent as polygonFromExtent} from '../geom/Polygon.js';
 
 /**
@@ -86,7 +87,7 @@ class ZoomToExtent extends Control {
     const view = map.getView();
     const extent = !this.extent
       ? view.getProjection().getExtent()
-      : this.extent;
+      : fromUserExtent(this.extent, view.getProjection());
     view.fitInternal(polygonFromExtent(extent));
   }
 }
