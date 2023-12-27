@@ -664,7 +664,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         vectorSource.loadFeatures(
           userExtent,
           toUserResolution(resolution, projection),
-          userProjection
+          userProjection,
+          {extent, resolution, projection}
         );
       }
       userTransform = getTransformFromProjections(userProjection, projection);

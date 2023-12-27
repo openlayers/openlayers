@@ -11,6 +11,13 @@ import {VOID} from './functions.js';
 let withCredentials = false;
 
 /**
+ * @typedef {Object} FeatureLoaderInternal
+ * @property {import("./extent.js").Extent} extent Extent.
+ * @property {number} resolution Resolution.
+ * @property {import("./proj/Projection.js").default} projection Projection.
+ */
+
+/**
  * {@link module:ol/source/Vector~VectorSource} sources use a function of this type to
  * load features.
  *
@@ -28,8 +35,9 @@ let withCredentials = false;
  *           import("./extent.js").Extent,
  *           number,
  *           import("./proj/Projection.js").default,
- *           function(Array<import("./Feature.js").default>): void=,
- *           function(): void=): void} FeatureLoader
+ *           function(Array<import("./Feature.js").default>=): void=,
+ *           function(): void=,
+ *           FeatureLoaderInternal=): void} FeatureLoader
  * @api
  */
 
