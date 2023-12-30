@@ -284,7 +284,10 @@ class ScaleLine extends Control {
       pointResolution /= 1852;
       suffix = 'NM';
     } else if (units == 'metric') {
-      if (nominalCount < 0.001) {
+      if (nominalCount < 1e-6) {
+        suffix = 'nm';
+        pointResolution *= 1e9;
+      } else if (nominalCount < 0.001) {
         suffix = 'μm';
         pointResolution *= 1000000;
       } else if (nominalCount < 1) {
