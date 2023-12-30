@@ -504,6 +504,9 @@ describe('ol.control.ScaleLine', function () {
     let mapView;
 
     const getMetricUnit = function (zoom) {
+      if (zoom > 40) {
+        return 'nm';
+      }
       if (zoom > 30) {
         return 'μm';
       }
