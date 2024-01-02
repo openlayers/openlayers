@@ -10,6 +10,12 @@ import Style, {createDefaultStyle} from '../../../../../src/ol/style/Style.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
 import View from '../../../../../src/ol/View.js';
+import {Polygon} from '../../../../../src/ol/geom.js';
+import {
+  clearUserProjection,
+  getUserProjection,
+  useGeographic,
+} from '../../../../../src/ol/proj.js';
 
 describe('ol.layer.Vector', function () {
   describe('constructor', function () {
@@ -139,6 +145,9 @@ describe('ol.layer.Vector', function () {
     });
 
     afterEach(function () {
+      if (getUserProjection()) {
+        clearUserProjection();
+      }
       document.body.removeChild(map.getTargetElement());
       map.setTarget(null);
     });
@@ -305,6 +314,51 @@ describe('ol.layer.Vector', function () {
           done();
         }, done)
         .catch(done);
+    });
+
+    it('detects features with user projection', () => {
+      useGeographic();
+      const source = new VectorSource({
+        features: [
+          new Feature({
+            geometry: new Point([16, 48]),
+            name: 'feature1',
+          }),
+          new Feature({
+            geometry: new Polygon([
+              [
+                [16.1, 48.1],
+                [16.1, 48.2],
+                [16.2, 48.2],
+                [16.2, 48.1],
+                [16.1, 48.1],
+              ],
+            ]),
+            name: 'feature2',
+          }),
+        ],
+      });
+
+      const layer = new VectorLayer({
+        source,
+      });
+      map.addLayer(layer);
+      map.getView().fit(source.getExtent(), {padding: [10, 10, 10, 10]});
+      map.renderSync();
+
+      const pixel1 = map.getPixelFromCoordinate([16, 48]);
+      const pixel2 = map.getPixelFromCoordinate([16.2, 48.2]);
+
+      return Promise.all([
+        layer.getFeatures(pixel1).then(function (features) {
+          expect(features.length).to.equal(1);
+          expect(features[0].get('name')).to.be('feature1');
+        }),
+        layer.getFeatures(pixel2).then(function (features) {
+          expect(features.length).to.equal(1);
+          expect(features[0].get('name')).to.be('feature2');
+        }),
+      ]);
     });
   });
 });
