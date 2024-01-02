@@ -77,7 +77,7 @@ imagery.on('prerender', function (event) {
       mousePosition[1],
     ]);
     const canvasRadius = Math.sqrt(
-      Math.pow(offset[0] - pixel[0], 2) + Math.pow(offset[1] - pixel[1], 2)
+      Math.pow(offset[0] - pixel[0], 2) + Math.pow(offset[1] - pixel[1], 2),
     );
     ctx.arc(pixel[0], pixel[1], canvasRadius, 0, 2 * Math.PI);
     ctx.lineWidth = (5 * canvasRadius) / radius;

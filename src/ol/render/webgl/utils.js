@@ -50,7 +50,7 @@ export function writePointFeatureToBuffers(
   vertexBuffer,
   indexBuffer,
   customAttributesSize,
-  bufferPositions
+  bufferPositions,
 ) {
   // This is for x, y and index
   const baseVertexAttrsCount = 3;
@@ -150,7 +150,7 @@ export function writeLineSegmentToBuffers(
   customAttributes,
   toWorldTransform,
   currentLength,
-  currentAngleTangentSum
+  currentAngleTangentSum,
 ) {
   // compute the stride to determine how many vertices were already pushed
   const baseVertexAttrsCount = 8; // base attributes: x0, y0, x1, y1, angle0, angle1, distance, params
@@ -179,12 +179,12 @@ export function writeLineSegmentToBuffers(
    */
   function angleBetween(p0, pA, pB) {
     const lenA = Math.sqrt(
-      (pA[0] - p0[0]) * (pA[0] - p0[0]) + (pA[1] - p0[1]) * (pA[1] - p0[1])
+      (pA[0] - p0[0]) * (pA[0] - p0[0]) + (pA[1] - p0[1]) * (pA[1] - p0[1]),
     );
     const tangentA = [(pA[0] - p0[0]) / lenA, (pA[1] - p0[1]) / lenA];
     const orthoA = [-tangentA[1], tangentA[0]];
     const lenB = Math.sqrt(
-      (pB[0] - p0[0]) * (pB[0] - p0[0]) + (pB[1] - p0[1]) * (pB[1] - p0[1])
+      (pB[0] - p0[0]) * (pB[0] - p0[0]) + (pB[1] - p0[1]) * (pB[1] - p0[1]),
     );
     const tangentB = [(pB[0] - p0[0]) / lenB, (pB[1] - p0[1]) / lenB];
 
@@ -193,7 +193,7 @@ export function writeLineSegmentToBuffers(
       lenA === 0 || lenB === 0
         ? 0
         : Math.acos(
-            clamp(tangentB[0] * tangentA[0] + tangentB[1] * tangentA[1], -1, 1)
+            clamp(tangentB[0] * tangentA[0] + tangentB[1] * tangentA[1], -1, 1),
           );
     const isClockwise = tangentB[0] * orthoA[0] + tangentB[1] * orthoA[1] > 0;
     return !isClockwise ? Math.PI * 2 - angle : angle;
@@ -259,7 +259,7 @@ export function writeLineSegmentToBuffers(
     angle0,
     angle1,
     currentLength,
-    computeParameters(0, currentAngleTangentSum)
+    computeParameters(0, currentAngleTangentSum),
   );
   vertexArray.push(...customAttributes);
 
@@ -271,7 +271,7 @@ export function writeLineSegmentToBuffers(
     angle0,
     angle1,
     currentLength,
-    computeParameters(1, currentAngleTangentSum)
+    computeParameters(1, currentAngleTangentSum),
   );
   vertexArray.push(...customAttributes);
 
@@ -283,7 +283,7 @@ export function writeLineSegmentToBuffers(
     angle0,
     angle1,
     currentLength,
-    computeParameters(2, currentAngleTangentSum)
+    computeParameters(2, currentAngleTangentSum),
   );
   vertexArray.push(...customAttributes);
 
@@ -295,7 +295,7 @@ export function writeLineSegmentToBuffers(
     angle0,
     angle1,
     currentLength,
-    computeParameters(3, currentAngleTangentSum)
+    computeParameters(3, currentAngleTangentSum),
   );
   vertexArray.push(...customAttributes);
 
@@ -305,7 +305,7 @@ export function writeLineSegmentToBuffers(
     baseIndex + 2,
     baseIndex + 1,
     baseIndex + 3,
-    baseIndex + 2
+    baseIndex + 2,
   );
 
   return {
@@ -313,7 +313,7 @@ export function writeLineSegmentToBuffers(
       currentLength +
       Math.sqrt(
         (p1world[0] - p0world[0]) * (p1world[0] - p0world[0]) +
-          (p1world[1] - p0world[1]) * (p1world[1] - p0world[1])
+          (p1world[1] - p0world[1]) * (p1world[1] - p0world[1]),
       ),
     angle: newAngleTangentSum,
   };
@@ -334,14 +334,14 @@ export function writePolygonTrianglesToBuffers(
   polygonStartIndex,
   vertexArray,
   indexArray,
-  customAttributesSize
+  customAttributesSize,
 ) {
   const instructionsPerVertex = 2; // x, y
   const attributesPerVertex = 2 + customAttributesSize;
   let instructionsIndex = polygonStartIndex;
   const customAttributes = instructions.slice(
     instructionsIndex,
-    instructionsIndex + customAttributesSize
+    instructionsIndex + customAttributesSize,
   );
   instructionsIndex += customAttributesSize;
   const ringsCount = instructions[instructionsIndex++];
@@ -355,7 +355,7 @@ export function writePolygonTrianglesToBuffers(
   }
   const flatCoords = instructions.slice(
     instructionsIndex,
-    instructionsIndex + verticesCount * instructionsPerVertex
+    instructionsIndex + verticesCount * instructionsPerVertex,
   );
 
   // pushing to vertices and indices!! this is where the magic happens

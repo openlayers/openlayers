@@ -137,7 +137,7 @@ describe('ol/proj/proj4.js', () => {
 
       expect(error).to.be.an(Error);
       expect(error.message).to.be(
-        'Proj4 must be registered first with register(proj4)'
+        'Proj4 must be registered first with register(proj4)',
       );
     });
   });

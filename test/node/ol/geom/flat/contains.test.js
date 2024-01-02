@@ -17,8 +17,8 @@ describe('ol/geom/flat/contains.js', function () {
             flatCoordinatesSimple.length,
             2,
             0.5,
-            0.5
-          )
+            0.5,
+          ),
         ).to.be(true);
       });
 
@@ -30,8 +30,8 @@ describe('ol/geom/flat/contains.js', function () {
             flatCoordinatesSimple.length,
             2,
             1.5,
-            1.5
-          )
+            1.5,
+          ),
         ).to.be(false);
       });
 
@@ -43,8 +43,8 @@ describe('ol/geom/flat/contains.js', function () {
             flatCoordinatesNonSimple.length,
             2,
             1,
-            1
-          )
+            1,
+          ),
         ).to.be(true);
       });
 
@@ -56,8 +56,8 @@ describe('ol/geom/flat/contains.js', function () {
             flatCoordinatesNonSimple.length,
             2,
             1.5,
-            2.5
-          )
+            2.5,
+          ),
         ).to.be(true);
       });
 
@@ -69,8 +69,8 @@ describe('ol/geom/flat/contains.js', function () {
             flatCoordinatesNonSimple.length,
             2,
             2.5,
-            1.5
-          )
+            1.5,
+          ),
         ).to.be(false);
       });
     });

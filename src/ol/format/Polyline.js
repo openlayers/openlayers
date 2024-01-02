@@ -96,14 +96,14 @@ class Polyline extends TextFeature {
       flatCoordinates,
       0,
       flatCoordinates.length,
-      stride
+      stride,
     );
     const lineString = new LineString(coordinates, this.geometryLayout_);
 
     return transformGeometryWithOptions(
       lineString,
       false,
-      this.adaptOptions(options)
+      this.adaptOptions(options),
     );
   }
 

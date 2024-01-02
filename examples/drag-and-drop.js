@@ -52,7 +52,7 @@ function setInteraction() {
     map.addLayer(
       new VectorLayer({
         source: vectorSource,
-      })
+      }),
     );
     map.getView().fit(vectorSource.getExtent());
   });

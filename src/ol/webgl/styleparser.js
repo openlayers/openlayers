@@ -35,7 +35,7 @@ export function expressionToGlsl(compilationContext, value, expectedType) {
     value,
     expectedType,
     parsingContext,
-    compilationContext
+    compilationContext,
   );
 }
 
@@ -111,13 +111,13 @@ function parseCommonSymbolProperties(style, builder, vertContext, prefix) {
     let radius = expressionToGlsl(
       vertContext,
       style[`${prefix}radius`],
-      NumberType
+      NumberType,
     );
     if (`${prefix}radius2` in style) {
       const radius2 = expressionToGlsl(
         vertContext,
         style[`${prefix}radius2`],
-        NumberType
+        NumberType,
       );
       radius = `max(${radius}, ${radius2})`;
     }
@@ -125,7 +125,7 @@ function parseCommonSymbolProperties(style, builder, vertContext, prefix) {
       radius = `(${radius} + ${expressionToGlsl(
         vertContext,
         style[`${prefix}stroke-width`],
-        NumberType
+        NumberType,
       )} * 0.5)`;
     }
     builder.setSymbolSizeExpression(`vec2(${radius} * 2. + 0.5)`); // adding some padding for antialiasing
@@ -134,10 +134,10 @@ function parseCommonSymbolProperties(style, builder, vertContext, prefix) {
     const scale = expressionToGlsl(
       vertContext,
       style[`${prefix}scale`],
-      NumberType | NumberArrayType
+      NumberType | NumberArrayType,
     );
     builder.setSymbolSizeExpression(
-      `${builder.getSymbolSizeExpression()} * ${scale}`
+      `${builder.getSymbolSizeExpression()} * ${scale}`,
     );
   }
   if (`${prefix}displacement` in style) {
@@ -145,13 +145,13 @@ function parseCommonSymbolProperties(style, builder, vertContext, prefix) {
       expressionToGlsl(
         vertContext,
         style[`${prefix}displacement`],
-        NumberArrayType
-      )
+        NumberArrayType,
+      ),
     );
   }
   if (`${prefix}rotation` in style) {
     builder.setSymbolRotationExpression(
-      expressionToGlsl(vertContext, style[`${prefix}rotation`], NumberType)
+      expressionToGlsl(vertContext, style[`${prefix}rotation`], NumberType),
     );
   }
   if (`${prefix}rotate-with-view` in style) {
@@ -172,7 +172,7 @@ function getColorFromDistanceField(
   fillColor,
   strokeColor,
   strokeWidth,
-  opacity
+  opacity,
 ) {
   let color = 'vec4(0.)';
   if (fillColor !== null) {
@@ -238,12 +238,12 @@ function parseImageOffsetProperties(
   prefix,
   context,
   imageSize,
-  sampleSize
+  sampleSize,
 ) {
   let offsetExpression = expressionToGlsl(
     context,
     style[`${prefix}offset`],
-    NumberArrayType
+    NumberArrayType,
   );
   if (`${prefix}offset-origin` in style) {
     switch (style[`${prefix}offset-origin`]) {
@@ -274,13 +274,12 @@ function parseCircleProperties(
   builder,
   uniforms,
   vertContext,
-  fragContext
+  fragContext,
 ) {
   // this function takes in screen coordinates in pixels and returns the signed distance field
   // (0 on the boundary, negative inside the circle, positive outside, values in pixels)
-  fragContext.functions[
-    'circleDistanceField'
-  ] = `float circleDistanceField(vec2 point, float radius) {
+  fragContext.functions['circleDistanceField'] =
+    `float circleDistanceField(vec2 point, float radius) {
   return length(point) - radius;
 }`;
 
@@ -292,7 +291,7 @@ function parseCircleProperties(
     opacity = expressionToGlsl(
       fragContext,
       style['circle-opacity'],
-      NumberType
+      NumberType,
     );
   }
 
@@ -302,7 +301,7 @@ function parseCircleProperties(
     const scale = expressionToGlsl(
       fragContext,
       style['circle-scale'],
-      NumberType | NumberArrayType
+      NumberType | NumberArrayType,
     );
     currentPoint = `coordsPx / ${scale}`;
   }
@@ -313,7 +312,7 @@ function parseCircleProperties(
     fillColor = expressionToGlsl(
       fragContext,
       style['circle-fill-color'],
-      ColorType
+      ColorType,
     );
   }
 
@@ -323,7 +322,7 @@ function parseCircleProperties(
     strokeColor = expressionToGlsl(
       fragContext,
       style['circle-stroke-color'],
-      ColorType
+      ColorType,
     );
   }
 
@@ -331,7 +330,7 @@ function parseCircleProperties(
   let radius = expressionToGlsl(
     fragContext,
     style['circle-radius'],
-    NumberType
+    NumberType,
   );
 
   // STROKE WIDTH
@@ -340,7 +339,7 @@ function parseCircleProperties(
     strokeWidth = expressionToGlsl(
       fragContext,
       style['circle-stroke-width'],
-      NumberType
+      NumberType,
     );
     radius = `(${radius} + ${strokeWidth} * 0.5)`;
   }
@@ -352,7 +351,7 @@ function parseCircleProperties(
     fillColor,
     strokeColor,
     strokeWidth,
-    opacity
+    opacity,
   );
   builder.setSymbolColorExpression(colorExpression);
 }
@@ -369,7 +368,7 @@ function parseShapeProperties(
   builder,
   uniforms,
   vertContext,
-  fragContext
+  fragContext,
 ) {
   fragContext.functions['round'] = `float round(float v) {
   return sign(v) * floor(abs(v) + 0.5);
@@ -378,9 +377,8 @@ function parseShapeProperties(
   // these functions take in screen coordinates in pixels and returns the signed distance field
   // (0 on the boundary, negative inside the polygon, positive outside, values in pixels)
   // inspired by https://github.com/zranger1/PixelblazePatterns/blob/master/Toolkit/sdf2d.md#n-sided-regular-polygon
-  fragContext.functions[
-    'starDistanceField'
-  ] = `float starDistanceField(vec2 point, float numPoints, float radius, float radius2, float angle) {
+  fragContext.functions['starDistanceField'] =
+    `float starDistanceField(vec2 point, float numPoints, float radius, float radius2, float angle) {
   float startAngle = -PI * 0.5 + angle; // tip starts upwards and rotates clockwise with angle
   float c = cos(startAngle);
   float s = sin(startAngle);
@@ -395,9 +393,8 @@ function parseShapeProperties(
   vec2 edgeNormal = vec2(radius2 * sin(alpha * 0.5), -radius2 * cos(alpha * 0.5) + radius);
   return dot(normalize(edgeNormal), tipToPoint);
 }`;
-  fragContext.functions[
-    'regularDistanceField'
-  ] = `float regularDistanceField(vec2 point, float numPoints, float radius, float angle) {
+  fragContext.functions['regularDistanceField'] =
+    `float regularDistanceField(vec2 point, float numPoints, float radius, float angle) {
   float startAngle = -PI * 0.5 + angle; // tip starts upwards and rotates clockwise with angle
   float c = cos(startAngle);
   float s = sin(startAngle);
@@ -426,7 +423,7 @@ function parseShapeProperties(
     const scale = expressionToGlsl(
       fragContext,
       style['shape-scale'],
-      NumberType | NumberArrayType
+      NumberType | NumberArrayType,
     );
     currentPoint = `coordsPx / ${scale}`;
   }
@@ -437,7 +434,7 @@ function parseShapeProperties(
     fillColor = expressionToGlsl(
       fragContext,
       style['shape-fill-color'],
-      ColorType
+      ColorType,
     );
   }
 
@@ -447,7 +444,7 @@ function parseShapeProperties(
     strokeColor = expressionToGlsl(
       fragContext,
       style['shape-stroke-color'],
-      ColorType
+      ColorType,
     );
   }
 
@@ -457,7 +454,7 @@ function parseShapeProperties(
     strokeWidth = expressionToGlsl(
       fragContext,
       style['shape-stroke-width'],
-      NumberType
+      NumberType,
     );
   }
 
@@ -465,7 +462,7 @@ function parseShapeProperties(
   const numPoints = expressionToGlsl(
     fragContext,
     style['shape-points'],
-    NumberType
+    NumberType,
   );
   let angle = '0.';
   if ('shape-angle' in style) {
@@ -480,7 +477,7 @@ function parseShapeProperties(
     let radius2 = expressionToGlsl(
       fragContext,
       style['shape-radius2'],
-      NumberType
+      NumberType,
     );
     if (strokeWidth !== null) {
       radius2 = `${radius2} + ${strokeWidth} * 0.5`;
@@ -496,7 +493,7 @@ function parseShapeProperties(
     fillColor,
     strokeColor,
     strokeWidth,
-    opacity
+    opacity,
   );
   builder.setSymbolColorExpression(colorExpression);
 }
@@ -513,7 +510,7 @@ function parseIconProperties(
   builder,
   uniforms,
   vertContext,
-  fragContext
+  fragContext,
 ) {
   // COLOR
   let color = 'vec4(1.0)';
@@ -526,7 +523,7 @@ function parseIconProperties(
     color = `${color} * ${expressionToGlsl(
       fragContext,
       style['icon-opacity'],
-      NumberType
+      NumberType,
     )}`;
   }
 
@@ -537,11 +534,11 @@ function parseIconProperties(
     builder,
     uniforms,
     'icon-',
-    textureId
+    textureId,
   );
   builder
     .setSymbolColorExpression(
-      `${color} * samplePremultiplied(u_texture${textureId}, v_texCoord)`
+      `${color} * samplePremultiplied(u_texture${textureId}, v_texCoord)`,
     )
     .setSymbolSizeExpression(sizeExpression);
 
@@ -551,8 +548,8 @@ function parseIconProperties(
       `vec2(${expressionToGlsl(
         vertContext,
         style['icon-width'],
-        NumberType
-      )}, ${expressionToGlsl(vertContext, style['icon-height'], NumberType)})`
+        NumberType,
+      )}, ${expressionToGlsl(vertContext, style['icon-height'], NumberType)})`,
     );
   }
 
@@ -561,7 +558,7 @@ function parseIconProperties(
     const sampleSize = expressionToGlsl(
       vertContext,
       style['icon-size'],
-      NumberArrayType
+      NumberArrayType,
     );
     const fullsize = builder.getSymbolSizeExpression();
     builder.setSymbolSizeExpression(sampleSize);
@@ -570,10 +567,10 @@ function parseIconProperties(
       'icon-',
       vertContext,
       'v_quadSizePx',
-      sampleSize
+      sampleSize,
     );
     builder.setTextureCoordinateExpression(
-      `(vec4((${offset}).xyxy) + vec4(0., 0., ${sampleSize})) / (${fullsize}).xyxy`
+      `(vec4((${offset}).xyxy) + vec4(0., 0., ${sampleSize})) / (${fullsize}).xyxy`,
     );
   }
 
@@ -583,14 +580,14 @@ function parseIconProperties(
     const anchor = expressionToGlsl(
       vertContext,
       style['icon-anchor'],
-      NumberArrayType
+      NumberArrayType,
     );
     let scale = `1.0`;
     if (`icon-scale` in style) {
       scale = expressionToGlsl(
         vertContext,
         style[`icon-scale`],
-        NumberType | NumberArrayType
+        NumberType | NumberArrayType,
       );
     }
     let shiftPx;
@@ -623,7 +620,7 @@ function parseIconProperties(
       }
     }
     builder.setSymbolOffsetExpression(
-      `${builder.getSymbolOffsetExpression()} + ${offsetPx}`
+      `${builder.getSymbolOffsetExpression()} + ${offsetPx}`,
     );
   }
 }
@@ -640,11 +637,11 @@ function parseStrokeProperties(
   builder,
   uniforms,
   vertContext,
-  fragContext
+  fragContext,
 ) {
   if ('stroke-color' in style) {
     builder.setStrokeColorExpression(
-      expressionToGlsl(fragContext, style['stroke-color'], ColorType)
+      expressionToGlsl(fragContext, style['stroke-color'], ColorType),
     );
   }
   if ('stroke-pattern-src' in style) {
@@ -654,7 +651,7 @@ function parseStrokeProperties(
       builder,
       uniforms,
       'stroke-pattern-',
-      textureId
+      textureId,
     );
     let sampleSizeExpression = sizeExpression;
     let offsetExpression = 'vec2(0.)';
@@ -662,14 +659,14 @@ function parseStrokeProperties(
       sampleSizeExpression = expressionToGlsl(
         fragContext,
         style[`stroke-pattern-size`],
-        NumberArrayType
+        NumberArrayType,
       );
       offsetExpression = parseImageOffsetProperties(
         style,
         'stroke-pattern-',
         fragContext,
         sizeExpression,
-        sampleSizeExpression
+        sampleSizeExpression,
       );
     }
     let spacingExpression = '0.';
@@ -677,12 +674,11 @@ function parseStrokeProperties(
       spacingExpression = expressionToGlsl(
         fragContext,
         style['stroke-pattern-spacing'],
-        NumberType
+        NumberType,
       );
     }
-    fragContext.functions[
-      'sampleStrokePattern'
-    ] = `vec4 sampleStrokePattern(sampler2D texture, vec2 textureSize, vec2 textureOffset, vec2 sampleSize, float spacingPx, float currentLengthPx, float currentRadiusRatio, float lineWidth) {
+    fragContext.functions['sampleStrokePattern'] =
+      `vec4 sampleStrokePattern(sampler2D texture, vec2 textureSize, vec2 textureOffset, vec2 sampleSize, float spacingPx, float currentLengthPx, float currentRadiusRatio, float lineWidth) {
   float currentLengthScaled = currentLengthPx * sampleSize.y / lineWidth;
   float spacingScaled = spacingPx * sampleSize.y / lineWidth;
   float uCoordPx = mod(currentLengthScaled, (sampleSize.x + spacingScaled));
@@ -698,44 +694,43 @@ function parseStrokeProperties(
       tintExpression = builder.getStrokeColorExpression();
     }
     builder.setStrokeColorExpression(
-      `${tintExpression} * sampleStrokePattern(${textureName}, ${sizeExpression}, ${offsetExpression}, ${sampleSizeExpression}, ${spacingExpression}, currentLengthPx, currentRadiusRatio, v_width)`
+      `${tintExpression} * sampleStrokePattern(${textureName}, ${sizeExpression}, ${offsetExpression}, ${sampleSizeExpression}, ${spacingExpression}, currentLengthPx, currentRadiusRatio, v_width)`,
     );
   }
 
   if ('stroke-width' in style) {
     builder.setStrokeWidthExpression(
-      expressionToGlsl(vertContext, style['stroke-width'], NumberType)
+      expressionToGlsl(vertContext, style['stroke-width'], NumberType),
     );
   }
 
   if ('stroke-offset' in style) {
     builder.setStrokeOffsetExpression(
-      expressionToGlsl(vertContext, style['stroke-offset'], NumberType)
+      expressionToGlsl(vertContext, style['stroke-offset'], NumberType),
     );
   }
 
   if ('stroke-line-cap' in style) {
     builder.setStrokeCapExpression(
-      expressionToGlsl(vertContext, style['stroke-line-cap'], StringType)
+      expressionToGlsl(vertContext, style['stroke-line-cap'], StringType),
     );
   }
 
   if ('stroke-line-join' in style) {
     builder.setStrokeJoinExpression(
-      expressionToGlsl(vertContext, style['stroke-line-join'], StringType)
+      expressionToGlsl(vertContext, style['stroke-line-join'], StringType),
     );
   }
 
   if ('stroke-miter-limit' in style) {
     builder.setStrokeMiterLimitExpression(
-      expressionToGlsl(vertContext, style['stroke-miter-limit'], NumberType)
+      expressionToGlsl(vertContext, style['stroke-miter-limit'], NumberType),
     );
   }
 
   if ('stroke-line-dash' in style) {
-    fragContext.functions[
-      'getSingleDashDistance'
-    ] = `float getSingleDashDistance(float distance, float radius, float dashOffset, float dashLength, float dashLengthTotal, float capType) {
+    fragContext.functions['getSingleDashDistance'] =
+      `float getSingleDashDistance(float distance, float radius, float dashOffset, float dashLength, float dashLengthTotal, float capType) {
   float localDistance = mod(distance, dashLengthTotal);
   float distanceSegment = abs(localDistance - dashOffset - dashLength * 0.5) - dashLength * 0.5;
   distanceSegment = min(distanceSegment, dashLengthTotal - localDistance);
@@ -748,7 +743,7 @@ function parseStrokeProperties(
 }`;
 
     let dashPattern = style['stroke-line-dash'].map((v) =>
-      expressionToGlsl(fragContext, v, NumberType)
+      expressionToGlsl(fragContext, v, NumberType),
     );
     // if pattern has odd length, concatenate it with itself to be even
     if (dashPattern.length % 2 === 1) {
@@ -760,7 +755,7 @@ function parseStrokeProperties(
       offsetExpression = expressionToGlsl(
         vertContext,
         style['stroke-line-dash-offset'],
-        NumberType
+        NumberType,
       );
     }
 
@@ -769,7 +764,7 @@ function parseStrokeProperties(
     const dashFunctionName = `dashDistanceField_${uniqueDashKey}`;
 
     const dashLengthsDef = dashPattern.map(
-      (v, i) => `float dashLength${i} = ${v};`
+      (v, i) => `float dashLength${i} = ${v};`,
     );
     const totalLengthDef = dashPattern
       .map((v, i) => `dashLength${i}`)
@@ -783,15 +778,14 @@ function parseStrokeProperties(
       distanceExpression = `min(${distanceExpression}, getSingleDashDistance(distance, radius, ${currentDashOffset}, dashLength${i}, totalDashLength, capType))`;
     }
 
-    fragContext.functions[
-      dashFunctionName
-    ] = `float ${dashFunctionName}(float distance, float radius, float capType) {
+    fragContext.functions[dashFunctionName] =
+      `float ${dashFunctionName}(float distance, float radius, float capType) {
   ${dashLengthsDef.join('\n  ')}
   float totalDashLength = ${totalLengthDef};
   return ${distanceExpression};
 }`;
     builder.setStrokeDistanceFieldExpression(
-      `${dashFunctionName}(currentLengthPx + ${offsetExpression}, currentRadiusPx, capType)`
+      `${dashFunctionName}(currentLengthPx + ${offsetExpression}, currentRadiusPx, capType)`,
     );
   }
 }
@@ -808,11 +802,11 @@ function parseFillProperties(
   builder,
   uniforms,
   vertContext,
-  fragContext
+  fragContext,
 ) {
   if ('fill-color' in style) {
     builder.setFillColorExpression(
-      expressionToGlsl(fragContext, style['fill-color'], ColorType)
+      expressionToGlsl(fragContext, style['fill-color'], ColorType),
     );
   }
   if ('fill-pattern-src' in style) {
@@ -822,7 +816,7 @@ function parseFillProperties(
       builder,
       uniforms,
       'fill-pattern-',
-      textureId
+      textureId,
     );
     let sampleSizeExpression = sizeExpression;
     let offsetExpression = 'vec2(0.)';
@@ -830,19 +824,18 @@ function parseFillProperties(
       sampleSizeExpression = expressionToGlsl(
         fragContext,
         style[`fill-pattern-size`],
-        NumberArrayType
+        NumberArrayType,
       );
       offsetExpression = parseImageOffsetProperties(
         style,
         'fill-pattern-',
         fragContext,
         sizeExpression,
-        sampleSizeExpression
+        sampleSizeExpression,
       );
     }
-    fragContext.functions[
-      'sampleFillPattern'
-    ] = `vec4 sampleFillPattern(sampler2D texture, vec2 textureSize, vec2 textureOffset, vec2 sampleSize, vec2 pxOrigin, vec2 pxPosition) {
+    fragContext.functions['sampleFillPattern'] =
+      `vec4 sampleFillPattern(sampler2D texture, vec2 textureSize, vec2 textureOffset, vec2 sampleSize, vec2 pxOrigin, vec2 pxPosition) {
   float scaleRatio = pow(2., mod(u_zoom + 0.5, 1.) - 0.5);
   vec2 pxRelativePos = pxPosition - pxOrigin;
   // rotate the relative position from origin by the current view rotation
@@ -860,7 +853,7 @@ function parseFillProperties(
       tintExpression = builder.getFillColorExpression();
     }
     builder.setFillColorExpression(
-      `${tintExpression} * sampleFillPattern(${textureName}, ${sizeExpression}, ${offsetExpression}, ${sampleSizeExpression}, pxOrigin, pxPos)`
+      `${tintExpression} * sampleFillPattern(${textureName}, ${sizeExpression}, ${offsetExpression}, ${sampleSizeExpression}, pxOrigin, pxPos)`,
     );
   }
 }
@@ -925,7 +918,7 @@ export function parseLiteralStyle(style) {
     const parsedFilter = expressionToGlsl(
       fragContext,
       style.filter,
-      BooleanType
+      BooleanType,
     );
     builder.setFragmentDiscardExpression(`!${parsedFilter}`);
   }
@@ -940,7 +933,7 @@ export function parseLiteralStyle(style) {
     if (variable.type === StringType) {
       callback = () =>
         getStringNumberEquivalent(
-          /** @type {string} */ (style.variables[variable.name])
+          /** @type {string} */ (style.variables[variable.name]),
         );
     } else if (variable.type === ColorType) {
       callback = () =>
@@ -948,7 +941,7 @@ export function parseLiteralStyle(style) {
           ...asArray(
             /** @type {string|Array<number>} */ (
               style.variables[variable.name]
-            ) || '#eee'
+            ) || '#eee',
           ),
         ]);
     } else if (variable.type === BooleanType) {
@@ -981,35 +974,35 @@ export function parseLiteralStyle(style) {
   Object.keys(vertContext.properties).forEach(function (propName) {
     const property = vertContext.properties[propName];
     builder.addAttribute(
-      `${getGlslTypeFromType(property.type)} a_prop_${property.name}`
+      `${getGlslTypeFromType(property.type)} a_prop_${property.name}`,
     );
   });
 
-  const attributes = Object.keys(vertContext.properties).map(function (
-    propName
-  ) {
-    const property = vertContext.properties[propName];
-    let callback;
-    if (property.evaluator) {
-      callback = property.evaluator;
-    } else if (property.type === StringType) {
-      callback = (feature) =>
-        getStringNumberEquivalent(feature.get(property.name));
-    } else if (property.type === ColorType) {
-      callback = (feature) =>
-        packColor([...asArray(feature.get(property.name) || '#eee')]);
-    } else if (property.type === BooleanType) {
-      callback = (feature) => (feature.get(property.name) ? 1.0 : 0.0);
-    } else {
-      callback = (feature) => feature.get(property.name);
-    }
+  const attributes = Object.keys(vertContext.properties).map(
+    function (propName) {
+      const property = vertContext.properties[propName];
+      let callback;
+      if (property.evaluator) {
+        callback = property.evaluator;
+      } else if (property.type === StringType) {
+        callback = (feature) =>
+          getStringNumberEquivalent(feature.get(property.name));
+      } else if (property.type === ColorType) {
+        callback = (feature) =>
+          packColor([...asArray(feature.get(property.name) || '#eee')]);
+      } else if (property.type === BooleanType) {
+        callback = (feature) => (feature.get(property.name) ? 1.0 : 0.0);
+      } else {
+        callback = (feature) => feature.get(property.name);
+      }
 
-    return {
-      name: property.name,
-      size: getGlslSizeFromType(property.type),
-      callback,
-    };
-  });
+      return {
+        name: property.name,
+        size: getGlslSizeFromType(property.type),
+        callback,
+      };
+    },
+  );
 
   // add functions that were collected in the compilation contexts
   for (const functionName in vertContext.functions) {
@@ -1026,7 +1019,7 @@ export function parseLiteralStyle(style) {
         ...prev,
         [curr.name]: {callback: curr.callback, size: curr.size},
       }),
-      {}
+      {},
     ),
     uniforms: uniforms,
   };

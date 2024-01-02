@@ -47,7 +47,7 @@ export function linearRingsAreOriented(
   offset,
   ends,
   stride,
-  right
+  right,
 ) {
   right = right !== undefined ? right : false;
   for (let i = 0, ii = ends.length; i < ii; ++i) {
@@ -56,7 +56,7 @@ export function linearRingsAreOriented(
       flatCoordinates,
       offset,
       end,
-      stride
+      stride,
     );
     if (i === 0) {
       if ((right && isClockwise) || (!right && !isClockwise)) {
@@ -90,7 +90,7 @@ export function linearRingssAreOriented(
   offset,
   endss,
   stride,
-  right
+  right,
 ) {
   for (let i = 0, ii = endss.length; i < ii; ++i) {
     const ends = endss[i];
@@ -122,7 +122,7 @@ export function orientLinearRings(
   offset,
   ends,
   stride,
-  right
+  right,
 ) {
   right = right !== undefined ? right : false;
   for (let i = 0, ii = ends.length; i < ii; ++i) {
@@ -131,7 +131,7 @@ export function orientLinearRings(
       flatCoordinates,
       offset,
       end,
-      stride
+      stride,
     );
     const reverse =
       i === 0
@@ -163,7 +163,7 @@ export function orientLinearRingsArray(
   offset,
   endss,
   stride,
-  right
+  right,
 ) {
   for (let i = 0, ii = endss.length; i < ii; ++i) {
     offset = orientLinearRings(
@@ -171,7 +171,7 @@ export function orientLinearRingsArray(
       offset,
       endss[i],
       stride,
-      right
+      right,
     );
   }
   return offset;

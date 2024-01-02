@@ -21,7 +21,7 @@ const vectorTileSource = new VectorTileSource({
         new Feature({
           geometry: new Point(corner),
           tileCoord,
-        })
+        }),
     );
     tile.setFeatures(features);
   },

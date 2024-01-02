@@ -208,7 +208,7 @@ describe('ol/renderer/canvas/VectorLayer', function () {
         resolution,
         rotation,
         hitTolerance,
-        callback
+        callback,
       ) {
         const feature = new Feature(new Point([0, 0]));
         const distanceSq = 0;
@@ -234,7 +234,7 @@ describe('ol/renderer/canvas/VectorLayer', function () {
         frameState,
         0,
         spy,
-        matches
+        matches,
       );
       expect(spy.callCount).to.be(1);
       expect(spy.getCall(0).args[1]).to.be(layer);
@@ -295,8 +295,8 @@ describe('ol/renderer/canvas/VectorLayer', function () {
             projExtent[2] + worldWidth - buffer,
             10000,
           ],
-          buffer
-        )
+          buffer,
+        ),
       );
       expect(loadExtents.length).to.be(2);
       expect(loadExtents[0]).to.eql(bufferExtent(frameState.extent, buffer));
@@ -320,8 +320,8 @@ describe('ol/renderer/canvas/VectorLayer', function () {
             projExtent[2] + worldWidth - buffer,
             10000,
           ],
-          buffer
-        )
+          buffer,
+        ),
       );
       expect(loadExtents.length).to.be(2);
       expect(loadExtents[0]).to.eql(bufferExtent(frameState.extent, buffer));
@@ -350,8 +350,8 @@ describe('ol/renderer/canvas/VectorLayer', function () {
             projExtent[2] + worldWidth - buffer,
             10000,
           ],
-          buffer
-        )
+          buffer,
+        ),
       );
       expect(loadExtents.length).to.be(1);
       expect(loadExtents[0]).to.eql(bufferExtent(frameState.extent, buffer));
@@ -373,8 +373,8 @@ describe('ol/renderer/canvas/VectorLayer', function () {
             projExtent[2] + 2 * worldWidth + 10000,
             10000,
           ],
-          buffer
-        )
+          buffer,
+        ),
       );
       expect(loadExtents.length).to.be(1);
       const normalizedExtent = [
@@ -397,8 +397,8 @@ describe('ol/renderer/canvas/VectorLayer', function () {
             projExtent[2] + worldWidth - buffer,
             10000,
           ],
-          buffer
-        )
+          buffer,
+        ),
       );
       expect(loadExtents.length).to.be(1);
       const normalizedExtent = [-10000, -10000, 10000, 10000];

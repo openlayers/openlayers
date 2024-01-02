@@ -41,7 +41,7 @@ export function createHitDetectionImageData(
   resolution,
   rotation,
   squaredTolerance,
-  projection
+  projection,
 ) {
   const userExtent = projection ? toUserExtent(extent, projection) : extent;
   const width = size[0] * HIT_DETECT_RESOLUTION;
@@ -58,7 +58,7 @@ export function createHitDetectionImageData(
     squaredTolerance,
     projection
       ? getTransformFromProjections(getUserProjection(), projection)
-      : null
+      : null,
   );
   const featureCount = features.length;
   // Stretch hit detection index to use the whole available color range
@@ -107,7 +107,7 @@ export function createHitDetectionImageData(
           imgSize[0],
           imgSize[1],
           undefined,
-          {alpha: false}
+          {alpha: false},
         );
         const img = imgContext.canvas;
         imgContext.fillStyle = color;
@@ -124,7 +124,7 @@ export function createHitDetectionImageData(
             scale: image.getScale(),
             rotation: image.getRotation(),
             rotateWithView: image.getRotateWithView(),
-          })
+          }),
         );
       }
       const zIndex = style.getZIndex() || 0;
@@ -147,7 +147,7 @@ export function createHitDetectionImageData(
           const geometry = geometries[i];
           byGeometryType[geometry.getType().replace('Multi', '')].push(
             geometry,
-            style
+            style,
           );
         }
       } else {

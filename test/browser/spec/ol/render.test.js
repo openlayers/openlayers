@@ -36,7 +36,7 @@ describe('ol.render', function () {
       const transform = scaleTransform(
         createTransform(),
         pixelRatio,
-        pixelRatio
+        pixelRatio,
       );
       expect(equals(render.transform_, transform)).to.be.ok();
     });

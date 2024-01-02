@@ -80,7 +80,7 @@ describe('ol.renderer.vector', function () {
           new MultiPoint([
             [0, 0],
             [1, 1],
-          ])
+          ]),
         );
         const imageReplay = builderGroup.getBuilder(style.getZIndex(), 'Image');
         const setImageStyleSpy = sinon.spy(imageReplay, 'setImageStyle');
@@ -98,15 +98,15 @@ describe('ol.renderer.vector', function () {
           new LineString([
             [0, 0],
             [1, 1],
-          ])
+          ]),
         );
         const lineStringReplay = builderGroup.getBuilder(
           style.getZIndex(),
-          'LineString'
+          'LineString',
         );
         const setFillStrokeStyleSpy = sinon.spy(
           lineStringReplay,
-          'setFillStrokeStyle'
+          'setFillStrokeStyle',
         );
         const drawLineStringSpy = sinon
           .stub(lineStringReplay, 'drawLineString')
@@ -125,15 +125,15 @@ describe('ol.renderer.vector', function () {
               [0, 0],
               [1, 1],
             ],
-          ])
+          ]),
         );
         const lineStringReplay = builderGroup.getBuilder(
           style.getZIndex(),
-          'LineString'
+          'LineString',
         );
         const setFillStrokeStyleSpy = sinon.spy(
           lineStringReplay,
-          'setFillStrokeStyle'
+          'setFillStrokeStyle',
         );
         const drawMultiLineStringSpy = sinon
           .stub(lineStringReplay, 'drawMultiLineString')
@@ -154,15 +154,15 @@ describe('ol.renderer.vector', function () {
               [1, 0],
               [0, 0],
             ],
-          ])
+          ]),
         );
         const polygonReplay = builderGroup.getBuilder(
           style.getZIndex(),
-          'Polygon'
+          'Polygon',
         );
         const setFillStrokeStyleSpy = sinon.spy(
           polygonReplay,
-          'setFillStrokeStyle'
+          'setFillStrokeStyle',
         );
         const drawPolygonSpy = sinon
           .stub(polygonReplay, 'drawPolygon')
@@ -185,15 +185,15 @@ describe('ol.renderer.vector', function () {
                 [0, 0],
               ],
             ],
-          ])
+          ]),
         );
         const polygonReplay = builderGroup.getBuilder(
           style.getZIndex(),
-          'Polygon'
+          'Polygon',
         );
         const setFillStrokeStyleSpy = sinon.spy(
           polygonReplay,
-          'setFillStrokeStyle'
+          'setFillStrokeStyle',
         );
         const drawMultiPolygonSpy = sinon
           .stub(polygonReplay, 'drawMultiPolygon')

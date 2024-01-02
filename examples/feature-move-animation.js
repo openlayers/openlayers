@@ -121,7 +121,7 @@ fetch('data/polyline/route.json').then(function (response) {
       lastTime = time;
 
       const currentCoordinate = route.getCoordinateAt(
-        distance > 1 ? 2 - distance : distance
+        distance > 1 ? 2 - distance : distance,
       );
       position.setCoordinates(currentCoordinate);
       const vectorContext = getVectorContext(event);

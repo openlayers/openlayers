@@ -121,7 +121,7 @@ describe('ol.interaction.Snap', function () {
         new LineString([
           [-10, 0],
           [10, 0],
-        ])
+        ]),
       );
       const snapInteraction = new Snap({
         features: new Collection([line]),
@@ -158,7 +158,7 @@ describe('ol.interaction.Snap', function () {
         new LineString([
           [-10, 0],
           [10, 0],
-        ]).transform(viewProjection, userProjection)
+        ]).transform(viewProjection, userProjection),
       );
       const snapInteraction = new Snap({
         features: new Collection([line]),
@@ -195,7 +195,7 @@ describe('ol.interaction.Snap', function () {
         new LineString([
           [-10, 0],
           [10, 0],
-        ])
+        ]),
       );
       const snapInteraction = new Snap({
         features: new Collection([point]),
@@ -225,7 +225,7 @@ describe('ol.interaction.Snap', function () {
         new LineString([
           [0, 0],
           [50, 0],
-        ])
+        ]),
       );
       const point = new Feature(new Point([5, 0]));
       const snapInteraction = new Snap({
@@ -253,7 +253,7 @@ describe('ol.interaction.Snap', function () {
         new LineString([
           [0, 0],
           [50, 0],
-        ])
+        ]),
       );
       const point = new Feature(new Point([5, 0]));
       const snapInteraction = new Snap({
@@ -298,11 +298,11 @@ describe('ol.interaction.Snap', function () {
 
         expect(event.coordinate[0]).to.roughlyEqual(
           Math.sin(Math.PI / 4) * 10,
-          1e-10
+          1e-10,
         );
         expect(event.coordinate[1]).to.roughlyEqual(
           Math.sin(Math.PI / 4) * 10,
-          1e-10
+          1e-10,
         );
 
         done();
@@ -316,7 +316,7 @@ describe('ol.interaction.Snap', function () {
       const viewProjection = map.getView().getProjection();
 
       const circle = new Feature(
-        new Circle([0, 0], 10).transform(viewProjection, userProjection)
+        new Circle([0, 0], 10).transform(viewProjection, userProjection),
       );
       const snapInteraction = new Snap({
         features: new Collection([circle]),
@@ -333,7 +333,7 @@ describe('ol.interaction.Snap', function () {
       const coordinate = transform(
         [Math.sin(Math.PI / 4) * 10, Math.sin(Math.PI / 4) * 10],
         viewProjection,
-        userProjection
+        userProjection,
       );
 
       snapInteraction.on('snap', function (snapEvent) {
@@ -361,7 +361,7 @@ describe('ol.interaction.Snap', function () {
         new LineString([
           [-10, 0],
           [10, 0],
-        ])
+        ]),
       );
 
       const event = {
@@ -385,7 +385,7 @@ describe('ol.interaction.Snap', function () {
         new LineString([
           [-10, 0],
           [0, 0],
-        ])
+        ]),
       );
       const snapInteraction = new Snap({
         features: new Collection([line]),

@@ -76,7 +76,7 @@ export function getImageSrc(
   projection,
   url,
   params,
-  serverType
+  serverType,
 ) {
   params = Object.assign({REQUEST: 'GetMap'}, params);
 
@@ -128,7 +128,7 @@ export function getRequestParams(params, request) {
       'STYLES': '',
       'TRANSPARENT': true,
     },
-    params
+    params,
   );
 }
 
@@ -182,7 +182,7 @@ export function createLoader(options) {
       projection,
       options.url,
       getRequestParams(options.params, 'GetMap'),
-      options.serverType
+      options.serverType,
     );
     const image = new Image();
     if (options.crossOrigin !== null) {
@@ -215,7 +215,7 @@ export function getFeatureInfoUrl(options, coordinate, resolution) {
     coordinate,
     resolution,
     0,
-    GETFEATUREINFO_IMAGE_SIZE
+    GETFEATUREINFO_IMAGE_SIZE,
   );
 
   const baseParams = {
@@ -225,7 +225,7 @@ export function getFeatureInfoUrl(options, coordinate, resolution) {
   Object.assign(
     baseParams,
     getRequestParams(options.params, 'GetFeatureInfo'),
-    options.params
+    options.params,
   );
 
   const x = floor((coordinate[0] - extent[0]) / resolution, DECIMALS);
@@ -239,7 +239,7 @@ export function getFeatureInfoUrl(options, coordinate, resolution) {
     extent,
     GETFEATUREINFO_IMAGE_SIZE,
     projectionObj,
-    baseParams
+    baseParams,
   );
 }
 

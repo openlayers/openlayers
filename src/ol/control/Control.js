@@ -129,7 +129,7 @@ class Control extends BaseObject {
       target.appendChild(this.element);
       if (this.render !== VOID) {
         this.listenerKeys.push(
-          listen(map, MapEventType.POSTRENDER, this.render, this)
+          listen(map, MapEventType.POSTRENDER, this.render, this),
         );
       }
       map.render();

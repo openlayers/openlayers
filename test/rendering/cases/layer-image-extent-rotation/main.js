@@ -11,7 +11,7 @@ const center = transform([-122.416667, 37.783333], 'EPSG:4326', 'EPSG:3857');
 const extent = transformExtent(
   [-123.1, 37.1, -122.1, 37.9],
   'EPSG:4326',
-  'EPSG:3857'
+  'EPSG:3857',
 );
 
 new Map({
@@ -24,7 +24,7 @@ new Map({
         imageExtent: transformExtent(
           [-123, 37, -122, 38],
           'EPSG:4326',
-          'EPSG:3857'
+          'EPSG:3857',
         ),
         projection: getProjection('EPSG:3857'),
       }),

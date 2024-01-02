@@ -45,14 +45,14 @@ gif.frames(
             img: ctx.canvas,
             opacity: 0.8,
           }),
-        })
+        }),
       );
     }
     ctx.clearRect(0, 0, frame.width, frame.height);
     ctx.drawImage(frame.buffer, frame.x, frame.y);
     map.render();
   },
-  true
+  true,
 );
 
 // change mouse cursor when over icon

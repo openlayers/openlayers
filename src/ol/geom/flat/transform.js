@@ -17,7 +17,7 @@ export function transform2D(
   end,
   stride,
   transform,
-  dest
+  dest,
 ) {
   dest = dest ? dest : [];
   let i = 0;
@@ -50,7 +50,7 @@ export function rotate(
   stride,
   angle,
   anchor,
-  dest
+  dest,
 ) {
   dest = dest ? dest : [];
   const cos = Math.cos(angle);
@@ -93,7 +93,7 @@ export function scale(
   sx,
   sy,
   anchor,
-  dest
+  dest,
 ) {
   dest = dest ? dest : [];
   const anchorX = anchor[0];
@@ -131,7 +131,7 @@ export function translate(
   stride,
   deltaX,
   deltaY,
-  dest
+  dest,
 ) {
   dest = dest ? dest : [];
   let i = 0;

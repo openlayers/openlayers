@@ -214,9 +214,9 @@ class DataTileSource extends TileSource {
         const textureSize = this.getTileSize(z);
         return Math.max(
           textureSize[0] / tileSize[0],
-          textureSize[1] / tileSize[1]
+          textureSize[1] / tileSize[1],
         );
-      })
+      }),
     );
 
     const sourceTileGrid = this.getTileGridForProjection(sourceProj);
@@ -224,7 +224,7 @@ class DataTileSource extends TileSource {
     const tileCoord = [z, x, y];
     const wrappedTileCoord = this.getTileCoordForTileUrlFunction(
       tileCoord,
-      targetProj
+      targetProj,
     );
 
     const options = Object.assign(
@@ -240,7 +240,7 @@ class DataTileSource extends TileSource {
         getTileFunction: (z, x, y, pixelRatio) =>
           this.getTile(z, x, y, pixelRatio, sourceProj),
       },
-      this.tileOptions
+      this.tileOptions,
     );
     const newTile = new ReprojDataTile(options);
     newTile.key = this.getKey();
@@ -285,7 +285,7 @@ class DataTileSource extends TileSource {
         loader: loader,
         size: size,
       },
-      this.tileOptions
+      this.tileOptions,
     );
 
     const tile = new DataTile(options);
@@ -314,8 +314,8 @@ class DataTileSource extends TileSource {
         tileState == TileState.ERROR
           ? TileEventType.TILELOADERROR
           : tileState == TileState.LOADED
-          ? TileEventType.TILELOADEND
-          : undefined;
+            ? TileEventType.TILELOADEND
+            : undefined;
     }
     if (type) {
       this.dispatchEvent(new TileSourceEvent(type, tile));
@@ -387,7 +387,7 @@ class DataTileSource extends TileSource {
     const usedTileCache = this.getTileCacheForProjection(projection);
 
     this.tileCache.expireCache(
-      this.tileCache == usedTileCache ? usedTiles : {}
+      this.tileCache == usedTileCache ? usedTiles : {},
     );
     for (const id in this.tileCacheForProjection_) {
       const tileCache = this.tileCacheForProjection_[id];

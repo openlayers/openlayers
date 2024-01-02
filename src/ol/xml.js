@@ -120,7 +120,7 @@ export function makeArrayExtender(valueReader, thisArg) {
       const value = valueReader.call(
         thisArg !== undefined ? thisArg : this,
         node,
-        objectStack
+        objectStack,
       );
       if (value !== undefined) {
         const array = /** @type {Array<*>} */ (
@@ -150,7 +150,7 @@ export function makeArrayPusher(valueReader, thisArg) {
       const value = valueReader.call(
         thisArg !== undefined ? thisArg : this,
         node,
-        objectStack
+        objectStack,
       );
       if (value !== undefined) {
         const array = /** @type {Array<*>} */ (
@@ -180,7 +180,7 @@ export function makeReplacer(valueReader, thisArg) {
       const value = valueReader.call(
         thisArg !== undefined ? thisArg : this,
         node,
-        objectStack
+        objectStack,
       );
       if (value !== undefined) {
         objectStack[objectStack.length - 1] = value;
@@ -208,7 +208,7 @@ export function makeObjectPropertyPusher(valueReader, property, thisArg) {
       const value = valueReader.call(
         thisArg !== undefined ? thisArg : this,
         node,
-        objectStack
+        objectStack,
       );
       if (value !== undefined) {
         const object = /** @type {!Object} */ (
@@ -246,7 +246,7 @@ export function makeObjectPropertySetter(valueReader, property, thisArg) {
       const value = valueReader.call(
         thisArg !== undefined ? thisArg : this,
         node,
-        objectStack
+        objectStack,
       );
       if (value !== undefined) {
         const object = /** @type {!Object} */ (
@@ -274,7 +274,7 @@ export function makeChildAppender(nodeWriter, thisArg) {
       thisArg !== undefined ? thisArg : this,
       node,
       value,
-      objectStack
+      objectStack,
     );
     const parent = /** @type {NodeStackItem} */ (
       objectStack[objectStack.length - 1]
@@ -462,7 +462,7 @@ export function serialize(
   values,
   objectStack,
   keys,
-  thisArg
+  thisArg,
 ) {
   const length = (keys !== undefined ? keys : values).length;
   let value, node;
@@ -473,14 +473,14 @@ export function serialize(
         thisArg !== undefined ? thisArg : this,
         value,
         objectStack,
-        keys !== undefined ? keys[i] : undefined
+        keys !== undefined ? keys[i] : undefined,
       );
       if (node !== undefined) {
         serializersNS[node.namespaceURI][node.localName].call(
           thisArg,
           node,
           value,
-          objectStack
+          objectStack,
         );
       }
     }
@@ -517,7 +517,7 @@ export function pushSerializeAndPop(
   values,
   objectStack,
   keys,
-  thisArg
+  thisArg,
 ) {
   objectStack.push(object);
   serialize(serializersNS, nodeFactory, values, objectStack, keys, thisArg);

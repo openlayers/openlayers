@@ -128,7 +128,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
         extent,
         10,
         newTileRepresentationLookup(),
-        tileLayer.getPreload()
+        tileLayer.getPreload(),
       );
 
       const source = tileLayer.getSource();
@@ -155,7 +155,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
         extent,
         10,
         newTileRepresentationLookup(),
-        tileLayer.getPreload()
+        tileLayer.getPreload(),
       );
 
       const source = tileLayer.getSource();
@@ -191,7 +191,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
         extent,
         10,
         newTileRepresentationLookup(),
-        tileLayer.getPreload()
+        tileLayer.getPreload(),
       );
 
       const source = tileLayer.getSource();
@@ -215,7 +215,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
 
     it('layer min zoom relates to view zoom levels', () => {
       map.setView(
-        new View({maxResolution: map.getView().getMaxResolution() * 2})
+        new View({maxResolution: map.getView().getMaxResolution() * 2}),
       );
       tileLayer.setPreload(Infinity);
       tileLayer.setMinZoom(9);
@@ -226,7 +226,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
         extent,
         10,
         newTileRepresentationLookup(),
-        tileLayer.getPreload()
+        tileLayer.getPreload(),
       );
 
       const source = tileLayer.getSource();

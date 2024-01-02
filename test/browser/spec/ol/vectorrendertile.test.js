@@ -91,7 +91,7 @@ describe('ol.VectorRenderTile', function () {
         const sourceTiles = source.getSourceTiles(
           1,
           source.getProjection(),
-          tile
+          tile,
         );
         expect(sourceTiles.length).to.be(1);
         expect(sourceTiles[0].tileCoord).to.eql([0, 16, 9]);

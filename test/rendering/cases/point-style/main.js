@@ -23,7 +23,7 @@ feature.setStyle(
         color: '#91E339',
       }),
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 
@@ -38,7 +38,7 @@ feature.setStyle(
         color: '#5447E6',
       }),
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 
@@ -53,7 +53,7 @@ feature.setStyle(
         color: '#92A8A6',
       }),
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 
@@ -72,7 +72,7 @@ feature.setStyle(
         width: 1,
       }),
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 
@@ -91,7 +91,7 @@ feature.setStyle(
         width: 2,
       }),
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 
@@ -110,7 +110,7 @@ feature.setStyle(
         width: 3,
       }),
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 
@@ -126,7 +126,7 @@ feature.setStyle(
         width: 1,
       }),
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 
@@ -145,7 +145,7 @@ feature.setStyle(
         width: 2,
       }),
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 
@@ -164,7 +164,7 @@ feature.setStyle(
         width: 3,
       }),
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 

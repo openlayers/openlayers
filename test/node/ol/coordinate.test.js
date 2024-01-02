@@ -50,7 +50,7 @@ describe('ol/coordinate.js', function () {
         coordinate,
         delta.map(function (n) {
           return String(n);
-        })
+        }),
       );
       expect(coordinate[0]).to.eql(48.73);
       expect(coordinate[1]).to.eql(10.1);
@@ -220,7 +220,7 @@ describe('ol/coordinate.js', function () {
   describe('degreesToStringHDMS', () => {
     it('includes minutes and seconds if non-zero', () => {
       expect(degreesToStringHDMS('NS', 10 + 30 / 60 + 30 / 3600)).to.be(
-        '10° 30′ 30″ N'
+        '10° 30′ 30″ N',
       );
     });
 

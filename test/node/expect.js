@@ -28,7 +28,7 @@ expect.Assertion.prototype.roughlyEqual = function (n, tol) {
         ' of ' +
         n
       );
-    }
+    },
   );
   return this;
 };

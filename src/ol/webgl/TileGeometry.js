@@ -76,7 +76,7 @@ class TileGeometry extends BaseTileRepresentation {
     const sourceTiles = this.tile.getSourceTiles();
     const features = sourceTiles.reduce(
       (accumulator, sourceTile) => accumulator.concat(sourceTile.getFeatures()),
-      []
+      [],
     );
     this.batch_.addFeatures(features);
 
@@ -85,13 +85,13 @@ class TileGeometry extends BaseTileRepresentation {
     const transform = translateTransform(
       createTransform(),
       -tileOriginX,
-      -tileOriginY
+      -tileOriginY,
     );
 
     const generatePromises = this.styleRenderers_.map((renderer, i) =>
       renderer.generateBuffers(this.batch_, transform).then((buffers) => {
         this.buffers[i] = buffers;
-      })
+      }),
     );
     Promise.all(generatePromises).then(() => {
       this.setReady();

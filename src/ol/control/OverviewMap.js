@@ -156,7 +156,7 @@ class OverviewMap extends Control {
     button.addEventListener(
       EventType.CLICK,
       this.handleClick_.bind(this),
-      false
+      false,
     );
 
     /**
@@ -238,7 +238,7 @@ class OverviewMap extends Control {
     const move = function (event) {
       const position = /** @type {?} */ (computeDesiredMousePosition(event));
       const coordinates = ovmap.getEventCoordinateInternal(
-        /** @type {MouseEvent} */ (position)
+        /** @type {MouseEvent} */ (position),
       );
 
       overlay.setPosition(coordinates);
@@ -290,8 +290,8 @@ class OverviewMap extends Control {
           map,
           ObjectEventType.PROPERTYCHANGE,
           this.handleMapPropertyChange_,
-          this
-        )
+          this,
+        ),
       );
 
       const view = map.getView();
@@ -348,7 +348,7 @@ class OverviewMap extends Control {
 
     view.addChangeListener(
       ViewProperty.ROTATION,
-      this.boundHandleRotationChanged_
+      this.boundHandleRotationChanged_,
     );
     // Sync once with the new view
     this.handleRotationChanged_();
@@ -362,7 +362,7 @@ class OverviewMap extends Control {
   unbindView_(view) {
     view.removeChangeListener(
       ViewProperty.ROTATION,
-      this.boundHandleRotationChanged_
+      this.boundHandleRotationChanged_,
     );
   }
 
@@ -414,10 +414,10 @@ class OverviewMap extends Control {
     const ovextent = ovview.calculateExtentInternal(ovmapSize);
 
     const topLeftPixel = ovmap.getPixelFromCoordinateInternal(
-      getTopLeft(extent)
+      getTopLeft(extent),
     );
     const bottomRightPixel = ovmap.getPixelFromCoordinateInternal(
-      getBottomRight(extent)
+      getBottomRight(extent),
     );
 
     const boxWidth = Math.abs(topLeftPixel[0] - bottomRightPixel[0]);
@@ -537,7 +537,7 @@ class OverviewMap extends Control {
         delete this.ovmapPostrenderKey_;
         this.updateBox_();
       },
-      this
+      this,
     );
   }
 

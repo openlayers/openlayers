@@ -29,7 +29,7 @@ feature.setStyle(
         color: '#000',
       }),
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 
@@ -48,7 +48,7 @@ feature.setStyle(
         width: 2,
       }),
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 
@@ -66,7 +66,7 @@ feature.setStyle(
         color: [10, 10, 10, 0.5],
       }),
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 
@@ -84,7 +84,7 @@ feature.setStyle(
         color: [10, 10, 10, 0.5],
       }),
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 
@@ -106,7 +106,7 @@ feature.setStyle(
         width: 1,
       }),
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 
@@ -136,7 +136,7 @@ feature.setStyle(
         width: 1,
       }),
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 

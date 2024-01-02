@@ -90,7 +90,7 @@ class Link extends Interaction {
         replace: false,
         prefix: '',
       },
-      options || {}
+      options || {},
     );
 
     let animationOptions;
@@ -232,7 +232,7 @@ class Link extends Interaction {
     this.listenerKeys_.push(
       listen(map, MapEventType.MOVEEND, this.updateUrl_, this),
       listen(map.getLayerGroup(), EventType.CHANGE, this.updateUrl_, this),
-      listen(map, 'change:layergroup', this.handleChangeLayerGroup_, this)
+      listen(map, 'change:layergroup', this.handleChangeLayerGroup_, this),
     );
 
     if (!this.replace_) {

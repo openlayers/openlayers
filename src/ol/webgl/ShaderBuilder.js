@@ -93,7 +93,7 @@ export class ShaderBuilder {
      * @private
      */
     this.symbolSizeExpression_ = `vec2(${numberToGlsl(
-      DEFAULT_STYLE['circle-radius']
+      DEFAULT_STYLE['circle-radius'],
     )} + ${numberToGlsl(DEFAULT_STYLE['circle-stroke-width'] * 0.5)})`;
 
     /**
@@ -113,7 +113,7 @@ export class ShaderBuilder {
      * @private
      */
     this.symbolColorExpression_ = colorToGlsl(
-      /** @type {string} */ (DEFAULT_STYLE['circle-fill-color'])
+      /** @type {string} */ (DEFAULT_STYLE['circle-fill-color']),
     );
 
     /**
@@ -151,7 +151,7 @@ export class ShaderBuilder {
      * @private
      */
     this.strokeColorExpression_ = colorToGlsl(
-      /** @type {string} */ (DEFAULT_STYLE['stroke-color'])
+      /** @type {string} */ (DEFAULT_STYLE['stroke-color']),
     );
 
     /**
@@ -190,7 +190,7 @@ export class ShaderBuilder {
      * @private
      */
     this.fillColorExpression_ = colorToGlsl(
-      /** @type {string} */ (DEFAULT_STYLE['fill-color'])
+      /** @type {string} */ (DEFAULT_STYLE['fill-color']),
     );
 
     /**

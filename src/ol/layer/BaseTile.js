@@ -90,7 +90,7 @@ class BaseTileLayer extends Layer {
     this.setUseInterimTilesOnError(
       options.useInterimTilesOnError !== undefined
         ? options.useInterimTilesOnError
-        : true
+        : true,
     );
   }
 

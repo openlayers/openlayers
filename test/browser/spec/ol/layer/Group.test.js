@@ -560,7 +560,7 @@ describe('ol/layer/Group', function () {
       });
       const layerStatesArray = group.getLayerStatesArray();
       expect(layerStatesArray[0].extent).to.eql(
-        getIntersection(layer3.getExtent(), groupExtent)
+        getIntersection(layer3.getExtent(), groupExtent),
       );
       group.dispose();
     });

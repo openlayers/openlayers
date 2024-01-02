@@ -101,7 +101,7 @@ client.onload = function () {
         mass: parseFloat(line[1]) || 0,
         year: parseInt(line[2]) || 0,
         geometry: new Point(coords),
-      })
+      }),
     );
   }
 

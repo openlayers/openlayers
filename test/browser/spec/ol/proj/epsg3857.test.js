@@ -63,7 +63,7 @@ describe('ol/proj/epsg3857', function () {
       const point = [0, 0];
       expect(getPointResolution(epsg3857, resolution, point)).to.roughlyEqual(
         19.11,
-        1e-1
+        1e-1,
       );
     });
 
@@ -75,7 +75,7 @@ describe('ol/proj/epsg3857', function () {
       const point = transform([0, 43.65], epsg4326, epsg3857);
       expect(getPointResolution(epsg3857, resolution, point)).to.roughlyEqual(
         19.11 * Math.cos((Math.PI * 43.65) / 180),
-        1e-9
+        1e-9,
       );
     });
 
@@ -89,7 +89,7 @@ describe('ol/proj/epsg3857', function () {
         const point = transform([0, latitude], epsg4326, epsg3857);
         expect(getPointResolution(epsg3857, resolution, point)).to.roughlyEqual(
           19.11 * Math.cos((Math.PI * latitude) / 180),
-          1e-9
+          1e-9,
         );
       }
     });

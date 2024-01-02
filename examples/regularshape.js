@@ -109,7 +109,7 @@ for (let i = 0; i < count; ++i) {
   const coordinates = [2 * e * Math.random() - e, 2 * e * Math.random() - e];
   features[i] = new Feature(new Point(coordinates));
   features[i].setStyle(
-    styles[styleKeys[Math.floor(Math.random() * styleKeys.length)]]
+    styles[styleKeys[Math.floor(Math.random() * styleKeys.length)]],
   );
 }
 

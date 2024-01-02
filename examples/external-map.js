@@ -91,7 +91,7 @@ button.addEventListener('click', function () {
   mapWindow = window.open(
     'resources/external-map-map.html',
     'MapWindow',
-    'toolbar=0,location=0,menubar=0,width=800,height=600'
+    'toolbar=0,location=0,menubar=0,width=800,height=600',
   );
   mapWindow.addEventListener('DOMContentLoaded', function () {
     const externalMapTarget = mapWindow.document.getElementById('map');

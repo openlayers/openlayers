@@ -54,13 +54,13 @@ class ZoomToExtent extends Control {
     button.setAttribute('type', 'button');
     button.title = tipLabel;
     button.appendChild(
-      typeof label === 'string' ? document.createTextNode(label) : label
+      typeof label === 'string' ? document.createTextNode(label) : label,
     );
 
     button.addEventListener(
       EventType.CLICK,
       this.handleClick_.bind(this),
-      false
+      false,
     );
 
     const cssClasses =

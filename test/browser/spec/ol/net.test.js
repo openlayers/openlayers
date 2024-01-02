@@ -29,7 +29,7 @@ describe('ol/net', function () {
     it('returns the second arg if it is an absolute URL', function () {
       const url = resolveUrl(
         'https://example.com',
-        'https://other-example.com'
+        'https://other-example.com',
       );
       expect(url).to.be('https://other-example.com');
     });

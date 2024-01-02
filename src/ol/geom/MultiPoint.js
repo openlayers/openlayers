@@ -26,14 +26,14 @@ class MultiPoint extends SimpleGeometry {
     if (layout && !Array.isArray(coordinates[0])) {
       this.setFlatCoordinates(
         layout,
-        /** @type {Array<number>} */ (coordinates)
+        /** @type {Array<number>} */ (coordinates),
       );
     } else {
       this.setCoordinates(
         /** @type {Array<import("../coordinate.js").Coordinate>} */ (
           coordinates
         ),
-        layout
+        layout,
       );
     }
   }
@@ -56,7 +56,7 @@ class MultiPoint extends SimpleGeometry {
   clone() {
     const multiPoint = new MultiPoint(
       this.flatCoordinates.slice(),
-      this.layout
+      this.layout,
     );
     multiPoint.applyProperties(this);
     return multiPoint;
@@ -80,7 +80,7 @@ class MultiPoint extends SimpleGeometry {
         x,
         y,
         flatCoordinates[i],
-        flatCoordinates[i + 1]
+        flatCoordinates[i + 1],
       );
       if (squaredDistance < minSquaredDistance) {
         minSquaredDistance = squaredDistance;
@@ -103,7 +103,7 @@ class MultiPoint extends SimpleGeometry {
       this.flatCoordinates,
       0,
       this.flatCoordinates.length,
-      this.stride
+      this.stride,
     );
   }
 
@@ -121,9 +121,9 @@ class MultiPoint extends SimpleGeometry {
     return new Point(
       this.flatCoordinates.slice(
         index * this.stride,
-        (index + 1) * this.stride
+        (index + 1) * this.stride,
       ),
-      this.layout
+      this.layout,
     );
   }
 
@@ -188,7 +188,7 @@ class MultiPoint extends SimpleGeometry {
       this.flatCoordinates,
       0,
       coordinates,
-      this.stride
+      this.stride,
     );
     this.changed();
   }

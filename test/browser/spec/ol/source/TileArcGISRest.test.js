@@ -252,7 +252,7 @@ describe('ol.source.TileArcGISRest', function () {
       const tileUrl = source.tileUrlFunction(
         [0, 0, 0],
         1,
-        getProjection('EPSG:4326')
+        getProjection('EPSG:4326'),
       );
       expect(tileUrl.indexOf(urls[0])).to.be(0);
     });

@@ -14,7 +14,7 @@ proj4.defs(
     llpos[1] +
     ' +lon_0=' +
     llpos[0] +
-    ' +x_0=0 +y_0=0 +a=6371000 +b=6371000 +units=m'
+    ' +x_0=0 +y_0=0 +a=6371000 +b=6371000 +units=m',
 );
 register(proj4);
 const aeqd = getProjection('az');

@@ -19,9 +19,6 @@ jobs:
     name: Pre-Test
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-
     steps:
       - name: Clone Repository
         uses: actions/checkout@v4
@@ -29,7 +26,7 @@ jobs:
       - name: Set Node.js Version
         uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version: '20'
 
       - name: Install Dependencies
         run: npm ci
@@ -41,9 +38,6 @@ jobs:
     name: Browser
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-
     steps:
       - name: Clone Repository
         uses: actions/checkout@v4
@@ -51,7 +45,7 @@ jobs:
       - name: Set Node.js Version
         uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version: '20'
 
       - name: Install Dependencies
         run: npm ci
@@ -63,9 +57,6 @@ jobs:
     name: Node
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-
     steps:
       - name: Clone Repository
         uses: actions/checkout@v4
@@ -73,7 +64,7 @@ jobs:
       - name: Set Node.js Version
         uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version: '20'
 
       - name: Install Dependencies
         run: npm ci
@@ -85,9 +76,6 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-
     steps:
       - name: Clone Repository
         uses: actions/checkout@v4
@@ -95,7 +83,7 @@ jobs:
       - name: Set Node.js Version
         uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version: '20'
 
       - name: Install Dependencies
         run: npm ci
@@ -110,9 +98,6 @@ jobs:
     name: Rendering
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-
     steps:
       - name: Clone Repository
         uses: actions/checkout@v4
@@ -120,7 +105,7 @@ jobs:
       - name: Set Node.js Version
         uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version: '20'
 
       - name: Install Dependencies
         run: npm ci

@@ -20,7 +20,7 @@ describe('ol/geom/flat/center.js', function () {
         squareMultiPoly.flatCoordinates,
         0,
         squareMultiPoly.endss_,
-        2
+        2,
       );
       expect(got).to.eql([0.5, 0.5]);
     });
@@ -50,7 +50,7 @@ describe('ol/geom/flat/center.js', function () {
         squareMultiPoly.flatCoordinates,
         0,
         squareMultiPoly.endss_,
-        2
+        2,
       );
       expect(got).to.eql([0.5, 0.5, 3.5, 0.5]);
     });
@@ -78,7 +78,7 @@ describe('ol/geom/flat/center.js', function () {
         polywithHole.flatCoordinates,
         0,
         polywithHole.endss_,
-        2
+        2,
       );
       expect(got).to.eql([2.5, 2.5]);
     });

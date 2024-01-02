@@ -92,7 +92,7 @@ map.on('click', (e) => {
       const features = clickedFeatures[0].get('features');
       if (features.length > 1) {
         const extent = boundingExtent(
-          features.map((r) => r.getGeometry().getCoordinates())
+          features.map((r) => r.getGeometry().getCoordinates()),
         );
         map.getView().fit(extent, {duration: 1000, padding: [50, 50, 50, 50]});
       }

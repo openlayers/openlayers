@@ -25,7 +25,7 @@ feature.setStyle(
       src: '/data/me0.svg',
       scale: 2,
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 
@@ -40,7 +40,7 @@ feature.setStyle(
       offset: [16, 0],
       scale: 2,
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 
@@ -56,7 +56,7 @@ feature.setStyle(
       offset: [16, 0],
       size: [64, 40],
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 

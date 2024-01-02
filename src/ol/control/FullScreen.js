@@ -193,7 +193,7 @@ class FullScreen extends Control {
     this.button_.addEventListener(
       EventType.CLICK,
       this.handleClick_.bind(this),
-      false
+      false,
     );
     this.setClassName_(this.button_, this.isInFullscreen_);
 
@@ -293,7 +293,7 @@ class FullScreen extends Control {
     if (oldMap) {
       oldMap.removeChangeListener(
         MapProperty.TARGET,
-        this.boundHandleMapTargetChange_
+        this.boundHandleMapTargetChange_,
       );
     }
 
@@ -303,7 +303,7 @@ class FullScreen extends Control {
     if (map) {
       map.addChangeListener(
         MapProperty.TARGET,
-        this.boundHandleMapTargetChange_
+        this.boundHandleMapTargetChange_,
       );
     }
   }
@@ -329,7 +329,7 @@ class FullScreen extends Control {
 
       for (let i = 0, ii = events.length; i < ii; ++i) {
         listeners.push(
-          listen(doc, events[i], this.handleFullScreenChange_, this)
+          listen(doc, events[i], this.handleFullScreenChange_, this),
         );
       }
       this.handleFullScreenChange_();

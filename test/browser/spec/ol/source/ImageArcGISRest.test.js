@@ -26,7 +26,7 @@ describe('ol/source/ImageArcGISRest', function () {
 
     it('is false if constructed with interpolate: false', function () {
       const source = new ImageArcGISRest(
-        Object.assign({interpolate: false}, options)
+        Object.assign({interpolate: false}, options),
       );
       expect(source.getInterpolate()).to.be(false);
     });
@@ -40,7 +40,7 @@ describe('ol/source/ImageArcGISRest', function () {
         viewExtent,
         resolution,
         pixelRatio,
-        proj3857
+        proj3857,
       );
       image.load();
 
@@ -64,7 +64,7 @@ describe('ol/source/ImageArcGISRest', function () {
         [3, 2, -7, 1.12],
         resolution,
         1.01,
-        proj3857
+        proj3857,
       );
       image.load();
       const uri = new URL(image.getImage().src);
@@ -79,7 +79,7 @@ describe('ol/source/ImageArcGISRest', function () {
         [3, 2, -7, 1],
         resolution,
         pixelRatio,
-        proj3857
+        proj3857,
       );
       image.load();
       const uri = new URL(image.getImage().src);
@@ -102,7 +102,7 @@ describe('ol/source/ImageArcGISRest', function () {
         [3, 2, -3, 1],
         resolution,
         pixelRatio,
-        projection
+        projection,
       );
       image.load();
       const uri = new URL(image.getImage().src);
@@ -118,7 +118,7 @@ describe('ol/source/ImageArcGISRest', function () {
         [3, 2, -3, 1],
         resolution,
         pixelRatio,
-        proj3857
+        proj3857,
       );
       image.load();
       const uri = new URL(image.getImage().src);
@@ -156,7 +156,7 @@ describe('ol/source/ImageArcGISRest', function () {
         [3, 2, -7, 1],
         resolution,
         pixelRatio,
-        proj3857
+        proj3857,
       );
       image.load();
       const uri = new URL(image.getImage().src);
@@ -174,7 +174,7 @@ describe('ol/source/ImageArcGISRest', function () {
         [3, 2, -7, 1],
         resolution,
         pixelRatio,
-        proj3857
+        proj3857,
       );
       image.load();
       const uri = new URL(image.getImage().src);

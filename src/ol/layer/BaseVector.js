@@ -239,7 +239,7 @@ class BaseVectorLayer extends Layer {
     }
     /** @type {*} */ (this.getRenderer()).renderDeclutter(
       frameState,
-      layerState
+      layerState,
     );
   }
 

@@ -171,7 +171,7 @@ class CanvasBuilder extends VectorContext {
     end,
     stride,
     closed,
-    skipFirst
+    skipFirst,
   ) {
     const coordinates = this.coordinates;
     let myEnd = coordinates.length;
@@ -234,7 +234,7 @@ class CanvasBuilder extends VectorContext {
         end,
         stride,
         false,
-        false
+        false,
       );
       builderEnds.push(builderEnd);
       offset = end;
@@ -277,7 +277,7 @@ class CanvasBuilder extends VectorContext {
             offset,
             endss[i],
             stride,
-            myEnds
+            myEnds,
           );
           builderEndss.push(myEnds);
         }
@@ -314,7 +314,7 @@ class CanvasBuilder extends VectorContext {
             geometry
           ).getEnds(),
           stride,
-          builderEnds
+          builderEnds,
         );
         this.instructions.push([
           CanvasInstruction.CUSTOM,
@@ -342,7 +342,7 @@ class CanvasBuilder extends VectorContext {
           flatCoordinates.length,
           stride,
           false,
-          false
+          false,
         );
         this.instructions.push([
           CanvasInstruction.CUSTOM,
@@ -483,7 +483,7 @@ class CanvasBuilder extends VectorContext {
           ? this.pixelRatio
           : 1;
       state.fillStyle = asColorLike(
-        fillStyleColor ? fillStyleColor : defaultFillStyle
+        fillStyleColor ? fillStyleColor : defaultFillStyle,
       );
     } else {
       state.fillStyle = undefined;
@@ -491,7 +491,7 @@ class CanvasBuilder extends VectorContext {
     if (strokeStyle) {
       const strokeStyleColor = strokeStyle.getColor();
       state.strokeStyle = asColorLike(
-        strokeStyleColor ? strokeStyleColor : defaultStrokeStyle
+        strokeStyleColor ? strokeStyleColor : defaultStrokeStyle,
       );
       const strokeStyleLineCap = strokeStyle.getLineCap();
       state.lineCap =

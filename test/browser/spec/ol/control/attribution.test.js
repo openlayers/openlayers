@@ -91,7 +91,7 @@ describe('ol.control.Attribution', function () {
     map.addLayer(
       new TileLayer({
         source: source,
-      })
+      }),
     );
     map.renderSync();
 
@@ -114,7 +114,7 @@ describe('ol.control.Attribution', function () {
     map.addLayer(
       new TileLayer({
         source: source,
-      })
+      }),
     );
     map.renderSync();
 

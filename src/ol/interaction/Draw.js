@@ -428,7 +428,7 @@ function getTraceTargetUpdate(coordinate, traceState, map, snapTolerance) {
     // only consider switching trace direction if close to the start
     const newCoordinate = interpolateCoordinate(
       newTarget.coordinates,
-      newEndIndex
+      newEndIndex,
     );
     const pixel = map.getPixelFromCoordinate(newCoordinate);
     if (distance(pixel, traceState.startPx) > snapTolerance) {
@@ -445,12 +445,12 @@ function getTraceTargetUpdate(coordinate, traceState, map, snapTolerance) {
       const forwardDistance = getCumulativeSquaredDistance(
         coordinates,
         startIndex,
-        endIndex
+        endIndex,
       );
       const reverseDistance = getCumulativeSquaredDistance(
         coordinates,
         startIndex,
-        endIndex - count
+        endIndex - count,
       );
       if (reverseDistance < forwardDistance) {
         newEndIndex -= count;
@@ -459,12 +459,12 @@ function getTraceTargetUpdate(coordinate, traceState, map, snapTolerance) {
       const reverseDistance = getCumulativeSquaredDistance(
         coordinates,
         startIndex,
-        endIndex
+        endIndex,
       );
       const forwardDistance = getCumulativeSquaredDistance(
         coordinates,
         startIndex,
-        endIndex + count
+        endIndex + count,
       );
       if (forwardDistance < reverseDistance) {
         newEndIndex += count;
@@ -712,8 +712,8 @@ class Draw extends PointerInteraction {
     this.minPoints_ = options.minPoints
       ? options.minPoints
       : this.mode_ === 'Polygon'
-      ? 3
-      : 2;
+        ? 3
+        : 2;
 
     /**
      * The number of points that can be drawn before a polygon ring or line string
@@ -725,8 +725,8 @@ class Draw extends PointerInteraction {
       this.mode_ === 'Circle'
         ? 2
         : options.maxPoints
-        ? options.maxPoints
-        : Infinity;
+          ? options.maxPoints
+          : Infinity;
 
     /**
      * A function to decide if a potential finish coordinate is permissible
@@ -762,12 +762,12 @@ class Draw extends PointerInteraction {
           const center = fromUserCoordinate(coordinates[0], projection);
           const squaredLength = squaredCoordinateDistance(
             center,
-            fromUserCoordinate(coordinates[coordinates.length - 1], projection)
+            fromUserCoordinate(coordinates[coordinates.length - 1], projection),
           );
           circle.setCenterAndRadius(
             center,
             Math.sqrt(squaredLength),
-            this.geometryLayout_
+            this.geometryLayout_,
           );
           const userProjection = getUserProjection();
           if (userProjection) {
@@ -797,7 +797,7 @@ class Draw extends PointerInteraction {
                 // Add a closing coordinate to match the first
                 geometry.setCoordinates(
                   [coordinates[0].concat([coordinates[0][0]])],
-                  this.geometryLayout_
+                  this.geometryLayout_,
                 );
               } else {
                 geometry.setCoordinates([], this.geometryLayout_);
@@ -1075,8 +1075,8 @@ class Draw extends PointerInteraction {
           event.map,
           event.originalEvent,
           false,
-          event.frameState
-        )
+          event.frameState,
+        ),
       );
     }, this.dragVertexDelay_);
     this.downPx_ = event.pixel;
@@ -1258,7 +1258,7 @@ class Draw extends PointerInteraction {
       event.coordinate,
       traceState,
       this.getMap(),
-      this.snapTolerance_
+      this.snapTolerance_,
     );
 
     if (traceState.targetIndex !== updatedTraceTarget.index) {
@@ -1273,7 +1273,7 @@ class Draw extends PointerInteraction {
       this.addTracedCoordinates_(
         newTarget,
         newTarget.startIndex,
-        updatedTraceTarget.endIndex
+        updatedTraceTarget.endIndex,
       );
     } else {
       // target stayed the same
@@ -1289,7 +1289,7 @@ class Draw extends PointerInteraction {
     // update event coordinate and pixel to match end point of final segment
     const coordinate = interpolateCoordinate(
       target.coordinates,
-      target.endIndex
+      target.endIndex,
     );
     const pixel = this.getMap().getPixelFromCoordinate(coordinate);
     event.coordinate = coordinate;
@@ -1461,13 +1461,13 @@ class Draw extends PointerInteraction {
     if (!sketchLineGeom) {
       sketchLineGeom = new LineString(
         ring.getFlatCoordinates(),
-        ring.getLayout()
+        ring.getLayout(),
       );
       this.sketchLine_.setGeometry(sketchLineGeom);
     } else {
       sketchLineGeom.setFlatCoordinates(
         ring.getLayout(),
-        ring.getFlatCoordinates()
+        ring.getFlatCoordinates(),
       );
       sketchLineGeom.changed();
     }
@@ -1499,7 +1499,7 @@ class Draw extends PointerInteraction {
     const geometry = this.geometryFunction_(
       this.sketchCoords_,
       undefined,
-      projection
+      projection,
     );
     this.sketchFeature_ = new Feature();
     if (this.geometryName_) {
@@ -1508,7 +1508,7 @@ class Draw extends PointerInteraction {
     this.sketchFeature_.setGeometry(geometry);
     this.updateSketchFeatures_();
     this.dispatchEvent(
-      new DrawEvent(DrawEventType.DRAWSTART, this.sketchFeature_)
+      new DrawEvent(DrawEventType.DRAWSTART, this.sketchFeature_),
     );
   }
 
@@ -1544,7 +1544,7 @@ class Draw extends PointerInteraction {
     this.geometryFunction_(
       /** @type {!LineCoordType} */ (this.sketchCoords_),
       geometry,
-      projection
+      projection,
     );
     if (this.sketchPoint_) {
       const sketchPointGeom = this.sketchPoint_.getGeometry();
@@ -1630,7 +1630,7 @@ class Draw extends PointerInteraction {
         this.geometryFunction_(coordinates, geometry, projection);
         if (geometry.getType() === 'Polygon' && this.sketchLine_) {
           this.createOrUpdateCustomSketchLine_(
-            /** @type {Polygon} */ (geometry)
+            /** @type {Polygon} */ (geometry),
           );
         }
       } else if (mode === 'Polygon') {
@@ -1693,15 +1693,15 @@ class Draw extends PointerInteraction {
     // cast multi-part geometries
     if (this.type_ === 'MultiPoint') {
       sketchFeature.setGeometry(
-        new MultiPoint([/** @type {PointCoordType} */ (coordinates)])
+        new MultiPoint([/** @type {PointCoordType} */ (coordinates)]),
       );
     } else if (this.type_ === 'MultiLineString') {
       sketchFeature.setGeometry(
-        new MultiLineString([/** @type {LineCoordType} */ (coordinates)])
+        new MultiLineString([/** @type {LineCoordType} */ (coordinates)]),
       );
     } else if (this.type_ === 'MultiPolygon') {
       sketchFeature.setGeometry(
-        new MultiPolygon([/** @type {PolyCoordType} */ (coordinates)])
+        new MultiPolygon([/** @type {PolyCoordType} */ (coordinates)]),
       );
     }
 
@@ -1814,7 +1814,7 @@ class Draw extends PointerInteraction {
     this.sketchPoint_ = new Feature(new Point(last));
     this.updateSketchFeatures_();
     this.dispatchEvent(
-      new DrawEvent(DrawEventType.DRAWSTART, this.sketchFeature_)
+      new DrawEvent(DrawEventType.DRAWSTART, this.sketchFeature_),
     );
   }
 
@@ -1878,11 +1878,11 @@ export function createRegularPolygon(sides, angle) {
   return function (coordinates, geometry, projection) {
     const center = fromUserCoordinate(
       /** @type {LineCoordType} */ (coordinates)[0],
-      projection
+      projection,
     );
     const end = fromUserCoordinate(
       /** @type {LineCoordType} */ (coordinates)[coordinates.length - 1],
-      projection
+      projection,
     );
     const radius = Math.sqrt(squaredCoordinateDistance(center, end));
     geometry = geometry || fromCircle(new Circle(center), sides);
@@ -1897,7 +1897,7 @@ export function createRegularPolygon(sides, angle) {
       /** @type {Polygon} */ (geometry),
       center,
       radius,
-      internalAngle
+      internalAngle,
     );
 
     const userProjection = getUserProjection();
@@ -1923,7 +1923,7 @@ export function createBox() {
         coordinates[coordinates.length - 1],
       ]).map(function (coordinate) {
         return fromUserCoordinate(coordinate, projection);
-      })
+      }),
     );
     const boxCoordinates = [
       [

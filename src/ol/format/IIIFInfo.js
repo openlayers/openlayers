@@ -183,8 +183,8 @@ function generateVersion1Options(iiifInfo) {
           ? [iiifInfo.imageInfo.tile_width, iiifInfo.imageInfo.tile_height]
           : [iiifInfo.imageInfo.tile_width, iiifInfo.imageInfo.tile_width]
         : iiifInfo.imageInfo.tile_height != undefined
-        ? [iiifInfo.imageInfo.tile_height, iiifInfo.imageInfo.tile_height]
-        : undefined,
+          ? [iiifInfo.imageInfo.tile_height, iiifInfo.imageInfo.tile_height]
+          : undefined,
   };
 }
 
@@ -363,7 +363,7 @@ class IIIFInfo {
     }
     assert(
       false,
-      'Cannot determine IIIF Image API version from provided image information JSON'
+      'Cannot determine IIIF Image API version from provided image information JSON',
     );
   }
 
@@ -466,15 +466,15 @@ class IIIFInfo {
         imageOptions.formats.includes(options.format)
           ? options.format
           : imageOptions.preferredFormat !== undefined
-          ? imageOptions.preferredFormat
-          : 'jpg',
+            ? imageOptions.preferredFormat
+            : 'jpg',
       supports: imageOptions.supports,
       quality:
         options.quality && imageOptions.qualities.includes(options.quality)
           ? options.quality
           : imageOptions.qualities.includes('native')
-          ? 'native'
-          : 'default',
+            ? 'native'
+            : 'default',
       resolutions: Array.isArray(imageOptions.resolutions)
         ? imageOptions.resolutions.sort(function (a, b) {
             return b - a;

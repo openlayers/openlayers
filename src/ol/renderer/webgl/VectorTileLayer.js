@@ -111,7 +111,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
      */
     this.tileMaskIndices_ = new WebGLArrayBuffer(
       ELEMENT_ARRAY_BUFFER,
-      STATIC_DRAW
+      STATIC_DRAW,
     );
     this.tileMaskIndices_.fromArray([0, 1, 3, 1, 2, 3]);
 
@@ -168,7 +168,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       builder.setFragmentDiscardExpression(
         exisitingDiscard !== 'false'
           ? `(${exisitingDiscard}) || (${discardFromMask})`
-          : discardFromMask
+          : discardFromMask,
       );
       builder.addUniform(`sampler2D ${Uniforms.TILE_MASK_TEXTURE}`);
       builder.addUniform(`float ${Uniforms.TILE_ZOOM_LEVEL}`);
@@ -179,7 +179,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       let shaders;
       if (!isShaders) {
         const parseResult = parseLiteralStyle(
-          /** @type {import('../../style/webgl.js').WebGLStyle} */ (style)
+          /** @type {import('../../style/webgl.js').WebGLStyle} */ (style),
         );
         addBuilderParams(parseResult.builder);
         shaders = {
@@ -191,14 +191,14 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
         addBuilderParams(
           /** @type {import('../../render/webgl/VectorStyleRenderer.js').StyleShaders} */ (
             style
-          ).builder
+          ).builder,
         );
         shaders = style;
       }
       return new VectorStyleRenderer(
         shaders,
         this.helper,
-        this.hitDetectionEnabled_
+        this.hitDetectionEnabled_,
       );
     });
   }
@@ -210,12 +210,12 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.tileMaskTarget_ = new WebGLRenderTarget(this.helper);
     const builder = new ShaderBuilder()
       .setFillColorExpression(
-        `vec4(${Uniforms.TILE_ZOOM_LEVEL} / 50., 0., 0., 1.)`
+        `vec4(${Uniforms.TILE_ZOOM_LEVEL} / 50., 0., 0., 1.)`,
       )
       .addUniform(`float ${Uniforms.TILE_ZOOM_LEVEL}`);
     this.tileMaskProgram_ = this.helper.getProgram(
       builder.getFillFragmentShader(),
-      builder.getFillVertexShader()
+      builder.getFillVertexShader(),
     );
     this.helper.flushBufferData(this.tileMaskIndices_);
   }
@@ -242,14 +242,14 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     super.beforeTilesRender(frameState, true); // always consider that tiles need alpha blending
     this.helper.makeProjectionTransform(
       frameState,
-      this.currentFrameStateTransform_
+      this.currentFrameStateTransform_,
     );
   }
 
   beforeTilesMaskRender(frameState) {
     this.helper.makeProjectionTransform(
       frameState,
-      this.currentFrameStateTransform_
+      this.currentFrameStateTransform_,
     );
     const pixelRatio = frameState.pixelRatio;
     const size = frameState.size;
@@ -258,18 +258,18 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       frameState,
       this.tileMaskTarget_,
       true,
-      true
+      true,
     );
     this.helper.useProgram(this.tileMaskProgram_, frameState);
     setFromTransform(this.tmpTransform_, this.currentFrameStateTransform_);
     this.helper.setUniformMatrixValue(
       Uniforms.PROJECTION_MATRIX,
-      mat4FromTransform(this.tmpMat4_, this.tmpTransform_)
+      mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
     );
     makeInverseTransform(this.tmpTransform_, this.currentFrameStateTransform_);
     this.helper.setUniformMatrixValue(
       Uniforms.SCREEN_TO_WORLD_MATRIX,
-      mat4FromTransform(this.tmpMat4_, this.tmpTransform_)
+      mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
     );
     return true;
   }
@@ -283,7 +283,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.helper.setUniformFloatVec4(Uniforms.RENDER_EXTENT, extent);
     this.helper.setUniformFloatValue(Uniforms.GLOBAL_ALPHA, 1);
     this.helper.bindBuffer(
-      /** @type {TileGeometry} */ (tileRepresentation).maskVertices
+      /** @type {TileGeometry} */ (tileRepresentation).maskVertices,
     );
     this.helper.bindBuffer(this.tileMaskIndices_);
     this.helper.enableAttributes(this.tileMaskAttributes_);
@@ -305,14 +305,14 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     multiplyTransform(this.tmpTransform_, batchInvertTransform);
     this.helper.setUniformMatrixValue(
       Uniforms.PROJECTION_MATRIX,
-      mat4FromTransform(this.tmpMat4_, this.tmpTransform_)
+      mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
     );
 
     // screen to world matrix
     makeInverseTransform(this.tmpTransform_, this.currentFrameStateTransform_);
     this.helper.setUniformMatrixValue(
       Uniforms.SCREEN_TO_WORLD_MATRIX,
-      mat4FromTransform(this.tmpMat4_, this.tmpTransform_)
+      mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
     );
 
     this.helper.setUniformFloatValue(Uniforms.GLOBAL_ALPHA, alpha);
@@ -332,7 +332,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     tileExtent,
     depth,
     gutter,
-    alpha
+    alpha,
   ) {
     const gutterExtent = getIntersection(tileExtent, renderExtent, tileExtent);
     const tileZ = tileRepresentation.tile.getTileCoord()[0];
@@ -345,7 +345,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
           gutterExtent,
           buffers.invertVerticesTransform,
           tileZ,
-          depth
+          depth,
         );
       });
     }

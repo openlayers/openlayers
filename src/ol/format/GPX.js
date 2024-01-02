@@ -228,7 +228,7 @@ class GPX extends XMLFeature {
     gpx.setAttributeNS(
       XML_SCHEMA_INSTANCE_URI,
       'xsi:schemaLocation',
-      SCHEMA_LOCATION
+      SCHEMA_LOCATION,
     );
     gpx.setAttribute('version', '1.1');
     gpx.setAttribute('creator', 'OpenLayers');
@@ -239,7 +239,7 @@ class GPX extends XMLFeature {
       GPX_SERIALIZERS,
       GPX_NODE_FACTORY,
       features,
-      [options]
+      [options],
     );
     return gpx;
   }
@@ -526,7 +526,7 @@ function GPX_NODE_FACTORY(value, objectStack, nodeName) {
 function appendCoordinate(flatCoordinates, layoutOptions, node, values) {
   flatCoordinates.push(
     parseFloat(node.getAttribute('lon')),
-    parseFloat(node.getAttribute('lat'))
+    parseFloat(node.getAttribute('lat')),
   );
   if ('ele' in values) {
     flatCoordinates.push(/** @type {number} */ (values['ele']));
@@ -681,7 +681,7 @@ function readRte(node, objectStack) {
     },
     RTE_PARSERS,
     node,
-    objectStack
+    objectStack,
   );
   if (!values) {
     return undefined;
@@ -717,7 +717,7 @@ function readTrk(node, objectStack) {
     },
     TRK_PARSERS,
     node,
-    objectStack
+    objectStack,
   );
   if (!values) {
     return undefined;
@@ -777,7 +777,7 @@ function writeLink(node, value, objectStack) {
     OBJECT_PROPERTY_NODE_FACTORY,
     link,
     objectStack,
-    LINK_SEQUENCE
+    LINK_SEQUENCE,
   );
 }
 
@@ -826,7 +826,7 @@ function writeWptType(node, coordinate, objectStack) {
     OBJECT_PROPERTY_NODE_FACTORY,
     values,
     objectStack,
-    orderedKeys
+    orderedKeys,
   );
 }
 
@@ -859,7 +859,7 @@ function writeRte(node, feature, objectStack) {
     OBJECT_PROPERTY_NODE_FACTORY,
     values,
     objectStack,
-    orderedKeys
+    orderedKeys,
   );
 }
 
@@ -892,7 +892,7 @@ function writeTrk(node, feature, objectStack) {
     OBJECT_PROPERTY_NODE_FACTORY,
     values,
     objectStack,
-    orderedKeys
+    orderedKeys,
   );
 }
 
@@ -911,7 +911,7 @@ function writeTrkSeg(node, lineString, objectStack) {
     TRKSEG_SERIALIZERS,
     TRKSEG_NODE_FACTORY,
     lineString.getCoordinates(),
-    objectStack
+    objectStack,
   );
 }
 

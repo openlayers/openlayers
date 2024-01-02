@@ -61,14 +61,14 @@ describe('ol.tilegrid.WMTS', function () {
       expect(tileGrid.origins_).to.eql(
         Array.apply(null, Array(20)).map(
           Array.prototype.valueOf,
-          [-20037508.3428, 20037508.3428]
-        )
+          [-20037508.3428, 20037508.3428],
+        ),
       );
 
       expect(tileGrid.tileSizes_).to.be.an('array');
       expect(tileGrid.tileSizes_).to.have.length(20);
       expect(tileGrid.tileSizes_).to.eql(
-        Array.apply(null, Array(20)).map(Number.prototype.valueOf, 256)
+        Array.apply(null, Array(20)).map(Number.prototype.valueOf, 256),
       );
     });
   });
@@ -134,14 +134,14 @@ describe('ol.tilegrid.WMTS', function () {
       expect(tileGrid.origins_).to.eql(
         Array.apply(null, Array(22)).map(
           Array.prototype.valueOf,
-          [-20037508, 20037508]
-        )
+          [-20037508, 20037508],
+        ),
       );
 
       expect(tileGrid.tileSizes_).to.be.an('array');
       expect(tileGrid.tileSizes_).to.have.length(22);
       expect(tileGrid.tileSizes_).to.eql(
-        Array.apply(null, Array(22)).map(Number.prototype.valueOf, 256)
+        Array.apply(null, Array(22)).map(Number.prototype.valueOf, 256),
       );
     });
 
@@ -152,7 +152,7 @@ describe('ol.tilegrid.WMTS', function () {
       const tileGrid = createFromCapabilitiesMatrixSet(
         matrixSetObj,
         undefined,
-        matrixLimitArray
+        matrixLimitArray,
       );
       expect(tileGrid.matrixIds_).to.be.an('array');
       expect(tileGrid.matrixIds_).to.have.length(20);
@@ -195,14 +195,14 @@ describe('ol.tilegrid.WMTS', function () {
       expect(tileGrid.origins_).to.eql(
         Array.apply(null, Array(20)).map(
           Array.prototype.valueOf,
-          [-20037508, 20037508]
-        )
+          [-20037508, 20037508],
+        ),
       );
 
       expect(tileGrid.tileSizes_).to.be.an('array');
       expect(tileGrid.tileSizes_).to.have.length(20);
       expect(tileGrid.tileSizes_).to.eql(
-        Array.apply(null, Array(20)).map(Number.prototype.valueOf, 256)
+        Array.apply(null, Array(20)).map(Number.prototype.valueOf, 256),
       );
     });
 
@@ -213,7 +213,7 @@ describe('ol.tilegrid.WMTS', function () {
       const tileGrid = createFromCapabilitiesMatrixSet(
         matrixSetObj,
         undefined,
-        matrixLimitArray
+        matrixLimitArray,
       );
       expect(tileGrid.matrixIds_).to.be.an('array');
       expect(tileGrid.matrixIds_).to.have.length(2);
@@ -230,14 +230,14 @@ describe('ol.tilegrid.WMTS', function () {
       expect(tileGrid.origins_).to.eql(
         Array.apply(null, Array(2)).map(
           Array.prototype.valueOf,
-          [-20037508, 20037508]
-        )
+          [-20037508, 20037508],
+        ),
       );
 
       expect(tileGrid.tileSizes_).to.be.an('array');
       expect(tileGrid.tileSizes_).to.have.length(2);
       expect(tileGrid.tileSizes_).to.eql(
-        Array.apply(null, Array(2)).map(Number.prototype.valueOf, 256)
+        Array.apply(null, Array(2)).map(Number.prototype.valueOf, 256),
       );
     });
   });

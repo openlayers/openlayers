@@ -123,7 +123,7 @@ describe('ol/format/TopoJSON.js', function () {
     it('parses simple.json', async () => {
       const text = await fse.readFile(
         'test/node/ol/format/TopoJSON/simple.json',
-        {encoding: 'utf8'}
+        {encoding: 'utf8'},
       );
 
       const features = format.readFeatures(text);
@@ -149,7 +149,7 @@ describe('ol/format/TopoJSON.js', function () {
     it('parses simple.json and transforms', async () => {
       const text = await fse.readFile(
         'test/node/ol/format/TopoJSON/simple.json',
-        {encoding: 'utf8'}
+        {encoding: 'utf8'},
       );
       const features = format.readFeatures(text, {
         featureProjection: 'EPSG:3857',
@@ -159,7 +159,7 @@ describe('ol/format/TopoJSON.js', function () {
       const point = features[0].getGeometry();
       expect(point.getType()).to.be('Point');
       expect(features[0].getGeometry().getCoordinates()).to.eql(
-        transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857')
+        transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'),
       );
 
       const line = features[1].getGeometry();
@@ -187,7 +187,7 @@ describe('ol/format/TopoJSON.js', function () {
     it('parses world-110m.json', async () => {
       const text = await fse.readFile(
         'test/node/ol/format/TopoJSON/world-110m.json',
-        {encoding: 'utf8'}
+        {encoding: 'utf8'},
       );
 
       const features = format.readFeatures(text);
@@ -214,7 +214,7 @@ describe('ol/format/TopoJSON.js', function () {
     it("sets the topology's child names as feature property", async () => {
       const text = await fse.readFile(
         'test/node/ol/format/TopoJSON/world-110m.json',
-        {encoding: 'utf8'}
+        {encoding: 'utf8'},
       );
       const format = new TopoJSON({
         layerName: 'layer',
@@ -227,7 +227,7 @@ describe('ol/format/TopoJSON.js', function () {
     it("only parses features from specified topology's children", async () => {
       const text = await fse.readFile(
         'test/node/ol/format/TopoJSON/world-110m.json',
-        {encoding: 'utf8'}
+        {encoding: 'utf8'},
       );
       const format = new TopoJSON({
         layers: ['land'],

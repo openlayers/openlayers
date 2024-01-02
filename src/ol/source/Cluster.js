@@ -117,7 +117,7 @@ class Cluster extends VectorSource {
         const geometry = /** @type {Point} */ (feature.getGeometry());
         assert(
           !geometry || geometry.getType() === 'Point',
-          'The default `geometryFunction` can only handle `Point` or null geometries'
+          'The default `geometryFunction` can only handle `Point` or null geometries',
         );
         return geometry;
       };

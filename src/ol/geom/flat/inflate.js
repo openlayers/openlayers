@@ -15,7 +15,7 @@ export function inflateCoordinates(
   offset,
   end,
   stride,
-  coordinates
+  coordinates,
 ) {
   coordinates = coordinates !== undefined ? coordinates : [];
   let i = 0;
@@ -39,7 +39,7 @@ export function inflateCoordinatesArray(
   offset,
   ends,
   stride,
-  coordinatess
+  coordinatess,
 ) {
   coordinatess = coordinatess !== undefined ? coordinatess : [];
   let i = 0;
@@ -50,7 +50,7 @@ export function inflateCoordinatesArray(
       offset,
       end,
       stride,
-      coordinatess[i]
+      coordinatess[i],
     );
     offset = end;
   }
@@ -72,7 +72,7 @@ export function inflateMultiCoordinatesArray(
   offset,
   endss,
   stride,
-  coordinatesss
+  coordinatesss,
 ) {
   coordinatesss = coordinatesss !== undefined ? coordinatesss : [];
   let i = 0;
@@ -86,7 +86,7 @@ export function inflateMultiCoordinatesArray(
             offset,
             ends,
             stride,
-            coordinatesss[i]
+            coordinatesss[i],
           );
     offset = ends[ends.length - 1];
   }

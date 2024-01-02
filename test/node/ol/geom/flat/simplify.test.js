@@ -96,7 +96,7 @@ describe('ol/geom/flat/simplify.js', function () {
         flatCoordinates.length,
         2,
         25,
-        false
+        false,
       );
       expect(result.length).to.be(simplifiedFlatCoordinates.length);
       expect(result).to.eql(simplifiedFlatCoordinates);
@@ -109,7 +109,7 @@ describe('ol/geom/flat/simplify.js', function () {
         flatCoordinates.length,
         2,
         25,
-        true
+        true,
       );
       expect(result.length).to.be(simplifiedHighQualityFlatCoordinates.length);
       expect(result).to.eql(simplifiedHighQualityFlatCoordinates);
@@ -139,21 +139,21 @@ describe('ol/geom/flat/simplify.js', function () {
 
     it('works when the points are widely spaced', function () {
       expect(
-        radialDistance([0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 0.5, dest, 0)
+        radialDistance([0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 0.5, dest, 0),
       ).to.be(8);
       expect(dest).to.eql([0, 0, 1, 0, 2, 0, 3, 0]);
     });
 
     it('works when the spacing matches the tolerance', function () {
       expect(
-        radialDistance([0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 1, dest, 0)
+        radialDistance([0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 1, dest, 0),
       ).to.be(6);
       expect(dest).to.eql([0, 0, 2, 0, 3, 0]);
     });
 
     it('works when the points are closely spaced', function () {
       expect(
-        radialDistance([0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 1.5, dest, 0)
+        radialDistance([0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 1.5, dest, 0),
       ).to.be(6);
       expect(dest).to.eql([0, 0, 2, 0, 3, 0]);
     });
@@ -167,8 +167,8 @@ describe('ol/geom/flat/simplify.js', function () {
           2,
           1,
           dest,
-          0
-        )
+          0,
+        ),
       ).to.be(12);
       expect(dest).to.eql([0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1]);
     });
@@ -182,8 +182,8 @@ describe('ol/geom/flat/simplify.js', function () {
           2,
           2,
           dest,
-          0
-        )
+          0,
+        ),
       ).to.be(4);
       expect(dest).to.eql([0, 0, 1, 1]);
     });
@@ -197,8 +197,8 @@ describe('ol/geom/flat/simplify.js', function () {
           2,
           2,
           dest,
-          0
-        )
+          0,
+        ),
       ).to.be(2);
       expect(dest).to.eql([0, 0]);
     });
@@ -212,8 +212,8 @@ describe('ol/geom/flat/simplify.js', function () {
           2,
           25,
           dest,
-          0
-        )
+          0,
+        ),
       ).to.be(simplifiedRadiallyFlatCoordinates.length);
       expect(dest).to.eql(simplifiedRadiallyFlatCoordinates);
     });
@@ -242,28 +242,28 @@ describe('ol/geom/flat/simplify.js', function () {
 
     it('works when the points are widely spaced', function () {
       expect(
-        douglasPeucker([0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 0.5, dest, 0)
+        douglasPeucker([0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 0.5, dest, 0),
       ).to.be(4);
       expect(dest).to.eql([0, 0, 3, 0]);
     });
 
     it('works when the spacing matches the tolerance', function () {
       expect(
-        douglasPeucker([0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 1, dest, 0)
+        douglasPeucker([0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 1, dest, 0),
       ).to.be(4);
       expect(dest).to.eql([0, 0, 3, 0]);
     });
 
     it('works when the points are closely spaced', function () {
       expect(
-        douglasPeucker([0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 1.5, dest, 0)
+        douglasPeucker([0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 1.5, dest, 0),
       ).to.be(4);
       expect(dest).to.eql([0, 0, 3, 0]);
     });
 
     it('does not elimnate points outside the tolerance', function () {
       expect(douglasPeucker([0, 0, 1, 1, 2, 0], 0, 6, 2, 0.5, dest, 0)).to.be(
-        6
+        6,
       );
       expect(dest).to.eql([0, 0, 1, 1, 2, 0]);
     });
@@ -275,14 +275,14 @@ describe('ol/geom/flat/simplify.js', function () {
 
     it('does not eliminate multiple points outside the tolerance', function () {
       expect(
-        douglasPeucker([0, 0, 1, 1, 1, -1, 2, 0], 0, 8, 2, 0.5, dest, 0)
+        douglasPeucker([0, 0, 1, 1, 1, -1, 2, 0], 0, 8, 2, 0.5, dest, 0),
       ).to.be(8);
       expect(dest).to.eql([0, 0, 1, 1, 1, -1, 2, 0]);
     });
 
     it('does eliminate multiple points within the tolerance', function () {
       expect(
-        douglasPeucker([0, 0, 1, 1, 1, -1, 2, 0], 0, 8, 2, 2, dest, 0)
+        douglasPeucker([0, 0, 1, 1, 1, -1, 2, 0], 0, 8, 2, 2, dest, 0),
       ).to.be(4);
       expect(dest).to.eql([0, 0, 2, 0]);
     });
@@ -296,8 +296,8 @@ describe('ol/geom/flat/simplify.js', function () {
           2,
           1,
           dest,
-          0
-        )
+          0,
+        ),
       ).to.be(4);
       expect(dest).to.eql([0, 0, 1, 1]);
     });
@@ -311,8 +311,8 @@ describe('ol/geom/flat/simplify.js', function () {
           2,
           2,
           dest,
-          0
-        )
+          0,
+        ),
       ).to.be(4);
       expect(dest).to.eql([0, 0, 1, 1]);
     });
@@ -326,15 +326,15 @@ describe('ol/geom/flat/simplify.js', function () {
           2,
           2,
           dest,
-          0
-        )
+          0,
+        ),
       ).to.be(4);
       expect(dest).to.eql([0, 0, 0, 0]);
     });
 
     it('works on small triangles', function () {
       expect(
-        douglasPeucker([3, 0, 4, 1, 5, 2, 5, 0], 0, 8, 2, 1, dest, 0)
+        douglasPeucker([3, 0, 4, 1, 5, 2, 5, 0], 0, 8, 2, 1, dest, 0),
       ).to.be(6);
       expect(dest).to.eql([3, 0, 5, 2, 5, 0]);
     });
@@ -348,8 +348,8 @@ describe('ol/geom/flat/simplify.js', function () {
           2,
           25,
           dest,
-          0
-        )
+          0,
+        ),
       ).to.be(simplifiedHighQualityFlatCoordinates.length);
       expect(dest).to.eql(simplifiedHighQualityFlatCoordinates);
     });
@@ -365,7 +365,7 @@ describe('ol/geom/flat/simplify.js', function () {
     it('expands points to a zero-length line', function () {
       const simplifiedFlatCoordinates = [];
       expect(
-        quantize([0, 0, 0, 0], 0, 4, 2, 2, simplifiedFlatCoordinates, 0)
+        quantize([0, 0, 0, 0], 0, 4, 2, 2, simplifiedFlatCoordinates, 0),
       ).to.be(4);
       expect(simplifiedFlatCoordinates).to.eql([0, 0, 0, 0]);
     });
@@ -373,7 +373,7 @@ describe('ol/geom/flat/simplify.js', function () {
     it('snaps near-by points to the same value', function () {
       const simplifiedFlatCoordinates = [];
       expect(
-        quantize([0.1, 0, 0, 0.1], 0, 4, 2, 2, simplifiedFlatCoordinates, 0)
+        quantize([0.1, 0, 0, 0.1], 0, 4, 2, 2, simplifiedFlatCoordinates, 0),
       ).to.be(4);
       expect(simplifiedFlatCoordinates).to.eql([0, 0, 0, 0]);
     });
@@ -388,8 +388,8 @@ describe('ol/geom/flat/simplify.js', function () {
           2,
           2,
           simplifiedFlatCoordinates,
-          0
-        )
+          0,
+        ),
       ).to.be(4);
       expect(simplifiedFlatCoordinates).to.eql([0, 0, 2, 0]);
     });
@@ -404,8 +404,8 @@ describe('ol/geom/flat/simplify.js', function () {
           2,
           2,
           simplifiedFlatCoordinates,
-          0
-        )
+          0,
+        ),
       ).to.be(4);
       expect(simplifiedFlatCoordinates).to.eql([0, 0, 6, 0]);
     });
@@ -420,8 +420,8 @@ describe('ol/geom/flat/simplify.js', function () {
           2,
           2,
           simplifiedFlatCoordinates,
-          0
-        )
+          0,
+        ),
       ).to.be(4);
       expect(simplifiedFlatCoordinates).to.eql([0, 0, 0, -6]);
     });
@@ -436,8 +436,8 @@ describe('ol/geom/flat/simplify.js', function () {
           2,
           2,
           simplifiedFlatCoordinates,
-          0
-        )
+          0,
+        ),
       ).to.be(4);
       expect(simplifiedFlatCoordinates).to.eql([0, 0, 6, -6]);
     });
@@ -452,8 +452,8 @@ describe('ol/geom/flat/simplify.js', function () {
           2,
           2,
           simplifiedFlatCoordinates,
-          0
-        )
+          0,
+        ),
       ).to.be(8);
       expect(simplifiedFlatCoordinates).to.eql([0, 0, 2, 0, 0, 0, 4, 0]);
     });

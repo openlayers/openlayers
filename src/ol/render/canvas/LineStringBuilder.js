@@ -35,7 +35,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
       end,
       stride,
       false,
-      false
+      false,
     );
     const moveToLineToInstruction = [
       CanvasInstruction.MOVE_TO_LINE_TO,
@@ -71,7 +71,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
         defaultLineDash,
         defaultLineDashOffset,
       ],
-      beginPathInstruction
+      beginPathInstruction,
     );
     const flatCoordinates = lineStringGeometry.getFlatCoordinates();
     const stride = lineStringGeometry.getStride();
@@ -79,7 +79,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
       flatCoordinates,
       0,
       flatCoordinates.length,
-      stride
+      stride,
     );
     this.hitDetectionInstructions.push(strokeInstruction);
     this.endGeometry(feature);
@@ -109,7 +109,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
         defaultLineDash,
         defaultLineDashOffset,
       ],
-      beginPathInstruction
+      beginPathInstruction,
     );
     const ends = multiLineStringGeometry.getEnds();
     const flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
@@ -120,7 +120,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
         flatCoordinates,
         offset,
         /** @type {number} */ (ends[i]),
-        stride
+        stride,
       );
     }
     this.hitDetectionInstructions.push(strokeInstruction);

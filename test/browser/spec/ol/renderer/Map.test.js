@@ -59,7 +59,7 @@ describe('ol/renderer/Map.js', function () {
         const point = new Point([0, 0]);
         const polygon = fromExtent([0, -1e6, 1e6, 1e6]);
         const geometryCollection = new Feature(
-          new GeometryCollection([polygon, point])
+          new GeometryCollection([polygon, point]),
         );
         const multiPoint = new MultiPoint([
           [-1e6, -1e6],
@@ -79,7 +79,7 @@ describe('ol/renderer/Map.js', function () {
             feature,
             layer,
             geometry,
-          })
+          }),
         );
         expect(hit.feature).to.be(geometryCollection);
         expect(hit.layer).to.be(layer);
@@ -90,7 +90,7 @@ describe('ol/renderer/Map.js', function () {
             feature,
             layer,
             geometry,
-          })
+          }),
         );
         expect(hit.feature).to.be(geometryCollection);
         expect(hit.geometry).to.be(polygon);
@@ -100,7 +100,7 @@ describe('ol/renderer/Map.js', function () {
             feature,
             layer,
             geometry,
-          })
+          }),
         );
         expect(hit.feature).to.be(multiGeometry);
         expect(hit.geometry).to.be(multiPoint);
@@ -115,7 +115,7 @@ describe('ol/renderer/Map.js', function () {
           new View({
             center: [4.5, 7],
             resolution: 0.05,
-          })
+          }),
         );
 
         const styles = {
@@ -216,7 +216,7 @@ describe('ol/renderer/Map.js', function () {
 
         function hitTest(coordinate) {
           const features = map.getFeaturesAtPixel(
-            map.getPixelFromCoordinate(coordinate)
+            map.getPixelFromCoordinate(coordinate),
           );
           const result = {count: 0};
           if (features && features.length > 0) {
@@ -348,7 +348,7 @@ describe('ol/renderer/Map.js', function () {
             feature,
             layer,
             geometry,
-          })
+          }),
         );
         expect(hit).to.be.ok();
         expect(hit.feature).to.be(feature);
@@ -369,7 +369,7 @@ describe('ol/renderer/Map.js', function () {
             feature,
             layer,
             geometry,
-          })
+          }),
         );
         expect(hit).to.be.ok();
         expect(hit.feature).to.be(feature);
@@ -393,7 +393,7 @@ describe('ol/renderer/Map.js', function () {
             feature,
             layer,
             geometry,
-          })
+          }),
         );
         expect(hit).to.be.ok();
         expect(hit.feature).to.be(feature);
@@ -419,7 +419,7 @@ describe('ol/renderer/Map.js', function () {
             feature,
             layer,
             geometry,
-          })
+          }),
         );
         expect(hit).to.be.ok();
         expect(hit.feature).to.be(feature);
@@ -435,7 +435,7 @@ describe('ol/renderer/Map.js', function () {
             feature,
             layer,
             geometry,
-          })
+          }),
         );
         expect(hit).to.be.ok();
         expect(hit.feature).to.be(feature);
@@ -470,7 +470,7 @@ describe('ol/renderer/Map.js', function () {
             feature,
             layer,
             geometry,
-          })
+          }),
         );
         expect(hit).to.be.ok();
         expect(hit.feature).to.be(feature);
@@ -493,7 +493,7 @@ describe('ol/renderer/Map.js', function () {
             feature,
             layer,
             geometry,
-          })
+          }),
         );
         expect(hit).to.be(undefined);
 
@@ -513,7 +513,7 @@ describe('ol/renderer/Map.js', function () {
             feature,
             layer,
             geometry,
-          })
+          }),
         );
         expect(hit).to.be.ok();
         expect(hit.feature).to.be(feature);
@@ -537,7 +537,7 @@ describe('ol/renderer/Map.js', function () {
             feature,
             layer,
             geometry,
-          })
+          }),
         );
         expect(hit).to.be.ok();
         expect(hit.feature).to.be(feature);
@@ -585,7 +585,7 @@ describe('ol/renderer/Map.js', function () {
                   feature,
                   layer,
                   geometry,
-                })
+                }),
               );
               expect(hit).to.be.ok();
               expect(hit.feature).to.be(feature);
@@ -618,7 +618,7 @@ describe('ol/renderer/Map.js', function () {
                   feature,
                   layer,
                   geometry,
-                })
+                }),
               );
               expect(hit).to.be(undefined);
               done();
@@ -648,7 +648,7 @@ describe('ol/renderer/Map.js', function () {
                   feature,
                   layer,
                   geometry,
-                })
+                }),
               );
               expect(hit).to.be.ok();
               expect(hit.feature).to.be(feature);
@@ -681,7 +681,7 @@ describe('ol/renderer/Map.js', function () {
                   feature,
                   layer,
                   geometry,
-                })
+                }),
               );
               expect(hit).to.be.ok();
               expect(hit.feature).to.be(feature);
@@ -715,35 +715,35 @@ describe('ol/renderer/Map.js', function () {
                 [10, 0],
               ].map((coordinate) => new Feature(new Point(coordinate))),
             }),
-          })
+          }),
         );
         map.renderSync();
 
         let feature = map.forEachFeatureAtPixel(
           map.getPixelFromCoordinate([8, 6]),
           (feature) => feature,
-          {hitTolerance: 20}
+          {hitTolerance: 20},
         );
         expect(feature.getGeometry().getCoordinates()).to.eql([10, 0]);
 
         feature = map.forEachFeatureAtPixel(
           map.getPixelFromCoordinate([6, -8]),
           (feature) => feature,
-          {hitTolerance: 20}
+          {hitTolerance: 20},
         );
         expect(feature.getGeometry().getCoordinates()).to.eql([0, -10]);
 
         feature = map.forEachFeatureAtPixel(
           map.getPixelFromCoordinate([-6, -4]),
           (feature) => feature,
-          {hitTolerance: 20}
+          {hitTolerance: 20},
         );
         expect(feature.getGeometry().getCoordinates()).to.eql([0, 0]);
 
         feature = map.forEachFeatureAtPixel(
           map.getPixelFromCoordinate([-6, 7]),
           (feature) => feature,
-          {hitTolerance: 20}
+          {hitTolerance: 20},
         );
         expect(feature.getGeometry().getCoordinates()).to.eql([0, 10]);
       });
@@ -819,10 +819,10 @@ describe('ol/renderer/Map.js', function () {
     it('only draws features that intersect the hit detection viewport', function () {
       const resolution = map.getView().getResolution();
       source.addFeature(
-        new Feature(new Point([660000 + resolution * 6, 190000]))
+        new Feature(new Point([660000 + resolution * 6, 190000])),
       );
       source.addFeature(
-        new Feature(new Point([660000 - resolution * 12, 190000]))
+        new Feature(new Point([660000 - resolution * 12, 190000])),
       );
       map.renderSync();
       const spy = sinon.spy(CanvasRenderingContext2D.prototype, 'drawImage');

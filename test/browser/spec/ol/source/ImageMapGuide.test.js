@@ -50,10 +50,10 @@ describe('ol/source/ImageMapGuide', function () {
         map.once('rendercomplete', function () {
           expect(srcs.length).to.be(2);
           expect(new URL(srcs[0]).searchParams.get('MAPDEFINITION')).to.be(
-            'mdf'
+            'mdf',
           );
           expect(new URL(srcs[1]).searchParams.get('MAPDEFINITION')).to.be(
-            'newValue'
+            'newValue',
           );
           done();
         });

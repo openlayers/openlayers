@@ -140,7 +140,7 @@ export function getMapTileUrlTemplate(links, mediaType) {
 export function getVectorTileUrlTemplate(
   links,
   mediaType,
-  supportedMediaTypes
+  supportedMediaTypes,
 ) {
   let tileUrlTemplate;
   let fallbackUrlTemplate;
@@ -197,7 +197,7 @@ function parseTileMatrixSet(
   sourceInfo,
   tileMatrixSet,
   tileUrlTemplate,
-  tileMatrixSetLimits
+  tileMatrixSetLimits,
 ) {
   let projection = sourceInfo.projection;
   if (!projection) {
@@ -353,13 +353,13 @@ function parseTileSetMetadata(sourceInfo, tileSet) {
   if (tileSet.dataType === 'map') {
     tileUrlTemplate = getMapTileUrlTemplate(
       tileSet.links,
-      sourceInfo.mediaType
+      sourceInfo.mediaType,
     );
   } else if (tileSet.dataType === 'vector') {
     tileUrlTemplate = getVectorTileUrlTemplate(
       tileSet.links,
       sourceInfo.mediaType,
-      sourceInfo.supportedMediaTypes
+      sourceInfo.supportedMediaTypes,
     );
   } else {
     throw new Error('Expected tileset data type to be "map" or "vector"');
@@ -370,17 +370,17 @@ function parseTileSetMetadata(sourceInfo, tileSet) {
       sourceInfo,
       tileSet.tileMatrixSet,
       tileUrlTemplate,
-      tileMatrixSetLimits
+      tileMatrixSetLimits,
     );
   }
 
   const tileMatrixSetLink = tileSet.links.find(
     (link) =>
-      link.rel === 'http://www.opengis.net/def/rel/ogc/1.0/tiling-scheme'
+      link.rel === 'http://www.opengis.net/def/rel/ogc/1.0/tiling-scheme',
   );
   if (!tileMatrixSetLink) {
     throw new Error(
-      'Expected http://www.opengis.net/def/rel/ogc/1.0/tiling-scheme link or tileMatrixSet'
+      'Expected http://www.opengis.net/def/rel/ogc/1.0/tiling-scheme link or tileMatrixSet',
     );
   }
   const tileMatrixSetDefinition = tileMatrixSetLink.href;
@@ -391,7 +391,7 @@ function parseTileSetMetadata(sourceInfo, tileSet) {
       sourceInfo,
       tileMatrixSet,
       tileUrlTemplate,
-      tileMatrixSetLimits
+      tileMatrixSetLimits,
     );
   });
 }

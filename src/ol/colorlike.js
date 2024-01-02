@@ -63,7 +63,7 @@ function asCanvasPattern(pattern) {
   const canvasPattern = iconCache.getPattern(
     cacheKey,
     undefined,
-    pattern.color
+    pattern.color,
   );
   if (canvasPattern) {
     return canvasPattern;
@@ -75,7 +75,7 @@ function asCanvasPattern(pattern) {
   }
   const patternCanvasContext = createCanvasContext2D(
     pattern.size[0],
-    pattern.size[1]
+    pattern.size[1],
   );
   patternCanvasContext.drawImage(
     iconImage.getImage(1),
@@ -86,7 +86,7 @@ function asCanvasPattern(pattern) {
     0,
     0,
     pattern.size[0],
-    pattern.size[1]
+    pattern.size[1],
   );
   getIconImage(
     patternCanvasContext.canvas,
@@ -94,7 +94,7 @@ function asCanvasPattern(pattern) {
     undefined,
     ImageState.LOADED,
     pattern.color,
-    true
+    true,
   );
   return iconCache.getPattern(cacheKey, undefined, pattern.color);
 }

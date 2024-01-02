@@ -24,7 +24,7 @@ feature1.setStyle(
       placement: 'line',
       overflow: true,
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature1);
 
@@ -43,7 +43,7 @@ feature2.setStyle(
       font: 'italic bold 0.5em Ubuntu',
       overflow: true,
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature2);
 
@@ -56,7 +56,7 @@ feature3.setStyle(
     text: new Text({
       text: 'Set properties',
     }),
-  })
+  }),
 );
 feature3.getStyle().getText().setTextAlign('left');
 feature3.getStyle().getText().setOffsetX(10);
@@ -91,7 +91,7 @@ feature4.setStyle(
       placement: 'line',
       overflow: true,
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature4);
 
@@ -112,7 +112,7 @@ feature5.setStyle(
       maxAngle: Math.PI,
       overflow: true,
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature5);
 
@@ -132,7 +132,7 @@ feature6.setStyle(
         color: '#00FF00',
       }),
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature6);
 

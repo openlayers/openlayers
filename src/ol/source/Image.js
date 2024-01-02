@@ -255,7 +255,7 @@ class ImageSource extends Source {
       pixelRatio,
       (extent, resolution, pixelRatio) =>
         this.getImageInternal(extent, resolution, pixelRatio, sourceProjection),
-      this.getInterpolate()
+      this.getInterpolate(),
     );
     this.reprojectedRevision_ = this.getRevision();
 
@@ -297,11 +297,11 @@ class ImageSource extends Source {
         requestExtent,
         requestResolution,
         pixelRatio,
-        this.loader
+        this.loader,
       );
       this.image.addEventListener(
         EventType.CHANGE,
-        this.handleImageChange.bind(this)
+        this.handleImageChange.bind(this),
       );
     }
     return this.image;

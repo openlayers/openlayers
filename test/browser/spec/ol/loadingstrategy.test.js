@@ -23,15 +23,15 @@ describe('ol/loadingstrategy', function () {
       const userExtent = toUserExtent(extent, get('EPSG:3857'));
       const userResolution = toUserResolution(
         tileGrid.getResolution(1),
-        get('EPSG:3857')
+        get('EPSG:3857'),
       );
       const extents = strategy(userExtent, userResolution, get('EPSG:3857'));
       expect(
         approximatelyEquals(
           transformExtent(extents[0], 'EPSG:4326', 'EPSG:3857'),
           extent,
-          1e-8
-        )
+          1e-8,
+        ),
       ).to.be(true);
     });
   });

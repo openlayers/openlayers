@@ -244,7 +244,7 @@ class Executor {
       ? TEXT_ALIGN[textState.justify]
       : horizontalTextAlign(
           Array.isArray(text) ? text[0] : text,
-          textState.textAlign || defaultTextAlign
+          textState.textAlign || defaultTextAlign,
         );
     const strokeWidth =
       strokeKey && strokeState.lineWidth ? strokeState.lineWidth : 0;
@@ -255,7 +255,7 @@ class Executor {
 
     const {width, height, widths, heights, lineWidths} = getTextDimensions(
       textState,
-      chunks
+      chunks,
     );
     const renderWidth = width + strokeWidth;
     const contextInstructions = [];
@@ -352,7 +352,7 @@ class Executor {
     p3,
     p4,
     fillInstruction,
-    strokeInstruction
+    strokeInstruction,
   ) {
     context.beginPath();
     context.moveTo.apply(context, p1);
@@ -367,7 +367,7 @@ class Executor {
     if (strokeInstruction) {
       this.setStrokeStyle_(
         context,
-        /** @type {Array<*>} */ (strokeInstruction)
+        /** @type {Array<*>} */ (strokeInstruction),
       );
       context.stroke();
     }
@@ -409,7 +409,7 @@ class Executor {
     snapToPixel,
     padding,
     fillStroke,
-    feature
+    feature,
   ) {
     anchorX *= scale[0];
     anchorY *= scale[1];
@@ -444,7 +444,7 @@ class Executor {
         1,
         rotation,
         -centerX,
-        -centerY
+        -centerY,
       );
 
       applyTransform(transform, p1);
@@ -456,7 +456,7 @@ class Executor {
         Math.min(p1[1], p2[1], p3[1], p4[1]),
         Math.max(p1[0], p2[0], p3[0], p4[0]),
         Math.max(p1[1], p2[1], p3[1], p4[1]),
-        tmpExtent
+        tmpExtent,
       );
     } else {
       createOrUpdate(
@@ -464,7 +464,7 @@ class Executor {
         Math.min(boxY, boxY + boxH),
         Math.max(boxX, boxX + boxW),
         Math.max(boxY, boxY + boxH),
-        tmpExtent
+        tmpExtent,
       );
     }
     if (snapToPixel) {
@@ -508,7 +508,7 @@ class Executor {
     dimensions,
     opacity,
     fillInstruction,
-    strokeInstruction
+    strokeInstruction,
   ) {
     const fillStroke = !!(fillInstruction || strokeInstruction);
 
@@ -532,7 +532,7 @@ class Executor {
           p3,
           p4,
           /** @type {Array<*>} */ (fillInstruction),
-          /** @type {Array<*>} */ (strokeInstruction)
+          /** @type {Array<*>} */ (strokeInstruction),
         );
       }
       drawImageOrLabel(
@@ -546,7 +546,7 @@ class Executor {
         dimensions.drawImageH,
         dimensions.drawImageX,
         dimensions.drawImageY,
-        dimensions.scale
+        dimensions.scale,
       );
     }
     return true;
@@ -607,7 +607,7 @@ class Executor {
     const pixelRatio = this.pixelRatio;
     const align = horizontalTextAlign(
       Array.isArray(text) ? text[0] : text,
-      textState.textAlign || defaultTextAlign
+      textState.textAlign || defaultTextAlign,
     );
     const baseline = TEXT_ALIGN[textState.textBaseline || defaultTextBaseline];
     const strokeWidth =
@@ -649,7 +649,7 @@ class Executor {
     snapToPixel,
     featureCallback,
     hitExtent,
-    declutterTree
+    declutterTree,
   ) {
     /** @type {Array<number>} */
     let pixelCoordinates;
@@ -665,7 +665,7 @@ class Executor {
         this.coordinates.length,
         2,
         transform,
-        this.pixelCoordinates_
+        this.pixelCoordinates_,
       );
       transformSetFromArray(this.renderedTransform_, transform);
     }
@@ -826,7 +826,7 @@ class Executor {
               text,
               textKey,
               strokeKey,
-              fillKey
+              fillKey,
             );
             image = labelWithAnchor.label;
             instruction[3] = image;
@@ -889,7 +889,7 @@ class Executor {
               snapToPixel,
               padding,
               backgroundFill || backgroundStroke,
-              feature
+              feature,
             );
             /** @type {ReplayImageOrLabelArgs} */
             const args = [
@@ -1000,7 +1000,7 @@ class Executor {
               measureAndCacheTextWidth,
               font,
               cachedWidths,
-              viewRotationFromTransform ? 0 : this.viewRotation_
+              viewRotationFromTransform ? 0 : this.viewRotation_,
             );
             drawChars: if (parts) {
               /** @type {Array<ReplayImageOrLabelArgs>} */
@@ -1035,7 +1035,7 @@ class Executor {
                     false,
                     defaultPadding,
                     false,
-                    feature
+                    feature,
                   );
                   if (
                     declutterTree &&
@@ -1077,7 +1077,7 @@ class Executor {
                     false,
                     defaultPadding,
                     false,
-                    feature
+                    feature,
                   );
                   if (
                     declutterTree &&
@@ -1213,7 +1213,7 @@ class Executor {
     transform,
     viewRotation,
     snapToPixel,
-    declutterTree
+    declutterTree,
   ) {
     this.viewRotation_ = viewRotation;
     this.execute_(
@@ -1224,7 +1224,7 @@ class Executor {
       snapToPixel,
       undefined,
       undefined,
-      declutterTree
+      declutterTree,
     );
   }
 
@@ -1243,7 +1243,7 @@ class Executor {
     transform,
     viewRotation,
     featureCallback,
-    hitExtent
+    hitExtent,
   ) {
     this.viewRotation_ = viewRotation;
     return this.execute_(
@@ -1253,7 +1253,7 @@ class Executor {
       this.hitDetectionInstructions,
       true,
       featureCallback,
-      hitExtent
+      hitExtent,
     );
   }
 }

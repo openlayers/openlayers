@@ -135,8 +135,8 @@ class EsriJSON extends JSONFeature {
           this.readFeatureFromObject(
             esriJSONFeatures[i],
             options,
-            object.objectIdFieldName
-          )
+            object.objectIdFieldName,
+          ),
         );
       }
       return features;
@@ -302,7 +302,7 @@ function convertRings(rings, layout) {
       flatRing,
       0,
       flatRing.length,
-      layout.length
+      layout.length,
     );
     if (clockwise) {
       outerRings.push([rings[i]]);
@@ -318,7 +318,7 @@ function convertRings(rings, layout) {
       const outerRing = outerRings[i][0];
       const containsHole = containsExtent(
         new LinearRing(outerRing).getExtent(),
-        new LinearRing(hole).getExtent()
+        new LinearRing(hole).getExtent(),
       );
       if (containsHole) {
         // the hole is contained push it into our polygon
@@ -563,7 +563,7 @@ function writeGeometry(geometry, options) {
   const geometryWriter = GEOMETRY_WRITERS[geometry.getType()];
   return geometryWriter(
     transformGeometryWithOptions(geometry, true, options),
-    options
+    options,
   );
 }
 

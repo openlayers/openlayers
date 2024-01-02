@@ -35,7 +35,7 @@ class TextFeature extends FeatureFormat {
   readFeature(source, options) {
     return this.readFeatureFromText(
       getText(source),
-      this.adaptOptions(options)
+      this.adaptOptions(options),
     );
   }
 
@@ -61,7 +61,7 @@ class TextFeature extends FeatureFormat {
   readFeatures(source, options) {
     return this.readFeaturesFromText(
       getText(source),
-      this.adaptOptions(options)
+      this.adaptOptions(options),
     );
   }
 
@@ -87,7 +87,7 @@ class TextFeature extends FeatureFormat {
   readGeometry(source, options) {
     return this.readGeometryFromText(
       getText(source),
-      this.adaptOptions(options)
+      this.adaptOptions(options),
     );
   }
 

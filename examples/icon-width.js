@@ -34,7 +34,7 @@ widthInput.addEventListener('input', (event) => {
       src: 'data/icon.png',
       width: Number(event.target.value),
       height: currentIcon.getHeight(),
-    })
+    }),
   );
   iconFeature.setStyle(iconStyle);
 });
@@ -45,7 +45,7 @@ heightInput.addEventListener('input', (event) => {
       src: 'data/icon.png',
       height: Number(event.target.value),
       width: currentIcon.getWidth(),
-    })
+    }),
   );
   iconFeature.setStyle(iconStyle);
 });
@@ -55,7 +55,7 @@ clearWidthButton.addEventListener('click', () => {
     new Icon({
       src: 'data/icon.png',
       height: currentIcon.getHeight(),
-    })
+    }),
   );
   iconFeature.setStyle(iconStyle);
   widthInput.value = Math.round(iconStyle.getImage().getWidth());
@@ -68,7 +68,7 @@ clearHeightButton.addEventListener('click', () => {
     new Icon({
       src: 'data/icon.png',
       width: currentIcon.getWidth(),
-    })
+    }),
   );
   iconFeature.setStyle(iconStyle);
   heightInput.value = Math.round(iconStyle.getImage().getHeight());
@@ -93,7 +93,7 @@ const map = new Map({
 });
 map.on(
   'rendercomplete',
-  () => (scaleSpan.innerText = formatScale(iconStyle.getImage().getScale()))
+  () => (scaleSpan.innerText = formatScale(iconStyle.getImage().getScale())),
 );
 
 function formatScale(scale) {

@@ -80,7 +80,7 @@ describe('ol/source/Tile', function () {
       map.renderSync();
       expect(
         source.getTileCacheForProjection(map.getView().getProjection())
-          .highWaterMark
+          .highWaterMark,
       ).to.be(4);
       map.setTarget(null);
       document.body.removeChild(target);
@@ -92,7 +92,7 @@ describe('ol/source/Tile', function () {
         cacheSize: 442,
       });
       expect(source.getTileCacheForProjection(projection).highWaterMark).to.be(
-        442
+        442,
       );
     });
   });
@@ -212,7 +212,7 @@ describe('ol/source/Tile', function () {
         range,
         function () {
           return true;
-        }
+        },
       );
       expect(covered).to.be(true);
     });
@@ -235,7 +235,7 @@ describe('ol/source/Tile', function () {
         range,
         function () {
           return true;
-        }
+        },
       );
       expect(covered).to.be(false);
     });
@@ -258,7 +258,7 @@ describe('ol/source/Tile', function () {
         range,
         function () {
           return false;
-        }
+        },
       );
       expect(covered).to.be(false);
     });

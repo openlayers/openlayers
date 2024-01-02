@@ -39,7 +39,7 @@ describe('ol/geom/MultiPolygon.js', function () {
             [5, 2],
             [5, 0],
           ],
-        ])
+        ]),
       );
       expect(multiPolygon.getCoordinates()).to.eql([
         [
@@ -78,7 +78,7 @@ describe('ol/geom/MultiPolygon.js', function () {
             [1, 1],
             [2, 0],
           ],
-        ])
+        ]),
       );
       expect(multiPolygon.getCoordinates()).to.eql([
         [
@@ -98,7 +98,7 @@ describe('ol/geom/MultiPolygon.js', function () {
             [5, 2],
             [5, 0],
           ],
-        ])
+        ]),
       );
       expect(multiPolygon.getCoordinates()).to.eql([
         [
@@ -393,7 +393,7 @@ describe('ol/geom/MultiPolygon.js', function () {
         const polygons = multiPolygon.getPolygons();
         for (let i = 0; i < polygons.length; i++) {
           expect(multiPolygon.intersectsExtent(polygons[i].getExtent())).to.be(
-            true
+            true,
           );
         }
       });

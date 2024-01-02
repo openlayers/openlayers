@@ -38,7 +38,7 @@ describe('ol.render.canvas.BuilderGroup', function () {
         1,
         pixelRatio || 1,
         !!overlaps,
-        builder.finish()
+        builder.finish(),
       );
       executor.execute(context, 1, transform, 0, false);
     }
@@ -56,7 +56,7 @@ describe('ol.render.canvas.BuilderGroup', function () {
             [0, -45],
             [-90, 0],
           ],
-        ])
+        ]),
       );
       feature1 = new Feature(
         new Polygon([
@@ -67,7 +67,7 @@ describe('ol.render.canvas.BuilderGroup', function () {
             [0, -45],
             [-90, -45],
           ],
-        ])
+        ]),
       );
       feature2 = new Feature(
         new Polygon([
@@ -78,7 +78,7 @@ describe('ol.render.canvas.BuilderGroup', function () {
             [0, 45],
             [90, 45],
           ],
-        ])
+        ]),
       );
       feature3 = new Feature(
         new Polygon([
@@ -89,7 +89,7 @@ describe('ol.render.canvas.BuilderGroup', function () {
             [90, -45],
             [-90, -45],
           ],
-        ])
+        ]),
       );
       fill0 = new Style({
         fill: new Fill({color: 'black'}),
@@ -250,14 +250,14 @@ describe('ol.render.canvas.BuilderGroup', function () {
         builder,
         pixelRatio,
         overlaps,
-        coordinate
+        coordinate,
       ) {
         const executor = new ExecutorGroup(
           [-180, -90, 180, 90],
           1,
           pixelRatio || 1,
           !!overlaps,
-          builder.finish()
+          builder.finish(),
         );
 
         executor.execute(context, 1, transform, 0, false);
@@ -270,34 +270,34 @@ describe('ol.render.canvas.BuilderGroup', function () {
           new MultiPoint([
             [45, 90],
             [90, 45],
-          ])
+          ]),
         );
         linestring = new Feature(
           new LineString([
             [45, 90],
             [45, 45],
             [90, 45],
-          ])
+          ]),
         );
         multilinestring = new Feature(
           new MultiLineString([
             linestring.getGeometry().getCoordinates(),
             linestring.getGeometry().getCoordinates(),
-          ])
+          ]),
         );
         polygon = feature1;
         multipolygon = new Feature(
           new MultiPolygon([
             polygon.getGeometry().getCoordinates(),
             polygon.getGeometry().getCoordinates(),
-          ])
+          ]),
         );
         geometrycollection = new Feature(
           new GeometryCollection([
             point.getGeometry(),
             linestring.getGeometry(),
             polygon.getGeometry(),
-          ])
+          ]),
         );
       });
       it('calls the renderer function in hit detection', function () {

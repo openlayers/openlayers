@@ -107,8 +107,8 @@ class ScaleLine extends Control {
       options.className !== undefined
         ? options.className
         : options.bar
-        ? 'ol-scale-bar'
-        : 'ol-scale-line';
+          ? 'ol-scale-bar'
+          : 'ol-scale-line';
 
     /**
      * @private
@@ -244,7 +244,7 @@ class ScaleLine extends Control {
       projection,
       viewState.resolution,
       center,
-      pointResolutionUnits
+      pointResolutionUnits,
     );
 
     const minWidth =
@@ -391,7 +391,7 @@ class ScaleLine extends Control {
           (i % 2 === 0 || steps === 2
             ? this.createStepText(i, width, false, scale, suffix)
             : '') +
-          '</div>'
+          '</div>',
       );
     }
     // render text at the end
@@ -458,7 +458,7 @@ class ScaleLine extends Control {
       this.viewState_.projection,
       this.viewState_.resolution,
       this.viewState_.center,
-      'm'
+      'm',
     );
     const dpi = this.dpi_ || DEFAULT_DPI;
     const inchesPerMeter = 1000 / 25.4;

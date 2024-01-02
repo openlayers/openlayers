@@ -19,7 +19,7 @@ export function lineChunk(chunkLength, flatCoordinates, offset, end, stride) {
     const x2 = flatCoordinates[cursor + stride];
     const y2 = flatCoordinates[cursor + stride + 1];
     const segmentLength = Math.sqrt(
-      (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)
+      (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1),
     );
     chunkM += segmentLength;
     if (chunkM >= chunkLength) {
@@ -36,7 +36,7 @@ export function lineChunk(chunkLength, flatCoordinates, offset, end, stride) {
     } else if (chunkM < chunkLength) {
       currentChunk.push(
         flatCoordinates[cursor + stride],
-        flatCoordinates[cursor + stride + 1]
+        flatCoordinates[cursor + stride + 1],
       );
       cursor += stride;
     } else {

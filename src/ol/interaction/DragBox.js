@@ -211,8 +211,8 @@ class DragBox extends PointerInteraction {
       new DragBoxEvent(
         DragBoxEventType.BOXDRAG,
         mapBrowserEvent.coordinate,
-        mapBrowserEvent
-      )
+        mapBrowserEvent,
+      ),
     );
   }
 
@@ -227,7 +227,7 @@ class DragBox extends PointerInteraction {
     const completeBox = this.boxEndCondition_(
       mapBrowserEvent,
       this.startPixel_,
-      mapBrowserEvent.pixel
+      mapBrowserEvent.pixel,
     );
     if (completeBox) {
       this.onBoxEnd(mapBrowserEvent);
@@ -236,8 +236,8 @@ class DragBox extends PointerInteraction {
       new DragBoxEvent(
         completeBox ? DragBoxEventType.BOXEND : DragBoxEventType.BOXCANCEL,
         mapBrowserEvent.coordinate,
-        mapBrowserEvent
-      )
+        mapBrowserEvent,
+      ),
     );
     return false;
   }
@@ -256,8 +256,8 @@ class DragBox extends PointerInteraction {
         new DragBoxEvent(
           DragBoxEventType.BOXSTART,
           mapBrowserEvent.coordinate,
-          mapBrowserEvent
-        )
+          mapBrowserEvent,
+        ),
       );
       return true;
     }

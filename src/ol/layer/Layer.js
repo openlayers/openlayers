@@ -169,7 +169,7 @@ class Layer extends BaseLayer {
 
     this.addChangeListener(
       LayerProperty.SOURCE,
-      this.handleSourcePropertyChange_
+      this.handleSourcePropertyChange_,
     );
 
     const source = options.source
@@ -250,7 +250,7 @@ class Layer extends BaseLayer {
         source,
         EventType.CHANGE,
         this.handleSourceChange_,
-        this
+        this,
       );
       if (source.getState() === 'ready') {
         this.sourceReady_ = true;
@@ -314,7 +314,7 @@ class Layer extends BaseLayer {
     let layerState;
     if (frameState.layerStatesArray) {
       layerState = frameState.layerStatesArray.find(
-        (layerState) => layerState.layer === this
+        (layerState) => layerState.layer === this,
       );
     } else {
       layerState = this.getLayerState();
@@ -436,11 +436,11 @@ class Layer extends BaseLayer {
             !layerStatesArray.some(function (arrayLayerState) {
               return arrayLayerState.layer === layerState.layer;
             }),
-            'A layer can only be added to the map once. Use either `layer.setMap()` or `map.addLayer()`, not both.'
+            'A layer can only be added to the map once. Use either `layer.setMap()` or `map.addLayer()`, not both.',
           );
           layerStatesArray.push(layerState);
         },
-        this
+        this,
       );
       this.mapRenderKey_ = listen(this, EventType.CHANGE, map.render, map);
       this.changed();

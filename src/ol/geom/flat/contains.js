@@ -16,7 +16,7 @@ export function linearRingContainsExtent(
   offset,
   end,
   stride,
-  extent
+  extent,
 ) {
   const outside = forEachCorner(
     extent,
@@ -31,9 +31,9 @@ export function linearRingContainsExtent(
         end,
         stride,
         coordinate[0],
-        coordinate[1]
+        coordinate[1],
       );
-    }
+    },
   );
   return !outside;
 }
@@ -53,7 +53,7 @@ export function linearRingContainsXY(
   end,
   stride,
   x,
-  y
+  y,
 ) {
   // https://geomalgorithms.com/a03-_inclusion.html
   // Copyright 2000 softSurfer, 2012 Dan Sunday
@@ -96,7 +96,7 @@ export function linearRingsContainsXY(
   ends,
   stride,
   x,
-  y
+  y,
 ) {
   if (ends.length === 0) {
     return false;
@@ -129,7 +129,7 @@ export function linearRingssContainsXY(
   endss,
   stride,
   x,
-  y
+  y,
 ) {
   if (endss.length === 0) {
     return false;

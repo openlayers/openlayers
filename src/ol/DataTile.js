@@ -59,7 +59,7 @@ export function toArray(image) {
       image.width,
       image.height,
       undefined,
-      {willReadFrequently: true}
+      {willReadFrequently: true},
     );
   }
   const canvas = sharedContext.canvas;

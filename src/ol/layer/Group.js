@@ -134,7 +134,7 @@ class LayerGroup extends BaseLayer {
       } else {
         assert(
           typeof (/** @type {?} */ (layers).getArray) === 'function',
-          'Expected `layers` to be an array or a `Collection`'
+          'Expected `layers` to be an array or a `Collection`',
         );
       }
     } else {
@@ -161,7 +161,12 @@ class LayerGroup extends BaseLayer {
     const layers = this.getLayers();
     this.layersListenerKeys_.push(
       listen(layers, CollectionEventType.ADD, this.handleLayersAdd_, this),
-      listen(layers, CollectionEventType.REMOVE, this.handleLayersRemove_, this)
+      listen(
+        layers,
+        CollectionEventType.REMOVE,
+        this.handleLayersRemove_,
+        this,
+      ),
     );
 
     for (const id in this.listenerKeys_) {
@@ -187,7 +192,7 @@ class LayerGroup extends BaseLayer {
         layer,
         ObjectEventType.PROPERTYCHANGE,
         this.handleLayerChange_,
-        this
+        this,
       ),
       listen(layer, EventType.CHANGE, this.handleLayerChange_, this),
     ];
@@ -195,7 +200,7 @@ class LayerGroup extends BaseLayer {
     if (layer instanceof LayerGroup) {
       listenerKeys.push(
         listen(layer, 'addlayer', this.handleLayerGroupAdd_, this),
-        listen(layer, 'removelayer', this.handleLayerGroupRemove_, this)
+        listen(layer, 'removelayer', this.handleLayerGroupRemove_, this),
       );
     }
 
@@ -314,11 +319,11 @@ class LayerGroup extends BaseLayer {
       layerState.visible = layerState.visible && ownLayerState.visible;
       layerState.maxResolution = Math.min(
         layerState.maxResolution,
-        ownLayerState.maxResolution
+        ownLayerState.maxResolution,
       );
       layerState.minResolution = Math.max(
         layerState.minResolution,
-        ownLayerState.minResolution
+        ownLayerState.minResolution,
       );
       layerState.minZoom = Math.max(layerState.minZoom, ownLayerState.minZoom);
       layerState.maxZoom = Math.min(layerState.maxZoom, ownLayerState.maxZoom);
@@ -326,7 +331,7 @@ class LayerGroup extends BaseLayer {
         if (layerState.extent !== undefined) {
           layerState.extent = getIntersection(
             layerState.extent,
-            ownLayerState.extent
+            ownLayerState.extent,
           );
         } else {
           layerState.extent = ownLayerState.extent;

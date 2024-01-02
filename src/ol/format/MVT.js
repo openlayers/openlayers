@@ -141,7 +141,7 @@ class MVT extends FeatureFormat {
           // close polygon
           flatCoordinates.push(
             flatCoordinates[currentEnd],
-            flatCoordinates[currentEnd + 1]
+            flatCoordinates[currentEnd + 1],
           );
           coordsLen += 2;
         }
@@ -195,7 +195,7 @@ class MVT extends FeatureFormat {
         ends,
         2,
         values,
-        id
+        id,
       );
       feature.transform(options.dataProjection);
     } else {
@@ -211,12 +211,12 @@ class MVT extends FeatureFormat {
           geometryType === 'Point'
             ? new Point(flatCoordinates, 'XY')
             : geometryType === 'LineString'
-            ? new LineString(flatCoordinates, 'XY')
-            : geometryType === 'MultiPoint'
-            ? new MultiPoint(flatCoordinates, 'XY')
-            : geometryType === 'MultiLineString'
-            ? new MultiLineString(flatCoordinates, 'XY', ends)
-            : null;
+              ? new LineString(flatCoordinates, 'XY')
+              : geometryType === 'MultiPoint'
+                ? new MultiPoint(flatCoordinates, 'XY')
+                : geometryType === 'MultiLineString'
+                  ? new MultiLineString(flatCoordinates, 'XY', ends)
+                  : null;
       }
       const ctor = /** @type {typeof import("../Feature.js").default} */ (
         this.featureClass_
@@ -353,18 +353,18 @@ function layerPBFReader(tag, layer, pbf) {
         tag === 1
           ? pbf.readString()
           : tag === 2
-          ? pbf.readFloat()
-          : tag === 3
-          ? pbf.readDouble()
-          : tag === 4
-          ? pbf.readVarint64()
-          : tag === 5
-          ? pbf.readVarint()
-          : tag === 6
-          ? pbf.readSVarint()
-          : tag === 7
-          ? pbf.readBoolean()
-          : null;
+            ? pbf.readFloat()
+            : tag === 3
+              ? pbf.readDouble()
+              : tag === 4
+                ? pbf.readVarint64()
+                : tag === 5
+                  ? pbf.readVarint()
+                  : tag === 6
+                    ? pbf.readSVarint()
+                    : tag === 7
+                      ? pbf.readBoolean()
+                      : null;
     }
     layer.values.push(value);
   }

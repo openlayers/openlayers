@@ -48,7 +48,7 @@ class ReprojImage extends ImageWrapper {
     targetResolution,
     pixelRatio,
     getImageFunction,
-    interpolate
+    interpolate,
   ) {
     let maxSourceExtent = sourceProj.getExtent();
     if (maxSourceExtent && sourceProj.canWrapX()) {
@@ -72,7 +72,7 @@ class ReprojImage extends ImageWrapper {
       sourceProj,
       targetProj,
       targetCenter,
-      targetResolution
+      targetResolution,
     );
 
     const errorThresholdInPixels = ERROR_THRESHOLD;
@@ -83,7 +83,7 @@ class ReprojImage extends ImageWrapper {
       limitedTargetExtent,
       maxSourceExtent,
       sourceResolution * errorThresholdInPixels,
-      targetResolution
+      targetResolution,
     );
 
     const sourceExtent = triangulation.calculateSourceExtent();
@@ -206,7 +206,7 @@ class ReprojImage extends ImageWrapper {
         0,
         undefined,
         this.interpolate_,
-        true
+        true,
       );
     }
     this.state = sourceState;
@@ -238,7 +238,7 @@ class ReprojImage extends ImageWrapper {
               this.reproject_();
             }
           },
-          this
+          this,
         );
         this.sourceImage_.load();
       }
@@ -250,7 +250,9 @@ class ReprojImage extends ImageWrapper {
    */
   unlistenSource_() {
     unlistenByKey(
-      /** @type {!import("../events.js").EventsKey} */ (this.sourceListenerKey_)
+      /** @type {!import("../events.js").EventsKey} */ (
+        this.sourceListenerKey_
+      ),
     );
     this.sourceListenerKey_ = null;
   }

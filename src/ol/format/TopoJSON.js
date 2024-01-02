@@ -79,7 +79,7 @@ class TopoJSON extends JSONFeature {
      * @type {import("../proj/Projection.js").default}
      */
     this.dataProjection = getProjection(
-      options.dataProjection ? options.dataProjection : 'EPSG:4326'
+      options.dataProjection ? options.dataProjection : 'EPSG:4326',
     );
   }
 
@@ -126,8 +126,8 @@ class TopoJSON extends JSONFeature {
               translate,
               property,
               objectName,
-              options
-            )
+              options,
+            ),
           );
         } else {
           feature = /** @type {TopoJSONGeometry} */ (
@@ -141,8 +141,8 @@ class TopoJSON extends JSONFeature {
               translate,
               property,
               objectName,
-              options
-            )
+              options,
+            ),
           );
         }
       }
@@ -328,7 +328,7 @@ function readFeaturesFromGeometryCollection(
   translate,
   property,
   name,
-  options
+  options,
 ) {
   const geometries = collection['geometries'];
   const features = [];
@@ -340,7 +340,7 @@ function readFeaturesFromGeometryCollection(
       translate,
       property,
       name,
-      options
+      options,
     );
   }
   return features;
@@ -366,7 +366,7 @@ function readFeatureFromGeometry(
   translate,
   property,
   name,
-  options
+  options,
 ) {
   let geometry = null;
   const type = object.type;

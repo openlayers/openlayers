@@ -136,14 +136,14 @@ function parseStyle(style, bandCount) {
   if (style.contrast !== undefined) {
     const contrast = expressionToGlsl(context, style.contrast, NumberType);
     pipeline.push(
-      `color.rgb = clamp((${contrast} + 1.0) * color.rgb - (${contrast} / 2.0), vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0));`
+      `color.rgb = clamp((${contrast} + 1.0) * color.rgb - (${contrast} / 2.0), vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0));`,
     );
   }
 
   if (style.exposure !== undefined) {
     const exposure = expressionToGlsl(context, style.exposure, NumberType);
     pipeline.push(
-      `color.rgb = clamp((${exposure} + 1.0) * color.rgb, vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0));`
+      `color.rgb = clamp((${exposure} + 1.0) * color.rgb, vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0));`,
     );
   }
 
@@ -171,7 +171,7 @@ function parseStyle(style, bandCount) {
   if (style.brightness !== undefined) {
     const brightness = expressionToGlsl(context, style.brightness, NumberType);
     pipeline.push(
-      `color.rgb = clamp(color.rgb + ${brightness}, vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0));`
+      `color.rgb = clamp(color.rgb + ${brightness}, vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0));`,
     );
   }
 
@@ -181,7 +181,7 @@ function parseStyle(style, bandCount) {
   const numVariables = Object.keys(context.variables).length;
   if (numVariables > 1 && !style.variables) {
     throw new Error(
-      `Missing variables in style (expected ${context.variables})`
+      `Missing variables in style (expected ${context.variables})`,
     );
   }
 
@@ -206,20 +206,20 @@ function parseStyle(style, bandCount) {
 
   const textureCount = Math.ceil(bandCount / 4);
   uniformDeclarations.push(
-    `uniform sampler2D ${Uniforms.TILE_TEXTURE_ARRAY}[${textureCount}];`
+    `uniform sampler2D ${Uniforms.TILE_TEXTURE_ARRAY}[${textureCount}];`,
   );
 
   if (context.paletteTextures) {
     uniformDeclarations.push(
-      `uniform sampler2D ${PALETTE_TEXTURE_ARRAY}[${context.paletteTextures.length}];`
+      `uniform sampler2D ${PALETTE_TEXTURE_ARRAY}[${context.paletteTextures.length}];`,
     );
   }
 
-  const functionDefintions = Object.keys(context.functions).map(function (
-    name
-  ) {
-    return context.functions[name];
-  });
+  const functionDefintions = Object.keys(context.functions).map(
+    function (name) {
+      return context.functions[name];
+    },
+  );
 
   const fragmentShader = `
     #ifdef GL_FRAGMENT_PRECISION_HIGH
@@ -349,8 +349,8 @@ class WebGLTileLayer extends BaseTileLayer {
         ? this.sources_(extent, resolution)
         : this.sources_
       : source
-      ? [source]
-      : [];
+        ? [source]
+        : [];
   }
 
   /**
@@ -456,7 +456,7 @@ class WebGLTileLayer extends BaseTileLayer {
     if (this.renderedResolution_ > 0.5 * viewState.resolution) {
       const altSources = this.getSources(
         frameState.extent,
-        this.renderedResolution_
+        this.renderedResolution_,
       ).filter((source) => !sources.includes(source));
       if (altSources.length > 0) {
         return this.renderSources(frameState, altSources);

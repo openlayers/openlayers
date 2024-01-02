@@ -44,11 +44,11 @@ map.addLayer(
         scale,
         frameState.viewState.rotation,
         -center[0] / svgResolution - width / 2,
-        center[1] / svgResolution - height / 2
+        center[1] / svgResolution - height / 2,
       );
       svgContainer.style.transform = cssTransform;
       svgContainer.style.opacity = this.getOpacity();
       return svgContainer;
     },
-  })
+  }),
 );

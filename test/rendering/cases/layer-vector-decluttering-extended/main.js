@@ -52,7 +52,7 @@ map.addLayer(
         }),
       });
     },
-  })
+  }),
 );
 
 const sourceRed = new VectorSource();
@@ -97,7 +97,7 @@ map.addLayer(
         }),
       });
     },
-  })
+  }),
 );
 
 const sourceOrange = new VectorSource();
@@ -140,7 +140,7 @@ map.addLayer(
         }),
       });
     },
-  })
+  }),
 );
 
 const sourceCyan = new VectorSource();
@@ -185,7 +185,7 @@ map.addLayer(
         }),
       });
     },
-  })
+  }),
 );
 
 render({tolerance: 0.007});

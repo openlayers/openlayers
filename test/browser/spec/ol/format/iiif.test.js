@@ -12,7 +12,7 @@ describe('ol.format.IIIFInfo', function () {
       expect(iiifInfo.getImageApiVersion()).to.be(Versions.VERSION3);
 
       iiifInfo.setImageInfo(
-        '{"@context": "http://iiif.io/api/image/2/context.json","@id":"http://iiif.test/id"}'
+        '{"@context": "http://iiif.io/api/image/2/context.json","@id":"http://iiif.test/id"}',
       );
       expect(iiifInfo.getImageApiVersion()).to.be(Versions.VERSION2);
     });

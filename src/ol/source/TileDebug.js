@@ -61,7 +61,7 @@ class TileDebug extends XYZ {
         context.fillText(text, tileSize[0] / 2, tileSize[1] / 2, tileSize[0]);
 
         /** @type {import("../ImageTile.js").default} */ (tile).setImage(
-          context.canvas
+          context.canvas,
         );
       },
     });

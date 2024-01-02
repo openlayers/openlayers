@@ -77,7 +77,7 @@ class Fill {
         'anonymous',
         undefined,
         color.offset ? null : color.color ? color.color : null,
-        !(color.offset && color.size)
+        !(color.offset && color.size),
       );
       patternImage.ready().then(() => {
         this.patternImage_ = null;

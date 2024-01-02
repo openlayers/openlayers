@@ -8,7 +8,7 @@ import {useGeographic} from '../src/ol/proj.js';
 useGeographic();
 
 const tiles = new pmtiles.PMTiles(
-  'https://pub-9288c68512ed46eca46ddcade307709b.r2.dev/protomaps-sample-datasets/terrarium_z9.pmtiles'
+  'https://pub-9288c68512ed46eca46ddcade307709b.r2.dev/protomaps-sample-datasets/terrarium_z9.pmtiles',
 );
 
 function loadImage(src) {
@@ -119,7 +119,7 @@ function formatLocation([lon, lat]) {
   const NS = lat < 0 ? 'S' : 'N';
   const EW = lon < 0 ? 'W' : 'E';
   return `${Math.abs(lat).toFixed(1)}° ${NS}, ${Math.abs(lon).toFixed(
-    1
+    1,
   )}° ${EW}`;
 }
 

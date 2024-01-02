@@ -27,7 +27,7 @@ pt1.setStyle(
         color: 'fuchsia',
       }),
     }),
-  })
+  }),
 );
 
 const border = new Feature({
