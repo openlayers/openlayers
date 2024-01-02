@@ -443,4 +443,61 @@ describe('VectorStyleRenderer', () => {
       ]);
     });
   });
+  describe('applying a style filter', () => {
+    let buffers;
+    const style = {
+      'fill-color': 'green',
+      'stroke-width': 2,
+      'circle-radius': 6,
+    };
+    describe('excluding only some objects', () => {
+      beforeEach(async () => {
+        const filter = ['<', ['get', 'test'], 2500];
+        vectorStyleRenderer = new VectorStyleRenderer(
+          {...style, filter},
+          helper,
+          true,
+          filter
+        );
+        sinon.spy(geometryBatch, 'filter');
+        buffers = await vectorStyleRenderer.generateBuffers(
+          geometryBatch,
+          SAMPLE_TRANSFORM
+        );
+      });
+      it('compiles filter to be run on CPU', () => {
+        const filterFn = vectorStyleRenderer.featureFilter_;
+        expect(filterFn(geometryBatch.getFeatureFromRef(1))).to.be(true);
+        expect(filterFn(geometryBatch.getFeatureFromRef(2))).to.be(true);
+        expect(filterFn(geometryBatch.getFeatureFromRef(3))).to.be(false);
+        expect(filterFn(geometryBatch.getFeatureFromRef(4))).to.be(false);
+      });
+      it('applies filter and generates buffer', () => {
+        expect(geometryBatch.filter.callCount).to.be(1);
+        expect(buffers.pointBuffers).not.to.be(null);
+        expect(buffers.lineStringBuffers).not.to.be(null);
+        expect(buffers.polygonBuffers).not.to.be(null);
+      });
+    });
+    describe('excluding all objects', () => {
+      beforeEach(async () => {
+        const filter = ['>', ['get', 'test'], 10000];
+        vectorStyleRenderer = new VectorStyleRenderer(
+          {...style, filter},
+          helper,
+          true,
+          filter
+        );
+        sinon.spy(geometryBatch, 'filter');
+        buffers = await vectorStyleRenderer.generateBuffers(
+          geometryBatch,
+          SAMPLE_TRANSFORM
+        );
+      });
+      it('applies filter and returns null', () => {
+        expect(geometryBatch.filter.callCount).to.be(1);
+        expect(buffers).to.be(null);
+      });
+    });
+  });
 });
