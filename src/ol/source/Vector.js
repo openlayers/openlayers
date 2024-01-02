@@ -1093,12 +1093,14 @@ class VectorSource extends Source {
    */
   removeFeatureInternal(feature) {
     const featureKey = getUid(feature);
-    const featureChangeKeys = this.featureChangeKeys_[featureKey];
-    if (!featureChangeKeys) {
-      return;
+    if (!(feature instanceof RenderFeature)) {
+      const featureChangeKeys = this.featureChangeKeys_[featureKey];
+      if (!featureChangeKeys) {
+        return;
+      }
+      featureChangeKeys.forEach(unlistenByKey);
+      delete this.featureChangeKeys_[featureKey];
     }
-    featureChangeKeys.forEach(unlistenByKey);
-    delete this.featureChangeKeys_[featureKey];
     const id = feature.getId();
     if (id !== undefined) {
       delete this.idIndex_[id.toString()];
