@@ -142,10 +142,18 @@ export function greatCircleArc(
  * @param {number} lat2 Latitude 2.
  * @param {import("../../proj/Projection.js").default} projection Projection.
  * @param {number} squaredTolerance Squared tolerance.
+ * @param {import("../../proj/Projection.js").default|undefined} sourceProjection Source projection.
  * @return {Array<number>} Flat coordinates.
  */
-export function meridian(lon, lat1, lat2, projection, squaredTolerance) {
-  const epsg4326Projection = getProjection('EPSG:4326');
+export function meridian(
+  lon,
+  lat1,
+  lat2,
+  projection,
+  squaredTolerance,
+  sourceProjection
+) {
+  sourceProjection = sourceProjection || getProjection('EPSG:4326');
   return line(
     /**
      * @param {number} frac Fraction.
@@ -154,7 +162,7 @@ export function meridian(lon, lat1, lat2, projection, squaredTolerance) {
     function (frac) {
       return [lon, lat1 + (lat2 - lat1) * frac];
     },
-    getTransform(epsg4326Projection, projection),
+    getTransform(sourceProjection, projection),
     squaredTolerance
   );
 }
@@ -166,10 +174,18 @@ export function meridian(lon, lat1, lat2, projection, squaredTolerance) {
  * @param {number} lon2 Longitude 2.
  * @param {import("../../proj/Projection.js").default} projection Projection.
  * @param {number} squaredTolerance Squared tolerance.
+ * @param {import("../../proj/Projection.js").default|undefined} sourceProjection Source projection.
  * @return {Array<number>} Flat coordinates.
  */
-export function parallel(lat, lon1, lon2, projection, squaredTolerance) {
-  const epsg4326Projection = getProjection('EPSG:4326');
+export function parallel(
+  lat,
+  lon1,
+  lon2,
+  projection,
+  squaredTolerance,
+  sourceProjection
+) {
+  sourceProjection = sourceProjection || getProjection('EPSG:4326');
   return line(
     /**
      * @param {number} frac Fraction.
@@ -178,7 +194,7 @@ export function parallel(lat, lon1, lon2, projection, squaredTolerance) {
     function (frac) {
       return [lon1 + (lon2 - lon1) * frac, lat];
     },
-    getTransform(epsg4326Projection, projection),
+    getTransform(sourceProjection, projection),
     squaredTolerance
   );
 }
