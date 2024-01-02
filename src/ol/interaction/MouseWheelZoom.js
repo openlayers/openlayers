@@ -150,19 +150,19 @@ class MouseWheelZoom extends Interaction {
 
   /**
    * @private
+   * @param {import("../View.js").default} view View.
    */
-  endInteraction_() {
-    this.trackpadTimeoutId_ = undefined;
-    const map = this.getMap();
-    if (!map) {
-      return;
-    }
-    const view = map.getView();
+  endInteraction_(view) {
     view.endInteraction(
       undefined,
       this.lastDelta_ ? (this.lastDelta_ > 0 ? 1 : -1) : 0,
       this.lastAnchor_
     );
+
+    this.trackpadTimeoutId_ = undefined;
+    this.mode_ = undefined;
+    this.lastAnchor_ = null;
+    this.startTime_ = undefined;
   }
 
   /**
@@ -221,7 +221,7 @@ class MouseWheelZoom extends Interaction {
     const view = map.getView();
     if (
       this.mode_ === 'trackpad' &&
-      !(view.getConstrainResolution() || this.constrainResolution_)
+      (view.getConstrainResolution() || this.constrainResolution_)
     ) {
       if (this.trackpadTimeoutId_) {
         clearTimeout(this.trackpadTimeoutId_);
@@ -232,7 +232,7 @@ class MouseWheelZoom extends Interaction {
         view.beginInteraction();
       }
       this.trackpadTimeoutId_ = setTimeout(
-        this.endInteraction_.bind(this),
+        this.endInteraction_.bind(this, view),
         this.timeout_
       );
       view.adjustZoom(-delta / this.deltaPerZoom_, this.lastAnchor_);
@@ -246,7 +246,7 @@ class MouseWheelZoom extends Interaction {
 
     clearTimeout(this.timeoutId_);
     this.timeoutId_ = setTimeout(
-      this.handleWheelZoom_.bind(this, map),
+      this.handleWheelZoom_.bind(this, view),
       timeLeft
     );
 
@@ -255,10 +255,9 @@ class MouseWheelZoom extends Interaction {
 
   /**
    * @private
-   * @param {import("../Map.js").default} map Map.
+   * @param {import("../View.js").default} view View.
    */
-  handleWheelZoom_(map) {
-    const view = map.getView();
+  handleWheelZoom_(view) {
     if (view.getAnimating()) {
       view.cancelAnimations();
     }
@@ -274,11 +273,11 @@ class MouseWheelZoom extends Interaction {
     }
     zoomByDelta(view, delta, this.lastAnchor_, this.duration_);
 
+    this.timeoutId_ = undefined;
     this.mode_ = undefined;
     this.totalDelta_ = 0;
     this.lastAnchor_ = null;
     this.startTime_ = undefined;
-    this.timeoutId_ = undefined;
   }
 
   /**

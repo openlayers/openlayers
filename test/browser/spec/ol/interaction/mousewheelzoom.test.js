@@ -65,6 +65,7 @@ describe('ol.interaction.MouseWheelZoom', function () {
   describe('handleEvent()', function () {
     if (FIREFOX) {
       it('works on Firefox in DOM_DELTA_PIXEL mode (trackpad)', function (done) {
+        map.getView().setConstrainResolution(true);
         map.once('postrender', function () {
           expect(interaction.mode_).to.be('trackpad');
           done();
@@ -83,6 +84,7 @@ describe('ol.interaction.MouseWheelZoom', function () {
 
     if (!FIREFOX) {
       it('works in DOM_DELTA_PIXEL mode (trackpad)', function (done) {
+        map.getView().setConstrainResolution(true);
         map.once('postrender', function () {
           expect(interaction.mode_).to.be('trackpad');
           done();
