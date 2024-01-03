@@ -22,7 +22,7 @@ for (i = 0, ii = styles.length; i < ii; ++i) {
         imagerySet: styles[i],
         // placeholderTiles: false, // Optional. Prevents showing of BingMaps placeholder tiles
       }),
-    })
+    }),
   );
 }
 const map = new Map({

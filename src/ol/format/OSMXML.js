@@ -73,7 +73,7 @@ class OSMXML extends XMLFeature {
         },
         PARSERS,
         node,
-        [options]
+        [options],
       );
       // parse nodes in ways
       for (let j = 0; j < state.ways.length; j++) {
@@ -143,7 +143,7 @@ function readNode(node, objectStack) {
     },
     NODE_PARSERS,
     node,
-    objectStack
+    objectStack,
   );
   if (!isEmpty(values.tags)) {
     const geometry = new Point(coordinates);
@@ -172,7 +172,7 @@ function readWay(node, objectStack) {
     },
     WAY_PARSERS,
     node,
-    objectStack
+    objectStack,
   );
   const state = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   state.ways.push(values);

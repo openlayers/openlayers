@@ -102,12 +102,12 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       layer.getSource().addFeature(
         new Feature({
           geometry: new Point([10, 20]),
-        })
+        }),
       );
       layer.getSource().addFeature(
         new Feature({
           geometry: new Point([30, 40]),
-        })
+        }),
       );
       renderer.prepareFrame(frameState);
 
@@ -118,17 +118,17 @@ describe('ol/renderer/webgl/PointsLayer', function () {
           return;
         }
         expect(renderer.verticesBuffer_.getArray().length).to.eql(
-          2 * 4 * attributePerVertex
+          2 * 4 * attributePerVertex,
         );
         expect(renderer.indicesBuffer_.getArray().length).to.eql(2 * 6);
 
         expect(renderer.verticesBuffer_.getArray()[0]).to.eql(10);
         expect(renderer.verticesBuffer_.getArray()[1]).to.eql(20);
         expect(
-          renderer.verticesBuffer_.getArray()[4 * attributePerVertex + 0]
+          renderer.verticesBuffer_.getArray()[4 * attributePerVertex + 0],
         ).to.eql(30);
         expect(
-          renderer.verticesBuffer_.getArray()[4 * attributePerVertex + 1]
+          renderer.verticesBuffer_.getArray()[4 * attributePerVertex + 1],
         ).to.eql(40);
         done();
       });
@@ -144,12 +144,12 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       layer.getSource().addFeature(
         new Feature({
           geometry: new Point([10, 20]),
-        })
+        }),
       );
       layer.getSource().addFeature(
         new Feature({
           geometry: new Point([30, 40]),
-        })
+        }),
       );
       renderer.prepareFrame(frameState);
 
@@ -163,17 +163,17 @@ describe('ol/renderer/webgl/PointsLayer', function () {
           return;
         }
         expect(renderer.verticesBuffer_.getArray().length).to.eql(
-          2 * 4 * attributePerVertex
+          2 * 4 * attributePerVertex,
         );
         expect(renderer.indicesBuffer_.getArray().length).to.eql(2 * 6);
 
         expect(renderer.verticesBuffer_.getArray()[0]).to.eql(10);
         expect(renderer.verticesBuffer_.getArray()[1]).to.eql(20);
         expect(
-          renderer.verticesBuffer_.getArray()[4 * attributePerVertex + 0]
+          renderer.verticesBuffer_.getArray()[4 * attributePerVertex + 0],
         ).to.eql(30);
         expect(
-          renderer.verticesBuffer_.getArray()[4 * attributePerVertex + 1]
+          renderer.verticesBuffer_.getArray()[4 * attributePerVertex + 1],
         ).to.eql(40);
         done();
       });
@@ -184,13 +184,13 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       source.addFeature(
         new Feature({
           geometry: new Point([10, 20]),
-        })
+        }),
       );
       source.removeFeature(source.getFeatures()[0]);
       source.addFeature(
         new Feature({
           geometry: new Point([10, 20]),
-        })
+        }),
       );
       renderer.prepareFrame(frameState);
 
@@ -200,7 +200,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         }
         const attributePerVertex = 3;
         expect(renderer.verticesBuffer_.getArray().length).to.eql(
-          4 * attributePerVertex
+          4 * attributePerVertex,
         );
         expect(renderer.indicesBuffer_.getArray().length).to.eql(6);
         done();
@@ -301,7 +301,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         -1,
         0,
         0,
-        0
+        0,
       );
       const frameState = Object.assign({}, baseFrameState, {
         extent: [-20, -20, 20, 20],
@@ -328,7 +328,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
               expect(feature).to.be(expected);
               called = true;
             },
-            null
+            null,
           );
 
           if (expected) {
@@ -363,7 +363,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         -1,
         0,
         0,
-        0
+        0,
       );
       const frameState = Object.assign({}, baseFrameState, {
         pixelRatio: 3,
@@ -482,24 +482,24 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       expect(renderer.featureCount_).to.be(3);
       expect(getCache(features[0], renderer).feature).to.be(features[0]);
       expect(getCache(features[0], renderer).geometry).to.be(
-        features[0].getGeometry()
+        features[0].getGeometry(),
       );
       expect(getCache(features[0], renderer).properties['test']).to.be(
-        features[0].get('test')
+        features[0].get('test'),
       );
       expect(getCache(features[1], renderer).feature).to.be(features[1]);
       expect(getCache(features[1], renderer).geometry).to.be(
-        features[1].getGeometry()
+        features[1].getGeometry(),
       );
       expect(getCache(features[1], renderer).properties['test']).to.be(
-        features[1].get('test')
+        features[1].get('test'),
       );
       expect(getCache(features[2], renderer).feature).to.be(features[2]);
       expect(getCache(features[2], renderer).geometry).to.be(
-        features[2].getGeometry()
+        features[2].getGeometry(),
       );
       expect(getCache(features[2], renderer).properties['test']).to.be(
-        features[2].get('test')
+        features[2].get('test'),
       );
     });
 
@@ -517,17 +517,17 @@ describe('ol/renderer/webgl/PointsLayer', function () {
 
       expect(getCache(features[0], renderer).feature).to.be(features[0]);
       expect(getCache(features[0], renderer).geometry).to.be(
-        features[0].getGeometry()
+        features[0].getGeometry(),
       );
       expect(getCache(features[0], renderer).properties['test']).to.be(
-        features[0].get('test')
+        features[0].get('test'),
       );
       expect(getCache(features[1], renderer).feature).to.be(features[1]);
       expect(getCache(features[1], renderer).geometry).to.be(
-        features[1].getGeometry()
+        features[1].getGeometry(),
       );
       expect(getCache(features[1], renderer).properties['test']).to.be(
-        features[1].get('test')
+        features[1].get('test'),
       );
     });
 
@@ -545,17 +545,17 @@ describe('ol/renderer/webgl/PointsLayer', function () {
 
       expect(getCache(features[0], renderer).feature).to.be(features[0]);
       expect(getCache(features[0], renderer).geometry).to.be(
-        features[0].getGeometry()
+        features[0].getGeometry(),
       );
       expect(getCache(features[0], renderer).properties['test']).to.be(
-        features[0].get('test')
+        features[0].get('test'),
       );
       expect(getCache(features[2], renderer).feature).to.be(features[2]);
       expect(getCache(features[2], renderer).geometry).to.be(
-        features[2].getGeometry()
+        features[2].getGeometry(),
       );
       expect(getCache(features[2], renderer).properties['test']).to.be(
-        features[2].get('test')
+        features[2].get('test'),
       );
     });
 
@@ -576,10 +576,10 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         10, 20,
       ]);
       expect(getCache(features[0], renderer).properties['test']).to.be(
-        features[0].get('test')
+        features[0].get('test'),
       );
       expect(getCache(features[0], renderer).properties['added']).to.be(
-        features[0].get('added')
+        features[0].get('added'),
       );
     });
   });
@@ -713,7 +713,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
           const canvas = document.querySelector('.ol-layer');
           targetContext.drawImage(canvas, 99, 0, 1, 1, 0, 0, 1, 1);
           expect(
-            Array.from(targetContext.getImageData(0, 0, 1, 1).data)
+            Array.from(targetContext.getImageData(0, 0, 1, 1).data),
           ).to.eql([255, 0, 0, 255]);
           done();
         });

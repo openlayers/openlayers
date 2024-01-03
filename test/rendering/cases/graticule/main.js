@@ -10,7 +10,7 @@ proj4.defs(
   'EPSG:9311',
   '+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +ellps=clrk66 ' +
     '+towgs84=2.478,149.752,197.726,-0.526,-0.498,0.501,0.685 ' +
-    '+units=m +no_defs +type=crs'
+    '+units=m +no_defs +type=crs',
 );
 register(proj4);
 

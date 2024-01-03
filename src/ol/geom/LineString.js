@@ -55,14 +55,14 @@ class LineString extends SimpleGeometry {
     if (layout !== undefined && !Array.isArray(coordinates[0])) {
       this.setFlatCoordinates(
         layout,
-        /** @type {Array<number>} */ (coordinates)
+        /** @type {Array<number>} */ (coordinates),
       );
     } else {
       this.setCoordinates(
         /** @type {Array<import("../coordinate.js").Coordinate>} */ (
           coordinates
         ),
-        layout
+        layout,
       );
     }
   }
@@ -85,7 +85,7 @@ class LineString extends SimpleGeometry {
   clone() {
     const lineString = new LineString(
       this.flatCoordinates.slice(),
-      this.layout
+      this.layout,
     );
     lineString.applyProperties(this);
     return lineString;
@@ -109,8 +109,8 @@ class LineString extends SimpleGeometry {
           0,
           this.flatCoordinates.length,
           this.stride,
-          0
-        )
+          0,
+        ),
       );
       this.maxDeltaRevision_ = this.getRevision();
     }
@@ -124,7 +124,7 @@ class LineString extends SimpleGeometry {
       x,
       y,
       closestPoint,
-      minSquaredDistance
+      minSquaredDistance,
     );
   }
 
@@ -145,7 +145,7 @@ class LineString extends SimpleGeometry {
       0,
       this.flatCoordinates.length,
       this.stride,
-      callback
+      callback,
     );
   }
 
@@ -174,7 +174,7 @@ class LineString extends SimpleGeometry {
       this.flatCoordinates.length,
       this.stride,
       m,
-      extrapolate
+      extrapolate,
     );
   }
 
@@ -188,7 +188,7 @@ class LineString extends SimpleGeometry {
       this.flatCoordinates,
       0,
       this.flatCoordinates.length,
-      this.stride
+      this.stride,
     );
   }
 
@@ -210,7 +210,7 @@ class LineString extends SimpleGeometry {
       this.stride,
       fraction,
       dest,
-      this.stride
+      this.stride,
     );
   }
 
@@ -224,7 +224,7 @@ class LineString extends SimpleGeometry {
       this.flatCoordinates,
       0,
       this.flatCoordinates.length,
-      this.stride
+      this.stride,
     );
   }
 
@@ -235,7 +235,7 @@ class LineString extends SimpleGeometry {
     if (this.flatMidpointRevision_ != this.getRevision()) {
       this.flatMidpoint_ = this.getCoordinateAt(
         0.5,
-        this.flatMidpoint_ ?? undefined
+        this.flatMidpoint_ ?? undefined,
       );
       this.flatMidpointRevision_ = this.getRevision();
     }
@@ -257,7 +257,7 @@ class LineString extends SimpleGeometry {
       this.stride,
       squaredTolerance,
       simplifiedFlatCoordinates,
-      0
+      0,
     );
     return new LineString(simplifiedFlatCoordinates, 'XY');
   }
@@ -283,7 +283,7 @@ class LineString extends SimpleGeometry {
       0,
       this.flatCoordinates.length,
       this.stride,
-      extent
+      extent,
     );
   }
 
@@ -302,7 +302,7 @@ class LineString extends SimpleGeometry {
       this.flatCoordinates,
       0,
       coordinates,
-      this.stride
+      this.stride,
     );
     this.changed();
   }

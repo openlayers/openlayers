@@ -111,7 +111,7 @@ class VectorTileLayer extends BaseVectorLayer {
     super(
       /** @type {import("./BaseVector.js").Options<import("../source/VectorTile.js").default>} */ (
         baseOptions
-      )
+      ),
     );
 
     /***
@@ -132,7 +132,7 @@ class VectorTileLayer extends BaseVectorLayer {
     const renderMode = options.renderMode || 'hybrid';
     assert(
       renderMode == 'hybrid' || renderMode == 'vector',
-      "`renderMode` must be `'hybrid'` or `'vector'`"
+      "`renderMode` must be `'hybrid'` or `'vector'`",
     );
 
     /**
@@ -145,7 +145,7 @@ class VectorTileLayer extends BaseVectorLayer {
     this.setUseInterimTilesOnError(
       options.useInterimTilesOnError !== undefined
         ? options.useInterimTilesOnError
-        : true
+        : true,
     );
 
     /**

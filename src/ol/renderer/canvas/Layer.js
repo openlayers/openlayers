@@ -159,7 +159,7 @@ class CanvasLayerRenderer extends LayerRenderer {
           target.style.backgroundColor &&
           equals(
             asArray(target.style.backgroundColor),
-            asArray(backgroundColor)
+            asArray(backgroundColor),
           )))
     ) {
       const canvas = target.firstElementChild;
@@ -251,7 +251,7 @@ class CanvasLayerRenderer extends LayerRenderer {
         type,
         this.inversePixelTransform,
         frameState,
-        context
+        context,
       );
       layer.dispatchEvent(event);
     }
@@ -295,7 +295,7 @@ class CanvasLayerRenderer extends LayerRenderer {
     pixelRatio,
     width,
     height,
-    offsetX
+    offsetX,
   ) {
     const dx1 = width / 2;
     const dy1 = height / 2;
@@ -311,7 +311,7 @@ class CanvasLayerRenderer extends LayerRenderer {
       sy,
       -rotation,
       dx2,
-      dy2
+      dy2,
     );
   }
 

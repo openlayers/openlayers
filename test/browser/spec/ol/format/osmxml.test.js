@@ -155,7 +155,7 @@ describe('ol.format.OSMXML', function () {
       const g = f.getGeometry();
       expect(g).to.be.an(Point);
       expect(g.getCoordinates()).to.eql(
-        transform([2, 1], 'EPSG:4326', 'EPSG:3857')
+        transform([2, 1], 'EPSG:4326', 'EPSG:3857'),
       );
     });
   });

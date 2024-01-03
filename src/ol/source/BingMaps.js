@@ -265,10 +265,10 @@ class BingMaps extends TileImage {
               tileCoord[0],
               tileCoord[1],
               tileCoord[2],
-              quadKeyTileCoord
+              quadKeyTileCoord,
             );
             const url = new URL(
-              imageUrl.replace('{quadkey}', quadKey(quadKeyTileCoord))
+              imageUrl.replace('{quadkey}', quadKey(quadKeyTileCoord)),
             );
             const params = url.searchParams;
             if (hidpi) {
@@ -283,13 +283,13 @@ class BingMaps extends TileImage {
             return url.toString();
           }
         );
-      })
+      }),
     );
 
     if (resource.imageryProviders) {
       const transform = getTransformFromProjections(
         getProjection('EPSG:4326'),
-        this.getProjection()
+        this.getProjection(),
       );
 
       this.setAttributions((frameState) => {
@@ -298,11 +298,11 @@ class BingMaps extends TileImage {
         const tileGrid = this.getTileGrid();
         const z = tileGrid.getZForResolution(
           viewState.resolution,
-          this.zDirection
+          this.zDirection,
         );
         const tileCoord = tileGrid.getTileCoordForCoordAndZ(
           viewState.center,
-          z
+          z,
         );
         const zoom = tileCoord[0];
         resource.imageryProviders.map(function (imageryProvider) {

@@ -18,7 +18,7 @@ describe('ol.render.Feature', function () {
         ends,
         2,
         properties,
-        'foo'
+        'foo',
       );
       expect(feature).to.be.a(RenderFeature);
     });
@@ -32,7 +32,7 @@ describe('ol.render.Feature', function () {
         ends,
         2,
         properties,
-        'foo'
+        'foo',
       );
       expect(feature.get('foo')).to.be('bar');
     });
@@ -46,7 +46,7 @@ describe('ol.render.Feature', function () {
         ends,
         2,
         properties,
-        'foo'
+        'foo',
       );
       expect(feature.getEnds()).to.equal(ends);
     });
@@ -60,7 +60,7 @@ describe('ol.render.Feature', function () {
         ends,
         2,
         properties,
-        'foo'
+        'foo',
       );
       expect(feature.getExtent()).to.eql([0, 0, 0, 0]);
     });
@@ -72,7 +72,7 @@ describe('ol.render.Feature', function () {
         ends,
         2,
         properties,
-        'foo'
+        'foo',
       );
       expect(feature.getExtent()).to.equal(feature.extent_);
     });
@@ -83,7 +83,7 @@ describe('ol.render.Feature', function () {
         [-1, -2, 2, 1],
         null,
         2,
-        {}
+        {},
       );
       expect(feature.getExtent()).to.eql([-1, -2, 2, 1]);
     });
@@ -97,7 +97,7 @@ describe('ol.render.Feature', function () {
         ends,
         2,
         properties,
-        'foo'
+        'foo',
       );
       expect(feature.getFlatCoordinates()).to.equal(flatCoordinates);
     });
@@ -118,7 +118,7 @@ describe('ol.render.Feature', function () {
         'Polygon',
         polygon.getOrientedFlatCoordinates(),
         polygon.getEnds(),
-        2
+        2,
       );
       expect(feature.getFlatInteriorPoint()).to.eql([5, 5, 10]);
       expect(feature.getFlatInteriorPoint()).to.be(feature.flatInteriorPoints_);
@@ -151,11 +151,11 @@ describe('ol.render.Feature', function () {
         'Polygon',
         polygon.getOrientedFlatCoordinates(),
         polygon.getEndss().flat(),
-        2
+        2,
       );
       expect(feature.getFlatInteriorPoints()).to.eql([5, 5, 10, 15, 5, 10]);
       expect(feature.getFlatInteriorPoints()).to.be(
-        feature.flatInteriorPoints_
+        feature.flatInteriorPoints_,
       );
     });
   });
@@ -173,7 +173,7 @@ describe('ol.render.Feature', function () {
         'LineString',
         line.getFlatCoordinates(),
         [10],
-        2
+        2,
       );
       expect(feature.getFlatMidpoint()).to.eql([10, 10]);
       expect(feature.getFlatMidpoint()).to.eql(feature.flatMidpoints_);
@@ -202,7 +202,7 @@ describe('ol.render.Feature', function () {
         'MultiLineString',
         line.getFlatCoordinates(),
         line.getEnds(),
-        2
+        2,
       );
       expect(feature.getFlatMidpoints()).to.eql([10, 10, 20, 10]);
       expect(feature.getFlatMidpoints()).to.be(feature.flatMidpoints_);
@@ -217,7 +217,7 @@ describe('ol.render.Feature', function () {
         ends,
         2,
         properties,
-        'foo'
+        'foo',
       );
       expect(feature.getGeometry()).to.equal(feature);
     });
@@ -231,7 +231,7 @@ describe('ol.render.Feature', function () {
         ends,
         2,
         properties,
-        'foo'
+        'foo',
       );
       expect(feature.getId()).to.be('foo');
     });
@@ -245,7 +245,7 @@ describe('ol.render.Feature', function () {
         ends,
         2,
         properties,
-        'foo'
+        'foo',
       );
       expect(feature.getProperties()).to.equal(properties);
     });
@@ -259,7 +259,7 @@ describe('ol.render.Feature', function () {
         ends,
         2,
         properties,
-        'foo'
+        'foo',
       );
       expect(feature.getSimplifiedGeometry()).to.equal(feature);
     });
@@ -273,7 +273,7 @@ describe('ol.render.Feature', function () {
         ends,
         2,
         properties,
-        'foo'
+        'foo',
       );
       expect(feature.getStride()).to.be(2);
     });
@@ -287,7 +287,7 @@ describe('ol.render.Feature', function () {
         ends,
         2,
         properties,
-        'foo'
+        'foo',
       );
       expect(feature.getStyleFunction()).to.be(undefined);
     });
@@ -301,7 +301,7 @@ describe('ol.render.Feature', function () {
         ends,
         2,
         properties,
-        'foo'
+        'foo',
       );
       expect(feature.getType()).to.equal(type);
     });
@@ -315,7 +315,7 @@ describe('ol.render.Feature', function () {
         ends,
         2,
         properties,
-        'foo'
+        'foo',
       );
 
       const clone = feature.clone();

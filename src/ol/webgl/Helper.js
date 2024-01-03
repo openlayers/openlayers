@@ -367,11 +367,11 @@ class WebGLHelper extends Disposable {
 
     canvas.addEventListener(
       ContextEventType.LOST,
-      this.boundHandleWebGLContextLost_
+      this.boundHandleWebGLContextLost_,
     );
     canvas.addEventListener(
       ContextEventType.RESTORED,
-      this.boundHandleWebGLContextRestored_
+      this.boundHandleWebGLContextRestored_,
     );
 
     /**
@@ -431,7 +431,7 @@ class WebGLHelper extends Disposable {
               vertexShader: options.vertexShader,
               fragmentShader: options.fragmentShader,
               uniforms: options.uniforms,
-            })
+            }),
         )
       : [new WebGLPostProcessingPass({webGlContext: this.gl_})];
 
@@ -543,11 +543,11 @@ class WebGLHelper extends Disposable {
     const canvas = this.gl_.canvas;
     canvas.removeEventListener(
       ContextEventType.LOST,
-      this.boundHandleWebGLContextLost_
+      this.boundHandleWebGLContextLost_,
     );
     canvas.removeEventListener(
       ContextEventType.RESTORED,
-      this.boundHandleWebGLContextRestored_
+      this.boundHandleWebGLContextRestored_,
     );
 
     releaseCanvas(this.canvasCacheKey_);
@@ -627,7 +627,7 @@ class WebGLHelper extends Disposable {
     frameState,
     renderTarget,
     disableAlphaBlend,
-    enableDepth
+    enableDepth,
   ) {
     const gl = this.gl_;
     const size = renderTarget.getSize();
@@ -681,12 +681,12 @@ class WebGLHelper extends Disposable {
           frameState,
           null,
           preCompose,
-          postCompose
+          postCompose,
         );
       } else {
         this.postProcessPasses_[i].apply(
           frameState,
-          this.postProcessPasses_[i + 1]
+          this.postProcessPasses_[i + 1],
         );
       }
     }
@@ -718,12 +718,12 @@ class WebGLHelper extends Disposable {
 
     this.setUniformFloatValue(
       DefaultUniform.TIME,
-      (Date.now() - this.startTime_) * 0.001
+      (Date.now() - this.startTime_) * 0.001,
     );
     this.setUniformFloatValue(DefaultUniform.ZOOM, frameState.viewState.zoom);
     this.setUniformFloatValue(
       DefaultUniform.RESOLUTION,
-      frameState.viewState.resolution
+      frameState.viewState.resolution,
     );
     this.setUniformFloatValue(DefaultUniform.PIXEL_RATIO, pixelRatio);
     this.setUniformFloatVec2(DefaultUniform.VIEWPORT_SIZE_PX, [
@@ -797,14 +797,14 @@ class WebGLHelper extends Disposable {
             gl.RGBA,
             gl.RGBA,
             gl.UNSIGNED_BYTE,
-            value
+            value,
           );
         }
         textureSlot++;
       } else if (Array.isArray(value) && value.length === 6) {
         this.setUniformMatrixValue(
           uniform.name,
-          fromTransform(this.tmpMat4_, value)
+          fromTransform(this.tmpMat4_, value),
         );
       } else if (Array.isArray(value) && value.length <= 4) {
         switch (value.length) {
@@ -812,7 +812,7 @@ class WebGLHelper extends Disposable {
             gl.uniform2f(
               this.getUniformLocation(uniform.name),
               value[0],
-              value[1]
+              value[1],
             );
             return;
           case 3:
@@ -820,7 +820,7 @@ class WebGLHelper extends Disposable {
               this.getUniformLocation(uniform.name),
               value[0],
               value[1],
-              value[2]
+              value[2],
             );
             return;
           case 4:
@@ -829,7 +829,7 @@ class WebGLHelper extends Disposable {
               value[0],
               value[1],
               value[2],
-              value[3]
+              value[3],
             );
             return;
           default:
@@ -883,12 +883,12 @@ class WebGLHelper extends Disposable {
 
     const fragmentShader = this.compileShader(
       fragmentShaderSource,
-      gl.FRAGMENT_SHADER
+      gl.FRAGMENT_SHADER,
     );
 
     const vertexShader = this.compileShader(
       vertexShaderSource,
-      gl.VERTEX_SHADER
+      gl.VERTEX_SHADER,
     );
 
     const program = gl.createProgram();
@@ -898,7 +898,7 @@ class WebGLHelper extends Disposable {
 
     if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
       const message = `Fragment shader compilation failed: ${gl.getShaderInfoLog(
-        fragmentShader
+        fragmentShader,
       )}`;
       throw new Error(message);
     }
@@ -906,7 +906,7 @@ class WebGLHelper extends Disposable {
 
     if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
       const message = `Vertex shader compilation failed: ${gl.getShaderInfoLog(
-        vertexShader
+        vertexShader,
       )}`;
       throw new Error(message);
     }
@@ -914,7 +914,7 @@ class WebGLHelper extends Disposable {
 
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
       const message = `GL program linking failed: ${gl.getProgramInfoLog(
-        program
+        program,
       )}`;
       throw new Error(message);
     }
@@ -976,7 +976,7 @@ class WebGLHelper extends Disposable {
       2 / (resolution * size[1]),
       -rotation,
       -center[0],
-      -center[1]
+      -center[1],
     );
     return transform;
   }
@@ -1053,7 +1053,7 @@ class WebGLHelper extends Disposable {
         attr.size,
         attr.type || FLOAT,
         stride,
-        offset
+        offset,
       );
       offset += attr.size * getByteSizeFromType(attr.type);
     }
@@ -1120,7 +1120,7 @@ class WebGLHelper extends Disposable {
         border,
         format,
         type,
-        null
+        null,
       );
     }
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);

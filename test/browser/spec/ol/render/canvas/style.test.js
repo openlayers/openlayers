@@ -87,7 +87,7 @@ function expectImageEquals(image, expected) {
   }
 
   throw new Error(
-    `Comparison not implemented for ${expected.constructor.name}`
+    `Comparison not implemented for ${expected.constructor.name}`,
   );
 }
 

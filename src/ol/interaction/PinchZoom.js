@@ -88,7 +88,7 @@ class PinchZoom extends PointerInteraction {
 
     // scale anchor point.
     this.anchor_ = map.getCoordinateFromPixelInternal(
-      map.getEventPixel(centroidFromPointers(this.targetPointers))
+      map.getEventPixel(centroidFromPointers(this.targetPointers)),
     );
 
     // scale, bypass the resolution constraint

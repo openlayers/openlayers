@@ -63,7 +63,7 @@ function setProjection(code, name, proj4def, bbox) {
         projection: 'EPSG:3857',
         center: [0, 0],
         zoom: 1,
-      })
+      }),
     );
     return;
   }

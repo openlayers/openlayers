@@ -57,7 +57,7 @@ function createFeatures(stroke, fill, offSet = [0, 0], scale = 1) {
         rotation: Math.PI / 4,
         angle: 0,
       }),
-    })
+    }),
   );
   vectorSource.addFeature(feature);
 
@@ -75,7 +75,7 @@ function createFeatures(stroke, fill, offSet = [0, 0], scale = 1) {
         radius2: 4,
         angle: 0,
       }),
-    })
+    }),
   );
   vectorSource.addFeature(feature);
 
@@ -93,7 +93,7 @@ function createFeatures(stroke, fill, offSet = [0, 0], scale = 1) {
         radius2: 0,
         angle: 0,
       }),
-    })
+    }),
   );
   vectorSource.addFeature(feature);
 
@@ -112,7 +112,7 @@ function createFeatures(stroke, fill, offSet = [0, 0], scale = 1) {
         angle: 0,
         scale: [1, 0.5],
       }),
-    })
+    }),
   );
   vectorSource.addFeature(feature);
 }
@@ -123,7 +123,7 @@ createFeatures(
     lineDash: [10, 5],
   }),
   null,
-  [50, 50]
+  [50, 50],
 );
 createFeatures(
   new Stroke({
@@ -131,7 +131,7 @@ createFeatures(
     lineDashOffset: 5,
   }),
   null,
-  [-50, -50]
+  [-50, -50],
 );
 createFeatures(
   new Stroke({
@@ -139,7 +139,7 @@ createFeatures(
   }),
   null,
   [-50, 50],
-  1.5
+  1.5,
 );
 
 createFeatures(new Stroke(), new Fill(), [50, -50]);

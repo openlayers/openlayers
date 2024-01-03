@@ -110,13 +110,13 @@ class IconImageCache {
         iconImage.ready().then(() => {
           this.patternCache_[key] = getSharedCanvasContext2D().createPattern(
             iconImage.getImage(1),
-            'repeat'
+            'repeat',
           );
         });
       } else {
         this.patternCache_[key] = getSharedCanvasContext2D().createPattern(
           iconImage.getImage(1),
-          'repeat'
+          'repeat',
         );
       }
     }

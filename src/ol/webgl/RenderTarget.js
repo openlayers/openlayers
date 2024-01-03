@@ -113,7 +113,7 @@ class WebGLRenderTarget {
         size[1],
         gl.RGBA,
         gl.UNSIGNED_BYTE,
-        this.data_
+        this.data_,
       );
       this.dataCacheDirty_ = false;
     }
@@ -184,7 +184,7 @@ class WebGLRenderTarget {
       gl.COLOR_ATTACHMENT0,
       gl.TEXTURE_2D,
       this.texture_,
-      0
+      0,
     );
 
     gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthbuffer_);
@@ -192,13 +192,13 @@ class WebGLRenderTarget {
       gl.RENDERBUFFER,
       gl.DEPTH_COMPONENT16,
       size[0],
-      size[1]
+      size[1],
     );
     gl.framebufferRenderbuffer(
       gl.FRAMEBUFFER,
       gl.DEPTH_ATTACHMENT,
       gl.RENDERBUFFER,
-      this.depthbuffer_
+      this.depthbuffer_,
     );
 
     this.data_ = new Uint8Array(size[0] * size[1] * 4);

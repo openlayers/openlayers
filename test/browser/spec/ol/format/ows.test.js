@@ -37,7 +37,7 @@ describe('ol.format.OWS 1.1', function () {
         '</ows:ContactInfo>' +
         '</ows:ServiceContact>' +
         '</ows:ServiceProvider>' +
-        '</ows:GetCapabilities>'
+        '</ows:GetCapabilities>',
     );
 
     const obj = parser.read(doc);
@@ -71,7 +71,7 @@ describe('ol.format.OWS 1.1', function () {
         '<ows:Fees>none</ows:Fees>' +
         '<ows:AccessConstraints>none</ows:AccessConstraints>' +
         '</ows:ServiceIdentification>' +
-        '</ows:GetCapabilities>'
+        '</ows:GetCapabilities>',
     );
     const obj = parser.readFromNode(doc.firstChild);
     expect(obj).to.be.ok();
@@ -79,7 +79,7 @@ describe('ol.format.OWS 1.1', function () {
     const serviceIdentification = obj.ServiceIdentification;
     expect(serviceIdentification).to.be.ok();
     expect(serviceIdentification.Abstract).to.eql(
-      'Service that constrains the map access interface to some TileMatrixSets'
+      'Service that constrains the map access interface to some TileMatrixSets',
     );
     expect(serviceIdentification.AccessConstraints).to.eql('none');
     expect(serviceIdentification.Fees).to.eql('none');
@@ -129,7 +129,7 @@ describe('ol.format.OWS 1.1', function () {
         '</ows:DCP>' +
         '</ows:Operation>' +
         '</ows:OperationsMetadata>' +
-        '</ows:GetCapabilities>'
+        '</ows:GetCapabilities>',
     );
     const obj = parser.readFromNode(doc.firstChild);
     expect(obj).to.be.ok();

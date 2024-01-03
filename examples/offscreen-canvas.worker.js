@@ -102,7 +102,7 @@ function loadStyles() {
               undefined,
               spriteJson,
               spriteImageUrl,
-              getFont
+              getFont,
             );
             layers.push(layer);
           });
@@ -119,9 +119,9 @@ const tileQueue = new TileQueue(
       tile,
       tileSourceKey,
       tileCenter,
-      tileResolution
+      tileResolution,
     ),
-  () => worker.postMessage({action: 'requestRender'})
+  () => worker.postMessage({action: 'requestRender'}),
 );
 
 const maxTotalLoading = 8;
@@ -130,10 +130,10 @@ const maxNewLoads = 2;
 worker.addEventListener('message', (event) => {
   if (event.data.action === 'requestFeatures') {
     const layersInView = layers.filter((l) =>
-      inView(l.getLayerState(), frameState.viewState)
+      inView(l.getLayerState(), frameState.viewState),
     );
     const observables = layersInView.map((l) =>
-      l.getFeatures(event.data.pixel)
+      l.getFeatures(event.data.pixel),
     );
     Promise.all(observables).then((res) => {
       const features = res.flat();
@@ -162,7 +162,7 @@ worker.addEventListener('message', (event) => {
     }
   });
   layers.forEach(
-    (layer) => layer.getRenderer().context && layer.renderDeclutter(frameState)
+    (layer) => layer.getRenderer().context && layer.renderDeclutter(frameState),
   );
   if (tileQueue.getTilesLoading() < maxTotalLoading) {
     tileQueue.reprioritize();
@@ -176,6 +176,6 @@ worker.addEventListener('message', (event) => {
       transform: rendererTransform,
       frameState: JSON.parse(stringify(frameState)),
     },
-    [imageData]
+    [imageData],
   );
 });

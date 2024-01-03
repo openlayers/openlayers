@@ -483,7 +483,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
         expect(tileCache.getCount()).to.equal(1);
         const state = tileCache.peekLast().getState();
         expect(state === TileState.LOADING || state === TileState.LOADED).to.be(
-          true
+          true,
         );
         done();
       });
@@ -555,7 +555,7 @@ where('Uint8ClampedArray').describe('Processor', function () {
         }
         expect(output).to.be.a(ImageData);
         expect(output.data).to.eql(
-          new Uint8ClampedArray([2, 4, 6, 8, 10, 12, 14, 16])
+          new Uint8ClampedArray([2, 4, 6, 8, 10, 12, 14, 16]),
         );
         done();
       });
@@ -598,7 +598,7 @@ where('Uint8ClampedArray').describe('Processor', function () {
         const v0 = Math.round((255 * (1 + 8 / 12)) / 2);
         const v1 = Math.round((255 * (1 + -3 / 13)) / 2);
         expect(output.data).to.eql(
-          new Uint8ClampedArray([v0, v0, v0, 0, v1, v1, v1, 1])
+          new Uint8ClampedArray([v0, v0, v0, 0, v1, v1, v1, 1]),
         );
 
         done();

@@ -13,7 +13,7 @@ proj4.defs(
   '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
     '+x_0=400000 +y_0=-100000 +ellps=airy ' +
     '+towgs84=446.448,-125.157,542.06,0.15,0.247,0.842,-20.489 ' +
-    '+units=m +no_defs'
+    '+units=m +no_defs',
 );
 
 register(proj4);
@@ -103,7 +103,7 @@ exportButton.addEventListener(
       getPointResolution(
         map.getView().getProjection(),
         resolution / 25.4,
-        map.getView().getCenter()
+        map.getView().getCenter(),
       );
 
     map.once('rendercomplete', function () {
@@ -117,7 +117,7 @@ exportButton.addEventListener(
           0,
           0,
           dim[0],
-          dim[1]
+          dim[1],
         );
         pdf.save('map.pdf');
         // Reset original map size
@@ -138,5 +138,5 @@ exportButton.addEventListener(
     map.updateSize();
     map.getView().setResolution(scaleResolution);
   },
-  false
+  false,
 );

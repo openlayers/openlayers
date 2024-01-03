@@ -53,7 +53,7 @@ exports.publish = function (data, opts) {
         assert.strictEqual(
           doc.inherited,
           true,
-          'Unexpected export on private class: ' + doc.longname
+          'Unexpected export on private class: ' + doc.longname,
         );
         include = false;
       }
@@ -168,8 +168,8 @@ exports.publish = function (data, opts) {
           base: base,
         },
         null,
-        2
-      )
+        2,
+      ),
     );
   });
 };

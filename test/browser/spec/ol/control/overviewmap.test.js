@@ -100,16 +100,16 @@ describe('ol.control.OverviewMap', function () {
 
       map.addControl(control);
       expect(control.ovmap_.getView().getProjection().getCode()).to.be(
-        'EPSG:3857'
+        'EPSG:3857',
       );
 
       map.setView(
         new View({
           projection: 'EPSG:4326',
-        })
+        }),
       );
       expect(control.ovmap_.getView().getProjection().getCode()).to.be(
-        'EPSG:4326'
+        'EPSG:4326',
       );
     });
 
@@ -123,17 +123,17 @@ describe('ol.control.OverviewMap', function () {
       map.addControl(control);
       expect(control.ovmap_.getView()).to.be(overviewMapView);
       expect(control.ovmap_.getView().getProjection().getCode()).to.be(
-        'EPSG:3857'
+        'EPSG:3857',
       );
 
       map.setView(
         new View({
           projection: 'EPSG:4326',
-        })
+        }),
       );
       expect(control.ovmap_.getView()).to.be(overviewMapView);
       expect(control.ovmap_.getView().getProjection().getCode()).to.be(
-        'EPSG:3857'
+        'EPSG:3857',
       );
     });
 

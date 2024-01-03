@@ -317,7 +317,7 @@ export function get(image, cacheKey, crossOrigin, imageState, color, pattern) {
       image instanceof HTMLImageElement ? image.src || undefined : cacheKey,
       crossOrigin,
       imageState,
-      color
+      color,
     );
     iconImageCache.set(cacheKey, crossOrigin, color, iconImage, pattern);
   }

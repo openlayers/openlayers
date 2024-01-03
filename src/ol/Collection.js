@@ -205,7 +205,7 @@ class Collection extends BaseObject {
     this.array_.splice(index, 0, elem);
     this.updateLength_();
     this.dispatchEvent(
-      new CollectionEvent(CollectionEventType.ADD, elem, index)
+      new CollectionEvent(CollectionEventType.ADD, elem, index),
     );
   }
 
@@ -267,7 +267,7 @@ class Collection extends BaseObject {
     this.dispatchEvent(
       /** @type {CollectionEvent<T>} */ (
         new CollectionEvent(CollectionEventType.REMOVE, prev, index)
-      )
+      ),
     );
     return prev;
   }
@@ -295,12 +295,12 @@ class Collection extends BaseObject {
     this.dispatchEvent(
       /** @type {CollectionEvent<T>} */ (
         new CollectionEvent(CollectionEventType.REMOVE, prev, index)
-      )
+      ),
     );
     this.dispatchEvent(
       /** @type {CollectionEvent<T>} */ (
         new CollectionEvent(CollectionEventType.ADD, elem, index)
-      )
+      ),
     );
   }
 

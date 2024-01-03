@@ -29,7 +29,7 @@ const cogSource = new GeoTIFF({
 
 cogSource.setAttributions(
   'Contains OS data © Crown Copyright and database right ' +
-    new Date().getFullYear()
+    new Date().getFullYear(),
 );
 
 const map = new Map({
@@ -54,6 +54,6 @@ const map = new Map({
   view: cogSource
     .getView()
     .then((viewConfig) =>
-      fromEPSGCode(viewConfig.projection.getCode()).then(() => viewConfig)
+      fromEPSGCode(viewConfig.projection.getCode()).then(() => viewConfig),
     ),
 });

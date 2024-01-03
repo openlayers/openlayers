@@ -99,7 +99,7 @@ class WebGLPointsLayer extends Layer {
       (name) => ({
         name,
         ...this.parseResult_.attributes[name],
-      })
+      }),
     );
     return new WebGLPointsLayerRenderer(this, {
       vertexShader: this.parseResult_.builder.getSymbolVertexShader(),

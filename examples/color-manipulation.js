@@ -27,13 +27,13 @@ function rgb2hcl(pixel) {
   const blue = rgb2xyz(pixel[2]);
 
   const x = xyz2lab(
-    (0.4124564 * red + 0.3575761 * green + 0.1804375 * blue) / Xn
+    (0.4124564 * red + 0.3575761 * green + 0.1804375 * blue) / Xn,
   );
   const y = xyz2lab(
-    (0.2126729 * red + 0.7151522 * green + 0.072175 * blue) / Yn
+    (0.2126729 * red + 0.7151522 * green + 0.072175 * blue) / Yn,
   );
   const z = xyz2lab(
-    (0.0193339 * red + 0.119192 * green + 0.9503041 * blue) / Zn
+    (0.0193339 * red + 0.119192 * green + 0.9503041 * blue) / Zn,
   );
 
   const l = 116 * y - 16;

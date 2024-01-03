@@ -94,7 +94,7 @@ describe('ol/format/Polyline.js', function () {
       const encodeSignedIntegers = polyline.encodeSignedIntegers;
 
       expect(encodeSignedIntegers(signedIntegers)).to.eql(
-        encodedSignedIntegers
+        encodedSignedIntegers,
       );
     });
   });
@@ -104,7 +104,7 @@ describe('ol/format/Polyline.js', function () {
       const decodeSignedIntegers = polyline.decodeSignedIntegers;
 
       expect(decodeSignedIntegers(encodedSignedIntegers)).to.eql(
-        signedIntegers
+        signedIntegers,
       );
     });
   });
@@ -114,7 +114,7 @@ describe('ol/format/Polyline.js', function () {
       const encodeUnsignedIntegers = polyline.encodeUnsignedIntegers;
 
       expect(encodeUnsignedIntegers(unsignedIntegers)).to.eql(
-        encodedUnsignedIntegers
+        encodedUnsignedIntegers,
       );
     });
   });
@@ -124,7 +124,7 @@ describe('ol/format/Polyline.js', function () {
       const decodeUnsignedIntegers = polyline.decodeUnsignedIntegers;
 
       expect(decodeUnsignedIntegers(encodedUnsignedIntegers)).to.eql(
-        unsignedIntegers
+        unsignedIntegers,
       );
     });
   });
@@ -307,7 +307,7 @@ describe('ol/format/Polyline.js', function () {
     it('parses XYZ linestring', function () {
       const xyz = polyline.encodeDeltas(
         [38.5, -120.2, 100, 40.7, -120.95, 200, 43.252, -126.453, 20],
-        3
+        3,
       );
       const format = new Polyline({
         geometryLayout: 'XYZ',
@@ -349,7 +349,7 @@ describe('ol/format/Polyline.js', function () {
       expect(
         format.writeFeature(feature, {
           featureProjection: 'EPSG:3857',
-        })
+        }),
       ).to.be(encodedFlatPoints);
     });
   });
@@ -365,7 +365,7 @@ describe('ol/format/Polyline.js', function () {
       expect(
         format.writeFeatures(features, {
           featureProjection: 'EPSG:3857',
-        })
+        }),
       ).to.be(encodedFlatPoints);
     });
   });
@@ -381,7 +381,7 @@ describe('ol/format/Polyline.js', function () {
       expect(
         format.writeGeometry(geometry, {
           featureProjection: 'EPSG:3857',
-        })
+        }),
       ).to.be(encodedFlatPoints);
     });
   });

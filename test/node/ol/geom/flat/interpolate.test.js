@@ -22,7 +22,7 @@ describe('ol/geom/flat/interpolate.js', function () {
         const flatCoordinates = [0, 1, 2, 3, 4, 5];
         const point = interpolatePoint(flatCoordinates, 0, 6, 2, 0.5);
         expect(point).to.eql([2, 3]);
-      }
+      },
     );
 
     it('also when vertices are repeated', function () {
@@ -38,7 +38,7 @@ describe('ol/geom/flat/interpolate.js', function () {
         const flatCoordinates = [0, 1, 2, 3, 4, 5, 6, 7];
         const point = interpolatePoint(flatCoordinates, 0, 8, 2, 0.5);
         expect(point).to.eql([3, 4]);
-      }
+      },
     );
 
     it('also when vertices are repeated', function () {

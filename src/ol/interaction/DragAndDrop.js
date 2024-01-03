@@ -209,8 +209,8 @@ class DragAndDrop extends Interaction {
             DragAndDropEventType.ADD_FEATURES,
             file,
             features,
-            projection
-          )
+            projection,
+          ),
         );
         break;
       }
@@ -301,7 +301,7 @@ class DragAndDrop extends Interaction {
       const reader = new FileReader();
       reader.addEventListener(
         EventType.LOAD,
-        this.handleResult_.bind(this, file)
+        this.handleResult_.bind(this, file),
       );
       if (this.readAsBuffer_) {
         reader.readAsArrayBuffer(file);

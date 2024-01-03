@@ -48,7 +48,7 @@ class MockXHR extends events.EventEmitter {
       (err) => {
         console.error(err); // eslint-disable-line no-console
         this.emit('error', {target: this});
-      }
+      },
     );
   }
 }
@@ -72,14 +72,14 @@ describe('ol/source/ogcTileUtil.js', () => {
       const tileInfo = await getTileSetInfo(sourceInfo);
       expect(tileInfo).to.be.an(Object);
       expect(tileInfo.urlTemplate).to.be(
-        '/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.jpg'
+        '/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.jpg',
       );
       expect(tileInfo.grid).to.be.a(TileGrid);
       expect(tileInfo.grid.getTileSize(0)).to.eql([256, 256]);
       expect(tileInfo.grid.getResolutions()).to.have.length(10);
       expect(tileInfo.urlFunction).to.be.a(Function);
       expect(tileInfo.urlFunction([3, 2, 1])).to.be(
-        'https://maps.ecere.com/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad/3/1/2.jpg'
+        'https://maps.ecere.com/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad/3/1/2.jpg',
       );
       expect(tileInfo.urlFunction([3, -1, 0])).to.be(undefined); // below min x
       expect(tileInfo.urlFunction([3, 8, 0])).to.be(undefined); // above max x
@@ -96,11 +96,11 @@ describe('ol/source/ogcTileUtil.js', () => {
       const tileInfo = await getTileSetInfo(sourceInfo);
       expect(tileInfo).to.be.an(Object);
       expect(tileInfo.urlTemplate).to.be(
-        '/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.png'
+        '/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.png',
       );
       expect(tileInfo.urlFunction).to.be.a(Function);
       expect(tileInfo.urlFunction([3, 2, 1])).to.be(
-        'https://maps.ecere.com/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad/3/1/2.png'
+        'https://maps.ecere.com/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad/3/1/2.png',
       );
     });
 
@@ -112,14 +112,14 @@ describe('ol/source/ogcTileUtil.js', () => {
       const tileInfo = await getTileSetInfo(sourceInfo);
       expect(tileInfo).to.be.an(Object);
       expect(tileInfo.urlTemplate).to.be(
-        '/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.json'
+        '/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.json',
       );
       expect(tileInfo.grid).to.be.a(TileGrid);
       expect(tileInfo.grid.getTileSize(0)).to.eql([256, 256]);
       expect(tileInfo.grid.getResolutions()).to.have.length(8);
       expect(tileInfo.urlFunction).to.be.a(Function);
       expect(tileInfo.urlFunction([3, 2, 1])).to.be(
-        'https://maps.ecere.com/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/3/1/2.json'
+        'https://maps.ecere.com/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/3/1/2.json',
       );
       expect(tileInfo.urlFunction([2, -1, 0])).to.be(undefined); // below min x
       expect(tileInfo.urlFunction([2, 4, 0])).to.be(undefined); // above max x
@@ -136,11 +136,11 @@ describe('ol/source/ogcTileUtil.js', () => {
       const tileInfo = await getTileSetInfo(sourceInfo);
       expect(tileInfo).to.be.an(Object);
       expect(tileInfo.urlTemplate).to.be(
-        '/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.mvt'
+        '/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.mvt',
       );
       expect(tileInfo.urlFunction).to.be.a(Function);
       expect(tileInfo.urlFunction([3, 2, 1])).to.be(
-        'https://maps.ecere.com/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/3/1/2.mvt'
+        'https://maps.ecere.com/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/3/1/2.mvt',
       );
     });
 
@@ -157,11 +157,11 @@ describe('ol/source/ogcTileUtil.js', () => {
       const tileInfo = await getTileSetInfo(sourceInfo);
       expect(tileInfo).to.be.an(Object);
       expect(tileInfo.urlTemplate).to.be(
-        '/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.mvt'
+        '/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.mvt',
       );
       expect(tileInfo.urlFunction).to.be.a(Function);
       expect(tileInfo.urlFunction([3, 2, 1])).to.be(
-        'https://maps.ecere.com/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/3/1/2.mvt'
+        'https://maps.ecere.com/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/3/1/2.mvt',
       );
     });
 
@@ -178,11 +178,11 @@ describe('ol/source/ogcTileUtil.js', () => {
       const tileInfo = await getTileSetInfo(sourceInfo);
       expect(tileInfo).to.be.an(Object);
       expect(tileInfo.urlTemplate).to.be(
-        '/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.json'
+        '/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.json',
       );
       expect(tileInfo.urlFunction).to.be.a(Function);
       expect(tileInfo.urlFunction([3, 2, 1])).to.be(
-        'https://maps.ecere.com/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/3/1/2.json'
+        'https://maps.ecere.com/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/3/1/2.json',
       );
     });
   });
@@ -192,7 +192,7 @@ describe('ol/source/ogcTileUtil.js', () => {
     before(async () => {
       const url = path.join(
         getDataDir(),
-        'ogcapi/collections/ne_10m_admin_0_countries/tiles/WebMercatorQuad.json'
+        'ogcapi/collections/ne_10m_admin_0_countries/tiles/WebMercatorQuad.json',
       );
       const tileSet = await fse.readJSON(url);
       links = tileSet.links;
@@ -201,17 +201,17 @@ describe('ol/source/ogcTileUtil.js', () => {
     it('gets the last known vector type if the preferred media type is absent', () => {
       const urlTemplate = getVectorTileUrlTemplate(links);
       expect(urlTemplate).to.be(
-        '/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.json'
+        '/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.json',
       );
     });
 
     it('gets the preferred media type if given', () => {
       const urlTemplate = getVectorTileUrlTemplate(
         links,
-        'application/vnd.mapbox-vector-tile'
+        'application/vnd.mapbox-vector-tile',
       );
       expect(urlTemplate).to.be(
-        '/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.mvt'
+        '/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.mvt',
       );
     });
 
@@ -220,7 +220,7 @@ describe('ol/source/ogcTileUtil.js', () => {
         'application/vnd.mapbox-vector-tile',
       ]);
       expect(urlTemplate).to.be(
-        '/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.mvt'
+        '/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.mvt',
       );
     });
 
@@ -237,7 +237,7 @@ describe('ol/source/ogcTileUtil.js', () => {
     before(async () => {
       const url = path.join(
         getDataDir(),
-        'ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad.json'
+        'ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad.json',
       );
       const tileSet = await fse.readJSON(url);
       links = tileSet.links;
@@ -246,14 +246,14 @@ describe('ol/source/ogcTileUtil.js', () => {
     it('gets the last known image type if the preferred media type is absent', () => {
       const urlTemplate = getMapTileUrlTemplate(links);
       expect(urlTemplate).to.be(
-        '/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.jpg'
+        '/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.jpg',
       );
     });
 
     it('gets the preferred media type if given', () => {
       const urlTemplate = getMapTileUrlTemplate(links, 'image/png');
       expect(urlTemplate).to.be(
-        '/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.png'
+        '/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.png',
       );
     });
 

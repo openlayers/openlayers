@@ -59,7 +59,7 @@ vectorLayer.getSource().on('featuresloadend', function () {
       const polygon = feature.getGeometry();
       view.fit(polygon);
     },
-    false
+    false,
   );
 
   const centerlausanne = document.getElementById('centerlausanne');
@@ -70,6 +70,6 @@ vectorLayer.getSource().on('featuresloadend', function () {
       const point = feature.getGeometry();
       view.setCenter(point.getCoordinates());
     },
-    false
+    false,
   );
 });

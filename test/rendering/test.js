@@ -89,7 +89,7 @@ function serve(options) {
       }
       const address = server.address();
       options.log.info(
-        `test server listening http://${address.address}:${address.port}/`
+        `test server listening http://${address.address}:${address.port}/`,
       );
       resolve(() => server.close(() => process.exit(0)));
     });
@@ -131,12 +131,12 @@ async function match(actual, expected) {
   const height = expectedImage.height;
   if (actualImage.width != width) {
     throw new Error(
-      `Unexpected width for ${actual}: expected ${width}, got ${actualImage.width}`
+      `Unexpected width for ${actual}: expected ${width}, got ${actualImage.width}`,
     );
   }
   if (actualImage.height != height) {
     throw new Error(
-      `Unexpected height for ${actual}: expected ${height}, got ${actualImage.height}`
+      `Unexpected height for ${actual}: expected ${height}, got ${actualImage.height}`,
     );
   }
   const count = pixelmatch(
@@ -144,7 +144,7 @@ async function match(actual, expected) {
     expectedImage.data,
     null,
     width,
-    height
+    height,
   );
   return count / (width * height);
 }
@@ -206,7 +206,7 @@ async function renderEach(page, entries, options) {
     const {tolerance = 0.005, message = ''} = await renderPage(
       page,
       entry,
-      options
+      options,
     );
 
     if (options.fix) {
@@ -290,7 +290,7 @@ async function getLatest(patterns) {
 
 async function getOutdated(entries, options) {
   const libTime = await getLatest(
-    path.join(baseDir, '..', 'src', 'ol', '**', '*')
+    path.join(baseDir, '..', 'src', 'ol', '**', '*'),
   );
   options.log.debug('library time', libTime);
   const outdated = [];
@@ -304,7 +304,7 @@ async function getOutdated(entries, options) {
     }
 
     const caseTime = await getLatest(
-      path.join(baseDir, path.dirname(entry), '**', '*')
+      path.join(baseDir, path.dirname(entry), '**', '*'),
     );
     options.log.debug('case time', entry, caseTime);
     if (passTime < caseTime) {

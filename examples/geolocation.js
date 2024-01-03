@@ -72,7 +72,7 @@ positionFeature.setStyle(
         width: 2,
       }),
     }),
-  })
+  }),
 );
 
 geolocation.on('change:position', function () {

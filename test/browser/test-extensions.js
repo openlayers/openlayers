@@ -79,7 +79,7 @@ setLogLevel('error');
           ' of ' +
           n
         );
-      }
+      },
     );
     return this;
   };
@@ -124,7 +124,7 @@ setLogLevel('error');
           ' | expected ' +
           node1.nodeType +
           ' to equal ' +
-          node2.nodeType
+          node2.nodeType,
       );
     }
     if (testPrefix) {
@@ -137,7 +137,7 @@ setLogLevel('error');
             ' | expected ' +
             node1.nodeName +
             ' to equal ' +
-            node2.nodeName
+            node2.nodeName,
         );
       }
     } else {
@@ -152,7 +152,7 @@ setLogLevel('error');
             ' | expected ' +
             n1 +
             ' to equal ' +
-            n2
+            n2,
         );
       }
     }
@@ -162,7 +162,7 @@ setLogLevel('error');
       const nv2 = node2.nodeValue.replace(/\s/g, '');
       if (nv1 !== nv2) {
         errors.push(
-          'nodeValue test failed | expected ' + nv1 + ' to equal ' + nv2
+          'nodeValue test failed | expected ' + nv1 + ' to equal ' + nv2,
         );
       }
     } else if (node1.nodeType === 1) {
@@ -177,7 +177,7 @@ setLogLevel('error');
                 ' | expected ' +
                 node1.prefix +
                 ' to equal ' +
-                node2.prefix
+                node2.prefix,
             );
           }
         }
@@ -190,7 +190,7 @@ setLogLevel('error');
               ' | expected ' +
               node1.namespaceURI +
               ' to equal ' +
-              node2.namespaceURI
+              node2.namespaceURI,
           );
         }
       }
@@ -232,7 +232,7 @@ setLogLevel('error');
             ' | expected ' +
             node1AttrLen +
             ' to equal ' +
-            node2AttrLen
+            node2AttrLen,
         );
       }
       for (const name in node1Attr) {
@@ -241,7 +241,7 @@ setLogLevel('error');
             'Attribute name ' +
               node1Attr[name].name +
               ' expected for element ' +
-              node1.nodeName
+              node1.nodeName,
           );
           break;
         }
@@ -253,7 +253,7 @@ setLogLevel('error');
               ' | expected ' +
               node1Attr[name].namespaceURI +
               ' to equal ' +
-              node2Attr[name].namespaceURI
+              node2Attr[name].namespaceURI,
           );
         }
         if (node1Attr[name].value !== node2Attr[name].value) {
@@ -263,7 +263,7 @@ setLogLevel('error');
               ' | expected ' +
               node1Attr[name].value +
               ' to equal ' +
-              node2Attr[name].value
+              node2Attr[name].value,
           );
         }
       }
@@ -295,7 +295,7 @@ setLogLevel('error');
               ' | expected ' +
               node1ChildNodes.length +
               ' to equal ' +
-              node2ChildNodes.length
+              node2ChildNodes.length,
           );
         }
       }
@@ -306,7 +306,7 @@ setLogLevel('error');
             node1ChildNodes[j],
             node2ChildNodes[j],
             options,
-            errors
+            errors,
           );
         }
       }
@@ -356,7 +356,7 @@ setLogLevel('error');
           '\n' +
           errors.join('\n')
         );
-      }
+      },
     );
     return this;
   };

@@ -33,7 +33,7 @@ describe('ol.VectorTile', function () {
     const loader = tile.loader_;
     listen(tile, 'change', function (e) {
       expect(
-        tile.getFeatures()[1246].getGeometry().getFlatCoordinates()
+        tile.getFeatures()[1246].getGeometry().getFlatCoordinates(),
       ).to.eql([1827804.0218549764, 6144812.116688028]);
       done();
     });

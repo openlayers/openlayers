@@ -202,7 +202,7 @@ export const registerFont = (function () {
       const referenceFont = referenceFonts[i];
       referenceWidth = measureTextWidth(
         fontStyle + ' ' + fontWeight + ' ' + size + referenceFont,
-        text
+        text,
       );
       if (fontFamily != referenceFont) {
         const width = measureTextWidth(
@@ -214,7 +214,7 @@ export const registerFont = (function () {
             fontFamily +
             ',' +
             referenceFont,
-          text
+          text,
         );
         // If width and referenceWidth are the same, then the fallback was used
         // instead of the font we wanted, so the font is not available.
@@ -432,7 +432,7 @@ export function drawImageOrLabel(
   h,
   x,
   y,
-  scale
+  scale,
 ) {
   context.save();
 
@@ -463,7 +463,7 @@ export function drawImageOrLabel(
       0,
       0,
       w,
-      h
+      h,
     );
   } else {
     // if image not flipped translate and scale can be avoided
@@ -478,7 +478,7 @@ export function drawImageOrLabel(
       x,
       y,
       w * scale[0],
-      h * scale[1]
+      h * scale[1],
     );
   }
 
@@ -495,7 +495,7 @@ function executeLabelInstructions(label, context) {
     if (Array.isArray(contextInstructions[i + 1])) {
       context[contextInstructions[i]].apply(
         context,
-        contextInstructions[i + 1]
+        contextInstructions[i + 1],
       );
     } else {
       context[contextInstructions[i]] = contextInstructions[i + 1];

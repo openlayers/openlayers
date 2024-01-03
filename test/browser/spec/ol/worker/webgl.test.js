@@ -44,7 +44,7 @@ describe('ol/worker/webgl', () => {
       });
       it('responds with info passed in the message', () => {
         expect(responseData.type).to.eql(
-          WebGLWorkerMessageType.GENERATE_POINT_BUFFERS
+          WebGLWorkerMessageType.GENERATE_POINT_BUFFERS,
         );
         expect(responseData.renderInstructions.byteLength).to.greaterThan(0);
         expect(responseData.testInt).to.be(101);
@@ -53,7 +53,7 @@ describe('ol/worker/webgl', () => {
       it('responds with buffer data', () => {
         const indices = Array.from(new Uint32Array(responseData.indexBuffer));
         const vertices = Array.from(
-          new Float32Array(responseData.vertexBuffer)
+          new Float32Array(responseData.vertexBuffer),
         );
         expect(indices).to.eql([0, 1, 3, 1, 2, 3, 4, 5, 7, 5, 6, 7]);
         expect(vertices).to.eql([
@@ -96,7 +96,7 @@ describe('ol/worker/webgl', () => {
       });
       it('responds with info passed in the message', () => {
         expect(responseData.type).to.eql(
-          WebGLWorkerMessageType.GENERATE_LINE_STRING_BUFFERS
+          WebGLWorkerMessageType.GENERATE_LINE_STRING_BUFFERS,
         );
         expect(responseData.renderInstructions.byteLength).to.greaterThan(0);
         expect(responseData.testInt).to.be(101);
@@ -144,7 +144,7 @@ describe('ol/worker/webgl', () => {
             if (event.data.id === id) {
               responseData = event.data;
               vertices = Array.from(
-                new Float32Array(responseData.vertexBuffer)
+                new Float32Array(responseData.vertexBuffer),
               );
               done();
             }
@@ -190,7 +190,7 @@ describe('ol/worker/webgl', () => {
       });
       it('responds with info passed in the message', () => {
         expect(responseData.type).to.eql(
-          WebGLWorkerMessageType.GENERATE_POLYGON_BUFFERS
+          WebGLWorkerMessageType.GENERATE_POLYGON_BUFFERS,
         );
         expect(responseData.renderInstructions.byteLength).to.greaterThan(0);
         expect(responseData.testInt).to.be(101);
@@ -199,7 +199,7 @@ describe('ol/worker/webgl', () => {
       it('responds with buffer data', () => {
         const indices = Array.from(new Uint32Array(responseData.indexBuffer));
         const vertices = Array.from(
-          new Float32Array(responseData.vertexBuffer)
+          new Float32Array(responseData.vertexBuffer),
         );
         expect(indices).to.have.length(27);
         expect(vertices).to.have.length(33);

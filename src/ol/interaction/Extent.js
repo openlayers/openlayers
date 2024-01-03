@@ -376,12 +376,12 @@ class Extent extends PointerInteraction {
       } else if (x !== null) {
         this.pointerHandler_ = getEdgeHandler(
           getOpposingPoint([x, extent[1]]),
-          getOpposingPoint([x, extent[3]])
+          getOpposingPoint([x, extent[3]]),
         );
       } else if (y !== null) {
         this.pointerHandler_ = getEdgeHandler(
           getOpposingPoint([extent[0], y]),
-          getOpposingPoint([extent[2], y])
+          getOpposingPoint([extent[2], y]),
         );
       }
       //no snap - new bbox
@@ -441,7 +441,7 @@ class Extent extends PointerInteraction {
   getExtent() {
     return toUserExtent(
       this.getExtentInternal(),
-      this.getMap().getView().getProjection()
+      this.getMap().getView().getProjection(),
     );
   }
 

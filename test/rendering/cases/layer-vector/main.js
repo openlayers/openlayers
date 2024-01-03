@@ -42,8 +42,8 @@ function addPolygon(r, source) {
           [center[0] - r, center[1] + r],
           [center[0] - r, center[1] - r],
         ],
-      ])
-    )
+      ]),
+    ),
   );
 }
 
@@ -51,13 +51,13 @@ const smallLine = new Feature(
   new LineString([
     [center[0], center[1] - 1],
     [center[0], center[1] + 1],
-  ])
+  ]),
 );
 smallLine.setStyle(
   new Style({
     zIndex: -99,
     stroke: new Stroke({width: 75, color: 'red'}),
-  })
+  }),
 );
 smallLine.getGeometry().translate(-1000, 1000);
 source1.addFeature(smallLine);
@@ -72,7 +72,7 @@ const smallLine2 = new Feature(
   new LineString([
     [center[0], center[1] - 1000],
     [center[0], center[1] + 1000],
-  ])
+  ]),
 );
 smallLine2.setStyle([
   new Style({
@@ -89,7 +89,7 @@ const smallLine3 = new Feature(
   new LineString([
     [center[0], center[1] - 1],
     [center[0], center[1] + 1],
-  ])
+  ]),
 );
 smallLine3.setStyle([
   new Style({

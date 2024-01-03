@@ -318,7 +318,7 @@ describe('ol/format/EsriJSON.js', function () {
       });
       expect(feature[0].getGeometry()).to.be.an(Point);
       expect(feature[0].getGeometry().getCoordinates()).to.eql(
-        transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857')
+        transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'),
       );
     });
 
@@ -329,7 +329,7 @@ describe('ol/format/EsriJSON.js', function () {
       });
       expect(features[0].getGeometry()).to.be.an(Point);
       expect(features[0].getGeometry().getCoordinates()).to.eql(
-        transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857')
+        transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'),
       );
       expect(features[1].getGeometry().getCoordinates()).to.eql([
         transform([102.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
@@ -349,7 +349,7 @@ describe('ol/format/EsriJSON.js', function () {
 
     it('can create a feature with a specific geometryName', function () {
       const feature = new EsriJSON({geometryName: 'the_geom'}).readFeature(
-        pointEsriJSON
+        pointEsriJSON,
       );
       expect(feature.getGeometryName()).to.be('the_geom');
       expect(feature.getGeometry()).to.be.an(Point);
@@ -379,7 +379,7 @@ describe('ol/format/EsriJSON.js', function () {
     it('parses ksfields.geojson', async () => {
       const text = await fse.readFile(
         'test/node/ol/format/EsriJSON/ksfields.json',
-        {encoding: 'utf8'}
+        {encoding: 'utf8'},
       );
       const result = format.readFeatures(text);
       expect(result.length).to.be(9);
@@ -396,8 +396,8 @@ describe('ol/format/EsriJSON.js', function () {
           [
             -10585772.743554419, 4712365.161160459, -10579560.16462974,
             4716567.373073828,
-          ]
-        )
+          ],
+        ),
       ).to.be(true);
 
       const last = result[8];
@@ -412,8 +412,8 @@ describe('ol/format/EsriJSON.js', function () {
           [
             -10555714.026858449, 4576511.565880965, -10553671.199322715,
             4578554.9934867555,
-          ]
-        )
+          ],
+        ),
       ).to.be(true);
     });
   });
@@ -1218,7 +1218,7 @@ describe('ol/format/EsriJSON.js', function () {
       const point = new Point([10, 20]);
       const esrijson = format.writeGeometry(point);
       expect(point.getCoordinates()).to.eql(
-        format.readGeometry(esrijson).getCoordinates()
+        format.readGeometry(esrijson).getCoordinates(),
       );
     });
 
@@ -1226,7 +1226,7 @@ describe('ol/format/EsriJSON.js', function () {
       const point = new Point([10, 20, 0], 'XYZ');
       const esrijson = format.writeGeometry(point);
       expect(point.getCoordinates()).to.eql(
-        format.readGeometry(esrijson).getCoordinates()
+        format.readGeometry(esrijson).getCoordinates(),
       );
     });
 
@@ -1234,7 +1234,7 @@ describe('ol/format/EsriJSON.js', function () {
       const point = new Point([10, 20, 0], 'XYM');
       const esrijson = format.writeGeometry(point);
       expect(point.getCoordinates()).to.eql(
-        format.readGeometry(esrijson).getCoordinates()
+        format.readGeometry(esrijson).getCoordinates(),
       );
     });
 
@@ -1242,7 +1242,7 @@ describe('ol/format/EsriJSON.js', function () {
       const point = new Point([10, 20, 5, 0], 'XYZM');
       const esrijson = format.writeGeometry(point);
       expect(point.getCoordinates()).to.eql(
-        format.readGeometry(esrijson).getCoordinates()
+        format.readGeometry(esrijson).getCoordinates(),
       );
     });
 
@@ -1253,7 +1253,7 @@ describe('ol/format/EsriJSON.js', function () {
       ]);
       const esrijson = format.writeGeometry(linestring);
       expect(linestring.getCoordinates()).to.eql(
-        format.readGeometry(esrijson).getCoordinates()
+        format.readGeometry(esrijson).getCoordinates(),
       );
     });
 
@@ -1263,11 +1263,11 @@ describe('ol/format/EsriJSON.js', function () {
           [10, 20, 1534],
           [30, 40, 1420],
         ],
-        'XYZ'
+        'XYZ',
       );
       const esrijson = format.writeGeometry(linestring);
       expect(linestring.getCoordinates()).to.eql(
-        format.readGeometry(esrijson).getCoordinates()
+        format.readGeometry(esrijson).getCoordinates(),
       );
     });
 
@@ -1277,11 +1277,11 @@ describe('ol/format/EsriJSON.js', function () {
           [10, 20, 1534],
           [30, 40, 1420],
         ],
-        'XYM'
+        'XYM',
       );
       const esrijson = format.writeGeometry(linestring);
       expect(linestring.getCoordinates()).to.eql(
-        format.readGeometry(esrijson).getCoordinates()
+        format.readGeometry(esrijson).getCoordinates(),
       );
     });
 
@@ -1291,11 +1291,11 @@ describe('ol/format/EsriJSON.js', function () {
           [10, 20, 1534, 1],
           [30, 40, 1420, 1],
         ],
-        'XYZM'
+        'XYZM',
       );
       const esrijson = format.writeGeometry(linestring);
       expect(linestring.getCoordinates()).to.eql(
-        format.readGeometry(esrijson).getCoordinates()
+        format.readGeometry(esrijson).getCoordinates(),
       );
     });
 
@@ -1324,7 +1324,7 @@ describe('ol/format/EsriJSON.js', function () {
       const polygon = new Polygon([outer, inner1, inner2]);
       const esrijson = format.writeGeometry(polygon);
       expect(polygon.getCoordinates(false)).to.eql(
-        format.readGeometry(esrijson).getCoordinates()
+        format.readGeometry(esrijson).getCoordinates(),
       );
     });
 
@@ -1353,7 +1353,7 @@ describe('ol/format/EsriJSON.js', function () {
       const polygon = new Polygon([outer, inner1, inner2], 'XYZ');
       const esrijson = format.writeGeometry(polygon);
       expect(polygon.getCoordinates(false)).to.eql(
-        format.readGeometry(esrijson).getCoordinates()
+        format.readGeometry(esrijson).getCoordinates(),
       );
     });
 
@@ -1382,7 +1382,7 @@ describe('ol/format/EsriJSON.js', function () {
       const polygon = new Polygon([outer, inner1, inner2], 'XYM');
       const esrijson = format.writeGeometry(polygon);
       expect(polygon.getCoordinates(false)).to.eql(
-        format.readGeometry(esrijson).getCoordinates()
+        format.readGeometry(esrijson).getCoordinates(),
       );
     });
 
@@ -1411,7 +1411,7 @@ describe('ol/format/EsriJSON.js', function () {
       const polygon = new Polygon([outer, inner1, inner2], 'XYZM');
       const esrijson = format.writeGeometry(polygon);
       expect(polygon.getCoordinates(false)).to.eql(
-        format.readGeometry(esrijson).getCoordinates()
+        format.readGeometry(esrijson).getCoordinates(),
       );
     });
 
@@ -1422,7 +1422,7 @@ describe('ol/format/EsriJSON.js', function () {
       ]);
       const esrijson = format.writeGeometry(multipoint);
       expect(multipoint.getCoordinates()).to.eql(
-        format.readGeometry(esrijson).getCoordinates()
+        format.readGeometry(esrijson).getCoordinates(),
       );
     });
 
@@ -1432,11 +1432,11 @@ describe('ol/format/EsriJSON.js', function () {
           [102.0, 0.0, 3],
           [103.0, 1.0, 4],
         ],
-        'XYZ'
+        'XYZ',
       );
       const esrijson = format.writeGeometry(multipoint);
       expect(multipoint.getCoordinates()).to.eql(
-        format.readGeometry(esrijson).getCoordinates()
+        format.readGeometry(esrijson).getCoordinates(),
       );
     });
 
@@ -1446,11 +1446,11 @@ describe('ol/format/EsriJSON.js', function () {
           [102.0, 0.0, 3],
           [103.0, 1.0, 4],
         ],
-        'XYM'
+        'XYM',
       );
       const esrijson = format.writeGeometry(multipoint);
       expect(multipoint.getCoordinates()).to.eql(
-        format.readGeometry(esrijson).getCoordinates()
+        format.readGeometry(esrijson).getCoordinates(),
       );
     });
 
@@ -1460,11 +1460,11 @@ describe('ol/format/EsriJSON.js', function () {
           [102.0, 0.0, 3, 1],
           [103.0, 1.0, 4, 1],
         ],
-        'XYZM'
+        'XYZM',
       );
       const esrijson = format.writeGeometry(multipoint);
       expect(multipoint.getCoordinates()).to.eql(
-        format.readGeometry(esrijson).getCoordinates()
+        format.readGeometry(esrijson).getCoordinates(),
       );
     });
 
@@ -1485,7 +1485,7 @@ describe('ol/format/EsriJSON.js', function () {
       ]);
       const esrijson = format.writeGeometry(multilinestring);
       expect(multilinestring.getCoordinates()).to.eql(
-        format.readGeometry(esrijson).getCoordinates()
+        format.readGeometry(esrijson).getCoordinates(),
       );
     });
 
@@ -1505,11 +1505,11 @@ describe('ol/format/EsriJSON.js', function () {
             [108.0, 4.0, 4],
           ],
         ],
-        'XYZ'
+        'XYZ',
       );
       const esrijson = format.writeGeometry(multilinestring);
       expect(multilinestring.getCoordinates()).to.eql(
-        format.readGeometry(esrijson).getCoordinates()
+        format.readGeometry(esrijson).getCoordinates(),
       );
     });
 
@@ -1529,11 +1529,11 @@ describe('ol/format/EsriJSON.js', function () {
             [108.0, 4.0, 4],
           ],
         ],
-        'XYM'
+        'XYM',
       );
       const esrijson = format.writeGeometry(multilinestring);
       expect(multilinestring.getCoordinates()).to.eql(
-        format.readGeometry(esrijson).getCoordinates()
+        format.readGeometry(esrijson).getCoordinates(),
       );
     });
 
@@ -1553,11 +1553,11 @@ describe('ol/format/EsriJSON.js', function () {
             [108.0, 4.0, 4, 2],
           ],
         ],
-        'XYZM'
+        'XYZM',
       );
       const esrijson = format.writeGeometry(multilinestring);
       expect(multilinestring.getCoordinates()).to.eql(
-        format.readGeometry(esrijson).getCoordinates()
+        format.readGeometry(esrijson).getCoordinates(),
       );
     });
 
@@ -1588,7 +1588,7 @@ describe('ol/format/EsriJSON.js', function () {
       ]);
       const esrijson = format.writeGeometry(multipolygon);
       expect(multipolygon.getCoordinates()).to.eql(
-        format.readGeometry(esrijson).getCoordinates()
+        format.readGeometry(esrijson).getCoordinates(),
       );
     });
 
@@ -1618,11 +1618,11 @@ describe('ol/format/EsriJSON.js', function () {
             ],
           ],
         ],
-        'XYZ'
+        'XYZ',
       );
       const esrijson = format.writeGeometry(multipolygon);
       expect(multipolygon.getCoordinates()).to.eql(
-        format.readGeometry(esrijson).getCoordinates()
+        format.readGeometry(esrijson).getCoordinates(),
       );
     });
 
@@ -1652,11 +1652,11 @@ describe('ol/format/EsriJSON.js', function () {
             ],
           ],
         ],
-        'XYM'
+        'XYM',
       );
       const esrijson = format.writeGeometry(multipolygon);
       expect(multipolygon.getCoordinates()).to.eql(
-        format.readGeometry(esrijson).getCoordinates()
+        format.readGeometry(esrijson).getCoordinates(),
       );
     });
 
@@ -1686,11 +1686,11 @@ describe('ol/format/EsriJSON.js', function () {
             ],
           ],
         ],
-        'XYZM'
+        'XYZM',
       );
       const esrijson = format.writeGeometry(multipolygon);
       expect(multipolygon.getCoordinates()).to.eql(
-        format.readGeometry(esrijson).getCoordinates()
+        format.readGeometry(esrijson).getCoordinates(),
       );
     });
 
@@ -1706,10 +1706,10 @@ describe('ol/format/EsriJSON.js', function () {
       });
       expect(point.getCoordinates()[0]).to.roughlyEqual(
         newPoint.getCoordinates()[0],
-        1e-8
+        1e-8,
       );
       expect(
-        Math.abs(point.getCoordinates()[1] - newPoint.getCoordinates()[1])
+        Math.abs(point.getCoordinates()[1] - newPoint.getCoordinates()[1]),
       ).to.be.lessThan(0.0000001);
     });
   });
@@ -1726,7 +1726,7 @@ describe('ol/format/EsriJSON.js', function () {
         got = array[i];
         exp = result[i];
         expect(got.getGeometry().getCoordinates()).to.eql(
-          exp.getGeometry().getCoordinates()
+          exp.getGeometry().getCoordinates(),
         );
         gotProp = got.getProperties();
         delete gotProp.geometry;
@@ -1749,7 +1749,10 @@ describe('ol/format/EsriJSON.js', function () {
         got = array[i];
         exp = result[i];
         expect(
-          got.getGeometry().transform('EPSG:3857', 'EPSG:4326').getCoordinates()
+          got
+            .getGeometry()
+            .transform('EPSG:3857', 'EPSG:4326')
+            .getCoordinates(),
         ).to.eql(exp.getGeometry().getCoordinates());
       }
     });
@@ -1778,7 +1781,7 @@ describe('ol/format/EsriJSON.js', function () {
         const spatialReference = feature.geometry.spatialReference;
         expect(Number(spatialReference.wkid)).to.equal(3857);
         expect(feature.geometry.paths[0]).to.eql(
-          array[i].getGeometry().getCoordinates()
+          array[i].getGeometry().getCoordinates(),
         );
       });
     });
@@ -1798,7 +1801,7 @@ describe('ol/format/EsriJSON.js', function () {
             .getGeometry()
             .clone()
             .transform('EPSG:3857', 'EPSG:4326')
-            .getCoordinates()
+            .getCoordinates(),
         );
       });
     });
@@ -1810,7 +1813,7 @@ describe('ol/format/EsriJSON.js', function () {
       esrijson.features.forEach(function (feature, i) {
         expect(feature.geometry.spatialReference).to.be(undefined);
         expect(feature.geometry.paths[0]).to.eql(
-          array[i].getGeometry().getCoordinates()
+          array[i].getGeometry().getCoordinates(),
         );
       });
     });

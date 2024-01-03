@@ -153,7 +153,7 @@ class Attribution extends Control {
     this.toggleButton_.addEventListener(
       EventType.CLICK,
       this.handleClick_.bind(this),
-      false
+      false,
     );
 
     const cssClasses =
@@ -194,8 +194,8 @@ class Attribution extends Control {
       new Set(
         this.getMap()
           .getAllLayers()
-          .flatMap((layer) => layer.getAttributions(frameState))
-      )
+          .flatMap((layer) => layer.getAttributions(frameState)),
+      ),
     );
 
     const collapsible = !this.getMap()
@@ -203,7 +203,7 @@ class Attribution extends Control {
       .some(
         (layer) =>
           layer.getSource() &&
-          layer.getSource().getAttributionsCollapsible() === false
+          layer.getSource().getAttributionsCollapsible() === false,
       );
     if (!this.overrideCollapsible_) {
       this.setCollapsible(collapsible);

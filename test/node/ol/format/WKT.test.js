@@ -22,7 +22,7 @@ describe('ol/format/WKT.js', function () {
         featureProjection: 'EPSG:3857',
       });
       expect(geom.getCoordinates()).to.eql(
-        transform([1, 2], 'EPSG:4326', 'EPSG:3857')
+        transform([1, 2], 'EPSG:4326', 'EPSG:3857'),
       );
     });
   });
@@ -49,7 +49,7 @@ describe('ol/format/WKT.js', function () {
       });
       const geom = feature.getGeometry();
       expect(geom.getCoordinates()).to.eql(
-        transform([1, 2], 'EPSG:4326', 'EPSG:3857')
+        transform([1, 2], 'EPSG:4326', 'EPSG:3857'),
       );
     });
   });
@@ -57,7 +57,7 @@ describe('ol/format/WKT.js', function () {
   describe('#writeFeature()', function () {
     it('transforms with dataProjection and featureProjection', function () {
       const feature = new Feature(
-        new Point([1, 2]).transform('EPSG:4326', 'EPSG:3857')
+        new Point([1, 2]).transform('EPSG:4326', 'EPSG:3857'),
       );
       const wkt = format.writeFeature(feature, {
         dataProjection: 'EPSG:4326',
@@ -84,10 +84,10 @@ describe('ol/format/WKT.js', function () {
       expect(point1.getType()).to.eql('Point');
       expect(point2.getType()).to.eql('Point');
       expect(point1.getCoordinates()).to.eql(
-        transform([1, 2], 'EPSG:4326', 'EPSG:3857')
+        transform([1, 2], 'EPSG:4326', 'EPSG:3857'),
       );
       expect(point2.getCoordinates()).to.eql(
-        transform([4, 5], 'EPSG:4326', 'EPSG:3857')
+        transform([4, 5], 'EPSG:4326', 'EPSG:3857'),
       );
     });
   });
@@ -106,19 +106,19 @@ describe('ol/format/WKT.js', function () {
       expect(gotFeatures).to.have.length(2);
       expect(gotFeatures[0].getGeometry().getCoordinates()[0]).to.roughlyEqual(
         1,
-        1e-6
+        1e-6,
       );
       expect(gotFeatures[0].getGeometry().getCoordinates()[1]).to.roughlyEqual(
         2,
-        1e-6
+        1e-6,
       );
       expect(gotFeatures[1].getGeometry().getCoordinates()[0]).to.roughlyEqual(
         4,
-        1e-6
+        1e-6,
       );
       expect(gotFeatures[1].getGeometry().getCoordinates()[1]).to.roughlyEqual(
         5,
-        1e-6
+        1e-6,
       );
     });
   });

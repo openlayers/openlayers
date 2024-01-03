@@ -218,7 +218,7 @@ export function getPointResolution(projection, resolution, point, units) {
       // average of the width and height.
       const toEPSG4326 = getTransformFromProjections(
         projection,
-        get('EPSG:4326')
+        get('EPSG:4326'),
       );
       if (toEPSG4326 === identityTransform && projUnits !== 'degrees') {
         // no transform is available
@@ -285,7 +285,7 @@ export function addEquivalentTransforms(
   projections1,
   projections2,
   forwardTransform,
-  inverseTransform
+  inverseTransform,
 ) {
   projections1.forEach(function (projection1) {
     projections2.forEach(function (projection2) {
@@ -377,12 +377,12 @@ export function addCoordinateTransforms(source, destination, forward, inverse) {
   addTransformFunc(
     sourceProj,
     destProj,
-    createTransformFromCoordinateTransform(forward)
+    createTransformFromCoordinateTransform(forward),
   );
   addTransformFunc(
     destProj,
     sourceProj,
-    createTransformFromCoordinateTransform(inverse)
+    createTransformFromCoordinateTransform(inverse),
   );
 }
 
@@ -400,7 +400,7 @@ export function fromLonLat(coordinate, projection) {
   return transform(
     coordinate,
     'EPSG:4326',
-    projection !== undefined ? projection : 'EPSG:3857'
+    projection !== undefined ? projection : 'EPSG:3857',
   );
 }
 
@@ -417,7 +417,7 @@ export function toLonLat(coordinate, projection) {
   const lonLat = transform(
     coordinate,
     projection !== undefined ? projection : 'EPSG:3857',
-    'EPSG:4326'
+    'EPSG:4326',
   );
   const lon = lonLat[0];
   if (lon < -180 || lon > 180) {
@@ -459,7 +459,7 @@ export function equivalent(projection1, projection2) {
  */
 export function getTransformFromProjections(
   sourceProjection,
-  destinationProjection
+  destinationProjection,
 ) {
   const sourceCode = sourceProjection.getCode();
   const destinationCode = destinationProjection.getCode();
@@ -533,11 +533,11 @@ export function transformExtent(extent, source, destination, stops) {
 export function transformWithProjections(
   point,
   sourceProjection,
-  destinationProjection
+  destinationProjection,
 ) {
   const transformFunc = getTransformFromProjections(
     sourceProjection,
-    destinationProjection
+    destinationProjection,
   );
   return transformFunc(point);
 }
@@ -618,7 +618,7 @@ export function fromUserCoordinate(coordinate, destProjection) {
     ) {
       showCoordinateWarning = false;
       warn(
-        'Call useGeographic() from ol/proj once to work with [longitude, latitude] coordinates.'
+        'Call useGeographic() from ol/proj once to work with [longitude, latitude] coordinates.',
       );
     }
     return coordinate;
@@ -744,7 +744,7 @@ export function addCommon() {
     EPSG4326_PROJECTIONS,
     EPSG3857_PROJECTIONS,
     fromEPSG4326,
-    toEPSG4326
+    toEPSG4326,
   );
 }
 

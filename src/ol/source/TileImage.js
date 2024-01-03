@@ -155,7 +155,7 @@ class TileImage extends UrlTile {
     const usedTileCache = this.getTileCacheForProjection(projection);
 
     this.tileCache.expireCache(
-      this.tileCache == usedTileCache ? usedTiles : {}
+      this.tileCache == usedTileCache ? usedTiles : {},
     );
     for (const id in this.tileCacheForProjection) {
       const tileCache = this.tileCacheForProjection[id];
@@ -241,7 +241,7 @@ class TileImage extends UrlTile {
     const projKey = getUid(projection);
     if (!(projKey in this.tileCacheForProjection)) {
       this.tileCacheForProjection[projKey] = new TileCache(
-        this.tileCache.highWaterMark
+        this.tileCache.highWaterMark,
       );
     }
     return this.tileCacheForProjection[projKey];
@@ -261,7 +261,7 @@ class TileImage extends UrlTile {
     const tileCoord = [z, x, y];
     const urlTileCoord = this.getTileCoordForTileUrlFunction(
       tileCoord,
-      projection
+      projection,
     );
     const tileUrl = urlTileCoord
       ? this.tileUrlFunction(urlTileCoord, pixelRatio, projection)
@@ -272,7 +272,7 @@ class TileImage extends UrlTile {
       tileUrl !== undefined ? tileUrl : '',
       this.crossOrigin,
       this.tileLoadFunction,
-      this.tileOptions
+      this.tileOptions,
     );
     tile.key = key;
     tile.addEventListener(EventType.CHANGE, this.handleTileChange.bind(this));
@@ -299,7 +299,7 @@ class TileImage extends UrlTile {
         x,
         y,
         pixelRatio,
-        sourceProjection || projection
+        sourceProjection || projection,
       );
     }
     const cache = this.getTileCacheForProjection(projection);
@@ -317,7 +317,7 @@ class TileImage extends UrlTile {
     const targetTileGrid = this.getTileGridForProjection(projection);
     const wrappedTileCoord = this.getTileCoordForTileUrlFunction(
       tileCoord,
-      projection
+      projection,
     );
     const newTile = new ReprojTile(
       sourceProjection,
@@ -332,7 +332,7 @@ class TileImage extends UrlTile {
         this.getTileInternal(z, x, y, pixelRatio, sourceProjection),
       this.reprojectionErrorThreshold_,
       this.renderReprojectionEdges_,
-      this.tileOptions
+      this.tileOptions,
     );
     newTile.key = key;
 

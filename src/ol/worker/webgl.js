@@ -43,7 +43,7 @@ worker.onmessage = (event) => {
           vertexBuffer,
           indexBuffer,
           customAttrsCount,
-          bufferPositions
+          bufferPositions,
         );
       }
 
@@ -54,7 +54,7 @@ worker.onmessage = (event) => {
           indexBuffer: indexBuffer.buffer,
           renderInstructions: renderInstructions.buffer,
         },
-        received
+        received,
       );
 
       worker.postMessage(message, [
@@ -85,8 +85,8 @@ worker.onmessage = (event) => {
         customAttributes = Array.from(
           renderInstructions.slice(
             currentInstructionsIndex,
-            currentInstructionsIndex + customAttrsCount
-          )
+            currentInstructionsIndex + customAttrsCount,
+          ),
         );
         currentInstructionsIndex += customAttrsCount;
         verticesCount = renderInstructions[currentInstructionsIndex++];
@@ -131,7 +131,7 @@ worker.onmessage = (event) => {
             customAttributes,
             invertTransform,
             currentLength,
-            currentAngleTangentSum
+            currentAngleTangentSum,
           );
           currentLength = measures.length;
           currentAngleTangentSum = measures.angle;
@@ -149,7 +149,7 @@ worker.onmessage = (event) => {
           indexBuffer: indexBuffer.buffer,
           renderInstructions: renderInstructions.buffer,
         },
-        received
+        received,
       );
 
       worker.postMessage(message, [
@@ -175,7 +175,7 @@ worker.onmessage = (event) => {
           currentInstructionsIndex,
           vertices,
           indices,
-          customAttrsCount
+          customAttrsCount,
         );
       }
 
@@ -189,7 +189,7 @@ worker.onmessage = (event) => {
           indexBuffer: indexBuffer.buffer,
           renderInstructions: renderInstructions.buffer,
         },
-        received
+        received,
       );
 
       worker.postMessage(message, [

@@ -12,7 +12,7 @@ const format = new WKT();
 const feature = format.readFeature(
   'POLYGON((10.689697265625 -25.0927734375, 34.595947265625 ' +
     '-20.1708984375, 38.814697265625 -35.6396484375, 13.502197265625 ' +
-    '-39.1552734375, 10.689697265625 -25.0927734375))'
+    '-39.1552734375, 10.689697265625 -25.0927734375))',
 );
 feature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
 
@@ -77,11 +77,11 @@ exportButton.addEventListener(
             // Apply the transform to the export map context
             CanvasRenderingContext2D.prototype.setTransform.apply(
               mapContext,
-              matrix
+              matrix,
             );
             mapContext.drawImage(canvas, 0, 0);
           }
-        }
+        },
       );
       mapContext.globalAlpha = 1;
       mapContext.setTransform(1, 0, 0, 1, 0, 0);
@@ -92,7 +92,7 @@ exportButton.addEventListener(
         0,
         0,
         dim[0],
-        dim[1]
+        dim[1],
       );
       pdf.save('map.pdf');
       // Reset original map size
@@ -108,5 +108,5 @@ exportButton.addEventListener(
     const scaling = Math.min(width / size[0], height / size[1]);
     map.getView().setResolution(viewResolution / scaling);
   },
-  false
+  false,
 );

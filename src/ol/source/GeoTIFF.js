@@ -471,7 +471,7 @@ class GeoTIFFSource extends DataTile {
     for (let i = 0; i < numSources; ++i) {
       requests[i] = getImagesForSource(
         this.sourceInfo_[i],
-        this.sourceOptions_
+        this.sourceOptions_,
       );
     }
     Promise.all(requests)
@@ -555,7 +555,7 @@ class GeoTIFFSource extends DataTile {
       const imageCount = images.length;
       if (masks.length > 0 && masks.length !== imageCount) {
         throw new Error(
-          `Expected one mask per image found ${masks.length} masks and ${imageCount} images`
+          `Expected one mask per image found ${masks.length} masks and ${imageCount} images`,
         );
       }
 
@@ -636,7 +636,7 @@ class GeoTIFFSource extends DataTile {
           sourceResolutions[sourceResolutions.length - 1];
         this.resolutionFactors_[sourceIndex] = resolutionFactor;
         const scaledSourceResolutions = sourceResolutions.map(
-          (resolution) => (resolution *= resolutionFactor)
+          (resolution) => (resolution *= resolutionFactor),
         );
         const message = `Resolution mismatch for source ${sourceIndex}, got [${scaledSourceResolutions}] but expected [${resolutions}]`;
         assertEqual(
@@ -644,7 +644,7 @@ class GeoTIFFSource extends DataTile {
           scaledSourceResolutions,
           0.02,
           message,
-          this.viewRejector
+          this.viewRejector,
         );
       }
 
@@ -656,7 +656,7 @@ class GeoTIFFSource extends DataTile {
           renderTileSizes,
           0.01,
           `Tile size mismatch for source ${sourceIndex}`,
-          this.viewRejector
+          this.viewRejector,
         );
       }
 
@@ -668,7 +668,7 @@ class GeoTIFFSource extends DataTile {
           sourceTileSizes,
           0,
           `Tile size mismatch for source ${sourceIndex}`,
-          this.viewRejector
+          this.viewRejector,
         );
       }
 

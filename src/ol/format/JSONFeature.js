@@ -39,7 +39,7 @@ class JSONFeature extends FeatureFormat {
     return /** @type {import('./Feature.js').FeatureOrRenderFeature<T>} */ (
       this.readFeatureFromObject(
         getObject(source),
-        this.getReadOptions(source, options)
+        this.getReadOptions(source, options),
       )
     );
   }
@@ -57,7 +57,7 @@ class JSONFeature extends FeatureFormat {
     return /** @type {Array<import('./Feature.js').FeatureOrRenderFeature<T>>} */ (
       this.readFeaturesFromObject(
         getObject(source),
-        this.getReadOptions(source, options)
+        this.getReadOptions(source, options),
       )
     );
   }
@@ -95,7 +95,7 @@ class JSONFeature extends FeatureFormat {
   readGeometry(source, options) {
     return this.readGeometryFromObject(
       getObject(source),
-      this.getReadOptions(source, options)
+      this.getReadOptions(source, options),
     );
   }
 

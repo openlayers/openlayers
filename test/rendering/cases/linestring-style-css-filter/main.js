@@ -27,7 +27,7 @@ feature = new Feature({
 feature.setStyle(
   new Style({
     stroke: new Stroke({color: '#f00', width: 3}),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 
@@ -47,7 +47,7 @@ feature.setStyle(
       lineDash: [4, 8],
       lineJoin: 'round',
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 

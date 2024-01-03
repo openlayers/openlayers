@@ -19,7 +19,7 @@ describe('ol/Image', function () {
         extent,
         resolution,
         pixelRatio,
-        ImageState.IDLE
+        ImageState.IDLE,
       );
       expect(instance).to.be.an(ImageWrapper);
       expect(instance.getState()).to.be(ImageState.IDLE);

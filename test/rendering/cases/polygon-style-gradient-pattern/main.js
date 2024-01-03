@@ -60,7 +60,7 @@ feature.setStyle(
   new Style({
     fill: new Fill({color: pattern}),
     stroke: new Stroke({color: gradient, width: 3}),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 
@@ -95,7 +95,7 @@ feature.setStyle(
   new Style({
     fill: new Fill({color: gradient}),
     stroke: new Stroke({color: pattern, width: 5}),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 

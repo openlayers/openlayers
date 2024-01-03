@@ -27,7 +27,7 @@ export function deflateCoordinates(
   flatCoordinates,
   offset,
   coordinates,
-  stride
+  stride,
 ) {
   for (let i = 0, ii = coordinates.length; i < ii; ++i) {
     const coordinate = coordinates[i];
@@ -51,7 +51,7 @@ export function deflateCoordinatesArray(
   offset,
   coordinatess,
   stride,
-  ends
+  ends,
 ) {
   ends = ends ? ends : [];
   let i = 0;
@@ -60,7 +60,7 @@ export function deflateCoordinatesArray(
       flatCoordinates,
       offset,
       coordinatess[j],
-      stride
+      stride,
     );
     ends[i++] = end;
     offset = end;
@@ -82,7 +82,7 @@ export function deflateMultiCoordinatesArray(
   offset,
   coordinatesss,
   stride,
-  endss
+  endss,
 ) {
   endss = endss ? endss : [];
   let i = 0;
@@ -92,7 +92,7 @@ export function deflateMultiCoordinatesArray(
       offset,
       coordinatesss[j],
       stride,
-      endss[i]
+      endss[i],
     );
     if (ends.length === 0) {
       ends[0] = offset;

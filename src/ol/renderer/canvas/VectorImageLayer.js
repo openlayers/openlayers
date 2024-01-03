@@ -68,7 +68,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
     }
     const vectorPixel = apply(
       this.coordinateToVectorPixelTransform_,
-      apply(this.renderedPixelToCoordinateTransform_, pixel.slice())
+      apply(this.renderedPixelToCoordinateTransform_, pixel.slice()),
     );
     return this.vectorRenderer_.getFeatures(vectorPixel);
   }
@@ -141,7 +141,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
             }
             callback();
           }
-        }
+        },
       );
 
       image.addEventListener(EventType.CHANGE, () => {
@@ -162,7 +162,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
           -1 / renderedResolution,
           0,
           -viewState.center[0],
-          -viewState.center[1]
+          -viewState.center[1],
         );
       });
       image.load();
@@ -202,7 +202,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
     frameState,
     hitTolerance,
     callback,
-    matches
+    matches,
   ) {
     if (this.vectorRenderer_) {
       return this.vectorRenderer_.forEachFeatureAtCoordinate(
@@ -210,7 +210,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
         frameState,
         hitTolerance,
         callback,
-        matches
+        matches,
       );
     }
     return super.forEachFeatureAtCoordinate(
@@ -218,7 +218,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
       frameState,
       hitTolerance,
       callback,
-      matches
+      matches,
     );
   }
 }

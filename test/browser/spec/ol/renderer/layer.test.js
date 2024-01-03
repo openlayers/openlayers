@@ -52,7 +52,7 @@ describe('ol/renderer/Layer', function () {
         extent,
         resolution,
         pixelRatio,
-        imageLoadFunction
+        imageLoadFunction,
       );
     });
 

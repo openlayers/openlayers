@@ -99,7 +99,7 @@ export default WMTSTileGrid;
 export function createFromCapabilitiesMatrixSet(
   matrixSet,
   extent,
-  matrixLimits
+  matrixLimits,
 ) {
   /** @type {!Array<number>} */
   const resolutions = [];
@@ -171,7 +171,7 @@ export function createFromCapabilitiesMatrixSet(
       }
       resolutions.push(resolution);
       tileSizes.push(
-        tileWidth == tileHeight ? tileWidth : [tileWidth, tileHeight]
+        tileWidth == tileHeight ? tileWidth : [tileWidth, tileHeight],
       );
       sizes.push([elt['MatrixWidth'], elt['MatrixHeight']]);
     }

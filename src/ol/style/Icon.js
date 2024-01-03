@@ -163,7 +163,7 @@ class Icon extends ImageStyle {
 
     assert(
       !(cacheKey !== undefined && image),
-      '`image` and `src` cannot be provided at the same time'
+      '`image` and `src` cannot be provided at the same time',
     );
 
     if ((cacheKey === undefined || cacheKey.length === 0) && image) {
@@ -171,7 +171,7 @@ class Icon extends ImageStyle {
     }
     assert(
       cacheKey !== undefined && cacheKey.length > 0,
-      'A defined and non-empty `src` or `image` must be provided'
+      'A defined and non-empty `src` or `image` must be provided',
     );
 
     assert(
@@ -179,7 +179,7 @@ class Icon extends ImageStyle {
         (options.width !== undefined || options.height !== undefined) &&
         options.scale !== undefined
       ),
-      '`width` or `height` cannot be provided together with `scale`'
+      '`width` or `height` cannot be provided together with `scale`',
     );
 
     let imageState;
@@ -212,7 +212,7 @@ class Icon extends ImageStyle {
       /** @type {string} */ (cacheKey),
       this.crossOrigin_,
       imageState,
-      this.color_
+      this.color_,
     );
 
     /**
@@ -264,8 +264,8 @@ class Icon extends ImageStyle {
                 imageSize[0],
                 imageSize[1],
                 options.width,
-                options.height
-              )
+                options.height,
+              ),
             );
           };
           this.listenImageChange(onload);
@@ -274,7 +274,7 @@ class Icon extends ImageStyle {
       }
       if (width !== undefined) {
         this.setScale(
-          calculateScale(width, height, options.width, options.height)
+          calculateScale(width, height, options.width, options.height),
         );
       }
     }

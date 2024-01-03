@@ -43,7 +43,7 @@ new Map({
             0,
             0,
             labelCanvasSize,
-            labelCanvasSize
+            labelCanvasSize,
           ).data;
           return new Uint8Array(data.buffer);
         },

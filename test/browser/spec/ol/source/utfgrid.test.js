@@ -117,7 +117,7 @@ describe('ol.source.UTFGrid', function () {
       const expectedExtent3857 = transformExtent(
         expectedExtent4326,
         proj4326,
-        proj3857
+        proj3857,
       );
       expect(extent).to.eql(proj3857.getExtent());
       expect(extent[0]).to.roughlyEqual(expectedExtent3857[0], 1e-8);
@@ -226,19 +226,19 @@ describe('ol.source.UTFGrid', function () {
         const tileCoord = [1, 1, 0]; // overwritten to match our stored JSON
         const urlTileCoord = this.getTileCoordForTileUrlFunction(
           tileCoord,
-          projection
+          projection,
         );
         const tileUrl = this.tileUrlFunction_(
           urlTileCoord,
           pixelRatio,
-          projection
+          projection,
         );
         const tile = new CustomTile(
           tileCoord,
           tileUrl !== undefined ? 0 : 4, // IDLE : EMPTY
           tileUrl !== undefined ? tileUrl : '',
           this.tileGrid.getTileCoordExtent(tileCoord),
-          true
+          true,
         ); // always preemptive, so loading doesn't happen automatically
         // manually call handleLoad_ with our local JSON data
         tile.handleLoad_(gridJson110);
@@ -261,7 +261,7 @@ describe('ol.source.UTFGrid', function () {
         bonn3857,
         resolutionZoom1,
         callback,
-        true
+        true,
       );
     });
 
@@ -275,7 +275,7 @@ describe('ol.source.UTFGrid', function () {
         noState3857,
         resolutionZoom1,
         callback,
-        true
+        true,
       );
     });
   });

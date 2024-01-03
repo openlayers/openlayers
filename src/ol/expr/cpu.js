@@ -96,7 +96,7 @@ export function buildExpression(encoded, type, context) {
     const expected = typeName(type);
     const actual = typeName(expression.type);
     throw new Error(
-      `Expected expression to be of type ${expected}, got ${actual}`
+      `Expected expression to be of type ${expected}, got ${actual}`,
     );
   }
   return compileExpression(expression, context);
@@ -498,7 +498,7 @@ function compileInterpolateExpression(expression, context) {
             previousInput,
             previousOutput,
             input,
-            output
+            output,
           );
         }
         return interpolateNumber(
@@ -507,7 +507,7 @@ function compileInterpolateExpression(expression, context) {
           previousInput,
           previousOutput,
           input,
-          output
+          output,
         );
       }
       previousInput = input;

@@ -182,7 +182,7 @@ class Heatmap extends BaseVector {
       .addUniform('float u_blurSlope')
       .setSymbolSizeExpression('vec2(u_size)')
       .setSymbolColorExpression(
-        'vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * u_blurSlope) * v_prop_weight)'
+        'vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * u_blurSlope) * v_prop_weight)',
       );
 
     return new WebGLPointsLayerRenderer(this, {

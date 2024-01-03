@@ -52,7 +52,7 @@ describe('ol.control.ZoomSlider', function () {
       expect(hasUnselectableCls).to.be(true);
 
       const zoomSliderThumbs = zoomSliderContainer.querySelectorAll(
-        '.ol-zoomslider-thumb'
+        '.ol-zoomslider-thumb',
       );
       expect(zoomSliderThumbs.length).to.be(1);
 

@@ -171,13 +171,13 @@ class TileWMS extends TileImage {
     const sourceProjCoord = transform(
       coordinate,
       projectionObj,
-      sourceProjectionObj
+      sourceProjectionObj,
     );
     const sourceResolution = calculateSourceResolution(
       sourceProjectionObj,
       projectionObj,
       coordinate,
-      resolution
+      resolution,
     );
 
     const z = tileGrid.getZForResolution(sourceResolution, this.zDirection);
@@ -201,7 +201,7 @@ class TileWMS extends TileImage {
     Object.assign(
       baseParams,
       getRequestParams(this.params_, 'GetFeatureInfo'),
-      params
+      params,
     );
 
     const x = Math.floor((sourceProjCoord[0] - tileExtent[0]) / tileResolution);
@@ -215,7 +215,7 @@ class TileWMS extends TileImage {
       tileExtent,
       1,
       sourceProjectionObj || projectionObj,
-      baseParams
+      baseParams,
     );
   }
 
@@ -315,7 +315,7 @@ class TileWMS extends TileImage {
       projection,
       url,
       params,
-      this.serverType_
+      this.serverType_,
     );
   }
 
@@ -391,7 +391,7 @@ class TileWMS extends TileImage {
 
     const baseParams = Object.assign(
       {},
-      getRequestParams(this.params_, 'GetMap')
+      getRequestParams(this.params_, 'GetMap'),
     );
 
     return this.getRequestUrl_(
@@ -399,7 +399,7 @@ class TileWMS extends TileImage {
       tileExtent,
       pixelRatio,
       projection,
-      baseParams
+      baseParams,
     );
   }
 }

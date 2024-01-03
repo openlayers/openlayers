@@ -70,7 +70,7 @@ describe('ol/source/ImageWMS', function () {
           viewExtent,
           resolution,
           pixelRatio,
-          projection
+          projection,
         );
         image.load();
         const uri = new URL(image.getImage().src);
@@ -81,17 +81,17 @@ describe('ol/source/ImageWMS', function () {
         const bboxAspectRatio = (bbox[3] - bbox[1]) / (bbox[2] - bbox[0]);
         const imageAspectRatio = imageWidth / imageHeight;
         const marginWidth = Math.ceil(
-          ((ratio - 1) * viewWidth) / resolution / 2
+          ((ratio - 1) * viewWidth) / resolution / 2,
         );
         const marginHeight = Math.ceil(
-          ((ratio - 1) * viewHeight) / resolution / 2
+          ((ratio - 1) * viewHeight) / resolution / 2,
         );
 
         expect(imageWidth).to.be(
-          Math.round(viewWidth / resolution) + 2 * marginWidth
+          Math.round(viewWidth / resolution) + 2 * marginWidth,
         );
         expect(imageHeight).to.be(
-          Math.round(viewHeight / resolution) + 2 * marginHeight
+          Math.round(viewHeight / resolution) + 2 * marginHeight,
         );
         expect(bboxAspectRatio).to.roughlyEqual(imageAspectRatio, 1e-12);
       });
@@ -118,7 +118,7 @@ describe('ol/source/ImageWMS', function () {
         [10, 20, 30.1, 39.9],
         resolution,
         pixelRatio,
-        projection
+        projection,
       );
       image.load();
       const uri = new URL(image.getImage().src);
@@ -182,7 +182,7 @@ describe('ol/source/ImageWMS', function () {
         extent,
         resolution,
         pixelRatio,
-        projection
+        projection,
       );
       image1.load();
       const uri1 = new URL(image1.getImage().src);
@@ -195,7 +195,7 @@ describe('ol/source/ImageWMS', function () {
         extent,
         resolution,
         pixelRatio,
-        projection2
+        projection2,
       );
       image2.load();
       const uri2 = new URL(image2.getImage().src);
@@ -208,7 +208,7 @@ describe('ol/source/ImageWMS', function () {
         extent,
         resolution,
         pixelRatio,
-        projection3
+        projection3,
       );
       image3.load();
       const uri3 = new URL(image3.getImage().src);
@@ -336,7 +336,7 @@ describe('ol/source/ImageWMS', function () {
       expect(imageLoadFunction.getCall(0).args[0]).to.eql(image);
       expect(imageLoadFunction.getCall(0).args[1]).to.be(
         window.location.origin +
-          '/wms?REQUEST=GetMap&SERVICE=WMS&VERSION=1.3.0&FORMAT=image%2Fpng&STYLES=&TRANSPARENT=true&LAYERS=layer&WIDTH=200&HEIGHT=200&CRS=EPSG%3A4326&BBOX=20%2C10%2C40%2C30'
+          '/wms?REQUEST=GetMap&SERVICE=WMS&VERSION=1.3.0&FORMAT=image%2Fpng&STYLES=&TRANSPARENT=true&LAYERS=layer&WIDTH=200&HEIGHT=200&CRS=EPSG%3A4326&BBOX=20%2C10%2C40%2C30',
       );
     });
 
@@ -347,13 +347,13 @@ describe('ol/source/ImageWMS', function () {
         extent,
         resolution,
         pixelRatio,
-        projection
+        projection,
       );
       const image2 = source.getImage(
         extent,
         resolution,
         pixelRatio,
-        projection
+        projection,
       );
       expect(image1).to.equal(image2);
     });
@@ -434,7 +434,7 @@ describe('ol/source/ImageWMS', function () {
       expect(uri.pathname).to.be('/wms');
       const queryData = uri.searchParams;
       expect(queryData.get('BBOX')).to.be(
-        '1577259.402312431,2854419.4299513334,2875520.229418512,4152680.2570574144'
+        '1577259.402312431,2854419.4299513334,2875520.229418512,4152680.2570574144',
       );
       expect(queryData.get('CRS')).to.be('EPSG:3857');
       expect(queryData.get('FORMAT')).to.be('image/png');

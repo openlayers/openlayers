@@ -68,7 +68,7 @@ function displayFeatureInfo(pixel, width) {
   const feature = map.getFeaturesAtPixel(pixel)[0];
   if (feature) {
     const featurePixel = map.getPixelFromCoordinate(
-      feature.getGeometry().getCoordinates()
+      feature.getGeometry().getCoordinates(),
     );
     if (featurePixel[0] > width) {
       featurePixel[0] = featurePixel[0] % width;

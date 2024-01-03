@@ -47,7 +47,7 @@ export function numberToGlsl(v) {
 export function arrayToGlsl(array) {
   if (array.length < 2 || array.length > 4) {
     throw new Error(
-      '`formatArray` can only output `vec2`, `vec3` or `vec4` arrays.'
+      '`formatArray` can only output `vec2`, `vec3` or `vec4` arrays.',
     );
   }
   return `vec${array.length}(${array.map(numberToGlsl).join(', ')})`;
@@ -183,7 +183,7 @@ export function buildExpression(
   encoded,
   type,
   parsingContext,
-  compilationContext
+  compilationContext,
 ) {
   const expression = parse(encoded, parsingContext, type);
   if (isType(expression.type, NoneType)) {
@@ -193,7 +193,7 @@ export function buildExpression(
     const expected = typeName(type);
     const actual = typeName(expression.type);
     throw new Error(
-      `Expected expression to be of type ${expected}, got ${actual}`
+      `Expected expression to be of type ${expected}, got ${actual}`,
     );
   }
   return compile(expression, type, compilationContext);
@@ -265,35 +265,35 @@ const compilers = {
   [Ops.All]: createCompiler((compiledArgs) => `(${compiledArgs.join(` && `)})`),
   [Ops.Not]: createCompiler(([value]) => `(!${value})`),
   [Ops.Equal]: createCompiler(
-    ([firstValue, secondValue]) => `(${firstValue} == ${secondValue})`
+    ([firstValue, secondValue]) => `(${firstValue} == ${secondValue})`,
   ),
   [Ops.NotEqual]: createCompiler(
-    ([firstValue, secondValue]) => `(${firstValue} != ${secondValue})`
+    ([firstValue, secondValue]) => `(${firstValue} != ${secondValue})`,
   ),
   [Ops.GreaterThan]: createCompiler(
-    ([firstValue, secondValue]) => `(${firstValue} > ${secondValue})`
+    ([firstValue, secondValue]) => `(${firstValue} > ${secondValue})`,
   ),
   [Ops.GreaterThanOrEqualTo]: createCompiler(
-    ([firstValue, secondValue]) => `(${firstValue} >= ${secondValue})`
+    ([firstValue, secondValue]) => `(${firstValue} >= ${secondValue})`,
   ),
   [Ops.LessThan]: createCompiler(
-    ([firstValue, secondValue]) => `(${firstValue} < ${secondValue})`
+    ([firstValue, secondValue]) => `(${firstValue} < ${secondValue})`,
   ),
   [Ops.LessThanOrEqualTo]: createCompiler(
-    ([firstValue, secondValue]) => `(${firstValue} <= ${secondValue})`
+    ([firstValue, secondValue]) => `(${firstValue} <= ${secondValue})`,
   ),
   [Ops.Multiply]: createCompiler(
-    (compiledArgs) => `(${compiledArgs.join(' * ')})`
+    (compiledArgs) => `(${compiledArgs.join(' * ')})`,
   ),
   [Ops.Divide]: createCompiler(
-    ([firstValue, secondValue]) => `(${firstValue} / ${secondValue})`
+    ([firstValue, secondValue]) => `(${firstValue} / ${secondValue})`,
   ),
   [Ops.Add]: createCompiler((compiledArgs) => `(${compiledArgs.join(' + ')})`),
   [Ops.Subtract]: createCompiler(
-    ([firstValue, secondValue]) => `(${firstValue} - ${secondValue})`
+    ([firstValue, secondValue]) => `(${firstValue} - ${secondValue})`,
   ),
   [Ops.Clamp]: createCompiler(
-    ([value, min, max]) => `clamp(${value}, ${min}, ${max})`
+    ([value, min, max]) => `clamp(${value}, ${min}, ${max})`,
   ),
   [Ops.Mod]: createCompiler(([value, modulo]) => `mod(${value}, ${modulo})`),
   [Ops.Pow]: createCompiler(([value, power]) => `pow(${value}, ${power})`),
@@ -321,7 +321,7 @@ const compilers = {
     return result;
   }),
   [Ops.Between]: createCompiler(
-    ([value, min, max]) => `(${value} >= ${min} && ${value} <= ${max})`
+    ([value, min, max]) => `(${value} >= ${min} && ${value} <= ${max})`,
   ),
   [Ops.Interpolate]: createCompiler(([exponent, input, ...compiledArgs]) => {
     let result = '';
@@ -363,7 +363,7 @@ ${tests.join('\n')}
     return `${funcName}(${needle})`;
   }),
   [Ops.Array]: createCompiler(
-    (args) => `vec${args.length}(${args.join(', ')})`
+    (args) => `vec${args.length}(${args.join(', ')})`,
   ),
   [Ops.Color]: createCompiler((compiledArgs) => {
     if (compiledArgs.length === 1) {
@@ -399,9 +399,8 @@ ${tests.join('\n')}
 `;
       }
 
-      context.functions[
-        GET_BAND_VALUE_FUNC
-      ] = `float getBandValue(float band, float xOffset, float yOffset) {
+      context.functions[GET_BAND_VALUE_FUNC] =
+        `float getBandValue(float band, float xOffset, float yOffset) {
   float dx = xOffset / ${Uniforms.TEXTURE_PIXEL_WIDTH};
   float dy = yOffset / ${Uniforms.TEXTURE_PIXEL_HEIGHT};
 ${ifBlocks}
@@ -455,8 +454,8 @@ function compile(expression, returnType, context) {
     if (compiler === undefined) {
       throw new Error(
         `No compiler defined for this operator: ${JSON.stringify(
-          expression.operator
-        )}`
+          expression.operator,
+        )}`,
       );
     }
     return compiler(context, expression, returnType);
@@ -476,7 +475,7 @@ function compile(expression, returnType, context) {
 
   if ((expression.type & ColorType) > 0) {
     return colorToGlsl(
-      /** @type {Array<number> | string} */ (expression.value)
+      /** @type {Array<number> | string} */ (expression.value),
     );
   }
 
@@ -486,7 +485,7 @@ function compile(expression, returnType, context) {
 
   throw new Error(
     `Unexpected expression ${expression.value} (expected type ${typeName(
-      returnType
-    )})`
+      returnType,
+    )})`,
   );
 }

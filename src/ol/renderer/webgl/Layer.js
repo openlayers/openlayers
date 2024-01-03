@@ -91,7 +91,7 @@ class WebGLLayerRenderer extends LayerRenderer {
         RenderEventType.PRECOMPOSE,
         undefined,
         frameState,
-        context
+        context,
       );
       layer.dispatchEvent(event);
     }
@@ -109,7 +109,7 @@ class WebGLLayerRenderer extends LayerRenderer {
         RenderEventType.POSTCOMPOSE,
         undefined,
         frameState,
-        context
+        context,
       );
       layer.dispatchEvent(event);
     }
@@ -231,14 +231,14 @@ class WebGLLayerRenderer extends LayerRenderer {
         -frameState.pixelRatio,
         0,
         0,
-        -frameState.size[1]
+        -frameState.size[1],
       );
 
       const event = new RenderEvent(
         type,
         this.inversePixelTransform_,
         frameState,
-        context
+        context,
       );
       layer.dispatchEvent(event);
     }

@@ -220,7 +220,7 @@ class CanvasTextBuilder extends CanvasBuilder {
             flatCoordinates,
             flatOffset,
             ends[o],
-            stride
+            stride,
           );
         } else {
           chunks = [flatCoordinates.slice(flatOffset, ends[o])];
@@ -235,7 +235,7 @@ class CanvasTextBuilder extends CanvasBuilder {
               chunk,
               0,
               chunk.length,
-              2
+              2,
             );
             chunkBegin = range[0];
             chunkEnd = range[1];
@@ -333,7 +333,7 @@ class CanvasTextBuilder extends CanvasBuilder {
       if (textState.backgroundFill || textState.backgroundStroke) {
         this.setFillStrokeStyle(
           textState.backgroundFill,
-          textState.backgroundStroke
+          textState.backgroundStroke,
         );
         if (textState.backgroundFill) {
           this.updateFillStyle(this.state, this.createFill);
@@ -567,7 +567,7 @@ class CanvasTextBuilder extends CanvasBuilder {
           this.textFillState_ = fillState;
         }
         fillState.fillStyle = asColorLike(
-          textFillStyle.getColor() || defaultFillStyle
+          textFillStyle.getColor() || defaultFillStyle,
         );
       }
 
@@ -595,7 +595,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         strokeState.miterLimit =
           miterLimit === undefined ? defaultMiterLimit : miterLimit;
         strokeState.strokeStyle = asColorLike(
-          textStrokeStyle.getColor() || defaultStrokeStyle
+          textStrokeStyle.getColor() || defaultStrokeStyle,
         );
       }
 

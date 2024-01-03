@@ -210,7 +210,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       it('batch contains all features', () => {
         const polygonIds = Object.keys(renderer.batch_.polygonBatch.entries);
         const lineStringIds = Object.keys(
-          renderer.batch_.lineStringBatch.entries
+          renderer.batch_.lineStringBatch.entries,
         );
         const pointIds = Object.keys(renderer.batch_.pointBatch.entries);
         expect(polygonIds).to.eql([getUid(feature2)]);
@@ -321,7 +321,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
           apply(target, thisArg, [uniform, value]) {
             return target.call(thisArg, uniform, [...value]);
           },
-        }
+        },
       );
 
       renderer.renderFrame({
@@ -466,7 +466,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         -4, // -1 / viewState.resolution,
         0, // -viewState.rotation,
         0, // -viewState.center[0],
-        -16 // -viewState.center[1]
+        -16, // -viewState.center[1]
       );
       frameState = {
         ...frameState,
@@ -487,9 +487,9 @@ describe('ol/renderer/webgl/VectorLayer', () => {
             done(
               new Error(
                 `feature found id=${found.get(
-                  'id'
-                )}, does not match expected id=${expected.get('id')}`
-              )
+                  'id',
+                )}, does not match expected id=${expected.get('id')}`,
+              ),
             );
           }
         } else if (called) {
@@ -520,20 +520,20 @@ describe('ol/renderer/webgl/VectorLayer', () => {
     });
     it('unlistens to source events', () => {
       expect(
-        vectorSource.removeEventListener.calledWith(VectorEventType.ADDFEATURE)
+        vectorSource.removeEventListener.calledWith(VectorEventType.ADDFEATURE),
       ).to.be(true);
       expect(
         vectorSource.removeEventListener.calledWith(
-          VectorEventType.CHANGEFEATURE
-        )
+          VectorEventType.CHANGEFEATURE,
+        ),
       ).to.be(true);
       expect(
         vectorSource.removeEventListener.calledWith(
-          VectorEventType.REMOVEFEATURE
-        )
+          VectorEventType.REMOVEFEATURE,
+        ),
       ).to.be(true);
       expect(
-        vectorSource.removeEventListener.calledWith(VectorEventType.CLEAR)
+        vectorSource.removeEventListener.calledWith(VectorEventType.CLEAR),
       ).to.be(true);
     });
   });

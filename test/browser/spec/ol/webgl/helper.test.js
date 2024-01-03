@@ -154,13 +154,13 @@ describe('ol/webgl/WebGLHelper', function () {
         expect(uniformLocations[DefaultUniform.TIME]).not.to.eql(undefined);
         expect(uniformLocations[DefaultUniform.ZOOM]).not.to.eql(undefined);
         expect(uniformLocations[DefaultUniform.RESOLUTION]).not.to.eql(
-          undefined
+          undefined,
         );
         expect(uniformLocations[DefaultUniform.VIEWPORT_SIZE_PX]).not.to.eql(
-          undefined
+          undefined,
         );
         expect(uniformLocations[DefaultUniform.PIXEL_RATIO]).not.to.eql(
-          undefined
+          undefined,
         );
         expect(uniformLocations[DefaultUniform.ROTATION]).not.to.eql(undefined);
       });
@@ -239,18 +239,18 @@ describe('ol/webgl/WebGLHelper', function () {
       it('throws for an invalid vertex shader', function () {
         h = new WebGLHelper();
         expect(() =>
-          h.getProgram(FRAGMENT_SHADER, INVALID_VERTEX_SHADER)
+          h.getProgram(FRAGMENT_SHADER, INVALID_VERTEX_SHADER),
         ).to.throwException(
-          /Vertex shader compilation failed: ERROR: 0:10: 'bla' : syntax error/
+          /Vertex shader compilation failed: ERROR: 0:10: 'bla' : syntax error/,
         );
       });
 
       it('throws for an invalid fragment shader', function () {
         h = new WebGLHelper();
         expect(() =>
-          h.getProgram(INVALID_FRAGMENT_SHADER, VERTEX_SHADER)
+          h.getProgram(INVALID_FRAGMENT_SHADER, VERTEX_SHADER),
         ).to.throwException(
-          /Fragment shader compilation failed: ERROR: 0:5: 'oops' : undeclared identifier/
+          /Fragment shader compilation failed: ERROR: 0:5: 'oops' : undeclared identifier/,
         );
       });
     });
@@ -276,13 +276,13 @@ describe('ol/webgl/WebGLHelper', function () {
         translateTransform(
           expected,
           -SAMPLE_FRAMESTATE.viewState.center[0],
-          -SAMPLE_FRAMESTATE.viewState.center[1]
+          -SAMPLE_FRAMESTATE.viewState.center[1],
         );
 
         h.makeProjectionTransform(SAMPLE_FRAMESTATE, given);
 
         expect(given.map((val) => val.toFixed(15))).to.eql(
-          expected.map((val) => val.toFixed(15))
+          expected.map((val) => val.toFixed(15)),
         );
       });
     });
@@ -319,7 +319,7 @@ describe('ol/webgl/WebGLHelper', function () {
           gl.COLOR_ATTACHMENT0,
           gl.TEXTURE_2D,
           t,
-          0
+          0,
         );
         const data = new Uint8Array(width * height * 4);
         gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, data);
@@ -356,7 +356,7 @@ describe('ol/webgl/WebGLHelper', function () {
           gl.COLOR_ATTACHMENT0,
           gl.TEXTURE_2D,
           t,
-          0
+          0,
         );
         const data = new Uint8Array(width * height * 4);
         gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, data);
@@ -419,9 +419,9 @@ describe('ol/webgl/WebGLHelper', function () {
 
         void main(void) {
           gl_Position = vec4(u_test, attr3, 0.0, 1.0);
-        }`
+        }`,
         ),
-        SAMPLE_FRAMESTATE
+        SAMPLE_FRAMESTATE,
       );
     });
 
