@@ -11,7 +11,8 @@ import {toSize} from '../size.js';
  * @property {number} rotation Rotation.
  * @property {number|import("../size.js").Size} scale Scale.
  * @property {Array<number>} displacement Displacement.
- * @property {"declutter"|"obstacle"|"none"|undefined} declutterMode Declutter mode: `declutter`, `obstacle`, 'none */
+ * @property {import('../style.js').DeclutterMode} declutterMode Declutter mode: `declutter`, `obstacle`, 'none`
+ */
 
 /**
  * @classdesc

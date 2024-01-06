@@ -11,3 +11,5 @@ export {default as RegularShape} from './style/RegularShape.js';
 export {default as Stroke} from './style/Stroke.js';
 export {default as Style} from './style/Style.js';
 export {default as Text} from './style/Text.js';
+
+/** @typedef {"declutter"|"obstacle"|"none"|undefined} DeclutterMode */

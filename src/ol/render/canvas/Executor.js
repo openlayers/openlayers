@@ -812,7 +812,7 @@ class Executor {
               instruction[14]
             );
           const declutterImageWithText =
-            /** @type {import("../canvas.js").DeclutterImageWithText} */ (
+            /** @type {{args: import("../canvas.js").DeclutterImageWithText, declutterMode: import('../../style.js').DeclutterMode}} */ (
               instruction[15]
             );
 
@@ -906,44 +906,44 @@ class Executor {
                 : null,
             ];
             if (declutterTree) {
-              if (declutterMode === 'none') {
-                // not rendered in declutter group
-                continue;
-              } else if (declutterMode === 'obstacle') {
-                // will always be drawn, thus no collision detection, but insert as obstacle
-                declutterTree.insert(dimensions.declutterBox);
-                continue;
-              } else {
-                let imageArgs;
-                let imageDeclutterBox;
-                if (declutterImageWithText) {
-                  const index = dd - d;
-                  if (!declutterImageWithText[index]) {
-                    // We now have the image for an image+text combination.
-                    declutterImageWithText[index] = args;
-                    // Don't render anything for now, wait for the text.
-                    continue;
-                  }
-                  imageArgs = declutterImageWithText[index];
-                  delete declutterImageWithText[index];
-                  imageDeclutterBox = getDeclutterBox(imageArgs);
-                  if (declutterTree.collides(imageDeclutterBox)) {
-                    continue;
-                  }
-                }
-                if (declutterTree.collides(dimensions.declutterBox)) {
+              let imageArgs, imageDeclutterMode, imageDeclutterBox;
+              if (declutterImageWithText) {
+                const index = dd - d;
+                if (!declutterImageWithText[index]) {
+                  // We now have the image for an image+text combination.
+                  declutterImageWithText[index] = {args, declutterMode};
+                  // Don't render anything for now, wait for the text.
                   continue;
                 }
-                if (imageArgs) {
-                  // We now have image and text for an image+text combination.
-                  declutterTree.insert(imageDeclutterBox);
-                  // Render the image before we render the text.
-                  this.replayImageOrLabel_.apply(this, imageArgs);
-                }
-                declutterTree.insert(dimensions.declutterBox);
+                const imageDeclutter = declutterImageWithText[index];
+                imageArgs = imageDeclutter.args;
+                imageDeclutterMode = imageDeclutter.declutterMode;
+                delete declutterImageWithText[index];
+                imageDeclutterBox = getDeclutterBox(imageArgs);
               }
+              // We now have image and text for an image+text combination.
+              let renderImage, renderText;
+              if (
+                imageArgs &&
+                (imageDeclutterMode === 'obstacle' ||
+                  !declutterTree.collides(imageDeclutterBox))
+              ) {
+                renderImage = true;
+              }
+              if (!declutterTree.collides(dimensions.declutterBox)) {
+                renderText = true;
+              }
+              if (renderImage) {
+                declutterTree.insert(imageDeclutterBox);
+                this.replayImageOrLabel_.apply(this, imageArgs);
+              }
+              if (renderText) {
+                declutterTree.insert(dimensions.declutterBox);
+                this.replayImageOrLabel_.apply(this, args);
+              }
+            } else {
+              this.replayImageOrLabel_.apply(this, args);
             }
-            this.replayImageOrLabel_.apply(this, args);
           }
           ++i;
           break;

@@ -361,6 +361,7 @@ function renderPointGeometry(
 ) {
   const imageStyle = style.getImage();
   const textStyle = style.getText();
+  const hasText = textStyle && textStyle.getText();
   /** @type {import("../render/canvas.js").DeclutterImageWithText} */
   let declutterImageWithText;
   if (imageStyle) {
@@ -369,18 +370,10 @@ function renderPointGeometry(
     }
     let imageBuilderGroup = builderGroup;
     if (declutterBuilderGroup) {
-      const declutterMode = imageStyle.getDeclutterMode();
-      if (declutterMode !== 'none') {
+      const imageDeclutterMode = imageStyle.getDeclutterMode();
+      if (imageDeclutterMode !== 'none') {
         imageBuilderGroup = declutterBuilderGroup;
-        if (declutterMode === 'obstacle') {
-          // draw in non-declutter group:
-          const imageReplay = builderGroup.getBuilder(
-            style.getZIndex(),
-            'Image',
-          );
-          imageReplay.setImageStyle(imageStyle, declutterImageWithText);
-          imageReplay.drawPoint(geometry, feature);
-        } else if (textStyle && textStyle.getText()) {
+        if (hasText) {
           declutterImageWithText = {};
         }
       }
@@ -392,7 +385,7 @@ function renderPointGeometry(
     imageReplay.setImageStyle(imageStyle, declutterImageWithText);
     imageReplay.drawPoint(geometry, feature);
   }
-  if (textStyle && textStyle.getText()) {
+  if (hasText) {
     let textBuilderGroup = builderGroup;
     if (declutterBuilderGroup) {
       textBuilderGroup = declutterBuilderGroup;
@@ -430,17 +423,7 @@ function renderMultiPointGeometry(
       const declutterMode = imageStyle.getDeclutterMode();
       if (declutterMode !== 'none') {
         imageBuilderGroup = declutterBuilderGroup;
-        if (declutterMode === 'obstacle') {
-          // draw in non-declutter group:
-          const imageReplay = builderGroup.getBuilder(
-            style.getZIndex(),
-            'Image',
-          );
-          imageReplay.setImageStyle(imageStyle, declutterImageWithText);
-          imageReplay.drawMultiPoint(geometry, feature);
-        } else if (textStyle && textStyle.getText()) {
-          declutterImageWithText = {};
-        }
+        declutterImageWithText = {};
       }
     }
     const imageReplay = imageBuilderGroup.getBuilder(
