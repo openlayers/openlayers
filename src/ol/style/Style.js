@@ -8,6 +8,16 @@ import Stroke from './Stroke.js';
 import {assert} from '../asserts.js';
 
 /**
+ * Defines how symbols and text are decluttered on layers ith `declutter` set to `true`
+ * * **declutter**: Overlapping symbols and text are decluttered.
+ * * **obstacle**: Symbols and text are rendered, but serve as obstacle for subsequent attempts
+ *   to place a symbol or text at the same location.
+ * * **none**: No decluttering is done.
+ *
+ * @typedef {"declutter"|"obstacle"|"none"} DeclutterMode
+ */
+
+/**
  * A function that takes an {@link module:ol/Feature~Feature} and a `{number}`
  * representing the view's resolution. The function should return a
  * {@link module:ol/style/Style~Style} or an array of them. This way e.g. a

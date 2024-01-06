@@ -675,6 +675,8 @@ class Executor {
     let dd; // end of per-instruction data
     let anchorX,
       anchorY,
+      /** @type {import('../../style/Style.js').DeclutterMode} */
+      declutterMode,
       prevX,
       prevY,
       roundX,
@@ -807,12 +809,9 @@ class Executor {
             instruction[12]
           );
           let width = /** @type {number} */ (instruction[13]);
-          const declutterMode =
-            /** @type {"declutter"|"obstacle"|"none"|undefined} */ (
-              instruction[14]
-            );
+          declutterMode = instruction[14] || 'declutter';
           const declutterImageWithText =
-            /** @type {{args: import("../canvas.js").DeclutterImageWithText, declutterMode: import('../../style.js').DeclutterMode}} */ (
+            /** @type {{args: import("../canvas.js").DeclutterImageWithText, declutterMode: import('../../style/Style.js').DeclutterMode}} */ (
               instruction[15]
             );
 
@@ -925,20 +924,35 @@ class Executor {
               let renderImage, renderText;
               if (
                 imageArgs &&
-                (imageDeclutterMode === 'obstacle' ||
+                (imageDeclutterMode !== 'declutter' ||
                   !declutterTree.collides(imageDeclutterBox))
               ) {
                 renderImage = true;
               }
-              if (!declutterTree.collides(dimensions.declutterBox)) {
+              if (
+                declutterMode !== 'declutter' ||
+                !declutterTree.collides(dimensions.declutterBox)
+              ) {
                 renderText = true;
               }
+              if (
+                imageDeclutterMode === 'declutter' &&
+                declutterMode === 'declutter'
+              ) {
+                const render = renderImage && renderText;
+                renderImage = render;
+                renderText = render;
+              }
               if (renderImage) {
-                declutterTree.insert(imageDeclutterBox);
+                if (imageDeclutterMode !== 'none') {
+                  declutterTree.insert(imageDeclutterBox);
+                }
                 this.replayImageOrLabel_.apply(this, imageArgs);
               }
               if (renderText) {
-                declutterTree.insert(dimensions.declutterBox);
+                if (declutterMode !== 'none') {
+                  declutterTree.insert(dimensions.declutterBox);
+                }
                 this.replayImageOrLabel_.apply(this, args);
               }
             } else {
@@ -964,6 +978,7 @@ class Executor {
             /** @type {number} */ (instruction[13]),
             /** @type {number} */ (instruction[13]),
           ];
+          declutterMode = instruction[14] || 'declutter';
 
           const textState = this.textStates[textKey];
           const font = textState.font;
@@ -1039,6 +1054,7 @@ class Executor {
                   );
                   if (
                     declutterTree &&
+                    declutterMode === 'declutter' &&
                     declutterTree.collides(dimensions.declutterBox)
                   ) {
                     break drawChars;
@@ -1081,6 +1097,7 @@ class Executor {
                   );
                   if (
                     declutterTree &&
+                    declutterMode === 'declutter' &&
                     declutterTree.collides(dimensions.declutterBox)
                   ) {
                     break drawChars;
@@ -1096,7 +1113,7 @@ class Executor {
                   ]);
                 }
               }
-              if (declutterTree) {
+              if (declutterTree && declutterMode !== 'none') {
                 declutterTree.load(replayImageOrLabelArgs.map(getDeclutterBox));
               }
               for (let i = 0, ii = replayImageOrLabelArgs.length; i < ii; ++i) {

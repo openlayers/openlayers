@@ -138,6 +138,11 @@ class CanvasTextBuilder extends CanvasBuilder {
     this.strokeKey_ = '';
 
     /**
+     * @type {import('../../style/Style.js').DeclutterMode}
+     */
+    this.declutterMode_ = undefined;
+
+    /**
      * Data shared with an image builder for combined decluttering.
      * @private
      * @type {import("../canvas.js").DeclutterImageWithText}
@@ -386,7 +391,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.textRotation_,
         [1, 1],
         NaN,
-        undefined,
+        this.declutterMode_,
         this.declutterImageWithText_,
         padding == defaultPadding
           ? defaultPadding
@@ -425,7 +430,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.textRotation_,
         [scale, scale],
         NaN,
-        undefined,
+        this.declutterMode_,
         this.declutterImageWithText_,
         padding,
         !!textState.backgroundFill,
@@ -528,6 +533,7 @@ class CanvasTextBuilder extends CanvasBuilder {
       text,
       textKey,
       1,
+      this.declutterMode_,
     ]);
     this.hitDetectionInstructions.push([
       CanvasInstruction.DRAW_CHARS,
@@ -544,6 +550,7 @@ class CanvasTextBuilder extends CanvasBuilder {
       text,
       textKey,
       1 / pixelRatio,
+      this.declutterMode_,
     ]);
   }
 
@@ -656,6 +663,7 @@ class CanvasTextBuilder extends CanvasBuilder {
             : '|' + getUid(fillState.fillStyle)
           : '';
     }
+    this.declutterMode_ = textStyle.getDeclutterMode();
     this.declutterImageWithText_ = sharedData;
   }
 }

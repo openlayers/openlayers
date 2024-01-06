@@ -370,12 +370,9 @@ function renderPointGeometry(
     }
     let imageBuilderGroup = builderGroup;
     if (declutterBuilderGroup) {
-      const imageDeclutterMode = imageStyle.getDeclutterMode();
-      if (imageDeclutterMode !== 'none') {
-        imageBuilderGroup = declutterBuilderGroup;
-        if (hasText) {
-          declutterImageWithText = {};
-        }
+      imageBuilderGroup = declutterBuilderGroup;
+      if (hasText) {
+        declutterImageWithText = {};
       }
     }
     const imageReplay = imageBuilderGroup.getBuilder(
@@ -412,6 +409,7 @@ function renderMultiPointGeometry(
 ) {
   const imageStyle = style.getImage();
   const textStyle = style.getText();
+  const hasText = textStyle && textStyle.getText();
   /** @type {import("../render/canvas.js").DeclutterImageWithText} */
   let declutterImageWithText;
   if (imageStyle) {
@@ -420,9 +418,8 @@ function renderMultiPointGeometry(
     }
     let imageBuilderGroup = builderGroup;
     if (declutterBuilderGroup) {
-      const declutterMode = imageStyle.getDeclutterMode();
-      if (declutterMode !== 'none') {
-        imageBuilderGroup = declutterBuilderGroup;
+      imageBuilderGroup = declutterBuilderGroup;
+      if (hasText) {
         declutterImageWithText = {};
       }
     }
@@ -433,7 +430,7 @@ function renderMultiPointGeometry(
     imageReplay.setImageStyle(imageStyle, declutterImageWithText);
     imageReplay.drawMultiPoint(geometry, feature);
   }
-  if (textStyle && textStyle.getText()) {
+  if (hasText) {
     let textBuilderGroup = builderGroup;
     if (declutterBuilderGroup) {
       textBuilderGroup = declutterBuilderGroup;

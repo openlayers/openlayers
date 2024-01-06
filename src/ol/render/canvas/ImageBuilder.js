@@ -94,7 +94,7 @@ class CanvasImageBuilder extends CanvasBuilder {
 
     /**
      * @private
-     * @type {import('../../style.js').DeclutterMode}
+     * @type {import('../../style/Style.js').DeclutterMode}
      */
     this.declutterMode_ = undefined;
 
