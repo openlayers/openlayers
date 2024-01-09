@@ -7,8 +7,10 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
 import proj4 from 'proj4';
 import {applyTransform} from '../src/ol/extent.js';
-import {get as getProjection, getTransform} from '../src/ol/proj.js';
-import {register} from '../src/ol/proj/proj4.js';
+import {fromEPSGCode, register} from '../src/ol/proj/proj4.js';
+import {getTransform} from '../src/ol/proj.js';
+
+register(proj4);
 
 const osmSource = new OSM();
 
@@ -55,8 +57,8 @@ const renderEdgesCheckbox = document.getElementById('render-edges');
 const showTilesCheckbox = document.getElementById('show-tiles');
 const showGraticuleCheckbox = document.getElementById('show-graticule');
 
-function setProjection(code, name, proj4def, bbox) {
-  if (code === null || name === null || proj4def === null || bbox === null) {
+function setProjection(projection, name, bbox) {
+  if (projection === null || name === null || bbox === null) {
     resultSpan.innerHTML = 'Nothing usable found, using EPSG:3857...';
     map.setView(
       new View({
@@ -68,63 +70,43 @@ function setProjection(code, name, proj4def, bbox) {
     return;
   }
 
-  resultSpan.innerHTML = '(' + code + ') ' + name;
+  resultSpan.innerHTML = '(' + projection.getCode() + ') ' + name;
 
-  const newProjCode = 'EPSG:' + code;
-  proj4.defs(newProjCode, proj4def);
-  register(proj4);
-  const newProj = getProjection(newProjCode);
-  const fromLonLat = getTransform('EPSG:4326', newProj);
+  const fromLonLat = getTransform('EPSG:4326', projection);
 
-  let worldExtent = [bbox[1], bbox[2], bbox[3], bbox[0]];
-  newProj.setWorldExtent(worldExtent);
+  projection.setWorldExtent(bbox);
 
   // approximate calculation of projection extent,
   // checking if the world extent crosses the dateline
-  if (bbox[1] > bbox[3]) {
-    worldExtent = [bbox[1], bbox[2], bbox[3] + 360, bbox[0]];
+  if (bbox[0] > bbox[2]) {
+    bbox = [bbox[0], bbox[1], bbox[2] + 360, bbox[3]];
   }
-  const extent = applyTransform(worldExtent, fromLonLat, undefined, 8);
-  newProj.setExtent(extent);
+  const extent = applyTransform(bbox, fromLonLat, undefined, 8);
+  projection.setExtent(extent);
   const newView = new View({
-    projection: newProj,
+    projection: projection,
   });
   map.setView(newView);
   newView.fit(extent);
 }
 
-function search(query) {
-  resultSpan.innerHTML = 'Searching ...';
-  fetch('https://epsg.io/?format=json&q=' + query)
-    .then(function (response) {
-      return response.json();
+function loadProjection(epsgCode) {
+  resultSpan.innerHTML = 'Loading ...';
+  fromEPSGCode(epsgCode)
+    .then((projection) => {
+      const code = projection.getCode().substring(5);
+      fetch(`https://spatialreference.org/ref/epsg/${code}/projjson.json`)
+        .then((response) => response.json())
+        .then((json) =>
+          setProjection(projection, json.name, [
+            json.bbox.west_longitude,
+            json.bbox.south_latitude,
+            json.bbox.east_longitude,
+            json.bbox.north_latitude,
+          ]),
+        );
     })
-    .then(function (json) {
-      const results = json['results'];
-      if (results && results.length > 0) {
-        for (let i = 0, ii = results.length; i < ii; i++) {
-          const result = results[i];
-          if (result) {
-            const code = result['code'];
-            const name = result['name'];
-            const proj4def = result['wkt'];
-            const bbox = result['bbox'];
-            if (
-              code &&
-              code.length > 0 &&
-              proj4def &&
-              proj4def.length > 0 &&
-              bbox &&
-              bbox.length == 4
-            ) {
-              setProjection(code, name, proj4def, bbox);
-              return;
-            }
-          }
-        }
-      }
-      setProjection(null, null, null, null);
-    });
+    .catch(() => setProjection(null, null, null));
 }
 
 /**
@@ -132,7 +114,7 @@ function search(query) {
  * @param {Event} event The event.
  */
 searchButton.onclick = function (event) {
-  search(queryInput.value);
+  loadProjection(queryInput.value);
   event.preventDefault();
 };
 

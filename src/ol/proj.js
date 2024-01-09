@@ -23,8 +23,7 @@
  * Proj4js, or create a custom build to support those projections you need; see
  * the Proj4js website for how to do this. You also need the Proj4js definitions
  * for the required projections. These definitions can be obtained from
- * https://epsg.io/, and are a JS function, so can be loaded in a script
- * tag (as in the examples) or pasted into your application.
+ * https://spatialreference.org/, using the PROJ4 or WKT v1 formats.
  *
  * After all required projection definitions are added to proj4's registry (by
  * using `proj4.defs()`), simply call `register(proj4)` from the `ol/proj/proj4`

@@ -5,7 +5,7 @@ import Projection from '../src/ol/proj/Projection.js';
 import View from '../src/ol/View.js';
 import proj4 from 'proj4';
 import {ScaleLine, defaults as defaultControls} from '../src/ol/control.js';
-import {fromLonLat} from '../src/ol/proj.js';
+import {fromLonLat, transformExtent} from '../src/ol/proj.js';
 import {register} from '../src/ol/proj/proj4.js';
 
 // Transparent Proj4js support:
@@ -16,10 +16,6 @@ import {register} from '../src/ol/proj/proj4.js';
 // Proj4js. To get the registered ol/proj/Projection instance with other
 // parameters like units and axis orientation applied from Proj4js, use
 // `ol/proj#get('EPSG:21781')`.
-//
-// Note that we are setting the projection's extent here, which is used to
-// determine the view resolution for zoom level 0. Recommended values for a
-// projection's validity extent can be found at https://epsg.io/.
 
 proj4.defs(
   'EPSG:21781',
@@ -31,10 +27,17 @@ register(proj4);
 
 const projection = new Projection({
   code: 'EPSG:21781',
-  extent: [485869.5728, 76443.1884, 837076.5648, 299941.7864],
 });
 
-const extent = [420000, 30000, 900000, 350000];
+// The extent is used to determine zoom level 0. Recommended values for a
+// projection's validity extent can be found at https://spatialreference.org/ref/epsg/21781/.
+const extent = transformExtent(
+  [5.96, 45.82, 10.49, 47.81],
+  'EPSG:4326',
+  projection,
+);
+projection.setExtent(extent);
+
 const layers = [
   new ImageLayer({
     extent: extent,
@@ -73,6 +76,7 @@ const map = new Map({
     projection: projection,
     center: fromLonLat([8.23, 46.86], projection),
     extent: extent,
+    showFullExtent: true,
     zoom: 2,
   }),
 });

@@ -93,9 +93,13 @@ export function register(proj4) {
  * @return {Promise<string>} The proj4 definition.
  */
 let epsgLookup = async function (code) {
-  const response = await fetch(`https://epsg.io/${code}.proj4`);
+  const response = await fetch(
+    `https://spatialreference.org/ref/epsg/${code}/ogcwkt/`,
+  );
   if (!response.ok) {
-    throw new Error(`Unexpected response from epsg.io: ${response.status}`);
+    throw new Error(
+      `Unexpected response from spatialreference.org: ${response.status}`,
+    );
   }
   return response.text();
 };
@@ -103,7 +107,7 @@ let epsgLookup = async function (code) {
 /**
  * Set the lookup function for getting proj4 definitions given an EPSG code.
  * By default, the {@link module:ol/proj/proj4.fromEPSGCode} function uses the
- * epsg.io website for proj4 definitions.  This can be changed by providing a
+ * spatialreference.org website for proj4 definitions.  This can be changed by providing a
  * different lookup function.
  *
  * @param {function(number):Promise<string>} func The lookup function.
@@ -124,7 +128,7 @@ export function getEPSGLookup() {
 
 /**
  * Get a projection from an EPSG code.  This function fetches the projection
- * definition from the epsg.io website, registers this definition for use with
+ * definition from the spatialreference.org website, registers this definition for use with
  * proj4, and returns a configured projection.  You must call import proj4 and
  * call {@link module:ol/proj/proj4.register} before using this function.
  *
@@ -155,71 +159,4 @@ export async function fromEPSGCode(code) {
   register(proj4);
 
   return get(epsgCode);
-}
-
-/**
- * Generate an EPSG lookup function which uses the MapTiler Coordinates API to find projection
- * definitions which do not require proj4 to be configured to handle `+nadgrids` parameters.
- * Call {@link module:ol/proj/proj4.setEPSGLookup} use the function for lookups
- * `setEPSGLookup(epsgLookupMapTiler('{YOUR_MAPTILER_API_KEY_HERE}'))`.
- *
- * @param {string} key MapTiler API key.  Get your own API key at https://www.maptiler.com/cloud/.
- * @return {function(number):Promise<string>} The EPSG lookup function.
- * @api
- */
-export function epsgLookupMapTiler(key) {
-  return async function (code) {
-    const response = await fetch(
-      `https://api.maptiler.com/coordinates/search/code:${code}.json?transformations=true&exports=true&key=${key}`,
-    );
-    if (!response.ok) {
-      throw new Error(
-        `Unexpected response from maptiler.com: ${response.status}`,
-      );
-    }
-    return response.json().then((json) => {
-      const results = json['results'];
-      if (results?.length > 0) {
-        const result = results.filter(
-          (r) =>
-            r['id']?.['authority'] === 'EPSG' && r['id']?.['code'] === code,
-        )[0];
-        if (result) {
-          const transforms = result['transformations'];
-          if (transforms?.length > 0) {
-            // use default transform if it does not require grids
-            const defaultTransform = result['default_transformation'];
-            if (
-              transforms.filter(
-                (t) =>
-                  t['id']?.['authority'] === defaultTransform?.['authority'] &&
-                  t['id']?.['code'] === defaultTransform?.['code'] &&
-                  t['grids']?.length === 0,
-              ).length > 0
-            ) {
-              return result['exports']?.['proj4'];
-            }
-            // otherwise use most accurate alternative without grids
-            const transform = transforms
-              .filter(
-                (t) =>
-                  t['grids']?.length === 0 &&
-                  t['target_crs']?.['authority'] === 'EPSG' &&
-                  t['target_crs']?.['code'] === 4326 &&
-                  t['deprecated'] === false &&
-                  t['usable'] === true,
-              )
-              .sort((t1, t2) => t1['accuracy'] - t2['accuracy'])[0]?.[
-              'exports'
-            ]?.['proj4'];
-            if (transform) {
-              return transform;
-            }
-          }
-          // fallback to default
-          return result['exports']?.['proj4'];
-        }
-      }
-    });
-  };
 }

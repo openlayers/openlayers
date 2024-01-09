@@ -15,6 +15,16 @@
 
 * The `finishDrawing()` method now returns the drawn feature or `null` if no drawing could be finished. Previously it returned `undefined`.
 
+#### Removal of `epsgLookupMapTiler()` from `ol/proj/proj4.js`
+
+When upgrading, just remove
+```js
+setEPSGLookup(epsgLookupMapTiler(myApikey));
+```
+from your code.
+
+The `fromEPSGCode()` function from the `ol/proj/proj4.js` module now uses https://spatialreference.org/ instead of https://epsg.io/ to look up EPSG projection definitions. As a result, that function no longer creates projections from proj strings that require grid transforms to be configured in proj4.js. And because that was the only purpose why `epsgLookupMapTiler()` was created in the first place, it is now removed.
+
 ### 8.0.0
 
 #### Removal of deprecated properties and methods

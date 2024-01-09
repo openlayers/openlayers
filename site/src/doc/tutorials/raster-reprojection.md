@@ -11,7 +11,7 @@ The view in any Proj4js supported coordinate reference system is possible and pr
 
 # Usage
 
-The API usage is very simple. Just specify proper projection (e.g. using [EPSG](https://epsg.io) code) on `ol/View`:
+The API usage is very simple. Just specify proper projection (e.g. using [EPSG](https://spatialreference.org/ref/epsg/) code) on `ol/View`:
 
 ```js
 import Map from 'ol/Map.js';
@@ -46,7 +46,7 @@ If a source (based on `ol/source/TileImage` or `ol/source/Image`) has a projecti
 
 - [Raster reprojection demo](/en/latest/examples/reprojection.html)
 - [OpenStreetMap to WGS84 reprojection](/en/latest/examples/reprojection-wgs84.html)
-- [Reprojection with EPSG.io database search](/en/latest/examples/reprojection-by-code.html)
+- [Reprojection with EPSG database search](/en/latest/examples/reprojection-by-code.html)
 - [Image reprojection](/en/latest/examples/reprojection-image.html)
 
 ### Custom projection
@@ -55,7 +55,7 @@ The easiest way to use a custom projection is to add the [Proj4js](http://proj4j
 
     npm install proj4
 
-Following example shows definition of a [British National Grid](https://epsg.io/27700):
+Following example shows definition of a [British National Grid](https://spatialreference.org/ref/epsg/27700/):
 
 ```js
 import proj4 from 'proj4';

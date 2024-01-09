@@ -8,6 +8,7 @@ import {
   addCoordinateTransforms,
   addProjection,
   transform,
+  transformExtent,
 } from '../src/ol/proj.js';
 
 // By default OpenLayers does not know about the EPSG:21781 (Swiss) projection.
@@ -17,9 +18,6 @@ import {
 
 const projection = new Projection({
   code: 'EPSG:21781',
-  // The extent is used to determine zoom level 0. Recommended values for a
-  // projection's validity extent can be found at https://epsg.io/.
-  extent: [485869.5728, 76443.1884, 837076.5648, 299941.7864],
   units: 'm',
 });
 addProjection(projection);
@@ -45,7 +43,15 @@ addCoordinateTransforms(
   },
 );
 
-const extent = [420000, 30000, 900000, 350000];
+// The extent is used to determine zoom level 0. Recommended values for a
+// projection's validity extent can be found at https://spatialreference.org/ref/epsg/21781/.
+const extent = transformExtent(
+  [5.96, 45.82, 10.49, 47.81],
+  'EPSG:4326',
+  projection,
+);
+projection.setExtent(extent);
+
 const layers = [
   new TileLayer({
     extent: extent,
@@ -88,6 +94,7 @@ const map = new Map({
     projection: projection,
     center: transform([8.23, 46.86], 'EPSG:4326', 'EPSG:21781'),
     extent: extent,
+    showFullExtent: true,
     zoom: 2,
   }),
 });
