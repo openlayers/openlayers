@@ -205,6 +205,7 @@ export function calculateSourceExtentResolution(
  * @param {boolean} [renderEdges] Render reprojection edges.
  * @param {boolean} [interpolate] Use linear interpolation when resampling.
  * @param {boolean} [drawSingle] Draw single source images directly without stitchContext.
+ * @param {boolean} [clipExtent] Clip stitchContext to sourceExtent.
  * @return {HTMLCanvasElement} Canvas with reprojected data.
  */
 export function render(
@@ -221,6 +222,7 @@ export function render(
   renderEdges,
   interpolate,
   drawSingle,
+  clipExtent,
 ) {
   const context = createCanvasContext2D(
     Math.round(pixelRatio * width),
@@ -263,6 +265,14 @@ export function render(
 
     if (!interpolate) {
       stitchContext.imageSmoothingEnabled = false;
+    }
+    if (sourceExtent && clipExtent) {
+      const xPos = (sourceExtent[0] - sourceDataExtent[0]) * stitchScale;
+      const yPos = -(sourceExtent[3] - sourceDataExtent[3]) * stitchScale;
+      const width = getWidth(sourceExtent) * stitchScale;
+      const height = getHeight(sourceExtent) * stitchScale;
+      stitchContext.rect(xPos, yPos, width, height);
+      stitchContext.clip();
     }
 
     sources.forEach(function (src, i, arr) {
