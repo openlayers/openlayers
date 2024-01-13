@@ -87,7 +87,7 @@ describe('ol/View', function () {
       view.setViewportSize();
       expect(view.getZoom()).to.eql(4);
       expect(view.targetResolution_).to.eql(
-        view.getMaxResolution() / Math.pow(2, 4)
+        view.getMaxResolution() / Math.pow(2, 4),
       );
     });
 
@@ -197,11 +197,11 @@ describe('ol/View', function () {
           const fn = createResolutionConstraint(options).constraint;
           expect(fn(156543.03392804097, 0, size)).to.roughlyEqual(
             156543.03392804097,
-            1e-9
+            1e-9,
           );
           expect(fn(78271.51696402048, 0, size)).to.roughlyEqual(
             78271.51696402048,
-            1e-10
+            1e-10,
           );
         });
       });
@@ -264,12 +264,12 @@ describe('ol/View', function () {
 
           expect(constraint(defaultMaxRes, 0, size)).to.roughlyEqual(
             defaultMaxRes,
-            1e-9
+            1e-9,
           );
 
           expect(constraint(0, 0, size)).to.roughlyEqual(
             defaultMaxRes / Math.pow(2, maxZoom),
-            1e-9
+            1e-9,
           );
         });
 
@@ -281,12 +281,12 @@ describe('ol/View', function () {
 
           expect(constraint(defaultMaxRes, 0, size)).to.roughlyEqual(
             defaultMaxRes / Math.pow(2, minZoom),
-            1e-9
+            1e-9,
           );
 
           expect(constraint(0, 0, size)).to.roughlyEqual(
             defaultMaxRes / Math.pow(2, 28),
-            1e-9
+            1e-9,
           );
         });
 
@@ -300,12 +300,12 @@ describe('ol/View', function () {
 
           expect(constraint(defaultMaxRes, 0, size)).to.roughlyEqual(
             defaultMaxRes / Math.pow(2, minZoom),
-            1e-9
+            1e-9,
           );
 
           expect(constraint(0, 0, size)).to.roughlyEqual(
             defaultMaxRes / Math.pow(2, maxZoom),
-            1e-9
+            1e-9,
           );
         });
 
@@ -321,12 +321,12 @@ describe('ol/View', function () {
 
           expect(constraint(defaultMaxRes, 0, size)).to.roughlyEqual(
             defaultMaxRes / Math.pow(zoomFactor, minZoom),
-            1e-9
+            1e-9,
           );
 
           expect(constraint(0, 0, size)).to.roughlyEqual(
             defaultMaxRes / Math.pow(zoomFactor, maxZoom),
-            1e-9
+            1e-9,
           );
         });
       });
@@ -347,7 +347,7 @@ describe('ol/View', function () {
 
           expect(constraint(maxResolution * 3, 0, size)).to.roughlyEqual(
             maxResolution,
-            1e-9
+            1e-9,
           );
 
           const minResolution = constraint(0, 0, size);
@@ -365,7 +365,7 @@ describe('ol/View', function () {
 
           expect(constraint(defaultMaxRes, 0, size)).to.roughlyEqual(
             defaultMaxRes,
-            1e-9
+            1e-9,
           );
 
           const constrainedMinRes = constraint(0, 0, size);
@@ -451,7 +451,7 @@ describe('ol/View', function () {
 
           expect(constraint(maxResolution * 3, 0, size)).to.roughlyEqual(
             maxResolution,
-            1e-9
+            1e-9,
           );
 
           const minResolution = constraint(0, 0, size);
@@ -471,7 +471,7 @@ describe('ol/View', function () {
 
           expect(constraint(defaultMaxRes, 0, size)).to.roughlyEqual(
             defaultMaxRes,
-            1e-9
+            1e-9,
           );
 
           const constrainedMinRes = constraint(0, 0, size);
@@ -733,7 +733,7 @@ describe('ol/View', function () {
           expect(view.getZoom()).to.eql(4);
           expect(view.getAnimating()).to.be(false);
           done();
-        }
+        },
       );
       expect(view.getAnimating()).to.eql(true);
       expect(isNaN(view.nextResolution_)).to.be(false);
@@ -756,7 +756,7 @@ describe('ol/View', function () {
           expect(view.getZoom()).to.eql(4);
           expect(view.getAnimating()).to.eql(false);
           done();
-        }
+        },
       );
     });
 
@@ -820,7 +820,7 @@ describe('ol/View', function () {
           {
             rotation: rotation,
           },
-          {resolution: resolution}
+          {resolution: resolution},
         );
         expect(view.getAnimating()).to.be(false);
         expect(view.getCenter()).to.eql(center);
@@ -843,7 +843,7 @@ describe('ol/View', function () {
           {
             rotation: 2,
             duration: 25,
-          }
+          },
         );
         expect(view.getAnimating()).to.be(true);
         expect(view.getCenter()).to.eql(center);
@@ -868,7 +868,7 @@ describe('ol/View', function () {
           expect(complete).to.be(true);
           expect(view.getZoom()).to.be(4);
           done();
-        }
+        },
       );
     });
 
@@ -891,7 +891,7 @@ describe('ol/View', function () {
           expect(view.getResolution()).to.be(minResolution);
           expect(view.getZoom()).to.be(maxZoom);
           done();
-        }
+        },
       );
     });
 
@@ -910,10 +910,10 @@ describe('ol/View', function () {
           expect(complete).to.be(true);
           expect(view.getRotation()).to.roughlyEqual(
             (Math.PI / 180) * -1,
-            1e-12
+            1e-12,
           );
           done();
-        }
+        },
       );
     });
 
@@ -932,10 +932,10 @@ describe('ol/View', function () {
           expect(complete).to.be(true);
           expect(view.getRotation()).to.roughlyEqual(
             (Math.PI / 180) * 179,
-            1e-12
+            1e-12,
           );
           done();
-        }
+        },
       );
     });
 
@@ -953,7 +953,7 @@ describe('ol/View', function () {
         function (complete) {
           expect(complete).to.be(true);
           done();
-        }
+        },
       );
     });
 
@@ -971,7 +971,7 @@ describe('ol/View', function () {
             zoom: 2,
             duration: 10,
           },
-          secondCallback
+          secondCallback,
         );
       }
 
@@ -985,7 +985,7 @@ describe('ol/View', function () {
           zoom: 1,
           duration: 25,
         },
-        firstCallback
+        firstCallback,
       );
     });
 
@@ -1003,7 +1003,7 @@ describe('ol/View', function () {
         function (complete) {
           expect(complete).to.be(false);
           done();
-        }
+        },
       );
 
       view.setCenter([1, 2]); // interrupt the animation
@@ -1023,7 +1023,7 @@ describe('ol/View', function () {
         function (complete) {
           expect(complete).to.be(true);
           done();
-        }
+        },
       );
     });
 
@@ -1039,7 +1039,7 @@ describe('ol/View', function () {
           expect(view.getZoom()).to.be(10);
           expect(complete).to.be(true);
           done();
-        }
+        },
       );
     });
 
@@ -1066,7 +1066,7 @@ describe('ol/View', function () {
           expect(view.getCenter()).to.eql([10, 10]);
           expect(complete).to.be(true);
           done();
-        }
+        },
       );
 
       setTimeout(function () {
@@ -1095,7 +1095,7 @@ describe('ol/View', function () {
           center: [1, 2],
           duration: 25,
         },
-        decrement
+        decrement,
       );
       expect(view.getHints()[ViewHint.ANIMATING]).to.be(1);
 
@@ -1104,7 +1104,7 @@ describe('ol/View', function () {
           zoom: 1,
           duration: 25,
         },
-        decrement
+        decrement,
       );
       expect(view.getHints()[ViewHint.ANIMATING]).to.be(2);
 
@@ -1113,7 +1113,7 @@ describe('ol/View', function () {
           rotation: Math.PI,
           duration: 25,
         },
-        decrement
+        decrement,
       );
       expect(view.getHints()[ViewHint.ANIMATING]).to.be(3);
     });
@@ -1163,7 +1163,7 @@ describe('ol/View', function () {
         },
         function () {
           ++calls;
-        }
+        },
       );
 
       setTimeout(function () {
@@ -1180,7 +1180,7 @@ describe('ol/View', function () {
             expect(view.getZoom()).to.be(2);
             expect(view.getAnimating()).to.be(false);
             done();
-          }
+          },
         );
       }, 10);
     });
@@ -1209,7 +1209,7 @@ describe('ol/View', function () {
           ++calls;
           expect(view.getCenter()).to.eql([100, 100]);
           onAnimateEnd();
-        }
+        },
       );
 
       view.animate(
@@ -1225,7 +1225,7 @@ describe('ol/View', function () {
           ++calls;
           expect(view.getResolution()).to.be(2);
           onAnimateEnd();
-        }
+        },
       );
 
       setTimeout(function () {
@@ -1259,7 +1259,7 @@ describe('ol/View', function () {
         function () {
           expect(view.getZoom()).to.be(1);
           done();
-        }
+        },
       );
 
       setTimeout(function () {
@@ -1284,7 +1284,7 @@ describe('ol/View', function () {
         function () {
           expect(view.getZoom()).to.be(1);
           done();
-        }
+        },
       );
 
       setTimeout(function () {
@@ -1348,7 +1348,7 @@ describe('ol/View', function () {
         {
           zoom: 10,
           duration: 50,
-        }
+        },
       );
 
       view.animate({
@@ -1381,7 +1381,7 @@ describe('ol/View', function () {
           expect(view.getAnimating()).to.be(false);
           expect(complete).to.be(false);
           done();
-        }
+        },
       );
 
       setTimeout(function () {
@@ -1423,7 +1423,7 @@ describe('ol/View', function () {
       view.setResolution(513);
       expect(view.getZoom()).to.roughlyEqual(
         Math.log(1024 / 513) / Math.LN2,
-        1e-9
+        1e-9,
       );
 
       view.setResolution(512);
@@ -1444,7 +1444,7 @@ describe('ol/View', function () {
       view.setResolution(15);
       expect(view.getZoom()).to.roughlyEqual(
         Math.log(1024 / 15) / Math.LN2,
-        1e-9
+        1e-9,
       );
     });
 
@@ -1551,11 +1551,11 @@ describe('ol/View', function () {
 
       expect(view.getResolutionForZoom(max)).to.be(view.getMinResolution());
       expect(view.getResolutionForZoom(max + 1)).to.be(
-        view.getMinResolution() / 2
+        view.getMinResolution() / 2,
       );
       expect(view.getResolutionForZoom(min)).to.be(view.getMaxResolution());
       expect(view.getResolutionForZoom(min - 1)).to.be(
-        view.getMaxResolution() * 2
+        view.getMaxResolution() * 2,
       );
     });
 
@@ -1595,7 +1595,7 @@ describe('ol/View', function () {
     it('returns the zoom level for the min resolution', function () {
       const view = new View();
       expect(view.getMaxZoom()).to.be(
-        view.getZoomForResolution(view.getMinResolution())
+        view.getZoomForResolution(view.getMinResolution()),
       );
     });
 
@@ -1611,7 +1611,7 @@ describe('ol/View', function () {
     it('returns the zoom level for the max resolution', function () {
       const view = new View();
       expect(view.getMinZoom()).to.be(
-        view.getZoomForResolution(view.getMaxResolution())
+        view.getZoomForResolution(view.getMaxResolution()),
       );
     });
 
@@ -1811,7 +1811,7 @@ describe('ol/View', function () {
           [6000, 47100],
           [7000, 46000],
         ]),
-        {size: [200, 200], padding: [100, 0, 0, 100]}
+        {size: [200, 200], padding: [100, 0, 0, 100]},
       );
       expect(view.getResolution()).to.be(11);
       expect(view.getCenter()[0]).to.be(5950);
@@ -1835,7 +1835,7 @@ describe('ol/View', function () {
           [6000, 47100],
           [7000, 46000],
         ]),
-        {size: [200, 200], padding: [100, 0, 0, 100]}
+        {size: [200, 200], padding: [100, 0, 0, 100]},
       );
       expect(view.getResolution()).to.roughlyEqual(14.849242404917458, 1e-9);
       expect(view.getCenter()[0]).to.roughlyEqual(5200, 1e-9);
@@ -1850,7 +1850,7 @@ describe('ol/View', function () {
           [6000, 47100],
           [7000, 46000],
         ]),
-        {size: [200, 200], padding: [100, 0, 0, 100]}
+        {size: [200, 200], padding: [100, 0, 0, 100]},
       );
       expect(view.getResolution()).to.be(20);
       expect(view.getCenter()[0]).to.be(5500);
@@ -1862,7 +1862,7 @@ describe('ol/View', function () {
           [6000, 47100],
           [7000, 46000],
         ]),
-        {size: [200, 200], padding: [100, 0, 0, 100], nearest: true}
+        {size: [200, 200], padding: [100, 0, 0, 100], nearest: true},
       );
       expect(view.getResolution()).to.be(10);
       expect(view.getCenter()[0]).to.be(6000);
@@ -1929,7 +1929,7 @@ describe('ol/View', function () {
           size: [200, 200],
           padding: [100, 0, 0, 100],
           duration: 25,
-        }
+        },
       );
 
       expect(view.getAnimating()).to.eql(true);
@@ -1954,7 +1954,7 @@ describe('ol/View', function () {
             expect(complete).to.be(true);
             done();
           },
-        }
+        },
       );
     });
     it('calls a callback when animation completes', function (done) {
@@ -1970,7 +1970,7 @@ describe('ol/View', function () {
             expect(complete).to.be(true);
             done();
           },
-        }
+        },
       );
     });
   });
@@ -2056,7 +2056,7 @@ describe('ol/View', function () {
       view = new View();
       expect(view.getConstrainedResolution(1000000)).to.be(defaultMaxRes);
       expect(view.getConstrainedResolution(defaultMaxRes / 8)).to.be(
-        defaultMaxRes / 8
+        defaultMaxRes / 8,
       );
     });
     it('works correctly by snapping to a custom zoom factor', function () {
@@ -2106,11 +2106,11 @@ describe('ol/View', function () {
       expect(view.getRotation()).to.roughlyEqual(-Math.PI / 6, 1e-9);
       expect(view.getCenter()[0]).to.roughlyEqual(
         50 * (1 - Math.cos(Math.PI / 3)),
-        1e-9
+        1e-9,
       );
       expect(view.getCenter()[1]).to.roughlyEqual(
         -50 * Math.sin(Math.PI / 3),
-        1e-9
+        1e-9,
       );
     });
 

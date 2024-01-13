@@ -258,20 +258,20 @@ describe('ol/source/Zoomify', function () {
       const tileUrlFunction = source.getTileUrlFunction();
       // zoomlevel 0
       expect(tileUrlFunction([0, 0, 0])).to.eql(
-        'spec/ol/source/images/zoomify/TileGroup0/0-0-0.jpg'
+        'spec/ol/source/images/zoomify/TileGroup0/0-0-0.jpg',
       );
       // zoomlevel 1
       expect(tileUrlFunction([1, 0, 0])).to.eql(
-        'spec/ol/source/images/zoomify/TileGroup0/1-0-0.jpg'
+        'spec/ol/source/images/zoomify/TileGroup0/1-0-0.jpg',
       );
       expect(tileUrlFunction([1, 1, 0])).to.eql(
-        'spec/ol/source/images/zoomify/TileGroup0/1-1-0.jpg'
+        'spec/ol/source/images/zoomify/TileGroup0/1-1-0.jpg',
       );
       expect(tileUrlFunction([1, 0, 1])).to.eql(
-        'spec/ol/source/images/zoomify/TileGroup0/1-0-1.jpg'
+        'spec/ol/source/images/zoomify/TileGroup0/1-0-1.jpg',
       );
       expect(tileUrlFunction([1, 1, 1])).to.eql(
-        'spec/ol/source/images/zoomify/TileGroup0/1-1-1.jpg'
+        'spec/ol/source/images/zoomify/TileGroup0/1-1-1.jpg',
       );
     });
     it('creates an expected tileUrlFunction with IIP template', function () {
@@ -279,20 +279,20 @@ describe('ol/source/Zoomify', function () {
       const tileUrlFunction = source.getTileUrlFunction();
       // zoomlevel 0
       expect(tileUrlFunction([0, 0, 0])).to.eql(
-        'spec/ol/source/images/zoomify?JTL=0,0'
+        'spec/ol/source/images/zoomify?JTL=0,0',
       );
       // zoomlevel 1
       expect(tileUrlFunction([1, 0, 0])).to.eql(
-        'spec/ol/source/images/zoomify?JTL=1,0'
+        'spec/ol/source/images/zoomify?JTL=1,0',
       );
       expect(tileUrlFunction([1, 1, 0])).to.eql(
-        'spec/ol/source/images/zoomify?JTL=1,1'
+        'spec/ol/source/images/zoomify?JTL=1,1',
       );
       expect(tileUrlFunction([1, 0, 1])).to.eql(
-        'spec/ol/source/images/zoomify?JTL=1,2'
+        'spec/ol/source/images/zoomify?JTL=1,2',
       );
       expect(tileUrlFunction([1, 1, 1])).to.eql(
-        'spec/ol/source/images/zoomify?JTL=1,3'
+        'spec/ol/source/images/zoomify?JTL=1,3',
       );
     });
 
@@ -304,20 +304,20 @@ describe('ol/source/Zoomify', function () {
       const tileUrlFunction = source.getTileUrlFunction();
       // zoomlevel 0
       expect(tileUrlFunction([0, 0, 0])).to.eql(
-        'spec/ol/source/images/zoomify/TileGroup0/0-0-0.jpg'
+        'spec/ol/source/images/zoomify/TileGroup0/0-0-0.jpg',
       );
       // zoomlevel 1
       expect(tileUrlFunction([1, 0, 0])).to.eql(
-        'spec/ol/source/images/zoomify/TileGroup0/1-0-0.jpg'
+        'spec/ol/source/images/zoomify/TileGroup0/1-0-0.jpg',
       );
       expect(tileUrlFunction([1, 1, 0])).to.eql(
-        'spec/ol/source/images/zoomify/TileGroup0/1-1-0.jpg'
+        'spec/ol/source/images/zoomify/TileGroup0/1-1-0.jpg',
       );
       expect(tileUrlFunction([1, 0, 1])).to.eql(
-        'spec/ol/source/images/zoomify/TileGroup0/1-0-1.jpg'
+        'spec/ol/source/images/zoomify/TileGroup0/1-0-1.jpg',
       );
       expect(tileUrlFunction([1, 1, 1])).to.eql(
-        'spec/ol/source/images/zoomify/TileGroup0/1-1-1.jpg'
+        'spec/ol/source/images/zoomify/TileGroup0/1-1-1.jpg',
       );
     });
     it('returns undefined if no tileCoord passed', function () {

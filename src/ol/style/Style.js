@@ -444,7 +444,7 @@ export function toFunction(obj) {
     } else {
       assert(
         typeof (/** @type {?} */ (obj).getZIndex) === 'function',
-        'Expected an `Style` or an array of `Style`'
+        'Expected an `Style` or an array of `Style`',
       );
       const style = /** @type {Style} */ (obj);
       styles = [style];
@@ -551,7 +551,7 @@ export function createEditingStyle() {
 
   styles['GeometryCollection'] = styles['Polygon'].concat(
     styles['LineString'],
-    styles['Point']
+    styles['Point'],
   );
 
   return styles;

@@ -81,7 +81,7 @@ describe('MixedGeometryBatch', function () {
       it('leaves other batches untouched', () => {
         expect(Object.keys(mixedBatch.polygonBatch.entries)).to.have.length(0);
         expect(Object.keys(mixedBatch.lineStringBatch.entries)).to.have.length(
-          0
+          0,
         );
       });
       it('assigns a hit detection ref to the entry', () => {
@@ -397,7 +397,7 @@ describe('MixedGeometryBatch', function () {
               [203, 204],
               [205, 206],
               [207, 208],
-            ])
+            ]),
           );
           mixedBatch.changeFeature(feature1);
         });
@@ -615,7 +615,7 @@ describe('MixedGeometryBatch', function () {
               [502, 503],
               [504, 505],
               [506, 507],
-            ])
+            ]),
           );
           multiPolygon.appendPolygon(
             new Polygon([
@@ -626,7 +626,7 @@ describe('MixedGeometryBatch', function () {
                 [207, 208],
                 [2090, 210],
               ],
-            ])
+            ]),
           );
           mixedBatch.changeFeature(feature);
         });
@@ -687,7 +687,7 @@ describe('MixedGeometryBatch', function () {
                 [205, 206],
                 [2070, 208],
               ],
-            ])
+            ]),
           );
           mixedBatch.changeFeature(feature);
         });
@@ -868,7 +868,7 @@ describe('MixedGeometryBatch', function () {
         {
           prop1: 'abcd',
           prop2: 'efgh',
-        }
+        },
       );
       uid = getUid(feature);
     });
@@ -968,7 +968,7 @@ describe('MixedGeometryBatch', function () {
         {
           prop1: 'abcd',
           prop2: 'efgh',
-        }
+        },
       );
       uid = getUid(feature);
       mixedBatch.addFeature(feature);
@@ -1076,7 +1076,7 @@ describe('MixedGeometryBatch', function () {
         {
           prop3: 'abcd',
           prop4: 'efgh',
-        }
+        },
       );
       feature2 = new RenderFeature(
         'Polygon',
@@ -1086,7 +1086,7 @@ describe('MixedGeometryBatch', function () {
         {
           prop3: 'uvw',
           prop4: 'xyz',
-        }
+        },
       );
       feature3 = new RenderFeature(
         'MultiPoint',
@@ -1096,7 +1096,7 @@ describe('MixedGeometryBatch', function () {
         {
           prop3: 'uvw',
           prop4: 'xyz',
-        }
+        },
       );
       uid1 = getUid(feature1);
       uid2 = getUid(feature2);
@@ -1175,7 +1175,7 @@ describe('MixedGeometryBatch', function () {
             [205, 206],
             [207, 208],
           ],
-        ])
+        ]),
       );
       const feature2 = new Feature(new Point([201, 202]));
       mixedBatch.addFeature(feature1);

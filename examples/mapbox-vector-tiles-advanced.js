@@ -27,7 +27,7 @@ function tileUrlFunction(tileCoord) {
     .replace('{y}', String(tileCoord[2]))
     .replace(
       '{a-d}',
-      'abcd'.substr(((tileCoord[1] << tileCoord[0]) + tileCoord[2]) % 4, 1)
+      'abcd'.substr(((tileCoord[1] << tileCoord[0]) + tileCoord[2]) % 4, 1),
     );
 }
 

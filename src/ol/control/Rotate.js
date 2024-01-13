@@ -80,7 +80,7 @@ class Rotate extends Control {
     button.addEventListener(
       EventType.CLICK,
       this.handleClick_.bind(this),
-      false
+      false,
     );
 
     const cssClasses =

@@ -281,7 +281,7 @@ export function toString(mat) {
     mat
       .map(
         (value, i) =>
-          Math.round(value * matrixPrecision[i]) / matrixPrecision[i]
+          Math.round(value * matrixPrecision[i]) / matrixPrecision[i],
       )
       .join(', ') +
     ')';

@@ -50,7 +50,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
         end,
         stride,
         true,
-        !stroke
+        !stroke,
       );
       const moveToLineToInstruction = [
         CanvasInstruction.MOVE_TO_LINE_TO,
@@ -118,7 +118,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
       flatCoordinates.length,
       stride,
       false,
-      false
+      false,
     );
     const circleInstruction = [CanvasInstruction.CIRCLE, myBegin];
     this.instructions.push(beginPathInstruction, circleInstruction);
@@ -172,7 +172,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
       flatCoordinates,
       0,
       /** @type {Array<number>} */ (ends),
-      stride
+      stride,
     );
     this.endGeometry(feature);
   }
@@ -217,7 +217,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
         flatCoordinates,
         offset,
         endss[i],
-        stride
+        stride,
       );
     }
     this.endGeometry(feature);

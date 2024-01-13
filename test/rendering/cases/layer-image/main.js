@@ -19,7 +19,7 @@ new Map({
         imageExtent: transformExtent(
           [-123, 37, -122, 38],
           'EPSG:4326',
-          'EPSG:3857'
+          'EPSG:3857',
         ),
         projection: getProjection('EPSG:3857'),
       }),

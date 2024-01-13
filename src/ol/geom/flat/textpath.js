@@ -32,7 +32,7 @@ export function drawTextOnPath(
   measureAndCacheTextWidth,
   font,
   cache,
-  rotation
+  rotation,
 ) {
   let x2 = flatCoordinates[offset];
   let y2 = flatCoordinates[offset + 1];

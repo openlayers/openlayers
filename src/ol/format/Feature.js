@@ -183,7 +183,7 @@ class FeatureFormat {
         featureProjection: this.defaultFeatureProjection,
         featureClass: this.featureClass,
       },
-      options
+      options,
     );
   }
 
@@ -414,10 +414,10 @@ export function createRenderFeature(object, options) {
       geometry.ends?.flat(),
       stride,
       object.properties || {},
-      object.id
+      object.id,
     ).enableSimplifyTransformed(),
     false,
-    options
+    options,
   );
 }
 
@@ -432,7 +432,7 @@ export function createGeometry(object, options) {
   }
   if (Array.isArray(object)) {
     const geometries = object.map((geometry) =>
-      createGeometry(geometry, options)
+      createGeometry(geometry, options),
     );
     return new GeometryCollection(geometries);
   }
@@ -440,6 +440,6 @@ export function createGeometry(object, options) {
   return transformGeometryWithOptions(
     new Geometry(object.flatCoordinates, object.layout, object.ends),
     false,
-    options
+    options,
   );
 }

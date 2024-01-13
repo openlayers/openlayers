@@ -42,7 +42,7 @@ addCoordinateTransforms(
       CHtoWGSlng(coordinate[0], coordinate[1]),
       CHtoWGSlat(coordinate[0], coordinate[1]),
     ];
-  }
+  },
 );
 
 const extent = [420000, 30000, 900000, 350000];

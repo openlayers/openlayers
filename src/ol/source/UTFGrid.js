@@ -142,7 +142,7 @@ export class CustomTile extends Tile {
         function (e) {
           callback(this.getData(coordinate));
         },
-        this
+        this,
       );
       this.loadInternal_();
     } else {
@@ -195,7 +195,7 @@ export class CustomTile extends Tile {
         requestJSONP(
           this.src_,
           this.handleLoad_.bind(this),
-          this.handleError_.bind(this)
+          this.handleError_.bind(this),
         );
       } else {
         const client = new XMLHttpRequest();
@@ -314,7 +314,7 @@ class UTFGrid extends TileSource {
         requestJSONP(
           options.url,
           this.handleTileJSONResponse.bind(this),
-          this.handleTileJSONError.bind(this)
+          this.handleTileJSONError.bind(this),
         );
       } else {
         const client = new XMLHttpRequest();
@@ -391,7 +391,7 @@ class UTFGrid extends TileSource {
           tileCoord[1],
           tileCoord[2],
           1,
-          this.getProjection()
+          this.getProjection(),
         )
       );
       tile.forDataAtCoordinate(coordinate, callback, request);
@@ -426,7 +426,7 @@ class UTFGrid extends TileSource {
     if (tileJSON['bounds'] !== undefined) {
       const transform = getTransformFromProjections(
         epsg4326Projection,
-        sourceProjection
+        sourceProjection,
       );
       extent = applyTransform(tileJSON['bounds'], transform);
     }
@@ -480,7 +480,7 @@ class UTFGrid extends TileSource {
     const tileCoord = [z, x, y];
     const urlTileCoord = this.getTileCoordForTileUrlFunction(
       tileCoord,
-      projection
+      projection,
     );
     const tileUrl = this.tileUrlFunction_(urlTileCoord, pixelRatio, projection);
     const tile = new CustomTile(
@@ -489,7 +489,7 @@ class UTFGrid extends TileSource {
       tileUrl !== undefined ? tileUrl : '',
       this.tileGrid.getTileCoordExtent(tileCoord),
       this.preemptive_,
-      this.jsonp_
+      this.jsonp_,
     );
     this.tileCache.set(tileCoordKey, tile);
     return tile;

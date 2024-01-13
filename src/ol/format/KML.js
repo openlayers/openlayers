@@ -128,7 +128,7 @@ const PLACEMARK_PARSERS = makeStructureNS(
   makeStructureNS(GX_NAMESPACE_URIS, {
     'MultiTrack': makeObjectPropertySetter(readGxMultiTrack, 'geometry'),
     'Track': makeObjectPropertySetter(readGxTrack, 'geometry'),
-  })
+  }),
 );
 
 /**
@@ -539,7 +539,7 @@ class KML extends XMLFeature {
       PLACEMARK_PARSERS,
       node,
       objectStack,
-      this
+      this,
     );
     if (!object) {
       return undefined;
@@ -568,7 +568,7 @@ class KML extends XMLFeature {
         styleUrl,
         this.defaultStyle_,
         this.sharedStyles_,
-        this.showPointNames_
+        this.showPointNames_,
       );
       feature.setStyle(styleFunction);
     }
@@ -776,12 +776,12 @@ class KML extends XMLFeature {
     } else if (isDocument(source)) {
       extend(
         networkLinks,
-        this.readNetworkLinksFromDocument(/** @type {Document} */ (source))
+        this.readNetworkLinksFromDocument(/** @type {Document} */ (source)),
       );
     } else {
       extend(
         networkLinks,
-        this.readNetworkLinksFromNode(/** @type {Element} */ (source))
+        this.readNetworkLinksFromNode(/** @type {Element} */ (source)),
       );
     }
     return networkLinks;
@@ -797,7 +797,7 @@ class KML extends XMLFeature {
       if (n.nodeType == Node.ELEMENT_NODE) {
         extend(
           networkLinks,
-          this.readNetworkLinksFromNode(/** @type {Element} */ (n))
+          this.readNetworkLinksFromNode(/** @type {Element} */ (n)),
         );
       }
     }
@@ -846,7 +846,7 @@ class KML extends XMLFeature {
     } else if (isDocument(source)) {
       extend(
         regions,
-        this.readRegionFromDocument(/** @type {Document} */ (source))
+        this.readRegionFromDocument(/** @type {Document} */ (source)),
       );
     } else {
       extend(regions, this.readRegionFromNode(/** @type {Element} */ (source)));
@@ -919,7 +919,7 @@ class KML extends XMLFeature {
     } else if (isDocument(source)) {
       extend(
         cameras,
-        this.readCameraFromDocument(/** @type {Document} */ (source))
+        this.readCameraFromDocument(/** @type {Document} */ (source)),
       );
     } else {
       extend(cameras, this.readCameraFromNode(/** @type {Element} */ (source)));
@@ -987,7 +987,7 @@ class KML extends XMLFeature {
     kml.setAttributeNS(
       XML_SCHEMA_INSTANCE_URI,
       'xsi:schemaLocation',
-      SCHEMA_LOCATION
+      SCHEMA_LOCATION,
     );
 
     const /** @type {import("../xml.js").NodeStackItem} */ context = {
@@ -1009,7 +1009,7 @@ class KML extends XMLFeature {
       values,
       [options],
       orderedKeys,
-      this
+      this,
     );
     return kml;
   }
@@ -1074,7 +1074,7 @@ function createFeatureStyleFunction(
   styleUrl,
   defaultStyle,
   sharedStyles,
-  showPointNames
+  showPointNames,
 ) {
   return (
     /**
@@ -1618,7 +1618,7 @@ function readGxMultiTrack(node, objectStack) {
     [],
     GX_MULTITRACK_GEOMETRY_PARSERS,
     node,
-    objectStack
+    objectStack,
   );
   if (!lineStrings) {
     return undefined;
@@ -1638,7 +1638,7 @@ const GX_TRACK_PARSERS = makeStructureNS(
   },
   makeStructureNS(GX_NAMESPACE_URIS, {
     'coord': gxCoordParser,
-  })
+  }),
 );
 
 /**
@@ -1654,7 +1654,7 @@ function readGxTrack(node, objectStack) {
     }),
     GX_TRACK_PARSERS,
     node,
-    objectStack
+    objectStack,
   );
   if (!gxTrackObject) {
     return undefined;
@@ -1672,7 +1672,7 @@ function readGxTrack(node, objectStack) {
         coordinates[i][0],
         coordinates[i][1],
         coordinates[i][2],
-        whens[i]
+        whens[i],
       );
     }
   }
@@ -1694,7 +1694,7 @@ const ICON_PARSERS = makeStructureNS(
     'y': makeObjectPropertySetter(readDecimal),
     'w': makeObjectPropertySetter(readDecimal),
     'h': makeObjectPropertySetter(readDecimal),
-  })
+  }),
 );
 
 /**
@@ -1729,7 +1729,7 @@ function readFlatCoordinatesFromNode(node, objectStack) {
     null,
     GEOMETRY_FLAT_COORDINATES_PARSERS,
     node,
-    objectStack
+    objectStack,
   );
 }
 
@@ -1754,7 +1754,7 @@ function readLineString(node, objectStack) {
     {},
     EXTRUDE_AND_ALTITUDE_MODE_PARSERS,
     node,
-    objectStack
+    objectStack,
   );
   const flatCoordinates = readFlatCoordinatesFromNode(node, objectStack);
   if (flatCoordinates) {
@@ -1775,7 +1775,7 @@ function readLinearRing(node, objectStack) {
     {},
     EXTRUDE_AND_ALTITUDE_MODE_PARSERS,
     node,
-    objectStack
+    objectStack,
   );
   const flatCoordinates = readFlatCoordinatesFromNode(node, objectStack);
   if (flatCoordinates) {
@@ -1811,7 +1811,7 @@ function readMultiGeometry(node, objectStack) {
     [],
     MULTI_GEOMETRY_PARSERS,
     node,
-    objectStack
+    objectStack,
   );
   if (!geometries) {
     return null;
@@ -1870,7 +1870,7 @@ function readPoint(node, objectStack) {
     {},
     EXTRUDE_AND_ALTITUDE_MODE_PARSERS,
     node,
-    objectStack
+    objectStack,
   );
   const flatCoordinates = readFlatCoordinatesFromNode(node, objectStack);
   if (flatCoordinates) {
@@ -1901,13 +1901,13 @@ function readPolygon(node, objectStack) {
     /** @type {Object<string,*>} */ ({}),
     EXTRUDE_AND_ALTITUDE_MODE_PARSERS,
     node,
-    objectStack
+    objectStack,
   );
   const flatLinearRings = pushParseAndPop(
     [null],
     FLAT_LINEAR_RINGS_PARSERS,
     node,
-    objectStack
+    objectStack,
   );
   if (flatLinearRings && flatLinearRings[0]) {
     const flatCoordinates = flatLinearRings[0];
@@ -1947,7 +1947,7 @@ function readStyle(node, objectStack) {
     STYLE_PARSERS,
     node,
     objectStack,
-    this
+    this,
   );
   if (!styleObject) {
     return null;
@@ -2004,7 +2004,7 @@ function readStyle(node, objectStack) {
                 .filter(function (geometry) {
                   const type = geometry.getType();
                   return type !== 'Polygon' && type !== 'MultiPolygon';
-                })
+                }),
             );
           }
           if (type !== 'Polygon' && type !== 'MultiPolygon') {
@@ -2032,7 +2032,7 @@ function readStyle(node, objectStack) {
                 .filter(function (geometry) {
                   const type = geometry.getType();
                   return type === 'Polygon' || type === 'MultiPolygon';
-                })
+                }),
             );
           }
           if (type === 'Polygon' || type === 'MultiPolygon') {
@@ -2262,7 +2262,7 @@ function latLonAltBoxParser(node, objectStack) {
     {},
     LAT_LON_ALT_BOX_PARSERS,
     node,
-    objectStack
+    objectStack,
   );
   if (!object) {
     return;
@@ -2330,7 +2330,7 @@ function innerBoundaryIsParser(node, objectStack) {
     /** @type {Array<Array<number>>} */ ([]),
     INNER_BOUNDARY_IS_PARSERS,
     node,
-    objectStack
+    objectStack,
   );
   if (innerBoundaryFlatLinearRings.length > 0) {
     const flatLinearRings =
@@ -2359,7 +2359,7 @@ function outerBoundaryIsParser(node, objectStack) {
     undefined,
     OUTER_BOUNDARY_IS_PARSERS,
     node,
-    objectStack
+    objectStack,
   );
   if (flatLinearRing) {
     const flatLinearRings =
@@ -2473,7 +2473,7 @@ function writeDataNode(node, pair, objectStack) {
         OBJECT_PROPERTY_NODE_FACTORY,
         [value.displayName],
         objectStack,
-        ['displayName']
+        ['displayName'],
       );
     }
 
@@ -2484,7 +2484,7 @@ function writeDataNode(node, pair, objectStack) {
         OBJECT_PROPERTY_NODE_FACTORY,
         [value.value],
         objectStack,
-        ['value']
+        ['value'],
       );
     }
   } else {
@@ -2494,7 +2494,7 @@ function writeDataNode(node, pair, objectStack) {
       OBJECT_PROPERTY_NODE_FACTORY,
       [value],
       objectStack,
-      ['value']
+      ['value'],
     );
   }
 }
@@ -2551,7 +2551,7 @@ function writeDocument(node, features, objectStack) {
     features,
     objectStack,
     undefined,
-    this
+    this,
   );
 }
 
@@ -2579,7 +2579,7 @@ function writeExtendedData(node, namesAndValues, objectStack) {
       EXTENDEDDATA_NODE_SERIALIZERS,
       DATA_NODE_FACTORY,
       [{name: names[i], value: values[i]}],
-      objectStack
+      objectStack,
     );
   }
 }
@@ -2592,7 +2592,7 @@ function writeExtendedData(node, namesAndValues, objectStack) {
 const ICON_SEQUENCE = makeStructureNS(
   NAMESPACE_URIS,
   ['href'],
-  makeStructureNS(GX_NAMESPACE_URIS, ['x', 'y', 'w', 'h'])
+  makeStructureNS(GX_NAMESPACE_URIS, ['x', 'y', 'w', 'h']),
 );
 
 /**
@@ -2610,7 +2610,7 @@ const ICON_SERIALIZERS = makeStructureNS(
     'y': makeChildAppender(writeDecimalTextNode),
     'w': makeChildAppender(writeDecimalTextNode),
     'h': makeChildAppender(writeDecimalTextNode),
-  })
+  }),
 );
 
 /**
@@ -2640,7 +2640,7 @@ function writeIcon(node, icon, objectStack) {
     OBJECT_PROPERTY_NODE_FACTORY,
     values,
     objectStack,
-    orderedKeys
+    orderedKeys,
   );
   orderedKeys = ICON_SEQUENCE[GX_NAMESPACE_URIS[0]];
   values = makeSequence(icon, orderedKeys);
@@ -2650,7 +2650,7 @@ function writeIcon(node, icon, objectStack) {
     GX_NODE_FACTORY,
     values,
     objectStack,
-    orderedKeys
+    orderedKeys,
   );
 }
 
@@ -2751,7 +2751,7 @@ function writeIconStyle(node, style, objectStack) {
     OBJECT_PROPERTY_NODE_FACTORY,
     values,
     objectStack,
-    orderedKeys
+    orderedKeys,
   );
 }
 
@@ -2800,7 +2800,7 @@ function writeLabelStyle(node, style, objectStack) {
     OBJECT_PROPERTY_NODE_FACTORY,
     values,
     objectStack,
-    orderedKeys
+    orderedKeys,
   );
 }
 
@@ -2841,7 +2841,7 @@ function writeLineStyle(node, style, objectStack) {
     OBJECT_PROPERTY_NODE_FACTORY,
     values,
     objectStack,
-    orderedKeys
+    orderedKeys,
   );
 }
 
@@ -2874,7 +2874,7 @@ const GEOMETRY_NODE_FACTORY = function (value, objectStack, nodeName) {
       parentNode.namespaceURI,
       GEOMETRY_TYPE_TO_NODENAME[
         /** @type {import("../geom/Geometry.js").default} */ (value).getType()
-      ]
+      ],
     );
   }
 };
@@ -2939,15 +2939,15 @@ function writeMultiGeometry(node, geometry, objectStack) {
         const type = geometry.getType();
         if (type === 'MultiPoint') {
           geometries = geometries.concat(
-            /** @type {MultiPoint} */ (geometry).getPoints()
+            /** @type {MultiPoint} */ (geometry).getPoints(),
           );
         } else if (type === 'MultiLineString') {
           geometries = geometries.concat(
-            /** @type {MultiLineString} */ (geometry).getLineStrings()
+            /** @type {MultiLineString} */ (geometry).getLineStrings(),
           );
         } else if (type === 'MultiPolygon') {
           geometries = geometries.concat(
-            /** @type {MultiPolygon} */ (geometry).getPolygons()
+            /** @type {MultiPolygon} */ (geometry).getPolygons(),
           );
         } else if (
           type === 'Point' ||
@@ -2977,7 +2977,7 @@ function writeMultiGeometry(node, geometry, objectStack) {
     MULTI_GEOMETRY_SERIALIZERS,
     factory,
     geometries,
-    objectStack
+    objectStack,
   );
 }
 
@@ -3002,7 +3002,7 @@ function writeBoundaryIs(node, linearRing, objectStack) {
     BOUNDARY_IS_SERIALIZERS,
     LINEAR_RING_NODE_FACTORY,
     [linearRing],
-    objectStack
+    objectStack,
   );
 }
 
@@ -3171,7 +3171,7 @@ function writePlacemark(node, feature, objectStack) {
     OBJECT_PROPERTY_NODE_FACTORY,
     values,
     objectStack,
-    orderedKeys
+    orderedKeys,
   );
 
   if (keys.length > 0) {
@@ -3182,7 +3182,7 @@ function writePlacemark(node, feature, objectStack) {
       PLACEMARK_SERIALIZERS,
       EXTENDEDDATA_NODE_FACTORY,
       [namesAndValues],
-      objectStack
+      objectStack,
     );
   }
 
@@ -3199,7 +3199,7 @@ function writePlacemark(node, feature, objectStack) {
     PLACEMARK_SERIALIZERS,
     GEOMETRY_NODE_FACTORY,
     [geometry],
-    objectStack
+    objectStack,
   );
 }
 
@@ -3251,7 +3251,7 @@ function writePrimitiveGeometry(node, geometry, objectStack) {
     OBJECT_PROPERTY_NODE_FACTORY,
     values,
     objectStack,
-    orderedKeys
+    orderedKeys,
   );
 }
 
@@ -3305,7 +3305,7 @@ function writePolygon(node, polygon, objectStack) {
     POLYGON_SERIALIZERS,
     INNER_BOUNDARY_NODE_FACTORY,
     linearRings,
-    objectStack
+    objectStack,
   );
   // outer ring
   pushSerializeAndPop(
@@ -3313,7 +3313,7 @@ function writePolygon(node, polygon, objectStack) {
     POLYGON_SERIALIZERS,
     OUTER_BOUNDARY_NODE_FACTORY,
     [outerRing],
-    objectStack
+    objectStack,
   );
 }
 
@@ -3351,7 +3351,7 @@ function writePolyStyle(node, style, objectStack) {
     OBJECT_PROPERTY_NODE_FACTORY,
     values,
     objectStack,
-    orderedKeys
+    orderedKeys,
   );
 }
 
@@ -3431,7 +3431,7 @@ function writeStyle(node, styles, objectStack) {
     OBJECT_PROPERTY_NODE_FACTORY,
     values,
     objectStack,
-    orderedKeys
+    orderedKeys,
   );
 }
 

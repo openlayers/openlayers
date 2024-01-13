@@ -123,7 +123,7 @@ describe('ol/layer/WebGLTile', function () {
               loader(z2, x2, y2) {
                 return new Uint8Array([x1, y1, x2, y2]);
               },
-            })
+            }),
         ),
       });
 
@@ -294,7 +294,7 @@ describe('ol/layer/WebGLTile', function () {
         viewState.center,
         viewState.resolution,
         viewState.rotation,
-        size
+        size,
       ),
       layerStatesArray: map.getLayerGroup().getLayerStatesArray(),
       layerIndex: 0,
@@ -338,7 +338,7 @@ describe('ol/layer/WebGLTile', function () {
         gl_FragColor = color;
         gl_FragColor.rgb *= gl_FragColor.a;
         gl_FragColor *= u_transitionAlpha;
-      }`.replace(/[ \n]+/g, ' ')
+      }`.replace(/[ \n]+/g, ' '),
     );
 
     expect(compileShaderSpy.getCall(1).args[0].replace(/[ \n]+/g, ' ')).to.be(
@@ -364,7 +364,7 @@ describe('ol/layer/WebGLTile', function () {
         );
         gl_Position = u_tileTransform * vec4(a_textureCoord, u_depth, 1.0);
       }
-      `.replace(/[ \n]+/g, ' ')
+      `.replace(/[ \n]+/g, ' '),
     );
   });
 
@@ -392,7 +392,7 @@ describe('ol/layer/WebGLTile', function () {
         viewState.center,
         viewState.resolution,
         viewState.rotation,
-        size
+        size,
       ),
       layerStatesArray: map.getLayerGroup().getLayerStatesArray(),
       layerIndex: 0,
@@ -449,7 +449,7 @@ describe('ol/layer/WebGLTile', function () {
         gl_FragColor = color;
         gl_FragColor.rgb *= gl_FragColor.a;
         gl_FragColor *= u_transitionAlpha;
-      }`.replace(/[ \n]+/g, ' ')
+      }`.replace(/[ \n]+/g, ' '),
     );
   });
 
@@ -571,7 +571,7 @@ describe('ol/layer/WebGLTile', function () {
           ([z, x, y]) =>
             new DataTileSource({
               bandCount: 7,
-            })
+            }),
         ),
       });
       expect(layer.getSourceBandCount_()).to.be(7);
@@ -681,7 +681,7 @@ describe('ol/layer/WebGLTile', function () {
         loader(z, x, y) {
           return new ImageData(256, 256).data;
         },
-      })
+      }),
     );
 
     let called = false;

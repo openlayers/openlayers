@@ -20,7 +20,7 @@ describe('ol/geom/flat/area.js', function () {
         [0, 0, 0, 3, 3, 3, 3, 0, 1, 1, 2, 1, 2, 2, 1, 2],
         0,
         [8, 16],
-        2
+        2,
       );
       expect(area).to.be(8);
     });

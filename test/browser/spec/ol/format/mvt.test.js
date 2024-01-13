@@ -157,7 +157,7 @@ describe('ol.format.MVT', function () {
         {},
         rawFeature,
         flatCoordinates,
-        ends
+        ends,
       ) {
         flatCoordinates.push(0, 0);
         ends.push(2);
@@ -184,7 +184,7 @@ describe('ol.format.MVT', function () {
         {},
         rawFeature,
         flatCoordinates,
-        ends
+        ends,
       ) {
         flatCoordinates.push(0, 0, 3, 0, 3, 3, 0, 3, 0, 0);
         flatCoordinates.push(1, 1, 1, 2, 2, 2, 2, 1, 1, 1);
@@ -210,7 +210,7 @@ describe('ol.format.MVT', function () {
         {},
         rawFeature,
         flatCoordinates,
-        ends
+        ends,
       ) {
         flatCoordinates.push(0, 0, 1, 0, 1, 1, 0, 1, 0, 0);
         flatCoordinates.push(1, 1, 2, 1, 2, 2, 1, 2, 1, 1);
@@ -238,7 +238,7 @@ describe('ol.format.MVT', function () {
         {},
         rawFeature,
         flatCoordinates,
-        ends
+        ends,
       ) {
         flatCoordinates.push(0, 0, 1, 0, 1, 1, 1, 0, 0, 0);
         flatCoordinates.push(1, 1, 2, 1, 2, 2, 2, 1, 1, 1);
@@ -251,7 +251,7 @@ describe('ol.format.MVT', function () {
       const feature = format.createFeature_(
         {},
         rawFeature,
-        format.adaptOptions(options)
+        format.adaptOptions(options),
       );
       expect(feature).to.be.a(RenderFeature);
       expect(feature.getType()).to.be('Polygon');

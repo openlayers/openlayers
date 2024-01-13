@@ -120,7 +120,7 @@ class GML3 extends GMLBase {
       this.MULTICURVE_PARSERS,
       node,
       objectStack,
-      this
+      this,
     );
     if (lineStrings) {
       const multiLineString = new MultiLineString(lineStrings);
@@ -141,7 +141,7 @@ class GML3 extends GMLBase {
       this.MULTICURVE_PARSERS,
       node,
       objectStack,
-      this
+      this,
     );
     const flatCoordinates = [];
     for (let i = 0, ii = lineStrings.length; i < ii; ++i) {
@@ -162,7 +162,7 @@ class GML3 extends GMLBase {
       this.MULTISURFACE_PARSERS,
       node,
       objectStack,
-      this
+      this,
     );
     if (polygons) {
       return new MultiPolygon(polygons);
@@ -196,7 +196,7 @@ class GML3 extends GMLBase {
       this.PATCHES_PARSERS,
       node,
       objectStack,
-      this
+      this,
     );
   }
 
@@ -220,7 +220,7 @@ class GML3 extends GMLBase {
       this.FLAT_LINEAR_RINGS_PARSERS,
       node,
       objectStack,
-      this
+      this,
     );
   }
 
@@ -235,7 +235,7 @@ class GML3 extends GMLBase {
       this.GEOMETRY_FLAT_COORDINATES_PARSERS,
       node,
       objectStack,
-      this
+      this,
     );
   }
 
@@ -250,7 +250,7 @@ class GML3 extends GMLBase {
       this.RING_PARSERS,
       node,
       objectStack,
-      this
+      this,
     );
     if (flatLinearRing) {
       const flatLinearRings =
@@ -271,7 +271,7 @@ class GML3 extends GMLBase {
       this.RING_PARSERS,
       node,
       objectStack,
-      this
+      this,
     );
     if (flatLinearRing) {
       const flatLinearRings =
@@ -293,7 +293,7 @@ class GML3 extends GMLBase {
       this.SURFACE_PARSERS,
       node,
       objectStack,
-      this
+      this,
     );
     if (flatLinearRings && flatLinearRings[0]) {
       const flatCoordinates = flatLinearRings[0];
@@ -320,7 +320,7 @@ class GML3 extends GMLBase {
       this.CURVE_PARSERS,
       node,
       objectStack,
-      this
+      this,
     );
     if (flatCoordinates) {
       const lineString = new LineString(flatCoordinates, 'XYZ');
@@ -341,13 +341,13 @@ class GML3 extends GMLBase {
       this.ENVELOPE_PARSERS,
       node,
       objectStack,
-      this
+      this,
     );
     return createOrUpdate(
       flatCoordinates[1][0],
       flatCoordinates[1][1],
       flatCoordinates[2][0],
-      flatCoordinates[2][1]
+      flatCoordinates[2][1],
     );
   }
 
@@ -421,7 +421,7 @@ class GML3 extends GMLBase {
       /** @type {Element} */ (node.parentNode).getAttribute('srsDimension')
     ) {
       dim = readNonNegativeIntegerString(
-        /** @type {Element} */ (node.parentNode).getAttribute('srsDimension')
+        /** @type {Element} */ (node.parentNode).getAttribute('srsDimension'),
       );
     } else if (contextDimension) {
       dim = readNonNegativeIntegerString(contextDimension);
@@ -559,7 +559,7 @@ class GML3 extends GMLBase {
       values,
       objectStack,
       keys,
-      this
+      this,
     );
   }
 
@@ -595,7 +595,7 @@ class GML3 extends GMLBase {
     }
     return createElementNS(
       parentNode.namespaceURI,
-      exteriorWritten !== undefined ? 'interior' : 'exterior'
+      exteriorWritten !== undefined ? 'interior' : 'exterior',
     );
   }
 
@@ -620,7 +620,7 @@ class GML3 extends GMLBase {
         rings,
         objectStack,
         undefined,
-        this
+        this,
       );
     } else if (node.nodeName === 'Surface') {
       const patches = createElementNS(node.namespaceURI, 'patches');
@@ -675,7 +675,7 @@ class GML3 extends GMLBase {
       polygons,
       objectStack,
       undefined,
-      this
+      this,
     );
   }
 
@@ -699,7 +699,7 @@ class GML3 extends GMLBase {
       points,
       objectStack,
       undefined,
-      this
+      this,
     );
   }
 
@@ -724,7 +724,7 @@ class GML3 extends GMLBase {
       lines,
       objectStack,
       undefined,
-      this
+      this,
     );
   }
 
@@ -815,13 +815,13 @@ class GML3 extends GMLBase {
     if (Array.isArray(geometry)) {
       value = transformExtentWithOptions(
         /** @type {import("../extent.js").Extent} */ (geometry),
-        context
+        context,
       );
     } else {
       value = transformGeometryWithOptions(
         /** @type {import("../geom/Geometry.js").default} */ (geometry),
         true,
-        context
+        context,
       );
     }
     pushSerializeAndPop(
@@ -832,7 +832,7 @@ class GML3 extends GMLBase {
       [value],
       objectStack,
       undefined,
-      this
+      this,
     );
   }
 
@@ -870,7 +870,7 @@ class GML3 extends GMLBase {
             if (!(key in context.serializers[featureNS])) {
               context.serializers[featureNS][key] = makeChildAppender(
                 this.writeGeometryElement,
-                this
+                this,
               );
             }
           } else {
@@ -891,7 +891,7 @@ class GML3 extends GMLBase {
       makeSimpleNodeFactory(undefined, featureNS),
       values,
       objectStack,
-      keys
+      keys,
     );
   }
 
@@ -910,7 +910,7 @@ class GML3 extends GMLBase {
     serializers[featureNS] = {};
     serializers[featureNS][featureType] = makeChildAppender(
       this.writeFeatureElement,
-      this
+      this,
     );
     const item = Object.assign({}, context);
     item.node = node;
@@ -920,7 +920,7 @@ class GML3 extends GMLBase {
       serializers,
       makeSimpleNodeFactory(featureType, featureNS),
       features,
-      objectStack
+      objectStack,
     );
   }
 
@@ -936,7 +936,7 @@ class GML3 extends GMLBase {
     const parentNode = objectStack[objectStack.length - 1].node;
     return createElementNS(
       this.namespace,
-      MULTIGEOMETRY_TO_MEMBER_NODENAME[parentNode.nodeName]
+      MULTIGEOMETRY_TO_MEMBER_NODENAME[parentNode.nodeName],
     );
   }
 
@@ -1014,7 +1014,7 @@ class GML3 extends GMLBase {
     node.setAttributeNS(
       XML_SCHEMA_INSTANCE_URI,
       'xsi:schemaLocation',
-      this.schemaLocation
+      this.schemaLocation,
     );
     const context = {
       srsName: this.srsName,
@@ -1170,7 +1170,7 @@ GML3.prototype.PATCHES_PARSERS = {
 GML3.prototype.SEGMENTS_PARSERS = {
   'http://www.opengis.net/gml': {
     'LineStringSegment': makeArrayExtender(
-      GML3.prototype.readLineStringSegment
+      GML3.prototype.readLineStringSegment,
     ),
   },
 };
@@ -1223,10 +1223,10 @@ GML3.prototype.ENVELOPE_SERIALIZERS = {
 GML3.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS = {
   'http://www.opengis.net/gml': {
     'surfaceMember': makeChildAppender(
-      GML3.prototype.writeSurfaceOrPolygonMember
+      GML3.prototype.writeSurfaceOrPolygonMember,
     ),
     'polygonMember': makeChildAppender(
-      GML3.prototype.writeSurfaceOrPolygonMember
+      GML3.prototype.writeSurfaceOrPolygonMember,
     ),
   },
 };
@@ -1246,10 +1246,10 @@ GML3.prototype.POINTMEMBER_SERIALIZERS = {
 GML3.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS = {
   'http://www.opengis.net/gml': {
     'lineStringMember': makeChildAppender(
-      GML3.prototype.writeLineStringOrCurveMember
+      GML3.prototype.writeLineStringOrCurveMember,
     ),
     'curveMember': makeChildAppender(
-      GML3.prototype.writeLineStringOrCurveMember
+      GML3.prototype.writeLineStringOrCurveMember,
     ),
   },
 };
@@ -1265,16 +1265,16 @@ GML3.prototype.GEOMETRY_SERIALIZERS = {
     'MultiPoint': makeChildAppender(GML3.prototype.writeMultiPoint),
     'LineString': makeChildAppender(GML3.prototype.writeCurveOrLineString),
     'MultiLineString': makeChildAppender(
-      GML3.prototype.writeMultiCurveOrLineString
+      GML3.prototype.writeMultiCurveOrLineString,
     ),
     'LinearRing': makeChildAppender(GML3.prototype.writeLinearRing),
     'Polygon': makeChildAppender(GML3.prototype.writeSurfaceOrPolygon),
     'MultiPolygon': makeChildAppender(
-      GML3.prototype.writeMultiSurfaceOrPolygon
+      GML3.prototype.writeMultiSurfaceOrPolygon,
     ),
     'Surface': makeChildAppender(GML3.prototype.writeSurfaceOrPolygon),
     'MultiSurface': makeChildAppender(
-      GML3.prototype.writeMultiSurfaceOrPolygon
+      GML3.prototype.writeMultiSurfaceOrPolygon,
     ),
     'Envelope': makeChildAppender(GML3.prototype.writeEnvelope),
   },

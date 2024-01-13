@@ -182,7 +182,7 @@ describe('ol/style/RegularShape', function () {
       expect(original.getRotateWithView()).to.eql(clone.getRotateWithView());
       expect(original.getScale()).to.eql(clone.getScale());
       expect(original.getStroke().getColor()).to.eql(
-        clone.getStroke().getColor()
+        clone.getStroke().getColor(),
       );
       expect(original.getDisplacement()[0]).to.eql(clone.getDisplacement()[0]);
       expect(original.getDisplacement()[1]).to.eql(clone.getDisplacement()[1]);
@@ -206,10 +206,10 @@ describe('ol/style/RegularShape', function () {
       clone.getFill().setColor('#012345');
       clone.getStroke().setColor('#012345');
       expect(original.getFill().getColor()).to.not.eql(
-        clone.getFill().getColor()
+        clone.getFill().getColor(),
       );
       expect(original.getStroke().getColor()).to.not.eql(
-        clone.getStroke().getColor()
+        clone.getStroke().getColor(),
       );
     });
   });

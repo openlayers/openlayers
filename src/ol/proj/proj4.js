@@ -61,7 +61,7 @@ export function register(proj4) {
           axisOrientation: def.axis,
           metersPerUnit: def.to_meter,
           units,
-        })
+        }),
       );
     }
   }
@@ -80,7 +80,7 @@ export function register(proj4) {
             proj1,
             proj2,
             createSafeCoordinateTransform(proj1, proj2, transform.forward),
-            createSafeCoordinateTransform(proj2, proj1, transform.inverse)
+            createSafeCoordinateTransform(proj2, proj1, transform.inverse),
           );
         }
       }
@@ -170,18 +170,19 @@ export async function fromEPSGCode(code) {
 export function epsgLookupMapTiler(key) {
   return async function (code) {
     const response = await fetch(
-      `https://api.maptiler.com/coordinates/search/code:${code}.json?transformations=true&exports=true&key=${key}`
+      `https://api.maptiler.com/coordinates/search/code:${code}.json?transformations=true&exports=true&key=${key}`,
     );
     if (!response.ok) {
       throw new Error(
-        `Unexpected response from maptiler.com: ${response.status}`
+        `Unexpected response from maptiler.com: ${response.status}`,
       );
     }
     return response.json().then((json) => {
       const results = json['results'];
       if (results?.length > 0) {
         const result = results.filter(
-          (r) => r['id']?.['authority'] === 'EPSG' && r['id']?.['code'] === code
+          (r) =>
+            r['id']?.['authority'] === 'EPSG' && r['id']?.['code'] === code,
         )[0];
         if (result) {
           const transforms = result['transformations'];
@@ -193,7 +194,7 @@ export function epsgLookupMapTiler(key) {
                 (t) =>
                   t['id']?.['authority'] === defaultTransform?.['authority'] &&
                   t['id']?.['code'] === defaultTransform?.['code'] &&
-                  t['grids']?.length === 0
+                  t['grids']?.length === 0,
               ).length > 0
             ) {
               return result['exports']?.['proj4'];
@@ -206,7 +207,7 @@ export function epsgLookupMapTiler(key) {
                   t['target_crs']?.['authority'] === 'EPSG' &&
                   t['target_crs']?.['code'] === 4326 &&
                   t['deprecated'] === false &&
-                  t['usable'] === true
+                  t['usable'] === true,
               )
               .sort((t1, t2) => t1['accuracy'] - t2['accuracy'])[0]?.[
               'exports'

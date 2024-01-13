@@ -124,7 +124,7 @@ client.addEventListener('load', function () {
         shape: shape,
         duration: line[3],
         geometry: new Point(fromLonLat(coords)),
-      })
+      }),
     );
   }
   shapeTypes['all'] = features.length;
@@ -135,7 +135,7 @@ client.addEventListener('load', function () {
         attributions: 'National UFO Reporting Center',
       }),
       style: style,
-    })
+    }),
   );
   fillShapeSelect(shapeTypes);
 });

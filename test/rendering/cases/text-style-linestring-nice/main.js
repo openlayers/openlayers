@@ -26,7 +26,7 @@ feature1.setStyle(
       font: '10px Ubuntu',
       placement: 'line',
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature1);
 
@@ -44,7 +44,7 @@ feature2.setStyle(
       textAlign: 'right',
       placement: 'line',
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature2);
 
@@ -58,7 +58,7 @@ feature3.setStyle(
       font: 'italic bold 0.75em Ubuntu',
       text: 'Set properties',
     }),
-  })
+  }),
 );
 feature3.getStyle().getText().setTextAlign('left');
 feature3.getStyle().getText().setOffsetX(10);
@@ -90,7 +90,7 @@ feature4.setStyle(
       textBaseline: 'top',
       placement: 'line',
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature4);
 
@@ -108,7 +108,7 @@ feature5.setStyle(
       textAlign: 'start',
       placement: 'line',
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature5);
 
@@ -128,7 +128,7 @@ feature6.setStyle(
         width: 1,
       }),
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature6);
 
@@ -150,7 +150,7 @@ feature7.setStyle(
         width: 1,
       }),
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature7);
 

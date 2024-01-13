@@ -40,14 +40,14 @@ class LinearRing extends SimpleGeometry {
     if (layout !== undefined && !Array.isArray(coordinates[0])) {
       this.setFlatCoordinates(
         layout,
-        /** @type {Array<number>} */ (coordinates)
+        /** @type {Array<number>} */ (coordinates),
       );
     } else {
       this.setCoordinates(
         /** @type {Array<import("../coordinate.js").Coordinate>} */ (
           coordinates
         ),
-        layout
+        layout,
       );
     }
   }
@@ -79,8 +79,8 @@ class LinearRing extends SimpleGeometry {
           0,
           this.flatCoordinates.length,
           this.stride,
-          0
-        )
+          0,
+        ),
       );
       this.maxDeltaRevision_ = this.getRevision();
     }
@@ -94,7 +94,7 @@ class LinearRing extends SimpleGeometry {
       x,
       y,
       closestPoint,
-      minSquaredDistance
+      minSquaredDistance,
     );
   }
 
@@ -108,7 +108,7 @@ class LinearRing extends SimpleGeometry {
       this.flatCoordinates,
       0,
       this.flatCoordinates.length,
-      this.stride
+      this.stride,
     );
   }
 
@@ -122,7 +122,7 @@ class LinearRing extends SimpleGeometry {
       this.flatCoordinates,
       0,
       this.flatCoordinates.length,
-      this.stride
+      this.stride,
     );
   }
 
@@ -141,7 +141,7 @@ class LinearRing extends SimpleGeometry {
       this.stride,
       squaredTolerance,
       simplifiedFlatCoordinates,
-      0
+      0,
     );
     return new LinearRing(simplifiedFlatCoordinates, 'XY');
   }
@@ -180,7 +180,7 @@ class LinearRing extends SimpleGeometry {
       this.flatCoordinates,
       0,
       coordinates,
-      this.stride
+      this.stride,
     );
     this.changed();
   }

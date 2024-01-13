@@ -58,7 +58,7 @@ const map = new Map({
 source.getView().then(function (options) {
   const view = map.getView();
   view.fit(
-    transformExtent(options.extent, options.projection, view.getProjection())
+    transformExtent(options.extent, options.projection, view.getProjection()),
   );
 });
 

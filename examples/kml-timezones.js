@@ -17,7 +17,7 @@ const styleFunction = function (feature) {
   const tzOffset = feature.get('tz-offset');
   const local = new Date();
   local.setTime(
-    local.getTime() + (local.getTimezoneOffset() + (tzOffset || 0)) * 60000
+    local.getTime() + (local.getTimezoneOffset() + (tzOffset || 0)) * 60000,
   );
   // offset from local noon (in hours)
   let delta = Math.abs(12 - (local.getHours() + local.getMinutes() / 60));

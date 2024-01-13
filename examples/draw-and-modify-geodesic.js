@@ -90,7 +90,7 @@ const modify = new Modify({
           last = transform(
             polygon[(polygon.length - 1) / 2],
             projection,
-            'EPSG:4326'
+            'EPSG:4326',
           );
           radius = getDistance(first, last) / 2;
         } else {
@@ -103,7 +103,7 @@ const modify = new Modify({
         const circle = circular(
           transform(center, projection, 'EPSG:4326'),
           radius,
-          128
+          128,
         );
         circle.transform('EPSG:4326', projection);
         geometries[0].setCoordinates(circle.getCoordinates());

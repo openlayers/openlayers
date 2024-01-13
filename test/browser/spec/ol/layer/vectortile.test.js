@@ -205,7 +205,7 @@ describe('ol.layer.VectorTile', function () {
           },
           size: [2 * tileSize, 2 * tileSize],
           extent: [-tileSize, -tileSize, tileSize, tileSize].map(
-            (n) => n * resolution
+            (n) => n * resolution,
           ),
           viewHints: [0, 0],
           layerStatesArray: layer.getLayerStatesArray(),

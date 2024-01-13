@@ -83,7 +83,7 @@ export function defaults(options) {
       new DoubleClickZoom({
         delta: options.zoomDelta,
         duration: options.zoomDuration,
-      })
+      }),
     );
   }
 
@@ -93,7 +93,7 @@ export function defaults(options) {
       new DragPan({
         onFocusOnly: options.onFocusOnly,
         kinetic: kinetic,
-      })
+      }),
     );
   }
 
@@ -108,7 +108,7 @@ export function defaults(options) {
     interactions.push(
       new PinchZoom({
         duration: options.zoomDuration,
-      })
+      }),
     );
   }
 
@@ -119,7 +119,7 @@ export function defaults(options) {
       new KeyboardZoom({
         delta: options.zoomDelta,
         duration: options.zoomDuration,
-      })
+      }),
     );
   }
 
@@ -130,7 +130,7 @@ export function defaults(options) {
       new MouseWheelZoom({
         onFocusOnly: options.onFocusOnly,
         duration: options.zoomDuration,
-      })
+      }),
     );
   }
 
@@ -140,7 +140,7 @@ export function defaults(options) {
     interactions.push(
       new DragZoom({
         duration: options.zoomDuration,
-      })
+      }),
     );
   }
 

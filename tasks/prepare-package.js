@@ -21,17 +21,17 @@ async function main() {
   // copy in readme and license files
   await fse.copyFile(
     path.resolve(baseDir, '../README.md'),
-    path.join(buildDir, 'README.md')
+    path.join(buildDir, 'README.md'),
   );
 
   await fse.copyFile(
     path.resolve(baseDir, '../LICENSE.md'),
-    path.join(buildDir, 'LICENSE.md')
+    path.join(buildDir, 'LICENSE.md'),
   );
 
   await fse.copy(
     path.resolve(baseDir, '../build/full/'),
-    path.join(buildDir, 'dist')
+    path.join(buildDir, 'dist'),
   );
 }
 

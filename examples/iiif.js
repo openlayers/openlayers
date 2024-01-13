@@ -33,7 +33,7 @@ function refreshMap(imageInfoUrl) {
               resolutions: iiifTileSource.getTileGrid().getResolutions(),
               extent: iiifTileSource.getTileGrid().getExtent(),
               constrainOnlyCenter: true,
-            })
+            }),
           );
           map.getView().fit(iiifTileSource.getTileGrid().getExtent());
           notifyDiv.textContent = '';

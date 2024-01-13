@@ -69,14 +69,14 @@ describe('ol.style.Text', function () {
       expect(original.getRepeat()).to.eql(clone.getRepeat());
       expect(original.getTextBaseline()).to.eql(clone.getTextBaseline());
       expect(original.getStroke().getColor()).to.eql(
-        clone.getStroke().getColor()
+        clone.getStroke().getColor(),
       );
       expect(original.getFill().getColor()).to.eql(clone.getFill().getColor());
       expect(original.getBackgroundStroke().getColor()).to.eql(
-        clone.getBackgroundStroke().getColor()
+        clone.getBackgroundStroke().getColor(),
       );
       expect(original.getBackgroundFill().getColor()).to.eql(
-        clone.getBackgroundFill().getColor()
+        clone.getBackgroundFill().getColor(),
       );
       expect(original.getPadding()).to.eql(clone.getPadding());
     });
@@ -97,10 +97,10 @@ describe('ol.style.Text', function () {
       clone.getFill().setColor('#012345');
       clone.getStroke().setColor('#012345');
       expect(original.getFill().getColor()).to.not.eql(
-        clone.getFill().getColor()
+        clone.getFill().getColor(),
       );
       expect(original.getStroke().getColor()).to.not.eql(
-        clone.getStroke().getColor()
+        clone.getStroke().getColor(),
       );
     });
   });

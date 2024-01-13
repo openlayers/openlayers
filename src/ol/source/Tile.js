@@ -287,7 +287,7 @@ class TileSource extends Source {
     const sourceProjection = this.getProjection();
     assert(
       sourceProjection === null || equivalent(sourceProjection, projection),
-      'A VectorTile source can only be rendered if it has a projection compatible with the view projection.'
+      'A VectorTile source can only be rendered if it has a projection compatible with the view projection.',
     );
     return this.tileCache;
   }

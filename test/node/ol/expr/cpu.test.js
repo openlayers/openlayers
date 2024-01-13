@@ -70,6 +70,24 @@ describe('ol/expr/cpu.js', () => {
         expected: 'forty-two',
       },
       {
+        name: 'geometry-type',
+        type: StringType,
+        expression: ['geometry-type'],
+        context: {
+          geometryType: 'LineString',
+        },
+        expected: 'LineString',
+      },
+      {
+        name: 'geometry-type (empty)',
+        type: StringType,
+        expression: ['geometry-type'],
+        context: {
+          geometryType: '',
+        },
+        expected: '',
+      },
+      {
         name: 'resolution',
         type: NumberType,
         expression: ['resolution'],

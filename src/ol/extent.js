@@ -260,7 +260,7 @@ export function createOrUpdateFromFlatCoordinates(
   offset,
   end,
   stride,
-  dest
+  dest,
 ) {
   const extent = createOrUpdateEmpty(dest);
   return extendFlatCoordinates(extent, flatCoordinates, offset, end, stride);
@@ -375,7 +375,7 @@ export function extendFlatCoordinates(
   flatCoordinates,
   offset,
   end,
-  stride
+  stride,
 ) {
   for (; offset < end; offset += stride) {
     extendXY(extent, flatCoordinates[offset], flatCoordinates[offset + 1]);
@@ -529,14 +529,14 @@ export function getForViewAndSize(center, resolution, rotation, size, dest) {
     center,
     resolution,
     rotation,
-    size
+    size,
   );
   return createOrUpdate(
     Math.min(x0, x1, x2, x3),
     Math.min(y0, y1, y2, y3),
     Math.max(x0, x1, x2, x3),
     Math.max(y0, y1, y2, y3),
-    dest
+    dest,
   );
 }
 
@@ -824,7 +824,7 @@ export function applyTransform(extent, transformFn, dest, stops) {
         extent[2] - (width * i) / stops,
         extent[3],
         extent[0],
-        extent[3] - (height * i) / stops
+        extent[3] - (height * i) / stops,
       );
     }
   } else {
@@ -866,7 +866,7 @@ export function wrapX(extent, projection) {
   ) {
     const worldWidth = getWidth(projectionExtent);
     const worldsAway = Math.floor(
-      (center[0] - projectionExtent[0]) / worldWidth
+      (center[0] - projectionExtent[0]) / worldWidth,
     );
     const offset = worldsAway * worldWidth;
     extent[0] -= offset;

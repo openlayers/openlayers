@@ -290,7 +290,7 @@ export const mouseOnly = function (mapBrowserEvent) {
   ).originalEvent;
   assert(
     pointerEvent !== undefined,
-    'mapBrowserEvent must originate from a pointer event'
+    'mapBrowserEvent must originate from a pointer event',
   );
   // see https://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
   return pointerEvent.pointerType == 'mouse';
@@ -309,7 +309,7 @@ export const touchOnly = function (mapBrowserEvent) {
   ).originalEvent;
   assert(
     pointerEvt !== undefined,
-    'mapBrowserEvent must originate from a pointer event'
+    'mapBrowserEvent must originate from a pointer event',
   );
   // see https://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
   return pointerEvt.pointerType === 'touch';
@@ -328,7 +328,7 @@ export const penOnly = function (mapBrowserEvent) {
   ).originalEvent;
   assert(
     pointerEvt !== undefined,
-    'mapBrowserEvent must originate from a pointer event'
+    'mapBrowserEvent must originate from a pointer event',
   );
   // see https://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
   return pointerEvt.pointerType === 'pen';
@@ -349,7 +349,7 @@ export const primaryAction = function (mapBrowserEvent) {
   ).originalEvent;
   assert(
     pointerEvent !== undefined,
-    'mapBrowserEvent must originate from a pointer event'
+    'mapBrowserEvent must originate from a pointer event',
   );
   return pointerEvent.isPrimary && pointerEvent.button === 0;
 };

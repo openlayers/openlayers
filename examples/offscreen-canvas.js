@@ -45,7 +45,7 @@ function updateContainerTransform() {
         renderedResolution / resolution,
         rotation - renderedRotation,
         0,
-        0
+        0,
       );
     }
     transformContainer.style.transform = toTransformString(transform);
@@ -128,9 +128,9 @@ worker.addEventListener('message', (message) => {
               image: imageBitmap,
               src: message.data.src,
             },
-            [imageBitmap]
+            [imageBitmap],
           );
-        }
+        },
       );
     });
     image.src = message.data.src;
@@ -164,7 +164,10 @@ function showInfo(propertiesFromFeatures) {
   const properties = propertiesFromFeatures.map((e) =>
     Object.keys(e)
       .filter((key) => !key.includes(':'))
-      .reduce((newObj, currKey) => ((newObj[currKey] = e[currKey]), newObj), {})
+      .reduce(
+        (newObj, currKey) => ((newObj[currKey] = e[currKey]), newObj),
+        {},
+      ),
   );
   info.innerText = JSON.stringify(properties, null, 2);
   info.style.opacity = 1;

@@ -83,7 +83,7 @@ describe('ol/style/Circle', function () {
       expect(original.getScale()[0]).to.eql(clone.getScale()[0]);
       expect(original.getScale()[1]).to.eql(clone.getScale()[1]);
       expect(original.getStroke().getColor()).to.eql(
-        clone.getStroke().getColor()
+        clone.getStroke().getColor(),
       );
       expect(original.getDisplacement()[0]).to.eql(clone.getDisplacement()[0]);
       expect(original.getDisplacement()[1]).to.eql(clone.getDisplacement()[1]);
@@ -109,10 +109,10 @@ describe('ol/style/Circle', function () {
       clone.getFill().setColor('#012345');
       clone.getStroke().setColor('#012345');
       expect(original.getFill().getColor()).to.not.eql(
-        clone.getFill().getColor()
+        clone.getFill().getColor(),
       );
       expect(original.getStroke().getColor()).to.not.eql(
-        clone.getStroke().getColor()
+        clone.getStroke().getColor(),
       );
     });
   });

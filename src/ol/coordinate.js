@@ -432,7 +432,7 @@ export function getWorldsAway(coordinate, projection, sourceExtentWidth) {
   ) {
     sourceExtentWidth = sourceExtentWidth || getWidth(projectionExtent);
     worldsAway = Math.floor(
-      (coordinate[0] - projectionExtent[0]) / sourceExtentWidth
+      (coordinate[0] - projectionExtent[0]) / sourceExtentWidth,
     );
   }
   return worldsAway;

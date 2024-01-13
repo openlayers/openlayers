@@ -96,7 +96,7 @@ class PriorityQueue {
   enqueue(element) {
     assert(
       !(this.keyFunction_(element) in this.queuedElements_),
-      'Tried to enqueue an `element` that was already added to the queue'
+      'Tried to enqueue an `element` that was already added to the queue',
     );
     const priority = this.priorityFunction_(element);
     if (priority != DROP) {

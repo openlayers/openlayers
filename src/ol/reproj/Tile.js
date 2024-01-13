@@ -55,7 +55,7 @@ class ReprojTile extends Tile {
     getTileFunction,
     errorThreshold,
     renderEdges,
-    options
+    options,
   ) {
     super(tileCoord, TileState.IDLE, options);
 
@@ -120,7 +120,7 @@ class ReprojTile extends Tile {
     this.sourceZ_ = 0;
 
     const targetExtent = targetTileGrid.getTileCoordExtent(
-      this.wrappedTileCoord_
+      this.wrappedTileCoord_,
     );
     const maxTargetExtent = this.targetTileGrid_.getExtent();
     let maxSourceExtent = this.sourceTileGrid_.getExtent();
@@ -146,14 +146,14 @@ class ReprojTile extends Tile {
     }
 
     const targetResolution = targetTileGrid.getResolution(
-      this.wrappedTileCoord_[0]
+      this.wrappedTileCoord_[0],
     );
 
     const sourceResolution = calculateSourceExtentResolution(
       sourceProj,
       targetProj,
       limitedTargetExtent,
-      targetResolution
+      targetResolution,
     );
 
     if (!isFinite(sourceResolution) || sourceResolution <= 0) {
@@ -176,7 +176,7 @@ class ReprojTile extends Tile {
       limitedTargetExtent,
       maxSourceExtent,
       sourceResolution * errorThresholdInPixels,
-      targetResolution
+      targetResolution,
     );
 
     if (this.triangulation_.getTriangles().length === 0) {
@@ -193,12 +193,12 @@ class ReprojTile extends Tile {
         sourceExtent[1] = clamp(
           sourceExtent[1],
           maxSourceExtent[1],
-          maxSourceExtent[3]
+          maxSourceExtent[3],
         );
         sourceExtent[3] = clamp(
           sourceExtent[3],
           maxSourceExtent[1],
-          maxSourceExtent[3]
+          maxSourceExtent[3],
         );
       } else {
         sourceExtent = getIntersection(sourceExtent, maxSourceExtent);
@@ -210,7 +210,7 @@ class ReprojTile extends Tile {
     } else {
       const sourceRange = sourceTileGrid.getTileRangeForExtentAndZ(
         sourceExtent,
-        this.sourceZ_
+        this.sourceZ_,
       );
 
       for (let srcX = sourceRange.minX; srcX <= sourceRange.maxX; srcX++) {
@@ -260,11 +260,11 @@ class ReprojTile extends Tile {
       const height = typeof size === 'number' ? size : size[1];
       const targetResolution = this.targetTileGrid_.getResolution(z);
       const sourceResolution = this.sourceTileGrid_.getResolution(
-        this.sourceZ_
+        this.sourceZ_,
       );
 
       const targetExtent = this.targetTileGrid_.getTileCoordExtent(
-        this.wrappedTileCoord_
+        this.wrappedTileCoord_,
       );
 
       this.canvas_ = renderReprojected(
@@ -279,7 +279,7 @@ class ReprojTile extends Tile {
         sources,
         this.gutter_,
         this.renderEdges_,
-        this.interpolate
+        this.interpolate,
       );
 
       this.state = TileState.LOADED;
@@ -321,7 +321,7 @@ class ReprojTile extends Tile {
                 }
               }
             },
-            this
+            this,
           );
           this.sourcesListenerKeys_.push(sourceListenKey);
         }

@@ -90,7 +90,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
               {
                 'color': 'red',
               },
-              2
+              2,
             ),
             new RenderFeature(
               'Polygon',
@@ -98,7 +98,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
               polygon.getEnds(),
               2,
               {},
-              3
+              3,
             ),
           ]);
         },
@@ -186,12 +186,12 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       expect(firstBuilder.uniforms_).to.contain('sampler2D u_depthMask');
       expect(firstBuilder.uniforms_).to.contain('float u_tileZoomLevel');
       expect(firstBuilder.getFragmentDiscardExpression()).to.be(
-        'texture2D(u_depthMask, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > u_tileZoomLevel + 0.5'
+        'texture2D(u_depthMask, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > u_tileZoomLevel + 0.5',
       );
       expect(secondBuilder.uniforms_).to.contain('sampler2D u_depthMask');
       expect(secondBuilder.uniforms_).to.contain('float u_tileZoomLevel');
       expect(secondBuilder.getFragmentDiscardExpression()).to.be(
-        '(u_zoom > 10.0) || (texture2D(u_depthMask, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > u_tileZoomLevel + 0.5)'
+        '(u_zoom > 10.0) || (texture2D(u_depthMask, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > u_tileZoomLevel + 0.5)',
       );
     });
     it('instantiates the tile mask target, indices, attributes and program', () => {
@@ -245,7 +245,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
           [1, 2, 3],
           TileState.LOADING,
           [0, 0, 0],
-          () => sourceTile
+          () => sourceTile,
         ),
         grid,
         helper: renderer.helper,
@@ -286,7 +286,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
           apply(target, thisArg, [uniform, value]) {
             return target.call(thisArg, uniform, [...value]);
           },
-        }
+        },
       );
 
       renderer.renderFrame(frameState);

@@ -112,11 +112,11 @@ class WMSGetFeatureInfo extends XMLFeature {
         const parsers = {};
         parsers[featureType] = makeArrayPusher(
           this.gmlFormat_.readFeatureElement,
-          this.gmlFormat_
+          this.gmlFormat_,
         );
         const parsersNS = makeStructureNS(
           [context['featureNS'], null],
-          parsers
+          parsers,
         );
         layerElement.setAttribute('namespaceURI', this.featureNS_);
         const layerFeatures = pushParseAndPop(
@@ -125,7 +125,7 @@ class WMSGetFeatureInfo extends XMLFeature {
           parsersNS,
           layerElement,
           objectStack,
-          this.gmlFormat_
+          this.gmlFormat_,
         );
         if (layerFeatures) {
           extend(features, layerFeatures);
@@ -138,7 +138,7 @@ class WMSGetFeatureInfo extends XMLFeature {
         this.gmlFormat_.FEATURE_COLLECTION_PARSERS,
         node,
         [{}],
-        this.gmlFormat_
+        this.gmlFormat_,
       );
       if (gmlFeatures) {
         features = gmlFeatures;

@@ -114,7 +114,7 @@ const lineFeature = new Feature(
   new LineString([
     [-1e7, 1e6],
     [-1e6, 3e6],
-  ])
+  ]),
 );
 
 const polygonFeature = new Feature(
@@ -126,7 +126,7 @@ const polygonFeature = new Feature(
       [-1e6, -1e6],
       [-3e6, -1e6],
     ],
-  ])
+  ]),
 );
 
 const map = new Map({

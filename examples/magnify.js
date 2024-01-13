@@ -65,7 +65,7 @@ imagery.on('postrender', function (event) {
       mousePosition[1],
     ]);
     const half = Math.sqrt(
-      Math.pow(offset[0] - pixel[0], 2) + Math.pow(offset[1] - pixel[1], 2)
+      Math.pow(offset[0] - pixel[0], 2) + Math.pow(offset[1] - pixel[1], 2),
     );
     const context = event.context;
     const centerX = pixel[0];

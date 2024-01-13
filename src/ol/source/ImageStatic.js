@@ -79,12 +79,12 @@ class Static extends ImageSource {
           imageLoadFunction(this.image, src);
           return decode(image);
         },
-      })
+      }),
     );
 
     this.image.addEventListener(
       EventType.CHANGE,
-      this.handleImageChange.bind(this)
+      this.handleImageChange.bind(this),
     );
   }
 

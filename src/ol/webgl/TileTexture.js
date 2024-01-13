@@ -52,7 +52,7 @@ function uploadDataTexture(
   data,
   size,
   bandCount,
-  interpolate
+  interpolate,
 ) {
   const gl = helper.getGL();
   let textureType;
@@ -112,7 +112,7 @@ function uploadDataTexture(
     0,
     format,
     textureType,
-    data
+    data,
   );
   gl.pixelStorei(gl.UNPACK_ALIGNMENT, oldUnpackAlignment);
 }
@@ -152,7 +152,7 @@ class TileTexture extends BaseTileRepresentation {
      * @private
      */
     this.renderSize_ = toSize(
-      options.grid.getTileSize(options.tile.tileCoord[0])
+      options.grid.getTileSize(options.tile.tileCoord[0]),
     );
 
     /**
@@ -234,7 +234,7 @@ class TileTexture extends BaseTileRepresentation {
         data,
         pixelSize,
         this.bandCount,
-        tile.interpolate
+        tile.interpolate,
       );
       this.setReady();
       return;
@@ -280,7 +280,7 @@ class TileTexture extends BaseTileRepresentation {
         textureData,
         pixelSize,
         bandCount,
-        tile.interpolate
+        tile.interpolate,
       );
     }
 
@@ -393,7 +393,7 @@ class TileTexture extends BaseTileRepresentation {
           arrayData,
           sourceSize,
           renderCol,
-          renderRow
+          renderRow,
         );
       }
       return this.getImagePixelData_(asImageLike(data), renderCol, renderRow);

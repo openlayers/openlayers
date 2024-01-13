@@ -124,7 +124,7 @@ class ImageCanvasSource extends ImageSource {
       resolution,
       pixelRatio,
       size,
-      projection
+      projection,
     );
     if (canvasElement) {
       canvas = new ImageCanvas(extent, resolution, pixelRatio, canvasElement);

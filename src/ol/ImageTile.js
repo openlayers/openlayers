@@ -156,7 +156,7 @@ class ImageTile extends Tile {
       this.unlisten_ = listenImage(
         this.image_,
         this.handleImageLoad_.bind(this),
-        this.handleImageError_.bind(this)
+        this.handleImageError_.bind(this),
       );
     }
   }

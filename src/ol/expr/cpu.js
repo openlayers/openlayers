@@ -32,6 +32,7 @@ import {
  * @property {Object} variables The values for variables used in 'var' expressions.
  * @property {number} resolution The map resolution.
  * @property {string|number|null} featureId The feature id.
+ * @property {string} geometryType Geometry type of the current object.
  */
 
 /**
@@ -43,6 +44,7 @@ export function newEvaluationContext() {
     properties: {},
     resolution: NaN,
     featureId: null,
+    geometryType: '',
   };
 }
 
@@ -94,7 +96,7 @@ export function buildExpression(encoded, type, context) {
     const expected = typeName(type);
     const actual = typeName(expression.type);
     throw new Error(
-      `Expected expression to be of type ${expected}, got ${actual}`
+      `Expected expression to be of type ${expected}, got ${actual}`,
     );
   }
   return compileExpression(expression, context);
@@ -129,7 +131,10 @@ function compileExpression(expression, context) {
       return compileAccessorExpression(expression, context);
     }
     case Ops.Id: {
-      return (expression) => expression.featureId;
+      return (context) => context.featureId;
+    }
+    case Ops.GeometryType: {
+      return (context) => context.geometryType;
     }
     case Ops.Concat: {
       const args = expression.args.map((e) => compileExpression(e, context));
@@ -182,7 +187,6 @@ function compileExpression(expression, context) {
       throw new Error(`Unsupported operator ${operator}`);
     }
     // TODO: unimplemented
-    // Ops.GeometryType
     // Ops.Zoom
     // Ops.Time
     // Ops.Between
@@ -494,7 +498,7 @@ function compileInterpolateExpression(expression, context) {
             previousInput,
             previousOutput,
             input,
-            output
+            output,
           );
         }
         return interpolateNumber(
@@ -503,7 +507,7 @@ function compileInterpolateExpression(expression, context) {
           previousInput,
           previousOutput,
           input,
-          output
+          output,
         );
       }
       previousInput = input;

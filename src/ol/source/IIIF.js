@@ -86,7 +86,7 @@ class IIIF extends TileImage {
         size[0] > 0 &&
         !isNaN(size[1]) &&
         size[1] > 0,
-      'Missing or invalid `size`'
+      'Missing or invalid `size`',
     );
     const width = size[0];
     const height = size[1];
@@ -164,7 +164,7 @@ class IIIF extends TileImage {
       if (resolutions.length == 0) {
         maxZoom = Math.max(
           Math.ceil(Math.log(width / tileWidth) / Math.LN2),
-          Math.ceil(Math.log(height / tileHeight) / Math.LN2)
+          Math.ceil(Math.log(height / tileHeight) / Math.LN2),
         );
         for (let i = maxZoom; i >= 0; i--) {
           resolutions.push(Math.pow(2, i));
@@ -325,7 +325,7 @@ class IIIF extends TileImage {
       null,
       toSize(tileSize || 256).map(function (size) {
         return size * tilePixelRatio;
-      })
+      }),
     );
 
     super({

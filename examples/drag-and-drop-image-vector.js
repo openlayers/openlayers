@@ -46,7 +46,7 @@ dragAndDropInteraction.on('addfeatures', function (event) {
   map.addLayer(
     new VectorImageLayer({
       source: vectorSource,
-    })
+    }),
   );
   map.getView().fit(vectorSource.getExtent());
 });

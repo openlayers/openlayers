@@ -62,7 +62,7 @@ function getUrl(
   size,
   useOverlay,
   metersPerUnit,
-  displayDpi
+  displayDpi,
 ) {
   const scale = getScale(extent, size, metersPerUnit, displayDpi);
   const center = getCenter(extent);
@@ -109,7 +109,7 @@ export function createLoader(options) {
       size,
       options.useOverlay,
       options.metersPerUnit || 1,
-      options.displayDpi || 96
+      options.displayDpi || 96,
     );
     return load(image, src).then((image) => ({image, extent, pixelRatio}));
   };

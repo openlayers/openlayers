@@ -46,7 +46,7 @@ class Point extends SimpleGeometry {
       x,
       y,
       flatCoordinates[0],
-      flatCoordinates[1]
+      flatCoordinates[1],
     );
     if (squaredDistance < minSquaredDistance) {
       const stride = this.stride;
@@ -110,7 +110,7 @@ class Point extends SimpleGeometry {
       this.flatCoordinates,
       0,
       coordinates,
-      this.stride
+      this.stride,
     );
     this.changed();
   }

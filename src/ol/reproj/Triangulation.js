@@ -62,7 +62,7 @@ class Triangulation {
     targetExtent,
     maxSourceExtent,
     errorThreshold,
-    destinationResolution
+    destinationResolution,
   ) {
     /**
      * @type {import("../proj/Projection.js").default}
@@ -171,9 +171,9 @@ class Triangulation {
             Math.ceil(
               Math.log2(
                 getArea(targetExtent) /
-                  (destinationResolution * destinationResolution * 256 * 256)
-              )
-            )
+                  (destinationResolution * destinationResolution * 256 * 256),
+              ),
+            ),
           )
         : 0);
 
@@ -186,7 +186,7 @@ class Triangulation {
       sourceTopRight,
       sourceBottomRight,
       sourceBottomLeft,
-      maxSubdivision
+      maxSubdivision,
     );
 
     if (this.wrapsXInSource_) {
@@ -196,7 +196,7 @@ class Triangulation {
           leftBound,
           triangle.source[0][0],
           triangle.source[1][0],
-          triangle.source[2][0]
+          triangle.source[2][0],
         );
       });
 
@@ -207,7 +207,7 @@ class Triangulation {
           Math.max(
             triangle.source[0][0],
             triangle.source[1][0],
-            triangle.source[2][0]
+            triangle.source[2][0],
           ) -
             leftBound >
           this.sourceWorldWidth_ / 2
@@ -233,12 +233,12 @@ class Triangulation {
           const minX = Math.min(
             newTriangle[0][0],
             newTriangle[1][0],
-            newTriangle[2][0]
+            newTriangle[2][0],
           );
           const maxX = Math.max(
             newTriangle[0][0],
             newTriangle[1][0],
-            newTriangle[2][0]
+            newTriangle[2][0],
           );
           if (maxX - minX < this.sourceWorldWidth_ / 2) {
             triangle.source = newTriangle;
@@ -398,7 +398,7 @@ class Triangulation {
             bSrc,
             bcSrc,
             daSrc,
-            maxSubdivision - 1
+            maxSubdivision - 1,
           );
           this.addQuad_(
             da,
@@ -409,7 +409,7 @@ class Triangulation {
             bcSrc,
             cSrc,
             dSrc,
-            maxSubdivision - 1
+            maxSubdivision - 1,
           );
         } else {
           // split vertically (left & right)
@@ -427,7 +427,7 @@ class Triangulation {
             abSrc,
             cdSrc,
             dSrc,
-            maxSubdivision - 1
+            maxSubdivision - 1,
           );
           this.addQuad_(
             ab,
@@ -438,7 +438,7 @@ class Triangulation {
             bSrc,
             cSrc,
             cdSrc,
-            maxSubdivision - 1
+            maxSubdivision - 1,
           );
         }
         return;

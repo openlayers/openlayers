@@ -43,7 +43,7 @@ class GML32 extends GML3 {
     const context = objectStack[objectStack.length - 1];
     objectStack[objectStack.length - 1] = Object.assign(
       {multiCurve: true, multiSurface: true},
-      context
+      context,
     );
     super.writeGeometryElement(node, geometry, objectStack);
   }
@@ -187,7 +187,7 @@ GML32.prototype.PATCHES_PARSERS = {
 GML32.prototype.SEGMENTS_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
     'LineStringSegment': makeArrayExtender(
-      GML3.prototype.readLineStringSegment
+      GML3.prototype.readLineStringSegment,
     ),
   },
 };
@@ -210,10 +210,10 @@ GML32.prototype.MULTIPOINT_PARSERS = {
 GML32.prototype.MULTILINESTRING_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
     'lineStringMember': makeArrayPusher(
-      GMLBase.prototype.lineStringMemberParser
+      GMLBase.prototype.lineStringMemberParser,
     ),
     'lineStringMembers': makeArrayPusher(
-      GMLBase.prototype.lineStringMemberParser
+      GMLBase.prototype.lineStringMemberParser,
     ),
   },
 };
@@ -296,10 +296,10 @@ GML32.prototype.ENVELOPE_SERIALIZERS = {
 GML32.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS = {
   'http://www.opengis.net/gml/3.2': {
     'surfaceMember': makeChildAppender(
-      GML3.prototype.writeSurfaceOrPolygonMember
+      GML3.prototype.writeSurfaceOrPolygonMember,
     ),
     'polygonMember': makeChildAppender(
-      GML3.prototype.writeSurfaceOrPolygonMember
+      GML3.prototype.writeSurfaceOrPolygonMember,
     ),
   },
 };
@@ -319,10 +319,10 @@ GML32.prototype.POINTMEMBER_SERIALIZERS = {
 GML32.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS = {
   'http://www.opengis.net/gml/3.2': {
     'lineStringMember': makeChildAppender(
-      GML3.prototype.writeLineStringOrCurveMember
+      GML3.prototype.writeLineStringOrCurveMember,
     ),
     'curveMember': makeChildAppender(
-      GML3.prototype.writeLineStringOrCurveMember
+      GML3.prototype.writeLineStringOrCurveMember,
     ),
   },
 };
@@ -338,16 +338,16 @@ GML32.prototype.GEOMETRY_SERIALIZERS = {
     'MultiPoint': makeChildAppender(GML3.prototype.writeMultiPoint),
     'LineString': makeChildAppender(GML3.prototype.writeCurveOrLineString),
     'MultiLineString': makeChildAppender(
-      GML3.prototype.writeMultiCurveOrLineString
+      GML3.prototype.writeMultiCurveOrLineString,
     ),
     'LinearRing': makeChildAppender(GML3.prototype.writeLinearRing),
     'Polygon': makeChildAppender(GML3.prototype.writeSurfaceOrPolygon),
     'MultiPolygon': makeChildAppender(
-      GML3.prototype.writeMultiSurfaceOrPolygon
+      GML3.prototype.writeMultiSurfaceOrPolygon,
     ),
     'Surface': makeChildAppender(GML3.prototype.writeSurfaceOrPolygon),
     'MultiSurface': makeChildAppender(
-      GML3.prototype.writeMultiSurfaceOrPolygon
+      GML3.prototype.writeMultiSurfaceOrPolygon,
     ),
     'Envelope': makeChildAppender(GML3.prototype.writeEnvelope),
   },

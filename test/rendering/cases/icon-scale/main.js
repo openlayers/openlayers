@@ -89,7 +89,7 @@ for (let i = 0; i < 2; ++i) {
       scale: [1, 1.5],
       anchor: [0.5, 1],
       rotated: i,
-    })
+    }),
   );
 }
 

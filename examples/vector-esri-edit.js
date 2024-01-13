@@ -36,7 +36,7 @@ const vectorSource = new VectorSource({
           extent[2] +
           ',"ymax":' +
           extent[3] +
-          ',"spatialReference":{"wkid":102100}}'
+          ',"spatialReference":{"wkid":102100}}',
       ) +
       '&geometryType=esriGeometryEnvelope&inSR=102100&outFields=*' +
       '&outSR=102100';
@@ -46,7 +46,7 @@ const vectorSource = new VectorSource({
       success: function (response) {
         if (response.error) {
           alert(
-            response.error.message + '\n' + response.error.details.join('\n')
+            response.error.message + '\n' + response.error.details.join('\n'),
           );
         } else {
           // dataProjection will be read from document
@@ -63,7 +63,7 @@ const vectorSource = new VectorSource({
   strategy: tileStrategy(
     createXYZ({
       tileSize: 512,
-    })
+    }),
   ),
 });
 

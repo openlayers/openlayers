@@ -9,14 +9,7 @@ import {
   StringType,
   newParsingContext,
 } from '../../../../src/ol/expr/expression.js';
-import {
-  Circle,
-  GeometryCollection,
-  MultiLineString,
-  MultiPoint,
-  MultiPolygon,
-  Point,
-} from '../../../../src/ol/geom.js';
+import {MultiPolygon} from '../../../../src/ol/geom.js';
 import {
   arrayToGlsl,
   buildExpression,
@@ -41,7 +34,7 @@ describe('ol/expr/gpu.js', () => {
   describe('arrayToGlsl()', () => {
     it('outputs numbers with dot separators', () => {
       expect(arrayToGlsl([1, 0, 3.45, 0.8888])).to.eql(
-        'vec4(1.0, 0.0, 3.45, 0.8888)'
+        'vec4(1.0, 0.0, 3.45, 0.8888)',
       );
       expect(arrayToGlsl([3, 4])).to.eql('vec2(3.0, 4.0)');
     });
@@ -54,20 +47,20 @@ describe('ol/expr/gpu.js', () => {
   describe('colorToGlsl()', () => {
     it('normalizes color and outputs numbers with dot separators, including premultiplied alpha', () => {
       expect(colorToGlsl([100, 0, 255])).to.eql(
-        'vec4(0.39215686274509803, 0.0, 1.0, 1.0)'
+        'vec4(0.39215686274509803, 0.0, 1.0, 1.0)',
       );
       expect(colorToGlsl([100, 0, 255, 0.7])).to.eql(
-        'vec4(0.2745098039215686, 0.0, 0.7, 0.7)'
+        'vec4(0.2745098039215686, 0.0, 0.7, 0.7)',
       );
     });
     it('handles colors in string format', () => {
       expect(colorToGlsl('red')).to.eql('vec4(1.0, 0.0, 0.0, 1.0)');
       expect(colorToGlsl('#00ff99')).to.eql('vec4(0.0, 1.0, 0.6, 1.0)');
       expect(colorToGlsl('rgb(100, 0, 255)')).to.eql(
-        'vec4(0.39215686274509803, 0.0, 1.0, 1.0)'
+        'vec4(0.39215686274509803, 0.0, 1.0, 1.0)',
       );
       expect(colorToGlsl('rgba(100, 0, 255, 0.3)')).to.eql(
-        'vec4(0.11764705882352941, 0.0, 0.3, 0.3)'
+        'vec4(0.11764705882352941, 0.0, 0.3, 0.3)',
       );
     });
   });
@@ -75,19 +68,19 @@ describe('ol/expr/gpu.js', () => {
   describe('stringToGlsl()', () => {
     it('maps input string to stable numbers', () => {
       expect(stringToGlsl('abcd')).to.eql(
-        numberToGlsl(getStringNumberEquivalent('abcd'))
+        numberToGlsl(getStringNumberEquivalent('abcd')),
       );
       expect(stringToGlsl('defg')).to.eql(
-        numberToGlsl(getStringNumberEquivalent('defg'))
+        numberToGlsl(getStringNumberEquivalent('defg')),
       );
       expect(stringToGlsl('hijk')).to.eql(
-        numberToGlsl(getStringNumberEquivalent('hijk'))
+        numberToGlsl(getStringNumberEquivalent('hijk')),
       );
       expect(stringToGlsl('abcd')).to.eql(
-        numberToGlsl(getStringNumberEquivalent('abcd'))
+        numberToGlsl(getStringNumberEquivalent('abcd')),
       );
       expect(stringToGlsl('def')).to.eql(
-        numberToGlsl(getStringNumberEquivalent('def'))
+        numberToGlsl(getStringNumberEquivalent('def')),
       );
     });
   });
@@ -171,20 +164,8 @@ describe('ol/expr/gpu.js', () => {
           expect(prop.name).to.equal('geometryType');
           expect(prop.type).to.equal(StringType);
           expect(prop.evaluator).to.be.an(Function);
-          const results = [
-            new Feature(new Point([0, 1])),
-            new Feature(new MultiPolygon([])),
-            new Feature(new MultiLineString([])),
-            new Feature(new GeometryCollection([new Circle([0, 1])])),
-            new Feature(new GeometryCollection([new MultiPoint([])])),
-          ].map(prop.evaluator);
-          expect(results).to.eql([
-            'Point',
-            'Polygon',
-            'LineString',
-            'Polygon',
-            'Point',
-          ]);
+          const feature = new Feature(new MultiPolygon([]));
+          expect(prop.evaluator(feature)).to.eql('Polygon');
         },
       },
       {
@@ -486,9 +467,9 @@ describe('ol/expr/gpu.js', () => {
         type: StringType,
         expression: ['match', ['get', 'attr'], 0, 'red', 1, 'yellow', 'white'],
         expected: `(a_prop_attr == 0.0 ? ${stringToGlsl(
-          'red'
+          'red',
         )} : (a_prop_attr == 1.0 ? ${stringToGlsl('yellow')} : ${stringToGlsl(
-          'white'
+          'white',
         )}))`,
       },
       {
@@ -504,9 +485,9 @@ describe('ol/expr/gpu.js', () => {
           [1, 0],
         ],
         expected: `(a_prop_attr == ${stringToGlsl(
-          'low'
+          'low',
         )} ? vec2(0.0, 0.0) : (a_prop_attr == ${stringToGlsl(
-          'high'
+          'high',
         )} ? vec2(0.0, 1.0) : vec2(1.0, 0.0)))`,
       },
       {
@@ -830,7 +811,7 @@ describe('ol/expr/gpu.js', () => {
           c.expression,
           c.type,
           parsingContext,
-          compilationContext
+          compilationContext,
         );
         expect(result).to.eql(c.expected);
         if (c.contextAssertion) {
@@ -938,13 +919,13 @@ describe('ol/expr/gpu.js', () => {
             c.expression,
             c.type,
             parsingContext,
-            compilationContext
+            compilationContext,
           );
         if (c.exception === true) {
           expect(build).to.throwException();
         } else {
           expect(build).to.throwError((e) =>
-            expect(e.message).to.eql(c.exception)
+            expect(e.message).to.eql(c.exception),
           );
         }
       });

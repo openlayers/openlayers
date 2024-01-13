@@ -20,7 +20,7 @@ ellipse.setStyle(
         width: 3,
       }),
     }),
-  })
+  }),
 );
 
 const vectorSource = new VectorSource();

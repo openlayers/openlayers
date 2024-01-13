@@ -93,7 +93,7 @@ const vectorPoints = new VectorLayer({
         });
         feature.setStyle(createStyle(featureOptions));
         return feature;
-      })
+      }),
     ),
     format: new GeoJSON(),
   }),

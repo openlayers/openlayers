@@ -853,7 +853,7 @@ function encode(geom) {
   let wktType = wktTypeLookup[type];
   if (typeof (/** @type {?} */ (geom).getFlatCoordinates) === 'function') {
     const dimInfo = encodeGeometryLayout(
-      /** @type {import("../geom/SimpleGeometry.js").default} */ (geom)
+      /** @type {import("../geom/SimpleGeometry.js").default} */ (geom),
     );
     if (dimInfo.length > 0) {
       wktType += ' ' + dimInfo;

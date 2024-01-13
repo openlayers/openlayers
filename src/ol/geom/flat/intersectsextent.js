@@ -24,14 +24,14 @@ export function intersectsLineString(
   offset,
   end,
   stride,
-  extent
+  extent,
 ) {
   const coordinatesExtent = extendFlatCoordinates(
     createEmpty(),
     flatCoordinates,
     offset,
     end,
-    stride
+    stride,
   );
   if (!intersects(extent, coordinatesExtent)) {
     return false;
@@ -58,7 +58,7 @@ export function intersectsLineString(
      */
     function (point1, point2) {
       return intersectsSegment(extent, point1, point2);
-    }
+    },
   );
 }
 
@@ -75,7 +75,7 @@ export function intersectsLineStringArray(
   offset,
   ends,
   stride,
-  extent
+  extent,
 ) {
   for (let i = 0, ii = ends.length; i < ii; ++i) {
     if (
@@ -101,7 +101,7 @@ export function intersectsLinearRing(
   offset,
   end,
   stride,
-  extent
+  extent,
 ) {
   if (intersectsLineString(flatCoordinates, offset, end, stride, extent)) {
     return true;
@@ -113,7 +113,7 @@ export function intersectsLinearRing(
       end,
       stride,
       extent[0],
-      extent[1]
+      extent[1],
     )
   ) {
     return true;
@@ -125,7 +125,7 @@ export function intersectsLinearRing(
       end,
       stride,
       extent[0],
-      extent[3]
+      extent[3],
     )
   ) {
     return true;
@@ -137,7 +137,7 @@ export function intersectsLinearRing(
       end,
       stride,
       extent[2],
-      extent[1]
+      extent[1],
     )
   ) {
     return true;
@@ -149,7 +149,7 @@ export function intersectsLinearRing(
       end,
       stride,
       extent[2],
-      extent[3]
+      extent[3],
     )
   ) {
     return true;
@@ -170,7 +170,7 @@ export function intersectsLinearRingArray(
   offset,
   ends,
   stride,
-  extent
+  extent,
 ) {
   if (!intersectsLinearRing(flatCoordinates, offset, ends[0], stride, extent)) {
     return false;
@@ -185,7 +185,7 @@ export function intersectsLinearRingArray(
         ends[i - 1],
         ends[i],
         stride,
-        extent
+        extent,
       )
     ) {
       if (
@@ -194,7 +194,7 @@ export function intersectsLinearRingArray(
           ends[i - 1],
           ends[i],
           stride,
-          extent
+          extent,
         )
       ) {
         return false;
@@ -217,7 +217,7 @@ export function intersectsLinearRingMultiArray(
   offset,
   endss,
   stride,
-  extent
+  extent,
 ) {
   for (let i = 0, ii = endss.length; i < ii; ++i) {
     const ends = endss[i];

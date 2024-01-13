@@ -127,7 +127,7 @@ class LayerRenderer extends Observable {
     frameState,
     hitTolerance,
     callback,
-    matches
+    matches,
   ) {
     return undefined;
   }

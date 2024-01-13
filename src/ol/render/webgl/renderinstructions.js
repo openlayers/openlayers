@@ -15,7 +15,7 @@ function pushCustomAttributesInRenderInstructions(
   renderInstructions,
   customAttributes,
   batchEntry,
-  currentIndex
+  currentIndex,
 ) {
   let shift = 0;
   for (const key in customAttributes) {
@@ -45,7 +45,7 @@ function pushCustomAttributesInRenderInstructions(
 export function getCustomAttributesSize(customAttributes) {
   return Object.keys(customAttributes).reduce(
     (prev, curr) => prev + (customAttributes[curr].size || 1),
-    0
+    0,
   );
 }
 
@@ -62,7 +62,7 @@ export function generatePointRenderInstructions(
   batch,
   renderInstructions,
   customAttributes,
-  transform
+  transform,
 ) {
   // here we anticipate the amount of render instructions for points:
   // 2 instructions per vertex for position (x and y)
@@ -92,7 +92,7 @@ export function generatePointRenderInstructions(
         renderInstructions,
         customAttributes,
         batchEntry,
-        renderIndex
+        renderIndex,
       );
     }
   }
@@ -112,7 +112,7 @@ export function generateLineStringRenderInstructions(
   batch,
   renderInstructions,
   customAttributes,
-  transform
+  transform,
 ) {
   // here we anticipate the amount of render instructions for lines:
   // 2 instructions per vertex for position (x and y)
@@ -141,13 +141,13 @@ export function generateLineStringRenderInstructions(
         flatCoords.length,
         2,
         transform,
-        flatCoords
+        flatCoords,
       );
       renderIndex += pushCustomAttributesInRenderInstructions(
         renderInstructions,
         customAttributes,
         batchEntry,
-        renderIndex
+        renderIndex,
       );
 
       // vertices count
@@ -176,7 +176,7 @@ export function generatePolygonRenderInstructions(
   batch,
   renderInstructions,
   customAttributes,
-  transform
+  transform,
 ) {
   // here we anticipate the amount of render instructions for polygons:
   // 2 instructions per vertex for position (x and y)
@@ -207,13 +207,13 @@ export function generatePolygonRenderInstructions(
         flatCoords.length,
         2,
         transform,
-        flatCoords
+        flatCoords,
       );
       renderIndex += pushCustomAttributesInRenderInstructions(
         renderInstructions,
         customAttributes,
         batchEntry,
-        renderIndex
+        renderIndex,
       );
 
       // ring count

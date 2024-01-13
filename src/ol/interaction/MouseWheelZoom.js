@@ -43,7 +43,7 @@ class MouseWheelZoom extends Interaction {
     options = options ? options : {};
 
     super(
-      /** @type {import("./Interaction.js").InteractionOptions} */ (options)
+      /** @type {import("./Interaction.js").InteractionOptions} */ (options),
     );
 
     /**
@@ -161,7 +161,7 @@ class MouseWheelZoom extends Interaction {
     view.endInteraction(
       undefined,
       this.lastDelta_ ? (this.lastDelta_ > 0 ? 1 : -1) : 0,
-      this.lastAnchor_
+      this.lastAnchor_,
     );
   }
 
@@ -233,7 +233,7 @@ class MouseWheelZoom extends Interaction {
       }
       this.trackpadTimeoutId_ = setTimeout(
         this.endInteraction_.bind(this),
-        this.timeout_
+        this.timeout_,
       );
       view.adjustZoom(-delta / this.deltaPerZoom_, this.lastAnchor_);
       this.startTime_ = now;
@@ -247,7 +247,7 @@ class MouseWheelZoom extends Interaction {
     clearTimeout(this.timeoutId_);
     this.timeoutId_ = setTimeout(
       this.handleWheelZoom_.bind(this, map),
-      timeLeft
+      timeLeft,
     );
 
     return false;
@@ -266,7 +266,7 @@ class MouseWheelZoom extends Interaction {
       -clamp(
         this.totalDelta_,
         -this.maxDelta_ * this.deltaPerZoom_,
-        this.maxDelta_ * this.deltaPerZoom_
+        this.maxDelta_ * this.deltaPerZoom_,
       ) / this.deltaPerZoom_;
     if (view.getConstrainResolution() || this.constrainResolution_) {
       // view has a zoom constraint, zoom by 1

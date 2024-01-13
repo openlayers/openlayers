@@ -87,9 +87,9 @@ class TileGrid {
          * @return {number} Comparison result
          */
         (a, b) => b - a,
-        true
+        true,
       ),
-      '`resolutions` must be sorted in descending order'
+      '`resolutions` must be sorted in descending order',
     );
 
     // check if we've got a consistent zoom factor and origin
@@ -134,7 +134,7 @@ class TileGrid {
       this.origins_ = options.origins;
       assert(
         this.origins_.length == this.resolutions_.length,
-        'Number of `origins` and `resolutions` must be equal'
+        'Number of `origins` and `resolutions` must be equal',
       );
     }
 
@@ -146,7 +146,7 @@ class TileGrid {
 
     assert(
       (!this.origin_ && this.origins_) || (this.origin_ && !this.origins_),
-      'Either `origin` or `origins` must be configured, never both'
+      'Either `origin` or `origins` must be configured, never both',
     );
 
     /**
@@ -158,7 +158,7 @@ class TileGrid {
       this.tileSizes_ = options.tileSizes;
       assert(
         this.tileSizes_.length == this.resolutions_.length,
-        'Number of `tileSizes` and `resolutions` must be equal'
+        'Number of `tileSizes` and `resolutions` must be equal',
       );
     }
 
@@ -170,12 +170,12 @@ class TileGrid {
       options.tileSize !== undefined
         ? options.tileSize
         : !this.tileSizes_
-        ? DEFAULT_TILE_SIZE
-        : null;
+          ? DEFAULT_TILE_SIZE
+          : null;
     assert(
       (!this.tileSize_ && this.tileSizes_) ||
         (this.tileSize_ && !this.tileSizes_),
-      'Either `tileSize` or `tileSizes` must be configured, never both'
+      'Either `tileSize` or `tileSizes` must be configured, never both',
     );
 
     /**
@@ -208,7 +208,7 @@ class TileGrid {
           Math.min(0, size[0]),
           Math.max(size[0] - 1, -1),
           Math.min(0, size[1]),
-          Math.max(size[1] - 1, -1)
+          Math.max(size[1] - 1, -1),
         );
         if (extent) {
           const restrictedTileRange = this.getTileRangeForExtentAndZ(extent, z);
@@ -252,7 +252,7 @@ class TileGrid {
     tileCoord,
     callback,
     tempTileRange,
-    tempExtent
+    tempExtent,
   ) {
     let tileRange, x, y;
     let tileCoordExtent = null;
@@ -272,7 +272,7 @@ class TileGrid {
         tileRange = this.getTileRangeForExtentAndZ(
           tileCoordExtent,
           z,
-          tempTileRange
+          tempTileRange,
         );
       }
       if (callback(z, tileRange)) {
@@ -358,17 +358,17 @@ class TileGrid {
           minX + 1,
           minY,
           minY + 1,
-          tempTileRange
+          tempTileRange,
         );
       }
       const tileCoordExtent = this.getTileCoordExtent(
         tileCoord,
-        tempExtent || this.tmpExtent_
+        tempExtent || this.tmpExtent_,
       );
       return this.getTileRangeForExtentAndZ(
         tileCoordExtent,
         tileCoord[0] + 1,
-        tempTileRange
+        tempTileRange,
       );
     }
     return null;
@@ -395,7 +395,7 @@ class TileGrid {
         tileCoordY,
         tileCoordX,
         tileCoordY,
-        tempTileRange
+        tempTileRange,
       );
     }
 
@@ -483,7 +483,7 @@ class TileGrid {
       coordinate[1],
       resolution,
       false,
-      opt_tileCoord
+      opt_tileCoord,
     );
   }
 
@@ -505,7 +505,7 @@ class TileGrid {
     y,
     resolution,
     reverseIntersectionPolicy,
-    opt_tileCoord
+    opt_tileCoord,
   ) {
     const z = this.getZForResolution(resolution);
     const scale = resolution / this.getResolution(z);
@@ -574,7 +574,7 @@ class TileGrid {
       coordinate[1],
       z,
       false,
-      opt_tileCoord
+      opt_tileCoord,
     );
   }
 
@@ -635,7 +635,7 @@ class TileGrid {
     const z = linearFindNearest(
       this.resolutions_,
       resolution,
-      opt_direction || 0
+      opt_direction || 0,
     );
     return clamp(z, this.minZoom, this.maxZoom);
   }
@@ -652,7 +652,7 @@ class TileGrid {
       0,
       viewport.length,
       2,
-      this.getTileCoordExtent(tileCoord)
+      this.getTileCoordExtent(tileCoord),
     );
   }
 

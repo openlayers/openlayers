@@ -91,7 +91,7 @@ class Geometry extends BaseObject {
         const clone = this.clone();
         clone.applyTransform(transform);
         return clone.getSimplifiedGeometry(squaredTolerance);
-      }
+      },
     );
   }
 
@@ -106,7 +106,7 @@ class Geometry extends BaseObject {
     return this.simplifyTransformedInternal(
       this.getRevision(),
       squaredTolerance,
-      transform
+      transform,
     );
   }
 
@@ -320,7 +320,7 @@ class Geometry extends BaseObject {
               -scale,
               0,
               0,
-              0
+              0,
             );
             transform2D(
               inCoordinates,
@@ -328,12 +328,12 @@ class Geometry extends BaseObject {
               inCoordinates.length,
               stride,
               tmpTransform,
-              outCoordinates
+              outCoordinates,
             );
             return getTransform(sourceProj, destination)(
               inCoordinates,
               outCoordinates,
-              stride
+              stride,
             );
           }
         : getTransform(sourceProj, destination);

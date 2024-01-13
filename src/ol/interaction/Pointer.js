@@ -50,7 +50,7 @@ class PointerInteraction extends Interaction {
     options = options ? options : {};
 
     super(
-      /** @type {import("./Interaction.js").InteractionOptions} */ (options)
+      /** @type {import("./Interaction.js").InteractionOptions} */ (options),
     );
 
     if (options.handleDownEvent) {

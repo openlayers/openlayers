@@ -62,7 +62,7 @@ const displayCountryInfo = function (coordinate) {
         nameElement.innerHTML = data['admin'];
       }
       infoOverlay.setPosition(data ? coordinate : undefined);
-    }
+    },
   );
 };
 

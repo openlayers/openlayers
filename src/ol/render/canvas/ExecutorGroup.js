@@ -38,7 +38,7 @@ class ExecutorGroup {
     pixelRatio,
     overlaps,
     allInstructions,
-    renderBuffer
+    renderBuffer,
   ) {
     /**
      * @private
@@ -124,7 +124,7 @@ class ExecutorGroup {
           this.resolution_,
           this.pixelRatio_,
           this.overlaps_,
-          instructions
+          instructions,
         );
       }
     }
@@ -162,7 +162,7 @@ class ExecutorGroup {
     rotation,
     hitTolerance,
     callback,
-    declutteredFeatures
+    declutteredFeatures,
   ) {
     hitTolerance = Math.round(hitTolerance);
     const contextSize = hitTolerance * 2 + 1;
@@ -174,7 +174,7 @@ class ExecutorGroup {
       -1 / resolution,
       -rotation,
       -coordinate[0],
-      -coordinate[1]
+      -coordinate[1],
     );
 
     const newContext = !this.hitDetectionContext_;
@@ -183,7 +183,7 @@ class ExecutorGroup {
         contextSize,
         contextSize,
         undefined,
-        {willReadFrequently: true}
+        {willReadFrequently: true},
       );
     }
     const context = this.hitDetectionContext_;
@@ -208,7 +208,7 @@ class ExecutorGroup {
       buffer(
         hitExtent,
         resolution * (this.renderBuffer_ + hitTolerance),
-        hitExtent
+        hitExtent,
       );
     }
 
@@ -226,7 +226,7 @@ class ExecutorGroup {
         0,
         0,
         contextSize,
-        contextSize
+        contextSize,
       ).data;
       for (let i = 0, ii = indexes.length; i < ii; i++) {
         if (imageData[indexes[i]] > 0) {
@@ -267,7 +267,7 @@ class ExecutorGroup {
             transform,
             rotation,
             featureCallback,
-            hitExtent
+            hitExtent,
           );
           if (result) {
             return result;
@@ -320,7 +320,7 @@ class ExecutorGroup {
     viewRotation,
     snapToPixel,
     builderTypes,
-    declutterTree
+    declutterTree,
   ) {
     /** @type {Array<number>} */
     const zs = Object.keys(this.executorsByZIndex_).map(Number);
@@ -351,7 +351,7 @@ class ExecutorGroup {
             transform,
             viewRotation,
             snapToPixel,
-            declutterTree
+            declutterTree,
           );
         }
       }

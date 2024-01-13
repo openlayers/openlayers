@@ -34,7 +34,7 @@ fetch('data/geojson/roads-seoul.geojson')
       Polygon,
       MultiPoint,
       MultiLineString,
-      MultiPolygon
+      MultiPolygon,
     );
 
     for (let i = 0; i < features.length; i++) {

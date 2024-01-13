@@ -19,7 +19,7 @@ describe('ol/geom/flat/deflate.js', function () {
           [1, 2],
           [3, 4],
         ],
-        2
+        2,
       );
       expect(offset).to.be(4);
       expect(flatCoordinates).to.eql([1, 2, 3, 4]);
@@ -46,7 +46,7 @@ describe('ol/geom/flat/deflate.js', function () {
             [7, 8],
           ],
         ],
-        2
+        2,
       );
       expect(ends).to.eql([4, 8]);
       expect(flatCoordinates).to.eql([1, 2, 3, 4, 5, 6, 7, 8]);

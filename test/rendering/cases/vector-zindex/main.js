@@ -20,7 +20,7 @@ feature = new Feature({
 feature.setStyle(
   new Style({
     stroke: new Stroke({color: '#f00', width: 10}),
-  })
+  }),
 );
 vectorSourceRed.addFeature(feature);
 
@@ -33,7 +33,7 @@ feature = new Feature({
 feature.setStyle(
   new Style({
     stroke: new Stroke({color: '#00f', width: 16}),
-  })
+  }),
 );
 vectorSourceBlue.addFeature(feature);
 

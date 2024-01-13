@@ -101,7 +101,7 @@ class BaseLayer extends BaseObject {
       options.opacity !== undefined ? options.opacity : 1;
     assert(
       typeof properties[LayerProperty.OPACITY] === 'number',
-      'Layer opacity must be a number'
+      'Layer opacity must be a number',
     );
 
     properties[LayerProperty.VISIBLE] =

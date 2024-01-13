@@ -16,7 +16,7 @@ describe('ol.reproj', function () {
         proj3857,
         proj3857,
         origin,
-        resolution
+        resolution,
       );
       expect(result).to.be(resolution);
 
@@ -24,7 +24,7 @@ describe('ol.reproj', function () {
         proj3857,
         proj3857,
         point3857,
-        resolution
+        resolution,
       );
       expect(result).to.be(resolution);
 
@@ -32,7 +32,7 @@ describe('ol.reproj', function () {
         proj4326,
         proj4326,
         point4326,
-        resolution
+        resolution,
       );
       expect(result).to.be(resolution);
     });
@@ -44,19 +44,19 @@ describe('ol.reproj', function () {
         proj3857,
         proj4326,
         point4326,
-        resolution4326
+        resolution4326,
       );
       expect(resolution3857).not.to.be(resolution4326);
       expect(resolution3857).to.roughlyEqual(
         5 * proj4326.getMetersPerUnit(),
-        1e-4
+        1e-4,
       );
 
       const result = calculateSourceResolution(
         proj4326,
         proj3857,
         point3857,
-        resolution3857
+        resolution3857,
       );
       expect(result).to.be(resolution4326);
     });

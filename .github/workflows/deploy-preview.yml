@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version: '20'
       - run: npm install --global netlify-cli@6
       - run: npm install unzipper@0.10
 
@@ -51,7 +51,7 @@ jobs:
             const content = await file.buffer();
             return content.toString();
 
-      - uses: dawidd6/action-download-artifact@v2
+      - uses: dawidd6/action-download-artifact@v3
         with:
           github_token: ${{secrets.GITHUB_TOKEN}}
           workflow: build-preview.yml

@@ -41,7 +41,7 @@ describe('ol/geom/MultiLineString.js', function () {
         new LineString([
           [1, 2],
           [3, 4],
-        ])
+        ]),
       );
       expect(multiLineString.getCoordinates()).to.eql([
         [
@@ -53,7 +53,7 @@ describe('ol/geom/MultiLineString.js', function () {
         new LineString([
           [5, 6],
           [7, 8],
-        ])
+        ]),
       );
       expect(multiLineString.getCoordinates()).to.eql([
         [
@@ -192,7 +192,7 @@ describe('ol/geom/MultiLineString.js', function () {
             [10, 11, 12],
           ],
         ],
-        'XYM'
+        'XYM',
       );
     });
 
@@ -292,7 +292,7 @@ describe('ol/geom/MultiLineString.js', function () {
             4, 5, 6,
           ]);
           expect(multiLineString.getCoordinateAtM(7.5, true, false)).to.be(
-            null
+            null,
           );
           expect(multiLineString.getCoordinateAtM(9, true, false)).to.eql([
             7, 8, 9,
@@ -334,7 +334,7 @@ describe('ol/geom/MultiLineString.js', function () {
             10, 11, 12,
           ]);
           expect(multiLineString.getCoordinateAtM(15, false, true)).to.eql(
-            null
+            null,
           );
         });
       });
@@ -342,7 +342,7 @@ describe('ol/geom/MultiLineString.js', function () {
       describe('with no extrapolation or interpolation', function () {
         it('returns the expected value', function () {
           expect(multiLineString.getCoordinateAtM(0, false, false)).to.eql(
-            null
+            null,
           );
           expect(multiLineString.getCoordinateAtM(3, false, false)).to.eql([
             1, 2, 3,
@@ -354,7 +354,7 @@ describe('ol/geom/MultiLineString.js', function () {
             4, 5, 6,
           ]);
           expect(multiLineString.getCoordinateAtM(7.5, false, false)).to.eql(
-            null
+            null,
           );
           expect(multiLineString.getCoordinateAtM(9, false, false)).to.eql([
             7, 8, 9,
@@ -366,7 +366,7 @@ describe('ol/geom/MultiLineString.js', function () {
             10, 11, 12,
           ]);
           expect(multiLineString.getCoordinateAtM(15, false, false)).to.eql(
-            null
+            null,
           );
         });
       });

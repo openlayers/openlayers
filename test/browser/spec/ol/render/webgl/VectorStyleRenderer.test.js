@@ -65,7 +65,7 @@ const SAMPLE_TRANSFORM = composeTransform(
   0.25,
   0,
   -100,
-  -200
+  -200,
 );
 
 describe('VectorStyleRenderer', () => {
@@ -200,12 +200,12 @@ describe('VectorStyleRenderer', () => {
       beforeEach(async () => {
         buffers = await vectorStyleRenderer.generateBuffers(
           geometryBatch,
-          SAMPLE_TRANSFORM
+          SAMPLE_TRANSFORM,
         );
       });
       it('creates buffers for a geometry batch', () => {
         expect(buffers.invertVerticesTransform).to.eql(
-          makeInverseTransform(createTransform(), SAMPLE_TRANSFORM)
+          makeInverseTransform(createTransform(), SAMPLE_TRANSFORM),
         );
         expect(buffers.polygonBuffers[0]).to.be.an(WebGLArrayBuffer);
         expect(buffers.polygonBuffers[0].getType()).to.be(ELEMENT_ARRAY_BUFFER);
@@ -219,7 +219,7 @@ describe('VectorStyleRenderer', () => {
 
         expect(buffers.lineStringBuffers[0]).to.be.an(WebGLArrayBuffer);
         expect(buffers.lineStringBuffers[0].getType()).to.be(
-          ELEMENT_ARRAY_BUFFER
+          ELEMENT_ARRAY_BUFFER,
         );
         expect(buffers.lineStringBuffers[0].getUsage()).to.be(DYNAMIC_DRAW);
         expect(buffers.lineStringBuffers[1]).to.be.an(WebGLArrayBuffer);
@@ -246,7 +246,7 @@ describe('VectorStyleRenderer', () => {
       beforeEach(async () => {
         buffers = await vectorStyleRenderer.generateBuffers(
           geometryBatch,
-          SAMPLE_TRANSFORM
+          SAMPLE_TRANSFORM,
         );
         sinon.spy(helper, 'bindBuffer');
         sinon.spy(helper, 'enableAttributes');
@@ -258,46 +258,46 @@ describe('VectorStyleRenderer', () => {
       it('uses programs for all geometry types', function () {
         expect(helper.useProgram.callCount).to.be(3);
         expect(helper.useProgram.firstCall.firstArg).to.be(
-          vectorStyleRenderer.fillProgram_
+          vectorStyleRenderer.fillProgram_,
         );
         expect(helper.useProgram.secondCall.firstArg).to.be(
-          vectorStyleRenderer.strokeProgram_
+          vectorStyleRenderer.strokeProgram_,
         );
         expect(helper.useProgram.thirdCall.firstArg).to.be(
-          vectorStyleRenderer.symbolProgram_
+          vectorStyleRenderer.symbolProgram_,
         );
       });
       it('binds buffers for all geometry types', function () {
         expect(helper.bindBuffer.callCount).to.be(6);
         expect(helper.bindBuffer.calledWith(buffers.polygonBuffers[0])).to.be(
-          true
+          true,
         );
         expect(helper.bindBuffer.calledWith(buffers.polygonBuffers[1])).to.be(
-          true
+          true,
         );
         expect(
-          helper.bindBuffer.calledWith(buffers.lineStringBuffers[0])
+          helper.bindBuffer.calledWith(buffers.lineStringBuffers[0]),
         ).to.be(true);
         expect(
-          helper.bindBuffer.calledWith(buffers.lineStringBuffers[1])
+          helper.bindBuffer.calledWith(buffers.lineStringBuffers[1]),
         ).to.be(true);
         expect(helper.bindBuffer.calledWith(buffers.pointBuffers[0])).to.be(
-          true
+          true,
         );
         expect(helper.bindBuffer.calledWith(buffers.pointBuffers[1])).to.be(
-          true
+          true,
         );
       });
       it('enables attributes for all geometry types', function () {
         expect(helper.enableAttributes.callCount).to.be(3);
         expect(helper.enableAttributes.firstCall.firstArg).to.be(
-          vectorStyleRenderer.polygonAttributesDesc_
+          vectorStyleRenderer.polygonAttributesDesc_,
         );
         expect(helper.enableAttributes.secondCall.firstArg).to.be(
-          vectorStyleRenderer.lineStringAttributesDesc_
+          vectorStyleRenderer.lineStringAttributesDesc_,
         );
         expect(helper.enableAttributes.thirdCall.firstArg).to.be(
-          vectorStyleRenderer.pointAttributesDesc_
+          vectorStyleRenderer.pointAttributesDesc_,
         );
       });
       it('calls the pre render callback once per geometry type', function () {
@@ -325,7 +325,7 @@ describe('VectorStyleRenderer', () => {
     beforeEach(async () => {
       const fillOnlyShaders = SAMPLE_SHADERS();
       fillOnlyShaders.builder = new ShaderBuilder().setFillColorExpression(
-        'vec4(1.0)'
+        'vec4(1.0)',
       );
       sinon.spy(helper, 'flushBufferData');
       sinon.spy(helper, 'enableAttributes');
@@ -334,7 +334,7 @@ describe('VectorStyleRenderer', () => {
       vectorStyleRenderer = new VectorStyleRenderer(fillOnlyShaders, helper);
       buffers = await vectorStyleRenderer.generateBuffers(
         geometryBatch,
-        SAMPLE_TRANSFORM
+        SAMPLE_TRANSFORM,
       );
       preRenderCb = sinon.spy();
       vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
@@ -348,11 +348,11 @@ describe('VectorStyleRenderer', () => {
     it('only does the polygon render pass', function () {
       expect(helper.enableAttributes.callCount).to.be(1);
       expect(helper.enableAttributes.firstCall.firstArg).to.be(
-        vectorStyleRenderer.polygonAttributesDesc_
+        vectorStyleRenderer.polygonAttributesDesc_,
       );
       expect(helper.useProgram.callCount).to.be(1);
       expect(helper.useProgram.firstCall.firstArg).to.be(
-        vectorStyleRenderer.fillProgram_
+        vectorStyleRenderer.fillProgram_,
       );
       expect(helper.drawElements.callCount).to.be(1);
       expect(helper.drawElements.firstCall.args).to.eql([
@@ -366,7 +366,7 @@ describe('VectorStyleRenderer', () => {
     beforeEach(async () => {
       const strokeOnlyShaders = SAMPLE_SHADERS();
       strokeOnlyShaders.builder = new ShaderBuilder().setStrokeColorExpression(
-        'vec4(1.0)'
+        'vec4(1.0)',
       );
       sinon.spy(helper, 'flushBufferData');
       sinon.spy(helper, 'enableAttributes');
@@ -375,7 +375,7 @@ describe('VectorStyleRenderer', () => {
       vectorStyleRenderer = new VectorStyleRenderer(strokeOnlyShaders, helper);
       buffers = await vectorStyleRenderer.generateBuffers(
         geometryBatch,
-        SAMPLE_TRANSFORM
+        SAMPLE_TRANSFORM,
       );
       preRenderCb = sinon.spy();
       vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
@@ -389,11 +389,11 @@ describe('VectorStyleRenderer', () => {
     it('only does the line string render pass', function () {
       expect(helper.enableAttributes.callCount).to.be(1);
       expect(helper.enableAttributes.firstCall.firstArg).to.be(
-        vectorStyleRenderer.lineStringAttributesDesc_
+        vectorStyleRenderer.lineStringAttributesDesc_,
       );
       expect(helper.useProgram.callCount).to.be(1);
       expect(helper.useProgram.firstCall.firstArg).to.be(
-        vectorStyleRenderer.strokeProgram_
+        vectorStyleRenderer.strokeProgram_,
       );
       expect(helper.drawElements.callCount).to.be(1);
       expect(helper.drawElements.firstCall.args).to.eql([
@@ -407,7 +407,7 @@ describe('VectorStyleRenderer', () => {
     beforeEach(async () => {
       const symbolOnlyShaders = SAMPLE_SHADERS();
       symbolOnlyShaders.builder = new ShaderBuilder().setSymbolColorExpression(
-        'vec4(1.)'
+        'vec4(1.)',
       );
       sinon.spy(helper, 'flushBufferData');
       sinon.spy(helper, 'enableAttributes');
@@ -416,7 +416,7 @@ describe('VectorStyleRenderer', () => {
       vectorStyleRenderer = new VectorStyleRenderer(symbolOnlyShaders, helper);
       buffers = await vectorStyleRenderer.generateBuffers(
         geometryBatch,
-        SAMPLE_TRANSFORM
+        SAMPLE_TRANSFORM,
       );
       preRenderCb = sinon.spy();
       vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
@@ -430,11 +430,11 @@ describe('VectorStyleRenderer', () => {
     it('only does the point render pass', function () {
       expect(helper.enableAttributes.callCount).to.be(1);
       expect(helper.enableAttributes.firstCall.firstArg).to.be(
-        vectorStyleRenderer.pointAttributesDesc_
+        vectorStyleRenderer.pointAttributesDesc_,
       );
       expect(helper.useProgram.callCount).to.be(1);
       expect(helper.useProgram.firstCall.firstArg).to.be(
-        vectorStyleRenderer.symbolProgram_
+        vectorStyleRenderer.symbolProgram_,
       );
       expect(helper.drawElements.callCount).to.be(1);
       expect(helper.drawElements.firstCall.args).to.eql([

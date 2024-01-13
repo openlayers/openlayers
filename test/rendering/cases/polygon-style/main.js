@@ -39,7 +39,7 @@ feature.setStyle(
       lineJoin: 'round',
       lineCap: 'butt',
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 
@@ -80,7 +80,7 @@ feature.setStyle(
       color: '#9696EB',
       width: 3,
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 
@@ -110,7 +110,7 @@ feature.setStyle(
       color: '#777',
       lineDash: [2, 4],
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 
@@ -145,7 +145,7 @@ feature.setStyle(
     fill: new Fill({
       color: 'rgba(255, 0, 0, 0.85)',
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature);
 

@@ -29,7 +29,7 @@ class CompositeMapRenderer extends MapRenderer {
     this.fontChangeListenerKey_ = listen(
       checkedFonts,
       ObjectEventType.PROPERTYCHANGE,
-      map.redrawText.bind(map)
+      map.redrawText.bind(map),
     );
 
     /**
@@ -135,7 +135,7 @@ class CompositeMapRenderer extends MapRenderer {
       }
       if ('getDeclutter' in layer) {
         declutterLayers.push(
-          /** @type {import("../layer/BaseVector.js").default} */ (layer)
+          /** @type {import("../layer/BaseVector.js").default} */ (layer),
         );
       }
     }

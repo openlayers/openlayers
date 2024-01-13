@@ -104,7 +104,7 @@ class TileJSON extends TileImage {
         requestJSONP(
           options.url,
           this.handleTileJSONResponse.bind(this),
-          this.handleTileJSONError.bind(this)
+          this.handleTileJSONError.bind(this),
         );
       } else {
         const client = new XMLHttpRequest();
@@ -169,7 +169,7 @@ class TileJSON extends TileImage {
     if (tileJSON['bounds'] !== undefined) {
       const transform = getTransformFromProjections(
         epsg4326Projection,
-        sourceProjection
+        sourceProjection,
       );
       extent = applyTransform(tileJSON['bounds'], transform);
     }

@@ -61,7 +61,7 @@ new Map({
         background: 'red',
         width: '50%',
         height: '100%',
-      }
+      },
     ),
     new Element(
       {
@@ -71,7 +71,7 @@ new Map({
         background: 'green',
         width: '100%',
         height: '50%',
-      }
+      },
     ),
   ],
   controls: [

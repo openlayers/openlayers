@@ -143,8 +143,8 @@ class UrlTile extends TileSource {
         tileState == TileState.ERROR
           ? TileEventType.TILELOADERROR
           : tileState == TileState.LOADED
-          ? TileEventType.TILELOADEND
-          : undefined;
+            ? TileEventType.TILELOADEND
+            : undefined;
     }
     if (type != undefined) {
       this.dispatchEvent(new TileSourceEvent(type, tile));

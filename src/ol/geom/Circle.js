@@ -39,7 +39,7 @@ class Circle extends SimpleGeometry {
     const circle = new Circle(
       this.flatCoordinates.slice(),
       undefined,
-      this.layout
+      this.layout,
     );
     circle.applyProperties(this);
     return circle;
@@ -110,7 +110,7 @@ class Circle extends SimpleGeometry {
       flatCoordinates[1] - radius,
       flatCoordinates[0] + radius,
       flatCoordinates[1] + radius,
-      extent
+      extent,
     );
   }
 
@@ -233,7 +233,7 @@ class Circle extends SimpleGeometry {
     const center = this.getCenter();
     const stride = this.getStride();
     this.setCenter(
-      rotate(center, 0, center.length, stride, angle, anchor, center)
+      rotate(center, 0, center.length, stride, angle, anchor, center),
     );
     this.changed();
   }

@@ -11,7 +11,7 @@ const COG =
 
 function numpyTileLoader(z, x, y) {
   const url = `https://api.cogeo.xyz/cog/tiles/WebMercatorQuad/${z}/${x}/${y}@1x?format=npy&url=${encodeURIComponent(
-    COG
+    COG,
   )}`;
 
   return fetch(url)

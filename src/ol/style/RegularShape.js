@@ -222,7 +222,7 @@ class RegularShape extends ImageStyle {
   getHitDetectionImage() {
     if (!this.hitDetectionCanvas_) {
       this.hitDetectionCanvas_ = this.createHitDetectionCanvas_(
-        this.renderOptions_
+        this.renderOptions_,
       );
     }
     return this.hitDetectionCanvas_;
@@ -240,7 +240,7 @@ class RegularShape extends ImageStyle {
       const renderOptions = this.renderOptions_;
       const context = createCanvasContext2D(
         renderOptions.size * pixelRatio,
-        renderOptions.size * pixelRatio
+        renderOptions.size * pixelRatio,
       );
       this.draw_(renderOptions, context, pixelRatio);
 

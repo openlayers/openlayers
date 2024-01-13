@@ -137,7 +137,7 @@ class ImageWMS extends ImageSource {
         sourceProjectionObj,
         projectionObj,
         coordinate,
-        resolution
+        resolution,
       );
       coordinate = transform(coordinate, projectionObj, sourceProjectionObj);
     }
@@ -176,7 +176,7 @@ class ImageWMS extends ImageSource {
           ...params,
         },
       },
-      resolution
+      resolution,
     );
   }
 

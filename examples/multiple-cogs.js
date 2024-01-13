@@ -69,14 +69,14 @@ const map = new Map({
   view: Promise.all(
     sources.map(function (source) {
       return source.getView();
-    })
+    }),
   ).then(function (options) {
     const projection = 'EPSG:3857';
     const extent = createEmpty();
     options.forEach(function (options) {
       extend(
         extent,
-        transformExtent(options.extent, options.projection, projection)
+        transformExtent(options.extent, options.projection, projection),
       );
     });
     return {

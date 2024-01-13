@@ -62,6 +62,11 @@ export class VectorSourceEvent extends Event {
 }
 
 /***
+ * @template {import("../Feature.js").FeatureLike} [T=import("../Feature.js").default]
+ * @typedef {T extends RenderFeature ? T|Array<T> : T} FeatureClassOrArrayOfRenderFeatures
+ */
+
+/***
  * @template Return
  * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
  *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent, Return> &
@@ -234,7 +239,7 @@ class VectorSource extends Source {
       // create a XHR feature loader for "url" and "format"
       this.loader_ = xhr(
         this.url_,
-        /** @type {import("../format/Feature.js").default} */ (this.format_)
+        /** @type {import("../format/Feature.js").default} */ (this.format_),
       );
     }
 
@@ -275,7 +280,7 @@ class VectorSource extends Source {
     /**
      * A lookup of features by id (the return from feature.getId()).
      * @private
-     * @type {!Object<string, FeatureClass|Array<RenderFeature>>}
+     * @type {!Object<string, import('../Feature.js').FeatureLike|Array<import('../Feature.js').FeatureLike>>}
      */
     this.idIndex_ = {};
 
@@ -364,7 +369,7 @@ class VectorSource extends Source {
     }
 
     this.dispatchEvent(
-      new VectorSourceEvent(VectorEventType.ADDFEATURE, feature)
+      new VectorSourceEvent(VectorEventType.ADDFEATURE, feature),
     );
   }
 
@@ -383,7 +388,7 @@ class VectorSource extends Source {
         feature,
         ObjectEventType.PROPERTYCHANGE,
         this.handleFeatureChange_,
-        this
+        this,
       ),
     ];
   }
@@ -419,7 +424,7 @@ class VectorSource extends Source {
     if (valid) {
       assert(
         !(featureKey in this.uidIndex_),
-        'The passed `feature` was already added to the source'
+        'The passed `feature` was already added to the source',
       );
       this.uidIndex_[featureKey] = feature;
     }
@@ -477,7 +482,7 @@ class VectorSource extends Source {
     if (this.hasListener(VectorEventType.ADDFEATURE)) {
       for (let i = 0, length = newFeatures.length; i < length; i++) {
         this.dispatchEvent(
-          new VectorSourceEvent(VectorEventType.ADDFEATURE, newFeatures[i])
+          new VectorSourceEvent(VectorEventType.ADDFEATURE, newFeatures[i]),
         );
       }
     }
@@ -500,7 +505,7 @@ class VectorSource extends Source {
           collection.push(evt.feature);
           modifyingCollection = false;
         }
-      }
+      },
     );
     this.addEventListener(
       VectorEventType.REMOVEFEATURE,
@@ -513,7 +518,7 @@ class VectorSource extends Source {
           collection.remove(evt.feature);
           modifyingCollection = false;
         }
-      }
+      },
     );
     collection.addEventListener(
       CollectionEventType.ADD,
@@ -526,7 +531,7 @@ class VectorSource extends Source {
           this.addFeature(evt.element);
           modifyingCollection = false;
         }
-      }
+      },
     );
     collection.addEventListener(
       CollectionEventType.REMOVE,
@@ -539,7 +544,7 @@ class VectorSource extends Source {
           this.removeFeature(evt.element);
           modifyingCollection = false;
         }
-      }
+      },
     );
     this.featuresCollection_ = collection;
   }
@@ -696,7 +701,7 @@ class VectorSource extends Source {
             return result;
           }
         }
-      }
+      },
     );
   }
 
@@ -769,7 +774,7 @@ class VectorSource extends Source {
       const extents = wrapAndSliceX(extent, projection);
 
       return [].concat(
-        ...extents.map((anExtent) => this.featuresRtree_.getInExtent(anExtent))
+        ...extents.map((anExtent) => this.featuresRtree_.getInExtent(anExtent)),
       );
     }
     if (this.featuresCollection_) {
@@ -832,7 +837,7 @@ class VectorSource extends Source {
             extent[3] = y + minDistance;
           }
         }
-      }
+      },
     );
     return closestFeature;
   }
@@ -860,12 +865,16 @@ class VectorSource extends Source {
    * `source.getFeatureById(2)` will return a feature with id `'2'` or `2`.
    *
    * @param {string|number} id Feature identifier.
-   * @return {FeatureClass|Array<RenderFeature>|null} The feature (or `null` if not found).
+   * @return {FeatureClassOrArrayOfRenderFeatures<FeatureClass>|null} The feature (or `null` if not found).
    * @api
    */
   getFeatureById(id) {
     const feature = this.idIndex_[id.toString()];
-    return feature !== undefined ? feature : null;
+    return feature !== undefined
+      ? /** @type {FeatureClassOrArrayOfRenderFeatures<FeatureClass>} */ (
+          feature
+        )
+      : null;
   }
 
   /**
@@ -947,7 +956,7 @@ class VectorSource extends Source {
     }
     this.changed();
     this.dispatchEvent(
-      new VectorSourceEvent(VectorEventType.CHANGEFEATURE, feature)
+      new VectorSourceEvent(VectorEventType.CHANGEFEATURE, feature),
     );
   }
 
@@ -998,12 +1007,12 @@ class VectorSource extends Source {
          */
         function (object) {
           return containsExtent(object.extent, extentToLoad);
-        }
+        },
       );
       if (!alreadyLoaded) {
         ++this.loadingExtentsCount_;
         this.dispatchEvent(
-          new VectorSourceEvent(VectorEventType.FEATURESLOADSTART)
+          new VectorSourceEvent(VectorEventType.FEATURESLOADSTART),
         );
         this.loader_.call(
           this,
@@ -1016,16 +1025,16 @@ class VectorSource extends Source {
               new VectorSourceEvent(
                 VectorEventType.FEATURESLOADEND,
                 undefined,
-                features
-              )
+                features,
+              ),
             );
           },
           () => {
             --this.loadingExtentsCount_;
             this.dispatchEvent(
-              new VectorSourceEvent(VectorEventType.FEATURESLOADERROR)
+              new VectorSourceEvent(VectorEventType.FEATURESLOADERROR),
             );
-          }
+          },
         );
         loadedExtentsRtree.insert(extentToLoad, {extent: extentToLoad.slice()});
       }
@@ -1105,7 +1114,7 @@ class VectorSource extends Source {
     }
     delete this.uidIndex_[featureKey];
     this.dispatchEvent(
-      new VectorSourceEvent(VectorEventType.REMOVEFEATURE, feature)
+      new VectorSourceEvent(VectorEventType.REMOVEFEATURE, feature),
     );
     return feature;
   }

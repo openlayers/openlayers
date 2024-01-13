@@ -83,7 +83,7 @@ function clusterCircleStyle(cluster, resolution) {
   return generatePointsCircle(
     clusterMembers.length,
     cluster.getGeometry().getCoordinates(),
-    resolution
+    resolution,
   ).reduce((styles, coordinates, i) => {
     const point = new Point(coordinates);
     const line = new LineString([centerCoordinates, coordinates]);
@@ -91,15 +91,15 @@ function clusterCircleStyle(cluster, resolution) {
       new Style({
         geometry: line,
         stroke: convexHullStroke,
-      })
+      }),
     );
     styles.push(
       clusterMemberStyle(
         new Feature({
           ...clusterMembers[i].getProperties(),
           geometry: point,
-        })
-      )
+        }),
+      ),
     );
     return styles;
   }, []);
@@ -149,7 +149,7 @@ function clusterHullStyle(cluster) {
   }
   const originalFeatures = cluster.get('features');
   const points = originalFeatures.map((feature) =>
-    feature.getGeometry().getCoordinates()
+    feature.getGeometry().getCoordinates(),
   );
   return new Style({
     geometry: new Polygon([monotoneChainConvexHull(points)]),
@@ -255,7 +255,7 @@ map.on('click', (event) => {
         // Calculate the extent of the cluster members.
         const extent = createEmpty();
         clusterMembers.forEach((feature) =>
-          extend(extent, feature.getGeometry().getExtent())
+          extend(extent, feature.getGeometry().getExtent()),
         );
         const view = map.getView();
         const resolution = map.getView().getResolution();

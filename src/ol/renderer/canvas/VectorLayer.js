@@ -117,6 +117,12 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
+     * @type {number}
+     */
+    this.renderedPixelRatio_ = 1;
+
+    /**
+     * @private
      * @type {function(import("../../Feature.js").default, import("../../Feature.js").default): number|null}
      */
     this.renderedRenderOrder_ = null;
@@ -196,7 +202,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         pixelRatio,
         width,
         height,
-        world * worldWidth
+        world * worldWidth,
       );
       executorGroup.execute(
         context,
@@ -205,7 +211,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         rotation,
         snapToPixel,
         undefined,
-        declutterTree
+        declutterTree,
       );
     } while (++world < endWorld);
   }
@@ -215,7 +221,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       const compositionContext = createCanvasContext2D(
         this.context.canvas.width,
         this.context.canvas.height,
-        canvasPool
+        canvasPool,
       );
       this.compositionContext_ = compositionContext;
     } else {
@@ -245,7 +251,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       this.renderWorlds(
         this.declutterExecutorGroup,
         frameState,
-        frameState.declutterTree
+        frameState.declutterTree,
       );
       this.releaseCompositionContext_();
     }
@@ -364,8 +370,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
             HIT_DETECT_RESOLUTION,
             width,
             height,
-            0
-          ).slice()
+            0,
+          ).slice(),
         );
         const source = layer.getSource();
         const projectionExtent = projection.getExtent();
@@ -389,8 +395,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
                 HIT_DETECT_RESOLUTION,
                 width,
                 height,
-                offsetX
-              ).slice()
+                offsetX,
+              ).slice(),
             );
             startX += worldWidth;
           }
@@ -407,13 +413,13 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
                 HIT_DETECT_RESOLUTION,
                 width,
                 height,
-                offsetX
-              ).slice()
+                offsetX,
+              ).slice(),
             );
             startX -= worldWidth;
           }
         }
-
+        const userProjection = getUserProjection();
         this.hitDetectionImageData_ = createHitDetectionImageData(
           size,
           transforms,
@@ -421,11 +427,13 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
           layer.getStyleFunction(),
           extent,
           resolution,
-          rotation
+          rotation,
+          getSquaredRenderTolerance(resolution, this.renderedPixelRatio_),
+          userProjection ? projection : null,
         );
       }
       resolve(
-        hitDetect(pixel, this.renderedFeatures_, this.hitDetectionImageData_)
+        hitDetect(pixel, this.renderedFeatures_, this.hitDetectionImageData_),
       );
     });
   }
@@ -444,7 +452,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     frameState,
     hitTolerance,
     callback,
-    matches
+    matches,
   ) {
     if (!this.replayGroup_) {
       return undefined;
@@ -477,7 +485,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
             geometry: geometry,
             distanceSq: distanceSq,
             callback: callback,
-          })
+          }),
         );
       } else if (match !== true && distanceSq < match.distanceSq) {
         if (distanceSq === 0) {
@@ -506,7 +514,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         executorGroup === this.declutterExecutorGroup &&
           frameState.declutterTree
           ? frameState.declutterTree.all().map((item) => item.value)
-          : null
+          : null,
       ));
     });
 
@@ -574,7 +582,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const center = viewState.center.slice();
     const extent = buffer(
       frameStateExtent,
-      vectorLayerRenderBuffer * resolution
+      vectorLayerRenderBuffer * resolution,
     );
     const renderedExtent = extent.slice();
     const loadExtents = [extent.slice()];
@@ -642,7 +650,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       getRenderTolerance(resolution, pixelRatio),
       extent,
       resolution,
-      pixelRatio
+      pixelRatio,
     );
 
     let declutterBuilderGroup;
@@ -651,7 +659,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         getRenderTolerance(resolution, pixelRatio),
         extent,
         resolution,
-        pixelRatio
+        pixelRatio,
       );
     }
 
@@ -664,7 +672,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         vectorSource.loadFeatures(
           userExtent,
           toUserResolution(resolution, projection),
-          userProjection
+          userProjection,
         );
       }
       userTransform = getTransformFromProjections(userProjection, projection);
@@ -694,7 +702,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
             styles,
             replayGroup,
             userTransform,
-            declutterBuilderGroup
+            declutterBuilderGroup,
           );
           ready = ready && !dirty;
         }
@@ -719,7 +727,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       pixelRatio,
       vectorSource.getOverlaps(),
       replayGroupInstructions,
-      vectorLayer.getRenderBuffer()
+      vectorLayer.getRenderBuffer(),
     );
 
     if (declutterBuilderGroup) {
@@ -729,7 +737,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         pixelRatio,
         vectorSource.getOverlaps(),
         declutterBuilderGroup.finish(),
-        vectorLayer.getRenderBuffer()
+        vectorLayer.getRenderBuffer(),
       );
     }
 
@@ -740,6 +748,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     this.wrappedRenderedExtent_ = extent;
     this.renderedCenter_ = center;
     this.renderedProjection_ = projection;
+    this.renderedPixelRatio_ = pixelRatio;
     this.replayGroup_ = executorGroup;
     this.hitDetectionImageData_ = null;
 
@@ -762,7 +771,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     styles,
     builderGroup,
     transform,
-    declutterBuilderGroup
+    declutterBuilderGroup,
   ) {
     if (!styles) {
       return false;
@@ -778,7 +787,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
             squaredTolerance,
             this.boundHandleStyleImageChange_,
             transform,
-            declutterBuilderGroup
+            declutterBuilderGroup,
           ) || loading;
       }
     } else {
@@ -789,7 +798,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         squaredTolerance,
         this.boundHandleStyleImageChange_,
         transform,
-        declutterBuilderGroup
+        declutterBuilderGroup,
       );
     }
     return loading;

@@ -39,14 +39,14 @@ async function createRelease(options) {
     client,
     response.data,
     options.site,
-    'Examples and docs (zip)'
+    'Examples and docs (zip)',
   );
 
   await uploadAsset(
     client,
     response.data,
     options.package,
-    'Package archive (zip)'
+    'Package archive (zip)',
   );
 }
 

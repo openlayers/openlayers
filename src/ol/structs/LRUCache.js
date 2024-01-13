@@ -116,7 +116,7 @@ class LRUCache {
     const entry = this.entries_[key];
     assert(
       entry !== undefined,
-      'Tried to get a value for a key that does not exist in the cache'
+      'Tried to get a value for a key that does not exist in the cache',
     );
     if (entry === this.newest_) {
       return entry.value_;
@@ -144,7 +144,7 @@ class LRUCache {
     const entry = this.entries_[key];
     assert(
       entry !== undefined,
-      'Tried to get a value for a key that does not exist in the cache'
+      'Tried to get a value for a key that does not exist in the cache',
     );
     if (entry === this.newest_) {
       this.newest_ = /** @type {Entry} */ (entry.older);
@@ -262,7 +262,7 @@ class LRUCache {
   set(key, value) {
     assert(
       !(key in this.entries_),
-      'Tried to set a value for a key that is used already'
+      'Tried to set a value for a key that is used already',
     );
     const entry = {
       key_: key,

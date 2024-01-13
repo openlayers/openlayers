@@ -66,7 +66,7 @@ describe('ol.source.Cluster', function () {
               new LineString([
                 [0, 0],
                 [1, 1],
-              ])
+              ]),
             ),
             new Feature(
               new Polygon([
@@ -77,7 +77,7 @@ describe('ol.source.Cluster', function () {
                   [1, -1],
                   [-1, -1],
                 ],
-              ])
+              ]),
             ),
           ],
         }),
