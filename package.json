@@ -69,7 +69,7 @@
     "@types/topojson-specification": "^1.0.1",
     "chaikin-smooth": "^1.0.4",
     "clean-css-cli": "5.6.3",
-    "copy-webpack-plugin": "^11.0.0",
+    "copy-webpack-plugin": "^12.0.1",
     "es-main": "^1.0.2",
     "eslint": "^8.56.0",
     "eslint-config-openlayers": "^19.0.0",
