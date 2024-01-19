@@ -13,6 +13,7 @@ export const SnapEventType = {
    * @api
    */
   SNAP: 'snap',
+  UNSNAP: 'unsnap',
 };
 
 /**
@@ -54,5 +55,11 @@ export class SnapEvent extends Event {
      * @api
      */
     this.segment = options.segment;
+  }
+}
+
+export class UnsnapEvent extends Event {
+  constructor() {
+    super(SnapEventType.UNSNAP);
   }
 }
