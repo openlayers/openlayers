@@ -7,7 +7,7 @@ import PointerInteraction from './Pointer.js';
 import RBush from '../structs/RBush.js';
 import VectorEventType from '../source/VectorEventType.js';
 import {FALSE, TRUE} from '../functions.js';
-import {SnapEvent, SnapEventType} from '../events/SnapEvent.js';
+import {SnapEvent, SnapEventType, UnsnapEvent} from '../events/SnapEvent.js';
 import {boundingExtent, buffer, createEmpty} from '../extent.js';
 import {
   closestOnCircle,
@@ -79,6 +79,7 @@ const tempSegment = [];
  *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
  *     'change:active', import("../Object").ObjectEvent, Return> &
  *   import("../Observable").OnSignature<'snap', SnapEvent, Return> &
+ *   import("../Observable").OnSignature<'unsnap', UnsnapEvent, Return> &
  *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
  *     'change:active'|'snap', Return>} SnapOnSignature
  */
@@ -211,6 +212,12 @@ class Snap extends PointerInteraction {
     this.rBush_ = new RBush();
 
     /**
+     * @type {boolean}
+     * @private
+     */
+    this.snapped_ = false;
+
+    /**
      * @const
      * @private
      * @type {Object<string, function(Array<Array<import('../coordinate.js').Coordinate>>, import("../geom/Geometry.js").default): void>}
@@ -296,6 +303,7 @@ class Snap extends PointerInteraction {
   handleEvent(evt) {
     const result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
     if (result) {
+      this.snapped_ = true;
       evt.coordinate = result.vertex.slice(0, 2);
       evt.pixel = result.vertexPixel;
       this.dispatchEvent(
@@ -306,6 +314,9 @@ class Snap extends PointerInteraction {
           segment: result.segment,
         }),
       );
+    } else if (this.snapped_) {
+      this.snapped_ = false;
+      this.dispatchEvent(new UnsnapEvent());
     }
     return super.handleEvent(evt);
   }
