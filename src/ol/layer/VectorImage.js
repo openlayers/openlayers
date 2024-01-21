@@ -35,9 +35,11 @@ import CanvasVectorImageLayerRenderer from '../renderer/canvas/VectorImageLayer.
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
  * use [map.addLayer()]{@link import("../Map.js").default#addLayer}.
- * @property {boolean} [declutter=false] Declutter images and text on this layer. The priority is defined
- * by the `zIndex` of the style and the render order of features. Higher z-index means higher priority.
- * Within the same z-index, a feature rendered before another has higher priority.
+ * @property {boolean} [declutter=false] Declutter images and text on this layer. The priority
+ * is defined by the `zIndex` of the style and the render order of features. Higher z-index means higher
+ * priority. Within the same z-index, a feature rendered before another has higher priority. Items will
+ * not be decluttered against or together with items on other layers with the same `declutter` value. If
+ * that is needed, use {@link import("../layer/Vector.js").default} instead.
  * @property {import("../style/Style.js").StyleLike|null} [style] Layer style. When set to `null`, only
  * features that have their own style will be rendered. See {@link module:ol/style/Style~Style} for the default style
  * which will be used if this is not set.

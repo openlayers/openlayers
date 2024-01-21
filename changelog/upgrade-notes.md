@@ -2,6 +2,18 @@
 
 ### 9.0.0
 
+#### Improved render order of decluttered items
+
+Decluttered items in Vector and VectorTile layers now maintain the render order of the layers and within a layer. They do not get lifted to a higher place in the stack any more.
+
+For most use cases, this is the desired behavior. If, however, you've been relying on the previous behavior, you now have to create separate layers above the layer stack, with just the styles for the declutter items.
+
+#### Removal of `Map#flushDeclutterItems()`
+
+It is no longer necessary to call this function to put layers above decluttered stymbols and text, because decluttering no longer lifts elements above the layer stack.
+
+To upgrade, simply remove the code where you use the `flushDeclutterItems()` method.
+
 #### Changes in `ol/style`
 
 * Removed the `ol/style/RegularShape`'s `radius1` property. Use `radius` for regular polygons or `radius` and `radius2` for stars.

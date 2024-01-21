@@ -382,6 +382,22 @@ class Layer extends BaseLayer {
   }
 
   /**
+   * When the renderer follows a layout -> render approach, do the final rendering here.
+   * @param {import('../Map.js').FrameState} frameState Frame state
+   */
+  renderDeferred(frameState) {
+    const layerRenderer = this.getRenderer();
+    if (
+      !layerRenderer ||
+      'renderDeferred' in layerRenderer === false ||
+      typeof layerRenderer.renderDeferred !== 'function'
+    ) {
+      return;
+    }
+    layerRenderer.renderDeferred(frameState);
+  }
+
+  /**
    * For use inside the library only.
    * @param {import("../Map.js").default|null} map Map.
    */

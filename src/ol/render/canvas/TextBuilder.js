@@ -164,8 +164,9 @@ class CanvasTextBuilder extends CanvasBuilder {
   /**
    * @param {import("../../geom/SimpleGeometry.js").default|import("../Feature.js").default} geometry Geometry.
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
+   * @param {number} [index] Render order index.
    */
-  drawText(geometry, feature) {
+  drawText(geometry, feature, index) {
     const fillState = this.textFillState_;
     const strokeState = this.textStrokeState_;
     const textState = this.textState_;
@@ -187,7 +188,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         geometryType == 'Polygon' ||
         geometryType == 'MultiPolygon')
     ) {
-      if (!intersects(this.getBufferedMaxExtent(), geometry.getExtent())) {
+      if (!intersects(this.maxExtent, geometry.getExtent())) {
         return;
       }
       let ends;
@@ -212,7 +213,7 @@ class CanvasTextBuilder extends CanvasBuilder {
           ends.push(endss[i][0]);
         }
       }
-      this.beginGeometry(geometry, feature);
+      this.beginGeometry(geometry, feature, index);
       const repeat = textState.repeat;
       const textAlign = repeat ? undefined : textState.textAlign;
       // No `justify` support for line placement.
@@ -349,7 +350,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         }
       }
 
-      this.beginGeometry(geometry, feature);
+      this.beginGeometry(geometry, feature, index);
 
       // adjust padding for negative scale
       let padding = textState.padding;

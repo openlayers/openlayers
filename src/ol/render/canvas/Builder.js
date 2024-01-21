@@ -247,9 +247,10 @@ class CanvasBuilder extends VectorContext {
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
    * @param {Function} renderer Renderer.
    * @param {Function} hitDetectionRenderer Renderer.
+   * @param {number} [index] Render order index.
    */
-  drawCustom(geometry, feature, renderer, hitDetectionRenderer) {
-    this.beginGeometry(geometry, feature);
+  drawCustom(geometry, feature, renderer, hitDetectionRenderer, index) {
+    this.beginGeometry(geometry, feature, index);
 
     const type = geometry.getType();
     const stride = geometry.getStride();
@@ -288,6 +289,7 @@ class CanvasBuilder extends VectorContext {
           geometry,
           renderer,
           inflateMultiCoordinatesArray,
+          index,
         ]);
         this.hitDetectionInstructions.push([
           CanvasInstruction.CUSTOM,
@@ -296,6 +298,7 @@ class CanvasBuilder extends VectorContext {
           geometry,
           hitDetectionRenderer || renderer,
           inflateMultiCoordinatesArray,
+          index,
         ]);
         break;
       case 'Polygon':
@@ -323,6 +326,7 @@ class CanvasBuilder extends VectorContext {
           geometry,
           renderer,
           inflateCoordinatesArray,
+          index,
         ]);
         this.hitDetectionInstructions.push([
           CanvasInstruction.CUSTOM,
@@ -331,6 +335,7 @@ class CanvasBuilder extends VectorContext {
           geometry,
           hitDetectionRenderer || renderer,
           inflateCoordinatesArray,
+          index,
         ]);
         break;
       case 'LineString':
@@ -351,6 +356,7 @@ class CanvasBuilder extends VectorContext {
           geometry,
           renderer,
           inflateCoordinates,
+          index,
         ]);
         this.hitDetectionInstructions.push([
           CanvasInstruction.CUSTOM,
@@ -359,6 +365,7 @@ class CanvasBuilder extends VectorContext {
           geometry,
           hitDetectionRenderer || renderer,
           inflateCoordinates,
+          index,
         ]);
         break;
       case 'MultiPoint':
@@ -373,6 +380,7 @@ class CanvasBuilder extends VectorContext {
             geometry,
             renderer,
             inflateCoordinates,
+            index,
           ]);
           this.hitDetectionInstructions.push([
             CanvasInstruction.CUSTOM,
@@ -381,6 +389,7 @@ class CanvasBuilder extends VectorContext {
             geometry,
             hitDetectionRenderer || renderer,
             inflateCoordinates,
+            index,
           ]);
         }
         break;
@@ -395,6 +404,8 @@ class CanvasBuilder extends VectorContext {
           builderEnd,
           geometry,
           renderer,
+          undefined,
+          index,
         ]);
         this.hitDetectionInstructions.push([
           CanvasInstruction.CUSTOM,
@@ -402,6 +413,8 @@ class CanvasBuilder extends VectorContext {
           builderEnd,
           geometry,
           hitDetectionRenderer || renderer,
+          undefined,
+          index,
         ]);
         break;
       default:
@@ -413,13 +426,15 @@ class CanvasBuilder extends VectorContext {
    * @protected
    * @param {import("../../geom/Geometry").default|import("../Feature.js").default} geometry The geometry.
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
+   * @param {number} index Render order index
    */
-  beginGeometry(geometry, feature) {
+  beginGeometry(geometry, feature, index) {
     this.beginGeometryInstruction1_ = [
       CanvasInstruction.BEGIN_GEOMETRY,
       feature,
       0,
       geometry,
+      index,
     ];
     this.instructions.push(this.beginGeometryInstruction1_);
     this.beginGeometryInstruction2_ = [
@@ -427,6 +442,7 @@ class CanvasBuilder extends VectorContext {
       feature,
       0,
       geometry,
+      index,
     ];
     this.hitDetectionInstructions.push(this.beginGeometryInstruction2_);
   }

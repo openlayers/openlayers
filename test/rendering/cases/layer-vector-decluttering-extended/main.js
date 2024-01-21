@@ -160,7 +160,6 @@ sourceCyan.addFeatures([
 // cyan circles are always drawn.
 // texts are decluttered against each others (and blue/red/orange layers).
 // the circles of the orange layer and this layer are no obstactles for texts.
-// the texts are decluttered and thus above the circles of the orange layer.
 map.addLayer(
   new VectorLayer({
     zIndex: 1,

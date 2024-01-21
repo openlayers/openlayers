@@ -653,6 +653,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.sourceListenKeys_ = null;
     super.disposeInternal();
   }
+
+  renderDeclutter() {}
 }
 
 export default WebGLPointsLayerRenderer;

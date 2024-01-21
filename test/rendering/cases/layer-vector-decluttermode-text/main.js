@@ -8,6 +8,7 @@ import Text from '../../../../src/ol/style/Text.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import View from '../../../../src/ol/View.js';
+import {Stroke} from '../../../../src/ol/style.js';
 
 const center = [1825927.7316762917, 6143091.089223046];
 const map = new Map({
@@ -67,6 +68,10 @@ layer.setStyle(function (feature) {
       text: feature.get('text'),
       font: 'italic bold 30px Ubuntu',
       offsetY: -30,
+      stroke: new Stroke({
+        color: 'white',
+        width: 2,
+      }),
     }),
   });
 });

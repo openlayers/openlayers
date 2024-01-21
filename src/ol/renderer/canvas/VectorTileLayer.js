@@ -2,10 +2,13 @@
  * @module ol/renderer/canvas/VectorTileLayer
  */
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
-import CanvasExecutorGroup from '../../render/canvas/ExecutorGroup.js';
+import CanvasExecutorGroup, {
+  DECLUTTER,
+} from '../../render/canvas/ExecutorGroup.js';
 import CanvasTileLayerRenderer from './TileLayer.js';
 import TileState from '../../TileState.js';
 import ViewHint from '../../ViewHint.js';
+import ZIndexContext from '../../render/canvas/ZIndexContext.js';
 import {
   HIT_DETECT_RESOLUTION,
   createHitDetectionImageData,
@@ -20,6 +23,7 @@ import {
   scale as scaleTransform,
   translate as translateTransform,
 } from '../../transform.js';
+import {ascending} from '../../array.js';
 import {
   boundingExtent,
   buffer,
@@ -90,9 +94,21 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     /**
      * @private
+     * @type {number}
+     */
+    this.renderedOpacity_ = 1;
+
+    /**
+     * @private
      * @type {import("../../transform.js").Transform}
      */
     this.tmpTransform_ = createTransform();
+
+    /**
+     * @private
+     * @type {Array<ZIndexContext>}
+     */
+    this.tileClipContexts_ = null;
   }
 
   /**
@@ -205,7 +221,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     }
 
     const source = layer.getSource();
-    const declutter = layer.getDeclutter();
+    const declutter = !!layer.getDeclutter();
     const sourceTileGrid = source.getTileGrid();
     const tileGrid = source.getTileGridForProjection(projection);
     const tileExtent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
@@ -214,9 +230,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const layerUid = getUid(layer);
     delete tile.hitDetectionImageData[layerUid];
     tile.executorGroups[layerUid] = [];
-    if (declutter) {
-      tile.declutterExecutorGroups[layerUid] = [];
-    }
     builderState.dirty = false;
     for (let t = 0, tt = sourceTiles.length; t < tt; ++t) {
       const sourceTile = sourceTiles[t];
@@ -237,13 +250,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         : builderExtent;
       const builderGroup = new CanvasBuilderGroup(
         0,
-        builderExtent,
+        sharedExtent,
         resolution,
         pixelRatio,
       );
-      const declutterBuilderGroup = declutter
-        ? new CanvasBuilderGroup(0, sharedExtent, resolution, pixelRatio)
-        : undefined;
       const squaredTolerance = getSquaredRenderTolerance(
         resolution,
         pixelRatio,
@@ -251,9 +261,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
       /**
        * @param {import("../../Feature.js").FeatureLike} feature Feature.
+       * @param {number} [index] Render order index.
        * @this {CanvasVectorTileLayerRenderer}
        */
-      const render = function (feature) {
+      const render = function (feature, index) {
         let styles;
         const styleFunction =
           feature.getStyleFunction() || layer.getStyleFunction();
@@ -266,7 +277,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
             squaredTolerance,
             styles,
             builderGroup,
-            declutterBuilderGroup,
+            declutter,
+            index,
           );
           builderState.dirty = builderState.dirty || dirty;
         }
@@ -282,7 +294,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           !bufferedExtent ||
           intersects(bufferedExtent, feature.getGeometry().getExtent())
         ) {
-          render.call(this, feature);
+          render.call(this, feature, i);
         }
       }
       const executorGroupInstructions = builderGroup.finish();
@@ -300,19 +312,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         source.getOverlaps(),
         executorGroupInstructions,
         layer.getRenderBuffer(),
+        !!this.frameState?.declutter,
       );
       tile.executorGroups[layerUid].push(renderingReplayGroup);
-      if (declutterBuilderGroup) {
-        const declutterExecutorGroup = new CanvasExecutorGroup(
-          null,
-          resolution,
-          pixelRatio,
-          source.getOverlaps(),
-          declutterBuilderGroup.finish(),
-          layer.getRenderBuffer(),
-        );
-        tile.declutterExecutorGroups[layerUid].push(declutterExecutorGroup);
-      }
     }
     builderState.renderedRevision = revision;
     builderState.renderedRenderOrder = renderOrder;
@@ -403,15 +405,11 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
       const layerUid = getUid(layer);
       const executorGroups = [tile.executorGroups[layerUid]];
-      const declutterExecutorGroups = tile.declutterExecutorGroups[layerUid];
-      if (declutterExecutorGroups) {
-        executorGroups.push(declutterExecutorGroups);
-      }
+      const declutter = layer.getDeclutter();
       executorGroups.some((executorGroups) => {
-        const declutteredFeatures =
-          executorGroups === declutterExecutorGroups
-            ? frameState.declutterTree.all().map((item) => item.value)
-            : null;
+        const declutteredFeatures = declutter
+          ? frameState.declutter[declutter].all().map((item) => item.value)
+          : null;
         for (let t = 0, tt = executorGroups.length; t < tt; ++t) {
           const executorGroup = executorGroups[t];
           found = executorGroup.forEachFeatureAtCoordinate(
@@ -566,23 +564,70 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       );
     for (let i = 0, ii = tiles.length; i < ii; ++i) {
       const tile = tiles[i];
-      const declutterExecutorGroups =
-        tile.declutterExecutorGroups[getUid(this.getLayer())];
-      if (declutterExecutorGroups) {
-        for (let j = declutterExecutorGroups.length - 1; j >= 0; --j) {
-          declutterExecutorGroups[j].execute(
+      const executorGroups = tile.executorGroups[getUid(this.getLayer())];
+      const declutter = this.getLayer().getDeclutter();
+      if (executorGroups) {
+        for (let j = executorGroups.length - 1; j >= 0; --j) {
+          executorGroups[j].execute(
             this.context,
-            1,
+            [this.context.canvas.width, this.context.canvas.height],
             this.getTileRenderTransform(tile, frameState),
             frameState.viewState.rotation,
             hifi,
-            undefined,
-            frameState.declutterTree,
+            DECLUTTER,
+            declutter ? frameState.declutter[declutter] : undefined,
           );
         }
       }
     }
     context.globalAlpha = alpha;
+  }
+
+  renderDeferred() {
+    const tiles =
+      /** @type {Array<import("../../VectorRenderTile.js").default>} */ (
+        this.renderedTiles
+      );
+    const executorGroups = tiles.reduce((acc, tile, index) => {
+      tile.executorGroups[getUid(this.getLayer())].forEach((executorGroup) =>
+        acc.push({
+          executorGroup,
+          index,
+        }),
+      );
+      return acc;
+    }, []);
+
+    const executorGroupZIndexContexts = executorGroups.map(({executorGroup}) =>
+      executorGroup.getDeferredZIndexContexts(),
+    );
+    const zIndexKeys = executorGroupZIndexContexts
+      .map((zIndexContext) => Object.keys(zIndexContext))
+      .flat()
+      .sort(ascending);
+    zIndexKeys.map(Number).forEach((zIndex) => {
+      executorGroupZIndexContexts.forEach((zIndexContexts, i) => {
+        if (!zIndexContexts[zIndex]) {
+          return;
+        }
+        zIndexContexts[zIndex].forEach((zIndexContext) => {
+          const {executorGroup, index} = executorGroups[i];
+          const context = executorGroup.getRenderedContext();
+          const alpha = context.globalAlpha;
+          context.globalAlpha = this.renderedOpacity_;
+          const tileClipContext = this.tileClipContexts_[index];
+          if (tileClipContext) {
+            tileClipContext.draw(context);
+          }
+          zIndexContext.draw(context);
+          if (tileClipContext) {
+            context.restore();
+          }
+          context.globalAlpha = alpha;
+          zIndexContext.clear();
+        });
+      });
+    });
   }
 
   getTileRenderTransform(tile, frameState) {
@@ -632,15 +677,19 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     this.renderedPixelToCoordinateTransform_ =
       frameState.pixelToCoordinateTransform.slice();
     this.renderedRotation_ = frameState.viewState.rotation;
+    this.renderedOpacity_ =
+      frameState.layerStatesArray[frameState.layerIndex].opacity;
 
     const layer = /** @type {import("../../layer/VectorTile.js").default} */ (
       this.getLayer()
     );
     const renderMode = layer.getRenderMode();
     const alpha = context.globalAlpha;
-    context.globalAlpha =
-      frameState.layerStatesArray[frameState.layerIndex].opacity;
-    const replayTypes = VECTOR_REPLAYS[renderMode];
+    context.globalAlpha = this.renderedOpacity_;
+    const declutter = layer.getDeclutter();
+    const replayTypes = declutter
+      ? VECTOR_REPLAYS[renderMode].filter((type) => !DECLUTTER.includes(type))
+      : VECTOR_REPLAYS[renderMode];
     const viewState = frameState.viewState;
     const rotation = viewState.rotation;
     const tileSource = layer.getSource();
@@ -653,6 +702,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const tiles = this.renderedTiles;
     const clips = [];
     const clipZs = [];
+    const tileClipContexts = [];
     let ready = true;
     for (let i = tiles.length - 1; i >= 0; --i) {
       const tile = /** @type {import("../../VectorRenderTile.js").default} */ (
@@ -670,7 +720,13 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       let contextSaved = false;
       // Clip mask for regions in this tile that already filled by a higher z tile
       const currentClip = executorGroups[0].getClipCoords(transform);
+      let clipContext = context;
+      let tileClipContext;
       if (currentClip) {
+        if (declutter) {
+          tileClipContext = new ZIndexContext();
+          clipContext = tileClipContext.getContext();
+        }
         for (let j = 0, jj = clips.length; j < jj; ++j) {
           if (z !== currentZ && currentZ < clipZs[j]) {
             const clip = clips[j];
@@ -686,21 +742,21 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
               )
             ) {
               if (!contextSaved) {
-                context.save();
+                clipContext.save();
                 contextSaved = true;
               }
-              context.beginPath();
+              clipContext.beginPath();
               // counter-clockwise (outer ring) for current tile
-              context.moveTo(currentClip[0], currentClip[1]);
-              context.lineTo(currentClip[2], currentClip[3]);
-              context.lineTo(currentClip[4], currentClip[5]);
-              context.lineTo(currentClip[6], currentClip[7]);
+              clipContext.moveTo(currentClip[0], currentClip[1]);
+              clipContext.lineTo(currentClip[2], currentClip[3]);
+              clipContext.lineTo(currentClip[4], currentClip[5]);
+              clipContext.lineTo(currentClip[6], currentClip[7]);
               // clockwise (inner ring) for higher z tile
-              context.moveTo(clip[6], clip[7]);
-              context.lineTo(clip[4], clip[5]);
-              context.lineTo(clip[2], clip[3]);
-              context.lineTo(clip[0], clip[1]);
-              context.clip();
+              clipContext.moveTo(clip[6], clip[7]);
+              clipContext.lineTo(clip[4], clip[5]);
+              clipContext.lineTo(clip[2], clip[3]);
+              clipContext.lineTo(clip[0], clip[1]);
+              clipContext.clip();
             }
           }
         }
@@ -711,7 +767,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         const executorGroup = executorGroups[t];
         executorGroup.execute(
           context,
-          1,
+          [context.canvas.width, context.canvas.height],
           transform,
           rotation,
           hifi,
@@ -719,11 +775,16 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         );
       }
       if (contextSaved) {
-        context.restore();
+        if (clipContext === context) {
+          clipContext.restore();
+        } else {
+          tileClipContexts[i] = tileClipContext;
+        }
       }
     }
     context.globalAlpha = alpha;
     this.ready = ready;
+    this.tileClipContexts_ = tileClipContexts;
 
     super.postRender(context, frameState);
   }
@@ -733,7 +794,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {number} squaredTolerance Squared tolerance.
    * @param {import("../../style/Style.js").default|Array<import("../../style/Style.js").default>} styles The style or array of styles.
    * @param {import("../../render/canvas/BuilderGroup.js").default} builderGroup Replay group.
-   * @param {import("../../render/canvas/BuilderGroup.js").default} [declutterBuilderGroup] Builder group for decluttering.
+   * @param {boolean} [declutter] Enable decluttering.
+   * @param {number} [index] Render order index.
    * @return {boolean} `true` if an image is loading.
    */
   renderFeature(
@@ -741,7 +803,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     squaredTolerance,
     styles,
     builderGroup,
-    declutterBuilderGroup,
+    declutter,
+    index,
   ) {
     if (!styles) {
       return false;
@@ -757,7 +820,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
             squaredTolerance,
             this.boundHandleStyleImageChange_,
             undefined,
-            declutterBuilderGroup,
+            declutter,
+            index,
           ) || loading;
       }
     } else {
@@ -768,7 +832,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         squaredTolerance,
         this.boundHandleStyleImageChange_,
         undefined,
-        declutterBuilderGroup,
+        declutter,
+        index,
       );
     }
     return loading;
@@ -844,11 +909,15 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const executorGroup = executorGroups[i];
       executorGroup.execute(
         context,
-        renderScale,
+        [
+          context.canvas.width * renderScale,
+          context.canvas.height * renderScale,
+        ],
         transform,
         0,
         true,
         IMAGE_REPLAYS[layer.getRenderMode()],
+        null,
       );
     }
     replayState.renderedTileResolution = tile.wantedResolution;
