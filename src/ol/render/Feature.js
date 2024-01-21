@@ -52,6 +52,7 @@ const tmpTransform = createTransform();
  * Lightweight, read-only, {@link module:ol/Feature~Feature} and {@link module:ol/geom/Geometry~Geometry} like
  * structure, optimized for vector tile rendering and styling. Geometry access
  * through the API is limited to getting the type and extent of the geometry.
+ * @template {Object<string, *>} T Type of the properties object.
  */
 class RenderFeature {
   /**
@@ -60,7 +61,7 @@ class RenderFeature {
    *     to be right-handed for polygons.
    * @param {Array<number>} ends Ends.
    * @param {number} stride Stride.
-   * @param {Object<string, *>} properties Properties.
+   * @param {T} properties Properties.
    * @param {number|string|undefined} id Feature id.
    */
   constructor(type, flatCoordinates, ends, stride, properties, id) {
@@ -113,7 +114,7 @@ class RenderFeature {
 
     /**
      * @private
-     * @type {Object<string, *>}
+     * @type {T}
      */
     this.properties_ = properties;
 
@@ -282,7 +283,7 @@ class RenderFeature {
 
   /**
    * Get the feature properties.
-   * @return {Object<string, *>} Feature properties.
+   * @return {T} Feature properties.
    * @api
    */
   getProperties() {
