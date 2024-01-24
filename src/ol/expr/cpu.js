@@ -183,6 +183,9 @@ function compileExpression(expression, context) {
     case Ops.Interpolate: {
       return compileInterpolateExpression(expression, context);
     }
+    case Ops.Coalesce: {
+      return compileCoalesceExpression(expression, context);
+    }
     default: {
       throw new Error(`Unsupported operator ${operator}`);
     }
@@ -460,6 +463,28 @@ function compileMatchExpression(expression, context) {
       }
     }
     return args[length - 1](context);
+  };
+}
+
+/**
+ * @param {import('./expression.js').CallExpression} expression The call expression.
+ * @param {import('./expression.js').ParsingContext} context The parsing context.
+ * @return {ExpressionEvaluator} The evaluator function.
+ */
+function compileCoalesceExpression(expression, context) {
+  const length = expression.args.length;
+  const args = new Array(length);
+  for (let i = 0; i < length; ++i) {
+    args[i] = compileExpression(expression.args[i], context);
+  }
+  return (ctx) => {
+    for (let i = 0; i < args.length; i++) {
+      const value = args[i](ctx);
+      if (typeof value !== 'undefined' && value !== null) {
+        return value;
+      }
+    }
+    return undefined;
   };
 }
 

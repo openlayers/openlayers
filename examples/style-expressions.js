@@ -28,6 +28,7 @@ const map = new Map({
         'circle-fill-color': 'gray',
         'circle-stroke-color': 'white',
         'circle-stroke-width': 0.5,
+        'text-value': ['coalesce', ['get', 'missing'], 'default value'],
       },
     }),
     new Layer({
