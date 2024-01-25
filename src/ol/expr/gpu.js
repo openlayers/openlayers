@@ -438,6 +438,7 @@ ${ifBlocks}
   // TODO: unimplemented
   // Ops.Number
   // Ops.String
+  // Ops.Coalesce
   // Ops.Concat
 };
 

@@ -123,7 +123,8 @@ function compileExpression(expression, context) {
   const operator = expression.operator;
   switch (operator) {
     case Ops.Number:
-    case Ops.String: {
+    case Ops.String:
+    case Ops.Coalesce: {
       return compileAssertionExpression(expression, context);
     }
     case Ops.Get:
@@ -183,9 +184,6 @@ function compileExpression(expression, context) {
     case Ops.Interpolate: {
       return compileInterpolateExpression(expression, context);
     }
-    case Ops.Coalesce: {
-      return compileCoalesceExpression(expression, context);
-    }
     default: {
       throw new Error(`Unsupported operator ${operator}`);
     }
@@ -215,6 +213,17 @@ function compileAssertionExpression(expression, context) {
     args[i] = compileExpression(expression.args[i], context);
   }
   switch (type) {
+    case Ops.Coalesce: {
+      return (context) => {
+        for (let i = 0; i < length; ++i) {
+          const value = args[i](context);
+          if (typeof value !== 'undefined' && value !== null) {
+            return value;
+          }
+        }
+        throw new Error('Expected one of the values to be non-null');
+      };
+    }
     case Ops.Number:
     case Ops.String: {
       return (context) => {
@@ -463,28 +472,6 @@ function compileMatchExpression(expression, context) {
       }
     }
     return args[length - 1](context);
-  };
-}
-
-/**
- * @param {import('./expression.js').CallExpression} expression The call expression.
- * @param {import('./expression.js').ParsingContext} context The parsing context.
- * @return {ExpressionEvaluator} The evaluator function.
- */
-function compileCoalesceExpression(expression, context) {
-  const length = expression.args.length;
-  const args = new Array(length);
-  for (let i = 0; i < length; ++i) {
-    args[i] = compileExpression(expression.args[i], context);
-  }
-  return (ctx) => {
-    for (let i = 0; i < args.length; i++) {
-      const value = args[i](ctx);
-      if (typeof value !== 'undefined' && value !== null) {
-        return value;
-      }
-    }
-    return undefined;
   };
 }
 
