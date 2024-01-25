@@ -133,6 +133,39 @@ describe('ol/expr/cpu.js', () => {
         expected: 'Feature foo',
       },
       {
+        name: 'coalesce (2 arguments, first has a value)',
+        type: StringType,
+        expression: ['coalesce', ['get', 'val'], 'default'],
+        context: {
+          properties: {val: 'test'},
+        },
+        expected: 'test',
+      },
+      {
+        name: 'coalesce (2 arguments, first has no value)',
+        type: StringType,
+        expression: ['coalesce', ['get', 'val'], 'default'],
+        context: {
+          properties: {},
+        },
+        expected: 'default',
+      },
+      {
+        name: 'coalesce (several arguments, first few have no value)',
+        type: StringType,
+        expression: [
+          'coalesce',
+          ['get', 'val'],
+          ['get', 'beer'],
+          ['get', 'present'],
+          'last resort',
+        ],
+        context: {
+          properties: {present: 'hello world'},
+        },
+        expected: 'hello world',
+      },
+      {
         name: 'any (true)',
         type: BooleanType,
         expression: ['any', ['get', 'nope'], ['get', 'yep'], ['get', 'nope']],

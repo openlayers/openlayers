@@ -70,6 +70,8 @@ import {isStringColor} from '../color.js';
  *     `input` and `stopX` values must all be of type `number`. `outputX` values can be `number` or `color` values.
  *     Note: `input` will be clamped between `stop1` and `stopN`, meaning that all output values will be comprised
  *     between `output1` and `outputN`.
+ *   * `['coalesce', value1, value2, ...]` returns the first value in the list which is not null or undefined.
+ *     An example would be to provide a default value for get: ['coalesce',['get','propertynanme'],'default value']]
  *
  * * Logical operators:
  *   * `['<', value1, value2]` returns `true` if `value1` is strictly lower than `value2`, or `false` otherwise.
@@ -357,6 +359,7 @@ export const Ops = {
   Match: 'match',
   Between: 'between',
   Interpolate: 'interpolate',
+  Coalesce: 'coalesce',
   Case: 'case',
   In: 'in',
   Number: 'number',
@@ -467,6 +470,19 @@ const parsers = {
     },
     withArgsCount(2, Infinity),
     parseArgsOfType(NumberType | ColorType),
+    narrowArgsType,
+  ),
+  [Ops.Coalesce]: createParser(
+    (parsedArgs) => {
+      let type = AnyType;
+      for (let i = 1; i < parsedArgs.length; i += 2) {
+        type &= parsedArgs[i].type;
+      }
+      type &= parsedArgs[parsedArgs.length - 1].type;
+      return type;
+    },
+    withArgsCount(2, Infinity),
+    parseArgsOfType(AnyType),
     narrowArgsType,
   ),
   [Ops.Divide]: createParser(

@@ -123,7 +123,8 @@ function compileExpression(expression, context) {
   const operator = expression.operator;
   switch (operator) {
     case Ops.Number:
-    case Ops.String: {
+    case Ops.String:
+    case Ops.Coalesce: {
       return compileAssertionExpression(expression, context);
     }
     case Ops.Get:
@@ -212,6 +213,17 @@ function compileAssertionExpression(expression, context) {
     args[i] = compileExpression(expression.args[i], context);
   }
   switch (type) {
+    case Ops.Coalesce: {
+      return (context) => {
+        for (let i = 0; i < length; ++i) {
+          const value = args[i](context);
+          if (typeof value !== 'undefined' && value !== null) {
+            return value;
+          }
+        }
+        throw new Error('Expected one of the values to be non-null');
+      };
+    }
     case Ops.Number:
     case Ops.String: {
       return (context) => {

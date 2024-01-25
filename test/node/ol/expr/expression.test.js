@@ -108,6 +108,18 @@ describe('ol/expr/expression.js', () => {
       expect(context.properties.has('foo')).to.be(true);
     });
 
+    it('parses a coalesce expression', () => {
+      const context = newParsingContext();
+      const expression = parse(
+        ['coalesce', ['get', 'foo'], 'default'],
+        context,
+      );
+      expect(expression).to.be.a(CallExpression);
+      expect(expression.operator).to.be('coalesce');
+      expect(isType(expression.type, AnyType));
+      expect(context.properties.has('foo')).to.be(true);
+    });
+
     it('parses id expression', () => {
       const context = newParsingContext();
       const expression = parse(['id'], context);
