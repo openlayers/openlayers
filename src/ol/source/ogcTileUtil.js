@@ -206,7 +206,14 @@ function parseTileMatrixSet(
       throw new Error(`Unsupported CRS: ${tileMatrixSet.crs}`);
     }
   }
-  const backwards = projection.getAxisOrientation().substr(0, 2) !== 'en';
+  const orderedAxes = tileMatrixSet.orderedAxes;
+  const backwards =
+    (orderedAxes
+      ? orderedAxes
+          .slice(0, 2)
+          .map((s) => s.replace(/E|X|Lon/i, 'e').replace(/N|Y|Lat/i, 'n'))
+          .join('')
+      : projection.getAxisOrientation().substr(0, 2)) !== 'en';
 
   const matrices = tileMatrixSet.tileMatrices;
 
