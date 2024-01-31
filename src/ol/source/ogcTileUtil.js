@@ -48,6 +48,7 @@ import {getIntersection as intersectExtents} from '../extent.js';
  * @typedef {Object} TileMatrixSet
  * @property {string} id The tile matrix set identifier.
  * @property {string} crs The coordinate reference system.
+ * @property {Array<string>} [orderedAxes] Axis order.
  * @property {Array<TileMatrix>} tileMatrices Array of tile matrices.
  */
 
