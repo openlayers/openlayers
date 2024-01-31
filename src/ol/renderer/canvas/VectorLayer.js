@@ -266,7 +266,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * Render deferred instructions.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    */
-  renderDeferred(frameState) {
+  renderDeferredInternal(frameState) {
     this.replayGroup_.renderDeferred();
   }
 

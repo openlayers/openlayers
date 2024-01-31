@@ -264,6 +264,9 @@ class CanvasLayerRenderer extends LayerRenderer {
    */
   preRender(context, frameState) {
     this.frameState = frameState;
+    if (frameState.declutter) {
+      return;
+    }
     this.dispatchRenderEvent_(RenderEventType.PRERENDER, context, frameState);
   }
 
@@ -273,7 +276,36 @@ class CanvasLayerRenderer extends LayerRenderer {
    * @protected
    */
   postRender(context, frameState) {
+    if (frameState.declutter) {
+      return;
+    }
     this.dispatchRenderEvent_(RenderEventType.POSTRENDER, context, frameState);
+  }
+
+  /**
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   */
+  renderDeferredInternal(frameState) {}
+
+  /**
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @override
+   */
+  renderDeferred(frameState) {
+    if (!frameState.declutter) {
+      return;
+    }
+    this.dispatchRenderEvent_(
+      RenderEventType.PRERENDER,
+      this.context,
+      frameState,
+    );
+    this.renderDeferredInternal(frameState);
+    this.dispatchRenderEvent_(
+      RenderEventType.POSTRENDER,
+      this.context,
+      frameState,
+    );
   }
 
   /**

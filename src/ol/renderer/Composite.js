@@ -162,7 +162,7 @@ class CompositeMapRenderer extends MapRenderer {
     for (let i = layerStates.length - 1; i >= 0; --i) {
       const layerState = layerStates[i];
       const layer = layerState.layer;
-      if (layer instanceof BaseVectorLayer && layer.getDeclutter()) {
+      if (layer.getDeclutter()) {
         layer.renderDeclutter(frameState, layerState);
       }
     }

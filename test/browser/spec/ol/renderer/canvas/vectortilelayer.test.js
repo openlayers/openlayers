@@ -625,7 +625,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       });
     });
 
-    it('does not fail after flushDeclutterItems()', (done) => {
+    it('does not fail after decluttering', (done) => {
       const target = document.createElement('div');
       target.style.width = '100px';
       target.style.height = '100px';

@@ -1082,6 +1082,63 @@ describe('ol/Map', function () {
       });
     });
 
+    it('layers dispatch prerender and postrender when not decluttering', function (done) {
+      const layer = new VectorLayer({source: new VectorSource()});
+      let prerender = false;
+      let postrender = false;
+      const renderDeferredSpy = sinon.spy(
+        layer.getRenderer(),
+        'renderDeferred',
+      );
+      layer.on('prerender', () => (prerender = true));
+      layer.on('postrender', () => {
+        expect(renderDeferredSpy.callCount).to.be(0);
+        renderDeferredSpy.restore();
+        postrender = true;
+      });
+      map.addLayer(layer);
+      map.once('postrender', () => {
+        try {
+          expect(prerender).to.be(true);
+          expect(postrender).to.be(true);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      });
+      map.render();
+    });
+
+    it('layers dispatch prerender and postrender when decluttering', function (done) {
+      const layer = new VectorLayer({
+        source: new VectorSource(),
+        declutter: true,
+      });
+      let prerender = false;
+      let postrender = false;
+      const renderDeferredSpy = sinon.spy(
+        layer.getRenderer(),
+        'renderDeferred',
+      );
+      layer.on('prerender', () => (prerender = true));
+      layer.on('postrender', () => {
+        expect(renderDeferredSpy.callCount).to.be(1);
+        renderDeferredSpy.restore();
+        postrender = true;
+      });
+      map.addLayer(layer);
+      map.once('postrender', () => {
+        try {
+          expect(prerender).to.be(true);
+          expect(postrender).to.be(true);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      });
+      map.render();
+    });
+
     it('uses the same render frame for subsequent calls', function () {
       map.render();
       const id1 = map.animationDelayKey_;

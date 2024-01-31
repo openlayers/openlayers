@@ -583,7 +583,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     context.globalAlpha = alpha;
   }
 
-  renderDeferred() {
+  renderDeferredInternal() {
     const tiles =
       /** @type {Array<import("../../VectorRenderTile.js").default>} */ (
         this.renderedTiles

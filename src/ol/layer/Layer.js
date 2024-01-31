@@ -381,17 +381,24 @@ class Layer extends BaseLayer {
     this.rendered = false;
   }
 
+  /** @return {string} Declutter */
+  getDeclutter() {
+    return undefined;
+  }
+
+  /**
+   * @param {import("../Map.js").FrameState} frameState Frame state.
+   * @param {import("../layer/Layer.js").State} layerState Layer state.
+   */
+  renderDeclutter(frameState, layerState) {}
+
   /**
    * When the renderer follows a layout -> render approach, do the final rendering here.
    * @param {import('../Map.js').FrameState} frameState Frame state
    */
   renderDeferred(frameState) {
     const layerRenderer = this.getRenderer();
-    if (
-      !layerRenderer ||
-      'renderDeferred' in layerRenderer === false ||
-      typeof layerRenderer.renderDeferred !== 'function'
-    ) {
+    if (!layerRenderer) {
       return;
     }
     layerRenderer.renderDeferred(frameState);
