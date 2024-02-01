@@ -360,10 +360,7 @@ export default WMTS;
  * @api
  */
 export function optionsFromCapabilities(wmtsCap, config) {
-  const layers = wmtsCap['Contents']['Layer'];
-  if (!layers) {
-    return null;
-  }
+  const layers = wmtsCap['Contents']['Layer'] || [];
   const l = layers.find(function (elt) {
     return elt['Identifier'] == config['layer'];
   });
