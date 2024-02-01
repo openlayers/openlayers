@@ -1586,9 +1586,9 @@ function projectedDistanceToSegmentDataSquared(
     if (segmentData.index === CIRCLE_CIRCUMFERENCE_INDEX) {
       const userProjection = getUserProjection();
       if (userProjection) {
-        circleGeometry = /** @type {import("../geom/Circle.js").default} */ (
-          circleGeometry.clone().transform(userProjection, projection)
-        );
+        circleGeometry = circleGeometry
+          .clone()
+          .transform(userProjection, projection);
       }
       const distanceToCenterSquared = squaredCoordinateDistance(
         circleGeometry.getCenter(),
@@ -1628,9 +1628,9 @@ function closestOnSegmentData(pointCoordinates, segmentData, projection) {
     );
     const userProjection = getUserProjection();
     if (userProjection) {
-      circleGeometry = /** @type {import("../geom/Circle.js").default} */ (
-        circleGeometry.clone().transform(userProjection, projection)
-      );
+      circleGeometry = circleGeometry
+        .clone()
+        .transform(userProjection, projection);
     }
     return toUserCoordinate(
       circleGeometry.getClosestPoint(
