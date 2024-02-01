@@ -376,6 +376,8 @@ class ReprojDataTile extends DataTile {
           this.gutter_,
           false,
           false,
+          false,
+          true,
         );
 
         for (let i = 0, len = sources.length; i < len; ++i) {
