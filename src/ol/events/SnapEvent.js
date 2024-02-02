@@ -57,9 +57,3 @@ export class SnapEvent extends Event {
     this.segment = options.segment;
   }
 }
-
-export class UnsnapEvent extends Event {
-  constructor() {
-    super(SnapEventType.UNSNAP);
-  }
-}

@@ -7,7 +7,7 @@ import PointerInteraction from './Pointer.js';
 import RBush from '../structs/RBush.js';
 import VectorEventType from '../source/VectorEventType.js';
 import {FALSE, TRUE} from '../functions.js';
-import {SnapEvent, SnapEventType, UnsnapEvent} from '../events/SnapEvent.js';
+import {SnapEvent, SnapEventType} from '../events/SnapEvent.js';
 import {boundingExtent, buffer, createEmpty} from '../extent.js';
 import {
   closestOnCircle,
@@ -49,6 +49,15 @@ import {listen, unlistenByKey} from '../events.js';
  */
 
 /**
+ * Information about the last snapped state.
+ * @typedef {Object} SnappedInfo
+ * @property {import("../coordinate.js").Coordinate|null} vertex - The snapped vertex.
+ * @property {import("../coordinate.js").Coordinate|null} vertexPixel - The pixel of the snapped vertex.
+ * @property {import("../Feature.js").default|null} feature - The feature being snapped.
+ * @property {Array<import("../coordinate.js").Coordinate>|null} segment - Segment, or `null` if snapped to a vertex.
+ */
+
+/**
  * @param  {import("../source/Vector.js").VectorSourceEvent|import("../Collection.js").CollectionEvent<import("../Feature.js").default>} evt Event.
  * @return {import("../Feature.js").default|null} Feature.
  */
@@ -79,7 +88,6 @@ const tempSegment = [];
  *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
  *     'change:active', import("../Object").ObjectEvent, Return> &
  *   import("../Observable").OnSignature<'snap', SnapEvent, Return> &
- *   import("../Observable").OnSignature<'unsnap', UnsnapEvent, Return> &
  *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
  *     'change:active'|'snap', Return>} SnapOnSignature
  */
@@ -212,10 +220,11 @@ class Snap extends PointerInteraction {
     this.rBush_ = new RBush();
 
     /**
-     * @type {boolean}
+     * @type {SnappedInfo|null}
      * @private
+     * @description Holds information about the last snapped state.
      */
-    this.snapped_ = false;
+    this.snapped_ = null;
 
     /**
      * @const
@@ -296,28 +305,54 @@ class Snap extends PointerInteraction {
   }
 
   /**
+   * Checks if two snap data sets are equal.
+   * Compares the Y-coordinate of the `vertex` and the feature ID.
+   *
+   * @param {SnappedInfo} data1 The first snap data set.
+   * @param {SnappedInfo} data2 The second snap data set.
+   * @return {boolean} `true` if the data sets are equal, otherwise `false`.
+   * @private
+   */
+  areSnapDataEqual_(data1, data2) {
+    return (
+      data1.vertex[1] === data2.vertex[1] &&
+      data1.feature?.getId() === data2.feature?.getId()
+    );
+  }
+
+  /**
    * @param {import("../MapBrowserEvent.js").default} evt Map browser event.
    * @return {boolean} `false` to stop event propagation.
    * @api
    */
   handleEvent(evt) {
     const result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
+
     if (result) {
-      this.snapped_ = true;
       evt.coordinate = result.vertex.slice(0, 2);
       evt.pixel = result.vertexPixel;
-      this.dispatchEvent(
-        new SnapEvent(SnapEventType.SNAP, {
+
+      // Dispatch UNSNAP event if already snapped
+      if (this.snapped_ && !this.areSnapDataEqual_(this.snapped_, result)) {
+        this.dispatchEvent(new SnapEvent(SnapEventType.UNSNAP, this.snapped_));
+      }
+
+      if (!this.snapped_ || !this.areSnapDataEqual_(this.snapped_, result)) {
+        // Update snapped information and dispatch SNAP event
+        this.snapped_ = {
           vertex: evt.coordinate,
           vertexPixel: evt.pixel,
           feature: result.feature,
           segment: result.segment,
-        }),
-      );
+        };
+        this.dispatchEvent(new SnapEvent(SnapEventType.SNAP, this.snapped_));
+      }
     } else if (this.snapped_) {
-      this.snapped_ = false;
-      this.dispatchEvent(new UnsnapEvent());
+      // Dispatch UNSNAP event if no longer snapped
+      this.dispatchEvent(new SnapEvent(SnapEventType.UNSNAP, this.snapped_));
+      this.snapped_ = null;
     }
+
     return super.handleEvent(evt);
   }
 
