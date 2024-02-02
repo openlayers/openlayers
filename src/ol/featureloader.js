@@ -130,7 +130,7 @@ export function loadFeaturesXhr(
  * loads features (with XHR), parses the features, and adds them to the
  * vector source.
  * @param {string|FeatureUrlFunction} url Feature URL service.
- * @param {import("./format/Feature.js").default} format Feature format.
+ * @param {import("./format/Feature.js").default<typeof import("./Feature.js").default|typeof import("./render/Feature.js").default>} format Feature format.
  * @return {FeatureLoader} The feature loader.
  * @api
  */
