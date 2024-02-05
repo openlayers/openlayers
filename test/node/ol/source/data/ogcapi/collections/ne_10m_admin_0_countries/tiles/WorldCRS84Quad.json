@@ -1,0 +1,303 @@
+{
+   "title" : "ne_10m_admin_0_countries",
+   "tileMatrixSetURI" : "http://www.opengis.net/def/tilematrixset/OGC/1.0/WorldCRS84Quad",
+   "crs" : "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+   "dataType" : "vector",
+   "tileMatrixSetLimits" : [
+      { "tileMatrix" : "0", "minTileRow" : 0, "maxTileRow" : 0, "minTileCol" : 0, "maxTileCol" : 1 },
+      { "tileMatrix" : "1", "minTileRow" : 0, "maxTileRow" : 1, "minTileCol" : 0, "maxTileCol" : 3 },
+      { "tileMatrix" : "2", "minTileRow" : 0, "maxTileRow" : 3, "minTileCol" : 0, "maxTileCol" : 7 },
+      { "tileMatrix" : "3", "minTileRow" : 0, "maxTileRow" : 7, "minTileCol" : 0, "maxTileCol" : 15 },
+      { "tileMatrix" : "4", "minTileRow" : 0, "maxTileRow" : 15, "minTileCol" : 0, "maxTileCol" : 31 },
+      { "tileMatrix" : "5", "minTileRow" : 0, "maxTileRow" : 31, "minTileCol" : 0, "maxTileCol" : 63 },
+      { "tileMatrix" : "6", "minTileRow" : 0, "maxTileRow" : 63, "minTileCol" : 0, "maxTileCol" : 127 }
+   ],
+   "links" : [
+      {
+         "rel" : "self",
+         "type" : "application/json",
+         "title" : "The JSON representation of the WorldCRS84Quad vector tileset for NaturalEarth:cultural:ne_10m_admin_0_countries",
+         "href" : "/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WorldCRS84Quad?f=json"
+      },
+      {
+         "rel" : "alternate",
+         "type" : "text/plain",
+         "title" : "The ECON representation of the WorldCRS84Quad vector tileset for NaturalEarth:cultural:ne_10m_admin_0_countries",
+         "href" : "/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WorldCRS84Quad?f=econ"
+      },
+      {
+         "rel" : "alternate",
+         "type" : "text/html",
+         "title" : "The HTML representation of the WorldCRS84Quad vector tileset for NaturalEarth:cultural:ne_10m_admin_0_countries",
+         "href" : "/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WorldCRS84Quad?=html"
+      },
+      {
+         "rel" : "alternate",
+         "type" : "application/json+tile",
+         "title" : "The TileJSON representation of the WorldCRS84Quad vector tileset for NaturalEarth:cultural:ne_10m_admin_0_countries",
+         "href" : "/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WorldCRS84Quad?f=tilejson"
+      },
+      {
+         "rel" : "http://www.opengis.net/def/rel/ogc/1.0/tiling-scheme",
+         "type" : "application/json",
+         "title" : "WorldCRS84QuadTileMatrixSet definition (as JSON)",
+         "href" : "/ogcapi/tileMatrixSets/WorldCRS84Quad"
+      },
+      {
+         "rel" : "http://www.opengis.net/def/rel/ogc/1.0/geodata",
+         "href" : "/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries"
+      },
+      {
+         "rel" : "item",
+         "type" : "application/vnd.gnosis-map-tile",
+         "title" : "WorldCRS84Quad vector tiles for NaturalEarth:cultural:ne_10m_admin_0_countries (as GNOSIS Map Tiles)",
+         "href" : "/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WorldCRS84Quad/{tileMatrix}/{tileRow}/{tileCol}.gmt",
+         "templated" : true
+      },
+      {
+         "rel" : "item",
+         "type" : "application/vnd.mapbox-vector-tile",
+         "title" : "WorldCRS84Quad vector tiles for NaturalEarth:cultural:ne_10m_admin_0_countries (as Mapbox Vector Tiles)",
+         "href" : "/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WorldCRS84Quad/{tileMatrix}/{tileRow}/{tileCol}.mvt",
+         "templated" : true
+      },
+      {
+         "rel" : "item",
+         "type" : "application/geo+json",
+         "title" : "WorldCRS84Quad vector tiles for NaturalEarth:cultural:ne_10m_admin_0_countries (as GeoJSON)",
+         "href" : "/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WorldCRS84Quad/{tileMatrix}/{tileRow}/{tileCol}.json",
+         "templated" : true
+      },
+      {
+         "rel" : "item",
+         "type" : "application/vnd.ogc.fg+json",
+         "title" : "WorldCRS84Quad vector tiles for NaturalEarth:cultural:ne_10m_admin_0_countries (as F&G GeoJSON)",
+         "href" : "/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WorldCRS84Quad/{tileMatrix}/{tileRow}/{tileCol}.fgjson",
+         "templated" : true
+      },
+      {
+         "rel" : "item",
+         "type" : "text/mapml",
+         "title" : "WorldCRS84Quad vector tiles for NaturalEarth:cultural:ne_10m_admin_0_countries (as MapML)",
+         "href" : "/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WorldCRS84Quad/{tileMatrix}/{tileRow}/{tileCol}.mapml",
+         "templated" : true
+      }
+   ],
+   "layers" : [
+      {
+         "id" : "ne_10m_admin_0_countries",
+         "dataType" : "vector",
+         "geometryDimension" : 2,
+         "minScaleDenominator" : 4367830.1877243574709,
+         "minCellSize" : 0.010986328125,
+         "maxTileMatrix" : "6",
+         "links" : [
+            {
+               "rel" : "http://www.opengis.net/def/rel/ogc/1.0/geodata",
+               "href" : "/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries"
+            }
+         ],
+         "propertiesSchema" : {
+            "$schema" : "https://json-schema.org/draft/2020-12/schema",
+            "type" : "object",
+            "properties" : { "abbrev" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 23
+            }, "abbrev_len" : {
+               "type" : "integer",
+               "x-ogc-property-seq" : 61
+            }, "adm0_a3" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 10
+            }, "adm0_a3_is" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 51
+            }, "adm0_a3_un" : {
+               "type" : "integer",
+               "x-ogc-property-seq" : 53
+            }, "adm0_a3_us" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 52
+            }, "adm0_a3_wb" : {
+               "type" : "integer",
+               "x-ogc-property-seq" : 54
+            }, "adm0_dif" : {
+               "type" : "integer",
+               "x-ogc-property-seq" : 6
+            }, "admin" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 9
+            }, "brk_a3" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 20
+            }, "brk_diff" : {
+               "type" : "integer",
+               "x-ogc-property-seq" : 17
+            }, "brk_group" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 22
+            }, "brk_name" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 21
+            }, "continent" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 55
+            }, "economy" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 40
+            }, "featurecla" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 2
+            }, "fips_10" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 43
+            }, "formal_en" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 25
+            }, "formal_fr" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 26
+            }, "gdp_md_est" : {
+               "type" : "integer",
+               "x-ogc-property-seq" : 36
+            }, "gdp_year" : {
+               "type" : "integer",
+               "x-ogc-property-seq" : 39
+            }, "geou_dif" : {
+               "type" : "integer",
+               "x-ogc-property-seq" : 11
+            }, "geounit" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 12
+            }, "gu_a3" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 13
+            }, "homepart" : {
+               "type" : "integer",
+               "x-ogc-property-seq" : 63
+            }, "income_grp" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 41
+            }, "iso_a2" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 44
+            }, "iso_a3" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 45
+            }, "iso_n3" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 46
+            }, "labelrank" : {
+               "type" : "integer",
+               "x-ogc-property-seq" : 3
+            }, "lastcensus" : {
+               "type" : "integer",
+               "x-ogc-property-seq" : 38
+            }, "level" : {
+               "type" : "integer",
+               "x-ogc-property-seq" : 7
+            }, "long_len" : {
+               "type" : "integer",
+               "x-ogc-property-seq" : 60
+            }, "mapcolor13" : {
+               "type" : "integer",
+               "x-ogc-property-seq" : 34
+            }, "mapcolor7" : {
+               "type" : "integer",
+               "x-ogc-property-seq" : 31
+            }, "mapcolor8" : {
+               "type" : "integer",
+               "x-ogc-property-seq" : 32
+            }, "mapcolor9" : {
+               "type" : "integer",
+               "x-ogc-property-seq" : 33
+            }, "name" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 18
+            }, "name_alt" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 30
+            }, "name_len" : {
+               "type" : "integer",
+               "x-ogc-property-seq" : 59
+            }, "name_long" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 19
+            }, "name_sort" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 29
+            }, "note_adm0" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 27
+            }, "note_brk" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 28
+            }, "pop_est" : {
+               "type" : "integer",
+               "x-ogc-property-seq" : 35
+            }, "pop_year" : {
+               "type" : "integer",
+               "x-ogc-property-seq" : 37
+            }, "postal" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 24
+            }, "region_un" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 56
+            }, "region_wb" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 58
+            }, "scalerank" : {
+               "type" : "integer",
+               "x-ogc-property-seq" : 1
+            }, "sov_a3" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 5
+            }, "sovereignt" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 4
+            }, "su_a3" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 16
+            }, "su_dif" : {
+               "type" : "integer",
+               "x-ogc-property-seq" : 14
+            }, "subregion" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 57
+            }, "subunit" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 15
+            }, "tiny" : {
+               "type" : "integer",
+               "x-ogc-property-seq" : 62
+            }, "type" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 8
+            }, "un_a3" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 47
+            }, "wb_a2" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 48
+            }, "wb_a3" : {
+               "type" : "string",
+               "x-ogc-property-seq" : 49
+            }, "wikipedia" : {
+               "type" : "integer",
+               "x-ogc-property-seq" : 42
+            }, "woe_id" : {
+               "type" : "integer",
+               "x-ogc-property-seq" : 50
+            } }
+         }
+      }
+   ],
+   "centerPoint" : {
+      "coordinates" : [ 0, 0.000102911832 ],
+      "tileMatrix" : "3",
+      "scaleDenominator" : 34942641.501794859767,
+      "cellSize" : 0.087890625,
+      "crs" : "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+   }
+}

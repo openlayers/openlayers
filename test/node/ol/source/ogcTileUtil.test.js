@@ -127,6 +127,32 @@ describe('ol/source/ogcTileUtil.js', () => {
       expect(tileInfo.urlFunction([2, 0, 4])).to.be(undefined); // above max y
     });
 
+    it('orderedAxes overrides the projection axis orientation', async () => {
+      baseUrl = 'https://maps.ecere.com/';
+      const sourceInfo = {
+        url: 'https://maps.ecere.com/ogcapi/collections/ne_10m_admin_0_countries/tiles/WorldCRS84Quad',
+        projection: 'EPSG:4326',
+      };
+      const tileInfo = await getTileSetInfo(sourceInfo);
+      expect(tileInfo).to.be.an(Object);
+      expect(tileInfo.urlTemplate).to.be(
+        '/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WorldCRS84Quad/{tileMatrix}/{tileRow}/{tileCol}.json',
+      );
+      expect(tileInfo.grid).to.be.a(TileGrid);
+      expect(tileInfo.grid.getExtent()).to.eql([-180, -90, 180, 90]);
+      expect(tileInfo.grid.getTileSize(0)).to.eql([256, 256]);
+      expect(tileInfo.grid.getResolutions()).to.have.length(7);
+      expect(tileInfo.urlFunction).to.be.a(Function);
+      expect(tileInfo.urlFunction([3, 2, 1])).to.be(
+        'https://maps.ecere.com/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WorldCRS84Quad/3/1/2.json',
+      );
+      expect(tileInfo.urlFunction([2, -1, 0])).to.be(undefined); // below min x
+      expect(tileInfo.urlFunction([2, 4, 0])).to.not.be(undefined); // below max x
+      expect(tileInfo.urlFunction([2, 8, 0])).to.be(undefined); // above max x
+      expect(tileInfo.urlFunction([2, 0, -1])).to.be(undefined); // below min y
+      expect(tileInfo.urlFunction([2, 0, 4])).to.be(undefined); // above max y
+    });
+
     it('allows preferred media type to be configured', async () => {
       baseUrl = 'https://maps.ecere.com/';
       const sourceInfo = {
