@@ -48,6 +48,7 @@ import {getIntersection as intersectExtents} from '../extent.js';
  * @typedef {Object} TileMatrixSet
  * @property {string} id The tile matrix set identifier.
  * @property {string} crs The coordinate reference system.
+ * @property {Array<string>} [orderedAxes] Axis order.
  * @property {Array<TileMatrix>} tileMatrices Array of tile matrices.
  */
 
@@ -206,7 +207,14 @@ function parseTileMatrixSet(
       throw new Error(`Unsupported CRS: ${tileMatrixSet.crs}`);
     }
   }
-  const backwards = projection.getAxisOrientation().substr(0, 2) !== 'en';
+  const orderedAxes = tileMatrixSet.orderedAxes;
+  const backwards =
+    (orderedAxes
+      ? orderedAxes
+          .slice(0, 2)
+          .map((s) => s.replace(/E|X|Lon/i, 'e').replace(/N|Y|Lat/i, 'n'))
+          .join('')
+      : projection.getAxisOrientation().substr(0, 2)) !== 'en';
 
   const matrices = tileMatrixSet.tileMatrices;
 
