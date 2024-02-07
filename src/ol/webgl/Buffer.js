@@ -114,6 +114,17 @@ class WebGLArrayBuffer {
   }
 
   /**
+   * @param {Float32Array|Uint32Array} array Array.
+   */
+  setArray(array) {
+    const ArrayType = getArrayClassForType(this.type);
+    if (!(array instanceof ArrayType)) {
+      throw new Error(`Expected ${ArrayType}`);
+    }
+    this.array = array;
+  }
+
+  /**
    * @return {number} Usage.
    */
   getUsage() {

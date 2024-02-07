@@ -55,14 +55,13 @@ const attributeDescriptions = [
  * made available to shaders.
  * @property {Array<import("../../webgl/PaletteTexture.js").default>} [paletteTextures] Palette textures.
  * @property {number} [cacheSize=512] The texture cache size.
+ * @property {Array<import('./Layer.js').PostProcessesOptions>} [postProcesses] Post-processes definitions.
  */
 
 /**
- * @typedef {import("../../layer/WebGLTile.js").default} LayerType
- */
-/**
  * @typedef {import("../../webgl/TileTexture.js").TileType} TileTextureType
  */
+
 /**
  * @typedef {import("../../webgl/TileTexture.js").default} TileTextureRepresentation
  */
@@ -70,6 +69,7 @@ const attributeDescriptions = [
 /**
  * @classdesc
  * WebGL renderer for tile layers.
+ * @template {import("../../layer/WebGLTile.js").default|import("../../layer/Flow.js").default} LayerType
  * @extends {WebGLBaseTileLayerRenderer<LayerType, TileTextureType, TileTextureRepresentation>}
  * @api
  */

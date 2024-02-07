@@ -108,7 +108,12 @@ class WebGLPostProcessingPass {
 
     this.scaleRatio_ = options.scaleRatio || 1;
 
+    /**
+     * @type {WebGLTexture}
+     * @private
+     */
     this.renderTargetTexture_ = gl.createTexture();
+
     this.renderTargetTextureSize_ = null;
 
     this.frameBuffer_ = gl.createFramebuffer();
@@ -173,6 +178,10 @@ class WebGLPostProcessingPass {
           location: gl.getUniformLocation(this.renderTargetProgram_, name),
         });
       });
+  }
+
+  getRenderTargetTexture() {
+    return this.renderTargetTexture_;
   }
 
   /**
