@@ -409,7 +409,7 @@ export function rotateAtOffset(context, rotation, offsetX, offsetY) {
 }
 
 /**
- * @param {CanvasRenderingContext2D} context Context.
+ * @param {CanvasRenderingContext2D|import("../render/canvas/ZIndexContext.js").ZIndexContextProxy} context Context.
  * @param {import("../transform.js").Transform|null} transform Transform.
  * @param {number} opacity Opacity.
  * @param {Label|HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} labelOrImage Label.
@@ -437,7 +437,11 @@ export function drawImageOrLabel(
   context.save();
 
   if (opacity !== 1) {
-    context.globalAlpha *= opacity;
+    if (context.globalAlpha === undefined) {
+      context.globalAlpha = (context) => (context.globalAlpha *= opacity);
+    } else {
+      context.globalAlpha *= opacity;
+    }
   }
   if (transform) {
     context.transform.apply(context, transform);

@@ -190,6 +190,11 @@ class LayerRenderer extends Observable {
   }
 
   /**
+   * @param {import("../Map.js").FrameState} frameState Frame state.
+   */
+  renderDeferred(frameState) {}
+
+  /**
    * Clean up.
    */
   disposeInternal() {

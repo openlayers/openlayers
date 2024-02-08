@@ -32,7 +32,7 @@ import {
  * @property {boolean} [rotateWithView=false] Whether to rotate the shape with the view.
  * @property {number|import("../size.js").Size} [scale=1] Scale. Unless two dimensional scaling is required a better
  * result may be obtained with appropriate settings for `radius` and `radius2`.
- * @property {"declutter"|"obstacle"|"none"|undefined} [declutterMode] Declutter mode.
+ * @property {import('./Style.js').DeclutterMode} [declutterMode] Declutter mode.
  */
 
 /**

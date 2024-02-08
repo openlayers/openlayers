@@ -630,7 +630,7 @@ class RasterSource extends ImageSource {
     this.frameState_ = {
       animate: false,
       coordinateToPixelTransform: createTransform(),
-      declutterTree: null,
+      declutter: null,
       extent: null,
       index: 0,
       layerIndex: 0,

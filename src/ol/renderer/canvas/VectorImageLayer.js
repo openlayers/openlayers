@@ -111,7 +111,6 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
       const imageLayerState = Object.assign({}, layerState, {opacity: 1});
       const imageFrameState = /** @type {import("../../Map.js").FrameState} */ (
         Object.assign({}, frameState, {
-          declutterTree: new RBush(9),
           extent: renderedExtent,
           size: [width, height],
           viewState: /** @type {import("../../View.js").State} */ (
@@ -121,8 +120,15 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
           ),
           layerStatesArray: [imageLayerState],
           layerIndex: 0,
+          declutter: null,
         })
       );
+      const declutter = this.getLayer().getDeclutter();
+      if (declutter) {
+        imageFrameState.declutter = {
+          [declutter]: new RBush(9),
+        };
+      }
       let emptyImage = true;
       const image = new ImageCanvas(
         renderedExtent,
@@ -137,6 +143,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
             vectorRenderer.clipping = false;
             if (vectorRenderer.renderFrame(imageFrameState, null)) {
               vectorRenderer.renderDeclutter(imageFrameState);
+              vectorRenderer.renderDeferred(imageFrameState);
               emptyImage = false;
             }
             callback();

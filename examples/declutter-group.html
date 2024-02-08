@@ -1,14 +1,15 @@
 ---
 layout: example.html
 title: Declutter Group
-shortdesc: Declutter vector layers by groups
+shortdesc: Group decluttering of vector symbols and text.
 docs: >
-  This shows how to specify when vector(tile) layers are decluttered if `declutter` is set to true. By default,
-  all decluttering will happen after all layers have been rendered. Calling the map's `flushDeclutter()` method 
-  makes decluttering occur immediately. This is useful for layers that need to be entirely rendered above the declutter items
-  of layers lower in the layer stack. In the example, the blue square overlay displays above the decluttered vector symbols
-  and labels.
-tags: "mapbox, declutter, vector"
+  Different truthy `declutter` values enable declutter groups. If `declutter` was set to `true` on the
+  vector layer in this example, the symbol and texts of the vector layer would prevent overlapping
+  symbols and texts from the Mapbox styled layers below. Because it is set to `"separate"`, which is
+  a different value than `true`, the vector layer is decluttered separate from the Mapbox styled
+  layers below. Symbols and texts of the Mapbox styled layers below can overlap those of the vector
+  layer.
+tags: "mapbox, declutter, decluttering, labels, vector"
 cloak:
   - key: get_your_own_D6rA4zTHduk6KOKTXzGB
     value: Get your own API key at https://www.maptiler.com/cloud/

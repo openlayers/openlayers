@@ -73,7 +73,6 @@ sourceRed.addFeatures([
 // red circles are always drawn, but serve as obstacles.
 // however, they cannot serve as obstacles for layers on-top (blue layer).
 // texts are decluttered against each other and the circles.
-// circles are drawn on non-declutter executor, i.e. behind decluttered labels and objects.
 map.addLayer(
   new VectorLayer({
     zIndex: 3,
@@ -161,7 +160,6 @@ sourceCyan.addFeatures([
 // cyan circles are always drawn.
 // texts are decluttered against each others (and blue/red/orange layers).
 // the circles of the orange layer and this layer are no obstactles for texts.
-// the texts are decluttered and thus above the circles of the orange layer.
 map.addLayer(
   new VectorLayer({
     zIndex: 1,

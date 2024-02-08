@@ -421,7 +421,10 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         }),
       });
       const sourceTile = new VectorTile([0, 0, 0], 2);
-      sourceTile.features_ = [new RenderFeature('Point', [0, 0], [], 2)];
+      sourceTile.features_ = [
+        new RenderFeature('LineString', [0, 0, 1000, 1000], [3], 2),
+        new RenderFeature('Point', [0, 0], [], 2),
+      ];
       sourceTile.getImage = function () {
         return document.createElement('canvas');
       };
@@ -451,6 +454,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         viewState: {
           center: [0, 0],
           resolution: 156543.03392804097,
+          rotation: 0,
           projection: proj,
         },
         size: [256, 256],
@@ -468,6 +472,9 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         moveTo: () => sequence.push('moveTo'),
         lineTo: () => sequence.push('lineTo'),
         clip: () => sequence.push('clip'),
+        setLineDash: () => sequence.push('setLineDash'),
+        stroke: () => sequence.push('stroke'),
+        drawImage: () => sequence.push('drawImage'),
         canvas: {
           style: {
             transform: '',
@@ -488,6 +495,14 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         'lineTo',
         'lineTo',
         'clip',
+        'setLineDash',
+        'beginPath',
+        'moveTo',
+        'lineTo',
+        'stroke',
+        'restore',
+        'save',
+        'drawImage',
         'restore',
         'postrender',
       ]);
@@ -610,7 +625,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       });
     });
 
-    it('does not fail after flushDeclutterItems()', (done) => {
+    it('does not fail after decluttering', (done) => {
       const target = document.createElement('div');
       target.style.width = '100px';
       target.style.height = '100px';
