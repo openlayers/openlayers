@@ -30,16 +30,15 @@ class ZIndexContext {
     this.context_ = /** @type {ZIndexContextProxy} */ (
       new Proxy(CanvasRenderingContext2D.prototype, {
         get: (target, property) => {
-          if (property === 'globalAlpha' || property === 'canvas') {
+          if (typeof (/** @type {*} */ (target)[property]) !== 'function') {
+            // we only accept calling functions on the proxy, not accessing properties
             return undefined;
           }
-          if (typeof (/** @type {*} */ (target)[property]) === 'function') {
-            if (!this.instructions_[this.zIndex + this.offset_]) {
-              this.instructions_[this.zIndex + this.offset_] = [];
-            }
-            this.instructions_[this.zIndex + this.offset_].push(property);
-            return this.pushMethodArgs_;
+          if (!this.instructions_[this.zIndex + this.offset_]) {
+            this.instructions_[this.zIndex + this.offset_] = [];
           }
+          this.instructions_[this.zIndex + this.offset_].push(property);
+          return this.pushMethodArgs_;
         },
         set: (target, property, value) => {
           if (!this.instructions_[this.zIndex + this.offset_]) {
