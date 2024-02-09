@@ -10,7 +10,7 @@ For most use cases, this is the desired behavior. If, however, you've been relyi
 
 #### Removal of `Map#flushDeclutterItems()`
 
-It is no longer necessary to call this function to put layers above decluttered stymbols and text, because decluttering no longer lifts elements above the layer stack.
+It is no longer necessary to call this function to put layers above decluttered symbols and text, because decluttering no longer lifts elements above the layer stack.
 
 To upgrade, simply remove the code where you use the `flushDeclutterItems()` method.
 
@@ -21,7 +21,7 @@ To upgrade, simply remove the code where you use the `flushDeclutterItems()` met
 
 #### `GeometryCollection` constructor
 
-`ol/geom/GeometryCollection` can no longer be created without providing a Geometry array. Emtpy arrays are still valid.
+`ol/geom/GeometryCollection` can no longer be created without providing a Geometry array. Empty arrays are still valid.
 
 #### `ol/interaction/Draw`
 
