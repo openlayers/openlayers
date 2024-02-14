@@ -10,7 +10,7 @@ import WebGLVectorLayerRenderer from '../src/ol/renderer/webgl/VectorLayer.js';
 /** @type {import('../src/ol/style/webgl.js').WebGLStyle} */
 const style = {
   'stroke-color': ['*', ['get', 'COLOR'], [220, 220, 220]],
-  'stroke-width': 3,
+  'stroke-width': 2,
   'stroke-offset': -1,
   'fill-color': ['*', ['get', 'COLOR'], [255, 255, 255, 0.6]],
 };
@@ -48,7 +48,7 @@ const featureOverlay = new WebGLLayer({
   map: map,
   style: {
     'stroke-color': 'rgba(255, 255, 255, 0.7)',
-    'stroke-width': 2,
+    'stroke-width': 1,
   },
 });
 
