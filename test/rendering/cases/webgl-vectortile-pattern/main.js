@@ -35,7 +35,7 @@ class WebGLVectorTileLayer extends VectorTile {
       style: {
         'fill-pattern-src': canvasFill.toDataURL('png'),
         'stroke-pattern-src': canvasStroke.toDataURL('png'),
-        'stroke-width': 2,
+        'stroke-width': 1,
       },
     });
   }
