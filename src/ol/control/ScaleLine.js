@@ -69,6 +69,9 @@ const DEFAULT_DPI = 25.4 / 0.28;
  * but this can be changed by using the css selector `.ol-scale-line`.
  * When specifying `bar` as `true`, a scalebar will be rendered instead
  * of a scaleline.
+ * For cartesian measurements of the scalebar, you need to set the
+ * `getPointResolution` method of your projection to simply return the input
+ * value, e.g. `projection.setGetPointResolution(r => r);`
  *
  * @api
  */
