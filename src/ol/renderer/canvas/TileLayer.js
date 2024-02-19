@@ -6,7 +6,6 @@ import ImageTile from '../../ImageTile.js';
 import ReprojTile from '../../reproj/Tile.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
-import ZIndexContext from '../../render/canvas/ZIndexContext.js';
 import {
   apply as applyTransform,
   compose as composeTransform,
@@ -96,13 +95,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
      * @type {import("../../TileRange.js").default}
      */
     this.tmpTileRange_ = new TileRange(0, 0, 0, 0);
-
-    /**
-     * @type {ZIndexContext}
-     */
-    this.deferredContext_ = tileLayer.getDeclutter()
-      ? new ZIndexContext()
-      : null;
   }
 
   /**
@@ -391,9 +383,8 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const canvasTransform = toTransformString(this.pixelTransform);
 
     this.useContainer(target, canvasTransform, this.getBackground(frameState));
-    const context = this.deferredContext_
-      ? this.deferredContext_.getContext()
-      : this.context;
+
+    const context = this.getRenderContext(frameState);
     const canvas = this.context.canvas;
 
     makeInverse(this.inversePixelTransform, this.pixelTransform);
@@ -583,16 +574,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
   }
 
   /**
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
-   */
-  renderDeferredInternal(frameState) {
-    if (this.deferredContext_) {
-      this.deferredContext_.draw(this.context);
-      this.deferredContext_.clear();
-    }
-  }
-
-  /**
    * @param {import("../../ImageTile.js").default} tile Tile.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {number} x Left of the tile.
@@ -607,10 +588,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     if (!image) {
       return;
     }
-    /** @type {import('../../render/canvas/ZIndexContext.js').ZIndexContextProxy} */
-    const context = this.deferredContext_
-      ? this.deferredContext_.getContext()
-      : this.context;
+    const context = this.getRenderContext(frameState);
     const uid = getUid(this);
     const layerState = frameState.layerStatesArray[frameState.layerIndex];
     const alpha =

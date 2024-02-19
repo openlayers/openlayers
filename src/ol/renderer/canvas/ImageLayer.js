@@ -191,8 +191,8 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
 
     this.useContainer(target, canvasTransform, this.getBackground(frameState));
 
-    const context = this.context;
-    const canvas = context.canvas;
+    const context = this.getRenderContext(frameState);
+    const canvas = this.context.canvas;
 
     if (canvas.width != width || canvas.height != height) {
       canvas.width = width;
@@ -243,17 +243,16 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       const dx = transform[4];
       const dy = transform[5];
       const opacity = layerState.opacity;
-      let previousAlpha;
       if (opacity !== 1) {
-        previousAlpha = context.globalAlpha;
+        context.save();
         context.globalAlpha = opacity;
       }
       context.drawImage(img, 0, 0, +img.width, +img.height, dx, dy, dw, dh);
       if (opacity !== 1) {
-        context.globalAlpha = previousAlpha;
+        context.restore();
       }
     }
-    this.postRender(context, frameState);
+    this.postRender(this.context, frameState);
 
     if (clipped) {
       context.restore();

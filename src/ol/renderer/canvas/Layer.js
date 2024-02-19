@@ -4,6 +4,7 @@
 import LayerRenderer from '../Layer.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
+import ZIndexContext from '../../render/canvas/ZIndexContext.js';
 import {
   apply as applyTransform,
   compose as composeTransform,
@@ -87,6 +88,12 @@ class CanvasLayerRenderer extends LayerRenderer {
      * @type {CanvasRenderingContext2D}
      */
     this.context = null;
+
+    /**
+     * @private
+     * @type {ZIndexContext}
+     */
+    this.deferredContext_ = null;
 
     /**
      * @type {boolean}
@@ -289,6 +296,19 @@ class CanvasLayerRenderer extends LayerRenderer {
 
   /**
    * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @return {import('../../render/canvas/ZIndexContext.js').ZIndexContextProxy} Context.
+   */
+  getRenderContext(frameState) {
+    if (frameState.declutter && !this.deferredContext_) {
+      this.deferredContext_ = new ZIndexContext();
+    }
+    return frameState.declutter
+      ? this.deferredContext_.getContext()
+      : this.context;
+  }
+
+  /**
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @override
    */
   renderDeferred(frameState) {
@@ -300,6 +320,10 @@ class CanvasLayerRenderer extends LayerRenderer {
       this.context,
       frameState,
     );
+    if (frameState.declutter && this.deferredContext_) {
+      this.deferredContext_.draw(this.context);
+      this.deferredContext_.clear();
+    }
     this.renderDeferredInternal(frameState);
     this.dispatchRenderEvent_(
       RenderEventType.POSTRENDER,
