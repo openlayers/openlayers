@@ -587,7 +587,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    */
   renderDeferredInternal(frameState) {
-    super.renderDeferredInternal(frameState);
     const tiles =
       /** @type {Array<import("../../VectorRenderTile.js").default>} */ (
         this.renderedTiles
