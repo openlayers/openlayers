@@ -2,6 +2,8 @@
  * @module ol/render/canvas/ZIndexContext
  */
 
+import {getSharedCanvasContext2D} from '../../dom.js';
+
 /** @typedef {CanvasRenderingContext2D & {globalAlpha: any}} ZIndexContextProxy */
 
 /**
@@ -30,7 +32,10 @@ class ZIndexContext {
     this.context_ = /** @type {ZIndexContextProxy} */ (
       new Proxy(CanvasRenderingContext2D.prototype, {
         get: (target, property) => {
-          if (typeof (/** @type {*} */ (target)[property]) !== 'function') {
+          if (
+            typeof (/** @type {*} */ (getSharedCanvasContext2D())[property]) !==
+            'function'
+          ) {
             // we only accept calling functions on the proxy, not accessing properties
             return undefined;
           }

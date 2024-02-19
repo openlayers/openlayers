@@ -6,6 +6,7 @@ import ImageTile from '../../ImageTile.js';
 import ReprojTile from '../../reproj/Tile.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
+import ZIndexContext from '../../render/canvas/ZIndexContext.js';
 import {
   apply as applyTransform,
   compose as composeTransform,
@@ -95,6 +96,13 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
      * @type {import("../../TileRange.js").default}
      */
     this.tmpTileRange_ = new TileRange(0, 0, 0, 0);
+
+    /**
+     * @type {ZIndexContext}
+     */
+    this.deferredContext_ = tileLayer.getDeclutter()
+      ? new ZIndexContext()
+      : null;
   }
 
   /**
@@ -383,8 +391,10 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const canvasTransform = toTransformString(this.pixelTransform);
 
     this.useContainer(target, canvasTransform, this.getBackground(frameState));
-    const context = this.context;
-    const canvas = context.canvas;
+    const context = this.deferredContext_
+      ? this.deferredContext_.getContext()
+      : this.context;
+    const canvas = this.context.canvas;
 
     makeInverse(this.inversePixelTransform, this.pixelTransform);
 
@@ -558,7 +568,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     );
     this.scheduleExpireCache(frameState, tileSource);
 
-    this.postRender(context, frameState);
+    this.postRender(this.context, frameState);
 
     if (layerState.extent) {
       context.restore();
@@ -570,6 +580,16 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     }
 
     return this.container;
+  }
+
+  /**
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   */
+  renderDeferredInternal(frameState) {
+    if (this.deferredContext_) {
+      this.deferredContext_.draw(this.context);
+      this.deferredContext_.clear();
+    }
   }
 
   /**
@@ -587,17 +607,21 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     if (!image) {
       return;
     }
+    /** @type {import('../../render/canvas/ZIndexContext.js').ZIndexContextProxy} */
+    const context = this.deferredContext_
+      ? this.deferredContext_.getContext()
+      : this.context;
     const uid = getUid(this);
     const layerState = frameState.layerStatesArray[frameState.layerIndex];
     const alpha =
       layerState.opacity *
       (transition ? tile.getAlpha(uid, frameState.time) : 1);
-    const alphaChanged = alpha !== this.context.globalAlpha;
+    const alphaChanged = alpha !== context.globalAlpha;
     if (alphaChanged) {
-      this.context.save();
-      this.context.globalAlpha = alpha;
+      context.save();
+      context.globalAlpha = alpha;
     }
-    this.context.drawImage(
+    context.drawImage(
       image,
       gutter,
       gutter,
@@ -610,7 +634,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     );
 
     if (alphaChanged) {
-      this.context.restore();
+      context.restore();
     }
     if (alpha !== layerState.opacity) {
       frameState.animate = true;
