@@ -73,7 +73,7 @@ const vector = new WebGLLayer({
   }),
 });
 
-new Map({
+const map = new Map({
   layers: [vector],
   target: 'map',
   view: new View({
@@ -83,6 +83,8 @@ new Map({
   }),
 });
 
-render({
-  message: 'renders lines with various patterns',
+map.once('rendercomplete', () => {
+  render({
+    message: 'renders lines with various patterns',
+  });
 });

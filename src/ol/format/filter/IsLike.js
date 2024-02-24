@@ -27,7 +27,7 @@ class IsLike extends Comparison {
     wildCard,
     singleChar,
     escapeChar,
-    matchCase
+    matchCase,
   ) {
     super('PropertyIsLike', propertyName);
 

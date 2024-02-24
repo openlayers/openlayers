@@ -19,7 +19,7 @@ describe('ol.reproj.Image', function () {
             'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=';
           return load(img);
         });
-      }
+      },
     );
   }
 
@@ -38,7 +38,7 @@ describe('ol.reproj.Image', function () {
             'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8depePQAIiwMjFXlnJQAAAABJRU5ErkJggg==';
           return load(img);
         });
-      }
+      },
     );
   }
 
@@ -99,7 +99,7 @@ describe('ol.reproj.Image', function () {
             Math.abs(pixels[i + 0] - pixels[0]) +
               Math.abs(pixels[i + 1] - pixels[1]) +
               Math.abs(pixels[i + 2] - pixels[2]) +
-              Math.abs(pixels[i + 3] - pixels[3])
+              Math.abs(pixels[i + 3] - pixels[3]),
           ).to.be.lessThan(5);
         }
         done();

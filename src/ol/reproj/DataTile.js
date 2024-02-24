@@ -124,7 +124,7 @@ class ReprojDataTile extends DataTile {
     this.sourceZ_ = 0;
 
     const targetExtent = this.targetTileGrid_.getTileCoordExtent(
-      this.wrappedTileCoord_
+      this.wrappedTileCoord_,
     );
     const maxTargetExtent = this.targetTileGrid_.getExtent();
     let maxSourceExtent = this.sourceTileGrid_.getExtent();
@@ -151,7 +151,7 @@ class ReprojDataTile extends DataTile {
     }
 
     const targetResolution = this.targetTileGrid_.getResolution(
-      this.wrappedTileCoord_[0]
+      this.wrappedTileCoord_[0],
     );
 
     const targetProj = options.targetProj;
@@ -159,7 +159,7 @@ class ReprojDataTile extends DataTile {
       sourceProj,
       targetProj,
       limitedTargetExtent,
-      targetResolution
+      targetResolution,
     );
 
     if (!isFinite(sourceResolution) || sourceResolution <= 0) {
@@ -184,7 +184,7 @@ class ReprojDataTile extends DataTile {
       limitedTargetExtent,
       maxSourceExtent,
       sourceResolution * errorThresholdInPixels,
-      targetResolution
+      targetResolution,
     );
 
     if (this.triangulation_.getTriangles().length === 0) {
@@ -201,12 +201,12 @@ class ReprojDataTile extends DataTile {
         sourceExtent[1] = clamp(
           sourceExtent[1],
           maxSourceExtent[1],
-          maxSourceExtent[3]
+          maxSourceExtent[3],
         );
         sourceExtent[3] = clamp(
           sourceExtent[3],
           maxSourceExtent[1],
-          maxSourceExtent[3]
+          maxSourceExtent[3],
         );
       } else {
         sourceExtent = getIntersection(sourceExtent, maxSourceExtent);
@@ -218,7 +218,7 @@ class ReprojDataTile extends DataTile {
     } else {
       const sourceRange = this.sourceTileGrid_.getTileRangeForExtentAndZ(
         sourceExtent,
-        this.sourceZ_
+        this.sourceZ_,
       );
       const getTile = options.getTileFunction;
       for (let srcX = sourceRange.minX; srcX <= sourceRange.maxX; srcX++) {
@@ -290,7 +290,7 @@ class ReprojDataTile extends DataTile {
       const bytesPerPixel = (bytesPerElement * tileDataR.length) / pixelCount;
       const bytesPerRow = tileDataR.byteLength / pixelSize[1];
       const bandCount = Math.floor(
-        bytesPerRow / bytesPerElement / pixelSize[0]
+        bytesPerRow / bytesPerElement / pixelSize[0],
       );
       const packedLength = pixelCount * bandCount;
       let packedData = tileDataR;
@@ -325,11 +325,11 @@ class ReprojDataTile extends DataTile {
       const targetHeight = typeof size === 'number' ? size : size[1];
       const targetResolution = this.targetTileGrid_.getResolution(z);
       const sourceResolution = this.sourceTileGrid_.getResolution(
-        this.sourceZ_
+        this.sourceZ_,
       );
 
       const targetExtent = this.targetTileGrid_.getTileCoordExtent(
-        this.wrappedTileCoord_
+        this.wrappedTileCoord_,
       );
 
       let dataR, dataU;
@@ -375,7 +375,9 @@ class ReprojDataTile extends DataTile {
           sources,
           this.gutter_,
           false,
-          false
+          false,
+          false,
+          true,
         );
 
         for (let i = 0, len = sources.length; i < len; ++i) {
@@ -390,7 +392,7 @@ class ReprojDataTile extends DataTile {
           0,
           0,
           canvas.width,
-          canvas.height
+          canvas.height,
         );
 
         releaseCanvas(context);
@@ -398,7 +400,7 @@ class ReprojDataTile extends DataTile {
 
         if (!dataR) {
           dataU = new Uint8Array(
-            bytesPerPixel * imageData.width * imageData.height
+            bytesPerPixel * imageData.width * imageData.height,
           );
           dataR = new dataSources[0].dataType(dataU.buffer);
         }
@@ -467,7 +469,7 @@ class ReprojDataTile extends DataTile {
             }
           }
         },
-        this
+        this,
       );
       this.sourcesListenerKeys_.push(sourceListenKey);
     });

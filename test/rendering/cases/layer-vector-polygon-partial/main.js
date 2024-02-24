@@ -16,7 +16,7 @@ const src = new VectorSource({
           [-9, 18],
           [-22, 18],
         ],
-      ])
+      ]),
     ),
     new Feature(
       new Polygon([
@@ -27,7 +27,7 @@ const src = new VectorSource({
           [4, 18],
           [-9, 18],
         ],
-      ])
+      ]),
     ),
   ],
 });

@@ -18,7 +18,7 @@ describe('ol/geom/flat/orient.js', function () {
         flatCoordinates,
         0,
         flatCoordinates.length,
-        2
+        2,
       );
       expect(isClockwise).to.be(true);
     });
@@ -29,7 +29,7 @@ describe('ol/geom/flat/orient.js', function () {
         flatCoordinates,
         0,
         flatCoordinates.length,
-        2
+        2,
       );
       expect(isClockwise).to.be(false);
     });
@@ -40,7 +40,7 @@ describe('ol/geom/flat/orient.js', function () {
         flatCoordinates,
         0,
         flatCoordinates.length,
-        2
+        2,
       );
       expect(isClockwise).to.be(true);
     });
@@ -51,7 +51,7 @@ describe('ol/geom/flat/orient.js', function () {
         flatCoordinates,
         0,
         flatCoordinates.length,
-        2
+        2,
       );
       expect(isClockwise).to.be(false);
     });
@@ -62,7 +62,7 @@ describe('ol/geom/flat/orient.js', function () {
         flatCoordinates,
         0,
         flatCoordinates.length,
-        2
+        2,
       );
       expect(isClockwise).to.be(true);
     });
@@ -73,7 +73,7 @@ describe('ol/geom/flat/orient.js', function () {
         flatCoordinates,
         0,
         flatCoordinates.length,
-        2
+        2,
       );
       expect(isClockwise).to.be(false);
     });
@@ -84,7 +84,7 @@ describe('ol/geom/flat/orient.js', function () {
         flatCoordinates,
         0,
         flatCoordinates.length,
-        2
+        2,
       );
       expect(isClockwise).to.be(undefined);
     });
@@ -247,7 +247,7 @@ describe('ol/geom/flat/orient.js', function () {
         ends,
         2,
         {},
-        feature.getId()
+        feature.getId(),
       );
     });
 
@@ -255,7 +255,7 @@ describe('ol/geom/flat/orient.js', function () {
       renderFeatures.forEach((renderFeature, i) => {
         const ends = renderFeature.getEnds();
         expect(inflateEnds(renderFeature.getFlatCoordinates(), ends)).to.eql(
-          features[i].getGeometry().getEndss()
+          features[i].getGeometry().getEndss(),
         );
       });
     });

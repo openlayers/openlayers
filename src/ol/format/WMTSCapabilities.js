@@ -70,7 +70,7 @@ class WMTSCapabilities extends XML {
       WMTSCapabilityObject,
       PARSERS,
       node,
-      []
+      [],
     );
     return WMTSCapabilityObject ? WMTSCapabilityObject : null;
   }
@@ -106,7 +106,7 @@ const LAYER_PARSERS = makeStructureNS(
     'WGS84BoundingBox': makeObjectPropertySetter(readBoundingBox),
     'BoundingBox': makeObjectPropertyPusher(readBoundingBoxWithCrs),
     'Identifier': makeObjectPropertySetter(readString),
-  })
+  }),
 );
 
 /**
@@ -122,7 +122,7 @@ const STYLE_PARSERS = makeStructureNS(
   makeStructureNS(OWS_NAMESPACE_URIS, {
     'Title': makeObjectPropertySetter(readString),
     'Identifier': makeObjectPropertySetter(readString),
-  })
+  }),
 );
 
 /**
@@ -170,7 +170,7 @@ const DIMENSION_PARSERS = makeStructureNS(
   },
   makeStructureNS(OWS_NAMESPACE_URIS, {
     'Identifier': makeObjectPropertySetter(readString),
-  })
+  }),
 );
 
 /**
@@ -198,7 +198,7 @@ const TMS_PARSERS = makeStructureNS(
     'SupportedCRS': makeObjectPropertySetter(readString),
     'Identifier': makeObjectPropertySetter(readString),
     'BoundingBox': makeObjectPropertySetter(readBoundingBox),
-  })
+  }),
 );
 
 /**
@@ -218,7 +218,7 @@ const TM_PARSERS = makeStructureNS(
   },
   makeStructureNS(OWS_NAMESPACE_URIS, {
     'Identifier': makeObjectPropertySetter(readString),
-  })
+  }),
 );
 
 /**
@@ -313,7 +313,7 @@ function readBoundingBox(node, objectStack) {
     [],
     WGS84_BBOX_READERS,
     node,
-    objectStack
+    objectStack,
   );
   if (coordinates.length != 2) {
     return undefined;
@@ -332,7 +332,7 @@ function readBoundingBoxWithCrs(node, objectStack) {
     [],
     WGS84_BBOX_READERS,
     node,
-    objectStack
+    objectStack,
   );
   if (coordinates.length != 2) {
     return undefined;

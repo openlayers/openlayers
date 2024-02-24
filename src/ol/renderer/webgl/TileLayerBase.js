@@ -88,7 +88,7 @@ function lookupHasTile(tileRepresentationLookup, tile) {
 function addTileRepresentationToLookup(
   tileRepresentationLookup,
   tileRepresentation,
-  z
+  z,
 ) {
   const representationsByZ = tileRepresentationLookup.representationsByZ;
   if (!(z in representationsByZ)) {
@@ -108,7 +108,7 @@ function getRenderExtent(frameState, extent) {
   if (layerState.extent) {
     extent = getIntersection(
       extent,
-      fromUserExtent(layerState.extent, frameState.viewState.projection)
+      fromUserExtent(layerState.extent, frameState.viewState.projection),
     );
   }
   const source = /** @type {import("../../source/Tile.js").default} */ (
@@ -289,7 +289,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     extent,
     initialZ,
     tileRepresentationLookup,
-    preload
+    preload,
   ) {
     const viewState = frameState.viewState;
     const tileLayer = this.getLayer();
@@ -316,16 +316,16 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
             ? map
                 .getView()
                 .getResolutionForZoom(Math.max(tileLayer.getMinZoom(), 0))
-            : tileGrid.getResolution(0)
+            : tileGrid.getResolution(0),
         ),
-        tileSource.zDirection
-      )
+        tileSource.zDirection,
+      ),
     );
     for (let z = initialZ; z >= minZ; --z) {
       const tileRange = tileGrid.getTileRangeForExtentAndZ(
         extent,
         z,
-        this.tempTileRange_
+        this.tempTileRange_,
       );
 
       const tileResolution = tileGrid.getResolution(z);
@@ -354,7 +354,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
               x,
               y,
               frameState.pixelRatio,
-              viewState.projection
+              viewState.projection,
             );
           }
 
@@ -384,7 +384,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
           addTileRepresentationToLookup(
             tileRepresentationLookup,
             tileRepresentation,
-            z
+            z,
           );
 
           const tileQueueKey = tile.getKey();
@@ -448,7 +448,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     tileExtent,
     depth,
     gutter,
-    alpha
+    alpha,
   ) {}
 
   /**
@@ -467,7 +467,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     gutter,
     extent,
     alphaLookup,
-    tileGrid
+    tileGrid,
   ) {
     if (!tileRepresentation.ready) {
       return;
@@ -508,14 +508,14 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     scaleTransform(
       this.tileTransform_,
       2 / ((frameState.size[0] * tileScale) / tileWidthWithGutter),
-      -2 / ((frameState.size[1] * tileScale) / tileWidthWithGutter)
+      -2 / ((frameState.size[1] * tileScale) / tileWidthWithGutter),
     );
     rotateTransform(this.tileTransform_, viewState.rotation);
     scaleTransform(this.tileTransform_, 1, 1 / aspectRatio);
     translateTransform(
       this.tileTransform_,
       (tileSize[0] * (tileCenterI - centerI) - gutter) / tileWidthWithGutter,
-      (tileSize[1] * (tileCenterJ - centerJ) - gutter) / tileHeightWithGutter
+      (tileSize[1] * (tileCenterJ - centerJ) - gutter) / tileHeightWithGutter,
     );
 
     this.renderTile(
@@ -529,7 +529,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
       tileExtent,
       depth,
       gutter,
-      alpha
+      alpha,
     );
   }
 
@@ -552,7 +552,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     const extent = getRenderExtent(frameState, frameState.extent);
     const z = tileGrid.getZForResolution(
       viewState.resolution,
-      tileSource.zDirection
+      tileSource.zDirection,
     );
 
     /**
@@ -564,7 +564,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     if (frameState.nextExtent) {
       const targetZ = tileGrid.getZForResolution(
         viewState.nextResolution,
-        tileSource.zDirection
+        tileSource.zDirection,
       );
       const nextExtent = getRenderExtent(frameState, frameState.nextExtent);
       this.enqueueTiles(
@@ -572,7 +572,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
         nextExtent,
         targetZ,
         tileRepresentationLookup,
-        preload
+        preload,
       );
     }
 
@@ -584,7 +584,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
           extent,
           z - 1,
           tileRepresentationLookup,
-          preload - 1
+          preload - 1,
         );
       }, 0);
     }
@@ -631,7 +631,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
         tileGrid,
         tileCoord,
         z + 1,
-        tileRepresentationLookup
+        tileRepresentationLookup,
       );
 
       if (coveredByChildren) {
@@ -645,7 +645,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
           tileGrid,
           tileCoord,
           parentZ,
-          tileRepresentationLookup
+          tileRepresentationLookup,
         );
 
         if (coveredByParent) {
@@ -674,7 +674,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
             /** @type {TileRepresentation} */ (tileRepresentation),
             tileZ,
             tileExtent,
-            depthForZ(tileZ)
+            depthForZ(tileZ),
           );
         }
       }
@@ -698,7 +698,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
           gutter,
           extent,
           alphaLookup,
-          tileGrid
+          tileGrid,
         );
       }
     }
@@ -714,7 +714,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
           gutter,
           extent,
           alphaLookup,
-          tileGrid
+          tileGrid,
         );
       }
     }
@@ -722,7 +722,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     this.helper.finalizeDraw(
       frameState,
       this.dispatchPreComposeEvent,
-      this.dispatchPostComposeEvent
+      this.dispatchPostComposeEvent,
     );
 
     const canvas = this.helper.getCanvas();
@@ -766,7 +766,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     const tileRange = tileGrid.getTileRangeForTileCoordAndZ(
       tileCoord,
       altZ,
-      this.tempTileRange_
+      this.tempTileRange_,
     );
 
     if (!tileRange) {
@@ -789,7 +789,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
             addTileRepresentationToLookup(
               tileRepresentationLookup,
               tileRepresentation,
-              altZ
+              altZ,
             );
             loaded = true;
           }
@@ -805,7 +805,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
   clearCache() {
     const tileRepresentationCache = this.tileRepresentationCache;
     tileRepresentationCache.forEach((tileRepresentation) =>
-      tileRepresentation.dispose()
+      tileRepresentation.dispose(),
     );
     tileRepresentationCache.clear();
   }

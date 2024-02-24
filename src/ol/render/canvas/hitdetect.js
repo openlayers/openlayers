@@ -7,6 +7,11 @@ import {Icon} from '../../style.js';
 import {ascending} from '../../array.js';
 import {clamp} from '../../math.js';
 import {createCanvasContext2D} from '../../dom.js';
+import {
+  getTransformFromProjections,
+  getUserProjection,
+  toUserExtent,
+} from '../../proj.js';
 import {intersects} from '../../extent.js';
 
 export const HIT_DETECT_RESOLUTION = 0.5;
@@ -20,9 +25,11 @@ export const HIT_DETECT_RESOLUTION = 0.5;
  * Features to consider for hit detection.
  * @param {import("../../style/Style.js").StyleFunction|undefined} styleFunction
  * Layer style function.
- * @param {import("../../extent.js").Extent} extent Extent.
+ * @param {import("../../extent.js").Extent} extent Extent in render projection.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
+ * @param {number} [squaredTolerance] Squared tolerance.
+ * @param {import("../../proj/Projection.js").default} [projection] Render projection.
  * @return {ImageData} Hit detection image data.
  */
 export function createHitDetectionImageData(
@@ -32,8 +39,11 @@ export function createHitDetectionImageData(
   styleFunction,
   extent,
   resolution,
-  rotation
+  rotation,
+  squaredTolerance,
+  projection,
 ) {
+  const userExtent = projection ? toUserExtent(extent, projection) : extent;
   const width = size[0] * HIT_DETECT_RESOLUTION;
   const height = size[1] * HIT_DETECT_RESOLUTION;
   const context = createCanvasContext2D(width, height);
@@ -44,7 +54,11 @@ export function createHitDetectionImageData(
     HIT_DETECT_RESOLUTION,
     extent,
     null,
-    rotation
+    rotation,
+    squaredTolerance,
+    projection
+      ? getTransformFromProjections(getUserProjection(), projection)
+      : null,
   );
   const featureCount = features.length;
   // Stretch hit detection index to use the whole available color range
@@ -68,7 +82,7 @@ export function createHitDetectionImageData(
     for (let j = 0, jj = styles.length; j < jj; ++j) {
       const originalStyle = styles[j];
       const geometry = originalStyle.getGeometryFunction()(feature);
-      if (!geometry || !intersects(extent, geometry.getExtent())) {
+      if (!geometry || !intersects(userExtent, geometry.getExtent())) {
         continue;
       }
       const style = originalStyle.clone();
@@ -93,7 +107,7 @@ export function createHitDetectionImageData(
           imgSize[0],
           imgSize[1],
           undefined,
-          {alpha: false}
+          {alpha: false},
         );
         const img = imgContext.canvas;
         imgContext.fillStyle = color;
@@ -110,7 +124,7 @@ export function createHitDetectionImageData(
             scale: image.getScale(),
             rotation: image.getRotation(),
             rotateWithView: image.getRotateWithView(),
-          })
+          }),
         );
       }
       const zIndex = style.getZIndex() || 0;
@@ -133,7 +147,7 @@ export function createHitDetectionImageData(
           const geometry = geometries[i];
           byGeometryType[geometry.getType().replace('Multi', '')].push(
             geometry,
-            style
+            style,
           );
         }
       } else {

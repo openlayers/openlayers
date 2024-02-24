@@ -89,7 +89,7 @@ describe('ol/layer/Heatmap', function () {
 
       function hitTest(coordinate) {
         const features = map.getFeaturesAtPixel(
-          map.getPixelFromCoordinate(coordinate)
+          map.getPixelFromCoordinate(coordinate),
         );
         return features.length ? features[0] : null;
       }

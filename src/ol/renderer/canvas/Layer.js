@@ -4,6 +4,7 @@
 import LayerRenderer from '../Layer.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
+import ZIndexContext from '../../render/canvas/ZIndexContext.js';
 import {
   apply as applyTransform,
   compose as composeTransform,
@@ -89,6 +90,12 @@ class CanvasLayerRenderer extends LayerRenderer {
     this.context = null;
 
     /**
+     * @private
+     * @type {ZIndexContext}
+     */
+    this.deferredContext_ = null;
+
+    /**
      * @type {boolean}
      */
     this.containerReused = false;
@@ -159,7 +166,7 @@ class CanvasLayerRenderer extends LayerRenderer {
           target.style.backgroundColor &&
           equals(
             asArray(target.style.backgroundColor),
-            asArray(backgroundColor)
+            asArray(backgroundColor),
           )))
     ) {
       const canvas = target.firstElementChild;
@@ -251,7 +258,7 @@ class CanvasLayerRenderer extends LayerRenderer {
         type,
         this.inversePixelTransform,
         frameState,
-        context
+        context,
       );
       layer.dispatchEvent(event);
     }
@@ -264,6 +271,9 @@ class CanvasLayerRenderer extends LayerRenderer {
    */
   preRender(context, frameState) {
     this.frameState = frameState;
+    if (frameState.declutter) {
+      return;
+    }
     this.dispatchRenderEvent_(RenderEventType.PRERENDER, context, frameState);
   }
 
@@ -273,7 +283,53 @@ class CanvasLayerRenderer extends LayerRenderer {
    * @protected
    */
   postRender(context, frameState) {
+    if (frameState.declutter) {
+      return;
+    }
     this.dispatchRenderEvent_(RenderEventType.POSTRENDER, context, frameState);
+  }
+
+  /**
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   */
+  renderDeferredInternal(frameState) {}
+
+  /**
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @return {import('../../render/canvas/ZIndexContext.js').ZIndexContextProxy} Context.
+   */
+  getRenderContext(frameState) {
+    if (frameState.declutter && !this.deferredContext_) {
+      this.deferredContext_ = new ZIndexContext();
+    }
+    return frameState.declutter
+      ? this.deferredContext_.getContext()
+      : this.context;
+  }
+
+  /**
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @override
+   */
+  renderDeferred(frameState) {
+    if (!frameState.declutter) {
+      return;
+    }
+    this.dispatchRenderEvent_(
+      RenderEventType.PRERENDER,
+      this.context,
+      frameState,
+    );
+    if (frameState.declutter && this.deferredContext_) {
+      this.deferredContext_.draw(this.context);
+      this.deferredContext_.clear();
+    }
+    this.renderDeferredInternal(frameState);
+    this.dispatchRenderEvent_(
+      RenderEventType.POSTRENDER,
+      this.context,
+      frameState,
+    );
   }
 
   /**
@@ -295,7 +351,7 @@ class CanvasLayerRenderer extends LayerRenderer {
     pixelRatio,
     width,
     height,
-    offsetX
+    offsetX,
   ) {
     const dx1 = width / 2;
     const dy1 = height / 2;
@@ -311,7 +367,7 @@ class CanvasLayerRenderer extends LayerRenderer {
       sy,
       -rotation,
       dx2,
-      dy2
+      dy2,
     );
   }
 

@@ -369,13 +369,13 @@ describe('ol.format.KML', function () {
             },
             function (coordinate) {
               return [coordinate[0] / 2, coordinate[1] / 2];
-            }
+            },
           );
 
           const layout = 'XYZ';
           const point = new Point([1, 2, 3], layout).transform(
             'EPSG:4326',
-            'double'
+            'double',
           );
           const features = [new Feature(point)];
           const node = format.writeFeaturesNode(features, {
@@ -521,7 +521,7 @@ describe('ol.format.KML', function () {
               [1, 2],
               [3, 4],
             ],
-            layout
+            layout,
           );
           const features = [new Feature(lineString)];
           const node = format.writeFeaturesNode(features);
@@ -547,7 +547,7 @@ describe('ol.format.KML', function () {
               [1, 2, 3],
               [4, 5, 6],
             ],
-            layout
+            layout,
           );
           const features = [new Feature(lineString)];
           const node = format.writeFeaturesNode(features);
@@ -573,7 +573,7 @@ describe('ol.format.KML', function () {
               [1, 2, 100],
               [3, 4, 200],
             ],
-            layout
+            layout,
           );
           const features = [new Feature(lineString)];
           const node = format.writeFeaturesNode(features);
@@ -599,7 +599,7 @@ describe('ol.format.KML', function () {
               [1, 2, 3, 100],
               [4, 5, 6, 200],
             ],
-            layout
+            layout,
           );
           const features = [new Feature(lineString)];
           const node = format.writeFeaturesNode(features);
@@ -650,7 +650,7 @@ describe('ol.format.KML', function () {
               [3, 4],
               [1, 2],
             ],
-            layout
+            layout,
           );
           const features = [new Feature(linearRing)];
           const node = format.writeFeaturesNode(features);
@@ -677,7 +677,7 @@ describe('ol.format.KML', function () {
               [4, 5, 6],
               [1, 2, 3],
             ],
-            layout
+            layout,
           );
           const features = [new Feature(linearRing)];
           const node = format.writeFeaturesNode(features);
@@ -704,7 +704,7 @@ describe('ol.format.KML', function () {
               [3, 4, 200],
               [1, 2, 100],
             ],
-            layout
+            layout,
           );
           const features = [new Feature(linearRing)];
           const node = format.writeFeaturesNode(features);
@@ -731,7 +731,7 @@ describe('ol.format.KML', function () {
               [4, 5, 6, 200],
               [1, 2, 3, 100],
             ],
-            layout
+            layout,
           );
           const features = [new Feature(linearRing)];
           const node = format.writeFeaturesNode(features);
@@ -795,7 +795,7 @@ describe('ol.format.KML', function () {
                 [0, 0],
               ],
             ],
-            layout
+            layout,
           );
           const features = [new Feature(polygon)];
           const node = format.writeFeaturesNode(features);
@@ -830,7 +830,7 @@ describe('ol.format.KML', function () {
                 [0, 0, 5],
               ],
             ],
-            layout
+            layout,
           );
           const features = [new Feature(polygon)];
           const node = format.writeFeaturesNode(features);
@@ -867,7 +867,7 @@ describe('ol.format.KML', function () {
                 [0, 0, 1],
               ],
             ],
-            layout
+            layout,
           );
           const features = [new Feature(polygon)];
           const node = format.writeFeaturesNode(features);
@@ -904,7 +904,7 @@ describe('ol.format.KML', function () {
                 [0, 0, 5, 1],
               ],
             ],
-            layout
+            layout,
           );
           const features = [new Feature(polygon)];
           const node = format.writeFeaturesNode(features);
@@ -1050,7 +1050,7 @@ describe('ol.format.KML', function () {
                 [4, 3, 0],
               ],
             ],
-            layout
+            layout,
           );
           const features = [new Feature(polygon)];
           const node = format.writeFeaturesNode(features);
@@ -1162,7 +1162,7 @@ describe('ol.format.KML', function () {
                 ],
               ],
             ],
-            layout
+            layout,
           );
           const features = [new Feature(multiPolygon)];
           const node = format.writeFeaturesNode(features);
@@ -1239,7 +1239,7 @@ describe('ol.format.KML', function () {
               [1, 2, 3],
               [4, 5, 6],
             ],
-            layout
+            layout,
           );
           const features = [new Feature(multiPoint)];
           const node = format.writeFeaturesNode(features);
@@ -1323,7 +1323,7 @@ describe('ol.format.KML', function () {
                 [10, 11, 12],
               ],
             ],
-            layout
+            layout,
           );
           const features = [new Feature(multiLineString)];
           const node = format.writeFeaturesNode(features);
@@ -1426,7 +1426,7 @@ describe('ol.format.KML', function () {
                 ],
               ],
             ],
-            layout
+            layout,
           );
           const features = [new Feature(multiPolygon)];
           const node = format.writeFeaturesNode(features);
@@ -1723,10 +1723,10 @@ describe('ol.format.KML', function () {
           expect(flatCoordinates[7]).to.be.eql(Date.UTC(2014, 1, 1, 0, 0, 0));
           expect(flatCoordinates[11]).to.be.eql(Date.UTC(2014, 1, 6, 0, 0, 0));
           expect(flatCoordinates[15]).to.be.eql(
-            Date.UTC(2014, 1, 6, 19, 39, 3)
+            Date.UTC(2014, 1, 6, 19, 39, 3),
           );
           expect(flatCoordinates[19]).to.be.eql(
-            Date.UTC(2014, 1, 6, 16, 39, 10)
+            Date.UTC(2014, 1, 6, 16, 39, 10),
           );
         });
       });
@@ -2197,7 +2197,7 @@ describe('ol.format.KML', function () {
           const imageStyle = style.getImage();
           expect(imageStyle).to.be.an(Icon);
           expect(new URL(imageStyle.getSrc()).href).to.eql(
-            new URL('http://foo.png').href
+            new URL('http://foo.png').href,
           );
           expect(imageStyle.getAnchor()).to.be(null);
           expect(imageStyle.getOrigin()).to.be(null);
@@ -2239,7 +2239,7 @@ describe('ol.format.KML', function () {
           const imageStyle = style.getImage();
           expect(imageStyle).to.be.an(Icon);
           expect(new URL(imageStyle.getSrc()).href).to.eql(
-            new URL('http://foo.png').href
+            new URL('http://foo.png').href,
           );
           expect(imageStyle.getAnchor()).to.be(null);
           expect(imageStyle.getOrigin()).to.be(null);
@@ -2285,7 +2285,7 @@ describe('ol.format.KML', function () {
           const imageStyle = style.getImage();
           expect(imageStyle).to.be.an(Icon);
           expect(new URL(imageStyle.getSrc()).href).to.eql(
-            new URL('https://foo.png').href
+            new URL('https://foo.png').href,
           );
           expect(imageStyle.getAnchor()).to.be(null);
           expect(imageStyle.getOrigin()).to.be(null);
@@ -2420,7 +2420,7 @@ describe('ol.format.KML', function () {
             const imageStyle = style.getImage();
             expect(imageStyle).to.be.an(Icon);
             expect(new URL(imageStyle.getSrc()).href).to.eql(
-              new URL('http://foo.png').href
+              new URL('http://foo.png').href,
             );
             expect(imageStyle.anchor_).to.be.an(Array);
             expect(imageStyle.anchor_).to.have.length(2);
@@ -2776,7 +2776,7 @@ describe('ol.format.KML', function () {
           const lineStringFeature = new Feature(lineString);
           const polygonFeature = new Feature(polygon);
           const collectionFeature = new Feature(
-            new GeometryCollection([lineString, polygon])
+            new GeometryCollection([lineString, polygon]),
           );
           const text =
             '<kml xmlns="http://earth.google.com/kml/2.2">' +
@@ -2806,7 +2806,7 @@ describe('ol.format.KML', function () {
           const style = styleArray[0];
           expect(style).to.be.an(Style);
           expect(style.getGeometryFunction()(lineStringFeature)).to.be(
-            lineString
+            lineString,
           );
           expect(style.getGeometryFunction()(polygonFeature)).to.be(undefined);
           const gc = style.getGeometryFunction()(collectionFeature);
@@ -2830,7 +2830,7 @@ describe('ol.format.KML', function () {
           const style1 = styleArray[1];
           expect(style1).to.be.an(Style);
           expect(style1.getGeometryFunction()(lineStringFeature)).to.be(
-            undefined
+            undefined,
           );
           expect(style1.getGeometryFunction()(polygonFeature)).to.be(polygon);
           const gc1 = style1.getGeometryFunction()(collectionFeature);
@@ -2897,7 +2897,7 @@ describe('ol.format.KML', function () {
           const lineStringFeature = new Feature(lineString);
           const polygonFeature = new Feature(polygon);
           const collectionFeature = new Feature(
-            new GeometryCollection([lineString, polygon])
+            new GeometryCollection([lineString, polygon]),
           );
           const text =
             '<kml xmlns="http://earth.google.com/kml/2.2">' +
@@ -2928,7 +2928,7 @@ describe('ol.format.KML', function () {
           const style = styleArray[0];
           expect(style).to.be.an(Style);
           expect(style.getGeometryFunction()(lineStringFeature)).to.be(
-            lineString
+            lineString,
           );
           expect(style.getGeometryFunction()(polygonFeature)).to.be(undefined);
           const gc = style.getGeometryFunction()(collectionFeature);
@@ -2950,7 +2950,7 @@ describe('ol.format.KML', function () {
           const style1 = styleArray[1];
           expect(style1).to.be.an(Style);
           expect(style1.getGeometryFunction()(lineStringFeature)).to.be(
-            undefined
+            undefined,
           );
           expect(style1.getGeometryFunction()(polygonFeature)).to.be(polygon);
           const gc1 = style1.getGeometryFunction()(collectionFeature);
@@ -3391,7 +3391,7 @@ describe('ol.format.KML', function () {
           const imageStyle = style.getImage();
           expect(imageStyle).to.be.an(Icon);
           expect(new URL(imageStyle.getSrc()).href).to.eql(
-            new URL('http://bar.png').href
+            new URL('http://bar.png').href,
           );
           expect(imageStyle.getAnchor()).to.be(null);
           expect(imageStyle.getOrigin()).to.be(null);
@@ -3652,7 +3652,7 @@ describe('ol.format.KML', function () {
           const imageStyle = style.getImage();
           expect(imageStyle).to.be.an(Icon);
           expect(new URL(imageStyle.getSrc()).href).to.eql(
-            new URL('http://bar.png').href
+            new URL('http://bar.png').href,
           );
           expect(imageStyle.getAnchor()).to.be(null);
           expect(imageStyle.getOrigin()).to.be(null);
@@ -3729,7 +3729,7 @@ describe('ol.format.KML', function () {
           const imageStyle = style.getImage();
           expect(imageStyle).to.be.an(Icon);
           expect(new URL(imageStyle.getSrc()).href).to.eql(
-            new URL('http://bar.png').href
+            new URL('http://bar.png').href,
           );
           expect(imageStyle.getAnchor()).to.be(null);
           expect(imageStyle.getOrigin()).to.be(null);
@@ -3808,7 +3808,7 @@ describe('ol.format.KML', function () {
           const imageStyle = style.getImage();
           expect(imageStyle).to.be.an(Icon);
           expect(new URL(imageStyle.getSrc()).href).to.eql(
-            new URL('http://bar.png').href
+            new URL('http://bar.png').href,
           );
           expect(imageStyle.getAnchor()).to.be(null);
           expect(imageStyle.getOrigin()).to.be(null);
@@ -4029,22 +4029,22 @@ describe('ol.format.KML', function () {
             format.readFeatures(
               '<kml xmlns="http://earth.google.com/kml/2.0">' +
                 '  <Placemark/>' +
-                '</kml>'
-            )
+                '</kml>',
+            ),
           ).to.have.length(1);
           expect(
             format.readFeatures(
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
                 '  <Placemark/>' +
-                '</kml>'
-            )
+                '</kml>',
+            ),
           ).to.have.length(1);
           expect(
             format.readFeatures(
               '<kml xmlns="http://www.opengis.net/kml/2.2">' +
                 '  <Placemark/>' +
-                '</kml>'
-            )
+                '</kml>',
+            ),
           ).to.have.length(1);
         });
 
@@ -4053,8 +4053,8 @@ describe('ol.format.KML', function () {
             format.readFeatures(
               '<kml xmlns="http://example.com/notkml/1.0">' +
                 '  <Placemark/>' +
-                '</kml>'
-            )
+                '</kml>',
+            ),
           ).to.be.empty();
         });
 
@@ -4085,7 +4085,7 @@ describe('ol.format.KML', function () {
         it('should ignore invalid coordinates', function () {
           const doc = new DOMParser().parseFromString(
             '<coordinates>INVALID</coordinates>',
-            'application/xml'
+            'application/xml',
           );
           const node = doc.firstChild;
           expect(readFlatCoordinates(node)).to.be(undefined);
@@ -4284,13 +4284,13 @@ describe('ol.format.KML', function () {
         expect(gs).to.have.length(1);
         expect(gs[0]).to.be.an(Point);
         expect(gs[0].getCoordinates()).to.eql(
-          f.getGeometry().getGeometries()[0].getCoordinates()
+          f.getGeometry().getGeometries()[0].getCoordinates(),
         );
         const imageStyle = style.getImage();
         expect(imageStyle).to.be.an(Icon);
         expect(imageStyle.getScale()).to.eql(0.4);
         expect(imageStyle.getSrc()).to.eql(
-          'http://maps.google.com/mapfiles/kml/shapes/star.png'
+          'http://maps.google.com/mapfiles/kml/shapes/star.png',
         );
         const textStyle = style.getText();
         expect(textStyle).to.be.an(Text);
@@ -4426,7 +4426,7 @@ describe('ol.format.KML', function () {
         expect(nl).to.have.length(2);
         expect(nl[0].name).to.be('bar');
         expect(nl[0].href.replace(window.location.origin, '')).to.be(
-          '/bar/bar.kml'
+          '/bar/bar.kml',
         );
         expect(nl[1].href).to.be('http://foo.com/foo.kml');
       });

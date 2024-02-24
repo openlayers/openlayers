@@ -45,12 +45,6 @@ class VectorRenderTile extends Tile {
     this.executorGroups = {};
 
     /**
-     * Executor groups for decluttering, by layer uid. Entries are read/written by the renderer.
-     * @type {Object<string, Array<import("./render/canvas/ExecutorGroup.js").default>>}
-     */
-    this.declutterExecutorGroups = {};
-
-    /**
      * Number of loading source tiles. Read/written by the source.
      * @type {number}
      */

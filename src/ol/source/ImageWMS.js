@@ -81,7 +81,7 @@ class ImageWMS extends ImageSource {
      * @private
      * @type {!Object}
      */
-    this.params_ = options.params;
+    this.params_ = Object.assign({}, options.params);
 
     /**
      * @private
@@ -137,7 +137,7 @@ class ImageWMS extends ImageSource {
         sourceProjectionObj,
         projectionObj,
         coordinate,
-        resolution
+        resolution,
       );
       coordinate = transform(coordinate, projectionObj, sourceProjectionObj);
     }
@@ -176,7 +176,7 @@ class ImageWMS extends ImageSource {
           ...params,
         },
       },
-      resolution
+      resolution,
     );
   }
 

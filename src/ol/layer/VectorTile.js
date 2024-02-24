@@ -50,25 +50,21 @@ import {assert} from '../asserts.js';
  * @property {VectorTileRenderType} [renderMode='hybrid'] Render mode for vector tiles:
  *  * `'hybrid'`: Polygon and line elements are rendered as images, so pixels are scaled during zoom
  *    animations. Point symbols and texts are accurately rendered as vectors and can stay upright on
- *    rotated views.
- *  * `'vector'`: Everything is rendered as vectors. Use this mode for improved performance on vector
- *    tile layers with only a few rendered features (e.g. for highlighting a subset of features of
- *    another layer with the same source).
+ *    rotated views, but get lifted above all polygon and line elements.
+ *  * `'vector'`: Everything is rendered as vectors and the original render order is maintained. Use
+ *    this mode for improved performance and visual epxerience on vector tile layers with not too many
+ *    rendered features (e.g. for highlighting a subset of features of another layer with the same
+ *    source).
  * @property {import("../source/VectorTile.js").default} [source] Source.
  * @property {import("../Map.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
  * use [map.addLayer()]{@link import("../Map.js").default#addLayer}.
- * @property {boolean} [declutter=false] Declutter images and text. Decluttering is applied to all
- * image and text styles of all Vector and VectorTile layers that have set this to `true`. The priority
- * is defined by the z-index of the layer, the `zIndex` of the style and the render order of features.
- * Higher z-index means higher priority. Within the same z-index, a feature rendered before another has
- * higher priority.
- *
- * As an optimization decluttered features from layers with the same `className` are rendered above
- * the fill and stroke styles of all of those layers regardless of z-index.  To opt out of this
- * behavior and place declutterd features with their own layer configure the layer with a `className`
- * other than `ol-layer`.
+ * @property {boolean|string|number} [declutter=false] Declutter images and text. Any truthy value will enable
+ * decluttering. Within a layer, a feature rendered before another has higher priority. All layers with the
+ * same `declutter` value will be decluttered together. The priority is determined by the drawing order of the
+ * layers with the same `declutter` value. Higher in the layer stack means higher priority. To declutter distinct
+ * layers or groups of layers separately, use different truthy values for `declutter`.
  * @property {import("../style/Style.js").StyleLike|null} [style] Layer style. When set to `null`, only
  * features that have their own style will be rendered. See {@link module:ol/style/Style~Style} for the default style
  * which will be used if this is not set.
@@ -111,7 +107,7 @@ class VectorTileLayer extends BaseVectorLayer {
     super(
       /** @type {import("./BaseVector.js").Options<import("../source/VectorTile.js").default>} */ (
         baseOptions
-      )
+      ),
     );
 
     /***
@@ -132,7 +128,7 @@ class VectorTileLayer extends BaseVectorLayer {
     const renderMode = options.renderMode || 'hybrid';
     assert(
       renderMode == 'hybrid' || renderMode == 'vector',
-      "`renderMode` must be `'hybrid'` or `'vector'`"
+      "`renderMode` must be `'hybrid'` or `'vector'`",
     );
 
     /**
@@ -145,7 +141,7 @@ class VectorTileLayer extends BaseVectorLayer {
     this.setUseInterimTilesOnError(
       options.useInterimTilesOnError !== undefined
         ? options.useInterimTilesOnError
-        : true
+        : true,
     );
 
     /**

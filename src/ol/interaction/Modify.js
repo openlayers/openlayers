@@ -370,16 +370,16 @@ class Modify extends PointerInteraction {
       features = new Collection(this.source_.getFeatures());
       this.source_.addEventListener(
         VectorEventType.ADDFEATURE,
-        this.handleSourceAdd_.bind(this)
+        this.handleSourceAdd_.bind(this),
       );
       this.source_.addEventListener(
         VectorEventType.REMOVEFEATURE,
-        this.handleSourceRemove_.bind(this)
+        this.handleSourceRemove_.bind(this),
       );
     }
     if (!features) {
       throw new Error(
-        'The modify interaction requires features, a source or a layer'
+        'The modify interaction requires features, a source or a layer',
       );
     }
     if (options.hitDetection) {
@@ -395,11 +395,11 @@ class Modify extends PointerInteraction {
     this.features_.forEach(this.addFeature_.bind(this));
     this.features_.addEventListener(
       CollectionEventType.ADD,
-      this.handleFeatureAdd_.bind(this)
+      this.handleFeatureAdd_.bind(this),
     );
     this.features_.addEventListener(
       CollectionEventType.REMOVE,
-      this.handleFeatureRemove_.bind(this)
+      this.handleFeatureRemove_.bind(this),
     );
 
     /**
@@ -467,8 +467,8 @@ class Modify extends PointerInteraction {
           new ModifyEvent(
             ModifyEventType.MODIFYSTART,
             this.featuresBeingModified_,
-            evt
-          )
+            evt,
+          ),
         );
       }
     }
@@ -487,7 +487,7 @@ class Modify extends PointerInteraction {
     }
     feature.removeEventListener(
       EventType.CHANGE,
-      this.boundHandleFeatureChange_
+      this.boundHandleFeatureChange_,
     );
   }
 
@@ -507,7 +507,7 @@ class Modify extends PointerInteraction {
         if (feature === node.feature) {
           nodesToRemove.push(node);
         }
-      }
+      },
     );
     for (let i = nodesToRemove.length - 1; i >= 0; --i) {
       const nodeToRemove = nodesToRemove[i];
@@ -790,7 +790,7 @@ class Modify extends PointerInteraction {
         .clone()
         .transform(userProjection, projection);
       circleGeometry = fromCircle(
-        /** @type {import("../geom/Circle.js").default} */ (circleGeometry)
+        /** @type {import("../geom/Circle.js").default} */ (circleGeometry),
       ).transform(projection, userProjection);
     }
     this.rBush_.insert(circleGeometry.getExtent(), circumferenceSegmentData);
@@ -948,7 +948,7 @@ class Modify extends PointerInteraction {
             const projection = evt.map.getView().getProjection();
             let radius = coordinateDistance(
               fromUserCoordinate(geometry.getCenter(), projection),
-              fromUserCoordinate(vertex, projection)
+              fromUserCoordinate(vertex, projection),
             );
             const userProjection = getUserProjection();
             if (userProjection) {
@@ -1016,7 +1016,7 @@ class Modify extends PointerInteraction {
           const closestVertex = closestOnSegmentData(
             pixelCoordinate,
             segmentDataMatch,
-            projection
+            projection,
           );
           if (
             coordinatesEqual(closestVertex, vertex) &&
@@ -1123,12 +1123,12 @@ class Modify extends PointerInteraction {
             .transform(userProjection, projection);
           circleGeometry = fromCircle(circleGeometry).transform(
             projection,
-            userProjection
+            userProjection,
           );
         }
         this.rBush_.update(
           circleGeometry.getExtent(),
-          circumferenceSegmentData
+          circumferenceSegmentData,
         );
       } else {
         this.rBush_.update(boundingExtent(segmentData.segment), segmentData);
@@ -1139,8 +1139,8 @@ class Modify extends PointerInteraction {
         new ModifyEvent(
           ModifyEventType.MODIFYEND,
           this.featuresBeingModified_,
-          evt
-        )
+          evt,
+        ),
       );
       this.featuresBeingModified_ = null;
     }
@@ -1186,7 +1186,7 @@ class Modify extends PointerInteraction {
         (feature, layer, geometry) => {
           if (geometry && geometry.getType() === 'Point') {
             geometry = new Point(
-              toUserCoordinate(geometry.getCoordinates(), projection)
+              toUserCoordinate(geometry.getCoordinates(), projection),
             );
           }
           const geom = geometry || feature.getGeometry();
@@ -1208,18 +1208,18 @@ class Modify extends PointerInteraction {
           }
           return true;
         },
-        {layerFilter}
+        {layerFilter},
       );
     }
     if (!nodes) {
       const viewExtent = fromUserExtent(
         createExtent(pixelCoordinate, tempExtent),
-        projection
+        projection,
       );
       const buffer = map.getView().getResolution() * this.pixelTolerance_;
       const box = toUserExtent(
         bufferExtent(viewExtent, buffer, tempExtent),
-        projection
+        projection,
       );
       nodes = this.rBush_.getInExtent(box);
     }
@@ -1247,7 +1247,7 @@ class Modify extends PointerInteraction {
           this.createOrUpdateVertexFeature_(
             vertex,
             [node.feature],
-            [node.geometry]
+            [node.geometry],
           );
         } else {
           const pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
@@ -1265,7 +1265,7 @@ class Modify extends PointerInteraction {
           this.createOrUpdateVertexFeature_(
             vertex,
             [node.feature],
-            [node.geometry]
+            [node.geometry],
           );
           const geometries = {};
           geometries[getUid(node.geometry)] = true;
@@ -1385,8 +1385,8 @@ class Modify extends PointerInteraction {
           new ModifyEvent(
             ModifyEventType.MODIFYEND,
             this.featuresBeingModified_,
-            evt
-          )
+            evt,
+          ),
         );
       }
 
@@ -1502,7 +1502,7 @@ class Modify extends PointerInteraction {
 
           this.rBush_.insert(
             boundingExtent(newSegmentData.segment),
-            newSegmentData
+            newSegmentData,
           );
         }
         this.updateSegmentIndices_(geometry, index, segmentData.depth, -1);
@@ -1547,7 +1547,7 @@ class Modify extends PointerInteraction {
         ) {
           segmentDataMatch.index += delta;
         }
-      }
+      },
     );
   }
 }
@@ -1574,7 +1574,7 @@ function compareIndexes(a, b) {
 function projectedDistanceToSegmentDataSquared(
   pointCoordinates,
   segmentData,
-  projection
+  projection,
 ) {
   const geometry = segmentData.geometry;
 
@@ -1586,13 +1586,13 @@ function projectedDistanceToSegmentDataSquared(
     if (segmentData.index === CIRCLE_CIRCUMFERENCE_INDEX) {
       const userProjection = getUserProjection();
       if (userProjection) {
-        circleGeometry = /** @type {import("../geom/Circle.js").default} */ (
-          circleGeometry.clone().transform(userProjection, projection)
-        );
+        circleGeometry = circleGeometry
+          .clone()
+          .transform(userProjection, projection);
       }
       const distanceToCenterSquared = squaredCoordinateDistance(
         circleGeometry.getCenter(),
-        fromUserCoordinate(pointCoordinates, projection)
+        fromUserCoordinate(pointCoordinates, projection),
       );
       const distanceToCircumference =
         Math.sqrt(distanceToCenterSquared) - circleGeometry.getRadius();
@@ -1628,15 +1628,15 @@ function closestOnSegmentData(pointCoordinates, segmentData, projection) {
     );
     const userProjection = getUserProjection();
     if (userProjection) {
-      circleGeometry = /** @type {import("../geom/Circle.js").default} */ (
-        circleGeometry.clone().transform(userProjection, projection)
-      );
+      circleGeometry = circleGeometry
+        .clone()
+        .transform(userProjection, projection);
     }
     return toUserCoordinate(
       circleGeometry.getClosestPoint(
-        fromUserCoordinate(pointCoordinates, projection)
+        fromUserCoordinate(pointCoordinates, projection),
       ),
-      projection
+      projection,
     );
   }
   const coordinate = fromUserCoordinate(pointCoordinates, projection);
@@ -1644,7 +1644,7 @@ function closestOnSegmentData(pointCoordinates, segmentData, projection) {
   tempSegment[1] = fromUserCoordinate(segmentData.segment[1], projection);
   return toUserCoordinate(
     closestOnSegment(coordinate, tempSegment),
-    projection
+    projection,
   );
 }
 

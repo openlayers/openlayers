@@ -21,7 +21,7 @@ const feature = new Feature(
   new LineString([
     [-4000000, 0],
     [4000000, 0],
-  ])
+  ]),
 );
 
 const vector = new VectorLayer({
@@ -53,7 +53,7 @@ map.on('singleclick', function (e) {
     },
     {
       hitTolerance: hitTolerance,
-    }
+    },
   );
   if (hit) {
     style.getStroke().setColor('green');
@@ -82,7 +82,7 @@ const changeHitTolerance = function () {
     hitTolerance + 1,
     hitTolerance + 0.5,
     0,
-    2 * Math.PI
+    2 * Math.PI,
   );
   ctx.fill();
   ctx.stroke();

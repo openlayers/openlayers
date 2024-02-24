@@ -39,6 +39,6 @@ fetch(capabilitiesUrl)
     map.addLayer(
       new TileLayer({
         source: new WMTS(options),
-      })
+      }),
     );
   });

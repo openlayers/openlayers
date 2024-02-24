@@ -33,7 +33,7 @@ import {isEmpty} from '../obj.js';
  */
 
 /**
- * @template {import("../Feature.js").FeatureClass} FeatureOrRenderFeature
+ * @template {import("../Feature.js").FeatureClass} FeatureClassToFeature
  * @typedef {Object} Options
  *
  * @property {import("../proj.js").ProjectionLike} [dataProjection='EPSG:4326'] Default data projection.
@@ -44,7 +44,7 @@ import {isEmpty} from '../obj.js';
  * the geometry_name field in the feature GeoJSON. If set to `true` the GeoJSON reader
  * will look for that field to set the geometry name. If both this field is set to `true`
  * and a `geometryName` is provided, the `geometryName` will take precedence.
- * @property {FeatureOrRenderFeature} [featureClass] Feature class
+ * @property {FeatureClassToFeature} [featureClass] Feature class
  * to be used when reading features. The default is {@link module:ol/Feature~Feature}. If performance is
  * the primary concern, and features are not going to be modified or round-tripped through the format,
  * consider using {@link module:ol/render/Feature~RenderFeature}
@@ -71,7 +71,7 @@ class GeoJSON extends JSONFeature {
      * @type {import("../proj/Projection.js").default}
      */
     this.dataProjection = getProjection(
-      options.dataProjection ? options.dataProjection : 'EPSG:4326'
+      options.dataProjection ? options.dataProjection : 'EPSG:4326',
     );
 
     if (options.featureProjection) {
@@ -134,7 +134,7 @@ class GeoJSON extends JSONFeature {
           id: geoJSONFeature['id'],
           properties: geoJSONFeature['properties'],
         },
-        options
+        options,
       );
     }
 
@@ -175,7 +175,7 @@ class GeoJSON extends JSONFeature {
       for (let i = 0, ii = geoJSONFeatures.length; i < ii; ++i) {
         const featureObject = this.readFeatureFromObject(
           geoJSONFeatures[i],
-          options
+          options,
         );
         if (!featureObject) {
           continue;
@@ -314,7 +314,7 @@ function readGeometryInternal(object, options) {
     }
     case 'LineString': {
       geometry = readLineStringGeometry(
-        /** @type {GeoJSONLineString} */ (object)
+        /** @type {GeoJSONLineString} */ (object),
       );
       break;
     }
@@ -324,25 +324,25 @@ function readGeometryInternal(object, options) {
     }
     case 'MultiPoint': {
       geometry = readMultiPointGeometry(
-        /** @type {GeoJSONMultiPoint} */ (object)
+        /** @type {GeoJSONMultiPoint} */ (object),
       );
       break;
     }
     case 'MultiLineString': {
       geometry = readMultiLineStringGeometry(
-        /** @type {GeoJSONMultiLineString} */ (object)
+        /** @type {GeoJSONMultiLineString} */ (object),
       );
       break;
     }
     case 'MultiPolygon': {
       geometry = readMultiPolygonGeometry(
-        /** @type {GeoJSONMultiPolygon} */ (object)
+        /** @type {GeoJSONMultiPolygon} */ (object),
       );
       break;
     }
     case 'GeometryCollection': {
       geometry = readGeometryCollectionGeometry(
-        /** @type {GeoJSONGeometryCollection} */ (object)
+        /** @type {GeoJSONGeometryCollection} */ (object),
       );
       break;
     }
@@ -376,7 +376,7 @@ function readGeometryCollectionGeometry(object, options) {
      */
     function (geometry) {
       return readGeometryInternal(geometry, options);
-    }
+    },
   );
   return geometries;
 }
@@ -451,7 +451,7 @@ function readMultiPolygonGeometry(object) {
     flatCoordinates,
     0,
     coordinates,
-    stride
+    stride,
   );
   return {
     type: 'MultiPolygon',
@@ -494,42 +494,42 @@ function writeGeometry(geometry, options) {
     case 'Point': {
       geoJSON = writePointGeometry(
         /** @type {import("../geom/Point.js").default} */ (geometry),
-        options
+        options,
       );
       break;
     }
     case 'LineString': {
       geoJSON = writeLineStringGeometry(
         /** @type {import("../geom/LineString.js").default} */ (geometry),
-        options
+        options,
       );
       break;
     }
     case 'Polygon': {
       geoJSON = writePolygonGeometry(
         /** @type {import("../geom/Polygon.js").default} */ (geometry),
-        options
+        options,
       );
       break;
     }
     case 'MultiPoint': {
       geoJSON = writeMultiPointGeometry(
         /** @type {import("../geom/MultiPoint.js").default} */ (geometry),
-        options
+        options,
       );
       break;
     }
     case 'MultiLineString': {
       geoJSON = writeMultiLineStringGeometry(
         /** @type {import("../geom/MultiLineString.js").default} */ (geometry),
-        options
+        options,
       );
       break;
     }
     case 'MultiPolygon': {
       geoJSON = writeMultiPolygonGeometry(
         /** @type {import("../geom/MultiPolygon.js").default} */ (geometry),
-        options
+        options,
       );
       break;
     }
@@ -538,7 +538,7 @@ function writeGeometry(geometry, options) {
         /** @type {import("../geom/GeometryCollection.js").default} */ (
           geometry
         ),
-        options
+        options,
       );
       break;
     }

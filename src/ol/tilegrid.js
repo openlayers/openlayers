@@ -43,7 +43,7 @@ export function wrapX(tileGrid, tileCoord, projection) {
   if (!containsCoordinate(projectionExtent, center)) {
     const worldWidth = getWidth(projectionExtent);
     const worldsAway = Math.ceil(
-      (projectionExtent[0] - center[0]) / worldWidth
+      (projectionExtent[0] - center[0]) / worldWidth,
     );
     center[0] += worldWidth * worldsAway;
     return tileGrid.getTileCoordForCoordAndZ(center, z);
@@ -104,7 +104,7 @@ export function createXYZ(options) {
       extent,
       xyzOptions.maxZoom,
       xyzOptions.tileSize,
-      xyzOptions.maxResolution
+      xyzOptions.maxResolution,
     ),
   };
   return new TileGrid(gridOptions);

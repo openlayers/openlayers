@@ -16,7 +16,7 @@ describe('ol/geom/flat/flip.js', function () {
     it('can flip XY coordinates in place', function () {
       const flatCoordinates = [1, 2, 3, 4];
       expect(flipXY(flatCoordinates, 0, 4, 2, flatCoordinates)).to.be(
-        flatCoordinates
+        flatCoordinates,
       );
       expect(flatCoordinates).to.eql([2, 1, 4, 3]);
     });
@@ -24,7 +24,7 @@ describe('ol/geom/flat/flip.js', function () {
     it('can flip XY coordinates in place while preserving other dimensions', function () {
       const flatCoordinates = [1, 2, 3, 4, 5, 6, 7, 8, 9];
       expect(flipXY(flatCoordinates, 0, 9, 3, flatCoordinates)).to.be(
-        flatCoordinates
+        flatCoordinates,
       );
       expect(flatCoordinates).to.eql([2, 1, 3, 5, 4, 6, 8, 7, 9]);
     });

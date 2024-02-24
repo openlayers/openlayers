@@ -10,6 +10,7 @@ import {
   OBJECT_PROPERTY_NODE_FACTORY,
   XML_SCHEMA_INSTANCE_URI,
   createElementNS,
+  isDocument,
   makeArrayPusher,
   makeArraySerializer,
   makeChildAppender,
@@ -17,6 +18,7 @@ import {
   makeSequence,
   makeSimpleNodeFactory,
   makeStructureNS,
+  parse,
   parseNode,
   pushParseAndPop,
   pushSerializeAndPop,
@@ -74,6 +76,12 @@ const GPX_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
+ * @typedef {Object} GPXLink
+ * @property {string} [text] text
+ * @property {string} [type] type
+ */
+
+/**
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
@@ -81,6 +89,71 @@ const GPX_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 const LINK_PARSERS = makeStructureNS(NAMESPACE_URIS, {
   'text': makeObjectPropertySetter(readString, 'linkText'),
   'type': makeObjectPropertySetter(readString, 'linkType'),
+});
+
+/**
+ * @typedef {Object} GPXAuthor
+ * @property {string} [name] name
+ * @property {string} [email] email
+ * @property {GPXLink} [link] link
+ */
+
+/**
+ * @const
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ */
+// @ts-ignore
+const AUTHOR_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+  'name': makeObjectPropertySetter(readString),
+  'email': parseEmail,
+  'link': parseLink,
+});
+
+/**
+ * @typedef {Object} GPXMetadata
+ * @property {string} [name] name
+ * @property {string} [desc] desc
+ * @property {GPXAuthor} [author] author
+ * @property {GPXLink} [link] link
+ * @property {number} [time] time
+ * @property {string} [keywords] keywords
+ * @property {Array<number>} [bounds] bounds
+ * @property {Object} [extensions] extensions
+ *
+ */
+
+/**
+ * @const
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ */
+// @ts-ignore
+const METADATA_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+  'name': makeObjectPropertySetter(readString),
+  'desc': makeObjectPropertySetter(readString),
+  'author': makeObjectPropertySetter(readAuthor),
+  'copyright': makeObjectPropertySetter(readCopyright),
+  'link': parseLink,
+  'time': makeObjectPropertySetter(readDateTime),
+  'keywords': makeObjectPropertySetter(readString),
+  'bounds': parseBounds,
+  'extensions': parseExtensions,
+});
+
+/**
+ * @typedef {Object} GPXCopyright
+ * @property {string} [author] author
+ * @property {number} [year] year
+ * @property {string} [license] license
+ */
+
+/**
+ * @const
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ */
+// @ts-ignore
+const COPYRIGHT_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+  'year': makeObjectPropertySetter(readPositiveInteger),
+  'license': makeObjectPropertySetter(readString),
 });
 
 /**
@@ -166,6 +239,66 @@ class GPX extends XMLFeature {
   }
 
   /**
+   * Reads a GPX file's metadata tag, reading among other things:
+   *   - the name and description of this GPX
+   *   - its author
+   *   - the copyright associated with this GPX file
+   *
+   * Will return null if no metadata tag is present (or no valid source is given).
+   *
+   * @param {Document|Element|Object|string} source Source.
+   * @return {GPXMetadata | null} Metadata
+   * @api
+   */
+  readMetadata(source) {
+    if (!source) {
+      return null;
+    }
+    if (typeof source === 'string') {
+      return this.readMetadataFromDocument(parse(source));
+    }
+    if (isDocument(source)) {
+      return this.readMetadataFromDocument(/** @type {Document} */ (source));
+    }
+    return this.readMetadataFromNode(source);
+  }
+
+  /**
+   * @param {Document} doc Document.
+   * @return {GPXMetadata | null} Metadata
+   */
+  readMetadataFromDocument(doc) {
+    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
+      if (n.nodeType === Node.ELEMENT_NODE) {
+        const metadata = this.readMetadataFromNode(/** @type {Element} */ (n));
+        if (metadata) {
+          return metadata;
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
+   * @param {Element} node Node.
+   * @return {Object} Metadata
+   */
+  readMetadataFromNode(node) {
+    if (!NAMESPACE_URIS.includes(node.namespaceURI)) {
+      return null;
+    }
+    for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
+      if (
+        NAMESPACE_URIS.includes(n.namespaceURI) &&
+        n.localName === 'metadata'
+      ) {
+        return pushParseAndPop({}, METADATA_PARSERS, n, []);
+      }
+    }
+    return null;
+  }
+
+  /**
    * @param {Element} node Node.
    * @param {import("./Feature.js").ReadOptions} [options] Options.
    * @return {import("../Feature.js").default} Feature.
@@ -228,7 +361,7 @@ class GPX extends XMLFeature {
     gpx.setAttributeNS(
       XML_SCHEMA_INSTANCE_URI,
       'xsi:schemaLocation',
-      SCHEMA_LOCATION
+      SCHEMA_LOCATION,
     );
     gpx.setAttribute('version', '1.1');
     gpx.setAttribute('creator', 'OpenLayers');
@@ -239,7 +372,7 @@ class GPX extends XMLFeature {
       GPX_SERIALIZERS,
       GPX_NODE_FACTORY,
       features,
-      [options]
+      [options],
     );
     return gpx;
   }
@@ -526,7 +659,7 @@ function GPX_NODE_FACTORY(value, objectStack, nodeName) {
 function appendCoordinate(flatCoordinates, layoutOptions, node, values) {
   flatCoordinates.push(
     parseFloat(node.getAttribute('lon')),
-    parseFloat(node.getAttribute('lat'))
+    parseFloat(node.getAttribute('lat')),
   );
   if ('ele' in values) {
     flatCoordinates.push(/** @type {number} */ (values['ele']));
@@ -587,6 +720,72 @@ function applyLayoutOptions(layoutOptions, flatCoordinates, ends) {
     }
   }
   return layout;
+}
+
+/**
+ * @param {Element} node Node.
+ * @param {Array<any>} objectStack Object stack.
+ * @return {GPXAuthor | undefined} Person object.
+ */
+function readAuthor(node, objectStack) {
+  const values = pushParseAndPop({}, AUTHOR_PARSERS, node, objectStack);
+  if (values) {
+    return values;
+  }
+  return undefined;
+}
+
+/**
+ * @param {Element} node Node.
+ * @param {Array<any>} objectStack Object stack.
+ * @return {GPXCopyright | undefined} Person object.
+ */
+function readCopyright(node, objectStack) {
+  const values = pushParseAndPop({}, COPYRIGHT_PARSERS, node, objectStack);
+  if (values) {
+    const author = node.getAttribute('author');
+    if (author !== null) {
+      values['author'] = author;
+    }
+    return values;
+  }
+  return undefined;
+}
+
+/**
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
+ */
+function parseBounds(node, objectStack) {
+  const values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
+  const minlat = node.getAttribute('minlat');
+  const minlon = node.getAttribute('minlon');
+  const maxlat = node.getAttribute('maxlat');
+  const maxlon = node.getAttribute('maxlon');
+  if (
+    minlon !== null &&
+    minlat !== null &&
+    maxlon !== null &&
+    maxlat !== null
+  ) {
+    values['bounds'] = [
+      [parseFloat(minlon), parseFloat(minlat)],
+      [parseFloat(maxlon), parseFloat(maxlat)],
+    ];
+  }
+}
+
+/**
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
+ */
+function parseEmail(node, objectStack) {
+  const values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
+  const id = node.getAttribute('id');
+  const domain = node.getAttribute('domain');
+  if (id !== null && domain !== null) {
+    values['email'] = `${id}@${domain}`;
+  }
 }
 
 /**
@@ -681,7 +880,7 @@ function readRte(node, objectStack) {
     },
     RTE_PARSERS,
     node,
-    objectStack
+    objectStack,
   );
   if (!values) {
     return undefined;
@@ -717,7 +916,7 @@ function readTrk(node, objectStack) {
     },
     TRK_PARSERS,
     node,
-    objectStack
+    objectStack,
   );
   if (!values) {
     return undefined;
@@ -777,7 +976,7 @@ function writeLink(node, value, objectStack) {
     OBJECT_PROPERTY_NODE_FACTORY,
     link,
     objectStack,
-    LINK_SEQUENCE
+    LINK_SEQUENCE,
   );
 }
 
@@ -826,7 +1025,7 @@ function writeWptType(node, coordinate, objectStack) {
     OBJECT_PROPERTY_NODE_FACTORY,
     values,
     objectStack,
-    orderedKeys
+    orderedKeys,
   );
 }
 
@@ -859,7 +1058,7 @@ function writeRte(node, feature, objectStack) {
     OBJECT_PROPERTY_NODE_FACTORY,
     values,
     objectStack,
-    orderedKeys
+    orderedKeys,
   );
 }
 
@@ -892,7 +1091,7 @@ function writeTrk(node, feature, objectStack) {
     OBJECT_PROPERTY_NODE_FACTORY,
     values,
     objectStack,
-    orderedKeys
+    orderedKeys,
   );
 }
 
@@ -911,7 +1110,7 @@ function writeTrkSeg(node, lineString, objectStack) {
     TRKSEG_SERIALIZERS,
     TRKSEG_NODE_FACTORY,
     lineString.getCoordinates(),
-    objectStack
+    objectStack,
   );
 }
 

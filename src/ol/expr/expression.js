@@ -70,6 +70,8 @@ import {isStringColor} from '../color.js';
  *     `input` and `stopX` values must all be of type `number`. `outputX` values can be `number` or `color` values.
  *     Note: `input` will be clamped between `stop1` and `stopN`, meaning that all output values will be comprised
  *     between `output1` and `outputN`.
+ *   * `['coalesce', value1, value2, ...]` returns the first value in the list which is not null or undefined.
+ *     An example would be to provide a default value for get: ['coalesce',['get','propertynanme'],'default value']]
  *
  * * Logical operators:
  *   * `['<', value1, value2]` returns `true` if `value1` is strictly lower than `value2`, or `false` otherwise.
@@ -219,6 +221,7 @@ export class CallExpression {
  * @property {Set<string>} variables Variables referenced with the 'var' operator.
  * @property {Set<string>} properties Properties referenced with the 'get' operator.
  * @property {boolean} featureId The style uses the feature id.
+ * @property {boolean} geometryType The style uses the feature geometry type.
  * @property {import("../style/flat.js").FlatStyle|import("../style/webgl.js").WebGLStyle} style The style being parsed
  */
 
@@ -230,6 +233,7 @@ export function newParsingContext() {
     variables: new Set(),
     properties: new Set(),
     featureId: false,
+    geometryType: false,
     style: {},
   };
 }
@@ -355,6 +359,7 @@ export const Ops = {
   Match: 'match',
   Between: 'between',
   Interpolate: 'interpolate',
+  Coalesce: 'coalesce',
   Case: 'case',
   In: 'in',
   Number: 'number',
@@ -381,79 +386,79 @@ const parsers = {
         return getTypeFromHint(
           /** @type {string} */ (
             /** @type {LiteralExpression} */ (typeHint).value
-          )
+          ),
         );
       }
       return AnyType;
     },
     withArgsCount(1, 2),
-    withGetArgs
+    withGetArgs,
   ),
   [Ops.Var]: createParser(
     ([firstArg]) => firstArg.type,
     withArgsCount(1, 1),
-    withVarArgs
+    withVarArgs,
   ),
   [Ops.Id]: createParser(NumberType | StringType, withNoArgs, usesFeatureId),
   [Ops.Concat]: createParser(
     StringType,
     withArgsCount(2, Infinity),
-    parseArgsOfType(AnyType)
+    parseArgsOfType(AnyType),
   ),
-  [Ops.GeometryType]: createParser(StringType, withNoArgs),
+  [Ops.GeometryType]: createParser(StringType, withNoArgs, usesGeometryType),
   [Ops.Resolution]: createParser(NumberType, withNoArgs),
   [Ops.Zoom]: createParser(NumberType, withNoArgs),
   [Ops.Time]: createParser(NumberType, withNoArgs),
   [Ops.Any]: createParser(
     BooleanType,
     withArgsCount(2, Infinity),
-    parseArgsOfType(BooleanType)
+    parseArgsOfType(BooleanType),
   ),
   [Ops.All]: createParser(
     BooleanType,
     withArgsCount(2, Infinity),
-    parseArgsOfType(BooleanType)
+    parseArgsOfType(BooleanType),
   ),
   [Ops.Not]: createParser(
     BooleanType,
     withArgsCount(1, 1),
-    parseArgsOfType(BooleanType)
+    parseArgsOfType(BooleanType),
   ),
   [Ops.Equal]: createParser(
     BooleanType,
     withArgsCount(2, 2),
     parseArgsOfType(AnyType),
-    narrowArgsType
+    narrowArgsType,
   ),
   [Ops.NotEqual]: createParser(
     BooleanType,
     withArgsCount(2, 2),
     parseArgsOfType(AnyType),
-    narrowArgsType
+    narrowArgsType,
   ),
   [Ops.GreaterThan]: createParser(
     BooleanType,
     withArgsCount(2, 2),
     parseArgsOfType(AnyType),
-    narrowArgsType
+    narrowArgsType,
   ),
   [Ops.GreaterThanOrEqualTo]: createParser(
     BooleanType,
     withArgsCount(2, 2),
     parseArgsOfType(AnyType),
-    narrowArgsType
+    narrowArgsType,
   ),
   [Ops.LessThan]: createParser(
     BooleanType,
     withArgsCount(2, 2),
     parseArgsOfType(AnyType),
-    narrowArgsType
+    narrowArgsType,
   ),
   [Ops.LessThanOrEqualTo]: createParser(
     BooleanType,
     withArgsCount(2, 2),
     parseArgsOfType(AnyType),
-    narrowArgsType
+    narrowArgsType,
   ),
   [Ops.Multiply]: createParser(
     (parsedArgs) => {
@@ -465,77 +470,90 @@ const parsers = {
     },
     withArgsCount(2, Infinity),
     parseArgsOfType(NumberType | ColorType),
-    narrowArgsType
+    narrowArgsType,
+  ),
+  [Ops.Coalesce]: createParser(
+    (parsedArgs) => {
+      let type = AnyType;
+      for (let i = 1; i < parsedArgs.length; i += 2) {
+        type &= parsedArgs[i].type;
+      }
+      type &= parsedArgs[parsedArgs.length - 1].type;
+      return type;
+    },
+    withArgsCount(2, Infinity),
+    parseArgsOfType(AnyType),
+    narrowArgsType,
   ),
   [Ops.Divide]: createParser(
     NumberType,
     withArgsCount(2, 2),
-    parseArgsOfType(NumberType)
+    parseArgsOfType(NumberType),
   ),
   [Ops.Add]: createParser(
     NumberType,
     withArgsCount(2, Infinity),
-    parseArgsOfType(NumberType)
+    parseArgsOfType(NumberType),
   ),
   [Ops.Subtract]: createParser(
     NumberType,
     withArgsCount(2, 2),
-    parseArgsOfType(NumberType)
+    parseArgsOfType(NumberType),
   ),
   [Ops.Clamp]: createParser(
     NumberType,
     withArgsCount(3, 3),
-    parseArgsOfType(NumberType)
+    parseArgsOfType(NumberType),
   ),
   [Ops.Mod]: createParser(
     NumberType,
     withArgsCount(2, 2),
-    parseArgsOfType(NumberType)
+    parseArgsOfType(NumberType),
   ),
   [Ops.Pow]: createParser(
     NumberType,
     withArgsCount(2, 2),
-    parseArgsOfType(NumberType)
+    parseArgsOfType(NumberType),
   ),
   [Ops.Abs]: createParser(
     NumberType,
     withArgsCount(1, 1),
-    parseArgsOfType(NumberType)
+    parseArgsOfType(NumberType),
   ),
   [Ops.Floor]: createParser(
     NumberType,
     withArgsCount(1, 1),
-    parseArgsOfType(NumberType)
+    parseArgsOfType(NumberType),
   ),
   [Ops.Ceil]: createParser(
     NumberType,
     withArgsCount(1, 1),
-    parseArgsOfType(NumberType)
+    parseArgsOfType(NumberType),
   ),
   [Ops.Round]: createParser(
     NumberType,
     withArgsCount(1, 1),
-    parseArgsOfType(NumberType)
+    parseArgsOfType(NumberType),
   ),
   [Ops.Sin]: createParser(
     NumberType,
     withArgsCount(1, 1),
-    parseArgsOfType(NumberType)
+    parseArgsOfType(NumberType),
   ),
   [Ops.Cos]: createParser(
     NumberType,
     withArgsCount(1, 1),
-    parseArgsOfType(NumberType)
+    parseArgsOfType(NumberType),
   ),
   [Ops.Atan]: createParser(
     NumberType,
     withArgsCount(1, 2),
-    parseArgsOfType(NumberType)
+    parseArgsOfType(NumberType),
   ),
   [Ops.Sqrt]: createParser(
     NumberType,
     withArgsCount(1, 1),
-    parseArgsOfType(NumberType)
+    parseArgsOfType(NumberType),
   ),
   [Ops.Match]: createParser(
     (parsedArgs) => {
@@ -548,12 +566,12 @@ const parsers = {
     },
     withArgsCount(4, Infinity),
     withEvenArgs,
-    parseMatchArgs
+    parseMatchArgs,
   ),
   [Ops.Between]: createParser(
     BooleanType,
     withArgsCount(3, 3),
-    parseArgsOfType(NumberType)
+    parseArgsOfType(NumberType),
   ),
   [Ops.Interpolate]: createParser(
     (parsedArgs) => {
@@ -565,7 +583,7 @@ const parsers = {
     },
     withArgsCount(6, Infinity),
     withEvenArgs,
-    parseInterpolateArgs
+    parseInterpolateArgs,
   ),
   [Ops.Case]: createParser(
     (parsedArgs) => {
@@ -578,18 +596,18 @@ const parsers = {
     },
     withArgsCount(3, Infinity),
     withOddArgs,
-    parseCaseArgs
+    parseCaseArgs,
   ),
   [Ops.In]: createParser(BooleanType, withArgsCount(2, 2), parseInArgs),
   [Ops.Number]: createParser(
     NumberType,
     withArgsCount(1, Infinity),
-    parseArgsOfType(AnyType)
+    parseArgsOfType(AnyType),
   ),
   [Ops.String]: createParser(
     StringType,
     withArgsCount(1, Infinity),
-    parseArgsOfType(AnyType)
+    parseArgsOfType(AnyType),
   ),
   [Ops.Array]: createParser(
     (parsedArgs) => {
@@ -598,17 +616,17 @@ const parsers = {
         : NumberArrayType;
     },
     withArgsCount(1, Infinity),
-    parseArgsOfType(NumberType)
+    parseArgsOfType(NumberType),
   ),
   [Ops.Color]: createParser(
     ColorType,
     withArgsCount(1, 4),
-    parseArgsOfType(NumberType)
+    parseArgsOfType(NumberType),
   ),
   [Ops.Band]: createParser(
     NumberType,
     withArgsCount(1, 3),
-    parseArgsOfType(NumberType)
+    parseArgsOfType(NumberType),
   ),
   [Ops.Palette]: createParser(ColorType, withArgsCount(2, 2), parsePaletteArgs),
 };
@@ -661,8 +679,8 @@ function withVarArgs(encoded, context, parsedArgs, typeHint) {
   if (typeHint && !overlapsType(typeHint, arg.type)) {
     throw new Error(
       `The variable ${varName} has type ${typeName(
-        arg.type
-      )} but the following type was expected: ${typeName(typeHint)}`
+        arg.type,
+      )} but the following type was expected: ${typeName(typeHint)}`,
     );
   }
   return [arg];
@@ -673,6 +691,13 @@ function withVarArgs(encoded, context, parsedArgs, typeHint) {
  */
 function usesFeatureId(encoded, context) {
   context.featureId = true;
+}
+
+/**
+ * @type ArgValidator
+ */
+function usesGeometryType(encoded, context) {
+  context.geometryType = true;
 }
 
 /**
@@ -699,7 +724,7 @@ function withArgsCount(minArgs, maxArgs) {
       if (argCount !== minArgs) {
         const plural = minArgs === 1 ? '' : 's';
         throw new Error(
-          `Expected ${minArgs} argument${plural} for ${operation}, got ${argCount}`
+          `Expected ${minArgs} argument${plural} for ${operation}, got ${argCount}`,
         );
       }
     } else if (argCount < minArgs || argCount > maxArgs) {
@@ -708,7 +733,7 @@ function withArgsCount(minArgs, maxArgs) {
           ? `${minArgs} or more`
           : `${minArgs} to ${maxArgs}`;
       throw new Error(
-        `Expected ${range} arguments for ${operation}, got ${argCount}`
+        `Expected ${range} arguments for ${operation}, got ${argCount}`,
       );
     }
   };
@@ -733,7 +758,7 @@ function parseArgsOfType(argType) {
         const expectedType = typeName(expression.type);
         throw new Error(
           `Unexpected type for argument ${i} of ${operation} operation` +
-            `, got ${gotType} but expected ${expectedType}`
+            `, got ${gotType} but expected ${expectedType}`,
         );
       }
       expression.type &= argType;
@@ -758,7 +783,7 @@ function narrowArgsType(encoded, context, parsedArgs) {
 
   if (sameType === NoneType) {
     throw new Error(
-      `No common type could be found for arguments of ${operation} operation`
+      `No common type could be found for arguments of ${operation} operation`,
     );
   }
 
@@ -779,8 +804,8 @@ function withOddArgs(encoded, context) {
   if (argCount % 2 === 0) {
     throw new Error(
       `An odd amount of arguments was expected for operation ${operation}, got ${JSON.stringify(
-        argCount
-      )} instead`
+        argCount,
+      )} instead`,
     );
   }
 }
@@ -794,8 +819,8 @@ function withEvenArgs(encoded, context) {
   if (argCount % 2 === 1) {
     throw new Error(
       `An even amount of arguments was expected for operation ${operation}, got ${JSON.stringify(
-        argCount
-      )} instead`
+        argCount,
+      )} instead`,
     );
   }
 }
@@ -828,14 +853,15 @@ function parseMatchArgs(encoded, context, parsedArgs, typeHint) {
   if (!overlapsType(expectedInputType, inputType)) {
     throw new Error(
       `Expected an input of type ${typeName(
-        expectedInputType
-      )} for the interpolate operation` + `, got ${typeName(inputType)} instead`
+        expectedInputType,
+      )} for the interpolate operation` +
+        `, got ${typeName(inputType)} instead`,
     );
   }
   if (isType(outputType, NoneType)) {
     throw new Error(
       `Could not find a common output type for the following match operation: ` +
-        JSON.stringify(encoded)
+        JSON.stringify(encoded),
     );
   }
 
@@ -869,7 +895,7 @@ function parseInterpolateArgs(encoded, context, parsedArgs, typeHint) {
       if (typeof interpolation !== 'number') {
         throw new Error(
           `Expected a number base for exponential interpolation` +
-            `, got ${JSON.stringify(interpolation)} instead`
+            `, got ${JSON.stringify(interpolation)} instead`,
         );
       }
       break;
@@ -878,7 +904,7 @@ function parseInterpolateArgs(encoded, context, parsedArgs, typeHint) {
   }
   if (!interpolation) {
     throw new Error(
-      `Invalid interpolation type: ${JSON.stringify(interpolationType)}`
+      `Invalid interpolation type: ${JSON.stringify(interpolationType)}`,
     );
   }
   interpolation = parse(interpolation, context);
@@ -888,7 +914,7 @@ function parseInterpolateArgs(encoded, context, parsedArgs, typeHint) {
   if (!overlapsType(NumberType, input.type)) {
     throw new Error(
       `Expected an input of type number for the interpolate operation` +
-        `, got ${typeName(input.type)} instead`
+        `, got ${typeName(input.type)} instead`,
     );
   }
   input = parse(encoded[2], context, NumberType); // parse again with narrower output
@@ -899,14 +925,14 @@ function parseInterpolateArgs(encoded, context, parsedArgs, typeHint) {
     if (!overlapsType(NumberType, stop.type)) {
       throw new Error(
         `Expected all stop input values in the interpolate operation to be of type number` +
-          `, got ${typeName(stop.type)} at position ${i + 2} instead`
+          `, got ${typeName(stop.type)} at position ${i + 2} instead`,
       );
     }
     let output = parse(encoded[i + 4], context);
     if (!overlapsType(NumberType | ColorType, output.type)) {
       throw new Error(
         `Expected all stop output values in the interpolate operation to be a number or color` +
-          `, got ${typeName(output.type)} at position ${i + 3} instead`
+          `, got ${typeName(output.type)} at position ${i + 3} instead`,
       );
     }
     // parse again with narrower types
@@ -935,7 +961,7 @@ function parseCaseArgs(encoded, context, parsedArgs, typeHint) {
     if (!overlapsType(BooleanType, condition.type)) {
       throw new Error(
         `Expected all conditions in the case operation to be of type boolean` +
-          `, got ${typeName(condition.type)} at position ${i} instead`
+          `, got ${typeName(condition.type)} at position ${i} instead`,
       );
     }
     outputType &= output.type;
@@ -946,7 +972,7 @@ function parseCaseArgs(encoded, context, parsedArgs, typeHint) {
   if (isType(outputType, NoneType)) {
     throw new Error(
       `Could not find a common output type for the following case operation: ` +
-        JSON.stringify(encoded)
+        JSON.stringify(encoded),
     );
   }
 
@@ -957,7 +983,7 @@ function parseCaseArgs(encoded, context, parsedArgs, typeHint) {
   args[args.length - 1] = parse(
     encoded[encoded.length - 1],
     context,
-    outputType
+    outputType,
   );
 
   return args;
@@ -971,18 +997,18 @@ function parseInArgs(encoded, context) {
   let haystack = /** @type {any} */ (encoded[2]);
   if (!Array.isArray(haystack)) {
     throw new Error(
-      `The "in" operator was provided a literal value which was not an array as second argument.`
+      `The "in" operator was provided a literal value which was not an array as second argument.`,
     );
   }
   if (typeof haystack[0] === 'string') {
     if (haystack[0] !== 'literal') {
       throw new Error(
-        `For the "in" operator, a string array should be wrapped in a "literal" operator to disambiguate from expressions.`
+        `For the "in" operator, a string array should be wrapped in a "literal" operator to disambiguate from expressions.`,
       );
     }
     if (!Array.isArray(haystack[1])) {
       throw new Error(
-        `The "in" operator was provided a literal value which was not an array as second argument.`
+        `The "in" operator was provided a literal value which was not an array as second argument.`,
       );
     }
     haystack = haystack[1];
@@ -998,7 +1024,7 @@ function parseInArgs(encoded, context) {
   if (isType(needleType, NoneType)) {
     throw new Error(
       `Could not find a common type for the following in operation: ` +
-        JSON.stringify(encoded)
+        JSON.stringify(encoded),
     );
   }
 
@@ -1014,8 +1040,8 @@ function parsePaletteArgs(encoded, context) {
   if (index.type !== NumberType) {
     throw new Error(
       `The first argument of palette must be an number, got ${typeName(
-        index.type
-      )} instead`
+        index.type,
+      )} instead`,
     );
   }
   const colors = encoded[2];
@@ -1027,14 +1053,14 @@ function parsePaletteArgs(encoded, context) {
     const color = parse(colors[i], context, ColorType);
     if (!(color instanceof LiteralExpression)) {
       throw new Error(
-        `The palette color at index ${i} must be a literal value`
+        `The palette color at index ${i} must be a literal value`,
       );
     }
     if (!overlapsType(color.type, ColorType)) {
       throw new Error(
         `The palette color at index ${i} should be of type color, got ${typeName(
-          color.type
-        )} instead`
+          color.type,
+        )} instead`,
       );
     }
     parsedColors[i] = color;
@@ -1063,10 +1089,10 @@ function createParser(returnType, ...argValidators) {
       if (!overlapsType(actualType, typeHint)) {
         throw new Error(
           `The following expression was expected to return ${typeName(
-            typeHint
+            typeHint,
           )}, but returns ${typeName(actualType)} instead: ${JSON.stringify(
-            encoded
-          )}`
+            encoded,
+          )}`,
         );
       }
       actualType &= typeHint;
@@ -1074,8 +1100,8 @@ function createParser(returnType, ...argValidators) {
     if (actualType === NoneType) {
       throw new Error(
         `No matching type was found for the following expression: ${JSON.stringify(
-          encoded
-        )}`
+          encoded,
+        )}`,
       );
     }
     return new CallExpression(actualType, operator, ...parsedArgs);
@@ -1096,4 +1122,36 @@ function parseCallExpression(encoded, context, typeHint) {
     throw new Error(`Unknown operator: ${operator}`);
   }
   return parser(encoded, context, typeHint);
+}
+
+/**
+ * Returns a simplified geometry type suited for the `geometry-type` operator
+ * @param {import('../geom/Geometry.js').default|import('../render/Feature.js').default} geometry Geometry object
+ * @return {'Point'|'LineString'|'Polygon'|''} Simplified geometry type; empty string of no geometry found
+ */
+export function computeGeometryType(geometry) {
+  if (!geometry) {
+    return '';
+  }
+  const type = geometry.getType();
+  switch (type) {
+    case 'Point':
+    case 'LineString':
+    case 'Polygon':
+      return type;
+    case 'MultiPoint':
+    case 'MultiLineString':
+    case 'MultiPolygon':
+      return /** @type {'Point'|'LineString'|'Polygon'} */ (type.substring(5));
+    case 'Circle':
+      return 'Polygon';
+    case 'GeometryCollection':
+      return computeGeometryType(
+        /** @type {import("../geom/GeometryCollection.js").default} */ (
+          geometry
+        ).getGeometries()[0],
+      );
+    default:
+      return '';
+  }
 }

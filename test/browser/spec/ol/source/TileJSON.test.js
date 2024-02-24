@@ -76,19 +76,19 @@ describe('ol/source/TileJSON', function () {
       });
       expect(source.getState()).to.be('ready');
       expect(source.getTileUrlFunction()([0, 0, 0])).to.be(
-        'https://a.tiles.mapbox.com/v3/mapbox.geography-class/0/0/0.png'
+        'https://a.tiles.mapbox.com/v3/mapbox.geography-class/0/0/0.png',
       );
       expect(source.getTileUrlFunction()([1, 0, 0])).to.be(
-        'https://a.tiles.mapbox.com/v3/mapbox.geography-class/1/0/0.png'
+        'https://a.tiles.mapbox.com/v3/mapbox.geography-class/1/0/0.png',
       );
       expect(source.getTileUrlFunction()([1, 0, 1])).to.be(
-        'https://b.tiles.mapbox.com/v3/mapbox.geography-class/1/0/1.png'
+        'https://b.tiles.mapbox.com/v3/mapbox.geography-class/1/0/1.png',
       );
       expect(source.getTileUrlFunction()([1, 1, 0])).to.be(
-        'https://c.tiles.mapbox.com/v3/mapbox.geography-class/1/1/0.png'
+        'https://c.tiles.mapbox.com/v3/mapbox.geography-class/1/1/0.png',
       );
       expect(source.getTileUrlFunction()([1, 1, 1])).to.be(
-        'https://d.tiles.mapbox.com/v3/mapbox.geography-class/1/1/1.png'
+        'https://d.tiles.mapbox.com/v3/mapbox.geography-class/1/1/1.png',
       );
     });
 
@@ -108,13 +108,13 @@ describe('ol/source/TileJSON', function () {
       frameState.extent = transformExtent(
         [1, 51, 2, 52],
         'EPSG:4326',
-        'EPSG:3857'
+        'EPSG:3857',
       );
       expect(attributions(frameState)).to.eql(['TileMill']);
       frameState.extent = transformExtent(
         [2, 51, 3, 52],
         'EPSG:4326',
-        'EPSG:3857'
+        'EPSG:3857',
       );
       expect(attributions(frameState)).to.be(null);
     });
@@ -132,13 +132,13 @@ describe('ol/source/TileJSON', function () {
       frameState.extent = transformExtent(
         [1, 51, 2, 52],
         'EPSG:4326',
-        'EPSG:3857'
+        'EPSG:3857',
       );
       expect(attributions(frameState)).to.eql(['TileMill']);
       frameState.extent = transformExtent(
         [2, 51, 3, 52],
         'EPSG:4326',
-        'EPSG:3857'
+        'EPSG:3857',
       );
       expect(attributions(frameState)).to.eql(['TileMill']);
     });
@@ -198,37 +198,37 @@ describe('ol/source/TileJSON', function () {
       let tileUrl;
 
       tileUrl = source.tileUrlFunction(
-        tileGrid.getTileCoordForCoordAndZ(coordinate, 0)
+        tileGrid.getTileCoordForCoordAndZ(coordinate, 0),
       );
       expect(tileUrl.match(regex)[1]).to.eql('0/0/0');
 
       tileUrl = source.tileUrlFunction(
-        tileGrid.getTileCoordForCoordAndZ(coordinate, 1)
+        tileGrid.getTileCoordForCoordAndZ(coordinate, 1),
       );
       expect(tileUrl.match(regex)[1]).to.eql('1/1/0');
 
       tileUrl = source.tileUrlFunction(
-        tileGrid.getTileCoordForCoordAndZ(coordinate, 2)
+        tileGrid.getTileCoordForCoordAndZ(coordinate, 2),
       );
       expect(tileUrl.match(regex)[1]).to.eql('2/2/1');
 
       tileUrl = source.tileUrlFunction(
-        tileGrid.getTileCoordForCoordAndZ(coordinate, 3)
+        tileGrid.getTileCoordForCoordAndZ(coordinate, 3),
       );
       expect(tileUrl.match(regex)[1]).to.eql('3/4/2');
 
       tileUrl = source.tileUrlFunction(
-        tileGrid.getTileCoordForCoordAndZ(coordinate, 4)
+        tileGrid.getTileCoordForCoordAndZ(coordinate, 4),
       );
       expect(tileUrl.match(regex)[1]).to.eql('4/8/5');
 
       tileUrl = source.tileUrlFunction(
-        tileGrid.getTileCoordForCoordAndZ(coordinate, 5)
+        tileGrid.getTileCoordForCoordAndZ(coordinate, 5),
       );
       expect(tileUrl.match(regex)[1]).to.eql('5/16/11');
 
       tileUrl = source.tileUrlFunction(
-        tileGrid.getTileCoordForCoordAndZ(coordinate, 6)
+        tileGrid.getTileCoordForCoordAndZ(coordinate, 6),
       );
       expect(tileUrl.match(regex)[1]).to.eql('6/33/22');
     });

@@ -328,7 +328,7 @@ describe('ol.interaction.Translate', function () {
               [30, 0],
             ],
           ]),
-        ])
+        ]),
       );
       source.addFeature(feature);
       map.once('postrender', function () {
@@ -359,7 +359,7 @@ describe('ol.interaction.Translate', function () {
     it('moves in a non-parallel user projection', function (done) {
       proj4.defs(
         'EPSG:32637',
-        '+proj=utm +zone=37 +datum=WGS84 +units=m +no_defs +type=crs'
+        '+proj=utm +zone=37 +datum=WGS84 +units=m +no_defs +type=crs',
       );
       register(proj4);
       const userProjection = 'EPSG:32637';
@@ -377,7 +377,7 @@ describe('ol.interaction.Translate', function () {
               [30, 0],
             ],
           ]),
-        ]).transform(viewProjection, userProjection)
+        ]).transform(viewProjection, userProjection),
       );
       source.addFeature(feature);
       map.once('postrender', function () {

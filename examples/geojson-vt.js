@@ -88,14 +88,14 @@ fetch(url)
         const data = tileIndex.getTile(
           tileCoord[0],
           tileCoord[1],
-          tileCoord[2]
+          tileCoord[2],
         );
         const geojson = JSON.stringify(
           {
             type: 'FeatureCollection',
             features: data ? data.features : [],
           },
-          replacer
+          replacer,
         );
         const features = format.readFeatures(geojson, {
           extent: vectorSource.getTileGrid().getTileCoordExtent(tileCoord),

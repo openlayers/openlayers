@@ -119,13 +119,13 @@ class WebGLPostProcessingPass {
     const vertexShader = gl.createShader(gl.VERTEX_SHADER);
     gl.shaderSource(
       vertexShader,
-      options.vertexShader || DEFAULT_VERTEX_SHADER
+      options.vertexShader || DEFAULT_VERTEX_SHADER,
     );
     gl.compileShader(vertexShader);
     const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
     gl.shaderSource(
       fragmentShader,
-      options.fragmentShader || DEFAULT_FRAGMENT_SHADER
+      options.fragmentShader || DEFAULT_FRAGMENT_SHADER,
     );
     gl.compileShader(fragmentShader);
     this.renderTargetProgram_ = gl.createProgram();
@@ -140,24 +140,24 @@ class WebGLPostProcessingPass {
     gl.bufferData(
       gl.ARRAY_BUFFER,
       new Float32Array(verticesArray),
-      gl.STATIC_DRAW
+      gl.STATIC_DRAW,
     );
 
     this.renderTargetAttribLocation_ = gl.getAttribLocation(
       this.renderTargetProgram_,
-      'a_position'
+      'a_position',
     );
     this.renderTargetUniformLocation_ = gl.getUniformLocation(
       this.renderTargetProgram_,
-      'u_screenSize'
+      'u_screenSize',
     );
     this.renderTargetOpacityLocation_ = gl.getUniformLocation(
       this.renderTargetProgram_,
-      'u_opacity'
+      'u_opacity',
     );
     this.renderTargetTextureLocation_ = gl.getUniformLocation(
       this.renderTargetProgram_,
-      'u_image'
+      'u_image',
     );
 
     /**
@@ -226,7 +226,7 @@ class WebGLPostProcessingPass {
         border,
         format,
         type,
-        data
+        data,
       );
 
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -239,20 +239,20 @@ class WebGLPostProcessingPass {
         gl.COLOR_ATTACHMENT0,
         gl.TEXTURE_2D,
         this.renderTargetTexture_,
-        0
+        0,
       );
 
       gl.renderbufferStorage(
         gl.RENDERBUFFER,
         gl.DEPTH_COMPONENT16,
         textureSize[0],
-        textureSize[1]
+        textureSize[1],
       );
       gl.framebufferRenderbuffer(
         gl.FRAMEBUFFER,
         gl.DEPTH_ATTACHMENT,
         gl.RENDERBUFFER,
-        this.depthBuffer_
+        this.depthBuffer_,
       );
     }
   }
@@ -270,7 +270,7 @@ class WebGLPostProcessingPass {
 
     gl.bindFramebuffer(
       gl.FRAMEBUFFER,
-      nextPass ? nextPass.getFrameBuffer() : null
+      nextPass ? nextPass.getFrameBuffer() : null,
     );
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, this.renderTargetTexture_);
@@ -306,7 +306,7 @@ class WebGLPostProcessingPass {
       gl.FLOAT,
       false,
       0,
-      0
+      0,
     );
     gl.uniform2f(this.renderTargetUniformLocation_, size[0], size[1]);
     gl.uniform1i(this.renderTargetTextureLocation_, 0);
@@ -377,7 +377,7 @@ class WebGLPostProcessingPass {
             value.height,
             0,
             gl.UNSIGNED_BYTE,
-            new Uint8Array(value.data)
+            new Uint8Array(value.data),
           );
         } else {
           gl.texImage2D(
@@ -386,7 +386,7 @@ class WebGLPostProcessingPass {
             gl.RGBA,
             gl.RGBA,
             gl.UNSIGNED_BYTE,
-            value
+            value,
           );
         }
 
@@ -406,7 +406,7 @@ class WebGLPostProcessingPass {
               value[0],
               value[1],
               value[2],
-              value[3]
+              value[3],
             );
             return;
           default:

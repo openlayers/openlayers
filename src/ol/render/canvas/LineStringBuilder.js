@@ -35,7 +35,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
       end,
       stride,
       false,
-      false
+      false,
     );
     const moveToLineToInstruction = [
       CanvasInstruction.MOVE_TO_LINE_TO,
@@ -50,8 +50,9 @@ class CanvasLineStringBuilder extends CanvasBuilder {
   /**
    * @param {import("../../geom/LineString.js").default|import("../Feature.js").default} lineStringGeometry Line string geometry.
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
+   * @param {number} [index] Render order index.
    */
-  drawLineString(lineStringGeometry, feature) {
+  drawLineString(lineStringGeometry, feature, index) {
     const state = this.state;
     const strokeStyle = state.strokeStyle;
     const lineWidth = state.lineWidth;
@@ -59,7 +60,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
       return;
     }
     this.updateStrokeStyle(state, this.applyStroke);
-    this.beginGeometry(lineStringGeometry, feature);
+    this.beginGeometry(lineStringGeometry, feature, index);
     this.hitDetectionInstructions.push(
       [
         CanvasInstruction.SET_STROKE_STYLE,
@@ -71,7 +72,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
         defaultLineDash,
         defaultLineDashOffset,
       ],
-      beginPathInstruction
+      beginPathInstruction,
     );
     const flatCoordinates = lineStringGeometry.getFlatCoordinates();
     const stride = lineStringGeometry.getStride();
@@ -79,7 +80,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
       flatCoordinates,
       0,
       flatCoordinates.length,
-      stride
+      stride,
     );
     this.hitDetectionInstructions.push(strokeInstruction);
     this.endGeometry(feature);
@@ -88,8 +89,9 @@ class CanvasLineStringBuilder extends CanvasBuilder {
   /**
    * @param {import("../../geom/MultiLineString.js").default|import("../Feature.js").default} multiLineStringGeometry MultiLineString geometry.
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
+   * @param {number} [index] Render order index.
    */
-  drawMultiLineString(multiLineStringGeometry, feature) {
+  drawMultiLineString(multiLineStringGeometry, feature, index) {
     const state = this.state;
     const strokeStyle = state.strokeStyle;
     const lineWidth = state.lineWidth;
@@ -97,7 +99,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
       return;
     }
     this.updateStrokeStyle(state, this.applyStroke);
-    this.beginGeometry(multiLineStringGeometry, feature);
+    this.beginGeometry(multiLineStringGeometry, feature, index);
     this.hitDetectionInstructions.push(
       [
         CanvasInstruction.SET_STROKE_STYLE,
@@ -109,7 +111,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
         defaultLineDash,
         defaultLineDashOffset,
       ],
-      beginPathInstruction
+      beginPathInstruction,
     );
     const ends = multiLineStringGeometry.getEnds();
     const flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
@@ -120,7 +122,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
         flatCoordinates,
         offset,
         /** @type {number} */ (ends[i]),
-        stride
+        stride,
       );
     }
     this.hitDetectionInstructions.push(strokeInstruction);

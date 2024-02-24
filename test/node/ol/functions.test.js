@@ -37,7 +37,7 @@ describe('ol/functions.js', function () {
           expect(err).to.be.an(Error);
           expect(err.message).to.be('an error');
           done();
-        }
+        },
       );
     });
 
@@ -53,7 +53,7 @@ describe('ol/functions.js', function () {
           expect(err).to.be.an(Error);
           expect(err.message).to.be('an error');
           done();
-        }
+        },
       );
     });
   });

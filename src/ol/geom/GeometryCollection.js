@@ -53,7 +53,7 @@ class GeometryCollection extends Geometry {
     const geometries = this.geometries_;
     for (let i = 0, ii = geometries.length; i < ii; ++i) {
       this.changeEventsKeys_.push(
-        listen(geometries[i], EventType.CHANGE, this.changed, this)
+        listen(geometries[i], EventType.CHANGE, this.changed, this),
       );
     }
   }
@@ -65,7 +65,7 @@ class GeometryCollection extends Geometry {
    */
   clone() {
     const geometryCollection = new GeometryCollection(
-      cloneGeometries(this.geometries_)
+      cloneGeometries(this.geometries_),
     );
     geometryCollection.applyProperties(this);
     return geometryCollection;
@@ -88,7 +88,7 @@ class GeometryCollection extends Geometry {
         x,
         y,
         closestPoint,
-        minSquaredDistance
+        minSquaredDistance,
       );
     }
     return minSquaredDistance;
@@ -151,7 +151,7 @@ class GeometryCollection extends Geometry {
         geometriesArray = geometriesArray.concat(
           /** @type {GeometryCollection} */ (
             geometries[i]
-          ).getGeometriesArrayRecursive()
+          ).getGeometriesArrayRecursive(),
         );
       } else {
         geometriesArray.push(geometries[i]);
@@ -192,7 +192,7 @@ class GeometryCollection extends Geometry {
     }
     if (simplified) {
       const simplifiedGeometryCollection = new GeometryCollection(
-        simplifiedGeometries
+        simplifiedGeometries,
       );
       return simplifiedGeometryCollection;
     }

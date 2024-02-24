@@ -48,7 +48,7 @@ class SimpleGeometry extends Geometry {
       0,
       this.flatCoordinates.length,
       this.stride,
-      extent
+      extent,
     );
   }
 
@@ -83,7 +83,7 @@ class SimpleGeometry extends Geometry {
    */
   getLastCoordinate() {
     return this.flatCoordinates.slice(
-      this.flatCoordinates.length - this.stride
+      this.flatCoordinates.length - this.stride,
     );
   }
 
@@ -227,7 +227,7 @@ class SimpleGeometry extends Geometry {
         stride,
         angle,
         anchor,
-        flatCoordinates
+        flatCoordinates,
       );
       this.changed();
     }
@@ -260,7 +260,7 @@ class SimpleGeometry extends Geometry {
         sx,
         sy,
         anchor,
-        flatCoordinates
+        flatCoordinates,
       );
       this.changed();
     }
@@ -284,7 +284,7 @@ class SimpleGeometry extends Geometry {
         stride,
         deltaX,
         deltaY,
-        flatCoordinates
+        flatCoordinates,
       );
       this.changed();
     }
@@ -341,7 +341,7 @@ export function transformGeom2D(simpleGeometry, transform, dest) {
     flatCoordinates.length,
     stride,
     transform,
-    dest
+    dest,
   );
 }
 

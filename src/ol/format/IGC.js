@@ -150,7 +150,7 @@ class IGC extends TextFeature {
     const layout = altitudeMode == 'none' ? 'XYM' : 'XYZM';
     const lineString = new LineString(flatCoordinates, layout);
     const feature = new Feature(
-      transformGeometryWithOptions(lineString, false, options)
+      transformGeometryWithOptions(lineString, false, options),
     );
     feature.setProperties(properties, true);
     return feature;

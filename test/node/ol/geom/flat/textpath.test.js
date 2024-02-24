@@ -27,7 +27,7 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       1,
       measureAndCacheTextWidth,
       '',
-      {}
+      {},
     );
     expect(instructions).to.eql([[50, 0, 15, 0, 'foo']]);
   });
@@ -44,7 +44,7 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       1,
       measureAndCacheTextWidth,
       '',
-      {}
+      {},
     );
     expect(instructions).to.eql([[15, 0, 15, 0, 'foo']]);
   });
@@ -62,7 +62,7 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       1,
       measureAndCacheTextWidth,
       '',
-      {}
+      {},
     );
     expect(instructions).to.eql([[85, 0, 15, 0, 'foo']]);
   });
@@ -80,7 +80,7 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       1,
       measureAndCacheTextWidth,
       '',
-      {}
+      {},
     );
     const a = (90 * Math.PI) / 180;
     expect(instructions).to.eql([[0, 50, 15, a, 'foo']]);
@@ -99,7 +99,7 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       1,
       measureAndCacheTextWidth,
       '',
-      {}
+      {},
     );
     expect(instructions[0][3]).to.be((45 * Math.PI) / 180);
     expect(instructions.length).to.be(1);
@@ -118,7 +118,7 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       1,
       measureAndCacheTextWidth,
       '',
-      {}
+      {},
     );
     expect(instructions[0][3]).to.be((-45 * Math.PI) / 180);
     expect(instructions.length).to.be(1);
@@ -137,7 +137,7 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       1,
       measureAndCacheTextWidth,
       '',
-      {}
+      {},
     );
     expect(instructions[0]).to.eql([50, 0, 75, 0, 'foo-foo-foo-foo']);
     expect(instructions.length).to.be(1);
@@ -157,7 +157,7 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       1,
       measureAndCacheTextWidth,
       '',
-      {}
+      {},
     );
     expect(instructions[0][3]).to.eql((45 * Math.PI) / 180);
     expect(instructions[0][4]).to.be('fo');
@@ -179,7 +179,7 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       1,
       measureAndCacheTextWidth,
       '',
-      {}
+      {},
     );
     expect(instructions).to.be(null);
   });
@@ -198,7 +198,7 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       1,
       measureAndCacheTextWidth,
       '',
-      {}
+      {},
     );
     expect(instructions).to.not.be(undefined);
   });
@@ -217,7 +217,7 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       1,
       measureAndCacheTextWidth,
       '',
-      {}
+      {},
     );
     expect(instructions[0][3]).to.be((-45 * Math.PI) / 180);
     expect(instructions.length).to.be(1);
@@ -237,7 +237,7 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       1,
       measureAndCacheTextWidth,
       '',
-      {}
+      {},
     );
     expect(instructions[0][3]).to.be((45 * Math.PI) / 180);
     expect(instructions.length).to.be(1);
@@ -262,7 +262,7 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       1,
       measureAndCacheTextWidth,
       '',
-      {}
+      {},
     );
     expect(instructions[0][3]).to.be((45 * Math.PI) / 180);
     expect(instructions[0][4]).to.be(text);
@@ -289,7 +289,7 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       1,
       measureAndCacheTextWidth,
       '',
-      {}
+      {},
     );
     expect(instructions[0][3]).to.be((45 * Math.PI) / 180);
     expect(instructions[0][4]).to.be('foo-foo-foo bar-bar-b');

@@ -222,7 +222,7 @@ class Translate extends PointerInteraction {
 
     this.addChangeListener(
       InteractionProperty.ACTIVE,
-      this.handleActiveChanged_
+      this.handleActiveChanged_,
     );
   }
 
@@ -249,8 +249,8 @@ class Translate extends PointerInteraction {
           features,
           event.coordinate,
           this.startCoordinate_,
-          event
-        )
+          event,
+        ),
       );
       return true;
     }
@@ -275,8 +275,8 @@ class Translate extends PointerInteraction {
           features,
           event.coordinate,
           this.startCoordinate_,
-          event
-        )
+          event,
+        ),
       );
       // cleanup
       this.startCoordinate_ = null;
@@ -297,7 +297,7 @@ class Translate extends PointerInteraction {
       const newViewCoordinate = fromUserCoordinate(newCoordinate, projection);
       const lastViewCoordinate = fromUserCoordinate(
         this.lastCoordinate_,
-        projection
+        projection,
       );
       const deltaX = newViewCoordinate[0] - lastViewCoordinate[0];
       const deltaY = newViewCoordinate[1] - lastViewCoordinate[1];
@@ -325,8 +325,8 @@ class Translate extends PointerInteraction {
           features,
           newCoordinate,
           this.startCoordinate_,
-          event
-        )
+          event,
+        ),
       );
     }
   }
@@ -372,7 +372,7 @@ class Translate extends PointerInteraction {
       {
         layerFilter: this.layerFilter_,
         hitTolerance: this.hitTolerance_,
-      }
+      },
     );
   }
 

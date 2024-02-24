@@ -63,13 +63,13 @@ export function loadFeaturesXhr(
   resolution,
   projection,
   success,
-  failure
+  failure,
 ) {
   const xhr = new XMLHttpRequest();
   xhr.open(
     'GET',
     typeof url === 'function' ? url(extent, resolution, projection) : url,
-    true
+    true,
   );
   if (format.getType() == 'arraybuffer') {
     xhr.responseType = 'arraybuffer';
@@ -94,7 +94,7 @@ export function loadFeaturesXhr(
         if (!source) {
           source = new DOMParser().parseFromString(
             xhr.responseText,
-            'application/xml'
+            'application/xml',
           );
         }
       } else if (type == 'arraybuffer') {
@@ -109,7 +109,7 @@ export function loadFeaturesXhr(
               featureProjection: projection,
             })
           ),
-          format.readProjection(source)
+          format.readProjection(source),
         );
       } else {
         failure();
@@ -130,7 +130,7 @@ export function loadFeaturesXhr(
  * loads features (with XHR), parses the features, and adds them to the
  * vector source.
  * @param {string|FeatureUrlFunction} url Feature URL service.
- * @param {import("./format/Feature.js").default} format Feature format.
+ * @param {import("./format/Feature.js").default<typeof import("./Feature.js").default|typeof import("./render/Feature.js").default>} format Feature format.
  * @return {FeatureLoader} The feature loader.
  * @api
  */
@@ -163,7 +163,7 @@ export function xhr(url, format) {
           success(features);
         }
       },
-      /* FIXME handle error */ failure ? failure : VOID
+      /* FIXME handle error */ failure ? failure : VOID,
     );
   };
 }

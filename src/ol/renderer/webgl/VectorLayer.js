@@ -172,7 +172,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     if (userProjection) {
       projectionTransform = getTransformFromProjections(
         userProjection,
-        frameState.viewState.projection
+        frameState.viewState.projection,
       );
     }
     this.batch_.addFeatures(source.getFeatures(), projectionTransform);
@@ -181,25 +181,25 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
         source,
         VectorEventType.ADDFEATURE,
         this.handleSourceFeatureAdded_.bind(this, projectionTransform),
-        this
+        this,
       ),
       listen(
         source,
         VectorEventType.CHANGEFEATURE,
         this.handleSourceFeatureChanged_,
-        this
+        this,
       ),
       listen(
         source,
         VectorEventType.REMOVEFEATURE,
         this.handleSourceFeatureDelete_,
-        this
+        this,
       ),
       listen(
         source,
         VectorEventType.CLEAR,
         this.handleSourceFeatureClear_,
-        this
+        this,
       ),
     ];
   }
@@ -221,7 +221,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     this.buffers_ = [];
     this.styleRenderers_ = this.styles_.map(
       (style) =>
-        new VectorStyleRenderer(style, this.helper, this.hitDetectionEnabled_)
+        new VectorStyleRenderer(style, this.helper, this.hitDetectionEnabled_),
     );
   }
 
@@ -285,14 +285,14 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     multiplyTransform(this.tmpTransform_, batchInvertTransform);
     this.helper.setUniformMatrixValue(
       Uniforms.PROJECTION_MATRIX,
-      mat4FromTransform(this.tmpMat4_, this.tmpTransform_)
+      mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
     );
 
     // screen to world matrix
     makeInverseTransform(this.tmpTransform_, this.tmpTransform_);
     this.helper.setUniformMatrixValue(
       Uniforms.SCREEN_TO_WORLD_MATRIX,
-      mat4FromTransform(this.tmpMat4_, this.tmpTransform_)
+      mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
     );
 
     // pattern origin should always be [0, 0] in world coordinates
@@ -314,7 +314,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
     const [startWorld, endWorld, worldWidth] = getWorldParameters(
       frameState,
-      this.getLayer()
+      this.getLayer(),
     );
 
     // draw the normal canvas
@@ -376,7 +376,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
         vectorSource.loadFeatures(
           toUserExtent(extent, userProjection),
           toUserResolution(resolution, projection),
-          userProjection
+          userProjection,
         );
       } else {
         vectorSource.loadFeatures(extent, resolution, projection);
@@ -386,13 +386,13 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
       const transform = this.helper.makeProjectionTransform(
         frameState,
-        createTransform()
+        createTransform(),
       );
 
       const generatePromises = this.styleRenderers_.map((renderer, i) =>
         renderer.generateBuffers(this.batch_, transform).then((buffers) => {
           this.buffers_[i] = buffers;
-        })
+        }),
       );
       Promise.all(generatePromises).then(() => {
         this.ready = true;
@@ -424,13 +424,13 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       this.helper.prepareDrawToRenderTarget(
         frameState,
         this.hitRenderTarget_,
-        true
+        true,
       );
     }
 
     this.currentFrameStateTransform_ = this.helper.makeProjectionTransform(
       frameState,
-      this.currentFrameStateTransform_
+      this.currentFrameStateTransform_,
     );
 
     do {
@@ -463,11 +463,11 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     frameState,
     hitTolerance,
     callback,
-    matches
+    matches,
   ) {
     assert(
       this.hitDetectionEnabled_,
-      '`forEachFeatureAtCoordinate` cannot be used on a WebGL layer if the hit detection logic has been disabled using the `disableHitDetection: true` option.'
+      '`forEachFeatureAtCoordinate` cannot be used on a WebGL layer if the hit detection logic has been disabled using the `disableHitDetection: true` option.',
     );
     if (!this.styleRenderers_.length || !this.hitDetectionEnabled_) {
       return undefined;
@@ -475,7 +475,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
     const pixel = applyTransform(
       frameState.coordinateToPixelTransform,
-      coordinate.slice()
+      coordinate.slice(),
     );
 
     const data = this.hitRenderTarget_.readPixel(pixel[0] / 2, pixel[1] / 2);

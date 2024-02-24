@@ -94,7 +94,7 @@ class BuilderGroup {
         this.tolerance_,
         this.maxExtent_,
         this.resolution_,
-        this.pixelRatio_
+        this.pixelRatio_,
       );
       replays[builderType] = replay;
     }

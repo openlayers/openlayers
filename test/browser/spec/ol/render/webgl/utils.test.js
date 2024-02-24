@@ -31,7 +31,7 @@ describe('webgl render utils', function () {
         4,
         vertexBuffer,
         indexBuffer,
-        0
+        0,
       );
 
       expect(vertexBuffer[0]).to.eql(10);
@@ -69,7 +69,7 @@ describe('webgl render utils', function () {
         8,
         vertexBuffer,
         indexBuffer,
-        2
+        2,
       );
 
       expect(vertexBuffer[0]).to.eql(10);
@@ -115,7 +115,7 @@ describe('webgl render utils', function () {
         0,
         vertexBuffer,
         indexBuffer,
-        0
+        0,
       );
       positions = writePointFeatureToBuffers(
         instructions,
@@ -123,7 +123,7 @@ describe('webgl render utils', function () {
         vertexBuffer,
         indexBuffer,
         0,
-        positions
+        positions,
       );
       positions = writePointFeatureToBuffers(
         instructions,
@@ -131,7 +131,7 @@ describe('webgl render utils', function () {
         vertexBuffer,
         indexBuffer,
         0,
-        positions
+        positions,
       );
 
       expect(vertexBuffer[0]).to.eql(10);
@@ -196,7 +196,7 @@ describe('webgl render utils', function () {
           [],
           invertInstructionsTransform,
           100,
-          100
+          100,
         );
         currentLength = result.length;
         currentAngleTangentSum = result.angle;
@@ -240,7 +240,7 @@ describe('webgl render utils', function () {
           [888, 999],
           invertInstructionsTransform,
           100,
-          100
+          100,
         );
         currentLength = result.length;
         currentAngleTangentSum = result.angle;
@@ -287,7 +287,7 @@ describe('webgl render utils', function () {
           [],
           invertInstructionsTransform,
           0,
-          10
+          10,
         );
         currentAngleTangentSum = result.angle;
       });
@@ -322,7 +322,7 @@ describe('webgl render utils', function () {
           [],
           invertInstructionsTransform,
           0,
-          10
+          10,
         );
         currentAngleTangentSum = result.angle;
       });
@@ -357,7 +357,7 @@ describe('webgl render utils', function () {
           [],
           invertInstructionsTransform,
           0,
-          10
+          10,
         );
         currentAngleTangentSum = result.angle;
       });
@@ -376,7 +376,7 @@ describe('webgl render utils', function () {
       it('angle tangent sum decreases', () => {
         expect(currentAngleTangentSum).roughlyEqual(
           10 - (1 + Math.sqrt(2)),
-          1e-9
+          1e-9,
         );
       });
     });
@@ -395,7 +395,7 @@ describe('webgl render utils', function () {
           [],
           invertInstructionsTransform,
           0,
-          10
+          10,
         );
         currentAngleTangentSum = result.angle;
       });
@@ -437,7 +437,7 @@ describe('webgl render utils', function () {
           3,
           vertexArray,
           indexArray,
-          0
+          0,
         );
       });
       it('generates triangles correctly', function () {
@@ -467,7 +467,7 @@ describe('webgl render utils', function () {
           3,
           vertexArray,
           indexArray,
-          1
+          1,
         );
       });
       it('generates triangles correctly', function () {
@@ -522,7 +522,7 @@ describe('webgl render utils', function () {
         encoded[0] * 255,
         encoded[1] * 255,
         encoded[2] * 255,
-        encoded[3] * 255
+        encoded[3] * 255,
       );
       const arr = [
         typed[0] / 255,

@@ -22,7 +22,7 @@ function getViewportClampedResolution(
   resolution,
   maxExtent,
   viewportSize,
-  showFullExtent
+  showFullExtent,
 ) {
   const xResolution = getWidth(maxExtent) / viewportSize[0];
   const yResolution = getHeight(maxExtent) / viewportSize[1];
@@ -73,7 +73,7 @@ export function createSnapToResolutions(
   resolutions,
   smooth,
   maxExtent,
-  showFullExtent
+  showFullExtent,
 ) {
   smooth = smooth !== undefined ? smooth : true;
   return (
@@ -93,7 +93,7 @@ export function createSnapToResolutions(
               maxResolution,
               maxExtent,
               size,
-              showFullExtent
+              showFullExtent,
             )
           : maxResolution;
 
@@ -105,7 +105,7 @@ export function createSnapToResolutions(
           return getSmoothClampedResolution(
             resolution,
             cappedMaxRes,
-            minResolution
+            minResolution,
           );
         }
 
@@ -136,7 +136,7 @@ export function createSnapToPower(
   minResolution,
   smooth,
   maxExtent,
-  showFullExtent
+  showFullExtent,
 ) {
   smooth = smooth !== undefined ? smooth : true;
   minResolution = minResolution !== undefined ? minResolution : 0;
@@ -156,7 +156,7 @@ export function createSnapToPower(
               maxResolution,
               maxExtent,
               size,
-              showFullExtent
+              showFullExtent,
             )
           : maxResolution;
 
@@ -168,18 +168,18 @@ export function createSnapToPower(
           return getSmoothClampedResolution(
             resolution,
             cappedMaxRes,
-            minResolution
+            minResolution,
           );
         }
 
         const tolerance = 1e-9;
         const minZoomLevel = Math.ceil(
-          Math.log(maxResolution / cappedMaxRes) / Math.log(power) - tolerance
+          Math.log(maxResolution / cappedMaxRes) / Math.log(power) - tolerance,
         );
         const offset = -direction * (0.5 - tolerance) + 0.5;
         const capped = Math.min(cappedMaxRes, resolution);
         const cappedZoomLevel = Math.floor(
-          Math.log(maxResolution / capped) / Math.log(power) + offset
+          Math.log(maxResolution / capped) / Math.log(power) + offset,
         );
         const zoomLevel = Math.max(minZoomLevel, cappedZoomLevel);
         const newResolution = maxResolution / Math.pow(power, zoomLevel);
@@ -203,7 +203,7 @@ export function createMinMaxResolution(
   minResolution,
   smooth,
   maxExtent,
-  showFullExtent
+  showFullExtent,
 ) {
   smooth = smooth !== undefined ? smooth : true;
 
@@ -222,7 +222,7 @@ export function createMinMaxResolution(
               maxResolution,
               maxExtent,
               size,
-              showFullExtent
+              showFullExtent,
             )
           : maxResolution;
 
@@ -232,7 +232,7 @@ export function createMinMaxResolution(
         return getSmoothClampedResolution(
           resolution,
           cappedMaxRes,
-          minResolution
+          minResolution,
         );
       }
       return undefined;

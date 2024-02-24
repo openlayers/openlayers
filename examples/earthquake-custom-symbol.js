@@ -42,7 +42,7 @@ const styleFunction = function (feature) {
       new Style({
         fill: new Fill({color: 'rgba(255, 153, 0, 0.4)'}),
         stroke: new Stroke({color: 'rgba(255, 204, 0, 0.2)', width: 2}),
-      })
+      }),
     );
     vectorContext.drawGeometry(new Polygon([symbol.map(scaleFunction)]));
     style = new Style({

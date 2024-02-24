@@ -63,7 +63,7 @@ class MapRenderer extends Disposable {
       -1 / viewState.resolution,
       -viewState.rotation,
       -viewState.center[0],
-      -viewState.center[1]
+      -viewState.center[1],
     );
 
     makeInverse(pixelToCoordinateTransform, coordinateToPixelTransform);
@@ -92,7 +92,7 @@ class MapRenderer extends Disposable {
     callback,
     thisArg,
     layerFilter,
-    thisArg2
+    thisArg2,
   ) {
     let result;
     const viewState = frameState.viewState;
@@ -140,7 +140,7 @@ class MapRenderer extends Disposable {
               : coordinate;
             const callback = forEachFeatureAtCoordinate.bind(
               null,
-              layerState.managed
+              layerState.managed,
             );
             tmpCoord[0] = coordinates[0] + offsets[i][0];
             tmpCoord[1] = coordinates[1] + offsets[i][1];
@@ -149,7 +149,7 @@ class MapRenderer extends Disposable {
               frameState,
               hitTolerance,
               callback,
-              matches
+              matches,
             );
           }
           if (result) {
@@ -189,7 +189,7 @@ class MapRenderer extends Disposable {
     hitTolerance,
     checkWrapped,
     layerFilter,
-    thisArg
+    thisArg,
   ) {
     const hasFeature = this.forEachFeatureAtCoordinate(
       coordinate,
@@ -199,7 +199,7 @@ class MapRenderer extends Disposable {
       TRUE,
       this,
       layerFilter,
-      thisArg
+      thisArg,
     );
 
     return hasFeature !== undefined;
@@ -220,11 +220,6 @@ class MapRenderer extends Disposable {
   renderFrame(frameState) {
     abstract();
   }
-
-  /**
-   * @param {import("../Map.js").FrameState} frameState Frame state.
-   */
-  flushDeclutterItems(frameState) {}
 
   /**
    * @param {import("../Map.js").FrameState} frameState Frame state.

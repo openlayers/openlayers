@@ -91,7 +91,7 @@
                   useTabs: false,
                   semi: true,
                   singleQuote: true,
-                  trailingComma: 'es5',
+                  trailingComma: 'all',
                   bracketSpacing: false,
                   jsxBracketSameLine: false,
                   fluid: false,

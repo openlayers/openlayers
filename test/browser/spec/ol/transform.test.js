@@ -125,7 +125,7 @@ describe('ol.transform', function () {
         sy,
         angle,
         dx2,
-        dy2
+        dy2,
       );
       expect(composed).to.equal(composedReturn);
       expect(composed).to.eql(expected);

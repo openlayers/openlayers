@@ -111,7 +111,7 @@ class WkbReader {
   readUint32(isLittleEndian) {
     return this.view_.getUint32(
       (this.pos_ += 4) - 4,
-      isLittleEndian !== undefined ? isLittleEndian : this.isLittleEndian_
+      isLittleEndian !== undefined ? isLittleEndian : this.isLittleEndian_,
     );
   }
 
@@ -122,7 +122,7 @@ class WkbReader {
   readDouble(isLittleEndian) {
     return this.view_.getFloat64(
       (this.pos_ += 8) - 8,
-      isLittleEndian !== undefined ? isLittleEndian : this.isLittleEndian_
+      isLittleEndian !== undefined ? isLittleEndian : this.isLittleEndian_,
     );
   }
 
@@ -260,7 +260,7 @@ class WkbReader {
 
       default:
         throw new Error(
-          'Unsupported WKB geometry type ' + typeId + ' is found'
+          'Unsupported WKB geometry type ' + typeId + ' is found',
         );
     }
   }
@@ -305,7 +305,7 @@ class WkbReader {
   readMultiLineString() {
     return this.readWkbCollection(
       this.readWkbBlock,
-      WKBGeometryType.LINE_STRING
+      WKBGeometryType.LINE_STRING,
     );
   }
 
@@ -334,13 +334,13 @@ class WkbReader {
       case WKBGeometryType.POINT:
         return new Point(
           /** @type {import('../coordinate.js').Coordinate} */ (result),
-          this.layout_
+          this.layout_,
         );
 
       case WKBGeometryType.LINE_STRING:
         return new LineString(
           /** @type {Array<import('../coordinate.js').Coordinate>} */ (result),
-          this.layout_
+          this.layout_,
         );
 
       case WKBGeometryType.POLYGON:
@@ -349,13 +349,13 @@ class WkbReader {
           /** @type {Array<Array<import('../coordinate.js').Coordinate>>} */ (
             result
           ),
-          this.layout_
+          this.layout_,
         );
 
       case WKBGeometryType.MULTI_POINT:
         return new MultiPoint(
           /** @type {Array<import('../coordinate.js').Coordinate>} */ (result),
-          this.layout_
+          this.layout_,
         );
 
       case WKBGeometryType.MULTI_LINE_STRING:
@@ -363,7 +363,7 @@ class WkbReader {
           /** @type {Array<Array<import('../coordinate.js').Coordinate>>} */ (
             result
           ),
-          this.layout_
+          this.layout_,
         );
 
       case WKBGeometryType.MULTI_POLYGON:
@@ -373,12 +373,12 @@ class WkbReader {
           /** @type {Array<Array<Array<import('../coordinate.js').Coordinate>>>} */ (
             result
           ),
-          this.layout_
+          this.layout_,
         );
 
       case WKBGeometryType.GEOMETRY_COLLECTION:
         return new GeometryCollection(
-          /** @type {Array<import('../geom/Geometry.js').default>} */ (result)
+          /** @type {Array<import('../geom/Geometry.js').default>} */ (result),
         );
 
       default:
@@ -460,12 +460,12 @@ class WkbWriter {
      */
     const coordsObj = Object.assign.apply(
       null,
-      layout.split('').map((axis, idx) => ({[axis]: coords[idx]}))
+      layout.split('').map((axis, idx) => ({[axis]: coords[idx]})),
     );
 
     for (const axis of this.layout_) {
       this.writeDouble(
-        axis in coordsObj ? coordsObj[axis] : this.nodata_[axis]
+        axis in coordsObj ? coordsObj[axis] : this.nodata_[axis],
       );
     }
   }
@@ -831,7 +831,7 @@ class WKB extends FeatureFormat {
   writeFeatures(features, options) {
     return this.writeGeometry(
       new GeometryCollection(features.map((f) => f.getGeometry())),
-      options
+      options,
     );
   }
 
@@ -872,7 +872,7 @@ class WKB extends FeatureFormat {
 
     writer.writeGeometry(
       transformGeometryWithOptions(geometry, true, options),
-      srid
+      srid,
     );
     const buffer = writer.getBuffer();
 

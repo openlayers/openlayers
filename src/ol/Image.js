@@ -160,7 +160,11 @@ class ImageWrapper extends EventTarget {
           ? resolution[0]
           : resolution;
         toPromise(() =>
-          this.loader(this.getExtent(), requestResolution, this.getPixelRatio())
+          this.loader(
+            this.getExtent(),
+            requestResolution,
+            this.getPixelRatio(),
+          ),
         )
           .then((image) => {
             if ('image' in image) {
@@ -302,8 +306,8 @@ export function decodeFallback(image, src) {
           .decode()
           .then(() => resolve(image))
           .catch((e) =>
-            image.complete && image.width ? resolve(image) : reject(e)
-          )
+            image.complete && image.width ? resolve(image) : reject(e),
+          ),
       )
     : load(image);
 }

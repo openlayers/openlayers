@@ -48,6 +48,7 @@ import {getIntersection as intersectExtents} from '../extent.js';
  * @typedef {Object} TileMatrixSet
  * @property {string} id The tile matrix set identifier.
  * @property {string} crs The coordinate reference system.
+ * @property {Array<string>} [orderedAxes] Axis order.
  * @property {Array<TileMatrix>} tileMatrices Array of tile matrices.
  */
 
@@ -140,7 +141,7 @@ export function getMapTileUrlTemplate(links, mediaType) {
 export function getVectorTileUrlTemplate(
   links,
   mediaType,
-  supportedMediaTypes
+  supportedMediaTypes,
 ) {
   let tileUrlTemplate;
   let fallbackUrlTemplate;
@@ -197,7 +198,7 @@ function parseTileMatrixSet(
   sourceInfo,
   tileMatrixSet,
   tileUrlTemplate,
-  tileMatrixSetLimits
+  tileMatrixSetLimits,
 ) {
   let projection = sourceInfo.projection;
   if (!projection) {
@@ -206,7 +207,14 @@ function parseTileMatrixSet(
       throw new Error(`Unsupported CRS: ${tileMatrixSet.crs}`);
     }
   }
-  const backwards = projection.getAxisOrientation().substr(0, 2) !== 'en';
+  const orderedAxes = tileMatrixSet.orderedAxes;
+  const backwards =
+    (orderedAxes
+      ? orderedAxes
+          .slice(0, 2)
+          .map((s) => s.replace(/E|X|Lon/i, 'e').replace(/N|Y|Lat/i, 'n'))
+          .join('')
+      : projection.getAxisOrientation().substr(0, 2)) !== 'en';
 
   const matrices = tileMatrixSet.tileMatrices;
 
@@ -353,13 +361,13 @@ function parseTileSetMetadata(sourceInfo, tileSet) {
   if (tileSet.dataType === 'map') {
     tileUrlTemplate = getMapTileUrlTemplate(
       tileSet.links,
-      sourceInfo.mediaType
+      sourceInfo.mediaType,
     );
   } else if (tileSet.dataType === 'vector') {
     tileUrlTemplate = getVectorTileUrlTemplate(
       tileSet.links,
       sourceInfo.mediaType,
-      sourceInfo.supportedMediaTypes
+      sourceInfo.supportedMediaTypes,
     );
   } else {
     throw new Error('Expected tileset data type to be "map" or "vector"');
@@ -370,17 +378,17 @@ function parseTileSetMetadata(sourceInfo, tileSet) {
       sourceInfo,
       tileSet.tileMatrixSet,
       tileUrlTemplate,
-      tileMatrixSetLimits
+      tileMatrixSetLimits,
     );
   }
 
   const tileMatrixSetLink = tileSet.links.find(
     (link) =>
-      link.rel === 'http://www.opengis.net/def/rel/ogc/1.0/tiling-scheme'
+      link.rel === 'http://www.opengis.net/def/rel/ogc/1.0/tiling-scheme',
   );
   if (!tileMatrixSetLink) {
     throw new Error(
-      'Expected http://www.opengis.net/def/rel/ogc/1.0/tiling-scheme link or tileMatrixSet'
+      'Expected http://www.opengis.net/def/rel/ogc/1.0/tiling-scheme link or tileMatrixSet',
     );
   }
   const tileMatrixSetDefinition = tileMatrixSetLink.href;
@@ -391,7 +399,7 @@ function parseTileSetMetadata(sourceInfo, tileSet) {
       sourceInfo,
       tileMatrixSet,
       tileUrlTemplate,
-      tileMatrixSetLimits
+      tileMatrixSetLimits,
     );
   });
 }

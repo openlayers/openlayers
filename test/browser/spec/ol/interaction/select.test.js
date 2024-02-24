@@ -57,7 +57,7 @@ describe('ol.interaction.Select', function () {
       new Feature({
         geometry: geometry,
         type: 'foo',
-      })
+      }),
     );
 
     source = new VectorSource({
@@ -310,7 +310,7 @@ describe('ol.interaction.Select', function () {
           expect(features.getLength()).to.equal(2);
           expect(features.item(0).get('type')).to.be('bar');
           expect(features.item(1).get('type')).to.be('bar');
-        }
+        },
       );
     });
 
@@ -344,7 +344,7 @@ describe('ol.interaction.Select', function () {
           const features = select.getFeatures();
           expect(features.getLength()).to.equal(1);
           expect(features.item(0).get('type')).to.be('bar');
-        }
+        },
       );
     });
   });

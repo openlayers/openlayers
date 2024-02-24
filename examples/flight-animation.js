@@ -51,7 +51,7 @@ const flightsSource = new VectorSource({
           // create an arc circle between the two locations
           const arcGenerator = new arc.GreatCircle(
             {x: from[1], y: from[0]},
-            {x: to[1], y: to[0]}
+            {x: to[1], y: to[0]},
           );
 
           const arcLine = arcGenerator.Arc(100, {offset: 10});
@@ -66,7 +66,7 @@ const flightsSource = new VectorSource({
               new Feature({
                 geometry: line,
                 finished: false,
-              })
+              }),
             );
           });
           // add the features with a delay so that the animation

@@ -50,7 +50,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
         end,
         stride,
         true,
-        !stroke
+        !stroke,
       );
       const moveToLineToInstruction = [
         CanvasInstruction.MOVE_TO_LINE_TO,
@@ -81,8 +81,9 @@ class CanvasPolygonBuilder extends CanvasBuilder {
   /**
    * @param {import("../../geom/Circle.js").default} circleGeometry Circle geometry.
    * @param {import("../../Feature.js").default} feature Feature.
+   * @param {number} [index] Render order index.
    */
-  drawCircle(circleGeometry, feature) {
+  drawCircle(circleGeometry, feature, index) {
     const state = this.state;
     const fillStyle = state.fillStyle;
     const strokeStyle = state.strokeStyle;
@@ -90,7 +91,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
       return;
     }
     this.setFillStrokeStyles_();
-    this.beginGeometry(circleGeometry, feature);
+    this.beginGeometry(circleGeometry, feature, index);
     if (state.fillStyle !== undefined) {
       this.hitDetectionInstructions.push([
         CanvasInstruction.SET_FILL_STYLE,
@@ -118,7 +119,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
       flatCoordinates.length,
       stride,
       false,
-      false
+      false,
     );
     const circleInstruction = [CanvasInstruction.CIRCLE, myBegin];
     this.instructions.push(beginPathInstruction, circleInstruction);
@@ -137,8 +138,9 @@ class CanvasPolygonBuilder extends CanvasBuilder {
   /**
    * @param {import("../../geom/Polygon.js").default|import("../Feature.js").default} polygonGeometry Polygon geometry.
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
+   * @param {number} [index] Render order index.
    */
-  drawPolygon(polygonGeometry, feature) {
+  drawPolygon(polygonGeometry, feature, index) {
     const state = this.state;
     const fillStyle = state.fillStyle;
     const strokeStyle = state.strokeStyle;
@@ -146,7 +148,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
       return;
     }
     this.setFillStrokeStyles_();
-    this.beginGeometry(polygonGeometry, feature);
+    this.beginGeometry(polygonGeometry, feature, index);
     if (state.fillStyle !== undefined) {
       this.hitDetectionInstructions.push([
         CanvasInstruction.SET_FILL_STYLE,
@@ -172,7 +174,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
       flatCoordinates,
       0,
       /** @type {Array<number>} */ (ends),
-      stride
+      stride,
     );
     this.endGeometry(feature);
   }
@@ -180,8 +182,9 @@ class CanvasPolygonBuilder extends CanvasBuilder {
   /**
    * @param {import("../../geom/MultiPolygon.js").default} multiPolygonGeometry MultiPolygon geometry.
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
+   * @param {number} [index] Render order index.
    */
-  drawMultiPolygon(multiPolygonGeometry, feature) {
+  drawMultiPolygon(multiPolygonGeometry, feature, index) {
     const state = this.state;
     const fillStyle = state.fillStyle;
     const strokeStyle = state.strokeStyle;
@@ -189,7 +192,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
       return;
     }
     this.setFillStrokeStyles_();
-    this.beginGeometry(multiPolygonGeometry, feature);
+    this.beginGeometry(multiPolygonGeometry, feature, index);
     if (state.fillStyle !== undefined) {
       this.hitDetectionInstructions.push([
         CanvasInstruction.SET_FILL_STYLE,
@@ -217,7 +220,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
         flatCoordinates,
         offset,
         endss[i],
-        stride
+        stride,
       );
     }
     this.endGeometry(feature);

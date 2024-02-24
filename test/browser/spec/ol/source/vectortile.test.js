@@ -52,7 +52,7 @@ describe('ol.source.VectorTile', function () {
       expect(tile).to.be.a(VectorRenderTile);
       expect(tile.getTileCoord()).to.eql([0, 0, 0]);
       expect(source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'))).to.equal(
-        tile
+        tile,
       );
     });
 
@@ -69,7 +69,7 @@ describe('ol.source.VectorTile', function () {
           const sourceTile = source.getSourceTiles(
             1,
             source.getProjection(),
-            tile
+            tile,
           )[0];
           expect(sourceTile.getFeatures().length).to.be.greaterThan(0);
           unlistenByKey(key);
@@ -135,7 +135,7 @@ describe('ol.source.VectorTile', function () {
         9119385,
         5820434,
         1,
-        source.getProjection()
+        source.getProjection(),
       );
       tile.load();
       expect(tile.getState()).to.be(TileState.LOADING);
@@ -156,7 +156,7 @@ describe('ol.source.VectorTile', function () {
   describe('#getTileGridForProjection', function () {
     it("creates a tile grid with the source tile grid's tile size", function () {
       const tileGrid = source.getTileGridForProjection(
-        getProjection('EPSG:3857')
+        getProjection('EPSG:3857'),
       );
       expect(tileGrid.getTileSize(0)).to.be(512);
     });
@@ -169,7 +169,7 @@ describe('ol.source.VectorTile', function () {
         8938,
         5680,
         1,
-        getProjection('EPSG:3857')
+        getProjection('EPSG:3857'),
       );
       let started = false;
       source.on('tileloadstart', function () {
@@ -189,14 +189,14 @@ describe('ol.source.VectorTile', function () {
         8938,
         5680,
         1,
-        getProjection('EPSG:3857')
+        getProjection('EPSG:3857'),
       );
       const tile2 = source.getTile(
         14,
         8938 + Math.pow(2, 14),
         5680,
         1,
-        getProjection('EPSG:3857')
+        getProjection('EPSG:3857'),
       );
       expect(tile2.wrappedTileCoord).to.eql([14, 8938, 5680]);
       let loadstart = 0;
@@ -295,7 +295,7 @@ describe('ol.source.VectorTile', function () {
       setTimeout(function () {
         expect(
           source.getTileCacheForProjection(map.getView().getProjection())
-            .highWaterMark
+            .highWaterMark,
         ).to.be(2);
         expect(source.sourceTileCache.highWaterMark).to.be(2);
         done();
@@ -409,23 +409,23 @@ describe('ol.source.VectorTile', function () {
             8938,
             5680,
             1,
-            map.getView().getProjection()
+            map.getView().getProjection(),
           );
           expect(tile.getKey()).to.be(
-            'spec/ol/data/14-8938-5680.vector.pbf?new/14,8938,5680'
+            'spec/ol/data/14-8938-5680.vector.pbf?new/14,8938,5680',
           );
           expect(tile.interimTile).to.be.a(VectorRenderTile);
           expect(tile.interimTile.getKey()).to.be(
-            'spec/ol/data/14-8938-5680.vector.pbf/14,8938,5680'
+            'spec/ol/data/14-8938-5680.vector.pbf/14,8938,5680',
           );
           const sourceTiles = source.getSourceTiles(
             1,
             map.getView().getProjection(),
-            tile
+            tile,
           );
           if (sourceTiles) {
             expect(sourceTiles[0].getKey()).to.be(
-              'spec/ol/data/14-8938-5680.vector.pbf?new/14,8938,5680'
+              'spec/ol/data/14-8938-5680.vector.pbf?new/14,8938,5680',
             );
             unByKey(key);
             done();

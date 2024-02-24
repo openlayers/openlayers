@@ -62,15 +62,15 @@ describe('ol.style.Style', function () {
       });
       const clone = original.clone();
       expect(original.getGeometry().getCoordinates()).to.eql(
-        clone.getGeometry().getCoordinates()
+        clone.getGeometry().getCoordinates(),
       );
       expect(original.getFill().getColor()).to.eql(clone.getFill().getColor());
       expect(original.getImage().getRadius()).to.eql(
-        clone.getImage().getRadius()
+        clone.getImage().getRadius(),
       );
       expect(original.getRenderer()).to.eql(clone.getRenderer());
       expect(original.getStroke().getColor()).to.eql(
-        clone.getStroke().getColor()
+        clone.getStroke().getColor(),
       );
       expect(original.getText().getText()).to.eql(clone.getText().getText());
       expect(original.getZIndex()).to.eql(clone.getZIndex());
@@ -112,20 +112,20 @@ describe('ol.style.Style', function () {
       clone.getStroke().setColor('#012345');
       clone.getText().setText('other');
       expect(original.getGeometry().getCoordinates()).not.to.eql(
-        clone.getGeometry().getCoordinates()
+        clone.getGeometry().getCoordinates(),
       );
       expect(original.getFill().getColor()).not.to.eql(
-        clone.getFill().getColor()
+        clone.getFill().getColor(),
       );
       expect(original.getImage().getScale()).not.to.eql(
-        clone.getImage().getScale()
+        clone.getImage().getScale(),
       );
       expect(original.getRenderer()).not.to.eql(clone.getRenderer());
       expect(original.getStroke().getColor()).not.to.eql(
-        clone.getStroke().getColor()
+        clone.getStroke().getColor(),
       );
       expect(original.getText().getText()).not.to.eql(
-        clone.getText().getText()
+        clone.getText().getText(),
       );
     });
   });
@@ -223,7 +223,7 @@ describe('ol.style.Style', function () {
       feature.set('myGeom', new Point([0, 0]));
       style.setGeometry('myGeom');
       expect(style.getGeometryFunction()(feature)).to.eql(
-        feature.get('myGeom')
+        feature.get('myGeom'),
       );
     });
 

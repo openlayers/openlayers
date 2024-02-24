@@ -32,14 +32,14 @@ class JSONFeature extends FeatureFormat {
    *
    * @param {ArrayBuffer|Document|Element|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
-   * @return {import('./Feature.js').FeatureOrRenderFeature<T>} Feature.
+   * @return {import('./Feature.js').FeatureClassToFeature<T>} Feature.
    * @api
    */
   readFeature(source, options) {
-    return /** @type {import('./Feature.js').FeatureOrRenderFeature<T>} */ (
+    return /** @type {import('./Feature.js').FeatureClassToFeature<T>} */ (
       this.readFeatureFromObject(
         getObject(source),
-        this.getReadOptions(source, options)
+        this.getReadOptions(source, options),
       )
     );
   }
@@ -50,14 +50,14 @@ class JSONFeature extends FeatureFormat {
    *
    * @param {ArrayBuffer|Document|Element|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
-   * @return {Array<import('./Feature.js').FeatureOrRenderFeature<T>>} Features.
+   * @return {Array<import('./Feature.js').FeatureClassToFeature<T>>} Features.
    * @api
    */
   readFeatures(source, options) {
-    return /** @type {Array<import('./Feature.js').FeatureOrRenderFeature<T>>} */ (
+    return /** @type {Array<import('./Feature.js').FeatureClassToFeature<T>>} */ (
       this.readFeaturesFromObject(
         getObject(source),
-        this.getReadOptions(source, options)
+        this.getReadOptions(source, options),
       )
     );
   }
@@ -95,7 +95,7 @@ class JSONFeature extends FeatureFormat {
   readGeometry(source, options) {
     return this.readGeometryFromObject(
       getObject(source),
-      this.getReadOptions(source, options)
+      this.getReadOptions(source, options),
     );
   }
 

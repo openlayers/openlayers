@@ -3,7 +3,11 @@
  */
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
 import CanvasLayerRenderer, {canvasPool} from './Layer.js';
-import ExecutorGroup from '../../render/canvas/ExecutorGroup.js';
+import ExecutorGroup, {
+  ALL,
+  DECLUTTER,
+  NON_DECLUTTER,
+} from '../../render/canvas/ExecutorGroup.js';
 import RenderEventType from '../../render/EventType.js';
 import ViewHint from '../../ViewHint.js';
 import {
@@ -117,6 +121,12 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
+     * @type {number}
+     */
+    this.renderedPixelRatio_ = 1;
+
+    /**
+     * @private
      * @type {function(import("../../Feature.js").default, import("../../Feature.js").default): number|null}
      */
     this.renderedRenderOrder_ = null;
@@ -132,11 +142,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
      * @type {boolean}
      */
     this.replayGroupChanged = true;
-
-    /**
-     * @type {import("../../render/canvas/ExecutorGroup").default}
-     */
-    this.declutterExecutorGroup = null;
 
     /**
      * Clipping to be performed by `renderFrame()`
@@ -160,9 +165,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   /**
    * @param {ExecutorGroup} executorGroup Executor group.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
-   * @param {import("rbush").default} [declutterTree] Declutter tree.
+   * @param {boolean} [declutterable] `true` to only render declutterable items,
+   *     `false` to only render non-declutterable items, `undefined` to render all.
    */
-  renderWorlds(executorGroup, frameState, declutterTree) {
+  renderWorlds(executorGroup, frameState, declutterable) {
     const extent = frameState.extent;
     const viewState = frameState.viewState;
     const center = viewState.center;
@@ -171,6 +177,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const rotation = viewState.rotation;
     const projectionExtent = projection.getExtent();
     const vectorSource = this.getLayer().getSource();
+    const declutter = this.getLayer().getDeclutter();
     const pixelRatio = frameState.pixelRatio;
     const viewHints = frameState.viewHints;
     const snapToPixel = !(
@@ -196,16 +203,22 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         pixelRatio,
         width,
         height,
-        world * worldWidth
+        world * worldWidth,
       );
       executorGroup.execute(
         context,
-        1,
+        [context.canvas.width, context.canvas.height],
         transform,
         rotation,
         snapToPixel,
-        undefined,
-        declutterTree
+        declutterable === undefined
+          ? ALL
+          : declutterable
+            ? DECLUTTER
+            : NON_DECLUTTER,
+        declutterable
+          ? declutter && frameState.declutter[declutter]
+          : undefined,
       );
     } while (++world < endWorld);
   }
@@ -215,7 +228,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       const compositionContext = createCanvasContext2D(
         this.context.canvas.width,
         this.context.canvas.height,
-        canvasPool
+        canvasPool,
       );
       this.compositionContext_ = compositionContext;
     } else {
@@ -240,15 +253,21 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    */
   renderDeclutter(frameState) {
-    if (this.declutterExecutorGroup) {
-      this.setupCompositionContext_();
-      this.renderWorlds(
-        this.declutterExecutorGroup,
-        frameState,
-        frameState.declutterTree
-      );
-      this.releaseCompositionContext_();
+    const declutter = this.getLayer().getDeclutter();
+    if (!declutter) {
+      return;
     }
+    this.setupCompositionContext_(); //FIXME Check if this works, or if we need to defer something.
+    this.renderWorlds(this.replayGroup_, frameState, true);
+    this.releaseCompositionContext_();
+  }
+
+  /**
+   * Render deferred instructions.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   */
+  renderDeferredInternal(frameState) {
+    this.replayGroup_.renderDeferred();
   }
 
   /**
@@ -272,10 +291,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const canvas = context.canvas;
 
     const replayGroup = this.replayGroup_;
-    const declutterExecutorGroup = this.declutterExecutorGroup;
-    let render =
-      (replayGroup && !replayGroup.isEmpty()) ||
-      (declutterExecutorGroup && !declutterExecutorGroup.isEmpty());
+    let render = replayGroup && !replayGroup.isEmpty();
     if (!render) {
       const hasRenderListeners =
         this.getLayer().hasListener(RenderEventType.PRERENDER) ||
@@ -318,7 +334,11 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     }
 
     if (render) {
-      this.renderWorlds(replayGroup, frameState);
+      this.renderWorlds(
+        replayGroup,
+        frameState,
+        this.getLayer().getDeclutter() ? false : undefined,
+      );
     }
 
     if (clipped) {
@@ -364,8 +384,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
             HIT_DETECT_RESOLUTION,
             width,
             height,
-            0
-          ).slice()
+            0,
+          ).slice(),
         );
         const source = layer.getSource();
         const projectionExtent = projection.getExtent();
@@ -389,8 +409,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
                 HIT_DETECT_RESOLUTION,
                 width,
                 height,
-                offsetX
-              ).slice()
+                offsetX,
+              ).slice(),
             );
             startX += worldWidth;
           }
@@ -407,13 +427,13 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
                 HIT_DETECT_RESOLUTION,
                 width,
                 height,
-                offsetX
-              ).slice()
+                offsetX,
+              ).slice(),
             );
             startX -= worldWidth;
           }
         }
-
+        const userProjection = getUserProjection();
         this.hitDetectionImageData_ = createHitDetectionImageData(
           size,
           transforms,
@@ -421,11 +441,13 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
           layer.getStyleFunction(),
           extent,
           resolution,
-          rotation
+          rotation,
+          getSquaredRenderTolerance(resolution, this.renderedPixelRatio_),
+          userProjection ? projection : null,
         );
       }
       resolve(
-        hitDetect(pixel, this.renderedFeatures_, this.hitDetectionImageData_)
+        hitDetect(pixel, this.renderedFeatures_, this.hitDetectionImageData_),
       );
     });
   }
@@ -444,7 +466,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     frameState,
     hitTolerance,
     callback,
-    matches
+    matches,
   ) {
     if (!this.replayGroup_) {
       return undefined;
@@ -477,7 +499,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
             geometry: geometry,
             distanceSq: distanceSq,
             callback: callback,
-          })
+          }),
         );
       } else if (match !== true && distanceSq < match.distanceSq) {
         if (distanceSq === 0) {
@@ -493,9 +515,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     let result;
     const executorGroups = [this.replayGroup_];
-    if (this.declutterExecutorGroup) {
-      executorGroups.push(this.declutterExecutorGroup);
-    }
+    const declutter = this.getLayer().getDeclutter();
     executorGroups.some((executorGroup) => {
       return (result = executorGroup.forEachFeatureAtCoordinate(
         coordinate,
@@ -503,10 +523,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         rotation,
         hitTolerance,
         featureCallback,
-        executorGroup === this.declutterExecutorGroup &&
-          frameState.declutterTree
-          ? frameState.declutterTree.all().map((item) => item.value)
-          : null
+        declutter && frameState.declutter[declutter]
+          ? frameState.declutter[declutter].all().map((item) => item.value)
+          : null,
       ));
     });
 
@@ -574,7 +593,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const center = viewState.center.slice();
     const extent = buffer(
       frameStateExtent,
-      vectorLayerRenderBuffer * resolution
+      vectorLayerRenderBuffer * resolution,
     );
     const renderedExtent = extent.slice();
     const loadExtents = [extent.slice()];
@@ -642,18 +661,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       getRenderTolerance(resolution, pixelRatio),
       extent,
       resolution,
-      pixelRatio
+      pixelRatio,
     );
-
-    let declutterBuilderGroup;
-    if (this.getLayer().getDeclutter()) {
-      declutterBuilderGroup = new CanvasBuilderGroup(
-        getRenderTolerance(resolution, pixelRatio),
-        extent,
-        resolution,
-        pixelRatio
-      );
-    }
 
     const userProjection = getUserProjection();
     let userTransform;
@@ -664,7 +673,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         vectorSource.loadFeatures(
           userExtent,
           toUserResolution(resolution, projection),
-          userProjection
+          userProjection,
         );
       }
       userTransform = getTransformFromProjections(userProjection, projection);
@@ -679,8 +688,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const render =
       /**
        * @param {import("../../Feature.js").default} feature Feature.
+       * @param {number} index Index.
        */
-      (feature) => {
+      (feature, index) => {
         let styles;
         const styleFunction =
           feature.getStyleFunction() || vectorLayer.getStyleFunction();
@@ -694,7 +704,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
             styles,
             replayGroup,
             userTransform,
-            declutterBuilderGroup
+            this.getLayer().getDeclutter(),
+            index,
           );
           ready = ready && !dirty;
         }
@@ -707,7 +718,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       features.sort(vectorLayerRenderOrder);
     }
     for (let i = 0, ii = features.length; i < ii; ++i) {
-      render(features[i]);
+      render(features[i], i);
     }
     this.renderedFeatures_ = features;
     this.ready = ready;
@@ -719,19 +730,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       pixelRatio,
       vectorSource.getOverlaps(),
       replayGroupInstructions,
-      vectorLayer.getRenderBuffer()
+      vectorLayer.getRenderBuffer(),
+      !!frameState.declutter,
     );
-
-    if (declutterBuilderGroup) {
-      this.declutterExecutorGroup = new ExecutorGroup(
-        extent,
-        resolution,
-        pixelRatio,
-        vectorSource.getOverlaps(),
-        declutterBuilderGroup.finish(),
-        vectorLayer.getRenderBuffer()
-      );
-    }
 
     this.renderedResolution_ = resolution;
     this.renderedRevision_ = vectorLayerRevision;
@@ -740,6 +741,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     this.wrappedRenderedExtent_ = extent;
     this.renderedCenter_ = center;
     this.renderedProjection_ = projection;
+    this.renderedPixelRatio_ = pixelRatio;
     this.replayGroup_ = executorGroup;
     this.hitDetectionImageData_ = null;
 
@@ -753,7 +755,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @param {import("../../style/Style.js").default|Array<import("../../style/Style.js").default>} styles The style or array of styles.
    * @param {import("../../render/canvas/BuilderGroup.js").default} builderGroup Builder group.
    * @param {import("../../proj.js").TransformFunction} [transform] Transform from user to view projection.
-   * @param {import("../../render/canvas/BuilderGroup.js").default} [declutterBuilderGroup] Builder for decluttering.
+   * @param {boolean} [declutter] Enable decluttering.
+   * @param {number} [index] Render order index.
    * @return {boolean} `true` if an image is loading.
    */
   renderFeature(
@@ -762,7 +765,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     styles,
     builderGroup,
     transform,
-    declutterBuilderGroup
+    declutter,
+    index,
   ) {
     if (!styles) {
       return false;
@@ -778,7 +782,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
             squaredTolerance,
             this.boundHandleStyleImageChange_,
             transform,
-            declutterBuilderGroup
+            declutter,
+            index,
           ) || loading;
       }
     } else {
@@ -789,7 +794,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         squaredTolerance,
         this.boundHandleStyleImageChange_,
         transform,
-        declutterBuilderGroup
+        declutter,
+        index,
       );
     }
     return loading;

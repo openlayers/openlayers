@@ -34,7 +34,7 @@ export function createFromTemplate(template, tileGrid) {
           const range = tileGrid.getFullTileRange(z);
           if (!range) {
             throw new Error(
-              'The {-y} placeholder requires a tile grid with extent'
+              'The {-y} placeholder requires a tile grid with extent',
             );
           }
           const y = range.getHeight() - tileCoord[2] - 1;

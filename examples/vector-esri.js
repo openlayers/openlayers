@@ -63,7 +63,7 @@ const vectorSource = new VectorSource({
           extent[3] +
           ',"spatialReference":{"wkid":' +
           srid +
-          '}}'
+          '}}',
       ) +
       '&geometryType=esriGeometryEnvelope&inSR=' +
       srid +
@@ -76,7 +76,7 @@ const vectorSource = new VectorSource({
   strategy: tileStrategy(
     createXYZ({
       tileSize: 512,
-    })
+    }),
   ),
   attributions:
     'University of Leicester (commissioned by the ' +

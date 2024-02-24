@@ -25,6 +25,70 @@ describe('ol.format.GPX', function () {
     });
   });
 
+  describe('metadata', function () {
+    it('can handle an empty metadata tag', function () {
+      const text =
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
+        '  <metadata></metadata>' +
+        '</gpx>';
+      const metadata = format.readMetadata(text);
+      expect(metadata).to.be.null;
+    });
+    it('can read various metadata entries/attribute', function () {
+      const test =
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
+        `  <metadata>` +
+        `    <name>GPX file name</name>` +
+        `    <desc>something that describe this GPX</desc>` +
+        `    <author>` +
+        `      <name>Author name</name>` +
+        `      <link href="https://url.to.author.website.com"></link>` +
+        `    </author>` +
+        `    <copyright author="hello I'm the author of the copyright">` +
+        `      <year>2024</year>` +
+        `      <license>https://link.to.the.licence.com</license>` +
+        `    </copyright>` +
+        `    <link href="https://a-link-for-this.gpx.com"></link>` +
+        `    <time>2024-01-25T12:00</time>` +
+        `    <keywords>Some,keywords,for,this,GPX</keywords>` +
+        `    <bounds minlat="12.3" maxlat="45.6" minlon="-7.0" maxlon="8.9"></bounds>` +
+        `  </metadata>` +
+        '</gpx>';
+      const metadata = format.readMetadata(test);
+      expect(metadata).to.be.an(Object);
+      expect(metadata['name']).to.be('GPX file name');
+      expect(metadata['desc']).to.be('something that describe this GPX');
+
+      expect(metadata['author']).to.be.an(Object);
+      const {author} = metadata;
+      expect(author['name']).to.be('Author name');
+      expect(author['link']).to.be('https://url.to.author.website.com');
+
+      expect(metadata['copyright']).to.be.an(Object);
+      const {copyright} = metadata;
+      expect(copyright['author']).to.be(
+        "hello I'm the author of the copyright",
+      );
+      expect(copyright['year']).to.be(2024);
+      expect(copyright['license']).to.be('https://link.to.the.licence.com');
+
+      expect(metadata['link']).to.be('https://a-link-for-this.gpx.com');
+      expect(metadata['time']).to.be(
+        new Date('2024-01-25T12:00').getTime() / 1000,
+      );
+      expect(metadata['keywords']).to.be('Some,keywords,for,this,GPX');
+
+      expect(metadata['bounds']).to.have.length(2);
+      const [bottomLeft, topRight] = metadata['bounds'];
+      expect(bottomLeft).to.have.length(2);
+      expect(bottomLeft[0]).to.be(-7.0);
+      expect(bottomLeft[1]).to.be(12.3);
+      expect(topRight).to.have.length(2);
+      expect(topRight[0]).to.be(8.9);
+      expect(topRight[1]).to.be(45.6);
+    });
+  });
+
   describe('rte', function () {
     it('can read an empty rte', function () {
       const text =

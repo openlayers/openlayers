@@ -70,6 +70,24 @@ describe('ol/expr/cpu.js', () => {
         expected: 'forty-two',
       },
       {
+        name: 'geometry-type',
+        type: StringType,
+        expression: ['geometry-type'],
+        context: {
+          geometryType: 'LineString',
+        },
+        expected: 'LineString',
+      },
+      {
+        name: 'geometry-type (empty)',
+        type: StringType,
+        expression: ['geometry-type'],
+        context: {
+          geometryType: '',
+        },
+        expected: '',
+      },
+      {
         name: 'resolution',
         type: NumberType,
         expression: ['resolution'],
@@ -113,6 +131,39 @@ describe('ol/expr/cpu.js', () => {
           featureId: 'foo',
         },
         expected: 'Feature foo',
+      },
+      {
+        name: 'coalesce (2 arguments, first has a value)',
+        type: StringType,
+        expression: ['coalesce', ['get', 'val'], 'default'],
+        context: {
+          properties: {val: 'test'},
+        },
+        expected: 'test',
+      },
+      {
+        name: 'coalesce (2 arguments, first has no value)',
+        type: StringType,
+        expression: ['coalesce', ['get', 'val'], 'default'],
+        context: {
+          properties: {},
+        },
+        expected: 'default',
+      },
+      {
+        name: 'coalesce (several arguments, first few have no value)',
+        type: StringType,
+        expression: [
+          'coalesce',
+          ['get', 'val'],
+          ['get', 'beer'],
+          ['get', 'present'],
+          'last resort',
+        ],
+        context: {
+          properties: {present: 'hello world'},
+        },
+        expected: 'hello world',
       },
       {
         name: 'any (true)',

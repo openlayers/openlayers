@@ -29,7 +29,7 @@ const SAMPLE_TRANSFORM = composeTransform(
   2 / (SAMPLE_FRAMESTATE.viewState.resolution * SAMPLE_FRAMESTATE.size[1]),
   -SAMPLE_FRAMESTATE.viewState.rotation,
   -SAMPLE_FRAMESTATE.viewState.center[0],
-  -SAMPLE_FRAMESTATE.viewState.center[1]
+  -SAMPLE_FRAMESTATE.viewState.center[1],
 );
 
 describe('Render instructions utilities', function () {
@@ -98,7 +98,7 @@ describe('Render instructions utilities', function () {
         mixedBatch.pointBatch,
         new Float32Array(0),
         customAttributes,
-        SAMPLE_TRANSFORM
+        SAMPLE_TRANSFORM,
       );
     });
     it('generates render instructions', function () {
@@ -114,7 +114,7 @@ describe('Render instructions utilities', function () {
         mixedBatch.lineStringBatch,
         new Float32Array(0),
         customAttributes,
-        SAMPLE_TRANSFORM
+        SAMPLE_TRANSFORM,
       );
     });
     it('generates render instructions', function () {
@@ -131,7 +131,7 @@ describe('Render instructions utilities', function () {
         mixedBatch.polygonBatch,
         new Float32Array(0),
         customAttributes,
-        SAMPLE_TRANSFORM
+        SAMPLE_TRANSFORM,
       );
     });
     it('generates render instructions', function () {
@@ -155,7 +155,7 @@ describe('Render instructions utilities', function () {
             },
           },
         ],
-        SAMPLE_TRANSFORM
+        SAMPLE_TRANSFORM,
       );
     });
     it('generates render instructions', function () {

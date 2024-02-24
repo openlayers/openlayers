@@ -68,7 +68,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
     }
     const vectorPixel = apply(
       this.coordinateToVectorPixelTransform_,
-      apply(this.renderedPixelToCoordinateTransform_, pixel.slice())
+      apply(this.renderedPixelToCoordinateTransform_, pixel.slice()),
     );
     return this.vectorRenderer_.getFeatures(vectorPixel);
   }
@@ -111,7 +111,6 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
       const imageLayerState = Object.assign({}, layerState, {opacity: 1});
       const imageFrameState = /** @type {import("../../Map.js").FrameState} */ (
         Object.assign({}, frameState, {
-          declutterTree: new RBush(9),
           extent: renderedExtent,
           size: [width, height],
           viewState: /** @type {import("../../View.js").State} */ (
@@ -121,8 +120,15 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
           ),
           layerStatesArray: [imageLayerState],
           layerIndex: 0,
+          declutter: null,
         })
       );
+      const declutter = this.getLayer().getDeclutter();
+      if (declutter) {
+        imageFrameState.declutter = {
+          [declutter]: new RBush(9),
+        };
+      }
       let emptyImage = true;
       const image = new ImageCanvas(
         renderedExtent,
@@ -137,11 +143,12 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
             vectorRenderer.clipping = false;
             if (vectorRenderer.renderFrame(imageFrameState, null)) {
               vectorRenderer.renderDeclutter(imageFrameState);
+              vectorRenderer.renderDeferred(imageFrameState);
               emptyImage = false;
             }
             callback();
           }
-        }
+        },
       );
 
       image.addEventListener(EventType.CHANGE, () => {
@@ -162,7 +169,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
           -1 / renderedResolution,
           0,
           -viewState.center[0],
-          -viewState.center[1]
+          -viewState.center[1],
         );
       });
       image.load();
@@ -202,7 +209,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
     frameState,
     hitTolerance,
     callback,
-    matches
+    matches,
   ) {
     if (this.vectorRenderer_) {
       return this.vectorRenderer_.forEachFeatureAtCoordinate(
@@ -210,7 +217,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
         frameState,
         hitTolerance,
         callback,
-        matches
+        matches,
       );
     }
     return super.forEachFeatureAtCoordinate(
@@ -218,7 +225,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
       frameState,
       hitTolerance,
       callback,
-      matches
+      matches,
     );
   }
 }

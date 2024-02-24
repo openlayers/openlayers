@@ -498,14 +498,14 @@ describe('ol.interaction.Modify', function () {
           [-10, -10],
           [10, 10],
           [-10, -10],
-        ])
+        ]),
       );
       const lineFeature2 = new Feature(
         new LineString([
           [10, 10],
           [-10, -10],
           [10, 10],
-        ])
+        ]),
       );
       features.length = 0;
       features.push(lineFeature1, lineFeature2);
@@ -581,7 +581,7 @@ describe('ol.interaction.Modify', function () {
       const viewProjection = map.getView().getProjection();
 
       const circleFeature = new Feature(
-        new Circle([10, 10], 20).transform(viewProjection, userProjection)
+        new Circle([10, 10], 20).transform(viewProjection, userProjection),
       );
       features.length = 0;
       features.push(circleFeature);
@@ -993,7 +993,7 @@ describe('ol.interaction.Modify', function () {
         [0, 0, 5, 5],
         function (node) {
           return node;
-        }
+        },
       );
       expect(firstSegmentData.segment[0]).to.eql([10, 10]);
       expect(firstSegmentData.segment[1]).to.eql([10, 10]);
@@ -1007,7 +1007,7 @@ describe('ol.interaction.Modify', function () {
         [0, 0, 5, 5],
         function (node) {
           return node;
-        }
+        },
       );
       expect(firstSegmentData.segment[0]).to.eql([1, 1]);
       expect(firstSegmentData.segment[1]).to.eql([1, 1]);
@@ -1034,7 +1034,7 @@ describe('ol.interaction.Modify', function () {
         [0, 0, 5, 5],
         function (node) {
           return node;
-        }
+        },
       );
       expect(firstSegmentData.segment[0]).to.eql([0, 0]);
       expect(firstSegmentData.segment[1]).to.eql([10, 20]);
@@ -1049,7 +1049,7 @@ describe('ol.interaction.Modify', function () {
         [0, 0, 5, 5],
         function (node) {
           return node;
-        }
+        },
       );
       expect(firstSegmentData.segment[0]).to.eql([1, 1]);
       expect(firstSegmentData.segment[1]).to.eql([10, 20]);
@@ -1106,13 +1106,13 @@ describe('ol.interaction.Modify', function () {
         new MultiPoint([
           [10, 10],
           [10, 20],
-        ])
+        ]),
       );
       collection.push(feature);
       simulateEvent('pointermove', 10, -20, null, 0);
       expect(modify.vertexFeature_.get('features')[0]).to.eql(feature);
       expect(modify.vertexFeature_.get('geometries')[0]).to.eql(
-        feature.getGeometry()
+        feature.getGeometry(),
       );
       map.removeInteraction(modify);
     });
@@ -1124,13 +1124,13 @@ describe('ol.interaction.Modify', function () {
       });
       map.addInteraction(modify);
       const feature = new Feature(
-        new GeometryCollection([fromExtent([0, 0, 10, 10]), new Point([5, 5])])
+        new GeometryCollection([fromExtent([0, 0, 10, 10]), new Point([5, 5])]),
       );
       collection.push(feature);
       simulateEvent('pointermove', 5, -5, null, 0);
       expect(modify.vertexFeature_.get('features')[0]).to.eql(feature);
       expect(modify.vertexFeature_.get('geometries')[0]).to.eql(
-        feature.getGeometry().getGeometriesArray()[1]
+        feature.getGeometry().getGeometriesArray()[1],
       );
     });
 
@@ -1151,13 +1151,13 @@ describe('ol.interaction.Modify', function () {
               color: 'fuchsia',
             }),
           }),
-        })
+        }),
       );
       map.renderSync();
       simulateEvent('pointermove', 10, -10, null, 0);
       expect(modify.vertexFeature_.get('features')[0]).to.eql(pointFeature);
       expect(
-        modify.vertexFeature_.get('geometries')[0].getCoordinates()
+        modify.vertexFeature_.get('geometries')[0].getCoordinates(),
       ).to.eql(pointFeature.getGeometry().getCoordinates());
     });
 
@@ -1171,7 +1171,7 @@ describe('ol.interaction.Modify', function () {
         new View({
           center: [16, 48],
           zoom: map.getView().getZoom(),
-        })
+        }),
       );
       map.addInteraction(modify);
       source.clear();
@@ -1185,7 +1185,7 @@ describe('ol.interaction.Modify', function () {
               color: 'fuchsia',
             }),
           }),
-        })
+        }),
       );
       map.renderSync();
       simulateEvent('pointermove', 10, -10, null, 0);
@@ -1194,7 +1194,7 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerup', 0, 0, null, 0);
       expect(modify.vertexFeature_.get('features')[0]).to.eql(pointFeature);
       expect(
-        modify.vertexFeature_.get('geometries')[0].getCoordinates()
+        modify.vertexFeature_.get('geometries')[0].getCoordinates(),
       ).to.eql(pointFeature.getGeometry().getCoordinates());
       clearUserProjection();
     });
@@ -1294,7 +1294,7 @@ describe('ol.interaction.Modify', function () {
       const viewProjection = map.getView().getProjection();
 
       const circleFeature = new Feature(
-        new Circle([10, 10], 20).transform(viewProjection, userProjection)
+        new Circle([10, 10], 20).transform(viewProjection, userProjection),
       );
       features.length = 0;
       features.push(circleFeature);

@@ -19,7 +19,7 @@ describe('ol/MapBrowserEventHandler', function () {
       handler = new MapBrowserEventHandler(
         new Map({
           target: target,
-        })
+        }),
       );
 
       clickSpy = sinon.spy();
@@ -210,7 +210,7 @@ describe('ol/MapBrowserEventHandler', function () {
       handler = new MapBrowserEventHandler(
         new Map({
           target: target,
-        })
+        }),
       );
 
       element = handler.element_;
@@ -289,7 +289,7 @@ describe('ol/MapBrowserEventHandler', function () {
       handler = new MapBrowserEventHandler(
         new Map({
           target: target,
-        })
+        }),
       );
 
       element = handler.element_;

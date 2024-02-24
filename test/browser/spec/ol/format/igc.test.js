@@ -66,25 +66,25 @@ describe('ol.format.IGC', function () {
       const expectedPoint1 = transform(
         [6.851583333333333, 45.9376],
         'EPSG:4326',
-        'EPSG:3857'
+        'EPSG:3857',
       );
       expectedPoint1.push(1303202928);
       const expectedPoint2 = transform(
         [6.850183333333334, 45.93395],
         'EPSG:4326',
-        'EPSG:3857'
+        'EPSG:3857',
       );
       expectedPoint2.push(1303203353);
       const expectedPoint3 = transform(
         [6.800816666666667, 45.916066666666666],
         'EPSG:4326',
-        'EPSG:3857'
+        'EPSG:3857',
       );
       expectedPoint3.push(1303203815);
       const expectedPoint4 = transform(
         [6.851583333333333, 45.9376],
         'EPSG:4326',
-        'EPSG:3857'
+        'EPSG:3857',
       );
       expectedPoint4.push(1303289328);
 
@@ -130,25 +130,25 @@ describe('ol.format.IGC', function () {
       const expectedPoint1 = transform(
         [6.851583333333333, 45.9376],
         'EPSG:4326',
-        'EPSG:3857'
+        'EPSG:3857',
       );
       expectedPoint1.push(1303202928);
       const expectedPoint2 = transform(
         [6.850183333333334, 45.93395],
         'EPSG:4326',
-        'EPSG:3857'
+        'EPSG:3857',
       );
       expectedPoint2.push(1303203353);
       const expectedPoint3 = transform(
         [6.800816666666667, 45.916066666666666],
         'EPSG:4326',
-        'EPSG:3857'
+        'EPSG:3857',
       );
       expectedPoint3.push(1303203815);
       const expectedPoint4 = transform(
         [6.851583333333333, 45.9376],
         'EPSG:4326',
-        'EPSG:3857'
+        'EPSG:3857',
       );
       expectedPoint4.push(1303289328);
 

@@ -107,9 +107,9 @@ class RenderFeature {
 
     /**
      * @private
-     * @type {Array<number>}
+     * @type {Array<number>|null}
      */
-    this.ends_ = ends;
+    this.ends_ = ends || null;
 
     /**
      * @private
@@ -158,7 +158,7 @@ class RenderFeature {
               this.flatCoordinates_,
               0,
               this.flatCoordinates_.length,
-              2
+              2,
             );
     }
     return this.extent_;
@@ -173,10 +173,10 @@ class RenderFeature {
       this.flatInteriorPoints_ = getInteriorPointOfArray(
         this.flatCoordinates_,
         0,
-        /** @type {Array<number>} */ (this.ends_),
+        this.ends_,
         2,
         flatCenter,
-        0
+        0,
       );
     }
     return this.flatInteriorPoints_;
@@ -194,7 +194,7 @@ class RenderFeature {
         0,
         ends,
         2,
-        flatCenters
+        flatCenters,
       );
     }
     return this.flatInteriorPoints_;
@@ -210,7 +210,7 @@ class RenderFeature {
         0,
         this.flatCoordinates_.length,
         2,
-        0.5
+        0.5,
       );
     }
     return this.flatMidpoints_;
@@ -340,7 +340,7 @@ class RenderFeature {
         -scale,
         0,
         0,
-        0
+        0,
       );
       transform2D(
         this.flatCoordinates_,
@@ -348,7 +348,7 @@ class RenderFeature {
         this.flatCoordinates_.length,
         2,
         tmpTransform,
-        this.flatCoordinates_
+        this.flatCoordinates_,
       );
     }
   }
@@ -371,15 +371,15 @@ class RenderFeature {
     return new RenderFeature(
       this.type_,
       this.flatCoordinates_.slice(),
-      this.ends_.slice(),
+      this.ends_?.slice(),
       this.stride_,
       Object.assign({}, this.properties_),
-      this.id_
+      this.id_,
     );
   }
 
   /**
-   * @return {Array<number>} Ends.
+   * @return {Array<number>|null} Ends.
    */
   getEnds() {
     return this.ends_;
@@ -410,7 +410,7 @@ class RenderFeature {
             this.simplifiedGeometry_.stride_,
             squaredTolerance,
             simplifiedFlatCoordinates,
-            0
+            0,
           );
           simplifiedEnds = [simplifiedFlatCoordinates.length];
           break;
@@ -424,7 +424,7 @@ class RenderFeature {
             squaredTolerance,
             simplifiedFlatCoordinates,
             0,
-            simplifiedEnds
+            simplifiedEnds,
           );
           break;
         case 'Polygon':
@@ -437,7 +437,7 @@ class RenderFeature {
             Math.sqrt(squaredTolerance),
             simplifiedFlatCoordinates,
             0,
-            simplifiedEnds
+            simplifiedEnds,
           );
           break;
         default:
@@ -449,7 +449,7 @@ class RenderFeature {
           simplifiedEnds,
           2,
           this.properties_,
-          this.id_
+          this.id_,
         );
       }
       this.squaredTolerance_ = squaredTolerance;
@@ -486,11 +486,11 @@ export function toGeometry(renderFeature) {
       return new MultiLineString(
         renderFeature.getFlatCoordinates(),
         'XY',
-        /** @type {Array<number>} */ (renderFeature.getEnds())
+        /** @type {Array<number>} */ (renderFeature.getEnds()),
       );
     case 'Polygon':
       const flatCoordinates = renderFeature.getFlatCoordinates();
-      const ends = /** @type {Array<number>} */ (renderFeature.getEnds());
+      const ends = renderFeature.getEnds();
       const endss = inflateEnds(flatCoordinates, ends);
       return endss.length > 1
         ? new MultiPolygon(flatCoordinates, 'XY', endss)

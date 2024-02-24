@@ -74,7 +74,7 @@ class WMSCapabilities extends XML {
       },
       PARSERS,
       node,
-      []
+      [],
     );
     return wmsCapabilityObject ? wmsCapabilityObject : null;
   }
@@ -158,7 +158,7 @@ const LAYER_PARSERS = makeStructureNS(NAMESPACE_URIS, {
   'KeywordList': makeObjectPropertySetter(readKeywordList),
   'CRS': makeObjectPropertyPusher(readString),
   'EX_GeographicBoundingBox': makeObjectPropertySetter(
-    readEXGeographicBoundingBox
+    readEXGeographicBoundingBox,
   ),
   'BoundingBox': makeObjectPropertyPusher(readBoundingBox),
   'Dimension': makeObjectPropertyPusher(readDimension),
@@ -314,7 +314,7 @@ function readEXGeographicBoundingBox(node, objectStack) {
     {},
     EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS,
     node,
-    objectStack
+    objectStack,
   );
   if (!geographicBoundingBox) {
     return undefined;

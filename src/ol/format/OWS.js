@@ -240,7 +240,7 @@ function readGet(node, objectStack) {
     {'href': href},
     REQUEST_METHOD_PARSERS,
     node,
-    objectStack
+    objectStack,
   );
 }
 

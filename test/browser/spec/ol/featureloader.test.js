@@ -73,7 +73,7 @@ describe('ol.featureloader', function () {
             done();
           }, 0);
         },
-        errorSpy
+        errorSpy,
       );
     });
   });

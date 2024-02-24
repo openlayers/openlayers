@@ -19,7 +19,7 @@ export async function getLatestRelease() {
           latest = version;
         }
       }
-    }
+    },
   );
 
   return latest;

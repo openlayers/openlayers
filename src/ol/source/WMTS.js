@@ -154,7 +154,7 @@ class WMTS extends TileImage {
 
     if (urls && urls.length > 0) {
       this.tileUrlFunction = createFromTileUrlFunctions(
-        urls.map(this.createFromWMTSTemplate.bind(this))
+        urls.map(this.createFromWMTSTemplate.bind(this)),
       );
     }
   }
@@ -169,9 +169,9 @@ class WMTS extends TileImage {
     const key = urls.join('\n');
     this.setTileUrlFunction(
       createFromTileUrlFunctions(
-        urls.map(this.createFromWMTSTemplate.bind(this))
+        urls.map(this.createFromWMTSTemplate.bind(this)),
       ),
-      key
+      key,
     );
   }
 
@@ -361,7 +361,7 @@ export default WMTS;
  */
 export function optionsFromCapabilities(wmtsCap, config) {
   const layers = wmtsCap['Contents']['Layer'];
-  const l = layers.find(function (elt) {
+  const l = layers?.find(function (elt) {
     return elt['Identifier'] == config['layer'];
   });
   if (!l) {
@@ -468,7 +468,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
       (tileMatrixValue) =>
         tileMatrixValue.Identifier === selectedMatrixLimit.TileMatrix ||
         matrixSetObj.Identifier + ':' + tileMatrixValue.Identifier ===
-          selectedMatrixLimit.TileMatrix
+          selectedMatrixLimit.TileMatrix,
     );
     if (m) {
       matrix = m;
@@ -514,7 +514,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
       const wgs84MatrixSetExtent = transformExtent(
         matrixSetExtent,
         matrixSetObj['SupportedCRS'],
-        'EPSG:4326'
+        'EPSG:4326',
       );
       // Ignore slight deviation from the correct x limits
       wrapX =
@@ -526,7 +526,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
   const tileGrid = createFromCapabilitiesMatrixSet(
     matrixSetObj,
     extent,
-    matrixLimits
+    matrixLimits,
   );
 
   /** @type {!Array<string>} */

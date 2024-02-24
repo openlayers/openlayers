@@ -14,7 +14,7 @@ class WebGLLayer extends Layer {
       style: {
         'fill-color': '#ddd',
         'stroke-color': '#eee',
-        'stroke-width': 3,
+        'stroke-width': 2,
       },
     });
   }

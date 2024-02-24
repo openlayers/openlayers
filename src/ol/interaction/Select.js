@@ -344,11 +344,11 @@ class Select extends Interaction {
     if (map) {
       this.features_.addEventListener(
         CollectionEventType.ADD,
-        this.boundAddFeature_
+        this.boundAddFeature_,
       );
       this.features_.addEventListener(
         CollectionEventType.REMOVE,
-        this.boundRemoveFeature_
+        this.boundRemoveFeature_,
       );
 
       if (this.style_) {
@@ -357,11 +357,11 @@ class Select extends Interaction {
     } else {
       this.features_.removeEventListener(
         CollectionEventType.ADD,
-        this.boundAddFeature_
+        this.boundAddFeature_,
       );
       this.features_.removeEventListener(
         CollectionEventType.REMOVE,
-        this.boundRemoveFeature_
+        this.boundRemoveFeature_,
       );
     }
   }
@@ -506,7 +506,7 @@ class Select extends Interaction {
         {
           layerFilter: this.layerFilter_,
           hitTolerance: this.hitTolerance_,
-        }
+        },
       );
       for (let i = features.getLength() - 1; i >= 0; --i) {
         const feature = features.item(i);
@@ -550,7 +550,7 @@ class Select extends Interaction {
         {
           layerFilter: this.layerFilter_,
           hitTolerance: this.hitTolerance_,
-        }
+        },
       );
       for (let j = deselected.length - 1; j >= 0; --j) {
         features.remove(deselected[j]);
@@ -563,8 +563,8 @@ class Select extends Interaction {
           SelectEventType.SELECT,
           selected,
           deselected,
-          mapBrowserEvent
-        )
+          mapBrowserEvent,
+        ),
       );
     }
     return true;

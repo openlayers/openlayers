@@ -15,6 +15,7 @@ import {
   NumberArrayType,
   NumberType,
   StringType,
+  computeGeometryType,
   newParsingContext,
 } from '../../expr/expression.js';
 import {buildExpression, newEvaluationContext} from '../../expr/cpu.js';
@@ -83,6 +84,11 @@ export function rulesToStyleFunction(rules) {
       } else {
         evaluationContext.featureId = null;
       }
+    }
+    if (parsingContext.geometryType) {
+      evaluationContext.geometryType = computeGeometryType(
+        feature.getGeometry(),
+      );
     }
     return evaluator(evaluationContext);
   };
@@ -242,7 +248,7 @@ export function buildStyle(flatStyle, context) {
     // would be nice to check the properties and suggest "did you mean..."
     throw new Error(
       'No fill, stroke, point, or text symbolizer properties in style: ' +
-        JSON.stringify(flatStyle)
+        JSON.stringify(flatStyle),
     );
   }
 
@@ -305,7 +311,7 @@ function buildFill(flatStyle, prefix, context) {
     evaluateColor = colorLikeEvaluator(
       flatStyle,
       prefix + 'fill-color',
-      context
+      context,
     );
   }
   if (!evaluateColor) {
@@ -337,13 +343,13 @@ function buildStroke(flatStyle, prefix, context) {
   const evaluateWidth = numberEvaluator(
     flatStyle,
     prefix + 'stroke-width',
-    context
+    context,
   );
 
   const evaluateColor = colorLikeEvaluator(
     flatStyle,
     prefix + 'stroke-color',
-    context
+    context,
   );
 
   if (!evaluateWidth && !evaluateColor) {
@@ -353,31 +359,31 @@ function buildStroke(flatStyle, prefix, context) {
   const evaluateLineCap = stringEvaluator(
     flatStyle,
     prefix + 'stroke-line-cap',
-    context
+    context,
   );
 
   const evaluateLineJoin = stringEvaluator(
     flatStyle,
     prefix + 'stroke-line-join',
-    context
+    context,
   );
 
   const evaluateLineDash = numberArrayEvaluator(
     flatStyle,
     prefix + 'stroke-line-dash',
-    context
+    context,
   );
 
   const evaluateLineDashOffset = numberEvaluator(
     flatStyle,
     prefix + 'stroke-line-dash-offset',
-    context
+    context,
   );
 
   const evaluateMiterLimit = numberEvaluator(
     flatStyle,
     prefix + 'stroke-miter-limit',
-    context
+    context,
   );
 
   const stroke = new Stroke();
@@ -456,7 +462,7 @@ function buildText(flatStyle, context) {
   const evaluateBackgroundFill = buildFill(
     flatStyle,
     prefix + 'background-',
-    context
+    context,
   );
 
   const evaluateStroke = buildStroke(flatStyle, prefix, context);
@@ -464,7 +470,7 @@ function buildText(flatStyle, context) {
   const evaluateBackgroundStroke = buildStroke(
     flatStyle,
     prefix + 'background-',
-    context
+    context,
   );
 
   const evaluateFont = stringEvaluator(flatStyle, prefix + 'font', context);
@@ -472,31 +478,31 @@ function buildText(flatStyle, context) {
   const evaluateMaxAngle = numberEvaluator(
     flatStyle,
     prefix + 'max-angle',
-    context
+    context,
   );
 
   const evaluateOffsetX = numberEvaluator(
     flatStyle,
     prefix + 'offset-x',
-    context
+    context,
   );
 
   const evaluateOffsetY = numberEvaluator(
     flatStyle,
     prefix + 'offset-y',
-    context
+    context,
   );
 
   const evaluateOverflow = booleanEvaluator(
     flatStyle,
     prefix + 'overflow',
-    context
+    context,
   );
 
   const evaluatePlacement = stringEvaluator(
     flatStyle,
     prefix + 'placement',
-    context
+    context,
   );
 
   const evaluateRepeat = numberEvaluator(flatStyle, prefix + 'repeat', context);
@@ -506,13 +512,13 @@ function buildText(flatStyle, context) {
   const evaluateRotateWithView = booleanEvaluator(
     flatStyle,
     prefix + 'rotate-with-view',
-    context
+    context,
   );
 
   const evaluateRotation = numberEvaluator(
     flatStyle,
     prefix + 'rotation',
-    context
+    context,
   );
 
   const evaluateAlign = stringEvaluator(flatStyle, prefix + 'align', context);
@@ -520,22 +526,29 @@ function buildText(flatStyle, context) {
   const evaluateJustify = stringEvaluator(
     flatStyle,
     prefix + 'justify',
-    context
+    context,
   );
 
   const evaluateBaseline = stringEvaluator(
     flatStyle,
     prefix + 'baseline',
-    context
+    context,
   );
 
   const evaluatePadding = numberArrayEvaluator(
     flatStyle,
     prefix + 'padding',
-    context
+    context,
   );
 
-  const text = new Text({});
+  // The following properties are not currently settable
+  const declutterMode = optionalDeclutterMode(
+    flatStyle,
+    prefix + 'declutter-mode',
+  );
+
+  const text = new Text({declutterMode});
+
   return function (context) {
     text.setText(evaluateValue(context));
 
@@ -609,7 +622,7 @@ function buildText(flatStyle, context) {
         textAlign !== 'start'
       ) {
         throw new Error(
-          'Expected left, right, center, start, or end for text-align'
+          'Expected left, right, center, start, or end for text-align',
         );
       }
       text.setTextAlign(textAlign);
@@ -633,7 +646,7 @@ function buildText(flatStyle, context) {
         textBaseline !== 'hanging'
       ) {
         throw new Error(
-          'Expected bottom, top, middle, alphabetic, or hanging for text-baseline'
+          'Expected bottom, top, middle, alphabetic, or hanging for text-baseline',
         );
       }
       text.setTextBaseline(textBaseline);
@@ -688,7 +701,7 @@ function buildIcon(flatStyle, context) {
   const evaluateAnchor = coordinateEvaluator(
     flatStyle,
     prefix + 'anchor',
-    context
+    context,
   );
 
   const evaluateScale = sizeLikeEvaluator(flatStyle, prefix + 'scale', context);
@@ -696,36 +709,36 @@ function buildIcon(flatStyle, context) {
   const evaluateOpacity = numberEvaluator(
     flatStyle,
     prefix + 'opacity',
-    context
+    context,
   );
 
   const evaluateDisplacement = coordinateEvaluator(
     flatStyle,
     prefix + 'displacement',
-    context
+    context,
   );
 
   const evaluateRotation = numberEvaluator(
     flatStyle,
     prefix + 'rotation',
-    context
+    context,
   );
 
   const evaluateRotateWithView = booleanEvaluator(
     flatStyle,
     prefix + 'rotate-with-view',
-    context
+    context,
   );
 
   // the remaining symbolizer properties are not currently settable
   const anchorOrigin = optionalIconOrigin(flatStyle, prefix + 'anchor-origin');
   const anchorXUnits = optionalIconAnchorUnits(
     flatStyle,
-    prefix + 'anchor-x-units'
+    prefix + 'anchor-x-units',
   );
   const anchorYUnits = optionalIconAnchorUnits(
     flatStyle,
-    prefix + 'anchor-y-units'
+    prefix + 'anchor-y-units',
   );
   const color = optionalColorLike(flatStyle, prefix + 'color');
   const crossOrigin = optionalString(flatStyle, prefix + 'cross-origin');
@@ -736,7 +749,7 @@ function buildIcon(flatStyle, context) {
   const size = optionalSize(flatStyle, prefix + 'size');
   const declutterMode = optionalDeclutterMode(
     flatStyle,
-    prefix + 'declutter-mode'
+    prefix + 'declutter-mode',
   );
 
   const icon = new Icon({
@@ -803,17 +816,17 @@ function buildShape(flatStyle, context) {
   const evaluateDisplacement = coordinateEvaluator(
     flatStyle,
     prefix + 'displacement',
-    context
+    context,
   );
   const evaluateRotation = numberEvaluator(
     flatStyle,
     prefix + 'rotation',
-    context
+    context,
   );
   const evaluateRotateWithView = booleanEvaluator(
     flatStyle,
     prefix + 'rotate-with-view',
-    context
+    context,
   );
 
   // the remaining properties are not currently settable
@@ -821,7 +834,7 @@ function buildShape(flatStyle, context) {
   const angle = optionalNumber(flatStyle, prefix + 'angle');
   const declutterMode = optionalDeclutterMode(
     flatStyle,
-    prefix + 'declutter-mode'
+    prefix + 'declutter-mode',
   );
 
   const shape = new RegularShape({
@@ -872,23 +885,23 @@ function buildCircle(flatStyle, context) {
   const evaluateDisplacement = coordinateEvaluator(
     flatStyle,
     prefix + 'displacement',
-    context
+    context,
   );
   const evaluateRotation = numberEvaluator(
     flatStyle,
     prefix + 'rotation',
-    context
+    context,
   );
   const evaluateRotateWithView = booleanEvaluator(
     flatStyle,
     prefix + 'rotate-with-view',
-    context
+    context,
   );
 
   // the remaining properties are not currently settable
   const declutterMode = optionalDeclutterMode(
     flatStyle,
-    prefix + 'declutter-mode'
+    prefix + 'declutter-mode',
   );
 
   const circle = new Circle({
@@ -959,22 +972,22 @@ function patternEvaluator(flatStyle, prefix, context) {
   const srcEvaluator = stringEvaluator(
     flatStyle,
     prefix + 'pattern-src',
-    context
+    context,
   );
   const offsetEvaluator = sizeEvaluator(
     flatStyle,
     prefix + 'pattern-offset',
-    context
+    context,
   );
   const patternSizeEvaluator = sizeEvaluator(
     flatStyle,
     prefix + 'pattern-size',
-    context
+    context,
   );
   const colorEvaluator = colorLikeEvaluator(
     flatStyle,
     prefix + 'color',
-    context
+    context,
   );
   return function (context) {
     return {
@@ -1019,7 +1032,7 @@ function colorLikeEvaluator(flatStyle, name, context) {
   const evaluator = buildExpression(
     flatStyle[name],
     ColorType | StringType,
-    context
+    context,
   );
   return function (context) {
     return requireColorLike(evaluator(context), name);
@@ -1091,7 +1104,7 @@ function sizeLikeEvaluator(flatStyle, name, context) {
   const evaluator = buildExpression(
     flatStyle[name],
     NumberArrayType | NumberType,
-    context
+    context,
   );
   return function (context) {
     return requireSizeLike(evaluator(context), name);
@@ -1173,7 +1186,7 @@ function optionalIconOrigin(flatStyle, property) {
     encoded !== 'top-right'
   ) {
     throw new Error(
-      `Expected bottom-left, bottom-right, top-left, or top-right for ${property}`
+      `Expected bottom-left, bottom-right, top-left, or top-right for ${property}`,
     );
   }
   return encoded;
@@ -1211,7 +1224,7 @@ function optionalNumberArray(flatStyle, property) {
 /**
  * @param {FlatStyle} flatStyle The flat style.
  * @param {string} property The symbolizer property.
- * @return {"declutter"|"obstacle"|"none"|undefined} Icon declutter mode.
+ * @return {import('../../style/Style.js').DeclutterMode} Icon declutter mode.
  */
 function optionalDeclutterMode(flatStyle, property) {
   const encoded = flatStyle[property];

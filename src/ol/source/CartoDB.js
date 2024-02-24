@@ -138,7 +138,7 @@ class CartoDB extends XYZ {
     const client = new XMLHttpRequest();
     client.addEventListener(
       'load',
-      this.handleInitResponse_.bind(this, paramHash)
+      this.handleInitResponse_.bind(this, paramHash),
     );
     client.addEventListener('error', this.handleInitError_.bind(this));
     client.open('POST', mapUrl);

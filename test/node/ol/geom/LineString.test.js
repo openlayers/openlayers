@@ -182,7 +182,7 @@ describe('ol/geom/LineString.js', function () {
           [1, 2, 3],
           [4, 5, 6],
         ],
-        'XYM'
+        'XYM',
       );
     });
 
@@ -425,7 +425,7 @@ describe('ol/geom/LineString.js', function () {
           [1, 2, 3],
           [4, 5, 6],
         ],
-        'XYM'
+        'XYM',
       );
     });
 

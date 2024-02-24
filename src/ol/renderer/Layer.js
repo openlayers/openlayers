@@ -127,7 +127,7 @@ class LayerRenderer extends Observable {
     frameState,
     hitTolerance,
     callback,
-    matches
+    matches,
   ) {
     return undefined;
   }
@@ -188,6 +188,11 @@ class LayerRenderer extends Observable {
       layer.changed();
     }
   }
+
+  /**
+   * @param {import("../Map.js").FrameState} frameState Frame state.
+   */
+  renderDeferred(frameState) {}
 
   /**
    * Clean up.

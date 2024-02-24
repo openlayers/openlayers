@@ -29,7 +29,7 @@ map.once('rendercomplete', function () {
       center: [0, 0],
       zoom: 0,
       multiWorld: true,
-    })
+    }),
   );
   render({tolerance: 0.03});
 });

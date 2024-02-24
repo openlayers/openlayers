@@ -39,7 +39,7 @@ class PaletteTexture {
         0,
         gl.RGBA,
         gl.UNSIGNED_BYTE,
-        this.data
+        this.data,
       );
       this.texture_ = texture;
     }

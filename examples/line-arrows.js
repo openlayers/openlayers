@@ -39,7 +39,7 @@ const styleFunction = function (feature) {
           rotateWithView: true,
           rotation: -rotation,
         }),
-      })
+      }),
     );
   });
 
@@ -70,5 +70,5 @@ map.addInteraction(
   new Draw({
     source: source,
     type: 'LineString',
-  })
+  }),
 );

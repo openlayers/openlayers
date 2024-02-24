@@ -66,7 +66,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     if (layerState.extent !== undefined) {
       renderedExtent = getIntersection(
         renderedExtent,
-        fromUserExtent(layerState.extent, viewState.projection)
+        fromUserExtent(layerState.extent, viewState.projection),
       );
     }
 
@@ -81,7 +81,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
           renderedExtent,
           viewResolution,
           pixelRatio,
-          projection
+          projection,
         );
         if (image) {
           if (this.loadImage(image)) {
@@ -111,7 +111,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     const layer = this.getLayer();
     const coordinate = applyTransform(
       frameState.pixelToCoordinateTransform,
-      pixel.slice()
+      pixel.slice(),
     );
 
     const layerExtent = layer.getExtent();
@@ -126,7 +126,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
 
     const imageMapWidth = getWidth(imageExtent);
     const col = Math.floor(
-      img.width * ((coordinate[0] - imageExtent[0]) / imageMapWidth)
+      img.width * ((coordinate[0] - imageExtent[0]) / imageMapWidth),
     );
     if (col < 0 || col >= img.width) {
       return null;
@@ -134,7 +134,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
 
     const imageMapHeight = getHeight(imageExtent);
     const row = Math.floor(
-      img.height * ((imageExtent[3] - coordinate[1]) / imageMapHeight)
+      img.height * ((imageExtent[3] - coordinate[1]) / imageMapHeight),
     );
     if (row < 0 || row >= img.height) {
       return null;
@@ -183,7 +183,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       1 / pixelRatio,
       rotation,
       -width / 2,
-      -height / 2
+      -height / 2,
     );
     makeInverse(this.inversePixelTransform, this.pixelTransform);
 
@@ -191,8 +191,8 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
 
     this.useContainer(target, canvasTransform, this.getBackground(frameState));
 
-    const context = this.context;
-    const canvas = context.canvas;
+    const context = this.getRenderContext(frameState);
+    const canvas = this.context.canvas;
 
     if (canvas.width != width || canvas.height != height) {
       canvas.width = width;
@@ -207,7 +207,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     if (layerState.extent) {
       const layerExtent = fromUserExtent(
         layerState.extent,
-        viewState.projection
+        viewState.projection,
       );
       render = intersectsExtent(layerExtent, frameState.extent);
       clipped = render && !containsExtent(layerExtent, frameState.extent);
@@ -226,7 +226,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       scaleY,
       0,
       (imagePixelRatio * (imageExtent[0] - viewCenter[0])) / imageResolutionX,
-      (imagePixelRatio * (viewCenter[1] - imageExtent[3])) / imageResolutionY
+      (imagePixelRatio * (viewCenter[1] - imageExtent[3])) / imageResolutionY,
     );
 
     this.renderedResolution = (imageResolutionY * pixelRatio) / imagePixelRatio;
@@ -243,17 +243,16 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       const dx = transform[4];
       const dy = transform[5];
       const opacity = layerState.opacity;
-      let previousAlpha;
       if (opacity !== 1) {
-        previousAlpha = context.globalAlpha;
+        context.save();
         context.globalAlpha = opacity;
       }
       context.drawImage(img, 0, 0, +img.width, +img.height, dx, dy, dw, dh);
       if (opacity !== 1) {
-        context.globalAlpha = previousAlpha;
+        context.restore();
       }
     }
-    this.postRender(context, frameState);
+    this.postRender(this.context, frameState);
 
     if (clipped) {
       context.restore();

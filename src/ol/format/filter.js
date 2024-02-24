@@ -271,7 +271,7 @@ export function like(
   wildCard,
   singleChar,
   escapeChar,
-  matchCase
+  matchCase,
 ) {
   return new IsLike(
     propertyName,
@@ -279,7 +279,7 @@ export function like(
     wildCard,
     singleChar,
     escapeChar,
-    matchCase
+    matchCase,
   );
 }
 

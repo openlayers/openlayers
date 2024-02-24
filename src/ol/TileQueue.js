@@ -29,7 +29,7 @@ class TileQueue extends PriorityQueue {
        */
       function (element) {
         return /** @type {import("./Tile.js").default} */ (element[0]).getKey();
-      }
+      },
     );
 
     /** @private */
@@ -138,7 +138,7 @@ export function getTilePriority(
   tile,
   tileSourceKey,
   tileCenter,
-  tileResolution
+  tileResolution,
 ) {
   // Filter out tiles at higher zoom levels than the current zoom level, or that
   // are outside the visible extent.

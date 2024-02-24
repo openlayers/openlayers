@@ -19,7 +19,7 @@ const vectorLayer = new VectorLayer({
           [0.9, 0.85],
           [1, 0],
           [0.3, 0.5],
-        ])
+        ]),
       ),
     ],
   }),

@@ -105,7 +105,7 @@ export function calculateSourceResolution(
   sourceProj,
   targetProj,
   targetCenter,
-  targetResolution
+  targetResolution,
 ) {
   const sourceCenter = transform(targetCenter, targetProj, sourceProj);
 
@@ -113,7 +113,7 @@ export function calculateSourceResolution(
   let sourceResolution = getPointResolution(
     targetProj,
     targetResolution,
-    targetCenter
+    targetCenter,
   );
 
   const targetMetersPerUnit = targetProj.getMetersPerUnit();
@@ -158,14 +158,14 @@ export function calculateSourceExtentResolution(
   sourceProj,
   targetProj,
   targetExtent,
-  targetResolution
+  targetResolution,
 ) {
   const targetCenter = getCenter(targetExtent);
   let sourceResolution = calculateSourceResolution(
     sourceProj,
     targetProj,
     targetCenter,
-    targetResolution
+    targetResolution,
   );
 
   if (!isFinite(sourceResolution) || sourceResolution <= 0) {
@@ -174,7 +174,7 @@ export function calculateSourceExtentResolution(
         sourceProj,
         targetProj,
         corner,
-        targetResolution
+        targetResolution,
       );
       return isFinite(sourceResolution) && sourceResolution > 0;
     });
@@ -205,6 +205,7 @@ export function calculateSourceExtentResolution(
  * @param {boolean} [renderEdges] Render reprojection edges.
  * @param {boolean} [interpolate] Use linear interpolation when resampling.
  * @param {boolean} [drawSingle] Draw single source images directly without stitchContext.
+ * @param {boolean} [clipExtent] Clip stitchContext to sourceExtent.
  * @return {HTMLCanvasElement} Canvas with reprojected data.
  */
 export function render(
@@ -220,12 +221,13 @@ export function render(
   gutter,
   renderEdges,
   interpolate,
-  drawSingle
+  drawSingle,
+  clipExtent,
 ) {
   const context = createCanvasContext2D(
     Math.round(pixelRatio * width),
     Math.round(pixelRatio * height),
-    canvasPool
+    canvasPool,
   );
 
   if (!interpolate) {
@@ -258,11 +260,19 @@ export function render(
     stitchContext = createCanvasContext2D(
       Math.round(getWidth(sourceDataExtent) * stitchScale),
       Math.round(getHeight(sourceDataExtent) * stitchScale),
-      canvasPool
+      canvasPool,
     );
 
     if (!interpolate) {
       stitchContext.imageSmoothingEnabled = false;
+    }
+    if (sourceExtent && clipExtent) {
+      const xPos = (sourceExtent[0] - sourceDataExtent[0]) * stitchScale;
+      const yPos = -(sourceExtent[3] - sourceDataExtent[3]) * stitchScale;
+      const width = getWidth(sourceExtent) * stitchScale;
+      const height = getHeight(sourceExtent) * stitchScale;
+      stitchContext.rect(xPos, yPos, width, height);
+      stitchContext.clip();
     }
 
     sources.forEach(function (src, i, arr) {
@@ -286,7 +296,7 @@ export function render(
             : Math.round(xPos + srcWidth) - Math.round(xPos),
           interpolate
             ? srcHeight
-            : Math.round(yPos + srcHeight) - Math.round(yPos)
+            : Math.round(yPos + srcHeight) - Math.round(yPos),
         );
       }
     });
@@ -325,15 +335,15 @@ export function render(
     // Make sure that everything is on pixel boundaries
     const u0 = pixelRound((target[0][0] - targetTopLeft[0]) / targetResolution);
     const v0 = pixelRound(
-      -(target[0][1] - targetTopLeft[1]) / targetResolution
+      -(target[0][1] - targetTopLeft[1]) / targetResolution,
     );
     const u1 = pixelRound((target[1][0] - targetTopLeft[0]) / targetResolution);
     const v1 = pixelRound(
-      -(target[1][1] - targetTopLeft[1]) / targetResolution
+      -(target[1][1] - targetTopLeft[1]) / targetResolution,
     );
     const u2 = pixelRound((target[2][0] - targetTopLeft[0]) / targetResolution);
     const v2 = pixelRound(
-      -(target[2][1] - targetTopLeft[1]) / targetResolution
+      -(target[2][1] - targetTopLeft[1]) / targetResolution,
     );
 
     // Shift all the source points to improve numerical stability
@@ -373,13 +383,13 @@ export function render(
         // Go horizontally
         context.lineTo(
           u1 + pixelRound(((step + 1) * ud) / steps),
-          v1 + pixelRound((step * vd) / (steps - 1))
+          v1 + pixelRound((step * vd) / (steps - 1)),
         );
         // Go vertically
         if (step != steps - 1) {
           context.lineTo(
             u1 + pixelRound(((step + 1) * ud) / steps),
-            v1 + pixelRound(((step + 1) * vd) / (steps - 1))
+            v1 + pixelRound(((step + 1) * vd) / (steps - 1)),
           );
         }
       }
@@ -399,12 +409,12 @@ export function render(
       affineCoefs[1],
       affineCoefs[3],
       u0,
-      v0
+      v0,
     );
 
     context.translate(
       sourceDataExtent[0] - sourceNumericalShiftX,
-      sourceDataExtent[3] - sourceNumericalShiftY
+      sourceDataExtent[3] - sourceNumericalShiftY,
     );
 
     let image;
@@ -417,7 +427,7 @@ export function render(
       image = source.image;
       context.scale(
         getWidth(extent) / image.width,
-        -getHeight(extent) / image.height
+        -getHeight(extent) / image.height,
       );
     }
 

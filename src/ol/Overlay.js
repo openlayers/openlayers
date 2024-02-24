@@ -301,7 +301,7 @@ class Overlay extends BaseObject {
         map,
         MapEventType.POSTRENDER,
         this.render,
-        this
+        this,
       );
       this.updatePixelPosition();
       const container = this.stopEvent

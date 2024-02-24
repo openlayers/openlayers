@@ -154,7 +154,7 @@ describe('ol.format.WFS', function () {
         function (_xml) {
           xml = _xml;
           done();
-        }
+        },
       );
     });
     it('returns an empty array of features when none exist', function () {
@@ -188,7 +188,7 @@ describe('ol.format.WFS', function () {
         '+proj=sterea +lat_0=52.15616055555555 ' +
           '+lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 ' +
           '+ellps=bessel +towgs84=565.417,50.3319,465.552,-0.398957,0.343988,' +
-          '-1.8774,4.0725 +units=m +no_defs'
+          '-1.8774,4.0725 +units=m +no_defs',
       );
       register(proj4);
       afterLoadText('spec/ol/format/wfs/boundedBy.xml', function (xml) {
@@ -219,7 +219,7 @@ describe('ol.format.WFS', function () {
             done(e);
           }
           done();
-        }
+        },
       );
     });
     it('returns the correct TransactionResponse object', function () {
@@ -412,7 +412,7 @@ describe('ol.format.WFS', function () {
         featureTypes: ['states'],
         filter: orFilter(
           equalToFilter('name', 'New York'),
-          equalToFilter('area', 1234)
+          equalToFilter('area', 1234),
         ),
       });
       expect(serialized.firstElementChild).to.xmleql(parse(text));
@@ -456,12 +456,12 @@ describe('ol.format.WFS', function () {
         filter: orFilter(
           andFilter(
             greaterThanFilter('area', 100),
-            greaterThanOrEqualToFilter('pop', 20000)
+            greaterThanOrEqualToFilter('pop', 20000),
           ),
           andFilter(
             lessThanFilter('area', 100),
-            lessThanOrEqualToFilter('pop', 20000)
-          )
+            lessThanOrEqualToFilter('pop', 20000),
+          ),
         ),
       });
       expect(serialized.firstElementChild).to.xmleql(parse(text));
@@ -613,7 +613,7 @@ describe('ol.format.WFS', function () {
         filter: andFilter(
           equalToFilter('name', 'New York'),
           bboxFilter('the_geom', [1, 2, 3, 4], 'urn:ogc:def:crs:EPSG::4326'),
-          greaterThanFilter('population', 2000000)
+          greaterThanFilter('population', 2000000),
         ),
       });
       expect(serialized.firstElementChild).to.xmleql(parse(text));
@@ -652,7 +652,7 @@ describe('ol.format.WFS', function () {
               [15, 20],
               [10, 20],
             ],
-          ])
+          ]),
         ),
       });
       expect(serialized.firstElementChild).to.xmleql(parse(text));
@@ -691,7 +691,7 @@ describe('ol.format.WFS', function () {
               [15, 20],
               [10, 20],
             ],
-          ])
+          ]),
         ),
       });
       expect(serialized.firstElementChild).to.xmleql(parse(text));
@@ -734,7 +734,7 @@ describe('ol.format.WFS', function () {
                 [10, 20],
               ],
             ],
-          ])
+          ]),
         ),
       });
       expect(serialized.firstElementChild).to.xmleql(parse(text));
@@ -773,7 +773,7 @@ describe('ol.format.WFS', function () {
               [15, 20],
               [10, 20],
             ],
-          ])
+          ]),
         ),
       });
       expect(serialized.firstElementChild).to.xmleql(parse(text));
@@ -815,7 +815,7 @@ describe('ol.format.WFS', function () {
             ],
           ]),
           10,
-          'm'
+          'm',
         ),
       });
       expect(serialized.firstElementChild).to.xmleql(parse(text));
@@ -850,7 +850,7 @@ describe('ol.format.WFS', function () {
         filter: duringFilter(
           'date_prop',
           '2010-01-20T00:00:00Z',
-          '2012-12-31T00:00:00Z'
+          '2012-12-31T00:00:00Z',
         ),
       });
       expect(serialized.firstElementChild).to.xmleql(parse(text));
@@ -926,7 +926,7 @@ describe('ol.format.WFS', function () {
             [-12240318, 6507071],
             [-12416429, 6604910],
           ],
-        ])
+        ]),
       );
       updateFeature.setId('FAULTS.4455');
       const serialized = format.writeTransaction(null, [updateFeature], null, {
@@ -949,7 +949,7 @@ describe('ol.format.WFS', function () {
             [-12240318, 6507071],
             [-12416429, 6604910],
           ],
-        ])
+        ]),
       );
       updateFeature.setGeometryName('the_geom');
       updateFeature.setId('FAULTS.4455');
@@ -977,7 +977,7 @@ describe('ol.format.WFS', function () {
             [-12240318, 6507071],
             [-12416429, 6604910],
           ],
-        ])
+        ]),
       );
       updateFeature.setId('FAULTS.4455');
       const serialized = format.writeTransaction(null, [updateFeature], null, {
@@ -986,7 +986,7 @@ describe('ol.format.WFS', function () {
         gmlOptions: {srsName: 'EPSG:900913'},
       });
       expect(
-        serialized.firstChild.attributes.getNamedItem('xmlns:feature') !== null
+        serialized.firstChild.attributes.getNamedItem('xmlns:feature') !== null,
       ).to.equal(true);
     });
   });
@@ -1005,7 +1005,7 @@ describe('ol.format.WFS', function () {
             [-12240318, 6507071],
             [-12416429, 6604910],
           ],
-        ])
+        ]),
       );
 
       expect(function () {
@@ -1042,7 +1042,7 @@ describe('ol.format.WFS', function () {
             [-12240318, 6507071],
             [-12416429, 6604910],
           ],
-        ])
+        ]),
       );
       updateFeature.set(
         'geom2',
@@ -1052,7 +1052,7 @@ describe('ol.format.WFS', function () {
             [-12000001, 6700001],
             [-12000002, 6700002],
           ],
-        ])
+        ]),
       );
       const serialized = format.writeTransaction([updateFeature], [], null, {
         featureNS: 'http://foo',
@@ -1285,7 +1285,7 @@ describe('ol.format.WFS', function () {
         function (xml) {
           text = xml;
           done();
-        }
+        },
       );
     });
 
@@ -1336,7 +1336,7 @@ describe('ol.format.WFS', function () {
         [],
         [testFeature],
         [],
-        testOptions
+        testOptions,
       );
       const xmlSerializer = new XMLSerializer();
       const xmlString = xmlSerializer.serializeToString(serialized);
@@ -1352,7 +1352,7 @@ describe('ol.format.WFS', function () {
         function (xml) {
           text = xml;
           done();
-        }
+        },
       );
     });
 
@@ -1412,7 +1412,7 @@ describe('ol.format.WFS', function () {
             done(e);
           }
           done();
-        }
+        },
       );
     });
 
@@ -1440,7 +1440,7 @@ describe('ol.format.WFS', function () {
             done(e);
           }
           done();
-        }
+        },
       );
     });
 
@@ -1462,7 +1462,7 @@ describe('ol.format.WFS', function () {
             done(e);
           }
           done();
-        }
+        },
       );
     });
 
@@ -1483,7 +1483,7 @@ describe('ol.format.WFS', function () {
             done(e);
           }
           done();
-        }
+        },
       );
     });
 
@@ -1514,7 +1514,7 @@ describe('ol.format.WFS', function () {
             done(e);
           }
           done();
-        }
+        },
       );
     });
 
@@ -1555,9 +1555,9 @@ describe('ol.format.WFS', function () {
       const serialized = writeFilter(
         andFilter(
           likeFilter('name', 'Mississippi*'),
-          equalToFilter('waterway', 'riverbank')
+          equalToFilter('waterway', 'riverbank'),
         ),
-        '1.1.0'
+        '1.1.0',
       );
       expect(serialized).to.xmleql(parse(wfs1Filter));
     });
@@ -1565,8 +1565,8 @@ describe('ol.format.WFS', function () {
       const serialized = writeFilter(
         andFilter(
           likeFilter('name', 'Mississippi*'),
-          equalToFilter('waterway', 'riverbank')
-        )
+          equalToFilter('waterway', 'riverbank'),
+        ),
       );
       expect(serialized).to.xmleql(parse(wfs1Filter));
     });
@@ -1574,9 +1574,9 @@ describe('ol.format.WFS', function () {
       const serialized = writeFilter(
         andFilter(
           likeFilter('name', 'Mississippi*'),
-          equalToFilter('waterway', 'riverbank')
+          equalToFilter('waterway', 'riverbank'),
         ),
-        '2.0.0'
+        '2.0.0',
       );
       expect(serialized).to.xmleql(parse(wfs2Filter));
     });
@@ -1586,11 +1586,11 @@ describe('ol.format.WFS', function () {
     before(function (done) {
       proj4.defs(
         'http://www.opengis.net/def/crs/EPSG/0/26713',
-        '+proj=utm +zone=13 +ellps=clrk66 +datum=NAD27 +units=m +no_defs'
+        '+proj=utm +zone=13 +ellps=clrk66 +datum=NAD27 +units=m +no_defs',
       );
       proj4.defs(
         'urn:ogc:def:crs:EPSG::26713',
-        '+proj=utm +zone=13 +ellps=clrk66 +datum=NAD27 +units=m +no_defs'
+        '+proj=utm +zone=13 +ellps=clrk66 +datum=NAD27 +units=m +no_defs',
       );
       register(proj4);
       done();
@@ -1828,7 +1828,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             ],
           ]),
           10,
-          'm'
+          'm',
         ),
       });
       expect(serialized.firstElementChild).to.xmleql(parse(text));
@@ -1917,12 +1917,12 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         filter: orFilter(
           andFilter(
             greaterThanFilter('area', 100),
-            greaterThanOrEqualToFilter('pop', 20000)
+            greaterThanOrEqualToFilter('pop', 20000),
           ),
           andFilter(
             lessThanFilter('area', 100),
-            lessThanOrEqualToFilter('pop', 20000)
-          )
+            lessThanOrEqualToFilter('pop', 20000),
+          ),
         ),
       });
       expect(serialized.firstElementChild).to.xmleql(parse(text));
@@ -1957,7 +1957,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         filter: duringFilter(
           'date_prop',
           '2010-01-20T00:00:00Z',
-          '2012-12-31T00:00:00Z'
+          '2012-12-31T00:00:00Z',
         ),
       });
       expect(serialized.firstElementChild).to.xmleql(parse(text));
@@ -1980,7 +1980,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         [],
         [testFeature],
         [],
-        testOptions
+        testOptions,
       );
       const xmlSerializer = new XMLSerializer();
       const xmlString = xmlSerializer.serializeToString(serialized);

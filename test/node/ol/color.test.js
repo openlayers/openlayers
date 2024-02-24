@@ -154,13 +154,13 @@ describe('ol/color', () => {
       ]);
       // with 30 decimal digits
       expect(
-        fromString('rgba(255, 255, 0, 0.123456789012345678901234567890)')
+        fromString('rgba(255, 255, 0, 0.123456789012345678901234567890)'),
       ).to.eql([255, 255, 0, 0.12345678901234567890123456789]);
     });
 
     it('ignores whitespace before, between & after numbers (rgba)', () => {
       expect(fromString('rgba( \t 0  ,   0 \n ,   255  ,   0.4711   )')).to.eql(
-        [0, 0, 255, 0.4711]
+        [0, 0, 255, 0.4711],
       );
     });
 

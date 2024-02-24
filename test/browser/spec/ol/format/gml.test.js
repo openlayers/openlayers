@@ -432,7 +432,7 @@ describe('ol.format.GML3', function () {
         expect(g).to.be.an(Point);
         const coordinates = g.getCoordinates();
         expect(coordinates.splice(0, 2)).to.eql(
-          transform([1, 2], 'CRS:84', 'EPSG:3857')
+          transform([1, 2], 'CRS:84', 'EPSG:3857'),
         );
         config.dataProjection = 'CRS:84';
         const serialized = format.writeGeometryNode(g, config);
@@ -455,7 +455,7 @@ describe('ol.format.GML3', function () {
         expect(g).to.be.an(Point);
         const coordinates = g.getCoordinates();
         expect(coordinates.splice(0, 2)).to.eql(
-          transform([1, 2], 'CRS:84', 'EPSG:3857')
+          transform([1, 2], 'CRS:84', 'EPSG:3857'),
         );
       });
 
@@ -504,10 +504,10 @@ describe('ol.format.GML3', function () {
         expect(g).to.be.an(LineString);
         const coordinates = g.getCoordinates();
         expect(coordinates[0].slice(0, 2)).to.eql(
-          transform([1, 2], 'CRS:84', 'EPSG:3857')
+          transform([1, 2], 'CRS:84', 'EPSG:3857'),
         );
         expect(coordinates[1].slice(0, 2)).to.eql(
-          transform([3, 4], 'CRS:84', 'EPSG:3857')
+          transform([3, 4], 'CRS:84', 'EPSG:3857'),
         );
         const serialized = format.writeGeometryNode(g, config);
         const poss = serialized.firstElementChild.firstElementChild.textContent;
@@ -552,7 +552,7 @@ describe('ol.format.GML3', function () {
           ]);
           const serialized = formatWGS84.writeGeometryNode(g);
           expect(serialized.firstElementChild).to.xmleql(parse(text));
-        }
+        },
       );
 
       it('can read and write a point geometry with correct axis order', function () {
@@ -1538,7 +1538,7 @@ describe('ol.format.GML3', function () {
             done(e);
           }
           done();
-        }
+        },
       );
     });
 
@@ -1675,7 +1675,7 @@ describe('ol.format.GML3', function () {
             done(e);
           }
           done();
-        }
+        },
       );
     });
 
@@ -1696,7 +1696,7 @@ describe('ol.format.GML3', function () {
             done(e);
           }
           done();
-        }
+        },
       );
     });
 
@@ -1765,7 +1765,7 @@ describe('ol.format.GML3', function () {
             done(e);
           }
           done();
-        }
+        },
       );
     });
 
@@ -1805,15 +1805,15 @@ describe('ol.format.GML3', function () {
 
       feature = features[0];
       expect(feature.getGeometry().getFlatCoordinates()).to.eql(
-        expectedGeometry1
+        expectedGeometry1,
       );
       feature = features[1];
       expect(feature.getGeometry().getFlatCoordinates()).to.eql(
-        expectedGeometry2
+        expectedGeometry2,
       );
       feature = features[2];
       expect(feature.getGeometry().getFlatCoordinates()).to.eql(
-        expectedGeometry3
+        expectedGeometry3,
       );
     });
   });
@@ -1848,7 +1848,7 @@ describe('ol.format.GML3', function () {
       expect(
         features[0].values_['observationMethod']['CGI_TermValue']['value'][
           '_content_'
-        ]
+        ],
       ).to.eql('urn:ogc:def:nil:OGC:missing');
     });
 
@@ -1856,7 +1856,7 @@ describe('ol.format.GML3', function () {
       expect(
         features[0].values_['observationMethod']['CGI_TermValue']['value'][
           'codeSpace'
-        ]
+        ],
       ).to.eql('urn:ietf:rfc:2141');
     });
   });
@@ -1919,7 +1919,7 @@ describe('ol.format.GML32', function () {
         expect(g).to.be.an(Point);
         const coordinates = g.getCoordinates();
         expect(coordinates.splice(0, 2)).to.eql(
-          transform([1, 2], 'CRS:84', 'EPSG:3857')
+          transform([1, 2], 'CRS:84', 'EPSG:3857'),
         );
         config.dataProjection = 'CRS:84';
         const serialized = format.writeGeometryNode(g, config);
@@ -1942,7 +1942,7 @@ describe('ol.format.GML32', function () {
         expect(g).to.be.an(Point);
         const coordinates = g.getCoordinates();
         expect(coordinates.splice(0, 2)).to.eql(
-          transform([1, 2], 'CRS:84', 'EPSG:3857')
+          transform([1, 2], 'CRS:84', 'EPSG:3857'),
         );
       });
 
@@ -1991,10 +1991,10 @@ describe('ol.format.GML32', function () {
         expect(g).to.be.an(LineString);
         const coordinates = g.getCoordinates();
         expect(coordinates[0].slice(0, 2)).to.eql(
-          transform([1, 2], 'CRS:84', 'EPSG:3857')
+          transform([1, 2], 'CRS:84', 'EPSG:3857'),
         );
         expect(coordinates[1].slice(0, 2)).to.eql(
-          transform([3, 4], 'CRS:84', 'EPSG:3857')
+          transform([3, 4], 'CRS:84', 'EPSG:3857'),
         );
         const serialized = format.writeGeometryNode(g, config);
         const poss = serialized.firstElementChild.firstElementChild.textContent;
@@ -2039,7 +2039,7 @@ describe('ol.format.GML32', function () {
           ]);
           const serialized = formatWGS84.writeGeometryNode(g);
           expect(serialized.firstElementChild).to.xmleql(parse(text));
-        }
+        },
       );
 
       it('can read and write a point geometry with correct axis order', function () {
@@ -3008,11 +3008,11 @@ describe('ol.format.GML32', function () {
 
     it('correctly structures multiple elements with attributes', function () {
       expect(features[0].values_['attributeA'][0]['xlink:href']).to.be(
-        'http://www.example.com/extern/1'
+        'http://www.example.com/extern/1',
       );
       expect(features[0].values_['attributeA'][0]._content_).to.be(undefined);
       expect(features[0].values_['attributeA'][1]['xlink:href']).to.be(
-        'http://www.example.com/extern/2'
+        'http://www.example.com/extern/2',
       );
       expect(features[0].values_['attributeA'][2]._content_).to.be(undefined);
     });

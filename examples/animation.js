@@ -87,7 +87,7 @@ onClick('rotate-around-rome', function () {
       rotation: rotation + 2 * Math.PI,
       anchor: rome,
       easing: easeOut,
-    }
+    },
   );
 });
 
@@ -130,7 +130,7 @@ onClick('spin-to-rome', function () {
       center: rome,
       rotation: 2 * Math.PI,
       easing: easeOut,
-    }
+    },
   );
 });
 
@@ -154,7 +154,7 @@ function flyTo(location, done) {
       center: location,
       duration: duration,
     },
-    callback
+    callback,
   );
   view.animate(
     {
@@ -165,7 +165,7 @@ function flyTo(location, done) {
       zoom: zoom,
       duration: duration / 2,
     },
-    callback
+    callback,
   );
 }
 

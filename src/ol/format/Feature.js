@@ -95,8 +95,13 @@ import {
  */
 
 /***
+ * @template {import("../Feature.js").FeatureLike} T
+ * @typedef {T extends import("../render/Feature.js").default ? typeof import("../render/Feature.js").default : typeof import("../Feature.js").default} FeatureToFeatureClass<T>
+ */
+
+/***
  * @template {import("../Feature.js").FeatureClass} T
- * @typedef {T extends typeof import("../render/Feature.js").default ? import("../render/Feature.js").default : import("../Feature.js").default} FeatureOrRenderFeature<T>
+ * @typedef {T[keyof T] extends import("../render/Feature.js").default ? import("../render/Feature.js").default : import("../Feature.js").default} FeatureClassToFeature<T>
  */
 
 /**
@@ -183,7 +188,7 @@ class FeatureFormat {
         featureProjection: this.defaultFeatureProjection,
         featureClass: this.featureClass,
       },
-      options
+      options,
     );
   }
 
@@ -213,7 +218,7 @@ class FeatureFormat {
    * @abstract
    * @param {Document|Element|ArrayBuffer|Object|string} source Source.
    * @param {ReadOptions} [options] Read options.
-   * @return {Array<FeatureOrRenderFeature<T>>} Features.
+   * @return {Array<import('../Feature.js').FeatureLike|FeatureClassToFeature<T>>} Features.
    */
   readFeatures(source, options) {
     return abstract();
@@ -414,10 +419,10 @@ export function createRenderFeature(object, options) {
       geometry.ends?.flat(),
       stride,
       object.properties || {},
-      object.id
+      object.id,
     ).enableSimplifyTransformed(),
     false,
-    options
+    options,
   );
 }
 
@@ -432,7 +437,7 @@ export function createGeometry(object, options) {
   }
   if (Array.isArray(object)) {
     const geometries = object.map((geometry) =>
-      createGeometry(geometry, options)
+      createGeometry(geometry, options),
     );
     return new GeometryCollection(geometries);
   }
@@ -440,6 +445,6 @@ export function createGeometry(object, options) {
   return transformGeometryWithOptions(
     new Geometry(object.flatCoordinates, object.layout, object.ends),
     false,
-    options
+    options,
   );
 }

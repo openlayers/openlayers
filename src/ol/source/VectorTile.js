@@ -22,12 +22,13 @@ import {loadFeaturesXhr} from '../featureloader.js';
 import {toSize} from '../size.js';
 
 /**
+ * @template {import("../Feature.js").FeatureLike} FeatureType
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least twice the number of tiles in the viewport.
  * @property {import("../extent.js").Extent} [extent] Extent.
- * @property {import("../format/Feature.js").default} [format] Feature format for tiles. Used and required by the default.
+ * @property {import("../format/Feature.js").default<import("../format/Feature.js").FeatureToFeatureClass<FeatureType>>} [format] Feature format for tiles. Used and required by the default.
  * @property {boolean} [overlaps=true] This source may have overlapping geometries. Setting this
  * to `false` (e.g. for sources with polygons that represent administrative
  * boundaries or TopoJSON sources) allows the renderer to optimise fill and
@@ -98,10 +99,11 @@ import {toSize} from '../size.js';
  *
  * @fires import("./Tile.js").TileSourceEvent
  * @api
+ * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../Feature.js").default]
  */
 class VectorTile extends UrlTile {
   /**
-   * @param {!Options} options Vector tile options.
+   * @param {!Options<FeatureType>} options Vector tile options.
    */
   constructor(options) {
     const projection = options.projection || 'EPSG:3857';
@@ -140,7 +142,7 @@ class VectorTile extends UrlTile {
 
     /**
      * @private
-     * @type {import("../format/Feature.js").default|null}
+     * @type {import("../format/Feature.js").default<import("../format/Feature.js").FeatureToFeatureClass<FeatureType>>|null}
      */
     this.format_ = options.format ? options.format : null;
 
@@ -274,14 +276,14 @@ class VectorTile extends UrlTile {
       }
       const sourceZ = sourceTileGrid.getZForResolution(
         resolution,
-        this.zDirection
+        this.zDirection,
       );
 
       sourceTileGrid.forEachTileCoord(extent, sourceZ, (sourceTileCoord) => {
         const tileUrl = this.tileUrlFunction(
           sourceTileCoord,
           pixelRatio,
-          projection
+          projection,
         );
         const sourceTile = this.sourceTileCache.containsKey(tileUrl)
           ? this.sourceTileCache.get(tileUrl)
@@ -290,7 +292,7 @@ class VectorTile extends UrlTile {
               tileUrl ? TileState.IDLE : TileState.EMPTY,
               tileUrl,
               this.format_,
-              this.tileLoadFunction
+              this.tileLoadFunction,
             );
         tile.sourceTiles.push(sourceTile);
         const sourceTileState = sourceTile.getState();
@@ -316,7 +318,7 @@ class VectorTile extends UrlTile {
                 tile.setState(
                   isEmpty(tile.errorTileKeys)
                     ? TileState.LOADED
-                    : TileState.ERROR
+                    : TileState.ERROR,
                 );
               }
             }
@@ -329,7 +331,7 @@ class VectorTile extends UrlTile {
             sourceTileGrid.getTileCoordExtent(sourceTileCoord);
           sourceTile.projection = projection;
           sourceTile.resolution = sourceTileGrid.getResolution(
-            sourceTileCoord[0]
+            sourceTileCoord[0],
           );
           this.sourceTileCache.set(tileUrl, sourceTile);
           sourceTile.load();
@@ -338,10 +340,10 @@ class VectorTile extends UrlTile {
       if (!tile.loadingSourceTiles) {
         tile.setState(
           tile.sourceTiles.some(
-            (sourceTile) => sourceTile.getState() === TileState.ERROR
+            (sourceTile) => sourceTile.getState() === TileState.ERROR,
           )
             ? TileState.ERROR
-            : TileState.LOADED
+            : TileState.LOADED,
         );
       }
     }
@@ -370,7 +372,7 @@ class VectorTile extends UrlTile {
     const tileCoord = [z, x, y];
     let urlTileCoord = this.getTileCoordForTileUrlFunction(
       tileCoord,
-      projection
+      projection,
     );
     const sourceExtent = this.getTileGrid().getExtent();
     const tileGrid = this.getTileGridForProjection(projection);
@@ -400,7 +402,7 @@ class VectorTile extends UrlTile {
       tileCoord,
       empty ? TileState.EMPTY : TileState.IDLE,
       urlTileCoord,
-      this.getSourceTiles.bind(this, pixelRatio, projection)
+      this.getSourceTiles.bind(this, pixelRatio, projection),
     );
 
     newTile.key = key;
@@ -507,8 +509,8 @@ export function defaultLoadFunction(tile, url) {
         resolution,
         projection,
         tile.onLoad.bind(tile),
-        tile.onError.bind(tile)
+        tile.onError.bind(tile),
       );
-    }
+    },
   );
 }

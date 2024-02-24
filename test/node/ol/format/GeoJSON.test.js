@@ -272,7 +272,7 @@ describe('ol/format/GeoJSON.js', function () {
       });
       expect(feature[0].getGeometry()).to.be.an(Point);
       expect(feature[0].getGeometry().getCoordinates()).to.eql(
-        transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857')
+        transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'),
       );
     });
 
@@ -281,7 +281,7 @@ describe('ol/format/GeoJSON.js', function () {
       const feature = format.readFeatures(pointGeoJSON);
       expect(feature[0].getGeometry()).to.be.an(Point);
       expect(feature[0].getGeometry().getCoordinates()).to.eql(
-        transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857')
+        transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'),
       );
     });
 
@@ -292,7 +292,7 @@ describe('ol/format/GeoJSON.js', function () {
       });
       expect(feature[0].getGeometry()).to.be.an(Point);
       expect(feature[0].getGeometry().getCoordinates()).to.eql(
-        transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857')
+        transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'),
       );
     });
 
@@ -302,7 +302,7 @@ describe('ol/format/GeoJSON.js', function () {
       });
       expect(features[0].getGeometry()).to.be.an(Point);
       expect(features[0].getGeometry().getCoordinates()).to.eql(
-        transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857')
+        transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'),
       );
       expect(features[1].getGeometry().getCoordinates()).to.eql([
         transform([102.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
@@ -322,7 +322,7 @@ describe('ol/format/GeoJSON.js', function () {
 
     it('can create a feature with a specific geometryName', function () {
       const feature = new GeoJSON({geometryName: 'the_geom'}).readFeature(
-        pointGeoJSON
+        pointGeoJSON,
       );
       expect(feature.getGeometryName()).to.be('the_geom');
       expect(feature.getGeometry()).to.be.an(Point);
@@ -382,7 +382,7 @@ describe('ol/format/GeoJSON.js', function () {
     it('parses countries.geojson', async () => {
       const text = await fse.readFile(
         'test/node/ol/format/GeoJSON/countries.geojson',
-        {encoding: 'utf8'}
+        {encoding: 'utf8'},
       );
       const result = format.readFeatures(text);
       expect(result.length).to.be(179);
@@ -396,8 +396,8 @@ describe('ol/format/GeoJSON.js', function () {
       expect(
         equals(
           firstGeom.getExtent(),
-          [60.52843, 29.318572, 75.158028, 38.486282]
-        )
+          [60.52843, 29.318572, 75.158028, 38.486282],
+        ),
       ).to.be(true);
 
       const last = result[178];
@@ -409,8 +409,8 @@ describe('ol/format/GeoJSON.js', function () {
       expect(
         equals(
           lastGeom.getExtent(),
-          [25.264226, -22.271612, 32.849861, -15.507787]
-        )
+          [25.264226, -22.271612, 32.849861, -15.507787],
+        ),
       ).to.be(true);
     });
 
@@ -706,7 +706,7 @@ describe('ol/format/GeoJSON.js', function () {
         got = array[i];
         exp = result[i];
         expect(got.getGeometry().getCoordinates()).to.eql(
-          exp.getGeometry().getCoordinates()
+          exp.getGeometry().getCoordinates(),
         );
         gotProp = got.getProperties();
         delete gotProp.geometry;
@@ -728,7 +728,10 @@ describe('ol/format/GeoJSON.js', function () {
         got = array[i];
         exp = result[i];
         expect(
-          got.getGeometry().transform('EPSG:3857', 'EPSG:4326').getCoordinates()
+          got
+            .getGeometry()
+            .transform('EPSG:3857', 'EPSG:4326')
+            .getCoordinates(),
         ).to.eql(exp.getGeometry().getCoordinates());
       }
     });
@@ -782,7 +785,7 @@ describe('ol/format/GeoJSON.js', function () {
       const point = new Point([10, 20]);
       const geojson = format.writeGeometry(point);
       expect(point.getCoordinates()).to.eql(
-        format.readGeometry(geojson).getCoordinates()
+        format.readGeometry(geojson).getCoordinates(),
       );
     });
 
@@ -810,7 +813,7 @@ describe('ol/format/GeoJSON.js', function () {
       ]);
       const geojson = format.writeGeometry(linestring);
       expect(linestring.getCoordinates()).to.eql(
-        format.readGeometry(geojson).getCoordinates()
+        format.readGeometry(geojson).getCoordinates(),
       );
     });
 
@@ -839,7 +842,7 @@ describe('ol/format/GeoJSON.js', function () {
       const polygon = new Polygon([outer, inner1, inner2]);
       const geojson = format.writeGeometry(polygon);
       expect(polygon.getCoordinates()).to.eql(
-        format.readGeometry(geojson).getCoordinates()
+        format.readGeometry(geojson).getCoordinates(),
       );
     });
 
@@ -886,7 +889,7 @@ describe('ol/format/GeoJSON.js', function () {
 
       expect(JSON.parse(format.writeGeometry(right))).to.eql(rightObj);
       expect(JSON.parse(format.writeGeometry(rightMulti))).to.eql(
-        rightMultiObj
+        rightMultiObj,
       );
       expect(JSON.parse(format.writeGeometry(left))).to.eql(leftObj);
       expect(JSON.parse(format.writeGeometry(leftMulti))).to.eql(leftMultiObj);
@@ -990,7 +993,7 @@ describe('ol/format/GeoJSON.js', function () {
       expect(geometries.length).to.equal(gotGeometries.length);
       for (let i = 0, ii = geometries.length; i < ii; ++i) {
         expect(geometries[i].getCoordinates()).to.eql(
-          gotGeometries[i].getCoordinates()
+          gotGeometries[i].getCoordinates(),
         );
       }
     });
@@ -1014,11 +1017,11 @@ describe('ol/format/GeoJSON.js', function () {
       });
       expect(point.getCoordinates()[0]).to.roughlyEqual(
         newPoint.getCoordinates()[0],
-        1e-8
+        1e-8,
       );
       expect(point.getCoordinates()[1]).to.roughlyEqual(
         newPoint.getCoordinates()[1],
-        1e-8
+        1e-8,
       );
     });
 
@@ -1040,19 +1043,19 @@ describe('ol/format/GeoJSON.js', function () {
       const geometries = collection.getGeometries();
       expect(geometries[0].getCoordinates()[0]).to.roughlyEqual(
         gotGeometries[0].getCoordinates()[0],
-        1e-8
+        1e-8,
       );
       expect(geometries[0].getCoordinates()[1]).to.roughlyEqual(
         gotGeometries[0].getCoordinates()[1],
-        1e-8
+        1e-8,
       );
       expect(geometries[1].getCoordinates()[0][0]).to.roughlyEqual(
         gotGeometries[1].getCoordinates()[0][0],
-        1e-8
+        1e-8,
       );
       expect(geometries[1].getCoordinates()[0][1]).to.roughlyEqual(
         gotGeometries[1].getCoordinates()[0][1],
-        1e-8
+        1e-8,
       );
     });
 

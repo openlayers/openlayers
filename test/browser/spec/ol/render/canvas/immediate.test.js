@@ -54,15 +54,15 @@ describe('ol.render.canvas.Immediate', function () {
       context.setStyle(style);
       expect(context.setFillStrokeStyle.calledOnce).to.be(true);
       expect(
-        context.setFillStrokeStyle.firstCall.calledWithExactly(fill, stroke)
+        context.setFillStrokeStyle.firstCall.calledWithExactly(fill, stroke),
       ).to.be(true);
       expect(context.setImageStyle.calledOnce).to.be(true);
       expect(context.setImageStyle.firstCall.calledWithExactly(image)).to.be(
-        true
+        true,
       );
       expect(context.setTextStyle.calledOnce).to.be(true);
       expect(context.setTextStyle.firstCall.calledWithExactly(text)).to.be(
-        true
+        true,
       );
     });
   });
@@ -78,7 +78,7 @@ describe('ol.render.canvas.Immediate', function () {
       context.drawGeometry(geometry);
       expect(context.drawPoint.calledOnce).to.be(true);
       expect(context.drawPoint.firstCall.calledWithExactly(geometry)).to.be(
-        true
+        true,
       );
     });
 
@@ -93,7 +93,7 @@ describe('ol.render.canvas.Immediate', function () {
       context.drawGeometry(geometry);
       expect(context.drawLineString.calledOnce).to.be(true);
       expect(
-        context.drawLineString.firstCall.calledWithExactly(geometry)
+        context.drawLineString.firstCall.calledWithExactly(geometry),
       ).to.be(true);
     });
 
@@ -112,7 +112,7 @@ describe('ol.render.canvas.Immediate', function () {
       context.drawGeometry(geometry);
       expect(context.drawPolygon.calledOnce).to.be(true);
       expect(context.drawPolygon.firstCall.calledWithExactly(geometry)).to.be(
-        true
+        true,
       );
     });
 
@@ -127,7 +127,7 @@ describe('ol.render.canvas.Immediate', function () {
       context.drawGeometry(geometry);
       expect(context.drawMultiPoint.calledOnce).to.be(true);
       expect(
-        context.drawMultiPoint.firstCall.calledWithExactly(geometry)
+        context.drawMultiPoint.firstCall.calledWithExactly(geometry),
       ).to.be(true);
     });
 
@@ -144,7 +144,7 @@ describe('ol.render.canvas.Immediate', function () {
       context.drawGeometry(geometry);
       expect(context.drawMultiLineString.calledOnce).to.be(true);
       expect(
-        context.drawMultiLineString.firstCall.calledWithExactly(geometry)
+        context.drawMultiLineString.firstCall.calledWithExactly(geometry),
       ).to.be(true);
     });
 
@@ -165,7 +165,7 @@ describe('ol.render.canvas.Immediate', function () {
       context.drawGeometry(geometry);
       expect(context.drawMultiPolygon.calledOnce).to.be(true);
       expect(
-        context.drawMultiPolygon.firstCall.calledWithExactly(geometry)
+        context.drawMultiPolygon.firstCall.calledWithExactly(geometry),
       ).to.be(true);
     });
 
@@ -198,11 +198,11 @@ describe('ol.render.canvas.Immediate', function () {
       expect(context.drawPoint.firstCall.calledWithExactly(point)).to.be(true);
       expect(context.drawLineString.calledOnce).to.be(true);
       expect(
-        context.drawLineString.firstCall.calledWithExactly(linestring)
+        context.drawLineString.firstCall.calledWithExactly(linestring),
       ).to.be(true);
       expect(context.drawPolygon.calledOnce).to.be(true);
       expect(context.drawPolygon.firstCall.calledWithExactly(polygon)).to.be(
-        true
+        true,
       );
     });
 
@@ -215,7 +215,7 @@ describe('ol.render.canvas.Immediate', function () {
 
       expect(context.drawCircle.calledOnce).to.be(true);
       expect(context.drawCircle.firstCall.calledWithExactly(geometry)).to.be(
-        true
+        true,
       );
     });
   });
@@ -240,7 +240,7 @@ describe('ol.render.canvas.Immediate', function () {
                   return arg;
                 })
                 .join(', ') +
-              ']'
+              ']',
           );
         }
         return parts.join(', ');

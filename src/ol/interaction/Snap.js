@@ -242,9 +242,8 @@ class Snap extends PointerInteraction {
     if (geometry) {
       const segmenter = this.GEOMETRY_SEGMENTERS_[geometry.getType()];
       if (segmenter) {
-        this.indexedFeaturesExtents_[feature_uid] = geometry.getExtent(
-          createEmpty()
-        );
+        this.indexedFeaturesExtents_[feature_uid] =
+          geometry.getExtent(createEmpty());
         const segments =
           /** @type {Array<Array<import('../coordinate.js').Coordinate>>} */ ([]);
         segmenter(segments, geometry);
@@ -269,7 +268,7 @@ class Snap extends PointerInteraction {
         feature,
         EventType.CHANGE,
         this.handleFeatureChange_,
-        this
+        this,
       );
     }
   }
@@ -305,7 +304,7 @@ class Snap extends PointerInteraction {
           vertexPixel: evt.pixel,
           feature: result.feature,
           segment: result.segment,
-        })
+        }),
       );
     }
     return super.handleEvent(evt);
@@ -422,14 +421,14 @@ class Snap extends PointerInteraction {
             this.features_,
             CollectionEventType.ADD,
             this.handleFeatureAdd_,
-            this
+            this,
           ),
           listen(
             this.features_,
             CollectionEventType.REMOVE,
             this.handleFeatureRemove_,
-            this
-          )
+            this,
+          ),
         );
       } else if (this.source_) {
         keys.push(
@@ -437,14 +436,14 @@ class Snap extends PointerInteraction {
             this.source_,
             VectorEventType.ADDFEATURE,
             this.handleFeatureAdd_,
-            this
+            this,
           ),
           listen(
             this.source_,
             VectorEventType.REMOVEFEATURE,
             this.handleFeatureRemove_,
-            this
-          )
+            this,
+          ),
         );
       }
       features.forEach((feature) => this.addFeature(feature));
@@ -464,9 +463,9 @@ class Snap extends PointerInteraction {
     const box = toUserExtent(
       buffer(
         boundingExtent([projectedCoordinate]),
-        map.getView().getResolution() * this.pixelTolerance_
+        map.getView().getResolution() * this.pixelTolerance_,
       ),
-      projection
+      projection,
     );
 
     const segments = this.rBush_.getInExtent(box);
@@ -535,7 +534,7 @@ class Snap extends PointerInteraction {
           }
           vertex = closestOnCircle(
             projectedCoordinate,
-            /** @type {import("../geom/Circle.js").default} */ (circleGeometry)
+            /** @type {import("../geom/Circle.js").default} */ (circleGeometry),
           );
         } else {
           const [segmentStart, segmentEnd] = segmentData.segment;
@@ -587,9 +586,9 @@ class Snap extends PointerInteraction {
     let circleGeometry = geometry;
     const userProjection = getUserProjection();
     if (userProjection) {
-      circleGeometry = /** @type {import("../geom/Circle.js").default} */ (
-        circleGeometry.clone().transform(userProjection, projection)
-      );
+      circleGeometry = circleGeometry
+        .clone()
+        .transform(userProjection, projection);
     }
     const polygon = fromCircle(circleGeometry);
     if (userProjection) {

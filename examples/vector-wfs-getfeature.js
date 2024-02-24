@@ -54,7 +54,7 @@ const featureRequest = new WFS().writeGetFeature({
   outputFormat: 'application/json',
   filter: andFilter(
     likeFilter('name', 'Mississippi*'),
-    equalToFilter('waterway', 'riverbank')
+    equalToFilter('waterway', 'riverbank'),
   ),
 });
 

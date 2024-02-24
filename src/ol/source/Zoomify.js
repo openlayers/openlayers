@@ -33,7 +33,7 @@ export class CustomTile extends ImageTile {
     src,
     crossOrigin,
     tileLoadFunction,
-    options
+    options,
   ) {
     super(tileCoord, state, src, crossOrigin, tileLoadFunction, options);
 
@@ -177,7 +177,7 @@ class Zoomify extends TileImage {
       resolutions.push(tilePixelRatio << i);
       tileCountUpToTier.push(
         tierSizeInTiles[i - 1][0] * tierSizeInTiles[i - 1][1] +
-          tileCountUpToTier[i - 1]
+          tileCountUpToTier[i - 1],
       );
     }
     resolutions.reverse();
@@ -234,12 +234,12 @@ class Zoomify extends TileImage {
     }
 
     const tileUrlFunction = createFromTileUrlFunctions(
-      urls.map(createFromTemplate)
+      urls.map(createFromTemplate),
     );
 
     const ZoomifyTileClass = CustomTile.bind(
       null,
-      toSize(tileSize * tilePixelRatio)
+      toSize(tileSize * tilePixelRatio),
     );
 
     super({
@@ -267,7 +267,7 @@ class Zoomify extends TileImage {
     // tile url calculation.
     const tileUrl = tileGrid.getTileCoordForCoordAndResolution(
       getCenter(tileGrid.getExtent()),
-      resolutions[resolutions.length - 1]
+      resolutions[resolutions.length - 1],
     );
     const testTileUrl = tileUrlFunction(tileUrl, 1, null);
     const image = new Image();

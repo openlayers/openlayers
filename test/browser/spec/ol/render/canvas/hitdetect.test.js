@@ -41,7 +41,7 @@ describe('hitdetect', function () {
       styleFunction,
       [0, 0, 0, 0],
       1,
-      0
+      0,
     );
     expect(Array.prototype.slice.call(imageData.data, 0, 3)).to.eql([
       255, 255, 252,
@@ -102,7 +102,7 @@ describe('hitdetect', function () {
       new LineString([
         [0, 140],
         [200, 140],
-      ])
+      ]),
     );
     const bottomPolygon = new Feature(
       new Polygon([
@@ -113,7 +113,7 @@ describe('hitdetect', function () {
           [200, 0],
           [0, 0],
         ],
-      ])
+      ]),
     );
     const geometryCollection = new Feature(
       new GeometryCollection([
@@ -131,14 +131,14 @@ describe('hitdetect', function () {
             [66, 0],
           ],
         ]),
-      ])
+      ]),
     );
     const topPoint = new Feature(new Point([110, 100]));
     const topLineString = new Feature(
       new LineString([
         [0, 180],
         [200, 180],
-      ])
+      ]),
     );
     const topPolygon = new Feature(
       new Polygon([
@@ -149,7 +149,7 @@ describe('hitdetect', function () {
           [200, 0],
           [133, 0],
         ],
-      ])
+      ]),
     );
 
     features = [
@@ -205,26 +205,26 @@ describe('hitdetect', function () {
       styleFunction,
       [0, 0, 200, 200],
       1,
-      0
+      0,
     );
 
     expect(hitDetect([55, 100], features, imageData)[0]).to.be(bottomPoint);
     expect(hitDetect([65, 100], features, imageData)[0]).to.be(
-      geometryCollection
+      geometryCollection,
     );
     expect(hitDetect([75, 100], features, imageData)[0]).to.be(topPoint);
 
     expect(hitDetect([33, 190], features, imageData)[0]).to.be(bottomPolygon);
     expect(hitDetect([100, 190], features, imageData)[0]).to.be(
-      geometryCollection
+      geometryCollection,
     );
     expect(hitDetect([166, 190], features, imageData)[0]).to.be(topPolygon);
 
     expect(hitDetect([10, 130], features, imageData)[0]).to.be(
-      bottomLineString
+      bottomLineString,
     );
     expect(hitDetect([10, 110], features, imageData)[0]).to.be(
-      geometryCollection
+      geometryCollection,
     );
     expect(hitDetect([10, 90], features, imageData)[0]).to.be(topLineString);
   });

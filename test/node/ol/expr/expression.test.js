@@ -9,12 +9,21 @@ import {
   NumberArrayType,
   NumberType,
   StringType,
+  computeGeometryType,
   includesType,
   isType,
   newParsingContext,
   parse,
   typeName,
 } from '../../../../src/ol/expr/expression.js';
+import {
+  Circle,
+  GeometryCollection,
+  MultiLineString,
+  MultiPoint,
+  MultiPolygon,
+  Point,
+} from '../../../../src/ol/geom.js';
 
 describe('ol/expr/expression.js', () => {
   describe('parse()', () => {
@@ -91,10 +100,22 @@ describe('ol/expr/expression.js', () => {
       const context = newParsingContext();
       const expression = parse(
         ['concat', ['get', 'foo'], ' ', 'random'],
-        context
+        context,
       );
       expect(expression).to.be.a(CallExpression);
       expect(expression.operator).to.be('concat');
+      expect(isType(expression.type, AnyType));
+      expect(context.properties.has('foo')).to.be(true);
+    });
+
+    it('parses a coalesce expression', () => {
+      const context = newParsingContext();
+      const expression = parse(
+        ['coalesce', ['get', 'foo'], 'default'],
+        context,
+      );
+      expect(expression).to.be.a(CallExpression);
+      expect(expression.operator).to.be('coalesce');
       expect(isType(expression.type, AnyType));
       expect(context.properties.has('foo')).to.be(true);
     });
@@ -133,7 +154,7 @@ describe('ol/expr/expression.js', () => {
       const expression = parse(
         ['==', ['var', 'foo'], 'bar'],
         context,
-        BooleanType
+        BooleanType,
       );
       expect(isType(expression.args[0].type, StringType)).to.be(true);
       expect(isType(expression.args[1].type, StringType)).to.be(true);
@@ -144,7 +165,7 @@ describe('ol/expr/expression.js', () => {
       const context = newParsingContext();
       const expression = parse(
         ['*', ['get', 'foo'], 'red', [255, 0, 0, 1]],
-        context
+        context,
       );
       expect(expression).to.be.a(CallExpression);
       expect(expression.operator).to.be('*');
@@ -167,7 +188,7 @@ describe('ol/expr/expression.js', () => {
             'yellow',
             [255, 0, 0],
           ],
-          context
+          context,
         );
         expect(expression).to.be.a(CallExpression);
         expect(expression.operator).to.be('case');
@@ -182,14 +203,14 @@ describe('ol/expr/expression.js', () => {
       it('finds common output type (string/color)', () => {
         const expression = parse(
           ['case', true, 'red', false, 'yellow', 'white'],
-          newParsingContext()
+          newParsingContext(),
         );
         expect(isType(expression.type, ColorType | StringType)).to.be(true);
       });
       it('finds common output type (string)', () => {
         const expression = parse(
           ['case', true, 'red', false, 'yellow', '42'],
-          newParsingContext()
+          newParsingContext(),
         );
         expect(isType(expression.type, StringType)).to.be(true);
       });
@@ -206,7 +227,7 @@ describe('ol/expr/expression.js', () => {
             [255, 0, 255],
           ],
           newParsingContext(),
-          NumberArrayType
+          NumberArrayType,
         );
         expect(isType(expression.type, NumberArrayType)).to.be(true);
         expect(isType(expression.args[1].type, NumberArrayType)).to.be(true);
@@ -221,7 +242,7 @@ describe('ol/expr/expression.js', () => {
         const context = newParsingContext();
         const expression = parse(
           ['match', ['get', 'attr'], 0, 'red', 1, 'yellow', [255, 0, 0, 1]],
-          context
+          context,
         );
         expect(expression).to.be.a(CallExpression);
         expect(expression.operator).to.be('match');
@@ -237,23 +258,23 @@ describe('ol/expr/expression.js', () => {
       it('finds common output type (string)', () => {
         const expression = parse(
           ['match', ['get', 'attr'], 0, 'red', 1, 'yellow', 'not_a_color'],
-          newParsingContext()
+          newParsingContext(),
         );
         expect(isType(expression.type, StringType)).to.be(true);
       });
       it('finds common output type (color/array)', () => {
         const expression = parse(
           ['match', ['get', 'attr'], 0, [1, 1, 0], 1, [1, 0, 1], [0, 1, 1]],
-          newParsingContext()
+          newParsingContext(),
         );
         expect(isType(expression.type, ColorType | NumberArrayType)).to.be(
-          true
+          true,
         );
       });
       it('finds common output type (color/string)', () => {
         const expression = parse(
           ['match', ['get', 'attr'], 0, 'red', 1, 'yellow', 'green'],
-          newParsingContext()
+          newParsingContext(),
         );
         expect(isType(expression.type, ColorType | StringType)).to.be(true);
       });
@@ -264,7 +285,7 @@ describe('ol/expr/expression.js', () => {
         const context = newParsingContext();
         const expression = parse(
           ['in', ['get', 'attr'], [0, 50, 100]],
-          context
+          context,
         );
         expect(expression).to.be.a(CallExpression);
         expect(expression.operator).to.be('in');
@@ -279,7 +300,7 @@ describe('ol/expr/expression.js', () => {
         const context = newParsingContext();
         const expression = parse(
           ['in', ['get', 'attr'], ['literal', ['ab', 'cd', 'ef', 'gh']]],
-          context
+          context,
         );
         expect(expression).to.be.a(CallExpression);
         expect(expression.operator).to.be('in');
@@ -297,7 +318,7 @@ describe('ol/expr/expression.js', () => {
       it('outputs color type and list of colors as args', () => {
         const expression = parse(
           ['palette', 1, ['red', 'rgba(255, 255, 0, 1)', [0, 255, 255]]],
-          newParsingContext()
+          newParsingContext(),
         );
         expect(expression.operator).to.be('palette');
         expect(isType(expression.type, ColorType)).to.be(true);
@@ -313,7 +334,7 @@ describe('ol/expr/expression.js', () => {
       it('outputs number array type if args count is not 3 or 4', () => {
         const expression = parse(
           ['array', 1, 2, ['get', 'third'], 4, 5],
-          newParsingContext()
+          newParsingContext(),
         );
         expect(expression.operator).to.be('array');
         expect(isType(expression.type, NumberArrayType)).to.be(true);
@@ -327,10 +348,10 @@ describe('ol/expr/expression.js', () => {
       it('outputs number array or color type if args count is 3 or 4', () => {
         const expression = parse(
           ['array', 1, 2, ['get', 'blue']],
-          newParsingContext()
+          newParsingContext(),
         );
         expect(isType(expression.type, NumberArrayType | ColorType)).to.be(
-          true
+          true,
         );
         expect(expression.args).to.have.length(3);
         expect(isType(expression.args[0].type, NumberType)).to.be(true);
@@ -489,7 +510,7 @@ describe('ol/expr/expression.js', () => {
       it(`throws for ${name}`, () => {
         const newContext = {...newParsingContext(), ...context};
         expect(() =>
-          parse(expression, newContext, type ?? AnyType)
+          parse(expression, newContext, type ?? AnyType),
         ).to.throwError((e) => expect(e.message).to.eql(error));
       });
     }
@@ -622,6 +643,31 @@ describe('ol/expr/expression.js', () => {
       expect(isType(ColorType, NumberArrayType)).to.be(false);
       expect(isType(NumberArrayType, NumberArrayType)).to.be(true);
       expect(isType(AnyType, NumberArrayType)).to.be(false);
+    });
+  });
+  describe('computeGeometryType', () => {
+    it('returns empty string for falsy geom', () => {
+      expect(computeGeometryType(undefined)).to.eql('');
+    });
+    it('returns Point for Point geom', () => {
+      expect(computeGeometryType(new Point([0, 1]))).to.eql('Point');
+    });
+    it('returns Polygon for MultiPolygon geom', () => {
+      expect(computeGeometryType(new MultiPolygon([]))).to.eql('Polygon');
+    });
+    it('returns LineString for MultiLineString geom', () => {
+      expect(computeGeometryType(new MultiLineString([]))).to.eql('LineString');
+    });
+    it('returns first geom type in geometry collection', () => {
+      expect(
+        computeGeometryType(new GeometryCollection([new Circle([0, 1])])),
+      ).to.eql('Polygon');
+      expect(
+        computeGeometryType(new GeometryCollection([new MultiPoint([])])),
+      ).to.eql('Point');
+    });
+    it('returns empty string for empty geom collection', () => {
+      expect(computeGeometryType(new GeometryCollection([]))).to.eql('');
     });
   });
 });

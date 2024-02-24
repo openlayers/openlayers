@@ -2,6 +2,7 @@
  * @module ol/render/canvas/Executor
  */
 import CanvasInstruction from './Instruction.js';
+import ZIndexContext from '../canvas/ZIndexContext.js';
 import {TEXT_ALIGN} from './TextBuilder.js';
 import {
   apply as applyTransform,
@@ -46,7 +47,7 @@ import {transform2D} from '../../geom/flat/transform.js';
  */
 
 /**
- * @typedef {{0: CanvasRenderingContext2D, 1: number, 2: import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement, 3: ImageOrLabelDimensions, 4: number, 5: Array<*>, 6: Array<*>}} ReplayImageOrLabelArgs
+ * @typedef {{0: CanvasRenderingContext2D, 1: import('../../size.js').Size, 2: import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement, 3: ImageOrLabelDimensions, 4: number, 5: Array<*>, 6: Array<*>}} ReplayImageOrLabelArgs
  */
 
 /**
@@ -121,9 +122,16 @@ class Executor {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The replay can have overlapping geometries.
-   * @param {import("../canvas.js").SerializableInstructions} instructions The serializable instructions
+   * @param {import("../canvas.js").SerializableInstructions} instructions The serializable instructions.
+   * @param {boolean} [deferredRendering] Enable deferred rendering.
    */
-  constructor(resolution, pixelRatio, overlaps, instructions) {
+  constructor(
+    resolution,
+    pixelRatio,
+    overlaps,
+    instructions,
+    deferredRendering,
+  ) {
     /**
      * @protected
      * @type {boolean}
@@ -217,6 +225,19 @@ class Executor {
      * @type {Object<string, import("../canvas.js").Label>}
      */
     this.labels_ = {};
+
+    /**
+     * @private
+     * @type {import("../canvas/ZIndexContext.js").default}
+     */
+    this.zIndexContext_ = deferredRendering ? new ZIndexContext() : null;
+  }
+
+  /**
+   * @return {ZIndexContext} ZIndex context.
+   */
+  getZIndexContext() {
+    return this.zIndexContext_;
   }
 
   /**
@@ -244,7 +265,7 @@ class Executor {
       ? TEXT_ALIGN[textState.justify]
       : horizontalTextAlign(
           Array.isArray(text) ? text[0] : text,
-          textState.textAlign || defaultTextAlign
+          textState.textAlign || defaultTextAlign,
         );
     const strokeWidth =
       strokeKey && strokeState.lineWidth ? strokeState.lineWidth : 0;
@@ -255,7 +276,7 @@ class Executor {
 
     const {width, height, widths, heights, lineWidths} = getTextDimensions(
       textState,
-      chunks
+      chunks,
     );
     const renderWidth = width + strokeWidth;
     const contextInstructions = [];
@@ -352,7 +373,7 @@ class Executor {
     p3,
     p4,
     fillInstruction,
-    strokeInstruction
+    strokeInstruction,
   ) {
     context.beginPath();
     context.moveTo.apply(context, p1);
@@ -367,7 +388,7 @@ class Executor {
     if (strokeInstruction) {
       this.setStrokeStyle_(
         context,
-        /** @type {Array<*>} */ (strokeInstruction)
+        /** @type {Array<*>} */ (strokeInstruction),
       );
       context.stroke();
     }
@@ -409,7 +430,7 @@ class Executor {
     snapToPixel,
     padding,
     fillStroke,
-    feature
+    feature,
   ) {
     anchorX *= scale[0];
     anchorY *= scale[1];
@@ -444,7 +465,7 @@ class Executor {
         1,
         rotation,
         -centerX,
-        -centerY
+        -centerY,
       );
 
       applyTransform(transform, p1);
@@ -456,7 +477,7 @@ class Executor {
         Math.min(p1[1], p2[1], p3[1], p4[1]),
         Math.max(p1[0], p2[0], p3[0], p4[0]),
         Math.max(p1[1], p2[1], p3[1], p4[1]),
-        tmpExtent
+        tmpExtent,
       );
     } else {
       createOrUpdate(
@@ -464,7 +485,7 @@ class Executor {
         Math.min(boxY, boxY + boxH),
         Math.max(boxX, boxX + boxW),
         Math.max(boxY, boxY + boxH),
-        tmpExtent
+        tmpExtent,
       );
     }
     if (snapToPixel) {
@@ -493,7 +514,7 @@ class Executor {
   /**
    * @private
    * @param {CanvasRenderingContext2D} context Context.
-   * @param {number} contextScale Scale of the context.
+   * @param {import('../../size.js').Size} scaledCanvasSize Scaled canvas size.
    * @param {import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} imageOrLabel Image.
    * @param {ImageOrLabelDimensions} dimensions Dimensions.
    * @param {number} opacity Opacity.
@@ -503,24 +524,23 @@ class Executor {
    */
   replayImageOrLabel_(
     context,
-    contextScale,
+    scaledCanvasSize,
     imageOrLabel,
     dimensions,
     opacity,
     fillInstruction,
-    strokeInstruction
+    strokeInstruction,
   ) {
     const fillStroke = !!(fillInstruction || strokeInstruction);
 
     const box = dimensions.declutterBox;
-    const canvas = context.canvas;
     const strokePadding = strokeInstruction
       ? (strokeInstruction[2] * dimensions.scale[0]) / 2
       : 0;
     const intersects =
-      box.minX - strokePadding <= canvas.width / contextScale &&
+      box.minX - strokePadding <= scaledCanvasSize[0] &&
       box.maxX + strokePadding >= 0 &&
-      box.minY - strokePadding <= canvas.height / contextScale &&
+      box.minY - strokePadding <= scaledCanvasSize[1] &&
       box.maxY + strokePadding >= 0;
 
     if (intersects) {
@@ -532,7 +552,7 @@ class Executor {
           p3,
           p4,
           /** @type {Array<*>} */ (fillInstruction),
-          /** @type {Array<*>} */ (strokeInstruction)
+          /** @type {Array<*>} */ (strokeInstruction),
         );
       }
       drawImageOrLabel(
@@ -546,7 +566,7 @@ class Executor {
         dimensions.drawImageH,
         dimensions.drawImageX,
         dimensions.drawImageY,
-        dimensions.scale
+        dimensions.scale,
       );
     }
     return true;
@@ -580,7 +600,7 @@ class Executor {
    * @param {Array<*>} instruction Instruction.
    */
   setStrokeStyle_(context, instruction) {
-    context['strokeStyle'] =
+    context.strokeStyle =
       /** @type {import("../../colorlike.js").ColorLike} */ (instruction[1]);
     context.lineWidth = /** @type {number} */ (instruction[2]);
     context.lineCap = /** @type {CanvasLineCap} */ (instruction[3]);
@@ -607,7 +627,7 @@ class Executor {
     const pixelRatio = this.pixelRatio;
     const align = horizontalTextAlign(
       Array.isArray(text) ? text[0] : text,
-      textState.textAlign || defaultTextAlign
+      textState.textAlign || defaultTextAlign,
     );
     const baseline = TEXT_ALIGN[textState.textBaseline || defaultTextBaseline];
     const strokeWidth =
@@ -630,7 +650,7 @@ class Executor {
   /**
    * @private
    * @param {CanvasRenderingContext2D} context Context.
-   * @param {number} contextScale Scale of the context.
+   * @param {import('../../size.js').Size} scaledCanvasSize Scaled canvas size
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {Array<*>} instructions Instructions array.
    * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
@@ -643,14 +663,15 @@ class Executor {
    */
   execute_(
     context,
-    contextScale,
+    scaledCanvasSize,
     transform,
     instructions,
     snapToPixel,
     featureCallback,
     hitExtent,
-    declutterTree
+    declutterTree,
   ) {
+    const zIndexContext = this.zIndexContext_;
     /** @type {Array<number>} */
     let pixelCoordinates;
     if (this.pixelCoordinates_ && equals(transform, this.renderedTransform_)) {
@@ -665,7 +686,7 @@ class Executor {
         this.coordinates.length,
         2,
         transform,
-        this.pixelCoordinates_
+        this.pixelCoordinates_,
       );
       transformSetFromArray(this.renderedTransform_, transform);
     }
@@ -675,6 +696,8 @@ class Executor {
     let dd; // end of per-instruction data
     let anchorX,
       anchorY,
+      /** @type {import('../../style/Style.js').DeclutterMode} */
+      declutterMode,
       prevX,
       prevY,
       roundX,
@@ -727,6 +750,9 @@ class Executor {
           } else {
             ++i;
           }
+          if (zIndexContext) {
+            zIndexContext.zIndex = instruction[4];
+          }
           break;
         case CanvasInstruction.BEGIN_PATH:
           if (pendingFill > batchSize) {
@@ -769,7 +795,7 @@ class Executor {
               instruction[3]
             );
           const renderer = instruction[4];
-          const fn = instruction.length == 6 ? instruction[5] : undefined;
+          const fn = instruction[5];
           state.geometry = geometry;
           state.feature = feature;
           if (!(i in coordinateCache)) {
@@ -782,6 +808,9 @@ class Executor {
             coords[0] = pixelCoordinates[d];
             coords[1] = pixelCoordinates[d + 1];
             coords.length = 2;
+          }
+          if (zIndexContext) {
+            zIndexContext.zIndex = instruction[6];
           }
           renderer(coords, state);
           ++i;
@@ -807,12 +836,9 @@ class Executor {
             instruction[12]
           );
           let width = /** @type {number} */ (instruction[13]);
-          const declutterMode =
-            /** @type {"declutter"|"obstacle"|"none"|undefined} */ (
-              instruction[14]
-            );
+          declutterMode = instruction[14] || 'declutter';
           const declutterImageWithText =
-            /** @type {import("../canvas.js").DeclutterImageWithText} */ (
+            /** @type {{args: import("../canvas.js").DeclutterImageWithText, declutterMode: import('../../style/Style.js').DeclutterMode}} */ (
               instruction[15]
             );
 
@@ -826,7 +852,7 @@ class Executor {
               text,
               textKey,
               strokeKey,
-              fillKey
+              fillKey,
             );
             image = labelWithAnchor.label;
             instruction[3] = image;
@@ -889,12 +915,12 @@ class Executor {
               snapToPixel,
               padding,
               backgroundFill || backgroundStroke,
-              feature
+              feature,
             );
             /** @type {ReplayImageOrLabelArgs} */
             const args = [
               context,
-              contextScale,
+              scaledCanvasSize,
               image,
               dimensions,
               opacity,
@@ -906,44 +932,59 @@ class Executor {
                 : null,
             ];
             if (declutterTree) {
-              if (declutterMode === 'none') {
-                // not rendered in declutter group
-                continue;
-              } else if (declutterMode === 'obstacle') {
-                // will always be drawn, thus no collision detection, but insert as obstacle
-                declutterTree.insert(dimensions.declutterBox);
-                continue;
-              } else {
-                let imageArgs;
-                let imageDeclutterBox;
-                if (declutterImageWithText) {
-                  const index = dd - d;
-                  if (!declutterImageWithText[index]) {
-                    // We now have the image for an image+text combination.
-                    declutterImageWithText[index] = args;
-                    // Don't render anything for now, wait for the text.
-                    continue;
-                  }
-                  imageArgs = declutterImageWithText[index];
-                  delete declutterImageWithText[index];
-                  imageDeclutterBox = getDeclutterBox(imageArgs);
-                  if (declutterTree.collides(imageDeclutterBox)) {
-                    continue;
-                  }
-                }
-                if (declutterTree.collides(dimensions.declutterBox)) {
+              let imageArgs, imageDeclutterMode, imageDeclutterBox;
+              if (declutterImageWithText) {
+                const index = dd - d;
+                if (!declutterImageWithText[index]) {
+                  // We now have the image for an image+text combination.
+                  declutterImageWithText[index] = {args, declutterMode};
+                  // Don't render anything for now, wait for the text.
                   continue;
                 }
-                if (imageArgs) {
-                  // We now have image and text for an image+text combination.
-                  declutterTree.insert(imageDeclutterBox);
-                  // Render the image before we render the text.
-                  this.replayImageOrLabel_.apply(this, imageArgs);
-                }
-                declutterTree.insert(dimensions.declutterBox);
+                const imageDeclutter = declutterImageWithText[index];
+                imageArgs = imageDeclutter.args;
+                imageDeclutterMode = imageDeclutter.declutterMode;
+                delete declutterImageWithText[index];
+                imageDeclutterBox = getDeclutterBox(imageArgs);
               }
+              // We now have image and text for an image+text combination.
+              let renderImage, renderText;
+              if (
+                imageArgs &&
+                (imageDeclutterMode !== 'declutter' ||
+                  !declutterTree.collides(imageDeclutterBox))
+              ) {
+                renderImage = true;
+              }
+              if (
+                declutterMode !== 'declutter' ||
+                !declutterTree.collides(dimensions.declutterBox)
+              ) {
+                renderText = true;
+              }
+              if (
+                imageDeclutterMode === 'declutter' &&
+                declutterMode === 'declutter'
+              ) {
+                const render = renderImage && renderText;
+                renderImage = render;
+                renderText = render;
+              }
+              if (renderImage) {
+                if (imageDeclutterMode !== 'none') {
+                  declutterTree.insert(imageDeclutterBox);
+                }
+                this.replayImageOrLabel_.apply(this, imageArgs);
+              }
+              if (renderText) {
+                if (declutterMode !== 'none') {
+                  declutterTree.insert(dimensions.declutterBox);
+                }
+                this.replayImageOrLabel_.apply(this, args);
+              }
+            } else {
+              this.replayImageOrLabel_.apply(this, args);
             }
-            this.replayImageOrLabel_.apply(this, args);
           }
           ++i;
           break;
@@ -964,6 +1005,7 @@ class Executor {
             /** @type {number} */ (instruction[13]),
             /** @type {number} */ (instruction[13]),
           ];
+          declutterMode = instruction[14] || 'declutter';
 
           const textState = this.textStates[textKey];
           const font = textState.font;
@@ -1000,7 +1042,7 @@ class Executor {
               measureAndCacheTextWidth,
               font,
               cachedWidths,
-              viewRotationFromTransform ? 0 : this.viewRotation_
+              viewRotationFromTransform ? 0 : this.viewRotation_,
             );
             drawChars: if (parts) {
               /** @type {Array<ReplayImageOrLabelArgs>} */
@@ -1035,17 +1077,18 @@ class Executor {
                     false,
                     defaultPadding,
                     false,
-                    feature
+                    feature,
                   );
                   if (
                     declutterTree &&
+                    declutterMode === 'declutter' &&
                     declutterTree.collides(dimensions.declutterBox)
                   ) {
                     break drawChars;
                   }
                   replayImageOrLabelArgs.push([
                     context,
-                    contextScale,
+                    scaledCanvasSize,
                     label,
                     dimensions,
                     1,
@@ -1077,17 +1120,18 @@ class Executor {
                     false,
                     defaultPadding,
                     false,
-                    feature
+                    feature,
                   );
                   if (
                     declutterTree &&
+                    declutterMode === 'declutter' &&
                     declutterTree.collides(dimensions.declutterBox)
                   ) {
                     break drawChars;
                   }
                   replayImageOrLabelArgs.push([
                     context,
-                    contextScale,
+                    scaledCanvasSize,
                     label,
                     dimensions,
                     1,
@@ -1096,7 +1140,7 @@ class Executor {
                   ]);
                 }
               }
-              if (declutterTree) {
+              if (declutterTree && declutterMode !== 'none') {
                 declutterTree.load(replayImageOrLabelArgs.map(getDeclutterBox));
               }
               for (let i = 0, ii = replayImageOrLabelArgs.length; i < ii; ++i) {
@@ -1201,7 +1245,7 @@ class Executor {
 
   /**
    * @param {CanvasRenderingContext2D} context Context.
-   * @param {number} contextScale Scale of the context.
+   * @param {import('../../size.js').Size} scaledCanvasSize Scaled canvas size.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
    * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
@@ -1209,22 +1253,22 @@ class Executor {
    */
   execute(
     context,
-    contextScale,
+    scaledCanvasSize,
     transform,
     viewRotation,
     snapToPixel,
-    declutterTree
+    declutterTree,
   ) {
     this.viewRotation_ = viewRotation;
     this.execute_(
       context,
-      contextScale,
+      scaledCanvasSize,
       transform,
       this.instructions,
       snapToPixel,
       undefined,
       undefined,
-      declutterTree
+      declutterTree,
     );
   }
 
@@ -1243,17 +1287,17 @@ class Executor {
     transform,
     viewRotation,
     featureCallback,
-    hitExtent
+    hitExtent,
   ) {
     this.viewRotation_ = viewRotation;
     return this.execute_(
       context,
-      1,
+      [context.canvas.width, context.canvas.height],
       transform,
       this.hitDetectionInstructions,
       true,
       featureCallback,
-      hitExtent
+      hitExtent,
     );
   }
 }

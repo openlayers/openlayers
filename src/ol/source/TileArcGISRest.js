@@ -92,7 +92,7 @@ class TileArcGISRest extends TileImage {
      * @private
      * @type {!Object}
      */
-    this.params_ = options.params || {};
+    this.params_ = Object.assign({}, options.params);
 
     /**
      * @private
@@ -148,7 +148,7 @@ class TileArcGISRest extends TileImage {
     tileExtent,
     pixelRatio,
     projection,
-    params
+    params,
   ) {
     const urls = this.urls;
     if (!urls) {
@@ -170,7 +170,7 @@ class TileArcGISRest extends TileImage {
       ).getResolution(tileCoord[0]),
       pixelRatio,
       projection,
-      params
+      params,
     );
   }
 
@@ -235,7 +235,7 @@ class TileArcGISRest extends TileImage {
       tileExtent,
       pixelRatio,
       projection,
-      baseParams
+      baseParams,
     );
   }
 }

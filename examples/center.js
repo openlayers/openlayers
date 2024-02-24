@@ -45,7 +45,7 @@ zoomtoswitzerland.addEventListener(
     const polygon = feature.getGeometry();
     view.fit(polygon, {padding: [170, 50, 30, 150]});
   },
-  false
+  false,
 );
 
 const zoomtolausanne = document.getElementById('zoomtolausanne');
@@ -56,7 +56,7 @@ zoomtolausanne.addEventListener(
     const point = feature.getGeometry();
     view.fit(point, {padding: [170, 50, 30, 150], minResolution: 50});
   },
-  false
+  false,
 );
 
 const centerlausanne = document.getElementById('centerlausanne');
@@ -68,5 +68,5 @@ centerlausanne.addEventListener(
     const size = map.getSize();
     view.centerOn(point.getCoordinates(), size, [570, 500]);
   },
-  false
+  false,
 );
