@@ -15,6 +15,7 @@ import {
   lchaToRgba,
   normalize,
   rgbaToLcha,
+  toString,
   withAlpha,
 } from '../color.js';
 
@@ -183,6 +184,9 @@ function compileExpression(expression, context) {
     }
     case Ops.Interpolate: {
       return compileInterpolateExpression(expression, context);
+    }
+    case Ops.ToString: {
+      return compileConvertExpression(expression, context);
     }
     default: {
       throw new Error(`Unsupported operator ${operator}`);
@@ -527,6 +531,35 @@ function compileInterpolateExpression(expression, context) {
     }
     return previousOutput;
   };
+}
+
+/**
+ * @param {import('./expression.js').CallExpression} expression The call expression.
+ * @param {import('./expression.js').ParsingContext} context The parsing context.
+ * @return {ExpressionEvaluator} The evaluator function.
+ */
+function compileConvertExpression(expression, context) {
+  const op = expression.operator;
+  const length = expression.args.length;
+
+  const args = new Array(length);
+  for (let i = 0; i < length; ++i) {
+    args[i] = compileExpression(expression.args[i], context);
+  }
+  switch (op) {
+    case Ops.ToString: {
+      return (context) => {
+        const value = args[0](context);
+        if (expression.args[0].type === ColorType) {
+          return toString(value);
+        }
+        return value.toString();
+      };
+    }
+    default: {
+      throw new Error(`Unsupported convert operator ${op}`);
+    }
+  }
 }
 
 /**
