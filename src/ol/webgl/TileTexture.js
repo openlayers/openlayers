@@ -143,6 +143,11 @@ class TileTexture extends BaseTileRepresentation {
     super(options);
 
     /**
+     * @type {TileType}
+     */
+    this.lastUploadedTile;
+
+    /**
      * @type {Array<WebGLTexture>}
      */
     this.textures = [];
@@ -181,10 +186,18 @@ class TileTexture extends BaseTileRepresentation {
     this.setTile(options.tile);
   }
 
-  uploadTile() {
+  /**
+   * @protected
+   * @param {TileType} tile tile to upload.
+   */
+  uploadTile(tile) {
+    if (tile === this.lastUploadedTile) {
+      return;
+    }
+    this.lastUploadedTile = tile;
+
     const helper = this.helper_;
     const gl = helper.getGL();
-    const tile = this.tile;
 
     this.textures.length = 0;
 
