@@ -148,6 +148,7 @@ function compileExpression(expression, context) {
     }
     case Ops.Any:
     case Ops.All:
+    case Ops.In:
     case Ops.Not: {
       return compileLogicalExpression(expression, context);
     }
@@ -195,7 +196,6 @@ function compileExpression(expression, context) {
     // Ops.Zoom
     // Ops.Time
     // Ops.Between
-    // Ops.In
     // Ops.Array
     // Ops.Color
     // Ops.Band
@@ -333,6 +333,17 @@ function compileLogicalExpression(expression, context) {
           }
         }
         return true;
+      };
+    }
+    case Ops.In: {
+      return (context) => {
+        const value = args[0](context);
+        for (let i = 1; i < length; ++i) {
+          if (value === args[i](context)) {
+            return true;
+          }
+        }
+        return false;
       };
     }
     case Ops.Not: {

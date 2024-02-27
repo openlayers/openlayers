@@ -630,6 +630,18 @@ describe('ol/expr/cpu.js', () => {
         },
         expected: 'rgba(0,255,0,1)',
       },
+      {
+        name: 'in (true)',
+        type: BooleanType,
+        expression: ['in', 3, [1, 2, 3]],
+        expected: true,
+      },
+      {
+        name: 'in (false)',
+        type: BooleanType,
+        expression: ['in', 'yellow', ['literal', ['red', 'green', 'blue']]],
+        expected: false,
+      },
     ];
 
     for (const c of cases) {
