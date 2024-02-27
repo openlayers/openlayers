@@ -125,8 +125,8 @@ function getRenderExtent(frameState, extent) {
   return extent;
 }
 
-export function getCacheKey(source, tileCoord) {
-  return `${source.getKey()},${getTileCoordKey(tileCoord)}`;
+export function getCacheKey(tileCoord) {
+  return getTileCoordKey(tileCoord);
 }
 
 /**
@@ -227,22 +227,6 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
-   * @param {TileType} tile Tile.
-   * @return {boolean} Tile is drawable.
-   * @private
-   */
-  isDrawableTile_(tile) {
-    const tileLayer = this.getLayer();
-    const tileState = tile.getState();
-    const useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
-    return (
-      tileState == TileState.LOADED ||
-      tileState == TileState.EMPTY ||
-      (tileState == TileState.ERROR && !useInterimTilesOnError)
-    );
-  }
-
-  /**
    * Determine whether renderFrame should be called.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
@@ -333,7 +317,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
       for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
         for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
           const tileCoord = createTileCoord(z, x, y, this.tempTileCoord_);
-          const cacheKey = getCacheKey(tileSource, tileCoord);
+          const cacheKey = getCacheKey(tileCoord);
 
           /** @type {TileRepresentation} */
           let tileRepresentation;
@@ -349,6 +333,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
             !tileRepresentation ||
             tileRepresentation.tile.key !== tileSource.getKey()
           ) {
+            const interimTile = tile;
             tile = tileSource.getTile(
               z,
               x,
@@ -356,6 +341,16 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
               frameState.pixelRatio,
               viewState.projection,
             );
+            if (interimTile) {
+              //make the new tile the head of the list,
+              if (interimTile.getState() == TileState.IDLE) {
+                //the old tile hasn't begun loading yet, and is now outdated, so we can simply discard it
+                tile.interimTile = interimTile.interimTile;
+              } else {
+                tile.interimTile = interimTile;
+              }
+              tile.refreshInterimChain();
+            }
           }
 
           if (lookupHasTile(tileRepresentationLookup, tile)) {
@@ -371,14 +366,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
             });
             tileRepresentationCache.set(cacheKey, tileRepresentation);
           } else {
-            if (this.isDrawableTile_(tile)) {
-              tileRepresentation.setTile(tile);
-            } else {
-              const interimTile = /** @type {TileType} */ (
-                tile.getInterimTile()
-              );
-              tileRepresentation.setTile(interimTile);
-            }
+            tileRepresentation.setTile(tile);
           }
 
           addTileRepresentationToLookup(
@@ -775,10 +763,9 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
 
     let covered = true;
     const tileRepresentationCache = this.tileRepresentationCache;
-    const source = this.getLayer().getRenderSource();
     for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
-        const cacheKey = getCacheKey(source, [altZ, x, y]);
+        const cacheKey = getCacheKey([altZ, x, y]);
         let loaded = false;
         if (tileRepresentationCache.containsKey(cacheKey)) {
           const tileRepresentation = tileRepresentationCache.get(cacheKey);

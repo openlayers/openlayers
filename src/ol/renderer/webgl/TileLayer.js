@@ -319,7 +319,7 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       --z
     ) {
       const tileCoord = tileGrid.getTileCoordForCoordAndZ(coordinate, z);
-      const cacheKey = getCacheKey(source, tileCoord);
+      const cacheKey = getCacheKey(tileCoord);
       if (!tileTextureCache.containsKey(cacheKey)) {
         continue;
       }
