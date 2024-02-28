@@ -6,6 +6,7 @@ import EventType from '../events/EventType.js';
 import {CLASS_COLLAPSED, CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {equals} from '../array.js';
 import {removeChildren, replaceNode} from '../dom.js';
+import {toPromise} from '../functions.js';
 
 /**
  * @typedef {Object} Options
@@ -215,7 +216,7 @@ class Attribution extends Control {
    * @private
    * @param {?import("../Map.js").FrameState} frameState Frame state.
    */
-  updateElement_(frameState) {
+  async updateElement_(frameState) {
     if (!frameState) {
       if (this.renderedVisible_) {
         this.element.style.display = 'none';
@@ -224,7 +225,11 @@ class Attribution extends Control {
       return;
     }
 
-    const attributions = this.collectSourceAttributions_(frameState);
+    const attributions = await Promise.all(
+      this.collectSourceAttributions_(frameState).map((attribution) =>
+        toPromise(() => attribution),
+      ),
+    );
 
     const visible = attributions.length > 0;
     if (this.renderedVisible_ != visible) {
