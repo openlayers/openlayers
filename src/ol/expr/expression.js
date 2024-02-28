@@ -84,9 +84,9 @@ import {isStringColor} from '../color.js';
  *   * `['all', value1, value2, ...]` returns `true` if all the inputs are `true`, `false` otherwise.
  *   * `['any', value1, value2, ...]` returns `true` if any of the inputs are `true`, `false` otherwise.
  *   * `['between', value1, value2, value3]` returns `true` if `value1` is contained between `value2` and `value3`
- *     (inclusively), or `false` otherwise (WebGL only).
+ *     (inclusively), or `false` otherwise.
  *   * `['in', needle, haystack]` returns `true` if `needle` is found in `haystack`, and
- *     `false` otherwise (WebGL only).
+ *     `false` otherwise.
  *     This operator has the following limitations:
  *     * `haystack` has to be an array of numbers or strings (searching for a substring in a string is not supported yet)
  *     * Only literal arrays are supported as `haystack` for now; this means that `haystack` cannot be the result of an
