@@ -78,6 +78,10 @@ const LayerConfig = {
     extension: 'png',
     opaque: true,
   },
+  'alidade_satellite': {
+    extension: 'png',
+    opaque: true,
+  },
   'outdoors': {
     extension: 'png',
     opaque: true,
