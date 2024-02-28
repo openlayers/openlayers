@@ -603,6 +603,57 @@ describe('ol/expr/cpu.js', () => {
         expression: ['interpolate', ['linear'], 0.5, 0, 'red', 1, [0, 255, 0]],
         expected: [219, 170, 0, 1],
       },
+      {
+        name: 'to-string (string)',
+        type: StringType,
+        expression: ['to-string', 'foo'],
+        expected: 'foo',
+      },
+      {
+        name: 'to-string (number)',
+        type: StringType,
+        expression: ['to-string', 42.9],
+        expected: '42.9',
+      },
+      {
+        name: 'to-string (boolean)',
+        type: StringType,
+        expression: ['to-string', 1 < 2],
+        expected: 'true',
+      },
+      {
+        name: 'to-string (color)',
+        type: StringType,
+        expression: ['to-string', ['get', 'fill', 'color']],
+        context: {
+          properties: {fill: [0, 255, 0]},
+        },
+        expected: 'rgba(0,255,0,1)',
+      },
+      {
+        name: 'in (true)',
+        type: BooleanType,
+        expression: ['in', 3, [1, 2, 3]],
+        expected: true,
+      },
+      {
+        name: 'in (false)',
+        type: BooleanType,
+        expression: ['in', 'yellow', ['literal', ['red', 'green', 'blue']]],
+        expected: false,
+      },
+      {
+        name: 'between (true)',
+        type: BooleanType,
+        expression: ['between', 3, 3, 5],
+        expected: true,
+      },
+      {
+        name: 'between (false)',
+        type: BooleanType,
+        expression: ['between', 3, 4, 5],
+        expected: false,
+      },
     ];
 
     for (const c of cases) {

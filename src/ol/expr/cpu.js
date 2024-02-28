@@ -15,6 +15,7 @@ import {
   lchaToRgba,
   normalize,
   rgbaToLcha,
+  toString,
   withAlpha,
 } from '../color.js';
 
@@ -147,6 +148,8 @@ function compileExpression(expression, context) {
     }
     case Ops.Any:
     case Ops.All:
+    case Ops.Between:
+    case Ops.In:
     case Ops.Not: {
       return compileLogicalExpression(expression, context);
     }
@@ -184,14 +187,15 @@ function compileExpression(expression, context) {
     case Ops.Interpolate: {
       return compileInterpolateExpression(expression, context);
     }
+    case Ops.ToString: {
+      return compileConvertExpression(expression, context);
+    }
     default: {
       throw new Error(`Unsupported operator ${operator}`);
     }
     // TODO: unimplemented
     // Ops.Zoom
     // Ops.Time
-    // Ops.Between
-    // Ops.In
     // Ops.Array
     // Ops.Color
     // Ops.Band
@@ -329,6 +333,25 @@ function compileLogicalExpression(expression, context) {
           }
         }
         return true;
+      };
+    }
+    case Ops.Between: {
+      return (context) => {
+        const value = args[0](context);
+        const min = args[1](context);
+        const max = args[2](context);
+        return value >= min && value <= max;
+      };
+    }
+    case Ops.In: {
+      return (context) => {
+        const value = args[0](context);
+        for (let i = 1; i < length; ++i) {
+          if (value === args[i](context)) {
+            return true;
+          }
+        }
+        return false;
       };
     }
     case Ops.Not: {
@@ -527,6 +550,35 @@ function compileInterpolateExpression(expression, context) {
     }
     return previousOutput;
   };
+}
+
+/**
+ * @param {import('./expression.js').CallExpression} expression The call expression.
+ * @param {import('./expression.js').ParsingContext} context The parsing context.
+ * @return {ExpressionEvaluator} The evaluator function.
+ */
+function compileConvertExpression(expression, context) {
+  const op = expression.operator;
+  const length = expression.args.length;
+
+  const args = new Array(length);
+  for (let i = 0; i < length; ++i) {
+    args[i] = compileExpression(expression.args[i], context);
+  }
+  switch (op) {
+    case Ops.ToString: {
+      return (context) => {
+        const value = args[0](context);
+        if (expression.args[0].type === ColorType) {
+          return toString(value);
+        }
+        return value.toString();
+      };
+    }
+    default: {
+      throw new Error(`Unsupported convert operator ${op}`);
+    }
+  }
 }
 
 /**
