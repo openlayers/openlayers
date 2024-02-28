@@ -603,6 +603,33 @@ describe('ol/expr/cpu.js', () => {
         expression: ['interpolate', ['linear'], 0.5, 0, 'red', 1, [0, 255, 0]],
         expected: [219, 170, 0, 1],
       },
+      {
+        name: 'to-string (string)',
+        type: StringType,
+        expression: ['to-string', 'foo'],
+        expected: 'foo',
+      },
+      {
+        name: 'to-string (number)',
+        type: StringType,
+        expression: ['to-string', 42.9],
+        expected: '42.9',
+      },
+      {
+        name: 'to-string (boolean)',
+        type: StringType,
+        expression: ['to-string', 1 < 2],
+        expected: 'true',
+      },
+      {
+        name: 'to-string (color)',
+        type: StringType,
+        expression: ['to-string', ['get', 'fill', 'color']],
+        context: {
+          properties: {fill: [0, 255, 0]},
+        },
+        expected: 'rgba(0,255,0,1)',
+      },
     ];
 
     for (const c of cases) {

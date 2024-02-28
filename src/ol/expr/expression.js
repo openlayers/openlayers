@@ -104,6 +104,9 @@ import {isStringColor} from '../color.js';
  *     (e.g. `'#86A136'`), colors using the rgba[a] functional notation (e.g. `'rgb(134, 161, 54)'` or `'rgba(134, 161, 54, 1)'`),
  *     named colors (e.g. `'red'`), or array literals with 3 ([r, g, b]) or 4 ([r, g, b, a]) values (with r, g, and b
  *     in the 0-255 range and a in the 0-1 range) (WebGL only).
+ *   * `['to-string', value]` converts the input value to a string. If the input is a boolean, the result is "true" or "false".
+ *     If the input is a number, it is converted to a string as specified by the "NumberToString" algorithm of the ECMAScript
+ *     Language Specification. If the input is a color, it is converted to a string of the form "rgba(r,g,b,a)". (Canvas only)
  *
  * Values can either be literals or another operator, as they will be evaluated recursively.
  * Literal values can be of the following types:
@@ -369,6 +372,7 @@ export const Ops = {
   Id: 'id',
   Band: 'band',
   Palette: 'palette',
+  ToString: 'to-string',
 };
 
 /**
@@ -629,6 +633,11 @@ const parsers = {
     parseArgsOfType(NumberType),
   ),
   [Ops.Palette]: createParser(ColorType, withArgsCount(2, 2), parsePaletteArgs),
+  [Ops.ToString]: createParser(
+    StringType,
+    withArgsCount(1, 1),
+    parseArgsOfType(BooleanType | NumberType | StringType | ColorType),
+  ),
 };
 
 /**

@@ -440,6 +440,7 @@ ${ifBlocks}
   // Ops.String
   // Ops.Coalesce
   // Ops.Concat
+  // Ops.ToString
 };
 
 /**
