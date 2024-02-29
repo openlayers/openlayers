@@ -260,10 +260,12 @@ class Google extends TileImage {
   async fetchAttributions(frameState) {
     if (
       frameState.viewHints[ViewHint.ANIMATING] ||
-      frameState.viewHints[ViewHint.INTERACTING]
+      frameState.viewHints[ViewHint.INTERACTING] ||
+      equalsExtent(frameState.extent, this.previousViewportExtent_)
     ) {
       return this.previousViewportAttribution_;
     }
+    this.previousViewportExtent_ = frameState.extent.slice(0);
     const transform = getTransformFromProjections(
       this.getProjection(),
       getProjection('EPSG:4326'),
