@@ -285,7 +285,7 @@ class Google extends TileImage {
 	const url = `${attributionUrl}?session=${session}&key=${key}&${viewportExtent}`;
 	this.previousViewportAttribution_ = await fetch(url)
       .then((response) => response.json())
-      .then((json) => 'Google : ' + json.copyright);
+      .then((json) => json.copyright);
     
     return this.previousViewportAttribution_;
   }
