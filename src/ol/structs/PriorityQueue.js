@@ -99,14 +99,14 @@ class PriorityQueue {
       'Tried to enqueue an `element` that was already added to the queue',
     );
     const priority = this.priorityFunction_(element);
-    if (priority != DROP) {
-      this.elements_.push(element);
-      this.priorities_.push(priority);
-      this.queuedElements_[this.keyFunction_(element)] = true;
-      this.siftDown_(0, this.elements_.length - 1);
-      return true;
+    if (priority == DROP) {
+      return false;
     }
-    return false;
+    this.elements_.push(element);
+    this.priorities_.push(priority);
+    this.queuedElements_[this.keyFunction_(element)] = true;
+    this.siftDown_(0, this.elements_.length - 1);
+    return true;
   }
 
   /**
@@ -151,8 +151,7 @@ class PriorityQueue {
    * @private
    */
   heapify_() {
-    let i;
-    for (i = (this.elements_.length >> 1) - 1; i >= 0; i--) {
+    for (let i = (this.elements_.length >> 1) - 1; i >= 0; i--) {
       this.siftUp_(i);
     }
   }
@@ -178,6 +177,44 @@ class PriorityQueue {
    */
   isQueued(element) {
     return this.isKeyQueued(this.keyFunction_(element));
+  }
+
+  /**
+   * @param {string} key Key.
+   * @return {number} Index of this key's element or -1 if not found.
+   */
+  findIndex_(key) {
+    const elements = this.elements_;
+    for (let i = 0, ii = elements.length; i < ii; ++i) {
+      if (key === this.keyFunction_(elements[i])) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  /**
+   * @param {string} key Key.
+   * @return {boolean} True when this queue contained this element.
+   */
+  remove(key) {
+    if (!this.isKeyQueued(key)) {
+      return false;
+    }
+    const index = this.findIndex_(key);
+    const elements = this.elements_;
+    const priorities = this.priorities_;
+    if (index === elements.length - 1) {
+      elements.length = index;
+      priorities.length = index;
+    } else {
+      elements[index] = elements.pop();
+      priorities[index] = priorities.pop();
+      this.siftUp_(index);
+    }
+
+    delete this.queuedElements_[key];
+    return true;
   }
 
   /**
@@ -224,13 +261,12 @@ class PriorityQueue {
 
     while (index > startIndex) {
       const parentIndex = this.getParentIndex_(index);
-      if (priorities[parentIndex] > priority) {
-        elements[index] = elements[parentIndex];
-        priorities[index] = priorities[parentIndex];
-        index = parentIndex;
-      } else {
+      if (priorities[parentIndex] <= priority) {
         break;
       }
+      elements[index] = elements[parentIndex];
+      priorities[index] = priorities[parentIndex];
+      index = parentIndex;
     }
     elements[index] = element;
     priorities[index] = priority;
