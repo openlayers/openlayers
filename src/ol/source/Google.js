@@ -4,9 +4,9 @@
 
 import TileImage from './TileImage.js';
 import ViewHint from '../ViewHint.js';
-import {getBottomLeft, getTopRight} from '../extent.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
-import {get as getProjection, toLonLat} from '../proj.js';
+import {getBottomLeft, getTopRight} from '../extent.js';
+import {toLonLat} from '../proj.js';
 
 const createSessionUrl = 'https://tile.googleapis.com/v1/createSession';
 const tileUrl = 'https://tile.googleapis.com/v1/2dtiles';
@@ -265,8 +265,14 @@ class Google extends TileImage {
     ) {
       return this.previousViewportAttribution_;
     }
-	const [west, south] = toLonLat(getBottomLeft(frameState.extent), frameState.viewState.projection);
-	const [east, north] = toLonLat(getTopRight(frameState.extent), frameState.viewState.projection);
+    const [west, south] = toLonLat(
+      getBottomLeft(frameState.extent),
+      frameState.viewState.projection,
+    );
+    const [east, north] = toLonLat(
+      getTopRight(frameState.extent),
+      frameState.viewState.projection,
+    );
     const tileGrid = this.getTileGrid();
     const zoom = tileGrid.getZForResolution(
       frameState.viewState.resolution,
