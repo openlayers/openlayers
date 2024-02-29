@@ -4,9 +4,9 @@
 
 import TileImage from './TileImage.js';
 import ViewHint from '../ViewHint.js';
-import {applyTransform} from '../extent.js';
+import {getBottomLeft, getTopRight} from '../extent.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
-import {get as getProjection, getTransformFromProjections} from '../proj.js';
+import {get as getProjection, toLonLat} from '../proj.js';
 
 const createSessionUrl = 'https://tile.googleapis.com/v1/createSession';
 const tileUrl = 'https://tile.googleapis.com/v1/2dtiles';
@@ -265,20 +265,13 @@ class Google extends TileImage {
     ) {
       return this.previousViewportAttribution_;
     }
-    const transform = getTransformFromProjections(
-      this.getProjection(),
-      getProjection('EPSG:4326'),
-    );
-    const epsg4326Extent = applyTransform(frameState.extent, transform);
+	const [west, south] = toLonLat(getBottomLeft(frameState.extent), frameState.viewState.projection);
+	const [east, north] = toLonLat(getTopRight(frameState.extent), frameState.viewState.projection);
     const tileGrid = this.getTileGrid();
     const zoom = tileGrid.getZForResolution(
       frameState.viewState.resolution,
       this.zDirection,
     );
-    const north = epsg4326Extent[3];
-    const south = epsg4326Extent[1];
-    const east = epsg4326Extent[2];
-    const west = epsg4326Extent[0];
     const viewportExtent = `zoom=${zoom}&north=${north}&south=${south}&east=${east}&west=${west}`;
     // check if the extent or zoom has actually changed to avoid unnecessary requests
     if (this.previousViewportExtent_ == viewportExtent) {
