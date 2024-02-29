@@ -1,8 +1,8 @@
 import Google from '../src/ol/source/Google.js';
 import Layer from '../src/ol/layer/WebGLTile.js';
-import {Control, defaults as defaultControls} from '../src/ol/control.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
+import {Control, defaults as defaultControls} from '../src/ol/control.js';
 
 function showMap(key) {
   const source = new Google({
@@ -16,7 +16,7 @@ function showMap(key) {
       alert(source.getError());
     }
   });
-  
+
   class GoogleLogoControl extends Control {
     constructor() {
       const element = document.createElement('img');
@@ -24,7 +24,8 @@ function showMap(key) {
       element.style.position = 'absolute';
       element.style.bottom = '5px';
       element.style.left = '5px';
-      element.src = 'https://developers.google.com/static/maps/documentation/images/google_on_white.png';
+      element.src =
+        'https://developers.google.com/static/maps/documentation/images/google_on_white.png';
       super({
         element: element,
       });
@@ -33,7 +34,7 @@ function showMap(key) {
 
   const map = new Map({
     layers: [new Layer({source})],
-	controls: defaultControls().extend([new GoogleLogoControl()]),
+    controls: defaultControls().extend([new GoogleLogoControl()]),
     target: 'map',
     view: new View({
       center: [0, 0],

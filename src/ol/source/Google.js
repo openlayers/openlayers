@@ -3,10 +3,10 @@
  */
 
 import TileImage from './TileImage.js';
+import ViewHint from '../ViewHint.js';
 import {applyTransform} from '../extent.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
-import ViewHint from '../ViewHint.js';
 
 const createSessionUrl = 'https://tile.googleapis.com/v1/createSession';
 const tileUrl = 'https://tile.googleapis.com/v1/2dtiles';
@@ -140,8 +140,8 @@ class Google extends TileImage {
      * @private
      */
     this.sessionTokenRequest_ = sessionTokenRequest;
-	
-	/**
+
+    /**
      * @type {string}
      * @private
      */
@@ -152,14 +152,14 @@ class Google extends TileImage {
      * @private
      */
     this.sessionRefreshId_;
-	
-	/**
+
+    /**
      * @type {string}
      * @private
      */
     this.previousViewportAttribution_;
-	
-	/**
+
+    /**
      * @type {string}
      * @private
      */
@@ -167,7 +167,7 @@ class Google extends TileImage {
 
     this.createSession_();
   }
-  
+
   /**
    * @return {Error|null} A source loading error. When the source state is `error`, use this function
    * to get more information about the error. To debug a faulty configuration, you may want to use
@@ -237,7 +237,8 @@ class Google extends TileImage {
       tileSize: tileSize,
     });
 
-    const session = this.sessionTokenValue_ = sessionTokenResponse.session;
+    const session = sessionTokenResponse.session;
+    this.sessionTokenValue_ = session;
     const key = this.apiKey_;
     this.tileUrlFunction = function (tileCoord, pixelRatio, projection) {
       const z = tileCoord[0];
@@ -250,14 +251,17 @@ class Google extends TileImage {
     const expiry = parseInt(sessionTokenResponse.expiry, 10) * 1000;
     const timeout = Math.max(expiry - Date.now() - 60 * 1000, 1);
     this.sessionRefreshId_ = setTimeout(() => this.createSession_(), timeout);
-	
-	this.setAttributions(this.fetchAttributions.bind(this));
+
+    this.setAttributions(this.fetchAttributions.bind(this));
     // even if the state is already ready, we want the change event
     this.setState('ready');
   }
-  
-  async fetchAttributions(frameState){
-    if (frameState.viewHints[ViewHint.ANIMATING] || frameState.viewHints[ViewHint.INTERACTING]) {
+
+  async fetchAttributions(frameState) {
+    if (
+      frameState.viewHints[ViewHint.ANIMATING] ||
+      frameState.viewHints[ViewHint.INTERACTING]
+    ) {
       return this.previousViewportAttribution_;
     }
     const transform = getTransformFromProjections(
@@ -270,23 +274,23 @@ class Google extends TileImage {
       frameState.viewState.resolution,
       this.zDirection,
     );
-	const north = epsg4326Extent[3];
-	const south = epsg4326Extent[1];
-	const east = epsg4326Extent[2];
-	const west = epsg4326Extent[0];
-	const viewportExtent = `zoom=${zoom}&north=${north}&south=${south}&east=${east}&west=${west}`;
-	// check if the extent or zoom has actually changed to avoid unnecessary requests
-	if (this.previousViewportExtent_ == viewportExtent) {
+    const north = epsg4326Extent[3];
+    const south = epsg4326Extent[1];
+    const east = epsg4326Extent[2];
+    const west = epsg4326Extent[0];
+    const viewportExtent = `zoom=${zoom}&north=${north}&south=${south}&east=${east}&west=${west}`;
+    // check if the extent or zoom has actually changed to avoid unnecessary requests
+    if (this.previousViewportExtent_ == viewportExtent) {
       return this.previousViewportAttribution_;
-	}
-	this.previousViewportExtent_ = viewportExtent;
-	const session = this.sessionTokenValue_;
+    }
+    this.previousViewportExtent_ = viewportExtent;
+    const session = this.sessionTokenValue_;
     const key = this.apiKey_;
-	const url = `${attributionUrl}?session=${session}&key=${key}&${viewportExtent}`;
-	this.previousViewportAttribution_ = await fetch(url)
+    const url = `${attributionUrl}?session=${session}&key=${key}&${viewportExtent}`;
+    this.previousViewportAttribution_ = await fetch(url)
       .then((response) => response.json())
       .then((json) => json.copyright);
-    
+
     return this.previousViewportAttribution_;
   }
 
