@@ -261,11 +261,10 @@ class Google extends TileImage {
     if (
       frameState.viewHints[ViewHint.ANIMATING] ||
       frameState.viewHints[ViewHint.INTERACTING] ||
-      equalsExtent(frameState.extent, this.previousViewportExtent_)
+      frameState.animate
     ) {
       return this.previousViewportAttribution_;
     }
-    this.previousViewportExtent_ = frameState.extent.slice(0);
     const transform = getTransformFromProjections(
       this.getProjection(),
       getProjection('EPSG:4326'),
