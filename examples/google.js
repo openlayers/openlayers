@@ -36,8 +36,8 @@ function showMap(key) {
     layers: [new Layer({source})],
     controls: defaultControls({
       attributionOptions: {
-        collapsible: false
-      }
+        collapsible: false,
+      },
     }).extend([new GoogleLogoControl()]),
     target: 'map',
     view: new View({
