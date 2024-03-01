@@ -83,6 +83,7 @@ class Google extends TileImage {
     const opaque = !(options.overlay === true);
 
     super({
+      attributionsCollapsible: false,
       cacheSize: options.cacheSize,
       crossOrigin: 'anonymous',
       interpolate: options.interpolate,
