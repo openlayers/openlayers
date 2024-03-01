@@ -25,6 +25,7 @@ const maxZoom = 22;
  * @property {Array<string>} [layerTypes] The layer types added to the map (e.g. `'layerRoadmap'`, `'layerStreetview'`, or `'layerTraffic'`).
  * @property {boolean} [overlay=false] Display only the `layerTypes` and not the underlying `mapType` (only works if `layerTypes` is provided).
  * @property {Array<Object>} [styles] [Custom styles](https://developers.google.com/maps/documentation/tile/style-reference) applied to the map.
+ * @property {boolean} [attributionsCollapsible=true] Allow the attributions to be collapsed.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
@@ -83,7 +84,7 @@ class Google extends TileImage {
     const opaque = !(options.overlay === true);
 
     super({
-      attributionsCollapsible: false,
+      attributionsCollapsible: options.attributionsCollapsible,
       cacheSize: options.cacheSize,
       crossOrigin: 'anonymous',
       interpolate: options.interpolate,
@@ -253,12 +254,17 @@ class Google extends TileImage {
     const timeout = Math.max(expiry - Date.now() - 60 * 1000, 1);
     this.sessionRefreshId_ = setTimeout(() => this.createSession_(), timeout);
 
-    this.setAttributions(this.fetchAttributions.bind(this));
+    this.setAttributions(this.fetchAttributions_.bind(this));
     // even if the state is already ready, we want the change event
     this.setState('ready');
   }
 
-  async fetchAttributions(frameState) {
+  /**
+   * @param {import('../Map.js').FrameState} frameState The frame state.
+   * @return {Promise<string>} The attributions.
+   * @private
+   */
+  async fetchAttributions_(frameState) {
     if (
       frameState.viewHints[ViewHint.ANIMATING] ||
       frameState.viewHints[ViewHint.INTERACTING] ||
