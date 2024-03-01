@@ -3,16 +3,14 @@
  */
 
 import TileImage from './TileImage.js';
+import ViewHint from '../ViewHint.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
-
-const defaultAttribution =
-  'Google Maps' +
-  '<a class="ol-attribution-google-tos" href="https://cloud.google.com/maps-platform/terms/" target="_blank">Terms of Use</a>' +
-  ' and ' +
-  '<a class="ol-attribution-google-tos" href="https://policies.google.com/privacy" target="_blank">Privacy Policy</a>';
+import {getBottomLeft, getTopRight} from '../extent.js';
+import {toLonLat} from '../proj.js';
 
 const createSessionUrl = 'https://tile.googleapis.com/v1/createSession';
 const tileUrl = 'https://tile.googleapis.com/v1/2dtiles';
+const attributionUrl = 'https://tile.googleapis.com/tile/v1/viewport';
 const maxZoom = 22;
 
 /**
@@ -27,7 +25,6 @@ const maxZoom = 22;
  * @property {Array<string>} [layerTypes] The layer types added to the map (e.g. `'layerRoadmap'`, `'layerStreetview'`, or `'layerTraffic'`).
  * @property {boolean} [overlay=false] Display only the `layerTypes` and not the underlying `mapType` (only works if `layerTypes` is provided).
  * @property {Array<Object>} [styles] [Custom styles](https://developers.google.com/maps/documentation/tile/style-reference) applied to the map.
- * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
@@ -84,10 +81,9 @@ class Google extends TileImage {
   constructor(options) {
     const highDpi = !!options.highDpi;
     const opaque = !(options.overlay === true);
-    const attributions = options.attributions || [defaultAttribution];
 
     super({
-      attributions: attributions,
+      attributionsCollapsible: false,
       cacheSize: options.cacheSize,
       crossOrigin: 'anonymous',
       interpolate: options.interpolate,
@@ -147,10 +143,28 @@ class Google extends TileImage {
     this.sessionTokenRequest_ = sessionTokenRequest;
 
     /**
+     * @type {string}
+     * @private
+     */
+    this.sessionTokenValue_;
+
+    /**
      * @type {ReturnType<typeof setTimeout>}
      * @private
      */
     this.sessionRefreshId_;
+
+    /**
+     * @type {string}
+     * @private
+     */
+    this.previousViewportAttribution_;
+
+    /**
+     * @type {string}
+     * @private
+     */
+    this.previousViewportExtent_;
 
     this.createSession_();
   }
@@ -225,6 +239,7 @@ class Google extends TileImage {
     });
 
     const session = sessionTokenResponse.session;
+    this.sessionTokenValue_ = session;
     const key = this.apiKey_;
     this.tileUrlFunction = function (tileCoord, pixelRatio, projection) {
       const z = tileCoord[0];
@@ -238,8 +253,46 @@ class Google extends TileImage {
     const timeout = Math.max(expiry - Date.now() - 60 * 1000, 1);
     this.sessionRefreshId_ = setTimeout(() => this.createSession_(), timeout);
 
+    this.setAttributions(this.fetchAttributions.bind(this));
     // even if the state is already ready, we want the change event
     this.setState('ready');
+  }
+
+  async fetchAttributions(frameState) {
+    if (
+      frameState.viewHints[ViewHint.ANIMATING] ||
+      frameState.viewHints[ViewHint.INTERACTING] ||
+      frameState.animate
+    ) {
+      return this.previousViewportAttribution_;
+    }
+    const [west, south] = toLonLat(
+      getBottomLeft(frameState.extent),
+      frameState.viewState.projection,
+    );
+    const [east, north] = toLonLat(
+      getTopRight(frameState.extent),
+      frameState.viewState.projection,
+    );
+    const tileGrid = this.getTileGrid();
+    const zoom = tileGrid.getZForResolution(
+      frameState.viewState.resolution,
+      this.zDirection,
+    );
+    const viewportExtent = `zoom=${zoom}&north=${north}&south=${south}&east=${east}&west=${west}`;
+    // check if the extent or zoom has actually changed to avoid unnecessary requests
+    if (this.previousViewportExtent_ == viewportExtent) {
+      return this.previousViewportAttribution_;
+    }
+    this.previousViewportExtent_ = viewportExtent;
+    const session = this.sessionTokenValue_;
+    const key = this.apiKey_;
+    const url = `${attributionUrl}?session=${session}&key=${key}&${viewportExtent}`;
+    this.previousViewportAttribution_ = await fetch(url)
+      .then((response) => response.json())
+      .then((json) => json.copyright);
+
+    return this.previousViewportAttribution_;
   }
 
   disposeInternal() {
