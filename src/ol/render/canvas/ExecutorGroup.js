@@ -118,9 +118,9 @@ class ExecutorGroup {
     this.renderedContext_ = null;
 
     /**
-     * @type {Array<Array<import("./ZIndexContext.js").default>>}
+     * @type {Object<number, Array<import("./ZIndexContext.js").default>>}
      */
-    this.deferredZIndexContexts_ = [];
+    this.deferredZIndexContexts_ = {};
 
     this.createExecutors_(allInstructions, deferredRendering);
   }
@@ -425,12 +425,13 @@ class ExecutorGroup {
   }
 
   renderDeferred() {
-    this.deferredZIndexContexts_.forEach((zIndexContexts) => {
-      zIndexContexts.forEach((zIndexContext) => {
+    const deferredZIndexContexts = this.deferredZIndexContexts_;
+    for (const key in deferredZIndexContexts) {
+      deferredZIndexContexts[key].forEach((zIndexContext) => {
         zIndexContext.draw(this.renderedContext_); // FIXME Pass clip to replay for temporarily enabling clip
         zIndexContext.clear();
       });
-    });
+    }
   }
 }
 
