@@ -27,5 +27,5 @@ function checkSize() {
   attribution.setCollapsed(small);
 }
 
-window.addEventListener('resize', checkSize);
+map.on('change:size', checkSize);
 checkSize();
