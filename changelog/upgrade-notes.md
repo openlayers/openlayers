@@ -27,6 +27,10 @@ To upgrade, simply remove the code where you use the `flushDeclutterItems()` met
 
 * The `finishDrawing()` method now returns the drawn feature or `null` if no drawing could be finished. Previously it returned `undefined`.
 
+#### `ZoomToExtent` control in `useGeographic` mode
+
+The `ZoomToExtent` control now expects geographic coordinates when `useGeographic` is set. Before it expected coordinates in the projection of the map.
+
 ### 8.0.0
 
 #### Removal of deprecated properties and methods
