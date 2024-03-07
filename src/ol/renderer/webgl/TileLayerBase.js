@@ -125,8 +125,13 @@ function getRenderExtent(frameState, extent) {
   return extent;
 }
 
-export function getCacheKey(tileCoord) {
-  return getTileCoordKey(tileCoord);
+/**
+ * @param {import("../../source.js").Source} source Source.
+ * @param {import("../../tilecoord.js").TileCoord} tileCoord Tile coordinate.
+ * @return {string} Cachekey string.
+ */
+export function getCacheKey(source, tileCoord) {
+  return `${getUid(source)},${getTileCoordKey(tileCoord)}`;
 }
 
 /**
@@ -317,7 +322,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
       for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
         for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
           const tileCoord = createTileCoord(z, x, y, this.tempTileCoord_);
-          const cacheKey = getCacheKey(tileCoord);
+          const cacheKey = getCacheKey(tileSource, tileCoord);
 
           /** @type {TileRepresentation} */
           let tileRepresentation;
@@ -763,9 +768,10 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
 
     let covered = true;
     const tileRepresentationCache = this.tileRepresentationCache;
+    const source = this.getLayer().getRenderSource();
     for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
-        const cacheKey = getCacheKey([altZ, x, y]);
+        const cacheKey = getCacheKey(source, [altZ, x, y]);
         let loaded = false;
         if (tileRepresentationCache.containsKey(cacheKey)) {
           const tileRepresentation = tileRepresentationCache.get(cacheKey);
