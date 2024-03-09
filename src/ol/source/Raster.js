@@ -634,6 +634,7 @@ class RasterSource extends ImageSource {
       extent: null,
       index: 0,
       layerIndex: 0,
+      layerTransform: null,
       layerStatesArray: getLayerStatesArray(this.layers_),
       pixelRatio: 1,
       pixelToCoordinateTransform: createTransform(),

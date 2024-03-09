@@ -15,12 +15,7 @@ import {
   createHitDetectionImageData,
   hitDetect,
 } from '../../render/canvas/hitdetect.js';
-import {
-  apply,
-  makeInverse,
-  makeScale,
-  toString as transformToString,
-} from '../../transform.js';
+import {apply, makeInverse, makeScale} from '../../transform.js';
 import {
   buffer,
   containsExtent,
@@ -291,9 +286,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     makeScale(this.pixelTransform, 1 / pixelRatio, 1 / pixelRatio);
     makeInverse(this.inversePixelTransform, this.pixelTransform);
 
-    const canvasTransform = transformToString(this.pixelTransform);
-
-    this.useContainer(target, canvasTransform, this.getBackground(frameState));
+    this.useContainer(target, this.pixelTransform, frameState);
 
     const context = this.context;
     const canvas = context.canvas;
@@ -315,9 +308,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     if (canvas.width != width || canvas.height != height) {
       canvas.width = width;
       canvas.height = height;
-      if (canvas.style.transform !== canvasTransform) {
-        canvas.style.transform = canvasTransform;
-      }
     } else if (!this.containerReused) {
       context.clearRect(0, 0, width, height);
     }

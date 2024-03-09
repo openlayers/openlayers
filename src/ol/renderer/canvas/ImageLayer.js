@@ -8,7 +8,6 @@ import {
   apply as applyTransform,
   compose as composeTransform,
   makeInverse,
-  toString as toTransformString,
 } from '../../transform.js';
 import {
   containsCoordinate,
@@ -187,9 +186,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     );
     makeInverse(this.inversePixelTransform, this.pixelTransform);
 
-    const canvasTransform = toTransformString(this.pixelTransform);
-
-    this.useContainer(target, canvasTransform, this.getBackground(frameState));
+    this.useContainer(target, this.pixelTransform, frameState);
 
     const context = this.getRenderContext(frameState);
     const canvas = this.context.canvas;
@@ -258,10 +255,6 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       context.restore();
     }
     context.imageSmoothingEnabled = true;
-
-    if (canvasTransform !== canvas.style.transform) {
-      canvas.style.transform = canvasTransform;
-    }
 
     return this.container;
   }
