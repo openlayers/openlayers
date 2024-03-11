@@ -253,8 +253,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    */
   renderDeclutter(frameState) {
-    const declutter = this.getLayer().getDeclutter();
-    if (!declutter) {
+    if (!this.replayGroup_ || !this.getLayer().getDeclutter()) {
       return;
     }
     this.setupCompositionContext_(); //FIXME Check if this works, or if we need to defer something.
@@ -267,6 +266,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    */
   renderDeferredInternal(frameState) {
+    if (!this.replayGroup_) {
+      return;
+    }
     this.replayGroup_.renderDeferred();
   }
 
