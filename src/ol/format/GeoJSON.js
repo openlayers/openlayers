@@ -446,7 +446,7 @@ function readMultiPointGeometry(object) {
 function readMultiPolygonGeometry(object) {
   const coordinates = object['coordinates'];
   const flatCoordinates = [];
-  const stride = coordinates[0]?.[0]?.[0].length || 2;
+  const stride = coordinates[0]?.[0]?.[0]?.length || 2;
   const endss = deflateMultiCoordinatesArray(
     flatCoordinates,
     0,
