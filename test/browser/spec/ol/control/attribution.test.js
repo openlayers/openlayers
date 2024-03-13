@@ -72,10 +72,15 @@ describe('ol.control.Attribution', function () {
     map = null;
   });
 
-  it('does not add duplicate attributions', function () {
+  it('does not add duplicate attributions', function (done) {
     map.renderSync();
-    const attribution = map.getTarget().querySelectorAll('.ol-attribution li');
-    expect(attribution.length).to.be(2);
+    setTimeout(() => {
+      const attribution = map
+        .getTarget()
+        .querySelectorAll('.ol-attribution li');
+      expect(attribution.length).to.be(2);
+      done();
+    }, 0);
   });
 
   it('renders attributions as non-collapsible if source is configured with attributionsCollapsible set to false', function () {
