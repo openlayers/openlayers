@@ -426,7 +426,7 @@ class ExecutorGroup {
 
   renderDeferred() {
     const deferredZIndexContexts = this.deferredZIndexContexts_;
-    const zs = Object.keys(deferredZIndexContexts).sort(ascending);
+    const zs = Object.keys(deferredZIndexContexts).map(Number).sort(ascending);
     for (let i = 0, ii = zs.length; i < ii; ++i) {
       deferredZIndexContexts[zs[i]].forEach((zIndexContext) => {
         zIndexContext.draw(this.renderedContext_); // FIXME Pass clip to replay for temporarily enabling clip
