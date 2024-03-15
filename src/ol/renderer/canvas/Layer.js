@@ -9,10 +9,12 @@ import {
   apply as applyTransform,
   compose as composeTransform,
   create as createTransform,
+  equals as equalTransforms,
+  toString as toTransformString,
 } from '../../transform.js';
 import {asArray} from '../../color.js';
 import {createCanvasContext2D} from '../../dom.js';
-import {equals} from '../../array.js';
+import {equals as equalArrays} from '../../array.js';
 import {
   getBottomLeft,
   getBottomRight,
@@ -152,11 +154,12 @@ class CanvasLayerRenderer extends LayerRenderer {
   /**
    * Get a rendering container from an existing target, if compatible.
    * @param {HTMLElement} target Potential render target.
-   * @param {string} transform CSS Transform.
-   * @param {string} [backgroundColor] Background color.
+   * @param {import('../../transform.js').Transform} transform Transform parameters for the CSS matrix.
+   * @param {import('../../Map.js').FrameState} [frameState] Frame state.
    */
-  useContainer(target, transform, backgroundColor) {
+  useContainer(target, transform, frameState) {
     const layerClassName = this.getLayer().getClassName();
+    const backgroundColor = this.getBackground(frameState);
     let container, context;
     if (
       target &&
@@ -164,7 +167,7 @@ class CanvasLayerRenderer extends LayerRenderer {
       (!backgroundColor ||
         (target &&
           target.style.backgroundColor &&
-          equals(
+          equalArrays(
             asArray(target.style.backgroundColor),
             asArray(backgroundColor),
           )))
@@ -174,7 +177,11 @@ class CanvasLayerRenderer extends LayerRenderer {
         context = canvas.getContext('2d');
       }
     }
-    if (context && context.canvas.style.transform === transform) {
+    const transformsAreEqual =
+      frameState.layerTransform &&
+      transform &&
+      equalTransforms(frameState.layerTransform, transform);
+    if (context && transformsAreEqual) {
       // Container of the previous layer renderer can be used.
       this.container = target;
       this.context = context;
@@ -210,6 +217,12 @@ class CanvasLayerRenderer extends LayerRenderer {
       !this.container.style.backgroundColor
     ) {
       this.container.style.backgroundColor = backgroundColor;
+    }
+    if (!transformsAreEqual) {
+      if (transform) {
+        this.context.canvas.style.transform = toTransformString(transform);
+      }
+      frameState.layerTransform = transform;
     }
   }
 

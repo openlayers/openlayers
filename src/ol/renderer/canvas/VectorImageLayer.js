@@ -105,7 +105,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
       !hints[ViewHint.INTERACTING] &&
       !isEmpty(renderedExtent)
     ) {
-      vectorRenderer.useContainer(null, null);
+      vectorRenderer.useContainer(null, null, frameState);
       const context = vectorRenderer.context;
       const layerState = frameState.layerStatesArray[frameState.layerIndex];
       const imageLayerState = Object.assign({}, layerState, {opacity: 1});

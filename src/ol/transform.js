@@ -46,6 +46,26 @@ export function reset(transform) {
 }
 
 /**
+ * @param {!Transform} transform1 Transform 1.
+ * @param {!Transform} transform2 Transform 2.
+ * @return {boolean} Transform 1 and 2 are pixel equal.
+ */
+export function equals(transform1, transform2) {
+  if (transform1 === transform2) {
+    return true;
+  }
+  const tolerance = 1e-6;
+  return (
+    Math.abs(transform1[0] - transform2[0]) < tolerance &&
+    Math.abs(transform1[1] - transform2[1]) < tolerance &&
+    Math.abs(transform1[2] - transform2[2]) < tolerance &&
+    Math.abs(transform1[3] - transform2[3]) < tolerance &&
+    Math.abs(transform1[4] - transform2[4]) < tolerance &&
+    Math.abs(transform1[5] - transform2[5]) < tolerance
+  );
+}
+
+/**
  * Multiply the underlying matrices of two transforms and return the result in
  * the first transform.
  * @param {!Transform} transform1 Transform parameters of matrix 1.
@@ -265,25 +285,11 @@ export function determinant(mat) {
 }
 
 /**
- * @type {Array}
- */
-const matrixPrecision = [1e6, 1e6, 1e6, 1e6, 2, 2];
-
-/**
  * A rounded string version of the transform.  This can be used
  * for CSS transforms.
  * @param {!Transform} mat Matrix.
  * @return {string} The transform as a string.
  */
 export function toString(mat) {
-  const transformString =
-    'matrix(' +
-    mat
-      .map(
-        (value, i) =>
-          Math.round(value * matrixPrecision[i]) / matrixPrecision[i],
-      )
-      .join(', ') +
-    ')';
-  return transformString;
+  return 'matrix(' + mat.join(', ') + ')';
 }
