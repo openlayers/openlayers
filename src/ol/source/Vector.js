@@ -1069,8 +1069,28 @@ class VectorSource extends Source {
   }
 
   /**
-   * Remove a single feature from the source.  If you want to remove all features
+   * Batch remove features from the source.  If you want to remove all features
    * at once, use the {@link module:ol/source/Vector~VectorSource#clear #clear()} method
+   * instead.
+   * @param {Array<FeatureType>} features Features to remove.
+   */
+  removeFeatures(features) {
+    const removedFeatures = [];
+    for (let i = 0, ii = features.length; i < ii; ++i) {
+      const feature = features[i];
+      const removedFeature = this.removeFeatureInternal(feature);
+      if (removedFeature) {
+        removedFeatures.push(removedFeature);
+      }
+    }
+    if (removedFeatures.length > 0) {
+      this.changed();
+    }
+  }
+
+  /**
+   * Remove a single feature from the source. If you want to batch remove
+   * features, use the {@link module:ol/source/Vector~VectorSource#removeFeatures #removeFeatures()} method
    * instead.
    * @param {FeatureType} feature Feature to remove.
    * @api
@@ -1078,14 +1098,6 @@ class VectorSource extends Source {
   removeFeature(feature) {
     if (!feature) {
       return;
-    }
-    const featureKey = getUid(feature);
-    if (featureKey in this.nullGeometryFeatures_) {
-      delete this.nullGeometryFeatures_[featureKey];
-    } else {
-      if (this.featuresRtree_) {
-        this.featuresRtree_.remove(feature);
-      }
     }
     const result = this.removeFeatureInternal(feature);
     if (result) {
@@ -1102,6 +1114,13 @@ class VectorSource extends Source {
    */
   removeFeatureInternal(feature) {
     const featureKey = getUid(feature);
+    if (featureKey in this.nullGeometryFeatures_) {
+      delete this.nullGeometryFeatures_[featureKey];
+    } else {
+      if (this.featuresRtree_) {
+        this.featuresRtree_.remove(feature);
+      }
+    }
     const featureChangeKeys = this.featureChangeKeys_[featureKey];
     if (!featureChangeKeys) {
       return;
@@ -1113,9 +1132,11 @@ class VectorSource extends Source {
       delete this.idIndex_[id.toString()];
     }
     delete this.uidIndex_[featureKey];
-    this.dispatchEvent(
-      new VectorSourceEvent(VectorEventType.REMOVEFEATURE, feature),
-    );
+    if (this.hasListener(VectorEventType.REMOVEFEATURE)) {
+      this.dispatchEvent(
+        new VectorSourceEvent(VectorEventType.REMOVEFEATURE, feature),
+      );
+    }
     return feature;
   }
 
