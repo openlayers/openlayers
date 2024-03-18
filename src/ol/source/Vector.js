@@ -1078,14 +1078,6 @@ class VectorSource extends Source {
     const removedFeatures = [];
     for (let i = 0, ii = features.length; i < ii; ++i) {
       const feature = features[i];
-      const featureKey = getUid(feature);
-      if (featureKey in this.nullGeometryFeatures_) {
-        delete this.nullGeometryFeatures_[featureKey];
-      } else {
-        if (this.featuresRtree_) {
-          this.featuresRtree_.remove(feature);
-        }
-      }
       const removedFeature = this.removeFeatureInternal(feature);
       if (removedFeature) {
         removedFeatures.push(removedFeature);
@@ -1107,14 +1099,6 @@ class VectorSource extends Source {
     if (!feature) {
       return;
     }
-    const featureKey = getUid(feature);
-    if (featureKey in this.nullGeometryFeatures_) {
-      delete this.nullGeometryFeatures_[featureKey];
-    } else {
-      if (this.featuresRtree_) {
-        this.featuresRtree_.remove(feature);
-      }
-    }
     const result = this.removeFeatureInternal(feature);
     if (result) {
       this.changed();
@@ -1130,6 +1114,13 @@ class VectorSource extends Source {
    */
   removeFeatureInternal(feature) {
     const featureKey = getUid(feature);
+    if (featureKey in this.nullGeometryFeatures_) {
+      delete this.nullGeometryFeatures_[featureKey];
+    } else {
+      if (this.featuresRtree_) {
+        this.featuresRtree_.remove(feature);
+      }
+    }
     const featureChangeKeys = this.featureChangeKeys_[featureKey];
     if (!featureChangeKeys) {
       return;
