@@ -17,14 +17,15 @@ import {
 } from '../../render/canvas/hitdetect.js';
 import {
   apply,
+  compose as composeTransform,
   makeInverse,
-  makeScale,
   toString as transformToString,
 } from '../../transform.js';
 import {
   buffer,
   containsExtent,
   createEmpty,
+  getHeight,
   getWidth,
   intersects as intersectsExtent,
   wrapX as wrapExtentX,
@@ -184,8 +185,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]
     );
     const context = this.context;
-    const width = Math.round(frameState.size[0] * pixelRatio);
-    const height = Math.round(frameState.size[1] * pixelRatio);
+    const width = Math.round((getWidth(extent) / resolution) * pixelRatio);
+    const height = Math.round((getHeight(extent) / resolution) * pixelRatio);
 
     const multiWorld = vectorSource.getWrapX() && projection.canWrapX();
     const worldWidth = multiWorld ? getWidth(projectionExtent) : null;
@@ -286,9 +287,22 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const pixelRatio = frameState.pixelRatio;
     const layerState = frameState.layerStatesArray[frameState.layerIndex];
     this.opacity_ = layerState.opacity;
+    const extent = frameState.extent;
+    const resolution = frameState.viewState.resolution;
+    const width = Math.round((getWidth(extent) / resolution) * pixelRatio);
+    const height = Math.round((getHeight(extent) / resolution) * pixelRatio);
 
     // set forward and inverse pixel transforms
-    makeScale(this.pixelTransform, 1 / pixelRatio, 1 / pixelRatio);
+    composeTransform(
+      this.pixelTransform,
+      frameState.size[0] / 2,
+      frameState.size[1] / 2,
+      1 / pixelRatio,
+      1 / pixelRatio,
+      0,
+      -width / 2,
+      -height / 2,
+    );
     makeInverse(this.inversePixelTransform, this.pixelTransform);
 
     const canvasTransform = transformToString(this.pixelTransform);
@@ -310,8 +324,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     }
 
     // resize and clear
-    const width = Math.round(frameState.size[0] * pixelRatio);
-    const height = Math.round(frameState.size[1] * pixelRatio);
     if (canvas.width != width || canvas.height != height) {
       canvas.width = width;
       canvas.height = height;
