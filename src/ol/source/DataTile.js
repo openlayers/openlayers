@@ -20,9 +20,21 @@ import {toPromise} from '../functions.js';
 import {toSize} from '../size.js';
 
 /**
+ * @typedef {'anonymous'|'use-credentials'} CrossOriginAttribute
+ */
+
+/**
+ * @typedef {Object} LoaderOptions
+ * @property {AbortSignal} signal An abort controller signal.
+ * @property {CrossOriginAttribute} [crossOrigin] The cross-origin attribute for images.
+ * @property {number} [maxY] The maximum y coordinate at the given z level.  Will be undefined if the
+ * underlying tile grid does not have a known extent.
+ */
+
+/**
  * Data tile loading function.  The function is called with z, x, and y tile coordinates and
  * returns {@link import("../DataTile.js").Data data} for a tile or a promise for the same.
- * @typedef {function(number, number, number) : (import("../DataTile.js").Data|Promise<import("../DataTile.js").Data>)} Loader
+ * @typedef {function(number, number, number, LoaderOptions) : (import("../DataTile.js").Data|Promise<import("../DataTile.js").Data>)} Loader
  */
 
 /**
@@ -49,6 +61,8 @@ import {toSize} from '../size.js';
  * @property {number} [bandCount=4] Number of bands represented in the data.
  * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
  * the nearest neighbor is used when resampling.
+ * @property {CrossOriginAttribute} [crossOrigin='anonymous'] The crossOrigin property to pass to loaders for image data.
+ * @property {string} [key] Key for use in caching tiles.
  */
 
 /**
@@ -88,6 +102,7 @@ class DataTileSource extends TileSource {
       wrapX: options.wrapX,
       transition: options.transition,
       interpolate: options.interpolate,
+      key: options.key,
     });
 
     /**
@@ -137,6 +152,12 @@ class DataTileSource extends TileSource {
      * @type {!Object<string, import("../TileCache.js").default>}
      */
     this.tileCacheForProjection_ = {};
+
+    /**
+     * @private
+     * @type {CrossOriginAttribute}
+     */
+    this.crossOrigin_ = options.crossOrigin || 'anonymous';
   }
 
   /**
@@ -253,7 +274,7 @@ class DataTileSource extends TileSource {
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {!DataTile} Tile.
+   * @return {DataTile|null} Tile (or null if outside source extent).
    */
   getTile(z, x, y, pixelRatio, projection) {
     const sourceProjection = this.getProjection();
@@ -273,17 +294,39 @@ class DataTileSource extends TileSource {
 
     const sourceLoader = this.loader_;
 
+    const controller = new AbortController();
+
+    /**
+     * @type {LoaderOptions}
+     */
+    const loaderOptions = {
+      signal: controller.signal,
+      crossOrigin: this.crossOrigin_,
+    };
+
+    const tileCoord = this.getTileCoordForTileUrlFunction([z, x, y]);
+    if (!tileCoord) {
+      return null;
+    }
+
+    const requestZ = tileCoord[0];
+    const requestX = tileCoord[1];
+    const requestY = tileCoord[2];
     function loader() {
       return toPromise(function () {
-        return sourceLoader(z, x, y);
+        return sourceLoader(requestZ, requestX, requestY, loaderOptions);
       });
     }
 
+    /**
+     * @type {import("../DataTile.js").Options}
+     */
     const options = Object.assign(
       {
         tileCoord: [z, x, y],
         loader: loader,
         size: size,
+        controller: controller,
       },
       this.tileOptions,
     );

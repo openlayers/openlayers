@@ -2,18 +2,15 @@
  * @module ol/tileurlfunction
  */
 import {modulo} from './math.js';
+import {renderXYZTemplate} from './uri.js';
 import {hash as tileCoordHash} from './tilecoord.js';
 
 /**
  * @param {string} template Template.
- * @param {import("./tilegrid/TileGrid.js").default} tileGrid Tile grid.
+ * @param {import("./tilegrid/TileGrid.js").default|null} tileGrid Tile grid.
  * @return {import("./Tile.js").UrlFunction} Tile URL function.
  */
 export function createFromTemplate(template, tileGrid) {
-  const zRegEx = /\{z\}/g;
-  const xRegEx = /\{x\}/g;
-  const yRegEx = /\{y\}/g;
-  const dashYRegEx = /\{-y\}/g;
   return (
     /**
      * @param {import("./tilecoord.js").TileCoord} tileCoord Tile Coordinate.
@@ -25,21 +22,16 @@ export function createFromTemplate(template, tileGrid) {
       if (!tileCoord) {
         return undefined;
       }
-      return template
-        .replace(zRegEx, tileCoord[0].toString())
-        .replace(xRegEx, tileCoord[1].toString())
-        .replace(yRegEx, tileCoord[2].toString())
-        .replace(dashYRegEx, function () {
-          const z = tileCoord[0];
-          const range = tileGrid.getFullTileRange(z);
-          if (!range) {
-            throw new Error(
-              'The {-y} placeholder requires a tile grid with extent',
-            );
-          }
-          const y = range.getHeight() - tileCoord[2] - 1;
-          return y.toString();
-        });
+      let maxY;
+      const z = tileCoord[0];
+      if (tileGrid) {
+        // The `{-y}` placeholder only works for sources that have a tile grid at construction
+        const range = tileGrid.getFullTileRange(z);
+        if (range) {
+          maxY = range.getHeight() - 1;
+        }
+      }
+      return renderXYZTemplate(template, z, tileCoord[1], tileCoord[2], maxY);
     }
   );
 }
@@ -95,31 +87,6 @@ export function nullTileUrlFunction(tileCoord, pixelRatio, projection) {
 }
 
 /**
- * @param {string} url URL.
- * @return {Array<string>} Array of urls.
+ * TODO: Update ol-mapbox-style to import this from the uri.js module.
  */
-export function expandUrl(url) {
-  const urls = [];
-  let match = /\{([a-z])-([a-z])\}/.exec(url);
-  if (match) {
-    // char range
-    const startCharCode = match[1].charCodeAt(0);
-    const stopCharCode = match[2].charCodeAt(0);
-    let charCode;
-    for (charCode = startCharCode; charCode <= stopCharCode; ++charCode) {
-      urls.push(url.replace(match[0], String.fromCharCode(charCode)));
-    }
-    return urls;
-  }
-  match = /\{(\d+)-(\d+)\}/.exec(url);
-  if (match) {
-    // number range
-    const stop = parseInt(match[2], 10);
-    for (let i = parseInt(match[1], 10); i <= stop; i++) {
-      urls.push(url.replace(match[0], i.toString()));
-    }
-    return urls;
-  }
-  urls.push(url);
-  return urls;
-}
+export {expandUrl} from './uri.js';

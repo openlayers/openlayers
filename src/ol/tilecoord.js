@@ -72,7 +72,17 @@ export function fromKey(key) {
  * @return {number} Hash.
  */
 export function hash(tileCoord) {
-  return (tileCoord[1] << tileCoord[0]) + tileCoord[2];
+  return hashZXY(tileCoord[0], tileCoord[1], tileCoord[2]);
+}
+
+/**
+ * @param {number} z The tile z coordinate.
+ * @param {number} x The tile x coordinate.
+ * @param {number} y The tile y coordinate.
+ * @return {number} Hash.
+ */
+export function hashZXY(z, x, y) {
+  return (x << z) + y;
 }
 
 /**

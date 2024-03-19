@@ -1,7 +1,7 @@
+import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import RasterSource from '../src/ol/source/Raster.js';
 import View from '../src/ol/View.js';
-import XYZ from '../src/ol/source/XYZ.js';
 import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
 
 const minVgi = 0;
@@ -49,7 +49,7 @@ const attributions =
   '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
   '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
 
-const aerial = new XYZ({
+const aerial = new ImageTile({
   attributions: attributions,
   url: 'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=' + key,
   maxZoom: 20,

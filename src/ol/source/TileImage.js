@@ -16,7 +16,7 @@ import {getUid} from '../util.js';
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
- * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
+ * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
@@ -40,7 +40,8 @@ import {getUid} from '../util.js';
  * service advertizes 256px by 256px tiles but actually sends 512px
  * by 512px images (for retina/hidpi devices) then `tilePixelRatio`
  * should be set to `2`.
- * @property {import("../Tile.js").UrlFunction} [tileUrlFunction] Optional function to get tile URL given a tile coordinate and the projection.
+ * @property {import("../Tile.js").UrlFunction} [tileUrlFunction] Deprecated.  Use an ImageTile source and provide a function
+ * for the url option instead.
  * @property {string} [url] URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`, may be
  * used instead of defining each one separately in the `urls` option.
@@ -58,8 +59,7 @@ import {getUid} from '../util.js';
  */
 
 /**
- * @classdesc
- * Base class for sources providing images divided into a tile grid.
+ * @deprecated Use the ol/source/ImageTile.js instead.
  *
  * @fires import("./Tile.js").TileSourceEvent
  * @api
@@ -337,8 +337,6 @@ class TileImage extends UrlTile {
     newTile.key = key;
 
     if (tile) {
-      newTile.interimTile = tile;
-      newTile.refreshInterimChain();
       cache.replace(tileCoordKey, newTile);
     } else {
       cache.set(tileCoordKey, newTile);
@@ -356,31 +354,18 @@ class TileImage extends UrlTile {
    * @protected
    */
   getTileInternal(z, x, y, pixelRatio, projection) {
-    let tile = null;
     const tileCoordKey = getKeyZXY(z, x, y);
     const key = this.getKey();
     if (!this.tileCache.containsKey(tileCoordKey)) {
-      tile = this.createTile_(z, x, y, pixelRatio, projection, key);
+      const tile = this.createTile_(z, x, y, pixelRatio, projection, key);
       this.tileCache.set(tileCoordKey, tile);
-    } else {
-      tile = this.tileCache.get(tileCoordKey);
-      if (tile.key != key) {
-        // The source's params changed. If the tile has an interim tile and if we
-        // can use it then we use it. Otherwise we create a new tile.  In both
-        // cases we attempt to assign an interim tile to the new tile.
-        const interimTile = tile;
-        tile = this.createTile_(z, x, y, pixelRatio, projection, key);
+      return tile;
+    }
 
-        //make the new tile the head of the list,
-        if (interimTile.getState() == TileState.IDLE) {
-          //the old tile hasn't begun loading yet, and is now outdated, so we can simply discard it
-          tile.interimTile = interimTile.interimTile;
-        } else {
-          tile.interimTile = interimTile;
-        }
-        tile.refreshInterimChain();
-        this.tileCache.replace(tileCoordKey, tile);
-      }
+    let tile = this.tileCache.get(tileCoordKey);
+    if (tile.key != key) {
+      tile = this.createTile_(z, x, y, pixelRatio, projection, key);
+      this.tileCache.replace(tileCoordKey, tile);
     }
     return tile;
   }

@@ -104,15 +104,17 @@ class TileQueue extends PriorityQueue {
    */
   loadMoreTiles(maxTotalLoading, maxNewLoads) {
     let newLoads = 0;
-    let state, tile, tileKey;
     while (
       this.tilesLoading_ < maxTotalLoading &&
       newLoads < maxNewLoads &&
       this.getCount() > 0
     ) {
-      tile = /** @type {import("./Tile.js").default} */ (this.dequeue()[0]);
-      tileKey = tile.getKey();
-      state = tile.getState();
+      /**
+       * @type {import("./Tile.js").default}
+       */
+      const tile = this.dequeue()[0];
+      const tileKey = tile.getKey();
+      const state = tile.getState();
       if (state === TileState.IDLE && !(tileKey in this.tilesLoadingKeys_)) {
         this.tilesLoadingKeys_[tileKey] = true;
         ++this.tilesLoading_;

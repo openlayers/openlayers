@@ -113,20 +113,24 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
   /**
    * @param {import("../../VectorRenderTile.js").default} tile Tile.
-   * @param {number} pixelRatio Pixel ratio.
-   * @param {import("../../proj/Projection").default} projection Projection.
-   * @return {boolean|undefined} Tile needs to be rendered.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {number} x Left of the tile.
+   * @param {number} y Top of the tile.
+   * @param {number} w Width of the tile.
+   * @param {number} h Height of the tile.
+   * @param {number} gutter Tile gutter.
+   * @param {boolean} transition Apply an alpha transition.
    */
-  prepareTile(tile, pixelRatio, projection) {
-    let render;
-    const state = tile.getState();
-    if (state === TileState.LOADED || state === TileState.ERROR) {
-      this.updateExecutorGroup_(tile, pixelRatio, projection);
-      if (this.tileImageNeedsRender_(tile)) {
-        render = true;
-      }
+  drawTile(tile, frameState, x, y, w, h, gutter, transition) {
+    this.updateExecutorGroup_(
+      tile,
+      frameState.pixelRatio,
+      frameState.viewState.projection,
+    );
+    if (this.tileImageNeedsRender_(tile)) {
+      this.renderTileImage_(tile, frameState);
     }
-    return render;
+    super.drawTile(tile, frameState, x, y, w, h, gutter, transition);
   }
 
   /**
@@ -134,15 +138,18 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {number} x Tile coordinate x.
    * @param {number} y Tile coordinate y.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
-   * @return {!import("../../Tile.js").default} Tile.
+   * @return {import("../../Tile.js").default|null} Tile (or null if outside source extent).
    */
   getTile(z, x, y, frameState) {
-    const pixelRatio = frameState.pixelRatio;
+    const tile = /** @type {import("../../VectorRenderTile.js").default} */ (
+      this.getOrCreateTile(z, x, y, frameState)
+    );
+    if (!tile) {
+      return null;
+    }
+
     const viewState = frameState.viewState;
     const resolution = viewState.resolution;
-    const projection = viewState.projection;
-    const layer = this.getLayer();
-    const tile = layer.getSource().getTile(z, x, y, pixelRatio, projection);
     const viewHints = frameState.viewHints;
     const hifi = !(
       viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]
@@ -150,15 +157,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     if (hifi || !tile.wantedResolution) {
       tile.wantedResolution = resolution;
     }
-    const render = this.prepareTile(tile, pixelRatio, projection);
-    if (
-      render &&
-      (hifi || Date.now() - frameState.time < 8) &&
-      layer.getRenderMode() !== 'vector'
-    ) {
-      this.renderTileImage_(tile, frameState);
-    }
-    return super.getTile(z, x, y, frameState);
+    return this.getDrawableTile(tile);
   }
 
   /**
@@ -243,7 +242,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const builderExtent = buffer(
         sharedExtent,
         layer.getRenderBuffer() * resolution,
-        this.tmpExtent,
+        this.tempExtent,
       );
       const bufferedExtent = equals(sourceTileExtent, sharedExtent)
         ? null
@@ -650,7 +649,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const tileCoord = tile.tileCoord;
     const tileExtent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
     const worldOffset =
-      tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent)[0] - tileExtent[0];
+      tileGrid.getTileCoordExtent(tileCoord, this.tempExtent)[0] -
+      tileExtent[0];
     const transform = multiply(
       scale(this.inversePixelTransform.slice(), 1 / pixelRatio, 1 / pixelRatio),
       this.getRenderTransform(
@@ -903,7 +903,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       scaleTransform(canvasTransform, renderScale, renderScale);
       context.setTransform.apply(context, canvasTransform);
     }
-    const tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
+    const tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tempExtent);
     const pixelScale = renderPixelRatio / resolution;
     const transform = resetTransform(this.tmpTransform_);
     scaleTransform(transform, pixelScale, -pixelScale);
