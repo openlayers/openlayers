@@ -70,14 +70,15 @@ export function getTolerance(resolution, pixelRatio) {
  * @param {import("../geom/Circle.js").default} geometry Geometry.
  * @param {import("../style/Style.js").default} style Style.
  * @param {import("../Feature.js").default} feature Feature.
+ * @param {number} [index] Render order index.
  */
-function renderCircleGeometry(builderGroup, geometry, style, feature) {
+function renderCircleGeometry(builderGroup, geometry, style, feature, index) {
   const fillStyle = style.getFill();
   const strokeStyle = style.getStroke();
   if (fillStyle || strokeStyle) {
     const circleReplay = builderGroup.getBuilder(style.getZIndex(), 'Circle');
     circleReplay.setFillStrokeStyle(fillStyle, strokeStyle);
-    circleReplay.drawCircle(geometry, feature);
+    circleReplay.drawCircle(geometry, feature, index);
   }
   const textStyle = style.getText();
   if (textStyle && textStyle.getText()) {

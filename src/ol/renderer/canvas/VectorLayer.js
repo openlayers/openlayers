@@ -17,14 +17,15 @@ import {
 } from '../../render/canvas/hitdetect.js';
 import {
   apply,
+  compose as composeTransform,
   makeInverse,
-  makeScale,
   toString as transformToString,
 } from '../../transform.js';
 import {
   buffer,
   containsExtent,
   createEmpty,
+  getHeight,
   getWidth,
   intersects as intersectsExtent,
   wrapX as wrapExtentX,
@@ -153,7 +154,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
      * @private
      * @type {CanvasRenderingContext2D}
      */
-    this.compositionContext_ = null;
+    this.targetContext_ = null;
 
     /**
      * @private
@@ -183,9 +184,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const snapToPixel = !(
       viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]
     );
-    const context = this.compositionContext_;
-    const width = Math.round(frameState.size[0] * pixelRatio);
-    const height = Math.round(frameState.size[1] * pixelRatio);
+    const context = this.context;
+    const width = Math.round((getWidth(extent) / resolution) * pixelRatio);
+    const height = Math.round((getHeight(extent) / resolution) * pixelRatio);
 
     const multiWorld = vectorSource.getWrapX() && projection.canWrapX();
     const worldWidth = multiWorld ? getWidth(projectionExtent) : null;
@@ -223,28 +224,33 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     } while (++world < endWorld);
   }
 
-  setupCompositionContext_() {
+  /**
+   * @private
+   */
+  setDrawContext_() {
     if (this.opacity_ !== 1) {
-      const compositionContext = createCanvasContext2D(
+      this.targetContext_ = this.context;
+      this.context = createCanvasContext2D(
         this.context.canvas.width,
         this.context.canvas.height,
         canvasPool,
       );
-      this.compositionContext_ = compositionContext;
-    } else {
-      this.compositionContext_ = this.context;
     }
   }
 
-  releaseCompositionContext_() {
+  /**
+   * @private
+   */
+  resetDrawContext_() {
     if (this.opacity_ !== 1) {
-      const alpha = this.context.globalAlpha;
-      this.context.globalAlpha = this.opacity_;
-      this.context.drawImage(this.compositionContext_.canvas, 0, 0);
-      this.context.globalAlpha = alpha;
-      releaseCanvas(this.compositionContext_);
-      canvasPool.push(this.compositionContext_.canvas);
-      this.compositionContext_ = null;
+      const alpha = this.targetContext_.globalAlpha;
+      this.targetContext_.globalAlpha = this.opacity_;
+      this.targetContext_.drawImage(this.context.canvas, 0, 0);
+      this.targetContext_.globalAlpha = alpha;
+      releaseCanvas(this.context);
+      canvasPool.push(this.context.canvas);
+      this.context = this.targetContext_;
+      this.targetContext_ = null;
     }
   }
 
@@ -256,9 +262,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     if (!this.replayGroup_ || !this.getLayer().getDeclutter()) {
       return;
     }
-    this.setupCompositionContext_(); //FIXME Check if this works, or if we need to defer something.
     this.renderWorlds(this.replayGroup_, frameState, true);
-    this.releaseCompositionContext_();
   }
 
   /**
@@ -270,6 +274,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       return;
     }
     this.replayGroup_.renderDeferred();
+    this.resetDrawContext_();
   }
 
   /**
@@ -281,14 +286,29 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   renderFrame(frameState, target) {
     const pixelRatio = frameState.pixelRatio;
     const layerState = frameState.layerStatesArray[frameState.layerIndex];
+    this.opacity_ = layerState.opacity;
+    const extent = frameState.extent;
+    const resolution = frameState.viewState.resolution;
+    const width = Math.round((getWidth(extent) / resolution) * pixelRatio);
+    const height = Math.round((getHeight(extent) / resolution) * pixelRatio);
 
     // set forward and inverse pixel transforms
-    makeScale(this.pixelTransform, 1 / pixelRatio, 1 / pixelRatio);
+    composeTransform(
+      this.pixelTransform,
+      frameState.size[0] / 2,
+      frameState.size[1] / 2,
+      1 / pixelRatio,
+      1 / pixelRatio,
+      0,
+      -width / 2,
+      -height / 2,
+    );
     makeInverse(this.inversePixelTransform, this.pixelTransform);
 
     const canvasTransform = transformToString(this.pixelTransform);
 
     this.useContainer(target, canvasTransform, this.getBackground(frameState));
+
     const context = this.context;
     const canvas = context.canvas;
 
@@ -304,8 +324,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     }
 
     // resize and clear
-    const width = Math.round(frameState.size[0] * pixelRatio);
-    const height = Math.round(frameState.size[1] * pixelRatio);
     if (canvas.width != width || canvas.height != height) {
       canvas.width = width;
       canvas.height = height;
@@ -316,13 +334,12 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       context.clearRect(0, 0, width, height);
     }
 
+    this.setDrawContext_();
+
     this.preRender(context, frameState);
 
     const viewState = frameState.viewState;
     const projection = viewState.projection;
-
-    this.opacity_ = layerState.opacity;
-    this.setupCompositionContext_();
 
     // clipped rendering if layer extent is set
     let clipped = false;
@@ -331,7 +348,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       render = intersectsExtent(layerExtent, frameState.extent);
       clipped = render && !containsExtent(layerExtent, frameState.extent);
       if (clipped) {
-        this.clipUnrotated(this.compositionContext_, frameState, layerExtent);
+        this.clipUnrotated(context, frameState, layerExtent);
       }
     }
 
@@ -344,16 +361,17 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     }
 
     if (clipped) {
-      this.compositionContext_.restore();
+      context.restore();
     }
-
-    this.releaseCompositionContext_();
 
     this.postRender(context, frameState);
 
     if (this.renderedRotation_ !== viewState.rotation) {
       this.renderedRotation_ = viewState.rotation;
       this.hitDetectionImageData_ = null;
+    }
+    if (!frameState.declutter) {
+      this.resetDrawContext_();
     }
     return this.container;
   }
