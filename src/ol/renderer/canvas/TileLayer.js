@@ -10,6 +10,7 @@ import {
   apply as applyTransform,
   compose as composeTransform,
   makeInverse,
+  toString as toTransformString,
 } from '../../transform.js';
 import {ascending} from '../../array.js';
 import {
@@ -379,7 +380,9 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       -height / 2,
     );
 
-    this.useContainer(target, this.pixelTransform, frameState);
+    const canvasTransform = toTransformString(this.pixelTransform);
+
+    this.useContainer(target, canvasTransform, this.getBackground(frameState));
 
     const context = this.getRenderContext(frameState);
     const canvas = this.context.canvas;
@@ -562,6 +565,10 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       context.restore();
     }
     context.imageSmoothingEnabled = true;
+
+    if (canvasTransform !== canvas.style.transform) {
+      canvas.style.transform = canvasTransform;
+    }
 
     return this.container;
   }

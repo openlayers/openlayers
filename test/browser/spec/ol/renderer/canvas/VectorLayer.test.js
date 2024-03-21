@@ -466,7 +466,7 @@ describe('ol/renderer/canvas/VectorLayer', function () {
         size: [100, 100],
         viewState: {
           projection: projection,
-          resolution: 1,
+          resolution: 200,
           rotation: 0,
         },
       };

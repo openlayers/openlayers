@@ -2,7 +2,6 @@ import {
   apply,
   compose,
   create,
-  equals,
   invert,
   makeInverse,
   makeScale,
@@ -12,6 +11,7 @@ import {
   scale,
   set,
   setFromArray,
+  toString,
   translate,
 } from '../../../../src/ol/transform.js';
 
@@ -178,21 +178,12 @@ describe('ol.transform', function () {
       expect(point).to.eql([3, 5]);
     });
   });
-  describe('equals()', function () {
+  describe('toString()', function () {
     it('compares with value read back from node', function () {
       const mat = [1 / 3, 0, 0, 1 / 3, 0, 0];
       const node = document.createElement('div');
       node.style.transform = 'matrix(' + mat.join(',') + ')';
-      const cssTransform = node.style.transform;
-      expect(
-        equals(
-          mat,
-          cssTransform
-            .substring(7, cssTransform.length - 2)
-            .split(',')
-            .map(Number),
-        ),
-      ).to.be(true);
+      expect(toString(mat)).to.be(node.style.transform);
     });
   });
 });

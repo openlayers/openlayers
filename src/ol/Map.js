@@ -59,7 +59,6 @@ import {warn} from './console.js';
  * @property {import("./extent.js").Extent} [nextExtent] Next extent during an animation series.
  * @property {number} index Index.
  * @property {Array<import("./layer/Layer.js").State>} layerStatesArray LayerStatesArray.
- * @property {import('./transform.js').Transform} layerTransform Current layer transform.
  * @property {number} layerIndex LayerIndex.
  * @property {import("./transform.js").Transform} pixelToCoordinateTransform PixelToCoordinateTransform.
  * @property {Array<PostRenderFunction>} postRenderFunctions PostRenderFunctions.
@@ -1539,7 +1538,6 @@ class Map extends BaseObject {
         ),
         index: this.frameIndex_++,
         layerIndex: 0,
-        layerTransform: null,
         layerStatesArray: this.getLayerGroup().getLayerStatesArray(),
         pixelRatio: this.pixelRatio_,
         pixelToCoordinateTransform: this.pixelToCoordinateTransform_,
