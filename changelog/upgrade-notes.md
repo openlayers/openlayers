@@ -1,5 +1,9 @@
 ## Upgrade notes
 
+### 9.1.0
+
+No special changes are required when upgrading to the 9.1.0 release.
+
 ### 9.0.0
 
 #### Improved render order of decluttered items
