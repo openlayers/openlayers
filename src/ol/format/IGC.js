@@ -32,6 +32,12 @@ const H_RECORD_RE = /^H.([A-Z]{3}).*?:(.*)/;
 const HFDTE_RECORD_RE = /^HFDTE(\d{2})(\d{2})(\d{2})/;
 
 /**
+ * @const
+ * @type {RegExp}
+ */
+const HFDTEDATE_RECORD_RE = /^HFDTEDATE:(\d{2})(\d{2})(\d{2}),(\d{2})/;
+
+/**
  * A regular expression matching the newline characters `\r\n`, `\r` and `\n`.
  *
  * @const
@@ -131,15 +137,22 @@ class IGC extends TextFeature {
           lastDateTime = dateTime;
         }
       } else if (line.charAt(0) == 'H') {
-        m = HFDTE_RECORD_RE.exec(line);
+        m = HFDTEDATE_RECORD_RE.exec(line);
         if (m) {
           day = parseInt(m[1], 10);
           month = parseInt(m[2], 10) - 1;
           year = 2000 + parseInt(m[3], 10);
-        } else {
-          m = H_RECORD_RE.exec(line);
+        } else {  // trying old date header
+          m = HFDTE_RECORD_RE.exec(line);
           if (m) {
-            properties[m[1]] = m[2].trim();
+            day = parseInt(m[1], 10);
+            month = parseInt(m[2], 10) - 1;
+            year = 2000 + parseInt(m[3], 10);
+          } else {
+            m = H_RECORD_RE.exec(line);
+            if (m) {
+              properties[m[1]] = m[2].trim();
+            }
           }
         }
       }
