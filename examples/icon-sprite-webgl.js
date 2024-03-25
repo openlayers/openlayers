@@ -19,7 +19,7 @@ const map = new Map({
       source: new XYZ({
         attributions: attributions,
         url:
-          'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=' + key,
+          'https://api.maptiler.com/maps/satellite/{z}/{x}/{y}.jpg?key=' + key,
         tileSize: 512,
       }),
     }),
