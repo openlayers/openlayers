@@ -287,10 +287,12 @@ class DragBox extends PointerInteraction {
   setActive(active) {
     if (!active) {
       this.box_.disposeInternal();
-      this.startPixel_ = null;
-      this.dispatchEvent(
-        new DragBoxEvent(DragBoxEventType.BOXCANCEL, this.startPixel_, null),
-      );
+      if (this.startPixel_) {
+        this.dispatchEvent(
+          new DragBoxEvent(DragBoxEventType.BOXCANCEL, this.startPixel_, null),
+        );
+        this.startPixel_ = null;
+      }
     }
 
     super.setActive(active);
