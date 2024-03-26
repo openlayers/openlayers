@@ -100,6 +100,10 @@ class RenderBox extends Disposable {
    * Creates or updates the cached geometry.
    */
   createOrUpdateGeometry() {
+    if (!this.map_) {
+      return;
+    }
+
     const startPixel = this.startPixel_;
     const endPixel = this.endPixel_;
     const pixels = [
