@@ -269,6 +269,23 @@ class DragBox extends PointerInteraction {
    * @param {import("../MapBrowserEvent.js").default} event Event.
    */
   onBoxEnd(event) {}
+
+  /**
+   * Activate or deactivate the interaction.
+   * @param {boolean} active Active.
+   * @observable
+   * @api
+   */
+  setActive(active) {
+    if (!active) {
+      this.box_.setMap(null);
+      this.dispatchEvent(
+        new DragBoxEvent(DragBoxEventType.BOXCANCEL, this.startPixel_, null),
+      );
+    }
+
+    super.setActive(active);
+  }
 }
 
 export default DragBox;
