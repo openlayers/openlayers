@@ -125,8 +125,13 @@ function getRenderExtent(frameState, extent) {
   return extent;
 }
 
+/**
+ * @param {import("../../source.js").Source} source Source.
+ * @param {import("../../tilecoord.js").TileCoord} tileCoord Tile coordinate.
+ * @return {string} Cachekey string.
+ */
 export function getCacheKey(source, tileCoord) {
-  return `${source.getKey()},${getTileCoordKey(tileCoord)}`;
+  return `${getUid(source)},${getTileCoordKey(tileCoord)}`;
 }
 
 /**
@@ -224,22 +229,6 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     super.reset({
       uniforms: options.uniforms,
     });
-  }
-
-  /**
-   * @param {TileType} tile Tile.
-   * @return {boolean} Tile is drawable.
-   * @private
-   */
-  isDrawableTile_(tile) {
-    const tileLayer = this.getLayer();
-    const tileState = tile.getState();
-    const useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
-    return (
-      tileState == TileState.LOADED ||
-      tileState == TileState.EMPTY ||
-      (tileState == TileState.ERROR && !useInterimTilesOnError)
-    );
   }
 
   /**
@@ -349,6 +338,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
             !tileRepresentation ||
             tileRepresentation.tile.key !== tileSource.getKey()
           ) {
+            const interimTile = tile;
             tile = tileSource.getTile(
               z,
               x,
@@ -356,6 +346,16 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
               frameState.pixelRatio,
               viewState.projection,
             );
+            if (interimTile) {
+              //make the new tile the head of the list,
+              if (interimTile.getState() == TileState.IDLE) {
+                //the old tile hasn't begun loading yet, and is now outdated, so we can simply discard it
+                tile.interimTile = interimTile.interimTile;
+              } else {
+                tile.interimTile = interimTile;
+              }
+              tile.refreshInterimChain();
+            }
           }
 
           if (lookupHasTile(tileRepresentationLookup, tile)) {
@@ -371,14 +371,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
             });
             tileRepresentationCache.set(cacheKey, tileRepresentation);
           } else {
-            if (this.isDrawableTile_(tile)) {
-              tileRepresentation.setTile(tile);
-            } else {
-              const interimTile = /** @type {TileType} */ (
-                tile.getInterimTile()
-              );
-              tileRepresentation.setTile(interimTile);
-            }
+            tileRepresentation.setTile(tile);
           }
 
           addTileRepresentationToLookup(

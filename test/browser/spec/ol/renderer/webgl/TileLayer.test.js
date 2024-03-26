@@ -1,6 +1,5 @@
 import Map from '../../../../../../src/ol/Map.js';
 import TileQueue from '../../../../../../src/ol/TileQueue.js';
-import TileState from '../../../../../../src/ol/TileState.js';
 import TileTexture from '../../../../../../src/ol/webgl/TileTexture.js';
 import View from '../../../../../../src/ol/View.js';
 import WebGLTileLayer from '../../../../../../src/ol/layer/WebGLTile.js';
@@ -101,22 +100,6 @@ describe('ol/renderer/webgl/TileLayer', function () {
     expect(Object.keys(frameState.wantedTiles).length).to.be(1);
     expect(frameState.postRenderFunctions.length).to.be(1); // clear source cache (use renderer cache)
     expect(renderer.tileRepresentationCache.count_).to.be(1);
-  });
-
-  it('#isDrawableTile_()', function (done) {
-    const tile = tileLayer.getSource().getTile(0, 0, 0);
-    expect(renderer.isDrawableTile_(tile)).to.be(false);
-    tileLayer.getSource().on('tileloadend', () => {
-      expect(renderer.isDrawableTile_(tile)).to.be(true);
-      done();
-    });
-    tile.load();
-    const errorTile = tileLayer.getSource().getTile(1, 0, 1);
-    errorTile.setState(TileState.ERROR);
-    tileLayer.setUseInterimTilesOnError(false);
-    expect(renderer.isDrawableTile_(errorTile)).to.be(true);
-    tileLayer.setUseInterimTilesOnError(true);
-    expect(renderer.isDrawableTile_(errorTile)).to.be(false);
   });
 
   describe('enqueueTiles()', () => {

@@ -53,9 +53,10 @@ class TileGeometry extends BaseTileRepresentation {
 
   /**
    * @private
+   * @param {TileType} tile tile to upload.
    */
-  generateMaskBuffer_() {
-    const extent = this.tile.getSourceTiles()[0].extent;
+  generateMaskBuffer_(tile) {
+    const extent = tile.getSourceTiles()[0].extent;
     this.maskVertices.fromArray([
       extent[0],
       extent[1],
@@ -69,11 +70,15 @@ class TileGeometry extends BaseTileRepresentation {
     this.helper_.flushBufferData(this.maskVertices);
   }
 
-  uploadTile() {
-    this.generateMaskBuffer_();
+  /**
+   * @protected
+   * @param {TileType} tile tile to upload.
+   */
+  uploadTile(tile) {
+    this.generateMaskBuffer_(tile);
 
     this.batch_.clear();
-    const sourceTiles = this.tile.getSourceTiles();
+    const sourceTiles = tile.getSourceTiles();
     const features = sourceTiles.reduce(
       (accumulator, sourceTile) => accumulator.concat(sourceTile.getFeatures()),
       [],
