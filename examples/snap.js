@@ -131,4 +131,17 @@ ExampleModify.setActive(false);
 const snap = new Snap({
   source: vector.getSource(),
 });
+
+const snappedElement = document.getElementById('snapped');
+
+snap.on('snap', () => {
+  document.getElementById('map').style.cursor = 'grabbing';
+  snappedElement.innerHTML = 'Snapped: true';
+});
+
+snap.on('unsnap', () => {
+  document.getElementById('map').style.cursor = 'default';
+  snappedElement.innerHTML = 'Snapped: false';
+});
+
 map.addInteraction(snap);
