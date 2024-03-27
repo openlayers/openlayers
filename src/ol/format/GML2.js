@@ -93,9 +93,9 @@ class GML2 extends GMLBase {
       const y = parseFloat(coords[1]);
       const z = coords.length === 3 ? parseFloat(coords[2]) : 0;
       if (axisOrientation.substr(0, 2) === 'en') {
-        flatCoordinates.push(x, y, z);
+        coords.length === 3?flatCoordinates.push(x, y, z):flatCoordinates.push(x, y);
       } else {
-        flatCoordinates.push(y, x, z);
+        coords.length === 3?flatCoordinates.push(y, x, z):flatCoordinates.push(y, x);
       }
     }
     return flatCoordinates;
