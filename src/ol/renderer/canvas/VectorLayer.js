@@ -200,7 +200,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       const transform = this.getRenderTransform(
         center,
         resolution,
-        rotation,
+        0,
         pixelRatio,
         width,
         height,
@@ -288,7 +288,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const layerState = frameState.layerStatesArray[frameState.layerIndex];
     this.opacity_ = layerState.opacity;
     const extent = frameState.extent;
-    const resolution = frameState.viewState.resolution;
+    const viewState = frameState.viewState;
+    const resolution = viewState.resolution;
     const width = Math.round((getWidth(extent) / resolution) * pixelRatio);
     const height = Math.round((getHeight(extent) / resolution) * pixelRatio);
 
@@ -299,7 +300,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       frameState.size[1] / 2,
       1 / pixelRatio,
       1 / pixelRatio,
-      0,
+      viewState.rotation,
       -width / 2,
       -height / 2,
     );
@@ -338,7 +339,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     this.preRender(context, frameState);
 
-    const viewState = frameState.viewState;
     const projection = viewState.projection;
 
     // clipped rendering if layer extent is set
@@ -384,8 +384,12 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    */
   getFeatures(pixel) {
     return new Promise((resolve) => {
-      if (!this.hitDetectionImageData_ && !this.animatingOrInteracting_) {
-        const size = [this.context.canvas.width, this.context.canvas.height];
+      if (
+        this.frameState &&
+        !this.hitDetectionImageData_ &&
+        !this.animatingOrInteracting_
+      ) {
+        const size = this.frameState.size.slice();
         apply(this.pixelTransform, size);
         const center = this.renderedCenter_;
         const resolution = this.renderedResolution_;
