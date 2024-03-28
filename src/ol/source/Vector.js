@@ -1073,6 +1073,7 @@ class VectorSource extends Source {
    * at once, use the {@link module:ol/source/Vector~VectorSource#clear #clear()} method
    * instead.
    * @param {Array<FeatureType>} features Features to remove.
+   * @api
    */
   removeFeatures(features) {
     const removedFeatures = [];
