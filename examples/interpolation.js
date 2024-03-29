@@ -12,7 +12,8 @@ const notInterpolated = new TileLayer({
   source: new XYZ({
     attributions: attributions,
     url:
-      'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + key,
+      'https://api.maptiler.com/tiles/terrain-rgb-v2/{z}/{x}/{y}.webp?key=' +
+      key,
     tileSize: 512,
     maxZoom: 12,
     crossOrigin: '',
@@ -24,7 +25,8 @@ const interpolated = new TileLayer({
   source: new XYZ({
     attributions: attributions,
     url:
-      'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + key,
+      'https://api.maptiler.com/tiles/terrain-rgb-v2/{z}/{x}/{y}.webp?key=' +
+      key,
     tileSize: 512,
     maxZoom: 12,
     crossOrigin: '',
