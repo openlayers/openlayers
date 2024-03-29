@@ -95,7 +95,11 @@ class GML2 extends GMLBase {
       if (axisOrientation.substr(0, 2) === 'en') {
         coords.length === 3?flatCoordinates.push(x, y, z):flatCoordinates.push(x, y);
       } else {
-        coords.length === 3?flatCoordinates.push(y, x, z):flatCoordinates.push(y, x);
+        if (coords.length === 3) {
+          flatCoordinates.push(y, x, z);
+        } else {
+          flatCoordinates.push(y, x);
+        }
       }
     }
     return flatCoordinates;
