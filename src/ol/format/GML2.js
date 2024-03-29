@@ -98,7 +98,6 @@ class GML2 extends GMLBase {
         } else {
           flatCoordinates.push(x, y);
         }
-          
       } else {
         if (coords.length === 3) {
           flatCoordinates.push(y, x, z);
