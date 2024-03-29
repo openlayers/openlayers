@@ -312,7 +312,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         source.getOverlaps(),
         executorGroupInstructions,
         layer.getRenderBuffer(),
-        !!this.frameState?.declutter,
+        true,
       );
       tile.executorGroups[layerUid].push(renderingReplayGroup);
     }
@@ -726,10 +726,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       let clipContext = context;
       let tileClipContext;
       if (currentClip) {
-        if (declutter) {
-          tileClipContext = new ZIndexContext();
-          clipContext = tileClipContext.getContext();
-        }
+        tileClipContext = new ZIndexContext();
+        clipContext = tileClipContext.getContext();
         for (let j = 0, jj = clips.length; j < jj; ++j) {
           if (z !== currentZ && currentZ < clipZs[j]) {
             const clip = clips[j];
@@ -775,6 +773,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           rotation,
           hifi,
           replayTypes,
+          frameState.declutter === null ? undefined : frameState.declutter,
         );
       }
       if (contextSaved) {
@@ -788,6 +787,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     context.globalAlpha = alpha;
     this.ready = ready;
     this.tileClipContexts_ = tileClipContexts;
+    if (!frameState.declutter) {
+      this.renderDeferredInternal(frameState);
+    }
 
     super.postRender(context, frameState);
   }
