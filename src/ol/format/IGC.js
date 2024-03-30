@@ -145,15 +145,21 @@ class IGC extends TextFeature {
           const minute = parseInt(m[2], 10);
           const second = parseInt(m[3], 10);
           let y = parseInt(m[4], 10) + parseInt(m[5], 10) / 60000;
-          if( this.lad_ ) {
-            y += parseInt( line.slice( this.ladStart_, this.ladStop_ ), 10) / 60000 / ( 10 ** (this.ladStop_ - this.ladStart_) );
+          if (this.lad_) {
+            y +=
+              parseInt(line.slice(this.ladStart_, this.ladStop_), 10) /
+              60000 /
+              10 ** (this.ladStop_ - this.ladStart_);
           }
           if (m[6] == 'S') {
             y = -y;
           }
           let x = parseInt(m[7], 10) + parseInt(m[8], 10) / 60000;
-          if( this.lod_ ) {
-            x += parseInt( line.slice( this.lodStart_, this.lodStop_ ), 10) / 60000 / ( 10 ** (this.lodStop_ - this.lodStart_) );
+          if (this.lod_) {
+            x +=
+              parseInt(line.slice(this.lodStart_, this.lodStop_), 10) /
+              60000 /
+              10 ** (this.lodStop_ - this.lodStart_);
           }
           if (m[9] == 'W') {
             x = -x;
@@ -198,21 +204,21 @@ class IGC extends TextFeature {
           }
         }
       } else if (line.charAt(0) == 'I') {
-        const numberAdds = parseInt( line.slice(1, 3), 10 );
-        for( let i=0; i < numberAdds; i++ ) {
-          const addCode = line.slice( 7+(i*7), 10+(i*7) );
-          if( addCode === 'LAD' || addCode === 'LOD' ) {
+        const numberAdds = parseInt(line.slice(1, 3), 10);
+        for (let i = 0; i < numberAdds; i++) {
+          const addCode = line.slice(7 + i * 7, 10 + i * 7);
+          if (addCode === 'LAD' || addCode === 'LOD') {
             // in IGC format, columns are numbered from 1
-            const addStart = parseInt( line.slice( 3+(i*7), 5+(i*7) ), 10 ) - 1;
-            const addStop  = parseInt( line.slice( 5+(i*7), 7+(i*7) ), 10 );
-            if( addCode === 'LAD' ) {
+            const addStart = parseInt(line.slice(3 + i * 7, 5 + i * 7), 10) - 1;
+            const addStop = parseInt(line.slice(5 + i * 7, 7 + i * 7), 10);
+            if (addCode === 'LAD') {
               this.lad_ = true;
               this.ladStart_ = addStart;
-              this.ladStop_  = addStop;
-            } else if( addCode === 'LOD' ) {
+              this.ladStop_ = addStop;
+            } else if (addCode === 'LOD') {
               this.lod_ = true;
               this.lodStart_ = addStart;
-              this.lodStop_  = addStop;
+              this.lodStop_ = addStop;
             }
           }
         }
