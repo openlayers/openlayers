@@ -48,7 +48,8 @@ const map = new Map({
   layers: [
     new TileLayer({
       source: new XYZ({
-        url: 'https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=' + key,
+        url:
+          'https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=' + key,
         attributions: attributions,
         tileSize: 512,
         maxZoom: 22,
