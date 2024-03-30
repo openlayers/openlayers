@@ -8,7 +8,8 @@ const attributions =
   '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
   '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
 
-const url = 'https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=' + key;
+const url =
+  'https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=' + key;
 
 const withTransition = new TileLayer({
   source: new XYZ({url: url, tileSize: 512, attributions: attributions}),
