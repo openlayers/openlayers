@@ -15,7 +15,7 @@ import {isStringColor} from '../color.js';
  * Base type used for literal style parameters; can be a number literal or the output of an operator,
  * which in turns takes {@link import("./expression.js").ExpressionValue} arguments.
  *
- * The following operators can be used:
+ * See below for details on the available operators (with notes for those that are WebGL or Canvas only).
  *
  * * Reading operators:
  *   * `['band', bandIndex, xOffset, yOffset]` For tile layers only. Fetches pixel values from band
@@ -70,8 +70,15 @@ import {isStringColor} from '../color.js';
  *     `input` and `stopX` values must all be of type `number`. `outputX` values can be `number` or `color` values.
  *     Note: `input` will be clamped between `stop1` and `stopN`, meaning that all output values will be comprised
  *     between `output1` and `outputN`.
+ *   * `['string', value1, value2, ...]` returns the first value in the list that evaluates to a string.
+ *     An example would be to provide a default value for get: `['string', ['get', 'propertynanme'], 'default value']]`
+ *     (Canvas only).
+ *   * `['number', value1, value2, ...]` returns the first value in the list that evaluates to a number.
+ *     An example would be to provide a default value for get: `['string', ['get', 'propertynanme'], 42]]`
+ *     (Canvas only).
  *   * `['coalesce', value1, value2, ...]` returns the first value in the list which is not null or undefined.
- *     An example would be to provide a default value for get: ['coalesce',['get','propertynanme'],'default value']]
+ *     An example would be to provide a default value for get: `['coalesce', ['get','propertynanme'], 'default value']]`
+ *     (Canvas only).
  *
  * * Logical operators:
  *   * `['<', value1, value2]` returns `true` if `value1` is strictly lower than `value2`, or `false` otherwise.
