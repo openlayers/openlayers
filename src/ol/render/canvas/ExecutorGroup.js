@@ -364,6 +364,7 @@ class ExecutorGroup {
     zs.sort(ascending);
 
     builderTypes = builderTypes ? builderTypes : ALL;
+    const maxBuilderTypes = ALL.length;
     let i, ii, j, jj, replays, replay;
     if (declutterTree) {
       zs.reverse();
@@ -403,11 +404,11 @@ class ExecutorGroup {
           }
           if (zIndexContext) {
             zIndexContext.offset();
-            const z = zs[i];
-            if (!this.deferredZIndexContexts_[z]) {
-              this.deferredZIndexContexts_[z] = [];
+            const index = zs[i] * maxBuilderTypes + j;
+            if (!this.deferredZIndexContexts_[index]) {
+              this.deferredZIndexContexts_[index] = [];
             }
-            this.deferredZIndexContexts_[z].push(zIndexContext);
+            this.deferredZIndexContexts_[index].push(zIndexContext);
           }
         }
       }
