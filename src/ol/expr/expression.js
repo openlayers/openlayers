@@ -71,13 +71,13 @@ import {isStringColor} from '../color.js';
  *     Note: `input` will be clamped between `stop1` and `stopN`, meaning that all output values will be comprised
  *     between `output1` and `outputN`.
  *   * `['string', value1, value2, ...]` returns the first value in the list that evaluates to a string.
- *     An example would be to provide a default value for get: `['string', ['get', 'propertynanme'], 'default value']]`
+ *     An example would be to provide a default value for get: `['string', ['get', 'propertyname'], 'default value']]`
  *     (Canvas only).
  *   * `['number', value1, value2, ...]` returns the first value in the list that evaluates to a number.
- *     An example would be to provide a default value for get: `['string', ['get', 'propertynanme'], 42]]`
+ *     An example would be to provide a default value for get: `['string', ['get', 'propertyname'], 42]]`
  *     (Canvas only).
  *   * `['coalesce', value1, value2, ...]` returns the first value in the list which is not null or undefined.
- *     An example would be to provide a default value for get: `['coalesce', ['get','propertynanme'], 'default value']]`
+ *     An example would be to provide a default value for get: `['coalesce', ['get','propertyname'], 'default value']]`
  *     (Canvas only).
  *
  * * Logical operators:
