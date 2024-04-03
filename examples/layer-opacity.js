@@ -11,7 +11,8 @@ const imagery = new TileLayer({
   source: new XYZ({
     attributions:
       '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ',
-    url: 'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=' + key,
+    url: 'https://api.maptiler.com/maps/satellite/{z}/{x}/{y}.jpg?key=' + key,
+    tileSize: 512,
     maxZoom: 20,
     crossOrigin: '',
   }),
