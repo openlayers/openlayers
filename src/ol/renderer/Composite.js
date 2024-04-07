@@ -159,6 +159,9 @@ class CompositeMapRenderer extends MapRenderer {
    * @param {Array<import('../layer/Layer.js').State>} layerStates Layers.
    */
   declutter(frameState, layerStates) {
+    if (!frameState.declutter) {
+      return;
+    }
     for (let i = layerStates.length - 1; i >= 0; --i) {
       const layerState = layerStates[i];
       const layer = layerState.layer;

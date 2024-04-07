@@ -32,6 +32,12 @@ const H_RECORD_RE = /^H.([A-Z]{3}).*?:(.*)/;
 const HFDTE_RECORD_RE = /^HFDTE(\d{2})(\d{2})(\d{2})/;
 
 /**
+ * @const
+ * @type {RegExp}
+ */
+const HFDTEDATE_RECORD_RE = /^HFDTEDATE:(\d{2})(\d{2})(\d{2}),(\d{2})/;
+
+/**
  * A regular expression matching the newline characters `\r\n`, `\r` and `\n`.
  *
  * @const
@@ -74,6 +80,42 @@ class IGC extends TextFeature {
      * @type {IGCZ}
      */
     this.altitudeMode_ = options.altitudeMode ? options.altitudeMode : 'none';
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.lad_ = false;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.lod_ = false;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.ladStart_ = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.ladStop_ = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.lodStart_ = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.lodStop_ = 0;
   }
 
   /**
@@ -103,10 +145,22 @@ class IGC extends TextFeature {
           const minute = parseInt(m[2], 10);
           const second = parseInt(m[3], 10);
           let y = parseInt(m[4], 10) + parseInt(m[5], 10) / 60000;
+          if (this.lad_) {
+            y +=
+              parseInt(line.slice(this.ladStart_, this.ladStop_), 10) /
+              60000 /
+              10 ** (this.ladStop_ - this.ladStart_);
+          }
           if (m[6] == 'S') {
             y = -y;
           }
           let x = parseInt(m[7], 10) + parseInt(m[8], 10) / 60000;
+          if (this.lod_) {
+            x +=
+              parseInt(line.slice(this.lodStart_, this.lodStop_), 10) /
+              60000 /
+              10 ** (this.lodStop_ - this.lodStart_);
+          }
           if (m[9] == 'W') {
             x = -x;
           }
@@ -131,15 +185,41 @@ class IGC extends TextFeature {
           lastDateTime = dateTime;
         }
       } else if (line.charAt(0) == 'H') {
-        m = HFDTE_RECORD_RE.exec(line);
+        m = HFDTEDATE_RECORD_RE.exec(line);
         if (m) {
           day = parseInt(m[1], 10);
           month = parseInt(m[2], 10) - 1;
           year = 2000 + parseInt(m[3], 10);
         } else {
-          m = H_RECORD_RE.exec(line);
+          m = HFDTE_RECORD_RE.exec(line);
           if (m) {
-            properties[m[1]] = m[2].trim();
+            day = parseInt(m[1], 10);
+            month = parseInt(m[2], 10) - 1;
+            year = 2000 + parseInt(m[3], 10);
+          } else {
+            m = H_RECORD_RE.exec(line);
+            if (m) {
+              properties[m[1]] = m[2].trim();
+            }
+          }
+        }
+      } else if (line.charAt(0) == 'I') {
+        const numberAdds = parseInt(line.slice(1, 3), 10);
+        for (let i = 0; i < numberAdds; i++) {
+          const addCode = line.slice(7 + i * 7, 10 + i * 7);
+          if (addCode === 'LAD' || addCode === 'LOD') {
+            // in IGC format, columns are numbered from 1
+            const addStart = parseInt(line.slice(3 + i * 7, 5 + i * 7), 10) - 1;
+            const addStop = parseInt(line.slice(5 + i * 7, 7 + i * 7), 10);
+            if (addCode === 'LAD') {
+              this.lad_ = true;
+              this.ladStart_ = addStart;
+              this.ladStop_ = addStop;
+            } else if (addCode === 'LOD') {
+              this.lod_ = true;
+              this.lodStart_ = addStart;
+              this.lodStop_ = addStop;
+            }
           }
         }
       }
