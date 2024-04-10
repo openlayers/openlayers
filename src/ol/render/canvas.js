@@ -380,7 +380,6 @@ export function getTextDimensions(baseStyle, chunks) {
       width = Math.max(width, lineWidth);
       lineWidths.push(lineWidth);
       lineWidth = 0;
-      height += lineHeight;
       continue;
     }
     const font = chunks[i + 1] || baseStyle.font;
@@ -389,6 +388,7 @@ export function getTextDimensions(baseStyle, chunks) {
     lineWidth += currentWidth;
     const currentHeight = measureTextHeight(font);
     heights.push(currentHeight);
+    height += currentHeight;
     lineHeight = Math.max(lineHeight, currentHeight);
   }
   return {width, height, widths, heights, lineWidths};
