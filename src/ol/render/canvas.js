@@ -381,6 +381,7 @@ export function getTextDimensions(baseStyle, chunks) {
       lineWidths.push(lineWidth);
       lineWidth = 0;
       height += lineHeight;
+      lineHeight = 0;
       continue;
     }
     const font = chunks[i + 1] || baseStyle.font;
