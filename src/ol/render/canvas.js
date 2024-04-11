@@ -373,7 +373,6 @@ export function getTextDimensions(baseStyle, chunks) {
   let width = 0;
   let lineWidth = 0;
   let height = 0;
-  let lineHeight = 0;
   for (let i = 0, ii = chunks.length; i <= ii; i += 2) {
     const text = chunks[i];
     if (text === '\n' || i === ii) {
@@ -386,10 +385,9 @@ export function getTextDimensions(baseStyle, chunks) {
     const currentWidth = measureTextWidth(font, text);
     widths.push(currentWidth);
     lineWidth += currentWidth;
-    const currentHeight = measureTextHeight(font);
-    heights.push(currentHeight);
-    height += currentHeight;
-    lineHeight = Math.max(lineHeight, currentHeight);
+    const currentLineHeight = measureTextHeight(font);
+    heights.push(currentLineHeight);
+    height += currentLineHeight;
   }
   return {width, height, widths, heights, lineWidths};
 }
