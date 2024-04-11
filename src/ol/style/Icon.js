@@ -186,7 +186,7 @@ class Icon extends ImageStyle {
     if (options.src !== undefined) {
       imageState = ImageState.IDLE;
     } else if (image !== undefined) {
-      if (image instanceof HTMLImageElement) {
+      if ('complete' in image) {
         if (image.complete) {
           imageState = image.src ? ImageState.LOADED : ImageState.IDLE;
         } else {

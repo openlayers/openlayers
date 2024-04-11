@@ -314,7 +314,7 @@ export function get(image, cacheKey, crossOrigin, imageState, color, pattern) {
   if (!iconImage) {
     iconImage = new IconImage(
       image,
-      image instanceof HTMLImageElement ? image.src || undefined : cacheKey,
+      image && 'src' in image ? image.src || undefined : cacheKey,
       crossOrigin,
       imageState,
       color,
