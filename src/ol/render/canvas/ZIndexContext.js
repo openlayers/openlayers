@@ -30,7 +30,7 @@ class ZIndexContext {
      * @type {ZIndexContextProxy}
      */
     this.context_ = /** @type {ZIndexContextProxy} */ (
-      new Proxy(CanvasRenderingContext2D.prototype, {
+      new Proxy(getSharedCanvasContext2D(), {
         get: (target, property) => {
           if (
             typeof (/** @type {*} */ (getSharedCanvasContext2D())[property]) !==

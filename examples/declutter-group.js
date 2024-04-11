@@ -38,7 +38,7 @@ const overlay = new VectorLayer({
 const layer = new LayerGroup();
 apply(
   layer,
-  'https://api.maptiler.com/maps/topo-v2/style.json?key=get_your_own_D6rA4zTHduk6KOKTXzGB',
+  'https://api.maptiler.com/maps/streets-v2/style.json?key=get_your_own_D6rA4zTHduk6KOKTXzGB',
 );
 
 const map = new Map({
