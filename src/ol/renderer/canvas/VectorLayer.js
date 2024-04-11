@@ -15,12 +15,7 @@ import {
   createHitDetectionImageData,
   hitDetect,
 } from '../../render/canvas/hitdetect.js';
-import {
-  apply,
-  compose as composeTransform,
-  makeInverse,
-  toString as transformToString,
-} from '../../transform.js';
+import {apply} from '../../transform.js';
 import {
   buffer,
   containsExtent,
@@ -284,34 +279,12 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @return {HTMLElement|null} The rendered element.
    */
   renderFrame(frameState, target) {
-    const pixelRatio = frameState.pixelRatio;
     const layerState = frameState.layerStatesArray[frameState.layerIndex];
     this.opacity_ = layerState.opacity;
-    const extent = frameState.extent;
     const viewState = frameState.viewState;
-    const resolution = viewState.resolution;
-    const width = Math.round((getWidth(extent) / resolution) * pixelRatio);
-    const height = Math.round((getHeight(extent) / resolution) * pixelRatio);
 
-    // set forward and inverse pixel transforms
-    composeTransform(
-      this.pixelTransform,
-      frameState.size[0] / 2,
-      frameState.size[1] / 2,
-      1 / pixelRatio,
-      1 / pixelRatio,
-      viewState.rotation,
-      -width / 2,
-      -height / 2,
-    );
-    makeInverse(this.inversePixelTransform, this.pixelTransform);
-
-    const canvasTransform = transformToString(this.pixelTransform);
-
-    this.useContainer(target, canvasTransform, this.getBackground(frameState));
-
+    this.prepareContainer(frameState, target);
     const context = this.context;
-    const canvas = context.canvas;
 
     const replayGroup = this.replayGroup_;
     let render = replayGroup && !replayGroup.isEmpty();
@@ -322,17 +295,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       if (!hasRenderListeners) {
         return null;
       }
-    }
-
-    // resize and clear
-    if (canvas.width != width || canvas.height != height) {
-      canvas.width = width;
-      canvas.height = height;
-      if (canvas.style.transform !== canvasTransform) {
-        canvas.style.transform = canvasTransform;
-      }
-    } else if (!this.containerReused) {
-      context.clearRect(0, 0, width, height);
     }
 
     this.setDrawContext_();
