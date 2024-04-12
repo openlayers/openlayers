@@ -9,19 +9,15 @@ import TileState from '../../TileState.js';
 import {
   apply as applyTransform,
   compose as composeTransform,
-  makeInverse,
-  toString as toTransformString,
 } from '../../transform.js';
 import {ascending} from '../../array.js';
 import {
   containsCoordinate,
   createEmpty,
   equals,
-  getHeight,
   getIntersection,
   getRotatedViewport,
   getTopLeft,
-  getWidth,
   intersects,
 } from '../../extent.js';
 import {fromUserExtent} from '../../proj.js';
@@ -265,9 +261,12 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     let extent = frameState.extent;
     const resolution = frameState.viewState.resolution;
     const tilePixelRatio = tileSource.getTilePixelRatio(pixelRatio);
+
+    this.prepareContainer(frameState, target);
+
     // desired dimensions of the canvas in pixels
-    const width = Math.round((getWidth(extent) / resolution) * pixelRatio);
-    const height = Math.round((getHeight(extent) / resolution) * pixelRatio);
+    const width = this.context.canvas.width;
+    const height = this.context.canvas.height;
 
     const layerExtent =
       layerState.extent && fromUserExtent(layerState.extent, projection);
@@ -368,26 +367,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const canvasScale =
       ((tileResolution / viewResolution) * pixelRatio) / tilePixelRatio;
 
-    // set forward and inverse pixel transforms
-    composeTransform(
-      this.pixelTransform,
-      frameState.size[0] / 2,
-      frameState.size[1] / 2,
-      1 / pixelRatio,
-      1 / pixelRatio,
-      rotation,
-      -width / 2,
-      -height / 2,
-    );
-
-    const canvasTransform = toTransformString(this.pixelTransform);
-
-    this.useContainer(target, canvasTransform, this.getBackground(frameState));
-
     const context = this.getRenderContext(frameState);
-    const canvas = this.context.canvas;
-
-    makeInverse(this.inversePixelTransform, this.pixelTransform);
 
     // set scale transform for calculating tile positions on the canvas
     composeTransform(
@@ -400,13 +380,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       -width / 2,
       -height / 2,
     );
-
-    if (canvas.width != width || canvas.height != height) {
-      canvas.width = width;
-      canvas.height = height;
-    } else if (!this.containerReused) {
-      context.clearRect(0, 0, width, height);
-    }
 
     if (layerExtent) {
       this.clipUnrotated(context, frameState, layerExtent);
@@ -565,10 +538,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       context.restore();
     }
     context.imageSmoothingEnabled = true;
-
-    if (canvasTransform !== canvas.style.transform) {
-      canvas.style.transform = canvasTransform;
-    }
 
     return this.container;
   }
