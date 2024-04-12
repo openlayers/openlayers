@@ -510,6 +510,7 @@ class Snap extends PointerInteraction {
               closestVertex = vertex;
               minSquaredDistance = delta;
               closestFeature = segmentData.feature;
+              closestSegment = segmentData.segment;
             }
           });
         }
@@ -554,6 +555,7 @@ class Snap extends PointerInteraction {
                 ? null
                 : segmentData.segment;
             minSquaredDistance = delta;
+            closestFeature = segmentData.feature;
           }
         }
       }
