@@ -203,6 +203,59 @@ describe('ol.layer.Vector', function () {
       });
     });
 
+    it('detects features properly on rotated view', function (done) {
+      map.getView().setRotation(Math.PI / 4);
+      map.renderSync();
+      const source = new VectorSource({
+        features: [
+          new Feature({
+            geometry: new Point([-1000000, 0]),
+            name: 'feature1',
+          }),
+          new Feature({
+            geometry: new Point([1000000, 0]),
+            name: 'feature2',
+          }),
+        ],
+      });
+
+      const feature = new Feature({
+        geometry: new Point([-1000000, 0]),
+        name: 'feature with no size',
+      });
+
+      const testImage = new ImageStyle({
+        opacity: 1,
+        displacement: [],
+      });
+
+      testImage.getImageState = () => {};
+      testImage.listenImageChange = () => {};
+      testImage.getImageSize = () => {};
+
+      feature.setStyle([
+        new Style({
+          image: testImage,
+        }),
+      ]);
+
+      source.addFeature(feature);
+
+      const layer = new VectorLayer({
+        source,
+      });
+      map.addLayer(layer);
+      map.renderSync();
+
+      const pixel = map.getPixelFromCoordinate([-1000000, 0]);
+
+      layer.getFeatures(pixel).then(function (features) {
+        expect(features.length).to.equal(1);
+        expect(features[0].get('name')).to.be('feature1');
+        done();
+      });
+    });
+
     it('detects zero opacity images', function (done) {
       const source = new VectorSource({
         features: [

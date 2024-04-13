@@ -15,7 +15,6 @@ import {
   createHitDetectionImageData,
   hitDetect,
 } from '../../render/canvas/hitdetect.js';
-import {apply} from '../../transform.js';
 import {
   buffer,
   containsExtent,
@@ -352,7 +351,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         !this.animatingOrInteracting_
       ) {
         const size = this.frameState.size.slice();
-        apply(this.pixelTransform, size);
         const center = this.renderedCenter_;
         const resolution = this.renderedResolution_;
         const rotation = this.renderedRotation_;
