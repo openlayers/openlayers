@@ -22,6 +22,7 @@ import {assert} from '../asserts.js';
 
 /**
  * @typedef {Object} Options
+ * @template {import("../source/VectorTile.js").default<import('../Feature').FeatureLike>} VectorTileSourceType
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
@@ -55,7 +56,7 @@ import {assert} from '../asserts.js';
  *    this mode for improved performance and visual epxerience on vector tile layers with not too many
  *    rendered features (e.g. for highlighting a subset of features of another layer with the same
  *    source).
- * @property {import("../source/VectorTile.js").default} [source] Source.
+ * @property {VectorTileSourceType} [source] Source.
  * @property {import("../Map.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
@@ -90,7 +91,8 @@ import {assert} from '../asserts.js';
  * options means that `title` is observable, and has get/set accessors.
  *
  * @param {Options} [options] Options.
- * @extends {BaseVectorLayer<import("../source/VectorTile.js").default, CanvasVectorTileLayerRenderer>}
+ * @template {import("../source/VectorTile.js").default<import('../Feature').FeatureLike>} VectorTileSourceType
+ * @extends {BaseVectorLayer<VectorTileSourceType, CanvasVectorTileLayerRenderer>}
  * @api
  */
 class VectorTileLayer extends BaseVectorLayer {
@@ -105,7 +107,7 @@ class VectorTileLayer extends BaseVectorLayer {
     delete baseOptions.useInterimTilesOnError;
 
     super(
-      /** @type {import("./BaseVector.js").Options<import("../source/VectorTile.js").default>} */ (
+      /** @type {import("./BaseVector.js").Options<VectorTileSourceType>} */ (
         baseOptions
       ),
     );
