@@ -412,6 +412,9 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       expect(renderer.replayGroupChanged).to.be(true);
       renderer.prepareFrame(frameState);
       expect(renderer.replayGroupChanged).to.be(false);
+      frameState.declutter = {};
+      renderer.prepareFrame(frameState);
+      expect(renderer.replayGroupChanged).to.be(true);
     });
 
     it('dispatches a postrender event when rendering', function () {
