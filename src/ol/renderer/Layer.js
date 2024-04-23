@@ -30,11 +30,6 @@ class LayerRenderer extends Observable {
      * @type {LayerType}
      */
     this.layer_ = layer;
-
-    /**
-     * @type {import("../render/canvas/ExecutorGroup").default}
-     */
-    this.declutterExecutorGroup = null;
   }
 
   /**
