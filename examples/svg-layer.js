@@ -1,6 +1,10 @@
+import Feature from '../src/ol/Feature.js';
 import Layer from '../src/ol/layer/Layer.js';
 import Map from '../src/ol/Map.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
+import {Point} from '../src/ol/geom.js';
+import {Vector} from '../src/ol/layer.js';
 import {composeCssTransform} from '../src/ol/transform.js';
 
 const map = new Map({
@@ -30,6 +34,7 @@ svgContainer.style.width = width + 'px';
 svgContainer.style.height = height + 'px';
 svgContainer.style.transformOrigin = 'top left';
 svgContainer.className = 'svg-layer';
+svgContainer.style.position = 'absolute';
 
 map.addLayer(
   new Layer({
@@ -49,6 +54,19 @@ map.addLayer(
       svgContainer.style.transform = cssTransform;
       svgContainer.style.opacity = this.getOpacity();
       return svgContainer;
+    },
+  }),
+);
+
+map.addLayer(
+  new Vector({
+    source: new VectorSource({
+      features: [new Feature(new Point([0, 0]))],
+    }),
+    style: {
+      'circle-fill-color': 'blue',
+      'circle-radius': 10,
+      'circle-stroke-color': 'white',
     },
   }),
 );
