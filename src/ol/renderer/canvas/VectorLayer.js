@@ -128,6 +128,12 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
+     * @type {boolean}
+     */
+    this.renderedFrameDeclutter_;
+
+    /**
+     * @private
      * @type {import("../../render/canvas/ExecutorGroup").default}
      */
     this.replayGroup_ = null;
@@ -628,6 +634,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       this.renderedResolution_ == resolution &&
       this.renderedRevision_ == vectorLayerRevision &&
       this.renderedRenderOrder_ == vectorLayerRenderOrder &&
+      this.renderedFrameDeclutter_ === !!frameState.declutter &&
       containsExtent(this.wrappedRenderedExtent_, extent)
     ) {
       if (!equals(this.renderedExtent_, renderedExtent)) {
@@ -721,6 +728,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     this.renderedResolution_ = resolution;
     this.renderedRevision_ = vectorLayerRevision;
     this.renderedRenderOrder_ = vectorLayerRenderOrder;
+    this.renderedFrameDeclutter_ = !!frameState.declutter;
     this.renderedExtent_ = renderedExtent;
     this.wrappedRenderedExtent_ = extent;
     this.renderedCenter_ = center;
