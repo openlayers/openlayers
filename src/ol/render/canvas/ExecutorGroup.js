@@ -433,6 +433,7 @@ class ExecutorGroup {
         zIndexContext.draw(this.renderedContext_); // FIXME Pass clip to replay for temporarily enabling clip
         zIndexContext.clear();
       });
+      deferredZIndexContexts[zs[i]].length = 0;
     }
   }
 }

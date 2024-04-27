@@ -604,10 +604,15 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const executorGroupZIndexContexts = executorGroups.map(({executorGroup}) =>
       executorGroup.getDeferredZIndexContexts(),
     );
-    const zIndexKeys = executorGroupZIndexContexts
-      .map((zIndexContext) => Object.keys(zIndexContext))
-      .flat()
-      .sort(ascending);
+    const usedZIndices = {};
+    for (let i = 0, ii = executorGroups.length; i < ii; ++i) {
+      const executorGroupZindexContext =
+        executorGroups[i].executorGroup.getDeferredZIndexContexts();
+      for (const key in executorGroupZindexContext) {
+        usedZIndices[key] = true;
+      }
+    }
+    const zIndexKeys = Object.keys(usedZIndices).sort(ascending);
     zIndexKeys.map(Number).forEach((zIndex) => {
       executorGroupZIndexContexts.forEach((zIndexContexts, i) => {
         if (!zIndexContexts[zIndex]) {
@@ -629,6 +634,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           context.globalAlpha = alpha;
           zIndexContext.clear();
         });
+        zIndexContexts[zIndex].length = 0;
       });
     });
   }
