@@ -45,6 +45,16 @@ class PaletteTexture {
     }
     return this.texture_;
   }
+
+  /**
+   * @param {WebGLRenderingContext} gl Rendering context.
+   */
+  delete(gl) {
+    if (this.texture_) {
+      gl.deleteTexture(this.texture_);
+    }
+    this.texture_ = null;
+  }
 }
 
 export default PaletteTexture;
