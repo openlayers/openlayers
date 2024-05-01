@@ -129,10 +129,17 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    */
   reset(options) {
     super.reset(options);
+    if (this.helper) {
+      const gl = this.helper.getGL();
+      for (const paletteTexture of this.paletteTextures_) {
+        paletteTexture.delete(gl);
+      }
+    }
 
     this.vertexShader_ = options.vertexShader;
     this.fragmentShader_ = options.fragmentShader;
     this.paletteTextures_ = options.paletteTextures || [];
+
     if (this.helper) {
       this.program_ = this.helper.getProgram(
         this.fragmentShader_,
@@ -147,6 +154,17 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       this.vertexShader_,
     );
     this.helper.flushBufferData(this.indices_);
+  }
+
+  removeHelper() {
+    if (this.helper) {
+      const gl = this.helper.getGL();
+      for (const paletteTexture of this.paletteTextures_) {
+        paletteTexture.delete(gl);
+      }
+    }
+
+    super.removeHelper();
   }
 
   createTileRepresentation(options) {
@@ -358,6 +376,11 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     const helper = this.helper;
     if (helper) {
       const gl = helper.getGL();
+      for (const paletteTexture of this.paletteTextures_) {
+        paletteTexture.delete(gl);
+      }
+      this.paletteTextures_.length = 0;
+
       gl.deleteProgram(this.program_);
       delete this.program_;
       helper.deleteBuffer(this.indices_);
