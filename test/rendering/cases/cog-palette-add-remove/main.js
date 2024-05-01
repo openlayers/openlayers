@@ -40,10 +40,10 @@ const map = new Map({
 });
 
 // regression test for https://github.com/openlayers/openlayers/issues/15786
-setTimeout(() => {
+map.once('rendercomplete', () => {
   map.removeLayer(layer);
   map.addLayer(layer);
   render({
     message: 'palette still works after adding and removing layer',
   });
-}, 500);
+});
