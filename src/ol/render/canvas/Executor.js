@@ -1175,13 +1175,9 @@ class Executor {
           dd = /** @type {number} */ (instruction[2]);
           x = pixelCoordinates[d];
           y = pixelCoordinates[d + 1];
-          roundX = (x + 0.5) | 0;
-          roundY = (y + 0.5) | 0;
-          if (roundX !== prevX || roundY !== prevY) {
-            context.moveTo(x, y);
-            prevX = roundX;
-            prevY = roundY;
-          }
+          context.moveTo(x, y);
+          prevX = (x + 0.5) | 0;
+          prevY = (y + 0.5) | 0;
           for (d += 2; d < dd; d += 2) {
             x = pixelCoordinates[d];
             y = pixelCoordinates[d + 1];
