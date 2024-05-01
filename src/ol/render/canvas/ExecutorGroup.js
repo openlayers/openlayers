@@ -365,7 +365,7 @@ class ExecutorGroup {
 
     builderTypes = builderTypes ? builderTypes : ALL;
     const maxBuilderTypes = ALL.length;
-    let i, ii, j, jj, replays, replay;
+    let i, ii, j, jj, replays;
     if (declutterTree) {
       zs.reverse();
     }
@@ -374,7 +374,7 @@ class ExecutorGroup {
       replays = this.executorsByZIndex_[zIndexKey];
       for (j = 0, jj = builderTypes.length; j < jj; ++j) {
         const builderType = builderTypes[j];
-        replay = replays[builderType];
+        const replay = replays[builderType];
         if (replay !== undefined) {
           const zIndexContext =
             declutterTree === null ? undefined : replay.getZIndexContext();
@@ -391,14 +391,31 @@ class ExecutorGroup {
             // visible outside the current extent when panning
             this.clip(context, transform);
           }
-          replay.execute(
-            context,
-            scaledCanvasSize,
-            transform,
-            viewRotation,
-            snapToPixel,
-            declutterTree,
-          );
+          if (
+            !zIndexContext ||
+            builderType === 'Text' ||
+            builderType === 'Image'
+          ) {
+            replay.execute(
+              context,
+              scaledCanvasSize,
+              transform,
+              viewRotation,
+              snapToPixel,
+              declutterTree,
+            );
+          } else {
+            zIndexContext.pushFunction((context) =>
+              replay.execute(
+                context,
+                scaledCanvasSize,
+                transform,
+                viewRotation,
+                snapToPixel,
+                declutterTree,
+              ),
+            );
+          }
           if (requireClip) {
             context.restore();
           }
