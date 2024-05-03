@@ -6,6 +6,7 @@ import TileGrid from '../tilegrid/TileGrid.js';
 import {getJSON, resolveUrl} from '../net.js';
 import {get as getProjection} from '../proj.js';
 import {getIntersection as intersectExtents} from '../extent.js';
+import {error as logError} from '../console.js';
 
 /**
  * See https://ogcapi.ogc.org/tiles/.
@@ -96,6 +97,7 @@ const knownVectorMediaTypes = {
  * @property {Array<string>} [supportedMediaTypes] The supported media types.
  * @property {import("../proj/Projection.js").default} projection The source projection.
  * @property {Object} [context] Optional context for constructing the URL.
+ * @property {Array<string>} [collections] Optional collections to append the URL with.
  */
 
 /**
@@ -136,12 +138,14 @@ export function getMapTileUrlTemplate(links, mediaType) {
  * @param {Array<Link>} links Tileset links.
  * @param {string} [mediaType] The preferred media type.
  * @param {Array<string>} [supportedMediaTypes] The media types supported by the parser.
+ * @param {Array<string>} [collections] Optional collections to append the URL with.
  * @return {string} The tile URL template.
  */
 export function getVectorTileUrlTemplate(
   links,
   mediaType,
   supportedMediaTypes,
+  collections,
 ) {
   let tileUrlTemplate;
   let fallbackUrlTemplate;
@@ -181,6 +185,42 @@ export function getVectorTileUrlTemplate(
       tileUrlTemplate = fallbackUrlTemplate;
     } else {
       throw new Error('Could not find "item" link');
+    }
+  }
+
+  if (collections && collections.length) {
+    // According to conformance class
+    // http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/collections-selection
+    // commata in the identifiers of the `collections` query parameter
+    // need to be URLEncoded, while the commata separating the identifiers
+    // should not.
+    let url;
+    let isAbsolute = true;
+    try {
+      url = new URL(tileUrlTemplate);
+    } catch (e) {
+      isAbsolute = false;
+      url = new URL(tileUrlTemplate, 'https://example.com');
+    }
+
+    if (url.pathname.split('/').includes('collections')) {
+      logError(
+        'The "collections" query parameter cannot be added to collection endpoints',
+      );
+    } else {
+      const encodedCollections = collections
+        .map((c) => encodeURIComponent(c))
+        .join(',');
+
+      url.searchParams.append('collections', encodedCollections);
+      let baseUrl;
+      if (isAbsolute) {
+        baseUrl = decodeURI(url.toString()).split('?')[0];
+      } else {
+        baseUrl = decodeURIComponent(url.pathname);
+      }
+      const queryParams = decodeURIComponent(url.searchParams.toString());
+      tileUrlTemplate = `${baseUrl}?${queryParams}`;
     }
   }
 
@@ -368,6 +408,7 @@ function parseTileSetMetadata(sourceInfo, tileSet) {
       tileSet.links,
       sourceInfo.mediaType,
       sourceInfo.supportedMediaTypes,
+      sourceInfo.collections,
     );
   } else {
     throw new Error('Expected tileset data type to be "map" or "vector"');

@@ -33,13 +33,17 @@ import {error as logError} from '../console.js';
  * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=1]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
  * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
+ * @property {Array<string>} [collections] A list of geospatial data sub-resources to include. If not provided, the entire dataset will
+ * be included. This option is not applicable when requesting the tileset for a single collection.
  */
 
 /**
  * @classdesc
  * Layer source for map tiles from an [OGC API - Tiles](https://ogcapi.ogc.org/tiles/) service that provides "vector" type tiles.
  * The service must conform to at least the core (http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/core)
- * and tileset (http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/tileset) conformance classes.
+ * and tileset (http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/tileset) conformance classes. For supporting the `collections`
+ * option, the service must conform to the collections selection
+ * (http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/collections-selection) conformance class.
  *
  * Vector tile sets may come in a variety of formats (e.g. GeoJSON, MVT).  The `format` option is used to determine
  * which of the advertised media types is used.  If you need to force the use of a particular media type, you can
@@ -71,6 +75,7 @@ class OGCVectorTile extends VectorTileSource {
       mediaType: options.mediaType,
       supportedMediaTypes: options.format.supportedMediaTypes,
       context: options.context || null,
+      collections: options.collections,
     };
 
     getTileSetInfo(sourceInfo)
