@@ -68,6 +68,13 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     this.hitDetectionImageData_ = null;
 
     /**
+     * @private
+     * @type {boolean}
+     */
+    this.clipped_ = false;
+
+    /**
+     * @private
      * @type {Array<import("../../Feature.js").default>}
      */
     this.renderedFeatures_ = null;
@@ -197,7 +204,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       ? Math.floor((extent[0] - projectionExtent[0]) / worldWidth)
       : 0;
     do {
-      const transform = this.getRenderTransform(
+      let transform = this.getRenderTransform(
         center,
         resolution,
         0,
@@ -206,6 +213,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         height,
         world * worldWidth,
       );
+      if (frameState.declutter) {
+        transform = transform.slice(0);
+      }
       executorGroup.execute(
         context,
         [context.canvas.width, context.canvas.height],
@@ -274,6 +284,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       return;
     }
     this.replayGroup_.renderDeferred();
+    if (this.clipped_) {
+      this.context.restore();
+    }
     this.resetDrawContext_();
   }
 
@@ -309,12 +322,12 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const projection = viewState.projection;
 
     // clipped rendering if layer extent is set
-    let clipped = false;
+    this.clipped_ = false;
     if (render && layerState.extent && this.clipping) {
       const layerExtent = fromUserExtent(layerState.extent, projection);
       render = intersectsExtent(layerExtent, frameState.extent);
-      clipped = render && !containsExtent(layerExtent, frameState.extent);
-      if (clipped) {
+      this.clipped_ = render && !containsExtent(layerExtent, frameState.extent);
+      if (this.clipped_) {
         this.clipUnrotated(context, frameState, layerExtent);
       }
     }
@@ -327,7 +340,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       );
     }
 
-    if (clipped) {
+    if (!frameState.declutter && this.clipped_) {
       context.restore();
     }
 

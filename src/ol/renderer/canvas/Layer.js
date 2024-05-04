@@ -283,7 +283,7 @@ class CanvasLayerRenderer extends LayerRenderer {
         canvas.width = width;
         canvas.height = height;
       } else {
-        this.getRenderContext(frameState).clearRect(0, 0, width, height);
+        this.context.clearRect(0, 0, width, height);
       }
       if (canvasTransform !== canvas.style.transform) {
         canvas.style.transform = canvasTransform;
