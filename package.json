@@ -81,7 +81,7 @@
     "globby": "^14.0.0",
     "handlebars": "4.7.8",
     "jquery": "3.7.1",
-    "jsdoc": "4.0.2",
+    "jsdoc": "4.0.3",
     "jsdoc-plugin-intersection": "^1.0.4",
     "jsdoc-plugin-typescript": "^2.2.0",
     "json-stringify-safe": "^5.0.1",
