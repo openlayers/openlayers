@@ -874,6 +874,7 @@ function parseMatchArgs(encoded, context, parsedArgs, typeHint) {
         `, got ${typeName(inputType)} instead`,
     );
   }
+  inputType &= expectedInputType;
   if (isType(outputType, NoneType)) {
     throw new Error(
       `Could not find a common output type for the following match operation: ` +
