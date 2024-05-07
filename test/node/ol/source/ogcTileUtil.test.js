@@ -3,12 +3,13 @@ import events from 'events';
 import expect from '../../expect.js';
 import fse from 'fs-extra';
 import path from 'path';
-import {fileURLToPath} from 'url';
 import {
+  appendCollectionsQueryParam,
   getMapTileUrlTemplate,
   getTileSetInfo,
   getVectorTileUrlTemplate,
 } from '../../../../src/ol/source/ogcTileUtil.js';
+import {fileURLToPath} from 'url';
 import {overrideXHR, restoreXHR} from '../../../../src/ol/net.js';
 
 function getDataDir() {
@@ -304,6 +305,44 @@ describe('ol/source/ogcTileUtil.js', () => {
         getMapTileUrlTemplate([], 'image/png');
       }
       expect(call).to.throwException('Could not find "item" link');
+    });
+  });
+
+  describe('appendCollectionsQueryParam()', () => {
+    const collectionUrl =
+      '/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad.json';
+    const url = '/ogcapi/tiles/WebMercatorQuad.json';
+    it('appends the collections parameter to the url', () => {
+      const collections = ['foo', 'bar'];
+      const appendedUrl = appendCollectionsQueryParam(url, collections);
+      expect(appendedUrl).to.be(
+        '/ogcapi/tiles/WebMercatorQuad.json?collections=foo,bar',
+      );
+    });
+
+    it('returns the original url, if collections is empty', () => {
+      const collections = [];
+      const appendedUrl = appendCollectionsQueryParam(url, collections);
+      expect(appendedUrl).to.be('/ogcapi/tiles/WebMercatorQuad.json');
+    });
+
+    it('returns the original url, if it points to a collection tileset', () => {
+      const collections = ['foo'];
+      const appendedUrl = appendCollectionsQueryParam(
+        collectionUrl,
+        collections,
+      );
+      expect(appendedUrl).to.be(
+        '/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad.json',
+      );
+    });
+
+    it('urlencodes a comma in the collection identifier', () => {
+      const collections = ['foo,bar', 'baz'];
+      const appendedUrl = appendCollectionsQueryParam(url, collections);
+      expect(appendedUrl).to.be(
+        '/ogcapi/tiles/WebMercatorQuad.json?collections=foo%2Cbar,baz',
+      );
     });
   });
 });

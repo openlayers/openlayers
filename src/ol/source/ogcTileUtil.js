@@ -101,11 +101,46 @@ const knownVectorMediaTypes = {
  */
 
 /**
+ * @param {string} tileUrlTemplate Tile URL template.
+ * @param {Array<string>} collections List of collections to include as query parameter.
+ * @return {string} The tile URL template with appended collections query parameter.
+ */
+export function appendCollectionsQueryParam(tileUrlTemplate, collections) {
+  if (!collections.length) {
+    return tileUrlTemplate;
+  }
+
+  // making sure we can always construct a URL instance.
+  const url = new URL(tileUrlTemplate, 'file://');
+
+  if (url.pathname.split('/').includes('collections')) {
+    logError(
+      'The "collections" query parameter cannot be added to collection endpoints',
+    );
+    return tileUrlTemplate;
+  }
+  // According to conformance class
+  // http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/collections-selection
+  // commata in the identifiers of the `collections` query parameter
+  // need to be URLEncoded, while the commata separating the identifiers
+  // should not.
+  const encodedCollections = collections
+    .map((c) => encodeURIComponent(c))
+    .join(',');
+
+  url.searchParams.append('collections', encodedCollections);
+  const baseUrl = tileUrlTemplate.split('?')[0];
+  const queryParams = decodeURIComponent(url.searchParams.toString());
+  return `${baseUrl}?${queryParams}`;
+}
+
+/**
  * @param {Array<Link>} links Tileset links.
  * @param {string} [mediaType] The preferred media type.
+ * @param {Array<string>} [collections] Optional collections to append the URL with.
  * @return {string} The tile URL template.
  */
-export function getMapTileUrlTemplate(links, mediaType) {
+export function getMapTileUrlTemplate(links, mediaType, collections) {
   let tileUrlTemplate;
   let fallbackUrlTemplate;
   for (let i = 0; i < links.length; ++i) {
@@ -129,6 +164,10 @@ export function getMapTileUrlTemplate(links, mediaType) {
     } else {
       throw new Error('Could not find "item" link');
     }
+  }
+
+  if (collections) {
+    tileUrlTemplate = appendCollectionsQueryParam(tileUrlTemplate, collections);
   }
 
   return tileUrlTemplate;
@@ -188,40 +227,8 @@ export function getVectorTileUrlTemplate(
     }
   }
 
-  if (collections && collections.length) {
-    // According to conformance class
-    // http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/collections-selection
-    // commata in the identifiers of the `collections` query parameter
-    // need to be URLEncoded, while the commata separating the identifiers
-    // should not.
-    let url;
-    let isAbsolute = true;
-    try {
-      url = new URL(tileUrlTemplate);
-    } catch (e) {
-      isAbsolute = false;
-      url = new URL(tileUrlTemplate, 'https://example.com');
-    }
-
-    if (url.pathname.split('/').includes('collections')) {
-      logError(
-        'The "collections" query parameter cannot be added to collection endpoints',
-      );
-    } else {
-      const encodedCollections = collections
-        .map((c) => encodeURIComponent(c))
-        .join(',');
-
-      url.searchParams.append('collections', encodedCollections);
-      let baseUrl;
-      if (isAbsolute) {
-        baseUrl = decodeURI(url.toString()).split('?')[0];
-      } else {
-        baseUrl = decodeURIComponent(url.pathname);
-      }
-      const queryParams = decodeURIComponent(url.searchParams.toString());
-      tileUrlTemplate = `${baseUrl}?${queryParams}`;
-    }
+  if (collections) {
+    tileUrlTemplate = appendCollectionsQueryParam(tileUrlTemplate, collections);
   }
 
   return tileUrlTemplate;
@@ -402,6 +409,7 @@ function parseTileSetMetadata(sourceInfo, tileSet) {
     tileUrlTemplate = getMapTileUrlTemplate(
       tileSet.links,
       sourceInfo.mediaType,
+      sourceInfo.collections,
     );
   } else if (tileSet.dataType === 'vector') {
     tileUrlTemplate = getVectorTileUrlTemplate(
