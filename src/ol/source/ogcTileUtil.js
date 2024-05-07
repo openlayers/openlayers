@@ -194,7 +194,14 @@ export function getVectorTileUrlTemplate(
     // commata in the identifiers of the `collections` query parameter
     // need to be URLEncoded, while the commata separating the identifiers
     // should not.
-    const url = new URL(tileUrlTemplate, window.location.href);
+    let url;
+    let isAbsolute = true;
+    try {
+      url = new URL(tileUrlTemplate);
+    } catch (e) {
+      isAbsolute = false;
+      url = new URL(tileUrlTemplate, 'https://example.com');
+    }
 
     if (url.pathname.split('/').includes('collections')) {
       logError(
@@ -206,7 +213,12 @@ export function getVectorTileUrlTemplate(
         .join(',');
 
       url.searchParams.append('collections', encodedCollections);
-      const baseUrl = url.origin + decodeURIComponent(url.pathname);
+      let baseUrl;
+      if (isAbsolute) {
+        baseUrl = decodeURI(url.toString()).split('?')[0];
+      } else {
+        baseUrl = decodeURIComponent(url.pathname);
+      }
       const queryParams = decodeURIComponent(url.searchParams.toString());
       tileUrlTemplate = `${baseUrl}?${queryParams}`;
     }
