@@ -14,7 +14,7 @@ import {getUid} from '../util.js';
 import {listen, unlistenByKey} from '../events.js';
 
 /**
- * @typedef {'addlayer'|'removelayer'} EventType
+ * @typedef {'addlayer'|'removelayer'} GroupEventType
  */
 
 /**
@@ -25,7 +25,7 @@ import {listen, unlistenByKey} from '../events.js';
  */
 export class GroupEvent extends Event {
   /**
-   * @param {EventType} type The event type.
+   * @param {GroupEventType} type The event type.
    * @param {BaseLayer} layer The layer.
    */
   constructor(type, layer) {

@@ -30,7 +30,7 @@ class ZIndexContext {
      * @type {ZIndexContextProxy}
      */
     this.context_ = /** @type {ZIndexContextProxy} */ (
-      new Proxy(CanvasRenderingContext2D.prototype, {
+      new Proxy(getSharedCanvasContext2D(), {
         get: (target, property) => {
           if (
             typeof (/** @type {*} */ (getSharedCanvasContext2D())[property]) !==
@@ -67,6 +67,14 @@ class ZIndexContext {
   };
 
   /**
+   * Push a function that renders to the context directly.
+   * @param {function(CanvasRenderingContext2D): void} render Function.
+   */
+  pushFunction(render) {
+    this.instructions_[this.zIndex + this.offset_].push(render);
+  }
+
+  /**
    * Get a proxy for CanvasRenderingContext2D which does not support getting state
    * (e.g. `context.globalAlpha`, which will return `undefined`). To set state, if it relies on a
    * previous state (e.g. `context.globalAlpha = context.globalAlpha / 2`), set a function,
@@ -82,9 +90,13 @@ class ZIndexContext {
    */
   draw(context) {
     this.instructions_.forEach((instructionsAtIndex) => {
-      for (let i = 0, ii = instructionsAtIndex.length; i < ii; i += 2) {
+      for (let i = 0, ii = instructionsAtIndex.length; i < ii; ++i) {
         const property = instructionsAtIndex[i];
-        const instructionAtIndex = instructionsAtIndex[i + 1];
+        if (typeof property === 'function') {
+          property(context);
+          continue;
+        }
+        const instructionAtIndex = instructionsAtIndex[++i];
         if (typeof (/** @type {*} */ (context)[property]) === 'function') {
           /** @type {*} */ (context)[property](...instructionAtIndex);
         } else {

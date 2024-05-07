@@ -1,5 +1,13 @@
 ## Upgrade notes
 
+### Next version
+
+#### The `snap` event's feature property is now never `null`
+
+Previously, listeners for the `Snap` interaction's `snap` event received `null` as value for the `feature` property when snapped to a segment. Now, the value of the `feature` property is always set to the snapped feature.
+
+To distinguish between a vertex and a segment snap, look at the `snap` event's `segment` property. It will set to `null` on a vertex snap, and to the snapped segment on a segment snap.
+
 ### 9.1.0
 
 No special changes are required when upgrading to the 9.1.0 release.

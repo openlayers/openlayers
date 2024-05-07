@@ -1073,6 +1073,28 @@ describe('ol.webgl.styleparser', () => {
     });
   });
 
+  describe('handle ambiguous match input', () => {
+    it('parses a match', () => {
+      const result = parseLiteralStyle({
+        'icon-src':
+          'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',
+        'icon-color': [
+          'match',
+          ['get', 'foo'],
+          'green',
+          [251, 173, 21, 0.5],
+          'red',
+          [251, 173, 21, 0.5],
+          [251, 173, 21, 0.5],
+        ],
+      });
+
+      expect(result.attributes.foo.callback({get: () => 'green'})).to.be.a(
+        'number',
+      );
+    });
+  });
+
   describe('shader functions', () => {
     it('adds shader functions in the vertex and fragment shaders', () => {
       const result = parseLiteralStyle({

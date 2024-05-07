@@ -20,7 +20,7 @@ const map = new Map({
       source: new XYZ({
         attributions: attributions,
         url:
-          'https://api.maptiler.com/maps/outdoor/256/{z}/{x}/{y}@2x.png?key=' +
+          'https://api.maptiler.com/maps/outdoor-v2/256/{z}/{x}/{y}@2x.png?key=' +
           key,
         tilePixelRatio: 2, // THIS IS IMPORTANT
       }),

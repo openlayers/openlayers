@@ -68,9 +68,10 @@ export class VectorSourceEvent extends Event {
 
 /***
  * @template Return
+ * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../Feature.js").default]
  * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
  *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent, Return> &
- *   import("../Observable").OnSignature<import("./VectorEventType").VectorSourceEventTypes, VectorSourceEvent, Return> &
+ *   import("../Observable").OnSignature<import("./VectorEventType").VectorSourceEventTypes, VectorSourceEvent<FeatureType>, Return> &
  *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
  *     import("./VectorEventType").VectorSourceEventTypes, Return>} VectorSourceOnSignature
  */
@@ -84,7 +85,7 @@ export class VectorSourceEvent extends Event {
  * and the collection will stay in sync.
  * @property {import("../format/Feature.js").default<import("../format/Feature.js").FeatureToFeatureClass<FeatureType>>} [format] The feature format used by the XHR
  * feature loader when `url` is set. Required if `url` is set, otherwise ignored.
- * @property {import("../featureloader.js").FeatureLoader} [loader]
+ * @property {import("../featureloader.js").FeatureLoader<FeatureType>} [loader]
  * The loader function used to load features, from a remote source for example.
  * If this is not set and `url` is set, the source will create and use an XHR
  * feature loader. The `'featuresloadend'` and `'featuresloaderror'` events
@@ -194,12 +195,12 @@ class VectorSource extends Source {
     });
 
     /***
-     * @type {VectorSourceOnSignature<import("../events").EventsKey>}
+     * @type {VectorSourceOnSignature<import("../events").EventsKey, FeatureType>}
      */
     this.on;
 
     /***
-     * @type {VectorSourceOnSignature<import("../events").EventsKey>}
+     * @type {VectorSourceOnSignature<import("../events").EventsKey, FeatureType>}
      */
     this.once;
 
@@ -210,7 +211,7 @@ class VectorSource extends Source {
 
     /**
      * @private
-     * @type {import("../featureloader.js").FeatureLoader}
+     * @type {import("../featureloader.js").FeatureLoader<FeatureType>}
      */
     this.loader_ = VOID;
 
@@ -1170,7 +1171,7 @@ class VectorSource extends Source {
   /**
    * Set the new loader of the source. The next render cycle will use the
    * new loader.
-   * @param {import("../featureloader.js").FeatureLoader} loader The loader to set.
+   * @param {import("../featureloader.js").FeatureLoader<FeatureType>} loader The loader to set.
    * @api
    */
   setLoader(loader) {

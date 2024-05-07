@@ -24,11 +24,13 @@ let withCredentials = false;
  *
  * The function is responsible for loading the features and adding them to the
  * source.
+ *
+ * @template {import("./Feature.js").FeatureLike} [FeatureType=import("./Feature.js").default]
  * @typedef {function(this:(import("./source/Vector").default|import("./VectorTile.js").default),
  *           import("./extent.js").Extent,
  *           number,
  *           import("./proj/Projection.js").default,
- *           function(Array<import("./Feature.js").default>): void=,
+ *           function(Array<FeatureType>): void=,
  *           function(): void=): void} FeatureLoader
  * @api
  */
@@ -46,12 +48,13 @@ let withCredentials = false;
  */
 
 /**
+ * @template {import("./Feature.js").FeatureLike} [FeatureType=import("./Feature.js").FeatureLike]
  * @param {string|FeatureUrlFunction} url Feature URL service.
  * @param {import("./format/Feature.js").default} format Feature format.
  * @param {import("./extent.js").Extent} extent Extent.
  * @param {number} resolution Resolution.
  * @param {import("./proj/Projection.js").default} projection Projection.
- * @param {function(Array<import("./Feature.js").default>, import("./proj/Projection.js").default): void} success Success
+ * @param {function(Array<FeatureType>, import("./proj/Projection.js").default): void} success Success
  *      Function called with the loaded features and optionally with the data projection.
  * @param {function(): void} failure Failure
  *      Function called when loading failed.
@@ -102,7 +105,7 @@ export function loadFeaturesXhr(
       }
       if (source) {
         success(
-          /** @type {Array<import("./Feature.js").default>} */
+          /** @type {Array<FeatureType>} */
           (
             format.readFeatures(source, {
               extent: extent,
@@ -129,9 +132,10 @@ export function loadFeaturesXhr(
  * Create an XHR feature loader for a `url` and `format`. The feature loader
  * loads features (with XHR), parses the features, and adds them to the
  * vector source.
+ * @template {import("./Feature.js").FeatureLike} [FeatureType=import("./Feature.js").FeatureLike]
  * @param {string|FeatureUrlFunction} url Feature URL service.
- * @param {import("./format/Feature.js").default<typeof import("./Feature.js").default|typeof import("./render/Feature.js").default>} format Feature format.
- * @return {FeatureLoader} The feature loader.
+ * @param {import("./format/Feature.js").default<import('./format/Feature.js').FeatureToFeatureClass<FeatureType>>} format Feature format.
+ * @return {FeatureLoader<FeatureType>} The feature loader.
  * @api
  */
 export function xhr(url, format) {
@@ -139,13 +143,14 @@ export function xhr(url, format) {
    * @param {import("./extent.js").Extent} extent Extent.
    * @param {number} resolution Resolution.
    * @param {import("./proj/Projection.js").default} projection Projection.
-   * @param {function(Array<import("./Feature.js").default>): void} [success] Success
+   * @param {function(Array<FeatureType>): void} [success] Success
    *      Function called when loading succeeded.
    * @param {function(): void} [failure] Failure
    *      Function called when loading failed.
    */
   return function (extent, resolution, projection, success, failure) {
-    const source = /** @type {import("./source/Vector").default} */ (this);
+    const source =
+      /** @type {import("./source/Vector").default<FeatureType>} */ (this);
     loadFeaturesXhr(
       url,
       format,
@@ -153,7 +158,7 @@ export function xhr(url, format) {
       resolution,
       projection,
       /**
-       * @param {Array<import("./Feature.js").default>} features The loaded features.
+       * @param {Array<FeatureType>} features The loaded features.
        * @param {import("./proj/Projection.js").default} dataProjection Data
        * projection.
        */

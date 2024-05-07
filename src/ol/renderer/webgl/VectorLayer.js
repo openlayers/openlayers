@@ -428,12 +428,16 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       );
     }
 
-    this.currentFrameStateTransform_ = this.helper.makeProjectionTransform(
-      frameState,
-      this.currentFrameStateTransform_,
-    );
-
     do {
+      this.helper.makeProjectionTransform(
+        frameState,
+        this.currentFrameStateTransform_,
+      );
+      translateTransform(
+        this.currentFrameStateTransform_,
+        world * worldWidth,
+        0,
+      );
       for (let i = 0, ii = this.styleRenderers_.length; i < ii; i++) {
         const renderer = this.styleRenderers_[i];
         const buffers = this.buffers_[i];
@@ -445,7 +449,6 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
           this.helper.applyHitDetectionUniform(forHitDetection);
         });
       }
-      translateTransform(this.currentFrameStateTransform_, worldWidth, 0);
     } while (++world < endWorld);
   }
 

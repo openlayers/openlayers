@@ -9,6 +9,8 @@ import {
   apply as applyTransform,
   compose as composeTransform,
   create as createTransform,
+  makeInverse,
+  toString as toTransformString,
 } from '../../transform.js';
 import {asArray} from '../../color.js';
 import {createCanvasContext2D} from '../../dom.js';
@@ -16,8 +18,10 @@ import {equals} from '../../array.js';
 import {
   getBottomLeft,
   getBottomRight,
+  getHeight,
   getTopLeft,
   getTopRight,
+  getWidth,
 } from '../../extent.js';
 
 /**
@@ -243,6 +247,48 @@ class CanvasLayerRenderer extends LayerRenderer {
     context.lineTo(Math.round(bottomRight[0]), Math.round(bottomRight[1]));
     context.lineTo(Math.round(bottomLeft[0]), Math.round(bottomLeft[1]));
     context.clip();
+  }
+
+  /**
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {HTMLElement} target Target that may be used to render content to.
+   * @protected
+   */
+  prepareContainer(frameState, target) {
+    const extent = frameState.extent;
+    const resolution = frameState.viewState.resolution;
+    const rotation = frameState.viewState.rotation;
+    const pixelRatio = frameState.pixelRatio;
+    const width = Math.round((getWidth(extent) / resolution) * pixelRatio);
+    const height = Math.round((getHeight(extent) / resolution) * pixelRatio);
+    // set forward and inverse pixel transforms
+    composeTransform(
+      this.pixelTransform,
+      frameState.size[0] / 2,
+      frameState.size[1] / 2,
+      1 / pixelRatio,
+      1 / pixelRatio,
+      rotation,
+      -width / 2,
+      -height / 2,
+    );
+    makeInverse(this.inversePixelTransform, this.pixelTransform);
+
+    const canvasTransform = toTransformString(this.pixelTransform);
+    this.useContainer(target, canvasTransform, this.getBackground(frameState));
+
+    if (!this.containerReused) {
+      const canvas = this.context.canvas;
+      if (canvas.width != width || canvas.height != height) {
+        canvas.width = width;
+        canvas.height = height;
+      } else {
+        this.context.clearRect(0, 0, width, height);
+      }
+      if (canvasTransform !== canvas.style.transform) {
+        canvas.style.transform = canvasTransform;
+      }
+    }
   }
 
   /**
