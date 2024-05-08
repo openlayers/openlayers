@@ -111,7 +111,7 @@ export function appendCollectionsQueryParam(tileUrlTemplate, collections) {
   }
 
   // making sure we can always construct a URL instance.
-  const url = new URL(tileUrlTemplate, 'file://');
+  const url = new URL(tileUrlTemplate, 'file:/');
 
   if (url.pathname.split('/').includes('collections')) {
     logError(
