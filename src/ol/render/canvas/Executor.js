@@ -52,7 +52,7 @@ import {transform2D} from '../../geom/flat/transform.js';
 
 /**
  * @template T
- * @typedef {function(import("../../Feature.js").FeatureLike, import("../../geom/SimpleGeometry.js").default): T} FeatureCallback
+ * @typedef {function(import("../../Feature.js").FeatureLike, import("../../geom/SimpleGeometry.js").default, import("../../style/Style.js").DeclutterMode): T} FeatureCallback
  */
 
 /**
@@ -1155,7 +1155,11 @@ class Executor {
             feature = /** @type {import("../../Feature.js").FeatureLike} */ (
               instruction[1]
             );
-            const result = featureCallback(feature, currentGeometry);
+            const result = featureCallback(
+              feature,
+              currentGeometry,
+              declutterMode,
+            );
             if (result) {
               return result;
             }

@@ -255,9 +255,10 @@ class ExecutorGroup {
     /**
      * @param {import("../../Feature.js").FeatureLike} feature Feature.
      * @param {import("../../geom/SimpleGeometry.js").default} geometry Geometry.
+     * @param {import('../../style/Style.js').DeclutterMode} declutterMode Declutter mode.
      * @return {T|undefined} Callback result.
      */
-    function featureCallback(feature, geometry) {
+    function featureCallback(feature, geometry, declutterMode) {
       const imageData = context.getImageData(
         0,
         0,
@@ -268,6 +269,7 @@ class ExecutorGroup {
         if (imageData[indexes[i]] > 0) {
           if (
             !declutteredFeatures ||
+            declutterMode === 'none' ||
             (builderType !== 'Image' && builderType !== 'Text') ||
             declutteredFeatures.includes(feature)
           ) {
