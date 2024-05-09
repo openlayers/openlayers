@@ -185,6 +185,7 @@ class ReprojDataTile extends DataTile {
       maxSourceExtent,
       sourceResolution * errorThresholdInPixels,
       targetResolution,
+      true,
     );
 
     if (this.triangulation_.getTriangles().length === 0) {
