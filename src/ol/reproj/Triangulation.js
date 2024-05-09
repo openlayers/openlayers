@@ -55,6 +55,7 @@ class Triangulation {
    * @param {import("../extent.js").Extent} maxSourceExtent Maximal source extent that can be used.
    * @param {number} errorThreshold Acceptable error (in source units).
    * @param {?number} destinationResolution The (optional) resolution of the destination.
+   * @param {boolean} [clipExtent] Restrict to source projection extent.
    */
   constructor(
     sourceProj,
@@ -63,6 +64,7 @@ class Triangulation {
     maxSourceExtent,
     errorThreshold,
     destinationResolution,
+    clipExtent,
   ) {
     /**
      * @type {import("../proj/Projection.js").default}
@@ -117,6 +119,13 @@ class Triangulation {
      * @private
      */
     this.wrapsXInSource_ = false;
+
+    /**
+     * Restrict to source projection extent.
+     * @type {boolean}
+     * @private
+     */
+    this.clipExtent_ = clipExtent;
 
     /**
      * @type {boolean}
@@ -294,6 +303,7 @@ class Triangulation {
     // it covers most of the projection extent, but not fully
     const wrapsX =
       this.sourceProj_.canWrapX() &&
+      !this.clipExtent_ &&
       sourceCoverageX > 0.5 &&
       sourceCoverageX < 1;
 
