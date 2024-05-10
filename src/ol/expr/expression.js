@@ -134,6 +134,7 @@ export const NumberType = 1 << numTypes++;
 export const StringType = 1 << numTypes++;
 export const ColorType = 1 << numTypes++;
 export const NumberArrayType = 1 << numTypes++;
+export const SizeType = NumberType | NumberArrayType;
 export const AnyType = Math.pow(2, numTypes) - 1;
 
 const typeNames = {
