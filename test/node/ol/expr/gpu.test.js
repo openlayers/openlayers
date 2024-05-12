@@ -6,6 +6,7 @@ import {
   ColorType,
   NumberArrayType,
   NumberType,
+  SizeType,
   StringType,
   newParsingContext,
 } from '../../../../src/ol/expr/expression.js';
@@ -781,7 +782,7 @@ describe('ol/expr/gpu.js', () => {
           expect(context.variables).to.eql({
             fixedSize: {
               name: 'fixedSize',
-              type: NumberArrayType,
+              type: NumberArrayType | SizeType,
             },
             symbolType: {
               name: 'symbolType',
@@ -797,6 +798,24 @@ describe('ol/expr/gpu.js', () => {
             },
           });
         },
+      },
+      {
+        name: 'scale (number)',
+        type: SizeType,
+        expression: 1.5,
+        expected: 'vec2(1.5, 1.5)',
+      },
+      {
+        name: 'scale (constructed array)',
+        type: SizeType,
+        expression: ['array', 1.5, 0.5],
+        expected: 'vec2(1.5, 0.5)',
+      },
+      {
+        name: 'scale (array)',
+        type: SizeType,
+        expression: [1.5, 0.5],
+        expected: 'vec2(1.5, 0.5)',
       },
     ];
 

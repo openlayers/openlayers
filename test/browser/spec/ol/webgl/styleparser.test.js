@@ -1015,7 +1015,7 @@ describe('ol.webgl.styleparser', () => {
       });
       it('adds uniforms to the shader builder', () => {
         expect(parseResult.builder.uniforms_).to.eql([
-          'vec4 u_var_iconSize',
+          'vec2 u_var_iconSize',
           'vec2 u_var_color',
           'float u_var_lineType',
           'float u_var_lineWidth',
