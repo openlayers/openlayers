@@ -89,18 +89,10 @@ export function loadFeaturesXhr(
       try {
         /** @type {Document|Node|Object|string|undefined} */
         let source;
-        if (type == 'json') {
-          source = JSON.parse(xhr.responseText);
-        } else if (type == 'text') {
+        if (type == 'text' || type == 'json') {
           source = xhr.responseText;
         } else if (type == 'xml') {
-          source = xhr.responseXML;
-          if (!source) {
-            source = new DOMParser().parseFromString(
-              xhr.responseText,
-              'application/xml',
-            );
-          }
+          source = xhr.responseXML || xhr.responseText;
         } else if (type == 'arraybuffer') {
           source = /** @type {ArrayBuffer} */ (xhr.response);
         }
