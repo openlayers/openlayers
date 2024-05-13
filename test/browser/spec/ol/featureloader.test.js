@@ -59,7 +59,7 @@ describe('ol.featureloader', function () {
       });
     });
 
-    it('it calls the success callback', function (done) {
+    it('calls the success callback', function (done) {
       const errorSpy = sinon.spy();
       loader = xhr(url, format);
       loader.call(
@@ -75,6 +75,28 @@ describe('ol.featureloader', function () {
         },
         errorSpy,
       );
+    });
+
+    it('calls the failure callback when the parsing throws an error (xml)', function (done) {
+      const successSpy = sinon.spy();
+      loader = xhr('spec/ol/data/exceptionreport.xml', format);
+      loader.call(source, [], 1, 'EPSG:3857', successSpy, function () {
+        setTimeout(function () {
+          expect(successSpy.callCount).to.be(0);
+          done();
+        }, 0);
+      });
+    });
+
+    it('calls the failure callback when the parsing throws an error (json)', function (done) {
+      const successSpy = sinon.spy();
+      loader = xhr('spec/ol/data/exceptionreport.json', format);
+      loader.call(source, [], 1, 'EPSG:3857', successSpy, function () {
+        setTimeout(function () {
+          expect(successSpy.callCount).to.be(0);
+          done();
+        }, 0);
+      });
     });
   });
 });
