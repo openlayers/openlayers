@@ -174,8 +174,10 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
     it('gives precedence to feature styles over layer styles', function () {
       const spy = sinon.spy(layer.getRenderer(), 'renderFeature');
       map.renderSync();
-      expect(spy.getCall(0).args[2]).to.be(layer.getStyle());
-      expect(spy.getCall(1).args[2]).to.be(feature2.getStyle());
+      expect(spy.getCall(0).args[2]).to.be(layer.getStyleFunction()(feature1));
+      expect(spy.getCall(1).args[2]).to.be(
+        feature2.getStyleFunction()(feature2),
+      );
       spy.restore();
     });
 
