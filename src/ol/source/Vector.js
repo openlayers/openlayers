@@ -1116,7 +1116,7 @@ class VectorSource extends Source {
    */
   removeFeatureInternal(feature) {
     const featureKey = getUid(feature);
-    if (!this.uidIndex_.hasOwnProperty(featureKey)) {
+    if (!(featureKey in this.uidIndex_)) {
       return;
     }
 
