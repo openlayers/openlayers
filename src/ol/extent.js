@@ -885,9 +885,10 @@ export function wrapX(extent, projection) {
  *
  * @param {Extent} extent Extent.
  * @param {import("./proj/Projection.js").default} projection Projection
+ * @param {boolean} [multiWorld] Return all worlds
  * @return {Array<Extent>} The extent within the real world extent.
  */
-export function wrapAndSliceX(extent, projection) {
+export function wrapAndSliceX(extent, projection, multiWorld) {
   if (projection.canWrapX()) {
     const projectionExtent = projection.getExtent();
 
@@ -898,7 +899,7 @@ export function wrapAndSliceX(extent, projection) {
     wrapX(extent, projection);
     const worldWidth = getWidth(projectionExtent);
 
-    if (getWidth(extent) > worldWidth) {
+    if (getWidth(extent) > worldWidth && !multiWorld) {
       // the extent wraps around on itself
       return [[projectionExtent[0], extent[1], projectionExtent[2], extent[3]]];
     }
