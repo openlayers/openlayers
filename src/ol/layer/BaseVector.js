@@ -112,7 +112,7 @@ class BaseVectorLayer extends Layer {
 
     /**
      * User provided style.
-     * @type {import("../style/Style.js").StyleLike}
+     * @type {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike}
      * @private
      */
     this.style_ = null;
@@ -190,7 +190,7 @@ class BaseVectorLayer extends Layer {
   /**
    * Get the style for features.  This returns whatever was passed to the `style`
    * option at construction or to the `setStyle` method.
-   * @return {import("../style/Style.js").StyleLike|null|undefined} Layer style.
+   * @return {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike|null|undefined} Layer style.
    * @api
    */
   getStyle() {
@@ -265,9 +265,10 @@ class BaseVectorLayer extends Layer {
    * @api
    */
   setStyle(style) {
-    this.style_ = toStyleLike(style);
+    this.style_ = style === undefined ? createDefaultStyle : style;
+    const styleLike = toStyleLike(style);
     this.styleFunction_ =
-      style === null ? undefined : toStyleFunction(this.style_);
+      style === null ? undefined : toStyleFunction(styleLike);
     this.changed();
   }
 }
