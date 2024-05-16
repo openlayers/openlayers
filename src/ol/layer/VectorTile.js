@@ -91,8 +91,8 @@ import {assert} from '../asserts.js';
  * options means that `title` is observable, and has get/set accessors.
  *
  * @param {Options} [options] Options.
- * @template {import("../source/VectorTile.js").default<import('../Feature').FeatureLike>} VectorTileSourceType
- * @extends {BaseVectorLayer<VectorTileSourceType, CanvasVectorTileLayerRenderer>}
+ * @template {import('../Feature').FeatureLike} FeatureType
+ * @extends {BaseVectorLayer<import("../source/VectorTile.js").default<FeatureType>, CanvasVectorTileLayerRenderer>}
  * @api
  */
 class VectorTileLayer extends BaseVectorLayer {
@@ -107,7 +107,7 @@ class VectorTileLayer extends BaseVectorLayer {
     delete baseOptions.useInterimTilesOnError;
 
     super(
-      /** @type {import("./BaseVector.js").Options<VectorTileSourceType>} */ (
+      /** @type {import("./BaseVector.js").Options<import("../source/VectorTile.js").default<FeatureType>>} */ (
         baseOptions
       ),
     );

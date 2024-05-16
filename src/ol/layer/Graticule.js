@@ -178,7 +178,7 @@ const INTERVALS = [
  * Note that the view projection must define both extent and worldExtent.
  *
  * @fires import("../render/Event.js").RenderEvent
- * @extends {VectorLayer<import("../source/Vector.js").default>}
+ * @extends {VectorLayer<Feature>}
  * @api
  */
 class Graticule extends VectorLayer {
