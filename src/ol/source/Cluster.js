@@ -71,9 +71,10 @@ import {getUid} from '../util.js';
  */
 class Cluster extends VectorSource {
   /**
-   * @param {Options<FeatureType>} options Cluster options.
+   * @param {Options<FeatureType>} [options] Cluster options.
    */
   constructor(options) {
+    options = options || {};
     super({
       attributions: options.attributions,
       wrapX: options.wrapX,
@@ -180,7 +181,7 @@ class Cluster extends VectorSource {
    * @param {import("../proj/Projection.js").default} projection Projection.
    */
   loadFeatures(extent, resolution, projection) {
-    this.source.loadFeatures(extent, resolution, projection);
+    this.source?.loadFeatures(extent, resolution, projection);
     if (resolution !== this.resolution) {
       this.resolution = resolution;
       this.refresh();
