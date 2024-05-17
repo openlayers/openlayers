@@ -21,8 +21,8 @@ import {assert} from '../asserts.js';
  */
 
 /**
+ * @template {import('../Feature').FeatureLike} FeatureType
  * @typedef {Object} Options
- * @template {import("../source/VectorTile.js").default<import('../Feature').FeatureLike>} VectorTileSourceType
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
@@ -56,7 +56,7 @@ import {assert} from '../asserts.js';
  *    this mode for improved performance and visual epxerience on vector tile layers with not too many
  *    rendered features (e.g. for highlighting a subset of features of another layer with the same
  *    source).
- * @property {VectorTileSourceType} [source] Source.
+ * @property {import("../source/VectorTile.js").default<FeatureType>} [source] Source.
  * @property {import("../Map.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
@@ -69,7 +69,7 @@ import {assert} from '../asserts.js';
  * @property {import("../style/Style.js").StyleLike|null} [style] Layer style. When set to `null`, only
  * features that have their own style will be rendered. See {@link module:ol/style/Style~Style} for the default style
  * which will be used if this is not set.
- * @property {import("./Base.js").BackgroundColor|false} [background] Background color for the layer. If not specified, no
+ * @property {import("./Base.js").BackgroundColor} [background] Background color for the layer. If not specified, no
  * background will be rendered.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will be
  * recreated during animations. This means that no vectors will be shown clipped, but the setting
@@ -90,27 +90,24 @@ import {assert} from '../asserts.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @param {Options} [options] Options.
  * @template {import('../Feature').FeatureLike} FeatureType
  * @extends {BaseVectorLayer<import("../source/VectorTile.js").default<FeatureType>, CanvasVectorTileLayerRenderer>}
  * @api
  */
 class VectorTileLayer extends BaseVectorLayer {
   /**
-   * @param {Options} [options] Options.
+   * @param {Options<FeatureType>} [options] Options.
    */
   constructor(options) {
     options = options ? options : {};
 
-    const baseOptions = /** @type {Object} */ (Object.assign({}, options));
+    const baseOptions = /** @type {Options<FeatureType>} */ (
+      Object.assign({}, options)
+    );
     delete baseOptions.preload;
     delete baseOptions.useInterimTilesOnError;
 
-    super(
-      /** @type {import("./BaseVector.js").Options<import("../source/VectorTile.js").default<FeatureType>>} */ (
-        baseOptions
-      ),
-    );
+    super(baseOptions);
 
     /***
      * @type {VectorTileLayerOnSignature<import("../events").EventsKey>}

@@ -139,7 +139,10 @@
     "overrides": [
       {
         "files": "test/typescript/**/*.ts",
-        "parser": "@typescript-eslint/parser"
+        "parser": "@typescript-eslint/parser",
+        "rules": {
+          "import/named": "off"
+        }
       }
     ]
   },
