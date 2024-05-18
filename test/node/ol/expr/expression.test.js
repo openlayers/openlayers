@@ -532,7 +532,10 @@ describe('ol/expr/expression.js', () => {
         type: BooleanType | NumberType | StringType | ColorType,
         name: 'boolean, number, string, or color',
       },
-      {type: AnyType, name: 'boolean, number, string, color, or number[]'},
+      {
+        type: AnyType,
+        name: 'boolean, number, string, color, number[], or size',
+      },
     ];
 
     for (const {type, name} of cases) {

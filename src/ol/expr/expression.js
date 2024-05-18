@@ -134,6 +134,7 @@ export const NumberType = 1 << numTypes++;
 export const StringType = 1 << numTypes++;
 export const ColorType = 1 << numTypes++;
 export const NumberArrayType = 1 << numTypes++;
+export const SizeType = 1 << numTypes++;
 export const AnyType = Math.pow(2, numTypes) - 1;
 
 const typeNames = {
@@ -142,6 +143,7 @@ const typeNames = {
   [StringType]: 'string',
   [ColorType]: 'color',
   [NumberArrayType]: 'number[]',
+  [SizeType]: 'size',
 };
 
 const namedTypes = Object.keys(typeNames).map(Number).sort(ascending);
@@ -285,7 +287,10 @@ export function parse(encoded, context, typeHint) {
       return new LiteralExpression(BooleanType, encoded);
     }
     case 'number': {
-      return new LiteralExpression(NumberType, encoded);
+      return new LiteralExpression(
+        typeHint === SizeType ? SizeType : NumberType,
+        encoded,
+      );
     }
     case 'string': {
       let type = StringType;
@@ -322,7 +327,9 @@ export function parse(encoded, context, typeHint) {
   }
 
   let type = NumberArrayType;
-  if (encoded.length === 3 || encoded.length === 4) {
+  if (encoded.length === 2) {
+    type |= SizeType;
+  } else if (encoded.length === 3 || encoded.length === 4) {
     type |= ColorType;
   }
   if (typeHint) {
@@ -622,9 +629,11 @@ const parsers = {
   ),
   [Ops.Array]: createParser(
     (parsedArgs) => {
-      return parsedArgs.length === 3 || parsedArgs.length === 4
-        ? NumberArrayType | ColorType
-        : NumberArrayType;
+      return parsedArgs.length === 2
+        ? NumberArrayType | SizeType
+        : parsedArgs.length === 3 || parsedArgs.length === 4
+          ? NumberArrayType | ColorType
+          : NumberArrayType;
     },
     withArgsCount(1, Infinity),
     parseArgsOfType(NumberType),
