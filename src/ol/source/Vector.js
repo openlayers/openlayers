@@ -238,10 +238,7 @@ class VectorSource extends Source {
     } else if (this.url_ !== undefined) {
       assert(this.format_, '`format` must be set when `url` is set');
       // create a XHR feature loader for "url" and "format"
-      this.loader_ = xhr(
-        this.url_,
-        /** @type {import("../format/Feature.js").default} */ (this.format_),
-      );
+      this.loader_ = xhr(this.url_, this.format_);
     }
 
     /**

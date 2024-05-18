@@ -99,7 +99,7 @@ import {toSize} from '../size.js';
  *
  * @fires import("./Tile.js").TileSourceEvent
  * @api
- * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../Feature.js").default]
+ * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../render/Feature.js").default]
  */
 class VectorTile extends UrlTile {
   /**
@@ -180,7 +180,7 @@ class VectorTile extends UrlTile {
    * they can be clipped, duplicated across tiles, and simplified to the render resolution.
    *
    * @param {import("../extent.js").Extent} extent Extent.
-   * @return {Array<import("../Feature.js").FeatureLike>} Features.
+   * @return {Array<FeatureType>} Features.
    * @api
    */
   getFeaturesInExtent(extent) {
