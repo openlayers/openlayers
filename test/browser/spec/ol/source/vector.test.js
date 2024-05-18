@@ -366,6 +366,32 @@ describe('ol/source/Vector', function () {
         }
       });
 
+      it('works as expected for renderfeatures', function () {
+        const feature1 = new RenderFeature(
+          'Polygon',
+          [1, 1, 1, 2, 2, 1, 2, 2],
+          [],
+          2,
+          {},
+          'foo',
+        );
+        const feature2 = new RenderFeature(
+          'Polygon',
+          [1, 1, 1, 2, 2, 1, 2, 2],
+          [],
+          2,
+          {},
+          'foo',
+        );
+
+        const vectorSource = new VectorSource({features: [feature1, feature2]});
+        expect(vectorSource.getFeatureById('foo')).to.eql([feature1, feature2]);
+        vectorSource.removeFeature(feature1);
+        expect(vectorSource.getFeatureById('foo')).to.be(feature2);
+        vectorSource.removeFeature(feature2);
+        expect(vectorSource.getFeatureById('foo')).to.be(null);
+      });
+
       it('fires a change event', function () {
         const listener = sinon.spy();
         listen(vectorSource, 'change', listener);

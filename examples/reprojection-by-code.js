@@ -70,21 +70,19 @@ function setProjection(code, name, proj4def, bbox) {
 
   resultSpan.innerHTML = '(' + code + ') ' + name;
 
-  const newProjCode = 'EPSG:' + code;
-  proj4.defs(newProjCode, proj4def);
+  proj4.defs(code, proj4def);
   register(proj4);
-  const newProj = getProjection(newProjCode);
+  const newProj = getProjection(code);
   const fromLonLat = getTransform('EPSG:4326', newProj);
 
-  let worldExtent = [bbox[1], bbox[2], bbox[3], bbox[0]];
-  newProj.setWorldExtent(worldExtent);
+  newProj.setWorldExtent(bbox);
 
   // approximate calculation of projection extent,
   // checking if the world extent crosses the dateline
-  if (bbox[1] > bbox[3]) {
-    worldExtent = [bbox[1], bbox[2], bbox[3] + 360, bbox[0]];
+  if (bbox[0] > bbox[2]) {
+    bbox[2] += 360;
   }
-  const extent = applyTransform(worldExtent, fromLonLat, undefined, 8);
+  const extent = applyTransform(bbox, fromLonLat, undefined, 8);
   newProj.setExtent(extent);
   const newView = new View({
     projection: newProj,
@@ -95,7 +93,9 @@ function setProjection(code, name, proj4def, bbox) {
 
 function search(query) {
   resultSpan.innerHTML = 'Searching ...';
-  fetch('https://epsg.io/?format=json&q=' + query)
+  fetch(
+    `https://api.maptiler.com/coordinates/search/${query}.json?exports=true&key=get_your_own_D6rA4zTHduk6KOKTXzGB`,
+  )
     .then(function (response) {
       return response.json();
     })
@@ -105,9 +105,10 @@ function search(query) {
         for (let i = 0, ii = results.length; i < ii; i++) {
           const result = results[i];
           if (result) {
-            const code = result['code'];
+            const id = result['id'];
+            const code = id['authority'] + ':' + id['code'];
             const name = result['name'];
-            const proj4def = result['wkt'];
+            const proj4def = result['exports']['wkt'];
             const bbox = result['bbox'];
             if (
               code &&

@@ -1116,6 +1116,10 @@ class VectorSource extends Source {
    */
   removeFeatureInternal(feature) {
     const featureKey = getUid(feature);
+    if (!(featureKey in this.uidIndex_)) {
+      return;
+    }
+
     if (featureKey in this.nullGeometryFeatures_) {
       delete this.nullGeometryFeatures_[featureKey];
     } else {
@@ -1123,15 +1127,23 @@ class VectorSource extends Source {
         this.featuresRtree_.remove(feature);
       }
     }
+
     const featureChangeKeys = this.featureChangeKeys_[featureKey];
-    if (!featureChangeKeys) {
-      return;
-    }
-    featureChangeKeys.forEach(unlistenByKey);
+    featureChangeKeys?.forEach(unlistenByKey);
     delete this.featureChangeKeys_[featureKey];
+
     const id = feature.getId();
     if (id !== undefined) {
-      delete this.idIndex_[id.toString()];
+      const idString = id.toString();
+      const indexedFeature = this.idIndex_[idString];
+      if (indexedFeature === feature) {
+        delete this.idIndex_[idString];
+      } else if (Array.isArray(indexedFeature)) {
+        indexedFeature.splice(indexedFeature.indexOf(feature), 1);
+        if (indexedFeature.length === 1) {
+          this.idIndex_[idString] = indexedFeature[0];
+        }
+      }
     }
     delete this.uidIndex_[featureKey];
     if (this.hasListener(VectorEventType.REMOVEFEATURE)) {

@@ -57,6 +57,7 @@
   },
   "include": [
     "types/**/*.ts",
-    "src/ol/**/*.js"
+    "src/ol/**/*.js",
+    "test/typescript/cases/**/*.ts"
   ]
 }

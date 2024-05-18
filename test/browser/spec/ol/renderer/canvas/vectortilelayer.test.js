@@ -14,6 +14,7 @@ import VectorTileLayer from '../../../../../../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../../../../../../src/ol/source/VectorTile.js';
 import View from '../../../../../../src/ol/View.js';
 import XYZ from '../../../../../../src/ol/source/XYZ.js';
+import {Circle, Fill} from '../../../../../../src/ol/style.js';
 import {VOID} from '../../../../../../src/ol/functions.js';
 import {checkedFonts} from '../../../../../../src/ol/render/canvas.js';
 import {create} from '../../../../../../src/ol/transform.js';
@@ -173,8 +174,10 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
     it('gives precedence to feature styles over layer styles', function () {
       const spy = sinon.spy(layer.getRenderer(), 'renderFeature');
       map.renderSync();
-      expect(spy.getCall(0).args[2]).to.be(layer.getStyle());
-      expect(spy.getCall(1).args[2]).to.be(feature2.getStyle());
+      expect(spy.getCall(0).args[2]).to.be(layer.getStyleFunction()(feature1));
+      expect(spy.getCall(1).args[2]).to.be(
+        feature2.getStyleFunction()(feature2),
+      );
       spy.restore();
     });
 
@@ -753,6 +756,52 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
               [],
             );
         }).to.not.throwException();
+        done();
+      });
+    });
+
+    it('detects symbols with `declutterMode: "none"`', (done) => {
+      const target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      const extent = [
+        1824704.739223726, 6141868.096770482, 1827150.7241288517,
+        6144314.081675608,
+      ];
+      const source = new VectorTileSource({
+        format: new MVT(),
+        url: 'spec/ol/data/14-8938-5680.vector.pbf',
+        minZoom: 14,
+        maxZoom: 14,
+      });
+      const layer = new VectorTileLayer({
+        declutter: true,
+        extent: extent,
+        source: source,
+        style: new Style({
+          image: new Circle({
+            declutterMode: 'none',
+            radius: 5,
+            fill: new Fill({color: 'red'}),
+          }),
+        }),
+      });
+      const map = new Map({
+        target: target,
+        layers: [layer],
+        view: new View({
+          center: getCenter(extent),
+          zoom: 14,
+        }),
+      });
+      map.once('rendercomplete', () => {
+        setTimeout(() => {
+          map.setTarget(null);
+          document.body.removeChild(target);
+        }, 0);
+        const features = map.getFeaturesAtPixel([11, 75]);
+        expect(features).to.have.length(1);
         done();
       });
     });

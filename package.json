@@ -1,6 +1,6 @@
 {
   "name": "ol",
-  "version": "9.1.1-dev",
+  "version": "9.2.2-dev",
   "description": "OpenLayers mapping library",
   "keywords": [
     "map",
@@ -68,6 +68,7 @@
     "@types/pbf": "^3.0.2",
     "@types/proj4": "^2.5.2",
     "@types/topojson-specification": "^1.0.1",
+    "@typescript-eslint/parser": "^7.9.0",
     "chaikin-smooth": "^1.0.4",
     "clean-css-cli": "5.6.3",
     "copy-webpack-plugin": "^12.0.1",
@@ -101,7 +102,7 @@
     "pixelmatch": "^5.1.0",
     "pngjs": "^7.0.0",
     "proj4": "2.11.0",
-    "puppeteer": "22.8.0",
+    "puppeteer": "22.8.2",
     "rollup": "^4.1.4",
     "rollup-plugin-external-globals": "^0.10.0",
     "semver": "^7.3.7",
@@ -134,7 +135,13 @@
           "include": "test/**/*.test.js"
         }
       ]
-    }
+    },
+    "overrides": [
+      {
+        "files": "test/typescript/**/*.ts",
+        "parser": "@typescript-eslint/parser"
+      }
+    ]
   },
   "browserslist": [
     "> 1%",

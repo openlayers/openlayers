@@ -1,0 +1,2049 @@
+{
+  "links" : [ {
+    "rel" : "self",
+    "type" : "application/json",
+    "title" : "This document",
+    "href" : "/ogcapi/tiles/WebMercatorQuad?f=json"
+  }, {
+    "rel" : "alternate",
+    "type" : "application/vnd.mapbox.tile+json",
+    "title" : "This document as TileJSON",
+    "href" : "/ogcapi/tiles/WebMercatorQuad?f=tilejson"
+  }, {
+    "rel" : "http://www.opengis.net/def/rel/ogc/1.0/tiling-scheme",
+    "title" : "Definition of the tiling scheme",
+    "href" : "/ogcapi/tileMatrixSets/WebMercatorQuad"
+  }, {
+    "rel" : "item",
+    "type" : "application/vnd.mapbox-vector-tile",
+    "title" : "Mapbox vector tiles; the link is a URI template where {tileMatrix}/{tileRow}/{tileCol} is the tile in the tiling scheme '{{tileMatrixSetId}}'",
+    "href" : "/ogcapi/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}?f=mvt",
+    "templated" : true
+  } ],
+  "dataType" : "vector",
+  "tileMatrixSetId" : "WebMercatorQuad",
+  "tileMatrixSetURI" : "http://www.opengis.net/def/tilematrixset/OGC/1.0/WebMercatorQuad",
+  "tileMatrixSetLimits" : [ {
+    "tileMatrix" : "6",
+    "minTileRow" : 25,
+    "maxTileRow" : 25,
+    "minTileCol" : 38,
+    "maxTileCol" : 38,
+    "numberOfTiles" : 1
+  }, {
+    "tileMatrix" : "7",
+    "minTileRow" : 51,
+    "maxTileRow" : 51,
+    "minTileCol" : 76,
+    "maxTileCol" : 77,
+    "numberOfTiles" : 2
+  }, {
+    "tileMatrix" : "8",
+    "minTileRow" : 102,
+    "maxTileRow" : 103,
+    "minTileCol" : 153,
+    "maxTileCol" : 154,
+    "numberOfTiles" : 4
+  }, {
+    "tileMatrix" : "9",
+    "minTileRow" : 205,
+    "maxTileRow" : 207,
+    "minTileCol" : 306,
+    "maxTileCol" : 308,
+    "numberOfTiles" : 9
+  }, {
+    "tileMatrix" : "10",
+    "minTileRow" : 411,
+    "maxTileRow" : 414,
+    "minTileCol" : 613,
+    "maxTileCol" : 617,
+    "numberOfTiles" : 20
+  }, {
+    "tileMatrix" : "11",
+    "minTileRow" : 823,
+    "maxTileRow" : 829,
+    "minTileCol" : 1227,
+    "maxTileCol" : 1235,
+    "numberOfTiles" : 63
+  }, {
+    "tileMatrix" : "12",
+    "minTileRow" : 1646,
+    "maxTileRow" : 1658,
+    "minTileCol" : 2454,
+    "maxTileCol" : 2471,
+    "numberOfTiles" : 234
+  }, {
+    "tileMatrix" : "13",
+    "minTileRow" : 3292,
+    "maxTileRow" : 3317,
+    "minTileCol" : 4909,
+    "maxTileCol" : 4942,
+    "numberOfTiles" : 884
+  }, {
+    "tileMatrix" : "14",
+    "minTileRow" : 6584,
+    "maxTileRow" : 6634,
+    "minTileCol" : 9819,
+    "maxTileCol" : 9885,
+    "numberOfTiles" : 3417
+  }, {
+    "tileMatrix" : "15",
+    "minTileRow" : 13169,
+    "maxTileRow" : 13268,
+    "minTileCol" : 19638,
+    "maxTileCol" : 19770,
+    "numberOfTiles" : 13300
+  }, {
+    "tileMatrix" : "16",
+    "minTileRow" : 26339,
+    "maxTileRow" : 26536,
+    "minTileCol" : 39277,
+    "maxTileCol" : 39541,
+    "numberOfTiles" : 52470
+  }, {
+    "tileMatrix" : "17",
+    "minTileRow" : 52679,
+    "maxTileRow" : 53073,
+    "minTileCol" : 78554,
+    "maxTileCol" : 79082,
+    "numberOfTiles" : 208955
+  }, {
+    "tileMatrix" : "18",
+    "minTileRow" : 105359,
+    "maxTileRow" : 106147,
+    "minTileCol" : 157108,
+    "maxTileCol" : 158164,
+    "numberOfTiles" : 833973
+  } ],
+  "boundingBox" : {
+    "lowerLeft" : [ 35.7550730, 32.3573510 ],
+    "upperRight" : [ 37.2052760, 33.2671400 ],
+    "crs" : "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+  },
+  "centerPoint" : {
+    "coordinates" : [ 36.1033, 32.6264 ],
+    "tileMatrix" : "13"
+  },
+  "layers" : [ {
+    "title" : "Aeronautic (Curves)",
+    "description" : "Aeronautical Facilities: Information about an area specifically designed and constructed for landing, accommodating, and launching military and/or civilian aircraft, rockets, missiles and/or spacecraft.<br/>Aeronautical Aids to Navigation: Information about electronic equipment, housings, and utilities that provide positional information for direction or otherwise assisting in the navigation of airborne aircraft.",
+    "id" : "AeronauticCrv",
+    "dataType" : "vector",
+    "geometryDimension" : 1,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "GB075" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-multilinestring"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Aeronautic (Surfaces)",
+    "description" : "Aeronautical Facilities: Information about an area specifically designed and constructed for landing, accommodating, and launching military and/or civilian aircraft, rockets, missiles and/or spacecraft.<br/>Aeronautical Aids to Navigation: Information about electronic equipment, housings, and utilities that provide positional information for direction or otherwise assisting in the navigation of airborne aircraft.",
+    "id" : "AeronauticSrf",
+    "dataType" : "vector",
+    "geometryDimension" : 2,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "GB015" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-multipolygon"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Agricultural (Points)",
+    "description" : "Agricultural: Information about activities and man-made features involved in the raising of crops and animals, for food and non-food purposes.",
+    "id" : "AgriculturePnt",
+    "dataType" : "vector",
+    "geometryDimension" : 0,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "AM020" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-point"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Agricultural (Surfaces)",
+    "description" : "Agricultural: Information about activities and man-made features involved in the raising of crops and animals, for food and non-food purposes.",
+    "id" : "AgricultureSrf",
+    "dataType" : "vector",
+    "geometryDimension" : 2,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "EA040", "AM020", "EA010" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-multipolygon"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Cultural (Points)",
+    "description" : "Cultural: Information about features on the landscape that have been constructed by man.",
+    "id" : "CulturePnt",
+    "dataType" : "vector",
+    "geometryDimension" : 0,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "AK121", "AL012", "AL030", "AL130", "BH075" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-point"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "ZI037_REL" : {
+          "title" : "Religious Designation",
+          "enum" : [ -999999, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 ],
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Cultural (Surfaces)",
+    "description" : "Cultural: Information about features on the landscape that have been constructed by man.",
+    "id" : "CultureSrf",
+    "dataType" : "vector",
+    "geometryDimension" : 2,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "AK120", "AL012", "AL030" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-multipolygon"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "ZI037_REL" : {
+          "title" : "Religious Designation",
+          "enum" : [ -999999, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 ],
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Facility (Points)",
+    "id" : "FacilityPnt",
+    "dataType" : "vector",
+    "geometryDimension" : 0,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "AL010" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-point"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "FFN" : {
+          "title" : "Feature Function",
+          "enum" : [ -999999, 2, 3, 9, 14, 15, 16, 17, 19, 20, 21, 27, 30, 35, 40, 50, 60, 70, 81, 83, 84, 85, 87, 91, 92, 95, 99, 100, 101, 102, 103, 104, 105, 106, 107, 110, 111, 112, 113, 114, 115, 116, 118, 119, 120, 121, 122, 123, 124, 125, 129, 130, 140, 150, 155, 160, 161, 165, 171, 181, 190, 191, 192, 195, 210, 221, 225, 230, 231, 232, 233, 234, 235, 236, 237, 240, 241, 242, 243, 250, 251, 255, 257, 260, 270, 272, 280, 289, 290, 301, 304, 305, 306, 310, 320, 321, 322, 323, 324, 325, 330, 331, 332, 333, 334, 340, 341, 342, 343, 350, 351, 352, 355, 356, 360, 361, 362, 363, 370, 372, 382, 383, 385, 440, 459, 460, 464, 465, 466, 470, 473, 474, 475, 476, 477, 478, 480, 481, 482, 483, 484, 486, 487, 488, 489, 490, 491, 494, 495, 496, 497, 500, 501, 505, 507, 508, 510, 511, 512, 513, 514, 520, 525, 529, 530, 535, 536, 537, 538, 539, 540, 541, 545, 548, 549, 550, 551, 552, 553, 554, 555, 556, 557, 558, 559, 560, 561, 562, 563, 570, 572, 573, 574, 578, 579, 580, 582, 594, 601, 604, 610, 612, 614, 615, 616, 617, 620, 621, 622, 625, 626, 632, 633, 640, 642, 643, 651, 662, 663, 671, 680, 681, 691, 696, 701, 706, 711, 714, 717, 720, 721, 722, 725, 730, 741, 752, 757, 760, 761, 770, 775, 780, 781, 791, 795, 801, 807, 808, 809, 810, 811, 812, 813, 814, 815, 817, 818, 819, 821, 822, 825, 826, 827, 828, 829, 830, 831, 832, 833, 835, 836, 837, 838, 839, 840, 841, 842, 843, 844, 845, 846, 847, 848, 850, 851, 852, 855, 857, 859, 860, 861, 862, 863, 864, 865, 866, 871, 873, 875, 881, 882, 883, 884, 885, 887, 888, 890, 891, 892, 893, 894, 895, 900, 902, 905, 906, 907, 909, 912, 913, 914, 915, 919, 921, 922, 923, 930, 931, 932, 950, 954, 955, 960, 961, 962, 963, 964, 965, 966, 967, 970, 980 ],
+          "type" : "integer"
+        },
+        "ZI037_REL" : {
+          "title" : "Religious Designation",
+          "enum" : [ -999999, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 ],
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Facility (Surfaces)",
+    "id" : "FacilitySrf",
+    "dataType" : "vector",
+    "geometryDimension" : 2,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "AL010" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-multipolygon"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "FFN" : {
+          "title" : "Feature Function",
+          "enum" : [ -999999, 2, 3, 9, 14, 15, 16, 17, 19, 20, 21, 27, 30, 35, 40, 50, 60, 70, 81, 83, 84, 85, 87, 91, 92, 95, 99, 100, 101, 102, 103, 104, 105, 106, 107, 110, 111, 112, 113, 114, 115, 116, 118, 119, 120, 121, 122, 123, 124, 125, 129, 130, 140, 150, 155, 160, 161, 165, 171, 181, 190, 191, 192, 195, 210, 221, 225, 230, 231, 232, 233, 234, 235, 236, 237, 240, 241, 242, 243, 250, 251, 255, 257, 260, 270, 272, 280, 289, 290, 301, 304, 305, 306, 310, 320, 321, 322, 323, 324, 325, 330, 331, 332, 333, 334, 340, 341, 342, 343, 350, 351, 352, 355, 356, 360, 361, 362, 363, 370, 372, 382, 383, 385, 440, 459, 460, 464, 465, 466, 470, 473, 474, 475, 476, 477, 478, 480, 481, 482, 483, 484, 486, 487, 488, 489, 490, 491, 494, 495, 496, 497, 500, 501, 505, 507, 508, 510, 511, 512, 513, 514, 520, 525, 529, 530, 535, 536, 537, 538, 539, 540, 541, 545, 548, 549, 550, 551, 552, 553, 554, 555, 556, 557, 558, 559, 560, 561, 562, 563, 570, 572, 573, 574, 578, 579, 580, 582, 594, 601, 604, 610, 612, 614, 615, 616, 617, 620, 621, 622, 625, 626, 632, 633, 640, 642, 643, 651, 662, 663, 671, 680, 681, 691, 696, 701, 706, 711, 714, 717, 720, 721, 722, 725, 730, 741, 752, 757, 760, 761, 770, 775, 780, 781, 791, 795, 801, 807, 808, 809, 810, 811, 812, 813, 814, 815, 817, 818, 819, 821, 822, 825, 826, 827, 828, 829, 830, 831, 832, 833, 835, 836, 837, 838, 839, 840, 841, 842, 843, 844, 845, 846, 847, 848, 850, 851, 852, 855, 857, 859, 860, 861, 862, 863, 864, 865, 866, 871, 873, 875, 881, 882, 883, 884, 885, 887, 888, 890, 891, 892, 893, 894, 895, 900, 902, 905, 906, 907, 909, 912, 913, 914, 915, 919, 921, 922, 923, 930, 931, 932, 950, 954, 955, 960, 961, 962, 963, 964, 965, 966, 967, 970, 980 ],
+          "type" : "integer"
+        },
+        "ZI037_REL" : {
+          "title" : "Religious Designation",
+          "enum" : [ -999999, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 ],
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Hydrography (Curves)",
+    "id" : "HydrographyCrv",
+    "dataType" : "vector",
+    "geometryDimension" : 1,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "BH140", "BI020" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-multilinestring"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "ZI024_HYP" : {
+          "title" : "Hydrologic Persistence",
+          "enum" : [ -999999, 1, 2, 3, 4 ],
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        },
+        "WCC" : {
+          "title" : "Watercourse Channel Type",
+          "enum" : [ 1, 2, 3, 4, 6, 7, 8, 999 ],
+          "type" : "integer"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Hydrography (Points)",
+    "id" : "HydrographyPnt",
+    "dataType" : "vector",
+    "geometryDimension" : 0,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "BH170" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-point"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "SWT" : {
+          "title" : "Natural Pool Type",
+          "enum" : [ 1, 2, 3, 4, 6, 7, 8, 999 ],
+          "type" : "integer"
+        },
+        "IWT" : {
+          "title" : "Inland Water Type",
+          "enum" : [ 1, 2, 3, 4, 6, 7, 8, 999 ],
+          "type" : "integer"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "ZI024_HYP" : {
+          "title" : "Hydrologic Persistence",
+          "enum" : [ -999999, 1, 2, 3, 4 ],
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Hydrography (Surfaces)",
+    "id" : "HydrographySrf",
+    "dataType" : "vector",
+    "geometryDimension" : 2,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "BH082" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-multipolygon"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "SWT" : {
+          "title" : "Natural Pool Type",
+          "enum" : [ 1, 2, 3, 4, 6, 7, 8, 999 ],
+          "type" : "integer"
+        },
+        "IWT" : {
+          "title" : "Inland Water Type",
+          "enum" : [ 1, 2, 3, 4, 6, 7, 8, 999 ],
+          "type" : "integer"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "ZI024_HYP" : {
+          "title" : "Hydrologic Persistence",
+          "enum" : [ -999999, 1, 2, 3, 4 ],
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        },
+        "WCC" : {
+          "title" : "Watercourse Channel Type",
+          "enum" : [ 1, 2, 3, 4, 6, 7, 8, 999 ],
+          "type" : "integer"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Industry (Surfaces)",
+    "id" : "IndustrySrf",
+    "dataType" : "vector",
+    "geometryDimension" : 2,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "AA010" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-multipolygon"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "MZN" : {
+          "title" : "Extraction Mine Type",
+          "enum" : [ -999999, 1, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13 ],
+          "type" : "integer"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Information (Points)",
+    "description" : "Information: Information about geographic locations or regions that are significant for reasons other than the existence of a specific categorized (typed) feature.",
+    "id" : "InformationPnt",
+    "dataType" : "vector",
+    "geometryDimension" : 0,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "ZD040", "ZD045" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-point"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Military (Surfaces)",
+    "description" : "Military Installations and Defensive Structures: Information about military areas or support facilities and/or structures that are used to prevent or resist enemy attacks.",
+    "id" : "MilitarySrf",
+    "dataType" : "vector",
+    "geometryDimension" : 2,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "SU001" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-multipolygon"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Other (Surfaces)",
+    "id" : "o2s_a",
+    "dataType" : "vector",
+    "geometryDimension" : 2,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-multipolygon"
+        },
+        "tag1" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Other (Curves)",
+    "id" : "o2s_l",
+    "dataType" : "vector",
+    "geometryDimension" : 1,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-multilinestring"
+        },
+        "tag1" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Other (Points)",
+    "id" : "o2s_p",
+    "dataType" : "vector",
+    "geometryDimension" : 0,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-point"
+        },
+        "tag1" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Physiography (Curves)",
+    "description" : "Physiography: Information about the natural features of the Earth's surface or subsurface, as well as their formations.",
+    "id" : "PhysiographyCrv",
+    "dataType" : "vector",
+    "geometryDimension" : 1,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "DB010" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-multilinestring"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Recreation (Curves)",
+    "id" : "RecreationCrv",
+    "dataType" : "vector",
+    "geometryDimension" : 1,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "AK130" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-multilinestring"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Recreation (Points)",
+    "id" : "RecreationPnt",
+    "dataType" : "vector",
+    "geometryDimension" : 0,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "AK030", "AK170", "AK180" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-point"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "FFN" : {
+          "title" : "Feature Function",
+          "enum" : [ -999999, 2, 3, 9, 14, 15, 16, 17, 19, 20, 21, 27, 30, 35, 40, 50, 60, 70, 81, 83, 84, 85, 87, 91, 92, 95, 99, 100, 101, 102, 103, 104, 105, 106, 107, 110, 111, 112, 113, 114, 115, 116, 118, 119, 120, 121, 122, 123, 124, 125, 129, 130, 140, 150, 155, 160, 161, 165, 171, 181, 190, 191, 192, 195, 210, 221, 225, 230, 231, 232, 233, 234, 235, 236, 237, 240, 241, 242, 243, 250, 251, 255, 257, 260, 270, 272, 280, 289, 290, 301, 304, 305, 306, 310, 320, 321, 322, 323, 324, 325, 330, 331, 332, 333, 334, 340, 341, 342, 343, 350, 351, 352, 355, 356, 360, 361, 362, 363, 370, 372, 382, 383, 385, 440, 459, 460, 464, 465, 466, 470, 473, 474, 475, 476, 477, 478, 480, 481, 482, 483, 484, 486, 487, 488, 489, 490, 491, 494, 495, 496, 497, 500, 501, 505, 507, 508, 510, 511, 512, 513, 514, 520, 525, 529, 530, 535, 536, 537, 538, 539, 540, 541, 545, 548, 549, 550, 551, 552, 553, 554, 555, 556, 557, 558, 559, 560, 561, 562, 563, 570, 572, 573, 574, 578, 579, 580, 582, 594, 601, 604, 610, 612, 614, 615, 616, 617, 620, 621, 622, 625, 626, 632, 633, 640, 642, 643, 651, 662, 663, 671, 680, 681, 691, 696, 701, 706, 711, 714, 717, 720, 721, 722, 725, 730, 741, 752, 757, 760, 761, 770, 775, 780, 781, 791, 795, 801, 807, 808, 809, 810, 811, 812, 813, 814, 815, 817, 818, 819, 821, 822, 825, 826, 827, 828, 829, 830, 831, 832, 833, 835, 836, 837, 838, 839, 840, 841, 842, 843, 844, 845, 846, 847, 848, 850, 851, 852, 855, 857, 859, 860, 861, 862, 863, 864, 865, 866, 871, 873, 875, 881, 882, 883, 884, 885, 887, 888, 890, 891, 892, 893, 894, 895, 900, 902, 905, 906, 907, 909, 912, 913, 914, 915, 919, 921, 922, 923, 930, 931, 932, 950, 954, 955, 960, 961, 962, 963, 964, 965, 966, 967, 970, 980 ],
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Recreation (Surfaces)",
+    "id" : "RecreationSrf",
+    "dataType" : "vector",
+    "geometryDimension" : 2,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "AK040", "AK060", "AK160", "AK170" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-multipolygon"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Settlement (Points)",
+    "id" : "SettlementPnt",
+    "dataType" : "vector",
+    "geometryDimension" : 0,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "AL020", "AL105" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-point"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Settlement (Surfaces)",
+    "id" : "SettlementSrf",
+    "dataType" : "vector",
+    "geometryDimension" : 2,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "AL020" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-multipolygon"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "FFN" : {
+          "title" : "Feature Function",
+          "enum" : [ -999999, 2, 3, 9, 14, 15, 16, 17, 19, 20, 21, 27, 30, 35, 40, 50, 60, 70, 81, 83, 84, 85, 87, 91, 92, 95, 99, 100, 101, 102, 103, 104, 105, 106, 107, 110, 111, 112, 113, 114, 115, 116, 118, 119, 120, 121, 122, 123, 124, 125, 129, 130, 140, 150, 155, 160, 161, 165, 171, 181, 190, 191, 192, 195, 210, 221, 225, 230, 231, 232, 233, 234, 235, 236, 237, 240, 241, 242, 243, 250, 251, 255, 257, 260, 270, 272, 280, 289, 290, 301, 304, 305, 306, 310, 320, 321, 322, 323, 324, 325, 330, 331, 332, 333, 334, 340, 341, 342, 343, 350, 351, 352, 355, 356, 360, 361, 362, 363, 370, 372, 382, 383, 385, 440, 459, 460, 464, 465, 466, 470, 473, 474, 475, 476, 477, 478, 480, 481, 482, 483, 484, 486, 487, 488, 489, 490, 491, 494, 495, 496, 497, 500, 501, 505, 507, 508, 510, 511, 512, 513, 514, 520, 525, 529, 530, 535, 536, 537, 538, 539, 540, 541, 545, 548, 549, 550, 551, 552, 553, 554, 555, 556, 557, 558, 559, 560, 561, 562, 563, 570, 572, 573, 574, 578, 579, 580, 582, 594, 601, 604, 610, 612, 614, 615, 616, 617, 620, 621, 622, 625, 626, 632, 633, 640, 642, 643, 651, 662, 663, 671, 680, 681, 691, 696, 701, 706, 711, 714, 717, 720, 721, 722, 725, 730, 741, 752, 757, 760, 761, 770, 775, 780, 781, 791, 795, 801, 807, 808, 809, 810, 811, 812, 813, 814, 815, 817, 818, 819, 821, 822, 825, 826, 827, 828, 829, 830, 831, 832, 833, 835, 836, 837, 838, 839, 840, 841, 842, 843, 844, 845, 846, 847, 848, 850, 851, 852, 855, 857, 859, 860, 861, 862, 863, 864, 865, 866, 871, 873, 875, 881, 882, 883, 884, 885, 887, 888, 890, 891, 892, 893, 894, 895, 900, 902, 905, 906, 907, 909, 912, 913, 914, 915, 919, 921, 922, 923, 930, 931, 932, 950, 954, 955, 960, 961, 962, 963, 964, 965, 966, 967, 970, 980 ],
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Structure (Curves)",
+    "id" : "StructureCrv",
+    "dataType" : "vector",
+    "geometryDimension" : 1,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "AL260", "AQ150" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-multilinestring"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Structure (Points)",
+    "id" : "StructurePnt",
+    "dataType" : "vector",
+    "geometryDimension" : 0,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "AL013" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-point"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "FFN" : {
+          "title" : "Feature Function",
+          "enum" : [ -999999, 2, 3, 9, 14, 15, 16, 17, 19, 20, 21, 27, 30, 35, 40, 50, 60, 70, 81, 83, 84, 85, 87, 91, 92, 95, 99, 100, 101, 102, 103, 104, 105, 106, 107, 110, 111, 112, 113, 114, 115, 116, 118, 119, 120, 121, 122, 123, 124, 125, 129, 130, 140, 150, 155, 160, 161, 165, 171, 181, 190, 191, 192, 195, 210, 221, 225, 230, 231, 232, 233, 234, 235, 236, 237, 240, 241, 242, 243, 250, 251, 255, 257, 260, 270, 272, 280, 289, 290, 301, 304, 305, 306, 310, 320, 321, 322, 323, 324, 325, 330, 331, 332, 333, 334, 340, 341, 342, 343, 350, 351, 352, 355, 356, 360, 361, 362, 363, 370, 372, 382, 383, 385, 440, 459, 460, 464, 465, 466, 470, 473, 474, 475, 476, 477, 478, 480, 481, 482, 483, 484, 486, 487, 488, 489, 490, 491, 494, 495, 496, 497, 500, 501, 505, 507, 508, 510, 511, 512, 513, 514, 520, 525, 529, 530, 535, 536, 537, 538, 539, 540, 541, 545, 548, 549, 550, 551, 552, 553, 554, 555, 556, 557, 558, 559, 560, 561, 562, 563, 570, 572, 573, 574, 578, 579, 580, 582, 594, 601, 604, 610, 612, 614, 615, 616, 617, 620, 621, 622, 625, 626, 632, 633, 640, 642, 643, 651, 662, 663, 671, 680, 681, 691, 696, 701, 706, 711, 714, 717, 720, 721, 722, 725, 730, 741, 752, 757, 760, 761, 770, 775, 780, 781, 791, 795, 801, 807, 808, 809, 810, 811, 812, 813, 814, 815, 817, 818, 819, 821, 822, 825, 826, 827, 828, 829, 830, 831, 832, 833, 835, 836, 837, 838, 839, 840, 841, 842, 843, 844, 845, 846, 847, 848, 850, 851, 852, 855, 857, 859, 860, 861, 862, 863, 864, 865, 866, 871, 873, 875, 881, 882, 883, 884, 885, 887, 888, 890, 891, 892, 893, 894, 895, 900, 902, 905, 906, 907, 909, 912, 913, 914, 915, 919, 921, 922, 923, 930, 931, 932, 950, 954, 955, 960, 961, 962, 963, 964, 965, 966, 967, 970, 980 ],
+          "type" : "integer"
+        },
+        "ZI037_REL" : {
+          "title" : "Religious Designation",
+          "enum" : [ -999999, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 ],
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Structure (Surfaces)",
+    "id" : "StructureSrf",
+    "dataType" : "vector",
+    "geometryDimension" : 2,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "AL013" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-multipolygon"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "ZI037_REL" : {
+          "title" : "Religious Designation",
+          "enum" : [ -999999, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 ],
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Transportation - Ground (Curves)",
+    "description" : "Transportation: Information about the principal means of overland movement of people and goods from one location to another.",
+    "id" : "TransportationGroundCrv",
+    "dataType" : "vector",
+    "geometryDimension" : 1,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "AN010", "AP010", "AP030", "AP040", "AP050", "AQ040", "AQ130" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-multilinestring"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "RTY" : {
+          "title" : "Roadway Type",
+          "enum" : [ -999999, 1, 2, 3, 4 ],
+          "type" : "integer"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "TRS" : {
+          "title" : "Transportation System Type",
+          "enum" : [ -999999, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 20, 21, 22, 23, 24, 25, 30 ],
+          "type" : "integer"
+        },
+        "RIN_ROI" : {
+          "title" : "Route Designation Type",
+          "enum" : [ -999999, 1, 2, 3, 4, 5 ],
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        },
+        "ZI016_WTC" : {
+          "title" : "Road Weather Restriction",
+          "enum" : [ -999999, 1, 2, 3, 4, 5 ],
+          "type" : "integer"
+        },
+        "RIN_RTN" : {
+          "title" : "Route Designation",
+          "type" : "string"
+        },
+        "RLE" : {
+          "title" : "Relative Level",
+          "enum" : [ -999999, 1, 2, 3 ],
+          "type" : "integer"
+        },
+        "LOC" : {
+          "title" : "Vertical Relative Location",
+          "enum" : [ -999999, 1, 2, 3, 4, 5, 6, 7 ],
+          "type" : "integer"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Transportation - Ground (Points)",
+    "description" : "Transportation: Information about the principal means of overland movement of people and goods from one location to another.",
+    "id" : "TransportationGroundPnt",
+    "dataType" : "vector",
+    "geometryDimension" : 0,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "AP033", "AP040", "AQ040", "AQ062", "AQ125", "AQ170", "BH070" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-point"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "FFN" : {
+          "title" : "Feature Function",
+          "enum" : [ -999999, 2, 3, 9, 14, 15, 16, 17, 19, 20, 21, 27, 30, 35, 40, 50, 60, 70, 81, 83, 84, 85, 87, 91, 92, 95, 99, 100, 101, 102, 103, 104, 105, 106, 107, 110, 111, 112, 113, 114, 115, 116, 118, 119, 120, 121, 122, 123, 124, 125, 129, 130, 140, 150, 155, 160, 161, 165, 171, 181, 190, 191, 192, 195, 210, 221, 225, 230, 231, 232, 233, 234, 235, 236, 237, 240, 241, 242, 243, 250, 251, 255, 257, 260, 270, 272, 280, 289, 290, 301, 304, 305, 306, 310, 320, 321, 322, 323, 324, 325, 330, 331, 332, 333, 334, 340, 341, 342, 343, 350, 351, 352, 355, 356, 360, 361, 362, 363, 370, 372, 382, 383, 385, 440, 459, 460, 464, 465, 466, 470, 473, 474, 475, 476, 477, 478, 480, 481, 482, 483, 484, 486, 487, 488, 489, 490, 491, 494, 495, 496, 497, 500, 501, 505, 507, 508, 510, 511, 512, 513, 514, 520, 525, 529, 530, 535, 536, 537, 538, 539, 540, 541, 545, 548, 549, 550, 551, 552, 553, 554, 555, 556, 557, 558, 559, 560, 561, 562, 563, 570, 572, 573, 574, 578, 579, 580, 582, 594, 601, 604, 610, 612, 614, 615, 616, 617, 620, 621, 622, 625, 626, 632, 633, 640, 642, 643, 651, 662, 663, 671, 680, 681, 691, 696, 701, 706, 711, 714, 717, 720, 721, 722, 725, 730, 741, 752, 757, 760, 761, 770, 775, 780, 781, 791, 795, 801, 807, 808, 809, 810, 811, 812, 813, 814, 815, 817, 818, 819, 821, 822, 825, 826, 827, 828, 829, 830, 831, 832, 833, 835, 836, 837, 838, 839, 840, 841, 842, 843, 844, 845, 846, 847, 848, 850, 851, 852, 855, 857, 859, 860, 861, 862, 863, 864, 865, 866, 871, 873, 875, 881, 882, 883, 884, 885, 887, 888, 890, 891, 892, 893, 894, 895, 900, 902, 905, 906, 907, 909, 912, 913, 914, 915, 919, 921, 922, 923, 930, 931, 932, 950, 954, 955, 960, 961, 962, 963, 964, 965, 966, 967, 970, 980 ],
+          "type" : "integer"
+        },
+        "RIN_ROI" : {
+          "title" : "Route Designation Type",
+          "enum" : [ -999999, 1, 2, 3, 4, 5 ],
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        },
+        "TRS" : {
+          "title" : "Transportation System Type",
+          "enum" : [ -999999, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 20, 21, 22, 23, 24, 25, 30 ],
+          "type" : "integer"
+        },
+        "TRS2" : {
+          "title" : "Secondary Transportation System Type",
+          "enum" : [ -999999, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 20, 21, 22, 23, 24, 25, 30 ],
+          "type" : "integer"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Transportation - Ground (Surfaces)",
+    "description" : "Transportation: Information about the principal means of overland movement of people and goods from one location to another.",
+    "id" : "TransportationGroundSrf",
+    "dataType" : "vector",
+    "geometryDimension" : 2,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "AP030", "AQ125", "AQ140" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-multipolygon"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "FFN" : {
+          "title" : "Feature Function",
+          "enum" : [ -999999, 2, 3, 9, 14, 15, 16, 17, 19, 20, 21, 27, 30, 35, 40, 50, 60, 70, 81, 83, 84, 85, 87, 91, 92, 95, 99, 100, 101, 102, 103, 104, 105, 106, 107, 110, 111, 112, 113, 114, 115, 116, 118, 119, 120, 121, 122, 123, 124, 125, 129, 130, 140, 150, 155, 160, 161, 165, 171, 181, 190, 191, 192, 195, 210, 221, 225, 230, 231, 232, 233, 234, 235, 236, 237, 240, 241, 242, 243, 250, 251, 255, 257, 260, 270, 272, 280, 289, 290, 301, 304, 305, 306, 310, 320, 321, 322, 323, 324, 325, 330, 331, 332, 333, 334, 340, 341, 342, 343, 350, 351, 352, 355, 356, 360, 361, 362, 363, 370, 372, 382, 383, 385, 440, 459, 460, 464, 465, 466, 470, 473, 474, 475, 476, 477, 478, 480, 481, 482, 483, 484, 486, 487, 488, 489, 490, 491, 494, 495, 496, 497, 500, 501, 505, 507, 508, 510, 511, 512, 513, 514, 520, 525, 529, 530, 535, 536, 537, 538, 539, 540, 541, 545, 548, 549, 550, 551, 552, 553, 554, 555, 556, 557, 558, 559, 560, 561, 562, 563, 570, 572, 573, 574, 578, 579, 580, 582, 594, 601, 604, 610, 612, 614, 615, 616, 617, 620, 621, 622, 625, 626, 632, 633, 640, 642, 643, 651, 662, 663, 671, 680, 681, 691, 696, 701, 706, 711, 714, 717, 720, 721, 722, 725, 730, 741, 752, 757, 760, 761, 770, 775, 780, 781, 791, 795, 801, 807, 808, 809, 810, 811, 812, 813, 814, 815, 817, 818, 819, 821, 822, 825, 826, 827, 828, 829, 830, 831, 832, 833, 835, 836, 837, 838, 839, 840, 841, 842, 843, 844, 845, 846, 847, 848, 850, 851, 852, 855, 857, 859, 860, 861, 862, 863, 864, 865, 866, 871, 873, 875, 881, 882, 883, 884, 885, 887, 888, 890, 891, 892, 893, 894, 895, 900, 902, 905, 906, 907, 909, 912, 913, 914, 915, 919, 921, 922, 923, 930, 931, 932, 950, 954, 955, 960, 961, 962, 963, 964, 965, 966, 967, 970, 980 ],
+          "type" : "integer"
+        },
+        "TRS" : {
+          "title" : "Transportation System Type",
+          "enum" : [ -999999, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 20, 21, 22, 23, 24, 25, 30 ],
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        },
+        "ZI016_WTC" : {
+          "title" : "Road Weather Restriction",
+          "enum" : [ -999999, 1, 2, 3, 4, 5 ],
+          "type" : "integer"
+        },
+        "RIN_ROI" : {
+          "title" : "Route Designation Type",
+          "enum" : [ -999999, 1, 2, 3, 4, 5 ],
+          "type" : "integer"
+        },
+        "RTY" : {
+          "title" : "Roadway Type",
+          "enum" : [ -999999, 1, 2, 3, 4 ],
+          "type" : "integer"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Transportation - Water (Curves)",
+    "description" : "Transportation: Information about the principal means of over water movement of people and goods from one location to another.",
+    "id" : "TransportationWaterCrv",
+    "dataType" : "vector",
+    "geometryDimension" : 1,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "BH020" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-multilinestring"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "ZI024_HYP" : {
+          "title" : "Hydrologic Persistence",
+          "enum" : [ -999999, 1, 2, 3, 4 ],
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        },
+        "RLE" : {
+          "title" : "Relative Level",
+          "enum" : [ -999999, 1, 2, 3 ],
+          "type" : "integer"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Utility Infrastructure (Curves)",
+    "id" : "UtilityInfrastructureCrv",
+    "dataType" : "vector",
+    "geometryDimension" : 1,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "AT005" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-multilinestring"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "CAB" : {
+          "title" : "Cable Type",
+          "enum" : [ -999999, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 19 ],
+          "type" : "integer"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Utility Infrastructure (Points)",
+    "id" : "UtilityInfrastructurePnt",
+    "dataType" : "vector",
+    "geometryDimension" : 0,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "AT042" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-point"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        }
+      },
+      "type" : "object"
+    }
+  }, {
+    "title" : "Vegetation (Surfaces)",
+    "description" : "Vegetation: Information about the plant life in an area, or the lack thereof.",
+    "id" : "VegetationSrf",
+    "dataType" : "vector",
+    "geometryDimension" : 2,
+    "minTileMatrix" : "6",
+    "maxTileMatrix" : "18",
+    "propertiesSchema" : {
+      "required" : [ "geometry", "ZI001_SDV" ],
+      "properties" : {
+        "id" : {
+          "title" : "id",
+          "x-ogc-role" : "id",
+          "type" : "integer"
+        },
+        "F_CODE" : {
+          "title" : "Feature Type Code",
+          "x-ogc-role" : "type",
+          "enum" : [ "EB010", "EB070", "EC015" ],
+          "type" : "string"
+        },
+        "geometry" : {
+          "x-ogc-role" : "primary-geometry",
+          "format" : "geometry-multipolygon"
+        },
+        "ZI001_SDV" : {
+          "title" : "Last Change",
+          "x-ogc-role" : "primary-instant",
+          "format" : "date-time",
+          "type" : "string"
+        },
+        "UFI" : {
+          "title" : "Unique Entity Identifier",
+          "type" : "string"
+        },
+        "ZI005_FNA" : {
+          "title" : "Name",
+          "type" : "string"
+        },
+        "FCSUBTYPE" : {
+          "title" : "Feature Subtype Code",
+          "type" : "integer"
+        },
+        "ZI024_HYP" : {
+          "title" : "Hydrologic Persistence",
+          "enum" : [ -999999, 1, 2, 3, 4 ],
+          "type" : "integer"
+        },
+        "ZI006_MEM" : {
+          "title" : "Memorandum",
+          "type" : "string"
+        },
+        "ZI001_SDP" : {
+          "title" : "Source Description",
+          "type" : "string"
+        },
+        "VEG" : {
+          "title" : "Vegetation Characteristic",
+          "enum" : [ -999999, 8, 9, 10, 50, 56, 61, 62, 75, 83 ],
+          "type" : "integer"
+        }
+      },
+      "type" : "object"
+    }
+  } ]
+}

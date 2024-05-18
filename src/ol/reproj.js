@@ -186,6 +186,7 @@ export function calculateSourceExtentResolution(
 /**
  * @typedef {Object} ImageExtent
  * @property {import("./extent.js").Extent} extent Extent.
+ * @property {import("./extent.js").Extent} [clipExtent] Clip extent.
  * @property {import('./DataTile.js').ImageLike} image Image.
  */
 
@@ -276,13 +277,27 @@ export function render(
     }
 
     sources.forEach(function (src, i, arr) {
-      const xPos = (src.extent[0] - sourceDataExtent[0]) * stitchScale;
-      const yPos = -(src.extent[3] - sourceDataExtent[3]) * stitchScale;
-      const srcWidth = getWidth(src.extent) * stitchScale;
-      const srcHeight = getHeight(src.extent) * stitchScale;
-
       // This test should never fail -- but it does. Need to find a fix the upstream condition
       if (src.image.width > 0 && src.image.height > 0) {
+        if (src.clipExtent) {
+          stitchContext.save();
+          const xPos = (src.clipExtent[0] - sourceDataExtent[0]) * stitchScale;
+          const yPos = -(src.clipExtent[3] - sourceDataExtent[3]) * stitchScale;
+          const width = getWidth(src.clipExtent) * stitchScale;
+          const height = getHeight(src.clipExtent) * stitchScale;
+          stitchContext.rect(
+            interpolate ? xPos : Math.round(xPos),
+            interpolate ? yPos : Math.round(yPos),
+            interpolate ? width : Math.round(xPos + width) - Math.round(xPos),
+            interpolate ? height : Math.round(yPos + height) - Math.round(yPos),
+          );
+          stitchContext.clip();
+        }
+
+        const xPos = (src.extent[0] - sourceDataExtent[0]) * stitchScale;
+        const yPos = -(src.extent[3] - sourceDataExtent[3]) * stitchScale;
+        const srcWidth = getWidth(src.extent) * stitchScale;
+        const srcHeight = getHeight(src.extent) * stitchScale;
         stitchContext.drawImage(
           src.image,
           gutter,
@@ -298,6 +313,10 @@ export function render(
             ? srcHeight
             : Math.round(yPos + srcHeight) - Math.round(yPos),
         );
+
+        if (src.clipExtent) {
+          stitchContext.restore();
+        }
       }
     });
   }

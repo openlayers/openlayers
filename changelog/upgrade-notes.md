@@ -1,6 +1,6 @@
 ## Upgrade notes
 
-### Next version
+### 9.2.0
 
 #### The `snap` event's feature property is now never `null`
 

@@ -61,13 +61,13 @@ import CanvasVectorImageLayerRenderer from '../renderer/canvas/VectorImageLayer.
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @template {import("../source/Vector.js").default} VectorSourceType
- * @extends {BaseVectorLayer<VectorSourceType, CanvasVectorImageLayerRenderer>}
+ * @template {import("../Feature.js").default} FeatureType
+ * @extends {BaseVectorLayer<import("../source/Vector.js").default<FeatureType>, CanvasVectorImageLayerRenderer>}
  * @api
  */
 class VectorImageLayer extends BaseVectorLayer {
   /**
-   * @param {Options<VectorSourceType>} [options] Options.
+   * @param {Options<import("../source/Vector.js").default<FeatureType>>} [options] Options.
    */
   constructor(options) {
     options = options ? options : {};
