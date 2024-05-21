@@ -51,7 +51,7 @@ import {getUid} from '../util.js';
  * @property {import("../size.js").Size} [size] Icon size in pixels. Used together with `offset` to define the
  * sub-rectangle to use from the original (sprite) image.
  * @property {string} [src] Image source URI.
- * @property {"declutter"|"obstacle"|"none"|undefined} [declutterMode] Declutter mode.
+ * @property {import("./Style.js").DeclutterMode} [declutterMode] Declutter mode.
  */
 
 /**
@@ -186,7 +186,7 @@ class Icon extends ImageStyle {
     if (options.src !== undefined) {
       imageState = ImageState.IDLE;
     } else if (image !== undefined) {
-      if (image instanceof HTMLImageElement) {
+      if ('complete' in image) {
         if (image.complete) {
           imageState = image.src ? ImageState.LOADED : ImageState.IDLE;
         } else {

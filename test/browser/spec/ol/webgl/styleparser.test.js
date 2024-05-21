@@ -898,12 +898,12 @@ describe('ol.webgl.styleparser', () => {
           ],
           'circle-radius': 8,
           'circle-fill-color': ['get', 'color'],
-          'circle-scale': ['get', 'iconSize', 'number[]'],
+          'circle-scale': ['get', 'iconSize'],
         });
       });
       it('adds attributes to the shader builder', () => {
         expect(parseResult.builder.attributes_).to.eql([
-          'vec4 a_prop_iconSize',
+          'vec2 a_prop_iconSize',
           'float a_prop_lineType',
           'float a_prop_lineWidth',
           'vec2 a_prop_color',
@@ -915,7 +915,7 @@ describe('ol.webgl.styleparser', () => {
         expect(parseResult.builder.varyings_).to.eql([
           {
             name: 'v_prop_iconSize',
-            type: 'vec4',
+            type: 'vec2',
             expression: 'a_prop_iconSize',
           },
           {
@@ -943,7 +943,7 @@ describe('ol.webgl.styleparser', () => {
       });
       it('returns attributes with their callbacks in the result', () => {
         expect(parseResult.attributes).to.eql({
-          iconSize: {size: 4, callback: {}},
+          iconSize: {size: 2, callback: {}},
           color: {size: 2, callback: {}},
           lineType: {size: 1, callback: {}},
           lineWidth: {size: 1, callback: {}},
@@ -1015,7 +1015,7 @@ describe('ol.webgl.styleparser', () => {
       });
       it('adds uniforms to the shader builder', () => {
         expect(parseResult.builder.uniforms_).to.eql([
-          'vec4 u_var_iconSize',
+          'vec2 u_var_iconSize',
           'vec2 u_var_color',
           'float u_var_lineType',
           'float u_var_lineWidth',
@@ -1070,6 +1070,28 @@ describe('ol.webgl.styleparser', () => {
       expect(computeHash(path1)).not.to.eql(computeHash(path2));
       expect(computeHash(array1)).not.to.eql(computeHash(array2));
       expect(computeHash(path1)).not.to.eql(computeHash(array1));
+    });
+  });
+
+  describe('handle ambiguous match input', () => {
+    it('parses a match', () => {
+      const result = parseLiteralStyle({
+        'icon-src':
+          'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',
+        'icon-color': [
+          'match',
+          ['get', 'foo'],
+          'green',
+          [251, 173, 21, 0.5],
+          'red',
+          [251, 173, 21, 0.5],
+          [251, 173, 21, 0.5],
+        ],
+      });
+
+      expect(result.attributes.foo.callback({get: () => 'green'})).to.be.a(
+        'number',
+      );
     });
   });
 

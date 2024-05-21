@@ -15,7 +15,7 @@ import {isStringColor} from '../color.js';
  * Base type used for literal style parameters; can be a number literal or the output of an operator,
  * which in turns takes {@link import("./expression.js").ExpressionValue} arguments.
  *
- * The following operators can be used:
+ * See below for details on the available operators (with notes for those that are WebGL or Canvas only).
  *
  * * Reading operators:
  *   * `['band', bandIndex, xOffset, yOffset]` For tile layers only. Fetches pixel values from band
@@ -70,6 +70,15 @@ import {isStringColor} from '../color.js';
  *     `input` and `stopX` values must all be of type `number`. `outputX` values can be `number` or `color` values.
  *     Note: `input` will be clamped between `stop1` and `stopN`, meaning that all output values will be comprised
  *     between `output1` and `outputN`.
+ *   * `['string', value1, value2, ...]` returns the first value in the list that evaluates to a string.
+ *     An example would be to provide a default value for get: `['string', ['get', 'propertyname'], 'default value']]`
+ *     (Canvas only).
+ *   * `['number', value1, value2, ...]` returns the first value in the list that evaluates to a number.
+ *     An example would be to provide a default value for get: `['string', ['get', 'propertyname'], 42]]`
+ *     (Canvas only).
+ *   * `['coalesce', value1, value2, ...]` returns the first value in the list which is not null or undefined.
+ *     An example would be to provide a default value for get: `['coalesce', ['get','propertyname'], 'default value']]`
+ *     (Canvas only).
  *
  * * Logical operators:
  *   * `['<', value1, value2]` returns `true` if `value1` is strictly lower than `value2`, or `false` otherwise.
@@ -82,9 +91,9 @@ import {isStringColor} from '../color.js';
  *   * `['all', value1, value2, ...]` returns `true` if all the inputs are `true`, `false` otherwise.
  *   * `['any', value1, value2, ...]` returns `true` if any of the inputs are `true`, `false` otherwise.
  *   * `['between', value1, value2, value3]` returns `true` if `value1` is contained between `value2` and `value3`
- *     (inclusively), or `false` otherwise (WebGL only).
+ *     (inclusively), or `false` otherwise.
  *   * `['in', needle, haystack]` returns `true` if `needle` is found in `haystack`, and
- *     `false` otherwise (WebGL only).
+ *     `false` otherwise.
  *     This operator has the following limitations:
  *     * `haystack` has to be an array of numbers or strings (searching for a substring in a string is not supported yet)
  *     * Only literal arrays are supported as `haystack` for now; this means that `haystack` cannot be the result of an
@@ -102,6 +111,9 @@ import {isStringColor} from '../color.js';
  *     (e.g. `'#86A136'`), colors using the rgba[a] functional notation (e.g. `'rgb(134, 161, 54)'` or `'rgba(134, 161, 54, 1)'`),
  *     named colors (e.g. `'red'`), or array literals with 3 ([r, g, b]) or 4 ([r, g, b, a]) values (with r, g, and b
  *     in the 0-255 range and a in the 0-1 range) (WebGL only).
+ *   * `['to-string', value]` converts the input value to a string. If the input is a boolean, the result is "true" or "false".
+ *     If the input is a number, it is converted to a string as specified by the "NumberToString" algorithm of the ECMAScript
+ *     Language Specification. If the input is a color, it is converted to a string of the form "rgba(r,g,b,a)". (Canvas only)
  *
  * Values can either be literals or another operator, as they will be evaluated recursively.
  * Literal values can be of the following types:
@@ -122,6 +134,7 @@ export const NumberType = 1 << numTypes++;
 export const StringType = 1 << numTypes++;
 export const ColorType = 1 << numTypes++;
 export const NumberArrayType = 1 << numTypes++;
+export const SizeType = 1 << numTypes++;
 export const AnyType = Math.pow(2, numTypes) - 1;
 
 const typeNames = {
@@ -130,6 +143,7 @@ const typeNames = {
   [StringType]: 'string',
   [ColorType]: 'color',
   [NumberArrayType]: 'number[]',
+  [SizeType]: 'size',
 };
 
 const namedTypes = Object.keys(typeNames).map(Number).sort(ascending);
@@ -273,7 +287,10 @@ export function parse(encoded, context, typeHint) {
       return new LiteralExpression(BooleanType, encoded);
     }
     case 'number': {
-      return new LiteralExpression(NumberType, encoded);
+      return new LiteralExpression(
+        typeHint === SizeType ? SizeType : NumberType,
+        encoded,
+      );
     }
     case 'string': {
       let type = StringType;
@@ -310,7 +327,9 @@ export function parse(encoded, context, typeHint) {
   }
 
   let type = NumberArrayType;
-  if (encoded.length === 3 || encoded.length === 4) {
+  if (encoded.length === 2) {
+    type |= SizeType;
+  } else if (encoded.length === 3 || encoded.length === 4) {
     type |= ColorType;
   }
   if (typeHint) {
@@ -361,6 +380,7 @@ export const Ops = {
   Match: 'match',
   Between: 'between',
   Interpolate: 'interpolate',
+  Coalesce: 'coalesce',
   Case: 'case',
   In: 'in',
   Number: 'number',
@@ -370,6 +390,7 @@ export const Ops = {
   Id: 'id',
   Band: 'band',
   Palette: 'palette',
+  ToString: 'to-string',
 };
 
 /**
@@ -475,6 +496,19 @@ const parsers = {
     },
     withArgsCount(2, Infinity),
     parseArgsOfType(NumberType | ColorType),
+    narrowArgsType,
+  ),
+  [Ops.Coalesce]: createParser(
+    (parsedArgs) => {
+      let type = AnyType;
+      for (let i = 1; i < parsedArgs.length; i += 2) {
+        type &= parsedArgs[i].type;
+      }
+      type &= parsedArgs[parsedArgs.length - 1].type;
+      return type;
+    },
+    withArgsCount(2, Infinity),
+    parseArgsOfType(AnyType),
     narrowArgsType,
   ),
   [Ops.Divide]: createParser(
@@ -603,9 +637,11 @@ const parsers = {
   ),
   [Ops.Array]: createParser(
     (parsedArgs) => {
-      return parsedArgs.length === 3 || parsedArgs.length === 4
-        ? NumberArrayType | ColorType
-        : NumberArrayType;
+      return parsedArgs.length === 2
+        ? NumberArrayType | SizeType
+        : parsedArgs.length === 3 || parsedArgs.length === 4
+          ? NumberArrayType | ColorType
+          : NumberArrayType;
     },
     withArgsCount(1, Infinity),
     parseArgsOfType(NumberType),
@@ -621,6 +657,11 @@ const parsers = {
     parseArgsOfType(NumberType),
   ),
   [Ops.Palette]: createParser(ColorType, withArgsCount(2, 2), parsePaletteArgs),
+  [Ops.ToString]: createParser(
+    StringType,
+    withArgsCount(1, 1),
+    parseArgsOfType(BooleanType | NumberType | StringType | ColorType),
+  ),
 };
 
 /**
@@ -850,6 +891,7 @@ function parseMatchArgs(encoded, context, parsedArgs, typeHint) {
         `, got ${typeName(inputType)} instead`,
     );
   }
+  inputType &= expectedInputType;
   if (isType(outputType, NoneType)) {
     throw new Error(
       `Could not find a common output type for the following match operation: ` +

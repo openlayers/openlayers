@@ -17,9 +17,9 @@ import {get} from '../proj.js';
 import {inflateEnds} from '../geom/flat/orient.js';
 
 /**
- * @template {import("../Feature.js").FeatureClass} FeatureOrRenderFeature
+ * @template {import("../Feature.js").FeatureClass} FeatureClassToFeature
  * @typedef {Object} Options
- * @property {FeatureOrRenderFeature} [featureClass] Class for features returned by
+ * @property {FeatureClassToFeature} [featureClass] Class for features returned by
  * {@link module:ol/format/MVT~MVT#readFeatures}. Set to {@link module:ol/Feature~Feature} to get full editing and geometry
  * support at the cost of decreased rendering performance. The default is
  * {@link module:ol/render/Feature~RenderFeature}, which is optimized for rendering and hit detection.
@@ -55,13 +55,9 @@ class MVT extends FeatureFormat {
       units: 'tile-pixels',
     });
 
-    /**
-     * @private
-     * @type {import("../Feature.js").FeatureClass}
-     */
-    this.featureClass_ = options.featureClass
+    this.featureClass = options.featureClass
       ? options.featureClass
-      : RenderFeature;
+      : /** @type {T} */ (RenderFeature);
 
     /**
      * @private
@@ -188,8 +184,8 @@ class MVT extends FeatureFormat {
 
     const geometryType = getGeometryType(type, ends.length);
 
-    if (this.featureClass_ === RenderFeature) {
-      feature = new this.featureClass_(
+    if (this.featureClass === RenderFeature) {
+      feature = new /** @type {typeof RenderFeature} */ (this.featureClass)(
         geometryType,
         flatCoordinates,
         ends,
@@ -219,7 +215,7 @@ class MVT extends FeatureFormat {
                   : null;
       }
       const ctor = /** @type {typeof import("../Feature.js").default} */ (
-        this.featureClass_
+        this.featureClass
       );
       feature = new ctor();
       if (this.geometryName_) {
@@ -248,7 +244,7 @@ class MVT extends FeatureFormat {
    *
    * @param {ArrayBuffer} source Source.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
-   * @return {Array<import('./Feature.js').FeatureOrRenderFeature<T>>} Features.
+   * @return {Array<import('./Feature.js').FeatureClassToFeature<T>>} Features.
    * @api
    */
   readFeatures(source, options) {
@@ -279,7 +275,7 @@ class MVT extends FeatureFormat {
       }
     }
 
-    return /** @type {Array<import('./Feature.js').FeatureOrRenderFeature<T>>} */ (
+    return /** @type {Array<import('./Feature.js').FeatureClassToFeature<T>>} */ (
       features
     );
   }

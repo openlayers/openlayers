@@ -45,7 +45,7 @@ function getFont(font) {
 
 function loadStyles() {
   const styleUrl =
-    'https://api.maptiler.com/maps/topo-v2/style.json?key=get_your_own_D6rA4zTHduk6KOKTXzGB';
+    'https://api.maptiler.com/maps/streets-v2/style.json?key=get_your_own_D6rA4zTHduk6KOKTXzGB';
 
   fetch(styleUrl)
     .then((data) => data.json())
@@ -157,13 +157,20 @@ worker.addEventListener('message', (event) => {
   frameState.viewState.projection = get('EPSG:3857');
   layers.forEach((layer) => {
     if (inView(layer.getLayerState(), frameState.viewState)) {
+      if (layer.getDeclutter() && !frameState.declutterTree) {
+        frameState.declutter = {};
+      }
       const renderer = layer.getRenderer();
       renderer.renderFrame(frameState, canvas);
     }
   });
-  layers.forEach(
-    (layer) => layer.getRenderer().context && layer.renderDeclutter(frameState),
-  );
+  layers.forEach((layer) => {
+    if (!layer.getRenderer().context) {
+      return;
+    }
+    layer.renderDeclutter(frameState, layer.getLayerState());
+    layer.renderDeferred(frameState);
+  });
   if (tileQueue.getTilesLoading() < maxTotalLoading) {
     tileQueue.reprioritize();
     tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);

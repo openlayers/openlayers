@@ -10,6 +10,7 @@ import {
   NumberArrayType,
   NumberType,
   Ops,
+  SizeType,
   StringType,
   computeGeometryType,
   isType,
@@ -19,6 +20,7 @@ import {
 } from './expression.js';
 import {Uniforms} from '../renderer/webgl/TileLayer.js';
 import {asArray} from '../color.js';
+import {toSize} from '../size.js';
 
 /**
  * @param {string} operator Operator
@@ -70,6 +72,16 @@ export function colorToGlsl(color) {
     (array[2] / 255) * alpha,
     alpha,
   ]);
+}
+
+/**
+ * Normalizes and converts a number or array toa `vec2` array compatible with GLSL.
+ * @param {number|import('../size.js').Size} size Size.
+ * @return {string} The color expressed in the `vec4(1.0, 1.0, 1.0, 1.0)` form.
+ */
+export function sizeToGlsl(size) {
+  const array = toSize(size);
+  return arrayToGlsl(array);
 }
 
 /** @type {Object<string, number>} */
@@ -442,7 +454,9 @@ ${ifBlocks}
   // TODO: unimplemented
   // Ops.Number
   // Ops.String
+  // Ops.Coalesce
   // Ops.Concat
+  // Ops.ToString
 };
 
 /**
@@ -485,6 +499,12 @@ function compile(expression, returnType, context) {
 
   if ((expression.type & NumberArrayType) > 0) {
     return arrayToGlsl(/** @type {Array<number>} */ (expression.value));
+  }
+
+  if ((expression.type & SizeType) > 0) {
+    return sizeToGlsl(
+      /** @type {number|import('../size.js').Size} */ (expression.value),
+    );
   }
 
   throw new Error(

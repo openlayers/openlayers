@@ -13,7 +13,7 @@ import {
 } from '../render/canvas/style.js';
 
 /**
- * @template {import("../source/Vector.js").default|import("../source/VectorTile.js").default} VectorSourceType
+ * @template {import("../source/Vector.js").default<import('../Feature').FeatureLike>|import("../source/VectorTile.js").default<import('../Feature').FeatureLike>} VectorSourceType
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
@@ -43,16 +43,11 @@ import {
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
  * use [map.addLayer()]{@link import("../Map.js").default#addLayer}.
- * @property {boolean} [declutter=false] Declutter images and text. Decluttering is applied to all
- * image and text styles of all Vector and VectorTile layers that have set this to `true`. The priority
- * is defined by the z-index of the layer, the `zIndex` of the style and the render order of features.
- * Higher z-index means higher priority. Within the same z-index, a feature rendered before another has
- * higher priority.
- *
- * As an optimization decluttered features from layers with the same `className` are rendered above
- * the fill and stroke styles of all of those layers regardless of z-index.  To opt out of this
- * behavior and place declutterd features with their own layer configure the layer with a `className`
- * other than `ol-layer`.
+ * @property {boolean|string|number} [declutter=false] Declutter images and text. Any truthy value will enable
+ * decluttering. Within a layer, a feature rendered before another has higher priority. All layers with the
+ * same `declutter` value will be decluttered together. The priority is determined by the drawing order of the
+ * layers with the same `declutter` value. Higher in the layer stack means higher priority. To declutter distinct
+ * layers or groups of layers separately, use different truthy values for `declutter`.
  * @property {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike|null} [style] Layer style. When set to `null`, only
  * features that have their own style will be rendered. See {@link module:ol/style/Style~Style} for the default style
  * which will be used if this is not set.
@@ -82,7 +77,7 @@ const Property = {
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @template {import("../source/Vector.js").default|import("../source/VectorTile.js").default} VectorSourceType
+ * @template {import("../source/Vector.js").default<import('../Feature').FeatureLike>|import("../source/VectorTile.js").default<import('../Feature').FeatureLike>} VectorSourceType
  * @template {import("../renderer/canvas/VectorLayer.js").default|import("../renderer/canvas/VectorTileLayer.js").default|import("../renderer/canvas/VectorImageLayer.js").default|import("../renderer/webgl/PointsLayer.js").default} RendererType
  * @extends {Layer<VectorSourceType, RendererType>}
  * @api
@@ -104,10 +99,9 @@ class BaseVectorLayer extends Layer {
 
     /**
      * @private
-     * @type {boolean}
+     * @type {string}
      */
-    this.declutter_ =
-      options.declutter !== undefined ? options.declutter : false;
+    this.declutter_ = options.declutter ? String(options.declutter) : undefined;
 
     /**
      * @type {number}
@@ -118,7 +112,7 @@ class BaseVectorLayer extends Layer {
 
     /**
      * User provided style.
-     * @type {import("../style/Style.js").StyleLike}
+     * @type {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike}
      * @private
      */
     this.style_ = null;
@@ -152,7 +146,7 @@ class BaseVectorLayer extends Layer {
   }
 
   /**
-   * @return {boolean} Declutter.
+   * @return {string} Declutter group.
    */
   getDeclutter() {
     return this.declutter_;
@@ -196,7 +190,7 @@ class BaseVectorLayer extends Layer {
   /**
    * Get the style for features.  This returns whatever was passed to the `style`
    * option at construction or to the `setStyle` method.
-   * @return {import("../style/Style.js").StyleLike|null|undefined} Layer style.
+   * @return {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike|null|undefined} Layer style.
    * @api
    */
   getStyle() {
@@ -234,13 +228,11 @@ class BaseVectorLayer extends Layer {
    * @param {import("../layer/Layer.js").State} layerState Layer state.
    */
   renderDeclutter(frameState, layerState) {
-    if (!frameState.declutterTree) {
-      frameState.declutterTree = new RBush(9);
+    const declutterGroup = this.getDeclutter();
+    if (declutterGroup in frameState.declutter === false) {
+      frameState.declutter[declutterGroup] = new RBush(9);
     }
-    /** @type {*} */ (this.getRenderer()).renderDeclutter(
-      frameState,
-      layerState,
-    );
+    this.getRenderer().renderDeclutter(frameState, layerState);
   }
 
   /**
@@ -273,9 +265,10 @@ class BaseVectorLayer extends Layer {
    * @api
    */
   setStyle(style) {
-    this.style_ = toStyleLike(style);
+    this.style_ = style === undefined ? createDefaultStyle : style;
+    const styleLike = toStyleLike(style);
     this.styleFunction_ =
-      style === null ? undefined : toStyleFunction(this.style_);
+      style === null ? undefined : toStyleFunction(styleLike);
     this.changed();
   }
 }

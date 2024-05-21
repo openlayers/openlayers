@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><ows:ExceptionReport xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ows="http://www.opengis.net/ows" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0.0" xsi:schemaLocation="http://www.opengis.net/ows https://schemas.opengis.net/ows/1.0.0/owsExceptionReport.xsd">
+  <ows:Exception exceptionCode="NoApplicableCode">
+    <ows:ExceptionText>We have had issues trying to flip axis of GEOGCS["GCS_WGS_1984", 
+  DATUM["D_WGS_1984", 
+    SPHEROID["WGS_1984", 6378137.0, 298.257223563]], 
+  PRIMEM["Greenwich", 0.0], 
+  UNIT["degree", 0.017453292519943295], 
+  AXIS["Longitude", EAST], 
+  AXIS["Latitude", NORTH]]
+No authority was defined for code "GCS_WGS_1984". Did you forget "AUTHORITY:NUMBER"?</ows:ExceptionText>
+  </ows:Exception>
+</ows:ExceptionReport>

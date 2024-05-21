@@ -1,6 +1,30 @@
 ## Upgrade notes
 
+### 9.2.0
+
+#### The `snap` event's feature property is now never `null`
+
+Previously, listeners for the `Snap` interaction's `snap` event received `null` as value for the `feature` property when snapped to a segment. Now, the value of the `feature` property is always set to the snapped feature.
+
+To distinguish between a vertex and a segment snap, look at the `snap` event's `segment` property. It will set to `null` on a vertex snap, and to the snapped segment on a segment snap.
+
+### 9.1.0
+
+No special changes are required when upgrading to the 9.1.0 release.
+
 ### 9.0.0
+
+#### Improved render order of decluttered items
+
+Decluttered items in Vector and VectorTile layers now maintain the render order of the layers and within a layer. They do not get lifted to a higher place in the stack any more.
+
+For most use cases, this is the desired behavior. If, however, you've been relying on the previous behavior, you now have to create separate layers above the layer stack, with just the styles for the declutter items.
+
+#### Removal of `Map#flushDeclutterItems()`
+
+It is no longer necessary to call this function to put layers above decluttered symbols and text, because decluttering no longer lifts elements above the layer stack.
+
+To upgrade, simply remove the code where you use the `flushDeclutterItems()` method.
 
 #### Changes in `ol/style`
 
@@ -9,11 +33,15 @@
 
 #### `GeometryCollection` constructor
 
-`ol/geom/GeometryCollection` can no longer be created without providing a Geometry array. Emtpy arrays are still valid.
+`ol/geom/GeometryCollection` can no longer be created without providing a Geometry array. Empty arrays are still valid.
 
 #### `ol/interaction/Draw`
 
 * The `finishDrawing()` method now returns the drawn feature or `null` if no drawing could be finished. Previously it returned `undefined`.
+
+#### `ZoomToExtent` control in `useGeographic` mode
+
+The `ZoomToExtent` control now expects geographic coordinates when `useGeographic` is set. Before it expected coordinates in the projection of the map.
 
 ### 8.0.0
 

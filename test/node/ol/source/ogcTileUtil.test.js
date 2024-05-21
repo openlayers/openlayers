@@ -3,12 +3,13 @@ import events from 'events';
 import expect from '../../expect.js';
 import fse from 'fs-extra';
 import path from 'path';
-import {fileURLToPath} from 'url';
 import {
+  appendCollectionsQueryParam,
   getMapTileUrlTemplate,
   getTileSetInfo,
   getVectorTileUrlTemplate,
 } from '../../../../src/ol/source/ogcTileUtil.js';
+import {fileURLToPath} from 'url';
 import {overrideXHR, restoreXHR} from '../../../../src/ol/net.js';
 
 function getDataDir() {
@@ -127,6 +128,32 @@ describe('ol/source/ogcTileUtil.js', () => {
       expect(tileInfo.urlFunction([2, 0, 4])).to.be(undefined); // above max y
     });
 
+    it('orderedAxes overrides the projection axis orientation', async () => {
+      baseUrl = 'https://maps.ecere.com/';
+      const sourceInfo = {
+        url: 'https://maps.ecere.com/ogcapi/collections/ne_10m_admin_0_countries/tiles/WorldCRS84Quad',
+        projection: 'EPSG:4326',
+      };
+      const tileInfo = await getTileSetInfo(sourceInfo);
+      expect(tileInfo).to.be.an(Object);
+      expect(tileInfo.urlTemplate).to.be(
+        '/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WorldCRS84Quad/{tileMatrix}/{tileRow}/{tileCol}.json',
+      );
+      expect(tileInfo.grid).to.be.a(TileGrid);
+      expect(tileInfo.grid.getExtent()).to.eql([-180, -90, 180, 90]);
+      expect(tileInfo.grid.getTileSize(0)).to.eql([256, 256]);
+      expect(tileInfo.grid.getResolutions()).to.have.length(7);
+      expect(tileInfo.urlFunction).to.be.a(Function);
+      expect(tileInfo.urlFunction([3, 2, 1])).to.be(
+        'https://maps.ecere.com/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WorldCRS84Quad/3/1/2.json',
+      );
+      expect(tileInfo.urlFunction([2, -1, 0])).to.be(undefined); // below min x
+      expect(tileInfo.urlFunction([2, 4, 0])).to.not.be(undefined); // below max x
+      expect(tileInfo.urlFunction([2, 8, 0])).to.be(undefined); // above max x
+      expect(tileInfo.urlFunction([2, 0, -1])).to.be(undefined); // below min y
+      expect(tileInfo.urlFunction([2, 0, 4])).to.be(undefined); // above max y
+    });
+
     it('allows preferred media type to be configured', async () => {
       baseUrl = 'https://maps.ecere.com/';
       const sourceInfo = {
@@ -188,18 +215,22 @@ describe('ol/source/ogcTileUtil.js', () => {
   });
 
   describe('getVectorTileUrlTemplate()', () => {
+    let collectionLinks;
     let links;
     before(async () => {
-      const url = path.join(
+      const collectionUrl = path.join(
         getDataDir(),
         'ogcapi/collections/ne_10m_admin_0_countries/tiles/WebMercatorQuad.json',
       );
+      const collectionTileSet = await fse.readJSON(collectionUrl);
+      collectionLinks = collectionTileSet.links;
+      const url = path.join(getDataDir(), 'ogcapi/tiles/WebMercatorQuad.json');
       const tileSet = await fse.readJSON(url);
       links = tileSet.links;
     });
 
     it('gets the last known vector type if the preferred media type is absent', () => {
-      const urlTemplate = getVectorTileUrlTemplate(links);
+      const urlTemplate = getVectorTileUrlTemplate(collectionLinks);
       expect(urlTemplate).to.be(
         '/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.json',
       );
@@ -207,7 +238,7 @@ describe('ol/source/ogcTileUtil.js', () => {
 
     it('gets the preferred media type if given', () => {
       const urlTemplate = getVectorTileUrlTemplate(
-        links,
+        collectionLinks,
         'application/vnd.mapbox-vector-tile',
       );
       expect(urlTemplate).to.be(
@@ -216,7 +247,7 @@ describe('ol/source/ogcTileUtil.js', () => {
     });
 
     it('uses supported media types is preferred media type is not given', () => {
-      const urlTemplate = getVectorTileUrlTemplate(links, undefined, [
+      const urlTemplate = getVectorTileUrlTemplate(collectionLinks, undefined, [
         'application/vnd.mapbox-vector-tile',
       ]);
       expect(urlTemplate).to.be(
@@ -229,6 +260,18 @@ describe('ol/source/ogcTileUtil.js', () => {
         getVectorTileUrlTemplate([], 'application/vnd.mapbox-vector-tile');
       }
       expect(call).to.throwException('Could not find "item" link');
+    });
+
+    it('appends the collections query parameter if given', () => {
+      const urlTemplate = getVectorTileUrlTemplate(
+        links,
+        'application/vnd.mapbox-vector-tile',
+        undefined,
+        ['AeronauticCrv', 'CulturePnt'],
+      );
+      expect(urlTemplate).to.be(
+        '/ogcapi/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}?f=mvt&collections=AeronauticCrv,CulturePnt',
+      );
     });
   });
 
@@ -262,6 +305,44 @@ describe('ol/source/ogcTileUtil.js', () => {
         getMapTileUrlTemplate([], 'image/png');
       }
       expect(call).to.throwException('Could not find "item" link');
+    });
+  });
+
+  describe('appendCollectionsQueryParam()', () => {
+    const collectionUrl =
+      '/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad.json';
+    const url = '/ogcapi/tiles/WebMercatorQuad.json';
+    it('appends the collections parameter to the url', () => {
+      const collections = ['foo', 'bar'];
+      const appendedUrl = appendCollectionsQueryParam(url, collections);
+      expect(appendedUrl).to.be(
+        '/ogcapi/tiles/WebMercatorQuad.json?collections=foo,bar',
+      );
+    });
+
+    it('returns the original url, if collections is empty', () => {
+      const collections = [];
+      const appendedUrl = appendCollectionsQueryParam(url, collections);
+      expect(appendedUrl).to.be('/ogcapi/tiles/WebMercatorQuad.json');
+    });
+
+    it('returns the original url, if it points to a collection tileset', () => {
+      const collections = ['foo'];
+      const appendedUrl = appendCollectionsQueryParam(
+        collectionUrl,
+        collections,
+      );
+      expect(appendedUrl).to.be(
+        '/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad.json',
+      );
+    });
+
+    it('urlencodes a comma in the collection identifier', () => {
+      const collections = ['foo,bar', 'baz'];
+      const appendedUrl = appendCollectionsQueryParam(url, collections);
+      expect(appendedUrl).to.be(
+        '/ogcapi/tiles/WebMercatorQuad.json?collections=foo%2Cbar,baz',
+      );
     });
   });
 });

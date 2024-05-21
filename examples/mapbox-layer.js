@@ -11,7 +11,7 @@ const center = [-98.8, 37.9];
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
 
 const mbMap = new mapboxgl.Map({
-  style: 'https://api.maptiler.com/maps/bright/style.json?key=' + key,
+  style: 'https://api.maptiler.com/maps/dataviz-light/style.json?key=' + key,
   attributionControl: false,
   boxZoom: false,
   center: center,

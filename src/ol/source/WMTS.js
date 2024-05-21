@@ -361,7 +361,7 @@ export default WMTS;
  */
 export function optionsFromCapabilities(wmtsCap, config) {
   const layers = wmtsCap['Contents']['Layer'];
-  const l = layers.find(function (elt) {
+  const l = layers?.find(function (elt) {
     return elt['Identifier'] == config['layer'];
   });
   if (!l) {

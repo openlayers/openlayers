@@ -7,6 +7,7 @@ import {
   ColorType,
   NumberArrayType,
   NumberType,
+  SizeType,
   StringType,
   newParsingContext,
 } from '../expr/expression.js';
@@ -67,7 +68,7 @@ const UNPACK_COLOR_FN = `vec4 unpackColor(vec2 packedColor) {
  * @return {1|2|3|4} The amount of components for this value
  */
 function getGlslSizeFromType(type) {
-  if (type === ColorType) {
+  if (type === ColorType || type === SizeType) {
     return 2;
   }
   if (type === NumberArrayType) {
@@ -134,7 +135,7 @@ function parseCommonSymbolProperties(style, builder, vertContext, prefix) {
     const scale = expressionToGlsl(
       vertContext,
       style[`${prefix}scale`],
-      NumberType | NumberArrayType,
+      SizeType,
     );
     builder.setSymbolSizeExpression(
       `${builder.getSymbolSizeExpression()} * ${scale}`,
@@ -301,7 +302,7 @@ function parseCircleProperties(
     const scale = expressionToGlsl(
       fragContext,
       style['circle-scale'],
-      NumberType | NumberArrayType,
+      SizeType,
     );
     currentPoint = `coordsPx / ${scale}`;
   }
@@ -420,11 +421,7 @@ function parseShapeProperties(
   // SCALE
   let currentPoint = 'coordsPx';
   if ('shape-scale' in style) {
-    const scale = expressionToGlsl(
-      fragContext,
-      style['shape-scale'],
-      NumberType | NumberArrayType,
-    );
+    const scale = expressionToGlsl(fragContext, style['shape-scale'], SizeType);
     currentPoint = `coordsPx / ${scale}`;
   }
 
@@ -584,11 +581,7 @@ function parseIconProperties(
     );
     let scale = `1.0`;
     if (`icon-scale` in style) {
-      scale = expressionToGlsl(
-        vertContext,
-        style[`icon-scale`],
-        NumberType | NumberArrayType,
-      );
+      scale = expressionToGlsl(vertContext, style[`icon-scale`], SizeType);
     }
     let shiftPx;
     if (

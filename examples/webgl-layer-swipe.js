@@ -13,7 +13,8 @@ const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
 
 const imagery = new TileLayer({
   source: new XYZ({
-    url: 'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=' + key,
+    url: 'https://api.maptiler.com/maps/satellite/{z}/{x}/{y}.jpg?key=' + key,
+    tileSize: 512,
     attributions:
       '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
       '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',

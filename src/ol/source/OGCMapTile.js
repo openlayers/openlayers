@@ -33,13 +33,17 @@ import {error as logError} from '../console.js';
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  * @property {number} [transition] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
+ * @property {Array<string>} [collections] A list of geospatial data sub-resources to include. If not provided, the entire dataset will
+ * be included. This option is not applicable when requesting the tileset for a single collection.
  */
 
 /**
  * @classdesc
  * Layer source for map tiles from an [OGC API - Tiles](https://ogcapi.ogc.org/tiles/) service that provides "map" type tiles.
  * The service must conform to at least the core (http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/core)
- * and tileset (http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/tileset) conformance classes.
+ * and tileset (http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/tileset) conformance classes. For supporting the `collections`
+ * option, the service must conform to the collections selection
+ * (http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/collections-selection) conformance class.
  * @api
  */
 class OGCMapTile extends TileImage {
@@ -65,6 +69,7 @@ class OGCMapTile extends TileImage {
       projection: this.getProjection(),
       mediaType: options.mediaType,
       context: options.context || null,
+      collections: options.collections,
     };
 
     getTileSetInfo(sourceInfo)

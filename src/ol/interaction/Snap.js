@@ -554,6 +554,7 @@ class Snap extends PointerInteraction {
                 ? null
                 : segmentData.segment;
             minSquaredDistance = delta;
+            closestFeature = segmentData.feature;
           }
         }
       }
@@ -586,9 +587,9 @@ class Snap extends PointerInteraction {
     let circleGeometry = geometry;
     const userProjection = getUserProjection();
     if (userProjection) {
-      circleGeometry = /** @type {import("../geom/Circle.js").default} */ (
-        circleGeometry.clone().transform(userProjection, projection)
-      );
+      circleGeometry = circleGeometry
+        .clone()
+        .transform(userProjection, projection);
     }
     const polygon = fromCircle(circleGeometry);
     if (userProjection) {

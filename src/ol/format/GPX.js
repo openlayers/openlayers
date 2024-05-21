@@ -10,6 +10,7 @@ import {
   OBJECT_PROPERTY_NODE_FACTORY,
   XML_SCHEMA_INSTANCE_URI,
   createElementNS,
+  isDocument,
   makeArrayPusher,
   makeArraySerializer,
   makeChildAppender,
@@ -17,6 +18,7 @@ import {
   makeSequence,
   makeSimpleNodeFactory,
   makeStructureNS,
+  parse,
   parseNode,
   pushParseAndPop,
   pushSerializeAndPop,
@@ -74,6 +76,12 @@ const GPX_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
+ * @typedef {Object} GPXLink
+ * @property {string} [text] text
+ * @property {string} [type] type
+ */
+
+/**
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
@@ -81,6 +89,71 @@ const GPX_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 const LINK_PARSERS = makeStructureNS(NAMESPACE_URIS, {
   'text': makeObjectPropertySetter(readString, 'linkText'),
   'type': makeObjectPropertySetter(readString, 'linkType'),
+});
+
+/**
+ * @typedef {Object} GPXAuthor
+ * @property {string} [name] name
+ * @property {string} [email] email
+ * @property {GPXLink} [link] link
+ */
+
+/**
+ * @const
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ */
+// @ts-ignore
+const AUTHOR_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+  'name': makeObjectPropertySetter(readString),
+  'email': parseEmail,
+  'link': parseLink,
+});
+
+/**
+ * @typedef {Object} GPXMetadata
+ * @property {string} [name] name
+ * @property {string} [desc] desc
+ * @property {GPXAuthor} [author] author
+ * @property {GPXLink} [link] link
+ * @property {number} [time] time
+ * @property {string} [keywords] keywords
+ * @property {Array<number>} [bounds] bounds
+ * @property {Object} [extensions] extensions
+ *
+ */
+
+/**
+ * @const
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ */
+// @ts-ignore
+const METADATA_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+  'name': makeObjectPropertySetter(readString),
+  'desc': makeObjectPropertySetter(readString),
+  'author': makeObjectPropertySetter(readAuthor),
+  'copyright': makeObjectPropertySetter(readCopyright),
+  'link': parseLink,
+  'time': makeObjectPropertySetter(readDateTime),
+  'keywords': makeObjectPropertySetter(readString),
+  'bounds': parseBounds,
+  'extensions': parseExtensions,
+});
+
+/**
+ * @typedef {Object} GPXCopyright
+ * @property {string} [author] author
+ * @property {number} [year] year
+ * @property {string} [license] license
+ */
+
+/**
+ * @const
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ */
+// @ts-ignore
+const COPYRIGHT_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+  'year': makeObjectPropertySetter(readPositiveInteger),
+  'license': makeObjectPropertySetter(readString),
 });
 
 /**
@@ -163,6 +236,66 @@ class GPX extends XMLFeature {
       }
       feature.set('extensionsNode_', undefined);
     }
+  }
+
+  /**
+   * Reads a GPX file's metadata tag, reading among other things:
+   *   - the name and description of this GPX
+   *   - its author
+   *   - the copyright associated with this GPX file
+   *
+   * Will return null if no metadata tag is present (or no valid source is given).
+   *
+   * @param {Document|Element|Object|string} source Source.
+   * @return {GPXMetadata | null} Metadata
+   * @api
+   */
+  readMetadata(source) {
+    if (!source) {
+      return null;
+    }
+    if (typeof source === 'string') {
+      return this.readMetadataFromDocument(parse(source));
+    }
+    if (isDocument(source)) {
+      return this.readMetadataFromDocument(/** @type {Document} */ (source));
+    }
+    return this.readMetadataFromNode(source);
+  }
+
+  /**
+   * @param {Document} doc Document.
+   * @return {GPXMetadata | null} Metadata
+   */
+  readMetadataFromDocument(doc) {
+    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
+      if (n.nodeType === Node.ELEMENT_NODE) {
+        const metadata = this.readMetadataFromNode(/** @type {Element} */ (n));
+        if (metadata) {
+          return metadata;
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
+   * @param {Element} node Node.
+   * @return {Object} Metadata
+   */
+  readMetadataFromNode(node) {
+    if (!NAMESPACE_URIS.includes(node.namespaceURI)) {
+      return null;
+    }
+    for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
+      if (
+        NAMESPACE_URIS.includes(n.namespaceURI) &&
+        n.localName === 'metadata'
+      ) {
+        return pushParseAndPop({}, METADATA_PARSERS, n, []);
+      }
+    }
+    return null;
   }
 
   /**
@@ -587,6 +720,72 @@ function applyLayoutOptions(layoutOptions, flatCoordinates, ends) {
     }
   }
   return layout;
+}
+
+/**
+ * @param {Element} node Node.
+ * @param {Array<any>} objectStack Object stack.
+ * @return {GPXAuthor | undefined} Person object.
+ */
+function readAuthor(node, objectStack) {
+  const values = pushParseAndPop({}, AUTHOR_PARSERS, node, objectStack);
+  if (values) {
+    return values;
+  }
+  return undefined;
+}
+
+/**
+ * @param {Element} node Node.
+ * @param {Array<any>} objectStack Object stack.
+ * @return {GPXCopyright | undefined} Person object.
+ */
+function readCopyright(node, objectStack) {
+  const values = pushParseAndPop({}, COPYRIGHT_PARSERS, node, objectStack);
+  if (values) {
+    const author = node.getAttribute('author');
+    if (author !== null) {
+      values['author'] = author;
+    }
+    return values;
+  }
+  return undefined;
+}
+
+/**
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
+ */
+function parseBounds(node, objectStack) {
+  const values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
+  const minlat = node.getAttribute('minlat');
+  const minlon = node.getAttribute('minlon');
+  const maxlat = node.getAttribute('maxlat');
+  const maxlon = node.getAttribute('maxlon');
+  if (
+    minlon !== null &&
+    minlat !== null &&
+    maxlon !== null &&
+    maxlat !== null
+  ) {
+    values['bounds'] = [
+      [parseFloat(minlon), parseFloat(minlat)],
+      [parseFloat(maxlon), parseFloat(maxlat)],
+    ];
+  }
+}
+
+/**
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
+ */
+function parseEmail(node, objectStack) {
+  const values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
+  const id = node.getAttribute('id');
+  const domain = node.getAttribute('domain');
+  if (id !== null && domain !== null) {
+    values['email'] = `${id}@${domain}`;
+  }
 }
 
 /**

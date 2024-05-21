@@ -7,8 +7,6 @@ import ViewHint from '../../ViewHint.js';
 import {
   apply as applyTransform,
   compose as composeTransform,
-  makeInverse,
-  toString as toTransformString,
 } from '../../transform.js';
 import {
   containsCoordinate,
@@ -167,39 +165,13 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     const scaleY =
       (pixelRatio * imageResolutionY) / (viewResolution * imagePixelRatio);
 
-    const extent = frameState.extent;
-    const resolution = viewState.resolution;
-    const rotation = viewState.rotation;
+    this.prepareContainer(frameState, target);
+
     // desired dimensions of the canvas in pixels
-    const width = Math.round((getWidth(extent) / resolution) * pixelRatio);
-    const height = Math.round((getHeight(extent) / resolution) * pixelRatio);
+    const width = this.context.canvas.width;
+    const height = this.context.canvas.height;
 
-    // set forward and inverse pixel transforms
-    composeTransform(
-      this.pixelTransform,
-      frameState.size[0] / 2,
-      frameState.size[1] / 2,
-      1 / pixelRatio,
-      1 / pixelRatio,
-      rotation,
-      -width / 2,
-      -height / 2,
-    );
-    makeInverse(this.inversePixelTransform, this.pixelTransform);
-
-    const canvasTransform = toTransformString(this.pixelTransform);
-
-    this.useContainer(target, canvasTransform, this.getBackground(frameState));
-
-    const context = this.context;
-    const canvas = context.canvas;
-
-    if (canvas.width != width || canvas.height != height) {
-      canvas.width = width;
-      canvas.height = height;
-    } else if (!this.containerReused) {
-      context.clearRect(0, 0, width, height);
-    }
+    const context = this.getRenderContext(frameState);
 
     // clipped rendering if layer extent is set
     let clipped = false;
@@ -243,26 +215,21 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       const dx = transform[4];
       const dy = transform[5];
       const opacity = layerState.opacity;
-      let previousAlpha;
       if (opacity !== 1) {
-        previousAlpha = context.globalAlpha;
+        context.save();
         context.globalAlpha = opacity;
       }
       context.drawImage(img, 0, 0, +img.width, +img.height, dx, dy, dw, dh);
       if (opacity !== 1) {
-        context.globalAlpha = previousAlpha;
+        context.restore();
       }
     }
-    this.postRender(context, frameState);
+    this.postRender(this.context, frameState);
 
     if (clipped) {
       context.restore();
     }
     context.imageSmoothingEnabled = true;
-
-    if (canvasTransform !== canvas.style.transform) {
-      canvas.style.transform = canvasTransform;
-    }
 
     return this.container;
   }

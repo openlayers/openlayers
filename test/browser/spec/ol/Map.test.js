@@ -1082,6 +1082,63 @@ describe('ol/Map', function () {
       });
     });
 
+    it('layers dispatch prerender and postrender when not decluttering', function (done) {
+      const layer = new VectorLayer({source: new VectorSource()});
+      let prerender = false;
+      let postrender = false;
+      const renderDeferredSpy = sinon.spy(
+        layer.getRenderer(),
+        'renderDeferred',
+      );
+      layer.on('prerender', () => (prerender = true));
+      layer.on('postrender', () => {
+        expect(renderDeferredSpy.callCount).to.be(0);
+        renderDeferredSpy.restore();
+        postrender = true;
+      });
+      map.addLayer(layer);
+      map.once('postrender', () => {
+        try {
+          expect(prerender).to.be(true);
+          expect(postrender).to.be(true);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      });
+      map.render();
+    });
+
+    it('layers dispatch prerender and postrender when decluttering', function (done) {
+      const layer = new VectorLayer({
+        source: new VectorSource(),
+        declutter: true,
+      });
+      let prerender = false;
+      let postrender = false;
+      const renderDeferredSpy = sinon.spy(
+        layer.getRenderer(),
+        'renderDeferred',
+      );
+      layer.on('prerender', () => (prerender = true));
+      layer.on('postrender', () => {
+        expect(renderDeferredSpy.callCount).to.be(1);
+        renderDeferredSpy.restore();
+        postrender = true;
+      });
+      map.addLayer(layer);
+      map.once('postrender', () => {
+        try {
+          expect(prerender).to.be(true);
+          expect(postrender).to.be(true);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      });
+      map.render();
+    });
+
     it('uses the same render frame for subsequent calls', function () {
       map.render();
       const id1 = map.animationDelayKey_;
@@ -1122,62 +1179,6 @@ describe('ol/Map', function () {
         expect(frameState).to.be(null);
         done();
       });
-    });
-  });
-
-  describe('#fushDeclutterItems()', function () {
-    let map;
-
-    beforeEach(function () {
-      map = new Map({
-        target: createMapDiv(100, 100),
-        view: new View({
-          projection: 'EPSG:4326',
-          center: [0, 0],
-          resolution: 1,
-        }),
-      });
-    });
-
-    afterEach(function () {
-      disposeMap(map);
-    });
-
-    it('calls renderDeclutter() on all layers with a lower layer index', function () {
-      const createFeatures = () => [
-        new Feature(new Point([0, 0])),
-        new Feature(new Point([-1, 0])),
-        new Feature(new Point([1, 0])),
-      ];
-      const layer1 = new VectorLayer({
-        source: new VectorSource({features: createFeatures()}),
-      });
-      const layer2 = new VectorLayer({
-        source: new VectorSource({features: createFeatures()}),
-      });
-      const layer3 = new VectorLayer({
-        source: new VectorSource({features: createFeatures()}),
-      });
-      map.addLayer(layer1);
-      map.addLayer(layer2);
-      map.addLayer(layer3);
-
-      const spy1 = sinon.spy(layer1, 'renderDeclutter');
-      const spy2 = sinon.spy(layer2, 'renderDeclutter');
-      const spy3 = sinon.spy(layer3, 'renderDeclutter');
-
-      layer3.on('prerender', () => {
-        map.flushDeclutterItems();
-        expect(spy1.callCount).to.be(1);
-        expect(spy2.callCount).to.be(1);
-        expect(spy3.callCount).to.be(0);
-      });
-
-      map.renderSync();
-
-      expect(spy1.callCount).to.be(1);
-      expect(spy2.callCount).to.be(1);
-      expect(spy3.callCount).to.be(1);
     });
   });
 

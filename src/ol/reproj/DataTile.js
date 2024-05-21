@@ -14,11 +14,17 @@ import {
 } from '../reproj.js';
 import {clamp} from '../math.js';
 import {createCanvasContext2D, releaseCanvas} from '../dom.js';
-import {getArea, getIntersection} from '../extent.js';
+import {getArea, getIntersection, getWidth, wrapAndSliceX} from '../extent.js';
 import {listen, unlistenByKey} from '../events.js';
 
 /**
  * @typedef {function(number, number, number, number) : import("../DataTile.js").default} TileGetter
+ */
+
+/**
+ * @typedef {Object} TileOffset
+ * @property {DataTile} tile Tile.
+ * @property {number} offset Offset.
  */
 
 /**
@@ -107,7 +113,7 @@ class ReprojDataTile extends DataTile {
 
     /**
      * @private
-     * @type {!Array<DataTile>}
+     * @type {!Array<TileOffset>}
      */
     this.sourceTiles_ = [];
 
@@ -122,6 +128,20 @@ class ReprojDataTile extends DataTile {
      * @type {number}
      */
     this.sourceZ_ = 0;
+
+    const sourceProj = options.sourceProj;
+    const sourceProjExtent = sourceProj.getExtent();
+    const sourceTileGridExtent = options.sourceTileGrid.getExtent();
+
+    /**
+     * @private
+     * @type {import("../extent.js").Extent}
+     */
+    this.clipExtent_ = sourceProj.canWrapX()
+      ? sourceTileGridExtent
+        ? getIntersection(sourceProjExtent, sourceTileGridExtent)
+        : sourceProjExtent
+      : sourceTileGridExtent;
 
     const targetExtent = this.targetTileGrid_.getTileCoordExtent(
       this.wrappedTileCoord_,
@@ -140,8 +160,6 @@ class ReprojDataTile extends DataTile {
       return;
     }
 
-    const sourceProj = options.sourceProj;
-    const sourceProjExtent = sourceProj.getExtent();
     if (sourceProjExtent) {
       if (!maxSourceExtent) {
         maxSourceExtent = sourceProjExtent;
@@ -216,19 +234,37 @@ class ReprojDataTile extends DataTile {
     if (!getArea(sourceExtent)) {
       this.state = TileState.EMPTY;
     } else {
-      const sourceRange = this.sourceTileGrid_.getTileRangeForExtentAndZ(
-        sourceExtent,
-        this.sourceZ_,
+      let worldWidth = 0;
+      let worldsAway = 0;
+      if (sourceProj.canWrapX()) {
+        worldWidth = getWidth(sourceProjExtent);
+        worldsAway = Math.floor(
+          (sourceExtent[0] - sourceProjExtent[0]) / worldWidth,
+        );
+      }
+
+      const sourceExtents = wrapAndSliceX(
+        sourceExtent.slice(),
+        sourceProj,
+        true,
       );
-      const getTile = options.getTileFunction;
-      for (let srcX = sourceRange.minX; srcX <= sourceRange.maxX; srcX++) {
-        for (let srcY = sourceRange.minY; srcY <= sourceRange.maxY; srcY++) {
-          const tile = getTile(this.sourceZ_, srcX, srcY, this.pixelRatio_);
-          if (tile) {
-            this.sourceTiles_.push(tile);
+      sourceExtents.forEach((extent) => {
+        const sourceRange = this.sourceTileGrid_.getTileRangeForExtentAndZ(
+          extent,
+          this.sourceZ_,
+        );
+        const getTile = options.getTileFunction;
+        for (let srcX = sourceRange.minX; srcX <= sourceRange.maxX; srcX++) {
+          for (let srcY = sourceRange.minY; srcY <= sourceRange.maxY; srcY++) {
+            const tile = getTile(this.sourceZ_, srcX, srcY, this.pixelRatio_);
+            if (tile) {
+              const offset = worldsAway * worldWidth;
+              this.sourceTiles_.push({tile, offset});
+            }
           }
         }
-      }
+        ++worldsAway;
+      });
 
       if (this.sourceTiles_.length === 0) {
         this.state = TileState.EMPTY;
@@ -265,7 +301,8 @@ class ReprojDataTile extends DataTile {
    */
   reproject_() {
     const dataSources = [];
-    this.sourceTiles_.forEach((tile) => {
+    this.sourceTiles_.forEach((source) => {
+      const tile = source.tile;
       if (!tile || tile.getState() !== TileState.LOADED) {
         return;
       }
@@ -306,8 +343,17 @@ class ReprojDataTile extends DataTile {
           rowOffset += bytesPerRow / bytesPerElement;
         }
       }
+      const extent = this.sourceTileGrid_.getTileCoordExtent(tile.tileCoord);
+      extent[0] += source.offset;
+      extent[2] += source.offset;
+      const clipExtent = this.clipExtent_?.slice();
+      if (clipExtent) {
+        clipExtent[0] += source.offset;
+        clipExtent[2] += source.offset;
+      }
       dataSources.push({
-        extent: this.sourceTileGrid_.getTileCoordExtent(tile.tileCoord),
+        extent: extent,
+        clipExtent: clipExtent,
         data: new Uint8Array(packedData.buffer),
         dataType: DataType,
         bytesPerPixel: bytesPerPixel,
@@ -359,6 +405,7 @@ class ReprojDataTile extends DataTile {
           context.putImageData(imageData, 0, 0);
           sources.push({
             extent: dataSource.extent,
+            clipExtent: dataSource.clipExtent,
             image: context.canvas,
           });
         }
@@ -376,6 +423,8 @@ class ReprojDataTile extends DataTile {
           this.gutter_,
           false,
           false,
+          false,
+          //true,
         );
 
         for (let i = 0, len = sources.length; i < len; ++i) {
@@ -442,7 +491,7 @@ class ReprojDataTile extends DataTile {
     let leftToLoad = 0;
 
     this.sourcesListenerKeys_ = [];
-    this.sourceTiles_.forEach((tile) => {
+    this.sourceTiles_.forEach(({tile}) => {
       const state = tile.getState();
       if (state !== TileState.IDLE && state !== TileState.LOADING) {
         return;
@@ -475,7 +524,7 @@ class ReprojDataTile extends DataTile {
     if (leftToLoad === 0) {
       setTimeout(this.reproject_.bind(this), 0);
     } else {
-      this.sourceTiles_.forEach(function (tile) {
+      this.sourceTiles_.forEach(function ({tile}) {
         const state = tile.getState();
         if (state == TileState.IDLE) {
           tile.load();

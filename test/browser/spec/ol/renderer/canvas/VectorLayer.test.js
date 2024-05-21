@@ -1,5 +1,6 @@
 import CanvasVectorLayerRenderer from '../../../../../../src/ol/renderer/canvas/VectorLayer.js';
 import Feature from '../../../../../../src/ol/Feature.js';
+import GeoJSON from '../../../../../../src/ol/format/GeoJSON.js';
 import Map from '../../../../../../src/ol/Map.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import Style from '../../../../../../src/ol/style/Style.js';
@@ -411,6 +412,9 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       expect(renderer.replayGroupChanged).to.be(true);
       renderer.prepareFrame(frameState);
       expect(renderer.replayGroupChanged).to.be(false);
+      frameState.declutter = {};
+      renderer.prepareFrame(frameState);
+      expect(renderer.replayGroupChanged).to.be(true);
     });
 
     it('dispatches a postrender event when rendering', function () {
@@ -465,7 +469,7 @@ describe('ol/renderer/canvas/VectorLayer', function () {
         size: [100, 100],
         viewState: {
           projection: projection,
-          resolution: 1,
+          resolution: 200,
           rotation: 0,
         },
       };
@@ -560,6 +564,36 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       }
       expect(renderer.renderWorlds.callCount).to.be(1);
       expect(renderer.clipUnrotated.callCount).to.be(0);
+    });
+  });
+
+  describe('#renderDeclutter', () => {
+    it('does not throw on decluttered layer with postrender listener entering zoom range without loaded data', (done) => {
+      const vectorLayer = new VectorLayer({
+        background: '#1a2b39',
+        source: new VectorSource({
+          url: 'data:application/json;utf-8,{"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[0,0]}}]}',
+          format: new GeoJSON(),
+        }),
+        minZoom: 3,
+        declutter: true,
+      });
+      const map = new Map({
+        layers: [vectorLayer],
+        target: document.createElement('div'),
+        view: new View({
+          center: [0, 0],
+          zoom: 2,
+        }),
+      });
+      vectorLayer.on('postrender', function postrender() {
+        if (map.getView().getZoom() > vectorLayer.getMinZoom()) {
+          vectorLayer.un('postrender', postrender);
+          done();
+        }
+      });
+      map.setSize([100, 100]);
+      map.getView().animate({zoom: 3.01});
     });
   });
 });

@@ -205,6 +205,10 @@ class DragBox extends PointerInteraction {
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    */
   handleDragEvent(mapBrowserEvent) {
+    if (!this.startPixel_) {
+      return;
+    }
+
     this.box_.setPixels(this.startPixel_, mapBrowserEvent.pixel);
 
     this.dispatchEvent(
@@ -222,6 +226,10 @@ class DragBox extends PointerInteraction {
    * @return {boolean} If the event was consumed.
    */
   handleUpEvent(mapBrowserEvent) {
+    if (!this.startPixel_) {
+      return false;
+    }
+
     this.box_.setMap(null);
 
     const completeBox = this.boxEndCondition_(
@@ -269,6 +277,26 @@ class DragBox extends PointerInteraction {
    * @param {import("../MapBrowserEvent.js").default} event Event.
    */
   onBoxEnd(event) {}
+
+  /**
+   * Activate or deactivate the interaction.
+   * @param {boolean} active Active.
+   * @observable
+   * @api
+   */
+  setActive(active) {
+    if (!active) {
+      this.box_.setMap(null);
+      if (this.startPixel_) {
+        this.dispatchEvent(
+          new DragBoxEvent(DragBoxEventType.BOXCANCEL, this.startPixel_, null),
+        );
+        this.startPixel_ = null;
+      }
+    }
+
+    super.setActive(active);
+  }
 }
 
 export default DragBox;

@@ -33,7 +33,7 @@ import {isEmpty} from '../obj.js';
  */
 
 /**
- * @template {import("../Feature.js").FeatureClass} FeatureOrRenderFeature
+ * @template {import("../Feature.js").FeatureClass} FeatureClassToFeature
  * @typedef {Object} Options
  *
  * @property {import("../proj.js").ProjectionLike} [dataProjection='EPSG:4326'] Default data projection.
@@ -44,7 +44,7 @@ import {isEmpty} from '../obj.js';
  * the geometry_name field in the feature GeoJSON. If set to `true` the GeoJSON reader
  * will look for that field to set the geometry name. If both this field is set to `true`
  * and a `geometryName` is provided, the `geometryName` will take precedence.
- * @property {FeatureOrRenderFeature} [featureClass] Feature class
+ * @property {FeatureClassToFeature} [featureClass] Feature class
  * to be used when reading features. The default is {@link module:ol/Feature~Feature}. If performance is
  * the primary concern, and features are not going to be modified or round-tripped through the format,
  * consider using {@link module:ol/render/Feature~RenderFeature}

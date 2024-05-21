@@ -95,8 +95,13 @@ import {
  */
 
 /***
+ * @template {Feature|RenderFeature} T
+ * @typedef {T extends RenderFeature ? typeof RenderFeature : typeof Feature} FeatureToFeatureClass
+ */
+
+/***
  * @template {import("../Feature.js").FeatureClass} T
- * @typedef {T extends typeof import("../render/Feature.js").default ? import("../render/Feature.js").default : import("../Feature.js").default} FeatureOrRenderFeature<T>
+ * @typedef {T[keyof T] extends RenderFeature ? RenderFeature : Feature} FeatureClassToFeature
  */
 
 /**
@@ -128,9 +133,9 @@ class FeatureFormat {
 
     /**
      * @protected
-     * @type {import("../Feature.js").FeatureClass}
+     * @type {T}
      */
-    this.featureClass = Feature;
+    this.featureClass = /** @type {T} */ (Feature);
 
     /**
      * A list media types supported by the format in descending order of preference.
@@ -213,7 +218,7 @@ class FeatureFormat {
    * @abstract
    * @param {Document|Element|ArrayBuffer|Object|string} source Source.
    * @param {ReadOptions} [options] Read options.
-   * @return {Array<FeatureOrRenderFeature<T>>} Features.
+   * @return {Array<import('../Feature.js').FeatureLike|FeatureClassToFeature<T>>} Features.
    */
   readFeatures(source, options) {
     return abstract();
@@ -246,7 +251,7 @@ class FeatureFormat {
    * Encode a feature in this format.
    *
    * @abstract
-   * @param {import("../Feature.js").default} feature Feature.
+   * @param {Feature} feature Feature.
    * @param {WriteOptions} [options] Write options.
    * @return {string|ArrayBuffer} Result.
    */
@@ -258,7 +263,7 @@ class FeatureFormat {
    * Encode an array of features in this format.
    *
    * @abstract
-   * @param {Array<import("../Feature.js").default>} features Features.
+   * @param {Array<Feature>} features Features.
    * @param {WriteOptions} [options] Write options.
    * @return {string|ArrayBuffer} Result.
    */

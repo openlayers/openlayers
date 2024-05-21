@@ -541,7 +541,14 @@ function buildText(flatStyle, context) {
     context,
   );
 
-  const text = new Text({});
+  // The following properties are not currently settable
+  const declutterMode = optionalDeclutterMode(
+    flatStyle,
+    prefix + 'declutter-mode',
+  );
+
+  const text = new Text({declutterMode});
+
   return function (context) {
     text.setText(evaluateValue(context));
 
@@ -1217,7 +1224,7 @@ function optionalNumberArray(flatStyle, property) {
 /**
  * @param {FlatStyle} flatStyle The flat style.
  * @param {string} property The symbolizer property.
- * @return {"declutter"|"obstacle"|"none"|undefined} Icon declutter mode.
+ * @return {import('../../style/Style.js').DeclutterMode} Icon declutter mode.
  */
 function optionalDeclutterMode(flatStyle, property) {
   const encoded = flatStyle[property];

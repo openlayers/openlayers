@@ -3,6 +3,7 @@
  */
 import CanvasBuilder from './Builder.js';
 import CanvasInstruction from './Instruction.js';
+import {containsCoordinate} from '../../extent.js';
 
 class CanvasImageBuilder extends CanvasBuilder {
   /**
@@ -94,7 +95,7 @@ class CanvasImageBuilder extends CanvasBuilder {
 
     /**
      * @private
-     * @type {"declutter"|"obstacle"|"none"|undefined}
+     * @type {import('../../style/Style.js').DeclutterMode}
      */
     this.declutterMode_ = undefined;
 
@@ -109,12 +110,17 @@ class CanvasImageBuilder extends CanvasBuilder {
   /**
    * @param {import("../../geom/Point.js").default|import("../Feature.js").default} pointGeometry Point geometry.
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
+   * @param {number} [index] Render order index.
    */
-  drawPoint(pointGeometry, feature) {
-    if (!this.image_) {
+  drawPoint(pointGeometry, feature, index) {
+    if (
+      !this.image_ ||
+      (this.maxExtent &&
+        !containsCoordinate(this.maxExtent, pointGeometry.getFlatCoordinates()))
+    ) {
       return;
     }
-    this.beginGeometry(pointGeometry, feature);
+    this.beginGeometry(pointGeometry, feature, index);
     const flatCoordinates = pointGeometry.getFlatCoordinates();
     const stride = pointGeometry.getStride();
     const myBegin = this.coordinates.length;
@@ -166,16 +172,32 @@ class CanvasImageBuilder extends CanvasBuilder {
   /**
    * @param {import("../../geom/MultiPoint.js").default|import("../Feature.js").default} multiPointGeometry MultiPoint geometry.
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
+   * @param {number} [index] Render order index.
    */
-  drawMultiPoint(multiPointGeometry, feature) {
+  drawMultiPoint(multiPointGeometry, feature, index) {
     if (!this.image_) {
       return;
     }
-    this.beginGeometry(multiPointGeometry, feature);
+    this.beginGeometry(multiPointGeometry, feature, index);
     const flatCoordinates = multiPointGeometry.getFlatCoordinates();
-    const stride = multiPointGeometry.getStride();
+    const filteredFlatCoordinates = [];
+    for (
+      let i = 0, ii = flatCoordinates.length;
+      i < ii;
+      i += multiPointGeometry.getStride()
+    ) {
+      if (
+        !this.maxExtent ||
+        containsCoordinate(this.maxExtent, flatCoordinates.slice(i, i + 2))
+      ) {
+        filteredFlatCoordinates.push(
+          flatCoordinates[i],
+          flatCoordinates[i + 1],
+        );
+      }
+    }
     const myBegin = this.coordinates.length;
-    const myEnd = this.appendFlatPointCoordinates(flatCoordinates, stride);
+    const myEnd = this.appendFlatPointCoordinates(filteredFlatCoordinates, 2);
     this.instructions.push([
       CanvasInstruction.DRAW_IMAGE,
       myBegin,

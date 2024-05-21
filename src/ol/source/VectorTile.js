@@ -22,12 +22,13 @@ import {loadFeaturesXhr} from '../featureloader.js';
 import {toSize} from '../size.js';
 
 /**
+ * @template {import("../Feature.js").FeatureLike} FeatureType
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least twice the number of tiles in the viewport.
  * @property {import("../extent.js").Extent} [extent] Extent.
- * @property {import("../format/Feature.js").default} [format] Feature format for tiles. Used and required by the default.
+ * @property {import("../format/Feature.js").default<import("../format/Feature.js").FeatureToFeatureClass<FeatureType>>} [format] Feature format for tiles. Used and required by the default.
  * @property {boolean} [overlaps=true] This source may have overlapping geometries. Setting this
  * to `false` (e.g. for sources with polygons that represent administrative
  * boundaries or TopoJSON sources) allows the renderer to optimise fill and
@@ -98,10 +99,11 @@ import {toSize} from '../size.js';
  *
  * @fires import("./Tile.js").TileSourceEvent
  * @api
+ * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../render/Feature.js").default]
  */
 class VectorTile extends UrlTile {
   /**
-   * @param {!Options} options Vector tile options.
+   * @param {!Options<FeatureType>} options Vector tile options.
    */
   constructor(options) {
     const projection = options.projection || 'EPSG:3857';
@@ -140,7 +142,7 @@ class VectorTile extends UrlTile {
 
     /**
      * @private
-     * @type {import("../format/Feature.js").default|null}
+     * @type {import("../format/Feature.js").default<import("../format/Feature.js").FeatureToFeatureClass<FeatureType>>|null}
      */
     this.format_ = options.format ? options.format : null;
 
@@ -178,7 +180,7 @@ class VectorTile extends UrlTile {
    * they can be clipped, duplicated across tiles, and simplified to the render resolution.
    *
    * @param {import("../extent.js").Extent} extent Extent.
-   * @return {Array<import("../Feature.js").FeatureLike>} Features.
+   * @return {Array<FeatureType>} Features.
    * @api
    */
   getFeaturesInExtent(extent) {

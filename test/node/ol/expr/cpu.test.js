@@ -133,6 +133,39 @@ describe('ol/expr/cpu.js', () => {
         expected: 'Feature foo',
       },
       {
+        name: 'coalesce (2 arguments, first has a value)',
+        type: StringType,
+        expression: ['coalesce', ['get', 'val'], 'default'],
+        context: {
+          properties: {val: 'test'},
+        },
+        expected: 'test',
+      },
+      {
+        name: 'coalesce (2 arguments, first has no value)',
+        type: StringType,
+        expression: ['coalesce', ['get', 'val'], 'default'],
+        context: {
+          properties: {},
+        },
+        expected: 'default',
+      },
+      {
+        name: 'coalesce (several arguments, first few have no value)',
+        type: StringType,
+        expression: [
+          'coalesce',
+          ['get', 'val'],
+          ['get', 'beer'],
+          ['get', 'present'],
+          'last resort',
+        ],
+        context: {
+          properties: {present: 'hello world'},
+        },
+        expected: 'hello world',
+      },
+      {
         name: 'any (true)',
         type: BooleanType,
         expression: ['any', ['get', 'nope'], ['get', 'yep'], ['get', 'nope']],
@@ -569,6 +602,57 @@ describe('ol/expr/cpu.js', () => {
         type: ColorType,
         expression: ['interpolate', ['linear'], 0.5, 0, 'red', 1, [0, 255, 0]],
         expected: [219, 170, 0, 1],
+      },
+      {
+        name: 'to-string (string)',
+        type: StringType,
+        expression: ['to-string', 'foo'],
+        expected: 'foo',
+      },
+      {
+        name: 'to-string (number)',
+        type: StringType,
+        expression: ['to-string', 42.9],
+        expected: '42.9',
+      },
+      {
+        name: 'to-string (boolean)',
+        type: StringType,
+        expression: ['to-string', 1 < 2],
+        expected: 'true',
+      },
+      {
+        name: 'to-string (color)',
+        type: StringType,
+        expression: ['to-string', ['get', 'fill', 'color']],
+        context: {
+          properties: {fill: [0, 255, 0]},
+        },
+        expected: 'rgba(0,255,0,1)',
+      },
+      {
+        name: 'in (true)',
+        type: BooleanType,
+        expression: ['in', 3, [1, 2, 3]],
+        expected: true,
+      },
+      {
+        name: 'in (false)',
+        type: BooleanType,
+        expression: ['in', 'yellow', ['literal', ['red', 'green', 'blue']]],
+        expected: false,
+      },
+      {
+        name: 'between (true)',
+        type: BooleanType,
+        expression: ['between', 3, 3, 5],
+        expected: true,
+      },
+      {
+        name: 'between (false)',
+        type: BooleanType,
+        expression: ['between', 3, 4, 5],
+        expected: false,
       },
     ];
 

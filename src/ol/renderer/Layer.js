@@ -30,11 +30,6 @@ class LayerRenderer extends Observable {
      * @type {LayerType}
      */
     this.layer_ = layer;
-
-    /**
-     * @type {import("../render/canvas/ExecutorGroup").default}
-     */
-    this.declutterExecutorGroup = null;
   }
 
   /**
@@ -188,6 +183,11 @@ class LayerRenderer extends Observable {
       layer.changed();
     }
   }
+
+  /**
+   * @param {import("../Map.js").FrameState} frameState Frame state.
+   */
+  renderDeferred(frameState) {}
 
   /**
    * Clean up.

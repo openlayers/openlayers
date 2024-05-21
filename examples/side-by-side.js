@@ -11,7 +11,7 @@ const attributions =
 const roadLayer = new TileLayer({
   source: new XYZ({
     attributions: attributions,
-    url: 'https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=' + key,
+    url: 'https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=' + key,
     tileSize: 512,
     maxZoom: 22,
   }),
@@ -20,7 +20,8 @@ const roadLayer = new TileLayer({
 const aerialLayer = new TileLayer({
   source: new XYZ({
     attributions: attributions,
-    url: 'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=' + key,
+    url: 'https://api.maptiler.com/maps/satellite/{z}/{x}/{y}.jpg?key=' + key,
+    tileSize: 512,
     maxZoom: 20,
   }),
 });

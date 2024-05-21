@@ -53,7 +53,8 @@ import {warn} from './console.js';
  * @property {import("./View.js").State} viewState The state of the current view.
  * @property {boolean} animate Animate.
  * @property {import("./transform.js").Transform} coordinateToPixelTransform CoordinateToPixelTransform.
- * @property {import("rbush").default} declutterTree DeclutterTree.
+ * @property {Object<string, import("rbush").default>|null} declutter Declutter trees by declutter group.
+ * When null, no decluttering is needed because no layers have decluttering enabled.
  * @property {null|import("./extent.js").Extent} extent Extent (in view projection coordinates).
  * @property {import("./extent.js").Extent} [nextExtent] Next extent during an animation series.
  * @property {number} index Index.
@@ -1458,21 +1459,6 @@ class Map extends BaseObject {
   }
 
   /**
-   * This method is meant to be called in a layer's `prerender` listener. It causes all collected
-   * declutter items to be decluttered and rendered on the map immediately. This is useful for
-   * layers that need to appear entirely above the decluttered items of layers lower in the layer
-   * stack.
-   * @api
-   */
-  flushDeclutterItems() {
-    const frameState = this.frameState_;
-    if (!frameState) {
-      return;
-    }
-    this.renderer_.flushDeclutterItems(frameState);
-  }
-
-  /**
    * Remove the given control from the map.
    * @param {import("./control/Control.js").default} control Control.
    * @return {import("./control/Control.js").default|undefined} The removed control (or undefined
@@ -1543,7 +1529,7 @@ class Map extends BaseObject {
       frameState = {
         animate: false,
         coordinateToPixelTransform: this.coordinateToPixelTransform_,
-        declutterTree: null,
+        declutter: null,
         extent: getForViewAndSize(
           viewState.center,
           viewState.resolution,

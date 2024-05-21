@@ -138,6 +138,11 @@ class CanvasTextBuilder extends CanvasBuilder {
     this.strokeKey_ = '';
 
     /**
+     * @type {import('../../style/Style.js').DeclutterMode}
+     */
+    this.declutterMode_ = undefined;
+
+    /**
      * Data shared with an image builder for combined decluttering.
      * @private
      * @type {import("../canvas.js").DeclutterImageWithText}
@@ -159,8 +164,9 @@ class CanvasTextBuilder extends CanvasBuilder {
   /**
    * @param {import("../../geom/SimpleGeometry.js").default|import("../Feature.js").default} geometry Geometry.
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
+   * @param {number} [index] Render order index.
    */
-  drawText(geometry, feature) {
+  drawText(geometry, feature, index) {
     const fillState = this.textFillState_;
     const strokeState = this.textStrokeState_;
     const textState = this.textState_;
@@ -182,7 +188,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         geometryType == 'Polygon' ||
         geometryType == 'MultiPolygon')
     ) {
-      if (!intersects(this.getBufferedMaxExtent(), geometry.getExtent())) {
+      if (!intersects(this.maxExtent, geometry.getExtent())) {
         return;
       }
       let ends;
@@ -207,7 +213,7 @@ class CanvasTextBuilder extends CanvasBuilder {
           ends.push(endss[i][0]);
         }
       }
-      this.beginGeometry(geometry, feature);
+      this.beginGeometry(geometry, feature, index);
       const repeat = textState.repeat;
       const textAlign = repeat ? undefined : textState.textAlign;
       // No `justify` support for line placement.
@@ -344,7 +350,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         }
       }
 
-      this.beginGeometry(geometry, feature);
+      this.beginGeometry(geometry, feature, index);
 
       // adjust padding for negative scale
       let padding = textState.padding;
@@ -386,7 +392,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.textRotation_,
         [1, 1],
         NaN,
-        undefined,
+        this.declutterMode_,
         this.declutterImageWithText_,
         padding == defaultPadding
           ? defaultPadding
@@ -425,7 +431,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.textRotation_,
         [scale, scale],
         NaN,
-        undefined,
+        this.declutterMode_,
         this.declutterImageWithText_,
         padding,
         !!textState.backgroundFill,
@@ -528,6 +534,7 @@ class CanvasTextBuilder extends CanvasBuilder {
       text,
       textKey,
       1,
+      this.declutterMode_,
     ]);
     this.hitDetectionInstructions.push([
       CanvasInstruction.DRAW_CHARS,
@@ -544,6 +551,7 @@ class CanvasTextBuilder extends CanvasBuilder {
       text,
       textKey,
       1 / pixelRatio,
+      this.declutterMode_,
     ]);
   }
 
@@ -656,6 +664,7 @@ class CanvasTextBuilder extends CanvasBuilder {
             : '|' + getUid(fillState.fillStyle)
           : '';
     }
+    this.declutterMode_ = textStyle.getDeclutterMode();
     this.declutterImageWithText_ = sharedData;
   }
 }

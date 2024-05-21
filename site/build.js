@@ -1,14 +1,15 @@
 import Metalsmith from 'metalsmith';
+import alias from '@rollup/plugin-alias';
 import common from '@rollup/plugin-commonjs';
 import inPlace from '@metalsmith/in-place';
 import layouts from '@metalsmith/layouts';
 import markdown from '@metalsmith/markdown';
+import terser from '@rollup/plugin-terser';
 import {dirname, resolve} from 'node:path';
 import {env} from 'node:process';
 import {fileURLToPath} from 'node:url';
 import {nodeResolve} from '@rollup/plugin-node-resolve';
 import {rollup} from 'rollup';
-import terser from '@rollup/plugin-terser';
 
 const baseDir = dirname(fileURLToPath(import.meta.url));
 
@@ -39,6 +40,9 @@ async function bundleMain() {
           resolve(baseDir, '../src'),
           resolve(baseDir, '../node_modules'),
         ],
+      }),
+      alias({
+        entries: [{find: 'ol', replacement: '../../../src/ol/'}],
       }),
       terser(),
     ],

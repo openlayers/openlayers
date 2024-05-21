@@ -263,6 +263,7 @@ export class CustomTile extends Tile {
  * If not provided, `url` must be configured.
  * @property {string} [url] TileJSON endpoint that provides the configuration for this source.
  * Request will be made through JSONP. If not provided, `tileJSON` must be configured.
+ * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
  * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
@@ -281,6 +282,7 @@ class UTFGrid extends TileSource {
     super({
       projection: getProjection('EPSG:3857'),
       state: 'loading',
+      wrapX: options.wrapX !== undefined ? options.wrapX : true,
       zDirection: options.zDirection,
     });
 
@@ -451,7 +453,7 @@ class UTFGrid extends TileSource {
 
     this.tileUrlFunction_ = createFromTemplates(grids, tileGrid);
 
-    if (tileJSON['attribution'] !== undefined) {
+    if (tileJSON['attribution']) {
       const attributionExtent = extent !== undefined ? extent : gridExtent;
       this.setAttributions(function (frameState) {
         if (intersects(attributionExtent, frameState.extent)) {

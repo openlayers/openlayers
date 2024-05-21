@@ -62,6 +62,7 @@ const DEFAULT_FILL_COLOR = '#333';
  * is `'point'`. Default is no stroke.
  * @property {Array<number>} [padding=[0, 0, 0, 0]] Padding in pixels around the text for decluttering and background. The order of
  * values in the array is `[top, right, bottom, left]`.
+ * @property {import('../style/Style.js').DeclutterMode} [declutterMode] Declutter mode: `declutter`, `obstacle`, `none`
  */
 
 /**
@@ -204,6 +205,12 @@ class Text {
      * @type {Array<number>|null}
      */
     this.padding_ = options.padding === undefined ? null : options.padding;
+
+    /**
+     * @private
+     * @type {import('../style/Style.js').DeclutterMode}
+     */
+    this.declutterMode_ = options.declutterMode;
   }
 
   /**
@@ -237,6 +244,7 @@ class Text {
         ? this.getBackgroundStroke().clone()
         : undefined,
       padding: this.getPadding() || undefined,
+      declutterMode: this.getDeclutterMode(),
     });
   }
 
@@ -417,6 +425,15 @@ class Text {
    */
   getPadding() {
     return this.padding_;
+  }
+
+  /**
+   * Get the declutter mode of the shape
+   * @return {import("./Style.js").DeclutterMode} Shape's declutter mode
+   * @api
+   */
+  getDeclutterMode() {
+    return this.declutterMode_;
   }
 
   /**
