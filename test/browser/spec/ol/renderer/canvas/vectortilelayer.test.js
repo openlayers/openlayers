@@ -806,4 +806,48 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       });
     });
   });
+
+  describe('mixed declutter settings', () => {
+    let map;
+    beforeEach((done) => {
+      const extent = [
+        1824704.739223726, 6141868.096770482, 1827150.7241288517,
+        6144314.081675608,
+      ];
+      const source = new VectorTileSource({
+        format: new MVT(),
+        url: 'spec/ol/data/14-8938-5680.vector.pbf',
+        minZoom: 14,
+        maxZoom: 14,
+      });
+      const layer1 = new VectorTileLayer({
+        declutter: true,
+        extent: extent,
+        source: source,
+      });
+      const layer2 = new VectorTileLayer({
+        declutter: true,
+        extent: extent,
+        source: source,
+      });
+      map = new Map({
+        target: createMapDiv(100, 100),
+        layers: [layer1, layer2],
+        view: new View({
+          center: getCenter(extent),
+          zoom: 14,
+        }),
+      });
+      map.once('rendercomplete', () => done());
+    });
+
+    afterEach(() => {
+      disposeMap(map);
+    });
+
+    it('works with a mix of decluttering enabled and disabled', () => {
+      map.getLayers().item(1).declutter_ = false;
+      expect(() => map.renderSync()).to.not.throwException();
+    });
+  });
 });

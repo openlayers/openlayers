@@ -779,7 +779,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           rotation,
           hifi,
           replayTypes,
-          frameState.declutter === null ? undefined : frameState.declutter,
+          frameState.declutter?.[declutter],
         );
       }
       if (contextSaved) {
