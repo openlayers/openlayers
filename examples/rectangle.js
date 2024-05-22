@@ -4,9 +4,9 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
 
 import Feature from 'ol/Feature.js';
-import Polygon from 'ol/geom/Polygon.js';
 import {Vector as VectorLayer} from 'ol/layer.js';
 import {Vector as VectorSource} from 'ol/source.js';
+import {fromExtent} from 'ol/geom/Polygon.js';
 
 const map = new Map({
   layers: [
@@ -16,19 +16,9 @@ const map = new Map({
     new VectorLayer({
       source: new VectorSource({
         features: [
-          // Feature expects a Geometry
           new Feature(
-            // Polygon expects coordinates as an array of linear rings
-            new Polygon([
-              // the first (and in this case only) linear ring
-              [
-                [-1000000, 5000000], // actual coordinates...
-                [3000000, 5000000],
-                [3000000, 7000000],
-                [-1000000, 7000000],
-                [-1000000, 5000000], // first coordinate repeated
-              ],
-            ]),
+            // Here a `Geometry` is expected, e.g. a `Polygon`, which has a handy function to create a rectangle from bbox coordinates
+            fromExtent([-1000000, 5000000, 3000000, 7000000]), // minX, minY, maxX, maxY
           ),
         ],
       }),
