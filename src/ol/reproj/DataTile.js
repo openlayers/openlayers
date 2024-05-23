@@ -7,13 +7,14 @@ import DataTile, {asArrayLike, asImageLike, toArray} from '../DataTile.js';
 import EventType from '../events/EventType.js';
 import TileState from '../TileState.js';
 import Triangulation from './Triangulation.js';
+import {calculateSourceExtentResolution} from '../reproj.js';
 import {
-  calculateSourceExtentResolution,
-  canvasPool,
+  canvasGLPool,
+  createCanvasContextWebGL,
+  releaseGLCanvas,
   render as renderReprojected,
-} from '../reproj.js';
+} from './glreproj.js';
 import {clamp} from '../math.js';
-import {createCanvasContext2D, releaseCanvas} from '../dom.js';
 import {getArea, getIntersection, getWidth, wrapAndSliceX} from '../extent.js';
 import {listen, unlistenByKey} from '../events.js';
 
@@ -43,6 +44,7 @@ import {listen, unlistenByKey} from '../events.js';
  * @property {number} [errorThreshold] Acceptable reprojection error (in px).
  * @property {number} [transition=250] A duration for tile opacity
  * transitions in milliseconds. A duration of 0 disables the opacity transition.
+ * @property {boolean} [renderEdges] Render reprojection edges.
  */
 
 /**
@@ -62,6 +64,13 @@ class ReprojDataTile extends DataTile {
       interpolate: options.interpolate,
       transition: options.transition,
     });
+
+    /**
+     * @private
+     * @type {boolean | Array<number>}
+     */
+    this.renderEdges_ =
+      options.renderEdges !== undefined ? options.renderEdges : false;
 
     /**
      * @private
@@ -301,6 +310,7 @@ class ReprojDataTile extends DataTile {
    */
   reproject_() {
     const dataSources = [];
+
     this.sourceTiles_.forEach((source) => {
       const tile = source.tile;
       if (!tile || tile.getState() !== TileState.LOADED) {
@@ -329,20 +339,6 @@ class ReprojDataTile extends DataTile {
       const bandCount = Math.floor(
         bytesPerRow / bytesPerElement / pixelSize[0],
       );
-      const packedLength = pixelCount * bandCount;
-      let packedData = tileDataR;
-      if (tileDataR.length !== packedLength) {
-        packedData = new DataType(packedLength);
-        let dataIndex = 0;
-        let rowOffset = 0;
-        const colCount = pixelSize[0] * bandCount;
-        for (let rowIndex = 0; rowIndex < pixelSize[1]; ++rowIndex) {
-          for (let colIndex = 0; colIndex < colCount; ++colIndex) {
-            packedData[dataIndex++] = tileDataR[rowOffset + colIndex];
-          }
-          rowOffset += bytesPerRow / bytesPerElement;
-        }
-      }
       const extent = this.sourceTileGrid_.getTileCoordExtent(tile.tileCoord);
       extent[0] += source.offset;
       extent[2] += source.offset;
@@ -354,127 +350,159 @@ class ReprojDataTile extends DataTile {
       dataSources.push({
         extent: extent,
         clipExtent: clipExtent,
-        data: new Uint8Array(packedData.buffer),
+        data: tileDataR,
         dataType: DataType,
         bytesPerPixel: bytesPerPixel,
         pixelSize: pixelSize,
+        bandCount: bandCount,
       });
     });
     this.sourceTiles_.length = 0;
 
     if (dataSources.length === 0) {
       this.state = TileState.ERROR;
+      this.changed();
+      return;
+    }
+
+    const z = this.wrappedTileCoord_[0];
+    const size = this.targetTileGrid_.getTileSize(z);
+    const targetWidth = typeof size === 'number' ? size : size[0];
+    const targetHeight = typeof size === 'number' ? size : size[1];
+    const targetResolution = this.targetTileGrid_.getResolution(z);
+    const sourceResolution = this.sourceTileGrid_.getResolution(this.sourceZ_);
+
+    const targetExtent = this.targetTileGrid_.getTileCoordExtent(
+      this.wrappedTileCoord_,
+    );
+
+    const gl = createCanvasContextWebGL(
+      targetWidth,
+      targetHeight,
+      canvasGLPool,
+      {
+        premultipliedAlpha: false,
+        antialias: false,
+      },
+    );
+
+    let willInterpolate;
+    const format = gl.RGBA;
+    let textureType;
+    if (dataSources[0].dataType == Float32Array) {
+      textureType = gl.FLOAT;
+      gl.getExtension('WEBGL_color_buffer_float');
+      gl.getExtension('OES_texture_float');
+      gl.getExtension('EXT_float_blend');
+      const extension = gl.getExtension('OES_texture_float_linear');
+      const canInterpolate = extension !== null;
+      willInterpolate = canInterpolate && this.interpolate;
     } else {
-      const z = this.wrappedTileCoord_[0];
-      const size = this.targetTileGrid_.getTileSize(z);
-      const targetWidth = typeof size === 'number' ? size : size[0];
-      const targetHeight = typeof size === 'number' ? size : size[1];
-      const targetResolution = this.targetTileGrid_.getResolution(z);
-      const sourceResolution = this.sourceTileGrid_.getResolution(
-        this.sourceZ_,
-      );
+      textureType = gl.UNSIGNED_BYTE;
+      willInterpolate = this.interpolate;
+    }
 
-      const targetExtent = this.targetTileGrid_.getTileCoordExtent(
-        this.wrappedTileCoord_,
-      );
+    if (dataSources[0].bandCount > 4) {
+      this.state = TileState.ERROR;
+      this.changed();
+      return;
+    }
 
-      let dataR, dataU;
+    const bandCount = dataSources[0].bandCount;
 
-      const bytesPerPixel = dataSources[0].bytesPerPixel;
+    const sources = [];
+    for (let i = 0, len = dataSources.length; i < len; ++i) {
+      const dataSource = dataSources[i];
 
-      const reprojs = Math.ceil(bytesPerPixel / 3);
-      for (let reproj = reprojs - 1; reproj >= 0; --reproj) {
-        const sources = [];
-        for (let i = 0, len = dataSources.length; i < len; ++i) {
-          const dataSource = dataSources[i];
-          const buffer = dataSource.data;
-          const pixelSize = dataSource.pixelSize;
-          const width = pixelSize[0];
-          const height = pixelSize[1];
-          const context = createCanvasContext2D(width, height, canvasPool);
-          const imageData = context.createImageData(width, height);
-          const data = imageData.data;
-          let offset = reproj * 3;
-          for (let j = 0, len = data.length; j < len; j += 4) {
-            data[j] = buffer[offset];
-            data[j + 1] = buffer[offset + 1];
-            data[j + 2] = buffer[offset + 2];
-            data[j + 3] = 255;
-            offset += bytesPerPixel;
-          }
-          context.putImageData(imageData, 0, 0);
-          sources.push({
-            extent: dataSource.extent,
-            clipExtent: dataSource.clipExtent,
-            image: context.canvas,
-          });
+      const pixelSize = dataSource.pixelSize;
+      const width = pixelSize[0];
+      const height = pixelSize[1];
+
+      const data = new dataSource.dataType(4 * width * height);
+      let offset = 0;
+      for (let i = 0; i < data.length; i += 4) {
+        for (let j = 0; j < bandCount; j++) {
+          data[i + j] = dataSource.data[offset + j];
         }
-
-        const canvas = renderReprojected(
-          targetWidth,
-          targetHeight,
-          this.pixelRatio_,
-          sourceResolution,
-          this.sourceTileGrid_.getExtent(),
-          targetResolution,
-          targetExtent,
-          this.triangulation_,
-          sources,
-          this.gutter_,
-          false,
-          false,
-          false,
-          //true,
-        );
-
-        for (let i = 0, len = sources.length; i < len; ++i) {
-          const canvas = sources[i].image;
-          const context = canvas.getContext('2d');
-          releaseCanvas(context);
-          canvasPool.push(context.canvas);
-        }
-
-        const context = canvas.getContext('2d');
-        const imageData = context.getImageData(
-          0,
-          0,
-          canvas.width,
-          canvas.height,
-        );
-
-        releaseCanvas(context);
-        canvasPool.push(canvas);
-
-        if (!dataR) {
-          dataU = new Uint8Array(
-            bytesPerPixel * imageData.width * imageData.height,
-          );
-          dataR = new dataSources[0].dataType(dataU.buffer);
-        }
-
-        const data = imageData.data;
-        let offset = reproj * 3;
-        for (let i = 0, len = data.length; i < len; i += 4) {
-          if (data[i + 3] === 255) {
-            dataU[offset] = data[i];
-            dataU[offset + 1] = data[i + 1];
-            dataU[offset + 2] = data[i + 2];
-          } else {
-            dataU[offset] = 0;
-            dataU[offset + 1] = 0;
-            dataU[offset + 2] = 0;
-          }
-          offset += bytesPerPixel;
-        }
+        offset += bandCount;
       }
 
-      this.reprojData_ = dataR;
-      this.reprojSize_ = [
-        Math.round(targetWidth * this.pixelRatio_),
-        Math.round(targetHeight * this.pixelRatio_),
-      ];
-      this.state = TileState.LOADED;
+      const texture = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+
+      if (willInterpolate) {
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      } else {
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+      }
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        format,
+        width,
+        height,
+        0,
+        format,
+        textureType,
+        data,
+      );
+
+      sources.push({
+        extent: dataSource.extent,
+        texture: texture,
+        width: width,
+        height: height,
+      });
     }
+
+    const {framebuffer, width, height} = renderReprojected(
+      gl,
+      targetWidth,
+      targetHeight,
+      this.pixelRatio_,
+      sourceResolution,
+      targetResolution,
+      targetExtent,
+      this.triangulation_,
+      sources,
+      this.gutter_,
+      textureType,
+      this.renderEdges_,
+      willInterpolate,
+    );
+
+    const dataR = new dataSources[0].dataType(bandCount * width * height);
+    // The texture is always RGBA.
+    const data = new dataSources[0].dataType(4 * width * height);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+    gl.readPixels(0, 0, width, height, gl.RGBA, textureType, data);
+
+    releaseGLCanvas(gl);
+    canvasGLPool.push(gl.canvas);
+
+    let offset = 0;
+    const rows = targetHeight;
+    const cols = targetWidth * 4;
+    for (let i = 0, len = data.length; i < len; i += 4) {
+      // The data read by `readPixels` is flipped in the y-axis so flip it again.
+      const flipY = (rows - 1 - ((i / cols) | 0)) * cols + (i % cols);
+      dataR[offset] = data[flipY];
+      dataR[offset + 1] = data[flipY + 1];
+      dataR[offset + 2] = data[flipY + 2];
+      dataR[offset + 3] = data[flipY + 3];
+      offset += bandCount;
+    }
+
+    this.reprojData_ = dataR;
+    this.reprojSize_ = [
+      Math.round(targetWidth * this.pixelRatio_),
+      Math.round(targetHeight * this.pixelRatio_),
+    ];
+    this.state = TileState.LOADED;
     this.changed();
   }
 
