@@ -256,7 +256,16 @@ function compileAccessorExpression(expression, context) {
   const name = /** @type {string} */ (nameExpression.value);
   switch (expression.operator) {
     case Ops.Get: {
-      return (context) => context.properties[name];
+      return (context) => {
+        const args = expression.args;
+        let value = context.properties[name];
+        for (let i = 1, ii = args.length; i < ii; ++i) {
+          const keyExpression = /** @type {LiteralExpression} */ (args[i]);
+          const key = /** @type {string|number} */ (keyExpression.value);
+          value = value[key];
+        }
+        return value;
+      };
     }
     case Ops.Var: {
       return (context) => context.variables[name];

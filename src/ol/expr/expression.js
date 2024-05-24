@@ -25,9 +25,9 @@ import {isStringColor} from '../color.js';
  *     of bands, depending on the underlying data source and
  *     {@link import("../source/GeoTIFF.js").Options configuration}. `xOffset` and `yOffset` are optional
  *     and allow specifying pixel offsets for x and y. This is used for sampling data from neighboring pixels (WebGL only).
- *   * `['get', 'attributeName', typeHint]` fetches a feature property value, similar to `feature.get('attributeName')`
- *     A type hint can optionally be specified, in case the resulting expression contains a type ambiguity which
- *     will make it invalid. Type hints can be one of: 'string', 'color', 'number', 'boolean', 'number[]'
+ *   * `['get', attributeName]` fetches a feature property value, similar to `feature.get('attributeName')`.
+ *   * `['get', attributeName, keyOrArrayIndex, ...]` (Canvas only) Access nested properties and array items of a
+ *     feature property. The result is `undefined` when there is nothing at the specified key or index.
  *   * `['geometry-type']` returns a feature's geometry type as string, either: 'LineString', 'Point' or 'Polygon'
  *     `Multi*` values are returned as their singular equivalent
  *     `Circle` geometries are returned as 'Polygon'
@@ -251,27 +251,6 @@ export function newParsingContext() {
 }
 
 /**
- * @param {string} typeHint Type hint
- * @return {number} Resulting value type (will be a single type)
- */
-function getTypeFromHint(typeHint) {
-  switch (typeHint) {
-    case 'string':
-      return StringType;
-    case 'color':
-      return ColorType;
-    case 'number':
-      return NumberType;
-    case 'boolean':
-      return BooleanType;
-    case 'number[]':
-      return NumberArrayType;
-    default:
-      throw new Error(`Unrecognized type hint: ${typeHint}`);
-  }
-}
-
-/**
  * @typedef {LiteralValue|Array} EncodedExpression
  */
 
@@ -398,20 +377,7 @@ export const Ops = {
  * @type {Object<string, Parser>}
  */
 const parsers = {
-  [Ops.Get]: createParser(
-    ([_, typeHint]) => {
-      if (typeHint !== undefined) {
-        return getTypeFromHint(
-          /** @type {string} */ (
-            /** @type {LiteralExpression} */ (typeHint).value
-          ),
-        );
-      }
-      return AnyType;
-    },
-    withArgsCount(1, 2),
-    withGetArgs,
-  ),
+  [Ops.Get]: createParser(AnyType, withArgsCount(1, Infinity), withGetArgs),
   [Ops.Var]: createParser(
     ([firstArg]) => firstArg.type,
     withArgsCount(1, 1),
@@ -668,19 +634,29 @@ const parsers = {
  * @type ArgValidator
  */
 function withGetArgs(encoded, context) {
-  const arg = parse(encoded[1], context);
-  if (!(arg instanceof LiteralExpression)) {
-    throw new Error('Expected a literal argument for get operation');
+  const args = [];
+  for (let i = 1, ii = encoded.length; i < ii; ++i) {
+    const arg = parse(encoded[i], context);
+    args.push(arg);
+    if (!(arg instanceof LiteralExpression)) {
+      throw new Error('Expected a literal argument for get operation');
+    }
+    if (i > 1) {
+      if (typeof arg.value !== 'string' && typeof arg.value !== 'number') {
+        throw new Error(
+          'Expected key or array index of a get operation to be a string or number',
+        );
+      }
+      continue;
+    }
+    if (typeof arg.value !== 'string') {
+      throw new Error(
+        'Expected the attribute name of a get operation to be a string',
+      );
+    }
+    context.properties.add(String(arg.value));
   }
-  if (typeof arg.value !== 'string') {
-    throw new Error('Expected a string argument for get operation');
-  }
-  context.properties.add(arg.value);
-  if (encoded.length === 3) {
-    const hint = parse(encoded[2], context);
-    return [arg, hint];
-  }
-  return [arg];
+  return args;
 }
 
 /**

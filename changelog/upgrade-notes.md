@@ -1,5 +1,20 @@
 ## Upgrade notes
 
+### Next release
+
+#### Backwards incompatible changes
+
+##### Flat styles: Removal of Type hints in `'get'` expressions
+
+For the Canvas renderer, additional arguments to the `'get'` call expression now mean access to nested properties or array items. The expression system has been improved so type hints are no longer needed. If you were previously using a type hint in a `get` expression, you have to change the expression from e.g.
+```js
+['get', 'foo', 'number[]']
+```
+to
+```js
+['get', 'foo']
+```
+
 ### 9.2.0
 
 #### The `snap` event's feature property is now never `null`
