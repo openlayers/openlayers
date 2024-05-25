@@ -17,9 +17,9 @@ import {get} from '../proj.js';
 import {inflateEnds} from '../geom/flat/orient.js';
 
 /**
- * @template {import("../Feature.js").FeatureClass} FeatureClassToFeature
+ * @template {import("../Feature.js").FeatureClass} [FeatureClassType=import('./Feature.js').FeatureToFeatureClass<import("../render/Feature.js").default>]
  * @typedef {Object} Options
- * @property {FeatureClassToFeature} [featureClass] Class for features returned by
+ * @property {FeatureClassType} [featureClass] Class for features returned by
  * {@link module:ol/format/MVT~MVT#readFeatures}. Set to {@link module:ol/Feature~Feature} to get full editing and geometry
  * support at the cost of decreased rendering performance. The default is
  * {@link module:ol/render/Feature~RenderFeature}, which is optimized for rendering and hit detection.
@@ -34,13 +34,13 @@ import {inflateEnds} from '../geom/flat/orient.js';
  * @classdesc
  * Feature format for reading data in the Mapbox MVT format.
  *
- * @template {import('../Feature.js').FeatureClass} [T=typeof import("../render/Feature.js").default]
- * @extends {FeatureFormat<T>}
+ * @template {import('../Feature.js').FeatureClass} [FeatureClassType=import('./Feature.js').FeatureToFeatureClass<import("../render/Feature.js").default>]
+ * @extends {FeatureFormat<FeatureClassType>}
  * @api
  */
 class MVT extends FeatureFormat {
   /**
-   * @param {Options<T>} [options] Options.
+   * @param {Options<FeatureClassType>} [options] Options.
    */
   constructor(options) {
     super();
@@ -57,7 +57,7 @@ class MVT extends FeatureFormat {
 
     this.featureClass = options.featureClass
       ? options.featureClass
-      : /** @type {T} */ (RenderFeature);
+      : /** @type {FeatureClassType} */ (RenderFeature);
 
     /**
      * @private
@@ -157,7 +157,7 @@ class MVT extends FeatureFormat {
    * @param {PBF} pbf PBF
    * @param {Object} rawFeature Raw Mapbox feature.
    * @param {import("./Feature.js").ReadOptions} options Read options.
-   * @return {import("../Feature.js").FeatureLike|null} Feature.
+   * @return {import('./Feature.js').FeatureClassToFeature<FeatureClassType>|null} Feature.
    */
   createFeature_(pbf, rawFeature, options) {
     const type = rawFeature.type;
@@ -185,14 +185,10 @@ class MVT extends FeatureFormat {
     const geometryType = getGeometryType(type, ends.length);
 
     if (this.featureClass === RenderFeature) {
-      feature = new /** @type {typeof RenderFeature} */ (this.featureClass)(
-        geometryType,
-        flatCoordinates,
-        ends,
-        2,
-        values,
-        id,
-      );
+      feature =
+        new /** @type {import('./Feature.js').FeatureToFeatureClass<RenderFeature>} */ (
+          this.featureClass
+        )(geometryType, flatCoordinates, ends, 2, values, id);
       feature.transform(options.dataProjection);
     } else {
       let geom;
@@ -229,7 +225,9 @@ class MVT extends FeatureFormat {
       feature.setProperties(values, true);
     }
 
-    return feature;
+    return /** @type {import('./Feature.js').FeatureClassToFeature<FeatureClassType>} */ (
+      feature
+    );
   }
 
   /**
@@ -244,7 +242,7 @@ class MVT extends FeatureFormat {
    *
    * @param {ArrayBuffer} source Source.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
-   * @return {Array<import('./Feature.js').FeatureClassToFeature<T>>} Features.
+   * @return {Array<import('./Feature.js').FeatureClassToFeature<FeatureClassType>>} Features.
    * @api
    */
   readFeatures(source, options) {
@@ -275,7 +273,7 @@ class MVT extends FeatureFormat {
       }
     }
 
-    return /** @type {Array<import('./Feature.js').FeatureClassToFeature<T>>} */ (
+    return /** @type {Array<import('./Feature.js').FeatureClassToFeature<FeatureClassType>>} */ (
       features
     );
   }

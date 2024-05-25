@@ -33,7 +33,7 @@ import {isEmpty} from '../obj.js';
  */
 
 /**
- * @template {import("../Feature.js").FeatureClass} FeatureClassToFeature
+ * @template {import("../Feature.js").FeatureClass} [FeatureClassType=import('./Feature.js').FeatureToFeatureClass<import("../Feature.js").default>]
  * @typedef {Object} Options
  *
  * @property {import("../proj.js").ProjectionLike} [dataProjection='EPSG:4326'] Default data projection.
@@ -44,7 +44,7 @@ import {isEmpty} from '../obj.js';
  * the geometry_name field in the feature GeoJSON. If set to `true` the GeoJSON reader
  * will look for that field to set the geometry name. If both this field is set to `true`
  * and a `geometryName` is provided, the `geometryName` will take precedence.
- * @property {FeatureClassToFeature} [featureClass] Feature class
+ * @property {FeatureClassType} [featureClass] Feature class
  * to be used when reading features. The default is {@link module:ol/Feature~Feature}. If performance is
  * the primary concern, and features are not going to be modified or round-tripped through the format,
  * consider using {@link module:ol/render/Feature~RenderFeature}
@@ -54,13 +54,13 @@ import {isEmpty} from '../obj.js';
  * @classdesc
  * Feature format for reading and writing data in the GeoJSON format.
  *
- * @template {import('../Feature.js').FeatureClass} [T=typeof Feature]
- * @extends {JSONFeature<T>}
+ * @template {import('../Feature.js').FeatureClass} [FeatureClassType=import('./Feature.js').FeatureToFeatureClass<import("../Feature.js").default>]
+ * @extends {JSONFeature<FeatureClassType>}
  * @api
  */
 class GeoJSON extends JSONFeature {
   /**
-   * @param {Options<T>} [options] Options.
+   * @param {Options<FeatureClassType>} [options] Options.
    */
   constructor(options) {
     options = options ? options : {};
@@ -109,7 +109,7 @@ class GeoJSON extends JSONFeature {
    * @param {Object} object Object.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
-   * @return {Feature|RenderFeature|Array<RenderFeature>}.default} Feature.
+   * @return {import('./Feature.js').FeatureClassToFeature<FeatureClassType>|Array<import('./Feature.js').FeatureClassToFeature<FeatureClassType>>} Feature.
    */
   readFeatureFromObject(object, options) {
     /**
@@ -128,13 +128,15 @@ class GeoJSON extends JSONFeature {
 
     const geometry = readGeometryInternal(geoJSONFeature['geometry'], options);
     if (this.featureClass === RenderFeature) {
-      return createRenderFeature(
-        {
-          geometry,
-          id: geoJSONFeature['id'],
-          properties: geoJSONFeature['properties'],
-        },
-        options,
+      return /** @type {import('./Feature.js').FeatureClassToFeature<FeatureClassType>|Array<import('./Feature.js').FeatureClassToFeature<FeatureClassType>>} */ (
+        createRenderFeature(
+          {
+            geometry,
+            id: geoJSONFeature['id'],
+            properties: geoJSONFeature['properties'],
+          },
+          options,
+        )
       );
     }
 
@@ -153,18 +155,19 @@ class GeoJSON extends JSONFeature {
     if (geoJSONFeature['properties']) {
       feature.setProperties(geoJSONFeature['properties'], true);
     }
-    return feature;
+    return /** @type {import('./Feature.js').FeatureClassToFeature<FeatureClassType>|Array<import('./Feature.js').FeatureClassToFeature<FeatureClassType>>} */ (
+      feature
+    );
   }
 
   /**
    * @param {Object} object Object.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
-   * @return {Array<Feature|RenderFeature>} Features.
+   * @return {Array<import('./Feature.js').FeatureClassToFeature<FeatureClassType>>} Features.
    */
   readFeaturesFromObject(object, options) {
     const geoJSONObject = /** @type {GeoJSONObject} */ (object);
-    /** @type {Array<Feature|RenderFeature|Array<RenderFeature>>} */
     let features = null;
     if (geoJSONObject['type'] === 'FeatureCollection') {
       const geoJSONFeatureCollection = /** @type {GeoJSONFeatureCollection} */ (
@@ -185,7 +188,9 @@ class GeoJSON extends JSONFeature {
     } else {
       features = [this.readFeatureFromObject(object, options)];
     }
-    return features.flat();
+    return /** @type {Array<import('./Feature.js').FeatureClassToFeature<FeatureClassType>>} */ (
+      features.flat()
+    );
   }
 
   /**

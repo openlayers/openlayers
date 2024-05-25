@@ -5,7 +5,8 @@ import BaseVectorLayer from './BaseVector.js';
 import CanvasVectorImageLayerRenderer from '../renderer/canvas/VectorImageLayer.js';
 
 /**
- * @template {import("../source/Vector.js").default} VectorSourceType
+ * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../Feature.js").default]
+ * @template {import("../source/Vector.js").default<FeatureType>} [VectorSourceType=import("../source/Vector.js").default<FeatureType>]
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
@@ -61,13 +62,14 @@ import CanvasVectorImageLayerRenderer from '../renderer/canvas/VectorImageLayer.
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @template {import("../Feature.js").default} FeatureType
- * @extends {BaseVectorLayer<import("../source/Vector.js").default<FeatureType>, CanvasVectorImageLayerRenderer>}
+ * @template {import("../Feature.js").default} [FeatureType=import("../Feature.js").default]
+ * @template {import("../source/Vector.js").default<FeatureType>} [VectorSourceType=import("../source/Vector.js").default<FeatureType>]
+ * @extends {BaseVectorLayer<FeatureType, VectorSourceType, CanvasVectorImageLayerRenderer>}
  * @api
  */
 class VectorImageLayer extends BaseVectorLayer {
   /**
-   * @param {Options<import("../source/Vector.js").default<FeatureType>>} [options] Options.
+   * @param {Options<FeatureType, VectorSourceType>} [options] Options.
    */
   constructor(options) {
     options = options ? options : {};

@@ -21,7 +21,8 @@ import {assert} from '../asserts.js';
  */
 
 /**
- * @template {import('../Feature').FeatureLike} FeatureType
+ * @template {import("../Feature").FeatureLike} [FeatureType=import("../render/Feature.js").default]
+ * @template {import("../source/VectorTile.js").default<FeatureType>} [VectorTileSourceType=import("../source/VectorTile.js").default<FeatureType>]
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
@@ -56,7 +57,7 @@ import {assert} from '../asserts.js';
  *    this mode for improved performance and visual epxerience on vector tile layers with not too many
  *    rendered features (e.g. for highlighting a subset of features of another layer with the same
  *    source).
- * @property {import("../source/VectorTile.js").default<FeatureType>} [source] Source.
+ * @property {VectorTileSourceType} [source] Source.
  * @property {import("../Map.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
@@ -90,20 +91,19 @@ import {assert} from '../asserts.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @template {import('../Feature').FeatureLike} FeatureType
- * @extends {BaseVectorLayer<import("../source/VectorTile.js").default<FeatureType>, CanvasVectorTileLayerRenderer>}
+ * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../render/Feature.js").default]
+ * @template {import("../source/VectorTile.js").default<FeatureType>} [VectorTileSourceType=import("../source/VectorTile.js").default<FeatureType>]
+ * @extends {BaseVectorLayer<FeatureType, VectorTileSourceType, CanvasVectorTileLayerRenderer>}
  * @api
  */
 class VectorTileLayer extends BaseVectorLayer {
   /**
-   * @param {Options<FeatureType>} [options] Options.
+   * @param {Options<FeatureType, VectorTileSourceType>} [options] Options.
    */
   constructor(options) {
     options = options ? options : {};
 
-    const baseOptions = /** @type {Options<FeatureType>} */ (
-      Object.assign({}, options)
-    );
+    const baseOptions = Object.assign({}, options);
     delete baseOptions.preload;
     delete baseOptions.useInterimTilesOnError;
 
@@ -159,7 +159,9 @@ class VectorTileLayer extends BaseVectorLayer {
   }
 
   createRenderer() {
-    return new CanvasVectorTileLayerRenderer(this);
+    return new CanvasVectorTileLayerRenderer(
+      /** @type {VectorTileLayer} */ (this),
+    );
   }
 
   /**
