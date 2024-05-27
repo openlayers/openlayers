@@ -8,6 +8,7 @@ import {
   NoneType,
   NumberArrayType,
   NumberType,
+  SizeType,
   StringType,
   computeGeometryType,
   includesType,
@@ -228,6 +229,24 @@ describe('ol/expr/expression.js', () => {
         expect(isType(expression.args[3].type, NumberArrayType)).to.be(true);
         expect(isType(expression.args[5].type, NumberArrayType)).to.be(true);
         expect(isType(expression.args[6].type, NumberArrayType)).to.be(true);
+      });
+      it('finds common output type (size, type hint)', () => {
+        const expression = parse(
+          [
+            'case',
+            ['==', ['get', 'A'], 'true'],
+            1,
+            ['==', ['get', 'B'], 'true'],
+            2,
+            3,
+          ],
+          newParsingContext(),
+          SizeType,
+        );
+        expect(isType(expression.type, SizeType)).to.be(true);
+        expect(isType(expression.args[1].type, SizeType)).to.be(true);
+        expect(isType(expression.args[3].type, SizeType)).to.be(true);
+        expect(isType(expression.args[4].type, SizeType)).to.be(true);
       });
     });
 
