@@ -37,6 +37,7 @@ const maxZoom = 22;
  *   imageTile.getImage().src = src;
  * };
  * ```
+ * @property {Array<string>} [apiOptions] An array of values specifying additional options to apply.
  * @property {boolean} [wrapX=true] Wrap the world horizontally.
  * @property {number} [transition] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
@@ -56,6 +57,7 @@ const maxZoom = 22;
  * @property {Array<string>} [layerTypes] The layer types.
  * @property {boolean} [overlay] The overlay.
  * @property {Array<Object>} [styles] The styles.
+ * @property {Array<string>} [apiOptions] An array of values specifying additional options to apply.
  */
 
 /**
@@ -135,6 +137,9 @@ class Google extends TileImage {
     }
     if (options.overlay === true) {
       sessionTokenRequest.overlay = true;
+    }
+    if (options.apiOptions) {
+      sessionTokenRequest.apiOptions = options.apiOptions;
     }
 
     /**
