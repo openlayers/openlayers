@@ -21,9 +21,10 @@ docs: >
 tags: "blendmode, blend-mode, blend mode, blendingmode, blending-mode, blending mode, composition, compositing, canvas, vector"
 ---
 <div id="map" class="map"></div>
-<form class="form-horizontal">
+<form>
   <label>
-    <select id="blend-mode" class="form-control">
+    &nbsp;Canvas compositing / blending mode :&nbsp;
+    <select id="blend-mode">
       <option value="source-over">source-over (default)</option>
       <option>source-in</option>
       <option>source-out</option>
@@ -51,18 +52,18 @@ tags: "blendmode, blend-mode, blend mode, blendingmode, blending-mode, blending 
       <option>color</option>
       <option>luminosity</option>
     </select>
-    Canvas compositing / blending mode
   </label>
+  <br>
   <label>
+    &nbsp;Red circle affected :&nbsp;
     <input type="checkbox" id="affect-red" checked>
-    Red circle affected
   </label>
   <label>
+    &nbsp;Green circle affected :&nbsp;
     <input type="checkbox" id="affect-green" checked>
-    Green circle affected
   </label>
   <label>
+    &nbsp;Blue circle affected :&nbsp;
     <input type="checkbox" id="affect-blue" checked>
-    Blue circle affected
   </label>
 </form>
