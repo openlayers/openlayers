@@ -975,7 +975,7 @@ function parseInterpolateArgs(encoded, context, parsedArgs, typeHint) {
  * @type ArgValidator
  */
 function parseCaseArgs(encoded, context, parsedArgs, typeHint) {
-  const fallback = parse(encoded[encoded.length - 1], context);
+  const fallback = parse(encoded[encoded.length - 1], context, typeHint);
   let outputType =
     typeHint !== undefined ? typeHint & fallback.type : fallback.type;
 
@@ -983,7 +983,7 @@ function parseCaseArgs(encoded, context, parsedArgs, typeHint) {
   const args = new Array(encoded.length - 1);
   for (let i = 0; i < args.length - 1; i += 2) {
     const condition = parse(encoded[i + 1], context);
-    const output = parse(encoded[i + 2], context);
+    const output = parse(encoded[i + 2], context, typeHint);
     if (!overlapsType(BooleanType, condition.type)) {
       throw new Error(
         `Expected all conditions in the case operation to be of type boolean` +
