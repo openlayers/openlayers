@@ -1150,11 +1150,9 @@ class VectorSource extends Source {
    * Remove a feature from the id index.  Called internally when the feature id
    * may have changed.
    * @param {FeatureType} feature The feature.
-   * @return {boolean} Removed the feature from the index.
    * @private
    */
   removeFromIdIndex_(feature) {
-    let removed = false;
     for (const id in this.idIndex_) {
       const indexedFeature = this.idIndex_[id];
       if (
@@ -1165,11 +1163,9 @@ class VectorSource extends Source {
         indexedFeature.splice(indexedFeature.indexOf(feature), 1);
       } else if (this.idIndex_[id] === feature) {
         delete this.idIndex_[id];
-        removed = true;
         break;
       }
     }
-    return removed;
   }
 
   /**
