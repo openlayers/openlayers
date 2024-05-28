@@ -1103,7 +1103,7 @@ class VectorSource extends Source {
   /**
    * Remove feature without firing a `change` event.
    * @param {FeatureType} feature Feature.
-   * @return {boolean} True if the feature was removed, false if it was not added.
+   * @return {boolean} True if the feature was removed, false if it was not found.
    * @protected
    */
   removeFeatureInternal(feature) {
