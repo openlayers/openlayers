@@ -1074,15 +1074,11 @@ class VectorSource extends Source {
    * @api
    */
   removeFeatures(features) {
-    const removedFeatures = [];
+    let removed = false;
     for (let i = 0, ii = features.length; i < ii; ++i) {
-      const feature = features[i];
-      const removedFeature = this.removeFeatureInternal(feature);
-      if (removedFeature) {
-        removedFeatures.push(removedFeature);
-      }
+      removed = this.removeFeatureInternal(features[i]) || removed;
     }
-    if (removedFeatures.length > 0) {
+    if (removed) {
       this.changed();
     }
   }
@@ -1098,8 +1094,8 @@ class VectorSource extends Source {
     if (!feature) {
       return;
     }
-    const result = this.removeFeatureInternal(feature);
-    if (result) {
+    const removed = this.removeFeatureInternal(feature);
+    if (removed) {
       this.changed();
     }
   }
@@ -1107,14 +1103,13 @@ class VectorSource extends Source {
   /**
    * Remove feature without firing a `change` event.
    * @param {FeatureType} feature Feature.
-   * @return {FeatureType|undefined} The removed feature
-   *     (or undefined if the feature was not found).
+   * @return {boolean} True if the feature was removed, false if it was not found.
    * @protected
    */
   removeFeatureInternal(feature) {
     const featureKey = getUid(feature);
     if (!(featureKey in this.uidIndex_)) {
-      return;
+      return false;
     }
 
     if (featureKey in this.nullGeometryFeatures_) {
@@ -1148,33 +1143,22 @@ class VectorSource extends Source {
         new VectorSourceEvent(VectorEventType.REMOVEFEATURE, feature),
       );
     }
-    return feature;
+    return true;
   }
 
   /**
    * Remove a feature from the id index.  Called internally when the feature id
    * may have changed.
    * @param {FeatureType} feature The feature.
-   * @return {boolean} Removed the feature from the index.
    * @private
    */
   removeFromIdIndex_(feature) {
-    let removed = false;
     for (const id in this.idIndex_) {
-      const indexedFeature = this.idIndex_[id];
-      if (
-        feature instanceof RenderFeature &&
-        Array.isArray(indexedFeature) &&
-        indexedFeature.includes(feature)
-      ) {
-        indexedFeature.splice(indexedFeature.indexOf(feature), 1);
-      } else if (this.idIndex_[id] === feature) {
+      if (this.idIndex_[id] === feature) {
         delete this.idIndex_[id];
-        removed = true;
         break;
       }
     }
-    return removed;
   }
 
   /**
