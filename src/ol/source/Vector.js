@@ -1074,15 +1074,13 @@ class VectorSource extends Source {
    * @api
    */
   removeFeatures(features) {
-    const removedFeatures = [];
+    let isChanged = false;
     for (let i = 0, ii = features.length; i < ii; ++i) {
       const feature = features[i];
       const removedFeature = this.removeFeatureInternal(feature);
-      if (removedFeature) {
-        removedFeatures.push(removedFeature);
-      }
+      isChanged = isChanged || !!removedFeature;
     }
-    if (removedFeatures.length > 0) {
+    if (isChanged) {
       this.changed();
     }
   }
