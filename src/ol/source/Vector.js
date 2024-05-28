@@ -1154,14 +1154,7 @@ class VectorSource extends Source {
    */
   removeFromIdIndex_(feature) {
     for (const id in this.idIndex_) {
-      const indexedFeature = this.idIndex_[id];
-      if (
-        feature instanceof RenderFeature &&
-        Array.isArray(indexedFeature) &&
-        indexedFeature.includes(feature)
-      ) {
-        indexedFeature.splice(indexedFeature.indexOf(feature), 1);
-      } else if (this.idIndex_[id] === feature) {
+      if (this.idIndex_[id] === feature) {
         delete this.idIndex_[id];
         break;
       }
