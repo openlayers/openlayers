@@ -25,9 +25,9 @@ import {isStringColor} from '../color.js';
  *     of bands, depending on the underlying data source and
  *     {@link import("../source/GeoTIFF.js").Options configuration}. `xOffset` and `yOffset` are optional
  *     and allow specifying pixel offsets for x and y. This is used for sampling data from neighboring pixels (WebGL only).
- *   * `['get', 'attributeName', typeHint]` fetches a feature property value, similar to `feature.get('attributeName')`
- *     A type hint can optionally be specified, in case the resulting expression contains a type ambiguity which
- *     will make it invalid. Type hints can be one of: 'string', 'color', 'number', 'boolean', 'number[]'
+ *   * `['get', attributeName]` fetches a feature property value, similar to `feature.get('attributeName')`.
+ *   * `['get', attributeName, keyOrArrayIndex, ...]` (Canvas only) Access nested properties and array items of a
+ *     feature property. The result is `undefined` when there is nothing at the specified key or index.
  *   * `['geometry-type']` returns a feature's geometry type as string, either: 'LineString', 'Point' or 'Polygon'
  *     `Multi*` values are returned as their singular equivalent
  *     `Circle` geometries are returned as 'Polygon'
@@ -134,6 +134,7 @@ export const NumberType = 1 << numTypes++;
 export const StringType = 1 << numTypes++;
 export const ColorType = 1 << numTypes++;
 export const NumberArrayType = 1 << numTypes++;
+export const SizeType = 1 << numTypes++;
 export const AnyType = Math.pow(2, numTypes) - 1;
 
 const typeNames = {
@@ -142,6 +143,7 @@ const typeNames = {
   [StringType]: 'string',
   [ColorType]: 'color',
   [NumberArrayType]: 'number[]',
+  [SizeType]: 'size',
 };
 
 const namedTypes = Object.keys(typeNames).map(Number).sort(ascending);
@@ -249,27 +251,6 @@ export function newParsingContext() {
 }
 
 /**
- * @param {string} typeHint Type hint
- * @return {number} Resulting value type (will be a single type)
- */
-function getTypeFromHint(typeHint) {
-  switch (typeHint) {
-    case 'string':
-      return StringType;
-    case 'color':
-      return ColorType;
-    case 'number':
-      return NumberType;
-    case 'boolean':
-      return BooleanType;
-    case 'number[]':
-      return NumberArrayType;
-    default:
-      throw new Error(`Unrecognized type hint: ${typeHint}`);
-  }
-}
-
-/**
  * @typedef {LiteralValue|Array} EncodedExpression
  */
 
@@ -285,7 +266,10 @@ export function parse(encoded, context, typeHint) {
       return new LiteralExpression(BooleanType, encoded);
     }
     case 'number': {
-      return new LiteralExpression(NumberType, encoded);
+      return new LiteralExpression(
+        typeHint === SizeType ? SizeType : NumberType,
+        encoded,
+      );
     }
     case 'string': {
       let type = StringType;
@@ -322,7 +306,9 @@ export function parse(encoded, context, typeHint) {
   }
 
   let type = NumberArrayType;
-  if (encoded.length === 3 || encoded.length === 4) {
+  if (encoded.length === 2) {
+    type |= SizeType;
+  } else if (encoded.length === 3 || encoded.length === 4) {
     type |= ColorType;
   }
   if (typeHint) {
@@ -391,20 +377,7 @@ export const Ops = {
  * @type {Object<string, Parser>}
  */
 const parsers = {
-  [Ops.Get]: createParser(
-    ([_, typeHint]) => {
-      if (typeHint !== undefined) {
-        return getTypeFromHint(
-          /** @type {string} */ (
-            /** @type {LiteralExpression} */ (typeHint).value
-          ),
-        );
-      }
-      return AnyType;
-    },
-    withArgsCount(1, 2),
-    withGetArgs,
-  ),
+  [Ops.Get]: createParser(AnyType, withArgsCount(1, Infinity), withGetArgs),
   [Ops.Var]: createParser(
     ([firstArg]) => firstArg.type,
     withArgsCount(1, 1),
@@ -622,9 +595,11 @@ const parsers = {
   ),
   [Ops.Array]: createParser(
     (parsedArgs) => {
-      return parsedArgs.length === 3 || parsedArgs.length === 4
-        ? NumberArrayType | ColorType
-        : NumberArrayType;
+      return parsedArgs.length === 2
+        ? NumberArrayType | SizeType
+        : parsedArgs.length === 3 || parsedArgs.length === 4
+          ? NumberArrayType | ColorType
+          : NumberArrayType;
     },
     withArgsCount(1, Infinity),
     parseArgsOfType(NumberType),
@@ -659,19 +634,29 @@ const parsers = {
  * @type ArgValidator
  */
 function withGetArgs(encoded, context) {
-  const arg = parse(encoded[1], context);
-  if (!(arg instanceof LiteralExpression)) {
-    throw new Error('Expected a literal argument for get operation');
+  const args = [];
+  for (let i = 1, ii = encoded.length; i < ii; ++i) {
+    const arg = parse(encoded[i], context);
+    args.push(arg);
+    if (!(arg instanceof LiteralExpression)) {
+      throw new Error('Expected a literal argument for get operation');
+    }
+    if (i > 1) {
+      if (typeof arg.value !== 'string' && typeof arg.value !== 'number') {
+        throw new Error(
+          'Expected key or array index of a get operation to be a string or number',
+        );
+      }
+      continue;
+    }
+    if (typeof arg.value !== 'string') {
+      throw new Error(
+        'Expected the attribute name of a get operation to be a string',
+      );
+    }
+    context.properties.add(String(arg.value));
   }
-  if (typeof arg.value !== 'string') {
-    throw new Error('Expected a string argument for get operation');
-  }
-  context.properties.add(arg.value);
-  if (encoded.length === 3) {
-    const hint = parse(encoded[2], context);
-    return [arg, hint];
-  }
-  return [arg];
+  return args;
 }
 
 /**
@@ -966,7 +951,7 @@ function parseInterpolateArgs(encoded, context, parsedArgs, typeHint) {
  * @type ArgValidator
  */
 function parseCaseArgs(encoded, context, parsedArgs, typeHint) {
-  const fallback = parse(encoded[encoded.length - 1], context);
+  const fallback = parse(encoded[encoded.length - 1], context, typeHint);
   let outputType =
     typeHint !== undefined ? typeHint & fallback.type : fallback.type;
 
@@ -974,7 +959,7 @@ function parseCaseArgs(encoded, context, parsedArgs, typeHint) {
   const args = new Array(encoded.length - 1);
   for (let i = 0; i < args.length - 1; i += 2) {
     const condition = parse(encoded[i + 1], context);
-    const output = parse(encoded[i + 2], context);
+    const output = parse(encoded[i + 2], context, typeHint);
     if (!overlapsType(BooleanType, condition.type)) {
       throw new Error(
         `Expected all conditions in the case operation to be of type boolean` +

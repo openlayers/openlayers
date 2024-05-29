@@ -24,7 +24,7 @@ class VectorTile extends Tile {
 
     /**
      * @private
-     * @type {import("./format/Feature.js").default}
+     * @type {import("./format/Feature.js").default<typeof import("./Feature.js").default|typeof import("./render/Feature.js").default>}
      */
     this.format_ = format;
 
@@ -69,7 +69,7 @@ class VectorTile extends Tile {
 
   /**
    * Get the feature format assigned for reading this tile's features.
-   * @return {import("./format/Feature.js").default} Feature format.
+   * @return {import("./format/Feature.js").default<typeof import("./Feature.js").default|typeof import("./render/Feature.js").default>} Feature format.
    * @api
    */
   getFormat() {

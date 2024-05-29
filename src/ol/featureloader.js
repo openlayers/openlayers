@@ -50,7 +50,7 @@ let withCredentials = false;
 /**
  * @template {import("./Feature.js").FeatureLike} [FeatureType=import("./Feature.js").FeatureLike]
  * @param {string|FeatureUrlFunction} url Feature URL service.
- * @param {import("./format/Feature.js").default} format Feature format.
+ * @param {import("./format/Feature.js").default<import('./format/Feature.js').FeatureToFeatureClass<FeatureType>>} format Feature format.
  * @param {import("./extent.js").Extent} extent Extent.
  * @param {number} resolution Resolution.
  * @param {import("./proj/Projection.js").default} projection Projection.

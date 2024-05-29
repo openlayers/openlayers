@@ -2,6 +2,7 @@ import expect from '../../expect.js';
 import {
   BooleanType,
   ColorType,
+  NumberArrayType,
   NumberType,
   StringType,
   newParsingContext,
@@ -27,6 +28,61 @@ describe('ol/expr/cpu.js', () => {
      * @type {Array<Case>}
      */
     const cases = [
+      {
+        name: 'get',
+        context: {
+          properties: {
+            property: 42,
+          },
+        },
+        expression: ['get', 'property'],
+        type: NumberType,
+        expected: 42,
+      },
+      {
+        name: 'get (nested)',
+        context: {
+          properties: {
+            deeply: {nested: {property: 42}},
+          },
+        },
+        expression: ['get', 'deeply', 'nested', 'property'],
+        type: NumberType,
+        expected: 42,
+      },
+      {
+        name: 'get number (excess key)',
+        context: {
+          properties: {
+            property: 42,
+          },
+        },
+        expression: ['get', 'property', 'nothing_here'],
+        type: NumberType,
+        expected: undefined,
+      },
+      {
+        name: 'get array item',
+        context: {
+          properties: {
+            values: [17, 42],
+          },
+        },
+        expression: ['get', 'values', 1],
+        type: NumberType,
+        expected: 42,
+      },
+      {
+        name: 'get array',
+        context: {
+          properties: {
+            values: [17, 42],
+          },
+        },
+        expression: ['get', 'values'],
+        type: NumberArrayType,
+        expected: [17, 42],
+      },
       {
         name: 'boolean literal (true)',
         type: BooleanType,
@@ -622,13 +678,13 @@ describe('ol/expr/cpu.js', () => {
         expected: 'true',
       },
       {
-        name: 'to-string (color)',
+        name: 'to-string (array)',
         type: StringType,
-        expression: ['to-string', ['get', 'fill', 'color']],
+        expression: ['to-string', ['get', 'fill']],
         context: {
           properties: {fill: [0, 255, 0]},
         },
-        expected: 'rgba(0,255,0,1)',
+        expected: '0,255,0',
       },
       {
         name: 'in (true)',

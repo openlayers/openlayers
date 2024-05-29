@@ -55,13 +55,9 @@ class MVT extends FeatureFormat {
       units: 'tile-pixels',
     });
 
-    /**
-     * @private
-     * @type {import("../Feature.js").FeatureClass}
-     */
-    this.featureClass_ = options.featureClass
+    this.featureClass = options.featureClass
       ? options.featureClass
-      : RenderFeature;
+      : /** @type {T} */ (RenderFeature);
 
     /**
      * @private
@@ -188,8 +184,8 @@ class MVT extends FeatureFormat {
 
     const geometryType = getGeometryType(type, ends.length);
 
-    if (this.featureClass_ === RenderFeature) {
-      feature = new this.featureClass_(
+    if (this.featureClass === RenderFeature) {
+      feature = new /** @type {typeof RenderFeature} */ (this.featureClass)(
         geometryType,
         flatCoordinates,
         ends,
@@ -219,7 +215,7 @@ class MVT extends FeatureFormat {
                   : null;
       }
       const ctor = /** @type {typeof import("../Feature.js").default} */ (
-        this.featureClass_
+        this.featureClass
       );
       feature = new ctor();
       if (this.geometryName_) {

@@ -92,7 +92,7 @@ const tempSegment = [];
  * as it is added before.
  *
  * The snap interaction modifies map browser event `coordinate` and `pixel`
- * properties to force the snap to occur to any interaction that them.
+ * properties to force the snap to occur to any interaction that uses them.
  *
  * Example:
  *

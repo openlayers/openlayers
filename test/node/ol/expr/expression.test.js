@@ -8,6 +8,7 @@ import {
   NoneType,
   NumberArrayType,
   NumberType,
+  SizeType,
   StringType,
   computeGeometryType,
   includesType,
@@ -69,12 +70,6 @@ describe('ol/expr/expression.js', () => {
       expect(expression.operator).to.be('get');
       expect(isType(expression.type, AnyType)).to.be(true);
       expect(context.properties.has('foo')).to.be(true);
-    });
-
-    it('parses a get expression with type hint', () => {
-      const context = newParsingContext();
-      const expression = parse(['get', 'foo', 'number[]'], context);
-      expect(isType(expression.type, NumberArrayType)).to.be(true);
     });
 
     it('parses a var expression', () => {
@@ -234,6 +229,24 @@ describe('ol/expr/expression.js', () => {
         expect(isType(expression.args[3].type, NumberArrayType)).to.be(true);
         expect(isType(expression.args[5].type, NumberArrayType)).to.be(true);
         expect(isType(expression.args[6].type, NumberArrayType)).to.be(true);
+      });
+      it('finds common output type (size, type hint)', () => {
+        const expression = parse(
+          [
+            'case',
+            ['==', ['get', 'A'], 'true'],
+            1,
+            ['==', ['get', 'B'], 'true'],
+            2,
+            3,
+          ],
+          newParsingContext(),
+          SizeType,
+        );
+        expect(isType(expression.type, SizeType)).to.be(true);
+        expect(isType(expression.args[1].type, SizeType)).to.be(true);
+        expect(isType(expression.args[3].type, SizeType)).to.be(true);
+        expect(isType(expression.args[4].type, SizeType)).to.be(true);
       });
     });
 
@@ -419,11 +432,6 @@ describe('ol/expr/expression.js', () => {
           'The variable myAttr has type number but the following type was expected: string',
       },
       {
-        name: 'invalid type hint (get)',
-        expression: ['get', 'myAttr', 'invalid_type'],
-        error: 'Unrecognized type hint: invalid_type',
-      },
-      {
         name: 'invalid expression',
         expression: null,
         error: 'Expression must be an array or a primitive value',
@@ -532,7 +540,10 @@ describe('ol/expr/expression.js', () => {
         type: BooleanType | NumberType | StringType | ColorType,
         name: 'boolean, number, string, or color',
       },
-      {type: AnyType, name: 'boolean, number, string, color, or number[]'},
+      {
+        type: AnyType,
+        name: 'boolean, number, string, color, number[], or size',
+      },
     ];
 
     for (const {type, name} of cases) {

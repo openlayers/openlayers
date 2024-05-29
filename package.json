@@ -1,6 +1,6 @@
 {
   "name": "ol",
-  "version": "9.2.2-dev",
+  "version": "9.2.5-dev",
   "description": "OpenLayers mapping library",
   "keywords": [
     "map",
@@ -102,13 +102,13 @@
     "pixelmatch": "^5.1.0",
     "pngjs": "^7.0.0",
     "proj4": "2.11.0",
-    "puppeteer": "22.8.2",
+    "puppeteer": "22.10.0",
     "rollup": "^4.1.4",
     "rollup-plugin-external-globals": "^0.10.0",
     "semver": "^7.3.7",
     "serve-static": "^1.14.0",
     "shx": "^0.3.2",
-    "sinon": "^17.0.0",
+    "sinon": "^18.0.0",
     "source-map-loader": "^5.0.0",
     "threads": "^1.6.5",
     "typescript": "5.4.5",
@@ -139,7 +139,10 @@
     "overrides": [
       {
         "files": "test/typescript/**/*.ts",
-        "parser": "@typescript-eslint/parser"
+        "parser": "@typescript-eslint/parser",
+        "rules": {
+          "import/named": "off"
+        }
       }
     ]
   },
