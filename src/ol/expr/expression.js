@@ -834,7 +834,7 @@ function parseMatchArgs(encoded, context, parsedArgs, typeHint) {
 
   const input = parse(encoded[1], context);
   let inputType = input.type;
-  const fallback = parse(encoded[encoded.length - 1], context);
+  const fallback = parse(encoded[encoded.length - 1], context, typeHint);
   let outputType =
     typeHint !== undefined ? typeHint & fallback.type : fallback.type;
 
@@ -842,7 +842,7 @@ function parseMatchArgs(encoded, context, parsedArgs, typeHint) {
   const args = new Array(argsCount - 2);
   for (let i = 0; i < argsCount - 2; i += 2) {
     const match = parse(encoded[i + 2], context);
-    const output = parse(encoded[i + 3], context);
+    const output = parse(encoded[i + 3], context, typeHint);
     inputType &= match.type;
     outputType &= output.type;
     args[i] = match;
