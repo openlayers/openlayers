@@ -291,6 +291,14 @@ describe('ol/expr/expression.js', () => {
         );
         expect(isType(expression.type, ColorType | StringType)).to.be(true);
       });
+      it('finds common output type (size)', () => {
+        const expression = parse(
+          ['match', ['get', 'shape'], 'light', 0.5, 0.7],
+          newParsingContext(),
+          SizeType,
+        );
+        expect(isType(expression.type, SizeType)).to.be(true);
+      });
     });
 
     describe('in operation', () => {
