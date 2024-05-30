@@ -1,0 +1,24 @@
+---
+layout: example.html
+title: Interpolating Contours from a DEM
+shortdesc: Example of WebGL data interpolation
+docs: >
+  <p>
+    Example of data resampling when using raster DEM (digital elevation model) data with WebGL.
+    Mapzen Terrarium tiles with gutter are used which allow interpolation across tile edges.
+    One buffered tile is produced by loading nine adjacent tiles.
+    The data is interpolated by calculating the values represented by the RGB bands of the pixels
+    (Float32 data tiles are used to improve precision on mobile devices) and the
+    interpolated values are styled back as RGB so they can be accessed by a <code>ol/source/Raster</code>.
+    One raster source is used to plot contours where adjacent interpolated pixels cross the contour interval.
+    A second unseen raster source allows a custom mouse position control to display interpolated elevations
+    obtained from the rendered pixels.
+  </p><p>
+    The DEM source has a maximum zoom level of 15 while the view and background layer can zoom in much further.
+    The data values of the original source are shown for comparison.  Notice how, particularly on steep ground,
+    the interpolated values and contours change smoothly while the original data values are stepped.
+  </p>
+tags: "image-interpolation, contours, raster, mouse-position, mapzen"
+---
+<div id="map" class="map"></div>
+<div id="info"></div>
