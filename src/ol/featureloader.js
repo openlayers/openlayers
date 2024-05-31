@@ -26,7 +26,7 @@ let withCredentials = false;
  * source.
  *
  * @template {import("./Feature.js").FeatureLike} [FeatureType=import("./Feature.js").default]
- * @typedef {function(this:(import("./source/Vector").default|import("./VectorTile.js").default),
+ * @typedef {function(this:(import("./source/Vector").default<FeatureType>|import("./VectorTile.js").default),
  *           import("./extent.js").Extent,
  *           number,
  *           import("./proj/Projection.js").default,
@@ -48,9 +48,9 @@ let withCredentials = false;
  */
 
 /**
- * @template {import("./Feature.js").FeatureLike} [FeatureType=import("./Feature.js").FeatureLike]
+ * @template {import("./Feature.js").FeatureLike} [FeatureType=import("./Feature.js").default]
  * @param {string|FeatureUrlFunction} url Feature URL service.
- * @param {import("./format/Feature.js").default<import('./format/Feature.js').FeatureToFeatureClass<FeatureType>>} format Feature format.
+ * @param {import("./format/Feature.js").default<import("./format/Feature.js").FeatureToFeatureClass<FeatureType>>} format Feature format.
  * @param {import("./extent.js").Extent} extent Extent.
  * @param {number} resolution Resolution.
  * @param {import("./proj/Projection.js").default} projection Projection.
@@ -128,9 +128,9 @@ export function loadFeaturesXhr(
  * Create an XHR feature loader for a `url` and `format`. The feature loader
  * loads features (with XHR), parses the features, and adds them to the
  * vector source.
- * @template {import("./Feature.js").FeatureLike} [FeatureType=import("./Feature.js").FeatureLike]
+ * @template {import("./Feature.js").FeatureLike} FeatureType
  * @param {string|FeatureUrlFunction} url Feature URL service.
- * @param {import("./format/Feature.js").default<import('./format/Feature.js').FeatureToFeatureClass<FeatureType>>} format Feature format.
+ * @param {import("./format/Feature.js").default<import("./format/Feature.js").FeatureToFeatureClass<FeatureType>>} format Feature format.
  * @return {FeatureLoader<FeatureType>} The feature loader.
  * @api
  */

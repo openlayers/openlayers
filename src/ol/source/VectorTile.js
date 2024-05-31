@@ -22,7 +22,7 @@ import {loadFeaturesXhr} from '../featureloader.js';
 import {toSize} from '../size.js';
 
 /**
- * @template {import("../Feature.js").FeatureLike} FeatureType
+ * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../render/Feature.js").default]
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
@@ -491,7 +491,8 @@ export default VectorTile;
 
 /**
  * Sets the loader for a tile.
- * @param {import("../VectorTile.js").default} tile Vector tile.
+ * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../render/Feature.js").default]
+ * @param {import("../VectorTile.js").default<FeatureType>} tile Vector tile.
  * @param {string} url URL.
  */
 export function defaultLoadFunction(tile, url) {
