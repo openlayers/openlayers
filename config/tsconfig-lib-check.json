@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "skipLibCheck": false,
+    "skipDefaultLibCheck": true
+ },
+ "include": [
+    "../build/ol/**/*.d.ts"
+ ],
+ "exlude": [
+    "../build/ol/dist/**/*.d.ts"
+  ]
+}

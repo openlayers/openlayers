@@ -11,7 +11,7 @@
   "homepage": "https://openlayers.org/",
   "scripts": {
     "lint": "eslint tasks test src/ol examples config",
-    "pretest": "npm run lint && npm run typecheck && npm run typecheck-strict",
+    "pretest": "npm run lint && npm run typecheck && npm run typecheck-strict && npm run build-package",
     "test-rendering": "npm run build-full && node test/rendering/test.js",
     "test-browser": "npm run karma -- --single-run --log-level error",
     "test-node": "mocha --recursive test/node",
@@ -20,7 +20,7 @@
     "start": "npm run serve-examples",
     "serve-examples": "webpack serve --config examples/webpack/config.mjs --mode development",
     "build-examples": "shx rm -rf build/examples && webpack --config examples/webpack/config.mjs --mode production",
-    "build-package": "npm run build-full && npm run copy-css && npm run generate-types && node tasks/prepare-package.js",
+    "build-package": "npm run build-full && npm run copy-css && npm run generate-types && node tasks/prepare-package.js && npm run typecheck-libcheck",
     "build-index": "shx rm -f build/index.js && npm run transpile && node tasks/generate-index.js",
     "build-full": "shx rm -rf build/full && npm run build-index && npx rollup --config config/rollup-full-build.js",
     "copy-css": "shx cp src/ol/ol.css build/ol/ol.css",
@@ -28,6 +28,7 @@
     "transpile": "shx rm -rf build/ol && shx mkdir -p build/ol && shx cp -rf src/ol build && node tasks/serialize-workers.cjs && node tasks/set-version.js",
     "typecheck": "tsc --pretty",
     "typecheck-strict": "tsc --project config/tsconfig-strict.json",
+    "typecheck-libcheck": "tsc --project config/tsconfig-lib-check.json",
     "apidoc-debug": "shx rm -rf build/apidoc && node --inspect-brk=9229 ./node_modules/jsdoc/jsdoc.js --readme config/jsdoc/api/index.md --configure config/jsdoc/api/conf.json --package package.json --destination build/apidoc",
     "apidoc": "shx rm -rf build/apidoc && jsdoc --readme config/jsdoc/api/index.md --configure config/jsdoc/api/conf.json --package package.json --destination build/apidoc"
   },
