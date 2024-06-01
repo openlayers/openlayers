@@ -14,37 +14,37 @@ const options = {
 const layer1 = new VectorTileLayer(options);
 toFeature(layer1.getSource().getFeaturesInExtent([0, 0, 1, 1])[0]);
 
-const layer2: VectorTileLayer<Feature<Point>> = new VectorTileLayer({
-  source: new VectorTileSource({
-    format: new MVT({featureClass: Feature}),
-  }),
-});
+const layer2: VectorTileLayer<VectorTileSource<Feature<Point>>> =
+  new VectorTileLayer({
+    source: new VectorTileSource({
+      format: new MVT({featureClass: Feature}),
+    }),
+  });
 layer2
   .getSource()
   .getFeaturesInExtent([0, 0, 1, 1])[0]
   .getGeometry()
   .getCoordinates();
 
-const layer3: VectorTileLayer<Feature<Point>> = new VectorTileLayer({
-  source: new VectorTileSource({
-    format: new MVT({featureClass: Feature}),
-  }),
-});
+const layer3: VectorTileLayer<VectorTileSource<Feature<Point>>> =
+  new VectorTileLayer({
+    source: new VectorTileSource({
+      format: new MVT({featureClass: Feature}),
+    }),
+  });
 layer3
   .getSource()
   .getFeaturesInExtent([0, 0, 1, 1])[0]
   .getGeometry()
   .getCoordinates();
 
-const layer4: VectorTileLayer<
-  Feature,
-  OGCVectorTileSource<Feature<Point>>
-> = new VectorTileLayer({
-  source: new OGCVectorTileSource({
-    format: new MVT({featureClass: Feature}),
-    url: 'http://example.com',
-  }),
-});
+const layer4: VectorTileLayer<OGCVectorTileSource<Feature<Point>>> =
+  new VectorTileLayer({
+    source: new OGCVectorTileSource({
+      format: new MVT({featureClass: Feature}),
+      url: 'http://example.com',
+    }),
+  });
 layer4
   .getSource()
   .getFeaturesInExtent([0, 0, 1, 1])[0]

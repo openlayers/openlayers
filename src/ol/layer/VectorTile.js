@@ -20,9 +20,14 @@ import {assert} from '../asserts.js';
  * @typedef {'hybrid' | 'vector'} VectorTileRenderType
  */
 
+/***
+ * @template T
+ * @typedef {T extends import("../source/VectorTile.js").default<infer U extends import("../Feature.js").FeatureLike> ? U : never} ExtractedFeatureType
+ */
+
 /**
- * @template {import("../Feature").FeatureLike} [FeatureType=import("../render/Feature.js").default]
- * @template {import("../source/VectorTile.js").default<FeatureType>} [VectorTileSourceType=import("../source/VectorTile.js").default<FeatureType>]
+ * @template {import("../source/VectorTile.js").default<FeatureType>} [VectorTileSourceType=import("../source/VectorTile.js").default<*>]
+ * @template {import("../Feature").FeatureLike} [FeatureType=ExtractedFeatureType<VectorTileSourceType>]
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
@@ -91,14 +96,14 @@ import {assert} from '../asserts.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../render/Feature.js").default]
- * @template {import("../source/VectorTile.js").default<FeatureType>} [VectorTileSourceType=import("../source/VectorTile.js").default<FeatureType>]
+ * @template {import("../source/VectorTile.js").default<FeatureType>} [VectorTileSourceType=import("../source/VectorTile.js").default<*>]
+ * @template {import("../Feature.js").FeatureLike} [FeatureType=ExtractedFeatureType<VectorTileSourceType>]
  * @extends {BaseVectorLayer<FeatureType, VectorTileSourceType, CanvasVectorTileLayerRenderer>}
  * @api
  */
 class VectorTileLayer extends BaseVectorLayer {
   /**
-   * @param {Options<FeatureType, VectorTileSourceType>} [options] Options.
+   * @param {Options<VectorTileSourceType, FeatureType>} [options] Options.
    */
   constructor(options) {
     options = options ? options : {};
