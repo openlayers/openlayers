@@ -226,6 +226,7 @@
     "../src/ol/source/OGCVectorTile.js",
     "../src/ol/source/OSM.js",
     "../src/ol/source/Raster.js",
+    "../src/ol/source/SentinelHub.js",
     "../src/ol/source/Source.js",
     "../src/ol/source/StadiaMaps.js",
     "../src/ol/source/static.js",

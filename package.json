@@ -54,6 +54,7 @@
     "rbush": "^3.0.1"
   },
   "devDependencies": {
+    "@codemirror/lang-javascript": "^6.2.2",
     "@metalsmith/in-place": "^5.0.0",
     "@metalsmith/layouts": "^2.5.1",
     "@metalsmith/markdown": "^1.6.0",
@@ -72,6 +73,7 @@
     "@typescript-eslint/parser": "^7.9.0",
     "chaikin-smooth": "^1.0.4",
     "clean-css-cli": "5.6.3",
+    "codemirror": "^6.0.1",
     "copy-webpack-plugin": "^12.0.1",
     "es-main": "^1.0.2",
     "eslint": "^8.56.0",
