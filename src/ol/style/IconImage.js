@@ -278,8 +278,8 @@ class IconImage extends EventTarget {
       ctx.putImageData(imgData, 0, 0);
     } else {
       // Tainted canvas requires multiple drawImage calls to achieve same result
-      // Double any non-zero alpha until 100%
-      for (let i = 0; i < 8; ++i) {
+      // Increase any non-zero alpha until 100%
+      for (let a = 1 / 255; a < 254.5 / 255; a += a * (1 - a)) {
         ctx.drawImage(
           ctx.canvas,
           0,
