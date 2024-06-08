@@ -12,6 +12,25 @@ describe('ol/geom/flat/area.js', function () {
       const area = linearRing([0, 0, 0, 1, 1, 1, 1, 0], 0, 8, 2);
       expect(area).to.be(1);
     });
+
+    it('calculates with large coordinate values', function () {
+      const area = linearRing(
+        [
+          Number.MAX_SAFE_INTEGER - 1,
+          Number.MAX_SAFE_INTEGER - 1,
+          Number.MAX_SAFE_INTEGER - 1,
+          Number.MAX_SAFE_INTEGER,
+          Number.MAX_SAFE_INTEGER,
+          Number.MAX_SAFE_INTEGER,
+          Number.MAX_SAFE_INTEGER,
+          Number.MAX_SAFE_INTEGER - 1,
+        ],
+        0,
+        8,
+        2,
+      );
+      expect(area).to.be(1);
+    });
   });
 
   describe('linearRings', function () {
