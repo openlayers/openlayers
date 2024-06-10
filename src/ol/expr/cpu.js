@@ -2,14 +2,7 @@
  * @module ol/expr/cpu
  */
 
-import {
-  ColorType,
-  LiteralExpression,
-  Ops,
-  overlapsType,
-  parse,
-  typeName,
-} from './expression.js';
+import {ColorType, LiteralExpression, Ops, parse} from './expression.js';
 import {
   fromString,
   lchaToRgba,
@@ -92,14 +85,7 @@ export function newEvaluationContext() {
  * @return {ExpressionEvaluator} The expression evaluator.
  */
 export function buildExpression(encoded, type, context) {
-  const expression = parse(encoded, context);
-  if (!overlapsType(type, expression.type)) {
-    const expected = typeName(type);
-    const actual = typeName(expression.type);
-    throw new Error(
-      `Expected expression to be of type ${expected}, got ${actual}`,
-    );
-  }
+  const expression = parse(encoded, type, context);
   return compileExpression(expression, context);
 }
 

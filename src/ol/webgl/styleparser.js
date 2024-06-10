@@ -31,7 +31,6 @@ import {asArray} from '../color.js';
  */
 export function expressionToGlsl(compilationContext, value, expectedType) {
   const parsingContext = newParsingContext();
-  parsingContext.style = compilationContext.style;
   return buildExpression(
     value,
     expectedType,
@@ -917,38 +916,32 @@ export function parseLiteralStyle(style) {
   }
 
   // define one uniform per variable
-  Object.keys(fragContext.variables).forEach(function (varName) {
+  for (const varName in fragContext.variables) {
     const variable = fragContext.variables[varName];
     const uniformName = uniformNameForVariable(variable.name);
     builder.addUniform(`${getGlslTypeFromType(variable.type)} ${uniformName}`);
 
-    let callback;
-    if (variable.type === StringType) {
-      callback = () =>
-        getStringNumberEquivalent(
-          /** @type {string} */ (style.variables[variable.name]),
-        );
-    } else if (variable.type === ColorType) {
-      callback = () =>
-        packColor([
-          ...asArray(
-            /** @type {string|Array<number>} */ (
-              style.variables[variable.name]
-            ) || '#eee',
-          ),
-        ]);
-    } else if (variable.type === BooleanType) {
-      callback = () =>
-        /** @type {boolean} */ (style.variables[variable.name]) ? 1.0 : 0.0;
-    } else {
-      callback = () => /** @type {number} */ (style.variables[variable.name]);
-    }
-    uniforms[uniformName] = callback;
-  });
+    uniforms[uniformName] = () => {
+      const value = style.variables[variable.name];
+      if (typeof value === 'number') {
+        return value;
+      }
+      if (typeof value === 'boolean') {
+        return value ? 1 : 0;
+      }
+      if (variable.type === ColorType) {
+        return packColor([...asArray(value || '#eee')]);
+      }
+      if (typeof value === 'string') {
+        return getStringNumberEquivalent(value);
+      }
+      return value;
+    };
+  }
 
   // for each feature attribute used in the fragment shader, define a varying that will be used to pass data
   // from the vertex to the fragment shader, as well as an attribute in the vertex shader (if not already present)
-  Object.keys(fragContext.properties).forEach(function (propName) {
+  for (const propName in fragContext.properties) {
     const property = fragContext.properties[propName];
     if (!vertContext.properties[propName]) {
       vertContext.properties[propName] = property;
@@ -961,41 +954,15 @@ export function parseLiteralStyle(style) {
       builder.addVertexShaderFunction(UNPACK_COLOR_FN);
     }
     builder.addVarying(`v_prop_${property.name}`, type, expression);
-  });
+  }
 
   // for each feature attribute used in the vertex shader, define an attribute in the vertex shader.
-  Object.keys(vertContext.properties).forEach(function (propName) {
+  for (const propName in vertContext.properties) {
     const property = vertContext.properties[propName];
     builder.addAttribute(
       `${getGlslTypeFromType(property.type)} a_prop_${property.name}`,
     );
-  });
-
-  const attributes = Object.keys(vertContext.properties).map(
-    function (propName) {
-      const property = vertContext.properties[propName];
-      let callback;
-      if (property.evaluator) {
-        callback = property.evaluator;
-      } else if (property.type === StringType) {
-        callback = (feature) =>
-          getStringNumberEquivalent(feature.get(property.name));
-      } else if (property.type === ColorType) {
-        callback = (feature) =>
-          packColor([...asArray(feature.get(property.name) || '#eee')]);
-      } else if (property.type === BooleanType) {
-        callback = (feature) => (feature.get(property.name) ? 1.0 : 0.0);
-      } else {
-        callback = (feature) => feature.get(property.name);
-      }
-
-      return {
-        name: property.name,
-        size: getGlslSizeFromType(property.type),
-        callback,
-      };
-    },
-  );
+  }
 
   // add functions that were collected in the compilation contexts
   for (const functionName in vertContext.functions) {
@@ -1005,15 +972,36 @@ export function parseLiteralStyle(style) {
     builder.addFragmentShaderFunction(fragContext.functions[functionName]);
   }
 
-  return {
-    builder: builder,
-    attributes: attributes.reduce(
-      (prev, curr) => ({
-        ...prev,
-        [curr.name]: {callback: curr.callback, size: curr.size},
-      }),
-      {},
-    ),
-    uniforms: uniforms,
-  };
+  /**
+   * @type {import('../render/webgl/VectorStyleRenderer.js').AttributeDefinitions}
+   */
+  const attributes = {};
+  for (const propName in vertContext.properties) {
+    const property = vertContext.properties[propName];
+    let callback;
+    if (property.evaluator) {
+      callback = property.evaluator;
+    } else {
+      callback = (feature) => {
+        const value = feature.get(property.name);
+        if (property.type === ColorType) {
+          return packColor([...asArray(value || '#eee')]);
+        }
+        if (typeof value === 'string') {
+          return getStringNumberEquivalent(value);
+        }
+        if (typeof value === 'boolean') {
+          return value ? 1 : 0;
+        }
+        return value;
+      };
+    }
+
+    attributes[property.name] = {
+      size: getGlslSizeFromType(property.type),
+      callback,
+    };
+  }
+
+  return {builder, attributes, uniforms};
 }

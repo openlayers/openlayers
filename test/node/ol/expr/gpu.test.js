@@ -152,7 +152,7 @@ describe('ol/expr/gpu.js', () => {
         contextAssertion: (context) => {
           const variable = context.variables['myVar'];
           expect(variable.name).to.equal('myVar');
-          expect(variable.type).to.equal(StringType);
+          expect(variable.type).to.equal(AnyType);
         },
       },
       {
@@ -228,7 +228,7 @@ describe('ol/expr/gpu.js', () => {
       },
       {
         name: 'multiplication (infer string as color)',
-        type: AnyType,
+        type: ColorType,
         expression: ['*', [255, 127.5, 0, 0.5], 'red'],
         expected: '(vec4(0.5, 0.25, 0.0, 0.5) * vec4(1.0, 0.0, 0.0, 1.0))',
       },
@@ -521,7 +521,7 @@ describe('ol/expr/gpu.js', () => {
           5000,
           [0, 0, 255],
         ],
-        type: AnyType,
+        type: ColorType,
         expected:
           'mix(mix(vec4(1.0, 0.0, 0.0, 1.0), vec4(0.0, 1.0, 0.0, 1.0), clamp((a_prop_attr - 1000.0) / (2000.0 - 1000.0), 0.0, 1.0)), vec4(0.0, 0.0, 1.0, 1.0), clamp((a_prop_attr - 2000.0) / (5000.0 - 2000.0), 0.0, 1.0))',
       },
@@ -726,10 +726,16 @@ describe('ol/expr/gpu.js', () => {
           '(u_var_selected == false ? vec4(1.0, 0.0, 0.0, 1.0) : (u_var_selected == a_prop_validValue ? vec4(0.0, 0.5019607843137255, 0.0, 1.0) : ((u_time < 10000.0) ? u_var_oldColor : u_var_newColor)))',
         contextAssertion: (context) => {
           expect(context.properties).to.eql({
-            validValue: {name: 'validValue', type: BooleanType},
+            validValue: {
+              name: 'validValue',
+              type: StringType | NumberType | BooleanType,
+            },
           });
           expect(context.variables).to.eql({
-            selected: {name: 'selected', type: BooleanType},
+            selected: {
+              name: 'selected',
+              type: StringType | NumberType | BooleanType,
+            },
             newColor: {name: 'newColor', type: ColorType},
             oldColor: {name: 'oldColor', type: ColorType},
           });
@@ -755,7 +761,7 @@ describe('ol/expr/gpu.js', () => {
           ],
           ['var', 'fixedSize'],
         ],
-        type: AnyType,
+        type: NumberArrayType,
         context: {
           style: {
             variables: {
@@ -772,7 +778,7 @@ describe('ol/expr/gpu.js', () => {
           expect(context.properties).to.eql({
             type: {
               name: 'type',
-              type: StringType,
+              type: StringType | NumberType | BooleanType,
             },
             height: {
               name: 'height',
@@ -782,11 +788,11 @@ describe('ol/expr/gpu.js', () => {
           expect(context.variables).to.eql({
             fixedSize: {
               name: 'fixedSize',
-              type: NumberArrayType | SizeType,
+              type: NumberArrayType,
             },
             symbolType: {
               name: 'symbolType',
-              type: StringType,
+              type: AnyType,
             },
             mediumHeight: {
               name: 'mediumHeight',
@@ -861,7 +867,7 @@ describe('ol/expr/gpu.js', () => {
         name: 'expected type not matching actual type',
         expression: '42',
         type: NumberType,
-        exception: 'Expected expression to be of type number, got string',
+        exception: 'got a string, but expected number',
       },
       {
         name: 'argument type unexpected (var)',
@@ -870,12 +876,12 @@ describe('ol/expr/gpu.js', () => {
       },
       {
         name: 'argument type unexpected (any)',
-        expression: ['any', ['var', 'aa'], 10],
+        expression: ['any', ['var', 'aa'], [10, 20]],
         exception: true,
       },
       {
         name: 'argument type unexpected (all)',
-        expression: ['all', ['var', 'aa'], 10],
+        expression: ['all', ['var', 'aa'], [10, 20]],
         exception: true,
       },
       {
