@@ -50,7 +50,7 @@ let withCredentials = false;
 /**
  * @template {import("./Feature.js").FeatureLike} [FeatureType=import("./Feature.js").default]
  * @param {string|FeatureUrlFunction} url Feature URL service.
- * @param {import("./format/Feature.js").default<import("./format/Feature.js").FeatureToFeatureClass<FeatureType>>} format Feature format.
+ * @param {import("./format/Feature.js").default<FeatureType>} format Feature format.
  * @param {import("./extent.js").Extent} extent Extent.
  * @param {number} resolution Resolution.
  * @param {import("./proj/Projection.js").default} projection Projection.
@@ -130,7 +130,7 @@ export function loadFeaturesXhr(
  * vector source.
  * @template {import("./Feature.js").FeatureLike} FeatureType
  * @param {string|FeatureUrlFunction} url Feature URL service.
- * @param {import("./format/Feature.js").default<import("./format/Feature.js").FeatureToFeatureClass<FeatureType>>} format Feature format.
+ * @param {import("./format/Feature.js").default<FeatureType>} format Feature format.
  * @return {FeatureLoader<FeatureType>} The feature loader.
  * @api
  */

@@ -70,6 +70,8 @@ import {toSize} from '../size.js';
  * A source for typed array data tiles.
  *
  * @fires import("./Tile.js").TileSourceEvent
+ * @template {import("../Tile.js").default} [TileType=DataTile]
+ * @extends TileSource<TileType>
  * @api
  */
 class DataTileSource extends TileSource {
@@ -215,7 +217,7 @@ class DataTileSource extends TileSource {
    * @param {number} y Tile coordinate y.
    * @param {import("../proj/Projection.js").default} targetProj The output projection.
    * @param {import("../proj/Projection.js").default} sourceProj The input projection.
-   * @return {!DataTile} Tile.
+   * @return {!TileType} Tile.
    */
   getReprojTile_(z, x, y, targetProj, sourceProj) {
     const cache = this.getTileCacheForProjection(targetProj);
@@ -261,9 +263,11 @@ class DataTileSource extends TileSource {
         getTileFunction: (z, x, y, pixelRatio) =>
           this.getTile(z, x, y, pixelRatio, sourceProj),
       },
-      this.tileOptions,
+      /** @type {import("../reproj/DataTile.js").Options} */ (this.tileOptions),
     );
-    const newTile = new ReprojDataTile(options);
+    const newTile = /** @type {TileType} */ (
+      /** @type {*} */ (new ReprojDataTile(options))
+    );
     newTile.key = this.getKey();
     return newTile;
   }
@@ -274,7 +278,7 @@ class DataTileSource extends TileSource {
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {DataTile|null} Tile (or null if outside source extent).
+   * @return {TileType|null} Tile (or null if outside source extent).
    */
   getTile(z, x, y, pixelRatio, projection) {
     const sourceProjection = this.getProjection();
@@ -331,7 +335,9 @@ class DataTileSource extends TileSource {
       this.tileOptions,
     );
 
-    const tile = new DataTile(options);
+    const tile = /** @type {TileType} */ (
+      /** @type {*} */ (new DataTile(options))
+    );
     tile.key = this.getKey();
     tile.addEventListener(EventType.CHANGE, this.handleTileChange_);
 

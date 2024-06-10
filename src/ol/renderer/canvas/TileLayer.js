@@ -554,7 +554,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const projection = viewState.projection;
     const viewResolution = viewState.resolution;
     const viewCenter = viewState.center;
-    const rotation = viewState.rotation;
     const pixelRatio = frameState.pixelRatio;
 
     const tileLayer = this.getLayer();
@@ -572,8 +571,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       this.renderedSourceKey_ = sourceKey;
     }
 
-    const frameExtent = frameState.extent;
-    const resolution = frameState.viewState.resolution;
+    let frameExtent = frameState.extent;
     const tilePixelRatio = tileSource.getTilePixelRatio(pixelRatio);
 
     this.prepareContainer(frameState, target);
@@ -581,6 +579,15 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     // desired dimensions of the canvas in pixels
     const width = this.context.canvas.width;
     const height = this.context.canvas.height;
+
+    const layerExtent =
+      layerState.extent && fromUserExtent(layerState.extent, projection);
+    if (layerExtent) {
+      frameExtent = getIntersection(
+        frameExtent,
+        fromUserExtent(layerState.extent, projection),
+      );
+    }
 
     const dx = (tileResolution * width) / 2 / tilePixelRatio;
     const dy = (tileResolution * height) / 2 / tilePixelRatio;

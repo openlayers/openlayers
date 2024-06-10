@@ -46,6 +46,8 @@ import {withinExtentAndZ} from '../tilecoord.js';
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
  * Base class for sources providing images divided into a tile grid.
+ *
+ * @template {import("../Tile.js").default} [TileType=import("../Tile.js").default]
  * @abstract
  * @api
  */
@@ -213,7 +215,7 @@ class TileSource extends Source {
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {!import("../Tile.js").default} Tile.
+   * @return {TileType|null} Tile.
    */
   getTile(z, x, y, pixelRatio, projection) {
     return abstract();

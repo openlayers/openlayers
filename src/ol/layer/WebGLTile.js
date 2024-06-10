@@ -17,7 +17,7 @@ import {
 import {expressionToGlsl} from '../webgl/styleparser.js';
 
 /**
- * @typedef {import("../source/DataTile.js").default|import("../source/TileImage.js").default} SourceType
+ * @typedef {import("../source/DataTile.js").default} SourceType
  */
 
 /**

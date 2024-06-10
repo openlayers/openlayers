@@ -302,7 +302,7 @@ class ReprojDataTile extends DataTile {
   reproject_() {
     const dataSources = [];
     let imageLike = false;
-    this.sourceTiles_.forEach((tile) => {
+    this.sourceTiles_.forEach((source) => {
       const tile = source.tile;
       if (!tile || tile.getState() !== TileState.LOADED) {
         return;
