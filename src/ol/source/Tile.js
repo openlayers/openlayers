@@ -314,18 +314,6 @@ class TileSource extends Source {
   }
 
   /**
-   * Increases the cache size if needed
-   * @param {number} tileCount Minimum number of tiles needed.
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   */
-  updateCacheSize(tileCount, projection) {
-    const tileCache = this.getTileCacheForProjection(projection);
-    if (tileCount > tileCache.highWaterMark) {
-      tileCache.highWaterMark = tileCount;
-    }
-  }
-
-  /**
    * Marks a tile coord as being used, without triggering a load.
    * @abstract
    * @param {number} z Tile coordinate z.

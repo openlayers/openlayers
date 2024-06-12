@@ -94,13 +94,8 @@ function getRenderExtent(frameState, extent) {
 }
 
 /**
- * @type {Object<string, boolean>}
- */
-const empty = {};
-
-/**
  * @typedef {Object} Options
- * @property {number} [cacheSize=512] The texture cache size.
+ * @property {number} [cacheSize=512] The cache size.
  */
 
 /**
@@ -199,6 +194,13 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
      * @private
      */
     this.tileCache_ = new LRUCache(cacheSize);
+  }
+
+  /**
+   * @return {LRUCache} Tile cache.
+   */
+  getTileCache() {
+    return this.tileCache_;
   }
 
   /**
@@ -867,14 +869,28 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
      * @param {import("../../Map.js").default} map Map.
      * @param {import("../../Map.js").FrameState} frameState Frame state.
      */
-    const postRenderFunction = function (map, frameState) {
-      tileSource.updateCacheSize(0.1, frameState.viewState.projection);
-      tileSource.expireCache(frameState.viewState.projection, empty);
+    const postRenderFunction = (map, frameState) => {
+      const tileSourceKey = getUid(tileSource);
+      const usedTiles = frameState.usedTiles[tileSourceKey];
+      const tilesCount = usedTiles ? Object.keys(usedTiles).length : 0;
+      this.updateCacheSize(tilesCount);
+      this.tileCache_.expireCache();
     };
 
     frameState.postRenderFunctions.push(postRenderFunction);
 
     return this.container;
+  }
+
+  /**
+   * Increases the cache size if needed
+   * @param {number} tileCount Minimum number of tiles needed.
+   */
+  updateCacheSize(tileCount) {
+    this.tileCache_.highWaterMark = Math.max(
+      this.tileCache_.highWaterMark,
+      tileCount * 2,
+    );
   }
 
   /**

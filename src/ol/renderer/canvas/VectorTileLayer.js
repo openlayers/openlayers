@@ -67,9 +67,10 @@ const VECTOR_REPLAYS = {
 class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   /**
    * @param {import("../../layer/VectorTile.js").default} layer VectorTile layer.
+   * @param {import("./TileLayer.js").Options} options Options.
    */
-  constructor(layer) {
-    super(layer);
+  constructor(layer, options) {
+    super(layer, options);
 
     /** @private */
     this.boundHandleStyleImageChange_ = this.handleStyleImageChange_.bind(this);

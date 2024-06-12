@@ -16,7 +16,7 @@ import {
   intersects,
 } from '../extent.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
-import {getCacheKeyForTileKey, getKeyZXY} from '../tilecoord.js';
+import {getCacheKeyForTileKey} from '../tilecoord.js';
 import {isEmpty} from '../obj.js';
 import {loadFeaturesXhr} from '../featureloader.js';
 import {toSize} from '../size.js';
@@ -150,7 +150,7 @@ class VectorTile extends UrlTile {
      * @private
      * @type {TileCache}
      */
-    this.sourceTileCache = new TileCache(this.tileCache.highWaterMark);
+    this.sourceTileCache_ = new TileCache(128);
 
     /**
      * @private
@@ -184,7 +184,14 @@ class VectorTile extends UrlTile {
    */
   clear() {
     this.tileCache.clear();
-    this.sourceTileCache.clear();
+    this.sourceTileCache_.clear();
+  }
+
+  /**
+   * @param {number} size Cache size.
+   */
+  setSourceTileCacheSize(size) {
+    this.sourceTileCache_.highWaterMark = size;
   }
 
   /**
@@ -205,7 +212,7 @@ class VectorTile extends UrlTile {
       return acc;
     }, {});
     super.expireCache(projection, usedTiles);
-    this.sourceTileCache.expireCache(usedSourceTiles);
+    this.sourceTileCache_.expireCache(usedSourceTiles);
   }
 
   /**
@@ -240,8 +247,8 @@ class VectorTile extends UrlTile {
           pixelRatio,
           projection,
         );
-        const sourceTile = this.sourceTileCache.containsKey(tileUrl)
-          ? this.sourceTileCache.get(tileUrl)
+        const sourceTile = this.sourceTileCache_.containsKey(tileUrl)
+          ? this.sourceTileCache_.get(tileUrl)
           : new this.tileClass(
               sourceTileCoord,
               tileUrl ? TileState.IDLE : TileState.EMPTY,
@@ -288,7 +295,7 @@ class VectorTile extends UrlTile {
           sourceTile.resolution = sourceTileGrid.getResolution(
             sourceTileCoord[0],
           );
-          this.sourceTileCache.set(tileUrl, sourceTile);
+          this.sourceTileCache_.set(tileUrl, sourceTile);
           sourceTile.load();
         }
       });
@@ -315,15 +322,6 @@ class VectorTile extends UrlTile {
    * @return {!VectorRenderTile} Tile.
    */
   getTile(z, x, y, pixelRatio, projection) {
-    const coordKey = getKeyZXY(z, x, y);
-    const key = this.getKey();
-    let tile;
-    if (this.tileCache.containsKey(coordKey)) {
-      tile = this.tileCache.get(coordKey);
-      if (tile.key === key) {
-        return tile;
-      }
-    }
     const tileCoord = [z, x, y];
     let urlTileCoord = this.getTileCoordForTileUrlFunction(
       tileCoord,
@@ -359,13 +357,6 @@ class VectorTile extends UrlTile {
       urlTileCoord,
       this.getSourceTiles.bind(this, pixelRatio, projection),
     );
-
-    newTile.key = key;
-    if (tile) {
-      this.tileCache.replace(coordKey, newTile);
-    } else {
-      this.tileCache.set(coordKey, newTile);
-    }
     return newTile;
   }
 
@@ -426,17 +417,6 @@ class VectorTile extends UrlTile {
       Math.round(tileSize[0] * pixelRatio),
       Math.round(tileSize[1] * pixelRatio),
     ];
-  }
-
-  /**
-   * Increases the cache size if needed
-   * @param {number} tileCount Minimum number of tiles needed.
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   */
-  updateCacheSize(tileCount, projection) {
-    super.updateCacheSize(tileCount * 2, projection);
-    this.sourceTileCache.highWaterMark =
-      this.getTileCacheForProjection(projection).highWaterMark;
   }
 }
 

@@ -87,6 +87,8 @@ import {assert} from '../asserts.js';
  * means no preloading.
  * @property {boolean} [useInterimTilesOnError=true] Deprecated.  Use interim tiles on error.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+ * @property {number} [cacheSize=0] The internal tile cache size.  If too small, this will auto-grow to hold
+ * two zoom levels worth of tiles.
  */
 
 /**
@@ -110,6 +112,8 @@ class VectorTileLayer extends BaseVectorLayer {
 
     const baseOptions = Object.assign({}, options);
     delete baseOptions.preload;
+    const cacheSize = options.cacheSize === undefined ? 0 : options.cacheSize;
+    delete options.cacheSize;
     delete baseOptions.useInterimTilesOnError;
 
     super(baseOptions);
@@ -128,6 +132,12 @@ class VectorTileLayer extends BaseVectorLayer {
      * @type {VectorTileLayerOnSignature<void>}
      */
     this.un;
+
+    /**
+     * @type {number|undefined}
+     * @private
+     */
+    this.cacheSize_ = cacheSize;
 
     const renderMode = options.renderMode || 'hybrid';
     assert(
@@ -164,9 +174,9 @@ class VectorTileLayer extends BaseVectorLayer {
   }
 
   createRenderer() {
-    return new CanvasVectorTileLayerRenderer(
-      /** @type {VectorTileLayer} */ (this),
-    );
+    return new CanvasVectorTileLayerRenderer(this, {
+      cacheSize: this.cacheSize_,
+    });
   }
 
   /**
