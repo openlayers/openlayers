@@ -60,7 +60,7 @@
     "@octokit/rest": "^20.0.1",
     "@openlayers/eslint-plugin": "^4.0.0",
     "@rollup/plugin-alias": "^5.1.0",
-    "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-commonjs": "^26.0.1",
     "@rollup/plugin-node-resolve": "^15.0.0",
     "@rollup/plugin-terser": "^0.4.3",
     "@types/arcgis-rest-api": "^10.4.4",
