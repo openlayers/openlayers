@@ -102,11 +102,11 @@ export function fromString(s) {
 
   const color = parseRgba(s);
   if (color.length !== 4) {
-    throw new Error('Failed to parse "' + s + '" as color');
+    throw new Error('failed to parse "' + s + '" as color');
   }
   for (const c of color) {
     if (isNaN(c)) {
-      throw new Error('Failed to parse "' + s + '" as color');
+      throw new Error('failed to parse "' + s + '" as color');
     }
   }
   normalize(color);

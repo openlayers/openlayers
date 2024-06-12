@@ -6,15 +6,12 @@ import {
   BooleanType,
   CallExpression,
   ColorType,
-  NoneType,
   NumberArrayType,
   NumberType,
   Ops,
   SizeType,
   StringType,
   computeGeometryType,
-  isType,
-  overlapsType,
   parse,
   typeName,
 } from './expression.js';
@@ -197,17 +194,7 @@ export function buildExpression(
   parsingContext,
   compilationContext,
 ) {
-  const expression = parse(encoded, parsingContext, type);
-  if (isType(expression.type, NoneType)) {
-    throw new Error(`No matching type was found`);
-  }
-  if (!overlapsType(type, expression.type)) {
-    const expected = typeName(type);
-    const actual = typeName(expression.type);
-    throw new Error(
-      `Expected expression to be of type ${expected}, got ${actual}`,
-    );
-  }
+  const expression = parse(encoded, type, parsingContext);
   return compile(expression, type, compilationContext);
 }
 

@@ -13,7 +13,7 @@ import Style from '../../../../../src/ol/style/Style.js';
 import {VOID} from '../../../../../src/ol/functions.js';
 import {renderFeature} from '../../../../../src/ol/renderer/vector.js';
 
-describe('ol.renderer.vector', function () {
+describe('ol/renderer/vector', function () {
   describe('#renderFeature', function () {
     let builderGroup;
     let feature, iconStyle, style, squaredTolerance, listener;

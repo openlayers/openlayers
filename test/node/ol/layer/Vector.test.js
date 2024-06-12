@@ -23,7 +23,7 @@ describe('ol/layer/Vector.js', () => {
       const style = styles[0];
       const fill = style.getFill();
       expect(fill).to.be.a(Fill);
-      expect(fill.getColor()).to.be('red');
+      expect(fill.getColor()).to.eql([255, 0, 0, 1]);
     });
 
     it('accepts an array of flat styles', () => {
@@ -51,7 +51,7 @@ describe('ol/layer/Vector.js', () => {
 
       const firstStroke = first.getStroke();
       expect(firstStroke).to.be.a(Stroke);
-      expect(firstStroke.getColor()).to.be('red');
+      expect(firstStroke.getColor()).to.eql([255, 0, 0, 1]);
       expect(firstStroke.getWidth()).to.be(10);
 
       const second = styles[1];
@@ -59,7 +59,7 @@ describe('ol/layer/Vector.js', () => {
 
       const secondStroke = second.getStroke();
       expect(secondStroke).to.be.a(Stroke);
-      expect(secondStroke.getColor()).to.be('yellow');
+      expect(secondStroke.getColor()).to.eql([255, 255, 0, 1]);
       expect(secondStroke.getWidth()).to.be(5);
     });
   });

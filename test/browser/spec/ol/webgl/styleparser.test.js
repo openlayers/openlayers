@@ -10,7 +10,7 @@ import {
   uniformNameForVariable,
 } from '../../../../../src/ol/expr/gpu.js';
 
-describe('ol.webgl.styleparser', () => {
+describe('ol/webgl/styleparser', () => {
   describe('parseLiteralStyle', () => {
     it('parses a style with variables', () => {
       const result = parseLiteralStyle({
