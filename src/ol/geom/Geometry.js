@@ -258,11 +258,25 @@ class Geometry extends BaseObject {
    * The geometry is modified in place.
    * If you do not want the geometry modified in place, first `clone()` it and
    * then use this function on the clone.
-   * @abstract
    * @param {import("../proj.js").TransformFunction} transformFn Transform function.
    * Called with a flat array of geometry coordinates.
+   * @api
    */
   applyTransform(transformFn) {
+    this.applyTransformInternal(transformFn);
+  }
+
+  /**
+   * Apply a transform function to the coordinates of the geometry.
+   * The geometry is modified in place.
+   * If you do not want the geometry modified in place, first `clone()` it and
+   * then use this function on the clone.
+   * @abstract
+   * @param {import("../proj.js").TransformFunction} transformFn Transform function.
+   * @param {import("../proj/Projection.js").default} [sourceProj] Source projection.
+   * @param {import("../proj/Projection.js").default} [destProj] Destination projection.
+   */
+  applyTransformInternal(transformFn, sourceProj, destProj) {
     abstract();
   }
 
@@ -337,7 +351,11 @@ class Geometry extends BaseObject {
             );
           }
         : getTransform(sourceProj, destination);
-    this.applyTransform(transformFn);
+    this.applyTransformInternal(
+      transformFn,
+      sourceProj,
+      getProjection(destination)
+    );
     return this;
   }
 }

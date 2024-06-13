@@ -2,6 +2,7 @@
  * @module ol/geom/Circle
  */
 import SimpleGeometry from './SimpleGeometry.js';
+import {METERS_PER_UNIT, transform} from '../proj.js';
 import {createOrUpdate, forEachCorner, intersects} from '../extent.js';
 import {deflateCoordinate} from './flat/deflate.js';
 import {rotate} from './flat/transform.js';
@@ -171,15 +172,7 @@ class Circle extends SimpleGeometry {
    * @api
    */
   setCenter(center) {
-    const stride = this.stride;
-    const radius = this.flatCoordinates[stride] - this.flatCoordinates[0];
-    const flatCoordinates = center.slice();
-    flatCoordinates[stride] = flatCoordinates[0] + radius;
-    for (let i = 1; i < stride; ++i) {
-      flatCoordinates[stride + i] = center[i];
-    }
-    this.setFlatCoordinates(this.layout, flatCoordinates);
-    this.changed();
+    this.setCenterAndRadius(center, this.getRadius());
   }
 
   /**
@@ -218,8 +211,7 @@ class Circle extends SimpleGeometry {
    * @api
    */
   setRadius(radius) {
-    this.flatCoordinates[this.stride] = this.flatCoordinates[0] + radius;
-    this.changed();
+    this.setCenterAndRadius(this.getCenter(), radius);
   }
 
   /**
@@ -237,6 +229,34 @@ class Circle extends SimpleGeometry {
     );
     this.changed();
   }
+
+  translate(deltaX, deltaY) {
+    const center = this.getCenter();
+    this.setCenter([center[0] + deltaX, center[1] + deltaY]);
+  }
+
+  /**
+   * Apply a transform function to the coordinates of the geometry.
+   * The geometry is modified in place.
+   * If you do not want the geometry modified in place, first `clone()` it and
+   * then use this function on the clone.
+   * @abstract
+   * @param {import("../proj.js").TransformFunction} transformFn Transform function.
+   * @param {import("../proj/Projection.js").default} [sourceProj] Source projection.
+   * @param {import("../proj/Projection.js").default} [destProj] Destination projection.
+   */
+  applyTransformInternal(transformFn, sourceProj, destProj) {
+    if (sourceProj && destProj) {
+      const radius = this.getRadius();
+      this.setCenterAndRadius(
+        transform(this.getCenter(), sourceProj, destProj),
+        (radius * METERS_PER_UNIT[sourceProj.getUnits()]) /
+          METERS_PER_UNIT[destProj.getUnits()]
+      );
+    } else {
+      super.applyTransformInternal(transformFn);
+    }
+  }
 }
 
 /**
@@ -247,10 +267,17 @@ class Circle extends SimpleGeometry {
  *
  * Internally a circle is currently represented by two points: the center of
  * the circle `[cx, cy]`, and the point to the right of the circle
- * `[cx + r, cy]`. This `transform` function just transforms these two points.
- * So the resulting geometry is also a circle, and that circle does not
- * correspond to the shape that would be obtained by transforming every point
- * of the original circle.
+ * `[cx + r, cy]`. This `transform` function just transforms the center. It also
+ * adjusts the radius if the units of current and desired projection are different.
+ * The resulting geometry is also a circle, and that circle does not correspond to
+ * the shape that would be obtained by transforming points along the perimeter of the
+ * original circle. If that's what you want, you should instead use the
+ * {@link module:ol/geom/Polygon.fromCircle} or {@link module:ol/geom/Polygon.circular}
+ * function to create a circle shaped polygon, and transform that polygon.
+ *
+ * The geometry is modified in place.
+ * If you do not want the geometry modified in place, first `clone()` it and
+ * then use this function on the clone.
  *
  * @param {import("../proj.js").ProjectionLike} source The current projection.  Can be a
  *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
@@ -262,4 +289,22 @@ class Circle extends SimpleGeometry {
  * @api
  */
 Circle.prototype.transform;
+
+/**
+ * Apply a transform function to the coordinates of the circle. Note that the circle is
+ * internally represented by two points: the center of the circle `[cx, cy]`, and the point
+ * to the right of the circle `[cx + r, cy]`. This method just transforms these two points. If
+ * the transform function results in a second point with a different y value than the y
+ * value of the center, the resulting circle will still render correctly, but subsequent
+ * transforms or modifications on it can yield unexpected results.
+ *
+ * The geometry is modified in place.
+ * If you do not want the geometry modified in place, first `clone()` it and
+ * then use this function on the clone.
+ * @param {import("../proj.js").TransformFunction} transformFn Transform function.
+ * Called with a flat array of geometry coordinates.
+ * @function
+ * @api
+ */
+Circle.prototype.applyTransform;
 export default Circle;
