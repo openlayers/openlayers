@@ -153,7 +153,7 @@ export function writeLineSegmentToBuffers(
   currentAngleTangentSum,
 ) {
   // compute the stride to determine how many vertices were already pushed
-  const baseVertexAttrsCount = 8; // base attributes: x0, y0, x1, y1, angle0, angle1, distance, params
+  const baseVertexAttrsCount = 10; // base attributes: x0, y0, m0, x1, y1, m1, angle0, angle1, distance, params
   const stride = baseVertexAttrsCount + customAttributes.length;
   const baseIndex = vertexArray.length / stride;
 
@@ -165,6 +165,9 @@ export function writeLineSegmentToBuffers(
     instructions[segmentStartIndex + 1],
   ];
   const p1 = [instructions[segmentEndIndex], instructions[segmentEndIndex + 1]];
+
+  const m0 = instructions[segmentStartIndex + 2];
+  const m1 = instructions[segmentEndIndex + 2];
 
   // to compute join angles we need to reproject coordinates back in world units
   const p0world = applyTransform(toWorldTransform, [...p0]);
@@ -254,8 +257,10 @@ export function writeLineSegmentToBuffers(
   vertexArray.push(
     p0[0],
     p0[1],
+    m0,
     p1[0],
     p1[1],
+    m1,
     angle0,
     angle1,
     currentLength,
@@ -266,8 +271,10 @@ export function writeLineSegmentToBuffers(
   vertexArray.push(
     p0[0],
     p0[1],
+    m0,
     p1[0],
     p1[1],
+    m1,
     angle0,
     angle1,
     currentLength,
@@ -278,8 +285,10 @@ export function writeLineSegmentToBuffers(
   vertexArray.push(
     p0[0],
     p0[1],
+    m0,
     p1[0],
     p1[1],
+    m1,
     angle0,
     angle1,
     currentLength,
@@ -290,8 +299,10 @@ export function writeLineSegmentToBuffers(
   vertexArray.push(
     p0[0],
     p0[1],
+    m0,
     p1[0],
     p1[1],
+    m1,
     angle0,
     angle1,
     currentLength,

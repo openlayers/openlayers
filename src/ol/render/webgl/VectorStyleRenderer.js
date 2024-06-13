@@ -33,6 +33,8 @@ export const Attributes = {
   INDEX: 'a_index',
   SEGMENT_START: 'a_segmentStart',
   SEGMENT_END: 'a_segmentEnd',
+  MEASURE_START: 'a_measureStart',
+  MEASURE_END: 'a_measureEnd',
   PARAMETERS: 'a_parameters',
   JOIN_ANGLES: 'a_joinAngles',
   DISTANCE: 'a_distance',
@@ -253,8 +255,18 @@ class VectorStyleRenderer {
         type: AttributeType.FLOAT,
       },
       {
+        name: Attributes.MEASURE_START,
+        size: 1,
+        type: AttributeType.FLOAT,
+      },
+      {
         name: Attributes.SEGMENT_END,
         size: 2,
+        type: AttributeType.FLOAT,
+      },
+      {
+        name: Attributes.MEASURE_END,
+        size: 1,
         type: AttributeType.FLOAT,
       },
       {
