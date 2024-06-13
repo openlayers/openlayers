@@ -71,10 +71,11 @@ function readRGB(preference, image) {
  * the configured min and max.  If not provided and raster statistics are available, those will be used instead.
  * If neither are available, the maximum for the data type will be used.  To disable this behavior, set
  * the `normalize` option to `false` in the constructor.
- * @property {number} [nodata] Values to discard (overriding any nodata values in the metadata).
+ * @property {number|null} [nodata] Values to discard (overriding any nodata values in the metadata).
  * When provided, an additional alpha band will be added to the data.  Often the GeoTIFF metadata
  * will include information about nodata values, so you should only need to set this property if
- * you find that it is not already extracted from the metadata.
+ * you find that it is not already extracted from the metadata.  To ensure an alpha band will be added
+ * (without overriding potential values in the metadata) specify `null`.
  * @property {Array<number>} [bands] Band numbers to be read from (where the first band is `1`). If not provided, all bands will
  * be read. For example, if a GeoTIFF has blue (1), green (2), red (3), and near-infrared (4) bands, and you only need the
  * near-infrared band, configure `bands: [4]`.
@@ -925,7 +926,7 @@ class GeoTIFFSource extends DataTile {
             data[dataIndex] = value;
           } else {
             let nodata = source.nodata;
-            if (nodata === undefined) {
+            if (nodata === undefined || nodata === null) {
               let bandIndex;
               if (source.bands) {
                 bandIndex = source.bands[sampleIndex] - 1;
