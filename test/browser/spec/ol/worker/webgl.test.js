@@ -69,7 +69,7 @@ describe('ol/worker/webgl', () => {
       let vertices;
       beforeEach((done) => {
         const renderInstructions = Float32Array.from([
-          111, 4, 20, 30, 40, 50, 6, 7, 80, 90,
+          111, 4, 20, 30, -1, 40, 50, -2, 6, 7, -3, 80, 90, -4,
         ]);
         const id = Math.floor(Math.random() * 10000);
         const renderInstructionsTransform = createTransform();
@@ -106,25 +106,25 @@ describe('ol/worker/webgl', () => {
         expect(indices).to.eql([
           0, 1, 2, 1, 3, 2, 4, 5, 6, 5, 7, 6, 8, 9, 10, 9, 11, 10,
         ]);
-        expect(vertices.length).to.eql(108); // 3 segments, 4 vertices each, 8 attributes each + 1 custom attr
+        expect(vertices.length).to.eql(132); // 3 segments, 4 vertices each, 10 attributes each + 1 custom attr
       });
       it('computes join angles for an open line', () => {
         // join angles for first and last segments; the line is not a loop so it starts and ends with -1 angles
-        expect(vertices.slice(4, 6)).to.eql([-1, 0.11635516583919525]);
-        expect(vertices.slice(4 + 72, 6 + 72)).to.eql([
+        expect(vertices.slice(6, 8)).to.eql([-1, 0.11635516583919525]);
+        expect(vertices.slice(6 + 88, 8 + 88)).to.eql([
           0.05909299477934837, -1,
         ]);
       });
       it('computes the base length for each segment', () => {
-        expect(vertices[6]).to.eql(0);
-        expect(vertices[6 + 36]).to.eql(28.284271240234375);
-        expect(vertices[6 + 72]).to.eql(83.1021499633789);
+        expect(vertices[8]).to.eql(0);
+        expect(vertices[8 + 44]).to.eql(28.284271240234375);
+        expect(vertices[8 + 88]).to.eql(83.1021499633789);
       });
 
       describe('closed line', () => {
         beforeEach((done) => {
           const renderInstructions = Float32Array.from([
-            111, 4, 20, 30, 40, 50, 6, 7, 20, 30,
+            111, 4, 20, 30, -1, 40, 50, -2, 6, 7, -3, 20, 30, -4,
           ]);
           const id = Math.floor(Math.random() * 10000);
           const renderInstructionsTransform = createTransform();
@@ -152,10 +152,10 @@ describe('ol/worker/webgl', () => {
         });
         it('computes join angles for a closed loop', () => {
           // the sum of the first and last join angle should be 2PI
-          expect(vertices.slice(4, 6)).to.eql([
+          expect(vertices.slice(6, 8)).to.eql([
             3.380202054977417, 0.11635516583919525,
           ]);
-          expect(vertices.slice(4 + 72, 6 + 72)).to.eql([
+          expect(vertices.slice(6 + 88, 8 + 88)).to.eql([
             6.16093111038208, 2.9029834270477295,
           ]);
         });

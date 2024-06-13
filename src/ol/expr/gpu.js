@@ -239,6 +239,7 @@ const compilers = {
     const prefix = context.inFragmentShader ? 'v_prop_' : 'a_prop_';
     return prefix + propName;
   },
+  [Ops.LineMetric]: () => 'currentLineMetric', // this variable is assumed to always be present in shaders, default is 0.
   [Ops.Var]: (context, expression) => {
     const firstArg = /** @type {LiteralExpression} */ (expression.args[0]);
     const varName = /** @type {string} */ (firstArg.value);
