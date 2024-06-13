@@ -291,13 +291,17 @@ class MixedGeometryBatch {
         const lineGeom = /** @type {import("../../geom.js").LineString} */ (
           geometry
         );
+
+        const stride = lineGeom.getStride();
+
         this.addCoordinates_(
           type,
           lineGeom.getFlatCoordinates(),
           null,
           feature,
           getUid(feature),
-          lineGeom.getStride(),
+          stride,
+          lineGeom.getLayout?.(),
         );
         break;
       }
@@ -313,9 +317,10 @@ class MixedGeometryBatch {
    * @param {Feature|RenderFeature} feature Feature
    * @param {string} featureUid Feature uid
    * @param {number} stride Stride
+   * @param layout
    * @private
    */
-  addCoordinates_(type, flatCoords, ends, feature, featureUid, stride) {
+  addCoordinates_(type, flatCoords, ends, feature, featureUid, stride, layout) {
     /** @type {number} */
     let verticesCount;
     switch (type) {
@@ -339,6 +344,7 @@ class MixedGeometryBatch {
             feature,
             featureUid,
             stride,
+            layout,
           );
         }
         break;
@@ -354,6 +360,7 @@ class MixedGeometryBatch {
             feature,
             featureUid,
             stride,
+            layout,
           );
         }
         break;
@@ -366,6 +373,7 @@ class MixedGeometryBatch {
             null,
             feature,
             featureUid,
+            null,
             null,
           );
         }
@@ -382,6 +390,7 @@ class MixedGeometryBatch {
               feature,
               featureUid,
               stride,
+              layout,
             );
             return;
           }
@@ -423,6 +432,7 @@ class MixedGeometryBatch {
             feature,
             featureUid,
             stride,
+            layout,
           );
         }
         break;
@@ -456,7 +466,7 @@ class MixedGeometryBatch {
         this.lineStringBatch.verticesCount += verticesCount;
         this.lineStringBatch.geometriesCount++;
         this.lineStringBatch.entries[featureUid].flatCoordss.push(
-          getFlatCoordinatesXY(flatCoords, stride),
+          getFlatCoordinatesXYM(flatCoords, stride, layout),
         );
         this.lineStringBatch.entries[featureUid].verticesCount += verticesCount;
         break;
@@ -561,6 +571,30 @@ function getFlatCoordinatesXY(flatCoords, stride) {
     return flatCoords;
   }
   return flatCoords.filter((v, i) => i % stride < 2);
+}
+
+/**
+ * @param {Array<number>} flatCoords Flat coords
+ * @param {number} stride Stride
+ * @param layout
+ * @return {Array<number>} Flat coords with only XY components
+ */
+function getFlatCoordinatesXYM(flatCoords, stride, layout) {
+  if (stride === 3 && layout === 'XYM') {
+    return flatCoords;
+  }
+  // this is XYZM layout
+  if (stride === 4) {
+    return flatCoords.filter((v, i) => i % stride !== 2);
+  }
+  // this is XYZ layout
+  if (stride === 3) {
+    return flatCoords.map((v, i) => (i % stride !== 2 ? v : 0));
+  }
+  // this is XY layout
+  return new Array(flatCoords.length * 1.5)
+    .fill(0)
+    .map((v, i) => (i % 3 === 2 ? 0 : flatCoords[Math.round(i / 1.5)]));
 }
 
 export default MixedGeometryBatch;

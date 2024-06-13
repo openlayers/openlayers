@@ -30,6 +30,20 @@ tags: "draw, vector, webgl, line, dash"
       <input type="radio" class="uniform" name="joinType" value="bevel"/> <code>bevel</code>&nbsp;
     </label>
   </div>
+  <div class="form-group" style="margin-left: 18px">
+    <label>
+      Minimum timestamp
+      <input type="range" class="uniform" name="minT" min="0" max="250" value="0">
+    </label>
+    <span id="value-minT"></span>
+  </div>
+  <div class="form-group" style="margin-left: 18px">
+    <label>
+      Maximum timestamp
+      <input type="range" class="uniform" name="maxT" min="0" max="250" value="250">
+    </label>
+    <span id="value-maxT"></span>
+  </div>
   <div class="form-group">
     <label>
       Line width (pixels)

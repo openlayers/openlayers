@@ -602,10 +602,10 @@ ${this.uniforms_
     return 'uniform ' + uniform + ';';
   })
   .join('\n')}
-attribute vec2 a_position;
-attribute float a_index;
 attribute vec2 a_segmentStart;
 attribute vec2 a_segmentEnd;
+attribute float a_measureStart;
+attribute float a_measureEnd;
 attribute float a_parameters;
 attribute float a_distance;
 attribute vec2 a_joinAngles;
@@ -622,6 +622,8 @@ varying float v_angleEnd;
 varying float v_width;
 varying vec4 v_prop_hitColor;
 varying float v_distanceOffsetPx;
+varying float v_measureStart;
+varying float v_measureEnd;
 ${this.varyings_
   .map(function (varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
@@ -698,6 +700,8 @@ void main(void) {
   v_width = lineWidth;
   v_prop_hitColor = a_prop_hitColor;
   v_distanceOffsetPx = a_distance / u_resolution - (lineOffsetPx * angleTangentSum);
+  v_measureStart = a_measureStart;
+  v_measureEnd = a_measureEnd;
 ${this.varyings_
   .map(function (varying) {
     return '  ' + varying.name + ' = ' + varying.expression + ';';
@@ -729,6 +733,8 @@ varying float v_angleEnd;
 varying float v_width;
 varying vec4 v_prop_hitColor;
 varying float v_distanceOffsetPx;
+varying float v_measureStart;
+varying float v_measureEnd;
 ${this.varyings_
   .map(function (varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
@@ -834,15 +840,19 @@ void main(void) {
     discard;
   }
   #endif
-  if (${this.discardExpression_}) { discard; }
 
   float segmentLength = length(v_segmentEnd - v_segmentStart);
   vec2 segmentTangent = (v_segmentEnd - v_segmentStart) / segmentLength;
   vec2 segmentNormal = vec2(-segmentTangent.y, segmentTangent.x);
   vec2 startToPoint = currentPoint - v_segmentStart;
-  float currentLengthPx = max(0., min(dot(segmentTangent, startToPoint), segmentLength)) + v_distanceOffsetPx; 
+  float lengthToPoint =  max(0., min(dot(segmentTangent, startToPoint), segmentLength));
+  float currentLengthPx = lengthToPoint + v_distanceOffsetPx; 
   float currentRadiusPx = abs(dot(segmentNormal, startToPoint));
   float currentRadiusRatio = dot(segmentNormal, startToPoint) * 2. / v_width;
+  float currentLineMetric = mix(v_measureStart, v_measureEnd, lengthToPoint / segmentLength);
+  
+  if (${this.discardExpression_}) { discard; }
+
   vec4 color = ${this.strokeColorExpression_} * u_globalAlpha;
   float capType = ${this.strokeCapExpression_};
   float joinType = ${this.strokeJoinExpression_};

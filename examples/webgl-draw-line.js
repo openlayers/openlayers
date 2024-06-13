@@ -48,13 +48,20 @@ const getStyle = (dash, pattern) => {
           dashLength4: 15,
           dashOffset: 0,
           patternSpacing: 0,
+          minT: 40,
+          maxT: 90,
         },
     'stroke-width': ['var', 'width'],
-    'stroke-color': 'rgba(24,86,34,0.7)',
+    'stroke-color': 'rgb(126,35,144, 0.8)',
     'stroke-offset': ['var', 'offset'],
     'stroke-miter-limit': ['var', 'miterLimit'],
     'stroke-line-cap': ['var', 'capType'],
     'stroke-line-join': ['var', 'joinType'],
+    filter: [
+      'all',
+      ['>=', ['line-metric'], ['var', 'minT']],
+      ['<=', ['line-metric'], ['var', 'maxT']],
+    ],
   };
   if (dash) {
     newStyle = {
