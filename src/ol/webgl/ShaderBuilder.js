@@ -27,6 +27,7 @@ uniform mediump int u_hitDetection;
 
 const float PI = 3.141592653589793238;
 const float TWO_PI = 2.0 * PI;
+float currentLineMetric = 0.; // an actual value will be used in the stroke shaders
 
 // this used to produce an alpha-premultiplied color from a texture
 vec4 samplePremultiplied(sampler2D sampler, vec2 texCoord) {
@@ -666,6 +667,7 @@ void main(void) {
   v_angleStart = a_joinAngles.x;
   v_angleEnd = a_joinAngles.y;
   float vertexNumber = floor(abs(a_parameters) / 10000. + 0.5);
+  currentLineMetric = vertexNumber < 0.5 || (vertexNumber > 1.5 && vertexNumber < 2.5) ? v_measureStart : v_measureEnd;
   // we're reading the fractional part while keeping the sign (so -4.12 gives -0.12, 3.45 gives 0.45)
   float angleTangentSum = fract(abs(a_parameters) / 10000.) * 10000. * sign(a_parameters);
 
@@ -845,12 +847,12 @@ void main(void) {
   vec2 segmentTangent = (v_segmentEnd - v_segmentStart) / segmentLength;
   vec2 segmentNormal = vec2(-segmentTangent.y, segmentTangent.x);
   vec2 startToPoint = currentPoint - v_segmentStart;
-  float lengthToPoint =  max(0., min(dot(segmentTangent, startToPoint), segmentLength));
+  float lengthToPoint = max(0., min(dot(segmentTangent, startToPoint), segmentLength));
   float currentLengthPx = lengthToPoint + v_distanceOffsetPx; 
   float currentRadiusPx = abs(dot(segmentNormal, startToPoint));
   float currentRadiusRatio = dot(segmentNormal, startToPoint) * 2. / v_width;
-  float currentLineMetric = mix(v_measureStart, v_measureEnd, lengthToPoint / segmentLength);
-  
+  currentLineMetric = mix(v_measureStart, v_measureEnd, lengthToPoint / segmentLength);
+
   if (${this.discardExpression_}) { discard; }
 
   vec4 color = ${this.strokeColorExpression_} * u_globalAlpha;
