@@ -6,7 +6,6 @@ import VectorSource from '../../../../src/ol/source/Vector.js';
 import View from '../../../../src/ol/View.js';
 import WebGLVectorLayerRenderer from '../../../../src/ol/renderer/webgl/VectorLayer.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import GeometryCollection from '../../../../src/ol/geom/GeometryCollection.js';
 import Point from '../../../../src/ol/geom/Point.js';
 
 
@@ -51,7 +50,7 @@ const widthChanges = {
   'stroke-width': ['case', ['>', ['line-metric'], 60], 4, 8],
   // 'stroke-width': ['interpolate', ['linear'], ['line-metric'], 0, 20, 110, 1],
   'stroke-line-join': 'miter',
-  'stroke-line-cap': 'butt'
+  'stroke-line-cap': 'butt',
 };
 const colorInterpolation = {
   'stroke-color': ['interpolate', ['linear'], ['line-metric'], 0, 'rgb(0,49,152)', 110, 'rgb(176,148,9)'],
