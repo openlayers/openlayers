@@ -28,7 +28,7 @@ import {getUid} from '../util.js';
  * overlapping icons. As a tradoff, the cluster feature's position will no longer be
  * the center of all its features.
  * @property {function(FeatureType):(Point)} [geometryFunction]
- * Function that takes an {@link module:ol/Feature~Feature} as argument and returns an
+ * Function that takes a {@link module:ol/Feature~Feature} as argument and returns a
  * {@link module:ol/geom/Point~Point} as cluster calculation point for the feature. When a
  * feature should not be considered for clustering, the function should return
  * `null`. The default, which works when the underlying source contains point

@@ -91,17 +91,17 @@ const ModifyEventType = {
 /**
  * @typedef {Object} Options
  * @property {import("../events/condition.js").Condition} [condition] A function that
- * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event will be considered to add or move a
  * vertex to the sketch. Default is
  * {@link module:ol/events/condition.primaryAction}.
  * @property {import("../events/condition.js").Condition} [deleteCondition] A function
- * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled. By default,
  * {@link module:ol/events/condition.singleClick} with
  * {@link module:ol/events/condition.altKeyOnly} results in a vertex deletion.
  * @property {import("../events/condition.js").Condition} [insertVertexCondition] A
- * function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and
+ * function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and
  * returns a boolean to indicate whether a new vertex should be added to the sketch
  * features. Default is {@link module:ol/events/condition.always}.
  * @property {number} [pixelTolerance=10] Pixel tolerance for considering the

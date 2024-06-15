@@ -118,7 +118,7 @@ class VectorTile extends Tile {
   }
 
   /**
-   * Function for use in an {@link module:ol/source/VectorTile~VectorTile}'s `tileLoadFunction`.
+   * Function for use in a {@link module:ol/source/VectorTile~VectorTile}'s `tileLoadFunction`.
    * Sets the features for the tile.
    * @param {Array<FeatureType>} features Features.
    * @api

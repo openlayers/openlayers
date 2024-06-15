@@ -9,7 +9,7 @@ import {platformModifierKey, targetNotEditable} from '../events/condition.js';
  * @typedef {Object} Options
  * @property {number} [duration=100] Animation duration in milliseconds.
  * @property {import("../events/condition.js").Condition} [condition] A function that
- * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled. The default condition is
  * that {@link module:ol/events/condition.targetNotEditable} is fulfilled and that
  * the platform modifier key isn't pressed
