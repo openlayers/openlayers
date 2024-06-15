@@ -17,7 +17,7 @@ import {mouseActionButton} from '../events/condition.js';
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-dragbox'] CSS class name for styling the box.
- * @property {import("../events/condition.js").Condition} [condition] A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
+ * @property {import("../events/condition.js").Condition} [condition] A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol/events/condition~mouseActionButton}.
  * @property {number} [minArea=64] The minimum area of the box in pixel, this value is used by the default
@@ -106,7 +106,7 @@ export class DragBoxEvent extends Event {
 /**
  * @classdesc
  * Allows the user to draw a vector box by clicking and dragging on the map,
- * normally combined with an {@link module:ol/events/condition} that limits
+ * normally combined with a {@link module:ol/events/condition} that limits
  * it to when the shift or other key is held down. This is used, for example,
  * for zooming to a specific area of the map
  * (see {@link module:ol/interaction/DragZoom~DragZoom} and
