@@ -43,6 +43,12 @@ class LayerRenderer extends Observable {
      * @private
      */
     this.staleKeys_ = new Array();
+
+    /**
+     * @type {number}
+     * @protected
+     */
+    this.maxStaleKeys = maxStaleKeys;
   }
 
   /**
@@ -57,8 +63,8 @@ class LayerRenderer extends Observable {
    */
   prependStaleKey(key) {
     this.staleKeys_.unshift(key);
-    if (this.staleKeys_.length > maxStaleKeys) {
-      this.staleKeys_.length = maxStaleKeys;
+    if (this.staleKeys_.length > this.maxStaleKeys) {
+      this.staleKeys_.length = this.maxStaleKeys;
     }
   }
 

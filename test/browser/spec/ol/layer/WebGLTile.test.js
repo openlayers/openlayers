@@ -1,6 +1,5 @@
 import DataTileSource from '../../../../../src/ol/source/DataTile.js';
 import Map from '../../../../../src/ol/Map.js';
-import OSM from '../../../../../src/ol/source/OSM.js';
 import TileWMS from '../../../../../src/ol/source/TileWMS.js';
 import View from '../../../../../src/ol/View.js';
 import WebGLHelper from '../../../../../src/ol/webgl/Helper.js';
@@ -267,19 +266,6 @@ describe('ol/layer/WebGLTile', function () {
       const spy = sinon.spy(renderer, 'dispose');
       layer.dispose();
       expect(spy.called).to.be(true);
-    });
-  });
-
-  describe('caching', () => {
-    it('updates the size of the tile cache on the source ', (done) => {
-      const source = new OSM();
-      const spy = sinon.spy(source, 'updateCacheSize');
-      const layer = new WebGLTileLayer({source: source});
-      map.addLayer(layer);
-      map.once('rendercomplete', () => {
-        expect(spy.called).to.be(true);
-        done();
-      });
     });
   });
 

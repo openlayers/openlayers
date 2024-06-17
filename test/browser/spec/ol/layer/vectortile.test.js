@@ -227,6 +227,7 @@ describe('ol.layer.VectorTile', function () {
           usedTiles: {},
           tileQueue: {isKeyQueued: () => true},
           pixelToCoordinateTransform: createTransform(),
+          postRenderFunctions: [],
         });
 
       renderer.renderFrame(frameState);
@@ -237,7 +238,7 @@ describe('ol.layer.VectorTile', function () {
       expect(isEmpty(wantedTiles)).to.be(false);
 
       // Tiles are loaded synchronously
-      source.tileCache.forEach((tile) => tile.load());
+      renderer.tileCache_.forEach((tile) => tile.load());
 
       renderer.renderFrame(frameState);
       // Tiles loaded, waiting for icon

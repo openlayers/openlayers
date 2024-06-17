@@ -2,6 +2,7 @@ import Map from '../../../../../../src/ol/Map.js';
 import TileLayer from '../../../../../../src/ol/layer/Tile.js';
 import View from '../../../../../../src/ol/View.js';
 import XYZ from '../../../../../../src/ol/source/XYZ.js';
+import {OSM} from '../../../../../../src/ol/source.js';
 import {fromLonLat} from '../../../../../../src/ol/proj.js';
 
 describe('ol/renderer/canvas/TileLayer', function () {
@@ -47,6 +48,19 @@ describe('ol/renderer/canvas/TileLayer', function () {
       map.on('postrender', function () {
         expect(context.imageSmoothingEnabled).to.be(true);
         done();
+      });
+    });
+
+    describe('caching', () => {
+      it('updates the size of the tile cache ', (done) => {
+        const source = new OSM();
+        const layer = new TileLayer({source: source});
+        const spy = sinon.spy(layer.getRenderer(), 'updateCacheSize');
+        map.addLayer(layer);
+        map.once('rendercomplete', () => {
+          expect(spy.called).to.be(true);
+          done();
+        });
       });
     });
   });

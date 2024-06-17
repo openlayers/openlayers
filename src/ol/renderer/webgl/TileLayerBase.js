@@ -227,22 +227,6 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
-   * @param {TileType} tile Tile.
-   * @return {boolean} Tile is drawable.
-   * @private
-   */
-  isDrawableTile_(tile) {
-    const tileLayer = this.getLayer();
-    const tileState = tile.getState();
-    const useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
-    return (
-      tileState == TileState.LOADED ||
-      tileState == TileState.EMPTY ||
-      (tileState == TileState.ERROR && !useInterimTilesOnError)
-    );
-  }
-
-  /**
    * Determine whether renderFrame should be called.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.

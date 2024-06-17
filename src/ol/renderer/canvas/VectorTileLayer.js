@@ -158,21 +158,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     if (hifi || !tile.wantedResolution) {
       tile.wantedResolution = resolution;
     }
-    return this.getDrawableTile(tile);
-  }
-
-  /**
-   * @param {import("../../VectorRenderTile.js").default} tile Tile.
-   * @return {boolean} Tile is drawable.
-   */
-  isDrawableTile(tile) {
-    const layer = this.getLayer();
-    return (
-      super.isDrawableTile(tile) &&
-      (layer.getRenderMode() === 'vector'
-        ? getUid(layer) in tile.executorGroups
-        : tile.hasContext(layer))
-    );
+    return tile;
   }
 
   /**
@@ -897,7 +883,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const renderPixelRatio =
       (frameState.pixelRatio / tile.wantedResolution) * tileResolution;
     const resolution = tileGrid.getResolution(z);
-    const context = tile.getContext(layer);
+    const context = tile.getContext();
 
     // Increase tile size when overzooming for low pixel ratio, to avoid blurry tiles
     pixelRatio = Math.round(

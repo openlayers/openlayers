@@ -183,15 +183,7 @@ class VectorTile extends UrlTile {
    * @api
    */
   clear() {
-    this.tileCache.clear();
     this.sourceTileCache_.clear();
-  }
-
-  /**
-   * @param {number} size Cache size.
-   */
-  setSourceTileCacheSize(size) {
-    this.sourceTileCache_.highWaterMark = size;
   }
 
   /**
@@ -357,6 +349,7 @@ class VectorTile extends UrlTile {
       urlTileCoord,
       this.getSourceTiles.bind(this, pixelRatio, projection),
     );
+    newTile.key = this.getKey();
     return newTile;
   }
 

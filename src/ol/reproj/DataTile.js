@@ -354,7 +354,7 @@ class ReprojDataTile extends DataTile {
         clipExtent[2] += source.offset;
       }
       dataSources.push({
-        extent: this.sourceTileGrid_.getTileCoordExtent(tile.tileCoord),
+        extent: extent,
         clipExtent: clipExtent,
         data: new Uint8ClampedArray(packedData.buffer),
         dataType: DataType,
@@ -427,7 +427,6 @@ class ReprojDataTile extends DataTile {
         false,
         false,
         false,
-        true,
       );
 
       for (let i = 0, len = sources.length; i < len; ++i) {
