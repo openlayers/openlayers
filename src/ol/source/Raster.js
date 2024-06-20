@@ -952,6 +952,9 @@ function getImageData(layer, frameState) {
     if (container) {
       element = container.firstElementChild;
     }
+    if (!element) {
+      return null;
+    }
     if (!(element instanceof HTMLCanvasElement)) {
       throw new Error('Unsupported rendered element: ' + element);
     }
