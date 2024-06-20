@@ -175,7 +175,9 @@ class CanvasLayerRenderer extends LayerRenderer {
     ) {
       const canvas = target.firstElementChild;
       if (canvas instanceof HTMLCanvasElement) {
-        context = canvas.getContext('2d');
+        context = canvas.getContext('2d', {
+          willReadFrequently: true,
+        });
       }
     }
     if (context && context.canvas.style.transform === transform) {
@@ -198,7 +200,9 @@ class CanvasLayerRenderer extends LayerRenderer {
       style.position = 'absolute';
       style.width = '100%';
       style.height = '100%';
-      context = createCanvasContext2D();
+      context = createCanvasContext2D(undefined, undefined, undefined, {
+        willReadFrequently: true,
+      });
       const canvas = context.canvas;
       container.appendChild(canvas);
       style = canvas.style;
