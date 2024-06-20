@@ -27,68 +27,53 @@ const STAMEN_ATTRIBUTION =
   '&copy; <a href="https://stamen.com/" target="_blank">Stamen Design</a>';
 
 /**
- * @type {Object<string, {extension: string, opaque: boolean}>}
+ * @type {Object<string, {extension: string}>}
  */
 const LayerConfig = {
   'stamen_terrain': {
     extension: 'png',
-    opaque: true,
   },
   'stamen_terrain_background': {
     extension: 'png',
-    opaque: true,
   },
   'stamen_terrain_labels': {
     extension: 'png',
-    opaque: false,
   },
   'stamen_terrain_lines': {
     extension: 'png',
-    opaque: false,
   },
   'stamen_toner_background': {
     extension: 'png',
-    opaque: true,
   },
   'stamen_toner': {
     extension: 'png',
-    opaque: true,
   },
   'stamen_toner_labels': {
     extension: 'png',
-    opaque: false,
   },
   'stamen_toner_lines': {
     extension: 'png',
-    opaque: false,
   },
   'stamen_toner_lite': {
     extension: 'png',
-    opaque: true,
   },
   'stamen_watercolor': {
     extension: 'jpg',
-    opaque: true,
   },
   'alidade_smooth': {
     extension: 'png',
-    opaque: true,
   },
   'alidade_smooth_dark': {
     extension: 'png',
-    opaque: true,
   },
   'alidade_satellite': {
     extension: 'png',
-    opaque: true,
   },
   'outdoors': {
     extension: 'png',
-    opaque: true,
   },
   'osm_bright': {
     extension: 'png',
-    opaque: true,
   },
 };
 
@@ -115,7 +100,7 @@ const ProviderConfig = {
 
 /**
  * @typedef {Object} Options
- * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
+ * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {string} layer Layer name. Valid values: `alidade_smooth`, `alidade_smooth_dark`, `outdoors`, `stamen_terrain`, `stamen_terrain_background`, `stamen_terrain_labels`, `stamen_terrain_lines`, `stamen_toner_background`, `stamen_toner`, `stamen_toner_labels`, `stamen_toner_lines`, `stamen_toner_lite`, `stamen_watercolor`, and `osm_bright`.
@@ -193,7 +178,6 @@ class StadiaMaps extends XYZ {
         options.minZoom !== undefined
           ? options.minZoom
           : providerConfig.minZoom,
-      opaque: layerConfig.opaque,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       tileLoadFunction: options.tileLoadFunction,
       transition: options.transition,

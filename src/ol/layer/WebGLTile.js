@@ -17,7 +17,7 @@ import {
 import {expressionToGlsl} from '../webgl/styleparser.js';
 
 /**
- * @typedef {import("../source/DataTile.js").default|import("../source/TileImage.js").default} SourceType
+ * @typedef {import("../source/DataTile.js").default} SourceType
  */
 
 /**
@@ -73,7 +73,7 @@ import {expressionToGlsl} from '../webgl/styleparser.js';
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
  * use {@link module:ol/Map~Map#addLayer}.
- * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
+ * @property {boolean} [useInterimTilesOnError=true] Deprecated.  Use interim tiles on error.
  * @property {number} [cacheSize=512] The internal texture cache size.  This needs to be large enough to render
  * two zoom levels worth of tiles.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
@@ -292,9 +292,6 @@ class WebGLTileLayer extends BaseTileLayer {
     const style = options.style || {};
     delete options.style;
 
-    const cacheSize = options.cacheSize;
-    delete options.cacheSize;
-
     super(options);
 
     /**
@@ -320,12 +317,6 @@ class WebGLTileLayer extends BaseTileLayer {
      * @private
      */
     this.style_ = style;
-
-    /**
-     * @type {number}
-     * @private
-     */
-    this.cacheSize_ = cacheSize;
 
     /**
      * @type {Object<string, (string|number)>}
@@ -399,7 +390,7 @@ class WebGLTileLayer extends BaseTileLayer {
       vertexShader: parsedStyle.vertexShader,
       fragmentShader: parsedStyle.fragmentShader,
       uniforms: parsedStyle.uniforms,
-      cacheSize: this.cacheSize_,
+      cacheSize: this.getCacheSize(),
       paletteTextures: parsedStyle.paletteTextures,
     });
   }

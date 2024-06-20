@@ -34,15 +34,15 @@ class VectorRenderTile extends Tile {
 
     /**
      * @private
-     * @type {!Object<string, CanvasRenderingContext2D>}
+     * @type {CanvasRenderingContext2D|null}
      */
-    this.context_ = {};
+    this.context_ = null;
 
     /**
-     * Executor groups by layer uid. Entries are read/written by the renderer.
-     * @type {Object<string, Array<import("./render/canvas/ExecutorGroup.js").default>>}
+     * Executor groups. Read/written by the renderer.
+     * @type {Array<import("./render/canvas/ExecutorGroup.js").default>}
      */
-    this.executorGroups = {};
+    this.executorGroups = [];
 
     /**
      * Number of loading source tiles. Read/written by the source.
@@ -88,32 +88,28 @@ class VectorRenderTile extends Tile {
   }
 
   /**
-   * @param {import("./layer/Layer.js").default} layer Layer.
    * @return {CanvasRenderingContext2D} The rendering context.
    */
-  getContext(layer) {
-    const key = getUid(layer);
-    if (!(key in this.context_)) {
-      this.context_[key] = createCanvasContext2D(1, 1, canvasPool);
+  getContext() {
+    if (!this.context_) {
+      this.context_ = createCanvasContext2D(1, 1, canvasPool);
     }
-    return this.context_[key];
+    return this.context_;
   }
 
   /**
-   * @param {import("./layer/Layer.js").default} layer Layer.
-   * @return {boolean} Tile has a rendering context for the given layer.
+   * @return {boolean} Tile has a rendering context.
    */
-  hasContext(layer) {
-    return getUid(layer) in this.context_;
+  hasContext() {
+    return !!this.context_;
   }
 
   /**
    * Get the Canvas for this tile.
-   * @param {import("./layer/Layer.js").default} layer Layer.
    * @return {HTMLCanvasElement} Canvas.
    */
-  getImage(layer) {
-    return this.hasContext(layer) ? this.getContext(layer).canvas : null;
+  getImage() {
+    return this.hasContext() ? this.getContext().canvas : null;
   }
 
   /**
@@ -147,12 +143,9 @@ class VectorRenderTile extends Tile {
    * Remove from the cache due to expiry
    */
   release() {
-    for (const key in this.context_) {
-      const context = this.context_[key];
-      releaseCanvas(context);
-      canvasPool.push(context.canvas);
-      delete this.context_[key];
-    }
+    releaseCanvas(this.context_);
+    canvasPool.push(this.context_.canvas);
+    this.context_ = null;
     super.release();
   }
 }

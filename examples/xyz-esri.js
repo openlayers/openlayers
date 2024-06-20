@@ -1,14 +1,16 @@
+import Layer from '../src/ol/layer/WebGLTile.js';
 import Map from '../src/ol/Map.js';
-import TileLayer from '../src/ol/layer/Tile.js';
+import Source from '../src/ol/source/ImageTile.js';
 import View from '../src/ol/View.js';
-import XYZ from '../src/ol/source/XYZ.js';
-import {fromLonLat} from '../src/ol/proj.js';
+import {useGeographic} from '../src/ol/proj.js';
+
+useGeographic();
 
 const map = new Map({
   target: 'map',
   layers: [
-    new TileLayer({
-      source: new XYZ({
+    new Layer({
+      source: new Source({
         attributions:
           'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
           'rest/services/World_Topo_Map/MapServer">ArcGIS</a>',
@@ -19,7 +21,7 @@ const map = new Map({
     }),
   ],
   view: new View({
-    center: fromLonLat([-121.1, 47.5]),
+    center: [-121.1, 47.5],
     zoom: 7,
   }),
 });

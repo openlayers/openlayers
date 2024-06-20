@@ -61,39 +61,45 @@ describe('ol.layer.VectorTile', function () {
   });
 
   describe('#getFeatures()', function () {
-    let map, layer;
+    let map, layer, objectURL;
 
     beforeEach(function () {
+      objectURL = URL.createObjectURL(
+        new Blob(
+          [
+            `{
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [-36, 0]
+            },
+            "properties": {
+              "name": "feature1"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [36, 0]
+            },
+            "properties": {
+              "name": "feature2"
+            }
+          }
+        ]
+      }`,
+          ],
+          {type: 'application/json'},
+        ),
+      );
       layer = new VectorTileLayer({
         source: new VectorTileSource({
           format: new GeoJSON(),
-          url: `data:application/json;charset=utf-8,
-            {
-              "type": "FeatureCollection",
-              "features": [
-                {
-                  "type": "Feature",
-                  "geometry": {
-                    "type": "Point",
-                    "coordinates": [-36, 0]
-                  },
-                  "properties": {
-                    "name": "feature1"
-                  }
-                },
-                {
-                  "type": "Feature",
-                  "geometry": {
-                    "type": "Point",
-                    "coordinates": [36, 0]
-                  },
-                  "properties": {
-                    "name": "feature2"
-                  }
-                }
-              ]
-            }
-          `,
+          url: objectURL,
         }),
       });
       const container = document.createElement('div');
@@ -113,6 +119,7 @@ describe('ol.layer.VectorTile', function () {
     afterEach(function () {
       document.body.removeChild(map.getTargetElement());
       map.setTarget(null);
+      URL.revokeObjectURL(objectURL);
     });
 
     it('detects features properly', function (done) {
@@ -150,8 +157,14 @@ describe('ol.layer.VectorTile', function () {
         const pixel = map.getPixelFromCoordinate(fromLonLat([-36, 0]));
         Promise.all([layer.getFeatures(pixel), layer2.getFeatures(pixel)])
           .then(function (result) {
-            const tile = layer.getSource().tileCache.get('0/0/0');
-            expect(Object.keys(tile.hitDetectionImageData).length).to.be(2);
+            const tile = layer
+              .getRenderer()
+              .tileCache_.get(objectURL + ',0/0/0');
+            expect(Object.keys(tile.hitDetectionImageData).length).to.be(1);
+            const tile2 = layer2
+              .getRenderer()
+              .tileCache_.get(objectURL + ',0/0/0');
+            expect(Object.keys(tile2.hitDetectionImageData).length).to.be(1);
             done();
           })
           .catch(done);
@@ -214,6 +227,7 @@ describe('ol.layer.VectorTile', function () {
           usedTiles: {},
           tileQueue: {isKeyQueued: () => true},
           pixelToCoordinateTransform: createTransform(),
+          postRenderFunctions: [],
         });
 
       renderer.renderFrame(frameState);
@@ -224,7 +238,7 @@ describe('ol.layer.VectorTile', function () {
       expect(isEmpty(wantedTiles)).to.be(false);
 
       // Tiles are loaded synchronously
-      source.tileCache.forEach((tile) => tile.load());
+      renderer.tileCache_.forEach((tile) => tile.load());
 
       renderer.renderFrame(frameState);
       // Tiles loaded, waiting for icon

@@ -113,7 +113,7 @@ import {
  * {@link module:ol/Feature~Feature} objects from a variety of commonly used geospatial
  * file formats.  See the documentation for each format for more details.
  *
- * @template {import('../Feature.js').FeatureClass} [FeatureClassType=import('./Feature.js').FeatureToFeatureClass<import("../Feature.js").default>]
+ * @template {import('../Feature.js').FeatureLike} [FeatureType=import("../Feature.js").default]
  * @abstract
  * @api
  */
@@ -133,9 +133,11 @@ class FeatureFormat {
 
     /**
      * @protected
-     * @type {FeatureClassType}
+     * @type {FeatureToFeatureClass<FeatureType>}
      */
-    this.featureClass = /** @type {FeatureClassType} */ (Feature);
+    this.featureClass = /** @type {FeatureToFeatureClass<FeatureType>} */ (
+      Feature
+    );
 
     /**
      * A list media types supported by the format in descending order of preference.
@@ -206,7 +208,7 @@ class FeatureFormat {
    * @abstract
    * @param {Document|Element|Object|string} source Source.
    * @param {ReadOptions} [options] Read options.
-   * @return {FeatureClassToFeature<FeatureClassType>|Array<FeatureClassToFeature<FeatureClassType>>} Feature.
+   * @return {FeatureType|Array<FeatureType>} Feature.
    */
   readFeature(source, options) {
     return abstract();
@@ -218,7 +220,7 @@ class FeatureFormat {
    * @abstract
    * @param {Document|Element|ArrayBuffer|Object|string} source Source.
    * @param {ReadOptions} [options] Read options.
-   * @return {Array<FeatureClassToFeature<FeatureClassType>>} Features.
+   * @return {Array<FeatureType>} Features.
    */
   readFeatures(source, options) {
     return abstract();

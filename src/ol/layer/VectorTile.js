@@ -26,7 +26,7 @@ import {assert} from '../asserts.js';
  */
 
 /**
- * @template {import("../source/VectorTile.js").default<FeatureType>} [VectorTileSourceType=import("../source/VectorTile.js").default<*>]
+ * @template {import("../source/VectorTile.js").default<FeatureType>} [VectorTileSourceType=import("../source/VectorTile.js").default<*, *>]
  * @template {import("../Feature").FeatureLike} [FeatureType=ExtractedFeatureType<VectorTileSourceType>]
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
@@ -85,8 +85,10 @@ import {assert} from '../asserts.js';
  * recreated during interactions. See also `updateWhileAnimating`.
  * @property {number} [preload=0] Preload. Load low-resolution tiles up to `preload` levels. `0`
  * means no preloading.
- * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
+ * @property {boolean} [useInterimTilesOnError=true] Deprecated.  Use interim tiles on error.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+ * @property {number} [cacheSize=0] The internal tile cache size.  If too small, this will auto-grow to hold
+ * two zoom levels worth of tiles.
  */
 
 /**
@@ -96,7 +98,7 @@ import {assert} from '../asserts.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @template {import("../source/VectorTile.js").default<FeatureType>} [VectorTileSourceType=import("../source/VectorTile.js").default<*>]
+ * @template {import("../source/VectorTile.js").default<FeatureType>} [VectorTileSourceType=import("../source/VectorTile.js").default<*, *>]
  * @template {import("../Feature.js").FeatureLike} [FeatureType=ExtractedFeatureType<VectorTileSourceType>]
  * @extends {BaseVectorLayer<FeatureType, VectorTileSourceType, CanvasVectorTileLayerRenderer>}
  * @api
@@ -110,6 +112,8 @@ class VectorTileLayer extends BaseVectorLayer {
 
     const baseOptions = Object.assign({}, options);
     delete baseOptions.preload;
+    const cacheSize = options.cacheSize === undefined ? 0 : options.cacheSize;
+    delete options.cacheSize;
     delete baseOptions.useInterimTilesOnError;
 
     super(baseOptions);
@@ -128,6 +132,12 @@ class VectorTileLayer extends BaseVectorLayer {
      * @type {VectorTileLayerOnSignature<void>}
      */
     this.un;
+
+    /**
+     * @type {number|undefined}
+     * @private
+     */
+    this.cacheSize_ = cacheSize;
 
     const renderMode = options.renderMode || 'hybrid';
     assert(
@@ -164,9 +174,9 @@ class VectorTileLayer extends BaseVectorLayer {
   }
 
   createRenderer() {
-    return new CanvasVectorTileLayerRenderer(
-      /** @type {VectorTileLayer} */ (this),
-    );
+    return new CanvasVectorTileLayerRenderer(this, {
+      cacheSize: this.cacheSize_,
+    });
   }
 
   /**
@@ -187,6 +197,8 @@ class VectorTileLayer extends BaseVectorLayer {
     return super.getFeatures(pixel);
   }
 
+  getFeaturesInExtent(extent) {}
+
   /**
    * @return {VectorTileRenderType} The render mode.
    */
@@ -205,7 +217,7 @@ class VectorTileLayer extends BaseVectorLayer {
   }
 
   /**
-   * Whether we use interim tiles on error.
+   * Deprecated.  Whether we use interim tiles on error.
    * @return {boolean} Use interim tiles on error.
    * @observable
    * @api
@@ -227,7 +239,7 @@ class VectorTileLayer extends BaseVectorLayer {
   }
 
   /**
-   * Set whether we use interim tiles on error.
+   * Deprecated.  Set whether we use interim tiles on error.
    * @param {boolean} useInterimTilesOnError Use interim tiles on error.
    * @observable
    * @api

@@ -3,7 +3,8 @@ layout: example.html
 title: XYZ Retina Tiles
 shortdesc: Example of Retina / HiDPI mercator tiles (512x512px) available as XYZ.
 docs: >
-  The XYZ source accepts a `tilePixelRatio` option.
+  The ImageTile generates 256x256 pixel tiles by default.  If the requested images are larger than that, they
+  will be scaled to fit.  This example uses 512x512 tiles, which are scaled to 256x256 for display.
 tags: "retina, hidpi, xyz, maptiler, @2x, devicePixelRatio"
 cloak:
   - key: get_your_own_D6rA4zTHduk6KOKTXzGB

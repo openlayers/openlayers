@@ -37,7 +37,6 @@ class TileDebug extends XYZ {
     options = options || {};
 
     super({
-      opaque: false,
       projection: options.projection,
       tileGrid: options.tileGrid,
       wrapX: options.wrapX !== undefined ? options.wrapX : true,

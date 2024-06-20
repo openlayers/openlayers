@@ -12,7 +12,7 @@ const options = {
   }),
 };
 const layer1 = new VectorTileLayer(options);
-toFeature(layer1.getSource().getFeaturesInExtent([0, 0, 1, 1])[0]);
+toFeature(layer1.getFeaturesInExtent([0, 0, 1, 1])[0]);
 
 const layer2: VectorTileLayer<VectorTileSource<Feature<Point>>> =
   new VectorTileLayer({
@@ -20,11 +20,7 @@ const layer2: VectorTileLayer<VectorTileSource<Feature<Point>>> =
       format: new MVT({featureClass: Feature}),
     }),
   });
-layer2
-  .getSource()
-  .getFeaturesInExtent([0, 0, 1, 1])[0]
-  .getGeometry()
-  .getCoordinates();
+layer2.getFeaturesInExtent([0, 0, 1, 1])[0].getGeometry().getCoordinates();
 
 const layer3: VectorTileLayer<VectorTileSource<Feature<Point>>> =
   new VectorTileLayer({
@@ -32,21 +28,13 @@ const layer3: VectorTileLayer<VectorTileSource<Feature<Point>>> =
       format: new MVT({featureClass: Feature}),
     }),
   });
-layer3
-  .getSource()
-  .getFeaturesInExtent([0, 0, 1, 1])[0]
-  .getGeometry()
-  .getCoordinates();
+layer3.getFeaturesInExtent([0, 0, 1, 1])[0].getGeometry().getCoordinates();
 
-const layer4: VectorTileLayer<OGCVectorTileSource<Feature<Point>>> =
+const layer4: VectorTileLayer<VectorTileSource<Feature<Point>>> =
   new VectorTileLayer({
     source: new OGCVectorTileSource({
       format: new MVT({featureClass: Feature}),
       url: 'http://example.com',
     }),
   });
-layer4
-  .getSource()
-  .getFeaturesInExtent([0, 0, 1, 1])[0]
-  .getGeometry()
-  .getCoordinates();
+layer4.getFeaturesInExtent([0, 0, 1, 1])[0].getGeometry().getCoordinates();

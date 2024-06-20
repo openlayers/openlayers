@@ -235,9 +235,10 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       map.addLayer(layer2);
 
       map.renderSync();
-      const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
-      expect(Object.keys(tile.executorGroups)[0]).to.be(getUid(layer));
-      expect(Object.keys(tile.executorGroups)[1]).to.be(getUid(layer2));
+      const tile = layer.getRenderer().getTile(0, 0, 0, map.frameState_);
+      expect(Object.keys(tile.executorGroups)).to.have.length(1);
+      const tile2 = layer2.getRenderer().getTile(0, 0, 0, map.frameState_);
+      expect(Object.keys(tile2.executorGroups)).to.have.length(1);
     });
 
     it('reuses render container and adds and removes overlay context', function (done) {
@@ -383,9 +384,6 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         return tile;
       };
       const renderer = new CanvasVectorTileLayerRenderer(layer);
-      renderer.isDrawableTile = function () {
-        return true;
-      };
       const proj = getProjection('EPSG:3857');
       const frameState = {
         layerStatesArray: [layer.getLayerState()],
@@ -393,6 +391,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         extent: proj.getExtent(),
         pixelRatio: 1,
         pixelToCoordinateTransform: create(),
+        postRenderFunctions: [],
         time: Date.now(),
         viewHints: [],
         viewState: {
@@ -441,9 +440,6 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         return tile;
       };
       const renderer = new CanvasVectorTileLayerRenderer(layer);
-      renderer.isDrawableTile = function () {
-        return true;
-      };
       const proj = getProjection('EPSG:3857');
       const frameState = {
         layerStatesArray: [layer.getLayerState()],
@@ -451,6 +447,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         extent: proj.getExtent(),
         pixelRatio: 1,
         pixelToCoordinateTransform: create(),
+        postRenderFunctions: [],
         time: Date.now(),
         viewHints: [],
         viewState: {
@@ -489,7 +486,6 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       renderer.renderFrame(frameState);
       expect(sequence).to.eql([
         'prerender',
-        'clearRect',
         'save',
         'drawImage',
         'restore',
@@ -526,9 +522,6 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         return tile;
       };
       const renderer = new CanvasVectorTileLayerRenderer(layer);
-      renderer.isDrawableTile = function () {
-        return true;
-      };
       const proj = getProjection('EPSG:3857');
       const frameState = {
         layerStatesArray: [layer.getLayerState()],
@@ -536,6 +529,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         extent: proj.getExtent(),
         pixelRatio: 1,
         pixelToCoordinateTransform: create(),
+        postRenderFunctions: [],
         time: Date.now(),
         viewHints: [],
         viewState: {
@@ -574,7 +568,6 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       renderer.renderFrame(frameState);
       expect(sequence).to.eql([
         'prerender',
-        'clearRect',
         'save',
         'beginPath',
         'moveTo',
@@ -616,7 +609,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         tileClass: TileClass,
         tileGrid: createXYZ(),
       });
-      source.sourceTileCache.set('0/0/0.mvt', sourceTile);
+      source.sourceTileCache_.set('0/0/0.mvt', sourceTile);
       executorGroup = {};
       executorGroup.forEachFeatureAtCoordinate = function (
         coordinate,
