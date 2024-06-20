@@ -6,7 +6,7 @@ import TileState from '../../../../src/ol/TileState.js';
 import {DROP} from '../../../../src/ol/structs/PriorityQueue.js';
 import {defaultImageLoadFunction} from '../../../../src/ol/source/Image.js';
 
-describe('ol.TileQueue', function () {
+describe('ol/TileQueue', function () {
   function addRandomPriorityTiles(tq, num) {
     let i, tile, priority;
     for (i = 0; i < num; i++) {
@@ -41,6 +41,67 @@ describe('ol.TileQueue', function () {
   describe('#loadMoreTiles()', function () {
     const noop = function () {};
 
+    it('works when a already queued tile starts loading in a different TileQueue', function (done) {
+      const q1Cb = sinon.spy();
+      const q2Cb = sinon.spy();
+      const q1 = new TileQueue(noop, q1Cb);
+      const q2 = new TileQueue(noop, q2Cb);
+
+      const tile = createImageTile();
+      tile.addEventListener('change', function processed() {
+        if (tile.getState() !== TileState.LOADED) {
+          return;
+        }
+        tile.removeEventListener('change', processed);
+        setTimeout(finish, 0);
+      });
+
+      q1.enqueue([tile]);
+      q2.enqueue([tile]);
+      q1.loadMoreTiles(1, 1);
+      expect(q1.tilesLoadingKeys_[tile.getKey()]).to.be(true);
+      expect(q2.tilesLoadingKeys_[tile.getKey()]).to.be(true);
+
+      function finish() {
+        expect(q1.isEmpty()).to.be(true);
+        expect(q2.isEmpty()).to.be(true);
+        expect(q1Cb.called).to.be(true);
+        expect(q2Cb.called).to.be(true);
+        done();
+      }
+    });
+
+    it('works when a tile in state LOADING is added', function (done) {
+      const q1Cb = sinon.spy();
+      const q2Cb = sinon.spy();
+      const q1 = new TileQueue(noop, q1Cb);
+      const q2 = new TileQueue(noop, q2Cb);
+
+      const tile = createImageTile();
+      tile.addEventListener('change', function processed() {
+        if (tile.getState() !== TileState.LOADED) {
+          return;
+        }
+        tile.removeEventListener('change', processed);
+        setTimeout(finish, 0);
+      });
+
+      q1.enqueue([tile]);
+      q1.loadMoreTiles(1, 1);
+      expect(q1.tilesLoadingKeys_[tile.getKey()]).to.be(true);
+
+      q2.enqueue([tile]);
+      expect(q2.tilesLoadingKeys_[tile.getKey()]).to.be(true);
+
+      function finish() {
+        expect(q1.isEmpty()).to.be(true);
+        expect(q2.isEmpty()).to.be(true);
+        expect(q1Cb.called).to.be(true);
+        expect(q2Cb.called).to.be(true);
+        done();
+      }
+    });
+
     it('works when tile queues share tiles', function (done) {
       const q1 = new TileQueue(noop, noop);
       const q2 = new TileQueue(noop, noop);
@@ -56,9 +117,11 @@ describe('ol.TileQueue', function () {
           if (state === TileState.LOADED || state === TileState.ERROR) {
             tile.removeEventListener('change', processed);
             ++processedTiles;
-          }
-          if (processedTiles === numTiles) {
-            setTimeout(finish, 0);
+            if (processedTiles === maxLoading) {
+              setTimeout(finish, 0);
+            } else if (processedTiles === numTiles) {
+              setTimeout(finish2, 0);
+            }
           }
         });
         q1.enqueue([tile]);
@@ -66,36 +129,37 @@ describe('ol.TileQueue', function () {
       }
 
       // Initially, both have all tiles.
-      expect(q1.getCount()).to.equal(numTiles);
-      expect(q2.getCount()).to.equal(numTiles);
+      expect(q1.getCount()).to.be(numTiles);
+      expect(q2.getCount()).to.be(numTiles);
 
       // and nothing is loading
-      expect(q1.getTilesLoading()).to.equal(0);
-      expect(q2.getTilesLoading()).to.equal(0);
+      expect(q1.getTilesLoading()).to.be(0);
+      expect(q2.getTilesLoading()).to.be(0);
 
-      // ask both to load
+      // start loading tiles from q1
       q1.loadMoreTiles(maxLoading, maxLoading);
-      q2.loadMoreTiles(maxLoading, maxLoading);
 
-      // both tiles will be loading the max
-      expect(q1.getTilesLoading()).to.equal(maxLoading);
-      expect(q2.getTilesLoading()).to.equal(maxLoading);
+      // loading in q1 also moves tiles in q2 into loading state
+      expect(q1.getTilesLoading()).to.be(maxLoading);
+      expect(q2.getTilesLoading()).to.be(maxLoading);
+      expect(q1.getCount()).to.be(numTiles - maxLoading);
+      expect(q2.getCount()).to.be(numTiles - maxLoading);
 
-      // the second queue will be empty now
-      expect(q1.getCount()).to.equal(numTiles - maxLoading);
-      expect(q2.getCount()).to.equal(0);
-
-      // let all tiles load
+      // let first batch of tiles load
       function finish() {
-        expect(q1.getTilesLoading()).to.equal(0);
-        expect(q2.getTilesLoading()).to.equal(0);
+        expect(q1.getTilesLoading()).to.be(0);
+        expect(q2.getTilesLoading()).to.be(0);
 
-        // ask both to load, this should clear q1
-        q1.loadMoreTiles(maxLoading, maxLoading);
+        // load remaining tiles
         q2.loadMoreTiles(maxLoading, maxLoading);
 
-        expect(q1.getCount()).to.equal(0);
-        expect(q2.getCount()).to.equal(0);
+        expect(q1.getCount()).to.be(0);
+        expect(q2.getCount()).to.be(0);
+      }
+
+      function finish2() {
+        expect(q1.getTilesLoading()).to.be(0);
+        expect(q2.getTilesLoading()).to.be(0);
 
         done();
       }

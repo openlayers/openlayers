@@ -55,13 +55,31 @@ class TileQueue extends PriorityQueue {
   }
 
   /**
+   * @param {string} key The tile key.
+   * @return {boolean} True if tile is currently loading in this queue.
+   */
+  isKeyLoading(key) {
+    return key in this.tilesLoadingKeys_;
+  }
+
+  /**
    * @param {Array} element Element.
    * @return {boolean} The element was added to the queue.
    */
   enqueue(element) {
-    const added = super.enqueue(element);
+    const tile = /** @type {import("./Tile.js").default} */ (element[0]);
+    let added = false;
+    if (tile.getState() === TileState.LOADING) {
+      const key = tile.getKey();
+      if (!this.isKeyLoading(key)) {
+        this.tilesLoadingKeys_[key] = true;
+        ++this.tilesLoading_;
+        added = true;
+      }
+    } else {
+      added = super.enqueue(element);
+    }
     if (added) {
-      const tile = element[0];
       tile.addEventListener(EventType.CHANGE, this.boundHandleTileChange_);
     }
     return added;
@@ -94,7 +112,14 @@ class TileQueue extends PriorityQueue {
         delete this.tilesLoadingKeys_[tileKey];
         --this.tilesLoading_;
       }
+
       this.tileChangeCallback_();
+    } else if (state === TileState.LOADING) {
+      const tileKey = tile.getKey();
+      if (super.remove(tileKey)) {
+        this.tilesLoadingKeys_[tileKey] = true;
+        ++this.tilesLoading_;
+      }
     }
   }
 
