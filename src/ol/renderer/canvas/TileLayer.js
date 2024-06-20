@@ -181,12 +181,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     this.renderedSourceRevision_;
 
     /**
-     * @private
-     * @type {boolean}
-     */
-    //this.newTiles_ = false;
-
-    /**
      * @protected
      * @type {import("../../extent.js").Extent}
      */
@@ -542,7 +536,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * TODO:
-     *  * decide if we still need this.newTiles_
      *  * maybe skip transition when not fully opaque
      *  * decide if this.renderComplete is useful
      */
