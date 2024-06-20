@@ -280,6 +280,24 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
     });
   });
 
+  describe('#getInterpolate()', function () {
+    it('is true by default', function () {
+      expect(raster.getInterpolate()).to.be(true);
+    });
+
+    it('is false if constructed with interpolate: false', function () {
+      const raster = new RasterSource({
+        threads: 0,
+        sources: [redSource, greenSource, blueSource],
+        operation: function (inputs) {
+          return inputs[0];
+        },
+        interpolate: false,
+      });
+      expect(raster.getInterpolate()).to.be(false);
+    });
+  });
+
   describe('#setOperation()', function () {
     it('allows operation to be set', function (done) {
       let count = 0;
