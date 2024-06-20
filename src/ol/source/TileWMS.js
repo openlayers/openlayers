@@ -84,15 +84,12 @@ class TileWMS extends TileImage {
 
     const params = Object.assign({}, options.params);
 
-    const transparent = 'TRANSPARENT' in params ? params['TRANSPARENT'] : true;
-
     super({
       attributions: options.attributions,
       attributionsCollapsible: options.attributionsCollapsible,
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
       interpolate: options.interpolate,
-      opaque: !transparent,
       projection: options.projection,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       tileClass: options.tileClass,

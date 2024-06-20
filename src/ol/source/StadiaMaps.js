@@ -27,68 +27,53 @@ const STAMEN_ATTRIBUTION =
   '&copy; <a href="https://stamen.com/" target="_blank">Stamen Design</a>';
 
 /**
- * @type {Object<string, {extension: string, opaque: boolean}>}
+ * @type {Object<string, {extension: string}>}
  */
 const LayerConfig = {
   'stamen_terrain': {
     extension: 'png',
-    opaque: true,
   },
   'stamen_terrain_background': {
     extension: 'png',
-    opaque: true,
   },
   'stamen_terrain_labels': {
     extension: 'png',
-    opaque: false,
   },
   'stamen_terrain_lines': {
     extension: 'png',
-    opaque: false,
   },
   'stamen_toner_background': {
     extension: 'png',
-    opaque: true,
   },
   'stamen_toner': {
     extension: 'png',
-    opaque: true,
   },
   'stamen_toner_labels': {
     extension: 'png',
-    opaque: false,
   },
   'stamen_toner_lines': {
     extension: 'png',
-    opaque: false,
   },
   'stamen_toner_lite': {
     extension: 'png',
-    opaque: true,
   },
   'stamen_watercolor': {
     extension: 'jpg',
-    opaque: true,
   },
   'alidade_smooth': {
     extension: 'png',
-    opaque: true,
   },
   'alidade_smooth_dark': {
     extension: 'png',
-    opaque: true,
   },
   'alidade_satellite': {
     extension: 'png',
-    opaque: true,
   },
   'outdoors': {
     extension: 'png',
-    opaque: true,
   },
   'osm_bright': {
     extension: 'png',
-    opaque: true,
   },
 };
 
@@ -193,7 +178,6 @@ class StadiaMaps extends XYZ {
         options.minZoom !== undefined
           ? options.minZoom
           : providerConfig.minZoom,
-      opaque: layerConfig.opaque,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       tileLoadFunction: options.tileLoadFunction,
       transition: options.transition,

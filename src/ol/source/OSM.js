@@ -26,7 +26,6 @@ export const ATTRIBUTION =
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {number} [maxZoom=19] Max zoom.
- * @property {boolean} [opaque=true] Whether the layer is opaque.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
@@ -79,7 +78,6 @@ class OSM extends XYZ {
       crossOrigin: crossOrigin,
       interpolate: options.interpolate,
       maxZoom: options.maxZoom !== undefined ? options.maxZoom : 19,
-      opaque: options.opaque !== undefined ? options.opaque : true,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       tileLoadFunction: options.tileLoadFunction,
       transition: options.transition,

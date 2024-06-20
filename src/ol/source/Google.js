@@ -83,14 +83,12 @@ class Google extends TileImage {
    */
   constructor(options) {
     const highDpi = !!options.highDpi;
-    const opaque = !(options.overlay === true);
 
     super({
       attributionsCollapsible: options.attributionsCollapsible,
       cacheSize: options.cacheSize,
       crossOrigin: 'anonymous',
       interpolate: options.interpolate,
-      opaque: opaque,
       projection: 'EPSG:3857',
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       state: 'loading',

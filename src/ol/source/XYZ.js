@@ -15,7 +15,6 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
- * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
@@ -97,7 +96,6 @@ class XYZ extends TileImage {
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
       interpolate: options.interpolate,
-      opaque: options.opaque,
       projection: projection,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       tileGrid: tileGrid,

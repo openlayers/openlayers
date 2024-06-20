@@ -22,7 +22,6 @@ import {getUid} from '../util.js';
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
- * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
@@ -72,7 +71,6 @@ class TileImage extends UrlTile {
     super({
       attributions: options.attributions,
       cacheSize: options.cacheSize,
-      opaque: options.opaque,
       projection: options.projection,
       state: options.state,
       tileGrid: options.tileGrid,
@@ -195,21 +193,6 @@ class TileImage extends UrlTile {
       key += ':disable-interpolation';
     }
     return key;
-  }
-
-  /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {boolean} Opaque.
-   */
-  getOpaque(projection) {
-    if (
-      this.getProjection() &&
-      projection &&
-      !equivalent(this.getProjection(), projection)
-    ) {
-      return false;
-    }
-    return super.getOpaque(projection);
   }
 
   /**

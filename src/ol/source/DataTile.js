@@ -54,7 +54,6 @@ import {toSize} from '../size.js';
  * @property {number} [maxResolution] Optional tile grid resolution at level zero. Not used if `tileGrid` is provided.
  * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Tile projection.
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
- * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {import("./Source.js").State} [state] The source state.
  * @property {boolean} [wrapX=false] Render tiles beyond the antimeridian.
  * @property {number} [transition] Transition time when fading in new tiles (in milliseconds).
@@ -99,7 +98,6 @@ class DataTileSource extends TileSource {
       attributionsCollapsible: options.attributionsCollapsible,
       projection: projection,
       tileGrid: tileGrid,
-      opaque: options.opaque,
       state: options.state,
       wrapX: options.wrapX,
       transition: options.transition,

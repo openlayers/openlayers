@@ -28,7 +28,6 @@ import {withinExtentAndZ} from '../tilecoord.js';
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
- * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {number} [tilePixelRatio] TilePixelRatio.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection.
  * @property {import("./Source.js").State} [state] State.
@@ -79,12 +78,6 @@ class TileSource extends Source {
      * @type {TileSourceOnSignature<void>}
      */
     this.un;
-
-    /**
-     * @private
-     * @type {boolean}
-     */
-    this.opaque_ = options.opaque !== undefined ? options.opaque : false;
 
     /**
      * @private
@@ -184,14 +177,6 @@ class TileSource extends Source {
       this.key_ = key;
       this.changed();
     }
-  }
-
-  /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {boolean} Opaque.
-   */
-  getOpaque(projection) {
-    return this.opaque_;
   }
 
   /**

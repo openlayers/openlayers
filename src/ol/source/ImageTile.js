@@ -39,7 +39,6 @@ import {expandUrl, pickUrl, renderXYZTemplate} from '../uri.js';
  * @property {number} [maxResolution] Optional tile grid resolution at level zero. Not used if `tileGrid` is provided.
  * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Tile projection.
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
- * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {import("./Source.js").State} [state] The source state.
  * @property {boolean} [wrapX=true] Render tiles beyond the antimeridian.
  * @property {number} [transition] Transition time when fading in new tiles (in miliseconds).
@@ -184,7 +183,6 @@ class ImageTileSource extends DataTileSource {
       maxResolution: options.maxResolution,
       projection: options.projection,
       tileGrid: options.tileGrid,
-      opaque: options.opaque,
       state: state,
       wrapX: wrapX,
       transition: options.transition,

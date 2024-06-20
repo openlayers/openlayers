@@ -126,7 +126,6 @@ class BingMaps extends TileImage {
       cacheSize: options.cacheSize,
       crossOrigin: 'anonymous',
       interpolate: options.interpolate,
-      opaque: true,
       projection: getProjection('EPSG:3857'),
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       state: 'loading',

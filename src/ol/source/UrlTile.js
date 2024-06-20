@@ -14,7 +14,6 @@ import {getUid} from '../util.js';
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
- * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection.
  * @property {import("./Source.js").State} [state] State.
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] TileGrid.
@@ -45,7 +44,6 @@ class UrlTile extends TileSource {
     super({
       attributions: options.attributions,
       cacheSize: options.cacheSize,
-      opaque: options.opaque,
       projection: options.projection,
       state: options.state,
       tileGrid: options.tileGrid,
