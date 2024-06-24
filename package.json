@@ -130,6 +130,14 @@
     "rules": {
       "jsdoc/no-bad-blocks": "off",
       "import/no-commonjs": "error",
+      "import/no-unresolved": [
+        "error",
+        {
+          "ignore": [
+            "@octokit/rest"
+          ]
+        }
+      ],
       "@openlayers/no-exclusive-tests": [
         "error",
         {
