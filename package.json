@@ -57,7 +57,7 @@
     "@metalsmith/in-place": "^5.0.0",
     "@metalsmith/layouts": "^2.5.1",
     "@metalsmith/markdown": "^1.6.0",
-    "@octokit/rest": "^20.0.1",
+    "@octokit/rest": "^21.0.0",
     "@openlayers/eslint-plugin": "^4.0.0",
     "@rollup/plugin-alias": "^5.1.0",
     "@rollup/plugin-commonjs": "^26.0.1",
