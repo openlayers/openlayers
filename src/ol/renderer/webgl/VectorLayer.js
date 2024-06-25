@@ -391,6 +391,9 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
       const generatePromises = this.styleRenderers_.map((renderer, i) =>
         renderer.generateBuffers(this.batch_, transform).then((buffers) => {
+          if (this.buffers_[i]) {
+            this.disposeBuffers(this.buffers_[i]);
+          }
           this.buffers_[i] = buffers;
         }),
       );
@@ -492,9 +495,34 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
+   * Will release a set of Webgl buffers
+   * @param {import('../../render/webgl/VectorStyleRenderer.js').WebGLBuffers} buffers Buffers
+   */
+  disposeBuffers(buffers) {
+    if (buffers.pointBuffers) {
+      buffers.pointBuffers
+        .filter(Boolean)
+        .forEach((buffer) => this.helper.deleteBuffer(buffer));
+    }
+    if (buffers.lineStringBuffers) {
+      buffers.lineStringBuffers
+        .filter(Boolean)
+        .forEach((buffer) => this.helper.deleteBuffer(buffer));
+    }
+    if (buffers.polygonBuffers) {
+      buffers.polygonBuffers
+        .filter(Boolean)
+        .forEach((buffer) => this.helper.deleteBuffer(buffer));
+    }
+  }
+
+  /**
    * Clean up.
    */
   disposeInternal() {
+    this.buffers_.forEach((buffers) => {
+      this.disposeBuffers(buffers);
+    });
     if (this.sourceListenKeys_) {
       this.sourceListenKeys_.forEach(function (key) {
         unlistenByKey(key);

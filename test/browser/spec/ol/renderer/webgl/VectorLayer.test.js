@@ -310,6 +310,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       sinon.spy(renderer.helper, 'setUniformMatrixValue');
       sinon.spy(renderer.helper, 'prepareDraw');
       sinon.spy(renderer.helper, 'finalizeDraw');
+      sinon.spy(renderer.helper, 'deleteBuffer');
       sinon.spy(renderer.styleRenderers_[0], 'render');
       sinon.spy(renderer.styleRenderers_[1], 'render');
 
@@ -386,6 +387,9 @@ describe('ol/renderer/webgl/VectorLayer', () => {
     it('calls helper.finalizeDraw once', () => {
       expect(renderer.helper.finalizeDraw.calledOnce).to.be(true);
     });
+    it("does not delete any buffer if it's the first render", () => {
+      expect(renderer.helper.deleteBuffer.calledOnce).to.be(false);
+    });
 
     describe('with horizontal wrapping', () => {
       beforeEach(() => {
@@ -409,6 +413,19 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       it('calls render three times for each renderer', () => {
         expect(renderer.styleRenderers_[0].render.callCount).to.be(3 * withHit);
         expect(renderer.styleRenderers_[1].render.callCount).to.be(3 * withHit);
+      });
+    });
+
+    describe('regenerate frame buffers', () => {
+      beforeEach(async () => {
+        renderer.prepareFrame({
+          ...frameState,
+          extent: [0, 0, 10, 10],
+        });
+        await new Promise((resolve) => setTimeout(resolve, 150));
+      });
+      it('deletes previous buffers', () => {
+        expect(renderer.helper.deleteBuffer.callCount).to.be(12); // 2 buffers * 3 types of geometry * 2 different styles
       });
     });
   });
@@ -512,10 +529,13 @@ describe('ol/renderer/webgl/VectorLayer', () => {
   });
 
   describe('#dispose', () => {
-    beforeEach(() => {
+    let deleteBufferSpy;
+    beforeEach(async () => {
       // first call prepareFrame to load initial data and register listeners
       renderer.prepareFrame(frameState);
+      await new Promise((resolve) => setTimeout(resolve, 150));
       sinon.spy(vectorSource, 'removeEventListener');
+      deleteBufferSpy = sinon.spy(renderer.helper, 'deleteBuffer');
       renderer.dispose();
     });
     it('unlistens to source events', () => {
@@ -535,6 +555,9 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       expect(
         vectorSource.removeEventListener.calledWith(VectorEventType.CLEAR),
       ).to.be(true);
+    });
+    it('deletes webgl buffers', () => {
+      expect(deleteBufferSpy.callCount).to.be(12); // 2 buffers * 3 types of geometry * 2 different styles
     });
   });
 });
