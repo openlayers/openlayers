@@ -96,7 +96,7 @@ The [ol package](https://npmjs.com/package/ol) includes auto-generated TypeScrip
 
 ## Supported Browsers
 
-OpenLayers runs on all modern browsers (with greater than 1% global usage).  This includes Chrome, Firefox, Safari and Edge. For older browsers, [polyfills](https://polyfill.io/) will likely need to be added.
+OpenLayers runs on all modern browsers (with greater than 1% global usage).  This includes Chrome, Firefox, Safari and Edge. For older browsers, polyfills ([Fastly](https://polyfill-fastly.io) or [Cloudflare](https://cdnjs.cloudflare.com/polyfill)) will likely need to be added.
 
 ## Documentation
 

@@ -17,7 +17,7 @@ OpenLayers is available as [`ol` npm package](https://npmjs.com/package/ol), whi
 
 ## Browser Support
 
-OpenLayers runs on all modern browsers (with greater than 1% global usage).  This includes Chrome, Firefox, Safari and Edge. For older browsers, [polyfills](https://polyfill.io/) will likely need to be added.
+OpenLayers runs on all modern browsers (with greater than 1% global usage).  This includes Chrome, Firefox, Safari and Edge. For older browsers, polyfills ([Fastly](https://polyfill-fastly.io) or [Cloudflare](https://cdnjs.cloudflare.com/polyfill)) will likely need to be added.
 
 The library is intended for use on both desktop/laptop and mobile devices, and supports pointer and touch interactions.
 
