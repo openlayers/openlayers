@@ -129,6 +129,8 @@ const ModifyEventType = {
  * overlay.
  * @property {boolean} [snapToPointer=!hitDetection] The vertex, point or segment being modified snaps to the
  * pointer coordinate when clicked within the `pixelTolerance`.
+ * @property {boolean} [compare2D=false] Perform a 2D only comparison of vertices when determining proximity or equality. This can be useful in scenarios where the
+ * modification operations are purely planar and do not require consideration of height or depth.
  */
 
 /**
@@ -224,6 +226,12 @@ class Modify extends PointerInteraction {
      * @type {import("../events/condition.js").Condition}
      */
     this.condition_ = options.condition ? options.condition : primaryAction;
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this.compare2D_ = options.compare2D || false;
 
     /**
      * @private
@@ -1019,7 +1027,7 @@ class Modify extends PointerInteraction {
             projection,
           );
           if (
-            coordinatesEqual(closestVertex, vertex) &&
+            coordinatesEqual(closestVertex, vertex, this.compare2D_) &&
             !componentSegments[uid][0]
           ) {
             this.dragSegments_.push([segmentDataMatch, 0]);
@@ -1029,7 +1037,7 @@ class Modify extends PointerInteraction {
         }
 
         if (
-          coordinatesEqual(segment[0], vertex) &&
+          coordinatesEqual(segment[0], vertex, this.compare2D_) &&
           !componentSegments[uid][0]
         ) {
           this.dragSegments_.push([segmentDataMatch, 0]);
@@ -1038,7 +1046,7 @@ class Modify extends PointerInteraction {
         }
 
         if (
-          coordinatesEqual(segment[1], vertex) &&
+          coordinatesEqual(segment[1], vertex, this.compare2D_) &&
           !componentSegments[uid][1]
         ) {
           if (
@@ -1272,10 +1280,26 @@ class Modify extends PointerInteraction {
           for (let i = 1, ii = nodes.length; i < ii; ++i) {
             const segment = nodes[i].segment;
             if (
-              (coordinatesEqual(closestSegment[0], segment[0]) &&
-                coordinatesEqual(closestSegment[1], segment[1])) ||
-              (coordinatesEqual(closestSegment[0], segment[1]) &&
-                coordinatesEqual(closestSegment[1], segment[0]))
+              (coordinatesEqual(
+                closestSegment[0],
+                segment[0],
+                this.compare2D_,
+              ) &&
+                coordinatesEqual(
+                  closestSegment[1],
+                  segment[1],
+                  this.compare2D_,
+                )) ||
+              (coordinatesEqual(
+                closestSegment[0],
+                segment[1],
+                this.compare2D_,
+              ) &&
+                coordinatesEqual(
+                  closestSegment[1],
+                  segment[0],
+                  this.compare2D_,
+                ))
             ) {
               const geometryUid = getUid(nodes[i].geometry);
               if (!(geometryUid in geometries)) {
