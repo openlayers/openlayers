@@ -1849,7 +1849,7 @@ function readMultiGeometry(node, objectStack) {
     } else if (type == 'Polygon') {
       multiGeometry = new MultiPolygon(geometries);
       setCommonGeometryProperties(multiGeometry, geometries);
-    } else if (type == 'GeometryCollection') {
+    } else if (type == 'GeometryCollection' || type.startsWith('Multi')) {
       multiGeometry = new GeometryCollection(geometries);
     } else {
       throw new Error('Unknown geometry type found');
