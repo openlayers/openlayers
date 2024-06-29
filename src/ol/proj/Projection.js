@@ -124,6 +124,13 @@ class Projection {
      * @type {number|undefined}
      */
     this.metersPerUnit_ = options.metersPerUnit;
+
+    /**
+     * Transform matrix to rotate or skew the projection.
+     * @private
+     * @type {import("../transform.js").Transform|undefined}
+     */
+    this.matrix_ = undefined;
   }
 
   /**
@@ -265,6 +272,20 @@ class Projection {
    */
   getPointResolutionFunc() {
     return this.getPointResolutionFunc_;
+  }
+
+  /**
+   * @return {import("../transform.js").Transform|undefined} Transform matrix.
+   */
+  getMatrix() {
+    return this.matrix_;
+  }
+
+  /**
+   * @param {import("../transform.js").Transform|undefined} matrix Transform matrix.
+   */
+  setMatrix(matrix) {
+    this.matrix_ = matrix;
   }
 }
 

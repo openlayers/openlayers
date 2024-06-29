@@ -71,9 +71,11 @@ import {
   clear as clearTransformFuncs,
   get as getTransformFunc,
 } from './proj/transforms.js';
+import {apply as applyMatrix, invert as invertMatrix} from './transform.js';
 import {applyTransform, getWidth} from './extent.js';
 import {clamp, modulo} from './math.js';
 import {equals, getWorldsAway} from './coordinate.js';
+import {equals as equalsMatrix} from './array.js';
 import {getDistance} from './sphere.js';
 import {warn} from './console.js';
 
@@ -440,6 +442,14 @@ export function equivalent(projection1, projection2) {
   if (projection1 === projection2) {
     return true;
   }
+  const matrix1 = projection1.getMatrix();
+  const matrix2 = projection2.getMatrix();
+  if (
+    (matrix1 || matrix2) &&
+    (!matrix1 || !matrix2 || !equalsMatrix(matrix1, matrix2))
+  ) {
+    return false;
+  }
   const equalUnits = projection1.getUnits() === projection2.getUnits();
   if (projection1.getCode() === projection2.getCode()) {
     return equalUnits;
@@ -463,11 +473,55 @@ export function getTransformFromProjections(
 ) {
   const sourceCode = sourceProjection.getCode();
   const destinationCode = destinationProjection.getCode();
-  let transformFunc = getTransformFunc(sourceCode, destinationCode);
-  if (!transformFunc) {
-    transformFunc = identityTransform;
+  const transformFunc = getTransformFunc(sourceCode, destinationCode);
+  const sourceMatrix = sourceProjection.getMatrix();
+  const destinationMatrix = destinationProjection.getMatrix();
+  if (!sourceMatrix && !destinationMatrix) {
+    return transformFunc || identityTransform;
   }
-  return transformFunc;
+
+  let sourceTransform, destinationTransform;
+  if (sourceMatrix) {
+    const matrix = invertMatrix(sourceMatrix.slice());
+    sourceTransform = createTransformFromCoordinateTransform(
+      function (coordinate) {
+        return applyMatrix(matrix, coordinate);
+      },
+    );
+  }
+  if (destinationMatrix) {
+    const matrix = destinationMatrix;
+    destinationTransform = createTransformFromCoordinateTransform(
+      function (coordinate) {
+        return applyMatrix(matrix, coordinate);
+      },
+    );
+  }
+  return (
+    /**
+     * @param {Array<number>} input Input.
+     * @param {Array<number>} [output] Output.
+     * @param {number} [dimension] Dimension.
+     * @return {Array<number>} Output.
+     */
+    function (input, output, dimension) {
+      const length = input.length;
+      output = output !== undefined ? output : new Array(length);
+      for (let i = 0; i < length; ++i) {
+        output[i] = input[i];
+      }
+      if (sourceTransform) {
+        sourceTransform(output, output, dimension);
+      }
+      if (transformFunc) {
+        transformFunc(output, output, dimension);
+      }
+      if (destinationTransform) {
+        destinationTransform(output, output, dimension);
+      }
+      return output;
+    }
+  );
 }
 
 /**
