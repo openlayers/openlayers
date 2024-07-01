@@ -105,7 +105,7 @@
     "proj4": "2.11.0",
     "puppeteer": "22.12.0",
     "rollup": "^4.1.4",
-    "rollup-plugin-external-globals": "^0.10.0",
+    "rollup-plugin-external-globals": "^0.11.0",
     "semver": "^7.3.7",
     "serve-static": "^1.14.0",
     "shx": "^0.3.2",
