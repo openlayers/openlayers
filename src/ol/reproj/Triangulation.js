@@ -13,7 +13,7 @@ import {
   getWidth,
   intersects,
 } from '../extent.js';
-import {getTransform} from '../proj.js';
+import {getTransformFromProjectionsAndMatrix} from '../proj.js';
 import {modulo} from '../math.js';
 
 /**
@@ -55,6 +55,7 @@ class Triangulation {
    * @param {import("../extent.js").Extent} maxSourceExtent Maximal source extent that can be used.
    * @param {number} errorThreshold Acceptable error (in source units).
    * @param {?number} destinationResolution The (optional) resolution of the destination.
+   * @param {import("../transform.js").Transform} [sourceMatrix] Source transform matrix.
    */
   constructor(
     sourceProj,
@@ -63,6 +64,7 @@ class Triangulation {
     maxSourceExtent,
     errorThreshold,
     destinationResolution,
+    sourceMatrix,
   ) {
     /**
      * @type {import("../proj/Projection.js").default}
@@ -78,7 +80,12 @@ class Triangulation {
 
     /** @type {!Object<string, import("../coordinate.js").Coordinate>} */
     let transformInvCache = {};
-    const transformInv = getTransform(this.targetProj_, this.sourceProj_);
+    const transformInv = getTransformFromProjectionsAndMatrix(
+      null,
+      this.targetProj_,
+      this.sourceProj_,
+      sourceMatrix,
+    );
 
     /**
      * @param {import("../coordinate.js").Coordinate} c A coordinate.
