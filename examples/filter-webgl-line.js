@@ -23,17 +23,15 @@ class WebGLLayer extends Layer {
 }
 
 const source = new VectorSource({
-  url: 'data/geojson/switzerland.geojson',
+  url: 'data/geojson/switzerland-m-metric.geojson',
   format: new GeoJSON(),
 });
 
 /**
- * @param {boolean} dash Include line dash
- * @param {boolean} pattern Include image pattern
  * @return {import('../src/ol/style/webgl.js').WebGLStyle} Generated style
  */
-const getStyle = (dash, pattern) => {
-  let newStyle = {
+const getStyle = () => {
+  return {
     variables: style
       ? style.variables
       : {
@@ -48,8 +46,8 @@ const getStyle = (dash, pattern) => {
           dashLength4: 15,
           dashOffset: 0,
           patternSpacing: 0,
-          minT: 40,
-          maxT: 90,
+          minT: 31,
+          maxT: 208,
         },
     'stroke-width': ['var', 'width'],
     'stroke-color': 'rgb(126,35,144, 0.8)',
@@ -63,32 +61,11 @@ const getStyle = (dash, pattern) => {
       ['<=', ['line-metric'], ['var', 'maxT']],
     ],
   };
-  if (dash) {
-    newStyle = {
-      ...newStyle,
-      'stroke-line-dash': [
-        ['var', 'dashLength1'],
-        ['var', 'dashLength2'],
-        ['var', 'dashLength3'],
-        ['var', 'dashLength4'],
-      ],
-      'stroke-line-dash-offset': ['var', 'dashOffset'],
-    };
-  }
-  if (pattern) {
-    delete newStyle['stroke-color'];
-    newStyle = {
-      ...newStyle,
-      'stroke-pattern-src': 'data/dot.svg',
-      'stroke-pattern-spacing': ['var', 'patternSpacing'],
-    };
-  }
-  return newStyle;
 };
 
-style = getStyle(false, false);
+style = getStyle();
 
-let vector = new WebGLLayer({
+let vectorLayer = new WebGLLayer({
   source,
 });
 
@@ -97,7 +74,7 @@ const map = new Map({
     new TileLayer({
       source: new OSM(),
     }),
-    vector,
+    vectorLayer,
   ],
   target: 'map',
   view: new View({
@@ -110,11 +87,11 @@ const rebuildStyle = () => {
   const dash = document.getElementById('dashEnable').checked;
   const pattern = document.getElementById('patternEnable').checked;
   style = getStyle(dash, pattern);
-  map.removeLayer(vector);
-  vector = new WebGLLayer({
+  map.removeLayer(vectorLayer);
+  vectorLayer = new WebGLLayer({
     source,
   });
-  map.addLayer(vector);
+  map.addLayer(vectorLayer);
 };
 
 const modify = new Modify({source: source});
