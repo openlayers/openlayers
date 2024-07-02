@@ -249,15 +249,17 @@ class OverviewMap extends Control {
 
       scope.getMap().getView().setCenterInternal(coordinates);
 
-      window.removeEventListener('mousemove', move);
-      window.removeEventListener('mouseup', endMoving);
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', endMoving);
     };
 
     /* Binding */
 
-    overlayBox.addEventListener('mousedown', function () {
-      window.addEventListener('mousemove', move);
-      window.addEventListener('mouseup', endMoving);
+    this.ovmapDiv_.addEventListener('pointerdown', function () {
+      if (event.target === overlayBox) {
+        window.addEventListener('pointermove', move);
+      }
+      window.addEventListener('pointerup', endMoving);
     });
   }
 
