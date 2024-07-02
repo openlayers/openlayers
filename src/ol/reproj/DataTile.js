@@ -43,6 +43,7 @@ import {listen, unlistenByKey} from '../events.js';
  * @property {number} [errorThreshold] Acceptable reprojection error (in px).
  * @property {number} [transition=250] A duration for tile opacity
  * transitions in milliseconds. A duration of 0 disables the opacity transition.
+ * @property {import("../transform.js").Transform} [transformMatrix] Source transform matrix.
  */
 
 /**
@@ -203,6 +204,7 @@ class ReprojDataTile extends DataTile {
       maxSourceExtent,
       sourceResolution * errorThresholdInPixels,
       targetResolution,
+      options.transformMatrix,
     );
 
     if (this.triangulation_.getTriangles().length === 0) {
