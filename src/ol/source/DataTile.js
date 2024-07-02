@@ -12,9 +12,10 @@ import {
   createXYZ,
   extentFromProjection,
   getForProjection as getTileGridForProjection,
+  wrapX,
 } from '../tilegrid.js';
 import {equivalent, get as getProjection} from '../proj.js';
-import {getKeyZXY} from '../tilecoord.js';
+import {getKeyZXY, withinExtentAndZ} from '../tilecoord.js';
 import {getUid} from '../util.js';
 import {toPromise} from '../functions.js';
 import {toSize} from '../size.js';
@@ -158,6 +159,12 @@ class DataTileSource extends TileSource {
      * @type {CrossOriginAttribute}
      */
     this.crossOrigin_ = options.crossOrigin || 'anonymous';
+
+    /**
+     * @protected
+     * @type {import("../transform.js").Transform}
+     */
+    this.transformMatrix = null;
   }
 
   /**
@@ -194,7 +201,10 @@ class DataTileSource extends TileSource {
    */
   getGutterForProjection(projection) {
     const thisProj = this.getProjection();
-    if (!thisProj || equivalent(thisProj, projection)) {
+    if (
+      (!thisProj || equivalent(thisProj, projection)) &&
+      !this.transformMatrix
+    ) {
       return this.gutter_;
     }
 
@@ -240,7 +250,7 @@ class DataTileSource extends TileSource {
       }),
     );
 
-    const sourceTileGrid = this.getTileGridForProjection(sourceProj);
+    const sourceTileGrid = this.tileGrid;
     const targetTileGrid = this.getTileGridForProjection(targetProj);
     const tileCoord = [z, x, y];
     const wrappedTileCoord = this.getTileCoordForTileUrlFunction(
@@ -250,16 +260,17 @@ class DataTileSource extends TileSource {
 
     const options = Object.assign(
       {
-        sourceProj,
+        sourceProj: sourceProj || targetProj,
         sourceTileGrid,
         targetProj,
         targetTileGrid,
         tileCoord,
         wrappedTileCoord,
         pixelRatio: reprojTilePixelRatio,
-        gutter: this.getGutterForProjection(sourceProj),
+        gutter: this.gutter_,
         getTileFunction: (z, x, y, pixelRatio) =>
-          this.getTile(z, x, y, pixelRatio, sourceProj),
+          this.getTile(z, x, y, pixelRatio),
+        transformMatrix: this.transformMatrix,
       },
       /** @type {import("../reproj/DataTile.js").Options} */ (this.tileOptions),
     );
@@ -275,15 +286,15 @@ class DataTileSource extends TileSource {
    * @param {number} x Tile coordinate x.
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {import("../proj/Projection.js").default} [projection] Projection.
    * @return {TileType|null} Tile (or null if outside source extent).
    */
   getTile(z, x, y, pixelRatio, projection) {
     const sourceProjection = this.getProjection();
     if (
-      sourceProjection &&
       projection &&
-      !equivalent(sourceProjection, projection)
+      ((sourceProjection && !equivalent(sourceProjection, projection)) ||
+        this.transformMatrix)
     ) {
       return this.getReprojTile_(z, x, y, projection, sourceProjection);
     }
@@ -375,7 +386,11 @@ class DataTileSource extends TileSource {
    */
   getTileGridForProjection(projection) {
     const thisProj = this.getProjection();
-    if (this.tileGrid && (!thisProj || equivalent(thisProj, projection))) {
+    if (
+      this.tileGrid &&
+      (!thisProj || equivalent(thisProj, projection)) &&
+      !this.transformMatrix
+    ) {
       return this.tileGrid;
     }
 
@@ -415,7 +430,10 @@ class DataTileSource extends TileSource {
    */
   getTileCacheForProjection(projection) {
     const thisProj = this.getProjection();
-    if (!thisProj || equivalent(thisProj, projection)) {
+    if (
+      (!thisProj || equivalent(thisProj, projection)) &&
+      !this.transformMatrix
+    ) {
       return this.tileCache;
     }
 
@@ -440,6 +458,28 @@ class DataTileSource extends TileSource {
       const tileCache = this.tileCacheForProjection_[id];
       tileCache.expireCache(tileCache == usedTileCache ? usedTiles : {});
     }
+  }
+
+  /**
+   * Returns a tile coordinate wrapped around the x-axis. When the tile coordinate
+   * is outside the resolution and extent range of the tile grid, `null` will be
+   * returned.
+   * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
+   * @param {import("../proj/Projection.js").default} [projection] Projection.
+   * @return {import("../tilecoord.js").TileCoord} Tile coordinate to be passed to the tileUrlFunction or
+   *     null if no tile URL should be created for the passed `tileCoord`.
+   */
+  getTileCoordForTileUrlFunction(tileCoord, projection) {
+    const gridProjection =
+      projection !== undefined ? projection : this.getProjection();
+    const tileGrid =
+      projection !== undefined
+        ? this.getTileGridForProjection(gridProjection)
+        : this.tileGrid;
+    if (this.getWrapX() && gridProjection.isGlobal()) {
+      tileCoord = wrapX(tileGrid, tileCoord, gridProjection);
+    }
+    return withinExtentAndZ(tileCoord, tileGrid) ? tileCoord : null;
   }
 
   clear() {
