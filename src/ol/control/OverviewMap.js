@@ -237,7 +237,7 @@ class OverviewMap extends Control {
 
     const move = function (event) {
       const position = /** @type {?} */ (computeDesiredMousePosition(event));
-      const coordinates = ovmap.getEventCoordinateInternal(
+      const coordinates = ovmap.getEventCoordinate(
         /** @type {MouseEvent} */ (position),
       );
 
@@ -505,7 +505,7 @@ class OverviewMap extends Control {
 
     const overlay = this.boxOverlay_;
     const box = this.boxOverlay_.getElement();
-    const center = view.getCenterInternal();
+    const center = view.getCenter();
     const resolution = view.getResolution();
     const ovresolution = ovview.getResolution();
     const width = (mapSize[0] * resolution) / ovresolution;
