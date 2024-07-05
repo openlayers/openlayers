@@ -28,15 +28,17 @@ import {getHeight, getWidth} from '../extent.js';
 export function createLoader(options) {
   const load = options.load || decode;
   const extent = options.imageExtent;
-  const image = new Image();
-  image.crossOrigin = options.crossOrigin ?? null;
+  const crossOrigin = options.crossOrigin ?? null;
 
-  return () =>
-    load(image, options.url).then((image) => {
+  return () => {
+    const image = new Image();
+    image.crossOrigin = crossOrigin;
+    return load(image, options.url).then((image) => {
       const resolutionX = getWidth(extent) / image.width;
       const resolutionY = getHeight(extent) / image.height;
       const resolution =
         resolutionX !== resolutionY ? [resolutionX, resolutionY] : resolutionY;
       return {image, extent, resolution, pixelRatio: 1};
     });
+  };
 }
