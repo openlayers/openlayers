@@ -91,6 +91,9 @@ function getUrl(
  */
 export function createLoader(options) {
   const load = options.load || decode;
+  const useOverlay = options.useOverlay ?? false;
+  const metersPerUnit = options.metersPerUnit || 1;
+  const displayDpi = options.displayDpi || 96;
   const ratio = options.ratio ?? 1;
   const crossOrigin = options.crossOrigin ?? null;
 
@@ -107,9 +110,9 @@ export function createLoader(options) {
       options.params,
       extent,
       size,
-      options.useOverlay,
-      options.metersPerUnit || 1,
-      options.displayDpi || 96,
+      useOverlay,
+      metersPerUnit,
+      displayDpi,
     );
     return load(image, src).then((image) => ({image, extent, pixelRatio}));
   };
