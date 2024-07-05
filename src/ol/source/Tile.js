@@ -277,10 +277,14 @@ class TileSource extends Source {
    *     null if no tile URL should be created for the passed `tileCoord`.
    */
   getTileCoordForTileUrlFunction(tileCoord, projection) {
-    projection = projection !== undefined ? projection : this.getProjection();
-    const tileGrid = this.getTileGridForProjection(projection);
-    if (this.getWrapX() && projection.isGlobal()) {
-      tileCoord = wrapX(tileGrid, tileCoord, projection);
+    const gridProjection =
+      projection !== undefined ? projection : this.getProjection();
+    const tileGrid =
+      projection !== undefined
+        ? this.getTileGridForProjection(gridProjection)
+        : this.tileGrid || this.getTileGridForProjection(gridProjection);
+    if (this.getWrapX() && gridProjection.isGlobal()) {
+      tileCoord = wrapX(tileGrid, tileCoord, gridProjection);
     }
     return withinExtentAndZ(tileCoord, tileGrid) ? tileCoord : null;
   }
