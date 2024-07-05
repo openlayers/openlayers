@@ -91,7 +91,7 @@ exports.handlers = {
                       templateInfo[property.type.names[0]];
                   }
                   return property;
-                })
+                }),
               );
             }
           }
