@@ -297,10 +297,6 @@ class OverviewMap extends Control {
       const view = map.getView();
       if (view) {
         this.bindView_(view);
-        if (view.isDef()) {
-          this.ovmap_.updateSize();
-          this.resetExtent_();
-        }
       }
 
       if (!this.ovmap_.isRendered()) {
@@ -352,6 +348,11 @@ class OverviewMap extends Control {
     );
     // Sync once with the new view
     this.handleRotationChanged_();
+
+    if (view.isDef()) {
+      this.ovmap_.updateSize();
+      this.resetExtent_();
+    }
   }
 
   /**
