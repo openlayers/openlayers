@@ -166,6 +166,7 @@ export function createLoader(options) {
   const projection = getProjection(options.projection || 'EPSG:3857');
   const ratio = options.ratio || 1.5;
   const load = options.load || decode;
+  const crossOrigin = options.crossOrigin ?? null;
 
   /**
    * @type {import("../Image.js").Loader}
@@ -185,9 +186,7 @@ export function createLoader(options) {
       options.serverType,
     );
     const image = new Image();
-    if (options.crossOrigin !== null) {
-      image.crossOrigin = options.crossOrigin;
-    }
+    image.crossOrigin = crossOrigin;
     return load(image, src).then((image) => ({image, extent, pixelRatio}));
   };
 }

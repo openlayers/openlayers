@@ -29,9 +29,7 @@ export function createLoader(options) {
   const load = options.load || decode;
   const extent = options.imageExtent;
   const image = new Image();
-  if (options.crossOrigin !== null) {
-    image.crossOrigin = options.crossOrigin;
-  }
+  image.crossOrigin = options.crossOrigin ?? null;
 
   return () =>
     load(image, options.url).then((image) => {

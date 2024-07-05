@@ -91,6 +91,7 @@ export function createLoader(options) {
   const load = options.load ? options.load : decode;
   const projection = getProjection(options.projection || 'EPSG:3857');
   const ratio = options.ratio ?? 1.5;
+  const crossOrigin = options.crossOrigin ?? null;
 
   /** @type {import('../Image.js').ImageObjectPromiseLoader} */
   return function (extent, resolution, pixelRatio) {
@@ -115,9 +116,7 @@ export function createLoader(options) {
     );
 
     const image = new Image();
-    if (options.crossOrigin !== null) {
-      image.crossOrigin = options.crossOrigin;
-    }
+    image.crossOrigin = crossOrigin;
 
     return load(image, src).then((image) => {
       // Update resolution, because the server may return a smaller size than requested
