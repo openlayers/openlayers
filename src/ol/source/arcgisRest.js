@@ -90,6 +90,7 @@ export function getRequestUrl(
 export function createLoader(options) {
   const load = options.load ? options.load : decode;
   const projection = getProjection(options.projection || 'EPSG:3857');
+  const ratio = options.ratio ?? 1.5;
 
   /** @type {import('../Image.js').ImageObjectPromiseLoader} */
   return function (extent, resolution, pixelRatio) {
@@ -102,7 +103,7 @@ export function createLoader(options) {
     };
     Object.assign(params, options.params);
 
-    extent = getRequestExtent(extent, resolution, pixelRatio, options.ratio);
+    extent = getRequestExtent(extent, resolution, pixelRatio, ratio);
 
     const src = getRequestUrl(
       options.url,

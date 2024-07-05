@@ -91,6 +91,7 @@ function getUrl(
  */
 export function createLoader(options) {
   const load = options.load || decode;
+  const ratio = options.ratio ?? 1;
 
   /** @type {import('../Image.js').ImageObjectPromiseLoader} */
   return function (extent, resolution, pixelRatio) {
@@ -98,7 +99,7 @@ export function createLoader(options) {
     if (options.crossOrigin !== null) {
       image.crossOrigin = options.crossOrigin;
     }
-    extent = getRequestExtent(extent, resolution, pixelRatio, options.ratio);
+    extent = getRequestExtent(extent, resolution, pixelRatio, ratio);
     const width = getWidth(extent) / resolution;
     const height = getHeight(extent) / resolution;
     const size = [width * pixelRatio, height * pixelRatio];
