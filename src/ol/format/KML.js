@@ -1027,8 +1027,13 @@ function createNameStyleFunction(foundStyle, name) {
   const imageStyle = foundStyle.getImage();
   if (imageStyle) {
     const imageSize = imageStyle.getSize();
-    if (imageSize && imageSize.length == 2) {
-      const imageScale = imageStyle.getScaleArray();
+    const imageScale = imageStyle.getScaleArray();
+    if (
+      imageSize &&
+      imageSize.length == 2 &&
+      imageScale &&
+      imageScale.find((scale) => scale > 0)
+    ) {
       const anchor = imageStyle.getAnchor();
       // Offset the label to be centered to the right of the icon,
       // if there is one.
