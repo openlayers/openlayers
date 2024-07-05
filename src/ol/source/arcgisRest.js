@@ -74,7 +74,7 @@ export function getRequestUrl(
  * or the entire code must form a valid ArcGIS SpatialReference definition.
  * @property {number} [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport,
  * `2` means twice the size of the map viewport, and so on.
- * @property {string} [url] ArcGIS Rest service URL for a Map Service or Image Service. The url
+ * @property {string} url ArcGIS Rest service URL for a Map Service or Image Service. The url
  * should include /MapServer or /ImageServer.
  * @property {function(HTMLImageElement, string): Promise<import('../DataTile.js').ImageLike>} [load] Function
  * to perform loading of the image. Receives the created `HTMLImageElement` and the desired `src` as argument and
