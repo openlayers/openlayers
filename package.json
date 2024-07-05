@@ -51,7 +51,7 @@
     "earcut": "^2.2.3",
     "geotiff": "^2.0.7",
     "pbf": "3.2.1",
-    "rbush": "^3.0.1"
+    "rbush": "^4.0.0"
   },
   "devDependencies": {
     "@metalsmith/in-place": "^5.0.0",
