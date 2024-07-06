@@ -48,13 +48,13 @@ class BaseTileRepresentation extends EventTarget {
      * @type {number}
      * @protected
      */
-    this.gutter_ = options.gutter || 0;
+    this.gutter = options.gutter || 0;
 
     /**
      * @type {import("../webgl/Helper.js").default}
      * @protected
      */
-    this.helper_ = options.helper;
+    this.helper = options.helper;
 
     this.loaded = false;
     this.ready = false;
