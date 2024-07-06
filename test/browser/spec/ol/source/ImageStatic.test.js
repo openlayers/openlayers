@@ -20,12 +20,12 @@ describe('ol/source/ImageStatic', function () {
 
   describe('#getInterpolate()', function () {
     it('is true by default', function () {
-      const source = new Static({});
+      const source = new Static({imageExtent: extent});
       expect(source.getInterpolate()).to.be(true);
     });
 
     it('is false if constructed with interpolate: false', function () {
-      const source = new Static({interpolate: false});
+      const source = new Static({imageExtent: extent, interpolate: false});
       expect(source.getInterpolate()).to.be(false);
     });
   });
