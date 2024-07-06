@@ -360,11 +360,11 @@ describe('ol/renderer/canvas/ImageLayer', function () {
           renderer.renderFrame(frameState, null);
         }
         try {
-          const image = renderer.image_;
+          const image = renderer.image;
           expect(image).to.be.a(ImageWrapper);
           image.state = ImageState.EMPTY;
           expect(renderer.prepareFrame(frameState)).to.be(false);
-          expect(renderer.image_).to.be(null);
+          expect(renderer.image).to.be(null);
           done();
         } catch (e) {
           done(e);
