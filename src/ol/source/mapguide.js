@@ -9,7 +9,7 @@ import {getRequestExtent} from './Image.js';
 
 /**
  * @typedef {Object} LoaderOptions
- * @property {string} [url] The mapagent url.
+ * @property {string} url The mapagent url.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
@@ -91,14 +91,17 @@ function getUrl(
  */
 export function createLoader(options) {
   const load = options.load || decode;
+  const useOverlay = options.useOverlay ?? false;
+  const metersPerUnit = options.metersPerUnit || 1;
+  const displayDpi = options.displayDpi || 96;
+  const ratio = options.ratio ?? 1;
+  const crossOrigin = options.crossOrigin ?? null;
 
   /** @type {import('../Image.js').ImageObjectPromiseLoader} */
   return function (extent, resolution, pixelRatio) {
     const image = new Image();
-    if (options.crossOrigin !== null) {
-      image.crossOrigin = options.crossOrigin;
-    }
-    extent = getRequestExtent(extent, resolution, pixelRatio, options.ratio);
+    image.crossOrigin = crossOrigin;
+    extent = getRequestExtent(extent, resolution, pixelRatio, ratio);
     const width = getWidth(extent) / resolution;
     const height = getHeight(extent) / resolution;
     const size = [width * pixelRatio, height * pixelRatio];
@@ -107,9 +110,9 @@ export function createLoader(options) {
       options.params,
       extent,
       size,
-      options.useOverlay,
-      options.metersPerUnit || 1,
-      options.displayDpi || 96,
+      useOverlay,
+      metersPerUnit,
+      displayDpi,
     );
     return load(image, src).then((image) => ({image, extent, pixelRatio}));
   };

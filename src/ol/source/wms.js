@@ -166,6 +166,7 @@ export function createLoader(options) {
   const projection = getProjection(options.projection || 'EPSG:3857');
   const ratio = options.ratio || 1.5;
   const load = options.load || decode;
+  const crossOrigin = options.crossOrigin ?? null;
 
   /**
    * @type {import("../Image.js").Loader}
@@ -185,9 +186,7 @@ export function createLoader(options) {
       options.serverType,
     );
     const image = new Image();
-    if (options.crossOrigin !== null) {
-      image.crossOrigin = options.crossOrigin;
-    }
+    image.crossOrigin = crossOrigin;
     return load(image, src).then((image) => ({image, extent, pixelRatio}));
   };
 }
@@ -266,15 +265,6 @@ export function getLegendUrl(options, resolution) {
     'FORMAT': 'image/png',
   };
 
-  if (options.params === undefined || options.params['LAYER'] === undefined) {
-    const layers = options.params.LAYERS;
-    const isSingleLayer = !Array.isArray(layers) || layers.length === 1;
-    if (!isSingleLayer) {
-      return undefined;
-    }
-    baseParams['LAYER'] = layers;
-  }
-
   if (resolution !== undefined) {
     const mpu =
       getProjection(options.projection || 'EPSG:3857').getMetersPerUnit() || 1;
@@ -283,6 +273,15 @@ export function getLegendUrl(options, resolution) {
   }
 
   Object.assign(baseParams, options.params);
+
+  if (options.params !== undefined && baseParams['LAYER'] === undefined) {
+    const layers = baseParams['LAYERS'];
+    const isSingleLayer = !Array.isArray(layers) || layers.length !== 1;
+    if (!isSingleLayer) {
+      return undefined;
+    }
+    baseParams['LAYER'] = layers;
+  }
 
   return appendParams(options.url, baseParams);
 }

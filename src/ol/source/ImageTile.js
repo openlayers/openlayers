@@ -59,9 +59,7 @@ const loadError = new Error('Image failed to load');
 function loadImage(template, z, x, y, options) {
   return new Promise((resolve, reject) => {
     const image = new Image();
-    if (options.crossOrigin !== undefined) {
-      image.crossOrigin = options.crossOrigin;
-    }
+    image.crossOrigin = options.crossOrigin ?? null;
     image.addEventListener('load', () => resolve(image));
     image.addEventListener('error', () => reject(loadError));
     image.src = renderXYZTemplate(template, z, x, y, options.maxY);
