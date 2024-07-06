@@ -126,7 +126,7 @@ export function createFromCapabilitiesMatrixSet(
   const projection = getProjection(code);
   const metersPerUnit = projection.getMetersPerUnit();
   // swap origin x and y coordinates if axis orientation is lat/long
-  const switchOriginXY = projection.getAxisOrientation().substr(0, 2) == 'ne';
+  const switchOriginXY = projection.getAxisOrientation().startsWith('ne');
 
   matrixSet[matrixIdsPropName].sort(function (a, b) {
     return b[scaleDenominatorPropName] - a[scaleDenominatorPropName];

@@ -92,7 +92,7 @@ class GML2 extends GMLBase {
       const x = parseFloat(coords[0]);
       const y = parseFloat(coords[1]);
       const z = coords.length === 3 ? parseFloat(coords[2]) : 0;
-      if (axisOrientation.substr(0, 2) === 'en') {
+      if (axisOrientation.startsWith('en')) {
         flatCoordinates.push(x, y, z);
       } else {
         flatCoordinates.push(y, x, z);
@@ -481,14 +481,12 @@ class GML2 extends GMLBase {
    * @private
    */
   getCoords_(point, srsName, hasZ) {
-    let axisOrientation = 'enu';
-    if (srsName) {
-      axisOrientation = getProjection(srsName).getAxisOrientation();
-    }
-    let coords =
-      axisOrientation.substr(0, 2) === 'en'
-        ? point[0] + ',' + point[1]
-        : point[1] + ',' + point[0];
+    const axisOrientation = srsName
+      ? getProjection(srsName).getAxisOrientation()
+      : 'enu';
+    let coords = axisOrientation.startsWith('en')
+      ? point[0] + ',' + point[1]
+      : point[1] + ',' + point[0];
     if (hasZ) {
       // For newly created points, Z can be undefined.
       const z = point[2] || 0;

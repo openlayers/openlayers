@@ -448,7 +448,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
   }
 
   let wrapX = false;
-  const switchXY = projection.getAxisOrientation().substr(0, 2) == 'ne';
+  const switchXY = projection.getAxisOrientation().startsWith('ne');
 
   let matrix = matrixSetObj.TileMatrix[0];
 
