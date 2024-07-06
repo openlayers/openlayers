@@ -212,6 +212,7 @@ class Graticule extends VectorLayer {
 
     /**
      * @type {import("../proj/Projection.js").default}
+     * @private
      */
     this.projection_ = null;
 

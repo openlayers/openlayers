@@ -71,7 +71,11 @@ import {inflateEnds} from '../../geom/flat/orient.js';
  */
 class MixedGeometryBatch {
   constructor() {
+    /**
+     * @private
+     */
     this.globalCounter_ = 0;
+
     /**
      * Refs are used as keys for hit detection.
      * @type {Map<number, Feature|RenderFeature>}

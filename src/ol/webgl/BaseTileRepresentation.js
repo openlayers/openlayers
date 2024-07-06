@@ -38,6 +38,10 @@ class BaseTileRepresentation extends EventTarget {
      * @type {TileType}
      */
     this.tile;
+
+    /**
+     * @private
+     */
     this.handleTileChange_ = this.handleTileChange_.bind(this);
 
     /**

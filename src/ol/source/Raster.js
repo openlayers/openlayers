@@ -608,7 +608,10 @@ class RasterSource extends ImageSource {
       this.layers_[i].addEventListener(EventType.CHANGE, changed);
     }
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.useResolutions_ = options.resolutions !== null;
 
     /**
@@ -636,6 +639,7 @@ class RasterSource extends ImageSource {
     /**
      * The most recently rendered revision.
      * @type {number}
+     * @private
      */
     this.renderedRevision_;
 

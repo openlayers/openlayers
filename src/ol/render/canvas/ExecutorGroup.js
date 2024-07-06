@@ -118,6 +118,7 @@ class ExecutorGroup {
     this.renderedContext_ = null;
 
     /**
+     * @private
      * @type {Object<number, Array<import("./ZIndexContext.js").default>>}
      */
     this.deferredZIndexContexts_ = {};

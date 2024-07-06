@@ -134,6 +134,9 @@ class DataTileSource extends TileSource {
      */
     this.loader_ = options.loader;
 
+    /**
+     * @private
+     */
     this.handleTileChange_ = this.handleTileChange_.bind(this);
 
     /**

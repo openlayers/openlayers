@@ -240,6 +240,11 @@ class Icon extends ImageStyle {
     this.size_ = options.size !== undefined ? options.size : null;
 
     /**
+     * @private
+     */
+    this.initialOptions_;
+
+    /**
      * Calculate the scale if width or height were given.
      */
     if (options.width !== undefined || options.height !== undefined) {

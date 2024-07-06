@@ -107,6 +107,7 @@ class Google extends TileImage {
 
     /**
      * @type {Error|null}
+     * @private
      */
     this.error_ = null;
 

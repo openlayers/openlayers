@@ -136,9 +136,18 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       postProcesses: options.postProcesses,
     });
 
+    /**
+     * @private
+     */
     this.sourceRevision_ = -1;
 
+    /**
+     * @private
+     */
     this.verticesBuffer_ = new WebGLArrayBuffer(ARRAY_BUFFER, DYNAMIC_DRAW);
+    /**
+     * @private
+     */
     this.indicesBuffer_ = new WebGLArrayBuffer(
       ELEMENT_ARRAY_BUFFER,
       DYNAMIC_DRAW,
@@ -210,6 +219,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
     this.customAttributes = options.attributes ? options.attributes : [];
 
+    /**
+     * @private
+     */
     this.previousExtent_ = createEmpty();
 
     /**
@@ -303,6 +315,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.featureCount_ = 0;
 
     const source = this.getLayer().getSource();
+    /**
+     * @private
+     */
     this.sourceListenKeys_ = [
       listen(
         source,

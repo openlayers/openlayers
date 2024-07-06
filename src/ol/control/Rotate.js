@@ -89,6 +89,9 @@ class Rotate extends Control {
     element.className = cssClasses;
     element.appendChild(button);
 
+    /**
+     * @private
+     */
     this.callResetNorth_ = options.resetNorth ? options.resetNorth : undefined;
 
     /**

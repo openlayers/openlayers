@@ -105,6 +105,7 @@ class Tile extends EventTarget {
 
     /**
      * The duration for the opacity transition.
+     * @private
      * @type {number}
      */
     this.transition_ =
@@ -113,6 +114,7 @@ class Tile extends EventTarget {
     /**
      * Lookup of start times for rendering transitions.  If the start time is
      * equal to -1, the transition is complete.
+     * @private
      * @type {Object<string, number>}
      */
     this.transitionStarts_ = {};

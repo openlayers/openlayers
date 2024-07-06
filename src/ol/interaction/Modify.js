@@ -358,6 +358,7 @@ class Modify extends PointerInteraction {
 
     /**
      * @type {boolean|import("../layer/BaseVector").default}
+     * @private
      */
     this.hitDetection_ = null;
 
@@ -411,6 +412,7 @@ class Modify extends PointerInteraction {
     /**
      * Delta (x, y in map units) between matched rtree vertex and pointer vertex.
      * @type {Array<number>}
+     * @private
      */
     this.delta_ = [0, 0];
 

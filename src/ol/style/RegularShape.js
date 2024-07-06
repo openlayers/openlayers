@@ -136,6 +136,9 @@ class RegularShape extends ImageStyle {
      */
     this.renderOptions_;
 
+    /**
+     * @private
+     */
     this.imageState_ =
       this.fill_ && this.fill_.loading()
         ? ImageState.LOADING

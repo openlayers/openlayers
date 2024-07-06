@@ -58,11 +58,13 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     this.boundHandleStyleImageChange_ = this.handleStyleImageChange_.bind(this);
 
     /**
+     * @private
      * @type {boolean}
      */
     this.animatingOrInteracting_;
 
     /**
+     * @private
      * @type {ImageData|null}
      */
     this.hitDetectionImageData_ = null;

@@ -428,6 +428,7 @@ class Map extends BaseObject {
     this.targetElement_ = null;
 
     /**
+     * @private
      * @type {ResizeObserver}
      */
     this.resizeObserver_ = new ResizeObserver(() => this.updateSize());
