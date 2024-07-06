@@ -28,7 +28,7 @@ class LayerRenderer extends Observable {
     this.boundHandleImageChange_ = this.handleImageChange_.bind(this);
 
     /**
-     * @protected
+     * @private
      * @type {LayerType}
      */
     this.layer_ = layer;
