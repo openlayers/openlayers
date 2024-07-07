@@ -47,7 +47,7 @@ exports.publish = function (data, opts) {
       const constructor = doc.memberof;
       if (
         constructor &&
-        constructor.substr(-1) === '_' &&
+        constructor.endsWith('_') &&
         !constructor.includes('module:')
       ) {
         assert.strictEqual(

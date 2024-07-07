@@ -16,35 +16,6 @@ import {create as createTransform} from '../transform.js';
 import {equals, getCenter, getHeight, getWidth} from '../extent.js';
 import {getUid} from '../util.js';
 
-let hasImageData = true;
-try {
-  new ImageData(10, 10);
-} catch (_) {
-  hasImageData = false;
-}
-
-/** @type {CanvasRenderingContext2D} */
-let context;
-
-/**
- * @param {Uint8ClampedArray} data Image data.
- * @param {number} width Number of columns.
- * @param {number} height Number of rows.
- * @return {ImageData} Image data.
- */
-export function newImageData(data, width, height) {
-  if (hasImageData) {
-    return new ImageData(data, width, height);
-  }
-
-  if (!context) {
-    context = document.createElement('canvas').getContext('2d');
-  }
-  const imageData = context.createImageData(width, height);
-  imageData.data.set(data);
-  return imageData;
-}
-
 /**
  * @typedef {Object} MinionData
  * @property {Array<ArrayBuffer>} buffers Array of buffers.
@@ -64,20 +35,6 @@ export function newImageData(data, width, height) {
  * buffer.
  */
 function createMinion(operation) {
-  let workerHasImageData = true;
-  try {
-    new ImageData(10, 10);
-  } catch (_) {
-    workerHasImageData = false;
-  }
-
-  function newWorkerImageData(data, width, height) {
-    if (workerHasImageData) {
-      return new ImageData(data, width, height);
-    }
-    return {data: data, width: width, height: height};
-  }
-
   return function (data) {
     // bracket notation for minification support
     const buffers = data['buffers'];
@@ -92,7 +49,7 @@ function createMinion(operation) {
     if (imageOps) {
       const images = new Array(numBuffers);
       for (let b = 0; b < numBuffers; ++b) {
-        images[b] = newWorkerImageData(
+        images[b] = new ImageData(
           new Uint8ClampedArray(buffers[b]),
           width,
           height,
@@ -406,7 +363,7 @@ export class Processor extends Disposable {
     this.dataLookup_ = {};
     job.callback(
       null,
-      newImageData(data, job.inputs[0].width, job.inputs[0].height),
+      new ImageData(data, job.inputs[0].width, job.inputs[0].height),
       meta,
     );
     this.dispatch_();
