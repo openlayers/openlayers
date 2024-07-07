@@ -98,13 +98,18 @@ class Heatmap extends BaseVector {
     this.setRadius(options.radius !== undefined ? options.radius : 8);
 
     const weight = options.weight ? options.weight : 'weight';
-    if (typeof weight === 'string') {
-      this.weightFunction_ = function (feature) {
-        return feature.get(weight);
-      };
-    } else {
-      this.weightFunction_ = weight;
-    }
+
+    /**
+     * @private
+     */
+    this.weightFunction_ =
+      typeof weight === 'string'
+        ? /**
+           * @param {import('../Feature.js').default} feature Feature
+           * @return {any} weight
+           */
+          (feature) => feature.get(weight)
+        : weight;
 
     // For performance reasons, don't sort the features before rendering.
     // The render order is not relevant for a heatmap representation.

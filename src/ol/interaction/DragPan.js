@@ -56,11 +56,13 @@ class DragPan extends PointerInteraction {
 
     /**
      * @type {number}
+     * @private
      */
     this.lastPointersCount_;
 
     /**
      * @type {boolean}
+     * @private
      */
     this.panning_ = false;
 

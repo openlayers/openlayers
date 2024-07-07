@@ -100,8 +100,14 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
      */
     this.hitRenderTarget_;
 
+    /**
+     * @private
+     */
     this.sourceRevision_ = -1;
 
+    /**
+     * @private
+     */
     this.previousExtent_ = createEmpty();
 
     /**
@@ -113,8 +119,17 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
      */
     this.currentTransform_ = createTransform();
 
+    /**
+     * @private
+     */
     this.tmpCoords_ = [0, 0];
+    /**
+     * @private
+     */
     this.tmpTransform_ = createTransform();
+    /**
+     * @private
+     */
     this.tmpMat4_ = createMat4();
 
     /**

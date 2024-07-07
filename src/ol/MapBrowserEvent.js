@@ -32,12 +32,14 @@ class MapBrowserEvent extends MapEvent {
     /**
      * The map pixel relative to the viewport corresponding to the original browser event.
      * @type {?import("./pixel.js").Pixel}
+     * @private
      */
     this.pixel_ = null;
 
     /**
      * The coordinate in the user projection corresponding to the original browser event.
      * @type {?import("./coordinate.js").Coordinate}
+     * @private
      */
     this.coordinate_ = null;
 

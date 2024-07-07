@@ -27,6 +27,7 @@ class ZIndexContext {
     this.offset_ = 0;
 
     /**
+     * @private
      * @type {ZIndexContextProxy}
      */
     this.context_ = /** @type {ZIndexContextProxy} */ (

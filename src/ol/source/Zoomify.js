@@ -45,6 +45,7 @@ export class CustomTile extends ImageTile {
     this.zoomifyImage_ = null;
 
     /**
+     * @private
      * @type {import("../size.js").Size}
      */
     this.tileSize_ = tileSize;

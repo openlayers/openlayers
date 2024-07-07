@@ -155,7 +155,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
         if (image.getState() !== ImageState.LOADED) {
           return;
         }
-        this.image_ = emptyImage ? null : image;
+        this.image = emptyImage ? null : image;
         const imagePixelRatio = image.getPixelRatio();
         const renderedResolution =
           (fromResolutionLike(image.getResolution()) * pixelRatio) /
@@ -175,12 +175,12 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
       image.load();
     }
 
-    if (this.image_) {
+    if (this.image) {
       this.renderedPixelToCoordinateTransform_ =
         frameState.pixelToCoordinateTransform.slice();
     }
 
-    return !!this.image_;
+    return !!this.image;
   }
 
   /**

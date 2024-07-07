@@ -138,6 +138,7 @@ class CanvasTextBuilder extends CanvasBuilder {
     this.strokeKey_ = '';
 
     /**
+     * @private
      * @type {import('../../style/Style.js').DeclutterMode}
      */
     this.declutterMode_ = undefined;

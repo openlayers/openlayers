@@ -35,14 +35,14 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
      * @protected
      * @type {?import("../../Image.js").default}
      */
-    this.image_ = null;
+    this.image = null;
   }
 
   /**
    * @return {import('../../DataTile.js').ImageLike} Image.
    */
   getImage() {
-    return !this.image_ ? null : this.image_.getImage();
+    return !this.image ? null : this.image.getImage();
   }
 
   /**
@@ -83,17 +83,17 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
         );
         if (image) {
           if (this.loadImage(image)) {
-            this.image_ = image;
+            this.image = image;
           } else if (image.getState() === ImageState.EMPTY) {
-            this.image_ = null;
+            this.image = null;
           }
         }
       } else {
-        this.image_ = null;
+        this.image = null;
       }
     }
 
-    return !!this.image_;
+    return !!this.image;
   }
 
   /**
@@ -119,8 +119,8 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       }
     }
 
-    const imageExtent = this.image_.getExtent();
-    const img = this.image_.getImage();
+    const imageExtent = this.image.getExtent();
+    const img = this.image.getImage();
 
     const imageMapWidth = getWidth(imageExtent);
     const col = Math.floor(
@@ -148,7 +148,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
    * @return {HTMLElement} The rendered element.
    */
   renderFrame(frameState, target) {
-    const image = this.image_;
+    const image = this.image;
     const imageExtent = image.getExtent();
     const imageResolution = image.getResolution();
     const [imageResolutionX, imageResolutionY] = Array.isArray(imageResolution)

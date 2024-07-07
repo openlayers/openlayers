@@ -459,6 +459,7 @@ class GeoTIFFSource extends DataTile {
 
     /**
      * @type {true|false|'auto'}
+     * @private
      */
     this.convertToRGB_ = options.convertToRGB || false;
 
