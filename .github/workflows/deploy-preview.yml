@@ -58,6 +58,7 @@ jobs:
           pr: ${{steps.pull-request-number.outputs.result}}
           name: site
           path: build/site
+          allow_forks: true
 
       - name: Deploy to Netlify
         env:
