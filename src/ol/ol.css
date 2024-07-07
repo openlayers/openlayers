@@ -348,3 +348,7 @@
 .ol-overviewmap .ol-overviewmap-box:hover {
   cursor: move;
 }
+
+.ol-overviewmap .ol-viewport:hover {
+  cursor: pointer;
+}
