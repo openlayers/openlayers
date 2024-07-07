@@ -10,7 +10,6 @@
  */
 
 const {marked} = require('marked');
-const format = require('util').format;
 
 const tags = [
   'author',
@@ -29,14 +28,11 @@ const hasOwnProp = Object.prototype.hasOwnProperty;
 const markedRenderer = new marked.Renderer();
 
 // Allow prettyprint to work on inline code samples
-markedRenderer.code = function (code, language) {
-  const langClass = language ? ' lang-' + language : '';
+markedRenderer.code = function (code) {
+  const langClass = code.lang ? ' lang-' + code.lang : '';
+  const escapedCode = escapeCode(code.text);
 
-  return format(
-    '<pre class="prettyprint source%s"><code>%s</code></pre>',
-    langClass,
-    escapeCode(code)
-  );
+  return `<pre class="prettyprint source${langClass}"><code>${escapedCode}</code></pre>`;
 };
 
 function escapeCode(source) {
@@ -93,11 +89,10 @@ function process(doclet) {
       return;
     }
 
-    if (
-      typeof doclet[tag] === 'string' &&
-      shouldProcessString(tag, doclet[tag])
-    ) {
-      doclet[tag] = parse(doclet[tag]);
+    if (typeof doclet[tag] === 'string') {
+      if (shouldProcessString(tag, doclet[tag])) {
+        doclet[tag] = parse(doclet[tag]);
+      }
     } else if (Array.isArray(doclet[tag])) {
       doclet[tag].forEach(function (value, index, original) {
         const inner = {};
