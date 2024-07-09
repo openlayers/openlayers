@@ -68,6 +68,7 @@
     "@types/offscreencanvas": "^2019.6.4",
     "@types/pbf": "^3.0.2",
     "@types/proj4": "^2.5.2",
+    "@types/rbush": "^3.0.3",
     "@types/topojson-specification": "^1.0.1",
     "@typescript-eslint/parser": "^7.9.0",
     "chaikin-smooth": "^1.0.4",
