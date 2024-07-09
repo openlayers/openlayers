@@ -106,8 +106,14 @@ class VectorStyleRenderer {
    * @param {boolean} enableHitDetection Whether to enable the hit detection (needs compatible shader)
    */
   constructor(styleOrShaders, helper, enableHitDetection) {
+    /**
+     * @private
+     */
     this.helper_ = helper;
 
+    /**
+     * @private
+     */
     this.hitDetectionEnabled_ = enableHitDetection;
     let shaders = /** @type {StyleShaders} */ (styleOrShaders);
     const isShaders = 'builder' in styleOrShaders;
@@ -130,8 +136,17 @@ class VectorStyleRenderer {
      */
     this.hasFill_ = !!shaders.builder.getFillVertexShader();
     if (this.hasFill_) {
+      /**
+       * @private
+       */
       this.fillVertexShader_ = shaders.builder.getFillVertexShader();
+      /**
+       * @private
+       */
       this.fillFragmentShader_ = shaders.builder.getFillFragmentShader();
+      /**
+       * @private
+       */
       this.fillProgram_ = this.helper_.getProgram(
         this.fillFragmentShader_,
         this.fillVertexShader_,
@@ -144,8 +159,17 @@ class VectorStyleRenderer {
      */
     this.hasStroke_ = !!shaders.builder.getStrokeVertexShader();
     if (this.hasStroke_) {
+      /**
+       * @private
+       */
       this.strokeVertexShader_ = shaders.builder.getStrokeVertexShader();
+      /**
+       * @private
+       */
       this.strokeFragmentShader_ = shaders.builder.getStrokeFragmentShader();
+      /**
+       * @private
+       */
       this.strokeProgram_ = this.helper_.getProgram(
         this.strokeFragmentShader_,
         this.strokeVertexShader_,
@@ -158,8 +182,17 @@ class VectorStyleRenderer {
      */
     this.hasSymbol_ = !!shaders.builder.getSymbolVertexShader();
     if (this.hasSymbol_) {
+      /**
+       * @private
+       */
       this.symbolVertexShader_ = shaders.builder.getSymbolVertexShader();
+      /**
+       * @private
+       */
       this.symbolFragmentShader_ = shaders.builder.getSymbolFragmentShader();
+      /**
+       * @private
+       */
       this.symbolProgram_ = this.helper_.getProgram(
         this.symbolFragmentShader_,
         this.symbolVertexShader_,
@@ -177,11 +210,17 @@ class VectorStyleRenderer {
         }
       : {};
 
+    /**
+     * @private
+     */
     this.customAttributes_ = Object.assign(
       {},
       hitDetectionAttributes,
       shaders.attributes,
     );
+    /**
+     * @private
+     */
     this.uniforms_ = shaders.uniforms;
 
     const customAttributesDesc = Object.entries(this.customAttributes_).map(

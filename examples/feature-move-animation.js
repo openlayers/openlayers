@@ -1,10 +1,10 @@
 import Feature from '../src/ol/Feature.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import Point from '../src/ol/geom/Point.js';
 import Polyline from '../src/ol/format/Polyline.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
-import XYZ from '../src/ol/source/XYZ.js';
 import {
   Circle as CircleStyle,
   Fill,
@@ -31,7 +31,7 @@ const map = new Map({
   }),
   layers: [
     new TileLayer({
-      source: new XYZ({
+      source: new ImageTile({
         attributions: attributions,
         url: 'https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=' + key,
         tileSize: 512,

@@ -308,6 +308,11 @@ function buildFill(flatStyle, prefix, context) {
   if (prefix + 'fill-pattern-src' in flatStyle) {
     evaluateColor = patternEvaluator(flatStyle, prefix + 'fill-', context);
   } else {
+    if (flatStyle[prefix + 'fill-color'] === 'none') {
+      // avoids hit detection
+      return (context) => null;
+    }
+
     evaluateColor = colorLikeEvaluator(
       flatStyle,
       prefix + 'fill-color',
@@ -1029,11 +1034,7 @@ function colorLikeEvaluator(flatStyle, name, context) {
   if (!(name in flatStyle)) {
     return null;
   }
-  const evaluator = buildExpression(
-    flatStyle[name],
-    ColorType | StringType,
-    context,
-  );
+  const evaluator = buildExpression(flatStyle[name], ColorType, context);
   return function (context) {
     return requireColorLike(evaluator(context), name);
   };

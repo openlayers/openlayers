@@ -11,7 +11,7 @@
   "homepage": "https://openlayers.org/",
   "scripts": {
     "lint": "eslint tasks test src/ol examples config",
-    "pretest": "npm run lint && npm run typecheck && npm run typecheck-strict",
+    "pretest": "npm run lint && npm run typecheck && npm run typecheck-strict && npm run build-package",
     "test-rendering": "npm run build-full && node test/rendering/test.js",
     "test-browser": "npm run karma -- --single-run --log-level error",
     "test-node": "mocha --recursive test/node",
@@ -20,7 +20,7 @@
     "start": "npm run serve-examples",
     "serve-examples": "webpack serve --config examples/webpack/config.mjs --mode development",
     "build-examples": "shx rm -rf build/examples && webpack --config examples/webpack/config.mjs --mode production",
-    "build-package": "npm run build-full && npm run copy-css && npm run generate-types && node tasks/prepare-package.js",
+    "build-package": "npm run build-full && npm run copy-css && npm run generate-types && node tasks/prepare-package.js && npm run typecheck-libcheck",
     "build-index": "shx rm -f build/index.js && npm run transpile && node tasks/generate-index.js",
     "build-full": "shx rm -rf build/full && npm run build-index && npx rollup --config config/rollup-full-build.js",
     "copy-css": "shx cp src/ol/ol.css build/ol/ol.css",
@@ -28,6 +28,7 @@
     "transpile": "shx rm -rf build/ol && shx mkdir -p build/ol && shx cp -rf src/ol build && node tasks/serialize-workers.cjs && node tasks/set-version.js",
     "typecheck": "tsc --pretty",
     "typecheck-strict": "tsc --project config/tsconfig-strict.json",
+    "typecheck-libcheck": "tsc --project config/tsconfig-lib-check.json",
     "apidoc-debug": "shx rm -rf build/apidoc && node --inspect-brk=9229 ./node_modules/jsdoc/jsdoc.js --readme config/jsdoc/api/index.md --configure config/jsdoc/api/conf.json --package package.json --destination build/apidoc",
     "apidoc": "shx rm -rf build/apidoc && jsdoc --readme config/jsdoc/api/index.md --configure config/jsdoc/api/conf.json --package package.json --destination build/apidoc"
   },
@@ -47,19 +48,19 @@
   "dependencies": {
     "color-rgba": "^3.0.0",
     "color-space": "^2.0.1",
-    "earcut": "^2.2.3",
+    "earcut": "^3.0.0",
     "geotiff": "^2.0.7",
     "pbf": "3.2.1",
-    "rbush": "^3.0.1"
+    "rbush": "^4.0.0"
   },
   "devDependencies": {
     "@metalsmith/in-place": "^5.0.0",
     "@metalsmith/layouts": "^2.5.1",
     "@metalsmith/markdown": "^1.6.0",
-    "@octokit/rest": "^20.0.1",
+    "@octokit/rest": "^21.0.0",
     "@openlayers/eslint-plugin": "^4.0.0",
     "@rollup/plugin-alias": "^5.1.0",
-    "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-commonjs": "^26.0.1",
     "@rollup/plugin-node-resolve": "^15.0.0",
     "@rollup/plugin-terser": "^0.4.3",
     "@types/arcgis-rest-api": "^10.4.4",
@@ -94,24 +95,24 @@
     "karma-source-map-support": "^1.4.0",
     "karma-webpack": "^5.0.0",
     "loglevelnext": "^6.0.0",
-    "marked": "12.0.2",
+    "marked": "13.0.2",
     "metalsmith": "^2.5.0",
-    "mocha": "10.4.0",
+    "mocha": "10.6.0",
     "ol-mapbox-style": "^12.3.1",
     "ol-stac": "^1.0.0-beta.8",
-    "pixelmatch": "^5.1.0",
+    "pixelmatch": "^6.0.0",
     "pngjs": "^7.0.0",
     "proj4": "2.11.0",
-    "puppeteer": "22.10.0",
+    "puppeteer": "22.12.1",
     "rollup": "^4.1.4",
-    "rollup-plugin-external-globals": "^0.10.0",
+    "rollup-plugin-external-globals": "^0.11.0",
     "semver": "^7.3.7",
     "serve-static": "^1.14.0",
     "shx": "^0.3.2",
     "sinon": "^18.0.0",
     "source-map-loader": "^5.0.0",
     "threads": "^1.6.5",
-    "typescript": "5.4.5",
+    "typescript": "5.5.2",
     "walk": "^2.3.9",
     "webpack": "^5.27.2",
     "webpack-cli": "^5.0.0",
@@ -129,6 +130,14 @@
     "rules": {
       "jsdoc/no-bad-blocks": "off",
       "import/no-commonjs": "error",
+      "import/no-unresolved": [
+        "error",
+        {
+          "ignore": [
+            "@octokit/rest"
+          ]
+        }
+      ],
       "@openlayers/no-exclusive-tests": [
         "error",
         {

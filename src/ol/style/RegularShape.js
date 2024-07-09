@@ -104,7 +104,7 @@ class RegularShape extends ImageStyle {
      * @protected
      * @type {number}
      */
-    this.radius_ = options.radius;
+    this.radius = options.radius;
 
     /**
      * @private
@@ -136,6 +136,9 @@ class RegularShape extends ImageStyle {
      */
     this.renderOptions_;
 
+    /**
+     * @private
+     */
     this.imageState_ =
       this.fill_ && this.fill_.loading()
         ? ImageState.LOADING
@@ -297,7 +300,7 @@ class RegularShape extends ImageStyle {
    * @api
    */
   getRadius() {
-    return this.radius_;
+    return this.radius;
   }
 
   /**
@@ -390,7 +393,7 @@ class RegularShape extends ImageStyle {
     //      |α                                   .   .
     //       /                                         .   .
     //      ° center
-    let r1 = this.radius_;
+    let r1 = this.radius;
     let r2 = this.radius2_ === undefined ? r1 : this.radius2_;
     if (r1 < r2) {
       const tmp = r1;
@@ -466,7 +469,7 @@ class RegularShape extends ImageStyle {
     }
 
     const add = this.calculateLineJoinSize_(lineJoin, strokeWidth, miterLimit);
-    const maxRadius = Math.max(this.radius_, this.radius2_ || 0);
+    const maxRadius = Math.max(this.radius, this.radius2_ || 0);
     const size = Math.ceil(2 * maxRadius + add);
 
     return {
@@ -563,7 +566,7 @@ class RegularShape extends ImageStyle {
    */
   createPath_(context) {
     let points = this.points_;
-    const radius = this.radius_;
+    const radius = this.radius;
     if (points === Infinity) {
       context.arc(0, 0, radius, 0, 2 * Math.PI);
     } else {

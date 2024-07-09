@@ -3,6 +3,7 @@ import Point from '../../../src/ol/geom/Point.js';
 import VectorTileLayer from '../../../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../../../src/ol/source/VectorTile.js';
 import {MVT} from '../../../src/ol/format.js';
+import {OGCVectorTile as OGCVectorTileSource} from '../../../src/ol/source.js';
 import {toFeature} from '../../../src/ol/render/Feature.js';
 
 const options = {
@@ -11,14 +12,29 @@ const options = {
   }),
 };
 const layer1 = new VectorTileLayer(options);
-export const feature = toFeature(
-  layer1.getSource().getFeaturesInExtent([0, 0, 1, 1])[0],
-);
+toFeature(layer1.getFeaturesInExtent([0, 0, 1, 1])[0]);
 
-const layer2: VectorTileLayer<Feature<Point>> = new VectorTileLayer({
-  source: new VectorTileSource({
-    format: new MVT({featureClass: Feature}),
-  }),
-});
-const features = layer2.getSource().getFeaturesInExtent([0, 0, 1, 1]);
-export const coordinates = features[0].getGeometry().getCoordinates();
+const layer2: VectorTileLayer<VectorTileSource<Feature<Point>>> =
+  new VectorTileLayer({
+    source: new VectorTileSource({
+      format: new MVT({featureClass: Feature}),
+    }),
+  });
+layer2.getFeaturesInExtent([0, 0, 1, 1])[0].getGeometry().getCoordinates();
+
+const layer3: VectorTileLayer<VectorTileSource<Feature<Point>>> =
+  new VectorTileLayer({
+    source: new VectorTileSource({
+      format: new MVT({featureClass: Feature}),
+    }),
+  });
+layer3.getFeaturesInExtent([0, 0, 1, 1])[0].getGeometry().getCoordinates();
+
+const layer4: VectorTileLayer<VectorTileSource<Feature<Point>>> =
+  new VectorTileLayer({
+    source: new OGCVectorTileSource({
+      format: new MVT({featureClass: Feature}),
+      url: 'http://example.com',
+    }),
+  });
+layer4.getFeaturesInExtent([0, 0, 1, 1])[0].getGeometry().getCoordinates();

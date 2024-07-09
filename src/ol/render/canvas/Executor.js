@@ -260,7 +260,6 @@ class Executor {
       textState.scale[0] * pixelRatio,
       textState.scale[1] * pixelRatio,
     ];
-    const textIsArray = Array.isArray(text);
     const align = textState.justify
       ? TEXT_ALIGN[textState.justify]
       : horizontalTextAlign(
@@ -270,9 +269,9 @@ class Executor {
     const strokeWidth =
       strokeKey && strokeState.lineWidth ? strokeState.lineWidth : 0;
 
-    const chunks = textIsArray
+    const chunks = Array.isArray(text)
       ? text
-      : text.split('\n').reduce(createTextChunks, []);
+      : String(text).split('\n').reduce(createTextChunks, []);
 
     const {width, height, widths, heights, lineWidths} = getTextDimensions(
       textState,

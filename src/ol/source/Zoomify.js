@@ -8,7 +8,8 @@ import TileGrid from '../tilegrid/TileGrid.js';
 import TileImage from './TileImage.js';
 import TileState from '../TileState.js';
 import {createCanvasContext2D} from '../dom.js';
-import {createFromTileUrlFunctions, expandUrl} from '../tileurlfunction.js';
+import {createFromTileUrlFunctions} from '../tileurlfunction.js';
+import {expandUrl} from '../uri.js';
 import {getCenter} from '../extent.js';
 import {toSize} from '../size.js';
 
@@ -44,6 +45,7 @@ export class CustomTile extends ImageTile {
     this.zoomifyImage_ = null;
 
     /**
+     * @private
      * @type {import("../size.js").Size}
      */
     this.tileSize_ = tileSize;
@@ -76,7 +78,7 @@ export class CustomTile extends ImageTile {
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
- * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
+ * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value  you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.

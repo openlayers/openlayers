@@ -71,7 +71,7 @@ describe('ol/color', () => {
         ['wheat', [245, 222, 179, 1]],
         ['olive', [128, 128, 0, 1]],
         ['transparent', [0, 0, 0, 0]],
-        ['oops', 'Failed to parse "oops" as color'],
+        ['oops', 'failed to parse "oops" as color'],
 
         // rgb(a) varieties
         ['rgba(255,122,127,0.8)', [255, 122, 127, 0.8]],
@@ -179,7 +179,7 @@ describe('ol/color', () => {
             const color = fromString(c);
             expect().fail(`Expected an error, got ${color}`);
           } catch (err) {
-            expect(err.message).to.be(`Failed to parse "${c}" as color`);
+            expect(err.message).to.be(`failed to parse "${c}" as color`);
           }
         });
       }

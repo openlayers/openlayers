@@ -97,7 +97,13 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
      */
     this.currentFrameStateTransform_ = createTransform();
 
+    /**
+     * @private
+     */
     this.tmpTransform_ = createTransform();
+    /**
+     * @private
+     */
     this.tmpMat4_ = createMat4();
 
     /**
@@ -129,6 +135,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
 
     /**
      * @type {WebGLProgram}
+     * @private
      */
     this.tileMaskProgram_;
 

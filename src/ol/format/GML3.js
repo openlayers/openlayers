@@ -371,14 +371,11 @@ class GML3 extends GMLBase {
     }
     const context = objectStack[0];
     const containerSrs = context['srsName'];
-    let axisOrientation = 'enu';
-    if (containerSrs) {
-      const proj = getProjection(containerSrs);
-      axisOrientation = proj.getAxisOrientation();
-    }
+    const axisOrientation = containerSrs
+      ? getProjection(containerSrs).getAxisOrientation()
+      : 'enu';
     if (axisOrientation === 'neu') {
-      let i, ii;
-      for (i = 0, ii = flatCoordinates.length; i < ii; i += 3) {
+      for (let i = 0, ii = flatCoordinates.length; i < ii; i += 3) {
         const y = flatCoordinates[i];
         const x = flatCoordinates[i + 1];
         flatCoordinates[i] = x;
@@ -405,11 +402,9 @@ class GML3 extends GMLBase {
     const context = objectStack[0];
     const containerSrs = context['srsName'];
     const contextDimension = context['srsDimension'];
-    let axisOrientation = 'enu';
-    if (containerSrs) {
-      const proj = getProjection(containerSrs);
-      axisOrientation = proj.getAxisOrientation();
-    }
+    const axisOrientation = containerSrs
+      ? getProjection(containerSrs).getAxisOrientation()
+      : 'enu';
     const coords = s.split(/\s+/);
     // The "dimension" attribute is from the GML 3.0.1 spec.
     let dim = 2;
@@ -426,13 +421,14 @@ class GML3 extends GMLBase {
     } else if (contextDimension) {
       dim = readNonNegativeIntegerString(contextDimension);
     }
+    const asXYZ = axisOrientation.startsWith('en');
     let x, y, z;
     const flatCoordinates = [];
     for (let i = 0, ii = coords.length; i < ii; i += dim) {
       x = parseFloat(coords[i]);
       y = parseFloat(coords[i + 1]);
       z = dim === 3 ? parseFloat(coords[i + 2]) : 0;
-      if (axisOrientation.substr(0, 2) === 'en') {
+      if (asXYZ) {
         flatCoordinates.push(x, y, z);
       } else {
         flatCoordinates.push(y, x, z);
@@ -453,18 +449,14 @@ class GML3 extends GMLBase {
     const srsDimension = hasZ ? '3' : '2';
     node.setAttribute('srsDimension', srsDimension);
     const srsName = context['srsName'];
-    let axisOrientation = 'enu';
-    if (srsName) {
-      axisOrientation = getProjection(srsName).getAxisOrientation();
-    }
+    const axisOrientation = srsName
+      ? getProjection(srsName).getAxisOrientation()
+      : 'enu';
     const point = value.getCoordinates();
-    let coords;
     // only 2d for simple features profile
-    if (axisOrientation.substr(0, 2) === 'en') {
-      coords = point[0] + ' ' + point[1];
-    } else {
-      coords = point[1] + ' ' + point[0];
-    }
+    let coords = axisOrientation.startsWith('en')
+      ? point[0] + ' ' + point[1]
+      : point[1] + ' ' + point[0];
     if (hasZ) {
       // For newly created points, Z can be undefined.
       const z = point[2] || 0;
@@ -481,14 +473,12 @@ class GML3 extends GMLBase {
    * @private
    */
   getCoords_(point, srsName, hasZ) {
-    let axisOrientation = 'enu';
-    if (srsName) {
-      axisOrientation = getProjection(srsName).getAxisOrientation();
-    }
-    let coords =
-      axisOrientation.substr(0, 2) === 'en'
-        ? point[0] + ' ' + point[1]
-        : point[1] + ' ' + point[0];
+    const axisOrientation = srsName
+      ? getProjection(srsName).getAxisOrientation()
+      : 'enu';
+    let coords = axisOrientation.startsWith('en')
+      ? point[0] + ' ' + point[1]
+      : point[1] + ' ' + point[0];
     if (hasZ) {
       // For newly created points, Z can be undefined.
       const z = point[2] || 0;

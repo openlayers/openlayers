@@ -34,27 +34,27 @@ import {xhr} from '../featureloader.js';
  * @classdesc
  * Events emitted by {@link module:ol/source/Vector~VectorSource} instances are instances of this
  * type.
- * @template {import("../Feature.js").FeatureLike} [FeatureClass=import("../Feature.js").default]
+ * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../Feature.js").default]
  */
 export class VectorSourceEvent extends Event {
   /**
    * @param {string} type Type.
-   * @param {FeatureClass} [feature] Feature.
-   * @param {Array<FeatureClass>} [features] Features.
+   * @param {FeatureType} [feature] Feature.
+   * @param {Array<FeatureType>} [features] Features.
    */
   constructor(type, feature, features) {
     super(type);
 
     /**
      * The added or removed feature for the `ADDFEATURE` and `REMOVEFEATURE` events, `undefined` otherwise.
-     * @type {FeatureClass|undefined}
+     * @type {FeatureType|undefined}
      * @api
      */
     this.feature = feature;
 
     /**
      * The loaded features for the `FEATURESLOADED` event, `undefined` otherwise.
-     * @type {Array<FeatureClass>|undefined}
+     * @type {Array<FeatureType>|undefined}
      * @api
      */
     this.features = features;
@@ -77,13 +77,13 @@ export class VectorSourceEvent extends Event {
  */
 
 /**
- * @template {import("../Feature.js").FeatureLike} FeatureType
+ * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../Feature.js").default]
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {Array<FeatureType>|Collection<FeatureType>} [features]
  * Features. If provided as {@link module:ol/Collection~Collection}, the features in the source
  * and the collection will stay in sync.
- * @property {import("../format/Feature.js").default<import("../format/Feature.js").FeatureToFeatureClass<FeatureType>>} [format] The feature format used by the XHR
+ * @property {import("../format/Feature.js").default<FeatureType>} [format] The feature format used by the XHR
  * feature loader when `url` is set. Required if `url` is set, otherwise ignored.
  * @property {import("../featureloader.js").FeatureLoader<FeatureType>} [loader]
  * The loader function used to load features, from a remote source for example.
@@ -217,9 +217,9 @@ class VectorSource extends Source {
 
     /**
      * @private
-     * @type {import("../format/Feature.js").default<import('../format/Feature.js').FeatureToFeatureClass<FeatureType>>|undefined}
+     * @type {import("../format/Feature.js").default<FeatureType>|null}
      */
-    this.format_ = options.format;
+    this.format_ = options.format || null;
 
     /**
      * @private
@@ -328,7 +328,7 @@ class VectorSource extends Source {
    * instead. A feature will not be added to the source if feature with
    * the same id is already there. The reason for this behavior is to avoid
    * feature duplication when using bbox or tile loading strategies.
-   * Note: this also applies if an {@link module:ol/Collection~Collection} is used for features,
+   * Note: this also applies if a {@link module:ol/Collection~Collection} is used for features,
    * meaning that if a feature with a duplicate id is added in the collection, it will
    * be removed from it right away.
    * @param {FeatureType} feature Feature to add.
@@ -448,7 +448,7 @@ class VectorSource extends Source {
     const extents = [];
     /** @type {Array<FeatureType>} */
     const newFeatures = [];
-    /** @type Array<FeatureType> */
+    /** @type {Array<FeatureType>} */
     const geometryFeatures = [];
 
     for (let i = 0, length = features.length; i < length; i++) {
@@ -706,7 +706,7 @@ class VectorSource extends Source {
   /**
    * Get the features collection associated with this source. Will be `null`
    * unless the source was configured with `useSpatialIndex` set to `false`, or
-   * with an {@link module:ol/Collection~Collection} as `features`.
+   * with a {@link module:ol/Collection~Collection} as `features`.
    * @return {Collection<FeatureType>|null} The collection of features.
    * @api
    */
@@ -889,7 +889,7 @@ class VectorSource extends Source {
   /**
    * Get the format associated with this source.
    *
-   * @return {import("../format/Feature.js").default<import('../format/Feature.js').FeatureToFeatureClass<FeatureType>>|undefined} The feature format.
+   * @return {import("../format/Feature.js").default<FeatureType>|null}} The feature format.
    * @api
    */
   getFormat() {

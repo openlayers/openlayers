@@ -15,6 +15,12 @@ to
 ['get', 'foo']
 ```
 
+#### Other changes
+
+##### Removal of the `opaque` option from all `Tile` sources
+
+The `opaque` option was previously used to hint the renderer to perform some optimizations on layers known to be fully opaque. This is no longer needed, and the option has been removed.
+
 ### 9.2.0
 
 #### The `snap` event's feature property is now never `null`

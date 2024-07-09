@@ -255,13 +255,13 @@ function parseTileMatrixSet(
     }
   }
   const orderedAxes = tileMatrixSet.orderedAxes;
-  const backwards =
-    (orderedAxes
-      ? orderedAxes
-          .slice(0, 2)
-          .map((s) => s.replace(/E|X|Lon/i, 'e').replace(/N|Y|Lat/i, 'n'))
-          .join('')
-      : projection.getAxisOrientation().substr(0, 2)) !== 'en';
+  const axisOrientation = orderedAxes
+    ? orderedAxes
+        .slice(0, 2)
+        .map((s) => s.replace(/E|X|Lon/i, 'e').replace(/N|Y|Lat/i, 'n'))
+        .join('')
+    : projection.getAxisOrientation();
+  const backwards = !axisOrientation.startsWith('en');
 
   const matrices = tileMatrixSet.tileMatrices;
 

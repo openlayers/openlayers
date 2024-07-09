@@ -358,7 +358,6 @@ function getMaxForDataType(array) {
  * 0 and 1 with scaling factors based on the raster statistics or `min` and `max` properties of each source.
  * If instead you want to work with the raw values in a style expression, set this to `false`.  Setting this option
  * to `false` will make it so any `min` and `max` properties on sources are ignored.
- * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {import("../proj.js").ProjectionLike} [projection] Source projection.  If not provided, the GeoTIFF metadata
  * will be read for projection information.
  * @property {number} [transition=250] Duration of the opacity transition for rendering.
@@ -385,7 +384,6 @@ class GeoTIFFSource extends DataTile {
       state: 'loading',
       tileGrid: null,
       projection: options.projection || null,
-      opaque: options.opaque,
       transition: options.transition,
       interpolate: options.interpolate !== false,
       wrapX: options.wrapX,
@@ -461,6 +459,7 @@ class GeoTIFFSource extends DataTile {
 
     /**
      * @type {true|false|'auto'}
+     * @private
      */
     this.convertToRGB_ = options.convertToRGB || false;
 
@@ -767,10 +766,11 @@ class GeoTIFFSource extends DataTile {
    * @param {number} z The z tile index.
    * @param {number} x The x tile index.
    * @param {number} y The y tile index.
+   * @param {import('./DataTile.js').LoaderOptions} options The loader options.
    * @return {Promise} The composed tile data.
    * @private
    */
-  loadTile_(z, x, y) {
+  loadTile_(z, x, y, options) {
     const sourceTileSize = this.getTileSize(z);
     const sourceCount = this.sourceImagery_.length;
     const requests = new Array(sourceCount * 2);
@@ -816,6 +816,7 @@ class GeoTIFFSource extends DataTile {
         fillValue: fillValue,
         pool: pool,
         interleave: false,
+        signal: options.signal,
       };
       if (readRGB(this.convertToRGB_, image)) {
         requests[sourceIndex] = image.readRGB(readOptions);

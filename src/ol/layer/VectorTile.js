@@ -20,8 +20,14 @@ import {assert} from '../asserts.js';
  * @typedef {'hybrid' | 'vector'} VectorTileRenderType
  */
 
+/***
+ * @template T
+ * @typedef {T extends import("../source/VectorTile.js").default<infer U extends import("../Feature.js").FeatureLike> ? U : never} ExtractedFeatureType
+ */
+
 /**
- * @template {import('../Feature').FeatureLike} FeatureType
+ * @template {import("../source/VectorTile.js").default<FeatureType>} [VectorTileSourceType=import("../source/VectorTile.js").default<*, *>]
+ * @template {import("../Feature").FeatureLike} [FeatureType=ExtractedFeatureType<VectorTileSourceType>]
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
@@ -56,7 +62,7 @@ import {assert} from '../asserts.js';
  *    this mode for improved performance and visual epxerience on vector tile layers with not too many
  *    rendered features (e.g. for highlighting a subset of features of another layer with the same
  *    source).
- * @property {import("../source/VectorTile.js").default<FeatureType>} [source] Source.
+ * @property {VectorTileSourceType} [source] Source.
  * @property {import("../Map.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
@@ -79,8 +85,10 @@ import {assert} from '../asserts.js';
  * recreated during interactions. See also `updateWhileAnimating`.
  * @property {number} [preload=0] Preload. Load low-resolution tiles up to `preload` levels. `0`
  * means no preloading.
- * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
+ * @property {boolean} [useInterimTilesOnError=true] Deprecated.  Use interim tiles on error.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+ * @property {number} [cacheSize=0] The internal tile cache size.  If too small, this will auto-grow to hold
+ * two zoom levels worth of tiles.
  */
 
 /**
@@ -90,21 +98,22 @@ import {assert} from '../asserts.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @template {import('../Feature').FeatureLike} FeatureType
- * @extends {BaseVectorLayer<import("../source/VectorTile.js").default<FeatureType>, CanvasVectorTileLayerRenderer>}
+ * @template {import("../source/VectorTile.js").default<FeatureType>} [VectorTileSourceType=import("../source/VectorTile.js").default<*, *>]
+ * @template {import("../Feature.js").FeatureLike} [FeatureType=ExtractedFeatureType<VectorTileSourceType>]
+ * @extends {BaseVectorLayer<FeatureType, VectorTileSourceType, CanvasVectorTileLayerRenderer>}
  * @api
  */
 class VectorTileLayer extends BaseVectorLayer {
   /**
-   * @param {Options<FeatureType>} [options] Options.
+   * @param {Options<VectorTileSourceType, FeatureType>} [options] Options.
    */
   constructor(options) {
     options = options ? options : {};
 
-    const baseOptions = /** @type {Options<FeatureType>} */ (
-      Object.assign({}, options)
-    );
+    const baseOptions = Object.assign({}, options);
     delete baseOptions.preload;
+    const cacheSize = options.cacheSize === undefined ? 0 : options.cacheSize;
+    delete options.cacheSize;
     delete baseOptions.useInterimTilesOnError;
 
     super(baseOptions);
@@ -123,6 +132,12 @@ class VectorTileLayer extends BaseVectorLayer {
      * @type {VectorTileLayerOnSignature<void>}
      */
     this.un;
+
+    /**
+     * @type {number|undefined}
+     * @private
+     */
+    this.cacheSize_ = cacheSize;
 
     const renderMode = options.renderMode || 'hybrid';
     assert(
@@ -159,7 +174,9 @@ class VectorTileLayer extends BaseVectorLayer {
   }
 
   createRenderer() {
-    return new CanvasVectorTileLayerRenderer(this);
+    return new CanvasVectorTileLayerRenderer(this, {
+      cacheSize: this.cacheSize_,
+    });
   }
 
   /**
@@ -180,6 +197,8 @@ class VectorTileLayer extends BaseVectorLayer {
     return super.getFeatures(pixel);
   }
 
+  getFeaturesInExtent(extent) {}
+
   /**
    * @return {VectorTileRenderType} The render mode.
    */
@@ -198,7 +217,7 @@ class VectorTileLayer extends BaseVectorLayer {
   }
 
   /**
-   * Whether we use interim tiles on error.
+   * Deprecated.  Whether we use interim tiles on error.
    * @return {boolean} Use interim tiles on error.
    * @observable
    * @api
@@ -220,7 +239,7 @@ class VectorTileLayer extends BaseVectorLayer {
   }
 
   /**
-   * Set whether we use interim tiles on error.
+   * Deprecated.  Set whether we use interim tiles on error.
    * @param {boolean} useInterimTilesOnError Use interim tiles on error.
    * @observable
    * @api

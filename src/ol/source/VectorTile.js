@@ -16,19 +16,19 @@ import {
   intersects,
 } from '../extent.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
-import {fromKey, getCacheKeyForTileKey, getKeyZXY} from '../tilecoord.js';
+import {getCacheKeyForTileKey} from '../tilecoord.js';
 import {isEmpty} from '../obj.js';
 import {loadFeaturesXhr} from '../featureloader.js';
 import {toSize} from '../size.js';
 
 /**
- * @template {import("../Feature.js").FeatureLike} FeatureType
+ * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../render/Feature.js").default]
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least twice the number of tiles in the viewport.
  * @property {import("../extent.js").Extent} [extent] Extent.
- * @property {import("../format/Feature.js").default<import("../format/Feature.js").FeatureToFeatureClass<FeatureType>>} [format] Feature format for tiles. Used and required by the default.
+ * @property {import("../format/Feature.js").default<FeatureType>} [format] Feature format for tiles. Used and required by the default.
  * @property {boolean} [overlaps=true] This source may have overlapping geometries. Setting this
  * to `false` (e.g. for sources with polygons that represent administrative
  * boundaries or TopoJSON sources) allows the renderer to optimise fill and
@@ -125,7 +125,6 @@ class VectorTile extends UrlTile {
       attributionsCollapsible: options.attributionsCollapsible,
       cacheSize: options.cacheSize,
       interpolate: true,
-      opaque: false,
       projection: projection,
       state: options.state,
       tileGrid: tileGrid,
@@ -142,7 +141,7 @@ class VectorTile extends UrlTile {
 
     /**
      * @private
-     * @type {import("../format/Feature.js").default<import("../format/Feature.js").FeatureToFeatureClass<FeatureType>>|null}
+     * @type {import("../format/Feature.js").default<FeatureType>|null}
      */
     this.format_ = options.format ? options.format : null;
 
@@ -150,7 +149,7 @@ class VectorTile extends UrlTile {
      * @private
      * @type {TileCache}
      */
-    this.sourceTileCache = new TileCache(this.tileCache.highWaterMark);
+    this.sourceTileCache_ = new TileCache(128);
 
     /**
      * @private
@@ -172,51 +171,6 @@ class VectorTile extends UrlTile {
   }
 
   /**
-   * Get features whose bounding box intersects the provided extent. Only features for cached
-   * tiles for the last rendered zoom level are available in the source. So this method is only
-   * suitable for requesting tiles for extents that are currently rendered.
-   *
-   * Features are returned in random tile order and as they are included in the tiles. This means
-   * they can be clipped, duplicated across tiles, and simplified to the render resolution.
-   *
-   * @param {import("../extent.js").Extent} extent Extent.
-   * @return {Array<FeatureType>} Features.
-   * @api
-   */
-  getFeaturesInExtent(extent) {
-    const features = [];
-    const tileCache = this.tileCache;
-    if (tileCache.getCount() === 0) {
-      return features;
-    }
-    const z = fromKey(tileCache.peekFirstKey())[0];
-    const tileGrid = this.tileGrid;
-    tileCache.forEach(function (tile) {
-      if (tile.tileCoord[0] !== z || tile.getState() !== TileState.LOADED) {
-        return;
-      }
-      const sourceTiles = tile.getSourceTiles();
-      for (let i = 0, ii = sourceTiles.length; i < ii; ++i) {
-        const sourceTile = sourceTiles[i];
-        const tileCoord = sourceTile.tileCoord;
-        if (intersects(extent, tileGrid.getTileCoordExtent(tileCoord))) {
-          const tileFeatures = sourceTile.getFeatures();
-          if (tileFeatures) {
-            for (let j = 0, jj = tileFeatures.length; j < jj; ++j) {
-              const candidate = tileFeatures[j];
-              const geometry = candidate.getGeometry();
-              if (intersects(extent, geometry.getExtent())) {
-                features.push(candidate);
-              }
-            }
-          }
-        }
-      }
-    });
-    return features;
-  }
-
-  /**
    * @return {boolean} The source can have overlapping geometries.
    */
   getOverlaps() {
@@ -228,8 +182,7 @@ class VectorTile extends UrlTile {
    * @api
    */
   clear() {
-    this.tileCache.clear();
-    this.sourceTileCache.clear();
+    this.sourceTileCache_.clear();
   }
 
   /**
@@ -250,7 +203,7 @@ class VectorTile extends UrlTile {
       return acc;
     }, {});
     super.expireCache(projection, usedTiles);
-    this.sourceTileCache.expireCache(usedSourceTiles);
+    this.sourceTileCache_.expireCache(usedSourceTiles);
   }
 
   /**
@@ -285,8 +238,8 @@ class VectorTile extends UrlTile {
           pixelRatio,
           projection,
         );
-        const sourceTile = this.sourceTileCache.containsKey(tileUrl)
-          ? this.sourceTileCache.get(tileUrl)
+        const sourceTile = this.sourceTileCache_.containsKey(tileUrl)
+          ? this.sourceTileCache_.get(tileUrl)
           : new this.tileClass(
               sourceTileCoord,
               tileUrl ? TileState.IDLE : TileState.EMPTY,
@@ -333,7 +286,7 @@ class VectorTile extends UrlTile {
           sourceTile.resolution = sourceTileGrid.getResolution(
             sourceTileCoord[0],
           );
-          this.sourceTileCache.set(tileUrl, sourceTile);
+          this.sourceTileCache_.set(tileUrl, sourceTile);
           sourceTile.load();
         }
       });
@@ -360,15 +313,6 @@ class VectorTile extends UrlTile {
    * @return {!VectorRenderTile} Tile.
    */
   getTile(z, x, y, pixelRatio, projection) {
-    const coordKey = getKeyZXY(z, x, y);
-    const key = this.getKey();
-    let tile;
-    if (this.tileCache.containsKey(coordKey)) {
-      tile = this.tileCache.get(coordKey);
-      if (tile.key === key) {
-        return tile;
-      }
-    }
     const tileCoord = [z, x, y];
     let urlTileCoord = this.getTileCoordForTileUrlFunction(
       tileCoord,
@@ -404,15 +348,7 @@ class VectorTile extends UrlTile {
       urlTileCoord,
       this.getSourceTiles.bind(this, pixelRatio, projection),
     );
-
-    newTile.key = key;
-    if (tile) {
-      newTile.interimTile = tile;
-      newTile.refreshInterimChain();
-      this.tileCache.replace(coordKey, newTile);
-    } else {
-      this.tileCache.set(coordKey, newTile);
-    }
+    newTile.key = this.getKey();
     return newTile;
   }
 
@@ -474,24 +410,14 @@ class VectorTile extends UrlTile {
       Math.round(tileSize[1] * pixelRatio),
     ];
   }
-
-  /**
-   * Increases the cache size if needed
-   * @param {number} tileCount Minimum number of tiles needed.
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   */
-  updateCacheSize(tileCount, projection) {
-    super.updateCacheSize(tileCount * 2, projection);
-    this.sourceTileCache.highWaterMark =
-      this.getTileCacheForProjection(projection).highWaterMark;
-  }
 }
 
 export default VectorTile;
 
 /**
  * Sets the loader for a tile.
- * @param {import("../VectorTile.js").default} tile Vector tile.
+ * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../render/Feature.js").default]
+ * @param {import("../VectorTile.js").default<FeatureType>} tile Vector tile.
  * @param {string} url URL.
  */
 export function defaultLoadFunction(tile, url) {

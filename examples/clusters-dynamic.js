@@ -1,5 +1,6 @@
 import Feature from '../src/ol/Feature.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {
@@ -10,7 +11,7 @@ import {
   Style,
   Text,
 } from '../src/ol/style.js';
-import {Cluster, Vector as VectorSource, XYZ} from '../src/ol/source.js';
+import {Cluster, Vector as VectorSource} from '../src/ol/source.js';
 import {LineString, Point, Polygon} from '../src/ol/geom.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {createEmpty, extend, getHeight, getWidth} from '../src/ol/extent.js';
@@ -210,7 +211,7 @@ const clusterCircles = new VectorLayer({
 });
 
 const raster = new TileLayer({
-  source: new XYZ({
+  source: new ImageTile({
     attributions:
       'Base map: <a target="_blank" href="https://basemap.at/">basemap.at</a>',
     url: 'https://maps{1-4}.wien.gv.at/basemap/bmapgrau/normal/google3857/{z}/{y}/{x}.png',

@@ -1534,6 +1534,70 @@ describe('ol.format.KML', function () {
           expect(gs[0]).to.be.an(GeometryCollection);
         });
 
+        it('can read nested MultiPolygon geometries', function () {
+          const text =
+            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '  <Placemark>' +
+            '    <MultiGeometry>' +
+            '      <MultiGeometry>' +
+            '        <Polygon>' +
+            '          <extrude>0</extrude>' +
+            '          <altitudeMode>absolute</altitudeMode>' +
+            '          <outerBoundaryIs>' +
+            '            <LinearRing>' +
+            '              <coordinates>0,0,0 0,1,0 1,1,0 1,0,0</coordinates>' +
+            '            </LinearRing>' +
+            '          </outerBoundaryIs>' +
+            '        </Polygon>' +
+            '        <Polygon>' +
+            '          <outerBoundaryIs>' +
+            '            <LinearRing>' +
+            '              <coordinates>3,0,0 3,1,0 4,1,0 4,0,0</coordinates>' +
+            '            </LinearRing>' +
+            '          </outerBoundaryIs>' +
+            '        </Polygon>' +
+            '      </MultiGeometry>' +
+            '    </MultiGeometry>' +
+            '  </Placemark>' +
+            '</kml>';
+          const fs = format.readFeatures(text);
+          expect(fs).to.have.length(1);
+          const f = fs[0];
+          expect(f).to.be.an(Feature);
+          const g = f.getGeometry();
+          expect(g).to.be.an(GeometryCollection);
+          const gs = g.getGeometries();
+          expect(gs).to.have.length(1);
+          const m = gs[0];
+          expect(m).to.be.an(MultiPolygon);
+          expect(m.getCoordinates()).to.eql([
+            [
+              [
+                [0, 0, 0],
+                [0, 1, 0],
+                [1, 1, 0],
+                [1, 0, 0],
+              ],
+            ],
+            [
+              [
+                [3, 0, 0],
+                [3, 1, 0],
+                [4, 1, 0],
+                [4, 0, 0],
+              ],
+            ],
+          ]);
+          expect(m.get('extrude')).to.be.an('array');
+          expect(m.get('extrude')).to.have.length(2);
+          expect(m.get('extrude')[0]).to.be(false);
+          expect(m.get('extrude')[1]).to.be(undefined);
+          expect(m.get('altitudeMode')).to.be.an('array');
+          expect(m.get('altitudeMode')).to.have.length(2);
+          expect(m.get('altitudeMode')[0]).to.be('absolute');
+          expect(m.get('altitudeMode')[1]).to.be(undefined);
+        });
+
         it('can write GeometryCollection geometries', function () {
           const collection = new GeometryCollection([
             new GeometryCollection([

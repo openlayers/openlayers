@@ -4,16 +4,15 @@
 import Event from '../events/Event.js';
 import Source from './Source.js';
 import TileCache from '../TileCache.js';
-import TileState from '../TileState.js';
 import {abstract} from '../util.js';
 import {assert} from '../asserts.js';
 import {equivalent} from '../proj.js';
-import {getKeyZXY, withinExtentAndZ} from '../tilecoord.js';
 import {
   getForProjection as getTileGridForProjection,
   wrapX,
 } from '../tilegrid.js';
 import {scale as scaleSize, toSize} from '../size.js';
+import {withinExtentAndZ} from '../tilecoord.js';
 
 /***
  * @template Return
@@ -28,8 +27,7 @@ import {scale as scaleSize, toSize} from '../size.js';
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
- * @property {number} [cacheSize] CacheSize.
- * @property {boolean} [opaque=false] Whether the layer is opaque.
+ * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
  * @property {number} [tilePixelRatio] TilePixelRatio.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection.
  * @property {import("./Source.js").State} [state] State.
@@ -47,6 +45,8 @@ import {scale as scaleSize, toSize} from '../size.js';
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
  * Base class for sources providing images divided into a tile grid.
+ *
+ * @template {import("../Tile.js").default} [TileType=import("../Tile.js").default]
  * @abstract
  * @api
  */
@@ -78,12 +78,6 @@ class TileSource extends Source {
      * @type {TileSourceOnSignature<void>}
      */
     this.un;
-
-    /**
-     * @private
-     * @type {boolean}
-     */
-    this.opaque_ = options.opaque !== undefined ? options.opaque : false;
 
     /**
      * @private
@@ -159,44 +153,6 @@ class TileSource extends Source {
 
   /**
    * @param {import("../proj/Projection.js").default} projection Projection.
-   * @param {number} z Zoom level.
-   * @param {import("../TileRange.js").default} tileRange Tile range.
-   * @param {function(import("../Tile.js").default):(boolean|void)} callback Called with each
-   *     loaded tile.  If the callback returns `false`, the tile will not be
-   *     considered loaded.
-   * @return {boolean} The tile range is fully covered with loaded tiles.
-   */
-  forEachLoadedTile(projection, z, tileRange, callback) {
-    const tileCache = this.getTileCacheForProjection(projection);
-    if (!tileCache) {
-      return false;
-    }
-
-    let covered = true;
-    let tile, tileCoordKey, loaded;
-    for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
-      for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
-        tileCoordKey = getKeyZXY(z, x, y);
-        loaded = false;
-        if (tileCache.containsKey(tileCoordKey)) {
-          tile = /** @type {!import("../Tile.js").default} */ (
-            tileCache.get(tileCoordKey)
-          );
-          loaded = tile.getState() === TileState.LOADED;
-          if (loaded) {
-            loaded = callback(tile) !== false;
-          }
-        }
-        if (!loaded) {
-          covered = false;
-        }
-      }
-    }
-    return covered;
-  }
-
-  /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {number} Gutter.
    */
   getGutterForProjection(projection) {
@@ -224,14 +180,6 @@ class TileSource extends Source {
   }
 
   /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {boolean} Opaque.
-   */
-  getOpaque(projection) {
-    return this.opaque_;
-  }
-
-  /**
    * @param {import("../proj/Projection").default} [projection] Projection.
    * @return {Array<number>|null} Resolutions.
    */
@@ -252,7 +200,7 @@ class TileSource extends Source {
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {!import("../Tile.js").default} Tile.
+   * @return {TileType|null} Tile.
    */
   getTile(z, x, y, pixelRatio, projection) {
     return abstract();
@@ -348,18 +296,6 @@ class TileSource extends Source {
   refresh() {
     this.clear();
     super.refresh();
-  }
-
-  /**
-   * Increases the cache size if needed
-   * @param {number} tileCount Minimum number of tiles needed.
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   */
-  updateCacheSize(tileCount, projection) {
-    const tileCache = this.getTileCacheForProjection(projection);
-    if (tileCount > tileCache.highWaterMark) {
-      tileCache.highWaterMark = tileCount;
-    }
   }
 
   /**

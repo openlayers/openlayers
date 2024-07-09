@@ -31,6 +31,7 @@ class GeometryCollection extends Geometry {
     this.geometries_ = geometries;
 
     /**
+     * @private
      * @type {Array<import("../events.js").EventsKey>}
      */
     this.changeEventsKeys_ = [];

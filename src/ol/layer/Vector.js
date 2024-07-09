@@ -4,8 +4,14 @@
 import BaseVectorLayer from './BaseVector.js';
 import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer.js';
 
+/***
+ * @template T
+ * @typedef {T extends import("../source/Vector.js").default<infer U extends import("../Feature.js").FeatureLike> ? U : never} ExtractedFeatureType
+ */
+
 /**
- * @template {import('../Feature.js').FeatureLike} FeatureType
+ * @template {import("../source/Vector.js").default<FeatureType>} [VectorSourceType=import("../source/Vector.js").default<*>]
+ * @template {import('../Feature.js').FeatureLike} [FeatureType=ExtractedFeatureType<VectorSourceType>]
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
@@ -30,7 +36,7 @@ import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer.js';
  * @property {number} [renderBuffer=100] The buffer in pixels around the viewport extent used by the
  * renderer when getting features from the vector source for the rendering or hit-detection.
  * Recommended value: the size of the largest symbol, line width or label.
- * @property {import("../source/Vector.js").default<FeatureType>} [source] Source.
+ * @property {VectorSourceType} [source] Source.
  * @property {import("../Map.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
@@ -65,13 +71,14 @@ import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @template {import('../Feature.js').FeatureLike} FeatureType
- * @extends {BaseVectorLayer<import("../source/Vector.js").default<FeatureType>, CanvasVectorLayerRenderer>}
+ * @template {import("../source/Vector.js").default<FeatureType>} [VectorSourceType=import("../source/Vector.js").default<*>]
+ * @template {import('../Feature.js').FeatureLike} [FeatureType=ExtractedFeatureType<VectorSourceType>]
+ * @extends {BaseVectorLayer<FeatureType, VectorSourceType, CanvasVectorLayerRenderer>}
  * @api
  */
 class VectorLayer extends BaseVectorLayer {
   /**
-   * @param {Options<FeatureType>} [options] Options.
+   * @param {Options<VectorSourceType, FeatureType>} [options] Options.
    */
   constructor(options) {
     super(options);

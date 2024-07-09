@@ -141,6 +141,9 @@ class Link extends Interaction {
      */
     this.initial_ = true;
 
+    /**
+     * @private
+     */
     this.updateState_ = this.updateState_.bind(this);
 
     /**

@@ -7,17 +7,17 @@ import {getTileSetInfo} from './ogcTileUtil.js';
 import {error as logError} from '../console.js';
 
 /**
- * @template {import("../Feature.js").FeatureLike} FeatureType
+ * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../render/Feature.js").default]
  * @typedef {Object} Options
  * @property {string} url URL to the OGC Vector Tileset endpoint.
  * @property {Object} [context] A lookup of values to use in the tile URL template.  The `{tileMatrix}`
  * (zoom level), `{tileRow}`, and `{tileCol}` variables in the URL will always be provided by the source.
- * @property {import("../format/Feature.js").default<import('../format/Feature.js').FeatureToFeatureClass<FeatureType>>} format Feature parser for tiles.
+ * @property {import("../format/Feature.js").default<FeatureType>} [format] Feature format for tiles. Used and required by the default.
  * @property {string} [mediaType] The content type for the tiles (e.g. "application/vnd.mapbox-vector-tile").  If not provided,
  * the source will try to find a link with rel="item" that uses a vector type supported by the configured format.
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
- * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least twice the number of tiles in the viewport.
+ * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
  * @property {boolean} [overlaps=true] This source may have overlapping geometries. Setting this
  * to `false` (e.g. for sources with polygons that represent administrative
  * boundaries or TopoJSON sources) allows the renderer to optimise fill and
@@ -50,7 +50,7 @@ import {error as logError} from '../console.js';
  * which of the advertised media types is used.  If you need to force the use of a particular media type, you can
  * provide the `mediaType` option.
  * @api
- * @template {import("../Feature.js").FeatureLike} FeatureType
+ * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../render/Feature.js").default]
  * @extends {VectorTileSource<FeatureType>}
  */
 class OGCVectorTile extends VectorTileSource {

@@ -193,6 +193,38 @@ describe('ol/renderer/canvas/VectorLayer', function () {
     });
   });
 
+  describe('numeric labels', function () {
+    let map;
+    this.beforeEach(function () {
+      map = new Map({
+        target: createMapDiv(100, 100),
+        view: new View({
+          center: [0, 0],
+          zoom: 0,
+        }),
+      });
+    });
+
+    this.afterEach(function () {
+      disposeMap(map);
+    });
+
+    it('supports numbers for texts', function () {
+      const layer = new VectorLayer({
+        source: new VectorSource({
+          features: [new Feature(new Point([0, 0]))],
+        }),
+        style: new Style({
+          text: new Text({
+            text: 5,
+          }),
+        }),
+      });
+      map.addLayer(layer);
+      expect(() => map.renderSync()).to.not.throwException();
+    });
+  });
+
   describe('#forEachFeatureAtCoordinate', function () {
     /** @type {VectorLayer} */ let layer;
     /** @type {CanvasVectorLayerRenderer} */ let renderer;

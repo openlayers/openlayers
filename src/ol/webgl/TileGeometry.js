@@ -66,7 +66,7 @@ class TileGeometry extends BaseTileRepresentation {
       extent[0],
       extent[3],
     ]);
-    this.helper_.flushBufferData(this.maskVertices);
+    this.helper.flushBufferData(this.maskVertices);
   }
 
   uploadTile() {

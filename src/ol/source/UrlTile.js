@@ -4,7 +4,8 @@
 import TileEventType from './TileEventType.js';
 import TileSource, {TileSourceEvent} from './Tile.js';
 import TileState from '../TileState.js';
-import {createFromTemplates, expandUrl} from '../tileurlfunction.js';
+import {createFromTemplates} from '../tileurlfunction.js';
+import {expandUrl} from '../uri.js';
 import {getKeyZXY} from '../tilecoord.js';
 import {getUid} from '../util.js';
 
@@ -12,14 +13,14 @@ import {getUid} from '../util.js';
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
- * @property {number} [cacheSize] Cache size.
- * @property {boolean} [opaque=false] Whether the layer is opaque.
+ * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection.
  * @property {import("./Source.js").State} [state] State.
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] TileGrid.
  * @property {import("../Tile.js").LoadFunction} tileLoadFunction TileLoadFunction.
  * @property {number} [tilePixelRatio] TilePixelRatio.
- * @property {import("../Tile.js").UrlFunction} [tileUrlFunction] TileUrlFunction.
+ * @property {import("../Tile.js").UrlFunction} [tileUrlFunction] Deprecated.  Use an ImageTile source and provide a function
+ * for the url option instead.
  * @property {string} [url] Url.
  * @property {Array<string>} [urls] Urls.
  * @property {boolean} [wrapX=true] WrapX.
@@ -31,8 +32,7 @@ import {getUid} from '../util.js';
  */
 
 /**
- * @classdesc
- * Base class for sources providing tiles divided into a tile grid over http.
+ * @deprecated Use the ol/source/ImageTile.js instead.
  *
  * @fires import("./Tile.js").TileSourceEvent
  */
@@ -44,7 +44,6 @@ class UrlTile extends TileSource {
     super({
       attributions: options.attributions,
       cacheSize: options.cacheSize,
-      opaque: options.opaque,
       projection: options.projection,
       state: options.state,
       tileGrid: options.tileGrid,
@@ -94,6 +93,7 @@ class UrlTile extends TileSource {
   }
 
   /**
+   * Deprecated.  Use an ImageTile source instead.
    * Return the tile load function of the source.
    * @return {import("../Tile.js").LoadFunction} TileLoadFunction
    * @api
@@ -103,6 +103,7 @@ class UrlTile extends TileSource {
   }
 
   /**
+   * Deprecated.  Use an ImageTile source instead.
    * Return the tile URL function of the source.
    * @return {import("../Tile.js").UrlFunction} TileUrlFunction
    * @api
@@ -114,6 +115,7 @@ class UrlTile extends TileSource {
   }
 
   /**
+   * Deprecated.  Use an ImageTile source instead.
    * Return the URLs used for this source.
    * When a tileUrlFunction is used instead of url or urls,
    * null will be returned.
@@ -152,6 +154,7 @@ class UrlTile extends TileSource {
   }
 
   /**
+   * Deprecated.  Use an ImageTile source instead.
    * Set the tile load function of the source.
    * @param {import("../Tile.js").LoadFunction} tileLoadFunction Tile load function.
    * @api
@@ -163,6 +166,7 @@ class UrlTile extends TileSource {
   }
 
   /**
+   * Deprecated.  Use an ImageTile source instead.
    * Set the tile URL function of the source.
    * @param {import("../Tile.js").UrlFunction} tileUrlFunction Tile URL function.
    * @param {string} [key] Optional new tile key for the source.
@@ -190,6 +194,7 @@ class UrlTile extends TileSource {
   }
 
   /**
+   * Deprecated.  Use an ImageTile source instead.
    * Set the URLs to use for requests.
    * @param {Array<string>} urls URLs.
    * @api

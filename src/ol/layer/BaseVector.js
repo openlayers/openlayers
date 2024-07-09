@@ -13,7 +13,8 @@ import {
 } from '../render/canvas/style.js';
 
 /**
- * @template {import("../source/Vector.js").default<import('../Feature').FeatureLike>|import("../source/VectorTile.js").default<import('../Feature').FeatureLike>} VectorSourceType
+ * @template {import('../Feature').FeatureLike} FeatureType
+ * @template {import("../source/Vector.js").default<FeatureType>|import("../source/VectorTile.js").default<FeatureType>} VectorSourceType<FeatureType>
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
@@ -77,14 +78,15 @@ const Property = {
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @template {import("../source/Vector.js").default<import('../Feature').FeatureLike>|import("../source/VectorTile.js").default<import('../Feature').FeatureLike>} VectorSourceType
- * @template {import("../renderer/canvas/VectorLayer.js").default|import("../renderer/canvas/VectorTileLayer.js").default|import("../renderer/canvas/VectorImageLayer.js").default|import("../renderer/webgl/PointsLayer.js").default} RendererType
+ * @template {import('../Feature').FeatureLike} FeatureType
+ * @template {import("../source/Vector.js").default<FeatureType>|import("../source/VectorTile.js").default<FeatureType>} VectorSourceType<FeatureType>
  * @extends {Layer<VectorSourceType, RendererType>}
+ * @template {import("../renderer/canvas/VectorLayer.js").default|import("../renderer/canvas/VectorTileLayer.js").default|import("../renderer/canvas/VectorImageLayer.js").default|import("../renderer/webgl/PointsLayer.js").default} RendererType
  * @api
  */
 class BaseVectorLayer extends Layer {
   /**
-   * @param {Options<VectorSourceType>} [options] Options.
+   * @param {Options<FeatureType, VectorSourceType>} [options] Options.
    */
   constructor(options) {
     options = options ? options : {};

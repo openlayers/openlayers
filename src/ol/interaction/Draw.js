@@ -67,7 +67,7 @@ import {getStrideForLayout} from '../geom/SimpleGeometry.js';
  * before a polygon ring or line string can be finished. Default is `3` for
  * polygon rings and `2` for line strings.
  * @property {import("../events/condition.js").Condition} [finishCondition] A function
- * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether the drawing can be finished. Not used when drawing
  * POINT or MULTI_POINT geometries.
  * @property {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike} [style]
@@ -85,7 +85,7 @@ import {getStrideForLayout} from '../geom/SimpleGeometry.js';
  * @property {string} [geometryName] Geometry name to use for features created
  * by the draw interaction.
  * @property {import("../events/condition.js").Condition} [condition] A function that
- * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled.
  * By default {@link module:ol/events/condition.noModifierKeys}, i.e. a click,
  * adds a vertex or deactivates freehand drawing.
@@ -94,7 +94,7 @@ import {getStrideForLayout} from '../geom/SimpleGeometry.js';
  * mode and takes precedence over any `freehandCondition` option.
  * @property {import("../events/condition.js").Condition} [freehandCondition]
  * Condition that activates freehand drawing for lines and polygons. This
- * function takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and
+ * function takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and
  * returns a boolean to indicate whether that event should be handled. The
  * default is {@link module:ol/events/condition.shiftKeyOnly}, meaning that the
  * Shift key activates freehand drawing.

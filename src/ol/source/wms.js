@@ -46,17 +46,15 @@ export function getRequestUrl(baseUrl, extent, size, projection, params) {
   params['HEIGHT'] = size[1];
 
   const axisOrientation = projection.getAxisOrientation();
-  let bbox;
   const v13 = compareVersions(params['VERSION'], '1.3') >= 0;
   params[v13 ? 'CRS' : 'SRS'] = projection.getCode();
-  if (v13 && axisOrientation.substr(0, 2) == 'ne') {
-    bbox = [extent[1], extent[0], extent[3], extent[2]];
-  } else {
-    bbox = extent;
-  }
+  const bbox =
+    v13 && axisOrientation.startsWith('ne')
+      ? [extent[1], extent[0], extent[3], extent[2]]
+      : extent;
   params['BBOX'] = bbox.join(',');
 
-  return appendParams(/** @type {string} */ (baseUrl), params);
+  return appendParams(baseUrl, params);
 }
 
 /**
@@ -166,6 +164,7 @@ export function createLoader(options) {
   const projection = getProjection(options.projection || 'EPSG:3857');
   const ratio = options.ratio || 1.5;
   const load = options.load || decode;
+  const crossOrigin = options.crossOrigin ?? null;
 
   /**
    * @type {import("../Image.js").Loader}
@@ -185,9 +184,7 @@ export function createLoader(options) {
       options.serverType,
     );
     const image = new Image();
-    if (options.crossOrigin !== null) {
-      image.crossOrigin = options.crossOrigin;
-    }
+    image.crossOrigin = crossOrigin;
     return load(image, src).then((image) => ({image, extent, pixelRatio}));
   };
 }
@@ -266,15 +263,6 @@ export function getLegendUrl(options, resolution) {
     'FORMAT': 'image/png',
   };
 
-  if (options.params === undefined || options.params['LAYER'] === undefined) {
-    const layers = options.params.LAYERS;
-    const isSingleLayer = !Array.isArray(layers) || layers.length === 1;
-    if (!isSingleLayer) {
-      return undefined;
-    }
-    baseParams['LAYER'] = layers;
-  }
-
   if (resolution !== undefined) {
     const mpu =
       getProjection(options.projection || 'EPSG:3857').getMetersPerUnit() || 1;
@@ -283,6 +271,15 @@ export function getLegendUrl(options, resolution) {
   }
 
   Object.assign(baseParams, options.params);
+
+  if (options.params !== undefined && baseParams['LAYER'] === undefined) {
+    const layers = baseParams['LAYERS'];
+    const isSingleLayer = !Array.isArray(layers) || layers.length !== 1;
+    if (!isSingleLayer) {
+      return undefined;
+    }
+    baseParams['LAYER'] = layers;
+  }
 
   return appendParams(options.url, baseParams);
 }

@@ -51,13 +51,14 @@ jobs:
             const content = await file.buffer();
             return content.toString();
 
-      - uses: dawidd6/action-download-artifact@v3
+      - uses: dawidd6/action-download-artifact@v6
         with:
           github_token: ${{secrets.GITHUB_TOKEN}}
           workflow: build-preview.yml
           pr: ${{steps.pull-request-number.outputs.result}}
           name: site
           path: build/site
+          allow_forks: true
 
       - name: Deploy to Netlify
         env:

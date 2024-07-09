@@ -35,8 +35,8 @@ const TranslateEventType = {
 };
 
 /**
- * A function that takes an {@link module:ol/Feature~Feature} or
- * {@link module:ol/render/Feature~RenderFeature} and an
+ * A function that takes a {@link module:ol/Feature~Feature} or
+ * {@link module:ol/render/Feature~RenderFeature} and a
  * {@link module:ol/layer/Layer~Layer} and returns `true` if the feature may be
  * translated or `false` otherwise.
  * @typedef {function(Feature, import("../layer/Layer.js").default<import("../source/Source").default>):boolean} FilterFunction
@@ -45,7 +45,7 @@ const TranslateEventType = {
 /**
  * @typedef {Object} Options
  * @property {import("../events/condition.js").Condition} [condition] A function that
- * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled.
  * Default is {@link module:ol/events/condition.always}.
  * @property {Collection<Feature>} [features] Features contained in this collection will be able to be translated together.
@@ -56,7 +56,7 @@ const TranslateEventType = {
  * absent, all visible layers will be considered translatable.
  * Not used if `features` is provided.
  * @property {FilterFunction} [filter] A function
- * that takes an {@link module:ol/Feature~Feature} and an
+ * that takes a {@link module:ol/Feature~Feature} and an
  * {@link module:ol/layer/Layer~Layer} and returns `true` if the feature may be
  * translated or `false` otherwise. Not used if `features` is provided.
  * @property {number} [hitTolerance=0] Hit-detection tolerance. Pixels inside the radius around the given position

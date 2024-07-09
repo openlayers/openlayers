@@ -77,6 +77,9 @@ class MapBrowserEventHandler extends Target {
      */
     this.trackedTouches_ = {};
 
+    /**
+     * @private
+     */
     this.element_ = element;
 
     /**

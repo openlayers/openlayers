@@ -25,6 +25,7 @@ class CompositeMapRenderer extends MapRenderer {
     super(map);
 
     /**
+     * @private
      * @type {import("../events.js").EventsKey}
      */
     this.fontChangeListenerKey_ = listen(

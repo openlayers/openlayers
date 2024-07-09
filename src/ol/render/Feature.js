@@ -118,11 +118,13 @@ class RenderFeature {
     this.properties_ = properties;
 
     /**
+     * @private
      * @type {number}
      */
     this.squaredTolerance_;
 
     /**
+     * @private
      * @type {number}
      */
     this.stride_ = stride;

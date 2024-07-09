@@ -104,7 +104,7 @@ describe('ol/render/canvas/style.js', () => {
         expected: [
           new Style({
             fill: new Fill({
-              color: 'blue',
+              color: [0, 0, 255, 1],
             }),
           }),
         ],
@@ -135,7 +135,7 @@ describe('ol/render/canvas/style.js', () => {
         expected: [
           new Style({
             fill: new Fill({
-              color: 'green',
+              color: [0, 128, 0, 1],
             }),
           }),
         ],
@@ -166,12 +166,12 @@ describe('ol/render/canvas/style.js', () => {
         expected: [
           new Style({
             fill: new Fill({
-              color: 'green',
+              color: [0, 128, 0, 1],
             }),
           }),
           new Style({
             stroke: new Stroke({
-              color: 'green',
+              color: [0, 128, 0, 1],
               width: 5,
             }),
           }),
@@ -207,7 +207,7 @@ describe('ol/render/canvas/style.js', () => {
         },
         expected: new Style({
           fill: new Fill({
-            color: 'blue',
+            color: [0, 0, 255, 1],
           }),
         }),
       },
@@ -219,7 +219,7 @@ describe('ol/render/canvas/style.js', () => {
         },
         expected: new Style({
           stroke: new Stroke({
-            color: 'red',
+            color: [255, 0, 0, 1],
             width: 5,
           }),
         }),
@@ -256,8 +256,7 @@ describe('ol/render/canvas/style.js', () => {
           'icon-src': 'icon.svg',
           'icon-scale': 'oops',
         },
-        error:
-          'Expected expression to be of type number or number[], got string',
+        error: 'got a string, but expected number or number[]',
       },
       {
         name: 'get and var expressions',
@@ -279,7 +278,7 @@ describe('ol/render/canvas/style.js', () => {
             color: 'blue',
           }),
           stroke: new Stroke({
-            color: 'red',
+            color: [255, 0, 0, 1],
             width: 5,
           }),
         }),

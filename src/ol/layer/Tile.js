@@ -12,7 +12,7 @@ import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @template {import("../source/Tile.js").default} TileSourceType
+ * @template {import("../source/Tile.js").default} [TileSourceType=import("../source/Tile.js").default]
  * @extends BaseTileLayer<TileSourceType, CanvasTileLayerRenderer>
  * @api
  */
@@ -25,7 +25,9 @@ class TileLayer extends BaseTileLayer {
   }
 
   createRenderer() {
-    return new CanvasTileLayerRenderer(this);
+    return new CanvasTileLayerRenderer(this, {
+      cacheSize: this.getCacheSize(),
+    });
   }
 }
 

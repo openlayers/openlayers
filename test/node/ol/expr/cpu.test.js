@@ -189,6 +189,12 @@ describe('ol/expr/cpu.js', () => {
         expected: 'Feature foo',
       },
       {
+        name: 'concat (with string and number)',
+        type: StringType,
+        expression: ['concat', 'number ', 1],
+        expected: 'number 1',
+      },
+      {
         name: 'coalesce (2 arguments, first has a value)',
         type: StringType,
         expression: ['coalesce', ['get', 'val'], 'default'],

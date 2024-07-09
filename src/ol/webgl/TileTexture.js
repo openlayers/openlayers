@@ -171,7 +171,7 @@ class TileTexture extends BaseTileRepresentation {
       0, // P3
       0,
     ]);
-    this.helper_.flushBufferData(coords);
+    this.helper.flushBufferData(coords);
 
     /**
      * @type {WebGLArrayBuffer}
@@ -182,7 +182,7 @@ class TileTexture extends BaseTileRepresentation {
   }
 
   uploadTile() {
-    const helper = this.helper_;
+    const helper = this.helper;
     const gl = helper.getGL();
     const tile = this.tile;
 
@@ -213,8 +213,8 @@ class TileTexture extends BaseTileRepresentation {
 
     const sourceTileSize = /** @type {DataTile} */ (tile).getSize();
     const pixelSize = [
-      sourceTileSize[0] + 2 * this.gutter_,
-      sourceTileSize[1] + 2 * this.gutter_,
+      sourceTileSize[0] + 2 * this.gutter,
+      sourceTileSize[1] + 2 * this.gutter,
     ];
     const isFloat = data instanceof Float32Array;
     const pixelCount = pixelSize[0] * pixelSize[1];
@@ -288,8 +288,8 @@ class TileTexture extends BaseTileRepresentation {
   }
 
   disposeInternal() {
-    const gl = this.helper_.getGL();
-    this.helper_.deleteBuffer(this.coords);
+    const gl = this.helper.getGL();
+    this.helper.deleteBuffer(this.coords);
     for (let i = 0; i < this.textures.length; ++i) {
       gl.deleteTexture(this.textures[i]);
     }
@@ -304,7 +304,7 @@ class TileTexture extends BaseTileRepresentation {
    * @private
    */
   getImagePixelData_(image, renderCol, renderRow) {
-    const gutter = this.gutter_;
+    const gutter = this.gutter;
     const renderWidth = this.renderSize_[0];
     const renderHeight = this.renderSize_[1];
 
@@ -346,7 +346,7 @@ class TileTexture extends BaseTileRepresentation {
    * @private
    */
   getArrayPixelData_(data, sourceSize, renderCol, renderRow) {
-    const gutter = this.gutter_;
+    const gutter = this.gutter;
     const renderWidth = this.renderSize_[0];
     const renderHeight = this.renderSize_[1];
 

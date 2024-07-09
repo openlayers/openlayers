@@ -220,6 +220,7 @@
     "../src/ol/source/ImageMapGuide.js",
     "../src/ol/source/ImageStatic.js",
     "../src/ol/source/ImageWMS.js",
+    "../src/ol/source/ImageTile.js",
     "../src/ol/source/mapguide.js",
     "../src/ol/source/OGCMapTile.js",
     "../src/ol/source/ogcTileUtil.js",
