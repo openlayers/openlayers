@@ -113,8 +113,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
     });
 
     afterEach(function () {
-      document.body.removeChild(target);
-      map.dispose();
+      disposeMap(map);
     });
 
     it('creates a new instance', function () {
@@ -696,8 +695,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       source.on('tileloadend', function () {
         setTimeout(function () {
           const features = map.getFeaturesAtPixel([96, 96]);
-          document.body.removeChild(target);
-          map.dispose();
+          disposeMap(map);
           expect(features).to.be.an(Array);
           expect(features).to.be.empty();
           done();
@@ -735,8 +733,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       });
       map.once('rendercomplete', () => {
         setTimeout(() => {
-          map.setTarget(null);
-          document.body.removeChild(target);
+          disposeMap(map);
         }, 0);
         expect(() => {
           layer
@@ -790,8 +787,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       });
       map.once('rendercomplete', () => {
         setTimeout(() => {
-          map.setTarget(null);
-          document.body.removeChild(target);
+          disposeMap(map);
         }, 0);
         const features = map.getFeaturesAtPixel([11, 75]);
         expect(features).to.have.length(1);

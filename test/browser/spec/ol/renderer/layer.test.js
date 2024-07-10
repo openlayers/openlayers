@@ -141,8 +141,7 @@ describe('ol/renderer/Layer', function () {
     });
 
     afterEach(function () {
-      map.dispose();
-      document.body.removeChild(target);
+      disposeMap(map);
     });
 
     it('accesses tiles from current zoom level last', function (done) {

@@ -56,8 +56,7 @@ describe('ol/layer/Tile', function () {
     });
 
     afterEach(() => {
-      map.setTarget(null);
-      document.body.removeChild(target);
+      disposeMap(map);
     });
 
     it('gets pixel data', () => {
@@ -110,8 +109,7 @@ describe('ol/layer/Tile', function () {
     });
 
     afterEach(() => {
-      map.setTarget(null);
-      document.body.removeChild(target);
+      disposeMap(map);
     });
 
     it('gets pixel data', () => {
@@ -174,8 +172,7 @@ describe('ol/layer/Tile', function () {
     });
 
     afterEach(function () {
-      map.dispose();
-      document.body.removeChild(target);
+      disposeMap(map);
     });
 
     it('sets frameState.animate to false when opacity is 1', function (done) {

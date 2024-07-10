@@ -321,8 +321,7 @@ describe('ol/source/VectorTile', function () {
 
       expect(tileQueue.getTilesLoading()).to.be(0);
       if (count === max) {
-        document.body.removeChild(target);
-        map.dispose();
+        disposeMap(map);
         done();
         return;
       }

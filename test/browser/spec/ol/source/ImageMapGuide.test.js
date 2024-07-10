@@ -32,8 +32,7 @@ describe('ol/source/ImageMapGuide', function () {
     });
 
     afterEach(function () {
-      document.body.removeChild(map.getTargetElement());
-      map.setTarget(null);
+      disposeMap(map);
     });
 
     it('reloads from server', function (done) {

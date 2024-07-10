@@ -27,8 +27,7 @@ describe('ol.render.Box', function () {
   });
 
   afterEach(function () {
-    map.dispose();
-    document.body.removeChild(target);
+    disposeMap(map);
   });
 
   describe('constructor', function () {

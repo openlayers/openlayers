@@ -30,9 +30,8 @@ describe('ol.control.ZoomSlider', function () {
   });
 
   afterEach(function () {
+    disposeMap(map);
     zoomslider.dispose();
-    map.dispose();
-    document.body.removeChild(target);
     zoomslider = null;
     map = null;
     target = null;

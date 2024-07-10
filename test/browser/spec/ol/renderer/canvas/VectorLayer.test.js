@@ -90,7 +90,8 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       map.renderSync();
       expect(spy.getCall(0).args[2]).to.eql(layerStyle);
       expect(spy.getCall(1).args[2]).to.be(featureStyle);
-      document.body.removeChild(target);
+
+      disposeMap(map);
     });
 
     it('does not re-render for unavailable fonts', function (done) {

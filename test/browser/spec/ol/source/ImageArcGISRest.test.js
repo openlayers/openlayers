@@ -144,8 +144,7 @@ describe('ol/source/ImageArcGISRest', function () {
     });
 
     afterEach(function () {
-      document.body.removeChild(map.getTargetElement());
-      map.setTarget(null);
+      disposeMap(map);
     });
 
     it('add a new param', function () {

@@ -77,8 +77,7 @@ describe('ol/interaction/Draw', function () {
   });
 
   afterEach(function () {
-    map.dispose();
-    document.body.removeChild(target);
+    disposeMap(map);
     clearUserProjection();
   });
 

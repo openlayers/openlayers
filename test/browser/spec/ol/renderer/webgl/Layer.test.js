@@ -66,8 +66,8 @@ describe('ol/renderer/webgl/Layer', function () {
     }
 
     function dispose(map) {
-      map.setLayers([]);
-      map.setTarget(null);
+      disposeMap(map);
+      map.getAllLayers().forEach((l) => l.dispose());
     }
 
     it('allows sequences of WebGL layers to share a canvas', () => {

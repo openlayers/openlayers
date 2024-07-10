@@ -354,8 +354,7 @@ describe('ol/Map', function () {
     });
 
     afterEach(function () {
-      map.dispose();
-      document.body.removeChild(target);
+      disposeMap(map);
     });
 
     it('are fired only once after view changes', function (done) {
@@ -708,9 +707,7 @@ describe('ol/Map', function () {
     });
 
     afterEach(function () {
-      document.body.removeChild(map.getTargetElement());
-      map.setTarget(null);
-      map.dispose();
+      disposeMap(map);
       map.getLayers().forEach((layer) => layer.dispose());
     });
 
@@ -763,7 +760,7 @@ describe('ol/Map', function () {
       map.renderSync();
     });
     afterEach(function () {
-      document.body.removeChild(target);
+      disposeMap(map);
     });
 
     it('returns an empty array if no feature was found', function () {
@@ -885,8 +882,8 @@ describe('ol/Map', function () {
     });
 
     afterEach(function () {
+      disposeMap(map);
       clearUserProjection();
-      document.body.removeChild(target);
     });
 
     it('returns an empty array if no feature was found', function () {
@@ -945,8 +942,8 @@ describe('ol/Map', function () {
     });
 
     afterEach(function () {
+      disposeMap(map);
       clearUserProjection();
-      document.body.removeChild(target);
     });
 
     it('returns false if no feature was found', function () {
@@ -1049,8 +1046,7 @@ describe('ol/Map', function () {
     });
 
     afterEach(function () {
-      map.dispose();
-      document.body.removeChild(target);
+      disposeMap(map, target);
     });
 
     it('is called when the view.changed() is called', function () {
@@ -1211,6 +1207,10 @@ describe('ol/Map', function () {
         target: document.createElement('div'),
       });
       expect(map.targetChangeHandlerKeys_).to.be.ok();
+    });
+
+    afterEach(() => {
+      disposeMap(map);
     });
 
     describe('map with target not attached to dom', function () {
@@ -1448,6 +1448,8 @@ describe('ol/Map', function () {
         expect(position[0]).to.eql(80);
         // 190 = clientY - target.style.top
         expect(position[1]).to.eql(190);
+
+        disposeMap(map);
       });
     });
 
@@ -1475,9 +1477,7 @@ describe('ol/Map', function () {
       });
 
       afterEach(function () {
-        map.removeOverlay(overlay);
-        map.dispose();
-        document.body.removeChild(target);
+        disposeMap(map);
       });
 
       it('returns an overlay by id', function () {
@@ -1554,8 +1554,7 @@ describe('ol/Map', function () {
       });
 
       afterEach(function () {
-        map.dispose();
-        document.body.removeChild(target);
+        disposeMap(map);
         clearUserProjection();
       });
 
@@ -1625,8 +1624,7 @@ describe('ol/Map', function () {
     });
 
     afterEach(function () {
-      map.setTarget(null);
-      document.body.removeChild(target);
+      disposeMap(map, target);
     });
 
     it('calls handleEvent on interaction', function () {

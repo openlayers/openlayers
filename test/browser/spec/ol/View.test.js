@@ -1728,8 +1728,7 @@ describe('ol/View', function () {
       });
     });
     afterEach(function () {
-      map.setTarget(null);
-      document.body.removeChild(target);
+      disposeMap(map);
     });
     it('correctly initializes the viewport size', function () {
       const size = map.getView().getViewportSize_();
@@ -1764,8 +1763,7 @@ describe('ol/View', function () {
       });
     });
     afterEach(function () {
-      map.setTarget(null);
-      document.body.removeChild(target);
+      disposeMap(map);
     });
     it('same as getViewportSize_ when no padding is set', function () {
       const size = map.getView().getViewportSizeMinusPadding_();

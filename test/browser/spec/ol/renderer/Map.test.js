@@ -50,8 +50,7 @@ describe('ol/renderer/Map.js', function () {
       });
 
       afterEach(function () {
-        document.body.removeChild(map.getTargetElement());
-        map.setTarget(null);
+        disposeMap(map);
       });
 
       it('calls callback with feature, layer and geometry', function () {
@@ -791,9 +790,7 @@ describe('ol/renderer/Map.js', function () {
     });
 
     afterEach(function () {
-      const target = map.getTargetElement();
-      map.setTarget(null);
-      document.body.removeChild(target);
+      disposeMap(map);
     });
 
     it('works with custom projection', function () {

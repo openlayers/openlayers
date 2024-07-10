@@ -145,11 +145,10 @@ describe('ol.layer.Vector', function () {
     });
 
     afterEach(function () {
+      disposeMap(map);
       if (getUserProjection()) {
         clearUserProjection();
       }
-      document.body.removeChild(map.getTargetElement());
-      map.setTarget(null);
     });
 
     it('detects features properly', function (done) {
