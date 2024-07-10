@@ -350,7 +350,7 @@ class ExecutorGroup {
    * @param {boolean} snapToPixel Snap point symbols and test to integer pixel.
    * @param {Array<import("../canvas.js").BuilderType>} [builderTypes] Ordered replay types to replay.
    *     Default is {@link module:ol/render/replay~ALL}
-   * @param {import("rbush").default|null} [declutterTree] Declutter tree.
+   * @param {import("rbush").default<import('./Executor.js').DeclutterEntry>|null} [declutterTree] Declutter tree.
    *     When set to null, no decluttering is done, even when the executor group has a `ZIndexContext`.
    */
   execute(

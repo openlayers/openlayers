@@ -25,12 +25,7 @@ import {lineStringLength} from '../../geom/flat/length.js';
 import {transform2D} from '../../geom/flat/transform.js';
 
 /**
- * @typedef {Object} BBox
- * @property {number} minX Minimal x.
- * @property {number} minY Minimal y.
- * @property {number} maxX Maximal x.
- * @property {number} maxY Maximal y
- * @property {*} value Value.
+ * @typedef {import('../../structs/RBush.js').Entry<import('../../Feature.js').FeatureLike>} DeclutterEntry
  */
 
 /**
@@ -42,7 +37,7 @@ import {transform2D} from '../../geom/flat/transform.js';
  * @property {number} originX OriginX.
  * @property {number} originY OriginY.
  * @property {Array<number>} scale Scale.
- * @property {BBox} declutterBox DeclutterBox.
+ * @property {DeclutterEntry} declutterBox DeclutterBox.
  * @property {import("../../transform.js").Transform} canvasTransform CanvasTransform.
  */
 
@@ -71,7 +66,7 @@ const p4 = [];
 
 /**
  * @param {ReplayImageOrLabelArgs} replayImageOrLabelArgs Arguments to replayImageOrLabel
- * @return {BBox} Declutter bbox.
+ * @return {DeclutterEntry} Declutter rbush entry.
  */
 function getDeclutterBox(replayImageOrLabelArgs) {
   return replayImageOrLabelArgs[3].declutterBox;
@@ -656,7 +651,7 @@ class Executor {
    * @param {FeatureCallback<T>} [featureCallback] Feature callback.
    * @param {import("../../extent.js").Extent} [hitExtent] Only check
    *     features that intersect this extent.
-   * @param {import("rbush").default} [declutterTree] Declutter tree.
+   * @param {import("rbush").default<DeclutterEntry>} [declutterTree] Declutter tree.
    * @return {T|undefined} Callback result.
    * @template T
    */
@@ -1248,7 +1243,7 @@ class Executor {
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
    * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
-   * @param {import("rbush").default} [declutterTree] Declutter tree.
+   * @param {import("rbush").default<DeclutterEntry>} [declutterTree] Declutter tree.
    */
   execute(
     context,
