@@ -182,7 +182,7 @@ describe('ol/interaction/Pointer', function () {
     });
 
     afterEach(function () {
-      document.body.removeChild(target);
+      target.remove();
     });
 
     it('tracks pointers correctly', function () {

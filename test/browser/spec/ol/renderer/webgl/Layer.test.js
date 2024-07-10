@@ -20,7 +20,7 @@ describe('ol/renderer/webgl/Layer', function () {
     });
 
     afterEach(function () {
-      document.body.removeChild(target);
+      target.remove();
     });
 
     it('creates a new instance', function () {
@@ -40,7 +40,7 @@ describe('ol/renderer/webgl/Layer', function () {
     });
 
     afterEach(() => {
-      document.body.removeChild(target);
+      target.remove();
     });
 
     function getWebGLLayer(className) {

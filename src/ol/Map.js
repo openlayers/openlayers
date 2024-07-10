@@ -41,7 +41,6 @@ import {fromUserCoordinate, toUserCoordinate} from './proj.js';
 import {getUid} from './util.js';
 import {hasArea} from './size.js';
 import {listen, unlistenByKey} from './events.js';
-import {removeNode} from './dom.js';
 import {warn} from './console.js';
 
 /**
@@ -1253,7 +1252,7 @@ class Map extends BaseObject {
       );
       this.mapBrowserEventHandler_.dispose();
       this.mapBrowserEventHandler_ = null;
-      removeNode(this.viewport_);
+      this.viewport_.remove();
     }
 
     if (this.targetElement_) {

@@ -1265,7 +1265,7 @@ describe('ol/Map', function () {
           }
         });
       } finally {
-        document.body.removeChild(target);
+        target.remove();
       }
     });
   });
@@ -1425,7 +1425,7 @@ describe('ol/Map', function () {
         document.body.appendChild(target);
       });
       afterEach(function () {
-        document.body.removeChild(target);
+        target.remove();
       });
 
       it('works with touchend events', function () {

@@ -57,7 +57,7 @@ describe('ol.dom', function () {
       document.body.appendChild(element);
     });
     afterEach(function () {
-      element.parentNode.removeChild(element);
+      element.remove();
       element = null;
     });
 
@@ -193,7 +193,7 @@ describe('ol.dom', function () {
       document.body.appendChild(element);
     });
     afterEach(function () {
-      element.parentNode.removeChild(element);
+      element.remove();
       element = null;
     });
 

@@ -39,7 +39,7 @@ describe('ol/renderer/canvas/VectorLayer', function () {
     });
 
     afterEach(function () {
-      document.body.removeChild(target);
+      target.remove();
     });
 
     it('creates a new instance', function () {

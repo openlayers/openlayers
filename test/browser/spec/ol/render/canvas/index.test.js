@@ -75,7 +75,7 @@ describe('ol.render.canvas', function () {
           expect(e.key).to.be('normal\nnormal\nAbel');
           expect(render.textHeights).to.eql({});
 
-          document.head.removeChild(font);
+          font.remove();
           done();
         },
       );

@@ -270,7 +270,7 @@ describe('ol/source/VectorTile', function () {
     });
 
     afterEach(function () {
-      document.body.removeChild(target);
+      target.remove();
     });
 
     it('loads only required tiles', function (done) {
