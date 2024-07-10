@@ -44,11 +44,13 @@ describe('ol/renderer/webgl/Layer', function () {
     });
 
     function getWebGLLayer(className) {
+      const tileSize = 256;
       return new TileLayer({
         className: className,
         source: new DataTileSource({
+          tileSize: tileSize,
           loader(z, x, y) {
-            return new ImageData(256, 256);
+            return new ImageData(tileSize, tileSize).data;
           },
         }),
       });
