@@ -746,8 +746,7 @@ describe('ol/layer/Layer', function () {
     });
 
     afterEach(() => {
-      map.setTarget(null);
-      document.body.removeChild(target);
+      disposeMap(map);
     });
 
     it('is called when a layer goes from visible to not visible', () => {

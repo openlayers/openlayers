@@ -39,8 +39,7 @@ describe('ol/layer/VectorImage', function () {
     });
 
     afterEach(function () {
-      document.body.removeChild(map.getTargetElement());
-      map.setTarget(null);
+      disposeMap(map);
     });
 
     it('detects features properly', function (done) {

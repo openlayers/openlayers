@@ -60,7 +60,7 @@ describe("ol.control.Control's target", function () {
       const ctrl = new Control({target: 'mycontrol'});
       expect(ctrl.target_.id).to.equal('mycontrol');
       ctrl.dispose();
-      target.parentNode.removeChild(target);
+      target.remove();
     });
     it('accepts element for target', function () {
       const target = document.createElement('div');
@@ -69,7 +69,7 @@ describe("ol.control.Control's target", function () {
       const ctrl = new Control({target: target});
       expect(ctrl.target_.id).to.equal('mycontrol');
       ctrl.dispose();
-      target.parentNode.removeChild(target);
+      target.remove();
     });
     it('ignores non-existing target id', function () {
       const ctrl = new Control({target: 'doesnotexist'});

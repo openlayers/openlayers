@@ -49,8 +49,7 @@ describe('ol/layer/Image', () => {
     });
 
     afterEach(() => {
-      map.setTarget(null);
-      document.body.removeChild(target);
+      disposeMap(map);
     });
 
     it('should not detect pixels outside of the layer extent', () => {

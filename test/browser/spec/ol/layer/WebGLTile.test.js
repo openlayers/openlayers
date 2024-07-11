@@ -51,8 +51,7 @@ describe('ol/layer/WebGLTile', function () {
   });
 
   afterEach(function () {
-    map.setTarget(null);
-    document.body.removeChild(target);
+    disposeMap(map);
     map.getLayers().forEach((layer) => layer.dispose());
   });
 
@@ -76,8 +75,7 @@ describe('ol/layer/WebGLTile', function () {
     });
 
     afterEach(() => {
-      map.setTarget(null);
-      document.body.removeChild(target);
+      disposeMap(map);
     });
 
     it('retrieves pixel data', (done) => {
@@ -221,8 +219,7 @@ describe('ol/layer/WebGLTile', function () {
     });
 
     afterEach(() => {
-      map.setTarget(null);
-      document.body.removeChild(target);
+      disposeMap(map);
     });
 
     it('gets pixel data', () => {

@@ -374,13 +374,16 @@ setLogLevel('error');
     return target;
   };
 
-  global.disposeMap = function (map) {
-    const target = map.getTarget();
-    map.setTarget(null);
-    if (target && target.parentNode) {
-      target.parentNode.removeChild(target);
+  /**
+   * @param {import('../../src/ol/Map.js').default|undefined} map Map
+   * @param {HTMLElement} [target] Node in dom
+   */
+  global.disposeMap = function (map, target) {
+    target?.remove();
+    if (map) {
+      map.getTargetElement()?.remove();
+      map.dispose();
     }
-    map.dispose();
   };
 
   const features = {

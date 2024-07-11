@@ -47,14 +47,8 @@ describe('ol/reproj/DataTile', () => {
   });
 
   afterEach(() => {
-    if (map) {
-      map.setTarget(null);
-    }
-    if (mapR) {
-      mapR.setTarget(null);
-    }
-    document.body.removeChild(target);
-    document.body.removeChild(targetR);
+    disposeMap(map, target);
+    disposeMap(mapR, targetR);
     delete proj4.defs['EPSG:32632'];
     delete proj4.defs['EPSG:32636'];
     clearAllProjections();

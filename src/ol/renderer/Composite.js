@@ -77,7 +77,7 @@ class CompositeMapRenderer extends MapRenderer {
 
   disposeInternal() {
     unlistenByKey(this.fontChangeListenerKey_);
-    this.element_.parentNode.removeChild(this.element_);
+    this.element_.remove();
     super.disposeInternal();
   }
 
@@ -97,9 +97,9 @@ class CompositeMapRenderer extends MapRenderer {
     this.calculateMatrices2D(frameState);
     this.dispatchRenderEvent(RenderEventType.PRECOMPOSE, frameState);
 
-    const layerStatesArray = frameState.layerStatesArray.sort(function (a, b) {
-      return a.zIndex - b.zIndex;
-    });
+    const layerStatesArray = frameState.layerStatesArray.sort(
+      (a, b) => a.zIndex - b.zIndex,
+    );
     const declutter = layerStatesArray.some(
       (layerState) =>
         layerState.layer instanceof BaseVectorLayer &&

@@ -47,8 +47,7 @@ describe('ol.interaction.DblClickDragZoom', function () {
     });
 
     afterEach(function () {
-      map.dispose();
-      document.body.removeChild(target);
+      disposeMap(map);
     });
 
     it('does zoom in', function () {

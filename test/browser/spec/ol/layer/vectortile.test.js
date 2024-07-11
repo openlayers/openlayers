@@ -117,8 +117,7 @@ describe('ol.layer.VectorTile', function () {
     });
 
     afterEach(function () {
-      document.body.removeChild(map.getTargetElement());
-      map.setTarget(null);
+      disposeMap(map);
       URL.revokeObjectURL(objectURL);
     });
 

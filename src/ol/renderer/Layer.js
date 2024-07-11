@@ -34,11 +34,6 @@ class LayerRenderer extends Observable {
     this.layer_ = layer;
 
     /**
-     * @type {import("../render/canvas/ExecutorGroup").default}
-     */
-    this.declutterExecutorGroup = null;
-
-    /**
      * @type {Array<string>}
      * @private
      */

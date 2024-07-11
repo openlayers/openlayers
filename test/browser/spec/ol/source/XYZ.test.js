@@ -238,8 +238,7 @@ describe('ol/source/XYZ', function () {
     });
 
     afterEach(function () {
-      document.body.removeChild(map.getTargetElement());
-      map.setTarget(null);
+      disposeMap(map);
     });
 
     it('#refresh() reloads from server', function (done) {

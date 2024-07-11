@@ -54,8 +54,7 @@ describe('ol.interaction.Snap', function () {
     });
 
     afterEach(function () {
-      map.dispose();
-      document.body.removeChild(target);
+      disposeMap(map);
       clearUserProjection();
     });
 
@@ -489,8 +488,7 @@ describe('ol.interaction.Snap', function () {
     });
 
     afterEach(() => {
-      map.dispose();
-      document.body.removeChild(target);
+      disposeMap(map);
       clearUserProjection();
       restoreRAF();
     });

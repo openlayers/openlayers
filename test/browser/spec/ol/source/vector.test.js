@@ -230,8 +230,7 @@ describe('ol/source/Vector', function () {
       if (spy) {
         source.loader_.restore();
       }
-      document.body.removeChild(map.getTargetElement());
-      map.setTarget(null);
+      disposeMap(map);
     });
 
     it('#refresh() reloads from server', function (done) {
@@ -732,8 +731,7 @@ describe('ol/source/Vector', function () {
           }),
         });
         map.renderSync();
-        map.setTarget(null);
-        document.body.removeChild(div);
+        disposeMap(map);
       });
     });
 

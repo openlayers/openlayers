@@ -21,8 +21,7 @@ describe('ol.control.OverviewMap', function () {
   });
 
   afterEach(function () {
-    map.dispose();
-    document.body.removeChild(target);
+    disposeMap(map);
     map = null;
     target = null;
   });
