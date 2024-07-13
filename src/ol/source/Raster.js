@@ -649,7 +649,7 @@ class RasterSource extends ImageSource {
           attributions.push.apply(attributions, sourceAttribution);
         }
       }
-      return attributions.length !== 0 ? attributions : null;
+      return attributions;
     });
 
     if (options.operation !== undefined) {
