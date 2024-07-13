@@ -138,8 +138,8 @@ class ImageTile extends Tile {
    *     .catch(() => tile.setState(3)); // error
    * });
    * ```
-   *
    * @api
+   * @override
    */
   load() {
     if (this.state == TileState.ERROR) {

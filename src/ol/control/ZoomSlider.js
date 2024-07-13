@@ -169,6 +169,7 @@ class ZoomSlider extends Control {
    * the map here.
    * @param {import("../Map.js").default|null} map Map.
    * @api
+   * @override
    */
   setMap(map) {
     super.setMap(map);

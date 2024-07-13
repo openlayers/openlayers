@@ -175,6 +175,7 @@ class Geolocation extends BaseObject {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
     this.setTracking(false);

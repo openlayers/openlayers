@@ -634,6 +634,7 @@ class WKT extends TextFeature {
    * @param {string} text Text.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {import("../Feature.js").default} Feature.
+   * @override
    */
   readFeatureFromText(text, options) {
     const geom = this.readGeometryFromText(text, options);
@@ -647,6 +648,7 @@ class WKT extends TextFeature {
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
    * @return {Array<Feature>} Features.
+   * @override
    */
   readFeaturesFromText(text, options) {
     let geometries = [];
@@ -672,6 +674,7 @@ class WKT extends TextFeature {
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
    * @return {import("../geom/Geometry.js").default} Geometry.
+   * @override
    */
   readGeometryFromText(text, options) {
     const geometry = this.parse_(text);
@@ -683,6 +686,7 @@ class WKT extends TextFeature {
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @protected
    * @return {string} Text.
+   * @override
    */
   writeFeatureText(feature, options) {
     const geometry = feature.getGeometry();
@@ -697,6 +701,7 @@ class WKT extends TextFeature {
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @protected
    * @return {string} Text.
+   * @override
    */
   writeFeaturesText(features, options) {
     if (features.length == 1) {
@@ -715,6 +720,7 @@ class WKT extends TextFeature {
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @protected
    * @return {string} Text.
+   * @override
    */
   writeGeometryText(geometry, options) {
     return encode(transformGeometryWithOptions(geometry, true, options));

@@ -219,6 +219,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * @param {Options} options Options.
+   * @override
    */
   reset(options) {
     super.reset({
@@ -230,6 +231,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
    * Determine whether renderFrame should be called.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
+   * @override
    */
   prepareFrameInternal(frameState) {
     if (!this.projection_) {
@@ -517,6 +519,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
    * Render the layer.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {HTMLElement} The rendered element.
+   * @override
    */
   renderFrame(frameState) {
     this.frameState = frameState;
@@ -793,6 +796,9 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     tileRepresentationCache.clear();
   }
 
+  /**
+   * @override
+   */
   removeHelper() {
     if (this.helper) {
       this.clearCache();
@@ -803,6 +809,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
     super.disposeInternal();

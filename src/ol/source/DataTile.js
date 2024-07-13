@@ -194,6 +194,7 @@ class DataTileSource extends TileSource {
   /**
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {number} Gutter.
+   * @override
    */
   getGutterForProjection(projection) {
     const thisProj = this.getProjection();
@@ -280,6 +281,7 @@ class DataTileSource extends TileSource {
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {TileType|null} Tile (or null if outside source extent).
+   * @override
    */
   getTile(z, x, y, pixelRatio, projection) {
     const sourceProjection = this.getProjection();
@@ -375,6 +377,7 @@ class DataTileSource extends TileSource {
   /**
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {!import("../tilegrid/TileGrid.js").default} Tile grid.
+   * @override
    */
   getTileGridForProjection(projection) {
     const thisProj = this.getProjection();
@@ -415,6 +418,7 @@ class DataTileSource extends TileSource {
   /**
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {import("../TileCache.js").default} Tile cache.
+   * @override
    */
   getTileCacheForProjection(projection) {
     const thisProj = this.getProjection();
@@ -432,6 +436,7 @@ class DataTileSource extends TileSource {
   /**
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @param {!Object<string, boolean>} usedTiles Used tiles.
+   * @override
    */
   expireCache(projection, usedTiles) {
     const usedTileCache = this.getTileCacheForProjection(projection);
@@ -445,6 +450,9 @@ class DataTileSource extends TileSource {
     }
   }
 
+  /**
+   * @override
+   */
   clear() {
     super.clear();
     for (const id in this.tileCacheForProjection_) {

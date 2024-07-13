@@ -84,6 +84,9 @@ class VectorLayer extends BaseVectorLayer {
     super(options);
   }
 
+  /**
+   * @override
+   */
   createRenderer() {
     return new CanvasVectorLayerRenderer(this);
   }

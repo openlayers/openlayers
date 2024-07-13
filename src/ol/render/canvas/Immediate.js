@@ -485,6 +485,7 @@ class CanvasImmediateRenderer extends VectorContext {
    *
    * @param {import("../../geom/Circle.js").default} geometry Circle geometry.
    * @api
+   * @override
    */
   drawCircle(geometry) {
     if (this.squaredTolerance_) {
@@ -540,6 +541,7 @@ class CanvasImmediateRenderer extends VectorContext {
    *
    * @param {import("../../style/Style.js").default} style The rendering style.
    * @api
+   * @override
    */
   setStyle(style) {
     this.setFillStrokeStyle(style.getFill(), style.getStroke());
@@ -560,6 +562,7 @@ class CanvasImmediateRenderer extends VectorContext {
    *
    * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry The geometry to render.
    * @api
+   * @override
    */
   drawGeometry(geometry) {
     const type = geometry.getType();
@@ -623,6 +626,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * @param {import("../../Feature.js").default} feature Feature.
    * @param {import("../../style/Style.js").default} style Style.
    * @api
+   * @override
    */
   drawFeature(feature, style) {
     const geometry = style.getGeometryFunction()(feature);
@@ -638,6 +642,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * uses the current styles appropriate for each geometry in the collection.
    *
    * @param {import("../../geom/GeometryCollection.js").default} geometry Geometry collection.
+   * @override
    */
   drawGeometryCollection(geometry) {
     const geometries = geometry.getGeometriesArray();
@@ -651,6 +656,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * the current style.
    *
    * @param {import("../../geom/Point.js").default|import("../Feature.js").default} geometry Point geometry.
+   * @override
    */
   drawPoint(geometry) {
     if (this.squaredTolerance_) {
@@ -676,6 +682,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * uses the current style.
    *
    * @param {import("../../geom/MultiPoint.js").default|import("../Feature.js").default} geometry MultiPoint geometry.
+   * @override
    */
   drawMultiPoint(geometry) {
     if (this.squaredTolerance_) {
@@ -701,6 +708,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * the current style.
    *
    * @param {import("../../geom/LineString.js").default|import("../Feature.js").default} geometry LineString geometry.
+   * @override
    */
   drawLineString(geometry) {
     if (this.squaredTolerance_) {
@@ -739,6 +747,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * and uses the current style.
    *
    * @param {import("../../geom/MultiLineString.js").default|import("../Feature.js").default} geometry MultiLineString geometry.
+   * @override
    */
   drawMultiLineString(geometry) {
     if (this.squaredTolerance_) {
@@ -784,6 +793,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * the current style.
    *
    * @param {import("../../geom/Polygon.js").default|import("../Feature.js").default} geometry Polygon geometry.
+   * @override
    */
   drawPolygon(geometry) {
     if (this.squaredTolerance_) {
@@ -829,6 +839,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * Render MultiPolygon geometry into the canvas.  Rendering is immediate and
    * uses the current style.
    * @param {import("../../geom/MultiPolygon.js").default} geometry MultiPolygon geometry.
+   * @override
    */
   drawMultiPolygon(geometry) {
     if (this.squaredTolerance_) {
@@ -990,6 +1001,7 @@ class CanvasImmediateRenderer extends VectorContext {
    *
    * @param {import("../../style/Fill.js").default} fillStyle Fill style.
    * @param {import("../../style/Stroke.js").default} strokeStyle Stroke style.
+   * @override
    */
   setFillStrokeStyle(fillStyle, strokeStyle) {
     if (!fillStyle) {
@@ -1052,6 +1064,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * the image style.
    *
    * @param {import("../../style/Image.js").default} imageStyle Image style.
+   * @override
    */
   setImageStyle(imageStyle) {
     let imageSize;
@@ -1084,6 +1097,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * remove the text style.
    *
    * @param {import("../../style/Text.js").default} textStyle Text style.
+   * @override
    */
   setTextStyle(textStyle) {
     if (!textStyle) {

@@ -173,6 +173,9 @@ class VectorTileLayer extends BaseVectorLayer {
     this.setBackground;
   }
 
+  /**
+   * @override
+   */
   createRenderer() {
     return new CanvasVectorTileLayerRenderer(this, {
       cacheSize: this.cacheSize_,
@@ -192,6 +195,7 @@ class VectorTileLayer extends BaseVectorLayer {
    * @param {import("../pixel.js").Pixel} pixel Pixel.
    * @return {Promise<Array<import("../Feature").FeatureLike>>} Promise that resolves with an array of features.
    * @api
+   * @override
    */
   getFeatures(pixel) {
     return super.getFeatures(pixel);

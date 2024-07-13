@@ -104,6 +104,9 @@ class BaseTileRepresentation extends EventTarget {
     }
   }
 
+  /**
+   * @override
+   */
   disposeInternal() {
     this.tile.removeEventListener(EventType.CHANGE, this.handleTileChange_);
   }

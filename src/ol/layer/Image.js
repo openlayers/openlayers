@@ -24,6 +24,9 @@ class ImageLayer extends BaseImageLayer {
     super(options);
   }
 
+  /**
+   * @override
+   */
   createRenderer() {
     return new CanvasImageLayerRenderer(this);
   }
@@ -42,6 +45,7 @@ class ImageLayer extends BaseImageLayer {
    * @param {import("../pixel").Pixel} pixel Pixel.
    * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView|null} Pixel data.
    * @api
+   * @override
    */
   getData(pixel) {
     return super.getData(pixel);

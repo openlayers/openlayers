@@ -88,6 +88,7 @@ class TopoJSON extends JSONFeature {
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
    * @return {Array<Feature>} Features.
+   * @override
    */
   readFeaturesFromObject(object, options) {
     if (object.type == 'Topology') {
@@ -155,6 +156,7 @@ class TopoJSON extends JSONFeature {
    * @param {Object} object Object.
    * @protected
    * @return {import("../proj/Projection.js").default} Projection.
+   * @override
    */
   readProjectionFromObject(object) {
     return this.dataProjection;

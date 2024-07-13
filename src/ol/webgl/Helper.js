@@ -538,6 +538,7 @@ class WebGLHelper extends Disposable {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
     const canvas = this.gl_.canvas;

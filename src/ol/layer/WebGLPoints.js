@@ -94,6 +94,9 @@ class WebGLPointsLayer extends Layer {
     this.hitDetectionDisabled_ = !!options.disableHitDetection;
   }
 
+  /**
+   * @override
+   */
   createRenderer() {
     const attributes = Object.keys(this.parseResult_.attributes).map(
       (name) => ({

@@ -183,6 +183,9 @@ class Heatmap extends BaseVector {
     this.set(Property.RADIUS, radius);
   }
 
+  /**
+   * @override
+   */
   createRenderer() {
     const builder = new ShaderBuilder()
       .addAttribute('float a_prop_weight')
@@ -244,6 +247,9 @@ class Heatmap extends BaseVector {
     });
   }
 
+  /**
+   * @override
+   */
   renderDeclutter() {}
 }
 

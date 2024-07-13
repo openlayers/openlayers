@@ -413,6 +413,7 @@ class CanvasLayerRenderer extends LayerRenderer {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
     delete this.frameState;

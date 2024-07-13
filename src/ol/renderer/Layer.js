@@ -186,6 +186,7 @@ class LayerRenderer extends Observable {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
     delete this.layer_;

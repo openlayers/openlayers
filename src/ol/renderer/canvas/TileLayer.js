@@ -272,6 +272,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
   /**
    * @param {import("../../pixel.js").Pixel} pixel Pixel.
    * @return {Uint8ClampedArray} Data at the pixel location.
+   * @override
    */
   getData(pixel) {
     const frameState = this.frameState;
@@ -353,6 +354,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * Determine whether render should be called.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
+   * @override
    */
   prepareFrame(frameState) {
     const source = this.getLayer().getSource();
@@ -530,6 +532,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {HTMLElement} target Target that may be used to render content to.
    * @return {HTMLElement} The rendered element.
+   * @override
    */
   renderFrame(frameState, target) {
     this.renderComplete = true;

@@ -61,6 +61,7 @@ class OSMXML extends XMLFeature {
    * @param {Element} node Node.
    * @param {import("./Feature.js").ReadOptions} [options] Options.
    * @return {Array<import("../Feature.js").default>} Features.
+   * @override
    */
   readFeaturesFromNode(node, options) {
     options = this.getReadOptions(node, options);

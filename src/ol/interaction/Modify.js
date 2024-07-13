@@ -527,6 +527,7 @@ class Modify extends PointerInteraction {
    * @param {boolean} active Active.
    * @observable
    * @api
+   * @override
    */
   setActive(active) {
     if (this.vertexFeature_ && !active) {
@@ -541,6 +542,7 @@ class Modify extends PointerInteraction {
    * Subclasses may set up event handlers to get notified about changes to
    * the map here.
    * @param {import("../Map.js").default} map Map.
+   * @override
    */
   setMap(map) {
     this.overlay_.setMap(map);
@@ -838,6 +840,7 @@ class Modify extends PointerInteraction {
    * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} and may modify the geometry.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
    * @return {boolean} `false` to stop event propagation.
+   * @override
    */
   handleEvent(mapBrowserEvent) {
     if (!mapBrowserEvent.originalEvent) {
@@ -874,6 +877,7 @@ class Modify extends PointerInteraction {
   /**
    * Handle pointer drag events.
    * @param {import("../MapBrowserEvent.js").default} evt Event.
+   * @override
    */
   handleDragEvent(evt) {
     this.ignoreNextSingleClick_ = false;
@@ -981,6 +985,7 @@ class Modify extends PointerInteraction {
    * Handle pointer down events.
    * @param {import("../MapBrowserEvent.js").default} evt Event.
    * @return {boolean} If the event was consumed.
+   * @override
    */
   handleDownEvent(evt) {
     if (!this.condition_(evt)) {
@@ -1101,6 +1106,7 @@ class Modify extends PointerInteraction {
    * Handle pointer up events.
    * @param {import("../MapBrowserEvent.js").default} evt Event.
    * @return {boolean} If the event was consumed.
+   * @override
    */
   handleUpEvent(evt) {
     for (let i = this.dragSegments_.length - 1; i >= 0; --i) {

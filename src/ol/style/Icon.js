@@ -289,6 +289,7 @@ class Icon extends ImageStyle {
    * Clones the style. The underlying Image/HTMLCanvasElement is not cloned.
    * @return {Icon} The cloned style.
    * @api
+   * @override
    */
   clone() {
     let scale, width, height;
@@ -329,6 +330,7 @@ class Icon extends ImageStyle {
    * symbolizer.
    * @return {Array<number>} Anchor.
    * @api
+   * @override
    */
   getAnchor() {
     let anchor = this.normalizedAnchor_;
@@ -410,6 +412,7 @@ class Icon extends ImageStyle {
    * @return {HTMLImageElement|HTMLCanvasElement|ImageBitmap} Image or Canvas element. If the Icon
    * style was configured with `src` or with a not let loaded `img`, an `ImageBitmap` will be returned.
    * @api
+   * @override
    */
   getImage(pixelRatio) {
     return this.iconImage_.getImage(pixelRatio);
@@ -420,6 +423,7 @@ class Icon extends ImageStyle {
    * @param {number} pixelRatio Pixel ratio.
    * @return {number} The pixel ratio of the image.
    * @api
+   * @override
    */
   getPixelRatio(pixelRatio) {
     return this.iconImage_.getPixelRatio(pixelRatio);
@@ -427,6 +431,7 @@ class Icon extends ImageStyle {
 
   /**
    * @return {import("../size.js").Size} Image size.
+   * @override
    */
   getImageSize() {
     return this.iconImage_.getSize();
@@ -434,6 +439,7 @@ class Icon extends ImageStyle {
 
   /**
    * @return {import("../ImageState.js").default} Image state.
+   * @override
    */
   getImageState() {
     return this.iconImage_.getImageState();
@@ -441,6 +447,7 @@ class Icon extends ImageStyle {
 
   /**
    * @return {HTMLImageElement|HTMLCanvasElement|ImageBitmap} Image element.
+   * @override
    */
   getHitDetectionImage() {
     return this.iconImage_.getHitDetectionImage();
@@ -450,6 +457,7 @@ class Icon extends ImageStyle {
    * Get the origin of the symbolizer.
    * @return {Array<number>} Origin.
    * @api
+   * @override
    */
   getOrigin() {
     if (this.origin_) {
@@ -494,6 +502,7 @@ class Icon extends ImageStyle {
    * Get the size of the icon (in pixels).
    * @return {import("../size.js").Size} Image size.
    * @api
+   * @override
    */
   getSize() {
     return !this.size_ ? this.iconImage_.getSize() : this.size_;
@@ -536,6 +545,7 @@ class Icon extends ImageStyle {
    *
    * @param {number|import("../size.js").Size} scale Scale.
    * @api
+   * @override
    */
   setScale(scale) {
     delete this.initialOptions_;
@@ -544,6 +554,7 @@ class Icon extends ImageStyle {
 
   /**
    * @param {function(import("../events/Event.js").default): void} listener Listener function.
+   * @override
    */
   listenImageChange(listener) {
     this.iconImage_.addEventListener(EventType.CHANGE, listener);
@@ -555,6 +566,7 @@ class Icon extends ImageStyle {
    * automatically call this method. However, you might want to call this
    * method yourself for preloading or other purposes.
    * @api
+   * @override
    */
   load() {
     this.iconImage_.load();
@@ -562,11 +574,15 @@ class Icon extends ImageStyle {
 
   /**
    * @param {function(import("../events/Event.js").default): void} listener Listener function.
+   * @override
    */
   unlistenImageChange(listener) {
     this.iconImage_.removeEventListener(EventType.CHANGE, listener);
   }
 
+  /**
+   * @override
+   */
   ready() {
     return this.iconImage_.ready();
   }

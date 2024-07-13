@@ -232,6 +232,7 @@ class MVT extends FeatureFormat {
 
   /**
    * @return {import("./Feature.js").Type} Format.
+   * @override
    */
   getType() {
     return 'arraybuffer';
@@ -244,6 +245,7 @@ class MVT extends FeatureFormat {
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {Array<FeatureType>} Features.
    * @api
+   * @override
    */
   readFeatures(source, options) {
     const layers = this.layers_;
@@ -282,6 +284,7 @@ class MVT extends FeatureFormat {
    * @param {Document|Element|Object|string} source Source.
    * @return {import("../proj/Projection.js").default} Projection.
    * @api
+   * @override
    */
   readProjection(source) {
     return this.dataProjection;

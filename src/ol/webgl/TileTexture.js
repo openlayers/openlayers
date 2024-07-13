@@ -181,6 +181,9 @@ class TileTexture extends BaseTileRepresentation {
     this.setTile(options.tile);
   }
 
+  /**
+   * @override
+   */
   uploadTile() {
     const helper = this.helper;
     const gl = helper.getGL();
@@ -287,6 +290,9 @@ class TileTexture extends BaseTileRepresentation {
     this.setReady();
   }
 
+  /**
+   * @override
+   */
   disposeInternal() {
     const gl = this.helper.getGL();
     this.helper.deleteBuffer(this.coords);

@@ -292,6 +292,7 @@ class Snap extends PointerInteraction {
    * @param {import("../MapBrowserEvent.js").default} evt Map browser event.
    * @return {boolean} `false` to stop event propagation.
    * @api
+   * @override
    */
   handleEvent(evt) {
     const result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
@@ -352,6 +353,7 @@ class Snap extends PointerInteraction {
    * Handle pointer up events.
    * @param {import("../MapBrowserEvent.js").default} evt Event.
    * @return {boolean} If the event was consumed.
+   * @override
    */
   handleUpEvent(evt) {
     const featuresToUpdate = Object.values(this.pendingFeatures_);
@@ -397,6 +399,7 @@ class Snap extends PointerInteraction {
    * Subclasses may set up event handlers to get notified about changes to
    * the map here.
    * @param {import("../Map.js").default} map Map.
+   * @override
    */
   setMap(map) {
     const currentMap = this.getMap();

@@ -724,6 +724,7 @@ class WKB extends FeatureFormat {
 
   /**
    * @return {import("./Feature.js").Type} Format.
+   * @override
    */
   getType() {
     return this.hex_ ? 'text' : 'arraybuffer';
@@ -736,6 +737,7 @@ class WKB extends FeatureFormat {
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {import("../Feature.js").default} Feature.
    * @api
+   * @override
    */
   readFeature(source, options) {
     return new Feature({
@@ -750,6 +752,7 @@ class WKB extends FeatureFormat {
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {Array<import("../Feature.js").default>} Features.
    * @api
+   * @override
    */
   readFeatures(source, options) {
     let geometries = [];
@@ -769,6 +772,7 @@ class WKB extends FeatureFormat {
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {import("../geom/Geometry.js").default} Geometry.
    * @api
+   * @override
    */
   readGeometry(source, options) {
     const view = getDataView(source);
@@ -792,6 +796,7 @@ class WKB extends FeatureFormat {
    * @param {string|ArrayBuffer|ArrayBufferView} source Source.
    * @return {import("../proj/Projection.js").default|undefined} Projection.
    * @api
+   * @override
    */
   readProjection(source) {
     const view = this.viewCache_ || getDataView(source);
@@ -815,6 +820,7 @@ class WKB extends FeatureFormat {
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string|ArrayBuffer} Result.
    * @api
+   * @override
    */
   writeFeature(feature, options) {
     return this.writeGeometry(feature.getGeometry(), options);
@@ -827,6 +833,7 @@ class WKB extends FeatureFormat {
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string|ArrayBuffer} Result.
    * @api
+   * @override
    */
   writeFeatures(features, options) {
     return this.writeGeometry(
@@ -842,6 +849,7 @@ class WKB extends FeatureFormat {
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string|ArrayBuffer} Result.
    * @api
+   * @override
    */
   writeGeometry(geometry, options) {
     options = this.adaptOptions(options);

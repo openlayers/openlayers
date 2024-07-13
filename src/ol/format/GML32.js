@@ -38,6 +38,7 @@ class GML32 extends GML3 {
    * @param {Node} node Node.
    * @param {import("../geom/Geometry.js").default|import("../extent.js").Extent} geometry Geometry.
    * @param {Array<*>} objectStack Node stack.
+   * @override
    */
   writeGeometryElement(node, geometry, objectStack) {
     const context = objectStack[objectStack.length - 1];

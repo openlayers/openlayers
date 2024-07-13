@@ -248,6 +248,7 @@ class CanvasBuilder extends VectorContext {
    * @param {Function} renderer Renderer.
    * @param {Function} hitDetectionRenderer Renderer.
    * @param {number} [index] Render order index.
+   * @override
    */
   drawCustom(geometry, feature, renderer, hitDetectionRenderer, index) {
     this.beginGeometry(geometry, feature, index);
@@ -487,6 +488,7 @@ class CanvasBuilder extends VectorContext {
   /**
    * @param {import("../../style/Fill.js").default} fillStyle Fill style.
    * @param {import("../../style/Stroke.js").default} strokeStyle Stroke style.
+   * @override
    */
   setFillStrokeStyle(fillStyle, strokeStyle) {
     const state = this.state;

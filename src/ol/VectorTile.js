@@ -90,6 +90,7 @@ class VectorTile extends Tile {
 
   /**
    * Load not yet loaded URI.
+   * @override
    */
   load() {
     if (this.state == TileState.IDLE) {

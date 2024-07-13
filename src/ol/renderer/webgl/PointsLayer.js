@@ -354,6 +354,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     });
   }
 
+  /**
+   * @override
+   */
   afterHelperCreated() {
     this.program_ = this.helper.getProgram(
       this.fragmentShader_,
@@ -414,6 +417,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * Render the layer.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {HTMLElement} The rendered element.
+   * @override
    */
   renderFrame(frameState) {
     const gl = this.helper.getGL();
@@ -447,6 +451,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * Determine whether renderFrame should be called.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
+   * @override
    */
   prepareFrameInternal(frameState) {
     const layer = this.getLayer();
@@ -581,6 +586,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
    * @return {T|undefined} Callback result.
    * @template T
+   * @override
    */
   forEachFeatureAtCoordinate(
     coordinate,
@@ -658,6 +664,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
     this.worker_.terminate();

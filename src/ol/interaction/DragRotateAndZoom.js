@@ -67,6 +67,7 @@ class DragRotateAndZoom extends PointerInteraction {
   /**
    * Handle pointer drag events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @override
    */
   handleDragEvent(mapBrowserEvent) {
     if (!mouseOnly(mapBrowserEvent)) {
@@ -99,6 +100,7 @@ class DragRotateAndZoom extends PointerInteraction {
    * Handle pointer up events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
+   * @override
    */
   handleUpEvent(mapBrowserEvent) {
     if (!mouseOnly(mapBrowserEvent)) {
@@ -117,6 +119,7 @@ class DragRotateAndZoom extends PointerInteraction {
    * Handle pointer down events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
+   * @override
    */
   handleDownEvent(mapBrowserEvent) {
     if (!mouseOnly(mapBrowserEvent)) {
