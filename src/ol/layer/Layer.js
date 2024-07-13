@@ -339,11 +339,7 @@ class Layer extends BaseLayer {
     if (!this.isVisible(view)) {
       return [];
     }
-    let getAttributions;
-    const source = this.getSource();
-    if (source) {
-      getAttributions = source.getAttributions();
-    }
+    const getAttributions = this.getSource()?.getAttributions();
     if (!getAttributions) {
       return [];
     }

@@ -631,12 +631,8 @@ class RasterSource extends ImageSource {
     this.setAttributions(function (frameState) {
       /** @type {Array<string>} */
       const attributions = [];
-      for (
-        let index = 0, iMax = options.sources.length;
-        index < iMax;
-        ++index
-      ) {
-        const sourceOrLayer = options.sources[index];
+      for (let i = 0, iMax = options.sources.length; i < iMax; ++i) {
+        const sourceOrLayer = options.sources[i];
         const source =
           sourceOrLayer instanceof Source
             ? sourceOrLayer
@@ -644,14 +640,11 @@ class RasterSource extends ImageSource {
         if (!source) {
           continue;
         }
-        const attributionGetter = source.getAttributions();
-        if (typeof attributionGetter === 'function') {
-          const sourceAttributions = attributionGetter(frameState);
-          if (typeof sourceAttributions === 'string') {
-            attributions.push(sourceAttributions);
-          } else {
-            attributions.push(...sourceAttributions);
-          }
+        const sourceAttributions = source.getAttributions()?.(frameState);
+        if (typeof sourceAttributions === 'string') {
+          attributions.push(sourceAttributions);
+        } else if (sourceAttributions !== undefined) {
+          attributions.push(...sourceAttributions);
         }
       }
       return attributions;
