@@ -629,6 +629,7 @@ class RasterSource extends ImageSource {
     };
 
     this.setAttributions(function (frameState) {
+      /** @type {Array<string>} */
       const attributions = [];
       for (
         let index = 0, iMax = options.sources.length;
@@ -645,8 +646,12 @@ class RasterSource extends ImageSource {
         }
         const attributionGetter = source.getAttributions();
         if (typeof attributionGetter === 'function') {
-          const sourceAttribution = attributionGetter(frameState);
-          attributions.push.apply(attributions, sourceAttribution);
+          const sourceAttributions = attributionGetter(frameState);
+          if (typeof sourceAttributions === 'string') {
+            attributions.push(sourceAttributions);
+          } else {
+            attributions.push(...sourceAttributions);
+          }
         }
       }
       return attributions;
