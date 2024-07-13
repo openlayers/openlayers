@@ -45,15 +45,17 @@ import {clear} from './obj.js';
  * @return {EventsKey} Unique key for the listener.
  */
 export function listen(target, type, listener, thisArg, once) {
-  if (thisArg && thisArg !== target) {
-    listener = listener.bind(thisArg);
-  }
   if (once) {
     const originalListener = listener;
+    /**
+     * @this {typeof target}
+     */
     listener = function () {
       target.removeEventListener(type, listener);
-      originalListener.apply(this, arguments);
+      originalListener.apply(thisArg ?? this, arguments);
     };
+  } else if (thisArg && thisArg !== target) {
+    listener = listener.bind(thisArg);
   }
   const eventsKey = {
     target: target,

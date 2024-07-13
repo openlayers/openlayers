@@ -136,14 +136,9 @@ export class CustomTile extends Tile {
   forDataAtCoordinate(coordinate, callback, request) {
     if (this.state == TileState.EMPTY && request === true) {
       this.state = TileState.IDLE;
-      listenOnce(
-        this,
-        EventType.CHANGE,
-        function (e) {
-          callback(this.getData(coordinate));
-        },
-        this,
-      );
+      listenOnce(this, EventType.CHANGE, (e) => {
+        callback(this.getData(coordinate));
+      });
       this.loadInternal_();
     } else {
       if (request === true) {

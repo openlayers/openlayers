@@ -228,7 +228,7 @@ class ReprojImage extends ImageWrapper {
         this.sourceListenerKey_ = listen(
           this.sourceImage_,
           EventType.CHANGE,
-          function (e) {
+          (e) => {
             const sourceState = this.sourceImage_.getState();
             if (
               sourceState == ImageState.LOADED ||
@@ -238,7 +238,6 @@ class ReprojImage extends ImageWrapper {
               this.reproject_();
             }
           },
-          this,
         );
         this.sourceImage_.load();
       }

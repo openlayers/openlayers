@@ -58,6 +58,14 @@ describe('ol/events.js', function () {
       target.dispatchEvent('foo');
       expect(listener.callCount).to.be(2);
     });
+    it('is called with the provided this argument', () => {
+      const listener = sinon.spy();
+      const target = new EventTarget();
+      const that = {};
+      listenOnce(target, 'bar', listener, that);
+      target.dispatchEvent('bar');
+      expect(listener.thisValues[0]).to.be(that);
+    });
   });
 
   describe('unlistenByKey()', function () {
