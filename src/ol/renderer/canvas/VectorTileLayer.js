@@ -162,13 +162,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   }
 
   /**
-   * @inheritDoc
-   */
-  getTileImage(tile) {
-    return tile.getImage(this.getLayer());
-  }
-
-  /**
    * Determine whether render should be called.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
