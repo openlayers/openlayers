@@ -345,26 +345,21 @@ class ReprojTile extends Tile {
         if (state == TileState.IDLE || state == TileState.LOADING) {
           leftToLoad++;
 
-          const sourceListenKey = listen(
-            tile,
-            EventType.CHANGE,
-            function (e) {
-              const state = tile.getState();
-              if (
-                state == TileState.LOADED ||
-                state == TileState.ERROR ||
-                state == TileState.EMPTY
-              ) {
-                unlistenByKey(sourceListenKey);
-                leftToLoad--;
-                if (leftToLoad === 0) {
-                  this.unlistenSources_();
-                  this.reproject_();
-                }
+          const sourceListenKey = listen(tile, EventType.CHANGE, (e) => {
+            const state = tile.getState();
+            if (
+              state == TileState.LOADED ||
+              state == TileState.ERROR ||
+              state == TileState.EMPTY
+            ) {
+              unlistenByKey(sourceListenKey);
+              leftToLoad--;
+              if (leftToLoad === 0) {
+                this.unlistenSources_();
+                this.reproject_();
               }
-            },
-            this,
-          );
+            }
+          });
           this.sourcesListenerKeys_.push(sourceListenKey);
         }
       });

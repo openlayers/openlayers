@@ -2165,6 +2165,7 @@ const PAIR_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
+ * @this {KML}
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */

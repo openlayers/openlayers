@@ -446,7 +446,7 @@ class Layer extends BaseLayer {
       this.mapPrecomposeKey_ = listen(
         map,
         RenderEventType.PRECOMPOSE,
-        function (evt) {
+        (evt) => {
           const renderEvent =
             /** @type {import("../render/Event.js").default} */ (evt);
           const layerStatesArray = renderEvent.frameState.layerStatesArray;
@@ -459,7 +459,6 @@ class Layer extends BaseLayer {
           );
           layerStatesArray.push(layerState);
         },
-        this,
       );
       this.mapRenderKey_ = listen(this, EventType.CHANGE, map.render, map);
       this.changed();

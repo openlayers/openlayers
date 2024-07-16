@@ -755,7 +755,7 @@ class Draw extends PointerInteraction {
          * @param {import("../proj/Projection.js").default} projection The view projection.
          * @return {import("../geom/SimpleGeometry.js").default} A geometry.
          */
-        geometryFunction = function (coordinates, geometry, projection) {
+        geometryFunction = (coordinates, geometry, projection) => {
           const circle = geometry
             ? /** @type {Circle} */ (geometry)
             : new Circle([NaN, NaN]);
@@ -790,7 +790,7 @@ class Draw extends PointerInteraction {
          * @param {import("../proj/Projection.js").default} projection The view projection.
          * @return {import("../geom/SimpleGeometry.js").default} A geometry.
          */
-        geometryFunction = function (coordinates, geometry, projection) {
+        geometryFunction = (coordinates, geometry, projection) => {
           if (geometry) {
             if (mode === 'Polygon') {
               if (coordinates[0].length) {

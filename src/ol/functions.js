@@ -37,20 +37,21 @@ export function VOID() {}
  * @template ReturnType
  */
 export function memoizeOne(fn) {
-  let called = false;
-
   /** @type {ReturnType} */
   let lastResult;
 
-  /** @type {Array<any>} */
+  /** @type {Array<any>|undefined} */
   let lastArgs;
 
   let lastThis;
 
+  /**
+   * @this {*} Only need to know if `this` changed, don't care what type
+   * @return {ReturnType} Memoized value
+   */
   return function () {
     const nextArgs = Array.prototype.slice.call(arguments);
-    if (!called || this !== lastThis || !arrayEquals(nextArgs, lastArgs)) {
-      called = true;
+    if (!lastArgs || this !== lastThis || !arrayEquals(nextArgs, lastArgs)) {
       lastThis = this;
       lastArgs = nextArgs;
       lastResult = fn.apply(this, arguments);

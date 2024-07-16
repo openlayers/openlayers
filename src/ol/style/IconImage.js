@@ -281,7 +281,7 @@ class IconImage extends EventTarget {
         ) {
           resolve();
         } else {
-          this.addEventListener(EventType.CHANGE, function onChange() {
+          const onChange = () => {
             if (
               this.imageState_ === ImageState.LOADED ||
               this.imageState_ === ImageState.ERROR
@@ -289,7 +289,8 @@ class IconImage extends EventTarget {
               this.removeEventListener(EventType.CHANGE, onChange);
               resolve();
             }
-          });
+          };
+          this.addEventListener(EventType.CHANGE, onChange);
         }
       });
     }

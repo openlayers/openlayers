@@ -536,11 +536,10 @@ class OverviewMap extends Control {
     this.ovmapPostrenderKey_ = listenOnce(
       this.ovmap_,
       MapEventType.POSTRENDER,
-      function (event) {
+      (event) => {
         delete this.ovmapPostrenderKey_;
         this.updateBox_();
       },
-      this,
     );
   }
 
