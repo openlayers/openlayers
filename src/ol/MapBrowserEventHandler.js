@@ -391,6 +391,7 @@ class MapBrowserEventHandler extends Target {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
     if (this.relayedListenerKey_) {

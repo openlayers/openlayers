@@ -153,6 +153,7 @@ class CanvasTextBuilder extends CanvasBuilder {
 
   /**
    * @return {import("../canvas.js").SerializableInstructions} the serializable instructions.
+   * @override
    */
   finish() {
     const instructions = super.finish();
@@ -166,6 +167,7 @@ class CanvasTextBuilder extends CanvasBuilder {
    * @param {import("../../geom/SimpleGeometry.js").default|import("../Feature.js").default} geometry Geometry.
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
    * @param {number} [index] Render order index.
+   * @override
    */
   drawText(geometry, feature, index) {
     const fillState = this.textFillState_;
@@ -559,6 +561,7 @@ class CanvasTextBuilder extends CanvasBuilder {
   /**
    * @param {import("../../style/Text.js").default} textStyle Text style.
    * @param {Object} [sharedData] Shared data.
+   * @override
    */
   setTextStyle(textStyle, sharedData) {
     let textState, fillState, strokeState;

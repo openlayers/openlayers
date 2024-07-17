@@ -134,6 +134,7 @@ class WebGLLayerRenderer extends LayerRenderer {
    * Determine whether renderFrame should be called.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
+   * @override
    */
   prepareFrame(frameState) {
     if (this.getLayer().getRenderSource()) {
@@ -202,6 +203,7 @@ class WebGLLayerRenderer extends LayerRenderer {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
     this.removeHelper();

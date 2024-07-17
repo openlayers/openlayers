@@ -179,6 +179,7 @@ class DataTile extends Tile {
   /**
    * Load the tile data.
    * @api
+   * @override
    */
   load() {
     if (this.state !== TileState.IDLE && this.state !== TileState.ERROR) {
@@ -203,6 +204,7 @@ class DataTile extends Tile {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
     if (this.controller_) {

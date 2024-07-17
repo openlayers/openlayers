@@ -126,6 +126,7 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
 
   /**
    * @param {Options} options Options.
+   * @override
    */
   reset(options) {
     super.reset(options);
@@ -148,6 +149,9 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     }
   }
 
+  /**
+   * @override
+   */
   afterHelperCreated() {
     this.program_ = this.helper.getProgram(
       this.fragmentShader_,
@@ -156,6 +160,9 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.helper.flushBufferData(this.indices_);
   }
 
+  /**
+   * @override
+   */
   removeHelper() {
     if (this.helper) {
       const gl = this.helper.getGL();
@@ -167,15 +174,24 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     super.removeHelper();
   }
 
+  /**
+   * @override
+   */
   createTileRepresentation(options) {
     return new TileTexture(options);
   }
 
+  /**
+   * @override
+   */
   beforeTilesRender(frameState, tilesWithAlpha) {
     super.beforeTilesRender(frameState, tilesWithAlpha);
     this.helper.useProgram(this.program_, frameState);
   }
 
+  /**
+   * @override
+   */
   renderTile(
     tileTexture,
     tileTransform,
@@ -276,6 +292,7 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
   /**
    * @param {import("../../pixel.js").Pixel} pixel Pixel.
    * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView} Data at the pixel location.
+   * @override
    */
   getData(pixel) {
     const gl = this.helper.getGL();
@@ -371,6 +388,7 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
     const helper = this.helper;

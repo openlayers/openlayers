@@ -36,6 +36,7 @@ class OWS extends XML {
   /**
    * @param {Element} node Node.
    * @return {Object|null} Object
+   * @override
    */
   readFromNode(node) {
     const owsObject = pushParseAndPop({}, PARSERS, node, []);

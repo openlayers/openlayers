@@ -154,6 +154,7 @@ export class CustomTile extends Tile {
   /**
    * Return the key to be used for all tiles in the source.
    * @return {string} The key for all tiles.
+   * @override
    */
   getKey() {
     return this.src_;
@@ -234,6 +235,7 @@ export class CustomTile extends Tile {
   }
 
   /**
+   * @override
    */
   load() {
     if (this.preemptive_) {
@@ -468,6 +470,7 @@ class UTFGrid extends TileSource {
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {!CustomTile} Tile.
+   * @override
    */
   getTile(z, x, y, pixelRatio, projection) {
     const tileCoordKey = getKeyZXY(z, x, y);
@@ -497,6 +500,7 @@ class UTFGrid extends TileSource {
    * @param {number} z Tile coordinate z.
    * @param {number} x Tile coordinate x.
    * @param {number} y Tile coordinate y.
+   * @override
    */
   useTile(z, x, y) {
     const tileCoordKey = getKeyZXY(z, x, y);

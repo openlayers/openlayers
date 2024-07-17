@@ -57,6 +57,7 @@ class TileQueue extends PriorityQueue {
   /**
    * @param {Array} element Element.
    * @return {boolean} The element was added to the queue.
+   * @override
    */
   enqueue(element) {
     const added = super.enqueue(element);

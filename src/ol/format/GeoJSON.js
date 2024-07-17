@@ -110,6 +110,7 @@ class GeoJSON extends JSONFeature {
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
    * @return {FeatureType|Array<FeatureType>} Feature.
+   * @override
    */
   readFeatureFromObject(object, options) {
     /**
@@ -163,6 +164,7 @@ class GeoJSON extends JSONFeature {
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
    * @return {Array<FeatureType>} Features.
+   * @override
    */
   readFeaturesFromObject(object, options) {
     const geoJSONObject = /** @type {GeoJSONObject} */ (object);
@@ -194,6 +196,7 @@ class GeoJSON extends JSONFeature {
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
    * @return {import("../geom/Geometry.js").default} Geometry.
+   * @override
    */
   readGeometryFromObject(object, options) {
     return readGeometry(object, options);
@@ -203,6 +206,7 @@ class GeoJSON extends JSONFeature {
    * @param {Object} object Object.
    * @protected
    * @return {import("../proj/Projection.js").default} Projection.
+   * @override
    */
   readProjectionFromObject(object) {
     const crs = object['crs'];
@@ -228,6 +232,7 @@ class GeoJSON extends JSONFeature {
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {GeoJSONFeature} Object.
    * @api
+   * @override
    */
   writeFeatureObject(feature, options) {
     options = this.adaptOptions(options);
@@ -270,6 +275,7 @@ class GeoJSON extends JSONFeature {
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {GeoJSONFeatureCollection} GeoJSON Object.
    * @api
+   * @override
    */
   writeFeaturesObject(features, options) {
     options = this.adaptOptions(options);
@@ -290,6 +296,7 @@ class GeoJSON extends JSONFeature {
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {GeoJSONGeometry|GeoJSONGeometryCollection} Object.
    * @api
+   * @override
    */
   writeGeometryObject(geometry, options) {
     return writeGeometry(geometry, this.adaptOptions(options));

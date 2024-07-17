@@ -331,6 +331,7 @@ class ReprojTile extends Tile {
 
   /**
    * Load not yet loaded URI.
+   * @override
    */
   load() {
     if (this.state == TileState.IDLE) {
@@ -387,6 +388,7 @@ class ReprojTile extends Tile {
 
   /**
    * Remove from the cache due to expiry
+   * @override
    */
   release() {
     if (this.canvas_) {

@@ -270,6 +270,7 @@ class OverviewMap extends Control {
    * the map here.
    * @param {import("../Map.js").default|null} map Map.
    * @api
+   * @override
    */
   setMap(map) {
     const oldMap = this.getMap();

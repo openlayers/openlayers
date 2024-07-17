@@ -153,6 +153,7 @@ class RegularShape extends ImageStyle {
    * Clones the style.
    * @return {RegularShape} The cloned style.
    * @api
+   * @override
    */
   clone() {
     const scale = this.getScale();
@@ -178,6 +179,7 @@ class RegularShape extends ImageStyle {
    * symbolizer.
    * @return {Array<number>} Anchor.
    * @api
+   * @override
    */
   getAnchor() {
     const size = this.size_;
@@ -221,6 +223,7 @@ class RegularShape extends ImageStyle {
 
   /**
    * @return {HTMLCanvasElement} Image element.
+   * @override
    */
   getHitDetectionImage() {
     if (!this.hitDetectionCanvas_) {
@@ -236,6 +239,7 @@ class RegularShape extends ImageStyle {
    * @param {number} pixelRatio Pixel ratio.
    * @return {HTMLCanvasElement} Image or Canvas element.
    * @api
+   * @override
    */
   getImage(pixelRatio) {
     let image = this.canvases_[pixelRatio];
@@ -257,6 +261,7 @@ class RegularShape extends ImageStyle {
    * Get the image pixel ratio.
    * @param {number} pixelRatio Pixel ratio.
    * @return {number} Pixel ratio.
+   * @override
    */
   getPixelRatio(pixelRatio) {
     return pixelRatio;
@@ -264,6 +269,7 @@ class RegularShape extends ImageStyle {
 
   /**
    * @return {import("../size.js").Size} Image size.
+   * @override
    */
   getImageSize() {
     return this.size_;
@@ -271,6 +277,7 @@ class RegularShape extends ImageStyle {
 
   /**
    * @return {import("../ImageState.js").default} Image state.
+   * @override
    */
   getImageState() {
     return this.imageState_;
@@ -280,6 +287,7 @@ class RegularShape extends ImageStyle {
    * Get the origin of the symbolizer.
    * @return {Array<number>} Origin.
    * @api
+   * @override
    */
   getOrigin() {
     return this.origin_;
@@ -316,6 +324,7 @@ class RegularShape extends ImageStyle {
    * Get the size of the symbolizer (in pixels).
    * @return {import("../size.js").Size} Size.
    * @api
+   * @override
    */
   getSize() {
     return this.size_;
@@ -342,16 +351,19 @@ class RegularShape extends ImageStyle {
 
   /**
    * @param {function(import("../events/Event.js").default): void} listener Listener function.
+   * @override
    */
   listenImageChange(listener) {}
 
   /**
    * Load not yet loaded URI.
+   * @override
    */
   load() {}
 
   /**
    * @param {function(import("../events/Event.js").default): void} listener Listener function.
+   * @override
    */
   unlistenImageChange(listener) {}
 
@@ -611,6 +623,9 @@ class RegularShape extends ImageStyle {
     }
   }
 
+  /**
+   * @override
+   */
   ready() {
     return this.fill_ ? this.fill_.ready() : Promise.resolve();
   }

@@ -65,6 +65,7 @@ class WMSCapabilities extends XML {
   /**
    * @param {Element} node Node.
    * @return {Object|null} Object
+   * @override
    */
   readFromNode(node) {
     this.version = node.getAttribute('version').trim();

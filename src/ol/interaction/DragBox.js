@@ -203,6 +203,7 @@ class DragBox extends PointerInteraction {
   /**
    * Handle pointer drag events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @override
    */
   handleDragEvent(mapBrowserEvent) {
     if (!this.startPixel_) {
@@ -224,6 +225,7 @@ class DragBox extends PointerInteraction {
    * Handle pointer up events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
+   * @override
    */
   handleUpEvent(mapBrowserEvent) {
     if (!this.startPixel_) {
@@ -254,6 +256,7 @@ class DragBox extends PointerInteraction {
    * Handle pointer down events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
+   * @override
    */
   handleDownEvent(mapBrowserEvent) {
     if (this.condition_(mapBrowserEvent)) {
@@ -283,6 +286,7 @@ class DragBox extends PointerInteraction {
    * @param {boolean} active Active.
    * @observable
    * @api
+   * @override
    */
   setActive(active) {
     if (!active) {

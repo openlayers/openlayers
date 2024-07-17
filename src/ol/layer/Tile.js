@@ -24,6 +24,9 @@ class TileLayer extends BaseTileLayer {
     super(options);
   }
 
+  /**
+   * @override
+   */
   createRenderer() {
     return new CanvasTileLayerRenderer(this, {
       cacheSize: this.getCacheSize(),

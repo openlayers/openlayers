@@ -66,6 +66,7 @@ class CompositeMapRenderer extends MapRenderer {
   /**
    * @param {import("../render/EventType.js").default} type Event type.
    * @param {import("../Map.js").FrameState} frameState Frame state.
+   * @override
    */
   dispatchRenderEvent(type, frameState) {
     const map = this.getMap();
@@ -75,6 +76,9 @@ class CompositeMapRenderer extends MapRenderer {
     }
   }
 
+  /**
+   * @override
+   */
   disposeInternal() {
     unlistenByKey(this.fontChangeListenerKey_);
     this.element_.remove();
@@ -84,6 +88,7 @@ class CompositeMapRenderer extends MapRenderer {
   /**
    * Render.
    * @param {?import("../Map.js").FrameState} frameState Frame state.
+   * @override
    */
   renderFrame(frameState) {
     if (!frameState) {

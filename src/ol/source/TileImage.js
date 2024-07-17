@@ -131,6 +131,7 @@ class TileImage extends UrlTile {
 
   /**
    * @return {boolean} Can expire cache.
+   * @override
    */
   canExpireCache() {
     if (this.tileCache.canExpireCache()) {
@@ -148,6 +149,7 @@ class TileImage extends UrlTile {
   /**
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @param {!Object<string, boolean>} usedTiles Used tiles.
+   * @override
    */
   expireCache(projection, usedTiles) {
     const usedTileCache = this.getTileCacheForProjection(projection);
@@ -164,6 +166,7 @@ class TileImage extends UrlTile {
   /**
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {number} Gutter.
+   * @override
    */
   getGutterForProjection(projection) {
     if (
@@ -186,6 +189,7 @@ class TileImage extends UrlTile {
   /**
    * Return the key to be used for all tiles in the source.
    * @return {string} The key for all tiles.
+   * @override
    */
   getKey() {
     let key = super.getKey();
@@ -198,6 +202,7 @@ class TileImage extends UrlTile {
   /**
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {!import("../tilegrid/TileGrid.js").default} Tile grid.
+   * @override
    */
   getTileGridForProjection(projection) {
     const thisProj = this.getProjection();
@@ -215,6 +220,7 @@ class TileImage extends UrlTile {
   /**
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {import("../TileCache.js").default} Tile cache.
+   * @override
    */
   getTileCacheForProjection(projection) {
     const thisProj = this.getProjection();
@@ -269,6 +275,7 @@ class TileImage extends UrlTile {
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {!(ImageTile|ReprojTile)} Tile.
+   * @override
    */
   getTile(z, x, y, pixelRatio, projection) {
     const sourceProjection = this.getProjection();
@@ -391,6 +398,9 @@ class TileImage extends UrlTile {
     }
   }
 
+  /**
+   * @override
+   */
   clear() {
     super.clear();
     for (const id in this.tileCacheForProjection) {

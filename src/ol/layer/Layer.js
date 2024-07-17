@@ -181,6 +181,7 @@ class Layer extends BaseLayer {
   /**
    * @param {Array<import("./Layer.js").default>} [array] Array of layers (to be modified in place).
    * @return {Array<import("./Layer.js").default>} Array of layers.
+   * @override
    */
   getLayersArray(array) {
     array = array ? array : [];
@@ -191,6 +192,7 @@ class Layer extends BaseLayer {
   /**
    * @param {Array<import("./Layer.js").State>} [states] Optional list of layer states (to be modified in place).
    * @return {Array<import("./Layer.js").State>} List of layer states.
+   * @override
    */
   getLayerStatesArray(states) {
     states = states ? states : [];
@@ -217,6 +219,7 @@ class Layer extends BaseLayer {
 
   /**
    * @return {import("../source/Source.js").State} Source state.
+   * @override
    */
   getSourceState() {
     const source = this.getSource();
@@ -504,6 +507,7 @@ class Layer extends BaseLayer {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
     if (this.renderer_) {

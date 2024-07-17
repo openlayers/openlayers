@@ -965,6 +965,7 @@ class Draw extends PointerInteraction {
    * Subclasses may set up event handlers to get notified about changes to
    * the map here.
    * @param {import("../Map.js").default} map Map.
+   * @override
    */
   setMap(map) {
     super.setMap(map);
@@ -985,6 +986,7 @@ class Draw extends PointerInteraction {
    * @param {import("../MapBrowserEvent.js").default} event Map browser event.
    * @return {boolean} `false` to stop event propagation.
    * @api
+   * @override
    */
   handleEvent(event) {
     if (event.originalEvent.type === EventType.CONTEXTMENU) {
@@ -1050,6 +1052,7 @@ class Draw extends PointerInteraction {
    * Handle pointer down events.
    * @param {import("../MapBrowserEvent.js").default} event Event.
    * @return {boolean} If the event was consumed.
+   * @override
    */
   handleDownEvent(event) {
     this.shouldHandle_ = !this.freehand_;
@@ -1300,6 +1303,7 @@ class Draw extends PointerInteraction {
    * Handle pointer up events.
    * @param {import("../MapBrowserEvent.js").default} event Event.
    * @return {boolean} If the event was consumed.
+   * @override
    */
   handleUpEvent(event) {
     let pass = true;

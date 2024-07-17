@@ -346,6 +346,7 @@ class WebGLTileLayer extends BaseTileLayer {
 
   /**
    * @return {SourceType} The source being rendered.
+   * @override
    */
   getRenderSource() {
     return this.renderedSource_ || this.getSource();
@@ -353,6 +354,7 @@ class WebGLTileLayer extends BaseTileLayer {
 
   /**
    * @return {import("../source/Source.js").State} Source state.
+   * @override
    */
   getSourceState() {
     const source = this.getRenderSource();
@@ -383,6 +385,9 @@ class WebGLTileLayer extends BaseTileLayer {
       : 4;
   }
 
+  /**
+   * @override
+   */
   createRenderer() {
     const parsedStyle = parseStyle(this.style_, this.getSourceBandCount_());
 
@@ -417,6 +422,7 @@ class WebGLTileLayer extends BaseTileLayer {
    * @param {HTMLElement} target Target which the renderer may (but need not) use
    * for rendering its content.
    * @return {HTMLElement} The rendered element.
+   * @override
    */
   render(frameState, target) {
     this.rendered = true;

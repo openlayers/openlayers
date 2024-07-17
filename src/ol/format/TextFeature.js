@@ -19,6 +19,7 @@ class TextFeature extends FeatureFormat {
 
   /**
    * @return {import("./Feature.js").Type} Format.
+   * @override
    */
   getType() {
     return 'text';
@@ -31,6 +32,7 @@ class TextFeature extends FeatureFormat {
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {import("../Feature.js").default} Feature.
    * @api
+   * @override
    */
   readFeature(source, options) {
     return this.readFeatureFromText(
@@ -57,6 +59,7 @@ class TextFeature extends FeatureFormat {
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {Array<import("../Feature.js").default>} Features.
    * @api
+   * @override
    */
   readFeatures(source, options) {
     return this.readFeaturesFromText(
@@ -83,6 +86,7 @@ class TextFeature extends FeatureFormat {
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {import("../geom/Geometry.js").default} Geometry.
    * @api
+   * @override
    */
   readGeometry(source, options) {
     return this.readGeometryFromText(
@@ -108,6 +112,7 @@ class TextFeature extends FeatureFormat {
    * @param {Document|Element|Object|string} source Source.
    * @return {import("../proj/Projection.js").default|undefined} Projection.
    * @api
+   * @override
    */
   readProjection(source) {
     return this.readProjectionFromText(getText(source));
@@ -129,6 +134,7 @@ class TextFeature extends FeatureFormat {
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string} Encoded feature.
    * @api
+   * @override
    */
   writeFeature(feature, options) {
     return this.writeFeatureText(feature, this.adaptOptions(options));
@@ -152,6 +158,7 @@ class TextFeature extends FeatureFormat {
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string} Encoded features.
    * @api
+   * @override
    */
   writeFeatures(features, options) {
     return this.writeFeaturesText(features, this.adaptOptions(options));
@@ -175,6 +182,7 @@ class TextFeature extends FeatureFormat {
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string} Geometry.
    * @api
+   * @override
    */
   writeGeometry(geometry, options) {
     return this.writeGeometryText(geometry, this.adaptOptions(options));

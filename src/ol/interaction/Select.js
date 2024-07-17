@@ -334,6 +334,7 @@ class Select extends Interaction {
    * map, if any. Pass `null` to just remove the interaction from the current map.
    * @param {import("../Map.js").default|null} map Map.
    * @api
+   * @override
    */
   setMap(map) {
     const currentMap = this.getMap();
@@ -461,6 +462,7 @@ class Select extends Interaction {
    * selected state of features.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
    * @return {boolean} `false` to stop event propagation.
+   * @override
    */
   handleEvent(mapBrowserEvent) {
     if (!this.condition_(mapBrowserEvent)) {

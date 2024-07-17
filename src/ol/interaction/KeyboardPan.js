@@ -81,6 +81,7 @@ class KeyboardPan extends Interaction {
    * pressed).
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
    * @return {boolean} `false` to stop event propagation.
+   * @override
    */
   handleEvent(mapBrowserEvent) {
     let stopEvent = false;

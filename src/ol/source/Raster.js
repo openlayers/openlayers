@@ -371,6 +371,7 @@ export class Processor extends Disposable {
 
   /**
    * Terminate all workers associated with the processor.
+   * @override
    */
   disposeInternal() {
     for (let i = 0; i < this.workers_.length; ++i) {
@@ -737,6 +738,7 @@ class RasterSource extends ImageSource {
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {import("../ImageCanvas.js").default} Single image.
+   * @override
    */
   getImage(extent, resolution, pixelRatio, projection) {
     if (!this.allSourcesReady_()) {
@@ -859,6 +861,7 @@ class RasterSource extends ImageSource {
   /**
    * @param {import("../proj/Projection").default} [projection] Projection.
    * @return {Array<number>|null} Resolutions.
+   * @override
    */
   getResolutions(projection) {
     if (!this.useResolutions_) {
@@ -877,6 +880,9 @@ class RasterSource extends ImageSource {
     return resolutions;
   }
 
+  /**
+   * @override
+   */
   disposeInternal() {
     if (this.processor_) {
       this.processor_.dispose();

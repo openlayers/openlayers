@@ -119,6 +119,7 @@ class XYZ extends TileImage {
 
   /**
    * @return {number} Gutter.
+   * @override
    */
   getGutter() {
     return this.gutter_;

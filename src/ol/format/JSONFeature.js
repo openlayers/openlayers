@@ -21,6 +21,7 @@ class JSONFeature extends FeatureFormat {
 
   /**
    * @return {import("./Feature.js").Type} Format.
+   * @override
    */
   getType() {
     return 'json';
@@ -34,6 +35,7 @@ class JSONFeature extends FeatureFormat {
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {FeatureType|Array<FeatureType>} Feature.
    * @api
+   * @override
    */
   readFeature(source, options) {
     return this.readFeatureFromObject(
@@ -50,6 +52,7 @@ class JSONFeature extends FeatureFormat {
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {Array<FeatureType>} Features.
    * @api
+   * @override
    */
   readFeatures(source, options) {
     return this.readFeaturesFromObject(
@@ -87,6 +90,7 @@ class JSONFeature extends FeatureFormat {
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {import("../geom/Geometry.js").default} Geometry.
    * @api
+   * @override
    */
   readGeometry(source, options) {
     return this.readGeometryFromObject(
@@ -112,6 +116,7 @@ class JSONFeature extends FeatureFormat {
    * @param {ArrayBuffer|Document|Element|Object|string} source Source.
    * @return {import("../proj/Projection.js").default} Projection.
    * @api
+   * @override
    */
   readProjection(source) {
     return this.readProjectionFromObject(getObject(source));
@@ -134,6 +139,7 @@ class JSONFeature extends FeatureFormat {
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string} Encoded feature.
    * @api
+   * @override
    */
   writeFeature(feature, options) {
     return JSON.stringify(this.writeFeatureObject(feature, options));
@@ -156,6 +162,7 @@ class JSONFeature extends FeatureFormat {
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string} Encoded features.
    * @api
+   * @override
    */
   writeFeatures(features, options) {
     return JSON.stringify(this.writeFeaturesObject(features, options));
@@ -178,6 +185,7 @@ class JSONFeature extends FeatureFormat {
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string} Encoded geometry.
    * @api
+   * @override
    */
   writeGeometry(geometry, options) {
     return JSON.stringify(this.writeGeometryObject(geometry, options));

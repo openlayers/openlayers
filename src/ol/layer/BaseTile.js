@@ -170,6 +170,7 @@ class BaseTileLayer extends Layer {
    * @param {import("../pixel").Pixel} pixel Pixel.
    * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView|null} Pixel data.
    * @api
+   * @override
    */
   getData(pixel) {
     return super.getData(pixel);

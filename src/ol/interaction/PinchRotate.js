@@ -77,6 +77,7 @@ class PinchRotate extends PointerInteraction {
   /**
    * Handle pointer drag events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @override
    */
   handleDragEvent(mapBrowserEvent) {
     let rotationDelta = 0.0;
@@ -124,6 +125,7 @@ class PinchRotate extends PointerInteraction {
    * Handle pointer up events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
+   * @override
    */
   handleUpEvent(mapBrowserEvent) {
     if (this.targetPointers.length < 2) {
@@ -139,6 +141,7 @@ class PinchRotate extends PointerInteraction {
    * Handle pointer down events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
+   * @override
    */
   handleDownEvent(mapBrowserEvent) {
     if (this.targetPointers.length >= 2) {

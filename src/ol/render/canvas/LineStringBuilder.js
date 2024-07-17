@@ -51,6 +51,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
    * @param {import("../../geom/LineString.js").default|import("../Feature.js").default} lineStringGeometry Line string geometry.
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
    * @param {number} [index] Render order index.
+   * @override
    */
   drawLineString(lineStringGeometry, feature, index) {
     const state = this.state;
@@ -90,6 +91,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
    * @param {import("../../geom/MultiLineString.js").default|import("../Feature.js").default} multiLineStringGeometry MultiLineString geometry.
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
    * @param {number} [index] Render order index.
+   * @override
    */
   drawMultiLineString(multiLineStringGeometry, feature, index) {
     const state = this.state;
@@ -131,6 +133,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
 
   /**
    * @return {import("../canvas.js").SerializableInstructions} the serializable instructions.
+   * @override
    */
   finish() {
     const state = this.state;
@@ -147,6 +150,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
 
   /**
    * @param {import("../canvas.js").FillStrokeState} state State.
+   * @override
    */
   applyStroke(state) {
     if (

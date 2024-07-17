@@ -266,6 +266,7 @@ class TileWMS extends TileImage {
 
   /**
    * @return {number} Gutter.
+   * @override
    */
   getGutter() {
     return this.gutter_;
@@ -320,6 +321,7 @@ class TileWMS extends TileImage {
    * Get the tile pixel ratio for this source.
    * @param {number} pixelRatio Pixel ratio.
    * @return {number} Tile pixel ratio.
+   * @override
    */
   getTilePixelRatio(pixelRatio) {
     return !this.hidpi_ || this.serverType_ === undefined ? 1 : pixelRatio;

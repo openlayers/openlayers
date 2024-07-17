@@ -305,6 +305,9 @@ class Google extends TileImage {
     return this.previousViewportAttribution_;
   }
 
+  /**
+   * @override
+   */
   disposeInternal() {
     clearTimeout(this.sessionRefreshId_);
     super.disposeInternal();

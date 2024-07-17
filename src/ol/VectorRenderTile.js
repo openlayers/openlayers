@@ -134,6 +134,7 @@ class VectorRenderTile extends Tile {
 
   /**
    * Load the tile.
+   * @override
    */
   load() {
     this.getSourceTiles();
@@ -141,6 +142,7 @@ class VectorRenderTile extends Tile {
 
   /**
    * Remove from the cache due to expiry
+   * @override
    */
   release() {
     releaseCanvas(this.context_);

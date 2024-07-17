@@ -144,6 +144,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
 
   /**
    * @param {Options} options Options.
+   * @override
    */
   reset(options) {
     super.reset(options);
@@ -227,11 +228,17 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.helper.flushBufferData(this.tileMaskIndices_);
   }
 
+  /**
+   * @override
+   */
   afterHelperCreated() {
     this.createRenderers_();
     this.initTileMask_();
   }
 
+  /**
+   * @override
+   */
   createTileRepresentation(options) {
     const tileRep = new TileGeometry(options, this.styleRenderers_);
     // redraw the layer when the tile is ready
@@ -245,6 +252,9 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     return tileRep;
   }
 
+  /**
+   * @override
+   */
   beforeTilesRender(frameState, tilesWithAlpha) {
     super.beforeTilesRender(frameState, true); // always consider that tiles need alpha blending
     this.helper.makeProjectionTransform(
@@ -253,6 +263,9 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     );
   }
 
+  /**
+   * @override
+   */
   beforeTilesMaskRender(frameState) {
     this.helper.makeProjectionTransform(
       frameState,
@@ -281,6 +294,9 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     return true;
   }
 
+  /**
+   * @override
+   */
   renderTileMask(tileRepresentation, tileZ, extent, depth) {
     if (!tileRepresentation.ready) {
       return;
@@ -328,6 +344,9 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.helper.setUniformFloatVec4(Uniforms.RENDER_EXTENT, renderExtent);
   }
 
+  /**
+   * @override
+   */
   renderTile(
     tileRepresentation,
     tileTransform,
@@ -366,6 +385,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
     super.disposeInternal();

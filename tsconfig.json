@@ -25,6 +25,7 @@
     // "strictNullChecks": true,              /* Enable strict null checks. */
     // "strictFunctionTypes": true,           /* Enable strict checking of function types. */
     // "strictPropertyInitialization": true,  /* Enable strict checking of property initialization in classes. */
+    "noImplicitOverride": true,               /* Ensure overriding members in derived classes are marked with an override modifier. */
     "noImplicitThis": true,                   /* Raise error on 'this' expressions with an implied 'any' type. */
     // "alwaysStrict": true,                  /* Parse in strict mode and emit "use strict" for each source file. */
 

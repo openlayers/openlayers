@@ -654,6 +654,7 @@ class Map extends BaseObject {
   /**
    *
    * Clean up.
+   * @override
    */
   disposeInternal() {
     this.controls.clear();

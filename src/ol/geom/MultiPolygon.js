@@ -145,6 +145,7 @@ class MultiPolygon extends SimpleGeometry {
    * Make a complete copy of the geometry.
    * @return {!MultiPolygon} Clone.
    * @api
+   * @override
    */
   clone() {
     const len = this.endss_.length;
@@ -169,6 +170,7 @@ class MultiPolygon extends SimpleGeometry {
    * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
    * @param {number} minSquaredDistance Minimum squared distance.
    * @return {number} Minimum squared distance.
+   * @override
    */
   closestPointXY(x, y, closestPoint, minSquaredDistance) {
     if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
@@ -204,6 +206,7 @@ class MultiPolygon extends SimpleGeometry {
    * @param {number} x X.
    * @param {number} y Y.
    * @return {boolean} Contains (x, y).
+   * @override
    */
   containsXY(x, y) {
     return linearRingssContainsXY(
@@ -242,6 +245,7 @@ class MultiPolygon extends SimpleGeometry {
    *     constructed.
    * @return {Array<Array<Array<import("../coordinate.js").Coordinate>>>} Coordinates.
    * @api
+   * @override
    */
   getCoordinates(right) {
     let flatCoordinates;
@@ -334,6 +338,7 @@ class MultiPolygon extends SimpleGeometry {
    * @param {number} squaredTolerance Squared tolerance.
    * @return {MultiPolygon} Simplified MultiPolygon.
    * @protected
+   * @override
    */
   getSimplifiedGeometryInternal(squaredTolerance) {
     /** @type {Array<number>} */
@@ -418,6 +423,7 @@ class MultiPolygon extends SimpleGeometry {
    * Get the type of this geometry.
    * @return {import("./Geometry.js").Type} Geometry type.
    * @api
+   * @override
    */
   getType() {
     return 'MultiPolygon';
@@ -428,6 +434,7 @@ class MultiPolygon extends SimpleGeometry {
    * @param {import("../extent.js").Extent} extent Extent.
    * @return {boolean} `true` if the geometry and the extent intersect.
    * @api
+   * @override
    */
   intersectsExtent(extent) {
     return intersectsLinearRingMultiArray(
@@ -444,6 +451,7 @@ class MultiPolygon extends SimpleGeometry {
    * @param {!Array<Array<Array<import("../coordinate.js").Coordinate>>>} coordinates Coordinates.
    * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
    * @api
+   * @override
    */
   setCoordinates(coordinates, layout) {
     this.setLayout(layout, coordinates, 3);

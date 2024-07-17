@@ -93,6 +93,9 @@ class VectorImageLayer extends BaseVectorLayer {
     return this.imageRatio_;
   }
 
+  /**
+   * @override
+   */
   createRenderer() {
     return new CanvasVectorImageLayerRenderer(this);
   }

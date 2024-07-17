@@ -89,6 +89,7 @@ class Control extends BaseObject {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
     this.element?.remove();

@@ -72,6 +72,7 @@ class ImageCanvas extends ImageWrapper {
 
   /**
    * Load not yet loaded URI.
+   * @override
    */
   load() {
     if (this.state == ImageState.IDLE) {
@@ -83,6 +84,7 @@ class ImageCanvas extends ImageWrapper {
 
   /**
    * @return {HTMLCanvasElement} Canvas element.
+   * @override
    */
   getImage() {
     return this.canvas_;

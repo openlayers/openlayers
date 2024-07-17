@@ -103,6 +103,7 @@ class Static extends ImageSource {
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {import("../Image.js").default} Single image.
+   * @override
    */
   getImageInternal(extent, resolution, pixelRatio, projection) {
     if (intersects(extent, this.image.getExtent())) {

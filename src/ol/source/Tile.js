@@ -182,6 +182,7 @@ class TileSource extends Source {
   /**
    * @param {import("../proj/Projection").default} [projection] Projection.
    * @return {Array<number>|null} Resolutions.
+   * @override
    */
   getResolutions(projection) {
     const tileGrid = projection
@@ -293,6 +294,9 @@ class TileSource extends Source {
     this.tileCache.clear();
   }
 
+  /**
+   * @override
+   */
   refresh() {
     this.clear();
     super.refresh();
