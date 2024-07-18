@@ -666,7 +666,7 @@ void main(void) {
   v_angleStart = a_joinAngles.x;
   v_angleEnd = a_joinAngles.y;
   float vertexNumber = floor(abs(a_parameters) / 10000. + 0.5);
-  currentLineMetric = vertexNumber < 0.5 || (vertexNumber > 1.5 && vertexNumber < 2.5) ? v_measureStart : v_measureEnd;
+  currentLineMetric = vertexNumber < 1.5 ? a_measureStart : a_measureEnd;
   // we're reading the fractional part while keeping the sign (so -4.12 gives -0.12, 3.45 gives 0.45)
   float angleTangentSum = fract(abs(a_parameters) / 10000.) * 10000. * sign(a_parameters);
 
