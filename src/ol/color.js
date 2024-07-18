@@ -29,9 +29,6 @@ export function asString(color) {
   return toString(color);
 }
 
-/**
- * @type {number}
- */
 const MAX_CACHE_SIZE = 1024;
 
 /**
@@ -67,6 +64,7 @@ export function withAlpha(color) {
  * @return {Color} LCHuv color with alpha.
  */
 export function rgbaToLcha(color) {
+  /** @type {Array<number>} */
   const output = xyz.lchuv(rgb.xyz(color));
   output[3] = color[3];
   return output;
@@ -77,6 +75,7 @@ export function rgbaToLcha(color) {
  * @return {Color} RGBA color.
  */
 export function lchaToRgba(color) {
+  /** @type {Array<number>} */
   const output = xyz.rgb(lchuv.xyz(color));
   output[3] = color[3];
   return output;
@@ -147,19 +146,10 @@ export function normalize(color) {
  * @return {string} String.
  */
 export function toString(color) {
-  let r = color[0];
-  if (r != (r | 0)) {
-    r = (r + 0.5) | 0;
-  }
-  let g = color[1];
-  if (g != (g | 0)) {
-    g = (g + 0.5) | 0;
-  }
-  let b = color[2];
-  if (b != (b | 0)) {
-    b = (b + 0.5) | 0;
-  }
-  const a = color[3] === undefined ? 1 : Math.round(color[3] * 1000) / 1000;
+  const r = (color[0] + 0.5) | 0;
+  const g = (color[1] + 0.5) | 0;
+  const b = (color[2] + 0.5) | 0;
+  const a = color[3] === undefined ? 1 : ((color[3] * 1000 + 0.5) | 0) / 1000;
   return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
 }
 
