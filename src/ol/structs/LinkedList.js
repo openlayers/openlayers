@@ -3,15 +3,17 @@
  */
 
 /**
+ * @template T
  * @typedef {Object} Item
- * @property {Item} [prev] Previous.
- * @property {Item} [next] Next.
- * @property {?} data Data.
+ * @property {Item<T>|undefined} prev Previous.
+ * @property {Item<T>|undefined} next Next.
+ * @property {T} data Data.
  */
 
 /**
  * @classdesc
  * Creates an empty linked list structure.
+ * @template T
  */
 class LinkedList {
   /**
@@ -21,27 +23,27 @@ class LinkedList {
   constructor(circular) {
     /**
      * @private
-     * @type {Item|undefined}
+     * @type {Item<T>|undefined}
      */
-    this.first_;
+    this.first_ = undefined;
 
     /**
      * @private
-     * @type {Item|undefined}
+     * @type {Item<T>|undefined}
      */
-    this.last_;
+    this.last_ = undefined;
 
     /**
      * @private
-     * @type {Item|undefined}
+     * @type {Item<T>|undefined}
      */
-    this.head_;
+    this.head_ = undefined;
 
     /**
      * @private
      * @type {boolean}
      */
-    this.circular_ = circular === undefined ? true : circular;
+    this.circular_ = circular ?? true;
 
     /**
      * @private
@@ -53,10 +55,10 @@ class LinkedList {
   /**
    * Inserts an item into the linked list right after the current one.
    *
-   * @param {?} data Item data.
+   * @param {T} data Item data.
    */
   insertItem(data) {
-    /** @type {Item} */
+    /** @type {Item<T>} */
     const item = {
       prev: undefined,
       next: undefined,
@@ -97,34 +99,35 @@ class LinkedList {
    */
   removeItem() {
     const head = this.head_;
-    if (head) {
-      const next = head.next;
-      const prev = head.prev;
-      if (next) {
-        next.prev = prev;
-      }
-      if (prev) {
-        prev.next = next;
-      }
-      this.head_ = next || prev;
-
-      if (this.first_ === this.last_) {
-        this.head_ = undefined;
-        this.first_ = undefined;
-        this.last_ = undefined;
-      } else if (this.first_ === head) {
-        this.first_ = this.head_;
-      } else if (this.last_ === head) {
-        this.last_ = prev ? this.head_.prev : this.head_;
-      }
-      this.length_--;
+    if (!head) {
+      return;
     }
+    const next = head.next;
+    const prev = head.prev;
+    if (next) {
+      next.prev = prev;
+    }
+    if (prev) {
+      prev.next = next;
+    }
+    this.head_ = next ?? prev;
+
+    if (this.first_ === this.last_) {
+      this.head_ = undefined;
+      this.first_ = undefined;
+      this.last_ = undefined;
+    } else if (this.first_ === head) {
+      this.first_ = this.head_;
+    } else if (this.last_ === head) {
+      this.last_ = prev ? /** @type {Item<T>} */ (this.head_).prev : this.head_;
+    }
+    this.length_--;
   }
 
   /**
    * Sets the cursor to the first item, and returns the associated data.
    *
-   * @return {?} Item data.
+   * @return {T|undefined} Item data.
    */
   firstItem() {
     this.head_ = this.first_;
@@ -137,7 +140,7 @@ class LinkedList {
   /**
    * Sets the cursor to the last item, and returns the associated data.
    *
-   * @return {?} Item data.
+   * @return {T|undefined} Item data.
    */
   lastItem() {
     this.head_ = this.last_;
@@ -150,7 +153,7 @@ class LinkedList {
   /**
    * Sets the cursor to the next item, and returns the associated data.
    *
-   * @return {?} Item data.
+   * @return {T|undefined} Item data.
    */
   nextItem() {
     if (this.head_ && this.head_.next) {
@@ -163,7 +166,7 @@ class LinkedList {
   /**
    * Returns the next item's data without moving the cursor.
    *
-   * @return {?} Item data.
+   * @return {T|undefined} Item data.
    */
   getNextItem() {
     if (this.head_ && this.head_.next) {
@@ -175,7 +178,7 @@ class LinkedList {
   /**
    * Sets the cursor to the previous item, and returns the associated data.
    *
-   * @return {?} Item data.
+   * @return {T|undefined}} Item data.
    */
   prevItem() {
     if (this.head_ && this.head_.prev) {
@@ -188,7 +191,7 @@ class LinkedList {
   /**
    * Returns the previous item's data without moving the cursor.
    *
-   * @return {?} Item data.
+   * @return {T|undefined} Item data.
    */
   getPrevItem() {
     if (this.head_ && this.head_.prev) {
@@ -200,7 +203,7 @@ class LinkedList {
   /**
    * Returns the current item's data.
    *
-   * @return {?} Item data.
+   * @return {T|undefined} Item data.
    */
   getCurrItem() {
     if (this.head_) {
@@ -222,34 +225,39 @@ class LinkedList {
 
   /**
    * Concatenates two lists.
-   * @param {LinkedList} list List to merge into the current list.
+   * @param {LinkedList<T>} list List to merge into the current list.
    */
   concat(list) {
-    if (list.head_) {
-      if (this.head_) {
-        const end = this.head_.next;
-        this.head_.next = list.first_;
-        list.first_.prev = this.head_;
-        if (end) {
-          end.prev = list.last_;
-        } else {
-          this.last_ = list.last_;
-        }
-        list.last_.next = end;
-        this.length_ += list.length_;
-      } else {
-        this.head_ = list.head_;
-        this.first_ = list.first_;
-        this.last_ = list.last_;
-        this.length_ = list.length_;
-        this.first_.prev = this.circular_ ? this.last_ : undefined;
-        this.last_.next = this.circular_ ? this.first_ : undefined;
-      }
-      list.head_ = undefined;
-      list.first_ = undefined;
-      list.last_ = undefined;
-      list.length_ = 0;
+    if (!list.head_) {
+      return;
     }
+    if (this.head_) {
+      const end = this.head_.next;
+      this.head_.next = list.first_;
+      /** @type {Item<T>} */ (list.first_).prev = this.head_;
+      if (end) {
+        end.prev = list.last_;
+      } else {
+        this.last_ = list.last_;
+      }
+      /** @type {Item<T>} */ (list.last_).next = end;
+      this.length_ += list.length_;
+    } else {
+      this.head_ = list.head_;
+      this.first_ = list.first_;
+      this.last_ = list.last_;
+      this.length_ = list.length_;
+      /** @type {Item<T>} */ (this.first_).prev = this.circular_
+        ? this.last_
+        : undefined;
+      /** @type {Item<T>} */ (this.last_).next = this.circular_
+        ? this.first_
+        : undefined;
+    }
+    list.head_ = undefined;
+    list.first_ = undefined;
+    list.last_ = undefined;
+    list.length_ = 0;
   }
 
   /**
