@@ -47,8 +47,7 @@ const filterAbove = {
 const widthChanges = {
   'stroke-color': 'rgb(60,222,4)',
   'stroke-offset': 10,
-  'stroke-width': ['case', ['>', ['line-metric'], 60], 4, 8],
-  // 'stroke-width': ['interpolate', ['linear'], ['line-metric'], 0, 20, 110, 1],
+  'stroke-width': ['case', ['>', ['line-metric'], 60], 2, 8],
   'stroke-line-join': 'miter',
   'stroke-line-cap': 'butt',
 };
@@ -60,9 +59,8 @@ const colorInterpolation = {
   'stroke-width': 8
 };
 const shouldNotShowUp = {
-  // 'fill-color': ['*', 'rgb(126,35,144)', ['line-metric']],
+  'fill-color': ['*', 'rgb(126,35,144)', ['line-metric']],
   'circle-fill-color': ['*', 'rgb(126,35,144)', ['line-metric']],
-  // 'circle-fill-color': 'rgb(126,35,144)',
   'circle-radius': 20
 };
 
