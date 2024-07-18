@@ -224,6 +224,49 @@ describe('ol/structs/LinkedList.js', function () {
       expect(ll.head_.next.next.next.next.data).to.be(item6);
     });
 
+    it('concatenates lists when head.next_ is undefined', function () {
+      const ll1 = new LinkedList(false);
+      const ll2 = new LinkedList(false);
+      const d1 = {ll: 1};
+      const d2 = {ll: 2};
+      ll1.insertItem(d1);
+      ll2.insertItem(d2);
+      ll1.concat(ll2);
+
+      expect(ll2.length_).to.be(0);
+      expect(ll1.length_).to.be(2);
+      expect(ll1.first_.prev).to.be(undefined);
+      expect(ll1.last_.next).to.be(undefined);
+      expect(ll1.first_.data).to.be(d1);
+      expect(ll1.first_.next.data).to.be(d2);
+      expect(ll1.first_.next.next).to.be(undefined);
+      expect(ll1.last_.data).to.be(d2);
+      expect(ll1.last_.prev.data).to.be(d1);
+      expect(ll1.last_.prev.prev).to.be(undefined);
+    });
+
+    it('concatenates a circular list to a non-circular one', () => {
+      const ll1 = new LinkedList(false);
+      const ll2 = new LinkedList(true);
+      ll2.insertItem({});
+      ll1.concat(ll2);
+
+      expect(ll1.length_).to.be(1);
+      expect(ll1.first_.prev).to.be(undefined);
+      expect(ll1.last_.next).to.be(undefined);
+    });
+
+    it('concatenates a non-circular list to a circular one', () => {
+      const ll1 = new LinkedList(true);
+      const ll2 = new LinkedList(false);
+      ll2.insertItem({});
+      ll1.concat(ll2);
+
+      expect(ll1.length_).to.be(1);
+      expect(ll1.first_.prev).to.be(ll1.first_);
+      expect(ll1.last_.next).to.be(ll1.last_);
+    });
+
     it('receives the second list if the current one is empty', function () {
       ll.concat(ll2);
       expect(ll.length_).to.be(3);
