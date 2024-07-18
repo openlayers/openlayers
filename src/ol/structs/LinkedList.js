@@ -242,6 +242,8 @@ class LinkedList {
         this.first_ = list.first_;
         this.last_ = list.last_;
         this.length_ = list.length_;
+        this.first_.prev = this.circular_ ? this.last_ : undefined;
+        this.last_.next = this.circular_ ? this.first_ : undefined;
       }
       list.head_ = undefined;
       list.first_ = undefined;
