@@ -230,7 +230,11 @@ class LinkedList {
         const end = this.head_.next;
         this.head_.next = list.first_;
         list.first_.prev = this.head_;
-        end.prev = list.last_;
+        if (end) {
+          end.prev = list.last_;
+        } else {
+          this.last_ = list.last_;
+        }
         list.last_.next = end;
         this.length_ += list.length_;
       } else {
