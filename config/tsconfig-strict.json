@@ -245,7 +245,6 @@
     "../src/ol/source/XYZ.js",
     "../src/ol/source/Zoomify.js",
     "../src/ol/sphere.js",
-    "../src/ol/structs/LinkedList.js",
     "../src/ol/structs/LRUCache.js",
     "../src/ol/structs/RBush.js",
     "../src/ol/style.js",
