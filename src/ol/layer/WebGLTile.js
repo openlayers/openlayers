@@ -473,15 +473,17 @@ class WebGLTileLayer extends BaseTileLayer {
   setStyle(style) {
     this.styleVariables_ = style.variables || {};
     this.style_ = style;
-    const parsedStyle = parseStyle(this.style_, this.getSourceBandCount_());
-    const renderer = this.getRenderer();
-    renderer.reset({
-      vertexShader: parsedStyle.vertexShader,
-      fragmentShader: parsedStyle.fragmentShader,
-      uniforms: parsedStyle.uniforms,
-      paletteTextures: parsedStyle.paletteTextures,
-    });
-    this.changed();
+    if (this.hasRenderer()) {
+      const parsedStyle = parseStyle(this.style_, this.getSourceBandCount_());
+      const renderer = this.getRenderer();
+      renderer.reset({
+        vertexShader: parsedStyle.vertexShader,
+        fragmentShader: parsedStyle.fragmentShader,
+        uniforms: parsedStyle.uniforms,
+        paletteTextures: parsedStyle.paletteTextures,
+      });
+      this.changed();
+    }
   }
 
   /**
