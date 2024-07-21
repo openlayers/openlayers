@@ -201,7 +201,23 @@ class VectorTileLayer extends BaseVectorLayer {
     return super.getFeatures(pixel);
   }
 
-  getFeaturesInExtent(extent) {}
+  /**
+   * Get features whose bounding box intersects the provided extent. Only features for cached
+   * tiles for the last rendered zoom level are available in the source. So this method is only
+   * suitable for requesting tiles for extents that are currently rendered.
+   *
+   * Features are returned in random tile order and as they are included in the tiles. This means
+   * they can be clipped, duplicated across tiles, and simplified to the render resolution.
+   *
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @return {Array<FeatureType>} Features.
+   * @api
+   */
+  getFeaturesInExtent(extent) {
+    return /** @type {Array<FeatureType>} */ (
+      /** @type {*} */ (this.getRenderer().getFeaturesInExtent(extent))
+    );
+  }
 
   /**
    * @return {VectorTileRenderType} The render mode.

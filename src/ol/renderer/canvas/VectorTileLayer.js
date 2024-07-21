@@ -511,6 +511,43 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   }
 
   /**
+   * @param {import("../../extent.js").Extent} extent Extent.
+   * @return {Array<import('../../Feature.js').FeatureLike>} Features.
+   */
+  getFeaturesInExtent(extent) {
+    const features = [];
+    const tileCache = this.getTileCache();
+    if (tileCache.getCount() === 0) {
+      return features;
+    }
+    const tileGrid = this.getLayer().getSource().tileGrid;
+    const z = tileGrid.getZForResolution(this.renderedResolution);
+    tileCache.forEach((tile) => {
+      if (tile.tileCoord[0] !== z || tile.getState() !== TileState.LOADED) {
+        return;
+      }
+      const sourceTiles = tile.getSourceTiles();
+      for (let i = 0, ii = sourceTiles.length; i < ii; ++i) {
+        const sourceTile = sourceTiles[i];
+        const tileCoord = sourceTile.tileCoord;
+        if (intersects(extent, tileGrid.getTileCoordExtent(tileCoord))) {
+          const tileFeatures = sourceTile.getFeatures();
+          if (tileFeatures) {
+            for (let j = 0, jj = tileFeatures.length; j < jj; ++j) {
+              const candidate = tileFeatures[j];
+              const geometry = candidate.getGeometry();
+              if (intersects(extent, geometry.getExtent())) {
+                features.push(candidate);
+              }
+            }
+          }
+        }
+      }
+    });
+    return features;
+  }
+
+  /**
    * Perform action necessary to get the layer rendered after new fonts have loaded
    * @override
    */

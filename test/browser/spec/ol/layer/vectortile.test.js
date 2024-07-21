@@ -9,6 +9,7 @@ import {Icon, Style} from '../../../../../src/ol/style.js';
 import {Point} from '../../../../../src/ol/geom.js';
 import {create as createTransform} from '../../../../../src/ol/transform.js';
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
+import {fromExtent} from '../../../../../src/ol/geom/Polygon.js';
 import {fromLonLat, get as getProjection} from '../../../../../src/ol/proj.js';
 import {getUid} from '../../../../../src/ol/util.js';
 import {isEmpty} from '../../../../../src/ol/obj.js';
@@ -167,6 +168,68 @@ describe('ol.layer.VectorTile', function () {
             done();
           })
           .catch(done);
+      });
+    });
+  });
+
+  describe('getFeatuersInExtent', function () {
+    let map, layer, target;
+
+    beforeEach(function () {
+      const source = new VectorTileSource({
+        maxZoom: 15,
+        tileSize: 256,
+        url: '{z}/{x}/{y}',
+        tileLoadFunction: function (tile) {
+          const extent = source
+            .getTileGrid()
+            .getTileCoordExtent(tile.tileCoord);
+          const feature = new Feature(fromExtent(extent));
+          feature.set('z', tile.tileCoord[0]);
+          tile.setFeatures([feature]);
+        },
+      });
+      layer = new VectorTileLayer({source});
+      target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      map = new Map({
+        target: target,
+        layers: [layer],
+        view: new View({
+          center: [0, 0],
+          zoom: 0,
+        }),
+      });
+    });
+
+    afterEach(function () {
+      map.setTarget(null);
+      document.body.removeChild(target);
+    });
+
+    it('returns an empty array when no tiles are in the cache', function () {
+      layer.getRenderer().getTileCache().clear();
+      const extent = map.getView().calculateExtent(map.getSize());
+      expect(layer.getFeaturesInExtent(extent).length).to.be(0);
+    });
+
+    it('returns features in extent for the last rendered z', function (done) {
+      map.getView().setZoom(15);
+      map.once('rendercomplete', function () {
+        const extent = map.getView().calculateExtent(map.getSize());
+        const features = layer.getFeaturesInExtent(extent);
+        expect(features.length).to.be(4);
+        expect(features[0].get('z')).to.be(15);
+        map.getView().setZoom(0);
+        map.once('rendercomplete', function () {
+          const extent = map.getView().calculateExtent(map.getSize());
+          const features = layer.getFeaturesInExtent(extent);
+          expect(features.length).to.be(1);
+          expect(features[0].get('z')).to.be(0);
+          done();
+        });
       });
     });
   });
