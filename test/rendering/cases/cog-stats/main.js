@@ -7,12 +7,16 @@ const source = new GeoTIFF({
   transition: 0,
 });
 
+const layer = new TileLayer({
+  source: source,
+});
+
+layer.setStyle({
+  color: ['array', ['band', 1], ['band', 1], ['band', 1], ['band', 2]],
+});
+
 new Map({
-  layers: [
-    new TileLayer({
-      source: source,
-    }),
-  ],
+  layers: [layer],
   target: 'map',
   view: source.getView(),
 });
