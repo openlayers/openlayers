@@ -4,6 +4,17 @@
 
 #### Backwards incompatible changes
 
+##### `ol/source/VectorTile`: `getFeaturesInExtent()` method moved to `ol/layer/VectorTile`
+
+The `getFeaturesInExtent()` method of `ol/source/VectorTile` has been moved to `ol/layer/VectorTile`. The signature and behavior have not changed, so all that needs to be done is change code from e.g.
+```js
+layer.getSource().getFeaturesInExtent(extent);
+```
+to
+```js
+layer.getFeaturesInExtent(extent);
+```
+
 ##### Flat styles: Removal of Type hints in `'get'` expressions
 
 For the Canvas renderer, additional arguments to the `'get'` call expression now mean access to nested properties or array items. The expression system has been improved so type hints are no longer needed. If you were previously using a type hint in a `get` expression, you have to change the expression from e.g.
