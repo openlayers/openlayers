@@ -1706,7 +1706,7 @@ class Map extends BaseObject {
         parseFloat(computedStyle['paddingBottom']) -
         parseFloat(computedStyle['borderBottomWidth']);
       if (!isNaN(width) && !isNaN(height)) {
-        size = [width, height];
+        size = [Math.max(0, width), Math.max(0, height)];
         if (
           !hasArea(size) &&
           !!(

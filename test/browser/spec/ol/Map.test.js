@@ -1219,6 +1219,18 @@ describe('ol/Map', function () {
       });
     });
 
+    describe('map container with negative width and heigth due to borders', () => {
+      it('does not try to set a negative map size', () => {
+        const target = map.getTargetElement();
+        document.body.appendChild(target);
+        target.style.border = '1px solid black';
+        target.style.display = 'none';
+        map.updateSize();
+        document.body.removeChild(target);
+        expect(map.getSize()).to.eql([0, 0]);
+      });
+    });
+
     describe('call setTarget with null', function () {
       it('unregisters the viewport resize listener', function () {
         map.setTarget(null);
