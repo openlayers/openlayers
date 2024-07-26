@@ -407,10 +407,10 @@ class WebGLHelper extends Disposable {
     /**
      * Holds info about custom uniforms used in the post processing pass.
      * If the uniform is a texture, the WebGL Texture object will be stored here.
-     * @type {Array<UniformInternalDescription>}
+     * @type {Record<string, UniformInternalDescription>}
      * @private
      */
-    this.uniforms_ = [];
+    this.uniforms_ = {};
     if (options.uniforms) {
       this.setUniforms(options.uniforms);
     }
@@ -452,7 +452,7 @@ class WebGLHelper extends Disposable {
    * @param {Object<string, UniformValue>} uniforms Uniform definitions.
    */
   setUniforms(uniforms) {
-    this.uniforms_ = [];
+    this.uniforms_ = {};
     this.addUniforms(uniforms);
   }
 
@@ -461,11 +461,20 @@ class WebGLHelper extends Disposable {
    */
   addUniforms(uniforms) {
     for (const name in uniforms) {
-      this.uniforms_.push({
-        name: name,
-        value: uniforms[name],
-      });
+      this.addUniform(name, uniforms[name]);
     }
+  }
+
+  /**
+   * Add (or replace) a uniform definition.
+   * @param {string} name Uniform name.
+   * @param {UniformValue} value Uniform value.
+   */
+  addUniform(name, value) {
+    this.uniforms_[name] = {
+      name: name,
+      value: value,
+    };
   }
 
   /**
@@ -757,7 +766,7 @@ class WebGLHelper extends Disposable {
 
     let value;
     let textureSlot = 0;
-    this.uniforms_.forEach((uniform) => {
+    Object.values(this.uniforms_).forEach((uniform) => {
       value =
         typeof uniform.value === 'function'
           ? uniform.value(frameState)
@@ -838,6 +847,13 @@ class WebGLHelper extends Disposable {
         }
       } else if (typeof value === 'number') {
         gl.uniform1f(this.getUniformLocation(uniform.name), value);
+      } else if (Array.isArray(value) && value.length === 16) {
+        this.setUniformMatrixValue(
+          uniform.name,
+          fromTransform(this.tmpMat4_, value),
+        );
+      } else if (value !== null && value !== undefined) {
+        throw new Error('Unknown uniform: ' + uniform.name);
       }
     });
   }
