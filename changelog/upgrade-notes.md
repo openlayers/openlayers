@@ -2,6 +2,8 @@
 
 ### Next release
 
+### 10.0.0
+
 #### Backwards incompatible changes
 
 ##### `ol/source/VectorTile`: `getFeaturesInExtent()` method moved to `ol/layer/VectorTile`
