@@ -11,6 +11,7 @@
     "../src/ol/Collection.js",
     "../src/ol/color.js",
     "../src/ol/colorlike.js",
+    "../src/ol/CompositeTile.js",
     "../src/ol/control.js",
     "../src/ol/control/Attribution.js",
     "../src/ol/control/Control.js",
