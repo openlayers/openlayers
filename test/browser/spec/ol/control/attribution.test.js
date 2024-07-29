@@ -31,6 +31,7 @@ describe('ol.control.Attribution', function () {
         new Attribution({
           collapsed: false,
           collapsible: false,
+          staticAttribution: 'static',
         }),
       ],
       layers: [
@@ -53,6 +54,13 @@ describe('ol.control.Attribution', function () {
             projection: 'EPSG:3857',
             tileGrid: createXYZ(),
             attributions: 'foo',
+          }),
+        }),
+        new TileLayer({
+          source: new TileSource({
+            projection: 'EPSG:3857',
+            tileGrid: createXYZ(),
+            attributions: 'static',
           }),
         }),
       ],
@@ -78,7 +86,7 @@ describe('ol.control.Attribution', function () {
       const attribution = map
         .getTarget()
         .querySelectorAll('.ol-attribution li');
-      expect(attribution.length).to.be(2);
+      expect(attribution.length).to.be(3);
       done();
     }, 0);
   });
