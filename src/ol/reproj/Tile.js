@@ -3,8 +3,7 @@
  */
 import {ERROR_THRESHOLD} from './common.js';
 
-import EventType from '../events/EventType.js';
-import Tile from '../Tile.js';
+import CompositeTile from '../CompositeTile.js';
 import TileState from '../TileState.js';
 import Triangulation from './Triangulation.js';
 import {
@@ -14,7 +13,6 @@ import {
 } from '../reproj.js';
 import {clamp} from '../math.js';
 import {getArea, getIntersection, getWidth, wrapAndSliceX} from '../extent.js';
-import {listen, unlistenByKey} from '../events.js';
 import {releaseCanvas} from '../dom.js';
 
 /**
@@ -32,8 +30,9 @@ import {releaseCanvas} from '../dom.js';
  * Class encapsulating single reprojected tile.
  * See {@link module:ol/source/TileImage~TileImage}.
  *
+ * @extends {CompositeTile<import("../ImageTile.js").default, TileOffset>}
  */
-class ReprojTile extends Tile {
+class ReprojTile extends CompositeTile {
   /**
    * @param {import("../proj/Projection.js").default} sourceProj Source projection.
    * @param {import("../tilegrid/TileGrid.js").default} sourceTileGrid Source tile grid.
@@ -63,7 +62,11 @@ class ReprojTile extends Tile {
     renderEdges,
     options,
   ) {
-    super(tileCoord, TileState.IDLE, options);
+    super({
+      ...options,
+      tileCoord,
+      sourceTiles: [],
+    });
 
     /**
      * @private
@@ -106,18 +109,6 @@ class ReprojTile extends Tile {
      * @type {import("../tilecoord.js").TileCoord}
      */
     this.wrappedTileCoord_ = wrappedTileCoord ? wrappedTileCoord : tileCoord;
-
-    /**
-     * @private
-     * @type {!Array<TileOffset>}
-     */
-    this.sourceTiles_ = [];
-
-    /**
-     * @private
-     * @type {?Array<import("../events.js").EventsKey>}
-     */
-    this.sourcesListenerKeys_ = null;
 
     /**
      * @private
@@ -247,14 +238,14 @@ class ReprojTile extends Tile {
             const tile = getTileFunction(this.sourceZ_, srcX, srcY, pixelRatio);
             if (tile) {
               const offset = worldsAway * worldWidth;
-              this.sourceTiles_.push({tile, offset});
+              this.sourceTiles.push({tile, offset});
             }
           }
         }
         ++worldsAway;
       });
 
-      if (this.sourceTiles_.length === 0) {
+      if (this.sourceTiles.length === 0) {
         this.state = TileState.EMPTY;
       }
     }
@@ -273,7 +264,7 @@ class ReprojTile extends Tile {
    */
   reproject_() {
     const sources = [];
-    this.sourceTiles_.forEach((source) => {
+    this.sourceTiles.forEach((source) => {
       const tile = source.tile;
       if (tile && tile.getState() == TileState.LOADED) {
         const extent = this.sourceTileGrid_.getTileCoordExtent(tile.tileCoord);
@@ -291,7 +282,7 @@ class ReprojTile extends Tile {
         });
       }
     });
-    this.sourceTiles_.length = 0;
+    this.sourceTiles.length = 0;
 
     if (sources.length === 0) {
       this.state = TileState.ERROR;
@@ -330,60 +321,10 @@ class ReprojTile extends Tile {
   }
 
   /**
-   * Load not yet loaded URI.
    * @override
    */
-  load() {
-    if (this.state == TileState.IDLE) {
-      this.state = TileState.LOADING;
-      this.changed();
-
-      let leftToLoad = 0;
-
-      this.sourcesListenerKeys_ = [];
-      this.sourceTiles_.forEach(({tile}) => {
-        const state = tile.getState();
-        if (state == TileState.IDLE || state == TileState.LOADING) {
-          leftToLoad++;
-
-          const sourceListenKey = listen(tile, EventType.CHANGE, (e) => {
-            const state = tile.getState();
-            if (
-              state == TileState.LOADED ||
-              state == TileState.ERROR ||
-              state == TileState.EMPTY
-            ) {
-              unlistenByKey(sourceListenKey);
-              leftToLoad--;
-              if (leftToLoad === 0) {
-                this.unlistenSources_();
-                this.reproject_();
-              }
-            }
-          });
-          this.sourcesListenerKeys_.push(sourceListenKey);
-        }
-      });
-
-      if (leftToLoad === 0) {
-        setTimeout(this.reproject_.bind(this), 0);
-      } else {
-        this.sourceTiles_.forEach(function ({tile}, i, arr) {
-          const state = tile.getState();
-          if (state == TileState.IDLE) {
-            tile.load();
-          }
-        });
-      }
-    }
-  }
-
-  /**
-   * @private
-   */
-  unlistenSources_() {
-    this.sourcesListenerKeys_.forEach(unlistenByKey);
-    this.sourcesListenerKeys_ = null;
+  loadEnd() {
+    this.reproject_();
   }
 
   /**

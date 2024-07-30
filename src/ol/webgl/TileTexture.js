@@ -206,7 +206,7 @@ class TileTexture extends BaseTileRepresentation {
     for (let i = 0; i < tiles.length; i++) {
       const tile = tiles[i];
 
-      if (tile instanceof CompositeTile) {
+      if (tile instanceof CompositeTile && !(tile instanceof ReprojTile)) {
         this.uploadTiles(tile.getTiles());
         continue;
       }
@@ -415,7 +415,7 @@ class TileTexture extends BaseTileRepresentation {
     }
 
     let tile = this.tile;
-    while (tile instanceof CompositeTile) {
+    while (tile instanceof CompositeTile && !(tile instanceof ReprojTile)) {
       // XXX: only supports very first tile
       tile = tile.getTiles()[0];
     }
