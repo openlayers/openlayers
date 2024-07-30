@@ -197,10 +197,10 @@ class WebGLTileLayer extends BaseTileLayer {
   }
 
   /**
-   * @private
+   * @protected
    * @return {number} The number of source bands.
    */
-  getSourceBandCount_() {
+  getSourceBandCount() {
     const max = Number.MAX_SAFE_INTEGER;
     const sources = this.getSources([-max, -max, max, max], max);
     return sources && sources.length && 'bandCount' in sources[0]
@@ -213,7 +213,7 @@ class WebGLTileLayer extends BaseTileLayer {
    */
   parseStyle() {
     const style = this.style_;
-    const bandCount = this.getSourceBandCount_();
+    const bandCount = this.getSourceBandCount();
 
     /**
      * @type {import("../expr/gpu.js").CompilationContext}
