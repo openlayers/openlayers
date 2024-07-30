@@ -361,7 +361,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     if (!source) {
       return false;
     }
-    const sourceRevision = this.getLayer().getSource().getRevision();
+    const sourceRevision = source.getRevision();
     if (!this.renderedRevision_) {
       this.renderedRevision_ = sourceRevision;
     } else if (this.renderedRevision_ !== sourceRevision) {
@@ -597,6 +597,8 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
      */
     const tilesByZ = {};
 
+    this.renderedTiles.length = 0;
+
     /**
      * Part 1: Enqueue tiles
      */
@@ -623,6 +625,10 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
           preload - 1,
         );
       }, 0);
+    }
+
+    if (!(z in tilesByZ)) {
+      return this.container;
     }
 
     /**
@@ -720,7 +726,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     this.preRender(context, frameState);
 
-    this.renderedTiles.length = 0;
     /** @type {Array<number>} */
     const zs = Object.keys(tilesByZ).map(Number);
     zs.sort(ascending);
