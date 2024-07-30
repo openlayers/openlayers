@@ -1,0 +1,33 @@
+---
+layout: example.html
+title: WebGL Night Tile Layer
+shortdesc: Rendering a night shadow with WebGL.
+docs: >
+  This example shows how to use WebGL NightTile layer.
+tags: "webgl, day, night, nighttile"
+---
+<div id="map" class="map"></div>
+
+Date:
+<input type="datetime-local" id="datetime" />
+
+Twilight steps:
+<select id="twilight">
+  <option value="0">None</option>
+  <option value="1">1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+</select>
+
+Base Source:
+<select id="baseSource">
+  <option value="StadiaMaps">StadiaMaps</option>
+  <option value="OSM">OSM</option>
+</select>
+Night Source:
+<select id="nightSource">
+  <option value="StadiaMaps">StadiaMaps</option>
+  <option value="ColorTileSimple">ColorTile (opacity: 0.5)</option>
+  <option value="ColorTileBlack">ColorTile (#000000)</option>
+</select>
