@@ -101,7 +101,8 @@ import {expressionToGlsl} from '../webgl/styleparser.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @extends {BaseTileLayer<SourceType, WebGLTileLayerRenderer>}
+ * @template {WebGLTileLayerRenderer} RenderType
+ * @extends {BaseTileLayer<SourceType, RenderType>}
  * @fires import("../render/Event.js").RenderEvent
  * @api
  */
@@ -417,14 +418,16 @@ class WebGLTileLayer extends BaseTileLayer {
     const parsedStyle = this.parseStyle();
     const shader = this.buildShaders(parsedStyle);
 
-    return new WebGLTileLayerRenderer(this, {
-      vertexShader: shader.vertexShader,
-      fragmentShader: shader.fragmentShader,
+    return /** @type {RenderType} */ (
+      new WebGLTileLayerRenderer(this, {
+        vertexShader: shader.vertexShader,
+        fragmentShader: shader.fragmentShader,
 
-      cacheSize: this.getCacheSize(),
-      uniforms: parsedStyle.uniforms,
-      paletteTextures: parsedStyle.paletteTextures,
-    });
+        cacheSize: this.getCacheSize(),
+        uniforms: parsedStyle.uniforms,
+        paletteTextures: parsedStyle.paletteTextures,
+      })
+    );
   }
 
   /**

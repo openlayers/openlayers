@@ -57,9 +57,6 @@ const attributeDescriptions = [
  */
 
 /**
- * @typedef {import("../../layer/WebGLTile.js").default} LayerType
- */
-/**
  * @typedef {import("../../webgl/TileTexture.js").TileType} TileTextureType
  */
 /**
@@ -69,6 +66,7 @@ const attributeDescriptions = [
 /**
  * @classdesc
  * WebGL renderer for tile layers.
+ * @template {import("../../layer/WebGLTile.js").default} LayerType
  * @extends {WebGLBaseTileLayerRenderer<LayerType, TileTextureType, TileTextureRepresentation>}
  * @api
  */
