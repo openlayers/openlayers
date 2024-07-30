@@ -311,7 +311,10 @@ class DataTileSource extends TileSource {
       crossOrigin: this.crossOrigin_,
     };
 
-    const tileCoord = this.getTileCoordForTileUrlFunction([z, x, y]);
+    const tileCoord = this.getTileCoordForTileUrlFunction(
+      [z, x, y],
+      projection,
+    );
     if (!tileCoord) {
       return null;
     }
