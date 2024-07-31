@@ -5,8 +5,6 @@ import View from '../src/ol/View.js';
 import WebGLVectorLayerRenderer from '../src/ol/renderer/webgl/VectorLayer.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {Tile as TileLayer} from '../src/ol/layer.js';
-import {fromLonLat} from '../src/ol/proj.js';
-import IGC from '../src/ol/format/IGC.js';
 
 const lineStyle = {
   variables: {
@@ -46,21 +44,17 @@ const source = new VectorSource({
   features: [],
 });
 
-const START_TIME = 1303218342000;
-const END_TIME = 1303233916;
-
 const format = new IGC();
 for (let i = 0; i < igcUrls.length; ++i) {
-  fetch(igcUrls[i]).then(resp => resp.text()).then((data) => {
-    const features = format.readFeatures(data, {
-      featureProjection: 'EPSG:3857',
+  fetch(igcUrls[i])
+    .then((resp) => resp.text())
+    .then((data) => {
+      const features = format.readFeatures(data, {
+        featureProjection: 'EPSG:3857',
+      });
+      source.addFeatures(features);
     });
-    console.log(features)
-    source.addFeatures(features);
-  });
-};
-
-console.log('source', source);
+}
 
 const vectorLayer = new WebGLLayer({
   source,
