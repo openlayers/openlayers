@@ -321,7 +321,7 @@ class MixedGeometryBatch {
    * @param {Feature|RenderFeature} feature Feature
    * @param {string} featureUid Feature uid
    * @param {number} stride Stride
-   * @param layout
+   * @param {string} [layout] Layout
    * @private
    */
   addCoordinates_(type, flatCoords, ends, feature, featureUid, stride, layout) {
@@ -580,7 +580,7 @@ function getFlatCoordinatesXY(flatCoords, stride) {
 /**
  * @param {Array<number>} flatCoords Flat coords
  * @param {number} stride Stride
- * @param layout
+ * @param {string} layout Layout
  * @return {Array<number>} Flat coords with only XY components
  */
 function getFlatCoordinatesXYM(flatCoords, stride, layout) {
