@@ -31,7 +31,6 @@ describe('ol.control.Attribution', function () {
         new Attribution({
           collapsed: false,
           collapsible: false,
-          staticAttribution: 'static',
         }),
       ],
       layers: [
@@ -54,13 +53,6 @@ describe('ol.control.Attribution', function () {
             projection: 'EPSG:3857',
             tileGrid: createXYZ(),
             attributions: 'foo',
-          }),
-        }),
-        new TileLayer({
-          source: new TileSource({
-            projection: 'EPSG:3857',
-            tileGrid: createXYZ(),
-            attributions: 'static',
           }),
         }),
       ],
@@ -86,7 +78,7 @@ describe('ol.control.Attribution', function () {
       const attribution = map
         .getTarget()
         .querySelectorAll('.ol-attribution li');
-      expect(attribution.length).to.be(3);
+      expect(attribution.length).to.be(2);
       done();
     }, 0);
   });
@@ -96,7 +88,41 @@ describe('ol.control.Attribution', function () {
     map.addControl(
       new Attribution({
         collapsible: true,
-        staticAttribution: ['static', 'static'],
+        attributions: ['static', 'static'],
+      }),
+    );
+    map.renderSync();
+    setTimeout(() => {
+      const attribution = map
+        .getTarget()
+        .querySelectorAll('.ol-attribution li');
+      expect(attribution.length).to.be(3);
+      done();
+    }, 0);
+  });
+
+  it('renders static attributions alongside source attributions', function (done) {
+    map.getControls().clear();
+    map.addControl(
+      new Attribution({
+        attributions: ['static'],
+      }),
+    );
+    map.renderSync();
+    setTimeout(() => {
+      const attribution = map
+        .getTarget()
+        .querySelectorAll('.ol-attribution li');
+      expect(attribution.length).to.be(3);
+      done();
+    }, 0);
+  });
+
+  it('deduplicates static attributions and source attributions together', function (done) {
+    map.getControls().clear();
+    map.addControl(
+      new Attribution({
+        attributions: ['static', 'foo'],
       }),
     );
     map.renderSync();

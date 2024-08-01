@@ -205,9 +205,7 @@ class Attribution extends Control {
     );
     if (this.attributions_ !== undefined) {
       Array.isArray(this.attributions_)
-        ? this.attributions_.forEach((item) =>
-            visibleAttributions.add(item),
-          )
+        ? this.attributions_.forEach((item) => visibleAttributions.add(item))
         : visibleAttributions.add(this.attributions_);
     }
 
