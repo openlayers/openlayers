@@ -33,7 +33,7 @@ import {toPromise} from '../functions.js';
  * @property {function(import("../MapEvent.js").default):void} [render] Function called when
  * the control should be re-rendered. This is called in a `requestAnimationFrame`
  * callback.
- * @property {string|Array<string>|undefined} [staticAttribution] Optional attribution(s) that will always be
+ * @property {string|Array<string>|undefined} [attributions] Optional attribution(s) that will always be
  * displayed regardless of the layers rendered
  */
 
@@ -99,7 +99,7 @@ class Attribution extends Control {
      * @private
      * @type {string | Array<string> | undefined}
      */
-    this.staticAttribution_ = options.staticAttribution;
+    this.attributions_ = options.attributions;
 
     const className =
       options.className !== undefined ? options.className : 'ol-attribution';
@@ -203,12 +203,12 @@ class Attribution extends Control {
     const visibleAttributions = new Set(
       layers.flatMap((layer) => layer.getAttributions(frameState)),
     );
-    if (this.staticAttribution_ !== undefined) {
-      Array.isArray(this.staticAttribution_)
-        ? this.staticAttribution_.forEach((item) =>
+    if (this.attributions_ !== undefined) {
+      Array.isArray(this.attributions_)
+        ? this.attributions_.forEach((item) =>
             visibleAttributions.add(item),
           )
-        : visibleAttributions.add(this.staticAttribution_);
+        : visibleAttributions.add(this.attributions_);
     }
 
     if (!this.overrideCollapsible_) {
