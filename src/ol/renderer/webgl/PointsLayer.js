@@ -366,6 +366,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     if (this.hitDetectionEnabled_) {
       this.hitRenderTarget_ = new WebGLRenderTarget(this.helper);
     }
+
+    this.getLayer().getSource().changed();
   }
 
   /**
