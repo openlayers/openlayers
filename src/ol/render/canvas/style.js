@@ -18,6 +18,7 @@ import {
   computeGeometryType,
   newParsingContext,
 } from '../../expr/expression.js';
+import {NO_COLOR} from '../../color.js';
 import {buildExpression, newEvaluationContext} from '../../expr/cpu.js';
 import {isEmpty} from '../../obj.js';
 import {toSize} from '../../size.js';
@@ -326,7 +327,7 @@ function buildFill(flatStyle, prefix, context) {
   const fill = new Fill();
   return function (context) {
     const color = evaluateColor(context);
-    if (color === 'none') {
+    if (color === NO_COLOR) {
       return null;
     }
     fill.setColor(color);
@@ -395,7 +396,7 @@ function buildStroke(flatStyle, prefix, context) {
   return function (context) {
     if (evaluateColor) {
       const color = evaluateColor(context);
-      if (color === 'none') {
+      if (color === NO_COLOR) {
         return null;
       }
       stroke.setColor(color);

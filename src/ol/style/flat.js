@@ -99,7 +99,7 @@
  * Fill style properties applied to polygon features.
  *
  * @typedef {Object} FlatFill
- * @property {ColorExpression} [fill-color] The fill color.
+ * @property {ColorExpression} [fill-color] The fill color. `'none'` means no fill and no hit detection.
  * @property {StringExpression} [fill-pattern-src] Fill pattern image URL.
  * @property {SizeExpression} [fill-pattern-size] Fill pattern image size in pixels.
  * Can be used together with `fill-pattern-offset` to define the sub-rectangle to use
@@ -151,8 +151,8 @@
  * `'hanging'`, `'ideographic'`.
  * @property {NumberArrayExpression} [text-padding=[0, 0, 0, 0]] Padding in pixels around the text for decluttering and background. The order of
  * values in the array is `[top, right, bottom, left]`.
- * @property {ColorExpression} [text-fill-color] The fill color. Specify `'none'` to avoid hit detection on the fill.
- * @property {ColorExpression} [text-background-fill-color] The fill color.
+ * @property {ColorExpression} [text-fill-color] The fill color. `'none'` means no fill and no hit detection.
+ * @property {ColorExpression} [text-background-fill-color] The fill color. `'none'` means no fill and no hit detection.
  * @property {ColorExpression} [text-stroke-color] The stroke color.
  * @property {StringExpression} [text-stroke-line-cap='round'] Line cap style: `butt`, `round`, or `square`.
  * @property {StringExpression} [text-stroke-line-join='round'] Line join style: `bevel`, `round`, or `miter`.
@@ -216,7 +216,7 @@
  * @typedef {Object} FlatShape
  * @property {number} [shape-points] Number of points for stars and regular polygons. In case of a polygon, the number of points
  * is the number of sides.
- * @property {ColorExpression} [shape-fill-color] The fill color.
+ * @property {ColorExpression} [shape-fill-color] The fill color. `'none'` means no fill and no hit detection.
  * @property {ColorExpression} [shape-stroke-color] The stroke color.
  * @property {NumberExpression} [shape-stroke-width] Stroke pixel width.
  * @property {StringExpression} [shape-stroke-line-cap='round'] Line cap style: `butt`, `round`, or `square`.
@@ -241,7 +241,7 @@
  *
  * @typedef {Object} FlatCircle
  * @property {number} [circle-radius] Circle radius.
- * @property {ColorExpression} [circle-fill-color] The fill color.
+ * @property {ColorExpression} [circle-fill-color] The fill color. `'none'` means no fill and no hit detection.
  * @property {ColorExpression} [circle-stroke-color] The stroke color.
  * @property {NumberExpression} [circle-stroke-width] Stroke pixel width.
  * @property {StringExpression} [circle-stroke-line-cap='round'] Line cap style: `butt`, `round`, or `square`.
