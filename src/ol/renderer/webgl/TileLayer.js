@@ -153,6 +153,8 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    * @override
    */
   afterHelperCreated() {
+    super.afterHelperCreated();
+
     this.program_ = this.helper.getProgram(
       this.fragmentShader_,
       this.vertexShader_,
