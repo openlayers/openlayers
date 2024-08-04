@@ -422,9 +422,19 @@ describe('ol/renderer/webgl/VectorLayer', () => {
           ...frameState,
           extent: [0, 0, 10, 10],
         });
+        renderer.renderFrame(frameState);
         await new Promise((resolve) => setTimeout(resolve, 150));
       });
-      it('deletes previous buffers', () => {
+      it('keeps previous buffers until the next frame', () => {
+        expect(renderer.helper.deleteBuffer.callCount).to.be(0);
+      });
+      it('deletes previous buffers in the next frame', () => {
+        renderer.prepareFrame({
+          ...frameState,
+          extent: [0, 0, 10, 10],
+        });
+        renderer.renderFrame(frameState);
+
         expect(renderer.helper.deleteBuffer.callCount).to.be(12); // 2 buffers * 3 types of geometry * 2 different styles
       });
     });
