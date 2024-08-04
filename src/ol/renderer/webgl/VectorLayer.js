@@ -156,6 +156,12 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
      */
     this.buffers_ = [];
 
+    /**
+     * @type {Array<import('../../render/webgl/VectorStyleRenderer.js').WebGLBuffers>}
+     * @private
+     */
+    this.disposingBuffers_ = [];
+
     this.applyOptions_(options);
 
     /**
@@ -386,6 +392,10 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       this.sourceRevision_ = vectorSource.getRevision();
     }
 
+    // dispose unused buffers
+    this.disposingBuffers_.forEach((buffers) => this.disposeBuffers(buffers));
+    this.disposingBuffers_ = [];
+
     if (viewNotMoving && (extentChanged || sourceChanged)) {
       const projection = viewState.projection;
       const resolution = viewState.resolution;
@@ -415,7 +425,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       const generatePromises = this.styleRenderers_.map((renderer, i) =>
         renderer.generateBuffers(this.batch_, transform).then((buffers) => {
           if (this.buffers_[i]) {
-            this.disposeBuffers(this.buffers_[i]);
+            this.disposingBuffers_.push(this.buffers_[i]);
           }
           this.buffers_[i] = buffers;
         }),
@@ -546,6 +556,9 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    */
   disposeInternal() {
     this.buffers_.forEach((buffers) => {
+      this.disposeBuffers(buffers);
+    });
+    this.disposingBuffers_.forEach((buffers) => {
       this.disposeBuffers(buffers);
     });
     if (this.sourceListenKeys_) {
