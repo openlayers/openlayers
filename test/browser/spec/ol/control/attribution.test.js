@@ -83,6 +83,58 @@ describe('ol.control.Attribution', function () {
     }, 0);
   });
 
+  it('does not add duplicate static attributions', function (done) {
+    map.getControls().clear();
+    map.addControl(
+      new Attribution({
+        collapsible: true,
+        attributions: ['static', 'static'],
+      }),
+    );
+    map.renderSync();
+    setTimeout(() => {
+      const attribution = map
+        .getTarget()
+        .querySelectorAll('.ol-attribution li');
+      expect(attribution.length).to.be(3);
+      done();
+    }, 0);
+  });
+
+  it('renders static attributions alongside source attributions', function (done) {
+    map.getControls().clear();
+    map.addControl(
+      new Attribution({
+        attributions: ['static'],
+      }),
+    );
+    map.renderSync();
+    setTimeout(() => {
+      const attribution = map
+        .getTarget()
+        .querySelectorAll('.ol-attribution li');
+      expect(attribution.length).to.be(3);
+      done();
+    }, 0);
+  });
+
+  it('deduplicates static attributions and source attributions together', function (done) {
+    map.getControls().clear();
+    map.addControl(
+      new Attribution({
+        attributions: ['static', 'foo'],
+      }),
+    );
+    map.renderSync();
+    setTimeout(() => {
+      const attribution = map
+        .getTarget()
+        .querySelectorAll('.ol-attribution li');
+      expect(attribution.length).to.be(3);
+      done();
+    }, 0);
+  });
+
   it('renders attributions as non-collapsible if source is configured with attributionsCollapsible set to false', function () {
     map.getControls().clear();
     map.addControl(new Attribution());
