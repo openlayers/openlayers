@@ -6,7 +6,7 @@ import {Attribution, defaults as defaultControls} from '../src/ol/control.js';
 
 const attribution = new Attribution({
   collapsible: false,
-  staticAttribution: `<a href="https://openlayers.org">I'm a static attribution. I never disappear</a>`,
+  attributions: `<a href="https://openlayers.org">I'm a static attribution. I never disappear</a>`,
 });
 const map = new Map({
   layers: [
