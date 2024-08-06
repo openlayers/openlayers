@@ -72,7 +72,7 @@
     "@types/proj4": "^2.5.2",
     "@types/rbush": "^3.0.3",
     "@types/topojson-specification": "^1.0.1",
-    "@typescript-eslint/parser": "^7.9.0",
+    "@typescript-eslint/parser": "^8.0.0",
     "chaikin-smooth": "^1.0.4",
     "clean-css-cli": "5.6.3",
     "copy-webpack-plugin": "^12.0.1",
