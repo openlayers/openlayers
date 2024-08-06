@@ -125,8 +125,13 @@ function getRenderExtent(frameState, extent) {
   return extent;
 }
 
+/**
+ * @param {import("../../source/Tile.js").default} source The source.
+ * @param {import('../../tilecoord.js').TileCoord} tileCoord The tile coordinate.
+ * @return {string} The cache key.
+ */
 export function getCacheKey(source, tileCoord) {
-  return `${source.getKey()},${getTileCoordKey(tileCoord)}`;
+  return `${source.getKey()},${source.getRevision()},${getTileCoordKey(tileCoord)}`;
 }
 
 /**

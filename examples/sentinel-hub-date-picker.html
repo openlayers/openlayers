@@ -1,0 +1,29 @@
+---
+layout: example.html
+title: Sentinel Hub Date Picker
+shortdesc: Updating a Sentinel Hub source with new input data.
+docs: >
+  This example renders tiles from Sentinel Hub based on imagery in a user-selected date range.
+  Changing the date picker above calls `source.setData()` with an updated time range in the data filter.
+
+  See the [basic Sentinel Hub example](./sentinel-hub.html) for details on authentication.
+tags: "Sentinel Hub, process"
+---
+<div id="map" class="map"></div>
+<dialog id="auth-dialog" open>
+  <form method="dialog" id="auth-form">
+    <label>Client id
+      <br>
+      <input type="text" name="id" autofocus>
+    </label>
+    <label>Client secret
+      <br>
+      <input type="password" name="secret">
+    </label>
+    <input type="submit" value="show map">
+  </form>
+</dialog>
+<label>
+  Show imagery from the week before&nbsp;
+  <input type="date" id="to-date" value="2024-06-01">
+</label>
