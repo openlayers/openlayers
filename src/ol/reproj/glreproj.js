@@ -228,6 +228,15 @@ export function render(
     }
     stitchWidth = Math.round(getWidth(sourceDataExtent) * stitchScale);
     stitchHeight = Math.round(getHeight(sourceDataExtent) * stitchScale);
+
+    // Make sure we do not exceed the max texture size by lowering the resolution for this image.
+    // https://github.com/openlayers/openlayers/pull/15860#issuecomment-2254123580
+    const maxTexSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+    const largeSide = Math.max(stitchWidth, stitchHeight);
+    const scaleFactor = largeSide > maxTexSize ? maxTexSize / largeSide : 1;
+    const stitchWidthFixed = Math.round(stitchWidth * scaleFactor);
+    const stitchHeightFixed = Math.round(stitchHeight * scaleFactor);
+
     gl.bindTexture(gl.TEXTURE_2D, stitchTexture);
 
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -243,8 +252,8 @@ export function render(
       gl.TEXTURE_2D,
       0,
       gl.RGBA,
-      stitchWidth,
-      stitchHeight,
+      stitchWidthFixed,
+      stitchHeightFixed,
       0,
       gl.RGBA,
       dataType,
@@ -263,12 +272,14 @@ export function render(
     const webGLCanvas = new WebGLCanvas(gl);
 
     sources.forEach(function (src, i, arr) {
-      const xPos = (src.extent[0] - sourceDataExtent[0]) * stitchScale;
-      const yPos = -(src.extent[3] - sourceDataExtent[3]) * stitchScale;
-      const srcWidth = getWidth(src.extent) * stitchScale;
-      const srcHeight = getHeight(src.extent) * stitchScale;
+      const xPos =
+        (src.extent[0] - sourceDataExtent[0]) * stitchScale * scaleFactor;
+      const yPos =
+        -(src.extent[3] - sourceDataExtent[3]) * stitchScale * scaleFactor;
+      const srcWidth = getWidth(src.extent) * stitchScale * scaleFactor;
+      const srcHeight = getHeight(src.extent) * stitchScale * scaleFactor;
       gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-      gl.viewport(0, 0, stitchWidth, stitchHeight);
+      gl.viewport(0, 0, stitchWidthFixed, stitchHeightFixed);
 
       webGLCanvas.drawImage(
         src.texture,
@@ -284,8 +295,8 @@ export function render(
         interpolate
           ? srcHeight
           : Math.round(yPos + srcHeight) - Math.round(yPos),
-        stitchWidth,
-        stitchHeight,
+        stitchWidthFixed,
+        stitchHeightFixed,
       );
     });
     gl.deleteFramebuffer(fb);
