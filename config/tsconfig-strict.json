@@ -211,6 +211,7 @@
     "../src/ol/source/BingMaps.js",
     "../src/ol/source/CartoDB.js",
     "../src/ol/source/Cluster.js",
+    "../src/ol/source/ColorTile.js",
     "../src/ol/source/DataTile.js",
     "../src/ol/source/GeoTIFF.js",
     "../src/ol/source/Google.js",
