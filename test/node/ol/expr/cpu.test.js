@@ -716,6 +716,62 @@ describe('ol/expr/cpu.js', () => {
         expression: ['between', 3, 4, 5],
         expected: false,
       },
+      {
+        name: 'has (true)',
+        context: {
+          properties: {
+            property: 42,
+          },
+        },
+        type: BooleanType,
+        expression: ['has', 'property'],
+        expected: true,
+      },
+      {
+        name: 'has (false)',
+        context: {
+          properties: {
+            property: 42,
+          },
+        },
+        type: BooleanType,
+        expression: ['has', 'notProperty'],
+        expected: false,
+      },
+      {
+        name: 'has (false - null)',
+        context: {
+          properties: {
+            property: 42,
+            notProperty: null,
+          },
+        },
+        type: BooleanType,
+        expression: ['has', 'notProperty'],
+        expected: false,
+      },
+      {
+        name: 'has (nested array true)',
+        context: {
+          properties: {
+            property: [42, {foo: 'bar'}],
+          },
+        },
+        type: BooleanType,
+        expression: ['has', 'property', 1, 'foo'],
+        expected: true,
+      },
+      {
+        name: 'has (nested array false)',
+        context: {
+          properties: {
+            property: [42, {foo: 'bar'}],
+          },
+        },
+        type: BooleanType,
+        expression: ['has', 'property', 0, 'foo'],
+        expected: false,
+      },
     ];
 
     for (const c of cases) {
