@@ -86,7 +86,7 @@ export const FLOAT = 0x1406;
 const CONTEXT_IDS = ['experimental-webgl', 'webgl', 'webkit-3d', 'moz-webgl'];
 
 /**
- * @param {HTMLCanvasElement} canvas Canvas.
+ * @param {HTMLCanvasElement|OffscreenCanvas} canvas Canvas.
  * @param {Object} [attributes] Attributes.
  * @return {WebGLRenderingContext|null} WebGL rendering context.
  */
@@ -101,6 +101,7 @@ export function getContext(canvas, attributes) {
   const ii = CONTEXT_IDS.length;
   for (let i = 0; i < ii; ++i) {
     try {
+      // @ts-ignore -- not all possible context ids are known to the type
       const context = canvas.getContext(CONTEXT_IDS[i], attributes);
       if (context) {
         return /** @type {!WebGLRenderingContext} */ (context);

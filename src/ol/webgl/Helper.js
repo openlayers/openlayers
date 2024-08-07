@@ -11,6 +11,7 @@ import {
   UNSIGNED_SHORT,
   getContext,
 } from '../webgl.js';
+import {WORKER_OFFSCREEN_CANVAS} from '../has.js';
 import {clear} from '../obj.js';
 import {
   compose as composeTransform,
@@ -74,7 +75,7 @@ export const AttributeType = {
  */
 
 /**
- * @typedef {number|Array<number>|HTMLCanvasElement|HTMLImageElement|ImageData|WebGLTexture|import("../transform").Transform} UniformLiteralValue
+ * @typedef {number|Array<number>|HTMLCanvasElement|OffscreenCanvas|HTMLImageElement|ImageData|WebGLTexture|import("../transform").Transform} UniformLiteralValue
  */
 
 /**
@@ -146,16 +147,20 @@ function getUniqueCanvasCacheKey() {
 function getOrCreateContext(key) {
   let cacheItem = canvasCache[key];
   if (!cacheItem) {
-    const canvas = document.createElement('canvas');
-    canvas.width = 1;
-    canvas.height = 1;
-    canvas.style.position = 'absolute';
-    canvas.style.left = '0';
+    let canvas;
+    if (WORKER_OFFSCREEN_CANVAS) {
+      canvas = new OffscreenCanvas(1, 1);
+    } else {
+      canvas = document.createElement('canvas');
+      canvas.width = 1;
+      canvas.height = 1;
+      canvas.style.position = 'absolute';
+      canvas.style.left = '0';
+    }
     const context = getContext(canvas);
     cacheItem = {users: 0, context};
     canvasCache[key] = cacheItem;
   }
-
   cacheItem.users += 1;
   return cacheItem.context;
 }
@@ -576,8 +581,13 @@ class WebGLHelper extends Disposable {
     ) {
       canvas.width = size[0] * pixelRatio;
       canvas.height = size[1] * pixelRatio;
-      canvas.style.width = size[0] + 'px';
-      canvas.style.height = size[1] + 'px';
+      if (
+        typeof HTMLCanvasElement !== 'undefined' &&
+        canvas instanceof HTMLCanvasElement
+      ) {
+        canvas.style.width = size[0] + 'px';
+        canvas.style.height = size[1] + 'px';
+      }
     }
 
     // loop backwards in post processes list
@@ -694,6 +704,7 @@ class WebGLHelper extends Disposable {
   }
 
   /**
+   * //FIXME Allow OffscreenCanvas as return type
    * @return {HTMLCanvasElement} Canvas.
    */
   getCanvas() {
@@ -765,8 +776,12 @@ class WebGLHelper extends Disposable {
 
       // apply value based on type
       if (
-        value instanceof HTMLCanvasElement ||
-        value instanceof HTMLImageElement ||
+        (typeof OffscreenCanvas !== 'undefined' &&
+          value instanceof OffscreenCanvas) ||
+        (typeof HTMLCanvasElement !== 'undefined' &&
+          value instanceof HTMLCanvasElement) ||
+        (typeof HTMLImageElement !== 'undefined' &&
+          value instanceof HTMLImageElement) ||
         value instanceof ImageData ||
         value instanceof WebGLTexture
       ) {
@@ -1094,7 +1109,7 @@ class WebGLHelper extends Disposable {
    * parameter will be ignored.
    * Note: wrap parameters are set to clamp to edge, min filter is set to linear.
    * @param {Array<number>} size Expected size of the texture
-   * @param {ImageData|HTMLImageElement|HTMLCanvasElement} [data] Image data/object to bind to the texture
+   * @param {ImageData|HTMLImageElement|HTMLCanvasElement|OffscreenCanvas} [data] Image data/object to bind to the texture
    * @param {WebGLTexture} [texture] Existing texture to reuse
    * @return {WebGLTexture} The generated texture
    */
