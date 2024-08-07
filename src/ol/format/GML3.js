@@ -849,7 +849,7 @@ class GML3 extends GMLBase {
       const properties = feature.getProperties();
       for (const key in properties) {
         const value = properties[key];
-        if (value !== undefined && value !== null) {
+        if (value !== null && value !== undefined) {
           keys.push(key);
           values.push(value);
           if (
