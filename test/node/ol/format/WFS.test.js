@@ -12,7 +12,7 @@ describe('ol/format/WFS.js', () => {
 
     const writeTransaction = (gmlFormat) => {
       const wfs = new WFS({version: '2.0.0', gmlFormat});
-      const feature = new Feature({someProperty: undefined});
+      const feature = new Feature({foo: null, bar: undefined});
       wfs.writeTransaction([feature], [], [], {
         featurePrefix: 'sf',
         featureNS: 'http://www.openplans.org/spearfish',
@@ -21,11 +21,11 @@ describe('ol/format/WFS.js', () => {
       });
     };
 
-    it('does not throw on undefined property values when using GML2', () => {
+    it('does not throw on null or undefined property values when using GML2', () => {
       expect(() => writeTransaction(new GML2())).to.not.throwException();
     });
 
-    it('does not throw on undefined property values when using GML3', () => {
+    it('does not throw on null or undefined property values when using GML3', () => {
       expect(() => writeTransaction(new GML3())).to.not.throwException();
     });
   });
