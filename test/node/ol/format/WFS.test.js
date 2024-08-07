@@ -3,13 +3,9 @@ import GML2 from '../../../../src/ol/format/GML2.js';
 import GML3 from '../../../../src/ol/format/GML3.js';
 import WFS from '../../../../src/ol/format/WFS.js';
 import expect from '../../expect.js';
-import {JSDOM} from 'jsdom';
 
 describe('ol/format/WFS.js', () => {
   describe('#writeTransaction()', () => {
-    const dom = new JSDOM('<!DOCTYPE html><div/>');
-    global.document = dom.window.document;
-
     const writeTransaction = (gmlFormat) => {
       const wfs = new WFS({version: '2.0.0', gmlFormat});
       const feature = new Feature({foo: null, bar: undefined});
