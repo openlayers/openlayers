@@ -1,5 +1,5 @@
 import Feature from '../../../../src/ol/Feature.js';
-import GML3 from '../../../../src/ol/format/GML2.js';
+import GML2 from '../../../../src/ol/format/GML2.js';
 import GML3 from '../../../../src/ol/format/GML3.js';
 import WFS from '../../../../src/ol/format/WFS.js';
 import expect from '../../expect.js';
