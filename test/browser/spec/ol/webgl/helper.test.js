@@ -415,10 +415,14 @@ describe('ol/webgl/WebGLHelper', function () {
         attribute vec3 attr1;
         attribute vec2 attr2;
         attribute float attr3;
+        attribute float attr4;
         uniform float u_test;
 
         void main(void) {
+          gl_Position = vec4(attr1, 1.0);
+          gl_Position = vec4(attr2, 0.0, 1.0);
           gl_Position = vec4(u_test, attr3, 0.0, 1.0);
+          gl_Position = vec4(u_test, attr4, 0.0, 1.0);
         }`,
         ),
         SAMPLE_FRAMESTATE,
@@ -446,6 +450,36 @@ describe('ol/webgl/WebGLHelper', function () {
       expect(spy.getCall(2).args[2]).to.eql(FLOAT);
       expect(spy.getCall(2).args[3]).to.eql(6 * bytesPerFloat);
       expect(spy.getCall(2).args[4]).to.eql(5 * bytesPerFloat);
+    });
+
+    it('only enables attributes based on the given array', function () {
+      const gl = h.getGL();
+
+      h.enableAttributes(baseAttrs);
+
+      function isVertexAttribEnabled(name) {
+        const loc = h.getAttributeLocation(name);
+        return (
+          loc >= 0 && gl.getVertexAttrib(loc, gl.VERTEX_ATTRIB_ARRAY_ENABLED)
+        );
+      }
+
+      expect(isVertexAttribEnabled('attr1')).to.be(true);
+      expect(isVertexAttribEnabled('attr2')).to.be(true);
+      expect(isVertexAttribEnabled('attr3')).to.be(true);
+      expect(isVertexAttribEnabled('attr4')).to.be(false);
+
+      h.enableAttributes([
+        {
+          name: 'attr4',
+          size: 1,
+        },
+      ]);
+
+      expect(isVertexAttribEnabled('attr1')).to.be(false);
+      expect(isVertexAttribEnabled('attr2')).to.be(false);
+      expect(isVertexAttribEnabled('attr3')).to.be(false);
+      expect(isVertexAttribEnabled('attr4')).to.be(true);
     });
   });
 
