@@ -27,6 +27,7 @@ uniform mediump int u_hitDetection;
 
 const float PI = 3.141592653589793238;
 const float TWO_PI = 2.0 * PI;
+float currentLineMetric = 0.; // an actual value will be used in the stroke shaders
 
 // this used to produce an alpha-premultiplied color from a texture
 vec4 samplePremultiplied(sampler2D sampler, vec2 texCoord) {
@@ -602,10 +603,10 @@ ${this.uniforms_
     return 'uniform ' + uniform + ';';
   })
   .join('\n')}
-attribute vec2 a_position;
-attribute float a_index;
 attribute vec2 a_segmentStart;
 attribute vec2 a_segmentEnd;
+attribute float a_measureStart;
+attribute float a_measureEnd;
 attribute float a_parameters;
 attribute float a_distance;
 attribute vec2 a_joinAngles;
@@ -622,6 +623,8 @@ varying float v_angleEnd;
 varying float v_width;
 varying vec4 v_prop_hitColor;
 varying float v_distanceOffsetPx;
+varying float v_measureStart;
+varying float v_measureEnd;
 ${this.varyings_
   .map(function (varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
@@ -664,6 +667,7 @@ void main(void) {
   v_angleStart = a_joinAngles.x;
   v_angleEnd = a_joinAngles.y;
   float vertexNumber = floor(abs(a_parameters) / 10000. + 0.5);
+  currentLineMetric = vertexNumber < 1.5 ? a_measureStart : a_measureEnd;
   // we're reading the fractional part while keeping the sign (so -4.12 gives -0.12, 3.45 gives 0.45)
   float angleTangentSum = fract(abs(a_parameters) / 10000.) * 10000. * sign(a_parameters);
 
@@ -698,6 +702,8 @@ void main(void) {
   v_width = lineWidth;
   v_prop_hitColor = a_prop_hitColor;
   v_distanceOffsetPx = a_distance / u_resolution - (lineOffsetPx * angleTangentSum);
+  v_measureStart = a_measureStart;
+  v_measureEnd = a_measureEnd;
 ${this.varyings_
   .map(function (varying) {
     return '  ' + varying.name + ' = ' + varying.expression + ';';
@@ -729,6 +735,8 @@ varying float v_angleEnd;
 varying float v_width;
 varying vec4 v_prop_hitColor;
 varying float v_distanceOffsetPx;
+varying float v_measureStart;
+varying float v_measureEnd;
 ${this.varyings_
   .map(function (varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
@@ -834,15 +842,19 @@ void main(void) {
     discard;
   }
   #endif
-  if (${this.discardExpression_}) { discard; }
 
   float segmentLength = length(v_segmentEnd - v_segmentStart);
   vec2 segmentTangent = (v_segmentEnd - v_segmentStart) / segmentLength;
   vec2 segmentNormal = vec2(-segmentTangent.y, segmentTangent.x);
   vec2 startToPoint = currentPoint - v_segmentStart;
-  float currentLengthPx = max(0., min(dot(segmentTangent, startToPoint), segmentLength)) + v_distanceOffsetPx; 
+  float lengthToPoint = max(0., min(dot(segmentTangent, startToPoint), segmentLength));
+  float currentLengthPx = lengthToPoint + v_distanceOffsetPx; 
   float currentRadiusPx = abs(dot(segmentNormal, startToPoint));
   float currentRadiusRatio = dot(segmentNormal, startToPoint) * 2. / v_width;
+  currentLineMetric = mix(v_measureStart, v_measureEnd, lengthToPoint / segmentLength);
+
+  if (${this.discardExpression_}) { discard; }
+
   vec4 color = ${this.strokeColorExpression_} * u_globalAlpha;
   float capType = ${this.strokeCapExpression_};
   float joinType = ${this.strokeJoinExpression_};

@@ -1,0 +1,16 @@
+---
+layout: example.html
+title: Applying a filter along lines rendered with WebGL
+shortdesc: Example showing how filtering a line using the M parameter is represented with the WebGL renderer
+docs: >
+  This example showcases how the `['line-metric']` operator can be used to style and partially filter lines which
+    contain an M ("measure") parameter in their coordinates. For each trajectory the timestamp is stored in the M
+    parameter using an `XYM` layout. This let us show the progression on a specific time for each trajectory on the map.
+tags: "draw, vector, webgl, line, line-metric, measure, layout"
+---
+<div id="map" class="map"></div>
+<form>
+  Current time shown:<br>
+  <input style="width: 50%" type="range" class="uniform" id="time-input" name="maxT" min="1303200000" max="1303240000" value="1303240000">
+  <span id="time-value"></span>
+</form>
