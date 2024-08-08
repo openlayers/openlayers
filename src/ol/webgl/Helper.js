@@ -9,6 +9,7 @@ import {
   UNSIGNED_BYTE,
   UNSIGNED_INT,
   UNSIGNED_SHORT,
+  disableVertexAttribArrays,
   getContext,
 } from '../webgl.js';
 import {clear} from '../obj.js';
@@ -1047,6 +1048,9 @@ class WebGLHelper extends Disposable {
   enableAttributes(attributes) {
     const stride = computeAttributesStride(attributes);
     let offset = 0;
+
+    disableVertexAttribArrays(this.gl_);
+
     for (let i = 0; i < attributes.length; i++) {
       const attr = attributes[i];
       this.enableAttributeArray_(

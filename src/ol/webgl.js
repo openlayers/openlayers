@@ -130,3 +130,13 @@ export function getSupportedExtensions() {
   }
   return supportedExtensions;
 }
+
+/**
+ * @param {WebGLRenderingContext} gl WebGL rendering context.
+ */
+export function disableVertexAttribArrays(gl) {
+  const maxAttributes = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
+  for (let i = 0; i < maxAttributes; i++) {
+    gl.disableVertexAttribArray(i);
+  }
+}

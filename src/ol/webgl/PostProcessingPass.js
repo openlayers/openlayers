@@ -2,6 +2,7 @@
  * @module ol/webgl/PostProcessingPass
  */
 
+import {disableVertexAttribArrays} from '../webgl.js';
 import {getUid} from '../util.js';
 
 const DEFAULT_VERTEX_SHADER = `
@@ -335,6 +336,8 @@ class WebGLPostProcessingPass {
     gl.bindBuffer(gl.ARRAY_BUFFER, this.renderTargetVerticesBuffer_);
 
     gl.useProgram(this.renderTargetProgram_);
+
+    disableVertexAttribArrays(gl);
     gl.enableVertexAttribArray(this.renderTargetAttribLocation_);
     gl.vertexAttribPointer(
       this.renderTargetAttribLocation_,
