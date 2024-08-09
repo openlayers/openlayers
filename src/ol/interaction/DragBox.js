@@ -231,8 +231,6 @@ class DragBox extends PointerInteraction {
       return false;
     }
 
-    this.box_.setMap(null);
-
     const completeBox = this.boxEndCondition_(
       mapBrowserEvent,
       this.startPixel_,
@@ -248,6 +246,10 @@ class DragBox extends PointerInteraction {
         mapBrowserEvent,
       ),
     );
+
+    this.box_.setMap(null);
+    this.startPixel_ = null;
+
     return false;
   }
 
