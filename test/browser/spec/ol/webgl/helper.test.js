@@ -166,19 +166,21 @@ describe('ol/webgl/WebGLHelper', function () {
       });
 
       it('has processed uniforms', function () {
-        expect(h.uniforms_.length).to.eql(5);
-        expect(h.uniforms_[0].name).to.eql('u_test1');
-        expect(h.uniforms_[1].name).to.eql('u_test2');
-        expect(h.uniforms_[2].name).to.eql('u_test3');
-        expect(h.uniforms_[3].name).to.eql('u_test4');
-        expect(h.uniforms_[4].name).to.eql('u_test5');
-        expect(h.uniforms_[0].location).to.not.eql(-1);
-        expect(h.uniforms_[1].location).to.not.eql(-1);
-        expect(h.uniforms_[2].location).to.not.eql(-1);
-        expect(h.uniforms_[3].location).to.not.eql(-1);
-        expect(h.uniforms_[4].location).to.not.eql(-1);
-        expect(h.uniforms_[2].texture).to.not.eql(undefined);
-        expect(h.uniforms_[4].texture).to.eql(uniformTexture);
+        expect(Object.keys(h.uniforms_).length).to.eql(5);
+        expect(h.uniforms_['u_test1'].name).to.eql('u_test1');
+        expect(h.uniforms_['u_test2'].name).to.eql('u_test2');
+        expect(h.uniforms_['u_test3'].name).to.eql('u_test3');
+        expect(h.uniforms_['u_test4'].name).to.eql('u_test4');
+        expect(h.uniforms_['u_test5'].name).to.eql('u_test5');
+
+        expect(h.uniforms_['u_test1'].location).to.not.eql(-1);
+        expect(h.uniforms_['u_test2'].location).to.not.eql(-1);
+        expect(h.uniforms_['u_test3'].location).to.not.eql(-1);
+        expect(h.uniforms_['u_test4'].location).to.not.eql(-1);
+        expect(h.uniforms_['u_test5'].location).to.not.eql(-1);
+
+        expect(h.uniforms_['u_test3'].texture).to.not.eql(undefined);
+        expect(h.uniforms_['u_test5'].texture).to.eql(uniformTexture);
       });
 
       describe('avoid resizing the canvas if not required', () => {

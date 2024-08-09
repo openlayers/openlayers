@@ -545,7 +545,7 @@ describe('ol/layer/WebGLTile', function () {
           }),
         ],
       });
-      expect(layer.getSourceBandCount_()).to.be(7);
+      expect(layer.getSourceBandCount()).to.be(7);
     });
     it('can determine the correct band count for sources function', () => {
       const layer = new WebGLTileLayer({
@@ -557,7 +557,7 @@ describe('ol/layer/WebGLTile', function () {
             }),
         ),
       });
-      expect(layer.getSourceBandCount_()).to.be(7);
+      expect(layer.getSourceBandCount()).to.be(7);
     });
   });
 
