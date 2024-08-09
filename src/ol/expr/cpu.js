@@ -260,20 +260,19 @@ function compileAccessorExpression(expression, context) {
     case Ops.Has: {
       return (context) => {
         const args = expression.args;
-        let value = context.properties[name];
-        let has = value !== undefined && value !== null;
-        if (has && args.length > 1) {
-          for (let i = 1, ii = args.length; i < ii; ++i) {
-            const keyExpression = /** @type {LiteralExpression} */ (args[i]);
-            const key = /** @type {string|number} */ (keyExpression.value);
-            value = value[key];
-            has = value !== undefined && value !== null;
-            if (!has) {
-              break;
-            }
-          }
+        if (!(name in context.properties)) {
+          return false;
         }
-        return has;
+        let value = context.properties[name];
+        for (let i = 1, ii = args.length; i < ii; ++i) {
+          const keyExpression = /** @type {LiteralExpression} */ (args[i]);
+          const key = /** @type {string|number} */ (keyExpression.value);
+          if (!value || !Object.hasOwn(value, key)) {
+            return false;
+          }
+          value = value[key];
+        }
+        return true;
       };
     }
     default: {

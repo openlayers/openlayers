@@ -739,15 +739,47 @@ describe('ol/expr/cpu.js', () => {
         expected: false,
       },
       {
-        name: 'has (false - null)',
+        name: 'has (true - null)',
         context: {
           properties: {
-            property: 42,
-            notProperty: null,
+            property: null,
           },
         },
         type: BooleanType,
-        expression: ['has', 'notProperty'],
+        expression: ['has', 'property'],
+        expected: true,
+      },
+      {
+        name: 'has (true - undefined)',
+        context: {
+          properties: {
+            property: undefined,
+          },
+        },
+        type: BooleanType,
+        expression: ['has', 'property'],
+        expected: true,
+      },
+      {
+        name: 'has (nested object true)',
+        context: {
+          properties: {
+            deeply: {nested: {property: true}},
+          },
+        },
+        type: BooleanType,
+        expression: ['has', 'deeply', 'nested', 'property'],
+        expected: true,
+      },
+      {
+        name: 'has (nested object false)',
+        context: {
+          properties: {
+            deeply: {nested: {property: true}},
+          },
+        },
+        type: BooleanType,
+        expression: ['has', 'deeply', 'not', 'property'],
         expected: false,
       },
       {
