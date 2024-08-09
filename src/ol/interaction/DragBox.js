@@ -300,6 +300,27 @@ class DragBox extends PointerInteraction {
 
     super.setActive(active);
   }
+
+  /**
+   * @param {import("../Map.js").default|null} map Map.
+   * @override
+   */
+  setMap(map) {
+    const oldMap = this.getMap();
+
+    if (oldMap) {
+      this.box_.setMap(null);
+
+      if (this.startPixel_) {
+        this.dispatchEvent(
+          new DragBoxEvent(DragBoxEventType.BOXCANCEL, this.startPixel_, null),
+        );
+        this.startPixel_ = null;
+      }
+    }
+
+    super.setMap(map);
+  }
 }
 
 export default DragBox;
