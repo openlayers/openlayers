@@ -137,7 +137,7 @@ class DragBox extends PointerInteraction {
      */
     this.un;
 
-    options = options ? options : {};
+    options = options ?? {};
 
     /**
      * @type {import("../render/Box.js").default}
@@ -149,7 +149,7 @@ class DragBox extends PointerInteraction {
      * @type {number}
      * @private
      */
-    this.minArea_ = options.minArea !== undefined ? options.minArea : 64;
+    this.minArea_ = options.minArea ?? 64;
 
     if (options.onBoxEnd) {
       this.onBoxEnd = options.onBoxEnd;
@@ -165,15 +165,14 @@ class DragBox extends PointerInteraction {
      * @private
      * @type {import("../events/condition.js").Condition}
      */
-    this.condition_ = options.condition ? options.condition : mouseActionButton;
+    this.condition_ = options.condition ?? mouseActionButton;
 
     /**
      * @private
      * @type {EndCondition}
      */
-    this.boxEndCondition_ = options.boxEndCondition
-      ? options.boxEndCondition
-      : this.defaultBoxEndCondition;
+    this.boxEndCondition_ =
+      options.boxEndCondition ?? this.defaultBoxEndCondition;
   }
 
   /**
