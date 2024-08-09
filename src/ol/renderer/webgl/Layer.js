@@ -67,7 +67,12 @@ class WebGLLayerRenderer extends LayerRenderer {
      */
     this.helper;
 
-    layer.addChangeListener(LayerProperty.MAP, this.removeHelper.bind(this));
+    this.onMapChanged_ = () => {
+      this.clearCache();
+      this.removeHelper();
+    };
+
+    layer.addChangeListener(LayerProperty.MAP, this.onMapChanged_);
 
     this.dispatchPreComposeEvent = this.dispatchPreComposeEvent.bind(this);
     this.dispatchPostComposeEvent = this.dispatchPostComposeEvent.bind(this);
@@ -202,11 +207,21 @@ class WebGLLayerRenderer extends LayerRenderer {
   }
 
   /**
+   * @protected
+   */
+  clearCache() {}
+
+  /**
    * Clean up.
    * @override
    */
   disposeInternal() {
+    this.clearCache();
     this.removeHelper();
+    this.getLayer()?.removeChangeListener(
+      LayerProperty.MAP,
+      this.onMapChanged_,
+    );
     super.disposeInternal();
   }
 

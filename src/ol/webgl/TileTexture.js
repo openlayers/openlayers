@@ -4,7 +4,6 @@
 
 import BaseTileRepresentation from './BaseTileRepresentation.js';
 import DataTile, {asArrayLike, asImageLike} from '../DataTile.js';
-import EventType from '../events/EventType.js';
 import ImageTile from '../ImageTile.js';
 import ReprojTile from '../reproj/Tile.js';
 import WebGLArrayBuffer from './Buffer.js';
@@ -183,6 +182,26 @@ class TileTexture extends BaseTileRepresentation {
 
   /**
    * @override
+   * @param {import("./Helper.js").default} helper The WebGL helper.
+   */
+  setHelper(helper) {
+    const gl = this.helper?.getGL();
+    if (gl) {
+      this.helper.deleteBuffer(this.coords);
+      for (let i = 0; i < this.textures.length; ++i) {
+        gl.deleteTexture(this.textures[i]);
+      }
+    }
+
+    super.setHelper(helper);
+
+    if (helper) {
+      helper.flushBufferData(this.coords);
+    }
+  }
+
+  /**
+   * @override
    */
   uploadTile() {
     const helper = this.helper;
@@ -288,18 +307,6 @@ class TileTexture extends BaseTileRepresentation {
     }
 
     this.setReady();
-  }
-
-  /**
-   * @override
-   */
-  disposeInternal() {
-    const gl = this.helper.getGL();
-    this.helper.deleteBuffer(this.coords);
-    for (let i = 0; i < this.textures.length; ++i) {
-      gl.deleteTexture(this.textures[i]);
-    }
-    this.tile.removeEventListener(EventType.CHANGE, this.handleTileChange_);
   }
 
   /**
