@@ -46,12 +46,12 @@ describe('ol/expr/gpu.js', () => {
   });
 
   describe('colorToGlsl()', () => {
-    it('normalizes color and outputs numbers with dot separators, including premultiplied alpha', () => {
+    it('normalizes color and outputs numbers with dot separators', () => {
       expect(colorToGlsl([100, 0, 255])).to.eql(
         'vec4(0.39215686274509803, 0.0, 1.0, 1.0)',
       );
       expect(colorToGlsl([100, 0, 255, 0.7])).to.eql(
-        'vec4(0.2745098039215686, 0.0, 0.7, 0.7)',
+        'vec4(0.39215686274509803, 0.0, 1.0, 0.7)',
       );
     });
     it('handles colors in string format', () => {
@@ -61,7 +61,7 @@ describe('ol/expr/gpu.js', () => {
         'vec4(0.39215686274509803, 0.0, 1.0, 1.0)',
       );
       expect(colorToGlsl('rgba(100, 0, 255, 0.3)')).to.eql(
-        'vec4(0.11764705882352941, 0.0, 0.3, 0.3)',
+        'vec4(0.39215686274509803, 0.0, 1.0, 0.3)',
       );
     });
   });
@@ -230,7 +230,7 @@ describe('ol/expr/gpu.js', () => {
         name: 'multiplication (infer string as color)',
         type: ColorType,
         expression: ['*', [255, 127.5, 0, 0.5], 'red'],
-        expected: '(vec4(0.5, 0.25, 0.0, 0.5) * vec4(1.0, 0.0, 0.0, 1.0))',
+        expected: '(vec4(1.0, 0.5, 0.0, 0.5) * vec4(1.0, 0.0, 0.0, 1.0))',
       },
       {
         name: 'division',
@@ -382,8 +382,7 @@ describe('ol/expr/gpu.js', () => {
         name: 'color constructor',
         type: AnyType,
         expression: ['color', ['get', 'attr4'], 1, 2, 0.5],
-        expected:
-          '(0.5 * vec4(a_prop_attr4 / 255.0, 1.0 / 255.0, 2.0 / 255.0, 1.0))',
+        expected: 'vec4(a_prop_attr4 / 255.0, 1.0 / 255.0, 2.0 / 255.0, 0.5)',
       },
       {
         name: 'grayscale color',
@@ -395,7 +394,7 @@ describe('ol/expr/gpu.js', () => {
         name: 'grayscale color with alpha',
         type: AnyType,
         expression: ['color', 100, 0.5],
-        expected: '(0.5 * vec4(vec3(100.0 / 255.0), 1.0))',
+        expected: 'vec4(vec3(100.0 / 255.0), 0.5)',
       },
       {
         name: 'rgb color',
@@ -407,8 +406,7 @@ describe('ol/expr/gpu.js', () => {
         name: 'rgb color with alpha',
         type: AnyType,
         expression: ['color', 100, 150, 200, 0.5],
-        expected:
-          '(0.5 * vec4(100.0 / 255.0, 150.0 / 255.0, 200.0 / 255.0, 1.0))',
+        expected: 'vec4(100.0 / 255.0, 150.0 / 255.0, 200.0 / 255.0, 0.5)',
       },
       {
         name: 'band',
@@ -657,7 +655,7 @@ describe('ol/expr/gpu.js', () => {
           ['match', ['get', 'year'], 2000, 'green', '#ffe52c'],
         ],
         expected:
-          'mix(vec4(0.5, 0.5, 0.0, 0.5), (a_prop_year == 2000.0 ? vec4(0.0, 0.5019607843137255, 0.0, 1.0) : vec4(1.0, 0.8980392156862745, 0.17254901960784313, 1.0)), clamp((pow((mod((u_time + mix(0.0, 8.0, clamp((a_prop_year - 1850.0) / (2015.0 - 1850.0), 0.0, 1.0))), 8.0) / 8.0), 0.5) - 0.0) / (1.0 - 0.0), 0.0, 1.0))',
+          'mix(vec4(1.0, 1.0, 0.0, 0.5), (a_prop_year == 2000.0 ? vec4(0.0, 0.5019607843137255, 0.0, 1.0) : vec4(1.0, 0.8980392156862745, 0.17254901960784313, 1.0)), clamp((pow((mod((u_time + mix(0.0, 8.0, clamp((a_prop_year - 1850.0) / (2015.0 - 1850.0), 0.0, 1.0))), 8.0) / 8.0), 0.5) - 0.0) / (1.0 - 0.0), 0.0, 1.0))',
       },
       {
         name: 'array for symbol size',
