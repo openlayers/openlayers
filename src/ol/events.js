@@ -29,6 +29,8 @@ import {clear} from './obj.js';
  * @typedef {ListenerFunction|ListenerObject} Listener
  */
 
+export {default as BaseEvent } from './events/Event.js';
+
 /**
  * Registers an event listener on an event target. Inspired by
  * https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html
