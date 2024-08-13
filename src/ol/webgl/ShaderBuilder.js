@@ -52,6 +52,10 @@ const DEFAULT_STYLE = createDefaultStyle();
  *   .setSymbolSizeExpression('...')
  *   .getSymbolFragmentShader();
  * ```
+ *
+ * A note on [alpha premultiplication](https://en.wikipedia.org/wiki/Alpha_compositing#Straight_versus_premultiplied):
+ * The ShaderBuilder class expects all colors to **not having been alpha-premultiplied!** This is because alpha
+ * premultiplication is done at the end of each fragment shader.
  */
 export class ShaderBuilder {
   constructor() {
