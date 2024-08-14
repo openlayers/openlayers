@@ -53,11 +53,11 @@ export function packColor(color) {
 }
 
 const UNPACK_COLOR_FN = `vec4 unpackColor(vec2 packedColor) {
-  return fract(packedColor[1] / 256.0) * vec4(
+  return vec4(
     fract(floor(packedColor[0] / 256.0) / 256.0),
     fract(packedColor[0] / 256.0),
     fract(floor(packedColor[1] / 256.0) / 256.0),
-    1.0
+    fract(packedColor[1] / 256.0)
   );
 }`;
 
@@ -182,9 +182,9 @@ function getColorFromDistanceField(
     color = `mix(${strokeColor}, ${color}, ${strokeFillRatio})`;
   }
   const shapeOpacity = `(1.0 - smoothstep(-0.63, 0.58, ${distanceField}))`;
-  let result = `${color} * ${shapeOpacity}`;
+  let result = `${color} * vec4(1.0, 1.0, 1.0, ${shapeOpacity})`;
   if (opacity !== null) {
-    result = `${result} * ${opacity}`;
+    result = `${result} * vec4(1.0, 1.0, 1.0, ${opacity})`;
   }
   return result;
 }
@@ -511,11 +511,11 @@ function parseIconProperties(
 
   // OPACITY
   if ('icon-opacity' in style) {
-    color = `${color} * ${expressionToGlsl(
+    color = `${color} * vec4(1.0, 1.0, 1.0, ${expressionToGlsl(
       fragContext,
       style['icon-opacity'],
       NumberType,
-    )}`;
+    )})`;
   }
 
   // IMAGE & SIZE
@@ -529,7 +529,7 @@ function parseIconProperties(
   );
   builder
     .setSymbolColorExpression(
-      `${color} * samplePremultiplied(u_texture${textureId}, v_texCoord)`,
+      `${color} * texture2D(u_texture${textureId}, v_texCoord)`,
     )
     .setSymbolSizeExpression(sizeExpression);
 
@@ -673,7 +673,7 @@ function parseStrokeProperties(
   uCoordPx = clamp(uCoordPx, 0.5, sampleSize.x - 0.5);
   float vCoordPx = (-currentRadiusRatio * 0.5 + 0.5) * sampleSize.y;
   vec2 texCoord = (vec2(uCoordPx, vCoordPx) + textureOffset) / textureSize;
-  return samplePremultiplied(texture, texCoord);
+  return texture2D(texture, texCoord);
 }`;
     const textureName = `u_texture${textureId}`;
     let tintExpression = '1.';
@@ -832,7 +832,7 @@ function parseFillProperties(
   // also make sure that we're not sampling too close to the borders to avoid interpolation with outside pixels
   samplePos = clamp(samplePos, vec2(0.5), sampleSize - vec2(0.5));
   samplePos.y = sampleSize.y - samplePos.y; // invert y axis so that images appear upright
-  return samplePremultiplied(texture, (samplePos + textureOffset) / textureSize);
+  return texture2D(texture, (samplePos + textureOffset) / textureSize);
 }`;
     const textureName = `u_texture${textureId}`;
     let tintExpression = '1.';

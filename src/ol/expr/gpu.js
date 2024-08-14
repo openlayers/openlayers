@@ -62,13 +62,7 @@ export function arrayToGlsl(array) {
 export function colorToGlsl(color) {
   const array = asArray(color);
   const alpha = array.length > 3 ? array[3] : 1;
-  // all components are premultiplied with alpha value
-  return arrayToGlsl([
-    (array[0] / 255) * alpha,
-    (array[1] / 255) * alpha,
-    (array[2] / 255) * alpha,
-    alpha,
-  ]);
+  return arrayToGlsl([array[0] / 255, array[1] / 255, array[2] / 255, alpha]);
 }
 
 /**
@@ -371,14 +365,14 @@ ${tests.join('\n')}
     }
     if (compiledArgs.length === 2) {
       //grayscale with alpha
-      return `(${compiledArgs[1]} * vec4(vec3(${compiledArgs[0]} / 255.0), 1.0))`;
+      return `vec4(vec3(${compiledArgs[0]} / 255.0), ${compiledArgs[1]})`;
     }
     const rgb = compiledArgs.slice(0, 3).map((color) => `${color} / 255.0`);
     if (compiledArgs.length === 3) {
       return `vec4(${rgb.join(', ')}, 1.0)`;
     }
     const alpha = compiledArgs[3];
-    return `(${alpha} * vec4(${rgb.join(', ')}, 1.0))`;
+    return `vec4(${rgb.join(', ')}, ${alpha})`;
   }),
   [Ops.Band]: createCompiler(([band, xOffset, yOffset], context) => {
     if (!(GET_BAND_VALUE_FUNC in context.functions)) {

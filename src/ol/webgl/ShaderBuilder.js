@@ -27,12 +27,6 @@ uniform mediump int u_hitDetection;
 
 const float PI = 3.141592653589793238;
 const float TWO_PI = 2.0 * PI;
-
-// this used to produce an alpha-premultiplied color from a texture
-vec4 samplePremultiplied(sampler2D sampler, vec2 texCoord) {
-  vec4 color = texture2D(sampler, texCoord);
-  return vec4(color.rgb * color.a, color.a);
-}
 `;
 
 const DEFAULT_STYLE = createDefaultStyle();
@@ -58,6 +52,10 @@ const DEFAULT_STYLE = createDefaultStyle();
  *   .setSymbolSizeExpression('...')
  *   .getSymbolFragmentShader();
  * ```
+ *
+ * A note on [alpha premultiplication](https://en.wikipedia.org/wiki/Alpha_compositing#Straight_versus_premultiplied):
+ * The ShaderBuilder class expects all colors to **not having been alpha-premultiplied!** This is because alpha
+ * premultiplication is done at the end of each fragment shader.
  */
 export class ShaderBuilder {
   constructor() {
@@ -580,6 +578,7 @@ void main(void) {
   float s = sin(v_angle);
   coordsPx = vec2(c * coordsPx.x - s * coordsPx.y, s * coordsPx.x + c * coordsPx.y);
   gl_FragColor = ${this.symbolColorExpression_};
+  gl_FragColor.rgb *= gl_FragColor.a;
   if (u_hitDetection > 0) {
     if (gl_FragColor.a < 0.05) { discard; };
     gl_FragColor = v_prop_hitColor;
@@ -843,7 +842,7 @@ void main(void) {
   float currentLengthPx = max(0., min(dot(segmentTangent, startToPoint), segmentLength)) + v_distanceOffsetPx; 
   float currentRadiusPx = abs(dot(segmentNormal, startToPoint));
   float currentRadiusRatio = dot(segmentNormal, startToPoint) * 2. / v_width;
-  vec4 color = ${this.strokeColorExpression_} * u_globalAlpha;
+  vec4 color = ${this.strokeColorExpression_};
   float capType = ${this.strokeCapExpression_};
   float joinType = ${this.strokeJoinExpression_};
   float segmentStartDistance = computeSegmentPointDistance(currentPoint, v_segmentStart, v_segmentEnd, v_width, v_angleStart, capType, joinType);
@@ -853,7 +852,10 @@ void main(void) {
     max(segmentStartDistance, segmentEndDistance)
   );
   distance = max(distance, ${this.strokeDistanceFieldExpression_});
-  gl_FragColor = color * smoothstep(0.5, -0.5, distance);
+  color.a *= smoothstep(0.5, -0.5, distance);
+  gl_FragColor = color;
+  gl_FragColor.a *= u_globalAlpha;
+  gl_FragColor.rgb *= gl_FragColor.a;
   if (u_hitDetection > 0) {
     if (gl_FragColor.a < 0.1) { discard; };
     gl_FragColor = v_prop_hitColor;
@@ -951,7 +953,9 @@ void main(void) {
   }
   #endif
   if (${this.discardExpression_}) { discard; }
-  gl_FragColor = ${this.fillColorExpression_} * u_globalAlpha;
+  gl_FragColor = ${this.fillColorExpression_};
+  gl_FragColor.a *= u_globalAlpha;
+  gl_FragColor.rgb *= gl_FragColor.a;
   if (u_hitDetection > 0) {
     if (gl_FragColor.a < 0.1) { discard; };
     gl_FragColor = v_prop_hitColor;

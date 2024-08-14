@@ -311,6 +311,7 @@ void main(void) {
   float s = sin(v_angle);
   coordsPx = vec2(c * coordsPx.x - s * coordsPx.y, s * coordsPx.x + c * coordsPx.y);
   gl_FragColor = vec4(0.3137254901960784, 0.0, 1.0, 1.0);
+  gl_FragColor.rgb *= gl_FragColor.a;
   if (u_hitDetection > 0) {
     if (gl_FragColor.a < 0.05) { discard; };
     gl_FragColor = v_prop_hitColor;
@@ -345,6 +346,7 @@ void main(void) {
   float s = sin(v_angle);
   coordsPx = vec2(c * coordsPx.x - s * coordsPx.y, s * coordsPx.x + c * coordsPx.y);
   gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+  gl_FragColor.rgb *= gl_FragColor.a;
   if (u_hitDetection > 0) {
     if (gl_FragColor.a < 0.05) { discard; };
     gl_FragColor = v_prop_hitColor;
@@ -602,7 +604,7 @@ void main(void) {
   float currentLengthPx = max(0., min(dot(segmentTangent, startToPoint), segmentLength)) + v_distanceOffsetPx; 
   float currentRadiusPx = abs(dot(segmentNormal, startToPoint));
   float currentRadiusRatio = dot(segmentNormal, startToPoint) * 2. / v_width;
-  vec4 color = vec4(0.3137254901960784, 0.0, 1.0, 1.0) * u_globalAlpha;
+  vec4 color = vec4(0.3137254901960784, 0.0, 1.0, 1.0);
   float capType = ${stringToGlsl('butt')};
   float joinType = ${stringToGlsl('bevel')};
   float segmentStartDistance = computeSegmentPointDistance(currentPoint, v_segmentStart, v_segmentEnd, v_width, v_angleStart, capType, joinType);
@@ -612,7 +614,10 @@ void main(void) {
     max(segmentStartDistance, segmentEndDistance)
   );
   distance = max(distance, cos(currentLengthPx));
-  gl_FragColor = color * smoothstep(0.5, -0.5, distance);
+  color.a *= smoothstep(0.5, -0.5, distance);
+  gl_FragColor = color;
+  gl_FragColor.a *= u_globalAlpha;
+  gl_FragColor.rgb *= gl_FragColor.a;
   if (u_hitDetection > 0) {
     if (gl_FragColor.a < 0.1) { discard; };
     gl_FragColor = v_prop_hitColor;
@@ -702,7 +707,9 @@ void main(void) {
   }
   #endif
   if (u_myUniform > 0.5) { discard; }
-  gl_FragColor = vec4(0.3137254901960784, 0.0, 1.0, 1.0) * u_globalAlpha;
+  gl_FragColor = vec4(0.3137254901960784, 0.0, 1.0, 1.0);
+  gl_FragColor.a *= u_globalAlpha;
+  gl_FragColor.rgb *= gl_FragColor.a;
   if (u_hitDetection > 0) {
     if (gl_FragColor.a < 0.1) { discard; };
     gl_FragColor = v_prop_hitColor;
