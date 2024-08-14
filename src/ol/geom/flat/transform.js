@@ -9,7 +9,7 @@
  * @param {number} stride Stride.
  * @param {import("../../transform.js").Transform} transform Transform.
  * @param {Array<number>} [dest] Destination.
- * @param {number} [destStride] DestStride.
+ * @param {number} [destinationStride] Stride of destination coordinates; if unspecified, assumed to be 2.
  * @return {Array<number>} Transformed coordinates.
  */
 export function transform2D(
@@ -19,9 +19,10 @@ export function transform2D(
   stride,
   transform,
   dest,
-  destStride,
+  destinationStride,
 ) {
   dest = dest ? dest : [];
+  destinationStride = destinationStride ? destinationStride : 2;
   let i = 0;
   for (let j = offset; j < end; j += stride) {
     const x = flatCoordinates[j];
@@ -29,7 +30,7 @@ export function transform2D(
     dest[i++] = transform[0] * x + transform[2] * y + transform[4];
     dest[i++] = transform[1] * x + transform[3] * y + transform[5];
 
-    for (let k = 2; k < destStride; k++) {
+    for (let k = 2; k < destinationStride; k++) {
       dest[i++] = flatCoordinates[j + k];
     }
   }

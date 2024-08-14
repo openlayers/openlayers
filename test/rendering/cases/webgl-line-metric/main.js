@@ -102,5 +102,6 @@ new Map({
 });
 
 render({
-  message: 'renders two lines side-by-side, one closed and one open',
+  message:
+    'renders two lines side-by-side, styles using the line-metric operator',
 });

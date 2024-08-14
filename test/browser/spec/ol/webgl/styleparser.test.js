@@ -309,8 +309,8 @@ describe('ol/webgl/styleparser', () => {
 
     describe('icon style', () => {
       let result, uid;
-      describe('contains main properties and expressions, icon specified as data url', async () => {
-        beforeEach(async () => {
+      describe('contains main properties and expressions, icon specified as data url', () => {
+        beforeEach(() => {
           const style = {
             'icon-src':
               'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',
@@ -325,7 +325,6 @@ describe('ol/webgl/styleparser', () => {
           };
           uid = computeHash(style['icon-src']);
           result = parseLiteralStyle(style);
-          await new Promise((resolve) => setTimeout(resolve, 500));
         });
         it('sets up builder accordingly', () => {
           expect(result.builder.uniforms_).to.eql([
