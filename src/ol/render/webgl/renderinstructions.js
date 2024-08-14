@@ -115,11 +115,11 @@ export function generateLineStringRenderInstructions(
   transform,
 ) {
   // here we anticipate the amount of render instructions for lines:
-  // 2 instructions per vertex for position (x and y)
+  // 3 instructions per vertex for position (x, y and m)
   // + 1 instruction per line per custom attributes
   // + 1 instruction per line (for vertices count)
   const totalInstructionsCount =
-    2 * batch.verticesCount +
+    3 * batch.verticesCount +
     (1 + getCustomAttributesSize(customAttributes)) * batch.geometriesCount;
   if (
     !renderInstructions ||
@@ -139,9 +139,10 @@ export function generateLineStringRenderInstructions(
         batchEntry.flatCoordss[i],
         0,
         flatCoords.length,
-        2,
+        3,
         transform,
         flatCoords,
+        3,
       );
       renderIndex += pushCustomAttributesInRenderInstructions(
         renderInstructions,
@@ -151,12 +152,13 @@ export function generateLineStringRenderInstructions(
       );
 
       // vertices count
-      renderInstructions[renderIndex++] = flatCoords.length / 2;
+      renderInstructions[renderIndex++] = flatCoords.length / 3;
 
       // looping on points for positions
-      for (let j = 0, jj = flatCoords.length; j < jj; j += 2) {
+      for (let j = 0, jj = flatCoords.length; j < jj; j += 3) {
         renderInstructions[renderIndex++] = flatCoords[j];
         renderInstructions[renderIndex++] = flatCoords[j + 1];
+        renderInstructions[renderIndex++] = flatCoords[j + 2];
       }
     }
   }

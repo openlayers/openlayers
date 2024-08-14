@@ -179,6 +179,12 @@ describe('ol/expr/gpu.js', () => {
         expected: 'v_prop_geometryType',
       },
       {
+        name: 'line-metric',
+        type: AnyType,
+        expression: ['line-metric'],
+        expected: 'currentLineMetric',
+      },
+      {
         name: 'time',
         type: AnyType,
         expression: ['time'],

@@ -71,7 +71,7 @@ worker.onmessage = (event) => {
       const indices = [];
 
       const customAttrsCount = received.customAttributesSize;
-      const instructionsPerVertex = 2;
+      const instructionsPerVertex = 3;
 
       const renderInstructions = new Float32Array(received.renderInstructions);
       let currentInstructionsIndex = 0;
