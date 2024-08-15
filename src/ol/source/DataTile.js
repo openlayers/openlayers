@@ -319,10 +319,12 @@ class DataTileSource extends TileSource {
     const requestZ = tileCoord[0];
     const requestX = tileCoord[1];
     const requestY = tileCoord[2];
-    function loader() {
-      return toPromise(function () {
-        return sourceLoader(requestZ, requestX, requestY, loaderOptions);
-      });
+    async function loader() {
+      return [
+        await toPromise(function () {
+          return sourceLoader(requestZ, requestX, requestY, loaderOptions);
+        }),
+      ];
     }
 
     /**

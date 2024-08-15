@@ -89,7 +89,7 @@ const defaultSize = [256, 256];
 /**
  * @typedef {Object} Options
  * @property {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
- * @property {function(): Promise<Data>} loader Data loader.  For loaders that generate images,
+ * @property {function(): Promise<Array<Data>>} loader Data loader.  For loaders that generate images,
  * the promise should not resolve until the image is loaded.
  * @property {number} [transition=250] A duration for tile opacity
  * transitions in milliseconds. A duration of 0 disables the opacity transition.
@@ -113,16 +113,16 @@ class DataTile extends Tile {
     });
 
     /**
-     * @type {function(): Promise<Data>}
+     * @type {function(): Promise<Array<Data>>}
      * @private
      */
     this.loader_ = options.loader;
 
     /**
-     * @type {Data}
+     * @type {Array<Data>}
      * @private
      */
-    this.data_ = null;
+    this.data_ = [];
 
     /**
      * @type {Error}
@@ -145,13 +145,14 @@ class DataTile extends Tile {
 
   /**
    * Get the tile size.
+   * @param {number} [slot=0] slot of the data.
    * @return {import('./size.js').Size} Tile size.
    */
-  getSize() {
+  getSize(slot) {
     if (this.size_) {
       return this.size_;
     }
-    const imageData = asImageLike(this.data_);
+    const imageData = asImageLike(this.data_[slot ?? 0]);
     if (imageData) {
       return [imageData.width, imageData.height];
     }
@@ -160,11 +161,21 @@ class DataTile extends Tile {
 
   /**
    * Get the data for the tile.
+   * @param {number} [slot=0] slot of the data.
    * @return {Data} Tile data.
    * @api
    */
-  getData() {
-    return this.data_;
+  getData(slot) {
+    return this.data_[slot ?? 0];
+  }
+
+  /**
+   * Get the number of slots.
+   * @return {number} The number of slots.
+   * @api
+   */
+  getSlots() {
+    return this.data_.length;
   }
 
   /**

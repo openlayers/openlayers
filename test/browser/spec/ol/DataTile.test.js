@@ -18,7 +18,7 @@ describe('ol/DataTile', function () {
         const context = canvas.getContext('2d');
         context.fillStyle = 'red';
         context.fillRect(0, 0, 256, 256);
-        resolve(context.getImageData(0, 0, 256, 256).data);
+        resolve([context.getImageData(0, 0, 256, 256).data]);
       });
     };
   });
@@ -131,7 +131,7 @@ describe('ol/DataTile', function () {
         context.fillRect(0, 0, 256, 256);
         const src = canvas.toDataURL();
         const image = await loadImage(src);
-        return image;
+        return [image];
       };
       const tileCoord = [0, 0, 0];
       const tile = new DataTile({

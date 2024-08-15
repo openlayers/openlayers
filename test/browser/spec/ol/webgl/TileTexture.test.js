@@ -109,13 +109,13 @@ describe('ol/webgl/TileTexture', function () {
     const differentTile = new DataTile({
       tileCoord: [1, 0, 1],
       loader(z, x, y) {
-        return Promise.resolve(new Uint8Array(256 * 256 * 3));
+        return Promise.resolve([new Uint8Array(256 * 256 * 3)]);
       },
     });
     tileTexture.setTile(differentTile);
     expect(tile.getListeners('change').length).to.be(1);
     tileTexture.addEventListener('change', () => {
-      expect(tileTexture.bandCount).to.be(3);
+      expect(tileTexture.bandCounts[0]).to.be(3);
       done();
     });
     differentTile.load();

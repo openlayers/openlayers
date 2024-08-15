@@ -155,9 +155,9 @@ class TileTexture extends BaseTileRepresentation {
     );
 
     /**
-     * @type {number}
+     * @type {Array<number>}
      */
-    this.bandCount = NaN;
+    this.bandCounts = [];
 
     const coords = new WebGLArrayBuffer(ARRAY_BUFFER, STATIC_DRAW);
     coords.fromArray([
@@ -204,106 +204,121 @@ class TileTexture extends BaseTileRepresentation {
    * @override
    */
   uploadTile() {
+    this.textures.length = 0;
+    this.bandCounts = [];
+
+    const tile = this.tile;
     const helper = this.helper;
     const gl = helper.getGL();
-    const tile = this.tile;
 
-    this.textures.length = 0;
-
-    /**
-     * @type {import("../DataTile.js").Data}
-     */
-    let data;
-
-    if (tile instanceof ImageTile || tile instanceof ReprojTile) {
-      data = tile.getImage();
+    let slots;
+    if (tile instanceof DataTile) {
+      slots = tile.getSlots();
     } else {
-      data = tile.getData();
+      slots = 1;
     }
 
-    const image = asImageLike(data);
-    if (image) {
-      const texture = gl.createTexture();
-      this.textures.push(texture);
-      this.bandCount = 4;
-      uploadImageTexture(gl, texture, image, tile.interpolate);
-      this.setReady();
-      return;
-    }
-
-    data = asArrayLike(data);
-
-    const sourceTileSize = /** @type {DataTile} */ (tile).getSize();
-    const pixelSize = [
-      sourceTileSize[0] + 2 * this.gutter,
-      sourceTileSize[1] + 2 * this.gutter,
-    ];
-    const isFloat = data instanceof Float32Array;
-    const pixelCount = pixelSize[0] * pixelSize[1];
-    const DataType = isFloat ? Float32Array : Uint8Array;
-    const bytesPerElement = DataType.BYTES_PER_ELEMENT;
-    const bytesPerRow = data.byteLength / pixelSize[1];
-
-    this.bandCount = Math.floor(bytesPerRow / bytesPerElement / pixelSize[0]);
-    const textureCount = Math.ceil(this.bandCount / 4);
-
-    if (textureCount === 1) {
-      const texture = gl.createTexture();
-      this.textures.push(texture);
-      uploadDataTexture(
-        helper,
-        texture,
-        data,
-        pixelSize,
-        this.bandCount,
-        tile.interpolate,
-      );
-      this.setReady();
-      return;
-    }
-
-    const textureDataArrays = new Array(textureCount);
-    for (let textureIndex = 0; textureIndex < textureCount; ++textureIndex) {
-      const texture = gl.createTexture();
-      this.textures.push(texture);
-
-      const bandCount =
-        textureIndex < textureCount - 1 ? 4 : ((this.bandCount - 1) % 4) + 1;
-      textureDataArrays[textureIndex] = new DataType(pixelCount * bandCount);
-    }
-
-    let dataIndex = 0;
-    let rowOffset = 0;
-    const colCount = pixelSize[0] * this.bandCount;
-    for (let rowIndex = 0; rowIndex < pixelSize[1]; ++rowIndex) {
-      for (let colIndex = 0; colIndex < colCount; ++colIndex) {
-        const dataValue = data[rowOffset + colIndex];
-
-        const pixelIndex = Math.floor(dataIndex / this.bandCount);
-        const bandIndex = colIndex % this.bandCount;
-        const textureIndex = Math.floor(bandIndex / 4);
-        const textureData = textureDataArrays[textureIndex];
-        const bandCount = textureData.length / pixelCount;
-        const textureBandIndex = bandIndex % 4;
-        textureData[pixelIndex * bandCount + textureBandIndex] = dataValue;
-
-        ++dataIndex;
+    for (let slot = 0; slot < slots; slot++) {
+      /**
+       * @type {import("../DataTile.js").Data}
+       */
+      let data;
+      if (tile instanceof ImageTile || tile instanceof ReprojTile) {
+        data = tile.getImage();
+      } else {
+        data = tile.getData(slot);
       }
-      rowOffset += bytesPerRow / bytesPerElement;
-    }
 
-    for (let textureIndex = 0; textureIndex < textureCount; ++textureIndex) {
-      const texture = this.textures[textureIndex];
-      const textureData = textureDataArrays[textureIndex];
-      const bandCount = textureData.length / pixelCount;
-      uploadDataTexture(
-        helper,
-        texture,
-        textureData,
-        pixelSize,
-        bandCount,
-        tile.interpolate,
+      const image = asImageLike(data);
+      if (image) {
+        const texture = gl.createTexture();
+        this.textures.push(texture);
+        this.bandCounts.push(4);
+        uploadImageTexture(gl, texture, image, tile.interpolate);
+        continue;
+      }
+
+      data = asArrayLike(data);
+
+      const sourceTileSize = /** @type {DataTile} */ (tile).getSize();
+      const pixelSize = [
+        sourceTileSize[0] + 2 * this.gutter,
+        sourceTileSize[1] + 2 * this.gutter,
+      ];
+      const isFloat = data instanceof Float32Array;
+      const pixelCount = pixelSize[0] * pixelSize[1];
+      const DataType = isFloat ? Float32Array : Uint8Array;
+      const bytesPerElement = DataType.BYTES_PER_ELEMENT;
+      const bytesPerRow = data.byteLength / pixelSize[1];
+
+      const bandCount = Math.floor(
+        bytesPerRow / bytesPerElement / pixelSize[0],
       );
+      const textureCount = Math.ceil(bandCount / 4);
+
+      this.bandCounts.push(bandCount);
+
+      if (textureCount === 1) {
+        const texture = gl.createTexture();
+        this.textures.push(texture);
+        uploadDataTexture(
+          helper,
+          texture,
+          data,
+          pixelSize,
+          bandCount,
+          tile.interpolate,
+        );
+        continue;
+      }
+
+      const textureIndexBase = this.textures.length;
+      const textureDataArrays = new Array(textureCount);
+      for (let textureIndex = 0; textureIndex < textureCount; ++textureIndex) {
+        const texture = gl.createTexture();
+        this.textures.push(texture);
+
+        const textureBandCount =
+          textureIndex < textureCount - 1 ? 4 : ((bandCount - 1) % 4) + 1;
+        textureDataArrays[textureIndex] = new DataType(
+          pixelCount * textureBandCount,
+        );
+      }
+
+      let dataIndex = 0;
+      let rowOffset = 0;
+      const colCount = pixelSize[0] * bandCount;
+      for (let rowIndex = 0; rowIndex < pixelSize[1]; ++rowIndex) {
+        for (let colIndex = 0; colIndex < colCount; ++colIndex) {
+          const dataValue = data[rowOffset + colIndex];
+
+          const pixelIndex = Math.floor(dataIndex / bandCount);
+          const bandIndex = colIndex % bandCount;
+          const textureIndex = Math.floor(bandIndex / 4);
+          const textureData = textureDataArrays[textureIndex];
+          const textureBandCount = textureData.length / pixelCount;
+          const textureBandIndex = bandIndex % 4;
+          textureData[pixelIndex * textureBandCount + textureBandIndex] =
+            dataValue;
+
+          ++dataIndex;
+        }
+        rowOffset += bytesPerRow / bytesPerElement;
+      }
+
+      for (let textureIndex = 0; textureIndex < textureCount; ++textureIndex) {
+        const texture = this.textures[textureIndexBase + textureIndex];
+        const textureData = textureDataArrays[textureIndex];
+        const textureBandCount = textureData.length / pixelCount;
+        uploadDataTexture(
+          helper,
+          texture,
+          textureData,
+          pixelSize,
+          textureBandCount,
+          tile.interpolate,
+        );
+      }
     }
 
     this.setReady();
@@ -355,10 +370,11 @@ class TileTexture extends BaseTileRepresentation {
    * @param {import("../size.js").Size} sourceSize The size.
    * @param {number} renderCol The column index (in rendered tile space).
    * @param {number} renderRow The row index (in rendered tile space).
+   * @param {number} bandCount The band count for the data.
    * @return {import("../DataTile.js").ArrayLike|null} The data.
    * @private
    */
-  getArrayPixelData_(data, sourceSize, renderCol, renderRow) {
+  getArrayPixelData_(data, sourceSize, renderCol, renderRow, bandCount) {
     const gutter = this.gutter;
     const renderWidth = this.renderSize_[0];
     const renderHeight = this.renderSize_[1];
@@ -382,8 +398,8 @@ class TileTexture extends BaseTileRepresentation {
       return new DataView(buffer);
     }
 
-    const offset = this.bandCount * (sourceRow * sourceWidth + sourceCol);
-    return data.slice(offset, offset + this.bandCount);
+    const offset = bandCount * (sourceRow * sourceWidth + sourceCol);
+    return data.slice(offset, offset + bandCount);
   }
 
   /**
@@ -397,22 +413,25 @@ class TileTexture extends BaseTileRepresentation {
       return null;
     }
 
-    if (this.tile instanceof DataTile) {
-      const data = this.tile.getData();
+    const tile = this.tile;
+    if (tile instanceof DataTile) {
+      const data = tile.getData(0);
+      const bandCount = this.bandCounts[0];
       const arrayData = asArrayLike(data);
       if (arrayData) {
-        const sourceSize = this.tile.getSize();
+        const sourceSize = tile.getSize();
         return this.getArrayPixelData_(
           arrayData,
           sourceSize,
           renderCol,
           renderRow,
+          bandCount,
         );
       }
       return this.getImagePixelData_(asImageLike(data), renderCol, renderRow);
     }
 
-    return this.getImagePixelData_(this.tile.getImage(), renderCol, renderRow);
+    return this.getImagePixelData_(tile.getImage(), renderCol, renderRow);
   }
 }
 
