@@ -1,0 +1,30 @@
+---
+layout: example.html
+title: Sentinel Hub Custom Script
+shortdesc: Updating the Evalscript used by the Sentinel Hub source.
+docs: >
+  This example demonstrates how a custom script can be used to render tiles from Sentinel Hub.
+  Edit the `setup()` and `evaluatePixel()` functions above and click the update button to change the visualization.
+  See the Sentinel Hub [documentation on Evalscript](https://docs.sentinel-hub.com/api/latest/evalscript/) for more information.
+
+  See the [basic Sentinel Hub example](./sentinel-hub.html) for details on authentication.
+tags: "Sentinel Hub, process, Evalscript"
+---
+<div id="map" class="map"></div>
+<form id="evalscript-form">
+  <div id="evalscript"></div>
+  <input type="submit" value="update">
+</form>
+<dialog id="auth-dialog" open>
+  <form method="dialog" id="auth-form">
+    <label>Client id
+      <br>
+      <input type="text" name="id" autofocus>
+    </label>
+    <label>Client secret
+      <br>
+      <input type="password" name="secret">
+    </label>
+    <input type="submit" value="show map">
+  </form>
+</dialog>
