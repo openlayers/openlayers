@@ -164,6 +164,14 @@ class DataTileSource extends TileSource {
   }
 
   /**
+   * Get an array containing the band count for each slot.
+   * @return {Array<number>} An array containing the band count for each slot.
+   */
+  getBandCounts() {
+    return [this.bandCount || 4];
+  }
+
+  /**
    * Set the source tile sizes.  The length of the array is expected to match the number of
    * levels in the tile grid.
    * @protected

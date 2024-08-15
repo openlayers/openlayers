@@ -143,7 +143,7 @@ export function uniformNameForVariable(variableName) {
  * @property {Object<string, CompilationContextProperty>} properties The values for properties used in 'get' expressions.
  * @property {Object<string, CompilationContextVariable>} variables The values for variables used in 'var' expressions.
  * @property {Object<string, string>} functions Lookup of functions used by the style.
- * @property {number} [bandCount] Number of bands per pixel.
+ * @property {Array<number>} [bandCounts] Number of bands per pixel.
  * @property {Array<PaletteTexture>} [paletteTextures] List of palettes used by the style.
  * @property {import("../style/webgl.js").WebGLStyle} style Literal style.
  */
@@ -157,7 +157,7 @@ export function newCompilationContext() {
     variables: {},
     properties: {},
     functions: {},
-    bandCount: 0,
+    bandCounts: [],
     style: {},
   };
 }
@@ -378,17 +378,12 @@ ${tests.join('\n')}
   [Ops.Band]: createCompiler(([band, xOffset, yOffset], context) => {
     if (!(GET_BAND_VALUE_FUNC in context.functions)) {
       let ifBlocks = '';
-      const bandCount = context.bandCount || 1;
-      for (let i = 0; i < bandCount; i++) {
-        const colorIndex = Math.floor(i / 4);
-        let bandIndex = i % 4;
-        if (i === bandCount - 1 && bandIndex === 1) {
-          // LUMINANCE_ALPHA - band 1 assigned to rgb and band 2 assigned to alpha
-          bandIndex = 3;
-        }
-        const textureName = `${Uniforms.TILE_TEXTURE_ARRAY}[${colorIndex}]`;
-        ifBlocks += `  if (band == ${i + 1}.0) {
-    return texture2D(${textureName}, v_textureCoord + vec2(dx, dy))[${bandIndex}];
+      const bands = getBands(context.bandCounts || []);
+
+      for (const {band, textureIndex, valueIndex} of bands) {
+        const textureName = `${Uniforms.TILE_TEXTURE_ARRAY}[${textureIndex}]`;
+        ifBlocks += `  if (band == ${band}.0) {
+    return texture2D(${textureName}, v_textureCoord + vec2(dx, dy))[${valueIndex}];
   }
 `;
       }
@@ -490,4 +485,42 @@ function compile(expression, returnType, context) {
       returnType,
     )})`,
   );
+}
+
+/**
+ * @typedef {Object} BandDefinition
+ * @property {number} band Band#
+ * @property {number} textureIndex Texture index.
+ * @property {number} valueIndex Value index for vector.
+ */
+
+/**
+ * @param {Array<number>} bandCounts The array of number of band count.
+ * @return {Array<BandDefinition>} The Band definition.
+ */
+export function getBands(bandCounts) {
+  let band = 0;
+  let textureIndex = -1;
+  const result = [];
+  for (const bandCount of bandCounts) {
+    for (let i = 0; i < bandCount; i++) {
+      let valueIndex = i % 4;
+      band++;
+      if (valueIndex === 0) {
+        textureIndex++;
+      }
+
+      if (i === bandCount - 1 && valueIndex === 1) {
+        // LUMINANCE_ALPHA - band 1 assigned to rgb and band 2 assigned to alpha
+        valueIndex = 3;
+      }
+
+      result.push({
+        band,
+        textureIndex,
+        valueIndex,
+      });
+    }
+  }
+  return result;
 }
