@@ -5,6 +5,7 @@
   "globals": {
     "afterLoadText": false,
     "createMapDiv": true,
+    "defineCustomMapEl": true,
     "disposeMap": true,
     "expect": false,
     "proj4": false,
