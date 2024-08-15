@@ -84,8 +84,12 @@ export const altShiftKeysOnly = function (mapBrowserEvent) {
  */
 export const focus = function (event) {
   const targetElement = event.map.getTargetElement();
+  const rootNode = targetElement.getRootNode();
   const activeElement = event.map.getOwnerDocument().activeElement;
-  return targetElement.contains(activeElement);
+
+  return rootNode instanceof ShadowRoot
+    ? rootNode.host.contains(activeElement)
+    : targetElement.contains(activeElement);
 };
 
 /**
@@ -95,9 +99,12 @@ export const focus = function (event) {
  * @return {boolean} The map container has the focus or no 'tabindex' attribute.
  */
 export const focusWithTabindex = function (event) {
-  return event.map.getTargetElement().hasAttribute('tabindex')
-    ? focus(event)
-    : true;
+  const targetElement = event.map.getTargetElement();
+  const rootNode = targetElement.getRootNode();
+  const tabIndexCandidate =
+    rootNode instanceof ShadowRoot ? rootNode.host : targetElement;
+
+  return tabIndexCandidate.hasAttribute('tabindex') ? focus(event) : true;
 };
 
 /**
