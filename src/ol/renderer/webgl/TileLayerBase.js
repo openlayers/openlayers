@@ -788,7 +788,12 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     return covered;
   }
 
+  /**
+   * @override
+   */
   clearCache() {
+    super.clearCache();
+
     const tileRepresentationCache = this.tileRepresentationCache;
     tileRepresentationCache.forEach((tileRepresentation) =>
       tileRepresentation.dispose(),
@@ -799,12 +804,12 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
   /**
    * @override
    */
-  removeHelper() {
-    if (this.helper) {
-      this.clearCache();
-    }
+  afterHelperCreated() {
+    super.afterHelperCreated();
 
-    super.removeHelper();
+    this.tileRepresentationCache.forEach((tileRepresentation) =>
+      tileRepresentation.setHelper(this.helper),
+    );
   }
 
   /**
