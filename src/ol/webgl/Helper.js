@@ -113,6 +113,7 @@ export const AttributeType = {
  * @typedef {Object} CanvasCacheItem
  * @property {WebGLRenderingContext} context The context of this canvas.
  * @property {number} users The count of users of this canvas.
+ * @property {Object<string, number>} attrs The enabled attributes.
  */
 
 /**
@@ -152,7 +153,7 @@ function getOrCreateContext(key) {
     canvas.style.position = 'absolute';
     canvas.style.left = '0';
     const context = getContext(canvas);
-    cacheItem = {users: 0, context};
+    cacheItem = {users: 0, context, attrs: {}};
     canvasCache[key] = cacheItem;
   }
 
@@ -184,6 +185,45 @@ function releaseCanvas(key) {
   canvas.height = 1;
 
   delete canvasCache[key];
+}
+
+/**
+ * @param {string} key The canvas cache key.
+ * @param {number} index The attribute index to enable.
+ */
+function enableAttribute(key, index) {
+  const cacheItem = canvasCache[key];
+  if (!cacheItem) {
+    return;
+  }
+  canvasCache[key].attrs[index] = index;
+}
+
+/**
+ * @param {string} key The canvas cache key.
+ * @param {Object<string, number>} attrs The list of attributes.
+ */
+function disableAttributes(key, attrs) {
+  const cacheItem = canvasCache[key];
+  if (!cacheItem) {
+    return;
+  }
+  const gl = cacheItem.context;
+  for (const index of Object.values(attrs)) {
+    gl.disableVertexAttribArray(index);
+  }
+}
+
+/**
+ * @param {string} key The canvas cache key.
+ * @return {Object<string, number>} The list of enabled attributes.
+ */
+function getEnabledAttributes(key) {
+  const cacheItem = canvasCache[key];
+  if (!cacheItem) {
+    return {};
+  }
+  return {...cacheItem.attrs}; // shallow copy
 }
 
 /**
@@ -1026,16 +1066,19 @@ class WebGLHelper extends Disposable {
    * @param {number} type UNSIGNED_INT, UNSIGNED_BYTE, UNSIGNED_SHORT or FLOAT
    * @param {number} stride Stride in bytes (0 means attribs are packed)
    * @param {number} offset Offset in bytes
+   * @return {number} The index of enabled attribute. -1 means nothing enabled.
    * @private
    */
   enableAttributeArray_(attribName, size, type, stride, offset) {
     const location = this.getAttributeLocation(attribName);
     // the attribute has not been found in the shaders or is not used; do not enable it
     if (location < 0) {
-      return;
+      return -1;
     }
     this.gl_.enableVertexAttribArray(location);
     this.gl_.vertexAttribPointer(location, size, type, false, stride, offset);
+    enableAttribute(this.canvasCacheKey_, location);
+    return location;
   }
 
   /**
@@ -1045,19 +1088,26 @@ class WebGLHelper extends Disposable {
    * @param {Array<AttributeDescription>} attributes Ordered list of attributes to read from the buffer
    */
   enableAttributes(attributes) {
+    const unused = getEnabledAttributes(this.canvasCacheKey_);
+
     const stride = computeAttributesStride(attributes);
     let offset = 0;
     for (let i = 0; i < attributes.length; i++) {
       const attr = attributes[i];
-      this.enableAttributeArray_(
+      const l = this.enableAttributeArray_(
         attr.name,
         attr.size,
         attr.type || FLOAT,
         stride,
         offset,
       );
+      if (l >= 0) {
+        delete unused[l];
+      }
       offset += attr.size * getByteSizeFromType(attr.type);
     }
+
+    disableAttributes(this.canvasCacheKey_, unused);
   }
 
   /**
