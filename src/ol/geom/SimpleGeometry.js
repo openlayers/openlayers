@@ -207,7 +207,12 @@ class SimpleGeometry extends Geometry {
    */
   applyTransform(transformFn) {
     if (this.flatCoordinates) {
-      transformFn(this.flatCoordinates, this.flatCoordinates, this.stride);
+      transformFn(
+        this.flatCoordinates,
+        this.flatCoordinates,
+        this.layout.startsWith('XYZ') ? 3 : 2,
+        this.stride,
+      );
       this.changed();
     }
   }
