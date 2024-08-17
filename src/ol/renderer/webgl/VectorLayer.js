@@ -255,11 +255,18 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    * @override
    */
   afterHelperCreated() {
-    this.createRenderers_();
+    if (this.styleRenderers_.length) {
+      // To reuse buffers
+      this.styleRenderers_.forEach((renderer, i) =>
+        renderer.setHelper(this.helper, this.buffers_[i]),
+      );
+    } else {
+      this.createRenderers_();
+    }
+
     if (this.hitDetectionEnabled_) {
       this.hitRenderTarget_ = new WebGLRenderTarget(this.helper);
     }
-    this.getLayer().getSource().changed();
   }
 
   /**
