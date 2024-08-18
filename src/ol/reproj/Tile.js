@@ -14,6 +14,7 @@ import {
 } from '../reproj.js';
 import {clamp} from '../math.js';
 import {getArea, getIntersection, getWidth, wrapAndSliceX} from '../extent.js';
+import {getImagePixelData} from '../pixel.js';
 import {listen, unlistenByKey} from '../events.js';
 import {releaseCanvas} from '../dom.js';
 
@@ -266,6 +267,23 @@ class ReprojTile extends Tile {
    */
   getImage() {
     return this.canvas_;
+  }
+
+  /**
+   * @param {number} renderCol The column index (in rendered tile space).
+   * @param {number} renderRow The row index (in rendered tile space).
+   * @param {import('../size.js').Size} renderSize The size of rendered tile.
+   * @param {number} gutter The gutter.
+   * @return {Uint8ClampedArray} The data.
+   */
+  getPixelDataAt(renderCol, renderRow, renderSize, gutter) {
+    return getImagePixelData(
+      this.canvas_,
+      renderCol,
+      renderRow,
+      renderSize,
+      gutter,
+    );
   }
 
   /**

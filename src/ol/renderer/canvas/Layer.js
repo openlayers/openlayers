@@ -23,22 +23,12 @@ import {
   getTopRight,
   getWidth,
 } from '../../extent.js';
+import {getImagePixelData} from '../../pixel.js';
 
 /**
  * @type {Array<HTMLCanvasElement>}
  */
 export const canvasPool = [];
-
-/**
- * @type {CanvasRenderingContext2D}
- */
-let pixelContext = null;
-
-function createPixelContext() {
-  pixelContext = createCanvasContext2D(1, 1, undefined, {
-    willReadFrequently: true,
-  });
-}
 
 /**
  * @abstract
@@ -118,20 +108,7 @@ class CanvasLayerRenderer extends LayerRenderer {
    * @return {Uint8ClampedArray|null} The image data.
    */
   getImageData(image, col, row) {
-    if (!pixelContext) {
-      createPixelContext();
-    }
-    pixelContext.clearRect(0, 0, 1, 1);
-
-    let data;
-    try {
-      pixelContext.drawImage(image, col, row, 1, 1, 0, 0, 1, 1);
-      data = pixelContext.getImageData(0, 0, 1, 1).data;
-    } catch (err) {
-      pixelContext = null;
-      return null;
-    }
-    return data;
+    return getImagePixelData(image, col, row);
   }
 
   /**

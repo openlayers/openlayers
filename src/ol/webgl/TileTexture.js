@@ -8,7 +8,6 @@ import ImageTile from '../ImageTile.js';
 import ReprojTile from '../reproj/Tile.js';
 import WebGLArrayBuffer from './Buffer.js';
 import {ARRAY_BUFFER, STATIC_DRAW} from '../webgl.js';
-import {createCanvasContext2D} from '../dom.js';
 import {toSize} from '../size.js';
 
 /**
@@ -114,17 +113,6 @@ function uploadDataTexture(
     data,
   );
   gl.pixelStorei(gl.UNPACK_ALIGNMENT, oldUnpackAlignment);
-}
-
-/**
- * @type {CanvasRenderingContext2D}
- */
-let pixelContext = null;
-
-function createPixelContext() {
-  pixelContext = createCanvasContext2D(1, 1, undefined, {
-    willReadFrequently: true,
-  });
 }
 
 /**
@@ -325,113 +313,22 @@ class TileTexture extends BaseTileRepresentation {
   }
 
   /**
-   * @param {import("../DataTile.js").ImageLike} image The image.
-   * @param {number} renderCol The column index (in rendered tile space).
-   * @param {number} renderRow The row index (in rendered tile space).
-   * @return {Uint8ClampedArray|null} The data.
-   * @private
-   */
-  getImagePixelData_(image, renderCol, renderRow) {
-    const gutter = this.gutter;
-    const renderWidth = this.renderSize_[0];
-    const renderHeight = this.renderSize_[1];
-
-    if (!pixelContext) {
-      createPixelContext();
-    }
-    pixelContext.clearRect(0, 0, 1, 1);
-
-    const sourceWidth = image.width;
-    const sourceHeight = image.height;
-
-    const sourceWidthWithoutGutter = sourceWidth - 2 * gutter;
-    const sourceHeightWithoutGutter = sourceHeight - 2 * gutter;
-
-    const sourceCol =
-      gutter + Math.floor(sourceWidthWithoutGutter * (renderCol / renderWidth));
-
-    const sourceRow =
-      gutter +
-      Math.floor(sourceHeightWithoutGutter * (renderRow / renderHeight));
-
-    let data;
-    try {
-      pixelContext.drawImage(image, sourceCol, sourceRow, 1, 1, 0, 0, 1, 1);
-      data = pixelContext.getImageData(0, 0, 1, 1).data;
-    } catch (err) {
-      pixelContext = null;
-      return null;
-    }
-    return data;
-  }
-
-  /**
-   * @param {import("../DataTile.js").ArrayLike} data The data.
-   * @param {import("../size.js").Size} sourceSize The size.
-   * @param {number} renderCol The column index (in rendered tile space).
-   * @param {number} renderRow The row index (in rendered tile space).
-   * @param {number} bandCount The band count for the data.
-   * @return {import("../DataTile.js").ArrayLike|null} The data.
-   * @private
-   */
-  getArrayPixelData_(data, sourceSize, renderCol, renderRow, bandCount) {
-    const gutter = this.gutter;
-    const renderWidth = this.renderSize_[0];
-    const renderHeight = this.renderSize_[1];
-
-    const sourceWidthWithoutGutter = sourceSize[0];
-    const sourceHeightWithoutGutter = sourceSize[1];
-    const sourceWidth = sourceWidthWithoutGutter + 2 * gutter;
-    const sourceHeight = sourceHeightWithoutGutter + 2 * gutter;
-
-    const sourceCol =
-      gutter + Math.floor(sourceWidthWithoutGutter * (renderCol / renderWidth));
-
-    const sourceRow =
-      gutter +
-      Math.floor(sourceHeightWithoutGutter * (renderRow / renderHeight));
-
-    if (data instanceof DataView) {
-      const bytesPerPixel = data.byteLength / (sourceWidth * sourceHeight);
-      const offset = bytesPerPixel * (sourceRow * sourceWidth + sourceCol);
-      const buffer = data.buffer.slice(offset, offset + bytesPerPixel);
-      return new DataView(buffer);
-    }
-
-    const offset = bandCount * (sourceRow * sourceWidth + sourceCol);
-    return data.slice(offset, offset + bandCount);
-  }
-
-  /**
    * Get data for a pixel.  If the tile is not loaded, null is returned.
    * @param {number} renderCol The column index (in rendered tile space).
    * @param {number} renderRow The row index (in rendered tile space).
-   * @return {import("../DataTile.js").ArrayLike|null} The data.
+   * @return {Uint8ClampedArray|Float32Array|null} The data.
    */
   getPixelData(renderCol, renderRow) {
     if (!this.loaded) {
       return null;
     }
 
-    const tile = this.tile;
-    if (tile instanceof DataTile) {
-      const data = tile.getData(0);
-      const bandCount = this.bandCounts[0];
-      const arrayData = asArrayLike(data);
-      if (arrayData) {
-        const sourceSize = tile.getSize();
-        return this.getArrayPixelData_(
-          arrayData,
-          sourceSize,
-          renderCol,
-          renderRow,
-          bandCount,
-        );
-      }
-      return this.getImagePixelData_(asImageLike(data), renderCol, renderRow);
-    }
-
-    return this.getImagePixelData_(tile.getImage(), renderCol, renderRow);
+    return this.tile.getPixelDataAt(
+      renderCol,
+      renderRow,
+      this.renderSize_,
+      this.gutter,
+    );
   }
 }
 

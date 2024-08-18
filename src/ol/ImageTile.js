@@ -4,6 +4,7 @@
 import Tile from './Tile.js';
 import TileState from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
+import {getImagePixelData} from './pixel.js';
 import {listenImage} from './Image.js';
 
 class ImageTile extends Tile {
@@ -63,6 +64,23 @@ class ImageTile extends Tile {
    */
   getImage() {
     return this.image_;
+  }
+
+  /**
+   * @param {number} renderCol The column index (in rendered tile space).
+   * @param {number} renderRow The row index (in rendered tile space).
+   * @param {import('./size.js').Size} renderSize The size of rendered tile.
+   * @param {number} gutter The gutter.
+   * @return {Uint8ClampedArray} The data.
+   */
+  getPixelDataAt(renderCol, renderRow, renderSize, gutter) {
+    return getImagePixelData(
+      this.image_,
+      renderCol,
+      renderRow,
+      renderSize,
+      gutter,
+    );
   }
 
   /**

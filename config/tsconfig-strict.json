@@ -153,6 +153,7 @@
     "../src/ol/Object.js",
     "../src/ol/Observable.js",
     "../src/ol/Overlay.js",
+    "../src/ol/pixel.js",
     "../src/ol/proj.js",
     "../src/ol/proj/epsg3857.js",
     "../src/ol/proj/epsg4326.js",

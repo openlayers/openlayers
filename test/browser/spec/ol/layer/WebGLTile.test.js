@@ -93,7 +93,7 @@ describe('ol/layer/WebGLTile', function () {
 
       map.once('rendercomplete', () => {
         const data = layer.getData([50, 25]);
-        expect(data).to.be.a(Uint8Array);
+        expect(data).to.be.a(Uint8ClampedArray);
         expect(data.length).to.be(5);
         expect(data[0]).to.be(5);
         expect(data[1]).to.be(4);
@@ -129,28 +129,28 @@ describe('ol/layer/WebGLTile', function () {
       map.once('rendercomplete', () => {
         let data;
         data = layer.getData([25, 25]);
-        expect(data).to.be.a(Uint8Array);
+        expect(data).to.be.a(Uint8ClampedArray);
         expect(data.length).to.be(4);
         expect(data[0]).to.be(0);
         expect(data[1]).to.be(0);
         expect(data[2]).to.be(1);
         expect(data[3]).to.be(1);
         data = layer.getData([75, 25]);
-        expect(data).to.be.a(Uint8Array);
+        expect(data).to.be.a(Uint8ClampedArray);
         expect(data.length).to.be(4);
         expect(data[0]).to.be(1);
         expect(data[1]).to.be(0);
         expect(data[2]).to.be(0);
         expect(data[3]).to.be(1);
         data = layer.getData([25, 75]);
-        expect(data).to.be.a(Uint8Array);
+        expect(data).to.be.a(Uint8ClampedArray);
         expect(data.length).to.be(4);
         expect(data[0]).to.be(0);
         expect(data[1]).to.be(1);
         expect(data[2]).to.be(1);
         expect(data[3]).to.be(0);
         data = layer.getData([75, 75]);
-        expect(data).to.be.a(Uint8Array);
+        expect(data).to.be.a(Uint8ClampedArray);
         expect(data.length).to.be(4);
         expect(data[0]).to.be(1);
         expect(data[1]).to.be(1);
@@ -160,7 +160,7 @@ describe('ol/layer/WebGLTile', function () {
       });
     });
 
-    it('preserves the original data type', (done) => {
+    it('retrieves pixel data as float', (done) => {
       const layer = new WebGLTileLayer({
         source: new DataTileSource({
           tileSize: 1,
