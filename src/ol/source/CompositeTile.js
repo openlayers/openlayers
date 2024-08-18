@@ -52,8 +52,7 @@ class CompositeTileSource extends DataTileSource {
       sources
         .map((source) => source.getAttributions())
         .filter(Boolean)
-        .map((func) => func(frameState))
-        .join(' / ');
+        .flatMap((func) => func(frameState));
     const attributionsCollapsible = sources.every((source) =>
       source.getAttributionsCollapsible(),
     );
