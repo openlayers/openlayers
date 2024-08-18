@@ -28,6 +28,8 @@ import {listen, unlistenByKey} from '../events.js';
 
 /**
  * @typedef {Object} Options
+ * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
+ * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {number} [transition] Transition time when fading in new tiles (in milliseconds).
  * @property {string} [key] Key for use in caching tiles.
  * @property {Array<SourceType>} sources sources.
@@ -68,7 +70,7 @@ class CompositeTileSource extends DataTileSource {
       tileGrid: null,
       wrapX,
       transition: options.transition,
-      interpolate: false,
+      interpolate: options.interpolate ?? true,
       key: options.key,
       bandCount,
     });
