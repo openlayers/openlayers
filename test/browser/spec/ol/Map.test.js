@@ -1309,6 +1309,9 @@ describe('ol/Map', function () {
               contains: function () {
                 return hasFocus;
               },
+              getRootNode: function () {
+                return {};
+              },
             };
           },
           getOwnerDocument: function () {
