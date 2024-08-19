@@ -1671,9 +1671,9 @@ class Map extends BaseObject {
 
   /**
    * Set the target element to render this map into.
-   * In case the given `target` is inside a Shadow DOM you have to
-   * ensure that a possible `tabindex` attribute has to be placed on the
-   * target's host element, so it can be focused for key events to be emitted.
+   * For accessibility (focus and keyboard events for map navigation), the `target` element must have a
+   *  properly configured `tabindex` attribute. If the `target` element is inside a Shadow DOM, the
+   *  `tabindex` atribute must be set on the custom element's host element.
    * @param {HTMLElement|string} [target] The Element or id of the Element
    *     that the map is rendered in.
    * @observable
