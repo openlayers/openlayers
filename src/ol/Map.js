@@ -1129,6 +1129,14 @@ class Map extends BaseObject {
         : doc;
       const target = /** @type {Node} */ (originalEvent.target);
 
+      const currentDoc =
+        rootNode instanceof ShadowRoot
+          ? rootNode.host === target
+            ? rootNode.host.ownerDocument
+            : rootNode
+          : rootNode === doc
+            ? doc.documentElement
+            : rootNode;
       if (
         // Abort if the target is a child of the container for elements whose events are not meant
         // to be handled by map interactions.
@@ -1137,12 +1145,7 @@ class Map extends BaseObject {
         // It's possible for the target to no longer be in the page if it has been removed in an
         // event listener, this might happen in a Control that recreates it's content based on
         // user interaction either manually or via a render in something like https://reactjs.org/
-        // skip check for maps place in ShadowRoot element structures
-        !(rootNode instanceof ShadowRoot)
-          ? !(rootNode === doc ? doc.documentElement : rootNode).contains(
-              target,
-            )
-          : false
+        !currentDoc.contains(target)
       ) {
         return;
       }
