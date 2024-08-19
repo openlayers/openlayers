@@ -148,9 +148,9 @@ import {warn} from './console.js';
  * element itself or the `id` of the element. If not specified at construction
  * time, {@link module:ol/Map~Map#setTarget} must be called for the map to be
  * rendered. If passed by element, the container can be in a secondary document.
- * In case your `target` element is inside a Shadow DOM you have to ensure that
- * a possible `tabindex` attribute has to be placed on the target's host
- * element, so it can be focused for key events to be emitted.
+ * For accessibility (focus and keyboard events for map navigation), the `target` element must have a
+ *  properly configured `tabindex` attribute. If the `target` element is inside a Shadow DOM, the
+ *  `tabindex` atribute must be set on the custom element's host element.
  * **Note:** CSS `transform` support for the target element is limited to `scale`.
  * @property {View|Promise<import("./View.js").ViewOptions>} [view] The map's view.  No layer sources will be
  * fetched unless this is specified at construction time or through
