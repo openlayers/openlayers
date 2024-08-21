@@ -32,6 +32,7 @@ new Map({
   layers: [
     new TileLayer({
       source: new DataTile({
+        transition: 0,
         loader: function () {
           const data = new Float32Array(size * size);
           const numColors = colors.length;
