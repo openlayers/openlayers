@@ -146,6 +146,11 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
         this.fragmentShader_,
         this.vertexShader_,
       );
+      const gl = this.helper.getGL();
+      for (const paletteTexture of this.paletteTextures_) {
+        // upload the texture data
+        paletteTexture.getTexture(gl);
+      }
     }
   }
 
@@ -154,6 +159,12 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    */
   afterHelperCreated() {
     super.afterHelperCreated();
+
+    const gl = this.helper.getGL();
+    for (const paletteTexture of this.paletteTextures_) {
+      // upload the texture data
+      paletteTexture.getTexture(gl);
+    }
 
     this.program_ = this.helper.getProgram(
       this.fragmentShader_,
