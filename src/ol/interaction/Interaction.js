@@ -17,7 +17,7 @@ import {easeOut, linear} from '../easing.js';
 /**
  * Object literal with config options for interactions.
  * @typedef {Object} InteractionOptions
- * @property {function(import("../MapBrowserEvent.js").default):boolean} handleEvent
+ * @property {function(import("../MapBrowserEvent.js").default):boolean} [handleEvent]
  * Method called by the map to notify the interaction that a browser event was
  * dispatched to the map. If the function returns a falsy value, propagation of
  * the event to other interactions in the map's interactions chain will be
