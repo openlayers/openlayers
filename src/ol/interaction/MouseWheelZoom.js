@@ -104,7 +104,7 @@ class MouseWheelZoom extends Interaction {
 
     /**
      * @private
-     * @type {?import("../coordinate.js").Coordinate}
+     * @type {?import("../pixel.js").Pixel}
      */
     this.lastAnchor_ = null;
 
@@ -161,7 +161,7 @@ class MouseWheelZoom extends Interaction {
     view.endInteraction(
       undefined,
       this.lastDelta_ ? (this.lastDelta_ > 0 ? 1 : -1) : 0,
-      this.lastAnchor_,
+      this.lastAnchor_ ? map.getCoordinateFromPixel(this.lastAnchor_) : null,
     );
   }
 
@@ -188,7 +188,7 @@ class MouseWheelZoom extends Interaction {
     wheelEvent.preventDefault();
 
     if (this.useAnchor_) {
-      this.lastAnchor_ = mapBrowserEvent.coordinate;
+      this.lastAnchor_ = mapBrowserEvent.pixel;
     }
 
     // Delta normalisation inspired by
@@ -236,7 +236,10 @@ class MouseWheelZoom extends Interaction {
         this.endInteraction_.bind(this),
         this.timeout_,
       );
-      view.adjustZoom(-delta / this.deltaPerZoom_, this.lastAnchor_);
+      view.adjustZoom(
+        -delta / this.deltaPerZoom_,
+        this.lastAnchor_ ? map.getCoordinateFromPixel(this.lastAnchor_) : null,
+      );
       this.startTime_ = now;
       return false;
     }
@@ -273,7 +276,12 @@ class MouseWheelZoom extends Interaction {
       // view has a zoom constraint, zoom by 1
       delta = delta ? (delta > 0 ? 1 : -1) : 0;
     }
-    zoomByDelta(view, delta, this.lastAnchor_, this.duration_);
+    zoomByDelta(
+      view,
+      delta,
+      this.lastAnchor_ ? map.getCoordinateFromPixel(this.lastAnchor_) : null,
+      this.duration_,
+    );
 
     this.mode_ = undefined;
     this.totalDelta_ = 0;
