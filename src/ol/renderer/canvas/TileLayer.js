@@ -206,6 +206,12 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
      */
     this.tileCache_ = new LRUCache(cacheSize);
 
+    /**
+     * @private
+     * @type {import("../../proj/Projection.js").default}
+     */
+    this.renderedProjection_ = undefined;
+
     this.maxStaleKeys = cacheSize * 0.5;
   }
 
@@ -357,6 +363,13 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @override
    */
   prepareFrame(frameState) {
+    if (!this.renderedProjection_) {
+      this.renderedProjection_ = frameState.viewState.projection;
+    } else if (frameState.viewState.projection !== this.renderedProjection_) {
+      this.tileCache_.clear();
+      this.renderedProjection_ = frameState.viewState.projection;
+    }
+
     const source = this.getLayer().getSource();
     if (!source) {
       return false;

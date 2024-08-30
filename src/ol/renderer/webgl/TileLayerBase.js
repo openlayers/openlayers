@@ -214,7 +214,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
      * @private
      * @type {import("../../proj/Projection.js").default}
      */
-    this.projection_ = undefined;
+    this.renderedProjection_ = undefined;
   }
 
   /**
@@ -234,11 +234,11 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
    * @override
    */
   prepareFrameInternal(frameState) {
-    if (!this.projection_) {
-      this.projection_ = frameState.viewState.projection;
-    } else if (frameState.viewState.projection !== this.projection_) {
+    if (!this.renderedProjection_) {
+      this.renderedProjection_ = frameState.viewState.projection;
+    } else if (frameState.viewState.projection !== this.renderedProjection_) {
       this.clearCache();
-      this.projection_ = frameState.viewState.projection;
+      this.renderedProjection_ = frameState.viewState.projection;
     }
 
     const layer = this.getLayer();
