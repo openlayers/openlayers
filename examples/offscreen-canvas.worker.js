@@ -9,6 +9,8 @@ import {get} from '../src/ol/proj.js';
 import {inView} from '../src/ol/layer/Layer.js';
 import {stylefunction} from 'ol-mapbox-style';
 
+const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
+
 /** @type {any} */
 const worker = self;
 
@@ -22,18 +24,18 @@ const sources = {
   landcover: new VectorTileSource({
     maxZoom: 9,
     format: new MVT(),
-    url: 'https://api.maptiler.com/tiles/landcover/{z}/{x}/{y}.pbf?key=get_your_own_D6rA4zTHduk6KOKTXzGB',
+    url: 'https://api.maptiler.com/tiles/landcover/{z}/{x}/{y}.pbf?key=' + key,
   }),
   contours: new VectorTileSource({
     minZoom: 9,
     maxZoom: 14,
     format: new MVT(),
-    url: 'https://api.maptiler.com/tiles/contours/{z}/{x}/{y}.pbf?key=get_your_own_D6rA4zTHduk6KOKTXzGB',
+    url: 'https://api.maptiler.com/tiles/contours/{z}/{x}/{y}.pbf?key=' + key,
   }),
   maptiler_planet: new VectorTileSource({
     format: new MVT(),
     maxZoom: 14,
-    url: 'https://api.maptiler.com/tiles/v3/{z}/{x}/{y}.pbf?key=get_your_own_D6rA4zTHduk6KOKTXzGB',
+    url: 'https://api.maptiler.com/tiles/v3/{z}/{x}/{y}.pbf?key=' + key,
   }),
 };
 const layers = [];
@@ -45,7 +47,7 @@ function getFont(font) {
 
 function loadStyles() {
   const styleUrl =
-    'https://api.maptiler.com/maps/streets-v2/style.json?key=get_your_own_D6rA4zTHduk6KOKTXzGB';
+    'https://api.maptiler.com/maps/streets-v2/style.json?key=' + key;
 
   fetch(styleUrl)
     .then((data) => data.json())
