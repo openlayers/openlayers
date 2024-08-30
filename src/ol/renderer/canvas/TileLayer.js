@@ -210,7 +210,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
      * @private
      * @type {import("../../proj/Projection.js").default}
      */
-    this.projection_ = undefined;
+    this.renderedProjection_ = undefined;
 
     this.maxStaleKeys = cacheSize * 0.5;
   }
@@ -363,11 +363,11 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @override
    */
   prepareFrame(frameState) {
-    if (!this.projection_) {
-      this.projection_ = frameState.viewState.projection;
-    } else if (frameState.viewState.projection !== this.projection_) {
+    if (!this.renderedProjection_) {
+      this.renderedProjection_ = frameState.viewState.projection;
+    } else if (frameState.viewState.projection !== this.renderedProjection_) {
       this.tileCache_.clear();
-      this.projection_ = frameState.viewState.projection;
+      this.renderedProjection_ = frameState.viewState.projection;
     }
 
     const source = this.getLayer().getSource();
