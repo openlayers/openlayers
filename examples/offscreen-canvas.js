@@ -3,7 +3,6 @@ import Map from '../src/ol/Map.js';
 import Source from '../src/ol/source/Source.js';
 import View from '../src/ol/View.js';
 import Worker from 'worker-loader!./offscreen-canvas.worker.js'; //eslint-disable-line
-import stringify from 'json-stringify-safe';
 import {FullScreen} from '../src/ol/control.js';
 import {
   compose,
@@ -78,7 +77,35 @@ const map = new Map({
           rendering = true;
           worker.postMessage({
             action: 'render',
-            frameState: JSON.parse(stringify(frameState)),
+            frameState: {
+              layerIndex: 0,
+              wantedTiles: {},
+              usedTiles: {},
+              viewHints: frameState.viewHints.slice(0),
+              postRenderFunctions: [],
+              viewState: {
+                center: frameState.viewState.center.slice(0),
+                resolution: frameState.viewState.resolution,
+                rotation: frameState.viewState.rotation,
+                zoom: frameState.viewState.zoom,
+              },
+              pixelRatio: frameState.pixelRatio,
+              size: frameState.size.slice(0),
+              extent: frameState.extent.slice(0),
+              coordinateToPixelTransform:
+                frameState.coordinateToPixelTransform.slice(0),
+              pixelToCoordinateTransform:
+                frameState.pixelToCoordinateTransform.slice(0),
+              layerStatesArray: frameState.layerStatesArray.map((l) => ({
+                zIndex: l.zIndex,
+                visible: l.visible,
+                extent: l.extent,
+                maxResolution: l.maxResolution,
+                minResolution: l.minResolution,
+                sourceState: l.sourceState,
+                managed: l.managed,
+              })),
+            },
           });
         } else {
           frameState.animate = true;

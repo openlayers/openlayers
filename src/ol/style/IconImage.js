@@ -256,8 +256,6 @@ class IconImage extends EventTarget {
       Math.ceil(image.height * pixelRatio),
     );
     const canvas = ctx.canvas;
-    canvas.width = Math.ceil(image.width * pixelRatio);
-    canvas.height = Math.ceil(image.height * pixelRatio);
 
     ctx.scale(pixelRatio, pixelRatio);
     ctx.drawImage(image, 0, 0);

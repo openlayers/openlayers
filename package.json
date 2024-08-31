@@ -90,7 +90,6 @@
     "jsdoc": "4.0.3",
     "jsdoc-plugin-intersection": "^1.0.4",
     "jsdoc-plugin-typescript": "^2.3.0",
-    "json-stringify-safe": "^5.0.1",
     "jstransformer-handlebars": "^1.2.0",
     "karma": "^6.3.8",
     "karma-chrome-launcher": "^3.1.0",

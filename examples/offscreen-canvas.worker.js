@@ -4,7 +4,6 @@ import TileQueue, {
 } from '../src/ol/TileQueue.js';
 import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
-import stringify from 'json-stringify-safe';
 import {get} from '../src/ol/proj.js';
 import {inView} from '../src/ol/layer/Layer.js';
 import {stylefunction} from 'ol-mapbox-style';
@@ -141,7 +140,7 @@ worker.addEventListener('message', (event) => {
       const features = res.flat();
       worker.postMessage({
         action: 'getFeatures',
-        features: JSON.parse(stringify(features.map((e) => e.getProperties()))),
+        features: features.map((e) => e.getProperties()),
       });
     });
     return;
@@ -157,6 +156,7 @@ worker.addEventListener('message', (event) => {
   }
   frameState.tileQueue = tileQueue;
   frameState.viewState.projection = get('EPSG:3857');
+  frameState.layerStatesArray = layers.map((l) => l.getLayerState());
   layers.forEach((layer) => {
     if (inView(layer.getLayerState(), frameState.viewState)) {
       if (layer.getDeclutter() && !frameState.declutterTree) {
@@ -183,7 +183,20 @@ worker.addEventListener('message', (event) => {
       action: 'rendered',
       imageData: imageData,
       transform: rendererTransform,
-      frameState: JSON.parse(stringify(frameState)),
+      frameState: {
+        viewState: {
+          center: frameState.viewState.center.slice(0),
+          resolution: frameState.viewState.resolution,
+          rotation: frameState.viewState.rotation,
+        },
+        pixelRatio: frameState.pixelRatio,
+        size: frameState.size.slice(0),
+        extent: frameState.extent.slice(0),
+        coordinateToPixelTransform:
+          frameState.coordinateToPixelTransform.slice(0),
+        pixelToCoordinateTransform:
+          frameState.pixelToCoordinateTransform.slice(0),
+      },
     },
     [imageData],
   );
