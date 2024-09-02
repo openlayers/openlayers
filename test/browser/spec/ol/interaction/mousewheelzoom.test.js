@@ -76,7 +76,8 @@ describe('ol.interaction.MouseWheelZoom', function () {
           target: map.getViewport(),
           preventDefault: Event.prototype.preventDefault,
         });
-        event.coordinate = [0, 0];
+        event.coordinate = map.getView().getCenter();
+        event.pixel = map.getPixelFromCoordinate(event.coordinate);
         map.handleMapBrowserEvent(event);
       });
     }
@@ -94,7 +95,8 @@ describe('ol.interaction.MouseWheelZoom', function () {
           target: map.getViewport(),
           preventDefault: Event.prototype.preventDefault,
         });
-        event.coordinate = [0, 0];
+        event.coordinate = map.getView().getCenter();
+        event.pixel = map.getPixelFromCoordinate(event.coordinate);
         map.handleMapBrowserEvent(event);
       });
     }
@@ -114,7 +116,7 @@ describe('ol.interaction.MouseWheelZoom', function () {
         map.once('postrender', function () {
           const call = view.animateInternal.getCall(0);
           expect(call.args[0].resolution).to.be(2);
-          expect(call.args[0].anchor).to.eql([0, 0]);
+          expect(call.args[0].anchor).to.eql(map.getView().getCenter());
           done();
         });
 
@@ -125,7 +127,8 @@ describe('ol.interaction.MouseWheelZoom', function () {
           target: map.getViewport(),
           preventDefault: Event.prototype.preventDefault,
         });
-        event.coordinate = [0, 0];
+        event.coordinate = map.getView().getCenter();
+        event.pixel = map.getPixelFromCoordinate(event.coordinate);
 
         map.handleMapBrowserEvent(event);
       });
@@ -134,7 +137,7 @@ describe('ol.interaction.MouseWheelZoom', function () {
         map.once('postrender', function () {
           const call = view.animateInternal.getCall(0);
           expect(call.args[0].resolution).to.be(2);
-          expect(call.args[0].anchor).to.eql([0, 0]);
+          expect(call.args[0].anchor).to.eql(map.getView().getCenter());
           done();
         });
 
@@ -144,7 +147,8 @@ describe('ol.interaction.MouseWheelZoom', function () {
           target: map.getViewport(),
           preventDefault: Event.prototype.preventDefault,
         });
-        event.coordinate = [0, 0];
+        event.coordinate = map.getView().getCenter();
+        event.pixel = map.getPixelFromCoordinate(event.coordinate);
 
         map.handleMapBrowserEvent(event);
       });
