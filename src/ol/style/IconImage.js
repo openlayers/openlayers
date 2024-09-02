@@ -251,11 +251,12 @@ class IconImage extends EventTarget {
     }
 
     const image = this.image_;
-    const canvas = document.createElement('canvas');
-    canvas.width = Math.ceil(image.width * pixelRatio);
-    canvas.height = Math.ceil(image.height * pixelRatio);
+    const ctx = createCanvasContext2D(
+      Math.ceil(image.width * pixelRatio),
+      Math.ceil(image.height * pixelRatio),
+    );
+    const canvas = ctx.canvas;
 
-    const ctx = canvas.getContext('2d');
     ctx.scale(pixelRatio, pixelRatio);
     ctx.drawImage(image, 0, 0);
 
