@@ -90,7 +90,13 @@ import {warn} from './console.js';
  * transforms the input coordinate values, populates the output array, and
  * returns the output array.
  *
- * @typedef {function(Array<number>, Array<number>=, number=, number=): Array<number>} TransformFunction
+ * @callback TransformFunction
+ * @param {Array<number>} input
+ * @param {Array<number>} [output]
+ * @param {number} [dimension]
+ * @param {number} [stride]
+ * @return {Array<number>}
+ *
  * @api
  */
 
