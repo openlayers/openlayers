@@ -96,6 +96,7 @@ import {warn} from './console.js';
  * @param {number} [dimension]
  * @param {number} [stride]
  * @return {Array<number>}
+ *
  * @api
  */
 
