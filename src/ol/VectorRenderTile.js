@@ -145,9 +145,11 @@ class VectorRenderTile extends Tile {
    * @override
    */
   release() {
-    releaseCanvas(this.context_);
-    canvasPool.push(this.context_.canvas);
-    this.context_ = null;
+    if (this.context_) {
+      releaseCanvas(this.context_);
+      canvasPool.push(this.context_.canvas);
+      this.context_ = null;
+    }
     super.release();
   }
 }

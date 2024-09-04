@@ -241,6 +241,14 @@ class Tile extends EventTarget {
       this.transitionStarts_[id] = -1;
     }
   }
+
+  /**
+   * @override
+   */
+  disposeInternal() {
+    this.release();
+    super.disposeInternal();
+  }
 }
 
 export default Tile;
