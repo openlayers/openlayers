@@ -1,3 +1,6 @@
+import Map from '../../src/ol/Map.js';
+import View from '../../src/ol/View.js';
+import {defaults as defaultInteractions} from '../../src/ol/interaction.js';
 import {setLevel as setLogLevel} from '../../src/ol/console.js';
 
 setLogLevel('error');
@@ -374,13 +377,16 @@ setLogLevel('error');
     return target;
   };
 
-  global.disposeMap = function (map) {
-    const target = map.getTarget();
-    map.setTarget(null);
-    if (target && target.parentNode) {
-      target.parentNode.removeChild(target);
+  /**
+   * @param {import('../../src/ol/Map.js').default|undefined} map Map
+   * @param {HTMLElement} [target] Node in dom
+   */
+  global.disposeMap = function (map, target) {
+    target?.remove();
+    if (map) {
+      map.getTargetElement()?.remove();
+      map.dispose();
     }
-    map.dispose();
   };
 
   const features = {
@@ -416,4 +422,47 @@ setLogLevel('error');
       throw new Error('Found extra <div> elements in the body');
     }
   });
+
+  /**
+   * Defines and registers a custom HTML element `ol-map`.
+   *
+   * @param {Object} options Object holding different options used in
+   *  constructor of OLComponent. Currently 'interactionOpts' can be set as
+   *  child property.
+   */
+  global.defineCustomMapEl = function (options) {
+    // custom HTML element holding the OL map
+    class OLComponent extends HTMLElement {
+      constructor() {
+        super();
+        const shadow = this.attachShadow({mode: 'open'});
+
+        const style = document.createElement('style');
+        style.innerText = `
+          :host {
+            display: block;
+          }
+        `;
+        shadow.appendChild(style);
+
+        const target = document.createElement('div');
+        target.style.width = '100%';
+        target.style.height = '100%';
+        shadow.appendChild(target);
+
+        this.map = new Map({
+          target: target,
+          interactions: defaultInteractions(options.interactionOpts),
+          view: new View({
+            center: [0, 0],
+            resolutions: [1],
+            zoom: 8,
+          }),
+        });
+      }
+    }
+    if (customElements.get('ol-map') === undefined) {
+      customElements.define('ol-map', OLComponent);
+    }
+  };
 })(window);

@@ -210,6 +210,7 @@ class Link extends Interaction {
 
   /**
    * @param {import("../Map.js").default|null} map Map.
+   * @override
    */
   setMap(map) {
     const oldMap = this.getMap();

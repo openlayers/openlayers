@@ -1,5 +1,6 @@
 import Feature from '../../../../../src/ol/Feature.js';
 import GML2 from '../../../../../src/ol/format/GML2.js';
+import GML3 from '../../../../../src/ol/format/GML3.js';
 import GML32 from '../../../../../src/ol/format/GML32.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
@@ -1317,6 +1318,26 @@ describe('ol.format.WFS', function () {
         featurePrefix: 'topp',
       });
       expect(serialized).to.xmleql(parse(text));
+    });
+
+    describe('when writing out a Transaction request', function () {
+      const writeTransaction = (gmlFormat) => {
+        const wfs = new WFS({version: '2.0.0', gmlFormat});
+        const feature = new Feature({foo: null, bar: undefined});
+        wfs.writeTransaction([feature], [], [], {
+          featureNS: 'http://www.openplans.org/topp',
+          featureType: 'states',
+          featurePrefix: 'topp',
+        });
+      };
+
+      it('does not throw on null or undefined property values for GML2', () => {
+        expect(() => writeTransaction(new GML2())).to.not.throwException();
+      });
+
+      it('does not throw on null or undefined property values for GML3', () => {
+        expect(() => writeTransaction(new GML3())).to.not.throwException();
+      });
     });
 
     it('should use <Name> tag for property names', () => {

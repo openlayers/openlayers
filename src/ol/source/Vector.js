@@ -1041,6 +1041,9 @@ class VectorSource extends Source {
       this.loader_.length < 4 ? false : this.loadingExtentsCount_ > 0;
   }
 
+  /**
+   * @override
+   */
   refresh() {
     this.clear(true);
     this.loadedExtentsRtree_.clear();

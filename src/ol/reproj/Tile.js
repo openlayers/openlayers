@@ -331,6 +331,7 @@ class ReprojTile extends Tile {
 
   /**
    * Load not yet loaded URI.
+   * @override
    */
   load() {
     if (this.state == TileState.IDLE) {
@@ -345,26 +346,21 @@ class ReprojTile extends Tile {
         if (state == TileState.IDLE || state == TileState.LOADING) {
           leftToLoad++;
 
-          const sourceListenKey = listen(
-            tile,
-            EventType.CHANGE,
-            function (e) {
-              const state = tile.getState();
-              if (
-                state == TileState.LOADED ||
-                state == TileState.ERROR ||
-                state == TileState.EMPTY
-              ) {
-                unlistenByKey(sourceListenKey);
-                leftToLoad--;
-                if (leftToLoad === 0) {
-                  this.unlistenSources_();
-                  this.reproject_();
-                }
+          const sourceListenKey = listen(tile, EventType.CHANGE, (e) => {
+            const state = tile.getState();
+            if (
+              state == TileState.LOADED ||
+              state == TileState.ERROR ||
+              state == TileState.EMPTY
+            ) {
+              unlistenByKey(sourceListenKey);
+              leftToLoad--;
+              if (leftToLoad === 0) {
+                this.unlistenSources_();
+                this.reproject_();
               }
-            },
-            this,
-          );
+            }
+          });
           this.sourcesListenerKeys_.push(sourceListenKey);
         }
       });
@@ -392,6 +388,7 @@ class ReprojTile extends Tile {
 
   /**
    * Remove from the cache due to expiry
+   * @override
    */
   release() {
     if (this.canvas_) {

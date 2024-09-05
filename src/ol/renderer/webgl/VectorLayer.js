@@ -240,6 +240,9 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     );
   }
 
+  /**
+   * @override
+   */
   reset(options) {
     this.applyOptions_(options);
     if (this.helper) {
@@ -248,8 +251,19 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     super.reset(options);
   }
 
+  /**
+   * @override
+   */
   afterHelperCreated() {
-    this.createRenderers_();
+    if (this.styleRenderers_.length) {
+      // To reuse buffers
+      this.styleRenderers_.forEach((renderer, i) =>
+        renderer.setHelper(this.helper, this.buffers_[i]),
+      );
+    } else {
+      this.createRenderers_();
+    }
+
     if (this.hitDetectionEnabled_) {
       this.hitRenderTarget_ = new WebGLRenderTarget(this.helper);
     }
@@ -322,6 +336,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    * Render the layer.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {HTMLElement} The rendered element.
+   * @override
    */
   renderFrame(frameState) {
     const gl = this.helper.getGL();
@@ -358,6 +373,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    * Determine whether renderFrame should be called.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
+   * @override
    */
   prepareFrameInternal(frameState) {
     if (!this.initialFeaturesAdded_) {
@@ -478,6 +494,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
    * @return {T|undefined} Callback result.
    * @template T
+   * @override
    */
   forEachFeatureAtCoordinate(
     coordinate,
@@ -533,6 +550,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
     this.buffers_.forEach((buffers) => {

@@ -121,6 +121,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {number} h Height of the tile.
    * @param {number} gutter Tile gutter.
    * @param {boolean} transition Apply an alpha transition.
+   * @override
    */
   drawTile(tile, frameState, x, y, w, h, gutter, transition) {
     this.updateExecutorGroup_(
@@ -140,6 +141,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {number} y Tile coordinate y.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {import("../../Tile.js").default|null} Tile (or null if outside source extent).
+   * @override
    */
   getTile(z, x, y, frameState) {
     const tile = /** @type {import("../../VectorRenderTile.js").default} */ (
@@ -162,16 +164,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   }
 
   /**
-   * @inheritDoc
-   */
-  getTileImage(tile) {
-    return tile.getImage(this.getLayer());
-  }
-
-  /**
    * Determine whether render should be called.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
+   * @override
    */
   prepareFrame(frameState) {
     const layerRevision = this.getLayer().getRevision();
@@ -315,6 +311,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
    * @return {T|undefined} Callback result.
    * @template T
+   * @override
    */
   forEachFeatureAtCoordinate(
     coordinate,
@@ -419,6 +416,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * Asynchronous layer level hit detection.
    * @param {import("../../pixel.js").Pixel} pixel Pixel.
    * @return {Promise<Array<import("../../Feature.js").FeatureLike>>} Promise that resolves with an array of features.
+   * @override
    */
   getFeatures(pixel) {
     return new Promise((resolve, reject) => {
@@ -513,7 +511,45 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   }
 
   /**
+   * @param {import("../../extent.js").Extent} extent Extent.
+   * @return {Array<import('../../Feature.js').FeatureLike>} Features.
+   */
+  getFeaturesInExtent(extent) {
+    const features = [];
+    const tileCache = this.getTileCache();
+    if (tileCache.getCount() === 0) {
+      return features;
+    }
+    const tileGrid = this.getLayer().getSource().tileGrid;
+    const z = tileGrid.getZForResolution(this.renderedResolution);
+    tileCache.forEach((tile) => {
+      if (tile.tileCoord[0] !== z || tile.getState() !== TileState.LOADED) {
+        return;
+      }
+      const sourceTiles = tile.getSourceTiles();
+      for (let i = 0, ii = sourceTiles.length; i < ii; ++i) {
+        const sourceTile = sourceTiles[i];
+        const tileCoord = sourceTile.tileCoord;
+        if (intersects(extent, tileGrid.getTileCoordExtent(tileCoord))) {
+          const tileFeatures = sourceTile.getFeatures();
+          if (tileFeatures) {
+            for (let j = 0, jj = tileFeatures.length; j < jj; ++j) {
+              const candidate = tileFeatures[j];
+              const geometry = candidate.getGeometry();
+              if (intersects(extent, geometry.getExtent())) {
+                features.push(candidate);
+              }
+            }
+          }
+        }
+      }
+    });
+    return features;
+  }
+
+  /**
    * Perform action necessary to get the layer rendered after new fonts have loaded
+   * @override
    */
   handleFontsChanged() {
     const layer = this.getLayer();
@@ -571,6 +607,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
   /**
    * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @override
    */
   renderDeferredInternal(frameState) {
     const tiles =
@@ -663,6 +700,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * Render the vectors for this layer.
    * @param {CanvasRenderingContext2D} context Target context.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @override
    */
   postRender(context, frameState) {
     const viewHints = frameState.viewHints;

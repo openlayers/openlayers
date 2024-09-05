@@ -214,11 +214,12 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
      * @private
      * @type {import("../../proj/Projection.js").default}
      */
-    this.projection_ = undefined;
+    this.renderedProjection_ = undefined;
   }
 
   /**
    * @param {Options} options Options.
+   * @override
    */
   reset(options) {
     super.reset({
@@ -230,13 +231,14 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
    * Determine whether renderFrame should be called.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
+   * @override
    */
   prepareFrameInternal(frameState) {
-    if (!this.projection_) {
-      this.projection_ = frameState.viewState.projection;
-    } else if (frameState.viewState.projection !== this.projection_) {
+    if (!this.renderedProjection_) {
+      this.renderedProjection_ = frameState.viewState.projection;
+    } else if (frameState.viewState.projection !== this.renderedProjection_) {
       this.clearCache();
-      this.projection_ = frameState.viewState.projection;
+      this.renderedProjection_ = frameState.viewState.projection;
     }
 
     const layer = this.getLayer();
@@ -517,6 +519,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
    * Render the layer.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {HTMLElement} The rendered element.
+   * @override
    */
   renderFrame(frameState) {
     this.frameState = frameState;
@@ -703,6 +706,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
       }
     }
 
+    this.beforeFinalize(frameState);
     this.helper.finalizeDraw(
       frameState,
       this.dispatchPreComposeEvent,
@@ -732,6 +736,14 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
 
     this.postRender(gl, frameState);
     return canvas;
+  }
+
+  /**
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @protected
+   */
+  beforeFinalize(frameState) {
+    return;
   }
 
   /**
@@ -785,7 +797,12 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     return covered;
   }
 
+  /**
+   * @override
+   */
   clearCache() {
+    super.clearCache();
+
     const tileRepresentationCache = this.tileRepresentationCache;
     tileRepresentationCache.forEach((tileRepresentation) =>
       tileRepresentation.dispose(),
@@ -793,16 +810,20 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     tileRepresentationCache.clear();
   }
 
-  removeHelper() {
-    if (this.helper) {
-      this.clearCache();
-    }
+  /**
+   * @override
+   */
+  afterHelperCreated() {
+    super.afterHelperCreated();
 
-    super.removeHelper();
+    this.tileRepresentationCache.forEach((tileRepresentation) =>
+      tileRepresentation.setHelper(this.helper),
+    );
   }
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
     super.disposeInternal();

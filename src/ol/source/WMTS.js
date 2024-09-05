@@ -163,6 +163,7 @@ class WMTS extends TileImage {
    * Set the URLs to use for requests.
    * URLs may contain OGC conform URL Template Variables: {TileMatrix}, {TileRow}, {TileCol}.
    * @param {Array<string>} urls URLs.
+   * @override
    */
   setUrls(urls) {
     this.urls = urls;

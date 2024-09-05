@@ -580,8 +580,7 @@ describe('ol/source/ImageWMS', function () {
     });
 
     afterEach(function () {
-      document.body.removeChild(map.getTargetElement());
-      map.setTarget(null);
+      disposeMap(map);
     });
 
     it('reloads from server', function (done) {
@@ -629,8 +628,7 @@ describe('ol/source/ImageWMS', function () {
     });
 
     afterEach(function () {
-      document.body.removeChild(map.getTargetElement());
-      map.setTarget(null);
+      disposeMap(map);
       queryData.length = 0;
       getProjection('EPSG:3857').setGlobal(true);
       getProjection('EPSG:4326').setGlobal(true);

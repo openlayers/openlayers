@@ -5,6 +5,9 @@ import LRUCache from './structs/LRUCache.js';
 import {fromKey, getKey} from './tilecoord.js';
 
 class TileCache extends LRUCache {
+  /**
+   * @override
+   */
   clear() {
     while (this.getCount() > 0) {
       this.pop().release();
@@ -14,6 +17,7 @@ class TileCache extends LRUCache {
 
   /**
    * @param {!Object<string, boolean>} usedTiles Used tiles.
+   * @override
    */
   expireCache(usedTiles) {
     while (this.canExpireCache()) {

@@ -33,6 +33,8 @@ export const Attributes = {
   INDEX: 'a_index',
   SEGMENT_START: 'a_segmentStart',
   SEGMENT_END: 'a_segmentEnd',
+  MEASURE_START: 'a_measureStart',
+  MEASURE_END: 'a_measureEnd',
   PARAMETERS: 'a_parameters',
   JOIN_ANGLES: 'a_joinAngles',
   DISTANCE: 'a_distance',
@@ -108,8 +110,9 @@ class VectorStyleRenderer {
   constructor(styleOrShaders, helper, enableHitDetection) {
     /**
      * @private
+     * @type {import('../../webgl/Helper.js').default}
      */
-    this.helper_ = helper;
+    this.helper_;
 
     /**
      * @private
@@ -131,6 +134,24 @@ class VectorStyleRenderer {
     }
 
     /**
+     * @private
+     * @type {WebGLProgram}
+     */
+    this.fillProgram_;
+
+    /**
+     * @private
+     * @type {WebGLProgram}
+     */
+    this.strokeProgram_;
+
+    /**
+     * @private
+     * @type {WebGLProgram}
+     */
+    this.symbolProgram_;
+
+    /**
      * @type {boolean}
      * @private
      */
@@ -144,13 +165,6 @@ class VectorStyleRenderer {
        * @private
        */
       this.fillFragmentShader_ = shaders.builder.getFillFragmentShader();
-      /**
-       * @private
-       */
-      this.fillProgram_ = this.helper_.getProgram(
-        this.fillFragmentShader_,
-        this.fillVertexShader_,
-      );
     }
 
     /**
@@ -167,13 +181,6 @@ class VectorStyleRenderer {
        * @private
        */
       this.strokeFragmentShader_ = shaders.builder.getStrokeFragmentShader();
-      /**
-       * @private
-       */
-      this.strokeProgram_ = this.helper_.getProgram(
-        this.strokeFragmentShader_,
-        this.strokeVertexShader_,
-      );
     }
 
     /**
@@ -190,13 +197,6 @@ class VectorStyleRenderer {
        * @private
        */
       this.symbolFragmentShader_ = shaders.builder.getSymbolFragmentShader();
-      /**
-       * @private
-       */
-      this.symbolProgram_ = this.helper_.getProgram(
-        this.symbolFragmentShader_,
-        this.symbolVertexShader_,
-      );
     }
 
     const hitDetectionAttributes = this.hitDetectionEnabled_
@@ -253,8 +253,18 @@ class VectorStyleRenderer {
         type: AttributeType.FLOAT,
       },
       {
+        name: Attributes.MEASURE_START,
+        size: 1,
+        type: AttributeType.FLOAT,
+      },
+      {
         name: Attributes.SEGMENT_END,
         size: 2,
+        type: AttributeType.FLOAT,
+      },
+      {
+        name: Attributes.MEASURE_END,
+        size: 1,
         type: AttributeType.FLOAT,
       },
       {
@@ -292,9 +302,7 @@ class VectorStyleRenderer {
       ...customAttributesDesc,
     ];
 
-    if (shaders.uniforms) {
-      this.helper_.addUniforms(shaders.uniforms);
-    }
+    this.setHelper(helper);
   }
 
   /**
@@ -521,6 +529,49 @@ class VectorStyleRenderer {
     this.helper_.enableAttributes(attributes);
     preRenderCallback();
     this.helper_.drawElements(0, renderCount);
+  }
+
+  /**
+   * @param {import('../../webgl/Helper.js').default} helper Helper
+   * @param {WebGLBuffers} buffers WebGL Buffers to reload if any
+   */
+  setHelper(helper, buffers = null) {
+    this.helper_ = helper;
+
+    if (this.hasFill_) {
+      this.fillProgram_ = this.helper_.getProgram(
+        this.fillFragmentShader_,
+        this.fillVertexShader_,
+      );
+    }
+    if (this.hasStroke_) {
+      this.strokeProgram_ = this.helper_.getProgram(
+        this.strokeFragmentShader_,
+        this.strokeVertexShader_,
+      );
+    }
+    if (this.hasSymbol_) {
+      this.symbolProgram_ = this.helper_.getProgram(
+        this.symbolFragmentShader_,
+        this.symbolVertexShader_,
+      );
+    }
+    this.helper_.addUniforms(this.uniforms_);
+
+    if (buffers) {
+      if (buffers.polygonBuffers) {
+        this.helper_.flushBufferData(buffers.polygonBuffers[0]);
+        this.helper_.flushBufferData(buffers.polygonBuffers[1]);
+      }
+      if (buffers.lineStringBuffers) {
+        this.helper_.flushBufferData(buffers.lineStringBuffers[0]);
+        this.helper_.flushBufferData(buffers.lineStringBuffers[1]);
+      }
+      if (buffers.pointBuffers) {
+        this.helper_.flushBufferData(buffers.pointBuffers[0]);
+        this.helper_.flushBufferData(buffers.pointBuffers[1]);
+      }
+    }
   }
 }
 

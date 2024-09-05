@@ -48,6 +48,7 @@ class RenderBox extends Disposable {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
     this.setMap(null);

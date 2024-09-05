@@ -69,6 +69,9 @@ class TileGeometry extends BaseTileRepresentation {
     this.helper.flushBufferData(this.maskVertices);
   }
 
+  /**
+   * @override
+   */
   uploadTile() {
     this.generateMaskBuffer_();
 

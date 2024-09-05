@@ -93,6 +93,7 @@ class MapBrowserEvent extends MapEvent {
    * Prevents the default browser action.
    * See https://developer.mozilla.org/en-US/docs/Web/API/event.preventDefault.
    * @api
+   * @override
    */
   preventDefault() {
     super.preventDefault();
@@ -105,6 +106,7 @@ class MapBrowserEvent extends MapEvent {
    * Prevents further propagation of the current event.
    * See https://developer.mozilla.org/en-US/docs/Web/API/event.stopPropagation.
    * @api
+   * @override
    */
   stopPropagation() {
     super.stopPropagation();

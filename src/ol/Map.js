@@ -41,7 +41,6 @@ import {fromUserCoordinate, toUserCoordinate} from './proj.js';
 import {getUid} from './util.js';
 import {hasArea} from './size.js';
 import {listen, unlistenByKey} from './events.js';
-import {removeNode} from './dom.js';
 import {warn} from './console.js';
 
 /**
@@ -53,7 +52,8 @@ import {warn} from './console.js';
  * @property {import("./View.js").State} viewState The state of the current view.
  * @property {boolean} animate Animate.
  * @property {import("./transform.js").Transform} coordinateToPixelTransform CoordinateToPixelTransform.
- * @property {Object<string, import("rbush").default>|null} declutter Declutter trees by declutter group.
+ * @property {Object<string, import("rbush").default<import('./render/canvas/Executor.js').DeclutterEntry>>|null} declutter
+ * Declutter trees by declutter group.
  * When null, no decluttering is needed because no layers have decluttering enabled.
  * @property {null|import("./extent.js").Extent} extent Extent (in view projection coordinates).
  * @property {import("./extent.js").Extent} [nextExtent] Next extent during an animation series.
@@ -148,6 +148,9 @@ import {warn} from './console.js';
  * element itself or the `id` of the element. If not specified at construction
  * time, {@link module:ol/Map~Map#setTarget} must be called for the map to be
  * rendered. If passed by element, the container can be in a secondary document.
+ * For accessibility (focus and keyboard events for map navigation), the `target` element must have a
+ *  properly configured `tabindex` attribute. If the `target` element is inside a Shadow DOM, the
+ *  `tabindex` atribute must be set on the custom element's host element.
  * **Note:** CSS `transform` support for the target element is limited to `scale`.
  * @property {View|Promise<import("./View.js").ViewOptions>} [view] The map's view.  No layer sources will be
  * fetched unless this is specified at construction time or through
@@ -654,6 +657,7 @@ class Map extends BaseObject {
   /**
    *
    * Clean up.
+   * @override
    */
   disposeInternal() {
     this.controls.clear();
@@ -1127,6 +1131,15 @@ class Map extends BaseObject {
         ? this.viewport_.getRootNode()
         : doc;
       const target = /** @type {Node} */ (originalEvent.target);
+
+      const currentDoc =
+        rootNode instanceof ShadowRoot
+          ? rootNode.host === target
+            ? rootNode.host.ownerDocument
+            : rootNode
+          : rootNode === doc
+            ? doc.documentElement
+            : rootNode;
       if (
         // Abort if the target is a child of the container for elements whose events are not meant
         // to be handled by map interactions.
@@ -1135,7 +1148,7 @@ class Map extends BaseObject {
         // It's possible for the target to no longer be in the page if it has been removed in an
         // event listener, this might happen in a Control that recreates it's content based on
         // user interaction either manually or via a render in something like https://reactjs.org/
-        !(rootNode === doc ? doc.documentElement : rootNode).contains(target)
+        !currentDoc.contains(target)
       ) {
         return;
       }
@@ -1252,7 +1265,7 @@ class Map extends BaseObject {
       );
       this.mapBrowserEventHandler_.dispose();
       this.mapBrowserEventHandler_ = null;
-      removeNode(this.viewport_);
+      this.viewport_.remove();
     }
 
     if (this.targetElement_) {
@@ -1312,9 +1325,17 @@ class Map extends BaseObject {
         PASSIVE_EVENT_LISTENERS ? {passive: false} : false,
       );
 
-      const keyboardEventTarget = !this.keyboardEventTarget_
-        ? targetElement
-        : this.keyboardEventTarget_;
+      let keyboardEventTarget;
+      if (!this.keyboardEventTarget_) {
+        // check if map target is in shadowDOM, if yes use host element as target
+        const targetRoot = targetElement.getRootNode();
+        const targetCandidate =
+          targetRoot instanceof ShadowRoot ? targetRoot.host : targetElement;
+        keyboardEventTarget = targetCandidate;
+      } else {
+        keyboardEventTarget = this.keyboardEventTarget_;
+      }
+
       this.targetChangeHandlerKeys_ = [
         listen(
           keyboardEventTarget,
@@ -1650,6 +1671,9 @@ class Map extends BaseObject {
 
   /**
    * Set the target element to render this map into.
+   * For accessibility (focus and keyboard events for map navigation), the `target` element must have a
+   *  properly configured `tabindex` attribute. If the `target` element is inside a Shadow DOM, the
+   *  `tabindex` atribute must be set on the custom element's host element.
    * @param {HTMLElement|string} [target] The Element or id of the Element
    *     that the map is rendered in.
    * @observable
@@ -1705,7 +1729,7 @@ class Map extends BaseObject {
         parseFloat(computedStyle['paddingBottom']) -
         parseFloat(computedStyle['borderBottomWidth']);
       if (!isNaN(width) && !isNaN(height)) {
-        size = [width, height];
+        size = [Math.max(0, width), Math.max(0, height)];
         if (
           !hasArea(size) &&
           !!(

@@ -27,12 +27,7 @@ uniform mediump int u_hitDetection;
 
 const float PI = 3.141592653589793238;
 const float TWO_PI = 2.0 * PI;
-
-// this used to produce an alpha-premultiplied color from a texture
-vec4 samplePremultiplied(sampler2D sampler, vec2 texCoord) {
-  vec4 color = texture2D(sampler, texCoord);
-  return vec4(color.rgb * color.a, color.a);
-}
+float currentLineMetric = 0.; // an actual value will be used in the stroke shaders
 `;
 
 const DEFAULT_STYLE = createDefaultStyle();
@@ -58,6 +53,10 @@ const DEFAULT_STYLE = createDefaultStyle();
  *   .setSymbolSizeExpression('...')
  *   .getSymbolFragmentShader();
  * ```
+ *
+ * A note on [alpha premultiplication](https://en.wikipedia.org/wiki/Alpha_compositing#Straight_versus_premultiplied):
+ * The ShaderBuilder class expects all colors to **not having been alpha-premultiplied!** This is because alpha
+ * premultiplication is done at the end of each fragment shader.
  */
 export class ShaderBuilder {
   constructor() {
@@ -580,6 +579,7 @@ void main(void) {
   float s = sin(v_angle);
   coordsPx = vec2(c * coordsPx.x - s * coordsPx.y, s * coordsPx.x + c * coordsPx.y);
   gl_FragColor = ${this.symbolColorExpression_};
+  gl_FragColor.rgb *= gl_FragColor.a;
   if (u_hitDetection > 0) {
     if (gl_FragColor.a < 0.05) { discard; };
     gl_FragColor = v_prop_hitColor;
@@ -602,10 +602,10 @@ ${this.uniforms_
     return 'uniform ' + uniform + ';';
   })
   .join('\n')}
-attribute vec2 a_position;
-attribute float a_index;
 attribute vec2 a_segmentStart;
 attribute vec2 a_segmentEnd;
+attribute float a_measureStart;
+attribute float a_measureEnd;
 attribute float a_parameters;
 attribute float a_distance;
 attribute vec2 a_joinAngles;
@@ -622,6 +622,8 @@ varying float v_angleEnd;
 varying float v_width;
 varying vec4 v_prop_hitColor;
 varying float v_distanceOffsetPx;
+varying float v_measureStart;
+varying float v_measureEnd;
 ${this.varyings_
   .map(function (varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
@@ -664,6 +666,7 @@ void main(void) {
   v_angleStart = a_joinAngles.x;
   v_angleEnd = a_joinAngles.y;
   float vertexNumber = floor(abs(a_parameters) / 10000. + 0.5);
+  currentLineMetric = vertexNumber < 1.5 ? a_measureStart : a_measureEnd;
   // we're reading the fractional part while keeping the sign (so -4.12 gives -0.12, 3.45 gives 0.45)
   float angleTangentSum = fract(abs(a_parameters) / 10000.) * 10000. * sign(a_parameters);
 
@@ -698,6 +701,8 @@ void main(void) {
   v_width = lineWidth;
   v_prop_hitColor = a_prop_hitColor;
   v_distanceOffsetPx = a_distance / u_resolution - (lineOffsetPx * angleTangentSum);
+  v_measureStart = a_measureStart;
+  v_measureEnd = a_measureEnd;
 ${this.varyings_
   .map(function (varying) {
     return '  ' + varying.name + ' = ' + varying.expression + ';';
@@ -729,6 +734,8 @@ varying float v_angleEnd;
 varying float v_width;
 varying vec4 v_prop_hitColor;
 varying float v_distanceOffsetPx;
+varying float v_measureStart;
+varying float v_measureEnd;
 ${this.varyings_
   .map(function (varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
@@ -834,16 +841,20 @@ void main(void) {
     discard;
   }
   #endif
-  if (${this.discardExpression_}) { discard; }
 
   float segmentLength = length(v_segmentEnd - v_segmentStart);
   vec2 segmentTangent = (v_segmentEnd - v_segmentStart) / segmentLength;
   vec2 segmentNormal = vec2(-segmentTangent.y, segmentTangent.x);
   vec2 startToPoint = currentPoint - v_segmentStart;
-  float currentLengthPx = max(0., min(dot(segmentTangent, startToPoint), segmentLength)) + v_distanceOffsetPx; 
+  float lengthToPoint = max(0., min(dot(segmentTangent, startToPoint), segmentLength));
+  float currentLengthPx = lengthToPoint + v_distanceOffsetPx; 
   float currentRadiusPx = abs(dot(segmentNormal, startToPoint));
   float currentRadiusRatio = dot(segmentNormal, startToPoint) * 2. / v_width;
-  vec4 color = ${this.strokeColorExpression_} * u_globalAlpha;
+  currentLineMetric = mix(v_measureStart, v_measureEnd, lengthToPoint / segmentLength);
+
+  if (${this.discardExpression_}) { discard; }
+
+  vec4 color = ${this.strokeColorExpression_};
   float capType = ${this.strokeCapExpression_};
   float joinType = ${this.strokeJoinExpression_};
   float segmentStartDistance = computeSegmentPointDistance(currentPoint, v_segmentStart, v_segmentEnd, v_width, v_angleStart, capType, joinType);
@@ -853,7 +864,10 @@ void main(void) {
     max(segmentStartDistance, segmentEndDistance)
   );
   distance = max(distance, ${this.strokeDistanceFieldExpression_});
-  gl_FragColor = color * smoothstep(0.5, -0.5, distance);
+  color.a *= smoothstep(0.5, -0.5, distance);
+  gl_FragColor = color;
+  gl_FragColor.a *= u_globalAlpha;
+  gl_FragColor.rgb *= gl_FragColor.a;
   if (u_hitDetection > 0) {
     if (gl_FragColor.a < 0.1) { discard; };
     gl_FragColor = v_prop_hitColor;
@@ -951,7 +965,9 @@ void main(void) {
   }
   #endif
   if (${this.discardExpression_}) { discard; }
-  gl_FragColor = ${this.fillColorExpression_} * u_globalAlpha;
+  gl_FragColor = ${this.fillColorExpression_};
+  gl_FragColor.a *= u_globalAlpha;
+  gl_FragColor.rgb *= gl_FragColor.a;
   if (u_hitDetection > 0) {
     if (gl_FragColor.a < 0.1) { discard; };
     gl_FragColor = v_prop_hitColor;

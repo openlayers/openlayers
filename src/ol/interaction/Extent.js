@@ -314,6 +314,7 @@ class Extent extends PointerInteraction {
   /**
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
    * @return {boolean} `false` to stop event propagation.
+   * @override
    */
   handleEvent(mapBrowserEvent) {
     if (!mapBrowserEvent.originalEvent || !this.condition_(mapBrowserEvent)) {
@@ -336,6 +337,7 @@ class Extent extends PointerInteraction {
    * Handle pointer down events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
+   * @override
    */
   handleDownEvent(mapBrowserEvent) {
     const pixel = mapBrowserEvent.pixel;
@@ -396,6 +398,7 @@ class Extent extends PointerInteraction {
   /**
    * Handle pointer drag events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @override
    */
   handleDragEvent(mapBrowserEvent) {
     if (this.pointerHandler_) {
@@ -409,6 +412,7 @@ class Extent extends PointerInteraction {
    * Handle pointer up events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
+   * @override
    */
   handleUpEvent(mapBrowserEvent) {
     this.pointerHandler_ = null;
@@ -425,6 +429,7 @@ class Extent extends PointerInteraction {
    * Subclasses may set up event handlers to get notified about changes to
    * the map here.
    * @param {import("../Map.js").default} map Map.
+   * @override
    */
   setMap(map) {
     this.extentOverlay_.setMap(map);

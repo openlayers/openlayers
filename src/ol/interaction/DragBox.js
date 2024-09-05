@@ -137,7 +137,7 @@ class DragBox extends PointerInteraction {
      */
     this.un;
 
-    options = options ? options : {};
+    options = options ?? {};
 
     /**
      * @type {import("../render/Box.js").default}
@@ -149,7 +149,7 @@ class DragBox extends PointerInteraction {
      * @type {number}
      * @private
      */
-    this.minArea_ = options.minArea !== undefined ? options.minArea : 64;
+    this.minArea_ = options.minArea ?? 64;
 
     if (options.onBoxEnd) {
       this.onBoxEnd = options.onBoxEnd;
@@ -165,15 +165,14 @@ class DragBox extends PointerInteraction {
      * @private
      * @type {import("../events/condition.js").Condition}
      */
-    this.condition_ = options.condition ? options.condition : mouseActionButton;
+    this.condition_ = options.condition ?? mouseActionButton;
 
     /**
      * @private
      * @type {EndCondition}
      */
-    this.boxEndCondition_ = options.boxEndCondition
-      ? options.boxEndCondition
-      : this.defaultBoxEndCondition;
+    this.boxEndCondition_ =
+      options.boxEndCondition ?? this.defaultBoxEndCondition;
   }
 
   /**
@@ -203,6 +202,7 @@ class DragBox extends PointerInteraction {
   /**
    * Handle pointer drag events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @override
    */
   handleDragEvent(mapBrowserEvent) {
     if (!this.startPixel_) {
@@ -224,13 +224,12 @@ class DragBox extends PointerInteraction {
    * Handle pointer up events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
+   * @override
    */
   handleUpEvent(mapBrowserEvent) {
     if (!this.startPixel_) {
       return false;
     }
-
-    this.box_.setMap(null);
 
     const completeBox = this.boxEndCondition_(
       mapBrowserEvent,
@@ -247,6 +246,10 @@ class DragBox extends PointerInteraction {
         mapBrowserEvent,
       ),
     );
+
+    this.box_.setMap(null);
+    this.startPixel_ = null;
+
     return false;
   }
 
@@ -254,6 +257,7 @@ class DragBox extends PointerInteraction {
    * Handle pointer down events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
+   * @override
    */
   handleDownEvent(mapBrowserEvent) {
     if (this.condition_(mapBrowserEvent)) {
@@ -283,6 +287,7 @@ class DragBox extends PointerInteraction {
    * @param {boolean} active Active.
    * @observable
    * @api
+   * @override
    */
   setActive(active) {
     if (!active) {
@@ -296,6 +301,27 @@ class DragBox extends PointerInteraction {
     }
 
     super.setActive(active);
+  }
+
+  /**
+   * @param {import("../Map.js").default|null} map Map.
+   * @override
+   */
+  setMap(map) {
+    const oldMap = this.getMap();
+
+    if (oldMap) {
+      this.box_.setMap(null);
+
+      if (this.startPixel_) {
+        this.dispatchEvent(
+          new DragBoxEvent(DragBoxEventType.BOXCANCEL, this.startPixel_, null),
+        );
+        this.startPixel_ = null;
+      }
+    }
+
+    super.setMap(map);
   }
 }
 

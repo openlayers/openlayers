@@ -41,6 +41,7 @@ class SimpleGeometry extends Geometry {
    * @param {import("../extent.js").Extent} extent Extent.
    * @protected
    * @return {import("../extent.js").Extent} extent Extent.
+   * @override
    */
   computeExtent(extent) {
     return createOrUpdateFromFlatCoordinates(
@@ -100,6 +101,7 @@ class SimpleGeometry extends Geometry {
    * Create a simplified version of this geometry using the Douglas Peucker algorithm.
    * @param {number} squaredTolerance Squared tolerance.
    * @return {SimpleGeometry} Simplified geometry.
+   * @override
    */
   getSimplifiedGeometry(squaredTolerance) {
     if (this.simplifiedGeometryRevision !== this.getRevision()) {
@@ -201,10 +203,16 @@ class SimpleGeometry extends Geometry {
    * @param {import("../proj.js").TransformFunction} transformFn Transform function.
    * Called with a flat array of geometry coordinates.
    * @api
+   * @override
    */
   applyTransform(transformFn) {
     if (this.flatCoordinates) {
-      transformFn(this.flatCoordinates, this.flatCoordinates, this.stride);
+      transformFn(
+        this.flatCoordinates,
+        this.flatCoordinates,
+        this.layout.startsWith('XYZ') ? 3 : 2,
+        this.stride,
+      );
       this.changed();
     }
   }
@@ -215,6 +223,7 @@ class SimpleGeometry extends Geometry {
    * @param {number} angle Rotation angle in counter-clockwise radians.
    * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
    * @api
+   * @override
    */
   rotate(angle, anchor) {
     const flatCoordinates = this.getFlatCoordinates();
@@ -241,6 +250,7 @@ class SimpleGeometry extends Geometry {
    * @param {import("../coordinate.js").Coordinate} [anchor] The scale origin (defaults to the center
    *     of the geometry extent).
    * @api
+   * @override
    */
   scale(sx, sy, anchor) {
     if (sy === undefined) {
@@ -272,6 +282,7 @@ class SimpleGeometry extends Geometry {
    * @param {number} deltaX Delta X.
    * @param {number} deltaY Delta Y.
    * @api
+   * @override
    */
   translate(deltaX, deltaY) {
     const flatCoordinates = this.getFlatCoordinates();

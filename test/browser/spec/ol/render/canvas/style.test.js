@@ -212,6 +212,14 @@ describe('ol/render/canvas/style.js', () => {
         }),
       },
       {
+        name: '"none" fill',
+        style: {
+          'fill-color': 'none',
+          'stroke-width': 1,
+        },
+        expected: new Style({stroke: new Stroke({width: 1})}),
+      },
+      {
         name: 'simple stroke style',
         style: {
           'stroke-color': 'red',

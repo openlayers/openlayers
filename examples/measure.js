@@ -222,7 +222,7 @@ function addInteraction() {
  */
 function createHelpTooltip() {
   if (helpTooltipElement) {
-    helpTooltipElement.parentNode.removeChild(helpTooltipElement);
+    helpTooltipElement.remove();
   }
   helpTooltipElement = document.createElement('div');
   helpTooltipElement.className = 'ol-tooltip hidden';
@@ -239,7 +239,7 @@ function createHelpTooltip() {
  */
 function createMeasureTooltip() {
   if (measureTooltipElement) {
-    measureTooltipElement.parentNode.removeChild(measureTooltipElement);
+    measureTooltipElement.remove();
   }
   measureTooltipElement = document.createElement('div');
   measureTooltipElement.className = 'ol-tooltip ol-tooltip-measure';

@@ -64,7 +64,7 @@ import {listen, unlistenByKey} from '../events.js';
  * @property {boolean} visible Visible.
  * @property {boolean} managed Managed.
  * @property {import("../extent.js").Extent} [extent] Extent.
- * @property {number | undefined} zIndex ZIndex.
+ * @property {number} zIndex ZIndex.
  * @property {number} maxResolution Maximum resolution.
  * @property {number} minResolution Minimum resolution.
  * @property {number} minZoom Minimum zoom.
@@ -181,6 +181,7 @@ class Layer extends BaseLayer {
   /**
    * @param {Array<import("./Layer.js").default>} [array] Array of layers (to be modified in place).
    * @return {Array<import("./Layer.js").default>} Array of layers.
+   * @override
    */
   getLayersArray(array) {
     array = array ? array : [];
@@ -191,6 +192,7 @@ class Layer extends BaseLayer {
   /**
    * @param {Array<import("./Layer.js").State>} [states] Optional list of layer states (to be modified in place).
    * @return {Array<import("./Layer.js").State>} List of layer states.
+   * @override
    */
   getLayerStatesArray(states) {
     states = states ? states : [];
@@ -217,6 +219,7 @@ class Layer extends BaseLayer {
 
   /**
    * @return {import("../source/Source.js").State} Source state.
+   * @override
    */
   getSourceState() {
     const source = this.getSource();
@@ -339,11 +342,7 @@ class Layer extends BaseLayer {
     if (!this.isVisible(view)) {
       return [];
     }
-    let getAttributions;
-    const source = this.getSource();
-    if (source) {
-      getAttributions = source.getAttributions();
-    }
+    const getAttributions = this.getSource()?.getAttributions();
     if (!getAttributions) {
       return [];
     }
@@ -450,7 +449,7 @@ class Layer extends BaseLayer {
       this.mapPrecomposeKey_ = listen(
         map,
         RenderEventType.PRECOMPOSE,
-        function (evt) {
+        (evt) => {
           const renderEvent =
             /** @type {import("../render/Event.js").default} */ (evt);
           const layerStatesArray = renderEvent.frameState.layerStatesArray;
@@ -463,7 +462,6 @@ class Layer extends BaseLayer {
           );
           layerStatesArray.push(layerState);
         },
-        this,
       );
       this.mapRenderKey_ = listen(this, EventType.CHANGE, map.render, map);
       this.changed();
@@ -509,6 +507,7 @@ class Layer extends BaseLayer {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
     if (this.renderer_) {

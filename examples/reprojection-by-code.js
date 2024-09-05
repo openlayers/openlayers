@@ -10,6 +10,8 @@ import {applyTransform} from '../src/ol/extent.js';
 import {get as getProjection, getTransform} from '../src/ol/proj.js';
 import {register} from '../src/ol/proj/proj4.js';
 
+const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
+
 const osmSource = new OSM();
 
 const debugLayer = new TileLayer({
@@ -94,7 +96,7 @@ function setProjection(code, name, proj4def, bbox) {
 function search(query) {
   resultSpan.innerHTML = 'Searching ...';
   fetch(
-    `https://api.maptiler.com/coordinates/search/${query}.json?exports=true&key=get_your_own_D6rA4zTHduk6KOKTXzGB`,
+    `https://api.maptiler.com/coordinates/search/${query}.json?exports=true&key=${key}`,
   )
     .then(function (response) {
       return response.json();

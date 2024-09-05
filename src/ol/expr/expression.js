@@ -37,6 +37,9 @@ import {toSize} from '../size.js';
  *   * `['time']` The time in seconds since the creation of the layer (WebGL only).
  *   * `['var', 'varName']` fetches a value from the style variables; will throw an error if that variable is undefined
  *   * `['zoom']` The current zoom level (WebGL only).
+ *   * `['line-metric']` returns the M component of the current point on a line (WebGL only); in case where the geometry layout of the line
+ *      does not contain an M component (e.g. XY or XYZ), 0 is returned; 0 is also returned for geometries other than lines.
+ *      Please note that the M component will be linearly interpolated between the two points composing a segment.
  *
  * * Math operators:
  *   * `['*', value1, value2, ...]` multiplies the values (either numbers or colors)
@@ -91,6 +94,8 @@ import {toSize} from '../size.js';
  *   * `['!', value1]` returns `false` if `value1` is `true` or greater than `0`, or `true` otherwise.
  *   * `['all', value1, value2, ...]` returns `true` if all the inputs are `true`, `false` otherwise.
  *   * `['any', value1, value2, ...]` returns `true` if any of the inputs are `true`, `false` otherwise.
+ *   * `['has', attributeName, keyOrArrayIndex, ...]` returns `true` if feature properties include the (nested) key `attributeName`,
+ *     `false` otherwise.
  *   * `['between', value1, value2, value3]` returns `true` if `value1` is contained between `value2` and `value3`
  *     (inclusively), or `false` otherwise.
  *   * `['in', needle, haystack]` returns `true` if `needle` is found in `haystack`, and
@@ -373,6 +378,7 @@ export const Ops = {
   Var: 'var',
   Concat: 'concat',
   GeometryType: 'geometry-type',
+  LineMetric: 'line-metric',
   Any: 'any',
   All: 'all',
   Not: '!',
@@ -414,6 +420,7 @@ export const Ops = {
   Band: 'band',
   Palette: 'palette',
   ToString: 'to-string',
+  Has: 'has',
 };
 
 /**
@@ -428,12 +435,14 @@ export const Ops = {
 const parsers = {
   [Ops.Get]: createCallExpressionParser(hasArgsCount(1, Infinity), withGetArgs),
   [Ops.Var]: createCallExpressionParser(hasArgsCount(1, 1), withVarArgs),
+  [Ops.Has]: createCallExpressionParser(hasArgsCount(1, Infinity), withGetArgs),
   [Ops.Id]: createCallExpressionParser(usesFeatureId, withNoArgs),
   [Ops.Concat]: createCallExpressionParser(
     hasArgsCount(2, Infinity),
     withArgsOfType(StringType),
   ),
   [Ops.GeometryType]: createCallExpressionParser(usesGeometryType, withNoArgs),
+  [Ops.LineMetric]: createCallExpressionParser(withNoArgs),
   [Ops.Resolution]: createCallExpressionParser(withNoArgs),
   [Ops.Zoom]: createCallExpressionParser(withNoArgs),
   [Ops.Time]: createCallExpressionParser(withNoArgs),

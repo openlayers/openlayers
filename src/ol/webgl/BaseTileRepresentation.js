@@ -104,7 +104,21 @@ class BaseTileRepresentation extends EventTarget {
     }
   }
 
+  /**
+   * @param {import("./Helper.js").default} helper The WebGL helper.
+   */
+  setHelper(helper) {
+    this.helper = helper;
+    if (this.helper && this.loaded) {
+      this.uploadTile();
+    }
+  }
+
+  /**
+   * @override
+   */
   disposeInternal() {
+    this.setHelper(null);
     this.tile.removeEventListener(EventType.CHANGE, this.handleTileChange_);
   }
 }

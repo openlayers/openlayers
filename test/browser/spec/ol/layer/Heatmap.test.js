@@ -28,8 +28,7 @@ describe('ol/layer/Heatmap', function () {
   });
 
   afterEach(() => {
-    map.dispose();
-    document.body.removeChild(target);
+    disposeMap(map);
     layer.dispose();
   });
 

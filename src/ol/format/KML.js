@@ -639,6 +639,7 @@ class KML extends XMLFeature {
    * @param {Element} node Node.
    * @param {import("./Feature.js").ReadOptions} [options] Options.
    * @return {import("../Feature.js").default} Feature.
+   * @override
    */
   readFeatureFromNode(node, options) {
     if (!NAMESPACE_URIS.includes(node.namespaceURI)) {
@@ -658,6 +659,7 @@ class KML extends XMLFeature {
    * @param {Element} node Node.
    * @param {import("./Feature.js").ReadOptions} [options] Options.
    * @return {Array<import("../Feature.js").default>} Features.
+   * @override
    */
   readFeaturesFromNode(node, options) {
     if (!NAMESPACE_URIS.includes(node.namespaceURI)) {
@@ -977,6 +979,7 @@ class KML extends XMLFeature {
    * @param {import("./Feature.js").WriteOptions} [options] Options.
    * @return {Node} Node.
    * @api
+   * @override
    */
   writeFeaturesNode(features, options) {
     options = this.adaptOptions(options);
@@ -2165,6 +2168,7 @@ const PAIR_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
+ * @this {KML}
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */

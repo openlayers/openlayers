@@ -79,11 +79,13 @@ export const PROJECTIONS = [
  * @param {Array<number>} input Input array of coordinate values.
  * @param {Array<number>} [output] Output array of coordinate values.
  * @param {number} [dimension] Dimension (default is `2`).
+ * @param {number} [stride] Stride (default is `dimension`).
  * @return {Array<number>} Output array of coordinate values.
  */
-export function fromEPSG4326(input, output, dimension) {
+export function fromEPSG4326(input, output, dimension, stride) {
   const length = input.length;
   dimension = dimension > 1 ? dimension : 2;
+  stride = stride ?? dimension;
   if (output === undefined) {
     if (dimension > 2) {
       // preserve values beyond second dimension
@@ -92,7 +94,7 @@ export function fromEPSG4326(input, output, dimension) {
       output = new Array(length);
     }
   }
-  for (let i = 0; i < length; i += dimension) {
+  for (let i = 0; i < length; i += stride) {
     output[i] = (HALF_SIZE * input[i]) / 180;
     let y = RADIUS * Math.log(Math.tan((Math.PI * (+input[i + 1] + 90)) / 360));
     if (y > MAX_SAFE_Y) {
@@ -111,11 +113,13 @@ export function fromEPSG4326(input, output, dimension) {
  * @param {Array<number>} input Input array of coordinate values.
  * @param {Array<number>} [output] Output array of coordinate values.
  * @param {number} [dimension] Dimension (default is `2`).
+ * @param {number} [stride] Stride (default is `dimension`).
  * @return {Array<number>} Output array of coordinate values.
  */
-export function toEPSG4326(input, output, dimension) {
+export function toEPSG4326(input, output, dimension, stride) {
   const length = input.length;
   dimension = dimension > 1 ? dimension : 2;
+  stride = stride ?? dimension;
   if (output === undefined) {
     if (dimension > 2) {
       // preserve values beyond second dimension
@@ -124,7 +128,7 @@ export function toEPSG4326(input, output, dimension) {
       output = new Array(length);
     }
   }
-  for (let i = 0; i < length; i += dimension) {
+  for (let i = 0; i < length; i += stride) {
     output[i] = (180 * input[i]) / HALF_SIZE;
     output[i + 1] =
       (360 * Math.atan(Math.exp(input[i + 1] / RADIUS))) / Math.PI - 90;

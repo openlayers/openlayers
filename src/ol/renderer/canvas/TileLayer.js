@@ -206,6 +206,12 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
      */
     this.tileCache_ = new LRUCache(cacheSize);
 
+    /**
+     * @private
+     * @type {import("../../proj/Projection.js").default}
+     */
+    this.renderedProjection_ = undefined;
+
     this.maxStaleKeys = cacheSize * 0.5;
   }
 
@@ -272,6 +278,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
   /**
    * @param {import("../../pixel.js").Pixel} pixel Pixel.
    * @return {Uint8ClampedArray} Data at the pixel location.
+   * @override
    */
   getData(pixel) {
     const frameState = this.frameState;
@@ -353,13 +360,21 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * Determine whether render should be called.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
+   * @override
    */
   prepareFrame(frameState) {
+    if (!this.renderedProjection_) {
+      this.renderedProjection_ = frameState.viewState.projection;
+    } else if (frameState.viewState.projection !== this.renderedProjection_) {
+      this.tileCache_.clear();
+      this.renderedProjection_ = frameState.viewState.projection;
+    }
+
     const source = this.getLayer().getSource();
     if (!source) {
       return false;
     }
-    const sourceRevision = this.getLayer().getSource().getRevision();
+    const sourceRevision = source.getRevision();
     if (!this.renderedRevision_) {
       this.renderedRevision_ = sourceRevision;
     } else if (this.renderedRevision_ !== sourceRevision) {
@@ -530,6 +545,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {HTMLElement} target Target that may be used to render content to.
    * @return {HTMLElement} The rendered element.
+   * @override
    */
   renderFrame(frameState, target) {
     this.renderComplete = true;
@@ -594,6 +610,8 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
      */
     const tilesByZ = {};
 
+    this.renderedTiles.length = 0;
+
     /**
      * Part 1: Enqueue tiles
      */
@@ -620,6 +638,10 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
           preload - 1,
         );
       }, 0);
+    }
+
+    if (!(z in tilesByZ)) {
+      return this.container;
     }
 
     /**
@@ -717,7 +739,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     this.preRender(context, frameState);
 
-    this.renderedTiles.length = 0;
     /** @type {Array<number>} */
     const zs = Object.keys(tilesByZ).map(Number);
     zs.sort(ascending);

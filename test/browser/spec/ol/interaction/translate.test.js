@@ -66,8 +66,7 @@ describe('ol.interaction.Translate', function () {
   });
 
   afterEach(function () {
-    map.dispose();
-    document.body.removeChild(target);
+    disposeMap(map);
     clearUserProjection();
     delete proj4.defs['EPSG:32637'];
     clearAllProjections();

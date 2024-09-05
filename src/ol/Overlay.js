@@ -6,7 +6,7 @@ import MapEventType from './MapEventType.js';
 import {CLASS_SELECTABLE} from './css.js';
 import {containsExtent} from './extent.js';
 import {listen, unlistenByKey} from './events.js';
-import {outerHeight, outerWidth, removeChildren, removeNode} from './dom.js';
+import {outerHeight, outerWidth, removeChildren} from './dom.js';
 
 /**
  * @typedef {'bottom-left' | 'bottom-center' | 'bottom-right' | 'center-left' | 'center-center' | 'center-right' | 'top-left' | 'top-center' | 'top-right'} Positioning
@@ -291,7 +291,7 @@ class Overlay extends BaseObject {
    */
   handleMapChanged() {
     if (this.mapPostrenderListenerKey) {
-      removeNode(this.element);
+      this.element?.remove();
       unlistenByKey(this.mapPostrenderListenerKey);
       this.mapPostrenderListenerKey = null;
     }

@@ -123,6 +123,7 @@ class IGC extends TextFeature {
    * @param {string} text Text.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {import("../Feature.js").default} Feature.
+   * @override
    */
   readFeatureFromText(text, options) {
     const altitudeMode = this.altitudeMode_;
@@ -241,6 +242,7 @@ class IGC extends TextFeature {
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
    * @return {Array<Feature>} Features.
+   * @override
    */
   readFeaturesFromText(text, options) {
     const feature = this.readFeatureFromText(text, options);

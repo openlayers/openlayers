@@ -26,6 +26,7 @@ class Point extends SimpleGeometry {
    * Make a complete copy of the geometry.
    * @return {!Point} Clone.
    * @api
+   * @override
    */
   clone() {
     const point = new Point(this.flatCoordinates.slice(), this.layout);
@@ -39,6 +40,7 @@ class Point extends SimpleGeometry {
    * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
    * @param {number} minSquaredDistance Minimum squared distance.
    * @return {number} Minimum squared distance.
+   * @override
    */
   closestPointXY(x, y, closestPoint, minSquaredDistance) {
     const flatCoordinates = this.flatCoordinates;
@@ -63,6 +65,7 @@ class Point extends SimpleGeometry {
    * Return the coordinate of the point.
    * @return {import("../coordinate.js").Coordinate} Coordinates.
    * @api
+   * @override
    */
   getCoordinates() {
     return this.flatCoordinates.slice();
@@ -72,6 +75,7 @@ class Point extends SimpleGeometry {
    * @param {import("../extent.js").Extent} extent Extent.
    * @protected
    * @return {import("../extent.js").Extent} extent Extent.
+   * @override
    */
   computeExtent(extent) {
     return createOrUpdateFromCoordinate(this.flatCoordinates, extent);
@@ -81,6 +85,7 @@ class Point extends SimpleGeometry {
    * Get the type of this geometry.
    * @return {import("./Geometry.js").Type} Geometry type.
    * @api
+   * @override
    */
   getType() {
     return 'Point';
@@ -91,6 +96,7 @@ class Point extends SimpleGeometry {
    * @param {import("../extent.js").Extent} extent Extent.
    * @return {boolean} `true` if the geometry and the extent intersect.
    * @api
+   * @override
    */
   intersectsExtent(extent) {
     return containsXY(extent, this.flatCoordinates[0], this.flatCoordinates[1]);
@@ -100,6 +106,7 @@ class Point extends SimpleGeometry {
    * @param {!Array<*>} coordinates Coordinates.
    * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
    * @api
+   * @override
    */
   setCoordinates(coordinates, layout) {
     this.setLayout(layout, coordinates, 0);

@@ -81,6 +81,7 @@ class LineString extends SimpleGeometry {
    * Make a complete copy of the geometry.
    * @return {!LineString} Clone.
    * @api
+   * @override
    */
   clone() {
     const lineString = new LineString(
@@ -97,6 +98,7 @@ class LineString extends SimpleGeometry {
    * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
    * @param {number} minSquaredDistance Minimum squared distance.
    * @return {number} Minimum squared distance.
+   * @override
    */
   closestPointXY(x, y, closestPoint, minSquaredDistance) {
     if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
@@ -182,6 +184,7 @@ class LineString extends SimpleGeometry {
    * Return the coordinates of the linestring.
    * @return {Array<import("../coordinate.js").Coordinate>} Coordinates.
    * @api
+   * @override
    */
   getCoordinates() {
     return inflateCoordinates(
@@ -246,6 +249,7 @@ class LineString extends SimpleGeometry {
    * @param {number} squaredTolerance Squared tolerance.
    * @return {LineString} Simplified LineString.
    * @protected
+   * @override
    */
   getSimplifiedGeometryInternal(squaredTolerance) {
     /** @type {Array<number>} */
@@ -266,6 +270,7 @@ class LineString extends SimpleGeometry {
    * Get the type of this geometry.
    * @return {import("./Geometry.js").Type} Geometry type.
    * @api
+   * @override
    */
   getType() {
     return 'LineString';
@@ -276,6 +281,7 @@ class LineString extends SimpleGeometry {
    * @param {import("../extent.js").Extent} extent Extent.
    * @return {boolean} `true` if the geometry and the extent intersect.
    * @api
+   * @override
    */
   intersectsExtent(extent) {
     return intersectsLineString(
@@ -292,6 +298,7 @@ class LineString extends SimpleGeometry {
    * @param {!Array<import("../coordinate.js").Coordinate>} coordinates Coordinates.
    * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
    * @api
+   * @override
    */
   setCoordinates(coordinates, layout) {
     this.setLayout(layout, coordinates, 1);

@@ -60,6 +60,7 @@ class DragZoom extends DragBox {
   /**
    * Function to execute just before `onboxend` is fired
    * @param {import("../MapBrowserEvent.js").default} event Event.
+   * @override
    */
   onBoxEnd(event) {
     const map = this.getMap();

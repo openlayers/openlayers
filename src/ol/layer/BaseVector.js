@@ -149,6 +149,7 @@ class BaseVectorLayer extends Layer {
 
   /**
    * @return {string} Declutter group.
+   * @override
    */
   getDeclutter() {
     return this.declutter_;
@@ -167,6 +168,7 @@ class BaseVectorLayer extends Layer {
    * @param {import("../pixel.js").Pixel} pixel Pixel.
    * @return {Promise<Array<import("../Feature").FeatureLike>>} Promise that resolves with an array of features.
    * @api
+   * @override
    */
   getFeatures(pixel) {
     return super.getFeatures(pixel);
@@ -228,6 +230,7 @@ class BaseVectorLayer extends Layer {
    * Render declutter items for this layer
    * @param {import("../Map.js").FrameState} frameState Frame state.
    * @param {import("../layer/Layer.js").State} layerState Layer state.
+   * @override
    */
   renderDeclutter(frameState, layerState) {
     const declutterGroup = this.getDeclutter();

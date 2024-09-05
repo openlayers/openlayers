@@ -82,8 +82,7 @@ describe('ol.interaction.Select', function () {
   });
 
   afterEach(function () {
-    map.dispose();
-    document.body.removeChild(target);
+    disposeMap(map);
   });
 
   /**

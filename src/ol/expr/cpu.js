@@ -115,7 +115,8 @@ function compileExpression(expression, context) {
       return compileAssertionExpression(expression, context);
     }
     case Ops.Get:
-    case Ops.Var: {
+    case Ops.Var:
+    case Ops.Has: {
       return compileAccessorExpression(expression, context);
     }
     case Ops.Id: {
@@ -255,6 +256,24 @@ function compileAccessorExpression(expression, context) {
     }
     case Ops.Var: {
       return (context) => context.variables[name];
+    }
+    case Ops.Has: {
+      return (context) => {
+        const args = expression.args;
+        if (!(name in context.properties)) {
+          return false;
+        }
+        let value = context.properties[name];
+        for (let i = 1, ii = args.length; i < ii; ++i) {
+          const keyExpression = /** @type {LiteralExpression} */ (args[i]);
+          const key = /** @type {string|number} */ (keyExpression.value);
+          if (!value || !Object.hasOwn(value, key)) {
+            return false;
+          }
+          value = value[key];
+        }
+        return true;
+      };
     }
     default: {
       throw new Error(`Unsupported accessor operator ${expression.operator}`);

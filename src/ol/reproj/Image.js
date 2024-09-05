@@ -158,6 +158,7 @@ class ReprojImage extends ImageWrapper {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
     if (this.state == ImageState.LOADING) {
@@ -168,6 +169,7 @@ class ReprojImage extends ImageWrapper {
 
   /**
    * @return {HTMLCanvasElement} Image.
+   * @override
    */
   getImage() {
     return this.canvas_;
@@ -215,6 +217,7 @@ class ReprojImage extends ImageWrapper {
 
   /**
    * Load not yet loaded URI.
+   * @override
    */
   load() {
     if (this.state == ImageState.IDLE) {
@@ -228,7 +231,7 @@ class ReprojImage extends ImageWrapper {
         this.sourceListenerKey_ = listen(
           this.sourceImage_,
           EventType.CHANGE,
-          function (e) {
+          (e) => {
             const sourceState = this.sourceImage_.getState();
             if (
               sourceState == ImageState.LOADED ||
@@ -238,7 +241,6 @@ class ReprojImage extends ImageWrapper {
               this.reproject_();
             }
           },
-          this,
         );
         this.sourceImage_.load();
       }

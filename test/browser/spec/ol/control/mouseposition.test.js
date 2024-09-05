@@ -51,9 +51,8 @@ describe('ol/control/MousePosition', function () {
       });
     });
     afterEach(function () {
+      disposeMap(map);
       clearUserProjection();
-      map.dispose();
-      document.body.removeChild(target);
     });
 
     function simulateEvent(type, x, y) {

@@ -1,10 +1,12 @@
 import Point from '../../../../src/ol/geom/Point.js';
 import expect from '../../expect.js';
+import proj4 from 'proj4';
 import sinon from 'sinon';
 import {
   get as getProjection,
   getTransformFromProjections,
 } from '../../../../src/ol/proj.js';
+import {register, unregister} from '../../../../src/ol/proj/proj4.js';
 
 describe('ol/geom/Point.js', function () {
   it('cannot be constructed with a null geometry', function () {
@@ -196,11 +198,12 @@ describe('ol/geom/Point.js', function () {
       point.applyTransform(transform);
       expect(transform.calledOnce).to.be(true);
       const args = transform.firstCall.args;
-      expect(args).to.have.length(3);
+      expect(args).to.have.length(4);
 
       expect(args[0]).to.be(point.getFlatCoordinates()); // input coords
       expect(args[1]).to.be(point.getFlatCoordinates()); // output coords
       expect(args[2]).to.be(2); // dimension
+      expect(args[3]).to.be(2); // stride
     });
 
     it('allows for modification of coordinates', function () {
@@ -220,6 +223,18 @@ describe('ol/geom/Point.js', function () {
   });
 
   describe('#transform()', function () {
+    beforeEach(function () {
+      proj4.defs(
+        'EPSG:27700',
+        '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy ' +
+          '+towgs84=446.448,-125.157,542.06,0.15,0.247,0.842,-20.489 +units=m +no_defs',
+      );
+      register(proj4);
+    });
+    afterEach(function () {
+      unregister();
+    });
+
     it('transforms a geometry given CRS identifiers', function () {
       const point = new Point([-111, 45]).transform('EPSG:4326', 'EPSG:3857');
 
@@ -238,6 +253,25 @@ describe('ol/geom/Point.js', function () {
 
       expect(coords[0]).to.roughlyEqual(-12356463.47, 1e-2);
       expect(coords[1]).to.roughlyEqual(5621521.48, 1e-2);
+    });
+
+    it('transforms 3 dimensions for `XYZ` layout', function () {
+      const coordinates = [-4.004431525245309, 50.74081267230213, 1723304052];
+      const pointXYZ = new Point(coordinates, 'XYZ');
+      pointXYZ.transform('EPSG:4326', 'EPSG:27700');
+      expect(pointXYZ.getCoordinates()).to.eql(
+        proj4('EPSG:4326', 'EPSG:27700', coordinates),
+      );
+    });
+
+    it('transforms 2 dimensions for `XYM` layout', function () {
+      const coordinates = [-4.004431525245309, 50.74081267230213, 1723304052];
+      const pointXYM = new Point(coordinates, 'XYM');
+      pointXYM.transform('EPSG:4326', 'EPSG:27700');
+      expect(pointXYM.getCoordinates()).to.eql([
+        ...proj4('EPSG:4326', 'EPSG:27700', coordinates.slice(0, 2)),
+        coordinates[2],
+      ]);
     });
   });
 

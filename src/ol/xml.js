@@ -115,13 +115,10 @@ export function makeArrayExtender(valueReader, thisArg) {
     /**
      * @param {Node} node Node.
      * @param {Array<*>} objectStack Object stack.
+     * @this {*}
      */
     function (node, objectStack) {
-      const value = valueReader.call(
-        thisArg !== undefined ? thisArg : this,
-        node,
-        objectStack,
-      );
+      const value = valueReader.call(thisArg ?? this, node, objectStack);
       if (value !== undefined) {
         const array = /** @type {Array<*>} */ (
           objectStack[objectStack.length - 1]
@@ -145,13 +142,10 @@ export function makeArrayPusher(valueReader, thisArg) {
     /**
      * @param {Element} node Node.
      * @param {Array<*>} objectStack Object stack.
+     * @this {*}
      */
     function (node, objectStack) {
-      const value = valueReader.call(
-        thisArg !== undefined ? thisArg : this,
-        node,
-        objectStack,
-      );
+      const value = valueReader.call(thisArg ?? this, node, objectStack);
       if (value !== undefined) {
         const array = /** @type {Array<*>} */ (
           objectStack[objectStack.length - 1]
@@ -175,13 +169,10 @@ export function makeReplacer(valueReader, thisArg) {
     /**
      * @param {Node} node Node.
      * @param {Array<*>} objectStack Object stack.
+     * @this {*}
      */
     function (node, objectStack) {
-      const value = valueReader.call(
-        thisArg !== undefined ? thisArg : this,
-        node,
-        objectStack,
-      );
+      const value = valueReader.call(thisArg ?? this, node, objectStack);
       if (value !== undefined) {
         objectStack[objectStack.length - 1] = value;
       }
@@ -203,13 +194,10 @@ export function makeObjectPropertyPusher(valueReader, property, thisArg) {
     /**
      * @param {Element} node Node.
      * @param {Array<*>} objectStack Object stack.
+     * @this {*}
      */
     function (node, objectStack) {
-      const value = valueReader.call(
-        thisArg !== undefined ? thisArg : this,
-        node,
-        objectStack,
-      );
+      const value = valueReader.call(thisArg ?? this, node, objectStack);
       if (value !== undefined) {
         const object = /** @type {!Object} */ (
           objectStack[objectStack.length - 1]
@@ -241,13 +229,10 @@ export function makeObjectPropertySetter(valueReader, property, thisArg) {
     /**
      * @param {Element} node Node.
      * @param {Array<*>} objectStack Object stack.
+     * @this {*}
      */
     function (node, objectStack) {
-      const value = valueReader.call(
-        thisArg !== undefined ? thisArg : this,
-        node,
-        objectStack,
-      );
+      const value = valueReader.call(thisArg ?? this, node, objectStack);
       if (value !== undefined) {
         const object = /** @type {!Object} */ (
           objectStack[objectStack.length - 1]
@@ -269,19 +254,22 @@ export function makeObjectPropertySetter(valueReader, property, thisArg) {
  * @template T, V
  */
 export function makeChildAppender(nodeWriter, thisArg) {
-  return function (node, value, objectStack) {
-    nodeWriter.call(
-      thisArg !== undefined ? thisArg : this,
-      node,
-      value,
-      objectStack,
-    );
-    const parent = /** @type {NodeStackItem} */ (
-      objectStack[objectStack.length - 1]
-    );
-    const parentNode = parent.node;
-    parentNode.appendChild(node);
-  };
+  return (
+    /**
+     * @param {Element} node Node.
+     * @param {*} value Value to be written.
+     * @param {Array<*>} objectStack Object stack.
+     * @this {*}
+     */
+    function (node, value, objectStack) {
+      nodeWriter.call(thisArg ?? this, node, value, objectStack);
+      const parent = /** @type {NodeStackItem} */ (
+        objectStack[objectStack.length - 1]
+      );
+      const parentNode = parent.node;
+      parentNode.appendChild(node);
+    }
+  );
 }
 
 /**
@@ -470,7 +458,7 @@ export function serialize(
     value = values[i];
     if (value !== undefined) {
       node = nodeFactory.call(
-        thisArg !== undefined ? thisArg : this,
+        thisArg,
         value,
         objectStack,
         keys !== undefined ? keys[i] : undefined,

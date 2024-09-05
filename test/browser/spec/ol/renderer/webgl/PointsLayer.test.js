@@ -50,7 +50,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
     });
 
     afterEach(function () {
-      document.body.removeChild(target);
+      target.remove();
     });
 
     it('creates a new instance', function () {

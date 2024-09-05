@@ -280,6 +280,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   /**
    * Render deferred instructions.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @override
    */
   renderDeferredInternal(frameState) {
     if (!this.replayGroup_) {
@@ -297,6 +298,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {HTMLElement|null} target Target that may be used to render content to.
    * @return {HTMLElement|null} The rendered element.
+   * @override
    */
   renderFrame(frameState, target) {
     const layerState = frameState.layerStatesArray[frameState.layerIndex];
@@ -363,6 +365,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @param {import("../../pixel.js").Pixel} pixel Pixel.
    * @return {Promise<Array<import("../../Feature").default>>} Promise
    * that resolves with an array of features.
+   * @override
    */
   getFeatures(pixel) {
     return new Promise((resolve) => {
@@ -465,6 +468,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
    * @return {T|undefined} Callback result.
    * @template T
+   * @override
    */
   forEachFeatureAtCoordinate(
     coordinate,
@@ -539,6 +543,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * Perform action necessary to get the layer rendered after new fonts have loaded
+   * @override
    */
   handleFontsChanged() {
     const layer = this.getLayer();
@@ -560,6 +565,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * Determine whether render should be called.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
+   * @override
    */
   prepareFrame(frameState) {
     const vectorLayer = this.getLayer();

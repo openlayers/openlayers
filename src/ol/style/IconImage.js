@@ -251,11 +251,12 @@ class IconImage extends EventTarget {
     }
 
     const image = this.image_;
-    const canvas = document.createElement('canvas');
-    canvas.width = Math.ceil(image.width * pixelRatio);
-    canvas.height = Math.ceil(image.height * pixelRatio);
+    const ctx = createCanvasContext2D(
+      Math.ceil(image.width * pixelRatio),
+      Math.ceil(image.height * pixelRatio),
+    );
+    const canvas = ctx.canvas;
 
-    const ctx = canvas.getContext('2d');
     ctx.scale(pixelRatio, pixelRatio);
     ctx.drawImage(image, 0, 0);
 
@@ -281,7 +282,7 @@ class IconImage extends EventTarget {
         ) {
           resolve();
         } else {
-          this.addEventListener(EventType.CHANGE, function onChange() {
+          const onChange = () => {
             if (
               this.imageState_ === ImageState.LOADED ||
               this.imageState_ === ImageState.ERROR
@@ -289,7 +290,8 @@ class IconImage extends EventTarget {
               this.removeEventListener(EventType.CHANGE, onChange);
               resolve();
             }
-          });
+          };
+          this.addEventListener(EventType.CHANGE, onChange);
         }
       });
     }

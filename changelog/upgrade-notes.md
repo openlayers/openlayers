@@ -1,8 +1,23 @@
 ## Upgrade notes
 
-### Next release
+### 10.1.0
+
+No changes should be needed to update to this release.  See the release changelog for new features and fixes.
+
+### 10.0.0
 
 #### Backwards incompatible changes
+
+##### `ol/source/VectorTile`: `getFeaturesInExtent()` method moved to `ol/layer/VectorTile`
+
+The `getFeaturesInExtent()` method of `ol/source/VectorTile` has been moved to `ol/layer/VectorTile`. The signature and behavior have not changed, so all that needs to be done is change code from e.g.
+```js
+layer.getSource().getFeaturesInExtent(extent);
+```
+to
+```js
+layer.getFeaturesInExtent(extent);
+```
 
 ##### Flat styles: Removal of Type hints in `'get'` expressions
 

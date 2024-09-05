@@ -90,7 +90,13 @@ import {warn} from './console.js';
  * transforms the input coordinate values, populates the output array, and
  * returns the output array.
  *
- * @typedef {function(Array<number>, Array<number>=, number=): Array<number>} TransformFunction
+ * @callback TransformFunction
+ * @param {Array<number>} input
+ * @param {Array<number>} [output]
+ * @param {number} [dimension]
+ * @param {number} [stride]
+ * @return {Array<number>}
+ *
  * @api
  */
 
@@ -330,17 +336,19 @@ export function createTransformFromCoordinateTransform(coordTransform) {
     /**
      * @param {Array<number>} input Input.
      * @param {Array<number>} [output] Output.
-     * @param {number} [dimension] Dimension.
+     * @param {number} [dimension] Dimensions that should be transformed.
+     * @param {number} [stride] Stride.
      * @return {Array<number>} Output.
      */
-    function (input, output, dimension) {
+    function (input, output, dimension, stride) {
       const length = input.length;
       dimension = dimension !== undefined ? dimension : 2;
+      stride = stride ?? dimension;
       output = output !== undefined ? output : new Array(length);
-      for (let i = 0; i < length; i += dimension) {
+      for (let i = 0; i < length; i += stride) {
         const point = coordTransform(input.slice(i, i + dimension));
         const pointLength = point.length;
-        for (let j = 0, jj = dimension; j < jj; ++j) {
+        for (let j = 0, jj = stride; j < jj; ++j) {
           output[i + j] = j >= pointLength ? input[i + j] : point[j];
         }
       }

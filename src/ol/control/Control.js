@@ -5,7 +5,6 @@ import BaseObject from '../Object.js';
 import MapEventType from '../MapEventType.js';
 import {VOID} from '../functions.js';
 import {listen, unlistenByKey} from '../events.js';
-import {removeNode} from '../dom.js';
 
 /**
  * @typedef {Object} Options
@@ -90,9 +89,10 @@ class Control extends BaseObject {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
-    removeNode(this.element);
+    this.element?.remove();
     super.disposeInternal();
   }
 
@@ -115,7 +115,7 @@ class Control extends BaseObject {
    */
   setMap(map) {
     if (this.map_) {
-      removeNode(this.element);
+      this.element?.remove();
     }
     for (let i = 0, ii = this.listenerKeys.length; i < ii; ++i) {
       unlistenByKey(this.listenerKeys[i]);
@@ -123,9 +123,7 @@ class Control extends BaseObject {
     this.listenerKeys.length = 0;
     this.map_ = map;
     if (map) {
-      const target = this.target_
-        ? this.target_
-        : map.getOverlayContainerStopEvent();
+      const target = this.target_ ?? map.getOverlayContainerStopEvent();
       target.appendChild(this.element);
       if (this.render !== VOID) {
         this.listenerKeys.push(

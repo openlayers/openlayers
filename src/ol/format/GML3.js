@@ -849,7 +849,7 @@ class GML3 extends GMLBase {
       const properties = feature.getProperties();
       for (const key in properties) {
         const value = properties[key];
-        if (value !== null) {
+        if (value !== null && value !== undefined) {
           keys.push(key);
           values.push(value);
           if (
@@ -970,6 +970,7 @@ class GML3 extends GMLBase {
    * @param {import("./Feature.js").WriteOptions} [options] Options.
    * @return {Node} Node.
    * @api
+   * @override
    */
   writeGeometryNode(geometry, options) {
     options = this.adaptOptions(options);
@@ -997,6 +998,7 @@ class GML3 extends GMLBase {
    * @param {import("./Feature.js").WriteOptions} [options] Options.
    * @return {Element} Node.
    * @api
+   * @override
    */
   writeFeaturesNode(features, options) {
     options = this.adaptOptions(options);

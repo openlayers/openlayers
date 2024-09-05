@@ -180,6 +180,7 @@ class VectorTile extends UrlTile {
   /**
    * clear {@link module:ol/TileCache~TileCache} and delete all source tiles
    * @api
+   * @override
    */
   clear() {
     this.sourceTileCache_.clear();
@@ -188,6 +189,7 @@ class VectorTile extends UrlTile {
   /**
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @param {!Object<string, boolean>} usedTiles Used tiles.
+   * @override
    */
   expireCache(projection, usedTiles) {
     const tileCache = this.getTileCacheForProjection(projection);
@@ -311,6 +313,7 @@ class VectorTile extends UrlTile {
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {!VectorRenderTile} Tile.
+   * @override
    */
   getTile(z, x, y, pixelRatio, projection) {
     const tileCoord = [z, x, y];
@@ -355,6 +358,7 @@ class VectorTile extends UrlTile {
   /**
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {!import("../tilegrid/TileGrid.js").default} Tile grid.
+   * @override
    */
   getTileGridForProjection(projection) {
     const code = projection.getCode();
@@ -391,6 +395,7 @@ class VectorTile extends UrlTile {
    * Get the tile pixel ratio for this source.
    * @param {number} pixelRatio Pixel ratio.
    * @return {number} Tile pixel ratio.
+   * @override
    */
   getTilePixelRatio(pixelRatio) {
     return pixelRatio;
@@ -401,6 +406,7 @@ class VectorTile extends UrlTile {
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {import("../size.js").Size} Tile size.
+   * @override
    */
   getTilePixelSize(z, pixelRatio, projection) {
     const tileGrid = this.getTileGridForProjection(projection);

@@ -49,6 +49,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
    * Determine whether render should be called.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
+   * @override
    */
   prepareFrame(frameState) {
     const layerState = frameState.layerStatesArray[frameState.layerIndex];
@@ -99,6 +100,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
   /**
    * @param {import("../../pixel.js").Pixel} pixel Pixel.
    * @return {Uint8ClampedArray} Data at the pixel location.
+   * @override
    */
   getData(pixel) {
     const frameState = this.frameState;
@@ -146,6 +148,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {HTMLElement} target Target that may be used to render content to.
    * @return {HTMLElement} The rendered element.
+   * @override
    */
   renderFrame(frameState, target) {
     const image = this.image;

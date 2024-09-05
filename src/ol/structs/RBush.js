@@ -7,12 +7,8 @@ import {getUid} from '../util.js';
 import {isEmpty} from '../obj.js';
 
 /**
- * @typedef {Object} Entry
- * @property {number} minX MinX.
- * @property {number} minY MinY.
- * @property {number} maxX MaxX.
- * @property {number} maxY MaxY.
- * @property {Object} [value] Value.
+ * @typedef {import("rbush").BBox & {value: T}} Entry
+ * @template T
  */
 
 /**
@@ -20,7 +16,7 @@ import {isEmpty} from '../obj.js';
  * Wrapper around the RBush by Vladimir Agafonkin.
  * See https://github.com/mourner/rbush.
  *
- * @template T
+ * @template {Object} T
  */
 class RBush {
   /**
@@ -29,6 +25,7 @@ class RBush {
   constructor(maxEntries) {
     /**
      * @private
+     * @type {RBush_<Entry<T>>}
      */
     this.rbush_ = new RBush_(maxEntries);
 
@@ -36,7 +33,7 @@ class RBush {
      * A mapping between the objects added to this rbush wrapper
      * and the objects that are actually added to the internal rbush.
      * @private
-     * @type {Object<string, Entry>}
+     * @type {Object<string, Entry<T>>}
      */
     this.items_ = {};
   }
@@ -47,7 +44,7 @@ class RBush {
    * @param {T} value Value.
    */
   insert(extent, value) {
-    /** @type {Entry} */
+    /** @type {Entry<T>} */
     const item = {
       minX: extent[0],
       minY: extent[1],
@@ -71,7 +68,7 @@ class RBush {
       const extent = extents[i];
       const value = values[i];
 
-      /** @type {Entry} */
+      /** @type {Entry<T>} */
       const item = {
         minX: extent[0],
         minY: extent[1],
@@ -131,7 +128,7 @@ class RBush {
    * @return {Array<T>} All in extent.
    */
   getInExtent(extent) {
-    /** @type {Entry} */
+    /** @type {import("rbush").BBox} */
     const bbox = {
       minX: extent[0],
       minY: extent[1],
@@ -207,7 +204,7 @@ class RBush {
   }
 
   /**
-   * @param {RBush} rbush R-Tree.
+   * @param {RBush<T>} rbush R-Tree.
    */
   concat(rbush) {
     this.rbush_.load(rbush.rbush_.all());

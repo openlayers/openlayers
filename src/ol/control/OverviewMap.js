@@ -270,6 +270,7 @@ class OverviewMap extends Control {
    * the map here.
    * @param {import("../Map.js").default|null} map Map.
    * @api
+   * @override
    */
   setMap(map) {
     const oldMap = this.getMap();
@@ -536,11 +537,10 @@ class OverviewMap extends Control {
     this.ovmapPostrenderKey_ = listenOnce(
       this.ovmap_,
       MapEventType.POSTRENDER,
-      function (event) {
+      (event) => {
         delete this.ovmapPostrenderKey_;
         this.updateBox_();
       },
-      this,
     );
   }
 

@@ -275,6 +275,7 @@ class ReprojDataTile extends DataTile {
   /**
    * Get the tile size.
    * @return {import('../size.js').Size} Tile size.
+   * @override
    */
   getSize() {
     return this.reprojSize_;
@@ -283,6 +284,7 @@ class ReprojDataTile extends DataTile {
   /**
    * Get the data for the tile.
    * @return {import("../DataTile.js").Data} Tile data.
+   * @override
    */
   getData() {
     return this.reprojData_;
@@ -291,6 +293,7 @@ class ReprojDataTile extends DataTile {
   /**
    * Get any loading error.
    * @return {Error} Loading error.
+   * @override
    */
   getError() {
     return this.reprojError_;
@@ -483,6 +486,7 @@ class ReprojDataTile extends DataTile {
 
   /**
    * Load not yet loaded URI.
+   * @override
    */
   load() {
     if (this.state !== TileState.IDLE && this.state !== TileState.ERROR) {
@@ -501,26 +505,21 @@ class ReprojDataTile extends DataTile {
       }
       leftToLoad++;
 
-      const sourceListenKey = listen(
-        tile,
-        EventType.CHANGE,
-        function () {
-          const state = tile.getState();
-          if (
-            state == TileState.LOADED ||
-            state == TileState.ERROR ||
-            state == TileState.EMPTY
-          ) {
-            unlistenByKey(sourceListenKey);
-            leftToLoad--;
-            if (leftToLoad === 0) {
-              this.unlistenSources_();
-              this.reproject_();
-            }
+      const sourceListenKey = listen(tile, EventType.CHANGE, () => {
+        const state = tile.getState();
+        if (
+          state == TileState.LOADED ||
+          state == TileState.ERROR ||
+          state == TileState.EMPTY
+        ) {
+          unlistenByKey(sourceListenKey);
+          leftToLoad--;
+          if (leftToLoad === 0) {
+            this.unlistenSources_();
+            this.reproject_();
           }
-        },
-        this,
-      );
+        }
+      });
       this.sourcesListenerKeys_.push(sourceListenKey);
     });
 

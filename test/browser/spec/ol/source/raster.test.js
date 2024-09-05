@@ -47,7 +47,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
     greenSource = new Static({
       url: green,
       imageExtent: extent,
-      attributions: ['green raster source'],
+      attributions: (frameState) => 'green raster source',
     });
 
     blueSource = new VectorImageLayer({
@@ -238,7 +238,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
         },
       });
       const blueAttributions = blue.getAttributions();
-      expect(blueAttributions()).to.be(null);
+      expect(blueAttributions()).to.eql([]);
     });
 
     it('shows single attributions', function () {

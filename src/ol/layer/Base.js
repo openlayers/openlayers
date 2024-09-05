@@ -392,6 +392,7 @@ class BaseLayer extends BaseObject {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
     if (this.state_) {

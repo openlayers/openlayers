@@ -81,11 +81,14 @@ describe('Render instructions utilities', function () {
       new Feature({
         test: 4000,
         test2: [88, 99, 0],
-        geometry: new LineString([
-          [100, 200],
-          [300, 400],
-          [500, 600],
-        ]),
+        geometry: new LineString(
+          [
+            [100, 200, 1],
+            [300, 400, 2],
+            [500, 600, 3],
+          ],
+          'XYM',
+        ),
       }),
     ]);
   });
@@ -119,8 +122,8 @@ describe('Render instructions utilities', function () {
     });
     it('generates render instructions', function () {
       expect(Array.from(renderInstructions)).to.eql([
-        3000, 66, 77, 88, 5, 2, 0, 4, 0, 6, 2, 4, 6, 2, 0, 4000, 88, 99, 0, 3,
-        20, 38, 60, 78, 100, 118,
+        3000, 66, 77, 88, 5, 2, 0, 0, 4, 0, 0, 6, 2, 0, 4, 6, 0, 2, 0, 0, 4000,
+        88, 99, 0, 3, 20, 38, 1, 60, 78, 2, 100, 118, 3,
       ]);
     });
   });

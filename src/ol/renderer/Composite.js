@@ -66,6 +66,7 @@ class CompositeMapRenderer extends MapRenderer {
   /**
    * @param {import("../render/EventType.js").default} type Event type.
    * @param {import("../Map.js").FrameState} frameState Frame state.
+   * @override
    */
   dispatchRenderEvent(type, frameState) {
     const map = this.getMap();
@@ -75,15 +76,19 @@ class CompositeMapRenderer extends MapRenderer {
     }
   }
 
+  /**
+   * @override
+   */
   disposeInternal() {
     unlistenByKey(this.fontChangeListenerKey_);
-    this.element_.parentNode.removeChild(this.element_);
+    this.element_.remove();
     super.disposeInternal();
   }
 
   /**
    * Render.
    * @param {?import("../Map.js").FrameState} frameState Frame state.
+   * @override
    */
   renderFrame(frameState) {
     if (!frameState) {
@@ -97,9 +102,9 @@ class CompositeMapRenderer extends MapRenderer {
     this.calculateMatrices2D(frameState);
     this.dispatchRenderEvent(RenderEventType.PRECOMPOSE, frameState);
 
-    const layerStatesArray = frameState.layerStatesArray.sort(function (a, b) {
-      return a.zIndex - b.zIndex;
-    });
+    const layerStatesArray = frameState.layerStatesArray.sort(
+      (a, b) => a.zIndex - b.zIndex,
+    );
     const declutter = layerStatesArray.some(
       (layerState) =>
         layerState.layer instanceof BaseVectorLayer &&

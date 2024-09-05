@@ -282,6 +282,7 @@ class LayerGroup extends BaseLayer {
   /**
    * @param {Array<import("./Layer.js").default>} [array] Array of layers (to be modified in place).
    * @return {Array<import("./Layer.js").default>} Array of layers.
+   * @override
    */
   getLayersArray(array) {
     array = array !== undefined ? array : [];
@@ -299,6 +300,7 @@ class LayerGroup extends BaseLayer {
    * @param {Array<import("./Layer.js").State>} [dest] Optional list
    * of layer states (to be modified in place).
    * @return {Array<import("./Layer.js").State>} List of layer states.
+   * @override
    */
   getLayerStatesArray(dest) {
     const states = dest !== undefined ? dest : [];
@@ -347,6 +349,7 @@ class LayerGroup extends BaseLayer {
 
   /**
    * @return {import("../source/Source.js").State} Source state.
+   * @override
    */
   getSourceState() {
     return 'ready';

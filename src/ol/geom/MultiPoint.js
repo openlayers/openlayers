@@ -52,6 +52,7 @@ class MultiPoint extends SimpleGeometry {
    * Make a complete copy of the geometry.
    * @return {!MultiPoint} Clone.
    * @api
+   * @override
    */
   clone() {
     const multiPoint = new MultiPoint(
@@ -68,6 +69,7 @@ class MultiPoint extends SimpleGeometry {
    * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
    * @param {number} minSquaredDistance Minimum squared distance.
    * @return {number} Minimum squared distance.
+   * @override
    */
   closestPointXY(x, y, closestPoint, minSquaredDistance) {
     if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
@@ -97,6 +99,7 @@ class MultiPoint extends SimpleGeometry {
    * Return the coordinates of the multipoint.
    * @return {Array<import("../coordinate.js").Coordinate>} Coordinates.
    * @api
+   * @override
    */
   getCoordinates() {
     return inflateCoordinates(
@@ -149,6 +152,7 @@ class MultiPoint extends SimpleGeometry {
    * Get the type of this geometry.
    * @return {import("./Geometry.js").Type} Geometry type.
    * @api
+   * @override
    */
   getType() {
     return 'MultiPoint';
@@ -159,6 +163,7 @@ class MultiPoint extends SimpleGeometry {
    * @param {import("../extent.js").Extent} extent Extent.
    * @return {boolean} `true` if the geometry and the extent intersect.
    * @api
+   * @override
    */
   intersectsExtent(extent) {
     const flatCoordinates = this.flatCoordinates;
@@ -178,6 +183,7 @@ class MultiPoint extends SimpleGeometry {
    * @param {!Array<import("../coordinate.js").Coordinate>} coordinates Coordinates.
    * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
    * @api
+   * @override
    */
   setCoordinates(coordinates, layout) {
     this.setLayout(layout, coordinates, 1);

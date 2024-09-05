@@ -131,6 +131,7 @@ class Target extends Disposable {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
     this.listeners_ && clear(this.listeners_);

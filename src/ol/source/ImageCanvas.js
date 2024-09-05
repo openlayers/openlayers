@@ -97,6 +97,7 @@ class ImageCanvasSource extends ImageSource {
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {import("../ImageCanvas.js").default} Single image.
+   * @override
    */
   getImageInternal(extent, resolution, pixelRatio, projection) {
     resolution = this.findNearestResolution(resolution);

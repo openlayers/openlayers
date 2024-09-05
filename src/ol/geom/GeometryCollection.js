@@ -63,6 +63,7 @@ class GeometryCollection extends Geometry {
    * Make a complete copy of the geometry.
    * @return {!GeometryCollection} Clone.
    * @api
+   * @override
    */
   clone() {
     const geometryCollection = new GeometryCollection(
@@ -78,6 +79,7 @@ class GeometryCollection extends Geometry {
    * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
    * @param {number} minSquaredDistance Minimum squared distance.
    * @return {number} Minimum squared distance.
+   * @override
    */
   closestPointXY(x, y, closestPoint, minSquaredDistance) {
     if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
@@ -99,6 +101,7 @@ class GeometryCollection extends Geometry {
    * @param {number} x X.
    * @param {number} y Y.
    * @return {boolean} Contains (x, y).
+   * @override
    */
   containsXY(x, y) {
     const geometries = this.geometries_;
@@ -114,6 +117,7 @@ class GeometryCollection extends Geometry {
    * @param {import("../extent.js").Extent} extent Extent.
    * @protected
    * @return {import("../extent.js").Extent} extent Extent.
+   * @override
    */
   computeExtent(extent) {
     createOrUpdateEmpty(extent);
@@ -165,6 +169,7 @@ class GeometryCollection extends Geometry {
    * Create a simplified version of this geometry using the Douglas Peucker algorithm.
    * @param {number} squaredTolerance Squared tolerance.
    * @return {GeometryCollection} Simplified GeometryCollection.
+   * @override
    */
   getSimplifiedGeometry(squaredTolerance) {
     if (this.simplifiedGeometryRevision !== this.getRevision()) {
@@ -205,6 +210,7 @@ class GeometryCollection extends Geometry {
    * Get the type of this geometry.
    * @return {import("./Geometry.js").Type} Geometry type.
    * @api
+   * @override
    */
   getType() {
     return 'GeometryCollection';
@@ -215,6 +221,7 @@ class GeometryCollection extends Geometry {
    * @param {import("../extent.js").Extent} extent Extent.
    * @return {boolean} `true` if the geometry and the extent intersect.
    * @api
+   * @override
    */
   intersectsExtent(extent) {
     const geometries = this.geometries_;
@@ -239,6 +246,7 @@ class GeometryCollection extends Geometry {
    * @param {number} angle Rotation angle in radians.
    * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
    * @api
+   * @override
    */
   rotate(angle, anchor) {
     const geometries = this.geometries_;
@@ -257,6 +265,7 @@ class GeometryCollection extends Geometry {
    * @param {import("../coordinate.js").Coordinate} [anchor] The scale origin (defaults to the center
    *     of the geometry extent).
    * @api
+   * @override
    */
   scale(sx, sy, anchor) {
     if (!anchor) {
@@ -296,6 +305,7 @@ class GeometryCollection extends Geometry {
    * @param {import("../proj.js").TransformFunction} transformFn Transform function.
    * Called with a flat array of geometry coordinates.
    * @api
+   * @override
    */
   applyTransform(transformFn) {
     const geometries = this.geometries_;
@@ -311,6 +321,7 @@ class GeometryCollection extends Geometry {
    * @param {number} deltaX Delta X.
    * @param {number} deltaY Delta Y.
    * @api
+   * @override
    */
   translate(deltaX, deltaY) {
     const geometries = this.geometries_;
@@ -322,6 +333,7 @@ class GeometryCollection extends Geometry {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
     this.unlistenGeometriesChange_();

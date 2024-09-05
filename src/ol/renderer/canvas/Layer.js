@@ -105,12 +105,6 @@ class CanvasLayerRenderer extends LayerRenderer {
     this.containerReused = false;
 
     /**
-     * @private
-     * @type {CanvasRenderingContext2D}
-     */
-    this.pixelContext_ = null;
-
-    /**
      * @protected
      * @type {import("../../Map.js").FrameState|null}
      */
@@ -419,6 +413,7 @@ class CanvasLayerRenderer extends LayerRenderer {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
     delete this.frameState;

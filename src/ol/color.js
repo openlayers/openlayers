@@ -17,6 +17,13 @@ import {clamp} from './math.js';
  */
 
 /**
+ * Color to indicate that no color should be rendered. This is meant to be used for per-reference
+ * comparisons only.
+ * @type {Color}
+ */
+export const NO_COLOR = [NaN, NaN, NaN, 0];
+
+/**
  * Return the color as an rgba string.
  * @param {Color|string} color Color.
  * @return {string} Rgba string.
@@ -87,6 +94,9 @@ export function lchaToRgba(color) {
  * @return {Color} Color.
  */
 export function fromString(s) {
+  if (s === 'none') {
+    return NO_COLOR;
+  }
   if (cache.hasOwnProperty(s)) {
     return cache[s];
   }

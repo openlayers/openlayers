@@ -55,6 +55,7 @@ class WMTSCapabilities extends XML {
   /**
    * @param {Element} node Node.
    * @return {Object|null} Object
+   * @override
    */
   readFromNode(node) {
     let version = node.getAttribute('version');
