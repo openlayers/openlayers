@@ -379,10 +379,9 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
     });
     it('bind TILE_MASK_TEXTURE uniform three times for each tile and style renderer, plus one time before rendering tile masks', () => {
       const calls = renderer.helper.bindTexture.getCalls();
-      expect(calls.length).to.be(13);
+      expect(calls.length).to.be(15);
       expect(calls[0].args).to.eql([
         renderer.tileMaskTarget_.getTexture(),
-        0,
         Uniforms.TILE_MASK_TEXTURE,
       ]);
     });

@@ -284,8 +284,8 @@ describe('ol/layer/WebGLTile', function () {
     };
     renderer.prepareFrame(frameState);
     compileShaderSpy.restore();
-    expect(compileShaderSpy.callCount).to.be(2);
-    expect(compileShaderSpy.getCall(0).args[0].replace(/[ \n]+/g, ' ')).to.be(
+    expect(compileShaderSpy.callCount).to.be(4);
+    expect(compileShaderSpy.getCall(2).args[0].replace(/[ \n]+/g, ' ')).to.be(
       `
       #ifdef GL_FRAGMENT_PRECISION_HIGH
       precision highp float;
@@ -324,7 +324,7 @@ describe('ol/layer/WebGLTile', function () {
       }`.replace(/[ \n]+/g, ' '),
     );
 
-    expect(compileShaderSpy.getCall(1).args[0].replace(/[ \n]+/g, ' ')).to.be(
+    expect(compileShaderSpy.getCall(3).args[0].replace(/[ \n]+/g, ' ')).to.be(
       `
       attribute vec2 a_textureCoord;
 
@@ -382,8 +382,8 @@ describe('ol/layer/WebGLTile', function () {
     };
     renderer.prepareFrame(frameState);
     compileShaderSpy.restore();
-    expect(compileShaderSpy.callCount).to.be(2);
-    expect(compileShaderSpy.getCall(0).args[0].replace(/[ \n]+/g, ' ')).to.be(
+    expect(compileShaderSpy.callCount).to.be(4);
+    expect(compileShaderSpy.getCall(2).args[0].replace(/[ \n]+/g, ' ')).to.be(
       `
       #ifdef GL_FRAGMENT_PRECISION_HIGH
       precision highp float;
