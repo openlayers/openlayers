@@ -848,7 +848,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     }
     context.imageSmoothingEnabled = true;
 
-    // TODO: let the renderers manage their own cache instead of managing the source cache
     /**
      * Here we unconditionally expire the source cache since the renderer maintains
      * its own cache.
