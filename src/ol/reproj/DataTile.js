@@ -58,7 +58,7 @@ class ReprojDataTile extends DataTile {
   constructor(options) {
     super({
       tileCoord: options.tileCoord,
-      loader: () => Promise.resolve(new Uint8ClampedArray(4)),
+      loader: () => Promise.resolve([new Uint8ClampedArray(4)]),
       interpolate: options.interpolate,
       transition: options.transition,
     });
@@ -288,6 +288,13 @@ class ReprojDataTile extends DataTile {
    */
   getData() {
     return this.reprojData_;
+  }
+
+  /**
+   * @override
+   */
+  getSlots() {
+    return 1;
   }
 
   /**

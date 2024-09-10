@@ -1,0 +1,23 @@
+---
+layout: example.html
+title: CompositeTile source example
+shortdesc: Composite elevation data from PMTiles and OSM.
+docs: >
+  This example shows compositing elevation data from
+  a [PMTiles](https://github.com/protomaps/PMTiles) source
+  and OSM source.
+resources:
+  - https://unpkg.com/pmtiles@2.4.0/dist/index.js
+tags: "composite, osm, pmtiles, elevation, data tiles"
+---
+<div id="map" class="map"></div>
+<table class="controls">
+  <tr>
+    <td>elevation</td>
+    <td colspan="2" id="elevationOut"></td>
+  </tr>
+  <tr>
+    <td>location</td>
+    <td colspan="2" id="locationOut"></td>
+  </tr>
+</table>

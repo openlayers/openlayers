@@ -277,7 +277,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * @param {import("../../pixel.js").Pixel} pixel Pixel.
-   * @return {Uint8ClampedArray} Data at the pixel location.
+   * @return {Uint8ClampedArray|Float32Array|null} Data at the pixel location.
    * @override
    */
   getData(pixel) {
@@ -319,21 +319,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       const tileSize = toSize(tileGrid.getTileSize(z));
       const tileResolution = tileGrid.getResolution(z);
 
-      /**
-       * @type {import('../../DataTile.js').ImageLike}
-       */
-      let image;
-      if (tile instanceof ImageTile) {
-        image = tile.getImage();
-      } else if (tile instanceof DataTile) {
-        image = asImageLike(tile.getData());
-        if (!image) {
-          continue;
-        }
-      } else {
-        continue;
-      }
-
       const col = Math.floor(
         tilePixelRatio *
           ((coordinate[0] - tileOrigin[0]) / tileResolution -
@@ -350,7 +335,12 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         tilePixelRatio * source.getGutterForProjection(viewState.projection),
       );
 
-      return this.getImageData(image, col + gutter, row + gutter);
+      if (tile instanceof ImageTile) {
+        return tile.getPixelDataAt(col, row, tileSize, gutter);
+      }
+      if (tile instanceof DataTile) {
+        return tile.getPixelDataAt(col, row, tileSize, gutter);
+      }
     }
 
     return null;

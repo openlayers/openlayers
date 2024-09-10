@@ -2,6 +2,7 @@
  * @module ol/layer/WebGLTile
  */
 import BaseTileLayer from './BaseTile.js';
+import DataTileSource from '../source/DataTile.js';
 import LayerProperty from '../layer/Property.js';
 import WebGLTileLayerRenderer, {
   Attributes,
@@ -10,6 +11,7 @@ import WebGLTileLayerRenderer, {
 import {ColorType, NumberType} from '../expr/expression.js';
 import {
   PALETTE_TEXTURE_ARRAY,
+  getBands,
   getStringNumberEquivalent,
   newCompilationContext,
   uniformNameForVariable,
@@ -89,10 +91,10 @@ import {expressionToGlsl} from '../webgl/styleparser.js';
 
 /**
  * @param {Style} style The layer style.
- * @param {number} [bandCount] The number of bands.
+ * @param {Array<number>} [bandCounts] The array of number of bands.
  * @return {ParsedStyle} Shaders and uniforms generated from the style.
  */
-function parseStyle(style, bandCount) {
+function parseStyle(style, bandCounts) {
   const vertexShader = `
     attribute vec2 ${Attributes.TEXTURE_COORD};
     uniform mat4 ${Uniforms.TILE_TRANSFORM};
@@ -122,7 +124,7 @@ function parseStyle(style, bandCount) {
   const context = {
     ...newCompilationContext(),
     inFragmentShader: true,
-    bandCount: bandCount,
+    bandCounts: bandCounts,
     style: style,
   };
 
@@ -204,7 +206,11 @@ function parseStyle(style, bandCount) {
     return `uniform float ${name};`;
   });
 
-  const textureCount = Math.ceil(bandCount / 4);
+  const textureCount =
+    getBands(bandCounts).reduce(
+      (acc, val) => (acc < val.textureIndex ? val.textureIndex : acc),
+      0,
+    ) + 1;
   uniformDeclarations.push(
     `uniform sampler2D ${Uniforms.TILE_TEXTURE_ARRAY}[${textureCount}];`,
   );
@@ -375,21 +381,22 @@ class WebGLTileLayer extends BaseTileLayer {
 
   /**
    * @private
-   * @return {number} The number of source bands.
+   * @return {Array<number>} The array of number of source bands.
    */
-  getSourceBandCount_() {
+  getSourceBandCounts_() {
     const max = Number.MAX_SAFE_INTEGER;
     const sources = this.getSources([-max, -max, max, max], max);
-    return sources && sources.length && 'bandCount' in sources[0]
-      ? sources[0].bandCount
-      : 4;
+
+    return sources && sources.length && sources[0] instanceof DataTileSource
+      ? sources[0].getBandCounts()
+      : [4];
   }
 
   /**
    * @override
    */
   createRenderer() {
-    const parsedStyle = parseStyle(this.style_, this.getSourceBandCount_());
+    const parsedStyle = parseStyle(this.style_, this.getSourceBandCounts_());
 
     return new WebGLTileLayerRenderer(this, {
       vertexShader: parsedStyle.vertexShader,
@@ -474,7 +481,7 @@ class WebGLTileLayer extends BaseTileLayer {
     this.styleVariables_ = style.variables || {};
     this.style_ = style;
     if (this.hasRenderer()) {
-      const parsedStyle = parseStyle(this.style_, this.getSourceBandCount_());
+      const parsedStyle = parseStyle(this.style_, this.getSourceBandCounts_());
       const renderer = this.getRenderer();
       renderer.reset({
         vertexShader: parsedStyle.vertexShader,

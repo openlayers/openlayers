@@ -420,7 +420,7 @@ describe('ol/expr/gpu.js', () => {
         expression: ['band', 1],
         expected: 'getBandValue(1.0, 0.0, 0.0)',
         context: {
-          bandCount: 3,
+          bandCounts: [3],
         },
         contextAssertion: (context) => {
           expect(context.functions['getBandValue']).to

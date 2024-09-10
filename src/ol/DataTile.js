@@ -4,6 +4,7 @@
 import Tile from './Tile.js';
 import TileState from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
+import {getArrayPixelData, getImagePixelData} from './pixel.js';
 
 /**
  * @typedef {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|ImageBitmap} ImageLike
@@ -89,7 +90,7 @@ const defaultSize = [256, 256];
 /**
  * @typedef {Object} Options
  * @property {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
- * @property {function(): Promise<Data>} loader Data loader.  For loaders that generate images,
+ * @property {function(): Promise<Array<Data>>} loader Data loader.  For loaders that generate images,
  * the promise should not resolve until the image is loaded.
  * @property {number} [transition=250] A duration for tile opacity
  * transitions in milliseconds. A duration of 0 disables the opacity transition.
@@ -113,16 +114,16 @@ class DataTile extends Tile {
     });
 
     /**
-     * @type {function(): Promise<Data>}
+     * @type {function(): Promise<Array<Data>>}
      * @private
      */
     this.loader_ = options.loader;
 
     /**
-     * @type {Data}
+     * @type {Array<Data>}
      * @private
      */
-    this.data_ = null;
+    this.data_ = [];
 
     /**
      * @type {Error}
@@ -145,13 +146,14 @@ class DataTile extends Tile {
 
   /**
    * Get the tile size.
+   * @param {number} [slot=0] slot of the data.
    * @return {import('./size.js').Size} Tile size.
    */
-  getSize() {
+  getSize(slot) {
     if (this.size_) {
       return this.size_;
     }
-    const imageData = asImageLike(this.data_);
+    const imageData = asImageLike(this.getData(slot));
     if (imageData) {
       return [imageData.width, imageData.height];
     }
@@ -160,11 +162,99 @@ class DataTile extends Tile {
 
   /**
    * Get the data for the tile.
+   * @param {number} [slot=0] slot of the data.
    * @return {Data} Tile data.
    * @api
    */
-  getData() {
-    return this.data_;
+  getData(slot) {
+    return this.data_[slot ?? 0];
+  }
+
+  /**
+   * @param {number} slot The slot number.
+   * @return {number} The band count for the slot.
+   */
+  getBandCount(slot) {
+    let data = this.getData(slot);
+    if (asImageLike(data)) {
+      return 4;
+    }
+    data = /** @type {ArrayLike} */ (data);
+    const pixelSize = this.getSize(slot);
+    const isFloat = data instanceof Float32Array;
+    const DataType = isFloat ? Float32Array : Uint8Array;
+    const bytesPerElement = DataType.BYTES_PER_ELEMENT;
+    const bytesPerRow = data.byteLength / pixelSize[1];
+
+    return Math.floor(bytesPerRow / bytesPerElement / pixelSize[0]);
+  }
+
+  /**
+   * @param {number} renderCol The column index (in rendered tile space).
+   * @param {number} renderRow The row index (in rendered tile space).
+   * @param {import('./size.js').Size} renderSize The size of rendered tile.
+   * @param {number} gutter The gutter.
+   * @return {Uint8ClampedArray|Float32Array|null} The data.
+   */
+  getPixelDataAt(renderCol, renderRow, renderSize, gutter) {
+    const slotArray = [...Array(this.getSlots())].map((_, i) => i);
+    const dataArray = slotArray.map((slot) => this.getData(slot));
+    const stride = slotArray.reduce(
+      (acc, slot) => acc + this.getBandCount(slot),
+      0,
+    );
+    const containsFloat = dataArray.some((x) => x instanceof Float32Array);
+    const DataType = containsFloat ? Float32Array : Uint8ClampedArray;
+
+    const result = new DataType(stride);
+    let offset = 0;
+    for (let slot = 0; slot < dataArray.length; slot++) {
+      const data = dataArray[slot];
+      if (!data) {
+        return null;
+      }
+
+      const size = this.getSize(slot);
+      const bandCount = this.getBandCount(slot);
+
+      let pixelData;
+      if (asImageLike(data)) {
+        pixelData = getImagePixelData(
+          asImageLike(data),
+          renderCol,
+          renderRow,
+          renderSize,
+          gutter,
+        );
+      } else {
+        pixelData = getArrayPixelData(
+          asArrayLike(data),
+          bandCount,
+          size,
+          renderCol,
+          renderRow,
+          renderSize,
+          gutter,
+        );
+      }
+
+      if (!pixelData) {
+        return null;
+      }
+
+      result.set(pixelData, offset);
+      offset += bandCount;
+    }
+    return result;
+  }
+
+  /**
+   * Get the number of slots.
+   * @return {number} The number of slots.
+   * @api
+   */
+  getSlots() {
+    return this.data_.length;
   }
 
   /**
