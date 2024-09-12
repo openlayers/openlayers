@@ -88,6 +88,7 @@ class TileSource extends Source {
 
     /**
      * @type {import("../tilegrid/TileGrid.js").default|null}
+     * @protected
      */
     this.tileGrid = options.tileGrid !== undefined ? options.tileGrid : null;
 
