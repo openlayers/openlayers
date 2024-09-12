@@ -88,9 +88,10 @@ class VectorRenderTile extends Tile {
     this.getSourceTiles = getSourceTiles.bind(undefined, this);
 
     /**
-     * @type {!function():void}
+     * @type {!function(VectorRenderTile):void}
+     * @private
      */
-    this.removeSourceTiles = removeSourceTiles.bind(undefined, this);
+    this.removeSourceTiles_ = removeSourceTiles;
 
     /**
      * @type {import("./tilecoord.js").TileCoord}
@@ -161,7 +162,7 @@ class VectorRenderTile extends Tile {
       canvasPool.push(this.context_.canvas);
       this.context_ = null;
     }
-    this.removeSourceTiles();
+    this.removeSourceTiles_(this);
     this.sourceTiles.length = 0;
     super.release();
   }
