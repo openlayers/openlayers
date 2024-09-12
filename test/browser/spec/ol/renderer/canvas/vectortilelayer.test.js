@@ -374,9 +374,15 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       sourceTile.getImage = function () {
         return document.createElement('canvas');
       };
-      const tile = new VectorRenderTile([0, 0, 0], 1, [0, 0, 0], function () {
-        return sourceTile;
-      });
+      const tile = new VectorRenderTile(
+        [0, 0, 0],
+        1,
+        [0, 0, 0],
+        function () {
+          return sourceTile;
+        },
+        () => {},
+      );
       tile.transition_ = 0;
       tile.setState(TileState.LOADED);
       layer.getSource().getTile = function () {
@@ -429,9 +435,15 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         return document.createElement('canvas');
       };
       layer.getSource().getSourceTiles = () => [sourceTile];
-      const tile = new VectorRenderTile([0, 0, 0], 1, [0, 0, 0], function () {
-        return sourceTile;
-      });
+      const tile = new VectorRenderTile(
+        [0, 0, 0],
+        1,
+        [0, 0, 0],
+        function () {
+          return sourceTile;
+        },
+        () => {},
+      );
       tile.transition_ = 0;
       tile.replayState_[getUid(layer)] = [{dirty: true}];
       tile.setState(TileState.LOADED);
@@ -511,9 +523,15 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         return document.createElement('canvas');
       };
       layer.getSource().getSourceTiles = () => [sourceTile];
-      const tile = new VectorRenderTile([0, 0, 0], 1, [0, 0, 0], function () {
-        return sourceTile;
-      });
+      const tile = new VectorRenderTile(
+        [0, 0, 0],
+        1,
+        [0, 0, 0],
+        function () {
+          return sourceTile;
+        },
+        () => {},
+      );
       tile.transition_ = 0;
       tile.replayState_[getUid(layer)] = [{dirty: true}];
       tile.setState(TileState.LOADED);
@@ -608,7 +626,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         tileClass: TileClass,
         tileGrid: createXYZ(),
       });
-      source.sourceTileCache_.set('0/0/0.mvt', sourceTile);
+      source.sourceTiles_['0/0/0.mvt'] = sourceTile;
       executorGroup = {};
       executorGroup.forEachFeatureAtCoordinate = function (
         coordinate,

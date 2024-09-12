@@ -62,6 +62,25 @@ describe('ol/renderer/canvas/TileLayer', function () {
           done();
         });
       });
+      it('expires the tile cache, which disposes unused tiles', async () => {
+        const source = new OSM();
+        const layer = new TileLayer({source: source, cacheSize: 0});
+        const tiles = [];
+        layer.getSource().on('tileloadend', (event) => {
+          tiles.push(event.tile);
+        });
+        map.addLayer(layer);
+        await new Promise((resolve) => map.once('rendercomplete', resolve));
+        expect(layer.getRenderer().tileCache_.highWaterMark).to.be(4);
+        for (let i = 0; i < 4; ++i) {
+          map.getView().setZoom(map.getView().getZoom() + 1);
+          await new Promise((resolve) => map.once('rendercomplete', resolve));
+        }
+        expect(tiles.length).to.be(12);
+        for (let i = 0; i < 4; ++i) {
+          expect(tiles[i].disposed).to.be(true);
+        }
+      });
     });
   });
 });

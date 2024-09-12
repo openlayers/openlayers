@@ -246,6 +246,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
           TileState.LOADING,
           [0, 0, 0],
           () => sourceTile,
+          () => {},
         ),
         grid,
         helper: renderer.helper,

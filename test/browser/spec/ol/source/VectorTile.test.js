@@ -71,6 +71,23 @@ describe('ol/source/VectorTile', function () {
       });
     });
 
+    it('unreferences source tiles that are no longer used', () => {
+      const source = new VectorTileSource({
+        format: new GeoJSON(),
+        url: 'spec/ol/data/point.json',
+      });
+      const tile = source.getTile(0, 0, 0, 1, source.getProjection());
+
+      tile.load();
+      expect(Object.keys(source.sourceTiles_).length).to.be(1);
+      expect(source.tileKeysBySourceTileUrl_).to.eql({
+        'spec/ol/data/point.json': ['spec/ol/data/point.json/0,0,0'],
+      });
+      tile.dispose();
+      expect(Object.keys(source.sourceTiles_).length).to.be(0);
+      expect(source.tileKeysBySourceTileUrl_).to.eql({});
+    });
+
     it('handles empty tiles', function () {
       const source = new VectorTileSource({
         format: new GeoJSON(),
