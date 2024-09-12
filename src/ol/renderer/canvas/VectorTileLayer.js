@@ -520,8 +520,12 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     if (tileCache.getCount() === 0) {
       return features;
     }
-    const tileGrid = this.getLayer().getSource().tileGrid;
+    const source = this.getLayer().getSource();
+    const tileGrid = source.getTileGridForProjection(
+      this.frameState.viewState.projection,
+    );
     const z = tileGrid.getZForResolution(this.renderedResolution);
+    const visitedSourceTiles = {};
     tileCache.forEach((tile) => {
       if (tile.tileCoord[0] !== z || tile.getState() !== TileState.LOADED) {
         return;
@@ -529,6 +533,11 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const sourceTiles = tile.getSourceTiles();
       for (let i = 0, ii = sourceTiles.length; i < ii; ++i) {
         const sourceTile = sourceTiles[i];
+        const key = sourceTile.getKey();
+        if (key in visitedSourceTiles) {
+          continue;
+        }
+        visitedSourceTiles[key] = true;
         const tileCoord = sourceTile.tileCoord;
         if (intersects(extent, tileGrid.getTileCoordExtent(tileCoord))) {
           const tileFeatures = sourceTile.getFeatures();
