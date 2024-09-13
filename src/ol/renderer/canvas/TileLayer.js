@@ -323,7 +323,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
        * @type {import('../../DataTile.js').ImageLike}
        */
       let image;
-      if (tile instanceof ImageTile) {
+      if (tile instanceof ImageTile || tile instanceof ReprojTile) {
         image = tile.getImage();
       } else if (tile instanceof DataTile) {
         image = asImageLike(tile.getData());
