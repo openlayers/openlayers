@@ -128,6 +128,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       tile,
       frameState.pixelRatio,
       frameState.viewState.projection,
+      frameState.viewState,
     );
     if (this.tileImageNeedsRender_(tile)) {
       this.renderTileImage_(tile, frameState);
@@ -182,9 +183,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {import("../../VectorRenderTile.js").default} tile Tile.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../../proj/Projection.js").default} projection Projection.
+   * @param {import("../../View.js").State} viewState View state.
    * @private
    */
-  updateExecutorGroup_(tile, pixelRatio, projection) {
+  updateExecutorGroup_(tile, pixelRatio, projection, viewState) {
     const layer = /** @type {import("../../layer/VectorTile.js").default} */ (
       this.getLayer()
     );
@@ -295,6 +297,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         executorGroupInstructions,
         layer.getRenderBuffer(),
         true,
+        viewState,
       );
       tile.executorGroups[layerUid].push(renderingReplayGroup);
     }
