@@ -46,7 +46,7 @@
     "url": "https://opencollective.com/openlayers"
   },
   "dependencies": {
-    "@types/rbush": "^3.0.3",
+    "@types/rbush": "3.0.3",
     "color-rgba": "^3.0.0",
     "color-space": "^2.0.1",
     "earcut": "^3.0.0",
