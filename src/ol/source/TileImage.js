@@ -274,10 +274,11 @@ class TileImage extends UrlTile {
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {boolean} [omitCache] Do not use the tile cache.
    * @return {!(ImageTile|ReprojTile)} Tile.
    * @override
    */
-  getTile(z, x, y, pixelRatio, projection) {
+  getTile(z, x, y, pixelRatio, projection, omitCache) {
     const sourceProjection = this.getProjection();
     if (
       !sourceProjection ||
@@ -290,6 +291,7 @@ class TileImage extends UrlTile {
         y,
         pixelRatio,
         sourceProjection || projection,
+        omitCache,
       );
     }
     const cache = this.getTileCacheForProjection(projection);
@@ -319,7 +321,7 @@ class TileImage extends UrlTile {
       this.getTilePixelRatio(pixelRatio),
       this.getGutter(),
       (z, x, y, pixelRatio) =>
-        this.getTileInternal(z, x, y, pixelRatio, sourceProjection),
+        this.getTileInternal(z, x, y, pixelRatio, sourceProjection, omitCache),
       this.reprojectionErrorThreshold_,
       this.renderReprojectionEdges_,
       this.tileOptions,
@@ -340,12 +342,17 @@ class TileImage extends UrlTile {
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
    * @param {!import("../proj/Projection.js").default} projection Projection.
+   * @param {boolean} [omitCache] Do not use the tile cache.
    * @return {!ImageTile} Tile.
    * @protected
    */
-  getTileInternal(z, x, y, pixelRatio, projection) {
+  getTileInternal(z, x, y, pixelRatio, projection, omitCache) {
     const tileCoordKey = getKeyZXY(z, x, y);
     const key = this.getKey();
+    if (omitCache) {
+      return this.createTile_(z, x, y, pixelRatio, projection, key);
+    }
+
     if (!this.tileCache.containsKey(tileCoordKey)) {
       const tile = this.createTile_(z, x, y, pixelRatio, projection, key);
       this.tileCache.set(tileCoordKey, tile);
@@ -357,6 +364,7 @@ class TileImage extends UrlTile {
       tile = this.createTile_(z, x, y, pixelRatio, projection, key);
       this.tileCache.replace(tileCoordKey, tile);
     }
+
     return tile;
   }
 

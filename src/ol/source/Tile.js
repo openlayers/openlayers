@@ -202,9 +202,10 @@ class TileSource extends Source {
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {boolean} [omitCache] Do not use the tile cache.
    * @return {TileType|null} Tile.
    */
-  getTile(z, x, y, pixelRatio, projection) {
+  getTile(z, x, y, pixelRatio, projection, omitCache) {
     return abstract();
   }
 
