@@ -115,7 +115,7 @@
     "sinon": "^19.0.2",
     "source-map-loader": "^5.0.0",
     "threads": "^1.6.5",
-    "typescript": "5.5.4",
+    "typescript": "5.6.2",
     "walk": "^2.3.9",
     "webpack": "^5.27.2",
     "webpack-cli": "^5.0.0",
