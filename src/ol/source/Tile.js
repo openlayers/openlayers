@@ -4,7 +4,7 @@
 import Event from '../events/Event.js';
 import Source from './Source.js';
 import TileCache from '../TileCache.js';
-import {abstract} from '../util.js';
+import {abstract, getUid} from '../util.js';
 import {assert} from '../asserts.js';
 import {equivalent} from '../proj.js';
 import {
@@ -113,7 +113,7 @@ class TileSource extends Source {
      * @private
      * @type {string}
      */
-    this.key_ = options.key || '';
+    this.key_ = options.key || getUid(this);
 
     /**
      * @protected

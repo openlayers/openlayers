@@ -15,6 +15,7 @@ import {
 } from '../../../../../src/ol/tilegrid.js';
 import {createFromTemplate} from '../../../../../src/ol/tileurlfunction.js';
 import {getKeyZXY} from '../../../../../src/ol/tilecoord.js';
+import {getUid} from '../../../../../src/ol/util.js';
 import {listen} from '../../../../../src/ol/events.js';
 import {register} from '../../../../../src/ol/proj/proj4.js';
 
@@ -105,7 +106,7 @@ describe('ol/source/TileImage', function () {
 
     beforeEach(function () {
       source = createSource();
-      expect(source.getKey()).to.be('');
+      expect(source.getKey()).to.be(getUid(source));
       source.getTileInternal(0, 0, 0, 1, getProjection('EPSG:3857'));
       expect(source.tileCache.getCount()).to.be(1);
       tile = source.tileCache.get(getKeyZXY(0, 0, 0));

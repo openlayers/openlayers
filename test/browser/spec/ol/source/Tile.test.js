@@ -5,6 +5,7 @@ import TileGrid from '../../../../../src/ol/tilegrid/TileGrid.js';
 import TileSource from '../../../../../src/ol/source/Tile.js';
 import {getKeyZXY} from '../../../../../src/ol/tilecoord.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
+import {getUid} from '../../../../../src/ol/util.js';
 
 /**
  * Tile source for tests that uses a EPSG:4326 based grid with 4 resolutions and
@@ -70,7 +71,7 @@ describe('ol/source/Tile', function () {
   describe('#setKey()', function () {
     it('sets the source key', function () {
       const source = new TileSource({});
-      expect(source.getKey()).to.equal('');
+      expect(source.getKey()).to.equal(getUid(source));
 
       const key = 'foo';
       source.setKey(key);
