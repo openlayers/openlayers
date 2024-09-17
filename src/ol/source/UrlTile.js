@@ -6,7 +6,6 @@ import TileSource, {TileSourceEvent} from './Tile.js';
 import TileState from '../TileState.js';
 import {createFromTemplates} from '../tileurlfunction.js';
 import {expandUrl} from '../uri.js';
-import {getKeyZXY} from '../tilecoord.js';
 import {getUid} from '../util.js';
 
 /**
@@ -160,7 +159,6 @@ class UrlTile extends TileSource {
    * @api
    */
   setTileLoadFunction(tileLoadFunction) {
-    this.tileCache.clear();
     this.tileLoadFunction = tileLoadFunction;
     this.changed();
   }
@@ -174,7 +172,6 @@ class UrlTile extends TileSource {
    */
   setTileUrlFunction(tileUrlFunction, key) {
     this.tileUrlFunction = tileUrlFunction;
-    this.tileCache.pruneExceptNewestZ();
     if (typeof key !== 'undefined') {
       this.setKey(key);
     } else {
@@ -217,20 +214,6 @@ class UrlTile extends TileSource {
    */
   tileUrlFunction(tileCoord, pixelRatio, projection) {
     return undefined;
-  }
-
-  /**
-   * Marks a tile coord as being used, without triggering a load.
-   * @param {number} z Tile coordinate z.
-   * @param {number} x Tile coordinate x.
-   * @param {number} y Tile coordinate y.
-   * @override
-   */
-  useTile(z, x, y) {
-    const tileCoordKey = getKeyZXY(z, x, y);
-    if (this.tileCache.containsKey(tileCoordKey)) {
-      this.tileCache.get(tileCoordKey);
-    }
   }
 }
 

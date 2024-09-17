@@ -9,7 +9,6 @@ import TileState from '../TileState.js';
 import {applyTransform, intersects} from '../extent.js';
 import {createFromTemplates, nullTileUrlFunction} from '../tileurlfunction.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
-import {getKeyZXY} from '../tilecoord.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
 import {listenOnce} from '../events.js';
 import {jsonp as requestJSONP} from '../net.js';
@@ -473,10 +472,6 @@ class UTFGrid extends TileSource {
    * @override
    */
   getTile(z, x, y, pixelRatio, projection) {
-    const tileCoordKey = getKeyZXY(z, x, y);
-    if (this.tileCache.containsKey(tileCoordKey)) {
-      return this.tileCache.get(tileCoordKey);
-    }
     const tileCoord = [z, x, y];
     const urlTileCoord = this.getTileCoordForTileUrlFunction(
       tileCoord,
@@ -491,22 +486,7 @@ class UTFGrid extends TileSource {
       this.preemptive_,
       this.jsonp_,
     );
-    this.tileCache.set(tileCoordKey, tile);
     return tile;
-  }
-
-  /**
-   * Marks a tile coord as being used, without triggering a load.
-   * @param {number} z Tile coordinate z.
-   * @param {number} x Tile coordinate x.
-   * @param {number} y Tile coordinate y.
-   * @override
-   */
-  useTile(z, x, y) {
-    const tileCoordKey = getKeyZXY(z, x, y);
-    if (this.tileCache.containsKey(tileCoordKey)) {
-      this.tileCache.get(tileCoordKey);
-    }
   }
 }
 

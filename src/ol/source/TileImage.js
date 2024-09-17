@@ -8,7 +8,7 @@ import TileCache from '../TileCache.js';
 import TileState from '../TileState.js';
 import UrlTile from './UrlTile.js';
 import {equivalent, get as getProjection} from '../proj.js';
-import {getKey, getKeyZXY} from '../tilecoord.js';
+import {getKey} from '../tilecoord.js';
 import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
 import {getUid} from '../util.js';
 
@@ -134,9 +134,6 @@ class TileImage extends UrlTile {
    * @override
    */
   canExpireCache() {
-    if (this.tileCache.canExpireCache()) {
-      return true;
-    }
     for (const key in this.tileCacheForProjection) {
       if (this.tileCacheForProjection[key].canExpireCache()) {
         return true;
@@ -154,9 +151,6 @@ class TileImage extends UrlTile {
   expireCache(projection, usedTiles) {
     const usedTileCache = this.getTileCacheForProjection(projection);
 
-    this.tileCache.expireCache(
-      this.tileCache == usedTileCache ? usedTiles : {},
-    );
     for (const id in this.tileCacheForProjection) {
       const tileCache = this.tileCacheForProjection[id];
       tileCache.expireCache(tileCache == usedTileCache ? usedTiles : {});
@@ -225,13 +219,11 @@ class TileImage extends UrlTile {
   getTileCacheForProjection(projection) {
     const thisProj = this.getProjection();
     if (!thisProj || equivalent(thisProj, projection)) {
-      return this.tileCache;
+      return super.getTileCacheForProjection(projection);
     }
     const projKey = getUid(projection);
     if (!(projKey in this.tileCacheForProjection)) {
-      this.tileCacheForProjection[projKey] = new TileCache(
-        this.tileCache.highWaterMark,
-      );
+      this.tileCacheForProjection[projKey] = new TileCache(512);
     }
     return this.tileCacheForProjection[projKey];
   }
@@ -274,11 +266,10 @@ class TileImage extends UrlTile {
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
-   * @param {boolean} [omitCache] Do not use the tile cache.
    * @return {!(ImageTile|ReprojTile)} Tile.
    * @override
    */
-  getTile(z, x, y, pixelRatio, projection, omitCache) {
+  getTile(z, x, y, pixelRatio, projection) {
     const sourceProjection = this.getProjection();
     if (
       !sourceProjection ||
@@ -291,7 +282,6 @@ class TileImage extends UrlTile {
         y,
         pixelRatio,
         sourceProjection || projection,
-        omitCache,
       );
     }
     const cache = this.getTileCacheForProjection(projection);
@@ -321,7 +311,7 @@ class TileImage extends UrlTile {
       this.getTilePixelRatio(pixelRatio),
       this.getGutter(),
       (z, x, y, pixelRatio) =>
-        this.getTileInternal(z, x, y, pixelRatio, sourceProjection, omitCache),
+        this.getTileInternal(z, x, y, pixelRatio, sourceProjection),
       this.reprojectionErrorThreshold_,
       this.renderReprojectionEdges_,
       this.tileOptions,
@@ -342,30 +332,12 @@ class TileImage extends UrlTile {
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
    * @param {!import("../proj/Projection.js").default} projection Projection.
-   * @param {boolean} [omitCache] Do not use the tile cache.
    * @return {!ImageTile} Tile.
    * @protected
    */
-  getTileInternal(z, x, y, pixelRatio, projection, omitCache) {
-    const tileCoordKey = getKeyZXY(z, x, y);
+  getTileInternal(z, x, y, pixelRatio, projection) {
     const key = this.getKey();
-    if (omitCache) {
-      return this.createTile_(z, x, y, pixelRatio, projection, key);
-    }
-
-    if (!this.tileCache.containsKey(tileCoordKey)) {
-      const tile = this.createTile_(z, x, y, pixelRatio, projection, key);
-      this.tileCache.set(tileCoordKey, tile);
-      return tile;
-    }
-
-    let tile = this.tileCache.get(tileCoordKey);
-    if (tile.key != key) {
-      tile = this.createTile_(z, x, y, pixelRatio, projection, key);
-      this.tileCache.replace(tileCoordKey, tile);
-    }
-
-    return tile;
+    return this.createTile_(z, x, y, pixelRatio, projection, key);
   }
 
   /**

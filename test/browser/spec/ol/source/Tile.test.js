@@ -27,21 +27,15 @@ class MockTile extends TileSource {
       tileGrid: tileGrid,
     });
 
-    for (const key in tileStates) {
-      this.tileCache.set(key, new Tile(key.split('/'), tileStates[key]));
-    }
+    this.tileStates = tileStates;
+  }
+
+  getTile(z, x, y) {
+    const key = getKeyZXY(z, x, y);
+    const tile = new Tile([z, x, y], this.tileStates[key] || 0);
+    return tile;
   }
 }
-
-MockTile.prototype.getTile = function (z, x, y) {
-  const key = getKeyZXY(z, x, y);
-  if (this.tileCache.containsKey(key)) {
-    return /** @type {!ol.Tile} */ (this.tileCache.get(key));
-  }
-  const tile = new Tile(key, 0); // IDLE
-  this.tileCache.set(key, tile);
-  return tile;
-};
 
 describe('ol/source/Tile', function () {
   describe('constructor', function () {
@@ -51,20 +45,6 @@ describe('ol/source/Tile', function () {
       });
       expect(source).to.be.a(Source);
       expect(source).to.be.a(TileSource);
-    });
-    it('sets 0 as initial cache size', function () {
-      const source = new TileSource({});
-      expect(source.tileCache.highWaterMark).to.be(0);
-    });
-    it('sets a custom cache size', function () {
-      const projection = getProjection('EPSG:4326');
-      const source = new TileSource({
-        projection: projection,
-        cacheSize: 442,
-      });
-      expect(source.getTileCacheForProjection(projection).highWaterMark).to.be(
-        442,
-      );
     });
   });
 
@@ -174,15 +154,16 @@ describe('ol/source/Tile', function () {
       const source = new MockTile({
         '1/0/0': 2, // LOADED
       });
+      const revision = source.getRevision();
       // check the loaded tile is there
       const tile = source.getTile(1, 0, 0);
       expect(tile).to.be.a(Tile);
       // check tile cache is filled
-      expect(source.tileCache.getCount()).to.eql(1);
+      expect(source.getRevision()).to.eql(revision);
       // refresh the source
       source.refresh();
       // check tile cache after refresh (should be empty)
-      expect(source.tileCache.getCount()).to.eql(0);
+      expect(source.getRevision()).to.eql(revision + 1);
     });
   });
 });

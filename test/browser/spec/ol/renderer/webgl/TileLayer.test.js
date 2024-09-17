@@ -71,8 +71,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
     map.dispose();
   });
 
-  it('maintains a cache on the renderer instead of the source', function () {
-    expect(tileLayer.getSource().tileCache.highWaterMark).to.be(0.1);
+  it('maintains a cache on the renderer', function () {
     expect(renderer.tileRepresentationCache.highWaterMark).to.be(512);
   });
 

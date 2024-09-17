@@ -250,7 +250,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         y,
         frameState.pixelRatio,
         frameState.viewState.projection,
-        true,
       );
       if (!tile) {
         return null;
