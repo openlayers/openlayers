@@ -185,6 +185,7 @@ describe('ol.layer.VectorTile', function () {
             .getTileGrid()
             .getTileCoordExtent(tile.tileCoord);
           const feature = new Feature(fromExtent(extent));
+          feature.setId(tile.tileCoord.toString());
           feature.set('z', tile.tileCoord[0]);
           tile.setFeatures([feature]);
         },
@@ -221,13 +222,22 @@ describe('ol.layer.VectorTile', function () {
         const extent = map.getView().calculateExtent(map.getSize());
         const features = layer.getFeaturesInExtent(extent);
         expect(features.length).to.be(4);
-        expect(features[0].get('z')).to.be(15);
+        const keys = {};
+        features.forEach((feature) => {
+          expect(feature.get('z')).to.be(15);
+          expect(feature.getId() in keys).to.be(false);
+          keys[feature.getId()] = true;
+        });
         map.getView().setZoom(0);
         map.once('rendercomplete', function () {
           const extent = map.getView().calculateExtent(map.getSize());
           const features = layer.getFeaturesInExtent(extent);
           expect(features.length).to.be(1);
-          expect(features[0].get('z')).to.be(0);
+          features.forEach((feature) => {
+            expect(feature.get('z')).to.be(0);
+            expect(feature.getId() in keys).to.be(false);
+            keys[feature.getId()] = true;
+          });
           done();
         });
       });

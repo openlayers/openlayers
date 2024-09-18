@@ -2,6 +2,7 @@
  * @module ol/structs/LRUCache
  */
 
+import Disposable from '../Disposable.js';
 import {assert} from '../asserts.js';
 
 /**
@@ -66,12 +67,16 @@ class LRUCache {
   }
 
   /**
-   * Expire the cache.
+   * Expire the cache. When the cache entry is a {@link module:ol/Disposable~Disposable},
+   * the entry will be disposed.
    * @param {!Object<string, boolean>} [keep] Keys to keep. To be implemented by subclasses.
    */
   expireCache(keep) {
     while (this.canExpireCache()) {
-      this.pop();
+      const entry = this.pop();
+      if (entry instanceof Disposable) {
+        entry.dispose();
+      }
     }
   }
 

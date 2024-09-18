@@ -71,6 +71,13 @@ class VectorTile extends Tile {
   }
 
   /**
+   * @return {string} Tile url.
+   */
+  getTileUrl() {
+    return this.url_;
+  }
+
+  /**
    * Get the feature format assigned for reading this tile's features.
    * @return {import("./format/Feature.js").default<FeatureType>} Feature format.
    * @api

@@ -15,8 +15,5 @@
     "config/jsdoc/plugins/define-plugin.cjs",
     "config/jsdoc/plugins/virtual-plugin.cjs",
     "config/jsdoc/plugins/default-export.cjs"
-  ],
-  "typescript": {
-    "moduleRoot": "src"
-  }
+  ]
 }

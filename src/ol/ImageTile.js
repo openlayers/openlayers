@@ -172,6 +172,15 @@ class ImageTile extends Tile {
       this.unlisten_ = null;
     }
   }
+
+  /**
+   * @override
+   */
+  disposeInternal() {
+    this.unlistenImage_();
+    this.image_ = null;
+    super.disposeInternal();
+  }
 }
 
 /**

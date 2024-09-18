@@ -323,7 +323,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
        * @type {import('../../DataTile.js').ImageLike}
        */
       let image;
-      if (tile instanceof ImageTile) {
+      if (tile instanceof ImageTile || tile instanceof ReprojTile) {
         image = tile.getImage();
       } else if (tile instanceof DataTile) {
         image = asImageLike(tile.getData());
@@ -848,7 +848,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     }
     context.imageSmoothingEnabled = true;
 
-    // TODO: let the renderers manage their own cache instead of managing the source cache
     /**
      * Here we unconditionally expire the source cache since the renderer maintains
      * its own cache.

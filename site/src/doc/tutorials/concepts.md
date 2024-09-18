@@ -48,7 +48,7 @@ To get remote data for a layer, OpenLayers uses `ol/source/Source` subclasses. T
 ```js
 import OSM from 'ol/source/OSM.js';
 
-const source = OSM();
+const source = new OSM();
 ```
 
 ## Layer

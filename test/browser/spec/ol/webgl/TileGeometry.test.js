@@ -28,7 +28,13 @@ describe('ol/webgl/TileGeometry', function () {
   let helper;
 
   beforeEach(function () {
-    tile = new VectorRenderTile([3, 2, 1], TileState.IDLE, [3, 2, 1], () => []);
+    tile = new VectorRenderTile(
+      [3, 2, 1],
+      TileState.IDLE,
+      [3, 2, 1],
+      () => [],
+      () => {},
+    );
     styleRenderers = [new MockRenderer(), new MockRenderer()];
     helper = new WebGLHelper();
 
@@ -90,6 +96,7 @@ describe('ol/webgl/TileGeometry', function () {
         TileState.LOADED,
         [3, 2, 1],
         () => [sourceTile],
+        () => {},
       );
 
       sinon.spy(tileGeometry.batch_, 'clear');

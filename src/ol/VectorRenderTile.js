@@ -26,10 +26,16 @@ class VectorRenderTile extends Tile {
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {import("./TileState.js").default} state State.
    * @param {import("./tilecoord.js").TileCoord} urlTileCoord Wrapped tile coordinate for source urls.
-   * @param {function(VectorRenderTile):Array<import("./VectorTile").default>} getSourceTiles Function
-   * to get source tiles for this tile.
+   * @param {function(VectorRenderTile):Array<import("./VectorTile").default>} getSourceTiles Function.
+   * @param {function(VectorRenderTile):void} removeSourceTiles Function.
    */
-  constructor(tileCoord, state, urlTileCoord, getSourceTiles) {
+  constructor(
+    tileCoord,
+    state,
+    urlTileCoord,
+    getSourceTiles,
+    removeSourceTiles,
+  ) {
     super(tileCoord, state, {transition: 0});
 
     /**
@@ -80,6 +86,12 @@ class VectorRenderTile extends Tile {
      * @type {!function():Array<import("./VectorTile.js").default>}
      */
     this.getSourceTiles = getSourceTiles.bind(undefined, this);
+
+    /**
+     * @type {!function(VectorRenderTile):void}
+     * @private
+     */
+    this.removeSourceTiles_ = removeSourceTiles;
 
     /**
      * @type {import("./tilecoord.js").TileCoord}
@@ -145,9 +157,13 @@ class VectorRenderTile extends Tile {
    * @override
    */
   release() {
-    releaseCanvas(this.context_);
-    canvasPool.push(this.context_.canvas);
-    this.context_ = null;
+    if (this.context_) {
+      releaseCanvas(this.context_);
+      canvasPool.push(this.context_.canvas);
+      this.context_ = null;
+    }
+    this.removeSourceTiles_(this);
+    this.sourceTiles.length = 0;
     super.release();
   }
 }
