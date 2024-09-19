@@ -1310,9 +1310,9 @@ class View extends BaseObject {
    * @api
    */
   getResolutionForZoom(zoom) {
-    if (this.resolutions_) {
-      if (this.resolutions_.length <= 1) {
-        return 0;
+    if (this.resolutions_?.length) {
+      if (this.resolutions_.length === 1) {
+        return this.resolutions_[0];
       }
       const baseLevel = clamp(
         Math.floor(zoom),
