@@ -2,7 +2,6 @@ import Projection from '../../../../../src/ol/proj/Projection.js';
 import TileGrid from '../../../../../src/ol/tilegrid/TileGrid.js';
 import Zoomify, {CustomTile} from '../../../../../src/ol/source/Zoomify.js';
 import {DEFAULT_TILE_SIZE} from '../../../../../src/ol/tilegrid/common.js';
-import {listen} from '../../../../../src/ol/events.js';
 
 describe('ol/source/Zoomify', function () {
   const w = 1024;
@@ -332,40 +331,6 @@ describe('ol/source/Zoomify', function () {
       const source = getZoomifySource();
       const tile = source.getTile(0, 0, 0, 1, proj);
       expect(tile).to.be.a(CustomTile);
-    });
-
-    it('"tile.getImage" returns and caches an unloaded image', function () {
-      const source = getZoomifySource();
-
-      const tile = source.getTile(0, 0, 0, 1, proj);
-      const img = tile.getImage();
-
-      const tile2 = source.getTile(0, 0, 0, 1, proj);
-      const img2 = tile2.getImage();
-
-      expect(img).to.be.a(HTMLImageElement);
-      expect(img).to.be(img2);
-    });
-
-    it('"tile.getImage" returns and caches a loaded canvas', function (done) {
-      const source = getZoomifySource();
-
-      const tile = source.getTile(0, 0, 0, 1, proj);
-
-      listen(tile, 'change', function () {
-        if (tile.getState() == 2) {
-          // LOADED
-          const img = tile.getImage();
-          expect(img).to.be.a(HTMLCanvasElement);
-
-          const tile2 = source.getTile(0, 0, 0, 1, proj);
-          expect(tile2.getState()).to.be(2); // LOADED
-          const img2 = tile2.getImage();
-          expect(img).to.be(img2);
-          done();
-        }
-      });
-      tile.load();
     });
   });
 });

@@ -472,7 +472,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
         ],
       });
 
-      const tileCache = source.tileCache;
+      const tileCache = raster.layers_[0].getRenderer().tileCache_;
 
       expect(tileCache.getCount()).to.equal(0);
 

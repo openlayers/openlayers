@@ -8,7 +8,7 @@ import TileCache from '../TileCache.js';
 import TileState from '../TileState.js';
 import UrlTile from './UrlTile.js';
 import {equivalent, get as getProjection} from '../proj.js';
-import {getKey, getKeyZXY} from '../tilecoord.js';
+import {getKey} from '../tilecoord.js';
 import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
 import {getUid} from '../util.js';
 
@@ -134,9 +134,6 @@ class TileImage extends UrlTile {
    * @override
    */
   canExpireCache() {
-    if (this.tileCache.canExpireCache()) {
-      return true;
-    }
     for (const key in this.tileCacheForProjection) {
       if (this.tileCacheForProjection[key].canExpireCache()) {
         return true;
@@ -154,9 +151,6 @@ class TileImage extends UrlTile {
   expireCache(projection, usedTiles) {
     const usedTileCache = this.getTileCacheForProjection(projection);
 
-    this.tileCache.expireCache(
-      this.tileCache == usedTileCache ? usedTiles : {},
-    );
     for (const id in this.tileCacheForProjection) {
       const tileCache = this.tileCacheForProjection[id];
       tileCache.expireCache(tileCache == usedTileCache ? usedTiles : {});
@@ -225,13 +219,11 @@ class TileImage extends UrlTile {
   getTileCacheForProjection(projection) {
     const thisProj = this.getProjection();
     if (!thisProj || equivalent(thisProj, projection)) {
-      return this.tileCache;
+      return super.getTileCacheForProjection(projection);
     }
     const projKey = getUid(projection);
     if (!(projKey in this.tileCacheForProjection)) {
-      this.tileCacheForProjection[projKey] = new TileCache(
-        this.tileCache.highWaterMark,
-      );
+      this.tileCacheForProjection[projKey] = new TileCache(512);
     }
     return this.tileCacheForProjection[projKey];
   }
@@ -344,20 +336,8 @@ class TileImage extends UrlTile {
    * @protected
    */
   getTileInternal(z, x, y, pixelRatio, projection) {
-    const tileCoordKey = getKeyZXY(z, x, y);
     const key = this.getKey();
-    if (!this.tileCache.containsKey(tileCoordKey)) {
-      const tile = this.createTile_(z, x, y, pixelRatio, projection, key);
-      this.tileCache.set(tileCoordKey, tile);
-      return tile;
-    }
-
-    let tile = this.tileCache.get(tileCoordKey);
-    if (tile.key != key) {
-      tile = this.createTile_(z, x, y, pixelRatio, projection, key);
-      this.tileCache.replace(tileCoordKey, tile);
-    }
-    return tile;
+    return this.createTile_(z, x, y, pixelRatio, projection, key);
   }
 
   /**
