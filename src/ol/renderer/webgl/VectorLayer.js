@@ -196,7 +196,6 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
         source,
         VectorEventType.ADDFEATURE,
         this.handleSourceFeatureAdded_.bind(this, projectionTransform),
-        this,
       ),
       listen(
         source,
