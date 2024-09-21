@@ -973,24 +973,21 @@ export function parseLiteralStyle(style) {
   const attributes = {};
   for (const propName in vertContext.properties) {
     const property = vertContext.properties[propName];
-    let callback;
-    if (property.evaluator) {
-      callback = property.evaluator;
-    } else {
-      callback = (feature) => {
-        const value = feature.get(property.name);
-        if (property.type === ColorType) {
-          return packColor([...asArray(value || '#eee')]);
-        }
-        if (typeof value === 'string') {
-          return getStringNumberEquivalent(value);
-        }
-        if (typeof value === 'boolean') {
-          return value ? 1 : 0;
-        }
-        return value;
-      };
-    }
+    const callback = (feature) => {
+      const value = property.evaluator
+        ? property.evaluator(feature)
+        : feature.get(property.name);
+      if (property.type === ColorType) {
+        return packColor([...asArray(value || '#eee')]);
+      }
+      if (typeof value === 'string') {
+        return getStringNumberEquivalent(value);
+      }
+      if (typeof value === 'boolean') {
+        return value ? 1 : 0;
+      }
+      return value;
+    };
 
     attributes[property.name] = {
       size: getGlslSizeFromType(property.type),
