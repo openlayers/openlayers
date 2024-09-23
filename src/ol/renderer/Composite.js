@@ -31,7 +31,8 @@ class CompositeMapRenderer extends MapRenderer {
     this.fontChangeListenerKey_ = listen(
       checkedFonts,
       ObjectEventType.PROPERTYCHANGE,
-      map.redrawText.bind(map),
+      map.redrawText,
+      map,
     );
 
     /**

@@ -3,8 +3,7 @@
  */
 import Event from '../events/Event.js';
 import Source from './Source.js';
-import TileCache from '../TileCache.js';
-import {abstract} from '../util.js';
+import {abstract, getUid} from '../util.js';
 import {assert} from '../asserts.js';
 import {equivalent} from '../proj.js';
 import {
@@ -99,12 +98,6 @@ class TileSource extends Source {
 
     /**
      * @protected
-     * @type {import("../TileCache.js").default}
-     */
-    this.tileCache = new TileCache(options.cacheSize || 0);
-
-    /**
-     * @protected
      * @type {import("../size.js").Size}
      */
     this.tmpSize = [0, 0];
@@ -113,7 +106,7 @@ class TileSource extends Source {
      * @private
      * @type {string}
      */
-    this.key_ = options.key || '';
+    this.key_ = options.key || getUid(this);
 
     /**
      * @protected
@@ -138,7 +131,7 @@ class TileSource extends Source {
    * @return {boolean} Can expire cache.
    */
   canExpireCache() {
-    return this.tileCache.canExpireCache();
+    return false;
   }
 
   /**
@@ -237,9 +230,9 @@ class TileSource extends Source {
     const sourceProjection = this.getProjection();
     assert(
       sourceProjection === null || equivalent(sourceProjection, projection),
-      'A VectorTile source can only be rendered if it has a projection compatible with the view projection.',
+      "Use the renderer's tile cache when not reprojecting.",
     );
-    return this.tileCache;
+    return null;
   }
 
   /**
@@ -288,12 +281,10 @@ class TileSource extends Source {
   }
 
   /**
-   * Remove all cached tiles from the source. The next render cycle will fetch new tiles.
+   * Remove all cached reprojected tiles from the source. The next render cycle will create new tiles.
    * @api
    */
-  clear() {
-    this.tileCache.clear();
-  }
+  clear() {}
 
   /**
    * @override
@@ -302,16 +293,6 @@ class TileSource extends Source {
     this.clear();
     super.refresh();
   }
-
-  /**
-   * Marks a tile coord as being used, without triggering a load.
-   * @abstract
-   * @param {number} z Tile coordinate z.
-   * @param {number} x Tile coordinate x.
-   * @param {number} y Tile coordinate y.
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   */
-  useTile(z, x, y, projection) {}
 }
 
 /**

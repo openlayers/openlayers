@@ -294,10 +294,6 @@ class DataTileSource extends TileSource {
     }
 
     const size = this.getTileSize(z);
-    const tileCoordKey = getKeyZXY(z, x, y);
-    if (this.tileCache.containsKey(tileCoordKey)) {
-      return this.tileCache.get(tileCoordKey);
-    }
 
     const sourceLoader = this.loader_;
 
@@ -344,7 +340,6 @@ class DataTileSource extends TileSource {
     tile.key = this.getKey();
     tile.addEventListener(EventType.CHANGE, this.handleTileChange_);
 
-    this.tileCache.set(tileCoordKey, tile);
     return tile;
   }
 
@@ -423,7 +418,7 @@ class DataTileSource extends TileSource {
   getTileCacheForProjection(projection) {
     const thisProj = this.getProjection();
     if (!thisProj || equivalent(thisProj, projection)) {
-      return this.tileCache;
+      return super.getTileCacheForProjection(projection);
     }
 
     const projKey = getUid(projection);
@@ -441,9 +436,6 @@ class DataTileSource extends TileSource {
   expireCache(projection, usedTiles) {
     const usedTileCache = this.getTileCacheForProjection(projection);
 
-    this.tileCache.expireCache(
-      this.tileCache == usedTileCache ? usedTiles : {},
-    );
     for (const id in this.tileCacheForProjection_) {
       const tileCache = this.tileCacheForProjection_[id];
       tileCache.expireCache(tileCache == usedTileCache ? usedTiles : {});

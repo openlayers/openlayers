@@ -368,8 +368,19 @@ class WebGLTileLayer extends BaseTileLayer {
     if (this.hasRenderer()) {
       this.getRenderer().clearCache();
     }
-    if (this.getSource()) {
-      this.setStyle(this.style_);
+    const source = this.getSource();
+    if (source) {
+      if (source.getState() === 'loading') {
+        const onChange = () => {
+          if (source.getState() === 'ready') {
+            source.removeEventListener('change', onChange);
+            this.setStyle(this.style_);
+          }
+        };
+        source.addEventListener('change', onChange);
+      } else {
+        this.setStyle(this.style_);
+      }
     }
   }
 

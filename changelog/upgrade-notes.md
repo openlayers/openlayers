@@ -1,5 +1,9 @@
 ## Upgrade notes
 
+### 10.2.0
+
+No changes should be needed to update to this release.  See the release changelog for new features and fixes.
+
 ### 10.1.0
 
 No changes should be needed to update to this release.  See the release changelog for new features and fixes.

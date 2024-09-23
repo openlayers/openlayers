@@ -1,4 +1,5 @@
 import Feature from '../../../../../src/ol/Feature.js';
+import Point from '../../../../../src/ol/geom/Point.js';
 import {asArray} from '../../../../../src/ol/color.js';
 import {
   computeHash,
@@ -879,6 +880,31 @@ describe('ol/webgl/styleparser', () => {
       });
     });
 
+    describe('filter', () => {
+      let result;
+      beforeEach(() => {
+        result = parseLiteralStyle({
+          filter: [
+            'all',
+            ['==', ['geometry-type'], 'LineString'],
+            ['in', ['get', 'type'], ['literal', ['road', 'path', 'street']]],
+          ],
+        });
+      });
+      it('adds the filter expression and attributes to the shader builder', () => {
+        expect(result.builder.fragmentShaderFunctions_[0]).to.contain(
+          'bool operator_in_0',
+        );
+        expect(result.builder.getFragmentDiscardExpression()).to.be(
+          `!((v_prop_geometryType == ${stringToGlsl('LineString')}) && operator_in_0(v_prop_type))`,
+        );
+        expect(result.attributes).to.eql({
+          geometryType: {size: 1, callback: {}},
+          type: {size: 1, callback: {}},
+        });
+      });
+    });
+
     describe('handle attributes of types other that number', () => {
       let parseResult;
       beforeEach(() => {
@@ -901,6 +927,13 @@ describe('ol/webgl/styleparser', () => {
           'circle-radius': 8,
           'circle-fill-color': ['get', 'color'],
           'circle-scale': ['get', 'iconSize'],
+          'stroke-color': [
+            'match',
+            ['geometry-type'],
+            'Polygon',
+            'red',
+            'blue',
+          ],
         });
       });
       it('adds attributes to the shader builder', () => {
@@ -909,6 +942,7 @@ describe('ol/webgl/styleparser', () => {
           'float a_prop_lineType',
           'float a_prop_lineWidth',
           'vec2 a_prop_color',
+          'float a_prop_geometryType',
           'float a_prop_transparent',
           'vec2 a_prop_fillColor',
         ]);
@@ -924,6 +958,11 @@ describe('ol/webgl/styleparser', () => {
             name: 'v_prop_color',
             type: 'vec4',
             expression: 'unpackColor(a_prop_color)',
+          },
+          {
+            name: 'v_prop_geometryType',
+            type: 'float',
+            expression: 'a_prop_geometryType',
           },
           {
             name: 'v_prop_transparent',
@@ -951,6 +990,7 @@ describe('ol/webgl/styleparser', () => {
           lineWidth: {size: 1, callback: {}},
           transparent: {size: 1, callback: {}},
           fillColor: {size: 2, callback: {}},
+          geometryType: {size: 1, callback: {}},
         });
       });
       it('processes the feature attributes according to their types', () => {
@@ -961,6 +1001,7 @@ describe('ol/webgl/styleparser', () => {
           lineWidth: 0.5,
           fillColor: 'rgba(123, 240, 100, 0.3)',
           transparent: true,
+          geometry: new Point([0, 0]),
         });
         expect(parseResult.attributes['iconSize'].callback(feature)).to.eql([
           12, 18,
@@ -979,6 +1020,9 @@ describe('ol/webgl/styleparser', () => {
         );
         expect(parseResult.attributes['transparent'].callback(feature)).to.eql(
           1,
+        );
+        expect(parseResult.attributes['geometryType'].callback(feature)).to.eql(
+          stringToGlsl('Point'),
         );
       });
     });

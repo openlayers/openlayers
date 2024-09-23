@@ -71,8 +71,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
     map.dispose();
   });
 
-  it('maintains a cache on the renderer instead of the source', function () {
-    expect(tileLayer.getSource().tileCache.highWaterMark).to.be(0.1);
+  it('maintains a cache on the renderer', function () {
     expect(renderer.tileRepresentationCache.highWaterMark).to.be(512);
   });
 
@@ -121,10 +120,10 @@ describe('ol/renderer/webgl/TileLayer', function () {
       const wantedTiles = frameState.wantedTiles[sourceKey];
 
       const expected = {
-        '/10,511,511': true,
-        '/10,511,512': true,
-        '/10,512,511': true,
-        '/10,512,512': true,
+        [sourceKey + '/10,511,511']: true,
+        [sourceKey + '/10,511,512']: true,
+        [sourceKey + '/10,512,511']: true,
+        [sourceKey + '/10,512,512']: true,
       };
       expect(wantedTiles).to.eql(expected);
     });
@@ -148,18 +147,18 @@ describe('ol/renderer/webgl/TileLayer', function () {
       const wantedTiles = frameState.wantedTiles[sourceKey];
 
       const expected = {
-        '/10,511,511': true,
-        '/10,511,512': true,
-        '/10,512,511': true,
-        '/10,512,512': true,
-        '/9,255,255': true,
-        '/9,255,256': true,
-        '/9,256,255': true,
-        '/9,256,256': true,
-        '/8,127,127': true,
-        '/8,127,128': true,
-        '/8,128,127': true,
-        '/8,128,128': true,
+        [sourceKey + '/10,511,511']: true,
+        [sourceKey + '/10,511,512']: true,
+        [sourceKey + '/10,512,511']: true,
+        [sourceKey + '/10,512,512']: true,
+        [sourceKey + '/9,255,255']: true,
+        [sourceKey + '/9,255,256']: true,
+        [sourceKey + '/9,256,255']: true,
+        [sourceKey + '/9,256,256']: true,
+        [sourceKey + '/8,127,127']: true,
+        [sourceKey + '/8,127,128']: true,
+        [sourceKey + '/8,128,127']: true,
+        [sourceKey + '/8,128,128']: true,
       };
       expect(wantedTiles).to.eql(expected);
     });
@@ -184,14 +183,14 @@ describe('ol/renderer/webgl/TileLayer', function () {
       const wantedTiles = frameState.wantedTiles[sourceKey];
 
       const expected = {
-        '/10,511,511': true,
-        '/10,511,512': true,
-        '/10,512,511': true,
-        '/10,512,512': true,
-        '/9,255,255': true,
-        '/9,255,256': true,
-        '/9,256,255': true,
-        '/9,256,256': true,
+        [sourceKey + '/10,511,511']: true,
+        [sourceKey + '/10,511,512']: true,
+        [sourceKey + '/10,512,511']: true,
+        [sourceKey + '/10,512,512']: true,
+        [sourceKey + '/9,255,255']: true,
+        [sourceKey + '/9,255,256']: true,
+        [sourceKey + '/9,256,255']: true,
+        [sourceKey + '/9,256,256']: true,
       };
       expect(wantedTiles).to.eql(expected);
     });
@@ -219,18 +218,18 @@ describe('ol/renderer/webgl/TileLayer', function () {
       const wantedTiles = frameState.wantedTiles[sourceKey];
 
       const expected = {
-        '/10,511,511': true,
-        '/10,511,512': true,
-        '/10,512,511': true,
-        '/10,512,512': true,
-        '/9,255,255': true,
-        '/9,255,256': true,
-        '/9,256,255': true,
-        '/9,256,256': true,
-        '/8,127,127': true,
-        '/8,127,128': true,
-        '/8,128,127': true,
-        '/8,128,128': true,
+        [sourceKey + '/10,511,511']: true,
+        [sourceKey + '/10,511,512']: true,
+        [sourceKey + '/10,512,511']: true,
+        [sourceKey + '/10,512,512']: true,
+        [sourceKey + '/9,255,255']: true,
+        [sourceKey + '/9,255,256']: true,
+        [sourceKey + '/9,256,255']: true,
+        [sourceKey + '/9,256,256']: true,
+        [sourceKey + '/8,127,127']: true,
+        [sourceKey + '/8,127,128']: true,
+        [sourceKey + '/8,128,127']: true,
+        [sourceKey + '/8,128,128']: true,
       };
       expect(wantedTiles).to.eql(expected);
     });

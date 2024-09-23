@@ -101,6 +101,8 @@ function generateExports(symbols) {
   }
   const defs = ['\nvar ol = {};'].concat(nsdefs, [...new Set(blocks)]);
   const lines = Object.keys(imports).concat(defs.sort());
+  lines.push('', 'ol.VERSION = ol.util.VERSION;');
+  lines.push('', 'ol.getUid = ol.util.getUid;');
   lines.push('', 'export default ol;');
   return lines.join('\n');
 }

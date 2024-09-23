@@ -449,23 +449,30 @@ class Layer extends BaseLayer {
       this.mapPrecomposeKey_ = listen(
         map,
         RenderEventType.PRECOMPOSE,
-        (evt) => {
-          const renderEvent =
-            /** @type {import("../render/Event.js").default} */ (evt);
-          const layerStatesArray = renderEvent.frameState.layerStatesArray;
-          const layerState = this.getLayerState(false);
-          assert(
-            !layerStatesArray.some(function (arrayLayerState) {
-              return arrayLayerState.layer === layerState.layer;
-            }),
-            'A layer can only be added to the map once. Use either `layer.setMap()` or `map.addLayer()`, not both.',
-          );
-          layerStatesArray.push(layerState);
-        },
+        this.handlePrecompose_,
+        this,
       );
       this.mapRenderKey_ = listen(this, EventType.CHANGE, map.render, map);
       this.changed();
     }
+  }
+
+  /**
+   * @param {import("../events/Event.js").default} renderEvent Render event
+   * @private
+   */
+  handlePrecompose_(renderEvent) {
+    const layerStatesArray =
+      /** @type {import("../render/Event.js").default} */ (renderEvent)
+        .frameState.layerStatesArray;
+    const layerState = this.getLayerState(false);
+    assert(
+      !layerStatesArray.some(
+        (arrayLayerState) => arrayLayerState.layer === layerState.layer,
+      ),
+      'A layer can only be added to the map once. Use either `layer.setMap()` or `map.addLayer()`, not both.',
+    );
+    layerStatesArray.push(layerState);
   }
 
   /**

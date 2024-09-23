@@ -1573,6 +1573,16 @@ describe('ol/View', function () {
       expect(view.getResolutionForZoom(5)).to.be(2);
     });
 
+    it('returns correct zoom levels for views with a single configured resolution', () => {
+      const view = new View({
+        resolutions: [10],
+      });
+
+      expect(view.getResolutionForZoom(-1)).to.be(10);
+      expect(view.getResolutionForZoom(0)).to.be(10);
+      expect(view.getResolutionForZoom(5)).to.be(10);
+    });
+
     it('returns correct zoom levels for resolutions with variable zoom levels', function () {
       const view = new View({
         resolutions: [50, 10, 5, 2.5, 1.25, 0.625],

@@ -5,7 +5,6 @@ import Map from '../../../../../src/ol/Map.js';
 import TileLayer from '../../../../../src/ol/layer/Tile.js';
 import View from '../../../../../src/ol/View.js';
 import XYZ from '../../../../../src/ol/source/XYZ.js';
-import {fromKey} from '../../../../../src/ol/tilecoord.js';
 
 describe('ol/renderer/Layer', function () {
   let layer, renderer;
@@ -103,7 +102,7 @@ describe('ol/renderer/Layer', function () {
   });
 
   describe('manageTilePyramid behavior', function () {
-    let target, map, view, source;
+    let target, map, view, layer, source, spy;
 
     beforeEach(function (done) {
       target = document.createElement('div');
@@ -125,15 +124,15 @@ describe('ol/renderer/Layer', function () {
       source = new XYZ({
         url: '#{x}/{y}/{z}',
       });
+      spy = sinon.spy(source, 'getTile');
+      layer = new TileLayer({
+        source: source,
+      });
 
       map = new Map({
         target: target,
         view: view,
-        layers: [
-          new TileLayer({
-            source: source,
-          }),
-        ],
+        layers: [layer],
       });
       map.once('postrender', function () {
         done();
@@ -141,20 +140,19 @@ describe('ol/renderer/Layer', function () {
     });
 
     afterEach(function () {
+      source.getTile.restore();
       disposeMap(map);
     });
 
     it('accesses tiles from current zoom level last', function (done) {
       // expect most recent tile in the cache to be from zoom level 0
-      const key = source.tileCache.peekFirstKey();
-      const tileCoord = fromKey(key);
-      expect(tileCoord[0]).to.be(0);
+      const z = spy.lastCall.args[0];
+      expect(z).to.be(0);
 
       map.once('moveend', function () {
         // expect most recent tile in the cache to be from zoom level 4
-        const key = source.tileCache.peekFirstKey();
-        const tileCoord = fromKey(key);
-        expect(tileCoord[0]).to.be(4);
+        const z = spy.lastCall.args[0];
+        expect(z).to.be(4);
         done();
       });
       view.setZoom(4);
