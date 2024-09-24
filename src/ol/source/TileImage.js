@@ -4,11 +4,9 @@
 import EventType from '../events/EventType.js';
 import ImageTile from '../ImageTile.js';
 import ReprojTile from '../reproj/Tile.js';
-import TileCache from '../TileCache.js';
 import TileState from '../TileState.js';
 import UrlTile from './UrlTile.js';
 import {equivalent, get as getProjection} from '../proj.js';
-import {getKey} from '../tilecoord.js';
 import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
 import {getUid} from '../util.js';
 
@@ -106,12 +104,6 @@ class TileImage extends UrlTile {
 
     /**
      * @protected
-     * @type {!Object<string, TileCache>}
-     */
-    this.tileCacheForProjection = {};
-
-    /**
-     * @protected
      * @type {!Object<string, import("../tilegrid/TileGrid.js").default>}
      */
     this.tileGridForProjection = {};
@@ -127,34 +119,6 @@ class TileImage extends UrlTile {
      * @type {boolean}
      */
     this.renderReprojectionEdges_ = false;
-  }
-
-  /**
-   * @return {boolean} Can expire cache.
-   * @override
-   */
-  canExpireCache() {
-    for (const key in this.tileCacheForProjection) {
-      if (this.tileCacheForProjection[key].canExpireCache()) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @param {!Object<string, boolean>} usedTiles Used tiles.
-   * @override
-   */
-  expireCache(projection, usedTiles) {
-    const usedTileCache = this.getTileCacheForProjection(projection);
-
-    for (const id in this.tileCacheForProjection) {
-      const tileCache = this.tileCacheForProjection[id];
-      tileCache.expireCache(tileCache == usedTileCache ? usedTiles : {});
-    }
   }
 
   /**
@@ -209,23 +173,6 @@ class TileImage extends UrlTile {
         getTileGridForProjection(projection);
     }
     return this.tileGridForProjection[projKey];
-  }
-
-  /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {import("../TileCache.js").default} Tile cache.
-   * @override
-   */
-  getTileCacheForProjection(projection) {
-    const thisProj = this.getProjection();
-    if (!thisProj || equivalent(thisProj, projection)) {
-      return super.getTileCacheForProjection(projection);
-    }
-    const projKey = getUid(projection);
-    if (!(projKey in this.tileCacheForProjection)) {
-      this.tileCacheForProjection[projKey] = new TileCache(512);
-    }
-    return this.tileCacheForProjection[projKey];
   }
 
   /**
@@ -284,24 +231,15 @@ class TileImage extends UrlTile {
         sourceProjection || projection,
       );
     }
-    const cache = this.getTileCacheForProjection(projection);
     const tileCoord = [z, x, y];
-    let tile;
-    const tileCoordKey = getKey(tileCoord);
-    if (cache.containsKey(tileCoordKey)) {
-      tile = cache.get(tileCoordKey);
-    }
     const key = this.getKey();
-    if (tile && tile.key == key) {
-      return tile;
-    }
     const sourceTileGrid = this.getTileGridForProjection(sourceProjection);
     const targetTileGrid = this.getTileGridForProjection(projection);
     const wrappedTileCoord = this.getTileCoordForTileUrlFunction(
       tileCoord,
       projection,
     );
-    const newTile = new ReprojTile(
+    const tile = new ReprojTile(
       sourceProjection,
       sourceTileGrid,
       projection,
@@ -316,14 +254,8 @@ class TileImage extends UrlTile {
       this.renderReprojectionEdges_,
       this.tileOptions,
     );
-    newTile.key = key;
-
-    if (tile) {
-      cache.replace(tileCoordKey, newTile);
-    } else {
-      cache.set(tileCoordKey, newTile);
-    }
-    return newTile;
+    tile.key = key;
+    return tile;
   }
 
   /**
@@ -350,9 +282,6 @@ class TileImage extends UrlTile {
       return;
     }
     this.renderReprojectionEdges_ = render;
-    for (const id in this.tileCacheForProjection) {
-      this.tileCacheForProjection[id].clear();
-    }
     this.changed();
   }
 
@@ -375,16 +304,6 @@ class TileImage extends UrlTile {
       if (!(projKey in this.tileGridForProjection)) {
         this.tileGridForProjection[projKey] = tilegrid;
       }
-    }
-  }
-
-  /**
-   * @override
-   */
-  clear() {
-    super.clear();
-    for (const id in this.tileCacheForProjection) {
-      this.tileCacheForProjection[id].clear();
     }
   }
 }

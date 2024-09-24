@@ -616,17 +616,6 @@ describe('ol/layer/WebGLTile', function () {
     map.render();
   });
 
-  it('tries to expire the source tile cache', (done) => {
-    const source = layer.getSource();
-    const expire = sinon.spy(source, 'expireCache');
-
-    layer.updateStyleVariables({r: 1, g: 2, b: 3});
-    map.once('rendercomplete', () => {
-      expect(expire.called).to.be(true);
-      done();
-    });
-  });
-
   it('throws on incorrect style configs', function () {
     function incorrectStyle() {
       layer.style_ = {
