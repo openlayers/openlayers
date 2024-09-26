@@ -43,19 +43,6 @@ describe('ol/source/TileImage', function () {
     });
   });
 
-  describe('#getTileCacheForProjection', function () {
-    it('uses 512 as cache size', function () {
-      const source = createSource(undefined, undefined);
-      const tileCache = source.getTileCacheForProjection(
-        getProjection('EPSG:4326'),
-      );
-      expect(tileCache.highWaterMark).to.be(512);
-      expect(tileCache).to.not.equal(
-        source.getTileCacheForProjection(source.getProjection()),
-      );
-    });
-  });
-
   describe('#setTileGridForProjection', function () {
     it('uses the tilegrid for given projection', function () {
       const source = createSource();
@@ -65,23 +52,6 @@ describe('ol/source/TileImage', function () {
         getProjection('EPSG:4326'),
       );
       expect(retrieved).to.be(tileGrid);
-    });
-  });
-
-  describe('#refresh', function () {
-    it('refreshes the source when raster reprojection is used', function () {
-      const source = createSource();
-      let loaded = 0;
-      source.setTileLoadFunction(() => ++loaded);
-      source.getTile(0, 0, 0, 1, getProjection('EPSG:4326')).load();
-      expect(loaded).to.be(16384);
-      source.getTile(0, 0, 0, 1, getProjection('EPSG:4326')).load();
-      expect(loaded).to.be(16384);
-      const revision = source.getRevision();
-      source.refresh();
-      expect(source.getRevision()).to.be(revision + 1);
-      source.getTile(0, 0, 0, 1, getProjection('EPSG:4326')).load();
-      expect(loaded).to.be(16384 * 2);
     });
   });
 

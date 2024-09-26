@@ -97,7 +97,6 @@ describe('ol/renderer/webgl/TileLayer', function () {
     expect(rendered).to.be.a(HTMLCanvasElement);
     expect(frameState.tileQueue.getCount()).to.be(1);
     expect(Object.keys(frameState.wantedTiles).length).to.be(1);
-    expect(frameState.postRenderFunctions.length).to.be(1); // clear source cache (use renderer cache)
     expect(renderer.tileRepresentationCache.count_).to.be(1);
   });
 

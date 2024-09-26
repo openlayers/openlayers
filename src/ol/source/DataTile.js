@@ -4,7 +4,6 @@
 import DataTile from '../DataTile.js';
 import EventType from '../events/EventType.js';
 import ReprojDataTile from '../reproj/DataTile.js';
-import TileCache from '../TileCache.js';
 import TileEventType from './TileEventType.js';
 import TileSource, {TileSourceEvent} from './Tile.js';
 import TileState from '../TileState.js';
@@ -14,7 +13,6 @@ import {
   getForProjection as getTileGridForProjection,
 } from '../tilegrid.js';
 import {equivalent, get as getProjection} from '../proj.js';
-import {getKeyZXY} from '../tilecoord.js';
 import {getUid} from '../util.js';
 import {toPromise} from '../functions.js';
 import {toSize} from '../size.js';
@@ -152,12 +150,6 @@ class DataTileSource extends TileSource {
 
     /**
      * @private
-     * @type {!Object<string, import("../TileCache.js").default>}
-     */
-    this.tileCacheForProjection_ = {};
-
-    /**
-     * @private
      * @type {CrossOriginAttribute}
      */
     this.crossOrigin_ = options.crossOrigin || 'anonymous';
@@ -222,15 +214,6 @@ class DataTileSource extends TileSource {
    * @return {!TileType} Tile.
    */
   getReprojTile_(z, x, y, targetProj, sourceProj) {
-    const cache = this.getTileCacheForProjection(targetProj);
-    const tileCoordKey = getKeyZXY(z, x, y);
-    if (cache.containsKey(tileCoordKey)) {
-      const tile = cache.get(tileCoordKey);
-      if (tile && tile.key == this.getKey()) {
-        return tile;
-      }
-    }
-
     const tileGrid = this.getTileGrid();
     const reprojTilePixelRatio = Math.max.apply(
       null,
@@ -267,11 +250,11 @@ class DataTileSource extends TileSource {
       },
       /** @type {import("../reproj/DataTile.js").Options} */ (this.tileOptions),
     );
-    const newTile = /** @type {TileType} */ (
+    const tile = /** @type {TileType} */ (
       /** @type {*} */ (new ReprojDataTile(options))
     );
-    newTile.key = this.getKey();
-    return newTile;
+    tile.key = this.getKey();
+    return tile;
   }
 
   /**
@@ -407,48 +390,6 @@ class DataTileSource extends TileSource {
       if (!(projKey in this.tileGridForProjection_)) {
         this.tileGridForProjection_[projKey] = tilegrid;
       }
-    }
-  }
-
-  /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {import("../TileCache.js").default} Tile cache.
-   * @override
-   */
-  getTileCacheForProjection(projection) {
-    const thisProj = this.getProjection();
-    if (!thisProj || equivalent(thisProj, projection)) {
-      return super.getTileCacheForProjection(projection);
-    }
-
-    const projKey = getUid(projection);
-    if (!(projKey in this.tileCacheForProjection_)) {
-      this.tileCacheForProjection_[projKey] = new TileCache(0.1); // don't cache
-    }
-    return this.tileCacheForProjection_[projKey];
-  }
-
-  /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @param {!Object<string, boolean>} usedTiles Used tiles.
-   * @override
-   */
-  expireCache(projection, usedTiles) {
-    const usedTileCache = this.getTileCacheForProjection(projection);
-
-    for (const id in this.tileCacheForProjection_) {
-      const tileCache = this.tileCacheForProjection_[id];
-      tileCache.expireCache(tileCache == usedTileCache ? usedTiles : {});
-    }
-  }
-
-  /**
-   * @override
-   */
-  clear() {
-    super.clear();
-    for (const id in this.tileCacheForProjection_) {
-      this.tileCacheForProjection_[id].clear();
     }
   }
 }
