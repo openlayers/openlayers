@@ -3,6 +3,7 @@ import GeoJSON from '../src/ol/format/GeoJSON.js';
 import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
+import monotoneChainConvexHull from 'monotone-chain-convex-hull';
 import {
   Circle as CircleStyle,
   Fill,

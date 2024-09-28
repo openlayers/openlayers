@@ -9,7 +9,6 @@
     "gifler": false,
     "GyroNorm": false,
     "mapboxgl": false,
-    "monotoneChainConvexHull": false,
     "NumpyLoader": false,
     "saveAs": false,
     "toastr": false,

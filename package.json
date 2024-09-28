@@ -109,6 +109,7 @@
     "marked": "14.1.2",
     "metalsmith": "^2.5.0",
     "mocha": "10.7.3",
+    "monotone-chain-convex-hull": "^1.1.0",
     "ol-mapbox-style": "^12.3.1",
     "ol-stac": "^1.0.0-beta.8",
     "pixelmatch": "^6.0.0",
