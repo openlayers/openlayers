@@ -5,14 +5,12 @@
     "bootstrap": false,
     "common": false,
     "createMapboxStreetsV6Style": false,
-    "d3": false,
     "gifler": false,
     "GyroNorm": false,
     "mapboxgl": false,
     "NumpyLoader": false,
     "saveAs": false,
     "toastr": false,
-    "topojson": false,
     "topolis": false
   },
   "rules": {
