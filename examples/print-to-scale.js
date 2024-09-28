@@ -3,6 +3,8 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
 import WMTS, {optionsFromCapabilities} from '../src/ol/source/WMTS.js';
 import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import proj4 from 'proj4';
 import {ScaleLine, defaults as defaultControls} from '../src/ol/control.js';
 import {getPointResolution, get as getProjection} from '../src/ol/proj.js';
@@ -110,7 +112,7 @@ exportButton.addEventListener(
       exportOptions.width = width;
       exportOptions.height = height;
       html2canvas(map.getViewport(), exportOptions).then(function (canvas) {
-        const pdf = new jspdf.jsPDF('landscape', undefined, format);
+        const pdf = new jsPDF('landscape', undefined, format);
         pdf.addImage(
           canvas.toDataURL('image/jpeg'),
           'JPEG',
