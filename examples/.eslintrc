@@ -3,7 +3,6 @@
     "$": false,
     "arc": false,
     "bootstrap": false,
-    "chroma": false,
     "common": false,
     "createMapboxStreetsV6Style": false,
     "d3": false,
