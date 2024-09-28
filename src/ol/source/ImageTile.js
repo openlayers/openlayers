@@ -44,6 +44,9 @@ import {expandUrl, pickUrl, renderXYZTemplate} from '../uri.js';
  * @property {number} [transition] Transition time when fading in new tiles (in miliseconds).
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.
  * @property {import('./DataTile.js').CrossOriginAttribute} [crossOrigin='anonymous'] The crossOrigin property to pass to loaders for image data.
+ * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
+ * Choose whether to use tiles with a higher or lower zoom level when between integer
+ * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
  */
 
 const loadError = new Error('Image failed to load');
@@ -186,6 +189,7 @@ class ImageTileSource extends DataTileSource {
       transition: options.transition,
       interpolate: options.interpolate !== false,
       crossOrigin: options.crossOrigin,
+      zDirection: options.zDirection,
     });
   }
 
