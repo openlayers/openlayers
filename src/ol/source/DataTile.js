@@ -60,6 +60,9 @@ import {toSize} from '../size.js';
  * the nearest neighbor is used when resampling.
  * @property {CrossOriginAttribute} [crossOrigin='anonymous'] The crossOrigin property to pass to loaders for image data.
  * @property {string} [key] Key for use in caching tiles.
+ * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
+ * Choose whether to use tiles with a higher or lower zoom level when between integer
+ * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
  */
 
 /**
@@ -101,6 +104,7 @@ class DataTileSource extends TileSource {
       transition: options.transition,
       interpolate: options.interpolate,
       key: options.key,
+      zDirection: options.zDirection,
     });
 
     /**
