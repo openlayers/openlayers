@@ -98,6 +98,7 @@
     "jspdf": "^2.5.2",
     "jstransformer-handlebars": "^1.2.0",
     "jsts": "^2.11.3",
+    "jszip": "^2.7.0",
     "karma": "^6.3.8",
     "karma-chrome-launcher": "^3.1.0",
     "karma-firefox-launcher": "^2.1.2",

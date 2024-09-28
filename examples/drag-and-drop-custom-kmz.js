@@ -1,3 +1,4 @@
+import JSZip from 'jszip';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {
@@ -91,14 +92,11 @@ dragAndDropInteraction.on('addfeatures', function (event) {
 });
 
 const displayFeatureInfo = function (pixel) {
-  const features = [];
-  map.forEachFeatureAtPixel(pixel, function (feature) {
-    features.push(feature);
-  });
+  const features = map.getFeaturesAtPixel(pixel);
+  let html;
   if (features.length > 0) {
     const info = [];
-    let i, ii;
-    for (i = 0, ii = features.length; i < ii; ++i) {
+    for (let i = 0, ii = features.length; i < ii; ++i) {
       const description =
         features[i].get('description') ||
         features[i].get('name') ||
@@ -108,10 +106,9 @@ const displayFeatureInfo = function (pixel) {
         info.push(description);
       }
     }
-    document.getElementById('info').innerHTML = info.join('<br/>') || '&nbsp';
-  } else {
-    document.getElementById('info').innerHTML = '&nbsp;';
+    html = info.join('<br/>');
   }
+  document.getElementById('info').innerHTML = html ?? '';
 };
 
 map.on('pointermove', function (evt) {
@@ -132,9 +129,7 @@ const link = document.getElementById('download');
 
 function download(fullpath, filename) {
   fetch(fullpath)
-    .then(function (response) {
-      return response.blob();
-    })
+    .then((response) => response.blob())
     .then(function (blob) {
       link.href = URL.createObjectURL(blob);
       link.download = filename;
