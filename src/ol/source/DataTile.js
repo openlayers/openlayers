@@ -302,6 +302,10 @@ class DataTileSource extends TileSource {
     const requestZ = tileCoord[0];
     const requestX = tileCoord[1];
     const requestY = tileCoord[2];
+    const range = this.getTileGrid()?.getFullTileRange(requestZ);
+    if (range) {
+      loaderOptions.maxY = range.getHeight() - 1;
+    }
     function loader() {
       return toPromise(function () {
         return sourceLoader(requestZ, requestX, requestY, loaderOptions);
