@@ -64,6 +64,8 @@
     "@rollup/plugin-commonjs": "^26.0.1",
     "@rollup/plugin-node-resolve": "^15.0.0",
     "@rollup/plugin-terser": "^0.4.3",
+    "@turf/along": "^7.1.0",
+    "@turf/length": "^7.1.0",
     "@types/arcgis-rest-api": "^10.4.4",
     "@types/expect.js": "^0.3.32",
     "@types/geojson": "^7946.0.7",
