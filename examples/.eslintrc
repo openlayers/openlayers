@@ -6,7 +6,6 @@
     "common": false,
     "createMapboxStreetsV6Style": false,
     "d3": false,
-    "geojsonvt": false,
     "gifler": false,
     "GyroNorm": false,
     "html2canvas": false,
