@@ -1,50 +1,51 @@
-import * as mat4 from './vec/mat4.js';
+import * as mat4 from '../vec/mat4.js';
 
 /**
- * @module ol/WebGLCanvas
+ * @module ol/webgl/Canvas
  */
 
 const VERTEX_SHADER = `
-    attribute vec4 a_position;
-    attribute vec4 a_texcoord;
+  attribute vec4 a_position;
+  attribute vec4 a_texcoord;
 
-    uniform mat4 u_matrix;
-    uniform mat4 u_textureMatrix;
+  uniform mat4 u_matrix;
+  uniform mat4 u_textureMatrix;
 
-    varying vec2 v_texcoord;
+  varying vec2 v_texcoord;
 
-    void main() {
-       gl_Position = u_matrix * a_position;
-       vec2 texcoord = (u_textureMatrix * a_texcoord).xy;
-       v_texcoord = texcoord;
-    }
+  void main() {
+    gl_Position = u_matrix * a_position;
+    vec2 texcoord = (u_textureMatrix * a_texcoord).xy;
+    v_texcoord = texcoord;
+  }
 `;
+
 const FRAGMENT_SHADER = `
-    precision mediump float;
+  precision mediump float;
 
-    varying vec2 v_texcoord;
+  varying vec2 v_texcoord;
 
-    uniform sampler2D u_texture;
+  uniform sampler2D u_texture;
 
-    void main() {
-       if (
-           v_texcoord.x < 0.0 ||
-           v_texcoord.y < 0.0 ||
-           v_texcoord.x > 1.0 ||
-           v_texcoord.y > 1.0
-       ) {
-         discard;
-       }
-       gl_FragColor = texture2D(u_texture, v_texcoord);
+  void main() {
+    if (
+      v_texcoord.x < 0.0 ||
+      v_texcoord.y < 0.0 ||
+      v_texcoord.x > 1.0 ||
+      v_texcoord.y > 1.0
+    ) {
+      discard;
     }
+    gl_FragColor = texture2D(u_texture, v_texcoord);
+  }
 `;
 
-/** @typedef {import("./transform.js").Transform} Matrix */
+/** @typedef {import("../transform.js").Transform} Matrix */
 
 /**
  * Canvas-like operations implemented in webgl.
  */
-export class WebGLCanvas {
+export class Canvas {
   /**
    * @param {WebGLRenderingContext} gl Context to render in.
    */

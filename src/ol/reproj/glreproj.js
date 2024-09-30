@@ -3,7 +3,7 @@
  */
 import * as mat4 from '../vec/mat4.js';
 import {WORKER_OFFSCREEN_CANVAS} from '../has.js';
-import {WebGLCanvas, createProgram} from '../WebGLCanvas.js';
+import {Canvas as WebGLCanvas, createProgram} from '../webgl/Canvas.js';
 import {
   createEmpty,
   extend,
