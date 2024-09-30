@@ -1184,6 +1184,14 @@ class VectorSource extends Source {
     this.url_ = url;
     this.setLoader(xhr(url, this.format_));
   }
+
+  /**
+   * @param {boolean} overlaps The source can have overlapping geometries.
+   */
+  setOverlaps(overlaps) {
+    this.overlaps_ = overlaps;
+    this.changed();
+  }
 }
 
 export default VectorSource;
