@@ -45,7 +45,7 @@ new Map({
           labelContext.fillText(`y: ${y}`, half, half + labelLineHeight);
 
           labelContext.strokeStyle = 'white';
-          labelContext.lineWidth = 2;
+          labelContext.lineWidth = 10;
           labelContext.strokeRect(0, 0, labelCanvasSize, labelCanvasSize);
 
           const data = labelContext.getImageData(
