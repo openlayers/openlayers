@@ -455,6 +455,7 @@ class ReprojDataTile extends DataTile {
 
         sources.push({
           extent: dataSource.extent,
+          clipExtent: dataSource.clipExtent,
           texture: texture,
           width: width,
           height: height,
