@@ -1,4 +1,3 @@
-import JSZip from 'jszip';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {
@@ -8,31 +7,32 @@ import {
 import {GPX, GeoJSON, IGC, KML, TopoJSON} from '../src/ol/format.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import {unzipSync} from 'fflate';
 
 // Create functions to extract KML and icons from KMZ array buffer,
 // which must be done synchronously.
 
-const zip = new JSZip();
+let zip;
 
 function getKMLData(buffer) {
-  let kmlData;
-  zip.load(buffer);
-  const kmlFile = zip.file(/\.kml$/i)[0];
-  if (kmlFile) {
-    kmlData = kmlFile.asText();
+  zip = unzipSync(new Uint8Array(buffer));
+  const kml = Object.keys(zip).find((key) => /\.kml$/i.test(key));
+  if (!(kml in zip)) {
+    return null;
   }
-  return kmlData;
+  return new TextDecoder().decode(zip[kml]);
 }
 
 function getKMLImage(href) {
   const index = window.location.href.lastIndexOf('/');
-  if (index !== -1) {
-    const kmlFile = zip.file(href.slice(index + 1));
-    if (kmlFile) {
-      return URL.createObjectURL(new Blob([kmlFile.asArrayBuffer()]));
-    }
+  if (index === -1) {
+    return href;
   }
-  return href;
+  const image = href.slice(index + 1);
+  if (!(image in zip)) {
+    return href;
+  }
+  return URL.createObjectURL(new Blob([zip[image]]));
 }
 
 // Define a KMZ format class by subclassing ol/format/KML
