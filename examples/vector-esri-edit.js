@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import EsriJSON from '../src/ol/format/EsriJSON.js';
 import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';

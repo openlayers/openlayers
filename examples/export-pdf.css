@@ -1,3 +1,6 @@
 .map {
   max-width: 566px;
 }
+#export-pdf {
+  margin-top: 10px;
+}

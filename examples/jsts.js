@@ -1,6 +1,8 @@
+import BufferOp from 'jsts/org/locationtech/jts/operation/buffer/BufferOp.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import LinearRing from '../src/ol/geom/LinearRing.js';
 import Map from '../src/ol/Map.js';
+import OL3Parser from 'jsts/org/locationtech/jts/io/OL3Parser.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
@@ -26,7 +28,7 @@ fetch('data/geojson/roads-seoul.geojson')
       featureProjection: 'EPSG:3857',
     });
 
-    const parser = new jsts.io.OL3Parser();
+    const parser = new OL3Parser();
     parser.inject(
       Point,
       LineString,
@@ -43,7 +45,7 @@ fetch('data/geojson/roads-seoul.geojson')
       const jstsGeom = parser.read(feature.getGeometry());
 
       // create a buffer of 40 meters around each line
-      const buffered = jstsGeom.buffer(40);
+      const buffered = BufferOp.bufferOp(jstsGeom, 40);
 
       // convert back from JSTS and replace the geometry on the feature
       feature.setGeometry(parser.write(buffered));
