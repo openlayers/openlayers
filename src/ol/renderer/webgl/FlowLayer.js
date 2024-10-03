@@ -448,8 +448,8 @@ class FlowLayerRenderer extends WebGLTileLayerRenderer {
     );
 
     const rotation = this.tempVec2_;
-    rotation[0] = Math.cos(frameState.viewState.rotation);
-    rotation[1] = Math.sin(frameState.viewState.rotation);
+    rotation[0] = Math.cos(-frameState.viewState.rotation);
+    rotation[1] = Math.sin(-frameState.viewState.rotation);
     this.helper.setUniformFloatVec2(U.ROTATION, rotation);
 
     this.helper.setUniformFloatValue(U.MAX_SPEED, this.maxSpeed_);
@@ -478,8 +478,8 @@ class FlowLayerRenderer extends WebGLTileLayerRenderer {
     helper.setUniformFloatValue(U.DROP_RATE_BUMP, this.dropRateBump_);
 
     const rotation = this.tempVec2_;
-    rotation[0] = Math.cos(frameState.viewState.rotation);
-    rotation[1] = Math.sin(frameState.viewState.rotation);
+    rotation[0] = Math.cos(-frameState.viewState.rotation);
+    rotation[1] = Math.sin(-frameState.viewState.rotation);
     this.helper.setUniformFloatVec2(U.ROTATION, rotation);
 
     const size = frameState.size;
