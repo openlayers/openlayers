@@ -856,6 +856,9 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
      */
     const postRenderFunction = (map, frameState) => {
       const tileSourceKey = getUid(tileSource);
+      if (!frameState.wantedTiles)) {
+        return;
+      }
       const wantedTiles = frameState.wantedTiles[tileSourceKey];
       const tilesCount = wantedTiles ? Object.keys(wantedTiles).length : 0;
       this.updateCacheSize(tilesCount);
