@@ -108,6 +108,7 @@ export const canvasGLPool = [];
 /**
  * @typedef {Object} ImageExtent
  * @property {import("../extent.js").Extent} extent Extent.
+ * @property {import("../extent.js").Extent} [clipExtent] Clip extent.
  * @property {WebGLTexture} texture Texture.
  * @property {number} width Width of texture.
  * @property {number} height Height of texture.
@@ -130,6 +131,7 @@ export const canvasGLPool = [];
  * TODO: Allow setting renderEdges value in the data as this is done in "data-space".
  * @param {boolean | Array<number>} [renderEdges] Render reprojection edges.
  * @param {boolean} [interpolate] Use linear interpolation when resampling.
+ * @param {boolean} [drawSingle] Draw single source images directly without stitchTexture.
  * @return {{framebuffer: WebGLFramebuffer, width: number, height: number, texture: WebGLTexture}} Canvas with reprojected data.
  */
 export function render(
@@ -146,6 +148,7 @@ export function render(
   dataType,
   renderEdges,
   interpolate,
+  drawSingle,
 ) {
   const width = Math.round(pixelRatio * width_);
   const height = Math.round(pixelRatio * height_);
@@ -221,7 +224,7 @@ export function render(
   let stitchHeight;
   const stitchScale = 1 / sourceResolution;
 
-  if (sources.length !== 1 || gutter !== 0) {
+  if (!drawSingle || sources.length !== 1 || gutter !== 0) {
     stitchTexture = gl.createTexture();
     if (resultTexture === null) {
       throw new Error('Could not create texture');
@@ -281,6 +284,24 @@ export function render(
       gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
       gl.viewport(0, 0, stitchWidthFixed, stitchHeightFixed);
 
+      if (src.clipExtent) {
+        const xPos =
+          (src.clipExtent[0] - sourceDataExtent[0]) * stitchScale * scaleFactor;
+        const yPos =
+          -(src.clipExtent[3] - sourceDataExtent[3]) *
+          stitchScale *
+          scaleFactor;
+        const width = getWidth(src.clipExtent) * stitchScale * scaleFactor;
+        const height = getHeight(src.clipExtent) * stitchScale * scaleFactor;
+        gl.enable(gl.SCISSOR_TEST);
+        gl.scissor(
+          interpolate ? xPos : Math.round(xPos),
+          interpolate ? yPos : Math.round(yPos),
+          interpolate ? width : Math.round(xPos + width) - Math.round(xPos),
+          interpolate ? height : Math.round(yPos + height) - Math.round(yPos),
+        );
+      }
+
       webGLCanvas.drawImage(
         src.texture,
         src.width,
@@ -298,6 +319,8 @@ export function render(
         stitchWidthFixed,
         stitchHeightFixed,
       );
+
+      gl.disable(gl.SCISSOR_TEST);
     });
     gl.deleteFramebuffer(fb);
   } else {
