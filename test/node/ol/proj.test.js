@@ -19,6 +19,7 @@ import {
   get as getProjection,
   getTransform,
   getTransformFromProjections,
+  getTransformFromProjectionsAndMatrix,
   getUserProjection,
   setUserProjection,
   toLonLat,
@@ -29,7 +30,14 @@ import {
   transformExtent,
   useGeographic,
 } from '../../../src/ol/proj.js';
+import {fromExtent} from '../../../src/ol/geom/Polygon.js';
+import {getCenter, getHeight, getWidth} from '../../../src/ol/extent.js';
 import {METERS_PER_UNIT as metersPerDegree} from '../../../src/ol/proj/epsg4326.js';
+import {
+  multiply as multiplyMatrix,
+  rotate as rotateMatrix,
+  scale as scaleMatrix,
+} from '../../../src/ol/transform.js';
 import {register} from '../../../src/ol/proj/proj4.js';
 
 describe('ol/proj.js', function () {
@@ -683,6 +691,113 @@ describe('ol/proj.js', function () {
       expect(output[1]).to.roughlyEqual(40.91627447067577, 1e-9);
       expect(output[2]).to.roughlyEqual(-107.79783409434258, 1e-9);
       expect(output[3]).to.roughlyEqual(40.91627447067577, 1e-9);
+    });
+  });
+
+  describe('ol.proj.getTransformFromProjectionsAndMatrix()', function () {
+    let matrix, geometry;
+    beforeEach(function () {
+      const extent = [
+        8.433995415151397, 46.65804355828784, 9.144871415151389,
+        46.77980155828784,
+      ];
+      const center = getCenter(extent);
+      const imageWidth = 400;
+      const imageHeight = 100;
+      const imageRotation = 30;
+      const scaleY =
+        getHeight(extent) / imageHeight / (getWidth(extent) / imageWidth);
+      matrix = multiplyMatrix(
+        scaleMatrix(
+          rotateMatrix(
+            [1, 0, 0, scaleY, center[0], center[1]],
+            (-imageRotation * Math.PI) / 180,
+          ),
+          1,
+          1 / scaleY,
+        ),
+        [1, 0, 0, 1, -center[0], -center[1]],
+      );
+      geometry = fromExtent(extent);
+      register(proj4);
+    });
+
+    it('returns a transform function for a matrix', function () {
+      const transform1 = getTransformFromProjectionsAndMatrix(matrix);
+      expect(typeof transform1).to.be('function');
+      geometry.applyTransform(transform1);
+      const output1 = geometry.getFlatCoordinates();
+      expect(output1[0]).to.roughlyEqual(8.526044827681062, 1e-9);
+      expect(output1[1]).to.roughlyEqual(46.54444179773083, 1e-9);
+      expect(output1[2]).to.roughlyEqual(8.437185327681064, 1e-9);
+      expect(output1[3]).to.roughlyEqual(46.649887318844826, 1e-9);
+      expect(output1[4]).to.roughlyEqual(9.052822002621724, 1e-9);
+      expect(output1[5]).to.roughlyEqual(46.89340331884484, 1e-9);
+      expect(output1[6]).to.roughlyEqual(9.141681502621722, 1e-9);
+      expect(output1[7]).to.roughlyEqual(46.78795779773085, 1e-9);
+      expect(output1[8]).to.roughlyEqual(8.526044827681062, 1e-9);
+      expect(output1[9]).to.roughlyEqual(46.54444179773083, 1e-9);
+
+      const transform2 = getTransformFromProjectionsAndMatrix(
+        null,
+        null,
+        null,
+        matrix,
+      );
+      expect(typeof transform2).to.be('function');
+      geometry.applyTransform(transform2);
+      const output2 = geometry.getFlatCoordinates();
+      expect(output2[0]).to.roughlyEqual(8.433995415151397, 1e-9);
+      expect(output2[1]).to.roughlyEqual(46.65804355828784, 1e-9);
+      expect(output2[2]).to.roughlyEqual(8.433995415151397, 1e-9);
+      expect(output2[3]).to.roughlyEqual(46.77980155828784, 1e-9);
+      expect(output2[4]).to.roughlyEqual(9.144871415151389, 1e-9);
+      expect(output2[5]).to.roughlyEqual(46.77980155828784, 1e-9);
+      expect(output2[6]).to.roughlyEqual(9.144871415151389, 1e-9);
+      expect(output2[7]).to.roughlyEqual(46.65804355828784, 1e-9);
+      expect(output2[8]).to.roughlyEqual(8.433995415151397, 1e-9);
+      expect(output2[9]).to.roughlyEqual(46.65804355828784, 1e-9);
+    });
+
+    it('returns a transform function for a matrix and projections', function () {
+      const transform1 = getTransformFromProjectionsAndMatrix(
+        matrix,
+        getProjection('EPSG:4326'),
+        getProjection('GOOGLE'),
+      );
+      expect(typeof transform1).to.be('function');
+      geometry.applyTransform(transform1);
+      const output1 = geometry.getFlatCoordinates();
+      expect(output1[0]).to.roughlyEqual(949114.9686980797, 1e-9);
+      expect(output1[1]).to.roughlyEqual(5868029.818843867, 1e-9);
+      expect(output1[2]).to.roughlyEqual(939223.1744059351, 1e-9);
+      expect(output1[3]).to.roughlyEqual(5885112.843437028, 1e-9);
+      expect(output1[4]).to.roughlyEqual(1007755.5355739935, 1e-9);
+      expect(output1[5]).to.roughlyEqual(5924692.104555517, 1e-9);
+      expect(output1[6]).to.roughlyEqual(1017647.329866138, 1e-9);
+      expect(output1[7]).to.roughlyEqual(5907531.807277691, 1e-9);
+      expect(output1[8]).to.roughlyEqual(949114.9686980797, 1e-9);
+      expect(output1[9]).to.roughlyEqual(5868029.818843867, 1e-9);
+
+      const transform2 = getTransformFromProjectionsAndMatrix(
+        null,
+        getProjection('GOOGLE'),
+        getProjection('EPSG:4326'),
+        matrix,
+      );
+      expect(typeof transform2).to.be('function');
+      geometry.applyTransform(transform2);
+      const output2 = geometry.getFlatCoordinates();
+      expect(output2[0]).to.roughlyEqual(8.433995415151397, 1e-9);
+      expect(output2[1]).to.roughlyEqual(46.65804355828784, 1e-9);
+      expect(output2[2]).to.roughlyEqual(8.433995415151397, 1e-9);
+      expect(output2[3]).to.roughlyEqual(46.77980155828784, 1e-9);
+      expect(output2[4]).to.roughlyEqual(9.144871415151389, 1e-9);
+      expect(output2[5]).to.roughlyEqual(46.77980155828784, 1e-9);
+      expect(output2[6]).to.roughlyEqual(9.144871415151389, 1e-9);
+      expect(output2[7]).to.roughlyEqual(46.65804355828784, 1e-9);
+      expect(output2[8]).to.roughlyEqual(8.433995415151397, 1e-9);
+      expect(output2[9]).to.roughlyEqual(46.65804355828784, 1e-9);
     });
   });
 
