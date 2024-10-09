@@ -1229,8 +1229,10 @@ class Map extends BaseObject {
     }
 
     const postRenderFunctions = this.postRenderFunctions_;
-    for (let i = 0, ii = postRenderFunctions.length; i < ii; ++i) {
-      postRenderFunctions[i](this, frameState);
+    if (frameState) {
+      for (let i = 0, ii = postRenderFunctions.length; i < ii; ++i) {
+        postRenderFunctions[i](this, frameState);
+      }
     }
     postRenderFunctions.length = 0;
   }
