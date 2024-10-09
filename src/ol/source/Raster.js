@@ -519,6 +519,7 @@ class RasterSource extends ImageSource {
   constructor(options) {
     super({
       projection: null,
+      resolutions: options.resolutions,
     });
 
     /***
@@ -747,7 +748,7 @@ class RasterSource extends ImageSource {
 
     this.tileQueue_.loadMoreTiles(16, 16);
 
-    resolution = this.findNearestResolution(resolution);
+    resolution = this.findNearestResolution(resolution, projection);
     const frameState = this.updateFrameState_(extent, resolution, projection);
     this.requestedFrameState_ = frameState;
 
