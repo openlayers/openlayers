@@ -11,6 +11,7 @@ import {
   disableCoordinateWarning,
   fromUserCoordinate,
   fromUserExtent,
+  getPlanarProjection,
   getUserProjection,
   toUserCoordinate,
   toUserExtent,
@@ -57,6 +58,8 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
  * @property {number} [targetResolution] Target resolution.
  * @property {number} [sourceRotation] Source rotation.
  * @property {number} [targetRotation] Target rotation.
+ * @property {number} [sourceTilt] Source tilt.
+ * @property {number} [targetTilt] Target tilt.
  * @property {import("./coordinate.js").Coordinate} [anchor] Anchor.
  * @property {number} start Start.
  * @property {number} duration Duration.
@@ -171,6 +174,7 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
  * `minResolution`, `minZoom`, `maxZoom`, and `zoomFactor` options are ignored.
  * @property {number} [rotation=0] The initial rotation for the view in radians
  * (positive rotation clockwise, 0 means North).
+ * @property {number} [tilt=0] The initial tilt for the view in radians.
  * @property {number} [zoom] Only used if `resolution` is not defined. Zoom
  * level used to calculate the initial resolution for the view.
  * @property {number} [zoomFactor=2] The zoom factor used to compute the
@@ -191,6 +195,7 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
  * of the animation.  If `zoom` is also provided, this option will be ignored.
  * @property {number} [rotation] The rotation of the view at the end of
  * the animation.
+ * @property {number} [tilt] The tilt of the view at the end of the animation.
  * @property {import("./coordinate.js").Coordinate} [anchor] Optional anchor to remain fixed
  * during a rotation or resolution animation.
  * @property {number} [duration=1000] The duration of the animation in milliseconds.
@@ -205,11 +210,15 @@ import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
  * @typedef {Object} State
  * @property {import("./coordinate.js").Coordinate} center Center (in view projection coordinates).
  * @property {import("./proj/Projection.js").default} projection Projection.
+ * @property {import("./proj/Projection.js").default} finalProjection Projection.
  * @property {number} resolution Resolution.
  * @property {import("./coordinate.js").Coordinate} [nextCenter] The next center during an animation series.
  * @property {number} [nextResolution] The next resolution during an animation series.
  * @property {number} [nextRotation] The next rotation during an animation series.
+ * @property {number} [nextTilt] The next tilt during an animation series.
  * @property {number} rotation Rotation.
+ * @property {number} tilt Tilt.
+ * @property {number} fov FOV.
  * @property {number} zoom Zoom.
  */
 
@@ -385,6 +394,12 @@ class View extends BaseObject {
 
     /**
      * @private
+     * @type {number|undefined}
+     */
+    this.targetTilt_;
+
+    /**
+     * @private
      * @type {import("./coordinate.js").Coordinate}
      */
     this.nextCenter_ = null;
@@ -411,10 +426,10 @@ class View extends BaseObject {
       disableCoordinateWarning();
     }
     if (options.center) {
-      options.center = fromUserCoordinate(options.center, this.projection_);
+      options.center = fromUserCoordinate(options.center, this.getProjection());
     }
     if (options.extent) {
-      options.extent = fromUserExtent(options.extent, this.projection_);
+      options.extent = fromUserExtent(options.extent, this.getProjection());
     }
 
     this.applyOptions_(options);
@@ -484,6 +499,7 @@ class View extends BaseObject {
     };
 
     this.setRotation(options.rotation !== undefined ? options.rotation : 0);
+    this.setTilt(options.tilt !== undefined ? options.tilt : 0);
     this.setCenterInternal(
       options.center !== undefined ? options.center : null,
     );
@@ -547,6 +563,9 @@ class View extends BaseObject {
 
     // preserve rotation
     options.rotation = this.getRotation();
+
+    // preserve tilt
+    options.tilt = this.getTilt();
 
     return Object.assign({}, options, newOptions);
   }
@@ -639,6 +658,9 @@ class View extends BaseObject {
       if (state.rotation !== undefined) {
         this.setRotation(state.rotation);
       }
+      if (state.tilt !== undefined) {
+        this.setTilt(state.tilt);
+      }
     }
     if (i === animationCount) {
       if (callback) {
@@ -651,6 +673,7 @@ class View extends BaseObject {
     let center = this.targetCenter_.slice();
     let resolution = this.targetResolution_;
     let rotation = this.targetRotation_;
+    let tilt = this.targetTilt_;
     const series = [];
     for (; i < animationCount; ++i) {
       const options = /** @type {AnimationOptions} */ (arguments[i]);
@@ -686,6 +709,12 @@ class View extends BaseObject {
           modulo(options.rotation - rotation + Math.PI, 2 * Math.PI) - Math.PI;
         animation.targetRotation = rotation + delta;
         rotation = animation.targetRotation;
+      }
+
+      if (options.tilt !== undefined) {
+        animation.sourceTilt = tilt;
+        animation.targetTilt = clamp(tilt, 0, Math.PI / 2);
+        tilt = animation.targetTilt;
       }
 
       // check if animation is a no-op
@@ -747,6 +776,7 @@ class View extends BaseObject {
     this.nextCenter_ = null;
     this.nextResolution_ = NaN;
     this.nextRotation_ = NaN;
+    this.nextTilt_ = NaN;
   }
 
   /**
@@ -838,6 +868,18 @@ class View extends BaseObject {
           this.nextRotation_ = animation.targetRotation;
           this.targetRotation_ = rotation;
         }
+        if (
+          animation.sourceTilt !== undefined &&
+          animation.targetTilt !== undefined
+        ) {
+          const tilt =
+            progress === 1
+              ? animation.targetTilt
+              : animation.sourceTilt +
+                progress * (animation.targetTilt - animation.sourceTilt);
+          this.nextTilt_ = animation.targetTilt;
+          this.targetTilt_ = tilt;
+        }
         this.applyTargetState_(true);
         more = true;
         if (!animation.complete) {
@@ -850,6 +892,7 @@ class View extends BaseObject {
         this.nextCenter_ = null;
         this.nextResolution_ = NaN;
         this.nextRotation_ = NaN;
+        this.nextTilt_ = NaN;
         const callback = series[0].callback;
         if (callback) {
           animationCallback(callback, true);
@@ -1093,6 +1136,15 @@ class View extends BaseObject {
    * @api
    */
   getProjection() {
+    return getPlanarProjection(this.projection_);
+  }
+
+  /**
+   * Get the view projection.
+   * @return {import("./proj/Projection.js").default} The projection of the view.
+   * @api
+   */
+  getFinalProjection() {
     return this.projection_;
   }
 
@@ -1179,6 +1231,16 @@ class View extends BaseObject {
   }
 
   /**
+   * Get the view tilt.
+   * @return {number} The tilt of the view in radians.
+   * @observable
+   * @api
+   */
+  getTilt() {
+    return /** @type {number} */ (this.get(ViewProperty.TILT));
+  }
+
+  /**
    * Return a function that returns a resolution for a value between
    * 0 and 1. Exponential scaling is assumed.
    * @param {number} [power] Power.
@@ -1224,8 +1286,10 @@ class View extends BaseObject {
    */
   getState() {
     const projection = this.getProjection();
+    const finalProjection = this.getFinalProjection();
     const resolution = this.getResolution();
     const rotation = this.getRotation();
+    const tilt = this.getTilt();
     let center = /** @type {import("./coordinate.js").Coordinate} */ (
       this.getCenterInternal()
     );
@@ -1243,12 +1307,16 @@ class View extends BaseObject {
     return {
       center: center.slice(0),
       projection: projection !== undefined ? projection : null,
+      finalProjection: finalProjection !== projection ? finalProjection : null,
       resolution: resolution,
       nextCenter: this.nextCenter_,
       nextResolution: this.nextResolution_,
       nextRotation: this.nextRotation_,
+      nextTilt: this.nextTilt_,
       rotation: rotation,
       zoom: this.getZoom(),
+      tilt: tilt,
+      fov: 10, // XXX: TODO:
     };
   }
 
@@ -1695,6 +1763,17 @@ class View extends BaseObject {
   }
 
   /**
+   * Set the tilt for this view. Any tilt constraint will apply.
+   * @param {number} tilt The tilt of the view in radians.
+   * @observable
+   * @api
+   */
+  setTilt(tilt) {
+    this.targetTilt_ = tilt;
+    this.applyTargetState_();
+  }
+
+  /**
    * Zoom to a specific zoom level. Any resolution constrain will apply.
    * @param {number} zoom Zoom level.
    * @api
@@ -1720,6 +1799,7 @@ class View extends BaseObject {
       this.targetRotation_,
       isMoving,
     );
+    const newTilt = this.targetTilt_;
     const size = this.getViewportSize_(newRotation);
     const newResolution = this.constraints_.resolution(
       this.targetResolution_,
@@ -1742,6 +1822,9 @@ class View extends BaseObject {
 
     if (this.get(ViewProperty.ROTATION) !== newRotation) {
       this.set(ViewProperty.ROTATION, newRotation);
+    }
+    if (this.get(ViewProperty.TILT) !== newTilt) {
+      this.set(ViewProperty.TILT, newTilt);
     }
     if (this.get(ViewProperty.RESOLUTION) !== newResolution) {
       this.set(ViewProperty.RESOLUTION, newResolution);
@@ -1774,6 +1857,7 @@ class View extends BaseObject {
     duration = duration !== undefined ? duration : 200;
     const direction = resolutionDirection || 0;
 
+    const newTilt = this.targetTilt_;
     const newRotation = this.constraints_.rotation(this.targetRotation_);
     const size = this.getViewportSize_(newRotation);
     const newResolution = this.constraints_.resolution(
@@ -1808,6 +1892,7 @@ class View extends BaseObject {
     if (
       this.getResolution() !== newResolution ||
       this.getRotation() !== newRotation ||
+      this.getTilt() !== newTilt ||
       !this.getCenterInternal() ||
       !equals(this.getCenterInternal(), newCenter)
     ) {
@@ -1817,6 +1902,7 @@ class View extends BaseObject {
 
       this.animateInternal({
         rotation: newRotation,
+        tilt: newTilt,
         center: newCenter,
         resolution: newResolution,
         duration: duration,
@@ -2127,6 +2213,9 @@ export function isNoopAnimation(animation) {
     return false;
   }
   if (animation.sourceRotation !== animation.targetRotation) {
+    return false;
+  }
+  if (animation.sourceTilt !== animation.targetTilt) {
     return false;
   }
   return true;

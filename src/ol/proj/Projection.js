@@ -20,6 +20,7 @@ import {METERS_PER_UNIT} from './Units.js';
  * `number` view resolution and a {@link module:ol/coordinate~Coordinate} as arguments, and returns
  * the `number` resolution in projection units at the passed coordinate. If this is `undefined`,
  * the default {@link module:ol/proj.getPointResolution} function will be used.
+ * @property {boolean} [subjective] Whether the projection is subjective.
  */
 
 /**
@@ -124,6 +125,8 @@ class Projection {
      * @type {number|undefined}
      */
     this.metersPerUnit_ = options.metersPerUnit;
+
+    this.subjective_ = !!options.subjective;
   }
 
   /**
@@ -265,6 +268,10 @@ class Projection {
    */
   getPointResolutionFunc() {
     return this.getPointResolutionFunc_;
+  }
+
+  isSubjective() {
+    return this.subjective_;
   }
 }
 
