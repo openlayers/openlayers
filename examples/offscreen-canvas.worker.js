@@ -173,6 +173,7 @@ worker.addEventListener('message', (event) => {
     layer.renderDeclutter(frameState, layer.getLayerState());
     layer.renderDeferred(frameState);
   });
+  frameState.postRenderFunctions.forEach((fn) => fn(null, frameState));
   if (tileQueue.getTilesLoading() < maxTotalLoading) {
     tileQueue.reprioritize();
     tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);
