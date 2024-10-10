@@ -319,6 +319,9 @@ class Layer extends BaseLayer {
       layerState = frameState.layerStatesArray.find(
         (layerState) => layerState.layer === this,
       );
+      if (!layerState) {
+        return false;
+      }
     } else {
       layerState = this.getLayerState();
     }
