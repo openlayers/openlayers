@@ -1,6 +1,7 @@
 /**
  * @module ol/reproj/Triangulation
  */
+import {apply as applyMatrix} from '../transform.js';
 import {
   boundingExtent,
   createEmpty,
@@ -13,7 +14,11 @@ import {
   getWidth,
   intersects,
 } from '../extent.js';
-import {getTransformFromProjectionsAndMatrix} from '../proj.js';
+import {
+  createTransformFromCoordinateTransform,
+  getTransform,
+  transform,
+} from '../proj.js';
 import {modulo} from '../math.js';
 
 /**
@@ -80,12 +85,14 @@ class Triangulation {
 
     /** @type {!Object<string, import("../coordinate.js").Coordinate>} */
     let transformInvCache = {};
-    const transformInv = getTransformFromProjectionsAndMatrix(
-      null,
-      this.targetProj_,
-      this.sourceProj_,
-      sourceMatrix,
-    );
+    const transformInv = sourceMatrix
+      ? createTransformFromCoordinateTransform((input) =>
+          applyMatrix(
+            sourceMatrix,
+            transform(input, this.targetProj_, this.sourceProj_),
+          ),
+        )
+      : getTransform(this.targetProj_, this.sourceProj_);
 
     /**
      * @param {import("../coordinate.js").Coordinate} c A coordinate.

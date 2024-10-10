@@ -12,15 +12,20 @@ import {
 } from 'geotiff';
 import {
   Projection,
+  createTransformFromCoordinateTransform,
   get as getCachedProjection,
-  getTransformFromProjectionsAndMatrix,
   toUserCoordinate,
   toUserExtent,
 } from '../proj.js';
+import {
+  apply as applyMatrix,
+  create as createMatrix,
+  makeInverse,
+  multiply as multiplyTransform,
+} from '../transform.js';
 import {applyTransform, getCenter, getIntersection} from '../extent.js';
 import {clamp} from '../math.js';
 import {error as logError} from '../console.js';
-import {multiply as multiplyTransform} from '../transform.js';
 import {fromCode as unitsFromCode} from '../proj/Units.js';
 
 /**
@@ -790,10 +795,14 @@ class GeoTIFFSource extends DataTile {
       resolutions = [resolutions[0] * 2, resolutions[0], resolutions[0] / 2];
     }
 
-    const transformFn = getTransformFromProjectionsAndMatrix(
-      this.transformMatrix,
-    );
-    const viewExtent = applyTransform(extent, transformFn);
+    let viewExtent = extent;
+    if (this.transformMatrix) {
+      const matrix = makeInverse(createMatrix(), this.transformMatrix.slice());
+      const transformFn = createTransformFromCoordinateTransform((input) =>
+        applyMatrix(matrix, input),
+      );
+      viewExtent = applyTransform(extent, transformFn);
+    }
 
     this.viewResolver({
       showFullExtent: true,

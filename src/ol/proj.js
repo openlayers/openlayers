@@ -71,7 +71,6 @@ import {
   clear as clearTransformFuncs,
   get as getTransformFunc,
 } from './proj/transforms.js';
-import {apply as applyMatrix, invert as invertMatrix} from './transform.js';
 import {applyTransform, getWidth} from './extent.js';
 import {clamp, modulo} from './math.js';
 import {equals, getWorldsAway} from './coordinate.js';
@@ -477,78 +476,6 @@ export function getTransformFromProjections(
     transformFunc = identityTransform;
   }
   return transformFunc;
-}
-
-/**
- * Searches in the list of transform functions for the function for converting
- * coordinates from the source projection to the destination projection and
- * combines with transforms for source or destination transform matrix
- *
- * @param {import("./transform.js").Transform} [sourceMatrix] Source matrix.
- * @param {Projection} [sourceProjection] Source Projection object.
- * @param {Projection} [destinationProjection] Destination Projection object.
- * @param {import("./transform.js").Transform} [destinationMatrix] Destination matrix.
- * @return {TransformFunction} Transform function.
- */
-export function getTransformFromProjectionsAndMatrix(
-  sourceMatrix,
-  sourceProjection,
-  destinationProjection,
-  destinationMatrix,
-) {
-  let transformFunc;
-  if (sourceProjection && destinationProjection) {
-    transformFunc = getTransformFromProjections(
-      sourceProjection,
-      destinationProjection,
-    );
-  }
-  if (!sourceMatrix && !destinationMatrix) {
-    return transformFunc || identityTransform;
-  }
-
-  let sourceTransform, destinationTransform;
-  if (sourceMatrix) {
-    const matrix = invertMatrix(sourceMatrix.slice());
-    sourceTransform = createTransformFromCoordinateTransform(
-      function (coordinate) {
-        return applyMatrix(matrix, coordinate);
-      },
-    );
-  }
-  if (destinationMatrix) {
-    const matrix = destinationMatrix;
-    destinationTransform = createTransformFromCoordinateTransform(
-      function (coordinate) {
-        return applyMatrix(matrix, coordinate);
-      },
-    );
-  }
-  return (
-    /**
-     * @param {Array<number>} input Input.
-     * @param {Array<number>} [output] Output.
-     * @param {number} [dimension] Dimension.
-     * @return {Array<number>} Output.
-     */
-    function (input, output, dimension) {
-      const length = input.length;
-      output = output !== undefined ? output : new Array(length);
-      for (let i = 0; i < length; ++i) {
-        output[i] = input[i];
-      }
-      if (sourceTransform) {
-        sourceTransform(output, output, dimension);
-      }
-      if (transformFunc) {
-        transformFunc(output, output, dimension);
-      }
-      if (destinationTransform) {
-        destinationTransform(output, output, dimension);
-      }
-      return output;
-    }
-  );
 }
 
 /**
