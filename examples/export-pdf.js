@@ -1,6 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import WKT from '../src/ol/format/WKT.js';
+import jsPDF from 'jspdf';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 
@@ -85,7 +86,7 @@ exportButton.addEventListener(
       );
       mapContext.globalAlpha = 1;
       mapContext.setTransform(1, 0, 0, 1, 0, 0);
-      const pdf = new jspdf.jsPDF('landscape', undefined, format);
+      const pdf = new jsPDF('landscape', undefined, format);
       pdf.addImage(
         mapCanvas.toDataURL('image/jpeg'),
         'JPEG',

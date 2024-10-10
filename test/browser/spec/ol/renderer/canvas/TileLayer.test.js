@@ -81,6 +81,24 @@ describe('ol/renderer/canvas/TileLayer', function () {
           expect(tiles[i].disposed).to.be(true);
         }
       });
+
+      it('caches tiles and clears the cache when the source is refreshed', async () => {
+        const source = new OSM();
+        const layer = new TileLayer({source: source});
+        const tiles = [];
+        source.on('tileloadend', (event) => {
+          tiles.push(event.tile);
+        });
+        map.addLayer(layer);
+        await new Promise((resolve) => map.once('rendercomplete', resolve));
+        expect(tiles.length).to.be(2);
+        map.render();
+        await new Promise((resolve) => map.once('rendercomplete', resolve));
+        expect(tiles.length).to.be(2);
+        source.refresh();
+        await new Promise((resolve) => map.once('rendercomplete', resolve));
+        expect(tiles.length).to.be(4);
+      });
     });
   });
 });

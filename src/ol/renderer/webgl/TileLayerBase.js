@@ -39,11 +39,6 @@ export const Uniforms = {
 };
 
 /**
- * @type {Object<string, boolean>}
- */
-const empty = {};
-
-/**
  * Transform a zoom level into a depth value; zoom level zero has a depth value of 0.5, and increasing values
  * have a depth trending towards 0
  * @param {number} z A zoom level.
@@ -720,19 +715,6 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
       const tileRepresentation = tileRepresentationCache.pop();
       tileRepresentation.dispose();
     }
-
-    // TODO: let the renderers manage their own cache instead of managing the source cache
-    /**
-     * Here we unconditionally expire the source cache since the renderer maintains
-     * its own cache.
-     * @param {import("../../Map.js").default} map Map.
-     * @param {import("../../Map.js").FrameState} frameState Frame state.
-     */
-    const postRenderFunction = function (map, frameState) {
-      tileSource.expireCache(frameState.viewState.projection, empty);
-    };
-
-    frameState.postRenderFunctions.push(postRenderFunction);
 
     this.postRender(gl, frameState);
     return canvas;

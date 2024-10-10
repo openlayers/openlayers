@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Map from '../src/ol/Map.js';
 import OSM from '../src/ol/source/OSM.js';
 import TileJSON from '../src/ol/source/TileJSON.js';

@@ -13,7 +13,7 @@ const baseDir = dirname(fileURLToPath(import.meta.url));
 
 const isCssRegEx = /\.css(\?.*)?$/;
 const isJsRegEx = /\.js(\?.*)?$/;
-const importRegEx = /\s?import .*? from '([^']+)'/g;
+const importRegEx = /\s?import (?:.*? from )?'([^']+)'/g;
 const isTemplateJs = /\/(?:bootstrap(?:\.bundle)?)(?:\.min)?\.js(?:\?.*)?$/;
 const isTemplateCss =
   /\/(?:bootstrap|fontawesome-free@[\d.]+\/css\/(?:fontawesome|brands|solid))(?:\.min)?\.css(?:\?.*)?$/;

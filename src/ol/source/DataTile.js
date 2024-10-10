@@ -4,7 +4,6 @@
 import DataTile from '../DataTile.js';
 import EventType from '../events/EventType.js';
 import ReprojDataTile from '../reproj/DataTile.js';
-import TileCache from '../TileCache.js';
 import TileEventType from './TileEventType.js';
 import TileSource, {TileSourceEvent} from './Tile.js';
 import TileState from '../TileState.js';
@@ -14,7 +13,6 @@ import {
   getForProjection as getTileGridForProjection,
 } from '../tilegrid.js';
 import {equivalent, get as getProjection} from '../proj.js';
-import {getKeyZXY} from '../tilecoord.js';
 import {getUid} from '../util.js';
 import {toPromise} from '../functions.js';
 import {toSize} from '../size.js';
@@ -62,6 +60,9 @@ import {toSize} from '../size.js';
  * the nearest neighbor is used when resampling.
  * @property {CrossOriginAttribute} [crossOrigin='anonymous'] The crossOrigin property to pass to loaders for image data.
  * @property {string} [key] Key for use in caching tiles.
+ * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
+ * Choose whether to use tiles with a higher or lower zoom level when between integer
+ * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
  */
 
 /**
@@ -103,6 +104,7 @@ class DataTileSource extends TileSource {
       transition: options.transition,
       interpolate: options.interpolate,
       key: options.key,
+      zDirection: options.zDirection,
     });
 
     /**
@@ -149,12 +151,6 @@ class DataTileSource extends TileSource {
      * @type {!Object<string, import("../tilegrid/TileGrid.js").default>}
      */
     this.tileGridForProjection_ = {};
-
-    /**
-     * @private
-     * @type {!Object<string, import("../TileCache.js").default>}
-     */
-    this.tileCacheForProjection_ = {};
 
     /**
      * @private
@@ -222,15 +218,6 @@ class DataTileSource extends TileSource {
    * @return {!TileType} Tile.
    */
   getReprojTile_(z, x, y, targetProj, sourceProj) {
-    const cache = this.getTileCacheForProjection(targetProj);
-    const tileCoordKey = getKeyZXY(z, x, y);
-    if (cache.containsKey(tileCoordKey)) {
-      const tile = cache.get(tileCoordKey);
-      if (tile && tile.key == this.getKey()) {
-        return tile;
-      }
-    }
-
     const tileGrid = this.getTileGrid();
     const reprojTilePixelRatio = Math.max.apply(
       null,
@@ -267,11 +254,11 @@ class DataTileSource extends TileSource {
       },
       /** @type {import("../reproj/DataTile.js").Options} */ (this.tileOptions),
     );
-    const newTile = /** @type {TileType} */ (
+    const tile = /** @type {TileType} */ (
       /** @type {*} */ (new ReprojDataTile(options))
     );
-    newTile.key = this.getKey();
-    return newTile;
+    tile.key = this.getKey();
+    return tile;
   }
 
   /**
@@ -315,6 +302,10 @@ class DataTileSource extends TileSource {
     const requestZ = tileCoord[0];
     const requestX = tileCoord[1];
     const requestY = tileCoord[2];
+    const range = this.getTileGrid()?.getFullTileRange(requestZ);
+    if (range) {
+      loaderOptions.maxY = range.getHeight() - 1;
+    }
     function loader() {
       return toPromise(function () {
         return sourceLoader(requestZ, requestX, requestY, loaderOptions);
@@ -407,48 +398,6 @@ class DataTileSource extends TileSource {
       if (!(projKey in this.tileGridForProjection_)) {
         this.tileGridForProjection_[projKey] = tilegrid;
       }
-    }
-  }
-
-  /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {import("../TileCache.js").default} Tile cache.
-   * @override
-   */
-  getTileCacheForProjection(projection) {
-    const thisProj = this.getProjection();
-    if (!thisProj || equivalent(thisProj, projection)) {
-      return super.getTileCacheForProjection(projection);
-    }
-
-    const projKey = getUid(projection);
-    if (!(projKey in this.tileCacheForProjection_)) {
-      this.tileCacheForProjection_[projKey] = new TileCache(0.1); // don't cache
-    }
-    return this.tileCacheForProjection_[projKey];
-  }
-
-  /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @param {!Object<string, boolean>} usedTiles Used tiles.
-   * @override
-   */
-  expireCache(projection, usedTiles) {
-    const usedTileCache = this.getTileCacheForProjection(projection);
-
-    for (const id in this.tileCacheForProjection_) {
-      const tileCache = this.tileCacheForProjection_[id];
-      tileCache.expireCache(tileCache == usedTileCache ? usedTiles : {});
-    }
-  }
-
-  /**
-   * @override
-   */
-  clear() {
-    super.clear();
-    for (const id in this.tileCacheForProjection_) {
-      this.tileCacheForProjection_[id].clear();
     }
   }
 }

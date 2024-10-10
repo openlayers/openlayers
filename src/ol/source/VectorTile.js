@@ -416,6 +416,14 @@ class VectorTile extends UrlTile {
       Math.round(tileSize[1] * pixelRatio),
     ];
   }
+
+  /**
+   * @param {boolean} overlaps The source has overlapping geometries.
+   */
+  setOverlaps(overlaps) {
+    this.overlaps_ = overlaps;
+    this.changed();
+  }
 }
 
 export default VectorTile;

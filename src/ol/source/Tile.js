@@ -4,8 +4,6 @@
 import Event from '../events/Event.js';
 import Source from './Source.js';
 import {abstract, getUid} from '../util.js';
-import {assert} from '../asserts.js';
-import {equivalent} from '../proj.js';
 import {
   getForProjection as getTileGridForProjection,
   wrapX,
@@ -128,24 +126,6 @@ class TileSource extends Source {
   }
 
   /**
-   * @return {boolean} Can expire cache.
-   */
-  canExpireCache() {
-    return false;
-  }
-
-  /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @param {!Object<string, boolean>} usedTiles Used tiles.
-   */
-  expireCache(projection, usedTiles) {
-    const tileCache = this.getTileCacheForProjection(projection);
-    if (tileCache) {
-      tileCache.expireCache(usedTiles);
-    }
-  }
-
-  /**
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {number} Gutter.
    */
@@ -219,20 +199,6 @@ class TileSource extends Source {
       return getTileGridForProjection(projection);
     }
     return this.tileGrid;
-  }
-
-  /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {import("../TileCache.js").default} Tile cache.
-   * @protected
-   */
-  getTileCacheForProjection(projection) {
-    const sourceProjection = this.getProjection();
-    assert(
-      sourceProjection === null || equivalent(sourceProjection, projection),
-      "Use the renderer's tile cache when not reprojecting.",
-    );
-    return null;
   }
 
   /**

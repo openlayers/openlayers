@@ -1,6 +1,7 @@
 #info {
   width: 100%;
   height: 24rem;
+  margin-top: 10px;
   overflow: scroll;
   display: flex;
   align-items: baseline;
