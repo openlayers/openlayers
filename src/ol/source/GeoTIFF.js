@@ -12,12 +12,19 @@ import {
 } from 'geotiff';
 import {
   Projection,
+  createTransformFromCoordinateTransform,
   get as getCachedProjection,
   toUserCoordinate,
   toUserExtent,
 } from '../proj.js';
+import {
+  apply as applyMatrix,
+  create as createMatrix,
+  makeInverse,
+  multiply as multiplyTransform,
+} from '../transform.js';
+import {applyTransform, getCenter, getIntersection} from '../extent.js';
 import {clamp} from '../math.js';
-import {getCenter, getIntersection} from '../extent.js';
 import {error as logError} from '../console.js';
 import {fromCode as unitsFromCode} from '../proj/Units.js';
 
@@ -131,7 +138,7 @@ function getWorkerPool() {
  */
 function getBoundingBox(image) {
   try {
-    return image.getBoundingBox();
+    return image.getBoundingBox(true);
   } catch (_) {
     return [0, 0, image.getWidth(), image.getHeight()];
   }
@@ -522,6 +529,41 @@ class GeoTIFFSource extends DataTile {
   }
 
   /**
+   * Determine any transform matrix for the images in this GeoTIFF.
+   *
+   * @param {Array<Array<GeoTIFFImage>>} sources Each source is a list of images
+   * from a single GeoTIFF.
+   */
+  determineTransformMatrix(sources) {
+    const firstSource = sources[0];
+    for (let i = firstSource.length - 1; i >= 0; --i) {
+      const image = firstSource[i];
+      const modelTransformation = image.fileDirectory.ModelTransformation;
+      if (modelTransformation) {
+        // eslint-disable-next-line no-unused-vars
+        const [a, b, c, d, e, f, g, h] = modelTransformation;
+        const matrix = multiplyTransform(
+          multiplyTransform(
+            [
+              1 / Math.sqrt(a * a + e * e),
+              0,
+              0,
+              -1 / Math.sqrt(b * b + f * f),
+              d,
+              h,
+            ],
+            [a, e, b, f, 0, 0],
+          ),
+          [1, 0, 0, 1, -d, -h],
+        );
+        this.transformMatrix = matrix;
+        this.addAlpha_ = true;
+        break;
+      }
+    }
+  }
+
+  /**
    * Configure the tile grid based on images within the source GeoTIFFs.  Each GeoTIFF
    * must have the same internal tiled structure.
    * @param {Array<Array<GeoTIFFImage>>} sources Each source is a list of images
@@ -685,6 +727,7 @@ class GeoTIFFSource extends DataTile {
     if (!this.getProjection()) {
       this.determineProjection(sources);
     }
+    this.determineTransformMatrix(sources);
 
     this.samplesPerPixel_ = samplesPerPixel;
     this.nodataValues_ = nodataValues;
@@ -752,12 +795,21 @@ class GeoTIFFSource extends DataTile {
       resolutions = [resolutions[0] * 2, resolutions[0], resolutions[0] / 2];
     }
 
+    let viewExtent = extent;
+    if (this.transformMatrix) {
+      const matrix = makeInverse(createMatrix(), this.transformMatrix.slice());
+      const transformFn = createTransformFromCoordinateTransform((input) =>
+        applyMatrix(matrix, input),
+      );
+      viewExtent = applyTransform(extent, transformFn);
+    }
+
     this.viewResolver({
       showFullExtent: true,
       projection: this.projection,
       resolutions: resolutions,
-      center: toUserCoordinate(getCenter(extent), this.projection),
-      extent: toUserExtent(extent, this.projection),
+      center: toUserCoordinate(getCenter(viewExtent), this.projection),
+      extent: toUserExtent(viewExtent, this.projection),
       zoom: zoom,
     });
   }

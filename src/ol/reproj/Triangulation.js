@@ -1,6 +1,7 @@
 /**
  * @module ol/reproj/Triangulation
  */
+import {apply as applyMatrix} from '../transform.js';
 import {
   boundingExtent,
   createEmpty,
@@ -13,7 +14,11 @@ import {
   getWidth,
   intersects,
 } from '../extent.js';
-import {getTransform} from '../proj.js';
+import {
+  createTransformFromCoordinateTransform,
+  getTransform,
+  transform,
+} from '../proj.js';
 import {modulo} from '../math.js';
 
 /**
@@ -55,6 +60,7 @@ class Triangulation {
    * @param {import("../extent.js").Extent} maxSourceExtent Maximal source extent that can be used.
    * @param {number} errorThreshold Acceptable error (in source units).
    * @param {?number} destinationResolution The (optional) resolution of the destination.
+   * @param {import("../transform.js").Transform} [sourceMatrix] Source transform matrix.
    */
   constructor(
     sourceProj,
@@ -63,6 +69,7 @@ class Triangulation {
     maxSourceExtent,
     errorThreshold,
     destinationResolution,
+    sourceMatrix,
   ) {
     /**
      * @type {import("../proj/Projection.js").default}
@@ -78,7 +85,14 @@ class Triangulation {
 
     /** @type {!Object<string, import("../coordinate.js").Coordinate>} */
     let transformInvCache = {};
-    const transformInv = getTransform(this.targetProj_, this.sourceProj_);
+    const transformInv = sourceMatrix
+      ? createTransformFromCoordinateTransform((input) =>
+          applyMatrix(
+            sourceMatrix,
+            transform(input, this.targetProj_, this.sourceProj_),
+          ),
+        )
+      : getTransform(this.targetProj_, this.sourceProj_);
 
     /**
      * @param {import("../coordinate.js").Coordinate} c A coordinate.
