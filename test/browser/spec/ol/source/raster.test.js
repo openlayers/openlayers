@@ -1,5 +1,6 @@
 import Feature from '../../../../../src/ol/Feature.js';
 import ImageLayer from '../../../../../src/ol/layer/Image.js';
+import ImageWMS from '../../../../../src/ol/source/ImageWMS.js';
 import Map from '../../../../../src/ol/Map.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import Projection from '../../../../../src/ol/proj/Projection.js';
@@ -152,14 +153,14 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
       const source = new RasterSource({
         threads: 0,
         sources: [redSource],
-        resolutions: [1],
+        resolutions: [2],
         operation: function (inputs) {
           return inputs[0];
         },
       });
 
       source.on('afteroperations', function (event) {
-        expect(event.resolution).to.equal(1);
+        expect(event.resolution).to.equal(2);
         done();
       });
 
@@ -482,6 +483,142 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
         expect(state === TileState.LOADING || state === TileState.LOADED).to.be(
           true,
         );
+        done();
+      });
+    });
+  });
+
+  describe('resolutions', function () {
+    let map, source, target;
+    const canvas = document.createElement('canvas');
+    beforeEach(function () {
+      const options = {
+        params: {
+          LAYERS: 'layer',
+        },
+        ratio: 1,
+        url: new URL('/wms', window.location.href).toString(),
+        projection: 'EPSG:4326',
+        resolutions: [4, 2, 1, 0.5, 0.25],
+      };
+      source = new ImageWMS(options);
+      source.setImageLoadFunction(function (image, src) {
+        const params = new URL(src).searchParams;
+        canvas.width = Number(params.get('WIDTH'));
+        canvas.height = Number(params.get('HEIGHT'));
+        image.getImage().src = canvas.toDataURL();
+      });
+      target = document.createElement('div');
+      target.style.width = '256px';
+      target.style.height = '256px';
+      document.body.appendChild(target);
+    });
+
+    afterEach(function () {
+      disposeMap(map);
+    });
+
+    it('uses view resolution when resolutions is null', function (done) {
+      const rasterSource = new RasterSource({
+        threads: 0,
+        resolutions: null,
+        sources: [source],
+        operation: (i) => i[0],
+      });
+      map = new Map({
+        target: target,
+        layers: [
+          new ImageLayer({
+            source: rasterSource,
+          }),
+        ],
+        view: new View({
+          projection: 'EPSG:4326',
+          center: [0, 0],
+          zoom: 1,
+        }),
+      });
+
+      rasterSource.on('afteroperations', function (event) {
+        expect(event.resolution).to.equal(180 / 256);
+        done();
+      });
+    });
+
+    it('uses nearest resolution when set', function (done) {
+      const rasterSource = new RasterSource({
+        threads: 0,
+        resolutions: [4, 3, 2, 1.5, 1, 0.75, 0.5, 0.375, 0.25],
+        sources: [source],
+        operation: (i) => i[0],
+      });
+      map = new Map({
+        target: target,
+        layers: [
+          new ImageLayer({
+            source: rasterSource,
+          }),
+        ],
+        view: new View({
+          projection: 'EPSG:4326',
+          center: [0, 0],
+          zoom: 1,
+        }),
+      });
+
+      rasterSource.on('afteroperations', function (event) {
+        expect(event.resolution).to.equal(0.75);
+        done();
+      });
+    });
+
+    it('uses nearest source resolution when set', function (done) {
+      const rasterSource = new RasterSource({
+        threads: 0,
+        sources: [source],
+        operation: (i) => i[0],
+      });
+      map = new Map({
+        target: target,
+        layers: [
+          new ImageLayer({
+            source: rasterSource,
+          }),
+        ],
+        view: new View({
+          projection: 'EPSG:4326',
+          center: [0, 0],
+          zoom: 1,
+        }),
+      });
+
+      rasterSource.on('afteroperations', function (event) {
+        expect(event.resolution).to.equal(0.5);
+        done();
+      });
+    });
+
+    it('does not use reprojected image resolutions', function (done) {
+      const rasterSource = new RasterSource({
+        threads: 0,
+        sources: [source],
+        operation: (i) => i[0],
+      });
+      map = new Map({
+        target: target,
+        layers: [
+          new ImageLayer({
+            source: rasterSource,
+          }),
+        ],
+        view: new View({
+          center: [0, 0],
+          zoom: 0,
+        }),
+      });
+
+      rasterSource.on('afteroperations', function (event) {
+        expect(event.resolution).to.equal(map.getView().getResolution());
         done();
       });
     });
