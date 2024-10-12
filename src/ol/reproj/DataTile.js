@@ -375,12 +375,25 @@ class ReprojDataTile extends DataTile {
       return;
     }
 
+    const tileSize = this.sourceTileGrid_.getTileSize(this.sourceZ_);
+    const width = typeof tileSize === 'number' ? tileSize : tileSize[0];
+    const height = typeof tileSize === 'number' ? tileSize : tileSize[1];
+    const pixelRatio = Math.max.apply(
+      null,
+      dataSources.map((d) =>
+        Math.max(
+          (d.pixelSize[0] - 2 * gutter) / width,
+          (d.pixelSize[1] - 2 * gutter) / height,
+        ),
+      ),
+    );
+
     const z = this.wrappedTileCoord_[0];
     const size = this.targetTileGrid_.getTileSize(z);
     const targetWidth = typeof size === 'number' ? size : size[0];
     const targetHeight = typeof size === 'number' ? size : size[1];
-    const outWidth = targetWidth * this.pixelRatio_;
-    const outHeight = targetHeight * this.pixelRatio_;
+    const outWidth = Math.round(targetWidth * pixelRatio);
+    const outHeight = Math.round(targetHeight * pixelRatio);
     const targetResolution = this.targetTileGrid_.getResolution(z);
     const sourceResolution = this.sourceTileGrid_.getResolution(this.sourceZ_);
 
@@ -471,7 +484,7 @@ class ReprojDataTile extends DataTile {
         gl,
         targetWidth,
         targetHeight,
-        this.pixelRatio_,
+        pixelRatio,
         sourceResolution,
         targetResolution,
         targetExtent,
@@ -506,14 +519,14 @@ class ReprojDataTile extends DataTile {
     canvasGLPool.push(gl.canvas);
 
     if (imageLike) {
-      const context = createCanvasContext2D(targetWidth, targetHeight);
-      const imageData = new ImageData(dataR, targetWidth);
+      const context = createCanvasContext2D(outWidth, outHeight);
+      const imageData = new ImageData(dataR, outWidth);
       context.putImageData(imageData, 0, 0);
       this.reprojData_ = context.canvas;
     } else {
       this.reprojData_ = dataR;
     }
-    this.reprojSize_ = [Math.round(outWidth), Math.round(outHeight)];
+    this.reprojSize_ = [outWidth, outHeight];
     this.state = TileState.LOADED;
     this.changed();
   }
