@@ -159,8 +159,7 @@ class DataTileSource extends TileSource {
     this.crossOrigin_ = options.crossOrigin || 'anonymous';
 
     /**
-     * @protected
-     * @type {import("../transform.js").Transform}
+     * @type {import("../transform.js").Transform|null}
      */
     this.transformMatrix = null;
   }
