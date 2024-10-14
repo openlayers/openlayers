@@ -107,11 +107,11 @@ describe('ol/webgl/WebGLHelper', function () {
 
       it('has instantiated post-processing passes', function () {
         expect(h.postProcessPasses_.length).to.eql(2);
-        expect(h.postProcessPasses_[0].scaleRatio_).to.eql(0.5);
-        expect(h.postProcessPasses_[0].uniforms_.length).to.eql(0);
-        expect(h.postProcessPasses_[1].scaleRatio_).to.eql(1);
-        expect(h.postProcessPasses_[1].uniforms_.length).to.eql(1);
-        expect(h.postProcessPasses_[1].uniforms_[0].value).to.eql(4);
+        expect(h.postProcessPasses_[0].scaleRatio).to.eql(0.5);
+        expect(h.postProcessPasses_[0].uniforms.length).to.eql(0 + 2); // two extra default uniforms
+        expect(h.postProcessPasses_[1].scaleRatio).to.eql(1);
+        expect(h.postProcessPasses_[1].uniforms.length).to.eql(1 + 2); // two extra default uniforms
+        expect(h.postProcessPasses_[1].uniforms[0].value).to.eql(4);
       });
     });
   });
@@ -455,6 +455,7 @@ describe('ol/webgl/WebGLHelper', function () {
       stubTime = sinon.stub(Date, 'now');
       stubTime.returns(1000);
       h = new WebGLHelper();
+      h.useProgram(h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER));
       stubFloat = sinon.stub(h, 'setUniformFloatValue');
       stubVec2 = sinon.stub(h, 'setUniformFloatVec2');
 
