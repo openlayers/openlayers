@@ -48,9 +48,16 @@ import {error as logError} from '../console.js';
 /**
  * @typedef {Object} TileMatrixSet
  * @property {string} id The tile matrix set identifier.
- * @property {string} crs The coordinate reference system.
+ * @property {string|CRSObject} crs The coordinate reference system.
  * @property {Array<string>} [orderedAxes] Axis order.
  * @property {Array<TileMatrix>} tileMatrices Array of tile matrices.
+ */
+
+/**
+ * @typedef {Object} CRSObject
+ * @property {string} uri Reference to one coordinate reference system (CRS).
+ * @property {Object} wkt An object defining the CRS using the JSON encoding for Well-known text representation of coordinate reference systems 2.0.
+ * @property {Object} referenceSystem A reference system data structure as defined in the MD_ReferenceSystem of the ISO 19115.
  */
 
 /**
@@ -249,9 +256,13 @@ function parseTileMatrixSet(
 ) {
   let projection = sourceInfo.projection;
   if (!projection) {
-    projection = getProjection(tileMatrixSet.crs);
+    if (typeof tileMatrixSet.crs === 'string') {
+      projection = getProjection(tileMatrixSet.crs);
+    } else if ('uri' in tileMatrixSet.crs) {
+      projection = getProjection(tileMatrixSet.crs.uri);
+    }
     if (!projection) {
-      throw new Error(`Unsupported CRS: ${tileMatrixSet.crs}`);
+      throw new Error(`Unsupported CRS: ${JSON.stringify(tileMatrixSet.crs)}`);
     }
   }
   const orderedAxes = tileMatrixSet.orderedAxes;
