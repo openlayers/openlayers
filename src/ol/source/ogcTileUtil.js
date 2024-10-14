@@ -48,16 +48,24 @@ import {error as logError} from '../console.js';
 /**
  * @typedef {Object} TileMatrixSet
  * @property {string} id The tile matrix set identifier.
- * @property {string|CRSObject} crs The coordinate reference system.
+ * @property {string|CrsUri|CrsWkt|CrsReferenceSystem} crs The coordinate reference system.
  * @property {Array<string>} [orderedAxes] Axis order.
  * @property {Array<TileMatrix>} tileMatrices Array of tile matrices.
  */
 
 /**
- * @typedef {Object} CRSObject
+ * @typedef {Object} CrsUri
  * @property {string} uri Reference to one coordinate reference system (CRS).
- * @property {Object} wkt An object defining the CRS using the JSON encoding for Well-known text representation of coordinate reference systems 2.0.
- * @property {Object} referenceSystem A reference system data structure as defined in the MD_ReferenceSystem of the ISO 19115.
+ */
+
+/**
+ * @typedef {Object} CrsWkt
+ * @property {Object} wkt JSON encoding for WKT representation of CRS 2.0.
+ */
+
+/**
+ * @typedef {Object} CrsReferenceSystem
+ * @property {Object} referenceSystem Data structure as defined in the MD_ReferenceSystem of the ISO 19115.
  */
 
 /**
