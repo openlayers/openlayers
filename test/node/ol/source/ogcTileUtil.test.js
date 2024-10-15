@@ -212,6 +212,33 @@ describe('ol/source/ogcTileUtil.js', () => {
         'https://maps.ecere.com/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WebMercatorQuad/3/1/2.json',
       );
     });
+
+    it('works with a tile matrix set that uses a crs object with uri string', async () => {
+      baseUrl = 'https://maps.ecere.com/';
+      const sourceInfo = {
+        url: 'https://maps.ecere.com/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuadObjectCRS',
+      };
+      const tileInfo = await getTileSetInfo(sourceInfo);
+      expect(tileInfo).to.be.an(Object);
+    });
+
+    it('fails with a tile matrix set that uses a crs object with a wkt object', async () => {
+      baseUrl = 'https://maps.ecere.com/';
+      const sourceInfo = {
+        url: 'https://maps.ecere.com/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuadObjectWKT',
+      };
+
+      let error;
+      try {
+        await getTileSetInfo(sourceInfo);
+      } catch (err) {
+        error = err;
+      }
+      expect(error).to.be.an(Error);
+      expect(error.message).to.be(
+        'Unsupported CRS: {"wkt":{"supported":false}}',
+      );
+    });
   });
 
   describe('getVectorTileUrlTemplate()', () => {
