@@ -101,6 +101,7 @@ const knownVectorMediaTypes = {
 /**
  * @typedef {Object} TileSetInfo
  * @property {string} urlTemplate The tile URL template.
+ * @property {import("../proj/Projection.js").default} projection The source projection.
  * @property {import("../tilegrid/TileGrid.js").default} grid The tile grid.
  * @property {import("../Tile.js").UrlFunction} urlFunction The tile URL function.
  */
@@ -409,6 +410,7 @@ function parseTileMatrixSet(
 
   return {
     grid: tileGrid,
+    projection: projection,
     urlTemplate: tileUrlTemplate,
     urlFunction: tileUrlFunction,
   };

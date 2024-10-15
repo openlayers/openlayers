@@ -3,6 +3,7 @@ import events from 'events';
 import expect from '../../expect.js';
 import fse from 'fs-extra';
 import path from 'path';
+import {Projection, get as getProjection} from '../../../../src/ol/proj.js';
 import {
   appendCollectionsQueryParam,
   getMapTileUrlTemplate,
@@ -11,6 +12,7 @@ import {
 } from '../../../../src/ol/source/ogcTileUtil.js';
 import {fileURLToPath} from 'url';
 import {overrideXHR, restoreXHR} from '../../../../src/ol/net.js';
+import {setLevel as setLogLevel} from '../../../../src/ol/console.js';
 
 function getDataDir() {
   const modulePath = fileURLToPath(import.meta.url);
@@ -75,6 +77,10 @@ describe('ol/source/ogcTileUtil.js', () => {
       expect(tileInfo.urlTemplate).to.be(
         '/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad/{tileMatrix}/{tileRow}/{tileCol}.jpg',
       );
+      expect(tileInfo.projection).to.be.a(Projection);
+      expect(tileInfo.projection.getCode()).to.be(
+        'http://www.opengis.net/def/crs/EPSG/0/3857',
+      );
       expect(tileInfo.grid).to.be.a(TileGrid);
       expect(tileInfo.grid.getTileSize(0)).to.eql([256, 256]);
       expect(tileInfo.grid.getResolutions()).to.have.length(10);
@@ -132,10 +138,13 @@ describe('ol/source/ogcTileUtil.js', () => {
       baseUrl = 'https://maps.ecere.com/';
       const sourceInfo = {
         url: 'https://maps.ecere.com/ogcapi/collections/ne_10m_admin_0_countries/tiles/WorldCRS84Quad',
-        projection: 'EPSG:4326',
       };
       const tileInfo = await getTileSetInfo(sourceInfo);
       expect(tileInfo).to.be.an(Object);
+      expect(tileInfo.projection).to.be.a(Projection);
+      expect(tileInfo.projection.getCode()).to.be(
+        'http://www.opengis.net/def/crs/OGC/1.3/CRS84',
+      );
       expect(tileInfo.urlTemplate).to.be(
         '/ogcapi/collections/NaturalEarth:cultural:ne_10m_admin_0_countries/tiles/WorldCRS84Quad/{tileMatrix}/{tileRow}/{tileCol}.json',
       );
@@ -152,6 +161,18 @@ describe('ol/source/ogcTileUtil.js', () => {
       expect(tileInfo.urlFunction([2, 8, 0])).to.be(undefined); // above max x
       expect(tileInfo.urlFunction([2, 0, -1])).to.be(undefined); // below min y
       expect(tileInfo.urlFunction([2, 0, 4])).to.be(undefined); // above max y
+    });
+
+    it('allows projection to be overridden', async () => {
+      baseUrl = 'https://maps.ecere.com/';
+      const sourceInfo = {
+        url: 'https://maps.ecere.com/ogcapi/collections/ne_10m_admin_0_countries/tiles/WorldCRS84Quad',
+        projection: getProjection('EPSG:4326'),
+      };
+      const tileInfo = await getTileSetInfo(sourceInfo);
+      expect(tileInfo).to.be.an(Object);
+      expect(tileInfo.projection).to.be.a(Projection);
+      expect(tileInfo.projection.getCode()).to.be('EPSG:4326');
     });
 
     it('allows preferred media type to be configured', async () => {
@@ -220,6 +241,10 @@ describe('ol/source/ogcTileUtil.js', () => {
       };
       const tileInfo = await getTileSetInfo(sourceInfo);
       expect(tileInfo).to.be.an(Object);
+      expect(tileInfo.projection).to.be.a(Projection);
+      expect(tileInfo.projection.getCode()).to.be(
+        'http://www.opengis.net/def/crs/EPSG/0/3857',
+      );
     });
 
     it('fails with a tile matrix set that uses a crs object with a wkt object', async () => {
@@ -336,6 +361,14 @@ describe('ol/source/ogcTileUtil.js', () => {
   });
 
   describe('appendCollectionsQueryParam()', () => {
+    beforeEach(() => {
+      setLogLevel('none');
+    });
+
+    afterEach(() => {
+      setLogLevel('info');
+    });
+
     const collectionUrl =
       '/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad.json';
     const url = '/ogcapi/tiles/WebMercatorQuad.json';
