@@ -31,13 +31,16 @@ import {
   clone,
   createOrUpdateEmpty,
   equals as equalsExtent,
-  getForViewAndSize,
   isEmpty,
 } from './extent.js';
 import {defaults as defaultControls} from './control/defaults.js';
 import {defaults as defaultInteractions} from './interaction/defaults.js';
 import {equals} from './array.js';
-import {fromUserCoordinate, toUserCoordinate} from './proj.js';
+import {
+  fromUserCoordinate,
+  getExtentForViewAndSize,
+  toUserCoordinate,
+} from './proj.js';
 import {getUid} from './util.js';
 import {hasArea} from './size.js';
 import {listen, unlistenByKey} from './events.js';
@@ -1554,10 +1557,12 @@ class Map extends BaseObject {
         animate: false,
         coordinateToPixelTransform: this.coordinateToPixelTransform_,
         declutter: null,
-        extent: getForViewAndSize(
+        extent: getExtentForViewAndSize(
+          viewState.projection,
           viewState.center,
           viewState.resolution,
           viewState.rotation,
+          viewState.tilt,
           size,
         ),
         index: this.frameIndex_++,
@@ -1580,11 +1585,16 @@ class Map extends BaseObject {
         const rotation = isNaN(viewState.nextRotation)
           ? viewState.rotation
           : viewState.nextRotation;
+        const tilt = isNaN(viewState.nextTilt)
+          ? viewState.tilt
+          : viewState.nextTilt;
 
-        frameState.nextExtent = getForViewAndSize(
+        frameState.nextExtent = getExtentForViewAndSize(
+          viewState.projection,
           viewState.nextCenter,
           viewState.nextResolution,
           rotation,
+          tilt,
           size,
         );
       }

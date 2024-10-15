@@ -1,0 +1,66 @@
+---
+layout: example-verbatim.html
+title: Globe View
+shortdesc: Example of a globe projection.
+docs: >
+  This example shows how to use `globe` projection.
+tags: "globe, earth"
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>Globe View</title>
+    <link rel="stylesheet" type="text/css" href="/theme/ol.css">
+    <link rel="stylesheet" type="text/css" href="/theme/site.css">
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+      }
+      #map {
+        width: 100%;
+        height: 100%;
+      }
+      #overlay {
+        position: absolute;
+        left: calc(.5em + 1px + 1.375em + 1px + .5em);
+        top: calc(.5em);
+        background: white;
+        padding: 0.25em;
+        border-radius: 2px;
+        outline: 1px solid #8884;
+        margin: 1px;
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+
+        display: flex;
+        justify-items: center;
+        align-items: center;
+
+        gap: 0.5em;
+      }
+
+      #overlay > .tilt {
+        display: flex;
+        justify-items: center;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div id="overlay">
+      <label><input type="checkbox" id="debug" />Debug</label>
+      <label><input type="checkbox" id="regions" />Regions</label>
+      <label><input type="checkbox" id="cities" />Cities</label>
+      <div class="tilt">Tilt: <input type="range" min="0" max="90" step="1" id="tilt" value="45" /></div>
+    </div>
+    <script src="globe.js"></script>
+    <script src="common.js"></script>
+  </body>
+</html>
