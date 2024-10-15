@@ -372,6 +372,88 @@ describe('ol.interaction.Modify', function () {
 
       validateEvents(events, features);
     });
+
+    it('deletes user provided vertex of a LineString programmatically', function () {
+      const lineFeature = new Feature({
+        geometry: new LineString([
+          [0, 0],
+          [10, 20],
+          [0, 40],
+          [40, 40],
+          [40, 0],
+        ]),
+      });
+      features.length = 0;
+      features.push(lineFeature);
+      features.push(lineFeature.clone());
+
+      const first = features[0];
+      const firstRevision = first.getGeometry().getRevision();
+
+      const modify = new Modify({
+        features: new Collection(features),
+      });
+      map.addInteraction(modify);
+
+      const events = trackEvents(first, modify);
+
+      expect(first.getGeometry().getRevision()).to.equal(firstRevision);
+      expect(first.getGeometry().getCoordinates()).to.have.length(5);
+
+      const removed = modify.removePoint([40, 0]);
+
+      expect(removed).to.be(true);
+      expect(first.getGeometry().getRevision()).to.equal(firstRevision + 1);
+      expect(first.getGeometry().getCoordinates()).to.have.length(4);
+      expect(first.getGeometry().getCoordinates()[3][0]).to.equal(40);
+      expect(first.getGeometry().getCoordinates()[3][1]).to.equal(40);
+
+      validateEvents(events, features);
+    });
+
+    it('canRemovePoint() returns true when point can be deleted', function () {
+      const lineFeature = new Feature({
+        geometry: new LineString([
+          [0, 0],
+          [10, 20],
+          [0, 40],
+          [40, 40],
+          [40, 0],
+        ]),
+      });
+      features.length = 0;
+      features.push(lineFeature);
+
+      const modify = new Modify({
+        features: new Collection(features),
+      });
+      map.addInteraction(modify);
+
+      simulateEvent('pointermove', 10, -20, null, 0);
+
+      expect(modify.canRemovePoint()).to.be(true);
+    });
+
+    it('canRemovePoint() returns false when point cannot be deleted', function () {
+      const lineFeature = new Feature({
+        geometry: new LineString([
+          [0, 0],
+          [10, 20],
+          [0, 40],
+        ]),
+      });
+      features.length = 0;
+      features.push(lineFeature);
+
+      const modify = new Modify({
+        features: new Collection(features),
+      });
+      map.addInteraction(modify);
+
+      simulateEvent('pointermove', 5, -10, null, 0);
+
+      expect(modify.canRemovePoint()).to.be(false);
+    });
   });
 
   describe('vertex modification', function () {
@@ -529,6 +611,91 @@ describe('ol.interaction.Modify', function () {
       expect(lineFeature1.getGeometry().getCoordinates().length).to.be(4);
       expect(lineFeature2.getGeometry().getCoordinates().length).to.be(4);
       expect(modifiedFeatures.getArray()).to.eql([lineFeature1, lineFeature2]);
+    });
+    it('insertPoint() inserts a vertex into a LineString programmatically', function () {
+      const lineFeature = new Feature({
+        geometry: new LineString([
+          [-10, -10],
+          [10, 10],
+        ]),
+      });
+      features.length = 0;
+      features.push(lineFeature);
+
+      const modify = new Modify({
+        features: new Collection(features),
+      });
+      map.addInteraction(modify);
+
+      simulateEvent('pointermove', 0, 0, null, 0);
+
+      expect(lineFeature.getGeometry().getCoordinates().length).to.equal(2);
+
+      const inserted = modify.insertPoint();
+      expect(inserted).to.be(true);
+
+      expect(lineFeature.getGeometry().getCoordinates().length).to.equal(3);
+    });
+    it('insertPoint() inserts the provided vertex into a LineString programmatically', function () {
+      const lineFeature = new Feature({
+        geometry: new LineString([
+          [-10, -10],
+          [10, 10],
+        ]),
+      });
+      features.length = 0;
+      features.push(lineFeature);
+
+      const modify = new Modify({
+        features: new Collection(features),
+      });
+      map.addInteraction(modify);
+
+      expect(lineFeature.getGeometry().getCoordinates().length).to.equal(2);
+
+      const inserted = modify.insertPoint([0, 0]);
+      expect(inserted).to.be(true);
+
+      expect(lineFeature.getGeometry().getCoordinates().length).to.equal(3);
+      expect(lineFeature.getGeometry().getCoordinates()[1]).to.eql([0, 0]);
+    });
+    it('canInsertPoint() returns true when point can be inserted', function () {
+      const lineFeature = new Feature({
+        geometry: new LineString([
+          [-10, -10],
+          [10, 10],
+        ]),
+      });
+      features.length = 0;
+      features.push(lineFeature);
+
+      const modify = new Modify({
+        features: new Collection(features),
+      });
+      map.addInteraction(modify);
+
+      simulateEvent('pointermove', 0, 0, null, 0);
+
+      expect(modify.canInsertPoint()).to.be(true);
+    });
+    it('canInsertPoint() returns false when point cannot be inserted', function () {
+      const lineFeature = new Feature({
+        geometry: new LineString([
+          [-10, -10],
+          [10, 10],
+        ]),
+      });
+      features.length = 0;
+      features.push(lineFeature);
+
+      const modify = new Modify({
+        features: new Collection(features),
+      });
+      map.addInteraction(modify);
+
+      simulateEvent('pointermove', 5, 50, null, 0);
+
+      expect(modify.canInsertPoint()).to.be(false);
     });
   });
 
@@ -1089,6 +1256,10 @@ describe('ol.interaction.Modify', function () {
       expect(modify.vertexFeature_).to.not.be(null);
       expect(modify.vertexFeature_.get('features').length).to.be(1);
       expect(modify.vertexFeature_.get('geometries').length).to.be(1);
+      expect(modify.vertexFeature_.get('existing')).to.be(true);
+
+      simulateEvent('pointermove', 40, -20, null, 0);
+      expect(modify.vertexFeature_.get('existing')).to.be(false);
 
       modify.setActive(false);
       expect(modify.vertexFeature_).to.be(null);
@@ -1236,6 +1407,18 @@ describe('ol.interaction.Modify', function () {
         features: new Collection(),
       });
       expect(modify.getOverlay()).to.eql(modify.overlay_);
+    });
+  });
+
+  describe('#getPoint', function () {
+    it('returns the current pointer coordinate', function () {
+      const modify = new Modify({
+        features: new Collection([new Feature(new Point([10, 20]))]),
+      });
+      map.addInteraction(modify);
+      expect(modify.getPoint()).to.be(null);
+      simulateEvent('pointermove', 10, -20, null, 0);
+      expect(modify.getPoint()).to.eql([10, 20]);
     });
   });
 
