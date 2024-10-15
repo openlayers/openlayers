@@ -58,15 +58,19 @@ describe('ol/coordinate.js', function () {
   });
 
   describe('#equals', function () {
-    const cologne = [50.93333, 6.95];
-    const bonn1 = [50.73, 7.1];
-    const bonn2 = [50.73, 7.1];
+    const cologne = [50.93333, 6.95, 0];
+    const bonn1 = [50.73, 7.1, 10];
+    const bonn2 = [50.73, 7.1, 20];
 
     it('compares correctly', function () {
-      const bonnEqualsBonn = coordinatesEqual(bonn1, bonn2);
-      const bonnEqualsCologne = coordinatesEqual(bonn1, cologne);
-      expect(bonnEqualsBonn).to.be(true);
-      expect(bonnEqualsCologne).to.be(false);
+      const bonnEqualsBonn3D = coordinatesEqual(bonn1, bonn2);
+      const bonnEqualsBonn2D = coordinatesEqual(bonn1, bonn2, true);
+      const bonnEqualsCologne3D = coordinatesEqual(bonn1, cologne);
+      const bonnEqualsCologne2D = coordinatesEqual(bonn1, cologne, true);
+      expect(bonnEqualsBonn3D).to.be(false);
+      expect(bonnEqualsBonn2D).to.be(true);
+      expect(bonnEqualsCologne3D).to.be(false);
+      expect(bonnEqualsCologne2D).to.be(false);
     });
   });
 

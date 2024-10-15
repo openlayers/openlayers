@@ -236,17 +236,19 @@ export function format(coordinate, template, fractionDigits) {
 /**
  * @param {Coordinate} coordinate1 First coordinate.
  * @param {Coordinate} coordinate2 Second coordinate.
+ * @param {boolean} [compare2D=false] Compare only the first two dimensions. Default is `false`
  * @return {boolean} The two coordinates are equal.
  */
-export function equals(coordinate1, coordinate2) {
-  let equals = true;
-  for (let i = coordinate1.length - 1; i >= 0; --i) {
-    if (coordinate1[i] != coordinate2[i]) {
-      equals = false;
-      break;
-    }
+export function equals(coordinate1, coordinate2, compare2D = false) {
+  if (compare2D) {
+    return (
+      coordinate1[0] === coordinate2[0] && coordinate1[1] === coordinate2[1]
+    );
   }
-  return equals;
+  if (coordinate1.length !== coordinate2.length) {
+    return false;
+  }
+  return coordinate1.every((value, index) => value === coordinate2[index]);
 }
 
 /**
