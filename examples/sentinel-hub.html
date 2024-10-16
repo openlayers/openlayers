@@ -1,0 +1,42 @@
+---
+layout: example.html
+title: Sentinel Hub
+shortdesc: A tile source using the Sentinel Hub Processing API
+docs: >
+  This example renders a tile layer with a source that uses the Sentinel Hub [Processing API](https://docs.sentinel-hub.com/api/latest/api/process/) to generate tiles.
+  The Processing API requires an access token.  The form above can be used to provide an OAuth client id and secret.
+  The default client id and secret used in this example is severely rate limited. For the example to perform well,
+  you should register for your own client id and secret.
+  With this information, the source will fetch an access token.  If an accesss token is fetched by other means, the `source.setAuth()`
+  method can be called the token directly.  See the Sentinel Hub [authentication documentation](https://docs.sentinel-hub.com/api/latest/api/overview/authentication/) for details.
+
+  <p>
+    See these other examples for details on the following:
+    <ul>
+      <li>
+        <a href="./sentinel-hub-date-picker.html">Sentinel Hub Date Picker</a>
+        &mdash; calling <code>source.setData()</code> to update the time range for the input data.
+      </li>
+      <li>
+        <a href="./sentinel-hub-custom-script.html">Sentinel Hub Custom Script</a>
+        &mdash; calling <code>source.setEvalscript()</code> to update the Evalscript used in rendering tiles.
+      </li>
+    </ul>
+  </p>
+
+tags: "Sentinel Hub, process"
+---
+<div id="map" class="map"></div>
+<dialog id="auth-dialog" open>
+  <form method="dialog" id="auth-form">
+    <label>Client id
+      <br>
+      <input type="text" name="id" autofocus value="fa02a066-fc80-4cb4-af26-aae0af26cbf1">
+    </label>
+    <label>Client secret
+      <br>
+      <input type="password" name="secret" value="rate_limit_secret">
+    </label>
+    <input type="submit" value="show map">
+  </form>
+</dialog>
