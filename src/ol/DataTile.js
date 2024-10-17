@@ -148,12 +148,12 @@ class DataTile extends Tile {
    * @return {import('./size.js').Size} Tile size.
    */
   getSize() {
-    if (this.size_) {
-      return this.size_;
-    }
     const imageData = asImageLike(this.data_);
     if (imageData) {
       return [imageData.width, imageData.height];
+    }
+    if (this.size_) {
+      return this.size_;
     }
     return defaultSize;
   }
