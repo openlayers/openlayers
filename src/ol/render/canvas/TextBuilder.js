@@ -81,6 +81,12 @@ class CanvasTextBuilder extends CanvasBuilder {
 
     /**
      * @private
+     * @type {boolean|undefined}
+     */
+    this.textKeepUpright_ = undefined;
+
+    /**
+     * @private
      * @type {number}
      */
     this.textRotation_ = 0;
@@ -538,6 +544,7 @@ class CanvasTextBuilder extends CanvasBuilder {
       textKey,
       1,
       this.declutterMode_,
+      this.textKeepUpright_,
     ]);
     this.hitDetectionInstructions.push([
       CanvasInstruction.DRAW_CHARS,
@@ -555,6 +562,7 @@ class CanvasTextBuilder extends CanvasBuilder {
       textKey,
       1 / pixelRatio,
       this.declutterMode_,
+      this.textKeepUpright_,
     ]);
   }
 
@@ -632,12 +640,15 @@ class CanvasTextBuilder extends CanvasBuilder {
       const textOffsetX = textStyle.getOffsetX();
       const textOffsetY = textStyle.getOffsetY();
       const textRotateWithView = textStyle.getRotateWithView();
+      const textKeepUpright = textStyle.getKeepUpright();
       const textRotation = textStyle.getRotation();
       this.text_ = textStyle.getText() || '';
       this.textOffsetX_ = textOffsetX === undefined ? 0 : textOffsetX;
       this.textOffsetY_ = textOffsetY === undefined ? 0 : textOffsetY;
       this.textRotateWithView_ =
         textRotateWithView === undefined ? false : textRotateWithView;
+      this.textKeepUpright_ =
+        textKeepUpright === undefined ? true : textKeepUpright;
       this.textRotation_ = textRotation === undefined ? 0 : textRotation;
 
       this.strokeKey_ = strokeState

@@ -1001,6 +1001,7 @@ class Executor {
           ];
           declutterMode = instruction[14] || 'declutter';
 
+          const textKeepUpright = /** @type {boolean} */ (instruction[15]);
           const textState = this.textStates[textKey];
           const font = textState.font;
           const textScale = [
@@ -1037,6 +1038,7 @@ class Executor {
               font,
               cachedWidths,
               viewRotationFromTransform ? 0 : this.viewRotation_,
+              textKeepUpright,
             );
             drawChars: if (parts) {
               /** @type {Array<ReplayImageOrLabelArgs>} */
