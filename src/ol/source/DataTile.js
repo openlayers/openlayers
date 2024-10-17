@@ -160,7 +160,7 @@ class DataTileSource extends TileSource {
 
     /**
      * @protected
-     * @type {import("../transform.js").Transform}
+     * @type {import("../transform.js").Transform|null}
      */
     this.transformMatrix = null;
   }
