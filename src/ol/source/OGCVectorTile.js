@@ -92,6 +92,7 @@ class OGCVectorTile extends VectorTileSource {
    */
   handleTileSetInfo_(tileSetInfo) {
     this.tileGrid = tileSetInfo.grid;
+    this.projection = tileSetInfo.projection;
     this.setTileUrlFunction(tileSetInfo.urlFunction, tileSetInfo.urlTemplate);
     this.setState('ready');
   }

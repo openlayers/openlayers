@@ -157,6 +157,12 @@ class DataTileSource extends TileSource {
      * @type {CrossOriginAttribute}
      */
     this.crossOrigin_ = options.crossOrigin || 'anonymous';
+
+    /**
+     * @protected
+     * @type {import("../transform.js").Transform}
+     */
+    this.transformMatrix = null;
   }
 
   /**
@@ -194,7 +200,10 @@ class DataTileSource extends TileSource {
    */
   getGutterForProjection(projection) {
     const thisProj = this.getProjection();
-    if (!thisProj || equivalent(thisProj, projection)) {
+    if (
+      (!thisProj || equivalent(thisProj, projection)) &&
+      !this.transformMatrix
+    ) {
       return this.gutter_;
     }
 
@@ -218,11 +227,12 @@ class DataTileSource extends TileSource {
    * @return {!TileType} Tile.
    */
   getReprojTile_(z, x, y, targetProj, sourceProj) {
-    const tileGrid = this.getTileGrid();
+    const sourceTileGrid =
+      this.tileGrid || this.getTileGridForProjection(sourceProj || targetProj);
     const reprojTilePixelRatio = Math.max.apply(
       null,
-      tileGrid.getResolutions().map((r, z) => {
-        const tileSize = toSize(tileGrid.getTileSize(z));
+      sourceTileGrid.getResolutions().map((r, z) => {
+        const tileSize = toSize(sourceTileGrid.getTileSize(z));
         const textureSize = this.getTileSize(z);
         return Math.max(
           textureSize[0] / tileSize[0],
@@ -231,7 +241,6 @@ class DataTileSource extends TileSource {
       }),
     );
 
-    const sourceTileGrid = this.getTileGridForProjection(sourceProj);
     const targetTileGrid = this.getTileGridForProjection(targetProj);
     const tileCoord = [z, x, y];
     const wrappedTileCoord = this.getTileCoordForTileUrlFunction(
@@ -241,16 +250,17 @@ class DataTileSource extends TileSource {
 
     const options = Object.assign(
       {
-        sourceProj,
+        sourceProj: sourceProj || targetProj,
         sourceTileGrid,
         targetProj,
         targetTileGrid,
         tileCoord,
         wrappedTileCoord,
         pixelRatio: reprojTilePixelRatio,
-        gutter: this.getGutterForProjection(sourceProj),
+        gutter: this.gutter_,
         getTileFunction: (z, x, y, pixelRatio) =>
-          this.getTile(z, x, y, pixelRatio, sourceProj),
+          this.getTile(z, x, y, pixelRatio),
+        transformMatrix: this.transformMatrix,
       },
       /** @type {import("../reproj/DataTile.js").Options} */ (this.tileOptions),
     );
@@ -266,16 +276,16 @@ class DataTileSource extends TileSource {
    * @param {number} x Tile coordinate x.
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {import("../proj/Projection.js").default} [projection] Projection.
    * @return {TileType|null} Tile (or null if outside source extent).
    * @override
    */
   getTile(z, x, y, pixelRatio, projection) {
     const sourceProjection = this.getProjection();
     if (
-      sourceProjection &&
       projection &&
-      !equivalent(sourceProjection, projection)
+      ((sourceProjection && !equivalent(sourceProjection, projection)) ||
+        this.transformMatrix)
     ) {
       return this.getReprojTile_(z, x, y, projection, sourceProjection);
     }
@@ -367,7 +377,11 @@ class DataTileSource extends TileSource {
    */
   getTileGridForProjection(projection) {
     const thisProj = this.getProjection();
-    if (this.tileGrid && (!thisProj || equivalent(thisProj, projection))) {
+    if (
+      this.tileGrid &&
+      (!thisProj || equivalent(thisProj, projection)) &&
+      !this.transformMatrix
+    ) {
       return this.tileGrid;
     }
 
