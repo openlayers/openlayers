@@ -400,7 +400,8 @@ const sources = [];
  * Experimental layer that renders particles moving through a vector field.
  *
  * @extends BaseTileLayer<SourceType, FlowLayerRenderer>
- * @fires import("../render/Event.js").RenderEvent
+ * @fires import("../render/Event.js").RenderEvent#prerender
+ * @fires import("../render/Event.js").RenderEvent#postrender
  */
 class FlowLayer extends BaseTileLayer {
   /**
