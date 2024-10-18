@@ -9,4 +9,5 @@ export default {
   CENTER: 'center',
   RESOLUTION: 'resolution',
   ROTATION: 'rotation',
+  TILT: 'tilt',
 };
