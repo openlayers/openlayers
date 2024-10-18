@@ -1017,6 +1017,14 @@ class GeoTIFFSource extends DataTile {
 
     return data;
   }
+
+  /**
+   * Return affine transformation matrix derived from the GeoTIFF ModelTransformation, if present.
+   * @return {import("../transform.js").Transform|null} Affine transformation matrix.
+   */
+  getTransformMatrix() {
+    return this.transformMatrix?.slice() || null;
+  }
 }
 
 /**
