@@ -39,6 +39,7 @@ const DEFAULT_FILL_COLOR = '#333';
  * the distance between two text anchors in pixels. Only available when `placement` is set to `'line'`. Overrides 'textAlign'.
  * @property {number|import("../size.js").Size} [scale] Scale.
  * @property {boolean} [rotateWithView=false] Whether to rotate the text with the view.
+ * @property {boolean} [keepUpright=true] Whether the text can be rotated 180° to prevent being rendered upside down.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
  * @property {string|Array<string>} [text] Text content or rich text content. For plain text provide a string, which can
  * contain line breaks (`\n`). For rich text provide an array of text/font tuples. A tuple consists of the text to
@@ -94,6 +95,12 @@ class Text {
      * @type {boolean|undefined}
      */
     this.rotateWithView_ = options.rotateWithView;
+
+    /**
+     * @private
+     * @type {boolean|undefined}
+     */
+    this.keepUpright_ = options.keepUpright;
 
     /**
      * @private
@@ -228,6 +235,7 @@ class Text {
       overflow: this.getOverflow(),
       rotation: this.getRotation(),
       rotateWithView: this.getRotateWithView(),
+      keepUpright: this.getKeepUpright(),
       scale: Array.isArray(scale) ? scale.slice() : scale,
       text: this.getText(),
       textAlign: this.getTextAlign(),
@@ -327,6 +335,15 @@ class Text {
    */
   getRotateWithView() {
     return this.rotateWithView_;
+  }
+
+  /**
+   * Determine whether the text can be rendered upside down.
+   * @return {boolean|undefined} Keep text upright.
+   * @api
+   */
+  getKeepUpright() {
+    return this.keepUpright_;
   }
 
   /**
@@ -513,6 +530,16 @@ class Text {
    */
   setRotateWithView(rotateWithView) {
     this.rotateWithView_ = rotateWithView;
+  }
+
+  /**
+   * Set whether the text can be rendered upside down.
+   *
+   * @param {boolean} keepUpright Keep text upright.
+   * @api
+   */
+  setKeepUpright(keepUpright) {
+    this.keepUpright_ = keepUpright;
   }
 
   /**
