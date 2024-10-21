@@ -64,7 +64,8 @@ import {parseLiteralStyle} from '../webgl/styleparser.js';
  *
  * @template {import("../source/Vector.js").default<import('../Feature').FeatureLike>} VectorSourceType
  * @extends {Layer<VectorSourceType, WebGLPointsLayerRenderer>}
- * @fires import("../render/Event.js").RenderEvent
+ * @fires import("../render/Event.js").RenderEvent#prerender
+ * @fires import("../render/Event.js").RenderEvent#postrender
  */
 class WebGLPointsLayer extends Layer {
   /**
