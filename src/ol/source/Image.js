@@ -187,11 +187,20 @@ class ImageSource extends Source {
   }
 
   /**
+   * @param {import("../proj/Projection.js").default} [projection] Projection.
    * @return {Array<number>|null} Resolutions.
    * @override
    */
-  getResolutions() {
-    return this.resolutions_;
+  getResolutions(projection) {
+    const sourceProjection = this.getProjection();
+    if (
+      !sourceProjection ||
+      !projection ||
+      equivalent(sourceProjection, projection)
+    ) {
+      return this.resolutions_;
+    }
+    return null;
   }
 
   /**
@@ -204,10 +213,11 @@ class ImageSource extends Source {
   /**
    * @protected
    * @param {number} resolution Resolution.
+   * @param {import("../proj/Projection.js").default} [projection] Projection.
    * @return {number} Resolution.
    */
-  findNearestResolution(resolution) {
-    const resolutions = this.getResolutions();
+  findNearestResolution(resolution, projection) {
+    const resolutions = this.getResolutions(projection);
     if (resolutions) {
       const idx = linearFindNearest(resolutions, resolution, 0);
       resolution = resolutions[idx];
