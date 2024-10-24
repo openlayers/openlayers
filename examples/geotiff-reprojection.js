@@ -2,61 +2,36 @@ import GeoTIFF from '../src/ol/source/GeoTIFF.js';
 import Map from '../src/ol/Map.js';
 import TileLayer from '../src/ol/layer/WebGLTile.js';
 import View from '../src/ol/View.js';
+import proj4 from 'proj4';
+import {register} from '../src/ol/proj/proj4.js';
+import {transform} from '../src/ol/proj.js';
 
-const channels = ['red', 'green', 'blue'];
-for (const channel of channels) {
-  const selector = document.getElementById(channel);
-  selector.addEventListener('change', update);
+// register the proj4 library for use with coordinate transforms
+register(proj4);
 
-  const input = document.getElementById(`${channel}Max`);
-  input.addEventListener('input', update);
-}
-
-function getVariables() {
-  const variables = {};
-  for (const channel of channels) {
-    const selector = document.getElementById(channel);
-    variables[channel] = parseInt(selector.value, 10);
-
-    const inputId = `${channel}Max`;
-    const input = document.getElementById(inputId);
-    variables[inputId] = parseInt(input.value, 10);
-  }
-  return variables;
-}
-
-const layer = new TileLayer({
-  style: {
-    variables: getVariables(),
-    color: [
-      'array',
-      ['/', ['band', ['var', 'red']], ['var', 'redMax']],
-      ['/', ['band', ['var', 'green']], ['var', 'greenMax']],
-      ['/', ['band', ['var', 'blue']], ['var', 'blueMax']],
-      1,
-    ],
-  },
-  source: new GeoTIFF({
-    normalize: false,
-    sources: [
-      {
-        url: 'https://s2downloads.eox.at/demo/EOxCloudless/2020/rgbnir/s2cloudless2020-16bits_sinlge-file_z0-4.tif',
-      },
-    ],
-    wrapX: true,
-  }),
+const source = new GeoTIFF({
+  sources: [
+    {
+      url: 'https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/36/Q/WD/2020/7/S2A_36QWD_20200701_0_L2A/TCI.tif',
+    },
+  ],
 });
-
-function update() {
-  layer.updateStyleVariables(getVariables());
-}
 
 const map = new Map({
   target: 'map',
-  layers: [layer],
+  layers: [new TileLayer({source})],
   view: new View({
     center: [0, 0],
-    zoom: 2,
-    maxZoom: 6,
+    zoom: 12,
   }),
+});
+
+// after GeoTIFF metadata has been read, recenter the map to show the image
+source.getView().then(async (config) => {
+  // transform the image center to view coorindates
+  const center = transform(config.center, config.projection, 'EPSG:3857');
+
+  // update the view to show the image
+  const view = map.getView();
+  view.setCenter(center);
 });

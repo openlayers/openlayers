@@ -1,6 +1,0 @@
-.controls {
-  display: grid;
-  grid-template-columns: auto auto 1fr;
-  align-items: baseline;
-  gap: 0 1em;
-}

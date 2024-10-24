@@ -1,43 +1,17 @@
 ---
 layout: example.html
 title: GeoTIFF Reprojection
-shortdesc: GeoTIFF Reprojection
+shortdesc: Demonstrates how a GeoTIFF can be rendered in a different projection.
 docs: >
-  Example of reprojection of an EPSG:4326 GeoTIFF source with 20 bytes of raw values per pixel to EPSG:3857.
-tags: "cog, webgl, style, reprojection"
+  This example demonstrates how data from a GeoTIFF can be reprojected. Calling `source.getView()` returns
+  a promise that resolves after the GeoTIFF metadata has been fetched. This can be used to get the image
+  projection or coordinate reference system information (the EPSG code in this case) along with the image
+  extent and center coordinates. The `proj4` library is used to transform coordinates from the source
+  projection to the view projection. Using the transformed center, the view is updated to show the image.
+
+  Note that this example works because the proj4 library can handle transforms to and from UTM projections
+  without additional configuration. For handling arbitrary coordinate reference system transforms, additional
+  parameters may need to be loaded.
+tags: "cog, geotiff, reprojection"
 ---
 <div id="map" class="map"></div>
-<div class="controls">
-  <label for="red">Red channel</label>
-  <select id="red">
-    <option value="1" selected>visible red</option>
-    <option value="2">visible green</option>
-    <option value="3">visible blue</option>
-    <option value="4">near infrared</option>
-  </select>
-  <label>max
-    <input type="range" id="redMax" value="3000" min="2000" max="5000">
-  </label>
-
-  <label for="green">Green channel</label>
-  <select id="green">
-    <option value="1">visible red</option>
-    <option value="2" selected>visible green</option>
-    <option value="3">visible blue</option>
-    <option value="4">near infrared</option>
-  </select>
-  <label>max
-    <input type="range" id="greenMax" value="3000" min="2000" max="5000">
-  </label>
-
-  <label for="blue">Blue channel</label>
-  <select id="blue">
-    <option value="1">visible red</option>
-    <option value="2">visible green</option>
-    <option value="3" selected>visible blue</option>
-    <option value="4">near infrared</option>
-  </select>
-  <label>max
-    <input type="range" id="blueMax" value="3000" min="2000" max="5000">
-  </label>
-</div>
