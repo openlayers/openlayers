@@ -21,6 +21,7 @@ import {
 } from '../canvas.js';
 import {drawTextOnPath} from '../../geom/flat/textpath.js';
 import {equals} from '../../array.js';
+import {getTransformFromProjections} from '../../proj.js';
 import {lineStringLength} from '../../geom/flat/length.js';
 import {transform2D} from '../../geom/flat/transform.js';
 
@@ -119,6 +120,7 @@ class Executor {
    * @param {boolean} overlaps The replay can have overlapping geometries.
    * @param {import("../canvas.js").SerializableInstructions} instructions The serializable instructions.
    * @param {boolean} [deferredRendering] Enable deferred rendering.
+   * @param {import("../../View.js").State} [viewState] View state.
    */
   constructor(
     resolution,
@@ -126,6 +128,7 @@ class Executor {
     overlaps,
     instructions,
     deferredRendering,
+    viewState,
   ) {
     /**
      * @protected
@@ -172,6 +175,12 @@ class Executor {
 
     /**
      * @private
+     * @type {Array<number>}
+     */
+    this.transformedCoordinates_ = new Array(instructions.coordinates.length);
+
+    /**
+     * @private
      * @type {!import("../../transform.js").Transform}
      */
     this.renderedTransform_ = createTransform();
@@ -193,6 +202,20 @@ class Executor {
      * @type {number}
      */
     this.viewRotation_ = 0;
+
+    /**
+     * @private
+     * @type {import("../../View.js").State}
+     */
+    this.viewState_ = viewState;
+
+    this.transformFunc_ =
+      viewState?.projection &&
+      viewState?.finalProjection &&
+      getTransformFromProjections(
+        viewState?.projection,
+        viewState?.finalProjection,
+      );
 
     /**
      * @type {!Object<string, import("../canvas.js").FillState>}
@@ -674,10 +697,23 @@ class Executor {
       if (!this.pixelCoordinates_) {
         this.pixelCoordinates_ = [];
       }
+
+      let coordinates = this.coordinates;
+      if (this.transformFunc_) {
+        coordinates = this.transformedCoordinates_;
+        this.transformFunc_(
+          this.coordinates,
+          coordinates,
+          2,
+          2,
+          this.viewState_,
+        );
+      }
+
       pixelCoordinates = transform2D(
-        this.coordinates,
+        coordinates,
         0,
-        this.coordinates.length,
+        coordinates.length,
         2,
         transform,
         this.pixelCoordinates_,

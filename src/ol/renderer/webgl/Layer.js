@@ -10,15 +10,26 @@ import {
   compose as composeTransform,
   create as createTransform,
 } from '../../transform.js';
+import {createPostProcessors as createGlobePostProcessors} from '../../proj/webgl/globe.js';
 
 /**
- * @typedef {Object} PostProcessesOptions
- * @property {number} [scaleRatio] Scale ratio; if < 1, the post process will render to a texture smaller than
- * the main canvas that will then be sampled up (useful for saving resource on blur steps).
- * @property {string} [vertexShader] Vertex shader source
- * @property {string} [fragmentShader] Fragment shader source
- * @property {Object<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process step
+ * @typedef {import('../../webgl/Helper.js').PostProcessesOptions} PostProcessesOptions
  */
+
+/**
+ * Get Post-processors for finalProjection.
+ * @param {import("../../proj/Projection.js").default} projection Projection
+ * @return {Array<PostProcessesOptions>} Array of Post-process options.
+ */
+function getPostProcessors(projection) {
+  switch (projection?.getCode()) {
+    case 'globe':
+      return createGlobePostProcessors({h: 0});
+    default:
+      break;
+  }
+  return [];
+}
 
 /**
  * @typedef {Object} Options
@@ -54,7 +65,7 @@ class WebGLLayerRenderer extends LayerRenderer {
     /**
      * @private
      */
-    this.postProcesses_ = options.postProcesses;
+    this.postProcesses_ = options.postProcesses || [];
 
     /**
      * @private
@@ -76,6 +87,8 @@ class WebGLLayerRenderer extends LayerRenderer {
 
     this.dispatchPreComposeEvent = this.dispatchPreComposeEvent.bind(this);
     this.dispatchPostComposeEvent = this.dispatchPostComposeEvent.bind(this);
+
+    this.finalProjection_ = null;
   }
 
   /**
@@ -167,15 +180,21 @@ class WebGLLayerRenderer extends LayerRenderer {
       const canvasCacheKey =
         'map/' + frameState.mapId + '/group/' + groupNumber;
 
+      const finalProjection = frameState.viewState.finalProjection;
+
       if (
         !this.helper ||
         !this.helper.canvasCacheKeyMatches(canvasCacheKey) ||
-        this.helper.needsToBeRecreated()
+        this.helper.needsToBeRecreated() ||
+        this.finalProjection_ !== finalProjection
       ) {
         this.removeHelper();
 
         this.helper = new WebGLHelper({
-          postProcesses: this.postProcesses_,
+          postProcesses: [
+            ...getPostProcessors(finalProjection),
+            ...this.postProcesses_,
+          ],
           uniforms: this.uniforms_,
           canvasCacheKey: canvasCacheKey,
         });
@@ -183,6 +202,8 @@ class WebGLLayerRenderer extends LayerRenderer {
         if (className) {
           this.helper.getCanvas().className = className;
         }
+
+        this.finalProjection_ = finalProjection;
 
         this.afterHelperCreated();
       }
