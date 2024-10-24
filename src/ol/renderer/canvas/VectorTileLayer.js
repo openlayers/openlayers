@@ -419,6 +419,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @override
    */
   getFeatures(pixel) {
+    if (this.renderedTiles.length === 0) {
+      return Promise.resolve([]);
+    }
     return new Promise((resolve, reject) => {
       const layer = this.getLayer();
       const layerUid = getUid(layer);
