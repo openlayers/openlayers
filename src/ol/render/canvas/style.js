@@ -541,6 +541,12 @@ function buildText(flatStyle, context) {
     context,
   );
 
+  const evaluateKeepUpright = booleanEvaluator(
+    flatStyle,
+    prefix + 'keep-upright',
+    context,
+  );
+
   const evaluatePadding = numberArrayEvaluator(
     flatStyle,
     prefix + 'padding',
@@ -660,6 +666,10 @@ function buildText(flatStyle, context) {
 
     if (evaluatePadding) {
       text.setPadding(evaluatePadding(context));
+    }
+
+    if (evaluateKeepUpright) {
+      text.setKeepUpright(evaluateKeepUpright(context));
     }
 
     return text;
