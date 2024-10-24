@@ -161,6 +161,7 @@
     "../src/ol/proj/Projection.js",
     "../src/ol/proj/projections.js",
     "../src/ol/proj/transforms.js",
+    "../src/ol/proj/utm.js",
     "../src/ol/render.js",
     "../src/ol/render/Box.js",
     "../src/ol/render/canvas.js",

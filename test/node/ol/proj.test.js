@@ -462,6 +462,83 @@ describe('ol/proj.js', function () {
     });
   });
 
+  describe('lazily registered utm transforms', () => {
+    afterEach(() => {
+      clearAllProjections();
+      addCommon();
+    });
+
+    const cases = [
+      {
+        sourceCode: 'EPSG:32633',
+        sourceCoord: [500000, 100000],
+        destCode: 'EPSG:4326',
+        destCoord: [15, 0.9047306],
+      },
+      {
+        sourceCode: 'EPSG:32633',
+        sourceCoord: [500000, 4649776.22],
+        destCode: 'EPSG:4326',
+        destCoord: [15, 42],
+      },
+      {
+        sourceCode: 'EPSG:32633',
+        sourceCoord: [500000, 4649776.22],
+        destCode: 'EPSG:3857',
+        destCoord: [1669792.3618991016, 5160979.437547961],
+      },
+      {
+        sourceCode: 'EPSG:32633',
+        sourceCoord: [170000, 4649776.22],
+        destCode: 'EPSG:3857',
+        destCoord: [1226739.3663468603, 5150642.9136177115],
+      },
+      {
+        sourceCode: 'EPSG:32715',
+        sourceCoord: [600000, 8000000],
+        destCode: 'EPSG:4326',
+        destCoord: [-92.0549531, -18.0863946],
+      },
+      {
+        sourceCode: 'EPSG:32715',
+        sourceCoord: [600000, 8000000],
+        destCode: 'EPSG:3857',
+        destCoord: [-10247510.498555563, -2047663.3668866507],
+      },
+    ];
+
+    function epsilon(code) {
+      const projection = getProjection(code);
+      switch (projection.getUnits()) {
+        case 'm': {
+          return 1e-1;
+        }
+        case 'degrees': {
+          return 1e-6;
+        }
+        default: {
+          throw new Error(`unsupported units: ${projection.getUnits()}`);
+        }
+      }
+    }
+
+    for (const c of cases) {
+      it(`works for transform([${c.sourceCoord.join(', ')}], '${c.sourceCode}', '${c.destCode}')`, () => {
+        const output = transform(c.sourceCoord, c.sourceCode, c.destCode);
+        const e = epsilon(c.destCode);
+        expect(output[0]).to.roughlyEqual(c.destCoord[0], e);
+        expect(output[1]).to.roughlyEqual(c.destCoord[1], e);
+      });
+
+      it(`works for transform([${c.destCoord.join(', ')}], '${c.destCode}', '${c.sourceCode}')`, () => {
+        const output = transform(c.destCoord, c.destCode, c.sourceCode);
+        const e = epsilon(c.sourceCode);
+        expect(output[0]).to.roughlyEqual(c.sourceCoord[0], e);
+        expect(output[1]).to.roughlyEqual(c.sourceCoord[1], e);
+      });
+    }
+  });
+
   describe('Proj4js integration', function () {
     afterEach(function () {
       delete proj4.defs['EPSG:21781'];

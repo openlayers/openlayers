@@ -1,7 +1,7 @@
-import * as transforms from '../../../../../src/ol/proj/transforms.js';
 import Projection from '../../../../../src/ol/proj/Projection.js';
+import {add, get, remove} from '../../../../../src/ol/proj/transforms.js';
 
-describe('transforms.remove()', function () {
+describe('ol/proj/transforms.js', function () {
   const extent = [180, -90, 180, 90];
   const units = 'degrees';
 
@@ -19,11 +19,11 @@ describe('transforms.remove()', function () {
     const transform = function (input, output, dimension) {
       return input;
     };
-    transforms.add(foo, bar, transform);
-    expect(transforms.get('foo', 'bar')).to.be(transform);
+    add(foo, bar, transform);
+    expect(get('foo', 'bar')).to.be(transform);
 
-    const removed = transforms.remove(foo, bar);
+    const removed = remove(foo, bar);
     expect(removed).to.be(transform);
-    expect(transforms.get('foo', 'bar')).to.be(undefined);
+    expect(get('foo', 'bar')).to.be(null);
   });
 });
