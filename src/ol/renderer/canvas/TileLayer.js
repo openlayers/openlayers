@@ -152,7 +152,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @protected
-     * @type {import("../../proj/Projection.js").default}
+     * @type {import("../../proj/Projection.js").default|null}
      */
     this.renderedProjection = null;
 
@@ -205,12 +205,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
      * @private
      */
     this.tileCache_ = new LRUCache(cacheSize);
-
-    /**
-     * @private
-     * @type {import("../../proj/Projection.js").default}
-     */
-    this.renderedProjection_ = undefined;
 
     this.maxStaleKeys = cacheSize * 0.5;
   }
@@ -363,11 +357,11 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @override
    */
   prepareFrame(frameState) {
-    if (!this.renderedProjection_) {
-      this.renderedProjection_ = frameState.viewState.projection;
-    } else if (frameState.viewState.projection !== this.renderedProjection_) {
+    if (!this.renderedProjection) {
+      this.renderedProjection = frameState.viewState.projection;
+    } else if (frameState.viewState.projection !== this.renderedProjection) {
       this.tileCache_.clear();
-      this.renderedProjection_ = frameState.viewState.projection;
+      this.renderedProjection = frameState.viewState.projection;
     }
 
     const source = this.getLayer().getSource();
@@ -839,7 +833,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       !this.renderedExtent_ || !equals(this.renderedExtent_, canvasExtent);
     this.renderedExtent_ = canvasExtent;
     this.renderedPixelRatio = pixelRatio;
-    this.renderedProjection = projection;
 
     this.postRender(this.context, frameState);
 
