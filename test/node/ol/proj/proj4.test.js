@@ -16,8 +16,8 @@ import {
 } from '../../../../src/ol/proj/proj4.js';
 
 const epsgDefinitions = {
-  32721: '+proj=utm +zone=21 +south +datum=WGS84 +units=m +no_defs +type=crs',
-  32612: '+proj=utm +zone=12 +datum=WGS84 +units=m +no_defs +type=crs',
+  31287:
+    '+proj=lcc +lat_0=47.5 +lon_0=13.3333333333333 +lat_1=49 +lat_2=46 +x_0=400000 +y_0=400000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232 +units=m +no_defs +type=crs',
 };
 
 async function mockEPSGLookup(code) {
@@ -71,7 +71,7 @@ describe('ol/proj/proj4.js', () => {
 
       register(proj4);
       setEPSGLookup(lookup);
-      await fromEPSGCode(32612);
+      await fromEPSGCode(31287);
 
       expect(called).to.be(true);
     });
