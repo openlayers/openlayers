@@ -322,7 +322,7 @@ class Geometry extends BaseObject {
               0,
               0,
             );
-            transform2D(
+            const transformed = transform2D(
               inCoordinates,
               0,
               inCoordinates.length,
@@ -331,8 +331,8 @@ class Geometry extends BaseObject {
               outCoordinates,
             );
             return getTransform(sourceProj, destination)(
-              inCoordinates,
-              outCoordinates,
+              transformed,
+              transformed,
               stride,
             );
           }
