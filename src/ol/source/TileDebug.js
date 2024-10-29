@@ -38,6 +38,7 @@ class TileDebug extends ImageTile {
     const template = options.template || 'z:{z} x:{x} y:{y}';
 
     super({
+      transition: 0,
       projection: options.projection,
       tileGrid: options.tileGrid,
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
