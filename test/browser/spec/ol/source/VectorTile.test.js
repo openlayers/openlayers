@@ -299,52 +299,65 @@ describe('ol/source/VectorTile', function () {
     });
   });
 
-  it('does not fill up the tile queue', function (done) {
-    const target = document.createElement('div');
-    target.style.width = '100px';
-    target.style.height = '100px';
-    document.body.appendChild(target);
+  describe('tile cache and queue', function () {
+    let map, urls, source;
 
-    const urls = [
-      'spec/ol/data/14-8938-5680.vector.pbf?num=0&coord={z},{x},{y}',
-      'spec/ol/data/14-8938-5680.vector.pbf?num=1&coord={z},{x},{y}',
-      'spec/ol/data/14-8938-5680.vector.pbf?num=2&coord={z},{x},{y}',
-      'spec/ol/data/14-8938-5680.vector.pbf?num=3&coord={z},{x},{y}',
-    ];
+    beforeEach(() => {
+      map = new Map({
+        target: createMapDiv(100, 100),
+        view: new View({
+          center: [0, 0],
+          zoom: 0,
+        }),
+      });
 
-    const source = new VectorTileSource({
-      format: new MVT(),
-      url: urls[0],
-    });
+      urls = [
+        'spec/ol/data/14-8938-5680.vector.pbf?num=0&coord={z},{x},{y}',
+        'spec/ol/data/14-8938-5680.vector.pbf?num=1&coord={z},{x},{y}',
+        'spec/ol/data/14-8938-5680.vector.pbf?num=2&coord={z},{x},{y}',
+        'spec/ol/data/14-8938-5680.vector.pbf?num=3&coord={z},{x},{y}',
+      ];
 
-    const map = new Map({
-      target: target,
-      layers: [
+      source = new VectorTileSource({
+        format: new MVT(),
+        url: urls[0],
+      });
+
+      map.addLayer(
         new VectorTileLayer({
           source: source,
         }),
-      ],
-      view: new View({
-        center: [0, 0],
-        zoom: 0,
-      }),
+      );
     });
 
-    const tileQueue = map.tileQueue_;
-    const max = urls.length + 3;
-    let count = 0;
-    map.on('rendercomplete', () => {
-      ++count;
+    afterEach(() => {
+      disposeMap(map);
+    });
 
-      expect(tileQueue.getTilesLoading()).to.be(0);
-      if (count === max) {
-        disposeMap(map);
-        done();
-        return;
-      }
+    it('does not fill up the tile queue', function (done) {
+      const tileQueue = map.tileQueue_;
+      const max = urls.length + 3;
+      let count = 0;
+      map.on('rendercomplete', () => {
+        ++count;
 
-      const newUrl = urls[count % urls.length];
-      source.setUrl(newUrl);
+        expect(tileQueue.getTilesLoading()).to.be(0);
+        if (count === max) {
+          done();
+          return;
+        }
+
+        const newUrl = urls[count % urls.length];
+        source.setUrl(newUrl);
+      });
+    });
+
+    it('clears source tiles on refresh()', async () => {
+      await new Promise((resolve) => map.once('rendercomplete', resolve));
+      expect(Object.keys(source.sourceTiles_).length).to.be.greaterThan(0);
+      source.refresh();
+      map.renderSync();
+      expect(Object.keys(source.sourceTiles_).length).to.be(0);
     });
   });
 });

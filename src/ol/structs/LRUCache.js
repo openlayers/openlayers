@@ -59,6 +59,13 @@ class LRUCache {
     this.newest_ = null;
   }
 
+  deleteOldest() {
+    const entry = this.pop();
+    if (entry instanceof Disposable) {
+      entry.dispose();
+    }
+  }
+
   /**
    * @return {boolean} Can expire cache.
    */
@@ -73,10 +80,7 @@ class LRUCache {
    */
   expireCache(keep) {
     while (this.canExpireCache()) {
-      const entry = this.pop();
-      if (entry instanceof Disposable) {
-        entry.dispose();
-      }
+      this.deleteOldest();
     }
   }
 
@@ -84,10 +88,9 @@ class LRUCache {
    * FIXME empty description for jsdoc
    */
   clear() {
-    this.count_ = 0;
-    this.entries_ = {};
-    this.oldest_ = null;
-    this.newest_ = null;
+    while (this.oldest_) {
+      this.deleteOldest();
+    }
   }
 
   /**
