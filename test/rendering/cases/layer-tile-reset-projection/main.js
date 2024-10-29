@@ -7,6 +7,7 @@ const map = new Map({
   layers: [
     new TileLayer({
       source: new XYZ({
+        transition: 0,
         minZoom: 0,
         maxZoom: 0,
         url: '/data/tiles/osm/{z}/{x}/{y}.png',
