@@ -19,6 +19,7 @@ new Map({
       source: new DataTile({
         maxZoom: 0,
         loader: () => data,
+        transition: 0,
       }),
     }),
   ],

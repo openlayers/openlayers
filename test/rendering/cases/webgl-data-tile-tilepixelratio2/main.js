@@ -22,6 +22,7 @@ new Map({
         tileGrid: createXYZ({maxZoom: 0}),
         maxZoom: 0,
         loader: () => data,
+        transition: 0,
       }),
     }),
   ],

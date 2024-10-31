@@ -20,6 +20,7 @@ new Map({
   layers: [
     new TileLayer({
       source: new DataTile({
+        transition: 0,
         tileSize: size,
         bandCount: 8,
         loader: function (z, x, y) {
