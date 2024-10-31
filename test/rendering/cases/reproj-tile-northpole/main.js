@@ -23,6 +23,7 @@ const source = new XYZ({
   maxZoom: 0,
   projection: 'EPSG:4326',
   url: '/data/tiles/4326/{z}/{x}/{y}.png',
+  transition: 0,
 });
 
 new Map({

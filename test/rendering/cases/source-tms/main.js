@@ -10,6 +10,7 @@ new Map({
     new TileLayer({
       source: new ImageTile({
         url: '/data/tiles/nyc/{z}/{x}/{-y}.jpg',
+        transition: 0,
       }),
     }),
     new TileLayer({
