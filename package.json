@@ -116,7 +116,7 @@
     "loglevelnext": "^6.0.0",
     "marked": "14.1.3",
     "metalsmith": "^2.5.0",
-    "mocha": "10.7.3",
+    "mocha": "10.8.2",
     "monotone-chain-convex-hull": "^1.1.0",
     "ol-mapbox-style": "^12.3.1",
     "ol-stac": "^1.0.0-beta.8",
