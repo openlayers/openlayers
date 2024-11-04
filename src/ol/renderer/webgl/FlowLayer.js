@@ -80,12 +80,33 @@ class FlowLayerRenderer extends WebGLTileLayerRenderer {
       vertexShader: options.tileVertexShader,
       fragmentShader: options.tileFragmentShader,
       cacheSize: options.cacheSize,
-      // TODO: rework the post-processing logic
-      // see https://github.com/openlayers/openlayers/issues/16120
-      postProcesses: [{}],
+
       uniforms: {
         [U.MAX_SPEED]: options.maxSpeed,
       },
+
+      postProcesses: [
+        (gl, frameState, renderTarget, nextRenderTarget) => {
+          const canvas = this.helper.getCanvas();
+          const screenWidth = canvas.width;
+          const screenHeight = canvas.height;
+          if (
+            this.renderedWidth_ != screenWidth ||
+            this.renderedHeight_ != screenHeight
+          ) {
+            this.createSizeDependentTextures_();
+          }
+
+          this.velocityTexture_ = renderTarget.getTexture();
+
+          this.drawParticleTrails_(frameState, nextRenderTarget);
+          this.updateParticlePositions_(frameState);
+
+          frameState.animate = true;
+          this.renderedWidth_ = screenWidth;
+          this.renderedHeight_ = screenHeight;
+        },
+      ],
     });
 
     /**
@@ -340,54 +361,10 @@ class FlowLayerRenderer extends WebGLTileLayerRenderer {
   }
 
   /**
-   * @override
    * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../webgl/RenderTarget.js").default} nextRenderTarget Next render target.
    */
-  beforeFinalize(frameState) {
-    const helper = this.helper;
-    const gl = helper.getGL();
-    const canvas = helper.getCanvas();
-    const screenWidth = canvas.width;
-    const screenHeight = canvas.height;
-
-    if (
-      this.renderedWidth_ != screenWidth ||
-      this.renderedHeight_ != screenHeight
-    ) {
-      this.createSizeDependentTextures_();
-    }
-
-    const size = [screenWidth, screenHeight];
-
-    // copy current frame buffer to the velocity texture
-    this.velocityTexture_ = helper.createTexture(
-      size,
-      null,
-      this.velocityTexture_,
-    );
-    gl.copyTexImage2D(
-      gl.TEXTURE_2D,
-      0,
-      gl.RGBA,
-      0,
-      0,
-      screenWidth,
-      screenHeight,
-      0,
-    );
-
-    this.drawParticleTrails_(frameState);
-    this.updateParticlePositions_(frameState);
-
-    frameState.animate = true;
-    this.renderedWidth_ = screenWidth;
-    this.renderedHeight_ = screenHeight;
-  }
-
-  /**
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
-   */
-  drawParticleTrails_(frameState) {
+  drawParticleTrails_(frameState, nextRenderTarget) {
     const helper = this.helper;
     const gl = helper.getGL();
 
@@ -396,12 +373,15 @@ class FlowLayerRenderer extends WebGLTileLayerRenderer {
     this.drawTexture_(this.previousTrailsTexture_, this.fadeOpacity_);
     this.drawParticleColor_(frameState);
 
-    helper.bindInitialFrameBuffer();
-    gl.clearColor(0.0, 0.0, 0.0, 0.0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-
-    gl.enable(gl.BLEND);
+    helper.prepareDrawToRenderTarget(
+      frameState,
+      nextRenderTarget,
+      undefined,
+      undefined,
+      false,
+    );
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
     this.drawTexture_(this.nextTrailsTexture_, 1);
     gl.disable(gl.BLEND);
 
@@ -419,7 +399,7 @@ class FlowLayerRenderer extends WebGLTileLayerRenderer {
     const gl = helper.getGL();
 
     helper.useProgram(this.textureProgram_);
-    helper.bindTexture(texture, 0, U.TEXTURE);
+    helper.bindTexture(texture, U.TEXTURE);
     helper.bindAttribute(this.quadBuffer_, A.POSITION, 2);
     this.helper.setUniformFloatValue(U.OPACITY, opacity);
 
@@ -439,8 +419,8 @@ class FlowLayerRenderer extends WebGLTileLayerRenderer {
 
     helper.bindAttribute(this.particleIndexBuffer_, A.INDEX, 1);
 
-    helper.bindTexture(this.previousPositionTexture_, 0, U.POSITION_TEXTURE);
-    helper.bindTexture(this.velocityTexture_, 1, U.VELOCITY_TEXTURE);
+    helper.bindTexture(this.previousPositionTexture_, U.POSITION_TEXTURE);
+    helper.bindTexture(this.velocityTexture_, U.VELOCITY_TEXTURE);
 
     this.helper.setUniformFloatValue(
       U.PARTICLE_COUNT_SQRT,
@@ -468,8 +448,8 @@ class FlowLayerRenderer extends WebGLTileLayerRenderer {
     gl.viewport(0, 0, this.particleCountSqrt_, this.particleCountSqrt_);
     helper.bindFrameBuffer(this.framebuffer_, this.nextPositionTexture_);
 
-    helper.bindTexture(this.previousPositionTexture_, 0, U.POSITION_TEXTURE);
-    helper.bindTexture(this.velocityTexture_, 1, U.VELOCITY_TEXTURE);
+    helper.bindTexture(this.previousPositionTexture_, U.POSITION_TEXTURE);
+    helper.bindTexture(this.velocityTexture_, U.VELOCITY_TEXTURE);
     helper.bindAttribute(this.quadBuffer_, A.POSITION, 2);
 
     helper.setUniformFloatValue(U.RANDOM_SEED, Math.random());

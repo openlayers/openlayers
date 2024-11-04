@@ -53,6 +53,7 @@ class ExecutorGroup {
    * The serializable instructions.
    * @param {number} [renderBuffer] Optional rendering buffer.
    * @param {boolean} [deferredRendering] Enable deferred rendering with renderDeferred().
+   * @param {import("../../View.js").State} [viewState] View state.
    */
   constructor(
     maxExtent,
@@ -62,6 +63,7 @@ class ExecutorGroup {
     allInstructions,
     renderBuffer,
     deferredRendering,
+    viewState,
   ) {
     /**
      * @private
@@ -123,6 +125,8 @@ class ExecutorGroup {
      */
     this.deferredZIndexContexts_ = {};
 
+    this.viewState_ = viewState;
+
     this.createExecutors_(allInstructions, deferredRendering);
   }
 
@@ -162,6 +166,7 @@ class ExecutorGroup {
           this.overlaps_,
           instructions,
           deferredRendering,
+          this.viewState_,
         );
       }
     }

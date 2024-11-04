@@ -591,6 +591,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const frameStateExtent = frameState.extent;
     const viewState = frameState.viewState;
     const projection = viewState.projection;
+    const finalProjection = viewState.finalProjection;
     const resolution = viewState.resolution;
     const pixelRatio = frameState.pixelRatio;
     const vectorLayerRevision = vectorLayer.getRevision();
@@ -656,6 +657,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       this.renderedRevision_ == vectorLayerRevision &&
       this.renderedRenderOrder_ == vectorLayerRenderOrder &&
       this.renderedFrameDeclutter_ === !!frameState.declutter &&
+      !finalProjection?.isSubjective() &&
       containsExtent(this.wrappedRenderedExtent_, extent)
     ) {
       if (!equals(this.renderedExtent_, renderedExtent)) {
@@ -744,6 +746,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       replayGroupInstructions,
       vectorLayer.getRenderBuffer(),
       !!frameState.declutter,
+      frameState.viewState,
     );
 
     this.renderedResolution_ = resolution;

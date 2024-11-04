@@ -60,6 +60,11 @@ import {
   toEPSG4326,
 } from './proj/epsg3857.js';
 import {PROJECTIONS as EPSG4326_PROJECTIONS} from './proj/epsg4326.js';
+import {
+  PROJECTIONS as GLOBE_PROJECTIONS,
+  fromEPSG4326 as globeFromEPSG4326,
+  toEPSG4326 as globeToEPSG4326,
+} from './proj/globe.js';
 import {METERS_PER_UNIT} from './proj/Units.js';
 import {
   add as addProj,
@@ -71,7 +76,7 @@ import {
   clear as clearTransformFuncs,
   get as getTransformFunc,
 } from './proj/transforms.js';
-import {applyTransform, getWidth} from './extent.js';
+import {applyTransform, getForViewAndSize, getWidth} from './extent.js';
 import {clamp, modulo} from './math.js';
 import {equals, getWorldsAway} from './coordinate.js';
 import {getDistance} from './sphere.js';
@@ -95,6 +100,7 @@ import {warn} from './console.js';
  * @param {Array<number>} [output]
  * @param {number} [dimension]
  * @param {number} [stride]
+ * @param {import('./View.js').State} [viewState]
  * @return {Array<number>}
  *
  * @api
@@ -736,6 +742,36 @@ export function createSafeCoordinateTransform(sourceProj, destProj, transform) {
   };
 }
 
+export function getPlanarProjection(projection) {
+  if (!projection.isSubjective()) {
+    return projection;
+  }
+  // XXX:
+  return get('EPSG:4326');
+}
+
+/**
+ * @param {Projection} projection The Projection
+ * @param {import("./coordinate.js").Coordinate} center The center.
+ * @param {number} resolution The resolution.
+ * @param {number} rotation The rotation.
+ * @param {number} tilt The tilt in radians.
+ * @param {import("./size.js").Size} size The size.
+ * @return {import('./extent.js').Extent} The extent.
+ */
+export function getExtentForViewAndSize(
+  projection,
+  center,
+  resolution,
+  rotation,
+  tilt,
+  size,
+) {
+  const extent = getForViewAndSize(center, resolution, rotation, size);
+
+  return extent;
+}
+
 /**
  * Add transforms to and from EPSG:4326 and EPSG:3857.  This function is called
  * by when this module is executed and should only need to be called again after
@@ -746,6 +782,7 @@ export function addCommon() {
   // projections with equal meaning.
   addEquivalentProjections(EPSG3857_PROJECTIONS);
   addEquivalentProjections(EPSG4326_PROJECTIONS);
+  addEquivalentProjections(GLOBE_PROJECTIONS);
   // Add transformations to convert EPSG:4326 like coordinates to EPSG:3857 like
   // coordinates and back.
   addEquivalentTransforms(
@@ -753,6 +790,12 @@ export function addCommon() {
     EPSG3857_PROJECTIONS,
     fromEPSG4326,
     toEPSG4326,
+  );
+  addEquivalentTransforms(
+    EPSG4326_PROJECTIONS,
+    GLOBE_PROJECTIONS,
+    globeFromEPSG4326,
+    globeToEPSG4326,
   );
 }
 
