@@ -123,7 +123,7 @@
     "pixelmatch": "^6.0.0",
     "pmtiles": "^3.2.1",
     "pngjs": "^7.0.0",
-    "proj4": "2.12.1",
+    "proj4": "2.14.0",
     "puppeteer": "23.6.1",
     "rollup": "^4.1.4",
     "rollup-plugin-external-globals": "^0.12.0",
