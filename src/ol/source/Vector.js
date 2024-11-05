@@ -1057,11 +1057,9 @@ class VectorSource extends Source {
    */
   removeLoadedExtent(extent) {
     const loadedExtentsRtree = this.loadedExtentsRtree_;
-    let obj;
-    loadedExtentsRtree.forEachInExtent(extent, function (object) {
+    const obj = loadedExtentsRtree.forEachInExtent(extent, function (object) {
       if (equals(object.extent, extent)) {
-        obj = object;
-        return true;
+        return object;
       }
     });
     if (obj) {
