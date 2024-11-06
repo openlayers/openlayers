@@ -330,11 +330,11 @@ class Geometry extends BaseObject {
               tmpTransform,
               outCoordinates,
             );
-            return getTransform(sourceProj, destination)(
-              transformed,
-              transformed,
-              stride,
-            );
+            const projTransform = getTransform(sourceProj, destination);
+            if (projTransform) {
+              return projTransform(transformed, transformed, stride);
+            }
+            return transformed;
           }
         : getTransform(sourceProj, destination);
     this.applyTransform(transformFn);

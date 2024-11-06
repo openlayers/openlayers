@@ -1,5 +1,11 @@
 ## Upgrade notes
 
+### Next Release
+
+#### The `transform` function throws for unknown projections
+
+Previously, the `transform()` function from the `ol/proj` module would apply the identity transform if either the source or the destination projections were unrecognized. Now this function will throw an error if it cannot perform the transform. You can check whether a projection is registered by calling the `get()` function from `ol/proj` - this function returns `null` if the projection definition for a provided identifier is not known.
+
 ### 10.2.0
 
 No changes should be needed to update to this release.  See the release changelog for new features and fixes.

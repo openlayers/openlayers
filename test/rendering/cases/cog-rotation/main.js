@@ -4,6 +4,12 @@ import proj4 from 'proj4';
 import {GeoTIFF, TileDebug} from '../../../../src/ol/source.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
 
+proj4.defs(
+  'EPSG:32759',
+  '+proj=utm +zone=59 +south +datum=WGS84 +units=m +no_defs',
+);
+register(proj4);
+
 const source = new GeoTIFF({
   sources: [
     {
@@ -24,14 +30,7 @@ new Map({
     }),
   ],
   target: 'map',
-  view: source.getView().then((viewConfig) => {
-    proj4.defs(
-      'EPSG:32759',
-      '+proj=utm +zone=59 +south +datum=WGS84 +units=m +no_defs',
-    );
-    register(proj4);
-    return viewConfig;
-  }),
+  view: source.getView(),
 });
 
 render({

@@ -24,28 +24,30 @@ import {METERS_PER_UNIT} from './Units.js';
 
 /**
  * @classdesc
- * Projection definition class. One of these is created for each projection
- * supported in the application and stored in the {@link module:ol/proj} namespace.
- * You can use these in applications, but this is not required, as API params
- * and options use {@link module:ol/proj~ProjectionLike} which means the simple string
- * code will suffice.
+ * In most cases, you should not need to create instances of this class.
+ * Instead, where projection information is required, you can use a string
+ * projection code or identifier (e.g. `EPSG:4326`) instead of a projection
+ * instance.
  *
- * You can use {@link module:ol/proj.get} to retrieve the object for a particular
- * projection.
+ * The library includes support for transforming coordinates between the following
+ * projections:
  *
- * The library includes definitions for `EPSG:4326` and `EPSG:3857`, together
- * with the following aliases:
- * * `EPSG:4326`: CRS:84, urn:ogc:def:crs:EPSG:6.6:4326,
- *     urn:ogc:def:crs:OGC:1.3:CRS84, urn:ogc:def:crs:OGC:2:84,
- *     http://www.opengis.net/gml/srs/epsg.xml#4326,
- *     urn:x-ogc:def:crs:EPSG:4326
- * * `EPSG:3857`: EPSG:102100, EPSG:102113, EPSG:900913,
- *     urn:ogc:def:crs:EPSG:6.18:3:3857,
- *     http://www.opengis.net/gml/srs/epsg.xml#3857
+ *  * WGS 84 / Geographic - Using codes `EPSG:4326`, `CRS:84`, `urn:ogc:def:crs:EPSG:6.6:4326`,
+ *    `urn:ogc:def:crs:OGC:1.3:CRS84`, `urn:ogc:def:crs:OGC:2:84`, `http://www.opengis.net/gml/srs/epsg.xml#4326`,
+ *    or `urn:x-ogc:def:crs:EPSG:4326`
+ *  * WGS 84 / Spherical Mercator - Using codes `EPSG:3857`, `EPSG:102100`, `EPSG:102113`, `EPSG:900913`,
+ *    `urn:ogc:def:crs:EPSG:6.18:3:3857`, or `http://www.opengis.net/gml/srs/epsg.xml#3857`
+ *  * WGS 84 / UTM zones - Using codes `EPSG:32601` through `EPSG:32660` for northern zones
+ *    and `EPSG:32701` through `EPSG:32760` for southern zones. Note that the built-in UTM transforms
+ *    are lower accuracy (with errors on the order of 0.1 m) than those that you might get in a
+ *    library like [proj4js](https://github.com/proj4js/proj4js).
  *
- * If you use [proj4js](https://github.com/proj4js/proj4js), aliases can
- * be added using `proj4.defs()`. After all required projection definitions are
- * added, call the {@link module:ol/proj/proj4.register} function.
+ * For additional projection support, or to use higher accuracy transforms than the built-in ones, you can use
+ * the [proj4js](https://github.com/proj4js/proj4js) library. With `proj4js`, after adding any new projection
+ * definitions, call the {@link module:ol/proj/proj4.register} function.
+ *
+ * You can use the {@link module:ol/proj.get} function to retrieve a projection instance
+ * for one of the registered projections.
  *
  * @api
  */
