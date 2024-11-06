@@ -292,6 +292,19 @@ describe('ol/render/canvas/style.js', () => {
         }),
       },
       {
+        name: 'Text style',
+        style: {
+          'text-value': 'test',
+          'text-keep-upright': false,
+        },
+        expected: new Style({
+          text: new Text({
+            text: 'test',
+            keepTextUpright: false,
+          }),
+        }),
+      },
+      {
         name: 'missing circle-radius',
         style: {
           'circle-stroke-color': 'red',
