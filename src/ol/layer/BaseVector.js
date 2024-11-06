@@ -12,6 +12,11 @@ import {
   rulesToStyleFunction,
 } from '../render/canvas/style.js';
 
+/***
+ * @template T
+ * @typedef {T extends import("../source/Vector.js").default<infer U extends import("../Feature.js").FeatureLike> ? U : never} ExtractedFeatureType
+ */
+
 /**
  * @template {import('../Feature').FeatureLike} FeatureType
  * @template {import("../source/Vector.js").default<FeatureType>|import("../source/VectorTile.js").default<FeatureType>} VectorSourceType<FeatureType>

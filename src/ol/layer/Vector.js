@@ -4,14 +4,9 @@
 import BaseVectorLayer from './BaseVector.js';
 import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer.js';
 
-/***
- * @template T
- * @typedef {T extends import("../source/Vector.js").default<infer U extends import("../Feature.js").FeatureLike> ? U : never} ExtractedFeatureType
- */
-
 /**
  * @template {import("../source/Vector.js").default<FeatureType>} [VectorSourceType=import("../source/Vector.js").default<*>]
- * @template {import('../Feature.js').FeatureLike} [FeatureType=ExtractedFeatureType<VectorSourceType>]
+ * @template {import('../Feature.js').FeatureLike} [FeatureType=import("./BaseVector.js").ExtractedFeatureType<VectorSourceType>]
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
@@ -72,7 +67,7 @@ import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer.js';
  * options means that `title` is observable, and has get/set accessors.
  *
  * @template {import("../source/Vector.js").default<FeatureType>} [VectorSourceType=import("../source/Vector.js").default<*>]
- * @template {import('../Feature.js').FeatureLike} [FeatureType=ExtractedFeatureType<VectorSourceType>]
+ * @template {import('../Feature.js').FeatureLike} [FeatureType=import("./BaseVector.js").ExtractedFeatureType<VectorSourceType>]
  * @extends {BaseVectorLayer<FeatureType, VectorSourceType, CanvasVectorLayerRenderer>}
  * @api
  */
