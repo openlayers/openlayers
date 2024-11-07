@@ -33,7 +33,7 @@ class IconImageCache {
      * @type {number}
      * @private
      */
-    this.maxCacheSize_ = 32;
+    this.maxCacheSize_ = 1024;
   }
 
   /**
@@ -126,8 +126,8 @@ class IconImageCache {
   }
 
   /**
-   * Set the cache size of the icon cache. Default is `32`. Change this value when
-   * your map uses more than 32 different icon images and you are not caching icon
+   * Set the cache size of the icon cache. Default is `1024`. Change this value when
+   * your map uses more than 1024 different icon images and you are not caching icon
    * styles on the application level.
    * @param {number} maxCacheSize Cache max size.
    * @api
