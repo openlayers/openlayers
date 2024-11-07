@@ -22,7 +22,7 @@ const layer = new VectorTileLayer({
     tileGrid: tileGrid,
   }),
 });
-applyStyle(layer, url, '', {resolutions: tileGrid.getResolutions()});
+applyStyle(layer, url, {resolutions: tileGrid.getResolutions()});
 applyBackground(layer, url);
 
 const map = new Map({
