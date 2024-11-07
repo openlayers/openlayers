@@ -22,7 +22,7 @@ const map = new Map({
 });
 
 // after GeoTIFF metadata has been read, recenter the map to show the image
-source.getView().then(async (sourceView) => {
+source.getView().then((sourceView) => {
   const view = map.getView();
 
   // transform the image center to view coorindates
