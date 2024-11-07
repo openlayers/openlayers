@@ -93,9 +93,13 @@ export function register(proj4) {
  * @return {Promise<string>} The proj4 definition.
  */
 let epsgLookup = async function (code) {
-  const response = await fetch(`https://epsg.io/${code}.proj4`);
+  const response = await fetch(
+    `https://spatialreference.org/ref/epsg/${code}/ogcwkt/`,
+  );
   if (!response.ok) {
-    throw new Error(`Unexpected response from epsg.io: ${response.status}`);
+    throw new Error(
+      `Unexpected response from spatialreference.org: ${response.status}`,
+    );
   }
   return response.text();
 };
@@ -103,8 +107,8 @@ let epsgLookup = async function (code) {
 /**
  * Set the lookup function for getting proj4 definitions given an EPSG code.
  * By default, the {@link module:ol/proj/proj4.fromEPSGCode} function uses the
- * epsg.io website for proj4 definitions.  This can be changed by providing a
- * different lookup function.
+ * spatialreference.org website for proj4 definitions.
+ * This can be changed by providing a different lookup function.
  *
  * @param {function(number):Promise<string>} func The lookup function.
  * @api
@@ -124,9 +128,10 @@ export function getEPSGLookup() {
 
 /**
  * Get a projection from an EPSG code.  This function fetches the projection
- * definition from the epsg.io website, registers this definition for use with
- * proj4, and returns a configured projection.  You must call import proj4 and
- * call {@link module:ol/proj/proj4.register} before using this function.
+ * definition from the spatialreference.org website, registers this definition
+ * for use with proj4, and returns a configured projection.
+ * You must callimport proj4 and call {@link module:ol/proj/proj4.register}
+ * before using this function.
  *
  * If the projection definition is already registered with proj4, it will not
  * be fetched again (so it is ok to call this function multiple times with the
@@ -163,6 +168,7 @@ export async function fromEPSGCode(code) {
  * Call {@link module:ol/proj/proj4.setEPSGLookup} use the function for lookups
  * `setEPSGLookup(epsgLookupMapTiler('{YOUR_MAPTILER_API_KEY_HERE}'))`.
  *
+ * @deprecated
  * @param {string} key MapTiler API key.  Get your own API key at https://www.maptiler.com/cloud/.
  * @return {function(number):Promise<string>} The EPSG lookup function.
  * @api
