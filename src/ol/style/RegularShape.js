@@ -2,6 +2,7 @@
  * @module ol/style/RegularShape
  */
 
+import IconImage from './IconImage.js';
 import ImageState from '../ImageState.js';
 import ImageStyle from './Image.js';
 import {asArray} from '../color.js';
@@ -15,6 +16,7 @@ import {
   defaultMiterLimit,
   defaultStrokeStyle,
 } from '../render/canvas.js';
+import {shared as iconImageCache} from './IconImageCache.js';
 
 /**
  * Specify radius for regular polygons, or both radius and radius2 for stars.
@@ -69,12 +71,6 @@ class RegularShape extends ImageStyle {
         options.displacement !== undefined ? options.displacement : [0, 0],
       declutterMode: options.declutterMode,
     });
-
-    /**
-     * @private
-     * @type {Object<number, HTMLCanvasElement>}
-     */
-    this.canvases_;
 
     /**
      * @private
@@ -242,7 +238,13 @@ class RegularShape extends ImageStyle {
    * @override
    */
   getImage(pixelRatio) {
-    let image = this.canvases_[pixelRatio];
+    const fillKey = this.fill_?.getKey();
+    const cacheKey =
+      `${pixelRatio},${this.angle_},${this.radius},${this.radius2_},${this.points_},${fillKey}` +
+      Object.values(this.renderOptions_).join(',');
+    let image = /** @type {HTMLCanvasElement} */ (
+      iconImageCache.get(cacheKey, null, null)?.getImage(1)
+    );
     if (!image) {
       const renderOptions = this.renderOptions_;
       const context = createCanvasContext2D(
@@ -252,7 +254,12 @@ class RegularShape extends ImageStyle {
       this.draw_(renderOptions, context, pixelRatio);
 
       image = context.canvas;
-      this.canvases_[pixelRatio] = image;
+      iconImageCache.set(
+        cacheKey,
+        null,
+        null,
+        new IconImage(image, undefined, null, ImageState.LOADED, null),
+      );
     }
     return image;
   }
@@ -502,7 +509,6 @@ class RegularShape extends ImageStyle {
   render() {
     this.renderOptions_ = this.createRenderOptions();
     const size = this.renderOptions_.size;
-    this.canvases_ = {};
     this.hitDetectionCanvas_ = null;
     this.size_ = [size, size];
   }
