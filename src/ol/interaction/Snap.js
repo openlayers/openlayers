@@ -346,7 +346,13 @@ class Snap extends PointerInteraction {
       }
     } else if (this.snapped_) {
       // Dispatch UNSNAP event if no longer snapped
-      this.dispatchEvent(new SnapEvent(SnapEventType.UNSNAP, this.snapped_));
+      const emptySnap = {
+        vertex: null,
+        vertexPixel: null,
+        feature: null,
+        segment: null,
+      };
+      this.dispatchEvent(new SnapEvent(SnapEventType.UNSNAP, emptySnap));
       this.snapped_ = null;
     }
 
