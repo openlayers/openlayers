@@ -28,6 +28,22 @@ describe('ol.control.Control', function () {
 });
 
 describe('element', function () {
+  it('does not trigger error when it is set to null', function () {
+    const map = new Map({
+      target: document.createElement('div'),
+    });
+    try {
+      const control = new Control({
+        element: null,
+      });
+      expect(control.element).to.be(null);
+      map.addControl(control);
+    } catch (e) {
+      expect().fail();
+    }
+    disposeMap(map);
+  });
+
   it('sets `pointer-events: auto` for default target', function () {
     const control = new Control({
       element: document.createElement('div'),
