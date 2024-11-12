@@ -247,10 +247,8 @@ class RegularShape extends ImageStyle {
     );
     if (!image) {
       const renderOptions = this.renderOptions_;
-      const context = createCanvasContext2D(
-        renderOptions.size * pixelRatio,
-        renderOptions.size * pixelRatio,
-      );
+      const size = Math.ceil(renderOptions.size * pixelRatio);
+      const context = createCanvasContext2D(size, size);
       this.draw_(renderOptions, context, pixelRatio);
 
       image = context.canvas;
