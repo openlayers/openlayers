@@ -58,8 +58,12 @@ describe('ol/renderer/canvas/TileLayer', function () {
         const spy = sinon.spy(layer.getRenderer(), 'updateCacheSize');
         map.addLayer(layer);
         map.once('rendercomplete', () => {
-          expect(spy.called).to.be(true);
-          done();
+          // rendercomplete triggers before the postrender functions with the cleanup are run,
+          // so wait another cycle
+          setTimeout(() => {
+            expect(spy.called).to.be(true);
+            done();
+          }, 0);
         });
       });
       it('expires the tile cache, which disposes unused tiles', async () => {

@@ -542,6 +542,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @override
    */
   renderFrame(frameState, target) {
+    let allTilesIdle = true;
     this.renderComplete = true;
 
     /**
@@ -664,7 +665,12 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
           continue;
         }
       }
-      this.renderComplete = false;
+      if (tileState !== TileState.IDLE) {
+        allTilesIdle = false;
+      }
+      if (tileState !== TileState.ERROR) {
+        this.renderComplete = false;
+      }
 
       const hasStaleTile = this.findStaleTile_(tileCoord, tilesByZ);
       if (hasStaleTile) {
@@ -841,21 +847,24 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     }
     context.imageSmoothingEnabled = true;
 
-    /**
-     * Here we unconditionally expire the source cache since the renderer maintains
-     * its own cache.
-     * @param {import("../../Map.js").default} map Map.
-     * @param {import("../../Map.js").FrameState} frameState Frame state.
-     */
-    const postRenderFunction = (map, frameState) => {
-      const tileSourceKey = getUid(tileSource);
-      const wantedTiles = frameState.wantedTiles[tileSourceKey];
-      const tilesCount = wantedTiles ? Object.keys(wantedTiles).length : 0;
-      this.updateCacheSize(tilesCount);
-      this.tileCache_.expireCache();
-    };
+    if (this.renderComplete) {
+      /**
+       * @param {import("../../Map.js").default} map Map.
+       * @param {import("../../Map.js").FrameState} frameState Frame state.
+       */
+      const postRenderFunction = (map, frameState) => {
+        const tileSourceKey = getUid(tileSource);
+        const wantedTiles = frameState.wantedTiles[tileSourceKey];
+        const tilesCount = wantedTiles ? Object.keys(wantedTiles).length : 0;
+        this.updateCacheSize(tilesCount);
+        this.tileCache_.expireCache();
+      };
 
-    frameState.postRenderFunctions.push(postRenderFunction);
+      frameState.postRenderFunctions.push(postRenderFunction);
+    }
+    if (!this.renderComplete && !allTilesIdle) {
+      frameState.animate = true;
+    }
 
     return this.container;
   }
