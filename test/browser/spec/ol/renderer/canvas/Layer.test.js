@@ -16,7 +16,7 @@ describe('ol/renderer/canvas/Layer', function () {
       layers: [
         new TileLayer({
           source: new XYZ({
-            url: 'spec/ol/data/osm/{z}-{x}-{y}.png',
+            url: 'spec/ol/data/osm-{z}-{x}-{y}.png',
           }),
         }),
         new VectorLayer({
