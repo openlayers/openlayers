@@ -2,7 +2,6 @@ import Layer from '../src/ol/layer/WebGLTile.js';
 import Map from '../src/ol/Map.js';
 import Source from '../src/ol/source/ImageTile.js';
 import View from '../src/ol/View.js';
-import {createXYZ} from '../src/ol/tilegrid.js';
 import {useGeographic} from '../src/ol/proj.js';
 
 useGeographic();
@@ -21,8 +20,8 @@ const map = new Map({
         url:
           'https://api.maptiler.com/maps/outdoor-v2/256/{z}/{x}/{y}@2x.png?key=' +
           key,
-        tileSize: 512,
-        tileGrid: createXYZ({tileSize: 256, maxZoom: 22}),
+        maxZoom: 22,
+        tilePixelRatio: 2,
       }),
     }),
   ],
