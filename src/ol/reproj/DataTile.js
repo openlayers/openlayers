@@ -317,25 +317,28 @@ class ReprojDataTile extends DataTile {
   reproject_() {
     const dataSources = [];
     let imageLike = false;
+    const gutter = this.gutter_;
     this.sourceTiles_.forEach((source) => {
       const tile = source.tile;
       if (!tile || tile.getState() !== TileState.LOADED) {
         return;
       }
-      const size = tile.getSize();
-      const gutter = this.gutter_;
+      let pixelSize;
       /**
        * @type {import("../DataTile.js").ArrayLike}
        */
       let tileData;
       const arrayData = asArrayLike(tile.getData());
       if (arrayData) {
+        const size = tile.getSize();
+        pixelSize = [size[0] + 2 * gutter, size[1] + 2 * gutter];
         tileData = arrayData;
       } else {
         imageLike = true;
-        tileData = toArray(asImageLike(tile.getData()));
+        const imageData = asImageLike(tile.getData());
+        pixelSize = [imageData.width, imageData.height];
+        tileData = toArray(imageData);
       }
-      const pixelSize = [size[0] + 2 * gutter, size[1] + 2 * gutter];
       const isFloat = tileData instanceof Float32Array;
       const pixelCount = pixelSize[0] * pixelSize[1];
       const DataType = isFloat ? Float32Array : Uint8ClampedArray;
@@ -474,7 +477,7 @@ class ReprojDataTile extends DataTile {
         targetExtent,
         this.triangulation_,
         sources,
-        this.gutter_,
+        gutter,
         textureType,
         this.renderEdges_,
         willInterpolate,
