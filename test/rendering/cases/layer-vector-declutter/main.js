@@ -27,7 +27,6 @@ const vectorLayer1 = new VectorLayer({
   }),
 });
 const vectorLayer2 = new VectorLayer({
-  declutter: true,
   source: source2,
   opacity: 0.6,
   style: new Style({
@@ -127,5 +126,8 @@ const map = new Map({
 });
 
 map.getView().setRotation(Math.PI + Math.PI / 4);
+
+map.renderSync();
+vectorLayer2.setDeclutter(true);
 
 render();
