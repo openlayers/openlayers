@@ -369,11 +369,6 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     );
 
     const canvas = this.helper.getCanvas();
-    const layerState = frameState.layerStatesArray[frameState.layerIndex];
-    const opacity = layerState.opacity;
-    if (opacity !== parseFloat(canvas.style.opacity)) {
-      canvas.style.opacity = String(opacity);
-    }
 
     if (this.hitDetectionEnabled_) {
       this.renderWorlds(frameState, true, startWorld, endWorld, worldWidth);
