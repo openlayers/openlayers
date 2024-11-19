@@ -281,6 +281,15 @@ class BaseVectorLayer extends Layer {
       style === null ? undefined : toStyleFunction(styleLike);
     this.changed();
   }
+
+  /**
+   * @param {boolean|string|number} declutter Declutter images and text.
+   * @api
+   */
+  setDeclutter(declutter) {
+    this.declutter_ = declutter ? String(declutter) : undefined;
+    this.changed();
+  }
 }
 
 /**
