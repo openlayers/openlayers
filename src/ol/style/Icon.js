@@ -32,7 +32,7 @@ import ImageStyle from './Image.js';
  * the y value in pixels.
  * @property {import("../color.js").Color|string} [color] Color to tint the icon. If not specified,
  * the icon will be left as is.
- * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images. Note that you must provide a
+ * @property {import("../cors.js").CrossOriginOption} [crossOrigin] The `crossOrigin` attribute for loaded images. Note that you must provide a
  * `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {HTMLImageElement|HTMLCanvasElement|ImageBitmap} [img] Image object for the icon.
@@ -152,10 +152,9 @@ class Icon extends ImageStyle {
 
     /**
      * @private
-     * @type {?string}
+     * @type {import("../cors.js").CrossOriginAttribute}
      */
-    this.crossOrigin_ =
-      options.crossOrigin !== undefined ? options.crossOrigin : null;
+    this.crossOrigin_ = options.crossOrigin ?? 'no-cors';
 
     const image = options.img !== undefined ? options.img : null;
 

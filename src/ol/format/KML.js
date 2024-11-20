@@ -415,7 +415,7 @@ function defaultIconUrlFunction(href) {
  * @property {Array<Style>} [defaultStyle] Default style. The
  * default default style is the same as Google Earth.
  * @property {boolean} [writeStyles=true] Write styles into KML.
- * @property {null|string} [crossOrigin='anonymous'] The `crossOrigin` attribute for loaded images. Note that you must provide a
+ * @property {import("../cors.js").CrossOriginOption} [crossOrigin='anonymous'] The `crossOrigin` attribute for loaded images. Note that you must provide a
  * `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * @property {IconUrlFunction} [iconUrlFunction] Function that takes a url string and returns a url string.
  * Might be used to change an icon path or to substitute a data url obtained from a KMZ array buffer.
@@ -487,10 +487,9 @@ class KML extends XMLFeature {
       options.showPointNames !== undefined ? options.showPointNames : true;
 
     /**
-     * @type {null|string}
+     * @type {import("../cors.js").CrossOriginAttribute}
      */
-    this.crossOrigin_ =
-      options.crossOrigin !== undefined ? options.crossOrigin : 'anonymous';
+    this.crossOrigin_ = options.crossOrigin ?? 'anonymous';
 
     /**
      * @type {IconUrlFunction}

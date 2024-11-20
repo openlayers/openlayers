@@ -1,6 +1,7 @@
 /**
  * @module ol/source/ImageTile
  */
+import {setCrossOrigin} from '../cors.js';
 import {expandUrl, pickUrl, renderXYZTemplate} from '../uri.js';
 import DataTileSource from './DataTile.js';
 
@@ -43,7 +44,7 @@ import DataTileSource from './DataTile.js';
  * @property {boolean} [wrapX=true] Render tiles beyond the antimeridian.
  * @property {number} [transition] Transition time when fading in new tiles (in miliseconds).
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.
- * @property {import('./DataTile.js').CrossOriginAttribute} [crossOrigin='anonymous'] The crossOrigin property to pass to loaders for image data.
+ * @property {import("../cors.js").CrossOriginOption} [crossOrigin='no-cors'] The crossOrigin property to pass to loaders for image data.
  * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
  * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
@@ -62,7 +63,7 @@ const loadError = new Error('Image failed to load');
 function loadImage(template, z, x, y, options) {
   return new Promise((resolve, reject) => {
     const image = new Image();
-    image.crossOrigin = options.crossOrigin ?? null;
+    setCrossOrigin(image, options.crossOrigin ?? 'no-cors');
     image.addEventListener('load', () => resolve(image));
     image.addEventListener('error', () => reject(loadError));
     image.src = renderXYZTemplate(template, z, x, y, options.maxY);

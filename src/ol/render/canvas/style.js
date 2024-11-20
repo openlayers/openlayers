@@ -757,7 +757,7 @@ function buildIcon(flatStyle, context) {
     prefix + 'anchor-y-units',
   );
   const color = optionalColorLike(flatStyle, prefix + 'color');
-  const crossOrigin = optionalString(flatStyle, prefix + 'cross-origin');
+  const crossOrigin = optionalCrossOrigin(flatStyle, prefix + 'cross-origin');
   const offset = optionalNumberArray(flatStyle, prefix + 'offset');
   const offsetOrigin = optionalIconOrigin(flatStyle, prefix + 'offset-origin');
   const width = optionalNumber(flatStyle, prefix + 'width');
@@ -1168,15 +1168,15 @@ function optionalSize(flatStyle, property) {
 /**
  * @param {FlatStyle} flatStyle The flat style.
  * @param {string} property The symbolizer property.
- * @return {string|undefined} A string or undefined.
+ * @return {import("../../cors.js").CrossOriginAttribute} A crossOrigin attribute or undefined.
  */
-function optionalString(flatStyle, property) {
+function optionalCrossOrigin(flatStyle, property) {
   const encoded = flatStyle[property];
   if (encoded === undefined) {
     return undefined;
   }
-  if (typeof encoded !== 'string') {
-    throw new Error(`Expected a string for ${property}`);
+  if (!{'no-cors': true, 'anonymous': true, 'use-credentials': true}[encoded]) {
+    throw new Error(`Expected a valid cross-origin string for ${property}`);
   }
   return encoded;
 }
