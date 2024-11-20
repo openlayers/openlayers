@@ -2274,7 +2274,7 @@ describe('ol.format.KML', function () {
         });
 
         it("can read a feature's IconStyle (and set the crossOrigin option)", function () {
-          format = new KML({crossOrigin: null});
+          format = new KML({crossOrigin: 'no-cors'});
           const text =
             '<kml xmlns="http://earth.google.com/kml/2.2">' +
             '  <Placemark>' +
@@ -3419,7 +3419,7 @@ describe('ol.format.KML', function () {
         });
 
         it('can read a normal IconStyle (and set the crossOrigin option)', function () {
-          format = new KML({crossOrigin: null});
+          format = new KML({crossOrigin: 'no-cors'});
           const text =
             '<kml xmlns="http://earth.google.com/kml/2.2">' +
             '  <Document>' +
@@ -3678,7 +3678,7 @@ describe('ol.format.KML', function () {
         });
 
         it('can use IconStyles in StyleMaps before they are defined (and set the crossOrigin option)', function () {
-          format = new KML({crossOrigin: null});
+          format = new KML({crossOrigin: 'no-cors'});
           const text =
             '<kml xmlns="http://earth.google.com/kml/2.2">' +
             '  <Document>' +
@@ -3761,7 +3761,7 @@ describe('ol.format.KML', function () {
         });
 
         it('can apply a shared IconStyle to a feature (and set the crossOrigin option)', function () {
-          format = new KML({crossOrigin: null});
+          format = new KML({crossOrigin: 'no-cors'});
           const text =
             '<kml xmlns="http://earth.google.com/kml/2.2">' +
             '  <Document>' +
@@ -3838,7 +3838,7 @@ describe('ol.format.KML', function () {
         });
 
         it('can read a shared IconStyle from a Folder (and set the crossOrigin option)', function () {
-          format = new KML({crossOrigin: null});
+          format = new KML({crossOrigin: 'no-cors'});
           const text =
             '<kml xmlns="http://earth.google.com/kml/2.2">' +
             '  <Document>' +
