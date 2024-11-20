@@ -647,8 +647,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         usedZIndices[key] = true;
       }
     }
-    const zIndexKeys = Object.keys(usedZIndices).sort(ascending);
-    zIndexKeys.map(Number).forEach((zIndex) => {
+    const zIndexKeys = Object.keys(usedZIndices).map(Number).sort(ascending);
+    zIndexKeys.forEach((zIndex) => {
       executorGroupZIndexContexts.forEach((zIndexContexts, i) => {
         if (!zIndexContexts[zIndex]) {
           return;
