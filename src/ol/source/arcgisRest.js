@@ -9,6 +9,7 @@ import {getHeight, getWidth} from '../extent.js';
 import {get as getProjection} from '../proj.js';
 import {getRequestExtent} from './Image.js';
 import {round} from '../math.js';
+import {setCrossOrigin} from '../cors.js';
 
 /**
  * @param {string} baseUrl Base URL for the ArcGIS Rest service.
@@ -58,7 +59,7 @@ export function getRequestUrl(
 
 /**
  * @typedef {Object} LoaderOptions
- * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
+ * @property {import("../cors.js").CrossOriginOption} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting the image from
@@ -91,7 +92,7 @@ export function createLoader(options) {
   const load = options.load ? options.load : decode;
   const projection = getProjection(options.projection || 'EPSG:3857');
   const ratio = options.ratio ?? 1.5;
-  const crossOrigin = options.crossOrigin ?? null;
+  const crossOrigin = options.crossOrigin ?? 'no-cors';
 
   /** @type {import('../Image.js').ImageObjectPromiseLoader} */
   return function (extent, resolution, pixelRatio) {
@@ -116,7 +117,7 @@ export function createLoader(options) {
     );
 
     const image = new Image();
-    image.crossOrigin = crossOrigin;
+    setCrossOrigin(image, crossOrigin);
 
     return load(image, src).then((image) => {
       // Update resolution, because the server may return a smaller size than requested
