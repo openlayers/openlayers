@@ -68,7 +68,7 @@ import {outerHeight, outerWidth, removeChildren, removeNode} from './dom.js';
  * @enum {string}
  * @protected
  */
-const Property = {
+export const Property = {
   ELEMENT: 'element',
   MAP: 'map',
   OFFSET: 'offset',
@@ -301,7 +301,7 @@ class Overlay extends BaseObject {
         map,
         MapEventType.POSTRENDER,
         this.render,
-        this
+        this,
       );
       this.updatePixelPosition();
       const container = this.stopEvent

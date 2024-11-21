@@ -66,7 +66,7 @@ const ZM = 'ZM';
  * @const
  * @enum {number}
  */
-const TokenType = {
+export const TokenType = {
   START: 0,
   TEXT: 1,
   LEFT_PAREN: 2,
@@ -853,7 +853,7 @@ function encode(geom) {
   let wktType = wktTypeLookup[type];
   if (typeof (/** @type {?} */ (geom).getFlatCoordinates) === 'function') {
     const dimInfo = encodeGeometryLayout(
-      /** @type {import("../geom/SimpleGeometry.js").default} */ (geom)
+      /** @type {import("../geom/SimpleGeometry.js").default} */ (geom),
     );
     if (dimInfo.length > 0) {
       wktType += ' ' + dimInfo;

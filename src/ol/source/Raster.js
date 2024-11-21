@@ -95,7 +95,7 @@ function createMinion(operation) {
         images[b] = newWorkerImageData(
           new Uint8ClampedArray(buffers[b]),
           width,
-          height
+          height,
         );
       }
       const output = operation(images, meta).data;
@@ -152,7 +152,7 @@ function createWorker(config, onMessage) {
     typeof Blob === 'undefined'
       ? 'data:text/javascript;base64,' +
         Buffer.from(lines.join('\n'), 'binary').toString('base64')
-      : URL.createObjectURL(new Blob(lines, {type: 'text/javascript'}))
+      : URL.createObjectURL(new Blob(lines, {type: 'text/javascript'})),
   );
   worker.addEventListener('message', onMessage);
   return worker;
@@ -239,7 +239,7 @@ export class Processor extends Disposable {
     } else {
       workers[0] = createFauxWorker(
         config,
-        this._onWorkerMessage.bind(this, 0)
+        this._onWorkerMessage.bind(this, 0),
       );
     }
     this._workers = workers;
@@ -321,7 +321,7 @@ export class Processor extends Disposable {
           width: width,
           height: height,
         },
-        buffers
+        buffers,
       );
       return;
     }
@@ -342,7 +342,7 @@ export class Processor extends Disposable {
           width: width,
           height: height,
         },
-        slices
+        slices,
       );
     }
   }
@@ -391,7 +391,7 @@ export class Processor extends Disposable {
     job.callback(
       null,
       newImageData(data, job.inputs[0].width, job.inputs[0].height),
-      meta
+      meta,
     );
     this._dispatch();
   }
@@ -429,7 +429,7 @@ export class Processor extends Disposable {
 /**
  * @enum {string}
  */
-const RasterEventType = {
+export const RasterEventType = {
   /**
    * Triggered before operations are run.  Listeners will receive an event object with
    * a `data` property that can be used to make data available to operations.
@@ -821,12 +821,12 @@ class RasterSource extends ImageSource {
 
     const data = {};
     this.dispatchEvent(
-      new RasterSourceEvent(RasterEventType.BEFOREOPERATIONS, frameState, data)
+      new RasterSourceEvent(RasterEventType.BEFOREOPERATIONS, frameState, data),
     );
     this.processor_.process(
       imageDatas,
       data,
-      this.onWorkerComplete_.bind(this, frameState)
+      this.onWorkerComplete_.bind(this, frameState),
     );
   }
 
@@ -864,7 +864,7 @@ class RasterSource extends ImageSource {
         extent,
         resolution,
         1,
-        context.canvas
+        context.canvas,
       );
     }
     context.putImageData(output, 0, 0);
@@ -873,7 +873,7 @@ class RasterSource extends ImageSource {
     this.renderedRevision_ = this.getRevision();
 
     this.dispatchEvent(
-      new RasterSourceEvent(RasterEventType.AFTEROPERATIONS, frameState, data)
+      new RasterSourceEvent(RasterEventType.AFTEROPERATIONS, frameState, data),
     );
     if (frameState.animate) {
       requestAnimationFrame(this.changed.bind(this));

@@ -40,7 +40,7 @@ import {createCanvasContext2D} from '../dom.js';
  * @enum {string}
  * @private
  */
-const Property = {
+export const Property = {
   BLUR: 'blur',
   GRADIENT: 'gradient',
   RADIUS: 'radius',

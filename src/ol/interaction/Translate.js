@@ -12,7 +12,7 @@ import {always} from '../events/condition.js';
 /**
  * @enum {string}
  */
-const TranslateEventType = {
+export const TranslateEventType = {
   /**
    * Triggered upon feature translation start.
    * @event TranslateEvent#translatestart
@@ -221,7 +221,7 @@ class Translate extends PointerInteraction {
 
     this.addChangeListener(
       InteractionProperty.ACTIVE,
-      this.handleActiveChanged_
+      this.handleActiveChanged_,
     );
   }
 
@@ -248,8 +248,8 @@ class Translate extends PointerInteraction {
           features,
           event.coordinate,
           this.startCoordinate_,
-          event
-        )
+          event,
+        ),
       );
       return true;
     }
@@ -274,8 +274,8 @@ class Translate extends PointerInteraction {
           features,
           event.coordinate,
           this.startCoordinate_,
-          event
-        )
+          event,
+        ),
       );
       // cleanup
       this.startCoordinate_ = null;
@@ -310,8 +310,8 @@ class Translate extends PointerInteraction {
           features,
           newCoordinate,
           this.startCoordinate_,
-          event
-        )
+          event,
+        ),
       );
     }
   }
@@ -357,7 +357,7 @@ class Translate extends PointerInteraction {
       {
         layerFilter: this.layerFilter_,
         hitTolerance: this.hitTolerance_,
-      }
+      },
     );
   }
 
