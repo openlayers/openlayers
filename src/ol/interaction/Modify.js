@@ -79,6 +79,15 @@ export const ModifyEventType = {
 };
 
 /**
+ * @enum {string}
+ */
+export const ModifyVertexProperty = {
+  FEATURES: 'features',
+  GEOMETRIES: 'geometries',
+  EXISTING: 'existing',
+};
+
+/**
  * @typedef {Object} SegmentData
  * @property {Array<number>} [depth] Depth.
  * @property {Feature} feature Feature.
@@ -834,9 +843,9 @@ class Modify extends PointerInteraction {
       const geometry = vertexFeature.getGeometry();
       geometry.setCoordinates(coordinates);
     }
-    vertexFeature.set('features', features);
-    vertexFeature.set('geometries', geometries);
-    vertexFeature.set('existing', existing);
+    vertexFeature.set(ModifyVertexProperty.FEATURES, features);
+    vertexFeature.set(ModifyVertexProperty.GEOMETRIES, geometries);
+    vertexFeature.set(ModifyVertexProperty.EXISTING, existing);
     return vertexFeature;
   }
 
