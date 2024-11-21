@@ -1059,11 +1059,7 @@ class Modify extends PointerInteraction {
             this.changingFeature_ = true;
             const projection = evt.map.getView().getProjection();
             let radius = coordinateDistance(
-<<<<<<< HEAD
-              fromUserCoordinate(geometry.getCenter(), projection),
-=======
               fromUserCoordinate(circle.getCenter(), projection),
->>>>>>> main
               fromUserCoordinate(vertex, projection),
             );
             const userProjection = getUserProjection();
@@ -1296,10 +1292,7 @@ class Modify extends PointerInteraction {
             vertex,
             [node.feature],
             [node.geometry],
-<<<<<<< HEAD
-=======
             this.snappedToVertex_,
->>>>>>> main
           );
           const geometries = {};
           geometries[getUid(node.geometry)] = true;
