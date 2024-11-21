@@ -1,3 +1,6 @@
+import Map from '../../src/ol/Map.js';
+import View from '../../src/ol/View.js';
+import {defaults as defaultInteractions} from '../../src/ol/interaction.js';
 import {setLevel as setLogLevel} from '../../src/ol/console.js';
 
 setLogLevel('error');
@@ -79,7 +82,7 @@ setLogLevel('error');
           ' of ' +
           n
         );
-      }
+      },
     );
     return this;
   };
@@ -124,7 +127,7 @@ setLogLevel('error');
           ' | expected ' +
           node1.nodeType +
           ' to equal ' +
-          node2.nodeType
+          node2.nodeType,
       );
     }
     if (testPrefix) {
@@ -137,7 +140,7 @@ setLogLevel('error');
             ' | expected ' +
             node1.nodeName +
             ' to equal ' +
-            node2.nodeName
+            node2.nodeName,
         );
       }
     } else {
@@ -152,7 +155,7 @@ setLogLevel('error');
             ' | expected ' +
             n1 +
             ' to equal ' +
-            n2
+            n2,
         );
       }
     }
@@ -162,7 +165,7 @@ setLogLevel('error');
       const nv2 = node2.nodeValue.replace(/\s/g, '');
       if (nv1 !== nv2) {
         errors.push(
-          'nodeValue test failed | expected ' + nv1 + ' to equal ' + nv2
+          'nodeValue test failed | expected ' + nv1 + ' to equal ' + nv2,
         );
       }
     } else if (node1.nodeType === 1) {
@@ -177,7 +180,7 @@ setLogLevel('error');
                 ' | expected ' +
                 node1.prefix +
                 ' to equal ' +
-                node2.prefix
+                node2.prefix,
             );
           }
         }
@@ -190,7 +193,7 @@ setLogLevel('error');
               ' | expected ' +
               node1.namespaceURI +
               ' to equal ' +
-              node2.namespaceURI
+              node2.namespaceURI,
           );
         }
       }
@@ -232,7 +235,7 @@ setLogLevel('error');
             ' | expected ' +
             node1AttrLen +
             ' to equal ' +
-            node2AttrLen
+            node2AttrLen,
         );
       }
       for (const name in node1Attr) {
@@ -241,7 +244,7 @@ setLogLevel('error');
             'Attribute name ' +
               node1Attr[name].name +
               ' expected for element ' +
-              node1.nodeName
+              node1.nodeName,
           );
           break;
         }
@@ -253,7 +256,7 @@ setLogLevel('error');
               ' | expected ' +
               node1Attr[name].namespaceURI +
               ' to equal ' +
-              node2Attr[name].namespaceURI
+              node2Attr[name].namespaceURI,
           );
         }
         if (node1Attr[name].value !== node2Attr[name].value) {
@@ -263,7 +266,7 @@ setLogLevel('error');
               ' | expected ' +
               node1Attr[name].value +
               ' to equal ' +
-              node2Attr[name].value
+              node2Attr[name].value,
           );
         }
       }
@@ -295,7 +298,7 @@ setLogLevel('error');
               ' | expected ' +
               node1ChildNodes.length +
               ' to equal ' +
-              node2ChildNodes.length
+              node2ChildNodes.length,
           );
         }
       }
@@ -306,7 +309,7 @@ setLogLevel('error');
             node1ChildNodes[j],
             node2ChildNodes[j],
             options,
-            errors
+            errors,
           );
         }
       }
@@ -356,7 +359,7 @@ setLogLevel('error');
           '\n' +
           errors.join('\n')
         );
-      }
+      },
     );
     return this;
   };
@@ -374,13 +377,16 @@ setLogLevel('error');
     return target;
   };
 
-  global.disposeMap = function (map) {
-    const target = map.getTarget();
-    map.setTarget(null);
-    if (target && target.parentNode) {
-      target.parentNode.removeChild(target);
+  /**
+   * @param {import('../../src/ol/Map.js').default|undefined} map Map
+   * @param {HTMLElement} [target] Node in dom
+   */
+  global.disposeMap = function (map, target) {
+    target?.remove();
+    if (map) {
+      map.getTargetElement()?.remove();
+      map.dispose();
     }
-    map.dispose();
   };
 
   const features = {
@@ -416,4 +422,47 @@ setLogLevel('error');
       throw new Error('Found extra <div> elements in the body');
     }
   });
+
+  /**
+   * Defines and registers a custom HTML element `ol-map`.
+   *
+   * @param {Object} options Object holding different options used in
+   *  constructor of OLComponent. Currently 'interactionOpts' can be set as
+   *  child property.
+   */
+  global.defineCustomMapEl = function (options) {
+    // custom HTML element holding the OL map
+    class OLComponent extends HTMLElement {
+      constructor() {
+        super();
+        const shadow = this.attachShadow({mode: 'open'});
+
+        const style = document.createElement('style');
+        style.innerText = `
+          :host {
+            display: block;
+          }
+        `;
+        shadow.appendChild(style);
+
+        const target = document.createElement('div');
+        target.style.width = '100%';
+        target.style.height = '100%';
+        shadow.appendChild(target);
+
+        this.map = new Map({
+          target: target,
+          interactions: defaultInteractions(options.interactionOpts),
+          view: new View({
+            center: [0, 0],
+            resolutions: [1],
+            zoom: 8,
+          }),
+        });
+      }
+    }
+    if (customElements.get('ol-map') === undefined) {
+      customElements.define('ol-map', OLComponent);
+    }
+  };
 })(window);

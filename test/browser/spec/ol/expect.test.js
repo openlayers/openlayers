@@ -26,7 +26,7 @@ describe('expect.js', function () {
       const doc1 = '<bar:foo xmlns:bar="http://foo"></bar:foo>';
       const doc2 = '<foo xmlns="http://foo"></foo>';
       expect(
-        new DOMParser().parseFromString(doc1, 'application/xml')
+        new DOMParser().parseFromString(doc1, 'application/xml'),
       ).to.xmleql(new DOMParser().parseFromString(doc2, 'application/xml'));
     });
 
@@ -34,10 +34,10 @@ describe('expect.js', function () {
       const doc1 = '<bar:foo xmlns:bar="http://foo"></bar:foo>';
       const doc2 = '<foo xmlns="http://foo"></foo>';
       expect(
-        new DOMParser().parseFromString(doc1, 'application/xml')
+        new DOMParser().parseFromString(doc1, 'application/xml'),
       ).to.not.xmleql(
         new DOMParser().parseFromString(doc2, 'application/xml'),
-        {prefix: true}
+        {prefix: true},
       );
     });
 
@@ -45,7 +45,7 @@ describe('expect.js', function () {
       const doc1 = '<foo></foo>';
       const doc2 = '<bar></bar>';
       expect(
-        new DOMParser().parseFromString(doc1, 'application/xml')
+        new DOMParser().parseFromString(doc1, 'application/xml'),
       ).to.not.xmleql(new DOMParser().parseFromString(doc2, 'application/xml'));
     });
 
@@ -53,7 +53,7 @@ describe('expect.js', function () {
       const doc1 = '<foo attr="bla"></foo>';
       const doc2 = '<foo></foo>';
       expect(
-        new DOMParser().parseFromString(doc1, 'application/xml')
+        new DOMParser().parseFromString(doc1, 'application/xml'),
       ).to.not.xmleql(new DOMParser().parseFromString(doc2, 'application/xml'));
     });
 
@@ -61,7 +61,7 @@ describe('expect.js', function () {
       const doc1 = '<foo attr="bla"></foo>';
       const doc2 = '<foo attr="foo"></foo>';
       expect(
-        new DOMParser().parseFromString(doc1, 'application/xml')
+        new DOMParser().parseFromString(doc1, 'application/xml'),
       ).to.not.xmleql(new DOMParser().parseFromString(doc2, 'application/xml'));
     });
 
@@ -69,7 +69,7 @@ describe('expect.js', function () {
       const doc1 = '<foo><mynode></mynode></foo>';
       const doc2 = '<foo></foo>';
       expect(
-        new DOMParser().parseFromString(doc1, 'application/xml')
+        new DOMParser().parseFromString(doc1, 'application/xml'),
       ).to.not.xmleql(new DOMParser().parseFromString(doc2, 'application/xml'));
     });
   });

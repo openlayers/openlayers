@@ -128,7 +128,7 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
       interaction.on('addfeatures', function (evt) {
         expect(evt.features.length).to.be(1);
         expect(evt.features[0].getGeometry().getCoordinates()).to.eql(
-          transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857')
+          transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'),
         );
         expect(mockReadAsText).to.be(true);
         expect(mockReadAsArrayBuffer).to.be(false);

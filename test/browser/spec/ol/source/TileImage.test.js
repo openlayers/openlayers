@@ -14,20 +14,20 @@ import {
   createXYZ,
 } from '../../../../../src/ol/tilegrid.js';
 import {createFromTemplate} from '../../../../../src/ol/tileurlfunction.js';
-import {getKeyZXY} from '../../../../../src/ol/tilecoord.js';
+import {getUid} from '../../../../../src/ol/util.js';
 import {listen} from '../../../../../src/ol/events.js';
 import {register} from '../../../../../src/ol/proj/proj4.js';
 
 describe('ol/source/TileImage', function () {
-  function createSource(opt_proj, opt_tileGrid, opt_cacheSize) {
+  function createSource(opt_proj, opt_tileGrid, opt_transition) {
     const proj = opt_proj || 'EPSG:3857';
     return new TileImage({
-      cacheSize: opt_cacheSize,
       projection: proj,
       tileGrid: opt_tileGrid || createForProjection(proj, undefined, [2, 2]),
       tileUrlFunction: createFromTemplate(
-        'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs='
+        'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=',
       ),
+      transition: opt_transition,
     });
   }
 
@@ -43,59 +43,15 @@ describe('ol/source/TileImage', function () {
     });
   });
 
-  describe('#getTileCacheForProjection', function () {
-    it('uses the cacheSize for reprojected tile caches', function () {
-      const source = createSource(undefined, undefined, 442);
-      const tileCache = source.getTileCacheForProjection(
-        getProjection('EPSG:4326')
-      );
-      expect(tileCache.highWaterMark).to.be(442);
-      expect(tileCache).to.not.equal(
-        source.getTileCacheForProjection(source.getProjection())
-      );
-    });
-  });
-
   describe('#setTileGridForProjection', function () {
     it('uses the tilegrid for given projection', function () {
       const source = createSource();
       const tileGrid = createForProjection('EPSG:4326', 3, [10, 20]);
       source.setTileGridForProjection('EPSG:4326', tileGrid);
       const retrieved = source.getTileGridForProjection(
-        getProjection('EPSG:4326')
+        getProjection('EPSG:4326'),
       );
       expect(retrieved).to.be(tileGrid);
-    });
-  });
-
-  describe('#refresh', function () {
-    it('refreshes the source', function () {
-      const source = createSource();
-      let loaded = 0;
-      source.setTileLoadFunction(() => ++loaded);
-      source.getTile(0, 0, 0, 1, getProjection('EPSG:3857')).load();
-      expect(loaded).to.be(1);
-      source.getTile(0, 0, 0, 1, getProjection('EPSG:3857')).load();
-      expect(loaded).to.be(1);
-      const revision = source.getRevision();
-      source.refresh();
-      expect(source.getRevision()).to.be(revision + 1);
-      source.getTile(0, 0, 0, 1, getProjection('EPSG:3857')).load();
-      expect(loaded).to.be(2);
-    });
-    it('refreshes the source when raster reprojection is used', function () {
-      const source = createSource();
-      let loaded = 0;
-      source.setTileLoadFunction(() => ++loaded);
-      source.getTile(0, 0, 0, 1, getProjection('EPSG:4326')).load();
-      expect(loaded).to.be(16384);
-      source.getTile(0, 0, 0, 1, getProjection('EPSG:4326')).load();
-      expect(loaded).to.be(16384);
-      const revision = source.getRevision();
-      source.refresh();
-      expect(source.getRevision()).to.be(revision + 1);
-      source.getTile(0, 0, 0, 1, getProjection('EPSG:4326')).load();
-      expect(loaded).to.be(16384 * 2);
     });
   });
 
@@ -104,26 +60,13 @@ describe('ol/source/TileImage', function () {
 
     beforeEach(function () {
       source = createSource();
-      expect(source.getKey()).to.be('');
-      source.getTileInternal(0, 0, 0, 1, getProjection('EPSG:3857'));
-      expect(source.tileCache.getCount()).to.be(1);
-      tile = source.tileCache.get(getKeyZXY(0, 0, 0));
-    });
-
-    it('gets the tile from the cache', function () {
-      const returnedTile = source.getTileInternal(
-        0,
-        0,
-        0,
-        1,
-        getProjection('EPSG:3857')
-      );
-      expect(returnedTile).to.be(tile);
+      expect(source.getKey()).to.be(getUid(source));
+      tile = source.getTileInternal(0, 0, 0, 1, getProjection('EPSG:3857'));
     });
 
     describe('change a dynamic param', function () {
       describe('tile is not loaded', function () {
-        it('returns a tile with no interim tile', function () {
+        it('returns a tile with the right key', function () {
           source.getKey = function () {
             return 'key0';
           };
@@ -132,59 +75,10 @@ describe('ol/source/TileImage', function () {
             0,
             0,
             1,
-            getProjection('EPSG:3857')
+            getProjection('EPSG:3857'),
           );
           expect(returnedTile).not.to.be(tile);
           expect(returnedTile.key).to.be('key0');
-          expect(returnedTile.interimTile).to.be(null);
-        });
-      });
-
-      describe('tile is loaded', function () {
-        it('returns a tile with interim tile', function () {
-          source.getKey = function () {
-            return 'key0';
-          };
-          tile.state = 2; // LOADED
-          const returnedTile = source.getTileInternal(
-            0,
-            0,
-            0,
-            1,
-            getProjection('EPSG:3857')
-          );
-          expect(returnedTile).not.to.be(tile);
-          expect(returnedTile.key).to.be('key0');
-          expect(returnedTile.interimTile).to.be(tile);
-        });
-      });
-
-      describe('tile is not loaded but interim tile is', function () {
-        it('returns a tile with interim tile', function () {
-          let dynamicParamsKey, returnedTile;
-          source.getKey = function () {
-            return dynamicParamsKey;
-          };
-          dynamicParamsKey = 'key0';
-          tile.state = 2; // LOADED
-          returnedTile = source.getTileInternal(
-            0,
-            0,
-            0,
-            1,
-            getProjection('EPSG:3857')
-          );
-          dynamicParamsKey = 'key1';
-          returnedTile = source.getTileInternal(
-            0,
-            0,
-            0,
-            1,
-            getProjection('EPSG:3857')
-          );
-          expect(returnedTile).not.to.be(tile);
-          expect(returnedTile.key).to.be('key1');
-          expect(returnedTile.interimTile).to.be(tile);
         });
       });
     });
@@ -198,7 +92,7 @@ describe('ol/source/TileImage', function () {
         0,
         0,
         1,
-        getProjection('EPSG:3857')
+        getProjection('EPSG:3857'),
       );
       expect(tile3857).to.be.a(ImageTile);
       expect(tile3857).not.to.be.a(ReprojTile);
@@ -230,7 +124,7 @@ describe('ol/source/TileImage', function () {
         createXYZ({
           extent: [-180, -90, 180, 90],
           tileSize: [2, 2],
-        })
+        }),
       );
       const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
       expect(tile).to.be.a(ReprojTile);
@@ -252,7 +146,7 @@ describe('ol/source/TileImage', function () {
         createXYZ({
           extent: WORLD_EXTENT,
           tileSize: [2, 2],
-        })
+        }),
       );
       const tile = source.getTile(0, 0, 0, 1, proj);
       expect(tile).to.be.a(ReprojTile);
@@ -293,7 +187,7 @@ describe('ol/source/TileImage', function () {
     it('works for loading-error-loading-loaded sequences', function (done) {
       source.setTileLoadFunction(function (tile) {
         tile.setState(
-          tile.state == TileState.ERROR ? TileState.LOADED : TileState.ERROR
+          tile.state == TileState.ERROR ? TileState.LOADED : TileState.ERROR,
         );
       });
       const startSpy = sinon.spy();
@@ -313,6 +207,17 @@ describe('ol/source/TileImage', function () {
       });
       const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
       tile.load();
+    });
+  });
+
+  describe('transition option', function () {
+    it('reproj tile transition should be same with source tile', function () {
+      const transition = 0;
+      const source = createSource('EPSG:3857', undefined, transition);
+      const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:4326'));
+
+      expect(tile).to.be.a(ReprojTile);
+      expect(tile.transition_).to.be(transition);
     });
   });
 });

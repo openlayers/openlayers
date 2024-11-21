@@ -89,7 +89,7 @@ describe('ol/webgl/TileTexture', function () {
       [0, 0, 0],
       TileState.IDLE,
       'https://example.com/tile.png',
-      'use-credentials'
+      'use-credentials',
     );
     tileTexture.setTile(tile);
     const image = tile.getImage();

@@ -15,6 +15,7 @@ const source = new XYZ({
   maxZoom: 5,
   url: '/data/tiles/512x256/{z}/{x}/{y}.png',
   tileSize: [512, 256],
+  transition: 0,
 });
 
 new Map({

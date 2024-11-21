@@ -16,8 +16,9 @@ class VectorContext {
    * @param {import("../Feature.js").FeatureLike} feature Feature.
    * @param {Function} renderer Renderer.
    * @param {Function} hitDetectionRenderer Renderer.
+   * @param {number} [index] Render order index.
    */
-  drawCustom(geometry, feature, renderer, hitDetectionRenderer) {}
+  drawCustom(geometry, feature, renderer, hitDetectionRenderer, index) {}
 
   /**
    * Render a geometry.
@@ -36,62 +37,72 @@ class VectorContext {
   /**
    * @param {import("../geom/Circle.js").default} circleGeometry Circle geometry.
    * @param {import("../Feature.js").default} feature Feature.
+   * @param {number} [index] Render order index.
    */
-  drawCircle(circleGeometry, feature) {}
+  drawCircle(circleGeometry, feature, index) {}
 
   /**
    * @param {import("../Feature.js").default} feature Feature.
    * @param {import("../style/Style.js").default} style Style.
+   * @param {number} [index] Render order index.
    */
-  drawFeature(feature, style) {}
+  drawFeature(feature, style, index) {}
 
   /**
    * @param {import("../geom/GeometryCollection.js").default} geometryCollectionGeometry Geometry collection.
    * @param {import("../Feature.js").default} feature Feature.
+   * @param {number} [index] Render order index.
    */
-  drawGeometryCollection(geometryCollectionGeometry, feature) {}
+  drawGeometryCollection(geometryCollectionGeometry, feature, index) {}
 
   /**
    * @param {import("../geom/LineString.js").default|import("./Feature.js").default} lineStringGeometry Line string geometry.
    * @param {import("../Feature.js").FeatureLike} feature Feature.
+   * @param {number} [index] Render order index.
    */
-  drawLineString(lineStringGeometry, feature) {}
+  drawLineString(lineStringGeometry, feature, index) {}
 
   /**
    * @param {import("../geom/MultiLineString.js").default|import("./Feature.js").default} multiLineStringGeometry MultiLineString geometry.
    * @param {import("../Feature.js").FeatureLike} feature Feature.
+   * @param {number} [index] Render order index.
    */
-  drawMultiLineString(multiLineStringGeometry, feature) {}
+  drawMultiLineString(multiLineStringGeometry, feature, index) {}
 
   /**
    * @param {import("../geom/MultiPoint.js").default|import("./Feature.js").default} multiPointGeometry MultiPoint geometry.
    * @param {import("../Feature.js").FeatureLike} feature Feature.
+   * @param {number} [index] Render order index.
    */
-  drawMultiPoint(multiPointGeometry, feature) {}
+  drawMultiPoint(multiPointGeometry, feature, index) {}
 
   /**
    * @param {import("../geom/MultiPolygon.js").default} multiPolygonGeometry MultiPolygon geometry.
    * @param {import("../Feature.js").FeatureLike} feature Feature.
+   * @param {number} [index] Render order index.
    */
-  drawMultiPolygon(multiPolygonGeometry, feature) {}
+  drawMultiPolygon(multiPolygonGeometry, feature, index) {}
 
   /**
    * @param {import("../geom/Point.js").default|import("./Feature.js").default} pointGeometry Point geometry.
    * @param {import("../Feature.js").FeatureLike} feature Feature.
+   * @param {number} [index] Render order index.
    */
-  drawPoint(pointGeometry, feature) {}
+  drawPoint(pointGeometry, feature, index) {}
 
   /**
    * @param {import("../geom/Polygon.js").default|import("./Feature.js").default} polygonGeometry Polygon geometry.
    * @param {import("../Feature.js").FeatureLike} feature Feature.
+   * @param {number} [index] Render order index.
    */
-  drawPolygon(polygonGeometry, feature) {}
+  drawPolygon(polygonGeometry, feature, index) {}
 
   /**
    * @param {import("../geom/SimpleGeometry.js").default|import("./Feature.js").default} geometry Geometry.
    * @param {import("../Feature.js").FeatureLike} feature Feature.
+   * @param {number} [index] Render order index.
    */
-  drawText(geometry, feature) {}
+  drawText(geometry, feature, index) {}
 
   /**
    * @param {import("../style/Fill.js").default} fillStyle Fill style.

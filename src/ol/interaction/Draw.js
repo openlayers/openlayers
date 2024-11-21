@@ -67,17 +67,25 @@ import {getStrideForLayout} from '../geom/SimpleGeometry.js';
  * before a polygon ring or line string can be finished. Default is `3` for
  * polygon rings and `2` for line strings.
  * @property {import("../events/condition.js").Condition} [finishCondition] A function
- * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether the drawing can be finished. Not used when drawing
  * POINT or MULTI_POINT geometries.
  * @property {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike} [style]
- * Style for sketch features.
+ * Style for sketch features. The draw interaction can have up to three sketch features, depending on the mode.
+ * It will always contain a feature with a `Point` geometry that corresponds to the current cursor position.
+ * If the mode is `LineString` or `Polygon`, and there is at least one drawn point, it will also contain a feature with
+ * a `LineString` geometry that corresponds to the line between the already drawn points and the current cursor position.
+ * If the mode is `Polygon`, and there is at least one drawn point, it will also contain a feature with a `Polygon`
+ * geometry that corresponds to the polygon between the already drawn points and the current cursor position
+ * (note that this polygon has only two points if only one point is drawn).
+ * If the mode is `Circle`, and there is one point drawn, it will also contain a feature with a `Circle` geometry whose
+ * center is the drawn point and the radius is determined by the distance between the drawn point and the cursor.
  * @property {GeometryFunction} [geometryFunction]
  * Function that is called when a geometry's coordinates are updated.
  * @property {string} [geometryName] Geometry name to use for features created
  * by the draw interaction.
  * @property {import("../events/condition.js").Condition} [condition] A function that
- * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled.
  * By default {@link module:ol/events/condition.noModifierKeys}, i.e. a click,
  * adds a vertex or deactivates freehand drawing.
@@ -86,7 +94,7 @@ import {getStrideForLayout} from '../geom/SimpleGeometry.js';
  * mode and takes precedence over any `freehandCondition` option.
  * @property {import("../events/condition.js").Condition} [freehandCondition]
  * Condition that activates freehand drawing for lines and polygons. This
- * function takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and
+ * function takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and
  * returns a boolean to indicate whether that event should be handled. The
  * default is {@link module:ol/events/condition.shiftKeyOnly}, meaning that the
  * Shift key activates freehand drawing.
@@ -625,7 +633,7 @@ class Draw extends PointerInteraction {
     this.downPx_ = null;
 
     /**
-     * @type {?}
+     * @type {ReturnType<typeof setTimeout>}
      * @private
      */
     this.downTimeout_;
@@ -747,7 +755,7 @@ class Draw extends PointerInteraction {
          * @param {import("../proj/Projection.js").default} projection The view projection.
          * @return {import("../geom/SimpleGeometry.js").default} A geometry.
          */
-        geometryFunction = function (coordinates, geometry, projection) {
+        geometryFunction = (coordinates, geometry, projection) => {
           const circle = geometry
             ? /** @type {Circle} */ (geometry)
             : new Circle([NaN, NaN]);
@@ -782,7 +790,7 @@ class Draw extends PointerInteraction {
          * @param {import("../proj/Projection.js").default} projection The view projection.
          * @return {import("../geom/SimpleGeometry.js").default} A geometry.
          */
-        geometryFunction = function (coordinates, geometry, projection) {
+        geometryFunction = (coordinates, geometry, projection) => {
           if (geometry) {
             if (mode === 'Polygon') {
               if (coordinates[0].length) {
@@ -957,6 +965,7 @@ class Draw extends PointerInteraction {
    * Subclasses may set up event handlers to get notified about changes to
    * the map here.
    * @param {import("../Map.js").default} map Map.
+   * @override
    */
   setMap(map) {
     super.setMap(map);
@@ -977,6 +986,7 @@ class Draw extends PointerInteraction {
    * @param {import("../MapBrowserEvent.js").default} event Map browser event.
    * @return {boolean} `false` to stop event propagation.
    * @api
+   * @override
    */
   handleEvent(event) {
     if (event.originalEvent.type === EventType.CONTEXTMENU) {
@@ -1042,6 +1052,7 @@ class Draw extends PointerInteraction {
    * Handle pointer down events.
    * @param {import("../MapBrowserEvent.js").default} event Event.
    * @return {boolean} If the event was consumed.
+   * @override
    */
   handleDownEvent(event) {
     this.shouldHandle_ = !this.freehand_;
@@ -1292,6 +1303,7 @@ class Draw extends PointerInteraction {
    * Handle pointer up events.
    * @param {import("../MapBrowserEvent.js").default} event Event.
    * @return {boolean} If the event was consumed.
+   * @override
    */
   handleUpEvent(event) {
     let pass = true;
@@ -1554,6 +1566,7 @@ class Draw extends PointerInteraction {
   /**
    * Add a new coordinate to the drawing.
    * @param {!PointCoordType} coordinate Coordinate
+   * @return {Feature<import("../geom/SimpleGeometry.js").default>} The sketch feature.
    * @private
    */
   addToDrawing_(coordinate) {
@@ -1592,8 +1605,9 @@ class Draw extends PointerInteraction {
     this.createOrUpdateSketchPoint_(coordinate.slice());
     this.updateSketchFeatures_();
     if (done) {
-      this.finishDrawing();
+      return this.finishDrawing();
     }
+    return this.sketchFeature_;
   }
 
   /**
@@ -1658,12 +1672,13 @@ class Draw extends PointerInteraction {
    * Stop drawing and add the sketch feature to the target layer.
    * The {@link module:ol/interaction/Draw~DrawEventType.DRAWEND} event is
    * dispatched before inserting the feature.
+   * @return {Feature<import("../geom/SimpleGeometry.js").default>|null} The drawn feature.
    * @api
    */
   finishDrawing() {
     const sketchFeature = this.abortDrawing_();
     if (!sketchFeature) {
-      return;
+      return null;
     }
     let coordinates = this.sketchCoords_;
     const geometry = sketchFeature.getGeometry();
@@ -1704,6 +1719,7 @@ class Draw extends PointerInteraction {
     if (this.source_) {
       this.source_.addFeature(sketchFeature);
     }
+    return sketchFeature;
   }
 
   /**
@@ -1775,7 +1791,7 @@ class Draw extends PointerInteraction {
 
     const ending = coordinates[coordinates.length - 1];
     // Duplicate last coordinate for sketch drawing (cursor position)
-    this.addToDrawing_(ending);
+    this.sketchFeature_ = this.addToDrawing_(ending);
     this.modifyDrawing_(ending);
   }
 

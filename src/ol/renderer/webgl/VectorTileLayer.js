@@ -2,20 +2,16 @@
  * @module ol/renderer/webgl/VectorTileLayer
  */
 import EventType from '../../events/EventType.js';
-import LineStringBatchRenderer from '../../render/webgl/LineStringBatchRenderer.js';
-import PointBatchRenderer from '../../render/webgl/PointBatchRenderer.js';
-import PolygonBatchRenderer from '../../render/webgl/PolygonBatchRenderer.js';
 import TileGeometry from '../../webgl/TileGeometry.js';
-import WebGLBaseTileLayerRenderer, {Uniforms} from './TileLayerBase.js';
-import {
-  FILL_FRAGMENT_SHADER,
-  FILL_VERTEX_SHADER,
-  POINT_FRAGMENT_SHADER,
-  POINT_VERTEX_SHADER,
-  STROKE_FRAGMENT_SHADER,
-  STROKE_VERTEX_SHADER,
-  packColor,
-} from './shaders.js';
+import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
+import WebGLArrayBuffer from '../../webgl/Buffer.js';
+import WebGLBaseTileLayerRenderer, {
+  Uniforms as BaseUniforms,
+} from './TileLayerBase.js';
+import WebGLRenderTarget from '../../webgl/RenderTarget.js';
+import {AttributeType} from '../../webgl/Helper.js';
+import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
+import {ShaderBuilder} from '../../webgl/ShaderBuilder.js';
 import {
   create as createMat4,
   fromTransform as mat4FromTransform,
@@ -26,39 +22,28 @@ import {
   multiply as multiplyTransform,
   setFromArray as setFromTransform,
 } from '../../transform.js';
-import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {getIntersection} from '../../extent.js';
+import {parseLiteralStyle} from '../../webgl/styleparser.js';
+
+export const Uniforms = {
+  ...BaseUniforms,
+  TILE_MASK_TEXTURE: 'u_depthMask',
+  TILE_ZOOM_LEVEL: 'u_tileZoomLevel',
+};
+
+export const Attributes = {
+  POSITION: 'a_position',
+};
 
 /**
- * @param {Object<import("./shaders.js").DefaultAttributes,CustomAttributeCallback>} obj Lookup of attribute getters.
- * @return {Array<import("../../render/webgl/BatchRenderer").CustomAttribute>} An array of attribute descriptors.
- */
-function toAttributesArray(obj) {
-  return Object.keys(obj).map((key) => ({name: key, callback: obj[key]}));
-}
-
-/**
- * @typedef {function(import("../../Feature").default, Object<string, *>):number} CustomAttributeCallback A callback computing
- * the value of a custom attribute (different for each feature) to be passed on to the GPU.
- * Properties are available as 2nd arg for quicker access.
- */
-
-/**
- * @typedef {Object} ShaderProgram An object containing both shaders (vertex and fragment) as well as the required attributes
- * @property {string} [vertexShader] Vertex shader source (using the default one if unspecified).
- * @property {string} [fragmentShader] Fragment shader source (using the default one if unspecified).
- * @property {Object<import("./shaders.js").DefaultAttributes,CustomAttributeCallback>} attributes Custom attributes made available in the vertex shader.
- * Keys are the names of the attributes which are then accessible in the vertex shader using the `a_` prefix, e.g.: `a_opacity`.
- * Default shaders rely on the attributes in {@link module:ol/render/webgl/shaders~DefaultAttributes}.
+ * @typedef {import('../../render/webgl/VectorStyleRenderer.js').VectorStyle} VectorStyle
  */
 
 /**
  * @typedef {Object} Options
- * @property {ShaderProgram} [fill] Attributes and shaders for filling polygons.
- * @property {ShaderProgram} [stroke] Attributes and shaders for line strings and polygon strokes.
- * @property {ShaderProgram} [point] Attributes and shaders for points.
- * @property {Object<string, import("../../webgl/Helper").UniformValue>} [uniforms] Additional uniforms
- * made available to shaders.
+ * @property {VectorStyle|Array<VectorStyle>} style Vector style as literal style or shaders; can also accept an array of styles
+ * @property {boolean} [disableHitDetection=false] Setting this to true will provide a slight performance boost, but will
+ * prevent all hit detection on the layer.
  * @property {number} [cacheSize=512] The vector tile cache size.
  */
 
@@ -77,28 +62,31 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    * @param {Options} options Options.
    */
   constructor(tileLayer, options) {
-    super(tileLayer, options);
+    super(tileLayer, {
+      cacheSize: options.cacheSize,
+      uniforms: {
+        [Uniforms.PATTERN_ORIGIN]: [0, 0],
+        [Uniforms.TILE_MASK_TEXTURE]: () => this.tileMaskTarget_.getTexture(),
+      },
+    });
 
     /**
+     * @type {boolean}
      * @private
      */
-    this.worker_ = createWebGLWorker();
+    this.hitDetectionEnabled_ = !options.disableHitDetection;
 
     /**
-     * @type {PolygonBatchRenderer}
+     * @type {Array<VectorStyle>}
      * @private
      */
-    this.polygonRenderer_ = null;
+    this.styles_ = [];
+
     /**
-     * @type {PointBatchRenderer}
+     * @type {Array<VectorStyleRenderer>}
      * @private
      */
-    this.pointRenderer_ = null;
-    /**
-     * @type {LineStringBatchRenderer}
-     * @private
-     */
-    this.lineStringRenderer_ = null;
+    this.styleRenderers_ = [];
 
     /**
      * This transform is updated on every frame and is the composition of:
@@ -109,14 +97,54 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
      */
     this.currentFrameStateTransform_ = createTransform();
 
+    /**
+     * @private
+     */
     this.tmpTransform_ = createTransform();
+    /**
+     * @private
+     */
     this.tmpMat4_ = createMat4();
+
+    /**
+     * @type {WebGLRenderTarget}
+     * @private
+     */
+    this.tileMaskTarget_ = null;
+
+    /**
+     * @private
+     */
+    this.tileMaskIndices_ = new WebGLArrayBuffer(
+      ELEMENT_ARRAY_BUFFER,
+      STATIC_DRAW,
+    );
+    this.tileMaskIndices_.fromArray([0, 1, 3, 1, 2, 3]);
+
+    /**
+     * @type {Array<import('../../webgl/Helper.js').AttributeDescription>}
+     * @private
+     */
+    this.tileMaskAttributes_ = [
+      {
+        name: Attributes.POSITION,
+        size: 2,
+        type: AttributeType.FLOAT,
+      },
+    ];
+
+    /**
+     * @type {WebGLProgram}
+     * @private
+     */
+    this.tileMaskProgram_;
 
     this.applyOptions_(options);
   }
 
   /**
    * @param {Options} options Options.
+   * @override
    */
   reset(options) {
     super.reset(options);
@@ -124,6 +152,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.applyOptions_(options);
     if (this.helper) {
       this.createRenderers_();
+      this.initTileMask_();
     }
   }
 
@@ -132,97 +161,86 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    * @private
    */
   applyOptions_(options) {
-    const fillAttributes = {
-      color: function () {
-        return packColor('#ddd');
-      },
-      opacity: function () {
-        return 1;
-      },
-      ...(options.fill && options.fill.attributes),
-    };
-
-    const strokeAttributes = {
-      color: function () {
-        return packColor('#eee');
-      },
-      opacity: function () {
-        return 1;
-      },
-      width: function () {
-        return 1.5;
-      },
-      ...(options.stroke && options.stroke.attributes),
-    };
-
-    const pointAttributes = {
-      color: function () {
-        return packColor('#eee');
-      },
-      opacity: function () {
-        return 1;
-      },
-      ...(options.point && options.point.attributes),
-    };
-
-    this.fillVertexShader_ =
-      (options.fill && options.fill.vertexShader) || FILL_VERTEX_SHADER;
-    this.fillFragmentShader_ =
-      (options.fill && options.fill.fragmentShader) || FILL_FRAGMENT_SHADER;
-    this.fillAttributes_ = toAttributesArray(fillAttributes);
-
-    this.strokeVertexShader_ =
-      (options.stroke && options.stroke.vertexShader) || STROKE_VERTEX_SHADER;
-    this.strokeFragmentShader_ =
-      (options.stroke && options.stroke.fragmentShader) ||
-      STROKE_FRAGMENT_SHADER;
-    this.strokeAttributes_ = toAttributesArray(strokeAttributes);
-
-    this.pointVertexShader_ =
-      (options.point && options.point.vertexShader) || POINT_VERTEX_SHADER;
-    this.pointFragmentShader_ =
-      (options.point && options.point.fragmentShader) || POINT_FRAGMENT_SHADER;
-    this.pointAttributes_ = toAttributesArray(pointAttributes);
+    this.styles_ = Array.isArray(options.style)
+      ? options.style
+      : [options.style];
   }
 
   /**
    * @private
    */
   createRenderers_() {
-    this.polygonRenderer_ = new PolygonBatchRenderer(
-      this.helper,
-      this.worker_,
-      this.fillVertexShader_,
-      this.fillFragmentShader_,
-      this.fillAttributes_
-    );
-    this.pointRenderer_ = new PointBatchRenderer(
-      this.helper,
-      this.worker_,
-      this.pointVertexShader_,
-      this.pointFragmentShader_,
-      this.pointAttributes_
-    );
-    this.lineStringRenderer_ = new LineStringBatchRenderer(
-      this.helper,
-      this.worker_,
-      this.strokeVertexShader_,
-      this.strokeFragmentShader_,
-      this.strokeAttributes_
-    );
+    function addBuilderParams(builder) {
+      const exisitingDiscard = builder.getFragmentDiscardExpression();
+      const discardFromMask = `texture2D(${Uniforms.TILE_MASK_TEXTURE}, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > ${Uniforms.TILE_ZOOM_LEVEL} + 0.5`;
+      builder.setFragmentDiscardExpression(
+        exisitingDiscard !== 'false'
+          ? `(${exisitingDiscard}) || (${discardFromMask})`
+          : discardFromMask,
+      );
+      builder.addUniform(`sampler2D ${Uniforms.TILE_MASK_TEXTURE}`);
+      builder.addUniform(`float ${Uniforms.TILE_ZOOM_LEVEL}`);
+    }
+
+    this.styleRenderers_ = this.styles_.map((style) => {
+      const isShaders = 'builder' in style;
+      let shaders;
+      if (!isShaders) {
+        const parseResult = parseLiteralStyle(
+          /** @type {import('../../style/webgl.js').WebGLStyle} */ (style),
+        );
+        addBuilderParams(parseResult.builder);
+        shaders = {
+          builder: parseResult.builder,
+          attributes: parseResult.attributes,
+          uniforms: parseResult.uniforms,
+        };
+      } else {
+        addBuilderParams(
+          /** @type {import('../../render/webgl/VectorStyleRenderer.js').StyleShaders} */ (
+            style
+          ).builder,
+        );
+        shaders = style;
+      }
+      return new VectorStyleRenderer(
+        shaders,
+        this.helper,
+        this.hitDetectionEnabled_,
+      );
+    });
   }
 
+  /**
+   * @private
+   */
+  initTileMask_() {
+    this.tileMaskTarget_ = new WebGLRenderTarget(this.helper);
+    const builder = new ShaderBuilder()
+      .setFillColorExpression(
+        `vec4(${Uniforms.TILE_ZOOM_LEVEL} / 50., 0., 0., 1.)`,
+      )
+      .addUniform(`float ${Uniforms.TILE_ZOOM_LEVEL}`);
+    this.tileMaskProgram_ = this.helper.getProgram(
+      builder.getFillFragmentShader(),
+      builder.getFillVertexShader(),
+    );
+    this.helper.flushBufferData(this.tileMaskIndices_);
+  }
+
+  /**
+   * @override
+   */
   afterHelperCreated() {
     this.createRenderers_();
+    this.initTileMask_();
   }
 
+  /**
+   * @override
+   */
   createTileRepresentation(options) {
-    const tileRep = new TileGeometry(
-      options,
-      this.polygonRenderer_,
-      this.lineStringRenderer_,
-      this.pointRenderer_
-    );
+    const tileRep = new TileGeometry(options, this.styleRenderers_);
     // redraw the layer when the tile is ready
     const listener = () => {
       if (tileRep.ready) {
@@ -234,40 +252,101 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     return tileRep;
   }
 
+  /**
+   * @override
+   */
   beforeTilesRender(frameState, tilesWithAlpha) {
     super.beforeTilesRender(frameState, true); // always consider that tiles need alpha blending
     this.helper.makeProjectionTransform(
       frameState,
-      this.currentFrameStateTransform_
+      this.currentFrameStateTransform_,
     );
+  }
+
+  /**
+   * @override
+   */
+  beforeTilesMaskRender(frameState) {
+    this.helper.makeProjectionTransform(
+      frameState,
+      this.currentFrameStateTransform_,
+    );
+    const pixelRatio = frameState.pixelRatio;
+    const size = frameState.size;
+    this.tileMaskTarget_.setSize([size[0] * pixelRatio, size[1] * pixelRatio]);
+    this.helper.prepareDrawToRenderTarget(
+      frameState,
+      this.tileMaskTarget_,
+      true,
+      true,
+    );
+    this.helper.useProgram(this.tileMaskProgram_, frameState);
+    setFromTransform(this.tmpTransform_, this.currentFrameStateTransform_);
+    this.helper.setUniformMatrixValue(
+      Uniforms.PROJECTION_MATRIX,
+      mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
+    );
+    makeInverseTransform(this.tmpTransform_, this.currentFrameStateTransform_);
+    this.helper.setUniformMatrixValue(
+      Uniforms.SCREEN_TO_WORLD_MATRIX,
+      mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
+    );
+    return true;
+  }
+
+  /**
+   * @override
+   */
+  renderTileMask(tileRepresentation, tileZ, extent, depth) {
+    if (!tileRepresentation.ready) {
+      return;
+    }
+    this.helper.setUniformFloatValue(Uniforms.DEPTH, depth);
+    this.helper.setUniformFloatValue(Uniforms.TILE_ZOOM_LEVEL, tileZ);
+    this.helper.setUniformFloatVec4(Uniforms.RENDER_EXTENT, extent);
+    this.helper.setUniformFloatValue(Uniforms.GLOBAL_ALPHA, 1);
+    this.helper.bindBuffer(
+      /** @type {TileGeometry} */ (tileRepresentation).maskVertices,
+    );
+    this.helper.bindBuffer(this.tileMaskIndices_);
+    this.helper.enableAttributes(this.tileMaskAttributes_);
+    const renderCount = this.tileMaskIndices_.getSize();
+    this.helper.drawElements(0, renderCount);
   }
 
   /**
    * @param {number} alpha Alpha value of the tile
    * @param {import("../../extent.js").Extent} renderExtent Which extent to restrict drawing to
    * @param {import("../../transform.js").Transform} batchInvertTransform Inverse of the transformation in which tile geometries are expressed
+   * @param {number} tileZ Tile zoom level
+   * @param {number} depth Depth of the tile
    * @private
    */
-  applyUniforms_(alpha, renderExtent, batchInvertTransform) {
+  applyUniforms_(alpha, renderExtent, batchInvertTransform, tileZ, depth) {
     // world to screen matrix
     setFromTransform(this.tmpTransform_, this.currentFrameStateTransform_);
     multiplyTransform(this.tmpTransform_, batchInvertTransform);
     this.helper.setUniformMatrixValue(
       Uniforms.PROJECTION_MATRIX,
-      mat4FromTransform(this.tmpMat4_, this.tmpTransform_)
+      mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
     );
 
     // screen to world matrix
     makeInverseTransform(this.tmpTransform_, this.currentFrameStateTransform_);
     this.helper.setUniformMatrixValue(
       Uniforms.SCREEN_TO_WORLD_MATRIX,
-      mat4FromTransform(this.tmpMat4_, this.tmpTransform_)
+      mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
     );
 
     this.helper.setUniformFloatValue(Uniforms.GLOBAL_ALPHA, alpha);
+    this.helper.setUniformFloatValue(Uniforms.DEPTH, depth);
+    this.helper.setUniformFloatValue(Uniforms.TILE_ZOOM_LEVEL, tileZ);
     this.helper.setUniformFloatVec4(Uniforms.RENDER_EXTENT, renderExtent);
   }
 
+  /**
+   * @override
+   */
   renderTile(
     tileRepresentation,
     tileTransform,
@@ -279,42 +358,23 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     tileExtent,
     depth,
     gutter,
-    alpha
+    alpha,
   ) {
     const gutterExtent = getIntersection(tileExtent, renderExtent, tileExtent);
-
-    this.polygonRenderer_.preRender(
-      tileRepresentation.batch.polygonBatch,
-      this.frameState
-    );
-    this.applyUniforms_(
-      alpha,
-      gutterExtent,
-      tileRepresentation.batch.polygonBatch.invertVerticesBufferTransform
-    );
-    this.polygonRenderer_.render(tileRepresentation.batch.polygonBatch);
-
-    this.lineStringRenderer_.preRender(
-      tileRepresentation.batch.lineStringBatch,
-      this.frameState
-    );
-    this.applyUniforms_(
-      alpha,
-      gutterExtent,
-      tileRepresentation.batch.lineStringBatch.invertVerticesBufferTransform
-    );
-    this.lineStringRenderer_.render(tileRepresentation.batch.lineStringBatch);
-
-    this.pointRenderer_.preRender(
-      tileRepresentation.batch.pointBatch,
-      this.frameState
-    );
-    this.applyUniforms_(
-      alpha,
-      gutterExtent,
-      tileRepresentation.batch.pointBatch.invertVerticesBufferTransform
-    );
-    this.pointRenderer_.render(tileRepresentation.batch.pointBatch);
+    const tileZ = tileRepresentation.tile.getTileCoord()[0];
+    for (let i = 0, ii = this.styleRenderers_.length; i < ii; i++) {
+      const renderer = this.styleRenderers_[i];
+      const buffers = tileRepresentation.buffers[i];
+      renderer.render(buffers, frameState, () => {
+        this.applyUniforms_(
+          alpha,
+          gutterExtent,
+          buffers.invertVerticesTransform,
+          tileZ,
+          depth,
+        );
+      });
+    }
   }
 
   /**
@@ -325,9 +385,9 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
-    this.worker_.terminate();
     super.disposeInternal();
   }
 }

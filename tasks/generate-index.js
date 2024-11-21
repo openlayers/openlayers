@@ -22,7 +22,7 @@ async function getSymbols() {
 function getImport(symbol, member) {
   const defaultExport = symbol.name.split('~');
   if (symbol.isDefaultExport) {
-    const from = defaultExport[0].replace(/^module\:/, './');
+    const from = defaultExport[0].replace(/^module\:/, '../../');
     const importName = from.replace(/[.\/]+/g, '$');
     return `import ${importName} from '${from}.js';`;
   }
@@ -32,7 +32,7 @@ function getImport(symbol, member) {
     namedExport.length > 1 &&
     (defaultExport.length <= 1 || defaultExport[0].includes('.'))
   ) {
-    const from = namedExport[0].replace(/^module\:/, './');
+    const from = namedExport[0].replace(/^module\:/, '../../');
     const importName = from.replace(/[.\/]+/g, '_');
     return `import {${member} as ${importName}$${member}} from '${from}.js';`;
   }
@@ -101,6 +101,8 @@ function generateExports(symbols) {
   }
   const defs = ['\nvar ol = {};'].concat(nsdefs, [...new Set(blocks)]);
   const lines = Object.keys(imports).concat(defs.sort());
+  lines.push('', 'ol.VERSION = ol.util.VERSION;');
+  lines.push('', 'ol.getUid = ol.util.getUid;');
   lines.push('', 'export default ol;');
   return lines.join('\n');
 }
@@ -123,7 +125,7 @@ if (esMain(import.meta)) {
 
   main()
     .then(async (code) => {
-      const filepath = path.join(baseDir, '..', 'build', 'index.js');
+      const filepath = path.join(baseDir, '..', 'build', 'ol', 'dist', 'ol.js');
       await fse.outputFile(filepath, code);
     })
     .catch((err) => {

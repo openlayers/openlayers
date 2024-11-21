@@ -7,8 +7,6 @@ import ViewHint from '../../ViewHint.js';
 import {
   apply as applyTransform,
   compose as composeTransform,
-  makeInverse,
-  toString as toTransformString,
 } from '../../transform.js';
 import {
   containsCoordinate,
@@ -35,22 +33,23 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @protected
-     * @type {?import("../../ImageBase.js").default}
+     * @type {?import("../../Image.js").default}
      */
-    this.image_ = null;
+    this.image = null;
   }
 
   /**
-   * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
+   * @return {import('../../DataTile.js').ImageLike} Image.
    */
   getImage() {
-    return this.image_ ? this.image_.getImage() : null;
+    return !this.image ? null : this.image.getImage();
   }
 
   /**
    * Determine whether render should be called.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
+   * @override
    */
   prepareFrame(frameState) {
     const layerState = frameState.layerStatesArray[frameState.layerIndex];
@@ -66,7 +65,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     if (layerState.extent !== undefined) {
       renderedExtent = getIntersection(
         renderedExtent,
-        fromUserExtent(layerState.extent, viewState.projection)
+        fromUserExtent(layerState.extent, viewState.projection),
       );
     }
 
@@ -81,26 +80,27 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
           renderedExtent,
           viewResolution,
           pixelRatio,
-          projection
+          projection,
         );
         if (image) {
           if (this.loadImage(image)) {
-            this.image_ = image;
+            this.image = image;
           } else if (image.getState() === ImageState.EMPTY) {
-            this.image_ = null;
+            this.image = null;
           }
         }
       } else {
-        this.image_ = null;
+        this.image = null;
       }
     }
 
-    return !!this.image_;
+    return !!this.image;
   }
 
   /**
    * @param {import("../../pixel.js").Pixel} pixel Pixel.
    * @return {Uint8ClampedArray} Data at the pixel location.
+   * @override
    */
   getData(pixel) {
     const frameState = this.frameState;
@@ -111,7 +111,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     const layer = this.getLayer();
     const coordinate = applyTransform(
       frameState.pixelToCoordinateTransform,
-      pixel.slice()
+      pixel.slice(),
     );
 
     const layerExtent = layer.getExtent();
@@ -121,12 +121,12 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       }
     }
 
-    const imageExtent = this.image_.getExtent();
-    const img = this.getImage();
+    const imageExtent = this.image.getExtent();
+    const img = this.image.getImage();
 
     const imageMapWidth = getWidth(imageExtent);
     const col = Math.floor(
-      img.width * ((coordinate[0] - imageExtent[0]) / imageMapWidth)
+      img.width * ((coordinate[0] - imageExtent[0]) / imageMapWidth),
     );
     if (col < 0 || col >= img.width) {
       return null;
@@ -134,7 +134,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
 
     const imageMapHeight = getHeight(imageExtent);
     const row = Math.floor(
-      img.height * ((imageExtent[3] - coordinate[1]) / imageMapHeight)
+      img.height * ((imageExtent[3] - coordinate[1]) / imageMapHeight),
     );
     if (row < 0 || row >= img.height) {
       return null;
@@ -148,53 +148,33 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {HTMLElement} target Target that may be used to render content to.
    * @return {HTMLElement} The rendered element.
+   * @override
    */
   renderFrame(frameState, target) {
-    const image = this.image_;
+    const image = this.image;
     const imageExtent = image.getExtent();
     const imageResolution = image.getResolution();
+    const [imageResolutionX, imageResolutionY] = Array.isArray(imageResolution)
+      ? imageResolution
+      : [imageResolution, imageResolution];
     const imagePixelRatio = image.getPixelRatio();
     const layerState = frameState.layerStatesArray[frameState.layerIndex];
     const pixelRatio = frameState.pixelRatio;
     const viewState = frameState.viewState;
     const viewCenter = viewState.center;
     const viewResolution = viewState.resolution;
-    const scale =
-      (pixelRatio * imageResolution) / (viewResolution * imagePixelRatio);
+    const scaleX =
+      (pixelRatio * imageResolutionX) / (viewResolution * imagePixelRatio);
+    const scaleY =
+      (pixelRatio * imageResolutionY) / (viewResolution * imagePixelRatio);
 
-    const extent = frameState.extent;
-    const resolution = viewState.resolution;
-    const rotation = viewState.rotation;
+    this.prepareContainer(frameState, target);
+
     // desired dimensions of the canvas in pixels
-    const width = Math.round((getWidth(extent) / resolution) * pixelRatio);
-    const height = Math.round((getHeight(extent) / resolution) * pixelRatio);
+    const width = this.context.canvas.width;
+    const height = this.context.canvas.height;
 
-    // set forward and inverse pixel transforms
-    composeTransform(
-      this.pixelTransform,
-      frameState.size[0] / 2,
-      frameState.size[1] / 2,
-      1 / pixelRatio,
-      1 / pixelRatio,
-      rotation,
-      -width / 2,
-      -height / 2
-    );
-    makeInverse(this.inversePixelTransform, this.pixelTransform);
-
-    const canvasTransform = toTransformString(this.pixelTransform);
-
-    this.useContainer(target, canvasTransform, this.getBackground(frameState));
-
-    const context = this.context;
-    const canvas = context.canvas;
-
-    if (canvas.width != width || canvas.height != height) {
-      canvas.width = width;
-      canvas.height = height;
-    } else if (!this.containerReused) {
-      context.clearRect(0, 0, width, height);
-    }
+    const context = this.getRenderContext(frameState);
 
     // clipped rendering if layer extent is set
     let clipped = false;
@@ -202,7 +182,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     if (layerState.extent) {
       const layerExtent = fromUserExtent(
         layerState.extent,
-        viewState.projection
+        viewState.projection,
       );
       render = intersectsExtent(layerExtent, frameState.extent);
       clipped = render && !containsExtent(layerExtent, frameState.extent);
@@ -211,20 +191,20 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       }
     }
 
-    const img = this.getImage();
+    const img = image.getImage();
 
     const transform = composeTransform(
       this.tempTransform,
       width / 2,
       height / 2,
-      scale,
-      scale,
+      scaleX,
+      scaleY,
       0,
-      (imagePixelRatio * (imageExtent[0] - viewCenter[0])) / imageResolution,
-      (imagePixelRatio * (viewCenter[1] - imageExtent[3])) / imageResolution
+      (imagePixelRatio * (imageExtent[0] - viewCenter[0])) / imageResolutionX,
+      (imagePixelRatio * (viewCenter[1] - imageExtent[3])) / imageResolutionY,
     );
 
-    this.renderedResolution = (imageResolution * pixelRatio) / imagePixelRatio;
+    this.renderedResolution = (imageResolutionY * pixelRatio) / imagePixelRatio;
 
     const dw = img.width * transform[0];
     const dh = img.height * transform[3];
@@ -238,26 +218,21 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       const dx = transform[4];
       const dy = transform[5];
       const opacity = layerState.opacity;
-      let previousAlpha;
       if (opacity !== 1) {
-        previousAlpha = context.globalAlpha;
+        context.save();
         context.globalAlpha = opacity;
       }
       context.drawImage(img, 0, 0, +img.width, +img.height, dx, dy, dw, dh);
       if (opacity !== 1) {
-        context.globalAlpha = previousAlpha;
+        context.restore();
       }
     }
-    this.postRender(context, frameState);
+    this.postRender(this.context, frameState);
 
     if (clipped) {
       context.restore();
     }
     context.imageSmoothingEnabled = true;
-
-    if (canvasTransform !== canvas.style.transform) {
-      canvas.style.transform = canvasTransform;
-    }
 
     return this.container;
   }

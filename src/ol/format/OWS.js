@@ -35,7 +35,8 @@ class OWS extends XML {
 
   /**
    * @param {Element} node Node.
-   * @return {Object} Object
+   * @return {Object|null} Object
+   * @override
    */
   readFromNode(node) {
     const owsObject = pushParseAndPop({}, PARSERS, node, []);
@@ -240,7 +241,7 @@ function readGet(node, objectStack) {
     {'href': href},
     REQUEST_METHOD_PARSERS,
     node,
-    objectStack
+    objectStack,
   );
 }
 

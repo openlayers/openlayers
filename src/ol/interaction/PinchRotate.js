@@ -77,6 +77,7 @@ class PinchRotate extends PointerInteraction {
   /**
    * Handle pointer drag events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @override
    */
   handleDragEvent(mapBrowserEvent) {
     let rotationDelta = 0.0;
@@ -87,7 +88,7 @@ class PinchRotate extends PointerInteraction {
     // angle between touches
     const angle = Math.atan2(
       touch1.clientY - touch0.clientY,
-      touch1.clientX - touch0.clientX
+      touch1.clientX - touch0.clientX,
     );
 
     if (this.lastAngle_ !== undefined) {
@@ -110,7 +111,7 @@ class PinchRotate extends PointerInteraction {
     // FIXME: should be the intersection point between the lines:
     //     touch0,touch1 and previousTouch0,previousTouch1
     this.anchor_ = map.getCoordinateFromPixelInternal(
-      map.getEventPixel(centroidFromPointers(this.targetPointers))
+      map.getEventPixel(centroidFromPointers(this.targetPointers)),
     );
 
     // rotate
@@ -124,6 +125,7 @@ class PinchRotate extends PointerInteraction {
    * Handle pointer up events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
+   * @override
    */
   handleUpEvent(mapBrowserEvent) {
     if (this.targetPointers.length < 2) {
@@ -139,6 +141,7 @@ class PinchRotate extends PointerInteraction {
    * Handle pointer down events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
+   * @override
    */
   handleDownEvent(mapBrowserEvent) {
     if (this.targetPointers.length >= 2) {

@@ -53,12 +53,6 @@ class WebGLLayerRenderer extends LayerRenderer {
 
     /**
      * @private
-     * @type {CanvasRenderingContext2D}
-     */
-    this.pixelContext_ = null;
-
-    /**
-     * @private
      */
     this.postProcesses_ = options.postProcesses;
 
@@ -73,7 +67,12 @@ class WebGLLayerRenderer extends LayerRenderer {
      */
     this.helper;
 
-    layer.addChangeListener(LayerProperty.MAP, this.removeHelper.bind(this));
+    this.onMapChanged_ = () => {
+      this.clearCache();
+      this.removeHelper();
+    };
+
+    layer.addChangeListener(LayerProperty.MAP, this.onMapChanged_);
 
     this.dispatchPreComposeEvent = this.dispatchPreComposeEvent.bind(this);
     this.dispatchPostComposeEvent = this.dispatchPostComposeEvent.bind(this);
@@ -91,7 +90,7 @@ class WebGLLayerRenderer extends LayerRenderer {
         RenderEventType.PRECOMPOSE,
         undefined,
         frameState,
-        context
+        context,
       );
       layer.dispatchEvent(event);
     }
@@ -109,7 +108,7 @@ class WebGLLayerRenderer extends LayerRenderer {
         RenderEventType.POSTCOMPOSE,
         undefined,
         frameState,
-        context
+        context,
       );
       layer.dispatchEvent(event);
     }
@@ -140,6 +139,7 @@ class WebGLLayerRenderer extends LayerRenderer {
    * Determine whether renderFrame should be called.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
+   * @override
    */
   prepareFrame(frameState) {
     if (this.getLayer().getRenderSource()) {
@@ -167,7 +167,11 @@ class WebGLLayerRenderer extends LayerRenderer {
       const canvasCacheKey =
         'map/' + frameState.mapId + '/group/' + groupNumber;
 
-      if (!this.helper || !this.helper.canvasCacheKeyMatches(canvasCacheKey)) {
+      if (
+        !this.helper ||
+        !this.helper.canvasCacheKeyMatches(canvasCacheKey) ||
+        this.helper.needsToBeRecreated()
+      ) {
         this.removeHelper();
 
         this.helper = new WebGLHelper({
@@ -203,10 +207,21 @@ class WebGLLayerRenderer extends LayerRenderer {
   }
 
   /**
+   * @protected
+   */
+  clearCache() {}
+
+  /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
+    this.clearCache();
     this.removeHelper();
+    this.getLayer()?.removeChangeListener(
+      LayerProperty.MAP,
+      this.onMapChanged_,
+    );
     super.disposeInternal();
   }
 
@@ -227,14 +242,14 @@ class WebGLLayerRenderer extends LayerRenderer {
         -frameState.pixelRatio,
         0,
         0,
-        -frameState.size[1]
+        -frameState.size[1],
       );
 
       const event = new RenderEvent(
         type,
         this.inversePixelTransform_,
         frameState,
-        context
+        context,
       );
       layer.dispatchEvent(event);
     }

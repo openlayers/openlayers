@@ -9,6 +9,7 @@ import {Icon, Style} from '../../../../../src/ol/style.js';
 import {Point} from '../../../../../src/ol/geom.js';
 import {create as createTransform} from '../../../../../src/ol/transform.js';
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
+import {fromExtent} from '../../../../../src/ol/geom/Polygon.js';
 import {fromLonLat, get as getProjection} from '../../../../../src/ol/proj.js';
 import {getUid} from '../../../../../src/ol/util.js';
 import {isEmpty} from '../../../../../src/ol/obj.js';
@@ -61,39 +62,45 @@ describe('ol.layer.VectorTile', function () {
   });
 
   describe('#getFeatures()', function () {
-    let map, layer;
+    let map, layer, objectURL;
 
     beforeEach(function () {
+      objectURL = URL.createObjectURL(
+        new Blob(
+          [
+            `{
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [-36, 0]
+            },
+            "properties": {
+              "name": "feature1"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [36, 0]
+            },
+            "properties": {
+              "name": "feature2"
+            }
+          }
+        ]
+      }`,
+          ],
+          {type: 'application/json'},
+        ),
+      );
       layer = new VectorTileLayer({
         source: new VectorTileSource({
           format: new GeoJSON(),
-          url: `data:application/json;charset=utf-8,
-            {
-              "type": "FeatureCollection",
-              "features": [
-                {
-                  "type": "Feature",
-                  "geometry": {
-                    "type": "Point",
-                    "coordinates": [-36, 0]
-                  },
-                  "properties": {
-                    "name": "feature1"
-                  }
-                },
-                {
-                  "type": "Feature",
-                  "geometry": {
-                    "type": "Point",
-                    "coordinates": [36, 0]
-                  },
-                  "properties": {
-                    "name": "feature2"
-                  }
-                }
-              ]
-            }
-          `,
+          url: objectURL,
         }),
       });
       const container = document.createElement('div');
@@ -111,8 +118,8 @@ describe('ol.layer.VectorTile', function () {
     });
 
     afterEach(function () {
-      document.body.removeChild(map.getTargetElement());
-      map.setTarget(null);
+      disposeMap(map);
+      URL.revokeObjectURL(objectURL);
     });
 
     it('detects features properly', function (done) {
@@ -150,11 +157,89 @@ describe('ol.layer.VectorTile', function () {
         const pixel = map.getPixelFromCoordinate(fromLonLat([-36, 0]));
         Promise.all([layer.getFeatures(pixel), layer2.getFeatures(pixel)])
           .then(function (result) {
-            const tile = layer.getSource().tileCache.get('0/0/0');
-            expect(Object.keys(tile.hitDetectionImageData).length).to.be(2);
+            const tile = layer
+              .getRenderer()
+              .tileCache_.get(objectURL + ',0/0/0');
+            expect(Object.keys(tile.hitDetectionImageData).length).to.be(1);
+            const tile2 = layer2
+              .getRenderer()
+              .tileCache_.get(objectURL + ',0/0/0');
+            expect(Object.keys(tile2.hitDetectionImageData).length).to.be(1);
             done();
           })
           .catch(done);
+      });
+    });
+  });
+
+  describe('getFeatuersInExtent', function () {
+    let map, layer, target;
+
+    beforeEach(function () {
+      const source = new VectorTileSource({
+        maxZoom: 15,
+        tileSize: 256,
+        url: '{z}/{x}/{y}',
+        tileLoadFunction: function (tile) {
+          const extent = source
+            .getTileGrid()
+            .getTileCoordExtent(tile.tileCoord);
+          const feature = new Feature(fromExtent(extent));
+          feature.setId(tile.tileCoord.toString());
+          feature.set('z', tile.tileCoord[0]);
+          tile.setFeatures([feature]);
+        },
+      });
+      layer = new VectorTileLayer({source});
+      target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      map = new Map({
+        target: target,
+        layers: [layer],
+        view: new View({
+          center: [0, 0],
+          zoom: 0,
+        }),
+      });
+    });
+
+    afterEach(function () {
+      map.setTarget(null);
+      document.body.removeChild(target);
+    });
+
+    it('returns an empty array when no tiles are in the cache', function () {
+      layer.getRenderer().getTileCache().clear();
+      const extent = map.getView().calculateExtent(map.getSize());
+      expect(layer.getFeaturesInExtent(extent).length).to.be(0);
+    });
+
+    it('returns features in extent for the last rendered z', function (done) {
+      map.getView().setZoom(15);
+      map.once('rendercomplete', function () {
+        const extent = map.getView().calculateExtent(map.getSize());
+        const features = layer.getFeaturesInExtent(extent);
+        expect(features.length).to.be(4);
+        const keys = {};
+        features.forEach((feature) => {
+          expect(feature.get('z')).to.be(15);
+          expect(feature.getId() in keys).to.be(false);
+          keys[feature.getId()] = true;
+        });
+        map.getView().setZoom(0);
+        map.once('rendercomplete', function () {
+          const extent = map.getView().calculateExtent(map.getSize());
+          const features = layer.getFeaturesInExtent(extent);
+          expect(features.length).to.be(1);
+          features.forEach((feature) => {
+            expect(feature.get('z')).to.be(0);
+            expect(feature.getId() in keys).to.be(false);
+            keys[feature.getId()] = true;
+          });
+          done();
+        });
       });
     });
   });
@@ -205,7 +290,7 @@ describe('ol.layer.VectorTile', function () {
           },
           size: [2 * tileSize, 2 * tileSize],
           extent: [-tileSize, -tileSize, tileSize, tileSize].map(
-            (n) => n * resolution
+            (n) => n * resolution,
           ),
           viewHints: [0, 0],
           layerStatesArray: layer.getLayerStatesArray(),
@@ -214,6 +299,7 @@ describe('ol.layer.VectorTile', function () {
           usedTiles: {},
           tileQueue: {isKeyQueued: () => true},
           pixelToCoordinateTransform: createTransform(),
+          postRenderFunctions: [],
         });
 
       renderer.renderFrame(frameState);
@@ -224,7 +310,7 @@ describe('ol.layer.VectorTile', function () {
       expect(isEmpty(wantedTiles)).to.be(false);
 
       // Tiles are loaded synchronously
-      source.tileCache.forEach((tile) => tile.load());
+      renderer.tileCache_.forEach((tile) => tile.load());
 
       renderer.renderFrame(frameState);
       // Tiles loaded, waiting for icon

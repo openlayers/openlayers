@@ -1,3 +1,4 @@
+import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {
@@ -9,7 +10,7 @@ import {
   Tile as TileLayer,
   VectorImage as VectorImageLayer,
 } from '../src/ol/layer.js';
-import {Vector as VectorSource, XYZ} from '../src/ol/source.js';
+import {Vector as VectorSource} from '../src/ol/source.js';
 
 const dragAndDropInteraction = new DragAndDrop({
   formatConstructors: [GPX, GeoJSON, IGC, KML, TopoJSON],
@@ -24,10 +25,11 @@ const map = new Map({
   interactions: defaultInteractions().extend([dragAndDropInteraction]),
   layers: [
     new TileLayer({
-      source: new XYZ({
+      source: new ImageTile({
         attributions: attributions,
         url:
-          'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=' + key,
+          'https://api.maptiler.com/maps/satellite/{z}/{x}/{y}.jpg?key=' + key,
+        tileSize: 512,
         maxZoom: 20,
       }),
     }),
@@ -46,7 +48,7 @@ dragAndDropInteraction.on('addfeatures', function (event) {
   map.addLayer(
     new VectorImageLayer({
       source: vectorSource,
-    })
+    }),
   );
   map.getView().fit(vectorSource.getExtent());
 });

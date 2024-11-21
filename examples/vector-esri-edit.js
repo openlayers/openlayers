@@ -1,8 +1,9 @@
+import $ from 'jquery';
 import EsriJSON from '../src/ol/format/EsriJSON.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
-import XYZ from '../src/ol/source/XYZ.js';
 import {
   Draw,
   Modify,
@@ -36,7 +37,7 @@ const vectorSource = new VectorSource({
           extent[2] +
           ',"ymax":' +
           extent[3] +
-          ',"spatialReference":{"wkid":102100}}'
+          ',"spatialReference":{"wkid":102100}}',
       ) +
       '&geometryType=esriGeometryEnvelope&inSR=102100&outFields=*' +
       '&outSR=102100';
@@ -46,7 +47,7 @@ const vectorSource = new VectorSource({
       success: function (response) {
         if (response.error) {
           alert(
-            response.error.message + '\n' + response.error.details.join('\n')
+            response.error.message + '\n' + response.error.details.join('\n'),
           );
         } else {
           // dataProjection will be read from document
@@ -63,7 +64,7 @@ const vectorSource = new VectorSource({
   strategy: tileStrategy(
     createXYZ({
       tileSize: 512,
-    })
+    }),
   ),
 });
 
@@ -72,7 +73,7 @@ const vector = new VectorLayer({
 });
 
 const raster = new TileLayer({
-  source: new XYZ({
+  source: new ImageTile({
     attributions:
       'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
       'rest/services/World_Topo_Map/MapServer">ArcGIS</a>',

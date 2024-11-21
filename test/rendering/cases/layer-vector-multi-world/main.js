@@ -26,7 +26,7 @@ addCoordinateTransforms(
   },
   function (coord) {
     return toEPSG4326([coord[0] + 20037508.342789244, coord[1]]);
-  }
+  },
 );
 
 const feature = new Feature({

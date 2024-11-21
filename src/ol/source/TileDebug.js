@@ -2,9 +2,9 @@
  * @module ol/source/TileDebug
  */
 
-import XYZ from './XYZ.js';
+import ImageTile from './ImageTile.js';
 import {createCanvasContext2D} from '../dom.js';
-import {toSize} from '../size.js';
+import {renderXYZTemplate} from '../uri.js';
 
 /**
  * @typedef {Object} Options
@@ -26,7 +26,7 @@ import {toSize} from '../size.js';
  * each tile. See examples/canvas-tiles for an example.
  * @api
  */
-class TileDebug extends XYZ {
+class TileDebug extends ImageTile {
   /**
    * @param {Options} [options] Debug tile options.
    */
@@ -35,17 +35,17 @@ class TileDebug extends XYZ {
      * @type {Options}
      */
     options = options || {};
+    const template = options.template || 'z:{z} x:{x} y:{y}';
 
     super({
-      opaque: false,
+      transition: 0,
       projection: options.projection,
       tileGrid: options.tileGrid,
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
       zDirection: options.zDirection,
-      url: options.template || 'z:{z} x:{x} y:{y}',
-      tileLoadFunction: (tile, text) => {
-        const z = tile.getTileCoord()[0];
-        const tileSize = toSize(this.tileGrid.getTileSize(z));
+      loader: (z, x, y, loaderOptions) => {
+        const text = renderXYZTemplate(template, z, x, y, loaderOptions.maxY);
+        const tileSize = this.getTileSize(z);
         const context = createCanvasContext2D(tileSize[0], tileSize[1]);
 
         context.strokeStyle = 'grey';
@@ -59,10 +59,7 @@ class TileDebug extends XYZ {
         context.lineWidth = 4;
         context.strokeText(text, tileSize[0] / 2, tileSize[1] / 2, tileSize[0]);
         context.fillText(text, tileSize[0] / 2, tileSize[1] / 2, tileSize[0]);
-
-        /** @type {import("../ImageTile.js").default} */ (tile).setImage(
-          context.canvas
-        );
+        return context.canvas;
       },
     });
   }

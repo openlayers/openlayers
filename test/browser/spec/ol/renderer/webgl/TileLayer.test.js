@@ -1,6 +1,5 @@
 import Map from '../../../../../../src/ol/Map.js';
 import TileQueue from '../../../../../../src/ol/TileQueue.js';
-import TileState from '../../../../../../src/ol/TileState.js';
 import TileTexture from '../../../../../../src/ol/webgl/TileTexture.js';
 import View from '../../../../../../src/ol/View.js';
 import WebGLTileLayer from '../../../../../../src/ol/layer/WebGLTile.js';
@@ -72,8 +71,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
     map.dispose();
   });
 
-  it('maintains a cache on the renderer instead of the source', function () {
-    expect(tileLayer.getSource().tileCache.highWaterMark).to.be(0.1);
+  it('maintains a cache on the renderer', function () {
     expect(renderer.tileRepresentationCache.highWaterMark).to.be(512);
   });
 
@@ -99,24 +97,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
     expect(rendered).to.be.a(HTMLCanvasElement);
     expect(frameState.tileQueue.getCount()).to.be(1);
     expect(Object.keys(frameState.wantedTiles).length).to.be(1);
-    expect(frameState.postRenderFunctions.length).to.be(1); // clear source cache (use renderer cache)
     expect(renderer.tileRepresentationCache.count_).to.be(1);
-  });
-
-  it('#isDrawableTile_()', function (done) {
-    const tile = tileLayer.getSource().getTile(0, 0, 0);
-    expect(renderer.isDrawableTile_(tile)).to.be(false);
-    tileLayer.getSource().on('tileloadend', () => {
-      expect(renderer.isDrawableTile_(tile)).to.be(true);
-      done();
-    });
-    tile.load();
-    const errorTile = tileLayer.getSource().getTile(1, 0, 1);
-    errorTile.setState(TileState.ERROR);
-    tileLayer.setUseInterimTilesOnError(false);
-    expect(renderer.isDrawableTile_(errorTile)).to.be(true);
-    tileLayer.setUseInterimTilesOnError(true);
-    expect(renderer.isDrawableTile_(errorTile)).to.be(false);
   });
 
   describe('enqueueTiles()', () => {
@@ -128,7 +109,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
         extent,
         10,
         newTileRepresentationLookup(),
-        tileLayer.getPreload()
+        tileLayer.getPreload(),
       );
 
       const source = tileLayer.getSource();
@@ -138,10 +119,10 @@ describe('ol/renderer/webgl/TileLayer', function () {
       const wantedTiles = frameState.wantedTiles[sourceKey];
 
       const expected = {
-        '/10,511,511': true,
-        '/10,511,512': true,
-        '/10,512,511': true,
-        '/10,512,512': true,
+        [sourceKey + '/10,511,511']: true,
+        [sourceKey + '/10,511,512']: true,
+        [sourceKey + '/10,512,511']: true,
+        [sourceKey + '/10,512,512']: true,
       };
       expect(wantedTiles).to.eql(expected);
     });
@@ -155,7 +136,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
         extent,
         10,
         newTileRepresentationLookup(),
-        tileLayer.getPreload()
+        tileLayer.getPreload(),
       );
 
       const source = tileLayer.getSource();
@@ -165,18 +146,18 @@ describe('ol/renderer/webgl/TileLayer', function () {
       const wantedTiles = frameState.wantedTiles[sourceKey];
 
       const expected = {
-        '/10,511,511': true,
-        '/10,511,512': true,
-        '/10,512,511': true,
-        '/10,512,512': true,
-        '/9,255,255': true,
-        '/9,255,256': true,
-        '/9,256,255': true,
-        '/9,256,256': true,
-        '/8,127,127': true,
-        '/8,127,128': true,
-        '/8,128,127': true,
-        '/8,128,128': true,
+        [sourceKey + '/10,511,511']: true,
+        [sourceKey + '/10,511,512']: true,
+        [sourceKey + '/10,512,511']: true,
+        [sourceKey + '/10,512,512']: true,
+        [sourceKey + '/9,255,255']: true,
+        [sourceKey + '/9,255,256']: true,
+        [sourceKey + '/9,256,255']: true,
+        [sourceKey + '/9,256,256']: true,
+        [sourceKey + '/8,127,127']: true,
+        [sourceKey + '/8,127,128']: true,
+        [sourceKey + '/8,128,127']: true,
+        [sourceKey + '/8,128,128']: true,
       };
       expect(wantedTiles).to.eql(expected);
     });
@@ -191,7 +172,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
         extent,
         10,
         newTileRepresentationLookup(),
-        tileLayer.getPreload()
+        tileLayer.getPreload(),
       );
 
       const source = tileLayer.getSource();
@@ -201,21 +182,21 @@ describe('ol/renderer/webgl/TileLayer', function () {
       const wantedTiles = frameState.wantedTiles[sourceKey];
 
       const expected = {
-        '/10,511,511': true,
-        '/10,511,512': true,
-        '/10,512,511': true,
-        '/10,512,512': true,
-        '/9,255,255': true,
-        '/9,255,256': true,
-        '/9,256,255': true,
-        '/9,256,256': true,
+        [sourceKey + '/10,511,511']: true,
+        [sourceKey + '/10,511,512']: true,
+        [sourceKey + '/10,512,511']: true,
+        [sourceKey + '/10,512,512']: true,
+        [sourceKey + '/9,255,255']: true,
+        [sourceKey + '/9,255,256']: true,
+        [sourceKey + '/9,256,255']: true,
+        [sourceKey + '/9,256,256']: true,
       };
       expect(wantedTiles).to.eql(expected);
     });
 
     it('layer min zoom relates to view zoom levels', () => {
       map.setView(
-        new View({maxResolution: map.getView().getMaxResolution() * 2})
+        new View({maxResolution: map.getView().getMaxResolution() * 2}),
       );
       tileLayer.setPreload(Infinity);
       tileLayer.setMinZoom(9);
@@ -226,7 +207,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
         extent,
         10,
         newTileRepresentationLookup(),
-        tileLayer.getPreload()
+        tileLayer.getPreload(),
       );
 
       const source = tileLayer.getSource();
@@ -236,18 +217,18 @@ describe('ol/renderer/webgl/TileLayer', function () {
       const wantedTiles = frameState.wantedTiles[sourceKey];
 
       const expected = {
-        '/10,511,511': true,
-        '/10,511,512': true,
-        '/10,512,511': true,
-        '/10,512,512': true,
-        '/9,255,255': true,
-        '/9,255,256': true,
-        '/9,256,255': true,
-        '/9,256,256': true,
-        '/8,127,127': true,
-        '/8,127,128': true,
-        '/8,128,127': true,
-        '/8,128,128': true,
+        [sourceKey + '/10,511,511']: true,
+        [sourceKey + '/10,511,512']: true,
+        [sourceKey + '/10,512,511']: true,
+        [sourceKey + '/10,512,512']: true,
+        [sourceKey + '/9,255,255']: true,
+        [sourceKey + '/9,255,256']: true,
+        [sourceKey + '/9,256,255']: true,
+        [sourceKey + '/9,256,256']: true,
+        [sourceKey + '/8,127,127']: true,
+        [sourceKey + '/8,127,128']: true,
+        [sourceKey + '/8,128,127']: true,
+        [sourceKey + '/8,128,128']: true,
       };
       expect(wantedTiles).to.eql(expected);
     });

@@ -41,7 +41,6 @@ import {fromUserCoordinate, toUserCoordinate} from './proj.js';
 import {getUid} from './util.js';
 import {hasArea} from './size.js';
 import {listen, unlistenByKey} from './events.js';
-import {removeNode} from './dom.js';
 import {warn} from './console.js';
 
 /**
@@ -53,8 +52,10 @@ import {warn} from './console.js';
  * @property {import("./View.js").State} viewState The state of the current view.
  * @property {boolean} animate Animate.
  * @property {import("./transform.js").Transform} coordinateToPixelTransform CoordinateToPixelTransform.
- * @property {import("rbush").default} declutterTree DeclutterTree.
- * @property {null|import("./extent.js").Extent} extent Extent.
+ * @property {Object<string, import("rbush").default<import('./render/canvas/Executor.js').DeclutterEntry>>|null} declutter
+ * Declutter trees by declutter group.
+ * When null, no decluttering is needed because no layers have decluttering enabled.
+ * @property {null|import("./extent.js").Extent} extent Extent (in view projection coordinates).
  * @property {import("./extent.js").Extent} [nextExtent] Next extent during an animation series.
  * @property {number} index Index.
  * @property {Array<import("./layer/Layer.js").State>} layerStatesArray LayerStatesArray.
@@ -147,6 +148,9 @@ import {warn} from './console.js';
  * element itself or the `id` of the element. If not specified at construction
  * time, {@link module:ol/Map~Map#setTarget} must be called for the map to be
  * rendered. If passed by element, the container can be in a secondary document.
+ * For accessibility (focus and keyboard events for map navigation), the `target` element must have a
+ *  properly configured `tabindex` attribute. If the `target` element is inside a Shadow DOM, the
+ *  `tabindex` atribute must be set on the custom element's host element.
  * **Note:** CSS `transform` support for the target element is limited to `scale`.
  * @property {View|Promise<import("./View.js").ViewOptions>} [view] The map's view.  No layer sources will be
  * fetched unless this is specified at construction time or through
@@ -263,9 +267,9 @@ class Map extends BaseObject {
 
     /**
      * @private
-     * @type {boolean|undefined}
+     * @type {boolean}
      */
-    this.renderComplete_;
+    this.renderComplete_ = false;
 
     /**
      * @private
@@ -294,7 +298,7 @@ class Map extends BaseObject {
 
     /**
      * @private
-     * @type {*}
+     * @type {ReturnType<typeof setTimeout>}
      */
     this.postRenderTimeoutHandle_;
 
@@ -427,6 +431,7 @@ class Map extends BaseObject {
     this.targetElement_ = null;
 
     /**
+     * @private
      * @type {ResizeObserver}
      */
     this.resizeObserver_ = new ResizeObserver(() => this.updateSize());
@@ -478,12 +483,12 @@ class Map extends BaseObject {
      */
     this.tileQueue_ = new TileQueue(
       this.getTilePriority.bind(this),
-      this.handleTileChange_.bind(this)
+      this.handleTileChange_.bind(this),
     );
 
     this.addChangeListener(
       MapProperty.LAYERGROUP,
-      this.handleLayerGroupChanged_
+      this.handleLayerGroupChanged_,
     );
     this.addChangeListener(MapProperty.VIEW, this.handleViewChanged_);
     this.addChangeListener(MapProperty.SIZE, this.handleSizeChanged_);
@@ -507,7 +512,7 @@ class Map extends BaseObject {
        */
       (event) => {
         event.element.setMap(this);
-      }
+      },
     );
 
     this.controls.addEventListener(
@@ -517,7 +522,7 @@ class Map extends BaseObject {
        */
       (event) => {
         event.element.setMap(null);
-      }
+      },
     );
 
     this.interactions.addEventListener(
@@ -527,7 +532,7 @@ class Map extends BaseObject {
        */
       (event) => {
         event.element.setMap(this);
-      }
+      },
     );
 
     this.interactions.addEventListener(
@@ -537,7 +542,7 @@ class Map extends BaseObject {
        */
       (event) => {
         event.element.setMap(null);
-      }
+      },
     );
 
     this.overlays_.addEventListener(
@@ -547,7 +552,7 @@ class Map extends BaseObject {
        */
       (event) => {
         this.addOverlayInternal_(event.element);
-      }
+      },
     );
 
     this.overlays_.addEventListener(
@@ -561,7 +566,7 @@ class Map extends BaseObject {
           delete this.overlayIdIndex_[id.toString()];
         }
         event.element.setMap(null);
-      }
+      },
     );
 
     this.controls.forEach(
@@ -570,7 +575,7 @@ class Map extends BaseObject {
        */
       (control) => {
         control.setMap(this);
-      }
+      },
     );
 
     this.interactions.forEach(
@@ -579,7 +584,7 @@ class Map extends BaseObject {
        */
       (interaction) => {
         interaction.setMap(this);
-      }
+      },
     );
 
     this.overlays_.forEach(this.addOverlayInternal_.bind(this));
@@ -652,6 +657,7 @@ class Map extends BaseObject {
   /**
    *
    * Clean up.
+   * @override
    */
   disposeInternal() {
     this.controls.clear();
@@ -699,7 +705,7 @@ class Map extends BaseObject {
       callback,
       null,
       layerFilter,
-      null
+      null,
     );
   }
 
@@ -718,7 +724,7 @@ class Map extends BaseObject {
       function (feature) {
         features.push(feature);
       },
-      options
+      options,
     );
     return features;
   }
@@ -768,7 +774,7 @@ class Map extends BaseObject {
       hitTolerance,
       checkWrapped,
       layerFilter,
-      null
+      null,
     );
   }
 
@@ -851,7 +857,7 @@ class Map extends BaseObject {
   getCoordinateFromPixel(pixel) {
     return toUserCoordinate(
       this.getCoordinateFromPixelInternal(pixel),
-      this.getView().getProjection()
+      this.getView().getProjection(),
     );
   }
 
@@ -894,7 +900,7 @@ class Map extends BaseObject {
    * Note that the index treats string and numeric identifiers as the same. So
    * `map.getOverlayById(2)` will return an overlay with id `'2'` or `2`.
    * @param {string|number} id Overlay identifier.
-   * @return {import("./Overlay.js").default} Overlay.
+   * @return {import("./Overlay.js").default|null} Overlay.
    * @api
    */
   getOverlayById(id) {
@@ -983,7 +989,7 @@ class Map extends BaseObject {
   getPixelFromCoordinate(coordinate) {
     const viewCoordinate = fromUserCoordinate(
       coordinate,
-      this.getView().getProjection()
+      this.getView().getProjection(),
     );
     return this.getPixelFromCoordinateInternal(viewCoordinate);
   }
@@ -1001,7 +1007,7 @@ class Map extends BaseObject {
     }
     return applyTransform(
       frameState.coordinateToPixelTransform,
-      coordinate.slice(0, 2)
+      coordinate.slice(0, 2),
     );
   }
 
@@ -1088,7 +1094,7 @@ class Map extends BaseObject {
       tile,
       tileSourceKey,
       tileCenter,
-      tileResolution
+      tileResolution,
     );
   }
 
@@ -1125,6 +1131,15 @@ class Map extends BaseObject {
         ? this.viewport_.getRootNode()
         : doc;
       const target = /** @type {Node} */ (originalEvent.target);
+
+      const currentDoc =
+        rootNode instanceof ShadowRoot
+          ? rootNode.host === target
+            ? rootNode.host.ownerDocument
+            : rootNode
+          : rootNode === doc
+            ? doc.documentElement
+            : rootNode;
       if (
         // Abort if the target is a child of the container for elements whose events are not meant
         // to be handled by map interactions.
@@ -1133,7 +1148,7 @@ class Map extends BaseObject {
         // It's possible for the target to no longer be in the page if it has been removed in an
         // event listener, this might happen in a Control that recreates it's content based on
         // user interaction either manually or via a render in something like https://reactjs.org/
-        !(rootNode === doc ? doc.documentElement : rootNode).contains(target)
+        !currentDoc.contains(target)
       ) {
         return;
       }
@@ -1192,30 +1207,32 @@ class Map extends BaseObject {
     }
 
     if (frameState && this.renderer_ && !frameState.animate) {
-      if (this.renderComplete_ === true) {
+      if (this.renderComplete_) {
         if (this.hasListener(RenderEventType.RENDERCOMPLETE)) {
           this.renderer_.dispatchRenderEvent(
             RenderEventType.RENDERCOMPLETE,
-            frameState
+            frameState,
           );
         }
         if (this.loaded_ === false) {
           this.loaded_ = true;
           this.dispatchEvent(
-            new MapEvent(MapEventType.LOADEND, this, frameState)
+            new MapEvent(MapEventType.LOADEND, this, frameState),
           );
         }
       } else if (this.loaded_ === true) {
         this.loaded_ = false;
         this.dispatchEvent(
-          new MapEvent(MapEventType.LOADSTART, this, frameState)
+          new MapEvent(MapEventType.LOADSTART, this, frameState),
         );
       }
     }
 
     const postRenderFunctions = this.postRenderFunctions_;
-    for (let i = 0, ii = postRenderFunctions.length; i < ii; ++i) {
-      postRenderFunctions[i](this, frameState);
+    if (frameState) {
+      for (let i = 0, ii = postRenderFunctions.length; i < ii; ++i) {
+        postRenderFunctions[i](this, frameState);
+      }
     }
     postRenderFunctions.length = 0;
   }
@@ -1242,15 +1259,15 @@ class Map extends BaseObject {
       this.targetChangeHandlerKeys_ = null;
       this.viewport_.removeEventListener(
         EventType.CONTEXTMENU,
-        this.boundHandleBrowserEvent_
+        this.boundHandleBrowserEvent_,
       );
       this.viewport_.removeEventListener(
         EventType.WHEEL,
-        this.boundHandleBrowserEvent_
+        this.boundHandleBrowserEvent_,
       );
       this.mapBrowserEventHandler_.dispose();
       this.mapBrowserEventHandler_ = null;
-      removeNode(this.viewport_);
+      this.viewport_.remove();
     }
 
     if (this.targetElement_) {
@@ -1291,40 +1308,48 @@ class Map extends BaseObject {
 
       this.mapBrowserEventHandler_ = new MapBrowserEventHandler(
         this,
-        this.moveTolerance_
+        this.moveTolerance_,
       );
       for (const key in MapBrowserEventType) {
         this.mapBrowserEventHandler_.addEventListener(
           MapBrowserEventType[key],
-          this.handleMapBrowserEvent.bind(this)
+          this.handleMapBrowserEvent.bind(this),
         );
       }
       this.viewport_.addEventListener(
         EventType.CONTEXTMENU,
         this.boundHandleBrowserEvent_,
-        false
+        false,
       );
       this.viewport_.addEventListener(
         EventType.WHEEL,
         this.boundHandleBrowserEvent_,
-        PASSIVE_EVENT_LISTENERS ? {passive: false} : false
+        PASSIVE_EVENT_LISTENERS ? {passive: false} : false,
       );
 
-      const keyboardEventTarget = !this.keyboardEventTarget_
-        ? targetElement
-        : this.keyboardEventTarget_;
+      let keyboardEventTarget;
+      if (!this.keyboardEventTarget_) {
+        // check if map target is in shadowDOM, if yes use host element as target
+        const targetRoot = targetElement.getRootNode();
+        const targetCandidate =
+          targetRoot instanceof ShadowRoot ? targetRoot.host : targetElement;
+        keyboardEventTarget = targetCandidate;
+      } else {
+        keyboardEventTarget = this.keyboardEventTarget_;
+      }
+
       this.targetChangeHandlerKeys_ = [
         listen(
           keyboardEventTarget,
           EventType.KEYDOWN,
           this.handleBrowserEvent,
-          this
+          this,
         ),
         listen(
           keyboardEventTarget,
           EventType.KEYPRESS,
           this.handleBrowserEvent,
-          this
+          this,
         ),
       ];
       const rootNode = targetElement.getRootNode();
@@ -1367,19 +1392,19 @@ class Map extends BaseObject {
     }
     const view = this.getView();
     if (view) {
-      this.updateViewportSize_();
+      this.updateViewportSize_(this.getSize());
 
       this.viewPropertyListenerKey_ = listen(
         view,
         ObjectEventType.PROPERTYCHANGE,
         this.handleViewPropertyChanged_,
-        this
+        this,
       );
       this.viewChangeListenerKey_ = listen(
         view,
         EventType.CHANGE,
         this.handleViewPropertyChanged_,
-        this
+        this,
       );
 
       view.resolveConstraints(0);
@@ -1522,18 +1547,18 @@ class Map extends BaseObject {
     let frameState = null;
     if (size !== undefined && hasArea(size) && view && view.isDef()) {
       const viewHints = view.getHints(
-        this.frameState_ ? this.frameState_.viewHints : undefined
+        this.frameState_ ? this.frameState_.viewHints : undefined,
       );
       const viewState = view.getState();
       frameState = {
         animate: false,
         coordinateToPixelTransform: this.coordinateToPixelTransform_,
-        declutterTree: null,
+        declutter: null,
         extent: getForViewAndSize(
           viewState.center,
           viewState.resolution,
           viewState.rotation,
-          size
+          size,
         ),
         index: this.frameIndex_++,
         layerIndex: 0,
@@ -1560,7 +1585,7 @@ class Map extends BaseObject {
           viewState.nextCenter,
           viewState.nextResolution,
           rotation,
-          size
+          size,
         );
       }
     }
@@ -1574,7 +1599,7 @@ class Map extends BaseObject {
       }
       Array.prototype.push.apply(
         this.postRenderFunctions_,
-        frameState.postRenderFunctions
+        frameState.postRenderFunctions,
       );
 
       if (previousFrameState) {
@@ -1584,7 +1609,7 @@ class Map extends BaseObject {
             !equalsExtent(frameState.extent, this.previousExtent_));
         if (moveStart) {
           this.dispatchEvent(
-            new MapEvent(MapEventType.MOVESTART, this, previousFrameState)
+            new MapEvent(MapEventType.MOVESTART, this, previousFrameState),
           );
           this.previousExtent_ = createOrUpdateEmpty(this.previousExtent_);
         }
@@ -1598,7 +1623,7 @@ class Map extends BaseObject {
 
       if (idle) {
         this.dispatchEvent(
-          new MapEvent(MapEventType.MOVEEND, this, frameState)
+          new MapEvent(MapEventType.MOVEEND, this, frameState),
         );
         clone(frameState.extent, this.previousExtent_);
       }
@@ -1607,13 +1632,12 @@ class Map extends BaseObject {
     this.dispatchEvent(new MapEvent(MapEventType.POSTRENDER, this, frameState));
 
     this.renderComplete_ =
-      this.hasListener(MapEventType.LOADSTART) ||
-      this.hasListener(MapEventType.LOADEND) ||
-      this.hasListener(RenderEventType.RENDERCOMPLETE)
-        ? !this.tileQueue_.getTilesLoading() &&
-          !this.tileQueue_.getCount() &&
-          !this.getLoadingOrNotReady()
-        : undefined;
+      (this.hasListener(MapEventType.LOADSTART) ||
+        this.hasListener(MapEventType.LOADEND) ||
+        this.hasListener(RenderEventType.RENDERCOMPLETE)) &&
+      !this.tileQueue_.getTilesLoading() &&
+      !this.tileQueue_.getCount() &&
+      !this.getLoadingOrNotReady();
 
     if (!this.postRenderTimeoutHandle_) {
       this.postRenderTimeoutHandle_ = setTimeout(() => {
@@ -1649,6 +1673,9 @@ class Map extends BaseObject {
 
   /**
    * Set the target element to render this map into.
+   * For accessibility (focus and keyboard events for map navigation), the `target` element must have a
+   *  properly configured `tabindex` attribute. If the `target` element is inside a Shadow DOM, the
+   *  `tabindex` atribute must be set on the custom element's host element.
    * @param {HTMLElement|string} [target] The Element or id of the Element
    *     that the map is rendered in.
    * @observable
@@ -1704,7 +1731,7 @@ class Map extends BaseObject {
         parseFloat(computedStyle['paddingBottom']) -
         parseFloat(computedStyle['borderBottomWidth']);
       if (!isNaN(width) && !isNaN(height)) {
-        size = [width, height];
+        size = [Math.max(0, width), Math.max(0, height)];
         if (
           !hasArea(size) &&
           !!(
@@ -1714,7 +1741,7 @@ class Map extends BaseObject {
           )
         ) {
           warn(
-            "No map visible because the map container's width or height are 0."
+            "No map visible because the map container's width or height are 0.",
           );
         }
       }
@@ -1723,25 +1750,18 @@ class Map extends BaseObject {
     const oldSize = this.getSize();
     if (size && (!oldSize || !equals(size, oldSize))) {
       this.setSize(size);
-      this.updateViewportSize_();
+      this.updateViewportSize_(size);
     }
   }
 
   /**
    * Recomputes the viewport size and save it on the view object (if any)
+   * @param {import("./size.js").Size|undefined} size The size.
    * @private
    */
-  updateViewportSize_() {
+  updateViewportSize_(size) {
     const view = this.getView();
     if (view) {
-      let size = undefined;
-      const computedStyle = getComputedStyle(this.viewport_);
-      if (computedStyle.width && computedStyle.height) {
-        size = [
-          parseInt(computedStyle.width, 10),
-          parseInt(computedStyle.height, 10),
-        ];
-      }
       view.setViewportSize(size);
     }
   }
@@ -1793,8 +1813,8 @@ function createOptionsInternal(options) {
     } else {
       assert(
         typeof (/** @type {?} */ (options.controls).getArray) === 'function',
-        47
-      ); // Expected `controls` to be an array or an `import("./Collection.js").Collection`
+        'Expected `controls` to be an array or an `ol/Collection.js`',
+      );
       controls = options.controls;
     }
   }
@@ -1808,8 +1828,8 @@ function createOptionsInternal(options) {
       assert(
         typeof (/** @type {?} */ (options.interactions).getArray) ===
           'function',
-        48
-      ); // Expected `interactions` to be an array or an `import("./Collection.js").Collection`
+        'Expected `interactions` to be an array or an `ol/Collection.js`',
+      );
       interactions = options.interactions;
     }
   }
@@ -1822,8 +1842,8 @@ function createOptionsInternal(options) {
     } else {
       assert(
         typeof (/** @type {?} */ (options.overlays).getArray) === 'function',
-        49
-      ); // Expected `overlays` to be an array or an `import("./Collection.js").Collection`
+        'Expected `overlays` to be an array or an `ol/Collection.js`',
+      );
       overlays = options.overlays;
     }
   } else {

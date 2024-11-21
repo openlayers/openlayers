@@ -7,10 +7,19 @@ import Style, {
   createDefaultStyle,
   toFunction as toStyleFunction,
 } from '../style/Style.js';
-import {toStyle} from '../style/flat.js';
+import {
+  flatStylesToStyleFunction,
+  rulesToStyleFunction,
+} from '../render/canvas/style.js';
+
+/***
+ * @template T
+ * @typedef {T extends import("../source/Vector.js").default<infer U extends import("../Feature.js").FeatureLike> ? U : never} ExtractedFeatureType
+ */
 
 /**
- * @template {import("../source/Vector.js").default|import("../source/VectorTile.js").default} VectorSourceType
+ * @template {import('../Feature').FeatureLike} FeatureType
+ * @template {import("../source/Vector.js").default<FeatureType>|import("../source/VectorTile.js").default<FeatureType>} VectorSourceType<FeatureType>
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
@@ -40,16 +49,11 @@ import {toStyle} from '../style/flat.js';
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
  * use [map.addLayer()]{@link import("../Map.js").default#addLayer}.
- * @property {boolean} [declutter=false] Declutter images and text. Decluttering is applied to all
- * image and text styles of all Vector and VectorTile layers that have set this to `true`. The priority
- * is defined by the z-index of the layer, the `zIndex` of the style and the render order of features.
- * Higher z-index means higher priority. Within the same z-index, a feature rendered before another has
- * higher priority.
- *
- * As an optimization decluttered features from layers with the same `className` are rendered above
- * the fill and stroke styles of all of those layers regardless of z-index.  To opt out of this
- * behavior and place declutterd features with their own layer configure the layer with a `className`
- * other than `ol-layer`.
+ * @property {boolean|string|number} [declutter=false] Declutter images and text. Any truthy value will enable
+ * decluttering. Within a layer, a feature rendered before another has higher priority. All layers with the
+ * same `declutter` value will be decluttered together. The priority is determined by the drawing order of the
+ * layers with the same `declutter` value. Higher in the layer stack means higher priority. To declutter distinct
+ * layers or groups of layers separately, use different truthy values for `declutter`.
  * @property {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike|null} [style] Layer style. When set to `null`, only
  * features that have their own style will be rendered. See {@link module:ol/style/Style~Style} for the default style
  * which will be used if this is not set.
@@ -79,14 +83,15 @@ export const Property = {
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @template {import("../source/Vector.js").default|import("../source/VectorTile.js").default} VectorSourceType
- * @template {import("../renderer/canvas/VectorLayer.js").default|import("../renderer/canvas/VectorTileLayer.js").default|import("../renderer/canvas/VectorImageLayer.js").default|import("../renderer/webgl/PointsLayer.js").default} RendererType
+ * @template {import('../Feature').FeatureLike} FeatureType
+ * @template {import("../source/Vector.js").default<FeatureType>|import("../source/VectorTile.js").default<FeatureType>} VectorSourceType<FeatureType>
  * @extends {Layer<VectorSourceType, RendererType>}
+ * @template {import("../renderer/canvas/VectorLayer.js").default|import("../renderer/canvas/VectorTileLayer.js").default|import("../renderer/canvas/VectorImageLayer.js").default|import("../renderer/webgl/PointsLayer.js").default} RendererType
  * @api
  */
 class BaseVectorLayer extends Layer {
   /**
-   * @param {Options<VectorSourceType>} [options] Options.
+   * @param {Options<FeatureType, VectorSourceType>} [options] Options.
    */
   constructor(options) {
     options = options ? options : {};
@@ -101,10 +106,9 @@ class BaseVectorLayer extends Layer {
 
     /**
      * @private
-     * @type {boolean}
+     * @type {string}
      */
-    this.declutter_ =
-      options.declutter !== undefined ? options.declutter : false;
+    this.declutter_ = options.declutter ? String(options.declutter) : undefined;
 
     /**
      * @type {number}
@@ -115,7 +119,7 @@ class BaseVectorLayer extends Layer {
 
     /**
      * User provided style.
-     * @type {import("../style/Style.js").StyleLike}
+     * @type {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike}
      * @private
      */
     this.style_ = null;
@@ -149,7 +153,8 @@ class BaseVectorLayer extends Layer {
   }
 
   /**
-   * @return {boolean} Declutter.
+   * @return {string} Declutter group.
+   * @override
    */
   getDeclutter() {
     return this.declutter_;
@@ -168,6 +173,7 @@ class BaseVectorLayer extends Layer {
    * @param {import("../pixel.js").Pixel} pixel Pixel.
    * @return {Promise<Array<import("../Feature").FeatureLike>>} Promise that resolves with an array of features.
    * @api
+   * @override
    */
   getFeatures(pixel) {
     return super.getFeatures(pixel);
@@ -193,7 +199,7 @@ class BaseVectorLayer extends Layer {
   /**
    * Get the style for features.  This returns whatever was passed to the `style`
    * option at construction or to the `setStyle` method.
-   * @return {import("../style/Style.js").StyleLike|null|undefined} Layer style.
+   * @return {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike|null|undefined} Layer style.
    * @api
    */
   getStyle() {
@@ -228,12 +234,15 @@ class BaseVectorLayer extends Layer {
   /**
    * Render declutter items for this layer
    * @param {import("../Map.js").FrameState} frameState Frame state.
+   * @param {import("../layer/Layer.js").State} layerState Layer state.
+   * @override
    */
-  renderDeclutter(frameState) {
-    if (!frameState.declutterTree) {
-      frameState.declutterTree = new RBush(9);
+  renderDeclutter(frameState, layerState) {
+    const declutterGroup = this.getDeclutter();
+    if (declutterGroup in frameState.declutter === false) {
+      frameState.declutter[declutterGroup] = new RBush(9);
     }
-    /** @type {*} */ (this.getRenderer()).renderDeclutter(frameState);
+    this.getRenderer().renderDeclutter(frameState, layerState);
   }
 
   /**
@@ -252,53 +261,100 @@ class BaseVectorLayer extends Layer {
    * `setStyle()` without arguments to reset to the default style. See
    * [the ol/style/Style module]{@link module:ol/style/Style~Style} for information on the default style.
    *
-   * If your layer has a static style, you can use "flat" style object literals instead of
-   * using the `Style` and symbolizer constructors (`Fill`, `Stroke`, etc.).  See the documentation
-   * for the [flat style types]{@link module:ol/style/flat~FlatStyle} to see what properties are supported.
+   * If your layer has a static style, you can use [flat style]{@link module:ol/style/flat~FlatStyle} object
+   * literals instead of using the `Style` and symbolizer constructors (`Fill`, `Stroke`, etc.):
+   * ```js
+   * vectorLayer.setStyle({
+   *   "fill-color": "yellow",
+   *   "stroke-color": "black",
+   *   "stroke-width": 4
+   * })
+   * ```
    *
    * @param {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike|null} [style] Layer style.
    * @api
    */
   setStyle(style) {
-    /**
-     * @type {import("../style/Style.js").StyleLike|null}
-     */
-    let styleLike;
-
-    if (style === undefined) {
-      styleLike = createDefaultStyle;
-    } else if (style === null) {
-      styleLike = null;
-    } else if (typeof style === 'function') {
-      styleLike = style;
-    } else if (style instanceof Style) {
-      styleLike = style;
-    } else if (Array.isArray(style)) {
-      const len = style.length;
-
-      /**
-       * @type {Array<Style>}
-       */
-      const styles = new Array(len);
-
-      for (let i = 0; i < len; ++i) {
-        const s = style[i];
-        if (s instanceof Style) {
-          styles[i] = s;
-        } else {
-          styles[i] = toStyle(s);
-        }
-      }
-      styleLike = styles;
-    } else {
-      styleLike = toStyle(style);
-    }
-
-    this.style_ = styleLike;
+    this.style_ = style === undefined ? createDefaultStyle : style;
+    const styleLike = toStyleLike(style);
     this.styleFunction_ =
-      style === null ? undefined : toStyleFunction(this.style_);
+      style === null ? undefined : toStyleFunction(styleLike);
     this.changed();
   }
+
+  /**
+   * @param {boolean|string|number} declutter Declutter images and text.
+   * @api
+   */
+  setDeclutter(declutter) {
+    this.declutter_ = declutter ? String(declutter) : undefined;
+    this.changed();
+  }
+}
+
+/**
+ * Coerce the allowed style types into a shorter list of types.  Flat styles, arrays of flat
+ * styles, and arrays of rules are converted into style functions.
+ *
+ * @param {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike|null} [style] Layer style.
+ * @return {import("../style/Style.js").StyleLike|null} The style.
+ */
+function toStyleLike(style) {
+  if (style === undefined) {
+    return createDefaultStyle;
+  }
+  if (!style) {
+    return null;
+  }
+  if (typeof style === 'function') {
+    return style;
+  }
+  if (style instanceof Style) {
+    return style;
+  }
+  if (!Array.isArray(style)) {
+    return flatStylesToStyleFunction([style]);
+  }
+  if (style.length === 0) {
+    return [];
+  }
+
+  const length = style.length;
+  const first = style[0];
+
+  if (first instanceof Style) {
+    /**
+     * @type {Array<Style>}
+     */
+    const styles = new Array(length);
+    for (let i = 0; i < length; ++i) {
+      const candidate = style[i];
+      if (!(candidate instanceof Style)) {
+        throw new Error('Expected a list of style instances');
+      }
+      styles[i] = candidate;
+    }
+    return styles;
+  }
+
+  if ('style' in first) {
+    /**
+     * @type Array<import("../style/flat.js").Rule>
+     */
+    const rules = new Array(length);
+    for (let i = 0; i < length; ++i) {
+      const candidate = style[i];
+      if (!('style' in candidate)) {
+        throw new Error('Expected a list of rules with a style property');
+      }
+      rules[i] = candidate;
+    }
+    return rulesToStyleFunction(rules);
+  }
+
+  const flatStyles =
+    /** @type {Array<import("../style/flat.js").FlatStyle>} */ (style);
+  return flatStylesToStyleFunction(flatStyles);
 }
 
 export default BaseVectorLayer;

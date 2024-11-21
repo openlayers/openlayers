@@ -177,8 +177,9 @@ const INTERVALS = [
  * Layer that renders a grid for a coordinate system (currently only EPSG:4326 is supported).
  * Note that the view projection must define both extent and worldExtent.
  *
- * @fires import("../render/Event.js").RenderEvent
- * @extends {VectorLayer<import("../source/Vector.js").default>}
+ * @fires import("../render/Event.js").RenderEvent#prerender
+ * @fires import("../render/Event.js").RenderEvent#postrender
+ * @extends {VectorLayer<VectorSource<Feature>>}
  * @api
  */
 class Graticule extends VectorLayer {
@@ -194,7 +195,7 @@ class Graticule extends VectorLayer {
         updateWhileInteracting: true,
         renderBuffer: 0,
       },
-      options
+      options,
     );
 
     delete baseOptions.maxLines;
@@ -212,6 +213,7 @@ class Graticule extends VectorLayer {
 
     /**
      * @type {import("../proj/Projection.js").default}
+     * @private
      */
     this.projection_ = null;
 
@@ -474,7 +476,7 @@ class Graticule extends VectorLayer {
         overlaps: false,
         useSpatialIndex: false,
         wrapX: options.wrapX,
-      })
+      }),
     );
 
     /**
@@ -638,7 +640,7 @@ class Graticule extends VectorLayer {
       minLat,
       maxLat,
       squaredTolerance,
-      index
+      index,
     );
     if (intersects(lineString.getExtent(), extent)) {
       if (this.meridiansLabels_) {
@@ -673,7 +675,7 @@ class Graticule extends VectorLayer {
       minLon,
       maxLon,
       squaredTolerance,
-      index
+      index,
     );
     if (intersects(lineString.getExtent(), extent)) {
       if (this.parallelsLabels_) {
@@ -857,7 +859,7 @@ class Graticule extends VectorLayer {
       validExtentP,
       this.toLonLatTransform_,
       undefined,
-      8
+      8,
     );
 
     let maxLat = validExtent[3];
@@ -911,7 +913,7 @@ class Graticule extends VectorLayer {
           maxLat,
           squaredTolerance,
           extent,
-          idx
+          idx,
         );
       }
     } else {
@@ -923,7 +925,7 @@ class Graticule extends VectorLayer {
           maxLat,
           squaredTolerance,
           extent,
-          idx
+          idx,
         );
       }
     }
@@ -939,7 +941,7 @@ class Graticule extends VectorLayer {
           maxLat,
           squaredTolerance,
           extent,
-          idx
+          idx,
         );
       }
     } else {
@@ -951,7 +953,7 @@ class Graticule extends VectorLayer {
           maxLat,
           squaredTolerance,
           extent,
-          idx
+          idx,
         );
       }
     }
@@ -977,7 +979,7 @@ class Graticule extends VectorLayer {
         maxLon,
         squaredTolerance,
         extent,
-        idx
+        idx,
       );
     }
 
@@ -992,7 +994,7 @@ class Graticule extends VectorLayer {
         maxLon,
         squaredTolerance,
         extent,
-        idx
+        idx,
       );
     }
 
@@ -1050,7 +1052,7 @@ class Graticule extends VectorLayer {
       minLat,
       maxLat,
       this.projection_,
-      squaredTolerance
+      squaredTolerance,
     );
     let lineString = this.meridians_[index];
     if (!lineString) {
@@ -1083,7 +1085,7 @@ class Graticule extends VectorLayer {
     const lat = clamp(
       extent[1] + Math.abs(extent[1] - extent[3]) * this.lonLabelPosition_,
       clampedBottom,
-      clampedTop
+      clampedTop,
     );
     const coordinate0 =
       flatCoordinates[bottom - 1] +
@@ -1120,7 +1122,7 @@ class Graticule extends VectorLayer {
       minLon,
       maxLon,
       this.projection_,
-      squaredTolerance
+      squaredTolerance,
     );
     let lineString = this.parallels_[index];
     if (!lineString) {
@@ -1152,7 +1154,7 @@ class Graticule extends VectorLayer {
     const lon = clamp(
       extent[0] + Math.abs(extent[0] - extent[2]) * this.latLabelPosition_,
       clampedLeft,
-      clampedRight
+      clampedRight,
     );
     const coordinate1 =
       flatCoordinates[left + 1] +
@@ -1202,7 +1204,7 @@ class Graticule extends VectorLayer {
         const lonLatCoordinates = toLonLatTransform(
           coordinates,
           output,
-          dimension
+          dimension,
         );
         for (let i = 0, l = lonLatCoordinates.length; i < l; i += dimension) {
           if (lonLatCoordinates[i] < split) {
@@ -1221,7 +1223,7 @@ class Graticule extends VectorLayer {
       [this.minLon_, this.minLat_, this.maxLon_, this.maxLat_],
       this.fromLonLatTransform_,
       undefined,
-      8
+      8,
     );
 
     this.minX_ = worldExtentP[0];
@@ -1242,7 +1244,7 @@ class Graticule extends VectorLayer {
     // so replace any NaN latitudes with the min or max value closest to a pole
 
     this.projectionCenterLonLat_ = this.toLonLatTransform_(
-      getCenter(projection.getExtent())
+      getCenter(projection.getExtent()),
     );
     if (isNaN(this.projectionCenterLonLat_[1])) {
       this.projectionCenterLonLat_[1] =

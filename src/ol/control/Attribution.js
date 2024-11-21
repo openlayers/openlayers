@@ -6,6 +6,7 @@ import EventType from '../events/EventType.js';
 import {CLASS_COLLAPSED, CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {equals} from '../array.js';
 import {removeChildren, replaceNode} from '../dom.js';
+import {toPromise} from '../functions.js';
 
 /**
  * @typedef {Object} Options
@@ -32,6 +33,8 @@ import {removeChildren, replaceNode} from '../dom.js';
  * @property {function(import("../MapEvent.js").default):void} [render] Function called when
  * the control should be re-rendered. This is called in a `requestAnimationFrame`
  * callback.
+ * @property {string|Array<string>|undefined} [attributions] Optional attribution(s) that will always be
+ * displayed regardless of the layers rendered
  */
 
 /**
@@ -91,6 +94,12 @@ class Attribution extends Control {
     if (!this.collapsible_) {
       this.collapsed_ = false;
     }
+
+    /**
+     * @private
+     * @type {string | Array<string> | undefined}
+     */
+    this.attributions_ = options.attributions;
 
     const className =
       options.className !== undefined ? options.className : 'ol-attribution';
@@ -153,7 +162,7 @@ class Attribution extends Control {
     this.toggleButton_.addEventListener(
       EventType.CLICK,
       this.handleClick_.bind(this),
-      false
+      false,
     );
 
     const cssClasses =
@@ -190,32 +199,30 @@ class Attribution extends Control {
    * @private
    */
   collectSourceAttributions_(frameState) {
-    const visibleAttributions = Array.from(
-      new Set(
-        this.getMap()
-          .getAllLayers()
-          .flatMap((layer) => layer.getAttributions(frameState))
-      )
+    const layers = this.getMap().getAllLayers();
+    const visibleAttributions = new Set(
+      layers.flatMap((layer) => layer.getAttributions(frameState)),
     );
+    if (this.attributions_ !== undefined) {
+      Array.isArray(this.attributions_)
+        ? this.attributions_.forEach((item) => visibleAttributions.add(item))
+        : visibleAttributions.add(this.attributions_);
+    }
 
-    const collapsible = !this.getMap()
-      .getAllLayers()
-      .some(
-        (layer) =>
-          layer.getSource() &&
-          layer.getSource().getAttributionsCollapsible() === false
-      );
     if (!this.overrideCollapsible_) {
+      const collapsible = !layers.some(
+        (layer) => layer.getSource()?.getAttributionsCollapsible() === false,
+      );
       this.setCollapsible(collapsible);
     }
-    return visibleAttributions;
+    return Array.from(visibleAttributions);
   }
 
   /**
    * @private
    * @param {?import("../Map.js").FrameState} frameState Frame state.
    */
-  updateElement_(frameState) {
+  async updateElement_(frameState) {
     if (!frameState) {
       if (this.renderedVisible_) {
         this.element.style.display = 'none';
@@ -224,7 +231,11 @@ class Attribution extends Control {
       return;
     }
 
-    const attributions = this.collectSourceAttributions_(frameState);
+    const attributions = await Promise.all(
+      this.collectSourceAttributions_(frameState).map((attribution) =>
+        toPromise(() => attribution),
+      ),
+    );
 
     const visible = attributions.length > 0;
     if (this.renderedVisible_ != visible) {

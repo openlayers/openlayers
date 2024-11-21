@@ -1,0 +1,10 @@
+{
+  "version": "1.1.0",
+  "exceptions": [
+    {
+      "code": "noApplicableCode",
+      "locator": "noLocator",
+      "text": "We have had issues trying to flip axis of GEOGCS[\"GCS_WGS_1984\", \n  DATUM[\"D_WGS_1984\", \n    SPHEROID[\"WGS_1984\", 6378137.0, 298.257223563]], \n  PRIMEM[\"Greenwich\", 0.0], \n  UNIT[\"degree\", 0.017453292519943295], \n  AXIS[\"Longitude\", EAST], \n  AXIS[\"Latitude\", NORTH]]\nNo authority was defined for code \"GCS_WGS_1984\". Did you forget \"AUTHORITY:NUMBER\"?"
+    }
+  ]
+}

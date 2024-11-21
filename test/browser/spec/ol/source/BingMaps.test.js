@@ -29,6 +29,8 @@ describe('ol/source/BingMaps', function () {
       source = new BingMaps({
         imagerySet: 'AerialWithLabelsOnDemand',
         key: '',
+        placeholderTiles: false,
+        hidpi: true,
       });
 
       const client = new XMLHttpRequest();
@@ -64,44 +66,49 @@ describe('ol/source/BingMaps', function () {
       tileUrl = source.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 1),
         1,
-        projection
+        projection,
       );
       expect(tileUrl.match(regex)[1]).to.equal(quadKey([1, 1, 0]));
 
       tileUrl = source.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 2),
         1,
-        projection
+        projection,
       );
       expect(tileUrl.match(regex)[1]).to.equal(quadKey([2, 2, 1]));
 
       tileUrl = source.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 3),
         1,
-        projection
+        projection,
       );
       expect(tileUrl.match(regex)[1]).to.equal(quadKey([3, 4, 2]));
 
       tileUrl = source.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 4),
         1,
-        projection
+        projection,
       );
       expect(tileUrl.match(regex)[1]).to.equal(quadKey([4, 8, 5]));
 
       tileUrl = source.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 5),
         1,
-        projection
+        projection,
       );
       expect(tileUrl.match(regex)[1]).to.equal(quadKey([5, 16, 11]));
 
       tileUrl = source.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 6),
         1,
-        projection
+        projection,
       );
       expect(tileUrl.match(regex)[1]).to.equal(quadKey([6, 33, 22]));
+
+      const url = new URL(tileUrl);
+      expect(url.searchParams.get('dpi')).to.equal('d1');
+      expect(url.searchParams.get('device')).to.equal('mobile');
+      expect(url.searchParams.get('n')).to.equal('z');
     });
   });
 });

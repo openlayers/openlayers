@@ -1,7 +1,8 @@
+import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
-import {OSM, Raster, XYZ} from '../src/ol/source.js';
+import {OSM, Raster} from '../src/ol/source.js';
 
 /**
  * Generates a shaded relief image given elevation data.  Uses a 3x3
@@ -43,15 +44,13 @@ function shade(inputs, data) {
     scaled;
   function calculateElevation(pixel) {
     // The method used to extract elevations from the DEM.
-    // In this case the format used is
-    // red + green * 2 + blue * 3
+    // In this case the format used is Terrarium
+    // red * 256 + green + blue / 256 - 32768
     //
     // Other frequently used methods include the Mapbox format
     // (red * 256 * 256 + green * 256 + blue) * 0.1 - 10000
-    // and the Terrarium format
-    // (red * 256 + green + blue / 256) - 32768
     //
-    return pixel[0] + pixel[1] * 2 + pixel[2] * 3;
+    return pixel[0] * 256 + pixel[1] + pixel[2] / 256 - 32768;
   }
   for (pixelY = 0; pixelY <= maxY; ++pixelY) {
     y0 = pixelY === 0 ? 0 : pixelY - 1;
@@ -123,10 +122,12 @@ function shade(inputs, data) {
   return {data: shadeData, width: width, height: height};
 }
 
-const elevation = new XYZ({
-  url: 'https://{a-d}.tiles.mapbox.com/v3/aj.sf-dem/{z}/{x}/{y}.png',
+const elevation = new ImageTile({
+  url: 'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png',
   crossOrigin: 'anonymous',
-  maxZoom: 13,
+  maxZoom: 15,
+  attributions:
+    '<a href="https://github.com/tilezen/joerd/blob/master/docs/attribution.md" target="_blank">Data sources and attribution</a>',
 });
 
 const raster = new Raster({
@@ -147,9 +148,7 @@ const map = new Map({
     }),
   ],
   view: new View({
-    extent: [-13675026, 4439648, -13580856, 4580292],
     center: [-13615645, 4497969],
-    minZoom: 10,
     zoom: 13,
   }),
 });

@@ -27,7 +27,7 @@ circleFeature.setStyle(
         innerRadius,
         x,
         y,
-        outerRadius
+        outerRadius,
       );
       gradient.addColorStop(0, 'rgba(255,0,0,0)');
       gradient.addColorStop(0.6, 'rgba(255,0,0,0.2)');
@@ -41,7 +41,7 @@ circleFeature.setStyle(
       ctx.strokeStyle = 'rgba(255,0,0,1)';
       ctx.stroke();
     },
-  })
+  }),
 );
 
 new Map({

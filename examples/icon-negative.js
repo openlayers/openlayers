@@ -2,7 +2,7 @@ import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import Point from '../src/ol/geom/Point.js';
 import Select from '../src/ol/interaction/Select.js';
-import Stamen from '../src/ol/source/Stamen.js';
+import StadiaMaps from '../src/ol/source/StadiaMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
 import {Icon, Style} from '../src/ol/style.js';
@@ -26,7 +26,7 @@ iconFeature.set('style', createStyle('data/icon.png', undefined));
 const map = new Map({
   layers: [
     new TileLayer({
-      source: new Stamen({layer: 'watercolor'}),
+      source: new StadiaMaps({layer: 'stamen_watercolor'}),
     }),
     new VectorLayer({
       style: function (feature) {

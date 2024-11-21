@@ -38,7 +38,7 @@ describe('ol/geom/flat/transform.js', function () {
       const pixelCoordinates = transformGeom2D(
         multiPolygonGeometry,
         transform,
-        []
+        [],
       );
       expect(pixelCoordinates[0]).to.roughlyEqual(806.6035275946265, 1e-9);
       expect(pixelCoordinates[1]).to.roughlyEqual(160.48916296287916, 1e-9);
@@ -105,7 +105,7 @@ describe('ol/geom/flat/transform.js', function () {
         multiPolygon.getStride(),
         deltaX,
         deltaY,
-        flatCoordinates
+        flatCoordinates,
       );
       expect(flatCoordinates).to.eql([
         1, 2, 2, 1, 3, 2, 2, 3, 2, 2, 2, 2, 1, 2, 2, 3, 4, 3, 3, 5, 3, 4, 5, 3,
@@ -146,7 +146,7 @@ describe('ol/geom/flat/transform.js', function () {
         multiPolygon.getStride(),
         angle,
         anchor,
-        flatCoordinates
+        flatCoordinates,
       );
       expect(flatCoordinates[0]).to.roughlyEqual(1, 1e-9);
       expect(flatCoordinates[1]).to.roughlyEqual(1, 1e-9);

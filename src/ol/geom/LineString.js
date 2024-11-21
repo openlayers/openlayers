@@ -30,7 +30,7 @@ class LineString extends SimpleGeometry {
 
     /**
      * @private
-     * @type {import("../coordinate.js").Coordinate}
+     * @type {import("../coordinate.js").Coordinate|null}
      */
     this.flatMidpoint_ = null;
 
@@ -55,14 +55,14 @@ class LineString extends SimpleGeometry {
     if (layout !== undefined && !Array.isArray(coordinates[0])) {
       this.setFlatCoordinates(
         layout,
-        /** @type {Array<number>} */ (coordinates)
+        /** @type {Array<number>} */ (coordinates),
       );
     } else {
       this.setCoordinates(
         /** @type {Array<import("../coordinate.js").Coordinate>} */ (
           coordinates
         ),
-        layout
+        layout,
       );
     }
   }
@@ -73,11 +73,7 @@ class LineString extends SimpleGeometry {
    * @api
    */
   appendCoordinate(coordinate) {
-    if (!this.flatCoordinates) {
-      this.flatCoordinates = coordinate.slice();
-    } else {
-      extend(this.flatCoordinates, coordinate);
-    }
+    extend(this.flatCoordinates, coordinate);
     this.changed();
   }
 
@@ -85,11 +81,12 @@ class LineString extends SimpleGeometry {
    * Make a complete copy of the geometry.
    * @return {!LineString} Clone.
    * @api
+   * @override
    */
   clone() {
     const lineString = new LineString(
       this.flatCoordinates.slice(),
-      this.layout
+      this.layout,
     );
     lineString.applyProperties(this);
     return lineString;
@@ -101,6 +98,7 @@ class LineString extends SimpleGeometry {
    * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
    * @param {number} minSquaredDistance Minimum squared distance.
    * @return {number} Minimum squared distance.
+   * @override
    */
   closestPointXY(x, y, closestPoint, minSquaredDistance) {
     if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
@@ -113,8 +111,8 @@ class LineString extends SimpleGeometry {
           0,
           this.flatCoordinates.length,
           this.stride,
-          0
-        )
+          0,
+        ),
       );
       this.maxDeltaRevision_ = this.getRevision();
     }
@@ -128,7 +126,7 @@ class LineString extends SimpleGeometry {
       x,
       y,
       closestPoint,
-      minSquaredDistance
+      minSquaredDistance,
     );
   }
 
@@ -149,7 +147,7 @@ class LineString extends SimpleGeometry {
       0,
       this.flatCoordinates.length,
       this.stride,
-      callback
+      callback,
     );
   }
 
@@ -178,7 +176,7 @@ class LineString extends SimpleGeometry {
       this.flatCoordinates.length,
       this.stride,
       m,
-      extrapolate
+      extrapolate,
     );
   }
 
@@ -186,13 +184,14 @@ class LineString extends SimpleGeometry {
    * Return the coordinates of the linestring.
    * @return {Array<import("../coordinate.js").Coordinate>} Coordinates.
    * @api
+   * @override
    */
   getCoordinates() {
     return inflateCoordinates(
       this.flatCoordinates,
       0,
       this.flatCoordinates.length,
-      this.stride
+      this.stride,
     );
   }
 
@@ -214,7 +213,7 @@ class LineString extends SimpleGeometry {
       this.stride,
       fraction,
       dest,
-      this.stride
+      this.stride,
     );
   }
 
@@ -228,7 +227,7 @@ class LineString extends SimpleGeometry {
       this.flatCoordinates,
       0,
       this.flatCoordinates.length,
-      this.stride
+      this.stride,
     );
   }
 
@@ -237,18 +236,23 @@ class LineString extends SimpleGeometry {
    */
   getFlatMidpoint() {
     if (this.flatMidpointRevision_ != this.getRevision()) {
-      this.flatMidpoint_ = this.getCoordinateAt(0.5, this.flatMidpoint_);
+      this.flatMidpoint_ = this.getCoordinateAt(
+        0.5,
+        this.flatMidpoint_ ?? undefined,
+      );
       this.flatMidpointRevision_ = this.getRevision();
     }
-    return this.flatMidpoint_;
+    return /** @type {Array<number>} */ (this.flatMidpoint_);
   }
 
   /**
    * @param {number} squaredTolerance Squared tolerance.
    * @return {LineString} Simplified LineString.
    * @protected
+   * @override
    */
   getSimplifiedGeometryInternal(squaredTolerance) {
+    /** @type {Array<number>} */
     const simplifiedFlatCoordinates = [];
     simplifiedFlatCoordinates.length = douglasPeucker(
       this.flatCoordinates,
@@ -257,7 +261,7 @@ class LineString extends SimpleGeometry {
       this.stride,
       squaredTolerance,
       simplifiedFlatCoordinates,
-      0
+      0,
     );
     return new LineString(simplifiedFlatCoordinates, 'XY');
   }
@@ -266,6 +270,7 @@ class LineString extends SimpleGeometry {
    * Get the type of this geometry.
    * @return {import("./Geometry.js").Type} Geometry type.
    * @api
+   * @override
    */
   getType() {
     return 'LineString';
@@ -276,6 +281,7 @@ class LineString extends SimpleGeometry {
    * @param {import("../extent.js").Extent} extent Extent.
    * @return {boolean} `true` if the geometry and the extent intersect.
    * @api
+   * @override
    */
   intersectsExtent(extent) {
     return intersectsLineString(
@@ -283,7 +289,7 @@ class LineString extends SimpleGeometry {
       0,
       this.flatCoordinates.length,
       this.stride,
-      extent
+      extent,
     );
   }
 
@@ -292,6 +298,7 @@ class LineString extends SimpleGeometry {
    * @param {!Array<import("../coordinate.js").Coordinate>} coordinates Coordinates.
    * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
    * @api
+   * @override
    */
   setCoordinates(coordinates, layout) {
     this.setLayout(layout, coordinates, 1);
@@ -302,7 +309,7 @@ class LineString extends SimpleGeometry {
       this.flatCoordinates,
       0,
       coordinates,
-      this.stride
+      this.stride,
     );
     this.changed();
   }

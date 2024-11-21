@@ -24,7 +24,7 @@ worker.onmessage = (event) => {
       const baseVertexAttrsCount = 3;
       const baseInstructionsCount = 2;
 
-      const customAttrsCount = received.customAttributesCount;
+      const customAttrsCount = received.customAttributesSize;
       const instructionsCount = baseInstructionsCount + customAttrsCount;
       const renderInstructions = new Float32Array(received.renderInstructions);
 
@@ -43,7 +43,7 @@ worker.onmessage = (event) => {
           vertexBuffer,
           indexBuffer,
           customAttrsCount,
-          bufferPositions
+          bufferPositions,
         );
       }
 
@@ -54,7 +54,7 @@ worker.onmessage = (event) => {
           indexBuffer: indexBuffer.buffer,
           renderInstructions: renderInstructions.buffer,
         },
-        received
+        received,
       );
 
       worker.postMessage(message, [
@@ -65,11 +65,13 @@ worker.onmessage = (event) => {
       break;
     }
     case WebGLWorkerMessageType.GENERATE_LINE_STRING_BUFFERS: {
+      /** @type {Array<number>} */
       const vertices = [];
+      /** @type {Array<number>} */
       const indices = [];
 
-      const customAttrsCount = received.customAttributesCount;
-      const instructionsPerVertex = 2;
+      const customAttrsCount = received.customAttributesSize;
+      const instructionsPerVertex = 3;
 
       const renderInstructions = new Float32Array(received.renderInstructions);
       let currentInstructionsIndex = 0;
@@ -83,30 +85,56 @@ worker.onmessage = (event) => {
         customAttributes = Array.from(
           renderInstructions.slice(
             currentInstructionsIndex,
-            currentInstructionsIndex + customAttrsCount
-          )
+            currentInstructionsIndex + customAttrsCount,
+          ),
         );
         currentInstructionsIndex += customAttrsCount;
         verticesCount = renderInstructions[currentInstructionsIndex++];
 
+        const firstInstructionsIndex = currentInstructionsIndex;
+        const lastInstructionsIndex =
+          currentInstructionsIndex +
+          (verticesCount - 1) * instructionsPerVertex;
+        const isLoop =
+          renderInstructions[firstInstructionsIndex] ===
+            renderInstructions[lastInstructionsIndex] &&
+          renderInstructions[firstInstructionsIndex + 1] ===
+            renderInstructions[lastInstructionsIndex + 1];
+
+        let currentLength = 0;
+        let currentAngleTangentSum = 0;
+
         // last point is only a segment end, do not loop over it
         for (let i = 0; i < verticesCount - 1; i++) {
-          writeLineSegmentToBuffers(
+          let beforeIndex = null;
+          if (i > 0) {
+            beforeIndex =
+              currentInstructionsIndex + (i - 1) * instructionsPerVertex;
+          } else if (isLoop) {
+            beforeIndex = lastInstructionsIndex - instructionsPerVertex;
+          }
+          let afterIndex = null;
+          if (i < verticesCount - 2) {
+            afterIndex =
+              currentInstructionsIndex + (i + 2) * instructionsPerVertex;
+          } else if (isLoop) {
+            afterIndex = firstInstructionsIndex + instructionsPerVertex;
+          }
+          const measures = writeLineSegmentToBuffers(
             renderInstructions,
             currentInstructionsIndex + i * instructionsPerVertex,
             currentInstructionsIndex + (i + 1) * instructionsPerVertex,
-            i > 0
-              ? currentInstructionsIndex + (i - 1) * instructionsPerVertex
-              : null,
-            i < verticesCount - 2
-              ? currentInstructionsIndex + (i + 2) * instructionsPerVertex
-              : null,
+            beforeIndex,
+            afterIndex,
             vertices,
             indices,
             customAttributes,
-            transform,
-            invertTransform
+            invertTransform,
+            currentLength,
+            currentAngleTangentSum,
           );
+          currentLength = measures.length;
+          currentAngleTangentSum = measures.angle;
         }
         currentInstructionsIndex += verticesCount * instructionsPerVertex;
       }
@@ -121,7 +149,7 @@ worker.onmessage = (event) => {
           indexBuffer: indexBuffer.buffer,
           renderInstructions: renderInstructions.buffer,
         },
-        received
+        received,
       );
 
       worker.postMessage(message, [
@@ -132,10 +160,12 @@ worker.onmessage = (event) => {
       break;
     }
     case WebGLWorkerMessageType.GENERATE_POLYGON_BUFFERS: {
+      /** @type {Array<number>} */
       const vertices = [];
+      /** @type {Array<number>} */
       const indices = [];
 
-      const customAttrsCount = received.customAttributesCount;
+      const customAttrsCount = received.customAttributesSize;
       const renderInstructions = new Float32Array(received.renderInstructions);
 
       let currentInstructionsIndex = 0;
@@ -145,7 +175,7 @@ worker.onmessage = (event) => {
           currentInstructionsIndex,
           vertices,
           indices,
-          customAttrsCount
+          customAttrsCount,
         );
       }
 
@@ -159,7 +189,7 @@ worker.onmessage = (event) => {
           indexBuffer: indexBuffer.buffer,
           renderInstructions: renderInstructions.buffer,
         },
-        received
+        received,
       );
 
       worker.postMessage(message, [

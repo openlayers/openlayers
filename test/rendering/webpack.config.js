@@ -34,7 +34,7 @@ export default {
         use: {
           loader: path.join(
             baseDir,
-            '../../examples/webpack/worker-loader.cjs'
+            '../../examples/webpack/worker-loader.cjs',
           ),
         },
         include: [path.join(baseDir, '../../src/ol/worker')],

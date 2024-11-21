@@ -17,7 +17,7 @@ const map = new Map({
     new TileLayer({
       minZoom: 14, // visible at zoom levels above 14
       source: new TileJSON({
-        url: 'https://api.maptiler.com/maps/outdoor/tiles.json?key=' + key,
+        url: 'https://api.maptiler.com/maps/outdoor-v2/tiles.json?key=' + key,
         tileSize: 512,
       }),
     }),

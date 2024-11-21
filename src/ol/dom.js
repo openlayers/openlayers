@@ -17,7 +17,7 @@ export function createCanvasContext2D(width, height, canvasPool, settings) {
   /** @type {HTMLCanvasElement|OffscreenCanvas} */
   let canvas;
   if (canvasPool && canvasPool.length) {
-    canvas = canvasPool.shift();
+    canvas = /** @type {HTMLCanvasElement} */ (canvasPool.shift());
   } else if (WORKER_OFFSCREEN_CANVAS) {
     canvas = new OffscreenCanvas(width || 300, height || 300);
   } else {
@@ -33,6 +33,19 @@ export function createCanvasContext2D(width, height, canvasPool, settings) {
   return /** @type {CanvasRenderingContext2D} */ (
     canvas.getContext('2d', settings)
   );
+}
+
+/** @type {CanvasRenderingContext2D} */
+let sharedCanvasContext;
+
+/**
+ * @return {CanvasRenderingContext2D} Shared canvas context.
+ */
+export function getSharedCanvasContext2D() {
+  if (!sharedCanvasContext) {
+    sharedCanvasContext = createCanvasContext2D(1, 1);
+  }
+  return sharedCanvasContext;
 }
 
 /**
@@ -89,19 +102,11 @@ export function replaceNode(newNode, oldNode) {
 }
 
 /**
- * @param {Node} node The node to remove.
- * @return {Node|null} The node that was removed or null.
- */
-export function removeNode(node) {
-  return node && node.parentNode ? node.parentNode.removeChild(node) : null;
-}
-
-/**
  * @param {Node} node The node to remove the children from.
  */
 export function removeChildren(node) {
   while (node.lastChild) {
-    node.removeChild(node.lastChild);
+    node.lastChild.remove();
   }
 }
 

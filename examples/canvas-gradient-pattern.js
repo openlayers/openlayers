@@ -4,6 +4,7 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
 import {DEVICE_PIXEL_RATIO} from '../src/ol/has.js';
+import {Fill, Stroke, Style} from '../src/ol/style.js';
 import {fromLonLat} from '../src/ol/proj.js';
 
 // Gradient and pattern are in canvas pixel space, so we adjust for the
@@ -28,11 +29,13 @@ const vectorLayer = new VectorLayer({
     url: 'data/kml/states.kml',
     format: new KML({extractStyles: false}),
   }),
-  style: {
-    'fill-color': gradient,
-    'stroke-width': 1,
-    'stroke-color': '#333',
-  },
+  style: new Style({
+    fill: new Fill({color: gradient}),
+    stroke: new Stroke({
+      color: '#333',
+      width: 1,
+    }),
+  }),
 });
 
 const map = new Map({

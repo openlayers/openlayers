@@ -1,10 +1,9 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import Point from '../src/ol/geom/Point.js';
-import TileJSON from '../src/ol/source/TileJSON.js';
-import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
 import {Icon, Style} from '../src/ol/style.js';
+import {OGCMapTile, Vector as VectorSource} from '../src/ol/source.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {fromLonLat} from '../src/ol/proj.js';
 
@@ -33,7 +32,7 @@ rome.setStyle(
       crossOrigin: 'anonymous',
       src: 'data/square.svg',
     }),
-  })
+  }),
 );
 
 london.setStyle(
@@ -44,7 +43,7 @@ london.setStyle(
       src: 'data/bigdot.png',
       scale: 0.2,
     }),
-  })
+  }),
 );
 
 madrid.setStyle(
@@ -54,7 +53,7 @@ madrid.setStyle(
       src: 'data/bigdot.png',
       scale: 0.2,
     }),
-  })
+  }),
 );
 
 paris.setStyle(
@@ -64,7 +63,7 @@ paris.setStyle(
       crossOrigin: 'anonymous',
       src: 'data/dot.svg',
     }),
-  })
+  }),
 );
 
 berlin.setStyle(
@@ -73,7 +72,7 @@ berlin.setStyle(
       crossOrigin: 'anonymous',
       src: 'data/dot.svg',
     }),
-  })
+  }),
 );
 const vectorSource = new VectorSource({
   features: [rome, london, madrid, paris, berlin],
@@ -84,8 +83,8 @@ const vectorLayer = new VectorLayer({
 });
 
 const rasterLayer = new TileLayer({
-  source: new TileJSON({
-    url: 'https://a.tiles.mapbox.com/v3/aj.1x1-degrees.json?secure=1',
+  source: new OGCMapTile({
+    url: 'https://maps.gnosis.earth/ogcapi/collections/NaturalEarth:raster:HYP_HR_SR_OB_DR/map/tiles/WebMercatorQuad',
     crossOrigin: '',
   }),
 });

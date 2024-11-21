@@ -1,12 +1,30 @@
 /**
  * @module ol/format/Feature
  */
+import Feature from '../Feature.js';
+import RenderFeature from '../render/Feature.js';
+import {
+  GeometryCollection,
+  LineString,
+  MultiLineString,
+  MultiPoint,
+  MultiPolygon,
+  Point,
+  Polygon,
+} from '../geom.js';
 import {abstract} from '../util.js';
 import {
   equivalent as equivalentProjection,
   get as getProjection,
+  getTransform,
   transformExtent,
 } from '../proj.js';
+import {
+  linearRingsAreOriented,
+  linearRingssAreOriented,
+  orientLinearRings,
+  orientLinearRingsArray,
+} from '../geom/flat/orient.js';
 
 /**
  * @typedef {Object} ReadOptions
@@ -54,6 +72,39 @@ import {
  */
 
 /**
+ * @typedef {Object} SimpleGeometryObject
+ * @property {import('../geom/Geometry.js').Type} type Type.
+ * @property {Array<number>} flatCoordinates Flat coordinates.
+ * @property {Array<number>|Array<Array<number>>} [ends] Ends or endss.
+ * @property {import('../geom/Geometry.js').GeometryLayout} [layout] Layout.
+ */
+
+/**
+ * @typedef {Array<GeometryObject>} GeometryCollectionObject
+ */
+
+/**
+ * @typedef {SimpleGeometryObject|GeometryCollectionObject} GeometryObject
+ */
+
+/**
+ * @typedef {Object} FeatureObject
+ * @property {string|number} [id] Id.
+ * @property {GeometryObject} [geometry] Geometry.
+ * @property {Object<string, *>} [properties] Properties.
+ */
+
+/***
+ * @template {import('../Feature.js').FeatureLike} T
+ * @typedef {T extends RenderFeature ? typeof RenderFeature : typeof Feature} FeatureToFeatureClass
+ */
+
+/***
+ * @template {import("../Feature.js").FeatureClass} T
+ * @typedef {T[keyof T] extends RenderFeature ? RenderFeature : Feature} FeatureClassToFeature
+ */
+
+/**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
@@ -62,6 +113,7 @@ import {
  * {@link module:ol/Feature~Feature} objects from a variety of commonly used geospatial
  * file formats.  See the documentation for each format for more details.
  *
+ * @template {import('../Feature.js').FeatureLike} [FeatureType=import("../Feature.js").default]
  * @abstract
  * @api
  */
@@ -78,6 +130,14 @@ class FeatureFormat {
      * @type {import("../proj/Projection.js").default|undefined}
      */
     this.defaultFeatureProjection = undefined;
+
+    /**
+     * @protected
+     * @type {FeatureToFeatureClass<FeatureType>}
+     */
+    this.featureClass = /** @type {FeatureToFeatureClass<FeatureType>} */ (
+      Feature
+    );
 
     /**
      * A list media types supported by the format in descending order of preference.
@@ -128,8 +188,9 @@ class FeatureFormat {
       {
         dataProjection: this.dataProjection,
         featureProjection: this.defaultFeatureProjection,
+        featureClass: this.featureClass,
       },
-      options
+      options,
     );
   }
 
@@ -147,7 +208,7 @@ class FeatureFormat {
    * @abstract
    * @param {Document|Element|Object|string} source Source.
    * @param {ReadOptions} [options] Read options.
-   * @return {import("../Feature.js").FeatureLike} Feature.
+   * @return {FeatureType|Array<FeatureType>} Feature.
    */
   readFeature(source, options) {
     return abstract();
@@ -159,7 +220,7 @@ class FeatureFormat {
    * @abstract
    * @param {Document|Element|ArrayBuffer|Object|string} source Source.
    * @param {ReadOptions} [options] Read options.
-   * @return {Array<import("../Feature.js").FeatureLike>} Features.
+   * @return {Array<FeatureType>} Features.
    */
   readFeatures(source, options) {
     return abstract();
@@ -192,7 +253,7 @@ class FeatureFormat {
    * Encode a feature in this format.
    *
    * @abstract
-   * @param {import("../Feature.js").default} feature Feature.
+   * @param {Feature} feature Feature.
    * @param {WriteOptions} [options] Write options.
    * @return {string|ArrayBuffer} Result.
    */
@@ -204,7 +265,7 @@ class FeatureFormat {
    * Encode an array of features in this format.
    *
    * @abstract
-   * @param {Array<import("../Feature.js").default>} features Features.
+   * @param {Array<Feature>} features Features.
    * @param {WriteOptions} [options] Write options.
    * @return {string|ArrayBuffer} Result.
    */
@@ -228,10 +289,11 @@ class FeatureFormat {
 export default FeatureFormat;
 
 /**
- * @param {import("../geom/Geometry.js").default} geometry Geometry.
+ * @template {import("../geom/Geometry.js").default|RenderFeature} T
+ * @param {T} geometry Geometry.
  * @param {boolean} write Set to true for writing, false for reading.
  * @param {WriteOptions|ReadOptions} [options] Options.
- * @return {import("../geom/Geometry.js").default} Transformed geometry.
+ * @return {T} Transformed geometry.
  */
 export function transformGeometryWithOptions(geometry, write, options) {
   const featureProjection = options
@@ -239,18 +301,22 @@ export function transformGeometryWithOptions(geometry, write, options) {
     : null;
   const dataProjection = options ? getProjection(options.dataProjection) : null;
 
-  let transformed;
+  let transformed = geometry;
   if (
     featureProjection &&
     dataProjection &&
     !equivalentProjection(featureProjection, dataProjection)
   ) {
-    transformed = (write ? geometry.clone() : geometry).transform(
-      write ? featureProjection : dataProjection,
-      write ? dataProjection : featureProjection
-    );
-  } else {
-    transformed = geometry;
+    if (write) {
+      transformed = /** @type {T} */ (geometry.clone());
+    }
+    const fromProjection = write ? featureProjection : dataProjection;
+    const toProjection = write ? dataProjection : featureProjection;
+    if (fromProjection.getUnits() === 'tile-pixels') {
+      transformed.transform(fromProjection, toProjection);
+    } else {
+      transformed.applyTransform(getTransform(fromProjection, toProjection));
+    }
   }
   if (
     write &&
@@ -270,7 +336,7 @@ export function transformGeometryWithOptions(geometry, write, options) {
       return coordinates;
     };
     if (transformed === geometry) {
-      transformed = geometry.clone();
+      transformed = /** @type {T} */ (geometry.clone());
     }
     transformed.applyTransform(transform);
   }
@@ -296,4 +362,91 @@ export function transformExtentWithOptions(extent, options) {
     return transformExtent(extent, dataProjection, featureProjection);
   }
   return extent;
+}
+
+const GeometryConstructor = {
+  Point: Point,
+  LineString: LineString,
+  Polygon: Polygon,
+  MultiPoint: MultiPoint,
+  MultiLineString: MultiLineString,
+  MultiPolygon: MultiPolygon,
+};
+
+function orientFlatCoordinates(flatCoordinates, ends, stride) {
+  if (Array.isArray(ends[0])) {
+    // MultiPolagon
+    if (!linearRingssAreOriented(flatCoordinates, 0, ends, stride)) {
+      flatCoordinates = flatCoordinates.slice();
+      orientLinearRingsArray(flatCoordinates, 0, ends, stride);
+    }
+    return flatCoordinates;
+  }
+  if (!linearRingsAreOriented(flatCoordinates, 0, ends, stride)) {
+    flatCoordinates = flatCoordinates.slice();
+    orientLinearRings(flatCoordinates, 0, ends, stride);
+  }
+  return flatCoordinates;
+}
+
+/**
+ * @param {FeatureObject} object Feature object.
+ * @param {WriteOptions|ReadOptions} [options] Options.
+ * @return {RenderFeature|Array<RenderFeature>} Render feature.
+ */
+export function createRenderFeature(object, options) {
+  const geometry = object.geometry;
+  if (!geometry) {
+    return [];
+  }
+  if (Array.isArray(geometry)) {
+    return geometry
+      .map((geometry) => createRenderFeature({...object, geometry}))
+      .flat();
+  }
+
+  const geometryType =
+    geometry.type === 'MultiPolygon' ? 'Polygon' : geometry.type;
+  if (geometryType === 'GeometryCollection' || geometryType === 'Circle') {
+    throw new Error('Unsupported geometry type: ' + geometryType);
+  }
+
+  const stride = geometry.layout.length;
+  return transformGeometryWithOptions(
+    new RenderFeature(
+      geometryType,
+      geometryType === 'Polygon'
+        ? orientFlatCoordinates(geometry.flatCoordinates, geometry.ends, stride)
+        : geometry.flatCoordinates,
+      geometry.ends?.flat(),
+      stride,
+      object.properties || {},
+      object.id,
+    ).enableSimplifyTransformed(),
+    false,
+    options,
+  );
+}
+
+/**
+ * @param {GeometryObject|null} object Geometry object.
+ * @param {WriteOptions|ReadOptions} [options] Options.
+ * @return {import("../geom/Geometry.js").default} Geometry.
+ */
+export function createGeometry(object, options) {
+  if (!object) {
+    return null;
+  }
+  if (Array.isArray(object)) {
+    const geometries = object.map((geometry) =>
+      createGeometry(geometry, options),
+    );
+    return new GeometryCollection(geometries);
+  }
+  const Geometry = GeometryConstructor[object.type];
+  return transformGeometryWithOptions(
+    new Geometry(object.flatCoordinates, object.layout, object.ends),
+    false,
+    options,
+  );
 }

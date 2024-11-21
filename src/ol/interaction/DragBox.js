@@ -17,7 +17,7 @@ import {mouseActionButton} from '../events/condition.js';
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-dragbox'] CSS class name for styling the box.
- * @property {import("../events/condition.js").Condition} [condition] A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
+ * @property {import("../events/condition.js").Condition} [condition] A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol/events/condition~mouseActionButton}.
  * @property {number} [minArea=64] The minimum area of the box in pixel, this value is used by the default
@@ -106,7 +106,7 @@ export class DragBoxEvent extends Event {
 /**
  * @classdesc
  * Allows the user to draw a vector box by clicking and dragging on the map,
- * normally combined with an {@link module:ol/events/condition} that limits
+ * normally combined with a {@link module:ol/events/condition} that limits
  * it to when the shift or other key is held down. This is used, for example,
  * for zooming to a specific area of the map
  * (see {@link module:ol/interaction/DragZoom~DragZoom} and
@@ -137,7 +137,7 @@ class DragBox extends PointerInteraction {
      */
     this.un;
 
-    options = options ? options : {};
+    options = options ?? {};
 
     /**
      * @type {import("../render/Box.js").default}
@@ -149,7 +149,7 @@ class DragBox extends PointerInteraction {
      * @type {number}
      * @private
      */
-    this.minArea_ = options.minArea !== undefined ? options.minArea : 64;
+    this.minArea_ = options.minArea ?? 64;
 
     if (options.onBoxEnd) {
       this.onBoxEnd = options.onBoxEnd;
@@ -165,15 +165,14 @@ class DragBox extends PointerInteraction {
      * @private
      * @type {import("../events/condition.js").Condition}
      */
-    this.condition_ = options.condition ? options.condition : mouseActionButton;
+    this.condition_ = options.condition ?? mouseActionButton;
 
     /**
      * @private
      * @type {EndCondition}
      */
-    this.boxEndCondition_ = options.boxEndCondition
-      ? options.boxEndCondition
-      : this.defaultBoxEndCondition;
+    this.boxEndCondition_ =
+      options.boxEndCondition ?? this.defaultBoxEndCondition;
   }
 
   /**
@@ -203,8 +202,13 @@ class DragBox extends PointerInteraction {
   /**
    * Handle pointer drag events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @override
    */
   handleDragEvent(mapBrowserEvent) {
+    if (!this.startPixel_) {
+      return;
+    }
+
     this.box_.setPixels(this.startPixel_, mapBrowserEvent.pixel);
 
     this.dispatchEvent(
@@ -220,9 +224,12 @@ class DragBox extends PointerInteraction {
    * Handle pointer up events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
+   * @override
    */
   handleUpEvent(mapBrowserEvent) {
-    this.box_.setMap(null);
+    if (!this.startPixel_) {
+      return false;
+    }
 
     const completeBox = this.boxEndCondition_(
       mapBrowserEvent,
@@ -239,6 +246,10 @@ class DragBox extends PointerInteraction {
         mapBrowserEvent,
       ),
     );
+
+    this.box_.setMap(null);
+    this.startPixel_ = null;
+
     return false;
   }
 
@@ -246,6 +257,7 @@ class DragBox extends PointerInteraction {
    * Handle pointer down events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
+   * @override
    */
   handleDownEvent(mapBrowserEvent) {
     if (this.condition_(mapBrowserEvent)) {
@@ -269,6 +281,48 @@ class DragBox extends PointerInteraction {
    * @param {import("../MapBrowserEvent.js").default} event Event.
    */
   onBoxEnd(event) {}
+
+  /**
+   * Activate or deactivate the interaction.
+   * @param {boolean} active Active.
+   * @observable
+   * @api
+   * @override
+   */
+  setActive(active) {
+    if (!active) {
+      this.box_.setMap(null);
+      if (this.startPixel_) {
+        this.dispatchEvent(
+          new DragBoxEvent(DragBoxEventType.BOXCANCEL, this.startPixel_, null),
+        );
+        this.startPixel_ = null;
+      }
+    }
+
+    super.setActive(active);
+  }
+
+  /**
+   * @param {import("../Map.js").default|null} map Map.
+   * @override
+   */
+  setMap(map) {
+    const oldMap = this.getMap();
+
+    if (oldMap) {
+      this.box_.setMap(null);
+
+      if (this.startPixel_) {
+        this.dispatchEvent(
+          new DragBoxEvent(DragBoxEventType.BOXCANCEL, this.startPixel_, null),
+        );
+        this.startPixel_ = null;
+      }
+    }
+
+    super.setMap(map);
+  }
 }
 
 export default DragBox;

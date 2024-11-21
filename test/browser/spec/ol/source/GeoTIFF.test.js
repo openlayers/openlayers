@@ -1,5 +1,6 @@
 import GeoTIFFSource from '../../../../../src/ol/source/GeoTIFF.js';
 import TileState from '../../../../../src/ol/TileState.js';
+import {get} from '../../../../../src/ol/proj.js';
 
 describe('ol/source/GeoTIFF', function () {
   describe('constructor', function () {
@@ -59,6 +60,31 @@ describe('ol/source/GeoTIFF', function () {
         ],
       });
       expect(source.getWrapX()).to.be(true);
+    });
+
+    it('defaults to projection: null', function () {
+      const source = new GeoTIFFSource({
+        sources: [
+          {
+            url: 'spec/ol/source/images/0-0-0.tif',
+          },
+        ],
+      });
+      expect(source.getProjection()).to.be(null);
+    });
+
+    it('allows projection to be set', function () {
+      const projection = 'EPSG:4326';
+      const expected = get(projection);
+      const source = new GeoTIFFSource({
+        projection,
+        sources: [
+          {
+            url: 'spec/ol/source/images/0-0-0.tif',
+          },
+        ],
+      });
+      expect(source.getProjection()).to.be(expected);
     });
 
     it('generates Float32Array data if normalize is set to false', (done) => {

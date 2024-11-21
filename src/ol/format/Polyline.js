@@ -4,7 +4,6 @@
 import Feature from '../Feature.js';
 import LineString from '../geom/LineString.js';
 import TextFeature from './TextFeature.js';
-import {assert} from '../asserts.js';
 import {flipXY} from '../geom/flat/flip.js';
 import {get as getProjection} from '../proj.js';
 import {getStrideForLayout} from '../geom/SimpleGeometry.js';
@@ -66,6 +65,7 @@ class Polyline extends TextFeature {
    * @param {string} text Text.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {import("../Feature.js").default} Feature.
+   * @override
    */
   readFeatureFromText(text, options) {
     const geometry = this.readGeometryFromText(text, options);
@@ -77,6 +77,7 @@ class Polyline extends TextFeature {
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
    * @return {Array<Feature>} Features.
+   * @override
    */
   readFeaturesFromText(text, options) {
     const feature = this.readFeatureFromText(text, options);
@@ -88,6 +89,7 @@ class Polyline extends TextFeature {
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
    * @return {import("../geom/Geometry.js").default} Geometry.
+   * @override
    */
   readGeometryFromText(text, options) {
     const stride = getStrideForLayout(this.geometryLayout_);
@@ -97,14 +99,14 @@ class Polyline extends TextFeature {
       flatCoordinates,
       0,
       flatCoordinates.length,
-      stride
+      stride,
     );
     const lineString = new LineString(coordinates, this.geometryLayout_);
 
     return transformGeometryWithOptions(
       lineString,
       false,
-      this.adaptOptions(options)
+      this.adaptOptions(options),
     );
   }
 
@@ -113,14 +115,14 @@ class Polyline extends TextFeature {
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @protected
    * @return {string} Text.
+   * @override
    */
   writeFeatureText(feature, options) {
     const geometry = feature.getGeometry();
     if (geometry) {
       return this.writeGeometryText(geometry, options);
     }
-    assert(false, 40); // Expected `feature` to have a geometry
-    return '';
+    throw new Error('Expected `feature` to have a geometry');
   }
 
   /**
@@ -128,6 +130,7 @@ class Polyline extends TextFeature {
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @protected
    * @return {string} Text.
+   * @override
    */
   writeFeaturesText(features, options) {
     return this.writeFeatureText(features[0], options);
@@ -138,6 +141,7 @@ class Polyline extends TextFeature {
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @protected
    * @return {string} Text.
+   * @override
    */
   writeGeometryText(geometry, options) {
     geometry =

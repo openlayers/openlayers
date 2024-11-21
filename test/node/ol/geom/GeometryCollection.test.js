@@ -123,7 +123,7 @@ describe('ol/geom/GeometryCollection.js', function () {
       expect(clonedGeometries).to.have.length(1);
       expect(clonedGeometries[0]).not.to.be(originalGeometries[0]);
       expect(clonedGeometries[0].getCoordinates()).to.eql(
-        originalGeometries[0].getCoordinates()
+        originalGeometries[0].getCoordinates(),
       );
     });
   });

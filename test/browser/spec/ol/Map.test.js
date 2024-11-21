@@ -87,7 +87,7 @@ describe('ol/Map', function () {
       map.setView(
         new Promise((r) => {
           resolve = r;
-        })
+        }),
       );
 
       expect(map.getView()).to.be.a(View);
@@ -150,7 +150,7 @@ describe('ol/Map', function () {
           map.addControl(
             new SubControl({
               element: document.createElement('div'),
-            })
+            }),
           );
         }
       }
@@ -354,8 +354,7 @@ describe('ol/Map', function () {
     });
 
     afterEach(function () {
-      map.dispose();
-      document.body.removeChild(target);
+      disposeMap(map);
     });
 
     it('are fired only once after view changes', function (done) {
@@ -468,10 +467,7 @@ describe('ol/Map', function () {
                 features: [new Feature(new Point([0, 0]))],
               }),
               style: {
-                symbol: {
-                  color: 'red',
-                  symbolType: 'circle',
-                },
+                'circle-radius': 4,
               },
             }),
           ],
@@ -482,9 +478,17 @@ describe('ol/Map', function () {
         const layers = map.getLayers().getArray();
         map.once('rendercomplete', function () {
           expect(map.tileQueue_.getTilesLoading()).to.be(0);
-          expect(layers[1].getSource().image_.getState()).to.be(
-            ImageState.LOADED
-          );
+          expect(
+            layers[1]
+              .getSource()
+              .getImage(
+                map.getView().calculateExtent(),
+                map.getView().getResolution(),
+                1,
+                map.getView().getProjection(),
+              )
+              .getState(),
+          ).to.be(ImageState.LOADED);
           expect(layers[2].getSource().getFeatures().length).to.be(1);
           expect(layers[6].getRenderer().ready).to.be(true);
           done();
@@ -493,7 +497,7 @@ describe('ol/Map', function () {
           new View({
             center: [0, 0],
             zoom: 0,
-          })
+          }),
         );
       });
 
@@ -503,7 +507,7 @@ describe('ol/Map', function () {
           new View({
             center: [0, 0],
             zoom: 0,
-          })
+          }),
         );
         map.once('rendercomplete', () => done());
       });
@@ -571,7 +575,7 @@ describe('ol/Map', function () {
                 tileUrlFunction: (tileCoord) => tileCoord.join('/'),
                 tileLoadFunction: function (tile, url) {
                   const coordinate = tileGrid.getTileCoordCenter(
-                    tile.getTileCoord()
+                    tile.getTileCoord(),
                   );
                   const feature = new Feature(new Point(coordinate));
                   tile.setFeatures([feature]);
@@ -694,10 +698,8 @@ describe('ol/Map', function () {
               features: [new Feature(new Point([0, 0]))],
             }),
             style: {
-              symbol: {
-                color: 'red',
-                symbolType: 'circle',
-              },
+              'circle-radius': 4,
+              'circle-fill-color': 'red',
             },
           }),
         ],
@@ -705,9 +707,7 @@ describe('ol/Map', function () {
     });
 
     afterEach(function () {
-      document.body.removeChild(map.getTargetElement());
-      map.setTarget(null);
-      map.dispose();
+      disposeMap(map);
       map.getLayers().forEach((layer) => layer.dispose());
     });
 
@@ -725,7 +725,7 @@ describe('ol/Map', function () {
         new View({
           center: [0, 0],
           zoom: 0,
-        })
+        }),
       );
     });
   });
@@ -744,7 +744,7 @@ describe('ol/Map', function () {
               new LineString([
                 [-50, 0],
                 [50, 0],
-              ])
+              ]),
             ),
           ],
         }),
@@ -760,7 +760,7 @@ describe('ol/Map', function () {
       map.renderSync();
     });
     afterEach(function () {
-      document.body.removeChild(target);
+      disposeMap(map);
     });
 
     it('returns an empty array if no feature was found', function () {
@@ -867,7 +867,7 @@ describe('ol/Map', function () {
                       [-100, 50],
                       [-100, 40],
                     ],
-                  ])
+                  ]),
                 ),
               ],
             }),
@@ -882,8 +882,8 @@ describe('ol/Map', function () {
     });
 
     afterEach(function () {
+      disposeMap(map);
       clearUserProjection();
-      document.body.removeChild(target);
     });
 
     it('returns an empty array if no feature was found', function () {
@@ -927,7 +927,7 @@ describe('ol/Map', function () {
                       [-100, 50],
                       [-100, 40],
                     ],
-                  ])
+                  ]),
                 ),
               ],
             }),
@@ -942,8 +942,8 @@ describe('ol/Map', function () {
     });
 
     afterEach(function () {
+      disposeMap(map);
       clearUserProjection();
-      document.body.removeChild(target);
     });
 
     it('returns false if no feature was found', function () {
@@ -987,7 +987,7 @@ describe('ol/Map', function () {
             offset: [32, 32],
             size: [32, 32],
           }),
-        })
+        }),
       );
 
       map = new Map({
@@ -1011,7 +1011,7 @@ describe('ol/Map', function () {
       map.once('rendercomplete', function () {
         const hit = map.forEachFeatureAtPixel(
           map.getPixelFromCoordinate([0, 0]),
-          () => true
+          () => true,
         );
         try {
           expect(hit).to.be(true);
@@ -1046,8 +1046,7 @@ describe('ol/Map', function () {
     });
 
     afterEach(function () {
-      map.dispose();
-      document.body.removeChild(target);
+      disposeMap(map, target);
     });
 
     it('is called when the view.changed() is called', function () {
@@ -1077,6 +1076,63 @@ describe('ol/Map', function () {
         expect(event.frameState).not.to.be(null);
         done();
       });
+    });
+
+    it('layers dispatch prerender and postrender when not decluttering', function (done) {
+      const layer = new VectorLayer({source: new VectorSource()});
+      let prerender = false;
+      let postrender = false;
+      const renderDeferredSpy = sinon.spy(
+        layer.getRenderer(),
+        'renderDeferred',
+      );
+      layer.on('prerender', () => (prerender = true));
+      layer.on('postrender', () => {
+        expect(renderDeferredSpy.callCount).to.be(0);
+        renderDeferredSpy.restore();
+        postrender = true;
+      });
+      map.addLayer(layer);
+      map.once('postrender', () => {
+        try {
+          expect(prerender).to.be(true);
+          expect(postrender).to.be(true);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      });
+      map.render();
+    });
+
+    it('layers dispatch prerender and postrender when decluttering', function (done) {
+      const layer = new VectorLayer({
+        source: new VectorSource(),
+        declutter: true,
+      });
+      let prerender = false;
+      let postrender = false;
+      const renderDeferredSpy = sinon.spy(
+        layer.getRenderer(),
+        'renderDeferred',
+      );
+      layer.on('prerender', () => (prerender = true));
+      layer.on('postrender', () => {
+        expect(renderDeferredSpy.callCount).to.be(1);
+        renderDeferredSpy.restore();
+        postrender = true;
+      });
+      map.addLayer(layer);
+      map.once('postrender', () => {
+        try {
+          expect(prerender).to.be(true);
+          expect(postrender).to.be(true);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      });
+      map.render();
     });
 
     it('uses the same render frame for subsequent calls', function () {
@@ -1153,9 +1209,25 @@ describe('ol/Map', function () {
       expect(map.targetChangeHandlerKeys_).to.be.ok();
     });
 
+    afterEach(() => {
+      disposeMap(map);
+    });
+
     describe('map with target not attached to dom', function () {
       it('has undefined as size with target not in document', function () {
         expect(map.getSize()).to.be(undefined);
+      });
+    });
+
+    describe('map container with negative width and heigth due to borders', () => {
+      it('does not try to set a negative map size', () => {
+        const target = map.getTargetElement();
+        document.body.appendChild(target);
+        target.style.border = '1px solid black';
+        target.style.display = 'none';
+        map.updateSize();
+        document.body.removeChild(target);
+        expect(map.getSize()).to.eql([0, 0]);
       });
     });
 
@@ -1186,7 +1258,7 @@ describe('ol/Map', function () {
           source: new VectorSource({
             features: [new Feature(new Point([0, 0]))],
           }),
-        })
+        }),
       );
       map.getView().setCenter([0, 0]);
       map.getView().setZoom(0);
@@ -1205,7 +1277,7 @@ describe('ol/Map', function () {
           }
         });
       } finally {
-        document.body.removeChild(target);
+        target.remove();
       }
     });
   });
@@ -1236,6 +1308,9 @@ describe('ol/Map', function () {
               },
               contains: function () {
                 return hasFocus;
+              },
+              getRootNode: function () {
+                return {};
               },
             };
           },
@@ -1365,7 +1440,7 @@ describe('ol/Map', function () {
         document.body.appendChild(target);
       });
       afterEach(function () {
-        document.body.removeChild(target);
+        target.remove();
       });
 
       it('works with touchend events', function () {
@@ -1388,6 +1463,8 @@ describe('ol/Map', function () {
         expect(position[0]).to.eql(80);
         // 190 = clientY - target.style.top
         expect(position[1]).to.eql(190);
+
+        disposeMap(map);
       });
     });
 
@@ -1415,9 +1492,7 @@ describe('ol/Map', function () {
       });
 
       afterEach(function () {
-        map.removeOverlay(overlay);
-        map.dispose();
-        document.body.removeChild(target);
+        disposeMap(map);
       });
 
       it('returns an overlay by id', function () {
@@ -1459,7 +1534,7 @@ describe('ol/Map', function () {
       const centerMercator = transform(
         centerGeographic,
         getProjection('EPSG:4326'),
-        getProjection('EPSG:3857')
+        getProjection('EPSG:3857'),
       );
       const screenCenter = [500, 500];
 
@@ -1494,8 +1569,7 @@ describe('ol/Map', function () {
       });
 
       afterEach(function () {
-        map.dispose();
-        document.body.removeChild(target);
+        disposeMap(map);
         clearUserProjection();
       });
 
@@ -1504,11 +1578,11 @@ describe('ol/Map', function () {
         const coordinateGeographic = map.getCoordinateFromPixel(screenCenter);
         expect(coordinateGeographic[0]).to.roughlyEqual(
           centerGeographic[0],
-          1e-5
+          1e-5,
         );
         expect(coordinateGeographic[1]).to.roughlyEqual(
           centerGeographic[1],
-          1e-5
+          1e-5,
         );
         done();
       });
@@ -1565,14 +1639,17 @@ describe('ol/Map', function () {
     });
 
     afterEach(function () {
-      map.setTarget(null);
-      document.body.removeChild(target);
+      disposeMap(map, target);
     });
 
     it('calls handleEvent on interaction', function () {
       const spy = sinon.spy(dragpan, 'handleEvent');
       map.handleMapBrowserEvent(
-        new MapBrowserEvent('pointermove', map, new PointerEvent('pointermove'))
+        new MapBrowserEvent(
+          'pointermove',
+          map,
+          new PointerEvent('pointermove'),
+        ),
       );
       expect(spy.callCount).to.be(1);
       spy.restore();
@@ -1582,7 +1659,11 @@ describe('ol/Map', function () {
       map.setTarget(null);
       const spy = sinon.spy(dragpan, 'handleEvent');
       map.handleMapBrowserEvent(
-        new MapBrowserEvent('pointermove', map, new PointerEvent('pointermove'))
+        new MapBrowserEvent(
+          'pointermove',
+          map,
+          new PointerEvent('pointermove'),
+        ),
       );
       expect(spy.callCount).to.be(0);
       spy.restore();
@@ -1600,7 +1681,11 @@ describe('ol/Map', function () {
       });
       map.addInteraction(interaction);
       map.handleMapBrowserEvent(
-        new MapBrowserEvent('pointermove', map, new PointerEvent('pointermove'))
+        new MapBrowserEvent(
+          'pointermove',
+          map,
+          new PointerEvent('pointermove'),
+        ),
       );
       expect(callCount).to.be(1);
       expect(spy.callCount).to.be(0);
@@ -1617,7 +1702,11 @@ describe('ol/Map', function () {
       map.addInteraction(select);
       const spy = sinon.spy(dragpan, 'handleEvent');
       map.handleMapBrowserEvent(
-        new MapBrowserEvent('pointermove', map, new PointerEvent('pointermove'))
+        new MapBrowserEvent(
+          'pointermove',
+          map,
+          new PointerEvent('pointermove'),
+        ),
       );
       expect(spy.callCount).to.be(0);
       expect(selectStub.callCount).to.be(1);

@@ -24,18 +24,21 @@ const raster = new RasterSource({
       source: new DataTile({
         maxZoom: 0,
         loader: () => data0,
+        transition: 0,
       }),
     }),
     new TileLayer({
       source: new DataTile({
         maxZoom: 0,
         loader: () => data1,
+        transition: 0,
       }),
     }),
     new TileLayer({
       source: new DataTile({
         maxZoom: 0,
         loader: () => data2,
+        transition: 0,
       }),
     }),
   ],

@@ -14,7 +14,7 @@ import {getUid} from '../util.js';
 import {listen, unlistenByKey} from '../events.js';
 
 /**
- * @typedef {'addlayer'|'removelayer'} EventType
+ * @typedef {'addlayer'|'removelayer'} GroupEventType
  */
 
 /**
@@ -25,7 +25,7 @@ import {listen, unlistenByKey} from '../events.js';
  */
 export class GroupEvent extends Event {
   /**
-   * @param {EventType} type The event type.
+   * @param {GroupEventType} type The event type.
    * @param {BaseLayer} layer The layer.
    */
   constructor(type, layer) {
@@ -132,7 +132,10 @@ class LayerGroup extends BaseLayer {
       if (Array.isArray(layers)) {
         layers = new Collection(layers.slice(), {unique: true});
       } else {
-        assert(typeof (/** @type {?} */ (layers).getArray) === 'function', 43); // Expected `layers` to be an array or a `Collection`
+        assert(
+          typeof (/** @type {?} */ (layers).getArray) === 'function',
+          'Expected `layers` to be an array or a `Collection`',
+        );
       }
     } else {
       layers = new Collection(undefined, {unique: true});
@@ -279,6 +282,7 @@ class LayerGroup extends BaseLayer {
   /**
    * @param {Array<import("./Layer.js").default>} [array] Array of layers (to be modified in place).
    * @return {Array<import("./Layer.js").default>} Array of layers.
+   * @override
    */
   getLayersArray(array) {
     array = array !== undefined ? array : [];
@@ -296,6 +300,7 @@ class LayerGroup extends BaseLayer {
    * @param {Array<import("./Layer.js").State>} [dest] Optional list
    * of layer states (to be modified in place).
    * @return {Array<import("./Layer.js").State>} List of layer states.
+   * @override
    */
   getLayerStatesArray(dest) {
     const states = dest !== undefined ? dest : [];
@@ -344,6 +349,7 @@ class LayerGroup extends BaseLayer {
 
   /**
    * @return {import("../source/Source.js").State} Source state.
+   * @override
    */
   getSourceState() {
     return 'ready';

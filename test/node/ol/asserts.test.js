@@ -5,7 +5,7 @@ describe('ol/asserts.js', function () {
   describe('assert', function () {
     it('throws an exception', function () {
       expect(function () {
-        assert(false, 42);
+        assert(false, 'This should fail');
       }).to.throwException();
     });
   });

@@ -11,7 +11,7 @@ import {coordinates as reverseCoordinates} from './reverse.js';
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
- * @return {boolean} Is clockwise.
+ * @return {boolean|undefined} Is clockwise.
  */
 export function linearRingIsClockwise(flatCoordinates, offset, end, stride) {
   // https://stackoverflow.com/q/1165647/clockwise-method#1165943
@@ -47,7 +47,7 @@ export function linearRingsAreOriented(
   offset,
   ends,
   stride,
-  right
+  right,
 ) {
   right = right !== undefined ? right : false;
   for (let i = 0, ii = ends.length; i < ii; ++i) {
@@ -56,7 +56,7 @@ export function linearRingsAreOriented(
       flatCoordinates,
       offset,
       end,
-      stride
+      stride,
     );
     if (i === 0) {
       if ((right && isClockwise) || (!right && !isClockwise)) {
@@ -90,7 +90,7 @@ export function linearRingssAreOriented(
   offset,
   endss,
   stride,
-  right
+  right,
 ) {
   for (let i = 0, ii = endss.length; i < ii; ++i) {
     const ends = endss[i];
@@ -122,7 +122,7 @@ export function orientLinearRings(
   offset,
   ends,
   stride,
-  right
+  right,
 ) {
   right = right !== undefined ? right : false;
   for (let i = 0, ii = ends.length; i < ii; ++i) {
@@ -131,7 +131,7 @@ export function orientLinearRings(
       flatCoordinates,
       offset,
       end,
-      stride
+      stride,
     );
     const reverse =
       i === 0
@@ -163,7 +163,7 @@ export function orientLinearRingsArray(
   offset,
   endss,
   stride,
-  right
+  right,
 ) {
   for (let i = 0, ii = endss.length; i < ii; ++i) {
     offset = orientLinearRings(
@@ -171,7 +171,7 @@ export function orientLinearRingsArray(
       offset,
       endss[i],
       stride,
-      right
+      right,
     );
   }
   return offset;
@@ -182,16 +182,21 @@ export function orientLinearRingsArray(
  * @param {Array<number>} flatCoordinates Flat coordinates
  * @param {Array<number>} ends Linear ring end indexes
  * @return {Array<Array<number>>} Two dimensional endss array that can
- * be used to contruct a MultiPolygon
+ * be used to construct a MultiPolygon
  */
 export function inflateEnds(flatCoordinates, ends) {
   const endss = [];
   let offset = 0;
   let prevEndIndex = 0;
+  let startOrientation;
   for (let i = 0, ii = ends.length; i < ii; ++i) {
     const end = ends[i];
     // classifies an array of rings into polygons with outer rings and holes
-    if (!linearRingIsClockwise(flatCoordinates, offset, end, 2)) {
+    const orientation = linearRingIsClockwise(flatCoordinates, offset, end, 2);
+    if (startOrientation === undefined) {
+      startOrientation = orientation;
+    }
+    if (orientation === startOrientation) {
       endss.push(ends.slice(prevEndIndex, i + 1));
     } else {
       if (endss.length === 0) {

@@ -4,9 +4,10 @@
 
 import BaseTileRepresentation from './BaseTileRepresentation.js';
 import MixedGeometryBatch from '../render/webgl/MixedGeometryBatch.js';
+import WebGLArrayBuffer from './Buffer.js';
+import {ARRAY_BUFFER, STATIC_DRAW} from '../webgl.js';
 import {
   create as createTransform,
-  reset as resetTransform,
   translate as translateTransform,
 } from '../transform.js';
 
@@ -18,87 +19,85 @@ import {
  * @extends {BaseTileRepresentation<TileType>}
  */
 class TileGeometry extends BaseTileRepresentation {
-  batch = new MixedGeometryBatch();
-
   /**
    * @param {import("./BaseTileRepresentation.js").TileRepresentationOptions<TileType>} options The tile texture options.
-   * @param {import("../render/webgl/PolygonBatchRenderer.js").default} polygonRenderer Polygon renderer
-   * @param {import("../render/webgl/LineStringBatchRenderer.js").default} lineStringRenderer Linestring renderer
-   * @param {import("../render/webgl/PointBatchRenderer.js").default} pointRenderer Point renderer
+   * @param {Array<import("../render/webgl/VectorStyleRenderer.js").default>} styleRenderers Array of vector style renderers
    */
-  constructor(options, polygonRenderer, lineStringRenderer, pointRenderer) {
+  constructor(options, styleRenderers) {
     super(options);
-    /**
-     * @private
-     */
-    this.polygonRenderer_ = polygonRenderer;
-    /**
-     * @private
-     */
-    this.lineStringRenderer_ = lineStringRenderer;
-    /**
-     * @private
-     */
-    this.pointRenderer_ = pointRenderer;
 
     /**
      * @private
      */
-    this.renderInstructionsTransform_ = createTransform();
+    this.batch_ = new MixedGeometryBatch();
+
+    /**
+     * @private
+     */
+    this.styleRenderers_ = styleRenderers;
+
+    /**
+     * @type {Array<import("../render/webgl/VectorStyleRenderer.js").WebGLBuffers>}
+     */
+    this.buffers = [];
+
+    /**
+     * Each geometry tile also has a mask which consisted of a quad (two triangles); this mask is intended to
+     * be rendered to an offscreen buffer, and be used to correctly mask tiles according to their zoom level
+     * during rendering
+     */
+    this.maskVertices = new WebGLArrayBuffer(ARRAY_BUFFER, STATIC_DRAW);
 
     this.setTile(options.tile);
   }
 
-  uploadTile_() {
-    this.batch.clear();
+  /**
+   * @private
+   */
+  generateMaskBuffer_() {
+    const extent = this.tile.getSourceTiles()[0].extent;
+    this.maskVertices.fromArray([
+      extent[0],
+      extent[1],
+      extent[2],
+      extent[1],
+      extent[2],
+      extent[3],
+      extent[0],
+      extent[3],
+    ]);
+    this.helper.flushBufferData(this.maskVertices);
+  }
+
+  /**
+   * @override
+   */
+  uploadTile() {
+    this.generateMaskBuffer_();
+
+    this.batch_.clear();
     const sourceTiles = this.tile.getSourceTiles();
     const features = sourceTiles.reduce(
       (accumulator, sourceTile) => accumulator.concat(sourceTile.getFeatures()),
-      []
+      [],
     );
-    this.batch.addFeatures(features);
+    this.batch_.addFeatures(features);
 
     const tileOriginX = sourceTiles[0].extent[0];
     const tileOriginY = sourceTiles[0].extent[1];
-    resetTransform(this.renderInstructionsTransform_);
-    translateTransform(
-      this.renderInstructionsTransform_,
+    const transform = translateTransform(
+      createTransform(),
       -tileOriginX,
-      -tileOriginY
+      -tileOriginY,
     );
 
-    let remaining = 3;
-    const rebuildCb = () => {
-      remaining--;
-      if (remaining === 0) {
-        this.setReady();
-      }
-    };
-
-    // split geometry processing into separate tasks to avoid blocking the UI thread
-    setTimeout(() => {
-      this.polygonRenderer_.rebuild(
-        this.batch.polygonBatch,
-        this.renderInstructionsTransform_,
-        'Polygon',
-        rebuildCb
-      );
-    });
-    setTimeout(() => {
-      this.lineStringRenderer_.rebuild(
-        this.batch.lineStringBatch,
-        this.renderInstructionsTransform_,
-        'LineString',
-        rebuildCb
-      );
-    });
-    setTimeout(() => {
-      this.pointRenderer_.rebuild(
-        this.batch.pointBatch,
-        this.renderInstructionsTransform_,
-        'Point',
-        rebuildCb
-      );
+    const generatePromises = this.styleRenderers_.map((renderer, i) =>
+      renderer.generateBuffers(this.batch_, transform).then((buffers) => {
+        this.buffers[i] = buffers;
+      }),
+    );
+    Promise.all(generatePromises).then(() => {
+      this.setReady();
     });
   }
 }

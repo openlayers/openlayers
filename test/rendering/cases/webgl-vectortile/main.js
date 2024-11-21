@@ -4,26 +4,18 @@ import VectorTile from '../../../../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
 import View from '../../../../src/ol/View.js';
 import WebGLVectorTileLayerRenderer from '../../../../src/ol/renderer/webgl/VectorTileLayer.js';
-import {asArray} from '../../../../src/ol/color.js';
 import {createXYZ} from '../../../../src/ol/tilegrid.js';
-import {packColor} from '../../../../src/ol/renderer/webgl/shaders.js';
 
 class WebGLVectorTileLayer extends VectorTile {
   createRenderer() {
     return new WebGLVectorTileLayerRenderer(this, {
       className: this.getClassName(),
-      fill: {
-        attributes: {
-          color: () => packColor(asArray('#eee')),
-          opacity: () => 1,
-        },
-      },
-      stroke: {
-        attributes: {
-          color: () => packColor(asArray('#888')),
-          opacity: () => 0.5,
-          width: () => 1,
-        },
+      style: {
+        'fill-color': '#eee',
+        'stroke-color': 'rgba(136,136,136, 0.5)',
+        'stroke-width': 1,
+        'circle-radius': 2,
+        'circle-fill-color': '#707070',
       },
     });
   }

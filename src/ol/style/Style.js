@@ -8,7 +8,17 @@ import Stroke from './Stroke.js';
 import {assert} from '../asserts.js';
 
 /**
- * A function that takes an {@link module:ol/Feature~Feature} and a `{number}`
+ * Defines how symbols and text are decluttered on layers ith `declutter` set to `true`
+ * * **declutter**: Overlapping symbols and text are decluttered.
+ * * **obstacle**: Symbols and text are rendered, but serve as obstacle for subsequent attempts
+ *   to place a symbol or text at the same location.
+ * * **none**: No decluttering is done.
+ *
+ * @typedef {"declutter"|"obstacle"|"none"} DeclutterMode
+ */
+
+/**
+ * A function that takes a {@link module:ol/Feature~Feature} and a `{number}`
  * representing the view's resolution. The function should return a
  * {@link module:ol/style/Style~Style} or an array of them. This way e.g. a
  * vector layer can be styled. If the function returns `undefined`, the
@@ -23,7 +33,7 @@ import {assert} from '../asserts.js';
  */
 
 /**
- * A function that takes an {@link module:ol/Feature~Feature} as argument and returns an
+ * A function that takes a {@link module:ol/Feature~Feature} as argument and returns an
  * {@link module:ol/geom/Geometry~Geometry} that will be rendered and styled for the feature.
  *
  * @typedef {function(import("../Feature.js").FeatureLike):
@@ -36,7 +46,7 @@ import {assert} from '../asserts.js';
  * 1. The pixel coordinates of the geometry in GeoJSON notation.
  * 2. The {@link module:ol/render~State} of the layer renderer.
  *
- * @typedef {function((import("../coordinate.js").Coordinate|Array<import("../coordinate.js").Coordinate>|Array<Array<import("../coordinate.js").Coordinate>>),import("../render.js").State): void} RenderFunction
+ * @typedef {function((import("../coordinate.js").Coordinate|Array<import("../coordinate.js").Coordinate>|Array<Array<import("../coordinate.js").Coordinate>>|Array<Array<Array<import("../coordinate.js").Coordinate>>>),import("../render.js").State): void} RenderFunction
  */
 
 /**
@@ -158,7 +168,7 @@ class Style {
 
     /**
      * @private
-     * @type {string|import("../geom/Geometry.js").default|GeometryFunction}
+     * @type {string|import("../geom/Geometry.js").default|GeometryFunction|null}
      */
     this.geometry_ = null;
 
@@ -174,13 +184,13 @@ class Style {
 
     /**
      * @private
-     * @type {import("./Fill.js").default}
+     * @type {import("./Fill.js").default|null}
      */
     this.fill_ = options.fill !== undefined ? options.fill : null;
 
     /**
      * @private
-     * @type {import("./Image.js").default}
+     * @type {import("./Image.js").default|null}
      */
     this.image_ = options.image !== undefined ? options.image : null;
 
@@ -201,13 +211,13 @@ class Style {
 
     /**
      * @private
-     * @type {import("./Stroke.js").default}
+     * @type {import("./Stroke.js").default|null}
      */
     this.stroke_ = options.stroke !== undefined ? options.stroke : null;
 
     /**
      * @private
-     * @type {import("./Text.js").default}
+     * @type {import("./Text.js").default|null}
      */
     this.text_ = options.text !== undefined ? options.text : null;
 
@@ -231,10 +241,10 @@ class Style {
       ).clone();
     }
     return new Style({
-      geometry: geometry,
+      geometry: geometry ?? undefined,
       fill: this.getFill() ? this.getFill().clone() : undefined,
       image: this.getImage() ? this.getImage().clone() : undefined,
-      renderer: this.getRenderer(),
+      renderer: this.getRenderer() ?? undefined,
       stroke: this.getStroke() ? this.getStroke().clone() : undefined,
       text: this.getText() ? this.getText().clone() : undefined,
       zIndex: this.getZIndex(),
@@ -283,7 +293,7 @@ class Style {
 
   /**
    * Get the geometry to be rendered.
-   * @return {string|import("../geom/Geometry.js").default|GeometryFunction}
+   * @return {string|import("../geom/Geometry.js").default|GeometryFunction|null}
    * Feature property or geometry or function that returns the geometry that will
    * be rendered with this style.
    * @api
@@ -304,7 +314,7 @@ class Style {
 
   /**
    * Get the fill style.
-   * @return {import("./Fill.js").default} Fill style.
+   * @return {import("./Fill.js").default|null} Fill style.
    * @api
    */
   getFill() {
@@ -313,7 +323,7 @@ class Style {
 
   /**
    * Set the fill style.
-   * @param {import("./Fill.js").default} fill Fill style.
+   * @param {import("./Fill.js").default|null} fill Fill style.
    * @api
    */
   setFill(fill) {
@@ -322,7 +332,7 @@ class Style {
 
   /**
    * Get the image style.
-   * @return {import("./Image.js").default} Image style.
+   * @return {import("./Image.js").default|null} Image style.
    * @api
    */
   getImage() {
@@ -340,7 +350,7 @@ class Style {
 
   /**
    * Get the stroke style.
-   * @return {import("./Stroke.js").default} Stroke style.
+   * @return {import("./Stroke.js").default|null} Stroke style.
    * @api
    */
   getStroke() {
@@ -349,7 +359,7 @@ class Style {
 
   /**
    * Set the stroke style.
-   * @param {import("./Stroke.js").default} stroke Stroke style.
+   * @param {import("./Stroke.js").default|null} stroke Stroke style.
    * @api
    */
   setStroke(stroke) {
@@ -358,7 +368,7 @@ class Style {
 
   /**
    * Get the text style.
-   * @return {import("./Text.js").default} Text style.
+   * @return {import("./Text.js").default|null} Text style.
    * @api
    */
   getText() {
@@ -442,7 +452,10 @@ export function toFunction(obj) {
     if (Array.isArray(obj)) {
       styles = obj;
     } else {
-      assert(typeof (/** @type {?} */ (obj).getZIndex) === 'function', 41); // Expected an `Style` or an array of `Style`
+      assert(
+        typeof (/** @type {?} */ (obj).getZIndex) === 'function',
+        'Expected an `Style` or an array of `Style`',
+      );
       const style = /** @type {Style} */ (obj);
       styles = [style];
     }
@@ -548,7 +561,7 @@ export function createEditingStyle() {
 
   styles['GeometryCollection'] = styles['Polygon'].concat(
     styles['LineString'],
-    styles['Point']
+    styles['Point'],
   );
 
   return styles;

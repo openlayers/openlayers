@@ -56,7 +56,7 @@ function onChangeUnit() {
 function onInvertColorsChange() {
   control.element.classList.toggle(
     'ol-scale-bar-inverted',
-    invertColorsCheckbox.checked
+    invertColorsCheckbox.checked,
   );
 }
 unitsSelect.addEventListener('change', onChangeUnit);

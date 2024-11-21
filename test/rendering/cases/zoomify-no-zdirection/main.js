@@ -8,6 +8,7 @@ const layer = new TileLayer({
     url: '/data/tiles/zoomify/',
     size: [200, 200],
     tileSize: 100,
+    transition: 0,
   }),
 });
 

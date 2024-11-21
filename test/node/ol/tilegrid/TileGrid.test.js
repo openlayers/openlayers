@@ -444,7 +444,7 @@ describe('ol/tilegrid/TileGrid.js', function () {
       const grid = createForProjection(projection);
       const resolutions = grid.getResolutions();
       expect(resolutions[5]).to.be(
-        (360 * METERS_PER_UNIT.degrees) / DEFAULT_TILE_SIZE / Math.pow(2, 5)
+        (360 * METERS_PER_UNIT.degrees) / DEFAULT_TILE_SIZE / Math.pow(2, 5),
       );
     });
 
@@ -462,7 +462,7 @@ describe('ol/tilegrid/TileGrid.js', function () {
         projection,
         undefined,
         undefined,
-        'bottom-left'
+        'bottom-left',
       );
       const origin = grid.getOrigin();
       const half = HALF_SIZE;
@@ -475,7 +475,7 @@ describe('ol/tilegrid/TileGrid.js', function () {
         projection,
         undefined,
         undefined,
-        'bottom-right'
+        'bottom-right',
       );
       const origin = grid.getOrigin();
       const half = HALF_SIZE;
@@ -488,7 +488,7 @@ describe('ol/tilegrid/TileGrid.js', function () {
         projection,
         undefined,
         undefined,
-        'top-left'
+        'top-left',
       );
       const origin = grid.getOrigin();
       const half = HALF_SIZE;
@@ -501,7 +501,7 @@ describe('ol/tilegrid/TileGrid.js', function () {
         projection,
         undefined,
         undefined,
-        'top-right'
+        'top-right',
       );
       const origin = grid.getOrigin();
       const half = HALF_SIZE;
@@ -513,7 +513,7 @@ describe('ol/tilegrid/TileGrid.js', function () {
     it('uses defaults', function () {
       const tileGrid = createXYZ();
       expect(tileGrid.getExtent()).to.eql(
-        getProjection('EPSG:3857').getExtent()
+        getProjection('EPSG:3857').getExtent(),
       );
       expect(tileGrid.getMinZoom()).to.equal(0);
       expect(tileGrid.getMaxZoom()).to.equal(DEFAULT_MAX_ZOOM);
@@ -622,11 +622,11 @@ describe('ol/tilegrid/TileGrid.js', function () {
               tileRange.minX,
               tileRange.maxX,
               tileRange.minY,
-              tileRange.maxY
-            )
+              tileRange.maxY,
+            ),
           );
           return false;
-        }
+        },
       );
 
       expect(zs.length).to.eql(5);
@@ -859,7 +859,7 @@ describe('ol/tilegrid/TileGrid.js', function () {
         100000,
         100000,
         100,
-        false
+        false,
       );
       expect(tileCoord[0]).to.eql(3);
       expect(tileCoord[1]).to.eql(10);
@@ -886,7 +886,7 @@ describe('ol/tilegrid/TileGrid.js', function () {
         100000,
         100000,
         100,
-        true
+        true,
       );
       expect(tileCoord[0]).to.eql(3);
       expect(tileCoord[1]).to.eql(9);
@@ -1102,7 +1102,7 @@ describe('ol/tilegrid/TileGrid.js', function () {
           zs.push(z);
           tileRanges.push(tileRange);
           return false;
-        }
+        },
       );
 
       expect(zs.length).to.eql(3);
@@ -1226,49 +1226,49 @@ describe('ol/tilegrid/TileGrid.js', function () {
       expect(
         tileGrid.getZForResolution(626, function (value, high, low) {
           return value - (low + (high - low) * 0.25);
-        })
+        }),
       ).to.eql(0);
 
       expect(
         tileGrid.getZForResolution(625, function (value, high, low) {
           return value - (low + (high - low) * 0.25);
-        })
+        }),
       ).to.eql(1);
 
       expect(
         tileGrid.getZForResolution(476, function (value, high, low) {
           return value - (low + (high - low) * 0.9);
-        })
+        }),
       ).to.eql(1);
 
       expect(
         tileGrid.getZForResolution(475, function (value, high, low) {
           return value - (low + (high - low) * 0.9);
-        })
+        }),
       ).to.eql(2);
 
       expect(
         tileGrid.getZForResolution(201, function (value, high, low) {
           return value - (low + (high - low) * 0.666666667);
-        })
+        }),
       ).to.eql(2);
 
       expect(
         tileGrid.getZForResolution(200, function (value, high, low) {
           return value - (low + (high - low) * 0.666666667);
-        })
+        }),
       ).to.eql(3);
 
       expect(
         tileGrid.getZForResolution(126, function (value, high, low) {
           return value - (low + (high - low) * 0.166666667);
-        })
+        }),
       ).to.eql(2);
 
       expect(
         tileGrid.getZForResolution(125, function (value, high, low) {
           return value - (low + (high - low) * 0.166666667);
-        })
+        }),
       ).to.eql(3);
     });
   });
@@ -1276,7 +1276,7 @@ describe('ol/tilegrid/TileGrid.js', function () {
   describe('getTileRangeForTileCoordAndZ()', function () {
     const tileGrid = createForExtent(
       getProjection('EPSG:3857').getExtent(),
-      22
+      22,
     );
 
     it('can be used to get the child tile range', function () {
@@ -1322,7 +1322,7 @@ describe('ol/tilegrid/TileGrid.js', function () {
           expect(range.minY).to.be(tileRange.minY);
           expect(range.maxY).to.be(tileRange.maxY);
         });
-      }
+      },
     );
   });
 });

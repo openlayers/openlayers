@@ -10,6 +10,8 @@ import {abstract} from '../util.js';
  * instantiated in apps.
  * Base class for JSON feature formats.
  *
+ * @template {import('../Feature.js').FeatureLike} [FeatureType=import("../Feature.js").default]
+ * @extends {FeatureFormat<FeatureType>}
  * @abstract
  */
 class JSONFeature extends FeatureFormat {
@@ -19,6 +21,7 @@ class JSONFeature extends FeatureFormat {
 
   /**
    * @return {import("./Feature.js").Type} Format.
+   * @override
    */
   getType() {
     return 'json';
@@ -30,13 +33,14 @@ class JSONFeature extends FeatureFormat {
    *
    * @param {ArrayBuffer|Document|Element|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
-   * @return {import("../Feature.js").default} Feature.
+   * @return {FeatureType|Array<FeatureType>} Feature.
    * @api
+   * @override
    */
   readFeature(source, options) {
     return this.readFeatureFromObject(
       getObject(source),
-      this.getReadOptions(source, options)
+      this.getReadOptions(source, options),
     );
   }
 
@@ -46,13 +50,14 @@ class JSONFeature extends FeatureFormat {
    *
    * @param {ArrayBuffer|Document|Element|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
-   * @return {Array<import("../Feature.js").default>} Features.
+   * @return {Array<FeatureType>} Features.
    * @api
+   * @override
    */
   readFeatures(source, options) {
     return this.readFeaturesFromObject(
       getObject(source),
-      this.getReadOptions(source, options)
+      this.getReadOptions(source, options),
     );
   }
 
@@ -61,7 +66,7 @@ class JSONFeature extends FeatureFormat {
    * @param {Object} object Object.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
-   * @return {import("../Feature.js").default} Feature.
+   * @return {FeatureType|Array<FeatureType>} Feature.
    */
   readFeatureFromObject(object, options) {
     return abstract();
@@ -72,7 +77,7 @@ class JSONFeature extends FeatureFormat {
    * @param {Object} object Object.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
-   * @return {Array<import("../Feature.js").default>} Features.
+   * @return {Array<FeatureType>} Features.
    */
   readFeaturesFromObject(object, options) {
     return abstract();
@@ -85,11 +90,12 @@ class JSONFeature extends FeatureFormat {
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {import("../geom/Geometry.js").default} Geometry.
    * @api
+   * @override
    */
   readGeometry(source, options) {
     return this.readGeometryFromObject(
       getObject(source),
-      this.getReadOptions(source, options)
+      this.getReadOptions(source, options),
     );
   }
 
@@ -110,6 +116,7 @@ class JSONFeature extends FeatureFormat {
    * @param {ArrayBuffer|Document|Element|Object|string} source Source.
    * @return {import("../proj/Projection.js").default} Projection.
    * @api
+   * @override
    */
   readProjection(source) {
     return this.readProjectionFromObject(getObject(source));
@@ -132,6 +139,7 @@ class JSONFeature extends FeatureFormat {
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string} Encoded feature.
    * @api
+   * @override
    */
   writeFeature(feature, options) {
     return JSON.stringify(this.writeFeatureObject(feature, options));
@@ -154,6 +162,7 @@ class JSONFeature extends FeatureFormat {
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string} Encoded features.
    * @api
+   * @override
    */
   writeFeatures(features, options) {
     return JSON.stringify(this.writeFeaturesObject(features, options));
@@ -176,6 +185,7 @@ class JSONFeature extends FeatureFormat {
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string} Encoded geometry.
    * @api
+   * @override
    */
   writeGeometry(geometry, options) {
     return JSON.stringify(this.writeGeometryObject(geometry, options));

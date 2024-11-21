@@ -48,8 +48,7 @@ describe('ol.interaction.DragRotateAndZoom', function () {
     });
 
     afterEach(function () {
-      map.dispose();
-      document.body.removeChild(target);
+      disposeMap(map);
     });
 
     it('does not rotate when rotation is disabled on the view', function () {

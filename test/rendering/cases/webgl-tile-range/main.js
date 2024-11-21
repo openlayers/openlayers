@@ -47,6 +47,7 @@ new Map({
         maxZoom: 1,
         tileSize: size,
         loader: () => data,
+        transition: 0,
       }),
     }),
     new TileLayer({

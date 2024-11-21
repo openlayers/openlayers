@@ -20,12 +20,12 @@ const sourceDebug = new TileDebug({tileGrid: source.getTileGrid()});
 
 source.setTileGridForProjection(
   get('EPSG:4326'),
-  createForProjection(get('EPSG:4326'), 7, [64, 64])
+  createForProjection(get('EPSG:4326'), 7, [64, 64]),
 );
 
 sourceDebug.setTileGridForProjection(
   get('EPSG:4326'),
-  createForProjection(get('EPSG:4326'), 7, [64, 64])
+  createForProjection(get('EPSG:4326'), 7, [64, 64]),
 );
 
 new Map({

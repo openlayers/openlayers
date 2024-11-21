@@ -10,7 +10,7 @@ import {shiftKeyOnly} from '../events/condition.js';
  * @property {string} [className='ol-dragzoom'] CSS class name for styling the
  * box.
  * @property {import("../events/condition.js").Condition} [condition] A function that
- * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled.
  * Default is {@link module:ol/events/condition.shiftKeyOnly}.
  * @property {number} [duration=200] Animation duration in milliseconds.
@@ -22,7 +22,7 @@ import {shiftKeyOnly} from '../events/condition.js';
 /**
  * @classdesc
  * Allows the user to zoom the map by clicking and dragging on the map,
- * normally combined with an {@link module:ol/events/condition} that limits
+ * normally combined with a {@link module:ol/events/condition} that limits
  * it to when a key, shift by default, is held down.
  *
  * To change the style of the box, use CSS and the `.ol-dragzoom` selector, or
@@ -60,6 +60,7 @@ class DragZoom extends DragBox {
   /**
    * Function to execute just before `onboxend` is fired
    * @param {import("../MapBrowserEvent.js").default} event Event.
+   * @override
    */
   onBoxEnd(event) {
     const map = this.getMap();

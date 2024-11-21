@@ -23,9 +23,6 @@
     "config/jsdoc/plugins/api.cjs",
     "config/jsdoc/plugins/default-export.cjs"
   ],
-  "typescript": {
-    "moduleRoot": "src"
-  },
   "templates": {
     "cleverLinks": true,
     "monospaceLinks": true,

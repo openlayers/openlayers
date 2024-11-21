@@ -1,7 +1,7 @@
+import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
-import XYZ from '../src/ol/source/XYZ.js';
 import {GeoJSON, WFS} from '../src/ol/format.js';
 import {Stroke, Style} from '../src/ol/style.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
@@ -28,9 +28,10 @@ const attributions =
   '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
 
 const raster = new TileLayer({
-  source: new XYZ({
+  source: new ImageTile({
     attributions: attributions,
-    url: 'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=' + key,
+    url: 'https://api.maptiler.com/maps/satellite/{z}/{x}/{y}.jpg?key=' + key,
+    tileSize: 512,
     maxZoom: 20,
   }),
 });
@@ -54,7 +55,7 @@ const featureRequest = new WFS().writeGetFeature({
   outputFormat: 'application/json',
   filter: andFilter(
     likeFilter('name', 'Mississippi*'),
-    equalToFilter('waterway', 'riverbank')
+    equalToFilter('waterway', 'riverbank'),
   ),
 });
 

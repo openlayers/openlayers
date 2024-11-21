@@ -3,7 +3,9 @@ layout: example.html
 title: Bing Maps
 shortdesc: Example of a Bing Maps layer.
 docs: >
-  <p>When the Bing Maps tile service doesn't have tiles for a given resolution and region it returns "placeholder" tiles indicating that. Zoom the map beyond level 19 to see the "placeholder" tiles. If you want OpenLayers to display stretched tiles in place of "placeholder" tiles beyond zoom level 19 then set <code>maxZoom</code> to <code>19</code> in the options passed to <code>ol/source/BingMaps</code>.</p>
+  <p>When the Bing Maps tile service doesn't have tiles for a given resolution and region it returns "placeholder" tiles by default for `Aerial` and `OrdnanceSurvey' styles. If you want OpenLayers to display
+    stretched tiles in place of "placeholder" tiles at zoom levels where Bing Maps does not have tiles available then set
+    <code>placeholderTiles</code> to <code>false</code> in the options passed to <code>ol/source/BingMaps</code>.</p>
 tags: "bing, bing-maps"
 cloak:
   - key: AlEoTLTlzFB6Uf4Sy-ugXcRO21skQO7K8eObA5_L-8d20rjqZJLs2nkO1RMjGSPN

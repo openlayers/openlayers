@@ -1,8 +1,12 @@
+import 'd3-transition';
+import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import RasterSource from '../src/ol/source/Raster.js';
 import View from '../src/ol/View.js';
-import XYZ from '../src/ol/source/XYZ.js';
 import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
+import {max} from 'd3-array';
+import {scaleLinear} from 'd3-scale';
+import {select} from 'd3-selection';
 
 const minVgi = 0;
 const maxVgi = 0.5;
@@ -49,9 +53,10 @@ const attributions =
   '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
   '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
 
-const aerial = new XYZ({
+const aerial = new ImageTile({
   attributions: attributions,
-  url: 'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=' + key,
+  url: 'https://api.maptiler.com/maps/satellite/{z}/{x}/{y}.jpg?key=' + key,
+  tileSize: 512,
   maxZoom: 20,
   crossOrigin: '',
 });
@@ -140,20 +145,18 @@ function schedulePlot(resolution, counts, threshold) {
 
 const barWidth = 15;
 const plotHeight = 150;
-const chart = d3
-  .select('#plot')
+const chart = select('#plot')
   .append('svg')
   .attr('width', barWidth * bins)
   .attr('height', plotHeight);
 
 const chartRect = chart.node().getBoundingClientRect();
 
-const tip = d3.select(document.body).append('div').attr('class', 'tip');
+const tip = select(document.body).append('div').attr('class', 'tip');
 
 function plot(resolution, counts, threshold) {
-  const yScale = d3
-    .scaleLinear()
-    .domain([0, d3.max(counts.values)])
+  const yScale = scaleLinear()
+    .domain([0, max(counts.values)])
     .range([0, plotHeight]);
 
   const bar = chart.selectAll('rect').data(counts.values);

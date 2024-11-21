@@ -21,7 +21,7 @@ export function interpolatePoint(
   stride,
   fraction,
   dest,
-  dimension
+  dimension,
 ) {
   let o, t;
   const n = (end - offset) / stride;
@@ -61,8 +61,8 @@ export function interpolatePoint(
       o === undefined
         ? NaN
         : t === undefined
-        ? flatCoordinates[o + i]
-        : lerp(flatCoordinates[o + i], flatCoordinates[o + stride + i], t);
+          ? flatCoordinates[o + i]
+          : lerp(flatCoordinates[o + i], flatCoordinates[o + stride + i], t);
   }
   return dest;
 }
@@ -82,7 +82,7 @@ export function lineStringCoordinateAtM(
   end,
   stride,
   m,
-  extrapolate
+  extrapolate,
 ) {
   if (end == offset) {
     return null;
@@ -130,8 +130,8 @@ export function lineStringCoordinateAtM(
       lerp(
         flatCoordinates[(lo - 1) * stride + i],
         flatCoordinates[lo * stride + i],
-        t
-      )
+        t,
+      ),
     );
   }
   coordinate.push(m);
@@ -155,7 +155,7 @@ export function lineStringsCoordinateAtM(
   stride,
   m,
   extrapolate,
-  interpolate
+  interpolate,
 ) {
   if (interpolate) {
     return lineStringCoordinateAtM(
@@ -164,7 +164,7 @@ export function lineStringsCoordinateAtM(
       ends[ends.length - 1],
       stride,
       m,
-      extrapolate
+      extrapolate,
     );
   }
   let coordinate;
@@ -199,7 +199,7 @@ export function lineStringsCoordinateAtM(
         end,
         stride,
         m,
-        false
+        false,
       );
     }
     offset = end;

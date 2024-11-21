@@ -4,10 +4,11 @@ import TileQueue, {
 } from '../src/ol/TileQueue.js';
 import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
-import stringify from 'json-stringify-safe';
 import {get} from '../src/ol/proj.js';
 import {inView} from '../src/ol/layer/Layer.js';
 import {stylefunction} from 'ol-mapbox-style';
+
+const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
 
 /** @type {any} */
 const worker = self;
@@ -22,18 +23,18 @@ const sources = {
   landcover: new VectorTileSource({
     maxZoom: 9,
     format: new MVT(),
-    url: 'https://api.maptiler.com/tiles/landcover/{z}/{x}/{y}.pbf?key=get_your_own_D6rA4zTHduk6KOKTXzGB',
+    url: 'https://api.maptiler.com/tiles/landcover/{z}/{x}/{y}.pbf?key=' + key,
   }),
   contours: new VectorTileSource({
     minZoom: 9,
     maxZoom: 14,
     format: new MVT(),
-    url: 'https://api.maptiler.com/tiles/contours/{z}/{x}/{y}.pbf?key=get_your_own_D6rA4zTHduk6KOKTXzGB',
+    url: 'https://api.maptiler.com/tiles/contours/{z}/{x}/{y}.pbf?key=' + key,
   }),
-  openmaptiles: new VectorTileSource({
+  maptiler_planet: new VectorTileSource({
     format: new MVT(),
     maxZoom: 14,
-    url: 'https://api.maptiler.com/tiles/v3/{z}/{x}/{y}.pbf?key=get_your_own_D6rA4zTHduk6KOKTXzGB',
+    url: 'https://api.maptiler.com/tiles/v3/{z}/{x}/{y}.pbf?key=' + key,
   }),
 };
 const layers = [];
@@ -45,7 +46,7 @@ function getFont(font) {
 
 function loadStyles() {
   const styleUrl =
-    'https://api.maptiler.com/maps/topo/style.json?key=get_your_own_D6rA4zTHduk6KOKTXzGB';
+    'https://api.maptiler.com/maps/streets-v2/style.json?key=' + key;
 
   fetch(styleUrl)
     .then((data) => data.json())
@@ -102,7 +103,7 @@ function loadStyles() {
               undefined,
               spriteJson,
               spriteImageUrl,
-              getFont
+              getFont,
             );
             layers.push(layer);
           });
@@ -119,9 +120,9 @@ const tileQueue = new TileQueue(
       tile,
       tileSourceKey,
       tileCenter,
-      tileResolution
+      tileResolution,
     ),
-  () => worker.postMessage({action: 'requestRender'})
+  () => worker.postMessage({action: 'requestRender'}),
 );
 
 const maxTotalLoading = 8;
@@ -130,16 +131,16 @@ const maxNewLoads = 2;
 worker.addEventListener('message', (event) => {
   if (event.data.action === 'requestFeatures') {
     const layersInView = layers.filter((l) =>
-      inView(l.getLayerState(), frameState.viewState)
+      inView(l.getLayerState(), frameState.viewState),
     );
     const observables = layersInView.map((l) =>
-      l.getFeatures(event.data.pixel)
+      l.getFeatures(event.data.pixel),
     );
     Promise.all(observables).then((res) => {
       const features = res.flat();
       worker.postMessage({
         action: 'getFeatures',
-        features: JSON.parse(stringify(features.map((e) => e.getProperties()))),
+        features: features.map((e) => e.getProperties()),
       });
     });
     return;
@@ -155,15 +156,24 @@ worker.addEventListener('message', (event) => {
   }
   frameState.tileQueue = tileQueue;
   frameState.viewState.projection = get('EPSG:3857');
+  frameState.layerStatesArray = layers.map((l) => l.getLayerState());
   layers.forEach((layer) => {
     if (inView(layer.getLayerState(), frameState.viewState)) {
+      if (layer.getDeclutter() && !frameState.declutterTree) {
+        frameState.declutter = {};
+      }
       const renderer = layer.getRenderer();
       renderer.renderFrame(frameState, canvas);
     }
   });
-  layers.forEach(
-    (layer) => layer.getRenderer().context && layer.renderDeclutter(frameState)
-  );
+  layers.forEach((layer) => {
+    if (!layer.getRenderer().context) {
+      return;
+    }
+    layer.renderDeclutter(frameState, layer.getLayerState());
+    layer.renderDeferred(frameState);
+  });
+  frameState.postRenderFunctions.forEach((fn) => fn(null, frameState));
   if (tileQueue.getTilesLoading() < maxTotalLoading) {
     tileQueue.reprioritize();
     tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);
@@ -174,8 +184,21 @@ worker.addEventListener('message', (event) => {
       action: 'rendered',
       imageData: imageData,
       transform: rendererTransform,
-      frameState: JSON.parse(stringify(frameState)),
+      frameState: {
+        viewState: {
+          center: frameState.viewState.center.slice(0),
+          resolution: frameState.viewState.resolution,
+          rotation: frameState.viewState.rotation,
+        },
+        pixelRatio: frameState.pixelRatio,
+        size: frameState.size.slice(0),
+        extent: frameState.extent.slice(0),
+        coordinateToPixelTransform:
+          frameState.coordinateToPixelTransform.slice(0),
+        pixelToCoordinateTransform:
+          frameState.pixelToCoordinateTransform.slice(0),
+      },
     },
-    [imageData]
+    [imageData],
   );
 });

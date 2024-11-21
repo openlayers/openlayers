@@ -102,18 +102,18 @@ export function getVectorContext(event) {
   const frameState = event.frameState;
   const transform = multiplyTransform(
     event.inversePixelTransform.slice(),
-    frameState.coordinateToPixelTransform
+    frameState.coordinateToPixelTransform,
   );
   const squaredTolerance = getSquaredTolerance(
     frameState.viewState.resolution,
-    canvasPixelRatio
+    canvasPixelRatio,
   );
   let userTransform;
   const userProjection = getUserProjection();
   if (userProjection) {
     userTransform = getTransformFromProjections(
       userProjection,
-      frameState.viewState.projection
+      frameState.viewState.projection,
     );
   }
 
@@ -124,7 +124,7 @@ export function getVectorContext(event) {
     transform,
     frameState.viewState.rotation,
     squaredTolerance,
-    userTransform
+    userTransform,
   );
 }
 

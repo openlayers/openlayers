@@ -76,8 +76,9 @@ const fontRegEx = new RegExp(
     '(?:\\s*\\/\\s*(normal|[\\.\\d]+(?:\\%|in|[cem]m|ex|p[ctx])?))',
     '?\\s*([-,\\"\\\'\\sa-z]+?)\\s*$',
   ].join(''),
-  'i'
+  'i',
 );
+/** @type {Array<'style'|'variant'|'weight'|'size'|'lineHeight'|'family'>} */
 const fontRegExMatchIndex = [
   'style',
   'variant',

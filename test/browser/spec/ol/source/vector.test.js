@@ -4,6 +4,7 @@ import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import Map from '../../../../../src/ol/Map.js';
 import Point from '../../../../../src/ol/geom/Point.js';
+import RenderFeature from '../../../../../src/ol/render/Feature.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
 import View from '../../../../../src/ol/View.js';
@@ -17,7 +18,7 @@ import {
 import {getUid} from '../../../../../src/ol/util.js';
 import {listen} from '../../../../../src/ol/events.js';
 
-describe('ol.source.Vector', function () {
+describe('ol/source/Vector', function () {
   let pointFeature;
   let infiniteExtent;
   beforeEach(function () {
@@ -107,6 +108,16 @@ describe('ol.source.Vector', function () {
         source.addFeature(feature2);
         expect(source.getFeatures().length).to.be(1);
       });
+
+      it('Render features with the same id are gathered in an array', function () {
+        const source = new VectorSource();
+        const feature1 = new RenderFeature('Point', [1, 1], [], 2, {}, 1);
+        const feature2 = new RenderFeature('Point', [2, 2], [], 2, {}, 1);
+        source.addFeature(feature1);
+        source.addFeature(feature2);
+        expect(source.getFeatures().length).to.be(2);
+        expect(source.getFeatureById(1)).to.eql([feature1, feature2]);
+      });
     });
 
     describe('#hasFeature', function () {
@@ -146,8 +157,8 @@ describe('ol.source.Vector', function () {
           new LineString([
             [0, 0],
             [10, 10],
-          ])
-        )
+          ]),
+        ),
       );
       features.push(new Feature(new Point([0, 10])));
       features.push(new Feature(new Point([10, 5])));
@@ -167,7 +178,7 @@ describe('ol.source.Vector', function () {
           [1, 9],
           function (feature) {
             return feature.getGeometry().getType() == 'LineString';
-          }
+          },
         );
         expect(feature).to.be(features[0]);
       });
@@ -180,7 +191,7 @@ describe('ol.source.Vector', function () {
           features: vectorSource.getFeatures(),
         });
         expect(noSpatialIndexSource.getFeatures()).to.not.be(
-          noSpatialIndexSource.getFeaturesCollection().getArray()
+          noSpatialIndexSource.getFeaturesCollection().getArray(),
         );
       });
     });
@@ -219,8 +230,7 @@ describe('ol.source.Vector', function () {
       if (spy) {
         source.loader_.restore();
       }
-      document.body.removeChild(map.getTargetElement());
-      map.setTarget(null);
+      disposeMap(map);
     });
 
     it('#refresh() reloads from server', function (done) {
@@ -323,7 +333,7 @@ describe('ol.source.Vector', function () {
           infiniteExtent,
           function (f) {
             return ++count == 5;
-          }
+          },
         );
         expect(result).to.be(true);
         expect(count).to.be(5);
@@ -333,7 +343,7 @@ describe('ol.source.Vector', function () {
     describe('#getFeaturesInExtent', function () {
       it('returns the expected number of features', function () {
         expect(vectorSource.getFeaturesInExtent(infiniteExtent)).to.have.length(
-          10
+          10,
         );
       });
     });
@@ -350,9 +360,35 @@ describe('ol.source.Vector', function () {
         for (i = features.length - 1; i >= 0; --i) {
           vectorSource.removeFeature(features[i]);
           expect(vectorSource.getFeaturesInExtent(infiniteExtent)).have.length(
-            i
+            i,
           );
         }
+      });
+
+      it('works as expected for renderfeatures', function () {
+        const feature1 = new RenderFeature(
+          'Polygon',
+          [1, 1, 1, 2, 2, 1, 2, 2],
+          [],
+          2,
+          {},
+          'foo',
+        );
+        const feature2 = new RenderFeature(
+          'Polygon',
+          [1, 1, 1, 2, 2, 1, 2, 2],
+          [],
+          2,
+          {},
+          'foo',
+        );
+
+        const vectorSource = new VectorSource({features: [feature1, feature2]});
+        expect(vectorSource.getFeatureById('foo')).to.eql([feature1, feature2]);
+        vectorSource.removeFeature(feature1);
+        expect(vectorSource.getFeatureById('foo')).to.be(feature2);
+        vectorSource.removeFeature(feature2);
+        expect(vectorSource.getFeatureById('foo')).to.be(null);
       });
 
       it('fires a change event', function () {
@@ -386,15 +422,15 @@ describe('ol.source.Vector', function () {
     describe("modifying a feature's geometry", function () {
       it('keeps the R-Tree index up to date', function () {
         expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).to.have.length(
-          10
+          10,
         );
         features[0].getGeometry().setCoordinates([100, 100]);
         expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).to.have.length(
-          9
+          9,
         );
         features[0].getGeometry().setCoordinates([0.5, 0.5]);
         expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).to.have.length(
-          10
+          10,
         );
       });
     });
@@ -402,11 +438,11 @@ describe('ol.source.Vector', function () {
     describe('setting a features geometry', function () {
       it('keeps the R-Tree index up to date', function () {
         expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).to.have.length(
-          10
+          10,
         );
         features[0].setGeometry(new Point([100, 100]));
         expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).to.have.length(
-          9
+          9,
         );
       });
     });
@@ -621,7 +657,7 @@ describe('ol.source.Vector', function () {
       source.loadFeatures(
         [-10000, -10000, 10000, 10000],
         1,
-        getProjection('EPSG:3857')
+        getProjection('EPSG:3857'),
       );
     });
 
@@ -639,7 +675,7 @@ describe('ol.source.Vector', function () {
       source.loadFeatures(
         [-10000, -10000, 10000, 10000],
         1,
-        getProjection('EPSG:3857')
+        getProjection('EPSG:3857'),
       );
     });
 
@@ -656,7 +692,7 @@ describe('ol.source.Vector', function () {
       source.loadFeatures(
         [-10000, -10000, 10000, 10000],
         1,
-        getProjection('EPSG:3857')
+        getProjection('EPSG:3857'),
       );
     });
 
@@ -670,7 +706,7 @@ describe('ol.source.Vector', function () {
               const lonLatExtent = transformExtent(
                 extent,
                 'EPSG:3857',
-                'EPSG:4326'
+                'EPSG:4326',
               );
               expect(lonLatExtent[0]).to.roughlyEqual(-99.259349218, 1e-9);
               expect(lonLatExtent[2]).to.roughlyEqual(-95.963450781, 1e-9);
@@ -695,8 +731,7 @@ describe('ol.source.Vector', function () {
           }),
         });
         map.renderSync();
-        map.setTarget(null);
-        document.body.removeChild(div);
+        disposeMap(map);
       });
     });
 
@@ -706,7 +741,7 @@ describe('ol.source.Vector', function () {
         source.loadFeatures(
           [-10000, -10000, 10000, 10000],
           1,
-          getProjection('EPSG:3857')
+          getProjection('EPSG:3857'),
         );
         const loadedExtents = source.loadedExtentsRtree_.getAll();
         expect(loadedExtents).to.have.length(1);
@@ -733,14 +768,14 @@ describe('ol.source.Vector', function () {
         source.loadFeatures(
           [-10000, -10000, 10000, 10000],
           1,
-          getProjection('EPSG:3857')
+          getProjection('EPSG:3857'),
         );
         source.setLoader(loader2);
         source.refresh();
         source.loadFeatures(
           [-10000, -10000, 10000, 10000],
           1,
-          getProjection('EPSG:3857')
+          getProjection('EPSG:3857'),
         );
         expect(count1).to.eql(1);
         expect(count2).to.eql(1);
@@ -759,7 +794,7 @@ describe('ol.source.Vector', function () {
         source.loadFeatures(
           [-10000, -10000, 10000, 10000],
           1,
-          getProjection('EPSG:3857')
+          getProjection('EPSG:3857'),
         );
       });
 
@@ -782,7 +817,7 @@ describe('ol.source.Vector', function () {
         source.loadFeatures(
           [-10000, -10000, 10000, 10000],
           1,
-          getProjection('EPSG:3857')
+          getProjection('EPSG:3857'),
         );
       });
 
@@ -791,23 +826,19 @@ describe('ol.source.Vector', function () {
         const spy = sinon.spy();
         source.on('featuresloaderror', spy);
 
-        source.setLoader(function (
-          bbox,
-          resolution,
-          projection,
-          success,
-          failure
-        ) {
-          failure();
-          setTimeout(function () {
-            expect(spy.calledOnce).to.be(true);
-            done();
-          }, 0);
-        });
+        source.setLoader(
+          function (bbox, resolution, projection, success, failure) {
+            failure();
+            setTimeout(function () {
+              expect(spy.calledOnce).to.be(true);
+              done();
+            }, 0);
+          },
+        );
         source.loadFeatures(
           [-10000, -10000, 10000, 10000],
           1,
-          getProjection('EPSG:3857')
+          getProjection('EPSG:3857'),
         );
       });
     });
@@ -994,7 +1025,7 @@ describe('ol.source.Vector', function () {
       const projection = getProjection('EPSG:4326');
 
       expect(
-        source.getFeaturesInExtent([-180, -90, 180, 90], projection).length
+        source.getFeaturesInExtent([-180, -90, 180, 90], projection).length,
       ).to.be(3);
       const onlyB = source.getFeaturesInExtent([1, -90, 180, 90], projection);
       expect(onlyB.length).to.be(1);
@@ -1010,7 +1041,7 @@ describe('ol.source.Vector', function () {
 
       const bAndCAgain = source.getFeaturesInExtent(
         [-182, -90, -1, 90],
-        projection
+        projection,
       );
       expect(bAndCAgain.length).to.be(2);
       expect(bAndCAgain).to.contain(b);

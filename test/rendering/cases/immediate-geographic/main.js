@@ -29,7 +29,7 @@ layer.on('postrender', (event) => {
           color: 'red',
         }),
       }),
-    })
+    }),
   );
   context.drawGeometry(new Point(center));
 });

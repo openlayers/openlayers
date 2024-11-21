@@ -1,8 +1,8 @@
 /**
  * @module ol/ImageCanvas
  */
-import ImageBase from './ImageBase.js';
 import ImageState from './ImageState.js';
+import ImageWrapper from './Image.js';
 
 /**
  * A function that is called to trigger asynchronous canvas drawing.  It is
@@ -13,7 +13,7 @@ import ImageState from './ImageState.js';
  * @typedef {function(function(Error=): void): void} Loader
  */
 
-class ImageCanvas extends ImageBase {
+class ImageCanvas extends ImageWrapper {
   /**
    * @param {import("./extent.js").Extent} extent Extent.
    * @param {number} resolution Resolution.
@@ -72,6 +72,7 @@ class ImageCanvas extends ImageBase {
 
   /**
    * Load not yet loaded URI.
+   * @override
    */
   load() {
     if (this.state == ImageState.IDLE) {
@@ -83,6 +84,7 @@ class ImageCanvas extends ImageBase {
 
   /**
    * @return {HTMLCanvasElement} Canvas element.
+   * @override
    */
   getImage() {
     return this.canvas_;

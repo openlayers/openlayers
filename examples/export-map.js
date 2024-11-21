@@ -85,7 +85,7 @@ document.getElementById('export-png').addEventListener('click', function () {
           // Apply the transform to the export map context
           CanvasRenderingContext2D.prototype.setTransform.apply(
             mapContext,
-            matrix
+            matrix,
           );
           const backgroundColor = canvas.parentNode.style.backgroundColor;
           if (backgroundColor) {
@@ -94,7 +94,7 @@ document.getElementById('export-png').addEventListener('click', function () {
           }
           mapContext.drawImage(canvas, 0, 0);
         }
-      }
+      },
     );
     mapContext.globalAlpha = 1;
     mapContext.setTransform(1, 0, 0, 1, 0, 0);

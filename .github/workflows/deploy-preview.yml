@@ -11,14 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'}}
     steps:
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version: '20'
       - run: npm install --global netlify-cli@6
       - run: npm install unzipper@0.10
 
       - name: Get pull request number
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         id: pull-request-number
         with:
           result-encoding: string
@@ -51,13 +51,14 @@ jobs:
             const content = await file.buffer();
             return content.toString();
 
-      - uses: dawidd6/action-download-artifact@v2
+      - uses: dawidd6/action-download-artifact@v6
         with:
           github_token: ${{secrets.GITHUB_TOKEN}}
           workflow: build-preview.yml
           pr: ${{steps.pull-request-number.outputs.result}}
           name: site
           path: build/site
+          allow_forks: true
 
       - name: Deploy to Netlify
         env:
@@ -66,12 +67,12 @@ jobs:
         run: netlify deploy --dir=build/site --alias=deploy-preview-${{steps.pull-request-number.outputs.result}}
 
       - name: Add comment to pull request
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const pullRequestNumber = parseInt(${{steps.pull-request-number.outputs.result}}, 10);
 
-            const start = ':package:';
+            const start = '📦';
             const author = 'github-actions[bot]';
 
             const comments = await github.rest.issues.listComments({
@@ -96,7 +97,7 @@ jobs:
             }
             
       - name: Clean up artifact
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           result-encoding: string
           script: |

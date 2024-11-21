@@ -26,29 +26,29 @@ class VectorRenderTile extends Tile {
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {import("./TileState.js").default} state State.
    * @param {import("./tilecoord.js").TileCoord} urlTileCoord Wrapped tile coordinate for source urls.
-   * @param {function(VectorRenderTile):Array<import("./VectorTile").default>} getSourceTiles Function
-   * to get source tiles for this tile.
+   * @param {function(VectorRenderTile):Array<import("./VectorTile").default>} getSourceTiles Function.
+   * @param {function(VectorRenderTile):void} removeSourceTiles Function.
    */
-  constructor(tileCoord, state, urlTileCoord, getSourceTiles) {
+  constructor(
+    tileCoord,
+    state,
+    urlTileCoord,
+    getSourceTiles,
+    removeSourceTiles,
+  ) {
     super(tileCoord, state, {transition: 0});
 
     /**
      * @private
-     * @type {!Object<string, CanvasRenderingContext2D>}
+     * @type {CanvasRenderingContext2D|null}
      */
-    this.context_ = {};
+    this.context_ = null;
 
     /**
-     * Executor groups by layer uid. Entries are read/written by the renderer.
-     * @type {Object<string, Array<import("./render/canvas/ExecutorGroup.js").default>>}
+     * Executor groups. Read/written by the renderer.
+     * @type {Array<import("./render/canvas/ExecutorGroup.js").default>}
      */
-    this.executorGroups = {};
-
-    /**
-     * Executor groups for decluttering, by layer uid. Entries are read/written by the renderer.
-     * @type {Object<string, Array<import("./render/canvas/ExecutorGroup.js").default>>}
-     */
-    this.declutterExecutorGroups = {};
+    this.executorGroups = [];
 
     /**
      * Number of loading source tiles. Read/written by the source.
@@ -88,38 +88,40 @@ class VectorRenderTile extends Tile {
     this.getSourceTiles = getSourceTiles.bind(undefined, this);
 
     /**
+     * @type {!function(VectorRenderTile):void}
+     * @private
+     */
+    this.removeSourceTiles_ = removeSourceTiles;
+
+    /**
      * @type {import("./tilecoord.js").TileCoord}
      */
     this.wrappedTileCoord = urlTileCoord;
   }
 
   /**
-   * @param {import("./layer/Layer.js").default} layer Layer.
    * @return {CanvasRenderingContext2D} The rendering context.
    */
-  getContext(layer) {
-    const key = getUid(layer);
-    if (!(key in this.context_)) {
-      this.context_[key] = createCanvasContext2D(1, 1, canvasPool);
+  getContext() {
+    if (!this.context_) {
+      this.context_ = createCanvasContext2D(1, 1, canvasPool);
     }
-    return this.context_[key];
+    return this.context_;
   }
 
   /**
-   * @param {import("./layer/Layer.js").default} layer Layer.
-   * @return {boolean} Tile has a rendering context for the given layer.
+   * @return {boolean} Tile has a rendering context.
    */
-  hasContext(layer) {
-    return getUid(layer) in this.context_;
+  hasContext() {
+    return !!this.context_;
   }
 
   /**
    * Get the Canvas for this tile.
-   * @param {import("./layer/Layer.js").default} layer Layer.
    * @return {HTMLCanvasElement} Canvas.
    */
-  getImage(layer) {
-    return this.hasContext(layer) ? this.getContext(layer).canvas : null;
+  getImage() {
+    return this.hasContext() ? this.getContext().canvas : null;
   }
 
   /**
@@ -144,6 +146,7 @@ class VectorRenderTile extends Tile {
 
   /**
    * Load the tile.
+   * @override
    */
   load() {
     this.getSourceTiles();
@@ -151,14 +154,16 @@ class VectorRenderTile extends Tile {
 
   /**
    * Remove from the cache due to expiry
+   * @override
    */
   release() {
-    for (const key in this.context_) {
-      const context = this.context_[key];
-      releaseCanvas(context);
-      canvasPool.push(context.canvas);
-      delete this.context_[key];
+    if (this.context_) {
+      releaseCanvas(this.context_);
+      canvasPool.push(this.context_.canvas);
+      this.context_ = null;
     }
+    this.removeSourceTiles_(this);
+    this.sourceTiles.length = 0;
     super.release();
   }
 }

@@ -1,13 +1,19 @@
 import Control from '../../../../../src/ol/control/Control.js';
+import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import OverviewMap from '../../../../../src/ol/control/OverviewMap.js';
+import VectorLayer from '../../../../../src/ol/layer/Vector.js';
+import VectorSource from '../../../../../src/ol/source/Vector.js';
 import View from '../../../../../src/ol/View.js';
+import {Point} from '../../../../../src/ol/geom.js';
 
 describe('ol.control.OverviewMap', function () {
   let map, target;
 
   beforeEach(function () {
     target = document.createElement('div');
+    target.style.width = '256px';
+    target.style.height = '256px';
     document.body.appendChild(target);
     map = new Map({
       target: target,
@@ -15,8 +21,7 @@ describe('ol.control.OverviewMap', function () {
   });
 
   afterEach(function () {
-    map.dispose();
-    document.body.removeChild(target);
+    disposeMap(map);
     map = null;
     target = null;
   });
@@ -26,6 +31,37 @@ describe('ol.control.OverviewMap', function () {
       const control = new OverviewMap();
       expect(control).to.be.a(OverviewMap);
       expect(control).to.be.a(Control);
+    });
+  });
+
+  describe('recenter', function () {
+    it('recenters main map on overview map click', function () {
+      map.setView(new View({center: [0, 0], resolution: 1}));
+      map.addLayer(
+        new VectorLayer({
+          source: new VectorSource({
+            features: [new Feature(new Point([0, 0]))],
+          }),
+        }),
+      );
+      const control = new OverviewMap({collapsed: false, collapsible: false});
+      control.ovmapDiv_.style.width = '100px';
+      control.ovmapDiv_.style.height = '100px';
+      map.addControl(control);
+      control.getOverviewMap().renderSync();
+      const [x, y] = control.ovmap_.getPixelFromCoordinate([100, 100]);
+      const origin = control.ovmapDiv_.getBoundingClientRect();
+      const down = new PointerEvent('pointerdown', {
+        clientX: origin.left + x,
+        clientY: origin.top + y,
+      });
+      const up = new PointerEvent('pointerup', {
+        clientX: origin.left + x,
+        clientY: origin.top + y,
+      });
+      control.ovmapDiv_.dispatchEvent(down);
+      window.dispatchEvent(up);
+      expect(map.getView().getCenter()).to.eql([100, 100]);
     });
   });
 
@@ -100,16 +136,16 @@ describe('ol.control.OverviewMap', function () {
 
       map.addControl(control);
       expect(control.ovmap_.getView().getProjection().getCode()).to.be(
-        'EPSG:3857'
+        'EPSG:3857',
       );
 
       map.setView(
         new View({
           projection: 'EPSG:4326',
-        })
+        }),
       );
       expect(control.ovmap_.getView().getProjection().getCode()).to.be(
-        'EPSG:4326'
+        'EPSG:4326',
       );
     });
 
@@ -123,17 +159,17 @@ describe('ol.control.OverviewMap', function () {
       map.addControl(control);
       expect(control.ovmap_.getView()).to.be(overviewMapView);
       expect(control.ovmap_.getView().getProjection().getCode()).to.be(
-        'EPSG:3857'
+        'EPSG:3857',
       );
 
       map.setView(
         new View({
           projection: 'EPSG:4326',
-        })
+        }),
       );
       expect(control.ovmap_.getView()).to.be(overviewMapView);
       expect(control.ovmap_.getView().getProjection().getCode()).to.be(
-        'EPSG:3857'
+        'EPSG:3857',
       );
     });
 

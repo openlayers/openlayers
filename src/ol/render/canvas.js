@@ -42,6 +42,7 @@ import {getFontParameters} from '../css.js';
  * @property {CanvasLineJoin} [lineJoin] LineJoin.
  * @property {number} [lineWidth] LineWidth.
  * @property {number} [miterLimit] MiterLimit.
+ * @property {number} [fillPatternScale] Fill pattern scale.
  */
 
 /**
@@ -93,7 +94,7 @@ export const defaultFont = '10px sans-serif';
 
 /**
  * @const
- * @type {import("../colorlike.js").ColorLike}
+ * @type {string}
  */
 export const defaultFillStyle = '#000';
 
@@ -201,7 +202,7 @@ export const registerFont = (function () {
       const referenceFont = referenceFonts[i];
       referenceWidth = measureTextWidth(
         fontStyle + ' ' + fontWeight + ' ' + size + referenceFont,
-        text
+        text,
       );
       if (fontFamily != referenceFont) {
         const width = measureTextWidth(
@@ -213,7 +214,7 @@ export const registerFont = (function () {
             fontFamily +
             ',' +
             referenceFont,
-          text
+          text,
         );
         // If width and referenceWidth are the same, then the fallback was used
         // instead of the font we wanted, so the font is not available.
@@ -232,7 +233,8 @@ export const registerFont = (function () {
     for (let i = 0, ii = fonts.length; i < ii; ++i) {
       const font = fonts[i];
       if (checkedFonts.get(font) < retries) {
-        if (isAvailable.apply(this, font.split('\n'))) {
+        const [style, weight, family] = font.split('\n');
+        if (isAvailable(style, weight, family)) {
           clear(textHeights);
           // Make sure that loaded fonts are picked up by Safari
           measureContext = null;
@@ -380,6 +382,7 @@ export function getTextDimensions(baseStyle, chunks) {
       lineWidths.push(lineWidth);
       lineWidth = 0;
       height += lineHeight;
+      lineHeight = 0;
       continue;
     }
     const font = chunks[i + 1] || baseStyle.font;
@@ -408,7 +411,7 @@ export function rotateAtOffset(context, rotation, offsetX, offsetY) {
 }
 
 /**
- * @param {CanvasRenderingContext2D} context Context.
+ * @param {CanvasRenderingContext2D|import("../render/canvas/ZIndexContext.js").ZIndexContextProxy} context Context.
  * @param {import("../transform.js").Transform|null} transform Transform.
  * @param {number} opacity Opacity.
  * @param {Label|HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} labelOrImage Label.
@@ -431,15 +434,19 @@ export function drawImageOrLabel(
   h,
   x,
   y,
-  scale
+  scale,
 ) {
   context.save();
 
   if (opacity !== 1) {
-    context.globalAlpha *= opacity;
+    if (context.globalAlpha === undefined) {
+      context.globalAlpha = (context) => (context.globalAlpha *= opacity);
+    } else {
+      context.globalAlpha *= opacity;
+    }
   }
   if (transform) {
-    context.setTransform.apply(context, transform);
+    context.transform.apply(context, transform);
   }
 
   if (/** @type {*} */ (labelOrImage).contextInstructions) {
@@ -462,7 +469,7 @@ export function drawImageOrLabel(
       0,
       0,
       w,
-      h
+      h,
     );
   } else {
     // if image not flipped translate and scale can be avoided
@@ -477,7 +484,7 @@ export function drawImageOrLabel(
       x,
       y,
       w * scale[0],
-      h * scale[1]
+      h * scale[1],
     );
   }
 
@@ -494,7 +501,7 @@ function executeLabelInstructions(label, context) {
     if (Array.isArray(contextInstructions[i + 1])) {
       context[contextInstructions[i]].apply(
         context,
-        contextInstructions[i + 1]
+        contextInstructions[i + 1],
       );
     } else {
       context[contextInstructions[i]] = contextInstructions[i + 1];

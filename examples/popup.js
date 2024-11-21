@@ -1,8 +1,8 @@
+import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import Overlay from '../src/ol/Overlay.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
-import XYZ from '../src/ol/source/XYZ.js';
 import {toLonLat} from '../src/ol/proj.js';
 import {toStringHDMS} from '../src/ol/coordinate.js';
 
@@ -46,9 +46,10 @@ const attributions =
 const map = new Map({
   layers: [
     new TileLayer({
-      source: new XYZ({
+      source: new ImageTile({
         attributions: attributions,
-        url: 'https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=' + key,
+        url:
+          'https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=' + key,
         tileSize: 512,
       }),
     }),

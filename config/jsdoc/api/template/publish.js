@@ -72,7 +72,7 @@ function linkto(longname, linkText, cssClass, fragmentId) {
   }
   if (parseTypes) {
     // collections or generics with unions get parsed by catharsis and
-    // will unfortunamely include long module:ol/foo names
+    // will unfortunately include long module:ol/foo names
     return helper.linkto(longname, '', cssClass, fragmentId);
   }
 
@@ -89,7 +89,7 @@ function linkto(longname, linkText, cssClass, fragmentId) {
   if (match) {
     return (
       linkto(match[1], '', cssClass, fragmentId) +
-      '<' +
+      '&lt;' +
       linkto(match[2], '', cssClass, fragmentId) +
       '>'
     );
@@ -99,7 +99,7 @@ function linkto(longname, linkText, cssClass, fragmentId) {
     longname,
     htmlsafe(getShortName(longname)),
     cssClass,
-    fragmentId
+    fragmentId,
   );
 }
 
@@ -239,7 +239,7 @@ function getPathFromDoclet(doclet) {
 function preprocessLinks(text) {
   return text.replaceAll(
     /\{@link (module:ol\/\S+?)\}/g,
-    (match, longname) => `{@link ${longname} ${getShortName(longname)}}`
+    (match, longname) => `{@link ${longname} ${getShortName(longname)}}`,
   );
 }
 
@@ -274,7 +274,7 @@ function generateSourceFiles(sourceFiles) {
       source = {
         kind: 'source',
         code: helper.htmlsafe(
-          fs.readFileSync(sourceFiles[file].resolved, 'utf8')
+          fs.readFileSync(sourceFiles[file].resolved, 'utf8'),
         ),
       };
     } catch (e) {
@@ -285,7 +285,7 @@ function generateSourceFiles(sourceFiles) {
       'Source: ' + sourceFiles[file].shortened,
       [source],
       sourceOutfile,
-      false
+      false,
     );
   });
 }
@@ -470,7 +470,7 @@ exports.publish = function (taffyData, opts, tutorials) {
         let caption, code;
 
         const match = example.match(
-          /^\s*<caption>([\s\S]+?)<\/caption>(?:\s*[\n\r])([\s\S]+)$/i
+          /^\s*<caption>([\s\S]+?)<\/caption>(?:\s*[\n\r])([\s\S]+)$/i,
         );
         if (match) {
           caption = match[1];
@@ -522,7 +522,7 @@ exports.publish = function (taffyData, opts, tutorials) {
   if (conf['default'].staticFiles) {
     staticFilePaths = conf['default'].staticFiles.paths || [];
     staticFileFilter = new (require('jsdoc/lib/jsdoc/src/filter').Filter)(
-      conf['default'].staticFiles
+      conf['default'].staticFiles,
     );
     staticFileScanner = new (require('jsdoc/lib/jsdoc/src/scanner').Scanner)();
 
@@ -530,7 +530,7 @@ exports.publish = function (taffyData, opts, tutorials) {
       const extraStaticFiles = staticFileScanner.scan(
         [filePath],
         10,
-        staticFileFilter
+        staticFileFilter,
       );
 
       extraStaticFiles.forEach(function (fileName) {
@@ -608,7 +608,7 @@ exports.publish = function (taffyData, opts, tutorials) {
 
   attachModuleSymbols(
     find({kind: ['class', 'function'], longname: {left: 'module:'}}),
-    members.modules
+    members.modules,
   );
 
   // only output pretty-printed source files if requested; do this before generating any other
@@ -621,15 +621,15 @@ exports.publish = function (taffyData, opts, tutorials) {
     generate('Global', [{kind: 'globalobj'}], globalUrl);
   }
 
-  // index page displays information from package.json and lists files
-  const files = find({kind: 'file'});
+  // the file type doclets come from @fileoverview tags in comment blocks with an @api tag
+  const fileOverviews = find({kind: 'file'});
 
   view.navigationItems = view.nav.reduce(function (dict, item) {
     dict[item.longname] = item;
     return dict;
   }, {});
   const navigationHtml = helper.resolveLinks(
-    view.nav.map((item) => view.partial('navigation.tmpl', {item})).join('')
+    view.nav.map((item) => view.partial('navigation.tmpl', {item})).join(''),
   );
   const navHtmlPath = path.join(outdir, 'navigation.tmpl.html');
   fs.writeFileSync(navHtmlPath, navigationHtml, 'utf8');
@@ -642,8 +642,8 @@ exports.publish = function (taffyData, opts, tutorials) {
         readme: opts.readme,
         longname: opts.mainpagetitle ? opts.mainpagetitle : 'Main Page',
       },
-    ].concat(files),
-    indexUrl
+    ],
+    indexUrl,
   );
 
   // set up the lists that we'll use to generate pages
@@ -660,16 +660,25 @@ exports.publish = function (taffyData, opts, tutorials) {
         generate(
           'Class: ' + myClasses[0].name,
           myClasses,
-          helper.longnameToUrl[longname]
+          helper.longnameToUrl[longname],
         );
       }
 
       const myModules = helper.find(modules, {longname: longname});
       if (myModules.length) {
+        // assign any file overview description as the module description
+        myModules.forEach((moduleDoclet) => {
+          fileOverviews.forEach((fileDoclet) => {
+            if (fileDoclet.memberof !== moduleDoclet.longname) {
+              return;
+            }
+            moduleDoclet.description = fileDoclet.description;
+          });
+        });
         generate(
           'Module: ' + myModules[0].name,
           myModules,
-          helper.longnameToUrl[longname]
+          helper.longnameToUrl[longname],
         );
       }
 
@@ -678,7 +687,7 @@ exports.publish = function (taffyData, opts, tutorials) {
         generate(
           'Namespace: ' + myNamespaces[0].name,
           myNamespaces,
-          helper.longnameToUrl[longname]
+          helper.longnameToUrl[longname],
         );
       }
 
@@ -687,7 +696,7 @@ exports.publish = function (taffyData, opts, tutorials) {
         generate(
           'Mixin: ' + myMixins[0].name,
           myMixins,
-          helper.longnameToUrl[longname]
+          helper.longnameToUrl[longname],
         );
       }
 
@@ -696,7 +705,7 @@ exports.publish = function (taffyData, opts, tutorials) {
         generate(
           'External: ' + myExternals[0].name,
           myExternals,
-          helper.longnameToUrl[longname]
+          helper.longnameToUrl[longname],
         );
       }
     }
@@ -725,7 +734,7 @@ exports.publish = function (taffyData, opts, tutorials) {
       generateTutorial(
         'Tutorial: ' + child.title,
         child,
-        helper.tutorialToUrl(child.name)
+        helper.tutorialToUrl(child.name),
       );
       saveChildren(child);
     });

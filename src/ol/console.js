@@ -32,6 +32,9 @@ export function setLevel(l) {
   level = levels[l];
 }
 
+/**
+ * @param  {...any} args Arguments to log
+ */
 export function log(...args) {
   if (level > levels.info) {
     return;
@@ -39,6 +42,9 @@ export function log(...args) {
   console.log(...args); // eslint-disable-line no-console
 }
 
+/**
+ * @param  {...any} args Arguments to log
+ */
 export function warn(...args) {
   if (level > levels.warn) {
     return;
@@ -46,6 +52,9 @@ export function warn(...args) {
   console.warn(...args); // eslint-disable-line no-console
 }
 
+/**
+ * @param  {...any} args Arguments to log
+ */
 export function error(...args) {
   if (level > levels.error) {
     return;

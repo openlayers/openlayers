@@ -40,14 +40,14 @@ class LinearRing extends SimpleGeometry {
     if (layout !== undefined && !Array.isArray(coordinates[0])) {
       this.setFlatCoordinates(
         layout,
-        /** @type {Array<number>} */ (coordinates)
+        /** @type {Array<number>} */ (coordinates),
       );
     } else {
       this.setCoordinates(
         /** @type {Array<import("../coordinate.js").Coordinate>} */ (
           coordinates
         ),
-        layout
+        layout,
       );
     }
   }
@@ -56,6 +56,7 @@ class LinearRing extends SimpleGeometry {
    * Make a complete copy of the geometry.
    * @return {!LinearRing} Clone.
    * @api
+   * @override
    */
   clone() {
     return new LinearRing(this.flatCoordinates.slice(), this.layout);
@@ -67,6 +68,7 @@ class LinearRing extends SimpleGeometry {
    * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
    * @param {number} minSquaredDistance Minimum squared distance.
    * @return {number} Minimum squared distance.
+   * @override
    */
   closestPointXY(x, y, closestPoint, minSquaredDistance) {
     if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
@@ -79,8 +81,8 @@ class LinearRing extends SimpleGeometry {
           0,
           this.flatCoordinates.length,
           this.stride,
-          0
-        )
+          0,
+        ),
       );
       this.maxDeltaRevision_ = this.getRevision();
     }
@@ -94,7 +96,7 @@ class LinearRing extends SimpleGeometry {
       x,
       y,
       closestPoint,
-      minSquaredDistance
+      minSquaredDistance,
     );
   }
 
@@ -108,7 +110,7 @@ class LinearRing extends SimpleGeometry {
       this.flatCoordinates,
       0,
       this.flatCoordinates.length,
-      this.stride
+      this.stride,
     );
   }
 
@@ -116,13 +118,14 @@ class LinearRing extends SimpleGeometry {
    * Return the coordinates of the linear ring.
    * @return {Array<import("../coordinate.js").Coordinate>} Coordinates.
    * @api
+   * @override
    */
   getCoordinates() {
     return inflateCoordinates(
       this.flatCoordinates,
       0,
       this.flatCoordinates.length,
-      this.stride
+      this.stride,
     );
   }
 
@@ -130,8 +133,10 @@ class LinearRing extends SimpleGeometry {
    * @param {number} squaredTolerance Squared tolerance.
    * @return {LinearRing} Simplified LinearRing.
    * @protected
+   * @override
    */
   getSimplifiedGeometryInternal(squaredTolerance) {
+    /** @type {Array<number>} */
     const simplifiedFlatCoordinates = [];
     simplifiedFlatCoordinates.length = douglasPeucker(
       this.flatCoordinates,
@@ -140,7 +145,7 @@ class LinearRing extends SimpleGeometry {
       this.stride,
       squaredTolerance,
       simplifiedFlatCoordinates,
-      0
+      0,
     );
     return new LinearRing(simplifiedFlatCoordinates, 'XY');
   }
@@ -149,6 +154,7 @@ class LinearRing extends SimpleGeometry {
    * Get the type of this geometry.
    * @return {import("./Geometry.js").Type} Geometry type.
    * @api
+   * @override
    */
   getType() {
     return 'LinearRing';
@@ -159,6 +165,7 @@ class LinearRing extends SimpleGeometry {
    * @param {import("../extent.js").Extent} extent Extent.
    * @return {boolean} `true` if the geometry and the extent intersect.
    * @api
+   * @override
    */
   intersectsExtent(extent) {
     return false;
@@ -169,6 +176,7 @@ class LinearRing extends SimpleGeometry {
    * @param {!Array<import("../coordinate.js").Coordinate>} coordinates Coordinates.
    * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
    * @api
+   * @override
    */
   setCoordinates(coordinates, layout) {
     this.setLayout(layout, coordinates, 1);
@@ -179,7 +187,7 @@ class LinearRing extends SimpleGeometry {
       this.flatCoordinates,
       0,
       coordinates,
-      this.stride
+      this.stride,
     );
     this.changed();
   }

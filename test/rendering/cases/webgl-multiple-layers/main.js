@@ -35,11 +35,8 @@ new Map({
         }),
       }),
       style: {
-        symbol: {
-          symbolType: 'circle',
-          size: 6,
-          color: 'orange',
-        },
+        'circle-radius': 3,
+        'circle-fill-color': 'orange',
       },
     }),
     new TileLayer({
@@ -63,7 +60,7 @@ new Map({
             0,
             0,
             labelCanvasSize,
-            labelCanvasSize
+            labelCanvasSize,
           ).data;
           return new Uint8Array(data.buffer);
         },

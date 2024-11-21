@@ -4,7 +4,6 @@
 
 import BaseTileRepresentation from './BaseTileRepresentation.js';
 import DataTile, {asArrayLike, asImageLike} from '../DataTile.js';
-import EventType from '../events/EventType.js';
 import ImageTile from '../ImageTile.js';
 import ReprojTile from '../reproj/Tile.js';
 import WebGLArrayBuffer from './Buffer.js';
@@ -52,7 +51,7 @@ function uploadDataTexture(
   data,
   size,
   bandCount,
-  interpolate
+  interpolate,
 ) {
   const gl = helper.getGL();
   let textureType;
@@ -112,7 +111,7 @@ function uploadDataTexture(
     0,
     format,
     textureType,
-    data
+    data,
   );
   gl.pixelStorei(gl.UNPACK_ALIGNMENT, oldUnpackAlignment);
 }
@@ -152,7 +151,7 @@ class TileTexture extends BaseTileRepresentation {
      * @private
      */
     this.renderSize_ = toSize(
-      options.grid.getTileSize(options.tile.tileCoord[0])
+      options.grid.getTileSize(options.tile.tileCoord[0]),
     );
 
     /**
@@ -171,7 +170,7 @@ class TileTexture extends BaseTileRepresentation {
       0, // P3
       0,
     ]);
-    this.helper_.flushBufferData(coords);
+    this.helper.flushBufferData(coords);
 
     /**
      * @type {WebGLArrayBuffer}
@@ -181,8 +180,31 @@ class TileTexture extends BaseTileRepresentation {
     this.setTile(options.tile);
   }
 
-  uploadTile_() {
-    const helper = this.helper_;
+  /**
+   * @override
+   * @param {import("./Helper.js").default} helper The WebGL helper.
+   */
+  setHelper(helper) {
+    const gl = this.helper?.getGL();
+    if (gl) {
+      this.helper.deleteBuffer(this.coords);
+      for (let i = 0; i < this.textures.length; ++i) {
+        gl.deleteTexture(this.textures[i]);
+      }
+    }
+
+    super.setHelper(helper);
+
+    if (helper) {
+      helper.flushBufferData(this.coords);
+    }
+  }
+
+  /**
+   * @override
+   */
+  uploadTile() {
+    const helper = this.helper;
     const gl = helper.getGL();
     const tile = this.tile;
 
@@ -213,8 +235,8 @@ class TileTexture extends BaseTileRepresentation {
 
     const sourceTileSize = /** @type {DataTile} */ (tile).getSize();
     const pixelSize = [
-      sourceTileSize[0] + 2 * this.gutter_,
-      sourceTileSize[1] + 2 * this.gutter_,
+      sourceTileSize[0] + 2 * this.gutter,
+      sourceTileSize[1] + 2 * this.gutter,
     ];
     const isFloat = data instanceof Float32Array;
     const pixelCount = pixelSize[0] * pixelSize[1];
@@ -234,7 +256,7 @@ class TileTexture extends BaseTileRepresentation {
         data,
         pixelSize,
         this.bandCount,
-        tile.interpolate
+        tile.interpolate,
       );
       this.setReady();
       return;
@@ -280,20 +302,11 @@ class TileTexture extends BaseTileRepresentation {
         textureData,
         pixelSize,
         bandCount,
-        tile.interpolate
+        tile.interpolate,
       );
     }
 
     this.setReady();
-  }
-
-  disposeInternal() {
-    const gl = this.helper_.getGL();
-    this.helper_.deleteBuffer(this.coords);
-    for (let i = 0; i < this.textures.length; ++i) {
-      gl.deleteTexture(this.textures[i]);
-    }
-    this.tile.removeEventListener(EventType.CHANGE, this.handleTileChange_);
   }
 
   /**
@@ -304,7 +317,7 @@ class TileTexture extends BaseTileRepresentation {
    * @private
    */
   getImagePixelData_(image, renderCol, renderRow) {
-    const gutter = this.gutter_;
+    const gutter = this.gutter;
     const renderWidth = this.renderSize_[0];
     const renderHeight = this.renderSize_[1];
 
@@ -346,7 +359,7 @@ class TileTexture extends BaseTileRepresentation {
    * @private
    */
   getArrayPixelData_(data, sourceSize, renderCol, renderRow) {
-    const gutter = this.gutter_;
+    const gutter = this.gutter;
     const renderWidth = this.renderSize_[0];
     const renderHeight = this.renderSize_[1];
 
@@ -393,7 +406,7 @@ class TileTexture extends BaseTileRepresentation {
           arrayData,
           sourceSize,
           renderCol,
-          renderRow
+          renderRow,
         );
       }
       return this.getImagePixelData_(asImageLike(data), renderCol, renderRow);

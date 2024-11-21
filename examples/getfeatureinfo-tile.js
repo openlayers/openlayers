@@ -32,7 +32,7 @@ map.on('singleclick', function (evt) {
     evt.coordinate,
     viewResolution,
     'EPSG:3857',
-    {'INFO_FORMAT': 'text/html'}
+    {'INFO_FORMAT': 'text/html'},
   );
   if (url) {
     fetch(url)

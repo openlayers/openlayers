@@ -23,7 +23,7 @@ import {listen, unlistenByKey} from './events.js';
  */
 
 /***
- * @template Geometry
+ * @template {import("./geom/Geometry.js").default} [Geometry=import("./geom/Geometry.js").default]
  * @typedef {Object<string, *> & { geometry?: Geometry }} ObjectWithGeometry
  */
 
@@ -243,7 +243,7 @@ class Feature extends BaseObject {
         geometry,
         EventType.CHANGE,
         this.handleGeometryChange_,
-        this
+        this,
       );
     }
     this.changed();
@@ -323,7 +323,10 @@ export function createStyleFunction(obj) {
   if (Array.isArray(obj)) {
     styles = obj;
   } else {
-    assert(typeof (/** @type {?} */ (obj).getZIndex) === 'function', 41); // Expected an `import("./style/Style.js").Style` or an array of `import("./style/Style.js").Style`
+    assert(
+      typeof (/** @type {?} */ (obj).getZIndex) === 'function',
+      'Expected an `ol/style/Style` or an array of `ol/style/Style.js`',
+    );
     const style = /** @type {import("./style/Style.js").default} */ (obj);
     styles = [style];
   }

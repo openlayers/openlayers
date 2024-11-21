@@ -3,25 +3,15 @@
     "$": false,
     "arc": false,
     "bootstrap": false,
-    "chroma": false,
     "common": false,
     "createMapboxStreetsV6Style": false,
-    "d3": false,
-    "geojsonvt": false,
     "gifler": false,
     "GyroNorm": false,
-    "html2canvas": false,
-    "jspdf": false,
-    "jsts": false,
-    "JSZip": false,
     "mapboxgl": false,
-    "monotoneChainConvexHull": false,
     "NumpyLoader": false,
     "saveAs": false,
     "toastr": false,
-    "topojson": false,
-    "topolis": false,
-    "turf": false
+    "topolis": false
   },
   "rules": {
     "no-unused-vars": [2, {"varsIgnorePattern": "^map"}]

@@ -21,7 +21,7 @@ describe('ol.format.WMTSCapabilities', function () {
 
       const layer = capabilities.Contents.Layer[0];
       expect(layer.Abstract).to.be.eql(
-        'Blue Marble Next Generation NASA Product'
+        'Blue Marble Next Generation NASA Product',
       );
       expect(layer.Identifier).to.be.eql('BlueMarbleNextGeneration');
       expect(layer.Title).to.be.eql('Blue Marble Next Generation');
@@ -45,18 +45,19 @@ describe('ol.format.WMTSCapabilities', function () {
       expect(layer.Style[0].isDefault).to.be(true);
       expect(layer.Style[0].Title).to.be.eql('Dark Blue');
       expect(layer.Style[0].LegendURL[0].href).to.be.eql(
-        'http://www.miramon.uab.es/wmts/Coastlines/' + 'coastlines_darkBlue.png'
+        'http://www.miramon.uab.es/wmts/Coastlines/' +
+          'coastlines_darkBlue.png',
       );
       expect(layer.Style[0].LegendURL[0].format).to.be.eql('image/png');
 
       expect(layer.TileMatrixSetLink).to.be.an('array');
       expect(layer.TileMatrixSetLink).to.have.length(3);
       expect(layer.TileMatrixSetLink[0].TileMatrixSet).to.be.eql(
-        'BigWorldPixel'
+        'BigWorldPixel',
       );
       expect(layer.TileMatrixSetLink[1].TileMatrixSet).to.be.eql('google3857');
       expect(layer.TileMatrixSetLink[2].TileMatrixSet).to.be.eql(
-        'google3857subset'
+        'google3857subset',
       );
 
       const wgs84Bbox = layer.WGS84BoundingBox;
@@ -66,12 +67,22 @@ describe('ol.format.WMTSCapabilities', function () {
       expect(wgs84Bbox[1]).to.be.eql(-90);
       expect(wgs84Bbox[3]).to.be.eql(90.0);
 
+      const bbox = layer.BoundingBox;
+      expect(bbox).to.be.an('array');
+      expect(bbox[0].extent).to.be.an('array');
+      expect(bbox[0].extent[0]).to.be.eql(-180);
+      expect(bbox[0].extent[2]).to.be.eql(180);
+      expect(bbox[0].extent[1]).to.be.eql(-90);
+      expect(bbox[0].extent[3]).to.be.eql(90.0);
+      expect(bbox[0].crs).to.be.eql('urn:ogc:def:crs:CRS::84');
+      expect(bbox[1].crs).to.be.eql(null);
+
       expect(layer.ResourceURL).to.be.an('array');
       expect(layer.ResourceURL).to.have.length(2);
       expect(layer.ResourceURL[0].format).to.be.eql('image/png');
       expect(layer.ResourceURL[0].template).to.be.eql(
         'http://www.example.com/wmts/coastlines/{TileMatrix}' +
-          '/{TileRow}/{TileCol}.png'
+          '/{TileRow}/{TileCol}.png',
       );
     });
 
@@ -134,38 +145,38 @@ describe('ol.format.WMTSCapabilities', function () {
       expect(layer.TileMatrixSetLink[0].TileMatrixSetLimits).to.be.an('array');
       expect(layer.TileMatrixSetLink[0].TileMatrixSetLimits).to.have.length(20);
       expect(
-        layer.TileMatrixSetLink[0].TileMatrixSetLimits[0].TileMatrix
+        layer.TileMatrixSetLink[0].TileMatrixSetLimits[0].TileMatrix,
       ).to.be.eql('0');
       expect(
-        layer.TileMatrixSetLink[0].TileMatrixSetLimits[0].MinTileRow
+        layer.TileMatrixSetLink[0].TileMatrixSetLimits[0].MinTileRow,
       ).to.be.eql(0);
       expect(
-        layer.TileMatrixSetLink[0].TileMatrixSetLimits[0].MaxTileRow
+        layer.TileMatrixSetLink[0].TileMatrixSetLimits[0].MaxTileRow,
       ).to.be.eql(1);
       expect(
-        layer.TileMatrixSetLink[0].TileMatrixSetLimits[0].MinTileCol
+        layer.TileMatrixSetLink[0].TileMatrixSetLimits[0].MinTileCol,
       ).to.be.eql(0);
       expect(
-        layer.TileMatrixSetLink[0].TileMatrixSetLimits[0].MaxTileCol
+        layer.TileMatrixSetLink[0].TileMatrixSetLimits[0].MaxTileCol,
       ).to.be.eql(1);
 
       expect(layer.TileMatrixSetLink[1].TileMatrixSet).to.be.eql('Prefixed');
       expect(layer.TileMatrixSetLink[1].TileMatrixSetLimits).to.be.an('array');
       expect(layer.TileMatrixSetLink[1].TileMatrixSetLimits).to.have.length(2);
       expect(
-        layer.TileMatrixSetLink[1].TileMatrixSetLimits[0].TileMatrix
+        layer.TileMatrixSetLink[1].TileMatrixSetLimits[0].TileMatrix,
       ).to.be.eql('Prefixed:0');
       expect(
-        layer.TileMatrixSetLink[1].TileMatrixSetLimits[0].MinTileRow
+        layer.TileMatrixSetLink[1].TileMatrixSetLimits[0].MinTileRow,
       ).to.be.eql(0);
       expect(
-        layer.TileMatrixSetLink[1].TileMatrixSetLimits[0].MaxTileRow
+        layer.TileMatrixSetLink[1].TileMatrixSetLimits[0].MaxTileRow,
       ).to.be.eql(1);
       expect(
-        layer.TileMatrixSetLink[1].TileMatrixSetLimits[0].MinTileCol
+        layer.TileMatrixSetLink[1].TileMatrixSetLimits[0].MinTileCol,
       ).to.be.eql(0);
       expect(
-        layer.TileMatrixSetLink[1].TileMatrixSetLimits[0].MaxTileCol
+        layer.TileMatrixSetLink[1].TileMatrixSetLimits[0].MaxTileCol,
       ).to.be.eql(1);
     });
 
@@ -181,7 +192,7 @@ describe('ol.format.WMTSCapabilities', function () {
       expect(pm.TileMatrix[0].MatrixHeight).to.be.eql(1);
       expect(pm.TileMatrix[0].MatrixWidth).to.be.eql(1);
       expect(pm.TileMatrix[0].ScaleDenominator).to.be.eql(
-        559082264.0287178958533332
+        559082264.0287178958533332,
       );
       expect(pm.TileMatrix[0].TileWidth).to.be.eql(256);
       expect(pm.TileMatrix[0].TileHeight).to.be.eql(256);
@@ -192,7 +203,7 @@ describe('ol.format.WMTSCapabilities', function () {
       expect(pm.TileMatrix[1].MatrixHeight).to.be.eql(2);
       expect(pm.TileMatrix[1].MatrixWidth).to.be.eql(2);
       expect(pm.TileMatrix[1].ScaleDenominator).to.be.eql(
-        279541132.0143588959472254
+        279541132.0143588959472254,
       );
       expect(pm.TileMatrix[1].TileWidth).to.be.eql(256);
       expect(pm.TileMatrix[1].TileHeight).to.be.eql(256);

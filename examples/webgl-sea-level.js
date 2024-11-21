@@ -1,7 +1,7 @@
+import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import TileLayer from '../src/ol/layer/WebGLTile.js';
 import View from '../src/ol/View.js';
-import XYZ from '../src/ol/source/XYZ.js';
 import {fromLonLat} from '../src/ol/proj.js';
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
@@ -11,28 +11,23 @@ const attributions =
 
 // band math operates on normalized values from 0-1
 // so we scale by 255 to align with the elevation formula
-// from https://cloud.maptiler.com/tiles/terrain-rgb/
+// from https://cloud.maptiler.com/tiles/terrain-rgb-v2/
 const elevation = [
   '+',
   -10000,
-  [
-    '*',
-    0.1 * 255,
-    [
-      '+',
-      ['*', 256 * 256, ['band', 1]],
-      ['+', ['*', 256, ['band', 2]], ['band', 3]],
-    ],
-  ],
+  ['*', 0.1 * 255 * 256 * 256, ['band', 1]],
+  ['*', 0.1 * 255 * 256, ['band', 2]],
+  ['*', 0.1 * 255, ['band', 3]],
 ];
 
 const layer = new TileLayer({
   opacity: 0.6,
-  source: new XYZ({
+  source: new ImageTile({
     url:
-      'https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=' + key,
+      'https://api.maptiler.com/tiles/terrain-rgb-v2/{z}/{x}/{y}.webp?key=' +
+      key,
     tileSize: 512,
-    maxZoom: 12,
+    maxZoom: 14,
   }),
   style: {
     variables: {
@@ -52,8 +47,9 @@ const map = new Map({
   target: 'map',
   layers: [
     new TileLayer({
-      source: new XYZ({
-        url: 'https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=' + key,
+      source: new ImageTile({
+        url:
+          'https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=' + key,
         attributions: attributions,
         tileSize: 512,
         maxZoom: 22,

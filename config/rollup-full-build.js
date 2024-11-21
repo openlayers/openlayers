@@ -1,10 +1,10 @@
 import commonjs from '@rollup/plugin-commonjs';
 import externalGlobals from 'rollup-plugin-external-globals';
 import resolve from '@rollup/plugin-node-resolve';
-import {terser} from 'rollup-plugin-terser';
+import terser from '@rollup/plugin-terser';
 
 export default {
-  input: 'build/index.js',
+  input: 'build/ol/dist/ol.js',
   output: {
     name: 'ol',
     format: 'iife',

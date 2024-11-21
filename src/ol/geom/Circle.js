@@ -4,7 +4,7 @@
 import SimpleGeometry from './SimpleGeometry.js';
 import {createOrUpdate, forEachCorner, intersects} from '../extent.js';
 import {deflateCoordinate} from './flat/deflate.js';
-import {rotate, translate} from './flat/transform.js';
+import {rotate} from './flat/transform.js';
 
 /**
  * @classdesc
@@ -17,7 +17,7 @@ class Circle extends SimpleGeometry {
    * @param {!import("../coordinate.js").Coordinate} center Center.
    *     For internal use, flat coordinates in combination with `layout` and no
    *     `radius` are also accepted.
-   * @param {number} [radius] Radius.
+   * @param {number} [radius] Radius in units of the projection.
    * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
    */
   constructor(center, radius, layout) {
@@ -34,12 +34,13 @@ class Circle extends SimpleGeometry {
    * Make a complete copy of the geometry.
    * @return {!Circle} Clone.
    * @api
+   * @override
    */
   clone() {
     const circle = new Circle(
       this.flatCoordinates.slice(),
       undefined,
-      this.layout
+      this.layout,
     );
     circle.applyProperties(this);
     return circle;
@@ -51,6 +52,7 @@ class Circle extends SimpleGeometry {
    * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
    * @param {number} minSquaredDistance Minimum squared distance.
    * @return {number} Minimum squared distance.
+   * @override
    */
   closestPointXY(x, y, closestPoint, minSquaredDistance) {
     const flatCoordinates = this.flatCoordinates;
@@ -80,6 +82,7 @@ class Circle extends SimpleGeometry {
    * @param {number} x X.
    * @param {number} y Y.
    * @return {boolean} Contains (x, y).
+   * @override
    */
   containsXY(x, y) {
     const flatCoordinates = this.flatCoordinates;
@@ -101,6 +104,7 @@ class Circle extends SimpleGeometry {
    * @param {import("../extent.js").Extent} extent Extent.
    * @protected
    * @return {import("../extent.js").Extent} extent Extent.
+   * @override
    */
   computeExtent(extent) {
     const flatCoordinates = this.flatCoordinates;
@@ -110,7 +114,7 @@ class Circle extends SimpleGeometry {
       flatCoordinates[1] - radius,
       flatCoordinates[0] + radius,
       flatCoordinates[1] + radius,
-      extent
+      extent,
     );
   }
 
@@ -137,6 +141,7 @@ class Circle extends SimpleGeometry {
    * Get the type of this geometry.
    * @return {import("./Geometry.js").Type} Geometry type.
    * @api
+   * @override
    */
   getType() {
     return 'Circle';
@@ -147,6 +152,7 @@ class Circle extends SimpleGeometry {
    * @param {import("../extent.js").Extent} extent Extent.
    * @return {boolean} `true` if the geometry and the extent intersect.
    * @api
+   * @override
    */
   intersectsExtent(extent) {
     const circleExtent = this.getExtent();
@@ -206,10 +212,16 @@ class Circle extends SimpleGeometry {
     this.changed();
   }
 
+  /**
+   * @override
+   */
   getCoordinates() {
     return null;
   }
 
+  /**
+   * @override
+   */
   setCoordinates(coordinates, layout) {}
 
   /**
@@ -228,28 +240,13 @@ class Circle extends SimpleGeometry {
    * @param {number} angle Rotation angle in counter-clockwise radians.
    * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
    * @api
+   * @override
    */
   rotate(angle, anchor) {
     const center = this.getCenter();
     const stride = this.getStride();
     this.setCenter(
-      rotate(center, 0, center.length, stride, angle, anchor, center)
-    );
-    this.changed();
-  }
-
-  /**
-   * Translate the geometry.  This modifies the geometry coordinates in place.  If
-   * instead you want a new geometry, first `clone()` this geometry.
-   * @param {number} deltaX Delta X.
-   * @param {number} deltaY Delta Y.
-   * @api
-   */
-  translate(deltaX, deltaY) {
-    const center = this.getCenter();
-    const stride = this.getStride();
-    this.setCenter(
-      translate(center, 0, center.length, stride, deltaX, deltaY, center)
+      rotate(center, 0, center.length, stride, angle, anchor, center),
     );
     this.changed();
   }

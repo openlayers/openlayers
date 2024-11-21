@@ -57,12 +57,11 @@ export function remove(source, destination) {
  * Get a transform given a source code and a destination code.
  * @param {string} sourceCode The code for the source projection.
  * @param {string} destinationCode The code for the destination projection.
- * @return {import("../proj.js").TransformFunction|undefined} The transform function (if found).
+ * @return {import("../proj.js").TransformFunction|null} The transform function (if found).
  */
 export function get(sourceCode, destinationCode) {
-  let transform;
   if (sourceCode in transforms && destinationCode in transforms[sourceCode]) {
-    transform = transforms[sourceCode][destinationCode];
+    return transforms[sourceCode][destinationCode];
   }
-  return transform;
+  return null;
 }

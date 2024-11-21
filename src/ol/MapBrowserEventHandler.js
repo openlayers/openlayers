@@ -26,7 +26,7 @@ class MapBrowserEventHandler extends Target {
     this.map_ = map;
 
     /**
-     * @type {any}
+     * @type {ReturnType<typeof setTimeout>}
      * @private
      */
     this.clickTimeoutId_;
@@ -77,6 +77,9 @@ class MapBrowserEventHandler extends Target {
      */
     this.trackedTouches_ = {};
 
+    /**
+     * @private
+     */
     this.element_ = element;
 
     /**
@@ -87,7 +90,7 @@ class MapBrowserEventHandler extends Target {
       element,
       PointerEventType.POINTERDOWN,
       this.handlePointerDown_,
-      this
+      this,
     );
 
     /**
@@ -104,7 +107,7 @@ class MapBrowserEventHandler extends Target {
       element,
       PointerEventType.POINTERMOVE,
       this.relayMoveEvent_,
-      this
+      this,
     );
 
     /**
@@ -115,7 +118,7 @@ class MapBrowserEventHandler extends Target {
     this.element_.addEventListener(
       EventType.TOUCHMOVE,
       this.boundHandleTouchMove_,
-      PASSIVE_EVENT_LISTENERS ? {passive: false} : false
+      PASSIVE_EVENT_LISTENERS ? {passive: false} : false,
     );
   }
 
@@ -128,7 +131,7 @@ class MapBrowserEventHandler extends Target {
     let newEvent = new MapBrowserEvent(
       MapBrowserEventType.CLICK,
       this.map_,
-      pointerEvent
+      pointerEvent,
     );
     this.dispatchEvent(newEvent);
     if (this.clickTimeoutId_ !== undefined) {
@@ -138,7 +141,7 @@ class MapBrowserEventHandler extends Target {
       newEvent = new MapBrowserEvent(
         MapBrowserEventType.DBLCLICK,
         this.map_,
-        pointerEvent
+        pointerEvent,
       );
       this.dispatchEvent(newEvent);
     } else {
@@ -148,7 +151,7 @@ class MapBrowserEventHandler extends Target {
         const newEvent = new MapBrowserEvent(
           MapBrowserEventType.SINGLECLICK,
           this.map_,
-          pointerEvent
+          pointerEvent,
         );
         this.dispatchEvent(newEvent);
       }, 250);
@@ -203,7 +206,7 @@ class MapBrowserEventHandler extends Target {
       pointerEvent,
       undefined,
       undefined,
-      this.activePointers_
+      this.activePointers_,
     );
     this.dispatchEvent(newEvent);
 
@@ -254,7 +257,7 @@ class MapBrowserEventHandler extends Target {
       pointerEvent,
       undefined,
       undefined,
-      this.activePointers_
+      this.activePointers_,
     );
     this.dispatchEvent(newEvent);
 
@@ -271,7 +274,7 @@ class MapBrowserEventHandler extends Target {
           doc,
           MapBrowserEventType.POINTERMOVE,
           this.handlePointerMove_,
-          this
+          this,
         ),
         listen(doc, MapBrowserEventType.POINTERUP, this.handlePointerUp_, this),
         /* Note that the listener for `pointercancel is set up on
@@ -291,8 +294,8 @@ class MapBrowserEventHandler extends Target {
           this.element_,
           MapBrowserEventType.POINTERCANCEL,
           this.handlePointerUp_,
-          this
-        )
+          this,
+        ),
       );
       if (this.element_.getRootNode && this.element_.getRootNode() !== doc) {
         this.dragListenerKeys_.push(
@@ -300,8 +303,8 @@ class MapBrowserEventHandler extends Target {
             this.element_.getRootNode(),
             MapBrowserEventType.POINTERUP,
             this.handlePointerUp_,
-            this
-          )
+            this,
+          ),
         );
       }
     }
@@ -325,7 +328,7 @@ class MapBrowserEventHandler extends Target {
         pointerEvent,
         this.dragging_,
         undefined,
-        this.activePointers_
+        this.activePointers_,
       );
       this.dispatchEvent(newEvent);
     }
@@ -345,8 +348,8 @@ class MapBrowserEventHandler extends Target {
         MapBrowserEventType.POINTERMOVE,
         this.map_,
         pointerEvent,
-        dragging
-      )
+        dragging,
+      ),
     );
   }
 
@@ -360,7 +363,8 @@ class MapBrowserEventHandler extends Target {
    */
   handleTouchMove_(event) {
     // Due to https://github.com/mpizenberg/elm-pep/issues/2, `this.originalPointerMoveEvent_`
-    // may not be initialized yet when we get here on a platform without native pointer events.
+    // may not be initialized yet when we get here on a platform without native pointer events,
+    // when elm-pep is used as pointer events polyfill.
     const originalEvent = this.originalPointerMoveEvent_;
     if (
       (!originalEvent || originalEvent.defaultPrevented) &&
@@ -387,6 +391,7 @@ class MapBrowserEventHandler extends Target {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
     if (this.relayedListenerKey_) {
@@ -395,7 +400,7 @@ class MapBrowserEventHandler extends Target {
     }
     this.element_.removeEventListener(
       EventType.TOUCHMOVE,
-      this.boundHandleTouchMove_
+      this.boundHandleTouchMove_,
     );
 
     if (this.pointerdownListenerKey_) {

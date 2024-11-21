@@ -24,7 +24,7 @@ export function getInteriorPointOfArray(
   stride,
   flatCenters,
   flatCentersOffset,
-  dest
+  dest,
 ) {
   let i, ii, x, x1, x2, y1, y2;
   const y = flatCenters[flatCentersOffset + 1];
@@ -90,8 +90,9 @@ export function getInteriorPointsOfMultiArray(
   offset,
   endss,
   stride,
-  flatCenters
+  flatCenters,
 ) {
+  /** @type {Array<number>} */
   let interiorPoints = [];
   for (let i = 0, ii = endss.length; i < ii; ++i) {
     const ends = endss[i];
@@ -102,7 +103,7 @@ export function getInteriorPointsOfMultiArray(
       stride,
       flatCenters,
       2 * i,
-      interiorPoints
+      interiorPoints,
     );
     offset = ends[ends.length - 1];
   }

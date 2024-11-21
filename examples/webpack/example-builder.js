@@ -13,7 +13,7 @@ const baseDir = dirname(fileURLToPath(import.meta.url));
 
 const isCssRegEx = /\.css(\?.*)?$/;
 const isJsRegEx = /\.js(\?.*)?$/;
-const importRegEx = /\s?import .*? from '([^']+)'/g;
+const importRegEx = /\s?import (?:.*? from )?'([^']+)'/g;
 const isTemplateJs = /\/(?:bootstrap(?:\.bundle)?)(?:\.min)?\.js(?:\?.*)?$/;
 const isTemplateCss =
   /\/(?:bootstrap|fontawesome-free@[\d.]+\/css\/(?:fontawesome|brands|solid))(?:\.min)?\.css(?:\?.*)?$/;
@@ -29,7 +29,8 @@ function getPackageInfo() {
 
 handlebars.registerHelper(
   'md',
-  (str) => new handlebars.SafeString(marked(str))
+  (str) =>
+    new handlebars.SafeString(marked(str, {headerIds: false, mangle: false})),
 );
 
 /**
@@ -59,7 +60,7 @@ handlebars.registerHelper('indent', (text, options) => {
  */
 function sortObjectByKey(obj) {
   return Object.keys(obj)
-    .sort() // sort twice to get predictable, case insensitve order
+    .sort() // sort twice to get predictable, case insensitive order
     .sort((a, b) => a.localeCompare(b, 'en', {sensitivity: 'base'}))
     .reduce((idx, tag) => {
       idx[tag] = obj[tag];
@@ -193,7 +194,7 @@ export default class ExampleBuilder {
     }
 
     const exampleData = await Promise.all(
-      names.map((name) => this.parseExample(dir, name))
+      names.map((name) => this.parseExample(dir, name)),
     );
 
     const examples = exampleData.map((data) => ({
@@ -204,7 +205,7 @@ export default class ExampleBuilder {
     }));
 
     examples.sort((a, b) =>
-      a.title.localeCompare(b.title, 'en', {sensitivity: 'base'})
+      a.title.localeCompare(b.title, 'en', {sensitivity: 'base'}),
     );
     const tagIndex = createTagIndex(examples);
     const info = {
@@ -237,7 +238,7 @@ export default class ExampleBuilder {
         for (const file in newAssets) {
           assets[file] = new RawSource(newAssets[file]);
         }
-      })
+      }),
     );
 
     const indexSource = `const info = ${JSON.stringify(info)};`;
@@ -249,7 +250,7 @@ export default class ExampleBuilder {
     const htmlPath = path.join(dir, htmlName);
     const htmlSource = await fse.readFile(htmlPath, {encoding: 'utf8'});
     const {attributes: data, body} = frontMatter(
-      this.ensureNewLineAtEnd(htmlSource)
+      this.ensureNewLineAtEnd(htmlSource),
     );
     assert(!!data.layout, `missing layout in ${htmlPath}`);
     return Object.assign(data, {
@@ -339,7 +340,7 @@ export default class ExampleBuilder {
             source: source,
             type: ext,
           };
-        })
+        }),
       );
     }
 
@@ -357,7 +358,7 @@ export default class ExampleBuilder {
         },
       },
       null,
-      2
+      2,
     );
 
     data.css = {
@@ -384,7 +385,7 @@ export default class ExampleBuilder {
           data.css.remote.push(absoluteUrl);
         } else {
           throw new Error(
-            `Invalid resource: '${resource}' is not .js or .css: ${data.filename}`
+            `Invalid resource: '${resource}' is not .js or .css: ${data.filename}`,
           );
         }
       });

@@ -33,7 +33,7 @@ function createContext() {
 function executeInstructions(
   builder,
   expectedDrawTextImageCalls,
-  expectedBuilderImageCalls
+  expectedBuilderImageCalls,
 ) {
   const transform = createTransform();
   const context = createContext();
@@ -42,7 +42,7 @@ function executeInstructions(
   const replayImageOrLabelStub = sinon.stub(executor, 'replayImageOrLabel_');
   executor.execute(context, 1, transform);
   expect(executor.drawLabelWithPointPlacement_.callCount).to.be(
-    expectedDrawTextImageCalls
+    expectedDrawTextImageCalls,
   );
   expect(replayImageOrLabelStub.callCount).to.be(expectedBuilderImageCalls);
 }
@@ -63,20 +63,20 @@ describe('ol.render.canvas.TextBuilder', function () {
             [2, 2],
             [4, 4],
           ]),
-        ])
+        ]),
       ),
       new Feature(
         new LineString([
           [3, 3],
           [5, 5],
-        ])
+        ]),
       ),
       new Feature(new Circle([5, 5, 7], 4)),
       new Feature(
         new MultiPoint([
           [6, 6],
           [7, 7],
-        ])
+        ]),
       ),
       new Feature(
         new Polygon([
@@ -87,7 +87,7 @@ describe('ol.render.canvas.TextBuilder', function () {
             [9, 7],
             [7, 7],
           ],
-        ])
+        ]),
       ),
       new Feature(
         new MultiPolygon([
@@ -109,13 +109,13 @@ describe('ol.render.canvas.TextBuilder', function () {
               [9, 9],
             ],
           ]),
-        ])
+        ]),
       ),
     ];
     builder.setTextStyle(
       new Text({
         text: 'Text',
-      })
+      }),
     );
     features.forEach(function (feature) {
       builder.drawText(feature.getGeometry(), feature);
@@ -140,20 +140,20 @@ describe('ol.render.canvas.TextBuilder', function () {
             [2, 2, 3],
             [4, 4, 4],
           ]),
-        ])
+        ]),
       ),
       new Feature(
         new LineString([
           [3, 3, 5],
           [5, 5, 6],
-        ])
+        ]),
       ),
       new Feature(new Circle([5, 5, 7], 4)),
       new Feature(
         new MultiPoint([
           [6, 6, 8],
           [7, 7, 9],
-        ])
+        ]),
       ),
       new Feature(
         new Polygon([
@@ -164,7 +164,7 @@ describe('ol.render.canvas.TextBuilder', function () {
             [9, 7, 4],
             [7, 7, 5],
           ],
-        ])
+        ]),
       ),
       new Feature(
         new MultiPolygon([
@@ -186,13 +186,13 @@ describe('ol.render.canvas.TextBuilder', function () {
               [9, 9, 5],
             ],
           ]),
-        ])
+        ]),
       ),
     ];
     builder.setTextStyle(
       new Text({
         text: 'Text',
-      })
+      }),
     );
     features.forEach(function (feature) {
       builder.drawText(feature.getGeometry(), feature);
@@ -218,7 +218,7 @@ describe('ol.render.canvas.TextBuilder', function () {
     builder.setTextStyle(
       new Text({
         text: 'This is a long text',
-      })
+      }),
     );
     builder.drawText(geometry, feature);
     expect(builder.instructions.length).to.be(3);
@@ -228,7 +228,7 @@ describe('ol.render.canvas.TextBuilder', function () {
     builder.setTextStyle(
       new Text({
         text: 'short',
-      })
+      }),
     );
     builder.drawText(geometry, feature);
     expect(builder.instructions.length).to.be(3);
@@ -262,7 +262,7 @@ describe('ol.render.canvas.TextBuilder', function () {
     builder.setTextStyle(
       new Text({
         text: 'This is a long text',
-      })
+      }),
     );
     builder.drawText(geometry, feature);
     expect(builder.instructions.length).to.be(3);
@@ -272,7 +272,7 @@ describe('ol.render.canvas.TextBuilder', function () {
     builder.setTextStyle(
       new Text({
         text: 'short',
-      })
+      }),
     );
     builder.drawText(geometry, feature);
     expect(builder.instructions.length).to.be(3);
@@ -309,13 +309,13 @@ describe('ol.render.canvas.TextBuilder', function () {
             [70, -90],
           ],
         ],
-      ])
+      ]),
     );
     const builder = new TextBuilder(1, [-50, -90, 70, 90], 1, 1);
     builder.setTextStyle(
       new Text({
         text: 'text',
-      })
+      }),
     );
     builder.drawText(feature.getGeometry(), feature);
     expect(builder.coordinates).to.have.length(2);

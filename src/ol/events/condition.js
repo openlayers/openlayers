@@ -7,7 +7,7 @@ import {MAC, WEBKIT} from '../has.js';
 import {assert} from '../asserts.js';
 
 /**
- * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * `{boolean}`. If the condition is met, true should be returned.
  *
  * @typedef {function(this: ?, import("../MapBrowserEvent.js").default): boolean} Condition
@@ -84,8 +84,12 @@ export const altShiftKeysOnly = function (mapBrowserEvent) {
  */
 export const focus = function (event) {
   const targetElement = event.map.getTargetElement();
+  const rootNode = targetElement.getRootNode();
   const activeElement = event.map.getOwnerDocument().activeElement;
-  return targetElement.contains(activeElement);
+
+  return rootNode instanceof ShadowRoot
+    ? rootNode.host.contains(activeElement)
+    : targetElement.contains(activeElement);
 };
 
 /**
@@ -95,9 +99,12 @@ export const focus = function (event) {
  * @return {boolean} The map container has the focus or no 'tabindex' attribute.
  */
 export const focusWithTabindex = function (event) {
-  return event.map.getTargetElement().hasAttribute('tabindex')
-    ? focus(event)
-    : true;
+  const targetElement = event.map.getTargetElement();
+  const rootNode = targetElement.getRootNode();
+  const tabIndexCandidate =
+    rootNode instanceof ShadowRoot ? rootNode.host : targetElement;
+
+  return tabIndexCandidate.hasAttribute('tabindex') ? focus(event) : true;
 };
 
 /**
@@ -219,6 +226,21 @@ export const platformModifierKeyOnly = function (mapBrowserEvent) {
 };
 
 /**
+ * Return `true` if the platform-modifier-key (the meta-key on Mac,
+ * ctrl-key otherwise) is pressed.
+ *
+ * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
+ * @return {boolean} True if the platform modifier key is pressed.
+ * @api
+ */
+export const platformModifierKey = function (mapBrowserEvent) {
+  const originalEvent = /** @type {KeyboardEvent|MouseEvent|TouchEvent} */ (
+    mapBrowserEvent.originalEvent
+  );
+  return MAC ? originalEvent.metaKey : originalEvent.ctrlKey;
+};
+
+/**
  * Return `true` if only the shift-key is pressed, `false` otherwise (e.g. when
  * additionally the alt-key is pressed).
  *
@@ -273,7 +295,10 @@ export const mouseOnly = function (mapBrowserEvent) {
   const pointerEvent = /** @type {import("../MapBrowserEvent").default} */ (
     mapBrowserEvent
   ).originalEvent;
-  assert(pointerEvent !== undefined, 56); // mapBrowserEvent must originate from a pointer event
+  assert(
+    pointerEvent !== undefined,
+    'mapBrowserEvent must originate from a pointer event',
+  );
   // see https://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
   return pointerEvent.pointerType == 'mouse';
 };
@@ -289,7 +314,10 @@ export const touchOnly = function (mapBrowserEvent) {
   const pointerEvt = /** @type {import("../MapBrowserEvent").default} */ (
     mapBrowserEvent
   ).originalEvent;
-  assert(pointerEvt !== undefined, 56); // mapBrowserEvent must originate from a pointer event
+  assert(
+    pointerEvt !== undefined,
+    'mapBrowserEvent must originate from a pointer event',
+  );
   // see https://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
   return pointerEvt.pointerType === 'touch';
 };
@@ -305,7 +333,10 @@ export const penOnly = function (mapBrowserEvent) {
   const pointerEvt = /** @type {import("../MapBrowserEvent").default} */ (
     mapBrowserEvent
   ).originalEvent;
-  assert(pointerEvt !== undefined, 56); // mapBrowserEvent must originate from a pointer event
+  assert(
+    pointerEvt !== undefined,
+    'mapBrowserEvent must originate from a pointer event',
+  );
   // see https://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
   return pointerEvt.pointerType === 'pen';
 };
@@ -323,6 +354,9 @@ export const primaryAction = function (mapBrowserEvent) {
   const pointerEvent = /** @type {import("../MapBrowserEvent").default} */ (
     mapBrowserEvent
   ).originalEvent;
-  assert(pointerEvent !== undefined, 56); // mapBrowserEvent must originate from a pointer event
+  assert(
+    pointerEvent !== undefined,
+    'mapBrowserEvent must originate from a pointer event',
+  );
   return pointerEvent.isPrimary && pointerEvent.button === 0;
 };

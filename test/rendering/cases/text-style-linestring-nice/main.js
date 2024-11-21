@@ -26,7 +26,7 @@ feature1.setStyle(
       font: '10px Ubuntu',
       placement: 'line',
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature1);
 
@@ -44,7 +44,7 @@ feature2.setStyle(
       textAlign: 'right',
       placement: 'line',
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature2);
 
@@ -58,7 +58,7 @@ feature3.setStyle(
       font: 'italic bold 0.75em Ubuntu',
       text: 'Set properties',
     }),
-  })
+  }),
 );
 feature3.getStyle().getText().setTextAlign('left');
 feature3.getStyle().getText().setOffsetX(10);
@@ -90,7 +90,7 @@ feature4.setStyle(
       textBaseline: 'top',
       placement: 'line',
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature4);
 
@@ -108,7 +108,7 @@ feature5.setStyle(
       textAlign: 'start',
       placement: 'line',
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature5);
 
@@ -128,7 +128,7 @@ feature6.setStyle(
         width: 1,
       }),
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature6);
 
@@ -150,9 +150,51 @@ feature7.setStyle(
         width: 1,
       }),
     }),
-  })
+  }),
 );
 vectorSource.addFeature(feature7);
+
+const lineString8 = lineString7.clone();
+lineString8.translate(0, 40);
+lineString8.scale(-1, -1);
+const feature8 = new Feature({geometry: lineString8});
+feature8.setStyle(
+  new Style({
+    stroke: new Stroke({color: 'blue'}),
+    text: new Text({
+      text: 'do not keep upright',
+      font: 'normal 400 12px/1 Ubuntu',
+      textBaseline: 'bottom',
+      keepUpright: false,
+      placement: 'line',
+      stroke: new Stroke({
+        color: '#0000FF',
+        width: 1,
+      }),
+    }),
+  }),
+);
+vectorSource.addFeature(feature8);
+
+const lineString9 = lineString8.clone();
+const feature9 = new Feature({geometry: lineString9});
+feature9.setStyle(
+  new Style({
+    stroke: new Stroke({color: 'blue'}),
+    text: new Text({
+      text: 'keep upright',
+      font: 'normal 400 12px/1 Ubuntu',
+      textBaseline: 'bottom',
+      keepUpright: true,
+      placement: 'line',
+      stroke: new Stroke({
+        color: '#0000FF',
+        width: 1,
+      }),
+    }),
+  }),
+);
+vectorSource.addFeature(feature9);
 
 const map = new Map({
   pixelRatio: 1,
@@ -170,4 +212,4 @@ const map = new Map({
 });
 map.getView().fit(vectorSource.getExtent());
 
-render({tolerance: 0.021});
+render({tolerance: 0.01});

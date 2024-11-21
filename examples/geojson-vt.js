@@ -4,7 +4,7 @@ import Projection from '../src/ol/proj/Projection.js';
 import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
 import View from '../src/ol/View.js';
-import {Fill, Style} from '../src/ol/style.js';
+import geojsonvt from 'geojson-vt';
 
 // Converts geojson-vt data to GeoJSON
 const replacer = function (key, value) {
@@ -45,18 +45,10 @@ const replacer = function (key, value) {
   };
 };
 
-const style = new Style({
-  fill: new Fill({
-    color: '#eeeeee',
-  }),
-});
-
 const layer = new VectorTileLayer({
   background: '#1a2b39',
-  style: function (feature) {
-    const color = feature.get('COLOR') || '#eeeeee';
-    style.getFill().setColor(color);
-    return style;
+  style: {
+    'fill-color': ['string', ['get', 'COLOR'], '#eee'],
   },
 });
 
@@ -97,14 +89,14 @@ fetch(url)
         const data = tileIndex.getTile(
           tileCoord[0],
           tileCoord[1],
-          tileCoord[2]
+          tileCoord[2],
         );
         const geojson = JSON.stringify(
           {
             type: 'FeatureCollection',
             features: data ? data.features : [],
           },
-          replacer
+          replacer,
         );
         const features = format.readFeatures(geojson, {
           extent: vectorSource.getTileGrid().getTileCoordExtent(tileCoord),

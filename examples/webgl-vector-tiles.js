@@ -6,41 +6,48 @@ import View from '../src/ol/View.js';
 import WebGLVectorTileLayerRenderer from '../src/ol/renderer/webgl/VectorTileLayer.js';
 import {Fill, Icon, Stroke, Style, Text} from '../src/ol/style.js';
 import {asArray} from '../src/ol/color.js';
-import {packColor} from '../src/ol/renderer/webgl/shaders.js';
+import {packColor, parseLiteralStyle} from '../src/ol/webgl/styleparser.js';
 
 const key =
   'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2t0cGdwMHVnMGdlbzMxbDhwazBic2xrNSJ9.WbcTL9uj8JPAsnT9mgb7oQ';
 
+const result = parseLiteralStyle({
+  'fill-color': ['get', 'fillColor'],
+  'stroke-color': ['get', 'strokeColor'],
+  'stroke-width': ['get', 'strokeWidth'],
+  'circle-radius': 4,
+  'circle-fill-color': '#777',
+});
+
 class WebGLVectorTileLayer extends VectorTile {
   createRenderer() {
     return new WebGLVectorTileLayerRenderer(this, {
-      fill: {
+      style: {
+        builder: result.builder,
         attributes: {
-          color: (feature) => {
-            const style = this.getStyle()(feature, 1)[0];
-            const color = asArray(style?.getFill()?.getColor() || '#eee');
-            return packColor(color);
+          fillColor: {
+            size: 2,
+            callback: (feature) => {
+              const style = this.getStyle()(feature, 1)[0];
+              const color = asArray(style?.getFill()?.getColor() || '#eee');
+              return packColor(color);
+            },
           },
-          opacity: () => 1,
-        },
-      },
-      stroke: {
-        attributes: {
-          color: (feature) => {
-            const style = this.getStyle()(feature, 1)[0];
-            const color = asArray(style?.getStroke()?.getColor() || '#eee');
-            return packColor(color);
+          strokeColor: {
+            size: 2,
+            callback: (feature) => {
+              const style = this.getStyle()(feature, 1)[0];
+              const color = asArray(style?.getStroke()?.getColor() || '#eee');
+              return packColor(color);
+            },
           },
-          width: (feature) => {
-            const style = this.getStyle()(feature, 1)[0];
-            return style?.getStroke()?.getWidth() || 0;
+          strokeWidth: {
+            size: 1,
+            callback: (feature) => {
+              const style = this.getStyle()(feature, 1)[0];
+              return style?.getStroke()?.getWidth() || 0;
+            },
           },
-          opacity: () => 1,
-        },
-      },
-      point: {
-        attributes: {
-          color: () => packColor(asArray('#777')),
         },
       },
     });

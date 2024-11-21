@@ -5,13 +5,24 @@ layout: default.hbs
 
 # Raster Reprojection
 
-OpenLayers has an ability to display raster data from WMS, WMTS, static images and many other sources in a different coordinate system than delivered from the server.
+OpenLayers can display raster data from WMS, WMTS, static images, and many other sources in a different coordinate system than delivered from the server. In cases where the source projection differs from the map view projection, source data can be reprojected on the client (in the browser).
+
+OpenLayers comes with built-in support for transforming coordinates (and reprojecting rasters) between a handful of projections or coordinate reference systems.
+
+The built-in reprojection support applies to the following projections:
+
+ * WGS 84 / Geographic (`EPSG:4326`)
+ * WGS 84 / Web or Spherical Mercator (`EPSG:3857`)
+ * WGS 84 / Universal Transverse Mercator (`EPSG:32601` through `EPSG:32660` and `EPSG:32701` through `EPSG:32760`)
+
+For transforms between other, non-built-in projections, the Proj4js library can be used.
+
 Transformation of the map projections of the image happens directly in a web browser.
 The view in any Proj4js supported coordinate reference system is possible and previously incompatible layers can now be combined and overlaid.
 
 # Usage
 
-The API usage is very simple. Just specify proper projection (e.g. using [EPSG](https://epsg.io) code) on `ol/View`:
+The API usage for built-in projection support involves specifying the projection identifier on the source and the view. String [EPSG codes](https://epsg.io) can be used to identify the projections:
 
 ```js
 import Map from 'ol/Map.js';
@@ -51,7 +62,7 @@ If a source (based on `ol/source/TileImage` or `ol/source/Image`) has a projecti
 
 ### Custom projection
 
-The easiest way to use a custom projection is to add the [Proj4js](http://proj4js.org/) library to your project and then define the projection using a proj4 definition string. It can be installed with
+The easiest way to use a custom projection (one that doesn't have built-in support) is to add the [Proj4js](http://proj4js.org/) library to your project and then define the projection using a proj4 definition string. It can be installed with
 
     npm install proj4
 

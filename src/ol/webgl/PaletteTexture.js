@@ -12,7 +12,7 @@ class PaletteTexture {
     this.data = data;
 
     /**
-     * @type {WebGLTexture}
+     * @type {WebGLTexture|null}
      * @private
      */
     this.texture_ = null;
@@ -39,11 +39,21 @@ class PaletteTexture {
         0,
         gl.RGBA,
         gl.UNSIGNED_BYTE,
-        this.data
+        this.data,
       );
       this.texture_ = texture;
     }
     return this.texture_;
+  }
+
+  /**
+   * @param {WebGLRenderingContext} gl Rendering context.
+   */
+  delete(gl) {
+    if (this.texture_) {
+      gl.deleteTexture(this.texture_);
+    }
+    this.texture_ = null;
   }
 }
 

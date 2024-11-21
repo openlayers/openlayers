@@ -19,7 +19,7 @@ describe('ol/geom/flat/intersectsextent.js', function () {
           0,
           flatCoordinates.length,
           2,
-          extent
+          extent,
         );
         expect(r).to.be(false);
       });
@@ -32,7 +32,7 @@ describe('ol/geom/flat/intersectsextent.js', function () {
           0,
           flatCoordinates.length,
           2,
-          extent
+          extent,
         );
         expect(r).to.be(true);
       });
@@ -45,7 +45,7 @@ describe('ol/geom/flat/intersectsextent.js', function () {
           0,
           flatCoordinates.length,
           2,
-          extent
+          extent,
         );
         expect(r).to.be(true);
       });
@@ -58,7 +58,7 @@ describe('ol/geom/flat/intersectsextent.js', function () {
           0,
           flatCoordinates.length,
           2,
-          extent
+          extent,
         );
         expect(r).to.be(true);
       });
@@ -71,7 +71,7 @@ describe('ol/geom/flat/intersectsextent.js', function () {
           0,
           flatCoordinates.length,
           2,
-          extent
+          extent,
         );
         expect(r).to.be(false);
       });
@@ -82,7 +82,7 @@ describe('ol/geom/flat/intersectsextent.js', function () {
           0,
           flatCoordinates.length,
           2,
-          extent
+          extent,
         );
         expect(r).to.be(false);
       });
@@ -102,7 +102,7 @@ describe('ol/geom/flat/intersectsextent.js', function () {
           0,
           flatCoordinates.length,
           2,
-          extent
+          extent,
         );
         expect(r).to.be(true);
       });
@@ -118,11 +118,11 @@ describe('ol/geom/flat/intersectsextent.js', function () {
             0,
             flatCoordinates.length,
             2,
-            extent
+            extent,
           );
           expect(r).to.be(false);
         });
-      }
+      },
     );
     describe('ring contains the extent', function () {
       it('returns true', function () {
@@ -132,7 +132,7 @@ describe('ol/geom/flat/intersectsextent.js', function () {
           0,
           flatCoordinates.length,
           2,
-          extent
+          extent,
         );
         expect(r).to.be(true);
       });
@@ -157,7 +157,7 @@ describe('ol/geom/flat/intersectsextent.js', function () {
           0,
           ends,
           2,
-          extent
+          extent,
         );
         expect(r).to.be(false);
       });
@@ -170,7 +170,7 @@ describe('ol/geom/flat/intersectsextent.js', function () {
           0,
           ends,
           2,
-          extent
+          extent,
         );
         expect(r).to.be(true);
       });

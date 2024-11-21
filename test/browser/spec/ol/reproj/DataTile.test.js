@@ -47,14 +47,8 @@ describe('ol/reproj/DataTile', () => {
   });
 
   afterEach(() => {
-    if (map) {
-      map.setTarget(null);
-    }
-    if (mapR) {
-      mapR.setTarget(null);
-    }
-    document.body.removeChild(target);
-    document.body.removeChild(targetR);
+    disposeMap(map, target);
+    disposeMap(mapR, targetR);
     delete proj4.defs['EPSG:32632'];
     delete proj4.defs['EPSG:32636'];
     clearAllProjections();
@@ -140,7 +134,7 @@ describe('ol/reproj/DataTile', () => {
           const coordinate = transform(
             coordinateR,
             mapR.getView().getProjection(),
-            map.getView().getProjection()
+            map.getView().getProjection(),
           );
           const pixel = map.getPixelFromCoordinate(coordinate);
 
@@ -199,7 +193,7 @@ describe('ol/reproj/DataTile', () => {
             const coordinate = transform(
               coordinateR,
               mapR.getView().getProjection(),
-              map.getView().getProjection()
+              map.getView().getProjection(),
             );
             const pixel = map.getPixelFromCoordinate(coordinate);
 
@@ -218,11 +212,11 @@ describe('ol/reproj/DataTile', () => {
   it('pixel data reprojected from EPSG:32636 to EPSG:32632 exactly matches original', (done) => {
     proj4.defs(
       'EPSG:32632',
-      '+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs'
+      '+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs',
     );
     proj4.defs(
       'EPSG:32636',
-      '+proj=utm +zone=36 +datum=WGS84 +units=m +no_defs'
+      '+proj=utm +zone=36 +datum=WGS84 +units=m +no_defs',
     );
     register(proj4);
 
@@ -269,8 +263,8 @@ describe('ol/reproj/DataTile', () => {
           transformExtent(
             extent,
             map.getView().getProjection(),
-            mapR.getView().getProjection()
-          )
+            mapR.getView().getProjection(),
+          ),
         );
       mapR.once('rendercomplete', () => {
         for (let i = 1; i < 255; ++i) {
@@ -282,7 +276,7 @@ describe('ol/reproj/DataTile', () => {
           coordinateR = transform(
             coordinate,
             map.getView().getProjection(),
-            mapR.getView().getProjection()
+            mapR.getView().getProjection(),
           );
           pixelR = mapR.getPixelFromCoordinate(coordinateR);
           dataR = layerR.getData(pixelR);
@@ -301,7 +295,7 @@ describe('ol/reproj/DataTile', () => {
           coordinateR = transform(
             coordinate,
             map.getView().getProjection(),
-            mapR.getView().getProjection()
+            mapR.getView().getProjection(),
           );
           pixelR = mapR.getPixelFromCoordinate(coordinateR);
           dataR = layerR.getData(pixelR);
@@ -320,7 +314,7 @@ describe('ol/reproj/DataTile', () => {
           coordinateR = transform(
             coordinate,
             map.getView().getProjection(),
-            mapR.getView().getProjection()
+            mapR.getView().getProjection(),
           );
           pixelR = mapR.getPixelFromCoordinate(coordinateR);
           dataR = layerR.getData(pixelR);
@@ -339,7 +333,7 @@ describe('ol/reproj/DataTile', () => {
           coordinateR = transform(
             coordinate,
             map.getView().getProjection(),
-            mapR.getView().getProjection()
+            mapR.getView().getProjection(),
           );
           pixelR = mapR.getPixelFromCoordinate(coordinateR);
           dataR = layerR.getData(pixelR);
@@ -358,7 +352,7 @@ describe('ol/reproj/DataTile', () => {
           coordinateR = transform(
             coordinate,
             map.getView().getProjection(),
-            mapR.getView().getProjection()
+            mapR.getView().getProjection(),
           );
           pixelR = mapR.getPixelFromCoordinate(coordinateR);
           dataR = layerR.getData(pixelR);

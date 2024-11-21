@@ -20,7 +20,7 @@ describe('ol/renderer/webgl/Layer', function () {
     });
 
     afterEach(function () {
-      document.body.removeChild(target);
+      target.remove();
     });
 
     it('creates a new instance', function () {
@@ -40,15 +40,17 @@ describe('ol/renderer/webgl/Layer', function () {
     });
 
     afterEach(() => {
-      document.body.removeChild(target);
+      target.remove();
     });
 
     function getWebGLLayer(className) {
+      const tileSize = 256;
       return new TileLayer({
         className: className,
         source: new DataTileSource({
+          tileSize: tileSize,
           loader(z, x, y) {
-            return new ImageData(256, 256);
+            return new ImageData(tileSize, tileSize).data;
           },
         }),
       });
@@ -66,8 +68,8 @@ describe('ol/renderer/webgl/Layer', function () {
     }
 
     function dispose(map) {
-      map.setLayers([]);
-      map.setTarget(null);
+      disposeMap(map);
+      map.getAllLayers().forEach((l) => l.dispose());
     }
 
     it('allows sequences of WebGL layers to share a canvas', () => {

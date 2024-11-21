@@ -100,7 +100,7 @@ describe('ol/events/Target.js', function () {
           spy2();
           return false;
         },
-        false
+        false,
       );
       eventTarget.addEventListener('foo', spy3);
       eventTarget.dispatchEvent('foo');

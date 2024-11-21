@@ -31,7 +31,7 @@ class Bbox extends Filter {
     this.extent = extent;
     if (extent.length !== 4) {
       throw new Error(
-        'Expected an extent with four values ([minX, minY, maxX, maxY])'
+        'Expected an extent with four values ([minX, minY, maxX, maxY])',
       );
     }
 

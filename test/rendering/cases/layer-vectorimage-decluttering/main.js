@@ -54,13 +54,13 @@ source1.addFeature(
   new Feature({
     geometry: new Point([center[0] - 540, center[1]]),
     zIndex: 3,
-  })
+  }),
 );
 source1.addFeature(
   new Feature({
     geometry: new Point([center[0] + 540, center[1]]),
     zIndex: 1,
-  })
+  }),
 );
 layer1.setStyle(function (feature) {
   return new Style({
@@ -87,14 +87,14 @@ source2.addFeature(
     geometry: new Point([center[0] - 540, center[1]]),
     text: 'west',
     zIndex: 3,
-  })
+  }),
 );
 source2.addFeature(
   new Feature({
     geometry: new Point([center[0] + 540, center[1]]),
     text: 'east',
     zIndex: 1,
-  })
+  }),
 );
 layer2.setStyle(function (feature) {
   return new Style({
@@ -112,19 +112,19 @@ source3.addFeature(
   new Feature({
     geometry: new Point(center),
     text: 'center',
-  })
+  }),
 );
 source3.addFeature(
   new Feature({
     geometry: new Point([center[0] - 540, center[1]]),
     text: 'west',
-  })
+  }),
 );
 source3.addFeature(
   new Feature({
     geometry: new Point([center[0] + 540, center[1]]),
     text: 'east',
-  })
+  }),
 );
 layer3.setStyle(function (feature) {
   return new Style({
@@ -157,13 +157,13 @@ point.setStyle(
         width: 4,
       }),
     }),
-  })
+  }),
 );
 const line = new Feature(
   new LineString([
     [center[0] - 650, center[1] - 200],
     [center[0] + 650, center[1] - 200],
-  ])
+  ]),
 );
 line.setStyle(
   new Style({
@@ -178,7 +178,7 @@ line.setStyle(
       font: 'italic bold 18px Ubuntu',
       overflow: true,
     }),
-  })
+  }),
 );
 source4.addFeature(point);
 source4.addFeature(line);

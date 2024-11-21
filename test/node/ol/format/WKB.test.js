@@ -1006,7 +1006,7 @@ describe('ol/format/WKB.js', function () {
         featureProjection: 'EPSG:3857',
       });
       expect(geom.getCoordinates()).to.eql(
-        transform([1, 2], 'EPSG:4326', 'EPSG:3857')
+        transform([1, 2], 'EPSG:4326', 'EPSG:3857'),
       );
     });
 
@@ -1016,7 +1016,7 @@ describe('ol/format/WKB.js', function () {
         featureProjection: 'EPSG:3857',
       });
       expect(geom.getCoordinates()).to.eql(
-        transform([1, 2], 'EPSG:4326', 'EPSG:3857')
+        transform([1, 2], 'EPSG:4326', 'EPSG:3857'),
       );
     });
   });
@@ -1033,7 +1033,7 @@ describe('ol/format/WKB.js', function () {
         featureProjection: 'EPSG:3857',
       });
       expect(geom.getCoordinates()).to.eql(
-        transform([1, 2], 'EPSG:4326', 'EPSG:3857')
+        transform([1, 2], 'EPSG:4326', 'EPSG:3857'),
       );
     });
 
@@ -1048,7 +1048,7 @@ describe('ol/format/WKB.js', function () {
         featureProjection: 'EPSG:3857',
       });
       expect(geom.getCoordinates()).to.eql(
-        transform([1, 2], 'EPSG:4326', 'EPSG:3857')
+        transform([1, 2], 'EPSG:4326', 'EPSG:3857'),
       );
     });
   });
@@ -1235,12 +1235,12 @@ describe('ol/format/WKB.js', function () {
         new Point([1, 2, 3, 4], 'XYZM'),
       ]);
       const wkb = new WKB({nodataZ: 98, geometryLayout: 'XYZ'}).writeGeometry(
-        geom
+        geom,
       );
 
       // GEOMETRYCOLLECTION Z (POINT Z (1 2 98),POINT Z (1 2 98),POINT Z (1 2 3))
       expect(wkb).to.eql(
-        '0107000080030000000101000080000000000000F03F000000000000004000000000008058400101000080000000000000F03F000000000000004000000000008058400101000080000000000000F03F00000000000000400000000000000840'
+        '0107000080030000000101000080000000000000F03F000000000000004000000000008058400101000080000000000000F03F000000000000004000000000008058400101000080000000000000F03F00000000000000400000000000000840',
       );
     });
 
@@ -1251,12 +1251,12 @@ describe('ol/format/WKB.js', function () {
         new Point([1, 2, 3, 4], 'XYZM'),
       ]);
       const wkb = new WKB({nodataM: 99, geometryLayout: 'XYM'}).writeGeometry(
-        geom
+        geom,
       );
 
       // GEOMETRYCOLLECTION M (POINT M (1 2 99),POINT M (1 2 4),POINT M (1 2 4))
       expect(wkb).to.eql(
-        '0107000040030000000101000040000000000000F03F00000000000000400000000000C058400101000040000000000000F03F000000000000004000000000000010400101000040000000000000F03F00000000000000400000000000001040'
+        '0107000040030000000101000040000000000000F03F00000000000000400000000000C058400101000040000000000000F03F000000000000004000000000000010400101000040000000000000F03F00000000000000400000000000001040',
       );
     });
 
@@ -1274,7 +1274,7 @@ describe('ol/format/WKB.js', function () {
 
       // GEOMETRYCOLLECTION ZM (POINT ZM (1 2 98 99),POINT ZM (1 2 98 4),POINT ZM (1 2 3 4))
       expect(wkb).to.eql(
-        '01070000C00300000001010000C0000000000000F03F000000000000004000000000008058400000000000C0584001010000C0000000000000F03F00000000000000400000000000805840000000000000104001010000C0000000000000F03F000000000000004000000000000008400000000000001040'
+        '01070000C00300000001010000C0000000000000F03F000000000000004000000000008058400000000000C0584001010000C0000000000000F03F00000000000000400000000000805840000000000000104001010000C0000000000000F03F000000000000004000000000000008400000000000001040',
       );
     });
   });
@@ -1288,7 +1288,7 @@ describe('ol/format/WKB.js', function () {
       });
       const geom = feature.getGeometry();
       expect(geom.getCoordinates()).to.eql(
-        transform([1, 2], 'EPSG:4326', 'EPSG:3857')
+        transform([1, 2], 'EPSG:4326', 'EPSG:3857'),
       );
     });
   });
@@ -1296,7 +1296,7 @@ describe('ol/format/WKB.js', function () {
   describe('#writeFeature()', function () {
     it('transforms with dataProjection and featureProjection', function () {
       const feature = new Feature(
-        new Point([1, 2]).transform('EPSG:4326', 'EPSG:3857')
+        new Point([1, 2]).transform('EPSG:4326', 'EPSG:3857'),
       );
       const wkt = format.writeFeature(feature, {
         dataProjection: 'EPSG:4326',
@@ -1326,10 +1326,10 @@ describe('ol/format/WKB.js', function () {
       expect(point1.getType()).to.eql('Point');
       expect(point2.getType()).to.eql('Point');
       expect(point1.getCoordinates()).to.eql(
-        transform([1, 2], 'EPSG:4326', 'EPSG:3857')
+        transform([1, 2], 'EPSG:4326', 'EPSG:3857'),
       );
       expect(point2.getCoordinates()).to.eql(
-        transform([4, 5], 'EPSG:4326', 'EPSG:3857')
+        transform([4, 5], 'EPSG:4326', 'EPSG:3857'),
       );
     });
   });
@@ -1350,19 +1350,19 @@ describe('ol/format/WKB.js', function () {
       expect(gotFeatures).to.have.length(2);
       expect(gotFeatures[0].getGeometry().getCoordinates()[0]).to.roughlyEqual(
         1,
-        1e-6
+        1e-6,
       );
       expect(gotFeatures[0].getGeometry().getCoordinates()[1]).to.roughlyEqual(
         2,
-        1e-6
+        1e-6,
       );
       expect(gotFeatures[1].getGeometry().getCoordinates()[0]).to.roughlyEqual(
         4,
-        1e-6
+        1e-6,
       );
       expect(gotFeatures[1].getGeometry().getCoordinates()[1]).to.roughlyEqual(
         5,
-        1e-6
+        1e-6,
       );
     });
   });

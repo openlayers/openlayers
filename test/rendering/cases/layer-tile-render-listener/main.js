@@ -27,10 +27,10 @@ const onRender = function (event) {
       radius: 12,
       fill: new Fill({color: 'yellow'}),
       stroke: new Stroke({color: 'red', width: 1}),
-    })
+    }),
   );
   vectorContext.drawPoint(
-    new Point(transform([13, 37], 'EPSG:4326', 'EPSG:3857'))
+    new Point(transform([13, 37], 'EPSG:4326', 'EPSG:3857')),
   );
 };
 layer.on('postrender', onRender);

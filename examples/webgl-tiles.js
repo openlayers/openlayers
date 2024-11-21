@@ -1,13 +1,17 @@
+import Layer from '../src/ol/layer/WebGLTile.js';
 import Map from '../src/ol/Map.js';
-import OSM from '../src/ol/source/OSM.js';
-import TileLayer from '../src/ol/layer/WebGLTile.js';
+import Source from '../src/ol/source/ImageTile.js';
 import View from '../src/ol/View.js';
 
 const map = new Map({
   target: 'map',
   layers: [
-    new TileLayer({
-      source: new OSM(),
+    new Layer({
+      source: new Source({
+        url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+        attributions:
+          '&#169; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors.',
+      }),
     }),
   ],
   view: new View({

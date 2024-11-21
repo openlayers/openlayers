@@ -1,9 +1,10 @@
+import Layer from '../src/ol/layer/WebGLTile.js';
 import Map from '../src/ol/Map.js';
-import OSM from '../src/ol/source/OSM.js';
-import TileLayer from '../src/ol/layer/Tile.js';
+import Source from '../src/ol/source/ImageTile.js';
 import View from '../src/ol/View.js';
-import XYZ from '../src/ol/source/XYZ.js';
-import {transform} from '../src/ol/proj.js';
+import {useGeographic} from '../src/ol/proj.js';
+
+useGeographic();
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
 const attributions =
@@ -13,22 +14,17 @@ const attributions =
 const map = new Map({
   target: 'map',
   layers: [
-    new TileLayer({
-      source: new OSM(),
-    }),
-    new TileLayer({
-      source: new XYZ({
+    new Layer({
+      source: new Source({
         attributions: attributions,
         url:
-          'https://api.maptiler.com/maps/outdoor/256/{z}/{x}/{y}@2x.png?key=' +
+          'https://api.maptiler.com/maps/outdoor-v2/256/{z}/{x}/{y}@2x.png?key=' +
           key,
-        tilePixelRatio: 2, // THIS IS IMPORTANT
       }),
     }),
   ],
   view: new View({
-    projection: 'EPSG:3857',
-    center: transform([-112.18688965, 36.057944835], 'EPSG:4326', 'EPSG:3857'),
-    zoom: 12,
+    center: [-112.21324137318899, 36.105337765976756],
+    zoom: 13,
   }),
 });

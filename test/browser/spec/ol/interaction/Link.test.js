@@ -88,4 +88,22 @@ describe('ol/interaction/Link', () => {
       view.setRotation(0.5);
     });
   });
+
+  describe('track()', (done) => {
+    it('makes it possible to synchronize additional state with the URL', () => {
+      const link = new Link();
+      map.addInteraction(link);
+
+      const testProperty = 'test-property';
+      const testValue = 'test-value';
+
+      const initialValue = link.track(testProperty, (newValue) => {
+        expect(newValue).to.be(testValue);
+        done();
+      });
+
+      expect(initialValue).to.be(null);
+      link.update(testProperty, testValue);
+    });
+  });
 });

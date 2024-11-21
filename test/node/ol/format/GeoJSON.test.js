@@ -7,6 +7,7 @@ import LinearRing from '../../../../src/ol/geom/LinearRing.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
+import RenderFeature from '../../../../src/ol/render/Feature.js';
 import expect from '../../expect.js';
 import fse from 'fs-extra';
 import {
@@ -158,6 +159,41 @@ describe('ol/format/GeoJSON.js', function () {
     ],
   };
 
+  describe('extractGeometryName', () => {
+    it('makes it so the geometry name will be set to the value of the `geometry_name` value', () => {
+      const data = {
+        type: 'Feature',
+        properties: {},
+        geometry_name: 'the_geom',
+        geometry: {
+          type: 'Point',
+          coordinates: [0, 0],
+        },
+      };
+      const format = new GeoJSON({extractGeometryName: true});
+      const feature = format.readFeature(data);
+      expect(feature.getGeometryName()).to.be('the_geom');
+      expect(feature.getGeometry()).to.be.a(Point);
+      expect(feature.getGeometry().getCoordinates()).to.eql([0, 0]);
+    });
+
+    it('does nothing if `geometry_name` is missing', () => {
+      const data = {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'Point',
+          coordinates: [0, 0],
+        },
+      };
+      const format = new GeoJSON({extractGeometryName: true});
+      const feature = format.readFeature(data);
+      expect(feature.getGeometryName()).to.be('geometry');
+      expect(feature.getGeometry()).to.be.a(Point);
+      expect(feature.getGeometry().getCoordinates()).to.eql([0, 0]);
+    });
+  });
+
   describe('#readFeature', function () {
     it('can read a single point feature', function () {
       const feature = format.readFeature(pointGeoJSON);
@@ -236,7 +272,7 @@ describe('ol/format/GeoJSON.js', function () {
       });
       expect(feature[0].getGeometry()).to.be.an(Point);
       expect(feature[0].getGeometry().getCoordinates()).to.eql(
-        transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857')
+        transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'),
       );
     });
 
@@ -245,7 +281,7 @@ describe('ol/format/GeoJSON.js', function () {
       const feature = format.readFeatures(pointGeoJSON);
       expect(feature[0].getGeometry()).to.be.an(Point);
       expect(feature[0].getGeometry().getCoordinates()).to.eql(
-        transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857')
+        transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'),
       );
     });
 
@@ -256,7 +292,7 @@ describe('ol/format/GeoJSON.js', function () {
       });
       expect(feature[0].getGeometry()).to.be.an(Point);
       expect(feature[0].getGeometry().getCoordinates()).to.eql(
-        transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857')
+        transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'),
       );
     });
 
@@ -266,7 +302,7 @@ describe('ol/format/GeoJSON.js', function () {
       });
       expect(features[0].getGeometry()).to.be.an(Point);
       expect(features[0].getGeometry().getCoordinates()).to.eql(
-        transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857')
+        transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'),
       );
       expect(features[1].getGeometry().getCoordinates()).to.eql([
         transform([102.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
@@ -286,7 +322,7 @@ describe('ol/format/GeoJSON.js', function () {
 
     it('can create a feature with a specific geometryName', function () {
       const feature = new GeoJSON({geometryName: 'the_geom'}).readFeature(
-        pointGeoJSON
+        pointGeoJSON,
       );
       expect(feature.getGeometryName()).to.be('the_geom');
       expect(feature.getGeometry()).to.be.an(Point);
@@ -346,7 +382,7 @@ describe('ol/format/GeoJSON.js', function () {
     it('parses countries.geojson', async () => {
       const text = await fse.readFile(
         'test/node/ol/format/GeoJSON/countries.geojson',
-        {encoding: 'utf8'}
+        {encoding: 'utf8'},
       );
       const result = format.readFeatures(text);
       expect(result.length).to.be(179);
@@ -360,8 +396,8 @@ describe('ol/format/GeoJSON.js', function () {
       expect(
         equals(
           firstGeom.getExtent(),
-          [60.52843, 29.318572, 75.158028, 38.486282]
-        )
+          [60.52843, 29.318572, 75.158028, 38.486282],
+        ),
       ).to.be(true);
 
       const last = result[178];
@@ -373,8 +409,8 @@ describe('ol/format/GeoJSON.js', function () {
       expect(
         equals(
           lastGeom.getExtent(),
-          [25.264226, -22.271612, 32.849861, -15.507787]
-        )
+          [25.264226, -22.271612, 32.849861, -15.507787],
+        ),
       ).to.be(true);
     });
 
@@ -517,7 +553,7 @@ describe('ol/format/GeoJSON.js', function () {
       expect(array[1].getLayout()).to.eql('XY');
     });
 
-    it('works with empty coordinate arrays', function () {
+    it('works with empty coordinate subarrays', function () {
       const coordinates = [
         [
           [
@@ -535,6 +571,25 @@ describe('ol/format/GeoJSON.js', function () {
       };
       const geometry = format.readGeometry(geojson);
       expect(geometry.getCoordinates()).to.eql(coordinates);
+    });
+
+    it('works with empty coordinate array', () => {
+      const types = [
+        'Point',
+        'LineString',
+        'Polygon',
+        'MultiPoint',
+        'MultiLineString',
+        'MultiPolygon',
+      ];
+      types.forEach((type) => {
+        const geojson = {
+          type,
+          coordinates: [],
+        };
+        const geometry = format.readGeometry(geojson);
+        expect(geometry.getCoordinates()).to.eql([]);
+      });
     });
   });
 
@@ -651,7 +706,7 @@ describe('ol/format/GeoJSON.js', function () {
         got = array[i];
         exp = result[i];
         expect(got.getGeometry().getCoordinates()).to.eql(
-          exp.getGeometry().getCoordinates()
+          exp.getGeometry().getCoordinates(),
         );
         gotProp = got.getProperties();
         delete gotProp.geometry;
@@ -673,7 +728,10 @@ describe('ol/format/GeoJSON.js', function () {
         got = array[i];
         exp = result[i];
         expect(
-          got.getGeometry().transform('EPSG:3857', 'EPSG:4326').getCoordinates()
+          got
+            .getGeometry()
+            .transform('EPSG:3857', 'EPSG:4326')
+            .getCoordinates(),
         ).to.eql(exp.getGeometry().getCoordinates());
       }
     });
@@ -727,7 +785,7 @@ describe('ol/format/GeoJSON.js', function () {
       const point = new Point([10, 20]);
       const geojson = format.writeGeometry(point);
       expect(point.getCoordinates()).to.eql(
-        format.readGeometry(geojson).getCoordinates()
+        format.readGeometry(geojson).getCoordinates(),
       );
     });
 
@@ -755,7 +813,7 @@ describe('ol/format/GeoJSON.js', function () {
       ]);
       const geojson = format.writeGeometry(linestring);
       expect(linestring.getCoordinates()).to.eql(
-        format.readGeometry(geojson).getCoordinates()
+        format.readGeometry(geojson).getCoordinates(),
       );
     });
 
@@ -784,7 +842,7 @@ describe('ol/format/GeoJSON.js', function () {
       const polygon = new Polygon([outer, inner1, inner2]);
       const geojson = format.writeGeometry(polygon);
       expect(polygon.getCoordinates()).to.eql(
-        format.readGeometry(geojson).getCoordinates()
+        format.readGeometry(geojson).getCoordinates(),
       );
     });
 
@@ -831,7 +889,7 @@ describe('ol/format/GeoJSON.js', function () {
 
       expect(JSON.parse(format.writeGeometry(right))).to.eql(rightObj);
       expect(JSON.parse(format.writeGeometry(rightMulti))).to.eql(
-        rightMultiObj
+        rightMultiObj,
       );
       expect(JSON.parse(format.writeGeometry(left))).to.eql(leftObj);
       expect(JSON.parse(format.writeGeometry(leftMulti))).to.eql(leftMultiObj);
@@ -935,7 +993,7 @@ describe('ol/format/GeoJSON.js', function () {
       expect(geometries.length).to.equal(gotGeometries.length);
       for (let i = 0, ii = geometries.length; i < ii; ++i) {
         expect(geometries[i].getCoordinates()).to.eql(
-          gotGeometries[i].getCoordinates()
+          gotGeometries[i].getCoordinates(),
         );
       }
     });
@@ -959,11 +1017,11 @@ describe('ol/format/GeoJSON.js', function () {
       });
       expect(point.getCoordinates()[0]).to.roughlyEqual(
         newPoint.getCoordinates()[0],
-        1e-8
+        1e-8,
       );
       expect(point.getCoordinates()[1]).to.roughlyEqual(
         newPoint.getCoordinates()[1],
-        1e-8
+        1e-8,
       );
     });
 
@@ -985,19 +1043,19 @@ describe('ol/format/GeoJSON.js', function () {
       const geometries = collection.getGeometries();
       expect(geometries[0].getCoordinates()[0]).to.roughlyEqual(
         gotGeometries[0].getCoordinates()[0],
-        1e-8
+        1e-8,
       );
       expect(geometries[0].getCoordinates()[1]).to.roughlyEqual(
         gotGeometries[0].getCoordinates()[1],
-        1e-8
+        1e-8,
       );
       expect(geometries[1].getCoordinates()[0][0]).to.roughlyEqual(
         gotGeometries[1].getCoordinates()[0][0],
-        1e-8
+        1e-8,
       );
       expect(geometries[1].getCoordinates()[0][1]).to.roughlyEqual(
         gotGeometries[1].getCoordinates()[0][1],
-        1e-8
+        1e-8,
       );
     });
 
@@ -1067,6 +1125,190 @@ describe('ol/format/GeoJSON.js', function () {
         type: 'MultiPolygon',
         coordinates: coordinates,
       });
+    });
+  });
+});
+
+describe('ol/format/GeoJSON with {featureClass: RenderFeature}', function () {
+  let format;
+  beforeEach(function () {
+    format = new GeoJSON({featureClass: RenderFeature});
+  });
+
+  describe('#readGeometry', function () {
+    it('is the same as with the default', function () {
+      const str = JSON.stringify({
+        type: 'Point',
+        coordinates: [10, 20],
+      });
+
+      const obj = format.readGeometry(str);
+      expect(obj).to.be.a(Point);
+    });
+  });
+
+  describe('#readFeature', function () {
+    it('creates a render feature', function () {
+      const str = JSON.stringify({
+        type: 'Feature',
+        properties: {
+          foo: 'bar',
+        },
+        geometry: {
+          type: 'Point',
+          coordinates: [10, 20, 30],
+        },
+      });
+
+      const obj = format.readFeature(str);
+      expect(obj).to.be.a(RenderFeature);
+      expect(obj.getType()).to.be('Point');
+      expect(obj.getFlatCoordinates()).to.eql([10, 20, 30]);
+      expect(obj.getStride()).to.be(3);
+      expect(obj.get('foo')).to.be('bar');
+    });
+    it('returns an array for geometry collections', function () {
+      const str = JSON.stringify({
+        type: 'Feature',
+        id: 1,
+        properties: {
+          foo: 'bar',
+        },
+        geometry: {
+          type: 'GeometryCollection',
+          geometries: [
+            {
+              type: 'GeometryCollection',
+              geometries: [
+                {
+                  type: 'Point',
+                  coordinates: [1, 1],
+                },
+              ],
+            },
+            {
+              type: 'Point',
+              coordinates: [2, 2],
+            },
+          ],
+        },
+      });
+      const obj = format.readFeature(str);
+      expect(obj.length).to.be(2);
+      expect(obj[0]).to.be.a(RenderFeature);
+      expect(obj[0].getFlatCoordinates()).to.eql([1, 1]);
+      expect(obj[0].getId()).to.be(1);
+      expect(obj[0].get('foo')).to.be('bar');
+      expect(obj[1]).to.be.a(RenderFeature);
+      expect(obj[1].getFlatCoordinates()).to.eql([2, 2]);
+      expect(obj[1].getId()).to.be(1);
+      expect(obj[1].get('foo')).to.be('bar');
+    });
+  });
+
+  describe('#readFeatures', function () {
+    it('creates render features', function () {
+      const str = JSON.stringify({
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            properties: {
+              foo: 'bar',
+            },
+            geometry: {
+              type: 'Point',
+              coordinates: [1, 1],
+            },
+          },
+          {
+            type: 'Feature',
+            properties: {
+              foo: 'baz',
+            },
+            geometry: {
+              type: 'Point',
+              coordinates: [2, 2],
+            },
+          },
+        ],
+      });
+
+      const obj = format.readFeatures(str);
+      expect(obj.length).to.be(2);
+      expect(obj[0]).to.be.a(RenderFeature);
+    });
+    it('returns the correct array when geometry collections are involved', function () {
+      const str = JSON.stringify({
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            id: 1,
+            properties: {
+              foo: 'bar',
+            },
+            geometry: {
+              type: 'GeometryCollection',
+              geometries: [
+                {
+                  type: 'GeometryCollection',
+                  geometries: [
+                    {
+                      type: 'Point',
+                      coordinates: [1, 1],
+                    },
+                  ],
+                },
+                {
+                  type: 'Point',
+                  coordinates: [2, 2],
+                },
+              ],
+            },
+          },
+          {
+            type: 'Feature',
+            id: 2,
+            geometry: {
+              type: 'Point',
+              coordinates: [3, 3],
+            },
+          },
+        ],
+      });
+      const obj = format.readFeatures(str);
+      expect(obj.length).to.be(3);
+      expect(obj[0].getId()).to.be(1);
+      expect(obj[2].getId()).to.be(2);
+    });
+    it('ignores null geometry features', function () {
+      const str = JSON.stringify({
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            id: 1,
+            properties: {
+              foo: 'bar',
+            },
+            geometry: null,
+          },
+          {
+            type: 'Feature',
+            id: 2,
+            properties: {
+              foo: 'baz',
+            },
+            geometry: {
+              type: 'Point',
+              coordinates: [1, 1],
+            },
+          },
+        ],
+      });
+      const obj = format.readFeatures(str);
+      expect(obj.length).to.be(1);
     });
   });
 });

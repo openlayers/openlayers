@@ -65,13 +65,6 @@ OpenLayers appreciates contributions of all kinds.  We especially want to thank 
 
 <br>
 
-[![GeoSolutions logo](./sponsor-logos/geosolutions.png)](https://www.geosolutionsgroup.com/)
-
-> Your one-stop-shop for geospatial open source software.
-> https://www.geosolutionsgroup.com/
-
-<br>
-
 [![ela-compil logo](./sponsor-logos/ela-compil.png)](https://ela.pl/)
 
 > We develop leading Physical Security Information Management (PSIM) software.
@@ -88,6 +81,13 @@ OpenLayers appreciates contributions of all kinds.  We especially want to thank 
 
 <br>
 
+[![Scribble Maps logo](./sponsor-logos/scribble-maps.png)](https://www.scribblemaps.com/)
+
+> Build custom maps and identify insights across real estate, engineering, research, business, exploration, construction, manufacturing - and so much more.
+> https://www.scribblemaps.com/
+
+<br>
+
 See our [GitHub sponsors page](https://github.com/sponsors/openlayers) or [Open Collective](https://opencollective.com/openlayers/contribute/sponsors-214/checkout) if you too are interested in becoming a regular sponsor.
 
 ## TypeScript support
@@ -96,7 +96,7 @@ The [ol package](https://npmjs.com/package/ol) includes auto-generated TypeScrip
 
 ## Supported Browsers
 
-OpenLayers runs on all modern browsers (with greater than 1% global usage).  This includes Chrome, Firefox, Safari and Edge. For older browsers, [polyfills](https://polyfill.io/) will likely need to be added.
+OpenLayers runs on all modern browsers (with greater than 1% global usage).  This includes Chrome, Firefox, Safari and Edge. For older browsers, polyfills ([Fastly](https://polyfill-fastly.io) or [Cloudflare](https://cdnjs.cloudflare.com/polyfill)) will likely need to be added.
 
 ## Documentation
 

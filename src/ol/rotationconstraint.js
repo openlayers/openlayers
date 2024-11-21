@@ -60,7 +60,7 @@ export function createSnapToN(n) {
  * @return {Type} Rotation constraint.
  */
 export function createSnapToZero(tolerance) {
-  tolerance = tolerance || toRadians(5);
+  const t = tolerance === undefined ? toRadians(5) : tolerance;
   return (
     /**
      * @param {number|undefined} rotation Rotation.
@@ -68,17 +68,14 @@ export function createSnapToZero(tolerance) {
      * @return {number|undefined} Rotation.
      */
     function (rotation, isMoving) {
-      if (isMoving) {
+      if (isMoving || rotation === undefined) {
         return rotation;
       }
 
-      if (rotation !== undefined) {
-        if (Math.abs(rotation) <= tolerance) {
-          return 0;
-        }
-        return rotation;
+      if (Math.abs(rotation) <= t) {
+        return 0;
       }
-      return undefined;
+      return rotation;
     }
   );
 }

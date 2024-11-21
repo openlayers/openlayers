@@ -12,7 +12,7 @@ The core component of OpenLayers is the map (from the `ol/Map` module). It is re
 The markup below could be used to create a `<div>` that contains your map.
 
 ```xml
-<div id="map" style="width: 100%, height: 400px"></div>
+<div id="map" style="width: 100%; height: 400px"></div>
 ```
 
 The script below constructs a map that is rendered in the `<div>` above, using the `map` id of the element as a selector.
@@ -48,7 +48,7 @@ To get remote data for a layer, OpenLayers uses `ol/source/Source` subclasses. T
 ```js
 import OSM from 'ol/source/OSM.js';
 
-const source = OSM();
+const source = new OSM();
 ```
 
 ## Layer

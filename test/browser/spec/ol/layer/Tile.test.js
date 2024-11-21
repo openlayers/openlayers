@@ -56,8 +56,7 @@ describe('ol/layer/Tile', function () {
     });
 
     afterEach(() => {
-      map.setTarget(null);
-      document.body.removeChild(target);
+      disposeMap(map);
     });
 
     it('gets pixel data', () => {
@@ -68,6 +67,33 @@ describe('ol/layer/Tile', function () {
       expect(data[1]).to.be(208);
       expect(data[2]).to.be(208);
       expect(data[3]).to.be(255);
+    });
+
+    it('gets reprojected pixel data', (done) => {
+      layer.setSource(
+        new XYZ({
+          url: 'spec/ol/data/osm-0-0-0.png',
+          maxZoom: 0,
+          interpolate: false,
+        }),
+      );
+      map.setView(
+        new View({
+          center: [0, 0],
+          zoom: 1,
+          projection: 'EPSG:4326',
+        }),
+      );
+      map.once('rendercomplete', () => {
+        const data = layer.getData([50, 50]);
+        expect(data).to.be.a(Uint8ClampedArray);
+        expect(data.length).to.be(4);
+        expect(data[0]).to.be(181);
+        expect(data[1]).to.be(208);
+        expect(data[2]).to.be(208);
+        expect(data[3]).to.be(255);
+        done();
+      });
     });
 
     it('gets pixel data', () => {
@@ -110,8 +136,7 @@ describe('ol/layer/Tile', function () {
     });
 
     afterEach(() => {
-      map.setTarget(null);
-      document.body.removeChild(target);
+      disposeMap(map);
     });
 
     it('gets pixel data', () => {
@@ -174,8 +199,7 @@ describe('ol/layer/Tile', function () {
     });
 
     afterEach(function () {
-      map.dispose();
-      document.body.removeChild(target);
+      disposeMap(map);
     });
 
     it('sets frameState.animate to false when opacity is 1', function (done) {

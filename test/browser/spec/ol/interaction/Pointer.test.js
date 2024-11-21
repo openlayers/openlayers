@@ -155,7 +155,7 @@ describe('ol/interaction/Pointer', function () {
             center: [0, 0],
             zoom: 0,
           }),
-        })
+        }),
       );
       handler.map_.renderSync();
       element = handler.element_;
@@ -182,7 +182,7 @@ describe('ol/interaction/Pointer', function () {
     });
 
     afterEach(function () {
-      document.body.removeChild(target);
+      target.remove();
     });
 
     it('tracks pointers correctly', function () {

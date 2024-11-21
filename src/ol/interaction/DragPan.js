@@ -19,7 +19,7 @@ import {
 
 /**
  * @typedef {Object} Options
- * @property {import("../events/condition.js").Condition} [condition] A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
+ * @property {import("../events/condition.js").Condition} [condition] A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link module:ol/events/condition.noModifierKeys} and {@link module:ol/events/condition.primaryAction}.
  * @property {boolean} [onFocusOnly=false] When the map's target has a `tabindex` attribute set,
@@ -56,11 +56,13 @@ class DragPan extends PointerInteraction {
 
     /**
      * @type {number}
+     * @private
      */
     this.lastPointersCount_;
 
     /**
      * @type {boolean}
+     * @private
      */
     this.panning_ = false;
 
@@ -86,6 +88,7 @@ class DragPan extends PointerInteraction {
   /**
    * Handle pointer drag events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @override
    */
   handleDragEvent(mapBrowserEvent) {
     const map = mapBrowserEvent.map;
@@ -124,6 +127,7 @@ class DragPan extends PointerInteraction {
    * Handle pointer up events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
+   * @override
    */
   handleUpEvent(mapBrowserEvent) {
     const map = mapBrowserEvent.map;
@@ -163,6 +167,7 @@ class DragPan extends PointerInteraction {
    * Handle pointer down events.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
+   * @override
    */
   handleDownEvent(mapBrowserEvent) {
     if (this.targetPointers.length > 0 && this.condition_(mapBrowserEvent)) {

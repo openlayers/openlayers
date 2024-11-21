@@ -30,9 +30,8 @@ describe('ol.control.ZoomSlider', function () {
   });
 
   afterEach(function () {
+    disposeMap(map);
     zoomslider.dispose();
-    map.dispose();
-    document.body.removeChild(target);
     zoomslider = null;
     map = null;
     target = null;
@@ -52,7 +51,7 @@ describe('ol.control.ZoomSlider', function () {
       expect(hasUnselectableCls).to.be(true);
 
       const zoomSliderThumbs = zoomSliderContainer.querySelectorAll(
-        '.ol-zoomslider-thumb'
+        '.ol-zoomslider-thumb',
       );
       expect(zoomSliderThumbs.length).to.be(1);
 

@@ -71,10 +71,7 @@ class Source extends BaseObject {
      * @private
      * @type {boolean}
      */
-    this.attributionsCollapsible_ =
-      options.attributionsCollapsible !== undefined
-        ? options.attributionsCollapsible
-        : true;
+    this.attributionsCollapsible_ = options.attributionsCollapsible ?? true;
 
     /**
      * This source is currently loading data. Sources that defer loading to the
@@ -227,19 +224,13 @@ function adaptAttributions(attributionLike) {
   if (!attributionLike) {
     return null;
   }
-  if (Array.isArray(attributionLike)) {
-    return function (frameState) {
-      return attributionLike;
-    };
-  }
-
   if (typeof attributionLike === 'function') {
     return attributionLike;
   }
-
-  return function (frameState) {
-    return [attributionLike];
-  };
+  if (!Array.isArray(attributionLike)) {
+    attributionLike = [attributionLike];
+  }
+  return (frameState) => attributionLike;
 }
 
 export default Source;

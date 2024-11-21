@@ -30,7 +30,7 @@ const pyramid = new WebGLTileLayer({
             url: `https://s2downloads.eox.at/demo/EOxCloudless/2019/rgb/${z}/${y}/${x}.tif`,
           },
         ],
-      })
+      }),
   ),
 });
 

@@ -1,7 +1,7 @@
+import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
-import TileLayer from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/WebGLTile.js';
 import View from '../src/ol/View.js';
-import XYZ from '../src/ol/source/XYZ.js';
 
 const key =
   'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2t0cGdwMHVnMGdlbzMxbDhwazBic2xrNSJ9.WbcTL9uj8JPAsnT9mgb7oQ';
@@ -17,7 +17,7 @@ const urls = [
     key,
 ];
 
-const source = new XYZ();
+const source = new ImageTile();
 
 const map = new Map({
   target: 'map',

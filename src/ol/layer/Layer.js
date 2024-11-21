@@ -169,7 +169,7 @@ class Layer extends BaseLayer {
 
     this.addChangeListener(
       LayerProperty.SOURCE,
-      this.handleSourcePropertyChange_
+      this.handleSourcePropertyChange_,
     );
 
     const source = options.source
@@ -181,6 +181,7 @@ class Layer extends BaseLayer {
   /**
    * @param {Array<import("./Layer.js").default>} [array] Array of layers (to be modified in place).
    * @return {Array<import("./Layer.js").default>} Array of layers.
+   * @override
    */
   getLayersArray(array) {
     array = array ? array : [];
@@ -191,6 +192,7 @@ class Layer extends BaseLayer {
   /**
    * @param {Array<import("./Layer.js").State>} [states] Optional list of layer states (to be modified in place).
    * @return {Array<import("./Layer.js").State>} List of layer states.
+   * @override
    */
   getLayerStatesArray(states) {
     states = states ? states : [];
@@ -217,6 +219,7 @@ class Layer extends BaseLayer {
 
   /**
    * @return {import("../source/Source.js").State} Source state.
+   * @override
    */
   getSourceState() {
     const source = this.getSource();
@@ -250,7 +253,7 @@ class Layer extends BaseLayer {
         source,
         EventType.CHANGE,
         this.handleSourceChange_,
-        this
+        this,
       );
       if (source.getState() === 'ready') {
         this.sourceReady_ = true;
@@ -314,8 +317,11 @@ class Layer extends BaseLayer {
     let layerState;
     if (frameState.layerStatesArray) {
       layerState = frameState.layerStatesArray.find(
-        (layerState) => layerState.layer === this
+        (layerState) => layerState.layer === this,
       );
+      if (!layerState) {
+        return false;
+      }
     } else {
       layerState = this.getLayerState();
     }
@@ -339,11 +345,7 @@ class Layer extends BaseLayer {
     if (!this.isVisible(view)) {
       return [];
     }
-    let getAttributions;
-    const source = this.getSource();
-    if (source) {
-      getAttributions = source.getAttributions();
-    }
+    const getAttributions = this.getSource()?.getAttributions();
     if (!getAttributions) {
       return [];
     }
@@ -379,6 +381,29 @@ class Layer extends BaseLayer {
    */
   unrender() {
     this.rendered = false;
+  }
+
+  /** @return {string} Declutter */
+  getDeclutter() {
+    return undefined;
+  }
+
+  /**
+   * @param {import("../Map.js").FrameState} frameState Frame state.
+   * @param {import("../layer/Layer.js").State} layerState Layer state.
+   */
+  renderDeclutter(frameState, layerState) {}
+
+  /**
+   * When the renderer follows a layout -> render approach, do the final rendering here.
+   * @param {import('../Map.js').FrameState} frameState Frame state
+   */
+  renderDeferred(frameState) {
+    const layerRenderer = this.getRenderer();
+    if (!layerRenderer) {
+      return;
+    }
+    layerRenderer.renderDeferred(frameState);
   }
 
   /**
@@ -427,25 +452,30 @@ class Layer extends BaseLayer {
       this.mapPrecomposeKey_ = listen(
         map,
         RenderEventType.PRECOMPOSE,
-        function (evt) {
-          const renderEvent =
-            /** @type {import("../render/Event.js").default} */ (evt);
-          const layerStatesArray = renderEvent.frameState.layerStatesArray;
-          const layerState = this.getLayerState(false);
-          // A layer can only be added to the map once. Use either `layer.setMap()` or `map.addLayer()`, not both.
-          assert(
-            !layerStatesArray.some(function (arrayLayerState) {
-              return arrayLayerState.layer === layerState.layer;
-            }),
-            67
-          );
-          layerStatesArray.push(layerState);
-        },
-        this
+        this.handlePrecompose_,
+        this,
       );
       this.mapRenderKey_ = listen(this, EventType.CHANGE, map.render, map);
       this.changed();
     }
+  }
+
+  /**
+   * @param {import("../events/Event.js").default} renderEvent Render event
+   * @private
+   */
+  handlePrecompose_(renderEvent) {
+    const layerStatesArray =
+      /** @type {import("../render/Event.js").default} */ (renderEvent)
+        .frameState.layerStatesArray;
+    const layerState = this.getLayerState(false);
+    assert(
+      !layerStatesArray.some(
+        (arrayLayerState) => arrayLayerState.layer === layerState.layer,
+      ),
+      'A layer can only be added to the map once. Use either `layer.setMap()` or `map.addLayer()`, not both.',
+    );
+    layerStatesArray.push(layerState);
   }
 
   /**
@@ -487,6 +517,7 @@ class Layer extends BaseLayer {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
     if (this.renderer_) {

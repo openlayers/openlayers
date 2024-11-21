@@ -70,14 +70,14 @@ describe('ol.render.canvas', function () {
         function onPropertyChange(e) {
           render.checkedFonts.removeEventListener(
             'propertychange',
-            onPropertyChange
+            onPropertyChange,
           );
           expect(e.key).to.be('normal\nnormal\nAbel');
           expect(render.textHeights).to.eql({});
 
-          document.head.removeChild(font);
+          font.remove();
           done();
-        }
+        },
       );
       render.registerFont('12px Abel');
     });
@@ -87,10 +87,10 @@ describe('ol.render.canvas', function () {
     it('respects line-height', function () {
       const height = render.measureTextHeight('12px/1.2 sans-serif');
       expect(render.measureTextHeight('12px/2.4 sans-serif')).to.be.greaterThan(
-        height
+        height,
       );
       expect(render.measureTextHeight('12px/0.1 sans-serif')).to.be.lessThan(
-        height
+        height,
       );
     });
   });
@@ -114,7 +114,7 @@ describe('ol.render.canvas', function () {
     it('draws the image with correct parameters', function () {
       const layerContext = {
         save: sinon.spy(),
-        setTransform: sinon.spy(),
+        transform: sinon.spy(),
         drawImage: sinon.spy(),
         restore: sinon.spy(),
         globalAlpha: 1,
@@ -139,12 +139,12 @@ describe('ol.render.canvas', function () {
         h,
         x,
         y,
-        scale
+        scale,
       );
 
       expect(layerContext.save.callCount).to.be(1);
-      expect(layerContext.setTransform.callCount).to.be(1);
-      expect(layerContext.setTransform.firstCall.args).to.eql(transform);
+      expect(layerContext.transform.callCount).to.be(1);
+      expect(layerContext.transform.firstCall.args).to.eql(transform);
       expect(layerContext.drawImage.callCount).to.be(1);
       expect(layerContext.globalAlpha).to.be(0.5);
       expect(layerContext.restore.callCount).to.be(1);

@@ -27,6 +27,7 @@ class XMLFeature extends FeatureFormat {
 
   /**
    * @return {import("./Feature.js").Type} Format.
+   * @override
    */
   getType() {
     return 'xml';
@@ -39,6 +40,7 @@ class XMLFeature extends FeatureFormat {
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {import("../Feature.js").default} Feature.
    * @api
+   * @override
    */
   readFeature(source, options) {
     if (!source) {
@@ -51,7 +53,7 @@ class XMLFeature extends FeatureFormat {
     if (isDocument(source)) {
       return this.readFeatureFromDocument(
         /** @type {Document} */ (source),
-        options
+        options,
       );
     }
     return this.readFeatureFromNode(/** @type {Element} */ (source), options);
@@ -86,6 +88,7 @@ class XMLFeature extends FeatureFormat {
    * @param {import("./Feature.js").ReadOptions} [options] Options.
    * @return {Array<import("../Feature.js").default>} Features.
    * @api
+   * @override
    */
   readFeatures(source, options) {
     if (!source) {
@@ -98,7 +101,7 @@ class XMLFeature extends FeatureFormat {
     if (isDocument(source)) {
       return this.readFeaturesFromDocument(
         /** @type {Document} */ (source),
-        options
+        options,
       );
     }
     return this.readFeaturesFromNode(/** @type {Element} */ (source), options);
@@ -117,7 +120,7 @@ class XMLFeature extends FeatureFormat {
       if (n.nodeType == Node.ELEMENT_NODE) {
         extend(
           features,
-          this.readFeaturesFromNode(/** @type {Element} */ (n), options)
+          this.readFeaturesFromNode(/** @type {Element} */ (n), options),
         );
       }
     }
@@ -141,6 +144,7 @@ class XMLFeature extends FeatureFormat {
    * @param {Document|Element|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @return {import("../geom/Geometry.js").default} Geometry.
+   * @override
    */
   readGeometry(source, options) {
     if (!source) {
@@ -153,7 +157,7 @@ class XMLFeature extends FeatureFormat {
     if (isDocument(source)) {
       return this.readGeometryFromDocument(
         /** @type {Document} */ (source),
-        options
+        options,
       );
     }
     return this.readGeometryFromNode(/** @type {Element} */ (source), options);
@@ -185,6 +189,7 @@ class XMLFeature extends FeatureFormat {
    * @param {Document|Element|Object|string} source Source.
    * @return {import("../proj/Projection.js").default} Projection.
    * @api
+   * @override
    */
   readProjection(source) {
     if (!source) {
@@ -224,6 +229,7 @@ class XMLFeature extends FeatureFormat {
    * @param {import("../Feature.js").default} feature Feature.
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string} Encoded feature.
+   * @override
    */
   writeFeature(feature, options) {
     const node = this.writeFeatureNode(feature, options);
@@ -247,6 +253,7 @@ class XMLFeature extends FeatureFormat {
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string} Result.
    * @api
+   * @override
    */
   writeFeatures(features, options) {
     const node = this.writeFeaturesNode(features, options);
@@ -268,6 +275,7 @@ class XMLFeature extends FeatureFormat {
    * @param {import("../geom/Geometry.js").default} geometry Geometry.
    * @param {import("./Feature.js").WriteOptions} [options] Write options.
    * @return {string} Encoded geometry.
+   * @override
    */
   writeGeometry(geometry, options) {
     const node = this.writeGeometryNode(geometry, options);

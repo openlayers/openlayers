@@ -67,12 +67,12 @@ describe('ol.layer.Graticule', function () {
       expect(graticule.meridiansLabels_.length).to.be(13);
       expect(graticule.meridiansLabels_[0].text).to.be('0°');
       expect(
-        graticule.meridiansLabels_[0].geom.getCoordinates()[0]
+        graticule.meridiansLabels_[0].geom.getCoordinates()[0],
       ).to.roughlyEqual(0, 1e-9);
       expect(graticule.parallelsLabels_.length).to.be(3);
       expect(graticule.parallelsLabels_[0].text).to.be('0°');
       expect(
-        graticule.parallelsLabels_[0].geom.getCoordinates()[1]
+        graticule.parallelsLabels_[0].geom.getCoordinates()[1],
       ).to.roughlyEqual(0, 1e-9);
       feature.set('graticule_label', graticule.meridiansLabels_[0].text);
       expect(graticule.lonLabelStyle_(feature).getText().getText()).to.be('0°');
@@ -114,12 +114,12 @@ describe('ol.layer.Graticule', function () {
       expect(graticule.meridiansLabels_[0].text).to.be('0°');
       const coordinates = fromLonLat([360, 0]);
       expect(
-        graticule.meridiansLabels_[0].geom.getCoordinates()[0]
+        graticule.meridiansLabels_[0].geom.getCoordinates()[0],
       ).to.roughlyEqual(coordinates[0], 1e-9);
       expect(graticule.parallelsLabels_.length).to.be(3);
       expect(graticule.parallelsLabels_[0].text).to.be('0°');
       expect(
-        graticule.parallelsLabels_[0].geom.getCoordinates()[1]
+        graticule.parallelsLabels_[0].geom.getCoordinates()[1],
       ).to.roughlyEqual(0, 1e-9);
       feature.set('graticule_label', graticule.meridiansLabels_[0].text);
       expect(graticule.lonLabelStyle_(feature).getText().getText()).to.be('0°');
@@ -183,11 +183,11 @@ describe('ol.layer.Graticule', function () {
       expect(graticule.latLabelStyle_(feature).getText()).to.eql(latLabelStyle);
       feature.set('graticule_label', graticule.meridiansLabels_[0].text);
       expect(graticule.lonLabelStyle_(feature).getText().getText()).to.be(
-        'lon: 0'
+        'lon: 0',
       );
       feature.set('graticule_label', graticule.parallelsLabels_[0].text);
       expect(graticule.latLabelStyle_(feature).getText().getText()).to.be(
-        'lat: 0'
+        'lat: 0',
       );
       expect(graticule.lonLabelPosition_).to.be(0.9);
       expect(graticule.latLabelPosition_).to.be(0.1);

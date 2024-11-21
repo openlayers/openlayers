@@ -19,7 +19,7 @@ import {listen, unlistenByKey} from '../events.js';
  */
 class GeometryCollection extends Geometry {
   /**
-   * @param {Array<Geometry>} [geometries] Geometries.
+   * @param {Array<Geometry>} geometries Geometries.
    */
   constructor(geometries) {
     super();
@@ -28,9 +28,10 @@ class GeometryCollection extends Geometry {
      * @private
      * @type {Array<Geometry>}
      */
-    this.geometries_ = geometries ? geometries : null;
+    this.geometries_ = geometries;
 
     /**
+     * @private
      * @type {Array<import("../events.js").EventsKey>}
      */
     this.changeEventsKeys_ = [];
@@ -50,12 +51,10 @@ class GeometryCollection extends Geometry {
    * @private
    */
   listenGeometriesChange_() {
-    if (!this.geometries_) {
-      return;
-    }
-    for (let i = 0, ii = this.geometries_.length; i < ii; ++i) {
+    const geometries = this.geometries_;
+    for (let i = 0, ii = geometries.length; i < ii; ++i) {
       this.changeEventsKeys_.push(
-        listen(this.geometries_[i], EventType.CHANGE, this.changed, this)
+        listen(geometries[i], EventType.CHANGE, this.changed, this),
       );
     }
   }
@@ -64,10 +63,12 @@ class GeometryCollection extends Geometry {
    * Make a complete copy of the geometry.
    * @return {!GeometryCollection} Clone.
    * @api
+   * @override
    */
   clone() {
-    const geometryCollection = new GeometryCollection(null);
-    geometryCollection.setGeometries(this.geometries_);
+    const geometryCollection = new GeometryCollection(
+      cloneGeometries(this.geometries_),
+    );
     geometryCollection.applyProperties(this);
     return geometryCollection;
   }
@@ -78,6 +79,7 @@ class GeometryCollection extends Geometry {
    * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
    * @param {number} minSquaredDistance Minimum squared distance.
    * @return {number} Minimum squared distance.
+   * @override
    */
   closestPointXY(x, y, closestPoint, minSquaredDistance) {
     if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
@@ -89,7 +91,7 @@ class GeometryCollection extends Geometry {
         x,
         y,
         closestPoint,
-        minSquaredDistance
+        minSquaredDistance,
       );
     }
     return minSquaredDistance;
@@ -99,6 +101,7 @@ class GeometryCollection extends Geometry {
    * @param {number} x X.
    * @param {number} y Y.
    * @return {boolean} Contains (x, y).
+   * @override
    */
   containsXY(x, y) {
     const geometries = this.geometries_;
@@ -114,6 +117,7 @@ class GeometryCollection extends Geometry {
    * @param {import("../extent.js").Extent} extent Extent.
    * @protected
    * @return {import("../extent.js").Extent} extent Extent.
+   * @override
    */
   computeExtent(extent) {
     createOrUpdateEmpty(extent);
@@ -152,7 +156,7 @@ class GeometryCollection extends Geometry {
         geometriesArray = geometriesArray.concat(
           /** @type {GeometryCollection} */ (
             geometries[i]
-          ).getGeometriesArrayRecursive()
+          ).getGeometriesArrayRecursive(),
         );
       } else {
         geometriesArray.push(geometries[i]);
@@ -165,6 +169,7 @@ class GeometryCollection extends Geometry {
    * Create a simplified version of this geometry using the Douglas Peucker algorithm.
    * @param {number} squaredTolerance Squared tolerance.
    * @return {GeometryCollection} Simplified GeometryCollection.
+   * @override
    */
   getSimplifiedGeometry(squaredTolerance) {
     if (this.simplifiedGeometryRevision !== this.getRevision()) {
@@ -192,8 +197,9 @@ class GeometryCollection extends Geometry {
       }
     }
     if (simplified) {
-      const simplifiedGeometryCollection = new GeometryCollection(null);
-      simplifiedGeometryCollection.setGeometriesArray(simplifiedGeometries);
+      const simplifiedGeometryCollection = new GeometryCollection(
+        simplifiedGeometries,
+      );
       return simplifiedGeometryCollection;
     }
     this.simplifiedGeometryMaxMinSquaredTolerance = squaredTolerance;
@@ -204,6 +210,7 @@ class GeometryCollection extends Geometry {
    * Get the type of this geometry.
    * @return {import("./Geometry.js").Type} Geometry type.
    * @api
+   * @override
    */
   getType() {
     return 'GeometryCollection';
@@ -214,6 +221,7 @@ class GeometryCollection extends Geometry {
    * @param {import("../extent.js").Extent} extent Extent.
    * @return {boolean} `true` if the geometry and the extent intersect.
    * @api
+   * @override
    */
   intersectsExtent(extent) {
     const geometries = this.geometries_;
@@ -238,6 +246,7 @@ class GeometryCollection extends Geometry {
    * @param {number} angle Rotation angle in radians.
    * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
    * @api
+   * @override
    */
   rotate(angle, anchor) {
     const geometries = this.geometries_;
@@ -256,6 +265,7 @@ class GeometryCollection extends Geometry {
    * @param {import("../coordinate.js").Coordinate} [anchor] The scale origin (defaults to the center
    *     of the geometry extent).
    * @api
+   * @override
    */
   scale(sx, sy, anchor) {
     if (!anchor) {
@@ -295,6 +305,7 @@ class GeometryCollection extends Geometry {
    * @param {import("../proj.js").TransformFunction} transformFn Transform function.
    * Called with a flat array of geometry coordinates.
    * @api
+   * @override
    */
   applyTransform(transformFn) {
     const geometries = this.geometries_;
@@ -310,6 +321,7 @@ class GeometryCollection extends Geometry {
    * @param {number} deltaX Delta X.
    * @param {number} deltaY Delta Y.
    * @api
+   * @override
    */
   translate(deltaX, deltaY) {
     const geometries = this.geometries_;
@@ -321,6 +333,7 @@ class GeometryCollection extends Geometry {
 
   /**
    * Clean up.
+   * @override
    */
   disposeInternal() {
     this.unlistenGeometriesChange_();
@@ -333,11 +346,7 @@ class GeometryCollection extends Geometry {
  * @return {Array<Geometry>} Cloned geometries.
  */
 function cloneGeometries(geometries) {
-  const clonedGeometries = [];
-  for (let i = 0, ii = geometries.length; i < ii; ++i) {
-    clonedGeometries.push(geometries[i].clone());
-  }
-  return clonedGeometries;
+  return geometries.map((geometry) => geometry.clone());
 }
 
 export default GeometryCollection;

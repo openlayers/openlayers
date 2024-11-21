@@ -83,18 +83,16 @@ class Geometry extends BaseObject {
      * @param {import("../proj.js").TransformFunction} [transform] Optional transform function.
      * @return {Geometry} Simplified geometry.
      */
-    this.simplifyTransformedInternal = memoizeOne(function (
-      revision,
-      squaredTolerance,
-      transform
-    ) {
-      if (!transform) {
-        return this.getSimplifiedGeometry(squaredTolerance);
-      }
-      const clone = this.clone();
-      clone.applyTransform(transform);
-      return clone.getSimplifiedGeometry(squaredTolerance);
-    });
+    this.simplifyTransformedInternal = memoizeOne(
+      (revision, squaredTolerance, transform) => {
+        if (!transform) {
+          return this.getSimplifiedGeometry(squaredTolerance);
+        }
+        const clone = this.clone();
+        clone.applyTransform(transform);
+        return clone.getSimplifiedGeometry(squaredTolerance);
+      },
+    );
   }
 
   /**
@@ -108,7 +106,7 @@ class Geometry extends BaseObject {
     return this.simplifyTransformedInternal(
       this.getRevision(),
       squaredTolerance,
-      transform
+      transform,
     );
   }
 
@@ -301,7 +299,7 @@ class Geometry extends BaseObject {
    *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
    * @param {import("../proj.js").ProjectionLike} destination The desired projection.  Can be a
    *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
-   * @return {Geometry} This geometry.  Note that original geometry is
+   * @return {this} This geometry.  Note that original geometry is
    *     modified in place.
    * @api
    */
@@ -322,21 +320,21 @@ class Geometry extends BaseObject {
               -scale,
               0,
               0,
-              0
+              0,
             );
-            transform2D(
+            const transformed = transform2D(
               inCoordinates,
               0,
               inCoordinates.length,
               stride,
               tmpTransform,
-              outCoordinates
-            );
-            return getTransform(sourceProj, destination)(
-              inCoordinates,
               outCoordinates,
-              stride
             );
+            const projTransform = getTransform(sourceProj, destination);
+            if (projTransform) {
+              return projTransform(transformed, transformed, stride);
+            }
+            return transformed;
           }
         : getTransform(sourceProj, destination);
     this.applyTransform(transformFn);

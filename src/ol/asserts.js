@@ -1,14 +1,13 @@
 /**
  * @module ol/asserts
  */
-import AssertionError from './AssertionError.js';
 
 /**
  * @param {*} assertion Assertion we expected to be truthy.
- * @param {number} errorCode Error code.
+ * @param {string} errorMessage Error message.
  */
-export function assert(assertion, errorCode) {
+export function assert(assertion, errorMessage) {
   if (!assertion) {
-    throw new AssertionError(errorCode);
+    throw new Error(errorMessage);
   }
 }

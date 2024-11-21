@@ -6,13 +6,12 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
 import proj4 from 'proj4';
-import {Fill, Style} from '../src/ol/style.js';
 import {register} from '../src/ol/proj/proj4.js';
 
 proj4.defs(
   'ESRI:53009',
   '+proj=moll +lon_0=0 +x_0=0 +y_0=0 +a=6371000 ' +
-    '+b=6371000 +units=m +no_defs'
+    '+b=6371000 +units=m +no_defs',
 );
 register(proj4);
 
@@ -27,12 +26,6 @@ const sphereMollweideProjection = new Projection({
   worldExtent: [-179, -89.99, 179, 89.99],
 });
 
-const style = new Style({
-  fill: new Fill({
-    color: '#eeeeee',
-  }),
-});
-
 const map = new Map({
   keyboardEventTarget: document,
   layers: [
@@ -41,10 +34,8 @@ const map = new Map({
         url: 'https://openlayers.org/data/vector/ecoregions.json',
         format: new GeoJSON(),
       }),
-      style: function (feature) {
-        const color = feature.get('COLOR_BIO') || '#eeeeee';
-        style.getFill().setColor(color);
-        return style;
+      style: {
+        'fill-color': ['string', ['get', 'COLOR_BIO'], '#eee'],
       },
     }),
     new Graticule(),

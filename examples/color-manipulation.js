@@ -1,7 +1,7 @@
 import ImageLayer from '../src/ol/layer/Image.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {Raster as RasterSource, Stamen} from '../src/ol/source.js';
+import {Raster as RasterSource, StadiaMaps} from '../src/ol/source.js';
 
 /**
  * Color manipulation functions below are adapted from
@@ -27,13 +27,13 @@ function rgb2hcl(pixel) {
   const blue = rgb2xyz(pixel[2]);
 
   const x = xyz2lab(
-    (0.4124564 * red + 0.3575761 * green + 0.1804375 * blue) / Xn
+    (0.4124564 * red + 0.3575761 * green + 0.1804375 * blue) / Xn,
   );
   const y = xyz2lab(
-    (0.2126729 * red + 0.7151522 * green + 0.072175 * blue) / Yn
+    (0.2126729 * red + 0.7151522 * green + 0.072175 * blue) / Yn,
   );
   const z = xyz2lab(
-    (0.0193339 * red + 0.119192 * green + 0.9503041 * blue) / Zn
+    (0.0193339 * red + 0.119192 * green + 0.9503041 * blue) / Zn,
   );
 
   const l = 116 * y - 16;
@@ -101,8 +101,8 @@ function xyz2rgb(x) {
 
 const raster = new RasterSource({
   sources: [
-    new Stamen({
-      layer: 'watercolor',
+    new StadiaMaps({
+      layer: 'stamen_watercolor',
     }),
   ],
   operation: function (pixels, data) {

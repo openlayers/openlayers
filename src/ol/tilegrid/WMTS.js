@@ -99,7 +99,7 @@ export default WMTSTileGrid;
 export function createFromCapabilitiesMatrixSet(
   matrixSet,
   extent,
-  matrixLimits
+  matrixLimits,
 ) {
   /** @type {!Array<number>} */
   const resolutions = [];
@@ -126,7 +126,7 @@ export function createFromCapabilitiesMatrixSet(
   const projection = getProjection(code);
   const metersPerUnit = projection.getMetersPerUnit();
   // swap origin x and y coordinates if axis orientation is lat/long
-  const switchOriginXY = projection.getAxisOrientation().substr(0, 2) == 'ne';
+  const switchOriginXY = projection.getAxisOrientation().startsWith('ne');
 
   matrixSet[matrixIdsPropName].sort(function (a, b) {
     return b[scaleDenominatorPropName] - a[scaleDenominatorPropName];
@@ -171,7 +171,7 @@ export function createFromCapabilitiesMatrixSet(
       }
       resolutions.push(resolution);
       tileSizes.push(
-        tileWidth == tileHeight ? tileWidth : [tileWidth, tileHeight]
+        tileWidth == tileHeight ? tileWidth : [tileWidth, tileHeight],
       );
       sizes.push([elt['MatrixWidth'], elt['MatrixHeight']]);
     }

@@ -1,6 +1,6 @@
 import KML from '../src/ol/format/KML.js';
 import Map from '../src/ol/Map.js';
-import Stamen from '../src/ol/source/Stamen.js';
+import StadiaMaps from '../src/ol/source/StadiaMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
 import {Fill, Stroke, Style} from '../src/ol/style.js';
@@ -17,7 +17,7 @@ const styleFunction = function (feature) {
   const tzOffset = feature.get('tz-offset');
   const local = new Date();
   local.setTime(
-    local.getTime() + (local.getTimezoneOffset() + (tzOffset || 0)) * 60000
+    local.getTime() + (local.getTimezoneOffset() + (tzOffset || 0)) * 60000,
   );
   // offset from local noon (in hours)
   let delta = Math.abs(12 - (local.getHours() + local.getMinutes() / 60));
@@ -68,8 +68,8 @@ vector.getSource().on('featuresloadend', function (evt) {
 });
 
 const raster = new TileLayer({
-  source: new Stamen({
-    layer: 'toner',
+  source: new StadiaMaps({
+    layer: 'stamen_toner',
   }),
 });
 

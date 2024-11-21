@@ -28,8 +28,7 @@ describe('ol/layer/Heatmap', function () {
   });
 
   afterEach(() => {
-    map.dispose();
-    document.body.removeChild(target);
+    disposeMap(map);
     layer.dispose();
   });
 
@@ -89,20 +88,19 @@ describe('ol/layer/Heatmap', function () {
 
       function hitTest(coordinate) {
         const features = map.getFeaturesAtPixel(
-          map.getPixelFromCoordinate(coordinate)
+          map.getPixelFromCoordinate(coordinate),
         );
         return features.length ? features[0] : null;
       }
 
       const renderer = layer.getRenderer();
       renderer.worker_.addEventListener('message', function (event) {
-        if (!renderer.hitRenderInstructions_) {
+        if (!renderer.renderInstructions_) {
           return;
         }
         map.renderSync();
 
         let res;
-
         res = hitTest([0, 0]);
         expect(res).to.be(feature);
         res = hitTest([20, 0]);
@@ -111,7 +109,6 @@ describe('ol/layer/Heatmap', function () {
         expect(res).to.be(feature2);
         res = hitTest([0, 14]);
         expect(res).to.be(null);
-
         done();
       });
     });

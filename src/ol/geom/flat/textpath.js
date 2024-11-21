@@ -17,6 +17,7 @@ import {rotate} from './transform.js';
  * @param {string} font The font.
  * @param {Object<string, number>} cache A cache of measured widths.
  * @param {number} rotation Rotation to apply to the flatCoordinates to determine whether text needs to be reversed.
+ * @param {boolean} keepUpright Whether the text needs to be kept upright
  * @return {Array<Array<*>>|null} The result array (or null if `maxAngle` was
  * exceeded). Entries of the array are x, y, anchorX, angle, chunk.
  */
@@ -32,7 +33,8 @@ export function drawTextOnPath(
   measureAndCacheTextWidth,
   font,
   cache,
-  rotation
+  rotation,
+  keepUpright = true,
 ) {
   let x2 = flatCoordinates[offset];
   let y2 = flatCoordinates[offset + 1];
@@ -69,14 +71,16 @@ export function drawTextOnPath(
   const endX = lerp(x1, x2, interpolate);
   const endY = lerp(y1, y2, interpolate);
 
-  // Keep text upright
-  let reverse;
-  if (rotation) {
-    const flat = [beginX, beginY, endX, endY];
-    rotate(flat, 0, 4, 2, rotation, flat, flat);
-    reverse = flat[0] > flat[2];
-  } else {
-    reverse = beginX > endX;
+  // Keep text upright if the option is selected
+  let reverse = false;
+  if (keepUpright) {
+    if (rotation) {
+      const flat = [beginX, beginY, endX, endY];
+      rotate(flat, 0, 4, 2, rotation, flat, flat);
+      reverse = flat[0] > flat[2];
+    } else {
+      reverse = beginX > endX;
+    }
   }
 
   const PI = Math.PI;

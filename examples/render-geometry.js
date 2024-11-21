@@ -22,7 +22,7 @@ vectorContext.drawGeometry(
   new LineString([
     [10, 10],
     [90, 90],
-  ])
+  ]),
 );
 vectorContext.drawGeometry(
   new Polygon([
@@ -32,6 +32,6 @@ vectorContext.drawGeometry(
       [2, 98],
       [2, 2],
     ],
-  ])
+  ]),
 );
 vectorContext.drawGeometry(new Point([88, 88]));

@@ -80,7 +80,7 @@ class Rotate extends Control {
     button.addEventListener(
       EventType.CLICK,
       this.handleClick_.bind(this),
-      false
+      false,
     );
 
     const cssClasses =
@@ -89,6 +89,9 @@ class Rotate extends Control {
     element.className = cssClasses;
     element.appendChild(button);
 
+    /**
+     * @private
+     */
     this.callResetNorth_ = options.resetNorth ? options.resetNorth : undefined;
 
     /**

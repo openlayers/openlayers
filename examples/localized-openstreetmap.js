@@ -21,7 +21,6 @@ const openSeaMapLayer = new TileLayer({
       'All maps © <a href="https://www.openseamap.org/">OpenSeaMap</a>',
       ATTRIBUTION,
     ],
-    opaque: false,
     url: 'https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',
   }),
 });

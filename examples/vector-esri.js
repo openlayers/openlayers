@@ -1,8 +1,8 @@
 import EsriJSON from '../src/ol/format/EsriJSON.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
-import XYZ from '../src/ol/source/XYZ.js';
 import {Fill, Stroke, Style} from '../src/ol/style.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {createXYZ} from '../src/ol/tilegrid.js';
@@ -63,7 +63,7 @@ const vectorSource = new VectorSource({
           extent[3] +
           ',"spatialReference":{"wkid":' +
           srid +
-          '}}'
+          '}}',
       ) +
       '&geometryType=esriGeometryEnvelope&inSR=' +
       srid +
@@ -76,7 +76,7 @@ const vectorSource = new VectorSource({
   strategy: tileStrategy(
     createXYZ({
       tileSize: 512,
-    })
+    }),
   ),
   attributions:
     'University of Leicester (commissioned by the ' +
@@ -96,7 +96,7 @@ const vector = new VectorLayer({
 });
 
 const raster = new TileLayer({
-  source: new XYZ({
+  source: new ImageTile({
     attributions:
       'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
       'rest/services/World_Topo_Map/MapServer">ArcGIS</a>',

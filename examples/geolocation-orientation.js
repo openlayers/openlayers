@@ -163,7 +163,7 @@ geolocateBtn.addEventListener(
 
     disableButtons();
   },
-  false
+  false,
 );
 
 // simulate device move
@@ -196,10 +196,13 @@ simulateBtn.addEventListener(
       }
       const newDate = position.timestamp;
       simulatePositionChange(position);
-      window.setTimeout(function () {
-        prevDate = newDate;
-        geolocate();
-      }, (newDate - prevDate) / 0.5);
+      window.setTimeout(
+        function () {
+          prevDate = newDate;
+          geolocate();
+        },
+        (newDate - prevDate) / 0.5,
+      );
     }
     geolocate();
 
@@ -208,7 +211,7 @@ simulateBtn.addEventListener(
 
     disableButtons();
   },
-  false
+  false,
 );
 
 function simulatePositionChange(position) {

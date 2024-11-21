@@ -161,11 +161,12 @@ const modify = new Modify({source: source, style: modifyStyle});
 let tipPoint;
 
 function styleFunction(feature, segments, drawType, tip) {
-  const styles = [style];
+  const styles = [];
   const geometry = feature.getGeometry();
   const type = geometry.getType();
   let point, label, line;
-  if (!drawType || drawType === type) {
+  if (!drawType || drawType === type || type === 'Point') {
+    styles.push(style);
     if (type === 'Polygon') {
       point = geometry.getInteriorPoint();
       label = formatArea(geometry);

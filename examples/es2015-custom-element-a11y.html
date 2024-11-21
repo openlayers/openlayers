@@ -1,0 +1,11 @@
+---
+layout: example.html
+title: Custom map element with accessible map
+shortdesc: Example of a custom element with an accessible map, which can gain focus and allows keyboard based navigation.
+docs: >
+  The example creates and registers a custom element, `ol-map`, which contains an accessible OpenLayers map. Therefore the `ol-map` element has its `tabindex` attribute set to `"0"`.
+  So the map can gain the focus and thus allows map navigation with the keyboard. Use the + and - keys to zoom in and out and the arrow keys to pan the map.
+  **Note:** Only works in browsers that supports `ShadowRoot`.
+tags: "es2015, web-component, custom-element, shadow-dom, accessibility, tabindex"
+---
+<ol-map id="map" class="map" tabindex="0"></ol-map>

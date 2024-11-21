@@ -43,11 +43,11 @@ export function tile(tileGrid) {
      */
     function (extent, resolution, projection) {
       const z = tileGrid.getZForResolution(
-        fromUserResolution(resolution, projection)
+        fromUserResolution(resolution, projection),
       );
       const tileRange = tileGrid.getTileRangeForExtentAndZ(
         fromUserExtent(extent, projection),
-        z
+        z,
       );
       /** @type {Array<import("./extent.js").Extent>} */
       const extents = [];
@@ -64,7 +64,7 @@ export function tile(tileGrid) {
           ++tileCoord[2]
         ) {
           extents.push(
-            toUserExtent(tileGrid.getTileCoordExtent(tileCoord), projection)
+            toUserExtent(tileGrid.getTileCoordExtent(tileCoord), projection),
           );
         }
       }

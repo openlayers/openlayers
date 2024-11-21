@@ -29,6 +29,7 @@ const sourceRed = new DataTile({
     return context.getImageData(0, 0, size[0], size[1]).data;
   },
   tileSize: size,
+  transition: 0,
 });
 
 const sourceBlue = new DataTile({
@@ -45,6 +46,7 @@ const sourceBlue = new DataTile({
     return context.getImageData(0, 0, size[0], size[1]).data;
   },
   tileSize: size,
+  transition: 0,
 });
 
 const layer = new TileLayer({

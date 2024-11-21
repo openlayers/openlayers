@@ -1,7 +1,9 @@
 /**
  * @module ol/style/IconImageCache
  */
-import {asString} from '../color.js';
+import ImageState from '../ImageState.js';
+import {asArray} from '../color.js';
+import {getSharedCanvasContext2D} from '../dom.js';
 
 /**
  * @classdesc
@@ -16,6 +18,12 @@ class IconImageCache {
     this.cache_ = {};
 
     /**
+     * @type {!Object<string, CanvasPattern>}
+     * @private
+     */
+    this.patternCache_ = {};
+
+    /**
      * @type {number}
      * @private
      */
@@ -25,7 +33,7 @@ class IconImageCache {
      * @type {number}
      * @private
      */
-    this.maxCacheSize_ = 32;
+    this.maxCacheSize_ = 1024;
   }
 
   /**
@@ -33,6 +41,7 @@ class IconImageCache {
    */
   clear() {
     this.cache_ = {};
+    this.patternCache_ = {};
     this.cacheSize_ = 0;
   }
 
@@ -53,6 +62,7 @@ class IconImageCache {
         const iconImage = this.cache_[key];
         if ((i++ & 3) === 0 && !iconImage.hasListener()) {
           delete this.cache_[key];
+          delete this.patternCache_[key];
           --this.cacheSize_;
         }
       }
@@ -62,29 +72,62 @@ class IconImageCache {
   /**
    * @param {string} src Src.
    * @param {?string} crossOrigin Cross origin.
-   * @param {import("../color.js").Color} color Color.
+   * @param {import("../color.js").Color|string|null} color Color.
    * @return {import("./IconImage.js").default} Icon image.
    */
   get(src, crossOrigin, color) {
-    const key = getKey(src, crossOrigin, color);
+    const key = getCacheKey(src, crossOrigin, color);
     return key in this.cache_ ? this.cache_[key] : null;
   }
 
   /**
    * @param {string} src Src.
    * @param {?string} crossOrigin Cross origin.
-   * @param {import("../color.js").Color} color Color.
-   * @param {import("./IconImage.js").default} iconImage Icon image.
+   * @param {import("../color.js").Color|string|null} color Color.
+   * @return {CanvasPattern} Icon image.
    */
-  set(src, crossOrigin, color, iconImage) {
-    const key = getKey(src, crossOrigin, color);
-    this.cache_[key] = iconImage;
-    ++this.cacheSize_;
+  getPattern(src, crossOrigin, color) {
+    const key = getCacheKey(src, crossOrigin, color);
+    return key in this.patternCache_ ? this.patternCache_[key] : null;
   }
 
   /**
-   * Set the cache size of the icon cache. Default is `32`. Change this value when
-   * your map uses more than 32 different icon images and you are not caching icon
+   * @param {string} src Src.
+   * @param {?string} crossOrigin Cross origin.
+   * @param {import("../color.js").Color|string|null} color Color.
+   * @param {import("./IconImage.js").default|null} iconImage Icon image.
+   * @param {boolean} [pattern] Also cache a `'repeat'` pattern with this `iconImage`.
+   */
+  set(src, crossOrigin, color, iconImage, pattern) {
+    const key = getCacheKey(src, crossOrigin, color);
+    const update = key in this.cache_;
+    this.cache_[key] = iconImage;
+    if (pattern) {
+      if (iconImage.getImageState() === ImageState.IDLE) {
+        iconImage.load();
+      }
+      if (iconImage.getImageState() === ImageState.LOADING) {
+        iconImage.ready().then(() => {
+          this.patternCache_[key] = getSharedCanvasContext2D().createPattern(
+            iconImage.getImage(1),
+            'repeat',
+          );
+        });
+      } else {
+        this.patternCache_[key] = getSharedCanvasContext2D().createPattern(
+          iconImage.getImage(1),
+          'repeat',
+        );
+      }
+    }
+    if (!update) {
+      ++this.cacheSize_;
+    }
+  }
+
+  /**
+   * Set the cache size of the icon cache. Default is `1024`. Change this value when
+   * your map uses more than 1024 different icon images and you are not caching icon
    * styles on the application level.
    * @param {number} maxCacheSize Cache max size.
    * @api
@@ -98,11 +141,11 @@ class IconImageCache {
 /**
  * @param {string} src Src.
  * @param {?string} crossOrigin Cross origin.
- * @param {import("../color.js").Color} color Color.
+ * @param {import("../color.js").Color|string|null} color Color.
  * @return {string} Cache key.
  */
-function getKey(src, crossOrigin, color) {
-  const colorString = color ? asString(color) : 'null';
+export function getCacheKey(src, crossOrigin, color) {
+  const colorString = color ? asArray(color) : 'null';
   return crossOrigin + ':' + src + ':' + colorString;
 }
 

@@ -1,0 +1,19 @@
+---
+layout: example.html
+title: Populated Places
+shortdesc: Scaling and coloring points according to population.
+docs: >
+  The populated places dataset has a `pop_max` field that is used in rendering the style for each place.
+  The `interpolate` operator is used to scale the `circle-radius`, rendering a point with a radius of 3
+  for places with a population under 500 thousand, growing to a point with a radius of 10 for places with
+  a population of 10 million or more.  The same `interpolate` operator is used to generate a color ramp
+  for places based on the same `pop_max` field.
+
+tags: "vector, interpolate"
+cloak:
+  - key: get_your_own_D6rA4zTHduk6KOKTXzGB
+    value: Get your own API key at https://www.maptiler.com/cloud/
+---
+<div id="map" class="map">
+  <div id="info">&nbsp;</div>
+</div>

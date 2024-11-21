@@ -77,8 +77,7 @@ describe('ol/interaction/Draw', function () {
   });
 
   afterEach(function () {
-    map.dispose();
-    document.body.removeChild(target);
+    disposeMap(map);
     clearUserProjection();
   });
 
@@ -181,7 +180,7 @@ describe('ol/interaction/Draw', function () {
           new PointerEvent('pointerup', {
             clientX: 0,
             clientY: 0,
-          })
+          }),
         );
 
         expect(draw.traceCondition_(event)).to.be(false);
@@ -201,7 +200,7 @@ describe('ol/interaction/Draw', function () {
             clientX: 0,
             clientY: 0,
             shiftKey: true,
-          })
+          }),
         );
 
         expect(draw.traceCondition_(goodEvent)).to.be(true);
@@ -213,7 +212,7 @@ describe('ol/interaction/Draw', function () {
             clientX: 0,
             clientY: 0,
             shiftKey: false,
-          })
+          }),
         );
 
         expect(draw.traceCondition_(badEvent)).to.be(false);
@@ -1120,7 +1119,7 @@ describe('ol/interaction/Draw', function () {
               [0, -100],
               [0, -50],
             ],
-          ])
+          ]),
         ),
       ]);
 
@@ -1337,7 +1336,7 @@ describe('ol/interaction/Draw', function () {
       expect(geometry).to.be.a(Circle);
       const viewProjection = map.getView().getProjection();
       expect(geometry.getCenter()).to.eql(
-        transform([10, -20], viewProjection, userProjection)
+        transform([10, -20], viewProjection, userProjection),
       );
       const radius = geometry
         .clone()
@@ -1366,7 +1365,7 @@ describe('ol/interaction/Draw', function () {
       expect(geometry).to.be.a(Circle);
       const viewProjection = map.getView().getProjection();
       expect(geometry.getCenter()).to.eql(
-        transform([10, -20], viewProjection, userProjection)
+        transform([10, -20], viewProjection, userProjection),
       );
       const radius = geometry
         .clone()
@@ -1851,7 +1850,7 @@ describe('ol/interaction/Draw', function () {
     it('creates a box-shaped polygon in Circle mode in a user projection', function () {
       proj4.defs(
         'ESRI:54009',
-        '+proj=moll +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs'
+        '+proj=moll +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs',
       );
       register(proj4);
       const userProjection = 'ESRI:54009';
@@ -1911,7 +1910,7 @@ describe('ol/interaction/Draw', function () {
           [0, 0],
           [1, 1],
           [2, 0],
-        ])
+        ]),
       );
     });
 
@@ -1932,6 +1931,34 @@ describe('ol/interaction/Draw', function () {
       listen(draw, 'drawstart', spy);
       draw.extend(feature);
       expect(spy.callCount).to.be(1);
+    });
+  });
+
+  describe('append coordinates when drawing a LineString feature with maxPoints', () => {
+    let draw;
+    beforeEach(() => {
+      draw = new Draw({
+        source: source,
+        type: 'LineString',
+        maxPoints: 2,
+      });
+      map.addInteraction(draw);
+    });
+    it('finishes drawing when starting empty and appending maxPoints coordinates', (done) => {
+      draw.once('drawend', () => {
+        try {
+          setTimeout(() => {
+            expect(source.getFeatures()).to.have.length(1);
+            done();
+          }, 0);
+        } catch (e) {
+          done(e);
+        }
+      });
+      draw.appendCoordinates([
+        [0, 0],
+        [1, 1],
+      ]);
     });
   });
 

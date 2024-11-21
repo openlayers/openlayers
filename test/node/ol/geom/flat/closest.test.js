@@ -11,7 +11,7 @@ describe('ol/geom/flat/closest.js', function () {
     describe('maxSquaredDelta', function () {
       it('returns the expected value in simple cases', function () {
         expect(
-          maxSquaredDelta(flatCoordinates, 0, flatCoordinates.length, 2, 0)
+          maxSquaredDelta(flatCoordinates, 0, flatCoordinates.length, 2, 0),
         ).to.be(9);
       });
     });
@@ -19,7 +19,7 @@ describe('ol/geom/flat/closest.js', function () {
     describe('assignClosestPoint', function () {
       it('returns the expected value', function () {
         const maxDelta = Math.sqrt(
-          maxSquaredDelta(flatCoordinates, 0, flatCoordinates.length, 2, 0)
+          maxSquaredDelta(flatCoordinates, 0, flatCoordinates.length, 2, 0),
         );
         expect(maxDelta).to.be(3);
         const closestPoint = [NaN, NaN];
@@ -34,8 +34,8 @@ describe('ol/geom/flat/closest.js', function () {
             0,
             0,
             closestPoint,
-            Infinity
-          )
+            Infinity,
+          ),
         ).to.be(0);
         expect(closestPoint).to.eql([0, 0]);
         expect(
@@ -49,8 +49,8 @@ describe('ol/geom/flat/closest.js', function () {
             4,
             1,
             closestPoint,
-            Infinity
-          )
+            Infinity,
+          ),
         ).to.be(1);
         expect(closestPoint).to.eql([4, 0]);
         expect(
@@ -64,8 +64,8 @@ describe('ol/geom/flat/closest.js', function () {
             5,
             2,
             closestPoint,
-            Infinity
-          )
+            Infinity,
+          ),
         ).to.be(4);
         expect(closestPoint).to.eql([5, 0]);
         expect(
@@ -79,8 +79,8 @@ describe('ol/geom/flat/closest.js', function () {
             10,
             100,
             closestPoint,
-            Infinity
-          )
+            Infinity,
+          ),
         ).to.be(10000);
         expect(closestPoint).to.eql([10, 0]);
       });
@@ -117,7 +117,7 @@ describe('ol/geom/flat/closest.js', function () {
     describe('maxSquaredDelta', function () {
       it('returns the expected value', function () {
         expect(
-          maxSquaredDelta(flatCoordinates, 0, flatCoordinates.length, 2, 0)
+          maxSquaredDelta(flatCoordinates, 0, flatCoordinates.length, 2, 0),
         ).to.roughlyEqual(1389.1058, 1e-9);
       });
     });
@@ -125,7 +125,7 @@ describe('ol/geom/flat/closest.js', function () {
     describe('assignClosestPoint', function () {
       it('returns the expected value', function () {
         const maxDelta = Math.sqrt(
-          maxSquaredDelta(flatCoordinates, 0, flatCoordinates.length, 2, 0)
+          maxSquaredDelta(flatCoordinates, 0, flatCoordinates.length, 2, 0),
         );
         expect(maxDelta).to.roughlyEqual(Math.sqrt(1389.1058), 1e-9);
         const closestPoint = [NaN, NaN];
@@ -140,8 +140,8 @@ describe('ol/geom/flat/closest.js', function () {
             0,
             0,
             closestPoint,
-            Infinity
-          )
+            Infinity,
+          ),
         ).to.roughlyEqual(110902.405, 1e-9);
         expect(closestPoint).to.eql([292.41, 159.37]);
         expect(
@@ -155,8 +155,8 @@ describe('ol/geom/flat/closest.js', function () {
             500,
             500,
             closestPoint,
-            Infinity
-          )
+            Infinity,
+          ),
         ).to.roughlyEqual(106407.905, 1e-9);
         expect(closestPoint).to.eql([671.55, 222.55]);
         expect(
@@ -170,8 +170,8 @@ describe('ol/geom/flat/closest.js', function () {
             1000,
             500,
             closestPoint,
-            Infinity
-          )
+            Infinity,
+          ),
         ).to.roughlyEqual(18229.4425, 1e-9);
         expect(closestPoint).to.eql([866.36, 480.77]);
       });
@@ -185,7 +185,13 @@ describe('ol/geom/flat/closest.js', function () {
     describe('assignClosestPoint', function () {
       it('interpolates M coordinates', function () {
         const maxDelta = Math.sqrt(
-          maxSquaredDelta(flatCoordinates, 0, flatCoordinates.length, stride, 0)
+          maxSquaredDelta(
+            flatCoordinates,
+            0,
+            flatCoordinates.length,
+            stride,
+            0,
+          ),
         );
         expect(maxDelta).to.roughlyEqual(Math.sqrt(8), 1e-9);
         const closestPoint = [NaN, NaN];
@@ -200,8 +206,8 @@ describe('ol/geom/flat/closest.js', function () {
             1,
             1,
             closestPoint,
-            Infinity
-          )
+            Infinity,
+          ),
         ).to.roughlyEqual(0, 1e-9);
         expect(closestPoint).to.have.length(stride);
         expect(closestPoint[0]).to.be(1);

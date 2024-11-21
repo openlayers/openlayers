@@ -14,7 +14,7 @@ import {clamp} from '../math.js';
 /**
  * @typedef {Object} Options
  * @property {import("../events/condition.js").Condition} [condition] A function that
- * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled. Default is
  * {@link module:ol/events/condition.always}.
  * @property {boolean} [onFocusOnly=false] When the map's target has a `tabindex` attribute set,
@@ -43,7 +43,7 @@ class MouseWheelZoom extends Interaction {
     options = options ? options : {};
 
     super(
-      /** @type {import("./Interaction.js").InteractionOptions} */ (options)
+      /** @type {import("./Interaction.js").InteractionOptions} */ (options),
     );
 
     /**
@@ -104,7 +104,7 @@ class MouseWheelZoom extends Interaction {
 
     /**
      * @private
-     * @type {?import("../coordinate.js").Coordinate}
+     * @type {?import("../pixel.js").Pixel}
      */
     this.lastAnchor_ = null;
 
@@ -116,7 +116,7 @@ class MouseWheelZoom extends Interaction {
 
     /**
      * @private
-     * @type {?}
+     * @type {ReturnType<typeof setTimeout>}
      */
     this.timeoutId_;
 
@@ -129,12 +129,14 @@ class MouseWheelZoom extends Interaction {
     /**
      * Trackpad events separated by this delay will be considered separate
      * interactions.
+     * @private
      * @type {number}
      */
     this.trackpadEventGap_ = 400;
 
     /**
-     * @type {?}
+     * @private
+     * @type {ReturnType<typeof setTimeout>}
      */
     this.trackpadTimeoutId_;
 
@@ -159,7 +161,7 @@ class MouseWheelZoom extends Interaction {
     view.endInteraction(
       undefined,
       this.lastDelta_ ? (this.lastDelta_ > 0 ? 1 : -1) : 0,
-      this.lastAnchor_
+      this.lastAnchor_ ? map.getCoordinateFromPixel(this.lastAnchor_) : null,
     );
   }
 
@@ -168,6 +170,7 @@ class MouseWheelZoom extends Interaction {
    * zooms the map.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
    * @return {boolean} `false` to stop event propagation.
+   * @override
    */
   handleEvent(mapBrowserEvent) {
     if (!this.condition_(mapBrowserEvent)) {
@@ -185,7 +188,7 @@ class MouseWheelZoom extends Interaction {
     wheelEvent.preventDefault();
 
     if (this.useAnchor_) {
-      this.lastAnchor_ = mapBrowserEvent.coordinate;
+      this.lastAnchor_ = mapBrowserEvent.pixel;
     }
 
     // Delta normalisation inspired by
@@ -231,9 +234,12 @@ class MouseWheelZoom extends Interaction {
       }
       this.trackpadTimeoutId_ = setTimeout(
         this.endInteraction_.bind(this),
-        this.timeout_
+        this.timeout_,
       );
-      view.adjustZoom(-delta / this.deltaPerZoom_, this.lastAnchor_);
+      view.adjustZoom(
+        -delta / this.deltaPerZoom_,
+        this.lastAnchor_ ? map.getCoordinateFromPixel(this.lastAnchor_) : null,
+      );
       this.startTime_ = now;
       return false;
     }
@@ -245,7 +251,7 @@ class MouseWheelZoom extends Interaction {
     clearTimeout(this.timeoutId_);
     this.timeoutId_ = setTimeout(
       this.handleWheelZoom_.bind(this, map),
-      timeLeft
+      timeLeft,
     );
 
     return false;
@@ -264,13 +270,18 @@ class MouseWheelZoom extends Interaction {
       -clamp(
         this.totalDelta_,
         -this.maxDelta_ * this.deltaPerZoom_,
-        this.maxDelta_ * this.deltaPerZoom_
+        this.maxDelta_ * this.deltaPerZoom_,
       ) / this.deltaPerZoom_;
     if (view.getConstrainResolution() || this.constrainResolution_) {
       // view has a zoom constraint, zoom by 1
       delta = delta ? (delta > 0 ? 1 : -1) : 0;
     }
-    zoomByDelta(view, delta, this.lastAnchor_, this.duration_);
+    zoomByDelta(
+      view,
+      delta,
+      this.lastAnchor_ ? map.getCoordinateFromPixel(this.lastAnchor_) : null,
+      this.duration_,
+    );
 
     this.mode_ = undefined;
     this.totalDelta_ = 0;

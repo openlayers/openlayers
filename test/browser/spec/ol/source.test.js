@@ -30,11 +30,14 @@ describe('ol/source', function () {
       expect(
         getSources(
           [-10000, -10000, -5000, 10000],
-          resolutions[1]
-        )[0].getUrls()[0]
+          resolutions[1],
+        )[0].getUrls()[0],
       ).to.be('0-0-0/{z}/{x}/{y}.png');
       expect(
-        getSources([5000, -10000, 10000, 10000], resolutions[1])[0].getUrls()[0]
+        getSources(
+          [5000, -10000, 10000, 10000],
+          resolutions[1],
+        )[0].getUrls()[0],
       ).to.be('0-1-0/{z}/{x}/{y}.png');
     });
   });

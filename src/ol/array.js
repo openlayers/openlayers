@@ -50,6 +50,17 @@ export function ascending(a, b) {
 }
 
 /**
+ * Compare function sorting arrays in descending order.  Safe to use for numeric values.
+ * @param {*} a The first object to be compared.
+ * @param {*} b The second object to be compared.
+ * @return {number} A negative number, zero, or a positive number as the first
+ *     argument is greater than, equal to, or less than the second.
+ */
+export function descending(a, b) {
+  return a < b ? 1 : a > b ? -1 : 0;
+}
+
+/**
  * {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution} can use a function
  * of this type to determine which nearest resolution to use.
  *
@@ -174,8 +185,8 @@ export function remove(arr, obj) {
 }
 
 /**
- * @param {Array|Uint8ClampedArray} arr1 The first array to compare.
- * @param {Array|Uint8ClampedArray} arr2 The second array to compare.
+ * @param {Array<any>|Uint8ClampedArray} arr1 The first array to compare.
+ * @param {Array<any>|Uint8ClampedArray} arr2 The second array to compare.
  * @return {boolean} Whether the two arrays are equal.
  */
 export function equals(arr1, arr2) {

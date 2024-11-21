@@ -5,7 +5,11 @@ import Polygon, {
   fromExtent,
 } from '../../../../src/ol/geom/Polygon.js';
 import expect from '../../expect.js';
-import {boundingExtent, isEmpty} from '../../../../src/ol/extent.js';
+import {
+  boundingExtent,
+  createEmpty,
+  isEmpty,
+} from '../../../../src/ol/extent.js';
 
 describe('ol/geom/Polygon.js', function () {
   it('cannot be constructed with a null geometry', function () {
@@ -46,7 +50,7 @@ describe('ol/geom/Polygon.js', function () {
           [1, 2],
           [3, 4],
           [5, 6],
-        ])
+        ]),
       );
       expect(polygon.getCoordinates()).to.eql([
         [
@@ -60,7 +64,7 @@ describe('ol/geom/Polygon.js', function () {
           [7, 8],
           [9, 10],
           [11, 12],
-        ])
+        ]),
       );
       expect(polygon.getCoordinates()).to.eql([
         [
@@ -268,7 +272,7 @@ describe('ol/geom/Polygon.js', function () {
     describe('#intersectsExtent', function () {
       it('does not intersect outside extent', function () {
         expect(polygon.intersectsExtent(boundingExtent([outsideOuter]))).to.be(
-          false
+          false,
         );
       });
 
@@ -281,13 +285,13 @@ describe('ol/geom/Polygon.js', function () {
         const firstMidY = (outerRing[0][1] + outerRing[1][1]) / 2;
 
         expect(
-          polygon.intersectsExtent(boundingExtent([[firstMidX, firstMidY]]))
+          polygon.intersectsExtent(boundingExtent([[firstMidX, firstMidY]])),
         ).to.be(true);
       });
 
       it('does not intersect extent fully contained by inner ring', function () {
         expect(polygon.intersectsExtent(boundingExtent([insideInner]))).to.be(
-          false
+          false,
         );
       });
     });
@@ -370,7 +374,7 @@ describe('ol/geom/Polygon.js', function () {
     describe('#intersectsExtent', function () {
       it('does not intersect outside extent', function () {
         expect(polygon.intersectsExtent(boundingExtent([outsideOuter]))).to.be(
-          false
+          false,
         );
       });
 
@@ -383,13 +387,13 @@ describe('ol/geom/Polygon.js', function () {
         const firstMidY = (outerRing[0][1] + outerRing[1][1]) / 2;
 
         expect(
-          polygon.intersectsExtent(boundingExtent([[firstMidX, firstMidY]]))
+          polygon.intersectsExtent(boundingExtent([[firstMidX, firstMidY]])),
         ).to.be(true);
       });
 
       it('does not intersect extent fully contained by inner ring', function () {
         expect(polygon.intersectsExtent(boundingExtent([insideInner]))).to.be(
-          false
+          false,
         );
       });
     });
@@ -487,7 +491,7 @@ describe('ol/geom/Polygon.js', function () {
     describe('#intersectsExtent', function () {
       it('does not intersect outside extent', function () {
         expect(polygon.intersectsExtent(boundingExtent([outsideOuter]))).to.be(
-          false
+          false,
         );
       });
 
@@ -500,16 +504,16 @@ describe('ol/geom/Polygon.js', function () {
         const firstMidY = (outerRing[0][1] + outerRing[1][1]) / 2;
 
         expect(
-          polygon.intersectsExtent(boundingExtent([[firstMidX, firstMidY]]))
+          polygon.intersectsExtent(boundingExtent([[firstMidX, firstMidY]])),
         ).to.be(true);
       });
 
       it('does not intersect extent fully contained by inner ring', function () {
         expect(polygon.intersectsExtent(boundingExtent([insideInner1]))).to.be(
-          false
+          false,
         );
         expect(polygon.intersectsExtent(boundingExtent([insideInner2]))).to.be(
-          false
+          false,
         );
       });
     });
@@ -692,6 +696,12 @@ describe('ol/geom/Polygon.js', function () {
       expect(flatCoordinates).to.eql([1, 2, 1, 5, 3, 5, 3, 2, 1, 2]);
       const orientedFlatCoordinates = polygon.getOrientedFlatCoordinates();
       expect(orientedFlatCoordinates).to.eql([1, 2, 1, 5, 3, 5, 3, 2, 1, 2]);
+    });
+
+    it('throws on empty extent', function () {
+      expect(function () {
+        fromExtent(createEmpty());
+      }).to.throwException();
     });
   });
 

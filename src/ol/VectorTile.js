@@ -4,12 +4,15 @@
 import Tile from './Tile.js';
 import TileState from './TileState.js';
 
+/**
+ * @template {import('./Feature.js').FeatureLike} FeatureType
+ */
 class VectorTile extends Tile {
   /**
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {import("./TileState.js").default} state State.
    * @param {string} src Data source url.
-   * @param {import("./format/Feature.js").default} format Feature format.
+   * @param {import("./format/Feature.js").default<FeatureType>} format Feature format.
    * @param {import("./Tile.js").LoadFunction} tileLoadFunction Tile load function.
    * @param {import("./Tile.js").Options} [options] Tile options.
    */
@@ -24,19 +27,19 @@ class VectorTile extends Tile {
 
     /**
      * @private
-     * @type {import("./format/Feature.js").default}
+     * @type {import("./format/Feature.js").default<FeatureType>}
      */
     this.format_ = format;
 
     /**
      * @private
-     * @type {Array<import("./Feature.js").default>}
+     * @type {Array<FeatureType>}
      */
     this.features_ = null;
 
     /**
      * @private
-     * @type {import("./featureloader.js").FeatureLoader}
+     * @type {import("./featureloader.js").FeatureLoader<FeatureType>}
      */
     this.loader_;
 
@@ -68,8 +71,15 @@ class VectorTile extends Tile {
   }
 
   /**
+   * @return {string} Tile url.
+   */
+  getTileUrl() {
+    return this.url_;
+  }
+
+  /**
    * Get the feature format assigned for reading this tile's features.
-   * @return {import("./format/Feature.js").default} Feature format.
+   * @return {import("./format/Feature.js").default<FeatureType>} Feature format.
    * @api
    */
   getFormat() {
@@ -78,7 +88,7 @@ class VectorTile extends Tile {
 
   /**
    * Get the features for this tile. Geometries will be in the view projection.
-   * @return {Array<import("./Feature.js").FeatureLike>} Features.
+   * @return {Array<FeatureType>} Features.
    * @api
    */
   getFeatures() {
@@ -87,6 +97,7 @@ class VectorTile extends Tile {
 
   /**
    * Load not yet loaded URI.
+   * @override
    */
   load() {
     if (this.state == TileState.IDLE) {
@@ -100,7 +111,7 @@ class VectorTile extends Tile {
 
   /**
    * Handler for successful tile load.
-   * @param {Array<import("./Feature.js").default>} features The loaded features.
+   * @param {Array<FeatureType>} features The loaded features.
    * @param {import("./proj/Projection.js").default} dataProjection Data projection.
    */
   onLoad(features, dataProjection) {
@@ -115,9 +126,9 @@ class VectorTile extends Tile {
   }
 
   /**
-   * Function for use in an {@link module:ol/source/VectorTile~VectorTile}'s `tileLoadFunction`.
+   * Function for use in a {@link module:ol/source/VectorTile~VectorTile}'s `tileLoadFunction`.
    * Sets the features for the tile.
-   * @param {Array<import("./Feature.js").default>} features Features.
+   * @param {Array<FeatureType>} features Features.
    * @api
    */
   setFeatures(features) {
@@ -127,7 +138,7 @@ class VectorTile extends Tile {
 
   /**
    * Set the feature loader for reading this tile's features.
-   * @param {import("./featureloader.js").FeatureLoader} loader Feature loader.
+   * @param {import("./featureloader.js").FeatureLoader<FeatureType>} loader Feature loader.
    * @api
    */
   setLoader(loader) {

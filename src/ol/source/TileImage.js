@@ -4,11 +4,9 @@
 import EventType from '../events/EventType.js';
 import ImageTile from '../ImageTile.js';
 import ReprojTile from '../reproj/Tile.js';
-import TileCache from '../TileCache.js';
 import TileState from '../TileState.js';
 import UrlTile from './UrlTile.js';
 import {equivalent, get as getProjection} from '../proj.js';
-import {getKey, getKeyZXY} from '../tilecoord.js';
 import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
 import {getUid} from '../util.js';
 
@@ -16,13 +14,12 @@ import {getUid} from '../util.js';
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
- * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
+ * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
- * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
@@ -40,7 +37,8 @@ import {getUid} from '../util.js';
  * service advertizes 256px by 256px tiles but actually sends 512px
  * by 512px images (for retina/hidpi devices) then `tilePixelRatio`
  * should be set to `2`.
- * @property {import("../Tile.js").UrlFunction} [tileUrlFunction] Optional function to get tile URL given a tile coordinate and the projection.
+ * @property {import("../Tile.js").UrlFunction} [tileUrlFunction] Deprecated.  Use an ImageTile source and provide a function
+ * for the url option instead.
  * @property {string} [url] URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`, may be
  * used instead of defining each one separately in the `urls` option.
@@ -58,8 +56,7 @@ import {getUid} from '../util.js';
  */
 
 /**
- * @classdesc
- * Base class for sources providing images divided into a tile grid.
+ * @deprecated Use the ol/source/ImageTile.js instead.
  *
  * @fires import("./Tile.js").TileSourceEvent
  * @api
@@ -72,7 +69,6 @@ class TileImage extends UrlTile {
     super({
       attributions: options.attributions,
       cacheSize: options.cacheSize,
-      opaque: options.opaque,
       projection: options.projection,
       state: options.state,
       tileGrid: options.tileGrid,
@@ -108,12 +104,6 @@ class TileImage extends UrlTile {
 
     /**
      * @protected
-     * @type {!Object<string, TileCache>}
-     */
-    this.tileCacheForProjection = {};
-
-    /**
-     * @protected
      * @type {!Object<string, import("../tilegrid/TileGrid.js").default>}
      */
     this.tileGridForProjection = {};
@@ -132,40 +122,9 @@ class TileImage extends UrlTile {
   }
 
   /**
-   * @return {boolean} Can expire cache.
-   */
-  canExpireCache() {
-    if (this.tileCache.canExpireCache()) {
-      return true;
-    }
-    for (const key in this.tileCacheForProjection) {
-      if (this.tileCacheForProjection[key].canExpireCache()) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @param {!Object<string, boolean>} usedTiles Used tiles.
-   */
-  expireCache(projection, usedTiles) {
-    const usedTileCache = this.getTileCacheForProjection(projection);
-
-    this.tileCache.expireCache(
-      this.tileCache == usedTileCache ? usedTiles : {}
-    );
-    for (const id in this.tileCacheForProjection) {
-      const tileCache = this.tileCacheForProjection[id];
-      tileCache.expireCache(tileCache == usedTileCache ? usedTiles : {});
-    }
-  }
-
-  /**
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {number} Gutter.
+   * @override
    */
   getGutterForProjection(projection) {
     if (
@@ -188,6 +147,7 @@ class TileImage extends UrlTile {
   /**
    * Return the key to be used for all tiles in the source.
    * @return {string} The key for all tiles.
+   * @override
    */
   getKey() {
     let key = super.getKey();
@@ -199,22 +159,8 @@ class TileImage extends UrlTile {
 
   /**
    * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {boolean} Opaque.
-   */
-  getOpaque(projection) {
-    if (
-      this.getProjection() &&
-      projection &&
-      !equivalent(this.getProjection(), projection)
-    ) {
-      return false;
-    }
-    return super.getOpaque(projection);
-  }
-
-  /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {!import("../tilegrid/TileGrid.js").default} Tile grid.
+   * @override
    */
   getTileGridForProjection(projection) {
     const thisProj = this.getProjection();
@@ -227,24 +173,6 @@ class TileImage extends UrlTile {
         getTileGridForProjection(projection);
     }
     return this.tileGridForProjection[projKey];
-  }
-
-  /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {import("../TileCache.js").default} Tile cache.
-   */
-  getTileCacheForProjection(projection) {
-    const thisProj = this.getProjection();
-    if (!thisProj || equivalent(thisProj, projection)) {
-      return this.tileCache;
-    }
-    const projKey = getUid(projection);
-    if (!(projKey in this.tileCacheForProjection)) {
-      this.tileCacheForProjection[projKey] = new TileCache(
-        this.tileCache.highWaterMark
-      );
-    }
-    return this.tileCacheForProjection[projKey];
   }
 
   /**
@@ -261,7 +189,7 @@ class TileImage extends UrlTile {
     const tileCoord = [z, x, y];
     const urlTileCoord = this.getTileCoordForTileUrlFunction(
       tileCoord,
-      projection
+      projection,
     );
     const tileUrl = urlTileCoord
       ? this.tileUrlFunction(urlTileCoord, pixelRatio, projection)
@@ -272,7 +200,7 @@ class TileImage extends UrlTile {
       tileUrl !== undefined ? tileUrl : '',
       this.crossOrigin,
       this.tileLoadFunction,
-      this.tileOptions
+      this.tileOptions,
     );
     tile.key = key;
     tile.addEventListener(EventType.CHANGE, this.handleTileChange.bind(this));
@@ -286,6 +214,7 @@ class TileImage extends UrlTile {
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {!(ImageTile|ReprojTile)} Tile.
+   * @override
    */
   getTile(z, x, y, pixelRatio, projection) {
     const sourceProjection = this.getProjection();
@@ -299,27 +228,18 @@ class TileImage extends UrlTile {
         x,
         y,
         pixelRatio,
-        sourceProjection || projection
+        sourceProjection || projection,
       );
     }
-    const cache = this.getTileCacheForProjection(projection);
     const tileCoord = [z, x, y];
-    let tile;
-    const tileCoordKey = getKey(tileCoord);
-    if (cache.containsKey(tileCoordKey)) {
-      tile = cache.get(tileCoordKey);
-    }
     const key = this.getKey();
-    if (tile && tile.key == key) {
-      return tile;
-    }
     const sourceTileGrid = this.getTileGridForProjection(sourceProjection);
     const targetTileGrid = this.getTileGridForProjection(projection);
     const wrappedTileCoord = this.getTileCoordForTileUrlFunction(
       tileCoord,
-      projection
+      projection,
     );
-    const newTile = new ReprojTile(
+    const tile = new ReprojTile(
       sourceProjection,
       sourceTileGrid,
       projection,
@@ -332,18 +252,10 @@ class TileImage extends UrlTile {
         this.getTileInternal(z, x, y, pixelRatio, sourceProjection),
       this.reprojectionErrorThreshold_,
       this.renderReprojectionEdges_,
-      this.getInterpolate()
+      this.tileOptions,
     );
-    newTile.key = key;
-
-    if (tile) {
-      newTile.interimTile = tile;
-      newTile.refreshInterimChain();
-      cache.replace(tileCoordKey, newTile);
-    } else {
-      cache.set(tileCoordKey, newTile);
-    }
-    return newTile;
+    tile.key = key;
+    return tile;
   }
 
   /**
@@ -356,33 +268,8 @@ class TileImage extends UrlTile {
    * @protected
    */
   getTileInternal(z, x, y, pixelRatio, projection) {
-    let tile = null;
-    const tileCoordKey = getKeyZXY(z, x, y);
     const key = this.getKey();
-    if (!this.tileCache.containsKey(tileCoordKey)) {
-      tile = this.createTile_(z, x, y, pixelRatio, projection, key);
-      this.tileCache.set(tileCoordKey, tile);
-    } else {
-      tile = this.tileCache.get(tileCoordKey);
-      if (tile.key != key) {
-        // The source's params changed. If the tile has an interim tile and if we
-        // can use it then we use it. Otherwise we create a new tile.  In both
-        // cases we attempt to assign an interim tile to the new tile.
-        const interimTile = tile;
-        tile = this.createTile_(z, x, y, pixelRatio, projection, key);
-
-        //make the new tile the head of the list,
-        if (interimTile.getState() == TileState.IDLE) {
-          //the old tile hasn't begun loading yet, and is now outdated, so we can simply discard it
-          tile.interimTile = interimTile.interimTile;
-        } else {
-          tile.interimTile = interimTile;
-        }
-        tile.refreshInterimChain();
-        this.tileCache.replace(tileCoordKey, tile);
-      }
-    }
-    return tile;
+    return this.createTile_(z, x, y, pixelRatio, projection, key);
   }
 
   /**
@@ -395,9 +282,6 @@ class TileImage extends UrlTile {
       return;
     }
     this.renderReprojectionEdges_ = render;
-    for (const id in this.tileCacheForProjection) {
-      this.tileCacheForProjection[id].clear();
-    }
     this.changed();
   }
 
@@ -420,13 +304,6 @@ class TileImage extends UrlTile {
       if (!(projKey in this.tileGridForProjection)) {
         this.tileGridForProjection[projKey] = tilegrid;
       }
-    }
-  }
-
-  clear() {
-    super.clear();
-    for (const id in this.tileCacheForProjection) {
-      this.tileCacheForProjection[id].clear();
     }
   }
 }

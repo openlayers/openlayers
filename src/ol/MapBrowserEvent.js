@@ -32,12 +32,14 @@ class MapBrowserEvent extends MapEvent {
     /**
      * The map pixel relative to the viewport corresponding to the original browser event.
      * @type {?import("./pixel.js").Pixel}
+     * @private
      */
     this.pixel_ = null;
 
     /**
      * The coordinate in the user projection corresponding to the original browser event.
      * @type {?import("./coordinate.js").Coordinate}
+     * @private
      */
     this.coordinate_ = null;
 
@@ -91,6 +93,7 @@ class MapBrowserEvent extends MapEvent {
    * Prevents the default browser action.
    * See https://developer.mozilla.org/en-US/docs/Web/API/event.preventDefault.
    * @api
+   * @override
    */
   preventDefault() {
     super.preventDefault();
@@ -103,6 +106,7 @@ class MapBrowserEvent extends MapEvent {
    * Prevents further propagation of the current event.
    * See https://developer.mozilla.org/en-US/docs/Web/API/event.stopPropagation.
    * @api
+   * @override
    */
   stopPropagation() {
     super.stopPropagation();

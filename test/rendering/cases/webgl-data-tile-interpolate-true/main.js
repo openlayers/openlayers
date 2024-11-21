@@ -17,6 +17,7 @@ new Map({
   layers: [
     new TileLayer({
       source: new DataTile({
+        transition: 0,
         maxZoom: 0,
         interpolate: true,
         loader: () => data,

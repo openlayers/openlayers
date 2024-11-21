@@ -145,30 +145,37 @@ const formatArea = function (polygon) {
   return output;
 };
 
+const style = new Style({
+  fill: new Fill({
+    color: 'rgba(255, 255, 255, 0.2)',
+  }),
+  stroke: new Stroke({
+    color: 'rgba(0, 0, 0, 0.5)',
+    lineDash: [10, 10],
+    width: 2,
+  }),
+  image: new CircleStyle({
+    radius: 5,
+    stroke: new Stroke({
+      color: 'rgba(0, 0, 0, 0.7)',
+    }),
+    fill: new Fill({
+      color: 'rgba(255, 255, 255, 0.2)',
+    }),
+  }),
+});
+
 function addInteraction() {
   const type = typeSelect.value == 'area' ? 'Polygon' : 'LineString';
   draw = new Draw({
     source: source,
     type: type,
-    style: new Style({
-      fill: new Fill({
-        color: 'rgba(255, 255, 255, 0.2)',
-      }),
-      stroke: new Stroke({
-        color: 'rgba(0, 0, 0, 0.5)',
-        lineDash: [10, 10],
-        width: 2,
-      }),
-      image: new CircleStyle({
-        radius: 5,
-        stroke: new Stroke({
-          color: 'rgba(0, 0, 0, 0.7)',
-        }),
-        fill: new Fill({
-          color: 'rgba(255, 255, 255, 0.2)',
-        }),
-      }),
-    }),
+    style: function (feature) {
+      const geometryType = feature.getGeometry().getType();
+      if (geometryType === type || geometryType === 'Point') {
+        return style;
+      }
+    },
   });
   map.addInteraction(draw);
 
@@ -215,7 +222,7 @@ function addInteraction() {
  */
 function createHelpTooltip() {
   if (helpTooltipElement) {
-    helpTooltipElement.parentNode.removeChild(helpTooltipElement);
+    helpTooltipElement.remove();
   }
   helpTooltipElement = document.createElement('div');
   helpTooltipElement.className = 'ol-tooltip hidden';
@@ -232,7 +239,7 @@ function createHelpTooltip() {
  */
 function createMeasureTooltip() {
   if (measureTooltipElement) {
-    measureTooltipElement.parentNode.removeChild(measureTooltipElement);
+    measureTooltipElement.remove();
   }
   measureTooltipElement = document.createElement('div');
   measureTooltipElement.className = 'ol-tooltip ol-tooltip-measure';

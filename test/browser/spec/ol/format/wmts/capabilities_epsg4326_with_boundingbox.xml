@@ -14,7 +14,7 @@
     </ows:Keywords>
     <ows:ServiceType>OGC WMTS</ows:ServiceType>
     <ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
-    <ows:AccessConstraints>Proper attribution is required for any usage. The attribution shall follow the example of the demo map at https://maps.eox.at in the lower right corner including the respective links e.g. "Terrain { Data © OpenStreetMap contributers and others, Rendering © EOX }" with links to http://www.openstreetmap.org/copyright, https://maps.eox.at/#data, and https://eox.at. Additional restrictions may apply for individual layers as indicated in the respective abstract.</ows:AccessConstraints>
+    <ows:AccessConstraints>Proper attribution is required for any usage. The attribution shall follow the example of the demo map at https://maps.eox.at in the lower right corner including the respective links e.g. "Terrain { Data © OpenStreetMap contributors and others, Rendering © EOX }" with links to http://www.openstreetmap.org/copyright, https://maps.eox.at/#data, and https://eox.at. Additional restrictions may apply for individual layers as indicated in the respective abstract.</ows:AccessConstraints>
   </ows:ServiceIdentification>
   <ows:ServiceProvider>
     <ows:ProviderName>EOX</ows:ProviderName>

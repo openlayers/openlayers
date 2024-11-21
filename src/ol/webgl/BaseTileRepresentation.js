@@ -38,19 +38,23 @@ class BaseTileRepresentation extends EventTarget {
      * @type {TileType}
      */
     this.tile;
+
+    /**
+     * @private
+     */
     this.handleTileChange_ = this.handleTileChange_.bind(this);
 
     /**
      * @type {number}
      * @protected
      */
-    this.gutter_ = options.gutter || 0;
+    this.gutter = options.gutter || 0;
 
     /**
      * @type {import("../webgl/Helper.js").default}
      * @protected
      */
-    this.helper_ = options.helper;
+    this.helper = options.helper;
 
     this.loaded = false;
     this.ready = false;
@@ -67,7 +71,7 @@ class BaseTileRepresentation extends EventTarget {
       this.tile = tile;
       this.loaded = tile.getState() === TileState.LOADED;
       if (this.loaded) {
-        this.uploadTile_();
+        this.uploadTile();
       } else {
         if (tile instanceof ImageTile) {
           const image = tile.getImage();
@@ -82,8 +86,9 @@ class BaseTileRepresentation extends EventTarget {
 
   /**
    * @abstract
+   * @protected
    */
-  uploadTile_() {
+  uploadTile() {
     abstract();
   }
 
@@ -95,11 +100,25 @@ class BaseTileRepresentation extends EventTarget {
   handleTileChange_() {
     if (this.tile.getState() === TileState.LOADED) {
       this.loaded = true;
-      this.uploadTile_();
+      this.uploadTile();
     }
   }
 
+  /**
+   * @param {import("./Helper.js").default} helper The WebGL helper.
+   */
+  setHelper(helper) {
+    this.helper = helper;
+    if (this.helper && this.loaded) {
+      this.uploadTile();
+    }
+  }
+
+  /**
+   * @override
+   */
   disposeInternal() {
+    this.setHelper(null);
     this.tile.removeEventListener(EventType.CHANGE, this.handleTileChange_);
   }
 }

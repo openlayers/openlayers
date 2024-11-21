@@ -1,11 +1,11 @@
 import Feature from '../src/ol/Feature.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/WebGLTile.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
 import WebGLPointsLayer from '../src/ol/layer/WebGLPoints.js';
-import XYZ from '../src/ol/source/XYZ.js';
 import {fromLonLat} from '../src/ol/proj.js';
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
@@ -16,11 +16,10 @@ const attributions =
 const map = new Map({
   layers: [
     new TileLayer({
-      source: new XYZ({
+      source: new ImageTile({
         attributions: attributions,
         url:
-          'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=' + key,
-        tileSize: 512,
+          'https://api.maptiler.com/maps/satellite/{z}/{x}/{y}.jpg?key=' + key,
       }),
     }),
   ],
@@ -33,7 +32,6 @@ const map = new Map({
 
 const oldColor = [255, 160, 110];
 const newColor = [180, 255, 200];
-const size = 16;
 
 const style = {
   variables: {
@@ -44,41 +42,39 @@ const style = {
     ['==', ['var', 'filterShape'], 'all'],
     ['==', ['var', 'filterShape'], ['get', 'shape']],
   ],
-  symbol: {
-    symbolType: 'image',
-    src: 'data/ufo_shapes.png',
-    size: size,
-    color: [
-      'interpolate',
-      ['linear'],
-      ['get', 'year'],
-      1950,
-      oldColor,
-      2013,
-      newColor,
-    ],
-    rotateWithView: false,
-    offset: [0, 0],
-    textureCoord: [
-      'match',
-      ['get', 'shape'],
-      'light',
-      [0, 0, 0.25, 0.5],
-      'sphere',
-      [0.25, 0, 0.5, 0.5],
-      'circle',
-      [0.25, 0, 0.5, 0.5],
-      'disc',
-      [0.5, 0, 0.75, 0.5],
-      'oval',
-      [0.5, 0, 0.75, 0.5],
-      'triangle',
-      [0.75, 0, 1, 0.5],
-      'fireball',
-      [0, 0.5, 0.25, 1],
-      [0.75, 0.5, 1, 1],
-    ],
-  },
+  'icon-src': 'data/ufo_shapes.png',
+  'icon-width': 128,
+  'icon-height': 64,
+  'icon-color': [
+    'interpolate',
+    ['linear'],
+    ['get', 'year'],
+    1950,
+    oldColor,
+    2013,
+    newColor,
+  ],
+  'icon-offset': [
+    'match',
+    ['get', 'shape'],
+    'light',
+    [0, 0],
+    'sphere',
+    [32, 0],
+    'circle',
+    [32, 0],
+    'disc',
+    [64, 0],
+    'oval',
+    [64, 0],
+    'triangle',
+    [96, 0],
+    'fireball',
+    [0, 32],
+    [96, 32],
+  ],
+  'icon-size': [32, 32],
+  'icon-scale': 0.5,
 };
 
 const shapeSelect = document.getElementById('shape-filter');
@@ -127,7 +123,7 @@ client.addEventListener('load', function () {
         shape: shape,
         duration: line[3],
         geometry: new Point(fromLonLat(coords)),
-      })
+      }),
     );
   }
   shapeTypes['all'] = features.length;
@@ -138,7 +134,7 @@ client.addEventListener('load', function () {
         attributions: 'National UFO Reporting Center',
       }),
       style: style,
-    })
+    }),
   );
   fillShapeSelect(shapeTypes);
 });

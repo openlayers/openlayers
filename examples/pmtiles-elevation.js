@@ -1,14 +1,14 @@
-/* global pmtiles */
 import DataTile from '../src/ol/source/DataTile.js';
 import Map from '../src/ol/Map.js';
 import TileLayer from '../src/ol/layer/WebGLTile.js';
 import View from '../src/ol/View.js';
+import {PMTiles} from 'pmtiles';
 import {useGeographic} from '../src/ol/proj.js';
 
 useGeographic();
 
-const tiles = new pmtiles.PMTiles(
-  'https://pub-9288c68512ed46eca46ddcade307709b.r2.dev/protomaps-sample-datasets/terrarium_z9.pmtiles'
+const tiles = new PMTiles(
+  'https://pub-9288c68512ed46eca46ddcade307709b.r2.dev/protomaps-sample-datasets/terrarium_z9.pmtiles',
 );
 
 function loadImage(src) {
@@ -20,8 +20,8 @@ function loadImage(src) {
   });
 }
 
-async function loader(z, x, y) {
-  const response = await tiles.getZxy(z, x, y);
+async function loader(z, x, y, {signal}) {
+  const response = await tiles.getZxy(z, x, y, signal);
   const blob = new Blob([response.data]);
   const src = URL.createObjectURL(blob);
   const image = await loadImage(src);
@@ -30,11 +30,21 @@ async function loader(z, x, y) {
 }
 
 // The method used to extract elevations from the DEM.
+//   red * 256 + green + blue / 256 - 32768
 function elevation(xOffset, yOffset) {
   const red = ['band', 1, xOffset, yOffset];
   const green = ['band', 2, xOffset, yOffset];
   const blue = ['band', 3, xOffset, yOffset];
-  return ['-', ['+', ['*', 256 * 256, red], ['*', 256, green], blue], 32768];
+
+  // band math operates on normalized values from 0-1
+  // so we scale by 255
+  return [
+    '+',
+    ['*', 255 * 256, red],
+    ['*', 255, green],
+    ['*', 255 / 256, blue],
+    -32768,
+  ];
 }
 
 // Generates a shaded relief image given elevation data.  Uses a 3x3
@@ -46,7 +56,7 @@ const dzdx = ['/', ['-', z1x, z0x], dp];
 const z0y = ['*', ['var', 'vert'], elevation(0, -1)];
 const z1y = ['*', ['var', 'vert'], elevation(0, 1)];
 const dzdy = ['/', ['-', z1y, z0y], dp];
-const slope = ['atan', ['^', ['+', ['^', dzdx, 2], ['^', dzdy, 2]], 0.5]];
+const slope = ['atan', ['sqrt', ['+', ['^', dzdx, 2], ['^', dzdy, 2]]]];
 const aspect = ['clamp', ['atan', ['-', 0, dzdx], dzdy], -Math.PI, Math.PI];
 const sunEl = ['*', Math.PI / 180, ['var', 'sunEl']];
 const sunAz = ['*', Math.PI / 180, ['var', 'sunAz']];
@@ -54,8 +64,9 @@ const sunAz = ['*', Math.PI / 180, ['var', 'sunAz']];
 const incidence = [
   '+',
   ['*', ['sin', sunEl], ['cos', slope]],
-  ['*', ['*', ['cos', sunEl], ['sin', slope]], ['cos', ['-', sunAz, aspect]]],
+  ['*', ['cos', sunEl], ['sin', slope], ['cos', ['-', sunAz, aspect]]],
 ];
+const scaled = ['*', 255, incidence];
 
 const variables = {};
 
@@ -69,7 +80,7 @@ const layer = new TileLayer({
   }),
   style: {
     variables: variables,
-    color: ['array', incidence, incidence, incidence, 1],
+    color: ['color', scaled],
   },
 });
 
@@ -108,7 +119,7 @@ function formatLocation([lon, lat]) {
   const NS = lat < 0 ? 'S' : 'N';
   const EW = lon < 0 ? 'W' : 'E';
   return `${Math.abs(lat).toFixed(1)}° ${NS}, ${Math.abs(lon).toFixed(
-    1
+    1,
   )}° ${EW}`;
 }
 

@@ -21,6 +21,7 @@ const raster = new RasterSource({
         maxZoom: 0,
         interpolate: true,
         loader: () => data,
+        transition: 0,
       }),
     }),
   ],

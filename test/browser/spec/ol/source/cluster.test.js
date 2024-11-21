@@ -37,6 +37,16 @@ describe('ol.source.Cluster', function () {
       expect(source.getFeatures().length).to.be(1);
       expect(source.getFeatures()[0].get('features').length).to.be(2);
     });
+    it('clusters a source with point and null features', function () {
+      const source = new Cluster({
+        source: new VectorSource({
+          features: [new Feature(new Point([0, 0])), new Feature()],
+        }),
+      });
+      source.loadFeatures(extent, 1, projection);
+      expect(source.getFeatures().length).to.be(1);
+      expect(source.getFeatures()[0].get('features').length).to.be(1);
+    });
     it('clusters with a custom geometryFunction', function () {
       const source = new Cluster({
         geometryFunction: function (feature) {
@@ -56,7 +66,7 @@ describe('ol.source.Cluster', function () {
               new LineString([
                 [0, 0],
                 [1, 1],
-              ])
+              ]),
             ),
             new Feature(
               new Polygon([
@@ -67,7 +77,7 @@ describe('ol.source.Cluster', function () {
                   [1, -1],
                   [-1, -1],
                 ],
-              ])
+              ]),
             ),
           ],
         }),

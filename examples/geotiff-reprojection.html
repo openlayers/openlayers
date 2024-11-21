@@ -1,43 +1,39 @@
 ---
 layout: example.html
 title: GeoTIFF Reprojection
-shortdesc: GeoTIFF Reprojection
+shortdesc: Demonstrates how a GeoTIFF can be rendered in a different projection.
 docs: >
-  Example of reprojection of an EPSG:4326 GeoTIFF source with 20 bytes of raw values per pixel to EPSG:3857.
-tags: "cog, webgl, style, reprojection"
+  <p>
+    This example demonstrates how data from a GeoTIFF in one projection can be displayed on a map with a
+    different projection. For other source types, it is necessary to specify the source projection when
+    it differs from the map view projection. In this example, information about the source projection is
+    included in the GeoTIFF metadata, so it doesn't need to be specified in the application code.
+  </p>
+  <p>
+    The <code>source.getView()</code> method returns a promise that resolves after the GeoTIFF metadata has
+    been fetched. This can be used to get the image projection information along with the image extent and
+    center coordinates. The <code>transform()</code> function is used to transform the source imagery center
+    coordinate when updating the view.
+  </p>
+  <p>
+    OpenLayers has built-in reprojection support for sources in Universal Transverse Mercator (UTM)
+    projections. Since the source data shown here is in UTM Zone 36 N, no additional configuration is needed
+    to reproject the data to the map projection (Spherical Mercator).
+  </p>
+  <p>
+    See these other examples for details on the following:
+    <ul>
+      <li>
+        <a href="./reprojection.html">Reprojection with Proj4js</a>
+        &mdash; using the Proj4js library to reproject raster sources between a variety of projections.
+      </li>
+      <li>
+        <a href="./cog-projection.html">Projection Lookup</a>
+        &mdash; using an external service to look up projection configuration information.
+      </li>
+    </ul>
+  </p>
+
+tags: "cog, geotiff, reprojection, utm"
 ---
 <div id="map" class="map"></div>
-<div class="controls">
-  <label for="red">Red channel</label>
-  <select id="red">
-    <option value="1" selected>visible red</option>
-    <option value="2">visible green</option>
-    <option value="3">visible blue</option>
-    <option value="4">near infrared</option>
-  </select>
-  <label>max
-    <input type="range" id="redMax" value="3000" min="2000" max="5000">
-  </label>
-
-  <label for="green">Green channel</label>
-  <select id="green">
-    <option value="1">visible red</option>
-    <option value="2" selected>visible green</option>
-    <option value="3">visible blue</option>
-    <option value="4">near infrared</option>
-  </select>
-  <label>max
-    <input type="range" id="greenMax" value="3000" min="2000" max="5000">
-  </label>
-
-  <label for="blue">Blue channel</label>
-  <select id="blue">
-    <option value="1">visible red</option>
-    <option value="2">visible green</option>
-    <option value="3" selected>visible blue</option>
-    <option value="4">near infrared</option>
-  </select>
-  <label>max
-    <input type="range" id="blueMax" value="3000" min="2000" max="5000">
-  </label>
-</div>

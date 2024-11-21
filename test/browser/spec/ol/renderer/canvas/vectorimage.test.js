@@ -59,18 +59,18 @@ describe('ol/renderer/canvas/VectorImageLayer', function () {
     });
     it('sets image to null if no features are rendered', function () {
       renderer.prepareFrame(frameState);
-      expect(renderer.image_).to.be.a(ImageCanvas);
+      expect(renderer.image).to.be.a(ImageCanvas);
 
       layer.getSource().clear();
       renderer.prepareFrame(frameState);
-      expect(renderer.image_).to.be(null);
+      expect(renderer.image).to.be(null);
     });
     it('sets correct extent with imageRatio = 2', function () {
       const extent = frameState.extent.slice();
       scaleFromCenter(extent, 2);
 
       renderer.prepareFrame(frameState);
-      const imageExtent = renderer.image_.getExtent();
+      const imageExtent = renderer.image.getExtent();
       expect(imageExtent).to.eql(extent);
     });
   });

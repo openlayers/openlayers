@@ -1,6 +1,346 @@
 ## Upgrade notes
 
-### Next version
+### Next Release
+
+#### The `transform` function throws for unknown projections
+
+Previously, the `transform()` function from the `ol/proj` module would apply the identity transform if either the source or the destination projections were unrecognized. Now this function will throw an error if it cannot perform the transform. You can check whether a projection is registered by calling the `get()` function from `ol/proj` - this function returns `null` if the projection definition for a provided identifier is not known.
+
+### 10.2.0
+
+No changes should be needed to update to this release.  See the release changelog for new features and fixes.
+
+### 10.1.0
+
+No changes should be needed to update to this release.  See the release changelog for new features and fixes.
+
+### 10.0.0
+
+#### Backwards incompatible changes
+
+##### `ol/source/VectorTile`: `getFeaturesInExtent()` method moved to `ol/layer/VectorTile`
+
+The `getFeaturesInExtent()` method of `ol/source/VectorTile` has been moved to `ol/layer/VectorTile`. The signature and behavior have not changed, so all that needs to be done is change code from e.g.
+```js
+layer.getSource().getFeaturesInExtent(extent);
+```
+to
+```js
+layer.getFeaturesInExtent(extent);
+```
+
+##### Flat styles: Removal of Type hints in `'get'` expressions
+
+For the Canvas renderer, additional arguments to the `'get'` call expression now mean access to nested properties or array items. The expression system has been improved so type hints are no longer needed. If you were previously using a type hint in a `get` expression, you have to change the expression from e.g.
+```js
+['get', 'foo', 'number[]']
+```
+to
+```js
+['get', 'foo']
+```
+
+#### Other changes
+
+##### Removal of the `opaque` option from all `Tile` sources
+
+The `opaque` option was previously used to hint the renderer to perform some optimizations on layers known to be fully opaque. This is no longer needed, and the option has been removed.
+
+### 9.2.0
+
+#### The `snap` event's feature property is now never `null`
+
+Previously, listeners for the `Snap` interaction's `snap` event received `null` as value for the `feature` property when snapped to a segment. Now, the value of the `feature` property is always set to the snapped feature.
+
+To distinguish between a vertex and a segment snap, look at the `snap` event's `segment` property. It will set to `null` on a vertex snap, and to the snapped segment on a segment snap.
+
+### 9.1.0
+
+No special changes are required when upgrading to the 9.1.0 release.
+
+### 9.0.0
+
+#### Improved render order of decluttered items
+
+Decluttered items in Vector and VectorTile layers now maintain the render order of the layers and within a layer. They do not get lifted to a higher place in the stack any more.
+
+For most use cases, this is the desired behavior. If, however, you've been relying on the previous behavior, you now have to create separate layers above the layer stack, with just the styles for the declutter items.
+
+#### Removal of `Map#flushDeclutterItems()`
+
+It is no longer necessary to call this function to put layers above decluttered symbols and text, because decluttering no longer lifts elements above the layer stack.
+
+To upgrade, simply remove the code where you use the `flushDeclutterItems()` method.
+
+#### Changes in `ol/style`
+
+* Removed the `ol/style/RegularShape`'s `radius1` property. Use `radius` for regular polygons or `radius` and `radius2` for stars.
+* Removed the `shape-radius1` property from `ol/style/flat~FlatShape`. Use  `shape-radius` instead.
+
+#### `GeometryCollection` constructor
+
+`ol/geom/GeometryCollection` can no longer be created without providing a Geometry array. Empty arrays are still valid.
+
+#### `ol/interaction/Draw`
+
+* The `finishDrawing()` method now returns the drawn feature or `null` if no drawing could be finished. Previously it returned `undefined`.
+
+#### `ZoomToExtent` control in `useGeographic` mode
+
+The `ZoomToExtent` control now expects geographic coordinates when `useGeographic` is set. Before it expected coordinates in the projection of the map.
+
+### 8.0.0
+
+#### Removal of deprecated properties and methods
+
+ * Deprecated `ol/AssertionError` and error codes have been removed.
+
+#### Backwards incompatible changes
+
+##### New StadiaMaps source replaces the Stamen source
+
+The Stamen map tiles are now hosted by Stadia Maps.  See [the announcement](http://maps.stamen.com/stadia-partnership/) about the partnership and the [migration guide](https://docs.stadiamaps.com/guides/migrating-from-stamen-map-tiles/) from Stadia Maps.
+
+If you were previously using the `Stamen` source in your application, update this to use the `StadiaMaps` source instead.
+
+```diff
+ import Map from 'ol/Map.js';
+-import Stamen from 'ol/source/Stamen.js';
++import StadiaMaps from 'ol/source/StadiaMaps.js';
+ import TileLayer from 'ol/layer/Tile.js';
+ import View from 'ol/View.js';
+
+ const map = new Map({
+   layers: [
++    // NOTE: Layers from Stadia Maps do not require an API key for localhost development or most production
++    // web deployments. See https://docs.stadiamaps.com/authentication/ for details.
+     new TileLayer({
+-      source: new Stamen({
+-        layer: 'watercolor',
++      source: new StadiaMaps({
++        layer: 'stamen_watercolor',
++        // apiKey: 'OPTIONAL'
+       }),
+     }),
+     new TileLayer({
+-      source: new Stamen({
+-        layer: 'terrain-labels',
++      source: new StadiaMaps({
++        layer: 'stamen_terrain_labels',
++        // apiKey: 'OPTIONAL'
+       }),
+     }),
+   ],
+```
+
+##### Removal of `ol/source/ImageStatic`'s `imageSize` pseudo option
+
+Simply remove this option if you used it as intended, i.e. to provide the actual image size.
+
+The `imageSize` option never worked as advertised. The intended use of `imageSize` was to provide the actual size of the `image`. This was redundant for all images except SVG images with intrinsic sizing, but for those it never worked.
+
+What the `imageSize` option actually did when a size different from the actual image size was provided (unintended use), was a modification of the `imageExtent`.
+
+So for an image with an actual width and height of 256 pixels and an incorrectly configured image size of `[254, 254]`, this was what actually happened:
+```js
+const extent = [
+  -13629027.891360067, 4539747.983913189,
+  -13619243.951739565, 4559315.863154193,
+];
+const staticOptions = {
+  url: myImageUrl,
+  imageExtent: [
+    ...getBottomLeft(extent),
+    imageExtent[0] + (getWidth(extent) / 254) * 256,
+    imageExtent[1] + (getHeight(extent) / 254) * 256,
+  ]
+};
+```
+Try to get rid of such an unintended use, or replace the `imageSize` option with an extent calculation like the above.
+
+##### Removal of `ol/style/Icon`'s `imgSize` property
+
+The `imgSize` property is no longer needed. If you had it configured, simply remove it.
+
+##### Removal of the `icon-img-size` flat style property
+
+This property is no longer needed and can simply be removed.
+
+##### Change of the symbol style format in `ol/layer/WebGLPointsLayer`
+
+The `WebGLPointsLayer` class used to rely on a custom style format that was made specifically for this layer and which looked like this:
+
+```js
+const circleStyle = {
+    symbol: {
+        symbolType: 'circle',
+        size: 10,
+        color: 'orange'
+    }
+}
+
+const iconStyle = {
+    symbol: {
+        symbolType: 'image',
+        src: '../images/icon.png',
+        size: [16, 32],
+        textureCoord: [0, 0, 0.25, 1]
+    }
+}
+```
+
+Since then, a [flat style format](https://openlayers.org/en/latest/apidoc/module-ol_style_flat.html) was introduced in the library which offered a more complete way to express styling for points, and covered the capabilities of the other renderers as well:
+
+```js
+const circleStyle = {
+    'circle-radius': 8,
+    'circle-fill-color': 'blue',
+    'circle-stroke-width': 2,
+    'circle-stroke-color': 'darkblue',
+}
+
+const starStyle = {
+    'shape-radius1': 12,
+    'shape-radius2': 6,
+    'shape-points': 5,
+    'shape-fill-color': 'blue',
+    'shape-stroke-width': 2,
+    'shape-stroke-color': 'darkblue',
+}
+
+const iconStyle = {
+    'icon-src': '../images/icon.png',
+    'icon-scale': 2,
+    'icon-size': [16, 16],
+    'icon-offset': [32, 64],
+}
+```
+
+**From now on, only this new styling format will be supported. Support for the previous styling format is dropped and any usage of it will not show anything on screen.** This is also true for the `WebGLVectorLayerRenderer` and `WebGLVectorTileRenderer` classes.
+
+Here is a quick guide to help you migrate to the new style format:
+* for `symbolType: 'circle'`:
+  * set `circle-radius` to half of the `symbol.size` value
+  * if using an array for the `symbol.size` property, use a combination of `circle-radius` and `circle-scale`
+  * set `circle-fill-color` to the `symbol.color` value
+* for `symbolType: 'triangle'`:
+  * set `shape-points` to `3`
+  * set `shape-radius` to half of the `symbol.size` value
+  * if using an array for the `symbol.size` property, use a combination of `shape-radius` and `shape-scale`
+* for `symbolType: 'square'`:
+  * set `shape-points` to `4`
+  * set `shape-radius1` to half of the `symbol.size` value
+  * set `shape-radius2` to half of the `symbol.size` value multiplied by `Math.sqrt(2)`
+  * if using an array for the `symbol.size` property, use a combination of `shape-radius1`, `shape-radius2` and `shape-scale`
+  * set `shape-fill-color` to the `symbol.color` value
+* for `symbolType: 'image'`:
+  * set `icon-src` to the `symbol.src` value
+  * set `icon-width` and `icon-height` according to the `symbol.size` value
+  * set `icon-color` to the `symbol.color` value
+  * if using the `symbol.textureCoord` property, use a combination of `icon-size` and `icon-offset` to achieve the same result; note that these are expressed in pixels!
+* for all symbol types (`*` has to be replaced by `circle`, `shape` or `icon` accordingly):
+  * set `*-rotation` to the `symbol.rotation` value
+  * set `*-opacity` to the `symbol.opacity` value
+  * set `*-displacement` to the `symbol.offset` value
+  * set `*-rotate-with-view` to the `symbol.rotateWithView` value
+
+Please note that not all the point styling options are yet supported by WebGL renderers. Unsupported options are:
+* decluttering
+* dash and line joins for outlines
+* fill patterns
+
+##### Immediate renderer does not change the context transform
+
+Previously with some styles involving image or text scale or rotation, or view rotation `ol/render/canvas/Immediate#drawFeature` and `ol/render/canvas/Immediate#drawGeometry` might reset any canvas context transform set by the application.  If you were relying on this unintended and inconsistent behavior the application must now reset the context itself.
+
+##### Removal of `ol/layer/MapboxVector`
+
+To avoid a circular dependency between the `ol` and `ol-mapbox-style` packages, this layer has been removed. If you have been using `ol/layer/MapboxVector`, you can easily switch to using `MapboxVectorLayer` from the `ol-mapbox-style` package, version 11 or greater.
+
+Before:
+```js
+import MapboxVectorLayer from 'ol/layer/MapboxVector';
+```
+
+After:
+```js
+import {MapboxVectorLayer} from 'ol-mapbox-style';
+```
+
+##### Removal of WebGL utility classes from the API
+
+The `ol/webGL/Buffer`, `ol/webgl/PostProcessingPass` and `ol/webgl/RenderTarget` classes have been removed from the API. If you rely on these, try to stop depending on them, or at least watch out for changes with every new relase, because changes or removal won't be mentioned any more in the upgrade notes.
+
+##### Default line cap changed for RegularShape and Circle style
+
+If `ol/style/RegularShape` or `ol/style/Circle` is passed an `ol/style/Stroke` with the lineDash option, the new default lineCap is 'round'. Previously the lineCap option was ignored and the canvas' default of 'butt' was used.
+
+
+### 7.5.0
+
+#### Hit detection with Text fill
+
+Previously, text labels with transparent fills were not hit detected.  Now, you can control whether a transparent fill in a text label is hit detected or not.
+
+To create a text style with a transparent fill that will be hit detected, use a fill with `'transparent'` as the color.
+```js
+// transparent fill, will be hit detected
+const style = Style({
+  text: new Text({
+    fill: new Fill({
+      color: 'transparent',
+    }),
+    stroke: new Stroke({
+      color: 'red',
+      width: 2,
+    }),
+  }),
+});
+```
+Or, if using the flat literal style syntax:
+```js
+// transparent fill, will be hit detected
+const style = {
+  'text-fill-color': 'transparent',
+  'text-stroke-color': 'red',
+  'text-stroke-width': 2,
+}
+```
+
+By contrast, if you want a transparent fill that will not be hit detected, do the following:
+```js
+// absent fill, will not be hit detected
+const style = Style({
+  text: new Text({
+    fill: null,
+    stroke: new Stroke({
+      color: 'red',
+      width: 2,
+    }),
+  }),
+});
+```
+Or, if using the flat literal style syntax:
+```js
+// absent fill, will not be hit detected
+const style = {
+  'text-fill-color': 'none',
+  'text-stroke-color': 'red',
+  'text-stroke-width': 2,
+}
+```
+
+#### Fixed `textAlign` with `placement: 'line'`
+
+The `start` and `end` behavior previously was equivalent to `right` and `left`. Now it takes the text direction into account, so it will mean `left` and `right` for left-to-right text.
+
+#### Consistent hit detection of dashed lines
+
+MultiLineString stroke, and Polygon, MultiPolygon and Circle geometry outlines are now hit detected along their entire length by `ol/Map` methods (`forEachFeatureAtPixel`, `getFeaturesAtPixel`, `hasFeatureAtPixel`) even if the line is dashed.  This is consistent with LineString stroke and the `getFeatures` methods of `ol/layer/Vector` and `ol/layer/VectorTile`.
+
+#### Hit detection of zero opacity icons
+
+`ol/style/Image` subclasses are hit detected regardless of their `opacity` setting.  This makes icon styles consistent with the use of transparent fill in regular shapes.
 
 ### 7.2.0
 
@@ -13,7 +353,7 @@ If the previous behavior is desired, configure the source with `resolutions: nul
 #### Fixed `wrapX` behavior of `ol/control/MousePosition`
 
 Previously, `ol/control/MousePosition` always displayed coordinates as-is. Now it has a `wrapX` option,
-which is `true` by default. This avoids longitudes aoutside the -180 to 180 degrees range.
+which is `true` by default. This avoids longitudes outside the -180 to 180 degrees range.
 
 If you want the previous behavior, which displays coordinates with longitudes less than -180 or greater than 180, configure the control with `wrapX: false`.
 
@@ -85,7 +425,7 @@ const source = new DataTileSource({
 
 #### Fixed coordinate dimension handling in `ol/proj`'s `addCoordinateTransforms`
 
-The `forward` and `inverse` functions passed to `addCooordinateTransforms` now receive a coordinate with all dimensions of the original coordinate, not just two. If you previosly had coordinates with more than two dimensions and added a transform like
+The `forward` and `inverse` functions passed to `addCooordinateTransforms` now receive a coordinate with all dimensions of the original coordinate, not just two. If you previously had coordinates with more than two dimensions and added a transform like
 ```js
 addCoordinateTransforms(
     'EPSG:4326',
@@ -268,7 +608,7 @@ new Layer({
 ```
 
 Please note that this may incur a significant performance loss when dealing with many layers and/or
-targetting mobile devices.
+targeting mobile devices.
 
 ##### Removal of `TOUCH` constant from `ol/has`
 

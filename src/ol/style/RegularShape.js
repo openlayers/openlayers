@@ -2,6 +2,7 @@
  * @module ol/style/RegularShape
  */
 
+import IconImage from './IconImage.js';
 import ImageState from '../ImageState.js';
 import ImageStyle from './Image.js';
 import {asArray} from '../color.js';
@@ -9,21 +10,22 @@ import {asColorLike} from '../colorlike.js';
 import {createCanvasContext2D} from '../dom.js';
 import {
   defaultFillStyle,
+  defaultLineCap,
   defaultLineJoin,
   defaultLineWidth,
   defaultMiterLimit,
   defaultStrokeStyle,
 } from '../render/canvas.js';
+import {shared as iconImageCache} from './IconImageCache.js';
 
 /**
- * Specify radius for regular polygons, or radius1 and radius2 for stars.
+ * Specify radius for regular polygons, or both radius and radius2 for stars.
  * @typedef {Object} Options
  * @property {import("./Fill.js").default} [fill] Fill style.
  * @property {number} points Number of points for stars and regular polygons. In case of a polygon, the number of points
  * is the number of sides.
- * @property {number} [radius] Radius of a regular polygon.
- * @property {number} [radius1] First radius of a star. Ignored if radius is set.
- * @property {number} [radius2] Second radius of a star.
+ * @property {number} radius Radius of a regular polygon.
+ * @property {number} [radius2] Second radius to make a star instead of a regular polygon.
  * @property {number} [angle=0] Shape's angle in radians. A value of 0 will have one of the shape's points facing up.
  * @property {Array<number>} [displacement=[0, 0]] Displacement of the shape in pixels.
  * Positive values will shift the shape right and up.
@@ -31,15 +33,16 @@ import {
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
  * @property {boolean} [rotateWithView=false] Whether to rotate the shape with the view.
  * @property {number|import("../size.js").Size} [scale=1] Scale. Unless two dimensional scaling is required a better
- * result may be obtained with appropriate settings for `radius`, `radius1` and `radius2`.
- * @property {"declutter"|"obstacle"|"none"|undefined} [declutterMode] Declutter mode.
+ * result may be obtained with appropriate settings for `radius` and `radius2`.
+ * @property {import('./Style.js').DeclutterMode} [declutterMode] Declutter mode.
  */
 
 /**
  * @typedef {Object} RenderOptions
- * @property {import("../colorlike.js").ColorLike} [strokeStyle] StrokeStyle.
+ * @property {import("../colorlike.js").ColorLike|undefined} strokeStyle StrokeStyle.
  * @property {number} strokeWidth StrokeWidth.
  * @property {number} size Size.
+ * @property {CanvasLineCap} lineCap LineCap.
  * @property {Array<number>|null} lineDash LineDash.
  * @property {number} lineDashOffset LineDashOffset.
  * @property {CanvasLineJoin} lineJoin LineJoin.
@@ -49,7 +52,7 @@ import {
 /**
  * @classdesc
  * Set regular shape style for vector features. The resulting shape will be
- * a regular polygon when `radius` is provided, or a star when `radius1` and
+ * a regular polygon when `radius` is provided, or a star when both `radius` and
  * `radius2` are provided.
  * @api
  */
@@ -58,15 +61,10 @@ class RegularShape extends ImageStyle {
    * @param {Options} options Options.
    */
   constructor(options) {
-    /**
-     * @type {boolean}
-     */
-    const rotateWithView =
-      options.rotateWithView !== undefined ? options.rotateWithView : false;
-
     super({
       opacity: 1,
-      rotateWithView: rotateWithView,
+      rotateWithView:
+        options.rotateWithView !== undefined ? options.rotateWithView : false,
       rotation: options.rotation !== undefined ? options.rotation : 0,
       scale: options.scale !== undefined ? options.scale : 1,
       displacement:
@@ -76,19 +74,13 @@ class RegularShape extends ImageStyle {
 
     /**
      * @private
-     * @type {Object<number, HTMLCanvasElement>}
-     */
-    this.canvas_ = undefined;
-
-    /**
-     * @private
-     * @type {HTMLCanvasElement}
+     * @type {HTMLCanvasElement|null}
      */
     this.hitDetectionCanvas_ = null;
 
     /**
      * @private
-     * @type {import("./Fill.js").default}
+     * @type {import("./Fill.js").default|null}
      */
     this.fill_ = options.fill !== undefined ? options.fill : null;
 
@@ -108,8 +100,7 @@ class RegularShape extends ImageStyle {
      * @protected
      * @type {number}
      */
-    this.radius_ =
-      options.radius !== undefined ? options.radius : options.radius1;
+    this.radius = options.radius;
 
     /**
      * @private
@@ -125,7 +116,7 @@ class RegularShape extends ImageStyle {
 
     /**
      * @private
-     * @type {import("./Stroke.js").default}
+     * @type {import("./Stroke.js").default|null}
      */
     this.stroke_ = options.stroke !== undefined ? options.stroke : null;
 
@@ -133,14 +124,24 @@ class RegularShape extends ImageStyle {
      * @private
      * @type {import("../size.js").Size}
      */
-    this.size_ = null;
+    this.size_;
 
     /**
      * @private
      * @type {RenderOptions}
      */
-    this.renderOptions_ = null;
+    this.renderOptions_;
 
+    /**
+     * @private
+     */
+    this.imageState_ =
+      this.fill_ && this.fill_.loading()
+        ? ImageState.LOADING
+        : ImageState.LOADED;
+    if (this.imageState_ === ImageState.LOADING) {
+      this.ready().then(() => (this.imageState_ = ImageState.LOADED));
+    }
     this.render();
   }
 
@@ -148,6 +149,7 @@ class RegularShape extends ImageStyle {
    * Clones the style.
    * @return {RegularShape} The cloned style.
    * @api
+   * @override
    */
   clone() {
     const scale = this.getScale();
@@ -173,12 +175,10 @@ class RegularShape extends ImageStyle {
    * symbolizer.
    * @return {Array<number>} Anchor.
    * @api
+   * @override
    */
   getAnchor() {
     const size = this.size_;
-    if (!size) {
-      return null;
-    }
     const displacement = this.getDisplacement();
     const scale = this.getScaleArray();
     // anchor is scaled by renderer but displacement should not be scaled
@@ -200,7 +200,7 @@ class RegularShape extends ImageStyle {
 
   /**
    * Get the fill style for the shape.
-   * @return {import("./Fill.js").default} Fill style.
+   * @return {import("./Fill.js").default|null} Fill style.
    * @api
    */
   getFill() {
@@ -209,7 +209,7 @@ class RegularShape extends ImageStyle {
 
   /**
    * Set the fill style.
-   * @param {import("./Fill.js").default} fill Fill style.
+   * @param {import("./Fill.js").default|null} fill Fill style.
    * @api
    */
   setFill(fill) {
@@ -219,10 +219,13 @@ class RegularShape extends ImageStyle {
 
   /**
    * @return {HTMLCanvasElement} Image element.
+   * @override
    */
   getHitDetectionImage() {
     if (!this.hitDetectionCanvas_) {
-      this.createHitDetectionCanvas_(this.renderOptions_);
+      this.hitDetectionCanvas_ = this.createHitDetectionCanvas_(
+        this.renderOptions_,
+      );
     }
     return this.hitDetectionCanvas_;
   }
@@ -232,19 +235,29 @@ class RegularShape extends ImageStyle {
    * @param {number} pixelRatio Pixel ratio.
    * @return {HTMLCanvasElement} Image or Canvas element.
    * @api
+   * @override
    */
   getImage(pixelRatio) {
-    let image = this.canvas_[pixelRatio];
+    const fillKey = this.fill_?.getKey();
+    const cacheKey =
+      `${pixelRatio},${this.angle_},${this.radius},${this.radius2_},${this.points_},${fillKey}` +
+      Object.values(this.renderOptions_).join(',');
+    let image = /** @type {HTMLCanvasElement} */ (
+      iconImageCache.get(cacheKey, null, null)?.getImage(1)
+    );
     if (!image) {
       const renderOptions = this.renderOptions_;
-      const context = createCanvasContext2D(
-        renderOptions.size * pixelRatio,
-        renderOptions.size * pixelRatio
-      );
+      const size = Math.ceil(renderOptions.size * pixelRatio);
+      const context = createCanvasContext2D(size, size);
       this.draw_(renderOptions, context, pixelRatio);
 
       image = context.canvas;
-      this.canvas_[pixelRatio] = image;
+      iconImageCache.set(
+        cacheKey,
+        null,
+        null,
+        new IconImage(image, undefined, null, ImageState.LOADED, null),
+      );
     }
     return image;
   }
@@ -253,6 +266,7 @@ class RegularShape extends ImageStyle {
    * Get the image pixel ratio.
    * @param {number} pixelRatio Pixel ratio.
    * @return {number} Pixel ratio.
+   * @override
    */
   getPixelRatio(pixelRatio) {
     return pixelRatio;
@@ -260,6 +274,7 @@ class RegularShape extends ImageStyle {
 
   /**
    * @return {import("../size.js").Size} Image size.
+   * @override
    */
   getImageSize() {
     return this.size_;
@@ -267,15 +282,17 @@ class RegularShape extends ImageStyle {
 
   /**
    * @return {import("../ImageState.js").default} Image state.
+   * @override
    */
   getImageState() {
-    return ImageState.LOADED;
+    return this.imageState_;
   }
 
   /**
    * Get the origin of the symbolizer.
    * @return {Array<number>} Origin.
    * @api
+   * @override
    */
   getOrigin() {
     return this.origin_;
@@ -296,7 +313,7 @@ class RegularShape extends ImageStyle {
    * @api
    */
   getRadius() {
-    return this.radius_;
+    return this.radius;
   }
 
   /**
@@ -312,6 +329,7 @@ class RegularShape extends ImageStyle {
    * Get the size of the symbolizer (in pixels).
    * @return {import("../size.js").Size} Size.
    * @api
+   * @override
    */
   getSize() {
     return this.size_;
@@ -319,7 +337,7 @@ class RegularShape extends ImageStyle {
 
   /**
    * Get the stroke style for the shape.
-   * @return {import("./Stroke.js").default} Stroke style.
+   * @return {import("./Stroke.js").default|null} Stroke style.
    * @api
    */
   getStroke() {
@@ -328,7 +346,7 @@ class RegularShape extends ImageStyle {
 
   /**
    * Set the stroke style.
-   * @param {import("./Stroke.js").default} stroke Stroke style.
+   * @param {import("./Stroke.js").default|null} stroke Stroke style.
    * @api
    */
   setStroke(stroke) {
@@ -338,16 +356,19 @@ class RegularShape extends ImageStyle {
 
   /**
    * @param {function(import("../events/Event.js").default): void} listener Listener function.
+   * @override
    */
   listenImageChange(listener) {}
 
   /**
    * Load not yet loaded URI.
+   * @override
    */
   load() {}
 
   /**
    * @param {function(import("../events/Event.js").default): void} listener Listener function.
+   * @override
    */
   unlistenImageChange(listener) {}
 
@@ -389,7 +410,7 @@ class RegularShape extends ImageStyle {
     //      |α                                   .   .
     //       /                                         .   .
     //      ° center
-    let r1 = this.radius_;
+    let r1 = this.radius;
     let r2 = this.radius2_ === undefined ? r1 : this.radius2_;
     if (r1 < r2) {
       const tmp = r1;
@@ -407,7 +428,7 @@ class RegularShape extends ImageStyle {
     if (lineJoin === 'miter' && miterRatio <= miterLimit) {
       return miterRatio * strokeWidth;
     }
-    // Calculate the distnce from center to the stroke corner where
+    // Calculate the distance from center to the stroke corner where
     // it was cut short because of the miter limit.
     //              l
     //        ----+---- <= distance from center to here is maxr
@@ -446,6 +467,7 @@ class RegularShape extends ImageStyle {
    * @protected
    */
   createRenderOptions() {
+    let lineCap = defaultLineCap;
     let lineJoin = defaultLineJoin;
     let miterLimit = 0;
     let lineDash = null;
@@ -454,35 +476,24 @@ class RegularShape extends ImageStyle {
     let strokeWidth = 0;
 
     if (this.stroke_) {
-      strokeStyle = this.stroke_.getColor();
-      if (strokeStyle === null) {
-        strokeStyle = defaultStrokeStyle;
-      }
-      strokeStyle = asColorLike(strokeStyle);
-      strokeWidth = this.stroke_.getWidth();
-      if (strokeWidth === undefined) {
-        strokeWidth = defaultLineWidth;
-      }
+      strokeStyle = asColorLike(this.stroke_.getColor() ?? defaultStrokeStyle);
+      strokeWidth = this.stroke_.getWidth() ?? defaultLineWidth;
       lineDash = this.stroke_.getLineDash();
-      lineDashOffset = this.stroke_.getLineDashOffset();
-      lineJoin = this.stroke_.getLineJoin();
-      if (lineJoin === undefined) {
-        lineJoin = defaultLineJoin;
-      }
-      miterLimit = this.stroke_.getMiterLimit();
-      if (miterLimit === undefined) {
-        miterLimit = defaultMiterLimit;
-      }
+      lineDashOffset = this.stroke_.getLineDashOffset() ?? 0;
+      lineJoin = this.stroke_.getLineJoin() ?? defaultLineJoin;
+      lineCap = this.stroke_.getLineCap() ?? defaultLineCap;
+      miterLimit = this.stroke_.getMiterLimit() ?? defaultMiterLimit;
     }
 
     const add = this.calculateLineJoinSize_(lineJoin, strokeWidth, miterLimit);
-    const maxRadius = Math.max(this.radius_, this.radius2_ || 0);
+    const maxRadius = Math.max(this.radius, this.radius2_ || 0);
     const size = Math.ceil(2 * maxRadius + add);
 
     return {
       strokeStyle: strokeStyle,
       strokeWidth: strokeWidth,
       size: size,
+      lineCap: lineCap,
       lineDash: lineDash,
       lineDashOffset: lineDashOffset,
       lineJoin: lineJoin,
@@ -496,7 +507,7 @@ class RegularShape extends ImageStyle {
   render() {
     this.renderOptions_ = this.createRenderOptions();
     const size = this.renderOptions_.size;
-    this.canvas_ = {};
+    this.hitDetectionCanvas_ = null;
     this.size_ = [size, size];
   }
 
@@ -521,13 +532,14 @@ class RegularShape extends ImageStyle {
       context.fillStyle = asColorLike(color);
       context.fill();
     }
-    if (this.stroke_) {
+    if (renderOptions.strokeStyle) {
       context.strokeStyle = renderOptions.strokeStyle;
       context.lineWidth = renderOptions.strokeWidth;
       if (renderOptions.lineDash) {
         context.setLineDash(renderOptions.lineDash);
         context.lineDashOffset = renderOptions.lineDashOffset;
       }
+      context.lineCap = renderOptions.lineCap;
       context.lineJoin = renderOptions.lineJoin;
       context.miterLimit = renderOptions.miterLimit;
       context.stroke();
@@ -537,8 +549,10 @@ class RegularShape extends ImageStyle {
   /**
    * @private
    * @param {RenderOptions} renderOptions Render options.
+   * @return {HTMLCanvasElement} Canvas containing the icon
    */
   createHitDetectionCanvas_(renderOptions) {
+    let context;
     if (this.fill_) {
       let color = this.fill_.getColor();
 
@@ -555,18 +569,11 @@ class RegularShape extends ImageStyle {
       if (opacity === 0) {
         // if a transparent fill style is set, create an extra hit-detection image
         // with a default fill style
-        const context = createCanvasContext2D(
-          renderOptions.size,
-          renderOptions.size
-        );
-        this.hitDetectionCanvas_ = context.canvas;
-
+        context = createCanvasContext2D(renderOptions.size, renderOptions.size);
         this.drawHitDetectionCanvas_(renderOptions, context);
       }
     }
-    if (!this.hitDetectionCanvas_) {
-      this.hitDetectionCanvas_ = this.getImage(1);
-    }
+    return context ? context.canvas : this.getImage(1);
   }
 
   /**
@@ -575,7 +582,7 @@ class RegularShape extends ImageStyle {
    */
   createPath_(context) {
     let points = this.points_;
-    const radius = this.radius_;
+    const radius = this.radius;
     if (points === Infinity) {
       context.arc(0, 0, radius, 0, 2 * Math.PI);
     } else {
@@ -607,7 +614,7 @@ class RegularShape extends ImageStyle {
 
     context.fillStyle = defaultFillStyle;
     context.fill();
-    if (this.stroke_) {
+    if (renderOptions.strokeStyle) {
       context.strokeStyle = renderOptions.strokeStyle;
       context.lineWidth = renderOptions.strokeWidth;
       if (renderOptions.lineDash) {
@@ -618,6 +625,13 @@ class RegularShape extends ImageStyle {
       context.miterLimit = renderOptions.miterLimit;
       context.stroke();
     }
+  }
+
+  /**
+   * @override
+   */
+  ready() {
+    return this.fill_ ? this.fill_.ready() : Promise.resolve();
   }
 }
 

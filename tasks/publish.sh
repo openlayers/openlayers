@@ -33,7 +33,7 @@ display_usage() {
 
   The tag must be pushed to ${REMOTE} before the release can be published.
 
-  Additional args afer <version> will be passed to "npm publish" (e.g. "--tag beta").
+  Additional args after <version> will be passed to "npm publish" (e.g. "--tag beta").
 
 EOF
 }

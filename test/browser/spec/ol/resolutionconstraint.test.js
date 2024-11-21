@@ -238,30 +238,30 @@ describe('ol.resolutionconstraint', function () {
         const resolutionConstraint = createSnapToPower(2, 128, 16, true);
 
         expect(
-          resolutionConstraint(150, 0, [100, 100], true)
+          resolutionConstraint(150, 0, [100, 100], true),
         ).to.be.greaterThan(128);
         expect(resolutionConstraint(150, 0, [100, 100], true)).to.be.lessThan(
-          150
+          150,
         );
         expect(
-          resolutionConstraint(130, 0, [100, 100], true)
+          resolutionConstraint(130, 0, [100, 100], true),
         ).to.be.greaterThan(128);
         expect(resolutionConstraint(130, 0, [100, 100], true)).to.be.lessThan(
-          130
+          130,
         );
         expect(resolutionConstraint(128, 0, [100, 100], true)).to.eql(128);
         expect(resolutionConstraint(16, 0, [100, 100], true)).to.eql(16);
         expect(resolutionConstraint(15, 0, [100, 100], true)).to.be.greaterThan(
-          15
+          15,
         );
         expect(resolutionConstraint(15, 0, [100, 100], true)).to.be.lessThan(
-          16
+          16,
         );
         expect(resolutionConstraint(10, 0, [100, 100], true)).to.be.greaterThan(
-          10
+          10,
         );
         expect(resolutionConstraint(10, 0, [100, 100], true)).to.be.lessThan(
-          16
+          16,
         );
       });
     });
@@ -283,34 +283,34 @@ describe('ol.resolutionconstraint', function () {
       it('returns expected resolution value', function () {
         const resolutionConstraint = createSnapToResolutions(
           [128, 64, 32, 16],
-          true
+          true,
         );
 
         expect(
-          resolutionConstraint(150, 0, [100, 100], true)
+          resolutionConstraint(150, 0, [100, 100], true),
         ).to.be.greaterThan(128);
         expect(resolutionConstraint(150, 0, [100, 100], true)).to.be.lessThan(
-          150
+          150,
         );
         expect(
-          resolutionConstraint(130, 0, [100, 100], true)
+          resolutionConstraint(130, 0, [100, 100], true),
         ).to.be.greaterThan(128);
         expect(resolutionConstraint(130, 0, [100, 100], true)).to.be.lessThan(
-          130
+          130,
         );
         expect(resolutionConstraint(128, 0, [100, 100], true)).to.eql(128);
         expect(resolutionConstraint(16, 0, [100, 100], true)).to.eql(16);
         expect(resolutionConstraint(15, 0, [100, 100], true)).to.be.greaterThan(
-          15
+          15,
         );
         expect(resolutionConstraint(15, 0, [100, 100], true)).to.be.lessThan(
-          16
+          16,
         );
         expect(resolutionConstraint(10, 0, [100, 100], true)).to.be.greaterThan(
-          10
+          10,
         );
         expect(resolutionConstraint(10, 0, [100, 100], true)).to.be.lessThan(
-          16
+          16,
         );
       });
     });
@@ -319,7 +319,7 @@ describe('ol.resolutionconstraint', function () {
       it('returns expected resolution value', function () {
         const resolutionConstraint = createSnapToResolutions(
           [128, 64, 32, 16],
-          false
+          false,
         );
 
         expect(resolutionConstraint(150, 0, [100, 100], true)).to.eql(128);
@@ -336,30 +336,30 @@ describe('ol.resolutionconstraint', function () {
         const resolutionConstraint = createMinMaxResolution(128, 16, true);
 
         expect(
-          resolutionConstraint(150, 0, [100, 100], true)
+          resolutionConstraint(150, 0, [100, 100], true),
         ).to.be.greaterThan(128);
         expect(resolutionConstraint(150, 0, [100, 100], true)).to.be.lessThan(
-          150
+          150,
         );
         expect(
-          resolutionConstraint(130, 0, [100, 100], true)
+          resolutionConstraint(130, 0, [100, 100], true),
         ).to.be.greaterThan(128);
         expect(resolutionConstraint(130, 0, [100, 100], true)).to.be.lessThan(
-          130
+          130,
         );
         expect(resolutionConstraint(128, 0, [100, 100], true)).to.eql(128);
         expect(resolutionConstraint(16, 0, [100, 100], true)).to.eql(16);
         expect(resolutionConstraint(15, 0, [100, 100], true)).to.be.greaterThan(
-          15
+          15,
         );
         expect(resolutionConstraint(15, 0, [100, 100], true)).to.be.lessThan(
-          16
+          16,
         );
         expect(resolutionConstraint(10, 0, [100, 100], true)).to.be.greaterThan(
-          10
+          10,
         );
         expect(resolutionConstraint(10, 0, [100, 100], true)).to.be.lessThan(
-          16
+          16,
         );
       });
     });

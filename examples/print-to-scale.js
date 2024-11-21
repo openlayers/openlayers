@@ -3,6 +3,8 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
 import WMTS, {optionsFromCapabilities} from '../src/ol/source/WMTS.js';
 import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import proj4 from 'proj4';
 import {ScaleLine, defaults as defaultControls} from '../src/ol/control.js';
 import {getPointResolution, get as getProjection} from '../src/ol/proj.js';
@@ -13,7 +15,7 @@ proj4.defs(
   '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
     '+x_0=400000 +y_0=-100000 +ellps=airy ' +
     '+towgs84=446.448,-125.157,542.06,0.15,0.247,0.842,-20.489 ' +
-    '+units=m +no_defs'
+    '+units=m +no_defs',
 );
 
 register(proj4);
@@ -103,21 +105,21 @@ exportButton.addEventListener(
       getPointResolution(
         map.getView().getProjection(),
         resolution / 25.4,
-        map.getView().getCenter()
+        map.getView().getCenter(),
       );
 
     map.once('rendercomplete', function () {
       exportOptions.width = width;
       exportOptions.height = height;
       html2canvas(map.getViewport(), exportOptions).then(function (canvas) {
-        const pdf = new jspdf.jsPDF('landscape', undefined, format);
+        const pdf = new jsPDF('landscape', undefined, format);
         pdf.addImage(
           canvas.toDataURL('image/jpeg'),
           'JPEG',
           0,
           0,
           dim[0],
-          dim[1]
+          dim[1],
         );
         pdf.save('map.pdf');
         // Reset original map size
@@ -138,5 +140,5 @@ exportButton.addEventListener(
     map.updateSize();
     map.getView().setResolution(scaleResolution);
   },
-  false
+  false,
 );

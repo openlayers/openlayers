@@ -8,7 +8,7 @@ import {register} from '../../../../src/ol/proj/proj4.js';
 
 proj4.defs(
   'ESRI:54009',
-  '+proj=moll +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs'
+  '+proj=moll +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs',
 );
 
 register(proj4);

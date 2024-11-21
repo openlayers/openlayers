@@ -20,6 +20,7 @@ const source = new XYZ({
   minZoom: 0,
   maxZoom: 0,
   url: '/data/tiles/4326/{z}/{x}/{y}.png',
+  transition: 0,
 });
 
 new Map({

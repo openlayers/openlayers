@@ -120,7 +120,7 @@ class GML3 extends GMLBase {
       this.MULTICURVE_PARSERS,
       node,
       objectStack,
-      this
+      this,
     );
     if (lineStrings) {
       const multiLineString = new MultiLineString(lineStrings);
@@ -141,7 +141,7 @@ class GML3 extends GMLBase {
       this.MULTICURVE_PARSERS,
       node,
       objectStack,
-      this
+      this,
     );
     const flatCoordinates = [];
     for (let i = 0, ii = lineStrings.length; i < ii; ++i) {
@@ -162,7 +162,7 @@ class GML3 extends GMLBase {
       this.MULTISURFACE_PARSERS,
       node,
       objectStack,
-      this
+      this,
     );
     if (polygons) {
       return new MultiPolygon(polygons);
@@ -196,7 +196,7 @@ class GML3 extends GMLBase {
       this.PATCHES_PARSERS,
       node,
       objectStack,
-      this
+      this,
     );
   }
 
@@ -220,7 +220,7 @@ class GML3 extends GMLBase {
       this.FLAT_LINEAR_RINGS_PARSERS,
       node,
       objectStack,
-      this
+      this,
     );
   }
 
@@ -235,7 +235,7 @@ class GML3 extends GMLBase {
       this.GEOMETRY_FLAT_COORDINATES_PARSERS,
       node,
       objectStack,
-      this
+      this,
     );
   }
 
@@ -250,7 +250,7 @@ class GML3 extends GMLBase {
       this.RING_PARSERS,
       node,
       objectStack,
-      this
+      this,
     );
     if (flatLinearRing) {
       const flatLinearRings =
@@ -271,7 +271,7 @@ class GML3 extends GMLBase {
       this.RING_PARSERS,
       node,
       objectStack,
-      this
+      this,
     );
     if (flatLinearRing) {
       const flatLinearRings =
@@ -293,7 +293,7 @@ class GML3 extends GMLBase {
       this.SURFACE_PARSERS,
       node,
       objectStack,
-      this
+      this,
     );
     if (flatLinearRings && flatLinearRings[0]) {
       const flatCoordinates = flatLinearRings[0];
@@ -320,7 +320,7 @@ class GML3 extends GMLBase {
       this.CURVE_PARSERS,
       node,
       objectStack,
-      this
+      this,
     );
     if (flatCoordinates) {
       const lineString = new LineString(flatCoordinates, 'XYZ');
@@ -341,13 +341,13 @@ class GML3 extends GMLBase {
       this.ENVELOPE_PARSERS,
       node,
       objectStack,
-      this
+      this,
     );
     return createOrUpdate(
       flatCoordinates[1][0],
       flatCoordinates[1][1],
       flatCoordinates[2][0],
-      flatCoordinates[2][1]
+      flatCoordinates[2][1],
     );
   }
 
@@ -371,14 +371,11 @@ class GML3 extends GMLBase {
     }
     const context = objectStack[0];
     const containerSrs = context['srsName'];
-    let axisOrientation = 'enu';
-    if (containerSrs) {
-      const proj = getProjection(containerSrs);
-      axisOrientation = proj.getAxisOrientation();
-    }
+    const axisOrientation = containerSrs
+      ? getProjection(containerSrs).getAxisOrientation()
+      : 'enu';
     if (axisOrientation === 'neu') {
-      let i, ii;
-      for (i = 0, ii = flatCoordinates.length; i < ii; i += 3) {
+      for (let i = 0, ii = flatCoordinates.length; i < ii; i += 3) {
         const y = flatCoordinates[i];
         const x = flatCoordinates[i + 1];
         flatCoordinates[i] = x;
@@ -405,11 +402,9 @@ class GML3 extends GMLBase {
     const context = objectStack[0];
     const containerSrs = context['srsName'];
     const contextDimension = context['srsDimension'];
-    let axisOrientation = 'enu';
-    if (containerSrs) {
-      const proj = getProjection(containerSrs);
-      axisOrientation = proj.getAxisOrientation();
-    }
+    const axisOrientation = containerSrs
+      ? getProjection(containerSrs).getAxisOrientation()
+      : 'enu';
     const coords = s.split(/\s+/);
     // The "dimension" attribute is from the GML 3.0.1 spec.
     let dim = 2;
@@ -421,18 +416,19 @@ class GML3 extends GMLBase {
       /** @type {Element} */ (node.parentNode).getAttribute('srsDimension')
     ) {
       dim = readNonNegativeIntegerString(
-        /** @type {Element} */ (node.parentNode).getAttribute('srsDimension')
+        /** @type {Element} */ (node.parentNode).getAttribute('srsDimension'),
       );
     } else if (contextDimension) {
       dim = readNonNegativeIntegerString(contextDimension);
     }
+    const asXYZ = axisOrientation.startsWith('en');
     let x, y, z;
     const flatCoordinates = [];
     for (let i = 0, ii = coords.length; i < ii; i += dim) {
       x = parseFloat(coords[i]);
       y = parseFloat(coords[i + 1]);
       z = dim === 3 ? parseFloat(coords[i + 2]) : 0;
-      if (axisOrientation.substr(0, 2) === 'en') {
+      if (asXYZ) {
         flatCoordinates.push(x, y, z);
       } else {
         flatCoordinates.push(y, x, z);
@@ -453,18 +449,14 @@ class GML3 extends GMLBase {
     const srsDimension = hasZ ? '3' : '2';
     node.setAttribute('srsDimension', srsDimension);
     const srsName = context['srsName'];
-    let axisOrientation = 'enu';
-    if (srsName) {
-      axisOrientation = getProjection(srsName).getAxisOrientation();
-    }
+    const axisOrientation = srsName
+      ? getProjection(srsName).getAxisOrientation()
+      : 'enu';
     const point = value.getCoordinates();
-    let coords;
     // only 2d for simple features profile
-    if (axisOrientation.substr(0, 2) === 'en') {
-      coords = point[0] + ' ' + point[1];
-    } else {
-      coords = point[1] + ' ' + point[0];
-    }
+    let coords = axisOrientation.startsWith('en')
+      ? point[0] + ' ' + point[1]
+      : point[1] + ' ' + point[0];
     if (hasZ) {
       // For newly created points, Z can be undefined.
       const z = point[2] || 0;
@@ -481,14 +473,12 @@ class GML3 extends GMLBase {
    * @private
    */
   getCoords_(point, srsName, hasZ) {
-    let axisOrientation = 'enu';
-    if (srsName) {
-      axisOrientation = getProjection(srsName).getAxisOrientation();
-    }
-    let coords =
-      axisOrientation.substr(0, 2) === 'en'
-        ? point[0] + ' ' + point[1]
-        : point[1] + ' ' + point[0];
+    const axisOrientation = srsName
+      ? getProjection(srsName).getAxisOrientation()
+      : 'enu';
+    let coords = axisOrientation.startsWith('en')
+      ? point[0] + ' ' + point[1]
+      : point[1] + ' ' + point[0];
     if (hasZ) {
       // For newly created points, Z can be undefined.
       const z = point[2] || 0;
@@ -559,7 +549,7 @@ class GML3 extends GMLBase {
       values,
       objectStack,
       keys,
-      this
+      this,
     );
   }
 
@@ -595,7 +585,7 @@ class GML3 extends GMLBase {
     }
     return createElementNS(
       parentNode.namespaceURI,
-      exteriorWritten !== undefined ? 'interior' : 'exterior'
+      exteriorWritten !== undefined ? 'interior' : 'exterior',
     );
   }
 
@@ -620,7 +610,7 @@ class GML3 extends GMLBase {
         rings,
         objectStack,
         undefined,
-        this
+        this,
       );
     } else if (node.nodeName === 'Surface') {
       const patches = createElementNS(node.namespaceURI, 'patches');
@@ -675,7 +665,7 @@ class GML3 extends GMLBase {
       polygons,
       objectStack,
       undefined,
-      this
+      this,
     );
   }
 
@@ -699,7 +689,7 @@ class GML3 extends GMLBase {
       points,
       objectStack,
       undefined,
-      this
+      this,
     );
   }
 
@@ -724,7 +714,7 @@ class GML3 extends GMLBase {
       lines,
       objectStack,
       undefined,
-      this
+      this,
     );
   }
 
@@ -815,13 +805,13 @@ class GML3 extends GMLBase {
     if (Array.isArray(geometry)) {
       value = transformExtentWithOptions(
         /** @type {import("../extent.js").Extent} */ (geometry),
-        context
+        context,
       );
     } else {
       value = transformGeometryWithOptions(
         /** @type {import("../geom/Geometry.js").default} */ (geometry),
         true,
-        context
+        context,
       );
     }
     pushSerializeAndPop(
@@ -832,7 +822,7 @@ class GML3 extends GMLBase {
       [value],
       objectStack,
       undefined,
-      this
+      this,
     );
   }
 
@@ -859,7 +849,7 @@ class GML3 extends GMLBase {
       const properties = feature.getProperties();
       for (const key in properties) {
         const value = properties[key];
-        if (value !== null) {
+        if (value !== null && value !== undefined) {
           keys.push(key);
           values.push(value);
           if (
@@ -870,7 +860,7 @@ class GML3 extends GMLBase {
             if (!(key in context.serializers[featureNS])) {
               context.serializers[featureNS][key] = makeChildAppender(
                 this.writeGeometryElement,
-                this
+                this,
               );
             }
           } else {
@@ -891,7 +881,7 @@ class GML3 extends GMLBase {
       makeSimpleNodeFactory(undefined, featureNS),
       values,
       objectStack,
-      keys
+      keys,
     );
   }
 
@@ -910,7 +900,7 @@ class GML3 extends GMLBase {
     serializers[featureNS] = {};
     serializers[featureNS][featureType] = makeChildAppender(
       this.writeFeatureElement,
-      this
+      this,
     );
     const item = Object.assign({}, context);
     item.node = node;
@@ -920,7 +910,7 @@ class GML3 extends GMLBase {
       serializers,
       makeSimpleNodeFactory(featureType, featureNS),
       features,
-      objectStack
+      objectStack,
     );
   }
 
@@ -936,7 +926,7 @@ class GML3 extends GMLBase {
     const parentNode = objectStack[objectStack.length - 1].node;
     return createElementNS(
       this.namespace,
-      MULTIGEOMETRY_TO_MEMBER_NODENAME[parentNode.nodeName]
+      MULTIGEOMETRY_TO_MEMBER_NODENAME[parentNode.nodeName],
     );
   }
 
@@ -980,6 +970,7 @@ class GML3 extends GMLBase {
    * @param {import("./Feature.js").WriteOptions} [options] Options.
    * @return {Node} Node.
    * @api
+   * @override
    */
   writeGeometryNode(geometry, options) {
     options = this.adaptOptions(options);
@@ -1007,6 +998,7 @@ class GML3 extends GMLBase {
    * @param {import("./Feature.js").WriteOptions} [options] Options.
    * @return {Element} Node.
    * @api
+   * @override
    */
   writeFeaturesNode(features, options) {
     options = this.adaptOptions(options);
@@ -1014,7 +1006,7 @@ class GML3 extends GMLBase {
     node.setAttributeNS(
       XML_SCHEMA_INSTANCE_URI,
       'xsi:schemaLocation',
-      this.schemaLocation
+      this.schemaLocation,
     );
     const context = {
       srsName: this.srsName,
@@ -1170,7 +1162,7 @@ GML3.prototype.PATCHES_PARSERS = {
 GML3.prototype.SEGMENTS_PARSERS = {
   'http://www.opengis.net/gml': {
     'LineStringSegment': makeArrayExtender(
-      GML3.prototype.readLineStringSegment
+      GML3.prototype.readLineStringSegment,
     ),
   },
 };
@@ -1223,10 +1215,10 @@ GML3.prototype.ENVELOPE_SERIALIZERS = {
 GML3.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS = {
   'http://www.opengis.net/gml': {
     'surfaceMember': makeChildAppender(
-      GML3.prototype.writeSurfaceOrPolygonMember
+      GML3.prototype.writeSurfaceOrPolygonMember,
     ),
     'polygonMember': makeChildAppender(
-      GML3.prototype.writeSurfaceOrPolygonMember
+      GML3.prototype.writeSurfaceOrPolygonMember,
     ),
   },
 };
@@ -1246,10 +1238,10 @@ GML3.prototype.POINTMEMBER_SERIALIZERS = {
 GML3.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS = {
   'http://www.opengis.net/gml': {
     'lineStringMember': makeChildAppender(
-      GML3.prototype.writeLineStringOrCurveMember
+      GML3.prototype.writeLineStringOrCurveMember,
     ),
     'curveMember': makeChildAppender(
-      GML3.prototype.writeLineStringOrCurveMember
+      GML3.prototype.writeLineStringOrCurveMember,
     ),
   },
 };
@@ -1265,16 +1257,16 @@ GML3.prototype.GEOMETRY_SERIALIZERS = {
     'MultiPoint': makeChildAppender(GML3.prototype.writeMultiPoint),
     'LineString': makeChildAppender(GML3.prototype.writeCurveOrLineString),
     'MultiLineString': makeChildAppender(
-      GML3.prototype.writeMultiCurveOrLineString
+      GML3.prototype.writeMultiCurveOrLineString,
     ),
     'LinearRing': makeChildAppender(GML3.prototype.writeLinearRing),
     'Polygon': makeChildAppender(GML3.prototype.writeSurfaceOrPolygon),
     'MultiPolygon': makeChildAppender(
-      GML3.prototype.writeMultiSurfaceOrPolygon
+      GML3.prototype.writeMultiSurfaceOrPolygon,
     ),
     'Surface': makeChildAppender(GML3.prototype.writeSurfaceOrPolygon),
     'MultiSurface': makeChildAppender(
-      GML3.prototype.writeMultiSurfaceOrPolygon
+      GML3.prototype.writeMultiSurfaceOrPolygon,
     ),
     'Envelope': makeChildAppender(GML3.prototype.writeEnvelope),
   },

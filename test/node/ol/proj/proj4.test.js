@@ -18,6 +18,7 @@ import {
 const epsgDefinitions = {
   32721: '+proj=utm +zone=21 +south +datum=WGS84 +units=m +no_defs +type=crs',
   32612: '+proj=utm +zone=12 +datum=WGS84 +units=m +no_defs +type=crs',
+  3416: '+proj=lcc +lat_0=47.5 +lon_0=13.3333333333333 +lat_1=49 +lat_2=46 +x_0=400000 +y_0=400000 +ellps=GRS80 +units=m +no_defs +type=crs',
 };
 
 async function mockEPSGLookup(code) {
@@ -71,7 +72,7 @@ describe('ol/proj/proj4.js', () => {
 
       register(proj4);
       setEPSGLookup(lookup);
-      await fromEPSGCode(32612);
+      await fromEPSGCode(3416);
 
       expect(called).to.be(true);
     });
@@ -137,7 +138,7 @@ describe('ol/proj/proj4.js', () => {
 
       expect(error).to.be.an(Error);
       expect(error.message).to.be(
-        'Proj4 must be registered first with register(proj4)'
+        'Proj4 must be registered first with register(proj4)',
       );
     });
   });

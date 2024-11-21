@@ -20,6 +20,7 @@ new Map({
   layers: [
     new TileLayer({
       source: new DataTile({
+        transition: 0,
         tileSize: size,
         loader: function (z, x, y) {
           const halfW = size[0] / 2;

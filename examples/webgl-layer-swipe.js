@@ -1,8 +1,8 @@
+import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import OSM from '../src/ol/source/OSM.js';
 import TileLayer from '../src/ol/layer/WebGLTile.js';
 import View from '../src/ol/View.js';
-import XYZ from '../src/ol/source/XYZ.js';
 import {getRenderPixel} from '../src/ol/render.js';
 
 const osm = new TileLayer({
@@ -12,8 +12,8 @@ const osm = new TileLayer({
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
 
 const imagery = new TileLayer({
-  source: new XYZ({
-    url: 'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=' + key,
+  source: new ImageTile({
+    url: 'https://api.maptiler.com/maps/satellite/{z}/{x}/{y}.jpg?key=' + key,
     attributions:
       '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
       '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',

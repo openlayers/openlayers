@@ -1,16 +1,16 @@
 import Draw from '../src/ol/interaction/Draw.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import Snap from '../src/ol/interaction/Snap.js';
 import TileLayer from '../src/ol/layer/WebGLTile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
-import XYZ from '../src/ol/source/XYZ.js';
 
 const raster = new TileLayer({
-  source: new XYZ({
-    url: 'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=get_your_own_D6rA4zTHduk6KOKTXzGB',
+  source: new ImageTile({
+    url: 'https://api.maptiler.com/maps/satellite/{z}/{x}/{y}.jpg?key=get_your_own_D6rA4zTHduk6KOKTXzGB',
     maxZoom: 20,
   }),
 });

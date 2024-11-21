@@ -1,14 +1,18 @@
 ---
 layout: example.html
-title: Reprojection with EPSG.io Search
+title: Reprojection with coordinate system search
 shortdesc: Demonstrates client-side raster reprojection of OSM to arbitrary projection
 docs: >
   This example shows client-side raster reprojection capabilities from
   OSM (EPSG:3857) to arbitrary projection by searching
-  in <a href="https://epsg.io/">EPSG.io</a> database.
-tags: "reprojection, projection, proj4js, epsg.io, graticule"
+  in <a href="https://docs.maptiler.com/cloud/api/coordinates/">MapTiler Cloud Coordinates API</a>.
+  **Note**: Make sure to get your own API key at https://www.maptiler.com/cloud/ when using this example.
+tags: "reprojection, projection, proj4js, epsg, maptiler, graticule"
 resources:
   - https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css
+cloak:
+  - key: get_your_own_D6rA4zTHduk6KOKTXzGB
+    value: Get your own API key at https://www.maptiler.com/cloud/
 ---
 <div id="map" class="map"></div>
 <form class="row">

@@ -32,6 +32,30 @@ describe('ol/source/TileWMS', function () {
     });
   });
 
+  describe('#getParams', function () {
+    it('verify getting a param', function () {
+      const source = new TileWMS(options);
+      const setParams = source.getParams();
+      expect(setParams).to.eql({'LAYERS': 'layer'});
+    });
+
+    it('verify on adding a param', function () {
+      const source = new TileWMS(options);
+      source.updateParams({'TEST': 'value'});
+      const setParams = source.getParams();
+      expect(setParams).to.eql({'LAYERS': 'layer', TEST: 'value'});
+      expect(options.params).to.eql({'LAYERS': 'layer'});
+    });
+
+    it('verify on update a param', function () {
+      const source = new TileWMS(options);
+      source.updateParams({'LAYERS': 'newLayer'});
+      const setParams = source.getParams();
+      expect(setParams).to.eql({'LAYERS': 'newLayer'});
+      expect(options.params).to.eql({'LAYERS': 'layer'});
+    });
+  });
+
   describe('#getInterpolate()', function () {
     it('is true by default', function () {
       const source = new TileWMS();
@@ -185,7 +209,7 @@ describe('ol/source/TileWMS', function () {
       const url = source.tileUrlFunction(
         tileCoord,
         1,
-        getProjection('EPSG:4326')
+        getProjection('EPSG:4326'),
       );
       const uri = new URL(url);
       const queryData = uri.searchParams;
@@ -199,7 +223,7 @@ describe('ol/source/TileWMS', function () {
       const url = source.tileUrlFunction(
         tileCoord,
         1,
-        getProjection('EPSG:4326')
+        getProjection('EPSG:4326'),
       );
       const uri = new URL(url);
       const queryData = uri.searchParams;
@@ -217,7 +241,7 @@ describe('ol/source/TileWMS', function () {
       const url = source.tileUrlFunction(
         tileCoord,
         1,
-        getProjection('EPSG:4326')
+        getProjection('EPSG:4326'),
       );
       const uri = new URL(url);
       const queryData = uri.searchParams;
@@ -234,7 +258,7 @@ describe('ol/source/TileWMS', function () {
         [-7000000, -12000000],
         19567.87924100512,
         getProjection('EPSG:3857'),
-        {INFO_FORMAT: 'text/plain'}
+        {INFO_FORMAT: 'text/plain'},
       );
       const uri = new URL(url);
       expect(uri.protocol).to.be('http:');
@@ -270,20 +294,18 @@ describe('ol/source/TileWMS', function () {
         [-7000000, -12000000],
         19567.87924100512,
         getProjection('EPSG:3857'),
-        {INFO_FORMAT: 'text/plain'}
+        {INFO_FORMAT: 'text/plain'},
       );
       const uri = new URL(url);
       expect(uri.protocol).to.be('http:');
       expect(uri.hostname).to.be('example.com');
       expect(uri.pathname).to.be('/wms');
       const queryData = uri.searchParams;
-      expect(queryData.get('BBOX')).to.be(
-        '-79.17133464081945,-90,-66.51326044311186,-45'
-      );
+      expect(queryData.get('BBOX')).to.be('-78.75,-67.5,-67.5,-56.25');
       expect(queryData.get('CRS')).to.be('EPSG:4326');
       expect(queryData.get('FORMAT')).to.be('image/png');
       expect(queryData.get('HEIGHT')).to.be('256');
-      expect(queryData.get('I')).to.be('517');
+      expect(queryData.get('I')).to.be('105');
       expect(queryData.get('J')).to.be('117');
       expect(queryData.get('LAYERS')).to.be('layer');
       expect(queryData.get('QUERY_LAYERS')).to.be('layer');
@@ -304,7 +326,7 @@ describe('ol/source/TileWMS', function () {
         [-7000000, -12000000],
         19567.87924100512,
         getProjection('EPSG:3857'),
-        {INFO_FORMAT: 'text/plain', QUERY_LAYERS: 'foo,bar'}
+        {INFO_FORMAT: 'text/plain', QUERY_LAYERS: 'foo,bar'},
       );
       const uri = new URL(url);
       expect(uri.protocol).to.be('http:');
@@ -406,7 +428,7 @@ describe('ol/source/TileWMS', function () {
       const tileUrl = source.tileUrlFunction(
         [0, 0, 0],
         1,
-        getProjection('EPSG:4326')
+        getProjection('EPSG:4326'),
       );
       expect(tileUrl.indexOf(url)).to.be(0);
     });

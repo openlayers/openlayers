@@ -47,14 +47,6 @@
 
 		<th>Type</th>
 
-		<?js if (props.hasAttributes) {?>
-		<th>Argument</th>
-		<?js } ?>
-
-		<?js if (props.hasDefault) {?>
-		<th>Default</th>
-		<?js } ?>
-
 		<th class="last">Description</th>
 	</tr>
 	</thead>
@@ -73,33 +65,19 @@
 
             <td class="type">
             <?js if (prop.type && prop.type.names) {?>
-                <?js= self.partial('type.tmpl', prop.type.names) ?>
+                <?js= self.partial('type.tmpl', prop.type.names) + (prop.optional && typeof prop.defaultvalue === 'undefined' && !prop.type.names.includes('undefined') ? ' | undefined' : '') ?>
+                <?js if (typeof prop.defaultvalue !== 'undefined') { ?>
+                    <br>(defaults to <?js= self.htmlsafe(prop.defaultvalue) ?>)
+                <?js } ?>
             <?js } ?>
             </td>
 
-            <?js if (props.hasAttributes) {?>
-                <td class="attributes">
-                <?js if (prop.optional) { ?>
-                    &lt;optional><br>
+            <td class="description last">
+                <?js= prop.description ?>
+                <?js if (prop.subprops) { ?>
+                    <h6>Properties</h6><?js= self.partial('properties.tmpl', prop.subprops) ?>
                 <?js } ?>
-
-                <?js if (prop.nullable) { ?>
-                    &lt;nullable><br>
-                <?js } ?>
-                </td>
-            <?js } ?>
-
-            <?js if (props.hasDefault) {?>
-                <td class="default">
-                <?js if (typeof prop.defaultvalue !== 'undefined') { ?>
-                    <?js= self.htmlsafe(prop.defaultvalue) ?>
-                <?js } ?>
-                </td>
-            <?js } ?>
-
-            <td class="description last"><?js= prop.description ?><?js if (prop.subprops) { ?>
-                <h6>Properties</h6><?js= self.partial('properties.tmpl', prop.subprops) ?>
-            <?js } ?></td>
+            </td>
         </tr>
 
 	<?js }); ?>

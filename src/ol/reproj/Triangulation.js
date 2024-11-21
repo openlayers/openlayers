@@ -1,6 +1,7 @@
 /**
  * @module ol/reproj/Triangulation
  */
+import {apply as applyMatrix} from '../transform.js';
 import {
   boundingExtent,
   createEmpty,
@@ -13,7 +14,11 @@ import {
   getWidth,
   intersects,
 } from '../extent.js';
-import {getTransform} from '../proj.js';
+import {
+  createTransformFromCoordinateTransform,
+  getTransform,
+  transform,
+} from '../proj.js';
 import {modulo} from '../math.js';
 
 /**
@@ -55,6 +60,7 @@ class Triangulation {
    * @param {import("../extent.js").Extent} maxSourceExtent Maximal source extent that can be used.
    * @param {number} errorThreshold Acceptable error (in source units).
    * @param {?number} destinationResolution The (optional) resolution of the destination.
+   * @param {import("../transform.js").Transform} [sourceMatrix] Source transform matrix.
    */
   constructor(
     sourceProj,
@@ -62,7 +68,8 @@ class Triangulation {
     targetExtent,
     maxSourceExtent,
     errorThreshold,
-    destinationResolution
+    destinationResolution,
+    sourceMatrix,
   ) {
     /**
      * @type {import("../proj/Projection.js").default}
@@ -78,7 +85,14 @@ class Triangulation {
 
     /** @type {!Object<string, import("../coordinate.js").Coordinate>} */
     let transformInvCache = {};
-    const transformInv = getTransform(this.targetProj_, this.sourceProj_);
+    const transformInv = sourceMatrix
+      ? createTransformFromCoordinateTransform((input) =>
+          applyMatrix(
+            sourceMatrix,
+            transform(input, this.targetProj_, this.sourceProj_),
+          ),
+        )
+      : getTransform(this.targetProj_, this.sourceProj_);
 
     /**
      * @param {import("../coordinate.js").Coordinate} c A coordinate.
@@ -126,7 +140,7 @@ class Triangulation {
       this.sourceProj_.canWrapX() &&
       !!maxSourceExtent &&
       !!this.sourceProj_.getExtent() &&
-      getWidth(maxSourceExtent) == getWidth(this.sourceProj_.getExtent());
+      getWidth(maxSourceExtent) >= getWidth(this.sourceProj_.getExtent());
 
     /**
      * @type {?number}
@@ -156,7 +170,7 @@ class Triangulation {
     /*
      * The maxSubdivision controls how many splittings of the target area can
      * be done. The idea here is to do a linear mapping of the target areas
-     * but the actual overal reprojection (can be) extremely non-linear. The
+     * but the actual overall reprojection (can be) extremely non-linear. The
      * default value of MAX_SUBDIVISION was chosen based on mapping a 256x256
      * tile size. However this function is also called to remap canvas rendered
      * layers which can be much larger. This calculation increases the maxSubdivision
@@ -171,9 +185,9 @@ class Triangulation {
             Math.ceil(
               Math.log2(
                 getArea(targetExtent) /
-                  (destinationResolution * destinationResolution * 256 * 256)
-              )
-            )
+                  (destinationResolution * destinationResolution * 256 * 256),
+              ),
+            ),
           )
         : 0);
 
@@ -186,7 +200,7 @@ class Triangulation {
       sourceTopRight,
       sourceBottomRight,
       sourceBottomLeft,
-      maxSubdivision
+      maxSubdivision,
     );
 
     if (this.wrapsXInSource_) {
@@ -196,7 +210,7 @@ class Triangulation {
           leftBound,
           triangle.source[0][0],
           triangle.source[1][0],
-          triangle.source[2][0]
+          triangle.source[2][0],
         );
       });
 
@@ -207,7 +221,7 @@ class Triangulation {
           Math.max(
             triangle.source[0][0],
             triangle.source[1][0],
-            triangle.source[2][0]
+            triangle.source[2][0],
           ) -
             leftBound >
           this.sourceWorldWidth_ / 2
@@ -233,12 +247,12 @@ class Triangulation {
           const minX = Math.min(
             newTriangle[0][0],
             newTriangle[1][0],
-            newTriangle[2][0]
+            newTriangle[2][0],
           );
           const maxX = Math.max(
             newTriangle[0][0],
             newTriangle[1][0],
-            newTriangle[2][0]
+            newTriangle[2][0],
           );
           if (maxX - minX < this.sourceWorldWidth_ / 2) {
             triangle.source = newTriangle;
@@ -398,7 +412,7 @@ class Triangulation {
             bSrc,
             bcSrc,
             daSrc,
-            maxSubdivision - 1
+            maxSubdivision - 1,
           );
           this.addQuad_(
             da,
@@ -409,7 +423,7 @@ class Triangulation {
             bcSrc,
             cSrc,
             dSrc,
-            maxSubdivision - 1
+            maxSubdivision - 1,
           );
         } else {
           // split vertically (left & right)
@@ -427,7 +441,7 @@ class Triangulation {
             abSrc,
             cdSrc,
             dSrc,
-            maxSubdivision - 1
+            maxSubdivision - 1,
           );
           this.addQuad_(
             ab,
@@ -438,7 +452,7 @@ class Triangulation {
             bSrc,
             cSrc,
             cdSrc,
-            maxSubdivision - 1
+            maxSubdivision - 1,
           );
         }
         return;

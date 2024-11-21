@@ -53,7 +53,7 @@ class MultiPolygon extends SimpleGeometry {
 
     /**
      * @private
-     * @type {Array<number>}
+     * @type {Array<number>|null}
      */
     this.flatInteriorPoints_ = null;
 
@@ -77,20 +77,17 @@ class MultiPolygon extends SimpleGeometry {
 
     /**
      * @private
-     * @type {Array<number>}
+     * @type {Array<number>|null}
      */
     this.orientedFlatCoordinates_ = null;
 
     if (!endss && !Array.isArray(coordinates[0])) {
-      let thisLayout = this.getLayout();
       const polygons = /** @type {Array<Polygon>} */ (coordinates);
+      /** @type {Array<number>} */
       const flatCoordinates = [];
       const thisEndss = [];
       for (let i = 0, ii = polygons.length; i < ii; ++i) {
         const polygon = polygons[i];
-        if (i === 0) {
-          thisLayout = polygon.getLayout();
-        }
         const offset = flatCoordinates.length;
         const ends = polygon.getEnds();
         for (let j = 0, jj = ends.length; j < jj; ++j) {
@@ -99,14 +96,15 @@ class MultiPolygon extends SimpleGeometry {
         extend(flatCoordinates, polygon.getFlatCoordinates());
         thisEndss.push(ends);
       }
-      layout = thisLayout;
+      layout =
+        polygons.length === 0 ? this.getLayout() : polygons[0].getLayout();
       coordinates = flatCoordinates;
       endss = thisEndss;
     }
     if (layout !== undefined && endss) {
       this.setFlatCoordinates(
         layout,
-        /** @type {Array<number>} */ (coordinates)
+        /** @type {Array<number>} */ (coordinates),
       );
       this.endss_ = endss;
     } else {
@@ -114,7 +112,7 @@ class MultiPolygon extends SimpleGeometry {
         /** @type {Array<Array<Array<import("../coordinate.js").Coordinate>>>} */ (
           coordinates
         ),
-        layout
+        layout,
       );
     }
   }
@@ -147,6 +145,7 @@ class MultiPolygon extends SimpleGeometry {
    * Make a complete copy of the geometry.
    * @return {!MultiPolygon} Clone.
    * @api
+   * @override
    */
   clone() {
     const len = this.endss_.length;
@@ -158,7 +157,7 @@ class MultiPolygon extends SimpleGeometry {
     const multiPolygon = new MultiPolygon(
       this.flatCoordinates.slice(),
       this.layout,
-      newEndss
+      newEndss,
     );
     multiPolygon.applyProperties(this);
 
@@ -171,6 +170,7 @@ class MultiPolygon extends SimpleGeometry {
    * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
    * @param {number} minSquaredDistance Minimum squared distance.
    * @return {number} Minimum squared distance.
+   * @override
    */
   closestPointXY(x, y, closestPoint, minSquaredDistance) {
     if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
@@ -183,8 +183,8 @@ class MultiPolygon extends SimpleGeometry {
           0,
           this.endss_,
           this.stride,
-          0
-        )
+          0,
+        ),
       );
       this.maxDeltaRevision_ = this.getRevision();
     }
@@ -198,7 +198,7 @@ class MultiPolygon extends SimpleGeometry {
       x,
       y,
       closestPoint,
-      minSquaredDistance
+      minSquaredDistance,
     );
   }
 
@@ -206,6 +206,7 @@ class MultiPolygon extends SimpleGeometry {
    * @param {number} x X.
    * @param {number} y Y.
    * @return {boolean} Contains (x, y).
+   * @override
    */
   containsXY(x, y) {
     return linearRingssContainsXY(
@@ -214,7 +215,7 @@ class MultiPolygon extends SimpleGeometry {
       this.endss_,
       this.stride,
       x,
-      y
+      y,
     );
   }
 
@@ -228,7 +229,7 @@ class MultiPolygon extends SimpleGeometry {
       this.getOrientedFlatCoordinates(),
       0,
       this.endss_,
-      this.stride
+      this.stride,
     );
   }
 
@@ -244,6 +245,7 @@ class MultiPolygon extends SimpleGeometry {
    *     constructed.
    * @return {Array<Array<Array<import("../coordinate.js").Coordinate>>>} Coordinates.
    * @api
+   * @override
    */
   getCoordinates(right) {
     let flatCoordinates;
@@ -254,7 +256,7 @@ class MultiPolygon extends SimpleGeometry {
         0,
         this.endss_,
         this.stride,
-        right
+        right,
       );
     } else {
       flatCoordinates = this.flatCoordinates;
@@ -264,7 +266,7 @@ class MultiPolygon extends SimpleGeometry {
       flatCoordinates,
       0,
       this.endss_,
-      this.stride
+      this.stride,
     );
   }
 
@@ -284,18 +286,18 @@ class MultiPolygon extends SimpleGeometry {
         this.flatCoordinates,
         0,
         this.endss_,
-        this.stride
+        this.stride,
       );
       this.flatInteriorPoints_ = getInteriorPointsOfMultiArray(
         this.getOrientedFlatCoordinates(),
         0,
         this.endss_,
         this.stride,
-        flatCenters
+        flatCenters,
       );
       this.flatInteriorPointsRevision_ = this.getRevision();
     }
-    return this.flatInteriorPoints_;
+    return /** @type {Array<number>} */ (this.flatInteriorPoints_);
   }
 
   /**
@@ -324,21 +326,24 @@ class MultiPolygon extends SimpleGeometry {
           this.orientedFlatCoordinates_,
           0,
           this.endss_,
-          this.stride
+          this.stride,
         );
       }
       this.orientedRevision_ = this.getRevision();
     }
-    return this.orientedFlatCoordinates_;
+    return /** @type {Array<number>} */ (this.orientedFlatCoordinates_);
   }
 
   /**
    * @param {number} squaredTolerance Squared tolerance.
    * @return {MultiPolygon} Simplified MultiPolygon.
    * @protected
+   * @override
    */
   getSimplifiedGeometryInternal(squaredTolerance) {
+    /** @type {Array<number>} */
     const simplifiedFlatCoordinates = [];
+    /** @type {Array<Array<number>>} */
     const simplifiedEndss = [];
     simplifiedFlatCoordinates.length = quantizeMultiArray(
       this.flatCoordinates,
@@ -348,7 +353,7 @@ class MultiPolygon extends SimpleGeometry {
       Math.sqrt(squaredTolerance),
       simplifiedFlatCoordinates,
       0,
-      simplifiedEndss
+      simplifiedEndss,
     );
     return new MultiPolygon(simplifiedFlatCoordinates, 'XY', simplifiedEndss);
   }
@@ -380,7 +385,7 @@ class MultiPolygon extends SimpleGeometry {
     return new Polygon(
       this.flatCoordinates.slice(offset, end),
       this.layout,
-      ends
+      ends,
     );
   }
 
@@ -406,7 +411,7 @@ class MultiPolygon extends SimpleGeometry {
       const polygon = new Polygon(
         flatCoordinates.slice(offset, end),
         layout,
-        ends
+        ends,
       );
       polygons.push(polygon);
       offset = end;
@@ -418,6 +423,7 @@ class MultiPolygon extends SimpleGeometry {
    * Get the type of this geometry.
    * @return {import("./Geometry.js").Type} Geometry type.
    * @api
+   * @override
    */
   getType() {
     return 'MultiPolygon';
@@ -428,6 +434,7 @@ class MultiPolygon extends SimpleGeometry {
    * @param {import("../extent.js").Extent} extent Extent.
    * @return {boolean} `true` if the geometry and the extent intersect.
    * @api
+   * @override
    */
   intersectsExtent(extent) {
     return intersectsLinearRingMultiArray(
@@ -435,7 +442,7 @@ class MultiPolygon extends SimpleGeometry {
       0,
       this.endss_,
       this.stride,
-      extent
+      extent,
     );
   }
 
@@ -444,6 +451,7 @@ class MultiPolygon extends SimpleGeometry {
    * @param {!Array<Array<Array<import("../coordinate.js").Coordinate>>>} coordinates Coordinates.
    * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
    * @api
+   * @override
    */
   setCoordinates(coordinates, layout) {
     this.setLayout(layout, coordinates, 3);
@@ -455,7 +463,7 @@ class MultiPolygon extends SimpleGeometry {
       0,
       coordinates,
       this.stride,
-      this.endss_
+      this.endss_,
     );
     if (endss.length === 0) {
       this.flatCoordinates.length = 0;
