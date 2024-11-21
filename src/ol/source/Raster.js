@@ -200,11 +200,7 @@ export class Processor extends Disposable {
     } else {
       workers[0] = createFauxWorker(
         config,
-<<<<<<< HEAD
-        this._onWorkerMessage.bind(this, 0),
-=======
         this.onWorkerMessage_.bind(this, 0),
->>>>>>> main
       );
     }
     /**
@@ -367,11 +363,7 @@ export class Processor extends Disposable {
     this.dataLookup_ = {};
     job.callback(
       null,
-<<<<<<< HEAD
-      newImageData(data, job.inputs[0].width, job.inputs[0].height),
-=======
       new ImageData(data, job.inputs[0].width, job.inputs[0].height),
->>>>>>> main
       meta,
     );
     this.dispatch_();
