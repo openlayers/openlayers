@@ -45,11 +45,11 @@ const vectorTileLayer = new VectorTileLayer({
     }),
     new Style({
       image: new Circle({radius: 40, fill: new Fill({color: '#0f0'})}),
-      zIndex: 2,
+      zIndex: 1,
     }),
     new Style({
       image: new Circle({radius: 30, fill: new Fill({color: '#00f'})}),
-      zIndex: 4,
+      zIndex: 2,
     }),
   ],
 });
