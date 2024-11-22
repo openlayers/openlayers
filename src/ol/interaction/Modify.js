@@ -1215,7 +1215,10 @@ class Modify extends PointerInteraction {
             );
           }
           const geom = geometry || feature.getGeometry();
+
           if (
+            geom &&
+            geom.getType() === 'Point' &&
             feature instanceof Feature &&
             this.features_.getArray().includes(feature)
           ) {
