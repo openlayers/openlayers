@@ -56,7 +56,7 @@ document.addEventListener('keydown', function (evt) {
 let mousePosition = null;
 
 container.addEventListener('mousemove', function (event) {
-  mousePosition = map.getEventPixel(event);
+  mousePosition = event.pixel;
   map.render();
 });
 

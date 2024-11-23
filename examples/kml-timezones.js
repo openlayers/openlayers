@@ -122,8 +122,7 @@ map.on('pointermove', function (evt) {
     currentFeature = undefined;
     return;
   }
-  const pixel = map.getEventPixel(evt.originalEvent);
-  displayFeatureInfo(pixel, evt.originalEvent.target);
+  displayFeatureInfo(evt.pixel, evt.originalEvent.target);
 });
 
 map.on('click', function (evt) {

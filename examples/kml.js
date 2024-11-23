@@ -59,8 +59,7 @@ map.on('pointermove', function (evt) {
   if (evt.dragging) {
     return;
   }
-  const pixel = map.getEventPixel(evt.originalEvent);
-  displayFeatureInfo(pixel);
+  displayFeatureInfo(evt.pixel);
 });
 
 map.on('click', function (evt) {
