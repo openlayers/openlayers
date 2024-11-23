@@ -1062,11 +1062,11 @@ describe('ol/webgl/styleparser', () => {
       it('adds uniforms to the shader builder', () => {
         expect(parseResult.builder.uniforms_).to.eql([
           'vec2 u_var_iconSize',
-          'vec2 u_var_color',
+          'vec4 u_var_color',
           'float u_var_lineType',
           'float u_var_lineWidth',
           'float u_var_transparent',
-          'vec2 u_var_fillColor',
+          'vec4 u_var_fillColor',
         ]);
       });
       it('returns uniforms in the result', () => {
@@ -1081,13 +1081,11 @@ describe('ol/webgl/styleparser', () => {
       });
       it('processes uniforms according to their types', () => {
         expect(parseResult.uniforms['u_var_iconSize']()).to.eql([12, 18]);
-        expect(parseResult.uniforms['u_var_color']()).to.eql(
-          packColor(asArray('pink')),
-        );
+        expect(parseResult.uniforms['u_var_color']()).to.eql(asArray('pink'));
         expect(parseResult.uniforms['u_var_lineType']()).to.be.a('number');
         expect(parseResult.uniforms['u_var_lineWidth']()).to.eql(0.5);
         expect(parseResult.uniforms['u_var_fillColor']()).to.eql(
-          packColor(asArray('rgba(123, 240, 100, 0.3)')),
+          asArray('rgba(123, 240, 100, 0.3)'),
         );
         expect(parseResult.uniforms['u_var_transparent']()).to.eql(1);
       });

@@ -914,7 +914,12 @@ export function parseLiteralStyle(style) {
   for (const varName in fragContext.variables) {
     const variable = fragContext.variables[varName];
     const uniformName = uniformNameForVariable(variable.name);
-    builder.addUniform(`${getGlslTypeFromType(variable.type)} ${uniformName}`);
+    let glslType = getGlslTypeFromType(variable.type);
+    if (variable.type === ColorType) {
+      // we're not packing colors when they're passed as uniforms
+      glslType = 'vec4';
+    }
+    builder.addUniform(`${glslType} ${uniformName}`);
 
     uniforms[uniformName] = () => {
       const value = style.variables[variable.name];
@@ -925,7 +930,7 @@ export function parseLiteralStyle(style) {
         return value ? 1 : 0;
       }
       if (variable.type === ColorType) {
-        return packColor([...asArray(value || '#eee')]);
+        return asArray(value || '#eee');
       }
       if (typeof value === 'string') {
         return getStringNumberEquivalent(value);
