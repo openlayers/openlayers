@@ -48,6 +48,7 @@ export const Uniforms = {
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the canvas element.
  * @property {VectorStyle|Array<VectorStyle>} style Vector style as literal style or shaders; can also accept an array of styles
+ * @property {Object<string, number|Array<number>|string|boolean>} variables Style variables
  * @property {boolean} [disableHitDetection=false] Setting this to true will provide a slight performance boost, but will
  * prevent all hit detection on the layer.
  * @property {Array<import("./Layer").PostProcessesOptions>} [postProcesses] Post-processes definitions
@@ -139,6 +140,12 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     this.currentFrameStateTransform_ = createTransform();
 
     /**
+     * @type {import('../../style/flat.js').StyleVariables}
+     * @private
+     */
+    this.styleVariables_ = {};
+
+    /**
      * @type {Array<VectorStyle>}
      * @private
      */
@@ -223,6 +230,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    * @private
    */
   applyOptions_(options) {
+    this.styleVariables_ = options.variables;
     this.styles_ = Array.isArray(options.style)
       ? options.style
       : [options.style];
@@ -235,7 +243,12 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     this.buffers_ = [];
     this.styleRenderers_ = this.styles_.map(
       (style) =>
-        new VectorStyleRenderer(style, this.helper, this.hitDetectionEnabled_),
+        new VectorStyleRenderer(
+          style,
+          this.styleVariables_,
+          this.helper,
+          this.hitDetectionEnabled_,
+        ),
     );
   }
 

@@ -123,7 +123,6 @@ function parseStyle(style, bandCount) {
     ...newCompilationContext(),
     inFragmentShader: true,
     bandCount: bandCount,
-    style: style,
   };
 
   const pipeline = [];

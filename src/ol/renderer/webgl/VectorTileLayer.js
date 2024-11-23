@@ -42,6 +42,9 @@ export const Attributes = {
 /**
  * @typedef {Object} Options
  * @property {VectorStyle|Array<VectorStyle>} style Vector style as literal style or shaders; can also accept an array of styles
+ * @property {import('../../style/flat.js').StyleVariables} [variables] Style variables. Each variable must hold a literal value (not
+ * an expression). These variables can be used as {@link import("../../expr/expression.js").ExpressionValue expressions} in the styles properties
+ * using the `['var', 'varName']` operator.
  * @property {boolean} [disableHitDetection=false] Setting this to true will provide a slight performance boost, but will
  * prevent all hit detection on the layer.
  * @property {number} [cacheSize=512] The vector tile cache size.
@@ -81,6 +84,12 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
      * @private
      */
     this.styles_ = [];
+
+    /**
+     * @type {import('../../style/flat.js').StyleVariables}
+     * @private
+     */
+    this.styleVariables_ = options.variables || {};
 
     /**
      * @type {Array<VectorStyleRenderer>}
@@ -188,6 +197,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       if (!isShaders) {
         const parseResult = parseLiteralStyle(
           /** @type {import('../../style/webgl.js').WebGLStyle} */ (style),
+          this.styleVariables_,
         );
         addBuilderParams(parseResult.builder);
         shaders = {
@@ -205,6 +215,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       }
       return new VectorStyleRenderer(
         shaders,
+        this.styleVariables_,
         this.helper,
         this.hitDetectionEnabled_,
       );

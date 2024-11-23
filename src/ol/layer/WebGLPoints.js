@@ -9,6 +9,10 @@ import {parseLiteralStyle} from '../webgl/styleparser.js';
  * @template {import("../source/Vector.js").default<import('../Feature').FeatureLike>} VectorSourceType
  * @typedef {Object} Options
  * @property {import('../style/webgl.js').WebGLStyle} style Literal style to apply to the layer features.
+ * @property {import('../style/flat.js').StyleVariables} [variables] Style variables. Each variable must hold a literal value (not
+ * an expression). These variables can be used as {@link import("../expr/expression.js").ExpressionValue expressions} in the styles properties
+ * using the `['var', 'varName']` operator.
+ * To update style variables, use the {@link import("./WebGLPoints.js").default#updateStyleVariables} method.
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
@@ -77,16 +81,16 @@ class WebGLPointsLayer extends Layer {
     super(baseOptions);
 
     /**
+     * @type {import('../style/flat.js').StyleVariables}
+     * @private
+     */
+    this.styleVariables_ = options.variables || {};
+
+    /**
      * @private
      * @type {import('../webgl/styleparser.js').StyleParseResult}
      */
-    this.parseResult_ = parseLiteralStyle(options.style);
-
-    /**
-     * @type {Object<string, (string|number|Array<number>|boolean)>}
-     * @private
-     */
-    this.styleVariables_ = options.style.variables || {};
+    this.parseResult_ = parseLiteralStyle(options.style, this.styleVariables_);
 
     /**
      * @private
