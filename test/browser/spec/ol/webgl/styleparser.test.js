@@ -14,23 +14,25 @@ import {
 describe('ol/webgl/styleparser', () => {
   describe('parseLiteralStyle', () => {
     it('parses a style with variables', () => {
-      const result = parseLiteralStyle({
-        variables: {
+      const result = parseLiteralStyle(
+        {
+          'circle-radius': [
+            'interpolate',
+            ['linear'],
+            ['get', 'population'],
+            ['var', 'lower'],
+            4,
+            ['var', 'higher'],
+            8,
+          ],
+          'circle-fill-color': '#336699',
+          'circle-opacity': 0.5,
+        },
+        {
           lower: 100,
           higher: 400,
         },
-        'circle-radius': [
-          'interpolate',
-          ['linear'],
-          ['get', 'population'],
-          ['var', 'lower'],
-          4,
-          ['var', 'higher'],
-          8,
-        ],
-        'circle-fill-color': '#336699',
-        'circle-opacity': 0.5,
-      });
+      );
 
       const lowerUniformName = uniformNameForVariable('lower');
       const higherUniformName = uniformNameForVariable('higher');
@@ -90,13 +92,23 @@ describe('ol/webgl/styleparser', () => {
       const varName = 'mySize';
       const uniformName = uniformNameForVariable(varName);
 
-      const result = parseLiteralStyle({
-        variables: {
+      const result = parseLiteralStyle(
+        {
+          'circle-radius': [
+            'match',
+            ['var', varName],
+            'abc',
+            10,
+            'def',
+            20,
+            30,
+          ],
+          'circle-fill-color': 'red',
+        },
+        {
           mySize: 'abcdef',
         },
-        'circle-radius': ['match', ['var', varName], 'abc', 10, 'def', 20, 30],
-        'circle-fill-color': 'red',
-      });
+      );
 
       expect(result.uniforms[uniformName]()).to.be.greaterThan(0);
     });
@@ -624,12 +636,6 @@ describe('ol/webgl/styleparser', () => {
       describe('dynamic properties, color, width joins, caps, offset', () => {
         beforeEach(() => {
           const style = {
-            variables: {
-              width: 1,
-              capType: 'butt',
-              joinType: 'bevel',
-              miterLimit: 20,
-            },
             'stroke-color': [
               'interpolate',
               ['linear'],
@@ -652,7 +658,13 @@ describe('ol/webgl/styleparser', () => {
             ],
             'stroke-line-dash-offset': ['*', ['time'], 5],
           };
-          result = parseLiteralStyle(style);
+          const variables = {
+            width: 1,
+            capType: 'butt',
+            joinType: 'bevel',
+            miterLimit: 20,
+          };
+          result = parseLiteralStyle(style, variables);
         });
         it('parses style', () => {
           expect(result.builder.uniforms_).to.eql([
@@ -778,9 +790,6 @@ describe('ol/webgl/styleparser', () => {
       describe('color expression', () => {
         beforeEach(() => {
           const style = {
-            variables: {
-              scale: 10,
-            },
             'fill-color': [
               'interpolate',
               ['linear'],
@@ -791,23 +800,28 @@ describe('ol/webgl/styleparser', () => {
               'red',
             ],
           };
-          result = parseLiteralStyle(style);
+          const variables = {
+            scale: 10,
+          };
+          result = parseLiteralStyle(style, variables);
         });
         it('parses style', () => {
-          const result = parseLiteralStyle({
-            variables: {
+          const result = parseLiteralStyle(
+            {
+              'fill-color': [
+                'interpolate',
+                ['linear'],
+                ['*', ['get', 'intensity'], ['var', 'scale']],
+                0,
+                'blue',
+                10,
+                'red',
+              ],
+            },
+            {
               scale: 10,
             },
-            'fill-color': [
-              'interpolate',
-              ['linear'],
-              ['*', ['get', 'intensity'], ['var', 'scale']],
-              0,
-              'blue',
-              10,
-              'red',
-            ],
-          });
+          );
 
           expect(result.builder.uniforms_).to.eql(['float u_var_scale']);
           expect(result.builder.attributes_).to.eql(['float a_prop_intensity']);
@@ -1030,8 +1044,28 @@ describe('ol/webgl/styleparser', () => {
     describe('handle uniforms of types other that number', () => {
       let parseResult;
       beforeEach(() => {
-        parseResult = parseLiteralStyle({
-          variables: {
+        parseResult = parseLiteralStyle(
+          {
+            'fill-color': [
+              'case',
+              ['var', 'transparent'],
+              'transparent',
+              ['var', 'fillColor'],
+            ],
+            'stroke-width': [
+              'match',
+              ['var', 'lineType'],
+              'low',
+              ['var', 'lineWidth'],
+              'high',
+              ['*', ['var', 'lineWidth'], 2],
+              1.5,
+            ],
+            'circle-radius': 8,
+            'circle-fill-color': ['var', 'color'],
+            'circle-scale': ['var', 'iconSize'],
+          },
+          {
             iconSize: [12, 18],
             color: 'pink',
             lineType: 'low',
@@ -1039,25 +1073,7 @@ describe('ol/webgl/styleparser', () => {
             fillColor: 'rgba(123, 240, 100, 0.3)',
             transparent: true,
           },
-          'fill-color': [
-            'case',
-            ['var', 'transparent'],
-            'transparent',
-            ['var', 'fillColor'],
-          ],
-          'stroke-width': [
-            'match',
-            ['var', 'lineType'],
-            'low',
-            ['var', 'lineWidth'],
-            'high',
-            ['*', ['var', 'lineWidth'], 2],
-            1.5,
-          ],
-          'circle-radius': 8,
-          'circle-fill-color': ['var', 'color'],
-          'circle-scale': ['var', 'iconSize'],
-        });
+        );
       });
       it('adds uniforms to the shader builder', () => {
         expect(parseResult.builder.uniforms_).to.eql([

@@ -861,9 +861,10 @@ function parseFillProperties(
  * {@link module:ol/renderer/webgl/PointsLayer~WebGLPointsLayerRenderer}.
  *
  * @param {import("../style/webgl.js").WebGLStyle} style Literal style.
+ * @param {import('../style/flat.js').StyleVariables} variables Style variables.
  * @return {StyleParseResult} Result containing shader params, attributes and uniforms.
  */
-export function parseLiteralStyle(style) {
+export function parseLiteralStyle(style, variables) {
   /**
    * @type {import("../expr/gpu.js").CompilationContext}
    */
@@ -922,7 +923,7 @@ export function parseLiteralStyle(style) {
     builder.addUniform(`${glslType} ${uniformName}`);
 
     uniforms[uniformName] = () => {
-      const value = style.variables[variable.name];
+      const value = variables[variable.name];
       if (typeof value === 'number') {
         return value;
       }

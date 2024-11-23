@@ -300,3 +300,10 @@ export function createDefaultStyle() {
  * @property {boolean} [else] If true, the rule applies only if no other previous rule applies.
  * If the else rule also has a filter, the rule will not apply if the filter does not match.
  */
+
+/**
+ * Style variables are provided as an object. The variables can be read in a {@link import("../expr/expression.js").ExpressionValue style expression}
+ * using the `['var', 'varName']` operator.
+ * Each variable must hold a literal value (not an expression).
+ * @typedef {Object<string, number|Array<number>|string|boolean>} StyleVariables
+ */

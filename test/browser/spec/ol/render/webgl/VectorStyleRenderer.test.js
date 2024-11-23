@@ -110,7 +110,7 @@ describe('VectorStyleRenderer', () => {
 
   describe('constructor using style', () => {
     beforeEach(() => {
-      vectorStyleRenderer = new VectorStyleRenderer(SAMPLE_STYLE, helper);
+      vectorStyleRenderer = new VectorStyleRenderer(SAMPLE_STYLE, {}, helper);
     });
     it('creates a VectorStyleRenderer', () => {
       expect(vectorStyleRenderer.customAttributes_).to.eql({
@@ -153,7 +153,11 @@ describe('VectorStyleRenderer', () => {
   });
   describe('constructor using shaders', () => {
     beforeEach(() => {
-      vectorStyleRenderer = new VectorStyleRenderer(SAMPLE_SHADERS(), helper);
+      vectorStyleRenderer = new VectorStyleRenderer(
+        SAMPLE_SHADERS(),
+        {},
+        helper,
+      );
     });
     it('creates a VectorStyleRenderer', () => {
       expect(vectorStyleRenderer.customAttributes_).to.eql({
@@ -197,7 +201,11 @@ describe('VectorStyleRenderer', () => {
   });
   describe('methods', () => {
     beforeEach(() => {
-      vectorStyleRenderer = new VectorStyleRenderer(SAMPLE_SHADERS(), helper);
+      vectorStyleRenderer = new VectorStyleRenderer(
+        SAMPLE_SHADERS(),
+        {},
+        helper,
+      );
     });
     describe('generateBuffers', () => {
       let buffers;
@@ -335,7 +343,11 @@ describe('VectorStyleRenderer', () => {
       sinon.spy(helper, 'enableAttributes');
       sinon.spy(helper, 'useProgram');
       sinon.spy(helper, 'drawElements');
-      vectorStyleRenderer = new VectorStyleRenderer(fillOnlyShaders, helper);
+      vectorStyleRenderer = new VectorStyleRenderer(
+        fillOnlyShaders,
+        {},
+        helper,
+      );
       buffers = await vectorStyleRenderer.generateBuffers(
         geometryBatch,
         SAMPLE_TRANSFORM,
@@ -376,7 +388,11 @@ describe('VectorStyleRenderer', () => {
       sinon.spy(helper, 'enableAttributes');
       sinon.spy(helper, 'useProgram');
       sinon.spy(helper, 'drawElements');
-      vectorStyleRenderer = new VectorStyleRenderer(strokeOnlyShaders, helper);
+      vectorStyleRenderer = new VectorStyleRenderer(
+        strokeOnlyShaders,
+        {},
+        helper,
+      );
       buffers = await vectorStyleRenderer.generateBuffers(
         geometryBatch,
         SAMPLE_TRANSFORM,
@@ -417,7 +433,11 @@ describe('VectorStyleRenderer', () => {
       sinon.spy(helper, 'enableAttributes');
       sinon.spy(helper, 'useProgram');
       sinon.spy(helper, 'drawElements');
-      vectorStyleRenderer = new VectorStyleRenderer(symbolOnlyShaders, helper);
+      vectorStyleRenderer = new VectorStyleRenderer(
+        symbolOnlyShaders,
+        {},
+        helper,
+      );
       buffers = await vectorStyleRenderer.generateBuffers(
         geometryBatch,
         SAMPLE_TRANSFORM,
