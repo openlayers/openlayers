@@ -516,15 +516,21 @@ class Layer extends BaseLayer {
   }
 
   /**
-   * Clean up.
-   * @override
+   * This will clear the renderer so that a new one can be created next time it is needed
    */
-  disposeInternal() {
+  clearRenderer() {
     if (this.renderer_) {
       this.renderer_.dispose();
       delete this.renderer_;
     }
+  }
 
+  /**
+   * Clean up.
+   * @override
+   */
+  disposeInternal() {
+    this.clearRenderer();
     this.setSource(null);
     super.disposeInternal();
   }

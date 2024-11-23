@@ -362,7 +362,11 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     // draw the normal canvas
     this.helper.prepareDraw(frameState);
     this.renderWorlds(frameState, false, startWorld, endWorld, worldWidth);
-    this.helper.finalizeDraw(frameState);
+    this.helper.finalizeDraw(
+      frameState,
+      this.dispatchPreComposeEvent,
+      this.dispatchPostComposeEvent,
+    );
 
     const canvas = this.helper.getCanvas();
     const layerState = frameState.layerStatesArray[frameState.layerIndex];
