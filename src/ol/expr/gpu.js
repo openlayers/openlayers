@@ -166,6 +166,8 @@ const GET_BAND_VALUE_FUNC = 'getBandValue';
 
 export const PALETTE_TEXTURE_ARRAY = 'u_paletteTextures';
 
+export const FEATURE_ID_PROPERTY_NAME = 'OL_FEATURE_ID';
+
 /**
  * @typedef {string} CompiledExpression
  */
@@ -223,6 +225,24 @@ const compilers = {
     }
     const prefix = context.inFragmentShader ? 'v_prop_' : 'a_prop_';
     return prefix + propName;
+  },
+  [Ops.Id]: (context) => {
+    const isExisting = FEATURE_ID_PROPERTY_NAME in context.properties;
+    if (!isExisting) {
+      context.properties[FEATURE_ID_PROPERTY_NAME] = {
+        name: FEATURE_ID_PROPERTY_NAME,
+        type: NumberType | StringType,
+        evaluator: (feature) => {
+          const id = feature.getId();
+          if (id !== undefined) {
+            return id;
+          }
+          return null;
+        },
+      };
+    }
+    const prefix = context.inFragmentShader ? 'v_prop_' : 'a_prop_';
+    return prefix + FEATURE_ID_PROPERTY_NAME;
   },
   [Ops.GeometryType]: (context, expression, type) => {
     const propName = 'geometryType';

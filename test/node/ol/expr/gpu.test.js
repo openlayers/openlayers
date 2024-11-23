@@ -10,8 +10,8 @@ import {
   StringType,
   newParsingContext,
 } from '../../../../src/ol/expr/expression.js';
-import {MultiPolygon} from '../../../../src/ol/geom.js';
 import {
+  FEATURE_ID_PROPERTY_NAME,
   arrayToGlsl,
   buildExpression,
   colorToGlsl,
@@ -20,6 +20,7 @@ import {
   numberToGlsl,
   stringToGlsl,
 } from '../../../../src/ol/expr/gpu.js';
+import {MultiPolygon} from '../../../../src/ol/geom.js';
 
 describe('ol/expr/gpu.js', () => {
   describe('numberToGlsl()', () => {
@@ -133,6 +134,31 @@ describe('ol/expr/gpu.js', () => {
         type: AnyType,
         expression: ['get', 'myAttr'],
         expected: 'v_prop_myAttr',
+        context: {
+          inFragmentShader: true,
+        },
+      },
+      {
+        name: 'id',
+        type: AnyType,
+        expression: ['id'],
+        expected: 'a_prop_OL_FEATURE_ID',
+        contextAssertion: (context) => {
+          const prop = context.properties[FEATURE_ID_PROPERTY_NAME];
+          expect(prop.name).to.equal(FEATURE_ID_PROPERTY_NAME);
+          expect(prop.type).to.equal(StringType | NumberType);
+          expect(prop.evaluator).to.be.an(Function);
+          const feature = new Feature();
+          expect(prop.evaluator(feature)).to.eql(null);
+          feature.setId(1234);
+          expect(prop.evaluator(feature)).to.eql(1234);
+        },
+      },
+      {
+        name: 'id (in fragment shader)',
+        type: AnyType,
+        expression: ['id'],
+        expected: 'v_prop_OL_FEATURE_ID',
         context: {
           inFragmentShader: true,
         },
@@ -776,8 +802,7 @@ describe('ol/expr/gpu.js', () => {
             },
           },
         },
-        expected:
-          '((u_var_symbolType == 11.0) ? vec2((a_prop_type == 3.0 ? u_var_lowHeight : (a_prop_type == 12.0 ? u_var_mediumHeight : a_prop_height)), 10.0) : u_var_fixedSize)',
+        expected: `((u_var_symbolType == ${stringToGlsl('dynamic')}) ? vec2((a_prop_type == ${stringToGlsl('low')} ? u_var_lowHeight : (a_prop_type == ${stringToGlsl('medium')} ? u_var_mediumHeight : a_prop_height)), 10.0) : u_var_fixedSize)`,
         contextAssertion: (context) => {
           expect(context.properties).to.eql({
             type: {
