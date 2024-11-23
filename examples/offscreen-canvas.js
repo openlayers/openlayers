@@ -133,10 +133,9 @@ map.on('pointermove', function (evt) {
   if (evt.dragging) {
     return;
   }
-  const pixel = map.getEventPixel(evt.originalEvent);
   worker.postMessage({
     action: 'requestFeatures',
-    pixel: pixel,
+    pixel: evt.pixel,
   });
 });
 

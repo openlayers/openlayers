@@ -121,8 +121,7 @@ map.on('pointermove', function (evt) {
   if (evt.dragging) {
     return;
   }
-  const pixel = map.getEventPixel(evt.originalEvent);
-  const hit = map.hasFeatureAtPixel(pixel);
+  const hit = map.hasFeatureAtPixel(evt.pixel);
   if (hit) {
     map.getTarget().style.cursor = 'pointer';
   } else {
