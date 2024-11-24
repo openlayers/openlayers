@@ -56,13 +56,7 @@ const displayFeatureInfo = function (pixel) {
     info.innerHTML = '&nbsp;';
   }
 
-  if (!feature) {
-    highlightedId = -1;
-    vectorLayer.updateStyleVariables({highlightedId});
-    return;
-  }
-
-  const id = feature.getId();
+  const id = feature ? feature.getId() : -1;
   if (id !== highlightedId) {
     highlightedId = id;
     vectorLayer.updateStyleVariables({highlightedId});

@@ -78,12 +78,12 @@ class WebGLVectorLayer extends Layer {
     /**
      * @private
      */
-    this.style = options.style;
+    this.style_ = options.style;
 
     /**
      * @private
      */
-    this.hitDetectionDisabled = !!options.disableHitDetection;
+    this.hitDetectionDisabled_ = !!options.disableHitDetection;
   }
 
   /**
@@ -91,9 +91,9 @@ class WebGLVectorLayer extends Layer {
    */
   createRenderer() {
     return new WebGLVectorLayerRenderer(this, {
-      style: this.style,
+      style: this.style_,
       variables: this.styleVariables_,
-      disableHitDetection: this.hitDetectionDisabled,
+      disableHitDetection: this.hitDetectionDisabled_,
     });
   }
 

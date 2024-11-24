@@ -232,13 +232,7 @@ const compilers = {
       context.properties[FEATURE_ID_PROPERTY_NAME] = {
         name: FEATURE_ID_PROPERTY_NAME,
         type: NumberType | StringType,
-        evaluator: (feature) => {
-          const id = feature.getId();
-          if (id !== undefined) {
-            return id;
-          }
-          return null;
-        },
+        evaluator: (feature) => feature.getId() ?? null,
       };
     }
     const prefix = context.inFragmentShader ? 'v_prop_' : 'a_prop_';
