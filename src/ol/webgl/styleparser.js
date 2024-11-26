@@ -988,7 +988,7 @@ export function parseLiteralStyle(style, variables) {
       return value;
     };
 
-    attributes[property.name] = {
+    attributes[`prop_${property.name}`] = {
       size: getGlslSizeFromType(property.type),
       callback,
     };

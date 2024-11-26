@@ -479,7 +479,7 @@ ${this.uniforms_
   .join('\n')}
 attribute vec2 a_position;
 attribute float a_index;
-attribute vec4 a_prop_hitColor;
+attribute vec4 a_hitColor;
 ${this.attributes_
   .map(function (attribute) {
     return 'attribute ' + attribute + ';';
@@ -487,7 +487,7 @@ ${this.attributes_
   .join('\n')}
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
-varying vec4 v_prop_hitColor;
+varying vec4 v_hitColor;
 varying vec2 v_centerPx;
 varying float v_angle;
 varying vec2 v_quadSizePx;
@@ -531,7 +531,7 @@ void main(void) {
   float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.p;
   float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.q;
   v_texCoord = vec2(u, v);
-  v_prop_hitColor = a_prop_hitColor;
+  v_hitColor = a_hitColor;
   v_angle = angle;
   c = cos(-v_angle);
   s = sin(-v_angle);
@@ -561,7 +561,7 @@ ${this.uniforms_
   })
   .join('\n')}
 varying vec2 v_texCoord;
-varying vec4 v_prop_hitColor;
+varying vec4 v_hitColor;
 varying vec2 v_centerPx;
 varying float v_angle;
 varying vec2 v_quadSizePx;
@@ -582,7 +582,7 @@ void main(void) {
   gl_FragColor.rgb *= gl_FragColor.a;
   if (u_hitDetection > 0) {
     if (gl_FragColor.a < 0.05) { discard; };
-    gl_FragColor = v_prop_hitColor;
+    gl_FragColor = v_hitColor;
   }
 }`;
   }
@@ -609,7 +609,7 @@ attribute float a_measureEnd;
 attribute float a_parameters;
 attribute float a_distance;
 attribute vec2 a_joinAngles;
-attribute vec4 a_prop_hitColor;
+attribute vec4 a_hitColor;
 ${this.attributes_
   .map(function (attribute) {
     return 'attribute ' + attribute + ';';
@@ -620,7 +620,7 @@ varying vec2 v_segmentEnd;
 varying float v_angleStart;
 varying float v_angleEnd;
 varying float v_width;
-varying vec4 v_prop_hitColor;
+varying vec4 v_hitColor;
 varying float v_distanceOffsetPx;
 varying float v_measureStart;
 varying float v_measureEnd;
@@ -699,7 +699,7 @@ void main(void) {
   v_segmentStart = segmentStartPx;
   v_segmentEnd = segmentEndPx;
   v_width = lineWidth;
-  v_prop_hitColor = a_prop_hitColor;
+  v_hitColor = a_hitColor;
   v_distanceOffsetPx = a_distance / u_resolution - (lineOffsetPx * angleTangentSum);
   v_measureStart = a_measureStart;
   v_measureEnd = a_measureEnd;
@@ -732,7 +732,7 @@ varying vec2 v_segmentEnd;
 varying float v_angleStart;
 varying float v_angleEnd;
 varying float v_width;
-varying vec4 v_prop_hitColor;
+varying vec4 v_hitColor;
 varying float v_distanceOffsetPx;
 varying float v_measureStart;
 varying float v_measureEnd;
@@ -870,7 +870,7 @@ void main(void) {
   gl_FragColor.rgb *= gl_FragColor.a;
   if (u_hitDetection > 0) {
     if (gl_FragColor.a < 0.1) { discard; };
-    gl_FragColor = v_prop_hitColor;
+    gl_FragColor = v_hitColor;
   }
 }`;
   }
@@ -892,13 +892,13 @@ ${this.uniforms_
   })
   .join('\n')}
 attribute vec2 a_position;
-attribute vec4 a_prop_hitColor;
+attribute vec4 a_hitColor;
 ${this.attributes_
   .map(function (attribute) {
     return 'attribute ' + attribute + ';';
   })
   .join('\n')}
-varying vec4 v_prop_hitColor;
+varying vec4 v_hitColor;
 ${this.varyings_
   .map(function (varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
@@ -907,7 +907,7 @@ ${this.varyings_
 ${this.vertexShaderFunctions_.join('\n')}
 void main(void) {
   gl_Position = u_projectionMatrix * vec4(a_position, u_depth, 1.0);
-  v_prop_hitColor = a_prop_hitColor;
+  v_hitColor = a_hitColor;
 ${this.varyings_
   .map(function (varying) {
     return '  ' + varying.name + ' = ' + varying.expression + ';';
@@ -931,7 +931,7 @@ ${this.uniforms_
     return 'uniform ' + uniform + ';';
   })
   .join('\n')}
-varying vec4 v_prop_hitColor;
+varying vec4 v_hitColor;
 ${this.varyings_
   .map(function (varying) {
     return 'varying ' + varying.type + ' ' + varying.name + ';';
@@ -970,7 +970,7 @@ void main(void) {
   gl_FragColor.rgb *= gl_FragColor.a;
   if (u_hitDetection > 0) {
     if (gl_FragColor.a < 0.1) { discard; };
-    gl_FragColor = v_prop_hitColor;
+    gl_FragColor = v_hitColor;
   }
 }`;
   }

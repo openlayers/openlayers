@@ -227,7 +227,7 @@ class VectorStyleRenderer {
 
     const customAttributesDesc = Object.entries(this.customAttributes_).map(
       ([name, value]) => ({
-        name: `a_prop_${name}`,
+        name: `a_${name}`,
         size: value.size || 1,
         type: AttributeType.FLOAT,
       }),

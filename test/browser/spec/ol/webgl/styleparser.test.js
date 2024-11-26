@@ -55,7 +55,7 @@ describe('ol/webgl/styleparser', () => {
         `vec2(mix(4.0, 8.0, clamp((a_prop_population - u_var_lower) / (u_var_higher - u_var_lower), 0.0, 1.0)) * 2. + 0.5)`,
       );
       expect(Object.keys(result.attributes).length).to.eql(1);
-      expect(result.attributes).to.have.property('population');
+      expect(result.attributes).to.have.property('prop_population');
       expect(result.uniforms).to.have.property(lowerUniformName);
       expect(result.uniforms).to.have.property(higherUniformName);
     });
@@ -85,7 +85,7 @@ describe('ol/webgl/styleparser', () => {
         '!(v_prop_attr0 >= 0.0 && v_prop_attr0 <= 10.0)',
       );
       expect(Object.keys(result.attributes).length).to.eql(1);
-      expect(result.attributes).to.have.property('attr0');
+      expect(result.attributes).to.have.property('prop_attr0');
     });
 
     it('correctly adds string variables to the string literals mapping', () => {
@@ -165,10 +165,10 @@ describe('ol/webgl/styleparser', () => {
           );
           expect(result.builder.symbolRotateWithView_).to.eql(true);
           expect(Object.keys(result.attributes).length).to.eql(4);
-          expect(result.attributes).to.have.property('attr1');
-          expect(result.attributes).to.have.property('heading');
-          expect(result.attributes).to.have.property('color1');
-          expect(result.attributes).to.have.property('color2');
+          expect(result.attributes).to.have.property('prop_attr1');
+          expect(result.attributes).to.have.property('prop_heading');
+          expect(result.attributes).to.have.property('prop_color1');
+          expect(result.attributes).to.have.property('prop_color2');
           expect(result.uniforms).to.eql({});
         });
       });
@@ -269,10 +269,10 @@ describe('ol/webgl/styleparser', () => {
           );
           expect(result.builder.symbolRotateWithView_).to.eql(true);
           expect(Object.keys(result.attributes).length).to.eql(4);
-          expect(result.attributes).to.have.property('attr1');
-          expect(result.attributes).to.have.property('heading');
-          expect(result.attributes).to.have.property('color1');
-          expect(result.attributes).to.have.property('color2');
+          expect(result.attributes).to.have.property('prop_attr1');
+          expect(result.attributes).to.have.property('prop_heading');
+          expect(result.attributes).to.have.property('prop_color1');
+          expect(result.attributes).to.have.property('prop_color2');
           expect(result.uniforms).to.eql({});
         });
       });
@@ -370,9 +370,9 @@ describe('ol/webgl/styleparser', () => {
           );
           expect(result.builder.symbolRotateWithView_).to.eql(true);
           expect(Object.keys(result.attributes).length).to.eql(3);
-          expect(result.attributes).to.have.property('attr1');
-          expect(result.attributes).to.have.property('heading');
-          expect(result.attributes).to.have.property('color1');
+          expect(result.attributes).to.have.property('prop_attr1');
+          expect(result.attributes).to.have.property('prop_heading');
+          expect(result.attributes).to.have.property('prop_color1');
           expect(Object.keys(result.uniforms).length).to.eql(2);
           expect(result.uniforms).to.have.property(`u_texture${uid}_size`);
           expect(result.uniforms).to.have.property(`u_texture${uid}`);
@@ -708,9 +708,9 @@ describe('ol/webgl/styleparser', () => {
             'dashDistanceField_450289113(currentLengthPx + (u_time * 5.0), currentRadiusPx, capType)',
           );
           expect(Object.keys(result.attributes).length).to.eql(3);
-          expect(result.attributes).to.have.property('intensity');
-          expect(result.attributes).to.have.property('offset');
-          expect(result.attributes).to.have.property('size');
+          expect(result.attributes).to.have.property('prop_intensity');
+          expect(result.attributes).to.have.property('prop_offset');
+          expect(result.attributes).to.have.property('prop_size');
           expect(result.uniforms).to.have.property('u_var_width');
           expect(result.uniforms).to.have.property('u_var_capType');
           expect(result.uniforms).to.have.property('u_var_joinType');
@@ -836,7 +836,7 @@ describe('ol/webgl/styleparser', () => {
             'mix(vec4(0.0, 0.0, 1.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), clamp(((v_prop_intensity * u_var_scale) - 0.0) / (10.0 - 0.0), 0.0, 1.0))',
           );
           expect(Object.keys(result.attributes).length).to.eql(1);
-          expect(result.attributes).to.have.property('intensity');
+          expect(result.attributes).to.have.property('prop_intensity');
           expect(result.uniforms).to.have.property('u_var_scale');
         });
       });
@@ -914,7 +914,7 @@ describe('ol/webgl/styleparser', () => {
         );
         expect(result.attributes).to.eql({
           geometryType: {size: 1, callback: {}},
-          type: {size: 1, callback: {}},
+          prop_type: {size: 1, callback: {}},
         });
       });
     });
@@ -986,12 +986,12 @@ describe('ol/webgl/styleparser', () => {
       });
       it('returns attributes with their callbacks in the result', () => {
         expect(parseResult.attributes).to.eql({
-          iconSize: {size: 2, callback: {}},
-          color: {size: 2, callback: {}},
-          lineType: {size: 1, callback: {}},
-          lineWidth: {size: 1, callback: {}},
-          transparent: {size: 1, callback: {}},
-          fillColor: {size: 2, callback: {}},
+          prop_iconSize: {size: 2, callback: {}},
+          prop_color: {size: 2, callback: {}},
+          prop_lineType: {size: 1, callback: {}},
+          prop_lineWidth: {size: 1, callback: {}},
+          prop_transparent: {size: 1, callback: {}},
+          prop_fillColor: {size: 2, callback: {}},
         });
       });
       it('processes the feature attributes according to their types', () => {
@@ -1004,24 +1004,24 @@ describe('ol/webgl/styleparser', () => {
           transparent: true,
           geometry: new Point([0, 0]),
         });
-        expect(parseResult.attributes['iconSize'].callback(feature)).to.eql([
-          12, 18,
-        ]);
-        expect(parseResult.attributes['color'].callback(feature)).to.eql(
+        expect(
+          parseResult.attributes['prop_iconSize'].callback(feature),
+        ).to.eql([12, 18]);
+        expect(parseResult.attributes['prop_color'].callback(feature)).to.eql(
           packColor(asArray('pink')),
         );
-        expect(parseResult.attributes['lineType'].callback(feature)).to.be.a(
-          'number',
-        );
-        expect(parseResult.attributes['lineWidth'].callback(feature)).to.eql(
-          0.5,
-        );
-        expect(parseResult.attributes['fillColor'].callback(feature)).to.eql(
-          packColor(asArray('rgba(123, 240, 100, 0.3)')),
-        );
-        expect(parseResult.attributes['transparent'].callback(feature)).to.eql(
-          1,
-        );
+        expect(
+          parseResult.attributes['prop_lineType'].callback(feature),
+        ).to.be.a('number');
+        expect(
+          parseResult.attributes['prop_lineWidth'].callback(feature),
+        ).to.eql(0.5);
+        expect(
+          parseResult.attributes['prop_fillColor'].callback(feature),
+        ).to.eql(packColor(asArray('rgba(123, 240, 100, 0.3)')));
+        expect(
+          parseResult.attributes['prop_transparent'].callback(feature),
+        ).to.eql(1);
       });
     });
 
@@ -1194,7 +1194,7 @@ describe('ol/webgl/styleparser', () => {
         ],
       });
 
-      expect(result.attributes.foo.callback({get: () => 'green'})).to.be.a(
+      expect(result.attributes.prop_foo.callback({get: () => 'green'})).to.be.a(
         'number',
       );
     });

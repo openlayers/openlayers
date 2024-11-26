@@ -28,10 +28,10 @@ const SAMPLE_SHADERS = () => ({
     .setStrokeColorExpression('vec4(1.0)')
     .setSymbolColorExpression('vec4(1.0)'),
   attributes: {
-    attr1: {
+    prop_attr1: {
       callback: (feature) => feature.get('test'),
     },
-    attr2: {callback: () => [10, 20, 30], size: 3},
+    prop_attr2: {callback: () => [10, 20, 30], size: 3},
   },
   uniforms: {
     custom: () => 1234,
@@ -114,11 +114,11 @@ describe('VectorStyleRenderer', () => {
     });
     it('creates a VectorStyleRenderer', () => {
       expect(vectorStyleRenderer.customAttributes_).to.eql({
-        color: {
+        prop_color: {
           callback: {},
           size: 2,
         },
-        size: {
+        prop_size: {
           callback: {},
           size: 1,
         },
@@ -161,10 +161,10 @@ describe('VectorStyleRenderer', () => {
     });
     it('creates a VectorStyleRenderer', () => {
       expect(vectorStyleRenderer.customAttributes_).to.eql({
-        attr1: {
+        prop_attr1: {
           callback: {},
         },
-        attr2: {
+        prop_attr2: {
           callback: {},
           size: 3,
         },
