@@ -11,7 +11,6 @@ import {
   Ops,
   SizeType,
   StringType,
-  computeGeometryType,
   parse,
   typeName,
 } from './expression.js';
@@ -127,14 +126,12 @@ export function uniformNameForVariable(variableName) {
  * @typedef {Object} CompilationContextProperty
  * @property {string} name Name
  * @property {number} type Resolved property type
- * @property {function(import("../Feature.js").FeatureLike): *} [evaluator] Function used for evaluating the value;
  */
 
 /**
  * @typedef {Object} CompilationContextVariable
  * @property {string} name Name
  * @property {number} type Resolved variable type
- * @property {function(Object): *} [evaluator] Function used for evaluating the value; argument is the style variables object
  */
 
 /**
@@ -145,7 +142,8 @@ export function uniformNameForVariable(variableName) {
  * @property {Object<string, string>} functions Lookup of functions used by the style.
  * @property {number} [bandCount] Number of bands per pixel.
  * @property {Array<PaletteTexture>} [paletteTextures] List of palettes used by the style.
- * @property {import("../style/webgl.js").WebGLStyle} style Literal style.
+ * @property {boolean} featureId Whether the feature ID is used in the expression
+ * @property {boolean} geometryType Whether the geometry type is used in the expression
  */
 
 /**
@@ -158,7 +156,8 @@ export function newCompilationContext() {
     properties: {},
     functions: {},
     bandCount: 0,
-    style: {},
+    featureId: false,
+    geometryType: false,
   };
 }
 
@@ -166,7 +165,8 @@ const GET_BAND_VALUE_FUNC = 'getBandValue';
 
 export const PALETTE_TEXTURE_ARRAY = 'u_paletteTextures';
 
-export const FEATURE_ID_PROPERTY_NAME = 'OL_FEATURE_ID';
+export const FEATURE_ID_PROPERTY_NAME = 'featureId';
+export const GEOMETRY_TYPE_PROPERTY_NAME = 'geometryType';
 
 /**
  * @typedef {string} CompiledExpression
@@ -227,31 +227,14 @@ const compilers = {
     return prefix + propName;
   },
   [Ops.Id]: (context) => {
-    const isExisting = FEATURE_ID_PROPERTY_NAME in context.properties;
-    if (!isExisting) {
-      context.properties[FEATURE_ID_PROPERTY_NAME] = {
-        name: FEATURE_ID_PROPERTY_NAME,
-        type: NumberType | StringType,
-        evaluator: (feature) => feature.getId() ?? null,
-      };
-    }
-    const prefix = context.inFragmentShader ? 'v_prop_' : 'a_prop_';
+    context.featureId = true;
+    const prefix = context.inFragmentShader ? 'v_' : 'a_';
     return prefix + FEATURE_ID_PROPERTY_NAME;
   },
-  [Ops.GeometryType]: (context, expression, type) => {
-    const propName = 'geometryType';
-    const isExisting = propName in context.properties;
-    if (!isExisting) {
-      context.properties[propName] = {
-        name: propName,
-        type: StringType,
-        evaluator: (feature) => {
-          return computeGeometryType(feature.getGeometry());
-        },
-      };
-    }
-    const prefix = context.inFragmentShader ? 'v_prop_' : 'a_prop_';
-    return prefix + propName;
+  [Ops.GeometryType]: (context) => {
+    context.geometryType = true;
+    const prefix = context.inFragmentShader ? 'v_' : 'a_';
+    return prefix + GEOMETRY_TYPE_PROPERTY_NAME;
   },
   [Ops.LineMetric]: () => 'currentLineMetric', // this variable is assumed to always be present in shaders, default is 0.
   [Ops.Var]: (context, expression) => {

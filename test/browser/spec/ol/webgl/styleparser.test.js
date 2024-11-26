@@ -1,5 +1,5 @@
 import Feature from '../../../../../src/ol/Feature.js';
-import Point from '../../../../../src/ol/geom/Point.js';
+import {MultiPolygon, Point} from '../../../../../src/ol/geom.js';
 import {asArray} from '../../../../../src/ol/color.js';
 import {
   computeHash,
@@ -910,7 +910,7 @@ describe('ol/webgl/styleparser', () => {
           'bool operator_in_0',
         );
         expect(result.builder.getFragmentDiscardExpression()).to.be(
-          `!((v_prop_geometryType == ${stringToGlsl('LineString')}) && operator_in_0(v_prop_type))`,
+          `!((v_geometryType == ${stringToGlsl('LineString')}) && operator_in_0(v_prop_type))`,
         );
         expect(result.attributes).to.eql({
           geometryType: {size: 1, callback: {}},
@@ -941,13 +941,7 @@ describe('ol/webgl/styleparser', () => {
           'circle-radius': 8,
           'circle-fill-color': ['get', 'color'],
           'circle-scale': ['get', 'iconSize'],
-          'stroke-color': [
-            'match',
-            ['geometry-type'],
-            'Polygon',
-            'red',
-            'blue',
-          ],
+          'stroke-color': 'red',
         });
       });
       it('adds attributes to the shader builder', () => {
@@ -956,7 +950,6 @@ describe('ol/webgl/styleparser', () => {
           'float a_prop_lineType',
           'float a_prop_lineWidth',
           'vec2 a_prop_color',
-          'float a_prop_geometryType',
           'float a_prop_transparent',
           'vec2 a_prop_fillColor',
         ]);
@@ -972,11 +965,6 @@ describe('ol/webgl/styleparser', () => {
             name: 'v_prop_color',
             type: 'vec4',
             expression: 'unpackColor(a_prop_color)',
-          },
-          {
-            name: 'v_prop_geometryType',
-            type: 'float',
-            expression: 'a_prop_geometryType',
           },
           {
             name: 'v_prop_transparent',
@@ -1004,7 +992,6 @@ describe('ol/webgl/styleparser', () => {
           lineWidth: {size: 1, callback: {}},
           transparent: {size: 1, callback: {}},
           fillColor: {size: 2, callback: {}},
-          geometryType: {size: 1, callback: {}},
         });
       });
       it('processes the feature attributes according to their types', () => {
@@ -1034,9 +1021,6 @@ describe('ol/webgl/styleparser', () => {
         );
         expect(parseResult.attributes['transparent'].callback(feature)).to.eql(
           1,
-        );
-        expect(parseResult.attributes['geometryType'].callback(feature)).to.eql(
-          stringToGlsl('Point'),
         );
       });
     });
@@ -1104,6 +1088,67 @@ describe('ol/webgl/styleparser', () => {
           asArray('rgba(123, 240, 100, 0.3)'),
         );
         expect(parseResult.uniforms['u_var_transparent']()).to.eql(1);
+      });
+    });
+
+    describe('handle special context values (geometry type, feature id)', () => {
+      let parseResult;
+      beforeEach(() => {
+        parseResult = parseLiteralStyle({
+          filter: ['==', ['id'], 101],
+          'stroke-color': [
+            'match',
+            ['geometry-type'],
+            'Polygon',
+            'red',
+            'blue',
+          ],
+        });
+      });
+      it('adds attributes to the shader builder', () => {
+        expect(parseResult.builder.attributes_).to.eql([
+          'float a_geometryType',
+          'float a_featureId',
+        ]);
+      });
+      it('adds varyings to the shader builder', () => {
+        expect(parseResult.builder.varyings_).to.eql([
+          {
+            name: 'v_geometryType',
+            type: 'float',
+            expression: 'a_geometryType',
+          },
+          {
+            name: 'v_featureId',
+            type: 'float',
+            expression: 'a_featureId',
+          },
+        ]);
+      });
+      it('returns attributes with their callbacks in the result', () => {
+        expect(parseResult.attributes).to.eql({
+          featureId: {size: 1, callback: {}},
+          geometryType: {size: 1, callback: {}},
+        });
+      });
+      it('processes the feature geometry properly', () => {
+        const callback = parseResult.attributes['geometryType'].callback;
+        let feature = new Feature({
+          geometry: new Point([0, 0]),
+        });
+        expect(callback(feature)).to.eql(stringToGlsl('Point'));
+        feature = new Feature({
+          geometry: new MultiPolygon([]),
+        });
+        expect(callback(feature)).to.eql(stringToGlsl('Polygon'));
+      });
+      it('reads the feature id properly', () => {
+        const callback = parseResult.attributes['featureId'].callback;
+        const feature = new Feature();
+        feature.setId('1234');
+        expect(callback(feature)).to.eql(stringToGlsl('1234'));
+        feature.setId(101);
+        expect(callback(feature)).to.eql(101);
       });
     });
   });

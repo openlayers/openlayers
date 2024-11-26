@@ -1,4 +1,3 @@
-import Feature from '../../../../src/ol/Feature.js';
 import expect from '../../expect.js';
 import {
   AnyType,
@@ -11,7 +10,6 @@ import {
   newParsingContext,
 } from '../../../../src/ol/expr/expression.js';
 import {
-  FEATURE_ID_PROPERTY_NAME,
   arrayToGlsl,
   buildExpression,
   colorToGlsl,
@@ -20,7 +18,6 @@ import {
   numberToGlsl,
   stringToGlsl,
 } from '../../../../src/ol/expr/gpu.js';
-import {MultiPolygon} from '../../../../src/ol/geom.js';
 
 describe('ol/expr/gpu.js', () => {
   describe('numberToGlsl()', () => {
@@ -142,23 +139,16 @@ describe('ol/expr/gpu.js', () => {
         name: 'id',
         type: AnyType,
         expression: ['id'],
-        expected: 'a_prop_OL_FEATURE_ID',
+        expected: 'a_featureId',
         contextAssertion: (context) => {
-          const prop = context.properties[FEATURE_ID_PROPERTY_NAME];
-          expect(prop.name).to.equal(FEATURE_ID_PROPERTY_NAME);
-          expect(prop.type).to.equal(StringType | NumberType);
-          expect(prop.evaluator).to.be.an(Function);
-          const feature = new Feature();
-          expect(prop.evaluator(feature)).to.eql(null);
-          feature.setId(1234);
-          expect(prop.evaluator(feature)).to.eql(1234);
+          expect(context.featureId).to.be(true);
         },
       },
       {
         name: 'id (in fragment shader)',
         type: AnyType,
         expression: ['id'],
-        expected: 'v_prop_OL_FEATURE_ID',
+        expected: 'v_featureId',
         context: {
           inFragmentShader: true,
         },
@@ -185,14 +175,9 @@ describe('ol/expr/gpu.js', () => {
         name: 'geometry-type',
         type: AnyType,
         expression: ['geometry-type'],
-        expected: 'a_prop_geometryType',
+        expected: 'a_geometryType',
         contextAssertion: (context) => {
-          const prop = context.properties['geometryType'];
-          expect(prop.name).to.equal('geometryType');
-          expect(prop.type).to.equal(StringType);
-          expect(prop.evaluator).to.be.an(Function);
-          const feature = new Feature(new MultiPolygon([]));
-          expect(prop.evaluator(feature)).to.eql('Polygon');
+          expect(context.geometryType).to.be(true);
         },
       },
       {
@@ -202,7 +187,7 @@ describe('ol/expr/gpu.js', () => {
         context: {
           inFragmentShader: true,
         },
-        expected: 'v_prop_geometryType',
+        expected: 'v_geometryType',
       },
       {
         name: 'line-metric',

@@ -9,16 +9,20 @@ import {
   NumberType,
   SizeType,
   StringType,
+  computeGeometryType,
   newParsingContext,
 } from '../expr/expression.js';
-import {ShaderBuilder} from './ShaderBuilder.js';
-import {asArray} from '../color.js';
 import {
+  FEATURE_ID_PROPERTY_NAME,
+  GEOMETRY_TYPE_PROPERTY_NAME,
   buildExpression,
   getStringNumberEquivalent,
+  newCompilationContext,
   stringToGlsl,
   uniformNameForVariable,
 } from '../expr/gpu.js';
+import {ShaderBuilder} from './ShaderBuilder.js';
+import {asArray} from '../color.js';
 
 /**
  * Recursively parses a style expression and outputs a GLSL-compatible string. Takes in a compilation context that
@@ -865,26 +869,15 @@ function parseFillProperties(
  * @return {StyleParseResult} Result containing shader params, attributes and uniforms.
  */
 export function parseLiteralStyle(style, variables) {
-  /**
-   * @type {import("../expr/gpu.js").CompilationContext}
-   */
-  const vertContext = {
-    inFragmentShader: false,
-    properties: {},
-    variables: {},
-    functions: {},
-    style,
-  };
+  const vertContext = newCompilationContext();
 
   /**
    * @type {import("../expr/gpu.js").CompilationContext}
    */
   const fragContext = {
+    ...newCompilationContext(),
     inFragmentShader: true,
     variables: vertContext.variables,
-    properties: {},
-    functions: {},
-    style,
   };
 
   const builder = new ShaderBuilder();
@@ -977,12 +970,12 @@ export function parseLiteralStyle(style, variables) {
    * @type {import('../render/webgl/VectorStyleRenderer.js').AttributeDefinitions}
    */
   const attributes = {};
+
+  // Define attributes with their callback for each property used in the vertex shader
   for (const propName in vertContext.properties) {
     const property = vertContext.properties[propName];
     const callback = (feature) => {
-      const value = property.evaluator
-        ? property.evaluator(feature)
-        : feature.get(property.name);
+      const value = feature.get(property.name);
       if (property.type === ColorType) {
         return packColor([...asArray(value || '#eee')]);
       }
@@ -1000,6 +993,41 @@ export function parseLiteralStyle(style, variables) {
       callback,
     };
   }
+
+  // Define attributes for special inputs
+  function defineSpecialInput(contextPropName, glslPropName, type, callback) {
+    const inVertContext = vertContext[contextPropName];
+    const inFragContext = fragContext[contextPropName];
+    if (!inVertContext && !inFragContext) {
+      return;
+    }
+    const glslType = getGlslTypeFromType(type);
+    const attrSize = getGlslSizeFromType(type);
+    builder.addAttribute(`${glslType} a_${glslPropName}`);
+    if (inFragContext) {
+      builder.addVarying(`v_${glslPropName}`, glslType, `a_${glslPropName}`);
+    }
+    attributes[glslPropName] = {
+      size: attrSize,
+      callback,
+    };
+  }
+  defineSpecialInput(
+    'geometryType',
+    GEOMETRY_TYPE_PROPERTY_NAME,
+    StringType,
+    (feature) =>
+      getStringNumberEquivalent(computeGeometryType(feature.getGeometry())),
+  );
+  defineSpecialInput(
+    'featureId',
+    FEATURE_ID_PROPERTY_NAME,
+    StringType | NumberType,
+    (feature) => {
+      const id = feature.getId() ?? null;
+      return typeof id === 'string' ? getStringNumberEquivalent(id) : id;
+    },
+  );
 
   return {builder, attributes, uniforms};
 }
