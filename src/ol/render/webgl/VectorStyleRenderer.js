@@ -104,10 +104,11 @@ export const Attributes = {
 class VectorStyleRenderer {
   /**
    * @param {VectorStyle} styleOrShaders Literal style or custom shaders
+   * @param {import('../../style/flat.js').StyleVariables} variables Style variables
    * @param {import('../../webgl/Helper.js').default} helper Helper
    * @param {boolean} enableHitDetection Whether to enable the hit detection (needs compatible shader)
    */
-  constructor(styleOrShaders, helper, enableHitDetection) {
+  constructor(styleOrShaders, variables, helper, enableHitDetection) {
     /**
      * @private
      * @type {import('../../webgl/Helper.js').default}
@@ -125,6 +126,7 @@ class VectorStyleRenderer {
         /** @type {import('../../style/webgl.js').WebGLStyle} */ (
           styleOrShaders
         ),
+        variables,
       );
       shaders = {
         builder: parseResult.builder,
@@ -225,7 +227,7 @@ class VectorStyleRenderer {
 
     const customAttributesDesc = Object.entries(this.customAttributes_).map(
       ([name, value]) => ({
-        name: `a_prop_${name}`,
+        name: `a_${name}`,
         size: value.size || 1,
         type: AttributeType.FLOAT,
       }),

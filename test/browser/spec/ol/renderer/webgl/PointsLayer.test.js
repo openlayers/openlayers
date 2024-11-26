@@ -778,12 +778,12 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         source: new VectorSource({
           features: [new Feature(new Point([0, 0]))],
         }),
+        variables: {
+          r: 0,
+          g: 255,
+          b: 0,
+        },
         style: {
-          variables: {
-            r: 0,
-            g: 255,
-            b: 0,
-          },
           'circle-radius': 14,
           'circle-fill-color': [
             'color',

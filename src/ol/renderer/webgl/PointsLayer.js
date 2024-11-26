@@ -178,7 +178,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const customAttributes = options.attributes
       ? options.attributes.map(function (attribute) {
           return {
-            name: 'a_prop_' + attribute.name,
+            name: 'a_' + attribute.name,
             size: 1,
             type: AttributeType.FLOAT,
           };
@@ -205,7 +205,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
     if (this.hitDetectionEnabled_) {
       this.attributes.push({
-        name: 'a_prop_hitColor',
+        name: 'a_hitColor',
         size: 4,
         type: AttributeType.FLOAT,
       });

@@ -28,10 +28,10 @@ const SAMPLE_SHADERS = () => ({
     .setStrokeColorExpression('vec4(1.0)')
     .setSymbolColorExpression('vec4(1.0)'),
   attributes: {
-    attr1: {
+    prop_attr1: {
       callback: (feature) => feature.get('test'),
     },
-    attr2: {callback: () => [10, 20, 30], size: 3},
+    prop_attr2: {callback: () => [10, 20, 30], size: 3},
   },
   uniforms: {
     custom: () => 1234,
@@ -110,15 +110,15 @@ describe('VectorStyleRenderer', () => {
 
   describe('constructor using style', () => {
     beforeEach(() => {
-      vectorStyleRenderer = new VectorStyleRenderer(SAMPLE_STYLE, helper);
+      vectorStyleRenderer = new VectorStyleRenderer(SAMPLE_STYLE, {}, helper);
     });
     it('creates a VectorStyleRenderer', () => {
       expect(vectorStyleRenderer.customAttributes_).to.eql({
-        color: {
+        prop_color: {
           callback: {},
           size: 2,
         },
-        size: {
+        prop_size: {
           callback: {},
           size: 1,
         },
@@ -153,14 +153,18 @@ describe('VectorStyleRenderer', () => {
   });
   describe('constructor using shaders', () => {
     beforeEach(() => {
-      vectorStyleRenderer = new VectorStyleRenderer(SAMPLE_SHADERS(), helper);
+      vectorStyleRenderer = new VectorStyleRenderer(
+        SAMPLE_SHADERS(),
+        {},
+        helper,
+      );
     });
     it('creates a VectorStyleRenderer', () => {
       expect(vectorStyleRenderer.customAttributes_).to.eql({
-        attr1: {
+        prop_attr1: {
           callback: {},
         },
-        attr2: {
+        prop_attr2: {
           callback: {},
           size: 3,
         },
@@ -197,7 +201,11 @@ describe('VectorStyleRenderer', () => {
   });
   describe('methods', () => {
     beforeEach(() => {
-      vectorStyleRenderer = new VectorStyleRenderer(SAMPLE_SHADERS(), helper);
+      vectorStyleRenderer = new VectorStyleRenderer(
+        SAMPLE_SHADERS(),
+        {},
+        helper,
+      );
     });
     describe('generateBuffers', () => {
       let buffers;
@@ -335,7 +343,11 @@ describe('VectorStyleRenderer', () => {
       sinon.spy(helper, 'enableAttributes');
       sinon.spy(helper, 'useProgram');
       sinon.spy(helper, 'drawElements');
-      vectorStyleRenderer = new VectorStyleRenderer(fillOnlyShaders, helper);
+      vectorStyleRenderer = new VectorStyleRenderer(
+        fillOnlyShaders,
+        {},
+        helper,
+      );
       buffers = await vectorStyleRenderer.generateBuffers(
         geometryBatch,
         SAMPLE_TRANSFORM,
@@ -376,7 +388,11 @@ describe('VectorStyleRenderer', () => {
       sinon.spy(helper, 'enableAttributes');
       sinon.spy(helper, 'useProgram');
       sinon.spy(helper, 'drawElements');
-      vectorStyleRenderer = new VectorStyleRenderer(strokeOnlyShaders, helper);
+      vectorStyleRenderer = new VectorStyleRenderer(
+        strokeOnlyShaders,
+        {},
+        helper,
+      );
       buffers = await vectorStyleRenderer.generateBuffers(
         geometryBatch,
         SAMPLE_TRANSFORM,
@@ -417,7 +433,11 @@ describe('VectorStyleRenderer', () => {
       sinon.spy(helper, 'enableAttributes');
       sinon.spy(helper, 'useProgram');
       sinon.spy(helper, 'drawElements');
-      vectorStyleRenderer = new VectorStyleRenderer(symbolOnlyShaders, helper);
+      vectorStyleRenderer = new VectorStyleRenderer(
+        symbolOnlyShaders,
+        {},
+        helper,
+      );
       buffers = await vectorStyleRenderer.generateBuffers(
         geometryBatch,
         SAMPLE_TRANSFORM,

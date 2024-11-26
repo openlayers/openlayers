@@ -1,4 +1,3 @@
-import Feature from '../../../../src/ol/Feature.js';
 import expect from '../../expect.js';
 import {
   AnyType,
@@ -10,7 +9,6 @@ import {
   StringType,
   newParsingContext,
 } from '../../../../src/ol/expr/expression.js';
-import {MultiPolygon} from '../../../../src/ol/geom.js';
 import {
   arrayToGlsl,
   buildExpression,
@@ -138,6 +136,24 @@ describe('ol/expr/gpu.js', () => {
         },
       },
       {
+        name: 'id',
+        type: AnyType,
+        expression: ['id'],
+        expected: 'a_featureId',
+        contextAssertion: (context) => {
+          expect(context.featureId).to.be(true);
+        },
+      },
+      {
+        name: 'id (in fragment shader)',
+        type: AnyType,
+        expression: ['id'],
+        expected: 'v_featureId',
+        context: {
+          inFragmentShader: true,
+        },
+      },
+      {
         name: 'var',
         type: AnyType,
         expression: ['var', 'myVar'],
@@ -159,14 +175,9 @@ describe('ol/expr/gpu.js', () => {
         name: 'geometry-type',
         type: AnyType,
         expression: ['geometry-type'],
-        expected: 'a_prop_geometryType',
+        expected: 'a_geometryType',
         contextAssertion: (context) => {
-          const prop = context.properties['geometryType'];
-          expect(prop.name).to.equal('geometryType');
-          expect(prop.type).to.equal(StringType);
-          expect(prop.evaluator).to.be.an(Function);
-          const feature = new Feature(new MultiPolygon([]));
-          expect(prop.evaluator(feature)).to.eql('Polygon');
+          expect(context.geometryType).to.be(true);
         },
       },
       {
@@ -176,7 +187,7 @@ describe('ol/expr/gpu.js', () => {
         context: {
           inFragmentShader: true,
         },
-        expected: 'v_prop_geometryType',
+        expected: 'v_geometryType',
       },
       {
         name: 'line-metric',
@@ -776,8 +787,7 @@ describe('ol/expr/gpu.js', () => {
             },
           },
         },
-        expected:
-          '((u_var_symbolType == 11.0) ? vec2((a_prop_type == 3.0 ? u_var_lowHeight : (a_prop_type == 12.0 ? u_var_mediumHeight : a_prop_height)), 10.0) : u_var_fixedSize)',
+        expected: `((u_var_symbolType == ${stringToGlsl('dynamic')}) ? vec2((a_prop_type == ${stringToGlsl('low')} ? u_var_lowHeight : (a_prop_type == ${stringToGlsl('medium')} ? u_var_mediumHeight : a_prop_height)), 10.0) : u_var_fixedSize)`,
         contextAssertion: (context) => {
           expect(context.properties).to.eql({
             type: {
