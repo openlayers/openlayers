@@ -325,7 +325,7 @@ class WMTS extends TileImage {
           url = appendParams(url, localContext);
         } else {
           url = url.replace(/\{(\w+?)\}/g, function (m, p) {
-            return localContext[p];
+            return encodeURIComponent(localContext[p]);
           });
         }
         return url;
