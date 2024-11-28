@@ -1,8 +1,8 @@
 import DataTile from '../../../../src/ol/source/DataTile.js';
 import KML from '../../../../src/ol/format/KML.js';
 import Map from '../../../../src/ol/Map.js';
-import PointsLayer from '../../../../src/ol/layer/WebGLPoints.js';
 import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
+import VectorLayer from '../../../../src/ol/layer/WebGLVector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import View from '../../../../src/ol/View.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
@@ -26,7 +26,7 @@ new Map({
         transition: 0,
       }),
     }),
-    new PointsLayer({
+    new VectorLayer({
       opacity: 0.5,
       source: new VectorSource({
         url: '/data/2012_Earthquakes_Mag5.kml',
