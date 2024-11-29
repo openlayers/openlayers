@@ -72,7 +72,7 @@ import {warn} from './console.js';
  */
 
 /**
- * @typedef {function(Map, ?FrameState): any} PostRenderFunction
+ * @typedef {function(Map, FrameState): any} PostRenderFunction
  */
 
 /**
