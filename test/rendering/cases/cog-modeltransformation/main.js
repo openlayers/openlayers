@@ -1,6 +1,7 @@
 import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import GeoTIFF from '../../../../src/ol/source/GeoTIFF.js';
 import Map from '../../../../src/ol/Map.js';
+import TileDebug from '../../../../src/ol/source/TileDebug.js';
 import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
@@ -38,6 +39,11 @@ new Map({
     }),
     new TileLayer({
       source: source,
+    }),
+    new TileLayer({
+      source: new TileDebug({
+        source: source,
+      }),
     }),
   ],
   target: 'map',

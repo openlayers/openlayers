@@ -6,6 +6,13 @@ docs: >
   Example of using a COG with ModelTransformation.
   A ModelTransformation may rotate or skew the tile grid relative to the reported projection.
   This can be reprojected to that or any other supported projection.
+  To apply the ModelTransformation to `ol/source/TileDebug` use the `source` option.
 tags: "cog, projection, ModelTransformation"
 ---
 <div id="map" class="map"></div>
+<form>
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" id="show-tiles" checked />
+    <label class="form-check-label" for="show-tiles">Show source tile coordinates</label><br>
+  </div>
+</form>
