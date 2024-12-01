@@ -3,6 +3,7 @@ import ImageState from '../../../../../src/ol/ImageState.js';
 import ImageWMS from '../../../../../src/ol/source/ImageWMS.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
+import {calculateSourceResolution} from '../../../../../src/ol/reproj.js';
 import {fromLonLat, get as getProjection} from '../../../../../src/ol/proj.js';
 import {
   getForViewAndSize,
@@ -661,6 +662,122 @@ describe('ol/source/ImageWMS', function () {
         done();
       });
       map.getView().setCenter(fromLonLat([361, 0]));
+    });
+  });
+
+  describe('resolutions', function () {
+    let map, source;
+    const queryData = [];
+    beforeEach(function () {
+      const options = {
+        params: {
+          LAYERS: 'layer',
+        },
+        ratio: 1,
+        url: new URL('/wms', window.location.href).toString(),
+        projection: 'EPSG:4326',
+        resolutions: [4, 2, 1, 0.5, 0.25],
+      };
+      source = new ImageWMS(options);
+      source.setImageLoadFunction(function (image, src) {
+        queryData.push(new URL(src).searchParams);
+        image.state = ImageState.LOADED;
+        source.loading = false;
+      });
+      const target = document.createElement('div');
+      target.style.width = '256px';
+      target.style.height = '256px';
+      document.body.appendChild(target);
+      map = new Map({
+        target: target,
+        layers: [
+          new Image({
+            source: source,
+          }),
+        ],
+        view: new View({
+          projection: 'EPSG:4326',
+          zoom: 1,
+        }),
+      });
+    });
+
+    afterEach(function () {
+      disposeMap(map);
+      queryData.length = 0;
+    });
+
+    it('uses view resolution when resolutions not set', function (done) {
+      map.once('rendercomplete', function () {
+        expect(queryData.length).to.be(1);
+        expect(queryData[0].get('BBOX')).to.be('-90,-90,90,90');
+        expect(queryData[0].get('WIDTH')).to.be('256');
+        expect(queryData[0].get('HEIGHT')).to.be('256');
+        const bbox = queryData[0].get('BBOX').split(',').map(Number);
+        const width = Number(queryData[0].get('WIDTH'));
+        const height = Number(queryData[0].get('HEIGHT'));
+        const defaultResolution = map.getView().getResolution();
+        expect((bbox[3] - bbox[1]) / width).to.be(defaultResolution);
+        expect((bbox[2] - bbox[0]) / height).to.be(defaultResolution);
+        done();
+      });
+      source.setResolutions(null);
+      map.getView().setCenter([0, 0]);
+    });
+
+    it('uses nearest resolution when set', function (done) {
+      map.once('rendercomplete', function () {
+        expect(queryData.length).to.be(1);
+        expect(queryData[0].get('BBOX')).to.be('-90,-90,90,90');
+        expect(queryData[0].get('WIDTH')).to.be('360');
+        expect(queryData[0].get('HEIGHT')).to.be('360');
+        const bbox = queryData[0].get('BBOX').split(',').map(Number);
+        const width = Number(queryData[0].get('WIDTH'));
+        const height = Number(queryData[0].get('HEIGHT'));
+        expect((bbox[3] - bbox[1]) / width).to.be(0.5);
+        expect((bbox[2] - bbox[0]) / height).to.be(0.5);
+        done();
+      });
+      map.getView().setCenter([0, 0]);
+    });
+
+    it('uses default resolution for reprojection when resolutions not set', function (done) {
+      map.once('rendercomplete', function () {
+        expect(queryData.length).to.be(1);
+        expect(queryData[0].get('BBOX')).to.be('-85.078125,-180,85.078125,180');
+        expect(queryData[0].get('WIDTH')).to.be('256');
+        expect(queryData[0].get('HEIGHT')).to.be('121');
+        const bbox = queryData[0].get('BBOX').split(',').map(Number);
+        const width = Number(queryData[0].get('WIDTH'));
+        const height = Number(queryData[0].get('HEIGHT'));
+        const defaultResolution = calculateSourceResolution(
+          source.getProjection(),
+          map.getView().getProjection(),
+          map.getView().getCenter(),
+          map.getView().getResolution(),
+        );
+        expect((bbox[3] - bbox[1]) / width).to.be(defaultResolution);
+        expect((bbox[2] - bbox[0]) / height).to.be(defaultResolution);
+        done();
+      });
+      source.setResolutions(null);
+      map.setView(new View({center: [0, 0], zoom: 0}));
+    });
+
+    it('uses nearest resolution for reprojection when set', function (done) {
+      map.once('rendercomplete', function () {
+        expect(queryData.length).to.be(1);
+        expect(queryData[0].get('BBOX')).to.be('-85.5,-180,85.5,180');
+        expect(queryData[0].get('WIDTH')).to.be('360');
+        expect(queryData[0].get('HEIGHT')).to.be('171');
+        const bbox = queryData[0].get('BBOX').split(',').map(Number);
+        const width = Number(queryData[0].get('WIDTH'));
+        const height = Number(queryData[0].get('HEIGHT'));
+        expect((bbox[3] - bbox[1]) / width).to.be(1);
+        expect((bbox[2] - bbox[0]) / height).to.be(1);
+        done();
+      });
+      map.setView(new View({center: [0, 0], zoom: 0}));
     });
   });
 });
