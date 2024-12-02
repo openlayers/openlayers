@@ -46,9 +46,9 @@ class VectorRenderTile extends Tile {
 
     /**
      * Executor groups. Read/written by the renderer.
-     * @type {Array<import("./render/canvas/ExecutorGroup.js").default>}
+     * @type {Object<string, Array<import("./render/canvas/ExecutorGroup.js").default>>}
      */
-    this.executorGroups = [];
+    this.executorGroups = {};
 
     /**
      * Number of loading source tiles. Read/written by the source.
@@ -57,7 +57,7 @@ class VectorRenderTile extends Tile {
     this.loadingSourceTiles = 0;
 
     /**
-     * @type {Object<number, ImageData>}
+     * @type {Object<string, ImageData>}
      */
     this.hitDetectionImageData = {};
 
