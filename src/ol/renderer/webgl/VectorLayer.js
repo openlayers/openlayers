@@ -80,7 +80,6 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   constructor(layer, options) {
     const uniforms = {
       [Uniforms.RENDER_EXTENT]: [0, 0, 0, 0],
-      [Uniforms.PATTERN_ORIGIN]: [0, 0],
       [Uniforms.GLOBAL_ALPHA]: 1,
     };
 

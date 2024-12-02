@@ -3,14 +3,24 @@
  */
 import ContextEventType from '../webgl/ContextEventType.js';
 import Disposable from '../Disposable.js';
-import WebGLPostProcessingPass from './PostProcessingPass.js';
+import WebGLArrayBuffer from './Buffer.js';
+import WebGLRenderTarget from './RenderTarget.js';
 import {
+  ARRAY_BUFFER,
   FLOAT,
+  STATIC_DRAW,
   UNSIGNED_BYTE,
   UNSIGNED_INT,
   UNSIGNED_SHORT,
   getContext,
 } from '../webgl.js';
+import {
+  PostProcessUniforms,
+  postProcessAttributeDescriptions,
+  postProcessDefaultFragmentShader,
+  postProcessDefaultVertexShader,
+  postProcessVerticesBuffer,
+} from './PostProcessingPass.js';
 import {clear} from '../obj.js';
 import {
   compose as composeTransform,
@@ -84,12 +94,24 @@ export const AttributeType = {
  */
 
 /**
- * @typedef {Object} PostProcessesOptions
+ * @typedef {Object} PostProcessesOptionsObject
  * @property {number} [scaleRatio] Scale ratio; if < 1, the post process will render to a texture smaller than
  * the main canvas which will then be sampled up (useful for saving resource on blur steps).
  * @property {string} [vertexShader] Vertex shader source
  * @property {string} [fragmentShader] Fragment shader source
  * @property {Object<string,UniformValue>} [uniforms] Uniform definitions for the post process step
+ */
+
+/**
+ * @typedef {PostProcessesOptionsObject|function(WebGLRenderingContext, import("../Map.js").FrameState, import("../webgl/RenderTarget.js").default, import("../webgl/RenderTarget.js").default):void} PostProcessesOptions
+ */
+/**
+ * @typedef {Object} PostProcessPass
+ * @property {number} scaleRatio Scale ratio; if < 1, the post process will render to a texture smaller than
+ * the main canvas which will then be sampled up (useful for saving resource on blur steps).
+ * @property {Array<UniformInternalDescription>} [uniforms] Uniform definitions for the post process step
+ * @property {WebGLProgram|function(WebGLRenderingContext, import("../Map.js").FrameState, import("../webgl/RenderTarget.js").default, import("../webgl/RenderTarget.js").default):void} [program] The program for the post process step.
+ * @property {WebGLRenderTarget} renderTarget The render target for the post process step.
  */
 
 /**
@@ -184,6 +206,14 @@ function releaseCanvas(key) {
   canvas.height = 1;
 
   delete canvasCache[key];
+}
+
+/**
+ * @param {Object<string, UniformValue>} uniforms Uniform definitions.
+ * @return {Array<UniformInternalDescription>} Converted uniform internal description.
+ */
+function convertUniforms(uniforms) {
+  return Object.entries(uniforms).map(([name, value]) => ({name, value}));
 }
 
 /**
@@ -353,6 +383,18 @@ class WebGLHelper extends Disposable {
 
     /**
      * @private
+     * @type {number}
+     */
+    this.textureSlot_ = 0;
+
+    /**
+     * @private
+     * @type {Object<string, number>}
+     */
+    this.textureSlotCache_ = {};
+
+    /**
+     * @private
      * @type {WebGLProgram}
      */
     this.currentProgram_ = null;
@@ -405,7 +447,7 @@ class WebGLHelper extends Disposable {
     this.attribLocationsByProgram_ = {};
 
     /**
-     * Holds info about custom uniforms used in the post processing pass.
+     * Holds info about custom uniforms used in the shaders.
      * If the uniform is a texture, the WebGL Texture object will be stored here.
      * @type {Array<UniformInternalDescription>}
      * @private
@@ -416,24 +458,17 @@ class WebGLHelper extends Disposable {
     }
 
     /**
-     * An array of PostProcessingPass objects is kept in this variable, built from the steps provided in the
-     * options. If no post process was given, a default one is used (so as not to have to make an exception to
-     * the frame buffer logic).
-     * @type {Array<WebGLPostProcessingPass>}
-     * @private
+     * @type {Array<UniformInternalDescription>}
      */
-    this.postProcessPasses_ = options.postProcesses
-      ? options.postProcesses.map(
-          (options) =>
-            new WebGLPostProcessingPass({
-              webGlContext: this.gl_,
-              scaleRatio: options.scaleRatio,
-              vertexShader: options.vertexShader,
-              fragmentShader: options.fragmentShader,
-              uniforms: options.uniforms,
-            }),
-        )
-      : [new WebGLPostProcessingPass({webGlContext: this.gl_})];
+    this.frameStateUniforms_ = convertUniforms({
+      [DefaultUniform.TIME]: () => (Date.now() - this.startTime_) * 0.001,
+      [DefaultUniform.ZOOM]: (frameState) => frameState.viewState.zoom,
+      [DefaultUniform.RESOLUTION]: (frameState) =>
+        frameState.viewState.resolution,
+      [DefaultUniform.PIXEL_RATIO]: (frameState) => frameState.pixelRatio || 1,
+      [DefaultUniform.VIEWPORT_SIZE_PX]: (frameState) => frameState.size,
+      [DefaultUniform.ROTATION]: (frameState) => frameState.viewState.rotation,
+    });
 
     /**
      * @type {string|null}
@@ -446,6 +481,27 @@ class WebGLHelper extends Disposable {
      * @private
      */
     this.startTime_ = Date.now();
+
+    /**
+     * An array of PostProcessingPass objects is kept in this variable, built from the steps provided in the
+     * options. If no post process was given, a default one is used (so as not to have to make an exception to
+     * the frame buffer logic).
+     * @type {Array<PostProcessPass>}
+     * @private
+     */
+    this.postProcessPasses_ = this.createPostProcessPass_(
+      options.postProcesses,
+    );
+
+    /**
+     * @type {WebGLArrayBuffer}
+     * @private
+     */
+    this.postProcessVerticesBuffer_ = new WebGLArrayBuffer(
+      ARRAY_BUFFER,
+      STATIC_DRAW,
+    ).fromArray(postProcessVerticesBuffer);
+    this.flushBufferData(this.postProcessVerticesBuffer_);
   }
 
   /**
@@ -578,7 +634,7 @@ class WebGLHelper extends Disposable {
 
     // loop backwards in post processes list
     for (let i = this.postProcessPasses_.length - 1; i >= 0; i--) {
-      this.postProcessPasses_[i].init(frameState);
+      this.initPostProcessPass_(frameState, this.postProcessPasses_[i]);
     }
 
     gl.bindTexture(gl.TEXTURE_2D, null);
@@ -604,7 +660,7 @@ class WebGLHelper extends Disposable {
    */
   bindFrameBuffer(frameBuffer, texture) {
     const gl = this.getGL();
-    gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer || null);
     if (texture) {
       gl.framebufferTexture2D(
         gl.FRAMEBUFFER,
@@ -617,33 +673,20 @@ class WebGLHelper extends Disposable {
   }
 
   /**
-   * Bind the frame buffer from the initial render.
-   */
-  bindInitialFrameBuffer() {
-    const gl = this.getGL();
-    const frameBuffer = this.postProcessPasses_[0].getFrameBuffer();
-    gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
-    const texture = this.postProcessPasses_[0].getRenderTargetTexture();
-    gl.framebufferTexture2D(
-      gl.FRAMEBUFFER,
-      gl.COLOR_ATTACHMENT0,
-      gl.TEXTURE_2D,
-      texture,
-      0,
-    );
-  }
-
-  /**
    * Prepare a program to use a texture.
    * @param {WebGLTexture} texture The texture.
-   * @param {number} slot The texture slot.
    * @param {string} uniformName The corresponding uniform name.
    */
-  bindTexture(texture, slot, uniformName) {
+  bindTexture(texture, uniformName) {
     const gl = this.gl_;
-    gl.activeTexture(gl.TEXTURE0 + slot);
+    let textureSlot = this.textureSlotCache_[uniformName];
+    if (textureSlot === undefined) {
+      textureSlot = this.textureSlot_++;
+      this.textureSlotCache_[uniformName] = textureSlot;
+    }
+    gl.activeTexture(gl.TEXTURE0 + textureSlot);
     gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.uniform1i(this.getUniformLocation(uniformName), slot);
+    gl.uniform1i(this.getUniformLocation(uniformName), textureSlot);
   }
 
   /**
@@ -665,27 +708,37 @@ class WebGLHelper extends Disposable {
    * This is similar to `prepareDraw`, only post processes will not be applied.
    * Note: the whole viewport will be drawn to the render target, regardless of its size.
    * @param {import("../Map.js").FrameState} frameState current frame state
-   * @param {import("./RenderTarget.js").default} renderTarget Render target to draw to
+   * @param {import("./RenderTarget.js").default|null} renderTarget Render target to draw to
    * @param {boolean} [disableAlphaBlend] If true, no alpha blending will happen.
    * @param {boolean} [enableDepth] If true, enables depth testing.
+   * @param {boolean} [clear=true] If true, clear the buffer.
    */
   prepareDrawToRenderTarget(
     frameState,
     renderTarget,
     disableAlphaBlend,
     enableDepth,
+    clear,
   ) {
     const gl = this.gl_;
-    const size = renderTarget.getSize();
+    const size = renderTarget?.getSize() || [
+      gl.drawingBufferWidth,
+      gl.drawingBufferHeight,
+    ];
 
-    gl.bindFramebuffer(gl.FRAMEBUFFER, renderTarget.getFramebuffer());
-    gl.bindRenderbuffer(gl.RENDERBUFFER, renderTarget.getDepthbuffer());
+    gl.bindFramebuffer(gl.FRAMEBUFFER, renderTarget?.getFramebuffer() || null);
+    gl.bindRenderbuffer(
+      gl.RENDERBUFFER,
+      renderTarget?.getDepthbuffer() || null,
+    );
     gl.viewport(0, 0, size[0], size[1]);
-    gl.bindTexture(gl.TEXTURE_2D, renderTarget.getTexture());
-    gl.clearColor(0.0, 0.0, 0.0, 0.0);
-    gl.depthRange(0.0, 1.0);
-    gl.clearDepth(1.0);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    if (clear !== false) {
+      gl.clearColor(0.0, 0.0, 0.0, 0.0);
+      gl.depthRange(0.0, 1.0);
+      gl.clearDepth(1.0);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    }
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, disableAlphaBlend ? gl.ZERO : gl.ONE_MINUS_SRC_ALPHA);
     if (enableDepth) {
@@ -717,24 +770,19 @@ class WebGLHelper extends Disposable {
    * Apply the successive post process passes which will eventually render to the actual canvas.
    * @param {import("../Map.js").FrameState} frameState current frame state
    * @param {function(WebGLRenderingContext, import("../Map.js").FrameState):void} [preCompose] Called before composing.
-   * @param {function(WebGLRenderingContext, import("../Map.js").FrameState):void} [postCompose] Called before composing.
+   * @param {function(WebGLRenderingContext, import("../Map.js").FrameState):void} [postCompose] Called after composing.
    */
   finalizeDraw(frameState, preCompose, postCompose) {
     // apply post processes using the next one as target
-    for (let i = 0, ii = this.postProcessPasses_.length; i < ii; i++) {
-      if (i === ii - 1) {
-        this.postProcessPasses_[i].apply(
-          frameState,
-          null,
-          preCompose,
-          postCompose,
-        );
-      } else {
-        this.postProcessPasses_[i].apply(
-          frameState,
-          this.postProcessPasses_[i + 1],
-        );
-      }
+    const ii = this.postProcessPasses_.length;
+    for (let i = 0; i < ii; i++) {
+      this.applyPostProcessPass_(
+        frameState,
+        this.postProcessPasses_[i],
+        this.postProcessPasses_[i + 1] || null,
+        i === ii - 1 ? preCompose : undefined,
+        i === ii - 1 ? postCompose : undefined,
+      );
     }
   }
 
@@ -754,29 +802,11 @@ class WebGLHelper extends Disposable {
   }
 
   /**
-   * Sets the default matrix uniforms for a given frame state. This is called internally in `prepareDraw`.
+   * Sets the default matrix uniforms for a given frame state. This is called internally in `useProgram`.
    * @param {import("../Map.js").FrameState} frameState Frame state.
    */
   applyFrameState(frameState) {
-    const size = frameState.size;
-    const rotation = frameState.viewState.rotation;
-    const pixelRatio = frameState.pixelRatio;
-
-    this.setUniformFloatValue(
-      DefaultUniform.TIME,
-      (Date.now() - this.startTime_) * 0.001,
-    );
-    this.setUniformFloatValue(DefaultUniform.ZOOM, frameState.viewState.zoom);
-    this.setUniformFloatValue(
-      DefaultUniform.RESOLUTION,
-      frameState.viewState.resolution,
-    );
-    this.setUniformFloatValue(DefaultUniform.PIXEL_RATIO, pixelRatio);
-    this.setUniformFloatVec2(DefaultUniform.VIEWPORT_SIZE_PX, [
-      size[0],
-      size[1],
-    ]);
-    this.setUniformFloatValue(DefaultUniform.ROTATION, rotation);
+    this.applyUniformsInternal_(frameState, this.frameStateUniforms_);
   }
 
   /**
@@ -794,15 +824,27 @@ class WebGLHelper extends Disposable {
   }
 
   /**
-   * Sets the custom uniforms based on what was given in the constructor. This is called internally in `prepareDraw`.
+   * Sets the custom uniforms based on what was given in the constructor. This is called internally in `useProgram`.
    * @param {import("../Map.js").FrameState} frameState Frame state.
    */
   applyUniforms(frameState) {
+    this.applyUniformsInternal_(frameState, this.uniforms_);
+  }
+
+  /**
+   * Sets uniforms.
+   * @param {import("../Map.js").FrameState} frameState Frame state.
+   * @param {Array<UniformInternalDescription>} uniforms Uniforms to apply.
+   */
+  applyUniformsInternal_(frameState, uniforms) {
     const gl = this.gl_;
 
+    if (!uniforms) {
+      return;
+    }
+
     let value;
-    let textureSlot = 0;
-    this.uniforms_.forEach((uniform) => {
+    uniforms.forEach((uniform) => {
       value =
         typeof uniform.value === 'function'
           ? uniform.value(frameState)
@@ -823,7 +865,7 @@ class WebGLHelper extends Disposable {
           uniform.prevValue = undefined;
           uniform.texture = gl.createTexture();
         }
-        this.bindTexture(uniform.texture, textureSlot, uniform.name);
+        this.bindTexture(uniform.texture, uniform.name);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -846,43 +888,31 @@ class WebGLHelper extends Disposable {
             value,
           );
         }
-        textureSlot++;
       } else if (Array.isArray(value) && value.length === 6) {
         this.setUniformMatrixValue(
           uniform.name,
           fromTransform(this.tmpMat4_, value),
         );
+      } else if (Array.isArray(value) && value.length === 16) {
+        this.setUniformMatrixValue(uniform.name, value);
       } else if (Array.isArray(value) && value.length <= 4) {
         switch (value.length) {
           case 2:
-            gl.uniform2f(
-              this.getUniformLocation(uniform.name),
-              value[0],
-              value[1],
-            );
+            this.setUniformFloatVec2(uniform.name, value);
             return;
           case 3:
-            gl.uniform3f(
-              this.getUniformLocation(uniform.name),
-              value[0],
-              value[1],
-              value[2],
-            );
+            this.setUniformFloatVec3(uniform.name, value);
             return;
           case 4:
-            gl.uniform4f(
-              this.getUniformLocation(uniform.name),
-              value[0],
-              value[1],
-              value[2],
-              value[3],
-            );
+            this.setUniformFloatVec4(uniform.name, value);
             return;
           default:
             return;
         }
       } else if (typeof value === 'number') {
-        gl.uniform1f(this.getUniformLocation(uniform.name), value);
+        this.setUniformFloatValue(uniform.name, value);
+      } else if (value !== null && value !== undefined) {
+        throw new Error('Unsupported type of uniform: ' + uniform.name);
       }
     });
   }
@@ -897,6 +927,8 @@ class WebGLHelper extends Disposable {
     const gl = this.gl_;
     gl.useProgram(program);
     this.currentProgram_ = program;
+    this.textureSlot_ = 0;
+    this.textureSlotCache_ = {};
     if (frameState) {
       this.applyFrameState(frameState);
       this.applyUniforms(frameState);
@@ -1041,10 +1073,19 @@ class WebGLHelper extends Disposable {
   /**
    * Give a value for a vec2 uniform
    * @param {string} uniform Uniform name
-   * @param {Array<number>} value Array of length 4.
+   * @param {Array<number>} value Array of length 2.
    */
   setUniformFloatVec2(uniform, value) {
     this.gl_.uniform2fv(this.getUniformLocation(uniform), value);
+  }
+
+  /**
+   * Give a value for a vec3 uniform
+   * @param {string} uniform Uniform name
+   * @param {Array<number>} value Array of length 3.
+   */
+  setUniformFloatVec3(uniform, value) {
+    this.gl_.uniform3fv(this.getUniformLocation(uniform), value);
   }
 
   /**
@@ -1192,6 +1233,110 @@ class WebGLHelper extends Disposable {
       );
     }
     return texture;
+  }
+
+  /**
+   * @param {Array<PostProcessesOptions>} passes Array of PostProcess options.
+   * @return {Array<PostProcessPass>} PostProcess passes.
+   */
+  createPostProcessPass_(passes) {
+    passes = passes || [];
+    if (passes.length === 0) {
+      passes.push({});
+    }
+
+    return passes.map((options) => {
+      const renderTarget = new WebGLRenderTarget(this);
+
+      if (typeof options === 'function') {
+        return {
+          scaleRatio: 1,
+          program: options,
+          renderTarget,
+        };
+      }
+
+      return {
+        scaleRatio: options.scaleRatio || 1,
+        uniforms: convertUniforms({
+          ...options.uniforms,
+          [PostProcessUniforms.FRAMEBUFFER]: () => renderTarget.getTexture(),
+          [PostProcessUniforms.OPACITY]: (frameState) =>
+            frameState.layerStatesArray[frameState.layerIndex].opacity,
+        }),
+
+        renderTarget,
+        program: this.getProgram(
+          options.fragmentShader || postProcessDefaultFragmentShader,
+          options.vertexShader || postProcessDefaultVertexShader,
+        ),
+      };
+    });
+  }
+
+  /**
+   * @param {import("../Map.js").FrameState} frameState current frame state
+   * @param {PostProcessPass} [pass] The current pass of PostProcess.
+   */
+  initPostProcessPass_(frameState, pass) {
+    const gl = this.getGL();
+    pass?.renderTarget.setSize([
+      gl.drawingBufferWidth * pass.scaleRatio,
+      gl.drawingBufferHeight * pass.scaleRatio,
+    ]);
+    this.prepareDrawToRenderTarget(frameState, pass?.renderTarget);
+  }
+
+  /**
+   * @param {import("../Map.js").FrameState} frameState current frame state
+   * @param {PostProcessPass} [pass] The current pass of PostProcess.
+   * @param {PostProcessPass} [nextPass] The next pass of PostProcess, if any.
+   * @param {function(WebGLRenderingContext, import("../Map.js").FrameState):void} [preCompose] Called before composing.
+   * @param {function(WebGLRenderingContext, import("../Map.js").FrameState):void} [postCompose] Called after composing.
+   */
+  applyPostProcessPass_(frameState, pass, nextPass, preCompose, postCompose) {
+    const gl = this.getGL();
+
+    if (typeof pass.program === 'function') {
+      pass.program(gl, frameState, pass.renderTarget, nextPass?.renderTarget);
+      return;
+    }
+
+    let clear = false;
+    if (!nextPass) {
+      // clear the canvas if we are the first to render to it
+      // and preserveDrawingBuffer is true
+      const canvasId = getUid(gl.canvas);
+      if (!frameState.renderTargets[canvasId]) {
+        const attributes = gl.getContextAttributes();
+        if (attributes && attributes.preserveDrawingBuffer) {
+          clear = true;
+        }
+
+        frameState.renderTargets[canvasId] = true;
+      }
+    }
+
+    this.useProgram(pass.program, frameState);
+    this.prepareDrawToRenderTarget(
+      frameState,
+      nextPass?.renderTarget,
+      false,
+      false,
+      clear,
+    );
+
+    this.bindBuffer(this.postProcessVerticesBuffer_);
+    this.enableAttributes(postProcessAttributeDescriptions);
+    this.applyUniformsInternal_(frameState, pass.uniforms);
+
+    if (preCompose) {
+      preCompose(gl, frameState);
+    }
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    if (postCompose) {
+      postCompose(gl, frameState);
+    }
   }
 }
 
