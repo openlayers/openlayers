@@ -158,12 +158,13 @@ class MixedGeometryBatch {
    * @private
    */
   clearFeatureEntryInPointBatch_(feature) {
-    const entry = this.pointBatch.entries[getUid(feature)];
+    const featureUid = getUid(feature);
+    const entry = this.pointBatch.entries[featureUid];
     if (!entry) {
       return;
     }
     this.pointBatch.geometriesCount -= entry.flatCoordss.length;
-    delete this.pointBatch.entries[getUid(feature)];
+    delete this.pointBatch.entries[featureUid];
     return entry;
   }
 
@@ -173,13 +174,14 @@ class MixedGeometryBatch {
    * @private
    */
   clearFeatureEntryInLineStringBatch_(feature) {
-    const entry = this.lineStringBatch.entries[getUid(feature)];
+    const featureUid = getUid(feature);
+    const entry = this.lineStringBatch.entries[featureUid];
     if (!entry) {
       return;
     }
     this.lineStringBatch.verticesCount -= entry.verticesCount;
     this.lineStringBatch.geometriesCount -= entry.flatCoordss.length;
-    delete this.lineStringBatch.entries[getUid(feature)];
+    delete this.lineStringBatch.entries[featureUid];
     return entry;
   }
 
@@ -189,14 +191,15 @@ class MixedGeometryBatch {
    * @private
    */
   clearFeatureEntryInPolygonBatch_(feature) {
-    const entry = this.polygonBatch.entries[getUid(feature)];
+    const featureUid = getUid(feature);
+    const entry = this.polygonBatch.entries[featureUid];
     if (!entry) {
       return;
     }
     this.polygonBatch.verticesCount -= entry.verticesCount;
     this.polygonBatch.ringsCount -= entry.ringsCount;
     this.polygonBatch.geometriesCount -= entry.flatCoordss.length;
-    delete this.polygonBatch.entries[getUid(feature)];
+    delete this.polygonBatch.entries[featureUid];
     return entry;
   }
 
