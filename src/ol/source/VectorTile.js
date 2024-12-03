@@ -286,14 +286,15 @@ class VectorTile extends UrlTile {
    * @param {VectorRenderTile} tile Vector render tile.
    */
   removeSourceTiles(tile) {
+    const tileKey = tile.getKey();
     const sourceTiles = tile.sourceTiles;
     for (let i = 0, ii = sourceTiles.length; i < ii; ++i) {
       const sourceTileUrl = sourceTiles[i].getTileUrl();
-      const tileKey = this.getKey();
       if (!this.tileKeysBySourceTileUrl_[sourceTileUrl]) {
         return;
       }
-      const index = this.tileKeysBySourceTileUrl_[sourceTileUrl][tileKey];
+      const index =
+        this.tileKeysBySourceTileUrl_[sourceTileUrl].indexOf(tileKey);
       if (index === -1) {
         continue;
       }
