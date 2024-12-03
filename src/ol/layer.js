@@ -13,3 +13,4 @@ export {default as VectorImage} from './layer/VectorImage.js';
 export {default as VectorTile} from './layer/VectorTile.js';
 export {default as WebGLPoints} from './layer/WebGLPoints.js';
 export {default as WebGLTile} from './layer/WebGLTile.js';
+export {default as WebGLVector} from './layer/WebGLVector.js';
