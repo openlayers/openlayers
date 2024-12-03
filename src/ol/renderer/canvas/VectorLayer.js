@@ -522,23 +522,17 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       return undefined;
     };
 
-    let result;
-    const executorGroups = [this.replayGroup_];
     const declutter = this.getLayer().getDeclutter();
-    executorGroups.some((executorGroup) => {
-      return (result = executorGroup.forEachFeatureAtCoordinate(
-        coordinate,
-        resolution,
-        rotation,
-        hitTolerance,
-        featureCallback,
-        declutter && frameState.declutter[declutter]
-          ? frameState.declutter[declutter].all().map((item) => item.value)
-          : null,
-      ));
-    });
-
-    return result;
+    return this.replayGroup_.forEachFeatureAtCoordinate(
+      coordinate,
+      resolution,
+      rotation,
+      hitTolerance,
+      featureCallback,
+      declutter
+        ? frameState.declutter[declutter].all().map((item) => item.value)
+        : null,
+    );
   }
 
   /**

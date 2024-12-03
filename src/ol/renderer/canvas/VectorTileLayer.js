@@ -379,7 +379,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       );
 
     let found;
-    for (let i = 0, ii = renderedTiles.length; !found && i < ii; ++i) {
+    foundFeature: for (let i = 0, ii = renderedTiles.length; i < ii; ++i) {
       const tile = renderedTiles[i];
       const tileExtent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
       if (!intersects(tileExtent, hitExtent)) {
@@ -387,27 +387,24 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       }
 
       const layerUid = getUid(layer);
-      const executorGroups = [tile.executorGroups[layerUid]];
+      const executorGroups = tile.executorGroups[layerUid];
       const declutter = layer.getDeclutter();
-      executorGroups.some((executorGroups) => {
-        const declutteredFeatures = declutter
-          ? frameState.declutter[declutter].all().map((item) => item.value)
-          : null;
-        for (let t = 0, tt = executorGroups.length; t < tt; ++t) {
-          const executorGroup = executorGroups[t];
-          found = executorGroup.forEachFeatureAtCoordinate(
-            coordinate,
-            resolution,
-            rotation,
-            hitTolerance,
-            featureCallback,
-            declutteredFeatures,
-          );
-          if (found) {
-            return true;
-          }
+      const declutteredFeatures = declutter
+        ? frameState.declutter[declutter].all().map((item) => item.value)
+        : null;
+      for (let t = 0, tt = executorGroups.length; t < tt; ++t) {
+        found = executorGroups[t].forEachFeatureAtCoordinate(
+          coordinate,
+          resolution,
+          rotation,
+          hitTolerance,
+          featureCallback,
+          declutteredFeatures,
+        );
+        if (found) {
+          break foundFeature;
         }
-      });
+      }
     }
     return found;
   }
