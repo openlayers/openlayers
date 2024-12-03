@@ -17,7 +17,7 @@ import {never, shiftKeyOnly, singleClick} from '../events/condition.js';
 /**
  * @enum {string}
  */
-const SelectEventType = {
+export const SelectEventType = {
   /**
    * Triggered when feature(s) has been (de)selected.
    * @event SelectEvent#select

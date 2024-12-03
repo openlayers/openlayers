@@ -72,7 +72,7 @@ import {
  * @enum {string}
  * @private
  */
-const Property = {
+export const Property = {
   RENDER_ORDER: 'renderOrder',
 };
 

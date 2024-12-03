@@ -16,7 +16,7 @@ import {stopPropagation} from '../events/Event.js';
  *
  * @enum {number}
  */
-const Direction = {
+export const Direction = {
   VERTICAL: 0,
   HORIZONTAL: 1,
 };

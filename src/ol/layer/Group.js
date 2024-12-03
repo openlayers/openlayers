@@ -74,7 +74,7 @@ export class GroupEvent extends Event {
  * @enum {string}
  * @private
  */
-const Property = {
+export const Property = {
   LAYERS: 'layers',
 };
 

@@ -68,7 +68,7 @@ import {outerHeight, outerWidth, removeChildren} from './dom.js';
  * @enum {string}
  * @protected
  */
-const Property = {
+export const Property = {
   ELEMENT: 'element',
   MAP: 'map',
   OFFSET: 'offset',
