@@ -1,10 +1,12 @@
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import WebGLVectorLayer from '../src/ol/layer/WebGLVector.js';
 import {Draw, Modify, Snap} from '../src/ol/interaction.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-import {Tile as TileLayer} from '../src/ol/layer.js';
+import {
+  Tile as TileLayer,
+  WebGLVector as WebGLVectorLayer,
+} from '../src/ol/layer.js';
 import {fromLonLat} from '../src/ol/proj.js';
 
 /**
