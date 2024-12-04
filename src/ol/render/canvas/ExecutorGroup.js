@@ -3,7 +3,7 @@
  */
 
 import Executor from './Executor.js';
-import {ascending} from '../../array.js';
+import {ascending, descending} from '../../array.js';
 import {buffer, createEmpty, extendCoordinate} from '../../extent.js';
 import {
   compose as composeTransform,
@@ -235,9 +235,7 @@ class ExecutorGroup {
       context.clearRect(0, 0, contextSize, contextSize);
     }
 
-    /**
-     * @type {import("../../extent.js").Extent}
-     */
+    /** @type {import("../../extent.js").Extent|undefined} */
     let hitExtent;
     if (this.renderBuffer_ !== undefined) {
       hitExtent = createEmpty();
@@ -251,6 +249,7 @@ class ExecutorGroup {
 
     const indexes = getPixelIndexArray(hitTolerance);
 
+    /** @type {import("../canvas.js").BuilderType} */
     let builderType;
 
     /**
@@ -362,20 +361,15 @@ class ExecutorGroup {
     builderTypes,
     declutterTree,
   ) {
-    /** @type {Array<number>} */
     const zs = Object.keys(this.executorsByZIndex_).map(Number);
-    zs.sort(ascending);
+    zs.sort(declutterTree ? descending : ascending);
 
     builderTypes = builderTypes ? builderTypes : ALL;
     const maxBuilderTypes = ALL.length;
-    let i, ii, j, jj, replays;
-    if (declutterTree) {
-      zs.reverse();
-    }
-    for (i = 0, ii = zs.length; i < ii; ++i) {
+    for (let i = 0, ii = zs.length; i < ii; ++i) {
       const zIndexKey = zs[i].toString();
-      replays = this.executorsByZIndex_[zIndexKey];
-      for (j = 0, jj = builderTypes.length; j < jj; ++j) {
+      const replays = this.executorsByZIndex_[zIndexKey];
+      for (let j = 0, jj = builderTypes.length; j < jj; ++j) {
         const builderType = builderTypes[j];
         const replay = replays[builderType];
         if (replay !== undefined) {

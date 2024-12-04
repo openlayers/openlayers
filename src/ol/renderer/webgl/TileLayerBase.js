@@ -580,14 +580,13 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
      */
     const alphaLookup = {};
 
-    const uid = getUid(this);
-    const time = frameState.time;
     let blend = false;
-
     const representationsByZ = tileRepresentationLookup.representationsByZ;
 
     // look for cached tiles to use if a target tile is not ready
     if (z in representationsByZ) {
+      const uid = getUid(this);
+      const time = frameState.time;
       for (const tileRepresentation of representationsByZ[z]) {
         const tile = tileRepresentation.tile;
         if (
