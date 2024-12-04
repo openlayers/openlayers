@@ -408,12 +408,10 @@ class VectorSource extends Source {
         const indexedFeature = this.idIndex_[id];
         if (!(indexedFeature instanceof RenderFeature)) {
           valid = false;
+        } else if (!Array.isArray(indexedFeature)) {
+          this.idIndex_[id] = [indexedFeature, feature];
         } else {
-          if (!Array.isArray(indexedFeature)) {
-            this.idIndex_[id] = [indexedFeature, feature];
-          } else {
-            indexedFeature.push(feature);
-          }
+          indexedFeature.push(feature);
         }
       } else {
         valid = false;
@@ -565,10 +563,9 @@ class VectorSource extends Source {
       }
     } else {
       if (this.featuresRtree_) {
-        const removeAndIgnoreReturn = (feature) => {
+        this.featuresRtree_.forEach((feature) => {
           this.removeFeatureInternal(feature);
-        };
-        this.featuresRtree_.forEach(removeAndIgnoreReturn);
+        });
         for (const id in this.nullGeometryFeatures_) {
           this.removeFeatureInternal(this.nullGeometryFeatures_[id]);
         }
@@ -736,10 +733,11 @@ class VectorSource extends Source {
   /**
    * Get all features whose geometry intersects the provided coordinate.
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
-   * @return {Array<import("../Feature.js").default>} Features.
+   * @return {Array<FeatureType>} Features.
    * @api
    */
   getFeaturesAtCoordinate(coordinate) {
+    /** @type {Array<FeatureType>} */
     const features = [];
     this.forEachFeatureAtCoordinateDirect(coordinate, function (feature) {
       features.push(feature);
@@ -1017,6 +1015,9 @@ class VectorSource extends Source {
           extentToLoad,
           resolution,
           projection,
+          /**
+           * @param {Array<FeatureType>} features Loaded features
+           */
           (features) => {
             --this.loadingExtentsCount_;
             this.dispatchEvent(
