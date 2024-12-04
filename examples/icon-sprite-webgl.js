@@ -34,9 +34,6 @@ const oldColor = [255, 160, 110];
 const newColor = [180, 255, 200];
 
 const style = {
-  variables: {
-    filterShape: 'all',
-  },
   filter: [
     'any',
     ['==', ['var', 'filterShape'], 'all'],
@@ -77,9 +74,20 @@ const style = {
   'icon-scale': 0.5,
 };
 
+const pointsLayer = new WebGLPointsLayer({
+  variables: {
+    filterShape: 'all',
+  },
+  source: new VectorSource({
+    features: [],
+    attributions: 'National UFO Reporting Center',
+  }),
+  style: style,
+});
+
 const shapeSelect = document.getElementById('shape-filter');
 shapeSelect.addEventListener('input', function () {
-  style.variables.filterShape = shapeSelect.value;
+  pointsLayer.updateStyleVariables({filterShape: shapeSelect.value});
   map.render();
 });
 function fillShapeSelect(shapeTypes) {
@@ -127,15 +135,8 @@ client.addEventListener('load', function () {
     );
   }
   shapeTypes['all'] = features.length;
-  map.addLayer(
-    new WebGLPointsLayer({
-      source: new VectorSource({
-        features: features,
-        attributions: 'National UFO Reporting Center',
-      }),
-      style: style,
-    }),
-  );
+  pointsLayer.getSource().addFeatures(features);
+  map.addLayer(pointsLayer);
   fillShapeSelect(shapeTypes);
 });
 client.send();
