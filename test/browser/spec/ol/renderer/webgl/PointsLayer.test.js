@@ -445,6 +445,11 @@ describe('ol/renderer/webgl/PointsLayer', function () {
     /** @type {Array<Feature>} */
     let invalidGeometryFeatures;
 
+    /**
+     * @param {Feature} feature Feature
+     * @param {WebGLPointsLayerRenderer} renderer Renderer
+     * @return {import('../../../../../../src/ol/renderer/webgl/PointsLayer.js').FeatureCacheItem} cached values
+     */
     function getCache(feature, renderer) {
       return renderer.featureCache_[getUid(feature)];
     }
@@ -498,22 +503,22 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       });
       expect(renderer.featureCount_).to.be(3);
       expect(getCache(features[0], renderer).feature).to.be(features[0]);
-      expect(getCache(features[0], renderer).geometry).to.be(
-        features[0].getGeometry(),
+      expect(getCache(features[0], renderer).flatCoordinates).to.be(
+        features[0].getGeometry().getFlatCoordinates(),
       );
       expect(getCache(features[0], renderer).properties['test']).to.be(
         features[0].get('test'),
       );
       expect(getCache(features[1], renderer).feature).to.be(features[1]);
-      expect(getCache(features[1], renderer).geometry).to.be(
-        features[1].getGeometry(),
+      expect(getCache(features[1], renderer).flatCoordinates).to.be(
+        features[1].getGeometry().getFlatCoordinates(),
       );
       expect(getCache(features[1], renderer).properties['test']).to.be(
         features[1].get('test'),
       );
       expect(getCache(features[2], renderer).feature).to.be(features[2]);
-      expect(getCache(features[2], renderer).geometry).to.be(
-        features[2].getGeometry(),
+      expect(getCache(features[2], renderer).flatCoordinates).to.be(
+        features[2].getGeometry().getFlatCoordinates(),
       );
       expect(getCache(features[2], renderer).properties['test']).to.be(
         features[2].get('test'),
@@ -569,15 +574,15 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       expect(renderer.featureCount_).to.be(2);
 
       expect(getCache(features[0], renderer).feature).to.be(features[0]);
-      expect(getCache(features[0], renderer).geometry).to.be(
-        features[0].getGeometry(),
+      expect(getCache(features[0], renderer).flatCoordinates).to.be(
+        features[0].getGeometry().getFlatCoordinates(),
       );
       expect(getCache(features[0], renderer).properties['test']).to.be(
         features[0].get('test'),
       );
       expect(getCache(features[1], renderer).feature).to.be(features[1]);
-      expect(getCache(features[1], renderer).geometry).to.be(
-        features[1].getGeometry(),
+      expect(getCache(features[1], renderer).flatCoordinates).to.be(
+        features[1].getGeometry().getFlatCoordinates(),
       );
       expect(getCache(features[1], renderer).properties['test']).to.be(
         features[1].get('test'),
@@ -597,15 +602,15 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       expect(renderer.featureCount_).to.be(2);
 
       expect(getCache(features[0], renderer).feature).to.be(features[0]);
-      expect(getCache(features[0], renderer).geometry).to.be(
-        features[0].getGeometry(),
+      expect(getCache(features[0], renderer).flatCoordinates).to.be(
+        features[0].getGeometry().getFlatCoordinates(),
       );
       expect(getCache(features[0], renderer).properties['test']).to.be(
         features[0].get('test'),
       );
       expect(getCache(features[2], renderer).feature).to.be(features[2]);
-      expect(getCache(features[2], renderer).geometry).to.be(
-        features[2].getGeometry(),
+      expect(getCache(features[2], renderer).flatCoordinates).to.be(
+        features[2].getGeometry().getFlatCoordinates(),
       );
       expect(getCache(features[2], renderer).properties['test']).to.be(
         features[2].get('test'),
@@ -625,9 +630,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       expect(renderer.featureCount_).to.be(3);
 
       expect(getCache(features[0], renderer).feature).to.be(features[0]);
-      expect(getCache(features[0], renderer).geometry.getCoordinates()).to.eql([
-        10, 20,
-      ]);
+      expect(getCache(features[0], renderer).flatCoordinates).to.eql([10, 20]);
       expect(getCache(features[0], renderer).properties['test']).to.be(
         features[0].get('test'),
       );

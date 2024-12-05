@@ -26,20 +26,23 @@ import {create as createWebGLWorker} from '../../worker/webgl.js';
 import WebGLLayerRenderer from './Layer.js';
 import {getWorldParameters} from './worldUtil.js';
 
+/** @typedef {import("../../geom/Point.js").default} Point */
+/** @typedef {import("../../Feature").default<Point>} PointFeature */
+
 /**
  * @typedef {Object} CustomAttribute A description of a custom attribute to be passed on to the GPU, with a value different
  * for each feature.
  * @property {string} name Attribute name.
- * @property {function(import("../../Feature").default, Object<string, *>):number} callback This callback computes the numerical value of the
+ * @property {function(PointFeature, Object<string, *>):number} callback This callback computes the numerical value of the
  * attribute for a given feature (properties are available as 2nd arg for quicker access).
  */
 
 /**
  * @typedef {Object} FeatureCacheItem Object that holds a reference to a feature, its geometry and properties. Used to optimize
  * rebuildBuffers by accessing these objects quicker.
- * @property {import("../../Feature").default} feature Feature
+ * @property {PointFeature} feature Feature
  * @property {Object<string, *>} properties Feature properties
- * @property {import("../../geom").Geometry} geometry Feature geometry
+ * @property {import("../../coordinate.js").Coordinate} flatCoordinates Point coordinates
  */
 
 /**
@@ -314,7 +317,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
      */
     this.featureCount_ = 0;
 
-    const source = this.getLayer().getSource();
+    const source = /** @type {import("../../source/Vector.js").default} */ (
+      this.getLayer().getSource()
+    );
     /**
      * @private
      */
@@ -348,9 +353,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       const geometry = feature.getGeometry();
       if (geometry && geometry.getType() === 'Point') {
         this.featureCache_[getUid(feature)] = {
-          feature: feature,
+          feature: /** @type {PointFeature} */ (feature),
           properties: feature.getProperties(),
-          geometry: feature.getGeometry(),
+          flatCoordinates: /** @type {Point} */ (geometry).getFlatCoordinates(),
         };
         this.featureCount_++;
       }
@@ -388,9 +393,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const geometry = feature.getGeometry();
     if (geometry && geometry.getType() === 'Point') {
       this.featureCache_[getUid(feature)] = {
-        feature: feature,
+        feature: /** @type {PointFeature} */ (feature),
         properties: feature.getProperties(),
-        geometry: feature.getGeometry(),
+        flatCoordinates: /** @type {Point} */ (geometry).getFlatCoordinates(),
       };
       this.featureCount_++;
     }
@@ -408,7 +413,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     if (item) {
       if (geometry && geometry.getType() === 'Point') {
         item.properties = feature.getProperties();
-        item.geometry = geometry;
+        item.flatCoordinates = /** @type {Point} */ (
+          geometry
+        ).getFlatCoordinates();
       } else {
         delete this.featureCache_[featureUid];
         this.featureCount_--;
@@ -416,9 +423,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     } else {
       if (geometry && geometry.getType() === 'Point') {
         this.featureCache_[featureUid] = {
-          feature: feature,
+          feature: /** @type {PointFeature} */ (feature),
           properties: feature.getProperties(),
-          geometry: geometry,
+          flatCoordinates: /** @type {Point} */ (geometry).getFlatCoordinates(),
         };
         this.featureCount_++;
       }
@@ -548,25 +555,22 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     }
 
     // loop on features to fill the buffer
-    let featureCache, geometry;
+    let featureCache;
     const tmpCoords = [];
     const tmpColor = [];
     let idx = -1;
     for (const featureUid in this.featureCache_) {
       featureCache = this.featureCache_[featureUid];
-      geometry = /** @type {import("../../geom").Point} */ (
-        featureCache.geometry
-      );
       if (userProjection) {
         const userCoords = fromUserCoordinate(
-          geometry.getFlatCoordinates(),
+          featureCache.flatCoordinates,
           frameState.viewState.projection,
         );
         tmpCoords[0] = userCoords[0];
         tmpCoords[1] = userCoords[1];
       } else {
-        tmpCoords[0] = geometry.getFlatCoordinates()[0];
-        tmpCoords[1] = geometry.getFlatCoordinates()[1];
+        tmpCoords[0] = featureCache.flatCoordinates[0];
+        tmpCoords[1] = featureCache.flatCoordinates[1];
       }
       applyTransform(projectionTransform, tmpCoords);
 
