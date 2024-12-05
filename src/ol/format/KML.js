@@ -490,6 +490,12 @@ class KML extends XMLFeature {
      * @type {import("../cors.js").CrossOriginAttribute}
      */
     this.crossOrigin_ = options.crossOrigin ?? 'anonymous';
+    /*
+     * DEPRECATED: pass 'no-cors' rather than `null` to override default
+     */
+    if (options.crossOrigin === null) {
+      this.crossOrigin_ = 'no-cors';
+    }
 
     /**
      * @type {IconUrlFunction}
