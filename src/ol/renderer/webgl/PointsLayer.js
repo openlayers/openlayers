@@ -345,12 +345,15 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       ),
     ];
     source.forEachFeature((feature) => {
-      this.featureCache_[getUid(feature)] = {
-        feature: feature,
-        properties: feature.getProperties(),
-        geometry: feature.getGeometry(),
-      };
-      this.featureCount_++;
+      const geometry = feature.getGeometry();
+      if (geometry && geometry.getType() === 'Point') {
+        this.featureCache_[getUid(feature)] = {
+          feature: feature,
+          properties: feature.getProperties(),
+          geometry: feature.getGeometry(),
+        };
+        this.featureCount_++;
+      }
     });
   }
 
@@ -382,12 +385,15 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    */
   handleSourceFeatureAdded_(event) {
     const feature = event.feature;
-    this.featureCache_[getUid(feature)] = {
-      feature: feature,
-      properties: feature.getProperties(),
-      geometry: feature.getGeometry(),
-    };
-    this.featureCount_++;
+    const geometry = feature.getGeometry();
+    if (geometry && geometry.getType() === 'Point') {
+      this.featureCache_[getUid(feature)] = {
+        feature: feature,
+        properties: feature.getProperties(),
+        geometry: feature.getGeometry(),
+      };
+      this.featureCount_++;
+    }
   }
 
   /**
@@ -396,11 +402,27 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    */
   handleSourceFeatureChanged_(event) {
     const feature = event.feature;
-    this.featureCache_[getUid(feature)] = {
-      feature: feature,
-      properties: feature.getProperties(),
-      geometry: feature.getGeometry(),
-    };
+    const featureUid = getUid(feature);
+    const item = this.featureCache_[featureUid];
+    const geometry = feature.getGeometry();
+    if (item) {
+      if (geometry && geometry.getType() === 'Point') {
+        item.properties = feature.getProperties();
+        item.geometry = geometry;
+      } else {
+        delete this.featureCache_[featureUid];
+        this.featureCount_--;
+      }
+    } else {
+      if (geometry && geometry.getType() === 'Point') {
+        this.featureCache_[featureUid] = {
+          feature: feature,
+          properties: feature.getProperties(),
+          geometry: geometry,
+        };
+        this.featureCount_++;
+      }
+    }
   }
 
   /**
@@ -409,8 +431,11 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    */
   handleSourceFeatureDelete_(event) {
     const feature = event.feature;
-    delete this.featureCache_[getUid(feature)];
-    this.featureCount_--;
+    const featureUid = getUid(feature);
+    if (featureUid in this.featureCache_) {
+      delete this.featureCache_[featureUid];
+      this.featureCount_--;
+    }
   }
 
   /**
@@ -532,9 +557,6 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       geometry = /** @type {import("../../geom").Point} */ (
         featureCache.geometry
       );
-      if (!geometry || geometry.getType() !== 'Point') {
-        continue;
-      }
       if (userProjection) {
         const userCoords = fromUserCoordinate(
           geometry.getFlatCoordinates(),

@@ -2,7 +2,6 @@ import Feature from '../../../../../../src/ol/Feature.js';
 import GeoJSON from '../../../../../../src/ol/format/GeoJSON.js';
 import Map from '../../../../../../src/ol/Map.js';
 import OSM from '../../../../../../src/ol/source/OSM.js';
-import Point from '../../../../../../src/ol/geom/Point.js';
 import TileLayer from '../../../../../../src/ol/layer/Tile.js';
 import VectorLayer from '../../../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../../../src/ol/source/Vector.js';
@@ -10,6 +9,7 @@ import View from '../../../../../../src/ol/View.js';
 import ViewHint from '../../../../../../src/ol/ViewHint.js';
 import WebGLPointsLayer from '../../../../../../src/ol/layer/WebGLPoints.js';
 import WebGLPointsLayerRenderer from '../../../../../../src/ol/renderer/webgl/PointsLayer.js';
+import {LineString, Point} from '../../../../../../src/ol/geom.js';
 import {ShaderBuilder} from '../../../../../../src/ol/webgl/ShaderBuilder.js';
 import {WebGLWorkerMessageType} from '../../../../../../src/ol/render/webgl/constants.js';
 import {
@@ -435,7 +435,14 @@ describe('ol/renderer/webgl/PointsLayer', function () {
   });
 
   describe('featureCache_', function () {
-    let source, layer, features;
+    /** @type {VectorSource} */
+    let source;
+    /** @type {VectorLayer} */
+    let layer;
+    /** @type {Array<Feature<Point>>} */
+    let features;
+    /** @type {Array<Feature>} */
+    let invalidGeometryFeatures;
 
     function getCache(feature, renderer) {
       return renderer.featureCache_[getUid(feature)];
@@ -462,6 +469,15 @@ describe('ol/renderer/webgl/PointsLayer', function () {
           test: 'ijkl',
           geometry: new Point([4, 5]),
         }),
+      ];
+      invalidGeometryFeatures = [
+        new Feature(),
+        new Feature(
+          new LineString([
+            [0, 0],
+            [1, 1],
+          ]),
+        ),
       ];
     });
 
@@ -501,6 +517,42 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       expect(getCache(features[2], renderer).properties['test']).to.be(
         features[2].get('test'),
       );
+    });
+
+    it('ignores null-geometry features during construction', () => {
+      source.addFeatures([...features, ...invalidGeometryFeatures]);
+      const renderer = new WebGLPointsLayerRenderer(layer, {
+        vertexShader: simpleVertexShader,
+        fragmentShader: simpleFragmentShader,
+      });
+      expect(renderer.featureCount_).to.be(features.length);
+    });
+
+    it('removes features which no longer have a valid point geometry', () => {
+      source.addFeatures(features);
+      const renderer = new WebGLPointsLayerRenderer(layer, {
+        vertexShader: simpleVertexShader,
+        fragmentShader: simpleFragmentShader,
+      });
+      features[0].setGeometry(undefined);
+      features[1].setGeometry(
+        new LineString([
+          [0, 0],
+          [1, 1],
+        ]),
+      );
+      expect(renderer.featureCount_).to.be(1);
+    });
+
+    it('adds features whose geometry becomes valid', () => {
+      source.addFeatures(invalidGeometryFeatures);
+      const renderer = new WebGLPointsLayerRenderer(layer, {
+        vertexShader: simpleVertexShader,
+        fragmentShader: simpleFragmentShader,
+      });
+      invalidGeometryFeatures[0].setGeometry(new Point([0, 1]));
+      invalidGeometryFeatures[1].setGeometry(new Point([2, 2]));
+      expect(renderer.featureCount_).to.be(2);
     });
 
     it('contains the features added to the source', function () {
