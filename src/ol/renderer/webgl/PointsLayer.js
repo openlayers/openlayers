@@ -547,45 +547,44 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const singleInstructionLength =
       baseInstructionLength + this.customAttributes.length;
     const totalSize = singleInstructionLength * this.featureCount_;
-    if (
-      !this.renderInstructions_ ||
-      this.renderInstructions_.length !== totalSize
-    ) {
-      this.renderInstructions_ = new Float32Array(totalSize);
-    }
+    const renderInstructions =
+      this.renderInstructions_ && this.renderInstructions_.length === totalSize
+        ? this.renderInstructions_
+        : new Float32Array(totalSize);
+    this.renderInstructions_ = null;
 
-    // loop on features to fill the buffer
-    let featureCache;
-    const tmpCoords = [];
+    // loop over features to fill the buffer
+    /** @type {import('../../coordinate.js').Coordinate} */
+    let tmpCoords = [];
+    /** @type {Array<number>} */
     const tmpColor = [];
     let idx = -1;
+    const projection = frameState.viewState.projection;
     for (const featureUid in this.featureCache_) {
-      featureCache = this.featureCache_[featureUid];
+      const featureCache = this.featureCache_[featureUid];
       if (userProjection) {
-        const userCoords = fromUserCoordinate(
+        tmpCoords = fromUserCoordinate(
           featureCache.flatCoordinates,
-          frameState.viewState.projection,
+          projection,
         );
-        tmpCoords[0] = userCoords[0];
-        tmpCoords[1] = userCoords[1];
       } else {
         tmpCoords[0] = featureCache.flatCoordinates[0];
         tmpCoords[1] = featureCache.flatCoordinates[1];
       }
       applyTransform(projectionTransform, tmpCoords);
 
-      this.renderInstructions_[++idx] = tmpCoords[0];
-      this.renderInstructions_[++idx] = tmpCoords[1];
+      renderInstructions[++idx] = tmpCoords[0];
+      renderInstructions[++idx] = tmpCoords[1];
 
       // for hit detection, the feature uid is saved in the opacity value
       // and the index of the opacity value is encoded in the color values
       if (this.hitDetectionEnabled_) {
         const hitColor = colorEncodeId(idx + 5, tmpColor);
-        this.renderInstructions_[++idx] = hitColor[0];
-        this.renderInstructions_[++idx] = hitColor[1];
-        this.renderInstructions_[++idx] = hitColor[2];
-        this.renderInstructions_[++idx] = hitColor[3];
-        this.renderInstructions_[++idx] = Number(featureUid);
+        renderInstructions[++idx] = hitColor[0];
+        renderInstructions[++idx] = hitColor[1];
+        renderInstructions[++idx] = hitColor[2];
+        renderInstructions[++idx] = hitColor[3];
+        renderInstructions[++idx] = Number(featureUid);
       }
 
       // pushing custom attributes
@@ -594,7 +593,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
           featureCache.feature,
           featureCache.properties,
         );
-        this.renderInstructions_[++idx] = value;
+        renderInstructions[++idx] = value;
       }
     }
 
@@ -602,14 +601,13 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const message = {
       id: ++this.lastSentId,
       type: WebGLWorkerMessageType.GENERATE_POINT_BUFFERS,
-      renderInstructions: this.renderInstructions_.buffer,
+      renderInstructions: renderInstructions.buffer,
       customAttributesSize: singleInstructionLength - 2,
     };
     // additional properties will be sent back as-is by the worker
     message['projectionTransform'] = projectionTransform;
     this.ready = false;
-    this.worker_.postMessage(message, [this.renderInstructions_.buffer]);
-    this.renderInstructions_ = null;
+    this.worker_.postMessage(message, [renderInstructions.buffer]);
   }
 
   /**
