@@ -34,10 +34,6 @@ const animRatio = [
 ];
 
 const style = {
-  variables: {
-    minYear: 1850,
-    maxYear: 2015,
-  },
   filter: ['between', ['get', 'year'], ['var', 'minYear'], ['var', 'maxYear']],
   'circle-radius': [
     '*',
@@ -56,6 +52,16 @@ const style = {
   'circle-opacity': ['-', 1.0, ['*', animRatio, 0.75]],
 };
 
+const pointsLayer = new WebGLPointsLayer({
+  variables: {
+    minYear: 1850,
+    maxYear: 2015,
+  },
+  style: style,
+  source: vectorSource,
+  disableHitDetection: true,
+});
+
 // handle input values & events
 const minYearInput = document.getElementById('min-year');
 const maxYearInput = document.getElementById('max-year');
@@ -67,11 +73,11 @@ function updateStatusText() {
 }
 
 minYearInput.addEventListener('input', function () {
-  style.variables.minYear = parseInt(minYearInput.value);
+  pointsLayer.updateStyleVariables({minYear: parseInt(minYearInput.value)});
   updateStatusText();
 });
 maxYearInput.addEventListener('input', function () {
-  style.variables.maxYear = parseInt(maxYearInput.value);
+  pointsLayer.updateStyleVariables({maxYear: parseInt(minYearInput.value)});
   updateStatusText();
 });
 updateStatusText();
@@ -116,11 +122,7 @@ const map = new Map({
         layer: 'stamen_toner',
       }),
     }),
-    new WebGLPointsLayer({
-      style: style,
-      source: vectorSource,
-      disableHitDetection: true,
-    }),
+    pointsLayer,
   ],
   target: document.getElementById('map'),
   view: new View({
