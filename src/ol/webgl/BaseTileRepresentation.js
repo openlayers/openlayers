@@ -75,6 +75,7 @@ class BaseTileRepresentation extends EventTarget {
       } else {
         if (tile instanceof ImageTile) {
           const image = tile.getImage();
+          // TODO: Explain why this is forcing a cross origin fetch here.
           if (image instanceof Image && !image.crossOrigin) {
             image.crossOrigin = 'anonymous';
           }
