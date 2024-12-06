@@ -320,6 +320,26 @@ describe('ol/source/Vector', function () {
       });
     });
 
+    describe('#forEachFeature', function () {
+      it('iterates over all features of the rtree', function () {
+        let i = 0;
+        vectorSource.forEachFeature((f) => {
+          ++i;
+        });
+        expect(i).to.be(features.length);
+      });
+      it('iterates over all features of the collection', function () {
+        const source = new VectorSource({
+          features: features,
+          useSpatialIndex: false,
+        });
+        let i = 0;
+        source.forEachFeature((f) => {
+          ++i;
+        });
+        expect(i).to.be(features.length);
+      });
+    });
     describe('#forEachFeatureInExtent', function () {
       it('is called the expected number of times', function () {
         const f = sinon.spy();

@@ -599,7 +599,16 @@ class VectorSource extends Source {
    */
   forEachFeature(callback) {
     if (this.featuresRtree_) {
-      return this.featuresRtree_.forEach(callback);
+      let result = this.featuresRtree_.forEach(callback);
+      if (!result) {
+        for (const key in this.nullGeometryFeatures_) {
+          result = callback(this.nullGeometryFeatures_[key]);
+          if (result) {
+            break;
+          }
+        }
+      }
+      return result;
     }
     if (this.featuresCollection_) {
       this.featuresCollection_.forEach(callback);
