@@ -3,9 +3,9 @@
  */
 import Feature from '../Feature.js';
 import LineString from '../geom/LineString.js';
-import TextFeature from './TextFeature.js';
 import {get as getProjection} from '../proj.js';
 import {transformGeometryWithOptions} from './Feature.js';
+import TextFeature from './TextFeature.js';
 
 /**
  * @typedef {'barometric' | 'gps' | 'none'} IGCZ

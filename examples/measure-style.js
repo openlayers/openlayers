@@ -1,5 +1,10 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
+import {LineString, Point} from '../src/ol/geom.js';
+import {Draw, Modify} from '../src/ol/interaction.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import {OSM, Vector as VectorSource} from '../src/ol/source.js';
+import {getArea, getLength} from '../src/ol/sphere.js';
 import {
   Circle as CircleStyle,
   Fill,
@@ -8,11 +13,6 @@ import {
   Style,
   Text,
 } from '../src/ol/style.js';
-import {Draw, Modify} from '../src/ol/interaction.js';
-import {LineString, Point} from '../src/ol/geom.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {getArea, getLength} from '../src/ol/sphere.js';
 
 const typeSelect = document.getElementById('type');
 const showSegments = document.getElementById('segments');

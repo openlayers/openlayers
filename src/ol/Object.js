@@ -1,11 +1,11 @@
 /**
  * @module ol/Object
  */
-import Event from './events/Event.js';
 import ObjectEventType from './ObjectEventType.js';
 import Observable from './Observable.js';
-import {getUid} from './util.js';
+import Event from './events/Event.js';
 import {isEmpty} from './obj.js';
+import {getUid} from './util.js';
 
 /**
  * @classdesc

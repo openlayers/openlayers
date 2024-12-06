@@ -1,16 +1,16 @@
-import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
-import MVT from '../../../../../src/ol/format/MVT.js';
 import Map from '../../../../../src/ol/Map.js';
-import TileGrid from '../../../../../src/ol/tilegrid/TileGrid.js';
 import TileState from '../../../../../src/ol/TileState.js';
 import VectorRenderTile from '../../../../../src/ol/VectorRenderTile.js';
 import VectorTile from '../../../../../src/ol/VectorTile.js';
-import VectorTileLayer from '../../../../../src/ol/layer/VectorTile.js';
-import VectorTileSource from '../../../../../src/ol/source/VectorTile.js';
 import View from '../../../../../src/ol/View.js';
-import {createXYZ} from '../../../../../src/ol/tilegrid.js';
-import {get, get as getProjection} from '../../../../../src/ol/proj.js';
 import {listen, unlistenByKey} from '../../../../../src/ol/events.js';
+import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
+import MVT from '../../../../../src/ol/format/MVT.js';
+import VectorTileLayer from '../../../../../src/ol/layer/VectorTile.js';
+import {get, get as getProjection} from '../../../../../src/ol/proj.js';
+import VectorTileSource from '../../../../../src/ol/source/VectorTile.js';
+import TileGrid from '../../../../../src/ol/tilegrid/TileGrid.js';
+import {createXYZ} from '../../../../../src/ol/tilegrid.js';
 
 describe('ol/source/VectorTile', function () {
   let format, source;

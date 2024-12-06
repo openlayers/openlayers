@@ -6,8 +6,8 @@ import {
 import {
   addCommon,
   clearAllProjections,
-  getPointResolution,
   get as getProjection,
+  getPointResolution,
   transform,
 } from '../../../../../src/ol/proj.js';
 

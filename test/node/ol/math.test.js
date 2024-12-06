@@ -1,4 +1,3 @@
-import expect from '../expect.js';
 import {
   ceil,
   clamp,
@@ -12,6 +11,7 @@ import {
   toRadians,
   wrap,
 } from '../../../src/ol/math.js';
+import expect from '../expect.js';
 
 describe('ol/math.js', () => {
   describe('clamp', function () {

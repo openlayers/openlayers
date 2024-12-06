@@ -1,8 +1,8 @@
 /**
  * @module ol/interaction/DblClickDragZoom
  */
-import Interaction from './Interaction.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
+import Interaction from './Interaction.js';
 
 /**
  * @typedef {Object} Options

@@ -1,17 +1,11 @@
 /**
  * @module ol/reproj/Image
  */
-import {ERROR_THRESHOLD} from './common.js';
 
-import EventType from '../events/EventType.js';
-import ImageState from '../ImageState.js';
 import ImageWrapper from '../Image.js';
-import Triangulation from './Triangulation.js';
-import {
-  calculateSourceResolution,
-  render as renderReprojected,
-} from '../reproj.js';
-import {fromResolutionLike} from '../resolution.js';
+import ImageState from '../ImageState.js';
+import EventType from '../events/EventType.js';
+import {listen, unlistenByKey} from '../events.js';
 import {
   getCenter,
   getHeight,
@@ -19,7 +13,13 @@ import {
   getWidth,
   isEmpty,
 } from '../extent.js';
-import {listen, unlistenByKey} from '../events.js';
+import {
+  calculateSourceResolution,
+  render as renderReprojected,
+} from '../reproj.js';
+import {fromResolutionLike} from '../resolution.js';
+import Triangulation from './Triangulation.js';
+import {ERROR_THRESHOLD} from './common.js';
 
 /**
  * @typedef {function(import("../extent.js").Extent, number, number) : import("../Image.js").default} FunctionType

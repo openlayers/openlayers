@@ -1,10 +1,10 @@
+import {spy as sinonSpy} from 'sinon';
 import Geometry from '../../../../src/ol/geom/Geometry.js';
 import GeometryCollection from '../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import expect from '../../expect.js';
-import sinon from 'sinon';
 
 describe('ol/geom/GeometryCollection.js', function () {
   const outer = [
@@ -188,7 +188,7 @@ describe('ol/geom/GeometryCollection.js', function () {
     });
 
     it('fires a change event', function () {
-      const listener = sinon.spy();
+      const listener = sinonSpy();
       multi.on('change', listener);
       multi.setGeometries([point, line, poly]);
       expect(listener.calledOnce).to.be(true);

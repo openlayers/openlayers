@@ -1,3 +1,4 @@
+import {spy as sinonSpy} from 'sinon';
 import Tile from '../../../../src/ol/Tile.js';
 import TileCache from '../../../../src/ol/TileCache.js';
 import {getKey} from '../../../../src/ol/tilecoord.js';
@@ -16,7 +17,7 @@ describe('ol.TileCache', function () {
       ];
       const cache = new TileCache();
 
-      sinon.spy(tiles[0], 'dispose');
+      sinonSpy(tiles[0], 'dispose');
 
       tiles.forEach(function (tile) {
         cache.set(getKey(tile.tileCoord), tile);

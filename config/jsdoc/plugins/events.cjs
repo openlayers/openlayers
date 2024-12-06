@@ -1,5 +1,3 @@
-/* eslint-disable import/no-commonjs */
-
 const events = {};
 
 exports.handlers = {

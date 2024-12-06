@@ -1,11 +1,11 @@
-import IGC from '../src/ol/format/IGC.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
+import IGC from '../src/ol/format/IGC.js';
 import {
   Tile as TileLayer,
   WebGLVector as WebGLVectorLayer,
 } from '../src/ol/layer.js';
+import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 
 const lineStyle = {
   'stroke-width': 4,

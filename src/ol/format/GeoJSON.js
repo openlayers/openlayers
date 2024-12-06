@@ -3,20 +3,20 @@
  */
 
 import Feature from '../Feature.js';
-import JSONFeature from './JSONFeature.js';
+import {getLayoutForStride} from '../geom/SimpleGeometry.js';
+import {
+  deflateCoordinatesArray,
+  deflateMultiCoordinatesArray,
+} from '../geom/flat/deflate.js';
+import {isEmpty} from '../obj.js';
+import {get as getProjection} from '../proj.js';
 import RenderFeature from '../render/Feature.js';
 import {
   createGeometry,
   createRenderFeature,
   transformGeometryWithOptions,
 } from './Feature.js';
-import {
-  deflateCoordinatesArray,
-  deflateMultiCoordinatesArray,
-} from '../geom/flat/deflate.js';
-import {getLayoutForStride} from '../geom/SimpleGeometry.js';
-import {get as getProjection} from '../proj.js';
-import {isEmpty} from '../obj.js';
+import JSONFeature from './JSONFeature.js';
 
 /**
  * @typedef {import("geojson").GeoJSON} GeoJSONObject

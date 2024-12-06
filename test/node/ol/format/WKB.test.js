@@ -1,11 +1,11 @@
 import Feature from '../../../../src/ol/Feature.js';
+import WKB from '../../../../src/ol/format/WKB.js';
+import WKT from '../../../../src/ol/format/WKT.js';
 import GeometryCollection from '../../../../src/ol/geom/GeometryCollection.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import SimpleGeometry from '../../../../src/ol/geom/SimpleGeometry.js';
-import WKB from '../../../../src/ol/format/WKB.js';
-import WKT from '../../../../src/ol/format/WKT.js';
-import expect from '../../expect.js';
 import {transform} from '../../../../src/ol/proj.js';
+import expect from '../../expect.js';
 
 const patterns = [
   [

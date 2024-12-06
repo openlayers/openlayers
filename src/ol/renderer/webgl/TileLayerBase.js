@@ -1,14 +1,15 @@
 /**
  * @module ol/renderer/webgl/TileLayerBase
  */
-import LRUCache from '../../structs/LRUCache.js';
-import ReprojDataTile from '../../reproj/DataTile.js';
-import ReprojTile from '../../reproj/Tile.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
-import WebGLLayerRenderer from './Layer.js';
-import {abstract, getUid} from '../../util.js';
-import {create as createMat4} from '../../vec/mat4.js';
+import {descending} from '../../array.js';
+import {getIntersection, getRotatedViewport, isEmpty} from '../../extent.js';
+import {fromUserExtent} from '../../proj.js';
+import ReprojDataTile from '../../reproj/DataTile.js';
+import ReprojTile from '../../reproj/Tile.js';
+import {toSize} from '../../size.js';
+import LRUCache from '../../structs/LRUCache.js';
 import {
   createOrUpdate as createTileCoord,
   getKey as getTileCoordKey,
@@ -20,10 +21,9 @@ import {
   scale as scaleTransform,
   translate as translateTransform,
 } from '../../transform.js';
-import {descending} from '../../array.js';
-import {fromUserExtent} from '../../proj.js';
-import {getIntersection, getRotatedViewport, isEmpty} from '../../extent.js';
-import {toSize} from '../../size.js';
+import {abstract, getUid} from '../../util.js';
+import {create as createMat4} from '../../vec/mat4.js';
+import WebGLLayerRenderer from './Layer.js';
 
 export const Uniforms = {
   TILE_TRANSFORM: 'u_tileTransform',

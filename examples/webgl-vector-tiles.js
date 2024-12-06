@@ -1,11 +1,11 @@
-import MVT from '../src/ol/format/MVT.js';
 import Map from '../src/ol/Map.js';
-import VectorTile from '../src/ol/layer/VectorTile.js';
-import VectorTileSource from '../src/ol/source/VectorTile.js';
 import View from '../src/ol/View.js';
-import WebGLVectorTileLayerRenderer from '../src/ol/renderer/webgl/VectorTileLayer.js';
-import {Fill, Icon, Stroke, Style, Text} from '../src/ol/style.js';
 import {asArray} from '../src/ol/color.js';
+import MVT from '../src/ol/format/MVT.js';
+import VectorTile from '../src/ol/layer/VectorTile.js';
+import WebGLVectorTileLayerRenderer from '../src/ol/renderer/webgl/VectorTileLayer.js';
+import VectorTileSource from '../src/ol/source/VectorTile.js';
+import {Fill, Icon, Stroke, Style, Text} from '../src/ol/style.js';
 import {packColor, parseLiteralStyle} from '../src/ol/webgl/styleparser.js';
 
 const key =

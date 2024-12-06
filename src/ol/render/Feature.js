@@ -2,6 +2,27 @@
  * @module ol/render/Feature
  */
 import Feature from '../Feature.js';
+import {extend} from '../array.js';
+import {
+  createOrUpdateFromCoordinate,
+  createOrUpdateFromFlatCoordinates,
+  getCenter,
+  getHeight,
+} from '../extent.js';
+import {memoizeOne} from '../functions.js';
+import {linearRingss as linearRingssCenter} from '../geom/flat/center.js';
+import {
+  getInteriorPointOfArray,
+  getInteriorPointsOfMultiArray,
+} from '../geom/flat/interiorpoint.js';
+import {interpolatePoint} from '../geom/flat/interpolate.js';
+import {inflateEnds} from '../geom/flat/orient.js';
+import {
+  douglasPeucker,
+  douglasPeuckerArray,
+  quantizeArray,
+} from '../geom/flat/simplify.js';
+import {transform2D} from '../geom/flat/transform.js';
 import {
   LineString,
   MultiLineString,
@@ -10,32 +31,11 @@ import {
   Point,
   Polygon,
 } from '../geom.js';
+import {get as getProjection} from '../proj.js';
 import {
   compose as composeTransform,
   create as createTransform,
 } from '../transform.js';
-import {
-  createOrUpdateFromCoordinate,
-  createOrUpdateFromFlatCoordinates,
-  getCenter,
-  getHeight,
-} from '../extent.js';
-import {
-  douglasPeucker,
-  douglasPeuckerArray,
-  quantizeArray,
-} from '../geom/flat/simplify.js';
-import {extend} from '../array.js';
-import {
-  getInteriorPointOfArray,
-  getInteriorPointsOfMultiArray,
-} from '../geom/flat/interiorpoint.js';
-import {get as getProjection} from '../proj.js';
-import {inflateEnds} from '../geom/flat/orient.js';
-import {interpolatePoint} from '../geom/flat/interpolate.js';
-import {linearRingss as linearRingssCenter} from '../geom/flat/center.js';
-import {memoizeOne} from '../functions.js';
-import {transform2D} from '../geom/flat/transform.js';
 
 /**
  * @typedef {'Point' | 'LineString' | 'LinearRing' | 'Polygon' | 'MultiPoint' | 'MultiLineString'} Type
@@ -505,7 +505,7 @@ export function toGeometry(renderFeature) {
 /**
  * Create an `ol/Feature` from an `ol/render/Feature`
  * @param {RenderFeature} renderFeature RenderFeature
- * @param {string} [geometryName='geometry'] Geometry name to use
+ * @param {string} [geometryName] Geometry name to use
  * when creating the Feature.
  * @return {Feature} Newly constructed `ol/Feature` with properties,
  * geometry, and id copied over.

@@ -1,12 +1,12 @@
 import assert from 'assert';
-import frontMatter from 'front-matter';
 import fs from 'fs';
+import path, {dirname} from 'path';
+import {fileURLToPath} from 'url';
+import frontMatter from 'front-matter';
 import fse from 'fs-extra';
 import handlebars from 'handlebars';
-import path, {dirname} from 'path';
-import sources from 'webpack-sources';
-import {fileURLToPath} from 'url';
 import {marked} from 'marked';
+import sources from 'webpack-sources';
 
 const RawSource = sources.RawSource;
 const baseDir = dirname(fileURLToPath(import.meta.url));
@@ -400,7 +400,7 @@ export default class ExampleBuilder {
       assets[cssName] = await fse.readFile(cssPath, readOptions);
       data.css.local.push(cssName);
       data.css.source = this.ensureNewLineAtEnd(assets[cssName]);
-    } catch (err) {
+    } catch {
       // pass, no css for this example
     }
 

@@ -1,15 +1,15 @@
-import Layer from '../src/ol/layer/Layer.js';
 import Map from '../src/ol/Map.js';
-import Source from '../src/ol/source/Source.js';
 import View from '../src/ol/View.js';
-import Worker from 'worker-loader!./offscreen-canvas.worker.js'; //eslint-disable-line
 import {FullScreen} from '../src/ol/control.js';
+import Layer from '../src/ol/layer/Layer.js';
+import Source from '../src/ol/source/Source.js';
+import Worker from 'worker-loader!./offscreen-canvas.worker.js'; //eslint-disable-line
+import {createXYZ} from '../src/ol/tilegrid.js';
 import {
   compose,
   create,
   toString as toTransformString,
 } from '../src/ol/transform.js';
-import {createXYZ} from '../src/ol/tilegrid.js';
 
 const worker = new Worker();
 

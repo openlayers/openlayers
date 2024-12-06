@@ -1,8 +1,8 @@
-import ImageLayer from '../../../../../src/ol/layer/Image.js';
-import ImageMapGuide from '../../../../../src/ol/source/ImageMapGuide.js';
 import ImageState from '../../../../../src/ol/ImageState.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
+import ImageLayer from '../../../../../src/ol/layer/Image.js';
+import ImageMapGuide from '../../../../../src/ol/source/ImageMapGuide.js';
 
 describe('ol/source/ImageMapGuide', function () {
   let options;

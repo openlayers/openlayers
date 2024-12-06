@@ -1,8 +1,8 @@
 /**
  * @module ol/interaction/DragRotateAndZoom
  */
-import PointerInteraction from './Pointer.js';
 import {mouseOnly, shiftKeyOnly} from '../events/condition.js';
+import PointerInteraction from './Pointer.js';
 
 /**
  * @typedef {Object} Options

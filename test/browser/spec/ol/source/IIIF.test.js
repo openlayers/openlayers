@@ -1,6 +1,6 @@
+import {Versions} from '../../../../../src/ol/format/IIIFInfo.js';
 import IIIF from '../../../../../src/ol/source/IIIF.js';
 import {DEFAULT_TILE_SIZE} from '../../../../../src/ol/tilegrid/common.js';
-import {Versions} from '../../../../../src/ol/format/IIIFInfo.js';
 
 describe('ol/source/IIIF', function () {
   const width = 2000,

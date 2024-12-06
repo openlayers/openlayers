@@ -1,13 +1,13 @@
-import CircleStyle from '../../../../src/ol/style/Circle.js';
-import Fill from '../../../../src/ol/style/Fill.js';
 import Map from '../../../../src/ol/Map.js';
-import Point from '../../../../src/ol/geom/Point.js';
-import Stroke from '../../../../src/ol/style/Stroke.js';
-import TileLayer from '../../../../src/ol/layer/Tile.js';
 import View from '../../../../src/ol/View.js';
-import XYZ from '../../../../src/ol/source/XYZ.js';
+import Point from '../../../../src/ol/geom/Point.js';
+import TileLayer from '../../../../src/ol/layer/Tile.js';
 import {fromLonLat, transform} from '../../../../src/ol/proj.js';
 import {getVectorContext} from '../../../../src/ol/render.js';
+import XYZ from '../../../../src/ol/source/XYZ.js';
+import CircleStyle from '../../../../src/ol/style/Circle.js';
+import Fill from '../../../../src/ol/style/Fill.js';
+import Stroke from '../../../../src/ol/style/Stroke.js';
 
 const center = fromLonLat([8.6, 50.1]);
 

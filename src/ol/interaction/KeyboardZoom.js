@@ -2,8 +2,8 @@
  * @module ol/interaction/KeyboardZoom
  */
 import EventType from '../events/EventType.js';
-import Interaction, {zoomByDelta} from './Interaction.js';
 import {platformModifierKey, targetNotEditable} from '../events/condition.js';
+import Interaction, {zoomByDelta} from './Interaction.js';
 
 /**
  * @typedef {Object} Options

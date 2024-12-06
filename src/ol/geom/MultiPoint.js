@@ -1,13 +1,13 @@
 /**
  * @module ol/geom/MultiPoint
  */
+import {extend} from '../array.js';
+import {closestSquaredDistanceXY, containsXY} from '../extent.js';
+import {squaredDistance as squaredDx} from '../math.js';
 import Point from './Point.js';
 import SimpleGeometry from './SimpleGeometry.js';
-import {closestSquaredDistanceXY, containsXY} from '../extent.js';
 import {deflateCoordinates} from './flat/deflate.js';
-import {extend} from '../array.js';
 import {inflateCoordinates} from './flat/inflate.js';
-import {squaredDistance as squaredDx} from '../math.js';
 
 /**
  * @classdesc

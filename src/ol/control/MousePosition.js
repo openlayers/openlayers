@@ -2,7 +2,8 @@
  * @module ol/control/MousePosition
  */
 
-import Control from './Control.js';
+import {wrapX} from '../coordinate.js';
+import {listen} from '../events.js';
 import EventType from '../pointer/EventType.js';
 import {
   get as getProjection,
@@ -10,8 +11,7 @@ import {
   getUserProjection,
   identityTransform,
 } from '../proj.js';
-import {listen} from '../events.js';
-import {wrapX} from '../coordinate.js';
+import Control from './Control.js';
 
 /**
  * @type {string}

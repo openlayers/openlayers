@@ -1,8 +1,8 @@
-import expect from '../../../expect.js';
 import {
   assignClosestPoint,
   maxSquaredDelta,
 } from '../../../../../src/ol/geom/flat/closest.js';
+import expect from '../../../expect.js';
 
 describe('ol/geom/flat/closest.js', function () {
   describe('with simple data', function () {

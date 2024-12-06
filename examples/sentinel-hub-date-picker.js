@@ -1,8 +1,8 @@
 import Map from '../src/ol/Map.js';
-import SentinelHub from '../src/ol/source/SentinelHub.js';
-import TileLayer from '../src/ol/layer/WebGLTile.js';
 import View from '../src/ol/View.js';
+import TileLayer from '../src/ol/layer/WebGLTile.js';
 import {useGeographic} from '../src/ol/proj.js';
+import SentinelHub from '../src/ol/source/SentinelHub.js';
 
 useGeographic();
 

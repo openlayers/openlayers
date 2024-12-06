@@ -1,12 +1,13 @@
 /**
  * @module ol/format/GML3
  */
-import GML2 from './GML2.js';
-import GMLBase, {GMLNS} from './GMLBase.js';
+import {extend} from '../array.js';
+import {createOrUpdate} from '../extent.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
 import Polygon from '../geom/Polygon.js';
+import {get as getProjection} from '../proj.js';
 import {
   OBJECT_PROPERTY_NODE_FACTORY,
   XML_SCHEMA_INSTANCE_URI,
@@ -21,14 +22,13 @@ import {
   pushParseAndPop,
   pushSerializeAndPop,
 } from '../xml.js';
-import {createOrUpdate} from '../extent.js';
-import {extend} from '../array.js';
-import {get as getProjection} from '../proj.js';
-import {readNonNegativeIntegerString, writeStringTextNode} from './xsd.js';
 import {
   transformExtentWithOptions,
   transformGeometryWithOptions,
 } from './Feature.js';
+import GML2 from './GML2.js';
+import GMLBase, {GMLNS} from './GMLBase.js';
+import {readNonNegativeIntegerString, writeStringTextNode} from './xsd.js';
 
 /**
  * @const

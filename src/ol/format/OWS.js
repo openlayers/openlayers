@@ -1,13 +1,13 @@
 /**
  * @module ol/format/OWS
  */
-import XML from './XML.js';
 import {
   makeObjectPropertyPusher,
   makeObjectPropertySetter,
   makeStructureNS,
   pushParseAndPop,
 } from '../xml.js';
+import XML from './XML.js';
 import {readHref} from './xlink.js';
 import {readString} from './xsd.js';
 

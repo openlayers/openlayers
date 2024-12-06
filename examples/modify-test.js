@@ -1,14 +1,14 @@
-import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Map from '../src/ol/Map.js';
-import VectorLayer from '../src/ol/layer/Vector.js';
-import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
-import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
 import {
   Modify,
   Select,
   defaults as defaultInteractions,
 } from '../src/ol/interaction.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
 
 const styleFunction = (function () {
   const styles = {};

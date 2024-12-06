@@ -1,3 +1,4 @@
+import {spy as sinonSpy} from 'sinon';
 import Fill from '../../../../../src/ol/style/Fill.js';
 import RegularShape from '../../../../../src/ol/style/RegularShape.js';
 import Stroke from '../../../../../src/ol/style/Stroke.js';
@@ -218,9 +219,9 @@ describe('ol/style/RegularShape', function () {
     let canvas;
     beforeEach(function () {
       canvas = {
-        arc: sinon.spy(),
-        lineTo: sinon.spy(),
-        closePath: sinon.spy(),
+        arc: sinonSpy(),
+        lineTo: sinonSpy(),
+        closePath: sinonSpy(),
       };
     });
     it('does not double the points without radius2', function () {

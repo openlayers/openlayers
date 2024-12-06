@@ -1,9 +1,9 @@
 /**
  * @module ol/source/OGCMapTile
  */
+import {error as logError} from '../console.js';
 import TileImage from './TileImage.js';
 import {getTileSetInfo} from './ogcTileUtil.js';
-import {error as logError} from '../console.js';
 
 /**
  * @typedef {Object} Options

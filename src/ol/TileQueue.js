@@ -1,9 +1,9 @@
 /**
  * @module ol/TileQueue
  */
+import TileState from './TileState.js';
 import EventType from './events/EventType.js';
 import PriorityQueue, {DROP} from './structs/PriorityQueue.js';
-import TileState from './TileState.js';
 
 /**
  * @typedef {function(import("./Tile.js").default, string, import("./coordinate.js").Coordinate, number): number} PriorityFunction

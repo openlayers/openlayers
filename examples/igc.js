@@ -1,13 +1,13 @@
 import Feature from '../src/ol/Feature.js';
-import IGC from '../src/ol/format/IGC.js';
 import Map from '../src/ol/Map.js';
-import OSM, {ATTRIBUTION} from '../src/ol/source/OSM.js';
-import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
-import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
+import IGC from '../src/ol/format/IGC.js';
 import {LineString, Point} from '../src/ol/geom.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {getVectorContext} from '../src/ol/render.js';
+import OSM, {ATTRIBUTION} from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
 
 const colors = {
   'Clement Latour': 'rgba(0, 0, 255, 0.7)',

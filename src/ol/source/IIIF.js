@@ -2,14 +2,14 @@
  * @module ol/source/IIIF
  */
 
-import TileGrid from '../tilegrid/TileGrid.js';
-import TileImage from './TileImage.js';
-import {CustomTile} from './Zoomify.js';
-import {DEFAULT_TILE_SIZE} from '../tilegrid/common.js';
-import {Versions} from '../format/IIIFInfo.js';
 import {assert} from '../asserts.js';
 import {getTopLeft} from '../extent.js';
+import {Versions} from '../format/IIIFInfo.js';
 import {toSize} from '../size.js';
+import TileGrid from '../tilegrid/TileGrid.js';
+import {DEFAULT_TILE_SIZE} from '../tilegrid/common.js';
+import TileImage from './TileImage.js';
+import {CustomTile} from './Zoomify.js';
 
 /**
  * @typedef {Object} Options

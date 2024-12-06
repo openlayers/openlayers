@@ -20,9 +20,9 @@ import {get as getProjection} from '../proj.js';
  * A type that can be used to provide attribution information for data sources.
  *
  * It represents either
- * * a simple string (e.g. `'© Acme Inc.'`)
- * * an array of simple strings (e.g. `['© Acme Inc.', '© Bacme Inc.']`)
- * * a function that returns a string or array of strings ({@link module:ol/source/Source~Attribution})
+ * a simple string (e.g. `'© Acme Inc.'`)
+ * an array of simple strings (e.g. `['© Acme Inc.', '© Bacme Inc.']`)
+ * a function that returns a string or array of strings ({@link module:ol/source/Source~Attribution})
  *
  * @typedef {string|Array<string>|Attribution} AttributionLike
  */

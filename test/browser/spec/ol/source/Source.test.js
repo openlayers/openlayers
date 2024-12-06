@@ -1,5 +1,6 @@
-import Source from '../../../../../src/ol/source/Source.js';
+import {spy as sinonSpy} from 'sinon';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
+import Source from '../../../../../src/ol/source/Source.js';
 
 describe('ol/source/Source', function () {
   describe('constructor', function () {
@@ -68,7 +69,7 @@ describe('ol/source/Source', function () {
       const source = new Source({
         projection: getProjection('EPSG:4326'),
       });
-      const changedSpy = sinon.spy();
+      const changedSpy = sinonSpy();
       source.on('change', changedSpy);
       source.refresh();
       expect(changedSpy.called).to.be.ok();

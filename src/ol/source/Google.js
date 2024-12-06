@@ -2,11 +2,11 @@
  * @module ol/source/Google
  */
 
-import TileImage from './TileImage.js';
 import ViewHint from '../ViewHint.js';
-import {createXYZ, extentFromProjection} from '../tilegrid.js';
 import {getBottomLeft, getTopRight} from '../extent.js';
 import {toLonLat} from '../proj.js';
+import {createXYZ, extentFromProjection} from '../tilegrid.js';
+import TileImage from './TileImage.js';
 
 const createSessionUrl = 'https://tile.googleapis.com/v1/createSession';
 const tileUrl = 'https://tile.googleapis.com/v1/2dtiles';

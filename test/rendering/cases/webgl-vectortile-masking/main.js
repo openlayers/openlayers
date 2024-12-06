@@ -1,10 +1,10 @@
 import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
+import View from '../../../../src/ol/View.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import VectorTile from '../../../../src/ol/layer/VectorTile.js';
-import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
-import View from '../../../../src/ol/View.js';
 import WebGLVectorTileLayerRenderer from '../../../../src/ol/renderer/webgl/VectorTileLayer.js';
+import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
 
 const source = new VectorTileSource({
   tileSize: 64,

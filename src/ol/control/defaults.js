@@ -1,8 +1,8 @@
 /**
  * @module ol/control/defaults
  */
-import Attribution from './Attribution.js';
 import Collection from '../Collection.js';
+import Attribution from './Attribution.js';
 import Rotate from './Rotate.js';
 import Zoom from './Zoom.js';
 
@@ -25,9 +25,9 @@ import Zoom from './Zoom.js';
  * Set of controls included in maps by default. Unless configured otherwise,
  * this returns a collection containing an instance of each of the following
  * controls:
- * * {@link module:ol/control/Zoom~Zoom}
- * * {@link module:ol/control/Rotate~Rotate}
- * * {@link module:ol/control/Attribution~Attribution}
+ * {@link module:ol/control/Zoom~Zoom}
+ * {@link module:ol/control/Rotate~Rotate}
+ * {@link module:ol/control/Attribution~Attribution}
  *
  * @param {DefaultsOptions} [options] Options for the default controls.
  * @return {Collection<import("./Control.js").default>} A collection of controls

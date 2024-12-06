@@ -1,12 +1,12 @@
-import Point from '../../../../src/ol/geom/Point.js';
-import expect from '../../expect.js';
 import proj4 from 'proj4';
-import sinon from 'sinon';
+import {spy as sinonSpy} from 'sinon';
+import Point from '../../../../src/ol/geom/Point.js';
+import {register, unregister} from '../../../../src/ol/proj/proj4.js';
 import {
   get as getProjection,
   getTransformFromProjections,
 } from '../../../../src/ol/proj.js';
-import {register, unregister} from '../../../../src/ol/proj/proj4.js';
+import expect from '../../expect.js';
 
 describe('ol/geom/Point.js', function () {
   it('cannot be constructed with a null geometry', function () {
@@ -191,7 +191,7 @@ describe('ol/geom/Point.js', function () {
     let point, transform;
     beforeEach(function () {
       point = new Point([1, 2]);
-      transform = sinon.spy();
+      transform = sinonSpy();
     });
 
     it('calls a transform function', function () {

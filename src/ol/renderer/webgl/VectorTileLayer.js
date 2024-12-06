@@ -2,28 +2,28 @@
  * @module ol/renderer/webgl/VectorTileLayer
  */
 import EventType from '../../events/EventType.js';
-import TileGeometry from '../../webgl/TileGeometry.js';
+import {getIntersection} from '../../extent.js';
 import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
-import WebGLArrayBuffer from '../../webgl/Buffer.js';
-import WebGLBaseTileLayerRenderer, {
-  Uniforms as BaseUniforms,
-} from './TileLayerBase.js';
-import WebGLRenderTarget from '../../webgl/RenderTarget.js';
-import {AttributeType} from '../../webgl/Helper.js';
-import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
-import {ShaderBuilder} from '../../webgl/ShaderBuilder.js';
-import {
-  create as createMat4,
-  fromTransform as mat4FromTransform,
-} from '../../vec/mat4.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
   multiply as multiplyTransform,
   setFromArray as setFromTransform,
 } from '../../transform.js';
-import {getIntersection} from '../../extent.js';
+import {
+  create as createMat4,
+  fromTransform as mat4FromTransform,
+} from '../../vec/mat4.js';
+import WebGLArrayBuffer from '../../webgl/Buffer.js';
+import {AttributeType} from '../../webgl/Helper.js';
+import WebGLRenderTarget from '../../webgl/RenderTarget.js';
+import {ShaderBuilder} from '../../webgl/ShaderBuilder.js';
+import TileGeometry from '../../webgl/TileGeometry.js';
 import {parseLiteralStyle} from '../../webgl/styleparser.js';
+import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
+import WebGLBaseTileLayerRenderer, {
+  Uniforms as BaseUniforms,
+} from './TileLayerBase.js';
 
 export const Uniforms = {
   ...BaseUniforms,

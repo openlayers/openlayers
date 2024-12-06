@@ -1,11 +1,11 @@
 import Feature from '../../../../../../src/ol/Feature.js';
 import Map from '../../../../../../src/ol/Map.js';
+import View from '../../../../../../src/ol/View.js';
+import {Point} from '../../../../../../src/ol/geom.js';
 import TileLayer from '../../../../../../src/ol/layer/Tile.js';
 import VectorLayer from '../../../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../../../src/ol/source/Vector.js';
-import View from '../../../../../../src/ol/View.js';
 import XYZ from '../../../../../../src/ol/source/XYZ.js';
-import {Point} from '../../../../../../src/ol/geom.js';
 
 describe('ol/renderer/canvas/Layer', function () {
   let map;

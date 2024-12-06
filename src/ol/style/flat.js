@@ -15,12 +15,12 @@
  *     };
  *
  * See details about the available properties depending on what type of symbolizer should be applied:
- *  * {@link module:ol/style/flat~FlatStroke Stroke} - properties for applying a stroke to lines and polygons
- *  * {@link module:ol/style/flat~FlatFill Fill} - properties for filling polygons
- *  * {@link module:ol/style/flat~FlatText Text} - properties for labeling points, lines, and polygons
- *  * {@link module:ol/style/flat~FlatIcon Icon} - properties for rendering points with an icon
- *  * {@link module:ol/style/flat~FlatCircle Circle} - properties for rendering points with a circle
- *  * {@link module:ol/style/flat~FlatShape Shape} - properties for rendering points with a regular shape
+ *  {@link module:ol/style/flat~FlatStroke Stroke} - properties for applying a stroke to lines and polygons
+ *  {@link module:ol/style/flat~FlatFill Fill} - properties for filling polygons
+ *  {@link module:ol/style/flat~FlatText Text} - properties for labeling points, lines, and polygons
+ *  {@link module:ol/style/flat~FlatIcon Icon} - properties for rendering points with an icon
+ *  {@link module:ol/style/flat~FlatCircle Circle} - properties for rendering points with a circle
+ *  {@link module:ol/style/flat~FlatShape Shape} - properties for rendering points with a regular shape
  *
  * To conditionally apply styles based on a filter, a list of {@link module:ol/style/flat~Rule rules} can be used.
  * For example, to style points with a big orange circle if the population is greater than 1 million and

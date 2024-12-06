@@ -7,12 +7,12 @@
  * See https://mapbox.com/developers/api/.
  */
 
-import TileImage from './TileImage.js';
 import {applyTransform, intersects} from '../extent.js';
-import {createFromTemplates} from '../tileurlfunction.js';
-import {createXYZ, extentFromProjection} from '../tilegrid.js';
-import {get as getProjection, getTransformFromProjections} from '../proj.js';
 import {jsonp as requestJSONP} from '../net.js';
+import {get as getProjection, getTransformFromProjections} from '../proj.js';
+import {createXYZ, extentFromProjection} from '../tilegrid.js';
+import {createFromTemplates} from '../tileurlfunction.js';
+import TileImage from './TileImage.js';
 
 /**
  * @typedef {Object} Config
@@ -131,7 +131,7 @@ class TileJSON extends TileImage {
       let response;
       try {
         response = /** @type {Config} */ (JSON.parse(client.responseText));
-      } catch (err) {
+      } catch {
         this.handleTileJSONError();
         return;
       }

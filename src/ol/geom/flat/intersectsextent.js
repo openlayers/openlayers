@@ -7,8 +7,8 @@ import {
   intersects,
   intersectsSegment,
 } from '../../extent.js';
-import {forEach as forEachSegment} from './segments.js';
 import {linearRingContainsExtent, linearRingContainsXY} from './contains.js';
+import {forEach as forEachSegment} from './segments.js';
 
 /**
  * @param {Array<number>} flatCoordinates Flat coordinates.

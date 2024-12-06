@@ -1,7 +1,7 @@
+import {spy as sinonSpy} from 'sinon';
+import {isEmpty} from '../../../../src/ol/extent.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import expect from '../../expect.js';
-import sinon from 'sinon';
-import {isEmpty} from '../../../../src/ol/extent.js';
 
 describe('ol/geom/LineString.js', function () {
   it('cannot be constructed with a null geometry', function () {
@@ -391,7 +391,7 @@ describe('ol/geom/LineString.js', function () {
       });
 
       it('remembers the minimum squared tolerance', function () {
-        sinon.spy(lineString, 'getSimplifiedGeometryInternal');
+        sinonSpy(lineString, 'getSimplifiedGeometryInternal');
         const simplifiedGeometry1 = lineString.getSimplifiedGeometry(0.05);
         expect(lineString.getSimplifiedGeometryInternal.callCount).to.be(1);
         expect(simplifiedGeometry1).to.be(lineString);

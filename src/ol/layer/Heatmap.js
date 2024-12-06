@@ -1,11 +1,11 @@
 /**
  * @module ol/layer/Heatmap
  */
-import BaseVector from './BaseVector.js';
+import {createCanvasContext2D} from '../dom.js';
+import {clamp} from '../math.js';
 import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer.js';
 import {ShaderBuilder} from '../webgl/ShaderBuilder.js';
-import {clamp} from '../math.js';
-import {createCanvasContext2D} from '../dom.js';
+import BaseVector from './BaseVector.js';
 
 /**
  * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../Feature.js").default]

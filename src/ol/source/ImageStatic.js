@@ -2,12 +2,12 @@
  * @module ol/source/ImageStatic
  */
 
-import EventType from '../events/EventType.js';
-import ImageSource, {defaultImageLoadFunction} from './Image.js';
 import ImageWrapper, {decode} from '../Image.js';
-import {createLoader} from './static.js';
-import {get as getProjection} from '../proj.js';
+import EventType from '../events/EventType.js';
 import {intersects} from '../extent.js';
+import {get as getProjection} from '../proj.js';
+import ImageSource, {defaultImageLoadFunction} from './Image.js';
+import {createLoader} from './static.js';
 
 /**
  * @typedef {Object} Options

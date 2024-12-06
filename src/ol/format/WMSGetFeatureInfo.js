@@ -1,10 +1,10 @@
 /**
  * @module ol/format/WMSGetFeatureInfo
  */
-import GML2 from './GML2.js';
-import XMLFeature from './XMLFeature.js';
 import {extend} from '../array.js';
 import {makeArrayPusher, makeStructureNS, pushParseAndPop} from '../xml.js';
+import GML2 from './GML2.js';
+import XMLFeature from './XMLFeature.js';
 
 /**
  * @typedef {Object} Options

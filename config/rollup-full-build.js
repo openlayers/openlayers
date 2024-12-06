@@ -1,7 +1,7 @@
 import commonjs from '@rollup/plugin-commonjs';
-import externalGlobals from 'rollup-plugin-external-globals';
 import resolve from '@rollup/plugin-node-resolve';
 import terser from '@rollup/plugin-terser';
+import externalGlobals from 'rollup-plugin-external-globals';
 
 export default {
   input: 'build/ol/dist/ol.js',

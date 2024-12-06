@@ -1,8 +1,6 @@
 /**
  * @module ol/format/WMTSCapabilities
  */
-import OWS from './OWS.js';
-import XML from './XML.js';
 import {boundingExtent} from '../extent.js';
 import {
   makeArrayPusher,
@@ -11,8 +9,10 @@ import {
   makeStructureNS,
   pushParseAndPop,
 } from '../xml.js';
-import {readDecimal, readPositiveInteger, readString} from './xsd.js';
+import OWS from './OWS.js';
+import XML from './XML.js';
 import {readHref} from './xlink.js';
+import {readDecimal, readPositiveInteger, readString} from './xsd.js';
 
 /**
  * @const

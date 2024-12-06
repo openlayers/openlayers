@@ -1,9 +1,11 @@
 /**
  * @module ol/render/canvas/TextBuilder
  */
-import CanvasBuilder from './Builder.js';
-import CanvasInstruction from './Instruction.js';
 import {asColorLike} from '../../colorlike.js';
+import {intersects} from '../../extent.js';
+import {lineChunk} from '../../geom/flat/linechunk.js';
+import {matchingChunk} from '../../geom/flat/straightchunk.js';
+import {getUid} from '../../util.js';
 import {
   defaultFillStyle,
   defaultFont,
@@ -19,10 +21,8 @@ import {
   defaultTextBaseline,
   registerFont,
 } from '../canvas.js';
-import {getUid} from '../../util.js';
-import {intersects} from '../../extent.js';
-import {lineChunk} from '../../geom/flat/linechunk.js';
-import {matchingChunk} from '../../geom/flat/straightchunk.js';
+import CanvasBuilder from './Builder.js';
+import CanvasInstruction from './Instruction.js';
 /**
  * @const
  * @type {{left: 0, center: 0.5, right: 1, top: 0, middle: 0.5, hanging: 0.2, alphabetic: 0.8, ideographic: 0.8, bottom: 1}}

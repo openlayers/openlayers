@@ -1,9 +1,9 @@
-import GeoTIFF from '../src/ol/source/GeoTIFF.js';
 import Map from '../src/ol/Map.js';
-import TileGrid from '../src/ol/tilegrid/TileGrid.js';
 import View from '../src/ol/View.js';
 import WebGLTileLayer from '../src/ol/layer/WebGLTile.js';
+import GeoTIFF from '../src/ol/source/GeoTIFF.js';
 import {sourcesFromTileGrid} from '../src/ol/source.js';
+import TileGrid from '../src/ol/tilegrid/TileGrid.js';
 
 // Metadata from https://s2downloads.eox.at/demo/EOxCloudless/2019/rgb/2019_EOxCloudless_rgb.json
 

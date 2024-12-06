@@ -3,8 +3,8 @@
  */
 import RBush_ from 'rbush';
 import {createOrUpdate, equals} from '../extent.js';
-import {getUid} from '../util.js';
 import {isEmpty} from '../obj.js';
+import {getUid} from '../util.js';
 
 /**
  * @typedef {import("rbush").BBox & {value: T}} Entry

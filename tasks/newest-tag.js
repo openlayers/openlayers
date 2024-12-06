@@ -1,8 +1,8 @@
 import esMain from 'es-main';
 import semver from 'semver';
 import yargs from 'yargs';
-import {getLatestRelease} from './get-latest-release.js';
 import {hideBin} from 'yargs/helpers';
+import {getLatestRelease} from './get-latest-release.js';
 
 /**
  * @typedef {Object} Options

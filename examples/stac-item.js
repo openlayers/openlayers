@@ -1,10 +1,10 @@
-import Map from '../src/ol/Map.js';
-import OSM from '../src/ol/source/OSM.js';
 import STAC from 'ol-stac';
-import TileLayer from '../src/ol/layer/WebGLTile.js';
-import View from '../src/ol/View.js';
 import proj4 from 'proj4';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import TileLayer from '../src/ol/layer/WebGLTile.js';
 import {register} from '../src/ol/proj/proj4.js';
+import OSM from '../src/ol/source/OSM.js';
 
 register(proj4); // required to support source reprojection
 

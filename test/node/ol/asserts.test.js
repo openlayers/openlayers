@@ -1,5 +1,5 @@
-import expect from '../expect.js';
 import {assert} from '../../../src/ol/asserts.js';
+import expect from '../expect.js';
 
 describe('ol/asserts.js', function () {
   describe('assert', function () {

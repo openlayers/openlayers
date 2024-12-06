@@ -1,4 +1,3 @@
-import expect from '../expect.js';
 import {
   asArray,
   asString,
@@ -7,6 +6,7 @@ import {
   normalize,
   toString,
 } from '../../../src/ol/color.js';
+import expect from '../expect.js';
 
 describe('ol/color', () => {
   describe('asArray()', () => {

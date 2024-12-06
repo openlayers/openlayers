@@ -1,11 +1,11 @@
-import CanvasImmediateRenderer from '../../../../src/ol/render/canvas/Immediate.js';
+import {equals} from '../../../../src/ol/array.js';
 import {DEVICE_PIXEL_RATIO} from '../../../../src/ol/has.js';
+import CanvasImmediateRenderer from '../../../../src/ol/render/canvas/Immediate.js';
+import {toContext} from '../../../../src/ol/render.js';
 import {
   create as createTransform,
   scale as scaleTransform,
 } from '../../../../src/ol/transform.js';
-import {equals} from '../../../../src/ol/array.js';
-import {toContext} from '../../../../src/ol/render.js';
 
 describe('ol.render', function () {
   describe('toContext', function () {

@@ -1,11 +1,11 @@
 /**
  * @module ol/interaction/PinchRotate
  */
+import {FALSE} from '../functions.js';
+import {disable} from '../rotationconstraint.js';
 import PointerInteraction, {
   centroid as centroidFromPointers,
 } from './Pointer.js';
-import {FALSE} from '../functions.js';
-import {disable} from '../rotationconstraint.js';
 
 /**
  * @typedef {Object} Options

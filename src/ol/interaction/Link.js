@@ -1,11 +1,11 @@
 /**
  * @module ol/interaction/Link
  */
-import EventType from '../events/EventType.js';
-import Interaction from './Interaction.js';
 import MapEventType from '../MapEventType.js';
+import EventType from '../events/EventType.js';
 import {listen, unlistenByKey} from '../events.js';
 import {toFixed} from '../math.js';
+import Interaction from './Interaction.js';
 
 /**
  * @param {number} number A number.

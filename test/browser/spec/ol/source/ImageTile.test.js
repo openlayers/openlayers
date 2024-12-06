@@ -1,5 +1,5 @@
-import ImageTile from '../../../../../src/ol/source/ImageTile.js';
 import TileState from '../../../../../src/ol/TileState.js';
+import ImageTile from '../../../../../src/ol/source/ImageTile.js';
 import {pickUrl, renderXYZTemplate} from '../../../../../src/ol/uri.js';
 
 const emptyUrl =

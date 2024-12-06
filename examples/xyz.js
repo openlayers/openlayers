@@ -1,7 +1,7 @@
-import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
-import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
 
 const map = new Map({
   target: 'map',

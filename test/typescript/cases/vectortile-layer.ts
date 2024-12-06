@@ -1,10 +1,10 @@
 import Feature from '../../../src/ol/Feature.js';
+import {MVT} from '../../../src/ol/format.js';
 import Point from '../../../src/ol/geom/Point.js';
 import VectorTileLayer from '../../../src/ol/layer/VectorTile.js';
-import VectorTileSource from '../../../src/ol/source/VectorTile.js';
-import {MVT} from '../../../src/ol/format.js';
-import {OGCVectorTile as OGCVectorTileSource} from '../../../src/ol/source.js';
 import {toFeature} from '../../../src/ol/render/Feature.js';
+import VectorTileSource from '../../../src/ol/source/VectorTile.js';
+import {OGCVectorTile as OGCVectorTileSource} from '../../../src/ol/source.js';
 
 const options = {
   source: new VectorTileSource({

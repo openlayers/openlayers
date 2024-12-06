@@ -1,15 +1,15 @@
-import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
+import {GPX, GeoJSON, IGC, KML, TopoJSON} from '../src/ol/format.js';
 import {
   DragAndDrop,
   defaults as defaultInteractions,
 } from '../src/ol/interaction.js';
-import {GPX, GeoJSON, IGC, KML, TopoJSON} from '../src/ol/format.js';
 import {
   Tile as TileLayer,
   VectorImage as VectorImageLayer,
 } from '../src/ol/layer.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
 import {Vector as VectorSource} from '../src/ol/source.js';
 
 const dragAndDropInteraction = new DragAndDrop({

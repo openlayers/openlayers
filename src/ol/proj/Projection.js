@@ -32,12 +32,12 @@ import {METERS_PER_UNIT} from './Units.js';
  * The library includes support for transforming coordinates between the following
  * projections:
  *
- *  * WGS 84 / Geographic - Using codes `EPSG:4326`, `CRS:84`, `urn:ogc:def:crs:EPSG:6.6:4326`,
+ *  WGS 84 / Geographic - Using codes `EPSG:4326`, `CRS:84`, `urn:ogc:def:crs:EPSG:6.6:4326`,
  *    `urn:ogc:def:crs:OGC:1.3:CRS84`, `urn:ogc:def:crs:OGC:2:84`, `http://www.opengis.net/gml/srs/epsg.xml#4326`,
  *    or `urn:x-ogc:def:crs:EPSG:4326`
- *  * WGS 84 / Spherical Mercator - Using codes `EPSG:3857`, `EPSG:102100`, `EPSG:102113`, `EPSG:900913`,
+ *  WGS 84 / Spherical Mercator - Using codes `EPSG:3857`, `EPSG:102100`, `EPSG:102113`, `EPSG:900913`,
  *    `urn:ogc:def:crs:EPSG:6.18:3:3857`, or `http://www.opengis.net/gml/srs/epsg.xml#3857`
- *  * WGS 84 / UTM zones - Using codes `EPSG:32601` through `EPSG:32660` for northern zones
+ *  WGS 84 / UTM zones - Using codes `EPSG:32601` through `EPSG:32660` for northern zones
  *    and `EPSG:32701` through `EPSG:32760` for southern zones. Note that the built-in UTM transforms
  *    are lower accuracy (with errors on the order of 0.1 m) than those that you might get in a
  *    library like [proj4js](https://github.com/proj4js/proj4js).

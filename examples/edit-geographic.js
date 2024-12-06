@@ -1,9 +1,9 @@
 import GeoJSON from '../src/ol/format/GeoJSON.js';
-import VectorLayer from '../src/ol/layer/Vector.js';
-import VectorSource from '../src/ol/source/Vector.js';
-import {Draw, Modify, Select, Snap} from '../src/ol/interaction.js';
 import {Map, View} from '../src/ol/index.js';
+import {Draw, Modify, Select, Snap} from '../src/ol/interaction.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import {useGeographic} from '../src/ol/proj.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 useGeographic();
 

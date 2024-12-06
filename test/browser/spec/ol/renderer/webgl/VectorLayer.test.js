@@ -1,25 +1,26 @@
+import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
-import LineString from '../../../../../../src/ol/geom/LineString.js';
 import Map from '../../../../../../src/ol/Map.js';
+import View from '../../../../../../src/ol/View.js';
+import LineString from '../../../../../../src/ol/geom/LineString.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../../src/ol/geom/Polygon.js';
-import VectorEventType from '../../../../../../src/ol/source/VectorEventType.js';
 import VectorLayer from '../../../../../../src/ol/layer/Vector.js';
-import VectorSource from '../../../../../../src/ol/source/Vector.js';
-import VectorStyleRenderer, * as ol_render_webgl_vectorstylerenderer from '../../../../../../src/ol/render/webgl/VectorStyleRenderer.js';
-import View from '../../../../../../src/ol/View.js';
-import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
-import WebGLVectorLayerRenderer from '../../../../../../src/ol/renderer/webgl/VectorLayer.js';
 import {
   Projection,
   get as getProjection,
 } from '../../../../../../src/ol/proj.js';
-import {ShaderBuilder} from '../../../../../../src/ol/webgl/ShaderBuilder.js';
+import VectorStyleRenderer, * as ol_render_webgl_vectorstylerenderer from '../../../../../../src/ol/render/webgl/VectorStyleRenderer.js';
+import WebGLVectorLayerRenderer from '../../../../../../src/ol/renderer/webgl/VectorLayer.js';
+import VectorSource from '../../../../../../src/ol/source/Vector.js';
+import VectorEventType from '../../../../../../src/ol/source/VectorEventType.js';
 import {
   compose as composeTransform,
   create as createTransform,
 } from '../../../../../../src/ol/transform.js';
 import {getUid} from '../../../../../../src/ol/util.js';
+import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
+import {ShaderBuilder} from '../../../../../../src/ol/webgl/ShaderBuilder.js';
 
 const SAMPLE_STYLE = {
   'fill-color': ['get', 'color'],
@@ -146,7 +147,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
   describe('#afterHelperCreated', () => {
     let spy;
     beforeEach(() => {
-      spy = sinon.spy(ol_render_webgl_vectorstylerenderer, 'default');
+      spy = sinonSpy(ol_render_webgl_vectorstylerenderer, 'default');
       renderer.helper = new WebGLHelper();
       renderer.afterHelperCreated(frameState);
     });
@@ -176,7 +177,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
     describe('use a single style', () => {
       let spy;
       beforeEach(() => {
-        spy = sinon.spy(ol_render_webgl_vectorstylerenderer, 'default');
+        spy = sinonSpy(ol_render_webgl_vectorstylerenderer, 'default');
         renderer.reset({
           style: SAMPLE_STYLE2,
         });
@@ -201,10 +202,10 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       // first call prepareFrame to load initial data
       renderer.prepareFrame(frameState);
 
-      sinon.spy(renderer.batch_, 'addFeature');
-      sinon.spy(renderer.batch_, 'removeFeature');
-      sinon.spy(renderer.batch_, 'changeFeature');
-      sinon.spy(renderer.batch_, 'clear');
+      sinonSpy(renderer.batch_, 'addFeature');
+      sinonSpy(renderer.batch_, 'removeFeature');
+      sinonSpy(renderer.batch_, 'changeFeature');
+      sinonSpy(renderer.batch_, 'clear');
     });
     describe('initial state', () => {
       it('batch contains all features', () => {
@@ -248,7 +249,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
   describe('#prepareFrame', () => {
     let toRender;
     beforeEach(() => {
-      sinon.spy(vectorSource, 'loadFeatures');
+      sinonSpy(vectorSource, 'loadFeatures');
       toRender = renderer.prepareFrame(frameState);
     });
     it('requires rendering', () => {
@@ -304,15 +305,15 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       // wait for buffer generation to complete
       await new Promise((resolve) => setTimeout(resolve, 150));
 
-      sinon.spy(renderer.helper, 'setUniformFloatValue');
-      sinon.spy(renderer.helper, 'setUniformFloatVec2');
-      sinon.spy(renderer.helper, 'setUniformFloatVec4');
-      sinon.spy(renderer.helper, 'setUniformMatrixValue');
-      sinon.spy(renderer.helper, 'prepareDraw');
-      sinon.spy(renderer.helper, 'finalizeDraw');
-      sinon.spy(renderer.helper, 'deleteBuffer');
-      sinon.spy(renderer.styleRenderers_[0], 'render');
-      sinon.spy(renderer.styleRenderers_[1], 'render');
+      sinonSpy(renderer.helper, 'setUniformFloatValue');
+      sinonSpy(renderer.helper, 'setUniformFloatVec2');
+      sinonSpy(renderer.helper, 'setUniformFloatVec4');
+      sinonSpy(renderer.helper, 'setUniformMatrixValue');
+      sinonSpy(renderer.helper, 'prepareDraw');
+      sinonSpy(renderer.helper, 'finalizeDraw');
+      sinonSpy(renderer.helper, 'deleteBuffer');
+      sinonSpy(renderer.styleRenderers_[0], 'render');
+      sinonSpy(renderer.styleRenderers_[1], 'render');
 
       // this is required to keep a "snapshot" of the input matrix
       // (since the same object is reused for various calls)
@@ -492,7 +493,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
     });
     it('correctly hit detects features', (done) => {
       function checkHit(x, y, expected) {
-        const spy = sinon.spy();
+        const spy = sinonSpy();
         renderer.forEachFeatureAtCoordinate([x, y], frameState, 0, spy, []);
         const called = spy.callCount;
         const found = spy.getCall(0)?.args[0];
@@ -534,8 +535,8 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       // first call prepareFrame to load initial data and register listeners
       renderer.prepareFrame(frameState);
       await new Promise((resolve) => setTimeout(resolve, 150));
-      sinon.spy(vectorSource, 'removeEventListener');
-      deleteBufferSpy = sinon.spy(renderer.helper, 'deleteBuffer');
+      sinonSpy(vectorSource, 'removeEventListener');
+      deleteBufferSpy = sinonSpy(renderer.helper, 'deleteBuffer');
       renderer.dispose();
     });
     it('unlistens to source events', () => {

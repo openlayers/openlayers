@@ -1,11 +1,11 @@
-import Circle from '../../../../../src/ol/geom/Circle.js';
 import Collection from '../../../../../src/ol/Collection.js';
 import Feature from '../../../../../src/ol/Feature.js';
-import LineString from '../../../../../src/ol/geom/LineString.js';
 import Map from '../../../../../src/ol/Map.js';
+import View from '../../../../../src/ol/View.js';
+import Circle from '../../../../../src/ol/geom/Circle.js';
+import LineString from '../../../../../src/ol/geom/LineString.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import Snap from '../../../../../src/ol/interaction/Snap.js';
-import View from '../../../../../src/ol/View.js';
 import {
   clearUserProjection,
   setUserProjection,

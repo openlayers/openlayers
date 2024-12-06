@@ -2,9 +2,9 @@
  * @module ol/events/condition
  */
 import MapBrowserEventType from '../MapBrowserEventType.js';
+import {assert} from '../asserts.js';
 import {FALSE, TRUE} from '../functions.js';
 import {MAC, WEBKIT} from '../has.js';
-import {assert} from '../asserts.js';
 
 /**
  * A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a

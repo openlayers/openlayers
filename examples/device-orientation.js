@@ -1,8 +1,8 @@
 import Map from '../src/ol/Map.js';
-import OSM from '../src/ol/source/OSM.js';
-import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import {toRadians} from '../src/ol/math.js';
+import OSM from '../src/ol/source/OSM.js';
 
 const view = new View({
   center: [0, 0],

@@ -1,14 +1,15 @@
-import Circle from '../../../../../../src/ol/geom/Circle.js';
-import Executor from '../../../../../../src/ol/render/canvas/Executor.js';
+import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
+import Circle from '../../../../../../src/ol/geom/Circle.js';
 import LineString from '../../../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../../src/ol/geom/Polygon.js';
-import Text from '../../../../../../src/ol/style/Text.js';
+import Executor from '../../../../../../src/ol/render/canvas/Executor.js';
 import TextBuilder from '../../../../../../src/ol/render/canvas/TextBuilder.js';
+import Text from '../../../../../../src/ol/style/Text.js';
 import {create as createTransform} from '../../../../../../src/ol/transform.js';
 
 function createBuilder() {
@@ -38,8 +39,8 @@ function executeInstructions(
   const transform = createTransform();
   const context = createContext();
   const executor = new Executor(0.02, 1, false, builder.finish());
-  sinon.spy(executor, 'drawLabelWithPointPlacement_');
-  const replayImageOrLabelStub = sinon.stub(executor, 'replayImageOrLabel_');
+  sinonSpy(executor, 'drawLabelWithPointPlacement_');
+  const replayImageOrLabelStub = sinonStub(executor, 'replayImageOrLabel_');
   executor.execute(context, 1, transform);
   expect(executor.drawLabelWithPointPlacement_.callCount).to.be(
     expectedDrawTextImageCalls,

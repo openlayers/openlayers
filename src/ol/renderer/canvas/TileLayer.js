@@ -1,18 +1,10 @@
 /**
  * @module ol/renderer/canvas/TileLayer
  */
-import CanvasLayerRenderer from './Layer.js';
 import DataTile, {asImageLike} from '../../DataTile.js';
 import ImageTile from '../../ImageTile.js';
-import LRUCache from '../../structs/LRUCache.js';
-import ReprojDataTile from '../../reproj/DataTile.js';
-import ReprojTile from '../../reproj/Tile.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
-import {
-  apply as applyTransform,
-  compose as composeTransform,
-} from '../../transform.js';
 import {ascending} from '../../array.js';
 import {
   containsCoordinate,
@@ -23,10 +15,18 @@ import {
   getTopLeft,
   intersects,
 } from '../../extent.js';
-import {createOrUpdate as createTileCoord, getKeyZXY} from '../../tilecoord.js';
 import {fromUserExtent} from '../../proj.js';
-import {getUid} from '../../util.js';
+import ReprojDataTile from '../../reproj/DataTile.js';
+import ReprojTile from '../../reproj/Tile.js';
 import {toSize} from '../../size.js';
+import LRUCache from '../../structs/LRUCache.js';
+import {createOrUpdate as createTileCoord, getKeyZXY} from '../../tilecoord.js';
+import {
+  apply as applyTransform,
+  compose as composeTransform,
+} from '../../transform.js';
+import {getUid} from '../../util.js';
+import CanvasLayerRenderer from './Layer.js';
 
 /**
  * @param {string} sourceKey The source key.
@@ -563,8 +563,8 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * TODO:
-     *  * maybe skip transition when not fully opaque
-     *  * decide if this.renderComplete is useful
+     *  maybe skip transition when not fully opaque
+     *  decide if this.renderComplete is useful
      */
 
     const layerState = frameState.layerStatesArray[frameState.layerIndex];

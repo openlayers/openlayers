@@ -1,10 +1,10 @@
-import MVT from '../src/ol/format/MVT.js';
 import Map from '../src/ol/Map.js';
-import TileDebug from '../src/ol/source/TileDebug.js';
+import View from '../src/ol/View.js';
+import MVT from '../src/ol/format/MVT.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorTileLayer from '../src/ol/layer/VectorTile.js';
+import TileDebug from '../src/ol/source/TileDebug.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
-import View from '../src/ol/View.js';
 import {Fill, Stroke, Style, Text} from '../src/ol/style.js';
 
 const style = new Style({

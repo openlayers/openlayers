@@ -1,16 +1,16 @@
 /**
  * @module ol/renderer/canvas/VectorImageLayer
  */
-import CanvasImageLayerRenderer from './ImageLayer.js';
-import CanvasVectorLayerRenderer from './VectorLayer.js';
-import EventType from '../../events/EventType.js';
+import RBush from 'rbush';
 import ImageCanvas from '../../ImageCanvas.js';
 import ImageState from '../../ImageState.js';
-import RBush from 'rbush';
 import ViewHint from '../../ViewHint.js';
-import {apply, compose, create} from '../../transform.js';
-import {fromResolutionLike} from '../../resolution.js';
+import EventType from '../../events/EventType.js';
 import {getHeight, getWidth, isEmpty, scaleFromCenter} from '../../extent.js';
+import {fromResolutionLike} from '../../resolution.js';
+import {apply, compose, create} from '../../transform.js';
+import CanvasImageLayerRenderer from './ImageLayer.js';
+import CanvasVectorLayerRenderer from './VectorLayer.js';
 
 /**
  * @classdesc

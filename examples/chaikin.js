@@ -1,10 +1,9 @@
-import Draw from '../src/ol/interaction/Draw.js';
+import smooth from 'chaikin-smooth';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
+import Draw from '../src/ol/interaction/Draw.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-
-import smooth from 'chaikin-smooth';
+import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 
 function makeSmooth(path, numIterations) {
   numIterations = Math.min(Math.max(numIterations, 1), 10);

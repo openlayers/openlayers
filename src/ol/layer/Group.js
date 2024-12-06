@@ -1,17 +1,17 @@
 /**
  * @module ol/layer/Group
  */
-import BaseLayer from './Base.js';
 import Collection from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
-import Event from '../events/Event.js';
-import EventType from '../events/EventType.js';
 import ObjectEventType from '../ObjectEventType.js';
 import {assert} from '../asserts.js';
-import {clear} from '../obj.js';
-import {getIntersection} from '../extent.js';
-import {getUid} from '../util.js';
+import Event from '../events/Event.js';
+import EventType from '../events/EventType.js';
 import {listen, unlistenByKey} from '../events.js';
+import {getIntersection} from '../extent.js';
+import {clear} from '../obj.js';
+import {getUid} from '../util.js';
+import BaseLayer from './Base.js';
 
 /**
  * @typedef {'addlayer'|'removelayer'} GroupEventType

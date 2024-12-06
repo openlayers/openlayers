@@ -1,5 +1,5 @@
-import expect from '../../../expect.js';
 import {lineChunk} from '../../../../../src/ol/geom/flat/linechunk.js';
+import expect from '../../../expect.js';
 
 describe('ol/geom/flat/linechunk.js', function () {
   it('works with a single segment geometry longer than the desired chunks', function () {

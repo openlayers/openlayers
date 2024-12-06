@@ -1,24 +1,24 @@
 /**
  * @module ol/interaction/Extent
  */
-import Event from '../events/Event.js';
 import Feature from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
-import Point from '../geom/Point.js';
-import PointerInteraction from './Pointer.js';
-import VectorLayer from '../layer/Vector.js';
-import VectorSource from '../source/Vector.js';
-import {always} from '../events/condition.js';
-import {boundingExtent, getArea} from '../extent.js';
 import {
   closestOnSegment,
   distance as coordinateDistance,
   squaredDistance as squaredCoordinateDistance,
   squaredDistanceToSegment,
 } from '../coordinate.js';
-import {createEditingStyle} from '../style/Style.js';
+import Event from '../events/Event.js';
+import {always} from '../events/condition.js';
+import {boundingExtent, getArea} from '../extent.js';
+import Point from '../geom/Point.js';
 import {fromExtent as polygonFromExtent} from '../geom/Polygon.js';
+import VectorLayer from '../layer/Vector.js';
 import {toUserExtent} from '../proj.js';
+import VectorSource from '../source/Vector.js';
+import {createEditingStyle} from '../style/Style.js';
+import PointerInteraction from './Pointer.js';
 
 /**
  * @typedef {Object} Options

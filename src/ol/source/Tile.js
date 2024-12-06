@@ -2,14 +2,14 @@
  * @module ol/source/Tile
  */
 import Event from '../events/Event.js';
-import Source from './Source.js';
-import {abstract, getUid} from '../util.js';
+import {scale as scaleSize, toSize} from '../size.js';
+import {withinExtentAndZ} from '../tilecoord.js';
 import {
   getForProjection as getTileGridForProjection,
   wrapX,
 } from '../tilegrid.js';
-import {scale as scaleSize, toSize} from '../size.js';
-import {withinExtentAndZ} from '../tilecoord.js';
+import {abstract, getUid} from '../util.js';
+import Source from './Source.js';
 
 /***
  * @template Return

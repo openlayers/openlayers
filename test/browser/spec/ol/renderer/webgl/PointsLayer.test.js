@@ -1,24 +1,25 @@
+import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
-import GeoJSON from '../../../../../../src/ol/format/GeoJSON.js';
 import Map from '../../../../../../src/ol/Map.js';
-import OSM from '../../../../../../src/ol/source/OSM.js';
+import View from '../../../../../../src/ol/View.js';
+import ViewHint from '../../../../../../src/ol/ViewHint.js';
+import {createCanvasContext2D} from '../../../../../../src/ol/dom.js';
+import GeoJSON from '../../../../../../src/ol/format/GeoJSON.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import TileLayer from '../../../../../../src/ol/layer/Tile.js';
 import VectorLayer from '../../../../../../src/ol/layer/Vector.js';
-import VectorSource from '../../../../../../src/ol/source/Vector.js';
-import View from '../../../../../../src/ol/View.js';
-import ViewHint from '../../../../../../src/ol/ViewHint.js';
 import WebGLPointsLayer from '../../../../../../src/ol/layer/WebGLPoints.js';
-import WebGLPointsLayerRenderer from '../../../../../../src/ol/renderer/webgl/PointsLayer.js';
-import {ShaderBuilder} from '../../../../../../src/ol/webgl/ShaderBuilder.js';
+import {get as getProjection} from '../../../../../../src/ol/proj.js';
 import {WebGLWorkerMessageType} from '../../../../../../src/ol/render/webgl/constants.js';
+import WebGLPointsLayerRenderer from '../../../../../../src/ol/renderer/webgl/PointsLayer.js';
+import OSM from '../../../../../../src/ol/source/OSM.js';
+import VectorSource from '../../../../../../src/ol/source/Vector.js';
 import {
   compose as composeTransform,
   create as createTransform,
 } from '../../../../../../src/ol/transform.js';
-import {createCanvasContext2D} from '../../../../../../src/ol/dom.js';
-import {get as getProjection} from '../../../../../../src/ol/proj.js';
 import {getUid} from '../../../../../../src/ol/util.js';
+import {ShaderBuilder} from '../../../../../../src/ol/webgl/ShaderBuilder.js';
 
 const baseFrameState = {
   viewHints: [],
@@ -93,7 +94,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
     it('calls WebGlHelper#prepareDraw', function () {
       renderer.prepareFrame(frameState);
 
-      const spy = sinon.spy(renderer.helper, 'prepareDraw');
+      const spy = sinonSpy(renderer.helper, 'prepareDraw');
       renderer.prepareFrame(frameState);
       expect(spy.called).to.be(true);
     });
@@ -208,7 +209,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
     });
 
     it('rebuilds the buffers only when not interacting or animating', function () {
-      const spy = sinon.spy(renderer, 'rebuildBuffers_');
+      const spy = sinonSpy(renderer, 'rebuildBuffers_');
 
       frameState.viewHints[ViewHint.INTERACTING] = 1;
       frameState.viewHints[ViewHint.ANIMATING] = 0;
@@ -227,7 +228,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
     });
 
     it('rebuilds the buffers only when the frame extent changed', function () {
-      const spy = sinon.spy(renderer, 'rebuildBuffers_');
+      const spy = sinonSpy(renderer, 'rebuildBuffers_');
 
       renderer.prepareFrame(frameState);
       expect(spy.callCount).to.be(1);
@@ -241,7 +242,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
     });
 
     it('triggers source loading when the extent changes', function () {
-      const spy = sinon.spy(layer.getSource(), 'loadFeatures');
+      const spy = sinonSpy(layer.getSource(), 'loadFeatures');
 
       renderer.prepareFrame(frameState);
       expect(spy.callCount).to.be(1);
@@ -256,7 +257,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
     });
 
     it('triggers source loading when the source revision changes', function () {
-      const spy = sinon.spy(layer.getSource(), 'loadFeatures');
+      const spy = sinonSpy(layer.getSource(), 'loadFeatures');
 
       renderer.prepareFrame(frameState);
       expect(spy.callCount).to.be(1);
@@ -426,8 +427,8 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       });
       renderer.prepareFrame(frameState);
 
-      const spyHelper = sinon.spy(renderer.helper, 'disposeInternal');
-      const spyWorker = sinon.spy(renderer.worker_, 'terminate');
+      const spyHelper = sinonSpy(renderer.helper, 'disposeInternal');
+      const spyWorker = sinonSpy(renderer.worker_, 'terminate');
       renderer.dispose();
       expect(spyHelper.called).to.be(true);
       expect(spyWorker.called).to.be(true);

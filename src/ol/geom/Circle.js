@@ -1,8 +1,8 @@
 /**
  * @module ol/geom/Circle
  */
-import SimpleGeometry from './SimpleGeometry.js';
 import {createOrUpdate, forEachCorner, intersects} from '../extent.js';
+import SimpleGeometry from './SimpleGeometry.js';
 import {deflateCoordinate} from './flat/deflate.js';
 import {rotate} from './flat/transform.js';
 

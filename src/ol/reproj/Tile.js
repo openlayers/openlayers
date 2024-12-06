@@ -1,21 +1,21 @@
 /**
  * @module ol/reproj/Tile
  */
-import {ERROR_THRESHOLD} from './common.js';
 
-import EventType from '../events/EventType.js';
 import Tile from '../Tile.js';
 import TileState from '../TileState.js';
-import Triangulation from './Triangulation.js';
+import {releaseCanvas} from '../dom.js';
+import EventType from '../events/EventType.js';
+import {listen, unlistenByKey} from '../events.js';
+import {getArea, getIntersection, getWidth, wrapAndSliceX} from '../extent.js';
+import {clamp} from '../math.js';
 import {
   calculateSourceExtentResolution,
   canvasPool,
   render as renderReprojected,
 } from '../reproj.js';
-import {clamp} from '../math.js';
-import {getArea, getIntersection, getWidth, wrapAndSliceX} from '../extent.js';
-import {listen, unlistenByKey} from '../events.js';
-import {releaseCanvas} from '../dom.js';
+import Triangulation from './Triangulation.js';
+import {ERROR_THRESHOLD} from './common.js';
 
 /**
  * @typedef {function(number, number, number, number) : (import("../ImageTile.js").default)} FunctionType

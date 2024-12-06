@@ -1,3 +1,8 @@
+import {
+  boundingExtent,
+  createEmpty,
+  isEmpty,
+} from '../../../../src/ol/extent.js';
 import Circle from '../../../../src/ol/geom/Circle.js';
 import LinearRing from '../../../../src/ol/geom/LinearRing.js';
 import Polygon, {
@@ -5,11 +10,6 @@ import Polygon, {
   fromExtent,
 } from '../../../../src/ol/geom/Polygon.js';
 import expect from '../../expect.js';
-import {
-  boundingExtent,
-  createEmpty,
-  isEmpty,
-} from '../../../../src/ol/extent.js';
 
 describe('ol/geom/Polygon.js', function () {
   it('cannot be constructed with a null geometry', function () {

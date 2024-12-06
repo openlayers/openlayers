@@ -2,8 +2,6 @@
  * @module ol/control/OverviewMap
  */
 import Collection from '../Collection.js';
-import Control from './Control.js';
-import EventType from '../events/EventType.js';
 import Map from '../Map.js';
 import MapEventType from '../MapEventType.js';
 import MapProperty from '../MapProperty.js';
@@ -12,6 +10,9 @@ import Overlay from '../Overlay.js';
 import View from '../View.js';
 import ViewProperty from '../ViewProperty.js';
 import {CLASS_COLLAPSED, CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
+import {replaceNode} from '../dom.js';
+import EventType from '../events/EventType.js';
+import {listen, listenOnce} from '../events.js';
 import {
   containsExtent,
   equals as equalsExtent,
@@ -19,9 +20,8 @@ import {
   getTopLeft,
   scaleFromCenter,
 } from '../extent.js';
-import {listen, listenOnce} from '../events.js';
 import {fromExtent as polygonFromExtent} from '../geom/Polygon.js';
-import {replaceNode} from '../dom.js';
+import Control from './Control.js';
 
 /**
  * Maximum width and/or height extent ratio that determines when the overview

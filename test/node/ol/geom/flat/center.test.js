@@ -1,6 +1,6 @@
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
-import expect from '../../../expect.js';
 import {linearRingss as linearRingssCenter} from '../../../../../src/ol/geom/flat/center.js';
+import expect from '../../../expect.js';
 
 describe('ol/geom/flat/center.js', function () {
   describe('linearRingss', function () {

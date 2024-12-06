@@ -1,7 +1,8 @@
-import Event from '../../../../../src/ol/events/Event.js';
+import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
 import View from '../../../../../src/ol/View.js';
+import Event from '../../../../../src/ol/events/Event.js';
 
 describe('ol.interaction.KeyboardPan', function () {
   let map;
@@ -24,7 +25,7 @@ describe('ol.interaction.KeyboardPan', function () {
   describe('handleEvent()', function () {
     it('pans on arrow keys', function () {
       const view = map.getView();
-      const spy = sinon.spy(view, 'animateInternal');
+      const spy = sinonSpy(view, 'animateInternal');
       const event = new MapBrowserEvent('keydown', map, {
         type: 'keydown',
         target: map.getTargetElement(),
@@ -96,7 +97,7 @@ describe('ol.interaction.KeyboardPan', function () {
       // we have to wait until the map is rendered
       olMap.on('rendercomplete', () => {
         const view = olMap.getView();
-        const spy = sinon.spy(view, 'animateInternal');
+        const spy = sinonSpy(view, 'animateInternal');
         const event = new MapBrowserEvent('keydown', olMap, {
           type: 'keydown',
           target: customMapEl,

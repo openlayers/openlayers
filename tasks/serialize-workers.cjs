@@ -1,11 +1,9 @@
-/* eslint-disable import/no-commonjs */
-
 const path = require('path');
-const resolve = require('@rollup/plugin-node-resolve').nodeResolve;
 const common = require('@rollup/plugin-commonjs');
-const rollup = require('rollup');
+const resolve = require('@rollup/plugin-node-resolve').nodeResolve;
 const terser = require('@rollup/plugin-terser');
 const fse = require('fs-extra');
+const rollup = require('rollup');
 
 async function build(input, {minify = true} = {}) {
   const plugins = [

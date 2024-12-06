@@ -1,10 +1,10 @@
 /**
  * @module ol/interaction/PinchZoom
  */
+import {FALSE} from '../functions.js';
 import PointerInteraction, {
   centroid as centroidFromPointers,
 } from './Pointer.js';
-import {FALSE} from '../functions.js';
 
 /**
  * @typedef {Object} Options

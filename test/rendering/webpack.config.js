@@ -10,7 +10,7 @@ const caseDirs = fs.readdirSync(cases).filter((name) => {
   let exists = true;
   try {
     fs.accessSync(path.join(cases, name, 'main.js'));
-  } catch (err) {
+  } catch {
     exists = false;
   }
   return exists;

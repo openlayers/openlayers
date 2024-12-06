@@ -1,8 +1,8 @@
 /**
  * @module ol/geom/flat/geodesic
  */
-import {get as getProjection, getTransform} from '../../proj.js';
 import {squaredSegmentDistance, toDegrees, toRadians} from '../../math.js';
+import {get as getProjection, getTransform} from '../../proj.js';
 
 /**
  * @param {function(number): import("../../coordinate.js").Coordinate} interpolate Interpolate function.

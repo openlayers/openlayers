@@ -1,9 +1,9 @@
+import {spy as sinonSpy} from 'sinon';
 import Event, {
   preventDefault,
   stopPropagation,
 } from '../../../../src/ol/events/Event.js';
 import expect from '../../expect.js';
-import sinon from 'sinon';
 
 describe('ol/events/Event.js', function () {
   describe('constructor', function () {
@@ -32,7 +32,7 @@ describe('ol/events/Event.js', function () {
   describe('ol.events.Event.preventDefault', function () {
     it('calls preventDefault on the event object', function () {
       const event = {
-        preventDefault: sinon.spy(),
+        preventDefault: sinonSpy(),
       };
       preventDefault(event);
       expect(event.preventDefault.called).to.be(true);
@@ -42,7 +42,7 @@ describe('ol/events/Event.js', function () {
   describe('ol.events.Event.stopPropagation', function () {
     it('calls preventDefault on the event object', function () {
       const event = {
-        stopPropagation: sinon.spy(),
+        stopPropagation: sinonSpy(),
       };
       stopPropagation(event);
       expect(event.stopPropagation.called).to.be(true);

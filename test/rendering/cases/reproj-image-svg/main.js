@@ -1,10 +1,10 @@
-import ImageLayer from '../../../../src/ol/layer/Image.js';
-import ImageSource from '../../../../src/ol/source/Image.js';
+import {load} from '../../../../src/ol/Image.js';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
-import {createLoader} from '../../../../src/ol/source/static.js';
+import ImageLayer from '../../../../src/ol/layer/Image.js';
 import {fromLonLat} from '../../../../src/ol/proj.js';
-import {load} from '../../../../src/ol/Image.js';
+import ImageSource from '../../../../src/ol/source/Image.js';
+import {createLoader} from '../../../../src/ol/source/static.js';
 
 const source = new ImageSource({
   loader: createLoader({

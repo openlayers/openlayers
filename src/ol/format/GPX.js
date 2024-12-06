@@ -5,7 +5,7 @@ import Feature from '../Feature.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import Point from '../geom/Point.js';
-import XMLFeature from './XMLFeature.js';
+import {get as getProjection} from '../proj.js';
 import {
   OBJECT_PROPERTY_NODE_FACTORY,
   XML_SCHEMA_INSTANCE_URI,
@@ -23,7 +23,8 @@ import {
   pushParseAndPop,
   pushSerializeAndPop,
 } from '../xml.js';
-import {get as getProjection} from '../proj.js';
+import {transformGeometryWithOptions} from './Feature.js';
+import XMLFeature from './XMLFeature.js';
 import {
   readDateTime,
   readDecimal,
@@ -34,7 +35,6 @@ import {
   writeNonNegativeIntegerTextNode,
   writeStringTextNode,
 } from './xsd.js';
-import {transformGeometryWithOptions} from './Feature.js';
 
 /**
  * @const

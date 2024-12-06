@@ -2,9 +2,7 @@
  * @module ol/style/RegularShape
  */
 
-import IconImage from './IconImage.js';
 import ImageState from '../ImageState.js';
-import ImageStyle from './Image.js';
 import {asArray} from '../color.js';
 import {asColorLike} from '../colorlike.js';
 import {createCanvasContext2D} from '../dom.js';
@@ -16,7 +14,9 @@ import {
   defaultMiterLimit,
   defaultStrokeStyle,
 } from '../render/canvas.js';
+import IconImage from './IconImage.js';
 import {shared as iconImageCache} from './IconImageCache.js';
+import ImageStyle from './Image.js';
 
 /**
  * Specify radius for regular polygons, or both radius and radius2 for stars.

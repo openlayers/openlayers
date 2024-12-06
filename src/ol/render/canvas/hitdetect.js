@@ -2,17 +2,17 @@
  * @module ol/render/canvas/hitdetect
  */
 
-import CanvasImmediateRenderer from './Immediate.js';
-import {Icon} from '../../style.js';
 import {ascending} from '../../array.js';
-import {clamp} from '../../math.js';
 import {createCanvasContext2D} from '../../dom.js';
+import {intersects} from '../../extent.js';
+import {clamp} from '../../math.js';
 import {
   getTransformFromProjections,
   getUserProjection,
   toUserExtent,
 } from '../../proj.js';
-import {intersects} from '../../extent.js';
+import {Icon} from '../../style.js';
+import CanvasImmediateRenderer from './Immediate.js';
 
 export const HIT_DETECT_RESOLUTION = 0.5;
 

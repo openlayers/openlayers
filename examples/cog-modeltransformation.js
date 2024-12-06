@@ -1,12 +1,12 @@
-import GeoTIFF from '../src/ol/source/GeoTIFF.js';
-import Map from '../src/ol/Map.js';
-import OSM from '../src/ol/source/OSM.js';
-import TileDebug from '../src/ol/source/TileDebug.js';
-import TileLayer from '../src/ol/layer/WebGLTile.js';
-import View from '../src/ol/View.js';
 import proj4 from 'proj4';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import TileLayer from '../src/ol/layer/WebGLTile.js';
 import {fromEPSGCode, register} from '../src/ol/proj/proj4.js';
 import {transformExtent} from '../src/ol/proj.js';
+import GeoTIFF from '../src/ol/source/GeoTIFF.js';
+import OSM from '../src/ol/source/OSM.js';
+import TileDebug from '../src/ol/source/TileDebug.js';
 
 register(proj4);
 

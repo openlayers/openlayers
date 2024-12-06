@@ -4,14 +4,14 @@
  */
 import {WebGLWorkerMessageType} from '../render/webgl/constants.js';
 import {
-  create as createTransform,
-  makeInverse as makeInverseTransform,
-} from '../transform.js';
-import {
   writeLineSegmentToBuffers,
   writePointFeatureToBuffers,
   writePolygonTrianglesToBuffers,
 } from '../render/webgl/utils.js';
+import {
+  create as createTransform,
+  makeInverse as makeInverseTransform,
+} from '../transform.js';
 
 /** @type {any} */
 const worker = self;

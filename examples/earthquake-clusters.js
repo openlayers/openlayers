@@ -1,6 +1,13 @@
-import KML from '../src/ol/format/KML.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
+import {createEmpty, extend, getHeight, getWidth} from '../src/ol/extent.js';
+import KML from '../src/ol/format/KML.js';
+import {
+  Select,
+  defaults as defaultInteractions,
+} from '../src/ol/interaction.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import {Cluster, StadiaMaps, Vector as VectorSource} from '../src/ol/source.js';
 import {
   Circle as CircleStyle,
   Fill,
@@ -9,13 +16,6 @@ import {
   Style,
   Text,
 } from '../src/ol/style.js';
-import {Cluster, StadiaMaps, Vector as VectorSource} from '../src/ol/source.js';
-import {
-  Select,
-  defaults as defaultInteractions,
-} from '../src/ol/interaction.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {createEmpty, extend, getHeight, getWidth} from '../src/ol/extent.js';
 
 const earthquakeFill = new Fill({
   color: 'rgba(255, 153, 0, 0.8)',
