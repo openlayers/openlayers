@@ -1,11 +1,11 @@
 import Feature from '../src/ol/Feature.js';
 import Geolocation from '../src/ol/Geolocation.js';
 import Map from '../src/ol/Map.js';
-import Point from '../src/ol/geom/Point.js';
 import View from '../src/ol/View.js';
-import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
+import Point from '../src/ol/geom/Point.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import {OSM, Vector as VectorSource} from '../src/ol/source.js';
+import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
 
 const view = new View({
   center: [0, 0],

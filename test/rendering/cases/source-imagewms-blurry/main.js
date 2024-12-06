@@ -1,9 +1,9 @@
-import ImageLayer from '../../../../src/ol/layer/Image.js';
-import ImageWMS from '../../../../src/ol/source/ImageWMS.js';
+import proj4 from 'proj4';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
-import proj4 from 'proj4';
+import ImageLayer from '../../../../src/ol/layer/Image.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
+import ImageWMS from '../../../../src/ol/source/ImageWMS.js';
 
 proj4.defs(
   'EPSG:2056',

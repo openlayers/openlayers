@@ -1,11 +1,11 @@
-import Heatmap from '../../../../src/ol/layer/Heatmap.js';
-import KML from '../../../../src/ol/format/KML.js';
 import Map from '../../../../src/ol/Map.js';
-import Tile from '../../../../src/ol/layer/Tile.js';
-import Vector from '../../../../src/ol/source/Vector.js';
 import View from '../../../../src/ol/View.js';
-import XYZ from '../../../../src/ol/source/XYZ.js';
+import KML from '../../../../src/ol/format/KML.js';
+import Heatmap from '../../../../src/ol/layer/Heatmap.js';
+import Tile from '../../../../src/ol/layer/Tile.js';
 import {fromLonLat} from '../../../../src/ol/proj.js';
+import Vector from '../../../../src/ol/source/Vector.js';
+import XYZ from '../../../../src/ol/source/XYZ.js';
 
 const map = new Map({
   layers: [

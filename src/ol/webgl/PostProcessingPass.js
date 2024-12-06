@@ -65,7 +65,7 @@ const DEFAULT_FRAGMENT_SHADER = `
  *
  * Default shaders are shown hereafter:
  *
- * * Vertex shader:
+ * Vertex shader:
  *
  *   ```
  *   precision mediump float;
@@ -83,7 +83,7 @@ const DEFAULT_FRAGMENT_SHADER = `
  *   }
  *   ```
  *
- * * Fragment shader:
+ * Fragment shader:
  *
  *   ```
  *   precision mediump float;

@@ -1,11 +1,11 @@
-import Circle from '../src/ol/geom/Circle.js';
 import Feature from '../src/ol/Feature.js';
-import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
+import Circle from '../src/ol/geom/Circle.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import {OSM, Vector as VectorSource} from '../src/ol/source.js';
+import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
 
 const image = new CircleStyle({
   radius: 5,

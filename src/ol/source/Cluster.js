@@ -2,19 +2,19 @@
  * @module ol/source/Cluster
  */
 
-import EventType from '../events/EventType.js';
 import Feature from '../Feature.js';
-import Point from '../geom/Point.js';
-import VectorSource from './Vector.js';
-import {add as addCoordinate, scale as scaleCoordinate} from '../coordinate.js';
 import {assert} from '../asserts.js';
+import {add as addCoordinate, scale as scaleCoordinate} from '../coordinate.js';
+import EventType from '../events/EventType.js';
 import {
   buffer,
   createEmpty,
   createOrUpdateFromCoordinate,
   getCenter,
 } from '../extent.js';
+import Point from '../geom/Point.js';
 import {getUid} from '../util.js';
+import VectorSource from './Vector.js';
 
 /**
  * @template {import("../Feature.js").FeatureLike} FeatureType

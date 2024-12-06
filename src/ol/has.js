@@ -89,7 +89,7 @@ export const PASSIVE_EVENT_LISTENERS = (function () {
     window.addEventListener('_', null, options);
     // @ts-ignore Ignore invalid event type '_'
     window.removeEventListener('_', null, options);
-  } catch (error) {
+  } catch {
     // passive not supported
   }
   return passive;

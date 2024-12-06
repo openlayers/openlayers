@@ -1,22 +1,22 @@
+import {spy as sinonSpy} from 'sinon';
 import Collection from '../../../../../src/ol/Collection.js';
 import Feature from '../../../../../src/ol/Feature.js';
+import Map from '../../../../../src/ol/Map.js';
+import View from '../../../../../src/ol/View.js';
+import {listen} from '../../../../../src/ol/events.js';
 import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
-import Map from '../../../../../src/ol/Map.js';
 import Point from '../../../../../src/ol/geom/Point.js';
-import RenderFeature from '../../../../../src/ol/render/Feature.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
-import VectorSource from '../../../../../src/ol/source/Vector.js';
-import View from '../../../../../src/ol/View.js';
-import sinon from 'sinon';
 import {bbox as bboxStrategy} from '../../../../../src/ol/loadingstrategy.js';
 import {
   fromLonLat,
   get as getProjection,
   transformExtent,
 } from '../../../../../src/ol/proj.js';
+import RenderFeature from '../../../../../src/ol/render/Feature.js';
+import VectorSource from '../../../../../src/ol/source/Vector.js';
 import {getUid} from '../../../../../src/ol/util.js';
-import {listen} from '../../../../../src/ol/events.js';
 
 describe('ol/source/Vector', function () {
   let pointFeature;
@@ -34,7 +34,7 @@ describe('ol/source/Vector', function () {
 
     describe('#forEachFeatureInExtent', function () {
       it('does not call the callback', function () {
-        const f = sinon.spy();
+        const f = sinonSpy();
         vectorSource.forEachFeatureInExtent(infiniteExtent, f);
         expect(f.called).to.be(false);
       });
@@ -92,7 +92,7 @@ describe('ol/source/Vector', function () {
       });
 
       it('fires a change event', function () {
-        const listener = sinon.spy();
+        const listener = sinonSpy();
         listen(vectorSource, 'change', listener);
         vectorSource.addFeature(pointFeature);
         expect(listener.called).to.be(true);
@@ -221,7 +221,7 @@ describe('ol/source/Vector', function () {
         }),
       });
       map.once('rendercomplete', function () {
-        spy = sinon.spy(source, 'loader_');
+        spy = sinonSpy(source, 'loader_');
         done();
       });
     });
@@ -292,9 +292,9 @@ describe('ol/source/Vector', function () {
 
     describe('#clear', function () {
       it('removes all features using fast path', function () {
-        const removeFeatureSpy = sinon.spy();
+        const removeFeatureSpy = sinonSpy();
         listen(vectorSource, 'removefeature', removeFeatureSpy);
-        const clearSourceSpy = sinon.spy();
+        const clearSourceSpy = sinonSpy();
         listen(vectorSource, 'clear', clearSourceSpy);
         vectorSource.clear(true);
         expect(vectorSource.getFeatures()).to.eql([]);
@@ -306,9 +306,9 @@ describe('ol/source/Vector', function () {
       });
 
       it('removes all features using slow path', function () {
-        const removeFeatureSpy = sinon.spy();
+        const removeFeatureSpy = sinonSpy();
         listen(vectorSource, 'removefeature', removeFeatureSpy);
-        const clearSourceSpy = sinon.spy();
+        const clearSourceSpy = sinonSpy();
         listen(vectorSource, 'clear', clearSourceSpy);
         vectorSource.clear();
         expect(vectorSource.getFeatures()).to.eql([]);
@@ -322,7 +322,7 @@ describe('ol/source/Vector', function () {
 
     describe('#forEachFeatureInExtent', function () {
       it('is called the expected number of times', function () {
-        const f = sinon.spy();
+        const f = sinonSpy();
         vectorSource.forEachFeatureInExtent(infiniteExtent, f);
         expect(f.callCount).to.be(10);
       });
@@ -392,24 +392,24 @@ describe('ol/source/Vector', function () {
       });
 
       it('fires a change event', function () {
-        const listener = sinon.spy();
+        const listener = sinonSpy();
         listen(vectorSource, 'change', listener);
         vectorSource.removeFeature(features[0]);
         expect(listener.called).to.be(true);
       });
 
       it('fires a removefeature event', function () {
-        const listener = sinon.spy();
+        const listener = sinonSpy();
         listen(vectorSource, 'removefeature', listener);
         vectorSource.removeFeature(features[0]);
         expect(listener.called).to.be(true);
       });
 
       it('accepts features that are not in the source', function () {
-        const changeListener = sinon.spy();
+        const changeListener = sinonSpy();
         listen(vectorSource, 'change', changeListener);
 
-        const removeFeatureListener = sinon.spy();
+        const removeFeatureListener = sinonSpy();
         listen(vectorSource, 'removefeature', removeFeatureListener);
 
         const feature = new Feature(new Point([0, 0]));
@@ -491,7 +491,7 @@ describe('ol/source/Vector', function () {
     it("fires a change event when setting a feature's property", function () {
       const feature = new Feature(new Point([1, 1]));
       vectorSource.addFeature(feature);
-      const listener = sinon.spy();
+      const listener = sinonSpy();
       listen(vectorSource, 'change', listener);
       feature.set('foo', 'bar');
       expect(listener.called).to.be(true);
@@ -500,7 +500,7 @@ describe('ol/source/Vector', function () {
     it('fires a changefeature event when updating a feature', function () {
       const feature = new Feature(new Point([1, 1]));
       vectorSource.addFeature(feature);
-      const listener = sinon.spy(function (event) {
+      const listener = sinonSpy(function (event) {
         expect(event.feature).to.be(feature);
       });
       vectorSource.on('changefeature', listener);
@@ -800,7 +800,7 @@ describe('ol/source/Vector', function () {
 
       it('fires the FEATURESLOADEND event if the load function uses the callback', function (done) {
         const source = new VectorSource();
-        const spy = sinon.spy();
+        const spy = sinonSpy();
         source.on('featuresloadend', spy);
 
         const features = [new Feature(), new Feature()];
@@ -823,7 +823,7 @@ describe('ol/source/Vector', function () {
 
       it('fires the FEATURESLOADERROR event if the load function uses the callback', function (done) {
         const source = new VectorSource();
-        const spy = sinon.spy();
+        const spy = sinonSpy();
         source.on('featuresloaderror', spy);
 
         source.setLoader(
@@ -900,7 +900,7 @@ describe('ol/source/Vector', function () {
 
     it('#forEachFeatureInExtent loops through all features', function () {
       source.addFeatures([new Feature(), new Feature()]);
-      const spy = sinon.spy();
+      const spy = sinonSpy();
       source.forEachFeatureInExtent([0, 0, 0, 0], spy);
       expect(spy.callCount).to.be(2);
     });

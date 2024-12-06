@@ -1,9 +1,9 @@
-import ExtentInteraction from '../src/ol/interaction/Extent.js';
 import Map from '../src/ol/Map.js';
-import OSM from '../src/ol/source/OSM.js';
-import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
 import {shiftKeyOnly} from '../src/ol/events/condition.js';
+import ExtentInteraction from '../src/ol/interaction/Extent.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import OSM from '../src/ol/source/OSM.js';
 
 const map = new Map({
   layers: [

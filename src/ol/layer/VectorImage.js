@@ -1,8 +1,8 @@
 /**
  * @module ol/layer/VectorImage
  */
-import BaseVectorLayer from './BaseVector.js';
 import CanvasVectorImageLayerRenderer from '../renderer/canvas/VectorImageLayer.js';
+import BaseVectorLayer from './BaseVector.js';
 
 /**
  * @template {import("../source/Vector.js").default<FeatureType>} [VectorSourceType=import("../source/Vector.js").default<*>]

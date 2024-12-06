@@ -2,9 +2,9 @@
  * @module ol/source/mapguide
  */
 
-import {appendParams} from '../uri.js';
 import {decode} from '../Image.js';
 import {getCenter, getHeight, getWidth} from '../extent.js';
+import {appendParams} from '../uri.js';
 import {getRequestExtent} from './Image.js';
 
 /**

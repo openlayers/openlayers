@@ -1,9 +1,9 @@
 /**
  * @module ol/interaction/DragZoom
  */
-import DragBox from './DragBox.js';
 import {easeOut} from '../easing.js';
 import {shiftKeyOnly} from '../events/condition.js';
+import DragBox from './DragBox.js';
 
 /**
  * @typedef {Object} Options

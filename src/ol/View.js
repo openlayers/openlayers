@@ -4,7 +4,26 @@
 import BaseObject from './Object.js';
 import ViewHint from './ViewHint.js';
 import ViewProperty from './ViewProperty.js';
-import {DEFAULT_TILE_SIZE} from './tilegrid/common.js';
+import {linearFindNearest} from './array.js';
+import {assert} from './asserts.js';
+import {createExtent, none as centerNone} from './centerconstraint.js';
+import {
+  add as addCoordinate,
+  equals,
+  equals as coordinatesEqual,
+  rotate as rotateCoordinate,
+} from './coordinate.js';
+import {easeOut, inAndOut} from './easing.js';
+import {
+  getCenter,
+  getForViewAndSize,
+  getHeight,
+  getWidth,
+  isEmpty,
+} from './extent.js';
+import {VOID} from './functions.js';
+import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
+import {clamp, modulo} from './math.js';
 import {
   METERS_PER_UNIT,
   createProjection,
@@ -15,16 +34,6 @@ import {
   toUserCoordinate,
   toUserExtent,
 } from './proj.js';
-import {VOID} from './functions.js';
-import {
-  add as addCoordinate,
-  equals as coordinatesEqual,
-  equals,
-  rotate as rotateCoordinate,
-} from './coordinate.js';
-import {assert} from './asserts.js';
-import {none as centerNone, createExtent} from './centerconstraint.js';
-import {clamp, modulo} from './math.js';
 import {
   createMinMaxResolution,
   createSnapToPower,
@@ -36,16 +45,7 @@ import {
   disable,
   none as rotationNone,
 } from './rotationconstraint.js';
-import {easeOut, inAndOut} from './easing.js';
-import {
-  getCenter,
-  getForViewAndSize,
-  getHeight,
-  getWidth,
-  isEmpty,
-} from './extent.js';
-import {linearFindNearest} from './array.js';
-import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
+import {DEFAULT_TILE_SIZE} from './tilegrid/common.js';
 
 /**
  * An animation configuration
@@ -1885,7 +1885,7 @@ class View extends BaseObject {
   /**
    * Get a valid zoom level according to the current view constraints.
    * @param {number|undefined} targetZoom Target zoom.
-   * @param {number} [direction=0] Indicate which resolution should be used
+   * @param {number} [direction] Indicate which resolution should be used
    * by a renderer if the view resolution does not match any resolution of the tile source.
    * If 0, the nearest resolution will be used. If 1, the nearest lower resolution
    * will be used. If -1, the nearest higher resolution will be used.
@@ -1901,7 +1901,7 @@ class View extends BaseObject {
   /**
    * Get a valid resolution according to the current view constraints.
    * @param {number|undefined} targetResolution Target resolution.
-   * @param {number} [direction=0] Indicate which resolution should be used
+   * @param {number} [direction] Indicate which resolution should be used
    * by a renderer if the view resolution does not match any resolution of the tile source.
    * If 0, the nearest resolution will be used. If 1, the nearest lower resolution
    * will be used. If -1, the nearest higher resolution will be used.

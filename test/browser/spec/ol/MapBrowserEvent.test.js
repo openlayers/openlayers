@@ -1,5 +1,5 @@
-import Event from '../../../../src/ol/events/Event.js';
 import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
+import Event from '../../../../src/ol/events/Event.js';
 import {Map, View} from '../../../../src/ol/index.js';
 import {clearUserProjection, useGeographic} from '../../../../src/ol/proj.js';
 

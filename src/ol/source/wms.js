@@ -2,14 +2,14 @@
  * @module ol/source/wms
  */
 
-import {DECIMALS} from './common.js';
-import {appendParams} from '../uri.js';
-import {compareVersions} from '../string.js';
 import {decode} from '../Image.js';
-import {floor, round} from '../math.js';
 import {getForViewAndSize, getHeight, getWidth} from '../extent.js';
+import {floor, round} from '../math.js';
 import {get as getProjection} from '../proj.js';
+import {compareVersions} from '../string.js';
+import {appendParams} from '../uri.js';
 import {getRequestExtent} from './Image.js';
+import {DECIMALS} from './common.js';
 
 /**
  * Default WMS version.

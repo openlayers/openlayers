@@ -1,11 +1,11 @@
+import {getBottomLeft, getTopRight} from '../../../../../src/ol/extent.js';
+import WMTSCapabilities from '../../../../../src/ol/format/WMTSCapabilities.js';
 import Projection from '../../../../../src/ol/proj/Projection.js';
+import {get as getProjection} from '../../../../../src/ol/proj.js';
 import WMTS, {
   optionsFromCapabilities,
 } from '../../../../../src/ol/source/WMTS.js';
-import WMTSCapabilities from '../../../../../src/ol/format/WMTSCapabilities.js';
 import WMTSTileGrid from '../../../../../src/ol/tilegrid/WMTS.js';
-import {getBottomLeft, getTopRight} from '../../../../../src/ol/extent.js';
-import {get as getProjection} from '../../../../../src/ol/proj.js';
 
 describe('ol/source/WMTS', function () {
   describe('when creating options from capabilities', function () {

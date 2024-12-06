@@ -2,12 +2,12 @@ import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {LineString, Point, Polygon} from '../src/ol/geom.js';
-import {OGCMapTile, Vector as VectorSource} from '../src/ol/source.js';
 import {
   Pointer as PointerInteraction,
   defaults as defaultInteractions,
 } from '../src/ol/interaction.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import {OGCMapTile, Vector as VectorSource} from '../src/ol/source.js';
 
 class Drag extends PointerInteraction {
   constructor() {

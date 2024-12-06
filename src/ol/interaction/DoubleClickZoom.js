@@ -1,8 +1,8 @@
 /**
  * @module ol/interaction/DoubleClickZoom
  */
-import Interaction, {zoomByDelta} from './Interaction.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
+import Interaction, {zoomByDelta} from './Interaction.js';
 
 /**
  * @typedef {Object} Options

@@ -1,5 +1,5 @@
-import expect from '../expect.js';
 import {getFontParameters} from '../../../src/ol/css.js';
+import expect from '../expect.js';
 
 describe('ol.css', function () {
   describe('getFontParameters()', function () {

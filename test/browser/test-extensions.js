@@ -1,7 +1,7 @@
 import Map from '../../src/ol/Map.js';
 import View from '../../src/ol/View.js';
-import {defaults as defaultInteractions} from '../../src/ol/interaction.js';
 import {setLevel as setLogLevel} from '../../src/ol/console.js';
+import {defaults as defaultInteractions} from '../../src/ol/interaction.js';
 
 setLogLevel('error');
 
@@ -26,7 +26,7 @@ setLogLevel('error');
 
   /**
    * @param {string} path Relative path to file (e.g. 'spec/ol/foo.json').
-   * @param {function(Object)} next Function to call with response object on
+   * @param {function(Object): void} next Function to call with response object on
    *     success.  On failure, an error is thrown with the reason.
    */
   global.afterLoadJson = function (path, next) {
@@ -35,7 +35,7 @@ setLogLevel('error');
 
   /**
    * @param {string} path Relative path to file (e.g. 'spec/ol/foo.txt').
-   * @param {function(string)} next Function to call with response text on
+   * @param {function(string): void} next Function to call with response text on
    *     success.  On failure, an error is thrown with the reason.
    */
   global.afterLoadText = function (path, next) {
@@ -44,7 +44,7 @@ setLogLevel('error');
 
   /**
    * @param {string} path Relative path to file (e.g. 'spec/ol/foo.xml').
-   * @param {function(Document)} next Function to call with response xml on
+   * @param {function(Document): void} next Function to call with response xml on
    *     success.  On failure, an error is thrown with the reason.
    */
   global.afterLoadXml = function (path, next) {

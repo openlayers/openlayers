@@ -1,8 +1,8 @@
 /**
  * @module ol/ImageCanvas
  */
-import ImageState from './ImageState.js';
 import ImageWrapper from './Image.js';
+import ImageState from './ImageState.js';
 
 /**
  * A function that is called to trigger asynchronous canvas drawing.  It is

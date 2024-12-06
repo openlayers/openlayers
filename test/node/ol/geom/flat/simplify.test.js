@@ -1,10 +1,10 @@
-import expect from '../../../expect.js';
 import {
   douglasPeucker,
   quantize,
   radialDistance,
   simplifyLineString,
 } from '../../../../../src/ol/geom/flat/simplify.js';
+import expect from '../../../expect.js';
 
 describe('ol/geom/flat/simplify.js', function () {
   const flatCoordinates = [

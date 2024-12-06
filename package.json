@@ -75,7 +75,7 @@
     "@types/pbf": "^3.0.2",
     "@types/proj4": "^2.5.2",
     "@types/topojson-specification": "^1.0.1",
-    "@typescript-eslint/parser": "^8.0.0",
+    "@typescript-eslint/parser": "^8.17.0",
     "chaikin-smooth": "^1.0.4",
     "chroma-js": "^3.1.1",
     "clean-css-cli": "5.6.3",
@@ -89,8 +89,8 @@
     "d3-selection": "^3.0.0",
     "d3-transition": "^3.0.1",
     "es-main": "^1.0.2",
-    "eslint": "^8.56.0",
-    "eslint-config-openlayers": "^19.0.0",
+    "eslint": "^9.16.0",
+    "eslint-config-openlayers": "^20.0.0",
     "expect.js": "0.3.1",
     "express": "^4.17.1",
     "fflate": "^0.8.2",
@@ -143,40 +143,6 @@
     "webpack-sources": "^3.2.0",
     "worker-loader": "^3.0.8",
     "yargs": "^17.0.0"
-  },
-  "eslintConfig": {
-    "extends": "openlayers",
-    "plugins": [
-      "@openlayers"
-    ],
-    "rules": {
-      "jsdoc/no-bad-blocks": "off",
-      "import/no-commonjs": "error",
-      "import/no-unresolved": [
-        "error",
-        {
-          "ignore": [
-            "@octokit/rest",
-            "pmtiles"
-          ]
-        }
-      ],
-      "@openlayers/no-exclusive-tests": [
-        "error",
-        {
-          "include": "test/**/*.test.js"
-        }
-      ]
-    },
-    "overrides": [
-      {
-        "files": "test/typescript/**/*.ts",
-        "parser": "@typescript-eslint/parser",
-        "rules": {
-          "import/named": "off"
-        }
-      }
-    ]
   },
   "browserslist": [
     "> 1%",

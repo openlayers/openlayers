@@ -1,7 +1,7 @@
-import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
 import {OSM, Raster} from '../src/ol/source.js';
 
 /**

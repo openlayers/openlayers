@@ -1,8 +1,8 @@
 import Feature from '../../../../src/ol/Feature.js';
+import Vector from '../../../../src/ol/layer/Vector.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
 import Style, {createDefaultStyle} from '../../../../src/ol/style/Style.js';
-import Vector from '../../../../src/ol/layer/Vector.js';
 import expect from '../../expect.js';
 
 describe('ol/layer/Vector.js', () => {

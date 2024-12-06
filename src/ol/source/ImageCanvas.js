@@ -3,13 +3,13 @@
  */
 
 import ImageCanvas from '../ImageCanvas.js';
-import ImageSource from './Image.js';
 import {
   containsExtent,
   getHeight,
   getWidth,
   scaleFromCenter,
 } from '../extent.js';
+import ImageSource from './Image.js';
 
 /**
  * A function returning the canvas element (`{HTMLCanvasElement}`)

@@ -1,13 +1,13 @@
+import {unzipSync} from 'fflate';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
+import {GPX, GeoJSON, IGC, KML, TopoJSON} from '../src/ol/format.js';
 import {
   DragAndDrop,
   defaults as defaultInteractions,
 } from '../src/ol/interaction.js';
-import {GPX, GeoJSON, IGC, KML, TopoJSON} from '../src/ol/format.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {unzipSync} from 'fflate';
+import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 
 // Create functions to extract KML and icons from KMZ array buffer,
 // which must be done synchronously.

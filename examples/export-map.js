@@ -1,13 +1,13 @@
-import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Map from '../src/ol/Map.js';
-import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
-import {Fill, Style} from '../src/ol/style.js';
+import {asArray} from '../src/ol/color.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
 import {
   Heatmap as HeatmapLayer,
   Vector as VectorLayer,
 } from '../src/ol/layer.js';
-import {asArray} from '../src/ol/color.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import {Fill, Style} from '../src/ol/style.js';
 
 const style = new Style({
   fill: new Fill({

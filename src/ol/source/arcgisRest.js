@@ -2,13 +2,13 @@
  * @module ol/source/arcgisRest
  */
 
-import {DECIMALS} from './common.js';
-import {appendParams} from '../uri.js';
 import {decode} from '../Image.js';
 import {getHeight, getWidth} from '../extent.js';
-import {get as getProjection} from '../proj.js';
-import {getRequestExtent} from './Image.js';
 import {round} from '../math.js';
+import {get as getProjection} from '../proj.js';
+import {appendParams} from '../uri.js';
+import {getRequestExtent} from './Image.js';
+import {DECIMALS} from './common.js';
 
 /**
  * @param {string} baseUrl Base URL for the ArcGIS Rest service.

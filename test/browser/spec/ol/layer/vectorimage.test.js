@@ -1,9 +1,9 @@
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
+import View from '../../../../../src/ol/View.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import VectorImageLayer from '../../../../../src/ol/layer/VectorImage.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
-import View from '../../../../../src/ol/View.js';
 
 describe('ol/layer/VectorImage', function () {
   describe('#getFeatures()', function () {

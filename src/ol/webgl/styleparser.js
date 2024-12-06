@@ -2,6 +2,7 @@
  * Utilities for parsing literal style objects
  * @module ol/webgl/styleparser
  */
+import {asArray} from '../color.js';
 import {
   BooleanType,
   ColorType,
@@ -22,7 +23,6 @@ import {
   uniformNameForVariable,
 } from '../expr/gpu.js';
 import {ShaderBuilder} from './ShaderBuilder.js';
-import {asArray} from '../color.js';
 
 /**
  * Recursively parses a style expression and outputs a GLSL-compatible string. Takes in a compilation context that

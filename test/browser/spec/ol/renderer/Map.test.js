@@ -1,11 +1,9 @@
+import {spy as sinonSpy} from 'sinon';
 import Disposable from '../../../../../src/ol/Disposable.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
-import MapRenderer from '../../../../../src/ol/renderer/Map.js';
-import VectorLayer from '../../../../../src/ol/layer/Vector.js';
-import VectorSource from '../../../../../src/ol/source/Vector.js';
 import View from '../../../../../src/ol/View.js';
-import {Circle, Fill, Stroke, Style} from '../../../../../src/ol/style.js';
+import {fromExtent} from '../../../../../src/ol/geom/Polygon.js';
 import {
   Circle as CircleGeometry,
   GeometryCollection,
@@ -16,8 +14,11 @@ import {
   Point,
   Polygon,
 } from '../../../../../src/ol/geom.js';
+import VectorLayer from '../../../../../src/ol/layer/Vector.js';
 import {Projection} from '../../../../../src/ol/proj.js';
-import {fromExtent} from '../../../../../src/ol/geom/Polygon.js';
+import MapRenderer from '../../../../../src/ol/renderer/Map.js';
+import VectorSource from '../../../../../src/ol/source/Vector.js';
+import {Circle, Fill, Stroke, Style} from '../../../../../src/ol/style.js';
 
 describe('ol/renderer/Map.js', function () {
   describe('constructor', function () {
@@ -822,7 +823,7 @@ describe('ol/renderer/Map.js', function () {
         new Feature(new Point([660000 - resolution * 12, 190000])),
       );
       map.renderSync();
-      const spy = sinon.spy(CanvasRenderingContext2D.prototype, 'drawImage');
+      const spy = sinonSpy(CanvasRenderingContext2D.prototype, 'drawImage');
       const features = map.getFeaturesAtPixel([50, 44]);
       expect(features.length).to.be(1);
       expect(spy.callCount).to.be(2);

@@ -1,14 +1,15 @@
-import Image from '../../../../../src/ol/layer/Image.js';
+import {spy as sinonSpy} from 'sinon';
 import ImageState from '../../../../../src/ol/ImageState.js';
-import ImageWMS from '../../../../../src/ol/source/ImageWMS.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
-import {fromLonLat, get as getProjection} from '../../../../../src/ol/proj.js';
 import {
   getForViewAndSize,
   getHeight,
   getWidth,
 } from '../../../../../src/ol/extent.js';
+import Image from '../../../../../src/ol/layer/Image.js';
+import {fromLonLat, get as getProjection} from '../../../../../src/ol/proj.js';
+import ImageWMS from '../../../../../src/ol/source/ImageWMS.js';
 
 describe('ol/source/ImageWMS', function () {
   let extent, pixelRatio, options, optionsReproj, resolution, projection;
@@ -327,7 +328,7 @@ describe('ol/source/ImageWMS', function () {
     });
 
     it('creates an image with a custom imageLoadFunction', function () {
-      const imageLoadFunction = sinon.spy();
+      const imageLoadFunction = sinonSpy();
       options.imageLoadFunction = imageLoadFunction;
       const source = new ImageWMS(options);
       const image = source.getImage(extent, resolution, pixelRatio, projection);

@@ -1,12 +1,12 @@
-import {Circle, Fill, Style} from '../../../../src/ol/style.js';
-import {Feature, Map, View} from '../../../../src/ol/index.js';
 import {Point} from '../../../../src/ol/geom.js';
+import {Feature, Map, View} from '../../../../src/ol/index.js';
 import {
   Tile as TileLayer,
   Vector as VectorLayer,
 } from '../../../../src/ol/layer.js';
-import {Vector as VectorSource, XYZ} from '../../../../src/ol/source.js';
 import {useGeographic} from '../../../../src/ol/proj.js';
+import {Vector as VectorSource, XYZ} from '../../../../src/ol/source.js';
+import {Circle, Fill, Style} from '../../../../src/ol/style.js';
 
 useGeographic();
 

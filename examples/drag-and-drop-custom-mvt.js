@@ -1,13 +1,13 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
+import {GPX, GeoJSON, IGC, KML, MVT, TopoJSON} from '../src/ol/format.js';
 import {
   DragAndDrop,
   defaults as defaultInteractions,
 } from '../src/ol/interaction.js';
-import {GPX, GeoJSON, IGC, KML, MVT, TopoJSON} from '../src/ol/format.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {createXYZ} from '../src/ol/tilegrid.js';
 
 // Define a custom MVT format as ol/format/MVT requires an extent

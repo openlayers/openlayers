@@ -1,14 +1,14 @@
+import {spy as sinonSpy} from 'sinon';
 import EventTarget from '../../../src/ol/events/Target.js';
-import expect from '../expect.js';
-import sinon from 'sinon';
 import {listen, listenOnce, unlistenByKey} from '../../../src/ol/events.js';
+import expect from '../expect.js';
 
 describe('ol/events.js', function () {
   let add, target;
 
   beforeEach(function () {
     target = new EventTarget();
-    add = sinon.spy(target, 'addEventListener');
+    add = sinonSpy(target, 'addEventListener');
   });
 
   afterEach(function () {
@@ -42,7 +42,7 @@ describe('ol/events.js', function () {
   describe('listenOnce()', function () {
     it('creates a one-off listener', function () {
       const target = new EventTarget();
-      const listener = sinon.spy();
+      const listener = sinonSpy();
       listenOnce(target, 'foo', listener);
       target.dispatchEvent('foo');
       expect(listener.callCount).to.be(1);
@@ -50,7 +50,7 @@ describe('ol/events.js', function () {
       expect(listener.callCount).to.be(1);
     });
     it('Adds the same listener twice', function () {
-      const listener = sinon.spy();
+      const listener = sinonSpy();
       listenOnce(target, 'foo', listener);
       listenOnce(target, 'foo', listener);
       target.dispatchEvent('foo');
@@ -59,7 +59,7 @@ describe('ol/events.js', function () {
       expect(listener.callCount).to.be(2);
     });
     it('is called with the provided this argument', () => {
-      const listener = sinon.spy();
+      const listener = sinonSpy();
       const target = new EventTarget();
       const that = {};
       listenOnce(target, 'bar', listener, that);

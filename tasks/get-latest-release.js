@@ -1,6 +1,6 @@
+import {Octokit} from '@octokit/rest';
 import esMain from 'es-main';
 import semver from 'semver';
-import {Octokit} from '@octokit/rest';
 
 export async function getLatestRelease() {
   const client = new Octokit();

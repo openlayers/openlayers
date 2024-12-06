@@ -4,10 +4,10 @@
  * above layers.
  */
 
-import Control from '../../../../src/ol/control/Control.js';
-import Layer from '../../../../src/ol/layer/Layer.js';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
+import Control from '../../../../src/ol/control/Control.js';
+import Layer from '../../../../src/ol/layer/Layer.js';
 
 class Element extends Layer {
   constructor(options, style) {

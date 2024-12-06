@@ -1,12 +1,12 @@
 /**
  * @module ol/Image
  */
-import EventTarget from './events/Target.js';
-import EventType from './events/EventType.js';
 import ImageState from './ImageState.js';
-import {CREATE_IMAGE_BITMAP, IMAGE_DECODE} from './has.js';
+import EventType from './events/EventType.js';
+import EventTarget from './events/Target.js';
 import {listenOnce, unlistenByKey} from './events.js';
 import {toPromise} from './functions.js';
+import {CREATE_IMAGE_BITMAP, IMAGE_DECODE} from './has.js';
 
 /**
  * A function that takes an {@link module:ol/Image~ImageWrapper} for the image and a

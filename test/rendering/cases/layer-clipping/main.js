@@ -1,11 +1,11 @@
 import Map from '../../../../src/ol/Map.js';
+import View from '../../../../src/ol/View.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
+import TileLayer from '../../../../src/ol/layer/Tile.js';
+import {getVectorContext} from '../../../../src/ol/render.js';
+import XYZ from '../../../../src/ol/source/XYZ.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
 import Style from '../../../../src/ol/style/Style.js';
-import TileLayer from '../../../../src/ol/layer/Tile.js';
-import View from '../../../../src/ol/View.js';
-import XYZ from '../../../../src/ol/source/XYZ.js';
-import {getVectorContext} from '../../../../src/ol/render.js';
 
 const source = new XYZ({
   url: '/data/tiles/osm/{z}/{x}/{y}.png',

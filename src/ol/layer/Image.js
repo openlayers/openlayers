@@ -1,8 +1,8 @@
 /**
  * @module ol/layer/Image
  */
-import BaseImageLayer from './BaseImage.js';
 import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
+import BaseImageLayer from './BaseImage.js';
 
 /**
  * @classdesc

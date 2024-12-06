@@ -1,14 +1,21 @@
 /**
  * @module ol/renderer/webgl/VectorLayer
  */
-import BaseVector from '../../layer/BaseVector.js';
-import MixedGeometryBatch from '../../render/webgl/MixedGeometryBatch.js';
-import VectorEventType from '../../source/VectorEventType.js';
-import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
 import ViewHint from '../../ViewHint.js';
-import WebGLLayerRenderer from './Layer.js';
-import WebGLRenderTarget from '../../webgl/RenderTarget.js';
-import {DefaultUniform} from '../../webgl/Helper.js';
+import {assert} from '../../asserts.js';
+import {listen, unlistenByKey} from '../../events.js';
+import {buffer, createEmpty, equals} from '../../extent.js';
+import BaseVector from '../../layer/BaseVector.js';
+import {
+  getTransformFromProjections,
+  getUserProjection,
+  toUserExtent,
+  toUserResolution,
+} from '../../proj.js';
+import MixedGeometryBatch from '../../render/webgl/MixedGeometryBatch.js';
+import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
+import {colorDecodeId} from '../../render/webgl/utils.js';
+import VectorEventType from '../../source/VectorEventType.js';
 import {
   apply as applyTransform,
   create as createTransform,
@@ -17,21 +24,14 @@ import {
   setFromArray as setFromTransform,
   translate as translateTransform,
 } from '../../transform.js';
-import {assert} from '../../asserts.js';
-import {buffer, createEmpty, equals} from '../../extent.js';
-import {colorDecodeId} from '../../render/webgl/utils.js';
 import {
   create as createMat4,
   fromTransform as mat4FromTransform,
 } from '../../vec/mat4.js';
-import {
-  getTransformFromProjections,
-  getUserProjection,
-  toUserExtent,
-  toUserResolution,
-} from '../../proj.js';
+import {DefaultUniform} from '../../webgl/Helper.js';
+import WebGLRenderTarget from '../../webgl/RenderTarget.js';
+import WebGLLayerRenderer from './Layer.js';
 import {getWorldParameters} from './worldUtil.js';
-import {listen, unlistenByKey} from '../../events.js';
 
 export const Uniforms = {
   ...DefaultUniform,
@@ -57,16 +57,16 @@ export const Uniforms = {
 /**
  * @classdesc
  * Experimental WebGL vector renderer. Supports polygons, lines and points:
- *  * Polygons are broken down into triangles
- *  * Lines are rendered as strips of quads
- *  * Points are rendered as quads
+ *  Polygons are broken down into triangles
+ *  Lines are rendered as strips of quads
+ *  Points are rendered as quads
  *
  * You need to provide vertex and fragment shaders as well as custom attributes for each type of geometry. All shaders
  * can access the uniforms in the {@link module:ol/webgl/Helper~DefaultUniform} enum.
  * The vertex shaders can access the following attributes depending on the geometry type:
- *  * For polygons: {@link module:ol/render/webgl/PolygonBatchRenderer~Attributes}
- *  * For line strings: {@link module:ol/render/webgl/LineStringBatchRenderer~Attributes}
- *  * For points: {@link module:ol/render/webgl/PointBatchRenderer~Attributes}
+ *  For polygons: {@link module:ol/render/webgl/PolygonBatchRenderer~Attributes}
+ *  For line strings: {@link module:ol/render/webgl/LineStringBatchRenderer~Attributes}
+ *  For points: {@link module:ol/render/webgl/PointBatchRenderer~Attributes}
  *
  * Please note that the fragment shaders output should have premultiplied alpha, otherwise visual anomalies may occur.
  *

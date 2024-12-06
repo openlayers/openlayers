@@ -1,9 +1,9 @@
 /**
  * @module ol/render/webgl/MixedGeometryBatch
  */
+import {inflateEnds} from '../../geom/flat/orient.js';
 import RenderFeature from '../../render/Feature.js';
 import {getUid} from '../../util.js';
-import {inflateEnds} from '../../geom/flat/orient.js';
 
 /**
  * @typedef {import("../../Feature.js").default} Feature

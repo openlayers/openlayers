@@ -2,11 +2,11 @@
  * @module ol/source/ImageWMS
  */
 
-import ImageSource, {defaultImageLoadFunction} from './Image.js';
-import {calculateSourceResolution} from '../reproj.js';
-import {createLoader, getFeatureInfoUrl, getLegendUrl} from './wms.js';
 import {decode} from '../Image.js';
 import {get as getProjection, transform} from '../proj.js';
+import {calculateSourceResolution} from '../reproj.js';
+import ImageSource, {defaultImageLoadFunction} from './Image.js';
+import {createLoader, getFeatureInfoUrl, getLegendUrl} from './wms.js';
 
 /**
  * @typedef {Object} Options

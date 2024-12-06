@@ -5,6 +5,7 @@
 // of GEOMETRY_PARSERS_ and methods using GEOMETRY_PARSERS_ do not expect
 // envelopes/extents, only geometries!
 import Feature from '../Feature.js';
+import {extend} from '../array.js';
 import Geometry from '../geom/Geometry.js';
 import LineString from '../geom/LineString.js';
 import LinearRing from '../geom/LinearRing.js';
@@ -13,8 +14,7 @@ import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
-import XMLFeature from './XMLFeature.js';
-import {extend} from '../array.js';
+import {get as getProjection} from '../proj.js';
 import {
   getAllTextContent,
   getAttributeNS,
@@ -23,11 +23,11 @@ import {
   parseNode,
   pushParseAndPop,
 } from '../xml.js';
-import {get as getProjection} from '../proj.js';
 import {
   transformExtentWithOptions,
   transformGeometryWithOptions,
 } from './Feature.js';
+import XMLFeature from './XMLFeature.js';
 
 /**
  * @const

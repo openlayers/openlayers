@@ -1,10 +1,10 @@
-import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {fromLonLat} from '../src/ol/proj.js';
+import {OSM, Vector as VectorSource} from '../src/ol/source.js';
+import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
 
 /** @type {VectorSource<import("../src/ol/geom/SimpleGeometry.js").default>} */
 const source = new VectorSource({

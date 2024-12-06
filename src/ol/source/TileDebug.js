@@ -2,13 +2,13 @@
  * @module ol/source/TileDebug
  */
 
-import DataTile from './DataTile.js';
-import EventType from '../events/EventType.js';
-import ImageTile from './ImageTile.js';
 import {createCanvasContext2D} from '../dom.js';
+import EventType from '../events/EventType.js';
 import {get as getProjection} from '../proj.js';
-import {renderXYZTemplate} from '../uri.js';
 import {toSize} from '../size.js';
+import {renderXYZTemplate} from '../uri.js';
+import DataTile from './DataTile.js';
+import ImageTile from './ImageTile.js';
 
 /**
  * @typedef {Object} Options

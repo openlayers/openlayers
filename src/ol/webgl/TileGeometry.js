@@ -2,14 +2,14 @@
  * @module ol/webgl/TileGeometry
  */
 
-import BaseTileRepresentation from './BaseTileRepresentation.js';
 import MixedGeometryBatch from '../render/webgl/MixedGeometryBatch.js';
-import WebGLArrayBuffer from './Buffer.js';
-import {ARRAY_BUFFER, STATIC_DRAW} from '../webgl.js';
 import {
   create as createTransform,
   translate as translateTransform,
 } from '../transform.js';
+import {ARRAY_BUFFER, STATIC_DRAW} from '../webgl.js';
+import BaseTileRepresentation from './BaseTileRepresentation.js';
+import WebGLArrayBuffer from './Buffer.js';
 
 /**
  * @typedef {import("../VectorRenderTile").default} TileType

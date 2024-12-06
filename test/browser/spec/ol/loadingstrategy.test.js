@@ -1,4 +1,5 @@
 import {approximatelyEquals} from '../../../../src/ol/extent.js';
+import {tile} from '../../../../src/ol/loadingstrategy.js';
 import {
   clearUserProjection,
   get,
@@ -8,7 +9,6 @@ import {
   useGeographic,
 } from '../../../../src/ol/proj.js';
 import {createXYZ} from '../../../../src/ol/tilegrid.js';
-import {tile} from '../../../../src/ol/loadingstrategy.js';
 
 describe('ol/loadingstrategy', function () {
   describe('tile', function () {

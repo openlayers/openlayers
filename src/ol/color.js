@@ -1,8 +1,8 @@
 /**
  * @module ol/color
  */
-import lchuv from 'color-space/lchuv.js';
 import parseRgba from 'color-rgba';
+import lchuv from 'color-space/lchuv.js';
 import rgb from 'color-space/rgb.js';
 import xyz from 'color-space/xyz.js';
 import {clamp} from './math.js';
@@ -181,7 +181,7 @@ export function isStringColor(s) {
   try {
     fromString(s);
     return true;
-  } catch (_) {
+  } catch {
     return false;
   }
 }

@@ -1,8 +1,8 @@
 import ImageTile from '../../../../../src/ol/ImageTile.js';
-import TileGrid from '../../../../../src/ol/tilegrid/TileGrid.js';
-import TileWMS from '../../../../../src/ol/source/TileWMS.js';
-import {createXYZ} from '../../../../../src/ol/tilegrid.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
+import TileWMS from '../../../../../src/ol/source/TileWMS.js';
+import TileGrid from '../../../../../src/ol/tilegrid/TileGrid.js';
+import {createXYZ} from '../../../../../src/ol/tilegrid.js';
 
 describe('ol/source/TileWMS', function () {
   let options, optionsReproj;

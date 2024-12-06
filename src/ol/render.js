@@ -1,16 +1,16 @@
 /**
  * @module ol/render
  */
-import CanvasImmediateRenderer from './render/canvas/Immediate.js';
 import {DEVICE_PIXEL_RATIO} from './has.js';
+import {getTransformFromProjections, getUserProjection} from './proj.js';
+import CanvasImmediateRenderer from './render/canvas/Immediate.js';
+import {getSquaredTolerance} from './renderer/vector.js';
 import {
   apply as applyTransform,
   create as createTransform,
   multiply as multiplyTransform,
   scale as scaleTransform,
 } from './transform.js';
-import {getSquaredTolerance} from './renderer/vector.js';
-import {getTransformFromProjections, getUserProjection} from './proj.js';
 
 /**
  * @typedef {Object} State

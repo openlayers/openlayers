@@ -1,5 +1,3 @@
-/* eslint-disable import/no-commonjs */
-
 const build = require('../../tasks/serialize-workers.cjs').build;
 
 module.exports = function loader() {
@@ -12,7 +10,7 @@ module.exports = function loader() {
         try {
           const dependency = require.resolve(filePath);
           this.addDependency(dependency);
-        } catch (e) {
+        } catch {
           // empty catch block
         }
       }

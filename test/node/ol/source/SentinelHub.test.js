@@ -1,10 +1,10 @@
-import expect from '../../expect.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import {
   getProjectionIdentifier,
   parseTokenClaims,
   serializeFunction,
 } from '../../../../src/ol/source/SentinelHub.js';
+import expect from '../../expect.js';
 
 function trim(block) {
   return block

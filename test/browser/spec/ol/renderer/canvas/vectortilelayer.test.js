@@ -1,28 +1,29 @@
-import CanvasVectorTileLayerRenderer from '../../../../../../src/ol/renderer/canvas/VectorTileLayer.js';
+import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
-import MVT from '../../../../../../src/ol/format/MVT.js';
 import Map from '../../../../../../src/ol/Map.js';
-import Point from '../../../../../../src/ol/geom/Point.js';
-import RenderFeature from '../../../../../../src/ol/render/Feature.js';
-import Style from '../../../../../../src/ol/style/Style.js';
-import Text from '../../../../../../src/ol/style/Text.js';
-import TileLayer from '../../../../../../src/ol/layer/Tile.js';
 import TileState from '../../../../../../src/ol/TileState.js';
 import VectorRenderTile from '../../../../../../src/ol/VectorRenderTile.js';
 import VectorTile from '../../../../../../src/ol/VectorTile.js';
-import VectorTileLayer from '../../../../../../src/ol/layer/VectorTile.js';
-import VectorTileSource from '../../../../../../src/ol/source/VectorTile.js';
 import View from '../../../../../../src/ol/View.js';
-import XYZ from '../../../../../../src/ol/source/XYZ.js';
-import {Circle, Fill} from '../../../../../../src/ol/style.js';
-import {VOID} from '../../../../../../src/ol/functions.js';
-import {checkedFonts} from '../../../../../../src/ol/render/canvas.js';
-import {create} from '../../../../../../src/ol/transform.js';
-import {createFontStyle} from '../../../util.js';
-import {createXYZ} from '../../../../../../src/ol/tilegrid.js';
 import {getCenter} from '../../../../../../src/ol/extent.js';
+import MVT from '../../../../../../src/ol/format/MVT.js';
+import {VOID} from '../../../../../../src/ol/functions.js';
+import Point from '../../../../../../src/ol/geom/Point.js';
+import TileLayer from '../../../../../../src/ol/layer/Tile.js';
+import VectorTileLayer from '../../../../../../src/ol/layer/VectorTile.js';
 import {get as getProjection} from '../../../../../../src/ol/proj.js';
+import RenderFeature from '../../../../../../src/ol/render/Feature.js';
+import {checkedFonts} from '../../../../../../src/ol/render/canvas.js';
+import CanvasVectorTileLayerRenderer from '../../../../../../src/ol/renderer/canvas/VectorTileLayer.js';
+import VectorTileSource from '../../../../../../src/ol/source/VectorTile.js';
+import XYZ from '../../../../../../src/ol/source/XYZ.js';
+import Style from '../../../../../../src/ol/style/Style.js';
+import Text from '../../../../../../src/ol/style/Text.js';
+import {Circle, Fill} from '../../../../../../src/ol/style.js';
+import {createXYZ} from '../../../../../../src/ol/tilegrid.js';
+import {create} from '../../../../../../src/ol/transform.js';
 import {getUid} from '../../../../../../src/ol/util.js';
+import {createFontStyle} from '../../../util.js';
 
 describe('ol/renderer/canvas/VectorTileLayer', function () {
   describe('constructor', function () {
@@ -130,7 +131,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       });
       map.removeLayer(layer);
       map.addLayer(testLayer);
-      const spy = sinon.spy(
+      const spy = sinonSpy(
         CanvasVectorTileLayerRenderer.prototype,
         'renderTileImage_',
       );
@@ -140,11 +141,11 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
     });
 
     it('renders both replays and images for hybrid rendering', function () {
-      const spy1 = sinon.spy(
+      const spy1 = sinonSpy(
         CanvasVectorTileLayerRenderer.prototype,
         'getRenderTransform',
       );
-      const spy2 = sinon.spy(
+      const spy2 = sinonSpy(
         CanvasVectorTileLayerRenderer.prototype,
         'renderTileImage_',
       );
@@ -161,7 +162,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
           renderer: function () {},
         }),
       );
-      const spy = sinon.spy(
+      const spy = sinonSpy(
         CanvasVectorTileLayerRenderer.prototype,
         'getRenderTransform',
       );
@@ -171,7 +172,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
     });
 
     it('gives precedence to feature styles over layer styles', function () {
-      const spy = sinon.spy(layer.getRenderer(), 'renderFeature');
+      const spy = sinonSpy(layer.getRenderer(), 'renderFeature');
       map.renderSync();
       expect(spy.getCall(0).args[2]).to.be(layer.getStyleFunction()(feature1));
       expect(spy.getCall(1).args[2]).to.be(
@@ -607,7 +608,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
   });
 
   describe('#forEachFeatureAtCoordinate', function () {
-    /** @type {VectorTileLayer] */ let layer;
+    /** @type {VectorTileLayer} */ let layer;
     /** @type {CanvasVectorTileLayerRenderer} */ let renderer;
     /** @type {VectorTileSource} */ let source;
     let executorGroup;
@@ -656,7 +657,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
     });
 
     it('calls callback once per feature with a layer as 2nd arg', function () {
-      const spy = sinon.spy();
+      const spy = sinonSpy();
       const coordinate = [0, 0];
       const matches = [];
       const frameState = {

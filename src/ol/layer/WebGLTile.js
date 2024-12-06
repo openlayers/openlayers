@@ -1,12 +1,6 @@
 /**
  * @module ol/layer/WebGLTile
  */
-import BaseTileLayer from './BaseTile.js';
-import LayerProperty from '../layer/Property.js';
-import WebGLTileLayerRenderer, {
-  Attributes,
-  Uniforms,
-} from '../renderer/webgl/TileLayer.js';
 import {ColorType, NumberType} from '../expr/expression.js';
 import {
   PALETTE_TEXTURE_ARRAY,
@@ -14,7 +8,13 @@ import {
   newCompilationContext,
   uniformNameForVariable,
 } from '../expr/gpu.js';
+import LayerProperty from '../layer/Property.js';
+import WebGLTileLayerRenderer, {
+  Attributes,
+  Uniforms,
+} from '../renderer/webgl/TileLayer.js';
 import {expressionToGlsl} from '../webgl/styleparser.js';
+import BaseTileLayer from './BaseTile.js';
 
 /**
  * @typedef {import("../source/DataTile.js").default<import("../DataTile.js").default|import("../ImageTile.js").default>} SourceType

@@ -1,9 +1,14 @@
+import monotoneChainConvexHull from 'monotone-chain-convex-hull';
 import Feature from '../src/ol/Feature.js';
-import GeoJSON from '../src/ol/format/GeoJSON.js';
-import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import monotoneChainConvexHull from 'monotone-chain-convex-hull';
+import {createEmpty, extend, getHeight, getWidth} from '../src/ol/extent.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
+import {LineString, Point, Polygon} from '../src/ol/geom.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import {fromLonLat} from '../src/ol/proj.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
+import {Cluster, Vector as VectorSource} from '../src/ol/source.js';
 import {
   Circle as CircleStyle,
   Fill,
@@ -12,11 +17,6 @@ import {
   Style,
   Text,
 } from '../src/ol/style.js';
-import {Cluster, Vector as VectorSource} from '../src/ol/source.js';
-import {LineString, Point, Polygon} from '../src/ol/geom.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {createEmpty, extend, getHeight, getWidth} from '../src/ol/extent.js';
-import {fromLonLat} from '../src/ol/proj.js';
 
 const circleDistanceMultiplier = 1;
 const circleFootSeparation = 28;

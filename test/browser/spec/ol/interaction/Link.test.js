@@ -1,7 +1,7 @@
-import Layer from '../../../../../src/ol/layer/Tile.js';
-import Link from '../../../../../src/ol/interaction/Link.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
+import Link from '../../../../../src/ol/interaction/Link.js';
+import Layer from '../../../../../src/ol/layer/Tile.js';
 
 describe('ol/interaction/Link', () => {
   let map;

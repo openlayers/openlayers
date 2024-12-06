@@ -1,14 +1,15 @@
-import Map from '../../../../../src/ol/Map.js';
-import Projection from '../../../../../src/ol/proj/Projection.js';
-import ScaleLine from '../../../../../src/ol/control/ScaleLine.js';
-import View from '../../../../../src/ol/View.js';
 import proj4 from 'proj4';
+import {spy as sinonSpy} from 'sinon';
+import Map from '../../../../../src/ol/Map.js';
+import View from '../../../../../src/ol/View.js';
+import ScaleLine from '../../../../../src/ol/control/ScaleLine.js';
+import Projection from '../../../../../src/ol/proj/Projection.js';
+import {register} from '../../../../../src/ol/proj/proj4.js';
 import {
   addCommon,
   clearAllProjections,
   fromLonLat,
 } from '../../../../../src/ol/proj.js';
-import {register} from '../../../../../src/ol/proj/proj4.js';
 
 describe('ol.control.ScaleLine', function () {
   let map;
@@ -100,7 +101,7 @@ describe('ol.control.ScaleLine', function () {
 
   describe('synchronisation with map view', function () {
     it('calls `render` as soon as the map is rendered', function (done) {
-      const renderSpy = sinon.spy();
+      const renderSpy = sinonSpy();
       const ctrl = new ScaleLine({
         render: renderSpy,
       });
@@ -121,7 +122,7 @@ describe('ol.control.ScaleLine', function () {
       });
     });
     it('calls `render` as often as the map is rendered', function () {
-      const renderSpy = sinon.spy();
+      const renderSpy = sinonSpy();
       const ctrl = new ScaleLine({
         render: renderSpy,
       });
@@ -140,7 +141,7 @@ describe('ol.control.ScaleLine', function () {
       expect(renderSpy.callCount).to.be(3);
     });
     it('calls `render` as when the view changes', function (done) {
-      const renderSpy = sinon.spy();
+      const renderSpy = sinonSpy();
       const ctrl = new ScaleLine({
         render: renderSpy,
       });

@@ -1,4 +1,3 @@
-import expect from '../expect.js';
 import {
   ascending,
   binarySearch,
@@ -10,6 +9,7 @@ import {
   reverseSubArray,
   stableSort,
 } from '../../../src/ol/array.js';
+import expect from '../expect.js';
 
 describe('ol/array.js', function () {
   describe('binarySearch', function () {

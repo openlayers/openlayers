@@ -2,16 +2,8 @@
  * @module ol/layer/Graticule
  */
 import Collection from '../Collection.js';
-import EventType from '../render/EventType.js';
 import Feature from '../Feature.js';
-import Fill from '../style/Fill.js';
-import LineString from '../geom/LineString.js';
-import Point from '../geom/Point.js';
-import Stroke from '../style/Stroke.js';
-import Style from '../style/Style.js';
-import Text from '../style/Text.js';
-import VectorLayer from './Vector.js';
-import VectorSource from '../source/Vector.js';
+import {degreesToStringHDMS} from '../coordinate.js';
 import {
   applyTransform,
   approximatelyEquals,
@@ -25,15 +17,23 @@ import {
   isEmpty,
   wrapX as wrapExtentX,
 } from '../extent.js';
+import LineString from '../geom/LineString.js';
+import Point from '../geom/Point.js';
+import {meridian, parallel} from '../geom/flat/geodesic.js';
 import {clamp} from '../math.js';
-import {degreesToStringHDMS} from '../coordinate.js';
 import {
   equivalent as equivalentProjection,
   get as getProjection,
   getTransform,
 } from '../proj.js';
+import EventType from '../render/EventType.js';
 import {getVectorContext} from '../render.js';
-import {meridian, parallel} from '../geom/flat/geodesic.js';
+import VectorSource from '../source/Vector.js';
+import Fill from '../style/Fill.js';
+import Stroke from '../style/Stroke.js';
+import Style from '../style/Style.js';
+import Text from '../style/Text.js';
+import VectorLayer from './Vector.js';
 
 /**
  * @type {Stroke}

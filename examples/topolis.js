@@ -1,7 +1,11 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import MousePosition from '../src/ol/control/MousePosition.js';
 import View from '../src/ol/View.js';
+import MousePosition from '../src/ol/control/MousePosition.js';
+import {LineString, Point, Polygon} from '../src/ol/geom.js';
+import {Draw, Snap} from '../src/ol/interaction.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {
   Circle as CircleStyle,
   Fill,
@@ -9,10 +13,6 @@ import {
   Style,
   Text,
 } from '../src/ol/style.js';
-import {Draw, Snap} from '../src/ol/interaction.js';
-import {LineString, Point, Polygon} from '../src/ol/geom.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 
 const raster = new TileLayer({
   source: new OSM(),

@@ -3,12 +3,12 @@
  */
 import Feature from '../Feature.js';
 import LineString from '../geom/LineString.js';
-import TextFeature from './TextFeature.js';
-import {flipXY} from '../geom/flat/flip.js';
-import {get as getProjection} from '../proj.js';
 import {getStrideForLayout} from '../geom/SimpleGeometry.js';
+import {flipXY} from '../geom/flat/flip.js';
 import {inflateCoordinates} from '../geom/flat/inflate.js';
+import {get as getProjection} from '../proj.js';
 import {transformGeometryWithOptions} from './Feature.js';
+import TextFeature from './TextFeature.js';
 
 /**
  * @typedef {Object} Options
