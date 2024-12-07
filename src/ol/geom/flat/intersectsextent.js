@@ -2,7 +2,6 @@
  * @module ol/geom/flat/intersectsextent
  */
 import {
-  containsExtent,
   createEmpty,
   extendFlatCoordinates,
   intersects,
@@ -36,13 +35,10 @@ export function intersectsLineString(
   if (!intersects(extent, coordinatesExtent)) {
     return false;
   }
-  if (containsExtent(extent, coordinatesExtent)) {
-    return true;
-  }
-  if (coordinatesExtent[0] >= extent[0] && coordinatesExtent[2] <= extent[2]) {
-    return true;
-  }
-  if (coordinatesExtent[1] >= extent[1] && coordinatesExtent[3] <= extent[3]) {
+  if (
+    (coordinatesExtent[0] >= extent[0] && coordinatesExtent[2] <= extent[2]) ||
+    (coordinatesExtent[1] >= extent[1] && coordinatesExtent[3] <= extent[3])
+  ) {
     return true;
   }
   return forEachSegment(
