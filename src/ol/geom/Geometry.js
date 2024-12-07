@@ -35,6 +35,9 @@ import {transform2D} from './flat/transform.js';
  */
 const tmpTransform = createTransform();
 
+/** @type {import('../coordinate.js').Coordinate} */
+const tmpPoint = [NaN, NaN];
+
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -137,8 +140,7 @@ class Geometry extends BaseObject {
    * @return {boolean} Contains (x, y).
    */
   containsXY(x, y) {
-    const coord = this.getClosestPoint([x, y]);
-    return coord[0] === x && coord[1] === y;
+    return this.closestPointXY(x, y, tmpPoint, Number.MIN_VALUE) === 0;
   }
 
   /**

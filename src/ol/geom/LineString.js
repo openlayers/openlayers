@@ -290,6 +290,7 @@ class LineString extends SimpleGeometry {
       this.flatCoordinates.length,
       this.stride,
       extent,
+      this.getExtent(),
     );
   }
 
