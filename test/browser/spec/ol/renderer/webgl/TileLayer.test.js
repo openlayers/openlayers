@@ -232,6 +232,42 @@ describe('ol/renderer/webgl/TileLayer', function () {
       };
       expect(wantedTiles).to.eql(expected);
     });
+
+    it('skips tiles not in the rotated viewport', () => {
+      const z = 10;
+      const resolution = map.getView().getResolutionForZoom(z);
+      frameState.viewState.resolution = resolution;
+      frameState.viewState.rotation = Math.PI / 4;
+      const extent = [
+        -frameState.size[0],
+        -frameState.size[1],
+        frameState.size[0],
+        frameState.size[1],
+      ].map((c) => c * resolution * Math.SQRT2);
+
+      renderer.prepareFrame(frameState);
+      renderer.enqueueTiles(
+        frameState,
+        extent,
+        z,
+        newTileRepresentationLookup(),
+        tileLayer.getPreload(),
+      );
+
+      const source = tileLayer.getSource();
+      const sourceKey = getUid(source);
+      expect(frameState.wantedTiles[sourceKey]).to.be.an(Object);
+
+      const wantedTiles = frameState.wantedTiles[sourceKey];
+
+      const expected = {
+        [sourceKey + '/10,511,511']: true,
+        [sourceKey + '/10,511,512']: true,
+        [sourceKey + '/10,512,511']: true,
+        [sourceKey + '/10,512,512']: true,
+      };
+      expect(wantedTiles).to.eql(expected);
+    });
   });
 
   describe('#createTileRepresentation', () => {
