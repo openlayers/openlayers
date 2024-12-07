@@ -16,6 +16,7 @@ import {linearRingContainsExtent, linearRingContainsXY} from './contains.js';
  * @param {number} end End.
  * @param {number} stride Stride.
  * @param {import("../../extent.js").Extent} extent Extent.
+ * @param {import('../../extent.js').Extent} [coordinatesExtent] Coordinates extent
  * @return {boolean} True if the geometry and the extent intersect.
  */
 export function intersectsLineString(
@@ -24,14 +25,11 @@ export function intersectsLineString(
   end,
   stride,
   extent,
+  coordinatesExtent,
 ) {
-  const coordinatesExtent = extendFlatCoordinates(
-    createEmpty(),
-    flatCoordinates,
-    offset,
-    end,
-    stride,
-  );
+  coordinatesExtent =
+    coordinatesExtent ??
+    extendFlatCoordinates(createEmpty(), flatCoordinates, offset, end, stride);
   if (!intersects(extent, coordinatesExtent)) {
     return false;
   }
