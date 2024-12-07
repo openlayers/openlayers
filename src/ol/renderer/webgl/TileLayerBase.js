@@ -22,7 +22,7 @@ import {
 } from '../../transform.js';
 import {descending} from '../../array.js';
 import {fromUserExtent} from '../../proj.js';
-import {getIntersection, isEmpty} from '../../extent.js';
+import {getIntersection, getRotatedViewport, isEmpty} from '../../extent.js';
 import {toSize} from '../../size.js';
 
 export const Uniforms = {
@@ -307,6 +307,15 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
         tileSource.zDirection,
       ),
     );
+    const rotation = viewState.rotation;
+    const viewport = rotation
+      ? getRotatedViewport(
+          viewState.center,
+          viewState.resolution,
+          rotation,
+          frameState.size,
+        )
+      : undefined;
     for (let z = initialZ; z >= minZ; --z) {
       const tileRange = tileGrid.getTileRangeForExtentAndZ(
         extent,
@@ -318,6 +327,12 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
 
       for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
         for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
+          if (
+            rotation &&
+            !tileGrid.tileCoordIntersectsViewport([z, x, y], viewport)
+          ) {
+            continue;
+          }
           const tileCoord = createTileCoord(z, x, y, this.tempTileCoord_);
           const cacheKey = getCacheKey(tileSource, tileCoord);
 

@@ -19,6 +19,7 @@ import {
   createEmpty,
   equals,
   getIntersection,
+  getRotatedViewport,
   getTopLeft,
   intersects,
 } from '../../extent.js';
@@ -416,6 +417,15 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         tileSource.zDirection,
       ),
     );
+    const rotation = viewState.rotation;
+    const viewport = rotation
+      ? getRotatedViewport(
+          viewState.center,
+          viewState.resolution,
+          rotation,
+          frameState.size,
+        )
+      : undefined;
     for (let z = initialZ; z >= minZ; --z) {
       const tileRange = tileGrid.getTileRangeForExtentAndZ(
         extent,
@@ -427,6 +437,12 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
       for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
         for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
+          if (
+            rotation &&
+            !tileGrid.tileCoordIntersectsViewport([z, x, y], viewport)
+          ) {
+            continue;
+          }
           const tile = this.getTile(z, x, y, frameState);
           if (!tile) {
             continue;
