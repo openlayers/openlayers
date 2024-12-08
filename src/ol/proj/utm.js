@@ -12,8 +12,8 @@
  * edges.
  */
 
-import Projection from './Projection.js';
 import {toDegrees, toRadians, wrap} from '../math.js';
+import Projection from './Projection.js';
 
 /**
  * @typedef {Object} UTMZone

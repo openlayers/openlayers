@@ -2,8 +2,8 @@
  * @module ol/uri
  */
 
-import {hashZXY} from './tilecoord.js';
 import {modulo} from './math.js';
+import {hashZXY} from './tilecoord.js';
 
 /**
  * Appends query parameters to a URI.

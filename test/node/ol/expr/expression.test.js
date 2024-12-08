@@ -1,4 +1,3 @@
-import expect from '../../expect.js';
 import {
   AnyType,
   BooleanType,
@@ -25,6 +24,7 @@ import {
   MultiPolygon,
   Point,
 } from '../../../../src/ol/geom.js';
+import expect from '../../expect.js';
 
 describe('ol/expr/expression.js', () => {
   describe('parse()', () => {

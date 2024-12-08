@@ -1,8 +1,8 @@
-import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {OSM} from '../src/ol/source.js';
 import {WebGLTile as TileLayer} from '../src/ol/layer.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
+import {OSM} from '../src/ol/source.js';
 
 const variables = {};
 

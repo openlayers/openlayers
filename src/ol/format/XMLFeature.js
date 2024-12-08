@@ -1,9 +1,9 @@
 /**
  * @module ol/format/XMLFeature
  */
+import {extend} from '../array.js';
 import FeatureFormat from '../format/Feature.js';
 import {abstract} from '../util.js';
-import {extend} from '../array.js';
 import {getXMLSerializer, isDocument, parse} from '../xml.js';
 
 /**

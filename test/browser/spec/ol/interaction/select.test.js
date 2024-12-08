@@ -1,15 +1,16 @@
+import {spy as sinonSpy} from 'sinon';
 import Collection from '../../../../../src/ol/Collection.js';
 import Feature from '../../../../../src/ol/Feature.js';
-import Interaction from '../../../../../src/ol/interaction/Interaction.js';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
 import MapBrowserEventType from '../../../../../src/ol/MapBrowserEventType.js';
+import View from '../../../../../src/ol/View.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
+import Interaction from '../../../../../src/ol/interaction/Interaction.js';
 import Select from '../../../../../src/ol/interaction/Select.js';
-import Style from '../../../../../src/ol/style/Style.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
-import View from '../../../../../src/ol/View.js';
+import Style from '../../../../../src/ol/style/Style.js';
 
 describe('ol.interaction.Select', function () {
   let target, map, layer, source;
@@ -136,7 +137,7 @@ describe('ol.interaction.Select', function () {
     });
 
     it('select with single-click', function () {
-      const listenerSpy = sinon.spy(function (e) {
+      const listenerSpy = sinonSpy(function (e) {
         expect(e.selected).to.have.length(1);
       });
       select.on('select', listenerSpy);
@@ -150,7 +151,7 @@ describe('ol.interaction.Select', function () {
     });
 
     it('single-click outside the geometry', function () {
-      const listenerSpy = sinon.spy(function (e) {
+      const listenerSpy = sinonSpy(function (e) {
         expect(e.selected).to.have.length(1);
       });
       select.on('select', listenerSpy);
@@ -164,7 +165,7 @@ describe('ol.interaction.Select', function () {
     });
 
     it('select twice with single-click', function () {
-      const listenerSpy = sinon.spy(function (e) {
+      const listenerSpy = sinonSpy(function (e) {
         expect(e.selected).to.have.length(1);
       });
       select.on('select', listenerSpy);
@@ -179,7 +180,7 @@ describe('ol.interaction.Select', function () {
     });
 
     it('select with shift single-click', function () {
-      const listenerSpy = sinon.spy(function (e) {
+      const listenerSpy = sinonSpy(function (e) {
         expect(e.selected).to.have.length(1);
       });
       select.on('select', listenerSpy);
@@ -204,7 +205,7 @@ describe('ol.interaction.Select', function () {
     });
 
     it('select with single-click', function () {
-      const listenerSpy = sinon.spy(function (e) {
+      const listenerSpy = sinonSpy(function (e) {
         expect(e.selected).to.have.length(4);
       });
       select.on('select', listenerSpy);
@@ -218,7 +219,7 @@ describe('ol.interaction.Select', function () {
     });
 
     it('select with shift single-click', function () {
-      const listenerSpy = sinon.spy(function (e) {
+      const listenerSpy = sinonSpy(function (e) {
         expect(e.selected).to.have.length(4);
       });
       select.on('select', listenerSpy);
@@ -253,7 +254,7 @@ describe('ol.interaction.Select', function () {
     });
 
     it('with SHIFT + single-click', function () {
-      const listenerSpy = sinon.spy();
+      const listenerSpy = sinonSpy();
       select.on('select', listenerSpy);
 
       simulateEvent('singleclick', 10, -20, true);
@@ -360,7 +361,7 @@ describe('ol.interaction.Select', function () {
     });
 
     it('returns a layer from a selected feature', function () {
-      const listenerSpy = sinon.spy(function (e) {
+      const listenerSpy = sinonSpy(function (e) {
         const feature = e.selected[0];
         const layer_ = interaction.getLayer(feature);
         expect(e.selected).to.have.length(1);
@@ -412,7 +413,7 @@ describe('ol.interaction.Select', function () {
         interaction.setActive(false);
       });
       it('fires change:active', function () {
-        const listenerSpy = sinon.spy();
+        const listenerSpy = sinonSpy();
         interaction.on('change:active', listenerSpy);
         interaction.setActive(true);
         expect(listenerSpy.callCount).to.be(1);
@@ -443,7 +444,7 @@ describe('ol.interaction.Select', function () {
       it('changes the selected feature once', function () {
         map.addInteraction(firstInteraction);
 
-        const listenerSpy = sinon.spy();
+        const listenerSpy = sinonSpy();
         feature.on('change', listenerSpy);
 
         simulateEvent('singleclick', 10, -20, false);
@@ -459,7 +460,7 @@ describe('ol.interaction.Select', function () {
         map.removeInteraction(firstInteraction);
         map.addInteraction(secondInteraction);
 
-        const listenerSpy = sinon.spy();
+        const listenerSpy = sinonSpy();
         feature.on('change', listenerSpy);
 
         simulateEvent('singleclick', 10, -20, false);
@@ -489,10 +490,10 @@ describe('ol.interaction.Select', function () {
     //base case sanity check
     describe('without stop propagation', function () {
       it('both interactions dispatch select', function () {
-        const firstSelectSpy = sinon.spy();
+        const firstSelectSpy = sinonSpy();
         firstInteraction.on('select', firstSelectSpy);
 
-        const secondSelectSpy = sinon.spy();
+        const secondSelectSpy = sinonSpy();
         secondInteraction.on('select', secondSelectSpy);
 
         simulateEvent('singleclick', 10, -20);
@@ -504,10 +505,10 @@ describe('ol.interaction.Select', function () {
 
     describe('calling stop propagation', function () {
       it('only "last" added interaction dispatches select', function () {
-        const firstSelectSpy = sinon.spy();
+        const firstSelectSpy = sinonSpy();
         firstInteraction.on('select', firstSelectSpy);
 
-        const secondSelectSpy = sinon.spy(function (e) {
+        const secondSelectSpy = sinonSpy(function (e) {
           e.mapBrowserEvent.stopPropagation();
         });
         secondInteraction.on('select', secondSelectSpy);

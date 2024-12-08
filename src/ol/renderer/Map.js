@@ -2,13 +2,13 @@
  * @module ol/renderer/Map
  */
 import Disposable from '../Disposable.js';
-import {TRUE} from '../functions.js';
-import {abstract} from '../util.js';
-import {compose as composeTransform, makeInverse} from '../transform.js';
-import {getWidth} from '../extent.js';
-import {shared as iconImageCache} from '../style/IconImageCache.js';
-import {inView} from '../layer/Layer.js';
 import {wrapX} from '../coordinate.js';
+import {getWidth} from '../extent.js';
+import {TRUE} from '../functions.js';
+import {inView} from '../layer/Layer.js';
+import {shared as iconImageCache} from '../style/IconImageCache.js';
+import {compose as composeTransform, makeInverse} from '../transform.js';
+import {abstract} from '../util.js';
 
 /**
  * @template T

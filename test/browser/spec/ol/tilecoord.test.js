@@ -1,10 +1,10 @@
-import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 import {
   fromKey,
   getKey,
   hash,
   withinExtentAndZ,
 } from '../../../../src/ol/tilecoord.js';
+import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 
 describe('ol.TileCoord', function () {
   describe('create', function () {

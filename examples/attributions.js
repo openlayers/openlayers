@@ -1,8 +1,8 @@
 import Map from '../src/ol/Map.js';
-import OSM from '../src/ol/source/OSM.js';
-import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
 import {Attribution, defaults as defaultControls} from '../src/ol/control.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import OSM from '../src/ol/source/OSM.js';
 
 const attribution = new Attribution({
   collapsible: false,

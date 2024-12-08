@@ -1,15 +1,15 @@
-import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
-import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
-import {GeoJSON, WFS} from '../src/ol/format.js';
-import {Stroke, Style} from '../src/ol/style.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {
   and as andFilter,
   equalTo as equalToFilter,
   like as likeFilter,
 } from '../src/ol/format/filter.js';
+import {GeoJSON, WFS} from '../src/ol/format.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import {Stroke, Style} from '../src/ol/style.js';
 
 const vectorSource = new VectorSource();
 const vector = new VectorLayer({

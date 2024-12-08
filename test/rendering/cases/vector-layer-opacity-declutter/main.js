@@ -3,8 +3,8 @@ import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import {Polygon} from '../../../../src/ol/geom.js';
 import {Vector as VectorLayer} from '../../../../src/ol/layer.js';
-import {Vector as VectorSource} from '../../../../src/ol/source.js';
 import {fromLonLat} from '../../../../src/ol/proj.js';
+import {Vector as VectorSource} from '../../../../src/ol/source.js';
 
 const center = fromLonLat([8.6, 50.2]);
 

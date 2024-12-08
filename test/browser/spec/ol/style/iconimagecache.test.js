@@ -1,7 +1,7 @@
-import IconImage from '../../../../../src/ol/style/IconImage.js';
-import {VOID} from '../../../../../src/ol/functions.js';
-import {shared as iconImageCache} from '../../../../../src/ol/style/IconImageCache.js';
 import {listen} from '../../../../../src/ol/events.js';
+import {VOID} from '../../../../../src/ol/functions.js';
+import IconImage from '../../../../../src/ol/style/IconImage.js';
+import {shared as iconImageCache} from '../../../../../src/ol/style/IconImageCache.js';
 
 describe('ol.style.IconImageCache', function () {
   let originalMaxCacheSize;

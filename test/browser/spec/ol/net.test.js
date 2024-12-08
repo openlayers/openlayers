@@ -1,3 +1,4 @@
+import {spy as sinonSpy} from 'sinon';
 import {
   getJSON,
   jsonp as requestJSONP,
@@ -43,7 +44,7 @@ describe('ol/net', function () {
     let key, removeChild;
 
     function createCallback(url, done) {
-      removeChild = sinon.spy();
+      removeChild = sinonSpy();
       const callback = function (data) {
         expect(data).to.be(url + key);
         expect(removeChild.called).to.be(true);

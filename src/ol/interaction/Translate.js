@@ -2,13 +2,13 @@
  * @module ol/interaction/Translate
  */
 import Collection from '../Collection.js';
-import Event from '../events/Event.js';
 import Feature from '../Feature.js';
-import InteractionProperty from './Property.js';
-import PointerInteraction from './Pointer.js';
-import {TRUE} from '../functions.js';
+import Event from '../events/Event.js';
 import {always} from '../events/condition.js';
+import {TRUE} from '../functions.js';
 import {fromUserCoordinate, getUserProjection} from '../proj.js';
+import PointerInteraction from './Pointer.js';
+import InteractionProperty from './Property.js';
 
 /**
  * @enum {string}

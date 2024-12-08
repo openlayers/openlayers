@@ -1,6 +1,6 @@
-import DataTileSource from '../../../../../src/ol/source/DataTile.js';
 import FlowLayer from '../../../../../src/ol/layer/Flow.js';
 import FlowLayerRenderer from '../../../../../src/ol/renderer/webgl/FlowLayer.js';
+import DataTileSource from '../../../../../src/ol/source/DataTile.js';
 
 describe('ol/layer/Flow', () => {
   describe('constructor', () => {

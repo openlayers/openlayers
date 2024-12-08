@@ -1,5 +1,3 @@
-/* eslint-disable import/no-commonjs */
-
 /**
  * Modified from JSDoc's plugins/markdown and lib/jsdoc/util/markdown modules
  * (see https://github.com/jsdoc3/jsdoc/), which are licensed under the Apache 2

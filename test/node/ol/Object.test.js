@@ -1,7 +1,7 @@
+import {spy as sinonSpy} from 'sinon';
 import BaseObject from '../../../src/ol/Object.js';
-import expect from '../expect.js';
-import sinon from 'sinon';
 import {listen} from '../../../src/ol/events.js';
+import expect from '../expect.js';
 
 describe('ol/Object.js', function () {
   let o;
@@ -123,10 +123,10 @@ describe('ol/Object.js', function () {
     let listener1, listener2;
 
     beforeEach(function () {
-      listener1 = sinon.spy();
+      listener1 = sinonSpy();
       listen(o, 'change:k', listener1);
 
-      listener2 = sinon.spy();
+      listener2 = sinonSpy();
       listen(o, 'propertychange', listener2);
     });
 
@@ -155,10 +155,10 @@ describe('ol/Object.js', function () {
     let listener1, listener2;
 
     beforeEach(function () {
-      listener1 = sinon.spy();
+      listener1 = sinonSpy();
       listen(o, 'change:k', listener1);
 
-      listener2 = sinon.spy();
+      listener2 = sinonSpy();
       listen(o, 'propertychange', listener2);
     });
 
@@ -191,7 +191,7 @@ describe('ol/Object.js', function () {
       o.setX = function (x) {
         this.set('x', x);
       };
-      sinon.spy(o, 'setX');
+      sinonSpy(o, 'setX');
     });
 
     it('does not call the setter', function () {
@@ -208,7 +208,7 @@ describe('ol/Object.js', function () {
       o.getX = function () {
         return 1;
       };
-      sinon.spy(o, 'getX');
+      sinonSpy(o, 'getX');
     });
 
     it('does not call the getter', function () {
@@ -230,9 +230,9 @@ describe('ol/Object.js', function () {
     let listener1, listener2;
 
     beforeEach(function () {
-      listener1 = sinon.spy();
+      listener1 = sinonSpy();
       listen(o, 'change:k', listener1);
-      listener2 = sinon.spy();
+      listener2 = sinonSpy();
       listen(o, 'change:K', listener2);
     });
 

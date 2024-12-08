@@ -1,8 +1,8 @@
 /**
  * @module ol/layer/WebGLVector
  */
-import Layer from './Layer.js';
 import WebGLVectorLayerRenderer from '../renderer/webgl/VectorLayer.js';
+import Layer from './Layer.js';
 
 /***
  * @template T

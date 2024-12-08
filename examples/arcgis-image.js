@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {ImageArcGISRest, OSM} from '../src/ol/source.js';
 import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
+import {ImageArcGISRest, OSM} from '../src/ol/source.js';
 
 const url =
   'https://sampleserver6.arcgisonline.com/ArcGIS/rest/services/' +

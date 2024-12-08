@@ -2,11 +2,11 @@
  * @module ol/source/ogcTileUtil
  */
 
-import TileGrid from '../tilegrid/TileGrid.js';
+import {error as logError} from '../console.js';
+import {getIntersection as intersectExtents} from '../extent.js';
 import {getJSON, resolveUrl} from '../net.js';
 import {get as getProjection} from '../proj.js';
-import {getIntersection as intersectExtents} from '../extent.js';
-import {error as logError} from '../console.js';
+import TileGrid from '../tilegrid/TileGrid.js';
 
 /**
  * See https://ogcapi.ogc.org/tiles/.

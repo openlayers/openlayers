@@ -1,6 +1,6 @@
-import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
 import {LineString, Point, Polygon} from '../src/ol/geom.js';
 import {toContext} from '../src/ol/render.js';
+import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
 
 const canvas = document.getElementById('canvas');
 const vectorContext = toContext(canvas.getContext('2d'), {size: [100, 100]});

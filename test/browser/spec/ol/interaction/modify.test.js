@@ -1,31 +1,32 @@
-import Circle from '../../../../../src/ol/geom/Circle.js';
-import CircleStyle from '../../../../../src/ol/style/Circle.js';
+import {spy as sinonSpy} from 'sinon';
 import Collection from '../../../../../src/ol/Collection.js';
-import Event from '../../../../../src/ol/events/Event.js';
 import Feature from '../../../../../src/ol/Feature.js';
-import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js';
-import LineString from '../../../../../src/ol/geom/LineString.js';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
-import Modify, {ModifyEvent} from '../../../../../src/ol/interaction/Modify.js';
-import Point from '../../../../../src/ol/geom/Point.js';
-import Polygon, {fromExtent} from '../../../../../src/ol/geom/Polygon.js';
-import Snap from '../../../../../src/ol/interaction/Snap.js';
-import VectorLayer from '../../../../../src/ol/layer/Vector.js';
-import VectorSource from '../../../../../src/ol/source/Vector.js';
 import View from '../../../../../src/ol/View.js';
-import {Fill, Style} from '../../../../../src/ol/style.js';
-import {MultiPoint} from '../../../../../src/ol/geom.js';
-import {
-  clearUserProjection,
-  setUserProjection,
-  useGeographic,
-} from '../../../../../src/ol/proj.js';
+import Event from '../../../../../src/ol/events/Event.js';
 import {
   click,
   doubleClick,
   never,
 } from '../../../../../src/ol/events/condition.js';
+import Circle from '../../../../../src/ol/geom/Circle.js';
+import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js';
+import LineString from '../../../../../src/ol/geom/LineString.js';
+import Point from '../../../../../src/ol/geom/Point.js';
+import Polygon, {fromExtent} from '../../../../../src/ol/geom/Polygon.js';
+import {MultiPoint} from '../../../../../src/ol/geom.js';
+import Modify, {ModifyEvent} from '../../../../../src/ol/interaction/Modify.js';
+import Snap from '../../../../../src/ol/interaction/Snap.js';
+import VectorLayer from '../../../../../src/ol/layer/Vector.js';
+import {
+  clearUserProjection,
+  setUserProjection,
+  useGeographic,
+} from '../../../../../src/ol/proj.js';
+import VectorSource from '../../../../../src/ol/source/Vector.js';
+import CircleStyle from '../../../../../src/ol/style/Circle.js';
+import {Fill, Style} from '../../../../../src/ol/style.js';
 
 describe('ol.interaction.Modify', function () {
   let target, map, layer, source, features;
@@ -116,8 +117,8 @@ describe('ol.interaction.Modify', function () {
   /**
    * Tracks events triggered by the interaction as well as feature
    * modifications. Helper function to
-   * @param {ol.Feature} feature Modified feature.
-   * @param {ol.interaction.Modify} interaction The interaction.
+   * @param {Feature} feature Modified feature.
+   * @param {Modify} interaction The interaction.
    * @return {Array<ModifyEvent|string>} events
    */
   function trackEvents(feature, interaction) {
@@ -139,7 +140,7 @@ describe('ol.interaction.Modify', function () {
    * that first and last event are correct ModifyEvents and that feature
    * modifications event are in between.
    * @param {Array<ModifyEvent|string>} events The events.
-   * @param {Array<ol.Feature>} features The features.
+   * @param {Array<Feature>} features The features.
    */
   function validateEvents(events, features) {
     const startevent = events[0];
@@ -1039,7 +1040,7 @@ describe('ol.interaction.Modify', function () {
 
   describe('insertVertexCondition', function () {
     it('calls the callback function', function () {
-      const listenerSpy = sinon.spy(function (event) {
+      const listenerSpy = sinonSpy(function (event) {
         return false;
       });
 

@@ -1,15 +1,14 @@
-import Circle from '../../../../src/ol/geom/Circle.js';
+import fse from 'fs-extra';
 import Feature from '../../../../src/ol/Feature.js';
+import {equals} from '../../../../src/ol/extent.js';
 import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
+import Circle from '../../../../src/ol/geom/Circle.js';
 import GeometryCollection from '../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import LinearRing from '../../../../src/ol/geom/LinearRing.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import RenderFeature from '../../../../src/ol/render/Feature.js';
-import expect from '../../expect.js';
-import fse from 'fs-extra';
 import {
   Projection,
   fromLonLat,
@@ -17,7 +16,8 @@ import {
   toLonLat,
   transform,
 } from '../../../../src/ol/proj.js';
-import {equals} from '../../../../src/ol/extent.js';
+import RenderFeature from '../../../../src/ol/render/Feature.js';
+import expect from '../../expect.js';
 
 describe('ol/format/GeoJSON.js', function () {
   let format;

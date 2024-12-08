@@ -1,9 +1,9 @@
-import KML from '../../../../src/ol/format/KML.js';
 import Map from '../../../../src/ol/Map.js';
-import TileLayer from '../../../../src/ol/layer/Tile.js';
-import VectorSource from '../../../../src/ol/source/Vector.js';
 import View from '../../../../src/ol/View.js';
+import KML from '../../../../src/ol/format/KML.js';
+import TileLayer from '../../../../src/ol/layer/Tile.js';
 import WebGLPointsLayer from '../../../../src/ol/layer/WebGLPoints.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
 
 const vector = new WebGLPointsLayer({

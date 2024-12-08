@@ -1,7 +1,8 @@
 /**
  * @module ol/format/GML2
  */
-import GMLBase, {GMLNS} from './GMLBase.js';
+import {createOrUpdate} from '../extent.js';
+import {get as getProjection} from '../proj.js';
 import {
   OBJECT_PROPERTY_NODE_FACTORY,
   createElementNS,
@@ -13,12 +14,11 @@ import {
   pushParseAndPop,
   pushSerializeAndPop,
 } from '../xml.js';
-import {createOrUpdate} from '../extent.js';
-import {get as getProjection} from '../proj.js';
 import {
   transformExtentWithOptions,
   transformGeometryWithOptions,
 } from './Feature.js';
+import GMLBase, {GMLNS} from './GMLBase.js';
 import {writeStringTextNode} from './xsd.js';
 
 /**

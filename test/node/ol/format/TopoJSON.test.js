@@ -1,11 +1,11 @@
+import fse from 'fs-extra';
 import Feature from '../../../../src/ol/Feature.js';
 import FeatureFormat from '../../../../src/ol/format/Feature.js';
+import TopoJSON from '../../../../src/ol/format/TopoJSON.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import TopoJSON from '../../../../src/ol/format/TopoJSON.js';
-import expect from '../../expect.js';
-import fse from 'fs-extra';
 import {transform} from '../../../../src/ol/proj.js';
+import expect from '../../expect.js';
 
 const aruba = {
   type: 'Topology',

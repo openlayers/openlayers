@@ -1,9 +1,9 @@
 import Map from '../../../../src/ol/Map.js';
-import TileLayer from '../../../../src/ol/layer/Tile.js';
 import View from '../../../../src/ol/View.js';
+import TileLayer from '../../../../src/ol/layer/Tile.js';
+import {toLonLat} from '../../../../src/ol/proj.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
 import {createXYZ} from '../../../../src/ol/tilegrid.js';
-import {toLonLat} from '../../../../src/ol/proj.js';
 
 const tileGrid = createXYZ();
 const extent = tileGrid.getTileCoordExtent([5, 5, 12]);

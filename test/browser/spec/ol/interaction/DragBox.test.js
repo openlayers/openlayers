@@ -1,8 +1,8 @@
-import DragBox from '../../../../../src/ol/interaction/DragBox.js';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
 import View from '../../../../../src/ol/View.js';
 import {always} from '../../../../../src/ol/events/condition.js';
+import DragBox from '../../../../../src/ol/interaction/DragBox.js';
 
 describe('ol/interaction/DragBox', () => {
   let dragBox, map;

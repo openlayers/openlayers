@@ -1,6 +1,7 @@
 /**
  * @module ol/reproj
  */
+import {createCanvasContext2D, releaseCanvas} from './dom.js';
 import {
   containsCoordinate,
   createEmpty,
@@ -11,9 +12,8 @@ import {
   getTopLeft,
   getWidth,
 } from './extent.js';
-import {createCanvasContext2D, releaseCanvas} from './dom.js';
-import {getPointResolution, transform} from './proj.js';
 import {solveLinearSystem} from './math.js';
+import {getPointResolution, transform} from './proj.js';
 
 let brokenDiagonalRendering_;
 

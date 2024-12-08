@@ -76,7 +76,8 @@ export const UNSIGNED_INT = 0x1405;
  */
 export const FLOAT = 0x1406;
 
-/** end of goog.webgl constants
+/**
+  end of goog.webgl constants
  */
 
 /**
@@ -105,7 +106,7 @@ export function getContext(canvas, attributes) {
       if (context) {
         return /** @type {!WebGLRenderingContext} */ (context);
       }
-    } catch (e) {
+    } catch {
       // pass
     }
   }

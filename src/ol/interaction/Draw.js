@@ -1,24 +1,15 @@
 /**
  * @module ol/interaction/Draw
  */
-import Circle from '../geom/Circle.js';
-import Event from '../events/Event.js';
-import EventType from '../events/EventType.js';
 import Feature from '../Feature.js';
-import GeometryCollection from '../geom/GeometryCollection.js';
-import InteractionProperty from './Property.js';
-import LineString from '../geom/LineString.js';
 import MapBrowserEvent from '../MapBrowserEvent.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
-import MultiLineString from '../geom/MultiLineString.js';
-import MultiPoint from '../geom/MultiPoint.js';
-import MultiPolygon from '../geom/MultiPolygon.js';
-import Point from '../geom/Point.js';
-import PointerInteraction from './Pointer.js';
-import Polygon, {fromCircle, makeRegular} from '../geom/Polygon.js';
-import VectorLayer from '../layer/Vector.js';
-import VectorSource from '../source/Vector.js';
-import {FALSE, TRUE} from '../functions.js';
+import {
+  distance,
+  squaredDistance as squaredCoordinateDistance,
+} from '../coordinate.js';
+import Event from '../events/Event.js';
+import EventType from '../events/EventType.js';
 import {
   always,
   never,
@@ -32,14 +23,23 @@ import {
   getTopLeft,
   getTopRight,
 } from '../extent.js';
-import {clamp, squaredDistance, toFixed} from '../math.js';
-import {createEditingStyle} from '../style/Style.js';
-import {
-  distance,
-  squaredDistance as squaredCoordinateDistance,
-} from '../coordinate.js';
-import {fromUserCoordinate, getUserProjection} from '../proj.js';
+import {FALSE, TRUE} from '../functions.js';
+import Circle from '../geom/Circle.js';
+import GeometryCollection from '../geom/GeometryCollection.js';
+import LineString from '../geom/LineString.js';
+import MultiLineString from '../geom/MultiLineString.js';
+import MultiPoint from '../geom/MultiPoint.js';
+import MultiPolygon from '../geom/MultiPolygon.js';
+import Point from '../geom/Point.js';
+import Polygon, {fromCircle, makeRegular} from '../geom/Polygon.js';
 import {getStrideForLayout} from '../geom/SimpleGeometry.js';
+import VectorLayer from '../layer/Vector.js';
+import {clamp, squaredDistance, toFixed} from '../math.js';
+import {fromUserCoordinate, getUserProjection} from '../proj.js';
+import VectorSource from '../source/Vector.js';
+import {createEditingStyle} from '../style/Style.js';
+import PointerInteraction from './Pointer.js';
+import InteractionProperty from './Property.js';
 
 /**
  * @typedef {Object} Options

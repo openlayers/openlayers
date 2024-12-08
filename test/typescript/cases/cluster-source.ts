@@ -1,8 +1,8 @@
-import ClusterSource from '../../../src/ol/source/Cluster.js';
 import Feature from '../../../src/ol/Feature.js';
 import Geometry from '../../../src/ol/geom/Geometry.js';
 import Point from '../../../src/ol/geom/Point.js';
 import VectorLayer from '../../../src/ol/layer/Vector.js';
+import ClusterSource from '../../../src/ol/source/Cluster.js';
 import VectorSource from '../../../src/ol/source/Vector.js';
 
 export const layer1: VectorLayer<ClusterSource<Feature<Geometry>>> =

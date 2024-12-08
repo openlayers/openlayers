@@ -3,16 +3,18 @@
  */
 import Collection from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
-import Event from '../events/Event.js';
-import EventType from '../events/EventType.js';
 import Feature from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
-import Point from '../geom/Point.js';
-import PointerInteraction from './Pointer.js';
-import RBush from '../structs/RBush.js';
-import VectorEventType from '../source/VectorEventType.js';
-import VectorLayer from '../layer/Vector.js';
-import VectorSource from '../source/Vector.js';
+import {equals} from '../array.js';
+import {
+  closestOnSegment,
+  distance as coordinateDistance,
+  equals as coordinatesEqual,
+  squaredDistance as squaredCoordinateDistance,
+  squaredDistanceToSegment,
+} from '../coordinate.js';
+import Event from '../events/Event.js';
+import EventType from '../events/EventType.js';
 import {
   altKeyOnly,
   always,
@@ -24,16 +26,9 @@ import {
   buffer as bufferExtent,
   createOrUpdateFromCoordinate as createExtent,
 } from '../extent.js';
-import {
-  closestOnSegment,
-  distance as coordinateDistance,
-  equals as coordinatesEqual,
-  squaredDistance as squaredCoordinateDistance,
-  squaredDistanceToSegment,
-} from '../coordinate.js';
-import {createEditingStyle} from '../style/Style.js';
-import {equals} from '../array.js';
+import Point from '../geom/Point.js';
 import {fromCircle} from '../geom/Polygon.js';
+import VectorLayer from '../layer/Vector.js';
 import {
   fromUserCoordinate,
   fromUserExtent,
@@ -41,7 +36,12 @@ import {
   toUserCoordinate,
   toUserExtent,
 } from '../proj.js';
+import VectorSource from '../source/Vector.js';
+import VectorEventType from '../source/VectorEventType.js';
+import RBush from '../structs/RBush.js';
+import {createEditingStyle} from '../style/Style.js';
 import {getUid} from '../util.js';
+import PointerInteraction from './Pointer.js';
 
 /**
  * The segment index assigned to a circle's center when

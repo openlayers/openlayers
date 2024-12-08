@@ -1,9 +1,9 @@
 /**
  * @module ol/geom/SimpleGeometry
  */
-import Geometry from './Geometry.js';
-import {abstract} from '../util.js';
 import {createOrUpdateFromFlatCoordinates, getCenter} from '../extent.js';
+import {abstract} from '../util.js';
+import Geometry from './Geometry.js';
 import {rotate, scale, transform2D, translate} from './flat/transform.js';
 
 /**

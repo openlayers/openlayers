@@ -1,5 +1,5 @@
-import expect from '../../../expect.js';
 import {flipXY} from '../../../../../src/ol/geom/flat/flip.js';
+import expect from '../../../expect.js';
 
 describe('ol/geom/flat/flip.js', function () {
   describe('flipXY', function () {

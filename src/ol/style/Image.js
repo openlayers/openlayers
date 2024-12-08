@@ -1,8 +1,8 @@
 /**
  * @module ol/style/Image
  */
-import {abstract} from '../util.js';
 import {toSize} from '../size.js';
+import {abstract} from '../util.js';
 
 /**
  * @typedef {Object} Options

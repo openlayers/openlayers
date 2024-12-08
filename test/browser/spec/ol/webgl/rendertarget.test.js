@@ -1,3 +1,4 @@
+import {spy as sinonSpy} from 'sinon';
 import WebGLHelper from '../../../../../src/ol/webgl/Helper.js';
 import WebGLRenderTarget from '../../../../../src/ol/webgl/RenderTarget.js';
 
@@ -43,7 +44,7 @@ describe('ol.webgl.RenderTarget', function () {
 
     it('does nothing if the size has not changed', function () {
       const rt = new WebGLRenderTarget(helper, [12, 34]);
-      const spy = sinon.spy(rt, 'updateSize_');
+      const spy = sinonSpy(rt, 'updateSize_');
       rt.setSize([12, 34]);
       expect(spy.called).to.be(false);
       rt.setSize([12, 345]);
@@ -76,7 +77,7 @@ describe('ol.webgl.RenderTarget', function () {
     it('does not call gl.readPixels again when #clearCachedData is not called', function () {
       const rt = new WebGLRenderTarget(helper, [4, 4]);
       helper.createTexture([4, 4], testImage_4x4, rt.getTexture());
-      const spy = sinon.spy(rt.helper_.getGL(), 'readPixels');
+      const spy = sinonSpy(rt.helper_.getGL(), 'readPixels');
       rt.readAll();
       expect(spy.callCount).to.eql(1);
       rt.readAll();
@@ -109,7 +110,7 @@ describe('ol.webgl.RenderTarget', function () {
     it('does not call gl.readPixels again when #clearCachedData is not called', function () {
       const rt = new WebGLRenderTarget(helper, [4, 4]);
       helper.createTexture([4, 4], testImage_4x4, rt.getTexture());
-      const spy = sinon.spy(rt.helper_.getGL(), 'readPixels');
+      const spy = sinonSpy(rt.helper_.getGL(), 'readPixels');
       rt.readPixel(0, 0);
       expect(spy.callCount).to.eql(1);
       rt.readPixel(1, 1);

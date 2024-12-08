@@ -2,13 +2,8 @@
  * @module ol/render/canvas/style
  */
 
-import Circle from '../../style/Circle.js';
-import Fill from '../../style/Fill.js';
-import Icon from '../../style/Icon.js';
-import RegularShape from '../../style/RegularShape.js';
-import Stroke from '../../style/Stroke.js';
-import Style from '../../style/Style.js';
-import Text from '../../style/Text.js';
+import {NO_COLOR} from '../../color.js';
+import {buildExpression, newEvaluationContext} from '../../expr/cpu.js';
 import {
   BooleanType,
   ColorType,
@@ -18,10 +13,15 @@ import {
   computeGeometryType,
   newParsingContext,
 } from '../../expr/expression.js';
-import {NO_COLOR} from '../../color.js';
-import {buildExpression, newEvaluationContext} from '../../expr/cpu.js';
 import {isEmpty} from '../../obj.js';
 import {toSize} from '../../size.js';
+import Circle from '../../style/Circle.js';
+import Fill from '../../style/Fill.js';
+import Icon from '../../style/Icon.js';
+import RegularShape from '../../style/RegularShape.js';
+import Stroke from '../../style/Stroke.js';
+import Style from '../../style/Style.js';
+import Text from '../../style/Text.js';
 
 /**
  * @fileoverview This module includes functions to build styles for the canvas renderer.  Building

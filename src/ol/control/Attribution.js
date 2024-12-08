@@ -1,12 +1,12 @@
 /**
  * @module ol/control/Attribution
  */
-import Control from './Control.js';
-import EventType from '../events/EventType.js';
-import {CLASS_COLLAPSED, CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {equals} from '../array.js';
+import {CLASS_COLLAPSED, CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {removeChildren, replaceNode} from '../dom.js';
+import EventType from '../events/EventType.js';
 import {toPromise} from '../functions.js';
+import Control from './Control.js';
 
 /**
  * @typedef {Object} Options

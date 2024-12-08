@@ -1,14 +1,14 @@
 /**
  * @module ol/interaction/DragRotate
  */
-import PointerInteraction from './Pointer.js';
-import {FALSE} from '../functions.js';
 import {
   altShiftKeysOnly,
   mouseActionButton,
   mouseOnly,
 } from '../events/condition.js';
+import {FALSE} from '../functions.js';
 import {disable} from '../rotationconstraint.js';
+import PointerInteraction from './Pointer.js';
 
 /**
  * @typedef {Object} Options

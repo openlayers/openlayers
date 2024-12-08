@@ -1,8 +1,9 @@
-import Projection from '../../../src/ol/proj/Projection.js';
-import View from '../../../src/ol/View.js';
-import expect from '../expect.js';
 import proj4 from 'proj4';
+import View from '../../../src/ol/View.js';
+import Projection from '../../../src/ol/proj/Projection.js';
 import {HALF_SIZE} from '../../../src/ol/proj/epsg3857.js';
+import {METERS_PER_UNIT as metersPerDegree} from '../../../src/ol/proj/epsg4326.js';
+import {register} from '../../../src/ol/proj/proj4.js';
 import {
   METERS_PER_UNIT,
   addCommon,
@@ -15,8 +16,8 @@ import {
   fromUserCoordinate,
   fromUserExtent,
   fromUserResolution,
-  getPointResolution,
   get as getProjection,
+  getPointResolution,
   getTransform,
   getTransformFromProjections,
   getUserProjection,
@@ -29,8 +30,7 @@ import {
   transformExtent,
   useGeographic,
 } from '../../../src/ol/proj.js';
-import {METERS_PER_UNIT as metersPerDegree} from '../../../src/ol/proj/epsg4326.js';
-import {register} from '../../../src/ol/proj/proj4.js';
+import expect from '../expect.js';
 
 describe('ol/proj.js', function () {
   afterEach(function () {

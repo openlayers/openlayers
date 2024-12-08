@@ -2,7 +2,6 @@
  * @module ol/format/WKB
  */
 import Feature from '../Feature.js';
-import FeatureFormat, {transformGeometryWithOptions} from './Feature.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
@@ -10,9 +9,10 @@ import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
+import SimpleGeometry from '../geom/SimpleGeometry.js';
 import {get as getProjection} from '../proj.js';
 
-import SimpleGeometry from '../geom/SimpleGeometry.js';
+import FeatureFormat, {transformGeometryWithOptions} from './Feature.js';
 
 // WKB spec: https://www.ogc.org/standards/sfa
 // EWKB spec: https://raw.githubusercontent.com/postgis/postgis/2.1.0/doc/ZMSgeoms.txt
@@ -130,7 +130,7 @@ class WkbReader {
    * @return {import('../coordinate.js').Coordinate} coords for Point
    */
   readPoint() {
-    /** @type import('../coordinate.js').Coordinate */
+    /** @type {import('../coordinate.js').Coordinate} */
     const coords = [];
 
     coords.push(this.readDouble());
@@ -151,7 +151,7 @@ class WkbReader {
   readLineString() {
     const numPoints = this.readUint32();
 
-    /** @type Array<import('../coordinate.js').Coordinate> */
+    /** @type {Array<import('../coordinate.js').Coordinate>} */
     const coords = [];
     for (let i = 0; i < numPoints; i++) {
       coords.push(this.readPoint());
@@ -166,7 +166,7 @@ class WkbReader {
   readPolygon() {
     const numRings = this.readUint32();
 
-    /** @type Array<Array<import('../coordinate.js').Coordinate>> */
+    /** @type {Array<Array<import('../coordinate.js').Coordinate>>} */
     const rings = [];
     for (let i = 0; i < numRings; i++) {
       rings.push(this.readLineString()); // as a LinearRing

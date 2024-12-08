@@ -1,15 +1,16 @@
+import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import GeometryCollection from '../../../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../../../src/ol/geom/LineString.js';
 import LinearRing from '../../../../../../src/ol/geom/LinearRing.js';
-import MixedGeometryBatch from '../../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
 import MultiLineString from '../../../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../../src/ol/geom/Polygon.js';
-import RenderFeature from '../../../../../../src/ol/render/Feature.js';
 import {getUid} from '../../../../../../src/ol/index.js';
+import RenderFeature from '../../../../../../src/ol/render/Feature.js';
+import MixedGeometryBatch from '../../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
 
 describe('MixedGeometryBatch', function () {
   /**
@@ -25,7 +26,7 @@ describe('MixedGeometryBatch', function () {
     let features, spy;
     beforeEach(() => {
       features = [new Feature(), new Feature(), new Feature()];
-      spy = sinon.spy(mixedBatch, 'addFeature');
+      spy = sinonSpy(mixedBatch, 'addFeature');
       mixedBatch.addFeatures(features);
     });
     it('calls addFeature for each feature', () => {

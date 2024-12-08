@@ -1,7 +1,8 @@
-import Event from '../../../../../src/ol/events/Event.js';
+import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
 import View from '../../../../../src/ol/View.js';
+import Event from '../../../../../src/ol/events/Event.js';
 import {MAC} from '../../../../../src/ol/has.js';
 
 describe('ol.interaction.KeyboardZoom', function () {
@@ -25,7 +26,7 @@ describe('ol.interaction.KeyboardZoom', function () {
   describe('handleEvent()', function () {
     it('zooms on + and - keys', function () {
       const view = map.getView();
-      const spy = sinon.spy(view, 'animateInternal');
+      const spy = sinonSpy(view, 'animateInternal');
       const event = new MapBrowserEvent('keydown', map, {
         type: 'keydown',
         target: map.getTargetElement(),
@@ -47,7 +48,7 @@ describe('ol.interaction.KeyboardZoom', function () {
 
     it('does nothing if the target is editable', function () {
       const view = map.getView();
-      const spy = sinon.spy(view, 'animateInternal');
+      const spy = sinonSpy(view, 'animateInternal');
       const event = new MapBrowserEvent('keydown', map, {
         type: 'keydown',
         target: document.createElement('input'),
@@ -61,7 +62,7 @@ describe('ol.interaction.KeyboardZoom', function () {
 
     it('does nothing if platform modifier key is pressed at the same time', function () {
       const view = map.getView();
-      const spy = sinon.spy(view, 'animateInternal');
+      const spy = sinonSpy(view, 'animateInternal');
       const event = new MapBrowserEvent('keydown', map, {
         type: 'keydown',
         target: map.getTargetElement(),
@@ -120,7 +121,7 @@ describe('ol.interaction.KeyboardZoom', function () {
       // we have to wait until the map is rendered
       olMap.on('rendercomplete', () => {
         const view = map.getView();
-        const spy = sinon.spy(view, 'animateInternal');
+        const spy = sinonSpy(view, 'animateInternal');
         const event = new MapBrowserEvent('keydown', map, {
           type: 'keydown',
           target: customMapEl,

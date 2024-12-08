@@ -1,15 +1,15 @@
-import DragAndDrop from '../../../../../src/ol/interaction/DragAndDrop.js';
+import View from '../../../../../src/ol/View.js';
 import Event from '../../../../../src/ol/events/Event.js';
 import EventTarget from '../../../../../src/ol/events/Target.js';
 import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
 import MVT from '../../../../../src/ol/format/MVT.js';
-import VectorSource from '../../../../../src/ol/source/Vector.js';
-import View from '../../../../../src/ol/View.js';
+import DragAndDrop from '../../../../../src/ol/interaction/DragAndDrop.js';
 import {
   clearUserProjection,
   transform,
   useGeographic,
 } from '../../../../../src/ol/proj.js';
+import VectorSource from '../../../../../src/ol/source/Vector.js';
 
 where('FileReader').describe('ol.interaction.DragAndDrop', function () {
   let viewport, map, interaction;

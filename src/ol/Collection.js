@@ -1,8 +1,8 @@
 /**
  * @module ol/Collection
  */
-import BaseObject from './Object.js';
 import CollectionEventType from './CollectionEventType.js';
+import BaseObject from './Object.js';
 import Event from './events/Event.js';
 
 /**

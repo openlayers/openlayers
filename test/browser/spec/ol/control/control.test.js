@@ -1,5 +1,5 @@
-import Control from '../../../../../src/ol/control/Control.js';
 import Map from '../../../../../src/ol/Map.js';
+import Control from '../../../../../src/ol/control/Control.js';
 
 describe('ol.control.Control', function () {
   let map, control;
@@ -38,7 +38,7 @@ describe('element', function () {
       });
       expect(control.element).to.be(null);
       map.addControl(control);
-    } catch (e) {
+    } catch {
       expect().fail();
     }
     disposeMap(map);

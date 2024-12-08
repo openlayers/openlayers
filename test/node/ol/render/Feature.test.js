@@ -1,8 +1,3 @@
-import RenderFeature, {
-  toFeature,
-  toGeometry,
-} from '../../../../src/ol/render/Feature.js';
-import expect from '../../expect.js';
 import {
   LineString,
   MultiLineString,
@@ -11,6 +6,11 @@ import {
   Point,
   Polygon,
 } from '../../../../src/ol/geom.js';
+import RenderFeature, {
+  toFeature,
+  toGeometry,
+} from '../../../../src/ol/render/Feature.js';
+import expect from '../../expect.js';
 
 describe('ol/render/Feature', function () {
   describe('toGeometry()', function () {

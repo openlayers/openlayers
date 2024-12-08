@@ -4,8 +4,8 @@
 
 import ImageState from '../ImageState.js';
 import {asArray} from '../color.js';
-import {get as getIconImage} from './IconImage.js';
 import {getUid} from '../util.js';
+import {get as getIconImage} from './IconImage.js';
 
 /**
  * @typedef {Object} Options

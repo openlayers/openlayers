@@ -1,7 +1,10 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import Point from '../src/ol/geom/Point.js';
 import View from '../src/ol/View.js';
+import {boundingExtent} from '../src/ol/extent.js';
+import Point from '../src/ol/geom/Point.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import {Cluster, OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {
   Circle as CircleStyle,
   Fill,
@@ -9,9 +12,6 @@ import {
   Style,
   Text,
 } from '../src/ol/style.js';
-import {Cluster, OSM, Vector as VectorSource} from '../src/ol/source.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {boundingExtent} from '../src/ol/extent.js';
 
 const distanceInput = document.getElementById('distance');
 const minDistanceInput = document.getElementById('min-distance');

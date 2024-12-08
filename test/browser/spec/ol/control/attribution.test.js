@@ -1,9 +1,9 @@
-import Attribution from '../../../../../src/ol/control/Attribution.js';
 import Map from '../../../../../src/ol/Map.js';
 import Tile from '../../../../../src/ol/Tile.js';
+import View from '../../../../../src/ol/View.js';
+import Attribution from '../../../../../src/ol/control/Attribution.js';
 import TileLayer from '../../../../../src/ol/layer/Tile.js';
 import TileSource from '../../../../../src/ol/source/Tile.js';
-import View from '../../../../../src/ol/View.js';
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
 
 describe('ol.control.Attribution', function () {

@@ -1,8 +1,8 @@
-import {Feature, Map, View} from '../../../../src/ol/index.js';
 import {GeoJSON, MVT} from '../../../../src/ol/format.js';
+import {Feature, Map, View} from '../../../../src/ol/index.js';
 import {VectorTile as VectorTileLayer} from '../../../../src/ol/layer.js';
-import {VectorTile as VectorTileSource} from '../../../../src/ol/source.js';
 import {fromLonLat} from '../../../../src/ol/proj.js';
+import {VectorTile as VectorTileSource} from '../../../../src/ol/source.js';
 
 const center = fromLonLat([0.26, 24.08]);
 

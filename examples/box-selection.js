@@ -1,12 +1,12 @@
-import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import {platformModifierKeyOnly} from '../src/ol/events/condition.js';
+import {getWidth} from '../src/ol/extent.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
+import {DragBox, Select} from '../src/ol/interaction.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import View from '../src/ol/View.js';
-import {DragBox, Select} from '../src/ol/interaction.js';
 import {Fill, Stroke, Style} from '../src/ol/style.js';
-import {getWidth} from '../src/ol/extent.js';
-import {platformModifierKeyOnly} from '../src/ol/events/condition.js';
 
 const vectorSource = new VectorSource({
   url: 'https://openlayers.org/data/vector/ecoregions.json',

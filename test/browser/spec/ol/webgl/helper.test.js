@@ -1,8 +1,4 @@
-import WebGLArrayBuffer from '../../../../../src/ol/webgl/Buffer.js';
-import WebGLHelper, {
-  DefaultUniform,
-} from '../../../../../src/ol/webgl/Helper.js';
-import {ARRAY_BUFFER, FLOAT, STATIC_DRAW} from '../../../../../src/ol/webgl.js';
+import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import {
   create as createTransform,
   rotate as rotateTransform,
@@ -10,6 +6,11 @@ import {
   translate as translateTransform,
 } from '../../../../../src/ol/transform.js';
 import {getUid} from '../../../../../src/ol/util.js';
+import WebGLArrayBuffer from '../../../../../src/ol/webgl/Buffer.js';
+import WebGLHelper, {
+  DefaultUniform,
+} from '../../../../../src/ol/webgl/Helper.js';
+import {ARRAY_BUFFER, FLOAT, STATIC_DRAW} from '../../../../../src/ol/webgl.js';
 
 const VERTEX_SHADER = `
   precision mediump float;
@@ -184,8 +185,8 @@ describe('ol/webgl/WebGLHelper', function () {
       describe('avoid resizing the canvas if not required', () => {
         let widthSpy, heightSpy;
         beforeEach(function () {
-          widthSpy = sinon.spy(h.getCanvas(), 'width', ['set']);
-          heightSpy = sinon.spy(h.getCanvas(), 'height', ['set']);
+          widthSpy = sinonSpy(h.getCanvas(), 'width', ['set']);
+          heightSpy = sinonSpy(h.getCanvas(), 'height', ['set']);
           // same size and pixel ratio
           h.prepareDraw({
             pixelRatio: 2,
@@ -426,7 +427,7 @@ describe('ol/webgl/WebGLHelper', function () {
     });
 
     it('enables attributes based on the given array (FLOAT)', function () {
-      const spy = sinon.spy(h, 'enableAttributeArray_');
+      const spy = sinonSpy(h, 'enableAttributeArray_');
       h.enableAttributes(baseAttrs);
       const bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
 
@@ -452,11 +453,11 @@ describe('ol/webgl/WebGLHelper', function () {
   describe('#applyFrameState', function () {
     let stubFloat, stubVec2, stubTime;
     beforeEach(function () {
-      stubTime = sinon.stub(Date, 'now');
+      stubTime = sinonStub(Date, 'now');
       stubTime.returns(1000);
       h = new WebGLHelper();
-      stubFloat = sinon.stub(h, 'setUniformFloatValue');
-      stubVec2 = sinon.stub(h, 'setUniformFloatVec2');
+      stubFloat = sinonStub(h, 'setUniformFloatValue');
+      stubVec2 = sinonStub(h, 'setUniformFloatVec2');
 
       stubTime.returns(2000);
       h.applyFrameState({...SAMPLE_FRAMESTATE, pixelRatio: 2});

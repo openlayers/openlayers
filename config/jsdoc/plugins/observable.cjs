@@ -1,7 +1,16 @@
-/* eslint-disable import/no-commonjs */
-
 const classes = {};
 const observables = {};
+
+exports.defineTags = function (dictionary) {
+  dictionary.defineTag('observable', {
+    mustNotHaveValue: true,
+    canHaveType: false,
+    canHaveName: false,
+    onTagged: function (doclet, tag) {
+      doclet.observable = '';
+    },
+  });
+};
 
 exports.handlers = {
   newDoclet: function (e) {
@@ -55,15 +64,4 @@ exports.handlers = {
       }
     }
   },
-};
-
-exports.defineTags = function (dictionary) {
-  dictionary.defineTag('observable', {
-    mustNotHaveValue: true,
-    canHaveType: false,
-    canHaveName: false,
-    onTagged: function (doclet, tag) {
-      doclet.observable = '';
-    },
-  });
 };

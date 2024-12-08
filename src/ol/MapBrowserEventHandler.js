@@ -2,13 +2,13 @@
  * @module ol/MapBrowserEventHandler
  */
 
-import EventType from './events/EventType.js';
 import MapBrowserEvent from './MapBrowserEvent.js';
 import MapBrowserEventType from './MapBrowserEventType.js';
-import PointerEventType from './pointer/EventType.js';
+import EventType from './events/EventType.js';
 import Target from './events/Target.js';
-import {PASSIVE_EVENT_LISTENERS} from './has.js';
 import {listen, unlistenByKey} from './events.js';
+import {PASSIVE_EVENT_LISTENERS} from './has.js';
+import PointerEventType from './pointer/EventType.js';
 
 class MapBrowserEventHandler extends Target {
   /**

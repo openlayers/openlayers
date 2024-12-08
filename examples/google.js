@@ -1,8 +1,8 @@
-import Google from '../src/ol/source/Google.js';
-import Layer from '../src/ol/layer/WebGLTile.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {Control, defaults as defaultControls} from '../src/ol/control.js';
+import Layer from '../src/ol/layer/WebGLTile.js';
+import Google from '../src/ol/source/Google.js';
 
 function showMap(key) {
   const source = new Google({

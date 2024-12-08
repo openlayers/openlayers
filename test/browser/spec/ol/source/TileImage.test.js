@@ -1,22 +1,24 @@
+import proj4 from 'proj4';
+import {spy as sinonSpy} from 'sinon';
 import ImageTile from '../../../../../src/ol/ImageTile.js';
-import Projection from '../../../../../src/ol/proj/Projection.js';
-import ReprojTile from '../../../../../src/ol/reproj/Tile.js';
-import TileImage from '../../../../../src/ol/source/TileImage.js';
 import TileState from '../../../../../src/ol/TileState.js';
+import {listen} from '../../../../../src/ol/events.js';
+import Projection from '../../../../../src/ol/proj/Projection.js';
 import {WORLD_EXTENT} from '../../../../../src/ol/proj/epsg3857.js';
+import {register} from '../../../../../src/ol/proj/proj4.js';
 import {
   addCommon,
   clearAllProjections,
   get as getProjection,
 } from '../../../../../src/ol/proj.js';
+import ReprojTile from '../../../../../src/ol/reproj/Tile.js';
+import TileImage from '../../../../../src/ol/source/TileImage.js';
 import {
   createForProjection,
   createXYZ,
 } from '../../../../../src/ol/tilegrid.js';
 import {createFromTemplate} from '../../../../../src/ol/tileurlfunction.js';
 import {getUid} from '../../../../../src/ol/util.js';
-import {listen} from '../../../../../src/ol/events.js';
-import {register} from '../../../../../src/ol/proj/proj4.js';
 
 describe('ol/source/TileImage', function () {
   function createSource(opt_proj, opt_tileGrid, opt_transition) {
@@ -174,9 +176,9 @@ describe('ol/source/TileImage', function () {
       source.setTileLoadFunction(function (tile) {
         tile.setState(TileState.LOADED);
       });
-      const startSpy = sinon.spy();
+      const startSpy = sinonSpy();
       source.on('tileloadstart', startSpy);
-      const endSpy = sinon.spy();
+      const endSpy = sinonSpy();
       source.on('tileloadend', endSpy);
       const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
       tile.load();
@@ -190,9 +192,9 @@ describe('ol/source/TileImage', function () {
           tile.state == TileState.ERROR ? TileState.LOADED : TileState.ERROR,
         );
       });
-      const startSpy = sinon.spy();
+      const startSpy = sinonSpy();
       source.on('tileloadstart', startSpy);
-      const errorSpy = sinon.spy();
+      const errorSpy = sinonSpy();
       source.on('tileloaderror', function (e) {
         setTimeout(function () {
           e.tile.setState(TileState.LOADING);

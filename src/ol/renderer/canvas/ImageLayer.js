@@ -1,13 +1,8 @@
 /**
  * @module ol/renderer/canvas/ImageLayer
  */
-import CanvasLayerRenderer from './Layer.js';
 import ImageState from '../../ImageState.js';
 import ViewHint from '../../ViewHint.js';
-import {
-  apply as applyTransform,
-  compose as composeTransform,
-} from '../../transform.js';
 import {
   containsCoordinate,
   containsExtent,
@@ -18,6 +13,11 @@ import {
   isEmpty,
 } from '../../extent.js';
 import {fromUserExtent} from '../../proj.js';
+import {
+  apply as applyTransform,
+  compose as composeTransform,
+} from '../../transform.js';
+import CanvasLayerRenderer from './Layer.js';
 
 /**
  * @classdesc

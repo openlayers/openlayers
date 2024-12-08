@@ -1,8 +1,8 @@
-import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 
 const source = new VectorSource({
   url: 'data/geojson/switzerland.geojson',

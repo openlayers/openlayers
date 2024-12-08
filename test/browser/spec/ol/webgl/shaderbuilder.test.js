@@ -1,13 +1,13 @@
 import {
-  COMMON_HEADER,
-  ShaderBuilder,
-} from '../../../../../src/ol/webgl/ShaderBuilder.js';
-import {
   arrayToGlsl,
   colorToGlsl,
   numberToGlsl,
   stringToGlsl,
 } from '../../../../../src/ol/expr/gpu.js';
+import {
+  COMMON_HEADER,
+  ShaderBuilder,
+} from '../../../../../src/ol/webgl/ShaderBuilder.js';
 
 describe('ol.webgl.ShaderBuilder', () => {
   describe('getSymbolVertexShader', () => {

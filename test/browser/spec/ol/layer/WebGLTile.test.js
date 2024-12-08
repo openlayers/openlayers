@@ -1,14 +1,15 @@
-import DataTileSource from '../../../../../src/ol/source/DataTile.js';
+import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../src/ol/Map.js';
-import TileWMS from '../../../../../src/ol/source/TileWMS.js';
 import View from '../../../../../src/ol/View.js';
-import WebGLHelper from '../../../../../src/ol/webgl/Helper.js';
-import WebGLTileLayer from '../../../../../src/ol/layer/WebGLTile.js';
 import {createCanvasContext2D} from '../../../../../src/ol/dom.js';
-import {createXYZ} from '../../../../../src/ol/tilegrid.js';
 import {getForViewAndSize} from '../../../../../src/ol/extent.js';
+import WebGLTileLayer from '../../../../../src/ol/layer/WebGLTile.js';
 import {getRenderPixel} from '../../../../../src/ol/render.js';
+import DataTileSource from '../../../../../src/ol/source/DataTile.js';
+import TileWMS from '../../../../../src/ol/source/TileWMS.js';
 import {sourcesFromTileGrid} from '../../../../../src/ol/source.js';
+import {createXYZ} from '../../../../../src/ol/tilegrid.js';
+import WebGLHelper from '../../../../../src/ol/webgl/Helper.js';
 
 describe('ol/layer/WebGLTile', function () {
   /** @type {WebGLTileLayer} */
@@ -260,14 +261,14 @@ describe('ol/layer/WebGLTile', function () {
   describe('dispose()', () => {
     it('calls dispose on the renderer', () => {
       const renderer = layer.getRenderer();
-      const spy = sinon.spy(renderer, 'dispose');
+      const spy = sinonSpy(renderer, 'dispose');
       layer.dispose();
       expect(spy.called).to.be(true);
     });
   });
 
   it('creates fragment and vertex shaders', function () {
-    const compileShaderSpy = sinon.spy(WebGLHelper.prototype, 'compileShader');
+    const compileShaderSpy = sinonSpy(WebGLHelper.prototype, 'compileShader');
     const renderer = layer.getRenderer();
     const viewState = map.getView().getState();
     const size = map.getSize();
@@ -365,7 +366,7 @@ describe('ol/layer/WebGLTile', function () {
       color: ['array', nir, red, green, 1],
     });
 
-    const compileShaderSpy = sinon.spy(WebGLHelper.prototype, 'compileShader');
+    const compileShaderSpy = sinonSpy(WebGLHelper.prototype, 'compileShader');
     const renderer = layer.getRenderer();
     const viewState = map.getView().getState();
     const size = map.getSize();

@@ -1,8 +1,8 @@
-import MVT from '../src/ol/format/MVT.js';
 import Map from '../src/ol/Map.js';
-import OGCVectorTile from '../src/ol/source/OGCVectorTile.js';
-import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import View from '../src/ol/View.js';
+import MVT from '../src/ol/format/MVT.js';
+import VectorTileLayer from '../src/ol/layer/VectorTile.js';
+import OGCVectorTile from '../src/ol/source/OGCVectorTile.js';
 
 const map = new Map({
   target: 'map',

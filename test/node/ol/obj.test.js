@@ -1,5 +1,5 @@
-import expect from '../expect.js';
 import {clear, isEmpty} from '../../../src/ol/obj.js';
+import expect from '../expect.js';
 
 describe('ol/obj.js', () => {
   describe('clear()', function () {

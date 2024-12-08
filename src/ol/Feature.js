@@ -2,8 +2,8 @@
  * @module ol/Feature
  */
 import BaseObject from './Object.js';
-import EventType from './events/EventType.js';
 import {assert} from './asserts.js';
+import EventType from './events/EventType.js';
 import {listen, unlistenByKey} from './events.js';
 
 /**

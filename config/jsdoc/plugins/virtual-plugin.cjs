@@ -1,5 +1,3 @@
-/* eslint-disable import/no-commonjs */
-
 /**
  * Handle the interface and abstract annotations.
  * @param {Object} dictionary The tag dictionary.

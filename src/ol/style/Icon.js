@@ -1,13 +1,13 @@
 /**
  * @module ol/style/Icon
  */
-import EventType from '../events/EventType.js';
 import ImageState from '../ImageState.js';
-import ImageStyle from './Image.js';
-import {asArray} from '../color.js';
 import {assert} from '../asserts.js';
-import {get as getIconImage} from './IconImage.js';
+import {asArray} from '../color.js';
+import EventType from '../events/EventType.js';
 import {getUid} from '../util.js';
+import {get as getIconImage} from './IconImage.js';
+import ImageStyle from './Image.js';
 
 /**
  * @typedef {'fraction' | 'pixels'} IconAnchorUnits

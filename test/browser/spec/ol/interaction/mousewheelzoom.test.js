@@ -1,9 +1,10 @@
-import Event from '../../../../../src/ol/events/Event.js';
+import {spy as sinonSpy, useFakeTimers} from 'sinon';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
-import MouseWheelZoom from '../../../../../src/ol/interaction/MouseWheelZoom.js';
 import View from '../../../../../src/ol/View.js';
+import Event from '../../../../../src/ol/events/Event.js';
 import {DEVICE_PIXEL_RATIO, FIREFOX} from '../../../../../src/ol/has.js';
+import MouseWheelZoom from '../../../../../src/ol/interaction/MouseWheelZoom.js';
 
 describe('ol.interaction.MouseWheelZoom', function () {
   /** @type {Map} */
@@ -34,8 +35,8 @@ describe('ol.interaction.MouseWheelZoom', function () {
   describe('timeout duration', function () {
     let clock;
     beforeEach(function () {
-      sinon.spy(interaction, 'handleWheelZoom_');
-      clock = sinon.useFakeTimers();
+      sinonSpy(interaction, 'handleWheelZoom_');
+      clock = useFakeTimers();
     });
 
     afterEach(function () {
@@ -105,7 +106,7 @@ describe('ol.interaction.MouseWheelZoom', function () {
       let view;
       beforeEach(function () {
         view = map.getView();
-        sinon.spy(view, 'animateInternal');
+        sinonSpy(view, 'animateInternal');
       });
 
       afterEach(function () {

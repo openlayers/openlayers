@@ -1,7 +1,7 @@
-import GeoTIFF from '../src/ol/source/GeoTIFF.js';
+import {scale as chromaScale} from 'chroma-js';
 import Map from '../src/ol/Map.js';
 import TileLayer from '../src/ol/layer/WebGLTile.js';
-import chroma from 'chroma-js';
+import GeoTIFF from '../src/ol/source/GeoTIFF.js';
 
 const segments = 10;
 
@@ -30,7 +30,7 @@ function getVariables() {
 
   const minColor = minColorInput.value;
   const maxColor = maxColorInput.value;
-  const scale = chroma.scale([minColor, maxColor]).mode('lab');
+  const scale = chromaScale([minColor, maxColor]).mode('lab');
 
   const minValue = parseFloat(minValueInput.value);
   const maxValue = parseFloat(maxValueInput.value);

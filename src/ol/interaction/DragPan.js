@@ -1,21 +1,21 @@
 /**
  * @module ol/interaction/DragPan
  */
-import PointerInteraction, {
-  centroid as centroidFromPointers,
-} from './Pointer.js';
-import {FALSE} from '../functions.js';
+import {
+  rotate as rotateCoordinate,
+  scale as scaleCoordinate,
+} from '../coordinate.js';
+import {easeOut} from '../easing.js';
 import {
   all,
   focusWithTabindex,
   noModifierKeys,
   primaryAction,
 } from '../events/condition.js';
-import {easeOut} from '../easing.js';
-import {
-  rotate as rotateCoordinate,
-  scale as scaleCoordinate,
-} from '../coordinate.js';
+import {FALSE} from '../functions.js';
+import PointerInteraction, {
+  centroid as centroidFromPointers,
+} from './Pointer.js';
 
 /**
  * @typedef {Object} Options

@@ -1,13 +1,14 @@
-import DragZoom from '../../../../../src/ol/interaction/DragZoom.js';
+import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../src/ol/Map.js';
+import View from '../../../../../src/ol/View.js';
+import {getCenter, scaleFromCenter} from '../../../../../src/ol/extent.js';
 import Polygon, {
   fromExtent as polygonFromExtent,
 } from '../../../../../src/ol/geom/Polygon.js';
-import RenderBox from '../../../../../src/ol/render/Box.js';
+import DragZoom from '../../../../../src/ol/interaction/DragZoom.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
+import RenderBox from '../../../../../src/ol/render/Box.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
-import View from '../../../../../src/ol/View.js';
-import {getCenter, scaleFromCenter} from '../../../../../src/ol/extent.js';
 
 describe('ol.interaction.DragZoom', function () {
   /** @type {HTMLElement} */
@@ -72,7 +73,7 @@ describe('ol.interaction.DragZoom', function () {
       });
       map.addInteraction(interaction);
       const view = map.getView();
-      view.fitInternal = sinon.spy();
+      view.fitInternal = sinonSpy();
 
       const box = new RenderBox();
       const extent = [-110, 40, -90, 60];

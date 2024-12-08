@@ -2,9 +2,9 @@
  * @module ol/source/OGCVectorTile
  */
 
+import {error as logError} from '../console.js';
 import VectorTileSource from './VectorTile.js';
 import {getTileSetInfo} from './ogcTileUtil.js';
-import {error as logError} from '../console.js';
 
 /**
  * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../render/Feature.js").default]

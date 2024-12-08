@@ -2,12 +2,12 @@
  * @module ol/source/WMTS
  */
 
-import TileImage from './TileImage.js';
-import {appendParams, expandUrl} from '../uri.js';
 import {containsExtent} from '../extent.js';
+import {equivalent, get as getProjection, transformExtent} from '../proj.js';
 import {createFromCapabilitiesMatrixSet} from '../tilegrid/WMTS.js';
 import {createFromTileUrlFunctions} from '../tileurlfunction.js';
-import {equivalent, get as getProjection, transformExtent} from '../proj.js';
+import {appendParams, expandUrl} from '../uri.js';
+import TileImage from './TileImage.js';
 
 /**
  * Request encoding. One of 'KVP', 'REST'.

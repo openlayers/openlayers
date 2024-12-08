@@ -1,10 +1,10 @@
 /**
  * @module ol/control/Rotate
  */
-import Control from './Control.js';
-import EventType from '../events/EventType.js';
 import {CLASS_CONTROL, CLASS_HIDDEN, CLASS_UNSELECTABLE} from '../css.js';
 import {easeOut} from '../easing.js';
+import EventType from '../events/EventType.js';
+import Control from './Control.js';
 
 /**
  * @typedef {Object} Options

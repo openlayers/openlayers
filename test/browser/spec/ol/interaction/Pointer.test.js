@@ -1,10 +1,10 @@
-import Layer from '../../../../../src/ol/layer/Layer.js';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
 import MapBrowserEventHandler from '../../../../../src/ol/MapBrowserEventHandler.js';
+import View from '../../../../../src/ol/View.js';
 import OlEvent from '../../../../../src/ol/events/Event.js';
 import PointerInteraction from '../../../../../src/ol/interaction/Pointer.js';
-import View from '../../../../../src/ol/View.js';
+import Layer from '../../../../../src/ol/layer/Layer.js';
 
 describe('ol/interaction/Pointer', function () {
   describe('#handleEvent', function () {

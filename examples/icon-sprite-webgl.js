@@ -1,12 +1,12 @@
 import Feature from '../src/ol/Feature.js';
-import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
-import Point from '../src/ol/geom/Point.js';
-import TileLayer from '../src/ol/layer/WebGLTile.js';
-import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
+import Point from '../src/ol/geom/Point.js';
 import WebGLPointsLayer from '../src/ol/layer/WebGLPoints.js';
+import TileLayer from '../src/ol/layer/WebGLTile.js';
 import {fromLonLat} from '../src/ol/proj.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
 const attributions =

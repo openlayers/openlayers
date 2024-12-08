@@ -1,23 +1,23 @@
 /**
  * @module ol/reproj/DataTile
  */
-import {ERROR_THRESHOLD} from './common.js';
 
 import DataTile, {asArrayLike, asImageLike, toArray} from '../DataTile.js';
-import EventType from '../events/EventType.js';
 import TileState from '../TileState.js';
-import Triangulation from './Triangulation.js';
+import {createCanvasContext2D} from '../dom.js';
+import EventType from '../events/EventType.js';
+import {listen, unlistenByKey} from '../events.js';
+import {getArea, getIntersection, getWidth, wrapAndSliceX} from '../extent.js';
+import {clamp} from '../math.js';
 import {calculateSourceExtentResolution} from '../reproj.js';
+import Triangulation from './Triangulation.js';
+import {ERROR_THRESHOLD} from './common.js';
 import {
   canvasGLPool,
   createCanvasContextWebGL,
   releaseGLCanvas,
   render as renderReprojected,
 } from './glreproj.js';
-import {clamp} from '../math.js';
-import {createCanvasContext2D} from '../dom.js';
-import {getArea, getIntersection, getWidth, wrapAndSliceX} from '../extent.js';
-import {listen, unlistenByKey} from '../events.js';
 
 /**
  * @typedef {function(number, number, number, number) : import("../DataTile.js").default} TileGetter

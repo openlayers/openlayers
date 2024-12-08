@@ -1,15 +1,15 @@
 import Feature from '../../../../../src/ol/Feature.js';
-import {MultiPolygon, Point} from '../../../../../src/ol/geom.js';
 import {asArray} from '../../../../../src/ol/color.js';
+import {
+  stringToGlsl,
+  uniformNameForVariable,
+} from '../../../../../src/ol/expr/gpu.js';
+import {MultiPolygon, Point} from '../../../../../src/ol/geom.js';
 import {
   computeHash,
   packColor,
   parseLiteralStyle,
 } from '../../../../../src/ol/webgl/styleparser.js';
-import {
-  stringToGlsl,
-  uniformNameForVariable,
-} from '../../../../../src/ol/expr/gpu.js';
 
 describe('ol/webgl/styleparser', () => {
   describe('parseLiteralStyle', () => {

@@ -7,7 +7,9 @@ import TileState from '../../../../src/ol/TileState.js';
 import {listenOnce} from '../../../../src/ol/events.js';
 
 describe('ol/DataTile', function () {
-  /** @type {Promise<import('../../../../src/ol/DataTile.js').Data} */
+  /**
+   * @type {Promise<import('../../../../src/ol/DataTile.js').Data>}
+   */
   let loader;
   beforeEach(function () {
     loader = function () {

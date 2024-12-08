@@ -2,16 +2,16 @@
  * @module ol/render/canvas/ExecutorGroup
  */
 
-import Executor from './Executor.js';
 import {ascending, descending} from '../../array.js';
+import {createCanvasContext2D} from '../../dom.js';
 import {buffer, createEmpty, extendCoordinate} from '../../extent.js';
+import {transform2D} from '../../geom/flat/transform.js';
+import {isEmpty} from '../../obj.js';
 import {
   compose as composeTransform,
   create as createTransform,
 } from '../../transform.js';
-import {createCanvasContext2D} from '../../dom.js';
-import {isEmpty} from '../../obj.js';
-import {transform2D} from '../../geom/flat/transform.js';
+import Executor from './Executor.js';
 
 /**
  * @const

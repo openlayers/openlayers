@@ -3,18 +3,18 @@
  */
 //FIXME Implement projection handling
 
-import FeatureFormat, {transformGeometryWithOptions} from './Feature.js';
+import PBF from 'pbf';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
-import PBF from 'pbf';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
-import Projection from '../proj/Projection.js';
-import RenderFeature from '../render/Feature.js';
-import {get} from '../proj.js';
 import {inflateEnds} from '../geom/flat/orient.js';
+import Projection from '../proj/Projection.js';
+import {get} from '../proj.js';
+import RenderFeature from '../render/Feature.js';
+import FeatureFormat, {transformGeometryWithOptions} from './Feature.js';
 
 /**
  * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../render/Feature.js").default]

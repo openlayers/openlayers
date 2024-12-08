@@ -1,9 +1,6 @@
 /**
  * @module ol/tilegrid
  */
-import TileGrid from './tilegrid/TileGrid.js';
-import {DEFAULT_MAX_ZOOM, DEFAULT_TILE_SIZE} from './tilegrid/common.js';
-import {METERS_PER_UNIT, get as getProjection} from './proj.js';
 import {
   containsCoordinate,
   createOrUpdate,
@@ -11,7 +8,10 @@ import {
   getHeight,
   getWidth,
 } from './extent.js';
+import {METERS_PER_UNIT, get as getProjection} from './proj.js';
 import {toSize} from './size.js';
+import TileGrid from './tilegrid/TileGrid.js';
+import {DEFAULT_MAX_ZOOM, DEFAULT_TILE_SIZE} from './tilegrid/common.js';
 
 export {TileGrid};
 export {default as WMTS} from './tilegrid/WMTS.js';

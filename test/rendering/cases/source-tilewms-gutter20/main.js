@@ -1,7 +1,7 @@
 import Map from '../../../../src/ol/Map.js';
+import View from '../../../../src/ol/View.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
 import TileWMS from '../../../../src/ol/source/TileWMS.js';
-import View from '../../../../src/ol/View.js';
 
 const tileWms = new TileWMS({
   params: {

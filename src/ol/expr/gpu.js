@@ -1,6 +1,9 @@
 /**
  * @module ol/expr/gpu
  */
+import {asArray} from '../color.js';
+import {Uniforms} from '../renderer/webgl/TileLayer.js';
+import {toSize} from '../size.js';
 import PaletteTexture from '../webgl/PaletteTexture.js';
 import {
   BooleanType,
@@ -14,9 +17,6 @@ import {
   parse,
   typeName,
 } from './expression.js';
-import {Uniforms} from '../renderer/webgl/TileLayer.js';
-import {asArray} from '../color.js';
-import {toSize} from '../size.js';
 
 /**
  * @param {string} operator Operator

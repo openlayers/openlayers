@@ -1,9 +1,9 @@
-import ImageTile from '../src/ol/source/ImageTile.js';
-import KML from '../src/ol/format/KML.js';
 import Map from '../src/ol/Map.js';
-import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
+import KML from '../src/ol/format/KML.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
 const attributions =

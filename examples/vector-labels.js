@@ -1,6 +1,8 @@
-import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {
   Circle as CircleStyle,
   Fill,
@@ -8,8 +10,6 @@ import {
   Style,
   Text,
 } from '../src/ol/style.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 
 let openSansAdded = false;
 

@@ -1,8 +1,8 @@
 import Disposable from '../../../../../src/ol/Disposable.js';
 import Map from '../../../../../src/ol/Map.js';
+import View from '../../../../../src/ol/View.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import RenderBox from '../../../../../src/ol/render/Box.js';
-import View from '../../../../../src/ol/View.js';
 
 describe('ol.render.Box', function () {
   let box, map, target;

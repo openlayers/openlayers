@@ -1,5 +1,5 @@
-import BingMaps, {quadKey} from '../../../../../src/ol/source/BingMaps.js';
 import {unByKey} from '../../../../../src/ol/Observable.js';
+import BingMaps, {quadKey} from '../../../../../src/ol/source/BingMaps.js';
 
 describe('ol/source/BingMaps', function () {
   describe('quadKey()', function () {
