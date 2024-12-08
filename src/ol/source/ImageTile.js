@@ -3,6 +3,7 @@
  */
 import DataTileSource from './DataTile.js';
 import {expandUrl, pickUrl, renderXYZTemplate} from '../uri.js';
+import {toSize} from '../size.js';
 
 /**
  * Image tile loading function.  The function is called with z, x, and y tile coordinates and
@@ -33,6 +34,10 @@ import {expandUrl, pickUrl, renderXYZTemplate} from '../uri.js';
  * @property {number} [minZoom=0] Optional min zoom level. Not used if `tileGrid` is provided.
  * @property {number|import("../size.js").Size} [tileSize=[256, 256]] The pixel width and height of the source tiles.
  * This may be different than the rendered pixel size if a `tileGrid` is provided.
+ * @property {number} [tilePixelRatio] The pixel ratio used by the tile service.
+ * For example, if the tile service advertizes 256px by 256px tiles but actually sends 512px
+ * by 512px images (for retina/hidpi devices) then `tilePixelRatio`
+ * should be set to `2`. Not used if both `tileGrid` and `tileSize` are provided.
  * @property {number} [gutter=0] The size in pixels of the gutter around data tiles to ignore.
  * This allows artifacts of rendering at tile edges to be ignored.
  * Supported data should be wider and taller than the tile size by a value of `2 x gutter`.
@@ -137,7 +142,7 @@ function keyFromUrlLike(url) {
 
 /**
  * @classdesc
- * A source for typed array data tiles.
+ * A source for typed array data tiles loaded as images.
  *
  * @extends DataTileSource<import("../ImageTile.js").default>
  * @fires import("./Tile.js").TileSourceEvent
@@ -145,7 +150,7 @@ function keyFromUrlLike(url) {
  */
 class ImageTileSource extends DataTileSource {
   /**
-   * @param {Options} [options] DataTile source options.
+   * @param {Options} [options] ImageTile source options.
    */
   constructor(options) {
     options = options || {};
@@ -191,6 +196,24 @@ class ImageTileSource extends DataTileSource {
       crossOrigin: options.crossOrigin,
       zDirection: options.zDirection,
     });
+
+    if (
+      options.tilePixelRatio !== undefined &&
+      (options.tileGrid === undefined || options.tileSize === undefined)
+    ) {
+      const tileGrid = this.tileGrid;
+      if (tileGrid) {
+        this.setTileSizes(
+          tileGrid
+            .getResolutions()
+            .map((r, i) =>
+              toSize(tileGrid.getTileSize(i)).map((s) =>
+                Math.round(s * options.tilePixelRatio),
+              ),
+            ),
+        );
+      }
+    }
   }
 
   /**
