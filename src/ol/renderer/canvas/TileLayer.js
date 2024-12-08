@@ -158,10 +158,10 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     this.renderedProjection = null;
 
     /**
-     * @protected
+     * @private
      * @type {number}
      */
-    this.renderedRevision;
+    this.renderedRevision_;
 
     /**
      * @protected
@@ -576,7 +576,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     const tileLayer = this.getLayer();
     const tileSource = tileLayer.getSource();
-    const sourceRevision = tileSource.getRevision();
     const tileGrid = tileSource.getTileGridForProjection(projection);
     const z = tileGrid.getZForResolution(viewResolution, tileSource.zDirection);
     const tileResolution = tileGrid.getResolution(z);
@@ -849,7 +848,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       }
     }
 
-    this.renderedRevision = sourceRevision;
     this.renderedResolution = tileResolution;
     this.extentChanged =
       !this.renderedExtent_ || !equals(this.renderedExtent_, canvasExtent);
