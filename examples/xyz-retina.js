@@ -20,6 +20,7 @@ const map = new Map({
         url:
           'https://api.maptiler.com/maps/outdoor-v2/256/{z}/{x}/{y}@2x.png?key=' +
           key,
+        maxZoom: 22,
       }),
     }),
   ],
