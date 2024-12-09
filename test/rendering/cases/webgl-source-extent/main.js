@@ -1,10 +1,10 @@
 import Map from '../../../../src/ol/Map.js';
-import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
-import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
 import View from '../../../../src/ol/View.js';
-import XYZ from '../../../../src/ol/source/XYZ.js';
 import {getHeight, getWidth} from '../../../../src/ol/extent.js';
+import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
+import XYZ from '../../../../src/ol/source/XYZ.js';
+import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 
 const fullExtent = getProjection('EPSG:3857').getExtent();
 const width = getWidth(fullExtent);

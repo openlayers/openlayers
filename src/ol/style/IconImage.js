@@ -2,12 +2,12 @@
  * @module ol/style/IconImage
  */
 
-import EventTarget from '../events/Target.js';
-import EventType from '../events/EventType.js';
+import {decodeFallback} from '../Image.js';
 import ImageState from '../ImageState.js';
 import {asString} from '../color.js';
 import {createCanvasContext2D} from '../dom.js';
-import {decodeFallback} from '../Image.js';
+import EventType from '../events/EventType.js';
+import EventTarget from '../events/Target.js';
 import {shared as iconImageCache} from './IconImageCache.js';
 
 /**
@@ -112,7 +112,7 @@ class IconImage extends EventTarget {
       try {
         taintedTestContext.getImageData(0, 0, 1, 1);
         this.tainted_ = false;
-      } catch (e) {
+      } catch {
         taintedTestContext = null;
         this.tainted_ = true;
       }
@@ -224,7 +224,7 @@ class IconImage extends EventTarget {
       if (this.src_ !== undefined) {
         /** @type {HTMLImageElement} */ (this.image_).src = this.src_;
       }
-    } catch (e) {
+    } catch {
       this.handleImageError_();
     }
     if (this.image_ instanceof HTMLImageElement) {

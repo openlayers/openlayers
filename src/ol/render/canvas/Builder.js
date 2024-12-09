@@ -1,16 +1,21 @@
 /**
  * @module ol/render/canvas/Builder
  */
-import CanvasInstruction from './Instruction.js';
-import Relationship from '../../extent/Relationship.js';
-import VectorContext from '../VectorContext.js';
+import {equals, reverseSubArray} from '../../array.js';
 import {asColorLike} from '../../colorlike.js';
+import Relationship from '../../extent/Relationship.js';
 import {
   buffer,
   clone,
   containsCoordinate,
   coordinateRelationship,
 } from '../../extent.js';
+import {
+  inflateCoordinates,
+  inflateCoordinatesArray,
+  inflateMultiCoordinatesArray,
+} from '../../geom/flat/inflate.js';
+import VectorContext from '../VectorContext.js';
 import {
   defaultFillStyle,
   defaultLineCap,
@@ -21,12 +26,7 @@ import {
   defaultMiterLimit,
   defaultStrokeStyle,
 } from '../canvas.js';
-import {equals, reverseSubArray} from '../../array.js';
-import {
-  inflateCoordinates,
-  inflateCoordinatesArray,
-  inflateMultiCoordinatesArray,
-} from '../../geom/flat/inflate.js';
+import CanvasInstruction from './Instruction.js';
 
 class CanvasBuilder extends VectorContext {
   /**

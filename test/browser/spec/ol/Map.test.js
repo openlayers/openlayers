@@ -1,34 +1,32 @@
+import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import Collection from '../../../../src/ol/Collection.js';
-import Control from '../../../../src/ol/control/Control.js';
-import DoubleClickZoom from '../../../../src/ol/interaction/DoubleClickZoom.js';
-import DragPan from '../../../../src/ol/interaction/DragPan.js';
 import Feature from '../../../../src/ol/Feature.js';
-import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
-import ImageLayer from '../../../../src/ol/layer/Image.js';
 import ImageState from '../../../../src/ol/ImageState.js';
-import ImageStatic from '../../../../src/ol/source/ImageStatic.js';
-import Interaction from '../../../../src/ol/interaction/Interaction.js';
-import Layer from '../../../../src/ol/layer/Layer.js';
-import LayerGroup from '../../../../src/ol/layer/Group.js';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
 import MapEvent from '../../../../src/ol/MapEvent.js';
-import MouseWheelZoom from '../../../../src/ol/interaction/MouseWheelZoom.js';
 import Overlay from '../../../../src/ol/Overlay.js';
+import View from '../../../../src/ol/View.js';
+import Control from '../../../../src/ol/control/Control.js';
+import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
+import {TRUE} from '../../../../src/ol/functions.js';
+import {LineString, Point, Polygon} from '../../../../src/ol/geom.js';
+import DoubleClickZoom from '../../../../src/ol/interaction/DoubleClickZoom.js';
+import DragPan from '../../../../src/ol/interaction/DragPan.js';
+import Interaction from '../../../../src/ol/interaction/Interaction.js';
+import MouseWheelZoom from '../../../../src/ol/interaction/MouseWheelZoom.js';
 import PinchZoom from '../../../../src/ol/interaction/PinchZoom.js';
-import Property from '../../../../src/ol/layer/Property.js';
 import Select from '../../../../src/ol/interaction/Select.js';
+import {defaults as defaultInteractions} from '../../../../src/ol/interaction.js';
+import LayerGroup from '../../../../src/ol/layer/Group.js';
+import ImageLayer from '../../../../src/ol/layer/Image.js';
+import Layer from '../../../../src/ol/layer/Layer.js';
+import Property from '../../../../src/ol/layer/Property.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import VectorSource from '../../../../src/ol/source/Vector.js';
 import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
-import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
-import View from '../../../../src/ol/View.js';
 import WebGLPointsLayer from '../../../../src/ol/layer/WebGLPoints.js';
-import XYZ from '../../../../src/ol/source/XYZ.js';
-import {Icon, Style} from '../../../../src/ol/style.js';
-import {LineString, Point, Polygon} from '../../../../src/ol/geom.js';
-import {TRUE} from '../../../../src/ol/functions.js';
+import {tile as tileStrategy} from '../../../../src/ol/loadingstrategy.js';
 import {
   clearUserProjection,
   fromLonLat,
@@ -36,10 +34,13 @@ import {
   transform,
   useGeographic,
 } from '../../../../src/ol/proj.js';
-import {createXYZ} from '../../../../src/ol/tilegrid.js';
-import {defaults as defaultInteractions} from '../../../../src/ol/interaction.js';
+import ImageStatic from '../../../../src/ol/source/ImageStatic.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
+import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
+import XYZ from '../../../../src/ol/source/XYZ.js';
 import {shared as iconImageCache} from '../../../../src/ol/style/IconImageCache.js';
-import {tile as tileStrategy} from '../../../../src/ol/loadingstrategy.js';
+import {Icon, Style} from '../../../../src/ol/style.js';
+import {createXYZ} from '../../../../src/ol/tilegrid.js';
 
 describe('ol/Map', function () {
   describe('constructor', function () {
@@ -1052,7 +1053,7 @@ describe('ol/Map', function () {
     it('is called when the view.changed() is called', function () {
       const view = map.getView();
 
-      const spy = sinon.spy(map, 'render');
+      const spy = sinonSpy(map, 'render');
       view.changed();
       expect(spy.callCount).to.be(1);
     });
@@ -1061,13 +1062,13 @@ describe('ol/Map', function () {
       const view = map.getView();
       map.setView(null);
 
-      const spy = sinon.spy(map, 'render');
+      const spy = sinonSpy(map, 'render');
       view.changed();
       expect(spy.callCount).to.be(0);
     });
 
     it('calls renderFrame_ and results in a postrender event', function (done) {
-      const spy = sinon.spy(map, 'renderFrame_');
+      const spy = sinonSpy(map, 'renderFrame_');
       map.render();
       map.once('postrender', function (event) {
         expect(event).to.be.a(MapEvent);
@@ -1082,10 +1083,7 @@ describe('ol/Map', function () {
       const layer = new VectorLayer({source: new VectorSource()});
       let prerender = false;
       let postrender = false;
-      const renderDeferredSpy = sinon.spy(
-        layer.getRenderer(),
-        'renderDeferred',
-      );
+      const renderDeferredSpy = sinonSpy(layer.getRenderer(), 'renderDeferred');
       layer.on('prerender', () => (prerender = true));
       layer.on('postrender', () => {
         expect(renderDeferredSpy.callCount).to.be(0);
@@ -1112,10 +1110,7 @@ describe('ol/Map', function () {
       });
       let prerender = false;
       let postrender = false;
-      const renderDeferredSpy = sinon.spy(
-        layer.getRenderer(),
-        'renderDeferred',
-      );
+      const renderDeferredSpy = sinonSpy(layer.getRenderer(), 'renderDeferred');
       layer.on('prerender', () => (prerender = true));
       layer.on('postrender', () => {
         expect(renderDeferredSpy.callCount).to.be(1);
@@ -1643,7 +1638,7 @@ describe('ol/Map', function () {
     });
 
     it('calls handleEvent on interaction', function () {
-      const spy = sinon.spy(dragpan, 'handleEvent');
+      const spy = sinonSpy(dragpan, 'handleEvent');
       map.handleMapBrowserEvent(
         new MapBrowserEvent(
           'pointermove',
@@ -1657,7 +1652,7 @@ describe('ol/Map', function () {
 
     it('does not call handleEvent on interaction when map has no target', function () {
       map.setTarget(null);
-      const spy = sinon.spy(dragpan, 'handleEvent');
+      const spy = sinonSpy(dragpan, 'handleEvent');
       map.handleMapBrowserEvent(
         new MapBrowserEvent(
           'pointermove',
@@ -1670,7 +1665,7 @@ describe('ol/Map', function () {
     });
 
     it('does not call handleEvent on interaction that has been removed', function () {
-      const spy = sinon.spy(dragpan, 'handleEvent');
+      const spy = sinonSpy(dragpan, 'handleEvent');
       let callCount = 0;
       const interaction = new Interaction({
         handleEvent: function () {
@@ -1694,13 +1689,13 @@ describe('ol/Map', function () {
 
     it('does not call handleEvent on interaction when MapBrowserEvent propagation stopped', function () {
       const select = new Select();
-      const selectStub = sinon.stub(select, 'handleEvent');
+      const selectStub = sinonStub(select, 'handleEvent');
       selectStub.callsFake(function (e) {
         e.stopPropagation();
         return true;
       });
       map.addInteraction(select);
-      const spy = sinon.spy(dragpan, 'handleEvent');
+      const spy = sinonSpy(dragpan, 'handleEvent');
       map.handleMapBrowserEvent(
         new MapBrowserEvent(
           'pointermove',

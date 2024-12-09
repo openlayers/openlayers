@@ -2,22 +2,22 @@
  * @module ol/source/VectorTile
  */
 
-import EventType from '../events/EventType.js';
-import Tile from '../VectorTile.js';
-import TileGrid from '../tilegrid/TileGrid.js';
 import TileState from '../TileState.js';
-import UrlTile from './UrlTile.js';
 import VectorRenderTile from '../VectorRenderTile.js';
-import {DEFAULT_MAX_ZOOM} from '../tilegrid/common.js';
+import Tile from '../VectorTile.js';
+import EventType from '../events/EventType.js';
 import {
   buffer as bufferExtent,
   getIntersection,
   intersects,
 } from '../extent.js';
-import {createXYZ, extentFromProjection} from '../tilegrid.js';
-import {isEmpty} from '../obj.js';
 import {loadFeaturesXhr} from '../featureloader.js';
+import {isEmpty} from '../obj.js';
 import {toSize} from '../size.js';
+import TileGrid from '../tilegrid/TileGrid.js';
+import {DEFAULT_MAX_ZOOM} from '../tilegrid/common.js';
+import {createXYZ, extentFromProjection} from '../tilegrid.js';
+import UrlTile from './UrlTile.js';
 
 /**
  * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../render/Feature.js").default]

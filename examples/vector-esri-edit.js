@@ -1,9 +1,7 @@
 import $ from 'jquery';
-import EsriJSON from '../src/ol/format/EsriJSON.js';
-import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
-import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
+import EsriJSON from '../src/ol/format/EsriJSON.js';
 import {
   Draw,
   Modify,
@@ -11,9 +9,11 @@ import {
   defaults as defaultInteractions,
 } from '../src/ol/interaction.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {createXYZ} from '../src/ol/tilegrid.js';
-import {fromLonLat} from '../src/ol/proj.js';
 import {tile as tileStrategy} from '../src/ol/loadingstrategy.js';
+import {fromLonLat} from '../src/ol/proj.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import {createXYZ} from '../src/ol/tilegrid.js';
 
 const serviceUrl =
   'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Wildfire/FeatureServer/';

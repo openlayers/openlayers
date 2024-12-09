@@ -1,11 +1,11 @@
-import GeoJSON from '../src/ol/format/GeoJSON.js';
+import {along} from '@turf/along';
+import {length} from '@turf/length';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {along} from '@turf/along';
 import {fromLonLat} from '../src/ol/proj.js';
-import {length} from '@turf/length';
+import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 
 const source = new VectorSource();
 fetch('data/geojson/roads-seoul.geojson')

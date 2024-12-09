@@ -2,10 +2,10 @@
  * @module ol/interaction/MouseWheelZoom
  */
 import EventType from '../events/EventType.js';
-import Interaction, {zoomByDelta} from './Interaction.js';
-import {DEVICE_PIXEL_RATIO, FIREFOX} from '../has.js';
 import {all, always, focusWithTabindex} from '../events/condition.js';
+import {DEVICE_PIXEL_RATIO, FIREFOX} from '../has.js';
 import {clamp} from '../math.js';
+import Interaction, {zoomByDelta} from './Interaction.js';
 
 /**
  * @typedef {'trackpad' | 'wheel'} Mode

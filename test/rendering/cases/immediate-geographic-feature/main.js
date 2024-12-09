@@ -1,10 +1,10 @@
-import TileLayer from '../../../../src/ol/layer/Tile.js';
-import XYZ from '../../../../src/ol/source/XYZ.js';
 import {Circle} from '../../../../src/ol/geom.js';
 import {Feature, Map, View} from '../../../../src/ol/index.js';
-import {Stroke, Style} from '../../../../src/ol/style.js';
-import {getVectorContext} from '../../../../src/ol/render.js';
+import TileLayer from '../../../../src/ol/layer/Tile.js';
 import {useGeographic} from '../../../../src/ol/proj.js';
+import {getVectorContext} from '../../../../src/ol/render.js';
+import XYZ from '../../../../src/ol/source/XYZ.js';
+import {Stroke, Style} from '../../../../src/ol/style.js';
 
 useGeographic();
 

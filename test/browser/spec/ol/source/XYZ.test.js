@@ -1,9 +1,9 @@
 import Map from '../../../../../src/ol/Map.js';
-import TileImage from '../../../../../src/ol/source/TileImage.js';
+import View from '../../../../../src/ol/View.js';
 import TileLayer from '../../../../../src/ol/layer/Tile.js';
 import TileSource from '../../../../../src/ol/source/Tile.js';
+import TileImage from '../../../../../src/ol/source/TileImage.js';
 import UrlTile from '../../../../../src/ol/source/UrlTile.js';
-import View from '../../../../../src/ol/View.js';
 import XYZ from '../../../../../src/ol/source/XYZ.js';
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
 

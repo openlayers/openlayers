@@ -1,6 +1,6 @@
 import Map from '../src/ol/Map.js';
-import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import {OSM, TileDebug} from '../src/ol/source.js';
 
 const map = new Map({

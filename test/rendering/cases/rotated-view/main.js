@@ -1,13 +1,13 @@
 import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
-import Point from '../../../../src/ol/geom/Point.js';
 import View from '../../../../src/ol/View.js';
+import Point from '../../../../src/ol/geom/Point.js';
 import {
   Tile as TileLayer,
   Vector as VectorLayer,
 } from '../../../../src/ol/layer.js';
-import {Vector as VectorSource, XYZ} from '../../../../src/ol/source.js';
 import {fromLonLat} from '../../../../src/ol/proj.js';
+import {Vector as VectorSource, XYZ} from '../../../../src/ol/source.js';
 
 const center = fromLonLat([-111, 45.7]);
 

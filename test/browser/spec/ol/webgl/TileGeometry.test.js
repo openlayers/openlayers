@@ -1,19 +1,20 @@
+import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import Feature from '../../../../../src/ol/Feature.js';
-import MixedGeometryBatch from '../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
-import Point from '../../../../../src/ol/geom/Point.js';
-import Polygon from '../../../../../src/ol/geom/Polygon.js';
-import TileGeometry from '../../../../../src/ol/webgl/TileGeometry.js';
 import TileState from '../../../../../src/ol/TileState.js';
 import VectorRenderTile from '../../../../../src/ol/VectorRenderTile.js';
 import VectorTile from '../../../../../src/ol/VectorTile.js';
-import WebGLHelper from '../../../../../src/ol/webgl/Helper.js';
 import {VOID} from '../../../../../src/ol/functions.js';
+import Point from '../../../../../src/ol/geom/Point.js';
+import Polygon from '../../../../../src/ol/geom/Polygon.js';
+import MixedGeometryBatch from '../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
+import WebGLHelper from '../../../../../src/ol/webgl/Helper.js';
+import TileGeometry from '../../../../../src/ol/webgl/TileGeometry.js';
 
 class MockRenderer {
-  generateBuffers = sinon
-    .stub()
-    .callsFake(() => new Promise((resolve) => (this.endGenerate_ = resolve)));
+  generateBuffers = sinonStub().callsFake(
+    () => new Promise((resolve) => (this.endGenerate_ = resolve)),
+  );
   endGenerate_ = null;
 }
 
@@ -99,8 +100,8 @@ describe('ol/webgl/TileGeometry', function () {
         () => {},
       );
 
-      sinon.spy(tileGeometry.batch_, 'clear');
-      sinon.spy(tileGeometry.batch_, 'addFeatures');
+      sinonSpy(tileGeometry.batch_, 'clear');
+      sinonSpy(tileGeometry.batch_, 'addFeatures');
       tileGeometry.setTile(newTile);
       setTimeout(done, 10);
     });

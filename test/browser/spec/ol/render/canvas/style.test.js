@@ -1,14 +1,14 @@
+import {newEvaluationContext} from '../../../../../../src/ol/expr/cpu.js';
+import {newParsingContext} from '../../../../../../src/ol/expr/expression.js';
+import {
+  buildRuleSet,
+  buildStyle,
+} from '../../../../../../src/ol/render/canvas/style.js';
 import Fill from '../../../../../../src/ol/style/Fill.js';
 import Icon from '../../../../../../src/ol/style/Icon.js';
 import Image from '../../../../../../src/ol/style/Image.js';
 import Stroke from '../../../../../../src/ol/style/Stroke.js';
 import Style from '../../../../../../src/ol/style/Style.js';
-import {
-  buildRuleSet,
-  buildStyle,
-} from '../../../../../../src/ol/render/canvas/style.js';
-import {newEvaluationContext} from '../../../../../../src/ol/expr/cpu.js';
-import {newParsingContext} from '../../../../../../src/ol/expr/expression.js';
 
 /**
  * @param {Style} style The style to test.

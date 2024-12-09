@@ -5,10 +5,10 @@
 
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
-import Interaction from './Interaction.js';
+import {listen, unlistenByKey} from '../events.js';
 import {TRUE} from '../functions.js';
 import {get as getProjection, getUserProjection} from '../proj.js';
-import {listen, unlistenByKey} from '../events.js';
+import Interaction from './Interaction.js';
 
 /**
  * @typedef {Object} Options
@@ -278,7 +278,7 @@ class DragAndDrop extends Interaction {
         /** @type {Array<import("../Feature.js").default>} */
         (format.readFeatures(text, options))
       );
-    } catch (e) {
+    } catch {
       return null;
     }
   }

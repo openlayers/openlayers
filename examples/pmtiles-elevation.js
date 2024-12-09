@@ -1,9 +1,9 @@
-import DataTile from '../src/ol/source/DataTile.js';
-import Map from '../src/ol/Map.js';
-import TileLayer from '../src/ol/layer/WebGLTile.js';
-import View from '../src/ol/View.js';
 import {PMTiles} from 'pmtiles';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import TileLayer from '../src/ol/layer/WebGLTile.js';
 import {useGeographic} from '../src/ol/proj.js';
+import DataTile from '../src/ol/source/DataTile.js';
 
 useGeographic();
 

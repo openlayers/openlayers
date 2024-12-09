@@ -1,15 +1,15 @@
 /**
  * @module ol/renderer/webgl/PointsLayer
  */
-import BaseVector from '../../layer/BaseVector.js';
-import VectorEventType from '../../source/VectorEventType.js';
 import ViewHint from '../../ViewHint.js';
-import WebGLArrayBuffer from '../../webgl/Buffer.js';
-import WebGLLayerRenderer from './Layer.js';
-import WebGLRenderTarget from '../../webgl/RenderTarget.js';
-import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
-import {AttributeType, DefaultUniform} from '../../webgl/Helper.js';
+import {assert} from '../../asserts.js';
+import {listen, unlistenByKey} from '../../events.js';
+import {buffer, createEmpty, equals} from '../../extent.js';
+import BaseVector from '../../layer/BaseVector.js';
+import {fromUserCoordinate, getUserProjection} from '../../proj.js';
 import {WebGLWorkerMessageType} from '../../render/webgl/constants.js';
+import {colorDecodeId, colorEncodeId} from '../../render/webgl/utils.js';
+import VectorEventType from '../../source/VectorEventType.js';
 import {
   apply as applyTransform,
   create as createTransform,
@@ -17,14 +17,14 @@ import {
   multiply as multiplyTransform,
   translate as translateTransform,
 } from '../../transform.js';
-import {assert} from '../../asserts.js';
-import {buffer, createEmpty, equals} from '../../extent.js';
-import {colorDecodeId, colorEncodeId} from '../../render/webgl/utils.js';
-import {create as createWebGLWorker} from '../../worker/webgl.js';
-import {fromUserCoordinate, getUserProjection} from '../../proj.js';
 import {getUid} from '../../util.js';
+import WebGLArrayBuffer from '../../webgl/Buffer.js';
+import {AttributeType, DefaultUniform} from '../../webgl/Helper.js';
+import WebGLRenderTarget from '../../webgl/RenderTarget.js';
+import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
+import {create as createWebGLWorker} from '../../worker/webgl.js';
+import WebGLLayerRenderer from './Layer.js';
 import {getWorldParameters} from './worldUtil.js';
-import {listen, unlistenByKey} from '../../events.js';
 
 /**
  * @typedef {Object} CustomAttribute A description of a custom attribute to be passed on to the GPU, with a value different
@@ -47,8 +47,8 @@ import {listen, unlistenByKey} from '../../events.js';
  * @property {string} [className='ol-layer'] A CSS class name to set to the canvas element.
  * @property {Array<CustomAttribute>} [attributes] These attributes will be read from the features in the source and then
  * passed to the GPU. The `name` property of each attribute will serve as its identifier:
- *  * In the vertex shader as an `attribute` by prefixing it with `a_`
- *  * In the fragment shader as a `varying` by prefixing it with `v_`
+ *  In the vertex shader as an `attribute` by prefixing it with `a_`
+ *  In the fragment shader as a `varying` by prefixing it with `v_`
  * Please note that these can only be numerical values.
  * @property {string} vertexShader Vertex shader source, mandatory.
  * @property {string} fragmentShader Fragment shader source, mandatory.

@@ -1,6 +1,7 @@
+import {spy as sinonSpy} from 'sinon';
+import {xhr} from '../../../../src/ol/featureloader.js';
 import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
-import {xhr} from '../../../../src/ol/featureloader.js';
 
 describe('ol.featureloader', function () {
   describe('ol.featureloader.xhr', function () {
@@ -60,7 +61,7 @@ describe('ol.featureloader', function () {
     });
 
     it('calls the success callback', function (done) {
-      const errorSpy = sinon.spy();
+      const errorSpy = sinonSpy();
       loader = xhr(url, format);
       loader.call(
         source,
@@ -78,7 +79,7 @@ describe('ol.featureloader', function () {
     });
 
     it('calls the failure callback when the parsing throws an error (xml)', function (done) {
-      const successSpy = sinon.spy();
+      const successSpy = sinonSpy();
       loader = xhr('spec/ol/data/exceptionreport.xml', format);
       loader.call(source, [], 1, 'EPSG:3857', successSpy, function () {
         setTimeout(function () {
@@ -89,7 +90,7 @@ describe('ol.featureloader', function () {
     });
 
     it('calls the failure callback when the parsing throws an error (json)', function (done) {
-      const successSpy = sinon.spy();
+      const successSpy = sinonSpy();
       loader = xhr('spec/ol/data/exceptionreport.json', format);
       loader.call(source, [], 1, 'EPSG:3857', successSpy, function () {
         setTimeout(function () {

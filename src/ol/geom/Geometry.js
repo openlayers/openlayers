@@ -2,19 +2,19 @@
  * @module ol/geom/Geometry
  */
 import BaseObject from '../Object.js';
-import {abstract} from '../util.js';
-import {
-  compose as composeTransform,
-  create as createTransform,
-} from '../transform.js';
 import {
   createEmpty,
   createOrUpdateEmpty,
   getHeight,
   returnOrUpdate,
 } from '../extent.js';
-import {get as getProjection, getTransform} from '../proj.js';
 import {memoizeOne} from '../functions.js';
+import {get as getProjection, getTransform} from '../proj.js';
+import {
+  compose as composeTransform,
+  create as createTransform,
+} from '../transform.js';
+import {abstract} from '../util.js';
 import {transform2D} from './flat/transform.js';
 
 /**

@@ -1,11 +1,4 @@
-import expect from '../../expect.js';
 import proj4 from 'proj4';
-import {
-  Projection,
-  addCommon,
-  clearAllProjections,
-  transform,
-} from '../../../../src/ol/proj.js';
 import {
   fromEPSGCode,
   getEPSGLookup,
@@ -14,6 +7,13 @@ import {
   setEPSGLookup,
   unregister,
 } from '../../../../src/ol/proj/proj4.js';
+import {
+  Projection,
+  addCommon,
+  clearAllProjections,
+  transform,
+} from '../../../../src/ol/proj.js';
+import expect from '../../expect.js';
 
 const epsgDefinitions = {
   32721: '+proj=utm +zone=21 +south +datum=WGS84 +units=m +no_defs +type=crs',

@@ -2,9 +2,9 @@
  * @module ol/source/ImageMapGuide
  */
 
+import {decode} from '../Image.js';
 import ImageSource, {defaultImageLoadFunction} from './Image.js';
 import {createLoader} from './mapguide.js';
-import {decode} from '../Image.js';
 
 /**
  * @typedef {Object} Options

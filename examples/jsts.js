@@ -1,11 +1,9 @@
+import OL3Parser from 'jsts/org/locationtech/jts/io/OL3Parser.js';
 import BufferOp from 'jsts/org/locationtech/jts/operation/buffer/BufferOp.js';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import LinearRing from '../src/ol/geom/LinearRing.js';
-import Map from '../src/ol/Map.js';
-import OL3Parser from 'jsts/org/locationtech/jts/io/OL3Parser.js';
-import OSM from '../src/ol/source/OSM.js';
-import VectorSource from '../src/ol/source/Vector.js';
-import View from '../src/ol/View.js';
 import {
   LineString,
   MultiLineString,
@@ -16,6 +14,8 @@ import {
 } from '../src/ol/geom.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {fromLonLat} from '../src/ol/proj.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 const source = new VectorSource();
 fetch('data/geojson/roads-seoul.geojson')

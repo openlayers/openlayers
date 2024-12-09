@@ -1,5 +1,5 @@
-import ZIndexContext from '../../../../../../src/ol/render/canvas/ZIndexContext.js';
 import {createCanvasContext2D} from '../../../../../../src/ol/dom.js';
+import ZIndexContext from '../../../../../../src/ol/render/canvas/ZIndexContext.js';
 
 describe('ol/render/canvas/ZIndexContext', () => {
   let target;

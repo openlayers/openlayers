@@ -1,7 +1,6 @@
 /**
  * @module ol/reproj/Triangulation
  */
-import {apply as applyMatrix} from '../transform.js';
 import {
   boundingExtent,
   createEmpty,
@@ -14,12 +13,13 @@ import {
   getWidth,
   intersects,
 } from '../extent.js';
+import {modulo} from '../math.js';
 import {
   createTransformFromCoordinateTransform,
   getTransform,
   transform,
 } from '../proj.js';
-import {modulo} from '../math.js';
+import {apply as applyMatrix} from '../transform.js';
 
 /**
  * Single triangle; consists of 3 source points and 3 target points.

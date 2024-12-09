@@ -1,17 +1,17 @@
 import Feature from '../../../../../../src/ol/Feature.js';
 import LineString from '../../../../../../src/ol/geom/LineString.js';
-import MixedGeometryBatch from '../../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../../src/ol/geom/Polygon.js';
-import {
-  compose as composeTransform,
-  create as createTransform,
-} from '../../../../../../src/ol/transform.js';
+import MixedGeometryBatch from '../../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
 import {
   generateLineStringRenderInstructions,
   generatePointRenderInstructions,
   generatePolygonRenderInstructions,
 } from '../../../../../../src/ol/render/webgl/renderinstructions.js';
+import {
+  compose as composeTransform,
+  create as createTransform,
+} from '../../../../../../src/ol/transform.js';
 
 const SAMPLE_FRAMESTATE = {
   viewState: {

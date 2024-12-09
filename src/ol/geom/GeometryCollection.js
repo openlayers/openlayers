@@ -2,14 +2,14 @@
  * @module ol/geom/GeometryCollection
  */
 import EventType from '../events/EventType.js';
-import Geometry from './Geometry.js';
+import {listen, unlistenByKey} from '../events.js';
 import {
   closestSquaredDistanceXY,
   createOrUpdateEmpty,
   extend,
   getCenter,
 } from '../extent.js';
-import {listen, unlistenByKey} from '../events.js';
+import Geometry from './Geometry.js';
 
 /**
  * @classdesc

@@ -2,26 +2,23 @@
  * @module ol/source/StadiaMaps
  */
 
-import XYZ from './XYZ.js';
 import {ATTRIBUTION as OSM_ATTRIBUTION} from './OSM.js';
+import XYZ from './XYZ.js';
 
 /**
- * @const
- * @type string
+ * @type {string}
  */
 const STADIA_ATTRIBUTION =
   '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a>';
 
 /**
- * @const
- * @type string
+ * @type {string}
  */
 const OMT_ATTRIBUTION =
   '&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a>';
 
 /**
- * @const
- * @type string
+ * @type {string}
  */
 const STAMEN_ATTRIBUTION =
   '&copy; <a href="https://stamen.com/" target="_blank">Stamen Design</a>';

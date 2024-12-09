@@ -1,11 +1,11 @@
 /**
  * @module ol/control/ZoomToExtent
  */
-import Control from './Control.js';
-import EventType from '../events/EventType.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
-import {fromUserExtent} from '../proj.js';
+import EventType from '../events/EventType.js';
 import {fromExtent as polygonFromExtent} from '../geom/Polygon.js';
+import {fromUserExtent} from '../proj.js';
+import Control from './Control.js';
 
 /**
  * @typedef {Object} Options

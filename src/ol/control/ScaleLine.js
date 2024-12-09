@@ -1,9 +1,9 @@
 /**
  * @module ol/control/ScaleLine
  */
-import Control from './Control.js';
 import {CLASS_UNSELECTABLE} from '../css.js';
 import {METERS_PER_UNIT, getPointResolution} from '../proj.js';
+import Control from './Control.js';
 
 /**
  * @type {string}

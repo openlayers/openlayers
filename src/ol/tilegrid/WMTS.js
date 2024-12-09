@@ -2,8 +2,8 @@
  * @module ol/tilegrid/WMTS
  */
 
-import TileGrid from './TileGrid.js';
 import {get as getProjection} from '../proj.js';
+import TileGrid from './TileGrid.js';
 
 /**
  * @typedef {Object} Options

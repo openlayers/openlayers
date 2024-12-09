@@ -1,4 +1,3 @@
-import expect from '../../expect.js';
 import {
   AnyType,
   BooleanType,
@@ -18,6 +17,7 @@ import {
   numberToGlsl,
   stringToGlsl,
 } from '../../../../src/ol/expr/gpu.js';
+import expect from '../../expect.js';
 
 describe('ol/expr/gpu.js', () => {
   describe('numberToGlsl()', () => {

@@ -1,23 +1,24 @@
+import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import LineString from '../../../../../../src/ol/geom/LineString.js';
-import MixedGeometryBatch from '../../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../../src/ol/geom/Polygon.js';
+import MixedGeometryBatch from '../../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
 import VectorStyleRenderer from '../../../../../../src/ol/render/webgl/VectorStyleRenderer.js';
+import {
+  compose as composeTransform,
+  create as createTransform,
+  makeInverse as makeInverseTransform,
+} from '../../../../../../src/ol/transform.js';
 import WebGLArrayBuffer from '../../../../../../src/ol/webgl/Buffer.js';
 import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
+import {ShaderBuilder} from '../../../../../../src/ol/webgl/ShaderBuilder.js';
 import {
   ARRAY_BUFFER,
   DYNAMIC_DRAW,
   ELEMENT_ARRAY_BUFFER,
   FLOAT,
 } from '../../../../../../src/ol/webgl.js';
-import {ShaderBuilder} from '../../../../../../src/ol/webgl/ShaderBuilder.js';
-import {
-  compose as composeTransform,
-  create as createTransform,
-  makeInverse as makeInverseTransform,
-} from '../../../../../../src/ol/transform.js';
 
 /**
  * @type {import('../../../../../../src/ol/render/webgl/VectorStyleRenderer.js').StyleShaders}
@@ -260,11 +261,11 @@ describe('VectorStyleRenderer', () => {
           geometryBatch,
           SAMPLE_TRANSFORM,
         );
-        sinon.spy(helper, 'bindBuffer');
-        sinon.spy(helper, 'enableAttributes');
-        sinon.spy(helper, 'useProgram');
-        sinon.spy(helper, 'drawElements');
-        preRenderCb = sinon.spy();
+        sinonSpy(helper, 'bindBuffer');
+        sinonSpy(helper, 'enableAttributes');
+        sinonSpy(helper, 'useProgram');
+        sinonSpy(helper, 'drawElements');
+        preRenderCb = sinonSpy();
         vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
       });
       it('uses programs for all geometry types', function () {
@@ -339,10 +340,10 @@ describe('VectorStyleRenderer', () => {
       fillOnlyShaders.builder = new ShaderBuilder().setFillColorExpression(
         'vec4(1.0)',
       );
-      sinon.spy(helper, 'flushBufferData');
-      sinon.spy(helper, 'enableAttributes');
-      sinon.spy(helper, 'useProgram');
-      sinon.spy(helper, 'drawElements');
+      sinonSpy(helper, 'flushBufferData');
+      sinonSpy(helper, 'enableAttributes');
+      sinonSpy(helper, 'useProgram');
+      sinonSpy(helper, 'drawElements');
       vectorStyleRenderer = new VectorStyleRenderer(
         fillOnlyShaders,
         {},
@@ -352,7 +353,7 @@ describe('VectorStyleRenderer', () => {
         geometryBatch,
         SAMPLE_TRANSFORM,
       );
-      preRenderCb = sinon.spy();
+      preRenderCb = sinonSpy();
       vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
     });
     it('only loads buffer data for one geometry type', function () {
@@ -384,10 +385,10 @@ describe('VectorStyleRenderer', () => {
       strokeOnlyShaders.builder = new ShaderBuilder().setStrokeColorExpression(
         'vec4(1.0)',
       );
-      sinon.spy(helper, 'flushBufferData');
-      sinon.spy(helper, 'enableAttributes');
-      sinon.spy(helper, 'useProgram');
-      sinon.spy(helper, 'drawElements');
+      sinonSpy(helper, 'flushBufferData');
+      sinonSpy(helper, 'enableAttributes');
+      sinonSpy(helper, 'useProgram');
+      sinonSpy(helper, 'drawElements');
       vectorStyleRenderer = new VectorStyleRenderer(
         strokeOnlyShaders,
         {},
@@ -397,7 +398,7 @@ describe('VectorStyleRenderer', () => {
         geometryBatch,
         SAMPLE_TRANSFORM,
       );
-      preRenderCb = sinon.spy();
+      preRenderCb = sinonSpy();
       vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
     });
     it('only loads buffer data for one geometry type', function () {
@@ -429,10 +430,10 @@ describe('VectorStyleRenderer', () => {
       symbolOnlyShaders.builder = new ShaderBuilder().setSymbolColorExpression(
         'vec4(1.)',
       );
-      sinon.spy(helper, 'flushBufferData');
-      sinon.spy(helper, 'enableAttributes');
-      sinon.spy(helper, 'useProgram');
-      sinon.spy(helper, 'drawElements');
+      sinonSpy(helper, 'flushBufferData');
+      sinonSpy(helper, 'enableAttributes');
+      sinonSpy(helper, 'useProgram');
+      sinonSpy(helper, 'drawElements');
       vectorStyleRenderer = new VectorStyleRenderer(
         symbolOnlyShaders,
         {},
@@ -442,7 +443,7 @@ describe('VectorStyleRenderer', () => {
         geometryBatch,
         SAMPLE_TRANSFORM,
       );
-      preRenderCb = sinon.spy();
+      preRenderCb = sinonSpy();
       vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
     });
     it('only loads buffer data for one geometry type', function () {

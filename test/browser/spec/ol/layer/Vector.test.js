@@ -1,21 +1,21 @@
 import Feature from '../../../../../src/ol/Feature.js';
-import Icon from '../../../../../src/ol/style/Icon.js';
-import ImageStyle from '../../../../../src/ol/style/Image.js';
-import Layer from '../../../../../src/ol/layer/Layer.js';
-import LineString from '../../../../../src/ol/geom/LineString.js';
 import Map from '../../../../../src/ol/Map.js';
-import Point from '../../../../../src/ol/geom/Point.js';
-import Stroke from '../../../../../src/ol/style/Stroke.js';
-import Style, {createDefaultStyle} from '../../../../../src/ol/style/Style.js';
-import VectorLayer from '../../../../../src/ol/layer/Vector.js';
-import VectorSource from '../../../../../src/ol/source/Vector.js';
 import View from '../../../../../src/ol/View.js';
+import LineString from '../../../../../src/ol/geom/LineString.js';
+import Point from '../../../../../src/ol/geom/Point.js';
 import {Polygon} from '../../../../../src/ol/geom.js';
+import Layer from '../../../../../src/ol/layer/Layer.js';
+import VectorLayer from '../../../../../src/ol/layer/Vector.js';
 import {
   clearUserProjection,
   getUserProjection,
   useGeographic,
 } from '../../../../../src/ol/proj.js';
+import VectorSource from '../../../../../src/ol/source/Vector.js';
+import Icon from '../../../../../src/ol/style/Icon.js';
+import ImageStyle from '../../../../../src/ol/style/Image.js';
+import Stroke from '../../../../../src/ol/style/Stroke.js';
+import Style, {createDefaultStyle} from '../../../../../src/ol/style/Style.js';
 
 describe('ol.layer.Vector', function () {
   describe('constructor', function () {

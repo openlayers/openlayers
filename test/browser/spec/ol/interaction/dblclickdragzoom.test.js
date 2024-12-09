@@ -1,8 +1,8 @@
-import DblClickDragZoom from '../../../../../src/ol/interaction/DblClickDragZoom.js';
 import Map from '../../../../../src/ol/Map.js';
+import View from '../../../../../src/ol/View.js';
+import DblClickDragZoom from '../../../../../src/ol/interaction/DblClickDragZoom.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
-import View from '../../../../../src/ol/View.js';
 
 describe('ol.interaction.DblClickDragZoom', function () {
   describe('constructor', function () {

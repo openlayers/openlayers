@@ -3,16 +3,16 @@
  */
 import Collection from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
-import Event from '../events/Event.js';
 import Feature from '../Feature.js';
-import Interaction from './Interaction.js';
-import VectorLayer from '../layer/Vector.js';
+import {extend} from '../array.js';
+import Event from '../events/Event.js';
+import {never, shiftKeyOnly, singleClick} from '../events/condition.js';
 import {TRUE} from '../functions.js';
+import VectorLayer from '../layer/Vector.js';
 import {clear} from '../obj.js';
 import {createEditingStyle} from '../style/Style.js';
-import {extend} from '../array.js';
 import {getUid} from '../util.js';
-import {never, shiftKeyOnly, singleClick} from '../events/condition.js';
+import Interaction from './Interaction.js';
 
 /**
  * @enum {string}

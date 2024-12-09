@@ -1,13 +1,13 @@
 /**
  * @module ol/proj/proj4
  */
-import Projection from './Projection.js';
 import {
   addCoordinateTransforms,
   addEquivalentProjections,
   addProjection,
   createSafeCoordinateTransform,
 } from '../proj.js';
+import Projection from './Projection.js';
 import {get as getCachedProjection} from './projections.js';
 import {get as getTransform} from './transforms.js';
 

@@ -1,5 +1,5 @@
-import TileLayer from '../../../../../src/ol/layer/Tile.js';
 import {Map, View} from '../../../../../src/ol/index.js';
+import TileLayer from '../../../../../src/ol/layer/Tile.js';
 import {OSM, TileWMS, XYZ} from '../../../../../src/ol/source.js';
 
 describe('ol/layer/Tile', function () {

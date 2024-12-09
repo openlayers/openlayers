@@ -1,6 +1,6 @@
 import ImageTile from '../../../../../src/ol/ImageTile.js';
-import TileArcGISRest from '../../../../../src/ol/source/TileArcGISRest.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
+import TileArcGISRest from '../../../../../src/ol/source/TileArcGISRest.js';
 
 describe('ol.source.TileArcGISRest', function () {
   let options;

@@ -1,16 +1,16 @@
 /**
  * @module ol/layer/BaseVector
  */
-import Layer from './Layer.js';
 import RBush from 'rbush';
-import Style, {
-  createDefaultStyle,
-  toFunction as toStyleFunction,
-} from '../style/Style.js';
 import {
   flatStylesToStyleFunction,
   rulesToStyleFunction,
 } from '../render/canvas/style.js';
+import Style, {
+  createDefaultStyle,
+  toFunction as toStyleFunction,
+} from '../style/Style.js';
+import Layer from './Layer.js';
 
 /***
  * @template T
@@ -339,7 +339,7 @@ function toStyleLike(style) {
 
   if ('style' in first) {
     /**
-     * @type Array<import("../style/flat.js").Rule>
+     * @type {Array<import("../style/flat.js").Rule>}
      */
     const rules = new Array(length);
     for (let i = 0; i < length; ++i) {

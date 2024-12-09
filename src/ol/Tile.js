@@ -1,11 +1,11 @@
 /**
  * @module ol/Tile
  */
-import EventTarget from './events/Target.js';
-import EventType from './events/EventType.js';
 import TileState from './TileState.js';
-import {abstract} from './util.js';
 import {easeIn} from './easing.js';
+import EventType from './events/EventType.js';
+import EventTarget from './events/Target.js';
+import {abstract} from './util.js';
 
 /**
  * A function that takes a {@link module:ol/Tile~Tile} for the tile and a

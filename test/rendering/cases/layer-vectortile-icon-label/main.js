@@ -1,6 +1,6 @@
+import {MapboxVectorLayer} from 'ol-mapbox-style';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
-import {MapboxVectorLayer} from 'ol-mapbox-style';
 
 const mapboxVectorLayer = new MapboxVectorLayer({
   styleUrl: '/data/styles/bright-v9/style.json',

@@ -1,6 +1,6 @@
+import {spy as sinonSpy} from 'sinon';
 import Disposable from '../../../src/ol/Disposable.js';
 import expect from '../expect.js';
-import sinon from 'sinon';
 
 describe('ol/Disposable.js', function () {
   describe('constructor', function () {
@@ -26,7 +26,7 @@ describe('ol/Disposable.js', function () {
   describe('#dispose()', function () {
     it('calls disposeInternal only once', function () {
       const disposable = new Disposable();
-      sinon.spy(disposable, 'disposeInternal');
+      sinonSpy(disposable, 'disposeInternal');
       expect(disposable.disposeInternal.called).to.be(false);
       disposable.dispose();
       expect(disposable.disposeInternal.callCount).to.be(1);

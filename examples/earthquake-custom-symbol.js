@@ -1,12 +1,12 @@
-import KML from '../src/ol/format/KML.js';
 import Map from '../src/ol/Map.js';
-import Polygon from '../src/ol/geom/Polygon.js';
-import StadiaMaps from '../src/ol/source/StadiaMaps.js';
-import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
-import {Fill, Icon, Stroke, Style} from '../src/ol/style.js';
+import KML from '../src/ol/format/KML.js';
+import Polygon from '../src/ol/geom/Polygon.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {toContext} from '../src/ol/render.js';
+import StadiaMaps from '../src/ol/source/StadiaMaps.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import {Fill, Icon, Stroke, Style} from '../src/ol/style.js';
 
 const symbol = [
   [0, 0],

@@ -1,12 +1,12 @@
-import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
-import GeoTIFF from '../../../../src/ol/source/GeoTIFF.js';
-import Map from '../../../../src/ol/Map.js';
-import TileDebug from '../../../../src/ol/source/TileDebug.js';
-import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
-import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import VectorSource from '../../../../src/ol/source/Vector.js';
 import proj4 from 'proj4';
+import Map from '../../../../src/ol/Map.js';
+import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
+import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
+import GeoTIFF from '../../../../src/ol/source/GeoTIFF.js';
+import TileDebug from '../../../../src/ol/source/TileDebug.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 
 proj4.defs(
   'SR-ORG:97019',

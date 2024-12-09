@@ -1,5 +1,3 @@
-/* eslint-disable import/no-commonjs */
-
 /**
  * @fileoverview  This plugin extracts info from boolean defines.  This only
  * handles boolean defines with the default value in the description.  Default

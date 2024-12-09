@@ -1,16 +1,18 @@
 /**
  * @module ol/render/canvas/Executor
  */
-import CanvasInstruction from './Instruction.js';
-import ZIndexContext from '../canvas/ZIndexContext.js';
-import {TEXT_ALIGN} from './TextBuilder.js';
+import {equals} from '../../array.js';
+import {createEmpty, createOrUpdate, intersects} from '../../extent.js';
+import {lineStringLength} from '../../geom/flat/length.js';
+import {drawTextOnPath} from '../../geom/flat/textpath.js';
+import {transform2D} from '../../geom/flat/transform.js';
 import {
   apply as applyTransform,
   compose as composeTransform,
   create as createTransform,
   setFromArray as transformSetFromArray,
 } from '../../transform.js';
-import {createEmpty, createOrUpdate, intersects} from '../../extent.js';
+import ZIndexContext from '../canvas/ZIndexContext.js';
 import {
   defaultPadding,
   defaultTextAlign,
@@ -19,10 +21,8 @@ import {
   getTextDimensions,
   measureAndCacheTextWidth,
 } from '../canvas.js';
-import {drawTextOnPath} from '../../geom/flat/textpath.js';
-import {equals} from '../../array.js';
-import {lineStringLength} from '../../geom/flat/length.js';
-import {transform2D} from '../../geom/flat/transform.js';
+import CanvasInstruction from './Instruction.js';
+import {TEXT_ALIGN} from './TextBuilder.js';
 
 /**
  * @typedef {import('../../structs/RBush.js').Entry<import('../../Feature.js').FeatureLike>} DeclutterEntry

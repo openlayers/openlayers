@@ -1,12 +1,12 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import Point from '../src/ol/geom/Point.js';
-import StadiaMaps from '../src/ol/source/StadiaMaps.js';
-import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
+import Point from '../src/ol/geom/Point.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import WebGLPointsLayer from '../src/ol/layer/WebGLPoints.js';
-import {Vector} from '../src/ol/source.js';
 import {fromLonLat} from '../src/ol/proj.js';
+import StadiaMaps from '../src/ol/source/StadiaMaps.js';
+import {Vector} from '../src/ol/source.js';
 
 const vectorSource = new Vector({
   attributions: 'NASA',

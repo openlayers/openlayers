@@ -1,8 +1,8 @@
-import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import Map from '../../../../src/ol/Map.js';
-import VectorSource from '../../../../src/ol/source/Vector.js';
 import View from '../../../../src/ol/View.js';
+import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import WebGLVectorLayer from '../../../../src/ol/layer/WebGLVector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 
 /**
  * This is a properly oriented polygon.  The exterior ring is oriented counterclockwise

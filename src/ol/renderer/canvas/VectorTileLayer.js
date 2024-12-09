@@ -1,29 +1,10 @@
 /**
  * @module ol/renderer/canvas/VectorTileLayer
  */
-import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
-import CanvasExecutorGroup, {
-  DECLUTTER,
-} from '../../render/canvas/ExecutorGroup.js';
-import CanvasTileLayerRenderer from './TileLayer.js';
 import TileState from '../../TileState.js';
 import ViewHint from '../../ViewHint.js';
-import ZIndexContext from '../../render/canvas/ZIndexContext.js';
-import {
-  HIT_DETECT_RESOLUTION,
-  createHitDetectionImageData,
-  hitDetect,
-} from '../../render/canvas/hitdetect.js';
-import {
-  apply as applyTransform,
-  create as createTransform,
-  multiply,
-  reset as resetTransform,
-  scale,
-  scale as scaleTransform,
-  translate as translateTransform,
-} from '../../transform.js';
 import {ascending} from '../../array.js';
+import {wrapX} from '../../coordinate.js';
 import {
   boundingExtent,
   buffer,
@@ -33,13 +14,32 @@ import {
   getTopLeft,
   intersects,
 } from '../../extent.js';
+import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
+import CanvasExecutorGroup, {
+  DECLUTTER,
+} from '../../render/canvas/ExecutorGroup.js';
+import ZIndexContext from '../../render/canvas/ZIndexContext.js';
+import {
+  HIT_DETECT_RESOLUTION,
+  createHitDetectionImageData,
+  hitDetect,
+} from '../../render/canvas/hitdetect.js';
+import {toSize} from '../../size.js';
+import {
+  apply as applyTransform,
+  create as createTransform,
+  multiply,
+  reset as resetTransform,
+  scale,
+  scale as scaleTransform,
+  translate as translateTransform,
+} from '../../transform.js';
+import {getUid} from '../../util.js';
 import {
   getSquaredTolerance as getSquaredRenderTolerance,
   renderFeature,
 } from '../vector.js';
-import {getUid} from '../../util.js';
-import {toSize} from '../../size.js';
-import {wrapX} from '../../coordinate.js';
+import CanvasTileLayerRenderer from './TileLayer.js';
 
 /**
  * @type {!Object<string, Array<import("../../render/canvas.js").BuilderType>>}

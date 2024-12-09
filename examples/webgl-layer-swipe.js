@@ -1,9 +1,9 @@
-import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
-import OSM from '../src/ol/source/OSM.js';
-import TileLayer from '../src/ol/layer/WebGLTile.js';
 import View from '../src/ol/View.js';
+import TileLayer from '../src/ol/layer/WebGLTile.js';
 import {getRenderPixel} from '../src/ol/render.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
+import OSM from '../src/ol/source/OSM.js';
 
 const osm = new TileLayer({
   source: new OSM({wrapX: true}),

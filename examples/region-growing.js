@@ -1,9 +1,9 @@
-import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
-import RasterSource from '../src/ol/source/Raster.js';
 import View from '../src/ol/View.js';
 import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
 import {fromLonLat} from '../src/ol/proj.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
+import RasterSource from '../src/ol/source/Raster.js';
 
 function growRegion(inputs, data) {
   const image = inputs[0];

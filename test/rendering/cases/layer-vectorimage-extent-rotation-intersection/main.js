@@ -1,11 +1,11 @@
 import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
+import View from '../../../../src/ol/View.js';
 import Point from '../../../../src/ol/geom/Point.js';
+import {fromExtent} from '../../../../src/ol/geom/Polygon.js';
 import VectorImageLayer from '../../../../src/ol/layer/VectorImage.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
-import View from '../../../../src/ol/View.js';
 import {Fill, RegularShape, Stroke, Style} from '../../../../src/ol/style.js';
-import {fromExtent} from '../../../../src/ol/geom/Polygon.js';
 
 const extent = [
   1900e3 - 100000,

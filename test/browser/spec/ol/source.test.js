@@ -1,8 +1,8 @@
-import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
-import XYZ from '../../../../src/ol/source/XYZ.js';
-import {createXYZ} from '../../../../src/ol/tilegrid.js';
 import {get} from '../../../../src/ol/proj.js';
+import XYZ from '../../../../src/ol/source/XYZ.js';
 import {sourcesFromTileGrid} from '../../../../src/ol/source.js';
+import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
+import {createXYZ} from '../../../../src/ol/tilegrid.js';
 
 describe('ol/source', function () {
   describe('sourcesFromTileGrid()', function () {

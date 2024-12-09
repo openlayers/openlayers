@@ -3,9 +3,9 @@
  */
 // FIXME draw drag box
 import Event from '../events/Event.js';
-import PointerInteraction from './Pointer.js';
-import RenderBox from '../render/Box.js';
 import {mouseActionButton} from '../events/condition.js';
+import RenderBox from '../render/Box.js';
+import PointerInteraction from './Pointer.js';
 
 /**
  * A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two

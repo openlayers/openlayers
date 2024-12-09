@@ -1,11 +1,11 @@
-import StadiaMaps from '../src/ol/source/StadiaMaps.js';
-import TileLayer from '../src/ol/layer/Tile.js';
-import {Circle, Fill, Style} from '../src/ol/style.js';
-import {Map, View} from '../src/ol/index.js';
-import {Point} from '../src/ol/geom.js';
-import {getVectorContext} from '../src/ol/render.js';
 import {upAndDown} from '../src/ol/easing.js';
+import {Point} from '../src/ol/geom.js';
+import {Map, View} from '../src/ol/index.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import {useGeographic} from '../src/ol/proj.js';
+import {getVectorContext} from '../src/ol/render.js';
+import StadiaMaps from '../src/ol/source/StadiaMaps.js';
+import {Circle, Fill, Style} from '../src/ol/style.js';
 
 useGeographic();
 

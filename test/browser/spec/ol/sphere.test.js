@@ -1,9 +1,9 @@
+import WKT from '../../../../src/ol/format/WKT.js';
 import GeometryCollection from '../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import WKT from '../../../../src/ol/format/WKT.js';
 import {getArea, getDistance, getLength} from '../../../../src/ol/sphere.js';
 
 describe('ol/sphere', function () {

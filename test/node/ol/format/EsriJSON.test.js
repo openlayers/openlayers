@@ -1,5 +1,7 @@
-import EsriJSON from '../../../../src/ol/format/EsriJSON.js';
+import fse from 'fs-extra';
 import Feature from '../../../../src/ol/Feature.js';
+import {equals} from '../../../../src/ol/extent.js';
+import EsriJSON from '../../../../src/ol/format/EsriJSON.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import LinearRing from '../../../../src/ol/geom/LinearRing.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
@@ -7,10 +9,8 @@ import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import expect from '../../expect.js';
-import fse from 'fs-extra';
-import {equals} from '../../../../src/ol/extent.js';
 import {get as getProjection, transform} from '../../../../src/ol/proj.js';
+import expect from '../../expect.js';
 
 describe('ol/format/EsriJSON.js', function () {
   let format;

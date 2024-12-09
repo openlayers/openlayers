@@ -1,26 +1,27 @@
+import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../../src/ol/Map.js';
-import RenderFeature from '../../../../../../src/ol/render/Feature.js';
-import TileGeometry from '../../../../../../src/ol/webgl/TileGeometry.js';
 import TileQueue from '../../../../../../src/ol/TileQueue.js';
 import TileState from '../../../../../../src/ol/TileState.js';
 import VectorRenderTile from '../../../../../../src/ol/VectorRenderTile.js';
-import VectorStyleRenderer, * as ol_render_webgl_vectorstylerenderer from '../../../../../../src/ol/render/webgl/VectorStyleRenderer.js';
 import VectorTile from '../../../../../../src/ol/VectorTile.js';
-import VectorTileLayer from '../../../../../../src/ol/layer/VectorTile.js';
-import VectorTileSource from '../../../../../../src/ol/source/VectorTile.js';
 import View from '../../../../../../src/ol/View.js';
-import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
-import WebGLRenderTarget from '../../../../../../src/ol/webgl/RenderTarget.js';
+import {VOID} from '../../../../../../src/ol/functions.js';
+import {Polygon} from '../../../../../../src/ol/geom.js';
+import VectorTileLayer from '../../../../../../src/ol/layer/VectorTile.js';
+import {Projection} from '../../../../../../src/ol/proj.js';
+import RenderFeature from '../../../../../../src/ol/render/Feature.js';
+import VectorStyleRenderer, * as ol_render_webgl_vectorstylerenderer from '../../../../../../src/ol/render/webgl/VectorStyleRenderer.js';
 import WebGLVectorTileLayerRenderer, {
   Attributes,
   Uniforms,
 } from '../../../../../../src/ol/renderer/webgl/VectorTileLayer.js';
-import {Polygon} from '../../../../../../src/ol/geom.js';
-import {Projection} from '../../../../../../src/ol/proj.js';
-import {ShaderBuilder} from '../../../../../../src/ol/webgl/ShaderBuilder.js';
-import {VOID} from '../../../../../../src/ol/functions.js';
-import {create} from '../../../../../../src/ol/transform.js';
+import VectorTileSource from '../../../../../../src/ol/source/VectorTile.js';
 import {createXYZ} from '../../../../../../src/ol/tilegrid.js';
+import {create} from '../../../../../../src/ol/transform.js';
+import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
+import WebGLRenderTarget from '../../../../../../src/ol/webgl/RenderTarget.js';
+import {ShaderBuilder} from '../../../../../../src/ol/webgl/ShaderBuilder.js';
+import TileGeometry from '../../../../../../src/ol/webgl/TileGeometry.js';
 
 const SAMPLE_STYLE = {
   'fill-color': ['get', 'color'],
@@ -159,7 +160,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
   describe('#afterHelperCreated', () => {
     let spy;
     beforeEach(() => {
-      spy = sinon.spy(ol_render_webgl_vectorstylerenderer, 'default');
+      spy = sinonSpy(ol_render_webgl_vectorstylerenderer, 'default');
       renderer.helper = new WebGLHelper();
       renderer.afterHelperCreated(frameState);
     });
@@ -211,7 +212,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
     describe('use a single style', () => {
       let spy;
       beforeEach(() => {
-        spy = sinon.spy(ol_render_webgl_vectorstylerenderer, 'default');
+        spy = sinonSpy(ol_render_webgl_vectorstylerenderer, 'default');
         renderer.reset({
           style: SAMPLE_STYLE2,
         });
@@ -252,7 +253,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         helper: renderer.helper,
         gutter: 4,
       });
-      sinon.spy(vectorTileLayer, 'changed');
+      sinonSpy(vectorTileLayer, 'changed');
     });
     it('creates a TileGeometry instance', () => {
       expect(tileRepresentation).to.be.a(TileGeometry);
@@ -272,12 +273,12 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       frameState.tileQueue.loadMoreTiles(Infinity, Infinity);
       await new Promise((resolve) => setTimeout(resolve, 150));
 
-      sinon.spy(renderer.helper, 'setUniformFloatValue');
-      sinon.spy(renderer.helper, 'setUniformFloatVec4');
-      sinon.spy(renderer.helper, 'setUniformMatrixValue');
-      sinon.spy(renderer.helper, 'bindTexture');
-      sinon.spy(renderer.styleRenderers_[0], 'render');
-      sinon.spy(renderer.styleRenderers_[1], 'render');
+      sinonSpy(renderer.helper, 'setUniformFloatValue');
+      sinonSpy(renderer.helper, 'setUniformFloatVec4');
+      sinonSpy(renderer.helper, 'setUniformMatrixValue');
+      sinonSpy(renderer.helper, 'bindTexture');
+      sinonSpy(renderer.styleRenderers_[0], 'render');
+      sinonSpy(renderer.styleRenderers_[1], 'render');
 
       // this is required to keep a "snapshot" of the input matrix
       // (since the same object is reused for various calls)

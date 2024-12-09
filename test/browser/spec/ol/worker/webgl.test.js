@@ -1,6 +1,6 @@
 import {WebGLWorkerMessageType} from '../../../../../src/ol/render/webgl/constants.js';
-import {create} from '../../../../../src/ol/worker/webgl.js';
 import {create as createTransform} from '../../../../../src/ol/transform.js';
+import {create} from '../../../../../src/ol/worker/webgl.js';
 
 describe('ol/worker/webgl', () => {
   let worker;

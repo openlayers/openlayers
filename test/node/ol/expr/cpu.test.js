@@ -1,4 +1,7 @@
-import expect from '../../expect.js';
+import {
+  buildExpression,
+  newEvaluationContext,
+} from '../../../../src/ol/expr/cpu.js';
 import {
   BooleanType,
   ColorType,
@@ -7,10 +10,7 @@ import {
   StringType,
   newParsingContext,
 } from '../../../../src/ol/expr/expression.js';
-import {
-  buildExpression,
-  newEvaluationContext,
-} from '../../../../src/ol/expr/cpu.js';
+import expect from '../../expect.js';
 
 describe('ol/expr/cpu.js', () => {
   describe('buildExpression()', () => {
@@ -830,7 +830,7 @@ describe('ol/expr/cpu.js', () => {
      */
 
     /**
-     * @type {Array<InterpolateTest}
+     * @type {Array<InterpolateTest>}
      */
     const tests = [
       {

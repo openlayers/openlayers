@@ -1,5 +1,3 @@
-/* eslint-disable import/no-commonjs */
-
 /**
  * @fileoverview Generates JSON output based on exportable symbols.
  */

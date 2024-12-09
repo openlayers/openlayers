@@ -1,8 +1,8 @@
+import path, {dirname} from 'path';
+import {fileURLToPath} from 'url';
 import esMain from 'es-main';
 import fse from 'fs-extra';
 import generateInfo from './generate-info.js';
-import path, {dirname} from 'path';
-import {fileURLToPath} from 'url';
 
 /**
  * Read the symbols from info file.
