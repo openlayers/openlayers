@@ -13,6 +13,7 @@ export const SnapEventType = {
    * @api
    */
   SNAP: 'snap',
+  UNSNAP: 'unsnap',
 };
 
 /**
