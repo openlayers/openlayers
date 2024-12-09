@@ -2,6 +2,7 @@
  * @module ol/sphere
  */
 import {toDegrees, toRadians} from './math.js';
+import {getUserProjection} from './proj.js';
 
 /**
  * Object literal with options for the {@link getLength} or {@link getArea}
@@ -75,7 +76,7 @@ function getLengthInternal(coordinates, radius) {
 export function getLength(geometry, options) {
   options = options || {};
   const radius = options.radius || DEFAULT_RADIUS;
-  const projection = options.projection || 'EPSG:3857';
+  const projection = options.projection || getUserProjection() || 'EPSG:3857';
   const type = geometry.getType();
   if (type !== 'GeometryCollection') {
     geometry = geometry.clone().transform(projection, 'EPSG:4326');
@@ -170,15 +171,16 @@ function getAreaInternal(coordinates, radius) {
  * that polygon edges are segments of great circles on a sphere.
  * @param {import("./geom/Geometry.js").default} geometry A geometry.
  * @param {SphereMetricOptions} [options] Options for the area
- *     calculation.  By default, geometries are assumed to be in 'EPSG:3857'.
- *     You can change this by providing a `projection` option.
+ *     calculation. If a user projection is set (e.g. by calling `useGeographic()`),
+ *     geometries are assumed to be in this projection. Otherwise, geometries are
+ *     are assumed to be in 'EPSG:3857'. You can change this by providing a `projection` option.
  * @return {number} The spherical area (in square meters).
  * @api
  */
 export function getArea(geometry, options) {
   options = options || {};
   const radius = options.radius || DEFAULT_RADIUS;
-  const projection = options.projection || 'EPSG:3857';
+  const projection = options.projection || getUserProjection() || 'EPSG:3857';
   const type = geometry.getType();
   if (type !== 'GeometryCollection') {
     geometry = geometry.clone().transform(projection, 'EPSG:4326');
