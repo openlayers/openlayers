@@ -137,7 +137,7 @@ function keyFromUrlLike(url) {
 
 /**
  * @classdesc
- * A source for typed array data tiles.
+ * A source for typed array data tiles loaded as images.
  *
  * @extends DataTileSource<import("../ImageTile.js").default>
  * @fires import("./Tile.js").TileSourceEvent
@@ -145,7 +145,7 @@ function keyFromUrlLike(url) {
  */
 class ImageTileSource extends DataTileSource {
   /**
-   * @param {Options} [options] DataTile source options.
+   * @param {Options} [options] ImageTile source options.
    */
   constructor(options) {
     options = options || {};
