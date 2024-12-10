@@ -4,6 +4,7 @@ import LineString from '../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import Point from '../../../../src/ol/geom/Point.js';
+import {clearUserProjection, useGeographic} from '../../../../src/ol/proj.js';
 import {getArea, getDistance, getLength} from '../../../../src/ol/sphere.js';
 
 describe('ol/sphere', function () {
@@ -94,6 +95,7 @@ describe('ol/sphere', function () {
   });
 
   describe('getLength()', function () {
+    afterEach(() => clearUserProjection());
     const cases = [
       {
         geometry: new Point([0, 0]),
@@ -161,6 +163,24 @@ describe('ol/sphere', function () {
         length: 2 * 4407939.124914191,
       },
       {
+        useGeographic: true,
+        geometry: new MultiLineString([
+          [
+            [115, -32],
+            [131, -22],
+            [143, -25],
+            [150, -34],
+          ],
+          [
+            [115, -32],
+            [131, -22],
+            [143, -25],
+            [150, -34],
+          ],
+        ]),
+        length: 2 * 4407939.124914191,
+      },
+      {
         geometry: new GeometryCollection([
           new LineString([
             [115, -32],
@@ -183,6 +203,9 @@ describe('ol/sphere', function () {
     cases.forEach(function (c, i) {
       it('works for case ' + i, function () {
         const c = cases[i];
+        if (c.useGeographic) {
+          useGeographic();
+        }
         const length = getLength(c.geometry, c.options);
         expect(length).to.roughlyEqual(c.length, 1e-8);
       });
@@ -203,10 +226,24 @@ describe('ol/sphere', function () {
         done();
       });
     });
+    afterEach(() => clearUserProjection());
 
     it('calculates the area of Ilinois', function () {
       const area = getArea(geometry, {projection: 'EPSG:4326'});
       expect(area).to.equal(expectedArea);
+    });
+
+    it('respects the user projection', function () {
+      useGeographic();
+      const area = getArea(geometry);
+      expect(area).to.equal(expectedArea);
+    });
+
+    it('allows the user projection to be overridden', function () {
+      useGeographic();
+      const projected = geometry.clone().transform('EPSG:4326', 'EPSG:3857');
+      const area = getArea(projected, {projection: 'EPSG:3857'});
+      expect(area).to.roughlyEqual(expectedArea, 1e-3);
     });
 
     it('calculates the area of a projected geometry', function () {
