@@ -181,7 +181,7 @@ class ImageWrapper extends EventTarget {
             }
             if (
               image instanceof HTMLImageElement ||
-              image instanceof ImageBitmap ||
+              (CREATE_IMAGE_BITMAP && image instanceof ImageBitmap) ||
               image instanceof HTMLCanvasElement ||
               image instanceof HTMLVideoElement
             ) {
