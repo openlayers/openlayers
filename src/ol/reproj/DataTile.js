@@ -322,20 +322,23 @@ class ReprojDataTile extends DataTile {
       if (!tile || tile.getState() !== TileState.LOADED) {
         return;
       }
-      const size = tile.getSize();
-      const gutter = this.gutter_;
+      let pixelSize;
       /**
        * @type {import("../DataTile.js").ArrayLike}
        */
       let tileData;
       const arrayData = asArrayLike(tile.getData());
       if (arrayData) {
+        const size = tile.getSize();
+        const gutter = this.gutter_;
+        pixelSize = [size[0] + 2 * gutter, size[1] + 2 * gutter];
         tileData = arrayData;
       } else {
         imageLike = true;
-        tileData = toArray(asImageLike(tile.getData()));
+        const imageData = asImageLike(tile.getData());
+        pixelSize = [imageData.width, imageData.height];
+        tileData = toArray(imageData);
       }
-      const pixelSize = [size[0] + 2 * gutter, size[1] + 2 * gutter];
       const isFloat = tileData instanceof Float32Array;
       const pixelCount = pixelSize[0] * pixelSize[1];
       const DataType = isFloat ? Float32Array : Uint8ClampedArray;
@@ -376,8 +379,8 @@ class ReprojDataTile extends DataTile {
     const size = this.targetTileGrid_.getTileSize(z);
     const targetWidth = typeof size === 'number' ? size : size[0];
     const targetHeight = typeof size === 'number' ? size : size[1];
-    const outWidth = targetWidth * this.pixelRatio_;
-    const outHeight = targetHeight * this.pixelRatio_;
+    const outWidth = Math.round(targetWidth * this.pixelRatio_);
+    const outHeight = Math.round(targetHeight * this.pixelRatio_);
     const targetResolution = this.targetTileGrid_.getResolution(z);
     const sourceResolution = this.sourceTileGrid_.getResolution(this.sourceZ_);
 
@@ -503,14 +506,14 @@ class ReprojDataTile extends DataTile {
     canvasGLPool.push(gl.canvas);
 
     if (imageLike) {
-      const context = createCanvasContext2D(targetWidth, targetHeight);
-      const imageData = new ImageData(dataR, targetWidth);
+      const context = createCanvasContext2D(outWidth, outHeight);
+      const imageData = new ImageData(dataR, outWidth);
       context.putImageData(imageData, 0, 0);
       this.reprojData_ = context.canvas;
     } else {
       this.reprojData_ = dataR;
     }
-    this.reprojSize_ = [Math.round(outWidth), Math.round(outHeight)];
+    this.reprojSize_ = [outWidth, outHeight];
     this.state = TileState.LOADED;
     this.changed();
   }
