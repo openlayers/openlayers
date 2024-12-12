@@ -118,7 +118,7 @@
     "metalsmith": "^2.5.0",
     "mocha": "11.0.1",
     "monotone-chain-convex-hull": "^1.1.0",
-    "ol-mapbox-style": "^12.3.1",
+    "ol-mapbox-style": "^12.4.0",
     "ol-stac": "^1.0.0-beta.8",
     "pixelmatch": "^6.0.0",
     "pmtiles": "^4.0.1",

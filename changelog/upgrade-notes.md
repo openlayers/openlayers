@@ -2,6 +2,10 @@
 
 ### Next Release
 
+#### ol-mapbox-style compatibility
+
+This version of OpenLayers is only compatible with `ol-mapbox-style@12.4.0` or higher.
+
 ### 10.3.0
 
 #### The `transform` function throws for unknown projections
