@@ -2,6 +2,20 @@
 
 ### Next Release
 
+#### Backwards incompatible changes
+
+#### The `getArea()` and `getLength()` functions now respects the user projection
+
+Previously, the `getArea()` and `getLength()` functions in the `ol/sphere` module did not respect a user projection if one was set (e.g. by calling `useGeographic()` or `setUserProjection()`). Now, the `getArea()` and `getLength()` functions default to using the user projection if a `projection` option is not provided.
+
+If you relied on the previous behavior that defaulted to using `EPSG:3857` as the default projection even when a user projection is set, you can get this behavior by supplying a `projection` option to the `getArea()` or `getLength()` function.
+
+```js
+// if geometry coordinates are in EPSG:3857 and a different user projection is set
+const area = getArea(geometry, {projection: 'EPSG:3857'});
+const length = getLength(geometry, {projection: 'EPSG:3857'});
+```
+
 ### 10.3.0
 
 #### The `transform` function throws for unknown projections
