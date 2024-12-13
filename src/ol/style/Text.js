@@ -193,6 +193,9 @@ class Text {
      * @type {Array<number>|null}
      */
     this.padding_ = options.padding === undefined ? null : options.padding;
+
+    this.textFunction_ =
+      typeof this.text_ === 'function' ? this.text_ : () => this.text_;
   }
 
   /**
@@ -351,12 +354,7 @@ class Text {
    * @api
    */
   getTextFunction() {
-    if (typeof this.text_ === 'function') {
-      return this.text_;
-    } else {
-      const text = this.text_;
-      return (f) => text;
-    }
+    return this.textFunction_;
   }
 
   /**
