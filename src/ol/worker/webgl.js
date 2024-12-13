@@ -204,4 +204,4 @@ worker.onmessage = (event) => {
   }
 };
 
-export let create;
+/** @type {function(): Worker} */ export let create;
