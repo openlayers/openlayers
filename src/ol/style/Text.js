@@ -194,6 +194,10 @@ class Text {
      */
     this.padding_ = options.padding === undefined ? null : options.padding;
 
+    /**
+     * @private
+     * @type {TextFunction}
+     */
     this.textFunction_ =
       typeof this.text_ === 'function' ? this.text_ : () => this.text_;
   }
