@@ -1,10 +1,15 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {GPX, GeoJSON, IGC, KML, TopoJSON} from '../src/ol/format.js';
+import GPX from '../src/ol/format/GPX.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
+import IGC from '../src/ol/format/IGC.js';
+import KML from '../src/ol/format/KML.js';
+import TopoJSON from '../src/ol/format/TopoJSON.js';
 import DragAndDrop from '../src/ol/interaction/DragAndDrop.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import ImageTile from '../src/ol/source/ImageTile.js';
-import {Vector as VectorSource} from '../src/ol/source.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
 const attributions =

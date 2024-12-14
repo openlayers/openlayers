@@ -1,12 +1,15 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import EsriJSON from '../src/ol/format/EsriJSON.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import {tile as tileStrategy} from '../src/ol/loadingstrategy.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import ImageTile from '../src/ol/source/ImageTile.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import {Fill, Stroke, Style} from '../src/ol/style.js';
+import Fill from '../src/ol/style/Fill.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 import {createXYZ} from '../src/ol/tilegrid.js';
 
 const serviceUrl =

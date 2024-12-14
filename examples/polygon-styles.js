@@ -4,7 +4,10 @@ import GeoJSON from '../src/ol/format/GeoJSON.js';
 import MultiPoint from '../src/ol/geom/MultiPoint.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Fill from '../src/ol/style/Fill.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 const styles = [
   /* We are using two different styles for the polygons:

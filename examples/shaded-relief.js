@@ -1,8 +1,10 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
+import ImageLayer from '../src/ol/layer/Image.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import ImageTile from '../src/ol/source/ImageTile.js';
-import {OSM, Raster} from '../src/ol/source.js';
+import OSM from '../src/ol/source/OSM.js';
+import Raster from '../src/ol/source/Raster.js';
 
 /**
  * Generates a shaded relief image given elevation data.  Uses a 3x3

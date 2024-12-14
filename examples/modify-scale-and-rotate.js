@@ -6,11 +6,19 @@ import {
   primaryAction,
 } from '../src/ol/events/condition.js';
 import {getCenter, getHeight, getWidth} from '../src/ol/extent.js';
-import {MultiPoint, Point} from '../src/ol/geom.js';
-import {Draw, Modify, Translate} from '../src/ol/interaction.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
+import MultiPoint from '../src/ol/geom/MultiPoint.js';
+import Point from '../src/ol/geom/Point.js';
+import Draw from '../src/ol/interaction/Draw.js';
+import Modify from '../src/ol/interaction/Modify.js';
+import Translate from '../src/ol/interaction/Translate.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Fill from '../src/ol/style/Fill.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 const raster = new TileLayer({
   source: new OSM(),

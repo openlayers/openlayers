@@ -4,19 +4,21 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {createEmpty, extend, getHeight, getWidth} from '../src/ol/extent.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
-import {LineString, Point, Polygon} from '../src/ol/geom.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import LineString from '../src/ol/geom/LineString.js';
+import Point from '../src/ol/geom/Point.js';
+import Polygon from '../src/ol/geom/Polygon.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import {fromLonLat} from '../src/ol/proj.js';
+import Cluster from '../src/ol/source/Cluster.js';
 import ImageTile from '../src/ol/source/ImageTile.js';
-import {Cluster, Vector as VectorSource} from '../src/ol/source.js';
-import {
-  Circle as CircleStyle,
-  Fill,
-  Icon,
-  Stroke,
-  Style,
-  Text,
-} from '../src/ol/style.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Fill from '../src/ol/style/Fill.js';
+import Icon from '../src/ol/style/Icon.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
+import Text from '../src/ol/style/Text.js';
 
 const circleDistanceMultiplier = 1;
 const circleFootSeparation = 28;

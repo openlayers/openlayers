@@ -1,5 +1,6 @@
 import {applyBackground, applyStyle} from 'ol-mapbox-style';
-import {Map, View} from '../src/ol/index.js';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
 import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
 import {createXYZ} from '../src/ol/tilegrid.js';

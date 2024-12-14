@@ -6,7 +6,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import WebGLPointsLayer from '../src/ol/layer/WebGLPoints.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import StadiaMaps from '../src/ol/source/StadiaMaps.js';
-import {Vector} from '../src/ol/source.js';
+import Vector from '../src/ol/source/Vector.js';
 
 const vectorSource = new Vector({
   attributions: 'NASA',
