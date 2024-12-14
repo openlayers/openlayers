@@ -1,9 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {
-  DblClickDragZoom,
-  defaults as defaultInteractions,
-} from '../src/ol/interaction.js';
+import DblClickDragZoom from '../src/ol/interaction/DblClickDragZoom.js';
+import {defaults as defaultInteractions} from '../src/ol/interaction/defaults.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 

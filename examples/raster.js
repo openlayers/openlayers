@@ -4,7 +4,8 @@ import {scaleLinear} from 'd3-scale';
 import {select} from 'd3-selection';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
+import ImageLayer from '../src/ol/layer/Image.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import ImageTile from '../src/ol/source/ImageTile.js';
 import RasterSource from '../src/ol/source/Raster.js';
 

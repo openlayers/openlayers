@@ -6,8 +6,10 @@ import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';
 import TileLayer from '../src/ol/layer/WebGLTile.js';
 import {register} from '../src/ol/proj/proj4.js';
 import {get as getProjection, transformExtent} from '../src/ol/proj.js';
+import OSM from '../src/ol/source/OSM.js';
+import TileImage from '../src/ol/source/TileImage.js';
+import TileWMS from '../src/ol/source/TileWMS.js';
 import WMTS, {optionsFromCapabilities} from '../src/ol/source/WMTS.js';
-import {OSM, TileImage, TileWMS} from '../src/ol/source.js';
 import TileGrid from '../src/ol/tilegrid/TileGrid.js';
 import {createXYZ} from '../src/ol/tilegrid.js';
 

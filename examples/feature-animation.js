@@ -4,11 +4,15 @@ import {unByKey} from '../src/ol/Observable.js';
 import View from '../src/ol/View.js';
 import {easeOut} from '../src/ol/easing.js';
 import Point from '../src/ol/geom/Point.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import {getVectorContext} from '../src/ol/render.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-import {Circle as CircleStyle, Stroke, Style} from '../src/ol/style.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 const tileLayer = new TileLayer({
   source: new OSM({

@@ -1,7 +1,8 @@
 import {load} from '../src/ol/Image.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
+import ImageLayer from '../src/ol/layer/Image.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import ImageSource from '../src/ol/source/Image.js';
 import OSM from '../src/ol/source/OSM.js';
 import {createLoader} from '../src/ol/source/wms.js';

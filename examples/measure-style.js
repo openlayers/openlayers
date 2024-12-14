@@ -1,18 +1,20 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {LineString, Point} from '../src/ol/geom.js';
-import {Draw, Modify} from '../src/ol/interaction.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
+import LineString from '../src/ol/geom/LineString.js';
+import Point from '../src/ol/geom/Point.js';
+import Draw from '../src/ol/interaction/Draw.js';
+import Modify from '../src/ol/interaction/Modify.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import {getArea, getLength} from '../src/ol/sphere.js';
-import {
-  Circle as CircleStyle,
-  Fill,
-  RegularShape,
-  Stroke,
-  Style,
-  Text,
-} from '../src/ol/style.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Fill from '../src/ol/style/Fill.js';
+import RegularShape from '../src/ol/style/RegularShape.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
+import Text from '../src/ol/style/Text.js';
 
 const typeSelect = document.getElementById('type');
 const showSegments = document.getElementById('segments');

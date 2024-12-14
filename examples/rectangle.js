@@ -1,7 +1,7 @@
 import Feature from 'ol/Feature.js';
 import {fromExtent} from 'ol/geom/Polygon.js';
-import {Vector as VectorLayer} from 'ol/layer.js';
-import {Vector as VectorSource} from 'ol/source.js';
+import VectorLayer from 'ol/layer/Vector.js';
+import VectorSource from 'ol/source/Vector.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';

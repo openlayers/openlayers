@@ -5,7 +5,8 @@ import {feature} from 'topojson-client';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {getCenter, getWidth} from '../src/ol/extent.js';
-import {Layer, Tile as TileLayer} from '../src/ol/layer.js';
+import Layer from '../src/ol/layer/Layer.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat, toLonLat} from '../src/ol/proj.js';
 import StadiaMaps from '../src/ol/source/StadiaMaps.js';
 

@@ -1,6 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {FullScreen, defaults as defaultControls} from '../src/ol/control.js';
+import FullScreen from '../src/ol/control/FullScreen.js';
+import {defaults as defaultControls} from '../src/ol/control/defaults.js';
 import Layer from '../src/ol/layer/WebGLTile.js';
 import Source from '../src/ol/source/ImageTile.js';
 

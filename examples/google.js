@@ -1,6 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {Control, defaults as defaultControls} from '../src/ol/control.js';
+import Control from '../src/ol/control/Control.js';
+import {defaults as defaultControls} from '../src/ol/control/defaults.js';
 import Layer from '../src/ol/layer/WebGLTile.js';
 import Google from '../src/ol/source/Google.js';
 

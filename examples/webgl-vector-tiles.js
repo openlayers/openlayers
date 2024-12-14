@@ -5,7 +5,11 @@ import MVT from '../src/ol/format/MVT.js';
 import VectorTile from '../src/ol/layer/VectorTile.js';
 import WebGLVectorTileLayerRenderer from '../src/ol/renderer/webgl/VectorTileLayer.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
-import {Fill, Icon, Stroke, Style, Text} from '../src/ol/style.js';
+import Fill from '../src/ol/style/Fill.js';
+import Icon from '../src/ol/style/Icon.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
+import Text from '../src/ol/style/Text.js';
 import {packColor, parseLiteralStyle} from '../src/ol/webgl/styleparser.js';
 
 const key =
