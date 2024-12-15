@@ -319,7 +319,8 @@ class ScaleLine extends Control {
 
     let i = 3 * Math.floor(Math.log(minWidth * pointResolution) / Math.log(10));
     let count, width, decimalCount;
-    let previousCount, previousWidth, previousDecimalCount;
+    let previousCount = 0;
+    let previousWidth, previousDecimalCount;
     while (true) {
       decimalCount = Math.floor(i / 3);
       const decimal = Math.pow(10, decimalCount);
