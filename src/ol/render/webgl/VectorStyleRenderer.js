@@ -20,7 +20,14 @@ import {
 import {colorEncodeId} from './utils.js';
 
 const tmpColor = [];
-const WEBGL_WORKER = createWebGLWorker();
+/** @type {Worker|undefined} */
+let WEBGL_WORKER;
+function getWebGLWorker() {
+  if (!WEBGL_WORKER) {
+    WEBGL_WORKER = createWebGLWorker();
+  }
+  return WEBGL_WORKER;
+}
 let workerMessageCounter = 0;
 
 /**
@@ -424,6 +431,7 @@ class VectorStyleRenderer {
       renderInstructionsTransform: transform,
       customAttributesSize: getCustomAttributesSize(this.customAttributes_),
     };
+    const WEBGL_WORKER = getWebGLWorker();
     WEBGL_WORKER.postMessage(message, [renderInstructions.buffer]);
 
     // leave ownership of render instructions

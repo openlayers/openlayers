@@ -13,7 +13,10 @@ async function build(input, {minify = true} = {}) {
         if (id !== input) {
           return null;
         }
-        return code.replace('export let create;', '');
+        return code.replace(
+          '/** @type {function(): Worker} */ export let create;',
+          '',
+        );
       },
     },
     common(),
