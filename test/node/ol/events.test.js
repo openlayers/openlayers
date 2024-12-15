@@ -37,6 +37,16 @@ describe('ol/events.js', function () {
       listen(target, 'foo', listener, undefined);
       expect(target.listeners_['foo'].length).to.be(3);
     });
+    it('stops propagation when false is returned', () => {
+      const listener1 = sinonSpy(() => false);
+      const listener2 = sinonSpy();
+      const target = new EventTarget();
+      listen(target, 'bar', listener1);
+      listen(target, 'bar', listener2);
+      target.dispatchEvent('bar');
+      expect(listener1.calledOnce).to.be(true);
+      expect(listener2.calledOnce).to.be(false);
+    });
   });
 
   describe('listenOnce()', function () {
@@ -65,6 +75,16 @@ describe('ol/events.js', function () {
       listenOnce(target, 'bar', listener, that);
       target.dispatchEvent('bar');
       expect(listener.thisValues[0]).to.be(that);
+    });
+    it('stops propagation when false is returned', () => {
+      const listener1 = sinonSpy(() => false);
+      const listener2 = sinonSpy();
+      const target = new EventTarget();
+      listenOnce(target, 'bar', listener1);
+      listenOnce(target, 'bar', listener2);
+      target.dispatchEvent('bar');
+      expect(listener1.calledOnce).to.be(true);
+      expect(listener2.calledOnce).to.be(false);
     });
   });
 
