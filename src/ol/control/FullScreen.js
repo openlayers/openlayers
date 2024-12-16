@@ -8,11 +8,7 @@ import EventType from '../events/EventType.js';
 import {listen, unlistenByKey} from '../events.js';
 import Control from './Control.js';
 
-const events = [
-  'fullscreenchange',
-  'webkitfullscreenchange',
-  'MSFullscreenChange',
-];
+const events = ['fullscreenchange', 'webkitfullscreenchange'];
 
 /**
  * @enum {string}
