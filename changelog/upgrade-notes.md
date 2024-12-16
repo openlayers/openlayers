@@ -6,6 +6,11 @@
 
 This version of OpenLayers is only compatible with `ol-mapbox-style@12.4.0` or higher.
 
+#### Returning false from a one-time listener added with `once`
+
+Returning false from the listener function will now stop propagation, when the listener is added with `once`.
+Previously this only worked with the `on` method.
+
 ### 10.3.0
 
 #### The `transform` function throws for unknown projections
