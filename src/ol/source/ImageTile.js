@@ -31,8 +31,8 @@ import DataTileSource from './DataTile.js';
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [maxZoom=42] Optional max zoom level. Not used if `tileGrid` is provided.
  * @property {number} [minZoom=0] Optional min zoom level. Not used if `tileGrid` is provided.
- * @property {number|import("../size.js").Size} [tileSize=[256, 256]] The pixel width and height of the source tiles.
- * This may be different than the rendered pixel size if a `tileGrid` is provided.
+ * @property {number|import("../size.js").Size} [tileSize=[256, 256]] The tile size used by the tile service.
+ * Not used if `tileGrid` is provided.
  * @property {number} [gutter=0] The size in pixels of the gutter around data tiles to ignore.
  * This allows artifacts of rendering at tile edges to be ignored.
  * Supported data should be wider and taller than the tile size by a value of `2 x gutter`.
