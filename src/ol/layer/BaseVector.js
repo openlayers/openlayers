@@ -187,8 +187,7 @@ class BaseVectorLayer extends Layer {
   }
 
   /**
-   * @return {function(import("../Feature.js").default, import("../Feature.js").default): number|null|undefined} Render
-   *     order.
+   * @return {import("../render.js").OrderFunction|null|undefined} Render order.
    */
   getRenderOrder() {
     return /** @type {import("../render.js").OrderFunction|null|undefined} */ (

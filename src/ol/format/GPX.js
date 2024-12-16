@@ -184,6 +184,10 @@ const GPX_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
  */
 
 /**
+ * @typedef {function(Feature, Node): void} ReadExtensions
+ */
+
+/**
  * @classdesc
  * Feature format for reading and writing data in the GPX format.
  *
@@ -214,7 +218,7 @@ class GPX extends XMLFeature {
     this.dataProjection = getProjection('EPSG:4326');
 
     /**
-     * @type {function(Feature, Node): void|undefined}
+     * @type {ReadExtensions|undefined}
      * @private
      */
     this.readExtensions_ = options.readExtensions;
