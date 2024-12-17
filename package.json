@@ -10,7 +10,7 @@
   "private": true,
   "homepage": "https://openlayers.org/",
   "scripts": {
-    "lint": "eslint tasks test src/ol examples config",
+    "lint": "eslint config examples site src/ol tasks test",
     "pretest": "npm run lint && npm run typecheck && npm run typecheck-strict && npm run build-package",
     "test-rendering": "npm run build-full && node test/rendering/test.js",
     "test-browser": "npm run karma -- --single-run --log-level error",
