@@ -63,7 +63,7 @@ const tempSegment = [];
 /**
  * @enum {string}
  */
-const ModifyEventType = {
+export const ModifyEventType = {
   /**
    * Triggered upon feature modification start
    * @event ModifyEvent#modifystart
@@ -76,6 +76,15 @@ const ModifyEventType = {
    * @api
    */
   MODIFYEND: 'modifyend',
+};
+
+/**
+ * @enum {string}
+ */
+export const ModifyVertexProperty = {
+  FEATURES: 'features',
+  GEOMETRIES: 'geometries',
+  EXISTING: 'existing',
 };
 
 /**
@@ -834,9 +843,9 @@ class Modify extends PointerInteraction {
       const geometry = vertexFeature.getGeometry();
       geometry.setCoordinates(coordinates);
     }
-    vertexFeature.set('features', features);
-    vertexFeature.set('geometries', geometries);
-    vertexFeature.set('existing', existing);
+    vertexFeature.set(ModifyVertexProperty.FEATURES, features);
+    vertexFeature.set(ModifyVertexProperty.GEOMETRIES, geometries);
+    vertexFeature.set(ModifyVertexProperty.EXISTING, existing);
     return vertexFeature;
   }
 
