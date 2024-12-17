@@ -4,6 +4,14 @@
 import {METERS_PER_UNIT} from './Units.js';
 
 /**
+ * The function is called with a `number` view resolution and a
+ * {@link module:ol/coordinate~Coordinate} as arguments, and returns the `number` resolution
+ * in projection units at the passed coordinate.
+ * @typedef {function(number, import("../coordinate.js").Coordinate):number} GetPointResolution
+ * @api
+ */
+
+/**
  * @typedef {Object} Options
  * @property {string} code The SRS identifier code, e.g. `EPSG:4326`.
  * @property {import("./Units.js").Units} [units] Units. Required unless a
@@ -15,7 +23,7 @@ import {METERS_PER_UNIT} from './Units.js';
  * If not provided, the `units` are used to get the meters per unit from the {@link METERS_PER_UNIT}
  * lookup table.
  * @property {import("../extent.js").Extent} [worldExtent] The world extent for the SRS.
- * @property {function(number, import("../coordinate.js").Coordinate):number} [getPointResolution]
+ * @property {GetPointResolution} [getPointResolution]
  * Function to determine resolution at a point. The function is called with a
  * `number` view resolution and a {@link module:ol/coordinate~Coordinate} as arguments, and returns
  * the `number` resolution in projection units at the passed coordinate. If this is `undefined`,
@@ -111,7 +119,7 @@ class Projection {
 
     /**
      * @private
-     * @type {function(number, import("../coordinate.js").Coordinate):number|undefined}
+     * @type {GetPointResolution|undefined}
      */
     this.getPointResolutionFunc_ = options.getPointResolution;
 
@@ -262,7 +270,7 @@ class Projection {
 
   /**
    * Get the custom point resolution function for this projection (if set).
-   * @return {function(number, import("../coordinate.js").Coordinate):number|undefined} The custom point
+   * @return {GetPointResolution|undefined} The custom point
    * resolution function (if set).
    */
   getPointResolutionFunc() {

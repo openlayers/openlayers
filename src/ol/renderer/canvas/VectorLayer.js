@@ -131,7 +131,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
-     * @type {function(import("../../Feature.js").default, import("../../Feature.js").default): number|null}
+     * @type {import("../../render.js").OrderFunction|null}
      */
     this.renderedRenderOrder_ = null;
 

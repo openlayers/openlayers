@@ -73,6 +73,10 @@ export class ExtentEvent extends Event {
   }
 }
 
+/**
+ * @typedef {function (import("../coordinate.js").Coordinate): import("../extent.js").Extent} PointerHandler
+ */
+
 /***
  * @template Return
  * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
@@ -132,7 +136,7 @@ class Extent extends PointerInteraction {
 
     /**
      * Handler for pointer move events
-     * @type {function (import("../coordinate.js").Coordinate): import("../extent.js").Extent|null}
+     * @type {PointerHandler|null}
      * @private
      */
     this.pointerHandler_ = null;
@@ -511,7 +515,7 @@ function getPointHandler(fixedPoint) {
 /**
  * @param {import("../coordinate.js").Coordinate} fixedP1 first corner that will be unchanged in the new extent
  * @param {import("../coordinate.js").Coordinate} fixedP2 second corner that will be unchanged in the new extent
- * @return {function (import("../coordinate.js").Coordinate): import("../extent.js").Extent|null} event handler
+ * @return {PointerHandler|null} event handler
  */
 function getEdgeHandler(fixedP1, fixedP2) {
   if (fixedP1[0] == fixedP2[0]) {
