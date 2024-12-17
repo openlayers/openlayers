@@ -53,7 +53,7 @@ import {CREATE_IMAGE_BITMAP, IMAGE_DECODE} from './has.js';
  * Loader function used for image sources. Receives extent, resolution and pixel ratio as arguments.
  * The function returns a promise for an  {@link import("./Image.js").ImageObject image object}.
  *
- * @typedef {function(import("./extent.js").Extent, number, number, (function(HTMLImageElement, string): void)=): import("./DataTile.js").ImageLike|ImageObject|Promise<import("./DataTile.js").ImageLike|ImageObject>} ImageObjectPromiseLoader
+ * @typedef {function(import("./extent.js").Extent, number, number, (function(HTMLImageElement, string): void)=): Promise<import("./DataTile.js").ImageLike|ImageObject>} ImageObjectPromiseLoader
  */
 
 class ImageWrapper extends EventTarget {
@@ -62,7 +62,7 @@ class ImageWrapper extends EventTarget {
    * @param {number|Array<number>|undefined} resolution Resolution. If provided as array, x and y
    * resolution will be assumed.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {import("./ImageState.js").default|import("./Image.js").Loader} stateOrLoader State.
+   * @param {import("./ImageState.js").default|Loader} stateOrLoader State.
    */
   constructor(extent, resolution, pixelRatio, stateOrLoader) {
     super();
@@ -100,7 +100,7 @@ class ImageWrapper extends EventTarget {
 
     /**
      * @protected
-     * @type {import("./Image.js").Loader}
+     * @type {Loader|null}
      */
     this.loader = typeof stateOrLoader === 'function' ? stateOrLoader : null;
   }

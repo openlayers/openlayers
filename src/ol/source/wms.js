@@ -166,9 +166,6 @@ export function createLoader(options) {
   const load = options.load || decode;
   const crossOrigin = options.crossOrigin ?? null;
 
-  /**
-   * @type {import("../Image.js").Loader}
-   */
   return (extent, resolution, pixelRatio) => {
     extent = getRequestExtent(extent, resolution, pixelRatio, ratio);
     if (pixelRatio != 1 && (!hidpi || options.serverType === undefined)) {
