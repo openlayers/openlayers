@@ -83,7 +83,7 @@ export const Attributes = {
  */
 
 /**
- * @typedef {Object} StyleShaders
+ * @typedef {Object} AsShaders
  * @property {import("../../webgl/ShaderBuilder.js").ShaderBuilder} builder Shader builder with the appropriate presets.
  * @property {AttributeDefinitions} [attributes] Custom attributes made available in the vertex shaders.
  * Default shaders rely on the attributes in {@link Attributes}.
@@ -91,7 +91,13 @@ export const Attributes = {
  */
 
 /**
- * @typedef {import('../../style/webgl.js').WebGLStyle|StyleShaders} VectorStyle
+ * @typedef {Object} AsRule
+ * @property {import('../../style/flat.js').FlatStyle} style Style
+ * @property {import("../../expr/expression.js").EncodedExpression} [filter] Filter
+ */
+
+/**
+ * @typedef {AsRule|AsShaders} VectorStyle
  */
 
 /**
@@ -113,7 +119,7 @@ class VectorStyleRenderer {
    * @param {VectorStyle} styleOrShaders Literal style or custom shaders
    * @param {import('../../style/flat.js').StyleVariables} variables Style variables
    * @param {import('../../webgl/Helper.js').default} helper Helper
-   * @param {boolean} enableHitDetection Whether to enable the hit detection (needs compatible shader)
+   * @param {boolean} [enableHitDetection] Whether to enable the hit detection (needs compatible shader)
    */
   constructor(styleOrShaders, variables, helper, enableHitDetection) {
     /**
@@ -125,17 +131,18 @@ class VectorStyleRenderer {
     /**
      * @private
      */
-    this.hitDetectionEnabled_ = enableHitDetection;
-    let shaders = /** @type {StyleShaders} */ (styleOrShaders);
+    this.hitDetectionEnabled_ = !!enableHitDetection;
+
+    let asShaders = /** @type {AsShaders} */ (styleOrShaders);
     const isShaders = 'builder' in styleOrShaders;
     if (!isShaders) {
+      const asRule = /** @type {AsRule} */ (styleOrShaders);
       const parseResult = parseLiteralStyle(
-        /** @type {import('../../style/webgl.js').WebGLStyle} */ (
-          styleOrShaders
-        ),
+        asRule.style,
         variables,
+        asRule.filter,
       );
-      shaders = {
+      asShaders = {
         builder: parseResult.builder,
         attributes: parseResult.attributes,
         uniforms: parseResult.uniforms,
@@ -164,48 +171,48 @@ class VectorStyleRenderer {
      * @type {boolean}
      * @private
      */
-    this.hasFill_ = !!shaders.builder.getFillVertexShader();
+    this.hasFill_ = !!asShaders.builder.getFillVertexShader();
     if (this.hasFill_) {
       /**
        * @private
        */
-      this.fillVertexShader_ = shaders.builder.getFillVertexShader();
+      this.fillVertexShader_ = asShaders.builder.getFillVertexShader();
       /**
        * @private
        */
-      this.fillFragmentShader_ = shaders.builder.getFillFragmentShader();
+      this.fillFragmentShader_ = asShaders.builder.getFillFragmentShader();
     }
 
     /**
      * @type {boolean}
      * @private
      */
-    this.hasStroke_ = !!shaders.builder.getStrokeVertexShader();
+    this.hasStroke_ = !!asShaders.builder.getStrokeVertexShader();
     if (this.hasStroke_) {
       /**
        * @private
        */
-      this.strokeVertexShader_ = shaders.builder.getStrokeVertexShader();
+      this.strokeVertexShader_ = asShaders.builder.getStrokeVertexShader();
       /**
        * @private
        */
-      this.strokeFragmentShader_ = shaders.builder.getStrokeFragmentShader();
+      this.strokeFragmentShader_ = asShaders.builder.getStrokeFragmentShader();
     }
 
     /**
      * @type {boolean}
      * @private
      */
-    this.hasSymbol_ = !!shaders.builder.getSymbolVertexShader();
+    this.hasSymbol_ = !!asShaders.builder.getSymbolVertexShader();
     if (this.hasSymbol_) {
       /**
        * @private
        */
-      this.symbolVertexShader_ = shaders.builder.getSymbolVertexShader();
+      this.symbolVertexShader_ = asShaders.builder.getSymbolVertexShader();
       /**
        * @private
        */
-      this.symbolFragmentShader_ = shaders.builder.getSymbolFragmentShader();
+      this.symbolFragmentShader_ = asShaders.builder.getSymbolFragmentShader();
     }
 
     const hitDetectionAttributes = this.hitDetectionEnabled_
@@ -225,12 +232,12 @@ class VectorStyleRenderer {
     this.customAttributes_ = Object.assign(
       {},
       hitDetectionAttributes,
-      shaders.attributes,
+      asShaders.attributes,
     );
     /**
      * @private
      */
-    this.uniforms_ = shaders.uniforms;
+    this.uniforms_ = asShaders.uniforms;
 
     const customAttributesDesc = Object.entries(this.customAttributes_).map(
       ([name, value]) => ({

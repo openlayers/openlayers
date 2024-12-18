@@ -21,7 +21,7 @@ import {
 } from '../../../../../../src/ol/webgl.js';
 
 /**
- * @type {import('../../../../../../src/ol/render/webgl/VectorStyleRenderer.js').StyleShaders}
+ * @type {import('../../../../../../src/ol/render/webgl/VectorStyleRenderer.js').AsShaders}
  */
 const SAMPLE_SHADERS = () => ({
   builder: new ShaderBuilder()
@@ -40,13 +40,16 @@ const SAMPLE_SHADERS = () => ({
 });
 
 /**
- * @type {import('../../../../../../src/ol/style/webgl.js').WebGLStyle}
+ * @type {import('../../../../../../src/ol/render/webgl/VectorStyleRenderer.js').AsRule}
  */
-const SAMPLE_STYLE = {
-  'fill-color': ['get', 'color'],
-  'stroke-width': 2,
-  'circle-radius': ['get', 'size'],
-  'circle-fill-color': 'red',
+const SAMPLE_STYLE_RULE = {
+  style: {
+    'fill-color': ['get', 'color'],
+    'stroke-width': 2,
+    'circle-radius': ['get', 'size'],
+    'circle-fill-color': 'red',
+  },
+  filter: ['>', ['get', 'size'], 10],
 };
 
 const SAMPLE_FRAMESTATE = {
@@ -111,7 +114,11 @@ describe('VectorStyleRenderer', () => {
 
   describe('constructor using style', () => {
     beforeEach(() => {
-      vectorStyleRenderer = new VectorStyleRenderer(SAMPLE_STYLE, {}, helper);
+      vectorStyleRenderer = new VectorStyleRenderer(
+        SAMPLE_STYLE_RULE,
+        {},
+        helper,
+      );
     });
     it('creates a VectorStyleRenderer', () => {
       expect(vectorStyleRenderer.customAttributes_).to.eql({
