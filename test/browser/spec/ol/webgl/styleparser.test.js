@@ -61,11 +61,14 @@ describe('ol/webgl/styleparser', () => {
     });
 
     it('parses a style with a filter', () => {
-      const result = parseLiteralStyle({
-        filter: ['between', ['get', 'attr0'], 0, 10],
-        'circle-radius': 6,
-        'circle-fill-color': '#336699',
-      });
+      const result = parseLiteralStyle(
+        {
+          'circle-radius': 6,
+          'circle-fill-color': '#336699',
+        },
+        undefined,
+        ['between', ['get', 'attr0'], 0, 10],
+      );
 
       expect(result.builder.attributes_).to.eql(['float a_prop_attr0']);
       expect(result.builder.varyings_).to.eql([
@@ -897,13 +900,11 @@ describe('ol/webgl/styleparser', () => {
     describe('filter', () => {
       let result;
       beforeEach(() => {
-        result = parseLiteralStyle({
-          filter: [
-            'all',
-            ['==', ['geometry-type'], 'LineString'],
-            ['in', ['get', 'type'], ['literal', ['road', 'path', 'street']]],
-          ],
-        });
+        result = parseLiteralStyle({}, undefined, [
+          'all',
+          ['==', ['geometry-type'], 'LineString'],
+          ['in', ['get', 'type'], ['literal', ['road', 'path', 'street']]],
+        ]);
       });
       it('adds the filter expression and attributes to the shader builder', () => {
         expect(result.builder.fragmentShaderFunctions_[0]).to.contain(
@@ -1094,16 +1095,19 @@ describe('ol/webgl/styleparser', () => {
     describe('handle special context values (geometry type, feature id)', () => {
       let parseResult;
       beforeEach(() => {
-        parseResult = parseLiteralStyle({
-          filter: ['==', ['id'], 101],
-          'stroke-color': [
-            'match',
-            ['geometry-type'],
-            'Polygon',
-            'red',
-            'blue',
-          ],
-        });
+        parseResult = parseLiteralStyle(
+          {
+            'stroke-color': [
+              'match',
+              ['geometry-type'],
+              'Polygon',
+              'red',
+              'blue',
+            ],
+          },
+          undefined,
+          ['==', ['id'], 101],
+        );
       });
       it('adds attributes to the shader builder', () => {
         expect(parseResult.builder.attributes_).to.eql([
@@ -1202,14 +1206,13 @@ describe('ol/webgl/styleparser', () => {
 
   describe('shader functions', () => {
     it('adds shader functions in the vertex and fragment shaders', () => {
-      const result = parseLiteralStyle({
-        'stroke-width': 2,
-        filter: [
-          'in',
-          ['get', 'type'],
-          ['literal', ['road', 'path', 'street']],
-        ],
-      });
+      const result = parseLiteralStyle(
+        {
+          'stroke-width': 2,
+        },
+        undefined,
+        ['in', ['get', 'type'], ['literal', ['road', 'path', 'street']]],
+      );
 
       expect(result.builder.vertexShaderFunctions_).to.eql([]);
       expect(result.builder.fragmentShaderFunctions_).to.contain(
