@@ -261,6 +261,7 @@ class Layer extends BaseLayer {
           this.dispatchEvent('sourceready');
         }, 0);
       }
+      this.clearRenderer();
     }
     this.changed();
   }
