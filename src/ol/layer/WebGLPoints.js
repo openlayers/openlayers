@@ -8,7 +8,9 @@ import Layer from './Layer.js';
 /**
  * @template {import("../source/Vector.js").default<import('../Feature').FeatureLike>} VectorSourceType
  * @typedef {Object} Options
- * @property {import('../style/webgl.js').WebGLStyle} style Literal style to apply to the layer features.
+ * @property {import('../style/flat.js').FlatStyle} style Literal style to apply to the layer features.
+ * @property {import("../expr/expression.js").EncodedExpression} [filter] The filter used
+ * to determine if a style applies. If no filter is included, the rule always applies.
  * @property {import('../style/flat.js').StyleVariables} [variables] Style variables. Each variable must hold a literal value (not
  * an expression). These variables can be used as {@link import("../expr/expression.js").ExpressionValue expressions} in the styles properties
  * using the `['var', 'varName']` operator.
@@ -90,7 +92,11 @@ class WebGLPointsLayer extends Layer {
      * @private
      * @type {import('../webgl/styleparser.js').StyleParseResult}
      */
-    this.parseResult_ = parseLiteralStyle(options.style, this.styleVariables_);
+    this.parseResult_ = parseLiteralStyle(
+      options.style,
+      this.styleVariables_,
+      options.filter,
+    );
 
     /**
      * @private
