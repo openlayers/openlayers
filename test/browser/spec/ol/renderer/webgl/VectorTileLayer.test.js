@@ -26,13 +26,26 @@ import TileGeometry from '../../../../../../src/ol/webgl/TileGeometry.js';
 const SAMPLE_STYLE = {
   'fill-color': ['get', 'color'],
   'stroke-width': 2,
-  'circle-radius': 1.5,
+  'circle-radius': ['get', 'size'],
 };
 
-const SAMPLE_STYLE2 = {
-  'circle-radius': ['get', 'size'],
-  'circle-fill-color': 'red',
-};
+const SAMPLE_RULES = [
+  {
+    style: {
+      'circle-radius': 4,
+      'fill-color': ['get', 'color'],
+      'stroke-width': 2,
+    },
+  },
+  {
+    filter: ['>', ['zoom'], 10],
+    style: {
+      'circle-radius': 3,
+      'fill-color': 'white',
+      'stroke-width': 2,
+    },
+  },
+];
 
 const SAMPLE_SHADERS = () => ({
   builder: new ShaderBuilder()
@@ -59,8 +72,6 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
   let frameState;
   /** @type {Map} */
   let map;
-  /** @type {import('../../../../../../src/ol/render/webgl/VectorStyleRenderer.js').StyleShaders} */
-  let sampleShaders;
 
   beforeEach(function () {
     vectorTileLayer = new VectorTileLayer({
@@ -105,9 +116,8 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         },
       }),
     });
-    sampleShaders = SAMPLE_SHADERS();
     renderer = new WebGLVectorTileLayerRenderer(vectorTileLayer, {
-      style: [SAMPLE_STYLE, sampleShaders],
+      style: SAMPLE_RULES,
     });
 
     const proj = new Projection({
@@ -179,7 +189,9 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       const firstBuilder = spy.firstCall.args[0].builder;
       const secondBuilder = spy.secondCall.args[0].builder;
       expect(firstBuilder.getFillColorExpression()).to.be('v_prop_color');
-      expect(secondBuilder.getFillColorExpression()).to.be('vec4(1.0)');
+      expect(secondBuilder.getFillColorExpression()).to.be(
+        'vec4(1.0, 1.0, 1.0, 1.0)',
+      );
     });
     it('adds a discard expression and uniforms to the styles', () => {
       const firstBuilder = spy.firstCall.args[0].builder;
@@ -192,7 +204,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       expect(secondBuilder.uniforms_).to.contain('sampler2D u_depthMask');
       expect(secondBuilder.uniforms_).to.contain('float u_tileZoomLevel');
       expect(secondBuilder.getFragmentDiscardExpression()).to.be(
-        '(u_zoom > 10.0) || (texture2D(u_depthMask, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > u_tileZoomLevel + 0.5)',
+        '(!(u_zoom > 10.0)) || (texture2D(u_depthMask, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > u_tileZoomLevel + 0.5)',
       );
     });
     it('instantiates the tile mask target, indices, attributes and program', () => {
@@ -214,7 +226,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       beforeEach(() => {
         spy = sinonSpy(ol_render_webgl_vectorstylerenderer, 'default');
         renderer.reset({
-          style: SAMPLE_STYLE2,
+          style: SAMPLE_STYLE,
         });
       });
       afterEach(() => {
@@ -229,6 +241,29 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         expect(spy.callCount).to.be(1);
         const builder = spy.firstCall.args[0].builder;
         expect(builder.getSymbolColorExpression()).to.contain('v_prop_size');
+      });
+    });
+
+    describe('use shaders', () => {
+      let spy;
+      beforeEach(() => {
+        spy = sinonSpy(ol_render_webgl_vectorstylerenderer, 'default');
+        renderer.reset({
+          style: SAMPLE_SHADERS(),
+        });
+      });
+      afterEach(() => {
+        spy.restore();
+      });
+
+      it('recreates renderers', () => {
+        expect(renderer.styleRenderers_.length).to.be(1);
+        expect(renderer.styleRenderers_[0]).to.be.a(VectorStyleRenderer);
+      });
+      it('passes the correct styles to renderers', () => {
+        expect(spy.callCount).to.be(1);
+        const builder = spy.firstCall.args[0].builder;
+        expect(builder.getSymbolColorExpression()).to.contain('vec4(1.0)');
       });
     });
   });
