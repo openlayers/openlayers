@@ -28,10 +28,22 @@ const SAMPLE_STYLE = {
   'circle-radius': 1.5,
 };
 
-const SAMPLE_STYLE2 = {
-  'circle-radius': ['get', 'size'],
-  'circle-fill-color': 'red',
-};
+const SAMPLE_RULES = [
+  {
+    style: {
+      'circle-radius': 4,
+      'fill-color': ['get', 'color'],
+      'stroke-width': 2,
+    },
+  },
+  {
+    style: {
+      'circle-radius': 3,
+      'fill-color': ['get', 'color'],
+      'stroke-width': 2,
+    },
+  },
+];
 
 const SAMPLE_SHADERS = {
   builder: new ShaderBuilder()
@@ -96,7 +108,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       source: vectorSource,
     });
     renderer = new WebGLVectorLayerRenderer(vectorLayer, {
-      style: [SAMPLE_STYLE, SAMPLE_SHADERS],
+      style: SAMPLE_RULES,
     });
 
     const proj = new Projection({
@@ -163,8 +175,16 @@ describe('ol/renderer/webgl/VectorLayer', () => {
     });
     it('passes the correct styles to renderers', () => {
       expect(spy.callCount).to.be(2);
-      expect(spy.calledWith(SAMPLE_SHADERS)).to.be(true);
-      expect(spy.calledWith(SAMPLE_STYLE)).to.be(true);
+      expect(
+        spy.calledWith({
+          style: SAMPLE_RULES[0].style,
+        }),
+      ).to.be(true);
+      expect(
+        spy.calledWith({
+          style: SAMPLE_RULES[1].style,
+        }),
+      ).to.be(true);
     });
   });
 
@@ -174,12 +194,12 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       renderer.prepareFrame(frameState);
     });
 
-    describe('use a single style', () => {
+    describe('use shaders', () => {
       let spy;
       beforeEach(() => {
         spy = sinonSpy(ol_render_webgl_vectorstylerenderer, 'default');
         renderer.reset({
-          style: SAMPLE_STYLE2,
+          style: SAMPLE_SHADERS,
         });
       });
       afterEach(() => {
@@ -192,7 +212,29 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       });
       it('passes the correct styles to renderers', () => {
         expect(spy.callCount).to.be(1);
-        expect(spy.calledWith(SAMPLE_STYLE2)).to.be(true);
+        expect(spy.calledWith(SAMPLE_SHADERS)).to.be(true);
+      });
+    });
+
+    describe('use a single style', () => {
+      let spy;
+      beforeEach(() => {
+        spy = sinonSpy(ol_render_webgl_vectorstylerenderer, 'default');
+        renderer.reset({
+          style: SAMPLE_STYLE,
+        });
+      });
+      afterEach(() => {
+        spy.restore();
+      });
+
+      it('recreates renderers', () => {
+        expect(renderer.styleRenderers_.length).to.be(1);
+        expect(renderer.styleRenderers_[0]).to.be.a(VectorStyleRenderer);
+      });
+      it('passes the correct styles to renderers', () => {
+        expect(spy.callCount).to.be(1);
+        expect(spy.calledWith({style: SAMPLE_STYLE})).to.be(true);
       });
     });
   });
