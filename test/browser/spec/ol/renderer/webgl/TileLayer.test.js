@@ -80,6 +80,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
     tileLayer.setSource(null);
     expect(renderer.prepareFrame(frameState)).to.be(false);
     tileLayer.setSource(source);
+    renderer = tileLayer.getRenderer();
     expect(renderer.prepareFrame(frameState)).to.be(true);
     const tileGrid = source.getTileGrid();
     tileLayer.setExtent(tileGrid.getTileCoordExtent([2, 0, 0]));
