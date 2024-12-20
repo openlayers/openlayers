@@ -40,47 +40,55 @@ const point = new Feature({
   geometry: new Point([50, 0]),
 });
 const filterAbove = {
-  'stroke-color': 'rgb(255,64,64)',
-  'stroke-width': 12,
-  'stroke-line-join': 'miter',
-  'stroke-line-cap': 'butt',
+  style: {
+    'stroke-color': 'rgb(255,64,64)',
+    'stroke-width': 12,
+    'stroke-line-join': 'miter',
+    'stroke-line-cap': 'butt',
+  },
   filter: ['<', ['line-metric'], ['get', 'limit']],
 };
 const widthChanges = {
-  'stroke-color': 'rgb(60,222,4)',
-  'stroke-offset': 10,
-  'stroke-width': ['case', ['>', ['line-metric'], 60], 2, 8],
-  'stroke-line-join': 'miter',
-  'stroke-line-cap': 'butt',
+  style: {
+    'stroke-color': 'rgb(60,222,4)',
+    'stroke-offset': 10,
+    'stroke-width': ['case', ['>', ['line-metric'], 60], 2, 8],
+    'stroke-line-join': 'miter',
+    'stroke-line-cap': 'butt',
+  },
 };
 const colorInterpolation = {
-  'stroke-color': [
-    'interpolate',
-    ['linear'],
-    ['line-metric'],
-    0,
-    'rgb(0,49,152)',
-    110,
-    'rgb(176,148,9)',
-  ],
-  'stroke-line-cap': 'butt',
-  'stroke-line-join': 'miter',
-  'stroke-offset': -10,
-  'stroke-width': 8,
+  style: {
+    'stroke-color': [
+      'interpolate',
+      ['linear'],
+      ['line-metric'],
+      0,
+      'rgb(0,49,152)',
+      110,
+      'rgb(176,148,9)',
+    ],
+    'stroke-line-cap': 'butt',
+    'stroke-line-join': 'miter',
+    'stroke-offset': -10,
+    'stroke-width': 8,
+  },
 };
 const shouldNotShowUp = {
-  'fill-color': ['*', 'rgb(126,35,144)', ['line-metric']],
-  'circle-fill-color': ['*', 'rgb(126,35,144)', ['line-metric']],
-  'circle-radius': 20,
+  style: {
+    'fill-color': ['*', 'rgb(126,35,144)', ['line-metric']],
+    'circle-fill-color': ['*', 'rgb(126,35,144)', ['line-metric']],
+    'circle-radius': 20,
+  },
 };
 
-const style = [filterAbove, widthChanges, colorInterpolation, shouldNotShowUp];
+const rules = [filterAbove, widthChanges, colorInterpolation, shouldNotShowUp];
 
 const vector = new WebGLVectorLayer({
   source: new VectorSource({
     features: [openLine, polygon, point],
   }),
-  style,
+  style: rules,
 });
 
 new Map({

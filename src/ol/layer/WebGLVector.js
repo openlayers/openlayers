@@ -32,7 +32,7 @@ import Layer from './Layer.js';
  * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
  * be visible.
  * @property {VectorSourceType} [source] Source.
- * @property {import('../style/webgl.js').WebGLStyle} style Layer style.
+ * @property {import('../style/flat.js').FlatStyleLike} style Layer style.
  * @property {import('../style/flat.js').StyleVariables} [variables] Style variables. Each variable must hold a literal value (not
  * an expression). These variables can be used as {@link import("../expr/expression.js").ExpressionValue expressions} in the styles properties
  * using the `['var', 'varName']` operator.
@@ -108,7 +108,7 @@ class WebGLVectorLayer extends Layer {
 
   /**
    * Set the layer style.
-   * @param {import('../style/webgl.js').WebGLStyle} style Layer style.
+   * @param {import('../style/flat.js').FlatStyleLike} style Layer style.
    */
   setStyle(style) {
     this.style = style;

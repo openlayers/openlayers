@@ -4,6 +4,7 @@
 import EventType from '../../events/EventType.js';
 import {getIntersection} from '../../extent.js';
 import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
+import {breakDownFlatStyle} from '../../render/webgl/utils.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
