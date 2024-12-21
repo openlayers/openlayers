@@ -25,6 +25,7 @@ import {and as andFilterFn, bbox as bboxFilterFn} from './filter.js';
 import {
   readNonNegativeIntegerString,
   readPositiveInteger,
+  writeCDATASection,
   writeStringTextNode,
 } from './xsd.js';
 
@@ -941,7 +942,20 @@ function writeProperty(node, pair, objectStack) {
         GML32.prototype.writeGeometryElement(value, pair.value, objectStack);
       }
     } else {
-      writeStringTextNode(value, pair.value);
+      if (typeof pair.value === 'string') {
+        // Generate CDATA section to preserve whitespaces.
+        pair.value.split(']]>').forEach((part, i, a) => {
+          if (i < a.length - 1) {
+            part += ']]';
+          }
+          if (i > 0) {
+            part = '>' + part;
+          }
+          writeCDATASection(value, part);
+        });
+      } else {
+        writeStringTextNode(value, pair.value);
+      }
     }
   }
 }
