@@ -5,7 +5,7 @@ import View from '../../../../../../src/ol/View.js';
 import ViewHint from '../../../../../../src/ol/ViewHint.js';
 import {createCanvasContext2D} from '../../../../../../src/ol/dom.js';
 import GeoJSON from '../../../../../../src/ol/format/GeoJSON.js';
-import Point from '../../../../../../src/ol/geom/Point.js';
+import {LineString, Point} from '../../../../../../src/ol/geom.js';
 import TileLayer from '../../../../../../src/ol/layer/Tile.js';
 import VectorLayer from '../../../../../../src/ol/layer/Vector.js';
 import WebGLPointsLayer from '../../../../../../src/ol/layer/WebGLPoints.js';
@@ -436,8 +436,20 @@ describe('ol/renderer/webgl/PointsLayer', function () {
   });
 
   describe('featureCache_', function () {
-    let source, layer, features;
+    /** @type {VectorSource} */
+    let source;
+    /** @type {VectorLayer} */
+    let layer;
+    /** @type {Array<Feature<Point>>} */
+    let features;
+    /** @type {Array<Feature>} */
+    let invalidGeometryFeatures;
 
+    /**
+     * @param {Feature} feature Feature
+     * @param {WebGLPointsLayerRenderer} renderer Renderer
+     * @return {import('../../../../../../src/ol/renderer/webgl/PointsLayer.js').FeatureCacheItem} cached values
+     */
     function getCache(feature, renderer) {
       return renderer.featureCache_[getUid(feature)];
     }
@@ -464,6 +476,15 @@ describe('ol/renderer/webgl/PointsLayer', function () {
           geometry: new Point([4, 5]),
         }),
       ];
+      invalidGeometryFeatures = [
+        new Feature(),
+        new Feature(
+          new LineString([
+            [0, 0],
+            [1, 1],
+          ]),
+        ),
+      ];
     });
 
     it('contains no features initially', function () {
@@ -482,26 +503,62 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       });
       expect(renderer.featureCount_).to.be(3);
       expect(getCache(features[0], renderer).feature).to.be(features[0]);
-      expect(getCache(features[0], renderer).geometry).to.be(
-        features[0].getGeometry(),
+      expect(getCache(features[0], renderer).flatCoordinates).to.be(
+        features[0].getGeometry().getFlatCoordinates(),
       );
       expect(getCache(features[0], renderer).properties['test']).to.be(
         features[0].get('test'),
       );
       expect(getCache(features[1], renderer).feature).to.be(features[1]);
-      expect(getCache(features[1], renderer).geometry).to.be(
-        features[1].getGeometry(),
+      expect(getCache(features[1], renderer).flatCoordinates).to.be(
+        features[1].getGeometry().getFlatCoordinates(),
       );
       expect(getCache(features[1], renderer).properties['test']).to.be(
         features[1].get('test'),
       );
       expect(getCache(features[2], renderer).feature).to.be(features[2]);
-      expect(getCache(features[2], renderer).geometry).to.be(
-        features[2].getGeometry(),
+      expect(getCache(features[2], renderer).flatCoordinates).to.be(
+        features[2].getGeometry().getFlatCoordinates(),
       );
       expect(getCache(features[2], renderer).properties['test']).to.be(
         features[2].get('test'),
       );
+    });
+
+    it('ignores null-geometry features during construction', () => {
+      source.addFeatures([...features, ...invalidGeometryFeatures]);
+      const renderer = new WebGLPointsLayerRenderer(layer, {
+        vertexShader: simpleVertexShader,
+        fragmentShader: simpleFragmentShader,
+      });
+      expect(renderer.featureCount_).to.be(features.length);
+    });
+
+    it('removes features which no longer have a valid point geometry', () => {
+      source.addFeatures(features);
+      const renderer = new WebGLPointsLayerRenderer(layer, {
+        vertexShader: simpleVertexShader,
+        fragmentShader: simpleFragmentShader,
+      });
+      features[0].setGeometry(undefined);
+      features[1].setGeometry(
+        new LineString([
+          [0, 0],
+          [1, 1],
+        ]),
+      );
+      expect(renderer.featureCount_).to.be(1);
+    });
+
+    it('adds features whose geometry becomes valid', () => {
+      source.addFeatures(invalidGeometryFeatures);
+      const renderer = new WebGLPointsLayerRenderer(layer, {
+        vertexShader: simpleVertexShader,
+        fragmentShader: simpleFragmentShader,
+      });
+      invalidGeometryFeatures[0].setGeometry(new Point([0, 1]));
+      invalidGeometryFeatures[1].setGeometry(new Point([2, 2]));
+      expect(renderer.featureCount_).to.be(2);
     });
 
     it('contains the features added to the source', function () {
@@ -517,15 +574,15 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       expect(renderer.featureCount_).to.be(2);
 
       expect(getCache(features[0], renderer).feature).to.be(features[0]);
-      expect(getCache(features[0], renderer).geometry).to.be(
-        features[0].getGeometry(),
+      expect(getCache(features[0], renderer).flatCoordinates).to.be(
+        features[0].getGeometry().getFlatCoordinates(),
       );
       expect(getCache(features[0], renderer).properties['test']).to.be(
         features[0].get('test'),
       );
       expect(getCache(features[1], renderer).feature).to.be(features[1]);
-      expect(getCache(features[1], renderer).geometry).to.be(
-        features[1].getGeometry(),
+      expect(getCache(features[1], renderer).flatCoordinates).to.be(
+        features[1].getGeometry().getFlatCoordinates(),
       );
       expect(getCache(features[1], renderer).properties['test']).to.be(
         features[1].get('test'),
@@ -545,15 +602,15 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       expect(renderer.featureCount_).to.be(2);
 
       expect(getCache(features[0], renderer).feature).to.be(features[0]);
-      expect(getCache(features[0], renderer).geometry).to.be(
-        features[0].getGeometry(),
+      expect(getCache(features[0], renderer).flatCoordinates).to.be(
+        features[0].getGeometry().getFlatCoordinates(),
       );
       expect(getCache(features[0], renderer).properties['test']).to.be(
         features[0].get('test'),
       );
       expect(getCache(features[2], renderer).feature).to.be(features[2]);
-      expect(getCache(features[2], renderer).geometry).to.be(
-        features[2].getGeometry(),
+      expect(getCache(features[2], renderer).flatCoordinates).to.be(
+        features[2].getGeometry().getFlatCoordinates(),
       );
       expect(getCache(features[2], renderer).properties['test']).to.be(
         features[2].get('test'),
@@ -573,9 +630,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       expect(renderer.featureCount_).to.be(3);
 
       expect(getCache(features[0], renderer).feature).to.be(features[0]);
-      expect(getCache(features[0], renderer).geometry.getCoordinates()).to.eql([
-        10, 20,
-      ]);
+      expect(getCache(features[0], renderer).flatCoordinates).to.eql([10, 20]);
       expect(getCache(features[0], renderer).properties['test']).to.be(
         features[0].get('test'),
       );
