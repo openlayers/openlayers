@@ -58,11 +58,7 @@ To run the tests once:
 npm test
 ```
 
-To run the tests continuously during development:
-
-```shell
-npm run karma
-```
+See the [tests README](./test/README.md) for details.
 
 
 ## Adding examples
