@@ -34,7 +34,6 @@ const animRatio = [
 ];
 
 const style = {
-  filter: ['between', ['get', 'year'], ['var', 'minYear'], ['var', 'maxYear']],
   'circle-radius': [
     '*',
     ['interpolate', ['linear'], ['get', 'mass'], 0, 4, 200000, 13],
@@ -57,7 +56,8 @@ const pointsLayer = new WebGLPointsLayer({
     minYear: 1850,
     maxYear: 2015,
   },
-  style: style,
+  style,
+  filter: ['between', ['get', 'year'], ['var', 'minYear'], ['var', 'maxYear']],
   source: vectorSource,
   disableHitDetection: true,
 });

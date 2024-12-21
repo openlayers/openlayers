@@ -6,18 +6,27 @@ import WebGLVectorLayer from '../src/ol/layer/WebGLVector.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
-/** @type {import('../src/ol/style/webgl.js').WebGLStyle} */
-const style = {
-  'stroke-color': [
-    'case',
-    ['==', ['var', 'highlightedId'], ['id']],
-    'white',
-    ['*', ['get', 'COLOR'], [220, 220, 220]],
-  ],
-  'stroke-width': ['case', ['==', ['var', 'highlightedId'], ['id']], 3, 2],
-  'stroke-offset': -1,
-  'fill-color': ['*', ['get', 'COLOR'], [255, 255, 255, 0.6]],
-};
+/** @type {import('../src/ol/style/flat.js').FlatStyleLike} */
+const style = [
+  {
+    filter: ['==', ['var', 'highlightedId'], ['id']],
+    style: {
+      'stroke-color': 'white',
+      'stroke-width': 3,
+      'stroke-offset': -1,
+      'fill-color': [255, 255, 255, 0.4],
+    },
+  },
+  {
+    else: true,
+    style: {
+      'stroke-color': ['*', ['get', 'COLOR'], [220, 220, 220]],
+      'stroke-width': 2,
+      'stroke-offset': -1,
+      'fill-color': ['*', ['get', 'COLOR'], [255, 255, 255, 0.6]],
+    },
+  },
+];
 
 const osm = new TileLayer({
   source: new OSM(),
