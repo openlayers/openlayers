@@ -324,6 +324,7 @@ class WebGLTileLayer extends BaseTileLayer {
      */
     this.styleVariables_ = this.style_.variables || {};
 
+    this.handleSourceUpdate_();
     this.addChangeListener(LayerProperty.SOURCE, this.handleSourceUpdate_);
   }
 
