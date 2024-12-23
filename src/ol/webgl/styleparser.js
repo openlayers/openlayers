@@ -2,6 +2,7 @@
  * Utilities for parsing literal style objects
  * @module ol/webgl/styleparser
  */
+import {assert} from '../asserts.js';
 import {asArray} from '../color.js';
 import {
   BooleanType,
@@ -104,7 +105,7 @@ export function computeHash(input) {
 }
 
 /**
- * @param {import("../style/webgl.js").WebGLStyle} style Style
+ * @param {import("../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
  * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
  * @param {'shape-'|'circle-'|'icon-'} prefix Properties prefix
@@ -196,7 +197,7 @@ function getColorFromDistanceField(
 /**
  * This will parse an image property provided by `<prefix>-src`
  * The image size expression in GLSL will be returned
- * @param {import("../style/webgl.js").WebGLStyle} style Style
+ * @param {import("../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
  * @param {'icon-'|'fill-pattern-'|'stroke-pattern-'} prefix Property prefix
@@ -209,7 +210,11 @@ function parseImageProperties(style, builder, uniforms, prefix, textureId) {
     style[`${prefix}cross-origin`] === undefined
       ? 'anonymous'
       : style[`${prefix}cross-origin`];
-  image.src = style[`${prefix}src`];
+  assert(
+    typeof style[`${prefix}src`] === 'string',
+    `WebGL layers do not support expressions for the ${prefix}src style property`,
+  );
+  image.src = /** @type {string} */ (style[`${prefix}src`]);
 
   // the size is provided asynchronously using a uniform
   uniforms[`u_texture${textureId}_size`] = () => {
@@ -225,7 +230,7 @@ function parseImageProperties(style, builder, uniforms, prefix, textureId) {
 
 /**
  * This will parse an image's offset properties provided by `<prefix>-offset`, `<prefix>-offset-origin` and `<prefix>-size`
- * @param {import("../style/webgl.js").WebGLStyle} style Style
+ * @param {import("../style/flat.js").FlatStyle} style Style
  * @param {'icon-'|'fill-pattern-'|'stroke-pattern-'} prefix Property prefix
  * @param {import("../expr/gpu.js").CompilationContext} context Shader compilation context (vertex or fragment)
  * @param {string} imageSize Pixel size of the full image as a GLSL expression
@@ -262,7 +267,7 @@ function parseImageOffsetProperties(
 }
 
 /**
- * @param {import("../style/webgl.js").WebGLStyle} style Style
+ * @param {import("../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
  * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
@@ -356,7 +361,7 @@ function parseCircleProperties(
 }
 
 /**
- * @param {import("../style/webgl.js").WebGLStyle} style Style
+ * @param {import("../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
  * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
@@ -494,7 +499,7 @@ function parseShapeProperties(
 }
 
 /**
- * @param {import("../style/webgl.js").WebGLStyle} style Style
+ * @param {import("../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
  * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
@@ -617,7 +622,7 @@ function parseIconProperties(
 }
 
 /**
- * @param {import("../style/webgl.js").WebGLStyle} style Style
+ * @param {import("../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader Builder
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
  * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
@@ -782,7 +787,7 @@ function parseStrokeProperties(
 }
 
 /**
- * @param {import("../style/webgl.js").WebGLStyle} style Style
+ * @param {import("../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader Builder
  * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
  * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
@@ -857,18 +862,19 @@ function parseFillProperties(
  */
 
 /**
- * Parses a {@link import("../style/webgl.js").WebGLStyle} object and returns a {@link ShaderBuilder}
+ * Parses a {@link import("../style/flat.js").FlatStyle} object and returns a {@link ShaderBuilder}
  * object that has been configured according to the given style, as well as `attributes` and `uniforms`
  * arrays to be fed to the `WebGLPointsRenderer` class.
  *
  * Also returns `uniforms` and `attributes` properties as expected by the
  * {@link module:ol/renderer/webgl/PointsLayer~WebGLPointsLayerRenderer}.
  *
- * @param {import("../style/webgl.js").WebGLStyle} style Literal style.
- * @param {import('../style/flat.js').StyleVariables} variables Style variables.
+ * @param {import("../style/flat.js").FlatStyle} style Flat style.
+ * @param {import('../style/flat.js').StyleVariables} [variables] Style variables.
+ * @param {import("../expr/expression.js").EncodedExpression} [filter] Filter (if any)
  * @return {StyleParseResult} Result containing shader params, attributes and uniforms.
  */
-export function parseLiteralStyle(style, variables) {
+export function parseLiteralStyle(style, variables, filter) {
   const vertContext = newCompilationContext();
 
   /**
@@ -895,12 +901,8 @@ export function parseLiteralStyle(style, variables) {
   parseStrokeProperties(style, builder, uniforms, vertContext, fragContext);
   parseFillProperties(style, builder, uniforms, vertContext, fragContext);
 
-  if (style.filter) {
-    const parsedFilter = expressionToGlsl(
-      fragContext,
-      style.filter,
-      BooleanType,
-    );
+  if (filter) {
+    const parsedFilter = expressionToGlsl(fragContext, filter, BooleanType);
     builder.setFragmentDiscardExpression(`!${parsedFilter}`);
   }
 
