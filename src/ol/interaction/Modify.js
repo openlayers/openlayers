@@ -1285,6 +1285,17 @@ class Modify extends PointerInteraction {
           const squaredDist2 = squaredCoordinateDistance(vertexPixel, pixel2);
           dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
           this.snappedToVertex_ = dist <= this.pixelTolerance_;
+          // Stop and cleanup overlay vertex feature if a segment was hit and new vertex creation is not allowed by the insertVertexCondition
+          if (
+            !this.snappedToVertex_ &&
+            !this.insertVertexCondition_(this.lastPointerEvent_)
+          ) {
+            if (this.vertexFeature_) {
+              this.overlay_.getSource().removeFeature(this.vertexFeature_);
+              this.vertexFeature_ = null;
+            }
+            return;
+          }
           if (this.snappedToVertex_) {
             vertex =
               squaredDist1 > squaredDist2
