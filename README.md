@@ -115,4 +115,4 @@ Please see our guide on [contributing](CONTRIBUTING.md) if you're interested in 
 - Need help? Find it on [Stack Overflow using the tag 'openlayers'](https://stackoverflow.com/questions/tagged/openlayers)
 - Follow [@openlayers](https://twitter.com/openlayers) on Twitter
 
-![Test Status](https://github.com/openlayers/openlayers/workflows/Test/badge.svg)
+![Test Status](https://github.com/openlayers/openlayers/workflows/Test/badge.svg)   ![Static Badge](https://img.shields.io/badge/open_source-greend)
