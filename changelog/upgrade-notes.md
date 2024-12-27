@@ -11,6 +11,32 @@ This version of OpenLayers is only compatible with `ol-mapbox-style@12.4.0` or h
 Returning false from the listener function will now stop propagation, when the listener is added with `once`.
 Previously this only worked with the `on` method.
 
+#### The `filter` option for `WebGLPointsLayer` has changed
+
+The filter option for the `WebGLPointsLayer` must now be specified alongside other options instead of being part of the `style` object. Note that the `WebGLPointsLayer` is not part of the stable API and is subject to breaking changes between major releases.
+
+```js
+// Before
+new WebGLPointsLayer({
+  style: {
+    filter: ['between', ['get', 'year'], ['var', 'minYear'], ['var', 'maxYear']],
+    'circle-radius': 8,
+    'circle-fill-color': 'blue',
+  },
+  source: vectorSource,
+})
+
+// Now
+new WebGLPointsLayer({
+  filter: ['between', ['get', 'year'], ['var', 'minYear'], ['var', 'maxYear']],
+  style: {
+    'circle-radius': 8,
+    'circle-fill-color': 'blue',
+  },
+  source: vectorSource,
+})
+```
+
 ### 10.3.0
 
 #### The `transform` function throws for unknown projections

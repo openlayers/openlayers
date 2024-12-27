@@ -34,11 +34,6 @@ const oldColor = [255, 160, 110];
 const newColor = [180, 255, 200];
 
 const style = {
-  filter: [
-    'any',
-    ['==', ['var', 'filterShape'], 'all'],
-    ['==', ['var', 'filterShape'], ['get', 'shape']],
-  ],
   'icon-src': 'data/ufo_shapes.png',
   'icon-width': 128,
   'icon-height': 64,
@@ -82,7 +77,12 @@ const pointsLayer = new WebGLPointsLayer({
     features: [],
     attributions: 'National UFO Reporting Center',
   }),
-  style: style,
+  style,
+  filter: [
+    'any',
+    ['==', ['var', 'filterShape'], 'all'],
+    ['==', ['var', 'filterShape'], ['get', 'shape']],
+  ],
 });
 
 const shapeSelect = document.getElementById('shape-filter');

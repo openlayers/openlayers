@@ -4,6 +4,7 @@
 import EventType from '../../events/EventType.js';
 import {getIntersection} from '../../extent.js';
 import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
+import {breakDownFlatStyle} from '../../render/webgl/utils.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
@@ -36,12 +37,15 @@ export const Attributes = {
 };
 
 /**
- * @typedef {import('../../render/webgl/VectorStyleRenderer.js').VectorStyle} VectorStyle
+ * @typedef {import('../../render/webgl/VectorStyleRenderer.js').AsShaders} StyleAsShaders
+ */
+/**
+ * @typedef {import('../../render/webgl/VectorStyleRenderer.js').AsRule} StyleAsRule
  */
 
 /**
  * @typedef {Object} Options
- * @property {VectorStyle|Array<VectorStyle>} style Vector style as literal style or shaders; can also accept an array of styles
+ * @property {import('../../style/flat.js').FlatStyleLike | Array<StyleAsShaders> | StyleAsShaders} style Flat vector style; also accepts shaders
  * @property {import('../../style/flat.js').StyleVariables} [variables] Style variables. Each variable must hold a literal value (not
  * an expression). These variables can be used as {@link import("../../expr/expression.js").ExpressionValue expressions} in the styles properties
  * using the `['var', 'varName']` operator.
@@ -80,7 +84,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.hitDetectionEnabled_ = !options.disableHitDetection;
 
     /**
-     * @type {Array<VectorStyle>}
+     * @type {Array<StyleAsRule | StyleAsShaders>}
      * @private
      */
     this.styles_ = [];
@@ -170,9 +174,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    * @private
    */
   applyOptions_(options) {
-    this.styles_ = Array.isArray(options.style)
-      ? options.style
-      : [options.style];
+    this.styles_ = breakDownFlatStyle(options.style);
   }
 
   /**
@@ -193,11 +195,13 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
 
     this.styleRenderers_ = this.styles_.map((style) => {
       const isShaders = 'builder' in style;
+      /** @type {StyleAsShaders} */
       let shaders;
       if (!isShaders) {
         const parseResult = parseLiteralStyle(
-          /** @type {import('../../style/webgl.js').WebGLStyle} */ (style),
+          style.style,
           this.styleVariables_,
+          style.filter,
         );
         addBuilderParams(parseResult.builder);
         shaders = {
@@ -206,11 +210,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
           uniforms: parseResult.uniforms,
         };
       } else {
-        addBuilderParams(
-          /** @type {import('../../render/webgl/VectorStyleRenderer.js').StyleShaders} */ (
-            style
-          ).builder,
-        );
+        addBuilderParams(style.builder);
         shaders = style;
       }
       return new VectorStyleRenderer(

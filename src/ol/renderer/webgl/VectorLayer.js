@@ -14,7 +14,7 @@ import {
 } from '../../proj.js';
 import MixedGeometryBatch from '../../render/webgl/MixedGeometryBatch.js';
 import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
-import {colorDecodeId} from '../../render/webgl/utils.js';
+import {breakDownFlatStyle, colorDecodeId} from '../../render/webgl/utils.js';
 import VectorEventType from '../../source/VectorEventType.js';
 import {
   apply as applyTransform,
@@ -41,13 +41,16 @@ export const Uniforms = {
 };
 
 /**
- * @typedef {import('../../render/webgl/VectorStyleRenderer.js').VectorStyle} VectorStyle
+ * @typedef {import('../../render/webgl/VectorStyleRenderer.js').AsShaders} StyleAsShaders
+ */
+/**
+ * @typedef {import('../../render/webgl/VectorStyleRenderer.js').AsRule} StyleAsRule
  */
 
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the canvas element.
- * @property {VectorStyle|Array<VectorStyle>} style Vector style as literal style or shaders; can also accept an array of styles
+ * @property {import('../../style/flat.js').FlatStyleLike | Array<StyleAsShaders> | StyleAsShaders} style Flat vector style; also accepts shaders
  * @property {Object<string, number|Array<number>|string|boolean>} variables Style variables
  * @property {boolean} [disableHitDetection=false] Setting this to true will provide a slight performance boost, but will
  * prevent all hit detection on the layer.
@@ -146,7 +149,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     this.styleVariables_ = {};
 
     /**
-     * @type {Array<VectorStyle>}
+     * @type {Array<StyleAsRule | StyleAsShaders>}
      * @private
      */
     this.styles_ = [];
@@ -231,9 +234,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    */
   applyOptions_(options) {
     this.styleVariables_ = options.variables;
-    this.styles_ = Array.isArray(options.style)
-      ? options.style
-      : [options.style];
+    this.styles_ = breakDownFlatStyle(options.style);
   }
 
   /**

@@ -64,11 +64,15 @@ describe('ol/layer/WebGLVector', function () {
     expect(renderer).to.be.a(WebGLVectorLayerRenderer);
     expect(renderer.styles_).to.eql([
       {
-        'circle-radius': 4,
-        'circle-fill-color': ['var', 'fillColor'],
+        style: {
+          'circle-radius': 4,
+          'circle-fill-color': ['var', 'fillColor'],
+        },
       },
       {
-        'fill-color': ['var', 'fillColor'],
+        style: {
+          'fill-color': ['var', 'fillColor'],
+        },
       },
     ]);
     expect(renderer.styleVariables_).to.eql({
