@@ -488,7 +488,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     for (let i = 0; i < staleKeys.length; ++i) {
       const cacheKey = getCacheKey(staleKeys[i], z, x, y);
       if (tileCache.containsKey(cacheKey)) {
-        const tile = tileCache.get(cacheKey);
+        const tile = tileCache.peek(cacheKey);
         if (tile.getState() === TileState.LOADED) {
           tile.endTransition(getUid(this));
           addTileToLookup(tilesByZ, tile, z);
@@ -529,7 +529,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         const cacheKey = getCacheKey(sourceKey, altZ, x, y);
         let loaded = false;
         if (tileCache.containsKey(cacheKey)) {
-          const tile = tileCache.get(cacheKey);
+          const tile = tileCache.peek(cacheKey);
           if (tile.getState() === TileState.LOADED) {
             addTileToLookup(tilesByZ, tile, altZ);
             loaded = true;
