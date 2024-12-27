@@ -13,7 +13,7 @@ Previously this only worked with the `on` method.
 
 #### The `filter` option for `WebGLPointsLayer` has changed
 
-The filter option for the `WebGLPointsLayer` must now be specified alongside other options instead of being part of the `style` object.
+The filter option for the `WebGLPointsLayer` must now be specified alongside other options instead of being part of the `style` object. Note that the `WebGLPointsLayer` is not part of the stable API and is subject to breaking changes between major releases.
 
 ```js
 // Before
