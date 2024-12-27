@@ -2,8 +2,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {asArray} from '../src/ol/color.js';
 import MVT from '../src/ol/format/MVT.js';
-import VectorTile from '../src/ol/layer/VectorTile.js';
-import WebGLVectorTileLayerRenderer from '../src/ol/renderer/webgl/VectorTileLayer.js';
+import WebGLVectorTileLayer from '../src/ol/layer/WebGLVectorTile.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
 import Fill from '../src/ol/style/Fill.js';
 import Icon from '../src/ol/style/Icon.js';
@@ -23,40 +22,43 @@ const parsedStyleResult = parseLiteralStyle({
   'circle-fill-color': '#777',
 });
 
-class WebGLVectorTileLayer extends VectorTile {
-  createRenderer() {
-    return new WebGLVectorTileLayerRenderer(this, {
-      style: {
-        builder: parsedStyleResult.builder,
-        attributes: {
-          prop_fillColor: {
-            size: 2,
-            callback: (feature) => {
-              const style = this.getStyle()(feature, 1)[0];
-              const color = asArray(style?.getFill()?.getColor() || '#eee');
-              return packColor(color);
-            },
-          },
-          prop_strokeColor: {
-            size: 2,
-            callback: (feature) => {
-              const style = this.getStyle()(feature, 1)[0];
-              const color = asArray(style?.getStroke()?.getColor() || '#eee');
-              return packColor(color);
-            },
-          },
-          prop_strokeWidth: {
-            size: 1,
-            callback: (feature) => {
-              const style = this.getStyle()(feature, 1)[0];
-              return style?.getStroke()?.getWidth() || 0;
-            },
-          },
-        },
+// TODO: convert this style function to a flat style
+const styleFunction = createMapboxStreetsV6Style(
+  Style,
+  Fill,
+  Stroke,
+  Icon,
+  Text,
+);
+
+const style = {
+  builder: parsedStyleResult.builder,
+  attributes: {
+    prop_fillColor: {
+      size: 2,
+      callback: (feature) => {
+        const style = styleFunction(feature, 1)[0];
+        const color = asArray(style?.getFill()?.getColor() || '#eee');
+        return packColor(color);
       },
-    });
-  }
-}
+    },
+    prop_strokeColor: {
+      size: 2,
+      callback: (feature) => {
+        const style = styleFunction(feature, 1)[0];
+        const color = asArray(style?.getStroke()?.getColor() || '#eee');
+        return packColor(color);
+      },
+    },
+    prop_strokeWidth: {
+      size: 1,
+      callback: (feature) => {
+        const style = styleFunction(feature, 1)[0];
+        return style?.getStroke()?.getWidth() || 0;
+      },
+    },
+  },
+};
 
 const map = new Map({
   layers: [
@@ -72,7 +74,7 @@ const map = new Map({
           '{z}/{x}/{y}.vector.pbf?access_token=' +
           key,
       }),
-      style: createMapboxStreetsV6Style(Style, Fill, Stroke, Icon, Text),
+      style,
     }),
   ],
   target: 'map',
