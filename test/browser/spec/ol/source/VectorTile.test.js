@@ -88,6 +88,51 @@ describe('ol/source/VectorTile', function () {
       expect(source.tileKeysBySourceTileUrl_).to.eql({});
     });
 
+    it('unreferences source tiles with different source and render tile grids', () => {
+      const source = new VectorTileSource({
+        format: new GeoJSON(),
+        url: 'spec/ol/data/point.json?{z}-{x}-{y}',
+      });
+      source.tileGrids_['EPSG:3857'] = new TileGrid({
+        origin: [12345678, 12345678],
+        resolutions: [
+          100000, 50000, 25000, 12500, 6250, 3125, 1562.5, 781.25, 390.625,
+          195.3125, 97.65625, 48.828125, 24.4140625, 12.20703125, 6.103515625,
+          3.0517578125, 1.52587890625, 0.762939453125, 0.3814697265625,
+        ],
+        tileSize: 678,
+      });
+
+      const tiles = [
+        source.getTile(14, 8938, 5680, 1, source.getProjection()),
+        source.getTile(14, 8939, 5680, 1, source.getProjection()),
+      ];
+      tiles.forEach((tile) => tile.load());
+      expect(Object.keys(source.sourceTiles_).length).to.be(3);
+      expect(source.tileKeysBySourceTileUrl_).to.eql({
+        'spec/ol/data/point.json?13-5988-6377': [
+          'spec/ol/data/point.json?{z}-{x}-{y}/14,8938,5680',
+        ],
+        'spec/ol/data/point.json?13-5989-6377': [
+          'spec/ol/data/point.json?{z}-{x}-{y}/14,8938,5680',
+          'spec/ol/data/point.json?{z}-{x}-{y}/14,8939,5680',
+        ],
+        'spec/ol/data/point.json?13-5990-6377': [
+          'spec/ol/data/point.json?{z}-{x}-{y}/14,8939,5680',
+        ],
+      });
+      tiles[1].dispose();
+      expect(Object.keys(source.sourceTiles_).length).to.be(2);
+      expect(source.tileKeysBySourceTileUrl_).to.eql({
+        'spec/ol/data/point.json?13-5988-6377': [
+          'spec/ol/data/point.json?{z}-{x}-{y}/14,8938,5680',
+        ],
+        'spec/ol/data/point.json?13-5989-6377': [
+          'spec/ol/data/point.json?{z}-{x}-{y}/14,8938,5680',
+        ],
+      });
+    });
+
     it('handles empty tiles', function () {
       const source = new VectorTileSource({
         format: new GeoJSON(),
