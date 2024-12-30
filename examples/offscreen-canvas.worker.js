@@ -159,10 +159,13 @@ worker.addEventListener('message', (event) => {
   frameState.layerStatesArray = layers.map((l) => l.getLayerState());
   layers.forEach((layer) => {
     if (inView(layer.getLayerState(), frameState.viewState)) {
+      const renderer = layer.getRenderer();
+      if (!renderer.prepareFrame(frameState)) {
+        return;
+      }
       if (layer.getDeclutter() && !frameState.declutterTree) {
         frameState.declutter = {};
       }
-      const renderer = layer.getRenderer();
       renderer.renderFrame(frameState, canvas);
     }
   });
