@@ -71,6 +71,43 @@ describe('ol/source/VectorTile', function () {
       });
     });
 
+    describe('tile loading states', () => {
+      let tile, originalSetState;
+
+      beforeEach(() => {
+        const source = new VectorTileSource({
+          format: new GeoJSON(),
+          url: '#/{z}-{x}-{y}.png',
+        });
+
+        tile = source.getTile(14, 8938, 5680, 1, source.getProjection());
+        originalSetState = tile.setState;
+      });
+
+      afterEach(() => {
+        tile.setState = originalSetState;
+      });
+
+      it('transitions states until EMPTY is set', (done) => {
+        const states = [];
+        tile.setState = function (state) {
+          originalSetState.call(this, state);
+          states.push([state, tile.getState()]);
+          if (state === TileState.ERROR) {
+            expect(states).to.eql([
+              // [requested state, actual state]
+              [TileState.LOADING, TileState.LOADING],
+              [TileState.EMPTY, TileState.EMPTY],
+              [TileState.ERROR, TileState.EMPTY],
+            ]);
+            done();
+          }
+        };
+        tile.load();
+        tile.dispose();
+      });
+    });
+
     it('unreferences source tiles that are no longer used', () => {
       const source = new VectorTileSource({
         format: new GeoJSON(),
