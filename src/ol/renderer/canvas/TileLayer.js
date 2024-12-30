@@ -329,20 +329,20 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         continue;
       }
 
+      const gutter = Math.round(
+        tilePixelRatio * source.getGutterForProjection(viewState.projection),
+      );
+
       const col = Math.floor(
-        tilePixelRatio *
+        ((image.width - 2 * gutter) / tileSize[0]) *
           ((coordinate[0] - tileOrigin[0]) / tileResolution -
             tileCoord[1] * tileSize[0]),
       );
 
       const row = Math.floor(
-        tilePixelRatio *
+        ((image.height - 2 * gutter) / tileSize[1]) *
           ((tileOrigin[1] - coordinate[1]) / tileResolution -
             tileCoord[2] * tileSize[1]),
-      );
-
-      const gutter = Math.round(
-        tilePixelRatio * source.getGutterForProjection(viewState.projection),
       );
 
       return this.getImageData(image, col + gutter, row + gutter);
