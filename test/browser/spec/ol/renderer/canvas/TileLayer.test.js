@@ -3,6 +3,7 @@ import Map from '../../../../../../src/ol/Map.js';
 import View from '../../../../../../src/ol/View.js';
 import TileLayer from '../../../../../../src/ol/layer/Tile.js';
 import {fromLonLat} from '../../../../../../src/ol/proj.js';
+import ImageTile from '../../../../../../src/ol/source/ImageTile.js';
 import XYZ from '../../../../../../src/ol/source/XYZ.js';
 import {OSM} from '../../../../../../src/ol/source.js';
 
@@ -103,6 +104,27 @@ describe('ol/renderer/canvas/TileLayer', function () {
         source.refresh();
         await new Promise((resolve) => map.once('rendercomplete', resolve));
         expect(tiles.length).to.be(4);
+      });
+
+      it('does not mark alt/stale error tiles as newer', async () => {
+        const source = new ImageTile({
+          url: '#/{z}/{x}/{y}.png',
+        });
+        const layer = new TileLayer({source: source, cacheSize: 0});
+        const tiles = [];
+        layer.getSource().on('tileloadend', (event) => {
+          tiles.push(event.tile);
+        });
+        map.addLayer(layer);
+        await new Promise((resolve) => map.once('rendercomplete', resolve));
+        expect(layer.getRenderer().tileCache_.highWaterMark).to.be(4);
+        for (let i = 0; i < 4; ++i) {
+          map.getView().setZoom(map.getView().getZoom() + 1);
+          await new Promise((resolve) => map.once('rendercomplete', resolve));
+        }
+        expect(
+          layer.getRenderer().tileCache_.newest_.value_.tileCoord[0],
+        ).to.be(9);
       });
     });
   });
