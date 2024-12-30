@@ -6,8 +6,6 @@ import TileState from '../../TileState.js';
 import {descending} from '../../array.js';
 import {getIntersection, getRotatedViewport, isEmpty} from '../../extent.js';
 import {fromUserExtent} from '../../proj.js';
-import ReprojDataTile from '../../reproj/DataTile.js';
-import ReprojTile from '../../reproj/Tile.js';
 import {toSize} from '../../size.js';
 import LRUCache from '../../structs/LRUCache.js';
 import {
@@ -604,10 +602,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
       const time = frameState.time;
       for (const tileRepresentation of representationsByZ[z]) {
         const tile = tileRepresentation.tile;
-        if (
-          (tile instanceof ReprojTile || tile instanceof ReprojDataTile) &&
-          tile.getState() === TileState.EMPTY
-        ) {
+        if (tile.getState() === TileState.EMPTY) {
           continue;
         }
         const tileCoord = tile.tileCoord;
