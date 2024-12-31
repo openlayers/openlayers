@@ -8,8 +8,6 @@ import {
   getIntersection,
 } from '../../extent.js';
 import {fromUserExtent} from '../../proj.js';
-import ReprojDataTile from '../../reproj/DataTile.js';
-import ReprojTile from '../../reproj/Tile.js';
 import {toSize} from '../../size.js';
 import {apply as applyTransform} from '../../transform.js';
 import {fromTransform as mat4FromTransform} from '../../vec/mat4.js';
@@ -373,10 +371,7 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       }
       const tileTexture = tileTextureCache.get(cacheKey);
       const tile = tileTexture.tile;
-      if (
-        (tile instanceof ReprojTile || tile instanceof ReprojDataTile) &&
-        tile.getState() === TileState.EMPTY
-      ) {
+      if (tile.getState() === TileState.EMPTY) {
         return null;
       }
       if (!tileTexture.loaded) {

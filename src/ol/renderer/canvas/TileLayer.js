@@ -16,7 +16,6 @@ import {
   intersects,
 } from '../../extent.js';
 import {fromUserExtent} from '../../proj.js';
-import ReprojDataTile from '../../reproj/DataTile.js';
 import ReprojTile from '../../reproj/Tile.js';
 import {toSize} from '../../size.js';
 import LRUCache from '../../structs/LRUCache.js';
@@ -664,10 +663,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     // look for cached tiles to use if a target tile is not ready
     for (const tile of tilesByZ[z]) {
       const tileState = tile.getState();
-      if (
-        (tile instanceof ReprojTile || tile instanceof ReprojDataTile) &&
-        tileState === TileState.EMPTY
-      ) {
+      if (tileState === TileState.EMPTY) {
         continue;
       }
       const tileCoord = tile.tileCoord;
