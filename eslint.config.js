@@ -12,6 +12,7 @@ export default [
     ignores: [
       'config/jsdoc/api/template/static/scripts/',
       'examples/resources/*',
+      'site/build/*',
     ],
   },
   {
