@@ -123,10 +123,11 @@ class TileImage extends UrlTile {
 
   /**
    * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {number} [pixelRatio] Pixel ratio.
    * @return {number} Gutter.
    * @override
    */
-  getGutterForProjection(projection) {
+  getGutterForProjection(projection, pixelRatio) {
     if (
       this.getProjection() &&
       projection &&

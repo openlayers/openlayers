@@ -273,6 +273,20 @@ class TileWMS extends TileImage {
   }
 
   /**
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {number} [pixelRatio] Pixel ratio.
+   * @return {number} Gutter.
+   * @override
+   */
+  getGutterForProjection(projection, pixelRatio) {
+    let ratio = pixelRatio ?? 1;
+    if (ratio !== 1 && (!this.hidpi_ || this.serverType_ === undefined)) {
+      ratio = 1;
+    }
+    return super.getGutterForProjection(projection) * ratio;
+  }
+
+  /**
    * Get the user-provided params, i.e. those passed to the constructor through
    * the "params" option, and possibly updated using the updateParams method.
    * @return {Object} Params.
