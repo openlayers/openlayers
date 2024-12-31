@@ -1124,6 +1124,74 @@ describe('ol.interaction.Modify', function () {
         done();
       }, 0);
     });
+
+    it('does not create an overlay vertex feature on `pointermove` when insertVertexCondition is not fulfilled', function () {
+      const feature = new Feature({
+        geometry: new LineString([
+          [0, 0],
+          [10, 20],
+          [0, 40],
+          [40, 40],
+          [40, 0],
+        ]),
+      });
+      const firstRevision = feature.getGeometry().getRevision();
+      features.length = 0;
+      features.push(feature);
+      const listenerSpy = sinonSpy(() => false);
+      const modify = new Modify({
+        features: new Collection(features),
+        insertVertexCondition: listenerSpy,
+      });
+      map.addInteraction(modify);
+
+      // try to add vertex - should not be possible due to the insertVertexCondition
+      simulateEvent('pointermove', 40, -20, null, 0);
+      expect(modify.vertexFeature_).to.be(null);
+      simulateEvent('pointerdown', 40, -20, null, 0);
+      simulateEvent('pointermove', 60, -20, null, 0);
+      expect(modify.vertexFeature_).to.be(null);
+      simulateEvent('pointerdrag', 60, -20, null, 0);
+      simulateEvent('pointerup', 60, -20, null, 0);
+
+      expect(listenerSpy.callCount).to.be(2);
+      expect(feature.getGeometry().getRevision()).to.equal(firstRevision);
+      expect(feature.getGeometry().getCoordinates().length).to.eql(5);
+    });
+
+    it('does not prevent moving vertices', function () {
+      const feature = new Feature({
+        geometry: new LineString([
+          [0, 0],
+          [10, 20],
+          [0, 40],
+          [40, 40],
+          [40, 0],
+        ]),
+      });
+      const firstRevision = feature.getGeometry().getRevision();
+      features.length = 0;
+      features.push(feature);
+      const listenerSpy = sinonSpy(() => false);
+      const modify = new Modify({
+        features: new Collection(features),
+        insertVertexCondition: listenerSpy,
+      });
+      map.addInteraction(modify);
+
+      // move first vertex - should be possible
+      simulateEvent('pointermove', 0, 0, null, 0);
+      expect(modify.vertexFeature_).to.not.be(null);
+      simulateEvent('pointerdown', 0, 0, null, 0);
+      simulateEvent('pointermove', -20, 20, null, 0);
+      simulateEvent('pointerdrag', -20, 20, null, 0);
+      simulateEvent('pointerup', -20, 20, null, 0);
+
+      expect(listenerSpy.callCount).to.be(0);
+      expect(feature.getGeometry().getRevision()).to.equal(firstRevision + 1);
+      expect(feature.getGeometry().getCoordinates().length).to.eql(5);
+      expect(feature.getGeometry().getCoordinates()[0]).to.eql([-20, -20]);
+    });
   });
 
   describe('handle feature change', function () {
