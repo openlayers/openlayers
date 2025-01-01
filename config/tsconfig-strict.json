@@ -146,6 +146,7 @@
     "../src/ol/layer/WebGLPoints.js",
     "../src/ol/layer/WebGLVector.js",
     "../src/ol/layer/WebGLTile.js",
+    "../src/ol/layer/WebGLVectorTile.js",
     "../src/ol/loadingstrategy.js",
     "../src/ol/Map.js",
     "../src/ol/MapBrowserEvent.js",
