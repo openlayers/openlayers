@@ -100,6 +100,38 @@ class TileGeometry extends BaseTileRepresentation {
       this.setReady();
     });
   }
+
+  /**
+   * @override
+   */
+  disposeInternal() {
+    this.buffers.forEach((buffers) => {
+      this.disposeBuffers(buffers);
+    });
+    super.disposeInternal();
+  }
+
+  /**
+   * Will release a set of Webgl buffers
+   * @param {import('../render/webgl/VectorStyleRenderer.js').WebGLBuffers} buffers Buffers
+   */
+  disposeBuffers(buffers) {
+    if (buffers.pointBuffers) {
+      buffers.pointBuffers
+        .filter(Boolean)
+        .forEach((buffer) => this.helper.deleteBuffer(buffer));
+    }
+    if (buffers.lineStringBuffers) {
+      buffers.lineStringBuffers
+        .filter(Boolean)
+        .forEach((buffer) => this.helper.deleteBuffer(buffer));
+    }
+    if (buffers.polygonBuffers) {
+      buffers.polygonBuffers
+        .filter(Boolean)
+        .forEach((buffer) => this.helper.deleteBuffer(buffer));
+    }
+  }
 }
 
 export default TileGeometry;
