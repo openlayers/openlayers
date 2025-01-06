@@ -25,7 +25,7 @@ import Property from '../../../../src/ol/layer/Property.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
-import WebGLPointsLayer from '../../../../src/ol/layer/WebGLPoints.js';
+import WebGLVectorLayer from '../../../../src/ol/layer/WebGLVector.js';
 import {tile as tileStrategy} from '../../../../src/ol/loadingstrategy.js';
 import {
   clearUserProjection,
@@ -463,7 +463,7 @@ describe('ol/Map', function () {
                 },
               }),
             }),
-            new WebGLPointsLayer({
+            new WebGLVectorLayer({
               source: new VectorSource({
                 features: [new Feature(new Point([0, 0]))],
               }),
@@ -694,7 +694,7 @@ describe('ol/Map', function () {
               },
             }),
           }),
-          new WebGLPointsLayer({
+          new WebGLVectorLayer({
             source: new VectorSource({
               features: [new Feature(new Point([0, 0]))],
             }),

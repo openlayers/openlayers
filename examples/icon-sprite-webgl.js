@@ -2,8 +2,8 @@ import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
-import WebGLPointsLayer from '../src/ol/layer/WebGLPoints.js';
 import TileLayer from '../src/ol/layer/WebGLTile.js';
+import WebGLVectorLayer from '../src/ol/layer/WebGLVector.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import ImageTile from '../src/ol/source/ImageTile.js';
 import VectorSource from '../src/ol/source/Vector.js';
@@ -69,7 +69,7 @@ const style = {
   'icon-scale': 0.5,
 };
 
-const pointsLayer = new WebGLPointsLayer({
+const pointsLayer = new WebGLVectorLayer({
   variables: {
     filterShape: 'all',
   },

@@ -72,6 +72,7 @@ import Layer from './Layer.js';
  * @extends {Layer<VectorSourceType, WebGLPointsLayerRenderer>}
  * @fires import("../render/Event.js").RenderEvent#prerender
  * @fires import("../render/Event.js").RenderEvent#postrender
+ * @deprecated Use ol/layer/WebGLVector instead
  */
 class WebGLPointsLayer extends Layer {
   /**

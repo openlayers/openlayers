@@ -3,13 +3,13 @@ layout: example.html
 title: Icon Sprites with WebGL
 shortdesc: Rendering many icons with WebGL
 docs: >
-  This example shows how to use `ol/layer/WebGLPoints` to render
+  This example shows how to use `ol/layer/WebGLVector` to render
     a very large amount of sprites. The above map is based on a dataset from the National UFO Reporting Center: each
     icon marks a UFO sighting according to its reported shape (disk, light, fireball...). The older the sighting, the redder
     the icon.
 
   A very simple sprite atlas is used in the form of a PNG file containing all icons on a grid. Then, the `style` object
-    given to the `ol/layer/WebGLPoints` constructor is used to specify which sprite to use according to the sighting shape.
+    given to the `ol/layer/WebGLVector` constructor is used to specify which sprite to use according to the sighting shape.
 
   The dataset contains around 80k points and can be found here: https://www.kaggle.com/NUFORC/ufo-sightings
 tags: "webgl, icon, sprite, point, ufo"

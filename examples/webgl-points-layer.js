@@ -2,7 +2,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import WebGLPointsLayer from '../src/ol/layer/WebGLPoints.js';
+import WebGLVectorLayer from '../src/ol/layer/WebGLVector.js';
 import OSM from '../src/ol/source/OSM.js';
 import Vector from '../src/ol/source/Vector.js';
 
@@ -160,7 +160,7 @@ map.on('pointermove', function (ev) {
 
 function refreshLayer(newStyle) {
   const previousLayer = pointsLayer;
-  pointsLayer = new WebGLPointsLayer({
+  pointsLayer = new WebGLVectorLayer({
     source: vectorSource,
     style: newStyle,
   });
