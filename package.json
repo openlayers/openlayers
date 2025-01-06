@@ -114,7 +114,7 @@
     "karma-source-map-support": "^1.4.0",
     "karma-webpack": "^5.0.0",
     "loglevelnext": "^6.0.0",
-    "marked": "15.0.4",
+    "marked": "15.0.5",
     "metalsmith": "^2.5.0",
     "mocha": "11.0.1",
     "monotone-chain-convex-hull": "^1.1.0",
