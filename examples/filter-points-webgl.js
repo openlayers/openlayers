@@ -77,7 +77,7 @@ minYearInput.addEventListener('input', function () {
   updateStatusText();
 });
 maxYearInput.addEventListener('input', function () {
-  pointsLayer.updateStyleVariables({maxYear: parseInt(minYearInput.value)});
+  pointsLayer.updateStyleVariables({maxYear: parseInt(maxYearInput.value)});
   updateStatusText();
 });
 updateStatusText();
