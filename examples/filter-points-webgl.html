@@ -3,13 +3,13 @@ layout: example.html
 title: Filtering features with WebGL
 shortdesc: Using WebGL to filter large quantities of features
 docs: >
-  This example shows how to use `ol/layer/WebGLPoints` with a literal style to dynamically filter a large amount
+  This example shows how to use `ol/layer/WebGLVector` with a literal style to dynamically filter a large amount
     of point geometries. The above map is based on a dataset from the NASA containing 45k recorded meteorite
     landing sites. Each meteorite is marked by a circle on the map (the bigger the circle, the heavier
     the object). A pulse effect has been added, which is slightly offset by the year of the impact.
 
   Adjusting the sliders causes the objects outside of the date range to be filtered out of the map. This is done
-    by mutating the variables in the `style` object provided to the WebGL layer. Also note that the last snippet
+    by mutating the variables used by the `style` object provided to the WebGL layer. Also note that the last snippet
     of code is necessary to make sure the map refreshes itself every frame.
 
 tags: "webgl, icon, sprite, filter, feature"

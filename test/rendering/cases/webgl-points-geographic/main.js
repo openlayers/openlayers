@@ -1,6 +1,6 @@
 import {Point} from '../../../../src/ol/geom.js';
 import {Feature, Map, View} from '../../../../src/ol/index.js';
-import {Tile as TileLayer, WebGLPoints} from '../../../../src/ol/layer.js';
+import {Tile as TileLayer, WebGLVector} from '../../../../src/ol/layer.js';
 import {useGeographic} from '../../../../src/ol/proj.js';
 import {Vector as VectorSource, XYZ} from '../../../../src/ol/source.js';
 
@@ -18,7 +18,7 @@ new Map({
         transition: 0,
       }),
     }),
-    new WebGLPoints({
+    new WebGLVector({
       source: new VectorSource({
         features: [new Feature(point)],
       }),

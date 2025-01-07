@@ -3,7 +3,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import WebGLPointsLayer from '../src/ol/layer/WebGLPoints.js';
+import WebGLVectorLayer from '../src/ol/layer/WebGLVector.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import StadiaMaps from '../src/ol/source/StadiaMaps.js';
 import Vector from '../src/ol/source/Vector.js';
@@ -51,17 +51,6 @@ const style = {
   'circle-opacity': ['-', 1.0, ['*', animRatio, 0.75]],
 };
 
-const pointsLayer = new WebGLPointsLayer({
-  variables: {
-    minYear: 1850,
-    maxYear: 2015,
-  },
-  style,
-  filter: ['between', ['get', 'year'], ['var', 'minYear'], ['var', 'maxYear']],
-  source: vectorSource,
-  disableHitDetection: true,
-});
-
 // handle input values & events
 const minYearInput = document.getElementById('min-year');
 const maxYearInput = document.getElementById('max-year');
@@ -72,12 +61,30 @@ function updateStatusText() {
   div.querySelector('span.max-year').textContent = maxYearInput.value;
 }
 
+const pointsLayer = new WebGLVectorLayer({
+  variables: {
+    minYear: parseInt(minYearInput.value),
+    maxYear: parseInt(maxYearInput.value),
+  },
+  style: {
+    style,
+    filter: [
+      'between',
+      ['get', 'year'],
+      ['var', 'minYear'],
+      ['var', 'maxYear'],
+    ],
+  },
+  source: vectorSource,
+  disableHitDetection: true,
+});
+
 minYearInput.addEventListener('input', function () {
   pointsLayer.updateStyleVariables({minYear: parseInt(minYearInput.value)});
   updateStatusText();
 });
 maxYearInput.addEventListener('input', function () {
-  pointsLayer.updateStyleVariables({maxYear: parseInt(minYearInput.value)});
+  pointsLayer.updateStyleVariables({maxYear: parseInt(maxYearInput.value)});
   updateStatusText();
 });
 updateStatusText();

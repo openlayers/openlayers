@@ -2,6 +2,34 @@
 
 ### Next Release
 
+#### Deprecation of ol/layer/WebGLPoints
+
+Use `ol/layer/WebGLVector` instead. Besides rendering points it will also render lines and polygons.
+In most cases this is a drop-in replacement. To use filtering the style and filter have to be in a nested object.
+```js
+// Before
+new WebGLPointsLayer({
+  filter: ['between', ['get', 'year'], ['var', 'minYear'], ['var', 'maxYear']],
+  style: {
+    'circle-radius': 8,
+    'circle-fill-color': 'blue',
+  },
+  source: vectorSource,
+})
+
+// After
+new WebGLVectorLayer({
+  style: {
+    filter: ['between', ['get', 'year'], ['var', 'minYear'], ['var', 'maxYear']],
+    style: {
+      'circle-radius': 8,
+      'circle-fill-color': 'blue',
+    },
+  },
+  source: vectorSource,
+})
+```
+
 #### ol-mapbox-style compatibility
 
 This version of OpenLayers is only compatible with `ol-mapbox-style@12.4.0` or higher.
