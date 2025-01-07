@@ -785,8 +785,10 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         (tilePixelRatio * (canvasExtent[3] - originTileExtent[3])) /
           tileResolution,
       ]);
-      const tileGutter =
-        tilePixelRatio * tileSource.getGutterForProjection(projection);
+      const tileGutter = tileSource.getGutterForProjection(
+        projection,
+        pixelRatio,
+      );
       for (const tile of tilesByZ[currentZ]) {
         if (tile.getState() !== TileState.LOADED) {
           continue;
