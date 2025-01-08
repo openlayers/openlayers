@@ -380,7 +380,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const layerUid = getUid(layer);
     const declutter = layer.getDeclutter();
     const declutteredFeatures = declutter
-      ? frameState.declutter[declutter].all().map((item) => item.value)
+      ? frameState.declutter?.[declutter]?.all().map((item) => item.value)
       : null;
     let found;
     foundFeature: for (let i = 0, ii = renderedTiles.length; i < ii; ++i) {
@@ -589,7 +589,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     ];
     const declutter = this.getLayer().getDeclutter();
     const declutterTree = declutter
-      ? frameState.declutter[declutter]
+      ? frameState.declutter?.[declutter]
       : undefined;
     const layerUid = getUid(this.getLayer());
     const tiles =
