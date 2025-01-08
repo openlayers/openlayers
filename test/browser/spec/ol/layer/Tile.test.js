@@ -69,6 +69,24 @@ describe('ol/layer/Tile', function () {
       expect(data[3]).to.be(255);
     });
 
+    it('gets hidpi pixel data', (done) => {
+      layer.setSource(
+        new XYZ({
+          url: 'spec/ol/data/osm-0-0-0@2x.png',
+        }),
+      );
+      map.once('rendercomplete', () => {
+        const data = layer.getData([50, 50]);
+        expect(data).to.be.a(Uint8ClampedArray);
+        expect(data.length).to.be(4);
+        expect(data[0]).to.be(181);
+        expect(data[1]).to.be(208);
+        expect(data[2]).to.be(208);
+        expect(data[3]).to.be(255);
+        done();
+      });
+    });
+
     it('gets reprojected pixel data', (done) => {
       layer.setSource(
         new XYZ({
