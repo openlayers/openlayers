@@ -530,7 +530,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       hitTolerance,
       featureCallback,
       declutter
-        ? frameState.declutter[declutter].all().map((item) => item.value)
+        ? frameState.declutter?.[declutter]?.all().map((item) => item.value)
         : null,
     );
   }

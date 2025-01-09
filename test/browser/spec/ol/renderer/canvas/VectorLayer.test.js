@@ -275,6 +275,30 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       expect(spy.getCall(0).args[1]).to.be(layer);
       expect(matches).to.be.empty();
     });
+
+    it('works with declutter: true when source has no features', () => {
+      layer.setDeclutter(true);
+      const spy = sinonSpy();
+      const coordinate = [0, 0];
+      const matches = [];
+      const frameState = {
+        layerStatesArray: [{}],
+        viewState: {
+          center: [0, 0],
+          resolution: 1,
+          rotation: 0,
+        },
+      };
+      expect(() =>
+        renderer.forEachFeatureAtCoordinate(
+          coordinate,
+          frameState,
+          0,
+          spy,
+          matches,
+        ),
+      ).to.not.throwException();
+    });
   });
 
   describe('#prepareFrame and #compose', function () {
