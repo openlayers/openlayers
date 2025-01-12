@@ -60,7 +60,7 @@ describe('ol.control.OverviewMap', function () {
         clientY: origin.top + y,
       });
       control.ovmapDiv_.dispatchEvent(down);
-      window.dispatchEvent(up);
+      map.getOwnerDocument().dispatchEvent(up);
       expect(map.getView().getCenter()).to.eql([100, 100]);
     });
   });

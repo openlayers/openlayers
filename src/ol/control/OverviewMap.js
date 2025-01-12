@@ -221,14 +221,12 @@ class OverviewMap extends Control {
 
     /* Interactive map */
 
-    const scope = this;
-
     const overlay = this.boxOverlay_;
     const overlayBox = this.boxOverlay_.getElement();
 
     /* Functions definition */
 
-    const computeDesiredMousePosition = function (mousePosition) {
+    const computeDesiredMousePosition = (mousePosition) => {
       return {
         clientX: mousePosition.clientX,
         clientY: mousePosition.clientY,
@@ -244,22 +242,26 @@ class OverviewMap extends Control {
       overlay.setPosition(coordinates);
     };
 
-    const endMoving = function (event) {
+    const endMoving = (event) => {
       const coordinates = ovmap.getEventCoordinateInternal(event);
 
-      scope.getMap().getView().setCenterInternal(coordinates);
+      const map = this.getMap();
 
-      window.removeEventListener('pointermove', move);
-      window.removeEventListener('pointerup', endMoving);
+      map.getView().setCenterInternal(coordinates);
+
+      const ownerDocument = map.getOwnerDocument();
+      ownerDocument.removeEventListener('pointermove', move);
+      ownerDocument.removeEventListener('pointerup', endMoving);
     };
 
     /* Binding */
 
-    this.ovmapDiv_.addEventListener('pointerdown', function () {
+    this.ovmapDiv_.addEventListener('pointerdown', (event) => {
+      const ownerDocument = this.getMap().getOwnerDocument();
       if (event.target === overlayBox) {
-        window.addEventListener('pointermove', move);
+        ownerDocument.addEventListener('pointermove', move);
       }
-      window.addEventListener('pointerup', endMoving);
+      ownerDocument.addEventListener('pointerup', endMoving);
     });
   }
 
