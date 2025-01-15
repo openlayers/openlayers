@@ -171,7 +171,7 @@ describe('ol/source/ImageWMS', function () {
       expect(queryData.get('SERVICE')).to.be('WMS');
       expect(queryData.get('SRS')).to.be(null);
       expect(queryData.get('STYLES')).to.be('');
-      expect(queryData.get('TRANSPARENT')).to.be('true');
+      expect(queryData.get('TRANSPARENT')).to.be('TRUE');
       expect(queryData.get('VERSION')).to.be('1.3.0');
       expect(queryData.get('WIDTH')).to.be('200');
       expect(uri.hash.replace('#', '')).to.be.empty();
@@ -231,14 +231,14 @@ describe('ol/source/ImageWMS', function () {
 
     it('allows various parameters to be overridden', function () {
       options.params.FORMAT = 'image/jpeg';
-      options.params.TRANSPARENT = false;
+      options.params.TRANSPARENT = 'FALSE';
       const source = new ImageWMS(options);
       const image = source.getImage(extent, resolution, pixelRatio, projection);
       image.load();
       const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
       expect(queryData.get('FORMAT')).to.be('image/jpeg');
-      expect(queryData.get('TRANSPARENT')).to.be('false');
+      expect(queryData.get('TRANSPARENT')).to.be('FALSE');
     });
 
     it('does not add a STYLES= option if one is specified', function () {
@@ -337,7 +337,7 @@ describe('ol/source/ImageWMS', function () {
       expect(imageLoadFunction.getCall(0).args[0]).to.eql(image);
       expect(imageLoadFunction.getCall(0).args[1]).to.be(
         window.location.origin +
-          '/wms?REQUEST=GetMap&SERVICE=WMS&VERSION=1.3.0&FORMAT=image%2Fpng&STYLES=&TRANSPARENT=true&LAYERS=layer&WIDTH=200&HEIGHT=200&CRS=EPSG%3A4326&BBOX=20%2C10%2C40%2C30',
+          '/wms?REQUEST=GetMap&SERVICE=WMS&VERSION=1.3.0&FORMAT=image%2Fpng&STYLES=&TRANSPARENT=TRUE&LAYERS=layer&WIDTH=200&HEIGHT=200&CRS=EPSG%3A4326&BBOX=20%2C10%2C40%2C30',
       );
     });
 
@@ -418,7 +418,7 @@ describe('ol/source/ImageWMS', function () {
       expect(queryData.get('SERVICE')).to.be('WMS');
       expect(queryData.get('SRS')).to.be(null);
       expect(queryData.get('STYLES')).to.be('');
-      expect(queryData.get('TRANSPARENT')).to.be('true');
+      expect(queryData.get('TRANSPARENT')).to.be('TRUE');
       expect(queryData.get('VERSION')).to.be('1.3.0');
       expect(queryData.get('WIDTH')).to.be('101');
       expect(uri.hash.replace('#', '')).to.be.empty();
@@ -448,7 +448,7 @@ describe('ol/source/ImageWMS', function () {
       expect(queryData.get('SERVICE')).to.be('WMS');
       expect(queryData.get('SRS')).to.be(null);
       expect(queryData.get('STYLES')).to.be('');
-      expect(queryData.get('TRANSPARENT')).to.be('true');
+      expect(queryData.get('TRANSPARENT')).to.be('TRUE');
       expect(queryData.get('VERSION')).to.be('1.3.0');
       expect(queryData.get('WIDTH')).to.be('101');
       expect(uri.hash.replace('#', '')).to.be.empty();
@@ -477,7 +477,7 @@ describe('ol/source/ImageWMS', function () {
       expect(queryData.get('SERVICE')).to.be('WMS');
       expect(queryData.get('SRS')).to.be(null);
       expect(queryData.get('STYLES')).to.be('');
-      expect(queryData.get('TRANSPARENT')).to.be('true');
+      expect(queryData.get('TRANSPARENT')).to.be('TRUE');
       expect(queryData.get('VERSION')).to.be('1.3.0');
       expect(queryData.get('WIDTH')).to.be('101');
       expect(uri.hash.replace('#', '')).to.be.empty();
