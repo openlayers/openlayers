@@ -231,13 +231,32 @@ describe('ol/source/ImageWMS', function () {
 
     it('allows various parameters to be overridden', function () {
       options.params.FORMAT = 'image/jpeg';
-      options.params.TRANSPARENT = 'FALSE';
+      options.params.TRANSPARENT = false;
       const source = new ImageWMS(options);
       const image = source.getImage(extent, resolution, pixelRatio, projection);
       image.load();
       const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
       expect(queryData.get('FORMAT')).to.be('image/jpeg');
+      expect(queryData.get('TRANSPARENT')).to.be('false');
+    });
+
+    it('valid TRANSPARENT default value', function () {
+      const source = new ImageWMS(options);
+      const image = source.getImage(extent, resolution, pixelRatio, projection);
+      image.load();
+      const uri = new URL(image.getImage().src);
+      const queryData = uri.searchParams;
+      expect(queryData.get('TRANSPARENT')).to.be('TRUE');
+    });
+
+    it('valid TRANSPARENT override value', function () {
+      options.params.TRANSPARENT = 'FALSE';
+      const source = new ImageWMS(options);
+      const image = source.getImage(extent, resolution, pixelRatio, projection);
+      image.load();
+      const uri = new URL(image.getImage().src);
+      const queryData = uri.searchParams;
       expect(queryData.get('TRANSPARENT')).to.be('FALSE');
     });
 
