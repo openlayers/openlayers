@@ -124,7 +124,7 @@ export function getRequestParams(params, request) {
       'VERSION': DEFAULT_VERSION,
       'FORMAT': 'image/png',
       'STYLES': '',
-      'TRANSPARENT': true,
+      'TRANSPARENT': 'TRUE',
     },
     params,
   );
