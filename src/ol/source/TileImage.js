@@ -246,8 +246,8 @@ class TileImage extends UrlTile {
       targetTileGrid,
       tileCoord,
       wrappedTileCoord,
-      this.getTilePixelRatio(pixelRatio),
-      this.getGutter(),
+      pixelRatio,
+      this.getGutterForProjection(sourceProjection, pixelRatio),
       (z, x, y, pixelRatio) =>
         this.getTileInternal(z, x, y, pixelRatio, sourceProjection),
       this.reprojectionErrorThreshold_,
