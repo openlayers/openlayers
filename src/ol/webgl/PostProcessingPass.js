@@ -149,6 +149,12 @@ class WebGLPostProcessingPass {
       options.fragmentShader || DEFAULT_FRAGMENT_SHADER,
     );
     gl.compileShader(fragmentShader);
+    if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
+      const message = `Fragment shader compilation failed: ${gl.getShaderInfoLog(
+        fragmentShader,
+      )}`;
+      throw new Error(message);
+    }
     /**
      * @private
      */
