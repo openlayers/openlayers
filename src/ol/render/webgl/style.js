@@ -769,10 +769,146 @@ function parseFillProperties(style, builder, uniforms, context) {
 }
 
 /**
+ * This only compiles the expressions used in the text style properties; this has no impact on the
+ * shaders but the properties and variables used there will be collected
+ * @param {import("../../style/flat.js").FlatStyle} style Style
+ * @param {ShaderBuilder} builder Shader Builder
+ * @param {Object<string,import("../../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {import("../../expr/gpu.js").CompilationContext} context Shader compilation context
+ */
+function parseTextProperties(style, builder, uniforms, context) {
+  if ('text-value' in style) {
+    expressionToGlsl(context, style['text-value'], StringType);
+  }
+  if ('text-font' in style) {
+    expressionToGlsl(context, style['text-font'], StringType);
+  }
+  if ('text-max-angle' in style) {
+    expressionToGlsl(context, style['text-max-angle'], NumberType);
+  }
+  if ('text-offset-x' in style) {
+    expressionToGlsl(context, style['text-offset-x'], NumberType);
+  }
+  if ('text-offset-y' in style) {
+    expressionToGlsl(context, style['text-offset-y'], NumberType);
+  }
+  if ('text-overflow' in style) {
+    expressionToGlsl(context, style['text-overflow'], BooleanType);
+  }
+  if ('text-placement' in style) {
+    expressionToGlsl(context, style['text-placement'], StringType);
+  }
+  if ('text-repeat' in style) {
+    expressionToGlsl(context, style['text-repeat'], NumberType);
+  }
+  if ('text-scale' in style) {
+    expressionToGlsl(context, style['text-scale'], SizeType);
+  }
+  if ('text-rotate-with-view' in style) {
+    expressionToGlsl(context, style['text-rotate-with-view'], BooleanType);
+  }
+  if ('text-rotation' in style) {
+    expressionToGlsl(context, style['text-rotation'], NumberType);
+  }
+  if ('text-align' in style) {
+    expressionToGlsl(context, style['text-align'], StringType);
+  }
+  if ('text-justify' in style) {
+    expressionToGlsl(context, style['text-justify'], StringType);
+  }
+  if ('text-baseline' in style) {
+    expressionToGlsl(context, style['text-baseline'], StringType);
+  }
+  if ('text-padding' in style) {
+    expressionToGlsl(context, style['text-padding'], NumberArrayType);
+  }
+  if ('text-fill-color' in style) {
+    expressionToGlsl(context, style['text-fill-color'], ColorType);
+  }
+  if ('text-stroke-color' in style) {
+    expressionToGlsl(context, style['text-stroke-color'], ColorType);
+  }
+  if ('text-stroke-line-cap' in style) {
+    expressionToGlsl(context, style['text-stroke-line-cap'], StringType);
+  }
+  if ('text-stroke-line-join' in style) {
+    expressionToGlsl(context, style['text-stroke-line-join'], StringType);
+  }
+  if ('text-stroke-line-dash' in style) {
+    expressionToGlsl(context, style['text-stroke-line-dash'], NumberArrayType);
+  }
+  if ('text-stroke-line-dash-offset' in style) {
+    expressionToGlsl(
+      context,
+      style['text-stroke-line-dash-offset'],
+      NumberType,
+    );
+  }
+  if ('text-stroke-miter-limit' in style) {
+    expressionToGlsl(context, style['text-stroke-miter-limit'], NumberType);
+  }
+  if ('text-stroke-width' in style) {
+    expressionToGlsl(context, style['text-stroke-width'], NumberType);
+  }
+  if ('text-background-fill-color' in style) {
+    expressionToGlsl(context, style['text-background-fill-color'], ColorType);
+  }
+  if ('text-background-stroke-color' in style) {
+    expressionToGlsl(context, style['text-background-stroke-color'], ColorType);
+  }
+  if ('text-background-stroke-line-cap' in style) {
+    expressionToGlsl(
+      context,
+      style['text-background-stroke-line-cap'],
+      StringType,
+    );
+  }
+  if ('text-background-stroke-line-join' in style) {
+    expressionToGlsl(
+      context,
+      style['text-background-stroke-line-join'],
+      StringType,
+    );
+  }
+  if ('text-background-stroke-line-dash' in style) {
+    expressionToGlsl(
+      context,
+      style['text-background-stroke-line-dash'],
+      NumberArrayType,
+    );
+  }
+  if ('text-background-stroke-line-dash-offset' in style) {
+    expressionToGlsl(
+      context,
+      style['text-background-stroke-line-dash-offset'],
+      NumberType,
+    );
+  }
+  if ('text-background-stroke-miter-limit' in style) {
+    expressionToGlsl(
+      context,
+      style['text-background-stroke-miter-limit'],
+      NumberType,
+    );
+  }
+  if ('text-background-stroke-width' in style) {
+    expressionToGlsl(
+      context,
+      style['text-background-stroke-width'],
+      NumberType,
+    );
+  }
+  if ('z-index' in style) {
+    expressionToGlsl(context, style['z-index'], NumberType);
+  }
+}
+
+/**
  * @typedef {Object} StyleParseResult
  * @property {ShaderBuilder} builder Shader builder pre-configured according to a given style
  * @property {import("./VectorStyleRenderer.js").UniformDefinitions} uniforms Uniform definitions
  * @property {import("./VectorStyleRenderer.js").AttributeDefinitions} attributes Attribute definitions
+ * @property {import("../../style/flat.js").Rule} [sourceRule] Style and filter that was parsed (if any)
  */
 
 /**
@@ -805,6 +941,9 @@ export function parseLiteralStyle(style, variables, filter) {
   }
   parseStrokeProperties(style, builder, uniforms, context);
   parseFillProperties(style, builder, uniforms, context);
+  try {
+    parseTextProperties(style, builder, uniforms, context); // this will not change the shaders but still collect the properties
+  } catch (e) {}
 
   // note that the style filter may have already been applied earlier when building the rendering instructions
   // this is still needed in case a filter cannot be evaluated statically beforehand (e.g. depending on time)
