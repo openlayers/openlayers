@@ -459,6 +459,10 @@ class RenderFeature {
     });
     return this;
   }
+
+  hasProperties() {
+    return true;
+  }
 }
 
 /**
