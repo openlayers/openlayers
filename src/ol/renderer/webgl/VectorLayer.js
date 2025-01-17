@@ -249,6 +249,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
           this.styleVariables_,
           this.helper,
           this.hitDetectionEnabled_,
+          'filter' in style ? style.filter : null,
         ),
     );
   }
@@ -566,7 +567,9 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    */
   disposeInternal() {
     this.buffers_.forEach((buffers) => {
-      this.disposeBuffers(buffers);
+      if (buffers) {
+        this.disposeBuffers(buffers);
+      }
     });
     if (this.sourceListenKeys_) {
       this.sourceListenKeys_.forEach(function (key) {
