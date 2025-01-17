@@ -144,6 +144,20 @@ describe('ol/expr/expression.js', () => {
       expect(context.variables.has('foo')).to.be(true);
     });
 
+    it('parses an expression relying on map state', () => {
+      let context = newParsingContext();
+      parse(['zoom'], NumberType, context);
+      expect(context.mapState).to.be(true);
+
+      context = newParsingContext();
+      parse(['resolution'], NumberType, context);
+      expect(context.mapState).to.be(true);
+
+      context = newParsingContext();
+      parse(['time'], NumberType, context);
+      expect(context.mapState).to.be(true);
+    });
+
     it('parses a concat expression', () => {
       const context = newParsingContext();
       const expression = parse(
