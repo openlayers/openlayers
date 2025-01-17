@@ -453,6 +453,7 @@ ${ifBlocks}
   // Ops.Coalesce
   // Ops.Concat
   // Ops.ToString
+  // Ops.Has
 };
 
 /**

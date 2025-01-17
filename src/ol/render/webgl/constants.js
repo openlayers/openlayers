@@ -12,6 +12,17 @@ export const WebGLWorkerMessageType = {
 };
 
 /**
+ * @enum {string}
+ */
+export const TextOverlayWorkerMessageType = {
+  INIT: 'INIT',
+  LOAD_FEATURES: 'LOAD_FEATURES',
+  UNLOAD_FEATURES: 'UNLOAD_FEATURES',
+  RENDER: 'RENDER',
+  RENDERED: 'RENDERED',
+};
+
+/**
  * @typedef {Object} WebGLWorkerGenerateBuffersMessage
  * This message will trigger the generation of a vertex and an index buffer based on the given render instructions.
  * When the buffers are generated, the worked will send a message of the same type to the main thread, with
@@ -25,4 +36,15 @@ export const WebGLWorkerMessageType = {
  * @property {ArrayBuffer} [vertexAttributesBuffer] Vertex attributes array raw binary buffer (sent by the worker).
  * @property {ArrayBuffer} [instanceAttributesBuffer] Instance attributes array raw binary buffer (sent by the worker).
  * @property {import("../../transform").Transform} [renderInstructionsTransform] Transformation matrix used to project the instructions coordinates
+ */
+
+/**
+ * @typedef {Object} TextOverlayWorkerMessage
+ * TODO
+ * @property {TextOverlayWorkerMessageType} type Message type
+ * @property {string} [batchId] Batch id for given features
+ * @property {Array<import('../Feature.js').default>} [features] Features to load
+ * @property {Array<string>} [batchesId] Batches to render
+ * @property {ImageBitmap} [imageData] Rendered canvas
+ * @property {import("../../Map.js").FrameState} [frameState] Frame state of the rendered image
  */

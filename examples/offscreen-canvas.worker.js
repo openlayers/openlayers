@@ -53,6 +53,26 @@ function loadStyles() {
             layers: [],
           });
         }
+        // const paintProps = Object.keys(layer.paint);
+        // const layoutProps = Object.keys(layer.layout);
+        // const hasText =
+        //   paintProps.some((key) => key.startsWith('text-')) ||
+        //   layoutProps.some((key) => key.startsWith('text-'));
+        // if (hasText) {
+        //   for (const prop of paintProps) {
+        //     if (!prop.startsWith('text-')) {
+        //       delete layer.paint[prop];
+        //     }
+        //   }
+        //   for (const prop of layoutProps) {
+        //     if (!prop.startsWith('text-')) {
+        //       delete layer.layout[prop];
+        //     }
+        //   }
+        //   layer.layout['text-size'] = 16;
+        //   console.log(layer);
+        //   buckets[buckets.length - 1].layers.push(layer.id);
+        // }
         buckets[buckets.length - 1].layers.push(layer.id);
       });
 
