@@ -345,19 +345,12 @@ class CanvasTextBuilder extends CanvasBuilder {
 
       this.saveTextStates_();
 
-      if (textState.backgroundFill || textState.backgroundStroke) {
-        this.setFillStrokeStyle(
-          textState.backgroundFill,
-          textState.backgroundStroke,
-        );
-        if (textState.backgroundFill) {
-          this.updateFillStyle(this.state, this.createFill);
-        }
-        if (textState.backgroundStroke) {
-          this.updateStrokeStyle(this.state, this.applyStroke);
-          this.hitDetectionInstructions.push(this.createStroke(this.state));
-        }
-      }
+      const backgroundFill = textState.backgroundFill
+        ? this.createFill(this.fillStyleToState(textState.backgroundFill))
+        : null;
+      const backgroundStroke = textState.backgroundStroke
+        ? this.createStroke(this.strokeStyleToState(textState.backgroundStroke))
+        : null;
 
       this.beginGeometry(geometry, feature, index);
 
@@ -408,8 +401,8 @@ class CanvasTextBuilder extends CanvasBuilder {
           : padding.map(function (p) {
               return p * pixelRatio;
             }),
-        !!textState.backgroundFill,
-        !!textState.backgroundStroke,
+        backgroundFill,
+        backgroundStroke,
         this.text_,
         this.textKey_,
         this.strokeKey_,
@@ -420,10 +413,11 @@ class CanvasTextBuilder extends CanvasBuilder {
       ]);
       const scale = 1 / pixelRatio;
       // Set default fill for hit detection background
-      const currentFillStyle = this.state.fillStyle;
-      if (textState.backgroundFill) {
-        this.state.fillStyle = defaultFillStyle;
-        this.hitDetectionInstructions.push(this.createFill(this.state));
+      const hitDetectionBackgroundFill = backgroundFill
+        ? backgroundFill.slice(0)
+        : null;
+      if (hitDetectionBackgroundFill) {
+        hitDetectionBackgroundFill[1] = defaultFillStyle;
       }
       this.hitDetectionInstructions.push([
         CanvasInstruction.DRAW_IMAGE,
@@ -443,8 +437,8 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.declutterMode_,
         this.declutterImageWithText_,
         padding,
-        !!textState.backgroundFill,
-        !!textState.backgroundStroke,
+        hitDetectionBackgroundFill,
+        backgroundStroke,
         this.text_,
         this.textKey_,
         this.strokeKey_,
@@ -453,11 +447,6 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.textOffsetY_,
         geometryWidths,
       ]);
-      // Reset previous fill
-      if (textState.backgroundFill) {
-        this.state.fillStyle = currentFillStyle;
-        this.hitDetectionInstructions.push(this.createFill(this.state));
-      }
 
       this.endGeometry(feature);
     }

@@ -605,6 +605,104 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         'postrender',
       ]);
     });
+
+    it('renders text background correctly', () => {
+      // like the test above, but only with a point feature and a style with a textBackground
+      const layer = new VectorTileLayer({
+        source: new VectorTileSource({
+          tileGrid: createXYZ(),
+        }),
+        style: {
+          'text-value': 'text',
+          'text-background-fill-color': 'red',
+        },
+      });
+      const sourceTile = new VectorTile([0, 0, 0], 2);
+      sourceTile.features_ = [new RenderFeature('Point', [0, 0], [], 2)];
+      sourceTile.getImage = function () {
+        return document.createElement('canvas');
+      };
+      layer.getSource().getSourceTiles = () => [sourceTile];
+      const tile = new VectorRenderTile(
+        [0, 0, 0],
+        1,
+        [0, 0, 0],
+        function () {
+          return sourceTile;
+        },
+        () => {},
+      );
+      tile.transition_ = 0;
+      tile.replayState_[getUid(layer)] = [{dirty: true}];
+      tile.setState(TileState.LOADED);
+      layer.getSource().getTile = function () {
+        return tile;
+      };
+      const renderer = new CanvasVectorTileLayerRenderer(layer);
+      const proj = getProjection('EPSG:3857');
+      const frameState = {
+        layerStatesArray: [layer.getLayerState()],
+        layerIndex: 0,
+        extent: proj.getExtent(),
+        pixelRatio: 1,
+        pixelToCoordinateTransform: create(),
+        postRenderFunctions: [],
+        time: Date.now(),
+        viewHints: [],
+        viewState: {
+          center: [0, 0],
+          resolution: 156543.03392804097,
+          rotation: 0,
+          projection: proj,
+        },
+        size: [256, 256],
+        usedTiles: {},
+        wantedTiles: {},
+      };
+
+      renderer.container = document.createElement('div');
+      const sequence = [];
+      renderer.context = {
+        save: () => sequence.push('save'),
+        restore: () => sequence.push('restore'),
+        beginPath: () => sequence.push('beginPath'),
+        moveTo: () => sequence.push('moveTo'),
+        lineTo: () => sequence.push('lineTo'),
+        stroke: () => sequence.push('stroke'),
+        drawImage: () => sequence.push('drawImage'),
+        fill: () => sequence.push('fill'),
+        fillText: () => sequence.push('fillText'),
+        canvas: {
+          style: {
+            transform: '',
+          },
+        },
+      };
+      Object.defineProperty(renderer.context, 'fillStyle', {
+        set: (value) => {
+          sequence.push('fillStyle');
+        },
+      });
+
+      renderer.renderFrame(frameState);
+      expect(sequence).to.eql([
+        'save',
+        'drawImage',
+        'restore',
+        'beginPath',
+        'moveTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'fillStyle',
+        'fill',
+        'save',
+        'fillStyle',
+        'fillText',
+        'restore',
+      ]);
+    });
   });
 
   describe('#forEachFeatureAtCoordinate', function () {
