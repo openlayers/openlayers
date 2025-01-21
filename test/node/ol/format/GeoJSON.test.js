@@ -591,6 +591,27 @@ describe('ol/format/GeoJSON.js', function () {
         expect(geometry.getCoordinates()).to.eql([]);
       });
     });
+
+    it('works with empty coordinate array and reprojection', () => {
+      const types = [
+        'Point',
+        'LineString',
+        'Polygon',
+        'MultiPoint',
+        'MultiLineString',
+        'MultiPolygon',
+      ];
+      types.forEach((type) => {
+        const geojson = {
+          type,
+          coordinates: [],
+        };
+        const geometry = format.readGeometry(geojson, {
+          featureProjection: 'EPSG:3857',
+        });
+        expect(geometry.getCoordinates()).to.eql([]);
+      });
+    });
   });
 
   describe('#readProjection', function () {

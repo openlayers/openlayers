@@ -445,7 +445,7 @@ export function createGeometry(object, options) {
   }
   const Geometry = GeometryConstructor[object.type];
   return transformGeometryWithOptions(
-    new Geometry(object.flatCoordinates, object.layout, object.ends),
+    new Geometry(object.flatCoordinates, object.layout || 'XY', object.ends),
     false,
     options,
   );
