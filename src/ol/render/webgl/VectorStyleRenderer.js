@@ -345,32 +345,36 @@ class VectorStyleRenderer {
    */
   computeFeatureFilter(filter) {
     const parsingContext = newParsingContext();
+    /**
+     * @type {import('../../expr/cpu.js').ExpressionEvaluator}
+     */
+    let compiled;
     try {
-      const compiled = buildExpression(filter, BooleanType, parsingContext);
-
-      // do not apply the filter if it depends on map state (e.g. zoom level) or any variable
-      if (parsingContext.mapState || parsingContext.variables.size > 0) {
-        return null;
-      }
-
-      const evalContext = newEvaluationContext();
-      return (feature) => {
-        evalContext.properties = feature.getPropertiesInternal();
-        if (parsingContext.featureId) {
-          const id = feature.getId();
-          if (id !== undefined) {
-            evalContext.featureId = id;
-          } else {
-            evalContext.featureId = null;
-          }
-        }
-        evalContext.geometryType = computeGeometryType(feature.getGeometry());
-        return /** @type {boolean} */ (compiled(evalContext));
-      };
+      compiled = buildExpression(filter, BooleanType, parsingContext);
     } catch {
       // filter expression failed to compile for CPU: ignore it
       return null;
     }
+
+    // do not apply the filter if it depends on map state (e.g. zoom level) or any variable
+    if (parsingContext.mapState || parsingContext.variables.size > 0) {
+      return null;
+    }
+
+    const evalContext = newEvaluationContext();
+    return (feature) => {
+      evalContext.properties = feature.getPropertiesInternal();
+      if (parsingContext.featureId) {
+        const id = feature.getId();
+        if (id !== undefined) {
+          evalContext.featureId = id;
+        } else {
+          evalContext.featureId = null;
+        }
+      }
+      evalContext.geometryType = computeGeometryType(feature.getGeometry());
+      return /** @type {boolean} */ (compiled(evalContext));
+    };
   }
 
   /**

@@ -553,5 +553,25 @@ describe('VectorStyleRenderer', () => {
         expect(geometryBatch.filter.callCount).to.be(0);
       });
     });
+    describe('does not apply filter if it cannot be compiled for CPU', () => {
+      beforeEach(async () => {
+        const filter = ['>', ['line-metric'], 10];
+        vectorStyleRenderer = new VectorStyleRenderer(
+          {style, filter},
+          {},
+          helper,
+          true,
+          filter,
+        );
+        sinonSpy(geometryBatch, 'filter');
+        buffers = await vectorStyleRenderer.generateBuffers(
+          geometryBatch,
+          SAMPLE_TRANSFORM,
+        );
+      });
+      it('does not filter the geometry batches', () => {
+        expect(geometryBatch.filter.callCount).to.be(0);
+      });
+    });
   });
 });
