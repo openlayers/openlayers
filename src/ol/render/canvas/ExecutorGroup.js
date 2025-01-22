@@ -131,13 +131,12 @@ class ExecutorGroup {
    * @param {import("../../transform.js").Transform} transform Transform.
    */
   clip(context, transform) {
-    const bleed = 0.5; // avoid seams for adjacent polygons along tile boundaries
     const flatClipCoords = this.getClipCoords(transform);
     context.beginPath();
-    context.moveTo(flatClipCoords[0]-bleed, flatClipCoords[1]+bleed);
-    context.lineTo(flatClipCoords[2]-bleed, flatClipCoords[3]-bleed);
-    context.lineTo(flatClipCoords[4]+bleed, flatClipCoords[5]-bleed);
-    context.lineTo(flatClipCoords[6]+bleed, flatClipCoords[7]+bleed);
+    context.moveTo(flatClipCoords[0], flatClipCoords[1]);
+    context.lineTo(flatClipCoords[2], flatClipCoords[3]);
+    context.lineTo(flatClipCoords[4], flatClipCoords[5]);
+    context.lineTo(flatClipCoords[6], flatClipCoords[7]);
     context.clip();
   }
 
