@@ -578,8 +578,7 @@ class MixedGeometryBatch {
    */
   filter(featureFilter) {
     const filtered = new MixedGeometryBatch();
-    const features = this.refToFeature_.entries();
-    for (const [, feature] of features) {
+    for (const feature of this.refToFeature_.values()) {
       if (featureFilter(feature)) {
         filtered.addFeature(feature);
       }
