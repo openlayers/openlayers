@@ -901,6 +901,8 @@ export function parseLiteralStyle(style, variables, filter) {
   parseStrokeProperties(style, builder, uniforms, vertContext, fragContext);
   parseFillProperties(style, builder, uniforms, vertContext, fragContext);
 
+  // note that the style filter may have already been applied earlier when building the rendering instructions
+  // this is still needed in case a filter cannot be evaluated statically beforehand (e.g. depending on time)
   if (filter) {
     const parsedFilter = expressionToGlsl(fragContext, filter, BooleanType);
     builder.setFragmentDiscardExpression(`!${parsedFilter}`);

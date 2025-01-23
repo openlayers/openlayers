@@ -1,6 +1,12 @@
 /**
  * @module ol/render/webgl/VectorStyleRenderer
  */
+import {buildExpression, newEvaluationContext} from '../../expr/cpu.js';
+import {
+  BooleanType,
+  computeGeometryType,
+  newParsingContext,
+} from '../../expr/expression.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
@@ -120,8 +126,9 @@ class VectorStyleRenderer {
    * @param {import('../../style/flat.js').StyleVariables} variables Style variables
    * @param {import('../../webgl/Helper.js').default} helper Helper
    * @param {boolean} [enableHitDetection] Whether to enable the hit detection (needs compatible shader)
+   * @param {import("../../expr/expression.js").ExpressionValue} [filter] Optional filter expression
    */
-  constructor(styleOrShaders, variables, helper, enableHitDetection) {
+  constructor(styleOrShaders, variables, helper, enableHitDetection, filter) {
     /**
      * @private
      * @type {import('../../webgl/Helper.js').default}
@@ -213,6 +220,15 @@ class VectorStyleRenderer {
        * @private
        */
       this.symbolFragmentShader_ = asShaders.builder.getSymbolFragmentShader();
+    }
+
+    /**
+     * @type {function(import('../../Feature.js').FeatureLike): boolean}
+     * @private
+     */
+    this.featureFilter_ = null;
+    if (filter) {
+      this.featureFilter_ = this.computeFeatureFilter(filter);
     }
 
     const hitDetectionAttributes = this.hitDetectionEnabled_
@@ -322,13 +338,60 @@ class VectorStyleRenderer {
   }
 
   /**
+   * Will apply the style filter when generating geometry batches (if it can be evaluated outside a map context)
+   * @param {import("../../expr/expression.js").ExpressionValue} filter Style filter
+   * @return {function(import('../../Feature.js').FeatureLike): boolean} Feature filter
+   * @private
+   */
+  computeFeatureFilter(filter) {
+    const parsingContext = newParsingContext();
+    /**
+     * @type {import('../../expr/cpu.js').ExpressionEvaluator}
+     */
+    let compiled;
+    try {
+      compiled = buildExpression(filter, BooleanType, parsingContext);
+    } catch {
+      // filter expression failed to compile for CPU: ignore it
+      return null;
+    }
+
+    // do not apply the filter if it depends on map state (e.g. zoom level) or any variable
+    if (parsingContext.mapState || parsingContext.variables.size > 0) {
+      return null;
+    }
+
+    const evalContext = newEvaluationContext();
+    return (feature) => {
+      evalContext.properties = feature.getPropertiesInternal();
+      if (parsingContext.featureId) {
+        const id = feature.getId();
+        if (id !== undefined) {
+          evalContext.featureId = id;
+        } else {
+          evalContext.featureId = null;
+        }
+      }
+      evalContext.geometryType = computeGeometryType(feature.getGeometry());
+      return /** @type {boolean} */ (compiled(evalContext));
+    };
+  }
+
+  /**
    * @param {import('./MixedGeometryBatch.js').default} geometryBatch Geometry batch
    * @param {import("../../transform.js").Transform} transform Transform to apply to coordinates
-   * @return {Promise<WebGLBuffers>} A promise resolving to WebGL buffers
+   * @return {Promise<WebGLBuffers|null>} A promise resolving to WebGL buffers; returns null if buffers are empty
    */
   async generateBuffers(geometryBatch, transform) {
+    let filteredBatch = geometryBatch;
+    if (this.featureFilter_) {
+      filteredBatch = filteredBatch.filter(this.featureFilter_);
+      if (filteredBatch.isEmpty()) {
+        return null;
+      }
+    }
     const renderInstructions = this.generateRenderInstructions_(
-      geometryBatch,
+      filteredBatch,
       transform,
     );
     const [polygonBuffers, lineStringBuffers, pointBuffers] = await Promise.all(

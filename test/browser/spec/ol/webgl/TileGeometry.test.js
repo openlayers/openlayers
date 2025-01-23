@@ -136,5 +136,26 @@ describe('ol/webgl/TileGeometry', function () {
         -100, -200, 300, -200, 300, 400, -100, 400,
       ]);
     });
+
+    describe('#dispose', () => {
+      let deleteBufferSpy;
+      beforeEach(async () => {
+        deleteBufferSpy = sinonSpy(helper, 'deleteBuffer');
+        // generate buffers and dispose the tile
+        styleRenderers[0].endGenerate_({
+          pointBuffers: [{}, {}],
+          polygonBuffers: [{}, {}],
+        });
+        styleRenderers[1].endGenerate_({
+          polygonBuffers: [{}, {}],
+          lineStringBuffers: [{}, {}],
+        });
+        await new Promise((resolve) => setTimeout(resolve));
+        tileGeometry.dispose();
+      });
+      it('deletes webgl buffers', () => {
+        expect(deleteBufferSpy.callCount).to.be(8); // 2 for points, 4 for polygons, 2 for line strings
+      });
+    });
   });
 });

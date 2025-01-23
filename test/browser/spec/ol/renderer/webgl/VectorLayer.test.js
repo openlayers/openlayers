@@ -188,6 +188,59 @@ describe('ol/renderer/webgl/VectorLayer', () => {
     });
   });
 
+  describe('style with filters', () => {
+    let spy, styleWithFilters;
+    beforeEach(() => {
+      styleWithFilters = [
+        {
+          style: {
+            'circle-radius': 4,
+          },
+          filter: ['==', ['get', 'category'], 'A'],
+        },
+        {
+          style: {
+            'stroke-width': 2,
+          },
+          else: true,
+        },
+      ];
+      renderer = new WebGLVectorLayerRenderer(vectorLayer, {
+        style: styleWithFilters,
+      });
+      spy = sinonSpy(ol_render_webgl_vectorstylerenderer, 'default');
+      renderer.helper = new WebGLHelper();
+      renderer.afterHelperCreated(frameState);
+    });
+    afterEach(() => {
+      renderer.helper.dispose();
+      spy.restore();
+    });
+
+    it('passes the filters along styles to renderers', () => {
+      expect(spy.callCount).to.be(2);
+      expect(
+        spy.calledWith(
+          styleWithFilters[0],
+          undefined,
+          renderer.helper,
+          true,
+          styleWithFilters[0].filter,
+        ),
+      ).to.be(true);
+      expect(
+        spy.calledWith({
+          style: styleWithFilters[1].style,
+          filter: ['!', styleWithFilters[0].filter],
+        }),
+        undefined,
+        renderer.helper,
+        true,
+        ['!', styleWithFilters[0].filter],
+      ).to.be(true);
+    });
+  });
+
   describe('#reset', () => {
     beforeEach(() => {
       // first call prepareFrame to initialize the helper

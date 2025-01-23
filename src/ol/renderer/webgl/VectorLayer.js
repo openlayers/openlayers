@@ -249,6 +249,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
           this.styleVariables_,
           this.helper,
           this.hitDetectionEnabled_,
+          'filter' in style ? style.filter : null,
         ),
     );
   }
@@ -543,20 +544,24 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    * @param {import('../../render/webgl/VectorStyleRenderer.js').WebGLBuffers} buffers Buffers
    */
   disposeBuffers(buffers) {
+    /**
+     * @param {Array<import('../../webgl/Buffer.js').default>} typeBuffers Buffers
+     */
+    const disposeBuffersOfType = (typeBuffers) => {
+      for (const buffer of typeBuffers) {
+        if (buffer) {
+          this.helper.deleteBuffer(buffer);
+        }
+      }
+    };
     if (buffers.pointBuffers) {
-      buffers.pointBuffers
-        .filter(Boolean)
-        .forEach((buffer) => this.helper.deleteBuffer(buffer));
+      disposeBuffersOfType(buffers.pointBuffers);
     }
     if (buffers.lineStringBuffers) {
-      buffers.lineStringBuffers
-        .filter(Boolean)
-        .forEach((buffer) => this.helper.deleteBuffer(buffer));
+      disposeBuffersOfType(buffers.lineStringBuffers);
     }
     if (buffers.polygonBuffers) {
-      buffers.polygonBuffers
-        .filter(Boolean)
-        .forEach((buffer) => this.helper.deleteBuffer(buffer));
+      disposeBuffersOfType(buffers.polygonBuffers);
     }
   }
 
@@ -566,7 +571,9 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    */
   disposeInternal() {
     this.buffers_.forEach((buffers) => {
-      this.disposeBuffers(buffers);
+      if (buffers) {
+        this.disposeBuffers(buffers);
+      }
     });
     if (this.sourceListenKeys_) {
       this.sourceListenKeys_.forEach(function (key) {

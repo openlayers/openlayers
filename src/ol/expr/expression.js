@@ -253,6 +253,7 @@ export class CallExpression {
  * @property {Set<string>} properties Properties referenced with the 'get' operator.
  * @property {boolean} featureId The style uses the feature id.
  * @property {boolean} geometryType The style uses the feature geometry type.
+ * @property {boolean} mapState The style uses the map state (view state or time elapsed).
  */
 
 /**
@@ -264,6 +265,7 @@ export function newParsingContext() {
     properties: new Set(),
     featureId: false,
     geometryType: false,
+    mapState: false,
   };
 }
 
@@ -443,9 +445,9 @@ const parsers = {
   ),
   [Ops.GeometryType]: createCallExpressionParser(usesGeometryType, withNoArgs),
   [Ops.LineMetric]: createCallExpressionParser(withNoArgs),
-  [Ops.Resolution]: createCallExpressionParser(withNoArgs),
-  [Ops.Zoom]: createCallExpressionParser(withNoArgs),
-  [Ops.Time]: createCallExpressionParser(withNoArgs),
+  [Ops.Resolution]: createCallExpressionParser(usesMapState, withNoArgs),
+  [Ops.Zoom]: createCallExpressionParser(usesMapState, withNoArgs),
+  [Ops.Time]: createCallExpressionParser(usesMapState, withNoArgs),
   [Ops.Any]: createCallExpressionParser(
     hasArgsCount(2, Infinity),
     withArgsOfType(BooleanType),
@@ -658,6 +660,13 @@ function usesFeatureId(encoded, returnType, context) {
  */
 function usesGeometryType(encoded, returnType, context) {
   context.geometryType = true;
+}
+
+/**
+ * @type {ArgValidator}
+ */
+function usesMapState(encoded, returnType, context) {
+  context.mapState = true;
 }
 
 /**
