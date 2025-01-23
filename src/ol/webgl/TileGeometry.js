@@ -116,20 +116,24 @@ class TileGeometry extends BaseTileRepresentation {
    * @param {import('../render/webgl/VectorStyleRenderer.js').WebGLBuffers} buffers Buffers
    */
   disposeBuffers(buffers) {
+    /**
+     * @param {Array<WebGLArrayBuffer>} typeBuffers Buffers
+     */
+    const disposeBuffersOfType = (typeBuffers) => {
+      for (const buffer of typeBuffers) {
+        if (buffer) {
+          this.helper.deleteBuffer(buffer);
+        }
+      }
+    };
     if (buffers.pointBuffers) {
-      buffers.pointBuffers
-        .filter(Boolean)
-        .forEach((buffer) => this.helper.deleteBuffer(buffer));
+      disposeBuffersOfType(buffers.pointBuffers);
     }
     if (buffers.lineStringBuffers) {
-      buffers.lineStringBuffers
-        .filter(Boolean)
-        .forEach((buffer) => this.helper.deleteBuffer(buffer));
+      disposeBuffersOfType(buffers.lineStringBuffers);
     }
     if (buffers.polygonBuffers) {
-      buffers.polygonBuffers
-        .filter(Boolean)
-        .forEach((buffer) => this.helper.deleteBuffer(buffer));
+      disposeBuffersOfType(buffers.polygonBuffers);
     }
   }
 }
