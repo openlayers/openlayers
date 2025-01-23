@@ -24,7 +24,7 @@ const epsgDefinitions = {
 async function mockEPSGLookup(code) {
   const definition = epsgDefinitions[code];
   if (!definition) {
-    throw new Error('Unexpected response from epsg.io: 404');
+    throw new Error('Unexpected response from spatialreference.org: 404');
   }
   return definition;
 }
@@ -125,7 +125,9 @@ describe('ol/proj/proj4.js', () => {
       }
 
       expect(error).to.be.an(Error);
-      expect(error.message).to.be('Unexpected response from epsg.io: 404');
+      expect(error.message).to.be(
+        'Unexpected response from spatialreference.org: 404',
+      );
     });
 
     it('throws if proj4 is not already registered', async () => {
