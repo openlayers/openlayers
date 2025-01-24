@@ -25,12 +25,11 @@ let withCredentials = false;
  * The function is responsible for loading the features and adding them to the
  * source.
  *
- * @template {import("./Feature.js").FeatureLike} [FeatureType=import("./Feature.js").default]
- * @typedef {function(this:(import("./source/Vector").default<FeatureType>|import("./VectorTile.js").default),
+ * @typedef {function(
  *           import("./extent.js").Extent,
  *           number,
  *           import("./proj/Projection.js").default,
- *           function(Array<FeatureType>): void=,
+ *           function(Array<import("./Feature.js").FeatureLike>): void=,
  *           function(): void=): void} FeatureLoader
  * @api
  */
@@ -128,10 +127,9 @@ export function loadFeaturesXhr(
  * Create an XHR feature loader for a `url` and `format`. The feature loader
  * loads features (with XHR), parses the features, and adds them to the
  * vector source.
- * @template {import("./Feature.js").FeatureLike} FeatureType
  * @param {string|FeatureUrlFunction} url Feature URL service.
- * @param {import("./format/Feature.js").default<FeatureType>} format Feature format.
- * @return {FeatureLoader<FeatureType>} The feature loader.
+ * @param {import("./format/Feature.js").default<import("./Feature.js").FeatureLike>} format Feature format.
+ * @return {FeatureLoader} The feature loader.
  * @api
  */
 export function xhr(url, format) {
@@ -139,14 +137,13 @@ export function xhr(url, format) {
    * @param {import("./extent.js").Extent} extent Extent.
    * @param {number} resolution Resolution.
    * @param {import("./proj/Projection.js").default} projection Projection.
-   * @param {function(Array<FeatureType>): void} [success] Success
+   * @param {function(Array<import("./Feature.js").FeatureLike>): void} [success] Success
    *      Function called when loading succeeded.
    * @param {function(): void} [failure] Failure
    *      Function called when loading failed.
+   * @this {import("./source/Vector.js").default<import("./Feature.js").FeatureLike>}
    */
   return function (extent, resolution, projection, success, failure) {
-    const source =
-      /** @type {import("./source/Vector").default<FeatureType>} */ (this);
     loadFeaturesXhr(
       url,
       format,
@@ -154,12 +151,12 @@ export function xhr(url, format) {
       resolution,
       projection,
       /**
-       * @param {Array<FeatureType>} features The loaded features.
+       * @param {Array<import("./Feature.js").FeatureLike>} features The loaded features.
        * @param {import("./proj/Projection.js").default} dataProjection Data
        * projection.
        */
-      function (features, dataProjection) {
-        source.addFeatures(features);
+      (features, dataProjection) => {
+        this.addFeatures(features);
         if (success !== undefined) {
           success(features);
         }

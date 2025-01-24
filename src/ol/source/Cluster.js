@@ -27,7 +27,7 @@ import VectorSource from './Vector.js';
  * By default no minimum distance is guaranteed. This config can be used to avoid
  * overlapping icons. As a tradoff, the cluster feature's position will no longer be
  * the center of all its features.
- * @property {function(FeatureType):(Point|null)} [geometryFunction]
+ * @property {function(import("../Feature.js").FeatureLike):(Point|null)} [geometryFunction]
  * Function that takes a {@link module:ol/Feature~Feature} as argument and returns a
  * {@link module:ol/geom/Point~Point} as cluster calculation point for the feature. When a
  * feature should not be considered for clustering, the function should return
@@ -111,7 +111,7 @@ class Cluster extends VectorSource {
     this.features = [];
 
     /**
-     * @param {FeatureType} feature Feature.
+     * @param {import("../Feature.js").FeatureLike} feature Feature.
      * @return {Point} Cluster calculation point.
      * @protected
      */
