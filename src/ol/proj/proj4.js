@@ -131,7 +131,7 @@ export function getProjectionCodeLookup() {
 }
 
 /**
- * Get a projection from an projection code (i.e. autrhority:number).
+ * Get a projection from a projection code (i.e., authority:number).
  * This function fetches the projection definition from the
  * https://spatialreference.org website, registers this definition for use with
  * proj4, and returns a configured projection.  You must call import proj4 and
@@ -141,7 +141,7 @@ export function getProjectionCodeLookup() {
  * be fetched again (so it is ok to call this function multiple times with the
  * same code).
  *
- * @param {string} code The projection code (e.g. 'EPSG:4326' or 'OGC:CRS84').
+ * @param {string} code The projection code (e.g., 'EPSG:4326' or 'OGC:CRS84').
  * @return {Promise<Projection>} The projection.
  * @api
  */
