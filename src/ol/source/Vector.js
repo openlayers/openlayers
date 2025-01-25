@@ -85,7 +85,7 @@ export class VectorSourceEvent extends Event {
  * and the collection will stay in sync.
  * @property {import("../format/Feature.js").default<FeatureType>} [format] The feature format used by the XHR
  * feature loader when `url` is set. Required if `url` is set, otherwise ignored.
- * @property {import("../featureloader.js").FeatureLoader} [loader]
+ * @property {import("../featureloader.js").FeatureLoader<FeatureType>} [loader]
  * The loader function used to load features, from a remote source for example.
  * If this is not set and `url` is set, the source will create and use an XHR
  * feature loader. The `'featuresloadend'` and `'featuresloaderror'` events
@@ -211,7 +211,7 @@ class VectorSource extends Source {
 
     /**
      * @private
-     * @type {import("../featureloader.js").FeatureLoader}
+     * @type {import("../featureloader.js").FeatureLoader<import("../Feature.js").FeatureLike>}
      */
     this.loader_ = VOID;
 
