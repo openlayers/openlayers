@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "skipLibCheck": false,
+    "skipDefaultLibCheck": true,
+  },
+  "include": [
+    "cases/**/*.ts",
+    "../../build/ol/**/*.d.ts"
+  ]
+}

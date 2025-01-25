@@ -1,10 +1,10 @@
-import Feature, {FeatureLike} from '../../../src/ol/Feature.js';
-import Point from '../../../src/ol/geom/Point.js';
-import {LineString} from '../../../src/ol/geom.js';
+import Feature, {FeatureLike} from '../../../build/ol/Feature.js';
+import Point from '../../../build/ol/geom/Point.js';
+import {LineString} from '../../../build/ol/geom.js';
 import VectorImageLayer, {
   Options as VectorImageLayerOptions,
-} from '../../../src/ol/layer/VectorImage.js';
-import VectorSource from '../../../src/ol/source/Vector.js';
+} from '../../../build/ol/layer/VectorImage.js';
+import VectorSource from '../../../build/ol/source/Vector.js';
 
 const options: VectorImageLayerOptions<VectorSource<Feature<Point>>> = {
   source: new VectorSource({
