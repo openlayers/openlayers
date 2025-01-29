@@ -334,25 +334,21 @@ class Snap extends PointerInteraction {
       evt.coordinate = result.vertex.slice(0, 2);
       evt.pixel = result.vertexPixel;
 
-      if (!this.snapped_ || !this.areSnapDataEqual_(this.snapped_, result)) {
-        // Update snapped information if currently not snapped or snap segment/feature changed
-        this.snapped_ = {
-          vertex: evt.coordinate,
-          vertexPixel: evt.pixel,
-          feature: result.feature,
-          segment: result.segment,
-        };
-        this.dispatchEvent(new SnapEvent(SnapEventType.SNAP, this.snapped_));
+      // Dispatch UNSNAP event if already snapped
+      if (this.snapped_ && !this.areSnapDataEqual_(this.snapped_, result)) {
+        this.dispatchEvent(new SnapEvent(SnapEventType.UNSNAP, this.snapped_));
       }
+
+      this.snapped_ = {
+        vertex: evt.coordinate,
+        vertexPixel: evt.pixel,
+        feature: result.feature,
+        segment: result.segment,
+      };
+      this.dispatchEvent(new SnapEvent(SnapEventType.SNAP, this.snapped_));
     } else if (this.snapped_) {
       // Dispatch UNSNAP event if no longer snapped
-      const emptySnap = {
-        vertex: null,
-        vertexPixel: null,
-        feature: null,
-        segment: null,
-      };
-      this.dispatchEvent(new SnapEvent(SnapEventType.UNSNAP, emptySnap));
+      this.dispatchEvent(new SnapEvent(SnapEventType.UNSNAP, this.snapped_));
       this.snapped_ = null;
     }
 
