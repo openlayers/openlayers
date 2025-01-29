@@ -1,58 +1,37 @@
-import Map from '../../../../../src/ol/Map.js';
-import View from '../../../../../src/ol/View.js';
-import ImageLayer from '../../../../../src/ol/layer/Image.js';
 import ImageSource from '../../../../../src/ol/source/Image.js';
 import {createLoader} from '../../../../../src/ol/source/mapserver.js';
 
 describe('ol/source/mapserver', function () {
-  let options;
-  beforeEach(function () {
-    options = {
+  it('uses params', function (done) {
+    async function load(img, src) {
+      return new Promise((resolve, reject) => {
+        const params = new URL(src).searchParams;
+        expect(params.get('layers')).to.be('boundaries water');
+        expect(params.get('mode')).to.be('map');
+        expect(params.get('map_imagetype')).to.be('png');
+        expect(params.get('mapext')).to.be('1 2 3 4');
+        expect(params.get('imgext')).to.be('1 2 3 4');
+        expect(params.get('map_size')).to.be('2 2');
+        expect(params.get('imgx')).to.be('1');
+        expect(params.get('imgy')).to.be('1');
+        expect(params.get('imgxy')).to.be('2 2');
+        done();
+      });
+    }
+
+    const options = {
+      url: new URL('/mapserv?', window.location.href).toString(),
+      load: load,
       params: {
         'layers': 'boundaries water',
       },
-      url: new URL('/mapserv?', window.location.href).toString(),
     };
-  });
 
-  describe('#createSource', function () {
-    let map;
-    beforeEach(function () {
-      const target = document.createElement('div');
-      target.style.width = '100px';
-      target.style.height = '100px';
-      document.body.appendChild(target);
-      map = new Map({
-        target: target,
-        view: new View({
-          center: [0, 0],
-          zoom: 0,
-        }),
-      });
+    const source = new ImageSource({
+      loader: createLoader(options),
     });
 
-    afterEach(function () {
-      disposeMap(map);
-    });
-
-    it('uses params', function (done) {
-      async function load(img, src) {
-        return new Promise((resolve, reject) => {
-          //const image = new Image();
-          expect(new URL(src).searchParams.get('layers')).to.be(
-            'boundaries water',
-          );
-          done();
-        });
-      }
-
-      options.load = load;
-
-      const source = new ImageSource({
-        loader: createLoader(options),
-      });
-
-      map.addLayer(new ImageLayer({source: source}));
-    });
+    const image = source.getImage([1, 2, 3, 4], 1, 1, 'EPSG:4326');
+    image.load();
   });
 });
