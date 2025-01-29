@@ -31,7 +31,7 @@ describe('ol/source/mapserver', function () {
       loader: createLoader(options),
     });
 
-    const image = source.getImage([1, 2, 3, 4], 1, 1));
+    const image = source.getImage([1, 2, 3, 4], 1, 1);
     image.load();
   });
 });
