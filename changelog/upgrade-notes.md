@@ -2,6 +2,8 @@
 
 ### Next Release
 
+### 10.4.0
+
 #### Deprecation of ol/layer/WebGLPoints
 
 Use `ol/layer/WebGLVector` instead. Besides rendering points it will also render lines and polygons.
