@@ -50,7 +50,9 @@ function getUrl(baseUrl, params, extent, size) {
 }
 
 /**
- * Creates a loader for MapServer images.
+ * Creates a loader for MapServer images generated using the CGI interface,
+ * which predates OGC services. It is **strongly** recommended to configure
+ * MapServer to use WMS, and use the WMS createLoader.
  * @param {LoaderOptions} options LoaderOptions Options.
  * @return {import('../Image.js').ImageObjectPromiseLoader} MapServer image.
  * @api
