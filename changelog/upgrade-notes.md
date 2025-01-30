@@ -21,13 +21,13 @@ new WebGLPointsLayer({
 
 // After
 new WebGLVectorLayer({
-  style: {
+  style: [{
     filter: ['between', ['get', 'year'], ['var', 'minYear'], ['var', 'maxYear']],
     style: {
       'circle-radius': 8,
       'circle-fill-color': 'blue',
     },
-  },
+  }],
   source: vectorSource,
 })
 ```
