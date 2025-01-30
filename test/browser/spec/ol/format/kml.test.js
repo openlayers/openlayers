@@ -2051,7 +2051,7 @@ describe('ol.format.KML', function () {
             '  <Placemark>' +
             '    <ExtendedData>' +
             '      <Data name="foo">' +
-            '        <displayName><![CDATA[display name]]></displayName>' +
+            '        <displayName>display name</displayName>' +
             '        <value>bar</value>' +
             '      </Data>' +
             '    </ExtendedData>' +
