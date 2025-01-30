@@ -49,6 +49,15 @@ import PointerInteraction from './Pointer.js';
  */
 
 /**
+ * Information about the last snapped state.
+ * @typedef {Object} SnappedInfo
+ * @property {import("../coordinate.js").Coordinate|null} vertex - The snapped vertex.
+ * @property {import("../coordinate.js").Coordinate|null} vertexPixel - The pixel of the snapped vertex.
+ * @property {import("../Feature.js").default|null} feature - The feature being snapped.
+ * @property {Array<import("../coordinate.js").Coordinate>|null} segment - Segment, or `null` if snapped to a vertex.
+ */
+
+/**
  * @param  {import("../source/Vector.js").VectorSourceEvent|import("../Collection.js").CollectionEvent<import("../Feature.js").default>} evt Event.
  * @return {import("../Feature.js").default|null} Feature.
  */
@@ -211,6 +220,13 @@ class Snap extends PointerInteraction {
     this.rBush_ = new RBush();
 
     /**
+     * Holds information about the last snapped state.
+     * @type {SnappedInfo|null}
+     * @private
+     */
+    this.snapped_ = null;
+
+    /**
      * @const
      * @private
      * @type {Object<string, function(Array<Array<import('../coordinate.js').Coordinate>>, import("../geom/Geometry.js").default): void>}
@@ -289,6 +305,19 @@ class Snap extends PointerInteraction {
   }
 
   /**
+   * Checks if two snap data sets are equal.
+   * Compares the segment and the feature.
+   *
+   * @param {SnappedInfo} data1 The first snap data set.
+   * @param {SnappedInfo} data2 The second snap data set.
+   * @return {boolean} `true` if the data sets are equal, otherwise `false`.
+   * @private
+   */
+  areSnapDataEqual_(data1, data2) {
+    return data1.segment === data2.segment && data1.feature === data2.feature;
+  }
+
+  /**
    * @param {import("../MapBrowserEvent.js").default} evt Map browser event.
    * @return {boolean} `false` to stop event propagation.
    * @api
@@ -296,18 +325,29 @@ class Snap extends PointerInteraction {
    */
   handleEvent(evt) {
     const result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
+
     if (result) {
       evt.coordinate = result.vertex.slice(0, 2);
       evt.pixel = result.vertexPixel;
-      this.dispatchEvent(
-        new SnapEvent(SnapEventType.SNAP, {
-          vertex: evt.coordinate,
-          vertexPixel: evt.pixel,
-          feature: result.feature,
-          segment: result.segment,
-        }),
-      );
+
+      // Dispatch UNSNAP event if already snapped
+      if (this.snapped_ && !this.areSnapDataEqual_(this.snapped_, result)) {
+        this.dispatchEvent(new SnapEvent(SnapEventType.UNSNAP, this.snapped_));
+      }
+
+      this.snapped_ = {
+        vertex: evt.coordinate,
+        vertexPixel: evt.pixel,
+        feature: result.feature,
+        segment: result.segment,
+      };
+      this.dispatchEvent(new SnapEvent(SnapEventType.SNAP, this.snapped_));
+    } else if (this.snapped_) {
+      // Dispatch UNSNAP event if no longer snapped
+      this.dispatchEvent(new SnapEvent(SnapEventType.UNSNAP, this.snapped_));
+      this.snapped_ = null;
     }
+
     return super.handleEvent(evt);
   }
 
