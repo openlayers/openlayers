@@ -451,6 +451,67 @@ describe('ol.interaction.Snap', function () {
 
       snapInteraction.handleEvent(event);
     });
+
+    it('unsnaps not snapped to anything', function (done) {
+      const point = new Feature(new Point([10, 10]));
+
+      const snapInteraction = new Snap({
+        features: new Collection([point]),
+      });
+      snapInteraction.setMap(map);
+
+      snapInteraction.snapped_ = {
+        vertex: [10, 10],
+        vertexPixel: [10, 10],
+        feature: point,
+        segment: null,
+      };
+
+      const event = {
+        pixel: [50, 50],
+        coordinate: [50, 50],
+        map: map,
+      };
+
+      snapInteraction.on('unsnap', function (snapEvent) {
+        expect(snapEvent.feature).to.be(point);
+        expect(snapEvent.segment).to.be(null);
+        done();
+      });
+
+      snapInteraction.handleEvent(event);
+    });
+
+    it('unsnaps if snapped to other feature', function (done) {
+      const point1 = new Feature(new Point([10, 10]));
+      const point2 = new Feature(new Point([30, 30]));
+
+      const snapInteraction = new Snap({
+        features: new Collection([point1, point2]),
+      });
+      snapInteraction.setMap(map);
+
+      snapInteraction.snapped_ = {
+        vertex: [10, 10],
+        vertexPixel: [10, 10],
+        feature: point1,
+        segment: null,
+      };
+
+      const event = {
+        pixel: [30, 30],
+        coordinate: [30, 30],
+        map: map,
+      };
+
+      snapInteraction.on('unsnap', function (snapEvent) {
+        expect(snapEvent.feature).to.be(point1);
+        expect(snapEvent.segment).to.be(null);
+        done();
+      });
+
+      snapInteraction.handleEvent(event);
+    });
   });
 
   describe('handleEvent - useGeographic', () => {

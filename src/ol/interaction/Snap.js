@@ -57,7 +57,6 @@ import {listen, unlistenByKey} from '../events.js';
  * @property {Array<import("../coordinate.js").Coordinate>|null} segment - Segment, or `null` if snapped to a vertex.
  */
 
-
 /**
  * @param  {import("../source/Vector.js").VectorSourceEvent|import("../Collection.js").CollectionEvent<import("../Feature.js").default>} evt Event.
  * @return {import("../Feature.js").default|null} Feature.
@@ -315,10 +314,7 @@ class Snap extends PointerInteraction {
    * @private
    */
   areSnapDataEqual_(data1, data2) {
-    return (
-        data1.segment === data2.segment &&
-        data1.feature === data2.feature
-    );
+    return data1.segment === data2.segment && data1.feature === data2.feature;
   }
 
   /**
