@@ -142,6 +142,10 @@ export function writeNonNegativeIntegerTextNode(node, nonNegativeInteger) {
   node.appendChild(getDocument().createTextNode(string));
 }
 
+const whiteSpaceStart = /^\s/;
+const whiteSpaceEnd = /\s$/;
+const cdataCharacters = /(\n|\t|\r|<|&| {2})/;
+
 /**
  * @param {Node} node Node to append a TextNode with the string to.
  * @param {string} string String.
@@ -149,9 +153,9 @@ export function writeNonNegativeIntegerTextNode(node, nonNegativeInteger) {
 export function writeStringTextNode(node, string) {
   if (
     typeof string === 'string' &&
-    (/^\s/.test(string) ||
-      /\s$/.test(string) ||
-      /(\n|\t|\r|<|&| {2})/.test(string))
+    (whiteSpaceStart.test(string) ||
+      whiteSpaceEnd.test(string) ||
+      cdataCharacters.test(string))
   ) {
     string.split(']]>').forEach((part, i, a) => {
       if (i < a.length - 1) {

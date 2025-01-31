@@ -24,6 +24,7 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, 'Test');
 
+        expect(node.textContent).to.be('Test');
         expect(node).to.xmleql(parse(text));
       });
 
@@ -33,6 +34,7 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, 123456);
 
+        expect(node.textContent).to.be('123456');
         expect(node).to.xmleql(parse(text));
       });
 
@@ -42,6 +44,7 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, 'Basic string with spaces');
 
+        expect(node.textContent).to.be('Basic string with spaces');
         expect(node).to.xmleql(parse(text));
       });
     });
@@ -53,6 +56,7 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, 'two  spaces');
 
+        expect(node.textContent).to.be('two  spaces');
         expect(node).to.xmleql(parse(text));
       });
 
@@ -62,6 +66,7 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, ' test');
 
+        expect(node.textContent).to.be(' test');
         expect(node).to.xmleql(parse(text));
       });
 
@@ -71,6 +76,7 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, 'test ');
 
+        expect(node.textContent).to.be('test ');
         expect(node).to.xmleql(parse(text));
       });
 
@@ -80,6 +86,7 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, 'test\ntest');
 
+        expect(node.textContent).to.be('test\ntest');
         expect(node).to.xmleql(parse(text));
       });
 
@@ -89,6 +96,7 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, 'test\ttest');
 
+        expect(node.textContent).to.be('test\ttest');
         expect(node).to.xmleql(parse(text));
       });
     });
@@ -100,6 +108,7 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, 'test<test');
 
+        expect(node.textContent).to.be('test<test');
         expect(node).to.xmleql(parse(text));
       });
 
@@ -109,6 +118,7 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, 'test&test');
 
+        expect(node.textContent).to.be('test&test');
         expect(node).to.xmleql(parse(text));
       });
     });
@@ -123,6 +133,7 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, 'test]]>\ntest');
 
+        expect(node.textContent).to.be('test]]>\ntest');
         expect(node).to.xmleql(check);
       });
 
@@ -135,6 +146,7 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, ']]>test\ntest');
 
+        expect(node.textContent).to.be(']]>test\ntest');
         expect(node).to.xmleql(check);
       });
 
@@ -147,6 +159,7 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, 'test\ntest]]>');
 
+        expect(node.textContent).to.be('test\ntest]]>');
         expect(node).to.xmleql(check);
       });
 
@@ -161,6 +174,7 @@ describe('ol/format/xsd', function () {
         const node = getDocument().createElement('text');
         writeStringTextNode(node, ']]>\ntest]]>\ntest]]>');
 
+        expect(node.textContent).to.be(']]>\ntest]]>\ntest]]>');
         expect(node).to.xmleql(check);
       });
     });
