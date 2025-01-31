@@ -143,55 +143,16 @@ export function writeNonNegativeIntegerTextNode(node, nonNegativeInteger) {
 }
 
 /**
- * Checks if a given string should be wrapped in a CDATA section
- * @param {string} string String.
- * @return {boolean} true if the string should be wrapped in a CDATA section, else false
- */
-function checkCData(string) {
-  if (string.startsWith(' ')) {
-    return true;
-  }
-
-  if (string.endsWith(' ')) {
-    return true;
-  }
-
-  let space = false;
-  const length = string.length;
-  for (let i = 0; i < length; i++) {
-    const c = string[i];
-    if (
-      c === '\n' ||
-      c === '\t' ||
-      c === '\r' ||
-      c === '>' ||
-      c === '<' ||
-      c === '&' ||
-      c === "'" ||
-      c === '"'
-    ) {
-      return true;
-    }
-
-    if (c === ' ') {
-      if (space) {
-        return true;
-      }
-      space = true;
-    } else {
-      space = false;
-    }
-  }
-
-  return false;
-}
-
-/**
  * @param {Node} node Node to append a TextNode with the string to.
  * @param {string} string String.
  */
 export function writeStringTextNode(node, string) {
-  if (typeof string === 'string' && checkCData(string)) {
+  if (
+    typeof string === 'string' &&
+    (/^\s/.test(string) ||
+      /\s$/.test(string) ||
+      /(\n|\t|\r|<|&| {2})/.test(string))
+  ) {
     string.split(']]>').forEach((part, i, a) => {
       if (i < a.length - 1) {
         part += ']]';

@@ -107,6 +107,7 @@ setLogLevel('error');
           nodes.push(child);
         }
       } else if (child.nodeType == 4) {
+        // CDATA section, add it
         nodes.push(child);
       }
     }
@@ -171,6 +172,7 @@ setLogLevel('error');
         );
       }
     } else if (node1.nodeType === 4) {
+      // for CDATA sections compare nodeValue directly
       if (node1.nodeValue !== node2.nodeValue) {
         errors.push(
           'nodeValue cdata test failed | expected ' +
