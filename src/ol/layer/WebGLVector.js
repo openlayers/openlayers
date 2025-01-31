@@ -111,7 +111,7 @@ class WebGLVectorLayer extends Layer {
    * @param {import('../style/flat.js').FlatStyleLike} style Layer style.
    */
   setStyle(style) {
-    this.style = style;
+    this.style_ = style;
     this.clearRenderer();
     this.changed();
   }
