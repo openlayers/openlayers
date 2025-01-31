@@ -72,5 +72,45 @@ describe('expect.js', function () {
         new DOMParser().parseFromString(doc1, 'application/xml'),
       ).to.not.xmleql(new DOMParser().parseFromString(doc2, 'application/xml'));
     });
+
+    it('Test idential CDATA sections', function () {
+      const doc1 = '<foo><![CDATA[  test  ]]></foo>';
+      const doc2 = '<foo><![CDATA[  test  ]]></foo>';
+      expect(
+        new DOMParser().parseFromString(doc1, 'application/xml'),
+      ).to.xmleql(new DOMParser().parseFromString(doc2, 'application/xml'));
+    });
+
+    it('Test different CDATA sections', function () {
+      const doc1 = '<foo><![CDATA[test  ]]></foo>';
+      const doc2 = '<foo><![CDATA[  test]]></foo>';
+      expect(
+        new DOMParser().parseFromString(doc1, 'application/xml'),
+      ).to.not.xmleql(new DOMParser().parseFromString(doc2, 'application/xml'));
+    });
+
+    it('Test CDATA and Textnode', function () {
+      const doc1 = '<foo><![CDATA[test]]></foo>';
+      const doc2 = '<foo>test</foo>';
+      expect(
+        new DOMParser().parseFromString(doc1, 'application/xml'),
+      ).to.not.xmleql(new DOMParser().parseFromString(doc2, 'application/xml'));
+    });
+
+    it('Test different amount of CDATA sections', function () {
+      const doc1 = '<foo><![CDATA[test1]]><!CDATA[test2]]></foo>';
+      const doc2 = '<foo><![CDATA[test1]]></foo>';
+      expect(
+        new DOMParser().parseFromString(doc1, 'application/xml'),
+      ).to.not.xmleql(new DOMParser().parseFromString(doc2, 'application/xml'));
+    });
+
+    it('Test missing CDATA section', function () {
+      const doc1 = '<foo></foo>';
+      const doc2 = '<foo><![CDATA[test1]]></foo>';
+      expect(
+        new DOMParser().parseFromString(doc1, 'application/xml'),
+      ).to.not.xmleql(new DOMParser().parseFromString(doc2, 'application/xml'));
+    });
   });
 });

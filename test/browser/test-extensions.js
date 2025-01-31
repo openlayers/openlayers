@@ -106,6 +106,9 @@ setLogLevel('error');
         ) {
           nodes.push(child);
         }
+      } else if (child.nodeType == 4) {
+        // CDATA section, add it
+        nodes.push(child);
       }
     }
     if (options && options.ignoreElementOrder) {
@@ -166,6 +169,16 @@ setLogLevel('error');
       if (nv1 !== nv2) {
         errors.push(
           'nodeValue test failed | expected ' + nv1 + ' to equal ' + nv2,
+        );
+      }
+    } else if (node1.nodeType === 4) {
+      // for CDATA sections compare nodeValue directly
+      if (node1.nodeValue !== node2.nodeValue) {
+        errors.push(
+          'nodeValue cdata test failed | expected ' +
+            node1.nodeValue +
+            ' to equal ' +
+            node2.nodeValue,
         );
       }
     } else if (node1.nodeType === 1) {

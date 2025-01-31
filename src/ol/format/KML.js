@@ -45,7 +45,6 @@ import {
   readDecimal,
   readString,
   writeBooleanTextNode,
-  writeCDATASection,
   writeDecimalTextNode,
   writeStringTextNode,
 } from './xsd.js';
@@ -2508,7 +2507,7 @@ function writeDataNode(node, pair, objectStack) {
  * @param {string} name DisplayName.
  */
 function writeDataNodeName(node, name) {
-  writeCDATASection(node, name);
+  writeStringTextNode(node, name);
 }
 
 /**
