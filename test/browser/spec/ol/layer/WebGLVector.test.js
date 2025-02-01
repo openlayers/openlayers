@@ -114,6 +114,28 @@ describe('ol/layer/WebGLVector', function () {
     });
   });
 
+  describe('setStyle()', function () {
+    it('saves the new style on the layer', function () {
+      const newStyle = [
+        {
+          else: true,
+          style: {
+            'fill-color': 'blue',
+          },
+        },
+      ];
+      layer.setStyle(newStyle);
+      expect(layer.style_).to.eql(newStyle);
+    });
+
+    it('disposes of the previous renderer', function () {
+      const renderer = layer.getRenderer();
+      const spy = sinonSpy(renderer, 'dispose');
+      layer.setStyle({});
+      expect(spy.called).to.be(true);
+    });
+  });
+
   it('dispatches a precompose event with WebGL context', (done) => {
     let called = false;
     layer.on('precompose', (event) => {
