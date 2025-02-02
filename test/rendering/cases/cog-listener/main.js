@@ -16,9 +16,9 @@ const layer = new TileLayer({
     color: [
       'case',
       ['==', ['band', 2], 0],
-      'rgba(0,0,0,0.)',
+      'rgba(0,0,0,0)',
       ['!=', ['band', 2], 1],
-      'rgba(255,0,0,1.)',
+      'rgba(255,0,0,1)',
       ['array', ['band', 1], ['band', 1], ['band', 1], ['band', 2]],
     ],
   },
