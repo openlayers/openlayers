@@ -256,7 +256,7 @@ function addInteraction() {
     modifyStyle.setGeometry(tipPoint);
     modify.setActive(true);
     map.once('pointermove', function () {
-      modifyStyle.setGeometry();
+      modifyStyle.setGeometry(null);
     });
     tip = idleTip;
   });

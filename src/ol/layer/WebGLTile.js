@@ -284,7 +284,7 @@ function parseStyle(style, bandCount) {
  */
 class WebGLTileLayer extends BaseTileLayer {
   /**
-   * @param {Options} options Tile layer options.
+   * @param {Options} [options] Tile layer options.
    */
   constructor(options) {
     options = options ? Object.assign({}, options) : {};
