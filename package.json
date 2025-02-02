@@ -58,6 +58,7 @@
     "@metalsmith/layouts": "^2.5.1",
     "@metalsmith/markdown": "^1.6.0",
     "@octokit/rest": "^21.0.0",
+    "@planet/ol-numpytiles": "^3.0.1",
     "@rollup/plugin-alias": "^5.1.0",
     "@rollup/plugin-commonjs": "^28.0.0",
     "@rollup/plugin-node-resolve": "^16.0.0",
