@@ -77,11 +77,15 @@ const pointsLayer = new WebGLVectorLayer({
     features: [],
     attributions: 'National UFO Reporting Center',
   }),
-  style,
-  filter: [
-    'any',
-    ['==', ['var', 'filterShape'], 'all'],
-    ['==', ['var', 'filterShape'], ['get', 'shape']],
+  style: [
+    {
+      style,
+      filter: [
+        'any',
+        ['==', ['var', 'filterShape'], 'all'],
+        ['==', ['var', 'filterShape'], ['get', 'shape']],
+      ],
+    },
   ],
 });
 
