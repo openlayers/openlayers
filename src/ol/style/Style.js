@@ -396,7 +396,7 @@ class Style {
   /**
    * Set a geometry that is rendered instead of the feature's geometry.
    *
-   * @param {string|import("../geom/Geometry.js").default|GeometryFunction} geometry
+   * @param {string|import("../geom/Geometry.js").default|GeometryFunction|null} geometry
    *     Feature property or geometry or function returning a geometry to render
    *     for this style.
    * @api
