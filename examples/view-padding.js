@@ -11,7 +11,7 @@ import Fill from '../src/ol/style/Fill.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
-/** @type {VectorSource<import("../src/ol/geom/SimpleGeometry.js").default>} */
+/** @type {VectorSource<import('../src/ol/Feature.js').default<import('../src/ol/geom/SimpleGeometry.js').default>>} */
 const source = new VectorSource({
   url: 'data/geojson/switzerland.geojson',
   format: new GeoJSON(),

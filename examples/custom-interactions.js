@@ -21,7 +21,7 @@ class Drag extends PointerInteraction {
     });
 
     /**
-     * @type {import("../src/ol/coordinate.js").Coordinate}
+     * @type {import('../src/ol/coordinate.js').Coordinate}
      * @private
      */
     this.coordinate_ = null;
@@ -47,7 +47,7 @@ class Drag extends PointerInteraction {
 }
 
 /**
- * @param {import("../src/ol/MapBrowserEvent.js").default} evt Map browser event.
+ * @param {import('../src/ol/MapBrowserEvent.js').default} evt Map browser event.
  * @return {boolean} `true` to start the drag sequence.
  */
 function handleDownEvent(evt) {
@@ -66,7 +66,7 @@ function handleDownEvent(evt) {
 }
 
 /**
- * @param {import("../src/ol/MapBrowserEvent.js").default} evt Map browser event.
+ * @param {import('../src/ol/MapBrowserEvent.js').default} evt Map browser event.
  */
 function handleDragEvent(evt) {
   const deltaX = evt.coordinate[0] - this.coordinate_[0];
@@ -80,7 +80,7 @@ function handleDragEvent(evt) {
 }
 
 /**
- * @param {import("../src/ol/MapBrowserEvent.js").default} evt Event.
+ * @param {import('../src/ol/MapBrowserEvent.js').default} evt Event.
  */
 function handleMoveEvent(evt) {
   if (this.cursor_) {
