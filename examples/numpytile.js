@@ -1,3 +1,4 @@
+import NumpyLoader from '@planet/ol-numpytiles';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/WebGLTile.js';
