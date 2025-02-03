@@ -129,10 +129,10 @@ const displayFeatureInfo = function (pixel) {
       '<br>1965 Land Use: ' +
       feature.get('LU_1965');
     document.getElementById('info').innerHTML = info;
-    map.getTarget().style.cursor = 'pointer';
+    map.getTargetElement().style.cursor = 'pointer';
   } else {
     document.getElementById('info').innerHTML = '&nbsp;<br>&nbsp;';
-    map.getTarget().style.cursor = '';
+    map.getTargetElement().style.cursor = '';
   }
 };
 

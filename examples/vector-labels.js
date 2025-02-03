@@ -80,7 +80,7 @@ const getText = function (feature, resolution, dom) {
   } else if (type == 'hide') {
     text = '';
   } else if (type == 'shorten') {
-    text = text.trunc(12);
+    text = truncate(text, 12);
   } else if (
     type == 'wrap' &&
     (!dom.placement || dom.placement.value != 'line')
@@ -225,14 +225,13 @@ document
   });
 
 /**
+ * @param {string} string String
  * @param {number} n The max number of characters to keep.
  * @return {string} Truncated string.
  */
-String.prototype.trunc =
-  String.prototype.trunc ||
-  function (n) {
-    return this.length > n ? this.substr(0, n - 1) + '...' : this.substr(0);
-  };
+function truncate(string, n) {
+  return string.length > n ? string.slice(0, n - 1) + '…' : string.slice();
+}
 
 // https://stackoverflow.com/questions/14484787/wrap-text-in-javascript
 function stringDivider(str, width, spaceReplacer) {

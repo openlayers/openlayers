@@ -37,7 +37,7 @@ const swipe = document.getElementById('swipe');
 aerial.on('prerender', function (event) {
   const ctx = event.context;
   const mapSize = map.getSize();
-  const width = mapSize[0] * (swipe.value / 100);
+  const width = mapSize[0] * (Number(swipe.value) / 100);
   const tl = getRenderPixel(event, [width, 0]);
   const tr = getRenderPixel(event, [mapSize[0], 0]);
   const bl = getRenderPixel(event, [width, mapSize[1]]);

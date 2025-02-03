@@ -225,6 +225,6 @@ function simulatePositionChange(position) {
 }
 
 function disableButtons() {
-  geolocateBtn.disabled = 'disabled';
-  simulateBtn.disabled = 'disabled';
+  geolocateBtn.disabled = true;
+  simulateBtn.disabled = true;
 }

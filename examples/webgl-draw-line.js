@@ -136,7 +136,7 @@ const inputListener = (event) => {
   vector.updateStyleVariables(styleVariables);
   const valueSpan = document.getElementById(`value-${variableName}`);
   if (valueSpan) {
-    valueSpan.textContent = styleVariables[variableName];
+    valueSpan.textContent = String(styleVariables[variableName]);
   }
   map.render();
 };

@@ -17,7 +17,6 @@ function createStyle(src, img) {
       crossOrigin: 'anonymous',
       src: src,
       img: img,
-      imgSize: img ? [img.width, img.height] : undefined,
     }),
   });
 }

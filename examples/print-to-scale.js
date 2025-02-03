@@ -124,7 +124,7 @@ exportButton.addEventListener(
         );
         pdf.save('map.pdf');
         // Reset original map size
-        scaleLine.setDpi();
+        scaleLine.setDpi(undefined);
         map.getTargetElement().style.width = '';
         map.getTargetElement().style.height = '';
         map.updateSize();

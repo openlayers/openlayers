@@ -49,10 +49,10 @@ const displayFeatureInfo = function (pixel) {
       info.push(features[i].get('name'));
     }
     document.getElementById('info').innerHTML = info.join(', ') || '(unknown)';
-    map.getTarget().style.cursor = 'pointer';
+    map.getTargetElement().style.cursor = 'pointer';
   } else {
     document.getElementById('info').innerHTML = '&nbsp;';
-    map.getTarget().style.cursor = '';
+    map.getTargetElement().style.cursor = '';
   }
 };
 

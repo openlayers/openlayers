@@ -89,7 +89,7 @@ map.on('click', function (evt) {
 // change mouse cursor when over marker
 map.on('pointermove', function (e) {
   const hit = map.hasFeatureAtPixel(e.pixel);
-  map.getTarget().style.cursor = hit ? 'pointer' : '';
+  map.getTargetElement().style.cursor = hit ? 'pointer' : '';
 });
 // Close the popup when the map is moved
 map.on('movestart', disposePopover);

@@ -15,23 +15,22 @@ let startDate = threeHoursAgo();
 const frameRate = 0.5; // frames per second
 let animationId = null;
 
-const layers = [
-  new TileLayer({
-    source: new StadiaMaps({
-      layer: 'stamen_terrain',
-    }),
+const stadiaLayer = new TileLayer({
+  source: new StadiaMaps({
+    layer: 'stamen_terrain',
   }),
-  new TileLayer({
-    extent: extent,
-    source: new TileWMS({
-      attributions: ['Iowa State University'],
-      url: 'https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r-t.cgi',
-      params: {'LAYERS': 'nexrad-n0r-wmst'},
-    }),
+});
+const tileWmsLayer = new TileLayer({
+  extent: extent,
+  source: new TileWMS({
+    attributions: ['Iowa State University'],
+    url: 'https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r-t.cgi',
+    params: {'LAYERS': 'nexrad-n0r-wmst'},
   }),
-];
+});
+
 const map = new Map({
-  layers: layers,
+  layers: [stadiaLayer, tileWmsLayer],
   target: 'map',
   view: new View({
     center: getCenter(extent),
@@ -46,10 +45,10 @@ function updateInfo() {
 
 function setTime() {
   startDate.setMinutes(startDate.getMinutes() + 15);
-  if (startDate > Date.now()) {
+  if (+startDate > Date.now()) {
     startDate = threeHoursAgo();
   }
-  layers[1].getSource().updateParams({'TIME': startDate.toISOString()});
+  tileWmsLayer.getSource().updateParams({'TIME': startDate.toISOString()});
   updateInfo();
 }
 setTime();

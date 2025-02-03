@@ -53,7 +53,7 @@ exportButton.addEventListener(
     document.body.style.cursor = 'progress';
 
     const format = document.getElementById('format').value;
-    const resolution = document.getElementById('resolution').value;
+    const resolution = Number(document.getElementById('resolution').value);
     const dim = dims[format];
     const width = Math.round((dim[0] * resolution) / 25.4);
     const height = Math.round((dim[1] * resolution) / 25.4);

@@ -102,7 +102,6 @@ const map = new Map({
                 extent: l.extent,
                 maxResolution: l.maxResolution,
                 minResolution: l.minResolution,
-                sourceState: l.sourceState,
                 managed: l.managed,
               })),
             },
@@ -184,7 +183,7 @@ const info = document.getElementById('info');
 function showInfo(propertiesFromFeatures) {
   if (propertiesFromFeatures.length == 0) {
     info.innerText = '';
-    info.style.opacity = 0;
+    info.style.opacity = '0';
     return;
   }
   const properties = propertiesFromFeatures.map((e) =>
@@ -196,5 +195,5 @@ function showInfo(propertiesFromFeatures) {
       ),
   );
   info.innerText = JSON.stringify(properties, null, 2);
-  info.style.opacity = 1;
+  info.style.opacity = '1';
 }

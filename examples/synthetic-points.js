@@ -126,9 +126,5 @@ map.on('pointermove', function (evt) {
     return;
   }
   const hit = map.hasFeatureAtPixel(evt.pixel);
-  if (hit) {
-    map.getTarget().style.cursor = 'pointer';
-  } else {
-    map.getTarget().style.cursor = '';
-  }
+  map.getTargetElement().style.cursor = hit ? 'pointer' : '';
 });

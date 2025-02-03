@@ -33,7 +33,7 @@ const styleFunction = function (feature) {
   // the Placemark's name instead.
   const name = feature.get('name');
   const magnitude = parseFloat(name.substr(2));
-  const size = parseInt(10 + 40 * (magnitude - 5), 10);
+  const size = Math.floor(10 + 40 * (magnitude - 5));
   scale = size / 10;
   let style = styleCache[size];
   if (!style) {

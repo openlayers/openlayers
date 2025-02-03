@@ -81,7 +81,7 @@ const defaultStyle = new Modify({source: source})
 
 const modify = new Modify({
   source: source,
-  style: function (feature) {
+  style: function (feature, resolution) {
     feature.get('features').forEach(function (modifyFeature) {
       const modifyGeometry = modifyFeature.get('modifyGeometry');
       if (modifyGeometry) {
@@ -119,7 +119,7 @@ const modify = new Modify({
         modifyGeometry.setGeometries(geometries);
       }
     });
-    return defaultStyle(feature);
+    return defaultStyle(feature, resolution);
   },
 });
 

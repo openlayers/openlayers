@@ -91,7 +91,7 @@ function loadStyles() {
               this.container = {
                 firstElementChild: canvas,
                 style: {
-                  opacity: layer.getOpacity(),
+                  opacity: String(layer.getOpacity()),
                 },
               };
               rendererTransform = transform;

@@ -47,7 +47,7 @@ function makeFractal(depth) {
     }
   }
   const coordinates = graphToCoords(graph);
-  document.getElementById('count').innerHTML = coordinates.length;
+  document.getElementById('count').innerText = String(coordinates.length);
   geometry.setCoordinates(coordinates);
   feature.setGeometry(geometry);
 }
