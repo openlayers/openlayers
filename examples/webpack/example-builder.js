@@ -29,8 +29,7 @@ function getPackageInfo() {
 
 handlebars.registerHelper(
   'md',
-  (str) =>
-    new handlebars.SafeString(marked(str, {headerIds: false, mangle: false})),
+  (str) => new handlebars.SafeString(marked(str, {async: false})),
 );
 
 /**
@@ -282,9 +281,12 @@ export default class ExampleBuilder {
     return (
       source
         // remove "../src/" prefix to have the same import syntax as the documentation
-        .replace(/'\.\.\/src\//g, "'")
+        .replaceAll(
+          /(["'])(\.\.\/src\/ol\/[^"']+\.js)\1/g,
+          (full, quote, path) => "'" + path.slice(7) + "'",
+        )
         // Remove worker loader import and modify `new Worker()` to add source
-        .replace(/import Worker from 'worker-loader![^\n]*\n/g, '')
+        .replaceAll(/import Worker from 'worker-loader![^\n]*\n/g, '')
         .replace('new Worker()', "new Worker('./worker.js', {type: 'module'})")
     );
   }

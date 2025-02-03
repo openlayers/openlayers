@@ -190,7 +190,7 @@ control.addEventListener('input', function () {
   const m = time.start + time.duration * value;
   vectorSource.forEachFeature(function (feature) {
     const geometry =
-      /** @type {import("../src/ol/geom/LineString.js").default} */ (
+      /** @type {import('../src/ol/geom/LineString.js').default} */ (
         feature.getGeometry()
       );
     const coordinate = geometry.getCoordinateAtM(m, true);
