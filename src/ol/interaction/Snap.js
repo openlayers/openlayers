@@ -10,9 +10,15 @@ import {
 import EventType from '../events/EventType.js';
 import {SnapEvent, SnapEventType} from '../events/SnapEvent.js';
 import {listen, unlistenByKey} from '../events.js';
-import {boundingExtent, buffer, createEmpty} from '../extent.js';
+import {
+  boundingExtent,
+  buffer,
+  createEmpty,
+  intersects as intersectsExtent,
+} from '../extent.js';
 import {FALSE, TRUE} from '../functions.js';
 import {fromCircle} from '../geom/Polygon.js';
+import {getIntersectionPoint} from '../geom/flat/segments.js';
 import {
   fromUserCoordinate,
   getUserProjection,
@@ -36,6 +42,7 @@ import PointerInteraction from './Pointer.js';
  * @typedef {Object} SegmentData
  * @property {import("../Feature.js").default} feature Feature.
  * @property {Array<import("../coordinate.js").Coordinate>} segment Segment.
+ * @property {boolean} [isIntersection] Is intersection.
  */
 
 /**
@@ -43,6 +50,7 @@ import PointerInteraction from './Pointer.js';
  * @property {import("../Collection.js").default<import("../Feature.js").default>} [features] Snap to these features. Either this option or source should be provided.
  * @property {boolean} [edge=true] Snap to edges.
  * @property {boolean} [vertex=true] Snap to vertices.
+ * @property {boolean} [intersection=false] Snap to intersections between segments.
  * @property {number} [pixelTolerance=10] Pixel tolerance for considering the pointer close enough to a segment or
  * vertex for snapping.
  * @property {import("../source/Vector.js").default} [source] Snap to features from this source. Either this option or features should be provided
@@ -81,6 +89,10 @@ function getFeatureFromEvent(evt) {
 }
 
 const tempSegment = [];
+/** @type {Array<import('../extent.js').Extent>} */
+const tempExtents = [];
+/** @type {Array<SegmentData>} */
+const tempSegmentData = [];
 
 /***
  * @template Return
@@ -169,6 +181,13 @@ class Snap extends PointerInteraction {
      * @type {boolean}
      */
     this.edge_ = options.edge !== undefined ? options.edge : true;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.intersection_ =
+      options.intersection !== undefined ? options.intersection : false;
 
     /**
      * @type {import("../Collection.js").default<import("../Feature.js").default>|null}
@@ -263,18 +282,72 @@ class Snap extends PointerInteraction {
         const segments =
           /** @type {Array<Array<import('../coordinate.js').Coordinate>>} */ ([]);
         segmenter(segments, geometry);
-        if (segments.length === 1) {
-          this.rBush_.insert(boundingExtent(segments[0]), {
-            feature: feature,
-            segment: segments[0],
-          });
-        } else if (segments.length > 1) {
-          const extents = segments.map((s) => boundingExtent(s));
-          const segmentsData = segments.map((segment) => ({
+        let segmentCount = segments.length;
+        for (let i = 0; i < segmentCount; ++i) {
+          const segment = segments[i];
+          tempExtents[i] = boundingExtent(segment);
+          tempSegmentData[i] = {
             feature: feature,
             segment: segment,
-          }));
-          this.rBush_.load(extents, segmentsData);
+          };
+        }
+        tempExtents.length = segmentCount;
+        tempSegmentData.length = segmentCount;
+
+        if (this.intersection_) {
+          for (let j = 0, jj = segments.length; j < jj; ++j) {
+            const segment = segments[j];
+            if (segment.length === 1) {
+              continue;
+            }
+            const extent = tempExtents[j];
+            // Calculate intersections with own segments
+            for (let k = 0, kk = segments.length; k < kk; ++k) {
+              if (j === k || j - 1 === k || j + 1 === k) {
+                // Exclude self and neighbours
+                continue;
+              }
+              const otherSegment = segments[k];
+              if (!intersectsExtent(extent, tempExtents[k])) {
+                continue;
+              }
+              const intersection = getIntersectionPoint(segment, otherSegment);
+              if (!intersection) {
+                continue;
+              }
+              const intersectionSegment = [intersection];
+              tempExtents[segmentCount] = boundingExtent(intersectionSegment);
+              tempSegmentData[segmentCount++] = {
+                feature,
+                segment: intersectionSegment,
+                isIntersection: true,
+              };
+            }
+            // Calculate intersections with existing segments
+            const otherSegments = this.rBush_.getInExtent(tempExtents[j]);
+            for (const {segment: otherSegment} of otherSegments) {
+              if (otherSegment.length === 1) {
+                continue;
+              }
+              const intersection = getIntersectionPoint(segment, otherSegment);
+              if (!intersection) {
+                continue;
+              }
+              const intersectionSegment = [intersection];
+              tempExtents[segmentCount] = boundingExtent(intersectionSegment);
+              tempSegmentData[segmentCount++] = {
+                feature,
+                segment: intersectionSegment,
+                isIntersection: true,
+              };
+            }
+          }
+        }
+
+        if (segmentCount === 1) {
+          this.rBush_.insert(tempExtents[0], tempSegmentData[0]);
+        } else {
+          this.rBush_.load(tempExtents, tempSegmentData);
         }
       }
     }
@@ -521,13 +594,18 @@ class Snap extends PointerInteraction {
     let minSquaredDistance = Infinity;
     let closestFeature;
     let closestSegment = null;
+    let isIntersection;
 
     const squaredPixelTolerance = this.pixelTolerance_ * this.pixelTolerance_;
     const getResult = () => {
       if (closestVertex) {
         const vertexPixel = map.getPixelFromCoordinate(closestVertex);
         const squaredPixelDistance = squaredDistance(pixel, vertexPixel);
-        if (squaredPixelDistance <= squaredPixelTolerance) {
+        if (
+          squaredPixelDistance <= squaredPixelTolerance &&
+          ((isIntersection && this.intersection_) ||
+            (!isIntersection && (this.vertex_ || this.edge_)))
+        ) {
           return {
             vertex: closestVertex,
             vertexPixel: [
@@ -542,7 +620,7 @@ class Snap extends PointerInteraction {
       return null;
     };
 
-    if (this.vertex_) {
+    if (this.vertex_ || this.intersection_) {
       for (let i = 0; i < segmentsLength; ++i) {
         const segmentData = segments[i];
         if (segmentData.feature.getGeometry().getType() !== 'Circle') {
@@ -553,6 +631,7 @@ class Snap extends PointerInteraction {
               closestVertex = vertex;
               minSquaredDistance = delta;
               closestFeature = segmentData.feature;
+              isIntersection = segmentData.isIntersection;
             }
           });
         }
