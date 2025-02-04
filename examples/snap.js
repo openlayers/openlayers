@@ -135,6 +135,7 @@ ExampleModify.setActive(false);
 // are responsible of doing the snapping.
 const snap = new Snap({
   source: vector.getSource(),
+  intersection: true,
 });
 
 const snappedElement = document.getElementById('snapped');

@@ -1,5 +1,8 @@
 import {spy as sinonSpy} from 'sinon';
-import {forEach as forEachSegment} from '../../../../../src/ol/geom/flat/segments.js';
+import {
+  forEach as forEachSegment,
+  getIntersectionPoint,
+} from '../../../../../src/ol/geom/flat/segments.js';
 import expect from '../../../expect.js';
 
 describe('ol/geom/flat/segments.js', function () {
@@ -62,6 +65,45 @@ describe('ol/geom/flat/segments.js', function () {
         [1, 1, 1],
         [2, 2, 2],
       ]);
+    });
+  });
+
+  describe('getIntersectionPoint()', () => {
+    it('returns the intersection point', () => {
+      const segment1 = [
+        [0, 0],
+        [1, 1],
+      ];
+      const segment2 = [
+        [0, 1],
+        [1, 0],
+      ];
+      const intersection = getIntersectionPoint(segment1, segment2);
+      expect(intersection).to.eql([0.5, 0.5]);
+    });
+    it('returns undefined if there is no intersection', () => {
+      const segment1 = [
+        [0, 0],
+        [1, 1],
+      ];
+      const segment2 = [
+        [0, 2],
+        [1, 3],
+      ];
+      const intersection = getIntersectionPoint(segment1, segment2);
+      expect(intersection).to.be(undefined);
+    });
+    it('returns undefined if the segments are collinear', () => {
+      const segment1 = [
+        [0, 0],
+        [2, 2],
+      ];
+      const segment2 = [
+        [1, 1],
+        [3, 3],
+      ];
+      const intersection = getIntersectionPoint(segment1, segment2);
+      expect(intersection).to.be(undefined);
     });
   });
 });

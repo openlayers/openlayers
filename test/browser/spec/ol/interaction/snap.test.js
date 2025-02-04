@@ -247,6 +247,40 @@ describe('ol.interaction.Snap', function () {
       snapInteraction.handleEvent(event);
     });
 
+    it('snaps to intersection only', function (done) {
+      const line = new Feature(
+        new LineString([
+          [0, 0],
+          [100, 100],
+          [0, 100],
+          [100, 0],
+        ]),
+      );
+      const snapInteraction = new Snap({
+        features: new Collection([line]),
+        intersection: true,
+        vertex: false,
+        edge: false,
+      });
+      snapInteraction.setMap(map);
+      const event = {
+        pixel: [48 + width / 2, height / 2 - 48],
+        coordinate: [48, 48],
+        map: map,
+      };
+      snapInteraction.on('snap', function (snapEvent) {
+        try {
+          expect(snapEvent.feature).to.be(line);
+          expect(snapEvent.segment).to.be(null);
+          expect(event.coordinate).to.eql([50, 50]);
+          done();
+        } catch (error) {
+          done(error);
+        }
+      });
+      snapInteraction.handleEvent(event);
+    });
+
     it('snaps to point along line', function (done) {
       const line = new Feature(
         new LineString([
@@ -627,5 +661,48 @@ describe('ol.interaction.Snap', function () {
       expect(snapInteraction.getMap()).to.be(null);
       expect(feature.getListeners('change')).to.be(undefined);
     });
+  });
+
+  describe('intersection', () => {
+    const cases = [false, true];
+
+    for (const intersection of cases) {
+      it('adds intersection point segmentData to rBush_', function () {
+        const line1 = new Feature(
+          new LineString([
+            [0, 0],
+            [10, 10],
+          ]),
+        );
+        const line2 = new Feature(
+          new LineString([
+            [0, 10],
+            [10, 0],
+          ]),
+        );
+
+        const snapInteraction = new Snap({
+          features: new Collection([line1, line2]),
+          intersection,
+        });
+
+        snapInteraction.setMap(new Map({}));
+
+        const rBushItems = snapInteraction.rBush_.getAll();
+        const intersectionPoint = [5, 5];
+        const intersectionSegmentData = rBushItems.find((item) => {
+          return (
+            item.segment[0][0] === intersectionPoint[0] &&
+            item.segment[0][1] === intersectionPoint[1]
+          );
+        });
+
+        expect(!!intersectionSegmentData).to.be(intersection);
+        if (intersection) {
+          expect(intersectionSegmentData.segment[0]).to.eql(intersectionPoint);
+          expect(intersectionSegmentData.isIntersection).to.be(true);
+        }
+      });
+    }
   });
 });
