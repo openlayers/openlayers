@@ -81,6 +81,28 @@ describe('ol/layer/WebGLVectorTile', function () {
     expect(renderer.hitDetectionEnabled_).to.be(true);
   });
 
+  describe('setStyle()', function () {
+    it('saves the new style on the layer', function () {
+      const newStyle = [
+        {
+          else: true,
+          style: {
+            'fill-color': 'blue',
+          },
+        },
+      ];
+      layer.setStyle(newStyle);
+      expect(layer.style_).to.eql(newStyle);
+    });
+
+    it('disposes of the previous renderer', function () {
+      const renderer = layer.getRenderer();
+      const spy = sinonSpy(renderer, 'dispose');
+      layer.setStyle({});
+      expect(spy.called).to.be(true);
+    });
+  });
+
   describe('updateStyleVariables()', function () {
     it('updates style variables', function () {
       layer.updateStyleVariables({
