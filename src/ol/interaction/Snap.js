@@ -31,39 +31,227 @@ import {getUid} from '../util.js';
 import PointerInteraction from './Pointer.js';
 
 /**
- * @typedef {Object} Result
- * @property {import("../coordinate.js").Coordinate|null} vertex Vertex.
- * @property {import("../pixel.js").Pixel|null} vertexPixel VertexPixel.
- * @property {import("../Feature.js").default|null} feature Feature.
- * @property {Array<import("../coordinate.js").Coordinate>|null} segment Segment, or `null` if snapped to a vertex.
+ * @typedef {Array<import("../coordinate.js").Coordinate>} Segment
+ * An array of two coordinates representing a line segment, or an array of one
+ * coordinate representing a point.
  */
 
 /**
  * @typedef {Object} SegmentData
  * @property {import("../Feature.js").default} feature Feature.
- * @property {Array<import("../coordinate.js").Coordinate>} segment Segment.
+ * @property {Segment} segment Segment.
  * @property {boolean} [isIntersection] Is intersection.
+ */
+
+/**
+ * @template {import("../geom/Geometry.js").default} [GeometryType=import("../geom/Geometry.js").default]
+ * @typedef {(geometry: GeometryType, projection?: import("../proj/Projection.js").default) => Array<Segment>} Segmenter
+ * A function taking a {@link module:ol/geom/Geometry~Geometry} as argument and returning an array of {@link Segment}s.
+ */
+
+/**
+ * Each segmenter specified here will override the default segmenter for the
+ * corresponding geometry type. To exclude all geometries of a specific geometry type from being snapped to,
+ * set the segmenter to `null`.
+ * @typedef {Object} Segmenters
+ * @property {Segmenter<import("../geom/Point.js").default>|null} [Point] Point segmenter.
+ * @property {Segmenter<import("../geom/LineString.js").default>|null} [LineString] LineString segmenter.
+ * @property {Segmenter<import("../geom/Polygon.js").default>|null} [Polygon] Polygon segmenter.
+ * @property {Segmenter<import("../geom/Circle.js").default>|null} [Circle] Circle segmenter.
+ * @property {Segmenter<import("../geom/GeometryCollection.js").default>|null} [GeometryCollection] GeometryCollection segmenter.
+ * @property {Segmenter<import("../geom/MultiPoint.js").default>|null} [MultiPoint] MultiPoint segmenter.
+ * @property {Segmenter<import("../geom/MultiLineString.js").default>|null} [MultiLineString] MultiLineString segmenter.
+ * @property {Segmenter<import("../geom/MultiPolygon.js").default>|null} [MultiPolygon] MultiPolygon segmenter.
  */
 
 /**
  * @typedef {Object} Options
  * @property {import("../Collection.js").default<import("../Feature.js").default>} [features] Snap to these features. Either this option or source should be provided.
+ * @property {import("../source/Vector.js").default} [source] Snap to features from this source. Either this option or features should be provided
  * @property {boolean} [edge=true] Snap to edges.
  * @property {boolean} [vertex=true] Snap to vertices.
  * @property {boolean} [intersection=false] Snap to intersections between segments.
  * @property {number} [pixelTolerance=10] Pixel tolerance for considering the pointer close enough to a segment or
  * vertex for snapping.
- * @property {import("../source/Vector.js").default} [source] Snap to features from this source. Either this option or features should be provided
+ * @property {Segmenters} [segmenters] Custom segmenters by {@link module:ol/geom/Geometry~Type}. By default, the
+ * following segmenters are used:
+ *   - `Point`: A one-dimensional segment (e.g. `[[10, 20]]`) representing the point.
+ *   - `LineString`: One two-dimensional segment (e.g. `[[10, 20], [30, 40]]`) for each segment of the linestring.
+ *   - `Polygon`: One two-dimensional segment for each segment of the exterior ring and the interior rings.
+ *   - `Circle`: One two-dimensional segment for each segment of a regular polygon with 32 points representing the circle circumference.
+ *   - `GeometryCollection`: All segments of the contained geometries.
+ *   - `MultiPoint`: One one-dimensional segment for each point.
+ *   - `MultiLineString`: One two-dimensional segment for each segment of the linestrings.
+ *   - `MultiPolygon`: One two-dimensional segment for each segment of the polygons.
  */
 
 /**
  * Information about the last snapped state.
  * @typedef {Object} SnappedInfo
  * @property {import("../coordinate.js").Coordinate|null} vertex - The snapped vertex.
- * @property {import("../coordinate.js").Coordinate|null} vertexPixel - The pixel of the snapped vertex.
+ * @property {import("../pixel.js").Pixel|null} vertexPixel - The pixel of the snapped vertex.
  * @property {import("../Feature.js").default|null} feature - The feature being snapped.
- * @property {Array<import("../coordinate.js").Coordinate>|null} segment - Segment, or `null` if snapped to a vertex.
+ * @property {Segment|null} segment - Segment, or `null` if snapped to a vertex.
  */
+
+/***
+ * @type {Object<string, Segmenter>}
+ */
+const GEOMETRY_SEGMENTERS = {
+  /**
+   * @param {import("../geom/Circle.js").default} geometry Geometry.
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @return {Array<Segment>} Segments
+   */
+  Circle(geometry, projection) {
+    let circleGeometry = geometry;
+    const userProjection = getUserProjection();
+    if (userProjection) {
+      circleGeometry = circleGeometry
+        .clone()
+        .transform(userProjection, projection);
+    }
+    const polygon = fromCircle(circleGeometry);
+    if (userProjection) {
+      polygon.transform(projection, userProjection);
+    }
+    return GEOMETRY_SEGMENTERS.Polygon(polygon);
+  },
+
+  /**
+   * @param {import("../geom/GeometryCollection.js").default} geometry Geometry.
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @return {Array<Segment>} Segments
+   */
+  GeometryCollection(geometry, projection) {
+    /** @type {Array<Array<Segment>>} */
+    const segments = [];
+    const geometries = geometry.getGeometriesArray();
+    for (let i = 0; i < geometries.length; ++i) {
+      const segmenter = GEOMETRY_SEGMENTERS[geometries[i].getType()];
+      if (segmenter) {
+        segments.push(segmenter(geometries[i], projection));
+      }
+    }
+    return segments.flat();
+  },
+
+  /**
+   * @param {import("../geom/LineString.js").default} geometry Geometry.
+   * @return {Array<Segment>} Segments
+   */
+  LineString(geometry) {
+    /** @type {Array<Segment>} */
+    const segments = [];
+    const coordinates = geometry.getFlatCoordinates();
+    const stride = geometry.getStride();
+    for (let i = 0, ii = coordinates.length - stride; i < ii; i += stride) {
+      segments.push([
+        coordinates.slice(i, i + 2),
+        coordinates.slice(i + stride, i + stride + 2),
+      ]);
+    }
+    return segments;
+  },
+
+  /**
+   * @param {import("../geom/MultiLineString.js").default} geometry Geometry.
+   * @return {Array<Segment>} Segments
+   */
+  MultiLineString(geometry) {
+    /** @type {Array<Segment>} */
+    const segments = [];
+    const coordinates = geometry.getFlatCoordinates();
+    const stride = geometry.getStride();
+    const ends = geometry.getEnds();
+    let offset = 0;
+    for (let i = 0, ii = ends.length; i < ii; ++i) {
+      const end = ends[i];
+      for (let j = offset, jj = end - stride; j < jj; j += stride) {
+        segments.push([
+          coordinates.slice(j, j + 2),
+          coordinates.slice(j + stride, j + stride + 2),
+        ]);
+      }
+      offset = end;
+    }
+    return segments;
+  },
+
+  /**
+   * @param {import("../geom/MultiPoint.js").default} geometry Geometry.
+   * @return {Array<Segment>} Segments
+   */
+  MultiPoint(geometry) {
+    /** @type {Array<Segment>} */
+    const segments = [];
+    const coordinates = geometry.getFlatCoordinates();
+    const stride = geometry.getStride();
+    for (let i = 0, ii = coordinates.length - stride; i < ii; i += stride) {
+      segments.push([coordinates.slice(i, i + 2)]);
+    }
+    return segments;
+  },
+
+  /**
+   * @param {import("../geom/MultiPolygon.js").default} geometry Geometry.
+   * @return {Array<Segment>} Segments
+   */
+  MultiPolygon(geometry) {
+    /** @type {Array<Segment>} */
+    const segments = [];
+    const coordinates = geometry.getFlatCoordinates();
+    const stride = geometry.getStride();
+    const endss = geometry.getEndss();
+    let offset = 0;
+    for (let i = 0, ii = endss.length; i < ii; ++i) {
+      const ends = endss[i];
+      for (let j = 0, jj = ends.length; j < jj; ++j) {
+        const end = ends[j];
+        for (let k = offset, kk = end - stride; k < kk; k += stride) {
+          segments.push([
+            coordinates.slice(k, k + 2),
+            coordinates.slice(k + stride, k + stride + 2),
+          ]);
+        }
+        offset = end;
+      }
+    }
+    return segments;
+  },
+
+  /**
+   * @param {import("../geom/Point.js").default} geometry Geometry.
+   * @return {Array<Segment>} Segments
+   */
+  Point(geometry) {
+    return [[geometry.getFlatCoordinates().slice(0, 2)]];
+  },
+
+  /**
+   * @param {import("../geom/Polygon.js").default} geometry Geometry.
+   * @return {Array<Segment>} Segments
+   */
+  Polygon(geometry) {
+    /** @type {Array<Segment>} */
+    const segments = [];
+    const coordinates = geometry.getFlatCoordinates();
+    const stride = geometry.getStride();
+    const ends = geometry.getEnds();
+    let offset = 0;
+    for (let i = 0, ii = ends.length; i < ii; ++i) {
+      const end = ends[i];
+      for (let j = offset, jj = end - stride; j < jj; j += stride) {
+        segments.push([
+          coordinates.slice(j, j + 2),
+          coordinates.slice(j + stride, j + stride + 2),
+        ]);
+      }
+      offset = end;
+    }
+    return segments;
+  },
+};
 
 /**
  * @param  {import("../source/Vector.js").VectorSourceEvent|import("../Collection.js").CollectionEvent<import("../Feature.js").default>} evt Event.
@@ -246,21 +434,14 @@ class Snap extends PointerInteraction {
     this.snapped_ = null;
 
     /**
-     * @const
+     * @type {Object<string, Segmenter>}
      * @private
-     * @type {Object<string, function(Array<Array<import('../coordinate.js').Coordinate>>, import("../geom/Geometry.js").default): void>}
      */
-    this.GEOMETRY_SEGMENTERS_ = {
-      'Point': this.segmentPointGeometry_.bind(this),
-      'LineString': this.segmentLineStringGeometry_.bind(this),
-      'LinearRing': this.segmentLineStringGeometry_.bind(this),
-      'Polygon': this.segmentPolygonGeometry_.bind(this),
-      'MultiPoint': this.segmentMultiPointGeometry_.bind(this),
-      'MultiLineString': this.segmentMultiLineStringGeometry_.bind(this),
-      'MultiPolygon': this.segmentMultiPolygonGeometry_.bind(this),
-      'GeometryCollection': this.segmentGeometryCollectionGeometry_.bind(this),
-      'Circle': this.segmentCircleGeometry_.bind(this),
-    };
+    this.segmenters_ = Object.assign(
+      {},
+      GEOMETRY_SEGMENTERS,
+      options.segmenters,
+    );
   }
 
   /**
@@ -275,13 +456,14 @@ class Snap extends PointerInteraction {
     const feature_uid = getUid(feature);
     const geometry = feature.getGeometry();
     if (geometry) {
-      const segmenter = this.GEOMETRY_SEGMENTERS_[geometry.getType()];
+      const segmenter = this.segmenters_[geometry.getType()];
       if (segmenter) {
         this.indexedFeaturesExtents_[feature_uid] =
           geometry.getExtent(createEmpty());
-        const segments =
-          /** @type {Array<Array<import('../coordinate.js').Coordinate>>} */ ([]);
-        segmenter(segments, geometry);
+        const segments = segmenter(
+          geometry,
+          this.getMap().getView().getProjection(),
+        );
         let segmentCount = segments.length;
         for (let i = 0; i < segmentCount; ++i) {
           const segment = segments[i];
@@ -471,8 +653,9 @@ class Snap extends PointerInteraction {
   handleUpEvent(evt) {
     const featuresToUpdate = Object.values(this.pendingFeatures_);
     if (featuresToUpdate.length) {
-      featuresToUpdate.forEach(this.updateFeature_.bind(this));
-      this.pendingFeatures_ = {};
+      for (const feature of featuresToUpdate) {
+        this.updateFeature_(feature);
+      }
     }
     return false;
   }
@@ -517,9 +700,10 @@ class Snap extends PointerInteraction {
   setMap(map) {
     const currentMap = this.getMap();
     const keys = this.featuresListenerKeys_;
-    const features = /** @type {Array<import("../Feature.js").default>} */ (
-      this.getFeatures_()
-    );
+    let features = this.getFeatures_();
+    if (!Array.isArray(features)) {
+      features = features.getArray();
+    }
 
     if (currentMap) {
       keys.forEach(unlistenByKey);
@@ -562,7 +746,9 @@ class Snap extends PointerInteraction {
           ),
         );
       }
-      features.forEach((feature) => this.addFeature(feature));
+      for (const feature of features) {
+        this.addFeature(feature);
+      }
     }
   }
 
@@ -570,7 +756,7 @@ class Snap extends PointerInteraction {
    * @param {import("../pixel.js").Pixel} pixel Pixel
    * @param {import("../coordinate.js").Coordinate} pixelCoordinate Coordinate
    * @param {import("../Map.js").default} map Map.
-   * @return {Result|null} Snap result
+   * @return {SnappedInfo|null} Snap result
    */
   snapTo(pixel, pixelCoordinate, map) {
     const projection = map.getView().getProjection();
@@ -624,7 +810,7 @@ class Snap extends PointerInteraction {
       for (let i = 0; i < segmentsLength; ++i) {
         const segmentData = segments[i];
         if (segmentData.feature.getGeometry().getType() !== 'Circle') {
-          segmentData.segment.forEach((vertex) => {
+          for (const vertex of segmentData.segment) {
             const tempVertexCoord = fromUserCoordinate(vertex, projection);
             const delta = squaredDistance(projectedCoordinate, tempVertexCoord);
             if (delta < minSquaredDistance) {
@@ -633,7 +819,7 @@ class Snap extends PointerInteraction {
               closestFeature = segmentData.feature;
               isIntersection = segmentData.isIntersection;
             }
-          });
+          }
         }
       }
       const result = getResult();
@@ -697,125 +883,6 @@ class Snap extends PointerInteraction {
   updateFeature_(feature) {
     this.removeFeature(feature, false);
     this.addFeature(feature, false);
-  }
-
-  /**
-   * @param {Array<Array<import('../coordinate.js').Coordinate>>} segments Segments
-   * @param {import("../geom/Circle.js").default} geometry Geometry.
-   * @private
-   */
-  segmentCircleGeometry_(segments, geometry) {
-    const projection = this.getMap().getView().getProjection();
-    let circleGeometry = geometry;
-    const userProjection = getUserProjection();
-    if (userProjection) {
-      circleGeometry = circleGeometry
-        .clone()
-        .transform(userProjection, projection);
-    }
-    const polygon = fromCircle(circleGeometry);
-    if (userProjection) {
-      polygon.transform(projection, userProjection);
-    }
-    const coordinates = polygon.getCoordinates()[0];
-    for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-      segments.push(coordinates.slice(i, i + 2));
-    }
-  }
-
-  /**
-   * @param {Array<Array<import('../coordinate.js').Coordinate>>} segments Segments
-   * @param {import("../geom/GeometryCollection.js").default} geometry Geometry.
-   * @private
-   */
-  segmentGeometryCollectionGeometry_(segments, geometry) {
-    const geometries = geometry.getGeometriesArray();
-    for (let i = 0; i < geometries.length; ++i) {
-      const segmenter = this.GEOMETRY_SEGMENTERS_[geometries[i].getType()];
-      if (segmenter) {
-        segmenter(segments, geometries[i]);
-      }
-    }
-  }
-
-  /**
-   * @param {Array<Array<import('../coordinate.js').Coordinate>>} segments Segments
-   * @param {import("../geom/LineString.js").default} geometry Geometry.
-   * @private
-   */
-  segmentLineStringGeometry_(segments, geometry) {
-    const coordinates = geometry.getCoordinates();
-    for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-      segments.push(coordinates.slice(i, i + 2));
-    }
-  }
-
-  /**
-   * @param {Array<Array<import('../coordinate.js').Coordinate>>} segments Segments
-   * @param {import("../geom/MultiLineString.js").default} geometry Geometry.
-   * @private
-   */
-  segmentMultiLineStringGeometry_(segments, geometry) {
-    const lines = geometry.getCoordinates();
-    for (let j = 0, jj = lines.length; j < jj; ++j) {
-      const coordinates = lines[j];
-      for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-        segments.push(coordinates.slice(i, i + 2));
-      }
-    }
-  }
-
-  /**
-   * @param {Array<Array<import('../coordinate.js').Coordinate>>} segments Segments
-   * @param {import("../geom/MultiPoint.js").default} geometry Geometry.
-   * @private
-   */
-  segmentMultiPointGeometry_(segments, geometry) {
-    geometry.getCoordinates().forEach((point) => {
-      segments.push([point]);
-    });
-  }
-
-  /**
-   * @param {Array<Array<import('../coordinate.js').Coordinate>>} segments Segments
-   * @param {import("../geom/MultiPolygon.js").default} geometry Geometry.
-   * @private
-   */
-  segmentMultiPolygonGeometry_(segments, geometry) {
-    const polygons = geometry.getCoordinates();
-    for (let k = 0, kk = polygons.length; k < kk; ++k) {
-      const rings = polygons[k];
-      for (let j = 0, jj = rings.length; j < jj; ++j) {
-        const coordinates = rings[j];
-        for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-          segments.push(coordinates.slice(i, i + 2));
-        }
-      }
-    }
-  }
-
-  /**
-   * @param {Array<Array<import('../coordinate.js').Coordinate>>} segments Segments
-   * @param {import("../geom/Point.js").default} geometry Geometry.
-   * @private
-   */
-  segmentPointGeometry_(segments, geometry) {
-    segments.push([geometry.getCoordinates()]);
-  }
-
-  /**
-   * @param {Array<Array<import('../coordinate.js').Coordinate>>} segments Segments
-   * @param {import("../geom/Polygon.js").default} geometry Geometry.
-   * @private
-   */
-  segmentPolygonGeometry_(segments, geometry) {
-    const rings = geometry.getCoordinates();
-    for (let j = 0, jj = rings.length; j < jj; ++j) {
-      const coordinates = rings[j];
-      for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-        segments.push(coordinates.slice(i, i + 2));
-      }
-    }
   }
 }
 

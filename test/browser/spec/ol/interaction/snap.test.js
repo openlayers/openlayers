@@ -705,4 +705,40 @@ describe('ol.interaction.Snap', function () {
       });
     }
   });
+
+  describe('Custom segmenters', () => {
+    it('calls custom segmenters and uses their results', function (done) {
+      const customSegmenters = {
+        Point(geometry) {
+          const coordinates = geometry.getCoordinates();
+          return [
+            [
+              [coordinates[0] - 1, coordinates[1]],
+              [coordinates[0] + 1, coordinates[1]],
+            ],
+          ];
+        },
+      };
+
+      const point = new Feature(new Point([0, 0]));
+      const snapInteraction = new Snap({
+        features: new Collection([point]),
+        segmenters: customSegmenters,
+      });
+      snapInteraction.setMap(new Map({}));
+
+      const rBushItems = snapInteraction.rBush_.getAll();
+      const customSegment = rBushItems.find((item) => {
+        return (
+          item.segment[0][0] === -1 &&
+          item.segment[0][1] === 0 &&
+          item.segment[1][0] === 1 &&
+          item.segment[1][1] === 0
+        );
+      });
+
+      expect(!!customSegment).to.be(true);
+      done();
+    });
+  });
 });
