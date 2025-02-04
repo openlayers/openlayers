@@ -128,10 +128,17 @@ const map = new Map({
 });
 map.addControl(new FullScreen());
 
+let pointerOutside = true;
+const mapTarget = map.getTargetElement();
+mapTarget.addEventListener('pointerleave', () => {
+  pointerOutside = true;
+  showInfo([]);
+});
 map.on('pointermove', function (evt) {
   if (evt.dragging) {
     return;
   }
+  pointerOutside = false;
   worker.postMessage({
     action: 'requestFeatures',
     pixel: evt.pixel,
@@ -181,7 +188,7 @@ worker.addEventListener('message', (message) => {
 
 const info = document.getElementById('info');
 function showInfo(propertiesFromFeatures) {
-  if (propertiesFromFeatures.length == 0) {
+  if (propertiesFromFeatures.length == 0 || pointerOutside) {
     info.innerText = '';
     info.style.opacity = '0';
     return;
