@@ -61,5 +61,5 @@ gif.frames(
 // change mouse cursor when over icon
 map.on('pointermove', function (e) {
   const hit = map.hasFeatureAtPixel(e.pixel);
-  map.getTarget().style.cursor = hit ? 'pointer' : '';
+  map.getTargetElement().style.cursor = hit ? 'pointer' : '';
 });

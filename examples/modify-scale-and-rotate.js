@@ -156,7 +156,7 @@ const modify = new Modify({
   },
   deleteCondition: never,
   insertVertexCondition: never,
-  style: function (feature) {
+  style: function (feature, resolution) {
     feature.get('features').forEach(function (modifyFeature) {
       const modifyGeometry = modifyFeature.get('modifyGeometry');
       if (modifyGeometry) {
@@ -194,7 +194,7 @@ const modify = new Modify({
         }
       }
     });
-    return defaultStyle(feature);
+    return defaultStyle(feature, resolution);
   },
 });
 

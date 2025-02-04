@@ -100,7 +100,7 @@ inputMax.addEventListener('input', (evt) => {
   outputMax.innerText = evt.target.value;
 });
 
-inputMin.value = initialMin;
-inputMax.value = initialMax;
-outputMin.innerText = initialMin;
-outputMax.innerText = initialMax;
+inputMin.value = String(initialMin);
+inputMax.value = String(initialMax);
+outputMin.innerText = String(initialMin);
+outputMax.innerText = String(initialMax);

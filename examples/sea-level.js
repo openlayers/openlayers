@@ -35,7 +35,6 @@ const elevation = new ImageTile({
     'https://api.maptiler.com/tiles/terrain-rgb-v2/{z}/{x}/{y}.webp?key=' + key,
   tileSize: 512,
   maxZoom: 14,
-  crossOrigin: '',
   interpolate: false,
 });
 

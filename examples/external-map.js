@@ -97,7 +97,8 @@ button.addEventListener('click', function () {
     map.setTarget(externalMapTarget);
 
     if (timeoutKey) {
-      timeoutKey = clearTimeout(timeoutKey);
+      clearTimeout(timeoutKey);
+      timeoutKey = undefined;
     }
     mapWindow.addEventListener('pagehide', function () {
       resetMapTarget();

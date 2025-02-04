@@ -59,7 +59,7 @@ clearWidthButton.addEventListener('click', () => {
     }),
   );
   iconFeature.setStyle(iconStyle);
-  widthInput.value = Math.round(iconStyle.getImage().getWidth());
+  widthInput.value = String(Math.round(iconStyle.getImage().getWidth()));
   scaleSpan.innerText = formatScale(iconStyle.getImage().getScale());
   iconFeature.setStyle(iconStyle);
 });
@@ -72,7 +72,7 @@ clearHeightButton.addEventListener('click', () => {
     }),
   );
   iconFeature.setStyle(iconStyle);
-  heightInput.value = Math.round(iconStyle.getImage().getHeight());
+  heightInput.value = String(Math.round(iconStyle.getImage().getHeight()));
   iconFeature.setStyle(iconStyle);
 });
 

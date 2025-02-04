@@ -27,7 +27,7 @@ fetch('data/geojson/roads-seoul.geojson')
       featureProjection: 'EPSG:3857',
     });
 
-    const parser = new OL3Parser();
+    const parser = new OL3Parser(undefined, undefined);
     parser.inject(
       Point,
       LineString,

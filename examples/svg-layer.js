@@ -52,7 +52,7 @@ map.addLayer(
         center[1] / svgResolution - height / 2,
       );
       svgContainer.style.transform = cssTransform;
-      svgContainer.style.opacity = this.getOpacity();
+      svgContainer.style.opacity = String(this.getOpacity());
       return svgContainer;
     },
   }),

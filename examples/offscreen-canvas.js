@@ -102,7 +102,6 @@ const map = new Map({
                 extent: l.extent,
                 maxResolution: l.maxResolution,
                 minResolution: l.minResolution,
-                sourceState: l.sourceState,
                 managed: l.managed,
               })),
             },
@@ -129,10 +128,17 @@ const map = new Map({
 });
 map.addControl(new FullScreen());
 
+let pointerOutside = true;
+const mapTarget = map.getTargetElement();
+mapTarget.addEventListener('pointerleave', () => {
+  pointerOutside = true;
+  showInfo([]);
+});
 map.on('pointermove', function (evt) {
   if (evt.dragging) {
     return;
   }
+  pointerOutside = false;
   worker.postMessage({
     action: 'requestFeatures',
     pixel: evt.pixel,
@@ -182,9 +188,9 @@ worker.addEventListener('message', (message) => {
 
 const info = document.getElementById('info');
 function showInfo(propertiesFromFeatures) {
-  if (propertiesFromFeatures.length == 0) {
+  if (propertiesFromFeatures.length == 0 || pointerOutside) {
     info.innerText = '';
-    info.style.opacity = 0;
+    info.style.opacity = '0';
     return;
   }
   const properties = propertiesFromFeatures.map((e) =>
@@ -196,5 +202,5 @@ function showInfo(propertiesFromFeatures) {
       ),
   );
   info.innerText = JSON.stringify(properties, null, 2);
-  info.style.opacity = 1;
+  info.style.opacity = '1';
 }

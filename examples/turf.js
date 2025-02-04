@@ -26,9 +26,9 @@ fetch('data/geojson/roads-seoul.geojson')
     const distance = 0.2;
 
     // get the line length in kilometers
-    const lineLength = length(turfLine, 'kilometers');
+    const lineLength = length(turfLine, {units: 'kilometers'});
     for (let i = 1; i <= lineLength / distance; i++) {
-      const turfPoint = along(turfLine, i * distance, 'kilometers');
+      const turfPoint = along(turfLine, i * distance, {units: 'kilometers'});
 
       // convert the generated point to a OpenLayers feature
       const marker = format.readFeature(turfPoint);

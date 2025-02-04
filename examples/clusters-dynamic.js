@@ -76,7 +76,7 @@ let clickFeature, clickResolution;
  * Style for clusters with features that are too close to each other, activated on click.
  * @param {Feature} cluster A cluster with overlapping members.
  * @param {number} resolution The current view resolution.
- * @return {Style|null} A style to render an expanded view of the cluster members.
+ * @return {Array<Style>|null} A style to render an expanded view of the cluster members.
  */
 function clusterCircleStyle(cluster, resolution) {
   if (cluster !== clickFeature || resolution !== clickResolution) {

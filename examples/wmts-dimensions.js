@@ -14,7 +14,7 @@ const tileSizeMtrs = getWidth(projection.getExtent()) / tileSizePixels;
 const matrixIds = [];
 const resolutions = [];
 for (let i = 0; i <= 14; i++) {
-  matrixIds[i] = i;
+  matrixIds[i] = String(i);
   resolutions[i] = tileSizeMtrs / Math.pow(2, i);
 }
 const tileGrid = new WMTSTileGrid({

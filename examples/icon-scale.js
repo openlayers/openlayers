@@ -101,7 +101,7 @@ controlIds.forEach(function (id) {
   function setOutput() {
     const value = parseFloat(control.value);
     if (control.type === 'checkbox') {
-      output.innerText = control.checked;
+      output.innerText = String(control.checked);
     } else if (id === 'textAlign') {
       output.innerText = textAlignments[value];
     } else if (id === 'textBaseline') {
@@ -109,7 +109,7 @@ controlIds.forEach(function (id) {
     } else {
       output.innerText = control.step.startsWith('0.')
         ? value.toFixed(2)
-        : value;
+        : String(value);
     }
   }
   control.addEventListener('input', function () {

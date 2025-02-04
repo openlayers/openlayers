@@ -121,12 +121,16 @@ function shade(inputs, data) {
     }
   }
 
-  return {data: shadeData, width: width, height: height};
+  return {
+    data: shadeData,
+    width,
+    height,
+    colorSpace: 'srgb',
+  };
 }
 
 const elevation = new ImageTile({
   url: 'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png',
-  crossOrigin: 'anonymous',
   maxZoom: 15,
   attributions:
     '<a href="https://github.com/tilezen/joerd/blob/master/docs/attribution.md" target="_blank">Data sources and attribution</a>',

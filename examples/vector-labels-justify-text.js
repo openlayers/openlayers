@@ -59,7 +59,7 @@ const features = [
   },
 ];
 
-function createStyle({textAlign, justify}) {
+function createStyle({textAlign, justify = undefined}) {
   return new Style({
     image: new CircleStyle({
       radius: 10,

@@ -93,7 +93,7 @@ const map = new Map({
  */
 json('data/topojson/us.json').then(function (us) {
   const layer = new CanvasLayer({
-    features: feature(us, us.objects.counties),
+    features: feature(us, 'counties'),
   });
 
   map.addLayer(layer);

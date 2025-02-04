@@ -17,9 +17,7 @@ const vector = new VectorLayer({
   }),
 });
 
-const select = new Select({
-  wrapX: false,
-});
+const select = new Select();
 
 const modify = new Modify({
   features: select.getFeatures(),
