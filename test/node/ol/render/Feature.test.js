@@ -1,11 +1,9 @@
-import {
-  LineString,
-  MultiLineString,
-  MultiPoint,
-  MultiPolygon,
-  Point,
-  Polygon,
-} from '../../../../src/ol/geom.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
+import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
+import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
+import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
+import Point from '../../../../src/ol/geom/Point.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
 import RenderFeature, {
   toFeature,
   toGeometry,

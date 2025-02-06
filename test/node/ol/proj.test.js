@@ -1,11 +1,12 @@
 import proj4 from 'proj4';
 import View from '../../../src/ol/View.js';
 import Projection from '../../../src/ol/proj/Projection.js';
+import {METERS_PER_UNIT} from '../../../src/ol/proj/Units.js';
 import {HALF_SIZE} from '../../../src/ol/proj/epsg3857.js';
 import {METERS_PER_UNIT as metersPerDegree} from '../../../src/ol/proj/epsg4326.js';
 import {register} from '../../../src/ol/proj/proj4.js';
+
 import {
-  METERS_PER_UNIT,
   addCommon,
   addCoordinateTransforms,
   clearAllProjections,
@@ -30,6 +31,7 @@ import {
   transformExtent,
   useGeographic,
 } from '../../../src/ol/proj.js';
+
 import expect from '../expect.js';
 
 describe('ol/proj.js', function () {

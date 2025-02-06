@@ -4,7 +4,8 @@ import {
   stringToGlsl,
   uniformNameForVariable,
 } from '../../../../../src/ol/expr/gpu.js';
-import {MultiPolygon, Point} from '../../../../../src/ol/geom.js';
+import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
+import Point from '../../../../../src/ol/geom/Point.js';
 import {
   computeHash,
   packColor,

@@ -6,10 +6,8 @@ import LineString from '../../../../../../src/ol/geom/LineString.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../../src/ol/geom/Polygon.js';
 import VectorLayer from '../../../../../../src/ol/layer/Vector.js';
-import {
-  Projection,
-  get as getProjection,
-} from '../../../../../../src/ol/proj.js';
+import Projection from '../../../../../../src/ol/proj/Projection.js';
+import {get as getProjection} from '../../../../../../src/ol/proj.js';
 import VectorStyleRenderer, * as ol_render_webgl_vectorstylerenderer from '../../../../../../src/ol/render/webgl/VectorStyleRenderer.js';
 import WebGLVectorLayerRenderer from '../../../../../../src/ol/renderer/webgl/VectorLayer.js';
 import VectorSource from '../../../../../../src/ol/source/Vector.js';

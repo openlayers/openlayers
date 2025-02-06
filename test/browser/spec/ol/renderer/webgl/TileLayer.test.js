@@ -6,7 +6,7 @@ import {VOID} from '../../../../../../src/ol/functions.js';
 import WebGLTileLayer from '../../../../../../src/ol/layer/WebGLTile.js';
 import {get} from '../../../../../../src/ol/proj.js';
 import {newTileRepresentationLookup} from '../../../../../../src/ol/renderer/webgl/TileLayerBase.js';
-import {DataTile} from '../../../../../../src/ol/source.js';
+import DataTile from '../../../../../../src/ol/source/DataTile.js';
 import {create} from '../../../../../../src/ol/transform.js';
 import {getUid} from '../../../../../../src/ol/util.js';
 import TileTexture from '../../../../../../src/ol/webgl/TileTexture.js';

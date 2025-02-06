@@ -1,4 +1,5 @@
 import proj4 from 'proj4';
+import Projection from '../../../../src/ol/proj/Projection.js';
 import {
   fromEPSGCode,
   getEPSGLookup,
@@ -8,7 +9,6 @@ import {
   unregister,
 } from '../../../../src/ol/proj/proj4.js';
 import {
-  Projection,
   addCommon,
   clearAllProjections,
   transform,

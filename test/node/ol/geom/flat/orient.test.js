@@ -1,4 +1,4 @@
-import {GeoJSON} from '../../../../../src/ol/format.js';
+import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
 import {
   inflateEnds,
   linearRingIsClockwise,

@@ -3,7 +3,7 @@ import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import Control from '../../../../../src/ol/control/Control.js';
 import OverviewMap from '../../../../../src/ol/control/OverviewMap.js';
-import {Point} from '../../../../../src/ol/geom.js';
+import Point from '../../../../../src/ol/geom/Point.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
 

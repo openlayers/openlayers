@@ -1,8 +1,12 @@
-import {Point} from '../../../../src/ol/geom.js';
-import {Feature, Map, View} from '../../../../src/ol/index.js';
-import {Tile as TileLayer, WebGLVector} from '../../../../src/ol/layer.js';
+import Feature from '../../../../src/ol/Feature.js';
+import Map from '../../../../src/ol/Map.js';
+import View from '../../../../src/ol/View.js';
+import Point from '../../../../src/ol/geom/Point.js';
+import TileLayer from '../../../../src/ol/layer/Tile.js';
+import WebGLVector from '../../../../src/ol/layer/WebGLVector.js';
 import {useGeographic} from '../../../../src/ol/proj.js';
-import {Vector as VectorSource, XYZ} from '../../../../src/ol/source.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
+import XYZ from '../../../../src/ol/source/XYZ.js';
 
 useGeographic();
 
