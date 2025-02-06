@@ -2,8 +2,8 @@ import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import {Vector as VectorLayer} from '../../../../src/ol/layer.js';
-import {Vector as VectorSource} from '../../../../src/ol/source.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 
 const center = [0, 0];
 

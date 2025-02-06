@@ -3,22 +3,22 @@ import Disposable from '../../../../../src/ol/Disposable.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
-import {fromExtent} from '../../../../../src/ol/geom/Polygon.js';
-import {
-  Circle as CircleGeometry,
-  GeometryCollection,
-  LineString,
-  MultiLineString,
-  MultiPoint,
-  MultiPolygon,
-  Point,
-  Polygon,
-} from '../../../../../src/ol/geom.js';
+import CircleGeometry from '../../../../../src/ol/geom/Circle.js';
+import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js';
+import LineString from '../../../../../src/ol/geom/LineString.js';
+import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
+import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
+import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
+import Point from '../../../../../src/ol/geom/Point.js';
+import Polygon, {fromExtent} from '../../../../../src/ol/geom/Polygon.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
-import {Projection} from '../../../../../src/ol/proj.js';
+import Projection from '../../../../../src/ol/proj/Projection.js';
 import MapRenderer from '../../../../../src/ol/renderer/Map.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
-import {Circle, Fill, Stroke, Style} from '../../../../../src/ol/style.js';
+import Circle from '../../../../../src/ol/style/Circle.js';
+import Fill from '../../../../../src/ol/style/Fill.js';
+import Stroke from '../../../../../src/ol/style/Stroke.js';
+import Style from '../../../../../src/ol/style/Style.js';
 
 describe('ol/renderer/Map.js', function () {
   describe('constructor', function () {

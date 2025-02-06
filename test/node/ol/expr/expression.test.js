@@ -16,14 +16,12 @@ import {
   parse,
   typeName,
 } from '../../../../src/ol/expr/expression.js';
-import {
-  Circle,
-  GeometryCollection,
-  MultiLineString,
-  MultiPoint,
-  MultiPolygon,
-  Point,
-} from '../../../../src/ol/geom.js';
+import Circle from '../../../../src/ol/geom/Circle.js';
+import GeometryCollection from '../../../../src/ol/geom/GeometryCollection.js';
+import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
+import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
+import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
+import Point from '../../../../src/ol/geom/Point.js';
 import expect from '../../expect.js';
 
 describe('ol/expr/expression.js', () => {

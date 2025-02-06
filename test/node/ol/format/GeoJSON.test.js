@@ -9,8 +9,8 @@ import LinearRing from '../../../../src/ol/geom/LinearRing.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
+import Projection from '../../../../src/ol/proj/Projection.js';
 import {
-  Projection,
   fromLonLat,
   get as getProjection,
   toLonLat,

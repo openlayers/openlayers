@@ -6,9 +6,9 @@ import VectorRenderTile from '../../../../../../src/ol/VectorRenderTile.js';
 import VectorTile from '../../../../../../src/ol/VectorTile.js';
 import View from '../../../../../../src/ol/View.js';
 import {VOID} from '../../../../../../src/ol/functions.js';
-import {Polygon} from '../../../../../../src/ol/geom.js';
+import Polygon from '../../../../../../src/ol/geom/Polygon.js';
 import VectorTileLayer from '../../../../../../src/ol/layer/VectorTile.js';
-import {Projection} from '../../../../../../src/ol/proj.js';
+import Projection from '../../../../../../src/ol/proj/Projection.js';
 import RenderFeature from '../../../../../../src/ol/render/Feature.js';
 import VectorStyleRenderer, * as ol_render_webgl_vectorstylerenderer from '../../../../../../src/ol/render/webgl/VectorStyleRenderer.js';
 import WebGLVectorTileLayerRenderer, {

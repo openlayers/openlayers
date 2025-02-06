@@ -8,9 +8,9 @@ import MultiPoint from '../../../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../../src/ol/geom/Polygon.js';
-import {getUid} from '../../../../../../src/ol/index.js';
 import RenderFeature from '../../../../../../src/ol/render/Feature.js';
 import MixedGeometryBatch from '../../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
+import {getUid} from '../../../../../../src/ol/util.js';
 
 describe('MixedGeometryBatch', function () {
   /**

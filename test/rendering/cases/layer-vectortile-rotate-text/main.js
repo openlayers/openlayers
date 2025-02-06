@@ -3,7 +3,9 @@ import View from '../../../../src/ol/View.js';
 import MVT from '../../../../src/ol/format/MVT.js';
 import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
-import {Stroke, Style, Text} from '../../../../src/ol/style.js';
+import Stroke from '../../../../src/ol/style/Stroke.js';
+import Style from '../../../../src/ol/style/Style.js';
+import Text from '../../../../src/ol/style/Text.js';
 import {createXYZ} from '../../../../src/ol/tilegrid.js';
 
 new Map({

@@ -13,7 +13,9 @@ import Source from '../../../../../src/ol/source/Source.js';
 import TileSource from '../../../../../src/ol/source/Tile.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
 import XYZ from '../../../../../src/ol/source/XYZ.js';
-import {Circle, Fill, Style} from '../../../../../src/ol/style.js';
+import Circle from '../../../../../src/ol/style/Circle.js';
+import Fill from '../../../../../src/ol/style/Fill.js';
+import Style from '../../../../../src/ol/style/Style.js';
 
 const red =
   'data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAA' +

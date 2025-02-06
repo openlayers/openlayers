@@ -3,7 +3,8 @@ import View from '../../../../src/ol/View.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
 import {useGeographic} from '../../../../src/ol/proj.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
-import {TileGrid, createXYZ} from '../../../../src/ol/tilegrid.js';
+import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
+import {createXYZ} from '../../../../src/ol/tilegrid.js';
 
 const style = document.getElementById('map').style;
 style.position = 'relative';

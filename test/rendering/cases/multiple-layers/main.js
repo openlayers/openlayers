@@ -3,12 +3,12 @@ import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import {
-  Tile as TileLayer,
-  Vector as VectorLayer,
-} from '../../../../src/ol/layer.js';
-import {Vector as VectorSource, XYZ} from '../../../../src/ol/source.js';
-import {Stroke, Style} from '../../../../src/ol/style.js';
+import TileLayer from '../../../../src/ol/layer/Tile.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
+import XYZ from '../../../../src/ol/source/XYZ.js';
+import Stroke from '../../../../src/ol/style/Stroke.js';
+import Style from '../../../../src/ol/style/Style.js';
 
 const map = new Map({
   layers: [

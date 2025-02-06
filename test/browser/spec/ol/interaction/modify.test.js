@@ -13,9 +13,9 @@ import {
 import Circle from '../../../../../src/ol/geom/Circle.js';
 import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
+import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon, {fromExtent} from '../../../../../src/ol/geom/Polygon.js';
-import {MultiPoint} from '../../../../../src/ol/geom.js';
 import Modify, {ModifyEvent} from '../../../../../src/ol/interaction/Modify.js';
 import Snap from '../../../../../src/ol/interaction/Snap.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
@@ -26,7 +26,8 @@ import {
 } from '../../../../../src/ol/proj.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
 import CircleStyle from '../../../../../src/ol/style/Circle.js';
-import {Fill, Style} from '../../../../../src/ol/style.js';
+import Fill from '../../../../../src/ol/style/Fill.js';
+import Style from '../../../../../src/ol/style/Style.js';
 
 describe('ol.interaction.Modify', function () {
   let target, map, layer, source, features;

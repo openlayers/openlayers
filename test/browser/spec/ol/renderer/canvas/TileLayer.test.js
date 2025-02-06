@@ -4,8 +4,8 @@ import View from '../../../../../../src/ol/View.js';
 import TileLayer from '../../../../../../src/ol/layer/Tile.js';
 import {fromLonLat} from '../../../../../../src/ol/proj.js';
 import ImageTile from '../../../../../../src/ol/source/ImageTile.js';
+import OSM from '../../../../../../src/ol/source/OSM.js';
 import XYZ from '../../../../../../src/ol/source/XYZ.js';
-import {OSM} from '../../../../../../src/ol/source.js';
 
 describe('ol/renderer/canvas/TileLayer', function () {
   describe('#renderFrame', function () {

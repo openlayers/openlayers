@@ -5,12 +5,10 @@ import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
 import View from '../../../../../src/ol/View.js';
 import {shiftKeyOnly} from '../../../../../src/ol/events/condition.js';
-import {
-  Circle,
-  GeometryCollection,
-  Point,
-  Polygon,
-} from '../../../../../src/ol/geom.js';
+import Circle from '../../../../../src/ol/geom/Circle.js';
+import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js';
+import Point from '../../../../../src/ol/geom/Point.js';
+import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import Interaction from '../../../../../src/ol/interaction/Interaction.js';
 import Translate, {
   TranslateEvent,

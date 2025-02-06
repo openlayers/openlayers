@@ -2,9 +2,12 @@ import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
-import {Vector as VectorLayer} from '../../../../src/ol/layer.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
-import {Icon, Stroke, Style, Text} from '../../../../src/ol/style.js';
+import Icon from '../../../../src/ol/style/Icon.js';
+import Stroke from '../../../../src/ol/style/Stroke.js';
+import Style from '../../../../src/ol/style/Style.js';
+import Text from '../../../../src/ol/style/Text.js';
 
 const vectorLayer = new VectorLayer({
   declutter: true,

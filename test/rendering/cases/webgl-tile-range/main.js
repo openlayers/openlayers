@@ -1,7 +1,7 @@
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
-import {Projection} from '../../../../src/ol/proj.js';
+import Projection from '../../../../src/ol/proj/Projection.js';
 import DataTile from '../../../../src/ol/source/DataTile.js';
 
 const size = 256;
