@@ -315,7 +315,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         this.getLayer().hasListener(RenderEventType.PRERENDER) ||
         this.getLayer().hasListener(RenderEventType.POSTRENDER);
       if (!hasRenderListeners) {
-        return null;
+        return this.container;
       }
     }
 
