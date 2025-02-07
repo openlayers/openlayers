@@ -33,11 +33,12 @@ float currentLineMetric = 0.; // an actual value will be used in the stroke shad
 const DEFAULT_STYLE = createDefaultStyle();
 
 /**
- * @typedef {Object} VaryingDescription
- * @property {string} name Varying name, as will be declared in the header.
- * @property {string} type Varying type, either `float`, `vec2`, `vec4`...
- * @property {string} expression Expression which will be assigned to the varying in the vertex shader, and
- * passed on to the fragment shader.
+ * @typedef {Object} AttributeDescription
+ * @property {string} name Attribute name, as will be declared in the headers (including a_)
+ * @property {string} type Attribute type, either `float`, `vec2`, `vec4`...
+ * @property {string} varyingName Varying name, as will be declared in the fragment shader (including v_)
+ * @property {string} varyingType Varying type, either `float`, `vec2`, `vec4`...
+ * @property {string} varyingExpression GLSL expression to assign to the varying in the vertex shader
  */
 
 /**
@@ -69,17 +70,10 @@ export class ShaderBuilder {
 
     /**
      * Attributes; these will be declared in the header (should include the type).
-     * @type {Array<string>}
+     * @type {Array<AttributeDescription>}
      * @private
      */
     this.attributes_ = [];
-
-    /**
-     * Varyings with a name, a type and an expression.
-     * @type {Array<VaryingDescription>}
-     * @private
-     */
-    this.varyings_ = [];
 
     /**
      * @type {boolean}
@@ -219,27 +213,22 @@ export class ShaderBuilder {
   /**
    * Adds an attribute accessible in the vertex shader, read from the geometry buffer.
    * The given name should include a type, such as `vec2 a_position`.
+   * Attributes will also be made available under the same name in fragment shaders.
    * @param {string} name Attribute name
-   * @return {ShaderBuilder} the builder object
-   */
-  addAttribute(name) {
-    this.attributes_.push(name);
-    return this;
-  }
-
-  /**
-   * Adds a varying defined in the vertex shader and accessible from the fragment shader.
-   * The type and expression of the varying have to be specified separately.
-   * @param {string} name Varying name
    * @param {'float'|'vec2'|'vec3'|'vec4'} type Type
-   * @param {string} expression Expression used to assign a value to the varying.
+   * @param {string} [transform] Expression which will be assigned to the varying in the vertex shader, and
+   * passed on to the fragment shader.
+   * @param {'float'|'vec2'|'vec3'|'vec4'} [transformedType] Type of the attribute after transformation;
+   * e.g. `vec4` after unpacking color components
    * @return {ShaderBuilder} the builder object
    */
-  addVarying(name, type, expression) {
-    this.varyings_.push({
-      name: name,
-      type: type,
-      expression: expression,
+  addAttribute(name, type, transform, transformedType) {
+    this.attributes_.push({
+      name,
+      type,
+      varyingName: name.replace(/^a_/, 'v_'),
+      varyingType: transformedType ?? type,
+      varyingExpression: transform ?? name,
     });
     return this;
   }
@@ -451,15 +440,17 @@ export class ShaderBuilder {
 
   addVertexShaderFunction(code) {
     if (this.vertexShaderFunctions_.includes(code)) {
-      return;
+      return this;
     }
     this.vertexShaderFunctions_.push(code);
+    return this;
   }
   addFragmentShaderFunction(code) {
     if (this.fragmentShaderFunctions_.includes(code)) {
-      return;
+      return this;
     }
     this.fragmentShaderFunctions_.push(code);
+    return this;
   }
 
   /**
@@ -472,29 +463,23 @@ export class ShaderBuilder {
     }
 
     return `${COMMON_HEADER}
-${this.uniforms_
-  .map(function (uniform) {
-    return 'uniform ' + uniform + ';';
-  })
-  .join('\n')}
+${this.uniforms_.map((uniform) => `uniform ${uniform};`).join('\n')}
 attribute vec2 a_position;
 attribute float a_index;
 attribute vec4 a_hitColor;
-${this.attributes_
-  .map(function (attribute) {
-    return 'attribute ' + attribute + ';';
-  })
-  .join('\n')}
+
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
 varying vec4 v_hitColor;
 varying vec2 v_centerPx;
 varying float v_angle;
 varying vec2 v_quadSizePx;
-${this.varyings_
-  .map(function (varying) {
-    return 'varying ' + varying.type + ' ' + varying.name + ';';
-  })
+
+${this.attributes_
+  .map(
+    (attribute) => `attribute ${attribute.type} ${attribute.name};
+varying ${attribute.varyingType} ${attribute.varyingName};`,
+  )
   .join('\n')}
 ${this.vertexShaderFunctions_.join('\n')}
 vec2 pxToScreen(vec2 coordPx) {
@@ -537,10 +522,11 @@ void main(void) {
   s = sin(-v_angle);
   centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y); 
   v_centerPx = screenToPx(center.xy) + centerOffsetPx;
-${this.varyings_
-  .map(function (varying) {
-    return '  ' + varying.name + ' = ' + varying.expression + ';';
-  })
+${this.attributes_
+  .map(
+    (attribute) =>
+      `  ${attribute.varyingName} = ${attribute.varyingExpression};`,
+  )
   .join('\n')}
 }`;
   }
@@ -555,24 +541,26 @@ ${this.varyings_
     }
 
     return `${COMMON_HEADER}
-${this.uniforms_
-  .map(function (uniform) {
-    return 'uniform ' + uniform + ';';
-  })
-  .join('\n')}
+${this.uniforms_.map((uniform) => `uniform ${uniform};`).join('\n')}
 varying vec2 v_texCoord;
 varying vec4 v_hitColor;
 varying vec2 v_centerPx;
 varying float v_angle;
 varying vec2 v_quadSizePx;
-${this.varyings_
-  .map(function (varying) {
-    return 'varying ' + varying.type + ' ' + varying.name + ';';
-  })
+${this.attributes_
+  .map(
+    (attribute) => `varying ${attribute.varyingType} ${attribute.varyingName};`,
+  )
   .join('\n')}
 ${this.fragmentShaderFunctions_.join('\n')}
 
 void main(void) {
+${this.attributes_
+  .map(
+    (attribute) =>
+      `  ${attribute.varyingType} ${attribute.name} = ${attribute.varyingName}; // assign to original attribute name`,
+  )
+  .join('\n')}
   if (${this.discardExpression_}) { discard; }
   vec2 coordsPx = gl_FragCoord.xy / u_pixelRatio - v_centerPx; // relative to center
   float c = cos(v_angle);
@@ -597,11 +585,7 @@ void main(void) {
     }
 
     return `${COMMON_HEADER}
-${this.uniforms_
-  .map(function (uniform) {
-    return 'uniform ' + uniform + ';';
-  })
-  .join('\n')}
+${this.uniforms_.map((uniform) => `uniform ${uniform};`).join('\n')}
 attribute vec2 a_segmentStart;
 attribute vec2 a_segmentEnd;
 attribute float a_measureStart;
@@ -610,11 +594,7 @@ attribute float a_parameters;
 attribute float a_distance;
 attribute vec2 a_joinAngles;
 attribute vec4 a_hitColor;
-${this.attributes_
-  .map(function (attribute) {
-    return 'attribute ' + attribute + ';';
-  })
-  .join('\n')}
+
 varying vec2 v_segmentStart;
 varying vec2 v_segmentEnd;
 varying float v_angleStart;
@@ -624,10 +604,12 @@ varying vec4 v_hitColor;
 varying float v_distanceOffsetPx;
 varying float v_measureStart;
 varying float v_measureEnd;
-${this.varyings_
-  .map(function (varying) {
-    return 'varying ' + varying.type + ' ' + varying.name + ';';
-  })
+
+${this.attributes_
+  .map(
+    (attribute) => `attribute ${attribute.type} ${attribute.name};
+varying ${attribute.varyingType} ${attribute.varyingName};`,
+  )
   .join('\n')}
 ${this.vertexShaderFunctions_.join('\n')}
 vec2 worldToPx(vec2 worldPos) {
@@ -703,10 +685,11 @@ void main(void) {
   v_distanceOffsetPx = a_distance / u_resolution - (lineOffsetPx * angleTangentSum);
   v_measureStart = a_measureStart;
   v_measureEnd = a_measureEnd;
-${this.varyings_
-  .map(function (varying) {
-    return '  ' + varying.name + ' = ' + varying.expression + ';';
-  })
+${this.attributes_
+  .map(
+    (attribute) =>
+      `  ${attribute.varyingName} = ${attribute.varyingExpression};`,
+  )
   .join('\n')}
 }`;
   }
@@ -722,11 +705,7 @@ ${this.varyings_
     }
 
     return `${COMMON_HEADER}
-${this.uniforms_
-  .map(function (uniform) {
-    return 'uniform ' + uniform + ';';
-  })
-  .join('\n')}
+${this.uniforms_.map((uniform) => `uniform ${uniform};`).join('\n')}
 varying vec2 v_segmentStart;
 varying vec2 v_segmentEnd;
 varying float v_angleStart;
@@ -736,10 +715,10 @@ varying vec4 v_hitColor;
 varying float v_distanceOffsetPx;
 varying float v_measureStart;
 varying float v_measureEnd;
-${this.varyings_
-  .map(function (varying) {
-    return 'varying ' + varying.type + ' ' + varying.name + ';';
-  })
+${this.attributes_
+  .map(
+    (attribute) => `varying ${attribute.varyingType} ${attribute.varyingName};`,
+  )
   .join('\n')}
 ${this.fragmentShaderFunctions_.join('\n')}
 
@@ -827,6 +806,13 @@ float computeSegmentPointDistance(vec2 point, vec2 start, vec2 end, float width,
 }
 
 void main(void) {
+${this.attributes_
+  .map(
+    (attribute) =>
+      `  ${attribute.varyingType} ${attribute.name} = ${attribute.varyingName}; // assign to original attribute name`,
+  )
+  .join('\n')}
+      
   vec2 currentPoint = gl_FragCoord.xy / u_pixelRatio;
   #ifdef GL_FRAGMENT_PRECISION_HIGH
   vec2 worldPos = pxToWorld(currentPoint);
@@ -886,32 +872,27 @@ void main(void) {
     }
 
     return `${COMMON_HEADER}
-${this.uniforms_
-  .map(function (uniform) {
-    return 'uniform ' + uniform + ';';
-  })
-  .join('\n')}
+${this.uniforms_.map((uniform) => `uniform ${uniform};`).join('\n')}
 attribute vec2 a_position;
 attribute vec4 a_hitColor;
-${this.attributes_
-  .map(function (attribute) {
-    return 'attribute ' + attribute + ';';
-  })
-  .join('\n')}
+
 varying vec4 v_hitColor;
-${this.varyings_
-  .map(function (varying) {
-    return 'varying ' + varying.type + ' ' + varying.name + ';';
-  })
+
+${this.attributes_
+  .map(
+    (attribute) => `attribute ${attribute.type} ${attribute.name};
+varying ${attribute.varyingType} ${attribute.varyingName};`,
+  )
   .join('\n')}
 ${this.vertexShaderFunctions_.join('\n')}
 void main(void) {
   gl_Position = u_projectionMatrix * vec4(a_position, u_depth, 1.0);
   v_hitColor = a_hitColor;
-${this.varyings_
-  .map(function (varying) {
-    return '  ' + varying.name + ' = ' + varying.expression + ';';
-  })
+${this.attributes_
+  .map(
+    (attribute) =>
+      `  ${attribute.varyingName} = ${attribute.varyingExpression};`,
+  )
   .join('\n')}
 }`;
   }
@@ -926,16 +907,12 @@ ${this.varyings_
     }
 
     return `${COMMON_HEADER}
-${this.uniforms_
-  .map(function (uniform) {
-    return 'uniform ' + uniform + ';';
-  })
-  .join('\n')}
+${this.uniforms_.map((uniform) => `uniform ${uniform};`).join('\n')}
 varying vec4 v_hitColor;
-${this.varyings_
-  .map(function (varying) {
-    return 'varying ' + varying.type + ' ' + varying.name + ';';
-  })
+${this.attributes_
+  .map(
+    (attribute) => `varying ${attribute.varyingType} ${attribute.varyingName};`,
+  )
   .join('\n')}
 ${this.fragmentShaderFunctions_.join('\n')}
 vec2 pxToWorld(vec2 pxPos) {
@@ -949,6 +926,12 @@ vec2 worldToPx(vec2 worldPos) {
 }
 
 void main(void) {
+${this.attributes_
+  .map(
+    (attribute) =>
+      `  ${attribute.varyingType} ${attribute.name} = ${attribute.varyingName}; // assign to original attribute name`,
+  )
+  .join('\n')}
   vec2 pxPos = gl_FragCoord.xy / u_pixelRatio;
   vec2 pxOrigin = worldToPx(u_patternOrigin);
   #ifdef GL_FRAGMENT_PRECISION_HIGH
