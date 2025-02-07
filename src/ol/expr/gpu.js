@@ -136,7 +136,6 @@ export function uniformNameForVariable(variableName) {
 
 /**
  * @typedef {Object} CompilationContext
- * @property {boolean} [inFragmentShader] If false, means the expression output should be made for a vertex shader
  * @property {Object<string, CompilationContextProperty>} properties The values for properties used in 'get' expressions.
  * @property {Object<string, CompilationContextVariable>} variables The values for variables used in 'var' expressions.
  * @property {Object<string, string>} functions Lookup of functions used by the style.
@@ -151,7 +150,6 @@ export function uniformNameForVariable(variableName) {
  */
 export function newCompilationContext() {
   return {
-    inFragmentShader: false,
     variables: {},
     properties: {},
     functions: {},
@@ -223,18 +221,15 @@ const compilers = {
         type: expression.type,
       };
     }
-    const prefix = context.inFragmentShader ? 'v_prop_' : 'a_prop_';
-    return prefix + propName;
+    return 'a_prop_' + propName;
   },
   [Ops.Id]: (context) => {
     context.featureId = true;
-    const prefix = context.inFragmentShader ? 'v_' : 'a_';
-    return prefix + FEATURE_ID_PROPERTY_NAME;
+    return 'a_' + FEATURE_ID_PROPERTY_NAME;
   },
   [Ops.GeometryType]: (context) => {
     context.geometryType = true;
-    const prefix = context.inFragmentShader ? 'v_' : 'a_';
-    return prefix + GEOMETRY_TYPE_PROPERTY_NAME;
+    return 'a_' + GEOMETRY_TYPE_PROPERTY_NAME;
   },
   [Ops.LineMetric]: () => 'currentLineMetric', // this variable is assumed to always be present in shaders, default is 0.
   [Ops.Var]: (context, expression) => {

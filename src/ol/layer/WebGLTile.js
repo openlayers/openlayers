@@ -121,7 +121,6 @@ function parseStyle(style, bandCount) {
    */
   const context = {
     ...newCompilationContext(),
-    inFragmentShader: true,
     bandCount: bandCount,
   };
 

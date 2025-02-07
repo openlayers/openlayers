@@ -293,7 +293,6 @@ const particleColorVertexShader = `
  */
 function parseStyle(style) {
   const context = newCompilationContext();
-  context.inFragmentShader = true;
   const pipeline = [];
 
   if (style.color !== undefined) {
