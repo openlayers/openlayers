@@ -9,7 +9,7 @@ import {
 } from '../expr/gpu.js';
 import FlowLayerRenderer, {A, U, V} from '../renderer/webgl/FlowLayer.js';
 import {Attributes as BA, Uniforms as BU} from '../renderer/webgl/TileLayer.js';
-import {expressionToGlsl} from '../webgl/styleparser.js';
+import {expressionToGlsl} from '../webgl/compileUtil.js';
 import BaseTileLayer from './BaseTile.js';
 import LayerProperty from './Property.js';
 

@@ -13,7 +13,7 @@ import {
 } from '../../transform.js';
 import WebGLArrayBuffer from '../../webgl/Buffer.js';
 import {AttributeType} from '../../webgl/Helper.js';
-import {parseLiteralStyle} from '../../webgl/styleparser.js';
+import {parseLiteralStyle} from '../../webgl/style.js';
 import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {WebGLWorkerMessageType} from './constants.js';

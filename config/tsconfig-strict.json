@@ -291,7 +291,7 @@
     "../src/ol/webgl/PostProcessingPass.js",
     "../src/ol/webgl/RenderTarget.js",
     "../src/ol/webgl/ShaderBuilder.js",
-    "../src/ol/webgl/styleparser.js",
+    "../src/ol/webgl/style.js",
     "../src/ol/webgl/TileGeometry.js",
     "../src/ol/webgl/TileTexture.js",
     "../src/ol/worker/webgl.js",

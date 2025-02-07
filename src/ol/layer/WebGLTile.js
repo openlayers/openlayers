@@ -13,7 +13,7 @@ import WebGLTileLayerRenderer, {
   Attributes,
   Uniforms,
 } from '../renderer/webgl/TileLayer.js';
-import {expressionToGlsl} from '../webgl/styleparser.js';
+import {expressionToGlsl} from '../webgl/compileUtil.js';
 import BaseTileLayer from './BaseTile.js';
 
 /**

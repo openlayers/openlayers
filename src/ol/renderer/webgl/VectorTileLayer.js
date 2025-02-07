@@ -20,7 +20,7 @@ import {AttributeType} from '../../webgl/Helper.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
 import {ShaderBuilder} from '../../webgl/ShaderBuilder.js';
 import TileGeometry from '../../webgl/TileGeometry.js';
-import {parseLiteralStyle} from '../../webgl/styleparser.js';
+import {parseLiteralStyle} from '../../webgl/style.js';
 import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
 import WebGLBaseTileLayerRenderer, {
   Uniforms as BaseUniforms,
