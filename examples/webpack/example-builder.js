@@ -8,6 +8,31 @@ import handlebars from 'handlebars';
 import {marked} from 'marked';
 import sources from 'webpack-sources';
 
+/**
+ * @typedef {Object} Options
+ * @property {string} templates path to templates
+ * @property {string} common name of the common chunk.html templates dir
+ */
+
+/**
+ * @typedef {Object} TemplateConfig
+ * @property {string} filename base name of the example's files
+ * @property {string} layout html Template name from the template dir
+ * @property {string} title text for the html title
+ * @property {string} shortdesc Short description for the example list index.html
+ * @property {string} [docs] Description under the map
+ * @property {Array<string>} tags Tags for this example
+ * @property {boolean} [experimental=false] Display a notice about using non-api code
+ * @property {Array<string>} [resources] Additional js/css files to include
+ * @property {Array<{key: string, value: string}} [cloak] Hide sensitive information / access keys
+ */
+
+/**
+ * @typedef {Object} PackageJson
+ * @property {string} version Package version
+ * @property {Object<string, string>} devDependencies Development dependencies
+ */
+
 const RawSource = sources.RawSource;
 const baseDir = dirname(fileURLToPath(import.meta.url));
 
@@ -23,6 +48,9 @@ const exampleDirContents = fs
   .filter((name) => /^(?!index).*\.html$/.test(name))
   .map((name) => name.replace(/\.html$/, ''));
 
+/**
+ * @return {Promise<PackageJson>} package.json content
+ */
 function getPackageInfo() {
   return fse.readJSON(path.resolve(baseDir, '../../package.json'));
 }
@@ -69,10 +97,11 @@ function sortObjectByKey(obj) {
 
 /**
  * Create an index of tags belonging to examples
- * @param {Array<Object>} exampleData Array of example data objects.
- * @return {Object} Word index.
+ * @param {Array<{tags: Array<string>}>} exampleData Array of example data objects.
+ * @return {Object<string,Array<number>>} Word index.
  */
 function createTagIndex(exampleData) {
+  /** @type {Object<string,Array<number>>} */
   const index = {};
   exampleData.forEach((data, i) => {
     data.tags.forEach((tag) => {
@@ -92,11 +121,13 @@ function createTagIndex(exampleData) {
  * Create an inverted index of keywords from examples.  Property names are
  * lowercased words.  Property values are objects mapping example index to word
  * count.
- * @param {Array<Object>} exampleData Array of example data objects.
- * @return {Object} Word index.
+ * @param {Array<{shortdesc: string, title: string, tags: Array<string>}>} exampleData Array of example data objects.
+ * @return {Object<string, Object<number, number>>} Word index.
  */
 function createWordIndex(exampleData) {
+  /** @type {Object<string, Object<number, number>>} */
   const index = {};
+  /** @type {Array<'shortdesc'|'title'|'tags'>} */
   const keys = ['shortdesc', 'title', 'tags'];
   exampleData.forEach((data, i) => {
     keys.forEach((key) => {
@@ -123,7 +154,7 @@ function createWordIndex(exampleData) {
 /**
  * Gets dependencies from the js source.
  * @param {string} jsSource Source.
- * @param {Object} pkg Package info.
+ * @param {PackageJson} pkg Package info.
  * @return {Object<string, string>} dependencies
  */
 function getDependencies(jsSource, pkg) {
@@ -150,9 +181,7 @@ function getDependencies(jsSource, pkg) {
 export default class ExampleBuilder {
   /**
    * A webpack plugin that builds the html files for our examples.
-   * @param {Object} config Plugin configuration.  Requires a `templates` property
-   * with the path to templates and a `common` property with the name of the
-   * common chunk.
+   * @param {Options} config Plugin configuration.
    */
   constructor(config) {
     this.name = 'ExampleBuilder';
@@ -162,7 +191,7 @@ export default class ExampleBuilder {
 
   /**
    * Called by webpack.
-   * @param {Object} compiler The webpack compiler.
+   * @param {import('webpack').Compiler} compiler The webpack compiler.
    */
   apply(compiler) {
     compiler.hooks.compilation.tap(this.name, (compilation) => {
@@ -172,6 +201,10 @@ export default class ExampleBuilder {
     });
   }
 
+  /**
+   * @param {import('webpack').CompilationAssets} assets Assets
+   * @param {string} dir Examples dir
+   */
   async addAssets(assets, dir) {
     const jsAssetRE = /^[\w-]+\.js$/;
     const names = [];
@@ -244,6 +277,11 @@ export default class ExampleBuilder {
     assets['examples-info.js'] = new RawSource(indexSource);
   }
 
+  /**
+   * @param {string} dir Examles dir
+   * @param {string} name Example name
+   * @return {TemplateConfig} Config from the examles's html template file
+   */
   async parseExample(dir, name) {
     const htmlName = `${name}.html`;
     const htmlPath = path.join(dir, htmlName);
@@ -305,7 +343,13 @@ export default class ExampleBuilder {
     return source;
   }
 
+  /**
+   * @param {TemplateConfig} data Config for this example
+   * @param {PackageJson} pkg Data from package.json
+   * @return {Object<string, string>} Asset for this example
+   */
   async render(data, pkg) {
+    /** @type {Object<string, string>} */
     const assets = {};
     const readOptions = {encoding: 'utf8'};
 

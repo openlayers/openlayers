@@ -8,6 +8,7 @@ import ExampleBuilder from './example-builder.js';
 const src = path.join(dirname(fileURLToPath(import.meta.url)), '..');
 const root = path.join(src, '..');
 
+/** @type {import('webpack').Configuration} */
 export default {
   context: src,
   target: ['browserslist'],
