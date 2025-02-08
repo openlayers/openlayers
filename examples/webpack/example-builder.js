@@ -2,11 +2,14 @@ import assert from 'assert';
 import fs from 'fs';
 import path, {dirname} from 'path';
 import {fileURLToPath} from 'url';
+import eslint from 'eslint';
+import {parse} from 'espree';
 import frontMatter from 'front-matter';
 import fse from 'fs-extra';
 import handlebars from 'handlebars';
 import {marked} from 'marked';
 import sources from 'webpack-sources';
+import flatConfig from '../../eslint.config.js';
 
 /**
  * @typedef {Object} Options
@@ -187,6 +190,7 @@ export default class ExampleBuilder {
     this.name = 'ExampleBuilder';
     this.templates = config.templates;
     this.common = config.common;
+    this.inWatchMode = true;
   }
 
   /**
@@ -195,6 +199,7 @@ export default class ExampleBuilder {
    */
   apply(compiler) {
     compiler.hooks.compilation.tap(this.name, (compilation) => {
+      this.inWatchMode = compiler.watchMode;
       compilation.hooks.additionalAssets.tapPromise(this.name, async () => {
         await this.addAssets(compilation.assets, compiler.context);
       });
@@ -344,6 +349,37 @@ export default class ExampleBuilder {
   }
 
   /**
+   * Remove `/** @type {...} *` comments
+   * @param {string} sourceCode Source code
+   * @return {string} Cleaned up source code
+   */
+  removeTypeComments(sourceCode) {
+    if (this.inWatchMode) {
+      // Skip this in watch mode as it is slow
+      return sourceCode;
+    }
+    const ast = parse(sourceCode, {
+      comment: true,
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+    });
+    let cleanedSource = '';
+    let start = 0;
+    for (let i = 0, ii = ast.comments.length; i < ii; ++i) {
+      const comment = ast.comments[i];
+      if (!comment.value.startsWith('* @type ')) {
+        continue;
+      }
+      cleanedSource += sourceCode.slice(start, comment.start);
+      start = comment.end;
+    }
+    cleanedSource += sourceCode.slice(start);
+
+    const linter = new eslint.Linter({configType: 'flat'});
+    return linter.verifyAndFix(cleanedSource, flatConfig).output;
+  }
+
+  /**
    * @param {TemplateConfig} data Config for this example
    * @param {PackageJson} pkg Data from package.json
    * @return {Object<string, string>} Asset for this example
@@ -357,7 +393,9 @@ export default class ExampleBuilder {
     const jsName = `${data.name}.js`;
     const jsPath = path.join(data.dir, jsName);
     let jsSource = await fse.readFile(jsPath, {encoding: 'utf8'});
-    jsSource = this.transformJsSource(this.cloakSource(jsSource, data.cloak));
+    jsSource = this.removeTypeComments(
+      this.transformJsSource(this.cloakSource(jsSource, data.cloak)),
+    );
     data.js = {
       local: [],
       remote: [],
@@ -375,11 +413,11 @@ export default class ExampleBuilder {
           if (ext === 'mjs') {
             ext = 'js';
           }
+          source = this.cloakSource(source, data.cloak);
           if (ext === 'js') {
-            source = this.transformJsSource(source);
+            source = this.removeTypeComments(this.transformJsSource(source));
             jsSources += '\n' + source;
           }
-          source = this.cloakSource(source, data.cloak);
           assets[fileName] = source;
           return {
             name: sourceConfig.as || fileName,
