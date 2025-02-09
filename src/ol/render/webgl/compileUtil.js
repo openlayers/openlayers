@@ -1,26 +1,26 @@
 /**
- * Utilities for compiling expressions into WebGL concepts
- * @module ol/webgl/compilUtil
+ * Utilities for compiling expressions and turning them into WebGL concepts
+ * @module ol/render/webgl/compileUtil
  */
 
-import {asArray} from '../color.js';
+import {asArray} from '../../color.js';
 import {
   ColorType,
   NumberArrayType,
   SizeType,
   newParsingContext,
-} from '../expr/expression.js';
+} from '../../expr/expression.js';
 import {
   buildExpression,
   getStringNumberEquivalent,
   uniformNameForVariable,
-} from '../expr/gpu.js';
+} from '../../expr/gpu.js';
 
 /**
  * Recursively parses a style expression and outputs a GLSL-compatible string. Takes in a compilation context that
  * will be read and modified during the parsing operation.
- * @param {import("../expr/gpu.js").CompilationContext} compilationContext Compilation context
- * @param {import("../expr/expression.js").EncodedExpression} value Value
+ * @param {import("../../expr/gpu.js").CompilationContext} compilationContext Compilation context
+ * @param {import("../../expr/expression.js").EncodedExpression} value Value
  * @param {number} [expectedType] Expected final type (can be several types combined)
  * @return {string} GLSL-compatible output
  */
@@ -36,7 +36,7 @@ export function expressionToGlsl(compilationContext, value, expectedType) {
 
 /**
  * Packs all components of a color into a two-floats array
- * @param {import("../color.js").Color|string} color Color as array of numbers or string
+ * @param {import("../../color.js").Color|string} color Color as array of numbers or string
  * @return {Array<number>} Vec2 array containing the color in compressed form
  */
 export function packColor(color) {
@@ -87,7 +87,7 @@ export function getGlslTypeFromType(type) {
  * Applies the properties and variables collected in a compilation context to a ShaderBuilder instance:
  * properties will show up as attributes in shaders, and variables will show up as uniforms.
  * @param {import("./ShaderBuilder.js").ShaderBuilder} builder Shader builder
- * @param {import("../expr/gpu.js").CompilationContext} context Compilation context
+ * @param {import("../../expr/gpu.js").CompilationContext} context Compilation context
  */
 export function applyContextToBuilder(builder, context) {
   // define one uniform per variable
@@ -131,12 +131,12 @@ export function applyContextToBuilder(builder, context) {
 /**
  * Generates a set of uniforms from variables collected in a compilation context,
  * to be fed to a WebGLHelper instance
- * @param {import("../expr/gpu.js").CompilationContext} context Compilation context
- * @param {import('../style/flat.js').StyleVariables} [variables] Style variables.
- * @return {Object<string,import("../webgl/Helper").UniformValue>} Uniforms
+ * @param {import("../../expr/gpu.js").CompilationContext} context Compilation context
+ * @param {import('../../style/flat.js').StyleVariables} [variables] Style variables.
+ * @return {Object<string,import("../../webgl/Helper").UniformValue>} Uniforms
  */
 export function generateUniformsFromContext(context, variables) {
-  /** @type {Object<string,import("../webgl/Helper").UniformValue>} */
+  /** @type {Object<string,import("../../webgl/Helper").UniformValue>} */
   const uniforms = {};
 
   // define one uniform per variable
@@ -168,12 +168,12 @@ export function generateUniformsFromContext(context, variables) {
 /**
  * Generates a set of attributes from properties collected in a compilation context,
  * to be fed to a WebGLHelper instance
- * @param {import("../expr/gpu.js").CompilationContext} context Compilation context
- * @return {import('../render/webgl/VectorStyleRenderer.js').AttributeDefinitions} Attributes
+ * @param {import("../../expr/gpu.js").CompilationContext} context Compilation context
+ * @return {import('./VectorStyleRenderer.js').AttributeDefinitions} Attributes
  */
 export function generateAttributesFromContext(context) {
   /**
-   * @type {import('../render/webgl/VectorStyleRenderer.js').AttributeDefinitions}
+   * @type {import('./VectorStyleRenderer.js').AttributeDefinitions}
    */
   const attributes = {};
 

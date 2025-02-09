@@ -13,17 +13,17 @@ import {
 } from '../../transform.js';
 import WebGLArrayBuffer from '../../webgl/Buffer.js';
 import {AttributeType} from '../../webgl/Helper.js';
-import {parseLiteralStyle} from '../../webgl/style.js';
 import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {WebGLWorkerMessageType} from './constants.js';
+import {colorEncodeId} from './encodeUtil.js';
 import {
   generateLineStringRenderInstructions,
   generatePointRenderInstructions,
   generatePolygonRenderInstructions,
   getCustomAttributesSize,
 } from './renderinstructions.js';
-import {colorEncodeId} from './utils.js';
+import {parseLiteralStyle} from './style.js';
 
 const tmpColor = [];
 /** @type {Worker|undefined} */
@@ -90,7 +90,7 @@ export const Attributes = {
 
 /**
  * @typedef {Object} AsShaders
- * @property {import("../../webgl/ShaderBuilder.js").ShaderBuilder} builder Shader builder with the appropriate presets.
+ * @property {import("./ShaderBuilder.js").ShaderBuilder} builder Shader builder with the appropriate presets.
  * @property {AttributeDefinitions} [attributes] Custom attributes made available in the vertex shaders.
  * Default shaders rely on the attributes in {@link Attributes}.
  * @property {UniformDefinitions} [uniforms] Additional uniforms usable in shaders.

@@ -4,6 +4,7 @@ import LineString from '../../../../../../src/ol/geom/LineString.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../../src/ol/geom/Polygon.js';
 import MixedGeometryBatch from '../../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
+import {ShaderBuilder} from '../../../../../../src/ol/render/webgl/ShaderBuilder.js';
 import VectorStyleRenderer from '../../../../../../src/ol/render/webgl/VectorStyleRenderer.js';
 import {
   compose as composeTransform,
@@ -12,7 +13,6 @@ import {
 } from '../../../../../../src/ol/transform.js';
 import WebGLArrayBuffer from '../../../../../../src/ol/webgl/Buffer.js';
 import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
-import {ShaderBuilder} from '../../../../../../src/ol/webgl/ShaderBuilder.js';
 import {
   ARRAY_BUFFER,
   DYNAMIC_DRAW,

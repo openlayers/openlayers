@@ -3,8 +3,8 @@
  */
 import {createCanvasContext2D} from '../dom.js';
 import {clamp} from '../math.js';
+import {ShaderBuilder} from '../render/webgl/ShaderBuilder.js';
 import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer.js';
-import {ShaderBuilder} from '../webgl/ShaderBuilder.js';
 import BaseVector from './BaseVector.js';
 
 /**

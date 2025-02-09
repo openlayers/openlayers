@@ -1,8 +1,8 @@
 /**
  * @module ol/layer/WebGLPoints
  */
+import {parseLiteralStyle} from '../render/webgl/style.js';
 import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer.js';
-import {parseLiteralStyle} from '../webgl/style.js';
 import Layer from './Layer.js';
 
 /**
@@ -91,7 +91,7 @@ class WebGLPointsLayer extends Layer {
 
     /**
      * @private
-     * @type {import('../webgl/style.js').StyleParseResult}
+     * @type {import('../render/webgl/style.js').StyleParseResult}
      */
     this.parseResult_ = parseLiteralStyle(
       options.style,

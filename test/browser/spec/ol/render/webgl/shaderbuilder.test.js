@@ -3,11 +3,11 @@ import {
   colorToGlsl,
   numberToGlsl,
   stringToGlsl,
-} from '../../../../../src/ol/expr/gpu.js';
+} from '../../../../../../src/ol/expr/gpu.js';
 import {
   COMMON_HEADER,
   ShaderBuilder,
-} from '../../../../../src/ol/webgl/ShaderBuilder.js';
+} from '../../../../../../src/ol/render/webgl/ShaderBuilder.js';
 
 describe('ol.webgl.ShaderBuilder', () => {
   describe('getSymbolVertexShader', () => {

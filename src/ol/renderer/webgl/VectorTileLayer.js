@@ -3,8 +3,12 @@
  */
 import EventType from '../../events/EventType.js';
 import {getIntersection} from '../../extent.js';
+import {ShaderBuilder} from '../../render/webgl/ShaderBuilder.js';
 import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
-import {breakDownFlatStyle} from '../../render/webgl/utils.js';
+import {
+  breakDownFlatStyle,
+  parseLiteralStyle,
+} from '../../render/webgl/style.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
@@ -18,9 +22,7 @@ import {
 import WebGLArrayBuffer from '../../webgl/Buffer.js';
 import {AttributeType} from '../../webgl/Helper.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
-import {ShaderBuilder} from '../../webgl/ShaderBuilder.js';
 import TileGeometry from '../../webgl/TileGeometry.js';
-import {parseLiteralStyle} from '../../webgl/style.js';
 import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
 import WebGLBaseTileLayerRenderer, {
   Uniforms as BaseUniforms,

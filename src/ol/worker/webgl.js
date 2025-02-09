@@ -2,12 +2,12 @@
  * A worker that does cpu-heavy tasks related to webgl rendering.
  * @module ol/worker/webgl
  */
-import {WebGLWorkerMessageType} from '../render/webgl/constants.js';
 import {
   writeLineSegmentToBuffers,
   writePointFeatureToBuffers,
   writePolygonTrianglesToBuffers,
-} from '../render/webgl/utils.js';
+} from '../render/webgl/bufferUtil.js';
+import {WebGLWorkerMessageType} from '../render/webgl/constants.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,

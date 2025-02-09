@@ -14,7 +14,8 @@ import {
 } from '../../proj.js';
 import MixedGeometryBatch from '../../render/webgl/MixedGeometryBatch.js';
 import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
-import {breakDownFlatStyle, colorDecodeId} from '../../render/webgl/utils.js';
+import {colorDecodeId} from '../../render/webgl/encodeUtil.js';
+import {breakDownFlatStyle} from '../../render/webgl/style.js';
 import VectorEventType from '../../source/VectorEventType.js';
 import {
   apply as applyTransform,

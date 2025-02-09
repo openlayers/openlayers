@@ -1,8 +1,8 @@
 /**
  * Utilities for parsing flat styles for WebGL renderers
- * @module ol/webgl/style
+ * @module ol/render/webgl/style
  */
-import {assert} from '../asserts.js';
+import {assert} from '../../asserts.js';
 import {
   BooleanType,
   ColorType,
@@ -11,14 +11,14 @@ import {
   SizeType,
   StringType,
   computeGeometryType,
-} from '../expr/expression.js';
+} from '../../expr/expression.js';
 import {
   FEATURE_ID_PROPERTY_NAME,
   GEOMETRY_TYPE_PROPERTY_NAME,
   getStringNumberEquivalent,
   newCompilationContext,
   stringToGlsl,
-} from '../expr/gpu.js';
+} from '../../expr/gpu.js';
 import {ShaderBuilder} from './ShaderBuilder.js';
 import {
   applyContextToBuilder,
@@ -42,9 +42,9 @@ export function computeHash(input) {
 }
 
 /**
- * @param {import("../style/flat.js").FlatStyle} style Style
+ * @param {import("../../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
- * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
+ * @param {import("../../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
  * @param {'shape-'|'circle-'|'icon-'} prefix Properties prefix
  */
 function parseCommonSymbolProperties(style, builder, vertContext, prefix) {
@@ -134,9 +134,9 @@ function getColorFromDistanceField(
 /**
  * This will parse an image property provided by `<prefix>-src`
  * The image size expression in GLSL will be returned
- * @param {import("../style/flat.js").FlatStyle} style Style
+ * @param {import("../../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
- * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {Object<string,import("../../webgl/Helper").UniformValue>} uniforms Uniforms
  * @param {'icon-'|'fill-pattern-'|'stroke-pattern-'} prefix Property prefix
  * @param {string} textureId A identifier that will be used in the generated uniforms: `sample2d u_texture<id>` and `vec2 u_texture<id>_size`
  * @return {string} The image size expression
@@ -167,9 +167,9 @@ function parseImageProperties(style, builder, uniforms, prefix, textureId) {
 
 /**
  * This will parse an image's offset properties provided by `<prefix>-offset`, `<prefix>-offset-origin` and `<prefix>-size`
- * @param {import("../style/flat.js").FlatStyle} style Style
+ * @param {import("../../style/flat.js").FlatStyle} style Style
  * @param {'icon-'|'fill-pattern-'|'stroke-pattern-'} prefix Property prefix
- * @param {import("../expr/gpu.js").CompilationContext} context Shader compilation context (vertex or fragment)
+ * @param {import("../../expr/gpu.js").CompilationContext} context Shader compilation context (vertex or fragment)
  * @param {string} imageSize Pixel size of the full image as a GLSL expression
  * @param {string} sampleSize Pixel size of the sample in the image as a GLSL expression
  * @return {string} The offset expression
@@ -204,10 +204,10 @@ function parseImageOffsetProperties(
 }
 
 /**
- * @param {import("../style/flat.js").FlatStyle} style Style
+ * @param {import("../../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
- * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
- * @param {import("../expr/gpu.js").CompilationContext} context Shader compilation context
+ * @param {Object<string,import("../../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {import("../../expr/gpu.js").CompilationContext} context Shader compilation context
  */
 function parseCircleProperties(style, builder, uniforms, context) {
   // this function takes in screen coordinates in pixels and returns the signed distance field
@@ -279,10 +279,10 @@ function parseCircleProperties(style, builder, uniforms, context) {
 }
 
 /**
- * @param {import("../style/flat.js").FlatStyle} style Style
+ * @param {import("../../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
- * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
- * @param {import("../expr/gpu.js").CompilationContext} context Shader compilation context
+ * @param {Object<string,import("../../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {import("../../expr/gpu.js").CompilationContext} context Shader compilation context
  */
 function parseShapeProperties(style, builder, uniforms, context) {
   context.functions['round'] = `float round(float v) {
@@ -402,10 +402,10 @@ function parseShapeProperties(style, builder, uniforms, context) {
 }
 
 /**
- * @param {import("../style/flat.js").FlatStyle} style Style
+ * @param {import("../../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
- * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
- * @param {import("../expr/gpu.js").CompilationContext} context Shader compilation context
+ * @param {Object<string,import("../../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {import("../../expr/gpu.js").CompilationContext} context Shader compilation context
  */
 function parseIconProperties(style, builder, uniforms, context) {
   // COLOR
@@ -518,10 +518,10 @@ function parseIconProperties(style, builder, uniforms, context) {
 }
 
 /**
- * @param {import("../style/flat.js").FlatStyle} style Style
+ * @param {import("../../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader Builder
- * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
- * @param {import("../expr/gpu.js").CompilationContext} context Shader compilation context
+ * @param {Object<string,import("../../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {import("../../expr/gpu.js").CompilationContext} context Shader compilation context
  */
 function parseStrokeProperties(style, builder, uniforms, context) {
   if ('stroke-color' in style) {
@@ -676,10 +676,10 @@ function parseStrokeProperties(style, builder, uniforms, context) {
 }
 
 /**
- * @param {import("../style/flat.js").FlatStyle} style Style
+ * @param {import("../../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader Builder
- * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
- * @param {import("../expr/gpu.js").CompilationContext} context Shader compilation context
+ * @param {Object<string,import("../../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {import("../../expr/gpu.js").CompilationContext} context Shader compilation context
  */
 function parseFillProperties(style, builder, uniforms, context) {
   if ('fill-color' in style) {
@@ -739,21 +739,21 @@ function parseFillProperties(style, builder, uniforms, context) {
 /**
  * @typedef {Object} StyleParseResult
  * @property {ShaderBuilder} builder Shader builder pre-configured according to a given style
- * @property {import("../render/webgl/VectorStyleRenderer.js").UniformDefinitions} uniforms Uniform definitions
- * @property {import("../render/webgl/VectorStyleRenderer.js").AttributeDefinitions} attributes Attribute definitions
+ * @property {import("./VectorStyleRenderer.js").UniformDefinitions} uniforms Uniform definitions
+ * @property {import("./VectorStyleRenderer.js").AttributeDefinitions} attributes Attribute definitions
  */
 
 /**
- * Parses a {@link import("../style/flat.js").FlatStyle} object and returns a {@link ShaderBuilder}
+ * Parses a {@link import("../../style/flat.js").FlatStyle} object and returns a {@link ShaderBuilder}
  * object that has been configured according to the given style, as well as `attributes` and `uniforms`
  * arrays to be fed to the `WebGLPointsRenderer` class.
  *
  * Also returns `uniforms` and `attributes` properties as expected by the
  * {@link module:ol/renderer/webgl/PointsLayer~WebGLPointsLayerRenderer}.
  *
- * @param {import("../style/flat.js").FlatStyle} style Flat style.
- * @param {import('../style/flat.js').StyleVariables} [variables] Style variables.
- * @param {import("../expr/expression.js").EncodedExpression} [filter] Filter (if any)
+ * @param {import("../../style/flat.js").FlatStyle} style Flat style.
+ * @param {import('../../style/flat.js').StyleVariables} [variables] Style variables.
+ * @param {import("../../expr/expression.js").EncodedExpression} [filter] Filter (if any)
  * @return {StyleParseResult} Result containing shader params, attributes and uniforms.
  */
 export function parseLiteralStyle(style, variables, filter) {
@@ -761,7 +761,7 @@ export function parseLiteralStyle(style, variables, filter) {
 
   const builder = new ShaderBuilder();
 
-  /** @type {Object<string,import("../webgl/Helper").UniformValue>} */
+  /** @type {Object<string,import("../../webgl/Helper").UniformValue>} */
   const uniforms = {};
 
   if ('icon-src' in style) {
@@ -782,7 +782,7 @@ export function parseLiteralStyle(style, variables, filter) {
   }
 
   /**
-   * @type {import('../render/webgl/VectorStyleRenderer.js').AttributeDefinitions}
+   * @type {import('./VectorStyleRenderer.js').AttributeDefinitions}
    */
   const attributes = {};
 
@@ -827,4 +827,76 @@ export function parseLiteralStyle(style, variables, filter) {
       ...generateUniformsFromContext(context, variables),
     },
   };
+}
+
+/**
+ * @typedef {import('./VectorStyleRenderer.js').AsShaders} StyleAsShaders
+ */
+/**
+ * @typedef {import('./VectorStyleRenderer.js').AsRule} StyleAsRule
+ */
+
+/**
+ * Takes in either a Flat Style or an array of shaders (used as input for the webgl vector layer classes)
+ * and breaks it down into separate styles to be used by the VectorStyleRenderer class.
+ * @param {import('../../style/flat.js').FlatStyleLike | Array<StyleAsShaders> | StyleAsShaders} style Flat style or shaders
+ * @return {Array<StyleAsShaders | StyleAsRule>} Separate styles as shaders or rules with a single flat style and a filter
+ */
+export function breakDownFlatStyle(style) {
+  // possible cases:
+  // - single shader
+  // - multiple shaders
+  // - single style
+  // - multiple styles
+  // - multiple rules
+  const asArray = Array.isArray(style) ? style : [style];
+
+  // if array of rules: break rules into separate styles, compute "else" filters
+  if ('style' in asArray[0]) {
+    /** @type {Array<StyleAsRule>} */
+    const styles = [];
+    const rules = /** @type {Array<import('../../style/flat.js').Rule>} */ (
+      asArray
+    );
+    const previousFilters = [];
+    for (const rule of rules) {
+      const ruleStyles = Array.isArray(rule.style) ? rule.style : [rule.style];
+      /** @type {import("../../expr/expression.js").EncodedExpression} */
+      let currentFilter = rule.filter;
+      if (rule.else && previousFilters.length) {
+        currentFilter = [
+          'all',
+          ...previousFilters.map((filter) => ['!', filter]),
+        ];
+        if (rule.filter) {
+          currentFilter.push(rule.filter);
+        }
+        if (currentFilter.length < 3) {
+          currentFilter = currentFilter[1];
+        }
+      }
+      if (rule.filter) {
+        previousFilters.push(rule.filter);
+      }
+      /** @type {Array<StyleAsRule>} */
+      const stylesWithFilters = ruleStyles.map((style) => ({
+        style,
+        ...(currentFilter && {filter: currentFilter}),
+      }));
+      styles.push(...stylesWithFilters);
+    }
+    return styles;
+  }
+
+  // if array of shaders: return as is
+  if ('builder' in asArray[0]) {
+    return /** @type {Array<StyleAsShaders>} */ (asArray);
+  }
+
+  return asArray.map(
+    (style) =>
+      /** @type {StyleAsRule} */ ({
+        style,
+      }),
+  );
 }

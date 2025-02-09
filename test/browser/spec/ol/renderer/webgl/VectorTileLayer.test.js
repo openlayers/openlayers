@@ -10,6 +10,7 @@ import Polygon from '../../../../../../src/ol/geom/Polygon.js';
 import VectorTileLayer from '../../../../../../src/ol/layer/VectorTile.js';
 import Projection from '../../../../../../src/ol/proj/Projection.js';
 import RenderFeature from '../../../../../../src/ol/render/Feature.js';
+import {ShaderBuilder} from '../../../../../../src/ol/render/webgl/ShaderBuilder.js';
 import VectorStyleRenderer, * as ol_render_webgl_vectorstylerenderer from '../../../../../../src/ol/render/webgl/VectorStyleRenderer.js';
 import WebGLVectorTileLayerRenderer, {
   Attributes,
@@ -20,7 +21,6 @@ import {createXYZ} from '../../../../../../src/ol/tilegrid.js';
 import {create} from '../../../../../../src/ol/transform.js';
 import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
 import WebGLRenderTarget from '../../../../../../src/ol/webgl/RenderTarget.js';
-import {ShaderBuilder} from '../../../../../../src/ol/webgl/ShaderBuilder.js';
 import TileGeometry from '../../../../../../src/ol/webgl/TileGeometry.js';
 
 const SAMPLE_STYLE = {
