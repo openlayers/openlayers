@@ -166,7 +166,7 @@ import InteractionProperty from './Property.js';
 /**
  * @enum {string}
  */
-const DrawEventType = {
+export const DrawEventType = {
   /**
    * Triggered upon feature draw start
    * @event DrawEvent#drawstart
