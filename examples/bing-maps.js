@@ -34,7 +34,9 @@ const map = new Map({
   }),
 });
 
-const select = document.getElementById('layer-select');
+const select = /** @type {HTMLSelectElement} */ (
+  document.getElementById('layer-select')
+);
 function onChange() {
   const style = select.value;
   for (let i = 0, ii = layers.length; i < ii; ++i) {

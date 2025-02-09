@@ -18,9 +18,7 @@ import VectorSource from '../src/ol/source/Vector.js';
 
 const source = new VectorSource();
 fetch('data/geojson/roads-seoul.geojson')
-  .then(function (response) {
-    return response.json();
-  })
+  .then((response) => response.json())
   .then(function (json) {
     const format = new GeoJSON();
     const features = format.readFeatures(json, {

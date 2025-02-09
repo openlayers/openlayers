@@ -5,5 +5,5 @@ olms(
   'map',
   'https://api.maptiler.com/maps/outdoor-v2/style.json?key=get_your_own_D6rA4zTHduk6KOKTXzGB',
 ).then(function (map) {
-  map.addControl(new FullScreen());
+  /** @type {import('ol/Map.js').default} */ (map).addControl(new FullScreen());
 });

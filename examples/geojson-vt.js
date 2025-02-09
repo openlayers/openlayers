@@ -102,7 +102,9 @@ fetch(url)
           extent: vectorSource.getTileGrid().getTileCoordExtent(tileCoord),
           featureProjection: map.getView().getProjection(),
         });
-        tile.setFeatures(features);
+        /** @type {import('../src/ol/VectorTile.js').default} */ (
+          tile
+        ).setFeatures(features);
       },
     });
     layer.setSource(vectorSource);

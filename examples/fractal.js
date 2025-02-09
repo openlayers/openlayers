@@ -105,7 +105,9 @@ function graphToCoords(graph) {
   return coordinates;
 }
 
-const depthInput = document.getElementById('depth');
+const depthInput = /** @type {HTMLInputElement} */ (
+  document.getElementById('depth')
+);
 
 function update() {
   makeFractal(Number(depthInput.value));

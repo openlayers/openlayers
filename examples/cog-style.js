@@ -134,7 +134,9 @@ const styles = {
   ndviPaletteViridis,
 };
 
-const styleSelector = document.getElementById('style');
+const styleSelector = /** @type {HTMLSelectElement} */ (
+  document.getElementById('style')
+);
 
 function update() {
   const style = styles[styleSelector.value];

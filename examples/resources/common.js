@@ -46,9 +46,13 @@
     })
   }
 
-  const codepenButton = document.getElementById('codepen-button');
+  const codepenButton = /** @type {HTMLAnchorElement} */ (
+    document.getElementById('codepen-button')
+  );
   if (codepenButton) {
-    const form = document.getElementById('codepen-form');
+    const form = /** @type {HTMLFormElement} */ (
+      document.getElementById('codepen-form')
+    );
     codepenButton.href = form.action;
     codepenButton.addEventListener('click', function (event) {
       event.preventDefault();

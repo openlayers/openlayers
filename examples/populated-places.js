@@ -65,11 +65,17 @@ map.addInteraction(new Link());
 const info = document.getElementById('info');
 
 let currentFeature = null;
+/**
+ * @param {Array<number>} pixel Pixel
+ * @param {number} width View width
+ */
 function displayFeatureInfo(pixel, width) {
   const feature = map.getFeaturesAtPixel(pixel)[0];
   if (feature) {
     const featurePixel = map.getPixelFromCoordinate(
-      feature.getGeometry().getCoordinates(),
+      /** @type {import('../src/ol/geom/Point.js').default} */ (
+        feature.getGeometry()
+      ).getCoordinates(),
     );
     if (featurePixel[0] > width) {
       featurePixel[0] = featurePixel[0] % width;

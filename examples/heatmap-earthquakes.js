@@ -6,8 +6,10 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import StadiaMaps from '../src/ol/source/StadiaMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
-const blur = document.getElementById('blur');
-const radius = document.getElementById('radius');
+const blur = /** @type {HTMLInputElement} */ (document.getElementById('blur'));
+const radius = /** @type {HTMLInputElement} */ (
+  document.getElementById('radius')
+);
 
 const vector = new HeatmapLayer({
   source: new VectorSource({

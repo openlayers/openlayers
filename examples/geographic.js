@@ -68,7 +68,9 @@ map.on('click', function (event) {
     popover.dispose();
     popover = undefined;
   }
-  const feature = map.getFeaturesAtPixel(event.pixel)[0];
+  const feature = /** @type {Feature<Point>|undefined} */ (
+    map.getFeaturesAtPixel(event.pixel)[0]
+  );
   if (!feature) {
     return;
   }

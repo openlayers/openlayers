@@ -47,23 +47,28 @@ const selectStyle = new Style({
 
 const status = document.getElementById('status');
 
-let selected = null;
+/** @type {import('../src/ol/Feature.js').default|undefined} */
+let selected = undefined;
 map.on('pointermove', function (e) {
-  if (selected !== null) {
-    selected.setStyle(undefined);
-    selected = null;
+  const newSelected = map.forEachFeatureAtPixel(
+    e.pixel,
+    /**
+     * @param {import('../src/ol/Feature.js').default} f Feature
+     * @return {import('../src/ol/Feature.js').default} Feature
+     */
+    (f) => f,
+  );
+  if (newSelected === selected) {
+    return;
   }
-
-  map.forEachFeatureAtPixel(e.pixel, function (f) {
-    selected = f;
-    selectStyle.getFill().setColor(f.get('COLOR') || '#eeeeee');
-    f.setStyle(selectStyle);
-    return true;
-  });
-
   if (selected) {
-    status.innerHTML = selected.get('ECO_NAME');
-  } else {
-    status.innerHTML = '&nbsp;';
+    selected.setStyle(undefined);
   }
+  if (newSelected) {
+    selectStyle.getFill().setColor(newSelected.get('COLOR') || '#eeeeee');
+    newSelected.setStyle(selectStyle);
+  }
+  selected = newSelected;
+
+  status.innerHTML = selected ? selected.get('ECO_NAME') : '&nbsp;';
 });

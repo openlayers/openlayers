@@ -89,7 +89,9 @@ const pointsLayer = new WebGLVectorLayer({
   ],
 });
 
-const shapeSelect = document.getElementById('shape-filter');
+const shapeSelect = /** @type {HTMLSelectElement} */ (
+  document.getElementById('shape-filter')
+);
 shapeSelect.addEventListener('input', function () {
   pointsLayer.updateStyleVariables({filterShape: shapeSelect.value});
   map.render();

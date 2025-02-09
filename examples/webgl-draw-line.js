@@ -91,9 +91,13 @@ const map = new Map({
 });
 
 const rebuildStyle = () => {
-  const dash = document.getElementById('dashEnable').checked;
-  const pattern = document.getElementById('patternEnable').checked;
-  style = getStyle(dash, pattern);
+  const dashCheckbox = /** @type {HTMLInputElement} */ (
+    document.getElementById('dashEnable')
+  );
+  const patternCheckbox = /** @type {HTMLInputElement} */ (
+    document.getElementById('patternEnable')
+  );
+  style = getStyle(dashCheckbox.checked, patternCheckbox.checked);
   map.removeLayer(vector);
   vector = new WebGLVectorLayer({
     source,
@@ -122,15 +126,15 @@ addInteractions();
 
 const inputListener = (event) => {
   const variableName = event.target.name;
-  if (event.target.type === 'radio') {
-    styleVariables[variableName] = event.target.value;
-  } else {
-    styleVariables[variableName] = parseFloat(event.target.value);
-  }
-  vector.updateStyleVariables(styleVariables);
+  const value =
+    event.target.type === 'radio'
+      ? event.target.value
+      : parseFloat(event.target.value);
+  vector.updateStyleVariables({[variableName]: value});
+
   const valueSpan = document.getElementById(`value-${variableName}`);
   if (valueSpan) {
-    valueSpan.textContent = String(styleVariables[variableName]);
+    valueSpan.textContent = String(value);
   }
   map.render();
 };

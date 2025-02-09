@@ -32,18 +32,8 @@ addProjection(projection);
 addCoordinateTransforms(
   'EPSG:4326',
   projection,
-  function (coordinate) {
-    return [
-      WGStoCHy(coordinate[1], coordinate[0]),
-      WGStoCHx(coordinate[1], coordinate[0]),
-    ];
-  },
-  function (coordinate) {
-    return [
-      CHtoWGSlng(coordinate[0], coordinate[1]),
-      CHtoWGSlat(coordinate[0], coordinate[1]),
-    ];
-  },
+  (coord) => [WGStoCHy(coord[1], coord[0]), WGStoCHx(coord[1], coord[0])],
+  (coord) => [CHtoWGSlng(coord[0], coord[1]), CHtoWGSlat(coord[0], coord[1])],
 );
 
 const extent = [420000, 30000, 900000, 350000];
@@ -123,7 +113,12 @@ function WGStoCHy(lat, lng) {
   return y;
 }
 
-// Convert WGS lat/long (° dec) to CH x
+/**
+ * Convert WGS lat/long (° dec) to CH x
+ * @param {number} lat Latitude
+ * @param {number} lng Longitude
+ * @return {number} Ch x
+ */
 function WGStoCHx(lat, lng) {
   // Converts degrees dec to sex
   lat = DECtoSEX(lat);
@@ -149,7 +144,12 @@ function WGStoCHx(lat, lng) {
   return x;
 }
 
-// Convert CH y/x to WGS lat
+/**
+ * Convert CH y/x to WGS lat
+ * @param {number} y Y
+ * @param {number} x X
+ * @return {number} WGS84 Latitude
+ */
 function CHtoWGSlat(y, x) {
   // Converts military to civil and to unit = 1000km
   // Axillary values (% Bern)
@@ -171,7 +171,12 @@ function CHtoWGSlat(y, x) {
   return lat;
 }
 
-// Convert CH y/x to WGS long
+/**
+ * Convert CH y/x to WGS long
+ * @param {number} y Y
+ * @param {number} x X
+ * @return {number} WGS84 Longitude
+ */
 function CHtoWGSlng(y, x) {
   // Converts military to civil and to unit = 1000km
   // Axillary values (% Bern)
@@ -196,7 +201,7 @@ function CHtoWGSlng(y, x) {
 function DECtoSEX(angle) {
   // Extract DMS
   const deg = parseInt(angle, 10);
-  const min = parseInt((angle - deg) * 60, 10);
+  const min = ((angle - deg) * 60) | 0;
   const sec = ((angle - deg) * 60 - min) * 60;
 
   // Result in degrees sex (dd.mmss)
@@ -207,7 +212,7 @@ function DECtoSEX(angle) {
 function DEGtoSEC(angle) {
   // Extract DMS
   const deg = parseInt(angle, 10);
-  let min = parseInt((angle - deg) * 100, 10);
+  let min = ((angle - deg) * 100) | 0;
   let sec = ((angle - deg) * 100 - min) * 100;
 
   // Avoid rounding problems with seconds=0

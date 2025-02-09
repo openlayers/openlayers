@@ -29,13 +29,17 @@ const map = new Map({
   }),
 });
 
-const projectionSelect = document.getElementById('projection');
-projectionSelect.addEventListener('change', function (event) {
-  mousePositionControl.setProjection(event.target.value);
+const projectionSelect = /** @type {HTMLSelectElement} */ (
+  document.getElementById('projection')
+);
+projectionSelect.addEventListener('change', function () {
+  mousePositionControl.setProjection(this.value);
 });
 
-const precisionInput = document.getElementById('precision');
-precisionInput.addEventListener('change', function (event) {
-  const format = createStringXY(event.target.valueAsNumber);
+const precisionInput = /** @type {HTMLInputElement} */ (
+  document.getElementById('precision')
+);
+precisionInput.addEventListener('change', function () {
+  const format = createStringXY(this.valueAsNumber);
   mousePositionControl.setCoordinateFormat(format);
 });

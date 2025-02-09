@@ -97,7 +97,9 @@ document.getElementById('export-png').addEventListener('click', function () {
     );
     mapContext.globalAlpha = 1;
     mapContext.setTransform(1, 0, 0, 1, 0, 0);
-    const link = document.getElementById('image-download');
+    const link = /** @type {HTMLAnchorElement} */ (
+      document.getElementById('image-download')
+    );
     link.href = mapCanvas.toDataURL();
     link.click();
   });

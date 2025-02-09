@@ -50,12 +50,20 @@ const map = new Map({
   }),
 });
 
-const queryInput = document.getElementById('epsg-query');
+const queryInput = /** @type {HTMLInputElement} */ (
+  document.getElementById('epsg-query')
+);
 const searchButton = document.getElementById('epsg-search');
 const resultSpan = document.getElementById('epsg-result');
-const renderEdgesCheckbox = document.getElementById('render-edges');
-const showTilesCheckbox = document.getElementById('show-tiles');
-const showGraticuleCheckbox = document.getElementById('show-graticule');
+const renderEdgesCheckbox = /** @type {HTMLInputElement} */ (
+  document.getElementById('render-edges')
+);
+const showTilesCheckbox = /** @type {HTMLInputElement} */ (
+  document.getElementById('show-tiles')
+);
+const showGraticuleCheckbox = /** @type {HTMLInputElement} */ (
+  document.getElementById('show-graticule')
+);
 
 function setProjection(code, name, proj4def, bbox) {
   if (code === null || name === null || proj4def === null || bbox === null) {

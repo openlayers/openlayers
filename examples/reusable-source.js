@@ -36,7 +36,9 @@ function updateUrl(index) {
   source.setUrl(urls[index]);
 }
 
-const buttons = document.getElementsByClassName('switcher');
+const buttons = /** @type {HTMLCollectionOf<HTMLButtonElement>} */ (
+  document.getElementsByClassName('switcher')
+);
 for (let i = 0, ii = buttons.length; i < ii; ++i) {
   const button = buttons[i];
   button.addEventListener('click', updateUrl.bind(null, Number(button.value)));

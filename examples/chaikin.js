@@ -16,7 +16,7 @@ function makeSmooth(path, numIterations) {
   return path;
 }
 
-const vectorSource = new VectorSource({});
+const vectorSource = new VectorSource();
 
 const map = new Map({
   layers: [
@@ -35,8 +35,12 @@ const map = new Map({
   }),
 });
 
-const shallSmoothen = document.getElementById('shall-smoothen');
-const numIterations = document.getElementById('iterations');
+const shallSmoothen = /** @type {HTMLInputElement} */ (
+  document.getElementById('shall-smoothen')
+);
+const numIterations = /** @type {HTMLInputElement} */ (
+  document.getElementById('iterations')
+);
 
 const draw = new Draw({
   source: vectorSource,
@@ -48,7 +52,10 @@ draw.on('drawend', function (event) {
     return;
   }
   const feat = event.feature;
-  const geometry = feat.getGeometry();
+  const geometry =
+    /** @type {import('../src/ol/geom/LineString.js').default} */ (
+      feat.getGeometry()
+    );
   const coords = geometry.getCoordinates();
   const smoothened = makeSmooth(coords, parseInt(numIterations.value, 10) || 5);
   geometry.setCoordinates(smoothened);

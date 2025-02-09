@@ -4,6 +4,7 @@ import TileLayer from '../src/ol/layer/WebGLTile.js';
 import ImageTile from '../src/ol/source/ImageTile.js';
 import OSM from '../src/ol/source/OSM.js';
 
+/** @type {Object<string, number>} */
 const variables = {};
 
 // The method used to extract elevations from the DEM.
@@ -66,7 +67,7 @@ const shadedRelief = new TileLayer({
 
 const controlIds = ['vert', 'sunEl', 'sunAz'];
 controlIds.forEach(function (id) {
-  const control = document.getElementById(id);
+  const control = /** @type {HTMLInputElement} */ (document.getElementById(id));
   const output = document.getElementById(id + 'Out');
   function updateValues() {
     output.innerText = control.value;

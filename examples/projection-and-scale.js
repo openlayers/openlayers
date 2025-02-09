@@ -10,7 +10,9 @@ import {
 } from '../src/ol/proj.js';
 import OSM from '../src/ol/source/OSM.js';
 
-const viewProjSelect = document.getElementById('view-projection');
+const viewProjSelect = /** @type {HTMLInputElement} */ (
+  document.getElementById('view-projection')
+);
 const projection = getProjection(viewProjSelect.value);
 
 const scaleControl = new ScaleLine({

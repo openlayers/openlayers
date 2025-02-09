@@ -51,7 +51,7 @@ const vectorLayer = new VectorLayer({
     labelStyle
       .getText()
       .setText([
-        feature.getId(),
+        /** @type {string} */ (feature.getId()),
         'bold 13px Calibri,sans-serif',
         ` ${feature.get('name')}`,
         '',

@@ -39,10 +39,11 @@ const kernels = {
 
 function normalize(kernel) {
   const len = kernel.length;
-  const normal = new Array(len);
-  let i,
-    sum = 0;
-  for (i = 0; i < len; ++i) {
+  const normal = /** @type {Array<number>&{normalized: boolean}} */ (
+    new Array(len)
+  );
+  let sum = 0;
+  for (let i = 0; i < len; ++i) {
     sum += kernel[i];
   }
   if (sum <= 0) {
@@ -51,13 +52,15 @@ function normalize(kernel) {
   } else {
     normal.normalized = true;
   }
-  for (i = 0; i < len; ++i) {
+  for (let i = 0; i < len; ++i) {
     normal[i] = kernel[i] / sum;
   }
   return normal;
 }
 
-const select = document.getElementById('kernel');
+const select = /** @type {HTMLSelectElement} */ (
+  document.getElementById('kernel')
+);
 let selectedKernel = normalize(kernels[select.value]);
 
 /**
@@ -72,14 +75,17 @@ select.onchange = function () {
  * Apply a filter on "postrender" events.
  */
 imagery.on('postrender', function (event) {
-  convolve(event.context, selectedKernel);
+  convolve(
+    /** @type {CanvasRenderingContext2D} */ (event.context),
+    selectedKernel,
+  );
 });
 
 /**
  * Apply a convolution kernel to canvas.  This works for any size kernel, but
  * performance starts degrading above 3 x 3.
  * @param {CanvasRenderingContext2D} context Canvas 2d context.
- * @param {Array<number>} kernel Kernel.
+ * @param {Array<number>&{normalized: boolean}} kernel Kernel.
  */
 function convolve(context, kernel) {
   const canvas = context.canvas;

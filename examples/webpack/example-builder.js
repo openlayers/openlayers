@@ -13,26 +13,32 @@ import flatConfig from '../../eslint.config.js';
 
 /**
  * @typedef {Object} Options
- * @property {string} templates path to templates
- * @property {string} common name of the common chunk.html templates dir
+ * @property {string} templates Path to templates
+ * @property {string} common Name of the common chunk.html templates dir
  */
 
 /**
  * @typedef {Object} TemplateConfig
- * @property {string} filename base name of the example's files
- * @property {string} layout html Template name from the template dir
- * @property {string} title text for the html title
+ * @property {string} name Example name
+ * @property {string} htmlFileName Base name of the example's files
+ * @property {string} dir html Examples dir
+ * @property {string} layout Html template name from the template dir
+ * @property {string} title Text for the html title
  * @property {string} shortdesc Short description for the example list index.html
+ * @property {string} contents Content of example's html file
  * @property {string} [docs] Description under the map
  * @property {Array<string>} tags Tags for this example
  * @property {boolean} [experimental=false] Display a notice about using non-api code
- * @property {Array<string>} [resources] Additional js/css files to include
- * @property {Array<{key: string, value: string}} [cloak] Hide sensitive information / access keys
+ * @property {Array<{key: string, value: string}>} [cloak] Hide sensitive information / access keys
+ * @property {Array<string>} [resources] Additional js/css files to use in the main html page for the example
+ * @property {Array<{path: string, as: string}>} [sources] Additional source files to display
+ * @property {Array<{tag: string, examples: Array<{link: string, title: string, isCurrent: boolean}>}>} [tagsData] Data used to render the tags
  */
 
 /**
  * @typedef {Object} PackageJson
  * @property {string} version Package version
+ * @property {Object<string, string>} dependencies Dependencies
  * @property {Object<string, string>} devDependencies Development dependencies
  */
 
@@ -208,11 +214,12 @@ export default class ExampleBuilder {
   }
 
   /**
-   * @param {import('webpack').CompilationAssets} assets Assets
+   * @param {import('webpack').Compilation['assets']} assets Assets
    * @param {string} dir Examples dir
    */
   async addAssets(assets, dir) {
     const jsAssetRE = /^[\w-]+\.js$/;
+    /** @type {Array<string>} */
     const names = [];
     for (const filename in assets) {
       if (!jsAssetRE.test(filename)) {
@@ -236,7 +243,7 @@ export default class ExampleBuilder {
     );
 
     const examples = exampleData.map((data) => ({
-      link: data.filename,
+      link: data.htmlFileName,
       title: data.title,
       shortdesc: data.shortdesc,
       tags: data.tags,
@@ -253,7 +260,7 @@ export default class ExampleBuilder {
       wordIndex: sortObjectByKey(createWordIndex(examples)),
     };
     exampleData.forEach((data) => {
-      data.tags = data.tags.map((tag) => {
+      data.tagsData = data.tags.map((tag) => {
         const tagExamples = tagIndex[tag.toLowerCase()];
         return {
           tag: tag,
@@ -262,7 +269,7 @@ export default class ExampleBuilder {
             return {
               link: example.link,
               title: example.title,
-              isCurrent: data.filename === example.link,
+              isCurrent: data.htmlFileName === example.link,
             };
           }),
         };
@@ -286,7 +293,7 @@ export default class ExampleBuilder {
   /**
    * @param {string} dir Examles dir
    * @param {string} name Example name
-   * @return {TemplateConfig} Config from the examles's html template file
+   * @return {Promise<TemplateConfig>} Config from the examles's html template file
    */
   async parseExample(dir, name) {
     const htmlName = `${name}.html`;
@@ -298,7 +305,7 @@ export default class ExampleBuilder {
     assert(!!data.layout, `missing layout in ${htmlPath}`);
     return Object.assign(data, {
       contents: body,
-      filename: htmlName,
+      htmlFileName: htmlName,
       dir: dir,
       name: name,
       // process tags
@@ -350,7 +357,7 @@ export default class ExampleBuilder {
   }
 
   /**
-   * Remove `/** @type {...} *` comments
+   * Remove `/** @ type {...} ` comments
    * @param {string} cacheKey Cache key
    * @param {string} sourceCode Source code
    * @return {string} Cleaned up source code
@@ -387,7 +394,7 @@ export default class ExampleBuilder {
   /**
    * @param {TemplateConfig} data Config for this example
    * @param {PackageJson} pkg Data from package.json
-   * @return {Object<string, string>} Asset for this example
+   * @return {Promise<Object<string, string>>} Asset for this example
    */
   async render(data, pkg) {
     /** @type {Object<string, string>} */
@@ -402,15 +409,16 @@ export default class ExampleBuilder {
       jsPath,
       this.transformJsSource(this.cloakSource(jsSource, data.cloak)),
     );
-    data.js = {
+    const js = {
       local: [],
       remote: [],
       source: jsSource,
     };
 
     let jsSources = jsSource;
+    let extraSources;
     if (data.sources) {
-      data.extraSources = await Promise.all(
+      extraSources = await Promise.all(
         data.sources.map(async (sourceConfig) => {
           const fileName = sourceConfig.path;
           const extraSourcePath = path.join(data.dir, fileName);
@@ -437,8 +445,7 @@ export default class ExampleBuilder {
       );
     }
 
-    data.olVersion = pkg.version;
-    data.pkgJson = JSON.stringify(
+    const pkgJson = JSON.stringify(
       {
         name: data.name,
         dependencies: getDependencies(jsSources, pkg),
@@ -453,8 +460,7 @@ export default class ExampleBuilder {
       null,
       2,
     );
-
-    data.css = {
+    const css = {
       local: [],
       remote: [],
       source: undefined,
@@ -468,31 +474,31 @@ export default class ExampleBuilder {
           : `https://openlayers.org/en/v${pkg.version}/examples/${resource}`;
         if (isJsRegEx.test(resource)) {
           if (!isTemplateJs.test(resource)) {
-            data.js.local.push(resource);
+            js.local.push(resource);
           }
-          data.js.remote.push(absoluteUrl);
+          js.remote.push(absoluteUrl);
         } else if (isCssRegEx.test(resource)) {
           if (!isTemplateCss.test(resource)) {
-            data.css.local.push(resource);
+            css.local.push(resource);
           }
-          data.css.remote.push(absoluteUrl);
+          css.remote.push(absoluteUrl);
         } else {
           throw new Error(
-            `Invalid resource: '${resource}' is not .js or .css: ${data.filename}`,
+            `Invalid resource: '${resource}' is not .js or .css: ${data.name}`,
           );
         }
       });
     }
 
-    data.js.local.push(`${this.common}.js`, jsName);
+    js.local.push(`${this.common}.js`, jsName);
 
     // check for example css
     const cssName = `${data.name}.css`;
     const cssPath = path.join(data.dir, cssName);
     try {
       assets[cssName] = await fse.readFile(cssPath, readOptions);
-      data.css.local.push(cssName);
-      data.css.source = this.ensureNewLineAtEnd(assets[cssName]);
+      css.local.push(cssName);
+      css.source = this.ensureNewLineAtEnd(assets[cssName]);
     } catch {
       // pass, no css for this example
     }
@@ -500,7 +506,18 @@ export default class ExampleBuilder {
     const templatePath = path.join(this.templates, data.layout);
     const templateSource = await fse.readFile(templatePath, readOptions);
 
-    assets[data.filename] = handlebars.compile(templateSource)(data);
+    assets[data.htmlFileName] = handlebars.compile(templateSource)({
+      title: data.title,
+      contents: data.contents,
+      docs: data.docs,
+      shortdesc: data.shortdesc,
+      tags: data.tagsData,
+      extraSources,
+      js,
+      css,
+      pkgJson,
+      olVersion: pkg.version,
+    });
     return assets;
   }
 }

@@ -122,7 +122,9 @@ map.on('click', function (event) {
   raster.changed();
 });
 
-const thresholdControl = document.getElementById('threshold');
+const thresholdControl = /** @type {HTMLInputElement} */ (
+  document.getElementById('threshold')
+);
 
 raster.on('beforeoperations', function (event) {
   // the event.data object will be passed to operations
