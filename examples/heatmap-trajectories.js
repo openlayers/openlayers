@@ -1,8 +1,9 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import KML from '../src/ol/format/KML.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
 import HeatmapLayer from '../src/ol/layer/Heatmap.js';
 import TileLayer from '../src/ol/layer/Tile.js';
+import {fromLonLat} from '../src/ol/proj.js';
 import StadiaMaps from '../src/ol/source/StadiaMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
@@ -11,25 +12,23 @@ const radius = document.getElementById('radius');
 
 const heatmap = new HeatmapLayer({
   source: new VectorSource({
-    url: 'data/kml/2012_Earthquakes_Mag5.kml',
-    format: new KML({
-      extractStyles: false,
-    }),
+    url: 'data/geojson/ship-trajectories.json',
+    format: new GeoJSON(),
+    attributions: 'Danish Maritime Authority',
   }),
   blur: ['var', 'blur'],
   radius: ['var', 'radius'],
   variables: {
     blur: parseInt(blur.value, 10),
     radius: parseInt(radius.value, 10),
+    shipType: 'All',
   },
-  weight: function (feature) {
-    // 2012_Earthquakes_Mag5.kml stores the magnitude of each earthquake in a
-    // standards-violating <magnitude> tag in each Placemark.  We extract it from
-    // the Placemark's name instead.
-    const name = feature.get('name');
-    const magnitude = parseFloat(name.substring(2));
-    return magnitude - 5;
-  },
+  filter: [
+    'any',
+    ['==', ['var', 'shipType'], 'All'],
+    ['==', ['var', 'shipType'], ['get', 'ShipType']],
+  ],
+  weight: () => 0.1,
 });
 
 const raster = new TileLayer({
@@ -38,12 +37,12 @@ const raster = new TileLayer({
   }),
 });
 
-new Map({
-  layers: [raster, heatmap],
+const map = new Map({
+  layers: [raster, heatmap /*vector*/],
   target: 'map',
   view: new View({
-    center: [0, 0],
-    zoom: 2,
+    center: fromLonLat([11.86, 57.67]),
+    zoom: 12,
   }),
 });
 
@@ -53,4 +52,10 @@ blur.addEventListener('input', function () {
 
 radius.addEventListener('input', function () {
   heatmap.updateStyleVariables({radius: parseInt(radius.value, 10)});
+});
+
+const shipTypeSelect = document.getElementById('shiptype-filter');
+shipTypeSelect.addEventListener('input', function () {
+  heatmap.updateStyleVariables({shipType: shipTypeSelect.value});
+  map.render();
 });

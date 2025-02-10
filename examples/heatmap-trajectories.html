@@ -1,0 +1,36 @@
+---
+layout: example.html
+title: Trajectories Heatmap
+shortdesc: Demonstrates the use of a heatmap layer with linear geometries.
+docs: >
+  This example shows linear geometries rendered using a <code>ol/layer/Heatmap</code> layer.<br>
+  Data is AIS maritime traffic around Gothenburg transformed into GeoJSON, taken from <a href="https://movingpandas.github.io/movingpandas-website/2-analysis-examples/ship-data.html">this example</a>.
+tags: "heatmap, geojson, vector, trajectory, webgl"
+---
+<div id="map" class="map"></div>
+<form>
+  <label for="radius">radius size</label>
+  <input id="radius" type="range" min="1" max="50" step="1" value="5"/>
+  <label for="blur">blur size</label>
+  <input id="blur" type="range" min="1" max="50" step="1" value="15"/>
+  <label for="shiptype-filter">Filter by type of ship:</label>
+  <select id="shiptype-filter">
+      <option>All</option>
+      <option>Passenger</option>
+      <option>HSC</option>
+      <option>Tanker</option>
+      <option>Cargo</option>
+      <option>Sailing</option>
+      <option>Other</option>
+      <option>Tug</option>
+      <option>SAR</option>
+      <option>Pleasure</option>
+      <option>Dredging</option>
+      <option>Law enforcement</option>
+      <option>Pilot</option>
+      <option>Fishing</option>
+      <option>Diving</option>
+      <option>Spare 2</option>
+      <option>Undefined</option>
+  </select>
+</form>
