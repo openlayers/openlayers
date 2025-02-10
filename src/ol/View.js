@@ -367,6 +367,18 @@ class View extends BaseObject {
 
     /**
      * @private
+     * @type {boolean} Whether the viewport has been set externally or if it is set to the default value.
+     */
+    this.viewportSizeSet_ = false;
+
+    /**
+     * @private
+     * @type {Array<() => void>} List of promise resolve functions waiting for the viewport to be set.
+     */
+    this.deferredFitPromiseResolves_ = [];
+
+    /**
+     * @private
      * @type {import("./coordinate.js").Coordinate|undefined}
      */
     this.targetCenter_ = null;
@@ -929,7 +941,14 @@ class View extends BaseObject {
    * @param {import("./size.js").Size} [size] Viewport size; if undefined, [100, 100] is assumed
    */
   setViewportSize(size) {
-    this.viewportSize_ = Array.isArray(size) ? size.slice() : [100, 100];
+    if (Array.isArray(size)) {
+      this.viewportSize_ = size.slice();
+      this.viewportSizeSet_ = true;
+      this.deferredFitPromiseResolves_.forEach((fn) => fn());
+      this.deferredFitPromiseResolves_ = [];
+    } else {
+      this.viewportSize_ = [100, 100];
+    }
     if (!this.getAnimating()) {
       this.resolveConstraints(0);
     }
@@ -1336,9 +1355,15 @@ class View extends BaseObject {
    * The size is pixel dimensions of the box to fit the extent into.
    * In most cases you will want to use the map size, that is `map.getSize()`.
    * Takes care of the map angle.
+   *
+   * Calculating a resolution requires either `options.size` or a viewportsize
+   * set in the view. If size information is not available at the time `fit()`
+   * is called, fitting will be deferred until the viewport size is set,
+   * typically by a connected Map.
    * @param {import("./geom/SimpleGeometry.js").default|import("./extent.js").Extent} geometryOrExtent The geometry or
    *     extent to fit the view to.
    * @param {FitOptions} [options] Options.
+   * @return {Promise<void>} Promise that is resolved once view resolution and center have been set
    * @api
    */
   fit(geometryOrExtent, options) {
@@ -1377,7 +1402,18 @@ class View extends BaseObject {
       }
     }
 
-    this.fitInternal(geometry, options);
+    return new Promise((resolve) => {
+      const performFitInternal = () => {
+        this.fitInternal(geometry, options);
+        resolve();
+      };
+
+      if (this.viewportSizeSet_ || (options && Array.isArray(options.size))) {
+        performFitInternal();
+      } else {
+        this.deferredFitPromiseResolves_.push(performFitInternal.bind(this));
+      }
+    });
   }
 
   /**
