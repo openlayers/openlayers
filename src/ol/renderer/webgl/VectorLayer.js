@@ -584,6 +584,8 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     }
     super.disposeInternal();
   }
+
+  renderDeclutter() {}
 }
 
 export default WebGLVectorLayerRenderer;

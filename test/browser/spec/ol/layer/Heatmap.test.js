@@ -1,6 +1,7 @@
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
+import LineString from '../../../../../src/ol/geom/LineString.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import HeatmapLayer from '../../../../../src/ol/layer/Heatmap.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
@@ -74,9 +75,17 @@ describe('ol/layer/Heatmap', function () {
         id: 2,
         weight: 10,
       });
+      const feature3 = new Feature({
+        geometry: new LineString([
+          [-5, 10],
+          [5, 10],
+        ]),
+        id: 3,
+        weight: 10,
+      });
 
       const source = new VectorSource({
-        features: [feature, feature2],
+        features: [feature, feature2, feature3],
       });
       layer = new HeatmapLayer({
         source: source,
@@ -93,13 +102,8 @@ describe('ol/layer/Heatmap', function () {
         return features.length ? features[0] : null;
       }
 
-      const renderer = layer.getRenderer();
-      renderer.worker_.addEventListener('message', function (event) {
-        if (!renderer.renderInstructions_) {
-          return;
-        }
+      layer.once('change', () => {
         map.renderSync();
-
         let res;
         res = hitTest([0, 0]);
         expect(res).to.be(feature);
@@ -109,8 +113,35 @@ describe('ol/layer/Heatmap', function () {
         expect(res).to.be(feature2);
         res = hitTest([0, 14]);
         expect(res).to.be(null);
+        res = hitTest([-3, 10]);
+        expect(res).to.be(feature3);
+        res = hitTest([3, 7]);
+        expect(res).to.be(null);
         done();
       });
+    });
+  });
+
+  describe('updateStyleVariables()', function () {
+    it('updates style variables', function () {
+      layer = new HeatmapLayer({
+        source: new VectorSource(),
+        variables: {
+          foo: 'bar',
+        },
+      });
+
+      layer.updateStyleVariables({foo: 'bam'});
+      expect(layer.styleVariables_.foo).to.be('bam');
+    });
+
+    it('can be called even if no initial variables are provided', function () {
+      const layer = new HeatmapLayer({
+        source: new VectorSource(),
+      });
+
+      layer.updateStyleVariables({foo: 'bam'});
+      expect(layer.styleVariables_.foo).to.be('bam');
     });
   });
 });
