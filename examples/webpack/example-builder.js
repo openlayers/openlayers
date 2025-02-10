@@ -190,7 +190,9 @@ export default class ExampleBuilder {
     this.name = 'ExampleBuilder';
     this.templates = config.templates;
     this.common = config.common;
-    this.inWatchMode = true;
+    this.linter = new eslint.Linter({configType: 'flat'});
+    /** @type {Object<string,{original: string, cleaned: string}>} */
+    this.lintCache = {};
   }
 
   /**
@@ -199,7 +201,6 @@ export default class ExampleBuilder {
    */
   apply(compiler) {
     compiler.hooks.compilation.tap(this.name, (compilation) => {
-      this.inWatchMode = compiler.watchMode;
       compilation.hooks.additionalAssets.tapPromise(this.name, async () => {
         await this.addAssets(compilation.assets, compiler.context);
       });
@@ -350,33 +351,37 @@ export default class ExampleBuilder {
 
   /**
    * Remove `/** @type {...} *` comments
+   * @param {string} cacheKey Cache key
    * @param {string} sourceCode Source code
    * @return {string} Cleaned up source code
    */
-  removeTypeComments(sourceCode) {
-    if (this.inWatchMode) {
-      // Skip this in watch mode as it is slow
-      return sourceCode;
-    }
-    const ast = parse(sourceCode, {
-      comment: true,
-      ecmaVersion: 'latest',
-      sourceType: 'module',
-    });
-    let cleanedSource = '';
-    let start = 0;
-    for (let i = 0, ii = ast.comments.length; i < ii; ++i) {
-      const comment = ast.comments[i];
-      if (!comment.value.startsWith('* @type ')) {
-        continue;
+  removeTypeComments(cacheKey, sourceCode) {
+    let cacheItem = this.lintCache[cacheKey];
+    if (!cacheItem || cacheItem.original !== sourceCode) {
+      const ast = parse(sourceCode, {
+        comment: true,
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      });
+      let cleanedSource = '';
+      let start = 0;
+      for (let i = 0, ii = ast.comments.length; i < ii; ++i) {
+        const comment = ast.comments[i];
+        if (!comment.value.startsWith('* @type ')) {
+          continue;
+        }
+        cleanedSource += sourceCode.slice(start, comment.start);
+        start = comment.end;
       }
-      cleanedSource += sourceCode.slice(start, comment.start);
-      start = comment.end;
+      cleanedSource += sourceCode.slice(start);
+      cleanedSource = this.linter.verifyAndFix(
+        cleanedSource,
+        flatConfig,
+      ).output;
+      cacheItem = {original: sourceCode, cleaned: cleanedSource};
+      this.lintCache[cacheKey] = cacheItem;
     }
-    cleanedSource += sourceCode.slice(start);
-
-    const linter = new eslint.Linter({configType: 'flat'});
-    return linter.verifyAndFix(cleanedSource, flatConfig).output;
+    return cacheItem.cleaned;
   }
 
   /**
@@ -394,6 +399,7 @@ export default class ExampleBuilder {
     const jsPath = path.join(data.dir, jsName);
     let jsSource = await fse.readFile(jsPath, {encoding: 'utf8'});
     jsSource = this.removeTypeComments(
+      jsPath,
       this.transformJsSource(this.cloakSource(jsSource, data.cloak)),
     );
     data.js = {
@@ -415,7 +421,10 @@ export default class ExampleBuilder {
           }
           source = this.cloakSource(source, data.cloak);
           if (ext === 'js') {
-            source = this.removeTypeComments(this.transformJsSource(source));
+            source = this.removeTypeComments(
+              fileName,
+              this.transformJsSource(source),
+            );
             jsSources += '\n' + source;
           }
           assets[fileName] = source;
