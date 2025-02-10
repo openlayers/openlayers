@@ -1,0 +1,14 @@
+---
+layout: example.html
+title: MapServer WMS
+shortdesc: Example of a MapServer WMS map.
+docs: >
+  Example of a map generated using a [MapServer WMS](https://mapserver.org/ogc/wms_server.html), with an `ImageSource` and a `createLoader`
+  function. <br /><br />
+  You only need to set `serverType` if `hidpi` is `true`. On high-DPI screens, OpenLayers automatically calculates the 
+  map's `pixelRatio` and sends an additional [MAP_RESOLUTION](https://mapserver.org/ogc/wms_server.html#vendor-specific-wms-parameters) parameter
+  to MapServer to ensure fonts and symbols render correctly.
+
+tags: "mapserver, wms, image"
+---
+<div id="map" class="map"></div>
