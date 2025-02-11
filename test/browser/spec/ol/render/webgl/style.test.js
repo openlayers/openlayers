@@ -14,7 +14,7 @@ import {
   parseLiteralStyle,
 } from '../../../../../../src/ol/render/webgl/style.js';
 
-describe('ol/webgl/styleparser', () => {
+describe('ol/render/webgl/style', () => {
   describe('parseLiteralStyle', () => {
     it('parses a style with variables', () => {
       const result = parseLiteralStyle(
@@ -1200,13 +1200,6 @@ describe('ol/webgl/styleparser', () => {
         feature.setId(101);
         expect(callback(feature)).to.eql(101);
       });
-    });
-  });
-
-  describe('packColor', () => {
-    it('compresses all the components of a color into a [number, number] array', () => {
-      expect(packColor(asArray('red'))).to.eql([65280, 255]);
-      expect(packColor(asArray('rgba(0, 255, 255, 0.5)'))).to.eql([255, 65408]);
     });
   });
 

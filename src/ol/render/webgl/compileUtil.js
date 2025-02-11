@@ -48,7 +48,7 @@ export function packColor(color) {
   return [r + g, b + a];
 }
 
-const UNPACK_COLOR_FN = `vec4 unpackColor(vec2 packedColor) {
+export const UNPACK_COLOR_FN = `vec4 unpackColor(vec2 packedColor) {
   return vec4(
     fract(floor(packedColor[0] / 256.0) / 256.0),
     fract(packedColor[0] / 256.0),
