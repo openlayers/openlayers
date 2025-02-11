@@ -1,7 +1,6 @@
 /**
  * @module ol/featureloader
  */
-import {VOID} from './functions.js';
 
 /**
  *
@@ -164,7 +163,12 @@ export function xhr(url, format) {
           success(features);
         }
       },
-      /* FIXME handle error */ failure ? failure : VOID,
+      () => {
+        this.changed();
+        if (failure !== undefined) {
+          failure();
+        }
+      },
     );
   };
 }
