@@ -90,17 +90,13 @@ const map = new Map({
 
 // Convert WGS lat/long (° dec) to CH y
 function WGStoCHy(lat, lng) {
-  // Converts degrees dec to sex
-  lat = DECtoSEX(lat);
-  lng = DECtoSEX(lng);
-
-  // Converts degrees to seconds (sex)
-  lat = DEGtoSEC(lat);
-  lng = DEGtoSEC(lng);
+  // Converts degrees dec to seconds (sex)
+  const secLat = DECtoSEC(lat);
+  const secLng = DECtoSEC(lng);
 
   // Axillary values (% Bern)
-  const lat_aux = (lat - 169028.66) / 10000;
-  const lng_aux = (lng - 26782.5) / 10000;
+  const lat_aux = (secLat - 169028.66) / 10000;
+  const lng_aux = (secLng - 26782.5) / 10000;
 
   // Process Y
   const y =
@@ -120,17 +116,13 @@ function WGStoCHy(lat, lng) {
  * @return {number} Ch x
  */
 function WGStoCHx(lat, lng) {
-  // Converts degrees dec to sex
-  lat = DECtoSEX(lat);
-  lng = DECtoSEX(lng);
-
-  // Converts degrees to seconds (sex)
-  lat = DEGtoSEC(lat);
-  lng = DEGtoSEC(lng);
+  // Converts degrees dec to seconds (sex)
+  const secLat = DECtoSEC(lat);
+  const secLng = DECtoSEC(lng);
 
   // Axillary values (% Bern)
-  const lat_aux = (lat - 169028.66) / 10000;
-  const lng_aux = (lng - 26782.5) / 10000;
+  const lat_aux = (secLat - 169028.66) / 10000;
+  const lng_aux = (secLng - 26782.5) / 10000;
 
   // Process X
   const x =
@@ -197,31 +189,15 @@ function CHtoWGSlng(y, x) {
   return lng;
 }
 
-// Convert DEC angle to SEX DMS
-function DECtoSEX(angle) {
-  // Extract DMS
-  const deg = parseInt(angle, 10);
+/**
+ * Convert DEC angle to seconds
+ * @param {number} angle DEC angle
+ * @return {number} Result in degree seconds
+ */
+function DECtoSEC(angle) {
+  const deg = angle | 0;
   const min = ((angle - deg) * 60) | 0;
   const sec = ((angle - deg) * 60 - min) * 60;
 
-  // Result in degrees sex (dd.mmss)
-  return deg + min / 100 + sec / 10000;
-}
-
-// Convert Degrees angle to seconds
-function DEGtoSEC(angle) {
-  // Extract DMS
-  const deg = parseInt(angle, 10);
-  let min = ((angle - deg) * 100) | 0;
-  let sec = ((angle - deg) * 100 - min) * 100;
-
-  // Avoid rounding problems with seconds=0
-  const parts = String(angle).split('.');
-  if (parts.length == 2 && parts[1].length == 2) {
-    min = Number(parts[1]);
-    sec = 0;
-  }
-
-  // Result in degrees sex (dd.mmss)
   return sec + min * 60 + deg * 3600;
 }
