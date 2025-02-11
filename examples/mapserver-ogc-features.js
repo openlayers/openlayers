@@ -11,15 +11,11 @@ import View from '../src/ol/View.js';
 const mapServerUrl = `https://demo.mapserver.org/cgi-bin/mapserv/localdemo/ogcapi/collections/lakes/items`;
 const params = `f=json&limit=1000`;
 
-const lakeStyle = new Style({
-  fill: new Fill({
-    color: 'rgba(70, 130, 180, 0.6)',
-  }),
-  stroke: new Stroke({
-    color: 'rgba(25, 25, 112, 1)',
-    width: 2,
-  }),
-});
+const lakeStyle = {
+  'fill-color': 'rgba(70, 130, 180, 0.6)',
+  'stroke-color': 'rgba(25, 25, 112, 1)',
+  'stroke-width': 2
+}
 
 const layer = new VectorLayer({
   style: lakeStyle,
