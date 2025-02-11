@@ -604,6 +604,14 @@ float computeSegmentPointDistance(vec2 point, vec2 start, vec2 end, float width,
   return joinDistanceField(point, start, end, width, joinAngle, joinType);
 }
 
+float distanceFromSegment(vec2 point, vec2 start, vec2 end) {
+  vec2 tangent = end - start;
+  vec2 startToPoint = point - start;
+  // inspire by capsule fn in https://iquilezles.org/articles/distfunctions/
+  float h = clamp(dot(startToPoint, tangent) / dot(tangent, tangent), 0.0, 1.0);
+  return length(startToPoint - tangent * h);
+}
+
 void main(void) {
   float a_opacity = v_opacity; // assign to original attribute name
   vec3 a_test = v_test; // assign to original attribute name
@@ -629,24 +637,25 @@ void main(void) {
   vec2 segmentNormal = vec2(-segmentTangent.y, segmentTangent.x);
   vec2 startToPoint = currentPoint - v_segmentStart;
   float lengthToPoint = max(0., min(dot(segmentTangent, startToPoint), segmentLength));
-  float currentLengthPx = lengthToPoint + v_distanceOffsetPx; 
-  float currentRadiusPx = abs(dot(segmentNormal, startToPoint));
+  float currentLengthPx = lengthToPoint + v_distanceOffsetPx;
+  float currentRadiusPx = distanceFromSegment(currentPoint, v_segmentStart, v_segmentEnd);
   float currentRadiusRatio = dot(segmentNormal, startToPoint) * 2. / v_width;
   currentLineMetric = mix(v_measureStart, v_measureEnd, lengthToPoint / segmentLength);
 
   if (u_myUniform > 0.5) { discard; }
 
-  vec4 color = vec4(0.3137254901960784, 0.0, 1.0, 1.0);
   float capType = ${stringToGlsl('butt')};
   float joinType = ${stringToGlsl('bevel')};
   float segmentStartDistance = computeSegmentPointDistance(currentPoint, v_segmentStart, v_segmentEnd, v_width, v_angleStart, capType, joinType);
   float segmentEndDistance = computeSegmentPointDistance(currentPoint, v_segmentEnd, v_segmentStart, v_width, v_angleEnd, capType, joinType);
-  float distance = max(
+  float distanceField = max(
     segmentDistanceField(currentPoint, v_segmentStart, v_segmentEnd, v_width),
     max(segmentStartDistance, segmentEndDistance)
   );
-  distance = max(distance, cos(currentLengthPx));
-  color.a *= smoothstep(0.5, -0.5, distance);
+  distanceField = max(distanceField, cos(currentLengthPx));
+
+  vec4 color = vec4(0.3137254901960784, 0.0, 1.0, 1.0);
+  color.a *= smoothstep(0.5, -0.5, distanceField);
   gl_FragColor = color;
   gl_FragColor.a *= u_globalAlpha;
   gl_FragColor.rgb *= gl_FragColor.a;
