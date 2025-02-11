@@ -521,6 +521,10 @@ class MixedGeometryBatch {
    * @param {Feature|RenderFeature} feature Feature
    */
   changeFeature(feature) {
+    // the feature is not present in the batch; do not add it to avoid unexpected behaviors
+    if (!this.uidToRef_.get(getUid(feature))) {
+      return;
+    }
     this.removeFeature(feature);
     const geometry = feature.getGeometry();
     if (!geometry) {

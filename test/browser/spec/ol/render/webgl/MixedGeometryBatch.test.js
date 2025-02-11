@@ -127,6 +127,43 @@ describe('MixedGeometryBatch', function () {
           expect(mixedBatch.pointBatch.geometriesCount).to.be(2);
         });
       });
+      describe('if called with feature not already present', () => {
+        let otherFeature;
+        beforeEach(() => {
+          const geoms = new GeometryCollection([
+            new Point([40, 41]),
+            new LineString([
+              [0, 1],
+              [2, 3],
+            ]),
+            new Polygon([
+              [
+                [0, 1],
+                [2, 3],
+                [4, 5],
+              ],
+            ]),
+          ]);
+          otherFeature = new Feature(geoms);
+          mixedBatch.changeFeature(otherFeature);
+        });
+        it('does not add the new feature', () => {
+          expect(mixedBatch.pointBatch.entries).not.to.contain(
+            getUid(otherFeature),
+          );
+          expect(mixedBatch.polygonBatch.entries).not.to.contain(
+            getUid(otherFeature),
+          );
+          expect(mixedBatch.lineStringBatch.entries).not.to.contain(
+            getUid(otherFeature),
+          );
+        });
+        it('keeps geometry count the same', () => {
+          expect(mixedBatch.pointBatch.geometriesCount).to.be(2);
+          expect(mixedBatch.polygonBatch.geometriesCount).to.be(0);
+          expect(mixedBatch.lineStringBatch.geometriesCount).to.be(0);
+        });
+      });
     });
 
     describe('#removeFeature', () => {
