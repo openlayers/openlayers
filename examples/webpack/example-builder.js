@@ -168,7 +168,7 @@ function createWordIndex(exampleData) {
  */
 function getDependencies(jsSource, pkg) {
   const dependencies = {
-    ol: pkg.version,
+    ol: pkg.version.endsWith('-dev') ? 'dev' : pkg.version,
   };
 
   let importMatch;
