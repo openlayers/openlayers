@@ -4,7 +4,6 @@ import VectorLayer from 'ol/layer/Vector.js';
 import {bbox as bboxStrategy} from 'ol/loadingstrategy.js';
 import OSM from 'ol/source/OSM.js';
 import VectorSource from 'ol/source/Vector.js';
-import {Fill, Stroke, Style} from 'ol/style';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 
@@ -14,8 +13,8 @@ const params = `f=json&limit=1000`;
 const lakeStyle = {
   'fill-color': 'rgba(70, 130, 180, 0.6)',
   'stroke-color': 'rgba(25, 25, 112, 1)',
-  'stroke-width': 2
-}
+  'stroke-width': 2,
+};
 
 const layer = new VectorLayer({
   style: lakeStyle,
