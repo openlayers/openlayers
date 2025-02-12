@@ -10,6 +10,7 @@ import {applyTransform, intersects} from '../extent.js';
 import {jsonp as requestJSONP} from '../net.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
 import LRUCache from '../structs/LRUCache.js';
+import {getKeyZXY} from '../tilecoord.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 import {createFromTemplates, nullTileUrlFunction} from '../tileurlfunction.js';
 import TileSource from './Tile.js';
@@ -488,8 +489,9 @@ class UTFGrid extends TileSource {
       projection,
     );
     const tileUrl = this.tileUrlFunction_(urlTileCoord, pixelRatio, projection);
-    if (this.tileCache_.containsKey(tileUrl)) {
-      return this.tileCache_.get(tileUrl);
+    const tileKey = `${this.getKey()},${getKeyZXY(z, x, y)}`;
+    if (this.tileCache_.containsKey(tileKey)) {
+      return this.tileCache_.get(tileKey);
     }
     this.tileCache_.expireCache();
     const tile = new CustomTile(
@@ -500,7 +502,7 @@ class UTFGrid extends TileSource {
       this.preemptive_,
       this.jsonp_,
     );
-    this.tileCache_.set(tileUrl, tile);
+    this.tileCache_.set(tileKey, tile);
     return tile;
   }
 }
