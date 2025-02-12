@@ -312,7 +312,7 @@ class UTFGrid extends TileSource {
      * @private
      * @type {LRUCache}
      */
-    this.tileCache_ = new LRUCache(64);
+    this.tileCache_ = new LRUCache(512);
 
     if (options.url) {
       if (this.jsonp_) {
@@ -399,6 +399,9 @@ class UTFGrid extends TileSource {
           this.getProjection(),
         )
       );
+      if (tile.getState() == TileState.IDLE) {
+        tile.load();
+      }
       tile.forDataAtCoordinate(coordinate, callback, request);
     } else {
       if (request === true) {
