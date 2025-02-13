@@ -11,7 +11,7 @@ import XYZ from '../../../../src/ol/source/XYZ.js';
 const features = [];
 for (let i = 0; i < 16; i++) {
   const angle = (i * Math.PI) / 8;
-  const myProp = (i + 1) / 16;
+  const myProp = (100 * (i + 1)) / 16;
   features.push(
     new Feature({
       geometry: new LineString([
@@ -29,12 +29,8 @@ const vector = new HeatmapLayer({
   }),
   blur: 15,
   radius: 15,
-  weight: (feature) => feature.get('myProp'),
-  filter: [
-    'any',
-    ['<', ['get', 'myProp'], 0.5],
-    ['>', ['get', 'myProp'], 0.65],
-  ],
+  weight: ['/', ['get', 'myProp'], 100],
+  filter: ['any', ['<', ['get', 'myProp'], 50], ['>', ['get', 'myProp'], 65]],
 });
 
 const raster = new TileLayer({

@@ -16,6 +16,10 @@ import WebGLVectorLayerRenderer from '../renderer/webgl/VectorLayer.js';
 import BaseVector from './BaseVector.js';
 
 /**
+ * @typedef {import("../style/flat.js").NumberExpression|string|function(import("../Feature.js").default):number} WeightExpression
+ */
+
+/**
  * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../Feature.js").default]
  * @template {import("../source/Vector.js").default<FeatureType>} [VectorSourceType=import("../source/Vector.js").default<FeatureType>]
  * @typedef {Object} Options
@@ -40,8 +44,8 @@ import BaseVector from './BaseVector.js';
  * of the heatmap, specified as an array of CSS color strings.
  * @property {import("../style/flat.js").NumberExpression} [radius=8] Radius size in pixels.
  * @property {import("../style/flat.js").NumberExpression} [blur=15] Blur size in pixels.
- * @property {string|function(import("../Feature.js").default):number} [weight='weight'] The feature
- * attribute to use for the weight or a function that returns a weight from a feature. Weight values
+ * @property {WeightExpression} [weight='weight'] The feature
+ * attribute to use for the weight. This also supports expressions returning a number or a function that returns a weight from a feature. Weight values
  * should range from 0 to 1 (and values outside will be clamped to that range).
  * @property {import("../style/flat.js").BooleanExpression} [filter] Optional filter expression.
  * @property {Object<string, number|Array<number>|string|boolean>} [variables] Variables used in expressions (optional)
@@ -121,14 +125,7 @@ class Heatmap extends BaseVector {
     /**
      * @private
      */
-    this.weightFunction_ =
-      typeof weight === 'string'
-        ? /**
-           * @param {import('../Feature.js').FeatureLike} feature Feature
-           * @return {any} weight
-           */
-          (feature) => feature.get(weight)
-        : weight;
+    this.weight_ = weight;
 
     // For performance reasons, don't sort the features before rendering.
     // The render order is not relevant for a heatmap representation.
@@ -184,6 +181,7 @@ class Heatmap extends BaseVector {
    */
   setBlur(blur) {
     this.set(Property.BLUR, blur);
+    this.clearRenderer();
   }
 
   /**
@@ -204,6 +202,7 @@ class Heatmap extends BaseVector {
    */
   setRadius(radius) {
     this.set(Property.RADIUS, radius);
+    this.clearRenderer();
   }
 
   /**
@@ -214,6 +213,18 @@ class Heatmap extends BaseVector {
   setFilter(filter) {
     this.filter_ = filter;
     this.changed();
+    this.clearRenderer();
+  }
+
+  /**
+   * Set the weight expression
+   * @param {WeightExpression} weight Weight expression
+   * @api
+   */
+  setWeight(weight) {
+    this.weight_ = weight;
+    this.changed();
+    this.clearRenderer();
   }
 
   /**
@@ -229,8 +240,34 @@ class Heatmap extends BaseVector {
     const blurCompiled = expressionToGlsl(context, this.getBlur(), NumberType);
     const filterCompiled = expressionToGlsl(context, this.filter_, BooleanType);
 
-    const builder = new ShaderBuilder()
-      .addAttribute('a_weight', 'float')
+    const builder = new ShaderBuilder();
+
+    /** @type {import('../render/webgl/VectorStyleRenderer.js').AttributeDefinitions} */
+    const weightAttribute = {};
+    let weightExpression = null;
+    if (
+      typeof this.weight_ === 'string' ||
+      typeof this.weight_ === 'function'
+    ) {
+      const weightFunction =
+        typeof this.weight_ === 'string'
+          ? (feature) => feature.get(this.weight_)
+          : this.weight_;
+      weightAttribute['prop_weight'] = {
+        size: 1,
+        callback: (feature) => {
+          const weightValue = weightFunction(feature);
+          return weightValue !== undefined ? clamp(weightValue, 0, 1) : 1;
+        },
+      };
+      weightExpression = 'a_prop_weight';
+      builder.addAttribute('a_prop_weight', 'float');
+    } else {
+      const clampedWeight = ['clamp', this.weight_, 0, 1];
+      weightExpression = expressionToGlsl(context, clampedWeight, NumberType);
+    }
+
+    builder
       .addFragmentShaderFunction(
         `float getBlurSlope() {
   float blur = max(1., ${blurCompiled});
@@ -240,13 +277,13 @@ class Heatmap extends BaseVector {
       )
       .setSymbolSizeExpression(`vec2(${radiusCompiled} + ${blurCompiled}) * 2.`)
       .setSymbolColorExpression(
-        'vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * getBlurSlope()) * a_weight)',
+        `vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * getBlurSlope()) * ${weightExpression})`,
       )
       .setStrokeColorExpression(
-        'vec4(smoothstep(0., 1., (1. - length(currentRadiusPx * 2. / v_width)) * getBlurSlope()) * a_weight)',
+        `vec4(smoothstep(0., 1., (1. - length(currentRadiusPx * 2. / v_width)) * getBlurSlope()) * ${weightExpression})`,
       )
       .setStrokeWidthExpression(`(${radiusCompiled} + ${blurCompiled})`)
-      .setFillColorExpression('vec4(a_weight)')
+      .setFillColorExpression(`vec4(${weightExpression})`)
       .setFragmentDiscardExpression(`!${filterCompiled}`);
 
     applyContextToBuilder(builder, context);
@@ -260,13 +297,7 @@ class Heatmap extends BaseVector {
         builder,
         attributes: {
           ...attributes,
-          weight: {
-            size: 1,
-            callback: (feature) => {
-              const weight = this.weightFunction_(feature);
-              return weight !== undefined ? clamp(weight, 0, 1) : 1;
-            },
-          },
+          ...weightAttribute,
         },
         uniforms,
       },
