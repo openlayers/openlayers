@@ -451,14 +451,18 @@ span.type-signature.static {
   font-size: 0.95em;
   margin-bottom: 10px;
 }
+.main header ol,
 .main article ol,
+.main header ul,
 .main article ul {
   margin-left: 25px;
 }
+.main header ol > li,
 .main article ol > li {
   list-style-type: decimal;
   margin-bottom: 5px;
 }
+.main header ul > li,
 .main article ul > li {
   margin-bottom: 5px;
   list-style-type: disc;

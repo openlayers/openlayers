@@ -2,19 +2,19 @@
  * @module ol/geom/Geometry
  */
 import BaseObject from '../Object.js';
-import {abstract} from '../util.js';
-import {
-  compose as composeTransform,
-  create as createTransform,
-} from '../transform.js';
 import {
   createEmpty,
   createOrUpdateEmpty,
   getHeight,
   returnOrUpdate,
 } from '../extent.js';
-import {get as getProjection, getTransform} from '../proj.js';
 import {memoizeOne} from '../functions.js';
+import {get as getProjection, getTransform} from '../proj.js';
+import {
+  compose as composeTransform,
+  create as createTransform,
+} from '../transform.js';
+import {abstract} from '../util.js';
 import {transform2D} from './flat/transform.js';
 
 /**
@@ -34,6 +34,9 @@ import {transform2D} from './flat/transform.js';
  * @type {import("../transform.js").Transform}
  */
 const tmpTransform = createTransform();
+
+/** @type {import('../coordinate.js').Coordinate} */
+const tmpPoint = [NaN, NaN];
 
 /**
  * @classdesc
@@ -137,8 +140,7 @@ class Geometry extends BaseObject {
    * @return {boolean} Contains (x, y).
    */
   containsXY(x, y) {
-    const coord = this.getClosestPoint([x, y]);
-    return coord[0] === x && coord[1] === y;
+    return this.closestPointXY(x, y, tmpPoint, Number.MIN_VALUE) === 0;
   }
 
   /**
@@ -322,7 +324,7 @@ class Geometry extends BaseObject {
               0,
               0,
             );
-            transform2D(
+            const transformed = transform2D(
               inCoordinates,
               0,
               inCoordinates.length,
@@ -330,11 +332,11 @@ class Geometry extends BaseObject {
               tmpTransform,
               outCoordinates,
             );
-            return getTransform(sourceProj, destination)(
-              inCoordinates,
-              outCoordinates,
-              stride,
-            );
+            const projTransform = getTransform(sourceProj, destination);
+            if (projTransform) {
+              return projTransform(transformed, transformed, stride);
+            }
+            return transformed;
           }
         : getTransform(sourceProj, destination);
     this.applyTransform(transformFn);

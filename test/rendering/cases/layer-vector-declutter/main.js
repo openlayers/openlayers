@@ -1,16 +1,16 @@
-import Circle from '../../../../src/ol/geom/Circle.js';
-import CircleStyle from '../../../../src/ol/style/Circle.js';
 import Feature from '../../../../src/ol/Feature.js';
-import LineString from '../../../../src/ol/geom/LineString.js';
 import Map from '../../../../src/ol/Map.js';
+import View from '../../../../src/ol/View.js';
+import Circle from '../../../../src/ol/geom/Circle.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import Stroke from '../../../../src/ol/style/Stroke.js';
-import Style from '../../../../src/ol/style/Style.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
-import View from '../../../../src/ol/View.js';
-import {Fill} from '../../../../src/ol/style.js';
+import CircleStyle from '../../../../src/ol/style/Circle.js';
+import Fill from '../../../../src/ol/style/Fill.js';
+import Stroke from '../../../../src/ol/style/Stroke.js';
+import Style from '../../../../src/ol/style/Style.js';
 
 const center = [1825927.7316762917, 6143091.089223046];
 
@@ -27,7 +27,6 @@ const vectorLayer1 = new VectorLayer({
   }),
 });
 const vectorLayer2 = new VectorLayer({
-  declutter: true,
   source: source2,
   opacity: 0.6,
   style: new Style({
@@ -127,5 +126,8 @@ const map = new Map({
 });
 
 map.getView().setRotation(Math.PI + Math.PI / 4);
+
+map.renderSync();
+vectorLayer2.setDeclutter(true);
 
 render();

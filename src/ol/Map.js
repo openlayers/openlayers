@@ -1,32 +1,25 @@
 /**
  * @module ol/Map
  */
-import BaseObject from './Object.js';
 import Collection from './Collection.js';
 import CollectionEventType from './CollectionEventType.js';
-import CompositeMapRenderer from './renderer/Composite.js';
-import EventType from './events/EventType.js';
-import Layer from './layer/Layer.js';
-import LayerGroup, {GroupEvent} from './layer/Group.js';
 import MapBrowserEvent from './MapBrowserEvent.js';
 import MapBrowserEventHandler from './MapBrowserEventHandler.js';
 import MapBrowserEventType from './MapBrowserEventType.js';
 import MapEvent from './MapEvent.js';
 import MapEventType from './MapEventType.js';
 import MapProperty from './MapProperty.js';
+import BaseObject from './Object.js';
 import ObjectEventType from './ObjectEventType.js';
-import PointerEventType from './pointer/EventType.js';
-import RenderEventType from './render/EventType.js';
 import TileQueue, {getTilePriority} from './TileQueue.js';
 import View from './View.js';
 import ViewHint from './ViewHint.js';
-import {DEVICE_PIXEL_RATIO, PASSIVE_EVENT_LISTENERS} from './has.js';
-import {TRUE} from './functions.js';
-import {
-  apply as applyTransform,
-  create as createTransform,
-} from './transform.js';
+import {equals} from './array.js';
 import {assert} from './asserts.js';
+import {warn} from './console.js';
+import {defaults as defaultControls} from './control/defaults.js';
+import EventType from './events/EventType.js';
+import {listen, unlistenByKey} from './events.js';
 import {
   clone,
   createOrUpdateEmpty,
@@ -34,14 +27,21 @@ import {
   getForViewAndSize,
   isEmpty,
 } from './extent.js';
-import {defaults as defaultControls} from './control/defaults.js';
+import {TRUE} from './functions.js';
+import {DEVICE_PIXEL_RATIO, PASSIVE_EVENT_LISTENERS} from './has.js';
 import {defaults as defaultInteractions} from './interaction/defaults.js';
-import {equals} from './array.js';
+import LayerGroup, {GroupEvent} from './layer/Group.js';
+import Layer from './layer/Layer.js';
+import PointerEventType from './pointer/EventType.js';
 import {fromUserCoordinate, toUserCoordinate} from './proj.js';
-import {getUid} from './util.js';
+import RenderEventType from './render/EventType.js';
+import CompositeMapRenderer from './renderer/Composite.js';
 import {hasArea} from './size.js';
-import {listen, unlistenByKey} from './events.js';
-import {warn} from './console.js';
+import {
+  apply as applyTransform,
+  create as createTransform,
+} from './transform.js';
+import {getUid} from './util.js';
 
 /**
  * State of the current frame. Only `pixelRatio`, `time` and `viewState` should
@@ -72,7 +72,7 @@ import {warn} from './console.js';
  */
 
 /**
- * @typedef {function(Map, ?FrameState): any} PostRenderFunction
+ * @typedef {function(Map, FrameState): any} PostRenderFunction
  */
 
 /**

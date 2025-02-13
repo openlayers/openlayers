@@ -1,16 +1,21 @@
 /**
  * @module ol/layer/BaseVector
  */
-import Layer from './Layer.js';
 import RBush from 'rbush';
-import Style, {
-  createDefaultStyle,
-  toFunction as toStyleFunction,
-} from '../style/Style.js';
 import {
   flatStylesToStyleFunction,
   rulesToStyleFunction,
 } from '../render/canvas/style.js';
+import Style, {
+  createDefaultStyle,
+  toFunction as toStyleFunction,
+} from '../style/Style.js';
+import Layer from './Layer.js';
+
+/***
+ * @template T
+ * @typedef {T extends import("../source/Vector.js").default<infer U extends import("../Feature.js").FeatureLike> ? U : never} ExtractedFeatureType
+ */
 
 /**
  * @template {import('../Feature').FeatureLike} FeatureType
@@ -182,8 +187,7 @@ class BaseVectorLayer extends Layer {
   }
 
   /**
-   * @return {function(import("../Feature.js").default, import("../Feature.js").default): number|null|undefined} Render
-   *     order.
+   * @return {import("../render.js").OrderFunction|null|undefined} Render order.
    */
   getRenderOrder() {
     return /** @type {import("../render.js").OrderFunction|null|undefined} */ (
@@ -276,6 +280,15 @@ class BaseVectorLayer extends Layer {
       style === null ? undefined : toStyleFunction(styleLike);
     this.changed();
   }
+
+  /**
+   * @param {boolean|string|number} declutter Declutter images and text.
+   * @api
+   */
+  setDeclutter(declutter) {
+    this.declutter_ = declutter ? String(declutter) : undefined;
+    this.changed();
+  }
 }
 
 /**
@@ -325,7 +338,7 @@ function toStyleLike(style) {
 
   if ('style' in first) {
     /**
-     * @type Array<import("../style/flat.js").Rule>
+     * @type {Array<import("../style/flat.js").Rule>}
      */
     const rules = new Array(length);
     for (let i = 0; i < length; ++i) {

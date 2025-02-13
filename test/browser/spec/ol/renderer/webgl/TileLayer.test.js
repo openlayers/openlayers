@@ -1,15 +1,15 @@
 import Map from '../../../../../../src/ol/Map.js';
 import TileQueue from '../../../../../../src/ol/TileQueue.js';
-import TileTexture from '../../../../../../src/ol/webgl/TileTexture.js';
 import View from '../../../../../../src/ol/View.js';
-import WebGLTileLayer from '../../../../../../src/ol/layer/WebGLTile.js';
-import {DataTile} from '../../../../../../src/ol/source.js';
-import {VOID} from '../../../../../../src/ol/functions.js';
-import {create} from '../../../../../../src/ol/transform.js';
 import {createCanvasContext2D} from '../../../../../../src/ol/dom.js';
+import {VOID} from '../../../../../../src/ol/functions.js';
+import WebGLTileLayer from '../../../../../../src/ol/layer/WebGLTile.js';
 import {get} from '../../../../../../src/ol/proj.js';
-import {getUid} from '../../../../../../src/ol/util.js';
 import {newTileRepresentationLookup} from '../../../../../../src/ol/renderer/webgl/TileLayerBase.js';
+import DataTile from '../../../../../../src/ol/source/DataTile.js';
+import {create} from '../../../../../../src/ol/transform.js';
+import {getUid} from '../../../../../../src/ol/util.js';
+import TileTexture from '../../../../../../src/ol/webgl/TileTexture.js';
 
 describe('ol/renderer/webgl/TileLayer', function () {
   /** @type {import("../../../../../../src/ol/renderer/webgl/TileLayer.js").default} */
@@ -80,6 +80,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
     tileLayer.setSource(null);
     expect(renderer.prepareFrame(frameState)).to.be(false);
     tileLayer.setSource(source);
+    renderer = tileLayer.getRenderer();
     expect(renderer.prepareFrame(frameState)).to.be(true);
     const tileGrid = source.getTileGrid();
     tileLayer.setExtent(tileGrid.getTileCoordExtent([2, 0, 0]));
@@ -229,6 +230,42 @@ describe('ol/renderer/webgl/TileLayer', function () {
         [sourceKey + '/8,127,128']: true,
         [sourceKey + '/8,128,127']: true,
         [sourceKey + '/8,128,128']: true,
+      };
+      expect(wantedTiles).to.eql(expected);
+    });
+
+    it('skips tiles not in the rotated viewport', () => {
+      const z = 10;
+      const resolution = map.getView().getResolutionForZoom(z);
+      frameState.viewState.resolution = resolution;
+      frameState.viewState.rotation = Math.PI / 4;
+      const extent = [
+        -frameState.size[0],
+        -frameState.size[1],
+        frameState.size[0],
+        frameState.size[1],
+      ].map((c) => c * resolution * Math.SQRT2);
+
+      renderer.prepareFrame(frameState);
+      renderer.enqueueTiles(
+        frameState,
+        extent,
+        z,
+        newTileRepresentationLookup(),
+        tileLayer.getPreload(),
+      );
+
+      const source = tileLayer.getSource();
+      const sourceKey = getUid(source);
+      expect(frameState.wantedTiles[sourceKey]).to.be.an(Object);
+
+      const wantedTiles = frameState.wantedTiles[sourceKey];
+
+      const expected = {
+        [sourceKey + '/10,511,511']: true,
+        [sourceKey + '/10,511,512']: true,
+        [sourceKey + '/10,512,511']: true,
+        [sourceKey + '/10,512,512']: true,
       };
       expect(wantedTiles).to.eql(expected);
     });

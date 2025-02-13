@@ -1,9 +1,10 @@
+import {spy as sinonSpy} from 'sinon';
 import ImageWrapper from '../../../../../src/ol/Image.js';
-import Layer from '../../../../../src/ol/layer/Layer.js';
-import LayerRenderer from '../../../../../src/ol/renderer/Layer.js';
 import Map from '../../../../../src/ol/Map.js';
-import TileLayer from '../../../../../src/ol/layer/Tile.js';
 import View from '../../../../../src/ol/View.js';
+import Layer from '../../../../../src/ol/layer/Layer.js';
+import TileLayer from '../../../../../src/ol/layer/Tile.js';
+import LayerRenderer from '../../../../../src/ol/renderer/Layer.js';
 import XYZ from '../../../../../src/ol/source/XYZ.js';
 
 describe('ol/renderer/Layer', function () {
@@ -41,7 +42,7 @@ describe('ol/renderer/Layer', function () {
       const resolution = 1;
       const pixelRatio = 1;
 
-      const spy = sinon.spy();
+      const spy = sinonSpy();
       imageLoadFunction = (...args) => {
         spy(...args);
         const img = new Image();
@@ -124,7 +125,7 @@ describe('ol/renderer/Layer', function () {
       source = new XYZ({
         url: '#{x}/{y}/{z}',
       });
-      spy = sinon.spy(source, 'getTile');
+      spy = sinonSpy(source, 'getTile');
       layer = new TileLayer({
         source: source,
       });

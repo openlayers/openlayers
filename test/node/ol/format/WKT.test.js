@@ -1,8 +1,8 @@
 import Feature from '../../../../src/ol/Feature.js';
-import Point from '../../../../src/ol/geom/Point.js';
 import WKT from '../../../../src/ol/format/WKT.js';
-import expect from '../../expect.js';
+import Point from '../../../../src/ol/geom/Point.js';
 import {transform} from '../../../../src/ol/proj.js';
+import expect from '../../expect.js';
 
 describe('ol/format/WKT.js', function () {
   let format = new WKT();

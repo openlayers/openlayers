@@ -2,10 +2,10 @@
  * @module ol/layer/Base
  */
 import BaseObject from '../Object.js';
-import LayerProperty from './Property.js';
-import {abstract} from '../util.js';
 import {assert} from '../asserts.js';
 import {clamp} from '../math.js';
+import {abstract} from '../util.js';
+import LayerProperty from './Property.js';
 
 /**
  * A css color, or a function called with a view resolution returning a css color.

@@ -1,10 +1,10 @@
 import Map from '../src/ol/Map.js';
-import MousePosition from '../src/ol/control/MousePosition.js';
-import OSM from '../src/ol/source/OSM.js';
-import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
+import MousePosition from '../src/ol/control/MousePosition.js';
+import {defaults as defaultControls} from '../src/ol/control/defaults.js';
 import {createStringXY} from '../src/ol/coordinate.js';
-import {defaults as defaultControls} from '../src/ol/control.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import OSM from '../src/ol/source/OSM.js';
 
 const mousePositionControl = new MousePosition({
   coordinateFormat: createStringXY(4),

@@ -1,12 +1,40 @@
 import assert from 'assert';
-import frontMatter from 'front-matter';
 import fs from 'fs';
+import path, {dirname} from 'path';
+import {fileURLToPath} from 'url';
+import eslint from 'eslint';
+import {parse} from 'espree';
+import frontMatter from 'front-matter';
 import fse from 'fs-extra';
 import handlebars from 'handlebars';
-import path, {dirname} from 'path';
-import sources from 'webpack-sources';
-import {fileURLToPath} from 'url';
 import {marked} from 'marked';
+import sources from 'webpack-sources';
+import flatConfig from '../../eslint.config.js';
+
+/**
+ * @typedef {Object} Options
+ * @property {string} templates path to templates
+ * @property {string} common name of the common chunk.html templates dir
+ */
+
+/**
+ * @typedef {Object} TemplateConfig
+ * @property {string} filename base name of the example's files
+ * @property {string} layout html Template name from the template dir
+ * @property {string} title text for the html title
+ * @property {string} shortdesc Short description for the example list index.html
+ * @property {string} [docs] Description under the map
+ * @property {Array<string>} tags Tags for this example
+ * @property {boolean} [experimental=false] Display a notice about using non-api code
+ * @property {Array<string>} [resources] Additional js/css files to include
+ * @property {Array<{key: string, value: string}} [cloak] Hide sensitive information / access keys
+ */
+
+/**
+ * @typedef {Object} PackageJson
+ * @property {string} version Package version
+ * @property {Object<string, string>} devDependencies Development dependencies
+ */
 
 const RawSource = sources.RawSource;
 const baseDir = dirname(fileURLToPath(import.meta.url));
@@ -23,14 +51,16 @@ const exampleDirContents = fs
   .filter((name) => /^(?!index).*\.html$/.test(name))
   .map((name) => name.replace(/\.html$/, ''));
 
+/**
+ * @return {Promise<PackageJson>} package.json content
+ */
 function getPackageInfo() {
   return fse.readJSON(path.resolve(baseDir, '../../package.json'));
 }
 
 handlebars.registerHelper(
   'md',
-  (str) =>
-    new handlebars.SafeString(marked(str, {headerIds: false, mangle: false})),
+  (str) => new handlebars.SafeString(marked(str, {async: false})),
 );
 
 /**
@@ -70,10 +100,11 @@ function sortObjectByKey(obj) {
 
 /**
  * Create an index of tags belonging to examples
- * @param {Array<Object>} exampleData Array of example data objects.
- * @return {Object} Word index.
+ * @param {Array<{tags: Array<string>}>} exampleData Array of example data objects.
+ * @return {Object<string,Array<number>>} Word index.
  */
 function createTagIndex(exampleData) {
+  /** @type {Object<string,Array<number>>} */
   const index = {};
   exampleData.forEach((data, i) => {
     data.tags.forEach((tag) => {
@@ -93,11 +124,13 @@ function createTagIndex(exampleData) {
  * Create an inverted index of keywords from examples.  Property names are
  * lowercased words.  Property values are objects mapping example index to word
  * count.
- * @param {Array<Object>} exampleData Array of example data objects.
- * @return {Object} Word index.
+ * @param {Array<{shortdesc: string, title: string, tags: Array<string>}>} exampleData Array of example data objects.
+ * @return {Object<string, Object<number, number>>} Word index.
  */
 function createWordIndex(exampleData) {
+  /** @type {Object<string, Object<number, number>>} */
   const index = {};
+  /** @type {Array<'shortdesc'|'title'|'tags'>} */
   const keys = ['shortdesc', 'title', 'tags'];
   exampleData.forEach((data, i) => {
     keys.forEach((key) => {
@@ -124,7 +157,7 @@ function createWordIndex(exampleData) {
 /**
  * Gets dependencies from the js source.
  * @param {string} jsSource Source.
- * @param {Object} pkg Package info.
+ * @param {PackageJson} pkg Package info.
  * @return {Object<string, string>} dependencies
  */
 function getDependencies(jsSource, pkg) {
@@ -151,19 +184,20 @@ function getDependencies(jsSource, pkg) {
 export default class ExampleBuilder {
   /**
    * A webpack plugin that builds the html files for our examples.
-   * @param {Object} config Plugin configuration.  Requires a `templates` property
-   * with the path to templates and a `common` property with the name of the
-   * common chunk.
+   * @param {Options} config Plugin configuration.
    */
   constructor(config) {
     this.name = 'ExampleBuilder';
     this.templates = config.templates;
     this.common = config.common;
+    this.linter = new eslint.Linter({configType: 'flat'});
+    /** @type {Object<string,{original: string, cleaned: string}>} */
+    this.lintCache = {};
   }
 
   /**
    * Called by webpack.
-   * @param {Object} compiler The webpack compiler.
+   * @param {import('webpack').Compiler} compiler The webpack compiler.
    */
   apply(compiler) {
     compiler.hooks.compilation.tap(this.name, (compilation) => {
@@ -173,6 +207,10 @@ export default class ExampleBuilder {
     });
   }
 
+  /**
+   * @param {import('webpack').CompilationAssets} assets Assets
+   * @param {string} dir Examples dir
+   */
   async addAssets(assets, dir) {
     const jsAssetRE = /^[\w-]+\.js$/;
     const names = [];
@@ -245,6 +283,11 @@ export default class ExampleBuilder {
     assets['examples-info.js'] = new RawSource(indexSource);
   }
 
+  /**
+   * @param {string} dir Examles dir
+   * @param {string} name Example name
+   * @return {TemplateConfig} Config from the examles's html template file
+   */
   async parseExample(dir, name) {
     const htmlName = `${name}.html`;
     const htmlPath = path.join(dir, htmlName);
@@ -282,9 +325,12 @@ export default class ExampleBuilder {
     return (
       source
         // remove "../src/" prefix to have the same import syntax as the documentation
-        .replace(/'\.\.\/src\//g, "'")
+        .replaceAll(
+          /(["'])(\.\.\/src\/ol\/[^"']+\.js)\1/g,
+          (full, quote, path) => "'" + path.slice(7) + "'",
+        )
         // Remove worker loader import and modify `new Worker()` to add source
-        .replace(/import Worker from 'worker-loader![^\n]*\n/g, '')
+        .replaceAll(/import Worker from 'worker-loader![^\n]*\n/g, '')
         .replace('new Worker()', "new Worker('./worker.js', {type: 'module'})")
     );
   }
@@ -303,7 +349,48 @@ export default class ExampleBuilder {
     return source;
   }
 
+  /**
+   * Remove `/** @type {...} *` comments
+   * @param {string} cacheKey Cache key
+   * @param {string} sourceCode Source code
+   * @return {string} Cleaned up source code
+   */
+  removeTypeComments(cacheKey, sourceCode) {
+    let cacheItem = this.lintCache[cacheKey];
+    if (!cacheItem || cacheItem.original !== sourceCode) {
+      const ast = parse(sourceCode, {
+        comment: true,
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      });
+      let cleanedSource = '';
+      let start = 0;
+      for (let i = 0, ii = ast.comments.length; i < ii; ++i) {
+        const comment = ast.comments[i];
+        if (!comment.value.startsWith('* @type ')) {
+          continue;
+        }
+        cleanedSource += sourceCode.slice(start, comment.start);
+        start = comment.end;
+      }
+      cleanedSource += sourceCode.slice(start);
+      cleanedSource = this.linter.verifyAndFix(
+        cleanedSource,
+        flatConfig,
+      ).output;
+      cacheItem = {original: sourceCode, cleaned: cleanedSource};
+      this.lintCache[cacheKey] = cacheItem;
+    }
+    return cacheItem.cleaned;
+  }
+
+  /**
+   * @param {TemplateConfig} data Config for this example
+   * @param {PackageJson} pkg Data from package.json
+   * @return {Object<string, string>} Asset for this example
+   */
   async render(data, pkg) {
+    /** @type {Object<string, string>} */
     const assets = {};
     const readOptions = {encoding: 'utf8'};
 
@@ -311,7 +398,10 @@ export default class ExampleBuilder {
     const jsName = `${data.name}.js`;
     const jsPath = path.join(data.dir, jsName);
     let jsSource = await fse.readFile(jsPath, {encoding: 'utf8'});
-    jsSource = this.transformJsSource(this.cloakSource(jsSource, data.cloak));
+    jsSource = this.removeTypeComments(
+      jsPath,
+      this.transformJsSource(this.cloakSource(jsSource, data.cloak)),
+    );
     data.js = {
       local: [],
       remote: [],
@@ -329,11 +419,14 @@ export default class ExampleBuilder {
           if (ext === 'mjs') {
             ext = 'js';
           }
+          source = this.cloakSource(source, data.cloak);
           if (ext === 'js') {
-            source = this.transformJsSource(source);
+            source = this.removeTypeComments(
+              fileName,
+              this.transformJsSource(source),
+            );
             jsSources += '\n' + source;
           }
-          source = this.cloakSource(source, data.cloak);
           assets[fileName] = source;
           return {
             name: sourceConfig.as || fileName,
@@ -400,7 +493,7 @@ export default class ExampleBuilder {
       assets[cssName] = await fse.readFile(cssPath, readOptions);
       data.css.local.push(cssName);
       data.css.source = this.ensureNewLineAtEnd(assets[cssName]);
-    } catch (err) {
+    } catch {
       // pass, no css for this example
     }
 

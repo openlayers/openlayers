@@ -71,7 +71,7 @@ export function orthographic(left, right, bottom, top, near, far, out) {
  * @param {number} z How much to scale in the z direction.
  * @param {Mat4} [out] The matrix to write to.
  * @return {Mat4} out
- **/
+ */
 export function scale(m, x, y, z, out) {
   out = out ?? create();
   out[0] = m[0] * x;

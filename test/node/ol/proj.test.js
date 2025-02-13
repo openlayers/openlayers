@@ -1,10 +1,12 @@
-import Projection from '../../../src/ol/proj/Projection.js';
-import View from '../../../src/ol/View.js';
-import expect from '../expect.js';
 import proj4 from 'proj4';
+import View from '../../../src/ol/View.js';
+import Projection from '../../../src/ol/proj/Projection.js';
+import {METERS_PER_UNIT} from '../../../src/ol/proj/Units.js';
 import {HALF_SIZE} from '../../../src/ol/proj/epsg3857.js';
+import {METERS_PER_UNIT as metersPerDegree} from '../../../src/ol/proj/epsg4326.js';
+import {register} from '../../../src/ol/proj/proj4.js';
+
 import {
-  METERS_PER_UNIT,
   addCommon,
   addCoordinateTransforms,
   clearAllProjections,
@@ -15,8 +17,8 @@ import {
   fromUserCoordinate,
   fromUserExtent,
   fromUserResolution,
-  getPointResolution,
   get as getProjection,
+  getPointResolution,
   getTransform,
   getTransformFromProjections,
   getUserProjection,
@@ -29,8 +31,8 @@ import {
   transformExtent,
   useGeographic,
 } from '../../../src/ol/proj.js';
-import {METERS_PER_UNIT as metersPerDegree} from '../../../src/ol/proj/epsg4326.js';
-import {register} from '../../../src/ol/proj/proj4.js';
+
+import expect from '../expect.js';
 
 describe('ol/proj.js', function () {
   afterEach(function () {
@@ -460,6 +462,83 @@ describe('ol/proj.js', function () {
       pointResolution = getPointResolution(projection, 2, [0, 0], 'm');
       expect(pointResolution).to.be(0.6096);
     });
+  });
+
+  describe('lazily registered utm transforms', () => {
+    afterEach(() => {
+      clearAllProjections();
+      addCommon();
+    });
+
+    const cases = [
+      {
+        sourceCode: 'EPSG:32633',
+        sourceCoord: [500000, 100000],
+        destCode: 'EPSG:4326',
+        destCoord: [15, 0.9047306],
+      },
+      {
+        sourceCode: 'EPSG:32633',
+        sourceCoord: [500000, 4649776.22],
+        destCode: 'EPSG:4326',
+        destCoord: [15, 42],
+      },
+      {
+        sourceCode: 'EPSG:32633',
+        sourceCoord: [500000, 4649776.22],
+        destCode: 'EPSG:3857',
+        destCoord: [1669792.3618991016, 5160979.437547961],
+      },
+      {
+        sourceCode: 'EPSG:32633',
+        sourceCoord: [170000, 4649776.22],
+        destCode: 'EPSG:3857',
+        destCoord: [1226739.3663468603, 5150642.9136177115],
+      },
+      {
+        sourceCode: 'EPSG:32715',
+        sourceCoord: [600000, 8000000],
+        destCode: 'EPSG:4326',
+        destCoord: [-92.0549531, -18.0863946],
+      },
+      {
+        sourceCode: 'EPSG:32715',
+        sourceCoord: [600000, 8000000],
+        destCode: 'EPSG:3857',
+        destCoord: [-10247510.498555563, -2047663.3668866507],
+      },
+    ];
+
+    function epsilon(code) {
+      const projection = getProjection(code);
+      switch (projection.getUnits()) {
+        case 'm': {
+          return 1e-1;
+        }
+        case 'degrees': {
+          return 1e-6;
+        }
+        default: {
+          throw new Error(`unsupported units: ${projection.getUnits()}`);
+        }
+      }
+    }
+
+    for (const c of cases) {
+      it(`works for transform([${c.sourceCoord.join(', ')}], '${c.sourceCode}', '${c.destCode}')`, () => {
+        const output = transform(c.sourceCoord, c.sourceCode, c.destCode);
+        const e = epsilon(c.destCode);
+        expect(output[0]).to.roughlyEqual(c.destCoord[0], e);
+        expect(output[1]).to.roughlyEqual(c.destCoord[1], e);
+      });
+
+      it(`works for transform([${c.destCoord.join(', ')}], '${c.destCode}', '${c.sourceCode}')`, () => {
+        const output = transform(c.destCoord, c.destCode, c.sourceCode);
+        const e = epsilon(c.sourceCode);
+        expect(output[0]).to.roughlyEqual(c.sourceCoord[0], e);
+        expect(output[1]).to.roughlyEqual(c.sourceCoord[1], e);
+      });
+    }
   });
 
   describe('Proj4js integration', function () {

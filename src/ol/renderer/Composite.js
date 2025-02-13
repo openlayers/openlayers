@@ -1,16 +1,16 @@
 /**
  * @module ol/renderer/Composite
  */
-import BaseVectorLayer from '../layer/BaseVector.js';
-import MapRenderer from './Map.js';
 import ObjectEventType from '../ObjectEventType.js';
+import {CLASS_UNSELECTABLE} from '../css.js';
+import {replaceChildren} from '../dom.js';
+import {listen, unlistenByKey} from '../events.js';
+import BaseVectorLayer from '../layer/BaseVector.js';
+import {inView} from '../layer/Layer.js';
 import RenderEvent from '../render/Event.js';
 import RenderEventType from '../render/EventType.js';
-import {CLASS_UNSELECTABLE} from '../css.js';
 import {checkedFonts} from '../render/canvas.js';
-import {inView} from '../layer/Layer.js';
-import {listen, unlistenByKey} from '../events.js';
-import {replaceChildren} from '../dom.js';
+import MapRenderer from './Map.js';
 
 /**
  * @classdesc

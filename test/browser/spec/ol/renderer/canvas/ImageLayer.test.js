@@ -1,16 +1,17 @@
-import CanvasImageLayerRenderer from '../../../../../../src/ol/renderer/canvas/ImageLayer.js';
+import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
-import ImageLayer from '../../../../../../src/ol/layer/Image.js';
-import ImageState from '../../../../../../src/ol/ImageState.js';
 import ImageWrapper from '../../../../../../src/ol/Image.js';
+import ImageState from '../../../../../../src/ol/ImageState.js';
 import Map from '../../../../../../src/ol/Map.js';
-import Point from '../../../../../../src/ol/geom/Point.js';
-import Projection from '../../../../../../src/ol/proj/Projection.js';
-import Static from '../../../../../../src/ol/source/ImageStatic.js';
-import VectorImageLayer from '../../../../../../src/ol/layer/VectorImage.js';
-import VectorSource from '../../../../../../src/ol/source/Vector.js';
 import View from '../../../../../../src/ol/View.js';
+import Point from '../../../../../../src/ol/geom/Point.js';
+import ImageLayer from '../../../../../../src/ol/layer/Image.js';
+import VectorImageLayer from '../../../../../../src/ol/layer/VectorImage.js';
+import Projection from '../../../../../../src/ol/proj/Projection.js';
 import {get as getProj} from '../../../../../../src/ol/proj.js';
+import CanvasImageLayerRenderer from '../../../../../../src/ol/renderer/canvas/ImageLayer.js';
+import Static from '../../../../../../src/ol/source/ImageStatic.js';
+import VectorSource from '../../../../../../src/ol/source/Vector.js';
 
 describe('ol/renderer/canvas/ImageLayer', function () {
   describe('#getData', function () {
@@ -280,11 +281,11 @@ describe('ol/renderer/canvas/ImageLayer', function () {
       });
       layer.getSource().getImage([0, 0, 100, 100], 1, 1, projection).load();
       renderer = layer.getRenderer();
-      renderer.renderWorlds = sinon.spy();
-      renderer.clipUnrotated = sinon.spy();
+      renderer.renderWorlds = sinonSpy();
+      renderer.clipUnrotated = sinonSpy();
       renderer.useContainer = function () {
         CanvasImageLayerRenderer.prototype.useContainer.apply(this, arguments);
-        this.context = sinon.spy(this.context);
+        this.context = sinonSpy(this.context);
       };
       return {
         pixelRatio: 1,

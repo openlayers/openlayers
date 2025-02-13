@@ -1,14 +1,14 @@
 /**
  * @module ol/proj/proj4
  */
-import Projection from './Projection.js';
 import {
   addCoordinateTransforms,
   addEquivalentProjections,
   addProjection,
   createSafeCoordinateTransform,
-  get,
 } from '../proj.js';
+import Projection from './Projection.js';
+import {get as getCachedProjection} from './projections.js';
 import {get as getTransform} from './transforms.js';
 
 /**
@@ -49,7 +49,7 @@ export function register(proj4) {
   let i, j;
   for (i = 0; i < len; ++i) {
     const code = projCodes[i];
-    if (!get(code)) {
+    if (!getCachedProjection(code)) {
       const def = proj4.defs(code);
       let units = /** @type {import("./Units.js").Units} */ (def.units);
       if (!units && def.projName === 'longlat') {
@@ -67,10 +67,10 @@ export function register(proj4) {
   }
   for (i = 0; i < len; ++i) {
     const code1 = projCodes[i];
-    const proj1 = get(code1);
+    const proj1 = getCachedProjection(code1);
     for (j = 0; j < len; ++j) {
       const code2 = projCodes[j];
-      const proj2 = get(code2);
+      const proj2 = getCachedProjection(code2);
       if (!getTransform(code1, code2)) {
         if (proj4.defs[code1] === proj4.defs[code2]) {
           addEquivalentProjections([proj1, proj2]);
@@ -148,13 +148,13 @@ export async function fromEPSGCode(code) {
 
   const epsgCode = 'EPSG:' + code;
   if (proj4.defs(epsgCode)) {
-    return get(epsgCode);
+    return getCachedProjection(epsgCode);
   }
 
   proj4.defs(epsgCode, await epsgLookup(code));
   register(proj4);
 
-  return get(epsgCode);
+  return getCachedProjection(epsgCode);
 }
 
 /**

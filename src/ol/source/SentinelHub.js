@@ -2,11 +2,11 @@
  * @module ol/source/SentinelHub
  */
 
-import DataTileSource from './DataTile.js';
 import {
   equivalent as equivalentProjections,
   get as getProjection,
 } from '../proj.js';
+import DataTileSource from './DataTile.js';
 
 const defaultProcessUrl = 'https://services.sentinel-hub.com/api/v1/process';
 

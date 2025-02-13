@@ -1,8 +1,13 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {Draw, Modify, Select, Snap} from '../src/ol/interaction.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import Draw from '../src/ol/interaction/Draw.js';
+import Modify from '../src/ol/interaction/Modify.js';
+import Select from '../src/ol/interaction/Select.js';
+import Snap from '../src/ol/interaction/Snap.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 const raster = new TileLayer({
   source: new OSM(),
@@ -130,5 +135,19 @@ ExampleModify.setActive(false);
 // are responsible of doing the snapping.
 const snap = new Snap({
   source: vector.getSource(),
+  intersection: true,
 });
+
+const snappedElement = document.getElementById('snapped');
+
+snap.on('snap', () => {
+  document.getElementById('map').style.cursor = 'grabbing';
+  snappedElement.innerHTML = 'Snapped: true';
+});
+
+snap.on('unsnap', () => {
+  document.getElementById('map').style.cursor = 'default';
+  snappedElement.innerHTML = 'Snapped: false';
+});
+
 map.addInteraction(snap);

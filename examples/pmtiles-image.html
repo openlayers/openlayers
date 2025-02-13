@@ -1,0 +1,16 @@
+---
+layout: example.html
+title: PMTiles Image Tiles
+shortdesc: Displaying image tiles from a PMTiles archive.
+docs: >
+  This example shows image tiles from a [PMTiles](https://github.com/protomaps/PMTiles) source.
+  A PMTiles archive can contain tiled data in a variety of formats. In this example, the PMTiles
+  archive contains image-encoded tiles. The [PMTiles JavaScript API](https://pmtiles.io/typedoc/)
+  is used to issue range requests for tile data given tile z, x, y coordinates. The `ImageTile`
+  source is configured with a `loader` that returns a promise for a loaded image. The loader
+  in this example converts the PMTiles response data into a [data URL](https://developer.mozilla.org/en-US/docs/Web/URI/Schemes/data)
+  and then uses the browser's built-in image decoder to turn the data URL into an image.
+
+tags: "pmtiles, raster, image tiles"
+---
+<div id="map" class="map"></div>

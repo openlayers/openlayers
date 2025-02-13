@@ -1,9 +1,10 @@
-import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
-import {Raster as RasterSource} from '../src/ol/source.js';
+import ImageLayer from '../src/ol/layer/Image.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat} from '../src/ol/proj.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
+import RasterSource from '../src/ol/source/Raster.js';
 
 function flood(pixels, data) {
   const pixel = pixels[0];
@@ -34,7 +35,6 @@ const elevation = new ImageTile({
     'https://api.maptiler.com/tiles/terrain-rgb-v2/{z}/{x}/{y}.webp?key=' + key,
   tileSize: 512,
   maxZoom: 14,
-  crossOrigin: '',
   interpolate: false,
 });
 

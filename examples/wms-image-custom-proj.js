@@ -1,12 +1,13 @@
-import ImageLayer from '../src/ol/layer/Image.js';
-import ImageWMS from '../src/ol/source/ImageWMS.js';
-import Map from '../src/ol/Map.js';
-import Projection from '../src/ol/proj/Projection.js';
-import View from '../src/ol/View.js';
 import proj4 from 'proj4';
-import {ScaleLine, defaults as defaultControls} from '../src/ol/control.js';
-import {fromLonLat} from '../src/ol/proj.js';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import ScaleLine from '../src/ol/control/ScaleLine.js';
+import {defaults as defaultControls} from '../src/ol/control/defaults.js';
+import ImageLayer from '../src/ol/layer/Image.js';
+import Projection from '../src/ol/proj/Projection.js';
 import {register} from '../src/ol/proj/proj4.js';
+import {fromLonLat} from '../src/ol/proj.js';
+import ImageWMS from '../src/ol/source/ImageWMS.js';
 
 // Transparent Proj4js support:
 //

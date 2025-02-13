@@ -197,3 +197,18 @@ export function floor(n, decimals) {
 export function ceil(n, decimals) {
   return Math.ceil(toFixed(n, decimals));
 }
+
+/**
+ * Wraps a number between some minimum and maximum values.
+ * @param {number} n The number to wrap.
+ * @param {number} min The minimum of the range (inclusive).
+ * @param {number} max The maximum of the range (exclusive).
+ * @return {number} The wrapped number.
+ */
+export function wrap(n, min, max) {
+  if (n >= min && n < max) {
+    return n;
+  }
+  const range = max - min;
+  return ((((n - min) % range) + range) % range) + min;
+}

@@ -1,16 +1,16 @@
-import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
-import MVT from '../../../../../src/ol/format/MVT.js';
 import Map from '../../../../../src/ol/Map.js';
-import TileGrid from '../../../../../src/ol/tilegrid/TileGrid.js';
 import TileState from '../../../../../src/ol/TileState.js';
 import VectorRenderTile from '../../../../../src/ol/VectorRenderTile.js';
 import VectorTile from '../../../../../src/ol/VectorTile.js';
-import VectorTileLayer from '../../../../../src/ol/layer/VectorTile.js';
-import VectorTileSource from '../../../../../src/ol/source/VectorTile.js';
 import View from '../../../../../src/ol/View.js';
-import {createXYZ} from '../../../../../src/ol/tilegrid.js';
-import {get, get as getProjection} from '../../../../../src/ol/proj.js';
 import {listen, unlistenByKey} from '../../../../../src/ol/events.js';
+import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
+import MVT from '../../../../../src/ol/format/MVT.js';
+import VectorTileLayer from '../../../../../src/ol/layer/VectorTile.js';
+import {get, get as getProjection} from '../../../../../src/ol/proj.js';
+import VectorTileSource from '../../../../../src/ol/source/VectorTile.js';
+import TileGrid from '../../../../../src/ol/tilegrid/TileGrid.js';
+import {createXYZ} from '../../../../../src/ol/tilegrid.js';
 
 describe('ol/source/VectorTile', function () {
   let format, source;
@@ -71,6 +71,43 @@ describe('ol/source/VectorTile', function () {
       });
     });
 
+    describe('tile loading states', () => {
+      let tile, originalSetState;
+
+      beforeEach(() => {
+        const source = new VectorTileSource({
+          format: new GeoJSON(),
+          url: '#/{z}-{x}-{y}.png',
+        });
+
+        tile = source.getTile(14, 8938, 5680, 1, source.getProjection());
+        originalSetState = tile.setState;
+      });
+
+      afterEach(() => {
+        tile.setState = originalSetState;
+      });
+
+      it('transitions states until EMPTY is set', (done) => {
+        const states = [];
+        tile.setState = function (state) {
+          originalSetState.call(this, state);
+          states.push([state, tile.getState()]);
+          if (state === TileState.ERROR) {
+            expect(states).to.eql([
+              // [requested state, actual state]
+              [TileState.LOADING, TileState.LOADING],
+              [TileState.EMPTY, TileState.EMPTY],
+              [TileState.ERROR, TileState.EMPTY],
+            ]);
+            done();
+          }
+        };
+        tile.load();
+        tile.dispose();
+      });
+    });
+
     it('unreferences source tiles that are no longer used', () => {
       const source = new VectorTileSource({
         format: new GeoJSON(),
@@ -86,6 +123,51 @@ describe('ol/source/VectorTile', function () {
       tile.dispose();
       expect(Object.keys(source.sourceTiles_).length).to.be(0);
       expect(source.tileKeysBySourceTileUrl_).to.eql({});
+    });
+
+    it('unreferences source tiles with different source and render tile grids', () => {
+      const source = new VectorTileSource({
+        format: new GeoJSON(),
+        url: 'spec/ol/data/point.json?{z}-{x}-{y}',
+      });
+      source.tileGrids_['EPSG:3857'] = new TileGrid({
+        origin: [12345678, 12345678],
+        resolutions: [
+          100000, 50000, 25000, 12500, 6250, 3125, 1562.5, 781.25, 390.625,
+          195.3125, 97.65625, 48.828125, 24.4140625, 12.20703125, 6.103515625,
+          3.0517578125, 1.52587890625, 0.762939453125, 0.3814697265625,
+        ],
+        tileSize: 678,
+      });
+
+      const tiles = [
+        source.getTile(14, 8938, 5680, 1, source.getProjection()),
+        source.getTile(14, 8939, 5680, 1, source.getProjection()),
+      ];
+      tiles.forEach((tile) => tile.load());
+      expect(Object.keys(source.sourceTiles_).length).to.be(3);
+      expect(source.tileKeysBySourceTileUrl_).to.eql({
+        'spec/ol/data/point.json?13-5988-6377': [
+          'spec/ol/data/point.json?{z}-{x}-{y}/14,8938,5680',
+        ],
+        'spec/ol/data/point.json?13-5989-6377': [
+          'spec/ol/data/point.json?{z}-{x}-{y}/14,8938,5680',
+          'spec/ol/data/point.json?{z}-{x}-{y}/14,8939,5680',
+        ],
+        'spec/ol/data/point.json?13-5990-6377': [
+          'spec/ol/data/point.json?{z}-{x}-{y}/14,8939,5680',
+        ],
+      });
+      tiles[1].dispose();
+      expect(Object.keys(source.sourceTiles_).length).to.be(2);
+      expect(source.tileKeysBySourceTileUrl_).to.eql({
+        'spec/ol/data/point.json?13-5988-6377': [
+          'spec/ol/data/point.json?{z}-{x}-{y}/14,8938,5680',
+        ],
+        'spec/ol/data/point.json?13-5989-6377': [
+          'spec/ol/data/point.json?{z}-{x}-{y}/14,8938,5680',
+        ],
+      });
     });
 
     it('handles empty tiles', function () {
@@ -299,52 +381,65 @@ describe('ol/source/VectorTile', function () {
     });
   });
 
-  it('does not fill up the tile queue', function (done) {
-    const target = document.createElement('div');
-    target.style.width = '100px';
-    target.style.height = '100px';
-    document.body.appendChild(target);
+  describe('tile cache and queue', function () {
+    let map, urls, source;
 
-    const urls = [
-      'spec/ol/data/14-8938-5680.vector.pbf?num=0&coord={z},{x},{y}',
-      'spec/ol/data/14-8938-5680.vector.pbf?num=1&coord={z},{x},{y}',
-      'spec/ol/data/14-8938-5680.vector.pbf?num=2&coord={z},{x},{y}',
-      'spec/ol/data/14-8938-5680.vector.pbf?num=3&coord={z},{x},{y}',
-    ];
+    beforeEach(() => {
+      map = new Map({
+        target: createMapDiv(100, 100),
+        view: new View({
+          center: [0, 0],
+          zoom: 0,
+        }),
+      });
 
-    const source = new VectorTileSource({
-      format: new MVT(),
-      url: urls[0],
-    });
+      urls = [
+        'spec/ol/data/14-8938-5680.vector.pbf?num=0&coord={z},{x},{y}',
+        'spec/ol/data/14-8938-5680.vector.pbf?num=1&coord={z},{x},{y}',
+        'spec/ol/data/14-8938-5680.vector.pbf?num=2&coord={z},{x},{y}',
+        'spec/ol/data/14-8938-5680.vector.pbf?num=3&coord={z},{x},{y}',
+      ];
 
-    const map = new Map({
-      target: target,
-      layers: [
+      source = new VectorTileSource({
+        format: new MVT(),
+        url: urls[0],
+      });
+
+      map.addLayer(
         new VectorTileLayer({
           source: source,
         }),
-      ],
-      view: new View({
-        center: [0, 0],
-        zoom: 0,
-      }),
+      );
     });
 
-    const tileQueue = map.tileQueue_;
-    const max = urls.length + 3;
-    let count = 0;
-    map.on('rendercomplete', () => {
-      ++count;
+    afterEach(() => {
+      disposeMap(map);
+    });
 
-      expect(tileQueue.getTilesLoading()).to.be(0);
-      if (count === max) {
-        disposeMap(map);
-        done();
-        return;
-      }
+    it('does not fill up the tile queue', function (done) {
+      const tileQueue = map.tileQueue_;
+      const max = urls.length + 3;
+      let count = 0;
+      map.on('rendercomplete', () => {
+        ++count;
 
-      const newUrl = urls[count % urls.length];
-      source.setUrl(newUrl);
+        expect(tileQueue.getTilesLoading()).to.be(0);
+        if (count === max) {
+          done();
+          return;
+        }
+
+        const newUrl = urls[count % urls.length];
+        source.setUrl(newUrl);
+      });
+    });
+
+    it('clears source tiles on refresh()', async () => {
+      await new Promise((resolve) => map.once('rendercomplete', resolve));
+      expect(Object.keys(source.sourceTiles_).length).to.be.greaterThan(0);
+      source.refresh();
+      map.renderSync();
+      expect(Object.keys(source.sourceTiles_).length).to.be(0);
     });
   });
 });

@@ -1,11 +1,15 @@
-import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {Fill, Style} from '../src/ol/style.js';
-import {OSM, StadiaMaps, Vector as VectorSource} from '../src/ol/source.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import {getVectorContext} from '../src/ol/render.js';
+import OSM from '../src/ol/source/OSM.js';
+import StadiaMaps from '../src/ol/source/StadiaMaps.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import Fill from '../src/ol/style/Fill.js';
+import Style from '../src/ol/style/Style.js';
 
 //A distinct className is required to use another canvas for the background
 const background = new TileLayer({

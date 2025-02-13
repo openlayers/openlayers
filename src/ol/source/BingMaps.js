@@ -2,12 +2,12 @@
  * @module ol/source/BingMaps
  */
 
-import TileImage from './TileImage.js';
 import {applyTransform, intersects} from '../extent.js';
-import {createFromTileUrlFunctions} from '../tileurlfunction.js';
+import {get as getProjection, getTransformFromProjections} from '../proj.js';
 import {createOrUpdate} from '../tilecoord.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
-import {get as getProjection, getTransformFromProjections} from '../proj.js';
+import {createFromTileUrlFunctions} from '../tileurlfunction.js';
+import TileImage from './TileImage.js';
 
 /**
  * @param {import('../tilecoord.js').TileCoord} tileCoord Tile coord.

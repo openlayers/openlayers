@@ -20,11 +20,10 @@ export {default as Object} from './Object.js';
 export {default as Observable} from './Observable.js';
 export {default as Overlay} from './Overlay.js';
 export {default as Tile} from './Tile.js';
-export {default as TileCache} from './TileCache.js';
 export {default as TileQueue} from './TileQueue.js';
 export {default as TileRange} from './TileRange.js';
 export {default as VectorRenderTile} from './VectorRenderTile.js';
 export {default as VectorTile} from './VectorTile.js';
 export {default as View} from './View.js';
 
-export {getUid, VERSION} from './util.js';
+export {VERSION, getUid} from './util.js';

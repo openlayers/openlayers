@@ -2,8 +2,8 @@
  * @module ol/tileurlfunction
  */
 import {modulo} from './math.js';
-import {renderXYZTemplate} from './uri.js';
 import {hash as tileCoordHash} from './tilecoord.js';
+import {renderXYZTemplate} from './uri.js';
 
 /**
  * @param {string} template Template.
@@ -85,8 +85,3 @@ export function createFromTileUrlFunctions(tileUrlFunctions) {
 export function nullTileUrlFunction(tileCoord, pixelRatio, projection) {
   return undefined;
 }
-
-/**
- * TODO: Update ol-mapbox-style to import this from the uri.js module.
- */
-export {expandUrl} from './uri.js';

@@ -1,11 +1,13 @@
-import GeoJSON from '../src/ol/format/GeoJSON.js';
+import {along} from '@turf/along';
+import {length} from '@turf/length';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {along} from '@turf/along';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import {fromLonLat} from '../src/ol/proj.js';
-import {length} from '@turf/length';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 const source = new VectorSource();
 fetch('data/geojson/roads-seoul.geojson')
@@ -24,9 +26,9 @@ fetch('data/geojson/roads-seoul.geojson')
     const distance = 0.2;
 
     // get the line length in kilometers
-    const lineLength = length(turfLine, 'kilometers');
+    const lineLength = length(turfLine, {units: 'kilometers'});
     for (let i = 1; i <= lineLength / distance; i++) {
-      const turfPoint = along(turfLine, i * distance, 'kilometers');
+      const turfPoint = along(turfLine, i * distance, {units: 'kilometers'});
 
       // convert the generated point to a OpenLayers feature
       const marker = format.readFeature(turfPoint);

@@ -1,11 +1,11 @@
-import Map from '../src/ol/Map.js';
-import OSM from '../src/ol/source/OSM.js';
-import TileLayer from '../src/ol/layer/Tile.js';
-import View from '../src/ol/View.js';
 import proj4 from 'proj4';
-import {ScaleLine} from '../src/ol/control.js';
-import {fromLonLat, transformExtent} from '../src/ol/proj.js';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import ScaleLine from '../src/ol/control/ScaleLine.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import {register} from '../src/ol/proj/proj4.js';
+import {fromLonLat, transformExtent} from '../src/ol/proj.js';
+import OSM from '../src/ol/source/OSM.js';
 
 proj4.defs(
   'Indiana-East',

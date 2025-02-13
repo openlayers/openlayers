@@ -1,15 +1,16 @@
+import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import GeometryCollection from '../../../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../../../src/ol/geom/LineString.js';
 import LinearRing from '../../../../../../src/ol/geom/LinearRing.js';
-import MixedGeometryBatch from '../../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
 import MultiLineString from '../../../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../../src/ol/geom/Polygon.js';
 import RenderFeature from '../../../../../../src/ol/render/Feature.js';
-import {getUid} from '../../../../../../src/ol/index.js';
+import MixedGeometryBatch from '../../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
+import {getUid} from '../../../../../../src/ol/util.js';
 
 describe('MixedGeometryBatch', function () {
   /**
@@ -25,7 +26,7 @@ describe('MixedGeometryBatch', function () {
     let features, spy;
     beforeEach(() => {
       features = [new Feature(), new Feature(), new Feature()];
-      spy = sinon.spy(mixedBatch, 'addFeature');
+      spy = sinonSpy(mixedBatch, 'addFeature');
       mixedBatch.addFeatures(features);
     });
     it('calls addFeature for each feature', () => {
@@ -1223,6 +1224,75 @@ describe('MixedGeometryBatch', function () {
     it('clears point batch', () => {
       expect(Object.keys(mixedBatch.pointBatch.entries)).to.have.length(0);
       expect(mixedBatch.pointBatch.geometriesCount).to.be(0);
+    });
+  });
+
+  describe('#filter', () => {
+    beforeEach(() => {
+      const feature1 = new Feature({
+        keep: true,
+        geometry: new Point([101, 102]),
+      });
+      const feature2 = new Feature({
+        keep: false,
+        geometry: new Point([201, 202]),
+      });
+      const feature3 = new Feature({
+        keep: false,
+        geometry: new Point([301, 302]),
+      });
+      const feature4 = new Feature({
+        keep: true,
+        geometry: new Point([401, 402]),
+      });
+      mixedBatch.addFeature(feature1);
+      mixedBatch.addFeature(feature2);
+      mixedBatch.addFeature(feature3);
+      mixedBatch.addFeature(feature4);
+    });
+    describe('partial filtering', () => {
+      beforeEach(() => {
+        mixedBatch = mixedBatch.filter((feature) => feature.get('keep'));
+      });
+
+      it('only keeps two features', () => {
+        expect(Object.keys(mixedBatch.pointBatch.entries)).to.have.length(2);
+        expect(mixedBatch.pointBatch.geometriesCount).to.be(2);
+      });
+
+      it('leaves polygon batch empty', () => {
+        expect(Object.keys(mixedBatch.polygonBatch.entries)).to.have.length(0);
+        expect(mixedBatch.polygonBatch.geometriesCount).to.be(0);
+      });
+
+      it('leaves linestring batch empty', () => {
+        expect(Object.keys(mixedBatch.lineStringBatch.entries)).to.have.length(
+          0,
+        );
+        expect(mixedBatch.lineStringBatch.geometriesCount).to.be(0);
+      });
+    });
+    describe('filtering out everything', () => {
+      beforeEach(() => {
+        mixedBatch = mixedBatch.filter(() => false);
+      });
+
+      it('leaves point batch empty', () => {
+        expect(Object.keys(mixedBatch.pointBatch.entries)).to.have.length(0);
+        expect(mixedBatch.pointBatch.geometriesCount).to.be(0);
+      });
+
+      it('leaves polygon batch empty', () => {
+        expect(Object.keys(mixedBatch.polygonBatch.entries)).to.have.length(0);
+        expect(mixedBatch.polygonBatch.geometriesCount).to.be(0);
+      });
+
+      it('leaves linestring batch empty', () => {
+        expect(Object.keys(mixedBatch.lineStringBatch.entries)).to.have.length(
+          0,
+        );
+        expect(mixedBatch.lineStringBatch.geometriesCount).to.be(0);
+      });
     });
   });
 });

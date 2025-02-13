@@ -9,8 +9,8 @@ import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
-import {createElementNS, parse} from '../../../../../src/ol/xml.js';
 import {transform} from '../../../../../src/ol/proj.js';
+import {createElementNS, parse} from '../../../../../src/ol/xml.js';
 
 const readGeometry = function (format, text, opt_options) {
   const doc = parse(text);

@@ -1,14 +1,21 @@
 /**
  * @module ol/renderer/webgl/VectorLayer
  */
-import BaseVector from '../../layer/BaseVector.js';
-import MixedGeometryBatch from '../../render/webgl/MixedGeometryBatch.js';
-import VectorEventType from '../../source/VectorEventType.js';
-import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
 import ViewHint from '../../ViewHint.js';
-import WebGLLayerRenderer from './Layer.js';
-import WebGLRenderTarget from '../../webgl/RenderTarget.js';
-import {DefaultUniform} from '../../webgl/Helper.js';
+import {assert} from '../../asserts.js';
+import {listen, unlistenByKey} from '../../events.js';
+import {buffer, createEmpty, equals} from '../../extent.js';
+import BaseVector from '../../layer/BaseVector.js';
+import {
+  getTransformFromProjections,
+  getUserProjection,
+  toUserExtent,
+  toUserResolution,
+} from '../../proj.js';
+import MixedGeometryBatch from '../../render/webgl/MixedGeometryBatch.js';
+import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
+import {breakDownFlatStyle, colorDecodeId} from '../../render/webgl/utils.js';
+import VectorEventType from '../../source/VectorEventType.js';
 import {
   apply as applyTransform,
   create as createTransform,
@@ -17,21 +24,14 @@ import {
   setFromArray as setFromTransform,
   translate as translateTransform,
 } from '../../transform.js';
-import {assert} from '../../asserts.js';
-import {buffer, createEmpty, equals} from '../../extent.js';
-import {colorDecodeId} from '../../render/webgl/utils.js';
 import {
   create as createMat4,
   fromTransform as mat4FromTransform,
 } from '../../vec/mat4.js';
-import {
-  getTransformFromProjections,
-  getUserProjection,
-  toUserExtent,
-  toUserResolution,
-} from '../../proj.js';
+import {DefaultUniform} from '../../webgl/Helper.js';
+import WebGLRenderTarget from '../../webgl/RenderTarget.js';
+import WebGLLayerRenderer from './Layer.js';
 import {getWorldParameters} from './worldUtil.js';
-import {listen, unlistenByKey} from '../../events.js';
 
 export const Uniforms = {
   ...DefaultUniform,
@@ -41,13 +41,17 @@ export const Uniforms = {
 };
 
 /**
- * @typedef {import('../../render/webgl/VectorStyleRenderer.js').VectorStyle} VectorStyle
+ * @typedef {import('../../render/webgl/VectorStyleRenderer.js').AsShaders} StyleAsShaders
+ */
+/**
+ * @typedef {import('../../render/webgl/VectorStyleRenderer.js').AsRule} StyleAsRule
  */
 
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the canvas element.
- * @property {VectorStyle|Array<VectorStyle>} style Vector style as literal style or shaders; can also accept an array of styles
+ * @property {import('../../style/flat.js').FlatStyleLike | Array<StyleAsShaders> | StyleAsShaders} style Flat vector style; also accepts shaders
+ * @property {Object<string, number|Array<number>|string|boolean>} variables Style variables
  * @property {boolean} [disableHitDetection=false] Setting this to true will provide a slight performance boost, but will
  * prevent all hit detection on the layer.
  * @property {Array<import("./Layer").PostProcessesOptions>} [postProcesses] Post-processes definitions
@@ -56,16 +60,16 @@ export const Uniforms = {
 /**
  * @classdesc
  * Experimental WebGL vector renderer. Supports polygons, lines and points:
- *  * Polygons are broken down into triangles
- *  * Lines are rendered as strips of quads
- *  * Points are rendered as quads
+ *  Polygons are broken down into triangles
+ *  Lines are rendered as strips of quads
+ *  Points are rendered as quads
  *
  * You need to provide vertex and fragment shaders as well as custom attributes for each type of geometry. All shaders
  * can access the uniforms in the {@link module:ol/webgl/Helper~DefaultUniform} enum.
  * The vertex shaders can access the following attributes depending on the geometry type:
- *  * For polygons: {@link module:ol/render/webgl/PolygonBatchRenderer~Attributes}
- *  * For line strings: {@link module:ol/render/webgl/LineStringBatchRenderer~Attributes}
- *  * For points: {@link module:ol/render/webgl/PointBatchRenderer~Attributes}
+ *  For polygons: {@link module:ol/render/webgl/PolygonBatchRenderer~Attributes}
+ *  For line strings: {@link module:ol/render/webgl/LineStringBatchRenderer~Attributes}
+ *  For points: {@link module:ol/render/webgl/PointBatchRenderer~Attributes}
  *
  * Please note that the fragment shaders output should have premultiplied alpha, otherwise visual anomalies may occur.
  *
@@ -139,7 +143,13 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     this.currentFrameStateTransform_ = createTransform();
 
     /**
-     * @type {Array<VectorStyle>}
+     * @type {import('../../style/flat.js').StyleVariables}
+     * @private
+     */
+    this.styleVariables_ = {};
+
+    /**
+     * @type {Array<StyleAsRule | StyleAsShaders>}
      * @private
      */
     this.styles_ = [];
@@ -223,9 +233,8 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    * @private
    */
   applyOptions_(options) {
-    this.styles_ = Array.isArray(options.style)
-      ? options.style
-      : [options.style];
+    this.styleVariables_ = options.variables;
+    this.styles_ = breakDownFlatStyle(options.style);
   }
 
   /**
@@ -235,7 +244,13 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     this.buffers_ = [];
     this.styleRenderers_ = this.styles_.map(
       (style) =>
-        new VectorStyleRenderer(style, this.helper, this.hitDetectionEnabled_),
+        new VectorStyleRenderer(
+          style,
+          this.styleVariables_,
+          this.helper,
+          this.hitDetectionEnabled_,
+          'filter' in style ? style.filter : null,
+        ),
     );
   }
 
@@ -349,14 +364,13 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     // draw the normal canvas
     this.helper.prepareDraw(frameState);
     this.renderWorlds(frameState, false, startWorld, endWorld, worldWidth);
-    this.helper.finalizeDraw(frameState);
+    this.helper.finalizeDraw(
+      frameState,
+      this.dispatchPreComposeEvent,
+      this.dispatchPostComposeEvent,
+    );
 
     const canvas = this.helper.getCanvas();
-    const layerState = frameState.layerStatesArray[frameState.layerIndex];
-    const opacity = layerState.opacity;
-    if (opacity !== parseFloat(canvas.style.opacity)) {
-      canvas.style.opacity = String(opacity);
-    }
 
     if (this.hitDetectionEnabled_) {
       this.renderWorlds(frameState, true, startWorld, endWorld, worldWidth);
@@ -530,20 +544,24 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    * @param {import('../../render/webgl/VectorStyleRenderer.js').WebGLBuffers} buffers Buffers
    */
   disposeBuffers(buffers) {
+    /**
+     * @param {Array<import('../../webgl/Buffer.js').default>} typeBuffers Buffers
+     */
+    const disposeBuffersOfType = (typeBuffers) => {
+      for (const buffer of typeBuffers) {
+        if (buffer) {
+          this.helper.deleteBuffer(buffer);
+        }
+      }
+    };
     if (buffers.pointBuffers) {
-      buffers.pointBuffers
-        .filter(Boolean)
-        .forEach((buffer) => this.helper.deleteBuffer(buffer));
+      disposeBuffersOfType(buffers.pointBuffers);
     }
     if (buffers.lineStringBuffers) {
-      buffers.lineStringBuffers
-        .filter(Boolean)
-        .forEach((buffer) => this.helper.deleteBuffer(buffer));
+      disposeBuffersOfType(buffers.lineStringBuffers);
     }
     if (buffers.polygonBuffers) {
-      buffers.polygonBuffers
-        .filter(Boolean)
-        .forEach((buffer) => this.helper.deleteBuffer(buffer));
+      disposeBuffersOfType(buffers.polygonBuffers);
     }
   }
 
@@ -553,7 +571,9 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    */
   disposeInternal() {
     this.buffers_.forEach((buffers) => {
-      this.disposeBuffers(buffers);
+      if (buffers) {
+        this.disposeBuffers(buffers);
+      }
     });
     if (this.sourceListenKeys_) {
       this.sourceListenKeys_.forEach(function (key) {

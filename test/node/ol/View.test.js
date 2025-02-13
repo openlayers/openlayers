@@ -1,11 +1,11 @@
 import View from '../../../src/ol/View.js';
-import expect from '../expect.js';
 import {
   addCommon,
   clearAllProjections,
   clearUserProjection,
   useGeographic,
 } from '../../../src/ol/proj.js';
+import expect from '../expect.js';
 
 describe('ol/View.js', function () {
   afterEach(function () {

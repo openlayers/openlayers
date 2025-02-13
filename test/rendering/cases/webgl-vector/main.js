@@ -1,30 +1,21 @@
-import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
-import Layer from '../../../../src/ol/layer/Layer.js';
 import Map from '../../../../src/ol/Map.js';
-import TileLayer from '../../../../src/ol/layer/Tile.js';
-import VectorSource from '../../../../src/ol/source/Vector.js';
 import View from '../../../../src/ol/View.js';
-import WebGLVectorLayerRenderer from '../../../../src/ol/renderer/webgl/VectorLayer.js';
+import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
+import TileLayer from '../../../../src/ol/layer/Tile.js';
+import WebGLVectorLayer from '../../../../src/ol/layer/WebGLVector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
 
-class WebGLLayer extends Layer {
-  createRenderer() {
-    return new WebGLVectorLayerRenderer(this, {
-      className: this.getClassName(),
-      style: {
-        'fill-color': '#ddd',
-        'stroke-color': '#eee',
-        'stroke-width': 2,
-      },
-    });
-  }
-}
-
-const vector = new WebGLLayer({
+const vector = new WebGLVectorLayer({
   source: new VectorSource({
     url: '/data/countries.json',
     format: new GeoJSON(),
   }),
+  style: {
+    'fill-color': '#ddd',
+    'stroke-color': '#eee',
+    'stroke-width': 2,
+  },
 });
 
 const raster = new TileLayer({

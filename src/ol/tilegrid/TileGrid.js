@@ -4,14 +4,14 @@
 import TileRange, {
   createOrUpdate as createOrUpdateTileRange,
 } from '../TileRange.js';
-import {DEFAULT_TILE_SIZE} from './common.js';
-import {assert} from '../asserts.js';
-import {ceil, clamp, floor} from '../math.js';
-import {createOrUpdate, getTopLeft} from '../extent.js';
-import {createOrUpdate as createOrUpdateTileCoord} from '../tilecoord.js';
-import {intersectsLinearRing} from '../geom/flat/intersectsextent.js';
 import {isSorted, linearFindNearest} from '../array.js';
+import {assert} from '../asserts.js';
+import {createOrUpdate, getTopLeft} from '../extent.js';
+import {intersectsLinearRing} from '../geom/flat/intersectsextent.js';
+import {ceil, clamp, floor} from '../math.js';
 import {toSize} from '../size.js';
+import {createOrUpdate as createOrUpdateTileCoord} from '../tilecoord.js';
+import {DEFAULT_TILE_SIZE} from './common.js';
 
 /**
  * @private

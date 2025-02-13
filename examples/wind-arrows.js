@@ -1,13 +1,16 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import OSM from '../src/ol/source/OSM.js';
+import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
-import VectorSource from '../src/ol/source/Vector.js';
-import View from '../src/ol/View.js';
-import {Fill, RegularShape, Stroke, Style} from '../src/ol/style.js';
 import {fromLonLat} from '../src/ol/proj.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import Fill from '../src/ol/style/Fill.js';
+import RegularShape from '../src/ol/style/RegularShape.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 const shaft = new RegularShape({
   points: 2,

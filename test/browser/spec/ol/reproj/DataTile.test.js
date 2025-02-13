@@ -1,8 +1,8 @@
-import DataTileSource from '../../../../../src/ol/source/DataTile.js';
+import proj4 from 'proj4';
 import Map from '../../../../../src/ol/Map.js';
-import ReprojDataTile from '../../../../../src/ol/reproj/DataTile.js';
 import View from '../../../../../src/ol/View.js';
 import WebGLTileLayer from '../../../../../src/ol/layer/WebGLTile.js';
+import {register} from '../../../../../src/ol/proj/proj4.js';
 import {
   addCommon,
   clearAllProjections,
@@ -10,8 +10,9 @@ import {
   transform,
   transformExtent,
 } from '../../../../../src/ol/proj.js';
+import ReprojDataTile from '../../../../../src/ol/reproj/DataTile.js';
+import DataTileSource from '../../../../../src/ol/source/DataTile.js';
 import {createXYZ, getForProjection} from '../../../../../src/ol/tilegrid.js';
-import {register} from '../../../../../src/ol/proj/proj4.js';
 
 describe('ol/reproj/DataTile', () => {
   /** @type {Map} */

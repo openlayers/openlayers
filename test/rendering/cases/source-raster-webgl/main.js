@@ -1,9 +1,9 @@
-import DataTile from '../../../../src/ol/source/DataTile.js';
-import ImageLayer from '../../../../src/ol/layer/Image.js';
 import Map from '../../../../src/ol/Map.js';
-import RasterSource from '../../../../src/ol/source/Raster.js';
-import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
 import View from '../../../../src/ol/View.js';
+import ImageLayer from '../../../../src/ol/layer/Image.js';
+import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
+import DataTile from '../../../../src/ol/source/DataTile.js';
+import RasterSource from '../../../../src/ol/source/Raster.js';
 
 const size = 256;
 
@@ -21,6 +21,7 @@ const raster = new RasterSource({
         maxZoom: 0,
         interpolate: true,
         loader: () => data,
+        transition: 0,
       }),
     }),
   ],

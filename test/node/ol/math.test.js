@@ -1,4 +1,3 @@
-import expect from '../expect.js';
 import {
   ceil,
   clamp,
@@ -10,7 +9,9 @@ import {
   toDegrees,
   toFixed,
   toRadians,
+  wrap,
 } from '../../../src/ol/math.js';
+import expect from '../expect.js';
 
 describe('ol/math.js', () => {
   describe('clamp', function () {
@@ -191,6 +192,66 @@ describe('ol/math.js', () => {
     for (const c of cases) {
       it(`works for ceil(${c[0]}, ${c[1]})`, () => {
         expect(ceil(c[0], c[1])).to.be(c[2]);
+      });
+    }
+  });
+
+  describe('wrap', () => {
+    const cases = [
+      {
+        value: 0,
+        min: -180,
+        max: 180,
+        wrapped: 0,
+      },
+      {
+        value: 181,
+        min: -180,
+        max: 180,
+        wrapped: -179,
+      },
+      {
+        value: 180,
+        min: -180,
+        max: 180,
+        wrapped: -180,
+      },
+      {
+        value: -181,
+        min: -180,
+        max: 180,
+        wrapped: 179,
+      },
+      {
+        value: 181 + 360 * 5,
+        min: -180,
+        max: 180,
+        wrapped: -179,
+      },
+      {
+        value: -181 - 360 * 5,
+        min: -180,
+        max: 180,
+        wrapped: 179,
+      },
+      {
+        value: Math.PI / 4,
+        min: -Math.PI,
+        max: Math.PI,
+        wrapped: Math.PI / 4,
+      },
+      {
+        value: Math.PI / 4 + 4 * Math.PI,
+        min: -Math.PI,
+        max: Math.PI,
+        wrapped: Math.PI / 4,
+      },
+    ];
+
+    for (const c of cases) {
+      it(`works for wrap(${c.value}, ${c.min}, ${c.max})`, () => {
+        const wrapped = wrap(c.value, c.min, c.max);
+        expect(wrapped).to.roughlyEqual(c.wrapped, 1e-6);
       });
     }
   });

@@ -1,16 +1,16 @@
-import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {
-  DragAndDrop,
-  defaults as defaultInteractions,
-} from '../src/ol/interaction.js';
-import {GPX, GeoJSON, IGC, KML, TopoJSON} from '../src/ol/format.js';
-import {
-  Tile as TileLayer,
-  VectorImage as VectorImageLayer,
-} from '../src/ol/layer.js';
-import {Vector as VectorSource} from '../src/ol/source.js';
+import GPX from '../src/ol/format/GPX.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
+import IGC from '../src/ol/format/IGC.js';
+import KML from '../src/ol/format/KML.js';
+import TopoJSON from '../src/ol/format/TopoJSON.js';
+import DragAndDrop from '../src/ol/interaction/DragAndDrop.js';
+import {defaults as defaultInteractions} from '../src/ol/interaction/defaults.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorImageLayer from '../src/ol/layer/VectorImage.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 const dragAndDropInteraction = new DragAndDrop({
   formatConstructors: [GPX, GeoJSON, IGC, KML, TopoJSON],
@@ -74,8 +74,7 @@ map.on('pointermove', function (evt) {
   if (evt.dragging) {
     return;
   }
-  const pixel = map.getEventPixel(evt.originalEvent);
-  displayFeatureInfo(pixel);
+  displayFeatureInfo(evt.pixel);
 });
 
 map.on('click', function (evt) {

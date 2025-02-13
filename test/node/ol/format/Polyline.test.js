@@ -1,8 +1,8 @@
 import Feature from '../../../../src/ol/Feature.js';
-import LineString from '../../../../src/ol/geom/LineString.js';
 import Polyline, * as polyline from '../../../../src/ol/format/Polyline.js';
-import expect from '../../expect.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
 import {get as getProjection, transform} from '../../../../src/ol/proj.js';
+import expect from '../../expect.js';
 
 describe('ol/format/Polyline.js', function () {
   let format;

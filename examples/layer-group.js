@@ -1,10 +1,11 @@
 import $ from 'jquery';
 import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import LayerGroup from '../src/ol/layer/Group.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import {fromLonLat} from '../src/ol/proj.js';
 import OSM from '../src/ol/source/OSM.js';
 import TileJSON from '../src/ol/source/TileJSON.js';
-import View from '../src/ol/View.js';
-import {Group as LayerGroup, Tile as TileLayer} from '../src/ol/layer.js';
-import {fromLonLat} from '../src/ol/proj.js';
 
 const key =
   'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2t0cGdwMHVnMGdlbzMxbDhwazBic2xrNSJ9.WbcTL9uj8JPAsnT9mgb7oQ';

@@ -1,7 +1,17 @@
 /**
  * @module ol/renderer/canvas/Layer
  */
-import LayerRenderer from '../Layer.js';
+import {equals} from '../../array.js';
+import {asArray} from '../../color.js';
+import {createCanvasContext2D} from '../../dom.js';
+import {
+  getBottomLeft,
+  getBottomRight,
+  getHeight,
+  getTopLeft,
+  getTopRight,
+  getWidth,
+} from '../../extent.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import ZIndexContext from '../../render/canvas/ZIndexContext.js';
@@ -12,17 +22,7 @@ import {
   makeInverse,
   toString as toTransformString,
 } from '../../transform.js';
-import {asArray} from '../../color.js';
-import {createCanvasContext2D} from '../../dom.js';
-import {equals} from '../../array.js';
-import {
-  getBottomLeft,
-  getBottomRight,
-  getHeight,
-  getTopLeft,
-  getTopRight,
-  getWidth,
-} from '../../extent.js';
+import LayerRenderer from '../Layer.js';
 
 /**
  * @type {Array<HTMLCanvasElement>}
@@ -127,7 +127,7 @@ class CanvasLayerRenderer extends LayerRenderer {
     try {
       pixelContext.drawImage(image, col, row, 1, 1, 0, 0, 1, 1);
       data = pixelContext.getImageData(0, 0, 1, 1).data;
-    } catch (err) {
+    } catch {
       pixelContext = null;
       return null;
     }

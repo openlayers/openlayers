@@ -1,11 +1,5 @@
-import expect from '../../expect.js';
 import proj4 from 'proj4';
-import {
-  Projection,
-  addCommon,
-  clearAllProjections,
-  transform,
-} from '../../../../src/ol/proj.js';
+import Projection from '../../../../src/ol/proj/Projection.js';
 import {
   fromEPSGCode,
   getEPSGLookup,
@@ -14,10 +8,17 @@ import {
   setEPSGLookup,
   unregister,
 } from '../../../../src/ol/proj/proj4.js';
+import {
+  addCommon,
+  clearAllProjections,
+  transform,
+} from '../../../../src/ol/proj.js';
+import expect from '../../expect.js';
 
 const epsgDefinitions = {
   32721: '+proj=utm +zone=21 +south +datum=WGS84 +units=m +no_defs +type=crs',
   32612: '+proj=utm +zone=12 +datum=WGS84 +units=m +no_defs +type=crs',
+  3416: '+proj=lcc +lat_0=47.5 +lon_0=13.3333333333333 +lat_1=49 +lat_2=46 +x_0=400000 +y_0=400000 +ellps=GRS80 +units=m +no_defs +type=crs',
 };
 
 async function mockEPSGLookup(code) {
@@ -71,7 +72,7 @@ describe('ol/proj/proj4.js', () => {
 
       register(proj4);
       setEPSGLookup(lookup);
-      await fromEPSGCode(32612);
+      await fromEPSGCode(3416);
 
       expect(called).to.be(true);
     });

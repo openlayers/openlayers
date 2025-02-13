@@ -1,9 +1,11 @@
+import {jsPDF} from 'jspdf';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import WKT from '../src/ol/format/WKT.js';
-import jsPDF from 'jspdf';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 const raster = new TileLayer({
   source: new OSM(),
@@ -51,7 +53,7 @@ exportButton.addEventListener(
     document.body.style.cursor = 'progress';
 
     const format = document.getElementById('format').value;
-    const resolution = document.getElementById('resolution').value;
+    const resolution = Number(document.getElementById('resolution').value);
     const dim = dims[format];
     const width = Math.round((dim[0] * resolution) / 25.4);
     const height = Math.round((dim[1] * resolution) / 25.4);

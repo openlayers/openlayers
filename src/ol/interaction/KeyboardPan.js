@@ -1,11 +1,11 @@
 /**
  * @module ol/interaction/KeyboardPan
  */
+import {rotate as rotateCoordinate} from '../coordinate.js';
 import EventType from '../events/EventType.js';
-import Interaction, {pan} from './Interaction.js';
 import Key from '../events/Key.js';
 import {noModifierKeys, targetNotEditable} from '../events/condition.js';
-import {rotate as rotateCoordinate} from '../coordinate.js';
+import Interaction, {pan} from './Interaction.js';
 
 /**
  * @typedef {Object} Options

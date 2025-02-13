@@ -1,11 +1,11 @@
 /**
  * @module ol/layer/Heatmap
  */
-import BaseVector from './BaseVector.js';
+import {createCanvasContext2D} from '../dom.js';
+import {clamp} from '../math.js';
 import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer.js';
 import {ShaderBuilder} from '../webgl/ShaderBuilder.js';
-import {clamp} from '../math.js';
-import {createCanvasContext2D} from '../dom.js';
+import BaseVector from './BaseVector.js';
 
 /**
  * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../Feature.js").default]
@@ -189,13 +189,13 @@ class Heatmap extends BaseVector {
    */
   createRenderer() {
     const builder = new ShaderBuilder()
-      .addAttribute('float a_prop_weight')
-      .addVarying('v_prop_weight', 'float', 'a_prop_weight')
+      .addAttribute('float a_weight')
+      .addVarying('v_weight', 'float', 'a_weight')
       .addUniform('float u_size')
       .addUniform('float u_blurSlope')
       .setSymbolSizeExpression('vec2(u_size)')
       .setSymbolColorExpression(
-        'vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * u_blurSlope) * v_prop_weight)',
+        'vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * u_blurSlope) * v_weight)',
       );
 
     return new WebGLPointsLayerRenderer(this, {

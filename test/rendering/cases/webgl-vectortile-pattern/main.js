@@ -1,9 +1,8 @@
-import MVT from '../../../../src/ol/format/MVT.js';
 import Map from '../../../../src/ol/Map.js';
-import VectorTile from '../../../../src/ol/layer/VectorTile.js';
-import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
 import View from '../../../../src/ol/View.js';
-import WebGLVectorTileLayerRenderer from '../../../../src/ol/renderer/webgl/VectorTileLayer.js';
+import MVT from '../../../../src/ol/format/MVT.js';
+import WebGLVectorTileLayer from '../../../../src/ol/layer/WebGLVectorTile.js';
+import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
 import {createXYZ} from '../../../../src/ol/tilegrid.js';
 
 // create patterns
@@ -28,19 +27,6 @@ context.fillRect(0, 0, 4, 2);
 context.fillStyle = 'rgba(255,0,0,0.7)';
 context.fillRect(4, 0, 4, 2);
 
-class WebGLVectorTileLayer extends VectorTile {
-  createRenderer() {
-    return new WebGLVectorTileLayerRenderer(this, {
-      className: this.getClassName(),
-      style: {
-        'fill-pattern-src': canvasFill.toDataURL('png'),
-        'stroke-pattern-src': canvasStroke.toDataURL('png'),
-        'stroke-width': 1,
-      },
-    });
-  }
-}
-
 const map = new Map({
   layers: [
     new WebGLVectorTileLayer({
@@ -50,6 +36,11 @@ const map = new Map({
         url: '/data/tiles/mapbox-streets-v6/{z}/{x}/{y}.vector.pbf',
         transition: 0,
       }),
+      style: {
+        'fill-pattern-src': canvasFill.toDataURL('png'),
+        'stroke-pattern-src': canvasStroke.toDataURL('png'),
+        'stroke-width': 1,
+      },
     }),
   ],
   target: 'map',

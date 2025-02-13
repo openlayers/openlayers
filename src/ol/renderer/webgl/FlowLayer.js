@@ -2,9 +2,9 @@
  * @module ol/renderer/webgl/FlowLayer
  */
 import WebGLArrayBuffer from '../../webgl/Buffer.js';
-import WebGLTileLayerRenderer from './TileLayer.js';
-import {ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
 import {DefaultUniform} from '../../webgl/Helper.js';
+import {ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
+import WebGLTileLayerRenderer from './TileLayer.js';
 
 /**
  * @typedef {import("../../layer/Flow.js").default} LayerType

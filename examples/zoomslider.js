@@ -1,8 +1,8 @@
 import Map from '../src/ol/Map.js';
-import OSM from '../src/ol/source/OSM.js';
-import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
-import {ZoomSlider} from '../src/ol/control.js';
+import ZoomSlider from '../src/ol/control/ZoomSlider.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import OSM from '../src/ol/source/OSM.js';
 
 /**
  * Helper method for map-creation.

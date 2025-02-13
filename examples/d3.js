@@ -1,13 +1,14 @@
-import Map from '../src/ol/Map.js';
-import StadiaMaps from '../src/ol/source/StadiaMaps.js';
-import View from '../src/ol/View.js';
-import {Layer, Tile as TileLayer} from '../src/ol/layer.js';
-import {feature} from 'topojson-client';
-import {fromLonLat, toLonLat} from '../src/ol/proj.js';
-import {geoBounds, geoMercator, geoPath} from 'd3-geo';
-import {getCenter, getWidth} from '../src/ol/extent.js';
 import {json} from 'd3-fetch';
+import {geoBounds, geoMercator, geoPath} from 'd3-geo';
 import {select} from 'd3-selection';
+import {feature} from 'topojson-client';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import {getCenter, getWidth} from '../src/ol/extent.js';
+import Layer from '../src/ol/layer/Layer.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import {fromLonLat, toLonLat} from '../src/ol/proj.js';
+import StadiaMaps from '../src/ol/source/StadiaMaps.js';
 
 class CanvasLayer extends Layer {
   constructor(options) {
@@ -92,7 +93,7 @@ const map = new Map({
  */
 json('data/topojson/us.json').then(function (us) {
   const layer = new CanvasLayer({
-    features: feature(us, us.objects.counties),
+    features: feature(us, 'counties'),
   });
 
   map.addLayer(layer);

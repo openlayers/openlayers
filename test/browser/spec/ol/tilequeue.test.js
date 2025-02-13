@@ -1,10 +1,10 @@
 import ImageTile from '../../../../src/ol/ImageTile.js';
 import Tile from '../../../../src/ol/Tile.js';
-import TileCache from '../../../../src/ol/TileCache.js';
 import TileQueue from '../../../../src/ol/TileQueue.js';
 import TileState from '../../../../src/ol/TileState.js';
-import {DROP} from '../../../../src/ol/structs/PriorityQueue.js';
 import {defaultImageLoadFunction} from '../../../../src/ol/source/Image.js';
+import LRUCache from '../../../../src/ol/structs/LRUCache.js';
+import {DROP} from '../../../../src/ol/structs/PriorityQueue.js';
 
 describe('ol.TileQueue', function () {
   function addRandomPriorityTiles(tq, num) {
@@ -180,7 +180,7 @@ describe('ol.TileQueue', function () {
     it('error tiles - without retry', function (done) {
       const tq = new TileQueue(noop, noop);
       const tile = createImageTile(noop);
-      const tileCache = new TileCache();
+      const tileCache = new LRUCache();
       tileCache.set(tile.getTileCoord().toString(), tile);
 
       tq.enqueue([tile]);

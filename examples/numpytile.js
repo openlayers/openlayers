@@ -1,8 +1,9 @@
-import DataTileSource from '../src/ol/source/DataTile.js';
+import NumpyLoader from '@planet/ol-numpytiles';
 import Map from '../src/ol/Map.js';
-import TileLayer from '../src/ol/layer/WebGLTile.js';
 import View from '../src/ol/View.js';
+import TileLayer from '../src/ol/layer/WebGLTile.js';
 import {fromLonLat} from '../src/ol/proj.js';
+import DataTileSource from '../src/ol/source/DataTile.js';
 
 // 16-bit COG
 // Which will be served as NumpyTiles.
@@ -99,7 +100,7 @@ inputMax.addEventListener('input', (evt) => {
   outputMax.innerText = evt.target.value;
 });
 
-inputMin.value = initialMin;
-inputMax.value = initialMax;
-outputMin.innerText = initialMin;
-outputMax.innerText = initialMax;
+inputMin.value = String(initialMin);
+inputMax.value = String(initialMax);
+outputMin.innerText = String(initialMin);
+outputMax.innerText = String(initialMax);

@@ -4,9 +4,9 @@
 
 /**
  * The ol/proj module stores:
- * * a list of {@link module:ol/proj/Projection~Projection}
+ * a list of {@link module:ol/proj/Projection~Projection}
  * objects, one for each projection supported by the application
- * * a list of transform functions needed to convert coordinates in one projection
+ * a list of transform functions needed to convert coordinates in one projection
  * into another.
  *
  * The static functions are the methods used to maintain these.
@@ -53,14 +53,18 @@
  * {@link module:ol/proj.addProjection}. See examples/wms-no-proj for an example of
  * this.
  */
+import {warn} from './console.js';
+import {equals, getWorldsAway} from './coordinate.js';
+import {applyTransform, getWidth} from './extent.js';
+import {clamp, modulo} from './math.js';
 import Projection from './proj/Projection.js';
+import {METERS_PER_UNIT} from './proj/Units.js';
 import {
   PROJECTIONS as EPSG3857_PROJECTIONS,
   fromEPSG4326,
   toEPSG4326,
 } from './proj/epsg3857.js';
 import {PROJECTIONS as EPSG4326_PROJECTIONS} from './proj/epsg4326.js';
-import {METERS_PER_UNIT} from './proj/Units.js';
 import {
   add as addProj,
   clear as clearProj,
@@ -71,11 +75,11 @@ import {
   clear as clearTransformFuncs,
   get as getTransformFunc,
 } from './proj/transforms.js';
-import {applyTransform, getWidth} from './extent.js';
-import {clamp, modulo} from './math.js';
-import {equals, getWorldsAway} from './coordinate.js';
+import {
+  makeProjection as makeUTMProjection,
+  makeTransforms as makeUTMTransforms,
+} from './proj/utm.js';
 import {getDistance} from './sphere.js';
-import {warn} from './console.js';
 
 /**
  * A projection as {@link module:ol/proj/Projection~Projection}, SRS identifier
@@ -83,6 +87,22 @@ import {warn} from './console.js';
  * @typedef {Projection|string|undefined} ProjectionLike
  * @api
  */
+
+/**
+ * @typedef {Object} Transforms
+ * @property {TransformFunction} forward The forward transform (from geographic).
+ * @property {TransformFunction} inverse The inverse transform (to geographic).
+ */
+
+/**
+ * @type {Array<function(Projection): Transforms|null>}
+ */
+const transformFactories = [makeUTMTransforms];
+
+/**
+ * @type {Array<function(string): Projection|null>}
+ */
+const projectionFactories = [makeUTMProjection];
 
 /**
  * A transform function accepts an array of input coordinate values, an optional
@@ -107,7 +127,7 @@ export {Projection};
 let showCoordinateWarning = true;
 
 /**
- * @param {boolean} [disable = true] Disable console info about `useGeographic()`
+ * @param {boolean} [disable] Disable console info about `useGeographic()`
  */
 export function disableCoordinateWarning(disable) {
   const hide = disable === undefined ? true : disable;
@@ -176,9 +196,20 @@ export function addProjections(projections) {
  * @api
  */
 export function get(projectionLike) {
-  return typeof projectionLike === 'string'
-    ? getProj(/** @type {string} */ (projectionLike))
-    : /** @type {Projection} */ (projectionLike) || null;
+  if (!(typeof projectionLike === 'string')) {
+    return projectionLike;
+  }
+  const projection = getProj(projectionLike);
+  if (projection) {
+    return projection;
+  }
+  for (const makeProjection of projectionFactories) {
+    const projection = makeProjection(projectionLike);
+    if (projection) {
+      return projection;
+    }
+  }
+  return null;
 }
 
 /**
@@ -226,7 +257,7 @@ export function getPointResolution(projection, resolution, point, units) {
         projection,
         get('EPSG:4326'),
       );
-      if (toEPSG4326 === identityTransform && projUnits !== 'degrees') {
+      if (!toEPSG4326 && projUnits !== 'degrees') {
         // no transform is available
         pointResolution = resolution * projection.getMetersPerUnit();
       } else {
@@ -460,22 +491,86 @@ export function equivalent(projection1, projection2) {
  * Searches in the list of transform functions for the function for converting
  * coordinates from the source projection to the destination projection.
  *
- * @param {Projection} sourceProjection Source Projection object.
- * @param {Projection} destinationProjection Destination Projection
+ * @param {Projection} source Source Projection object.
+ * @param {Projection} destination Destination Projection
  *     object.
- * @return {TransformFunction} Transform function.
+ * @return {TransformFunction|null} Transform function.
  */
-export function getTransformFromProjections(
-  sourceProjection,
-  destinationProjection,
-) {
-  const sourceCode = sourceProjection.getCode();
-  const destinationCode = destinationProjection.getCode();
+export function getTransformFromProjections(source, destination) {
+  const sourceCode = source.getCode();
+  const destinationCode = destination.getCode();
   let transformFunc = getTransformFunc(sourceCode, destinationCode);
-  if (!transformFunc) {
-    transformFunc = identityTransform;
+  if (transformFunc) {
+    return transformFunc;
   }
+
+  /**
+   * @type {Transforms|null}
+   */
+  let sourceTransforms = null;
+
+  /**
+   * @type {Transforms|null}
+   */
+  let destinationTransforms = null;
+
+  // lazily add projections if we have supported transforms
+  for (const makeTransforms of transformFactories) {
+    if (!sourceTransforms) {
+      sourceTransforms = makeTransforms(source);
+    }
+    if (!destinationTransforms) {
+      destinationTransforms = makeTransforms(destination);
+    }
+  }
+
+  if (!sourceTransforms && !destinationTransforms) {
+    return null;
+  }
+
+  const intermediateCode = 'EPSG:4326';
+  if (!destinationTransforms) {
+    const toDestination = getTransformFunc(intermediateCode, destinationCode);
+    if (toDestination) {
+      transformFunc = composeTransformFuncs(
+        sourceTransforms.inverse,
+        toDestination,
+      );
+    }
+  } else if (!sourceTransforms) {
+    const fromSource = getTransformFunc(sourceCode, intermediateCode);
+    if (fromSource) {
+      transformFunc = composeTransformFuncs(
+        fromSource,
+        destinationTransforms.forward,
+      );
+    }
+  } else {
+    transformFunc = composeTransformFuncs(
+      sourceTransforms.inverse,
+      destinationTransforms.forward,
+    );
+  }
+
+  if (transformFunc) {
+    addProjection(source);
+    addProjection(destination);
+    addTransformFunc(source, destination, transformFunc);
+  }
+
   return transformFunc;
+}
+
+/**
+ * @param {TransformFunction} t1 The first transform function.
+ * @param {TransformFunction} t2 The second transform function.
+ * @return {TransformFunction} The composed transform function.
+ */
+function composeTransformFuncs(t1, t2) {
+  return function (input, output, dimensions, stride) {
+    output = t1(input, output, dimensions, stride);
+    return t2(output, output, dimensions, stride);
+  };
 }
 
 /**
@@ -496,7 +591,9 @@ export function getTransform(source, destination) {
 
 /**
  * Transforms a coordinate from source projection to destination projection.
- * This returns a new coordinate (and does not modify the original).
+ * This returns a new coordinate (and does not modify the original). If there
+ * is no available transform between the two projection, the function will throw
+ * an error.
  *
  * See {@link module:ol/proj.transformExtent} for extent transformation.
  * See the transform method of {@link module:ol/geom/Geometry~Geometry} and its
@@ -510,6 +607,13 @@ export function getTransform(source, destination) {
  */
 export function transform(coordinate, source, destination) {
   const transformFunc = getTransform(source, destination);
+  if (!transformFunc) {
+    const sourceCode = get(source).getCode();
+    const destinationCode = get(destination).getCode();
+    throw new Error(
+      `No transform available between ${sourceCode} and ${destinationCode}`,
+    );
+  }
   return transformFunc(coordinate, undefined, coordinate.length);
 }
 

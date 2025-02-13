@@ -1,10 +1,10 @@
-import Map from '../../../../src/ol/Map.js';
-import TileLayer from '../../../../src/ol/layer/Tile.js';
-import View from '../../../../src/ol/View.js';
-import XYZ from '../../../../src/ol/source/XYZ.js';
 import proj4 from 'proj4';
-import {get, transform} from '../../../../src/ol/proj.js';
+import Map from '../../../../src/ol/Map.js';
+import View from '../../../../src/ol/View.js';
+import TileLayer from '../../../../src/ol/layer/Tile.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
+import {get, transform} from '../../../../src/ol/proj.js';
+import XYZ from '../../../../src/ol/source/XYZ.js';
 
 proj4.defs('merc_180', '+proj=merc +lon_0=180 +units=m +no_defs');
 
@@ -20,6 +20,7 @@ const source = new XYZ({
   minZoom: 0,
   maxZoom: 0,
   url: '/data/tiles/4326/{z}/{x}/{y}.png',
+  transition: 0,
 });
 
 new Map({

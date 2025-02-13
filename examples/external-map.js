@@ -1,13 +1,11 @@
 import Map from '../src/ol/Map.js';
-import OSM from '../src/ol/source/OSM.js';
-import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
-import {
-  Control,
-  FullScreen,
-  defaults as defaultControls,
-} from '../src/ol/control.js';
+import Control from '../src/ol/control/Control.js';
+import FullScreen from '../src/ol/control/FullScreen.js';
+import {defaults as defaultControls} from '../src/ol/control/defaults.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat} from '../src/ol/proj.js';
+import OSM from '../src/ol/source/OSM.js';
 
 class UnusableMask extends Control {
   constructor() {
@@ -99,7 +97,8 @@ button.addEventListener('click', function () {
     map.setTarget(externalMapTarget);
 
     if (timeoutKey) {
-      timeoutKey = clearTimeout(timeoutKey);
+      clearTimeout(timeoutKey);
+      timeoutKey = undefined;
     }
     mapWindow.addEventListener('pagehide', function () {
       resetMapTarget();

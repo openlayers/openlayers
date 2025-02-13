@@ -2,15 +2,15 @@
  * @module ol/source/TileWMS
  */
 
-import TileImage from './TileImage.js';
-import {DEFAULT_VERSION, getImageSrc, getRequestParams} from './wms.js';
-import {appendParams} from '../uri.js';
 import {buffer, createEmpty} from '../extent.js';
+import {modulo} from '../math.js';
+import {get as getProjection, transform} from '../proj.js';
 import {calculateSourceResolution} from '../reproj.js';
 import {compareVersions} from '../string.js';
-import {get as getProjection, transform} from '../proj.js';
-import {modulo} from '../math.js';
 import {hash as tileCoordHash} from '../tilecoord.js';
+import {appendParams} from '../uri.js';
+import TileImage from './TileImage.js';
+import {DEFAULT_VERSION, getImageSrc, getRequestParams} from './wms.js';
 
 /**
  * @typedef {Object} Options

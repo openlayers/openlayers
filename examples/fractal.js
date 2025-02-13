@@ -1,9 +1,9 @@
 import Feature from '../src/ol/Feature.js';
-import LineString from '../src/ol/geom/LineString.js';
 import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import LineString from '../src/ol/geom/LineString.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import View from '../src/ol/View.js';
 
 const radius = 10e6;
 const cos30 = Math.cos(Math.PI / 6);
@@ -47,7 +47,7 @@ function makeFractal(depth) {
     }
   }
   const coordinates = graphToCoords(graph);
-  document.getElementById('count').innerHTML = coordinates.length;
+  document.getElementById('count').innerText = String(coordinates.length);
   geometry.setCoordinates(coordinates);
   feature.setGeometry(geometry);
 }

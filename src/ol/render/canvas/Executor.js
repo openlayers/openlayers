@@ -1,16 +1,18 @@
 /**
  * @module ol/render/canvas/Executor
  */
-import CanvasInstruction from './Instruction.js';
-import ZIndexContext from '../canvas/ZIndexContext.js';
-import {TEXT_ALIGN} from './TextBuilder.js';
+import {equals} from '../../array.js';
+import {createEmpty, createOrUpdate, intersects} from '../../extent.js';
+import {lineStringLength} from '../../geom/flat/length.js';
+import {drawTextOnPath} from '../../geom/flat/textpath.js';
+import {transform2D} from '../../geom/flat/transform.js';
 import {
   apply as applyTransform,
   compose as composeTransform,
   create as createTransform,
   setFromArray as transformSetFromArray,
 } from '../../transform.js';
-import {createEmpty, createOrUpdate, intersects} from '../../extent.js';
+import ZIndexContext from '../canvas/ZIndexContext.js';
 import {
   defaultPadding,
   defaultTextAlign,
@@ -19,10 +21,8 @@ import {
   getTextDimensions,
   measureAndCacheTextWidth,
 } from '../canvas.js';
-import {drawTextOnPath} from '../../geom/flat/textpath.js';
-import {equals} from '../../array.js';
-import {lineStringLength} from '../../geom/flat/length.js';
-import {transform2D} from '../../geom/flat/transform.js';
+import CanvasInstruction from './Instruction.js';
+import {TEXT_ALIGN} from './TextBuilder.js';
 
 /**
  * @typedef {import('../../structs/RBush.js').Entry<import('../../Feature.js').FeatureLike>} DeclutterEntry
@@ -377,6 +377,7 @@ class Executor {
     context.lineTo.apply(context, p1);
     if (fillInstruction) {
       this.alignAndScaleFill_ = /** @type {number} */ (fillInstruction[2]);
+      context.fillStyle = /** @type {string} */ (fillInstruction[1]);
       this.fill_(context);
     }
     if (strokeInstruction) {
@@ -703,8 +704,6 @@ class Executor {
       fillKey;
     let pendingFill = 0;
     let pendingStroke = 0;
-    let lastFillInstruction = null;
-    let lastStrokeInstruction = null;
     const coordinateCache = this.coordinateCache_;
     const viewRotation = this.viewRotation_;
     const viewRotationFromTransform =
@@ -867,15 +866,19 @@ class Executor {
             geometryWidths = /** @type {number} */ (instruction[25]);
           }
 
-          let padding, backgroundFill, backgroundStroke;
+          let padding, backgroundFillInstruction, backgroundStrokeInstruction;
           if (instruction.length > 17) {
             padding = /** @type {Array<number>} */ (instruction[16]);
-            backgroundFill = /** @type {boolean} */ (instruction[17]);
-            backgroundStroke = /** @type {boolean} */ (instruction[18]);
+            backgroundFillInstruction = /** @type {Array<*>} */ (
+              instruction[17]
+            );
+            backgroundStrokeInstruction = /** @type {Array<*>} */ (
+              instruction[18]
+            );
           } else {
             padding = defaultPadding;
-            backgroundFill = false;
-            backgroundStroke = false;
+            backgroundFillInstruction = null;
+            backgroundStrokeInstruction = null;
           }
 
           if (rotateWithView && viewRotationFromTransform) {
@@ -908,7 +911,7 @@ class Executor {
               scale,
               snapToPixel,
               padding,
-              backgroundFill || backgroundStroke,
+              !!backgroundFillInstruction || !!backgroundStrokeInstruction,
               feature,
             );
             /** @type {ReplayImageOrLabelArgs} */
@@ -918,12 +921,8 @@ class Executor {
               image,
               dimensions,
               opacity,
-              backgroundFill
-                ? /** @type {Array<*>} */ (lastFillInstruction)
-                : null,
-              backgroundStroke
-                ? /** @type {Array<*>} */ (lastStrokeInstruction)
-                : null,
+              backgroundFillInstruction,
+              backgroundStrokeInstruction,
             ];
             if (declutterTree) {
               let imageArgs, imageDeclutterMode, imageDeclutterBox;
@@ -1192,7 +1191,6 @@ class Executor {
           ++i;
           break;
         case CanvasInstruction.SET_FILL_STYLE:
-          lastFillInstruction = instruction;
           this.alignAndScaleFill_ = instruction[2];
 
           if (pendingFill) {
@@ -1209,7 +1207,6 @@ class Executor {
           ++i;
           break;
         case CanvasInstruction.SET_STROKE_STYLE:
-          lastStrokeInstruction = instruction;
           if (pendingStroke) {
             context.stroke();
             pendingStroke = 0;

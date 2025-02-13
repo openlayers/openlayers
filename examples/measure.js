@@ -1,13 +1,19 @@
-import Draw from '../src/ol/interaction/Draw.js';
 import Map from '../src/ol/Map.js';
+import {unByKey} from '../src/ol/Observable.js';
 import Overlay from '../src/ol/Overlay.js';
 import View from '../src/ol/View.js';
-import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
-import {LineString, Polygon} from '../src/ol/geom.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import LineString from '../src/ol/geom/LineString.js';
+import Polygon from '../src/ol/geom/Polygon.js';
+import Draw from '../src/ol/interaction/Draw.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import {getArea, getLength} from '../src/ol/sphere.js';
-import {unByKey} from '../src/ol/Observable.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Fill from '../src/ol/style/Fill.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 const raster = new TileLayer({
   source: new OSM(),
@@ -28,7 +34,7 @@ const vector = new VectorLayer({
 
 /**
  * Currently drawn feature.
- * @type {import("../src/ol/Feature.js").default}
+ * @type {import('../src/ol/Feature.js').default}
  */
 let sketch;
 
@@ -70,7 +76,7 @@ const continueLineMsg = 'Click to continue drawing the line';
 
 /**
  * Handle pointer move.
- * @param {import("../src/ol/MapBrowserEvent").default} evt The event.
+ * @param {import('../src/ol/MapBrowserEvent').default} evt The event.
  */
 const pointerMoveHandler = function (evt) {
   if (evt.dragging) {
@@ -187,8 +193,8 @@ function addInteraction() {
     // set sketch
     sketch = evt.feature;
 
-    /** @type {import("../src/ol/coordinate.js").Coordinate|undefined} */
-    let tooltipCoord = evt.coordinate;
+    /** @type {import('../src/ol/coordinate.js').Coordinate|undefined} */
+    let tooltipCoord;
 
     listener = sketch.getGeometry().on('change', function (evt) {
       const geom = evt.target;

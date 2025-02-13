@@ -1,5 +1,3 @@
-import Feature from '../../../../src/ol/Feature.js';
-import expect from '../../expect.js';
 import {
   AnyType,
   BooleanType,
@@ -10,7 +8,6 @@ import {
   StringType,
   newParsingContext,
 } from '../../../../src/ol/expr/expression.js';
-import {MultiPolygon} from '../../../../src/ol/geom.js';
 import {
   arrayToGlsl,
   buildExpression,
@@ -20,6 +17,7 @@ import {
   numberToGlsl,
   stringToGlsl,
 } from '../../../../src/ol/expr/gpu.js';
+import expect from '../../expect.js';
 
 describe('ol/expr/gpu.js', () => {
   describe('numberToGlsl()', () => {
@@ -52,16 +50,6 @@ describe('ol/expr/gpu.js', () => {
       );
       expect(colorToGlsl([100, 0, 255, 0.7])).to.eql(
         'vec4(0.39215686274509803, 0.0, 1.0, 0.7)',
-      );
-    });
-    it('handles colors in string format', () => {
-      expect(colorToGlsl('red')).to.eql('vec4(1.0, 0.0, 0.0, 1.0)');
-      expect(colorToGlsl('#00ff99')).to.eql('vec4(0.0, 1.0, 0.6, 1.0)');
-      expect(colorToGlsl('rgb(100, 0, 255)')).to.eql(
-        'vec4(0.39215686274509803, 0.0, 1.0, 1.0)',
-      );
-      expect(colorToGlsl('rgba(100, 0, 255, 0.3)')).to.eql(
-        'vec4(0.39215686274509803, 0.0, 1.0, 0.3)',
       );
     });
   });
@@ -138,6 +126,24 @@ describe('ol/expr/gpu.js', () => {
         },
       },
       {
+        name: 'id',
+        type: AnyType,
+        expression: ['id'],
+        expected: 'a_featureId',
+        contextAssertion: (context) => {
+          expect(context.featureId).to.be(true);
+        },
+      },
+      {
+        name: 'id (in fragment shader)',
+        type: AnyType,
+        expression: ['id'],
+        expected: 'v_featureId',
+        context: {
+          inFragmentShader: true,
+        },
+      },
+      {
         name: 'var',
         type: AnyType,
         expression: ['var', 'myVar'],
@@ -159,14 +165,9 @@ describe('ol/expr/gpu.js', () => {
         name: 'geometry-type',
         type: AnyType,
         expression: ['geometry-type'],
-        expected: 'a_prop_geometryType',
+        expected: 'a_geometryType',
         contextAssertion: (context) => {
-          const prop = context.properties['geometryType'];
-          expect(prop.name).to.equal('geometryType');
-          expect(prop.type).to.equal(StringType);
-          expect(prop.evaluator).to.be.an(Function);
-          const feature = new Feature(new MultiPolygon([]));
-          expect(prop.evaluator(feature)).to.eql('Polygon');
+          expect(context.geometryType).to.be(true);
         },
       },
       {
@@ -176,7 +177,7 @@ describe('ol/expr/gpu.js', () => {
         context: {
           inFragmentShader: true,
         },
-        expected: 'v_prop_geometryType',
+        expected: 'v_geometryType',
       },
       {
         name: 'line-metric',
@@ -231,12 +232,6 @@ describe('ol/expr/gpu.js', () => {
         type: AnyType,
         expression: ['*', 2, 4, 6, 8],
         expected: '(2.0 * 4.0 * 6.0 * 8.0)',
-      },
-      {
-        name: 'multiplication (infer string as color)',
-        type: ColorType,
-        expression: ['*', [255, 127.5, 0, 0.5], 'red'],
-        expected: '(vec4(1.0, 0.5, 0.0, 0.5) * vec4(1.0, 0.0, 0.0, 1.0))',
       },
       {
         name: 'division',
@@ -447,27 +442,6 @@ describe('ol/expr/gpu.js', () => {
         expected: 'getBandValue(1.0, -1.0, 2.0)',
       },
       {
-        name: 'colors as strings',
-        type: ColorType,
-        expression: [
-          'case',
-          ['>', ['get', 'attr'], 3],
-          'red',
-          ['>', ['get', 'attr'], 1],
-          'yellow',
-          'white',
-        ],
-        expected:
-          '((a_prop_attr > 3.0) ? vec4(1.0, 0.0, 0.0, 1.0) : ((a_prop_attr > 1.0) ? vec4(1.0, 1.0, 0.0, 1.0) : vec4(1.0, 1.0, 1.0, 1.0)))',
-      },
-      {
-        name: 'match (colors)',
-        type: ColorType,
-        expression: ['match', ['get', 'attr'], 0, 'red', 1, 'yellow', 'white'],
-        expected:
-          '(a_prop_attr == 0.0 ? vec4(1.0, 0.0, 0.0, 1.0) : (a_prop_attr == 1.0 ? vec4(1.0, 1.0, 0.0, 1.0) : vec4(1.0, 1.0, 1.0, 1.0)))',
-      },
-      {
         name: 'match (strings)',
         type: StringType,
         expression: ['match', ['get', 'attr'], 0, 'red', 1, 'yellow', 'white'],
@@ -600,70 +574,6 @@ describe('ol/expr/gpu.js', () => {
         },
       },
       {
-        name: 'palette',
-        expression: [
-          'palette',
-          ['get', 'color'],
-          ['red', 'rgb(0, 255, 0)', [0, 0, 255, 0.5]],
-        ],
-        type: AnyType,
-        expected:
-          'texture2D(u_paletteTextures[0], vec2((a_prop_color + 0.5) / 3.0, 0.5))',
-        contextAssertion: (context) => {
-          expect(context.paletteTextures[0]).to.eql({
-            name: 'u_paletteTextures[0]',
-            data: Uint8Array.from([
-              // red
-              255, 0, 0, 255,
-              // green
-              0, 255, 0, 255,
-              // blue, 0.5 alpha
-              0, 0, 255, 127,
-            ]),
-            texture_: null,
-          });
-        },
-      },
-      {
-        name: 'combination of interpolate, match, color and number',
-        type: ColorType,
-        expression: [
-          'interpolate',
-          ['linear'],
-          [
-            '^',
-            [
-              '/',
-              [
-                '%',
-                [
-                  '+',
-                  ['time'],
-                  [
-                    'interpolate',
-                    ['linear'],
-                    ['get', 'year'],
-                    1850,
-                    0,
-                    2015,
-                    8,
-                  ],
-                ],
-                8,
-              ],
-              8,
-            ],
-            0.5,
-          ],
-          0,
-          'rgba(255, 255, 0, 0.5)',
-          1,
-          ['match', ['get', 'year'], 2000, 'green', '#ffe52c'],
-        ],
-        expected:
-          'mix(vec4(1.0, 1.0, 0.0, 0.5), (a_prop_year == 2000.0 ? vec4(0.0, 0.5019607843137255, 0.0, 1.0) : vec4(1.0, 0.8980392156862745, 0.17254901960784313, 1.0)), clamp((pow((mod((u_time + mix(0.0, 8.0, clamp((a_prop_year - 1850.0) / (2015.0 - 1850.0), 0.0, 1.0))), 8.0) / 8.0), 0.5) - 0.0) / (1.0 - 0.0), 0.0, 1.0))',
-      },
-      {
         name: 'array for symbol size',
         type: NumberType | NumberArrayType,
         expression: [
@@ -701,51 +611,6 @@ describe('ol/expr/gpu.js', () => {
           'vec2(ceil((a_prop_width == 0.0 ? u_var_defaultWidth : a_prop_width)), ceil((a_prop_height == 0.0 ? u_var_defaultHeight : a_prop_height)))',
       },
       {
-        name: 'mix of var and get operators (color)',
-        expression: [
-          'match',
-          ['var', 'selected'],
-          false,
-          'red',
-          ['get', 'validValue'],
-          'green',
-          [
-            'case',
-            ['<', ['time'], 10000],
-            ['var', 'oldColor'],
-            ['var', 'newColor'],
-          ],
-        ],
-        type: ColorType,
-        context: {
-          style: {
-            variables: {
-              selected: true,
-              oldColor: 'grey',
-              newColor: 'white',
-            },
-          },
-        },
-        expected:
-          '(u_var_selected == false ? vec4(1.0, 0.0, 0.0, 1.0) : (u_var_selected == a_prop_validValue ? vec4(0.0, 0.5019607843137255, 0.0, 1.0) : ((u_time < 10000.0) ? u_var_oldColor : u_var_newColor)))',
-        contextAssertion: (context) => {
-          expect(context.properties).to.eql({
-            validValue: {
-              name: 'validValue',
-              type: StringType | NumberType | BooleanType,
-            },
-          });
-          expect(context.variables).to.eql({
-            selected: {
-              name: 'selected',
-              type: StringType | NumberType | BooleanType,
-            },
-            newColor: {name: 'newColor', type: ColorType},
-            oldColor: {name: 'oldColor', type: ColorType},
-          });
-        },
-      },
-      {
         name: 'mix of var and get operators (number array)',
         expression: [
           'case',
@@ -776,8 +641,7 @@ describe('ol/expr/gpu.js', () => {
             },
           },
         },
-        expected:
-          '((u_var_symbolType == 11.0) ? vec2((a_prop_type == 3.0 ? u_var_lowHeight : (a_prop_type == 12.0 ? u_var_mediumHeight : a_prop_height)), 10.0) : u_var_fixedSize)',
+        expected: `((u_var_symbolType == ${stringToGlsl('dynamic')}) ? vec2((a_prop_type == ${stringToGlsl('low')} ? u_var_lowHeight : (a_prop_type == ${stringToGlsl('medium')} ? u_var_mediumHeight : a_prop_height)), 10.0) : u_var_fixedSize)`,
         contextAssertion: (context) => {
           expect(context.properties).to.eql({
             type: {

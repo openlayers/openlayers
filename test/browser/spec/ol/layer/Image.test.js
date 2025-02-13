@@ -1,8 +1,8 @@
-import ImageLayer from '../../../../../src/ol/layer/Image.js';
 import Map from '../../../../../src/ol/Map.js';
-import Static from '../../../../../src/ol/source/ImageStatic.js';
 import View from '../../../../../src/ol/View.js';
-import {Projection} from '../../../../../src/ol/proj.js';
+import ImageLayer from '../../../../../src/ol/layer/Image.js';
+import Projection from '../../../../../src/ol/proj/Projection.js';
+import Static from '../../../../../src/ol/source/ImageStatic.js';
 
 describe('ol/layer/Image', () => {
   describe('getData()', () => {

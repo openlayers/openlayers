@@ -162,7 +162,7 @@ class CartoDB extends XYZ {
         response = /** @type {CartoDBLayerInfo} */ (
           JSON.parse(client.responseText)
         );
-      } catch (err) {
+      } catch {
         this.setState('error');
         return;
       }

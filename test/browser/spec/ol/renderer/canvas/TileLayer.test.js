@@ -1,9 +1,11 @@
+import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../../src/ol/Map.js';
-import TileLayer from '../../../../../../src/ol/layer/Tile.js';
 import View from '../../../../../../src/ol/View.js';
-import XYZ from '../../../../../../src/ol/source/XYZ.js';
-import {OSM} from '../../../../../../src/ol/source.js';
+import TileLayer from '../../../../../../src/ol/layer/Tile.js';
 import {fromLonLat} from '../../../../../../src/ol/proj.js';
+import ImageTile from '../../../../../../src/ol/source/ImageTile.js';
+import OSM from '../../../../../../src/ol/source/OSM.js';
+import XYZ from '../../../../../../src/ol/source/XYZ.js';
 
 describe('ol/renderer/canvas/TileLayer', function () {
   describe('#renderFrame', function () {
@@ -55,11 +57,15 @@ describe('ol/renderer/canvas/TileLayer', function () {
       it('updates the size of the tile cache ', (done) => {
         const source = new OSM();
         const layer = new TileLayer({source: source});
-        const spy = sinon.spy(layer.getRenderer(), 'updateCacheSize');
+        const spy = sinonSpy(layer.getRenderer(), 'updateCacheSize');
         map.addLayer(layer);
         map.once('rendercomplete', () => {
-          expect(spy.called).to.be(true);
-          done();
+          // rendercomplete triggers before the postrender functions with the cleanup are run,
+          // so wait another cycle
+          setTimeout(() => {
+            expect(spy.called).to.be(true);
+            done();
+          }, 0);
         });
       });
       it('expires the tile cache, which disposes unused tiles', async () => {
@@ -98,6 +104,27 @@ describe('ol/renderer/canvas/TileLayer', function () {
         source.refresh();
         await new Promise((resolve) => map.once('rendercomplete', resolve));
         expect(tiles.length).to.be(4);
+      });
+
+      it('does not mark alt/stale error tiles as newer', async () => {
+        const source = new ImageTile({
+          url: '#/{z}/{x}/{y}.png',
+        });
+        const layer = new TileLayer({source: source, cacheSize: 0});
+        const tiles = [];
+        layer.getSource().on('tileloadend', (event) => {
+          tiles.push(event.tile);
+        });
+        map.addLayer(layer);
+        await new Promise((resolve) => map.once('rendercomplete', resolve));
+        expect(layer.getRenderer().tileCache_.highWaterMark).to.be(4);
+        for (let i = 0; i < 4; ++i) {
+          map.getView().setZoom(map.getView().getZoom() + 1);
+          await new Promise((resolve) => map.once('rendercomplete', resolve));
+        }
+        expect(
+          layer.getRenderer().tileCache_.newest_.value_.tileCoord[0],
+        ).to.be(9);
       });
     });
   });

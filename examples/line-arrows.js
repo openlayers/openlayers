@@ -1,11 +1,15 @@
-import Draw from '../src/ol/interaction/Draw.js';
 import Map from '../src/ol/Map.js';
-import Point from '../src/ol/geom/Point.js';
 import View from '../src/ol/View.js';
-import {Icon, Stroke, Style} from '../src/ol/style.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import Point from '../src/ol/geom/Point.js';
+import Draw from '../src/ol/interaction/Draw.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import {get} from '../src/ol/proj.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import Icon from '../src/ol/style/Icon.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 const raster = new TileLayer({
   source: new OSM(),

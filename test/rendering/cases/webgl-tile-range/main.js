@@ -1,8 +1,8 @@
-import DataTile from '../../../../src/ol/source/DataTile.js';
 import Map from '../../../../src/ol/Map.js';
-import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
 import View from '../../../../src/ol/View.js';
-import {Projection} from '../../../../src/ol/proj.js';
+import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
+import Projection from '../../../../src/ol/proj/Projection.js';
+import DataTile from '../../../../src/ol/source/DataTile.js';
 
 const size = 256;
 const data = new Uint8Array(size * size * 4);
@@ -47,6 +47,7 @@ new Map({
         maxZoom: 1,
         tileSize: size,
         loader: () => data,
+        transition: 0,
       }),
     }),
     new TileLayer({

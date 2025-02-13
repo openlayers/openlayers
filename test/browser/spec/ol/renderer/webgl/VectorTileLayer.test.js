@@ -1,37 +1,51 @@
+import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../../src/ol/Map.js';
-import RenderFeature from '../../../../../../src/ol/render/Feature.js';
-import TileGeometry from '../../../../../../src/ol/webgl/TileGeometry.js';
 import TileQueue from '../../../../../../src/ol/TileQueue.js';
 import TileState from '../../../../../../src/ol/TileState.js';
 import VectorRenderTile from '../../../../../../src/ol/VectorRenderTile.js';
-import VectorStyleRenderer, * as ol_render_webgl_vectorstylerenderer from '../../../../../../src/ol/render/webgl/VectorStyleRenderer.js';
 import VectorTile from '../../../../../../src/ol/VectorTile.js';
-import VectorTileLayer from '../../../../../../src/ol/layer/VectorTile.js';
-import VectorTileSource from '../../../../../../src/ol/source/VectorTile.js';
 import View from '../../../../../../src/ol/View.js';
-import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
-import WebGLRenderTarget from '../../../../../../src/ol/webgl/RenderTarget.js';
+import {VOID} from '../../../../../../src/ol/functions.js';
+import Polygon from '../../../../../../src/ol/geom/Polygon.js';
+import VectorTileLayer from '../../../../../../src/ol/layer/VectorTile.js';
+import Projection from '../../../../../../src/ol/proj/Projection.js';
+import RenderFeature from '../../../../../../src/ol/render/Feature.js';
+import VectorStyleRenderer, * as ol_render_webgl_vectorstylerenderer from '../../../../../../src/ol/render/webgl/VectorStyleRenderer.js';
 import WebGLVectorTileLayerRenderer, {
   Attributes,
   Uniforms,
 } from '../../../../../../src/ol/renderer/webgl/VectorTileLayer.js';
-import {Polygon} from '../../../../../../src/ol/geom.js';
-import {Projection} from '../../../../../../src/ol/proj.js';
-import {ShaderBuilder} from '../../../../../../src/ol/webgl/ShaderBuilder.js';
-import {VOID} from '../../../../../../src/ol/functions.js';
-import {create} from '../../../../../../src/ol/transform.js';
+import VectorTileSource from '../../../../../../src/ol/source/VectorTile.js';
 import {createXYZ} from '../../../../../../src/ol/tilegrid.js';
+import {create} from '../../../../../../src/ol/transform.js';
+import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
+import WebGLRenderTarget from '../../../../../../src/ol/webgl/RenderTarget.js';
+import {ShaderBuilder} from '../../../../../../src/ol/webgl/ShaderBuilder.js';
+import TileGeometry from '../../../../../../src/ol/webgl/TileGeometry.js';
 
 const SAMPLE_STYLE = {
   'fill-color': ['get', 'color'],
   'stroke-width': 2,
-  'circle-radius': 1.5,
+  'circle-radius': ['get', 'size'],
 };
 
-const SAMPLE_STYLE2 = {
-  'circle-radius': ['get', 'size'],
-  'circle-fill-color': 'red',
-};
+const SAMPLE_RULES = [
+  {
+    style: {
+      'circle-radius': 4,
+      'fill-color': ['get', 'color'],
+      'stroke-width': 2,
+    },
+  },
+  {
+    filter: ['>', ['zoom'], 10],
+    style: {
+      'circle-radius': 3,
+      'fill-color': 'white',
+      'stroke-width': 2,
+    },
+  },
+];
 
 const SAMPLE_SHADERS = () => ({
   builder: new ShaderBuilder()
@@ -58,8 +72,6 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
   let frameState;
   /** @type {Map} */
   let map;
-  /** @type {import('../../../../../../src/ol/render/webgl/VectorStyleRenderer.js').StyleShaders} */
-  let sampleShaders;
 
   beforeEach(function () {
     vectorTileLayer = new VectorTileLayer({
@@ -104,9 +116,8 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         },
       }),
     });
-    sampleShaders = SAMPLE_SHADERS();
     renderer = new WebGLVectorTileLayerRenderer(vectorTileLayer, {
-      style: [SAMPLE_STYLE, sampleShaders],
+      style: SAMPLE_RULES,
     });
 
     const proj = new Projection({
@@ -159,7 +170,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
   describe('#afterHelperCreated', () => {
     let spy;
     beforeEach(() => {
-      spy = sinon.spy(ol_render_webgl_vectorstylerenderer, 'default');
+      spy = sinonSpy(ol_render_webgl_vectorstylerenderer, 'default');
       renderer.helper = new WebGLHelper();
       renderer.afterHelperCreated(frameState);
     });
@@ -178,7 +189,9 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       const firstBuilder = spy.firstCall.args[0].builder;
       const secondBuilder = spy.secondCall.args[0].builder;
       expect(firstBuilder.getFillColorExpression()).to.be('v_prop_color');
-      expect(secondBuilder.getFillColorExpression()).to.be('vec4(1.0)');
+      expect(secondBuilder.getFillColorExpression()).to.be(
+        'vec4(1.0, 1.0, 1.0, 1.0)',
+      );
     });
     it('adds a discard expression and uniforms to the styles', () => {
       const firstBuilder = spy.firstCall.args[0].builder;
@@ -191,7 +204,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       expect(secondBuilder.uniforms_).to.contain('sampler2D u_depthMask');
       expect(secondBuilder.uniforms_).to.contain('float u_tileZoomLevel');
       expect(secondBuilder.getFragmentDiscardExpression()).to.be(
-        '(u_zoom > 10.0) || (texture2D(u_depthMask, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > u_tileZoomLevel + 0.5)',
+        '(!(u_zoom > 10.0)) || (texture2D(u_depthMask, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > u_tileZoomLevel + 0.5)',
       );
     });
     it('instantiates the tile mask target, indices, attributes and program', () => {
@@ -211,9 +224,9 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
     describe('use a single style', () => {
       let spy;
       beforeEach(() => {
-        spy = sinon.spy(ol_render_webgl_vectorstylerenderer, 'default');
+        spy = sinonSpy(ol_render_webgl_vectorstylerenderer, 'default');
         renderer.reset({
-          style: SAMPLE_STYLE2,
+          style: SAMPLE_STYLE,
         });
       });
       afterEach(() => {
@@ -228,6 +241,29 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         expect(spy.callCount).to.be(1);
         const builder = spy.firstCall.args[0].builder;
         expect(builder.getSymbolColorExpression()).to.contain('v_prop_size');
+      });
+    });
+
+    describe('use shaders', () => {
+      let spy;
+      beforeEach(() => {
+        spy = sinonSpy(ol_render_webgl_vectorstylerenderer, 'default');
+        renderer.reset({
+          style: SAMPLE_SHADERS(),
+        });
+      });
+      afterEach(() => {
+        spy.restore();
+      });
+
+      it('recreates renderers', () => {
+        expect(renderer.styleRenderers_.length).to.be(1);
+        expect(renderer.styleRenderers_[0]).to.be.a(VectorStyleRenderer);
+      });
+      it('passes the correct styles to renderers', () => {
+        expect(spy.callCount).to.be(1);
+        const builder = spy.firstCall.args[0].builder;
+        expect(builder.getSymbolColorExpression()).to.contain('vec4(1.0)');
       });
     });
   });
@@ -252,7 +288,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         helper: renderer.helper,
         gutter: 4,
       });
-      sinon.spy(vectorTileLayer, 'changed');
+      sinonSpy(vectorTileLayer, 'changed');
     });
     it('creates a TileGeometry instance', () => {
       expect(tileRepresentation).to.be.a(TileGeometry);
@@ -272,12 +308,12 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       frameState.tileQueue.loadMoreTiles(Infinity, Infinity);
       await new Promise((resolve) => setTimeout(resolve, 150));
 
-      sinon.spy(renderer.helper, 'setUniformFloatValue');
-      sinon.spy(renderer.helper, 'setUniformFloatVec4');
-      sinon.spy(renderer.helper, 'setUniformMatrixValue');
-      sinon.spy(renderer.helper, 'bindTexture');
-      sinon.spy(renderer.styleRenderers_[0], 'render');
-      sinon.spy(renderer.styleRenderers_[1], 'render');
+      sinonSpy(renderer.helper, 'setUniformFloatValue');
+      sinonSpy(renderer.helper, 'setUniformFloatVec4');
+      sinonSpy(renderer.helper, 'setUniformMatrixValue');
+      sinonSpy(renderer.helper, 'bindTexture');
+      sinonSpy(renderer.styleRenderers_[0], 'render');
+      sinonSpy(renderer.styleRenderers_[1], 'render');
 
       // this is required to keep a "snapshot" of the input matrix
       // (since the same object is reused for various calls)

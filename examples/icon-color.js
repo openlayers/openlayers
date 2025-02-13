@@ -1,11 +1,14 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import Point from '../src/ol/geom/Point.js';
 import View from '../src/ol/View.js';
-import {Icon, Style} from '../src/ol/style.js';
-import {OGCMapTile, Vector as VectorSource} from '../src/ol/source.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import Point from '../src/ol/geom/Point.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import {fromLonLat} from '../src/ol/proj.js';
+import OGCMapTile from '../src/ol/source/OGCMapTile.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import Icon from '../src/ol/style/Icon.js';
+import Style from '../src/ol/style/Style.js';
 
 const rome = new Feature({
   geometry: new Point(fromLonLat([12.5, 41.9])),

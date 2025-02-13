@@ -1,9 +1,11 @@
 /**
  * @module ol/render/canvas/TextBuilder
  */
-import CanvasBuilder from './Builder.js';
-import CanvasInstruction from './Instruction.js';
 import {asColorLike} from '../../colorlike.js';
+import {intersects} from '../../extent.js';
+import {lineChunk} from '../../geom/flat/linechunk.js';
+import {matchingChunk} from '../../geom/flat/straightchunk.js';
+import {getUid} from '../../util.js';
 import {
   defaultFillStyle,
   defaultFont,
@@ -19,10 +21,8 @@ import {
   defaultTextBaseline,
   registerFont,
 } from '../canvas.js';
-import {getUid} from '../../util.js';
-import {intersects} from '../../extent.js';
-import {lineChunk} from '../../geom/flat/linechunk.js';
-import {matchingChunk} from '../../geom/flat/straightchunk.js';
+import CanvasBuilder from './Builder.js';
+import CanvasInstruction from './Instruction.js';
 /**
  * @const
  * @type {{left: 0, center: 0.5, right: 1, top: 0, middle: 0.5, hanging: 0.2, alphabetic: 0.8, ideographic: 0.8, bottom: 1}}
@@ -345,19 +345,12 @@ class CanvasTextBuilder extends CanvasBuilder {
 
       this.saveTextStates_();
 
-      if (textState.backgroundFill || textState.backgroundStroke) {
-        this.setFillStrokeStyle(
-          textState.backgroundFill,
-          textState.backgroundStroke,
-        );
-        if (textState.backgroundFill) {
-          this.updateFillStyle(this.state, this.createFill);
-        }
-        if (textState.backgroundStroke) {
-          this.updateStrokeStyle(this.state, this.applyStroke);
-          this.hitDetectionInstructions.push(this.createStroke(this.state));
-        }
-      }
+      const backgroundFill = textState.backgroundFill
+        ? this.createFill(this.fillStyleToState(textState.backgroundFill))
+        : null;
+      const backgroundStroke = textState.backgroundStroke
+        ? this.createStroke(this.strokeStyleToState(textState.backgroundStroke))
+        : null;
 
       this.beginGeometry(geometry, feature, index);
 
@@ -408,8 +401,8 @@ class CanvasTextBuilder extends CanvasBuilder {
           : padding.map(function (p) {
               return p * pixelRatio;
             }),
-        !!textState.backgroundFill,
-        !!textState.backgroundStroke,
+        backgroundFill,
+        backgroundStroke,
         this.text_,
         this.textKey_,
         this.strokeKey_,
@@ -420,10 +413,11 @@ class CanvasTextBuilder extends CanvasBuilder {
       ]);
       const scale = 1 / pixelRatio;
       // Set default fill for hit detection background
-      const currentFillStyle = this.state.fillStyle;
-      if (textState.backgroundFill) {
-        this.state.fillStyle = defaultFillStyle;
-        this.hitDetectionInstructions.push(this.createFill(this.state));
+      const hitDetectionBackgroundFill = backgroundFill
+        ? backgroundFill.slice(0)
+        : null;
+      if (hitDetectionBackgroundFill) {
+        hitDetectionBackgroundFill[1] = defaultFillStyle;
       }
       this.hitDetectionInstructions.push([
         CanvasInstruction.DRAW_IMAGE,
@@ -443,8 +437,8 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.declutterMode_,
         this.declutterImageWithText_,
         padding,
-        !!textState.backgroundFill,
-        !!textState.backgroundStroke,
+        hitDetectionBackgroundFill,
+        backgroundStroke,
         this.text_,
         this.textKey_,
         this.strokeKey_,
@@ -453,11 +447,6 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.textOffsetY_,
         geometryWidths,
       ]);
-      // Reset previous fill
-      if (textState.backgroundFill) {
-        this.state.fillStyle = currentFillStyle;
-        this.hitDetectionInstructions.push(this.createFill(this.state));
-      }
 
       this.endGeometry(feature);
     }

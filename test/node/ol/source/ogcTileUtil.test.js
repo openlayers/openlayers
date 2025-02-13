@@ -1,18 +1,19 @@
-import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 import events from 'events';
-import expect from '../../expect.js';
-import fse from 'fs-extra';
 import path from 'path';
-import {Projection, get as getProjection} from '../../../../src/ol/proj.js';
+import {fileURLToPath} from 'url';
+import fse from 'fs-extra';
+import {setLevel as setLogLevel} from '../../../../src/ol/console.js';
+import {overrideXHR, restoreXHR} from '../../../../src/ol/net.js';
+import Projection from '../../../../src/ol/proj/Projection.js';
+import {get as getProjection} from '../../../../src/ol/proj.js';
 import {
   appendCollectionsQueryParam,
   getMapTileUrlTemplate,
   getTileSetInfo,
   getVectorTileUrlTemplate,
 } from '../../../../src/ol/source/ogcTileUtil.js';
-import {fileURLToPath} from 'url';
-import {overrideXHR, restoreXHR} from '../../../../src/ol/net.js';
-import {setLevel as setLogLevel} from '../../../../src/ol/console.js';
+import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
+import expect from '../../expect.js';
 
 function getDataDir() {
   const modulePath = fileURLToPath(import.meta.url);

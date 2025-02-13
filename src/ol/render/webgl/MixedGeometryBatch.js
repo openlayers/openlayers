@@ -1,9 +1,9 @@
 /**
  * @module ol/render/webgl/MixedGeometryBatch
  */
+import {inflateEnds} from '../../geom/flat/orient.js';
 import RenderFeature from '../../render/Feature.js';
 import {getUid} from '../../util.js';
-import {inflateEnds} from '../../geom/flat/orient.js';
 
 /**
  * @typedef {import("../../Feature.js").default} Feature
@@ -92,7 +92,7 @@ class MixedGeometryBatch {
 
     /**
      * The precision in WebGL shaders is limited.
-     * To keep the refs as small as possible we maintain an array of returned references.
+     * To keep the refs as small as possible we maintain an array of freed up references.
      * @type {Array<number>}
      * @private
      */
@@ -158,12 +158,13 @@ class MixedGeometryBatch {
    * @private
    */
   clearFeatureEntryInPointBatch_(feature) {
-    const entry = this.pointBatch.entries[getUid(feature)];
+    const featureUid = getUid(feature);
+    const entry = this.pointBatch.entries[featureUid];
     if (!entry) {
       return;
     }
     this.pointBatch.geometriesCount -= entry.flatCoordss.length;
-    delete this.pointBatch.entries[getUid(feature)];
+    delete this.pointBatch.entries[featureUid];
     return entry;
   }
 
@@ -173,13 +174,14 @@ class MixedGeometryBatch {
    * @private
    */
   clearFeatureEntryInLineStringBatch_(feature) {
-    const entry = this.lineStringBatch.entries[getUid(feature)];
+    const featureUid = getUid(feature);
+    const entry = this.lineStringBatch.entries[featureUid];
     if (!entry) {
       return;
     }
     this.lineStringBatch.verticesCount -= entry.verticesCount;
     this.lineStringBatch.geometriesCount -= entry.flatCoordss.length;
-    delete this.lineStringBatch.entries[getUid(feature)];
+    delete this.lineStringBatch.entries[featureUid];
     return entry;
   }
 
@@ -189,14 +191,15 @@ class MixedGeometryBatch {
    * @private
    */
   clearFeatureEntryInPolygonBatch_(feature) {
-    const entry = this.polygonBatch.entries[getUid(feature)];
+    const featureUid = getUid(feature);
+    const entry = this.polygonBatch.entries[featureUid];
     if (!entry) {
       return;
     }
     this.polygonBatch.verticesCount -= entry.verticesCount;
     this.polygonBatch.ringsCount -= entry.ringsCount;
     this.polygonBatch.geometriesCount -= entry.flatCoordss.length;
-    delete this.polygonBatch.entries[getUid(feature)];
+    delete this.polygonBatch.entries[featureUid];
     return entry;
   }
 
@@ -530,8 +533,7 @@ class MixedGeometryBatch {
    * @param {Feature|RenderFeature} feature Feature
    */
   removeFeature(feature) {
-    let entry;
-    entry = this.clearFeatureEntryInPointBatch_(feature) || entry;
+    let entry = this.clearFeatureEntryInPointBatch_(feature);
     entry = this.clearFeatureEntryInPolygonBatch_(feature) || entry;
     entry = this.clearFeatureEntryInLineStringBatch_(feature) || entry;
     if (entry) {
@@ -562,6 +564,26 @@ class MixedGeometryBatch {
    */
   getFeatureFromRef(ref) {
     return this.refToFeature_.get(ref);
+  }
+
+  isEmpty() {
+    return this.globalCounter_ === 0;
+  }
+
+  /**
+   * Will return a new instance of this class that only contains the features
+   * for which the provided callback returned true
+   * @param {function((Feature|RenderFeature)): boolean} featureFilter Feature filter callback
+   * @return {MixedGeometryBatch} Filtered geometry batch
+   */
+  filter(featureFilter) {
+    const filtered = new MixedGeometryBatch();
+    for (const feature of this.refToFeature_.values()) {
+      if (featureFilter(feature)) {
+        filtered.addFeature(feature);
+      }
+    }
+    return filtered;
   }
 }
 

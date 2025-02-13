@@ -1,4 +1,3 @@
-import expect from '../../expect.js';
 import {
   AnyType,
   BooleanType,
@@ -17,14 +16,13 @@ import {
   parse,
   typeName,
 } from '../../../../src/ol/expr/expression.js';
-import {
-  Circle,
-  GeometryCollection,
-  MultiLineString,
-  MultiPoint,
-  MultiPolygon,
-  Point,
-} from '../../../../src/ol/geom.js';
+import Circle from '../../../../src/ol/geom/Circle.js';
+import GeometryCollection from '../../../../src/ol/geom/GeometryCollection.js';
+import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
+import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
+import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
+import Point from '../../../../src/ol/geom/Point.js';
+import expect from '../../expect.js';
 
 describe('ol/expr/expression.js', () => {
   describe('parse()', () => {
@@ -112,13 +110,6 @@ describe('ol/expr/expression.js', () => {
       expect(expression.value).to.eql([0, 0, 0, 1]);
     });
 
-    it('parses a literal color (string)', () => {
-      const expression = parse('fuchsia', ColorType, newParsingContext());
-      expect(expression).to.be.a(LiteralExpression);
-      expect(includesType(expression.type, ColorType));
-      expect(expression.value).to.eql([255, 0, 255, 1]);
-    });
-
     it('parses a literal number array', () => {
       const expression = parse([10, 20], NumberArrayType, newParsingContext());
       expect(expression).to.be.a(LiteralExpression);
@@ -142,6 +133,20 @@ describe('ol/expr/expression.js', () => {
       expect(expression.operator).to.be('var');
       expect(isType(expression.type, AnyType)).to.be(true);
       expect(context.variables.has('foo')).to.be(true);
+    });
+
+    it('parses an expression relying on map state', () => {
+      let context = newParsingContext();
+      parse(['zoom'], NumberType, context);
+      expect(context.mapState).to.be(true);
+
+      context = newParsingContext();
+      parse(['resolution'], NumberType, context);
+      expect(context.mapState).to.be(true);
+
+      context = newParsingContext();
+      parse(['time'], NumberType, context);
+      expect(context.mapState).to.be(true);
     });
 
     it('parses a concat expression', () => {
@@ -213,57 +218,7 @@ describe('ol/expr/expression.js', () => {
       expect(context.properties.has('foo')).to.be(true);
     });
 
-    it('parses a * expression with colors', () => {
-      const context = newParsingContext();
-      const expression = parse(
-        ['*', ['get', 'foo'], 'red', [255, 0, 0, 1]],
-        ColorType,
-        context,
-      );
-      expect(expression).to.be.a(CallExpression);
-      expect(expression.operator).to.be('*');
-      expect(isType(expression.type, ColorType)).to.be(true);
-      expect(expression.args).to.have.length(3);
-      expect(isType(expression.args[0].type, ColorType)).to.be(true);
-      expect(isType(expression.args[1].type, ColorType)).to.be(true);
-      expect(isType(expression.args[2].type, ColorType)).to.be(true);
-    });
-
     describe('case operation', () => {
-      it('respects the return type (string or array color)', () => {
-        const context = newParsingContext();
-        const expression = parse(
-          [
-            'case',
-            ['>', ['get', 'attr'], 3],
-            'red',
-            ['>', ['get', 'attr'], 1],
-            'yellow',
-            [255, 0, 0],
-          ],
-          ColorType,
-          context,
-        );
-        expect(expression).to.be.a(CallExpression);
-        expect(expression.operator).to.be('case');
-        expect(isType(expression.type, ColorType)).to.be(true);
-        expect(expression.args).to.have.length(5);
-        expect(isType(expression.args[0].type, BooleanType)).to.be(true);
-        expect(isType(expression.args[1].type, ColorType)).to.be(true);
-        expect(isType(expression.args[2].type, BooleanType)).to.be(true);
-        expect(isType(expression.args[3].type, ColorType)).to.be(true);
-        expect(isType(expression.args[4].type, ColorType)).to.be(true);
-      });
-
-      it('respects the return type (string color)', () => {
-        const expression = parse(
-          ['case', true, 'red', false, 'yellow', 'white'],
-          ColorType,
-          newParsingContext(),
-        );
-        expect(isType(expression.type, ColorType)).to.be(true);
-      });
-
       it('respects the return type (string)', () => {
         const expression = parse(
           ['case', true, 'red', false, 'yellow', '42'],
@@ -316,27 +271,6 @@ describe('ol/expr/expression.js', () => {
     });
 
     describe('match operation', () => {
-      it('respects the return type (color)', () => {
-        const context = newParsingContext();
-        const expression = parse(
-          ['match', ['get', 'attr'], 0, 'red', 1, 'yellow', [255, 0, 0, 1]],
-          ColorType,
-          context,
-        );
-        expect(expression).to.be.a(CallExpression);
-        expect(expression.operator).to.be('match');
-        expect(isType(expression.type, ColorType)).to.be(true);
-        expect(expression.args).to.have.length(6);
-        expect(typeName(expression.args[0].type)).to.be(
-          typeName(BooleanType | StringType | NumberType),
-        );
-        expect(isType(expression.args[1].type, NumberType)).to.be(true);
-        expect(isType(expression.args[2].type, ColorType)).to.be(true);
-        expect(isType(expression.args[3].type, NumberType)).to.be(true);
-        expect(isType(expression.args[4].type, ColorType)).to.be(true);
-        expect(isType(expression.args[5].type, ColorType)).to.be(true);
-      });
-
       it('respects the return type (string)', () => {
         const expression = parse(
           ['match', ['get', 'attr'], 0, 'red', 1, 'yellow', 'not_a_color'],
@@ -349,15 +283,6 @@ describe('ol/expr/expression.js', () => {
       it('respects the return type (color array)', () => {
         const expression = parse(
           ['match', ['get', 'attr'], 0, [1, 1, 0], 1, [1, 0, 1], [0, 1, 1]],
-          ColorType,
-          newParsingContext(),
-        );
-        expect(isType(expression.type, ColorType)).to.be(true);
-      });
-
-      it('respects the return type (color string)', () => {
-        const expression = parse(
-          ['match', ['get', 'attr'], 0, 'red', 1, 'yellow', 'green'],
           ColorType,
           newParsingContext(),
         );
@@ -408,23 +333,6 @@ describe('ol/expr/expression.js', () => {
         expect(isType(expression.args[2].type, StringType)).to.be(true);
         expect(isType(expression.args[3].type, StringType)).to.be(true);
         expect(isType(expression.args[4].type, StringType)).to.be(true);
-      });
-    });
-
-    describe('palette operator', () => {
-      it('outputs color type and list of colors as args', () => {
-        const expression = parse(
-          ['palette', 1, ['red', 'rgba(255, 255, 0, 1)', [0, 255, 255]]],
-          ColorType,
-          newParsingContext(),
-        );
-        expect(expression.operator).to.be('palette');
-        expect(isType(expression.type, ColorType)).to.be(true);
-        expect(expression.args).to.have.length(4);
-        expect(isType(expression.args[0].type, NumberType)).to.be(true);
-        expect(isType(expression.args[1].type, ColorType)).to.be(true);
-        expect(isType(expression.args[2].type, ColorType)).to.be(true);
-        expect(isType(expression.args[3].type, ColorType)).to.be(true);
       });
     });
 
@@ -562,12 +470,6 @@ describe('ol/expr/expression.js', () => {
         name: 'second argument is not an array (palette)',
         expression: ['palette', ['band', 2], 'red'],
         error: 'the second argument of palette must be an array',
-      },
-      {
-        name: 'second argument is not an array of colors (palette)',
-        expression: ['palette', ['band', 2], ['red', 'green', 'abcd']],
-        error:
-          'failed to parse color at index 2 in palette expression: failed to parse "abcd" as color',
       },
     ];
 

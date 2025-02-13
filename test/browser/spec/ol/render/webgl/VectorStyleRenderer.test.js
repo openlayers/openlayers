@@ -1,26 +1,27 @@
+import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import LineString from '../../../../../../src/ol/geom/LineString.js';
-import MixedGeometryBatch from '../../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../../src/ol/geom/Polygon.js';
+import MixedGeometryBatch from '../../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
 import VectorStyleRenderer from '../../../../../../src/ol/render/webgl/VectorStyleRenderer.js';
+import {
+  compose as composeTransform,
+  create as createTransform,
+  makeInverse as makeInverseTransform,
+} from '../../../../../../src/ol/transform.js';
 import WebGLArrayBuffer from '../../../../../../src/ol/webgl/Buffer.js';
 import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
+import {ShaderBuilder} from '../../../../../../src/ol/webgl/ShaderBuilder.js';
 import {
   ARRAY_BUFFER,
   DYNAMIC_DRAW,
   ELEMENT_ARRAY_BUFFER,
   FLOAT,
 } from '../../../../../../src/ol/webgl.js';
-import {ShaderBuilder} from '../../../../../../src/ol/webgl/ShaderBuilder.js';
-import {
-  compose as composeTransform,
-  create as createTransform,
-  makeInverse as makeInverseTransform,
-} from '../../../../../../src/ol/transform.js';
 
 /**
- * @type {import('../../../../../../src/ol/render/webgl/VectorStyleRenderer.js').StyleShaders}
+ * @type {import('../../../../../../src/ol/render/webgl/VectorStyleRenderer.js').AsShaders}
  */
 const SAMPLE_SHADERS = () => ({
   builder: new ShaderBuilder()
@@ -28,10 +29,10 @@ const SAMPLE_SHADERS = () => ({
     .setStrokeColorExpression('vec4(1.0)')
     .setSymbolColorExpression('vec4(1.0)'),
   attributes: {
-    attr1: {
+    prop_attr1: {
       callback: (feature) => feature.get('test'),
     },
-    attr2: {callback: () => [10, 20, 30], size: 3},
+    prop_attr2: {callback: () => [10, 20, 30], size: 3},
   },
   uniforms: {
     custom: () => 1234,
@@ -39,13 +40,16 @@ const SAMPLE_SHADERS = () => ({
 });
 
 /**
- * @type {import('../../../../../../src/ol/style/webgl.js').WebGLStyle}
+ * @type {import('../../../../../../src/ol/render/webgl/VectorStyleRenderer.js').AsRule}
  */
-const SAMPLE_STYLE = {
-  'fill-color': ['get', 'color'],
-  'stroke-width': 2,
-  'circle-radius': ['get', 'size'],
-  'circle-fill-color': 'red',
+const SAMPLE_STYLE_RULE = {
+  style: {
+    'fill-color': ['get', 'color'],
+    'stroke-width': 2,
+    'circle-radius': ['get', 'size'],
+    'circle-fill-color': 'red',
+  },
+  filter: ['>', ['get', 'size'], 10],
 };
 
 const SAMPLE_FRAMESTATE = {
@@ -110,15 +114,19 @@ describe('VectorStyleRenderer', () => {
 
   describe('constructor using style', () => {
     beforeEach(() => {
-      vectorStyleRenderer = new VectorStyleRenderer(SAMPLE_STYLE, helper);
+      vectorStyleRenderer = new VectorStyleRenderer(
+        SAMPLE_STYLE_RULE,
+        {},
+        helper,
+      );
     });
     it('creates a VectorStyleRenderer', () => {
       expect(vectorStyleRenderer.customAttributes_).to.eql({
-        color: {
+        prop_color: {
           callback: {},
           size: 2,
         },
-        size: {
+        prop_size: {
           callback: {},
           size: 1,
         },
@@ -153,14 +161,18 @@ describe('VectorStyleRenderer', () => {
   });
   describe('constructor using shaders', () => {
     beforeEach(() => {
-      vectorStyleRenderer = new VectorStyleRenderer(SAMPLE_SHADERS(), helper);
+      vectorStyleRenderer = new VectorStyleRenderer(
+        SAMPLE_SHADERS(),
+        {},
+        helper,
+      );
     });
     it('creates a VectorStyleRenderer', () => {
       expect(vectorStyleRenderer.customAttributes_).to.eql({
-        attr1: {
+        prop_attr1: {
           callback: {},
         },
-        attr2: {
+        prop_attr2: {
           callback: {},
           size: 3,
         },
@@ -197,7 +209,11 @@ describe('VectorStyleRenderer', () => {
   });
   describe('methods', () => {
     beforeEach(() => {
-      vectorStyleRenderer = new VectorStyleRenderer(SAMPLE_SHADERS(), helper);
+      vectorStyleRenderer = new VectorStyleRenderer(
+        SAMPLE_SHADERS(),
+        {},
+        helper,
+      );
     });
     describe('generateBuffers', () => {
       let buffers;
@@ -252,11 +268,11 @@ describe('VectorStyleRenderer', () => {
           geometryBatch,
           SAMPLE_TRANSFORM,
         );
-        sinon.spy(helper, 'bindBuffer');
-        sinon.spy(helper, 'enableAttributes');
-        sinon.spy(helper, 'useProgram');
-        sinon.spy(helper, 'drawElements');
-        preRenderCb = sinon.spy();
+        sinonSpy(helper, 'bindBuffer');
+        sinonSpy(helper, 'enableAttributes');
+        sinonSpy(helper, 'useProgram');
+        sinonSpy(helper, 'drawElements');
+        preRenderCb = sinonSpy();
         vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
       });
       it('uses programs for all geometry types', function () {
@@ -331,16 +347,20 @@ describe('VectorStyleRenderer', () => {
       fillOnlyShaders.builder = new ShaderBuilder().setFillColorExpression(
         'vec4(1.0)',
       );
-      sinon.spy(helper, 'flushBufferData');
-      sinon.spy(helper, 'enableAttributes');
-      sinon.spy(helper, 'useProgram');
-      sinon.spy(helper, 'drawElements');
-      vectorStyleRenderer = new VectorStyleRenderer(fillOnlyShaders, helper);
+      sinonSpy(helper, 'flushBufferData');
+      sinonSpy(helper, 'enableAttributes');
+      sinonSpy(helper, 'useProgram');
+      sinonSpy(helper, 'drawElements');
+      vectorStyleRenderer = new VectorStyleRenderer(
+        fillOnlyShaders,
+        {},
+        helper,
+      );
       buffers = await vectorStyleRenderer.generateBuffers(
         geometryBatch,
         SAMPLE_TRANSFORM,
       );
-      preRenderCb = sinon.spy();
+      preRenderCb = sinonSpy();
       vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
     });
     it('only loads buffer data for one geometry type', function () {
@@ -372,16 +392,20 @@ describe('VectorStyleRenderer', () => {
       strokeOnlyShaders.builder = new ShaderBuilder().setStrokeColorExpression(
         'vec4(1.0)',
       );
-      sinon.spy(helper, 'flushBufferData');
-      sinon.spy(helper, 'enableAttributes');
-      sinon.spy(helper, 'useProgram');
-      sinon.spy(helper, 'drawElements');
-      vectorStyleRenderer = new VectorStyleRenderer(strokeOnlyShaders, helper);
+      sinonSpy(helper, 'flushBufferData');
+      sinonSpy(helper, 'enableAttributes');
+      sinonSpy(helper, 'useProgram');
+      sinonSpy(helper, 'drawElements');
+      vectorStyleRenderer = new VectorStyleRenderer(
+        strokeOnlyShaders,
+        {},
+        helper,
+      );
       buffers = await vectorStyleRenderer.generateBuffers(
         geometryBatch,
         SAMPLE_TRANSFORM,
       );
-      preRenderCb = sinon.spy();
+      preRenderCb = sinonSpy();
       vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
     });
     it('only loads buffer data for one geometry type', function () {
@@ -413,16 +437,20 @@ describe('VectorStyleRenderer', () => {
       symbolOnlyShaders.builder = new ShaderBuilder().setSymbolColorExpression(
         'vec4(1.)',
       );
-      sinon.spy(helper, 'flushBufferData');
-      sinon.spy(helper, 'enableAttributes');
-      sinon.spy(helper, 'useProgram');
-      sinon.spy(helper, 'drawElements');
-      vectorStyleRenderer = new VectorStyleRenderer(symbolOnlyShaders, helper);
+      sinonSpy(helper, 'flushBufferData');
+      sinonSpy(helper, 'enableAttributes');
+      sinonSpy(helper, 'useProgram');
+      sinonSpy(helper, 'drawElements');
+      vectorStyleRenderer = new VectorStyleRenderer(
+        symbolOnlyShaders,
+        {},
+        helper,
+      );
       buffers = await vectorStyleRenderer.generateBuffers(
         geometryBatch,
         SAMPLE_TRANSFORM,
       );
-      preRenderCb = sinon.spy();
+      preRenderCb = sinonSpy();
       vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
     });
     it('only loads buffer data for one geometry type', function () {
@@ -445,6 +473,105 @@ describe('VectorStyleRenderer', () => {
         0,
         buffers.pointBuffers[0].getSize(),
       ]);
+    });
+  });
+  describe('applying a style filter', () => {
+    let buffers;
+    const style = {
+      'fill-color': 'green',
+      'stroke-width': 2,
+      'circle-radius': 6,
+    };
+    describe('excluding only some objects', () => {
+      beforeEach(async () => {
+        const filter = ['<', ['get', 'test'], 2500];
+        vectorStyleRenderer = new VectorStyleRenderer(
+          {style, filter},
+          {},
+          helper,
+          true,
+          filter,
+        );
+        sinonSpy(geometryBatch, 'filter');
+        buffers = await vectorStyleRenderer.generateBuffers(
+          geometryBatch,
+          SAMPLE_TRANSFORM,
+        );
+      });
+      it('compiles filter to be run on CPU', () => {
+        const filterFn = vectorStyleRenderer.featureFilter_;
+        expect(filterFn(geometryBatch.getFeatureFromRef(1))).to.be(true);
+        expect(filterFn(geometryBatch.getFeatureFromRef(2))).to.be(true);
+        expect(filterFn(geometryBatch.getFeatureFromRef(3))).to.be(false);
+        expect(filterFn(geometryBatch.getFeatureFromRef(4))).to.be(false);
+      });
+      it('applies filter and generates buffer', () => {
+        expect(geometryBatch.filter.callCount).to.be(1);
+        expect(buffers.pointBuffers).not.to.be(null);
+        expect(buffers.lineStringBuffers).not.to.be(null);
+        expect(buffers.polygonBuffers).not.to.be(null);
+      });
+    });
+    describe('excluding all objects', () => {
+      beforeEach(async () => {
+        const filter = ['>', ['get', 'test'], 10000];
+        vectorStyleRenderer = new VectorStyleRenderer(
+          {style, filter},
+          {},
+          helper,
+          true,
+          filter,
+        );
+        sinonSpy(geometryBatch, 'filter');
+        buffers = await vectorStyleRenderer.generateBuffers(
+          geometryBatch,
+          SAMPLE_TRANSFORM,
+        );
+      });
+      it('applies filter and returns null', () => {
+        expect(geometryBatch.filter.callCount).to.be(1);
+        expect(buffers).to.be(null);
+      });
+    });
+    describe('does not apply filter if it depends on map state', () => {
+      beforeEach(async () => {
+        const filter = ['>', ['zoom'], 2];
+        vectorStyleRenderer = new VectorStyleRenderer(
+          {style, filter},
+          {},
+          helper,
+          true,
+          filter,
+        );
+        sinonSpy(geometryBatch, 'filter');
+        buffers = await vectorStyleRenderer.generateBuffers(
+          geometryBatch,
+          SAMPLE_TRANSFORM,
+        );
+      });
+      it('does not filter the geometry batches', () => {
+        expect(geometryBatch.filter.callCount).to.be(0);
+      });
+    });
+    describe('does not apply filter if it cannot be compiled for CPU', () => {
+      beforeEach(async () => {
+        const filter = ['>', ['line-metric'], 10];
+        vectorStyleRenderer = new VectorStyleRenderer(
+          {style, filter},
+          {},
+          helper,
+          true,
+          filter,
+        );
+        sinonSpy(geometryBatch, 'filter');
+        buffers = await vectorStyleRenderer.generateBuffers(
+          geometryBatch,
+          SAMPLE_TRANSFORM,
+        );
+      });
+      it('does not filter the geometry batches', () => {
+        expect(geometryBatch.filter.callCount).to.be(0);
+      });
     });
   });
 });

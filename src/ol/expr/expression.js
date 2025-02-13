@@ -18,39 +18,39 @@ import {toSize} from '../size.js';
  *
  * See below for details on the available operators (with notes for those that are WebGL or Canvas only).
  *
- * * Reading operators:
- *   * `['band', bandIndex, xOffset, yOffset]` For tile layers only. Fetches pixel values from band
+ * Reading operators:
+ *   `['band', bandIndex, xOffset, yOffset]` For tile layers only. Fetches pixel values from band
  *     `bandIndex` of the source's data. The first `bandIndex` of the source data is `1`. Fetched values
  *     are in the 0..1 range. {@link import("../source/TileImage.js").default} sources have 4 bands: red,
  *     green, blue and alpha. {@link import("../source/DataTile.js").default} sources can have any number
  *     of bands, depending on the underlying data source and
  *     {@link import("../source/GeoTIFF.js").Options configuration}. `xOffset` and `yOffset` are optional
  *     and allow specifying pixel offsets for x and y. This is used for sampling data from neighboring pixels (WebGL only).
- *   * `['get', attributeName]` fetches a feature property value, similar to `feature.get('attributeName')`.
- *   * `['get', attributeName, keyOrArrayIndex, ...]` (Canvas only) Access nested properties and array items of a
+ *   `['get', attributeName]` fetches a feature property value, similar to `feature.get('attributeName')`.
+ *   `['get', attributeName, keyOrArrayIndex, ...]` (Canvas only) Access nested properties and array items of a
  *     feature property. The result is `undefined` when there is nothing at the specified key or index.
- *   * `['geometry-type']` returns a feature's geometry type as string, either: 'LineString', 'Point' or 'Polygon'
+ *   `['geometry-type']` returns a feature's geometry type as string, either: 'LineString', 'Point' or 'Polygon'
  *     `Multi*` values are returned as their singular equivalent
  *     `Circle` geometries are returned as 'Polygon'
  *     `GeometryCollection` geometries are returned as the type of the first geometry found in the collection (WebGL only).
- *   * `['resolution']` returns the current resolution
- *   * `['time']` The time in seconds since the creation of the layer (WebGL only).
- *   * `['var', 'varName']` fetches a value from the style variables; will throw an error if that variable is undefined
- *   * `['zoom']` The current zoom level (WebGL only).
- *   * `['line-metric']` returns the M component of the current point on a line (WebGL only); in case where the geometry layout of the line
+ *   `['resolution']` returns the current resolution
+ *   `['time']` The time in seconds since the creation of the layer (WebGL only).
+ *   `['var', 'varName']` fetches a value from the style variables; will throw an error if that variable is undefined
+ *   `['zoom']` The current zoom level (WebGL only).
+ *   `['line-metric']` returns the M component of the current point on a line (WebGL only); in case where the geometry layout of the line
  *      does not contain an M component (e.g. XY or XYZ), 0 is returned; 0 is also returned for geometries other than lines.
  *      Please note that the M component will be linearly interpolated between the two points composing a segment.
  *
- * * Math operators:
- *   * `['*', value1, value2, ...]` multiplies the values (either numbers or colors)
- *   * `['/', value1, value2]` divides `value1` by `value2`
- *   * `['+', value1, value2, ...]` adds the values
- *   * `['-', value1, value2]` subtracts `value2` from `value1`
- *   * `['clamp', value, low, high]` clamps `value` between `low` and `high`
- *   * `['%', value1, value2]` returns the result of `value1 % value2` (modulo)
- *   * `['^', value1, value2]` returns the value of `value1` raised to the `value2` power
- *   * `['abs', value1]` returns the absolute value of `value1`
- *   * `['floor', value1]` returns the nearest integer less than or equal to `value1`
+ * Math operators:
+ *   `['*', value1, value2, ...]` multiplies the values (either numbers or colors)
+ *   `['/', value1, value2]` divides `value1` by `value2`
+ *   `['+', value1, value2, ...]` adds the values
+ *   `['-', value1, value2]` subtracts `value2` from `value1`
+ *   `['clamp', value, low, high]` clamps `value` between `low` and `high`
+ *   `['%', value1, value2]` returns the result of `value1 % value2` (modulo)
+ *   `['^', value1, value2]` returns the value of `value1` raised to the `value2` power
+ *   `['abs', value1]` returns the absolute value of `value1`
+ *   `['floor', value1]` returns the nearest integer less than or equal to `value1`
  *   * `['round', value1]` returns the nearest integer to `value1`
  *   * `['ceil', value1]` returns the nearest integer greater than or equal to `value1`
  *   * `['sin', value1]` returns the sine of `value1`
@@ -253,6 +253,7 @@ export class CallExpression {
  * @property {Set<string>} properties Properties referenced with the 'get' operator.
  * @property {boolean} featureId The style uses the feature id.
  * @property {boolean} geometryType The style uses the feature geometry type.
+ * @property {boolean} mapState The style uses the map state (view state or time elapsed).
  */
 
 /**
@@ -264,6 +265,7 @@ export function newParsingContext() {
     properties: new Set(),
     featureId: false,
     geometryType: false,
+    mapState: false,
   };
 }
 
@@ -443,9 +445,9 @@ const parsers = {
   ),
   [Ops.GeometryType]: createCallExpressionParser(usesGeometryType, withNoArgs),
   [Ops.LineMetric]: createCallExpressionParser(withNoArgs),
-  [Ops.Resolution]: createCallExpressionParser(withNoArgs),
-  [Ops.Zoom]: createCallExpressionParser(withNoArgs),
-  [Ops.Time]: createCallExpressionParser(withNoArgs),
+  [Ops.Resolution]: createCallExpressionParser(usesMapState, withNoArgs),
+  [Ops.Zoom]: createCallExpressionParser(usesMapState, withNoArgs),
+  [Ops.Time]: createCallExpressionParser(usesMapState, withNoArgs),
   [Ops.Any]: createCallExpressionParser(
     hasArgsCount(2, Infinity),
     withArgsOfType(BooleanType),
@@ -604,7 +606,7 @@ const parsers = {
  */
 
 /**
- * @type ArgValidator
+ * @type {ArgValidator}
  */
 function withGetArgs(encoded, returnType, context) {
   const argsCount = encoded.length - 1;
@@ -634,7 +636,7 @@ function withGetArgs(encoded, returnType, context) {
 }
 
 /**
- * @type ArgValidator
+ * @type {ArgValidator}
  */
 function withVarArgs(encoded, returnType, context) {
   const name = encoded[1];
@@ -647,21 +649,28 @@ function withVarArgs(encoded, returnType, context) {
 }
 
 /**
- * @type ArgValidator
+ * @type {ArgValidator}
  */
 function usesFeatureId(encoded, returnType, context) {
   context.featureId = true;
 }
 
 /**
- * @type ArgValidator
+ * @type {ArgValidator}
  */
 function usesGeometryType(encoded, returnType, context) {
   context.geometryType = true;
 }
 
 /**
- * @type ArgValidator
+ * @type {ArgValidator}
+ */
+function usesMapState(encoded, returnType, context) {
+  context.mapState = true;
+}
+
+/**
+ * @type {ArgValidator}
  */
 function withNoArgs(encoded, returnType, context) {
   const operation = encoded[0];
@@ -761,7 +770,7 @@ function hasEvenArgs(encoded, returnType, context) {
 }
 
 /**
- * @type ArgValidator
+ * @type {ArgValidator}
  */
 function withMatchArgs(encoded, returnType, context) {
   const argsCount = encoded.length - 1;
@@ -796,7 +805,7 @@ function withMatchArgs(encoded, returnType, context) {
 }
 
 /**
- * @type ArgValidator
+ * @type {ArgValidator}
  */
 function withInterpolateArgs(encoded, returnType, context) {
   const interpolationType = encoded[1];
@@ -859,7 +868,7 @@ function withInterpolateArgs(encoded, returnType, context) {
 }
 
 /**
- * @type ArgValidator
+ * @type {ArgValidator}
  */
 function withCaseArgs(encoded, returnType, context) {
   const fallback = parse(encoded[encoded.length - 1], returnType, context);
@@ -889,7 +898,7 @@ function withCaseArgs(encoded, returnType, context) {
 }
 
 /**
- * @type ArgValidator
+ * @type {ArgValidator}
  */
 function withInArgs(encoded, returnType, context) {
   let haystack = encoded[2];
@@ -936,7 +945,7 @@ function withInArgs(encoded, returnType, context) {
 }
 
 /**
- * @type ArgValidator
+ * @type {ArgValidator}
  */
 function withPaletteArgs(encoded, returnType, context) {
   let index;

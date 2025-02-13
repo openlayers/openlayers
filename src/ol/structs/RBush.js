@@ -3,8 +3,8 @@
  */
 import RBush_ from 'rbush';
 import {createOrUpdate, equals} from '../extent.js';
-import {getUid} from '../util.js';
 import {isEmpty} from '../obj.js';
+import {getUid} from '../util.js';
 
 /**
  * @typedef {import("rbush").BBox & {value: T}} Entry
@@ -145,8 +145,9 @@ class RBush {
    * Calls a callback function with each value in the tree.
    * If the callback returns a truthy value, this value is returned without
    * checking the rest of the tree.
-   * @param {function(T): *} callback Callback.
-   * @return {*} Callback return value.
+   * @param {function(T): R} callback Callback.
+   * @return {R|undefined} Callback return value.
+   * @template R
    */
   forEach(callback) {
     return this.forEach_(this.getAll(), callback);
@@ -155,8 +156,9 @@ class RBush {
   /**
    * Calls a callback function with each value in the provided extent.
    * @param {import("../extent.js").Extent} extent Extent.
-   * @param {function(T): *} callback Callback.
-   * @return {*} Callback return value.
+   * @param {function(T): R} callback Callback.
+   * @return {R|undefined} Callback return value.
+   * @template R
    */
   forEachInExtent(extent, callback) {
     return this.forEach_(this.getInExtent(extent), callback);
@@ -164,9 +166,10 @@ class RBush {
 
   /**
    * @param {Array<T>} values Values.
-   * @param {function(T): *} callback Callback.
+   * @param {function(T): R} callback Callback.
+   * @return {R|undefined} Callback return value.
+   * @template R
    * @private
-   * @return {*} Callback return value.
    */
   forEach_(values, callback) {
     let result;

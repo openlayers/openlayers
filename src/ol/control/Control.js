@@ -1,10 +1,10 @@
 /**
  * @module ol/control/Control
  */
-import BaseObject from '../Object.js';
 import MapEventType from '../MapEventType.js';
-import {VOID} from '../functions.js';
+import BaseObject from '../Object.js';
 import {listen, unlistenByKey} from '../events.js';
+import {VOID} from '../functions.js';
 
 /**
  * @typedef {Object} Options
@@ -124,7 +124,9 @@ class Control extends BaseObject {
     this.map_ = map;
     if (map) {
       const target = this.target_ ?? map.getOverlayContainerStopEvent();
-      target.appendChild(this.element);
+      if (this.element) {
+        target.appendChild(this.element);
+      }
       if (this.render !== VOID) {
         this.listenerKeys.push(
           listen(map, MapEventType.POSTRENDER, this.render, this),

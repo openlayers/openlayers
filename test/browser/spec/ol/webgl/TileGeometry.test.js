@@ -1,19 +1,20 @@
+import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import Feature from '../../../../../src/ol/Feature.js';
-import MixedGeometryBatch from '../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
-import Point from '../../../../../src/ol/geom/Point.js';
-import Polygon from '../../../../../src/ol/geom/Polygon.js';
-import TileGeometry from '../../../../../src/ol/webgl/TileGeometry.js';
 import TileState from '../../../../../src/ol/TileState.js';
 import VectorRenderTile from '../../../../../src/ol/VectorRenderTile.js';
 import VectorTile from '../../../../../src/ol/VectorTile.js';
-import WebGLHelper from '../../../../../src/ol/webgl/Helper.js';
 import {VOID} from '../../../../../src/ol/functions.js';
+import Point from '../../../../../src/ol/geom/Point.js';
+import Polygon from '../../../../../src/ol/geom/Polygon.js';
+import MixedGeometryBatch from '../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
+import WebGLHelper from '../../../../../src/ol/webgl/Helper.js';
+import TileGeometry from '../../../../../src/ol/webgl/TileGeometry.js';
 
 class MockRenderer {
-  generateBuffers = sinon
-    .stub()
-    .callsFake(() => new Promise((resolve) => (this.endGenerate_ = resolve)));
+  generateBuffers = sinonStub().callsFake(
+    () => new Promise((resolve) => (this.endGenerate_ = resolve)),
+  );
   endGenerate_ = null;
 }
 
@@ -99,8 +100,8 @@ describe('ol/webgl/TileGeometry', function () {
         () => {},
       );
 
-      sinon.spy(tileGeometry.batch_, 'clear');
-      sinon.spy(tileGeometry.batch_, 'addFeatures');
+      sinonSpy(tileGeometry.batch_, 'clear');
+      sinonSpy(tileGeometry.batch_, 'addFeatures');
       tileGeometry.setTile(newTile);
       setTimeout(done, 10);
     });
@@ -134,6 +135,27 @@ describe('ol/webgl/TileGeometry', function () {
       expect(tileGeometry.maskVertices.getArray()).to.eql([
         -100, -200, 300, -200, 300, 400, -100, 400,
       ]);
+    });
+
+    describe('#dispose', () => {
+      let deleteBufferSpy;
+      beforeEach(async () => {
+        deleteBufferSpy = sinonSpy(helper, 'deleteBuffer');
+        // generate buffers and dispose the tile
+        styleRenderers[0].endGenerate_({
+          pointBuffers: [{}, {}],
+          polygonBuffers: [{}, {}],
+        });
+        styleRenderers[1].endGenerate_({
+          polygonBuffers: [{}, {}],
+          lineStringBuffers: [{}, {}],
+        });
+        await new Promise((resolve) => setTimeout(resolve));
+        tileGeometry.dispose();
+      });
+      it('deletes webgl buffers', () => {
+        expect(deleteBufferSpy.callCount).to.be(8); // 2 for points, 4 for polygons, 2 for line strings
+      });
     });
   });
 });

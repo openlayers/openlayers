@@ -1,16 +1,21 @@
 /**
  * @module ol/render/canvas/Builder
  */
-import CanvasInstruction from './Instruction.js';
-import Relationship from '../../extent/Relationship.js';
-import VectorContext from '../VectorContext.js';
+import {equals, reverseSubArray} from '../../array.js';
 import {asColorLike} from '../../colorlike.js';
+import Relationship from '../../extent/Relationship.js';
 import {
   buffer,
   clone,
   containsCoordinate,
   coordinateRelationship,
 } from '../../extent.js';
+import {
+  inflateCoordinates,
+  inflateCoordinatesArray,
+  inflateMultiCoordinatesArray,
+} from '../../geom/flat/inflate.js';
+import VectorContext from '../VectorContext.js';
 import {
   defaultFillStyle,
   defaultLineCap,
@@ -21,12 +26,7 @@ import {
   defaultMiterLimit,
   defaultStrokeStyle,
 } from '../canvas.js';
-import {equals, reverseSubArray} from '../../array.js';
-import {
-  inflateCoordinates,
-  inflateCoordinatesArray,
-  inflateMultiCoordinatesArray,
-} from '../../geom/flat/inflate.js';
+import CanvasInstruction from './Instruction.js';
 
 class CanvasBuilder extends VectorContext {
   /**
@@ -487,11 +487,13 @@ class CanvasBuilder extends VectorContext {
 
   /**
    * @param {import("../../style/Fill.js").default} fillStyle Fill style.
-   * @param {import("../../style/Stroke.js").default} strokeStyle Stroke style.
-   * @override
+   * @param {import('../canvas.js').FillStrokeState} [state] State.
+   * @return {import('../canvas.js').FillStrokeState} State.
    */
-  setFillStrokeStyle(fillStyle, strokeStyle) {
-    const state = this.state;
+  fillStyleToState(
+    fillStyle,
+    state = /** @type {import('../canvas.js').FillStrokeState} */ ({}),
+  ) {
     if (fillStyle) {
       const fillStyleColor = fillStyle.getColor();
       state.fillPatternScale =
@@ -506,6 +508,18 @@ class CanvasBuilder extends VectorContext {
     } else {
       state.fillStyle = undefined;
     }
+    return state;
+  }
+
+  /**
+   * @param {import("../../style/Stroke.js").default} strokeStyle Stroke style.
+   * @param {import("../canvas.js").FillStrokeState} state State.
+   * @return {import("../canvas.js").FillStrokeState} State.
+   */
+  strokeStyleToState(
+    strokeStyle,
+    state = /** @type {import('../canvas.js').FillStrokeState} */ ({}),
+  ) {
     if (strokeStyle) {
       const strokeStyleColor = strokeStyle.getColor();
       state.strokeStyle = asColorLike(
@@ -550,6 +564,18 @@ class CanvasBuilder extends VectorContext {
       state.lineWidth = undefined;
       state.miterLimit = undefined;
     }
+    return state;
+  }
+
+  /**
+   * @param {import("../../style/Fill.js").default} fillStyle Fill style.
+   * @param {import("../../style/Stroke.js").default} strokeStyle Stroke style.
+   * @override
+   */
+  setFillStrokeStyle(fillStyle, strokeStyle) {
+    const state = this.state;
+    this.fillStyleToState(fillStyle, state);
+    this.strokeStyleToState(strokeStyle, state);
   }
 
   /**
@@ -586,7 +612,7 @@ class CanvasBuilder extends VectorContext {
       state.lineCap,
       state.lineJoin,
       state.miterLimit,
-      this.applyPixelRatio(state.lineDash),
+      state.lineDash ? this.applyPixelRatio(state.lineDash) : null,
       state.lineDashOffset * this.pixelRatio,
     ];
   }

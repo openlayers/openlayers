@@ -1,8 +1,8 @@
 /**
  * @module ol/format/xsd
  */
-import {getAllTextContent, getDocument} from '../xml.js';
 import {padNumber} from '../string.js';
+import {getAllTextContent, getDocument} from '../xml.js';
 
 /**
  * @param {Node} node Node.
@@ -142,10 +142,31 @@ export function writeNonNegativeIntegerTextNode(node, nonNegativeInteger) {
   node.appendChild(getDocument().createTextNode(string));
 }
 
+const whiteSpaceStart = /^\s/;
+const whiteSpaceEnd = /\s$/;
+const cdataCharacters = /(\n|\t|\r|<|&| {2})/;
+
 /**
  * @param {Node} node Node to append a TextNode with the string to.
  * @param {string} string String.
  */
 export function writeStringTextNode(node, string) {
-  node.appendChild(getDocument().createTextNode(string));
+  if (
+    typeof string === 'string' &&
+    (whiteSpaceStart.test(string) ||
+      whiteSpaceEnd.test(string) ||
+      cdataCharacters.test(string))
+  ) {
+    string.split(']]>').forEach((part, i, a) => {
+      if (i < a.length - 1) {
+        part += ']]';
+      }
+      if (i > 0) {
+        part = '>' + part;
+      }
+      writeCDATASection(node, part);
+    });
+  } else {
+    node.appendChild(getDocument().createTextNode(string));
+  }
 }

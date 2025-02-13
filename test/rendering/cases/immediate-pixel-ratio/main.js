@@ -1,9 +1,17 @@
+import Feature from '../../../../src/ol/Feature.js';
+import Map from '../../../../src/ol/Map.js';
+import View from '../../../../src/ol/View.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
+import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
+import Point from '../../../../src/ol/geom/Point.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import VectorSource from '../../../../src/ol/source/Vector.js';
-import {Feature, Map, View} from '../../../../src/ol/index.js';
-import {Fill, Icon, Stroke, Style, Text} from '../../../../src/ol/style.js';
-import {LineString, MultiPoint, Point} from '../../../../src/ol/geom.js';
 import {getVectorContext} from '../../../../src/ol/render.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
+import Fill from '../../../../src/ol/style/Fill.js';
+import Icon from '../../../../src/ol/style/Icon.js';
+import Stroke from '../../../../src/ol/style/Stroke.js';
+import Style from '../../../../src/ol/style/Style.js';
+import Text from '../../../../src/ol/style/Text.js';
 
 const coordinates = [
   [50, -200, 0],

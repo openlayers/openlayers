@@ -1,5 +1,5 @@
-import expect from '../../expect.js';
 import {create, fromTransform} from '../../../../src/ol/vec/mat4.js';
+import expect from '../../expect.js';
 
 describe('ol/vec/mat4.js', function () {
   describe('create()', function () {

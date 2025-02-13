@@ -2,28 +2,29 @@
  * @module ol/renderer/webgl/VectorTileLayer
  */
 import EventType from '../../events/EventType.js';
-import TileGeometry from '../../webgl/TileGeometry.js';
+import {getIntersection} from '../../extent.js';
 import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
-import WebGLArrayBuffer from '../../webgl/Buffer.js';
-import WebGLBaseTileLayerRenderer, {
-  Uniforms as BaseUniforms,
-} from './TileLayerBase.js';
-import WebGLRenderTarget from '../../webgl/RenderTarget.js';
-import {AttributeType} from '../../webgl/Helper.js';
-import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
-import {ShaderBuilder} from '../../webgl/ShaderBuilder.js';
-import {
-  create as createMat4,
-  fromTransform as mat4FromTransform,
-} from '../../vec/mat4.js';
+import {breakDownFlatStyle} from '../../render/webgl/utils.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
   multiply as multiplyTransform,
   setFromArray as setFromTransform,
 } from '../../transform.js';
-import {getIntersection} from '../../extent.js';
+import {
+  create as createMat4,
+  fromTransform as mat4FromTransform,
+} from '../../vec/mat4.js';
+import WebGLArrayBuffer from '../../webgl/Buffer.js';
+import {AttributeType} from '../../webgl/Helper.js';
+import WebGLRenderTarget from '../../webgl/RenderTarget.js';
+import {ShaderBuilder} from '../../webgl/ShaderBuilder.js';
+import TileGeometry from '../../webgl/TileGeometry.js';
 import {parseLiteralStyle} from '../../webgl/styleparser.js';
+import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
+import WebGLBaseTileLayerRenderer, {
+  Uniforms as BaseUniforms,
+} from './TileLayerBase.js';
 
 export const Uniforms = {
   ...BaseUniforms,
@@ -36,12 +37,18 @@ export const Attributes = {
 };
 
 /**
- * @typedef {import('../../render/webgl/VectorStyleRenderer.js').VectorStyle} VectorStyle
+ * @typedef {import('../../render/webgl/VectorStyleRenderer.js').AsShaders} StyleAsShaders
+ */
+/**
+ * @typedef {import('../../render/webgl/VectorStyleRenderer.js').AsRule} StyleAsRule
  */
 
 /**
  * @typedef {Object} Options
- * @property {VectorStyle|Array<VectorStyle>} style Vector style as literal style or shaders; can also accept an array of styles
+ * @property {import('../../style/flat.js').FlatStyleLike | Array<StyleAsShaders> | StyleAsShaders} style Flat vector style; also accepts shaders
+ * @property {import('../../style/flat.js').StyleVariables} [variables] Style variables. Each variable must hold a literal value (not
+ * an expression). These variables can be used as {@link import("../../expr/expression.js").ExpressionValue expressions} in the styles properties
+ * using the `['var', 'varName']` operator.
  * @property {boolean} [disableHitDetection=false] Setting this to true will provide a slight performance boost, but will
  * prevent all hit detection on the layer.
  * @property {number} [cacheSize=512] The vector tile cache size.
@@ -77,10 +84,16 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.hitDetectionEnabled_ = !options.disableHitDetection;
 
     /**
-     * @type {Array<VectorStyle>}
+     * @type {Array<StyleAsRule | StyleAsShaders>}
      * @private
      */
     this.styles_ = [];
+
+    /**
+     * @type {import('../../style/flat.js').StyleVariables}
+     * @private
+     */
+    this.styleVariables_ = options.variables || {};
 
     /**
      * @type {Array<VectorStyleRenderer>}
@@ -161,9 +174,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    * @private
    */
   applyOptions_(options) {
-    this.styles_ = Array.isArray(options.style)
-      ? options.style
-      : [options.style];
+    this.styles_ = breakDownFlatStyle(options.style);
   }
 
   /**
@@ -184,10 +195,13 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
 
     this.styleRenderers_ = this.styles_.map((style) => {
       const isShaders = 'builder' in style;
+      /** @type {StyleAsShaders} */
       let shaders;
       if (!isShaders) {
         const parseResult = parseLiteralStyle(
-          /** @type {import('../../style/webgl.js').WebGLStyle} */ (style),
+          style.style,
+          this.styleVariables_,
+          style.filter,
         );
         addBuilderParams(parseResult.builder);
         shaders = {
@@ -196,17 +210,15 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
           uniforms: parseResult.uniforms,
         };
       } else {
-        addBuilderParams(
-          /** @type {import('../../render/webgl/VectorStyleRenderer.js').StyleShaders} */ (
-            style
-          ).builder,
-        );
+        addBuilderParams(style.builder);
         shaders = style;
       }
       return new VectorStyleRenderer(
         shaders,
+        this.styleVariables_,
         this.helper,
         this.hitDetectionEnabled_,
+        'filter' in style ? style.filter : null,
       );
     });
   }
@@ -365,6 +377,9 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     for (let i = 0, ii = this.styleRenderers_.length; i < ii; i++) {
       const renderer = this.styleRenderers_[i];
       const buffers = tileRepresentation.buffers[i];
+      if (!buffers) {
+        continue;
+      }
       renderer.render(buffers, frameState, () => {
         this.applyUniforms_(
           alpha,

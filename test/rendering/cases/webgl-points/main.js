@@ -1,13 +1,13 @@
-import KML from '../../../../src/ol/format/KML.js';
 import Map from '../../../../src/ol/Map.js';
-import TileLayer from '../../../../src/ol/layer/Tile.js';
-import VectorSource from '../../../../src/ol/source/Vector.js';
 import View from '../../../../src/ol/View.js';
-import WebGLPointsLayer from '../../../../src/ol/layer/WebGLPoints.js';
+import KML from '../../../../src/ol/format/KML.js';
+import TileLayer from '../../../../src/ol/layer/Tile.js';
+import WebGLVectorLayer from '../../../../src/ol/layer/WebGLVector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
 import {createDefaultStyle} from '../../../../src/ol/style/flat.js';
 
-const vector = new WebGLPointsLayer({
+const vector = new WebGLVectorLayer({
   source: new VectorSource({
     url: '/data/2012_Earthquakes_Mag5.kml',
     format: new KML({

@@ -1,17 +1,17 @@
 /**
  * @module ol/layer/Flow
  */
-import BaseTileLayer from './BaseTile.js';
-import FlowLayerRenderer, {A, U, V} from '../renderer/webgl/FlowLayer.js';
-import LayerProperty from './Property.js';
-import {Attributes as BA, Uniforms as BU} from '../renderer/webgl/TileLayer.js';
 import {ColorType} from '../expr/expression.js';
-import {expressionToGlsl} from '../webgl/styleparser.js';
 import {
   getStringNumberEquivalent,
   newCompilationContext,
   uniformNameForVariable,
 } from '../expr/gpu.js';
+import FlowLayerRenderer, {A, U, V} from '../renderer/webgl/FlowLayer.js';
+import {Attributes as BA, Uniforms as BU} from '../renderer/webgl/TileLayer.js';
+import {expressionToGlsl} from '../webgl/styleparser.js';
+import BaseTileLayer from './BaseTile.js';
+import LayerProperty from './Property.js';
 
 /**
  * @typedef {import("../source/DataTile.js").default} SourceType

@@ -1,15 +1,15 @@
 /**
  * @module ol/renderer/webgl/PointsLayer
  */
-import BaseVector from '../../layer/BaseVector.js';
-import VectorEventType from '../../source/VectorEventType.js';
 import ViewHint from '../../ViewHint.js';
-import WebGLArrayBuffer from '../../webgl/Buffer.js';
-import WebGLLayerRenderer from './Layer.js';
-import WebGLRenderTarget from '../../webgl/RenderTarget.js';
-import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
-import {AttributeType, DefaultUniform} from '../../webgl/Helper.js';
+import {assert} from '../../asserts.js';
+import {listen, unlistenByKey} from '../../events.js';
+import {buffer, createEmpty, equals} from '../../extent.js';
+import BaseVector from '../../layer/BaseVector.js';
+import {fromUserCoordinate, getUserProjection} from '../../proj.js';
 import {WebGLWorkerMessageType} from '../../render/webgl/constants.js';
+import {colorDecodeId, colorEncodeId} from '../../render/webgl/utils.js';
+import VectorEventType from '../../source/VectorEventType.js';
 import {
   apply as applyTransform,
   create as createTransform,
@@ -17,29 +17,32 @@ import {
   multiply as multiplyTransform,
   translate as translateTransform,
 } from '../../transform.js';
-import {assert} from '../../asserts.js';
-import {buffer, createEmpty, equals} from '../../extent.js';
-import {colorDecodeId, colorEncodeId} from '../../render/webgl/utils.js';
-import {create as createWebGLWorker} from '../../worker/webgl.js';
-import {fromUserCoordinate, getUserProjection} from '../../proj.js';
 import {getUid} from '../../util.js';
+import WebGLArrayBuffer from '../../webgl/Buffer.js';
+import {AttributeType, DefaultUniform} from '../../webgl/Helper.js';
+import WebGLRenderTarget from '../../webgl/RenderTarget.js';
+import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
+import {create as createWebGLWorker} from '../../worker/webgl.js';
+import WebGLLayerRenderer from './Layer.js';
 import {getWorldParameters} from './worldUtil.js';
-import {listen, unlistenByKey} from '../../events.js';
+
+/** @typedef {import("../../geom/Point.js").default} Point */
+/** @typedef {import("../../Feature").default<Point>} PointFeature */
 
 /**
  * @typedef {Object} CustomAttribute A description of a custom attribute to be passed on to the GPU, with a value different
  * for each feature.
  * @property {string} name Attribute name.
- * @property {function(import("../../Feature").default, Object<string, *>):number} callback This callback computes the numerical value of the
+ * @property {function(PointFeature, Object<string, *>):number} callback This callback computes the numerical value of the
  * attribute for a given feature (properties are available as 2nd arg for quicker access).
  */
 
 /**
  * @typedef {Object} FeatureCacheItem Object that holds a reference to a feature, its geometry and properties. Used to optimize
  * rebuildBuffers by accessing these objects quicker.
- * @property {import("../../Feature").default} feature Feature
+ * @property {PointFeature} feature Feature
  * @property {Object<string, *>} properties Feature properties
- * @property {import("../../geom").Geometry} geometry Feature geometry
+ * @property {import("../../coordinate.js").Coordinate} flatCoordinates Point coordinates
  */
 
 /**
@@ -47,8 +50,8 @@ import {listen, unlistenByKey} from '../../events.js';
  * @property {string} [className='ol-layer'] A CSS class name to set to the canvas element.
  * @property {Array<CustomAttribute>} [attributes] These attributes will be read from the features in the source and then
  * passed to the GPU. The `name` property of each attribute will serve as its identifier:
- *  * In the vertex shader as an `attribute` by prefixing it with `a_`
- *  * In the fragment shader as a `varying` by prefixing it with `v_`
+ *  In the vertex shader as an `attribute` by prefixing it with `a_`
+ *  In the fragment shader as a `varying` by prefixing it with `v_`
  * Please note that these can only be numerical values.
  * @property {string} vertexShader Vertex shader source, mandatory.
  * @property {string} fragmentShader Fragment shader source, mandatory.
@@ -178,7 +181,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const customAttributes = options.attributes
       ? options.attributes.map(function (attribute) {
           return {
-            name: 'a_prop_' + attribute.name,
+            name: 'a_' + attribute.name,
             size: 1,
             type: AttributeType.FLOAT,
           };
@@ -205,7 +208,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
     if (this.hitDetectionEnabled_) {
       this.attributes.push({
-        name: 'a_prop_hitColor',
+        name: 'a_hitColor',
         size: 4,
         type: AttributeType.FLOAT,
       });
@@ -314,7 +317,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
      */
     this.featureCount_ = 0;
 
-    const source = this.getLayer().getSource();
+    const source = /** @type {import("../../source/Vector.js").default} */ (
+      this.getLayer().getSource()
+    );
     /**
      * @private
      */
@@ -345,12 +350,15 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       ),
     ];
     source.forEachFeature((feature) => {
-      this.featureCache_[getUid(feature)] = {
-        feature: feature,
-        properties: feature.getProperties(),
-        geometry: feature.getGeometry(),
-      };
-      this.featureCount_++;
+      const geometry = feature.getGeometry();
+      if (geometry && geometry.getType() === 'Point') {
+        this.featureCache_[getUid(feature)] = {
+          feature: /** @type {PointFeature} */ (feature),
+          properties: feature.getProperties(),
+          flatCoordinates: /** @type {Point} */ (geometry).getFlatCoordinates(),
+        };
+        this.featureCount_++;
+      }
     });
   }
 
@@ -382,12 +390,15 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    */
   handleSourceFeatureAdded_(event) {
     const feature = event.feature;
-    this.featureCache_[getUid(feature)] = {
-      feature: feature,
-      properties: feature.getProperties(),
-      geometry: feature.getGeometry(),
-    };
-    this.featureCount_++;
+    const geometry = feature.getGeometry();
+    if (geometry && geometry.getType() === 'Point') {
+      this.featureCache_[getUid(feature)] = {
+        feature: /** @type {PointFeature} */ (feature),
+        properties: feature.getProperties(),
+        flatCoordinates: /** @type {Point} */ (geometry).getFlatCoordinates(),
+      };
+      this.featureCount_++;
+    }
   }
 
   /**
@@ -396,11 +407,29 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    */
   handleSourceFeatureChanged_(event) {
     const feature = event.feature;
-    this.featureCache_[getUid(feature)] = {
-      feature: feature,
-      properties: feature.getProperties(),
-      geometry: feature.getGeometry(),
-    };
+    const featureUid = getUid(feature);
+    const item = this.featureCache_[featureUid];
+    const geometry = feature.getGeometry();
+    if (item) {
+      if (geometry && geometry.getType() === 'Point') {
+        item.properties = feature.getProperties();
+        item.flatCoordinates = /** @type {Point} */ (
+          geometry
+        ).getFlatCoordinates();
+      } else {
+        delete this.featureCache_[featureUid];
+        this.featureCount_--;
+      }
+    } else {
+      if (geometry && geometry.getType() === 'Point') {
+        this.featureCache_[featureUid] = {
+          feature: /** @type {PointFeature} */ (feature),
+          properties: feature.getProperties(),
+          flatCoordinates: /** @type {Point} */ (geometry).getFlatCoordinates(),
+        };
+        this.featureCount_++;
+      }
+    }
   }
 
   /**
@@ -409,8 +438,11 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    */
   handleSourceFeatureDelete_(event) {
     const feature = event.feature;
-    delete this.featureCache_[getUid(feature)];
-    this.featureCount_--;
+    const featureUid = getUid(feature);
+    if (featureUid in this.featureCache_) {
+      delete this.featureCache_[featureUid];
+      this.featureCount_--;
+    }
   }
 
   /**
@@ -515,51 +547,44 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const singleInstructionLength =
       baseInstructionLength + this.customAttributes.length;
     const totalSize = singleInstructionLength * this.featureCount_;
-    if (
-      !this.renderInstructions_ ||
-      this.renderInstructions_.length !== totalSize
-    ) {
-      this.renderInstructions_ = new Float32Array(totalSize);
-    }
+    const renderInstructions =
+      this.renderInstructions_ && this.renderInstructions_.length === totalSize
+        ? this.renderInstructions_
+        : new Float32Array(totalSize);
+    this.renderInstructions_ = null;
 
-    // loop on features to fill the buffer
-    let featureCache, geometry;
-    const tmpCoords = [];
+    // loop over features to fill the buffer
+    /** @type {import('../../coordinate.js').Coordinate} */
+    let tmpCoords = [];
+    /** @type {Array<number>} */
     const tmpColor = [];
     let idx = -1;
+    const projection = frameState.viewState.projection;
     for (const featureUid in this.featureCache_) {
-      featureCache = this.featureCache_[featureUid];
-      geometry = /** @type {import("../../geom").Point} */ (
-        featureCache.geometry
-      );
-      if (!geometry || geometry.getType() !== 'Point') {
-        continue;
-      }
+      const featureCache = this.featureCache_[featureUid];
       if (userProjection) {
-        const userCoords = fromUserCoordinate(
-          geometry.getFlatCoordinates(),
-          frameState.viewState.projection,
+        tmpCoords = fromUserCoordinate(
+          featureCache.flatCoordinates,
+          projection,
         );
-        tmpCoords[0] = userCoords[0];
-        tmpCoords[1] = userCoords[1];
       } else {
-        tmpCoords[0] = geometry.getFlatCoordinates()[0];
-        tmpCoords[1] = geometry.getFlatCoordinates()[1];
+        tmpCoords[0] = featureCache.flatCoordinates[0];
+        tmpCoords[1] = featureCache.flatCoordinates[1];
       }
       applyTransform(projectionTransform, tmpCoords);
 
-      this.renderInstructions_[++idx] = tmpCoords[0];
-      this.renderInstructions_[++idx] = tmpCoords[1];
+      renderInstructions[++idx] = tmpCoords[0];
+      renderInstructions[++idx] = tmpCoords[1];
 
       // for hit detection, the feature uid is saved in the opacity value
       // and the index of the opacity value is encoded in the color values
       if (this.hitDetectionEnabled_) {
         const hitColor = colorEncodeId(idx + 5, tmpColor);
-        this.renderInstructions_[++idx] = hitColor[0];
-        this.renderInstructions_[++idx] = hitColor[1];
-        this.renderInstructions_[++idx] = hitColor[2];
-        this.renderInstructions_[++idx] = hitColor[3];
-        this.renderInstructions_[++idx] = Number(featureUid);
+        renderInstructions[++idx] = hitColor[0];
+        renderInstructions[++idx] = hitColor[1];
+        renderInstructions[++idx] = hitColor[2];
+        renderInstructions[++idx] = hitColor[3];
+        renderInstructions[++idx] = Number(featureUid);
       }
 
       // pushing custom attributes
@@ -568,7 +593,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
           featureCache.feature,
           featureCache.properties,
         );
-        this.renderInstructions_[++idx] = value;
+        renderInstructions[++idx] = value;
       }
     }
 
@@ -576,14 +601,13 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const message = {
       id: ++this.lastSentId,
       type: WebGLWorkerMessageType.GENERATE_POINT_BUFFERS,
-      renderInstructions: this.renderInstructions_.buffer,
+      renderInstructions: renderInstructions.buffer,
       customAttributesSize: singleInstructionLength - 2,
     };
     // additional properties will be sent back as-is by the worker
     message['projectionTransform'] = projectionTransform;
     this.ready = false;
-    this.worker_.postMessage(message, [this.renderInstructions_.buffer]);
-    this.renderInstructions_ = null;
+    this.worker_.postMessage(message, [renderInstructions.buffer]);
   }
 
   /**

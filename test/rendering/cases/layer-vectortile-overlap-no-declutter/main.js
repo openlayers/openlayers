@@ -1,10 +1,13 @@
 import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
+import View from '../../../../src/ol/View.js';
+import {fromExtent} from '../../../../src/ol/geom/Polygon.js';
 import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
-import View from '../../../../src/ol/View.js';
-import {Fill, Stroke, Style, Text} from '../../../../src/ol/style.js';
-import {fromExtent} from '../../../../src/ol/geom/Polygon.js';
+import Fill from '../../../../src/ol/style/Fill.js';
+import Stroke from '../../../../src/ol/style/Stroke.js';
+import Style from '../../../../src/ol/style/Style.js';
+import Text from '../../../../src/ol/style/Text.js';
 
 const vectorTileSource = new VectorTileSource({
   tileSize: 64,

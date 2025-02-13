@@ -1,11 +1,11 @@
+import {MapboxVectorLayer} from 'ol-mapbox-style';
 import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
-import VectorImageLayer from '../../../../src/ol/layer/VectorImage.js';
-import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import VectorSource from '../../../../src/ol/source/Vector.js';
 import View from '../../../../src/ol/View.js';
-import {MapboxVectorLayer} from 'ol-mapbox-style';
-import {Point} from '../../../../src/ol/geom.js';
+import Point from '../../../../src/ol/geom/Point.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
+import VectorImageLayer from '../../../../src/ol/layer/VectorImage.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 
 const mapboxVectorLayer = new MapboxVectorLayer({
   styleUrl: '/data/styles/bright-v9/style.json',

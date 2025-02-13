@@ -1,25 +1,11 @@
-import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
-import Layer from '../../../../src/ol/layer/Layer.js';
 import Map from '../../../../src/ol/Map.js';
-import VectorSource from '../../../../src/ol/source/Vector.js';
 import View from '../../../../src/ol/View.js';
-import WebGLVectorLayerRenderer from '../../../../src/ol/renderer/webgl/VectorLayer.js';
+import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
+import WebGLVectorLayer from '../../../../src/ol/layer/WebGLVector.js';
 import {useGeographic} from '../../../../src/ol/proj.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 
 useGeographic();
-
-class WebGLLayer extends Layer {
-  createRenderer() {
-    return new WebGLVectorLayerRenderer(this, {
-      className: this.getClassName(),
-      style: {
-        'fill-color': '#ddd',
-        'stroke-color': '#00AAFF',
-        'stroke-width': 1,
-      },
-    });
-  }
-}
 
 const format = new GeoJSON();
 const features = format.readFeatures({
@@ -43,10 +29,15 @@ const features = format.readFeatures({
   ],
 });
 
-const vector = new WebGLLayer({
+const vector = new WebGLVectorLayer({
   source: new VectorSource({
     features,
   }),
+  style: {
+    'fill-color': '#ddd',
+    'stroke-color': '#00AAFF',
+    'stroke-width': 1,
+  },
 });
 
 new Map({

@@ -1,10 +1,11 @@
 import Feature from '../src/ol/Feature.js';
-import LineString from '../src/ol/geom/LineString.js';
 import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import LineString from '../src/ol/geom/LineString.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import View from '../src/ol/View.js';
-import {Stroke, Style} from '../src/ol/style.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 const count = 10000;
 const features = new Array(count);

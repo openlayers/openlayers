@@ -1,7 +1,6 @@
 /**
  * @module ol/format/WMSCapabilities
  */
-import XML from './XML.js';
 import {compareVersions} from '../string.js';
 import {
   makeArrayPusher,
@@ -10,6 +9,8 @@ import {
   makeStructureNS,
   pushParseAndPop,
 } from '../xml.js';
+import XML from './XML.js';
+import {readHref} from './xlink.js';
 import {
   readBooleanString,
   readDecimal,
@@ -18,7 +19,6 @@ import {
   readPositiveInteger,
   readString,
 } from './xsd.js';
-import {readHref} from './xlink.js';
 
 /**
  * @const

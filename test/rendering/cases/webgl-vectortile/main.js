@@ -1,25 +1,9 @@
-import MVT from '../../../../src/ol/format/MVT.js';
 import Map from '../../../../src/ol/Map.js';
-import VectorTile from '../../../../src/ol/layer/VectorTile.js';
-import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
 import View from '../../../../src/ol/View.js';
-import WebGLVectorTileLayerRenderer from '../../../../src/ol/renderer/webgl/VectorTileLayer.js';
+import MVT from '../../../../src/ol/format/MVT.js';
+import WebGLVectorTileLayer from '../../../../src/ol/layer/WebGLVectorTile.js';
+import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
 import {createXYZ} from '../../../../src/ol/tilegrid.js';
-
-class WebGLVectorTileLayer extends VectorTile {
-  createRenderer() {
-    return new WebGLVectorTileLayerRenderer(this, {
-      className: this.getClassName(),
-      style: {
-        'fill-color': '#eee',
-        'stroke-color': 'rgba(136,136,136, 0.5)',
-        'stroke-width': 1,
-        'circle-radius': 2,
-        'circle-fill-color': '#707070',
-      },
-    });
-  }
-}
 
 const map = new Map({
   layers: [
@@ -30,6 +14,13 @@ const map = new Map({
         url: '/data/tiles/mapbox-streets-v6/{z}/{x}/{y}.vector.pbf',
         transition: 0,
       }),
+      style: {
+        'fill-color': '#eee',
+        'stroke-color': 'rgba(136,136,136, 0.5)',
+        'stroke-width': 1,
+        'circle-radius': 2,
+        'circle-fill-color': '#707070',
+      },
     }),
   ],
   target: 'map',

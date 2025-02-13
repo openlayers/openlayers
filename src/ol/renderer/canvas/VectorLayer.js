@@ -1,20 +1,10 @@
 /**
  * @module ol/renderer/canvas/VectorLayer
  */
-import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
-import CanvasLayerRenderer, {canvasPool} from './Layer.js';
-import ExecutorGroup, {
-  ALL,
-  DECLUTTER,
-  NON_DECLUTTER,
-} from '../../render/canvas/ExecutorGroup.js';
-import RenderEventType from '../../render/EventType.js';
 import ViewHint from '../../ViewHint.js';
-import {
-  HIT_DETECT_RESOLUTION,
-  createHitDetectionImageData,
-  hitDetect,
-} from '../../render/canvas/hitdetect.js';
+import {equals} from '../../array.js';
+import {wrapX as wrapCoordinateX} from '../../coordinate.js';
+import {createCanvasContext2D, releaseCanvas} from '../../dom.js';
 import {
   buffer,
   containsExtent,
@@ -24,14 +14,6 @@ import {
   intersects as intersectsExtent,
   wrapX as wrapExtentX,
 } from '../../extent.js';
-import {createCanvasContext2D, releaseCanvas} from '../../dom.js';
-import {
-  defaultOrder as defaultRenderOrder,
-  getTolerance as getRenderTolerance,
-  getSquaredTolerance as getSquaredRenderTolerance,
-  renderFeature,
-} from '../vector.js';
-import {equals} from '../../array.js';
 import {
   fromUserExtent,
   getTransformFromProjections,
@@ -39,8 +21,26 @@ import {
   toUserExtent,
   toUserResolution,
 } from '../../proj.js';
+import RenderEventType from '../../render/EventType.js';
+import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
+import ExecutorGroup, {
+  ALL,
+  DECLUTTER,
+  NON_DECLUTTER,
+} from '../../render/canvas/ExecutorGroup.js';
+import {
+  HIT_DETECT_RESOLUTION,
+  createHitDetectionImageData,
+  hitDetect,
+} from '../../render/canvas/hitdetect.js';
 import {getUid} from '../../util.js';
-import {wrapX as wrapCoordinateX} from '../../coordinate.js';
+import {
+  defaultOrder as defaultRenderOrder,
+  getSquaredTolerance as getSquaredRenderTolerance,
+  getTolerance as getRenderTolerance,
+  renderFeature,
+} from '../vector.js';
+import CanvasLayerRenderer, {canvasPool} from './Layer.js';
 
 /**
  * @classdesc
@@ -131,7 +131,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
-     * @type {function(import("../../Feature.js").default, import("../../Feature.js").default): number|null}
+     * @type {import("../../render.js").OrderFunction|null}
      */
     this.renderedRenderOrder_ = null;
 
@@ -522,23 +522,17 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       return undefined;
     };
 
-    let result;
-    const executorGroups = [this.replayGroup_];
     const declutter = this.getLayer().getDeclutter();
-    executorGroups.some((executorGroup) => {
-      return (result = executorGroup.forEachFeatureAtCoordinate(
-        coordinate,
-        resolution,
-        rotation,
-        hitTolerance,
-        featureCallback,
-        declutter && frameState.declutter[declutter]
-          ? frameState.declutter[declutter].all().map((item) => item.value)
-          : null,
-      ));
-    });
-
-    return result;
+    return this.replayGroup_.forEachFeatureAtCoordinate(
+      coordinate,
+      resolution,
+      rotation,
+      hitTolerance,
+      featureCallback,
+      declutter
+        ? frameState.declutter?.[declutter]?.all().map((item) => item.value)
+        : null,
+    );
   }
 
   /**

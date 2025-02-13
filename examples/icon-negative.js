@@ -1,12 +1,14 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import Select from '../src/ol/interaction/Select.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import StadiaMaps from '../src/ol/source/StadiaMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import View from '../src/ol/View.js';
-import {Icon, Style} from '../src/ol/style.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import Icon from '../src/ol/style/Icon.js';
+import Style from '../src/ol/style/Style.js';
 
 function createStyle(src, img) {
   return new Style({
@@ -15,7 +17,6 @@ function createStyle(src, img) {
       crossOrigin: 'anonymous',
       src: src,
       img: img,
-      imgSize: img ? [img.width, img.height] : undefined,
     }),
   });
 }

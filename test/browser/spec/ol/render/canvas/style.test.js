@@ -1,14 +1,14 @@
+import {newEvaluationContext} from '../../../../../../src/ol/expr/cpu.js';
+import {newParsingContext} from '../../../../../../src/ol/expr/expression.js';
+import {
+  buildRuleSet,
+  buildStyle,
+} from '../../../../../../src/ol/render/canvas/style.js';
 import Fill from '../../../../../../src/ol/style/Fill.js';
 import Icon from '../../../../../../src/ol/style/Icon.js';
 import Image from '../../../../../../src/ol/style/Image.js';
 import Stroke from '../../../../../../src/ol/style/Stroke.js';
 import Style from '../../../../../../src/ol/style/Style.js';
-import {
-  buildRuleSet,
-  buildStyle,
-} from '../../../../../../src/ol/render/canvas/style.js';
-import {newEvaluationContext} from '../../../../../../src/ol/expr/cpu.js';
-import {newParsingContext} from '../../../../../../src/ol/expr/expression.js';
 
 /**
  * @param {Style} style The style to test.
@@ -288,6 +288,19 @@ describe('ol/render/canvas/style.js', () => {
           stroke: new Stroke({
             color: [255, 0, 0, 1],
             width: 5,
+          }),
+        }),
+      },
+      {
+        name: 'Text style',
+        style: {
+          'text-value': 'test',
+          'text-keep-upright': false,
+        },
+        expected: new Style({
+          text: new Text({
+            text: 'test',
+            keepTextUpright: false,
           }),
         }),
       },

@@ -1,10 +1,10 @@
-import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
 import Overlay from '../src/ol/Overlay.js';
-import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
-import {toLonLat} from '../src/ol/proj.js';
 import {toStringHDMS} from '../src/ol/coordinate.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import {toLonLat} from '../src/ol/proj.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
 
 /**
  * Elements that make up the popup.

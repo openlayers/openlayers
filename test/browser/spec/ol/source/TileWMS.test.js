@@ -1,8 +1,8 @@
 import ImageTile from '../../../../../src/ol/ImageTile.js';
-import TileGrid from '../../../../../src/ol/tilegrid/TileGrid.js';
-import TileWMS from '../../../../../src/ol/source/TileWMS.js';
-import {createXYZ} from '../../../../../src/ol/tilegrid.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
+import TileWMS from '../../../../../src/ol/source/TileWMS.js';
+import TileGrid from '../../../../../src/ol/tilegrid/TileGrid.js';
+import {createXYZ} from '../../../../../src/ol/tilegrid.js';
 
 describe('ol/source/TileWMS', function () {
   let options, optionsReproj;
@@ -91,7 +91,7 @@ describe('ol/source/TileWMS', function () {
       expect(queryData.get('SERVICE')).to.be('WMS');
       expect(queryData.get('SRS')).to.be(null);
       expect(queryData.get('STYLES')).to.be('');
-      expect(queryData.get('TRANSPARENT')).to.be('true');
+      expect(queryData.get('TRANSPARENT')).to.be('TRUE');
       expect(queryData.get('VERSION')).to.be('1.3.0');
       expect(queryData.get('WIDTH')).to.be('256');
       expect(uri.hash.replace('#', '')).to.be.empty();
@@ -135,6 +135,23 @@ describe('ol/source/TileWMS', function () {
       const queryData = uri.searchParams;
       expect(queryData.get('FORMAT')).to.be('image/jpeg');
       expect(queryData.get('TRANSPARENT')).to.be('false');
+    });
+
+    it('valid TRANSPARENT default value', function () {
+      const source = new TileWMS(options);
+      const tile = source.getTile(3, 2, 2, 1, getProjection('EPSG:4326'));
+      const uri = new URL(tile.src_);
+      const queryData = uri.searchParams;
+      expect(queryData.get('TRANSPARENT')).to.be('TRUE');
+    });
+
+    it('valid TRANSPARENT override value', function () {
+      options.params.TRANSPARENT = 'FALSE';
+      const source = new TileWMS(options);
+      const tile = source.getTile(3, 2, 2, 1, getProjection('EPSG:4326'));
+      const uri = new URL(tile.src_);
+      const queryData = uri.searchParams;
+      expect(queryData.get('TRANSPARENT')).to.be('FALSE');
     });
 
     it('does not add a STYLES= option if one is specified', function () {
@@ -281,7 +298,7 @@ describe('ol/source/TileWMS', function () {
       expect(queryData.get('SERVICE')).to.be('WMS');
       expect(queryData.get('SRS')).to.be(null);
       expect(queryData.get('STYLES')).to.be('');
-      expect(queryData.get('TRANSPARENT')).to.be('true');
+      expect(queryData.get('TRANSPARENT')).to.be('TRUE');
       expect(queryData.get('VERSION')).to.be('1.3.0');
       expect(queryData.get('WIDTH')).to.be('256');
       expect(uri.hash.replace('#', '')).to.be.empty();
@@ -313,7 +330,7 @@ describe('ol/source/TileWMS', function () {
       expect(queryData.get('SERVICE')).to.be('WMS');
       expect(queryData.get('SRS')).to.be(null);
       expect(queryData.get('STYLES')).to.be('');
-      expect(queryData.get('TRANSPARENT')).to.be('true');
+      expect(queryData.get('TRANSPARENT')).to.be('TRUE');
       expect(queryData.get('VERSION')).to.be('1.3.0');
       expect(queryData.get('WIDTH')).to.be('256');
       expect(uri.hash.replace('#', '')).to.be.empty();
@@ -349,7 +366,7 @@ describe('ol/source/TileWMS', function () {
       expect(queryData.get('SERVICE')).to.be('WMS');
       expect(queryData.get('SRS')).to.be(null);
       expect(queryData.get('STYLES')).to.be('');
-      expect(queryData.get('TRANSPARENT')).to.be('true');
+      expect(queryData.get('TRANSPARENT')).to.be('TRUE');
       expect(queryData.get('VERSION')).to.be('1.3.0');
       expect(queryData.get('WIDTH')).to.be('256');
       expect(uri.hash.replace('#', '')).to.be.empty();

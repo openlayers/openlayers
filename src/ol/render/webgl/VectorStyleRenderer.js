@@ -1,26 +1,39 @@
 /**
  * @module ol/render/webgl/VectorStyleRenderer
  */
-import WebGLArrayBuffer from '../../webgl/Buffer.js';
-import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
-import {AttributeType} from '../../webgl/Helper.js';
-import {WebGLWorkerMessageType} from './constants.js';
-import {colorEncodeId} from './utils.js';
+import {buildExpression, newEvaluationContext} from '../../expr/cpu.js';
+import {
+  BooleanType,
+  computeGeometryType,
+  newParsingContext,
+} from '../../expr/expression.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
 } from '../../transform.js';
+import WebGLArrayBuffer from '../../webgl/Buffer.js';
+import {AttributeType} from '../../webgl/Helper.js';
+import {parseLiteralStyle} from '../../webgl/styleparser.js';
+import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
+import {WebGLWorkerMessageType} from './constants.js';
 import {
   generateLineStringRenderInstructions,
   generatePointRenderInstructions,
   generatePolygonRenderInstructions,
   getCustomAttributesSize,
 } from './renderinstructions.js';
-import {parseLiteralStyle} from '../../webgl/styleparser.js';
+import {colorEncodeId} from './utils.js';
 
 const tmpColor = [];
-const WEBGL_WORKER = createWebGLWorker();
+/** @type {Worker|undefined} */
+let WEBGL_WORKER;
+function getWebGLWorker() {
+  if (!WEBGL_WORKER) {
+    WEBGL_WORKER = createWebGLWorker();
+  }
+  return WEBGL_WORKER;
+}
 let workerMessageCounter = 0;
 
 /**
@@ -76,7 +89,7 @@ export const Attributes = {
  */
 
 /**
- * @typedef {Object} StyleShaders
+ * @typedef {Object} AsShaders
  * @property {import("../../webgl/ShaderBuilder.js").ShaderBuilder} builder Shader builder with the appropriate presets.
  * @property {AttributeDefinitions} [attributes] Custom attributes made available in the vertex shaders.
  * Default shaders rely on the attributes in {@link Attributes}.
@@ -84,7 +97,13 @@ export const Attributes = {
  */
 
 /**
- * @typedef {import('../../style/webgl.js').WebGLStyle|StyleShaders} VectorStyle
+ * @typedef {Object} AsRule
+ * @property {import('../../style/flat.js').FlatStyle} style Style
+ * @property {import("../../expr/expression.js").EncodedExpression} [filter] Filter
+ */
+
+/**
+ * @typedef {AsRule|AsShaders} VectorStyle
  */
 
 /**
@@ -104,10 +123,12 @@ export const Attributes = {
 class VectorStyleRenderer {
   /**
    * @param {VectorStyle} styleOrShaders Literal style or custom shaders
+   * @param {import('../../style/flat.js').StyleVariables} variables Style variables
    * @param {import('../../webgl/Helper.js').default} helper Helper
-   * @param {boolean} enableHitDetection Whether to enable the hit detection (needs compatible shader)
+   * @param {boolean} [enableHitDetection] Whether to enable the hit detection (needs compatible shader)
+   * @param {import("../../expr/expression.js").ExpressionValue} [filter] Optional filter expression
    */
-  constructor(styleOrShaders, helper, enableHitDetection) {
+  constructor(styleOrShaders, variables, helper, enableHitDetection, filter) {
     /**
      * @private
      * @type {import('../../webgl/Helper.js').default}
@@ -117,16 +138,18 @@ class VectorStyleRenderer {
     /**
      * @private
      */
-    this.hitDetectionEnabled_ = enableHitDetection;
-    let shaders = /** @type {StyleShaders} */ (styleOrShaders);
+    this.hitDetectionEnabled_ = !!enableHitDetection;
+
+    let asShaders = /** @type {AsShaders} */ (styleOrShaders);
     const isShaders = 'builder' in styleOrShaders;
     if (!isShaders) {
+      const asRule = /** @type {AsRule} */ (styleOrShaders);
       const parseResult = parseLiteralStyle(
-        /** @type {import('../../style/webgl.js').WebGLStyle} */ (
-          styleOrShaders
-        ),
+        asRule.style,
+        variables,
+        asRule.filter,
       );
-      shaders = {
+      asShaders = {
         builder: parseResult.builder,
         attributes: parseResult.attributes,
         uniforms: parseResult.uniforms,
@@ -155,48 +178,57 @@ class VectorStyleRenderer {
      * @type {boolean}
      * @private
      */
-    this.hasFill_ = !!shaders.builder.getFillVertexShader();
+    this.hasFill_ = !!asShaders.builder.getFillVertexShader();
     if (this.hasFill_) {
       /**
        * @private
        */
-      this.fillVertexShader_ = shaders.builder.getFillVertexShader();
+      this.fillVertexShader_ = asShaders.builder.getFillVertexShader();
       /**
        * @private
        */
-      this.fillFragmentShader_ = shaders.builder.getFillFragmentShader();
+      this.fillFragmentShader_ = asShaders.builder.getFillFragmentShader();
     }
 
     /**
      * @type {boolean}
      * @private
      */
-    this.hasStroke_ = !!shaders.builder.getStrokeVertexShader();
+    this.hasStroke_ = !!asShaders.builder.getStrokeVertexShader();
     if (this.hasStroke_) {
       /**
        * @private
        */
-      this.strokeVertexShader_ = shaders.builder.getStrokeVertexShader();
+      this.strokeVertexShader_ = asShaders.builder.getStrokeVertexShader();
       /**
        * @private
        */
-      this.strokeFragmentShader_ = shaders.builder.getStrokeFragmentShader();
+      this.strokeFragmentShader_ = asShaders.builder.getStrokeFragmentShader();
     }
 
     /**
      * @type {boolean}
      * @private
      */
-    this.hasSymbol_ = !!shaders.builder.getSymbolVertexShader();
+    this.hasSymbol_ = !!asShaders.builder.getSymbolVertexShader();
     if (this.hasSymbol_) {
       /**
        * @private
        */
-      this.symbolVertexShader_ = shaders.builder.getSymbolVertexShader();
+      this.symbolVertexShader_ = asShaders.builder.getSymbolVertexShader();
       /**
        * @private
        */
-      this.symbolFragmentShader_ = shaders.builder.getSymbolFragmentShader();
+      this.symbolFragmentShader_ = asShaders.builder.getSymbolFragmentShader();
+    }
+
+    /**
+     * @type {function(import('../../Feature.js').FeatureLike): boolean}
+     * @private
+     */
+    this.featureFilter_ = null;
+    if (filter) {
+      this.featureFilter_ = this.computeFeatureFilter(filter);
     }
 
     const hitDetectionAttributes = this.hitDetectionEnabled_
@@ -216,16 +248,16 @@ class VectorStyleRenderer {
     this.customAttributes_ = Object.assign(
       {},
       hitDetectionAttributes,
-      shaders.attributes,
+      asShaders.attributes,
     );
     /**
      * @private
      */
-    this.uniforms_ = shaders.uniforms;
+    this.uniforms_ = asShaders.uniforms;
 
     const customAttributesDesc = Object.entries(this.customAttributes_).map(
       ([name, value]) => ({
-        name: `a_prop_${name}`,
+        name: `a_${name}`,
         size: value.size || 1,
         type: AttributeType.FLOAT,
       }),
@@ -306,13 +338,60 @@ class VectorStyleRenderer {
   }
 
   /**
+   * Will apply the style filter when generating geometry batches (if it can be evaluated outside a map context)
+   * @param {import("../../expr/expression.js").ExpressionValue} filter Style filter
+   * @return {function(import('../../Feature.js').FeatureLike): boolean} Feature filter
+   * @private
+   */
+  computeFeatureFilter(filter) {
+    const parsingContext = newParsingContext();
+    /**
+     * @type {import('../../expr/cpu.js').ExpressionEvaluator}
+     */
+    let compiled;
+    try {
+      compiled = buildExpression(filter, BooleanType, parsingContext);
+    } catch {
+      // filter expression failed to compile for CPU: ignore it
+      return null;
+    }
+
+    // do not apply the filter if it depends on map state (e.g. zoom level) or any variable
+    if (parsingContext.mapState || parsingContext.variables.size > 0) {
+      return null;
+    }
+
+    const evalContext = newEvaluationContext();
+    return (feature) => {
+      evalContext.properties = feature.getPropertiesInternal();
+      if (parsingContext.featureId) {
+        const id = feature.getId();
+        if (id !== undefined) {
+          evalContext.featureId = id;
+        } else {
+          evalContext.featureId = null;
+        }
+      }
+      evalContext.geometryType = computeGeometryType(feature.getGeometry());
+      return /** @type {boolean} */ (compiled(evalContext));
+    };
+  }
+
+  /**
    * @param {import('./MixedGeometryBatch.js').default} geometryBatch Geometry batch
    * @param {import("../../transform.js").Transform} transform Transform to apply to coordinates
-   * @return {Promise<WebGLBuffers>} A promise resolving to WebGL buffers
+   * @return {Promise<WebGLBuffers|null>} A promise resolving to WebGL buffers; returns null if buffers are empty
    */
   async generateBuffers(geometryBatch, transform) {
+    let filteredBatch = geometryBatch;
+    if (this.featureFilter_) {
+      filteredBatch = filteredBatch.filter(this.featureFilter_);
+      if (filteredBatch.isEmpty()) {
+        return null;
+      }
+    }
     const renderInstructions = this.generateRenderInstructions_(
-      geometryBatch,
+      filteredBatch,
       transform,
     );
     const [polygonBuffers, lineStringBuffers, pointBuffers] = await Promise.all(
@@ -422,6 +501,7 @@ class VectorStyleRenderer {
       renderInstructionsTransform: transform,
       customAttributesSize: getCustomAttributesSize(this.customAttributes_),
     };
+    const WEBGL_WORKER = getWebGLWorker();
     WEBGL_WORKER.postMessage(message, [renderInstructions.buffer]);
 
     // leave ownership of render instructions

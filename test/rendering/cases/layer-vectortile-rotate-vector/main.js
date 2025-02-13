@@ -1,15 +1,15 @@
-import CircleStyle from '../../../../src/ol/style/Circle.js';
 import Feature from '../../../../src/ol/Feature.js';
-import Fill from '../../../../src/ol/style/Fill.js';
-import MVT from '../../../../src/ol/format/MVT.js';
 import Map from '../../../../src/ol/Map.js';
-import Point from '../../../../src/ol/geom/Point.js';
-import Style from '../../../../src/ol/style/Style.js';
-import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import VectorSource from '../../../../src/ol/source/Vector.js';
-import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
-import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
 import View from '../../../../src/ol/View.js';
+import MVT from '../../../../src/ol/format/MVT.js';
+import Point from '../../../../src/ol/geom/Point.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
+import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
+import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
+import CircleStyle from '../../../../src/ol/style/Circle.js';
+import Fill from '../../../../src/ol/style/Fill.js';
+import Style from '../../../../src/ol/style/Style.js';
 import {createXYZ} from '../../../../src/ol/tilegrid.js';
 
 const vectorSource = new VectorSource({

@@ -1,8 +1,8 @@
 /**
  * @module ol/format/JSONFeature
  */
-import FeatureFormat from './Feature.js';
 import {abstract} from '../util.js';
+import FeatureFormat from './Feature.js';
 
 /**
  * @classdesc

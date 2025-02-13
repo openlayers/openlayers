@@ -1,13 +1,14 @@
+import {spy as sinonSpy} from 'sinon';
+import Map from '../../../../../src/ol/Map.js';
+import View from '../../../../../src/ol/View.js';
 import Group from '../../../../../src/ol/layer/Group.js';
 import Layer, {inView} from '../../../../../src/ol/layer/Layer.js';
-import Map from '../../../../../src/ol/Map.js';
 import Property from '../../../../../src/ol/layer/Property.js';
+import TileLayer from '../../../../../src/ol/layer/Tile.js';
+import {get as getProjection} from '../../../../../src/ol/proj.js';
 import RenderEvent from '../../../../../src/ol/render/Event.js';
 import Source from '../../../../../src/ol/source/Source.js';
-import TileLayer from '../../../../../src/ol/layer/Tile.js';
-import View from '../../../../../src/ol/View.js';
 import XYZ from '../../../../../src/ol/source/XYZ.js';
-import {get as getProjection} from '../../../../../src/ol/proj.js';
 
 describe('ol/layer/Layer', function () {
   describe('constructor (defaults)', function () {
@@ -569,7 +570,7 @@ describe('ol/layer/Layer', function () {
       const layer = new Layer({
         source: new Source({projection: projection}),
       });
-      sinon.spy(layer, 'changed');
+      sinonSpy(layer, 'changed');
 
       const source = new Source({projection: projection});
       layer.set('source', source);
@@ -577,7 +578,7 @@ describe('ol/layer/Layer', function () {
     });
 
     it('sets up event listeners', function () {
-      sinon.spy(Layer.prototype, 'handleSourceChange_');
+      sinonSpy(Layer.prototype, 'handleSourceChange_');
 
       const first = new Source({projection: projection});
       const layer = new Layer({source: first});
@@ -614,7 +615,7 @@ describe('ol/layer/Layer', function () {
       const layer = new Layer({
         source: new Source({projection: projection}),
       });
-      sinon.spy(layer, 'changed');
+      sinonSpy(layer, 'changed');
 
       const source = new Source({projection: projection});
       layer.setSource(source);
@@ -622,7 +623,7 @@ describe('ol/layer/Layer', function () {
     });
 
     it('sets up event listeners', function () {
-      sinon.spy(Layer.prototype, 'handleSourceChange_');
+      sinonSpy(Layer.prototype, 'handleSourceChange_');
 
       const first = new Source({projection: projection});
       const layer = new Layer({source: first});
@@ -670,7 +671,7 @@ describe('ol/layer/Layer', function () {
     });
 
     it('triggers a change event', function () {
-      const listener = sinon.spy();
+      const listener = sinonSpy();
       layer.on('propertychange', listener);
       layer.setOpacity(0.4);
       expect(listener.calledOnce).to.be(true);
@@ -700,7 +701,7 @@ describe('ol/layer/Layer', function () {
     });
 
     it('fires a change event', function () {
-      const listener = sinon.spy();
+      const listener = sinonSpy();
       layer.on('propertychange', listener);
 
       layer.setVisible(false);
@@ -750,7 +751,7 @@ describe('ol/layer/Layer', function () {
     });
 
     it('is called when a layer goes from visible to not visible', () => {
-      const spy = sinon.spy(layer, 'unrender');
+      const spy = sinonSpy(layer, 'unrender');
       map.renderSync();
       expect(spy.callCount).to.be(0);
 
@@ -760,7 +761,7 @@ describe('ol/layer/Layer', function () {
     });
 
     it('is called when a layer is removed from the map', () => {
-      const spy = sinon.spy(layer, 'unrender');
+      const spy = sinonSpy(layer, 'unrender');
       map.renderSync();
       expect(spy.callCount).to.be(0);
 
@@ -770,7 +771,7 @@ describe('ol/layer/Layer', function () {
     });
 
     it('is called when a layer goes out of range', () => {
-      const spy = sinon.spy(layer, 'unrender');
+      const spy = sinonSpy(layer, 'unrender');
       map.renderSync();
       expect(spy.callCount).to.be(0);
 
@@ -882,7 +883,7 @@ describe('ol/layer/Layer', function () {
       let mapRenderSpy;
 
       beforeEach(function () {
-        mapRenderSpy = sinon.spy(map, 'render');
+        mapRenderSpy = sinonSpy(map, 'render');
       });
 
       afterEach(function () {

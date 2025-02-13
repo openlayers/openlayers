@@ -1,8 +1,8 @@
 /**
  * @module ol/render/webgl/renderinstructions
  */
-import {apply as applyTransform} from '../../transform.js';
 import {transform2D} from '../../geom/flat/transform.js';
+import {apply as applyTransform} from '../../transform.js';
 
 /**
  * @param {Float32Array} renderInstructions Render instructions
@@ -21,7 +21,7 @@ function pushCustomAttributesInRenderInstructions(
   for (const key in customAttributes) {
     const attr = customAttributes[key];
     const value = attr.callback.call(batchEntry, batchEntry.feature);
-    renderInstructions[currentIndex + shift++] = value[0] ?? value;
+    renderInstructions[currentIndex + shift++] = value?.[0] ?? value;
     if (!attr.size || attr.size === 1) {
       continue;
     }

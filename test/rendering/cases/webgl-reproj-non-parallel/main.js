@@ -1,13 +1,13 @@
-import GeoTIFF from '../../../../src/ol/source/GeoTIFF.js';
-import Map from '../../../../src/ol/Map.js';
-import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
-import View from '../../../../src/ol/View.js';
 import proj4 from 'proj4';
+import Map from '../../../../src/ol/Map.js';
+import View from '../../../../src/ol/View.js';
+import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
+import {register} from '../../../../src/ol/proj/proj4.js';
 import {
   get as getProjection,
   transformExtent,
 } from '../../../../src/ol/proj.js';
-import {register} from '../../../../src/ol/proj/proj4.js';
+import GeoTIFF from '../../../../src/ol/source/GeoTIFF.js';
 
 proj4.defs('EPSG:32632', '+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs');
 proj4.defs('EPSG:32636', '+proj=utm +zone=36 +datum=WGS84 +units=m +no_defs');

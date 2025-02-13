@@ -2,14 +2,14 @@
  * @module ol/source/wms
  */
 
-import {DECIMALS} from './common.js';
-import {appendParams} from '../uri.js';
-import {compareVersions} from '../string.js';
 import {decode} from '../Image.js';
-import {floor, round} from '../math.js';
 import {getForViewAndSize, getHeight, getWidth} from '../extent.js';
+import {floor, round} from '../math.js';
 import {get as getProjection} from '../proj.js';
+import {compareVersions} from '../string.js';
+import {appendParams} from '../uri.js';
 import {getRequestExtent} from './Image.js';
+import {DECIMALS} from './common.js';
 
 /**
  * Default WMS version.
@@ -124,7 +124,7 @@ export function getRequestParams(params, request) {
       'VERSION': DEFAULT_VERSION,
       'FORMAT': 'image/png',
       'STYLES': '',
-      'TRANSPARENT': true,
+      'TRANSPARENT': 'TRUE',
     },
     params,
   );
@@ -166,9 +166,6 @@ export function createLoader(options) {
   const load = options.load || decode;
   const crossOrigin = options.crossOrigin ?? null;
 
-  /**
-   * @type {import("../Image.js").Loader}
-   */
   return (extent, resolution, pixelRatio) => {
     extent = getRequestExtent(extent, resolution, pixelRatio, ratio);
     if (pixelRatio != 1 && (!hidpi || options.serverType === undefined)) {

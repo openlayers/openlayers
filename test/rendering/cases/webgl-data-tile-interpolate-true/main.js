@@ -1,7 +1,7 @@
-import DataTile from '../../../../src/ol/source/DataTile.js';
 import Map from '../../../../src/ol/Map.js';
-import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
 import View from '../../../../src/ol/View.js';
+import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
+import DataTile from '../../../../src/ol/source/DataTile.js';
 
 const size = 256;
 
@@ -17,6 +17,7 @@ new Map({
   layers: [
     new TileLayer({
       source: new DataTile({
+        transition: 0,
         maxZoom: 0,
         interpolate: true,
         loader: () => data,

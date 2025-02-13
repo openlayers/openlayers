@@ -1,6 +1,6 @@
 import DataTile from '../../../../../src/ol/DataTile.js';
-import DataTileSource from '../../../../../src/ol/source/DataTile.js';
 import TileState from '../../../../../src/ol/TileState.js';
+import DataTileSource from '../../../../../src/ol/source/DataTile.js';
 
 describe('ol/source/DataTile', function () {
   /** @type {DataTileSource} */

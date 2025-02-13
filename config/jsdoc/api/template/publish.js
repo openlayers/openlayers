@@ -1,5 +1,3 @@
-/* eslint-disable import/no-commonjs */
-
 /*global env: true */
 
 const hasOwnProp = Object.prototype.hasOwnProperty;
@@ -10,10 +8,10 @@ Object.prototype.hasOwnProperty = function (property) {
   return property in this;
 };
 
-const template = require('jsdoc/lib/jsdoc/template');
+const taffy = require('@jsdoc/salty').taffy;
 const fs = require('jsdoc/lib/jsdoc/fs');
 const path = require('jsdoc/lib/jsdoc/path');
-const taffy = require('@jsdoc/salty').taffy;
+const template = require('jsdoc/lib/jsdoc/template');
 const handle = require('jsdoc/lib/jsdoc/util/error').handle;
 const helper = require('jsdoc/lib/jsdoc/util/templateHelper');
 const htmlsafe = helper.htmlsafe;

@@ -1,14 +1,14 @@
 /**
  * @module ol/layer/Layer
  */
-import BaseLayer from './Base.js';
-import EventType from '../events/EventType.js';
-import LayerProperty from './Property.js';
-import RenderEventType from '../render/EventType.js';
 import View from '../View.js';
 import {assert} from '../asserts.js';
-import {intersects} from '../extent.js';
+import EventType from '../events/EventType.js';
 import {listen, unlistenByKey} from '../events.js';
+import {intersects} from '../extent.js';
+import RenderEventType from '../render/EventType.js';
+import BaseLayer from './Base.js';
+import LayerProperty from './Property.js';
 
 /**
  * @typedef {function(import("../Map.js").FrameState):HTMLElement} RenderFunction
@@ -261,6 +261,7 @@ class Layer extends BaseLayer {
           this.dispatchEvent('sourceready');
         }, 0);
       }
+      this.clearRenderer();
     }
     this.changed();
   }
@@ -516,15 +517,21 @@ class Layer extends BaseLayer {
   }
 
   /**
-   * Clean up.
-   * @override
+   * This will clear the renderer so that a new one can be created next time it is needed
    */
-  disposeInternal() {
+  clearRenderer() {
     if (this.renderer_) {
       this.renderer_.dispose();
       delete this.renderer_;
     }
+  }
 
+  /**
+   * Clean up.
+   * @override
+   */
+  disposeInternal() {
+    this.clearRenderer();
     this.setSource(null);
     super.disposeInternal();
   }

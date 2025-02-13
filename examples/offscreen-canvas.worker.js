@@ -1,12 +1,12 @@
-import MVT from '../src/ol/format/MVT.js';
+import {stylefunction} from 'ol-mapbox-style';
 import TileQueue, {
   getTilePriority as tilePriorityFunction,
 } from '../src/ol/TileQueue.js';
-import VectorTileLayer from '../src/ol/layer/VectorTile.js';
-import VectorTileSource from '../src/ol/source/VectorTile.js';
-import {get} from '../src/ol/proj.js';
+import MVT from '../src/ol/format/MVT.js';
 import {inView} from '../src/ol/layer/Layer.js';
-import {stylefunction} from 'ol-mapbox-style';
+import VectorTileLayer from '../src/ol/layer/VectorTile.js';
+import {get} from '../src/ol/proj.js';
+import VectorTileSource from '../src/ol/source/VectorTile.js';
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
 
@@ -91,7 +91,7 @@ function loadStyles() {
               this.container = {
                 firstElementChild: canvas,
                 style: {
-                  opacity: layer.getOpacity(),
+                  opacity: String(layer.getOpacity()),
                 },
               };
               rendererTransform = transform;
@@ -159,10 +159,13 @@ worker.addEventListener('message', (event) => {
   frameState.layerStatesArray = layers.map((l) => l.getLayerState());
   layers.forEach((layer) => {
     if (inView(layer.getLayerState(), frameState.viewState)) {
+      const renderer = layer.getRenderer();
+      if (!renderer.prepareFrame(frameState)) {
+        return;
+      }
       if (layer.getDeclutter() && !frameState.declutterTree) {
         frameState.declutter = {};
       }
-      const renderer = layer.getRenderer();
       renderer.renderFrame(frameState, canvas);
     }
   });

@@ -1,26 +1,24 @@
 /**
  * @module ol/renderer/webgl/TileLayer
  */
-import ReprojDataTile from '../../reproj/DataTile.js';
-import ReprojTile from '../../reproj/Tile.js';
 import TileState from '../../TileState.js';
-import TileTexture from '../../webgl/TileTexture.js';
-import WebGLArrayBuffer from '../../webgl/Buffer.js';
-import WebGLBaseTileLayerRenderer, {
-  Uniforms as BaseUniforms,
-  getCacheKey,
-} from './TileLayerBase.js';
-import {AttributeType} from '../../webgl/Helper.js';
-import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
-import {apply as applyTransform} from '../../transform.js';
 import {
   boundingExtent,
   containsCoordinate,
   getIntersection,
 } from '../../extent.js';
 import {fromUserExtent} from '../../proj.js';
-import {fromTransform as mat4FromTransform} from '../../vec/mat4.js';
 import {toSize} from '../../size.js';
+import {apply as applyTransform} from '../../transform.js';
+import {fromTransform as mat4FromTransform} from '../../vec/mat4.js';
+import WebGLArrayBuffer from '../../webgl/Buffer.js';
+import {AttributeType} from '../../webgl/Helper.js';
+import TileTexture from '../../webgl/TileTexture.js';
+import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
+import WebGLBaseTileLayerRenderer, {
+  Uniforms as BaseUniforms,
+  getCacheKey,
+} from './TileLayerBase.js';
 
 export const Uniforms = {
   ...BaseUniforms,
@@ -373,10 +371,7 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       }
       const tileTexture = tileTextureCache.get(cacheKey);
       const tile = tileTexture.tile;
-      if (
-        (tile instanceof ReprojTile || tile instanceof ReprojDataTile) &&
-        tile.getState() === TileState.EMPTY
-      ) {
+      if (tile.getState() === TileState.EMPTY) {
         return null;
       }
       if (!tileTexture.loaded) {

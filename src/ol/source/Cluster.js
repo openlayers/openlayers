@@ -2,22 +2,27 @@
  * @module ol/source/Cluster
  */
 
-import EventType from '../events/EventType.js';
 import Feature from '../Feature.js';
-import Point from '../geom/Point.js';
-import VectorSource from './Vector.js';
-import {add as addCoordinate, scale as scaleCoordinate} from '../coordinate.js';
 import {assert} from '../asserts.js';
+import {add as addCoordinate, scale as scaleCoordinate} from '../coordinate.js';
+import EventType from '../events/EventType.js';
 import {
   buffer,
   createEmpty,
   createOrUpdateFromCoordinate,
   getCenter,
 } from '../extent.js';
+import Point from '../geom/Point.js';
 import {getUid} from '../util.js';
+import VectorSource from './Vector.js';
 
 /**
- * @template {import("../Feature.js").FeatureLike} FeatureType
+ * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../Feature.js").FeatureLike]
+ * @typedef {(feature: FeatureType) => (Point|null)} GeometryFunction
+ */
+
+/**
+ * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../Feature.js").default]
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {number} [distance=20] Distance in pixels within which features will
@@ -27,7 +32,7 @@ import {getUid} from '../util.js';
  * By default no minimum distance is guaranteed. This config can be used to avoid
  * overlapping icons. As a tradoff, the cluster feature's position will no longer be
  * the center of all its features.
- * @property {function(FeatureType):(Point|null)} [geometryFunction]
+ * @property {GeometryFunction<FeatureType>} [geometryFunction]
  * Function that takes a {@link module:ol/Feature~Feature} as argument and returns a
  * {@link module:ol/geom/Point~Point} as cluster calculation point for the feature. When a
  * feature should not be considered for clustering, the function should return
@@ -66,7 +71,7 @@ import {getUid} from '../util.js';
  * source `setSource(null)` has to be called to remove the listener reference
  * from the wrapped source.
  * @api
- * @template {import('../Feature.js').FeatureLike} FeatureType
+ * @template {import('../Feature.js').FeatureLike} [FeatureType=import('../Feature.js').default]
  * @extends {VectorSource<Feature<import("../geom/Geometry.js").default>>}
  */
 class Cluster extends VectorSource {
@@ -111,8 +116,7 @@ class Cluster extends VectorSource {
     this.features = [];
 
     /**
-     * @param {FeatureType} feature Feature.
-     * @return {Point} Cluster calculation point.
+     * @type {GeometryFunction<import("../Feature.js").FeatureLike>}
      * @protected
      */
     this.geometryFunction =

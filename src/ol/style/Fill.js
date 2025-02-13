@@ -3,6 +3,8 @@
  */
 
 import ImageState from '../ImageState.js';
+import {asArray} from '../color.js';
+import {getUid} from '../util.js';
 import {get as getIconImage} from './IconImage.js';
 
 /**
@@ -90,6 +92,21 @@ class Fill {
       }
     }
     this.color_ = color;
+  }
+
+  /**
+   * @return {string} Key of the fill for cache lookup.
+   */
+  getKey() {
+    const fill = this.getColor();
+    if (!fill) {
+      return '';
+    }
+    return fill instanceof CanvasPattern || fill instanceof CanvasGradient
+      ? getUid(fill)
+      : typeof fill === 'object' && 'src' in fill
+        ? fill.src + ':' + fill.offset
+        : asArray(fill).toString();
   }
 
   /**

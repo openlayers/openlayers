@@ -1,7 +1,8 @@
-import ImageLayer from '../src/ol/layer/Image.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {Raster as RasterSource, StadiaMaps} from '../src/ol/source.js';
+import ImageLayer from '../src/ol/layer/Image.js';
+import RasterSource from '../src/ol/source/Raster.js';
+import StadiaMaps from '../src/ol/source/StadiaMaps.js';
 
 /**
  * Color manipulation functions below are adapted from

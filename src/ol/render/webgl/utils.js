@@ -2,8 +2,8 @@
  * @module ol/render/webgl/utils
  */
 import earcut from 'earcut';
-import {apply as applyTransform} from '../../transform.js';
 import {clamp} from '../../math.js';
+import {apply as applyTransform} from '../../transform.js';
 
 export const LINESTRING_ANGLE_COSINE_CUTOFF = 0.985;
 
@@ -429,4 +429,76 @@ export function colorDecodeId(color) {
   id += Math.round(color[2] * radix * mult);
   id += Math.round(color[3] * mult);
   return id;
+}
+
+/**
+ * @typedef {import('./VectorStyleRenderer.js').AsShaders} StyleAsShaders
+ */
+/**
+ * @typedef {import('./VectorStyleRenderer.js').AsRule} StyleAsRule
+ */
+
+/**
+ * Takes in either a Flat Style or an array of shaders (used as input for the webgl vector layer classes)
+ * and breaks it down into separate styles to be used by the VectorStyleRenderer class.
+ * @param {import('../../style/flat.js').FlatStyleLike | Array<StyleAsShaders> | StyleAsShaders} style Flat style or shaders
+ * @return {Array<StyleAsShaders | StyleAsRule>} Separate styles as shaders or rules with a single flat style and a filter
+ */
+export function breakDownFlatStyle(style) {
+  // possible cases:
+  // - single shader
+  // - multiple shaders
+  // - single style
+  // - multiple styles
+  // - multiple rules
+  const asArray = Array.isArray(style) ? style : [style];
+
+  // if array of rules: break rules into separate styles, compute "else" filters
+  if ('style' in asArray[0]) {
+    /** @type {Array<StyleAsRule>} */
+    const styles = [];
+    const rules = /** @type {Array<import('../../style/flat.js').Rule>} */ (
+      asArray
+    );
+    const previousFilters = [];
+    for (const rule of rules) {
+      const ruleStyles = Array.isArray(rule.style) ? rule.style : [rule.style];
+      /** @type {import("../../expr/expression.js").EncodedExpression} */
+      let currentFilter = rule.filter;
+      if (rule.else && previousFilters.length) {
+        currentFilter = [
+          'all',
+          ...previousFilters.map((filter) => ['!', filter]),
+        ];
+        if (rule.filter) {
+          currentFilter.push(rule.filter);
+        }
+        if (currentFilter.length < 3) {
+          currentFilter = currentFilter[1];
+        }
+      }
+      if (rule.filter) {
+        previousFilters.push(rule.filter);
+      }
+      /** @type {Array<StyleAsRule>} */
+      const stylesWithFilters = ruleStyles.map((style) => ({
+        style,
+        ...(currentFilter && {filter: currentFilter}),
+      }));
+      styles.push(...stylesWithFilters);
+    }
+    return styles;
+  }
+
+  // if array of shaders: return as is
+  if ('builder' in asArray[0]) {
+    return /** @type {Array<StyleAsShaders>} */ (asArray);
+  }
+
+  return asArray.map(
+    (style) =>
+      /** @type {StyleAsRule} */ ({
+        style,
+      }),
+  );
 }

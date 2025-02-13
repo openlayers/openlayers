@@ -1,8 +1,9 @@
+import {spy as sinonSpy, useFakeTimers} from 'sinon';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserEventHandler from '../../../../src/ol/MapBrowserEventHandler.js';
 import OlEvent from '../../../../src/ol/events/Event.js';
-import {DEVICE_PIXEL_RATIO} from '../../../../src/ol/has.js';
 import {listen} from '../../../../src/ol/events.js';
+import {DEVICE_PIXEL_RATIO} from '../../../../src/ol/has.js';
 
 describe('ol/MapBrowserEventHandler', function () {
   describe('#emulateClick_', function () {
@@ -14,7 +15,7 @@ describe('ol/MapBrowserEventHandler', function () {
     let target;
 
     beforeEach(function () {
-      clock = sinon.useFakeTimers();
+      clock = useFakeTimers();
       target = document.createElement('div');
       handler = new MapBrowserEventHandler(
         new Map({
@@ -22,13 +23,13 @@ describe('ol/MapBrowserEventHandler', function () {
         }),
       );
 
-      clickSpy = sinon.spy();
+      clickSpy = sinonSpy();
       listen(handler, 'click', clickSpy);
 
-      singleclickSpy = sinon.spy();
+      singleclickSpy = sinonSpy();
       listen(handler, 'singleclick', singleclickSpy);
 
-      dblclickSpy = sinon.spy();
+      dblclickSpy = sinonSpy();
       listen(handler, 'dblclick', dblclickSpy);
     });
 
@@ -188,7 +189,7 @@ describe('ol/MapBrowserEventHandler', function () {
         defaultPrevented: true,
       };
       const event = {
-        preventDefault: sinon.spy(),
+        preventDefault: sinonSpy(),
       };
       handler.handleTouchMove_(event);
       expect(event.preventDefault.callCount).to.be(1);
@@ -205,7 +206,7 @@ describe('ol/MapBrowserEventHandler', function () {
     let element, down1, down2, up1, up2;
 
     beforeEach(function () {
-      clock = sinon.useFakeTimers();
+      clock = useFakeTimers();
       target = document.createElement('div');
       handler = new MapBrowserEventHandler(
         new Map({
@@ -235,13 +236,13 @@ describe('ol/MapBrowserEventHandler', function () {
       up2.button = 0;
       up2.pointerId = 2;
 
-      clickSpy = sinon.spy();
+      clickSpy = sinonSpy();
       listen(handler, 'click', clickSpy);
 
-      singleclickSpy = sinon.spy();
+      singleclickSpy = sinonSpy();
       listen(handler, 'singleclick', singleclickSpy);
 
-      dblclickSpy = sinon.spy();
+      dblclickSpy = sinonSpy();
       listen(handler, 'dblclick', dblclickSpy);
     });
 

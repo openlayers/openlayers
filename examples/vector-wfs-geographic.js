@@ -1,13 +1,15 @@
-import GeoJSON from '../src/ol/format/GeoJSON.js';
-import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
-import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
-import {Stroke, Style} from '../src/ol/style.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {createXYZ} from '../src/ol/tilegrid.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import {tile} from '../src/ol/loadingstrategy.js';
 import {useGeographic} from '../src/ol/proj.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
+import {createXYZ} from '../src/ol/tilegrid.js';
 
 useGeographic();
 

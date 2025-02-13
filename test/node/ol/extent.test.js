@@ -1,9 +1,9 @@
-import * as _ol_extent_ from '../../../src/ol/extent.js';
-import expect from '../expect.js';
 import proj4 from 'proj4';
-import sinon from 'sinon';
-import {get, getTransform} from '../../../src/ol/proj.js';
+import {spy as sinonSpy} from 'sinon';
+import * as _ol_extent_ from '../../../src/ol/extent.js';
 import {register} from '../../../src/ol/proj/proj4.js';
+import {get, getTransform} from '../../../src/ol/proj.js';
+import expect from '../expect.js';
 
 describe('ol/extent.js', function () {
   describe('buffer', function () {
@@ -201,10 +201,10 @@ describe('ol/extent.js', function () {
     let callbackFalse;
     let callbackTrue;
     beforeEach(function () {
-      callbackFalse = sinon.spy(function () {
+      callbackFalse = sinonSpy(function () {
         return false;
       });
-      callbackTrue = sinon.spy(function () {
+      callbackTrue = sinonSpy(function () {
         return true;
       });
     });
@@ -236,16 +236,16 @@ describe('ol/extent.js', function () {
 
     it('ensures that any corner can cancel the callback execution', function () {
       const extent = [1, 2, 3, 4];
-      const bottomLeftSpy = sinon.spy(function (corner) {
+      const bottomLeftSpy = sinonSpy(function (corner) {
         return corner[0] === 1 && corner[1] === 2 ? true : false;
       });
-      const bottomRightSpy = sinon.spy(function (corner) {
+      const bottomRightSpy = sinonSpy(function (corner) {
         return corner[0] === 3 && corner[1] === 2 ? true : false;
       });
-      const topRightSpy = sinon.spy(function (corner) {
+      const topRightSpy = sinonSpy(function (corner) {
         return corner[0] === 3 && corner[1] === 4 ? true : false;
       });
-      const topLeftSpy = sinon.spy(function (corner) {
+      const topLeftSpy = sinonSpy(function (corner) {
         return corner[0] === 1 && corner[1] === 4 ? true : false;
       });
 
@@ -262,7 +262,7 @@ describe('ol/extent.js', function () {
 
     it('returns false eventually, if no invocation returned a truthy value', function () {
       const extent = [1, 2, 3, 4];
-      const spy = sinon.spy(); // will return undefined for each corner
+      const spy = sinonSpy(); // will return undefined for each corner
       const got = _ol_extent_.forEachCorner(extent, spy);
       expect(spy.callCount).to.be(4);
       expect(got).to.be(false);

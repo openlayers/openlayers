@@ -1,31 +1,33 @@
-import Circle from '../../../../../src/ol/geom/Circle.js';
-import CircleStyle from '../../../../../src/ol/style/Circle.js';
+import {spy as sinonSpy} from 'sinon';
 import Collection from '../../../../../src/ol/Collection.js';
-import Event from '../../../../../src/ol/events/Event.js';
 import Feature from '../../../../../src/ol/Feature.js';
-import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js';
-import LineString from '../../../../../src/ol/geom/LineString.js';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
-import Modify, {ModifyEvent} from '../../../../../src/ol/interaction/Modify.js';
-import Point from '../../../../../src/ol/geom/Point.js';
-import Polygon, {fromExtent} from '../../../../../src/ol/geom/Polygon.js';
-import Snap from '../../../../../src/ol/interaction/Snap.js';
-import VectorLayer from '../../../../../src/ol/layer/Vector.js';
-import VectorSource from '../../../../../src/ol/source/Vector.js';
 import View from '../../../../../src/ol/View.js';
-import {Fill, Style} from '../../../../../src/ol/style.js';
-import {MultiPoint} from '../../../../../src/ol/geom.js';
-import {
-  clearUserProjection,
-  setUserProjection,
-  useGeographic,
-} from '../../../../../src/ol/proj.js';
+import Event from '../../../../../src/ol/events/Event.js';
 import {
   click,
   doubleClick,
   never,
 } from '../../../../../src/ol/events/condition.js';
+import Circle from '../../../../../src/ol/geom/Circle.js';
+import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js';
+import LineString from '../../../../../src/ol/geom/LineString.js';
+import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
+import Point from '../../../../../src/ol/geom/Point.js';
+import Polygon, {fromExtent} from '../../../../../src/ol/geom/Polygon.js';
+import Modify, {ModifyEvent} from '../../../../../src/ol/interaction/Modify.js';
+import Snap from '../../../../../src/ol/interaction/Snap.js';
+import VectorLayer from '../../../../../src/ol/layer/Vector.js';
+import {
+  clearUserProjection,
+  setUserProjection,
+  useGeographic,
+} from '../../../../../src/ol/proj.js';
+import VectorSource from '../../../../../src/ol/source/Vector.js';
+import CircleStyle from '../../../../../src/ol/style/Circle.js';
+import Fill from '../../../../../src/ol/style/Fill.js';
+import Style from '../../../../../src/ol/style/Style.js';
 
 describe('ol.interaction.Modify', function () {
   let target, map, layer, source, features;
@@ -116,8 +118,8 @@ describe('ol.interaction.Modify', function () {
   /**
    * Tracks events triggered by the interaction as well as feature
    * modifications. Helper function to
-   * @param {ol.Feature} feature Modified feature.
-   * @param {ol.interaction.Modify} interaction The interaction.
+   * @param {Feature} feature Modified feature.
+   * @param {Modify} interaction The interaction.
    * @return {Array<ModifyEvent|string>} events
    */
   function trackEvents(feature, interaction) {
@@ -139,7 +141,7 @@ describe('ol.interaction.Modify', function () {
    * that first and last event are correct ModifyEvents and that feature
    * modifications event are in between.
    * @param {Array<ModifyEvent|string>} events The events.
-   * @param {Array<ol.Feature>} features The features.
+   * @param {Array<Feature>} features The features.
    */
   function validateEvents(events, features) {
     const startevent = events[0];
@@ -1039,7 +1041,7 @@ describe('ol.interaction.Modify', function () {
 
   describe('insertVertexCondition', function () {
     it('calls the callback function', function () {
-      const listenerSpy = sinon.spy(function (event) {
+      const listenerSpy = sinonSpy(function (event) {
         return false;
       });
 
@@ -1122,6 +1124,74 @@ describe('ol.interaction.Modify', function () {
         expect(modifyend).to.be(false);
         done();
       }, 0);
+    });
+
+    it('does not create an overlay vertex feature on `pointermove` when insertVertexCondition is not fulfilled', function () {
+      const feature = new Feature({
+        geometry: new LineString([
+          [0, 0],
+          [10, 20],
+          [0, 40],
+          [40, 40],
+          [40, 0],
+        ]),
+      });
+      const firstRevision = feature.getGeometry().getRevision();
+      features.length = 0;
+      features.push(feature);
+      const listenerSpy = sinonSpy(() => false);
+      const modify = new Modify({
+        features: new Collection(features),
+        insertVertexCondition: listenerSpy,
+      });
+      map.addInteraction(modify);
+
+      // try to add vertex - should not be possible due to the insertVertexCondition
+      simulateEvent('pointermove', 40, -20, null, 0);
+      expect(modify.vertexFeature_).to.be(null);
+      simulateEvent('pointerdown', 40, -20, null, 0);
+      simulateEvent('pointermove', 60, -20, null, 0);
+      expect(modify.vertexFeature_).to.be(null);
+      simulateEvent('pointerdrag', 60, -20, null, 0);
+      simulateEvent('pointerup', 60, -20, null, 0);
+
+      expect(listenerSpy.callCount).to.be(2);
+      expect(feature.getGeometry().getRevision()).to.equal(firstRevision);
+      expect(feature.getGeometry().getCoordinates().length).to.eql(5);
+    });
+
+    it('does not prevent moving vertices', function () {
+      const feature = new Feature({
+        geometry: new LineString([
+          [0, 0],
+          [10, 20],
+          [0, 40],
+          [40, 40],
+          [40, 0],
+        ]),
+      });
+      const firstRevision = feature.getGeometry().getRevision();
+      features.length = 0;
+      features.push(feature);
+      const listenerSpy = sinonSpy(() => false);
+      const modify = new Modify({
+        features: new Collection(features),
+        insertVertexCondition: listenerSpy,
+      });
+      map.addInteraction(modify);
+
+      // move first vertex - should be possible
+      simulateEvent('pointermove', 0, 0, null, 0);
+      expect(modify.vertexFeature_).to.not.be(null);
+      simulateEvent('pointerdown', 0, 0, null, 0);
+      simulateEvent('pointermove', -20, 20, null, 0);
+      simulateEvent('pointerdrag', -20, 20, null, 0);
+      simulateEvent('pointerup', -20, 20, null, 0);
+
+      expect(listenerSpy.callCount).to.be(0);
+      expect(feature.getGeometry().getRevision()).to.equal(firstRevision + 1);
+      expect(feature.getGeometry().getCoordinates().length).to.eql(5);
+      expect(feature.getGeometry().getCoordinates()[0]).to.eql([-20, -20]);
     });
   });
 

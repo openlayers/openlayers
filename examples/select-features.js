@@ -1,11 +1,13 @@
-import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import {altKeyOnly, click, pointerMove} from '../src/ol/events/condition.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Select from '../src/ol/interaction/Select.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import View from '../src/ol/View.js';
-import {Fill, Stroke, Style} from '../src/ol/style.js';
-import {altKeyOnly, click, pointerMove} from '../src/ol/events/condition.js';
+import Fill from '../src/ol/style/Fill.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 const style = new Style({
   fill: new Fill({

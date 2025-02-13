@@ -1,11 +1,8 @@
 /**
  * @module ol/format/WFS
  */
-import GML2 from './GML2.js';
-import GML3 from './GML3.js';
-import GML32 from './GML32.js';
-import GMLBase, {GMLNS} from './GMLBase.js';
-import XMLFeature from './XMLFeature.js';
+import {assert} from '../asserts.js';
+import {get as getProjection} from '../proj.js';
 import {
   XML_SCHEMA_INSTANCE_URI,
   createElementNS,
@@ -19,9 +16,12 @@ import {
   pushParseAndPop,
   pushSerializeAndPop,
 } from '../xml.js';
+import GML2 from './GML2.js';
+import GML3 from './GML3.js';
+import GML32 from './GML32.js';
+import GMLBase, {GMLNS} from './GMLBase.js';
+import XMLFeature from './XMLFeature.js';
 import {and as andFilterFn, bbox as bboxFilterFn} from './filter.js';
-import {assert} from '../asserts.js';
-import {get as getProjection} from '../proj.js';
 import {
   readNonNegativeIntegerString,
   readPositiveInteger,

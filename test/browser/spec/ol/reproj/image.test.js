@@ -1,7 +1,7 @@
 import ImageWrapper, {load} from '../../../../../src/ol/Image.js';
-import ReprojImage from '../../../../../src/ol/reproj/Image.js';
-import {get as getProjection} from '../../../../../src/ol/proj.js';
 import {listen} from '../../../../../src/ol/events.js';
+import {get as getProjection} from '../../../../../src/ol/proj.js';
+import ReprojImage from '../../../../../src/ol/reproj/Image.js';
 
 describe('ol.reproj.Image', function () {
   function createImage(pixelRatio) {

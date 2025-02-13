@@ -1,8 +1,9 @@
-import ImageWMS from '../src/ol/source/ImageWMS.js';
 import Map from '../src/ol/Map.js';
-import OSM from '../src/ol/source/OSM.js';
 import View from '../src/ol/View.js';
-import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
+import ImageLayer from '../src/ol/layer/Image.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import ImageWMS from '../src/ol/source/ImageWMS.js';
+import OSM from '../src/ol/source/OSM.js';
 
 const wmsSource = new ImageWMS({
   url: 'https://ahocevar.com/geoserver/wms',

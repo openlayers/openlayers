@@ -1,7 +1,7 @@
-import DataTile from '../../../../src/ol/source/DataTile.js';
 import Map from '../../../../src/ol/Map.js';
-import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
 import View from '../../../../src/ol/View.js';
+import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
+import DataTile from '../../../../src/ol/source/DataTile.js';
 
 const size = [81, 99];
 
@@ -29,6 +29,7 @@ const sourceRed = new DataTile({
     return context.getImageData(0, 0, size[0], size[1]).data;
   },
   tileSize: size,
+  transition: 0,
 });
 
 const sourceBlue = new DataTile({
@@ -45,6 +46,7 @@ const sourceBlue = new DataTile({
     return context.getImageData(0, 0, size[0], size[1]).data;
   },
   tileSize: size,
+  transition: 0,
 });
 
 const layer = new TileLayer({

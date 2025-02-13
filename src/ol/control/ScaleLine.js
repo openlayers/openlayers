@@ -1,9 +1,9 @@
 /**
  * @module ol/control/ScaleLine
  */
-import Control from './Control.js';
 import {CLASS_UNSELECTABLE} from '../css.js';
 import {METERS_PER_UNIT, getPointResolution} from '../proj.js';
+import Control from './Control.js';
 
 /**
  * @type {string}
@@ -319,7 +319,8 @@ class ScaleLine extends Control {
 
     let i = 3 * Math.floor(Math.log(minWidth * pointResolution) / Math.log(10));
     let count, width, decimalCount;
-    let previousCount, previousWidth, previousDecimalCount;
+    let previousCount = 0;
+    let previousWidth, previousDecimalCount;
     while (true) {
       decimalCount = Math.floor(i / 3);
       const decimal = Math.pow(10, decimalCount);

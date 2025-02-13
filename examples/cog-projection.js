@@ -1,14 +1,14 @@
-import GeoTIFF from '../src/ol/source/GeoTIFF.js';
+import proj4 from 'proj4';
 import Map from '../src/ol/Map.js';
 import TileLayer from '../src/ol/layer/WebGLTile.js';
-import XYZ from '../src/ol/source/XYZ.js';
-import proj4 from 'proj4';
 import {
   epsgLookupMapTiler,
   fromEPSGCode,
   register,
   setEPSGLookup,
 } from '../src/ol/proj/proj4.js';
+import GeoTIFF from '../src/ol/source/GeoTIFF.js';
+import XYZ from '../src/ol/source/XYZ.js';
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
 const attributions =

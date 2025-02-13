@@ -1,24 +1,24 @@
 /**
  * @module ol/interaction/Extent
  */
-import Event from '../events/Event.js';
 import Feature from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
-import Point from '../geom/Point.js';
-import PointerInteraction from './Pointer.js';
-import VectorLayer from '../layer/Vector.js';
-import VectorSource from '../source/Vector.js';
-import {always} from '../events/condition.js';
-import {boundingExtent, getArea} from '../extent.js';
 import {
   closestOnSegment,
   distance as coordinateDistance,
   squaredDistance as squaredCoordinateDistance,
   squaredDistanceToSegment,
 } from '../coordinate.js';
-import {createEditingStyle} from '../style/Style.js';
+import Event from '../events/Event.js';
+import {always} from '../events/condition.js';
+import {boundingExtent, getArea} from '../extent.js';
+import Point from '../geom/Point.js';
 import {fromExtent as polygonFromExtent} from '../geom/Polygon.js';
+import VectorLayer from '../layer/Vector.js';
 import {toUserExtent} from '../proj.js';
+import VectorSource from '../source/Vector.js';
+import {createEditingStyle} from '../style/Style.js';
+import PointerInteraction from './Pointer.js';
 
 /**
  * @typedef {Object} Options
@@ -72,6 +72,10 @@ export class ExtentEvent extends Event {
     this.extent = extent;
   }
 }
+
+/**
+ * @typedef {function (import("../coordinate.js").Coordinate): import("../extent.js").Extent} PointerHandler
+ */
 
 /***
  * @template Return
@@ -132,7 +136,7 @@ class Extent extends PointerInteraction {
 
     /**
      * Handler for pointer move events
-     * @type {function (import("../coordinate.js").Coordinate): import("../extent.js").Extent|null}
+     * @type {PointerHandler|null}
      * @private
      */
     this.pointerHandler_ = null;
@@ -511,7 +515,7 @@ function getPointHandler(fixedPoint) {
 /**
  * @param {import("../coordinate.js").Coordinate} fixedP1 first corner that will be unchanged in the new extent
  * @param {import("../coordinate.js").Coordinate} fixedP2 second corner that will be unchanged in the new extent
- * @return {function (import("../coordinate.js").Coordinate): import("../extent.js").Extent|null} event handler
+ * @return {PointerHandler|null} event handler
  */
 function getEdgeHandler(fixedP1, fixedP2) {
   if (fixedP1[0] == fixedP2[0]) {

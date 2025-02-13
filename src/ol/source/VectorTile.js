@@ -2,22 +2,22 @@
  * @module ol/source/VectorTile
  */
 
-import EventType from '../events/EventType.js';
-import Tile from '../VectorTile.js';
-import TileGrid from '../tilegrid/TileGrid.js';
 import TileState from '../TileState.js';
-import UrlTile from './UrlTile.js';
 import VectorRenderTile from '../VectorRenderTile.js';
-import {DEFAULT_MAX_ZOOM} from '../tilegrid/common.js';
+import Tile from '../VectorTile.js';
+import EventType from '../events/EventType.js';
 import {
   buffer as bufferExtent,
   getIntersection,
   intersects,
 } from '../extent.js';
-import {createXYZ, extentFromProjection} from '../tilegrid.js';
-import {isEmpty} from '../obj.js';
 import {loadFeaturesXhr} from '../featureloader.js';
+import {isEmpty} from '../obj.js';
 import {toSize} from '../size.js';
+import TileGrid from '../tilegrid/TileGrid.js';
+import {DEFAULT_MAX_ZOOM} from '../tilegrid/common.js';
+import {createXYZ, extentFromProjection} from '../tilegrid.js';
+import UrlTile from './UrlTile.js';
 
 /**
  * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../render/Feature.js").default]
@@ -286,14 +286,15 @@ class VectorTile extends UrlTile {
    * @param {VectorRenderTile} tile Vector render tile.
    */
   removeSourceTiles(tile) {
+    const tileKey = tile.getKey();
     const sourceTiles = tile.sourceTiles;
     for (let i = 0, ii = sourceTiles.length; i < ii; ++i) {
       const sourceTileUrl = sourceTiles[i].getTileUrl();
-      const tileKey = this.getKey();
       if (!this.tileKeysBySourceTileUrl_[sourceTileUrl]) {
         return;
       }
-      const index = this.tileKeysBySourceTileUrl_[sourceTileUrl][tileKey];
+      const index =
+        this.tileKeysBySourceTileUrl_[sourceTileUrl].indexOf(tileKey);
       if (index === -1) {
         continue;
       }
