@@ -297,7 +297,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * Render the layer.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {HTMLElement|null} target Target that may be used to render content to.
-   * @return {HTMLElement|null} The rendered element.
+   * @return {HTMLElement} The rendered element.
    * @override
    */
   renderFrame(frameState, target) {
