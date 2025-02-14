@@ -42,8 +42,10 @@ import BaseVector from './BaseVector.js';
  * be visible.
  * @property {Array<string>} [gradient=['#00f', '#0ff', '#0f0', '#ff0', '#f00']] The color gradient
  * of the heatmap, specified as an array of CSS color strings.
- * @property {import("../style/flat.js").NumberExpression} [radius=8] Radius size in pixels.
- * @property {import("../style/flat.js").NumberExpression} [blur=15] Blur size in pixels.
+ * @property {import("../style/flat.js").NumberExpression} [radius=8] Radius size in pixels. Note that for LineStrings,
+ * the width of the line will be double the radius.
+ * @property {import("../style/flat.js").NumberExpression} [blur=15] Blur size in pixels. This is added to the `radius`
+ * parameter above to create the final size of the blur effect.
  * @property {WeightExpression} [weight='weight'] The feature
  * attribute to use for the weight. This also supports expressions returning a number or a function that returns a weight from a feature. Weight values
  * should range from 0 to 1 (and values outside will be clamped to that range).
@@ -282,7 +284,7 @@ class Heatmap extends BaseVector {
       .setStrokeColorExpression(
         `vec4(smoothstep(0., 1., (1. - length(currentRadiusPx * 2. / v_width)) * getBlurSlope()) * ${weightExpression})`,
       )
-      .setStrokeWidthExpression(`(${radiusCompiled} + ${blurCompiled})`)
+      .setStrokeWidthExpression(`(${radiusCompiled} + ${blurCompiled}) * 2.`)
       .setFillColorExpression(`vec4(${weightExpression})`)
       .setFragmentDiscardExpression(`!${filterCompiled}`);
 

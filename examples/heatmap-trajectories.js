@@ -16,8 +16,8 @@ const heatmap = new HeatmapLayer({
     format: new GeoJSON(),
     attributions: 'Danish Maritime Authority',
   }),
-  blur: ['var', 'blur'],
-  radius: ['var', 'radius'],
+  blur: ['/', ['var', 'blur'], 2],
+  radius: ['/', ['var', 'radius'], 2],
   variables: {
     blur: parseInt(blur.value, 10),
     radius: parseInt(radius.value, 10),
