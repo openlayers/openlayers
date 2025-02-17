@@ -11,7 +11,7 @@ import {
 
 describe('ol.webgl.ShaderBuilder', () => {
   describe('getSymbolVertexShader', () => {
-    it('generates a symbol vertex shader (with varying)', () => {
+    it('generates a symbol vertex shader (with attributes)', () => {
       const builder = new ShaderBuilder();
       builder.addAttribute('a_opacity', 'float', numberToGlsl(0.4));
       builder.addAttribute('a_test', 'vec3', arrayToGlsl([1, 2, 3]));
@@ -291,7 +291,7 @@ void main(void) {
     });
   });
   describe('getSymbolFragmentShader', () => {
-    it('generates a symbol fragment shader (with varying)', () => {
+    it('generates a symbol fragment shader (with attributes)', () => {
       const builder = new ShaderBuilder();
       builder.addAttribute('a_opacity', 'float', numberToGlsl(0.4));
       builder.addAttribute('a_test', 'vec3', arrayToGlsl([1, 2, 3]));
@@ -504,7 +504,7 @@ void main(void) {
       });
     });
     describe('getStrokeFragmentShader', () => {
-      it('generates a stroke fragment shader (with varying, attribute and uniform)', () => {
+      it('generates a stroke fragment shader (with attribute and uniform)', () => {
         expect(builder.getStrokeFragmentShader()).to.eql(`${COMMON_HEADER}
 uniform float u_myUniform;
 varying vec2 v_segmentStart;
@@ -674,7 +674,7 @@ void main(void) {
   });
 
   describe('getFillVertexShader', () => {
-    it('generates a fill vertex shader (with varying, attribute and uniform)', () => {
+    it('generates a fill vertex shader (with attribute and uniform)', () => {
       const builder = new ShaderBuilder();
       builder.addAttribute('a_opacity', 'float', numberToGlsl(0.4));
       builder.addAttribute('a_test', 'vec3', arrayToGlsl([1, 2, 3]));
@@ -712,7 +712,7 @@ void main(void) {
     });
   });
   describe('getFillFragmentShader', () => {
-    it('generates a fill fragment shader (with varying, attribute and uniform)', () => {
+    it('generates a fill fragment shader (with attribute and uniform)', () => {
       const builder = new ShaderBuilder();
       builder.addAttribute('a_opacity', 'float', numberToGlsl(0.4));
       builder.addAttribute('a_test', 'vec3', arrayToGlsl([1, 2, 3]));
