@@ -9,37 +9,33 @@ import VectorSource from '../src/ol/source/Vector.js';
 const blur = document.getElementById('blur');
 const radius = document.getElementById('radius');
 
-const heatmap = new HeatmapLayer({
+const vector = new HeatmapLayer({
   source: new VectorSource({
     url: 'data/kml/2012_Earthquakes_Mag5.kml',
     format: new KML({
       extractStyles: false,
     }),
   }),
-  blur: ['var', 'blur'],
-  radius: ['var', 'radius'],
-  variables: {
-    blur: parseInt(blur.value, 10),
-    radius: parseInt(radius.value, 10),
-  },
+  blur: parseInt(blur.value, 10),
+  radius: parseInt(radius.value, 10),
   weight: function (feature) {
     // 2012_Earthquakes_Mag5.kml stores the magnitude of each earthquake in a
     // standards-violating <magnitude> tag in each Placemark.  We extract it from
     // the Placemark's name instead.
     const name = feature.get('name');
-    const magnitude = parseFloat(name.substring(2));
+    const magnitude = parseFloat(name.substr(2));
     return magnitude - 5;
   },
 });
 
 const raster = new TileLayer({
   source: new StadiaMaps({
-    layer: 'alidade_smooth_dark',
+    layer: 'stamen_toner',
   }),
 });
 
 new Map({
-  layers: [raster, heatmap],
+  layers: [raster, vector],
   target: 'map',
   view: new View({
     center: [0, 0],
@@ -48,9 +44,9 @@ new Map({
 });
 
 blur.addEventListener('input', function () {
-  heatmap.updateStyleVariables({blur: parseInt(blur.value, 10)});
+  vector.setBlur(parseInt(blur.value, 10));
 });
 
 radius.addEventListener('input', function () {
-  heatmap.updateStyleVariables({radius: parseInt(radius.value, 10)});
+  vector.setRadius(parseInt(radius.value, 10));
 });
