@@ -117,30 +117,12 @@ describe('ol/expr/gpu.js', () => {
         expected: 'a_prop_myAttr',
       },
       {
-        name: 'get (in fragment shader)',
-        type: AnyType,
-        expression: ['get', 'myAttr'],
-        expected: 'v_prop_myAttr',
-        context: {
-          inFragmentShader: true,
-        },
-      },
-      {
         name: 'id',
         type: AnyType,
         expression: ['id'],
         expected: 'a_featureId',
         contextAssertion: (context) => {
           expect(context.featureId).to.be(true);
-        },
-      },
-      {
-        name: 'id (in fragment shader)',
-        type: AnyType,
-        expression: ['id'],
-        expected: 'v_featureId',
-        context: {
-          inFragmentShader: true,
         },
       },
       {
@@ -169,15 +151,6 @@ describe('ol/expr/gpu.js', () => {
         contextAssertion: (context) => {
           expect(context.geometryType).to.be(true);
         },
-      },
-      {
-        name: 'geometry-type (in fragment shader)',
-        type: AnyType,
-        expression: ['geometry-type'],
-        context: {
-          inFragmentShader: true,
-        },
-        expected: 'v_geometryType',
       },
       {
         name: 'line-metric',

@@ -7,9 +7,9 @@ import {
   newCompilationContext,
   uniformNameForVariable,
 } from '../expr/gpu.js';
+import {expressionToGlsl} from '../render/webgl/compileUtil.js';
 import FlowLayerRenderer, {A, U, V} from '../renderer/webgl/FlowLayer.js';
 import {Attributes as BA, Uniforms as BU} from '../renderer/webgl/TileLayer.js';
-import {expressionToGlsl} from '../webgl/styleparser.js';
 import BaseTileLayer from './BaseTile.js';
 import LayerProperty from './Property.js';
 
@@ -293,7 +293,6 @@ const particleColorVertexShader = `
  */
 function parseStyle(style) {
   const context = newCompilationContext();
-  context.inFragmentShader = true;
   const pipeline = [];
 
   if (style.color !== undefined) {

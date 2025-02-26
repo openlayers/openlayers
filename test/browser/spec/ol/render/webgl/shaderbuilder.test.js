@@ -3,18 +3,18 @@ import {
   colorToGlsl,
   numberToGlsl,
   stringToGlsl,
-} from '../../../../../src/ol/expr/gpu.js';
+} from '../../../../../../src/ol/expr/gpu.js';
 import {
   COMMON_HEADER,
   ShaderBuilder,
-} from '../../../../../src/ol/webgl/ShaderBuilder.js';
+} from '../../../../../../src/ol/render/webgl/ShaderBuilder.js';
 
 describe('ol.webgl.ShaderBuilder', () => {
   describe('getSymbolVertexShader', () => {
-    it('generates a symbol vertex shader (with varying)', () => {
+    it('generates a symbol vertex shader (with attributes)', () => {
       const builder = new ShaderBuilder();
-      builder.addVarying('v_opacity', 'float', numberToGlsl(0.4));
-      builder.addVarying('v_test', 'vec3', arrayToGlsl([1, 2, 3]));
+      builder.addAttribute('a_opacity', 'float', numberToGlsl(0.4));
+      builder.addAttribute('a_test', 'vec3', arrayToGlsl([1, 2, 3]));
       builder.setSymbolSizeExpression(`vec2(${numberToGlsl(6)})`);
       builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
       builder.setSymbolColorExpression(colorToGlsl([80, 0, 255, 1]));
@@ -32,7 +32,10 @@ varying vec4 v_hitColor;
 varying vec2 v_centerPx;
 varying float v_angle;
 varying vec2 v_quadSizePx;
+
+attribute float a_opacity;
 varying float v_opacity;
+attribute vec3 a_test;
 varying vec3 v_test;
 
 vec2 pxToScreen(vec2 coordPx) {
@@ -82,7 +85,7 @@ void main(void) {
     it('generates a symbol vertex shader (with uniforms and attributes)', () => {
       const builder = new ShaderBuilder();
       builder.addUniform('float u_myUniform');
-      builder.addAttribute('vec2 a_myAttr');
+      builder.addAttribute('a_myAttr', 'vec2');
       builder.setSymbolSizeExpression(`vec2(${numberToGlsl(6)})`);
       builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
       builder.setSymbolColorExpression(colorToGlsl([80, 0, 255, 1]));
@@ -93,7 +96,7 @@ uniform float u_myUniform;
 attribute vec2 a_position;
 attribute float a_index;
 attribute vec4 a_hitColor;
-attribute vec2 a_myAttr;
+
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
 varying vec4 v_hitColor;
@@ -101,6 +104,8 @@ varying vec2 v_centerPx;
 varying float v_angle;
 varying vec2 v_quadSizePx;
 
+attribute vec2 a_myAttr;
+varying vec2 v_myAttr;
 
 vec2 pxToScreen(vec2 coordPx) {
   vec2 scaled = coordPx / u_viewportSizePx / 0.5;
@@ -142,7 +147,7 @@ void main(void) {
   s = sin(-v_angle);
   centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y); 
   v_centerPx = screenToPx(center.xy) + centerOffsetPx;
-
+  v_myAttr = a_myAttr;
 }`);
     });
     it('generates a symbol vertex shader (with rotateWithView)', () => {
@@ -165,6 +170,7 @@ varying vec4 v_hitColor;
 varying vec2 v_centerPx;
 varying float v_angle;
 varying vec2 v_quadSizePx;
+
 
 
 vec2 pxToScreen(vec2 coordPx) {
@@ -231,6 +237,7 @@ varying float v_angle;
 varying vec2 v_quadSizePx;
 
 
+
 vec2 pxToScreen(vec2 coordPx) {
   vec2 scaled = coordPx / u_viewportSizePx / 0.5;
   return scaled;
@@ -284,10 +291,10 @@ void main(void) {
     });
   });
   describe('getSymbolFragmentShader', () => {
-    it('generates a symbol fragment shader (with varying)', () => {
+    it('generates a symbol fragment shader (with attributes)', () => {
       const builder = new ShaderBuilder();
-      builder.addVarying('v_opacity', 'float', numberToGlsl(0.4));
-      builder.addVarying('v_test', 'vec3', arrayToGlsl([1, 2, 3]));
+      builder.addAttribute('a_opacity', 'float', numberToGlsl(0.4));
+      builder.addAttribute('a_test', 'vec3', arrayToGlsl([1, 2, 3]));
       builder.setSymbolSizeExpression(`vec2(${numberToGlsl(6)})`);
       builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
       builder.setSymbolColorExpression(colorToGlsl([80, 0, 255]));
@@ -305,6 +312,8 @@ varying vec3 v_test;
 
 
 void main(void) {
+  float a_opacity = v_opacity; // assign to original attribute name
+  vec3 a_test = v_test; // assign to original attribute name
   if (false) { discard; }
   vec2 coordsPx = gl_FragCoord.xy / u_pixelRatio - v_centerPx; // relative to center
   float c = cos(v_angle);
@@ -340,6 +349,7 @@ varying vec2 v_quadSizePx;
 
 
 void main(void) {
+
   if (u_myUniform > 0.5) { discard; }
   vec2 coordsPx = gl_FragCoord.xy / u_pixelRatio - v_centerPx; // relative to center
   float c = cos(v_angle);
@@ -366,10 +376,10 @@ void main(void) {
     let builder;
     beforeEach(() => {
       builder = new ShaderBuilder();
-      builder.addVarying('v_opacity', 'float', numberToGlsl(0.4));
-      builder.addVarying('v_test', 'vec3', arrayToGlsl([1, 2, 3]));
+      builder.addAttribute('a_opacity', 'float', numberToGlsl(0.4));
+      builder.addAttribute('a_test', 'vec3', arrayToGlsl([1, 2, 3]));
+      builder.addAttribute('a_myAttr', 'vec2');
       builder.addUniform('float u_myUniform');
-      builder.addAttribute('vec2 a_myAttr');
       builder.setStrokeWidthExpression(numberToGlsl(4));
       builder.setStrokeColorExpression(colorToGlsl([80, 0, 255, 1]));
       builder.setStrokeCapExpression(stringToGlsl('butt'));
@@ -391,7 +401,7 @@ attribute float a_parameters;
 attribute float a_distance;
 attribute vec2 a_joinAngles;
 attribute vec4 a_hitColor;
-attribute vec2 a_myAttr;
+
 varying vec2 v_segmentStart;
 varying vec2 v_segmentEnd;
 varying float v_angleStart;
@@ -401,8 +411,13 @@ varying vec4 v_hitColor;
 varying float v_distanceOffsetPx;
 varying float v_measureStart;
 varying float v_measureEnd;
+
+attribute float a_opacity;
 varying float v_opacity;
+attribute vec3 a_test;
 varying vec3 v_test;
+attribute vec2 a_myAttr;
+varying vec2 v_myAttr;
 
 vec2 worldToPx(vec2 worldPos) {
   vec4 screenPos = u_projectionMatrix * vec4(worldPos, 0.0, 1.0);
@@ -479,6 +494,7 @@ void main(void) {
   v_measureEnd = a_measureEnd;
   v_opacity = 0.4;
   v_test = vec3(1.0, 2.0, 3.0);
+  v_myAttr = a_myAttr;
 }`);
       });
 
@@ -488,7 +504,7 @@ void main(void) {
       });
     });
     describe('getStrokeFragmentShader', () => {
-      it('generates a stroke fragment shader (with varying, attribute and uniform)', () => {
+      it('generates a stroke fragment shader (with attribute and uniform)', () => {
         expect(builder.getStrokeFragmentShader()).to.eql(`${COMMON_HEADER}
 uniform float u_myUniform;
 varying vec2 v_segmentStart;
@@ -502,6 +518,7 @@ varying float v_measureStart;
 varying float v_measureEnd;
 varying float v_opacity;
 varying vec3 v_test;
+varying vec2 v_myAttr;
 
 
 vec2 pxToWorld(vec2 pxPos) {
@@ -587,7 +604,19 @@ float computeSegmentPointDistance(vec2 point, vec2 start, vec2 end, float width,
   return joinDistanceField(point, start, end, width, joinAngle, joinType);
 }
 
+float distanceFromSegment(vec2 point, vec2 start, vec2 end) {
+  vec2 tangent = end - start;
+  vec2 startToPoint = point - start;
+  // inspire by capsule fn in https://iquilezles.org/articles/distfunctions/
+  float h = clamp(dot(startToPoint, tangent) / dot(tangent, tangent), 0.0, 1.0);
+  return length(startToPoint - tangent * h);
+}
+
 void main(void) {
+  float a_opacity = v_opacity; // assign to original attribute name
+  vec3 a_test = v_test; // assign to original attribute name
+  vec2 a_myAttr = v_myAttr; // assign to original attribute name
+      
   vec2 currentPoint = gl_FragCoord.xy / u_pixelRatio;
   #ifdef GL_FRAGMENT_PRECISION_HIGH
   vec2 worldPos = pxToWorld(currentPoint);
@@ -608,24 +637,25 @@ void main(void) {
   vec2 segmentNormal = vec2(-segmentTangent.y, segmentTangent.x);
   vec2 startToPoint = currentPoint - v_segmentStart;
   float lengthToPoint = max(0., min(dot(segmentTangent, startToPoint), segmentLength));
-  float currentLengthPx = lengthToPoint + v_distanceOffsetPx; 
-  float currentRadiusPx = abs(dot(segmentNormal, startToPoint));
+  float currentLengthPx = lengthToPoint + v_distanceOffsetPx;
+  float currentRadiusPx = distanceFromSegment(currentPoint, v_segmentStart, v_segmentEnd);
   float currentRadiusRatio = dot(segmentNormal, startToPoint) * 2. / v_width;
   currentLineMetric = mix(v_measureStart, v_measureEnd, lengthToPoint / segmentLength);
 
   if (u_myUniform > 0.5) { discard; }
 
-  vec4 color = vec4(0.3137254901960784, 0.0, 1.0, 1.0);
   float capType = ${stringToGlsl('butt')};
   float joinType = ${stringToGlsl('bevel')};
   float segmentStartDistance = computeSegmentPointDistance(currentPoint, v_segmentStart, v_segmentEnd, v_width, v_angleStart, capType, joinType);
   float segmentEndDistance = computeSegmentPointDistance(currentPoint, v_segmentEnd, v_segmentStart, v_width, v_angleEnd, capType, joinType);
-  float distance = max(
+  float distanceField = max(
     segmentDistanceField(currentPoint, v_segmentStart, v_segmentEnd, v_width),
     max(segmentStartDistance, segmentEndDistance)
   );
-  distance = max(distance, cos(currentLengthPx));
-  color.a *= smoothstep(0.5, -0.5, distance);
+  distanceField = max(distanceField, cos(currentLengthPx));
+
+  vec4 color = vec4(0.3137254901960784, 0.0, 1.0, 1.0);
+  color.a *= smoothstep(0.5, -0.5, distanceField);
   gl_FragColor = color;
   gl_FragColor.a *= u_globalAlpha;
   gl_FragColor.rgb *= gl_FragColor.a;
@@ -644,12 +674,12 @@ void main(void) {
   });
 
   describe('getFillVertexShader', () => {
-    it('generates a fill vertex shader (with varying, attribute and uniform)', () => {
+    it('generates a fill vertex shader (with attribute and uniform)', () => {
       const builder = new ShaderBuilder();
-      builder.addVarying('v_opacity', 'float', numberToGlsl(0.4));
-      builder.addVarying('v_test', 'vec3', arrayToGlsl([1, 2, 3]));
+      builder.addAttribute('a_opacity', 'float', numberToGlsl(0.4));
+      builder.addAttribute('a_test', 'vec3', arrayToGlsl([1, 2, 3]));
+      builder.addAttribute('a_myAttr', 'vec2');
       builder.addUniform('float u_myUniform');
-      builder.addAttribute('vec2 a_myAttr');
       builder.setFillColorExpression(colorToGlsl([80, 0, 255, 1]));
       builder.setFragmentDiscardExpression('u_myUniform > 0.5');
 
@@ -657,16 +687,22 @@ void main(void) {
 uniform float u_myUniform;
 attribute vec2 a_position;
 attribute vec4 a_hitColor;
-attribute vec2 a_myAttr;
+
 varying vec4 v_hitColor;
+
+attribute float a_opacity;
 varying float v_opacity;
+attribute vec3 a_test;
 varying vec3 v_test;
+attribute vec2 a_myAttr;
+varying vec2 v_myAttr;
 
 void main(void) {
   gl_Position = u_projectionMatrix * vec4(a_position, u_depth, 1.0);
   v_hitColor = a_hitColor;
   v_opacity = 0.4;
   v_test = vec3(1.0, 2.0, 3.0);
+  v_myAttr = a_myAttr;
 }`);
     });
 
@@ -676,12 +712,12 @@ void main(void) {
     });
   });
   describe('getFillFragmentShader', () => {
-    it('generates a fill fragment shader (with varying, attribute and uniform)', () => {
+    it('generates a fill fragment shader (with attribute and uniform)', () => {
       const builder = new ShaderBuilder();
-      builder.addVarying('v_opacity', 'float', numberToGlsl(0.4));
-      builder.addVarying('v_test', 'vec3', arrayToGlsl([1, 2, 3]));
+      builder.addAttribute('a_opacity', 'float', numberToGlsl(0.4));
+      builder.addAttribute('a_test', 'vec3', arrayToGlsl([1, 2, 3]));
+      builder.addAttribute('a_myAttr', 'vec2');
       builder.addUniform('float u_myUniform');
-      builder.addAttribute('vec2 a_myAttr');
       builder.setFillColorExpression(colorToGlsl([80, 0, 255, 1]));
       builder.setFragmentDiscardExpression('u_myUniform > 0.5');
 
@@ -690,6 +726,7 @@ uniform float u_myUniform;
 varying vec4 v_hitColor;
 varying float v_opacity;
 varying vec3 v_test;
+varying vec2 v_myAttr;
 
 vec2 pxToWorld(vec2 pxPos) {
   vec2 screenPos = 2.0 * pxPos / u_viewportSizePx - 1.0;
@@ -702,6 +739,9 @@ vec2 worldToPx(vec2 worldPos) {
 }
 
 void main(void) {
+  float a_opacity = v_opacity; // assign to original attribute name
+  vec3 a_test = v_test; // assign to original attribute name
+  vec2 a_myAttr = v_myAttr; // assign to original attribute name
   vec2 pxPos = gl_FragCoord.xy / u_pixelRatio;
   vec2 pxOrigin = worldToPx(u_patternOrigin);
   #ifdef GL_FRAGMENT_PRECISION_HIGH

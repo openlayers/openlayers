@@ -8,7 +8,7 @@ import {buffer, createEmpty, equals} from '../../extent.js';
 import BaseVector from '../../layer/BaseVector.js';
 import {fromUserCoordinate, getUserProjection} from '../../proj.js';
 import {WebGLWorkerMessageType} from '../../render/webgl/constants.js';
-import {colorDecodeId, colorEncodeId} from '../../render/webgl/utils.js';
+import {colorDecodeId, colorEncodeId} from '../../render/webgl/encodeUtil.js';
 import VectorEventType from '../../source/VectorEventType.js';
 import {
   apply as applyTransform,
