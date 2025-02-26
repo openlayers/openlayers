@@ -182,7 +182,13 @@ class Heatmap extends BaseVector {
    * @observable
    */
   setBlur(blur) {
+    const previousValue = this.get(Property.BLUR);
     this.set(Property.BLUR, blur);
+    // if the value stays numerical, simply refresh the layer
+    if (typeof blur === 'number' && typeof previousValue === 'number') {
+      this.changed();
+      return;
+    }
     this.clearRenderer();
   }
 
@@ -203,7 +209,13 @@ class Heatmap extends BaseVector {
    * @observable
    */
   setRadius(radius) {
+    const previousValue = this.get(Property.RADIUS);
     this.set(Property.RADIUS, radius);
+    // if the value stays numerical, simply refresh the layer
+    if (typeof radius === 'number' && typeof previousValue === 'number') {
+      this.changed();
+      return;
+    }
     this.clearRenderer();
   }
 
@@ -233,16 +245,29 @@ class Heatmap extends BaseVector {
    * @override
    */
   createRenderer() {
+    const builder = new ShaderBuilder();
+
     const context = newCompilationContext();
-    const radiusCompiled = expressionToGlsl(
+    const filterCompiled = expressionToGlsl(context, this.filter_, BooleanType);
+    let radiusCompiled = expressionToGlsl(
       context,
       this.getRadius(),
       NumberType,
     );
-    const blurCompiled = expressionToGlsl(context, this.getBlur(), NumberType);
-    const filterCompiled = expressionToGlsl(context, this.filter_, BooleanType);
+    let blurCompiled = expressionToGlsl(context, this.getBlur(), NumberType);
 
-    const builder = new ShaderBuilder();
+    /** @type {import('../render/webgl/VectorStyleRenderer.js').UniformDefinitions} */
+    const blurRadiusUniforms = {};
+    if (typeof this.getBlur() === 'number') {
+      blurCompiled = 'a_blur';
+      blurRadiusUniforms['a_blur'] = () => this.getBlur();
+      builder.addUniform('float a_blur');
+    }
+    if (typeof this.getRadius() === 'number') {
+      radiusCompiled = 'a_radius';
+      blurRadiusUniforms['a_radius'] = () => this.getRadius();
+      builder.addUniform('float a_radius');
+    }
 
     /** @type {import('../render/webgl/VectorStyleRenderer.js').AttributeDefinitions} */
     const weightAttribute = {};
@@ -301,7 +326,10 @@ class Heatmap extends BaseVector {
           ...attributes,
           ...weightAttribute,
         },
-        uniforms,
+        uniforms: {
+          ...uniforms,
+          ...blurRadiusUniforms,
+        },
       },
       disableHitDetection: false,
       postProcesses: [

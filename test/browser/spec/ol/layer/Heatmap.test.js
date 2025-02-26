@@ -83,14 +83,33 @@ describe('ol/layer/Heatmap', function () {
       expect(layer.getBlur()).to.eql(15);
     });
     it('updates blur value', () => {
-      layer.setBlur(10);
-      expect(layer.getBlur()).to.eql(10);
+      layer.setBlur(['get', 'weight']);
+      expect(layer.getBlur()).to.eql(['get', 'weight']);
     });
     it('recreates the renderer', () => {
       sinonSpy(layer, 'createRenderer');
-      layer.setBlur(10);
+      layer.setBlur(['get', 'weight']);
       layer.getRenderer();
       expect(layer.createRenderer.calledOnce).to.be(true);
+    });
+
+    describe('numerical value', () => {
+      it('adds a uniform which reads the numerical value', () => {
+        layer.setBlur(12);
+        layer.getRenderer();
+        const rendererOpts = rendererSpy.getCall(0).args[1];
+        const uniforms = rendererOpts.style.uniforms;
+        expect(uniforms).to.have.key('a_blur');
+        expect(uniforms.a_blur()).to.eql(12);
+      });
+      it('does not recreate the renderer if called several times with a numerical value', () => {
+        sinonSpy(layer, 'createRenderer');
+        layer.setBlur(12);
+        layer.setBlur(17);
+        layer.setBlur(20);
+        layer.getRenderer();
+        expect(layer.createRenderer.callCount).to.be(1);
+      });
     });
   });
 
@@ -104,14 +123,33 @@ describe('ol/layer/Heatmap', function () {
       expect(layer.getRadius()).to.eql(8);
     });
     it('updates blur value', () => {
-      layer.setRadius(16);
-      expect(layer.getRadius()).to.eql(16);
+      layer.setRadius(['get', 'size']);
+      expect(layer.getRadius()).to.eql(['get', 'size']);
     });
     it('recreates the renderer', () => {
       sinonSpy(layer, 'createRenderer');
-      layer.setRadius(16);
+      layer.setRadius(['get', 'size']);
       layer.getRenderer();
       expect(layer.createRenderer.calledOnce).to.be(true);
+    });
+
+    describe('numerical value', () => {
+      it('adds a uniform which reads the numerical value', () => {
+        layer.setRadius(12);
+        layer.getRenderer();
+        const rendererOpts = rendererSpy.getCall(0).args[1];
+        const uniforms = rendererOpts.style.uniforms;
+        expect(uniforms).to.have.key('a_radius');
+        expect(uniforms.a_radius()).to.eql(12);
+      });
+      it('does not recreate the renderer if called several times with a numerical value', () => {
+        sinonSpy(layer, 'createRenderer');
+        layer.setRadius(12);
+        layer.setRadius(17);
+        layer.setRadius(20);
+        layer.getRenderer();
+        expect(layer.createRenderer.callCount).to.be(1);
+      });
     });
   });
 
