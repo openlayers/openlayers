@@ -9,7 +9,14 @@ import {
   toString,
   withAlpha,
 } from '../color.js';
-import {ColorType, LiteralExpression, Ops, parse} from './expression.js';
+import {
+  ColorType,
+  LiteralExpression,
+  Ops,
+  computeGeometryType,
+  newParsingContext,
+  parse,
+} from './expression.js';
 
 /**
  * @fileoverview This module includes functions to build expressions for evaluation on the CPU.
@@ -750,4 +757,46 @@ function interpolateColor(base, value, input1, rgba1, input2, rgba2) {
     interpolateNumber(base, value, input1, rgba1[3], input2, rgba2[3]),
   ];
   return lchaToRgba(lcha);
+}
+
+/**
+ * @typedef {function(import('../Feature.js').FeatureLike=, number=, import('../style/flat.js').StyleVariables=):(LiteralValue | UNKNOWN)} ExpressionAsFunction
+ */
+
+/**
+ * Converts the expression to an evaluator function that can be called with a feature, a resolution and style variables.
+ * @param {import('./expression.js').EncodedExpression} expression The encoded expression.
+ * @param {number} expectedType The expected type.
+ * @param {import('./expression.js').ParsingContext} [parsingContext] Optional parsing context; will be modified during expression parsing
+ * @return {ExpressionAsFunction} A function that evaluates an expression. All arguments (feature, resolution, variables)
+ * are optional. If any of each is not provided but the expression relies on their value, `UNKNOWN` will be returned.
+ */
+export function expressionToFunction(expression, expectedType, parsingContext) {
+  parsingContext = parsingContext ?? newParsingContext();
+  const compiled = buildExpression(expression, expectedType, parsingContext);
+  const evaluationContext = newEvaluationContext();
+  return (feature, resolution, variables) => {
+    evaluationContext.properties = UNKNOWN;
+    evaluationContext.featureId = UNKNOWN;
+    evaluationContext.geometryType = UNKNOWN;
+    if (feature) {
+      evaluationContext.properties = feature.getPropertiesInternal();
+      if (parsingContext.featureId) {
+        const id = feature.getId();
+        if (id !== undefined) {
+          evaluationContext.featureId = id;
+        } else {
+          evaluationContext.featureId = null;
+        }
+      }
+      if (parsingContext.geometryType) {
+        evaluationContext.geometryType = computeGeometryType(
+          feature.getGeometry(),
+        );
+      }
+    }
+    evaluationContext.variables = variables ?? UNKNOWN;
+    evaluationContext.resolution = resolution ?? UNKNOWN;
+    return compiled(evaluationContext);
+  };
 }
