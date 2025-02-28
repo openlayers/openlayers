@@ -1,6 +1,8 @@
+import Feature from '../../../../src/ol/Feature.js';
 import {
   UNKNOWN,
   buildExpression,
+  expressionToFunction,
   newEvaluationContext,
 } from '../../../../src/ol/expr/cpu.js';
 import {
@@ -1113,5 +1115,37 @@ describe('ol/expr/cpu.js', () => {
         }
       });
     }
+  });
+
+  describe('expressionToFunction()', () => {
+    let fn;
+    beforeEach(() => {
+      const expression = [
+        '+',
+        ['*', ['get', 'number'], 2],
+        ['resolution'],
+        ['var', 'otherNumber'],
+      ];
+      fn = expressionToFunction(expression, NumberType);
+    });
+    it('evaluates to the correct value', () => {
+      const feature = new Feature({number: 123});
+      const variables = {otherNumber: 0.999};
+      expect(fn).to.be.a('function');
+      expect(fn(feature, 1000, variables)).to.eql(1246.999);
+    });
+    it('evaluates to UNKNOWN if a feature, resolution or variable is not provided', () => {
+      const feature = new Feature({number: 123});
+      const variables = {otherNumber: 0.999};
+      expect(fn()).to.eql(UNKNOWN);
+      expect(fn(feature)).to.eql(UNKNOWN);
+      expect(fn(undefined, 1000)).to.eql(UNKNOWN);
+      expect(fn(undefined, undefined, variables)).to.eql(UNKNOWN);
+    });
+    it('throws an error if the expression cannot be compiled', () => {
+      expect(() =>
+        expressionToFunction(['abcd'], BooleanType),
+      ).to.throwException(/unknown operator: abcd/);
+    });
   });
 });
