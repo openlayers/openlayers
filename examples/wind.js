@@ -2,6 +2,7 @@ import colormap from 'colormap';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
+import {DEVICE_PIXEL_RATIO} from '../src/ol/has.js';
 import Flow from '../src/ol/layer/Flow.js';
 import WebGLVectorLayer from '../src/ol/layer/WebGLVector.js';
 import {get as getProjection, transform} from '../src/ol/proj.js';
@@ -149,7 +150,7 @@ for (let i = 0; i < colors.length; ++i) {
 
 const map = new Map({
   target: 'map',
-  pixelRatio: 2,
+  pixelRatio: Math.min(DEVICE_PIXEL_RATIO, 2),
   layers: [
     new WebGLVectorLayer({
       source: new VectorSource({
