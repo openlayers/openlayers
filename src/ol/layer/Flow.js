@@ -363,7 +363,7 @@ function parseStyle(style) {
         vx * ${U.ROTATION}.y + vy * ${U.ROTATION}.x
       );
 
-      float v_prop_speed = length(velocity);
+      float a_prop_speed = length(velocity);
 
       vec4 color;
 
