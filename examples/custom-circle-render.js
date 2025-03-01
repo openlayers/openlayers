@@ -14,7 +14,9 @@ const circleFeature = new Feature({
 circleFeature.setStyle(
   new Style({
     renderer(coordinates, state) {
-      const [[x, y], [x1, y1]] = coordinates;
+      const [[x, y], [x1, y1]] = /** @type {Array<Array<number>>} */ (
+        coordinates
+      );
       const ctx = state.context;
       const dx = x1 - x;
       const dy = y1 - y;

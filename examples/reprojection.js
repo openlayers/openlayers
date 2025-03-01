@@ -190,10 +190,18 @@ const map = new Map({
   }),
 });
 
-const baseLayerSelect = document.getElementById('base-layer');
-const overlayLayerSelect = document.getElementById('overlay-layer');
-const viewProjSelect = document.getElementById('view-projection');
-const renderEdgesCheckbox = document.getElementById('render-edges');
+const baseLayerSelect = /** @type {HTMLSelectElement} */ (
+  document.getElementById('base-layer')
+);
+const overlayLayerSelect = /** @type {HTMLSelectElement} */ (
+  document.getElementById('overlay-layer')
+);
+const viewProjSelect = /** @type {HTMLSelectElement} */ (
+  document.getElementById('view-projection')
+);
+const renderEdgesCheckbox = /** @type {HTMLInputElement} */ (
+  document.getElementById('render-edges')
+);
 let renderEdges = false;
 
 function updateViewProjection() {
