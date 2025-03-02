@@ -1281,24 +1281,47 @@ describe('ol/Map', function () {
   });
 
   describe('create interactions', function () {
-    let options, event, hasTabIndex, hasFocus, isPrimary;
+    let options;
 
-    beforeEach(function () {
-      options = {
-        altShiftDragRotate: false,
-        doubleClickZoom: false,
-        keyboard: false,
-        mouseWheelZoom: false,
-        shiftDragZoom: false,
-        dragPan: false,
-        pinchRotate: false,
-        pinchZoom: false,
-      };
-      hasTabIndex = true;
-      hasFocus = true;
-      isPrimary = true;
-      event = {
-        map: {
+    function createEvent(
+      type,
+      {altKey, button, hasTabIndex, hasFocus, isPrimary} = {},
+    ) {
+      if (altKey === undefined) {
+        altKey = false;
+      }
+      if (button === undefined) {
+        button = 0;
+      }
+      if (hasTabIndex === undefined) {
+        hasTabIndex = true;
+      }
+      if (hasFocus === undefined) {
+        hasFocus = true;
+      }
+      if (isPrimary === undefined) {
+        isPrimary = true;
+      }
+      const originalEvent = new PointerEvent(type, {
+        altKey,
+        button,
+        isPrimary,
+      });
+      Object.defineProperty(originalEvent, 'target', {
+        writable: false,
+        value: {
+          getTargetElement: function () {
+            return {
+              contains: function () {
+                return hasFocus;
+              },
+            };
+          },
+        },
+      });
+      return new MapBrowserEvent(
+        type,
+        {
           getTargetElement: function () {
             return {
               hasAttribute: function (attribute) {
@@ -1316,19 +1339,20 @@ describe('ol/Map', function () {
             return {};
           },
         },
-        originalEvent: {
-          isPrimary: isPrimary,
-          button: 0,
-        },
-        target: {
-          getTargetElement: function () {
-            return {
-              contains: function () {
-                return hasFocus;
-              },
-            };
-          },
-        },
+        originalEvent,
+      );
+    }
+
+    beforeEach(function () {
+      options = {
+        altShiftDragRotate: false,
+        doubleClickZoom: false,
+        keyboard: false,
+        mouseWheelZoom: false,
+        shiftDragZoom: false,
+        dragPan: false,
+        pinchRotate: false,
+        pinchZoom: false,
       };
     });
 
@@ -1348,13 +1372,14 @@ describe('ol/Map', function () {
         options.mouseWheelZoom = true;
         const interactions = defaultInteractions(options);
         expect(interactions.item(0).condition_).to.not.be(TRUE);
-        hasTabIndex = true;
-        hasFocus = true;
+        let event = createEvent('pointerdown');
         expect(interactions.item(0).condition_(event)).to.be(true);
-        hasTabIndex = true;
-        hasFocus = false;
+        event = createEvent('pointerdown', {hasFocus: false});
         expect(interactions.item(0).condition_(event)).to.be(false);
-        hasTabIndex = false;
+        event = createEvent('pointerdown', {
+          hasTabIndex: false,
+          hasFocus: false,
+        });
         expect(interactions.item(0).condition_(event)).to.be(true);
       });
     });
@@ -1365,27 +1390,27 @@ describe('ol/Map', function () {
         const interactions = defaultInteractions(options);
         expect(interactions.getLength()).to.eql(1);
         expect(interactions.item(0)).to.be.a(DragPan);
+        let event = createEvent('pointerdown');
         expect(interactions.item(0).condition_(event)).to.be(true);
-        hasTabIndex = true;
-        hasFocus = false;
+        event = createEvent('pointerdown', {hasFocus: false});
         expect(interactions.item(0).condition_(event)).to.be(true);
-        event.originalEvent.altKey = true;
+        event = createEvent('pointerdown', {altKey: true, hasFocus: false});
         expect(interactions.item(0).condition_(event)).to.be(false);
-        delete event.originalEvent.altKey;
-        event.originalEvent.button = 1;
+        event = createEvent('pointerdown', {button: 1, hasFocus: false});
         expect(interactions.item(0).condition_(event)).to.be(false);
       });
       it('does not use the default condition when onFocusOnly option is set', function () {
         options.onFocusOnly = true;
         options.dragPan = true;
         const interactions = defaultInteractions(options);
-        hasTabIndex = true;
-        hasFocus = true;
+        let event = createEvent('pointerdown');
         expect(interactions.item(0).condition_(event)).to.be(true);
-        hasTabIndex = true;
-        hasFocus = false;
+        event = createEvent('pointerdown', {hasFocus: false});
         expect(interactions.item(0).condition_(event)).to.be(false);
-        hasTabIndex = false;
+        event = createEvent('pointerdown', {
+          hasTabIndex: false,
+          hasFocus: false,
+        });
         expect(interactions.item(0).condition_(event)).to.be(true);
       });
     });
