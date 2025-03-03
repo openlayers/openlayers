@@ -51,7 +51,7 @@ jobs:
             const content = await file.buffer();
             return content.toString();
 
-      - uses: dawidd6/action-download-artifact@v8
+      - uses: dawidd6/action-download-artifact@v9
         with:
           github_token: ${{secrets.GITHUB_TOKEN}}
           workflow: build-preview.yml
