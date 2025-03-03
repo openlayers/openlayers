@@ -4,7 +4,6 @@ import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
 import View from '../../../../../src/ol/View.js';
-import Event from '../../../../../src/ol/events/Event.js';
 import {
   click,
   doubleClick,
@@ -100,17 +99,19 @@ describe('ol.interaction.Modify', function () {
     const viewport = map.getViewport();
     // calculated in case body has top < 0 (test runner with small window)
     const position = viewport.getBoundingClientRect();
-    const pointerEvent = new Event();
-    pointerEvent.type = type;
-    pointerEvent.target = viewport.firstChild;
-    pointerEvent.clientX = position.left + x + width / 2;
-    pointerEvent.clientY = position.top + y + height / 2;
-    pointerEvent.shiftKey = modifiers.shift || false;
-    pointerEvent.altKey = modifiers.alt || false;
-    pointerEvent.pointerId = 1;
-    pointerEvent.preventDefault = function () {};
-    pointerEvent.button = button;
-    pointerEvent.isPrimary = true;
+    const pointerEvent = new PointerEvent(type, {
+      clientX: position.left + x + width / 2,
+      clientY: position.top + y + height / 2,
+      shiftKey: modifiers.shift || false,
+      altKey: modifiers.alt || false,
+      button: button,
+      pointerId: 1,
+      isPrimary: true,
+    });
+    Object.defineProperty(pointerEvent, 'target', {
+      writable: false,
+      value: viewport.firstChild,
+    });
     const event = new MapBrowserEvent(type, map, pointerEvent);
     map.handleMapBrowserEvent(event);
   }

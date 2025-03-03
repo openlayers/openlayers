@@ -1099,7 +1099,7 @@ class Map extends BaseObject {
   }
 
   /**
-   * @param {UIEvent} browserEvent Browser event.
+   * @param {PointerEvent|KeyboardEvent|WheelEvent} browserEvent Browser event.
    * @param {string} [type] Type.
    */
   handleBrowserEvent(browserEvent, type) {
@@ -1117,9 +1117,7 @@ class Map extends BaseObject {
       // coordinates so interactions cannot be used.
       return;
     }
-    const originalEvent = /** @type {PointerEvent} */ (
-      mapBrowserEvent.originalEvent
-    );
+    const originalEvent = mapBrowserEvent.originalEvent;
     const eventType = originalEvent.type;
     if (
       eventType === PointerEventType.POINTERDOWN ||
