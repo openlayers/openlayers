@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path, {dirname} from 'path';
 import {fileURLToPath} from 'url';
-import CopyPlugin from 'copy-webpack-plugin'; // eslint-disable-line import/default
+import CopyPlugin from 'copy-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 import ExampleBuilder from './example-builder.js';
 
