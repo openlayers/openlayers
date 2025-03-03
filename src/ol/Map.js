@@ -1675,7 +1675,7 @@ class Map extends BaseObject {
 
   /**
    * Set the view for this map.
-   * @param {View|Promise<import("./View.js").ViewOptions>} view The view that controls this map.
+   * @param {View|Promise<import("./View.js").ViewOptions>|null} view The view that controls this map.
    * It is also possible to pass a promise that resolves to options for constructing a view.  This
    * alternative allows view properties to be resolved by sources or other components that load
    * view-related metadata.
