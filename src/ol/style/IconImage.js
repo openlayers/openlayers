@@ -5,6 +5,7 @@
 import {decodeFallback} from '../Image.js';
 import ImageState from '../ImageState.js';
 import {asString} from '../color.js';
+import {setCrossOrigin} from '../cors.js';
 import {createCanvasContext2D} from '../dom.js';
 import EventType from '../events/EventType.js';
 import EventTarget from '../events/Target.js';
@@ -19,7 +20,7 @@ class IconImage extends EventTarget {
   /**
    * @param {HTMLImageElement|HTMLCanvasElement|ImageBitmap|null} image Image.
    * @param {string|undefined} src Src.
-   * @param {?string} crossOrigin Cross origin.
+   * @param {import("../cors.js").CrossOriginOption} crossOrigin Cross origin.
    * @param {import("../ImageState.js").default|undefined} imageState Image state.
    * @param {import("../color.js").Color|string|null} color Color.
    */
@@ -40,9 +41,9 @@ class IconImage extends EventTarget {
 
     /**
      * @private
-     * @type {string|null}
+     * @type {import("../cors.js").CrossOriginAttribute}
      */
-    this.crossOrigin_ = crossOrigin;
+    this.crossOrigin_ = crossOrigin ?? 'no-cors';
 
     /**
      * @private
@@ -92,9 +93,7 @@ class IconImage extends EventTarget {
    */
   initializeImage_() {
     this.image_ = new Image();
-    if (this.crossOrigin_ !== null) {
-      this.image_.crossOrigin = this.crossOrigin_;
-    }
+    setCrossOrigin(this.image_, this.crossOrigin_);
   }
 
   /**
@@ -302,7 +301,7 @@ class IconImage extends EventTarget {
 /**
  * @param {HTMLImageElement|HTMLCanvasElement|ImageBitmap|null} image Image.
  * @param {string|undefined} cacheKey Src.
- * @param {?string} crossOrigin Cross origin.
+ * @param {import("../cors.js").CrossOriginOption} crossOrigin Cross origin.
  * @param {import("../ImageState.js").default|undefined} imageState Image state.
  * @param {import("../color.js").Color|string|null} color Color.
  * @param {boolean} [pattern] Also cache a `repeat` pattern with the icon image.
