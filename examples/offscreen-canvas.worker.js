@@ -163,7 +163,7 @@ worker.addEventListener('message', (event) => {
       if (!renderer.prepareFrame(frameState)) {
         return;
       }
-      if (layer.getDeclutter() && !frameState.declutterTree) {
+      if (layer.getDeclutter() && !frameState.declutter) {
         frameState.declutter = {};
       }
       renderer.renderFrame(frameState, canvas);
