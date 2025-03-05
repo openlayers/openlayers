@@ -7,8 +7,10 @@ import {fromLonLat} from '../src/ol/proj.js';
 import StadiaMaps from '../src/ol/source/StadiaMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
-const blur = document.getElementById('blur');
-const radius = document.getElementById('radius');
+const blur = /** @type {HTMLInputElement} */ (document.getElementById('blur'));
+const radius = /** @type {HTMLInputElement} */ (
+  document.getElementById('radius')
+);
 
 const heatmap = new HeatmapLayer({
   source: new VectorSource({
@@ -38,7 +40,7 @@ const raster = new TileLayer({
 });
 
 const map = new Map({
-  layers: [raster, heatmap /*vector*/],
+  layers: [raster, heatmap],
   target: 'map',
   view: new View({
     center: fromLonLat([11.86, 57.67]),
@@ -54,7 +56,9 @@ radius.addEventListener('input', function () {
   heatmap.updateStyleVariables({radius: parseInt(radius.value, 10)});
 });
 
-const shipTypeSelect = document.getElementById('shiptype-filter');
+const shipTypeSelect = /** @type {HTMLSelectElement} */ (
+  document.getElementById('shiptype-filter')
+);
 shipTypeSelect.addEventListener('input', function () {
   heatmap.updateStyleVariables({shipType: shipTypeSelect.value});
   map.render();

@@ -36,7 +36,9 @@ circleFeature.set('label-color', labelTextStroke);
 circleFeature.setStyle(
   new Style({
     renderer(coordinates, state) {
-      const [[x, y], [x1, y1]] = coordinates;
+      const [[x, y], [x1, y1]] = /** @type {Array<Array<number>>} */ (
+        coordinates
+      );
       const ctx = state.context;
       const dx = x1 - x;
       const dy = y1 - y;
@@ -66,7 +68,7 @@ circleFeature.setStyle(
       renderLabelText(ctx, x, y, circleFeature.get('label-color'));
     },
     hitDetectionRenderer(coordinates, state) {
-      const [x, y] = coordinates[0];
+      const [x, y] = /** @type {Array<Array<number>>} */ (coordinates)[0];
       const ctx = state.context;
       renderLabelText(ctx, x, y, circleFeature.get('label-color'));
     },
@@ -93,13 +95,23 @@ const map = new Map({
 });
 
 map.on('pointermove', (evt) => {
-  const featureOver = map.forEachFeatureAtPixel(evt.pixel, (feature) => {
-    feature.set('label-color', 'rgba(255,255,255,1)');
-    return feature;
-  });
+  const newPointerOverFeature = map.forEachFeatureAtPixel(
+    evt.pixel,
+    /**
+     * @param {Feature<Circle>} feature Feature
+     * @return {Feature<Circle>} Found feature
+     */
+    (feature) => feature,
+  );
 
-  if (pointerOverFeature && pointerOverFeature != featureOver) {
+  if (pointerOverFeature === newPointerOverFeature) {
+    return;
+  }
+  if (pointerOverFeature) {
     pointerOverFeature.set('label-color', labelTextStroke);
   }
-  pointerOverFeature = featureOver;
+  if (newPointerOverFeature) {
+    newPointerOverFeature.set('label-color', 'rgba(255,255,255,1)');
+  }
+  pointerOverFeature = newPointerOverFeature;
 });

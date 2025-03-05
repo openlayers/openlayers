@@ -43,9 +43,11 @@ const map = new Map({
 });
 map.getView().fit(extent);
 
-const control = document.getElementById('zoomifyProtocol');
-control.addEventListener('change', function (event) {
-  const value = event.currentTarget.value;
+const control = /** @type {HTMLSelectElement} */ (
+  document.getElementById('zoomifyProtocol')
+);
+control.addEventListener('change', function () {
+  const value = this.value;
   if (value === 'zoomify') {
     layer.setSource(source);
   } else if (value === 'zoomifyretina') {

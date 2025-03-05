@@ -25,7 +25,9 @@ const map = new Map({
 });
 
 // Geolocation marker
-const markerEl = document.getElementById('geolocation_marker');
+const markerEl = /** @type {HTMLImageElement} */ (
+  document.getElementById('geolocation_marker')
+);
 const marker = new Overlay({
   positioning: 'center-center',
   element: markerEl,
@@ -152,7 +154,9 @@ function updateView() {
 }
 
 // geolocate device
-const geolocateBtn = document.getElementById('geolocate');
+const geolocateBtn = /** @type {HTMLButtonElement} */ (
+  document.getElementById('geolocate')
+);
 geolocateBtn.addEventListener(
   'click',
   function () {
@@ -179,7 +183,9 @@ client.onload = function () {
 };
 client.send();
 
-const simulateBtn = document.getElementById('simulate');
+const simulateBtn = /** @type {HTMLButtonElement} */ (
+  document.getElementById('simulate')
+);
 simulateBtn.addEventListener(
   'click',
   function () {

@@ -79,25 +79,29 @@ const map = new Map({
   }),
 });
 
-const inputMin = document.getElementById('input-min');
-const inputMax = document.getElementById('input-max');
+const inputMin = /** @type {HTMLInputElement} */ (
+  document.getElementById('input-min')
+);
+const inputMax = /** @type {HTMLInputElement} */ (
+  document.getElementById('input-max')
+);
 const outputMin = document.getElementById('output-min');
 const outputMax = document.getElementById('output-max');
 
-inputMin.addEventListener('input', (evt) => {
-  numpyLayer.updateStyleVariables({
-    'bMin': parseFloat(evt.target.value),
-    'bMax': parseFloat(inputMax.value),
-  });
-  outputMin.innerText = evt.target.value;
-});
-
-inputMax.addEventListener('input', (evt) => {
+inputMin.addEventListener('input', () => {
   numpyLayer.updateStyleVariables({
     'bMin': parseFloat(inputMin.value),
-    'bMax': parseFloat(evt.target.value),
+    'bMax': parseFloat(inputMax.value),
   });
-  outputMax.innerText = evt.target.value;
+  outputMin.innerText = inputMin.value;
+});
+
+inputMax.addEventListener('input', () => {
+  numpyLayer.updateStyleVariables({
+    'bMin': parseFloat(inputMin.value),
+    'bMax': parseFloat(inputMax.value),
+  });
+  outputMax.innerText = inputMax.value;
 });
 
 inputMin.value = String(initialMin);
