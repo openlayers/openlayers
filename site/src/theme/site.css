@@ -183,6 +183,10 @@ a.badge-info:hover {
   cursor: pointer;
 }
 
+a>img {
+  cursor: pointer;
+}
+
 .modal-tag-example .modal-body {
   padding: 0;
 }
