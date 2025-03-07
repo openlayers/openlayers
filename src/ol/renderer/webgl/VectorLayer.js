@@ -3,6 +3,7 @@
  */
 import ViewHint from '../../ViewHint.js';
 import {assert} from '../../asserts.js';
+import {createCanvasContext2D} from '../../dom.js';
 import {listen, unlistenByKey} from '../../events.js';
 import {buffer, createEmpty, equals} from '../../extent.js';
 import BaseVector from '../../layer/BaseVector.js';
@@ -13,8 +14,8 @@ import {
   toUserResolution,
 } from '../../proj.js';
 import MixedGeometryBatch from '../../render/webgl/MixedGeometryBatch.js';
-import TextOverlay from '../../render/webgl/TextOverlay.js';
 import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
+import {TextOverlayWorkerMessageType} from '../../render/webgl/constants.js';
 import {colorDecodeId} from '../../render/webgl/encodeUtil.js';
 import {breakDownFlatStyle} from '../../render/webgl/style.js';
 import VectorEventType from '../../source/VectorEventType.js';
@@ -32,6 +33,7 @@ import {
 } from '../../vec/mat4.js';
 import {DefaultUniform} from '../../webgl/Helper.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
+import {create as createTextOverlayWorker} from '../../worker/textOverlay.js';
 import WebGLLayerRenderer from './Layer.js';
 import {getWorldParameters} from './worldUtil.js';
 
@@ -109,8 +111,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
               // gl_FragColor = textColor + 0.5 * color;
             }`,
           uniforms: {
-            [Uniforms.TEXT_OVERLAY_TEXTURE]: () =>
-              this.textOverlay_.getCanvas(),
+            [Uniforms.TEXT_OVERLAY_TEXTURE]: () => this.textOverlayCanvas_,
           },
         },
         ...(options.postProcesses ?? []),
@@ -210,11 +211,29 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
      */
     this.sourceListenKeys_ = null;
 
-    /**
-     * @type {TextOverlay}
-     * @private
-     */
-    this.textOverlay_ = null;
+    // this.textOverlay_ = null;
+
+    this.textOverlayWorker_ = createTextOverlayWorker();
+    this.textOverlayCanvas_ = createCanvasContext2D().canvas;
+    this.textOverlayWorker_.addEventListener('message', (message) => {
+      const received = message.data;
+      if (received.type === TextOverlayWorkerMessageType.RENDERED) {
+        const imageData = message.data.imageData;
+        this.textOverlayCanvas_.width = imageData.width;
+        this.textOverlayCanvas_.height = imageData.height;
+        this.textOverlayCanvas_.getContext('2d').drawImage(imageData, 0, 0);
+        this.textOverlayCanvas_.style.transform = message.data.transform;
+
+        // transfer back the image data
+        this.textOverlayWorker_.postMessage(
+          {
+            type: TextOverlayWorkerMessageType.RENDERED,
+            imageData,
+          },
+          [imageData],
+        );
+      }
+    });
   }
 
   /**
@@ -233,7 +252,13 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     }
     const features = source.getFeatures();
     this.batch_.addFeatures(features, projectionTransform);
-    this.textOverlay_.loadFeatureBatch(features, 'main');
+    // this.textOverlay_.loadFeatureBatch(features, 'main');
+    console.log(features);
+    this.textOverlayWorker_.postMessage({
+      type: TextOverlayWorkerMessageType.LOAD_FEATURES,
+      batchId: 'main',
+      features,
+    });
     this.sourceListenKeys_ = [
       listen(
         source,
@@ -291,10 +316,14 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    * @private
    */
   initTextOverlay_() {
-    this.textOverlay_ = new TextOverlay(
-      this.helper,
-      /** @type {any} */ (this.styles_),
-    );
+    // this.textOverlay_ = new TextOverlay(
+    //   this.helper,
+    //   /** @type {any} */ (this.styles_),
+    // );
+    this.textOverlayWorker_.postMessage({
+      type: TextOverlayWorkerMessageType.INIT,
+      style: this.styles_,
+    });
   }
 
   /**
@@ -409,7 +438,40 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     // draw the normal canvas
     this.helper.prepareDraw(frameState);
     this.renderWorlds(frameState, false, startWorld, endWorld, worldWidth);
-    this.textOverlay_.render(frameState, ['main']);
+    // this.textOverlay_.render(frameState, ['main']);
+    const frameStateCloned = {
+      layerIndex: 0,
+      wantedTiles: {},
+      usedTiles: {},
+      viewHints: frameState.viewHints.slice(0),
+      postRenderFunctions: [],
+      viewState: {
+        center: frameState.viewState.center.slice(0),
+        resolution: frameState.viewState.resolution,
+        rotation: frameState.viewState.rotation,
+        zoom: frameState.viewState.zoom,
+      },
+      pixelRatio: frameState.pixelRatio,
+      size: frameState.size.slice(0),
+      extent: frameState.extent.slice(0),
+      coordinateToPixelTransform:
+        frameState.coordinateToPixelTransform.slice(0),
+      pixelToCoordinateTransform:
+        frameState.pixelToCoordinateTransform.slice(0),
+      layerStatesArray: frameState.layerStatesArray.map((l) => ({
+        zIndex: l.zIndex,
+        visible: l.visible,
+        extent: l.extent,
+        maxResolution: l.maxResolution,
+        minResolution: l.minResolution,
+        managed: l.managed,
+      })),
+    };
+    this.textOverlayWorker_.postMessage({
+      type: TextOverlayWorkerMessageType.RENDER,
+      batchesId: ['main'],
+      frameState: frameStateCloned,
+    });
     this.helper.finalizeDraw(
       frameState,
       this.dispatchPreComposeEvent,
@@ -493,9 +555,21 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       });
 
       this.previousExtent_ = frameState.extent.slice();
+    }
 
-      this.textOverlay_.unloadFeatureBatch('main');
-      this.textOverlay_.loadFeatureBatch(vectorSource.getFeatures(), 'main');
+    if (sourceChanged) {
+      // TODO: update source
+      // this.textOverlay_.unloadFeatureBatch('main');
+      // this.textOverlay_.loadFeatureBatch(vectorSource.getFeatures(), 'main');
+      this.textOverlayWorker_.postMessage({
+        type: TextOverlayWorkerMessageType.UNLOAD_FEATURES,
+        batchId: 'main',
+      });
+      this.textOverlayWorker_.postMessage({
+        type: TextOverlayWorkerMessageType.LOAD_FEATURES,
+        batchId: 'main',
+        features: vectorSource.getFeatures(),
+      });
     }
 
     return true;

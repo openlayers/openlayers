@@ -10,10 +10,9 @@ import VectorSource from '../../source/Vector.js';
 
 class TextOverlay {
   /**
-   * @param {import('../../webgl/Helper.js').default} helper Helper
    * @param {Array<import('../../style/flat.js').Rule>} style Style rules
    */
-  constructor(helper, style) {
+  constructor(style) {
     /**
      * @private
      */
@@ -164,6 +163,7 @@ class TextOverlay {
       frameState.declutter = {};
     }
     renderer.context = this.context_;
+    renderer.targetContext_ = this.context_;
     renderer.useContainer = useContainer.bind(renderer, this.context_);
     const layerState = this.vectorLayer_.getLayerState();
 
