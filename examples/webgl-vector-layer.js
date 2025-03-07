@@ -3,6 +3,7 @@ import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import TileLayer from '../src/ol/layer/WebGLTile.js';
 import WebGLVectorLayer from '../src/ol/layer/WebGLVector.js';
+import RenderFeature from '../src/ol/render/Feature.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
@@ -47,7 +48,7 @@ const osm = new TileLayer({
 const vectorLayer = new WebGLVectorLayer({
   source: new VectorSource({
     url: 'https://openlayers.org/data/vector/ecoregions.json',
-    format: new GeoJSON(),
+    format: new GeoJSON({featureClass: RenderFeature}),
   }),
   style,
   variables: {
