@@ -4,6 +4,7 @@
 import EventType from '../../events/EventType.js';
 import {getIntersection} from '../../extent.js';
 import {ShaderBuilder} from '../../render/webgl/ShaderBuilder.js';
+import TextOverlay from '../../render/webgl/TextOverlay.js';
 import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
 import {
   breakDownFlatStyle,
@@ -32,6 +33,7 @@ export const Uniforms = {
   ...BaseUniforms,
   TILE_MASK_TEXTURE: 'u_depthMask',
   TILE_ZOOM_LEVEL: 'u_tileZoomLevel',
+  TEXT_OVERLAY_TEXTURE: 'u_textOverlay',
 };
 
 export const Attributes = {
@@ -77,6 +79,28 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
         [Uniforms.PATTERN_ORIGIN]: [0, 0],
         [Uniforms.TILE_MASK_TEXTURE]: () => this.tileMaskTarget_.getTexture(),
       },
+      postProcesses: [
+        {
+          fragmentShader: `
+            precision mediump float;
+
+            uniform sampler2D u_image;
+            uniform sampler2D ${Uniforms.TEXT_OVERLAY_TEXTURE};
+            
+            varying vec2 v_texCoord;
+
+            void main() {
+              vec4 color = texture2D(u_image, v_texCoord);
+              vec4 textColor = texture2D(${Uniforms.TEXT_OVERLAY_TEXTURE}, vec2(v_texCoord.x, 1.-v_texCoord.y));
+              gl_FragColor = textColor.a > 0.5 ? textColor : color;
+              // gl_FragColor = textColor + 0.5 * color;
+            }`,
+          uniforms: {
+            [Uniforms.TEXT_OVERLAY_TEXTURE]: () =>
+              this.textOverlay_.getCanvas(),
+          },
+        },
+      ],
     });
 
     /**
@@ -154,6 +178,18 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
      */
     this.tileMaskProgram_;
 
+    /**
+     * @type {TextOverlay}
+     * @private
+     */
+    this.textOverlay_ = null;
+
+    /**
+     * @type {Array<string>}
+     * @private
+     */
+    this.tilesToRender_ = [];
+
     this.applyOptions_(options);
   }
 
@@ -168,6 +204,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     if (this.helper) {
       this.createRenderers_();
       this.initTileMask_();
+      this.initTextOverlay_();
     }
   }
 
@@ -242,12 +279,20 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.helper.flushBufferData(this.tileMaskIndices_);
   }
 
+  initTextOverlay_() {
+    this.textOverlay_ = new TextOverlay(
+      this.helper,
+      /** @type {any} */ (this.styles_),
+    );
+  }
+
   /**
    * @override
    */
   afterHelperCreated() {
     this.createRenderers_();
     this.initTileMask_();
+    this.initTextOverlay_();
   }
 
   /**
@@ -258,6 +303,10 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     // redraw the layer when the tile is ready
     const listener = () => {
       if (tileRep.ready) {
+        this.textOverlay_.loadFeatureBatch(
+          tileRep.features,
+          tileRep.tile.getKey(),
+        );
         this.getLayer().changed();
         tileRep.removeEventListener(EventType.CHANGE, listener);
       }
@@ -275,6 +324,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       frameState,
       this.currentFrameStateTransform_,
     );
+    this.tilesToRender_.length = 0;
   }
 
   /**
@@ -306,6 +356,14 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
     );
     return true;
+  }
+
+  /**
+   * @override
+   */
+  beforeFinalize(frameState) {
+    // this.textOverlay_.renderFeatures(frameState, []);
+    this.textOverlay_.render(frameState, this.tilesToRender_);
   }
 
   /**
@@ -392,6 +450,17 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
         );
       });
     }
+    this.tilesToRender_.push(tileRepresentation.tile.getKey());
+  }
+
+  /**
+   * @override
+   */
+  beforeTileDispose(tileRepresentation) {
+    this.tilesToRender_.slice(
+      this.tilesToRender_.indexOf(tileRepresentation.tile.getKey()),
+    );
+    this.textOverlay_.unloadFeatureBatch(tileRepresentation.tile.getKey());
   }
 
   /**
