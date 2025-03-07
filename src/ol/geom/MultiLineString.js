@@ -13,6 +13,7 @@ import {
   lineStringsCoordinateAtM,
 } from './flat/interpolate.js';
 import {intersectsLineStringArray} from './flat/intersectsextent.js';
+import {lineStringLength} from './flat/length.js';
 import {douglasPeuckerArray} from './flat/simplify.js';
 
 /**
@@ -252,6 +253,27 @@ class MultiLineString extends SimpleGeometry {
       offset = end;
     }
     return lineStrings;
+  }
+
+  /**
+   * Return the sum of all line string lengths
+   * @return {number} Length (on projected plane).
+   * @api
+   */
+  getLength() {
+    const ends = this.ends_;
+    let start = 0;
+    let length = 0;
+    for (let i = 0, ii = ends.length; i < ii; ++i) {
+      length += lineStringLength(
+        this.flatCoordinates,
+        start,
+        ends[i],
+        this.stride,
+      );
+      start = ends[i];
+    }
+    return length;
   }
 
   /**

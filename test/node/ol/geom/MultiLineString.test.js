@@ -549,4 +549,23 @@ describe('ol/geom/MultiLineString.js', function () {
       expect(multiLineString.containsXY(-2, 3)).to.be(false);
     });
   });
+
+  describe('#getLength', function () {
+    it('sums up the length of all linestrings', function () {
+      const multiLineString = new MultiLineString([
+        [
+          [0, 0],
+          [1, 0],
+          [1, 1],
+        ],
+        [
+          [0.5, 0.5],
+          [0, 0.5],
+          [0, 0],
+        ],
+      ]);
+      const length = multiLineString.getLength();
+      expect(length).to.be(3);
+    });
+  });
 });
