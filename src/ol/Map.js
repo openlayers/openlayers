@@ -672,6 +672,9 @@ class Map extends BaseObject {
    * Detect features that intersect a pixel on the viewport, and execute a
    * callback with each intersecting feature. Layers included in the detection can
    * be configured through the `layerFilter` option in `options`.
+   * For polygons without a fill, only the stroke will be used for hit detection.
+   * Polygons must have a fill style applied to ensure that pixels inside a polygon are detected.
+   * The fill can be transparent.
    * @param {import("./pixel.js").Pixel} pixel Pixel.
    * @param {function(import("./Feature.js").FeatureLike, import("./layer/Layer.js").default<import("./source/Source").default>, import("./geom/SimpleGeometry.js").default): T} callback Feature callback. The callback will be
    *     called with two arguments. The first argument is one
@@ -711,6 +714,9 @@ class Map extends BaseObject {
 
   /**
    * Get all features that intersect a pixel on the viewport.
+   * For polygons without a fill, only the stroke will be used for hit detection.
+   * Polygons must have a fill style applied to ensure that pixels inside a polygon are detected.
+   * The fill can be transparent.
    * @param {import("./pixel.js").Pixel} pixel Pixel.
    * @param {AtPixelOptions} [options] Optional options.
    * @return {Array<import("./Feature.js").FeatureLike>} The detected features or
@@ -752,6 +758,9 @@ class Map extends BaseObject {
   /**
    * Detect if features intersect a pixel on the viewport. Layers included in the
    * detection can be configured through the `layerFilter` option.
+   * For polygons without a fill, only the stroke will be used for hit detection.
+   * Polygons must have a fill style applied to ensure that pixels inside a polygon are detected.
+   * The fill can be transparent.
    * @param {import("./pixel.js").Pixel} pixel Pixel.
    * @param {AtPixelOptions} [options] Optional options.
    * @return {boolean} Is there a feature at the given pixel?
