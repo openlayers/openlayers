@@ -58,11 +58,13 @@ describe('Render instructions utilities', function () {
       new Feature({
         test: 1000,
         test2: [22, 33, 44],
+        test3: null,
         geometry: new Point([10, 20]),
       }),
       new Feature({
         test: 2000,
         test2: [44, 55, 66],
+        test3: 3,
         geometry: new Point([30, 40]),
       }),
       new Feature({
@@ -165,6 +167,47 @@ describe('Render instructions utilities', function () {
       expect(Array.from(renderInstructions)).to.eql([
         2, 2, 0, 1, 2, 3, 6, 6, 0, 1, 2, 3,
       ]);
+    });
+  });
+
+  describe('undefined property', () => {
+    it('uses the value UNDEFINED_PROP_VALUE if the feature does not have this property set', () => {
+      renderInstructions = generatePointRenderInstructions(
+        mixedBatch.pointBatch,
+        new Float32Array(0),
+        [
+          {
+            name: 'test',
+            size: 1,
+            callback: function (feature) {
+              return feature.get('anotherProp');
+            },
+          },
+        ],
+        SAMPLE_TRANSFORM,
+      );
+
+      expect(Array.from(renderInstructions)).to.eql([
+        2, 2, -9999999, 6, 6, -9999999,
+      ]);
+    });
+    it('uses zero if the feature have this property set to null', () => {
+      renderInstructions = generatePointRenderInstructions(
+        mixedBatch.pointBatch,
+        new Float32Array(0),
+        [
+          {
+            name: 'test',
+            size: 1,
+            callback: function (feature) {
+              return feature.get('test3');
+            },
+          },
+        ],
+        SAMPLE_TRANSFORM,
+      );
+
+      expect(Array.from(renderInstructions)).to.eql([2, 2, 0, 6, 6, 3]);
     });
   });
 });
