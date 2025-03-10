@@ -689,6 +689,9 @@ describe('ol/render/webgl/style', () => {
               ['*', ['get', 'size'], 20],
             ],
             'stroke-line-dash-offset': ['*', ['time'], 5],
+            'circle-radius': 1,
+            'circle-fill-color': 'white',
+            'fill-color': 'white',
           };
           const variables = {
             width: 1,
@@ -743,7 +746,7 @@ describe('ol/render/webgl/style', () => {
             '(u_var_miterLimit - 10.0)',
           );
           expect(result.builder.strokeDistanceFieldExpression_).to.eql(
-            'dashDistanceField_450289113(currentLengthPx + (u_time * 5.0), currentRadiusPx, capType)',
+            'dashDistanceField_450289113(currentLengthPx + (u_time * 5.0), currentRadiusPx, capType, v_width)',
           );
           expect(Object.keys(result.attributes).length).to.eql(3);
           expect(result.attributes).to.have.property('prop_intensity');
@@ -754,18 +757,26 @@ describe('ol/render/webgl/style', () => {
           expect(result.uniforms).to.have.property('u_var_joinType');
           expect(result.uniforms).to.have.property('u_var_miterLimit');
 
-          expect(result.builder.fragmentShaderFunctions_[0]).to.contain(
+          expect(result.builder.fragmentShaderFunctions_[1]).to.contain(
             'float getSingleDashDistance',
           );
           expect(result.builder.fragmentShaderFunctions_).to
-            .contain(`float dashDistanceField_450289113(float distance, float radius, float capType) {
+            .contain(`float dashDistanceField_450289113(float distance, float radius, float capType, float lineWidth) {
   float dashLength0 = (a_prop_size * 10.0);
   float dashLength1 = (a_prop_size * 20.0);
   float dashLength2 = 5.0;
   float dashLength3 = (a_prop_size * 20.0);
   float totalDashLength = dashLength0 + dashLength1 + dashLength2 + dashLength3;
-  return min(getSingleDashDistance(distance, radius, 0., dashLength0, totalDashLength, capType), getSingleDashDistance(distance, radius, 0. + dashLength0 + dashLength1, dashLength2, totalDashLength, capType));
+  return min(getSingleDashDistance(distance, radius, 0., dashLength0, totalDashLength, capType, lineWidth), getSingleDashDistance(distance, radius, 0. + dashLength0 + dashLength1, dashLength2, totalDashLength, capType, lineWidth));
 }`);
+        });
+        it('does not use v_width in the point or fill shaders', () => {
+          expect(result.builder.getSymbolFragmentShader()).not.to.contain(
+            'v_width',
+          );
+          expect(result.builder.getFillFragmentShader()).not.to.contain(
+            'v_width',
+          );
         });
       });
       describe('stroke pattern, image as path', () => {

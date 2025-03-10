@@ -615,14 +615,14 @@ function parseStrokeProperties(style, builder, uniforms, context) {
 
   if ('stroke-line-dash' in style) {
     context.functions['getSingleDashDistance'] =
-      `float getSingleDashDistance(float distance, float radius, float dashOffset, float dashLength, float dashLengthTotal, float capType) {
+      `float getSingleDashDistance(float distance, float radius, float dashOffset, float dashLength, float dashLengthTotal, float capType, float lineWidth) {
   float localDistance = mod(distance, dashLengthTotal);
   float distanceSegment = abs(localDistance - dashOffset - dashLength * 0.5) - dashLength * 0.5;
   distanceSegment = min(distanceSegment, dashLengthTotal - localDistance);
   if (capType == ${stringToGlsl('square')}) {
-    distanceSegment -= v_width * 0.5;
+    distanceSegment -= lineWidth * 0.5;
   } else if (capType == ${stringToGlsl('round')}) {
-    distanceSegment = min(distanceSegment, sqrt(distanceSegment * distanceSegment + radius * radius) - v_width * 0.5);
+    distanceSegment = min(distanceSegment, sqrt(distanceSegment * distanceSegment + radius * radius) - lineWidth * 0.5);
   }
   return distanceSegment;
 }`;
@@ -655,22 +655,22 @@ function parseStrokeProperties(style, builder, uniforms, context) {
       .map((v, i) => `dashLength${i}`)
       .join(' + ');
     let currentDashOffset = '0.';
-    let distanceExpression = `getSingleDashDistance(distance, radius, ${currentDashOffset}, dashLength0, totalDashLength, capType)`;
+    let distanceExpression = `getSingleDashDistance(distance, radius, ${currentDashOffset}, dashLength0, totalDashLength, capType, lineWidth)`;
     for (let i = 2; i < dashPattern.length; i += 2) {
       currentDashOffset = `${currentDashOffset} + dashLength${
         i - 2
       } + dashLength${i - 1}`;
-      distanceExpression = `min(${distanceExpression}, getSingleDashDistance(distance, radius, ${currentDashOffset}, dashLength${i}, totalDashLength, capType))`;
+      distanceExpression = `min(${distanceExpression}, getSingleDashDistance(distance, radius, ${currentDashOffset}, dashLength${i}, totalDashLength, capType, lineWidth))`;
     }
 
     context.functions[dashFunctionName] =
-      `float ${dashFunctionName}(float distance, float radius, float capType) {
+      `float ${dashFunctionName}(float distance, float radius, float capType, float lineWidth) {
   ${dashLengthsDef.join('\n  ')}
   float totalDashLength = ${totalLengthDef};
   return ${distanceExpression};
 }`;
     builder.setStrokeDistanceFieldExpression(
-      `${dashFunctionName}(currentLengthPx + ${offsetExpression}, currentRadiusPx, capType)`,
+      `${dashFunctionName}(currentLengthPx + ${offsetExpression}, currentRadiusPx, capType, v_width)`,
     );
   }
 }
