@@ -203,6 +203,19 @@ describe('ol/source/ImageArcGISRest', function () {
     });
   });
 
+  describe('#setParams', function () {
+    it('allows params to be set', function () {
+      const before = {test: 'before', foo: 'bar'};
+      const source = new ImageArcGISRest({params: before});
+      source.setParams({test: 'after'});
+
+      const params = source.getParams();
+      expect(params).to.eql({test: 'after'});
+
+      expect(before).to.eql({test: 'before', foo: 'bar'});
+    });
+  });
+
   describe('#getParams', function () {
     it('verify getting a param', function () {
       options.params.TEST = 'value';
