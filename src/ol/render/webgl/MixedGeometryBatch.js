@@ -508,7 +508,7 @@ class MixedGeometryBatch {
    * @param {string} featureUid the feature uid
    * @private
    */
-  returnRef_(ref, featureUid) {
+  removeRef_(ref, featureUid) {
     if (!ref) {
       throw new Error('This feature has no ref: ' + featureUid);
     }
@@ -541,7 +541,7 @@ class MixedGeometryBatch {
     entry = this.clearFeatureEntryInPolygonBatch_(feature) || entry;
     entry = this.clearFeatureEntryInLineStringBatch_(feature) || entry;
     if (entry) {
-      this.returnRef_(entry.ref, getUid(entry.feature));
+      this.removeRef_(entry.ref, getUid(entry.feature));
     }
   }
 
@@ -582,10 +582,19 @@ class MixedGeometryBatch {
    */
   filter(featureFilter) {
     const filtered = new MixedGeometryBatch();
+    filtered.globalCounter_ = this.globalCounter_;
+    filtered.uidToRef_ = this.uidToRef_;
+    filtered.refToFeature_ = this.refToFeature_;
+    let empty = true;
     for (const feature of this.refToFeature_.values()) {
       if (featureFilter(feature)) {
         filtered.addFeature(feature);
+        empty = false;
       }
+    }
+    // no feature was added at all; simply return an empty batch for consistency downstream
+    if (empty) {
+      return new MixedGeometryBatch();
     }
     return filtered;
   }

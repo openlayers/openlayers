@@ -529,6 +529,29 @@ describe('ol/renderer/webgl/VectorLayer', () => {
     let centerPoint;
     let diagonalLine;
 
+    function checkHit(x, y, expected, done) {
+      const spy = sinonSpy();
+      renderer.forEachFeatureAtCoordinate([x, y], frameState, 0, spy, []);
+      const called = spy.callCount;
+      const found = spy.getCall(0)?.args[0];
+      if (expected) {
+        if (!called) {
+          done(new Error('no feature found, expected one'));
+        }
+        if (found && found !== expected) {
+          done(
+            new Error(
+              `feature found id=${found.get(
+                'id',
+              )}, does not match expected id=${expected.get('id')}`,
+            ),
+          );
+        }
+      } else if (called) {
+        done(new Error('found a feature, expected none'));
+      }
+    }
+
     beforeEach(() => {
       topLeftSquare = new Feature({
         id: 'topLeftSquare',
@@ -585,39 +608,45 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       };
     });
     it('correctly hit detects features', (done) => {
-      function checkHit(x, y, expected) {
-        const spy = sinonSpy();
-        renderer.forEachFeatureAtCoordinate([x, y], frameState, 0, spy, []);
-        const called = spy.callCount;
-        const found = spy.getCall(0)?.args[0];
-        if (expected) {
-          if (!called) {
-            done(new Error('no feature found, expected one'));
-          }
-          if (found && found !== expected) {
-            done(
-              new Error(
-                `feature found id=${found.get(
-                  'id',
-                )}, does not match expected id=${expected.get('id')}`,
-              ),
-            );
-          }
-        } else if (called) {
-          done(new Error('found a feature, expected none'));
-        }
-      }
-
       renderer.prepareFrame(frameState);
       // this will trigger when the rendering buffers are ready
       vectorLayer.once('change', () => {
         renderer.renderFrame(frameState);
-        checkHit(0, 16, centerPoint);
-        checkHit(-15, 25, topLeftSquare);
-        checkHit(15, 20, diagonalLine);
-        checkHit(-15, 5, diagonalLine);
-        checkHit(20, 5, null);
+        checkHit(0, 16, centerPoint, done);
+        checkHit(-15, 25, topLeftSquare, done);
+        checkHit(15, 20, diagonalLine, done);
+        checkHit(-15, 5, diagonalLine, done);
+        checkHit(20, 5, null, done);
         done();
+      });
+    });
+
+    describe('with a filter set', () => {
+      beforeEach(() => {
+        renderer = new WebGLVectorLayerRenderer(vectorLayer, {
+          style: [
+            {
+              filter: ['==', ['geometry-type'], 'Point'],
+              style: {
+                'circle-radius': 40,
+                'circle-fill-color': 'blue',
+              },
+            },
+          ],
+        });
+      });
+      it('correctly hit detects only the feature not filtered out', (done) => {
+        renderer.prepareFrame(frameState);
+        // this will trigger when the rendering buffers are ready
+        vectorLayer.once('change', () => {
+          renderer.renderFrame(frameState);
+          checkHit(0, 16, centerPoint, done);
+          checkHit(-15, 25, null, done);
+          checkHit(15, 20, null, done);
+          checkHit(-15, 5, null, done);
+          checkHit(20, 5, null, done);
+          done();
+        });
       });
     });
   });

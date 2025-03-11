@@ -175,6 +175,8 @@ describe('MixedGeometryBatch', function () {
       it('clears the entry related to this feature', () => {
         const keys = Object.keys(mixedBatch.pointBatch.entries);
         expect(keys).to.not.contain(getUid(feature1));
+        expect(mixedBatch.getFeatureFromRef(1)).to.be(undefined);
+        expect(mixedBatch.getFeatureFromRef(2)).to.be(feature2);
       });
       it('recompute geometry count', () => {
         expect(mixedBatch.pointBatch.geometriesCount).to.be(1);
@@ -1265,20 +1267,21 @@ describe('MixedGeometryBatch', function () {
   });
 
   describe('#filter', () => {
+    let feature1, feature2, feature3, feature4;
     beforeEach(() => {
-      const feature1 = new Feature({
+      feature1 = new Feature({
         keep: true,
         geometry: new Point([101, 102]),
       });
-      const feature2 = new Feature({
+      feature2 = new Feature({
         keep: false,
         geometry: new Point([201, 202]),
       });
-      const feature3 = new Feature({
+      feature3 = new Feature({
         keep: false,
         geometry: new Point([301, 302]),
       });
-      const feature4 = new Feature({
+      feature4 = new Feature({
         keep: true,
         geometry: new Point([401, 402]),
       });
@@ -1307,6 +1310,11 @@ describe('MixedGeometryBatch', function () {
           0,
         );
         expect(mixedBatch.lineStringBatch.geometriesCount).to.be(0);
+      });
+
+      it('preserves the feature references from the original batch', () => {
+        expect(mixedBatch.getFeatureFromRef(1)).to.be(feature1);
+        expect(mixedBatch.getFeatureFromRef(4)).to.be(feature4);
       });
     });
     describe('filtering out everything', () => {
