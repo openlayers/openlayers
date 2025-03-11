@@ -162,7 +162,7 @@ const map = new Map({
 const controlIds = ['vert', 'sunEl', 'sunAz'];
 const controls = {};
 controlIds.forEach(function (id) {
-  const control = document.getElementById(id);
+  const control = /** @type {HTMLInputElement} */ (document.getElementById(id));
   const output = document.getElementById(id + 'Out');
   control.addEventListener('input', function () {
     output.innerText = control.value;

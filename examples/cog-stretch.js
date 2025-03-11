@@ -13,13 +13,18 @@ for (const channel of channels) {
 }
 
 function getVariables() {
+  /** @type {Object<string, number>} */
   const variables = {};
   for (const channel of channels) {
-    const selector = document.getElementById(channel);
+    const selector = /** @type {HTMLSelectElement} */ (
+      document.getElementById(channel)
+    );
     variables[channel] = parseInt(selector.value, 10);
 
     const inputId = `${channel}Max`;
-    const input = document.getElementById(inputId);
+    const input = /** @type {HTMLInputElement} */ (
+      document.getElementById(inputId)
+    );
     variables[inputId] = parseInt(input.value, 10);
   }
   return variables;

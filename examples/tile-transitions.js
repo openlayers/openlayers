@@ -35,10 +35,11 @@ const map = new Map({
   }),
 });
 
-document
-  .getElementById('transition')
-  .addEventListener('change', function (event) {
-    const transition = event.target.checked;
-    withTransition.setVisible(transition);
-    withoutTransition.setVisible(!transition);
-  });
+const transitionCheckbox = /** @type {HTMLInputElement} */ (
+  document.getElementById('transition')
+);
+transitionCheckbox.addEventListener('change', function () {
+  const transition = this.checked;
+  withTransition.setVisible(transition);
+  withoutTransition.setVisible(!transition);
+});

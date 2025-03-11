@@ -61,7 +61,9 @@ const map = new Map({
   ],
 });
 
-const slider = document.getElementById('slider');
+const slider = /** @type {HTMLInputElement} */ (
+  document.getElementById('slider')
+);
 const updateSourceDimension = function () {
   wmtsSource.updateDimensions({'threshold': slider.value});
   document.getElementById('theinfo').innerHTML = slider.value + ' meters';

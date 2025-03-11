@@ -33,26 +33,28 @@ const featureOverlay = new VectorLayer({
   },
 });
 
+/** @type {import('../src/ol/Feature.js').default|undefined} */
 let highlight;
 const displayFeatureInfo = function (pixel) {
   vectorLayer.getFeatures(pixel).then(function (features) {
-    const feature = features.length ? features[0] : undefined;
+    const feature =
+      /** @type {import('../src/ol/Feature.js').default|undefined} */ (
+        features.length ? features[0] : undefined
+      );
+    if (feature === highlight) {
+      return;
+    }
     const info = document.getElementById('info');
-    if (features.length) {
-      info.innerHTML = feature.get('ECO_NAME') + ': ' + feature.get('NNH_NAME');
-    } else {
-      info.innerHTML = '&nbsp;';
+    info.innerHTML = feature
+      ? feature.get('ECO_NAME') + ': ' + feature.get('NNH_NAME')
+      : '&nbsp;';
+    if (highlight) {
+      featureOverlay.getSource().removeFeature(highlight);
     }
-
-    if (feature !== highlight) {
-      if (highlight) {
-        featureOverlay.getSource().removeFeature(highlight);
-      }
-      if (feature) {
-        featureOverlay.getSource().addFeature(feature);
-      }
-      highlight = feature;
+    if (feature) {
+      featureOverlay.getSource().addFeature(feature);
     }
+    highlight = feature;
   });
 };
 

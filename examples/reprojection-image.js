@@ -35,7 +35,9 @@ const map = new Map({
   }),
 });
 
-const interpolate = document.getElementById('interpolate');
+const interpolate = /** @type {HTMLInputElement} */ (
+  document.getElementById('interpolate')
+);
 
 function setSource() {
   const source = new Static({

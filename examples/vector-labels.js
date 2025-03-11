@@ -85,7 +85,7 @@ const getText = function (feature, resolution, dom) {
     type == 'wrap' &&
     (!dom.placement || dom.placement.value != 'line')
   ) {
-    text = stringDivider(text, 16, '\n');
+    text = stringDivider(text, 16);
   }
 
   return text;
@@ -233,22 +233,22 @@ function truncate(string, n) {
   return string.length > n ? string.slice(0, n - 1) + '…' : string.slice();
 }
 
-// https://stackoverflow.com/questions/14484787/wrap-text-in-javascript
-function stringDivider(str, width, spaceReplacer) {
+/**
+ * https://stackoverflow.com/questions/14484787/wrap-text-in-javascript
+ * @param {string} str A string without new lines
+ * @param {number} width Desired length
+ * @return {string} Wrapped text with new lines
+ */
+function stringDivider(str, width) {
   if (str.length > width) {
     let p = width;
-    while (p > 0 && str[p] != ' ' && str[p] != '-') {
+    while (p > 0 && str[p] !== ' ' && str[p] !== '-') {
       p--;
     }
     if (p > 0) {
-      let left;
-      if (str.substring(p, p + 1) == '-') {
-        left = str.substring(0, p + 1);
-      } else {
-        left = str.substring(0, p);
-      }
+      const left = str.substring(0, p + (str[p] === ' ' ? 0 : 1));
       const right = str.substring(p + 1);
-      return left + spaceReplacer + stringDivider(right, width, spaceReplacer);
+      return left + '\n' + stringDivider(right, width);
     }
   }
   return str;

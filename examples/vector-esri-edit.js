@@ -106,7 +106,9 @@ const map = new Map({
   }),
 });
 
-const typeSelect = document.getElementById('type');
+const typeSelect = /** @type {HTMLSelectElement} */ (
+  document.getElementById('type')
+);
 
 /**
  * Let user change the interaction type.

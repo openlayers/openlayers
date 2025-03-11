@@ -67,7 +67,7 @@ container.addEventListener('mouseout', function () {
 
 // before rendering the layer, do some clipping
 imagery.on('prerender', function (event) {
-  const ctx = event.context;
+  const ctx = /** @type {CanvasRenderingContext2D} */ (event.context);
   ctx.save();
   ctx.beginPath();
   if (mousePosition) {
@@ -90,6 +90,6 @@ imagery.on('prerender', function (event) {
 
 // after rendering the layer, restore the canvas context
 imagery.on('postrender', function (event) {
-  const ctx = event.context;
+  const ctx = /** @type {CanvasRenderingContext2D} */ (event.context);
   ctx.restore();
 });
