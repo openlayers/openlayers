@@ -38,7 +38,7 @@ export default {
     minimizer: [
       new TerserPlugin({
         // Do not minify examples that inject code into workers
-        exclude: [/(color-manipulation|region-growing|raster)\.js/],
+        exclude: [/(color-manipulation|region-growing|raster|webgl-interpolation)\.js/],
         extractComments: false,
       }),
     ],
