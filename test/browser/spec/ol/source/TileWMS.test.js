@@ -56,6 +56,93 @@ describe('ol/source/TileWMS', function () {
     });
   });
 
+  describe('updateParams()', function () {
+    it('updates a subset of the params', function () {
+      const source = new TileWMS({
+        url: 'http://example.com/wms',
+        params: {
+          LAYERS: 'layer',
+          test: 'before',
+        },
+      });
+
+      const tileCoord = [1, 2, 3];
+      const projection = getProjection('EPSG:4326');
+
+      const urlBefore = new URL(
+        source.tileUrlFunction(tileCoord, 1, projection),
+      );
+      const paramsBefore = urlBefore.searchParams;
+      expect(paramsBefore.get('test')).to.be('before');
+      expect(paramsBefore.get('LAYERS')).to.be('layer');
+      expect(paramsBefore.get('foo')).to.be(null);
+
+      source.updateParams({test: 'after', foo: 'bar'});
+
+      const urlAfter = new URL(
+        source.tileUrlFunction(tileCoord, 1, projection),
+      );
+      const paramsAfter = urlAfter.searchParams;
+      expect(paramsAfter.get('test')).to.be('after');
+      expect(paramsAfter.get('foo')).to.be('bar');
+      expect(paramsAfter.get('LAYERS')).to.be('layer');
+    });
+
+    it('does not modify the object passed to the constructor', function () {
+      const params = {LAYERS: 'layer'};
+      const source = new TileWMS({
+        url: 'http://example.com/wms',
+        params,
+      });
+
+      source.updateParams({LAYERS: 'after'});
+      expect(params.LAYERS).to.be('layer');
+    });
+
+    it('does not modify the object passed to setParams', function () {
+      const params = {LAYERS: 'layer'};
+      const source = new TileWMS({
+        url: 'http://example.com/wms',
+      });
+
+      source.setParams({LAYERS: 'after'});
+      expect(params.LAYERS).to.be('layer');
+    });
+  });
+
+  describe('setParams()', function () {
+    it('sets all of the params', function () {
+      const source = new TileWMS({
+        url: 'http://example.com/wms',
+        params: {
+          LAYERS: 'layer',
+          test: 'before',
+        },
+      });
+
+      const tileCoord = [1, 2, 3];
+      const projection = getProjection('EPSG:4326');
+
+      const urlBefore = new URL(
+        source.tileUrlFunction(tileCoord, 1, projection),
+      );
+      const paramsBefore = urlBefore.searchParams;
+      expect(paramsBefore.get('test')).to.be('before');
+      expect(paramsBefore.get('LAYERS')).to.be('layer');
+      expect(paramsBefore.get('foo')).to.be(null);
+
+      source.setParams({test: 'after', foo: 'bar'});
+
+      const urlAfter = new URL(
+        source.tileUrlFunction(tileCoord, 1, projection),
+      );
+      const paramsAfter = urlAfter.searchParams;
+      expect(paramsAfter.get('test')).to.be('after');
+      expect(paramsAfter.get('foo')).to.be('bar');
+      expect(paramsAfter.get('LAYERS')).to.be(null);
+    });
+  });
+
   describe('#getInterpolate()', function () {
     it('is true by default', function () {
       const source = new TileWMS();

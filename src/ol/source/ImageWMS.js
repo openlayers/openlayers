@@ -266,6 +266,16 @@ class ImageWMS extends ImageSource {
   }
 
   /**
+   * Set the user-provided params.
+   * @param {Object} params Params.
+   * @api
+   */
+  setParams(params) {
+    this.params_ = Object.assign({}, params);
+    this.changed();
+  }
+
+  /**
    * Update the user-provided params.
    * @param {Object} params Params.
    * @api

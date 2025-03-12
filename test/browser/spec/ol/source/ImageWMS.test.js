@@ -59,6 +59,19 @@ describe('ol/source/ImageWMS', function () {
     });
   });
 
+  describe('#setParams', function () {
+    it('sets new parameters', function () {
+      const before = {test: 'before', foo: 'bar'};
+      const source = new ImageWMS({params: before});
+      source.setParams({test: 'after'});
+
+      const params = source.getParams();
+      expect(params).to.eql({test: 'after'});
+
+      expect(before).to.eql({test: 'before', foo: 'bar'});
+    });
+  });
+
   describe('#getImage', function () {
     it('creates an image with the expected URL', function () {
       [1, 1.5].forEach(function (ratio) {
