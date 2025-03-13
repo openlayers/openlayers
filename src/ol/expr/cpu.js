@@ -502,7 +502,7 @@ function compileMatchExpression(expression, context) {
   }
   return (context) => {
     const value = args[0](context);
-    for (let i = 1; i < length; i += 2) {
+    for (let i = 1; i < length - 1; i += 2) {
       if (value === args[i](context)) {
         return args[i + 1](context);
       }
