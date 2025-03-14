@@ -8,12 +8,6 @@ const ua =
     : '';
 
 /**
- * User agent string says we are dealing with Firefox as browser.
- * @type {boolean}
- */
-export const FIREFOX = ua.includes('firefox');
-
-/**
  * User agent string says we are dealing with Safari as browser.
  * @type {boolean}
  */

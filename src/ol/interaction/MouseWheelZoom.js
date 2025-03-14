@@ -3,7 +3,6 @@
  */
 import EventType from '../events/EventType.js';
 import {all, always, focusWithTabindex} from '../events/condition.js';
-import {DEVICE_PIXEL_RATIO, FIREFOX} from '../has.js';
 import {clamp} from '../math.js';
 import Interaction, {zoomByDelta} from './Interaction.js';
 
@@ -196,9 +195,6 @@ class MouseWheelZoom extends Interaction {
     let delta;
     if (mapBrowserEvent.type == EventType.WHEEL) {
       delta = wheelEvent.deltaY;
-      if (FIREFOX && wheelEvent.deltaMode === WheelEvent.DOM_DELTA_PIXEL) {
-        delta /= DEVICE_PIXEL_RATIO;
-      }
       if (wheelEvent.deltaMode === WheelEvent.DOM_DELTA_LINE) {
         delta *= 40;
       }
