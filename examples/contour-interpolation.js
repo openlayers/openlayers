@@ -1,10 +1,10 @@
 import Map from '../src/ol/Map.js';
-import MousePosition from '../src/ol/control/MousePosition.js';
 import View from '../src/ol/View.js';
-import {DataTile, OSM, Raster as RasterSource} from '../src/ol/source.js';
+import MousePosition from '../src/ol/control/MousePosition.js';
+import {toStringHDMS} from '../src/ol/coordinate.js';
 import {Image as ImageLayer, WebGLTile as TileLayer} from '../src/ol/layer.js';
 import {fromLonLat, toLonLat} from '../src/ol/proj.js';
-import {toStringHDMS} from '../src/ol/coordinate.js';
+import {DataTile, OSM, Raster as RasterSource} from '../src/ol/source.js';
 
 const attribution =
   '<a href="https://github.com/tilezen/joerd/blob/master/docs/attribution.md" target="_blank">Data sources and attribution</a>';
@@ -52,7 +52,7 @@ const source = new DataTile({
             image.addEventListener('error', () => reject());
             image.addEventListener('load', () => resolve(image));
             image.src = `https://s3.amazonaws.com/elevation-tiles-prod/terrarium/${z}/${xx}/${yy}.png`;
-          })
+          }),
         );
       }
     }
@@ -70,7 +70,7 @@ const source = new DataTile({
         tileSize - gutter,
         tileSize - gutter,
         tileSize + 2 * gutter,
-        tileSize + 2 * gutter
+        tileSize + 2 * gutter,
       ).data;
       const pixels = data.length / 4;
       const floatData = new Float32Array(data.buffer);
