@@ -567,6 +567,16 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
+   * @protected
+   * @override
+   */
+  removeHelper() {
+    this.buffers_.length = 0;
+
+    super.removeHelper();
+  }
+
+  /**
    * Clean up.
    * @override
    */
