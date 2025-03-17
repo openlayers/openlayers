@@ -533,16 +533,23 @@ describe('ol.interaction.Snap', function () {
       };
 
       const event = {
-        pixel: [30, 30],
+        pixel: [30 + width / 2, height / 2 - 30],
         coordinate: [30, 30],
         map: map,
       };
 
-      snapInteraction.on('unsnap', function (snapEvent) {
-        expect(snapEvent.feature).to.be(point1);
-        expect(snapEvent.segment).to.be(null);
+      const snapEvents = [];
+      const snapEventHandler = (e) => {
+        snapEvents.push(e);
+        if (snapEvents.length !== 2) {
+          return;
+        }
+        expect(snapEvents.map((e) => e.type)).to.eql(['unsnap', 'snap']);
+        expect(snapEvents.map((e) => e.feature)).to.eql([point1, point2]);
         done();
-      });
+      };
+      snapInteraction.on('unsnap', snapEventHandler);
+      snapInteraction.on('snap', snapEventHandler);
 
       snapInteraction.handleEvent(event);
     });
