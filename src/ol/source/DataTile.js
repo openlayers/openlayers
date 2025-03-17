@@ -194,10 +194,11 @@ class DataTileSource extends TileSource {
 
   /**
    * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {number} [pixelRatio] Pixel ratio.
    * @return {number} Gutter.
    * @override
    */
-  getGutterForProjection(projection) {
+  getGutterForProjection(projection, pixelRatio) {
     const thisProj = this.getProjection();
     if (
       (!thisProj || equivalent(thisProj, projection)) &&
