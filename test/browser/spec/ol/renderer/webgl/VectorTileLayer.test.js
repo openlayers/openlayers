@@ -74,8 +74,14 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
   let map;
 
   beforeEach(function () {
+    const proj = new Projection({
+      code: 'custom',
+      units: 'pixels',
+      extent: [-128, -128, 128, 128],
+    });
     vectorTileLayer = new VectorTileLayer({
       source: new VectorTileSource({
+        projection: proj,
         tileGrid: createXYZ({
           tileSize: [256, 256],
           maxZoom: 5,
@@ -120,11 +126,6 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       style: SAMPLE_RULES,
     });
 
-    const proj = new Projection({
-      code: 'custom',
-      units: 'pixels',
-      extent: [-128, -128, 128, 128],
-    });
     frameState = {
       layerStatesArray: [vectorTileLayer.getLayerState()],
       layerIndex: 0,
