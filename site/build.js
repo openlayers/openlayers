@@ -1,7 +1,6 @@
 import {dirname, resolve} from 'node:path';
 import {env} from 'node:process';
 import {fileURLToPath} from 'node:url';
-import inPlace from '@metalsmith/in-place';
 import layouts from '@metalsmith/layouts';
 import markdown from '@metalsmith/markdown';
 import alias from '@rollup/plugin-alias';
@@ -20,9 +19,8 @@ const builder = Metalsmith(baseDir)
   .metadata({
     version: env.OL_VERSION || 'dev',
   })
-  .use(inPlace({transform: 'handlebars'}))
   .use(markdown())
-  .use(layouts());
+  .use(layouts({transform: 'handlebars'}));
 
 builder.build(async (err) => {
   if (err) {

@@ -55,7 +55,7 @@
   "devDependencies": {
     "@codemirror/lang-javascript": "^6.2.2",
     "@metalsmith/in-place": "^5.0.0",
-    "@metalsmith/layouts": "^2.5.1",
+    "@metalsmith/layouts": "^3.0.0",
     "@metalsmith/markdown": "^1.6.0",
     "@octokit/rest": "^21.0.0",
     "@planet/ol-numpytiles": "^3.0.1",
