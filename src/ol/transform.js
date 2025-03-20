@@ -267,7 +267,7 @@ export function determinant(mat) {
 /**
  * @type {Array}
  */
-const matrixPrecision = [1e6, 1e6, 1e6, 1e6, 2, 2];
+const matrixPrecision = [1e5, 1e5, 1e5, 1e5, 2, 2];
 
 /**
  * A rounded string version of the transform.  This can be used
