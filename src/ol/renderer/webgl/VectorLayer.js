@@ -17,6 +17,11 @@ import MixedGeometryBatch from '../../render/webgl/MixedGeometryBatch.js';
 import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
 import {TextOverlayWorkerMessageType} from '../../render/webgl/constants.js';
 import {colorDecodeId} from '../../render/webgl/encodeUtil.js';
+import {
+  deserializeFrameState,
+  serializeFeature,
+  serializeFrameState,
+} from '../../render/webgl/serialize.js';
 import {breakDownFlatStyle} from '../../render/webgl/style.js';
 import VectorEventType from '../../source/VectorEventType.js';
 import {
@@ -43,6 +48,7 @@ export const Uniforms = {
   PATTERN_ORIGIN: 'u_patternOrigin',
   GLOBAL_ALPHA: 'u_globalAlpha',
   TEXT_OVERLAY_TEXTURE: 'u_textOverlay',
+  TEXT_OVERLAY_MATRIX: 'u_textOverlayMatrix',
 };
 
 /**
@@ -101,17 +107,42 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
             uniform sampler2D u_image;
             uniform sampler2D ${Uniforms.TEXT_OVERLAY_TEXTURE};
+            uniform mat4 ${Uniforms.TEXT_OVERLAY_MATRIX};
             
             varying vec2 v_texCoord;
 
             void main() {
               vec4 color = texture2D(u_image, v_texCoord);
-              vec4 textColor = texture2D(${Uniforms.TEXT_OVERLAY_TEXTURE}, vec2(v_texCoord.x, 1.-v_texCoord.y));
-              gl_FragColor = textColor.a > 0.5 ? textColor : color;
+
+              vec4 coords = vec4(v_texCoord.x, v_texCoord.y, 0., 0.) * 2. - vec4(1., 1., 0., 0.);
+              coords = ${Uniforms.TEXT_OVERLAY_MATRIX} * coords;
+              coords = coords * 0.5 + vec4(0.5, 0.5, 0., 0.);
+              
+              // vec4 coords = vec4(v_texCoord.x, 1.-v_texCoord.y, 0., 1.);
+              // vec4 coords = ${Uniforms.TEXT_OVERLAY_MATRIX} * vec4(v_texCoord.x, v_texCoord.y, 0., 0.);
+
+              vec4 textColor = texture2D(${Uniforms.TEXT_OVERLAY_TEXTURE}, vec2(coords.x, 1.-coords.y));
+              // gl_FragColor = textColor.a > 0.5 ? textColor : color;
               // gl_FragColor = textColor + 0.5 * color;
+              gl_FragColor = textColor.a * textColor + (1. - textColor.a) * color;
             }`,
           uniforms: {
             [Uniforms.TEXT_OVERLAY_TEXTURE]: () => this.textOverlayCanvas_,
+            // [Uniforms.TEXT_OVERLAY_MATRIX]: () => this.textOverlayOffsetMatrix_,
+            [Uniforms.TEXT_OVERLAY_MATRIX]: () => {
+              makeInverseTransform(
+                this.tmpTransform_,
+                this.currentFrameStateTransform_,
+              );
+              multiplyTransform(
+                this.tmpTransform_,
+                this.textOverlayRenderTransform_,
+              );
+              return mat4FromTransform(
+                this.textOverlayOffsetMatrix_,
+                this.tmpTransform_,
+              );
+            },
           },
         },
         ...(options.postProcesses ?? []),
@@ -213,6 +244,13 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
     // this.textOverlay_ = null;
 
+    this.textOverlayOffsetMatrix_ = createMat4();
+    this.textOverlayOffsetMatrix_ = [
+      1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ];
+
+    this.textOverlayRenderTransform_ = createTransform();
+
     this.textOverlayWorker_ = createTextOverlayWorker();
     this.textOverlayCanvas_ = createCanvasContext2D().canvas;
     this.textOverlayWorker_.addEventListener('message', (message) => {
@@ -224,6 +262,11 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
         this.textOverlayCanvas_.getContext('2d').drawImage(imageData, 0, 0);
         this.textOverlayCanvas_.style.transform = message.data.transform;
 
+        this.textOverlayRenderTransform_ = this.helper.makeProjectionTransform(
+          deserializeFrameState(message.data.frameState),
+          this.textOverlayRenderTransform_,
+        );
+
         // transfer back the image data
         this.textOverlayWorker_.postMessage(
           {
@@ -232,6 +275,8 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
           },
           [imageData],
         );
+
+        this.changed();
       }
     });
   }
@@ -252,12 +297,10 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     }
     const features = source.getFeatures();
     this.batch_.addFeatures(features, projectionTransform);
-    // this.textOverlay_.loadFeatureBatch(features, 'main');
-    console.log(features);
     this.textOverlayWorker_.postMessage({
       type: TextOverlayWorkerMessageType.LOAD_FEATURES,
       batchId: 'main',
-      features,
+      features: features.map(serializeFeature),
     });
     this.sourceListenKeys_ = [
       listen(
@@ -323,6 +366,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     this.textOverlayWorker_.postMessage({
       type: TextOverlayWorkerMessageType.INIT,
       style: this.styles_,
+      userProjection: getUserProjection()?.getCode(),
     });
   }
 
@@ -418,6 +462,23 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     makeInverseTransform(this.tmpTransform_, batchInvertTransform);
     applyTransform(this.tmpTransform_, this.tmpCoords_);
     this.helper.setUniformFloatVec2(Uniforms.PATTERN_ORIGIN, this.tmpCoords_);
+
+    // compute text overlay offset matrix
+    // setFromTransform(this.tmpTransform_, this.currentFrameStateTransform_);
+    // multiplyTransform(
+    //   this.tmpTransform_,
+    //   makeInverseTransform(createTransform(), this.textOverlayRenderTransform_),
+    // );
+    // makeInverseTransform(this.tmpTransform_, this.currentFrameStateTransform_);
+    // multiplyTransform(this.tmpTransform_, this.textOverlayRenderTransform_);
+    // mat4FromTransform(this.textOverlayOffsetMatrix_, this.tmpTransform_);
+    // scale(
+    //   this.textOverlayOffsetMatrix_,
+    //   0.5,
+    //   0.5,
+    //   1,
+    //   this.textOverlayOffsetMatrix_,
+    // );
   }
 
   /**
@@ -439,38 +500,11 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     this.helper.prepareDraw(frameState);
     this.renderWorlds(frameState, false, startWorld, endWorld, worldWidth);
     // this.textOverlay_.render(frameState, ['main']);
-    const frameStateCloned = {
-      layerIndex: 0,
-      wantedTiles: {},
-      usedTiles: {},
-      viewHints: frameState.viewHints.slice(0),
-      postRenderFunctions: [],
-      viewState: {
-        center: frameState.viewState.center.slice(0),
-        resolution: frameState.viewState.resolution,
-        rotation: frameState.viewState.rotation,
-        zoom: frameState.viewState.zoom,
-      },
-      pixelRatio: frameState.pixelRatio,
-      size: frameState.size.slice(0),
-      extent: frameState.extent.slice(0),
-      coordinateToPixelTransform:
-        frameState.coordinateToPixelTransform.slice(0),
-      pixelToCoordinateTransform:
-        frameState.pixelToCoordinateTransform.slice(0),
-      layerStatesArray: frameState.layerStatesArray.map((l) => ({
-        zIndex: l.zIndex,
-        visible: l.visible,
-        extent: l.extent,
-        maxResolution: l.maxResolution,
-        minResolution: l.minResolution,
-        managed: l.managed,
-      })),
-    };
+
     this.textOverlayWorker_.postMessage({
       type: TextOverlayWorkerMessageType.RENDER,
       batchesId: ['main'],
-      frameState: frameStateCloned,
+      frameState: serializeFrameState(frameState),
     });
     this.helper.finalizeDraw(
       frameState,
@@ -568,7 +602,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       this.textOverlayWorker_.postMessage({
         type: TextOverlayWorkerMessageType.LOAD_FEATURES,
         batchId: 'main',
-        features: vectorSource.getFeatures(),
+        features: vectorSource.getFeatures().map(serializeFeature),
       });
     }
 

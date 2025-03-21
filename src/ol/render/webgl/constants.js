@@ -41,8 +41,9 @@ export const TextOverlayWorkerMessageType = {
  * @typedef {Object} TextOverlayWorkerMessage
  * TODO
  * @property {TextOverlayWorkerMessageType} type Message type
- * @property {string} [batchId]
- * @property {Array<string>} [batchesId]
- * @property {Array<Feature>} [features]
- * @property {ImageBitmap} [imageData]
+ * @property {string} [batchId] Batch id for given features
+ * @property {Array<import('../Feature.js').default>} [features] Features to load
+ * @property {Array<string>} [batchesId] Batches to render
+ * @property {ImageBitmap} [imageData] Rendered canvas
+ * @property {import("../../Map.js").FrameState} [frameState] Frame state of the rendered image
  */

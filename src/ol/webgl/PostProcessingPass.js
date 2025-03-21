@@ -458,6 +458,9 @@ class WebGLPostProcessingPass {
               value[3],
             );
             return;
+          case 16:
+            gl.uniformMatrix4fv(uniform.location, false, value);
+            return;
           default:
             return;
         }
