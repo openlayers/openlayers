@@ -19,6 +19,7 @@ import {
   apply as applyTransform,
   compose as composeTransform,
   create as createTransform,
+  equivalent,
   makeInverse,
   toString as toTransformString,
 } from '../../transform.js';
@@ -150,7 +151,7 @@ class CanvasLayerRenderer extends LayerRenderer {
   /**
    * Get a rendering container from an existing target, if compatible.
    * @param {HTMLElement} target Potential render target.
-   * @param {string} transform CSS Transform.
+   * @param {string} transform CSS transform matrix.
    * @param {string} [backgroundColor] Background color.
    */
   useContainer(target, transform, backgroundColor) {
@@ -172,7 +173,7 @@ class CanvasLayerRenderer extends LayerRenderer {
         context = canvas.getContext('2d');
       }
     }
-    if (context && context.canvas.style.transform === transform) {
+    if (context && equivalent(context.canvas.style.transform, transform)) {
       // Container of the previous layer renderer can be used.
       this.container = target;
       this.context = context;
