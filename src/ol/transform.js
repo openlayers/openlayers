@@ -300,10 +300,7 @@ export function equivalent(cssTransform1, cssTransform2) {
   const mat1 = fromString(cssTransform1);
   const mat2 = fromString(cssTransform2);
   for (let i = 0; i < 6; ++i) {
-    if (
-      Math.round(mat1[i] * matrixPrecision[i]) / matrixPrecision[i] !==
-      Math.round(mat2[i] * matrixPrecision[i]) / matrixPrecision[i]
-    ) {
+    if (Math.round((mat1[i] - mat2[i]) * matrixPrecision[i]) !== 0) {
       return false;
     }
   }
