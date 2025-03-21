@@ -2,6 +2,7 @@ import {
   apply,
   compose,
   create,
+  equivalent,
   invert,
   makeInverse,
   makeScale,
@@ -178,12 +179,14 @@ describe('ol.transform', function () {
       expect(point).to.eql([3, 5]);
     });
   });
-  describe('toString()', function () {
+  describe('equivalent()', function () {
     it('compares with value read back from node', function () {
-      const mat = [1 / 3, 0, 0, 1 / 3, 0, 0];
+      const mat = toString([1 / 3, 0, 0, 1 / 3, 0, 0]);
       const node = document.createElement('div');
-      node.style.transform = 'matrix(' + mat.join(',') + ')';
-      expect(toString(mat)).to.be(node.style.transform);
+      node.style.transform = mat;
+      expect(equivalent(mat, node.style.transform)).to.be(true);
+      const otherMat = toString([1 / 32, 0, 0, 1 / 3, 0, 1]);
+      expect(equivalent(mat, otherMat)).to.be(false);
     });
   });
 });
