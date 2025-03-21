@@ -3,6 +3,7 @@
  */
 import ViewHint from '../../ViewHint.js';
 import {assert} from '../../asserts.js';
+import {createCanvasContext2D} from '../../dom.js';
 import {listen, unlistenByKey} from '../../events.js';
 import {buffer, createEmpty, equals} from '../../extent.js';
 import BaseVector from '../../layer/BaseVector.js';
@@ -14,7 +15,13 @@ import {
 } from '../../proj.js';
 import MixedGeometryBatch from '../../render/webgl/MixedGeometryBatch.js';
 import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
+import {TextOverlayWorkerMessageType} from '../../render/webgl/constants.js';
 import {colorDecodeId} from '../../render/webgl/encodeUtil.js';
+import {
+  deserializeFrameState,
+  serializeFeature,
+  serializeFrameState,
+} from '../../render/webgl/serialize.js';
 import {breakDownFlatStyle} from '../../render/webgl/style.js';
 import VectorEventType from '../../source/VectorEventType.js';
 import {
@@ -31,6 +38,7 @@ import {
 } from '../../vec/mat4.js';
 import {DefaultUniform} from '../../webgl/Helper.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
+import {create as createTextOverlayWorker} from '../../worker/textOverlay.js';
 import WebGLLayerRenderer from './Layer.js';
 import {getWorldParameters} from './worldUtil.js';
 
@@ -39,6 +47,8 @@ export const Uniforms = {
   RENDER_EXTENT: 'u_renderExtent', // intersection of layer, source, and view extent
   PATTERN_ORIGIN: 'u_patternOrigin',
   GLOBAL_ALPHA: 'u_globalAlpha',
+  TEXT_OVERLAY_TEXTURE: 'u_textOverlay',
+  TEXT_OVERLAY_MATRIX: 'u_textOverlayMatrix',
 };
 
 /**
@@ -90,7 +100,53 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
     super(layer, {
       uniforms: uniforms,
-      postProcesses: options.postProcesses,
+      postProcesses: [
+        {
+          fragmentShader: `
+            precision mediump float;
+
+            uniform sampler2D u_image;
+            uniform sampler2D ${Uniforms.TEXT_OVERLAY_TEXTURE};
+            uniform mat4 ${Uniforms.TEXT_OVERLAY_MATRIX};
+            
+            varying vec2 v_texCoord;
+
+            void main() {
+              vec4 color = texture2D(u_image, v_texCoord);
+
+              vec4 coords = vec4(v_texCoord.x, v_texCoord.y, 0., 0.) * 2. - vec4(1., 1., 0., 0.);
+              coords = ${Uniforms.TEXT_OVERLAY_MATRIX} * coords;
+              coords = coords * 0.5 + vec4(0.5, 0.5, 0., 0.);
+              
+              // vec4 coords = vec4(v_texCoord.x, 1.-v_texCoord.y, 0., 1.);
+              // vec4 coords = ${Uniforms.TEXT_OVERLAY_MATRIX} * vec4(v_texCoord.x, v_texCoord.y, 0., 0.);
+
+              vec4 textColor = texture2D(${Uniforms.TEXT_OVERLAY_TEXTURE}, vec2(coords.x, 1.-coords.y));
+              // gl_FragColor = textColor.a > 0.5 ? textColor : color;
+              // gl_FragColor = textColor + 0.5 * color;
+              gl_FragColor = textColor.a * textColor + (1. - textColor.a) * color;
+            }`,
+          uniforms: {
+            [Uniforms.TEXT_OVERLAY_TEXTURE]: () => this.textOverlayCanvas_,
+            // [Uniforms.TEXT_OVERLAY_MATRIX]: () => this.textOverlayOffsetMatrix_,
+            [Uniforms.TEXT_OVERLAY_MATRIX]: () => {
+              makeInverseTransform(
+                this.tmpTransform_,
+                this.currentFrameStateTransform_,
+              );
+              multiplyTransform(
+                this.tmpTransform_,
+                this.textOverlayRenderTransform_,
+              );
+              return mat4FromTransform(
+                this.textOverlayOffsetMatrix_,
+                this.tmpTransform_,
+              );
+            },
+          },
+        },
+        ...(options.postProcesses ?? []),
+      ],
     });
 
     /**
@@ -185,6 +241,44 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
      * @type {Array<import("../../events.js").EventsKey|null>}
      */
     this.sourceListenKeys_ = null;
+
+    // this.textOverlay_ = null;
+
+    this.textOverlayOffsetMatrix_ = createMat4();
+    this.textOverlayOffsetMatrix_ = [
+      1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ];
+
+    this.textOverlayRenderTransform_ = createTransform();
+
+    this.textOverlayWorker_ = createTextOverlayWorker();
+    this.textOverlayCanvas_ = createCanvasContext2D().canvas;
+    this.textOverlayWorker_.addEventListener('message', (message) => {
+      const received = message.data;
+      if (received.type === TextOverlayWorkerMessageType.RENDERED) {
+        const imageData = message.data.imageData;
+        this.textOverlayCanvas_.width = imageData.width;
+        this.textOverlayCanvas_.height = imageData.height;
+        this.textOverlayCanvas_.getContext('2d').drawImage(imageData, 0, 0);
+        this.textOverlayCanvas_.style.transform = message.data.transform;
+
+        this.textOverlayRenderTransform_ = this.helper.makeProjectionTransform(
+          deserializeFrameState(message.data.frameState),
+          this.textOverlayRenderTransform_,
+        );
+
+        // transfer back the image data
+        this.textOverlayWorker_.postMessage(
+          {
+            type: TextOverlayWorkerMessageType.RENDERED,
+            imageData,
+          },
+          [imageData],
+        );
+
+        this.changed();
+      }
+    });
   }
 
   /**
@@ -201,7 +295,13 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
         frameState.viewState.projection,
       );
     }
-    this.batch_.addFeatures(source.getFeatures(), projectionTransform);
+    const features = source.getFeatures();
+    this.batch_.addFeatures(features, projectionTransform);
+    this.textOverlayWorker_.postMessage({
+      type: TextOverlayWorkerMessageType.LOAD_FEATURES,
+      batchId: 'main',
+      features: features.map(serializeFeature),
+    });
     this.sourceListenKeys_ = [
       listen(
         source,
@@ -256,12 +356,28 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
+   * @private
+   */
+  initTextOverlay_() {
+    // this.textOverlay_ = new TextOverlay(
+    //   this.helper,
+    //   /** @type {any} */ (this.styles_),
+    // );
+    this.textOverlayWorker_.postMessage({
+      type: TextOverlayWorkerMessageType.INIT,
+      style: this.styles_,
+      userProjection: getUserProjection()?.getCode(),
+    });
+  }
+
+  /**
    * @override
    */
   reset(options) {
     this.applyOptions_(options);
     if (this.helper) {
       this.createRenderers_();
+      this.initTextOverlay_();
     }
     super.reset(options);
   }
@@ -277,6 +393,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       );
     } else {
       this.createRenderers_();
+      this.initTextOverlay_();
     }
 
     if (this.hitDetectionEnabled_) {
@@ -345,6 +462,23 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     makeInverseTransform(this.tmpTransform_, batchInvertTransform);
     applyTransform(this.tmpTransform_, this.tmpCoords_);
     this.helper.setUniformFloatVec2(Uniforms.PATTERN_ORIGIN, this.tmpCoords_);
+
+    // compute text overlay offset matrix
+    // setFromTransform(this.tmpTransform_, this.currentFrameStateTransform_);
+    // multiplyTransform(
+    //   this.tmpTransform_,
+    //   makeInverseTransform(createTransform(), this.textOverlayRenderTransform_),
+    // );
+    // makeInverseTransform(this.tmpTransform_, this.currentFrameStateTransform_);
+    // multiplyTransform(this.tmpTransform_, this.textOverlayRenderTransform_);
+    // mat4FromTransform(this.textOverlayOffsetMatrix_, this.tmpTransform_);
+    // scale(
+    //   this.textOverlayOffsetMatrix_,
+    //   0.5,
+    //   0.5,
+    //   1,
+    //   this.textOverlayOffsetMatrix_,
+    // );
   }
 
   /**
@@ -365,6 +499,13 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     // draw the normal canvas
     this.helper.prepareDraw(frameState);
     this.renderWorlds(frameState, false, startWorld, endWorld, worldWidth);
+    // this.textOverlay_.render(frameState, ['main']);
+
+    this.textOverlayWorker_.postMessage({
+      type: TextOverlayWorkerMessageType.RENDER,
+      batchesId: ['main'],
+      frameState: serializeFrameState(frameState),
+    });
     this.helper.finalizeDraw(
       frameState,
       this.dispatchPreComposeEvent,
@@ -448,6 +589,21 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       });
 
       this.previousExtent_ = frameState.extent.slice();
+    }
+
+    if (sourceChanged) {
+      // TODO: update source
+      // this.textOverlay_.unloadFeatureBatch('main');
+      // this.textOverlay_.loadFeatureBatch(vectorSource.getFeatures(), 'main');
+      this.textOverlayWorker_.postMessage({
+        type: TextOverlayWorkerMessageType.UNLOAD_FEATURES,
+        batchId: 'main',
+      });
+      this.textOverlayWorker_.postMessage({
+        type: TextOverlayWorkerMessageType.LOAD_FEATURES,
+        batchId: 'main',
+        features: vectorSource.getFeatures().map(serializeFeature),
+      });
     }
 
     return true;
