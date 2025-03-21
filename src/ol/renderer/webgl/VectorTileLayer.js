@@ -1,11 +1,17 @@
 /**
  * @module ol/renderer/webgl/VectorTileLayer
  */
+import {createCanvasContext2D} from '../../dom.js';
 import EventType from '../../events/EventType.js';
 import {getIntersection} from '../../extent.js';
+import {getUserProjection} from '../../proj.js';
 import {ShaderBuilder} from '../../render/webgl/ShaderBuilder.js';
-import TextOverlay from '../../render/webgl/TextOverlay.js';
 import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
+import {TextOverlayWorkerMessageType} from '../../render/webgl/constants.js';
+import {
+  serializeFeature,
+  serializeFrameState,
+} from '../../render/webgl/serialize.js';
 import {
   breakDownFlatStyle,
   parseLiteralStyle,
@@ -25,6 +31,7 @@ import {AttributeType} from '../../webgl/Helper.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
 import TileGeometry from '../../webgl/TileGeometry.js';
 import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
+import {create as createTextOverlayWorker} from '../../worker/textOverlay.js';
 import WebGLBaseTileLayerRenderer, {
   Uniforms as BaseUniforms,
 } from './TileLayerBase.js';
@@ -96,8 +103,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
               // gl_FragColor = textColor + 0.5 * color;
             }`,
           uniforms: {
-            [Uniforms.TEXT_OVERLAY_TEXTURE]: () =>
-              this.textOverlay_.getCanvas(),
+            [Uniforms.TEXT_OVERLAY_TEXTURE]: () => this.textOverlayCanvas_,
           },
         },
       ],
@@ -178,12 +184,30 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
      */
     this.tileMaskProgram_;
 
-    /**
-     * @type {TextOverlay}
-     * @private
-     */
-    this.textOverlay_ = null;
+    this.textOverlayWorker_ = createTextOverlayWorker();
+    this.textOverlayCanvas_ = createCanvasContext2D().canvas;
+    this.textOverlayWorker_.addEventListener('message', (message) => {
+      const received = message.data;
+      if (received.type === TextOverlayWorkerMessageType.RENDERED) {
+        const imageData = message.data.imageData;
+        this.textOverlayCanvas_.width = imageData.width;
+        this.textOverlayCanvas_.height = imageData.height;
+        this.textOverlayCanvas_.getContext('2d').drawImage(imageData, 0, 0);
+        this.textOverlayCanvas_.style.transform = message.data.transform;
 
+        // transfer back the image data
+        this.textOverlayWorker_.postMessage(
+          {
+            type: TextOverlayWorkerMessageType.RENDERED,
+            imageData,
+          },
+          [imageData],
+        );
+
+        this.changed();
+        console.log('changed');
+      }
+    });
     /**
      * @type {Array<string>}
      * @private
@@ -280,10 +304,15 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
   }
 
   initTextOverlay_() {
-    this.textOverlay_ = new TextOverlay(
-      this.helper,
-      /** @type {any} */ (this.styles_),
-    );
+    // this.textOverlay_ = new TextOverlay(
+    //   this.helper,
+    //   /** @type {any} */ (this.styles_),
+    // );
+    this.textOverlayWorker_.postMessage({
+      type: TextOverlayWorkerMessageType.INIT,
+      style: this.styles_,
+      userProjection: getUserProjection()?.getCode(),
+    });
   }
 
   /**
@@ -303,10 +332,15 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     // redraw the layer when the tile is ready
     const listener = () => {
       if (tileRep.ready) {
-        this.textOverlay_.loadFeatureBatch(
-          tileRep.features,
-          tileRep.tile.getKey(),
-        );
+        // this.textOverlay_.loadFeatureBatch(
+        //   tileRep.features,
+        //   tileRep.tile.getKey(),
+        // );
+        this.textOverlayWorker_.postMessage({
+          type: TextOverlayWorkerMessageType.LOAD_FEATURES,
+          batchId: tileRep.tile.getKey(),
+          features: tileRep.features.map(serializeFeature),
+        });
         this.getLayer().changed();
         tileRep.removeEventListener(EventType.CHANGE, listener);
       }
@@ -363,7 +397,12 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    */
   beforeFinalize(frameState) {
     // this.textOverlay_.renderFeatures(frameState, []);
-    this.textOverlay_.render(frameState, this.tilesToRender_);
+    // this.textOverlay_.render(frameState, this.tilesToRender_);
+    this.textOverlayWorker_.postMessage({
+      type: TextOverlayWorkerMessageType.RENDER,
+      batchesId: this.tilesToRender_,
+      frameState: serializeFrameState(frameState),
+    });
   }
 
   /**
@@ -460,7 +499,11 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.tilesToRender_.slice(
       this.tilesToRender_.indexOf(tileRepresentation.tile.getKey()),
     );
-    this.textOverlay_.unloadFeatureBatch(tileRepresentation.tile.getKey());
+    // this.textOverlay_.unloadFeatureBatch(tileRepresentation.tile.getKey());
+    this.textOverlayWorker_.postMessage({
+      type: TextOverlayWorkerMessageType.UNLOAD_FEATURES,
+      batchId: tileRepresentation.tile.getKey(),
+    });
   }
 
   /**
