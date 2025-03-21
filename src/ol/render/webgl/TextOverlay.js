@@ -162,6 +162,8 @@ class TextOverlay {
     if (!frameState.declutter) {
       frameState.declutter = {};
     }
+    frameState.layerIndex = 0;
+    frameState.layerStatesArray = [this.vectorLayer_.getLayerState()];
     renderer.context = this.context_;
     renderer.targetContext_ = this.context_;
     renderer.useContainer = useContainer.bind(renderer, this.context_);
@@ -196,7 +198,11 @@ class TextOverlay {
   }
 
   getCanvas() {
-    return this.context_.canvas;
+    return /** @type {OffscreenCanvas} */ (this.context_.canvas);
+  }
+
+  getLayer() {
+    return this.vectorLayer_;
   }
 }
 
