@@ -18,16 +18,25 @@ const map = new Map({
   }),
 });
 
+/**
+ * @param {string} id Input element id
+ * @param {number} value Value to set
+ */
 function display(id, value) {
-  document.getElementById(id).value = value.toFixed(2);
+  const input = /** @type {HTMLInputElement} */ (document.getElementById(id));
+  input.value = value.toFixed(2);
 }
 
+/**
+ * @param {number} value Longitude
+ * @return {number} Longitude in range -180, 180
+ */
 function wrapLon(value) {
   const worlds = Math.floor((value + 180) / 360);
   return value - worlds * 360;
 }
 
-function onMoveEnd(evt) {
+map.on('moveend', function (evt) {
   const map = evt.map;
   const extent = map.getView().calculateExtent(map.getSize());
   const bottomLeft = toLonLat(getBottomLeft(extent));
@@ -36,6 +45,4 @@ function onMoveEnd(evt) {
   display('bottom', bottomLeft[1]);
   display('right', wrapLon(topRight[0]));
   display('top', topRight[1]);
-}
-
-map.on('moveend', onMoveEnd);
+});

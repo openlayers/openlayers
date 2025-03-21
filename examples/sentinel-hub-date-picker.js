@@ -12,6 +12,10 @@ const source = new SentinelHub({
       input: ['B02', 'B03', 'B04'],
       output: {bands: 3},
     }),
+    /**
+     * @param {{[K in 'B02'|'B03'|'B04']: number}} sample Sample
+     * @return {Array<number>} Value
+     */
     evaluatePixel: (sample) => [3 * sample.B04, 3 * sample.B03, 3 * sample.B02],
   },
 });
@@ -27,13 +31,18 @@ const map = new Map({
   }),
 });
 
-document.getElementById('auth-form').addEventListener('submit', (event) => {
-  const clientId = event.target.elements['id'].value;
-  const clientSecret = event.target.elements['secret'].value;
+const authForm = /** @type {HTMLFormElement} */ (
+  document.getElementById('auth-form')
+);
+authForm.addEventListener('submit', () => {
+  const clientId = authForm.elements['id'].value;
+  const clientSecret = authForm.elements['secret'].value;
   source.setAuth({clientId, clientSecret});
 });
 
-const picker = document.getElementById('to-date');
+const picker = /** @type {HTMLInputElement} */ (
+  document.getElementById('to-date')
+);
 
 function updateInputData() {
   const toDate = new Date(picker.value);

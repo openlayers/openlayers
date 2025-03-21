@@ -35,26 +35,27 @@ const featureOverlay = new VectorLayer({
 
 let highlight;
 const displayFeatureInfo = function (pixel) {
-  const feature = map.forEachFeatureAtPixel(pixel, function (feature) {
-    return feature;
-  });
-
+  const feature = map.forEachFeatureAtPixel(
+    pixel,
+    /**
+     * @param {import('../src/ol/Feature.js').default} feature  Feature
+     * @return {import('../src/ol/Feature.js').default} Feature
+     */
+    (feature) => feature,
+  );
+  if (feature === highlight) {
+    return;
+  }
   const info = document.getElementById('info');
-  if (feature) {
-    info.innerHTML = feature.get('ECO_NAME') || '&nbsp;';
-  } else {
-    info.innerHTML = '&nbsp;';
-  }
+  info.innerHTML = feature ? feature.get('ECO_NAME') || '&nbsp;' : '&nbsp;';
 
-  if (feature !== highlight) {
-    if (highlight) {
-      featureOverlay.getSource().removeFeature(highlight);
-    }
-    if (feature) {
-      featureOverlay.getSource().addFeature(feature);
-    }
-    highlight = feature;
+  if (highlight) {
+    featureOverlay.getSource().removeFeature(highlight);
   }
+  if (feature) {
+    featureOverlay.getSource().addFeature(feature);
+  }
+  highlight = feature;
 };
 
 map.on('pointermove', function (evt) {
