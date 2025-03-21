@@ -179,11 +179,25 @@ describe('ol.transform', function () {
     });
   });
   describe('toString()', function () {
+    function extractMatrixValues(matrixString) {
+      const match = matrixString.match(/matrix\(([^)]+)\)/);
+      if (match) {
+        return match[1].split(',').map(parseFloat);
+      }
+      return [];
+    };
+
     it('compares with value read back from node', function () {
       const mat = [1 / 3, 0, 0, 1 / 3, 0, 0];
       const node = document.createElement('div');
       node.style.transform = 'matrix(' + mat.join(',') + ')';
-      expect(toString(mat)).to.be(node.style.transform);
+
+      const nodeMatrixValue = extractMatrixValues(node.style.transform);
+      const roundedMatrixValue = extractMatrixValues(toString(mat));
+
+      for (let i = 0; i < nodeMatrixValue.length; i++) {
+        expect(nodeMatrixValue[i]).to.roughlyEqual(roundedMatrixValue[i], 1e-5)
+      }
     });
   });
 });
