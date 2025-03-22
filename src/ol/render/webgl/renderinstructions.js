@@ -1,6 +1,7 @@
 /**
  * @module ol/render/webgl/renderinstructions
  */
+import {UNDEFINED_PROP_VALUE} from '../../expr/gpu.js';
 import {transform2D} from '../../geom/flat/transform.js';
 import {apply as applyTransform} from '../../transform.js';
 
@@ -21,7 +22,13 @@ function pushCustomAttributesInRenderInstructions(
   for (const key in customAttributes) {
     const attr = customAttributes[key];
     const value = attr.callback.call(batchEntry, batchEntry.feature);
-    renderInstructions[currentIndex + shift++] = value?.[0] ?? value;
+    let first = value?.[0] ?? value;
+    if (first === undefined) {
+      first = UNDEFINED_PROP_VALUE;
+    } else if (first === null) {
+      first = 0;
+    }
+    renderInstructions[currentIndex + shift++] = first;
     if (!attr.size || attr.size === 1) {
       continue;
     }
