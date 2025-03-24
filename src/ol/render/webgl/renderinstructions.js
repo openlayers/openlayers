@@ -23,6 +23,9 @@ function pushCustomAttributesInRenderInstructions(
     const attr = customAttributes[key];
     const value = attr.callback.call(batchEntry, batchEntry.feature);
     let first = value?.[0] ?? value;
+    if (first === UNDEFINED_PROP_VALUE) {
+      console.warn('The "has" operator might return false positives.'); // eslint-disable-line no-console
+    }
     if (first === undefined) {
       first = UNDEFINED_PROP_VALUE;
     } else if (first === null) {

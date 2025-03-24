@@ -1,4 +1,6 @@
+import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
+import {UNDEFINED_PROP_VALUE} from '../../../../../../src/ol/expr/gpu.js';
 import LineString from '../../../../../../src/ol/geom/LineString.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../../src/ol/geom/Polygon.js';
@@ -208,6 +210,45 @@ describe('Render instructions utilities', function () {
       );
 
       expect(Array.from(renderInstructions)).to.eql([2, 2, 0, 6, 6, 3]);
+    });
+
+    describe('an attribute value conflicts with UNDEFINED_PROP_VALUE', () => {
+      let consoleSpy;
+      beforeEach(() => {
+        consoleSpy = sinonSpy(console, 'warn');
+        mixedBatch = new MixedGeometryBatch();
+        mixedBatch.addFeatures([
+          new Feature({
+            test: UNDEFINED_PROP_VALUE,
+            geometry: new Point([10, 20]),
+          }),
+        ]);
+      });
+      afterEach(() => {
+        consoleSpy.restore();
+      });
+      it('outputs a console warning', () => {
+        renderInstructions = generatePointRenderInstructions(
+          mixedBatch.pointBatch,
+          new Float32Array(0),
+          [
+            {
+              name: 'test',
+              size: 1,
+              callback: function (feature) {
+                return feature.get('test');
+              },
+            },
+          ],
+          SAMPLE_TRANSFORM,
+        );
+
+        expect(
+          consoleSpy.calledWith(
+            'The "has" operator might return false positives.',
+          ),
+        ).to.be(true);
+      });
     });
   });
 });

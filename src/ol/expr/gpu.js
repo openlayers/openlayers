@@ -168,8 +168,6 @@ export const GEOMETRY_TYPE_PROPERTY_NAME = 'geometryType';
 
 /**
  * The value `-9999999` will be used to indicate that a property on a feature is not defined, similar to a "no data" value.
- * @type {number}
- * @api
  */
 export const UNDEFINED_PROP_VALUE = -9999999;
 
