@@ -114,12 +114,9 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
             void main() {
               vec4 color = texture2D(u_image, v_texCoord);
 
-              vec4 coords = vec4(v_texCoord.x, v_texCoord.y, 0., 0.) * 2. - vec4(1., 1., 0., 0.);
-              coords = ${Uniforms.TEXT_OVERLAY_MATRIX} * coords;
-              coords = coords * 0.5 + vec4(0.5, 0.5, 0., 0.);
-              
-              // vec4 coords = vec4(v_texCoord.x, 1.-v_texCoord.y, 0., 1.);
-              // vec4 coords = ${Uniforms.TEXT_OVERLAY_MATRIX} * vec4(v_texCoord.x, v_texCoord.y, 0., 0.);
+              vec2 coords = v_texCoord * 2. - vec2(1.);
+              coords = (${Uniforms.TEXT_OVERLAY_MATRIX} * vec4(coords.xy, 0., 1.)).xy;
+              coords = coords * 0.5 + vec2(0.5);
 
               vec4 textColor = texture2D(${Uniforms.TEXT_OVERLAY_TEXTURE}, vec2(coords.x, 1.-coords.y));
               // gl_FragColor = textColor.a > 0.5 ? textColor : color;
@@ -129,14 +126,65 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
           uniforms: {
             [Uniforms.TEXT_OVERLAY_TEXTURE]: () => this.textOverlayCanvas_,
             // [Uniforms.TEXT_OVERLAY_MATRIX]: () => this.textOverlayOffsetMatrix_,
-            [Uniforms.TEXT_OVERLAY_MATRIX]: () => {
+            [Uniforms.TEXT_OVERLAY_MATRIX]: (frameState) => {
+              // makeInverseTransform(
+              //   this.tmpTransform_,
+              //   this.currentFrameStateTransform_,
+              // );
+              // multiplyTransform(
+              //   this.tmpTransform_,
+              //   this.textOverlayRenderTransform_,
+              // );
+              const viewState = frameState.viewState;
+              const renderedViewState =
+                this.textOverlayRenderFrameState_.viewState;
+              const center = viewState.center;
+              const resolution = viewState.resolution;
+              const rotation = viewState.rotation;
+              const size = frameState.size;
+              const renderedCenter = renderedViewState.center;
+              const renderedResolution = renderedViewState.resolution;
+              const renderedRotation = renderedViewState.rotation;
+              const renderedSize = this.textOverlayRenderFrameState_.size;
+              // resetTransform(this.tmpTransform_);
+              // composeTransform(
+              //   this.tmpTransform_,
+              //   ((renderedCenter[0] - center[0]) * 1) / resolution,
+              //   ((center[1] - renderedCenter[1]) * 1) / resolution,
+              //   // resolution / renderedResolution,
+              //   // resolution / renderedResolution,
+              //   1,
+              //   1,
+              //   // rotation - renderedRotation,
+              //   0,
+              //   0,
+              //   0,
+              // );
               makeInverseTransform(
                 this.tmpTransform_,
                 this.currentFrameStateTransform_,
               );
+              // composeTransform(
+              //   this.tmpTransform_,
+              //   renderedCenter[0] - center[0],
+              //   renderedCenter[1] - center[1],
+              //   // resolution / renderedResolution,
+              //   // resolution / renderedResolution,
+              //   1,
+              //   1,
+              //   // rotation - renderedRotation,
+              //   0,
+              //   0,
+              //   0,
+              // );
+              translateTransform(
+                this.tmpTransform_,
+                renderedCenter[0] - center[0],
+                renderedCenter[1] - center[1],
+              );
               multiplyTransform(
                 this.tmpTransform_,
-                this.textOverlayRenderTransform_,
+                this.currentFrameStateTransform_,
               );
               return mat4FromTransform(
                 this.textOverlayOffsetMatrix_,
@@ -250,6 +298,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     ];
 
     this.textOverlayRenderTransform_ = createTransform();
+    this.textOverlayRenderFrameState_ = null;
 
     this.textOverlayWorker_ = createTextOverlayWorker();
     this.textOverlayCanvas_ = createCanvasContext2D().canvas;
@@ -262,6 +311,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
         this.textOverlayCanvas_.getContext('2d').drawImage(imageData, 0, 0);
         this.textOverlayCanvas_.style.transform = message.data.transform;
 
+        this.textOverlayRenderFrameState_ = message.data.frameState;
         this.textOverlayRenderTransform_ = this.helper.makeProjectionTransform(
           deserializeFrameState(message.data.frameState),
           this.textOverlayRenderTransform_,
