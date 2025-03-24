@@ -167,6 +167,11 @@ export const FEATURE_ID_PROPERTY_NAME = 'featureId';
 export const GEOMETRY_TYPE_PROPERTY_NAME = 'geometryType';
 
 /**
+ * The value `-9999999` will be used to indicate that a property on a feature is not defined, similar to a "no data" value.
+ */
+export const UNDEFINED_PROP_VALUE = -9999999;
+
+/**
  * @typedef {string} CompiledExpression
  */
 
@@ -243,6 +248,18 @@ const compilers = {
       };
     }
     return uniformNameForVariable(varName);
+  },
+  [Ops.Has]: (context, expression) => {
+    const firstArg = /** @type {LiteralExpression} */ (expression.args[0]);
+    const propName = /** @type {string} */ (firstArg.value);
+    const isExisting = propName in context.properties;
+    if (!isExisting) {
+      context.properties[propName] = {
+        name: propName,
+        type: expression.type,
+      };
+    }
+    return `(a_prop_${propName} != ${numberToGlsl(UNDEFINED_PROP_VALUE)})`;
   },
   [Ops.Resolution]: () => 'u_resolution',
   [Ops.Zoom]: () => 'u_zoom',

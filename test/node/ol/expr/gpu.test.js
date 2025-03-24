@@ -159,6 +159,12 @@ describe('ol/expr/gpu.js', () => {
         expected: 'currentLineMetric',
       },
       {
+        name: 'has',
+        type: AnyType,
+        expression: ['has', 'myAttr'],
+        expected: '(a_prop_myAttr != -9999999.0)',
+      },
+      {
         name: 'time',
         type: AnyType,
         expression: ['time'],

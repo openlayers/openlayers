@@ -96,6 +96,7 @@ import {toSize} from '../size.js';
  *   * `['any', value1, value2, ...]` returns `true` if any of the inputs are `true`, `false` otherwise.
  *   * `['has', attributeName, keyOrArrayIndex, ...]` returns `true` if feature properties include the (nested) key `attributeName`,
  *     `false` otherwise.
+ *     Note that for WebGL layers, the hardcoded value `-9999999` is used to distinguish when a property is not defined.
  *   * `['between', value1, value2, value3]` returns `true` if `value1` is contained between `value2` and `value3`
  *     (inclusively), or `false` otherwise.
  *   * `['in', needle, haystack]` returns `true` if `needle` is found in `haystack`, and
