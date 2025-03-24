@@ -213,9 +213,14 @@ describe('Render instructions utilities', function () {
     });
 
     describe('an attribute value conflicts with UNDEFINED_PROP_VALUE', () => {
-      let consoleSpy;
+      let consoleSpy, originalConsole;
       beforeEach(() => {
-        consoleSpy = sinonSpy(console, 'warn');
+        originalConsole = console;
+        consoleSpy = sinonSpy();
+        window.console = {
+          ...console,
+          warn: consoleSpy,
+        };
         mixedBatch = new MixedGeometryBatch();
         mixedBatch.addFeatures([
           new Feature({
@@ -224,8 +229,8 @@ describe('Render instructions utilities', function () {
           }),
         ]);
       });
-      afterEach(() => {
-        consoleSpy.restore();
+      afterEach(function () {
+        window.console = originalConsole;
       });
       it('outputs a console warning', () => {
         renderInstructions = generatePointRenderInstructions(
