@@ -318,7 +318,7 @@ describe('ol/source/VectorTile', function () {
   });
 
   describe('different source and render tile grids', function () {
-    let source, map, loaded, target;
+    let source, map, loaded;
 
     beforeEach(function () {
       loaded = [];
@@ -348,11 +348,6 @@ describe('ol/source/VectorTile', function () {
         tileLoadFunction: tileLoadFunction,
       });
 
-      target = document.createElement('div');
-      target.style.width = '100px';
-      target.style.height = '100px';
-      document.body.appendChild(target);
-
       map = new Map({
         layers: [
           new VectorTileLayer({
@@ -360,7 +355,7 @@ describe('ol/source/VectorTile', function () {
             source: source,
           }),
         ],
-        target: target,
+        target: createMapDiv(100, 100),
         view: new View({
           zoom: 11,
           center: [666373.1624999996, 7034265.3572],
@@ -369,7 +364,7 @@ describe('ol/source/VectorTile', function () {
     });
 
     afterEach(function () {
-      target.remove();
+      disposeMap(map);
     });
 
     it('loads only required tiles', function (done) {
@@ -386,8 +381,8 @@ describe('ol/source/VectorTile', function () {
         center: toLonLat([666373.1624999996, 7034265.3572]),
         projection: 'EPSG:4326',
       });
+      map.setView(view);
       expect(function () {
-        map.setView(view);
         map.renderSync();
       }).to.throwException();
     });

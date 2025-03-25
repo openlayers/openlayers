@@ -96,7 +96,6 @@ describe('ol/renderer/canvas/VectorLayer', function () {
     });
 
     it('does not re-render for unavailable fonts', function (done) {
-      checkedFonts.values_ = {};
       const map = new Map({
         view: new View({
           center: [0, 0],
@@ -127,7 +126,6 @@ describe('ol/renderer/canvas/VectorLayer', function () {
     });
 
     it('does not re-render for available fonts', function (done) {
-      checkedFonts.values_ = {};
       const map = new Map({
         view: new View({
           center: [0, 0],
@@ -158,7 +156,6 @@ describe('ol/renderer/canvas/VectorLayer', function () {
     });
 
     it('re-renders for fonts that become available', function (done) {
-      checkedFonts.values_ = {};
       font.add();
       const map = new Map({
         view: new View({
@@ -208,6 +205,10 @@ describe('ol/renderer/canvas/VectorLayer', function () {
     });
 
     this.afterEach(function () {
+      checkedFonts.getListeners('propertychange').forEach((listener) => {
+        checkedFonts.removeEventListener('propertychange', listener);
+      });
+      checkedFonts.setProperties({});
       disposeMap(map);
     });
 
