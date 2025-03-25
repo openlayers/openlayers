@@ -1,5 +1,8 @@
+import Feature from '../../../../src/ol/Feature.js';
 import {
+  UNKNOWN,
   buildExpression,
+  expressionToFunction,
   newEvaluationContext,
 } from '../../../../src/ol/expr/cpu.js';
 import {
@@ -798,6 +801,215 @@ describe('ol/expr/cpu.js', () => {
         expression: ['has', 'property', 0, 'foo'],
         expected: false,
       },
+      {
+        name: 'incomplete context (unknown properties, color)',
+        type: ColorType,
+        expression: ['*', ['get', 'color'], [255, 255, 255, 0.5]],
+        context: {
+          properties: UNKNOWN,
+        },
+        expected: UNKNOWN,
+      },
+      {
+        name: 'incomplete context (unknown properties, boolean)',
+        type: BooleanType,
+        expression: ['all', ['get', 'enabled'], true],
+        context: {
+          properties: UNKNOWN,
+        },
+        expected: UNKNOWN,
+      },
+      {
+        name: 'incomplete context (unknown properties does not prevent resolution, any)',
+        type: BooleanType,
+        expression: ['any', ['get', 'enabled'], true],
+        context: {
+          properties: UNKNOWN,
+        },
+        expected: true,
+      },
+      {
+        name: 'incomplete context (unknown properties prevents resolution, any)',
+        type: BooleanType,
+        expression: ['any', ['get', 'enabled'], false],
+        context: {
+          properties: UNKNOWN,
+        },
+        expected: UNKNOWN,
+      },
+      {
+        name: 'incomplete context (unknown properties, assertion)',
+        type: StringType,
+        expression: ['string', ['get', 'type'], 'hello'],
+        context: {
+          properties: UNKNOWN,
+        },
+        expected: UNKNOWN,
+      },
+      {
+        name: 'incomplete context (unknown properties, comparison)',
+        type: BooleanType,
+        expression: ['==', ['get', 'enabled'], false],
+        context: {
+          properties: UNKNOWN,
+        },
+        expected: UNKNOWN,
+      },
+      {
+        name: 'incomplete context (unknown properties, case)',
+        type: NumberType,
+        expression: ['case', ['get', 'enabled'], 10, false, 20, 30],
+        context: {
+          properties: UNKNOWN,
+        },
+        expected: UNKNOWN,
+      },
+      {
+        name: 'incomplete context (unknown properties after, case)',
+        type: NumberType,
+        expression: ['case', true, 10, ['get', 'enabled'], 20, 30],
+        context: {
+          properties: UNKNOWN,
+        },
+        expected: 10,
+      },
+      {
+        name: 'incomplete context (unknown properties, match)',
+        type: NumberType,
+        expression: ['match', ['get', 'type'], 'abc', 10, 'def', 20, 30],
+        context: {
+          properties: UNKNOWN,
+        },
+        expected: UNKNOWN,
+      },
+      {
+        name: 'incomplete context (unknown properties after, match)',
+        type: NumberType,
+        expression: [
+          'match',
+          ['var', 'input'],
+          'abc',
+          10,
+          'def',
+          ['get', 'value'],
+          30,
+        ],
+        context: {
+          properties: UNKNOWN,
+          variables: {
+            input: 'abc',
+          },
+        },
+        expected: 10,
+      },
+      {
+        name: 'incomplete context (unknown properties, interpolate)',
+        type: NumberType,
+        expression: [
+          'interpolate',
+          ['linear'],
+          ['get', 'value'],
+          0,
+          -50,
+          10,
+          50,
+        ],
+        context: {
+          properties: UNKNOWN,
+        },
+        expected: UNKNOWN,
+      },
+      {
+        name: 'incomplete context (unknown properties after, interpolate)',
+        type: NumberType,
+        expression: [
+          'interpolate',
+          ['linear'],
+          ['var', 'input'],
+          0,
+          -50,
+          10,
+          -10,
+          20,
+          ['get', 'value'],
+        ],
+        context: {
+          properties: UNKNOWN,
+          variables: {input: 5},
+        },
+        expected: -30,
+      },
+      {
+        name: 'incomplete context (unknown properties, has)',
+        context: {
+          properties: UNKNOWN,
+        },
+        expression: ['has', 'property'],
+        expected: UNKNOWN,
+      },
+      {
+        name: 'incomplete context (unknown variables)',
+        type: ColorType,
+        expression: ['*', ['var', 'color'], [255, 255, 255, 0.5]],
+        context: {
+          variables: UNKNOWN,
+        },
+        expected: UNKNOWN,
+      },
+      {
+        name: 'incomplete context (unknown resolution)',
+        type: NumberType,
+        expression: ['-', ['resolution'], 100],
+        context: {
+          resolution: UNKNOWN,
+        },
+        expected: UNKNOWN,
+      },
+      {
+        name: 'incomplete context, string assertion (unknown value after)',
+        type: StringType,
+        expression: ['string', 42, 'chicken', ['get', 'id']],
+        context: {
+          properties: UNKNOWN,
+        },
+        expected: 'chicken',
+      },
+      {
+        name: 'incomplete context, string assertion (unknown value before)',
+        type: StringType,
+        expression: ['string', 42, ['get', 'id'], 'chicken'],
+        context: {
+          properties: UNKNOWN,
+        },
+        expected: UNKNOWN,
+      },
+      {
+        name: 'incomplete context, coalesce (unknown value before)',
+        type: StringType,
+        expression: ['coalesce', ['get', 'id'], 'default'],
+        context: {
+          properties: UNKNOWN,
+        },
+        expected: UNKNOWN,
+      },
+      {
+        name: 'incomplete context, coalesce (unknown value after)',
+        type: StringType,
+        expression: ['coalesce', 'bla', ['get', 'id'], 'default'],
+        context: {
+          properties: UNKNOWN,
+        },
+        expected: 'bla',
+      },
+      {
+        name: 'incomplete context (unknown resolution)',
+        type: StringType,
+        expression: ['*', ['resolution'], 1234],
+        context: {
+          resolution: UNKNOWN,
+        },
+        expected: UNKNOWN,
+      },
     ];
 
     for (const c of cases) {
@@ -884,6 +1096,7 @@ describe('ol/expr/cpu.js', () => {
         const parsingContext = newParsingContext();
         const evaluator = buildExpression(expression, type, parsingContext);
         const evaluationContext = newEvaluationContext();
+        evaluationContext.variables = {};
         for (const [input, output] of t.cases) {
           it(`works for ${input}`, () => {
             evaluationContext.variables.input = input;
@@ -893,5 +1106,47 @@ describe('ol/expr/cpu.js', () => {
         }
       });
     }
+  });
+
+  describe('expressionToFunction()', () => {
+    let fn;
+    beforeEach(() => {
+      const expression = [
+        '+',
+        ['*', ['get', 'number'], 2],
+        ['resolution'],
+        ['var', 'otherNumber'],
+      ];
+      fn = expressionToFunction(expression, NumberType);
+    });
+    it('evaluates to the correct value', () => {
+      const feature = new Feature({number: 123});
+      const variables = {otherNumber: 0.999};
+      expect(fn).to.be.a('function');
+      expect(fn(feature, 1000, variables)).to.eql(1246.999);
+    });
+    it('evaluates to UNKNOWN if a feature, resolution or variable is not provided', () => {
+      const feature = new Feature({number: 123});
+      const variables = {otherNumber: 0.999};
+      expect(fn()).to.eql(UNKNOWN);
+      expect(fn(feature)).to.eql(UNKNOWN);
+      expect(fn(undefined, 1000)).to.eql(UNKNOWN);
+      expect(fn(undefined, undefined, variables)).to.eql(UNKNOWN);
+    });
+    it('throws an error if the expression cannot be compiled', () => {
+      expect(() =>
+        expressionToFunction(['abcd'], BooleanType),
+      ).to.throwException(/unknown operator: abcd/);
+    });
+    it('uses the provided parsing context if present', () => {
+      const context = newParsingContext();
+      expressionToFunction(
+        ['>', ['resolution'], ['get', 'minZoom']],
+        BooleanType,
+        context,
+      );
+      expect(context.mapState).to.be(true);
+      expect(context.properties.has('minZoom')).to.be(true);
+    });
   });
 });

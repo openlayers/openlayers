@@ -1,12 +1,8 @@
 /**
  * @module ol/render/webgl/VectorStyleRenderer
  */
-import {buildExpression, newEvaluationContext} from '../../expr/cpu.js';
-import {
-  BooleanType,
-  computeGeometryType,
-  newParsingContext,
-} from '../../expr/expression.js';
+import {UNKNOWN, expressionToFunction} from '../../expr/cpu.js';
+import {BooleanType, newParsingContext} from '../../expr/expression.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
@@ -223,7 +219,6 @@ class VectorStyleRenderer {
     }
 
     /**
-     * @type {function(import('../../Feature.js').FeatureLike): boolean}
      * @private
      */
     this.featureFilter_ = null;
@@ -346,11 +341,12 @@ class VectorStyleRenderer {
   computeFeatureFilter(filter) {
     const parsingContext = newParsingContext();
     /**
-     * @type {import('../../expr/cpu.js').ExpressionEvaluator}
+     * @type {import('../../expr/cpu.js').ExpressionAsFunction}
      */
-    let compiled;
+    let expressionFn;
+
     try {
-      compiled = buildExpression(filter, BooleanType, parsingContext);
+      expressionFn = expressionToFunction(filter, BooleanType, parsingContext);
     } catch {
       // filter expression failed to compile for CPU: ignore it
       return null;
@@ -361,19 +357,9 @@ class VectorStyleRenderer {
       return null;
     }
 
-    const evalContext = newEvaluationContext();
     return (feature) => {
-      evalContext.properties = feature.getPropertiesInternal();
-      if (parsingContext.featureId) {
-        const id = feature.getId();
-        if (id !== undefined) {
-          evalContext.featureId = id;
-        } else {
-          evalContext.featureId = null;
-        }
-      }
-      evalContext.geometryType = computeGeometryType(feature.getGeometry());
-      return /** @type {boolean} */ (compiled(evalContext));
+      const result = expressionFn(feature);
+      return result === true || result === UNKNOWN;
     };
   }
 
