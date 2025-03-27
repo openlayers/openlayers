@@ -184,7 +184,6 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
 
     it('does not re-render for unavailable fonts', function (done) {
       map.renderSync();
-      checkedFonts.values_ = {};
       layerStyle[0].getText().setFont('12px "Unavailable font",sans-serif');
       layer.changed();
       const revision = layer.getRevision();
@@ -196,7 +195,6 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
 
     it('does not re-render for available fonts', function (done) {
       map.renderSync();
-      checkedFonts.values_ = {};
       layerStyle[0].getText().setFont('12px sans-serif');
       layer.changed();
       const revision = layer.getRevision();
@@ -208,7 +206,6 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
 
     it('re-renders for fonts that become available', function (done) {
       map.renderSync();
-      checkedFonts.values_ = {};
       font.add();
       layerStyle[0].getText().setFont(`12px "${fontFamily}",sans-serif`);
       layer.changed();
@@ -949,6 +946,10 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
     });
 
     afterEach(() => {
+      checkedFonts.getListeners('propertychange').forEach((listener) => {
+        checkedFonts.removeEventListener('propertychange', listener);
+      });
+      checkedFonts.setProperties({});
       disposeMap(map);
     });
 
