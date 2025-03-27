@@ -557,7 +557,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @override
    */
   renderFrame(frameState, target) {
-    let allTilesIdle = true;
     this.renderComplete = true;
 
     /**
@@ -675,9 +674,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
           tile.endTransition(uid);
           continue;
         }
-      }
-      if (tileState !== TileState.IDLE) {
-        allTilesIdle = false;
       }
       if (tileState !== TileState.ERROR) {
         this.renderComplete = false;
@@ -871,9 +867,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       };
 
       frameState.postRenderFunctions.push(postRenderFunction);
-    }
-    if (!this.renderComplete && !allTilesIdle) {
-      frameState.animate = true;
     }
 
     return this.container;
