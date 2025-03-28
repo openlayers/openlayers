@@ -40,21 +40,28 @@ class ZIndexContext {
             // we only accept calling functions on the proxy, not accessing properties
             return undefined;
           }
-          if (!this.instructions_[this.zIndex + this.offset_]) {
-            this.instructions_[this.zIndex + this.offset_] = [];
-          }
-          this.instructions_[this.zIndex + this.offset_].push(property);
+          this.push_(property);
           return this.pushMethodArgs_;
         },
         set: (target, property, value) => {
-          if (!this.instructions_[this.zIndex + this.offset_]) {
-            this.instructions_[this.zIndex + this.offset_] = [];
-          }
-          this.instructions_[this.zIndex + this.offset_].push(property, value);
+          this.push_(property, value);
           return true;
         },
       })
     );
+  }
+
+  /**
+   * @param {...*} args Arguments to push to the instructions array.
+   * @private
+   */
+  push_(...args) {
+    const instructions = this.instructions_;
+    const index = this.zIndex + this.offset_;
+    if (!instructions[index]) {
+      instructions[index] = [];
+    }
+    instructions[index].push(...args);
   }
 
   /**
@@ -63,7 +70,7 @@ class ZIndexContext {
    * @return {ZIndexContext} This.
    */
   pushMethodArgs_ = (...args) => {
-    this.instructions_[this.zIndex + this.offset_].push(args);
+    this.push_(args);
     return this;
   };
 
@@ -72,7 +79,7 @@ class ZIndexContext {
    * @param {function(CanvasRenderingContext2D): void} render Function.
    */
   pushFunction(render) {
-    this.instructions_[this.zIndex + this.offset_].push(render);
+    this.push_(render);
   }
 
   /**
