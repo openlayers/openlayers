@@ -113,9 +113,12 @@ class TileGeometry extends BaseTileRepresentation {
 
   /**
    * Will release a set of Webgl buffers
-   * @param {import('../render/webgl/VectorStyleRenderer.js').WebGLBuffers} buffers Buffers
+   * @param {import('../render/webgl/VectorStyleRenderer.js').WebGLBuffers|null} buffers Buffers
    */
   disposeBuffers(buffers) {
+    if (!buffers) {
+      return;
+    }
     /**
      * @param {Array<WebGLArrayBuffer>} typeBuffers Buffers
      */
