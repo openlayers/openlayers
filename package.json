@@ -136,7 +136,7 @@
     "semver": "^7.3.7",
     "serve-static": "^1.14.0",
     "shx": "^0.4.0",
-    "sinon": "^19.0.2",
+    "sinon": "^20.0.0",
     "source-map-loader": "^5.0.0",
     "threads": "^1.6.5",
     "topojson-client": "^3.1.0",
