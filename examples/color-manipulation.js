@@ -106,6 +106,11 @@ const raster = new RasterSource({
       layer: 'stamen_watercolor',
     }),
   ],
+  /**
+   * @param {Array<Array<number>>} pixels Color data for each source
+   * @param {Object<string, number>} data Value for each channel
+   * @return {Array<number>} Rgb values
+   */
   operation: function (pixels, data) {
     const hcl = rgb2hcl(pixels[0]);
 
@@ -140,6 +145,7 @@ const raster = new RasterSource({
   },
 });
 
+/** @type {Object<string, HTMLInputElement>} */
 const controls = {};
 
 raster.on('beforeoperations', function (event) {
@@ -165,7 +171,7 @@ const map = new Map({
 
 const controlIds = ['hue', 'chroma', 'lightness'];
 controlIds.forEach(function (id) {
-  const control = document.getElementById(id);
+  const control = /** @type {HTMLInputElement} */ (document.getElementById(id));
   const output = document.getElementById(id + 'Out');
   control.addEventListener('input', function () {
     output.innerText = control.value;

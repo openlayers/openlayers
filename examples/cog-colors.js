@@ -11,21 +11,30 @@ const defaultMaxColor = '#00ff00';
 const defaultMinValue = -0.5;
 const defaultMaxValue = 0.7;
 
-const minColorInput = document.getElementById('min-color');
+const minColorInput = /** @type {HTMLInputElement} */ (
+  document.getElementById('min-color')
+);
 minColorInput.value = defaultMinColor;
 
-const maxColorInput = document.getElementById('max-color');
+const maxColorInput = /** @type {HTMLInputElement} */ (
+  document.getElementById('max-color')
+);
 maxColorInput.value = defaultMaxColor;
 
 const minValueOutput = document.getElementById('min-value-output');
-const minValueInput = document.getElementById('min-value-input');
+const minValueInput = /** @type {HTMLInputElement} */ (
+  document.getElementById('min-value-input')
+);
 minValueInput.value = defaultMinValue.toString();
 
 const maxValueOutput = document.getElementById('max-value-output');
-const maxValueInput = document.getElementById('max-value-input');
+const maxValueInput = /** @type {HTMLInputElement} */ (
+  document.getElementById('max-value-input')
+);
 maxValueInput.value = defaultMaxValue.toString();
 
 function getVariables() {
+  /** @type {Object<string, number>} */
   const variables = {};
 
   const minColor = minColorInput.value;

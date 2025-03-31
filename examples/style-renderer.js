@@ -17,7 +17,10 @@ const stroke = new Stroke({
 const style = new Style({
   renderer: function (pixelCoordinates, state) {
     const context = state.context;
-    const geometry = state.geometry.clone();
+    const geometry =
+      /** @type {import('../src/ol/geom/SimpleGeometry.js').default} */ (
+        state.geometry.clone()
+      );
     geometry.setCoordinates(pixelCoordinates);
     const extent = geometry.getExtent();
     const width = getWidth(extent);

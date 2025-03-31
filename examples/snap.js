@@ -61,7 +61,9 @@ const ExampleModify = {
 };
 ExampleModify.init();
 
-const optionsForm = document.getElementById('options-form');
+const optionsForm = /** @type {HTMLFormElement} */ (
+  document.getElementById('options-form')
+);
 
 const ExampleDraw = {
   init: function () {
@@ -110,13 +112,14 @@ ExampleDraw.init();
  * @param {Event} e Change event.
  */
 optionsForm.onchange = function (e) {
-  const type = e.target.getAttribute('name');
+  const target = /** @type {HTMLInputElement|HTMLSelectElement} */ (e.target);
+  const type = target.getAttribute('name');
   if (type == 'draw-type') {
     ExampleModify.setActive(false);
     ExampleDraw.setActive(true);
     optionsForm.elements['interaction'].value = 'draw';
   } else if (type == 'interaction') {
-    const interactionType = e.target.value;
+    const interactionType = target.value;
     if (interactionType == 'modify') {
       ExampleDraw.setActive(false);
       ExampleModify.setActive(true);

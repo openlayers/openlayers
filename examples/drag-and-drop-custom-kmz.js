@@ -47,16 +47,29 @@ class KMZ extends KML {
     options.iconUrlFunction = getKMLImage;
     super(options);
   }
-
+  /**
+   * @return {'arraybuffer'} Always arraybuffer
+   * @override
+   */
   getType() {
     return 'arraybuffer';
   }
-
+  /**
+   * @param {Document|Element|Object|string} source Source.
+   * @param {import('../src/ol/format/Feature.js').ReadOptions} [options] Read options.
+   * @return {import('../src/ol/Feature.js').default} Feature.
+   * @override
+   */
   readFeature(source, options) {
     const kmlData = getKMLData(source);
     return super.readFeature(kmlData, options);
   }
-
+  /**
+   * @param {Document|Element|Object|string} source Source.
+   * @param {import('../src/ol/format/Feature.js').ReadOptions} [options] Options.
+   * @return {Array<import('../src/ol/Feature.js').default>} Features.
+   * @override
+   */
   readFeatures(source, options) {
     const kmlData = getKMLData(source);
     return super.readFeatures(kmlData, options);
@@ -128,7 +141,9 @@ map.on('click', function (evt) {
 
 // Sample data download
 
-const link = document.getElementById('download');
+const link = /** @type {HTMLAnchorElement} */ (
+  document.getElementById('download')
+);
 
 function download(fullpath, filename) {
   fetch(fullpath)

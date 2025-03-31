@@ -40,7 +40,7 @@ function el(id) {
 }
 
 el('track').addEventListener('change', function () {
-  geolocation.setTracking(this.checked);
+  geolocation.setTracking(/** @type {HTMLInputElement} */ (this).checked);
 });
 
 // update the HTML page when the position changes.
