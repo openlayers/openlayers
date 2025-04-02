@@ -187,7 +187,7 @@ const GEOMETRY_SEGMENTERS = {
     const segments = [];
     const coordinates = geometry.getFlatCoordinates();
     const stride = geometry.getStride();
-    for (let i = 0, ii = coordinates.length - stride; i < ii; i += stride) {
+    for (let i = 0, ii = coordinates.length; i < ii; i += stride) {
       segments.push([coordinates.slice(i, i + 2)]);
     }
     return segments;
