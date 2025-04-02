@@ -44,9 +44,9 @@ import LayerProperty from './Property.js';
  * visible.
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
- * @property {number} [minZoom] The minimum view zoom level (exclusive) above which this layer will be
+ * @property {number} [minZoom] The minimum view zoom level (inclusive) at which this layer will be
  * visible.
- * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
+ * @property {number} [maxZoom] The maximum view zoom level (exclusive) below which this layer will
  * be visible.
  * @property {SourceType} [source] Source for this layer.  If not provided to the constructor,
  * the source can be set by calling {@link module:ol/layer/Layer~Layer#setSource layer.setSource(source)} after
@@ -556,7 +556,7 @@ export function inView(layerState, viewState) {
     return false;
   }
   const zoom = viewState.zoom;
-  return zoom > layerState.minZoom && zoom <= layerState.maxZoom;
+  return zoom >= layerState.minZoom && zoom < layerState.maxZoom;
 }
 
 export default Layer;
