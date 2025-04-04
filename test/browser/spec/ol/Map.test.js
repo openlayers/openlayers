@@ -1736,5 +1736,37 @@ describe('ol/Map', function () {
       spy.restore();
       selectStub.restore();
     });
+
+    describe('external map', () => {
+      let iframe, spy;
+
+      beforeEach(() => {
+        iframe = document.createElement('iframe');
+        iframe.width = '100';
+        iframe.height = '100';
+        iframe.src = 'spec/ol/data/external-map.html';
+        document.body.appendChild(iframe);
+        spy = sinonSpy(dragpan, 'handleDownEvent');
+      });
+      afterEach(() => {
+        map.setTarget(null);
+        document.body.removeChild(iframe);
+        spy.restore();
+      });
+      it('handles events from a map in a separate window', (done) => {
+        document.body.removeChild(map.getTargetElement());
+        map.setTarget(null);
+        const win = iframe.contentWindow;
+        win.addEventListener('DOMContentLoaded', () => {
+          map.setTarget(iframe.contentDocument.getElementById('map'));
+          win.postMessage('test');
+          setTimeout(() => {
+            expect(spy.callCount).to.be(1);
+            expect(spy.firstCall.returnValue).to.be(true);
+            done();
+          }, 100);
+        });
+      });
+    });
   });
 });
