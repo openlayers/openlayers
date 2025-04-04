@@ -34,7 +34,11 @@ import Control from './Control.js';
  * the control should be re-rendered. This is called in a `requestAnimationFrame`
  * callback.
  * @property {string|Array<string>|undefined} [attributions] Optional attribution(s) that will always be
- * displayed regardless of the layers rendered
+ * displayed regardless of the layers rendered.
+ * **Caution:** Attributions are rendered dynamically using `innerHTML`, which can lead to potential
+ * [**XSS (Cross-Site Scripting)**](https://en.wikipedia.org/wiki/Cross-site_scripting) vulnerabilities.
+ * Use this feature only for trusted content
+ * or ensure that the content is properly sanitized before inserting it.
  */
 
 /**
