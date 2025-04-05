@@ -134,7 +134,7 @@ export const click = function (mapBrowserEvent) {
 export const mouseActionButton = function (mapBrowserEvent) {
   const originalEvent = mapBrowserEvent.originalEvent;
   return (
-    originalEvent instanceof PointerEvent &&
+    'pointerId' in originalEvent &&
     originalEvent.button == 0 &&
     !(WEBKIT && MAC && originalEvent.ctrlKey)
   );
@@ -283,9 +283,7 @@ export const targetNotEditable = function (mapBrowserEvent) {
 export const mouseOnly = function (mapBrowserEvent) {
   const pointerEvent = mapBrowserEvent.originalEvent;
   // see https://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
-  return (
-    pointerEvent instanceof PointerEvent && pointerEvent.pointerType == 'mouse'
-  );
+  return 'pointerId' in pointerEvent && pointerEvent.pointerType == 'mouse';
 };
 
 /**
@@ -298,9 +296,7 @@ export const mouseOnly = function (mapBrowserEvent) {
 export const touchOnly = function (mapBrowserEvent) {
   const pointerEvt = mapBrowserEvent.originalEvent;
   // see https://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
-  return (
-    pointerEvt instanceof PointerEvent && pointerEvt.pointerType === 'touch'
-  );
+  return 'pointerId' in pointerEvt && pointerEvt.pointerType === 'touch';
 };
 
 /**
@@ -313,7 +309,7 @@ export const touchOnly = function (mapBrowserEvent) {
 export const penOnly = function (mapBrowserEvent) {
   const pointerEvt = mapBrowserEvent.originalEvent;
   // see https://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
-  return pointerEvt instanceof PointerEvent && pointerEvt.pointerType === 'pen';
+  return 'pointerId' in pointerEvt && pointerEvt.pointerType === 'pen';
 };
 
 /**
@@ -328,7 +324,7 @@ export const penOnly = function (mapBrowserEvent) {
 export const primaryAction = function (mapBrowserEvent) {
   const pointerEvent = mapBrowserEvent.originalEvent;
   return (
-    pointerEvent instanceof PointerEvent &&
+    'pointerId' in pointerEvent &&
     pointerEvent.isPrimary &&
     pointerEvent.button === 0
   );
