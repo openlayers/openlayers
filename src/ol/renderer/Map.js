@@ -9,6 +9,8 @@ import {inView} from '../layer/Layer.js';
 import {shared as iconImageCache} from '../style/IconImageCache.js';
 import {compose as composeTransform, makeInverse} from '../transform.js';
 import {abstract} from '../util.js';
+import WebGLVectorLayerRenderer from "./webgl/VectorLayer.js";
+import WebGLPointsLayerRenderer from './webgl/PointsLayer.js';
 
 /**
  * @template T
@@ -135,9 +137,16 @@ class MapRenderer extends Disposable {
           const layerRenderer = layer.getRenderer();
           const source = layer.getSource();
           if (layerRenderer && source) {
-            const coordinates = source.getWrapX()
-              ? translatedCoordinate
-              : coordinate;
+            let coordinates;
+            if (
+              !source.getWrapX() ||
+              layerRenderer instanceof WebGLVectorLayerRenderer ||
+              layerRenderer instanceof WebGLPointsLayerRenderer
+            ) {
+              coordinates = coordinate;
+            } else {
+              coordinates = translatedCoordinate;
+            }
             const callback = forEachFeatureAtCoordinate.bind(
               null,
               layerState.managed,
