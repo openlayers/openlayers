@@ -9,8 +9,8 @@ import {inView} from '../layer/Layer.js';
 import {shared as iconImageCache} from '../style/IconImageCache.js';
 import {compose as composeTransform, makeInverse} from '../transform.js';
 import {abstract} from '../util.js';
-import WebGLVectorLayerRenderer from "./webgl/VectorLayer.js";
 import WebGLPointsLayerRenderer from './webgl/PointsLayer.js';
+import WebGLVectorLayerRenderer from './webgl/VectorLayer.js';
 
 /**
  * @template T
