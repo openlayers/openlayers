@@ -482,6 +482,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     }
     const resolution = frameState.viewState.resolution;
     const rotation = frameState.viewState.rotation;
+    const projection = frameState.viewState.projection;
+    coordinate = wrapCoordinateX(coordinate, projection);
     const layer = this.getLayer();
 
     /** @type {!Object<string, import("../Map.js").HitMatch<T>|true>} */

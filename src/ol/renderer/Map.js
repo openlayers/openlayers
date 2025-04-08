@@ -2,15 +2,12 @@
  * @module ol/renderer/Map
  */
 import Disposable from '../Disposable.js';
-import {wrapX} from '../coordinate.js';
 import {getWidth} from '../extent.js';
 import {TRUE} from '../functions.js';
 import {inView} from '../layer/Layer.js';
 import {shared as iconImageCache} from '../style/IconImageCache.js';
 import {compose as composeTransform, makeInverse} from '../transform.js';
 import {abstract} from '../util.js';
-import WebGLPointsLayerRenderer from './webgl/PointsLayer.js';
-import WebGLVectorLayerRenderer from './webgl/VectorLayer.js';
 
 /**
  * @template T
@@ -112,7 +109,6 @@ class MapRenderer extends Disposable {
 
     const projection = viewState.projection;
 
-    const translatedCoordinate = wrapX(coordinate.slice(), projection);
     const offsets = [[0, 0]];
     if (projection.canWrapX() && checkWrapped) {
       const projectionExtent = projection.getExtent();
@@ -137,22 +133,12 @@ class MapRenderer extends Disposable {
           const layerRenderer = layer.getRenderer();
           const source = layer.getSource();
           if (layerRenderer && source) {
-            let coordinates;
-            if (
-              !source.getWrapX() ||
-              layerRenderer instanceof WebGLVectorLayerRenderer ||
-              layerRenderer instanceof WebGLPointsLayerRenderer
-            ) {
-              coordinates = coordinate;
-            } else {
-              coordinates = translatedCoordinate;
-            }
             const callback = forEachFeatureAtCoordinate.bind(
               null,
               layerState.managed,
             );
-            tmpCoord[0] = coordinates[0] + offsets[i][0];
-            tmpCoord[1] = coordinates[1] + offsets[i][1];
+            tmpCoord[0] = coordinate[0] + offsets[i][0];
+            tmpCoord[1] = coordinate[1] + offsets[i][1];
             result = layerRenderer.forEachFeatureAtCoordinate(
               tmpCoord,
               frameState,

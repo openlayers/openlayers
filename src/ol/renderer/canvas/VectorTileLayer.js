@@ -323,6 +323,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const resolution = frameState.viewState.resolution;
     const rotation = frameState.viewState.rotation;
     hitTolerance = hitTolerance == undefined ? 0 : hitTolerance;
+    const projection = frameState.viewState.projection;
+    coordinate = wrapX(coordinate, projection);
     const layer = this.getLayer();
     const source = layer.getSource();
     const tileGrid = source.getTileGridForProjection(
