@@ -324,14 +324,18 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const rotation = frameState.viewState.rotation;
     hitTolerance = hitTolerance == undefined ? 0 : hitTolerance;
     const projection = frameState.viewState.projection;
-    coordinate = wrapX(coordinate, projection);
     const layer = this.getLayer();
     const source = layer.getSource();
     const tileGrid = source.getTileGridForProjection(
       frameState.viewState.projection,
     );
 
-    const hitExtent = boundingExtent([coordinate]);
+    let processedCoordinate = coordinate;
+    if (source.getWrapX()) {
+      processedCoordinate = wrapX(coordinate.slice(0), projection);
+    }
+
+    const hitExtent = boundingExtent([processedCoordinate]);
     buffer(hitExtent, resolution * hitTolerance, hitExtent);
 
     /** @type {!Object<string, import("../Map.js").HitMatch<T>|true>} */
@@ -395,7 +399,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const executorGroups = tile.executorGroups[layerUid];
       for (let t = 0, tt = executorGroups.length; t < tt; ++t) {
         found = executorGroups[t].forEachFeatureAtCoordinate(
-          coordinate,
+          processedCoordinate,
           resolution,
           rotation,
           hitTolerance,

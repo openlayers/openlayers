@@ -483,8 +483,13 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const resolution = frameState.viewState.resolution;
     const rotation = frameState.viewState.rotation;
     const projection = frameState.viewState.projection;
-    coordinate = wrapCoordinateX(coordinate, projection);
     const layer = this.getLayer();
+    const source = layer.getSource();
+
+    let processedCoordinate = coordinate;
+    if (source.getWrapX()) {
+      processedCoordinate = wrapCoordinateX(coordinate.slice(0), projection);
+    }
 
     /** @type {!Object<string, import("../Map.js").HitMatch<T>|true>} */
     const features = {};
@@ -526,7 +531,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     const declutter = this.getLayer().getDeclutter();
     return this.replayGroup_.forEachFeatureAtCoordinate(
-      coordinate,
+      processedCoordinate,
       resolution,
       rotation,
       hitTolerance,
