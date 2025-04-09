@@ -98,7 +98,7 @@
     "eslint-config-openlayers": "^20.0.0",
     "espree": "^10.3.0",
     "expect.js": "0.3.1",
-    "express": "^4.17.1",
+    "express": "^5.1.0",
     "fflate": "^0.8.2",
     "front-matter": "^4.0.0",
     "fs-extra": "^11.1.0",
