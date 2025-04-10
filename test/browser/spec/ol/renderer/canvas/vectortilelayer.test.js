@@ -773,6 +773,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         0,
         spy,
         matches,
+        [0, 0],
       );
       expect(spy.callCount).to.be(1);
       expect(spy.getCall(0).args[1]).to.be(layer);
@@ -859,6 +860,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
               1,
               VOID,
               [],
+              [0, 0],
             );
         }).to.not.throwException();
         done();

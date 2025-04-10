@@ -531,7 +531,14 @@ describe('ol/renderer/webgl/VectorLayer', () => {
 
     function checkHit(x, y, expected, done) {
       const spy = sinonSpy();
-      renderer.forEachFeatureAtCoordinate([x, y], frameState, 0, spy, []);
+      renderer.forEachFeatureAtCoordinate(
+        [x, y],
+        frameState,
+        0,
+        spy,
+        [],
+        [0, 0],
+      );
       const called = spy.callCount;
       const found = spy.getCall(0)?.args[0];
       if (expected) {
