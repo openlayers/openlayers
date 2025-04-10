@@ -611,11 +611,14 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
-   * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
+   * @param {import("../../coordinate.js").Coordinate} coordinate The original coordinate requested
+   * (typically unwrapped).
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {import("../vector.js").FeatureCallback<T>} callback Feature callback.
    * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
+   * @param {import("../../coordinate.js").Coordinate} worldOffset World offset (`[dx, dy]`)
+   * for the check (`[0, 0]` for primary world).
    * @return {T|undefined} Callback result.
    * @template T
    * @override
@@ -626,6 +629,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     hitTolerance,
     callback,
     matches,
+    worldOffset,
   ) {
     assert(
       this.hitDetectionEnabled_,
@@ -635,9 +639,13 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       return undefined;
     }
 
+    const processedCoordinate = [];
+    processedCoordinate[0] = coordinate[0] + worldOffset[0];
+    processedCoordinate[1] = coordinate[1] + worldOffset[1];
+
     const pixel = applyTransform(
       frameState.coordinateToPixelTransform,
-      coordinate.slice(),
+      processedCoordinate.slice(),
     );
 
     const data = this.hitRenderTarget_.readPixel(pixel[0] / 2, pixel[1] / 2);

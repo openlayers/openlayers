@@ -461,11 +461,14 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   }
 
   /**
-   * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
+   * @param {import("../../coordinate.js").Coordinate} coordinate The original coordinate requested
+   * (typically unwrapped).
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {import("../vector.js").FeatureCallback<T>} callback Feature callback.
    * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
+   * @param {import("../../coordinate.js").Coordinate} worldOffset World offset (`[dx, dy]`)
+   * for the check (`[0, 0]` for primary world).
    * @return {T|undefined} Callback result.
    * @template T
    * @override
@@ -476,6 +479,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     hitTolerance,
     callback,
     matches,
+    worldOffset,
   ) {
     if (!this.replayGroup_) {
       return undefined;
@@ -486,10 +490,11 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const layer = this.getLayer();
     const source = layer.getSource();
 
-    let processedCoordinate = coordinate;
-    if (source.getWrapX()) {
-      processedCoordinate = wrapCoordinateX(coordinate.slice(0), projection);
-    }
+    const processedCoordinate = source.getWrapX()
+      ? wrapCoordinateX(coordinate.slice(0), projection)
+      : coordinate.slice(0);
+    processedCoordinate[0] += worldOffset[0];
+    processedCoordinate[1] += worldOffset[1];
 
     /** @type {!Object<string, import("../Map.js").HitMatch<T>|true>} */
     const features = {};

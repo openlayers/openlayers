@@ -120,7 +120,6 @@ class MapRenderer extends Disposable {
     const numLayers = layerStates.length;
 
     const matches = /** @type {Array<HitMatch<T>>} */ ([]);
-    const tmpCoord = [];
     for (let i = 0; i < offsets.length; i++) {
       for (let j = numLayers - 1; j >= 0; --j) {
         const layerState = layerStates[j];
@@ -137,14 +136,13 @@ class MapRenderer extends Disposable {
               null,
               layerState.managed,
             );
-            tmpCoord[0] = coordinate[0] + offsets[i][0];
-            tmpCoord[1] = coordinate[1] + offsets[i][1];
             result = layerRenderer.forEachFeatureAtCoordinate(
-              tmpCoord,
+              coordinate,
               frameState,
               hitTolerance,
               callback,
               matches,
+              offsets[i],
             );
           }
           if (result) {
