@@ -124,7 +124,7 @@ function getRenderExtent(frameState, extent) {
  * @return {string} The cache key.
  */
 export function getCacheKey(source, tileCoord) {
-  return `${source.getKey()},${source.getRevision()},${getTileCoordKey(tileCoord)}`;
+  return `${getUid(source)},${source.getKey()},${source.getRevision()},${getTileCoordKey(tileCoord)}`;
 }
 
 /**

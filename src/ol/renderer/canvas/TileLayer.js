@@ -28,14 +28,15 @@ import {getUid} from '../../util.js';
 import CanvasLayerRenderer from './Layer.js';
 
 /**
+ * @param {import("../../source/Tile.js").default} source The tile source.
  * @param {string} sourceKey The source key.
  * @param {number} z The tile z level.
  * @param {number} x The tile x level.
  * @param {number} y The tile y level.
  * @return {string} The cache key.
  */
-function getCacheKey(sourceKey, z, x, y) {
-  return `${sourceKey},${getKeyZXY(z, x, y)}`;
+function getCacheKey(source, sourceKey, z, x, y) {
+  return `${getUid(source)},${sourceKey},${getKeyZXY(z, x, y)}`;
 }
 
 /**
@@ -157,12 +158,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     this.renderedProjection = null;
 
     /**
-     * @private
-     * @type {number}
-     */
-    this.renderedRevision_;
-
-    /**
      * @protected
      * @type {!Array<import("../../Tile.js").default>}
      */
@@ -230,7 +225,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const tileCache = this.tileCache_;
     const tileLayer = this.getLayer();
     const tileSource = tileLayer.getSource();
-    const cacheKey = getCacheKey(tileSource.getKey(), z, x, y);
+    const cacheKey = getCacheKey(tileSource, tileSource.getKey(), z, x, y);
 
     /** @type {import("../../Tile.js").default} */
     let tile;
@@ -369,10 +364,10 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       return false;
     }
     const sourceRevision = source.getRevision();
-    if (!this.renderedRevision_) {
-      this.renderedRevision_ = sourceRevision;
-    } else if (this.renderedRevision_ !== sourceRevision) {
-      this.renderedRevision_ = sourceRevision;
+    if (!this.renderedSourceRevision_) {
+      this.renderedSourceRevision_ = sourceRevision;
+    } else if (this.renderedSourceRevision_ !== sourceRevision) {
+      this.renderedSourceRevision_ = sourceRevision;
       if (this.renderedSourceKey_ === source.getKey()) {
         this.tileCache_.clear();
       }
@@ -485,7 +480,13 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const y = tileCoord[2];
     const staleKeys = this.getStaleKeys();
     for (let i = 0; i < staleKeys.length; ++i) {
-      const cacheKey = getCacheKey(staleKeys[i], z, x, y);
+      const cacheKey = getCacheKey(
+        this.getLayer().getSource(),
+        staleKeys[i],
+        z,
+        x,
+        y,
+      );
       if (tileCache.containsKey(cacheKey)) {
         const tile = tileCache.peek(cacheKey);
         if (tile.getState() === TileState.LOADED) {
@@ -525,7 +526,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const sourceKey = source.getKey();
     for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
-        const cacheKey = getCacheKey(sourceKey, altZ, x, y);
+        const cacheKey = getCacheKey(source, sourceKey, altZ, x, y);
         let loaded = false;
         if (tileCache.containsKey(cacheKey)) {
           const tile = tileCache.peek(cacheKey);

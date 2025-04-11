@@ -106,6 +106,28 @@ describe('ol/renderer/canvas/TileLayer', function () {
         expect(tiles.length).to.be(4);
       });
 
+      it('clears the cache when the layer has a new source with the same key', async () => {
+        const tiles = [];
+        let source = new TileDebug();
+        source.on('tileloadend', (event) => {
+          tiles.push(event.tile);
+        });
+        source.setKey('foo');
+        const layer = new TileLayer({source: source});
+        map.addLayer(layer);
+        await new Promise((resolve) => map.once('rendercomplete', resolve));
+        expect(tiles.length).to.be(2);
+        source.dispose();
+        source = new TileDebug();
+        source.on('tileloadend', (event) => {
+          tiles.push(event.tile);
+        });
+        source.setKey('foo');
+        layer.setSource(source);
+        await new Promise((resolve) => map.once('rendercomplete', resolve));
+        expect(tiles.length).to.be(4);
+      });
+
       it('does not mark alt/stale error tiles as newer', async () => {
         const source = new ImageTile({
           url: '#/{z}/{x}/{y}.png',
