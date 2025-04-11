@@ -131,7 +131,10 @@ function spawnJSDoc(paths) {
     let output = '';
     let errors = '';
     const cwd = path.join(baseDir, '..');
-    const child = spawn(jsdoc, ['-c', jsdocConfig].concat(paths), {cwd: cwd});
+    const child = spawn(jsdoc, ['-c', jsdocConfig].concat(paths), {
+      cwd,
+      shell: isWindows,
+    });
 
     child.stdout.on('data', (data) => {
       output += String(data);
