@@ -2,7 +2,6 @@
  * @module ol/renderer/Map
  */
 import Disposable from '../Disposable.js';
-import {wrapX} from '../coordinate.js';
 import {getWidth} from '../extent.js';
 import {TRUE} from '../functions.js';
 import {inView} from '../layer/Layer.js';
@@ -110,7 +109,6 @@ class MapRenderer extends Disposable {
 
     const projection = viewState.projection;
 
-    const translatedCoordinate = wrapX(coordinate.slice(), projection);
     const offsets = [[0, 0]];
     if (projection.canWrapX() && checkWrapped) {
       const projectionExtent = projection.getExtent();
@@ -122,7 +120,6 @@ class MapRenderer extends Disposable {
     const numLayers = layerStates.length;
 
     const matches = /** @type {Array<HitMatch<T>>} */ ([]);
-    const tmpCoord = [];
     for (let i = 0; i < offsets.length; i++) {
       for (let j = numLayers - 1; j >= 0; --j) {
         const layerState = layerStates[j];
@@ -135,21 +132,17 @@ class MapRenderer extends Disposable {
           const layerRenderer = layer.getRenderer();
           const source = layer.getSource();
           if (layerRenderer && source) {
-            const coordinates = source.getWrapX()
-              ? translatedCoordinate
-              : coordinate;
             const callback = forEachFeatureAtCoordinate.bind(
               null,
               layerState.managed,
             );
-            tmpCoord[0] = coordinates[0] + offsets[i][0];
-            tmpCoord[1] = coordinates[1] + offsets[i][1];
             result = layerRenderer.forEachFeatureAtCoordinate(
-              tmpCoord,
+              coordinate,
               frameState,
               hitTolerance,
               callback,
               matches,
+              offsets[i],
             );
           }
           if (result) {

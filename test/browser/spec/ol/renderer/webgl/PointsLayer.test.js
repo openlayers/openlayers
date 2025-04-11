@@ -331,6 +331,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
               called = true;
             },
             null,
+            [0, 0],
           );
 
           if (expected) {
@@ -390,7 +391,14 @@ describe('ol/renderer/webgl/PointsLayer', function () {
 
         function checkHit(x, y, expected) {
           found = null;
-          renderer.forEachFeatureAtCoordinate([x, y], frameState, 0, cb, null);
+          renderer.forEachFeatureAtCoordinate(
+            [x, y],
+            frameState,
+            0,
+            cb,
+            null,
+            [0, 0],
+          );
           expect(found).to.be(expected);
         }
 
