@@ -20,18 +20,26 @@ fetch('data/geojson/roads-seoul.geojson')
     const street = features[0];
 
     // convert to a turf.js feature
-    const turfLine = format.writeFeatureObject(street);
+    const turfLine =
+      /** @type {import('geojson').Feature<import('geojson').LineString>} */ (
+        format.writeFeatureObject(street)
+      );
 
     // show a marker every 200 meters
     const distance = 0.2;
 
     // get the line length in kilometers
-    const lineLength = length(turfLine, {units: 'kilometers'});
+    const units = {
+      units: /** @type {import('@turf/helpers').Units} */ ('kilometers'),
+    };
+    const lineLength = length(turfLine, units);
     for (let i = 1; i <= lineLength / distance; i++) {
-      const turfPoint = along(turfLine, i * distance, {units: 'kilometers'});
+      const turfPoint = along(turfLine, i * distance, units);
 
       // convert the generated point to a OpenLayers feature
-      const marker = format.readFeature(turfPoint);
+      const marker = /** @type {import('../src/ol/Feature.js').default} */ (
+        format.readFeature(turfPoint)
+      );
       marker.getGeometry().transform('EPSG:4326', 'EPSG:3857');
       source.addFeature(marker);
     }

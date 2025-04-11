@@ -14,8 +14,12 @@ import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 import Text from '../src/ol/style/Text.js';
 
-const distanceInput = document.getElementById('distance');
-const minDistanceInput = document.getElementById('min-distance');
+const distanceInput = /** @type {HTMLInputElement} */ (
+  document.getElementById('distance')
+);
+const minDistanceInput = /** @type {HTMLInputElement} */ (
+  document.getElementById('min-distance')
+);
 
 const count = 20000;
 const features = new Array(count);

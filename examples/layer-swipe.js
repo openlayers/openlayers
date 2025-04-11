@@ -32,10 +32,12 @@ const map = new Map({
   }),
 });
 
-const swipe = document.getElementById('swipe');
+const swipe = /** @type {HTMLInputElement} */ (
+  document.getElementById('swipe')
+);
 
 aerial.on('prerender', function (event) {
-  const ctx = event.context;
+  const ctx = /** @type {CanvasRenderingContext2D} */ (event.context);
   const mapSize = map.getSize();
   const width = mapSize[0] * (Number(swipe.value) / 100);
   const tl = getRenderPixel(event, [width, 0]);
@@ -54,7 +56,7 @@ aerial.on('prerender', function (event) {
 });
 
 aerial.on('postrender', function (event) {
-  const ctx = event.context;
+  const ctx = /** @type {CanvasRenderingContext2D} */ (event.context);
   ctx.restore();
 });
 

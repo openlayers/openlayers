@@ -67,7 +67,7 @@ imagery.on('postrender', function (event) {
     const half = Math.sqrt(
       Math.pow(offset[0] - pixel[0], 2) + Math.pow(offset[1] - pixel[1], 2),
     );
-    const context = event.context;
+    const context = /** @type {CanvasRenderingContext2D} */ (event.context);
     const centerX = pixel[0];
     const centerY = pixel[1];
     const originX = centerX - half;
