@@ -30,6 +30,18 @@ import Interaction, {zoomByDelta} from './Interaction.js';
  */
 
 /**
+ * Mutliplier for the DOM_DELTA_LINE delta value.
+ * @type {number}
+ */
+const DELTA_LINE_MULTIPLIER = 40;
+
+/**
+ * Mutliplier for the DOM_DELTA_PAGE delta value.
+ * @type {number}
+ */
+const DELTA_PAGE_MULTIPLIER = 300;
+
+/**
  * @classdesc
  * Allows the user to zoom the map by scrolling the mouse wheel.
  * @api
@@ -192,12 +204,17 @@ class MouseWheelZoom extends Interaction {
 
     // Delta normalisation inspired by
     // https://github.com/mapbox/mapbox-gl-js/blob/001c7b9/js/ui/handler/scroll_zoom.js
-    let delta;
-    if (mapBrowserEvent.type == EventType.WHEEL) {
-      delta = wheelEvent.deltaY;
-      if (wheelEvent.deltaMode === WheelEvent.DOM_DELTA_LINE) {
-        delta *= 40;
-      }
+    let delta = wheelEvent.deltaY;
+
+    switch (wheelEvent.deltaMode) {
+      case WheelEvent.DOM_DELTA_LINE:
+        delta *= DELTA_LINE_MULTIPLIER;
+        break;
+      case WheelEvent.DOM_DELTA_PAGE:
+        delta *= DELTA_PAGE_MULTIPLIER;
+        break;
+      default:
+      // pass
     }
 
     if (delta === 0) {
