@@ -112,6 +112,27 @@ describe('ol.interaction.MouseWheelZoom', function () {
         map.handleMapBrowserEvent(event);
       });
 
+      it('works in DOM_DELTA_PAGE mode (wheel)', function (done) {
+        map.once('postrender', function () {
+          const call = view.animateInternal.getCall(0);
+          expect(call.args[0].resolution).to.be(2);
+          expect(call.args[0].anchor).to.eql(map.getView().getCenter());
+          done();
+        });
+
+        const event = new MapBrowserEvent('wheel', map, {
+          type: 'wheel',
+          deltaMode: WheelEvent.DOM_DELTA_PAGE,
+          deltaY: 1,
+          target: map.getViewport(),
+          preventDefault: Event.prototype.preventDefault,
+        });
+        event.coordinate = map.getView().getCenter();
+        event.pixel = map.getPixelFromCoordinate(event.coordinate);
+
+        map.handleMapBrowserEvent(event);
+      });
+
       it('works on all browsers (wheel)', function (done) {
         map.once('postrender', function () {
           const call = view.animateInternal.getCall(0);
