@@ -3,6 +3,7 @@
  */
 
 import {decode} from '../Image.js';
+import {setCrossOrigin} from '../cors.js';
 import {getCenter, getHeight, getWidth} from '../extent.js';
 import {appendParams} from '../uri.js';
 import {getRequestExtent} from './Image.js';
@@ -10,7 +11,7 @@ import {getRequestExtent} from './Image.js';
 /**
  * @typedef {Object} LoaderOptions
  * @property {string} url The mapagent url.
- * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
+ * @property {import("../cors.js").CrossOriginOption} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {number} [displayDpi=96] The display resolution.
@@ -95,11 +96,11 @@ export function createLoader(options) {
   const metersPerUnit = options.metersPerUnit || 1;
   const displayDpi = options.displayDpi || 96;
   const ratio = options.ratio ?? 1;
-  const crossOrigin = options.crossOrigin ?? null;
+  const crossOrigin = options.crossOrigin ?? 'no-cors';
 
   return function (extent, resolution, pixelRatio) {
     const image = new Image();
-    image.crossOrigin = crossOrigin;
+    setCrossOrigin(image, crossOrigin);
     extent = getRequestExtent(extent, resolution, pixelRatio, ratio);
     const width = getWidth(extent) / resolution;
     const height = getHeight(extent) / resolution;
