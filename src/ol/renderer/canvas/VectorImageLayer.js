@@ -181,7 +181,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
         frameState.pixelToCoordinateTransform.slice();
     }
 
-    return !this.getLayer().getSource().loading && !!this.image;
+    return !this.getLayer().getSource()?.loading && !!this.image;
   }
 
   /**
