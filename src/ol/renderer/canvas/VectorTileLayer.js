@@ -12,6 +12,7 @@ import {
   equals,
   getIntersection,
   getTopLeft,
+  getWidth,
   intersects,
 } from '../../extent.js';
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
@@ -304,14 +305,12 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   }
 
   /**
-   * @param {import("../../coordinate.js").Coordinate} coordinate The original coordinate requested
-   * (typically unwrapped).
+   * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {import("../vector.js").FeatureCallback<T>} callback Feature callback.
    * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
-   * @param {import("../../coordinate.js").Coordinate} worldOffset World offset (`[dx, dy]`)
-   * for the check (`[0, 0]` for primary world).
+   * @param {boolean} [checkWrapped] Check for wrapped geometries.
    * @return {T|undefined} Callback result.
    * @template T
    * @override
@@ -322,101 +321,110 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     hitTolerance,
     callback,
     matches,
-    worldOffset,
+    checkWrapped,
   ) {
     const resolution = frameState.viewState.resolution;
     const rotation = frameState.viewState.rotation;
-    hitTolerance = hitTolerance == undefined ? 0 : hitTolerance;
     const projection = frameState.viewState.projection;
+    hitTolerance = hitTolerance == undefined ? 0 : hitTolerance;
     const layer = this.getLayer();
     const source = layer.getSource();
-    const tileGrid = source.getTileGridForProjection(
-      frameState.viewState.projection,
-    );
+    const tileGrid = source.getTileGridForProjection(projection);
 
-    const processedCoordinate = source.getWrapX()
-      ? wrapX(coordinate.slice(0), projection)
-      : coordinate.slice(0);
-    processedCoordinate[0] += worldOffset[0];
-    processedCoordinate[1] += worldOffset[1];
+    const offsets = [[0, 0]];
+    if (projection.canWrapX() && checkWrapped) {
+      const projectionExtent = projection.getExtent();
+      const worldWidth = getWidth(projectionExtent);
+      offsets.push([-worldWidth, 0], [worldWidth, 0]);
+    }
 
-    const hitExtent = boundingExtent([processedCoordinate]);
-    buffer(hitExtent, resolution * hitTolerance, hitExtent);
+    const translatedCoordinate = wrapX(coordinate.slice(0), projection);
 
-    /** @type {!Object<string, import("../Map.js").HitMatch<T>|true>} */
-    const features = {};
+    for (let i = 0; i < offsets.length; i++) {
+      const offset = offsets[i];
+      const processedCoordinate = source.getWrapX()
+        ? translatedCoordinate
+        : coordinate.slice(0);
+      processedCoordinate[0] += offset[0];
+      processedCoordinate[1] += offset[1];
 
-    /**
-     * @param {import("../../Feature.js").FeatureLike} feature Feature.
-     * @param {import("../../geom/SimpleGeometry.js").default} geometry Geometry.
-     * @param {number} distanceSq The squared distance to the click position.
-     * @return {T|undefined} Callback result.
-     */
-    const featureCallback = function (feature, geometry, distanceSq) {
-      let key = feature.getId();
-      if (key === undefined) {
-        key = getUid(feature);
-      }
-      const match = features[key];
-      if (!match) {
-        if (distanceSq === 0) {
-          features[key] = true;
-          return callback(feature, layer, geometry);
+      const hitExtent = boundingExtent([processedCoordinate]);
+      buffer(hitExtent, resolution * hitTolerance, hitExtent);
+
+      /** @type {!Object<string, import("../Map.js").HitMatch<T>|true>} */
+      const features = {};
+
+      /**
+       * @param {import("../../Feature.js").FeatureLike} feature Feature.
+       * @param {import("../../geom/SimpleGeometry.js").default} geometry Geometry.
+       * @param {number} distanceSq The squared distance to the click position.
+       * @return {T|undefined} Callback result.
+       */
+      const featureCallback = function (feature, geometry, distanceSq) {
+        let key = feature.getId();
+        if (key === undefined) {
+          key = getUid(feature);
         }
-        matches.push(
-          (features[key] = {
-            feature: feature,
-            layer: layer,
-            geometry: geometry,
-            distanceSq: distanceSq,
-            callback: callback,
-          }),
-        );
-      } else if (match !== true && distanceSq < match.distanceSq) {
-        if (distanceSq === 0) {
-          features[key] = true;
-          matches.splice(matches.lastIndexOf(match), 1);
-          return callback(feature, layer, geometry);
+        const match = features[key];
+        if (!match) {
+          if (distanceSq === 0) {
+            features[key] = true;
+            return callback(feature, layer, geometry);
+          }
+          matches.push(
+            (features[key] = {
+              feature: feature,
+              layer: layer,
+              geometry: geometry,
+              distanceSq: distanceSq,
+              callback: callback,
+            }),
+          );
+        } else if (match !== true && distanceSq < match.distanceSq) {
+          if (distanceSq === 0) {
+            features[key] = true;
+            matches.splice(matches.lastIndexOf(match), 1);
+            return callback(feature, layer, geometry);
+          }
+          match.geometry = geometry;
+          match.distanceSq = distanceSq;
         }
-        match.geometry = geometry;
-        match.distanceSq = distanceSq;
-      }
-      return undefined;
-    };
+        return undefined;
+      };
 
-    const renderedTiles =
-      /** @type {Array<import("../../VectorRenderTile.js").default>} */ (
-        this.renderedTiles
-      );
-    const layerUid = getUid(layer);
-    const declutter = layer.getDeclutter();
-    const declutteredFeatures = declutter
-      ? frameState.declutter?.[declutter]?.all().map((item) => item.value)
-      : null;
-    let found;
-    foundFeature: for (let i = 0, ii = renderedTiles.length; i < ii; ++i) {
-      const tile = renderedTiles[i];
-      const tileExtent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
-      if (!intersects(tileExtent, hitExtent)) {
-        continue;
-      }
-
-      const executorGroups = tile.executorGroups[layerUid];
-      for (let t = 0, tt = executorGroups.length; t < tt; ++t) {
-        found = executorGroups[t].forEachFeatureAtCoordinate(
-          processedCoordinate,
-          resolution,
-          rotation,
-          hitTolerance,
-          featureCallback,
-          declutteredFeatures,
+      const renderedTiles =
+        /** @type {Array<import("../../VectorRenderTile.js").default>} */ (
+          this.renderedTiles
         );
-        if (found) {
-          break foundFeature;
+      const layerUid = getUid(layer);
+      const declutter = layer.getDeclutter();
+      const declutteredFeatures = declutter
+        ? frameState.declutter?.[declutter]?.all().map((item) => item.value)
+        : null;
+      for (let i = 0, ii = renderedTiles.length; i < ii; ++i) {
+        const tile = renderedTiles[i];
+        const tileExtent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
+        if (!intersects(tileExtent, hitExtent)) {
+          continue;
+        }
+
+        const executorGroups = tile.executorGroups[layerUid];
+        for (let t = 0, tt = executorGroups.length; t < tt; ++t) {
+          const found = executorGroups[t].forEachFeatureAtCoordinate(
+            processedCoordinate,
+            resolution,
+            rotation,
+            hitTolerance,
+            featureCallback,
+            declutteredFeatures,
+          );
+          if (found) {
+            return found;
+          }
         }
       }
     }
-    return found;
+    return undefined;
   }
 
   /**

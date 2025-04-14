@@ -461,14 +461,12 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   }
 
   /**
-   * @param {import("../../coordinate.js").Coordinate} coordinate The original coordinate requested
-   * (typically unwrapped).
+   * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {import("../vector.js").FeatureCallback<T>} callback Feature callback.
    * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
-   * @param {import("../../coordinate.js").Coordinate} worldOffset World offset (`[dx, dy]`)
-   * for the check (`[0, 0]` for primary world).
+   * @param {boolean} [checkWrapped] Check for wrapped geometries.
    * @return {T|undefined} Callback result.
    * @template T
    * @override
@@ -479,7 +477,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     hitTolerance,
     callback,
     matches,
-    worldOffset,
+    checkWrapped,
   ) {
     if (!this.replayGroup_) {
       return undefined;
@@ -489,12 +487,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const projection = frameState.viewState.projection;
     const layer = this.getLayer();
     const source = layer.getSource();
-
-    const processedCoordinate = source.getWrapX()
-      ? wrapCoordinateX(coordinate.slice(0), projection)
-      : coordinate.slice(0);
-    processedCoordinate[0] += worldOffset[0];
-    processedCoordinate[1] += worldOffset[1];
 
     /** @type {!Object<string, import("../Map.js").HitMatch<T>|true>} */
     const features = {};
@@ -535,16 +527,42 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     };
 
     const declutter = this.getLayer().getDeclutter();
-    return this.replayGroup_.forEachFeatureAtCoordinate(
-      processedCoordinate,
-      resolution,
-      rotation,
-      hitTolerance,
-      featureCallback,
-      declutter
-        ? frameState.declutter?.[declutter]?.all().map((item) => item.value)
-        : null,
+
+    const offsets = [[0, 0]];
+    if (projection.canWrapX() && checkWrapped) {
+      const projectionExtent = projection.getExtent();
+      const worldWidth = getWidth(projectionExtent);
+      offsets.push([-worldWidth, 0], [worldWidth, 0]);
+    }
+
+    const translatedCoordinate = wrapCoordinateX(
+      coordinate.slice(0),
+      projection,
     );
+
+    for (let i = 0; i < offsets.length; i++) {
+      const offset = offsets[i];
+      const processedCoordinate = source.getWrapX()
+        ? translatedCoordinate
+        : coordinate.slice(0);
+      processedCoordinate[0] += offset[0];
+      processedCoordinate[1] += offset[1];
+
+      const found = this.replayGroup_.forEachFeatureAtCoordinate(
+        processedCoordinate,
+        resolution,
+        rotation,
+        hitTolerance,
+        featureCallback,
+        declutter
+          ? frameState.declutter?.[declutter]?.all().map((item) => item.value)
+          : null,
+      );
+      if (found) {
+        return found;
+      }
+    }
+    return undefined;
   }
 
   /**
