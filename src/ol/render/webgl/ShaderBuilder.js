@@ -843,7 +843,11 @@ ${this.attributes_
   float currentLengthPx = lengthToPoint + v_distanceOffsetPx;
   float currentRadiusPx = distanceFromSegment(currentPoint, v_segmentStart, v_segmentEnd);
   float currentRadiusRatio = dot(segmentNormal, startToPoint) * 2. / v_width;
-  currentLineMetric = mix(v_measureStart, v_measureEnd, lengthToPoint / segmentLength);
+  currentLineMetric = mix(
+    v_measureStart,
+    v_measureEnd,
+    lengthToPoint / max(segmentLength, 1.17549429e-38)
+  );
 
   if (${this.discardExpression_}) { discard; }
 
