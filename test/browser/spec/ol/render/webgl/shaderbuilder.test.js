@@ -62,7 +62,6 @@ void main(void) {
     offsetPx += halfSizePx * vec2(-1., 1.);
   }
   float angle = 0.0;
-  
   float c = cos(-angle);
   float s = sin(-angle);
   offsetPx = vec2(c * offsetPx.x - s * offsetPx.y, s * offsetPx.x + c * offsetPx.y);
@@ -76,7 +75,7 @@ void main(void) {
   v_angle = angle;
   c = cos(-v_angle);
   s = sin(-v_angle);
-  centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y); 
+  centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y);
   v_centerPx = screenToPx(center.xy) + centerOffsetPx;
   v_opacity = 0.4;
   v_test = vec3(1.0, 2.0, 3.0);
@@ -131,7 +130,6 @@ void main(void) {
     offsetPx += halfSizePx * vec2(-1., 1.);
   }
   float angle = 0.0;
-  
   float c = cos(-angle);
   float s = sin(-angle);
   offsetPx = vec2(c * offsetPx.x - s * offsetPx.y, s * offsetPx.x + c * offsetPx.y);
@@ -145,7 +143,7 @@ void main(void) {
   v_angle = angle;
   c = cos(-v_angle);
   s = sin(-v_angle);
-  centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y); 
+  centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y);
   v_centerPx = screenToPx(center.xy) + centerOffsetPx;
   v_myAttr = a_myAttr;
 }`);
@@ -196,8 +194,7 @@ void main(void) {
   } else {
     offsetPx += halfSizePx * vec2(-1., 1.);
   }
-  float angle = 0.0;
-  angle += u_rotation;
+  float angle = 0.0 + u_rotation;
   float c = cos(-angle);
   float s = sin(-angle);
   offsetPx = vec2(c * offsetPx.x - s * offsetPx.y, s * offsetPx.x + c * offsetPx.y);
@@ -211,7 +208,7 @@ void main(void) {
   v_angle = angle;
   c = cos(-v_angle);
   s = sin(-v_angle);
-  centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y); 
+  centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y);
   v_centerPx = screenToPx(center.xy) + centerOffsetPx;
 
 }`);
@@ -262,7 +259,6 @@ void main(void) {
     offsetPx += halfSizePx * vec2(-1., 1.);
   }
   float angle = u_time * 0.2;
-  
   float c = cos(-angle);
   float s = sin(-angle);
   offsetPx = vec2(c * offsetPx.x - s * offsetPx.y, s * offsetPx.x + c * offsetPx.y);
@@ -276,7 +272,7 @@ void main(void) {
   v_angle = angle;
   c = cos(-v_angle);
   s = sin(-v_angle);
-  centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y); 
+  centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y);
   v_centerPx = screenToPx(center.xy) + centerOffsetPx;
 
 }`);
@@ -469,7 +465,7 @@ void main(void) {
   vec2 normalPx = vec2(-tangentPx.y, tangentPx.x);
   segmentStartPx = getOffsetPoint(segmentStartPx, normalPx, v_angleStart, lineOffsetPx),
   segmentEndPx = getOffsetPoint(segmentEndPx, normalPx, v_angleEnd, lineOffsetPx);
-  
+
   // compute current vertex position
   float normalDir = vertexNumber < 0.5 || (vertexNumber > 1.5 && vertexNumber < 2.5) ? 1.0 : -1.0;
   float tangentDir = vertexNumber < 1.5 ? 1.0 : -1.0;
@@ -616,7 +612,7 @@ void main(void) {
   float a_opacity = v_opacity; // assign to original attribute name
   vec3 a_test = v_test; // assign to original attribute name
   vec2 a_myAttr = v_myAttr; // assign to original attribute name
-      
+
   vec2 currentPoint = gl_FragCoord.xy / u_pixelRatio;
   #ifdef GL_FRAGMENT_PRECISION_HIGH
   vec2 worldPos = pxToWorld(currentPoint);
@@ -640,7 +636,11 @@ void main(void) {
   float currentLengthPx = lengthToPoint + v_distanceOffsetPx;
   float currentRadiusPx = distanceFromSegment(currentPoint, v_segmentStart, v_segmentEnd);
   float currentRadiusRatio = dot(segmentNormal, startToPoint) * 2. / v_width;
-  currentLineMetric = mix(v_measureStart, v_measureEnd, lengthToPoint / segmentLength);
+  currentLineMetric = mix(
+    v_measureStart,
+    v_measureEnd,
+    lengthToPoint / max(segmentLength, 1.17549429e-38)
+  );
 
   if (u_myUniform > 0.5) { discard; }
 
