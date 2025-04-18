@@ -204,6 +204,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {import("../vector.js").FeatureCallback<T>} callback Feature callback.
    * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
+   * @param {boolean} [checkWrapped] Check for wrapped geometries.
    * @return {T|undefined} Callback result.
    * @template T
    * @override
@@ -214,6 +215,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
     hitTolerance,
     callback,
     matches,
+    checkWrapped,
   ) {
     if (this.vectorRenderer_) {
       return this.vectorRenderer_.forEachFeatureAtCoordinate(
@@ -222,6 +224,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
         hitTolerance,
         callback,
         matches,
+        checkWrapped,
       );
     }
     return super.forEachFeatureAtCoordinate(
@@ -230,6 +233,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
       hitTolerance,
       callback,
       matches,
+      checkWrapped,
     );
   }
 }
