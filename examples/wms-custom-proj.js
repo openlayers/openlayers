@@ -19,7 +19,7 @@ import TileWMS from '../src/ol/source/TileWMS.js';
 const projection = new Projection({
   code: 'EPSG:21781',
   // The extent is used to determine zoom level 0. Recommended values for a
-  // projection's validity extent can be found at https://epsg.io/.
+  // projection's validity extent can be found at https://spatialreference.org/.
   extent: [485869.5728, 76443.1884, 837076.5648, 299941.7864],
   units: 'm',
 });
