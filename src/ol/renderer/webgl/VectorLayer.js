@@ -4,7 +4,7 @@
 import ViewHint from '../../ViewHint.js';
 import {assert} from '../../asserts.js';
 import {listen, unlistenByKey} from '../../events.js';
-import {buffer, createEmpty, equals, getWidth} from '../../extent.js';
+import {buffer, createEmpty, equals} from '../../extent.js';
 import BaseVector from '../../layer/BaseVector.js';
 import {
   getTransformFromProjections,
@@ -506,7 +506,6 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {import("../vector.js").FeatureCallback<T>} callback Feature callback.
    * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
-   * @param {boolean} [checkWrapped] Check for wrapped geometries.
    * @return {T|undefined} Callback result.
    * @template T
    * @override
@@ -517,7 +516,6 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     hitTolerance,
     callback,
     matches,
-    checkWrapped,
   ) {
     assert(
       this.hitDetectionEnabled_,
@@ -527,42 +525,17 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       return undefined;
     }
 
-    const projection = frameState.viewState.projection;
+    const pixel = applyTransform(
+      frameState.coordinateToPixelTransform,
+      coordinate.slice(),
+    );
 
-    const offsets = [[0, 0]];
-    if (projection.canWrapX() && checkWrapped) {
-      const projectionExtent = projection.getExtent();
-      const worldWidth = getWidth(projectionExtent);
-      offsets.push([-worldWidth, 0], [worldWidth, 0]);
-    }
-
-    for (let i = 0; i < offsets.length; i++) {
-      const offset = offsets[i];
-      const processedCoordinate = [
-        coordinate[0] + offset[0],
-        coordinate[1] + offset[1],
-      ];
-
-      const pixel = applyTransform(
-        frameState.coordinateToPixelTransform,
-        processedCoordinate.slice(),
-      );
-
-      const data = this.hitRenderTarget_.readPixel(pixel[0] / 2, pixel[1] / 2);
-      const color = [
-        data[0] / 255,
-        data[1] / 255,
-        data[2] / 255,
-        data[3] / 255,
-      ];
-      const ref = colorDecodeId(color);
-      const feature = this.batch_.getFeatureFromRef(ref);
-      if (feature) {
-        const found = callback(feature, this.getLayer(), null);
-        if (found) {
-          return found;
-        }
-      }
+    const data = this.hitRenderTarget_.readPixel(pixel[0] / 2, pixel[1] / 2);
+    const color = [data[0] / 255, data[1] / 255, data[2] / 255, data[3] / 255];
+    const ref = colorDecodeId(color);
+    const feature = this.batch_.getFeatureFromRef(ref);
+    if (feature) {
+      return callback(feature, this.getLayer(), null);
     }
     return undefined;
   }

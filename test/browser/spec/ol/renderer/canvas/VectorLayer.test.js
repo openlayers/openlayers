@@ -257,14 +257,12 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       const spy = sinonSpy();
       const coordinate = [0, 0];
       const matches = [];
-      const projection = getProjection('EPSG:3857');
       const frameState = {
         layerStatesArray: [{}],
         viewState: {
           center: [0, 0],
           resolution: 1,
           rotation: 0,
-          projection: projection,
         },
       };
       renderer.forEachFeatureAtCoordinate(
@@ -284,14 +282,12 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       const spy = sinonSpy();
       const coordinate = [0, 0];
       const matches = [];
-      const projection = getProjection('EPSG:3857');
       const frameState = {
         layerStatesArray: [{}],
         viewState: {
           center: [0, 0],
           resolution: 1,
           rotation: 0,
-          projection: projection,
         },
       };
       expect(() =>

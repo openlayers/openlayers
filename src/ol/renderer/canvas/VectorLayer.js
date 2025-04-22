@@ -466,7 +466,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {import("../vector.js").FeatureCallback<T>} callback Feature callback.
    * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
-   * @param {boolean} [checkWrapped] Check for wrapped geometries.
    * @return {T|undefined} Callback result.
    * @template T
    * @override
@@ -477,16 +476,13 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     hitTolerance,
     callback,
     matches,
-    checkWrapped,
   ) {
     if (!this.replayGroup_) {
       return undefined;
     }
     const resolution = frameState.viewState.resolution;
     const rotation = frameState.viewState.rotation;
-    const projection = frameState.viewState.projection;
     const layer = this.getLayer();
-    const source = layer.getSource();
 
     /** @type {!Object<string, import("../Map.js").HitMatch<T>|true>} */
     const features = {};
@@ -527,42 +523,16 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     };
 
     const declutter = this.getLayer().getDeclutter();
-
-    const offsets = [[0, 0]];
-    if (projection.canWrapX() && checkWrapped) {
-      const projectionExtent = projection.getExtent();
-      const worldWidth = getWidth(projectionExtent);
-      offsets.push([-worldWidth, 0], [worldWidth, 0]);
-    }
-
-    const translatedCoordinate = wrapCoordinateX(
-      coordinate.slice(0),
-      projection,
+    return this.replayGroup_.forEachFeatureAtCoordinate(
+      coordinate,
+      resolution,
+      rotation,
+      hitTolerance,
+      featureCallback,
+      declutter
+        ? frameState.declutter?.[declutter]?.all().map((item) => item.value)
+        : null,
     );
-
-    for (let i = 0; i < offsets.length; i++) {
-      const offset = offsets[i];
-      const processedCoordinate = source.getWrapX()
-        ? translatedCoordinate
-        : coordinate.slice(0);
-      processedCoordinate[0] += offset[0];
-      processedCoordinate[1] += offset[1];
-
-      const found = this.replayGroup_.forEachFeatureAtCoordinate(
-        processedCoordinate,
-        resolution,
-        rotation,
-        hitTolerance,
-        featureCallback,
-        declutter
-          ? frameState.declutter?.[declutter]?.all().map((item) => item.value)
-          : null,
-      );
-      if (found) {
-        return found;
-      }
-    }
-    return undefined;
   }
 
   /**

@@ -2,6 +2,8 @@
  * @module ol/renderer/Map
  */
 import Disposable from '../Disposable.js';
+import {wrapX} from '../coordinate.js';
+import {getWidth} from '../extent.js';
 import {TRUE} from '../functions.js';
 import {inView} from '../layer/Layer.js';
 import {shared as iconImageCache} from '../style/IconImageCache.js';
@@ -106,40 +108,56 @@ class MapRenderer extends Disposable {
       return callback.call(thisArg, feature, managed ? layer : null, geometry);
     }
 
+    const projection = viewState.projection;
+
+    const translatedCoordinate = wrapX(coordinate.slice(), projection);
+    const offsets = [[0, 0]];
+    if (projection.canWrapX() && checkWrapped) {
+      const projectionExtent = projection.getExtent();
+      const worldWidth = getWidth(projectionExtent);
+      offsets.push([-worldWidth, 0], [worldWidth, 0]);
+    }
+
     const layerStates = frameState.layerStatesArray;
     const numLayers = layerStates.length;
 
     const matches = /** @type {Array<HitMatch<T>>} */ ([]);
-    for (let j = numLayers - 1; j >= 0; --j) {
-      const layerState = layerStates[j];
-      const layer = layerState.layer;
-      if (
-        layer.hasRenderer() &&
-        inView(layerState, viewState) &&
-        layerFilter.call(thisArg2, layer)
-      ) {
-        const layerRenderer = layer.getRenderer();
-        const source = layer.getSource();
-        if (layerRenderer && source) {
-          const callback = forEachFeatureAtCoordinate.bind(
-            null,
-            layerState.managed,
-          );
-          result = layerRenderer.forEachFeatureAtCoordinate(
-            coordinate,
-            frameState,
-            hitTolerance,
-            callback,
-            matches,
-            checkWrapped,
-          );
-        }
-        if (result) {
-          return result;
+    const tmpCoord = [];
+    for (let i = 0; i < offsets.length; i++) {
+      for (let j = numLayers - 1; j >= 0; --j) {
+        const layerState = layerStates[j];
+        const layer = layerState.layer;
+        if (
+          layer.hasRenderer() &&
+          inView(layerState, viewState) &&
+          layerFilter.call(thisArg2, layer)
+        ) {
+          const layerRenderer = layer.getRenderer();
+          const source = layer.getSource();
+          if (layerRenderer && source) {
+            const coordinates = source.getWrapX()
+              ? translatedCoordinate
+              : coordinate;
+            const callback = forEachFeatureAtCoordinate.bind(
+              null,
+              layerState.managed,
+            );
+            tmpCoord[0] = coordinates[0] + offsets[i][0];
+            tmpCoord[1] = coordinates[1] + offsets[i][1];
+            result = layerRenderer.forEachFeatureAtCoordinate(
+              tmpCoord,
+              frameState,
+              hitTolerance,
+              callback,
+              matches,
+            );
+          }
+          if (result) {
+            return result;
+          }
         }
       }
     }
-
     if (matches.length === 0) {
       return undefined;
     }
