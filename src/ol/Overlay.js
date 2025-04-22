@@ -533,8 +533,8 @@ class Overlay extends BaseObject {
 
     this.setVisible(true);
 
-    const x = Math.round(pixel[0] + offset[0]) + 'px';
-    const y = Math.round(pixel[1] + offset[1]) + 'px';
+    const x = `${pixel[0] + offset[0]}px`;
+    const y = `${pixel[1] + offset[1]}px`;
     let posX = '0%';
     let posY = '0%';
     if (
