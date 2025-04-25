@@ -12,6 +12,30 @@ export function create() {
 }
 
 /**
+ * @param {Mat4} out Flattened 4x4 matrix being reset.
+ * @return {Mat4} Reset 4x4 matrix
+ */
+export function reset(out) {
+  out[0] = 1;
+  out[1] = 0;
+  out[2] = 0;
+  out[3] = 0;
+  out[4] = 0;
+  out[5] = 1;
+  out[6] = 0;
+  out[7] = 0;
+  out[8] = 0;
+  out[9] = 0;
+  out[10] = 1;
+  out[11] = 0;
+  out[12] = 0;
+  out[13] = 0;
+  out[14] = 0;
+  out[15] = 1;
+  return out;
+}
+
+/**
  * @param {Mat4} mat4 Flattened 4x4 matrix receiving the result.
  * @param {import("../transform.js").Transform} transform Transformation matrix.
  * @return {Mat4} "2D transformation matrix as flattened 4x4 matrix."
@@ -174,6 +198,61 @@ export function translation(x, y, z, out) {
   out[13] = y;
   out[14] = z;
   out[15] = 1;
+
+  return out;
+}
+
+/**
+ * Rotate a matrix.
+ *
+ * @param {Mat4} m the matrix to rotate
+ * @param {number} angle How much to rotate.
+ * @param {Mat4} [out] the receiving matrix
+ * @return {Mat4} out
+ */
+export function rotate(m, angle, out) {
+  out = out ?? create();
+  const cos = Math.cos(angle),
+    sin = Math.sin(angle);
+
+  // rotation matrix components
+  const a11 = cos;
+  const a12 = -sin;
+  const a21 = sin;
+  const a22 = cos;
+  const a33 = 1;
+  const a44 = 1;
+
+  // const b11 = m[0];
+  // const b12 = m[1];
+  // const b13 = m[2];
+  // const b14 = m[3];
+  // const b21 = m[4];
+  // const b22 = m[5];
+  // const b23 = m[6];
+  // const b24 = m[7];
+  // const b33 = m[10];
+  // const b44 = m[15];
+
+  out[0] = a11 * m[0] + a12 * m[4];
+  out[1] = a11 * m[1] + a12 * m[5];
+  out[2] = a11 * m[2] + a12 * m[6];
+  out[3] = a11 * m[3] + a12 * m[7];
+
+  out[4] = a21 * m[0] + a22 * m[4];
+  out[5] = a21 * m[1] + a22 * m[5];
+  out[6] = a21 * m[2] + a22 * m[6];
+  out[7] = a21 * m[3] + a22 * m[7];
+
+  out[8] = a33 * m[8];
+  out[9] = a33 * m[9];
+  out[10] = a33 * m[10];
+  out[11] = a33 * m[11];
+
+  out[12] = a44 * m[12];
+  out[13] = a44 * m[13];
+  out[14] = a44 * m[14];
+  out[15] = a44 * m[15];
 
   return out;
 }

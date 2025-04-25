@@ -35,6 +35,10 @@ import {
 import {
   create as createMat4,
   fromTransform as mat4FromTransform,
+  reset as resetMat4,
+  rotate as rotateMat4,
+  scale as scaleMat4,
+  translate as translateMat4,
 } from '../../vec/mat4.js';
 import {DefaultUniform} from '../../webgl/Helper.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
@@ -125,16 +129,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
             }`,
           uniforms: {
             [Uniforms.TEXT_OVERLAY_TEXTURE]: () => this.textOverlayCanvas_,
-            // [Uniforms.TEXT_OVERLAY_MATRIX]: () => this.textOverlayOffsetMatrix_,
             [Uniforms.TEXT_OVERLAY_MATRIX]: (frameState) => {
-              // makeInverseTransform(
-              //   this.tmpTransform_,
-              //   this.currentFrameStateTransform_,
-              // );
-              // multiplyTransform(
-              //   this.tmpTransform_,
-              //   this.textOverlayRenderTransform_,
-              // );
               const viewState = frameState.viewState;
               const renderedViewState =
                 this.textOverlayRenderFrameState_.viewState;
@@ -146,50 +141,27 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
               const renderedResolution = renderedViewState.resolution;
               const renderedRotation = renderedViewState.rotation;
               const renderedSize = this.textOverlayRenderFrameState_.size;
-              // resetTransform(this.tmpTransform_);
-              // composeTransform(
-              //   this.tmpTransform_,
-              //   ((renderedCenter[0] - center[0]) * 1) / resolution,
-              //   ((center[1] - renderedCenter[1]) * 1) / resolution,
-              //   // resolution / renderedResolution,
-              //   // resolution / renderedResolution,
-              //   1,
-              //   1,
-              //   // rotation - renderedRotation,
-              //   0,
-              //   0,
-              //   0,
-              // );
-              makeInverseTransform(
-                this.tmpTransform_,
-                this.currentFrameStateTransform_,
-              );
-              // composeTransform(
-              //   this.tmpTransform_,
-              //   renderedCenter[0] - center[0],
-              //   renderedCenter[1] - center[1],
-              //   // resolution / renderedResolution,
-              //   // resolution / renderedResolution,
-              //   1,
-              //   1,
-              //   // rotation - renderedRotation,
-              //   0,
-              //   0,
-              //   0,
-              // );
-              translateTransform(
-                this.tmpTransform_,
-                renderedCenter[0] - center[0],
-                renderedCenter[1] - center[1],
-              );
-              multiplyTransform(
-                this.tmpTransform_,
-                this.currentFrameStateTransform_,
-              );
-              return mat4FromTransform(
+              resetMat4(this.textOverlayOffsetMatrix_);
+              translateMat4(
                 this.textOverlayOffsetMatrix_,
-                this.tmpTransform_,
+                -(renderedCenter[0] - center[0]) / resolution / (size[0] / 2),
+                -(renderedCenter[1] - center[1]) / resolution / (size[1] / 2),
+                0,
+                this.textOverlayOffsetMatrix_,
               );
+              rotateMat4(
+                this.textOverlayOffsetMatrix_,
+                rotation - renderedRotation,
+                this.textOverlayOffsetMatrix_,
+              );
+              scaleMat4(
+                this.textOverlayOffsetMatrix_,
+                resolution / renderedResolution,
+                resolution / renderedResolution,
+                1,
+                this.textOverlayOffsetMatrix_,
+              );
+              return this.textOverlayOffsetMatrix_;
             },
           },
         },
