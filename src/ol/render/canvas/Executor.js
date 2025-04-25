@@ -611,6 +611,9 @@ class Executor {
   setStrokeStyle_(context, instruction) {
     context.strokeStyle =
       /** @type {import("../../colorlike.js").ColorLike} */ (instruction[1]);
+    if (!instruction[1]) {
+      return;
+    }
     context.lineWidth = /** @type {number} */ (instruction[2]);
     context.lineCap = /** @type {CanvasLineCap} */ (instruction[3]);
     context.lineJoin = /** @type {CanvasLineJoin} */ (instruction[4]);
