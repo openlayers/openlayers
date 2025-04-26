@@ -36,6 +36,7 @@ const style = [
       'text-stroke-width': 2,
       'text-overflow': true,
       'text-declutter-mode': 'declutter',
+      // 'text-rotate-with-view': true,
     },
   },
 ];
