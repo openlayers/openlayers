@@ -140,18 +140,39 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
               const renderedCenter = renderedViewState.center;
               const renderedResolution = renderedViewState.resolution;
               const renderedRotation = renderedViewState.rotation;
-              const renderedSize = this.textOverlayRenderFrameState_.size;
+              const renderedSize = [
+                this.textOverlayCanvas_.width,
+                this.textOverlayCanvas_.height,
+              ];
               resetMat4(this.textOverlayOffsetMatrix_);
               translateMat4(
                 this.textOverlayOffsetMatrix_,
-                -(renderedCenter[0] - center[0]) / resolution / (size[0] / 2),
-                -(renderedCenter[1] - center[1]) / resolution / (size[1] / 2),
+                (center[0] - renderedCenter[0]) /
+                  resolution /
+                  (renderedSize[0] / 2),
+                (center[1] - renderedCenter[1]) /
+                  resolution /
+                  (renderedSize[1] / 2),
                 0,
+                this.textOverlayOffsetMatrix_,
+              );
+              scaleMat4(
+                this.textOverlayOffsetMatrix_,
+                1 / renderedSize[0],
+                1 / renderedSize[1],
+                1,
                 this.textOverlayOffsetMatrix_,
               );
               rotateMat4(
                 this.textOverlayOffsetMatrix_,
-                rotation - renderedRotation,
+                -rotation,
+                this.textOverlayOffsetMatrix_,
+              );
+              scaleMat4(
+                this.textOverlayOffsetMatrix_,
+                size[0],
+                size[1],
+                1,
                 this.textOverlayOffsetMatrix_,
               );
               scaleMat4(
@@ -161,6 +182,8 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
                 1,
                 this.textOverlayOffsetMatrix_,
               );
+              console.log('rendered rotation', renderedRotation);
+              console.log('rendered size', renderedSize);
               return this.textOverlayOffsetMatrix_;
             },
           },

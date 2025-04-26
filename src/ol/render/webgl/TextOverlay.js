@@ -165,7 +165,7 @@ class TextOverlay {
     frameState.layerIndex = 0;
     frameState.layerStatesArray = [this.vectorLayer_.getLayerState()];
     renderer.context = this.context_;
-    renderer.targetContext_ = this.context_;
+    // renderer.targetContext_ = this.context_;
     renderer.useContainer = useContainer.bind(renderer, this.context_);
     const layerState = this.vectorLayer_.getLayerState();
 
@@ -187,6 +187,8 @@ class TextOverlay {
     // renderer.renderDeferred(frameState);
     // renderer.renderFrame(frameState, this.context_.canvas);
 
+    // return;
+
     this.context_.strokeStyle = 'black';
     this.context_.lineWidth = 4;
     this.context_.strokeRect(
@@ -195,6 +197,54 @@ class TextOverlay {
       this.context_.canvas.width - 8,
       this.context_.canvas.height - 8,
     );
+
+    this.context_.strokeStyle = 'darkred';
+    this.context_.lineWidth = 1.5;
+    // draw a line
+    this.context_.beginPath();
+    this.context_.moveTo(4, this.context_.canvas.height / 2);
+    this.context_.lineTo(
+      this.context_.canvas.width - 8,
+      this.context_.canvas.height / 2,
+    );
+    this.context_.moveTo(this.context_.canvas.width / 2, 4);
+    this.context_.lineTo(
+      this.context_.canvas.width / 2,
+      this.context_.canvas.height - 8,
+    );
+    this.context_.moveTo(
+      this.context_.canvas.width * 0.4,
+      this.context_.canvas.height / 2 - 8,
+    );
+    this.context_.lineTo(
+      this.context_.canvas.width * 0.4,
+      this.context_.canvas.height / 2 + 8,
+    );
+    this.context_.moveTo(
+      this.context_.canvas.width * 0.6,
+      this.context_.canvas.height / 2 - 8,
+    );
+    this.context_.lineTo(
+      this.context_.canvas.width * 0.6,
+      this.context_.canvas.height / 2 + 8,
+    );
+    this.context_.moveTo(
+      this.context_.canvas.width / 2 - 8,
+      this.context_.canvas.height * 0.4,
+    );
+    this.context_.lineTo(
+      this.context_.canvas.width / 2 + 8,
+      this.context_.canvas.height * 0.4,
+    );
+    this.context_.moveTo(
+      this.context_.canvas.width / 2 - 8,
+      this.context_.canvas.height * 0.6,
+    );
+    this.context_.lineTo(
+      this.context_.canvas.width / 2 + 8,
+      this.context_.canvas.height * 0.6,
+    );
+    this.context_.stroke();
   }
 
   getCanvas() {

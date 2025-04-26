@@ -203,10 +203,10 @@ export function translation(x, y, z, out) {
 }
 
 /**
- * Rotate a matrix.
+ * Rotate a matrix around the Z axis, only affecting X and Y components.
  *
  * @param {Mat4} m the matrix to rotate
- * @param {number} angle How much to rotate.
+ * @param {number} angle How much to rotate (in radians).
  * @param {Mat4} [out] the receiving matrix
  * @return {Mat4} out
  */
@@ -220,39 +220,37 @@ export function rotate(m, angle, out) {
   const a12 = -sin;
   const a21 = sin;
   const a22 = cos;
-  const a33 = 1;
-  const a44 = 1;
 
-  // const b11 = m[0];
-  // const b12 = m[1];
-  // const b13 = m[2];
-  // const b14 = m[3];
-  // const b21 = m[4];
-  // const b22 = m[5];
-  // const b23 = m[6];
-  // const b24 = m[7];
-  // const b33 = m[10];
-  // const b44 = m[15];
+  const b11 = m[0];
+  const b12 = m[1];
+  const b13 = m[2];
+  const b14 = m[3];
+  const b21 = m[4];
+  const b22 = m[5];
+  const b23 = m[6];
+  const b24 = m[7];
 
-  out[0] = a11 * m[0] + a12 * m[4];
-  out[1] = a11 * m[1] + a12 * m[5];
-  out[2] = a11 * m[2] + a12 * m[6];
-  out[3] = a11 * m[3] + a12 * m[7];
+  out[0] = a11 * b11 + a12 * b21;
+  out[1] = a11 * b12 + a12 * b22;
+  out[2] = a11 * b13 + a12 * b23;
+  out[3] = a11 * b14 + a12 * b24;
 
-  out[4] = a21 * m[0] + a22 * m[4];
-  out[5] = a21 * m[1] + a22 * m[5];
-  out[6] = a21 * m[2] + a22 * m[6];
-  out[7] = a21 * m[3] + a22 * m[7];
+  out[4] = a21 * b11 + a22 * b21;
+  out[5] = a21 * b12 + a22 * b22;
+  out[6] = a21 * b13 + a22 * b23;
+  out[7] = a21 * b14 + a22 * b24;
 
-  out[8] = a33 * m[8];
-  out[9] = a33 * m[9];
-  out[10] = a33 * m[10];
-  out[11] = a33 * m[11];
+  if (out !== m) {
+    out[8] = m[8];
+    out[9] = m[9];
+    out[10] = m[10];
+    out[11] = m[11];
 
-  out[12] = a44 * m[12];
-  out[13] = a44 * m[13];
-  out[14] = a44 * m[14];
-  out[15] = a44 * m[15];
+    out[12] = m[12];
+    out[13] = m[13];
+    out[14] = m[14];
+    out[15] = m[15];
+  }
 
   return out;
 }
