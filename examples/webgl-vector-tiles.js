@@ -405,21 +405,6 @@ const style = [
       ['==', ['get', 'scalerank'], 2],
       ['<=', ['resolution'], 19567.87924100512],
     ],
-
-    // parsedFilter = parse(filter)
-    // => tree of instructions
-    // removeMapState(parsedFilter)
-    // => tree of instructions where map state operators (zoom, resolution, etc) are removed
-    // compiledFn = compile(parsedFilter)
-    // textFeatures = features.filter(compiledFn)
-
-    // remove the resolution from the filter
-    // filter: [
-    //   'all',
-    //   ['==', ['get', 'layer'], 'country_label'],
-    //   ['==', ['get', 'scalerank'], 2],
-    // ],
-
     else: true,
     style: {
       'text-value': ['get', 'name_en'],

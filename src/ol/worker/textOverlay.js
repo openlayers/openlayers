@@ -33,10 +33,7 @@ worker.onmessage = (event) => {
     }
     case TextOverlayWorkerMessageType.LOAD_FEATURES: {
       const batchId = received.batchId;
-      console.log(received.features);
-      // const features = parser.readFeatures(received.features, {});
       const features = received.features.map(deserializeFeature);
-      console.log(features);
       textOverlay.loadFeatureBatch(features, batchId);
       break;
     }
@@ -50,7 +47,6 @@ worker.onmessage = (event) => {
       const frameState = deserializeFrameState(received.frameState);
       if (renderOverlayKey) {
         cancelAnimationFrame(renderOverlayKey);
-        console.log('dropping frame');
       }
       renderOverlayKey = requestAnimationFrame(() => {
         renderOverlayKey = 0;

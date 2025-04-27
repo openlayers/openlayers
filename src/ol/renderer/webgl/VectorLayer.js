@@ -4,6 +4,8 @@
 import ViewHint from '../../ViewHint.js';
 import {assert} from '../../asserts.js';
 import {listen, unlistenByKey} from '../../events.js';
+import {UNKNOWN, expressionToFunction} from '../../expr/cpu.js';
+import {BooleanType} from '../../expr/expression.js';
 import {buffer, createEmpty, equals} from '../../extent.js';
 import BaseVector from '../../layer/BaseVector.js';
 import {
@@ -22,6 +24,7 @@ import {
 } from '../../render/webgl/serialize.js';
 import {breakDownFlatStyle} from '../../render/webgl/style.js';
 import {
+  createFilterForFeaturesWithText,
   createPostProcessDefinition,
   setupTextOverlayWorker,
 } from '../../render/webgl/textUtil.js';
@@ -40,6 +43,7 @@ import {
 } from '../../vec/mat4.js';
 import {DefaultUniform} from '../../webgl/Helper.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
+import {create as createTextOverlayWorker} from '../../worker/textOverlay.js';
 import WebGLLayerRenderer from './Layer.js';
 import {getWorldParameters} from './worldUtil.js';
 
@@ -184,8 +188,6 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
      */
     this.buffers_ = [];
 
-    this.applyOptions_(options);
-
     /**
      * @private
      */
@@ -215,11 +217,20 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
      */
     this.textOverlayRenderFrameState_ = null;
 
-    this.textOverlayWorker_ = setupTextOverlayWorker((canvas, frameState) => {
+    /**
+     * @type {function(Array<import('../../Feature.js').FeatureLike>): Array<import('../../Feature.js').FeatureLike>}
+     * @private
+     */
+    this.textFeaturesFilter = null;
+
+    this.textOverlayWorker_ = createTextOverlayWorker();
+    setupTextOverlayWorker(this.textOverlayWorker_, (canvas, frameState) => {
       this.textOverlayCanvas_ = canvas;
       this.textOverlayRenderFrameState_ = frameState;
       this.changed();
     });
+
+    this.applyOptions_(options);
   }
 
   /**
@@ -241,7 +252,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     this.textOverlayWorker_.postMessage({
       type: TextOverlayWorkerMessageType.LOAD_FEATURES,
       batchId: 'main',
-      features: features.map(serializeFeature),
+      features: this.textFeaturesFilter(features).map(serializeFeature),
     });
     this.sourceListenKeys_ = [
       listen(
@@ -277,6 +288,24 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   applyOptions_(options) {
     this.styleVariables_ = options.variables;
     this.styles_ = breakDownFlatStyle(options.style);
+    const textFeaturesFilter = createFilterForFeaturesWithText(options.style);
+    const filterFn = expressionToFunction(textFeaturesFilter, BooleanType);
+    this.textFeaturesFilter = (features) => {
+      const filtered = [];
+      for (const feature of features) {
+        const result = filterFn(feature);
+        if (result === true || result === UNKNOWN) {
+          filtered.push(feature);
+        }
+      }
+      console.log(
+        'filtered features',
+        filtered.length,
+        'from',
+        features.length,
+      );
+      return filtered;
+    };
   }
 
   /**
@@ -516,10 +545,11 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
         type: TextOverlayWorkerMessageType.UNLOAD_FEATURES,
         batchId: 'main',
       });
+      const features = this.textFeaturesFilter(vectorSource.getFeatures());
       this.textOverlayWorker_.postMessage({
         type: TextOverlayWorkerMessageType.LOAD_FEATURES,
         batchId: 'main',
-        features: vectorSource.getFeatures().map(serializeFeature),
+        features: features.map(serializeFeature),
       });
     }
 

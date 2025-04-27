@@ -75,7 +75,7 @@ describe('ol/render/webgl/textUtil', function () {
         [
           'all',
           [
-            'not',
+            '!',
             [
               'all',
               ['==', ['get', 'layer'], 'landuse'],
@@ -83,7 +83,7 @@ describe('ol/render/webgl/textUtil', function () {
             ],
           ],
           [
-            'not',
+            '!',
             [
               'all',
               ['==', ['get', 'layer'], 'landuse'],
@@ -97,7 +97,7 @@ describe('ol/render/webgl/textUtil', function () {
         [
           'all',
           [
-            'not',
+            '!',
             [
               'all',
               ['==', ['get', 'layer'], 'landuse'],
@@ -105,7 +105,7 @@ describe('ol/render/webgl/textUtil', function () {
             ],
           ],
           [
-            'not',
+            '!',
             [
               'all',
               ['==', ['get', 'layer'], 'landuse'],
@@ -182,6 +182,39 @@ describe('ol/render/webgl/textUtil', function () {
 
       const filter = createFilterForFeaturesWithText(style);
       expect(filter).to.eql(false);
+    });
+    it('returns a match-all filter expression if no filter on the text style', function () {
+      const style = [
+        {
+          filter: [
+            'all',
+            ['==', ['get', 'layer'], 'landuse'],
+            ['==', ['get', 'class'], 'park'],
+          ],
+          style: {
+            'fill-color': '#d8e8c8',
+          },
+        },
+        {
+          filter: [
+            'all',
+            ['==', ['get', 'layer'], 'landuse'],
+            ['==', ['get', 'class'], 'park'],
+          ],
+          style: {
+            'fill-color': '#d8e8c8',
+          },
+        },
+        {
+          style: {
+            'text-value': ['get', 'name_en'],
+            'text-font': '8px "Open Sans", "Arial Unicode MS", sans-serif',
+          },
+        },
+      ];
+
+      const filter = createFilterForFeaturesWithText(style);
+      expect(filter).to.eql(true);
     });
   });
 });

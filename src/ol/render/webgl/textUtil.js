@@ -78,17 +78,20 @@ export function createFilterForFeaturesWithText(style) {
     if (!rule.else) {
       excludeFilters.length = 0;
     }
-    if (!rule.filter) {
-      continue;
-    }
     const hasTextStyle = Object.keys(rule.style).some((key) =>
       key.startsWith('text-'),
     );
+    if (hasTextStyle && textFilterExpression === false && !rule.filter) {
+      textFilterExpression = true;
+    }
+    if (!rule.filter) {
+      continue;
+    }
     if (hasTextStyle) {
       addExpressionToFilter(rule.filter);
     } else {
       // no text style: store the filter as an exclude filter
-      excludeFilters.push(['not', rule.filter]);
+      excludeFilters.push(['!', rule.filter]);
     }
   }
   return textFilterExpression;

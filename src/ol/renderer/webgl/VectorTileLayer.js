@@ -2,6 +2,8 @@
  * @module ol/renderer/webgl/VectorTileLayer
  */
 import EventType from '../../events/EventType.js';
+import {UNKNOWN, expressionToFunction} from '../../expr/cpu.js';
+import {BooleanType} from '../../expr/expression.js';
 import {getIntersection} from '../../extent.js';
 import {getUserProjection} from '../../proj.js';
 import {ShaderBuilder} from '../../render/webgl/ShaderBuilder.js';
@@ -16,6 +18,7 @@ import {
   parseLiteralStyle,
 } from '../../render/webgl/style.js';
 import {
+  createFilterForFeaturesWithText,
   createPostProcessDefinition,
   setupTextOverlayWorker,
 } from '../../render/webgl/textUtil.js';
@@ -34,6 +37,7 @@ import {AttributeType} from '../../webgl/Helper.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
 import TileGeometry from '../../webgl/TileGeometry.js';
 import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
+import {create as createTextOverlayWorker} from '../../worker/textOverlay.js';
 import WebGLBaseTileLayerRenderer, {
   Uniforms as BaseUniforms,
 } from './TileLayerBase.js';
@@ -183,7 +187,14 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
      */
     this.textOverlayRenderFrameState_ = null;
 
-    this.textOverlayWorker_ = setupTextOverlayWorker((canvas, frameState) => {
+    /**
+     * @type {function(Array<import('../../Feature.js').FeatureLike>): Array<import('../../Feature.js').FeatureLike>}
+     * @private
+     */
+    this.textFeaturesFilter = null;
+
+    this.textOverlayWorker_ = createTextOverlayWorker();
+    setupTextOverlayWorker(this.textOverlayWorker_, (canvas, frameState) => {
       this.textOverlayCanvas_ = canvas;
       this.textOverlayRenderFrameState_ = frameState;
       this.changed();
@@ -219,6 +230,24 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    */
   applyOptions_(options) {
     this.styles_ = breakDownFlatStyle(options.style);
+    const textFeaturesFilter = createFilterForFeaturesWithText(options.style);
+    const filterFn = expressionToFunction(textFeaturesFilter, BooleanType);
+    this.textFeaturesFilter = (features) => {
+      const filtered = [];
+      for (const feature of features) {
+        const result = filterFn(feature);
+        if (result === true || result === UNKNOWN) {
+          filtered.push(feature);
+        }
+      }
+      console.log(
+        'filtered features',
+        filtered.length,
+        'from',
+        features.length,
+      );
+      return filtered;
+    };
   }
 
   /**
@@ -312,7 +341,9 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
         this.textOverlayWorker_.postMessage({
           type: TextOverlayWorkerMessageType.LOAD_FEATURES,
           batchId: tileRep.tile.getKey(),
-          features: tileRep.features.map(serializeFeature),
+          features: this.textFeaturesFilter(tileRep.features).map(
+            serializeFeature,
+          ),
         });
         this.getLayer().changed();
         tileRep.removeEventListener(EventType.CHANGE, listener);
