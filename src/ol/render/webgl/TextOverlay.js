@@ -159,6 +159,7 @@ class TextOverlay {
         },
       };
     }
+
     if (!frameState.declutter) {
       frameState.declutter = {};
     }

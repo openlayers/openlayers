@@ -3,7 +3,6 @@
  */
 import ViewHint from '../../ViewHint.js';
 import {assert} from '../../asserts.js';
-import {createCanvasContext2D} from '../../dom.js';
 import {listen, unlistenByKey} from '../../events.js';
 import {buffer, createEmpty, equals} from '../../extent.js';
 import BaseVector from '../../layer/BaseVector.js';
@@ -18,11 +17,14 @@ import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
 import {TextOverlayWorkerMessageType} from '../../render/webgl/constants.js';
 import {colorDecodeId} from '../../render/webgl/encodeUtil.js';
 import {
-  deserializeFrameState,
   serializeFeature,
   serializeFrameState,
 } from '../../render/webgl/serialize.js';
 import {breakDownFlatStyle} from '../../render/webgl/style.js';
+import {
+  createPostProcessDefinition,
+  setupTextOverlayWorker,
+} from '../../render/webgl/textUtil.js';
 import VectorEventType from '../../source/VectorEventType.js';
 import {
   apply as applyTransform,
@@ -35,14 +37,9 @@ import {
 import {
   create as createMat4,
   fromTransform as mat4FromTransform,
-  reset as resetMat4,
-  rotate as rotateMat4,
-  scale as scaleMat4,
-  translate as translateMat4,
 } from '../../vec/mat4.js';
 import {DefaultUniform} from '../../webgl/Helper.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
-import {create as createTextOverlayWorker} from '../../worker/textOverlay.js';
 import WebGLLayerRenderer from './Layer.js';
 import {getWorldParameters} from './worldUtil.js';
 
@@ -105,89 +102,10 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     super(layer, {
       uniforms: uniforms,
       postProcesses: [
-        {
-          fragmentShader: `
-            precision mediump float;
-
-            uniform sampler2D u_image;
-            uniform sampler2D ${Uniforms.TEXT_OVERLAY_TEXTURE};
-            uniform mat4 ${Uniforms.TEXT_OVERLAY_MATRIX};
-            
-            varying vec2 v_texCoord;
-
-            void main() {
-              vec4 color = texture2D(u_image, v_texCoord);
-
-              vec2 coords = v_texCoord * 2. - vec2(1.);
-              coords = (${Uniforms.TEXT_OVERLAY_MATRIX} * vec4(coords.xy, 0., 1.)).xy;
-              coords = coords * 0.5 + vec2(0.5);
-
-              vec4 textColor = texture2D(${Uniforms.TEXT_OVERLAY_TEXTURE}, vec2(coords.x, 1.-coords.y));
-              // gl_FragColor = textColor.a > 0.5 ? textColor : color;
-              // gl_FragColor = textColor + 0.5 * color;
-              gl_FragColor = textColor.a * textColor + (1. - textColor.a) * color;
-            }`,
-          uniforms: {
-            [Uniforms.TEXT_OVERLAY_TEXTURE]: () => this.textOverlayCanvas_,
-            [Uniforms.TEXT_OVERLAY_MATRIX]: (frameState) => {
-              const viewState = frameState.viewState;
-              const renderedViewState =
-                this.textOverlayRenderFrameState_.viewState;
-              const center = viewState.center;
-              const resolution = viewState.resolution;
-              const rotation = viewState.rotation;
-              const size = frameState.size;
-              const renderedCenter = renderedViewState.center;
-              const renderedResolution = renderedViewState.resolution;
-              const renderedRotation = renderedViewState.rotation;
-              const renderedSize = [
-                this.textOverlayCanvas_.width,
-                this.textOverlayCanvas_.height,
-              ];
-              resetMat4(this.textOverlayOffsetMatrix_);
-              translateMat4(
-                this.textOverlayOffsetMatrix_,
-                (center[0] - renderedCenter[0]) /
-                  resolution /
-                  (renderedSize[0] / 2),
-                (center[1] - renderedCenter[1]) /
-                  resolution /
-                  (renderedSize[1] / 2),
-                0,
-                this.textOverlayOffsetMatrix_,
-              );
-              scaleMat4(
-                this.textOverlayOffsetMatrix_,
-                1 / renderedSize[0],
-                1 / renderedSize[1],
-                1,
-                this.textOverlayOffsetMatrix_,
-              );
-              rotateMat4(
-                this.textOverlayOffsetMatrix_,
-                -rotation,
-                this.textOverlayOffsetMatrix_,
-              );
-              scaleMat4(
-                this.textOverlayOffsetMatrix_,
-                size[0],
-                size[1],
-                1,
-                this.textOverlayOffsetMatrix_,
-              );
-              scaleMat4(
-                this.textOverlayOffsetMatrix_,
-                resolution / renderedResolution,
-                resolution / renderedResolution,
-                1,
-                this.textOverlayOffsetMatrix_,
-              );
-              console.log('rendered rotation', renderedRotation);
-              console.log('rendered size', renderedSize);
-              return this.textOverlayOffsetMatrix_;
-            },
-          },
-        },
+        createPostProcessDefinition(
+          () => this.textOverlayCanvas_,
+          () => this.textOverlayRenderFrameState_,
+        ),
         ...(options.postProcesses ?? []),
       ],
     });
@@ -285,44 +203,22 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
      */
     this.sourceListenKeys_ = null;
 
-    // this.textOverlay_ = null;
+    /**
+     * @type {HTMLCanvasElement}
+     * @private
+     */
+    this.textOverlayCanvas_ = null;
 
-    this.textOverlayOffsetMatrix_ = createMat4();
-    this.textOverlayOffsetMatrix_ = [
-      1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    ];
-
-    this.textOverlayRenderTransform_ = createTransform();
+    /**
+     * @type {import("../../Map.js").FrameState}
+     * @private
+     */
     this.textOverlayRenderFrameState_ = null;
 
-    this.textOverlayWorker_ = createTextOverlayWorker();
-    this.textOverlayCanvas_ = createCanvasContext2D().canvas;
-    this.textOverlayWorker_.addEventListener('message', (message) => {
-      const received = message.data;
-      if (received.type === TextOverlayWorkerMessageType.RENDERED) {
-        const imageData = message.data.imageData;
-        this.textOverlayCanvas_.width = imageData.width;
-        this.textOverlayCanvas_.height = imageData.height;
-        this.textOverlayCanvas_.getContext('2d').drawImage(imageData, 0, 0);
-        this.textOverlayCanvas_.style.transform = message.data.transform;
-
-        this.textOverlayRenderFrameState_ = message.data.frameState;
-        this.textOverlayRenderTransform_ = this.helper.makeProjectionTransform(
-          deserializeFrameState(message.data.frameState),
-          this.textOverlayRenderTransform_,
-        );
-
-        // transfer back the image data
-        this.textOverlayWorker_.postMessage(
-          {
-            type: TextOverlayWorkerMessageType.RENDERED,
-            imageData,
-          },
-          [imageData],
-        );
-
-        this.changed();
-      }
+    this.textOverlayWorker_ = setupTextOverlayWorker((canvas, frameState) => {
+      this.textOverlayCanvas_ = canvas;
+      this.textOverlayRenderFrameState_ = frameState;
+      this.changed();
     });
   }
 
@@ -404,10 +300,6 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    * @private
    */
   initTextOverlay_() {
-    // this.textOverlay_ = new TextOverlay(
-    //   this.helper,
-    //   /** @type {any} */ (this.styles_),
-    // );
     this.textOverlayWorker_.postMessage({
       type: TextOverlayWorkerMessageType.INIT,
       style: this.styles_,
@@ -507,23 +399,6 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     makeInverseTransform(this.tmpTransform_, batchInvertTransform);
     applyTransform(this.tmpTransform_, this.tmpCoords_);
     this.helper.setUniformFloatVec2(Uniforms.PATTERN_ORIGIN, this.tmpCoords_);
-
-    // compute text overlay offset matrix
-    // setFromTransform(this.tmpTransform_, this.currentFrameStateTransform_);
-    // multiplyTransform(
-    //   this.tmpTransform_,
-    //   makeInverseTransform(createTransform(), this.textOverlayRenderTransform_),
-    // );
-    // makeInverseTransform(this.tmpTransform_, this.currentFrameStateTransform_);
-    // multiplyTransform(this.tmpTransform_, this.textOverlayRenderTransform_);
-    // mat4FromTransform(this.textOverlayOffsetMatrix_, this.tmpTransform_);
-    // scale(
-    //   this.textOverlayOffsetMatrix_,
-    //   0.5,
-    //   0.5,
-    //   1,
-    //   this.textOverlayOffsetMatrix_,
-    // );
   }
 
   /**
@@ -637,9 +512,6 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     }
 
     if (sourceChanged) {
-      // TODO: update source
-      // this.textOverlay_.unloadFeatureBatch('main');
-      // this.textOverlay_.loadFeatureBatch(vectorSource.getFeatures(), 'main');
       this.textOverlayWorker_.postMessage({
         type: TextOverlayWorkerMessageType.UNLOAD_FEATURES,
         batchId: 'main',
@@ -783,6 +655,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       });
       this.sourceListenKeys_ = null;
     }
+    this.textOverlayWorker_.terminate();
     super.disposeInternal();
   }
 
