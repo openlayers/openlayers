@@ -492,13 +492,13 @@ export function optionsFromCapabilities(wmtsCap, config) {
       matrixSetExtent[2],
     ];
   }
-  let extent = [
+  let extent = /** @type {import('../extent.js').Extent} */ ([
     origin[0] + tileSpanX * selectedMatrixLimit.MinTileCol,
     // add one to get proper bottom/right coordinate
     origin[1] - tileSpanY * (1 + selectedMatrixLimit.MaxTileRow),
     origin[0] + tileSpanX * (1 + selectedMatrixLimit.MaxTileCol),
     origin[1] - tileSpanY * selectedMatrixLimit.MinTileRow,
-  ];
+  ]);
 
   if (
     matrixSetExtent !== undefined &&

@@ -607,6 +607,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     const dx = (tileResolution * width) / 2 / tilePixelRatio;
     const dy = (tileResolution * height) / 2 / tilePixelRatio;
+    /** @type {import('../../extent.js').Extent} */
     const canvasExtent = [
       viewCenter[0] - dx,
       viewCenter[1] - dy,

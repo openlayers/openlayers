@@ -1940,7 +1940,9 @@ export function createCenterConstraint(options) {
 
   const projection = createProjection(options.projection, 'EPSG:3857');
   if (options.multiWorld !== true && projection.isGlobal()) {
-    const extent = projection.getExtent().slice();
+    const extent = /** @type {import('./extent.js').Extent} */ (
+      projection.getExtent().slice()
+    );
     extent[0] = -Infinity;
     extent[2] = Infinity;
     return createExtent(extent, false, false);

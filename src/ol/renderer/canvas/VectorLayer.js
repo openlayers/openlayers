@@ -600,8 +600,12 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       frameStateExtent,
       vectorLayerRenderBuffer * resolution,
     );
-    const renderedExtent = extent.slice();
-    const loadExtents = [extent.slice()];
+    const renderedExtent = /** @type {import('../../extent.js').Extent} */ (
+      extent.slice()
+    );
+    const loadExtents = [
+      /** @type {import('../../extent.js').Extent} */ (extent.slice()),
+    ];
     const projectionExtent = projection.getExtent();
 
     if (

@@ -83,7 +83,7 @@ export function clone(extent, dest) {
     dest[3] = extent[3];
     return dest;
   }
-  return extent.slice();
+  return /** @type {Extent} */ (extent.slice());
 }
 
 /**

@@ -104,7 +104,12 @@ class RBush {
    */
   update(extent, value) {
     const item = this.items_[getUid(value)];
-    const bbox = [item.minX, item.minY, item.maxX, item.maxY];
+    const bbox = /** @type {import('../extent.js').Extent} */ ([
+      item.minX,
+      item.minY,
+      item.maxX,
+      item.maxY,
+    ]);
     if (!equals(bbox, extent)) {
       this.remove(value);
       this.insert(extent, value);
