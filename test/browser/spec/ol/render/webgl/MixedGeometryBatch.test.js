@@ -8,6 +8,7 @@ import MultiPoint from '../../../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../../src/ol/geom/Polygon.js';
+import {getTransform} from '../../../../../../src/ol/proj.js';
 import RenderFeature from '../../../../../../src/ol/render/Feature.js';
 import MixedGeometryBatch from '../../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
 import {getUid} from '../../../../../../src/ol/util.js';
@@ -1226,6 +1227,36 @@ describe('MixedGeometryBatch', function () {
       it('computes the aggregated metrics on all points', () => {
         expect(mixedBatch.pointBatch.geometriesCount).to.be(3);
       });
+    });
+  });
+
+  describe('with projectionTransform', () => {
+    let geometry1, feature1, uid1, projectionTransform, transformedFlatCoordss;
+
+    beforeEach(() => {
+      projectionTransform = getTransform('EPSG:4326', 'EPSG:3857');
+
+      geometry1 = new Point([135, 35]);
+      feature1 = new Feature({
+        geometry: geometry1,
+      });
+
+      uid1 = getUid(feature1);
+      transformedFlatCoordss = [projectionTransform([135, 35])];
+
+      mixedBatch.addFeature(feature1, projectionTransform);
+    });
+
+    it('has the transformed flatCoords', () => {
+      expect(mixedBatch.pointBatch.entries[uid1].flatCoordss).to.eql(
+        transformedFlatCoordss,
+      );
+    });
+    it('has the same transformed flatCoords after changeFeature', () => {
+      mixedBatch.changeFeature(feature1, projectionTransform);
+      expect(mixedBatch.pointBatch.entries[uid1].flatCoordss).to.eql(
+        transformedFlatCoordss,
+      );
     });
   });
 
