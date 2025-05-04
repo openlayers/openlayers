@@ -45,11 +45,50 @@ export function setupTextOverlayWorker(worker, renderedCallback) {
 }
 
 /**
- * @param {Array<import('../../style/flat.js').Rule>} style Style rules
+ * @param {import('../../style/flat.js').FlatStyle} style Single flat style
+ * @return {boolean} Whether the style rule contains text-related styling properties
+ */
+function hasTextStyle(style) {
+  return Object.keys(style).some((key) => key.startsWith('text-'));
+}
+
+/**
+ * @param {import('../../style/flat.js').FlatStyle} style Single flat style
+ * @return {import('../../style/flat.js').FlatStyle|null} Style with text-related properties only;
+ *   if no text-related properties found, returns null
+ */
+function keepTextStyleProperties(style) {
+  if (!hasTextStyle(style)) {
+    return null;
+  }
+  return Object.keys(style).reduce(
+    (prev, key) =>
+      key.startsWith('text-')
+        ? {
+            ...prev,
+            [key]: style[key],
+          }
+        : prev,
+    {},
+  );
+}
+
+/**
+ * @param {import('../../style/flat.js').FlatStyleLike} style Flat style
  * @return {import("../../expr/expression.js").EncodedExpression} A single filter expression that can be used to keep
  *   only features associated with a text style
  */
 export function createFilterForFeaturesWithText(style) {
+  // single style
+  if (!Array.isArray(style)) {
+    return hasTextStyle(style);
+  }
+
+  // array of simple styles (no filters)
+  if (style.every((styleRule) => !('style' in styleRule))) {
+    return style.some(hasTextStyle);
+  }
+
   /** @type {import("../../expr/expression.js").EncodedExpression} */
   let textFilterExpression = false;
   /** @type {Array<import("../../expr/expression.js").EncodedExpression>} */
@@ -73,21 +112,23 @@ export function createFilterForFeaturesWithText(style) {
     }
   }
 
-  for (const rule of style) {
+  for (const rule of /** @type {Array<import('../../style/flat.js').Rule>} */ (
+    style
+  )) {
     // this is not an else rule: empty the exclude filters
     if (!rule.else) {
       excludeFilters.length = 0;
     }
-    const hasTextStyle = Object.keys(rule.style).some((key) =>
-      key.startsWith('text-'),
-    );
-    if (hasTextStyle && textFilterExpression === false && !rule.filter) {
+    const hasText = Array.isArray(rule.style)
+      ? rule.style.some(hasTextStyle)
+      : hasTextStyle(rule.style);
+    if (hasText && textFilterExpression === false && !rule.filter) {
       textFilterExpression = true;
     }
     if (!rule.filter) {
       continue;
     }
-    if (hasTextStyle) {
+    if (hasText) {
       addExpressionToFilter(rule.filter);
     } else {
       // no text style: store the filter as an exclude filter
@@ -98,15 +139,48 @@ export function createFilterForFeaturesWithText(style) {
 }
 
 /**
- * @param {Array<import('../../style/flat.js').Rule>} style Style rules
- * @return {function(Array<import('../../Feature.js').FeatureLike>): Array<import('../../Feature.js').FeatureLike>} This function will produce
- *   a filtered array of features from an array of features
+ * @param {import('../../style/flat.js').FlatStyleLike} style Flat style
+ * @return {import('../../style/flat.js').FlatStyleLike|null} A flat style containing only text-related styling;
+ *   all style rules without any text-related properties are discarded.
+ *   Returns null if no style applies to text.
  */
-// export function createFeaturesWithTextFilter(style) {
-//   return (features) => {
-//     features;
-//   };
-// }
+export function transformToTextStyle(style) {
+  // single style
+  if (!Array.isArray(style)) {
+    return keepTextStyleProperties(style);
+  }
+
+  // array of simple styles (no filters)
+  if (style.every((styleRule) => !('style' in styleRule))) {
+    const filteredStyle =
+      /** @type {Array<import('../../style/flat.js').FlatStyle>} */ (style)
+        .filter(hasTextStyle)
+        .map(keepTextStyleProperties);
+    return filteredStyle.length ? filteredStyle : null;
+  }
+
+  // remove properties not related to text
+  const textOnlyRules =
+    /** @type {Array<import('../../style/flat.js').Rule>} */ (style).map(
+      (styleRule) => {
+        const textStyle = Array.isArray(styleRule.style)
+          ? styleRule.style.map(keepTextStyleProperties)
+          : keepTextStyleProperties(styleRule.style);
+        return {
+          ...styleRule,
+          style: textStyle,
+        };
+      },
+    );
+
+  // 2. collapse style rules without text styles
+
+  if (!textOnlyRules.length) {
+    return null;
+  }
+
+  return textOnlyRules;
+}
 
 /**
  * @param {function(): HTMLCanvasElement} textOverlayCanvasGetter Function that returns the canvas where the text overlay was rendered

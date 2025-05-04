@@ -39,7 +39,6 @@ class TextOverlay {
         };
       })
       .filter((styleRule) => Object.keys(styleRule.style).length > 0);
-    // this.textStyleFn_ = rulesToStyleFunction(this.textStyles_);
 
     const textStyleFilters = this.textStyles_.filter((style) => !!style.filter);
     let collectedFilters;
@@ -53,7 +52,6 @@ class TextOverlay {
         ['any'],
       );
     }
-    // console.log('collectedFilters', collectedFilters);
 
     this.textFilterFn_ = expressionToFunction(collectedFilters, BooleanType);
 
@@ -88,29 +86,13 @@ class TextOverlay {
 
   loadFeatureBatch(features, batchId) {
     const filteredFeatures = features.filter(this.textFilterFn_);
-    // console.log(
-    //   'filtered features',
-    //   filteredFeatures.length,
-    //   'left from',
-    //   features.length,
-    // );
     this.featureBatches_[batchId] = filteredFeatures;
-    console.log(
-      'loaded batch',
-      batchId,
-      'with features',
-      filteredFeatures.length,
-    );
   }
 
   unloadFeatureBatch(batchId) {
     this.vectorSource_.removeFeatures(this.featureBatches_[batchId]);
     this.batchesRendered_.splice(this.batchesRendered_.indexOf(batchId));
-    // console.log(
-    //   `unloaded ${this.featureBatches[batchId].length} features in text overlay`,
-    // );
     delete this.featureBatches_[batchId];
-    console.log('unloaded batch', batchId);
   }
 
   /**
@@ -118,30 +100,19 @@ class TextOverlay {
    * @param {Array<string>} batchesToRender Batches to render
    */
   render(frameState, batchesToRender) {
-    // console.log(
-    //   'rendering, new batches',
-    //   batchesToRender,
-    //   'old batches',
-    //   this.batchesRendered_,
-    // );
     for (const batchId of batchesToRender) {
       if (this.batchesRendered_.includes(batchId)) {
         continue;
       }
       this.vectorSource_.addFeatures(this.featureBatches_[batchId]);
-      console.log('added features from batch', batchId);
     }
     for (const oldBatchId of this.batchesRendered_) {
       if (batchesToRender.includes(oldBatchId)) {
         continue;
       }
       this.vectorSource_.removeFeatures(this.featureBatches_[oldBatchId]);
-      console.log('remove features from batch', oldBatchId);
     }
     this.batchesRendered_ = [...batchesToRender];
-    // console.log(
-    //   `rendering ${this.vectorSource_.getFeatures().length} features in text overlay`,
-    // );
 
     const renderer =
       /** @type {import('../../renderer/canvas/VectorLayer.js').default} */ (
@@ -166,7 +137,6 @@ class TextOverlay {
     frameState.layerIndex = 0;
     frameState.layerStatesArray = [this.vectorLayer_.getLayerState()];
     renderer.context = this.context_;
-    // renderer.targetContext_ = this.context_;
     renderer.useContainer = useContainer.bind(renderer, this.context_);
     const layerState = this.vectorLayer_.getLayerState();
 
@@ -182,70 +152,6 @@ class TextOverlay {
     renderer.renderFrame(frameState, this.context_.canvas);
     this.vectorLayer_.renderDeclutter(frameState, layerState);
     this.vectorLayer_.renderDeferred(frameState);
-
-    // renderer.prepareFrame(frameState);
-    // renderer.renderDeclutter(frameState);
-    // renderer.renderDeferred(frameState);
-    // renderer.renderFrame(frameState, this.context_.canvas);
-
-    // return;
-
-    this.context_.strokeStyle = 'black';
-    this.context_.lineWidth = 4;
-    this.context_.strokeRect(
-      4,
-      4,
-      this.context_.canvas.width - 8,
-      this.context_.canvas.height - 8,
-    );
-
-    this.context_.strokeStyle = 'darkred';
-    this.context_.lineWidth = 1.5;
-    // draw a line
-    this.context_.beginPath();
-    this.context_.moveTo(4, this.context_.canvas.height / 2);
-    this.context_.lineTo(
-      this.context_.canvas.width - 8,
-      this.context_.canvas.height / 2,
-    );
-    this.context_.moveTo(this.context_.canvas.width / 2, 4);
-    this.context_.lineTo(
-      this.context_.canvas.width / 2,
-      this.context_.canvas.height - 8,
-    );
-    this.context_.moveTo(
-      this.context_.canvas.width * 0.4,
-      this.context_.canvas.height / 2 - 8,
-    );
-    this.context_.lineTo(
-      this.context_.canvas.width * 0.4,
-      this.context_.canvas.height / 2 + 8,
-    );
-    this.context_.moveTo(
-      this.context_.canvas.width * 0.6,
-      this.context_.canvas.height / 2 - 8,
-    );
-    this.context_.lineTo(
-      this.context_.canvas.width * 0.6,
-      this.context_.canvas.height / 2 + 8,
-    );
-    this.context_.moveTo(
-      this.context_.canvas.width / 2 - 8,
-      this.context_.canvas.height * 0.4,
-    );
-    this.context_.lineTo(
-      this.context_.canvas.width / 2 + 8,
-      this.context_.canvas.height * 0.4,
-    );
-    this.context_.moveTo(
-      this.context_.canvas.width / 2 - 8,
-      this.context_.canvas.height * 0.6,
-    );
-    this.context_.lineTo(
-      this.context_.canvas.width / 2 + 8,
-      this.context_.canvas.height * 0.6,
-    );
-    this.context_.stroke();
   }
 
   getCanvas() {
